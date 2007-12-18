@@ -1,0 +1,87 @@
+<html>
+<head>
+<title>Delivery Reservation Overview</title>
+<link rel="stylesheet" href="../../../../docroot/css/pc_ie.css"/>
+</head>
+<body jwcid="$content$">
+<span jwcid="border">
+<table cellpadding="1" align="center" cellspacing="0" border="0">
+    <tr align="center">
+		<td align="center"><b><span jwcid="insertPlanName">Plan Name</span></b></td>
+	</tr>
+	<tr align="center">
+		<td align="center"><a href="#" class="action" jwcid="linkUpdatePlan">Update Plan</a></td>
+	</tr>
+</table><br>
+<span jwcid="forEachDay"><table width="175" cellpadding="1" align="left" cellspacing="0" border="0" class="timeslotTable">
+	<tr>
+		<th colspan="2" nowrap bgcolor='c00cc3d'><span jwcid="insertDay">Thursday</span></th>
+		<th align="right" bgcolor='c00cc3d'>
+			<span jwcid="ifShowAddButton">
+				<a href="#" class="action" jwcid="linkAddShift">+</a>
+			</span>
+		</th>
+	</tr>
+	<span jwcid="forEachShift">
+		<span jwcid="ifShowShift">
+			<tr bgcolor='dfdfdf'>
+				<td nowrap><span jwcid="insertShiftName">Shift Name</span></td>
+				<td align="right" colspan="2">
+					<a href="#" class="action" jwcid="linkEditShift">?</a>
+					&nbsp;
+					<a href="#" class="action" jwcid="linkDeleteShift">X</a>
+				</td>
+			</tr>
+			<tr>
+				<td nowrap><span jwcid="insertStartTime">hh:mm a</span></td>
+				<td>&nbsp;</td>
+				<td nowrap><span jwcid="insertEndTime">hh:mm a</span></td>
+			</tr>
+			<tr>
+				<td colspan="3">
+					<table>
+						<tr bgcolor="c00cc3d">
+							<td align="center">Start</td>
+							<td align="center"> - </td>
+							<td align="center">End </td>
+							<td align="center">Status</td>
+							<td align="center">Cutoff</td>
+						</tr>
+						<span jwcid="forEachTimeslot">
+							<tr>
+								<td nowrap><span jwcid="insertTimeslotStartTime" /></td>
+								<td nowrap>&nbsp;-&nbsp;</td>
+								<td nowrap><span jwcid="insertTimeslotEndTime" /></td>
+								<td nowrap align="center"><span jwcid="insertTimeslotStatus" /></td>
+								<td nowrap><span jwcid="insertTimeslotCutoffTime" /></td>
+							</tr>
+						</span>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3">&nbsp;<br><br></td>
+			</tr>
+		</span>
+		<span jwcid="ifShowEditShift">
+			<tr><td colspan="3"><br><span jwcid="editShift"/><br></td></tr>
+			<tr bgcolor="#c00cc3d">
+				<td colspan="3"><font class="space2pix">.</font></td>
+			</tr>
+			<tr><td colspan="3"><br><span jwcid="editTimeslots"/><br></td></tr>
+		</span>
+	</span>
+	<tr>
+		<td colspan="3" align="center">
+			<span jwcid="ifShowAddShift">
+				<br><br>
+				<span jwcid="addShift"/>
+			</span>
+	
+		</td>
+	</tr>
+</table></span>
+
+</span>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<td colspan="2">
+	<table jwcid="relationshipEditor" style="width: 100%">
+		<span jwcid="header@Block">
+			<th>Sku</th>
+			<span jwcid="@ListEdit" source="ognl:domainKeys" value="ognl:currDomainKey">
+				<th><span jwcid="@Insert" value="ognl:currDomain.label"/></th>
+			</span>
+		</span>
+		<td><span jwcid="@ContentLink" key="ognl:currKey"/></td>
+		<span jwcid="@ListEdit" source="ognl:domainKeys" value="ognl:currDomainKey">
+			<td>
+				<select jwcid="@PropertySelection" model="ognl:currValueSelectionModel" value="ognl:currValue"/>
+			</td>
+		</span>
+	</table>
+</td>

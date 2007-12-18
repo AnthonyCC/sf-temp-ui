@@ -1,0 +1,102 @@
+<body jwcid="@Border" title="Content Editor">
+
+	<div id="main">	
+	    <span jwcid="@Conditional" condition="ognl:successMsg != null">
+			<table id="pageTitle" width="100%" cellpadding="0" cellspacing="0">
+				<tr>
+					<td valign="bottom">
+						<h1>Changes Saved</h1>
+					</td>
+				</tr>
+			</table>
+			<div class="buttonBar" style="color: #999; font-size: 8pt; padding: 4px; text-align: left;">
+				<span jwcid="@Insert" value="ognl:successMsg"/>
+			</div>
+			
+			<br/>
+		</span>
+
+	    <span jwcid="@Conditional" condition="ognl:changeSet != null">
+			<table jwcid="@HistoryTable" changes="ognl:changeSet.nodeChanges"/>
+		</span>
+
+		<span jwcid="@Conditional" condition="ognl:contentKey != null">
+			
+			<form jwcid="editForm">
+				
+				<span jwcid="@Defer" block="ognl:components.editorBlock">
+					<table id="pageTitle" width="100%" cellpadding="0" cellspacing="0">
+						<tr>
+							<td class="context">
+								<span jwcid="@Conditional" condition="ognl:allContexts.length &gt; 0">
+									<select title="Context" jwcid="selectContext" onchange="setDirtyFormWarning(false); this.form.submit();"/>
+									<a jwcid="@ExternalLink" page="LeftNav" parameters="ognl:context.parentContext.contentKey" target="frameLeftNav">
+										<img jwcid="@Image" image="ognl:assets.sync" align="absbottom" title="Reveal in Content Tree"/>
+									</a>
+								</span>
+							</td>
+							<td align="right" valign="bottom" width="75" style="line-height:0;" rowspan="2">
+								<img jwcid="@Any" src='ognl:"img/banners/" + contentKey.type.name + ".gif"' width="75" height="66"/>
+							</td>
+						</tr>
+						<tr>
+							<td valign="bottom">
+								<h1 jwcid="@Any" title="ognl:contentKey.encoded">
+									<nobr><span id="fadeError"><span jwcid="@Insert" value="ognl:selectedNode.label"/></span></nobr>
+								</h1>
+							</td>
+						</tr>
+					</table>
+					
+	                <span jwcid="@ShowErrors" delegate="ognl:beans.delegate" showFieldErrors="false"/>
+
+					<div class="buttonBar">
+						<table width="100%">
+							<tr>
+								<td align="left" width="40%" style="color: #999; font-size: 8pt;">
+									<span>
+										<span jwcid="@Insert" value="ognl:contentKey.type"/>
+										<span jwcid="@Insert" value="ognl:contentKey.id"/>
+									</span>
+								</td>
+								<td align="center" width="20%">
+									<input jwcid="save" class="button submit"/>
+									<input jwcid="cancel" class="button cancel"/>
+								</td>
+								<td align="right" width="40%">
+									<span jwcid="@Conditional" condition="ognl:previewLink != null">
+										<a jwcid="@GenericLink" target="_new" href="ognl:previewLink">Preview</a> |
+									</span>
+									<!-- remove the comment around the link below to get XML export functionality
+                                    <a jwcid="@ServiceLink" service="xmlExport" parameters="ognl:contentKey">XML</a> | 
+									-->
+									<a jwcid="@ExternalLink" page="ContentHistory" parameters="ognl:contentKey">Change History</a>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</span>
+				
+				<span jwcid="editorBlock@Block">
+					<div jwcid="@ContentEditor" node="ognl:selectedNode" contextNode="ognl:contextNode"/>
+				</span>
+
+				<div class="buttonBar">
+					<input jwcid="save2" class="button submit"/>
+					<input jwcid="cancel2" class="button cancel"/>
+				</div>
+				
+			</form>
+			<script jwcid="dirtyWarning"/>
+
+			
+			<span jwcid="@Conditional" condition="ognl:beans.delegate.hasErrors">
+				<script language="JavaScript" type="text/javascript" src="js/errorFader.js"/>
+			</span>
+
+		</span>
+		
+	</div>
+
+</body>
+

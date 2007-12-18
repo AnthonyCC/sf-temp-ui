@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE component-specification PUBLIC
+  "-//Apache Software Foundation//Tapestry Specification 3.0//EN"
+  "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<component-specification class="org.apache.tapestry.BaseComponent"
+    allow-body="yes"
+    allow-informal-parameters="no">
+    
+    <description>add a description</description>
+
+	<parameter name="relationship" type="com.freshdirect.cms.RelationshipI" direction="auto" required="yes"/>
+	
+	<component id="link" type="ExternalLink">
+		<static-binding name="page">RelationshipPopup</static-binding>
+		<binding name="parameters" expression='{page.pageName, relationship.name}'/>
+		<binding name="renderer" expression="beans.popupLinkRenderer"/>
+	</component>
+   
+	<bean name="popupLinkRenderer" class="org.apache.tapestry.contrib.link.PopupLinkRenderer" lifecycle="page">
+		<set-property name="windowName" expression="'relationship'"/>
+		<set-property name="features">'width=320,height=500'</set-property>
+	</bean>
+
+</component-specification>

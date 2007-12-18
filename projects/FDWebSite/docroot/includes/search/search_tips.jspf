@@ -1,0 +1,60 @@
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="520" class="text13">
+<tr><td colspan="2" class="text13">
+<FONT class="title16">Search Tips</font><BR>
+<BR>
+Type the name of an item into the text box, and click the <b>find</b> button.<br>
+<br>
+Be as specific as you can.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Ex. type <b>orange juice</b> instead of just <b>juice</b>.)<br>
+<br>
+<br>
+<b>What if no products match?</b><br>
+<BR>
+</td></tr>
+<TR VALIGN="TOP">
+	<TD WIDTH="10" ALIGN="RIGHT"><LI></TD>
+	<TD WIDTH="510" class="text13">Check the spelling of the words you entered.<br><br></TD>
+</TR>
+<TR VALIGN="TOP">
+	<TD WIDTH="10" ALIGN="RIGHT"><LI></TD>
+	<TD WIDTH="510" class="text13">We may not sell what you are looking for. If it's something you think we should carry, please <a href="javascript:pop('/request_product.jsp',400,585);">click here</a> to let us know about it.<br><br></TD>
+</TR>
+<tr>
+<td colspan=2 class="text13"><br>
+<b>What if too many products match?</b><br><br>
+</td>
+</tr>
+<TR VALIGN="TOP">
+	<TD WIDTH="10" ALIGN="RIGHT"><LI></TD>
+	<TD WIDTH="510" class="text13">
+		Make your search more specific by using two or three words to search for the product.<br>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Ex. type <b>apple pie</b> instead of just <b>apple</b>.)
+		<br><br>
+	</TD>
+</TR>
+</TABLE>
+<BR>
+
+<%-- 
+<font class="text11bold">Kosher and Organic</font><br>
+<BR>
+
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="520">
+<TR VALIGN="TOP">
+	<TD WIDTH="10" ALIGN="RIGHT"><LI></TD>
+	<TD WIDTH="510">
+		If you want to find only organic products check the box marked <b>organic</b>. 
+		<br><br>
+	</TD>
+</TR>
+<TR VALIGN="TOP">
+	<TD WIDTH="10" ALIGN="RIGHT"><LI></TD>
+	<TD WIDTH="510">
+		If you want to find only kosher products check the box marked<b> kosher</b>.
+	<br><br></TD>
+</TR>
+</TABLE>
+ --%>
+ 
+ 
+ 

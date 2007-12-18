@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE component-specification PUBLIC
+  "-//Apache Software Foundation//Tapestry Specification 3.0//EN"
+  "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<component-specification class="org.apache.tapestry.BaseComponent"
+    allow-body="yes"
+    allow-informal-parameters="yes">
+    
+    <description>add a description</description>
+
+	<parameter name="page" direction="in" type="java.lang.String" required="yes" property-name="targetPage" />
+	<parameter name="parameters" direction="in" type="java.lang.Object" required="no" default-value="null"/>
+	<parameter name="size" direction="in" type="java.lang.String" required="no" default-value="null"/>
+	
+	<component id="link" type="ExternalLink" inherit-informal-parameters="yes">
+		<binding name="page" expression="targetPage"/>
+		<binding name="parameters" expression="parameters"/>
+		<binding name="renderer" expression="beans.popupLinkRenderer"/>
+	</component>
+   
+	<bean name="popupLinkRenderer" class="com.freshdirect.cms.ui.tapestry.FormPopupLinkRenderer" lifecycle="page">
+		<set-property name="windowName" expression="targetPage"/>
+		<set-property name="features">(size=='large' ? 'width=720,height=500' : 'width=400,height=500')  + ',status=0,resizable=1,scrollbars=1'</set-property>
+	</bean>
+
+</component-specification>

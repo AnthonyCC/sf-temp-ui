@@ -1,0 +1,35 @@
+<table cellspacing="0" cellpadding="0" border="0">
+<tr>
+	<td>
+		<a href="/bakery_kitchen/bakery.jsp?pageNo=2"><b><font class="text12">Our Kitchen</font></b></a><br>
+		<font class="text10">Fresh, handcrafted, natural foods from our kitchen to yours</font>
+	</td>
+    <td rowspan="15"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
+    <td rowspan="15" valign="top"><a href="/bakery_kitchen/bakery.jsp?pageNo=2"><img src="/media_stat/images/template/kitchen/kb_pop_pg1_food.jpg" width="264" height="210" alt="" border="0"></a></td>
+</tr>
+<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"></td></tr>
+<tr>
+	<td valign="top"> 
+		<a href="/bakery_kitchen/bakery.jsp?pageNo=3"><b><font class="text12">Sample Menu</font></b></a><br>
+		<font class="text10">Every course from soup to dessert &#151; a few items from our menu</font>
+	</td>
+</tr>
+<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"></td></tr>
+<tr>
+	<td valign="top">
+		 <a href="/bakery_kitchen/bakery.jsp?pageNo=4"><b><font class="text12">Sample Entr&eacute;e </font></b></a><br>
+		<font class="text10">Mild or spicy, with your choice of sides &#151; meals to suit every mood	</font> 
+	</td>
+</tr>
+<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"></td></tr>
+<tr>
+	<td valign="top">
+	<a href="/bakery_kitchen/bakery.jsp?pageNo=5"><b><font class="text12">Our Pasta Bar</font></b></a><br>
+	<font class="text10">Pair any fresh pasta with any fresh sauce for dinner in minutes</font>
+
+	</td>
+</tr>
+<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"></td></tr>
+
+
+</table>

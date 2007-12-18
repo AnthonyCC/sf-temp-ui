@@ -1,0 +1,50 @@
+<xlsReporting>
+ <sources>
+  <source> <!-- Perhaps we use connection pools later on? -->
+    <name>DB</name>
+    <type>com.freshdirect.xls.datasource.DatabaseDataSourceKeyValue</type>
+    <url>jdbc:oracle:thin:@(DESCRIPTION =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb01-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb02-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (CONNECT_DATA =
+    (SERVER = DEDICATED)
+    (SERVICE_NAME = dbsto_prod)
+     (failover_mode =
+       (type = session)
+       (method = basic)
+       (retries = 20)
+     )
+  )
+ )</url>
+    <user>appdev</user>
+    <password>readn0wrt</password>
+  </source>
+ </sources>
+
+ <populate>
+  <sheet>
+   <name>DataSheet</name>
+   <beginOffsetRow>1</beginOffsetRow>
+   <beginOffsetColumn>0</beginOffsetColumn>
+   <dataSource>
+     <name>DB</name>
+     <param>
+select distinct c.customer_id as ID, sv.create_date, 'ZONE', sd.question, sd.answer
+from cust.survey sv,
+         cust.customerinfo c,
+         cust.surveydata sd,
+         cust.fdcustomer fdc
+where sv.survey_name = 'DietNutrition'
+  and sv.id = sd.survey_id
+  and sv.customer_id = fdc.id
+  and fdc.erp_customer_id = c.customer_id
+     </param>
+     <param>DietNutritionAllergy,DietNutritionImportance,DietNutritionWeight,DietNutritionShop,DietNutritionVegetarian,DietNutritionSpecific,DietNutritionAllergyOther,DietNutritionSpecificOther,DietNutritionVegetarianOther,DietNutritionWeightOther
+     </param>
+     <!--param>printHeader</param-->
+   </dataSource>
+  </sheet>
+
+
+ </populate>
+</xlsReporting>

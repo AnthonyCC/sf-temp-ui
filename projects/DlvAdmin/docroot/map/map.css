@@ -1,0 +1,48 @@
+.zip {
+	fill: #efefef;
+	stroke: gray;
+	stroke-width: 1;
+}
+.zip-over {
+	fill: #eaeaea;
+	stroke: black;
+	stroke-width: 1;
+}
+
+.zone {
+	fill: green;
+	stroke: red;
+	fill-opacity: 0.3;
+	stroke-opacity: 0.3;
+	stroke-width: 1;
+}
+.zone-over {
+	fill: blue;
+	fill-opacity: 0.3;
+	stroke: yellow;
+	stroke-width: 2;
+	stroke-opacity: 1;
+}
+
+.zip-text {
+	fill: gray;
+	font-family: Helvetica;
+	font-size: 24;
+	text-anchor:middle;
+}
+
+.zip-over-text {
+	fill: red;
+}
+
+.zone-text {
+	fill: black;
+	font-family: Helvetica;
+	font-size:26;
+	font-weight: bold;
+	text-anchor:middle;
+}
+
+.zone-over-text {
+	fill: red;
+}

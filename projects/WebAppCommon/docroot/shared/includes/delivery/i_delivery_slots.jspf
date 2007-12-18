@@ -1,0 +1,138 @@
+<%@ page import="com.freshdirect.delivery.restriction.DlvRestrictionsList"%>
+<%@ page import="com.freshdirect.delivery.restriction.EnumDlvRestrictionReason"%>
+<%@ page import="com.freshdirect.webapp.util.TimeslotPageUtil"%>
+<%@ page import="com.freshdirect.framework.util.DateUtil"%>
+<%@ page import="com.freshdirect.fdstore.*" %>
+<%@ page import="com.freshdirect.fdstore.util.TimeslotLogic" %>
+<%@ page import="com.freshdirect.delivery.model.DlvZoneModel" %>
+<%@ page import="java.util.Date" %>
+<%!
+private final static String TIMESLOT_BG_EVEN = "e8e8e8";
+private final static String TIMESLOT_BG_ODD = "f7f7f7";
+%>
+<% if (timeslots.size() > 0) { %>	
+<table border="0" cellspacing="2" cellpadding="0" summary="timeslots">
+	<tr>
+	<logic:iterate id="day" collection="<%=timeslots.getDays()%>" type="java.util.Date">
+		<%
+		boolean dayChosen = timeslots.isSelectedTimeslot(day, timeSlotId);
+		%>
+		<td align="center" valign="top" width="97">
+			<table border="0" cellspacing="0" cellpadding="0" width="97" class="timeslot">
+			  <thead class="<%= dayChosen ? "selected" : "normal" %>">
+				<tr>
+					<td colspan="2" rowspan="2" height="4" width="4"><img src="/media_stat/images/layout/small-corner_upper-left.gif" width="4" height="4" border="0"></td>
+					<td height="1" bgcolor="#222222" width="89"></td>
+					<td colspan="2" rowspan="2" height="4" width="4"><img src="/media_stat/images/layout/small-corner_upper-right.gif" width="4" height="4" border="0"></td>
+				</tr>
+				<tr>
+					<td height="3" width="89"><img src="/media_stat/images/layout/clear.gif" width="3" height="3" border="0" alt=""></td>
+				</tr>
+				<tr valign="top">
+					<td width="1" bgcolor="#222222"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0" alt=""></td>
+					<td width="3"><img src="/media_stat/images/layout/clear.gif" width="3" height="3" border="0" alt=""></td>
+					<td align="center" width="89">
+						<div class="day_name"><%= TimeslotPageUtil.formatDayName(day) %></div>
+						<div class="day_date"><%= TimeslotPageUtil.formatDeliveryDate(day) %></div>
+					</td>
+					<td width="3"><img src="/media_stat/images/layout/clear.gif" width="3" height="3" border="0" alt=""></td>
+					<td width="1" bgcolor="#222222"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0" alt=""></td>
+				</tr>
+			  </thead>
+			  <tbody>
+				<tr>
+					<td width="1" bgcolor="#222222"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0" alt=""></td>
+					<%
+					String bgcolor = TIMESLOT_BG_EVEN;
+					%>
+					<td width="95" colspan="3" bgcolor="#<%= bgcolor %>"><nobr>
+						<%
+						Date cutoffTime = null;
+						boolean firstSlot = true;
+						%>
+						<logic:iterate id="slot" collection="<%= timeslots.getTimeslotsForDate(day) %>" type="com.freshdirect.fdstore.FDTimeslot">
+							<%
+							boolean selectedSlot = slot.getTimeslotId().equals(timeSlotId);
+							boolean preReservedSlot = slot.getTimeslotId().equals(preReserveSlotId);
+							int startdlvHour = (DateUtil.toCalendar(slot.getBegDateTime())).get(Calendar.HOUR_OF_DAY);
+							int enddlvHour = (DateUtil.toCalendar(slot.getEndDateTime())).get(Calendar.HOUR_OF_DAY);
+							
+							if ((cutoffTime == null) || (cutoffTime.getTime() != slot.getCutoffDateTime().getTime())) {
+								//change color
+								if (cutoffTime != null) {
+									if (TIMESLOT_BG_EVEN.equals(bgcolor)) {
+										bgcolor = TIMESLOT_BG_ODD;
+									} else {
+										bgcolor = TIMESLOT_BG_EVEN;
+									}
+								}
+								cutoffTime = slot.getCutoffDateTime();
+								int cutoffTimeHour = (DateUtil.toCalendar(cutoffTime)).get(Calendar.HOUR_OF_DAY);
+								String cutoffDisp = TimeslotPageUtil.formatCutoffTime(cutoffTime) + (
+									(cutoffTimeHour >= DateUtil.MORNING_END && startdlvHour <= TimeslotPageUtil.EVENING_END)  ? "pm" : "am"
+								);
+								%>
+								<div class="cutoffTime" style="background: #<%= bgcolor %>">Order by <%= cutoffDisp %></div>
+								<%
+							}
+							
+							boolean highlightPreReserved = preReservedSlot && hasPreReserved;
+
+							DlvZoneModel zoneModel = (DlvZoneModel) zones.get(slot.getZoneId());
+							Date now = new Date();
+
+							int availCapacity = TimeslotLogic.getAvailableCapacity(slot.getDlvTimeslot(), now, timeslot_page_type, zoneModel.getCtReleaseTime());
+							int normalAvailCapacity = availCapacity;
+
+							if (TimeslotLogic.PAGE_CHEFSTABLE == timeslot_page_type) {
+								normalAvailCapacity = TimeslotLogic.getAvailableCapacity(slot.getDlvTimeslot(), now, TimeslotLogic.PAGE_NORMAL, zoneModel.getCtReleaseTime());
+							}
+
+
+							%>
+							<div class="slotRow" style="background:#<%= highlightPreReserved ? "f93" : normalAvailCapacity < 1 && availCapacity > 0 ? "996699" : bgcolor %>">
+								<span class="control">
+									<% 
+									if (availCapacity < 1 && !(selectedSlot || preReservedSlot)) {
+										if (isStaticSlot) {
+											%><img src="/media_stat/images/template/help/orangedot_trans.gif" width="10" height="10"><%
+										} else {
+											%><img src="/media_stat/images/template/checkout/x_trans.gif" width="10" height="10" border="0" hspace="4"><%
+										}
+									} else {
+										if (isStaticSlot){
+											%><img src="/media_stat/images/template/help/greendot_trans.gif" width="10" height="10"><%
+										} else {
+											%><input type="radio"
+												id="deliveryTimeslotId<%= slot.getTimeslotId() %>" name="deliveryTimeslotId"
+												<%= (selectedSlot || (preReservedSlot && "".equals(timeSlotId) && hasPreReserved)) ? "checked" : "" %>
+												value="<%= slot.getTimeslotId() %>"><%
+										}
+									}
+									//int slotEndHour = DateUtil.toCalendar(slot.getBegDateTime()).get(Calendar.HOUR_OF_DAY);
+									%>
+								</span><span class="time"><!-- <%= availCapacity %>, <%= normalAvailCapacity %>, <%= timeslot_page_type %> --><%= slot.getDisplayString(firstSlot) %></span>
+							</div>
+							<%
+							firstSlot = false;
+							%>
+						</logic:iterate>
+					</nobr>
+				</td>
+				<td width="1" bgcolor="#222222"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0" alt=""></td>
+			</tr>
+			<tr>
+				<td colspan="2" rowspan="2" height="4" width="4" bgcolor="#<%= bgcolor %>"><IMG src="/media_stat/images/layout/botleft_trans.gif" width="4" height="4" border="0" alt=""></td>
+				<td height="3" width="89" bgcolor="#<%= bgcolor %>"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""></td>
+				<td colspan="2" rowspan="2" height="4" width="4" bgcolor="#<%= bgcolor %>"><IMG src="/media_stat/images/layout/botright_trans.gif" width="4" height="4" border="0" alt=""></td>
+			</tr>
+			<tr>
+				<td height="1" bgcolor="#222222"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0" alt=""></td>
+			</tr>
+		  </tbody>
+		</table>
+	</td>   
+	</logic:iterate>
+	</tr>
+</table>
+<% } %>

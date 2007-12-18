@@ -1,0 +1,156 @@
+<%
+String bottomCatId = request.getParameter("catId");
+// get the node for this category
+CategoryModel cm_ForBottom = (CategoryModel)ContentFactory.getInstance().getContentNodeByName(bottomCatId);
+DepartmentModel dm_ForBottom = (DepartmentModel) cm_ForBottom.getDepartment();
+
+Attribute bottmAttrib = cm_ForBottom.getAttribute("LAYOUT");
+int bottLayoutType = bottmAttrib==null?-1:((Integer)bottmAttrib.getValue()).intValue(); 
+boolean isBottOfGroceryVirtual = false;
+boolean hasLeftNav = true;
+boolean noLeftNavLayout = false;
+int bottTblWidth = 400;
+
+if (request.getParameter("groceryVirtual")!=null ) {
+    isBottOfGroceryVirtual=true;
+}
+
+bottmAttrib = cm_ForBottom.getAttribute("SHOW_SIDE_NAV");
+if (bottmAttrib!=null) {
+    hasLeftNav = ((Boolean)bottmAttrib.getValue()).booleanValue();
+}
+
+noLeftNavLayout = (EnumLayoutType.COFFEE_BY_REGION.getId()==bottLayoutType  || EnumLayoutType.GROCERY_CATEGORY.getId()==bottLayoutType);
+
+if (!isBottOfGroceryVirtual && (noLeftNavLayout)){
+    hasLeftNav = false;
+} else if (isBottOfGroceryVirtual) hasLeftNav=true;
+
+
+if (!hasLeftNav) bottTblWidth = 550;
+
+boolean isGroceryProdPage = request.getParameter("groceryVirtual")==null?false:true;
+if (EnumLayoutType.GROCERY_PRODUCT.getId()==bottLayoutType) {
+    isGroceryProdPage = true;
+}
+if (!isGroceryProdPage) {
+
+    Attribute catBottAttrib = null; 
+
+    if (cm_ForBottom!=null) {
+        catBottAttrib = cm_ForBottom.getAttribute("CATEGORY_MIDDLE_MEDIA");
+        List catMidMedias =  catBottAttrib==null?new ArrayList():(List)catBottAttrib.getValue();
+        if (catMidMedias.size()>0) {  %>
+            <BR>
+            <IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="<%=bottTblWidth%>" HEIGHT="1" BORDER="0"><BR>
+            <FONT CLASS="space4pix"><br><br></FONT>
+            <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=bottTblWidth%>">
+               <TR VALIGN="TOP">
+                  <TD align="center">
+              <logic:iterate id='mediaRef' indexId='indexNo' collection="<%=catMidMedias%>" type="com.freshdirect.fdstore.content.MediaModel">
+    <%          if (((Html)mediaRef).getPath()!=null  && ((Html)mediaRef).getPath().toLowerCase().indexOf("blank.")==-1) { 
+                               if(indexNo.intValue()!=0){ %>
+                                     <img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
+                                     <IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="295" HEIGHT="1" BORDER="0"><BR>
+                                     <img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
+                               <%}%>
+                            <fd:IncludeMedia name='<%= ((Html)mediaRef).getPath() %>' />
+
+    <%          } %>
+              </logic:iterate>
+              </td></tr></table>
+<%      }
+        catBottAttrib = cm_ForBottom.getAttribute("CATEGORY_BOTTOM_MEDIA");
+        List catBottomMedias =  catBottAttrib==null?new ArrayList():(List)catBottAttrib.getValue();
+            if (catBottomMedias.size()>0) {
+    %>
+    <BR>
+    <IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="<%=bottTblWidth%>" HEIGHT="1" BORDER="0"><BR>
+    <FONT CLASS="space4pix"><br><br></FONT>
+    <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=bottTblWidth%>">
+       <TR VALIGN="TOP">
+          <TD align="center">
+<%
+
+    //CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNodeByName(bottomCatId);
+    
+    Image deptMngrImg = null;
+    //the dept_mgr has been inherited down to the categories..to enable different manager images on a category.
+    Attribute dptBottAttrib = cm_ForBottom.getAttribute("DEPT_MGR"); //department manager image with name
+
+    if (dptBottAttrib !=null) {
+        String deptMngrLink = "/shared/popup.jsp?deptId="+dm_ForBottom+"&attrib=DEPT_MGR_BIO&tmpl=large";
+        if ("bak".equalsIgnoreCase(dm_ForBottom.toString())) {
+            deptMngrLink +="&spec=craig_kominiak";
+        }
+        deptMngrImg = (Image)dptBottAttrib.getValue();
+    %>       
+            <a href="javascript:popup('<%=deptMngrLink%>','large')"><img src="<%=deptMngrImg.getPath()%>" border="0" alt="<%=cm_ForBottom.getFullName()%>: MANAGER"><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="110" HEIGHT="1" BORDER="0"></a>
+    <%
+        }
+
+
+%>     
+       </TD>
+       <TD WIDTH="10"><img src="/media/images/layout/clear.gif" width="10" height="1" alt="" border="0"></TD> 
+        <TD>
+              <logic:iterate id='mediaRef' indexId='indexNo' collection="<%=catBottomMedias%>" type="com.freshdirect.fdstore.content.MediaModel">
+    <%          if (((Html)mediaRef).getPath()!=null) { %>
+                               <% if(indexNo.intValue()!=0){ %>
+                                     <img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
+                                     <IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="295" HEIGHT="1" BORDER="0"><BR>
+                                     <img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
+                               <%}%>
+                            <fd:IncludeMedia name='<%= ((Html)mediaRef).getPath() %>' />
+
+    <%          } %>
+              </logic:iterate>
+        </TD>
+    </TR>
+    </TABLE>
+    <%}
+    }
+    %>
+<%
+    // display the featured brands if there are any
+    catBottAttrib = cm_ForBottom.getAttribute("FEATURED_BRANDS");
+    if (catBottAttrib !=null) { %>
+    <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=bottTblWidth%>">
+    <%
+        boolean isBrandsListEmpty = (brands==null || brands.size()==0);
+        List featuredBrands = (List)catBottAttrib.getValue();
+        int brandsShown =0;
+        for(int i=0;i<featuredBrands.size() && !isBrandsListEmpty ;i++){
+            BrandModel brandMod= ((BrandRef)featuredBrands.get(i)).getBrand();
+            if (brandMod==null) continue;
+            //is this brand in the list of brands that was built by the grocery_category_layout?
+            if (!brands.contains(brandMod)) continue;
+            catBottAttrib = brandMod.getAttribute("BRAND_LOGO_MEDIUM");
+            Image bLogo = new Image();
+            //if (catBottAttrib==null) continue; //no image
+            if (catBottAttrib==null) {
+                bLogo.setPath("/media_stat/images/layout/clear.gif");
+                bLogo.setWidth(12);
+                bLogo.setHeight(30);
+             } else bLogo = (Image)catBottAttrib.getValue();
+
+            String brandLink = response.encodeURL("/category.jsp?catId="+cm_ForBottom+"&brandValue="+brandMod.getContentName()+"&groceryVirtual="+cm_ForBottom+"&trk=feat");
+            if (brandsShown==0) {
+    %>
+                <tr VALIGN="TOP">
+                 <td WIDTH="<%=bottTblWidth%>">
+                  <IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="<%=bottTblWidth%>" HEIGHT="1"><br>
+                  <br>
+                  <img src="/media_stat/images/layout/clear.gif" width="10" height="1" alt="" border="0"><IMG src="/media_stat/images/layout/featured_brands.gif" WIDTH="94" HEIGHT="8" border="0"><br>
+                  <br><br>
+                 </td>
+                </tr>
+                <TR VALIGN="TOP">
+                    <td WIDTH="<%=bottTblWidth%>"><img src="/media_stat/images/layout/clear.gif" width="10" height="1" alt="" border="0">
+    <%      } %>
+            <a href="<%=brandLink%>"><img src="<%=bLogo.getPath()%>" width="<%=bLogo.getWidth()%>" height="<%=bLogo.getHeight()%>" alt="<%=brandMod.getFullName()%>" border="0"></a>&nbsp;&nbsp;
+    <%      brandsShown++;
+        } %>
+     </td></tr></table> 
+<%    }
+ } %>

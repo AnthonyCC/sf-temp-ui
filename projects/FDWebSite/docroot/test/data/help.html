@@ -1,0 +1,233 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+<title>Test Generator Help</title>
+</head>
+
+<body>
+<p>
+<img src="fd.gif"/>
+<p>
+<table width="100%" cellpadding="5" cellspacing="3">
+   <tbody style="font-family: tahoma,verdana,sans-serif; font-size: 10pt;">
+      <tr>
+         <td bgcolor="#ccccff">
+         <a name="about"/>
+	 <b>About</b>
+	 </td>
+      </tr>
+      <tr>
+	 <td bgcolor="#eeeeff">
+	 This is a test data generator. It is used to retrieve content
+	 from CMS. Currently the following content types are supported:
+	 <ul>
+	    <li> <tt>PRODUCT</tt>
+	    <li> <tt>RECIPE</tt>
+	    <li> <tt>CATEGORY</tt> 
+	    <li> <tt>DEPARTMENT</tt>
+	 </ul>
+
+	 The <a href="#output">output</a> is a tabulation of 
+	 <a href="#columns">content attributes</a>. Both load and performance
+	 tests use data retrieved by this tool.
+	 </td>
+      </tr>
+      <tr><td vspace="20"/></tr>
+
+      <tr>
+         <td bgcolor="#ccccff">
+         <a name="rows"/>
+	 <b>Row Filters</b>
+	 </td>
+      </tr>
+      <tr>
+	 <td bgcolor="#eeeeff">
+	 The row filters comprise a boolean formula which select the rows
+	 of the output. They are all instances of 
+	 <tt>com.freshdirect.fdstore.content.test.RowFilter</tt>. 
+	 Any subclass can be integrated into this interface to extend the 
+	 currently available filter set. Moreover <tt>RowFilter</tt> implements
+	 <tt>org.apache.commons.collections.Predicate</tt>, thus arbitrary
+	 boolean expressions can be composed with logical operators.
+	 </td>
+      </tr>
+      <tr><td vspace="20"/></tr>
+
+      <tr>
+         <td bgcolor="#ccccff">
+         <a name="groc"/>
+	 <b>Products displayed as groceries</b>
+	 </td>
+      </tr>
+      <tr>
+	 <td bgcolor="#eeeeff">
+	 If the product layout returns <tt>GROCERY_PRODUCT</tt>,
+	 <tt>GROCERY_DEPARTMENT</tt> or <tt>GROCERY_CATEGORY</tt> then
+	 the product will be rendered as a grocery.
+	 </td>
+      </tr>
+      <tr><td vspace="20"/></tr>
+
+
+      <tr>
+         <td bgcolor="#ccccff">
+         <a name="columns"/>
+	 <b>Columns</b>
+	 </td>
+      </tr>
+      <tr>
+	 <td bgcolor="#eeeeff">
+	 The columns are the actual content attributes that can be selected.
+	 They are instances of <tt>com.freshdirect.fdstore.content.test.ColumnExtractor</tt>,
+	 and new instances can be integrated into this user interface to select
+	 additional content attributes. The order of the attributes can also be
+	 <a href="#adjust">adjusted</a>.
+	 </td>
+      </tr>
+      <tr><td vspace="20"/></tr>
+
+      <tr>
+         <td bgcolor="#ccccff">
+         <a name="adjust"/>
+	 <b>Adjusting Column Order</b>
+	 </td>
+      </tr>
+      <tr>
+	 <td bgcolor="#eeeeff">
+	 The order of the columns can be adjusted by swapping adjacent
+	 attributes by clicking on the <img src="swap.gif"/> image.
+	 </td>
+      </tr>
+      <tr><td vspace="20"/></tr>
+
+      <tr>
+         <td bgcolor="#ccccff">
+         <a name="var"/>
+	 <b>Variations</b>
+	 </td>
+      </tr>
+      <tr>
+	 <td bgcolor="#eeeeff">
+	 Certain products can be configured in multiple ways. In particular
+	 several <tt>SKU</tt>s, sales units and <i>options</i> may correspond
+	 to a single product identifier. The number of variations is upper
+	 bounded by the cartesian product of these option (and thus can be
+	 in the several thousands for party packages). The user interface
+	 lets the user the specify the maximum number of variations to 
+	 select randomly from the set. The implementation guarantees that
+	 the instances are uniformly <a href="#random">randomly</a> selected 
+	 without explicit (and costly) enumeration.
+	 </td>
+      </tr>
+      <tr><td vspace="20"/></tr>
+
+      <tr>
+         <td bgcolor="#ccccff">
+         <a name="distro"/>
+	 <b>Distributions</b>
+	 </td>
+      </tr>
+      <tr>
+	 <td bgcolor="#eeeeff">
+	 This tool can generate test data according to a given reference distribution.
+	 The reference distribution can be given in either as a CSV file of relative
+	 frequencies, or they can be picked up from a file of URLs that contain query
+	 strings. The tool recognizes the distributions from the file extension.
+	 <ul>
+	     <li><tt>.url</tt>: a text file which contains URLs with query strings.
+	         For example, in the case of products data, it will look for the
+		 query parameter <tt>productId=</tt>.
+	     <li><tt>.pid</tt>: a CSV file with two columns: product id and frequency.
+	     <li><tt>.cid</tt>: a CSV file with two columns: category id and frequency.
+	     <li><tt>.rid</tt>: a CSV file with two columns: recipe id and frequency.
+	     <li><tt>.did</tt>: a CSV file with two columns: department id and frequency.
+	 </ul>
+	 The distribution files must be placed in a directory which is specified in the
+	 <tt>test.properties</tt> file as the <tt>tests.distributions.path</tt> property.
+	 The default is <tt>classpath:/com/freshdirect/resource/test/distro/</tt>.
+	 <p>
+	 There must also be a manifest file in this directory called <tt>manifest.csv</tt>.
+	 This is a csv file where the first column is the distribution's file name and
+	 the second column contains a brief description.
+	 <p>
+	 The tool first loads the distribution and then <a href="#random">randomly</a>
+	 samples; generates a random set of with the specified cardinality.
+	 <p>
+	 Internally, it is a fast implementation of the <i>reverse CDF</i> method.
+	 </td>
+      </tr>
+      <tr><td vspace="20"/></tr>
+
+      <tr>
+         <td bgcolor="#ccccff">
+         <a name="output"/>
+	 <b>Output Format</b>
+	 </td>
+      </tr>
+      <tr>
+	 <td bgcolor="#eeeeff">
+	 The output format is either a HTML or CSV. The automated tools use
+	 the CSV format. The UI is probably most useful to experiment with
+	 the data set and to arrive at the right URL.  
+	 </td>
+      </tr>
+      <tr><td vspace="20"/></tr>
+
+      <tr>
+         <td bgcolor="#ccccff">
+         <a name="results"/>
+	 <b>Results</b>
+	 </td>
+      </tr>
+      <tr>
+	 <td bgcolor="#eeeeff">
+	 The <i>go</i> button (a.k.a. <img height="24" src="csirke.gif"/>) will go ahead and
+	 fetch the data, while the <i>check</i> button (a.k.a <img height="24" src="szamolj.gif"/>)
+	 will only count the number of records that will be generated. It is worth checking the
+	 expected result count, since the JSP service has a limit of how much output it can produce
+	 before throwing an <tt>OutOfMemory</tt> error.
+	 <p>
+	 To use <tt>wget</tt> or some other command-line tool, take a note of the URL produced.
+	 </td>
+      </tr>
+      <tr><td vspace="20"/></tr>
+
+      <tr>
+         <td bgcolor="#ccccff">
+         <a name="random"/>
+	 <b>Randomness</b>
+	 </td>
+      </tr>
+      <tr>
+	 <td bgcolor="#eeeeff">
+	 Care has been taken into guaranteeing that the output produced is sufficiently random.
+
+	 <ul>
+            <li><b>Reproducibility</b>: There is only one random number seed, which is used to initialize the random number generators.
+	        Unfortunately this cannot guarantee that that the exact same output will be produced on
+                separate runs. For example, the CMS data may change and some filters (e.g. availability) may
+	        pass or fail depending on <i>when</i> the data was generated. Thus it is advisable to keep the retrieved
+		data to repeat the test.
+	    <li><b>Uniformity</b>: In uniform random sampling, each element of a set shall be picked with
+	        the exact same probability. When a given number of elements are chosen from a set of variations,
+		it is guaranteed that the chosen set of elements is picked with the same probability as any set of
+		unique elements with the same size (sampling without replacement). Also, when selecting the maximum
+		number of content keys to match, the filters first run through the entire content key set and <i>then</i>
+		the result set is chosen from this remaining set.
+	    <li><b>Efficiency</b>: As much as possible, virtual lists are used to represent sets. These do not enumerate
+	        the elements explicitly, but can produce them on demand efficiently. In particular, cartesian products
+		and concatenations (<tt>com.freshdirect.framework.util.CartesianProduct</tt> and 
+		<tt>com.freshdirect.framework.util.ListConcatenation</tt>) are implemented as virtual lists.
+	 <p>
+	 
+	 </td>
+      </tr>
+      <tr><td vspace="20"/></tr>
+
+
+   </tbody>
+</table>
+</body>
+</html>

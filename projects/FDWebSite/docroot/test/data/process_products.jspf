@@ -1,0 +1,108 @@
+<%
+  {
+      Enumeration params = request.getParameterNames();
+      while(params.hasMoreElements()) {
+         String name = (String)params.nextElement();
+
+	 if (name.equals("max_content")) {
+	    String value = request.getParameter(name).trim();
+	    if (value != null && value.length() > 0) maxContent = Integer.parseInt(value);
+	 } else if (name.equals("aval_days")) {
+	    String value = request.getParameter(name).trim();
+	    if (value != null && value.length() > 0) predicates.add(new RowFilter.ProductAvailable(Integer.parseInt(value)));
+	 } else if (name.equals("notanaiv")) {
+	    predicates.add(new NotPredicate(RowFilter.Unavailable));
+	 } else if (name.equals("notorphan")) {
+	    predicates.add(new NotPredicate(RowFilter.Orphan));
+	 } else if (name.equals("nothidden")) {
+	    predicates.add(new NotPredicate(RowFilter.Hidden));
+	 } else if (name.equals("groc")) {
+	    if ("false".equals(request.getParameter("groc"))) {
+	       predicates.add(
+	          new NotPredicate(
+	             new AnyPredicate(new Predicate[] {
+   		        new RowFilter.LayoutType(EnumLayoutType.GROCERY_PRODUCT),
+                        new RowFilter.LayoutType(EnumLayoutType.GROCERY_DEPARTMENT),
+		        new RowFilter.LayoutType(EnumLayoutType.GROCERY_CATEGORY)}
+		     )
+                  )
+	       );
+	    } else if ("true".equals(request.getParameter("groc"))) {
+	       predicates.add(
+	          new AnyPredicate(new Predicate[] {
+   		     new RowFilter.LayoutType(EnumLayoutType.GROCERY_PRODUCT),
+                     new RowFilter.LayoutType(EnumLayoutType.GROCERY_DEPARTMENT),
+		     new RowFilter.LayoutType(EnumLayoutType.GROCERY_CATEGORY)}
+		  )
+	       );
+	    }
+	 } else if (name.equals("layout")) {
+	    List layoutPredicates = new LinkedList();
+	    String[] values = request.getParameterValues(name);
+	    for(int i=0; i< values.length; ++i) {
+	       if ("PERISHABLE".equals(values[i])) layoutPredicates.add(new RowFilter.ProductLayout(EnumProductLayout.PERISHABLE));
+	       else if ("COMPOSITE".equals(values[i])) layoutPredicates.add(new RowFilter.ProductLayout(EnumProductLayout.COMPOSITE));
+	       else if ("WINE".equals(values[i])) layoutPredicates.add(new RowFilter.ProductLayout(EnumProductLayout.WINE));
+	       else if ("COMPOSITE_PLUS".equals(values[i])) layoutPredicates.add(new RowFilter.ProductLayout(EnumProductLayout.COMPOSITE_PLUS));
+	       else if ("PARTY_PLATTER".equals(values[i])) layoutPredicates.add(new RowFilter.ProductLayout(EnumProductLayout.PARTY_PLATTER));
+	       else if ("MULTI_ITEM_MEAL".equals(values[i])) layoutPredicates.add(new RowFilter.ProductLayout(EnumProductLayout.MULTI_ITEM_MEAL));
+	       else if ("COMPONENTGROUP_MEAL".equals(values[i])) layoutPredicates.add(new RowFilter.ProductLayout(EnumProductLayout.COMPONENTGROUP_MEAL));
+	       else if ("CONFIGURED_PRODUCT".equals(values[i])) layoutPredicates.add(new RowFilter.ProductLayout(EnumProductLayout.CONFIGURED_PRODUCT));
+	    }
+            if (layoutPredicates.size() > 0) predicates.add(new AnyPredicate((Predicate[])layoutPredicates.toArray(new Predicate[0])));
+	 } else if (name.equals("autoconfigurable")) {
+	    predicates.add(RowFilter.AutoConfigurable);
+	 } else if (name.equals("random")) {
+            String value = request.getParameter(name).trim();
+	    if (value != null && value.length() > 0) predicates.add(new RowFilter.Random(Integer.parseInt(value)));
+	 } else if (name.equals("ymal")) {
+	    List ymalPredicates = new LinkedList();
+	    String[] values = request.getParameterValues(name);
+	    for(int i=0; i< values.length; ++i) {
+	       if ("product".equals(values[i])) ymalPredicates.add(RowFilter.HasAvailableYmalProducts);
+	       else if ("recipe".equals(values[i])) ymalPredicates.add(RowFilter.HasAvailableYmalRecipes);
+	       else if ("category".equals(values[i])) ymalPredicates.add(RowFilter.HasYmalCategories);
+	    }
+            if (ymalPredicates.size() > 0) predicates.add(new AnyPredicate((Predicate[])ymalPredicates.toArray(new Predicate[0])));
+	 } else if (name.equals("column_order")) {
+
+	    ColumnExtractorSet variationsExtractor = null;
+
+	    String randomPick = request.getParameter("varperm");
+
+	    int varmax = 1;
+
+	    try {
+	       varmax = Integer.parseInt(request.getParameter("varmax"));
+	    } catch (NumberFormatException e) {
+	       // use 1
+	    }
+
+	    if ("one".equals(randomPick)) variationsExtractor = new ColumnExtractorSet.ConfigurationVariations(1);
+	    else if ("all".equals(randomPick)) variationsExtractor = new ColumnExtractorSet.ConfigurationVariations();
+	    else variationsExtractor = new ColumnExtractorSet.ConfigurationVariations(varmax);
+
+	    String[] columns = request.getParameter(name).split("\\.");
+	    for(int i=0; i< columns.length; ++i) {
+	       if ("product_id".equals(columns[i])) columnExtractors.add(ColumnExtractor.Id); 
+               else if ("category_id".equals(columns[i])) columnExtractors.add(ColumnExtractor.ParentNodeId);
+	       else if ("layout_path".equals(columns[i])) columnExtractors.add(ColumnExtractor.ProductLayout);
+	       else if ("content_type".equals(columns[i])) columnExtractors.add(ColumnExtractor.ContentType);
+	       else if ("content_key".equals(columns[i])) columnExtractors.add(ColumnExtractor.ContentKey);
+	       else if ("min_quantity".equals(columns[i])) columnExtractors.add(ColumnExtractor.MinimumQuantity);
+	       else if ("bpath".equals(columns[i])) {
+	          String bmax = (String)request.getParameter("bvar_max");
+		  if (bmax == null || "".equals(bmax)) columnExtractors.add(new ColumnExtractor.BrowsePath());
+		  else columnExtractors.add(new ColumnExtractor.BrowsePath(new Random(seed), Integer.parseInt(bmax)));
+	       } else if ("avail_skus".equals(columns[i])) columnExtractors.add(ColumnExtractor.AvailableSkuCodes);
+	       else if ("skus".equals(columns[i])) columnExtractors.add(ColumnExtractor.SkuCodes);
+	       else if ("perm_skus".equals(columns[i])) columnExtractors.add(variationsExtractor.getExtractor(ColumnExtractorSet.SKU_CODE));
+	       else if ("perm_options".equals(columns[i])) columnExtractors.add(variationsExtractor.getExtractor(ColumnExtractorSet.OPTIONS));
+	       else if ("perm_salesunits".equals(columns[i])) columnExtractors.add(variationsExtractor.getExtractor(ColumnExtractorSet.SALES_UNIT));
+
+	    }
+	 }
+      }
+  }
+%>
+

@@ -1,0 +1,107 @@
+<%@ page import="java.text.*, java.util.*" %>
+<%@ page import="com.freshdirect.customer.*" %>
+<%@ page import="com.freshdirect.fdstore.customer.*" %>
+<%@ page import="com.freshdirect.framework.webapp.*" %>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
+<%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@ page import="com.freshdirect.webapp.taglib.callcenter.GenericLocatorTag"%>
+
+<%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri="crm" prefix="crm" %>
+<link rel="stylesheet" href="/ccassets/css/crm.css" type="text/css">
+<style type="text/css">
+body {
+	background-color: #FFFFFF;
+}
+</style>
+<script>
+function openURL(inLocationURL) {
+
+    self.parent.location.href = inLocationURL;
+
+}
+</script>
+<logic:present name="returnOrders">
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+	<tr>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Order #</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>First Name</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Last Name</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" align="center"  class="border_bold"><span class="detail_text"><b>Email</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Home Phone</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Alt. Phone</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Delivery Date</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Order Status</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Amount</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Start Time</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>End Time</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Wave Number</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Truck Number</b></span></td>	
+	</tr>
+	
+	<%
+		
+		if(returnOrders == null || returnOrders.size() == 0) {
+	%>
+	<tr><td><span class="error">No Orders found for the given criteria.</span></td></tr>
+	
+	<%
+		} else {
+	%>	
+	<logic:iterate id="order" collection="<%= returnOrders %>" type="com.freshdirect.fdstore.customer.FDCustomerOrderInfo" indexId="cnt">
+	<%
+		if(cnt.intValue() < prcLimit) {
+	%>
+		<input type="hidden" name="custIds" value="<%= order.getIdentity().getErpCustomerPK() %>" />
+		<input type="hidden" name="saleIds" value="<%= order.getSaleId() %>" />
+		<input type="hidden" name="fdCustIds" value="<%= order.getIdentity().getFDCustomerPK() %>" />
+	<%
+		}
+	%>	
+	
+	<tr>
+	<td class="border_bottom"><span class="detail_text"><b><a onclick="javascript:openURL('/main/order_details.jsp?orderId=<%= order.getSaleId() %>')" href="#" style="color: #008800;font-size: 8pt;"><%= order.getSaleId() %></a></b></span></td>	
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= order.getFirstName() %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= order.getLastName() %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= order.getEmail() %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= order.getPhone() %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= order.getAltPhone() != null && order.getAltPhone().length() > 0 ?  order.getAltPhone() : "-" %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= CCFormatter.defaultFormatDate(order.getDeliveryDate()) %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= order.getOrderStatus().getDisplayName() %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= CCFormatter.formatCurrency(order.getAmount()) %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= CCFormatter.formatDeliveryTime(order.getStartTime()) %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= CCFormatter.formatDeliveryTime(order.getEndTime()) %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= order.getWaveNum() %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= order.getRouteNum() %></span></td>
+	</tr>
+	</logic:iterate>
+	<%
+		}
+	%>	
+	
+</table>
+</logic:present>

@@ -1,0 +1,15 @@
+<%@ page import='com.freshdirect.framework.xml.*'%>
+<%@ page import='java.io.*'%>
+<%@page import="javax.xml.transform.*"%>
+<%@page import="javax.xml.transform.stream.*"%>
+<%!
+	private Transformer transformer;
+%>
+<%
+		if (transformer == null) {
+			InputStream xslStream = pageContext.getServletContext().getResourceAsStream(("/resource/xml/nutrition_label.xsl"));
+			transformer = TransformerFactory.newInstance().newTransformer( new StreamSource(xslStream) );
+		}
+		org.dom4j.Document doc = new XMLSerializer().serializeDocument("nutrition", fdprd.getNutrition());
+		transformer.transform(new org.dom4j.io.DocumentSource(doc), new StreamResult(out));
+%>

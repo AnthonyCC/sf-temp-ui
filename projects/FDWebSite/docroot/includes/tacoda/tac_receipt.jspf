@@ -1,0 +1,9 @@
+<script language="javascript">
+var notSecure1 = "<fd:IncludeMedia name="/media/editorial/site_pages/tacoda/tac_receipt_beacon.html"/>";
+var notSecure2 = "<fd:IncludeMedia name="/media/editorial/site_pages/tacoda/tac_receipt_encore.html"/>";
+var notSecure3 = "<fd:IncludeMedia name="/media/editorial/site_pages/tacoda/tac_submit_encore.html"/>";
+
+var secure1 = "<fd:IncludeMedia name="/media/editorial/site_pages/tacoda/tac_receipt_beacon_s.html"/>";
+var secure2 = "<fd:IncludeMedia name="/media/editorial/site_pages/tacoda/tac_receipt_encore_s.html"/>";
+var secure3 = "<fd:IncludeMedia name="/media/editorial/site_pages/tacoda/tac_submit_encore_s.html"/>";
+</script>

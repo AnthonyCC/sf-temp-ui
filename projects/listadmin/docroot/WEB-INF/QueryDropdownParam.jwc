@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE component-specification PUBLIC
+  "-//Apache Software Foundation//Tapestry Specification 3.0//EN"
+  "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<component-specification class="org.apache.tapestry.BaseComponent"
+    allow-body="yes"
+    allow-informal-parameters="yes">
+    
+  <description>add a description</description>
+
+  <parameter name="clause" direction="in" type="com.freshdirect.listadmin.db.Clause" required="yes" property-name="theClause" />
+
+ <!-- component id="names" type="Foreach">
+   <binding name="source" expression="theClause.names"/>
+ </component -->
+</component-specification>

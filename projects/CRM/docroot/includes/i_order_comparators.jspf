@@ -1,0 +1,184 @@
+<%-- ******************************************
+	ORDER COMPARATORS
+*******************************************--%>
+
+<%!	private class ORDER_CustomerNameComparator implements Comparator {
+		public int compare(Object o1, Object o2) {
+			try {
+				FDOrderI order1 = (FDOrderI) o1;
+				FDOrderI order2 = (FDOrderI) o2;
+				ErpCustomerInfoModel custInfo1 = FDCustomerFactory.getErpCustomer(order1.getCustomerId()).getCustomerInfo();
+				ErpCustomerInfoModel custInfo2 = FDCustomerFactory.getErpCustomer(order2.getCustomerId()).getCustomerInfo();
+				String name1 = custInfo1.getLastName().toLowerCase() + custInfo1.getFirstName().toLowerCase();
+				String name2 = custInfo2.getLastName().toLowerCase() + custInfo1.getFirstName().toLowerCase();
+				return ( name1.compareTo(name2) );
+			} catch (Exception ex) {
+				return 0;
+			}
+        }
+	} // class ORDER_CustomerNameComparator
+	ORDER_CustomerNameComparator ORDER_custNameComparator = new ORDER_CustomerNameComparator();
+	
+	private class ORDER_CustomerNumComparator implements Comparator {
+		public int compare(Object o1, Object o2) {
+			try {
+				FDOrderI order1 = (FDOrderI) o1;
+				FDOrderI order2 = (FDOrderI) o2;
+				return ( new java.math.BigDecimal(order1.getCustomerId()).compareTo( new java.math.BigDecimal(order2.getCustomerId()) ) );
+			} catch (Exception ex) {
+				return 0;
+			}
+        }
+	} // class ORDER_CustomerNumComparator
+	ORDER_CustomerNumComparator ORDER_custNumComparator = new ORDER_CustomerNumComparator();
+	
+	private class ORDER_HomePhoneComparator implements Comparator {
+		public int compare(Object o1, Object o2) {
+			try {
+				FDOrderI order1 = (FDOrderI) o1;
+				FDOrderI order2 = (FDOrderI) o2;
+				ErpCustomerInfoModel custInfo1 = FDCustomerFactory.getErpCustomer(order1.getCustomerId()).getCustomerInfo();
+				ErpCustomerInfoModel custInfo2 = FDCustomerFactory.getErpCustomer(order2.getCustomerId()).getCustomerInfo();
+				return ( custInfo1.getHomePhone().toString().compareTo(custInfo2.getHomePhone().toString()) );
+			} catch (Exception ex) {
+				return 0;
+			}
+        }
+	} // class ORDER_HomePhoneComparator
+	ORDER_HomePhoneComparator ORDER_homePhoneComparator = new ORDER_HomePhoneComparator();
+	
+	private class ORDER_BizPhoneComparator implements Comparator {
+		public int compare(Object o1, Object o2) {
+			try {
+				FDOrderI order1 = (FDOrderI) o1;
+				FDOrderI order2 = (FDOrderI) o2;
+				ErpCustomerInfoModel custInfo1 = FDCustomerFactory.getErpCustomer(order1.getCustomerId()).getCustomerInfo();
+				ErpCustomerInfoModel custInfo2 = FDCustomerFactory.getErpCustomer(order2.getCustomerId()).getCustomerInfo();
+				return ( custInfo1.getBusinessPhone().toString().compareTo(custInfo2.getBusinessPhone().toString()) );
+			} catch (Exception ex) {
+				return 0;
+			}
+        }
+	} // class ORDER_BizPhoneComparator
+	ORDER_BizPhoneComparator ORDER_bizPhoneComparator = new ORDER_BizPhoneComparator();
+	
+    private class ORDER_EmailComparator implements Comparator {
+		public int compare(Object o1, Object o2) {
+			try {
+				FDOrderI order1 = (FDOrderI) o1;
+				FDOrderI order2 = (FDOrderI) o2;
+				ErpCustomerInfoModel custInfo1 = FDCustomerFactory.getErpCustomer(order1.getCustomerId()).getCustomerInfo();
+				ErpCustomerInfoModel custInfo2 = FDCustomerFactory.getErpCustomer(order2.getCustomerId()).getCustomerInfo();
+				return ( custInfo1.getEmail().toLowerCase().compareTo(custInfo2.getEmail().toLowerCase()) );
+			} catch (Exception ex) {
+				return 0;
+			}
+        }
+	} // class ORDER_EmailComparator
+	ORDER_EmailComparator ORDER_emailComparator = new ORDER_EmailComparator();
+	
+	private class ORDER_OrderNumberComparator implements Comparator {
+		public int compare(Object o1, Object o2) {
+			try {
+				FDOrderI order1 = (FDOrderI) o1;
+				FDOrderI order2 = (FDOrderI) o2;
+				return new java.math.BigDecimal(order1.getErpSalesId()).compareTo( new java.math.BigDecimal(order2.getErpSalesId()) );
+			} catch (Exception ex) {
+				return 0;
+			}
+        } // class ORDER_OrderNumberComparator
+	}
+	ORDER_OrderNumberComparator ORDER_orderNumComparator = new ORDER_OrderNumberComparator();
+	
+    private class ORDER_DeliveryDateComparator implements Comparator {
+		public int compare(Object o1, Object o2) {
+			FDOrderI order1 = (FDOrderI) o1;
+			FDOrderI order2 = (FDOrderI) o2;
+			return ( order1.getRequestedDate().compareTo(order2.getRequestedDate()) );
+        } // class ORDER_DeliveryDateComparator
+	}
+	ORDER_DeliveryDateComparator ORDER_deliveryDateComparator = new ORDER_DeliveryDateComparator();
+	
+    private class ORDER_OrderStatusComparator implements Comparator {
+		public int compare(Object o1, Object o2) {
+			FDOrderI order1 = (FDOrderI) o1;
+			FDOrderI order2 = (FDOrderI) o2;
+			// Get delivery date for each order
+			String status1 = order1.getOrderStatus().getDisplayName();
+			String status2 = order2.getOrderStatus().getDisplayName();
+			return ( status1.compareTo(status2) );
+        } // class ORDER_OrderStatusComparator
+	}
+	ORDER_OrderStatusComparator ORDER_orderStatusComparator = new ORDER_OrderStatusComparator();
+	
+    private class ORDER_OrderTotalComparator implements Comparator {
+		public int compare(Object o1, Object o2) {
+			try {
+				FDOrderI order1 = (FDOrderI) o1;
+				FDOrderI order2 = (FDOrderI) o2;
+				// Get order total for each order
+				Double amount1 = new Double( order1.getTotal() );
+				Double amount2 = new Double( order2.getTotal() );
+				return ( amount1.compareTo(amount2) );
+			} catch (Exception ex) {
+				return 0;
+			}
+        } // class ORDER_OrderTotalComparator
+	}
+	ORDER_OrderTotalComparator ORDER_orderTotalComparator = new ORDER_OrderTotalComparator();
+	
+    private class ORDER_CreateDateComparator implements Comparator {
+		public int compare(Object o1, Object o2) {
+			FDOrderI order1 = (FDOrderI) o1;
+			FDOrderI order2 = (FDOrderI) o2;
+			return ( order1.getDatePlaced().compareTo(order2.getDatePlaced()) );
+        } // class ORDER_CreateDateComparator
+	}
+	ORDER_CreateDateComparator ORDER_createDateComparator = new ORDER_CreateDateComparator();
+	
+    private class ORDER_CreateSourceComparator implements Comparator {
+		public int compare(Object o1, Object o2) {
+			FDOrderI order1 = (FDOrderI) o1;
+			FDOrderI order2 = (FDOrderI) o2;
+			// Get delivery date for each order
+			String source1 = order1.getOrderSource().getName();
+			String source2 = order2.getOrderSource().getName();
+			return ( source1.compareTo(source2) );
+        } // class ORDER_CreateSourceComparator
+	}
+	ORDER_CreateSourceComparator ORDER_createSourceComparator = new ORDER_CreateSourceComparator();
+	
+    private class ORDER_ModifiedDateComparator implements Comparator {
+		public int compare(Object o1, Object o2) {
+			FDOrderI order1 = (FDOrderI) o1;
+			FDOrderI order2 = (FDOrderI) o2;
+			return ( order1.getLastModifiedDate().compareTo(order2.getLastModifiedDate()) );
+        } // class ORDER_ModifiedDateComparator
+	}
+	ORDER_ModifiedDateComparator ORDER_modifiedDateComparator = new ORDER_ModifiedDateComparator();
+	
+    private class ORDER_ModifiedSourceComparator implements Comparator {
+        
+		public int compare(Object o1, Object o2) {
+			FDOrderI order1 = (FDOrderI) o1;
+			FDOrderI order2 = (FDOrderI) o2;
+			// Get delivery date for each order
+			String source1 = order1.getOrderSource("LAST_MODIFIED").getName();
+			String source2 = order2.getOrderSource("LAST_MODIFIED").getName();
+			return ( source1.compareTo(source2) );
+        }
+	} // class ORDER_ModifiedSourceComparator
+	ORDER_ModifiedSourceComparator ORDER_modifiedSourceComparator = new ORDER_ModifiedSourceComparator();
+	
+    private class ORDER_CreditIssuedComparator implements Comparator {
+		public int compare(Object o1, Object o2) {
+			FDOrderI order1 = (FDOrderI) o1;
+			FDOrderI order2 = (FDOrderI) o2;
+			// Get delivery date for each order
+			Integer i1 = new Integer( order1.hasCreditIssued() );
+			Integer i2 = new Integer( order2.hasCreditIssued() );
+			return i1.compareTo(i2);
+        } // class ORDER_CreditIssuedComparator
+	}
+	ORDER_CreditIssuedComparator ORDER_creditComparator = new ORDER_CreditIssuedComparator();
+%>

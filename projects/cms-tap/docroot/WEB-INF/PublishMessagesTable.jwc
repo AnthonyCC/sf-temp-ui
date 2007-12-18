@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE component-specification PUBLIC
+  "-//Apache Software Foundation//Tapestry Specification 3.0//EN"
+  "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<component-specification class="org.apache.tapestry.BaseComponent"
+    allow-body="no"
+    allow-informal-parameters="no">
+    
+    <description>Render a List of PublishMessage objects</description>
+    
+    <parameter name="publishMessages" type="java.util.List" direction="in" required="yes"/>
+	
+	<parameter name="dateFormat" type="java.text.SimpleDateFormat" direction="in"
+		default-value='new java.text.SimpleDateFormat("MM/dd/yyyy hh:mm:ss a")' />
+	
+    	<property-specification name="message" type="com.freshdirect.cms.publish.PublishMessage"/>
+
+    <component id="table" type="contrib:Table">
+		<inherited-binding name="source" parameter-name="publishMessages"/>
+		<binding name="row" expression="message"/>
+        <binding name="rowsClass" expression="'severity' + message.severity"/>
+        <static-binding name="pageSize" value="40"/>
+		<static-binding name="columns">Severity:severityString, Message:message, ContentKey:Related Content:contentId</static-binding>
+		<static-binding name="initialSortColumn" value="Date"/>
+		<static-binding name="initialSortOrder" value="true"/>
+	</component>
+    
+</component-specification>

@@ -1,0 +1,151 @@
+<%
+
+String  defaultDepotLocation = "";
+String fldDepotLocation = request.getParameter("selectAddressList");
+boolean checkedAddress = false;
+
+if (user !=null && user.getIdentity() != null){
+ 	defaultDepotLocation = FDCustomerManager.getDefaultDepotLocationPK(user.getIdentity() );
+}
+
+if(fldDepotLocation != null && fldDepotLocation.startsWith("DEPOT_")){
+	fldDepotLocation = fldDepotLocation.substring("DEPOT_".length());
+}else{
+	fldDepotLocation = defaultDepotLocation;
+} 
+
+String tableWidthFAQ = "675";
+String fontSizeFAQ = "text13";
+if(request.getRequestURI().indexOf("faq") > -1 ){
+	tableWidthFAQ = "475";
+	fontSizeFAQ = "bodyCopy";
+	if(request.getParameter("page")== null) {
+		tableWidthFAQ = "375";
+	}
+}
+if( request.getRequestURI().indexOf("depot") > -1){
+	tableWidthFAQ = "375";
+	fontSizeFAQ = "bodyCopy";
+}
+%>
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" width="<%=tableWidthFAQ%>">
+	<TR VALIGN="TOP">
+		<TD>
+<%if(request.getRequestURI().indexOf("registration") > -1 ){%>
+<%if(user.isCorporateUser()){%>
+                        <img src="/media_stat/images/template/corp/primary_delivery_address.gif" width="164" height="13" alt="" border="0"><br>
+    <%} else { %>
+
+			<img src="/media_stat/images/template/depot/primary_depot_address.gif" width="157" height="9" alt="" border="0"><br>
+    <%}%>
+			<img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br>
+			<img src="/media_stat/images/layout/999966.gif" width="695" height="1" BORDER="0" VSPACE="3"><BR>
+<%}else if(request.getRequestURI().indexOf("help") > -1 ){%>
+<%}else{%>		
+<%if(user.isCorporateUser()){%>
+                        <img src="/media_stat/images/template/corp/primary_delivery_address.gif" width="164" height="13" alt="" border="0"><br>
+    <%} else { %>
+			<img src="/media_stat/images/template/depot/depot_address.gif" width="99" height="9" alt="" border="0"><br>
+    <%}%>
+			<img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br>
+			<img src="/media_stat/images/layout/999966.gif" width="675" height="1" BORDER="0" VSPACE="3"><BR>
+
+<%}%>
+			<img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"><br>
+		</TD>
+	</TR>
+</TABLE>
+<a name="locationId"></a>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" width="<%=tableWidthFAQ%>">
+
+<input type="hidden" name="depotCode" value="<%=user.getDepotCode()%>">
+<fd:GetDepotLocations id='locations' depotCode='<%=user.getDepotCode()%>'>
+	
+<% int cnt = 0;
+    Date now = new Date();
+%>	
+	<logic:iterate id="location" collection="<%= locations %>" type="com.freshdirect.delivery.depot.DlvLocationModel" indexId="index">
+<%
+    //
+    // skip this location if it is not currently in use
+    //
+	
+	if (location.getPK().getId().equalsIgnoreCase(fldDepotLocation)){
+		checkedAddress = true;
+    }
+	if (now.before(location.getStartDate()) || now.after(location.getEndDate())) continue;
+	
+	if(locations.size() == 1){
+			checkedAddress = true;
+	}
+%>
+
+<%
+if(cnt%3 == 0){
+	if(cnt != 0){%>
+</TR>
+<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"></td></tr>
+<tr><td bgcolor="#cccccc" colspan=6><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" border="0"></td></tr>
+<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"></td></tr>
+	<%}%>
+<TR VALIGN="TOP">
+<%}
+cnt++;
+%>
+
+<%if(allowSelection){%>		
+		<TD width="20" valign="top"><input type="radio" name="selectAddressList" class="radio" value="DEPOT_<%=location.getPK().getId()%>" <%=checkedAddress || (fldDepotLocation.equals("") && index.intValue() == 0) ?"checked":"" %>><BR><img src="/media_stat/images/layout/clear.gif" width="20" height="1"><BR></TD>
+<%}else{%>		
+		<TD width="<%=(cnt-1)%3==0?"1":"20"%>" valign="top"><img src="/media_stat/images/layout/clear.gif" width="<%=(cnt-1)%3==0?"1":"20"%>" height="1"><BR></TD>	
+<%}%>	
+		<TD valign="top" width="195" class="<%=fontSizeFAQ%>">
+		
+			<b><%=location.getFacility()%></b><br>
+			<%=location.getAddress().getAddress1()%> 
+                        <%if(location.getAddress().getApartment() != null){%>
+                            &nbsp;&nbsp;Suite/Floor: <%=location.getAddress().getApartment()%>
+                        <%}%><br>
+			<% if(location.getAddress().getAddress2()!= null ){%>
+				<%=location.getAddress().getAddress2()%><br>
+			<%}%>
+			<%=location.getAddress().getCity()%> <%=location.getAddress().getState()%>, <%=location.getAddress().getZipCode()%><br>
+			<br>
+			<%if(location.getInstructions() != null && !"".equals(location.getInstructions())){%>
+				<b>Pickup instructions:</b><br>
+				<%=location.getInstructions()%><br>
+			<%}%>
+			
+
+			<%if ((request.getRequestURI().indexOf("help") > -1 ) || (request.getRequestURI().indexOf("signup") > -1 ) && !user.isCorporateUser()){%>
+				<br>
+				<b>Delivery available:</b><br>
+				<%@ include file="/includes/delivery/i_delivery_slots_depot.jspf" %>
+			<%}%>				
+
+		</td>
+<% checkedAddress = false;%>
+
+	</logic:iterate>
+
+<%if(cnt != 0){
+
+	if(cnt%3 != 0){
+		int colspan = 2 * (3-(cnt%3));
+		%>
+		<td colspan="<%=colspan%>"></td>
+	<%}%>
+</tr>
+<%}%>
+</fd:GetDepotLocations>
+</TABLE>
+<%if(user != null && user.isCorporateUser() && request.getRequestURI().indexOf("step_1_choose") > -1){%>
+	<table border='0' width='<%=tableWidthFAQ%>'>
+		<tr>
+			<td><b>Delivery instructions/reference</b><br>
+				Please enter any special delivery instructions or internal reference codes for this order<b>
+				<input type="text" size="100" name="corpDlvInstructions" class="text10" value="<%=user.getShoppingCart().getDeliveryInstructions()%>">
+                                <br><br><br>
+			</td>
+		</tr>
+	</table>
+<%}%>

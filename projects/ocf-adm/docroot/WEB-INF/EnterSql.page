@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE page-specification PUBLIC
+  "-//Apache Software Foundation//Tapestry Specification 3.0//EN"
+  "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<page-specification class="com.freshdirect.ocf.ui.page.EnterSql">
+    <description>add a description</description>
+	
+	<property-specification name="flight" type="com.freshdirect.ocf.core.Flight"/>
+	
+    <component id="listName" type="TextField">
+        <static-binding name="displayName">List Name</static-binding>
+        <binding name="value" expression="flight.listGenerator.name"/>
+    </component>
+
+    <component id="listDescription" type="TextArea">
+        <static-binding name="displayName">Description</static-binding>
+        <binding name="value" expression="flight.listGenerator.description"/>
+    </component>    
+    
+    <component id="listQuery" type="TextArea">
+        <static-binding name="displayName">Query</static-binding>
+        <static-binding name="rows">10</static-binding>
+        <static-binding name="cols">28</static-binding>
+        <binding name="value" expression="flight.listGenerator.query"/>
+    </component>
+    
+</page-specification>

@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+   "-//Hibernate/Hibernate Mapping DTD//EN"
+   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.freshdirect.ocf.core" schema="cust" >
+	<class name="DbListGenerator" table="OCF_LIST" >
+		<cache usage="nonstrict-read-write" />
+		
+		<id name="id" length="16">
+			<generator class="native" />
+		</id>
+		
+		<property name="name" not-null="true" />
+
+		<property name="description" />
+		
+		<property name="query" not-null="true" length="4000" />
+		
+	    <many-to-one name="storedQuery" class="com.freshdirect.listadmin.db.StoredQuery" column="stored_query_id" lazy="false"/>
+	</class>
+
+</hibernate-mapping>

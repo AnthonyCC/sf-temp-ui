@@ -1,0 +1,33 @@
+<%
+  {
+      Enumeration params = request.getParameterNames();
+      while(params.hasMoreElements()) {
+         String name = (String)params.nextElement();
+
+         if (name.equals("max_content")) {
+            String value = request.getParameter(name).trim();
+            if (value != null && value.length() > 0) maxContent = Integer.parseInt(value);
+         } else if (name.equals("nothidden")) {
+            predicates.add(new NotPredicate(RowFilter.Hidden));
+         } else if (name.equals("searchable")) {
+            predicates.add(RowFilter.Searchable);
+         } else if (name.equals("notorphan")) {
+            predicates.add(new NotPredicate(RowFilter.Orphan));
+         } else if (name.equals("featured")) {
+            predicates.add(RowFilter.Featured);
+         } else if (name.equals("secondary")) {
+            predicates.add(RowFilter.SecondaryCategory);
+         } else if (name.equals("column_order")) {
+            String[] columns = request.getParameter(name).split("\\.");
+            for(int i=0; i< columns.length; ++i) {
+                if("category_id".equals(columns[i])) columnExtractors.add(ColumnExtractor.Id);
+                else if ("parent_id".equals(columns[i])) columnExtractors.add(ColumnExtractor.ParentNodeId);
+                else if ("depth".equals(columns[i])) columnExtractors.add(ColumnExtractor.Depth);
+                else if ("spath".equals(columns[i])) columnExtractors.add(ColumnExtractor.ServletPath);
+                else if ("bpath".equals(columns[i])) columnExtractors.add(new ColumnExtractor.BrowsePath());
+            }
+         }
+      }
+  }
+%>
+

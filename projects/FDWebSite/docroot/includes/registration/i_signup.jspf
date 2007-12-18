@@ -1,0 +1,450 @@
+<%@ page import="com.freshdirect.delivery.*" %>
+<%@ page import="com.freshdirect.delivery.depot.*" %>
+<%@ page import="com.freshdirect.common.address.AddressModel" %>
+<%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
+<%@ page import="com.freshdirect.framework.util.NVL" %>
+<%//***********************************  Error Handling ******************************************%>
+<%!
+String[] checkRegistrationForm = {
+	EnumUserInfoName.DLV_FIRST_NAME.getCode(), EnumUserInfoName.DLV_LAST_NAME.getCode(),
+	EnumUserInfoName.DLV_COMPANY_NAME.getCode(),
+	EnumUserInfoName.DLV_ADDRESS_1.getCode(), EnumUserInfoName.DLV_ADDRESS_SUGGEST.getCode(), 
+	EnumUserInfoName.DLV_APARTMENT.getCode(), EnumUserInfoName.DLV_CITY.getCode(), 
+	EnumUserInfoName.DLV_STATE.getCode(), EnumUserInfoName.DLV_ZIPCODE.getCode(), 
+	EnumUserInfoName.DLV_HOME_PHONE.getCode(), EnumUserInfoName.DLV_WORK_PHONE.getCode(), 
+	EnumUserInfoName.DLV_ALT_PHONE.getCode(), EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode(), EnumUserInfoName.DLV_DEPOT_LOCATION_ID.getCode(), 
+	EnumUserInfoName.DLV_EMPLOYEE_ID.getCode(), EnumUserInfoName.EMAIL.getCode(), 
+	EnumUserInfoName.REPEAT_EMAIL.getCode(), EnumUserInfoName.PASSWORD.getCode(), 
+	EnumUserInfoName.REPEAT_PASSWORD.getCode(), EnumUserInfoName.PASSWORD_HINT.getCode(),
+	EnumUserInfoName.CUSTOMER_AGREEMENT.getCode()};
+								
+String[] checkErrorType = {EnumUserInfoName.DLV_NOT_IN_ZONE.getCode(), EnumUserInfoName.DLV_CANT_GEOCODE.getCode(), "address", "technical_difficulty"};
+%>
+<%//***********************************  Error Handling ******************************************%>
+
+<%
+FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+
+String fldTitle 			= request.getParameter("title");
+String fldName 				= request.getParameter(EnumUserInfoName.DLV_FIRST_NAME.getCode());
+String fldLastName 			= request.getParameter(EnumUserInfoName.DLV_LAST_NAME.getCode());
+String fldHomePhone 		= request.getParameter(EnumUserInfoName.DLV_HOME_PHONE.getCode());
+String fldBusinessPhone 	= request.getParameter("busphone");
+String fldBusinessPhoneExt 	= request.getParameter("busphoneext");
+String fldCellPhone 		= request.getParameter("cellphone");
+String fldCellPhoneExt 		= request.getParameter("cellphoneext");
+String fldWorkDepartment 	= request.getParameter("workDepartment");
+String fldEmployeeId        = request.getParameter("employeeId");
+EnumServiceType serviceType = (EnumServiceType)NVL.apply(EnumServiceType.getEnum(request.getParameter(EnumUserInfoName.DLV_SERVICE_TYPE.getCode())), EnumServiceType.CORPORATE.equals(user.getSelectedServiceType()) ? user.getSelectedServiceType() : EnumServiceType.HOME);
+String fldCompanyName 		= NVL.apply(request.getParameter(EnumUserInfoName.DLV_COMPANY_NAME.getCode()), "");
+String fldAddress1 			= request.getParameter(EnumUserInfoName.DLV_ADDRESS_1.getCode());
+String fldAddress2 			= request.getParameter(EnumUserInfoName.DLV_ADDRESS_2.getCode());
+String fldApartment 		= request.getParameter(EnumUserInfoName.DLV_APARTMENT.getCode());
+String fldCity 				= request.getParameter(EnumUserInfoName.DLV_CITY.getCode());
+String fldState 			= request.getParameter(EnumUserInfoName.DLV_STATE.getCode());
+String fldZipCode 			= request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode());
+String fldEmail 			= request.getParameter(EnumUserInfoName.EMAIL.getCode());
+String fldRepeatEmail 		= request.getParameter(EnumUserInfoName.REPEAT_EMAIL.getCode());
+String fldPassword          = request.getParameter(EnumUserInfoName.PASSWORD.getCode());
+String fldRepeatPassword    = request.getParameter(EnumUserInfoName.REPEAT_PASSWORD.getCode());
+String fldPasswordHint      = request.getParameter(EnumUserInfoName.PASSWORD_HINT.getCode());
+String fldTermsAndConditions = request.getParameter(EnumUserInfoName.CUSTOMER_AGREEMENT.getCode());
+//String fldHtmlEmail 		= request.getParameter("isSendHTMLEmail");
+String fldHowDidYouHear 	= request.getParameter("howDidYouHear");
+if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
+    fldTermsAndConditions = "checked";
+} else {
+    fldTermsAndConditions = "";
+}
+
+if (user != null) {
+	AddressModel addr = user.getAddress();
+	if (fldAddress1 == null) fldAddress1 = addr.getAddress1();
+	if (fldAddress2 == null) fldAddress2 = addr.getAddress2();
+	if (fldApartment == null) fldApartment = addr.getApartment();
+	if (fldCity == null) fldCity = addr.getCity();
+	if (fldState == null) fldState = "".equals(addr.getState()) ? "NY" : addr.getState();
+	if (fldZipCode == null) fldZipCode = addr.getZipCode();
+}
+if (fldZipCode==null && user!=null && user.getZipCode() !=null){//quite odd. we don't know the delivery area...hmmm. for now set zipcode = ""
+    fldZipCode=user.getZipCode();
+//!!! ADD LOGIC TO GET THE OTHER ADDRESS STUFF FROM THE ZIP CHECK DATA ....POTENTIALY THIS COULD BE EMPTY BECAUSE THE
+//  USER DID NOT NEED TO BE MORE DETAILED WITH THE ZIP CODE.
+}
+%>
+
+<table border="0" cellspacing="0" cellpadding="2" width="693">
+<tr valign="top">
+	<td width="347" valign="bottom">
+<%if(user.isDepotUser() || user.isCorporateUser()){%>
+		<img src="/media_stat/images/template/depot/name_contact_info.gif" width="145" height="9" alt="" border="0">&nbsp;&nbsp;&nbsp;<FONT class="text9">* Required information</FONT>
+<%}else{%>	
+		<img src="/media_stat/images/navigation/name_address.gif" width="108" height="9" border="0" alt="NAME AND ADDRESS">&nbsp;&nbsp;&nbsp;<FONT class="text9">* Required information</FONT>
+<%}%>
+	</td>
+	<td width="346" align="right">
+		<FONT class="bodyCopy"><b>Having problems signing up?</b><BR>
+		Call <%=user.getCustomerServiceContact()%> for help</FONT>
+	</td>
+</tr>
+<tr>
+	<td colspan="2" width="693">
+		<IMG src="/media_stat/images/layout/999966.gif" width="693" height="1" border="0" VSPACE="3"><BR>
+	</td>
+</tr>
+<%if(!user.isDepotUser() && !user.isCorporateUser()){%>
+<% if (user.isPickupOnly() || user.isEligibleForSignupPromotion()) {%>
+<tr><td colspan="3" align="center">
+    <table cellpadding="0" cellspacing="0" width="600" border="0">
+    <tr><td class="bodyCopy"><font class="space4pix"><br></font>
+        <% if (user.isPickupOnly()) {%>
+			<b>Please enter your home address.</b> We may not deliver to your home yet but if you live in
+			the Tri-State area you may be eligible for service at our <a href="javascript:popup('/delivery_popup.jsp','large')">pickup location</a>.</b>
+		<%} else if (user.isEligibleForSignupPromotion()) {%>
+			<b>To qualify for our trial offer, this address and the credit card billing address you'll enter during checkout must match.</b>
+		<% } %>
+		<br><br>
+		</td></tr></table>
+    </td>
+</tr>
+<% } %>
+<%}%>
+</table>
+
+<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ADDRESS_SUGGEST.getCode()%>' id='errorMsg'>
+	<%@ include file="/shared/includes/messages/i_error_suggested_address.jspf" %>
+</fd:ErrorHandler>
+					
+<table border="0" cellspacing="1" cellpadding="0" width="685">
+<tr valign="middle">
+	<td width="120" align="right" class="text12">Title</td>
+	<td width="565" colspan="2">&nbsp;&nbsp;<select class="text11" name="title">
+		<option <%=("".equalsIgnoreCase(fldTitle) ? "selected" : "")%>></option>
+		<option value="Mr" <%=("Mr".equalsIgnoreCase(fldTitle) ? "selected" : "")%>>Mr.</option>
+		<option value="Mrs" <%=("Mrs".equalsIgnoreCase(fldTitle) ? "selected" : "")%>>Mrs.</option>
+		<option value="Ms" <%=("Ms".equalsIgnoreCase(fldTitle) ? "selected" : "")%>>Ms.</option>
+		<option value="Miss" <%=("Miss".equalsIgnoreCase(fldTitle) ? "selected" : "")%>>Miss.</option>
+		<option value="Dr" <%=("Dr".equalsIgnoreCase(fldTitle) ? "selected" : "")%>>Dr.</option>			
+		</select>
+	</td>
+</tr>
+<tr valign="middle">
+	<td width="120" align="right" class="text12">
+		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
+		*&nbsp;First Name
+		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>'></span></fd:ErrorHandler>
+	</td>
+	<td width="565" colspan="2">&nbsp;&nbsp;<input maxlength="25" class="text11" SIZE="21" type="text" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" required="true" value="<%=fldName%>"> (full name or first initial)<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+	</td>
+</tr>
+<tr valign="middle">
+	<td width="120" align="right" class="text12">
+		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
+		*&nbsp;Last Name
+		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>'></span></fd:ErrorHandler>
+	</td>
+	<td width="565" colspan="2">&nbsp;&nbsp;<input maxlength="25" class="text11" SIZE="21" type="text" name="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>" required="true" value="<%=fldLastName%>">
+		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+	</td>
+</tr>
+
+<% if (user.isDepotUser()) {%>
+<tr valign="middle">
+	<td width="120" align="right" class="text12">
+		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
+		*&nbsp;Dept/Division
+		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()%>'></span></fd:ErrorHandler>
+	</td>
+	<td width="565" colspan="2">
+		&nbsp;&nbsp;<input maxlength="25" class="text11" SIZE="21" type="text" name="workDepartment" required="true" value="<%=fldWorkDepartment%>">
+		<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+	</td>
+</tr>
+<%
+    DlvDepotModel depot = FDDepotManager.getInstance().getDepot(user.getDepotCode());
+    if (depot != null && depot.getRequireEmployeeId()) { 
+	%>
+<tr valign="middle">
+	<td width="120" align="right" class="text12">
+		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_EMPLOYEE_ID.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
+		*&nbsp;Employee Id
+		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_EMPLOYEE_ID.getCode()%>'></span></fd:ErrorHandler>
+	</td>
+	<td width="565" colspan="2">
+		&nbsp;&nbsp;<input maxlength="25" class="text11" SIZE="21" type="text" name="employeeId" required="true" value="<%=fldEmployeeId%>">
+		<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_EMPLOYEE_ID.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+	</td>
+</tr>
+<%  }
+} %>
+	
+<% if (!user.isDepotUser()) { %>
+	<%@ include file="/shared/includes/registration/i_signup_address_fields.jspf" %>
+<%}%>
+<tr valign="middle">
+	<td width="120" align="right" class="text12">
+		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_HOME_PHONE.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
+		*&nbsp;Home Phone #
+		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_HOME_PHONE.getCode()%>'></span></fd:ErrorHandler>
+	</td>
+	<td width="565" colspan="2" class="text12">&nbsp;&nbsp;<input type="text" maxlength="14" size="21" class="text11" name="<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>" required="true" value="<%=fldHomePhone%>"> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_HOME_PHONE.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+	&nbsp;&nbsp;Ext.&nbsp;&nbsp;<input type="text" maxlength="6" size="4" class="text11" name="homephoneext" value="<%=request.getParameter("homephoneext")%>">
+	</td>
+</tr>
+<tr valign="top">
+	<td width="120"><BR></td>
+	<td width="565" class="text9" colspan="2"> <fd:ErrorHandler result='<%=result%>' name='homephone' id='errorDesc'><FONT class="text11rbold"><%= errorDesc %></font><br></fd:ErrorHandler>&nbsp;&nbsp;&nbsp;i.e. (212) 555-1212</td>
+</tr>
+
+<tr valign="middle">
+	<td width="120" align="right" class="text12">
+		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_WORK_PHONE.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
+		<%if(user.isDepotUser()){%>*&nbsp;<%}%>Work Phone #
+		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_WORK_PHONE.getCode()%>'></span></fd:ErrorHandler>
+	</td>
+	<td width="565" colspan="2">
+		&nbsp;&nbsp;<input type="text" maxlength="14" size="21" class="text11" name="<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>" required="true" value="<%=fldBusinessPhone%>"> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_WORK_PHONE.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+		&nbsp;&nbsp;<FONT class="text12">Ext.</FONT>&nbsp;&nbsp;<input type="text" maxlength="6" size="4" class="text11" name="busphoneext" value="<%=fldBusinessPhoneExt%>">
+	</td>
+</tr>
+
+<tr valign="middle">
+	<td width="120" align="right" class="text12">
+		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ALT_PHONE.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
+		&nbsp;Cell/Alt. #
+		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ALT_PHONE.getCode()%>'></span></fd:ErrorHandler>
+	</td>
+	<td width="565" colspan="2">
+		&nbsp;&nbsp;<input type="text" maxlength="14" size="21" class="text11" name="cellphone" required="true" value="<%=fldCellPhone%>"> <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ALT_PHONE.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+		&nbsp;&nbsp;<FONT class="text12">Ext.</FONT>&nbsp;&nbsp;<input type="text" maxlength="6" size="4" class="text11" name="cellphoneext" value="<%=fldCellPhoneExt%>">
+	</td>
+</tr>
+
+</table>
+
+<%
+// BEGINING D E P O T   L O C A T I O N S
+boolean allowSelection= true;
+if(user.isDepotUser()){
+%>
+
+<%@ include file="/shared/includes/i_depot_locations.jspf" %>
+<table border="0" cellspacing="0" cellpadding="2" width="693">
+<tr valign="top">
+	<td width="693">
+		<img src="/media_stat/images/template/depot/home_address.gif" width="96" height="9" alt="" border="0">&nbsp;&nbsp;&nbsp;<FONT class="text9">* Required information</FONT><BR>
+		<IMG src="/media_stat/images/layout/999966.gif" width="693" height="1" border="0" VSPACE="3"><br>
+		If your home address is within a FreshDirect <a href="javascript:popup('/help/delivery_zones.jsp','large')">delivery zone</a>, you can also get deliveries there.<br>
+		<% if ("bnl".equalsIgnoreCase(user.getDepotCode())) {%>
+			<b>If you reside on the Brookhaven Labs Campus, please call FreshDirect at <%=user.getCustomerServiceContact()%> to assist you in registering your address.</b><br>
+		<% } %>
+		<img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0">
+	</td>
+</tr>
+</table>
+<table border="0" cellspacing="0" cellpadding="2" width="693">
+	<%@ include file="/shared/includes/registration/i_signup_address_fields.jspf" %>
+<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"></td></tr>
+</table>
+<%
+// END D E P O T   L O C A T I O N S
+}%>	
+
+<br>
+<br>
+<table border="0" cellspacing="0" cellpadding="2" width="693">
+<tr valign="top">
+	<td width="693">
+		<img src="/media_stat/images/navigation/site_access_preferences.gif" width="160" height="9" border="0" alt="SITE ACCESS PREFERENCES">&nbsp;&nbsp;&nbsp;<FONT class="text9">* Required information</FONT><BR>
+		<IMG src="/media_stat/images/layout/999966.gif" width="693" height="1" border="0" VSPACE="3"><BR>
+	</td>
+</tr>
+</table>
+
+<table border="0" cellspacing="1" cellpadding="0" width="675">
+<tr valign="top">
+	<td width="120" align="right" class="text12">
+	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
+		<FONT class="space2pix"><BR></FONT>*&nbsp;E-mail Address
+	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>'></span></fd:ErrorHandler>
+	</td>
+	<td colspan="3">&nbsp;&nbsp;<input size="21" class="text9" maxlength="128" type="text" name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%= fldEmail%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+</tr>
+<tr valign="top">
+	<td width="120" align="right" class="text12">
+	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
+		<FONT CLASS="space2pix"><BR></FONT>*&nbsp;Repeat E-mail
+	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>'></span></fd:ErrorHandler>
+	</td>
+	<td colspan="3">&nbsp;&nbsp;<input size="21" class="text9" maxlength="128" type="text" name="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>" value="<%= fldEmail %>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+</tr>
+<tr valign="top">
+	<td width="120"></td>
+	<td colspan="3" class="text11">
+		<IMG src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0">This will be your User Name. You will use this to access the site.<BR><FONT class="space4pix"><BR></FONT>
+	</td>
+</tr>
+<tr valign="middle">
+	<td width="120" align="right" class="text12">
+	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
+		<FONT class="space4pix"><BR></FONT>*&nbsp;Password
+	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>'></span></fd:ErrorHandler>
+	</td>
+	<td colspan="3">&nbsp;&nbsp;<input class="text9" SIZE="21" type="password" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" required="true" value="<%= fldPassword %>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+</tr>
+<tr valign="top">
+	<td width="120" align="right" class="text12">
+	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
+		<FONT class="space4pix"><BR></FONT>*&nbsp;Repeat Password
+	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>'></span></fd:ErrorHandler>
+	</td>
+	<td colspan="3">&nbsp;&nbsp;<input size="21" type="password" class="text9" name="<%= EnumUserInfoName.REPEAT_PASSWORD.getCode()%>" required="true" value="<%= fldRepeatPassword %>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+</tr>
+<tr valign="top">
+	<td width="120" align="right" class="text12"></td>
+	<td colspan="3" class="text11"><IMG src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0">Must be at least 4 characters. Passwords are case sensitive.<FONT class="space4pix"><BR></FONT></td>
+</tr>
+
+<tr valign="top">
+	<td><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"></td>
+</tr>
+<tr valign="top">
+<td width="120" align="right" class="text12" rowspan="2">
+	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
+		*&nbsp;Town of Birth or<BR>Mother's Maiden<BR>Name
+	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD_HINT.getCode()%>'></span></fd:ErrorHandler>
+</td>
+	<td colspan="3">
+		<FONT class="space2pix"><BR><BR><BR></FONT>&nbsp;&nbsp;<input size="21" type="text" maxlength="25" class="text9" name="<%= EnumUserInfoName.PASSWORD_HINT.getCode() %>" required="true" value="<%= fldPasswordHint%>">
+		<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.PASSWORD_HINT.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+</tr>
+<tr valign="top">
+	<td colspan="3" class="text11"><IMG src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0">If you forget your password, we'll use this security word to verify your identity.<FONT class="space4pix"><BR></FONT></td>
+</tr>
+</table>
+
+
+<table border="0" cellspacing="0" cellpadding="2" width="693">
+<tr valign="top">
+
+<BR>
+<br>
+<% if(!user.isCorporateUser()){%>
+<table border="0" cellspacing="0" cellpadding="2" width="693">
+	<td width="693">
+		<img src="/media_stat/images/navigation/help_us_serve_you.gif" width="169" height="9" border="0" alt="HELP US SERVE YOU"><BR>
+		<IMG src="/media_stat/images/layout/999966.gif" width="693" height="1" border="0" VSPACE="3"><BR>
+	</td>
+</tr>
+</table>
+<font class="space4pix"><br></font>
+<table border="0" cellspacing="1" cellpadding="0" width="675">
+<%  String marketingQ1 = request.getParameter("shopFor");
+    if(marketingQ1 == null){
+        marketingQ1 = "";
+    }
+	String marketingQ2 = request.getParameter("household");
+    if(marketingQ2 == null){
+        marketingQ2 = "";
+    }
+%>
+<tr valign="top">
+	<td colspan="3" class="text12">When you shop for food, how many people do you typically shop for?</td>
+		<td><select name="shopFor" class="text12">
+	            <option value="" <%=("".equalsIgnoreCase(marketingQ1) ? "selected" : "")%>>PLEASE SELECT</option>
+		    <option value="1" <%=("1".equalsIgnoreCase(marketingQ1) ? "selected" : "")%>>1</option>
+		    <option value="2" <%=("2".equalsIgnoreCase(marketingQ1) ? "selected" : "" )%>>2</option>
+		    <option value="3" <%=("3".equalsIgnoreCase(marketingQ1) ? "selected" : "" )%>>3</option>
+		    <option value="4" <%=("4".equalsIgnoreCase(marketingQ1) ? "selected" : "" )%>>4</option>
+		    <option value="5+" <%=("5+".equalsIgnoreCase(marketingQ1) ? "selected" : "" )%>>5 or more</option>
+		</select></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="300" height="1" alt="" border="0"><br></td>
+</tr>
+<tr><td colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"></td></tr>
+<tr valign="top">
+	<td colspan="3" class="text12">Which best describes your household?</td>
+		<td><select name="household" class="text12">
+	            <option value="" <%=("".equalsIgnoreCase(marketingQ2) ? "selected" : "")%>>PLEASE SELECT</option>
+		    <option value="single" <%=("single".equalsIgnoreCase(marketingQ2) ? "selected" : "")%>>Single</option>
+		    <option value="couple2" <%=("couple2".equalsIgnoreCase(marketingQ2) ? "selected" : "" )%>>Couple</option>
+		    <option value="family with children" <%=("family with children".equalsIgnoreCase(marketingQ2) ? "selected" : "" )%>>Family with Children</option>
+		    <option value="roommate(s)" <%=("roommate(s)".equalsIgnoreCase(marketingQ2) ? "selected" : "" )%>>Roommate(s)</option>
+			<option value="office" <%=("office".equalsIgnoreCase(marketingQ2) ? "selected" : "" )%>>Office</option>
+			<option value="caterer/person chef" <%=("caterer/person chef".equalsIgnoreCase(marketingQ2) ? "selected" : "" )%>>Caterer/Personal Chef</option>
+		</select></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="300" height="1" alt="" border="0"></td>
+</tr>
+</table>
+<% } %>
+<table border="0" cellspacing="1" cellpadding="0" width="675">
+<%  String marketingQ3 = request.getParameter("howDidYouHear");
+    if(marketingQ3 == null){
+        marketingQ3 = "";
+    }
+%>
+<tr><td colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"></td></tr>
+<tr valign="top">
+	<td colspan="3" class="text12">How did you hear about FreshDirect?</td>
+		<td><select name="howDidYouHear" class="text12">
+                        <option value="" <%=("".equalsIgnoreCase(marketingQ3) ? "selected" : "")%>>PLEASE SELECT</option>
+			<option value="flyer" <%=("flyer".equalsIgnoreCase(marketingQ3) ? "selected" : "")%>>Flyer</option>
+			<option value="newspaper" <%=("newspaper".equalsIgnoreCase(marketingQ3) ? "selected" : "" )%>>Newspaper</option>
+			<option value="magazine" <%=("magazine".equalsIgnoreCase(marketingQ3) ? "selected" : "" )%>>Magazine</option>
+			<option value="tv" <%=("tv".equalsIgnoreCase(marketingQ3) ? "selected" : "" )%>>TV</option>
+			<option value="radio" <%=("radio".equalsIgnoreCase(marketingQ3) ? "selected" : "" )%>>Radio</option>
+			<option value="email" <%=("email".equalsIgnoreCase(marketingQ3) ? "selected" : "" )%>>Email</option>
+			<option value="friend" <%=("friend".equalsIgnoreCase(marketingQ3) ? "selected" : "")%>>Friend</option>
+			<option value="poster/billboard" <%=("poster or billboard".equalsIgnoreCase(marketingQ3) ? "selected" : "")%>>Poster/Billboard</option>
+			<option value="direct mail" <%=("direct mail".equalsIgnoreCase(marketingQ3) ? "selected" : "")%>>Direct Mail</option>
+			<option value="internet/web ad" <%=("internet/web ad".equalsIgnoreCase(marketingQ3) ? "selected" : "")%>>Internet/Web Ad</option>
+			<option value="freshdirect truck" <%=("freshdirect truck".equalsIgnoreCase(marketingQ3) ? "selected" : "")%>>Fresh Direct Truck</option>
+			<option value="taxi tops" <%=("taxi tops".equalsIgnoreCase(marketingQ3) ? "selected" : "")%>>Taxi Tops</option>				
+		</select></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="300" height="1" alt="" border="0"><br></td>
+</tr>
+</table>
+<BR>
+<table border="0" cellspacing="0" cellpadding="2" width="693">
+<tr valign="top">
+<td width="693"><img src="/media_stat/images/navigation/customer_agreement.gif"  border="0" alt="TERMS OF SERVICE">&nbsp;&nbsp;&nbsp;<FONT class="text9">* Required information</FONT><BR>
+<IMG src="/media_stat/images/layout/999966.gif" width="693" height="1" border="0" VSPACE="3"><BR></td>
+</tr></table><br>
+<textarea cols="60" rows="7" readonly xname="tos">
+	<%@ include file="/includes/registration/i_user_agreement.txt" %>
+</textarea><br><BR>
+<table cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+	<td width="45" align="right">*&nbsp;<input type="checkbox" value="yes" name="terms" <%=fldTermsAndConditions%>></td>
+	<td>
+		<FONT class="space4pix"><BR></FONT><FONT class="text12bold">I have read and agree to the Customer Agreement</FONT><BR>
+		<a href="javascript:popup('/registration/user_agreement.jsp','large')"><FONT class="text12">Click here for a printable version</FONT></a><BR><br>
+	</td>
+</tr>
+<tr valign="top">
+	<td colspan="2" width="450"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.CUSTOMER_AGREEMENT.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+</tr>
+</table>
+<BR>
+<BR>
+<% if (request.getRequestURI().toLowerCase().indexOf("checkout")==-1){ %>
+<table cellpadding="0" cellspacing="0" border="0" width="675">
+	<tr valign="top" BGCOLOR="#999966"><td width="675"><IMG src="/media_stat/images/layout/999966.gif" hspace="0" width="1" height="1" border="0"></td></tr>
+		<td width="675" align="right"><input type="image" src="/media_stat/images/buttons/sign_up_2.gif" name="register_new_user" alt="SIGN UP" vspace="4" hspace="4" border="0"></td></tr>
+	<tr valign="top" BGCOLOR="#999966"><td width="675"><IMG src="/media_stat/images/layout/999966.gif" hspace="0" width="1" height="1" border="0"></td></tr>
+</table><BR>
+<% } %>
+
+<%
+String uri = request.getRequestURI();
+if(uri.indexOf("registration")> -1){
+%>
+<table border="0" cellspacing="0" cellpadding="2" width="693">
+<tr valign="top">
+	<td width="693">
+		<b>Having problems signing up?</b><br>
+		Call <%=user.getCustomerServiceContact()%> for help 
+	</td>
+</tr>
+</table>
+<br>
+<%}%>

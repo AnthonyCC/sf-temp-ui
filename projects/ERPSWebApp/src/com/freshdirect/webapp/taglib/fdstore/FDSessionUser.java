@@ -1,0 +1,556 @@
+/*
+ * $Workfile$
+ *
+ * $Date$
+ *
+ * Copyright (c) 2001 FreshDirect, Inc.
+ *
+ */
+package com.freshdirect.webapp.taglib.fdstore;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpSessionBindingEvent;
+import javax.servlet.http.HttpSessionBindingListener;
+
+import org.apache.log4j.Category;
+
+import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
+import com.freshdirect.deliverypass.EnumDlvPassProfileType;
+import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.fdstore.FDReservation;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.FDCartModel;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDCustomerModel;
+import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDModifyCartModel;
+import com.freshdirect.fdstore.customer.FDOrderHistory;
+import com.freshdirect.fdstore.customer.FDPromotionEligibility;
+import com.freshdirect.fdstore.customer.FDUser;
+import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
+import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
+import com.freshdirect.fdstore.promotion.PromotionI;
+import com.freshdirect.fdstore.promotion.SignupDiscountRule;
+import com.freshdirect.framework.util.log.LoggerFactory;
+
+/**
+ *
+ * @version $Revision$
+ * @author $Author$
+ */
+public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
+     
+    private static Category LOGGER = LoggerFactory.getInstance( FDUser.class );
+    
+    private final FDUser user;
+    
+    private long lastCartSaveTime;
+    
+    private final static long SAVE_PERIOD = 2 * 60 * 1000; // 2 minutes
+
+	private int failedAuthorizations = 0;
+	private boolean healthWarningAcknowledged = false;
+	    
+    public FDSessionUser(FDUser user, HttpSession session) {
+        super();
+        this.user = user;
+		
+		String app = (String) session.getAttribute(SessionName.APPLICATION);
+		EnumTransactionSource src = EnumTransactionSource.WEBSITE;
+		if (app!=null && "callcenter".equalsIgnoreCase(app)) {
+			src = EnumTransactionSource.CUSTOMER_REP;  
+		}
+		this.user.setApplication(src); 
+
+        lastCartSaveTime = System.currentTimeMillis();
+    }
+    
+    public void valueBound(HttpSessionBindingEvent event) {
+        LOGGER.debug("FDUser bound to session");
+        this.saveCart();
+    }
+    
+    public void valueUnbound(HttpSessionBindingEvent event) {
+        LOGGER.debug("FDUser unbound from session");
+        this.saveCart(true);
+    }
+    
+    public void saveCart() {
+    	this.saveCart(false);
+    }
+    
+    public void saveCart(boolean forceSave) {
+        //
+        // don't save carts too often
+        //
+        if (!forceSave && (System.currentTimeMillis() - lastCartSaveTime) < SAVE_PERIOD ) return;
+        if (this.isCartPersistent()) {
+            LOGGER.info("Saving FDUser cart");
+            try {
+                FDCustomerManager.storeUser(this.user);
+                lastCartSaveTime = System.currentTimeMillis();
+            } catch (FDResourceException ex) {
+                LOGGER.warn("Unable to save FDUser", ex);
+            }
+        }
+    }
+
+	private boolean isCartPersistent() {
+		//
+		// don't save users that don't have a primary key
+		//
+		if (this.user.isAnonymous()) return false;
+		//
+		// don't save carts in modify mode
+		//
+		if (this.getShoppingCart() instanceof FDModifyCartModel) return false;
+		//
+		// save carts automatically for users who are:
+		//  already registered
+		//  anonymous and in our delivery area,
+		//  anonymous and will be in our delivery area within a year
+		//
+		if (this.getLevel() >= RECOGNIZED || this.isInZone()) {
+			return true;
+		}
+		return false;
+	}
+
+	public EnumTransactionSource getApplication() {
+		return this.user.getApplication();
+	}
+
+	public int getFailedAuthorizations(){
+		return this.failedAuthorizations;
+	}
+
+	public void incrementFailedAuthorizations(){
+		this.failedAuthorizations++;
+	}
+
+	public boolean isHealthWarningAcknowledged() {
+		return healthWarningAcknowledged;
+	}
+
+	public void setHealthWarningAcknowledged(boolean healthWarningAcknowledged) {
+		this.healthWarningAcknowledged = healthWarningAcknowledged;
+	}
+
+    
+    public FDUser getUser() {
+        return this.user;
+    }
+    
+    public String getCookie() {
+        return this.user.getCookie();
+    }
+    
+    public void setCookie(String cookie) {
+        this.user.setCookie(cookie);
+    }
+    
+    public String getZipCode() {
+        return this.user.getZipCode();
+    }
+    
+    public void setZipCode(String zipCode) {
+        this.user.setZipCode(zipCode);
+    }
+    
+    public void setAddress(AddressModel a) {
+        this.user.setAddress(a);
+    }
+
+	public AddressModel getAddress() {
+		return this.user.getAddress();	
+	}
+    
+    public FDIdentity getIdentity() {
+        return this.user.getIdentity();
+    }
+    
+    public void setIdentity(FDIdentity identity) {
+        this.user.setIdentity(identity);
+    }
+    
+    public int getLevel() {
+        return this.user.getLevel();
+    }
+    
+    public boolean isInZone() {
+        return this.user.isInZone();
+    }
+    
+    public void isLoggedIn(boolean loggedIn) {
+        this.user.isLoggedIn(loggedIn);
+    }
+    
+    public FDCartModel getShoppingCart() {
+        return this.user.getShoppingCart();
+    }
+    
+    public void setShoppingCart(FDCartModel cart) {
+        this.user.setShoppingCart(cart);
+    }
+
+    public boolean isSurveySkipped() {
+		return this.user.isSurveySkipped();    	
+    }
+    
+    public void setSurveySkipped(boolean skipped) {
+    	this.user.setSurveySkipped(skipped);	
+    }
+
+	public boolean isFraudulent() throws FDResourceException {
+		return this.user.isFraudulent();
+	}
+
+	public FDPromotionEligibility getPromotionEligibility() {
+		return this.user.getPromotionEligibility();
+	}
+    
+    public double getMaxSignupPromotion() {
+        return this.user.getMaxSignupPromotion();
+    }
+    
+	public SignupDiscountRule getSignupDiscountRule() {
+		return this.user.getSignupDiscountRule();
+	}
+
+	public boolean isPromotionAddressMismatch() {
+		return this.user.isPromotionAddressMismatch();
+	}
+
+	public void setRedeemedPromotion(PromotionI promotion) {
+		this.user.setRedeemedPromotion(promotion);
+	}
+
+	public PromotionI getRedeemedPromotion() {
+		return this.user.getRedeemedPromotion();
+	}
+    
+    public void updateUserState() {
+        this.user.updateUserState();
+    }
+    
+    public String getFirstName() throws FDResourceException {
+        return this.user.getFirstName();
+    }
+    
+    public String getDepotCode() {
+        return this.user.getDepotCode();
+    }
+
+	public void setDepotCode(String depotCode) {
+        this.user.setDepotCode(depotCode);
+    }
+    
+    public boolean isDepotUser() {
+        return this.user.isDepotUser();
+    }
+    
+    public boolean isCorporateUser() {
+    	return this.user.isCorporateUser();
+    }
+
+	public void invalidateCache() {
+    	this.user.invalidateCache();
+	}
+
+	public FDOrderHistory getOrderHistory() throws FDResourceException {
+		return this.user.getOrderHistory();
+	}
+
+    public int getAdjustedValidOrderCount() throws FDResourceException {
+    	return this.user.getAdjustedValidOrderCount();
+    }
+    
+    public int getDeliveredOrderCount() throws FDResourceException {
+    	return this.user.getDeliveredOrderCount();
+    }
+    
+    public int getValidPhoneOrderCount() throws FDResourceException {
+    	return this.user.getValidPhoneOrderCount();
+    }
+   
+	public boolean isEligibleForSignupPromotion() {
+		return this.user.isEligibleForSignupPromotion();
+	}
+
+	public PromotionI getEligibleSignupPromotion() {
+		return this.user.getEligibleSignupPromotion();
+	}
+
+    public boolean isOrderMinimumMet() throws FDResourceException {
+    	return this.user.isOrderMinimumMet();	
+    }
+    
+    public boolean isOrderMinimumMet(boolean alcohol) throws FDResourceException {
+    	return this.user.isOrderMinimumMet(alcohol);
+    }
+    
+    public double getMinimumOrderAmount(){
+    	return this.user.getMinimumOrderAmount();
+    }
+
+	public float getQuantityMaximum(ProductModel product) {
+		return this.user.getQuantityMaximum(product);
+	}
+    
+    public boolean isPickupOnly() {
+        return this.user.isPickupOnly();
+    }
+    
+    public boolean isPickupUser() {
+        return this.user.isPickupUser();
+    }
+    
+    public boolean isNotServiceable() {
+        return this.user.isNotServiceable();
+    }
+   
+    public boolean isDeliverableUser() {
+        return this.user.isDeliverableUser();
+    }
+    
+    public boolean isHomeUser() {
+        return this.user.isHomeUser();
+    }
+    
+    public FDCustomerModel getFDCustomer() throws FDResourceException {
+        return this.user.getFDCustomer();
+    }
+    
+    public FDReservation getReservation(){
+    	return this.user.getReservation();
+    }
+    
+    public void setReservation(FDReservation reservation){
+    	this.user.setReservation(reservation);
+    }
+    
+	public boolean isChefsTable() throws FDResourceException{
+		return this.user.isChefsTable();
+	}
+	
+	public boolean isEligibleForPreReservation() throws FDResourceException{
+		return this.user.isEligibleForPreReservation();
+	}
+	
+	public EnumServiceType getSelectedServiceType() {
+		return this.user.getSelectedServiceType();
+	}
+	
+	public void setSelectedServiceType(EnumServiceType serviceType){
+		this.user.setSelectedServiceType(serviceType);
+	}
+	
+	public void setAvailableServices(Set availableServices) {
+		user.setAvailableServices(availableServices);
+	}
+	
+	public String getCustomerServiceContact() {
+		return this.user.getCustomerServiceContact();
+	}
+	
+	public boolean isCheckEligible() {
+        return (user != null) ? user.isCheckEligible() : false;
+    }
+   
+	public Collection getPaymentMethods() {
+        return (user != null) ? user.getPaymentMethods() : new ArrayList();
+	}
+
+	public String  getUserId() {
+        return (user != null) ? user.getUserId() : "";
+	}
+	
+	public String getLastTrackingCode() {
+		return this.user.getLastTrackingCode();
+	}
+	
+	public void setLastTrackingCode(String lastTrackingCode) {
+		this.user.setLastTrackingCode(lastTrackingCode);
+	}
+	
+	public String getLastRefTrackingCode() {
+		return this.user.getLastRefTrackingCode();
+	}
+	
+	public void setLastRefTrackingCode (String lastRefTrackingCode) {
+		this.user.setLastRefTrackingCode(lastRefTrackingCode);
+	}
+	
+	public boolean isReferrerRestricted() throws FDResourceException {
+        return (user != null) ? user.isReferrerRestricted() : false;
+	}
+
+	public boolean isReferrerEligible() throws FDResourceException {
+        return (user != null) ? user.isReferrerEligible() : false;
+	}
+
+	public boolean isECheckRestricted() throws FDResourceException {
+        return (user != null) ? user.isECheckRestricted() : false;
+	}
+	
+	public String getRegRefTrackingCode() {
+        return (user != null) ? user.getRegRefTrackingCode() : "";
+	}
+	
+	public String getDefaultCounty() throws FDResourceException{
+		return (user != null) ? user.getDefaultCounty() : null;
+	}
+	
+	public boolean isActive() {
+		return user.isActive();
+	}
+	
+	public boolean isReceiveFDEmails() {
+		return user.isReceiveFDEmails();
+	}
+	
+	public void performDlvPassStatusCheck()throws FDResourceException {
+		user.performDlvPassStatusCheck();
+	}
+	public FDUserDlvPassInfo getDlvPassInfo(){
+		return this.user.getDlvPassInfo();
+	}
+
+	/**
+	 * @return Returns the deliveryPassStatus.
+	 */
+	public EnumDlvPassStatus getDeliveryPassStatus() {
+		return this.user.getDeliveryPassStatus();
+	}
+
+	public boolean isEligibleForDeliveryPass() throws FDResourceException {
+		return this.user.isEligibleForDeliveryPass();
+	}
+
+	public EnumDlvPassProfileType getEligibleDeliveryPass() throws FDResourceException {
+		return this.user.getEligibleDeliveryPass();
+	}
+
+	public String getDlvPassProfileValue() throws FDResourceException{
+		return this.user.getDlvPassProfileValue();
+	}
+
+	public boolean isDlvPassNone(){
+		return this.user.isDlvPassNone();
+	}
+	public boolean isDlvPassActive(){
+		return this.user.isDlvPassActive();
+	}
+	
+	
+	public boolean isDlvPassPending(){
+		return this.user.isDlvPassPending();
+	}
+
+	public boolean isDlvPassExpiredPending(){
+		return this.user.isDlvPassExpiredPending();
+	}
+
+	public boolean isDlvPassExpired(){
+		return this.user.isDlvPassExpired();
+	}
+
+	public boolean isDlvPassCancelled(){
+		return this.user.isDlvPassCancelled();
+	}
+	
+	public boolean isDlvPassShortShipped(){
+		return this.user.isDlvPassShortShipped();
+	}
+	
+	public boolean isDlvPassSettlementFailed(){
+		return this.user.isDlvPassSettlementFailed();
+	}
+
+	public boolean isDlvPassReturned() {
+		return this.user.isDlvPassReturned();
+	}
+	
+	public void updateDlvPassInfo() throws FDResourceException{
+		user.updateDlvPassInfo();
+	}
+	public void setLastRefProgramId(String progId) {
+		// TODO Auto-generated method stub
+		this.user.setLastRefProgramId(progId);
+	}
+
+	public String getLastRefProgId() {
+		// TODO Auto-generated method stub
+		return this.user.getLastRefProgId();
+	}
+
+	public void setLastRefTrkDtls(String trkDtls) {
+		// TODO Auto-generated method stub
+		this.user.setLastRefTrkDtls(trkDtls);
+	}
+
+	public String getLastRefTrkDtls() {
+		// TODO Auto-generated method stub
+		return this.user.getLastRefTrkDtls();
+	}
+
+	public void setLastRefProgInvtId (String progInvtId)
+    {
+    	this.user.setLastRefProgInvtId(progInvtId);
+    }
+	
+	 public String getLastRefProgInvtId()
+	 {
+		 return this.user.getLastRefProgInvtId();
+	 }
+
+	public String getLastName() throws FDResourceException {
+		return this.user.getLastName();
+	}
+	 
+	 public double getBaseDeliveryFee(){
+    	return this.user.getBaseDeliveryFee();
+    }
+	 
+	 public double getCorpDeliveryFee(){
+    	return this.user.getCorpDeliveryFee();
+    }
+	 
+	 public double getMinCorpOrderAmount(){
+    	return this.user.getMinCorpOrderAmount();
+    }
+	 
+	public int getUsableDeliveryPassCount() {
+	    	return user.getUsableDeliveryPassCount();
+	}
+	
+	public EnumDPAutoRenewalType hasAutoRenewDP() throws FDResourceException {
+		return user.hasAutoRenewDP();
+	}
+	
+	public AssignedCustomerParam getAssignedCustomerParam(String promoId) {
+		return user.getAssignedCustomerParam(promoId);
+	}
+	
+	public boolean isCCLEnabled() {		
+		return this.user.isCCLEnabled();
+	}
+
+	public boolean isCCLInExperienced() {
+		return this.user.isCCLInExperienced();
+	}
+
+	public List getCustomerCreatedListInfos() {
+		return this.user.getCustomerCreatedListInfos();
+	}
+}

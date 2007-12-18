@@ -1,0 +1,269 @@
+<%@ page import='com.freshdirect.framework.webapp.ActionError' %>
+<%@ page import='com.freshdirect.enum.EnumModel' %>
+<%@ page import="java.util.*" %>
+<%!
+final static CrmCaseActionType[] BUTTON_ACTION_TYPES = new CrmCaseActionType[] {
+	CrmCaseActionType.getEnum(CrmCaseActionType.CODE_CLOSE),
+	CrmCaseActionType.getEnum(CrmCaseActionType.CODE_ESCRVW),
+	CrmCaseActionType.getEnum(CrmCaseActionType.CODE_RETURN),
+	CrmCaseActionType.getEnum(CrmCaseActionType.CODE_APPROV),
+	CrmCaseActionType.getEnum(CrmCaseActionType.CODE_EML_OUT),
+	CrmCaseActionType.getEnum(CrmCaseActionType.CODE_CAL),
+	CrmCaseActionType.getEnum(CrmCaseActionType.CODE_CAL_MSG),
+	CrmCaseActionType.getEnum(CrmCaseActionType.CODE_CAL_SPK),
+	CrmCaseActionType.getEnum(CrmCaseActionType.CODE_CUST_CAL),
+	CrmCaseActionType.getEnum(CrmCaseActionType.CODE_ACT_DM_R),
+	CrmCaseActionType.getEnum(CrmCaseActionType.CODE_ACT_DM_A)
+};
+
+final static CrmAgentRole[] DISPLAY_ROLES = {
+	CrmAgentRole.getEnum(CrmAgentRole.CSR_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.CSRH_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.TRN_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.ASV_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.SUP_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.ADM_CODE) };
+%>
+<crm:CrmStoreCaseController actionName='storeCase' successPage='/case/case.jsp' result='result' case='<%= cm %>'>
+<crm:GetAllowedActions id="allowedActions" case="<%= cm %>">
+<%
+
+boolean isEditAllowed = (cm.isAnonymous() || allowedActions.contains( CrmCaseActionType.getEnum(CrmCaseActionType.CODE_EDIT))) 
+											&& (cm.getPK() == null || (!cm.getSubject().isObsolete() && !cm.getSubject().getQueue().isObsolete())) ;										
+boolean isAssignmentPriorityAllowed = false;
+%>
+<crm:GetCurrentAgent id="currentAgent">
+		<% isAssignmentPriorityAllowed = currentAgent.isSupervisor(); %> 
+		<% if (!cm.isAnonymous()) {
+			if ("ASQ".equals(cm.getSubject().getQueue().getCode()) && currentAgent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.ASV_CODE))) {
+
+				isAssignmentPriorityAllowed = true;
+			} else if (CrmCaseQueue.isTrnQueue(cm.getSubject().getQueue().getCode()) && currentAgent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.TRN_CODE))) {
+				isAssignmentPriorityAllowed = true;
+			}
+		} %>
+</crm:GetCurrentAgent>
+
+<table width="90%" cellpadding="0" cellspacing="5" border="0" class="case_content_text">
+<form name="case_details" method="POST">
+<input type="hidden" name="customerPK" value="<%= cm.getCustomerPK() != null ? cm.getCustomerPK().getId() : "" %>">
+<input type="hidden" name="salePK" value="<%= cm.getSalePK() != null ? cm.getSalePK().getId() : "" %>">
+	<tr>
+		<td class="case_content_field">Status</td>
+		<td><%= cm.getState()==null ? "Open" : cm.getState().getName() %></td>
+		<td class="case_content_field">Assigned</td>
+		<td>
+
+		<% if (isEditAllowed && isAssignmentPriorityAllowed) { %>
+			<select name="assignedAgent" class="pulldown">
+				<crm:GetAllAgents id="agentList">
+				<option class="title" value="<%= !cm.isAnonymous() ? ((CrmAgentModel)agentList.getAgents(CrmAgentRole.getEnum(CrmAgentRole.SYS_CODE)).get(0)).getPK().getId() : "" %>">-Select Agent-</option>
+				<logic:iterate id='role' collection="<%= DISPLAY_ROLES %>" type="com.freshdirect.crm.CrmAgentRole">
+					<option class="header"><%= role.getName() %></option>
+					<logic:iterate id='agent' collection="<%= agentList.getAgents(role) %>" type="com.freshdirect.crm.CrmAgentModel">
+					<% if (agent.isActive()) { %>
+						<option value="<%= agent.getPK().getId() %>" <%= agent.getPK().equals(cm.getAssignedAgentPK()) ? "selected" : "" %>>
+							&nbsp;<%= agent.getUserId() %>
+						</option>
+					<% } %>
+					</logic:iterate>
+					<option></option>
+				</logic:iterate>
+				</crm:GetAllAgents>
+			</select>
+		<% } else { %>
+			<crm:GetAgent id="agent" agentId="<%= cm.getAssignedAgentPK().getId() %>">
+				<input type="hidden" name="assignedAgent" value="<%= cm.getAssignedAgentPK().getId() %>">
+				<%= agent.getUserId() %>
+			</crm:GetAgent>
+		<% } %>
+		<fd:ErrorHandler result='<%= result %>' name='assignedAgent' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
+		</td>
+	</tr>
+	<script language="JavaScript">
+		<!--
+			function Queue(code, name, subjects) {
+				this.code = code;
+				this.name = name;
+				this.subjects = subjects;
+			}
+
+			function Subject(code, name) {
+				this.code = code;
+				this.name = name;
+			}
+
+			function populateSubject(queue, subjectField, selectedSubj){				
+				subjectField.options.length = 1;
+				var numSubj = queues[queue].subjects.length;
+				subjectField.options[0].text = numSubj==0 ? "-Select Queue then Subject-" : "-Select Subject-";
+				subjectField.disabled = numSubj==0;
+				for (i=0; i < numSubj; i++) {
+					var optName = queues[queue].subjects[i].name;
+					var optValue = queues[queue].subjects[i].code;
+					subjectField.options[subjectField.options.length]= new Option(optName, optValue, false, false);
+				}
+                                if(selectedSubj != null){
+                                        subjectField.value="<%= !cm.isAnonymous() ? cm.getSubject().getCode() : request.getParameter("subject") %>";
+                                }
+			}
+
+			var queues = new Array();
+			queues[""] = new Queue("", "", []);
+			<%
+			for (Iterator i = CrmCaseQueue.getEnumList().iterator(); i.hasNext(); ) {
+				CrmCaseQueue q = (CrmCaseQueue)i.next();
+				if (!q.isObsolete()) {
+				%>
+					queues["<%= q.getCode() %>"] = new Queue("<%= q.getCode() %>", "<%= q.getName() %>", [
+					<%
+					int c = 0;
+					for (Iterator j = q.getSubjects().iterator(); j.hasNext();) {
+						CrmCaseSubject s = (CrmCaseSubject)j.next();						
+						if (!s.isObsolete()) {
+							if (c>0) out.print(", ");
+							 c++;
+							%>new Subject("<%= s.getCode() %>", "<%= s.getName() %>")<%
+						}
+					}
+					out.println("]);");
+				}
+			}
+			%>		
+		//-->
+		</script>
+	<tr>
+		<td class="case_content_field">Queue</td>
+		<td>
+			<% if (isEditAllowed) { %>
+				<select name="queue" class="pulldown" onChange="populateSubject(case_details.queue.value,case_details.subject);">
+					<option class="title" value="">-Select Queue-</option>					
+					<logic:iterate id='queue' collection="<%=CrmCaseQueue.getEnumList()%>" type="com.freshdirect.crm.CrmCaseQueue">
+						<% if (!queue.isObsolete()) {%>
+						<option value='<%= queue.getCode() %>' 
+                                                <% if (!cm.isAnonymous()) {%>
+                                                    <%= cm.getSubject().getQueue().getCode().equals(queue.getCode()) ? "selected":"" %>
+                                                <% } else { %>
+                                                    <%= queue.getCode().equals(request.getParameter("queue")) ? "selected" : "" %>
+                                                 <%}%>><%= queue.getCode() %> - <%= queue.getName() %></option>
+><%= queue.getCode() %> - <%= queue.getName() %></option>
+						<%}%>
+					</logic:iterate>
+				
+				</select>
+			<% } else { %>
+				<%= cm.getSubject().getQueue().getCode() %> - <%= cm.getSubject().getQueue().getName() %>
+			<% } %>
+			<fd:ErrorHandler result='<%= result %>' name='queue' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
+		</td>
+		<td class="case_content_field">Priority</td>
+		<td>
+			<% if (isEditAllowed && isAssignmentPriorityAllowed) { %>
+				<select name="priority" class="pulldown">
+					<option>Automatic Selection</option>
+					<logic:iterate id='priority' collection="<%=CrmCasePriority.getEnumList()%>" type="com.freshdirect.crm.CrmCasePriority">
+						<option value='<%= priority.getCode() %>' <%= priority.equals(cm.getPriority()) ? "selected" : "" %>><%= priority.getName() %></option>
+					</logic:iterate>
+				</select>
+			<% } else { %>
+				<input type="hidden" name="priority" value='<%= cm.getPriority()==null ? "" : cm.getPriority().getCode() %>'>
+				<%= cm.getPriority()==null ? "Automatic Selection" : cm.getPriority().getName() %>
+			<% } %>
+			<fd:ErrorHandler result='<%= result %>' name='priority' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
+		</td>
+	</tr>
+	<tr>
+		<td class="case_content_field">Subject</td>
+		<td>
+			<% if (isEditAllowed) { %>
+				<select name="subject" class="pulldown" disabled="true">
+					<option class="title" value="">-Select Queue then Subject-</option>
+				</select>
+				<% if (cm.getSubject() != null) {%>
+					<script language="JavaScript">
+					<!--
+						populateSubject('<%=cm.getSubject().getQueue().getCode()%>', case_details.subject);
+						case_details.subject.value="<%= cm.getSubject().getCode() %>";
+					//-->
+					</script>
+				<% } %>
+			<% } else { %>
+				<input type="hidden" name="subject" value="<%= cm.getSubject().getCode() %>">
+				<%= cm.getSubject().getName() %>
+			<% } %>
+			<fd:ErrorHandler result='<%= result %>' name='subject' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
+		</td>
+		<td class="case_content_field">Quantities</td>
+		<td>Reported: <input type="text" name="reported" value="<%=cm.getProjectedQuantity()%>" size="3" maxlength="3">&nbsp;&nbsp;&nbsp;
+		    Actual: <input type="text" name="actual"  value="<%=cm.getActualQuantity()%>" size="3" maxlength="3">&nbsp;&nbsp;&nbsp;
+		</td>
+</tr>
+	<tr><td colspan="4"></td></tr>
+	<tr valign="top">
+		<td class="case_content_field">Summary</td>
+		<td colspan="3">
+			<textarea <%= isEditAllowed ? "" : "readonly" %> name="summary" rows="2" wrap="VIRTUAL" style="width: 600px;"><%= request.getParameter("summary")!= null ? request.getParameter("summary"):cm.getSummary() %></textarea>
+			<fd:ErrorHandler result='<%= result %>' name='summary' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td class="case_content_field">Notes</td>
+		<td colspan="3">
+			<textarea name="note" rows="4" wrap="VIRTUAL" style="width: 600px;"><%= request.getParameter("note") %></textarea>
+			<fd:ErrorHandler result='<%= result %>' name='note' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
+		</td>
+	</tr>
+	<tr>
+		<td></td>
+		<td colspan="3">
+		<% 	
+			List departments = new ArrayList( CrmDepartment.getEnumList() );
+  			Collections.sort(departments, EnumModel.COMP_NAME);
+		%>
+		<%
+	        int itemCount = departments.size();
+	        int maxCols = 6;
+			int maxRows = itemCount/maxCols + (itemCount%maxCols !=0 ? 1 : 0);
+	        int rowCount = 0;
+	        int colCount = 0;
+		%>
+		<fd:ErrorHandler result='<%= result %>' name='departments' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
+
+			
+		</td>
+	</tr>
+	<tr><td colspan="4"></td></tr>
+	<tr>
+		<td></td>
+		<td colspan="3">
+			<input type="submit" class="case_save" value='<%= cm.isAnonymous() ? "Create Case" : (isEditAllowed ? "Update Case" : "Add Note") %>'>
+			<% if (!cm.isAnonymous()) { 
+			int countButton = 0;
+			%>
+				<logic:iterate id='actionType' collection='<%= BUTTON_ACTION_TYPES %>' type='com.freshdirect.crm.CrmCaseActionType'>
+					<% if (allowedActions.contains(actionType)) { %>
+						<input type="submit" class="case_action" id="<%= actionType.getCode().toLowerCase() %>" name="actionTypeName" value="<%= actionType.getName() %>">
+					<%  
+						countButton++;
+						if (countButton == 3) {
+					%>
+					<br><img src="/images/clear.gif" width="1" height="8"><br>
+					<%
+						countButton = 0;
+						}
+					 } %>
+				</logic:iterate>
+			<% } %>
+			<br>
+			<fd:ErrorHandler result='<%= result %>' name='<%= ActionError.GENERIC %>' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
+		</td>
+	</tr>
+</form>
+</table>
+<% if (cm.isAnonymous()) { %>
+<script>
+    populateSubject(case_details.queue.value,case_details.subject,'<%=request.getParameter("subject")%>');
+</script>
+<% } %>
+</crm:GetAllowedActions>
+</crm:CrmStoreCaseController>

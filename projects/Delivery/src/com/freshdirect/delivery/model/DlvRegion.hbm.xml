@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.freshdirect.delivery.model" schema="dlv">
+
+    <class name="DlvRegion" table="REGION" lazy="false">
+        <id name="id" column="ID">
+            <generator class="sequence">
+            	<param name="sequence">SYSTEM_SEQ</param>
+            </generator>
+        </id>
+
+        <property name="name" column="NAME" not-null="true"/>
+
+        <bag name="regionDataList" cascade="all,delete-orphan" lazy="false">
+            <key column="REGION_ID" not-null="true"/>
+            <one-to-many class="DlvRegionDataModel"/>
+        </bag>
+
+    </class>
+    
+<sql-query name="getRegions">
+	<return-scalar column="regionId" type="string"/>
+	<return-scalar column="regionName" type="string"/>	
+    SELECT r.ID AS regionId, r.NAME AS regionName
+    FROM DLV.REGION r
+</sql-query>
+
+</hibernate-mapping>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE component-specification PUBLIC
+  "-//Apache Software Foundation//Tapestry Specification 3.0//EN"
+  "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<component-specification class="org.apache.tapestry.BaseComponent"
+    allow-body="yes"
+    allow-informal-parameters="yes">
+    
+  <description>add a description</description>
+
+  <parameter
+    name="clause"
+    direction="in"
+    type="com.freshdirect.listadmin.db.Clause"
+    required="yes"
+    property-name="theClause" />
+
+  <component id="simpleParam" type="SimpleParam" inherit-informal-parameters="no">
+    <binding name="clause" expression="theClause"/>
+  </component>
+
+  <component id="staticDropdownParam" type="StaticDropdownParam" inherit-informal-parameters="no">
+    <binding name="clause" expression="theClause"/>
+  </component>
+
+  <component id="nvpDropdownParam" type="NVPDropdownParam" inherit-informal-parameters="no">
+    <binding name="clause" expression="theClause"/>
+  </component>
+  
+  <component id="queryDropdownParam" type="QueryDropdownParam" inherit-informal-parameters="no">
+    <binding name="clause" expression="theClause"/>
+  </component>
+
+  <component id="timeDateParam" type="TimeDateParam" inherit-informal-parameters="no">
+    <binding name="clause" expression="theClause"/>
+  </component>
+  
+</component-specification>

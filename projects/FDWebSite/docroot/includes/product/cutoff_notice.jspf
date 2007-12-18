@@ -1,0 +1,46 @@
+<%@ page import='java.text.SimpleDateFormat'%>
+<%@ page import='com.freshdirect.framework.util.TimeOfDay'%>
+<%@ page import='com.freshdirect.webapp.util.RestrictionUtil'%>
+<%-- CUTOFF NOTICE requires productNode --%>
+<%
+{
+	TimeOfDay cutoffTime;
+	if (productNode.isPlatter()
+		&& (cutoffTime = RestrictionUtil.getPlatterRestrictionStartTime()) != null) {
+		
+		String headerTime;
+		String bodyTime;
+		if (new TimeOfDay("12:00 PM").equals(cutoffTime)) {
+			headerTime = "12 NOON";
+			bodyTime = "12 Noon";
+		} else {
+			SimpleDateFormat headerTimeFormat = new SimpleDateFormat("h:mm a");
+			SimpleDateFormat bodyTimeFormat = new SimpleDateFormat("ha");
+			
+			headerTime = headerTimeFormat.format(cutoffTime.getAsDate());
+			bodyTime = bodyTimeFormat.format(cutoffTime.getAsDate());
+		}
+		%>
+		<table width="420" cellpadding="0" cellspacing="0" border="0">
+			<tr>
+				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
+			</tr>
+			<tr>
+				<td bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+			</tr>
+			<tr>
+				<td align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"><br>
+				<span class="text11orbold">PLEASE ORDER BY <%=headerTime%> FOR DELIVERY TOMORROW</span><br>
+				To assure the highest quality, our chefs prepare this item to order. You must <b>complete checkout by <%=bodyTime%></b> to order this item for delivery tomorrow.<br><img src="/media_stat/images/layout/clear.gif" width="1" height="6"></td>
+			</tr>
+			<tr>
+				<td bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+			</tr>
+			<tr>
+				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="6"></td>
+			</tr>
+		</table>
+		<%
+	}
+}
+%>

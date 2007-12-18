@@ -1,0 +1,149 @@
+<%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@ page import="com.freshdirect.customer.ErpShippingInfo" %>
+<%@ page import="com.freshdirect.crm.CrmLateIssueModel,com.freshdirect.crm.CrmManager" %>
+<%-- THIS FILE DEPENDS ON THE FOLLOWING VARIABLES:
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	- FDOrderI order
+	- ErpAddressModel dlvAddress
+	- ErpPaymentMethodI paymentMethod
+	- boolean showPaymentButtons
+	- boolean showAddressButtons
+	- boolean showDeleteButtons
+--%>
+<%-- ~~~~~~~~~~~~~~~~~~~~~~~ BEGIN DELIVERY & PAYMENT INFO SECTION ~~~~~~~~~~~~~~~~~~~~~~~ --%>
+<%	
+	String fmtDlvDate = CCFormatter.formatDeliveryDate( order.getDeliveryReservation().getStartTime() );
+	String fmtDlvTime = CCFormatter.formatDeliveryTime( order.getDeliveryReservation().getStartTime() ) + " - " + CCFormatter.formatDeliveryTime( order.getDeliveryReservation().getEndTime() );
+	CrmLateIssueModel lateIssue = (order instanceof FDOrderI) ? CrmManager.getInstance().getRecentLateIssueForOrder(((FDOrderI)order).getErpSalesId()) : null;
+	if (lateIssue!=null) {
+%>
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="order_detail" style="padding: 1px;">
+	<tr class="inactive">
+		<td class="error">Late Report: <%=lateIssue.getDelayMinutes()%> minutes, <%=lateIssue.getComments()%></td>
+		</tr>
+	</table>
+
+<%  }  %>
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="order_detail" style="padding: 1px;">
+	<tr class="inactive">
+		<td width="22%">DELIVERY TIME</td>
+		<td width="38%">DELIVERY ADDRESS</td>
+		<td width="40%">PAYMENT INFORMATION</td>
+	</tr>
+	<tr valign="top">
+		<td style="padding-left: 8px;">
+			<%= fmtDlvDate %><br>
+			<%= fmtDlvTime %><br>
+			<div style="padding:5px;"></div>
+			<% if(order instanceof FDOrderI){
+				FDOrderI _order = (FDOrderI)order;
+				ErpShippingInfo shippingInfo = _order.getShippingInfo();
+			%>
+					<b>Web Id</b>: <%=_order.getErpSalesId()%><br>
+					<b>SAP Id</b>: <%=_order.getSapOrderId()%><br>
+					<br>
+				<% if (shippingInfo != null) { %>
+					<b>Wave Number</b>: <%= shippingInfo.getWaveNumber() %><br>
+					<b>Truck Number</b>: <%= shippingInfo.getTruckNumber() %><br>
+					<b>Stop Sequence</b>: <%= shippingInfo.getStopSequence()%><br>
+				<% } %>
+				<% if ( (_order.getCartonContents() != null) &&  (_order.getCartonContents().size() > 0) ){ %>
+					<br>
+					<a href="javascript:pop('/main/carton_contents_view.jsp?orderId=<%= orderId %>&scroll=yes','600','800');">Carton Contents</a>
+					</br>
+				<% } %>
+				<% if (_order.hasInvoice()) {%>
+					<div style="padding:5px;"></div>
+					<i>Components:</i><br>
+					<b>Regular Carton<%=shippingInfo.getRegularCartons() > 1 ? "s" : ""%></b>: <%= shippingInfo.getRegularCartons()%><br>
+					<b>Freezer Carton<%=shippingInfo.getFreezerCartons() > 1 ? "s" : ""%></b>: <%= shippingInfo.getFreezerCartons()%><br>
+					<b>Regular Carton<%=shippingInfo.getAlcoholCartons() > 1 ? "s" : ""%> Containing Alcohol</b>: <%= shippingInfo.getAlcoholCartons()%><br>
+				<%	if (_order.hasRedelivery()) { %>
+						<b>REDELIVERY</b>
+						<br>
+						<%= CCFormatter.formatDeliveryDate(_order.getRedeliveryStartTime())%><br>
+						<%= CCFormatter.formatDeliveryTime(_order.getRedeliveryStartTime()) + " - " + CCFormatter.formatDeliveryTime(_order.getRedeliveryEndTime())%><br>
+				<%	}
+				} 
+			}%>
+		</td>
+		<td>
+			<%@ include file="/includes/i_delivery_address_select.jspf"%>
+		</td>
+		<td>
+			<table width="100%" cellpadding="0" cellspacing="0" border="0" class="order_detail" style="padding: 1px;">
+				<tr>
+					<td width="35%">Payment Method</td>
+					<td width="65%"><%= paymentMethod.getPaymentMethodType() %></td>
+				</tr>
+				<tr>
+					<td>Name on account&nbsp;&nbsp;</td>
+					<td><%= paymentMethod.getName() %></td>
+				</tr>
+				<% if (paymentMethod.getCardType() != null) { %>
+				<tr>
+					<td>Card Type&nbsp;&nbsp;</td>
+					<td><%= paymentMethod.getCardType() %></td>
+				</tr>
+				<% } %>
+				<tr>
+					<td>Account Number&nbsp;&nbsp;</td>
+					<td><%= PaymentMethodUtil.getDisplayableAccountNumber(paymentMethod) %></td>
+				</tr>
+				<% if (paymentMethod.getAbaRouteNumber() != null) { %>
+				<tr>
+					<td>ABA Route Number&nbsp;&nbsp;</td>
+					<td><%= paymentMethod.getAbaRouteNumber() %></td>
+				</tr>
+				<% } %>
+				<% if (paymentMethod.getBankAccountType() != null) { %>
+				<tr>
+					<td>Bank Account Type&nbsp;&nbsp;</td>
+					<td><%= paymentMethod.getBankAccountType() %></td>
+				</tr>
+				<% } %>
+				<% if (paymentMethod.getExpirationDate() != null) { %>
+				<tr>
+					<td>Expires&nbsp;&nbsp;</td>
+					<td><%= CCFormatter.formatCreditCardExpDate( paymentMethod.getExpirationDate() ) %></td>
+				</tr>
+				<% } %>
+				<% if (!EnumPaymentType.REGULAR.equals(paymentMethod.getPaymentType())) {
+					%>
+					<tr><td colspan="2">&nbsp;</td></tr>
+					<tr>
+						<td><b>Payment</b></td>
+						<td style="color: red; font-weight: bold;"><%= paymentMethod.getPaymentType().getDescription() %></td>
+					</tr>
+					<tr>
+						<td>Referenced order</td>
+						<td><%= paymentMethod.getReferencedOrder() %></td>
+					</tr>
+					<%
+				}
+				%>
+				<tr><td colspan="2">&nbsp;</td></tr>
+				<tr valign="top">
+					<td>Billing address</td>
+					<td><%=paymentMethod.getAddress1()%>&nbsp;Apt. <%=paymentMethod.getApartment()%>
+                                    <%if(paymentMethod.getAddress2() != null && !"".equalsIgnoreCase(paymentMethod.getAddress2())){%>
+                                        <br><%=paymentMethod.getAddress2()%><%}%><br><%=paymentMethod.getCity()%>,&nbsp;<%=paymentMethod.getState()%>&nbsp;<%=paymentMethod.getZipCode()%></td>
+				</tr>
+				<tr>
+					<td>Billing Reference&nbsp;&nbsp;</td>
+					<td><%= paymentMethod.getBillingRef() != null && !"".equals(paymentMethod.getBillingRef()) ? paymentMethod.getBillingRef() : "<i>---</i>" %></td>
+				</tr>
+<%	if (showPaymentButtons) { %>
+				<tr>
+					<td>&nbsp;&nbsp;</td>
+					<td><br><A HREF="/checkout/checkout_select_payment.jsp" class="edit">EDIT</A></td>
+				</tr>
+<%	} %>
+			<tr><td colspan="2">&nbsp;</td></tr>
+			<tr><td colspan="2"><b>Note: Under no circumstance should payment method information be read to customer. If customer provides correct information to you it may be confirmed or denied.</b>
+			</td></tr>
+			</table>
+		</td>
+	</tr>
+</table>
+<%-- ~~~~~~~~~~~~~~~~~~~~~~~ END DELIVERY & PAYMENT INFO SECTION ~~~~~~~~~~~~~~~~~~~~~~~ --%>

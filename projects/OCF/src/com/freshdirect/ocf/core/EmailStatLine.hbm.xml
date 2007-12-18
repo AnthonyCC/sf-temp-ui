@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+   "-//Hibernate/Hibernate Mapping DTD//EN"
+   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.freshdirect.ocf.core" schema="cust">
+
+	<class name="EmailStatLine" table="OCF_EMAIL_STATS" >
+		<cache usage="nonstrict-read-write" />
+		
+		<composite-id>
+			<key-property name="mailingId" column="MAILING_ID" length="16"/>
+			<key-property name="customerId" column="CUSTOMER_ID" length="16"/>
+		</composite-id>
+		
+		<property name="openCount" column="OPEN_COUNT"/>
+		<property name="clickstreamCount" column="CLICKSTREAM_COUNT"/>
+		<property name="clickthruCount" column="CLICKTHRU_COUNT"/>
+		<property name="conversionCount" column="CONVERSION_COUNT"/>
+		<property name="attachmentCount" column="ATTACHMENT_COUNT"/>
+		<property name="forwardCount" column="FORWARD_COUNT"/>
+		<property name="mediaCount" column="MEDIA_COUNT"/>
+		<property name="bounceCount" column="BOUNCE_COUNT"/>
+		<property name="optoutCount" column="OPTOUT_COUNT"/>
+		<property name="optinCount" column="OPTIN_COUNT"/>
+		<property name="abuseCount" column="ABUSE_COUNT"/>
+		<property name="changeAddressCount" column="CHANGE_ADDRESS_COUNT"/>
+		<property name="blockedCount" column="BLOCKED_COUNT"/>
+		<property name="restrictedCount" column="RESTRICTED_COUNT"/>
+		<property name="otherReplyCount" column="OTHER_REPLY_COUNT"/>
+		<property name="suppressionCount" column="SUPPRESSION_COUNT"/>
+		
+	</class>
+	
+</hibernate-mapping>

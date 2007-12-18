@@ -1,0 +1,2 @@
+<div align="center"><b><font class="text12" color="#CC0000">WE'RE SORRY, ALL DELIVERY SLOTS ARE FULL</font></b><br>
+Due to overwhelming demand, there are no more openings for your selected location this week.<br>Orders may be placed up to seven days in advance or you can order now for delivery to a different location.<br><br><a href="<%=response.encodeURL("/view_cart.jsp?trk=chkplc")%>"><img src="/media_stat/images/template/checkout/slotsfull_savecart.gif" width="166" height="38" border="0"></a><br><br><br></div>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE page-specification PUBLIC
+  "-//Apache Software Foundation//Tapestry Specification 3.0//EN"
+  "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<page-specification class="com.freshdirect.listadmin.ui.page.Start">
+  <description>add a description</description>
+
+  <component id="form" type="Form">
+  </component>
+
+  <component id="availableClasses" type="Foreach">
+    <binding name="source" expression="availableClasses"/>
+  </component>
+
+  <component id="name" type="InsertText">
+    <binding name="value" expression="components.availableClasses.value"/>
+  </component>
+
+  <component id="availableQueries" type="Foreach">
+    <binding name="source" expression="availableQueries"/>
+  </component>
+
+  <component id="availableStoredQueries" type="Foreach">
+    <binding name="source" expression="availableStoredQueries"/>
+  </component>
+
+</page-specification>

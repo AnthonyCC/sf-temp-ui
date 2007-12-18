@@ -1,0 +1,171 @@
+<%@ page import='java.util.*'%>
+
+<% 
+ArrayList developers = new ArrayList();
+
+/** ENTRIES **
+- FD cartoon character
+- Name (title)
+- Favorite FD Product:
+- Favorite FD Moment:
+- Favorite FD Quote:
+- Favorite Thing About FD:
+- Photo
+*/
+
+String[] mike_rose =	{"<img src=\"/media_stat/images/template/about/app_dev_ch_mike.gif\" width=\"197\" height=\"216\" alt=\"I see the matrix..\" border=\"0\">",
+						"<b>Mike Rose</b> (Architectimus Maximus)", 
+						"<a href=\"/product.jsp?productId=snt_china_rose&catId=snt_tea\">Coungou Rose Petal</a>", 
+						"Seeing backend code perform 100x faster after rewrite.",
+						"\"Bye bye, Blue Martini.\"",
+						"Flexible working hours.",
+						"<img src=\"/media_stat/images/template/about/app_dev_mike.jpg\" width=\"134\" height=\"150\" alt=\"Uhh, what?\" border=\"0\">"
+						};
+
+String[] viktor_szathmary = 	{"<img src=\"/media_stat/images/template/about/app_dev_ch_viktor.gif\" width=\"95\" height=\"204\" alt=\"Yess, I'm the patch master..\" border=\"0\">",
+								"<b>Viktor Szathmary</b> (EJB Evangelist)", 
+								"<a href=\"/product.jsp?productId=prblk_suck&catId=prblk\">Suckling Pig</a>", 
+								"JSP optimizations.",
+								"\"We'll just throw some more hardware at it.\"",
+								"The \"can do\" attitude of the SAP folks.",
+								"<img src=\"/media_stat/images/template/about/app_dev_viktor.jpg\" width=\"97\" height=\"150\" alt=\"I said Viktor, not Victor!\" border=\"0\">"
+								};
+								
+String[] kashif_nadeem =	{"<span class=\"text12\"><b>Coming Soon...<br><br>;)</b></span>",
+							"<b>Kashif Nadeem</b> (Delivery Master)", 
+							"<a href=\"/product.jsp?productId=apl_breaburn&catId=apl\">Braeburn Apple</a>", 
+							"Rewriting our delivery system for the fifth time.",
+							"\"It'll just take a day or two to implement.\"",
+							"Working with our Creative Department.",
+							"<img src=\"/media_stat/images/template/about/app_dev_kashif.jpg\" width=\"113\" height=\"150\" border=\"0\" alt=\"What's up doc!!\">"
+							};
+							
+String[] robert_gayle =	{"<img src=\"/media_stat/images/template/about/app_dev_ch_rob.gif\" width=\"160\" height=\"199\" alt=\"Old, young, big-boned or skinny, I like 'em all.. have I told you about my moonlighting plans?\" border=\"0\">",
+						"<b>Robert Gayle</b> (JavaScript Guru)", 
+						"<a href=\"/product.jsp?productId=trp_cherimoya&catId=trp\">Cherimoya</a>", 
+						"Refactoring i_jspmethods into JspMethods.",
+						"\"Go ahead, ask Uncle Robert.\"",
+						"The relaxed atmosphere and friendly coworkers.",
+						"<img src=\"/media_stat/images/template/about/app_dev_rob.jpg\"  alt=\"Do you have any food?\" border=\"0\">"
+						};
+						
+String[] jeannice_angela =	{"<img src=\"/media_stat/images/template/about/app_dev_ch_jeannice.gif\" width=\"146\" height=\"178\" alt=\"What's wrong with pizza for breakfast?\" border=\"0\">",
+						"<b>Jeannice Angela</b> (Visual Doctor)", 
+						"<a href=\"/product.jsp?productId=nor_jarlsberg&catId=swissmtn\">Jarlsberg Swiss</a>", 
+						"..Because we've reached the scanner's limit, you no longer have to clock in/out.",
+						"\"I'm hungry..\"",
+						"Sporadic free good food.",
+						"<img src=\"/media_stat/images/template/about/app_dev_jeannice.jpg\" width=\"100\" height=\"125\" alt=\"Yes, it's natural..\" border=\"0\">"
+						};
+						
+String[] evan_kracoff =	{"<img src=\"/media_stat/images/template/about/app_dev_ch_evan.gif\" width=\"81\" height=\"217\" alt=\"Make it hot!\" border=\"0\">",
+						"<b>Evan Kracoff</b> (PMC Bricklayer)", 
+						"<a href=\"/category.jsp?catId=kosher_gro_beer&sortBy=name&showThumbnails=true&DisplayPerPage=30&sortDescending=false&disp=null&prodCatId=kosher_gro_beer&productId=beer_hebrew_mes_sxbt&trk=trans\">He\'Brew Messiah Bold</a>", 
+						"Lunch at sparks",
+						"\"Cause in the end, its all about penetration.\"",
+						"Irking Kashif.",
+						"<img src=\"/media_stat/images/template/about/app_dev_evan.jpg\" width=\"180\" height=\"177\" alt=\"visiting HC's cousin in San Fran...\" border=\"0\">"
+						};
+						
+String[] dave_gerridge =	{"<img src=\"/media_stat/images/template/about/app_dev_dave.jpg\" width=\"200\" height=\"150\" alt=\"Who said prison?\" border=\"0\">",
+							"<b>David Gerridge</b> (Project Impresario)", 
+							"<a href=\"/product.jsp?productId=spe_chatha_garlic_b_01&catId=gro_salad_crout\">Chatham Village Garlic & Butter Croutons</a>", 
+							"Joining the Web App group.",
+							"\"Gosh, I wonder what Bob had to tell me.\"",
+							"Projects finished on time, under budget.",
+							"<span class=\"text12\"><b>-> Business Development</b></span>"
+							};
+							
+String[] roberto_falck =	{"<img src=\"/media_stat/images/template/about/app_dev_roberto.jpg\" alt=\"Mind the hair...\" width=\"120\" height=\"150\" border=\"0\">",
+							"<b>Roberto Falck</b> (HTML Wrangler)", 
+							"<a href=\"/product.jsp?productId=fwhl_grper_whl&catId=fwhl\">Whole Grouper</a>", 
+							"Lying to Management.",
+							"\"Roberto, let's talk for a second.\"",
+							"Banana nut bread.",
+							"<span class=\"text12\"><b>-> 2002</b></span>"
+							};
+
+String[] jonathan_mccarter =	{"<img src=\"/media_stat/images/template/about/app_dev_jon.jpg\" width=\"124\" height=\"150\" alt=\"did anyone say: \"meat\"?\" border=\"0\">",
+								"<b>Jonathan McCarter</b> (Subcomandante for Customer Service)", 
+								"<a href=\"/product.jsp?productId=br_strwbrry_lngstm&catId=br\">Long-Stem Strawberries</a>", 
+								"Launch.",
+								"\"Happy Secretary's Day.\"",
+								"Pastry tastings.",
+								"<span class=\"text12\"><b>-> 2002</b></span>"
+								};
+						
+developers.add(mike_rose);
+developers.add(viktor_szathmary);
+developers.add(kashif_nadeem);
+developers.add(robert_gayle);
+developers.add(jeannice_angela);
+developers.add(evan_kracoff);
+
+developers.add(dave_gerridge);
+developers.add(roberto_falck);
+developers.add(jonathan_mccarter);
+%>
+<br>
+<div align="center"><font class="title18">Meet the FreshDirect Web Team</font><br></div>
+<font class="space4pix"><br></font>
+<table border="0" cellpadding="0" cellspacing="0" bgcolor="#ffffff" width="670">
+<tr bgcolor="#cccccc"><td><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0" alt=""></td></tr>
+</table>
+<br>
+<br>
+<% 
+for (int i = 0; i < developers.size(); i++) { 
+	String[] thisDeveloper = (String[]) developers.get(i);
+%>
+
+	<table border="0" cellpadding="1" cellspacing="1" width="670">
+				<tr>
+					<td width="200" align="center"><%=thisDeveloper[0]%></td>
+					<td width="325" valign="top">
+						<table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#E0E3D0">
+							<tr>
+								<td width="10"><img src="/media_stat/images/layout/clear.gif" width="10" height="18" border="0" alt=""></td>
+								<td class="text12"><%=thisDeveloper[1]%></td>
+							</tr>
+							<tr><td colspan="2" bgcolor="#ffffff"><img src="/media_stat/images/layout/cccccc.gif" width="100%" height="1" border="0"></td></tr>
+							<tr><td colspan="2" bgcolor="#ffffff"><span class="space4pix"><br></span></td></tr>
+						</table>
+						<table border="0" cellpadding="1" cellspacing="1" bgcolor="#ffffff" width="100%">
+							<tr valign="top">
+								<td colspan="2"><b>Favorite FD Product:</b></td>
+							</tr>
+							<tr valign="top">
+								<td width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" border="0" alt=""></td>
+								<td><%=thisDeveloper[2]%><br><span class="space4pix"><br></span></td>
+							</tr>
+							<tr valign="top">
+								<td colspan="2"><b>Favorite FD Moment:</b></td>
+							</tr>
+							<tr valign="top">
+								<td width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" border="0" alt=""></td>
+								<td><%=thisDeveloper[3]%><br><span class="space4pix"><br></span></td>
+							</tr>
+							<tr valign="top">
+								<td colspan="2"><b>Favorite FD Quote:</b></td>
+							</tr>
+							<tr valign="top">
+								<td width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" border="0" alt=""></td>
+								<td><%=thisDeveloper[4]%><br><span class="space4pix"><br></span></td>
+							</tr>
+							<tr valign="top">
+								<td colspan="2"><b>Favorite Thing About FD:</b></td>
+							</tr>
+							<tr valign="top">
+								<td width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" border="0" alt=""></td>
+								<td><%=thisDeveloper[5]%><br><span class="space4pix"><br></span></td>
+							</tr>
+						</table>
+					</td>
+					<td width="145" align="center"><%=thisDeveloper[6]%></td>
+				</tr>
+			</table>
+			<br>
+			<br>
+			<br>
+			<br>
+<% } %>

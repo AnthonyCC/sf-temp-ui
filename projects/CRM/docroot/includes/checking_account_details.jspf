@@ -1,0 +1,285 @@
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.PaymentMethodName"%>
+<%@ page import="com.freshdirect.common.customer.EnumCardType"%>
+<%@ page import="java.util.Calendar"%>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.AddressName"%>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.PaymentMethodUtil"%>
+<%@ page import="com.freshdirect.customer.ErpPaymentMethodI"%>
+<%@ page import="com.freshdirect.customer.ErpPaymentMethodModel"%>
+<%@ page import="java.util.Date"%>
+<%@ page import="com.freshdirect.customer.ErpAddressModel"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCustomerFactory"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCustomerManager"%>
+<%@ page import="import com.freshdirect.fdstore.customer.FDCustomerModel"%>
+<%@ page import="com.freshdirect.payment.*"%>
+<%@ page import='com.freshdirect.framework.webapp.*' %>
+
+<%@ taglib uri="template" prefix="tmpl" %>
+<%@ page import="com.freshdirect.customer.ErpCustomerInfoModel"%>
+<%@ taglib uri="logic" prefix="logic" %>
+<%@ taglib uri="crm" prefix="crm" %>
+<%@ taglib uri="freshdirect" prefix="fd" %>
+
+<%!
+String[] checkPaymentMethodForm = {PaymentMethodName.ACCOUNT_HOLDER, PaymentMethodName.ABA_ROUTE_NUMBER, 
+														PaymentMethodName.ACCOUNT_NUMBER, PaymentMethodName.ACCOUNT_NUMBER_VERIFY, 
+														PaymentMethodName.BANK_ACCOUNT_TYPE, EnumUserInfoName.BIL_ADDRESS_1.getCode(), 
+														EnumUserInfoName.BIL_CITY.getCode(), EnumUserInfoName.BIL_STATE.getCode(), 
+														EnumUserInfoName.BIL_ZIPCODE.getCode(), EnumUserInfoName.BIL_APARTMENT.getCode(), 
+														PaymentMethodName.TERMS};
+String[] checkErrorType = {"technical_difficulty", "payment_method_fraud"};
+%>
+
+<%
+String pageURI = request.getRequestURI(); 
+boolean isNew = pageURI.indexOf("new_checking_account") > -1 || pageURI.indexOf("checkout_new_checkacct") > -1;
+boolean inCheckout = pageURI.indexOf("checkout") > -1;
+String returnPage = request.getParameter("returnPage");
+String cancelLink = "/main/account_details.jsp";
+if (returnPage != null) {
+	cancelLink = returnPage;
+} else if (inCheckout) {
+	cancelLink = "/checkout/checkout_select_payment.jsp";
+}
+
+//dump out the results collection
+java.util.Collection resultErrors = result.getErrors();
+for(Iterator rItr = resultErrors.iterator();rItr.hasNext();) {
+    ActionError x = (ActionError)rItr.next();
+}
+
+ErpAddressModel defaultAddress = null;
+Collection addresses = FDCustomerManager.getShipToAddresses(user.getIdentity());
+
+String paymentMethodType = EnumPaymentMethodType.ECHECK.getName();
+
+boolean isDisplayTerms = true;
+
+//java.util.Collection paymentMethods = FDCustomerManager.getPaymentMethods(user.getIdentity());
+
+//
+//   EChecks terms only needs to be displayed when adding the first Echeck account
+//
+if(PaymentMethodUtil.hasECheckAccount(user.getIdentity())) {
+	isDisplayTerms = false;
+}
+
+String ccAccountNumber = (paymentMethod.getAccountNumber() != null && !"".equals(paymentMethod.getAccountNumber())) ? paymentMethod.getMaskedAccountNumber() : "";
+if (request.getParameter(PaymentMethodName.ACCOUNT_NUMBER) != null) {
+	ccAccountNumber = request.getParameter(PaymentMethodName.ACCOUNT_NUMBER);
+}
+
+String ccAccountNumberVerify = request.getParameter(PaymentMethodName.ACCOUNT_NUMBER_VERIFY);
+
+%>
+<crm:GetErpCustomer id="customer" user="<%= user %>">
+<% ErpCustomerInfoModel custInfo = customer.getCustomerInfo(); %>
+	<logic:iterate id="address" collection="<%=addresses%>" type="com.freshdirect.customer.ErpAddressModel" indexId="idx">
+		<% if (idx.intValue() == 0) {
+			defaultAddress = address;
+			continue;
+		}%>
+	</logic:iterate>
+
+		<script language="JavaScript" type="text/javascript">
+			function useDefaultName(formObj, formElement) {
+				flipBoolean(formElement);
+				if (formElement.value == "true") {
+						formObj.<%=PaymentMethodName.ACCOUNT_HOLDER%>.value = "<%= custInfo.getFirstName() %> <%= custInfo.getMiddleName() %> <%= custInfo.getLastName() %>";
+				} else {
+					formObj.checkingAccountName.value = "";
+				}
+			}
+			
+			function useDefaultAddress(formObj, formElement) {
+				flipBoolean(formElement);
+				if (formElement.value == "true") {
+						<% if (defaultAddress!=null) {	%>
+						formObj.<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>.value = "<%= defaultAddress.getAddress1() %>";
+						formObj.<%=EnumUserInfoName.BIL_ADDRESS_2.getCode()%>.value = "<%= defaultAddress.getAddress2() %>";
+						formObj.<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>.value = "<%= defaultAddress.getApartment() %>";
+						formObj.<%=EnumUserInfoName.BIL_CITY.getCode()%>.value = "<%= defaultAddress.getCity() %>";
+						formObj.<%=EnumUserInfoName.BIL_STATE.getCode()%>.value = "<%= defaultAddress.getState() %>";
+						formObj.<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>.value = "<%= defaultAddress.getZipCode() %>";
+						<% } %>
+				} else {
+					formObj.<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>.value = "";
+					formObj.<%=EnumUserInfoName.BIL_ADDRESS_2.getCode()%>.value = "";
+					formObj.<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>.value = "";
+					formObj.<%=EnumUserInfoName.BIL_CITY.getCode()%>.value = "";
+					formObj.<%=EnumUserInfoName.BIL_STATE.getCode()%>.value = "";
+					formObj.<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>.value = "";
+				}
+			}
+		</script>
+<crm:GetCurrentAgent id="agent">
+	<div class="cust_module">
+	<form name="checking_account" method="POST">
+		<table width="100%" cellpadding="0" cellspacing="0" class="cust_module_header">
+			<tr>
+				<td width="20%" class="cust_module_header_text"><%= isNew ? "New" : "Edit" %> Checking Account</td>
+				<td width="60%" align="center"><a href="<%=cancelLink%>" class="cancel">CANCEL</a>&nbsp;&nbsp;<a href="javascript:document.checking_account.submit();" class="save">SAVE</a></td>
+				<td width="20%" align="right" class="note">* Required</td>
+			</tr>
+		</table>
+	<div class="cust_module_content">
+	<table width="100%"><tr valign="top"><td width="50%">
+		<table cellpadding="3" cellspacing="5" class="cust_module_text" align="center">
+			<% if (isNew) { %><tr><td></td><td><input type="checkbox" name="use_default_name" onClick="useDefaultName(document.checking_account, document.checking_account.use_default_name)" value="false"> Use customer name?</td>
+			</tr><% } %>
+			<tr>
+				<td width="30%" align="right">Name on account:</td>
+				<td width="70%"><input type="text" class="input_text" style="width: 200px;" name="<%=PaymentMethodName.ACCOUNT_HOLDER%>" value="<%=paymentMethod.getName()%>"><fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.ACCOUNT_HOLDER%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+			</tr>
+			<tr valign="top">
+				<td width="30%" align="right">Account type:</td>
+				<td width="70%">
+				<%
+		Iterator iter = EnumBankAccountType.iterator();
+		while (iter.hasNext()) {
+			EnumBankAccountType bankAccountType = (EnumBankAccountType) iter.next();
+%>
+		<input type="radio" name="<%=PaymentMethodName.BANK_ACCOUNT_TYPE%>" value="<%=bankAccountType.getName()%>" <%=(bankAccountType.equals(paymentMethod.getBankAccountType())) ? "CHECKED" : ""%>><%=bankAccountType.getDescription()%><br>
+<% } %>
+	<fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.BANK_ACCOUNT_TYPE%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+
+			</tr>
+			<tr>
+			<% String[] checkAcctNumber = {PaymentMethodName.ACCOUNT_NUMBER, "payment_method_fraud"}; %>
+				<td align="right">Account number:</td>
+				<td><input type="text" class="input_text" style="width: 200px;" maxLength= "25" name="<%=PaymentMethodName.ACCOUNT_NUMBER%>" value="<%=ccAccountNumber%>"><fd:ErrorHandler result="<%=result%>" field="<%= checkAcctNumber %>" id='errorMsg'> <span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
+			</tr>
+			<tr>
+				<td align="right">Verify Account Number:</td>
+				<td><input type="text" class="input_text" style="width: 200px;"  maxLength= "25"  name="<%=PaymentMethodName.ACCOUNT_NUMBER_VERIFY%>" value="<%=ccAccountNumberVerify%>"><fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.ACCOUNT_NUMBER_VERIFY%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+			</tr>
+			<tr>
+				<td align="right">Routing Number:</td>
+				<td><input type="text" class="input_text" style="width: 150px;" name="<%=PaymentMethodName.ABA_ROUTE_NUMBER%>" value="<%=paymentMethod.getAbaRouteNumber()%>"><fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.ABA_ROUTE_NUMBER%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+			</tr>
+			<tr>
+				<td align="right">Bank name:</td>
+				<td><input type="text" class="input_text" style="width: 150px;" name="<%=PaymentMethodName.BANK_NAME%>" value="<%=paymentMethod.getBankName()%>"><fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.BANK_NAME%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+			</tr>
+			<tr>
+				<td align="right"><b>Account Address:</b></td>
+				<td><% if (defaultAddress!=null) { %><input type="checkbox" name="use_default_address" onClick="useDefaultAddress(document.checking_account, document.checking_account.use_default_address)" value="false"> Use default address?<% } %></td>
+			</tr>
+			<tr>
+				<td align="right">* Address1:</td>
+				<td><input type="text" class="input_text" style="width: 250px;" name="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>" value="<%=paymentMethod.getAddress1()%>">&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+			</tr>
+			<tr>
+				<td align="right">Address2:</td>
+				<td><input type="text" class="input_text" style="width: 250px;" name="<%=EnumUserInfoName.BIL_ADDRESS_2.getCode()%>" value="<%=paymentMethod.getAddress2()%>">&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ADDRESS_2.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+			</tr>
+
+			<tr>
+				<td align="right">Apt/ Floor:</td>
+				<td><input type="text" class="input_text" style="width: 80px;" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>" value="<%=paymentMethod.getApartment()%>">&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>" id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+			</tr>
+			<tr>
+				<td align="right">* City:</td>
+				<td><input type="text" class="input_text" style="width: 150px;" name="<%=EnumUserInfoName.BIL_CITY.getCode()%>" value="<%=paymentMethod.getCity()%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_CITY.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+			</tr>
+			<tr>
+				<td align="right">* State:</td>
+				<td><input type="text" maxlength="2" class="input_text" style="width: 80px;" name="<%=EnumUserInfoName.BIL_STATE.getCode()%>" value="<%=paymentMethod.getState()%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_STATE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+			</tr>
+			<tr>
+				<td align="right">* Zip:</td>
+				<td><input type="text" maxlength="5" class="input_text" style="width: 80px;" name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>" value="<%=paymentMethod.getZipCode()%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+			</tr>
+		</table><br>
+	</td><td  width="50%" style="border-left: solid 1px #999999; padding-left: 20px;">
+		
+		<table width="80%" cellpadding="3" cellspacing="5" class="cust_module_text">
+			<% if (isNew) { 
+				if (isDisplayTerms) {%>
+				<tr><td colspan="4">				
+				Addition of this method upon registration is limited to:<br>
+						- Corporate customers<br>
+						- VIP/Special Interest customers<br>
+						<textarea rows="10" style="width: 350px; margin-top: 8px; margin-bottom: 8px;" wrap="virtual"><%@ include file="/includes/registration/checkacct_terms.txt" %></textarea>
+						<br>
+						<input type="checkbox" name="<%=PaymentMethodName.TERMS%>" value="yes"> <b>I have read these terms clearly to the customer and<br>customer has verbally agreed to them.</b><span class="space4pix"><br><br></span>
+						<fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.TERMS%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+			</td></tr>
+			<% 	} else { // not isDisplayTerms %>
+						<input type="hidden" name="<%=PaymentMethodName.TERMS%>" value="yes">			
+			<% 	} %>
+		<%	} else { // IS NOT NEW %>
+			<input type="hidden" name="<%=PaymentMethodName.TERMS%>" value="yes">
+		<crm:CrmGetRestrictedPaymentMethod id="restrictedPaymentMethodModel" abaRouteNumber="<%=paymentMethod.getAbaRouteNumber()%>" accountNumber="<%=paymentMethod.getAccountNumber()%>" bankAccountType="<%=paymentMethod.getBankAccountType().getName()%>">
+			<% 			
+			if (restrictedPaymentMethodModel == null || restrictedPaymentMethodModel.getId() == null) {
+			%>
+			<tr>
+				<td>Status:</td>
+				<td colspan="3">In good standing</td>
+			</tr>
+			<tr>
+				<td>Since:</td>
+				<td colspan="3">Payment Method Added</td>
+			</tr>
+				<% if (agent.isSupervisor()) { %>
+				<tr><td colspan="4"><hr class="gray1px"></td></tr>
+				<tr><td></td><td colspan="3"><a href="javascript:pop('/supervisor/add_bad_account.jsp?account_number=<%=paymentMethod.getAccountNumber()%>&aba_route_number=<%=paymentMethod.getAbaRouteNumber()%>&bank_account_type=<%=paymentMethod.getBankAccountType().getName()%>&first_name=<%=custInfo.getFirstName()%>&last_name=<%=custInfo.getLastName()%>', 280, 700);" class="order_modify_cancel">ADD TO BAD ACCOUNT</a></td></tr>
+				<% }  // if isSupervisor %>
+			<% 
+			} else { // in bad account list 
+			%>
+				
+				<%-- if is in bad account status --%>
+				<tr>
+				<td>Status:</td>
+				<td class="error" colspan="3">Listed in Bad Account</td>
+			</tr>
+			<tr>
+				<td>Date:</td>
+				<% 
+				Date date = (restrictedPaymentMethodModel.getLastModifyDate() != null) ? restrictedPaymentMethodModel.getLastModifyDate() : restrictedPaymentMethodModel.getCreateDate();
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(date);
+				String calStr = cal.get(Calendar.MONTH) + "." + cal.get(Calendar.DAY_OF_MONTH) + "." + cal.get(Calendar.YEAR);
+				String agentName = (restrictedPaymentMethodModel.getLastModifyUser() != null) ? restrictedPaymentMethodModel.getLastModifyUser() : restrictedPaymentMethodModel.getCreateUser();
+				%>
+				<td><%=calStr%></td>
+				<td align="right">By:&nbsp;</td>
+				<td><%=agentName%></td>
+			</tr>
+				<tr>
+				<td>Reason:</td>
+				<td colspan="3"><%=restrictedPaymentMethodModel.getReason().getDescription()%></td>
+				</tr>
+				<% if (agent.isSupervisor()) { %>
+				<tr><td></td><td colspan="3"><a href="javascript:pop('/supervisor/remove_bad_account.jsp?restrict_payment_method_id=<%=restrictedPaymentMethodModel.getId()%>', 350, 500);" class="order_modify_proceed">REMOVE FROM BAD ACCOUNT</a></td></tr>
+				<% } %>
+			<% } %>
+			</crm:CrmGetRestrictedPaymentMethod>
+			<% } %>
+			
+			<%--error message---%>
+			<fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.BYPASS_BAD_ACCOUNT_CHECK%>' id='errorMsg'>
+			<tr><td colspan="4" style="border: solid 1px #CC0000; padding: 5px;"><span  class="error">ALERT: Account is bad<br></span>
+			<%--possible messages--%>
+			<span class="error_detail">Our system has determined this account to be fraudulent. It has been added to the bad account database.</span>
+			<br>
+			<span class="error_detail">This account matches an entry in our bad accounts database. Verify with customer that information is accurate, and alert Supervisor when deemed necessary.</span>
+			<br>
+			<% if (agent.isSupervisor()) { %>
+			<hr class="gray1px">
+			<input type="checkbox" name="bypassBadAccountCheck"> Bypass bad account check on next submission to force add/ update this payment information.
+			<%}%>
+			</td></tr>
+			</fd:ErrorHandler>
+		</table><br>
+	</td></tr>
+	</table>
+	</div>
+	<input type="hidden" name="<%=PaymentMethodName.PAYMENT_METHOD_TYPE%>" value="<%=paymentMethodType%>">
+	</form>
+	</div>
+</crm:GetCurrentAgent>
+</crm:GetErpCustomer>
+
+

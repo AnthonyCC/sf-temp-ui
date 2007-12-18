@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="src" path="/OCF"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/myworkspace-0.2.jar"/>
+	<classpathentry kind="lib" path="C:/FreshDirect/lib/thirdparty/tapestry-4.0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/FreshDirect/lib/thirdparty/spring.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/FreshDirect/lib/thirdparty/log4j.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/FreshDirect/lib/thirdparty/jstl.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/FreshDirect/lib/thirdparty/standard.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/FreshDirect/lib/thirdparty/poi-3.0-rc4-20070503.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Delivery"/>
+	<classpathentry kind="output" path="docroot/WEB-INF/classes"/>
+</classpath>

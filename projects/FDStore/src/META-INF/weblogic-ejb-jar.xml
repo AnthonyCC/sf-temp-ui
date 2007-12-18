@@ -1,0 +1,312 @@
+<?xml version="1.0"?>
+<!DOCTYPE weblogic-ejb-jar PUBLIC '-//BEA Systems, Inc.//DTD WebLogic 6.0.0 EJB//EN' 'http://www.bea.com/servers/wls600/dtd/weblogic-ejb-jar.dtd'>
+
+<weblogic-ejb-jar>
+
+	<weblogic-enterprise-bean>
+		<ejb-name>InventoryWarmup</ejb-name>
+		<stateless-session-descriptor>
+	        <pool>
+				<max-beans-in-free-pool>10</max-beans-in-free-pool>
+				<initial-beans-in-free-pool>1</initial-beans-in-free-pool>
+	        </pool>
+
+			<stateless-clustering>
+			</stateless-clustering>
+
+		</stateless-session-descriptor>
+
+		<transaction-descriptor>
+		</transaction-descriptor>
+
+		<reference-descriptor>
+			<resource-description>
+				<res-ref-name>jdbc/dbpool</res-ref-name>
+				<jndi-name>fddatasource</jndi-name>
+			</resource-description>
+			<ejb-reference-description>
+				<ejb-ref-name>ejb/FDCustomerManager</ejb-ref-name>
+				<jndi-name>freshdirect.fdstore.CustomerManager</jndi-name>
+			</ejb-reference-description>
+		</reference-descriptor>
+
+		<jndi-name>freshdirect.fdstore.InventoryWarmup</jndi-name>
+	</weblogic-enterprise-bean>
+
+	<weblogic-enterprise-bean>
+		<ejb-name>FDCustomerManager</ejb-name>
+		<stateless-session-descriptor>
+	        <pool>
+				<max-beans-in-free-pool>50</max-beans-in-free-pool>
+				<initial-beans-in-free-pool>10</initial-beans-in-free-pool>
+	        </pool>
+
+			<stateless-clustering>
+			</stateless-clustering>
+
+		</stateless-session-descriptor>
+
+		<transaction-descriptor>
+		</transaction-descriptor>
+
+		<reference-descriptor>
+			<resource-description>
+				<res-ref-name>jdbc/dbpool</res-ref-name>
+				<jndi-name>fddatasource</jndi-name>
+			</resource-description>
+			<ejb-reference-description>
+				<ejb-ref-name>ejb/ErpCustomer</ejb-ref-name>
+				<jndi-name>freshdirect.erp.Customer</jndi-name>
+			</ejb-reference-description>
+			<ejb-reference-description>
+				<ejb-ref-name>ejb/FraudManager</ejb-ref-name>
+				<jndi-name>freshdirect.fraud.prevention</jndi-name>
+			</ejb-reference-description>
+			<ejb-reference-description>
+				<ejb-ref-name>ejb/FDCustomer</ejb-ref-name>
+				<jndi-name>freshdirect.fdstore.Customer</jndi-name>
+			</ejb-reference-description>
+			<ejb-reference-description>
+				<ejb-ref-name>ejb/DlvManager</ejb-ref-name>
+				<jndi-name>freshdirect.delivery.DeliveryManager</jndi-name>
+			</ejb-reference-description>
+			<ejb-reference-description>
+				<ejb-ref-name>ejb/CrmManager</ejb-ref-name>
+				<jndi-name>freshdirect.crm.Manager</jndi-name>
+			</ejb-reference-description>
+			<ejb-reference-description>
+				<ejb-ref-name>ejb/AdServerGateway</ejb-ref-name>
+				<jndi-name>freshdirect.fdstore.AdServerGateway</jndi-name>
+			</ejb-reference-description>                        
+			<ejb-reference-description>
+				<ejb-ref-name>ejb/PaymentManager</ejb-ref-name>
+				<jndi-name>freshdirect.payment.PaymentManager</jndi-name>
+			</ejb-reference-description>      
+			<ejb-reference-description>
+				<ejb-ref-name>ejb/DlvPassManager</ejb-ref-name>
+				<jndi-name>freshdirect.erp.DlvPassManager</jndi-name>
+			</ejb-reference-description>			                  
+		</reference-descriptor>
+
+		<jndi-name>freshdirect.fdstore.CustomerManager</jndi-name>
+	</weblogic-enterprise-bean>
+
+	<weblogic-enterprise-bean>
+		<ejb-name>FDListManager</ejb-name>
+		<stateless-session-descriptor>
+	        <pool>
+				<max-beans-in-free-pool>50</max-beans-in-free-pool>
+				<initial-beans-in-free-pool>10</initial-beans-in-free-pool>
+	        </pool>
+
+			<stateless-clustering>
+			</stateless-clustering>
+
+		</stateless-session-descriptor>
+
+		<transaction-descriptor>
+		</transaction-descriptor>
+
+		<reference-descriptor>
+			<resource-description>
+				<res-ref-name>jdbc/dbpool</res-ref-name>
+				<jndi-name>fddatasource</jndi-name>
+			</resource-description>
+		</reference-descriptor>
+
+		<jndi-name>freshdirect.fdstore.ListManager</jndi-name>
+	</weblogic-enterprise-bean>
+
+	<weblogic-enterprise-bean>
+		<ejb-name>CallCenterManager</ejb-name>
+		<stateless-session-descriptor>
+	        <pool>
+				<max-beans-in-free-pool>50</max-beans-in-free-pool>
+				<initial-beans-in-free-pool>10</initial-beans-in-free-pool>
+	        </pool>
+
+			<stateless-clustering>
+			</stateless-clustering>
+
+		</stateless-session-descriptor>
+
+		<transaction-descriptor>
+		</transaction-descriptor>
+
+		<reference-descriptor>
+			<resource-description>
+				<res-ref-name>jdbc/dbpool</res-ref-name>
+				<jndi-name>fddatasource</jndi-name>
+			</resource-description>
+			<ejb-reference-description>
+				<ejb-ref-name>ejb/ComplaintManager</ejb-ref-name>
+				<jndi-name>freshdirect.erp.ComplaintManager</jndi-name>
+			</ejb-reference-description>
+			<ejb-reference-description>
+				<ejb-ref-name>ejb/DlvPassManager</ejb-ref-name>
+				<jndi-name>freshdirect.erp.DlvPassManager</jndi-name>
+			</ejb-reference-description>			                  
+		</reference-descriptor>
+
+		<jndi-name>freshdirect.fdstore.CallCenterManager</jndi-name>
+	</weblogic-enterprise-bean>
+
+	<weblogic-enterprise-bean>
+		<ejb-name>FDCustomer</ejb-name>
+		<entity-descriptor>
+			<pool>
+				<max-beans-in-free-pool>50</max-beans-in-free-pool>
+			</pool>
+
+			<entity-cache>
+				<concurrency-strategy>Database</concurrency-strategy>
+			</entity-cache>
+
+			<lifecycle>
+			</lifecycle>
+
+			<persistence>
+				<delay-updates-until-end-of-tx>True</delay-updates-until-end-of-tx>
+			</persistence>
+
+			<entity-clustering>
+			</entity-clustering>
+
+		</entity-descriptor>
+
+		<reference-descriptor>
+			<resource-description>
+				<res-ref-name>jdbc/dbpool</res-ref-name>
+				<jndi-name>fddatasource</jndi-name>
+			</resource-description>
+		</reference-descriptor>
+
+		<jndi-name>freshdirect.fdstore.Customer</jndi-name>
+	</weblogic-enterprise-bean>
+
+	
+	<weblogic-enterprise-bean>
+		<ejb-name>FDMonitor</ejb-name>
+		<stateless-session-descriptor>
+	        <pool>
+				<max-beans-in-free-pool>5</max-beans-in-free-pool>
+				<initial-beans-in-free-pool>5</initial-beans-in-free-pool>
+	        </pool>
+			<stateless-clustering>
+			</stateless-clustering>
+		</stateless-session-descriptor>
+		<transaction-descriptor>
+		</transaction-descriptor>
+		<reference-descriptor>
+			<ejb-reference-description>
+				<ejb-ref-name>ejb/ErpMonitor</ejb-ref-name>
+				<jndi-name>freshdirect.monitor.Monitor</jndi-name>
+			</ejb-reference-description>
+		</reference-descriptor>
+		<jndi-name>freshdirect.fdstore.monitor.Monitor</jndi-name>
+	</weblogic-enterprise-bean>
+        
+	<weblogic-enterprise-bean>
+		<ejb-name>AdServerGateway</ejb-name>
+		<stateless-session-descriptor>
+	        <pool>
+				<max-beans-in-free-pool>5</max-beans-in-free-pool>
+				<initial-beans-in-free-pool>5</initial-beans-in-free-pool>
+	        </pool>
+			<stateless-clustering>
+			</stateless-clustering>
+		</stateless-session-descriptor>
+		<transaction-descriptor>
+		</transaction-descriptor>
+		<reference-descriptor>
+                        <resource-description>
+				<res-ref-name>jms/QueueFactory</res-ref-name>
+				<jndi-name>queueFactory</jndi-name>
+			</resource-description>
+			<resource-env-description>
+				<res-env-ref-name>jms/Queue</res-env-ref-name>
+				<jndi-name>./oasQueue</jndi-name>
+			</resource-env-description>
+		</reference-descriptor>
+		<jndi-name>freshdirect.fdstore.AdServerGateway</jndi-name>
+	</weblogic-enterprise-bean>    
+
+	<weblogic-enterprise-bean>
+		<ejb-name>AdServerListener</ejb-name>
+
+		<message-driven-descriptor>
+			<pool>
+				<max-beans-in-free-pool>5</max-beans-in-free-pool>
+				<initial-beans-in-free-pool>5</initial-beans-in-free-pool>
+			</pool>
+			<destination-jndi-name>oasQueue</destination-jndi-name>
+		</message-driven-descriptor>
+
+		<jndi-name>freshdirect.fdstore.AdServerListener</jndi-name>
+	</weblogic-enterprise-bean>
+	
+	<weblogic-enterprise-bean>
+		<ejb-name>FDPromotionManager</ejb-name>
+		<stateless-session-descriptor>
+	        <pool>
+				<max-beans-in-free-pool>50</max-beans-in-free-pool>
+				<initial-beans-in-free-pool>10</initial-beans-in-free-pool>
+	        </pool>
+
+			<stateless-clustering>
+			</stateless-clustering>
+
+		</stateless-session-descriptor>
+
+		<transaction-descriptor>
+		</transaction-descriptor>
+
+		<reference-descriptor>
+			<resource-description>
+				<res-ref-name>jdbc/dbpool</res-ref-name>
+				<jndi-name>fddatasource</jndi-name>
+			</resource-description>
+			<ejb-reference-description>
+				<ejb-ref-name>ejb/ActivityLog</ejb-ref-name>
+				<jndi-name>freshdirect.customer.ActivityLog</jndi-name>
+			</ejb-reference-description>                        
+		</reference-descriptor>
+
+		<jndi-name>freshdirect.fdstore.PromotionManager</jndi-name>
+	</weblogic-enterprise-bean>
+
+	<weblogic-enterprise-bean>
+		<ejb-name>FDReferralManager</ejb-name>
+		<stateless-session-descriptor>
+	        <pool>
+				<max-beans-in-free-pool>50</max-beans-in-free-pool>
+				<initial-beans-in-free-pool>10</initial-beans-in-free-pool>
+	        </pool>
+
+			<stateless-clustering>
+			</stateless-clustering>
+
+		</stateless-session-descriptor>
+
+		<transaction-descriptor>
+		</transaction-descriptor>
+
+		<reference-descriptor>
+			<resource-description>
+				<res-ref-name>jdbc/dbpool</res-ref-name>
+				<jndi-name>fddatasource</jndi-name>
+			</resource-description>
+		</reference-descriptor>
+
+		<jndi-name>freshdirect.fdstore.ReferralManager</jndi-name>
+	</weblogic-enterprise-bean>
+
+	<transaction-isolation>
+		<isolation-level>TRANSACTION_READ_COMMITTED</isolation-level>
+		<method>
+			<ejb-name>FDCustomer</ejb-name>
+			<method-intf>Remote</method-intf>
+			<method-name>*</method-name>
+		</method>
+	</transaction-isolation>
+</weblogic-ejb-jar>

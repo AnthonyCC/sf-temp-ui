@@ -1,0 +1,479 @@
+<span jwcid="@Shell" title="Create a new template">
+    <script language="javascript" type="text/javascript">
+    <!-- 
+
+    operators = new Array();
+    operators[1] = '=';
+    operators[2] = '>';
+    operators[3] = '<';
+    operators[4] = '!=';
+    operators[5] = 'in';
+    operators[5] = 'not in';
+        
+    function move12(baseSelectName) {
+      var select1  = document.getElementById(baseSelectName + '1');
+      var select2  = document.getElementById(baseSelectName + '2');
+      doMove(select1,select2);
+    }
+
+    function move21(baseSelectName) {
+      var select1  = document.getElementById(baseSelectName + '2');
+      var select2  = document.getElementById(baseSelectName + '1');
+      doMove(select1,select2);
+    }
+
+    function moveUp(baseSelectName) {
+      var select2  = document.getElementById(baseSelectName + '2');
+      var selIndex = select2.selectedIndex;
+
+      if(selIndex < 1) return;
+
+      var theOption  = select2.options.item(selIndex);
+      var prevOption = select2.options.item(selIndex-1);
+
+      select2.insertBefore(theOption,prevOption);
+    }
+
+    function moveDown(baseSelectName) {
+      var select2  = document.getElementById(baseSelectName + '2');
+      var selIndex = select2.selectedIndex;
+
+      if(selIndex > getSize(select2)) {
+        return;
+      } else if(selIndex == getSize(select2)) {
+        var theOption  = select2.options.item(selIndex);
+        var nextOption = select2.options.item(selIndex+1);
+
+        select2.appendChild(theOption);
+      } else {
+        var theOption  = select2.options.item(selIndex);
+        var nextOption = select2.options.item(selIndex+2);
+
+        select2.insertBefore(theOption,nextOption);
+      }
+    }
+
+    function doMove(select1,select2) {
+      var selIndex = select1.selectedIndex;
+
+      if(selIndex < 0) return;
+
+      select2.appendChild(select1.options.item(selIndex));
+      selectNone(select1,select2);
+    }
+
+    function selectNone(list1,list2){
+      list1.selectedIndex = -1;
+      list2.selectedIndex = -1;
+    }
+
+
+    function getSize(list){
+      /* Mozilla ignores whitespace, 
+         IE doesn't - count the elements 
+         in the list */
+      var len = list.childNodes.length;
+      var nsLen = 0;
+
+      //nodeType returns 1 for elements
+      for(i=0; i<len; i++){
+        if(list.childNodes.item(i).nodeType==1)
+          nsLen++;
+      }
+
+      if(nsLen<2)
+          return 2;
+      else
+          return nsLen;
+    }
+
+    function doAddField() {
+      var theField  = document.getElementById('newDerivedField');
+
+      if(theField.value == '') {
+        return false;
+      }
+
+      var select2    = document.getElementById('fields2');
+      var newOption  = document.createElement("option");
+      var newText    = document.createTextNode(theField.value);
+      theField.value = '';
+
+      newOption.appendChild(newText);
+      select2.appendChild(newOption);
+      
+      return false;
+    }
+
+
+    function flipDiv(theSelect) {
+      document.getElementById('otherField_div').style.display = 'none';
+      document.getElementById('constant_div').style.display   = 'none';
+      document.getElementById('param_div').style.display      = 'none';
+      
+      document.getElementById('staticDropdown_div').style.display = 'none';
+      document.getElementById('queryDropdown_div').style.display  = 'none';
+      document.getElementById('selectDropdown_div').style.display = 'none';
+      document.getElementById('enumDropdown_div').style.display   = 'none';
+            
+      document.getElementById(theSelect.value + '_div').style.display = 'block';
+    }
+
+    var constraints     = new Array();
+    var constraintCount = 0;
+
+    function addConstraint() {
+      var target   = document.getElementById('constraint:target').value;
+      var field    = document.getElementById('constraint:field').value;
+      var operator = document.getElementById('constraint:operator').value;
+      var expr     = '';
+
+      if(target == '---') {
+        return;
+      } else if(target == 'otherField') {
+        expr = document.getElementById('otherField').value;
+        constraints[constraintCount] = '<otherField field=\''+field+'\' otherField=\''+expr+'\'/>';
+      } else if(target == 'constant') {
+        expr = 'constant value: ' + document.getElementById('constant').value;
+        constraints[constraintCount] = '<constant field=\''+field+'\' operatorId=\'' + operator + '\' constant=\''+  document.getElementById('constant').value  +'\'/>';
+      } else if(target == 'param') {
+        expr = 'paramater named ' + document.getElementById('param').value;
+        constraints[constraintCount] = '<param field=\''+field+'\' operatorId=\'' + operator + '\' parameter=\''+  document.getElementById('param').value  +'\'/>';
+      } else if(target == 'staticDropdown') {
+        expr = 'values from among ' + document.getElementById('staticDropdown').value;
+        constraints[constraintCount] = constraints + '<staticDropdown field=\''+field+'\' operatorId=\'' + operator + '\' options=\'' +  document.getElementById('staticDropdown').value  +'\'/>';
+      } else if(target == 'queryDropdown') {
+        expr = 'values from query ' + document.getElementById('queryDropdown').value;
+        constraints[constraintCount] = '<queryDropdown field=\''+field+'\' operatorId=\'' + operator + '\' query=\''+ document.getElementById('queryDropdown').value  +'\'/>';
+      } else if(target == 'enumDropdown') {
+        expr = 'values from the enum type ' + document.getElementById('enumDropdown').value;
+        constraints[constraintCount] = '<enumDropdown field=\''+field+'\' operatorId=\'' + operator + '\' class=\''+ document.getElementById('enumDropdown').value  +'\'/>';
+      }
+      
+      var theDiv    = document.getElementById('constraints');
+      var newDiv    = document.createElement('div');
+      var newPar    = document.createElement('p');
+      var newText   = document.createTextNode(field + ' ' + operators[operator] + ' ' + expr + '  ');
+      var newAnchor = document.createElement('a');
+      var aText     = document.createTextNode('Delete');
+
+      newDiv.setAttribute('id','constraintDiv' + constraintCount);
+      newAnchor.setAttribute('href','#');
+
+
+      newAnchor.onclick = makeCall(constraintCount);
+
+      newAnchor.appendChild(aText);
+      newPar.appendChild(newText);
+      newPar.appendChild(newAnchor);
+      newDiv.appendChild(newPar);
+      theDiv.appendChild(newDiv);
+
+      constraintCount++;
+    }
+
+    function makeCall(count) {
+      return function() {deleteConstraint(count);};
+    }
+
+
+    function deleteConstraint(constraintNum) {
+      var parentDiv = document.getElementById('constraints');
+      var childDiv  = document.getElementById('constraintDiv' + constraintNum);
+
+      parentDiv.removeChild(childDiv);
+
+      for(i=constraintNum;i<constraintCount-1;i++) {
+        constraints[i] = constraints[i]+1;
+      }
+      constraintCount--;
+
+      return false;
+    }
+    
+    function doSubmit() {      
+      if(document.getElementById('queryName').value == '') {
+        alert('Please name this query');
+        return false;
+      }
+      
+      var data = '<query name=\'';
+      data = data + document.getElementById('queryName').value;
+      data = data + '\' id=\'' + templateId;
+      data = data + '\'>';
+
+      data = data + '<fields>';
+      var options = document.getElementById('fields2').options;
+      for(i=0;i<options.length;i++) {
+        var val = options.item(i).value;
+        if(val != '') {
+          data = data + '<field name=\'' + val + '\'/>';
+        }
+      }
+      data = data + '</fields>'
+
+      data = data + '<groupBy>'
+      var options = document.getElementById('groupBy2').options;
+      for(i=0;i<options.length;i++) {
+        var val = options.item(i).value;
+        if(val != '') {
+          data = data + '<field name=\'' + val + '\'/>';
+        }
+      }
+      data = data + '</groupBy>'
+
+	        
+      data = data + '<constraints>'
+      for(i=0;i<constraintCount;i++) {
+        data = data + constraints[i];
+      }
+      data = data + '</constraints>';
+
+      data = data + '</query>';
+      
+      document.getElementById('submitData').value = data;
+      document.getElementById('masterForm').submit();
+    }
+
+    -->
+    templateId = '<span jwcid="@InsertText" value="ognl:template.templateId"/>'
+
+    <span jwcid="constraints2">
+      constraints[<span jwcid="@InsertText" value="ognl:components.constraints2.index"/>] = "<span jwcid="@Insert" raw="true" value="ognl:components.constraints2.value.xml"/>";
+      constraintCount = <span jwcid="@InsertText" value="ognl:components.constraints2.index+1"/>;
+    </span>
+    </script>
+
+
+    <p><font size="+1"><b>Create a new template</b></font></p>
+
+	<form action="#">
+		Template name: <input jwcid="@Any" type="text" id="queryName" name="queryName" value="ognl:template.name"/<>
+	</form>
+	
+    <h2>Fields</h2>
+
+    <form id="fieldForm" action="#">
+      <table>
+        <tr>
+          <td>
+            <select id="fields1" size="5" name="fields1" multiple>
+              <span jwcid="fields">
+                <option jwcid="@Any" value="ognl:components.fields.value"><span jwcid="@InsertText" value="ognl:components.fields.value"/></option>
+              </span>
+            </select>
+          </td>
+
+          <td>
+            <a href="#" onClick="move12('fields')">--&gt;</a><br>
+            <a href="#" onClick="move21('fields')">&lt;--</a>
+          </td>
+
+          <td>
+            <select id="fields2" size="5" name="fields2" multiple>
+	      <option></option>
+              <span jwcid="selectedFields">
+                <option jwcid="@Any" value="ognl:components.selectedFields.value"><span jwcid="@InsertText" value="ognl:components.selectedFields.value"/></option>
+              </span>
+            </select>
+          </td>
+
+          <td>
+            <a href="#" onClick="moveUp('fields')">/\</a><br>
+            <a href="#" onClick="moveDown('fields')">\/</a>
+          </td>
+
+
+        </tr>
+      </table>
+    </form>
+
+    Add a derived field
+      <form action="#" id="addDerivedFieldForm" onSubmit="doAddField()">
+        <input type="text" id="newDerivedField">
+        <input type="button" value="Add it" onClick="doAddField()">
+      </form>
+
+
+    <h2>Constraints</h2>
+
+    <div id="constraints">
+      <span jwcid="constraints">
+        <div jwcid="@Any" id="ognl:('constraintDiv' + components.constraints.index)">
+          <p><span jwcid="@InsertText" value="ognl:components.constraints.value"/>  <a jwcid="@Any" href="#" onClick="ognl:('deleteConstraint(' + components.constraints.index + ')')">Delete</a></p>
+        </div>
+
+      </span>
+    </div>
+
+      <form action="#" id="constraintForm">
+        <table border="1" width="400">
+          <tr>
+            <td>
+              <select id="constraint:field" name="constraint:field">
+                <span jwcid="allFields">
+                  <option jwcid="@Any" value="ognl:components.allFields.value"><span jwcid="@InsertText" value="ognl:components.allFields.value"/></option>
+                </span>
+              </select>
+            
+              <select name="constraint:operator" id="constraint:operator">
+                <option value="1">=</option>
+                <option value="2">&gt;</option>
+                <option value="3">&lt;</option>
+                <option value="4">!=</option>
+                <option value="5">in</option>
+                <option value="6">not in</option>
+              </select>
+
+          
+              <select name="constraint:target" id="constraint:target" onChange="flipDiv(this)">
+                <option value="---" selected>---</option>
+                <option value="otherField">Another field</option>
+                <option value="constant">a definition-time constant</option>
+                <option value="param">a run-time parameter</option>
+                <option value="staticDropdown">a static drop down</option>
+                <option value="queryDropdown">a drop down generated by a query</option>
+                <option value="selectDropdown">a drop down generated by a select</option>                
+                <option value="enumDropdown">a drop down of enum elements</option>
+                
+                <option value="5">a static multiple select</option>
+                <option value="6">a multiple select generated by a query</option>
+              </select>
+
+	      <input type="button" value="Add it" onClick="addConstraint()">
+            </td>
+          </tr>
+      
+          <tr>
+            <td>
+              <div id="blank_div" style="display:block">
+                <p>  </p>
+              </div>
+
+              <div id="otherField_div" style="display:none">
+                Select target field:
+                <select name="otherField" id="otherField">
+                  <span jwcid="allFields2">
+                    <option jwcid="@Any" value="ognl:components.allFields2.value"><span jwcid="@InsertText" value="ognl:components.allFields2.value"/></option>
+                  </span>
+                </select>
+              </div>
+
+              <div id="constant_div" style="display:none">
+                <p>Value for constant: <input type="text" id="constant" name="constant"/></p>
+              </div>
+
+              <div id="param_div" style="display:none">
+                <p>Description of parameter: <input type="text" id="param" name="param"></p>
+              </div>
+
+              <div id="staticDropdown_div" style="display:none">
+                <p>Options (opt1|opt2|... or opt1=value1|opt2=value2|...): <input type="text" id="staticDropdown" name="staticDropdown"></p>
+              </div>
+              
+              <div id="queryDropdown_div" style="display:none">
+                <p>Source query: 
+                  <select id="queryDropdown" name="queryDropdown">
+                    <span jwcid="queries">
+                      <option jwcid="@Any" value="ognl:components.queries.value.name"><span jwcid="@InsertText" value="ognl:components.queries.value.name"/></option>
+                    </span>
+                  </select>
+                </p>
+              </div>
+
+              <div id="selectDropdown_div" style="display:none">
+                <p>Not yet implemented</p>
+              </div>
+                            
+              <div id="enumDropdown_div" style="display:none">
+                <p>Enum class: <input type="text" id="enumDropdown" name="enumDropdown"></p>
+              </div>
+              
+            </td>
+          </tr>
+        </table>
+      </form>
+
+
+
+    <h2>Group by</h2>
+
+    <form id="groupByForm" action="#">
+      <table>
+        <tr>
+          <td>
+            <select id="groupBy1" name="groupBy1"  size="5" multiple>
+              <span jwcid="groupBys">
+                <option jwcid="@Any" value="ognl:components.groupBys.value"><span jwcid="@InsertText" value="ognl:components.groupBys.value"/></option>
+              </span>
+            </select>
+          </td>
+
+          <td>
+            <a href="#" onClick="move12('groupBy')">--&gt;</a><br>
+            <a href="#" onClick="move21('groupBy')">&lt;--</a>
+          </td>
+
+          <td>
+            <select id="groupBy2" name="groupBy2" size="5" multiple>
+	          <option></option>
+                  <span jwcid="selectedGroupBys">
+                    <option jwcid="@Any" value="ognl:components.selectedGroupBys.value"><span jwcid="@InsertText" value="ognl:components.selectedGroupBys.value"/></option>
+                  </span>
+            </select>
+          </td>
+
+          <td>
+            <a href="#" onClick="moveUp('groupBy')">/\</a><br>
+            <a href="#" onClick="moveDown('groupBy')">\/</a>
+          </td>
+        </tr>
+      </table>
+    </form>
+
+    <h2>Sort by</h2>
+    
+    <form id="sortByForm" action="#">
+      <table>
+        <tr>
+          <td>
+            <select id="sortBy1" name="sortBy1" size="5" multiple>
+              <span jwcid="orderBys">
+                <option jwcid="@Any" value="ognl:components.orderBys.value"><span jwcid="@InsertText" value="ognl:components.orderBys.value"/></option>
+              </span>
+            </select>
+          </td>
+
+          <td>
+            <a href="#" onClick="move12('sortBy')">--&gt;</a><br>
+            <a href="#" onClick="move21('sortBy')">&lt;--</a>
+          </td>
+
+          <td>
+            <select id="sortBy2" name="sortBy2" size="5" multiple>
+	      <option></option>
+              <span jwcid="selectedOrderBys">
+                <option jwcid="@Any" value="ognl:components.selectedOrderBys.value"><span jwcid="@InsertText" value="ognl:components.selectedOrderBys.value"/></option>
+              </span>
+            </select>
+          </td>
+
+          <td>
+            <a href="#" onClick="moveUp('sortBy')">/\</a><br>
+            <a href="#" onClick="moveDown('sortBy')">\/</a>
+          </td>
+
+
+        </tr>
+      </table>
+    </form>
+	
+	<form jwcid="form" id='masterForm' listener="ognl:listeners.saveQuery">
+	  <input type="hidden" name="submitData" id="submitData">
+	  <hidden jwcid="@Hidden" name="tableString" value="ognl:tableString"/>
+	  <!-- input type="submit" jwcid="@Submit" name="Save" value="Save"  listener="ognl:listeners.saveQuery"/ -->
+	  <input type="button" name="save" value="save" onClick="doSubmit();">
+	</form>
+
+</span>
+

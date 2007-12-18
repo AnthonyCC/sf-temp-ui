@@ -1,0 +1,162 @@
+<%-- Dependencies
+    Host page must :
+        - bring in the common_javascript.js file 
+        - Have a form field named actionName 
+--%>
+
+<% 
+    String editPage = null;
+    FDUserI _user = (FDUserI)session.getAttribute(SessionName.USER);
+
+    FDCartModel _cart =   _user.getShoppingCart();
+	
+    String cardStatus ="";
+    if(request.getParameter("card")!=null){
+            cardStatus = request.getParameter("card");
+    }
+
+
+    String selectedPaymPKId = request.getParameter("paymentId");
+	
+	if (request.getParameter("paymentMethodList") != null){
+		selectedPaymPKId = request.getParameter("paymentMethodList");
+	} else if(cardStatus.equalsIgnoreCase("new")){
+    	selectedPaymPKId = "new";
+    }
+    else if (selectedPaymPKId==null ) {
+        if(_cart.getPaymentMethod() != null && !(_cart instanceof FDModifyCartModel)) {
+            selectedPaymPKId = ((ErpPaymentMethodModel)_cart.getPaymentMethod()).getPK().getId();
+        } else {
+			selectedPaymPKId = FDCustomerManager.getDefaultPaymentMethodPK(_user.getIdentity());
+		}
+    }
+		
+    boolean showRadioButtons = false;
+    if (request.getRequestURI().toLowerCase().indexOf("your_account")>-1) {
+        editPage = "/your_account/edit_checkacct.jsp";
+
+    }else {
+        editPage = "/checkout/step_3_checkacct_edit.jsp";
+    	showRadioButtons=true;
+    }
+        
+    if (paymentMethods!=null && paymentMethods.size() > 0){    
+	    boolean disablePaymentMethod = false;	    
+    	int numEChecks = 0;
+        int itemCounter = 0;
+        int itemNum = 0;
+        if (selectedPaymPKId==null) selectedPaymPKId="";
+		boolean isNewOrder = !(_cart instanceof FDModifyCartModel);
+        String methodChecked = "";
+        boolean selectedPaymentMethodExist = false;
+        boolean selectedECheck = false;
+		ArrayList payMethodsList = new ArrayList(paymentMethods);
+		for(ListIterator saItr=payMethodsList.listIterator();saItr.hasNext();) {
+            ErpPaymentMethodI paymentM = (ErpPaymentMethodI)saItr.next();
+            if (EnumPaymentMethodType.ECHECK.equals(paymentM.getPaymentMethodType())) {
+            	numEChecks++;
+            }
+            String paymentPKId = ((ErpPaymentMethodModel)paymentM).getPK().getId();
+            if (selectedPaymPKId.equals(paymentPKId)) {
+            	selectedPaymentMethodExist = true;            	
+	            if (EnumPaymentMethodType.ECHECK.equals(paymentM.getPaymentMethodType())) {
+	            	selectedECheck = true;
+	            }
+            }
+		}
+		for(ListIterator saItr=payMethodsList.listIterator();saItr.hasNext();) {
+	        methodChecked = "";
+            boolean showDeleteButtons = numEChecks > 1?true:false;
+	            ErpPaymentMethodI paymentM = (ErpPaymentMethodI)saItr.next();
+            if (!EnumPaymentMethodType.ECHECK.equals(paymentM.getPaymentMethodType())) {
+            	continue;
+            }
+%>
+			<fd:CrmGetIsBadAccount id="isRestrictedAccount" paymentMethod="<%=paymentM%>">
+			<% 
+			disablePaymentMethod = false;
+			if(isRestrictedAccount.booleanValue()) {
+				disablePaymentMethod = true;
+			}
+			%>
+			</fd:CrmGetIsBadAccount>
+<%
+            String paymentPKId = ((ErpPaymentMethodModel)paymentM).getPK().getId();
+            if (!disablePaymentMethod) {
+	            if (paymentPKId.equals(selectedPaymPKId)){
+	                methodChecked = "checked";
+	            }
+				else if(selectedPaymPKId.equalsIgnoreCase("new") && itemNum == 0){
+				    methodChecked = "checked";
+				}
+				// select first echecks account for all new orders
+				if (((isNewOrder && !selectedECheck) || !selectedPaymentMethodExist) && itemNum == 0) { 
+					methodChecked = "checked";
+				}
+				//System.err.println("isNewOrder " + isNewOrder + " selectedECheck " + selectedECheck + " methodChecked " + methodChecked + " selectedPaymentMethodExist " + selectedPaymentMethodExist);
+			}
+            if((itemCounter % 3)==0) {
+                if(itemCounter!=0) {
+%>
+        </TR></TABLE><br><br>
+<%              } %>
+
+	<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" width="675">
+	<TR valign="top">
+<%
+            itemCounter=0;
+          } %>
+<%	
+   if (!disablePaymentMethod) { %>          
+	<TD width="20"><input type="<%=showRadioButtons?"radio":"hidden"%>" name="paymentMethodList" <%=methodChecked%> value="<%=paymentPKId%>" ></TD>
+<% } else { %>	
+	<TD width="20">&nbsp;</TD>
+<% } %>	
+	<TD width="185"> 
+		<FONT CLASS="text12"><%=paymentM.getName()%><br>
+		<b><%=(paymentM.getBankAccountType() != null) ? paymentM.getBankAccountType().getDescription() : "&nbsp;" %></b><br>
+		Routing # <%=paymentM.getAbaRouteNumber()%><br>
+		Account # <%= paymentM.getMaskedAccountNumber() %><br>
+		Bank Name <%=paymentM.getBankName()%><br>
+		<br>
+		<!-- if we have an account address -->
+		<b>Address:</b><br>
+		<%=paymentM.getName()%><br>
+		<%=paymentM.getAddress1()%><% if(paymentM.getApartment()!=null && paymentM.getApartment().trim().length()>0) { %>, Apt. <%=paymentM.getApartment()%><% } %>
+		<br>
+<%        if(paymentM.getAddress2()!=null && paymentM.getAddress2().trim().length()>0) { %>
+		<%=paymentM.getAddress2()%><br>
+<%        }%>
+		<%=paymentM.getCity()%>, <%=paymentM.getState()%> <%=paymentM.getZipCode()%><br>
+		<br>
+		</font> 
+		<A HREF="<%=editPage%>?paymentId=<%=paymentPKId%>"><IMG src="/media_stat/images/buttons/edit.gif" WIDTH="51" HEIGHT="16" ALT="Edit" BORDER="0"></A>&nbsp;
+		<input name="delete_cc" type="IMAGE" src="/media_stat/images/buttons/delete.gif" WIDTH="51" HEIGHT="16" ALT="Delete" BORDER="0" onClick="javascript:setDeletePaymentId(this.form,'<%=paymentPKId%>');setActionName(this.form,'deletePaymentMethod')">
+		
+	<!-- error message about card being expired goes here -->
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="185" HEIGHT="1">
+	</TD>
+<%          itemCounter++;
+			itemNum++;
+          if (itemNum <  numEChecks && (itemCounter % 3)!=0){     %>
+			<TD width="15"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="15" HEIGHT="1"></TD>
+			<TD width="1" bgcolor="#CCCCCC"><IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="1" HEIGHT="1"></TD>
+			<TD width="14"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="14" HEIGHT="1"></TD>
+<%          }
+        }
+        if (itemCounter==1) {
+%>
+		<%-- this spacer cell and image width should be dynamic: when no second payment method, 460 --%>
+		<TD WIDTH="470"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="470" HEIGHT="1" BORDER="0"><br></TD>
+<%
+        }else if(itemCounter==2){
+%>
+		<%-- this spacer cell  --%>
+		<TD WIDTH="235"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="235" HEIGHT="1" BORDER="0"><br></TD>
+<%
+        }
+%>
+</TR></TABLE>
+<%
+}
+%>

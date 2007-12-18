@@ -1,0 +1,248 @@
+/*
+ * $Workfile$
+ *
+ * $Date$
+ *
+ * Copyright (c) 2001 FreshDirect, Inc.
+ *
+ */
+package com.freshdirect.fdstore.customer;
+
+import java.util.Collection;
+import java.util.List;
+
+import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
+import com.freshdirect.deliverypass.EnumDlvPassProfileType;
+import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.fdstore.FDReservation;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
+import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
+import com.freshdirect.fdstore.promotion.PromotionI;
+import com.freshdirect.fdstore.promotion.SignupDiscountRule;
+
+/**
+ *
+ * @version $Revision$
+ * @author $Author$
+ */
+public interface FDUserI extends java.io.Serializable {
+
+
+    /** order minimum (before taxes and promotions are applied) */
+    public final static double MINIMUM_ORDER_AMOUNT = 30.00; 
+    public final static double MIN_CORP_ORDER_AMOUNT = 75.00;
+    public final static double BASE_DELIVERY_FEE = 4.99; // Used for site text
+    public final static double CORP_DELIVERY_FEE = 14.99; // Used for site text
+
+	public final static int GUEST = 0;              // anonymously cookied user who have not registered
+	public final static int RECOGNIZED = 1;         // cookied user who has registered and has a known identity
+	public final static int SIGNED_IN = 2;          // cookied user who has registered, has a known identity and is currently signed in
+	public final static boolean ZIPCHECK = true;
+    
+	public EnumTransactionSource getApplication();
+
+    public String getCookie();
+    
+    public void setCookie(String cookie);
+
+	public String getZipCode();
+
+	public void setZipCode(String zipCode);
+
+	public void setAddress(AddressModel a);
+
+	public AddressModel getAddress();
+
+	public FDIdentity getIdentity();
+
+	public void setIdentity(FDIdentity identity);
+
+	public int getLevel();
+
+	public boolean isInZone();
+        
+    public void isLoggedIn(boolean loggedId);
+
+	public FDCartModel getShoppingCart();
+
+	public void setShoppingCart(FDCartModel cart);
+    
+    public boolean isSurveySkipped();
+    
+    public void setSurveySkipped(boolean skipped);
+    
+	public boolean isFraudulent() throws FDResourceException;
+    
+	public FDPromotionEligibility getPromotionEligibility();
+
+	/** @deprecated */	
+	public double getMaxSignupPromotion();
+    
+	public SignupDiscountRule getSignupDiscountRule();
+
+	public boolean isPromotionAddressMismatch();
+
+	public void setRedeemedPromotion(PromotionI promotion); 
+	
+	public PromotionI getRedeemedPromotion();
+
+	public void updateUserState();
+
+	public String getFirstName() throws FDResourceException;
+	public String getLastName() throws FDResourceException;
+    
+    public FDCustomerModel getFDCustomer() throws FDResourceException;
+    
+    public String getDepotCode();
+
+	public void setDepotCode(String depotCode);
+    
+    public boolean isDepotUser();
+    
+    public boolean isCorporateUser();
+
+	/**
+	 * Invalidate cached order history & promotions.
+	 */
+	public void invalidateCache();
+
+	public FDOrderHistory getOrderHistory() throws FDResourceException;
+
+    public int getAdjustedValidOrderCount() throws FDResourceException;
+    
+    public int getValidPhoneOrderCount() throws FDResourceException;
+    
+	public boolean isEligibleForSignupPromotion();
+	
+	public PromotionI getEligibleSignupPromotion();
+
+    public boolean isOrderMinimumMet() throws FDResourceException;
+    
+    public double getMinimumOrderAmount();
+    
+	public boolean isOrderMinimumMet(boolean excludeBeer) throws FDResourceException;
+	
+	public float getQuantityMaximum(ProductModel product);
+    
+    public boolean isPickupOnly();
+    
+    public boolean isPickupUser();
+    
+    public boolean isNotServiceable();
+    
+    public boolean isDeliverableUser();
+    
+    public boolean isHomeUser();
+    
+    public FDReservation getReservation();
+    
+    public void setReservation(FDReservation reservation);
+    
+	public boolean isChefsTable() throws FDResourceException;
+	
+	public boolean isEligibleForPreReservation() throws FDResourceException;
+	
+	public EnumServiceType getSelectedServiceType();
+	
+	public void setSelectedServiceType(EnumServiceType serviceType);
+	
+	public String getCustomerServiceContact();
+	
+	public boolean isCheckEligible();
+    
+	public Collection getPaymentMethods();
+	
+	public String getUserId ();
+	
+	public String getLastTrackingCode ();
+	
+	public void setLastTrackingCode(String lastTrackingCode);
+	
+	
+	public void setLastRefTrackingCode (String lastRefTrackingCode);
+	
+	public String getLastRefTrackingCode();
+	
+	public void setLastRefProgramId (String progId);
+	
+	public String getLastRefProgId();
+	
+	public void setLastRefTrkDtls(String trkDtls);
+	
+	public String getLastRefTrkDtls();
+	
+    public void setLastRefProgInvtId (String progId);
+	
+	public String getLastRefProgInvtId();
+
+	
+	public boolean isReferrerRestricted() throws FDResourceException;
+	
+	public boolean isReferrerEligible() throws FDResourceException;	
+
+	public boolean isECheckRestricted() throws FDResourceException;
+
+	
+	
+	public String getDefaultCounty() throws FDResourceException;
+	
+	public boolean isActive();
+	
+	public boolean isReceiveFDEmails();
+	
+	public boolean isDlvPassNone();
+		
+	public boolean isDlvPassActive();
+	
+	public boolean isDlvPassPending();
+	
+	public boolean isDlvPassExpiredPending();
+	
+	public boolean isDlvPassExpired();
+	
+	public boolean isDlvPassCancelled();
+	
+	public boolean isDlvPassReturned();
+	
+	public boolean isDlvPassShortShipped();
+	
+	public boolean isDlvPassSettlementFailed();
+	
+	public EnumDlvPassStatus getDeliveryPassStatus();
+	
+	public void performDlvPassStatusCheck()throws FDResourceException;
+	
+	public boolean isEligibleForDeliveryPass() throws FDResourceException;
+	
+	public EnumDlvPassProfileType getEligibleDeliveryPass() throws FDResourceException;
+	
+	public String getDlvPassProfileValue() throws FDResourceException;
+	
+	public FDUserDlvPassInfo getDlvPassInfo();
+	
+	public void updateDlvPassInfo() throws FDResourceException;
+	
+	public double getBaseDeliveryFee();
+	
+	public double getMinCorpOrderAmount();
+	
+	public double getCorpDeliveryFee();
+	
+	public int getUsableDeliveryPassCount();
+	
+	public EnumDPAutoRenewalType hasAutoRenewDP() throws FDResourceException;
+
+	public AssignedCustomerParam getAssignedCustomerParam(String promoId);
+	
+	/* CCL */
+	public boolean isCCLEnabled();
+	
+	public boolean isCCLInExperienced();
+	
+	public List getCustomerCreatedListInfos();
+}

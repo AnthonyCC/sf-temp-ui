@@ -1,0 +1,46 @@
+<%@ page import="com.freshdirect.fdstore.customer.*" %>
+<%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession" %>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
+<%!	java.text.DecimalFormat qtyFormatter = new java.text.DecimalFormat("0.##");%>
+<%
+	String cartAction = request.getParameter("action");
+	String sPage = request.getParameter("successPage");
+	boolean hasCustomerCase = CrmSession.hasCustomerCase(session);
+%>
+<fd:FDShoppingCart id='cart' result='result' action='<%= cartAction %>' successPage='<%= sPage %>'>
+<%
+	String error = request.getParameter("dlvpasserror");
+	 if (error != null && error.equals("true")){
+		UserValidationUtil.validateContainsDlvPassOnly(request, result);
+	 }
+
+%>
+<%-- FOR DELIVERY PASS --%>
+<fd:ErrorHandler result='<%=result%>' name='error_dlv_pass_only' id='errorMsg'>
+   <%@ include file="/includes/i_error_messages.jspf" %>   
+</fd:ErrorHandler>
+
+<%-- ~~~~~~~~~~~~~ BEGIN CART HEADER SECTION ~~~~~~~~~~~~~ --%>
+<table width="100%" cellpadding="2" cellspacing="0" border="0" class="module_header">
+<form name="viewcart" method="POST">
+	<tr>
+		<td class="order">(<%= cart.getOrderLines().size() %> items) <B><%= CCFormatter.formatCurrency(cart.getSubTotal()) %></B> est total<% if (cart.getOrderLines().size() > 0) { %>&nbsp;&nbsp;<input type="submit" class="update_price" onClick="setSubmitAction('updateQuantities')" value="UPDATE PRICE"><% } %></td>
+		<td align="right" class="order"><a href="javascript:confirmClearCart(document.viewcart)" class="clear_all">CLEAR ALL</A></td>
+	</tr>
+</table>
+<%-- ~~~~~~~~~~~~~ END CART HEADER SECTION ~~~~~~~~~~~~~ --%>
+<div class="module_content" style="height: 94%;">
+	<%@ include file="/includes/cart_lines.jspf" %>
+	<table width='100%'>
+		<tr>
+			<td width='50%'><div align="left"><a href="/main/account_details.jsp?saveCart=true" class="checkout" style="width: 100px;"><< SAVE CART</a></div></td>
+			<td width='50%'><div align="right">
+				<%if(hasCustomerCase){%>
+					<a href="<%= response.encodeURL("/checkout/checkout_review_items.jsp") %>" class="checkout" style="width: 100px;">CHECKOUT >></a>
+				<%} else {%><span class="cust_module_content_edit">-Case required to checkout-</span><% } %>
+			</div></td>
+		</tr>
+		</form>
+	</table>
+</div>
+</fd:FDShoppingCart>

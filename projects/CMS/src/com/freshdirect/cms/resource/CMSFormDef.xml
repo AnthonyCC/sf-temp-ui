@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CMSDef xmlns="http://www.freshdirect.com/xsd/CMS" schemaLocation="http://www.freshdirect.com/xsd/CMS CMS.xsd">
+
+	<ContentTypeDef name="CmsFolder">
+		<AttributeDefs>
+			<AttributeDef type="S" name="name" />
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="subFolders" navigable="true" cardinality="Many">
+				<DestinationDef contentType="CmsFolder" />
+			</RelationshipDef>
+			<RelationshipDef name="editors" navigable="true" cardinality="Many">
+				<DestinationDef contentType="CmsEditor" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+
+
+	<ContentTypeDef name="CmsEditor">
+		<AttributeDefs>
+			<AttributeDef type="S" name="contentType" />
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="pages" navigable="true" cardinality="Many">
+				<DestinationDef contentType="CmsPage" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+
+	<ContentTypeDef name="CmsPage">
+		<AttributeDefs>
+			<AttributeDef type="S" name="title" />
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="sections" navigable="true" cardinality="Many">
+				<DestinationDef contentType="CmsSection" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+
+	<ContentTypeDef name="CmsSection">
+		<AttributeDefs>
+			<AttributeDef type="S" name="title" />
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="fields" navigable="true" cardinality="Many">
+				<DestinationDef contentType="CmsField" />
+				<DestinationDef contentType="CmsGridField" />
+				<DestinationDef contentType="CmsCustomField" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+
+	<ContentTypeDef name="CmsField">
+		<AttributeDefs>
+			<AttributeDef type="S" name="attribute" />
+		</AttributeDefs>
+	</ContentTypeDef>
+
+	<ContentTypeDef name="CmsCustomField">
+		<AttributeDefs>
+			<AttributeDef type="S" name="attribute" />
+			<AttributeDef type="S" name="component" />
+		</AttributeDefs>
+	</ContentTypeDef>
+	
+	<ContentTypeDef name="CmsGridField">
+		<AttributeDefs>
+			<AttributeDef type="S" name="attribute" />
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="columns" navigable="true" cardinality="Many">
+				<DestinationDef contentType="CmsField" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+
+</CMSDef>

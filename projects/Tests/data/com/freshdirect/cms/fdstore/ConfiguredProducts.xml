@@ -1,0 +1,1375 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Content>
+
+  <Store id="FreshDirect">
+  </Store>
+
+  <ConfiguredProduct id="ok">
+    <SKU>
+      <Sku ref="MEA0004562"/>
+    </SKU>
+    <SALES_UNIT>C01</SALES_UNIT>
+    <OPTIONS>C_MT_BF_PAK=ST,C_MT_BF_TW1=N,C_MT_BF_MAR=N</OPTIONS>
+    <QUANTITY>1.0</QUANTITY>
+  </ConfiguredProduct>
+
+  <ConfiguredProduct id="same_as_ok">
+    <SKU>
+      <Sku ref="MEA0004562"/>
+    </SKU>
+    <SALES_UNIT>C01</SALES_UNIT>
+    <OPTIONS>C_MT_BF_PAK=ST,C_MT_BF_TW1=N,C_MT_BF_MAR=N</OPTIONS>
+    <QUANTITY>1.0</QUANTITY>
+  </ConfiguredProduct>
+
+  <ConfiguredProduct id="same_as_ok2">
+    <SKU>
+      <Sku ref="MEA0004562"/>
+    </SKU>
+    <SALES_UNIT>C01</SALES_UNIT>
+    <OPTIONS>C_MT_BF_PAK=ST,C_MT_BF_TW1=N,C_MT_BF_MAR=N</OPTIONS>
+    <QUANTITY>1.0</QUANTITY>
+  </ConfiguredProduct>
+
+  <ConfiguredProduct id="same_as_ok3">
+    <SKU>
+      <Sku ref="MEA0004562"/>
+    </SKU>
+    <SALES_UNIT>C01</SALES_UNIT>
+    <OPTIONS>C_MT_BF_PAK=ST,C_MT_BF_TW1=N,C_MT_BF_MAR=N</OPTIONS>
+    <QUANTITY>1.0</QUANTITY>
+  </ConfiguredProduct>
+
+  <ConfiguredProduct id="cp_by_tomorrow">
+    <SKU>
+      <Sku ref="MEA0004563"/>
+    </SKU>
+    <SALES_UNIT>C01</SALES_UNIT>
+    <OPTIONS>C_MT_BF_PAK=ST,C_MT_BF_TW1=N,C_MT_BF_MAR=N</OPTIONS>
+    <QUANTITY>1.0</QUANTITY>
+  </ConfiguredProduct>
+
+  <ConfiguredProduct id="cp_by_after_tomorrow">
+    <SKU>
+      <Sku ref="MEA0004564"/>
+    </SKU>
+    <SALES_UNIT>C01</SALES_UNIT>
+    <OPTIONS>C_MT_BF_PAK=ST,C_MT_BF_TW1=N,C_MT_BF_MAR=N</OPTIONS>
+    <QUANTITY>1.0</QUANTITY>
+  </ConfiguredProduct>
+
+  <ConfiguredProduct id="cp_in_three_days">
+    <SKU>
+      <Sku ref="MEA0004565"/>
+    </SKU>
+    <SALES_UNIT>C01</SALES_UNIT>
+    <OPTIONS>C_MT_BF_PAK=ST,C_MT_BF_TW1=N,C_MT_BF_MAR=N</OPTIONS>
+    <QUANTITY>1.0</QUANTITY>
+  </ConfiguredProduct>
+
+  <ConfiguredProduct id="bad_sku">
+    <SKU>
+      <Sku ref="XYZ"/>
+    </SKU>
+    <SALES_UNIT>C01</SALES_UNIT>
+    <OPTIONS>C_MT_BF_PAK=ST,C_MT_BF_TW1=N,C_MT_BF_MAR=N</OPTIONS>
+    <QUANTITY>1.0</QUANTITY>
+  </ConfiguredProduct>
+
+  <ConfiguredProduct id="bad_salesunit">
+    <SKU>
+      <Sku ref="MEA0004562"/>
+    </SKU>
+    <SALES_UNIT>XYZ</SALES_UNIT>
+    <OPTIONS>C_MT_BF_PAK=ST,C_MT_BF_TW1=N,C_MT_BF_MAR=N</OPTIONS>
+    <QUANTITY>1.0</QUANTITY>
+  </ConfiguredProduct>
+  
+
+  <ConfiguredProduct id="bad_option">
+    <SKU>
+      <Sku ref="MEA0004562"/>
+    </SKU>
+    <SALES_UNIT>C01</SALES_UNIT>
+    <OPTIONS>C_MT_BF_PAK=XY,C_MT_BF_TW1=N,C_MT_BF_MAR=N</OPTIONS>
+    <QUANTITY>1.0</QUANTITY>
+  </ConfiguredProduct>
+  	
+  <ConfiguredProduct id="missing_option">
+    <SKU>
+      <Sku ref="MEA0004562"/>
+    </SKU>
+    <SALES_UNIT>C01</SALES_UNIT>
+    <OPTIONS>C_MT_BF_TW1=N,C_MT_BF_MAR=N</OPTIONS>
+    <QUANTITY>1.0</QUANTITY>
+  </ConfiguredProduct>
+
+  <ConfiguredProduct id="extra_option">
+    <SKU>
+      <Sku ref="MEA0004562"/>
+    </SKU>
+    <SALES_UNIT>C01</SALES_UNIT>
+    <OPTIONS>C_MT_BF_PAK=ST,C_MT_BF_TW1=N,C_MT_BF_MAR=N,FOO=BAR</OPTIONS>
+    <QUANTITY>1.0</QUANTITY>
+  </ConfiguredProduct>
+  
+  <ConfiguredProduct id="cp_unavailable">
+    <SKU>
+      <Sku ref="MEA0004561"/>
+    </SKU>
+    <SALES_UNIT>C01</SALES_UNIT>
+    <OPTIONS>C_MT_BF_PAK=ST,C_MT_BF_TW1=N,C_MT_BF_MAR=N</OPTIONS>
+    <QUANTITY>1.0</QUANTITY>
+  </ConfiguredProduct>
+
+  <ConfiguredProduct id="cp_discontinued">
+    <SKU>
+      <Sku ref="MEA0004566"/>
+    </SKU>
+    <SALES_UNIT>C01</SALES_UNIT>
+    <OPTIONS>C_MT_BF_PAK=ST,C_MT_BF_TW1=N,C_MT_BF_MAR=N</OPTIONS>
+    <QUANTITY>1.0</QUANTITY>
+  </ConfiguredProduct>
+
+  <ConfiguredProduct id="cp_temp_unav">
+    <SKU>
+      <Sku ref="MEA0004567"/>
+    </SKU>
+    <SALES_UNIT>C01</SALES_UNIT>
+    <OPTIONS>C_MT_BF_PAK=ST,C_MT_BF_TW1=N,C_MT_BF_MAR=N</OPTIONS>
+    <QUANTITY>1.0</QUANTITY>
+  </ConfiguredProduct>
+
+  <ConfiguredProduct id="cp_after_horizon">
+    <SKU>
+      <Sku ref="MEA0004568"/>
+    </SKU>
+    <SALES_UNIT>C01</SALES_UNIT>
+    <OPTIONS>C_MT_BF_PAK=ST,C_MT_BF_TW1=N,C_MT_BF_MAR=N</OPTIONS>
+    <QUANTITY>1.0</QUANTITY>
+  </ConfiguredProduct>
+
+  <ConfiguredProduct id="cp_required">
+    <SKU>
+      <Sku ref="MEA0004562"/>
+    </SKU>
+    <SALES_UNIT>C01</SALES_UNIT>
+    <OPTIONS>C_MT_BF_PAK=ST,C_MT_BF_TW1=N,C_MT_BF_MAR=N</OPTIONS>
+    <QUANTITY>1.0</QUANTITY>
+    <REQUIRED>true</REQUIRED>
+  </ConfiguredProduct>
+
+  <ConfiguredProduct id="cp_required_4569">
+    <SKU>
+      <Sku ref="MEA0004569"/>
+    </SKU>
+    <SALES_UNIT>C01</SALES_UNIT>
+    <OPTIONS>C_MT_BF_PAK=ST,C_MT_BF_TW1=N,C_MT_BF_MAR=N</OPTIONS>
+    <QUANTITY>1.0</QUANTITY>
+    <REQUIRED>true</REQUIRED>
+  </ConfiguredProduct>
+
+  <ConfiguredProduct id="cp_not_required">
+    <SKU>
+      <Sku ref="MEA0004562"/>
+    </SKU>
+    <SALES_UNIT>C01</SALES_UNIT>
+    <OPTIONS>C_MT_BF_PAK=ST,C_MT_BF_TW1=N,C_MT_BF_MAR=N</OPTIONS>
+    <QUANTITY>1.0</QUANTITY>
+    <REQUIRED>false</REQUIRED>
+  </ConfiguredProduct>
+
+  <ConfiguredProductGroup id="cpg_required">
+    <required>true</required>
+    <items>
+       <ConfiguredProduct ref="cp_required"/>
+    </items>
+  </ConfiguredProductGroup>
+
+  <ConfiguredProductGroup id="cpg_required_4569">
+    <required>true</required>
+    <items>
+       <ConfiguredProduct ref="cp_required_4569"/>
+    </items>
+  </ConfiguredProductGroup>
+
+  <ConfiguredProductGroup id="cpg_not_required">
+    <required>false</required>
+    <items>
+       <ConfiguredProduct ref="cp_not_required"/>
+    </items>
+  </ConfiguredProductGroup>
+
+
+  <Product id="ok_product">
+    <skus>
+      <Sku ref="MEA0004561"/>
+      <Sku ref="MEA0004562"/>
+      <Sku ref="MEA0004563"/>
+      <Sku ref="MEA0004564"/>
+      <Sku ref="MEA0004565"/>
+      <Sku ref="MEA0004566"/>
+      <Sku ref="MEA0004567"/>
+      <Sku ref="MEA0004568"/>
+    </skus>
+  </Product>
+  
+  <Category id="ok_category">
+    <products>
+      <Product ref="ok_product"/>
+      <Product ref="citrus_products"/>
+    </products>
+  </Category>
+  
+  <Department id="ok_department">
+    <FULL_NAME>The OK Department</FULL_NAME>
+    <categories>
+      <Category ref="ok_category"/>
+    </categories>
+  </Department>
+  
+  <ConfiguredProductGroup id="cpg_ok">
+    <required>true</required>
+    <items>
+       <ConfiguredProduct ref="ok"/>
+       <ConfiguredProduct ref="cp_unavailable"/>
+    </items>
+  </ConfiguredProductGroup>
+
+  <ConfiguredProductGroup id="cpg_unavailable">
+    <required>true</required>
+    <items>
+       <ConfiguredProduct ref="cp_unavailable"/>
+    </items>
+  </ConfiguredProductGroup>
+
+  <!-- a CPG that has an unavailable CP as its first item -->
+  <ConfiguredProductGroup id="cpg_unavailable_ok">
+    <required>true</required>
+    <items>
+       <ConfiguredProduct ref="cp_unavailable"/>
+       <ConfiguredProduct ref="same_as_ok"/>
+    </items>
+  </ConfiguredProductGroup>
+  
+  <!-- a CPG that has an item available tomorrow as the first item -->
+  <ConfiguredProductGroup id="cpg_by_tomorrow_1st">
+    <required>true</required>
+    <items>
+       <ConfiguredProduct ref="cp_by_tomorrow"/>
+       <ConfiguredProduct ref="cp_unavailable"/>
+    </items>
+  </ConfiguredProductGroup>
+  
+  <!-- a CPG that has an item available tomorrow as the non-first item,
+       while having an item available after tomorrow as the first item
+  -->
+  <ConfiguredProductGroup id="cpg_by_tomorrow_not_1st">
+    <required>true</required>
+    <items>
+       <ConfiguredProduct ref="cp_by_after_tomorrow"/>
+       <ConfiguredProduct ref="cp_unavailable"/>
+       <ConfiguredProduct ref="cp_by_tomorrow"/>
+    </items>
+  </ConfiguredProductGroup>
+  
+  <!-- a CPG that has an item available after tomorrow as the only
+       available item.
+  -->
+  <ConfiguredProductGroup id="cpg_by_after_tomorrow">
+    <required>true</required>
+    <items>
+       <ConfiguredProduct ref="cp_by_after_tomorrow"/>
+       <ConfiguredProduct ref="cp_unavailable"/>
+    </items>
+  </ConfiguredProductGroup>
+
+  <!-- a CPG that has an item available after tomorrow, but the
+       first available item available is in three days.
+  -->
+  <ConfiguredProductGroup id="cpg_in_three_days">
+    <required>true</required>
+    <items>
+       <ConfiguredProduct ref="cp_in_three_days"/>
+       <ConfiguredProduct ref="cp_by_after_tomorrow"/>
+       <ConfiguredProduct ref="cp_unavailable"/>
+    </items>
+  </ConfiguredProductGroup>
+
+  <!-- a CPG that has a discontinued item, plus other available items
+  -->
+  <ConfiguredProductGroup id="cpg_discontinued_ok">
+    <required>true</required>
+    <items>
+       <ConfiguredProduct ref="cp_discontinued"/>
+       <ConfiguredProduct ref="cp_by_after_tomorrow"/>
+       <ConfiguredProduct ref="cp_unavailable"/>
+    </items>
+  </ConfiguredProductGroup>
+
+  <!-- a CPG that has a temporarily unavailable item, plus other available items
+  -->
+  <ConfiguredProductGroup id="cpg_temp_unav_ok">
+    <required>true</required>
+    <items>
+       <ConfiguredProduct ref="cp_temp_unav"/>
+       <ConfiguredProduct ref="cp_by_after_tomorrow"/>
+       <ConfiguredProduct ref="cp_unavailable"/>
+    </items>
+  </ConfiguredProductGroup>
+
+  <!-- a CPG that only has products available after the horizon
+  -->
+  <ConfiguredProductGroup id="cpg_after_horizon">
+    <required>true</required>
+    <items>
+       <ConfiguredProduct ref="cp_after_horizon"/>
+    </items>
+  </ConfiguredProductGroup>
+
+  <!-- this is an unavailable product -->  
+  <Sku id="MEA0004561">
+      <KOSHER>false</KOSHER>
+      <VARIATION_MATRIX>
+        <DomainValue ref="grade_Prime"/>
+      </VARIATION_MATRIX>
+      <ORGANIC>false</ORGANIC>
+  </Sku>
+
+  <!-- this is a generally available product -->
+  <Sku id="MEA0004562">
+    <materials>
+	  <ErpMaterial id="000000000300300343">
+	    <classes>
+	      <ErpClass ref="CL_MT_BF_PT3_TW1"/>
+	    </classes>
+	    <name>300300343</name>
+	    <salesUnits>
+	      <ErpSalesUnit id="C01"/>
+	      <ErpSalesUnit id="C03"/>
+	    </salesUnits>
+	  </ErpMaterial>
+    </materials>
+  </Sku>
+
+  <!-- this is a product that is available by tomorrow, but not today -->
+  <Sku id="MEA0004563">
+      <KOSHER>false</KOSHER>
+      <VARIATION_MATRIX>
+        <DomainValue ref="grade_Prime"/>
+      </VARIATION_MATRIX>
+      <ORGANIC>false</ORGANIC>
+  </Sku>
+
+  <!-- this is a product that is only available after tomorrow,
+       but within 7 days
+  -->
+  <Sku id="MEA0004564">
+      <KOSHER>false</KOSHER>
+      <VARIATION_MATRIX>
+        <DomainValue ref="grade_Prime"/>
+      </VARIATION_MATRIX>
+      <ORGANIC>false</ORGANIC>
+  </Sku>
+
+  <!-- this is a product that is only available three days from now
+       but within 7 days
+  -->
+  <Sku id="MEA0004565">
+      <KOSHER>false</KOSHER>
+      <VARIATION_MATRIX>
+        <DomainValue ref="grade_Prime"/>
+      </VARIATION_MATRIX>
+      <ORGANIC>false</ORGANIC>
+  </Sku>
+
+  <!-- this is a discontinued product -->
+  <Sku id="MEA0004566">
+      <KOSHER>false</KOSHER>
+      <VARIATION_MATRIX>
+        <DomainValue ref="grade_Prime"/>
+      </VARIATION_MATRIX>
+      <ORGANIC>false</ORGANIC>
+  </Sku>
+
+  <!-- this is a temporarily unavailable product -->
+  <Sku id="MEA0004567">
+      <KOSHER>false</KOSHER>
+      <VARIATION_MATRIX>
+        <DomainValue ref="grade_Prime"/>
+      </VARIATION_MATRIX>
+      <ORGANIC>false</ORGANIC>
+  </Sku>
+
+  <!-- this is a product only available after the horizon -->
+  <Sku id="MEA0004568">
+      <KOSHER>false</KOSHER>
+      <VARIATION_MATRIX>
+        <DomainValue ref="grade_Prime"/>
+      </VARIATION_MATRIX>
+      <ORGANIC>false</ORGANIC>
+  </Sku>
+
+  <!-- this is a product is for testing auto-crossell -->
+  <Sku id="MEA0004569">
+      <KOSHER>false</KOSHER>
+      <VARIATION_MATRIX>
+        <DomainValue ref="grade_Prime"/>
+      </VARIATION_MATRIX>
+      <ORGANIC>false</ORGANIC>
+  </Sku>
+
+  <ErpClass id="CL_MT_BF_PT3_TW1">
+    <characteristics>
+	  <ErpCharacteristic id="CL_MT_BF_PT3_TW1/C_MT_BF_TW1">
+	  	<name>C_MT_BF_TW1</name>
+	    <values>
+	      <ErpCharacteristicValue id="CL_MT_BF_PT3_TW1/C_MT_BF_TW1/BT">
+	      	<name>BT</name>
+	      </ErpCharacteristicValue>
+	      <ErpCharacteristicValue id="CL_MT_BF_PT3_TW1/C_MT_BF_TW1/FT">
+	      	<name>FT</name>
+	      </ErpCharacteristicValue>
+	      <ErpCharacteristicValue id="CL_MT_BF_PT3_TW1/C_MT_BF_TW1/N">
+	      	<name>N</name>
+	      </ErpCharacteristicValue>
+	      <ErpCharacteristicValue id="CL_MT_BF_PT3_TW1/C_MT_BF_TW1/TO">
+	      	<name>TO</name>
+	      </ErpCharacteristicValue>
+	    </values>
+	  </ErpCharacteristic>
+	  <ErpCharacteristic id="CL_MT_BF_PT3_TW1/C_MT_BF_PAK">
+	  	<name>C_MT_BF_PAK</name>
+	    <values>
+	      <ErpCharacteristicValue id="CL_MT_BF_PT3_TW1/C_MT_BF_PAK/ST">
+	      	<name>ST</name>
+	      </ErpCharacteristicValue>
+	      <ErpCharacteristicValue id="CL_MT_BF_PT3_TW1/C_MT_BF_PAK/VP">
+	      	<name>VP</name>
+	      </ErpCharacteristicValue>
+	    </values>
+	  </ErpCharacteristic>
+	  <ErpCharacteristic id="CL_MT_BF_PT3_TW1/C_MT_BF_MAR">
+	  	<name>C_MT_BF_MAR</name>
+	    <values>
+	      <ErpCharacteristicValue id="CL_MT_BF_PT3_TW1/C_MT_BF_MAR/BSP">
+	      	<name>BSP</name>
+	      </ErpCharacteristicValue>
+	      <ErpCharacteristicValue id="CL_MT_BF_PT3_TW1/C_MT_BF_MAR/GRS">
+	      	<name>GRS</name>
+	      </ErpCharacteristicValue>
+	      <ErpCharacteristicValue id="CL_MT_BF_PT3_TW1/C_MT_BF_MAR/JDBS">
+	      	<name>JDBS</name>
+	      </ErpCharacteristicValue>
+	      <ErpCharacteristicValue id="CL_MT_BF_PT3_TW1/C_MT_BF_MAR/N">
+	      	<name>N</name>
+	      </ErpCharacteristicValue>
+	      <ErpCharacteristicValue id="CL_MT_BF_PT3_TW1/C_MT_BF_MAR/RRR">
+	      	<name>RRR</name>
+	      </ErpCharacteristicValue>
+	      <ErpCharacteristicValue id="CL_MT_BF_PT3_TW1/C_MT_BF_MAR/SGS">
+	      	<name>SGS</name>
+	      </ErpCharacteristicValue>
+	      <ErpCharacteristicValue id="CL_MT_BF_PT3_TW1/C_MT_BF_MAR/SPR">
+	      	<name>SPR</name>
+	      </ErpCharacteristicValue>
+	      <ErpCharacteristicValue id="CL_MT_BF_PT3_TW1/C_MT_BF_MAR/TRK">
+	      	<name>TRK</name>
+	      </ErpCharacteristicValue>
+	    </values>
+	  </ErpCharacteristic>
+      </characteristics>
+  </ErpClass>
+
+  <!-- a simple recipe that is available, with all the variants, sections, etc. -->
+  <Recipe id="rec_available">
+    <variants>
+      <RecipeVariant ref="rec_variant_available"/>
+    </variants>
+    <productionStatus>ACTIVE</productionStatus>
+  </Recipe>
+
+  <RecipeVariant id="rec_variant_available">
+    <name>main</name>
+    <sections>
+      <RecipeSection ref="rec_section_available"/>
+    </sections>
+  </RecipeVariant>
+  
+  <RecipeSection id="rec_section_available">
+    <ingredients>
+      <ConfiguredProduct ref="same_as_ok3"/>
+      <ConfiguredProductGroup ref="cpg_ok"/>
+    </ingredients>
+  </RecipeSection>
+
+  <!-- a simple recipe that is unavailable -->
+  <Recipe id="rec_unavailable">
+    <variants>
+      <RecipeVariant ref="rec_variant_unavailable"/>
+    </variants>
+    <productionStatus>ACTIVE</productionStatus>
+  </Recipe>
+
+  <RecipeVariant id="rec_variant_unavailable">
+    <name>main</name>
+    <sections>
+      <RecipeSection ref="rec_section_unavailable"/>
+    </sections>
+  </RecipeVariant>
+  
+  <RecipeSection id="rec_section_unavailable">
+    <ingredients>
+      <ConfiguredProduct ref="same_as_ok2"/>
+      <ConfiguredProductGroup ref="cpg_unavailable"/>
+    </ingredients>
+  </RecipeSection>
+
+  <!-- a recipe that is available, with havinga configured product group
+       of mupltiple items, some of them unavailable
+  -->
+  <Recipe id="rec_unavailable_ok">
+    <variants>
+      <RecipeVariant ref="rec_variant_unavailable_ok"/>
+    </variants>
+    <productionStatus>ACTIVE</productionStatus>
+  </Recipe>
+
+  <RecipeVariant id="rec_variant_unavailable_ok">
+    <name>main</name>
+    <sections>
+      <RecipeSection ref="rec_section_unavailable_ok"/>
+    </sections>
+  </RecipeVariant>
+  
+  <RecipeSection id="rec_section_unavailable_ok">
+    <ingredients>
+      <ConfiguredProductGroup ref="cpg_unavailable_ok"/>
+    </ingredients>
+  </RecipeSection>
+
+  <!-- a recipe that is available, by having a configured product group
+       that has an item available by tomorrow as the non-1st item
+  -->
+  <Recipe id="rec_by_tomorrow_1st">
+    <variants>
+      <RecipeVariant ref="rec_variant_by_tomorrow_1st"/>
+    </variants>
+    <productionStatus>ACTIVE</productionStatus>
+  </Recipe>
+
+  <RecipeVariant id="rec_variant_by_tomorrow_1st">
+    <name>main</name>
+    <sections>
+      <RecipeSection ref="rec_section_by_tomorrow_1st"/>
+    </sections>
+  </RecipeVariant>
+  
+  <RecipeSection id="rec_section_by_tomorrow_1st">
+    <ingredients>
+      <ConfiguredProductGroup ref="cpg_by_tomorrow_1st"/>
+    </ingredients>
+  </RecipeSection>
+
+  <!-- a recipe that is available, by having a configured product group
+       that has an item available by tomorrow as the 1st item
+  -->
+  <Recipe id="rec_by_tomorrow_not_1st">
+    <variants>
+      <RecipeVariant ref="rec_variant_by_tomorrow_not_1st"/>
+    </variants>
+    <productionStatus>ACTIVE</productionStatus>
+  </Recipe>
+
+  <RecipeVariant id="rec_variant_by_tomorrow_not_1st">
+    <name>main</name>
+    <sections>
+      <RecipeSection ref="rec_section_by_tomorrow_not_1st"/>
+    </sections>
+  </RecipeVariant>
+  
+  <RecipeSection id="rec_section_by_tomorrow_not_1st">
+    <ingredients>
+      <ConfiguredProductGroup ref="cpg_by_tomorrow_not_1st"/>
+    </ingredients>
+  </RecipeSection>
+
+  <!-- a recipe that is available, by having a configured product group
+       that has items available only after tomorrow
+  -->
+  <Recipe id="rec_by_after_tomorrow">
+    <variants>
+      <RecipeVariant ref="rec_variant_by_after_tomorrow"/>
+    </variants>
+    <productionStatus>ACTIVE</productionStatus>
+  </Recipe>
+
+  <RecipeVariant id="rec_variant_by_after_tomorrow">
+    <name>main</name>
+    <sections>
+      <RecipeSection ref="rec_section_by_after_tomorrow"/>
+    </sections>
+  </RecipeVariant>
+  
+  <RecipeSection id="rec_section_by_after_tomorrow">
+    <ingredients>
+      <ConfiguredProductGroup ref="cpg_by_after_tomorrow"/>
+    </ingredients>
+  </RecipeSection>
+
+  <!-- a recipe that is available, by having a configured product group
+       that has items available only in three days
+  -->
+  <Recipe id="rec_in_three_days">
+    <variants>
+      <RecipeVariant ref="rec_variant_in_three_days"/>
+    </variants>
+    <productionStatus>ACTIVE</productionStatus>
+  </Recipe>
+
+  <RecipeVariant id="rec_variant_in_three_days">
+    <name>main</name>
+    <sections>
+      <RecipeSection ref="rec_section_in_three_days"/>
+    </sections>
+  </RecipeVariant>
+  
+  <RecipeSection id="rec_section_in_three_days">
+    <ingredients>
+      <ConfiguredProductGroup ref="cpg_in_three_days"/>
+    </ingredients>
+  </RecipeSection>
+
+  <!-- a recipe that has a required ingredient
+  -->
+  <Recipe id="rec_with_required_ingredient">
+    <variants>
+      <RecipeVariant ref="rec_variant_with_required_ingredient"/>
+    </variants>
+    <productionStatus>ACTIVE</productionStatus>
+  </Recipe>
+
+  <RecipeVariant id="rec_variant_with_required_ingredient">
+    <name>main</name>
+    <sections>
+      <RecipeSection ref="rec_section_with_required_ingredient"/>
+    </sections>
+  </RecipeVariant>
+  
+  <RecipeSection id="rec_section_with_required_ingredient">
+    <ingredients>
+      <ConfiguredProduct ref="cp_required"/>
+    </ingredients>
+  </RecipeSection>
+
+  <!-- a recipe that has a required ingredient, with a different SKU
+  -->
+  <Recipe id="rec_with_required_ingredient_4569">
+    <variants>
+      <RecipeVariant ref="rec_variant_with_required_ingredient_4569"/>
+    </variants>
+    <productionStatus>ACTIVE</productionStatus>
+  </Recipe>
+
+  <RecipeVariant id="rec_variant_with_required_ingredient_4569">
+    <name>main</name>
+    <sections>
+      <RecipeSection ref="rec_section_with_required_ingredient_4569"/>
+    </sections>
+  </RecipeVariant>
+  
+  <RecipeSection id="rec_section_with_required_ingredient_4569">
+    <ingredients>
+      <ConfiguredProduct ref="cp_required_4569"/>
+    </ingredients>
+  </RecipeSection>
+
+  <!-- a recipe that has no required ingredient
+  -->
+  <Recipe id="rec_with_no_required_ingredient">
+    <variants>
+      <RecipeVariant ref="rec_variant_with_no_required_ingredient"/>
+    </variants>
+    <productionStatus>ACTIVE</productionStatus>
+  </Recipe>
+
+  <RecipeVariant id="rec_variant_with_no_required_ingredient">
+    <name>main</name>
+    <sections>
+      <RecipeSection ref="rec_section_with_no_required_ingredient"/>
+    </sections>
+  </RecipeVariant>
+  
+  <RecipeSection id="rec_section_with_no_required_ingredient">
+    <ingredients>
+      <ConfiguredProduct ref="cp_not_required"/>
+    </ingredients>
+  </RecipeSection>
+
+
+  <!-- a recipe that has a required ingredient in a configured product group
+  -->
+  <Recipe id="rec_with_required_ingredient_cpg">
+    <variants>
+      <RecipeVariant ref="rec_variant_with_required_ingredient_cpg"/>
+    </variants>
+    <productionStatus>ACTIVE</productionStatus>
+  </Recipe>
+
+  <RecipeVariant id="rec_variant_with_required_ingredient_cpg">
+    <name>main</name>
+    <sections>
+      <RecipeSection ref="rec_section_with_required_ingredient_cpg"/>
+    </sections>
+  </RecipeVariant>
+  
+  <RecipeSection id="rec_section_with_required_ingredient_cpg">
+    <ingredients>
+      <ConfiguredProductGroup ref="cpg_required"/>
+    </ingredients>
+  </RecipeSection>
+
+  <!-- a recipe that has a required ingredient, with a different SKU
+  -->
+  <Recipe id="rec_with_required_ingredient_cpg_4569">
+    <variants>
+      <RecipeVariant ref="rec_variant_with_required_ingredient_cpg_4569"/>
+    </variants>
+    <productionStatus>ACTIVE</productionStatus>
+  </Recipe>
+
+  <RecipeVariant id="rec_variant_with_required_ingredient_cpg_4569">
+    <name>main</name>
+    <sections>
+      <RecipeSection ref="rec_section_with_required_ingredient_cpg_4569"/>
+    </sections>
+  </RecipeVariant>
+  
+  <RecipeSection id="rec_section_with_required_ingredient_cpg_4569">
+    <ingredients>
+      <ConfiguredProductGroup ref="cpg_required_4569"/>
+    </ingredients>
+  </RecipeSection>
+
+  <!-- a recipe that has no required ingredient
+  -->
+  <Recipe id="rec_with_no_required_ingredient_cpg">
+    <variants>
+      <RecipeVariant ref="rec_variant_with_no_required_ingredient_cpg"/>
+    </variants>
+    <productionStatus>ACTIVE</productionStatus>
+  </Recipe>
+
+  <RecipeVariant id="rec_variant_with_no_required_ingredient_cpg">
+    <name>main</name>
+    <sections>
+      <RecipeSection ref="rec_section_with_no_required_ingredient_cpg"/>
+    </sections>
+  </RecipeVariant>
+  
+  <RecipeSection id="rec_section_with_no_required_ingredient_cpg">
+    <ingredients>
+      <ConfiguredProductGroup ref="cpg_not_required"/>
+    </ingredients>
+  </RecipeSection>
+
+
+  <!-- a real-world test scenario -->
+  <Recipe id="rec_wk_citrus_stm_snwpeas">
+        <variants>
+                <RecipeVariant ref="rec_wk_citrus_stm_snwpeas_default"/>
+         </variants>
+        <theme_color>DEFAULT</theme_color>
+        <ingredientsMedia>
+                <Html ref="4722129"/>
+        </ingredientsMedia>
+        <keywords>Monday-to-Friday Chicken, Michele Urvater</keywords>
+        <titleImage>
+                <Image ref="4484910"/>
+        </titleImage>
+        <classifications>
+                <DomainValue ref="rec_class_course_entree"/>
+                <DomainValue ref="rec_class_cuisine_asian"/>
+                <DomainValue ref="rec_class_method_poach"/>
+                <DomainValue ref="rec_class_serves_2_4"/>
+                <DomainValue ref="rec_class_skill_easy"/>
+                <DomainValue ref="rec_class_time_30"/>
+                <DomainValue ref="rec_classif_diet_gluten"/>
+                <DomainValue ref="rec_classif_diet_dairy"/>
+                <DomainValue ref="rec_classif_diet_light"/>
+                <DomainValue ref="rec_classif_spec_kids"/>
+                <DomainValue ref="rec_classif_spec_budget"/>
+                <DomainValue ref="rec_classif_spec_family"/>
+                <DomainValue ref="rec_class_ingrdt_chx"/>
+        </classifications>
+        <preparationMedia>
+                <Html ref="4722158"/>
+        </preparationMedia>
+        <copyrightMedia>
+                <Html ref="4614417"/>
+        </copyrightMedia>
+        <productionStatus>ACTIVE</productionStatus>
+        <description>
+                <Html ref="4722100"/>
+        </description>
+        <photo>
+                <Image ref="4484907"/>
+        </photo>
+        <source>
+                <RecipeSource ref="ckb_wk_mdayfday_chx"/>
+        </source>  
+        <name>Citrus Chicken Steamed with Snow Peas</name>
+  </Recipe>
+
+  <RecipeVariant id="rec_wk_citrus_stm_snwpeas_default">
+        <sections>
+                <RecipeSection ref="rec_wk_citrus_stm_snwpeas_default_main"/>
+                <RecipeSection ref="rec_wk_citrus_stm_snwpeas_optionals"/>
+                <RecipeSection ref="rec_wk_citrus_stm_snwpeas_default_Staple"/>
+        </sections>
+  </RecipeVariant>
+  
+  <RecipeSection id="rec_wk_citrus_stm_snwpeas_default_main">
+        <SHOW_QUANTITY>true</SHOW_QUANTITY>
+        <ingredients>
+                <ConfiguredProductGroup ref="clig_chkbrst_bnlskls_2whole"/>
+                <ConfiguredProductGroup ref="clig_lemons"/>
+                <ConfiguredProductGroup ref="clig_peas_snow_snap_half_lb"/>
+                <ConfiguredProductGroup ref="clig_ginger_root"/>
+                <ConfiguredProductGroup ref="clig_scallions"/>
+                <ConfiguredProductGroup ref="clig_pepper_crshd_red"/>
+        </ingredients>
+  </RecipeSection>
+  
+  <RecipeSection id="rec_wk_citrus_stm_snwpeas_default_Staple">
+        <SHOW_QUANTITY>false</SHOW_QUANTITY>
+        <ingredients>
+                <ConfiguredProductGroup ref="clig_salt"/>
+        </ingredients>
+        <name>You May Already Have</name>
+  </RecipeSection>
+
+  <RecipeSection id="rec_wk_citrus_stm_snwpeas_optionals">
+        <SHOW_QUANTITY>false</SHOW_QUANTITY>
+        <ingredients>
+                <ConfiguredProductGroup ref="clig_cilantro_fr"/>
+                <ConfiguredProductGroup ref="clig_parsley_ital_flat"/>
+        </ingredients>
+        <name>Optional Ingredients</name>
+  </RecipeSection>
+
+  <ConfiguredProductGroup id="clig_chkbrst_bnlskls_2whole">
+        <required>true</required>
+        <items>
+                <ConfiguredProduct ref="chckn_brsts_sb_2whl"/>
+                <ConfiguredProduct ref="chckn_sb_whl_abf_2"/>
+        </items>
+  </ConfiguredProductGroup>
+  
+  <ConfiguredProductGroup id="clig_lemons">
+        <required>true</required>
+        <items>
+                <ConfiguredProduct ref="clig_lemons_2"/>
+                <ConfiguredProduct ref="clig_lemons_6"/>
+        </items>
+  </ConfiguredProductGroup>
+
+  <ConfiguredProductGroup id="clig_peas_snow_snap_half_lb">
+        <items>
+                <ConfiguredProduct ref="clig_peas_snow_snap_half_lb_1"/>
+                <ConfiguredProduct ref="clig_peas_snow_snap_half_lb_2"/>
+                <ConfiguredProduct ref="clig_peas_snow_snap_half_lb_3"/>
+        </items>
+  </ConfiguredProductGroup>
+
+  <ConfiguredProductGroup id="clig_ginger_root">
+        <required>true</required>
+        <items>
+                <ConfiguredProduct ref="cf59f0e8-ec5b-4671-ae8a-5d63a54d6409"/>
+        </items>
+  </ConfiguredProductGroup>
+
+  <ConfiguredProductGroup id="clig_scallions">
+        <required>true</required>
+        <items>
+                <ConfiguredProduct ref="clig_scallions_1"/>
+                <ConfiguredProduct ref="clig_scallions_2"/>
+        </items>
+  </ConfiguredProductGroup>
+
+  <ConfiguredProductGroup id="clig_pepper_crshd_red">
+        <required>false</required>
+        <items>
+                <ConfiguredProduct ref="pper_crushed_red"/>
+                <ConfiguredProduct ref="pper_crshed_red_coast"/>
+                <ConfiguredProduct ref="ppr_crushed_red_spsprme"/>
+        </items>
+  </ConfiguredProductGroup>
+
+  <ConfiguredProductGroup id="clig_salt">
+        <required>false</required>
+        <items>
+                <ConfiguredProduct ref="169c46d5-fd1f-4455-abc5-5c4b13456a92"/>
+                <ConfiguredProduct ref="6a4a6c2e-96d4-4560-9541-70fb9f55cce1"/>
+                <ConfiguredProduct ref="0320679b-de6b-4fa2-8d54-04accbe118e3"/>
+                <ConfiguredProduct ref="c2c82e13-aad4-40a1-86f5-9551c715df5e"/>
+                <ConfiguredProduct ref="32623aa0-1199-4984-af10-fc9b7dde92a7"/>
+                <ConfiguredProduct ref="bebe0767-6c62-4cbe-b528-c2add95a3ef9"/>
+                <ConfiguredProduct ref="clig_salt_1"/>
+                <ConfiguredProduct ref="clig_salt_2"/>
+        </items>
+  </ConfiguredProductGroup>
+
+  <ConfiguredProductGroup id="clig_cilantro_fr">
+        <required>true</required>
+        <items>
+                <ConfiguredProduct ref="clig_cilantro_fr_1"/>
+                <ConfiguredProduct ref="clig_cilantro_fr_2"/>
+        </items>
+  </ConfiguredProductGroup>
+
+
+  <ConfiguredProduct id="chckn_brsts_sb_2whl">
+        <SKU>
+                <Sku ref="MEA0004716"/>
+        </SKU>
+        <REQUIRED>true</REQUIRED>
+        <INVISIBLE>false</INVISIBLE>
+        <SALES_UNIT>EA</SALES_UNIT>
+        <OPTIONS>C_PL_PAK=ST,C_PL_MAR=N</OPTIONS>
+        <QUANTITY>2.0</QUANTITY>
+  </ConfiguredProduct>
+ 
+  <ConfiguredProduct id="chckn_sb_whl_abf_2">
+        <SKU>
+                <Sku ref="MEA0004715"/>
+        </SKU>
+        <REQUIRED>true</REQUIRED>
+        <INVISIBLE>false</INVISIBLE>
+        <SALES_UNIT>EA</SALES_UNIT>
+        <OPTIONS>C_PL_PAK=ST,C_PL_MAR=N</OPTIONS>
+        <QUANTITY>2.0</QUANTITY>
+  </ConfiguredProduct>
+
+  <ConfiguredProduct id="clig_lemons_2">
+        <SKU>
+                <Sku ref="FRU0005131"/>
+        </SKU>
+        <REQUIRED>true</REQUIRED>
+        <INVISIBLE>false</INVISIBLE>
+        <SALES_UNIT>EA</SALES_UNIT>
+        <QUANTITY>3.0</QUANTITY>
+  </ConfiguredProduct>
+  
+  <ConfiguredProduct id="clig_lemons_6">
+        <SKU>
+                <Sku ref="FRU0005133"/>
+        </SKU>
+        <REQUIRED>true</REQUIRED>
+        <SALES_UNIT>EA</SALES_UNIT>
+        <QUANTITY>3.0</QUANTITY>
+  </ConfiguredProduct>
+  
+  <ConfiguredProduct id="clig_peas_snow_snap_half_lb_1">
+        <SKU>
+                <Sku ref="VEG0010983"/>
+        </SKU>
+        <REQUIRED>true</REQUIRED>
+        <SALES_UNIT>LB</SALES_UNIT>
+        <QUANTITY>0.5</QUANTITY>
+  </ConfiguredProduct>
+  
+  
+  <ConfiguredProduct id="clig_peas_snow_snap_half_lb_2">
+        <SKU>
+                <Sku ref="VEG0010984"/>
+        </SKU>
+        <REQUIRED>true</REQUIRED>
+        <SALES_UNIT>LB</SALES_UNIT>
+        <QUANTITY>0.5</QUANTITY>
+  </ConfiguredProduct>
+  
+  
+  <ConfiguredProduct id="clig_peas_snow_snap_half_lb_3">
+        <SKU>
+                <Sku ref="VEG0067476"/>
+        </SKU>
+        <REQUIRED>true</REQUIRED>
+        <SALES_UNIT>LB</SALES_UNIT>
+        <QUANTITY>0.5</QUANTITY>
+  </ConfiguredProduct>
+
+  <ConfiguredProduct id="cf59f0e8-ec5b-4671-ae8a-5d63a54d6409">
+        <SKU>
+                <Sku ref="VEG0011320"/>
+        </SKU>
+        <REQUIRED>false</REQUIRED>
+        <INVISIBLE>false</INVISIBLE>
+        <SALES_UNIT>EA</SALES_UNIT>
+        <QUANTITY>0.5</QUANTITY>
+  </ConfiguredProduct>
+
+  <ConfiguredProduct id="clig_scallions_1">
+        <SKU>
+                <Sku ref="VEG0011236"/>
+        </SKU>
+        <REQUIRED>true</REQUIRED>
+        <SALES_UNIT>EA</SALES_UNIT>
+        <QUANTITY>1.0</QUANTITY>
+  </ConfiguredProduct>
+
+  <ConfiguredProduct id="clig_scallions_2">
+        <SKU>
+                <Sku ref="VEG0064998"/>
+        </SKU>
+        <REQUIRED>true</REQUIRED>
+        <SALES_UNIT>EA</SALES_UNIT>
+        <QUANTITY>1.0</QUANTITY>
+  </ConfiguredProduct>
+
+  <ConfiguredProduct id="pper_crushed_red">
+        <SKU>
+                <Sku ref="SPE0058898"/>
+        </SKU>
+        <REQUIRED>false</REQUIRED>
+        <INVISIBLE>false</INVISIBLE>
+        <SALES_UNIT>EA</SALES_UNIT>
+        <QUANTITY>1.0</QUANTITY>
+  </ConfiguredProduct>
+ 
+  <ConfiguredProduct id="pper_crshed_red_coast">
+        <SKU>
+                <Sku ref="SPE0065382"/>
+        </SKU>
+        <REQUIRED>false</REQUIRED>
+        <INVISIBLE>false</INVISIBLE>
+        <SALES_UNIT>EA</SALES_UNIT>
+        <QUANTITY>1.0</QUANTITY>
+  </ConfiguredProduct>
+ 
+  <ConfiguredProduct id="ppr_crushed_red_spsprme">
+        <SKU>
+                <Sku ref="GRO002566"/>
+        </SKU>
+        <REQUIRED>false</REQUIRED>
+        <INVISIBLE>false</INVISIBLE>
+        <SALES_UNIT>EA</SALES_UNIT>
+        <QUANTITY>1.0</QUANTITY>
+  </ConfiguredProduct>
+ 
+  <ConfiguredProduct id="169c46d5-fd1f-4455-abc5-5c4b13456a92">
+        <SKU>
+                <Sku ref="SPE0000778"/>
+        </SKU>
+        <REQUIRED>false</REQUIRED>
+        <INVISIBLE>false</INVISIBLE>
+        <SALES_UNIT>EA</SALES_UNIT>
+        <QUANTITY>1.0</QUANTITY>
+  </ConfiguredProduct>
+ 
+  <ConfiguredProduct id="6a4a6c2e-96d4-4560-9541-70fb9f55cce1">
+        <SKU>
+                <Sku ref="SPE0000779"/>
+        </SKU>
+        <REQUIRED>false</REQUIRED>
+        <INVISIBLE>false</INVISIBLE>
+        <SALES_UNIT>EA</SALES_UNIT>
+        <QUANTITY>1.0</QUANTITY>
+  </ConfiguredProduct>
+ 
+  <ConfiguredProduct id="0320679b-de6b-4fa2-8d54-04accbe118e3">
+        <SKU>
+                <Sku ref="SPE0058846"/>
+        </SKU>
+        <REQUIRED>false</REQUIRED>
+        <INVISIBLE>false</INVISIBLE>
+        <SALES_UNIT>EA</SALES_UNIT>
+        <QUANTITY>1.0</QUANTITY>
+  </ConfiguredProduct>
+
+  <ConfiguredProduct id="c2c82e13-aad4-40a1-86f5-9551c715df5e">
+        <SKU>
+                <Sku ref="SPE0058847"/>
+        </SKU>
+        <REQUIRED>false</REQUIRED>
+        <INVISIBLE>false</INVISIBLE>
+        <SALES_UNIT>EA</SALES_UNIT>
+        <QUANTITY>1.0</QUANTITY>
+  </ConfiguredProduct>
+
+  <ConfiguredProduct id="32623aa0-1199-4984-af10-fc9b7dde92a7">
+        <SKU>
+                <Sku ref="GRO0058411"/>
+        </SKU>
+        <REQUIRED>false</REQUIRED>
+        <INVISIBLE>false</INVISIBLE>
+        <SALES_UNIT>EA</SALES_UNIT>
+        <QUANTITY>1.0</QUANTITY>
+  </ConfiguredProduct>
+
+  <ConfiguredProduct id="bebe0767-6c62-4cbe-b528-c2add95a3ef9">
+        <SKU>
+                <Sku ref="GRO0058273"/>
+        </SKU>
+        <REQUIRED>false</REQUIRED>
+        <INVISIBLE>false</INVISIBLE>
+        <SALES_UNIT>EA</SALES_UNIT>
+        <QUANTITY>1.0</QUANTITY>
+  </ConfiguredProduct>
+
+  <ConfiguredProduct id="clig_salt_1">
+        <SKU>
+                <Sku ref="GRO002572"/>
+        </SKU>
+        <REQUIRED>false</REQUIRED>
+        <SALES_UNIT>EA</SALES_UNIT>
+        <QUANTITY>1.0</QUANTITY>
+  </ConfiguredProduct>
+
+  <ConfiguredProduct id="clig_salt_2">
+        <SKU>
+                <Sku ref="GRO002570"/>
+        </SKU>
+        <REQUIRED>false</REQUIRED>
+        <SALES_UNIT>EA</SALES_UNIT>
+        <QUANTITY>1.0</QUANTITY>
+  </ConfiguredProduct>
+
+  <ConfiguredProduct id="clig_cilantro_fr_1">
+        <SKU>
+                <Sku ref="VEG0011088"/>
+        </SKU>
+        <REQUIRED>true</REQUIRED>
+        <SALES_UNIT>EA</SALES_UNIT>
+        <QUANTITY>1.0</QUANTITY>
+  </ConfiguredProduct>
+
+  <ConfiguredProduct id="clig_cilantro_fr_2">
+        <SKU>
+                <Sku ref="VEG0011087"/>
+        </SKU>
+        <REQUIRED>true</REQUIRED>
+        <SALES_UNIT>EA</SALES_UNIT>
+        <QUANTITY>1.0</QUANTITY>
+  </ConfiguredProduct>
+
+  <Sku id="MEA0004716">
+        <KOSHER>false</KOSHER>
+        <VARIATION_MATRIX>
+                <DomainValue ref="grade_Grade_A_All_Natural"/>
+        </VARIATION_MATRIX>
+        <ORGANIC>false</ORGANIC>
+  </Sku>
+
+  <Sku id="MEA0004715">
+        <KOSHER>false</KOSHER>
+        <VARIATION_MATRIX>
+                <DomainValue ref="grade_Free_Range"/>
+        </VARIATION_MATRIX>
+        <ORGANIC>false</ORGANIC>
+  </Sku>
+
+  <Sku id="FRU0005131">
+        <KOSHER>false</KOSHER>
+        <VARIATION_MATRIX>
+                <DomainValue ref="source_Farm_Fresh"/>
+                <DomainValue ref="size_Medium"/>
+        </VARIATION_MATRIX>
+        <ORGANIC>false</ORGANIC>
+  </Sku>
+
+  <Sku id="FRU0005133">
+        <KOSHER>false</KOSHER>
+        <VARIATION_MATRIX>
+                <DomainValue ref="source_Organic"/>
+                <DomainValue ref="size_Small"/>
+        </VARIATION_MATRIX>
+        <ORGANIC>false</ORGANIC>
+  </Sku>
+
+  <Sku id="VEG0010983">
+        <KOSHER>false</KOSHER>
+        <VARIATION_MATRIX>
+                <DomainValue ref="source_Farm_Fresh"/>
+        </VARIATION_MATRIX>
+        <ORGANIC>false</ORGANIC>
+  </Sku>
+
+  <Sku id="VEG0010984">
+        <KOSHER>false</KOSHER>
+        <VARIATION_MATRIX>
+                <DomainValue ref="source_Farm_Fresh"/>
+        </VARIATION_MATRIX>
+        <ORGANIC>false</ORGANIC>
+  </Sku>
+
+  <Sku id="VEG0067476">
+        <KOSHER>false</KOSHER>
+        <VARIATION_MATRIX>
+                <DomainValue ref="source_Organic"/>
+        </VARIATION_MATRIX>
+        <ORGANIC>false</ORGANIC>
+  </Sku>
+  
+  <Sku id="VEG0011320">
+        <KOSHER>false</KOSHER>
+        <VARIATION_MATRIX>
+                <DomainValue ref="source_Farm_Fresh"/>
+        </VARIATION_MATRIX>
+        <ORGANIC>false</ORGANIC>
+  </Sku>
+  
+  <Sku id="VEG0011236">
+        <KOSHER>false</KOSHER>
+        <VARIATION_MATRIX>
+                <DomainValue ref="source_Farm_Fresh"/>
+                <DomainValue ref="size_bunch"/>
+        </VARIATION_MATRIX>
+        <ORGANIC>false</ORGANIC>
+  </Sku>
+
+  <Sku id="VEG0064998">
+        <KOSHER>false</KOSHER>
+        <VARIATION_MATRIX>
+                <DomainValue ref="source_Organic"/>
+                <DomainValue ref="size_bunch"/>
+        </VARIATION_MATRIX>
+        <ORGANIC>false</ORGANIC>
+  </Sku>
+
+  <Sku id="SPE0058898">
+        <KOSHER>false</KOSHER>
+        <ORGANIC>false</ORGANIC>
+  </Sku>
+
+  <Sku id="SPE0065382">
+        <KOSHER>false</KOSHER>
+        <ORGANIC>false</ORGANIC>
+  </Sku>
+
+  <Sku id="GRO002566">
+        <KOSHER>false</KOSHER>
+        <ORGANIC>false</ORGANIC>
+  </Sku>
+
+  <Sku id="SPE0000778">
+        <KOSHER>false</KOSHER>
+        <ORGANIC>false</ORGANIC>
+  </Sku>
+  
+  <Sku id="SPE0000779">
+        <KOSHER>false</KOSHER>
+        <ORGANIC>false</ORGANIC>
+  </Sku>
+
+  <Sku id="SPE0058846">
+        <KOSHER>false</KOSHER>
+        <ORGANIC>false</ORGANIC>
+  </Sku>
+
+  <Sku id="SPE0058847">
+        <KOSHER>false</KOSHER>
+        <ORGANIC>false</ORGANIC>
+  </Sku>
+
+  <Sku id="GRO0058411">
+        <KOSHER>false</KOSHER>
+        <ORGANIC>false</ORGANIC>
+  </Sku>
+
+  <Sku id="GRO0058273">
+        <KOSHER>false</KOSHER>
+        <ORGANIC>false</ORGANIC>
+  </Sku>
+
+  <Sku id="GRO002572">
+        <KOSHER>false</KOSHER>
+        <ORGANIC>false</ORGANIC>
+  </Sku>
+
+  <Sku id="GRO002570">
+        <KOSHER>false</KOSHER>
+        <ORGANIC>false</ORGANIC>
+  </Sku>
+
+  <Sku id="VEG0011088">
+        <KOSHER>false</KOSHER>
+        <VARIATION_MATRIX>
+                <DomainValue ref="source_Farm_Fresh"/>
+        </VARIATION_MATRIX>
+        <ORGANIC>false</ORGANIC>
+  </Sku>
+
+  <Sku id="VEG0011087">
+        <KOSHER>false</KOSHER>
+        <VARIATION_MATRIX>
+                <DomainValue ref="source_Organic"/>
+        </VARIATION_MATRIX>
+        <ORGANIC>false</ORGANIC>
+  </Sku>
+
+
+  <Product id="citrus_products">
+    <skus>
+	    <Sku ref="FRU0004716"/>
+	    <Sku ref="FRU0004715"/>
+	    <Sku ref="FRU0005131"/>              
+	    <Sku ref="FRU0005133"/>
+	    <Sku ref="VEG0010983"/>
+	    <Sku ref="VEG0010984"/>
+	    <Sku ref="VEG0067476"/>
+	    <Sku ref="VEG0011320"/>
+	    <Sku ref="VEG0011236"/>
+	    <Sku ref="VEG0064998"/>
+	    <Sku ref="SPE0058898"/>
+	    <Sku ref="SPE0065382"/>
+	    <Sku ref="GRO002566"/>
+	    <Sku ref="SPE0000778"/>
+	    <Sku ref="SPE0000779"/>
+	    <Sku ref="SPE0058846"/>
+	    <Sku ref="SPE0058847"/>
+	    <Sku ref="GRO0058411"/>
+	    <Sku ref="GRO0058273"/>
+	    <Sku ref="GRO002572"/>
+	    <Sku ref="GRO002570"/>
+	    <Sku ref="VEG0011088"/>
+	    <Sku ref="VEG0011087"/>
+	 </skus>
+  </Product>
+
+  <Product id="product_multi_sku">
+    <skus>
+	    <Sku ref="FRU0004716"/>
+	    <Sku ref="FRU0004715"/>
+    </skus>
+  </Product>
+
+  <Product id="product_multi_variation_options">
+    <skus>
+	    <Sku ref="FRU0004715"/>
+    </skus>
+  </Product>
+
+  <Product id="product_multi_sales_units">
+    <skus>
+	    <Sku ref="FRU0005131"/>
+    </skus>
+  </Product>
+
+  <Product id="product_autoconfigurable">
+    <skus>
+	    <Sku ref="FRU0005133"/>
+    </skus>
+  </Product>
+
+  <Product id="product_autoconfigurable_variation_options">
+    <skus>
+	    <Sku ref="VEG0010983"/>
+    </skus>
+  </Product>
+
+  <DomainValue id="grade_Prime">
+    <Label>prime</Label>
+  </DomainValue>
+  
+</Content>

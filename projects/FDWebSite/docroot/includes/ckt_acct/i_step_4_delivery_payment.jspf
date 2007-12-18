@@ -1,0 +1,176 @@
+<%@ page import='com.freshdirect.delivery.depot.*'%>
+<%@ page import='com.freshdirect.payment.EnumPaymentMethodType'%>
+<%@ page import='com.freshdirect.customer.EnumUnattendedDeliveryFlag'%>
+<%@ page import='com.freshdirect.framework.util.NVL'%>
+<%!
+java.text.SimpleDateFormat cutoffDateFormat = new java.text.SimpleDateFormat("h:mm a 'on' EEEE, MM/d/yy");
+%>
+<%
+    boolean isDepotAddress = false;
+    ErpDepotAddressModel depotAddress = null;
+	String hamptonsDepotCode ="HAM";
+	String depotCode=null;
+    String depotName = "";
+    
+    if (cart instanceof FDOrderI) {
+    	isDepotAddress = ((FDOrderI)cart).getDeliveryAddress() instanceof ErpDepotAddressModel ? true : false;
+    	if (isDepotAddress) {
+    		depotAddress = (ErpDepotAddressModel) ((FDOrderI)cart).getDeliveryAddress() ;
+    	}
+    } else {
+    	isDepotAddress = user.getShoppingCart().getDeliveryAddress() instanceof ErpDepotAddressModel ? true : false;
+    	if (isDepotAddress) {
+    		depotAddress = (ErpDepotAddressModel) user.getShoppingCart().getDeliveryAddress(); 
+    	}
+    }
+    
+	if (isDepotAddress && depotAddress!=null) {
+		if(depotAddress.isPickup()){
+			DlvDepotModel depotModel = com.freshdirect.fdstore.FDDepotManager.getInstance().getDepotByLocationId(depotAddress.getLocationId());
+			if (depotModel!=null) {
+				depotName = depotModel.getName();
+				depotCode = depotModel.getDepotCode();
+			}
+		}
+    }
+
+    boolean showModify=true;
+    if (request.getRequestURI().toLowerCase().indexOf("step_4_receipt")>-1 || request.getRequestURI().toLowerCase().indexOf("order_detail")>-1 ){
+        showModify = false;
+    }
+boolean isShowSmaller = request.getRequestURI().indexOf("step_4_receipt") > -1; 
+String pymtDetailWidth="693";
+if (isShowSmaller) pymtDetailWidth="630";
+String lineWidth = isShowSmaller?"290":"310";
+%>
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=pymtDetailWidth%>">
+<TR VALIGN="TOP">
+    <TD WIDTH="290">
+        <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="290">
+        <TR VALIGN="TOP">
+            <TD WIDTH="290" COLSPAN="2"><img src="/media_stat/images/navigation/delivery_info.gif" WIDTH="92" HEIGHT="9" border="0" alt="DELIVERY INFO"><BR><IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=lineWidth%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR></TD>
+        </TR>
+        <TR VALIGN="TOP">
+            <TD WIDTH="10"><BR></TD>
+            <TD WIDTH="280">
+            <font class="space4pix"><br></font>
+            <FONT CLASS="text12">
+<b>Time:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% if (showModify) {%><A HREF="/checkout/step_2_select.jsp">Modify</A><%}%><BR>
+            <font class="space4pix"><br></font>
+            <%=fmtDlvDateTime%><br>
+            <%=deliveryTime%><br>
+            <br>
+<b>Address:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% if (showModify) {%><A HREF="/checkout/step_1_choose.jsp">Modify</A><%}%><font class="space4pix"><br><br></font>
+            <%= dlvAddress.getFirstName() %> <%= dlvAddress.getLastName() %><br>
+            <%if(depotName != null || depotName.length() > 1){%><%=depotName%><br><%}%>         
+            <%= dlvAddress.getAddress1() %><% if(dlvAddress.getApartment()!=null && dlvAddress.getApartment().trim().length()>0) { %>, Apt. <%=dlvAddress.getApartment()%><% } %><BR>
+            <% if(dlvAddress.getAddress2()!=null && dlvAddress.getAddress2().trim().length()>0) {
+            %><%= dlvAddress.getAddress2() %><br>
+            <% }%>
+            <%= dlvAddress.getCity() %>, <%= dlvAddress.getState() %> <%= dlvAddress.getZipCode() %><br>
+            <br>
+            <% if (dlvAddress.getPhone()!=null) { %>
+            Phone: <%= dlvAddress.getPhone().getPhone() %> <%if( !"".equals(dlvAddress.getPhone().getExtension()) ){%>Ext. <%= dlvAddress.getPhone().getExtension() %> <%}%><br>
+            <% } %>
+			<% if (dlvAddress.getAltContactPhone()!=null) { %>
+            Alt Contact: <%= dlvAddress.getAltContactPhone().getPhone() %> <%if( !"".equals(dlvAddress.getAltContactPhone().getExtension()) ){%>Ext. <%= dlvAddress.getAltContactPhone().getExtension() %> <%}%><br>
+            <% } %>
+               <%
+                boolean isPickup = cart instanceof FDOrderI ? 
+                    EnumDeliveryType.PICKUP.equals( ((FDOrderI)cart).getDeliveryType() ) :
+                    dlvAddress instanceof ErpDepotAddressModel && ((ErpDepotAddressModel)dlvAddress).isPickup();
+                if (isPickup) {
+                   if (hamptonsDepotCode.equalsIgnoreCase(depotCode)) {    %>
+                         <br><a href="javascript:popup('/delivery_popup.jsp?location=hamptons','large')">Click here for directions and details</a><br>          
+<%                 } else { %>
+                         <br><a href="javascript:popup('/delivery_popup.jsp','large')">Click here for directions and details</a><br>          
+<%               }
+}
+               %>
+               <br>
+        <%if(!isDepotAddress){%>    
+            <%if(dlvAddress.getInstructions()!= null && !dlvAddress.getInstructions().equals("") && !"NONE".equalsIgnoreCase(dlvAddress.getInstructions())){%>  
+                <font class="text12bold">Special Delivery Instructions:</font><br>              
+                <%=dlvAddress.getInstructions()%><br><br>
+            <%}%>       
+
+            <%if(EnumUnattendedDeliveryFlag.OPT_IN.equals(dlvAddress.getUnattendedDeliveryFlag())){%>  
+                <font class="text12bold">Unattended Delivery:</font><br>              
+                <%=NVL.apply(dlvAddress.getUnattendedDeliveryInstructions(),"OK")%><br><br>
+            <%}%>       
+        <%}else{%>      
+            <%if(depotAddress.getInstructions()!= null && !depotAddress.getInstructions().equals("") && !"NONE".equalsIgnoreCase(depotAddress.getInstructions())){%>    
+            <b>Pickup Instructions:</b><br>
+                <%=depotAddress.getInstructions()%><br><br>
+            <%}%>
+        <%}%>
+<%
+        if (dlvAddress.getAltDelivery() != null && dlvAddress.getAltDelivery().getId() > 0) { %>
+            <font class="text12bold">Alternate delivery</font>:<br>
+            <%= dlvAddress.getAltDelivery().getName()%><br><br> 
+<%           if("NEIGHBOR".equalsIgnoreCase(dlvAddress.getAltDelivery().getDeliveryCode())) {%>
+                <%=dlvAddress.getAltFirstName()%> <%=dlvAddress.getAltLastName()%><br>
+                Apt. #: <%=dlvAddress.getAltApartment()%><br>
+                <%if (dlvAddress.getAltPhone()!=null) {%><%=dlvAddress.getAltPhone().getPhone()%> <%if( !"".equals(dlvAddress.getAltPhone().getExtension()) ){%>Ext. <%= dlvAddress.getAltPhone().getExtension() %> <%}}%><br><br>
+            <%}%>
+        <%}%></FONT>
+		
+		<span class="text12"><b>Please note:</b> any modifications to<br>this order must be completed by<br><%= cutoffDateFormat.format(cart.getDeliveryReservation().getCutoffTime()) %>.</span>
+		<br><br></TD>
+        </TR>
+        </TABLE>
+    </TD>
+    <TD WIDTH="40"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="30" HEIGHT="1" BORDER="0"></TD>
+    <TD WIDTH="300">
+        <img src="/media_stat/images/navigation/payment_info.gif" WIDTH="91" HEIGHT="9" border="0" alt="PAYMENT INFO"><BR>
+        <IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=lineWidth%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+        <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="300">
+        <TR VALIGN="TOP">
+            <TD WIDTH="10"><BR></TD>
+            <TD WIDTH="300">
+            <font class="space4pix"><br></font>
+            <FONT CLASS="text12">
+            <b>Order Total:</b><BR>
+            <font class="space4pix"><br></font>
+            <%= currencyFormatter.format(cart.getTotal()) %>*<BR>
+            <BR>
+			<b><%=paymentMethod.getPaymentMethodType().getDescription()%>:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% if (showModify) {%><A HREF="/checkout/step_3_choose.jsp">Modify</A><%}%><BR>
+            <font class="space4pix"><br></font>
+            <%= paymentMethod.getName()%><BR>
+            <%= paymentMethod.getCardType() %> - <%= paymentMethod.getMaskedAccountNumber() %><br>
+            <BR>
+            <% if(EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {%>
+            <b>Account Address:</b><BR>
+            <font class="space4pix"><br></font>
+            <%= paymentMethod.getName() %><BR>
+            <%= paymentMethod.getAddress1() %><% if(paymentMethod.getApartment()!=null && paymentMethod.getApartment().trim().length()>0) { %>, Apt. <%=paymentMethod.getApartment()%><% } %><BR>
+            <% if(paymentMethod.getAddress2()!=null && paymentMethod.getAddress2().trim().length()>0) { %>
+            <%=paymentMethod.getAddress2()%><BR>
+            <%}%>
+            <%= paymentMethod.getCity() %>, <%= paymentMethod.getState() %> <%= paymentMethod.getZipCode() %><BR><BR>
+            <%}%>
+            <% if(EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())) {%>
+            <b>Billing Address:</b><BR>
+            <font class="space4pix"><br></font>
+            <%= paymentMethod.getName() %><BR>
+            <%= paymentMethod.getAddress1() %><% if(paymentMethod.getApartment()!=null && paymentMethod.getApartment().trim().length()>0) { %>, Apt. <%=paymentMethod.getApartment()%><% } %><BR>
+            <% if(paymentMethod.getAddress2()!=null && paymentMethod.getAddress2().trim().length()>0) { %>
+            <%=paymentMethod.getAddress2()%><BR>
+            <%}%>
+            <%= paymentMethod.getCity() %>, <%= paymentMethod.getState() %> <%= paymentMethod.getZipCode() %><BR><BR>
+            <%}%>
+            <%
+            if(EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())){%>
+                <b>Billing Reference/Client Code:</b><BR>
+                <font class="space4pix"><br></font>
+                <%= paymentMethod.getBillingRef() %><br>
+            <%
+            }%>
+			
+            </FONT>
+            </TD>
+        </TR>
+        </TABLE>
+        </TD>
+    </TR>
+</TABLE>

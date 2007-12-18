@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE component-specification PUBLIC
+  "-//Apache Software Foundation//Tapestry Specification 3.0//EN"
+  "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<component-specification class="com.freshdirect.cms.ui.tapestry.component.ContentField"
+    allow-body="no"
+    allow-informal-parameters="yes">
+    
+    <description>Renders edit-field table row for an AttributeI.</description>
+    
+	<parameter name="field" type="com.freshdirect.cms.ContentNodeI" required="no" default-value="null" direction="auto"/>
+	<parameter name="attribute" type="com.freshdirect.cms.AttributeI" required="yes" direction="auto"/>
+	<parameter name="contextNode" required="no" direction="auto" default-value="null" type="com.freshdirect.cms.context.ContextualContentNodeI"/>
+
+	<property-specification name="currColumn" type="com.freshdirect.cms.ContentNodeI"/>
+	<property-specification name="relCurrKey" type="com.freshdirect.cms.ContentKey"/>
+
+	<component id="tableRow" type="Any" inherit-informal-parameters="yes">
+		<static-binding name="element" value="tr"/>
+	</component>
+	
+	<component id="foreachColumn" type="For">
+		<binding name="source" expression="field.attributes.columns.value.{lookupContentNode()}"/>
+		<binding name="value" expression="currColumn"/>
+	</component>
+
+	<component id="ifGridRelationship" type="If">
+		<binding name="condition" expression='"R" == type.name and field!=null and field.key.type.name=="CmsGridField"'/>
+	</component>
+
+	<component id="ifPrimitiveField" type="If">
+		<binding name="condition" expression='type.name in {"B", "I", "D", "S", "E", "DT"} and (field==null or field.key.type.name not in {"CmsGridField", "CmsCustomField"})'/>
+	</component>
+
+	<component id="ifRelationship" type="If">
+		<binding name="condition" expression='"R" == type.name and (field==null or field.key.type.name not in {"CmsGridField", "CmsCustomField"})'/>
+	</component>
+
+	<component id="ifCustomField" type="If">
+		<binding name="condition" expression='field!=null and field.key.type.name=="CmsCustomField"'/>
+	</component>
+			
+</component-specification>

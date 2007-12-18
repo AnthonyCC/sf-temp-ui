@@ -1,0 +1,22 @@
+		<table width="600" border="0" cellspacing="0" cellpadding="0">
+		<TR>
+			<td width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
+			<TD WIDTH="400" valign="top">
+				<font class="text13">
+				<img src="/media_stat/images/template/about/abo_delivery_hdr.gif" width="361" height="24" alt="" border="0">
+				<font class="space8pix"><BR><br></font>				
+				FreshDirect is all about the food. But a little convenience doesn't hurt. Shop anytime from work or home, sparing yourself both the lines and the schlep. We bring everything directly to you in a FreshDirect refrigerator/freezer truck so the food is protected all the way to your door.
+				<font class="space8pix"><BR><br></font>
+				There is a $40 minimum total per order. There is a nominal delivery fee for home delivery - just $4.95.
+				<font class="space8pix"><BR><br></font>
+				Just tell us where and when you want your delivery by choosing a convenient two-hour delivery window, weekday evenings and all day weekends, seven days a week.
+				<font class="space8pix"><BR><br></font>
+				To find out more about delivery, <a href="/help/delivery_info<% if(user.isDepotUser()){ %>_depot<% } %>.jsp">click here</a>.
+				<font class="space8pix"><BR><br></font>
+				<font class="space8pix"><BR><br></font>
+				</font>
+			</td>
+			<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
+			<td valign="top"><img src="/media_stat/images/template/about/pas_manager_abo.jpg" width="150" height="270" alt="" border="0"></td>
+		</tr>
+		</TABLE>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE page-specification PUBLIC
+  "-//Apache Software Foundation//Tapestry Specification 3.0//EN"
+  "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<page-specification class="org.apache.tapestry.html.BasePage">
+
+    <description>Top menu frame</description>
+
+	<component id="isNotFirefox" type="If">
+		<binding name="condition" expression='requestCycle.requestContext.request.getHeader("User-Agent").indexOf("Firefox") &lt; 0'/>
+	</component>
+    
+</page-specification>

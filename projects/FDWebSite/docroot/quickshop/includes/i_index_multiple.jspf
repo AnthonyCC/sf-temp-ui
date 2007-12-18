@@ -1,0 +1,65 @@
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+
+<table width="535" cellpadding="0" cellspacing="0" border="0">
+	<tr valign="top">
+		<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1"></td>
+		<td width="237" class="text13">
+<fd:CCLCheck>			
+			<font class="text15"><b>Your Shopping Lists</b></font><span style="text-align: right;">&nbsp;&nbsp;&nbsp;<fd:CCLNew/></span>
+			<font class="space2pix"><br><br></font>
+			<font class="text12bold" color="#FF9933">CHANGE OR SHOP FROM YOUR LISTS:</font>
+			<%@ include file="/quickshop/includes/ccl_lists.jspf" %>
+</fd:CCLCheck>
+			<font class="text15"><b>Your Previous Orders</b></font><font class="space2pix"><br><br></font>
+			<font class="text12bold" color="#FF9933">CHOOSE AN ORDER:</font>
+			<font class="space2pix"><br><br><br></font>
+			<%@ include file="/quickshop/includes/order_nav.jspf" %>
+			<b><%= orderNav.toString() %></b>
+		</td>
+		<td width="10"><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
+		<td width="1" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+		<td width="20"><img src="/media_stat/images/layout/clear.gif" width="15" height="1"></td>
+		<%
+		String qsDeptId = "";
+		boolean hasDeptId = false;
+		boolean showLink = false;
+		boolean selected = false;
+		String qsMenuLink = "every_item.jsp";
+		%>
+		<td width="247" class="text13">
+			<fd:GetCustomerRecipeList id="recipes">
+				<div class="text15"><b>Your Recipes</b></div>
+				<div class="text12bold" style="color: #FF9933">REORDER YOUR FAVORITES:</div>
+				<div>
+					<b><a href="/quickshop/your_recipes.jsp">Click here to shop from your previous recipes</a></b>
+					<br><br><br>
+				</div>
+				
+			</fd:GetCustomerRecipeList>
+			
+				
+			<font class="text15"><b>Everything You've<br>Ever Ordered!</b></font><font class="space2pix"><br><br></font>
+				<font class="text12bold" color="#FF9933">CHOOSE DEPARTMENT:</font>
+				<font class="space2pix"><br><br><br></font>
+				<%@ include file="/quickshop/includes/department_nav.jspf" %>
+				<b><%= departmentNav.toString() %></b>
+		</td>
+	</tr>
+	<tr><td colspan="6"><br></td></tr>
+	<tr><td colspan="6" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+	<tr><td colspan="6" align="center"><font class="space4pix"><br><br></font>
+            <%if(FDStoreProperties.isAdServerEnabled()) {%>
+                <SCRIPT LANGUAGE=JavaScript>
+                <!--
+                OAS_AD('QSBottom');
+                //-->
+                </SCRIPT>
+            <%}else{%>
+                <%@ include file="/includes/home/i_banners.jspf" %>
+            <%}%>    
+                <font class="space2pix"><br><br><br></font>
+        </td></tr>
+	<tr><td colspan="6" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+	<tr><td colspan="6" align="center" class="bodyCopy"><br><a href="/index.jsp"><b>Click here to continue shopping from our homepage!</b></a></td></tr>
+</table>
+					

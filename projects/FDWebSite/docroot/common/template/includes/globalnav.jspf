@@ -1,0 +1,121 @@
+<%@ page import='java.util.*'  %>
+<%@ page import='com.freshdirect.fdstore.content.*'  %>
+<%@ page import='com.freshdirect.fdstore.customer.*'  %>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import='com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.*'%>
+<%@ page import='java.net.*'%>
+<%@ taglib uri='oscache' prefix='oscache' %>
+
+<%@ include file="/common/template/includes/globalnav_top.jspf" %>
+<%!
+public ContentNodeModel findDepartment (String deptId) throws FDResourceException {
+		return ContentFactory.getInstance().getContentNodeByName(deptId);
+}
+
+public ContentNodeModel findParentOfCategory (String catId) throws FDResourceException {
+		ContentNodeModel categoryNode = (ContentNodeModel)ContentFactory.getInstance().getContentNodeByName(catId);
+		ContentNodeModel dept = null;
+		if (categoryNode instanceof RecipeCategory) {
+			dept = RecipeDepartment.getDefault();
+		} else {
+		   dept= ((CategoryModel)categoryNode).getDepartment();
+		}
+		return dept;
+}
+
+%>
+<oscache:cache key='<%= "globalNav_"+request.getQueryString() %>' time='0'>
+<%
+try {
+
+String deptId = request.getParameter("deptId");
+String catId = request.getParameter("catId");
+String globalUri = request.getRequestURI();
+
+String thisDept = "";
+
+if (catId != null){
+	ContentNodeModel thisDeptObj = findParentOfCategory (catId);
+	thisDept = thisDeptObj.getContentName();
+} else if (deptId != null) {
+	if ("kosher_temp".equalsIgnoreCase(deptId)){
+		thisDept = "kos";
+	} else {
+		ContentNodeModel thisDeptObj = findDepartment(deptId);
+		thisDept = thisDeptObj.getContentName();
+	}
+} else {
+	//hmmm..if this url contains recipe%.jsp then assume the department is Recipe, since no cat or deptId specified
+	if (globalUri.startsWith("/recipe_dept.jsp") || 
+	    globalUri.startsWith("/recipe_cat.jsp") || 
+	    globalUri.startsWith("/recipe_subcat.jsp") || 
+	    globalUri.startsWith("/recipe.jsp") || 
+	    globalUri.startsWith("/recipe_search.jsp") ) {
+	  thisDept = RecipeDepartment.getDefault().getContentName();
+	}
+}
+
+%>
+<TABLE WIDTH="745" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+<TR><TD><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="6"></TD></TR>
+<%
+	boolean isAtHome = true;
+	if(	globalUri.indexOf("login")> -1 ||
+		globalUri.indexOf("promotion")> -1 ||
+		globalUri.indexOf("newproducts")> -1 ||
+		globalUri.indexOf("quickshop")> -1 || 
+		globalUri.indexOf("checkout")> -1 || 
+		globalUri.indexOf("help")> -1 || 
+		globalUri.indexOf("site_access")> -1 || 
+		globalUri.indexOf("about")> -1  || 
+		globalUri.indexOf("registration")> -1  ||
+		globalUri.indexOf("your_account")> -1 ||
+		globalUri.indexOf("search")> -1 ||
+		globalUri.indexOf("survey")> -1 ||
+		globalUri.indexOf("/department.jsp")> -1 ||
+		globalUri.indexOf("view_cart")> -1){
+		isAtHome = false;
+	}
+	%>
+<TR><TD><% if(!thisDept.equals("") && !thisDept.equalsIgnoreCase("about")){%>
+<img src="/media_stat/images/navigation/global_nav/topnav_<%=thisDept%>.gif" width="745" height="44" alt="" border="0" usemap="#globalNav" vspace="0">
+<%}else{
+		if(isAtHome == true){
+%>
+		<img src="/media_stat/images/navigation/global_nav/topnav_home.gif" width="745" height="44" alt="" border="0" usemap="#globalNav" vspace="0">
+<% } else { %>
+		<img src="/media_stat/images/navigation/global_nav/topnav_off.gif" width="745" height="44" alt="" border="0" usemap="#globalNav" vspace="0">	
+<% }
+	} %></TD></TR><TR><TD><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="3"></TD></TR></TABLE>
+<% } catch (Exception ex) {
+		ex.printStackTrace();
+%><oscache:usecached />
+<% } %></oscache:cache>
+
+<MAP NAME="globalNav">
+<AREA SHAPE="RECT" COORDS="0,0,35,44" HREF="/index.jsp" ALT="Home">
+<AREA SHAPE="RECT" COORDS="35,0,75,22" HREF="/department.jsp?deptId=fru&trk=gnav" ALT="Fruit">
+<AREA SHAPE="RECT" COORDS="75,0,144,22" HREF="/department.jsp?deptId=veg&trk=gnav" ALT="Vegetables">
+<AREA SHAPE="RECT" COORDS="144,0,181,22" HREF="/department.jsp?deptId=mea&trk=gnav" ALT="Meat">
+<AREA SHAPE="RECT" COORDS="181,0,237,22" HREF="/department.jsp?deptId=sea&trk=gnav" ALT="Seafood">
+<AREA SHAPE="RECT" COORDS="237,0,272,22" HREF="/department.jsp?deptId=del&trk=gnav" ALT="Deli">
+<AREA SHAPE="RECT" COORDS="272,0,319,22" HREF="/department.jsp?deptId=che&trk=gnav" ALT="Cheese">
+<AREA SHAPE="RECT" COORDS="319,0,357,22" HREF="/department.jsp?deptId=dai&trk=gnav" ALT="Dairy">
+<AREA SHAPE="RECT" COORDS="380,0,475,22" HREF="/department.jsp?deptId=fdi&trk=gnav" ALT="4-Minute Meals">
+<AREA SHAPE="RECT" COORDS="475,0,563,22" HREF="/department.jsp?deptId=rtc&trk=gnav" ALT="Ready to Cook">
+<AREA SHAPE="RECT" COORDS="563,0,628,22" HREF="/department.jsp?deptId=hmr&trk=gnav" ALT="Heat & Eat">
+<AREA SHAPE="RECT" COORDS="628,0,677,22" HREF="/department.jsp?deptId=bak&trk=gnav" ALT="Bakery">
+<AREA SHAPE="RECT" COORDS="677,0,734,22" HREF="/department.jsp?deptId=cat&trk=gnav" ALT="Catering">
+<AREA SHAPE="RECT" COORDS="35,23,91,44" HREF="/department.jsp?deptId=orgnat&trk=gnav" ALT="Organic">
+<AREA SHAPE="RECT" COORDS="91,23,133,44" HREF="/department.jsp?deptId=local&trk=gnav" ALT="Local">
+<AREA SHAPE="RECT" COORDS="133,23,183,44" HREF="/department.jsp?deptId=kos&trk=gnav" ALT="Kosher">
+<AREA SHAPE="RECT" COORDS="183,23,246,44" HREF="/department.jsp?deptId=our_picks&trk=gnav" ALT="Our Picks">
+<AREA SHAPE="RECT" COORDS="246,23,299,44" HREF="/department.jsp?deptId=rec&trk=gnav" ALT="Recipes">
+<AREA SHAPE="RECT" COORDS="389,23,442,44" HREF="/department.jsp?deptId=cof&trk=gnav" ALT="Coffee">
+<AREA SHAPE="RECT" COORDS="442,23,498,44" HREF="/department.jsp?deptId=gro&trk=gnav" ALT="Grocery">
+<AREA SHAPE="RECT" COORDS="498,23,597,44" HREF="/department.jsp?deptId=hba&trk=gnav" ALT="Health & Beauty">
+<AREA SHAPE="RECT" COORDS="597,23,647,44" HREF="/department.jsp?deptId=big&trk=gnav" ALT="Buy Big">
+<AREA SHAPE="RECT" COORDS="647,23,697,44" HREF="/department.jsp?deptId=fro&trk=gnav" ALT="Frozen">
+<AREA SHAPE="RECT" COORDS="697,23,735,44" HREF="/department.jsp?deptId=win&trk=gnav" ALT="Wine">
+</MAP>

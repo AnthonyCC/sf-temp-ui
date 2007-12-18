@@ -1,0 +1,41 @@
+<table border="0" cellspacing="0" cellpadding="0" width="690">
+	<tr valign="TOP">
+		<td><img src="../images/clear.gif" width="20" height="1" alt="" border="0"></td>
+		<td width="18" rowspan="2" bgcolor="#CC3300"><img src="../images/CC3300_tp_lft_crnr.gif" width="18" height="5" border="0"><br></td>
+		<td width="100%" bgcolor="#CC3300" colspan="2"><img src="../images/CC3300.gif" width="1" height="1"></td>
+		<td width="6" rowspan="2" colspan="2"><img src="../images/CC3300_tp_rt_crnr.gif" width="6" height="5" border="0"></td>
+		<td><img src="../images/clear.gif" width="20" height="1" alt="" border="0"></td>
+	</tr>
+	<tr valign="TOP">
+		<td></td>
+		<td width="10" rowspan="3"><img src="../images/dot_clear.gif" width="10" height="1" border="0"></td>
+		<td width="366"><img src="../images/dot_clear.gif" width="1" height="4" border="0"></td>
+		<td></td>					
+	</tr>
+	<tr valign="TOP">
+		<td></td>
+		<td width="18" bgcolor="#CC3300"><img src="../images/exclaim_CC3300.gif" width="18" height="22" border="0" alt="!"><br></td>
+		<td width="100%" valign="middle">
+			<img src="../images/clear.gif" width="1" height="3" alt="" border="0"><br>
+				<FONT CLASS="text11rbold"><%= errors.getError("resource_error").getDescription() %><br>			
+				</font>
+			<img src="../images/clear.gif" width="1" height="3" alt="" border="0"><br>
+		</td>
+		<td width="5">&nbsp;</td>
+		<td width="1" bgcolor="#CC3300"><img src="../images/CC3300.gif" width="1" height="1"></td>
+		<td></td>						
+	</tr>
+	<tr valign="TOP">
+		<td></td>
+		<td width="18" rowspan="2"><img src="../images/CC3300_bt_lft_crnr.gif" width="18" height="5" border="0"><br></td>
+		<td width="100%"><img src="../images/dot_clear.gif" width="1" height="4"></td>
+		<td width="6" rowspan="2" colspan="2"><img src="../images/CC3300_bt_rt_crnr.gif" width="6" height="5" border="0"></td>
+		<td></td>					
+	</tr>
+	<tr valign="TOP">
+		<td></td>
+		<td width="100%" bgcolor="#CC3300" colspan="2"><img src="../images/CC3300.gif" width="1" height="1" border="0"></td>
+		<td></td>					
+	</tr>
+</table>
+<br>	

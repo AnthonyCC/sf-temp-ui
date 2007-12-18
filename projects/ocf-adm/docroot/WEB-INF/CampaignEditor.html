@@ -1,0 +1,72 @@
+<body jwcid="@Border" title="Campaigns">
+<form jwcid="@Form" delegate="ognl:delegate" listener="ognl:listeners.saveOrUpdateCampaign" class="marginForm">
+	<span jwcid="@Conditional" condition="ognl:beans.delegate.hasErrors">
+		<span jwcid="@Delegator" delegate="ognl:beans.delegate.firstError">Error Message</span>
+	</span>
+
+	<table class="form">
+		<tr>
+			<th colspan="2">Campaign</th>
+		</tr>
+		
+		<tr>
+			<td class="label"><label for="name" class="first"><span jwcid="@FieldLabel" field="ognl:components.name"/></label></td>
+			<td><input jwcid="name" id="name" type="text"/></td>
+		</tr>
+		
+		<tr>
+			<td class="label"><label for="description">Description</td>
+			<td><input jwcid="description" id="description"/></td>
+		</tr>
+
+		<tr>
+			<td class="label"><label for="startDate"><span jwcid="@FieldLabel" field="ognl:components.startDate"/></label></td>
+			<td><input jwcid="startDate"/></td>
+		</tr>
+		
+		<tr>
+			<td class="label"><label for="endDate"><span jwcid="@FieldLabel" field="ognl:components.endDate"/></label></td>
+			<td><input jwcid="endDate"/></td>
+		</tr>
+		
+		<tr>
+			<td align="center">
+				<span jwcid="@Conditional" condition="ognl:!isNew">
+					<input jwcid="@Submit"
+						value="Update Campaign"
+						class="submit"/>
+				</span>
+				
+				<span jwcid="@Conditional" condition="ognl:isNew">
+					<input jwcid="@Submit"
+						value="Create Campaign"
+						class="submit"/>
+				</span>
+			</td>
+		</tr>
+	</table>
+</form>
+
+<span jwcid="@Conditional" condition="ognl:!isNew">
+	<table jwcid="flightTable" class="grid history">
+		<tr>
+			<td jwcid="ActionColumnValue@Block">
+				<span jwcid="forEachAction">
+					<span jwcid="@Insert" value="ognl:action.name"/>&nbsp;&nbsp;
+				</span>
+			</td>
+			<td jwcid="editColumnValue@Block">
+				<a jwcid="@ExternalLink" page="FlightEditor" parameters="ognl:{flight.campaign.id, flight.id}">Edit</a>
+			</td>
+			<td jwcid="executeColumnValue@Block">
+				<a jwcid="@DirectLink" listener="ognl:listeners.executeFlight" parameters="ognl:flight.id">Execute</a>
+			</td>
+		</tr>
+	</table>
+	<a jwcid="@ExternalLink" page="FlightEditor" parameters="ognl:{campaign.id}">New Flight</a>
+</span>
+<br><br>
+<a jwcid="@PageLink" page="Home">Back to Campaigns</a> 
+
+
+</body>

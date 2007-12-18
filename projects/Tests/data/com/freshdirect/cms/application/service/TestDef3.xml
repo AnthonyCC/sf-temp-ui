@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<CMSDef xmlns="http://www.freshdirect.com/xsd/CMS"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.freshdirect.com/xsd/CMS CMS.xsd">
+
+	<ContentTypeDef name="Foo">
+		<AttributeDefs>
+			<AttributeDef type="S" name="BAZ" />
+		</AttributeDefs>
+	</ContentTypeDef>
+
+	<ContentTypeDef name="Bar">
+		<AttributeDefs>
+			<AttributeDef type="S" name="BAZ" />
+		</AttributeDefs>
+	</ContentTypeDef>
+
+</CMSDef>

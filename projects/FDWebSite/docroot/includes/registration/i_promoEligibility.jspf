@@ -1,0 +1,14 @@
+<%@ page import="com.freshdirect.fdstore.customer.*" %>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.SystemMessageList" %>
+<%@ page import="java.text.MessageFormat" %>
+
+<%	if ( user.isFraudulent() ) { %>
+		<table border="0" cellspacing="0" cellpadding="0" width="500">
+			<tr>
+				<td class="text12">
+				<b>Please Note:</b> <%=MessageFormat.format(SystemMessageList.MSG_NOT_UNIQUE_INFO, new Object[]{user.getCustomerServiceContact()})%>
+				</td>
+			</tr>
+		</table><br><br>
+<%	} %>

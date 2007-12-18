@@ -1,0 +1,12 @@
+<%@ page import='com.freshdirect.webapp.util.JspMethods' %>
+
+<% if (user.isEligibleForSignupPromotion()) { %>
+	<b>Deliveries to your home address are eligible for our $<%=promotionValue%> free, fresh food offer!*</b> Here's how it works:
+<% } else { %>
+	<% if (user.isPickupOnly()) { %>
+		Please note that pickup orders are not eligible for the free food promotion.
+	<% } else { %>
+		<b>Please note that the free food promotion is not currently offered in your area.</b>
+	<% } %>
+<% } %>
+<br><br>

@@ -1,0 +1,174 @@
+<?xml version="1.0"?>
+<module id="com.freshdirect.cms" version="1.0.0">
+
+	<sub-module descriptor="hivemodule_search.xml"/>
+	<sub-module descriptor="hivemodule_erps.xml"/>
+	<sub-module descriptor="hivemodule_publish.xml"/>
+
+	<service-point id="cmsdatasource" interface="javax.sql.DataSource">
+		<invoke-factory service-id="hivemind.BuilderFactory">
+			<construct class="oracle.jdbc.pool.OracleConnectionPoolDataSource">
+				<set property="URL" value="jdbc:oracle:thin:@zetor:1521:DBEU01"/>
+				<!-- <set property="URL" value="jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=vsrac1.nyc1.freshdirect.com)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=vsrac2.nyc1.freshdirect.com)(PORT=1521))(LOAD_BALANCE=yes)(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=appdev.nyc.freshdirect.com)(FAILOVER_MODE=(TYPE=SELECT)(METHOD=BASIC)(RETRIES=180)(DELAY=5))))"/> -->
+				<set property="user" value="FDSTORE"/>
+				<set property="password" value="FDSTORE"/>
+			</construct>
+		</invoke-factory>
+	</service-point>
+	
+	<schema id="serviceList">
+		<element name="service">
+			<attribute name="name" required="true" translator="service"/>
+			<rules>
+				<push-attribute attribute="name"/>
+				<invoke-parent method="addElement"/>
+			</rules>
+		</element>
+	</schema>
+	
+	<schema id="objectList">
+		<element name="Object">
+			<attribute name="value" required="true" translator="object"/>
+			<rules>
+				<push-attribute attribute="value"/>
+				<invoke-parent method="addElement"/>
+			</rules>
+		</element>
+	</schema>
+	
+
+	<!--
+		COMPOSITE
+	-->
+	
+	<configuration-point id="composedServices" schema-id="serviceList"/>
+	<contribution configuration-id="composedServices">
+		<service name="StoreMediaContent"/>
+		<service name="FormContent"/>
+	</contribution>
+
+	<service-point id="CompositeService" interface="com.freshdirect.cms.application.ContentServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.CompositeContentService" service-id-property="name">
+				<configuration>composedServices</configuration>
+			</construct>
+		</invoke-factory>
+	</service-point>
+	
+	<!--
+		DEFS
+	-->
+
+	<service-point id="FormDef" interface="com.freshdirect.cms.application.ContentTypeServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.xml.XmlTypeService">
+				<string>classpath:/com/freshdirect/cms/resource/CMSFormDef.xml</string>
+			</construct>
+		</invoke-factory>
+	</service-point>
+	
+	<service-point id="FormContent" interface="com.freshdirect.cms.application.ContentServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.xml.XmlContentService"  service-id-property="name">
+				<service>FormDef</service>
+				<object>instance:com.freshdirect.cms.application.service.xml.FlexContentHandler</object>
+				<string>classpath:/com/freshdirect/cms/resource/FDForms.xml</string>
+				<service>ResourceInfo</service>
+			</construct>
+		</invoke-factory>
+	</service-point>	
+
+	<configuration-point id="composedTypeServices" schema-id="serviceList"/>
+	<contribution configuration-id="composedTypeServices">
+		<service name="StoreDef"/>
+		<service name="MediaDef"/>
+	</contribution>
+
+	<service-point id="StoreDef" interface="com.freshdirect.cms.application.ContentTypeServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.xml.XmlTypeService">
+				<string>classpath:/com/freshdirect/cms/resource/CMSStoreDef.xml</string>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<service-point id="MediaDef" interface="com.freshdirect.cms.application.ContentTypeServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.xml.XmlTypeService">
+				<string>classpath:/com/freshdirect/cms/resource/MediaDef.xml</string>
+			</construct>
+		</invoke-factory>
+	</service-point>
+	
+	<service-point id="CompositeDef" interface="com.freshdirect.cms.application.ContentTypeServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.CompositeTypeService">
+				<configuration>composedTypeServices</configuration>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<service-point id="StoreMediaContent" interface="com.freshdirect.cms.application.ContentServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.xml.XmlContentService"  service-id-property="name">
+				<service>CompositeDef</service>
+				<object>instance:com.freshdirect.cms.application.service.xml.FlexContentHandler</object>
+				<string>${cms.resource.basePath}/Store.xml.gz,${cms.resource.basePath}/Media.xml.gz,classpath:/com/freshdirect/cms/resource/FDRecipes.xml</string>
+				<service>ResourceInfo</service>
+			</construct>
+		</invoke-factory>
+	</service-point>
+	
+	
+	<service-point id="ResourceInfo" interface="com.freshdirect.cms.application.service.ResourceInfoServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.ResourceInfoService"/>
+		</invoke-factory>
+	</service-point>
+	
+		
+	<!--
+		CHANGE TRACKING
+	-->
+
+	<service-point id="ChangeLog" interface="com.freshdirect.cms.changecontrol.ChangeLogServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.changecontrol.DbChangeLogService">
+				<service>cmsdatasource</service>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<service-point id="ChangeTracker" interface="com.freshdirect.cms.application.ContentServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.changecontrol.ContentChangeTrackerService">
+				<service>ContentDecorator</service>
+				<service>ChangeLog</service>
+			</construct>
+		</invoke-factory>
+	</service-point>
+	
+	
+	<!--
+		VALIDATION
+	-->
+	
+	<configuration-point id="contentValidators" schema-id="objectList"/>
+	<contribution configuration-id="contentValidators">
+		<Object value="instance:com.freshdirect.cms.validation.BasicValidator"/>
+		<Object value="instance:com.freshdirect.cms.fdstore.PrimaryHomeValidator"/>
+		<Object value="instance:com.freshdirect.cms.fdstore.StructureValidator"/>
+		<Object value="instance:com.freshdirect.cms.fdstore.UniqueContentKeyValidator"/>
+		<Object value="instance:com.freshdirect.cms.fdstore.RecipeChildNodeValidator"/>
+	</contribution>
+
+	<service-point id="CmsManager" interface="com.freshdirect.cms.application.ContentServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.validation.ValidatingContentService">
+				<service>CompositeService</service>
+				<configuration>contentValidators</configuration>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+</module>

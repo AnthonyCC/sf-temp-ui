@@ -1,0 +1,116 @@
+<html jwcid="shell">
+<style>
+td.dbHeader {
+	background-color: #f90;
+	text-align: center;
+	font-size: 12pt;
+	font-weight: bold;
+}
+td.dbHeaderCT {
+	background-color: #4CC417;
+	text-align: center;
+	font-size: 12pt;
+	font-weight: bold;
+}    
+td.dbSubHeader {
+	background-color: #c6cfd6;
+	text-align: center;
+	font-size: 10pt;
+	font-weight: bold;
+}
+.timeslotTable {
+	border-top:1px solid #c6cfd6;
+	margin-top:4px;
+	border-right:1px solid #c6cfd6;
+	margin-right: 4px;
+	border-left:1px solid #c6cfd6;
+	margin-left:4px;
+	border-bottom:1px solid #c6cfd6
+}
+.timeslotTable td {
+	font-size: 8pt;
+}
+
+.overriden {
+	background:#ff9933;
+}
+
+.belowSixty {
+	background:#a4ffa4;
+}
+
+.aboveSixty {
+	background:#ffffce;
+}
+
+.aboveSeventyFive {
+	background:#ffdba6;
+}
+
+.critical {
+	background:#ffa6a6;
+}
+
+.odd{
+	background:#eeeeee;
+}
+
+.even{
+	background:#ffffff;
+}
+    
+.total{
+	background:#FF8040;
+}
+.base{
+	background:#00FFFF;
+}
+.ct{
+	background:#FFFF00;
+}            
+.error {
+	color: crimson;
+	font-weight: bold;
+	text-align: center;
+	width: 300px;
+}
+</style>
+<body class="composite" marginwidth="0" marginheight="0" jwcid="body">
+<div id="banner">
+	<table border="0" width="100%" cellpadding="8" cellspacing="0">
+		<tr>
+			<td>FreshDirect - DLVAdmin</td>
+            <td>(<span jwcid="insertUserName">user</span>)</td>
+            <td><a jwcid="logout" style="color: white;">Logout</a></td>
+	    </tr>
+	</table>
+</div>
+<div id="breadcrumbs">
+	<table border="0" width="100%" cellpadding="4" cellspacing="0">
+		<tr>
+			<td>
+				<span jwcid="forEachNav">
+					<span jwcid="ifPageLink">
+						<a href="#" jwcid="linkPage"><span jwcid="insertPage">NavElement</span></a>
+					</span>
+					<span jwcid="ifGenericLink">
+						<a href="#" jwcid="linkGeneric"><span jwcid="insertGeneric">NavElement</span></a>
+					</span>
+					<span jwcid="ifNotLastOne">
+						&nbsp; | &nbsp;
+					</span>
+				</span>
+			</td>
+			<td>
+				<div align="right">
+				</div>
+			</td>
+		</tr>
+	</table>
+</div>
+<br>
+<br>
+<span jwcid="renderBody"/>
+
+</body>
+</html>

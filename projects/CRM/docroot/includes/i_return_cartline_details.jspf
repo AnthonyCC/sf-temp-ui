@@ -1,0 +1,141 @@
+<%@ page import="com.freshdirect.framework.util.NVL"%>
+<logic:iterate id="cartLine" collection="<%= (invoicedView != null ? invoicedView.getOrderLines() : view.getOrderLines()) %>" type="com.freshdirect.fdstore.customer.FDCartLineI" indexId="lineNumber">
+<%  
+	ErpInvoiceLineI invoiceLine = null;
+	ErpReturnLineI returnLine = null;
+	String orderLineNumber = "";
+	if(cartLine.hasInvoiceLine()){
+		invoiceLine = cartLine.getInvoiceLine();
+		orderLineNumber = invoiceLine.getOrderLineNumber();
+	}
+	if(cartLine.hasReturnLine()){
+		returnLine = cartLine.getReturnLine();
+	}
+    if (lastDept==null || !lastDept.equalsIgnoreCase(cartLine.getDepartmentDesc())) {
+        lastDept = cartLine.getDepartmentDesc() ;
+%>
+<%if(view.isDisplayDepartment()){%>
+<tr class="order_item_dept">
+	<td colspan="2">&nbsp;</td>
+	<td colspan="5"><b><%=lastDept%></b></td>
+    <td colspan="4">&nbsp;</td>
+    <td colspan="4">&nbsp;</td>
+</tr>
+<%}%>
+<%  }
+    //
+    // collect department totals along the way
+    //
+    Map deptTotalMap = null;
+	if ( allDeptsMap.containsKey(cartLine.getDepartmentDesc()) ) {
+		deptTotalMap = (Map) allDeptsMap.get(cartLine.getDepartmentDesc());
+	} else {
+        deptTotalMap = new HashMap();
+        deptTotalMap.put("est", new Double(0.0));
+        deptTotalMap.put("final", new Double(0.0));
+    }
+    deptTotalMap.put("est", new Double(((Double)deptTotalMap.get("est")).doubleValue() + cartLine.getPrice()));
+    if (hasInvoice)
+        deptTotalMap.put("final", new Double(((Double)deptTotalMap.get("final")).doubleValue() + invoiceLine.getPrice()));
+	allDeptsMap.put(cartLine.getDepartmentDesc(), deptTotalMap);
+%>
+<tr valign="top">
+    <td align="<%=(hasReturn)?"right":"center" %>">
+		<%=cartLine.getReturnDisplayQuantity()%>
+		&nbsp;&nbsp;
+		<%String quantity = NVL.apply(request.getParameter("ret_qty_"+orderLineNumber), "");%>
+		<input type="text" size="5" name="ret_qty_<%=orderLineNumber%>" value=<%=(returnLine != null ? CCFormatter.formatQuantity(returnLine.getQuantity()) : quantity)%>>
+		<% if(cartLine.lookupFDProduct().isDeliveryPass()) { %>
+			<input type="hidden" name="h_q_<%=orderLineNumber%>_d_p" value="<%=invoiceLine.getQuantity()%>">
+		<% } else {%>	
+			<input type="hidden" name="h_q_<%=orderLineNumber%>" value="<%=invoiceLine.getQuantity()%>">
+		<% } %>	
+		<%if(result.hasError("qty_error_"+orderLineNumber)){%>
+			<br><span class="error"><%=result.getError("qty_error_"+orderLineNumber).getDescription()%></span>
+		<%}%>
+	</td>
+	<td align="center">
+		&nbsp;<input type="radio" name="fee_<%=orderLineNumber%>" <%= returnLine == null ? "checked" : !returnLine.isRestockingOnly() ? "checked" : ""%>  value="no_fee">
+        &nbsp;<input type="radio" name="fee_<%=orderLineNumber%>"  <%=(returnLine != null && returnLine.isRestockingOnly()) ? "checked" : ""%> value="restock_fee">
+	<td>
+		<%=cartLine.getLabel()%>
+  	</td>
+	
+    <td>&nbsp;<%= cartLine.getDescription() %> <%=cartLine.getConfigurationDesc()%> <font color="#888888"><%= cartLine.getSkuCode() %></font>
+	</td>
+	
+    <td width="5%" align="center"> 
+	<%if(cartLine.isPricedByLb()){%>
+		<%=invoiceLine.getWeight()%>&nbsp;lb 
+	<%}%>
+	</td>
+    
+	<td width="5%">(<%= cartLine.getUnitPrice() %>)</td>
+	
+    <td width="5%" align="right"><%= hasInvoice && invoiceLine.getCustomizationPrice() > 0 ? CCFormatter.formatCurrency(invoiceLine.getCustomizationPrice()) : ""%></td>
+	
+    <td align="right"><%= CCFormatter.formatCurrency(cartLine.getPrice()) %><%if(hasInvoice){%> / <b><%=CCFormatter.formatCurrency(invoiceLine.getPrice())%><%}%></b></td>
+	
+    <td width="1%">&nbsp;</td>
+    
+	<td width="1%" align="center"><b><%= (cartLine.hasTax())  ? "T" : "&nbsp;" %></b></td>
+	
+    <td width="1%" align="center"><b><%= (cartLine.hasScaledPricing()) ? "S" : "&nbsp;" %></b></td>
+	
+    <td width="1%" align="center"><b><%=(cartLine.hasDepositValue())  ? "D" : "&nbsp;" %></b></td>
+    
+</tr>
+</logic:iterate>
+<% if(view.isDisplayDepartment()){%>
+<tr><td colspan="15"><br></td></tr>	
+<tr>
+		<td colspan="6" align="right"><b>Department Subtotals</b> (for reference only, not included in order totals)</td>
+		<td colspan="2" align="right"><b>Total Est./Final</b></td>
+		<td colspan="4">&nbsp;</td>
+</tr>
+<tr><td colspan="15" class="list_separator" style="padding: 0px;"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td></tr>	
+<%  for (Iterator dIter = allDeptsMap.keySet().iterator(); dIter.hasNext(); ) {
+        String deptName = (String) dIter.next();
+        Map deptTotalMap = (Map) allDeptsMap.get(deptName);
+%>
+<tr>
+    <td colspan="3">&nbsp;</td>
+    <td colspan="3" align="right"><b><%= deptName %></b></td>
+    <td colspan="2" align="right">
+        <%= CCFormatter.formatCurrency(((Double)deptTotalMap.get("est")).doubleValue()) %> / <b><%= CCFormatter.formatCurrency(((Double)deptTotalMap.get("final")).doubleValue()) %></b>
+    </td>
+    <td colspan="4">&nbsp;</td>
+    <td colspan="3">&nbsp;</td>
+</tr>
+<%  }   %>
+<% }%>
+
+<tr><td colspan="15"><br></td></tr>
+<tr>
+		<td colspan="6" align="right"><b>Order Totals <%= order.containsAlcohol() ? "for <span class=\"order_dept\">"+view.getDescription()+"</span>" : "" %></b></td>
+		<td colspan="2" align="right"><b>Total Est./Final</b></td>
+		<td colspan="7">&nbsp;</td>
+</tr>
+<tr><td colspan="15" class="list_separator" style="padding: 0px;"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td></tr>
+
+<tr valign="top">
+	<td colspan="3">&nbsp;</td>
+	<td colspan="3" align="right">SubTotal <%= order.containsAlcohol() ? "("+view.getDescription()+")" : "" %>:</td>
+	<td colspan="2" align="right"><%= CCFormatter.formatCurrency(view.getSubtotal()) %><% if (hasInvoice) { %> / <b><%= CCFormatter.formatCurrency( invoicedView.getSubtotal() ) %></b><% } %></td>
+	<td colspan="4"><% if (hasEstimatedItems) out.print("*"); %></td>
+    <td colspan="3">&nbsp;</td>
+</tr>
+<tr>
+	<td colspan="3"></td>
+	<td colspan="3" align="right">Bottle Deposit <%= order.containsAlcohol() ? "("+view.getDescription()+")" : "" %>:</td>
+	<td colspan="2" align="right"><%= CCFormatter.formatCurrency(view.getDepositValue()) %><% if (hasInvoice) { %> / <b><%= CCFormatter.formatCurrency( invoicedView.getDepositValue() ) %></b><% } %></td>
+	<td colspan="4">&nbsp;</td>
+    <td colspan="3">&nbsp;</td>
+</tr>
+<tr>
+	<td colspan="3"></td>
+	<td colspan="3" align="right">Tax<%= order.containsAlcohol() ? "("+view.getDescription()+")" : "" %>:</td>
+	<td colspan="2" align="right"><%= CCFormatter.formatCurrency(view.getTax()) %><% if (hasInvoice) { %> / <b><%= CCFormatter.formatCurrency( invoicedView.getTax() ) %></b><% } %></td>
+	<td colspan="4">&nbsp;</td>
+    <td colspan="3">&nbsp;</td>
+</tr>

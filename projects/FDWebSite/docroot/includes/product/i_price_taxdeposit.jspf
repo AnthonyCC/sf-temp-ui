@@ -1,0 +1,13 @@
+<%
+	boolean hasTax = product.isTaxable();
+	boolean hasDeposit = product.hasDeposit();
+	if (hasTax || hasDeposit) {
+%>
+<i>Plus
+	<% if (hasTax) { %>Tax<% } %>
+	<% if (hasTax && hasDeposit) { %> &amp; <% } %>
+	<% if (hasDeposit) { %>Deposit<% } %>
+</i>
+<%
+	}
+%>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE component-specification PUBLIC
+  "-//Apache Software Foundation//Tapestry Specification 3.0//EN"
+  "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<component-specification class="com.freshdirect.cms.ui.tapestry.component.PrimitiveField"
+    allow-body="no"
+    allow-informal-parameters="no">
+    
+    <description>Render a primitive field (Boolean, Integer, Double, String, Date, Enum).</description>
+
+	<parameter name="attribute" type="com.freshdirect.cms.AttributeI" required="yes" direction="auto"/>
+	
+	<parameter name="renderLabel" type="boolean" required="no" direction="auto" default-value="false"/>
+	
+	<parameter name="contextNode" required="no" direction="auto" default-value="null" type="com.freshdirect.cms.context.ContextualContentNodeI"/>
+
+	<parameter name="definition" required="no" direction="auto" default-value="null" type="com.freshdirect.cms.AttributeDefI">
+		<description>Optional attribute definition to override default definition</description>
+	</parameter>
+    
+	<component id="textField" type="ValidField">
+		<binding name="displayName" expression="def.label"/>
+		<binding name="validator" expression="validator"/>
+		<binding name="value" expression="attributeValue"/>
+		<binding name="id" expression="def.name"/>
+		<binding name="size" expression="size"/>
+		<binding name="disabled" expression="disabled"/>
+		<binding name="class" expression='disabled ? "disabled" : ""'/>
+	</component>
+	<component id="textField2" copy-of="textField"/>
+
+	<component id="checkbox" type="Checkbox">
+		<binding name="disabled" expression="disabled"/>
+		<binding name="id" expression="def.name"/>
+		<binding name="value" expression="attributeValue"/>
+	</component>
+	<component id="checkbox2" copy-of="checkbox"/>
+
+    <component id="datePicker" type="DatePicker">
+        <binding name="value" expression="attributeValue"/>
+    </component>
+	<component id="datePicker2" copy-of="datePicker"/>
+	
+	<component id="select" type="PropertySelection">
+		<binding name="disabled" expression="disabled"/>
+		<binding name="value" expression="attributeValue"/>
+		<binding name="model" expression="enumSelectionModel"/>
+	</component>
+	<component id="select2" copy-of="select"/>
+
+	<bean name="S_validator" class="org.apache.tapestry.valid.StringValidator">
+		<set-property name="clientScriptingEnabled" expression="true"/>
+	</bean>
+	
+	<bean name="D_validator" class="org.apache.tapestry.valid.NumberValidator">
+		<set-property name="clientScriptingEnabled" expression="true"/>
+		<set-property name="valueType" expression="'double'"/>
+		<set-property name="minimum" expression="0"/>
+	</bean>
+	
+	<bean name="I_validator" class="org.apache.tapestry.valid.NumberValidator">
+		<set-property name="clientScriptingEnabled" expression="true"/>
+		<set-property name="valueType" expression="'int'"/>
+		<set-property name="minimum" expression="0"/>
+	</bean>
+	   
+</component-specification>

@@ -1,0 +1,48 @@
+<%@ page import="com.freshdirect.common.address.AddressModel" %>
+<%@ page import="com.freshdirect.fdstore.FDDeliveryManager" %>
+<%
+String	addressMessage = "";
+ArrayList suggestions = null;   // a holder for suggested addresses if the original address is not unique
+AddressModel address = new AddressModel();
+
+address.setAddress1(fldAddress1);
+address.setAddress2(fldAddress2);
+address.setApartment(fldApartment);
+address.setCity(fldCity);
+address.setState(fldState);
+address.setZipCode(fldZipCode);
+
+suggestions = FDDeliveryManager.getInstance().findSuggestionsForAmbiguousAddress(address);
+%>
+<script>
+function fillAddress(arg_address, arg_apt){
+	document.forms['address'].<%= EnumUserInfoName.DLV_ADDRESS_1.getCode() %>.value = arg_address;
+}
+</script>
+
+
+	<TABLE BORDER="0" CELLSPACING="1" CELLPADDING="0">
+	<TR VALIGN="MIDDLE">
+		<TD colspan=4 class="text11rbold">
+	
+		<%=addressMessage = result.getError(EnumUserInfoName.DLV_ADDRESS_SUGGEST.getCode()).getDescription()%>
+
+		<%  if (suggestions != null) {  %>
+			<table border="0" cellspacing="0" cellpadding="0">
+				<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"></td></tr>
+			<%      for (Iterator sIter = suggestions.iterator(); sIter.hasNext(); ) {
+			            AddressModel suggestion = (AddressModel) sIter.next();  %>
+			    <tr>
+					<td class="text11rbold">
+			        	<img src="/media_stat/images/layout/clear.gif" width="10" height="1" alt="" border="0"><a href="javascript:fillAddress('<%= suggestion.getAddress1() %>', '<% if (!"".equals(suggestion.getApartment())) { %> <%= suggestion.getApartment() %> <%}%>' )"><%= suggestion.getAddress1() %> <% if ( suggestion.getApartment() != null && !"".equals(suggestion.getApartment())) { %>Apt # <%= suggestion.getApartment() %><% } %></a>
+			    	</td>
+				</tr>
+			<%      }   %>
+			</table>
+		<%  }   %>
+	
+		</TD>
+	</tr>
+	</table>
+	<br>
+

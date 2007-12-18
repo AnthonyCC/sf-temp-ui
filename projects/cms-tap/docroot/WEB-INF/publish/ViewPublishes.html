@@ -1,0 +1,33 @@
+<body jwcid="@Border" title="Publish History">
+		<table id="pageTitle" width="100%" cellpadding="0" cellspacing="0">
+			<tr>
+				<td valign="bottom">
+					<h1>Publish History</h1>
+				</td>
+				<td align="right" valign="bottom" width="75" style="line-height:0;">
+					<img src="img/banner_publish.gif" width="75" height="66"></img>
+				</td>
+			</tr>
+		</table>
+		
+		<div class="buttonBar">
+				<a jwcid="@PageLink" page="NewPublish" class="newPublish">New Publish</a>
+		</div>
+		
+		<br/>
+	
+		<table jwcid="table" class="grid publish" width="98%">
+			<tr>
+				<td jwcid="publishOnColumnValue@Block">
+					<span jwcid="@Insert" value="ognl:publish.timestamp" format="ognl:dateFormat"/>
+				</td>
+				<td jwcid="publishByColumnValue@Block">
+					<span jwcid="@Insert" value="ognl:publish.userId" />
+				</td>
+				<td jwcid="changesColumnValue@Block">
+					<a jwcid="@ExternalLink" page="PublishHistory" parameters="ognl:publish.id">Changes</a>
+				</td>
+			</tr>
+		</table>
+	
+</body>

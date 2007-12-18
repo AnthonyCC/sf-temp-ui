@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<!-- ========================= RESOURCE DEFINITIONS ========================= -->
+	    
+    <bean id="transJDBCDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="fdtrndatasource"/>
+	</bean>
+    
+    <!-- the following is hibernate configuration via spring -->
+    
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+        <property name="dataSource" ref="transJDBCDataSource"/>
+        <property name="mappingResources">
+            <list>
+                <value>com/freshdirect/transadmin/model/TrnDispatch.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/TrnDispatchPlan.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/TrnEmployee.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/TrnEmployeeassignment.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/TrnEmployeeJobType.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/TrnRoute.hbm.xml</value>				
+				<value>com/freshdirect/transadmin/model/TrnTimeslot.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/TrnTruck.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/TrnTruckassignment.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/TrnZone.hbm.xml</value> 
+            </list>
+        </property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.show_sql">false</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.Oracle9Dialect</prop>                
+            </props>
+        </property>
+    </bean>
+    
+    <bean id="domainManagerDAO" class="com.freshdirect.transadmin.dao.hibernate.DomainManagerDaoHibernateImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>	
+	
+	<bean id="dispatchManagerDAO" class="com.freshdirect.transadmin.dao.hibernate.DispatchManagerDaoHibernateImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>	
+	
+    <!-- who is driving the transactions? No one... Probably should use directly -->
+    <bean id="domainManager" class="com.freshdirect.transadmin.service.impl.DomainManagerImpl">
+        <property name="domainManagerDao" ref="domainManagerDAO"/>
+    </bean>
+    
+     <bean id="dispatchManager" class="com.freshdirect.transadmin.service.impl.DispatchManagerImpl">
+        <property name="dispatchManagerDao" ref="dispatchManagerDAO"/>
+    </bean>
+     
+     <bean id="txManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>   
+    <!-- the following is jta configuration via spring        
+    <bean 
+        id="txManager" 
+        class="org.springframework.transaction.jta.WebLogicJtaTransactionManager"
+    />  --> 
+    
+    <bean id="domainManagerBase" abstract="true" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="target" ref="domainManager"/>
+        <property name="transactionManager" ref="txManager"/>
+        <property name="transactionAttributes">
+            <props>
+            	<prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>
+                <prop key="*">PROPAGATION_REQUIRED</prop>
+            </props>
+        </property>
+    </bean>
+    
+     <bean id="dispatchManagerBase" abstract="true" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="target" ref="dispatchManager"/>
+        <property name="transactionManager" ref="txManager"/>
+        <property name="transactionAttributes">
+            <props>
+            	<prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>
+                <prop key="*">PROPAGATION_REQUIRED</prop>
+            </props>
+        </property>
+    </bean>
+    
+    <!-- Hibernate 3.0's JMX statistics service -->
+	<!-- Implements the StatisticsServiceMBean management interface -->
+	
+	<bean name="transportationadmin:service=hibernateStatistics" class="org.hibernate.jmx.StatisticsService">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+    
+   
+</beans>

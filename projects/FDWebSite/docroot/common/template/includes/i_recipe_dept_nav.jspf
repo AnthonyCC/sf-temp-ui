@@ -1,0 +1,45 @@
+<%/*
+	Expects host to define:recipeCategory
+*/
+int idxValue= 0;
+%>
+
+	<table cellpadding="0" cellspacing="0" border="0">
+	    <tr>
+		    <td width="120" valign="middle" align="center"><a href="<%=response.encodeURL("/recipe_dept.jsp?deptId="+rcpDept)%>"><img src="/media_stat/recipe/rec_deptnav.gif" width="117" height="54" border="0" alt="Shop by recipe" hspace="4"></a></td>
+			<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>
+			<td bgcolor="#999966" width="1"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+			<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>
+			    <td valign="top" class="text9_lh12">
+			    <logic:iterate id="recipeCategory" indexId="idx" collection="<%= rcpDept.getDepartmentNav() %>" type="com.freshdirect.fdstore.content.RecipeCategory">
+		<%            Domain catClassification = recipeCategory.getClassification(); 
+				boolean hasSubcategories = recipeCategory.getSubcategories().size()>0;
+				if (!hasSubcategories) continue;
+				if (idxValue%4==0 && idxValue!=0) {  %>
+				  </td>
+				 <td><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>
+				 <td bgcolor="#999966" width="1"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+			     <td><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>
+				     <td valign="top" class="text9_lh12">
+                <% 		} %>
+			      <%=(idxValue%4!=0 ?"<br>":"")%>
+			      <% if (hasSubcategories) {%>
+			        <a href="<%=response.encodeURL("/recipe_cat.jsp?catId="+recipeCategory+"&trk=dnav")%>"><%=catClassification.getLabel()%></a> 
+			      <%} else { %>
+				 <%=catClassification.getLabel()%>
+			      <%}  %>
+				  <% idxValue++; %>
+			  </logic:iterate>
+<%			if (idxValue%4==0 && idxValue!=0) {  %>
+			  </td>
+			 <td><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>
+			 <td bgcolor="#999966" width="1"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+		          <td><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>
+			     <td valign="top" class="text9_lh12">
+	<% 		} %>
+		        <%=(idxValue%4!=0 ?"<br>":"")%>
+			<a href="<%=response.encodeURL("/recipe_search.jsp?trk=dnav")%>">Advanced Recipe Search</a> 
+		  </td>
+		</tr>
+		<tr><td colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td></tr>
+	</table>

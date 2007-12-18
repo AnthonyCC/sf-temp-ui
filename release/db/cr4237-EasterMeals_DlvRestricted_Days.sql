@@ -1,0 +1,1 @@
+insert into dlv.restricted_days values(system_seq.nextval,'OTR', 'Easter', null, '25-mar-2005',to_date('03/26/2005 11:59:59 pm','MM/DD/YYYY HH:MI:SS pm'),'EAS','Easter meals available March 25th and 26th only');

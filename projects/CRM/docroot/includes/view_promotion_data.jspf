@@ -1,0 +1,313 @@
+<%@ page import='com.freshdirect.fdstore.promotion.management.FDPromoZipRestriction'%>
+<%@ page import='com.freshdirect.webapp.util.CCFormatter'%>
+<%@ page import='com.freshdirect.customer.EnumChargeType'%>
+<%@ page import='org.apache.commons.lang.StringUtils'%>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties'%>
+<%@ page import="com.freshdirect.fdstore.customer.ProfileAttributeName"%>
+<%@ page import="com.freshdirect.fdstore.promotion.management.FDPromotionAttributeParam"%>
+<%
+int tableWidth = forPrint?100:400;
+int col1Width = forPrint?150:200;
+int zipCodeBreak = forPrint?3:5;
+int col2Width = 200;
+%>
+<table cellpadding="0" cellspacing="5" border="0" width="99%">
+		
+		<tr>
+			<td colspan="1" align="right"> Active:</td>
+			<td colspan="3" width="35%">&nbsp;<input type="checkbox" name="active" <%=promotion.isActive() ? "CHECKED" : ""%> DISABLED>&nbsp;</td>
+			
+			<td rowspan="12" style="border-left: solid 1px #CCCCCC;">&nbsp;</td>
+			
+			<td colspan="1" align="right">Start Date:</td>
+			<td colspan="3">&nbsp;<strong><%=promotion.getStartDay()%>-<%=promotion.getStartMonth()%>-<%=promotion.getStartYear()%></strong></td>
+
+		</tr>
+		<tr valign="top">
+            <td colspan="1" align="right">Promotion ID:</td>
+			<td colspan="3">&nbsp;<span class="field_note"><strong><%=promotion.getId()%></strong></span>&nbsp;</td>
+			
+			<td colspan="1" align="right">End Date:</td>
+			<td colspan="3">&nbsp;<strong><%=promotion.getExpirationDay()%>-<%=promotion.getExpirationMonth()%>-<%=promotion.getExpirationYear()%></strong></td>
+		</tr>
+		<tr valign="top">
+			<td colspan="1" align="right">System Code:</td>
+			<td colspan="3">&nbsp;<strong><%=promotion.getPromotionCode()%></strong></td>
+			
+			<td colspan="1" align="right">Maximum Usage:</td>
+			<td colspan="3">&nbsp;<strong><%=promotion.getMaxUsage()%>&nbsp;time(s)</strong></td>
+									
+		</tr>
+		<tr valign="top">
+			<td colspan="1" align="right">Campaign Type:</td>
+			<td colspan="3">&nbsp;<strong><%=promotion.getPromotionType()%></strong></td>
+			
+			<td colspan="1" align="right">Redemption Code:</td>
+			<td colspan="3">&nbsp;<strong>
+				<%=(StringUtils.isEmpty(promotion.getRedemptionCode())) ? "None - automatically applied" : promotion.getRedemptionCode() %>
+				</strong>
+			</td>
+			
+		</tr>
+		<tr valign="top">
+			<td colspan="1" align="right">Name:</td>
+			<td colspan="3">&nbsp;<strong><%=promotion.getName()%></strong></td>
+			
+			<td colspan="4" align="right">&nbsp;</td>		
+		            			
+		</tr>
+        <tr valign="top">
+			<td colspan="1" rowspan="3" align="right">Description:<br/>
+			<span class="field_note">This is shown upon<br/> redemption to customer</span></td>
+			<td rowspan="3" colspan="3">&nbsp;<strong><%=promotion.getDescription()%></strong></td>
+				            
+			<td colspan="1" align="right">Unique Use:</td>
+			<td colspan="3" style="padding-top=0px;">&nbsp;<input type="checkbox" name="unique_use" <%=promotion.isUniqueUse() ? "CHECKED" : ""%> DISABLED>
+				&nbsp;<span class="field_note">One-time, one single user.</span></td>
+		</tr>
+		
+		<tr valign="top">
+			
+			<td colspan="1" align="right" nowrap>Do Not Apply Fraud Rules:</td>
+			<td colspan="3">&nbsp;<input type="checkbox" name="dontApplyFraud" <%=promotion.isApplyFraud() ? "" : "CHECKED"%> DISABLED>
+			&nbsp;<span class="field_note">Rule checks for duplicate address or phone #</span></td>
+		</tr>	
+		
+		<tr valign="top">
+			<td colspan="1" align="right">Rule Based Promotion:</td>
+			<td colspan="3">&nbsp;<input type="checkbox" name="ruleBased" <%=promotion.isRuleBasedPromotion() ? "CHECKED" : ""%> DISABLED>
+			&nbsp;<span class="field_note">Additional rules govern this promotion, see notes.</span></td>			
+		</tr>
+		
+        <tr valign="top">
+			 <td colspan="1" rowspan="4"  align="right">Notes:<br/>
+			 <span class="field_note">internal notes regarding<br/> promotion setup<br/> & scenarios</span></td>
+			 <td colspan="3" rowspan="4">&nbsp;<strong><%=promotion.getNotes()%></strong></td>
+			
+			 <td colspan="1" align="right">&nbsp;</td>
+  			 <td colspan="3">&nbsp;</td>					  						 
+		</tr>
+		
+		<tr valign="top">
+			<td colspan="4" align="right">&nbsp;</td>  			
+		</tr>
+				
+		<tr valign="top">
+			<td colspan="4" align="right">&nbsp;</td>  			
+		</tr>
+					
+		<tr valign="top">
+			<td colspan="4" align="right">&nbsp;</td>  			
+		</tr>
+		
+		<tr>
+      		<td colspan="12" style="border-bottom: solid 1px #999999;"><br/>&nbsp;<strong>VALUE:</strong></td>
+    	 </tr>
+    	 <tr valign="top">
+    	 				    	    	  
+					 <% 
+					 boolean hasSampleItem = false;	
+					 boolean hasPercentageOff = false;					 
+					 if ("discount".equals(promotion.getValueType())) {%>		              
+		                <td colspan="1" align="right">Maximum Discount:&nbsp;</td>
+		                <td colspan="3">$ <strong><%=promotion.getMaxAmount()%></strong></td>		              
+		            <% } else if ("percentOff".equals(promotion.getValueType())) { 
+		            		hasPercentageOff = true; %>		              
+		                <td colspan="1" align="right">Percent Off:&nbsp;</td>
+		                <td colspan="3"><strong><%= promotion.getPercentOff() %>%</strong></td>		              
+		            <% } else if ("waiveCharge".equals(promotion.getValueType())) { %>		              
+		                <td colspan="1" align="right">Waive Charge Type:&nbsp;</td>
+		                <td colspan="3"><strong><%= promotion.getWaiveChargeType() %></strong></td>		             
+		            <% } else { 	
+		            	hasSampleItem = true;	%>	 
+		            <td colspan="1" align="right"><strong>SAMPLE ITEM&nbsp;</strong></td>
+	                <td colspan="3">&nbsp;</td>	          		            		              				                          		                          
+		             <% } %>
+		             
+			<td rowspan="1" style="border-left: solid 0px #CCCCCC;">&nbsp;</td>
+			<td colspan="4">&nbsp;</td>	
+		</tr> 
+		 <% if(hasSampleItem) { %>	
+		 	<tr valign="top">
+			 	<td colspan="1" align="right">Product ID:</td>
+		        <td colspan="3">&nbsp;<strong><%=promotion.getProductName()%></strong></td>	
+		         <td colspan="4">&nbsp;</td>
+		    </tr>
+		    <tr valign="top">
+			 	<td colspan="1" align="right">Category ID:</td>
+		        <td colspan="3">&nbsp;<strong><%=promotion.getCategoryName()%></strong></td>	
+		         <td colspan="4">&nbsp;</td>
+		    </tr>        	       
+		 <% } else if(hasPercentageOff) { %>		 			
+		 	<tr valign="top">
+			 	<td colspan="1" align="right">Department ID:</td>
+		        <td colspan="3">&nbsp;<strong><%=promotion.getAssignedDepartments()%></strong></td>	
+		         <td colspan="4">&nbsp;</td>
+		    </tr>
+		    <tr valign="top">
+			 	<td colspan="1" align="right">Category ID:</td>
+		        <td colspan="3">&nbsp;<strong><%=promotion.getAssignedCategories()%></strong></td>	
+		         <td colspan="4">&nbsp;</td>
+		    </tr>
+		    <tr valign="top">
+			 	<td colspan="1" align="right">Recipe ID:</td>
+		        <td colspan="3">&nbsp;<strong><%=promotion.getAssignedRecipes()%></strong></td>	
+		         <td colspan="4">&nbsp;</td>
+		    </tr>        	       
+		 <% } %> 
+		<tr>
+      		<td colspan="12" style="border-bottom: solid 1px #999999;"><br/>&nbsp;<strong>CUSTOMER REQUIREMENT</strong></td>
+   		 </tr>
+   		 
+   		<tr valign="top">
+			<td colspan="1" align="right">Customer Restriction:</td>
+			<% int size = promotion.getAssignedCustomerSize(); %>
+      		<td colspan="3"><strong><%= size > 0 ? String.valueOf(size) : "N/A" %></strong></td>
+      		
+      		      		
+      		<td rowspan="2" style="border-left: solid 1px #CCCCCC;">&nbsp;</td>
+      		
+      		<td colspan="1" align="right">Selected Profiles</td>
+			<td colspan="3">&nbsp;</td>	
+      		
+      	</tr>
+      	      
+		<tr valign="top">
+			<td colspan="1" align="right">&nbsp;</td>			
+      		<td colspan="3">
+      			<%if(forPrint || !isViewOnly || size ==0 ) {%>&nbsp;<% } else { %>
+      			<a href="javascript:void(0)" onclick="window.open('<%=FDStoreProperties.getMarketingAdminUrl()%>/searchRestriction.do?promotionCode=<%=promotion.getPromotionCode()%>','searchRestriction','width=600,height=700,menubar=no,status=no,scrollbars=yes,resizable=yes')">Search list</a><br/>
+      			<a href="javascript:void(0)" onclick="window.open('<%=FDStoreProperties.getMarketingAdminUrl()%>/downloadRestriction.do?promotionCode=<%=promotion.getPromotionCode()%>','deleteRestriction','width=600,height=700,menubar=no,status=no,scrollbars=yes,resizable=yes')">Download Full List</a>
+      			 <% } %>
+      		</td>
+      		
+			<td colspan="1" align="right">&nbsp;</td>
+			<td colspan="3" align="left">
+				<% int intRowIndex = 0;   %>
+				<table border="1" cellpadding="2" cellspacing="0" >
+					<thead>
+						<tr> 
+							<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th> 
+							<th>Profile Name</th> 
+							<th>Profile Value</th>
+						</tr>
+					</thead>	
+					<tbody>	
+						<%if(promotion.getAttributeList() != null) {
+							FDPromotionAttributeParam tmpParam = null; 						
+							 for(Iterator i = promotion.getAttributeList().iterator(); i.hasNext(); ) {
+					        	tmpParam = (FDPromotionAttributeParam) i.next(); 				        	
+					        %>
+					        	<tr> 
+					        		<td><%=(StringUtils.isEmpty(promotion.getProfileOperator())|| intRowIndex == 0) ? "&nbsp;" : promotion.getProfileOperator() %></td> 
+									<td><%=tmpParam.getAttributeName() %></td> 
+									<td><%=tmpParam.getDesiredValue() %></td> 
+								</tr>
+					     <%   intRowIndex++; 
+					     	}				     				     
+					     }  %>   
+				     </tbody> 				
+				</table>	
+			</td>						
+		</tr>
+		   	
+
+		<tr>
+      		<td colspan="12" style="border-bottom: solid 1px #999999;"><br/>&nbsp;<strong>ORDER REQUIREMENT</strong></td>
+   		 </tr>
+   		 <% StringBuffer strOrderTypeBuf = new StringBuffer();   		 	
+   		 	if(promotion.isOrderTypeHomeAllowed()) {
+   		 		strOrderTypeBuf.append("Home");
+   		 	}   		 	
+   		 	if(promotion.isOrderTypePickupAllowed()) {
+   		 		if(strOrderTypeBuf.length() > 0)strOrderTypeBuf.append(",");
+   		 		strOrderTypeBuf.append("Pickup");
+   		 	}
+   		 	if(promotion.isOrderTypeCorporateAllowed()) {
+   		 		if(strOrderTypeBuf.length() > 0)strOrderTypeBuf.append(",");
+   		 		strOrderTypeBuf.append("Corporate");
+   		 	}   		 	
+   		 	if(promotion.isOrderTypeDepotAllowed()) {
+   		 		if(strOrderTypeBuf.length() > 0)strOrderTypeBuf.append(",");
+   		 		strOrderTypeBuf.append("Depot");
+   		 	}
+   		 %>
+    <tr valign="top">      
+      
+      <td colspan="1" align="right">Order Type:</td>
+      <td colspan="3"><strong><%=strOrderTypeBuf.toString()%></strong></td>
+      
+       <td rowspan="4" style="border-left: solid 1px #CCCCCC;">&nbsp;</td>
+       
+       <td colspan="1" align="right" rowspan="3">Need Category items:<br/>
+      	<span class="field_note">one of the categories<br/> cart. comma separated<br/> no whitespaces</span></td>
+       <td colspan="3">&nbsp;<strong><%=promotion.getNeedItemsFrom()%></strong></td>
+    </tr>
+    
+     <tr valign="top">
+	    <td colspan="1" align="right">Minimum Order Subtotal:&nbsp;</td>
+	    <td colspan="3">$ <strong><%=promotion.getMinSubtotal()%></strong> </td>	    
+	           
+       <td colspan="4" align="right">&nbsp;</td>
+       
+	  </tr>
+	  
+	  <tr valign="top">
+	    <td colspan="1" align="right">Apply on order #:&nbsp;</td>
+	    <td colspan="3"><strong><%=promotion.getOrderCount()%></strong></td>	    	    
+       
+       	<td colspan="4" align="right">&nbsp;</td>
+       
+	  </tr>
+	  
+    <tr>
+	    <td colspan="1" align="right">Zip Restrictions:&nbsp;</td>
+        <td colspan="3">
+            <%
+              if(!promotion.getZipRestrictions().isEmpty()){
+                TreeMap map = promotion.getZipRestrictions();
+                %><table width="<%=tableWidth%>" border="1" cellpadding="1" cellspacing="0"><tr><th>Effective Date</th><th>ZIP Code(s)</th><th>Restriction Type</th></tr><%
+                for(Iterator i=map.keySet().iterator(); i.hasNext(); ){
+                    Date curDate = (Date) i.next();
+                    FDPromoZipRestriction zipRestriction = (FDPromoZipRestriction) map.get(curDate);
+                    int count = 1;
+                    List zipCodeList = (List)zipRestriction.getZipCodeList();
+                    StringBuffer sb = new StringBuffer();
+                    for(Iterator x = zipCodeList.iterator(); x.hasNext(); ){
+                        if(count == zipCodeList.size()){
+                            sb.append(x.next());
+                        }
+                        else {
+                            sb.append(x.next()+",");
+                        }
+                        if(count !=0 && count%zipCodeBreak==0){
+                            sb.append("<br/>");
+                        }
+                        count++;
+                    }
+
+            %>
+                <tr>
+                  <td nowrap><%=CCFormatter.formatDateMonthYear(zipRestriction.getStartDate())%></td>
+                  <td><%=sb.toString()%></td>
+                  <td><%=zipRestriction.getType()%></td>
+                </tr>
+            <%
+            sb = null;
+            }%>
+                </table>
+                <%
+                
+              }
+              else {%>
+                <strong>No Zip Restrictions</strong>
+              <%}%>
+        </td>
+        
+        <td colspan="1" align="right">&nbsp;</td>
+		<td colspan="3">&nbsp;</td>	
+	  </tr>
+                   				
+	</table>
+ 	
+	<br/>

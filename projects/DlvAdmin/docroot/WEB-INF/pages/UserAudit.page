@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE page-specification PUBLIC
+  "-//Apache Software Foundation//Tapestry Specification 4.0//EN"
+  "http://jakarta.apache.org/tapestry/dtd/Tapestry_4_0.dtd">
+  
+<page-specification class="com.freshdirect.dlvadmin.UserAudit">
+
+	<property name="startDate" initial-value="calculateDate(-14)"/>
+	<property name="startTime" initial-value="@com.freshdirect.framework.util.TimeOfDay@MIDNIGHT"/>
+	<property name="endDate" initial-value="calculateDate(1)"/>
+	<property name="endTime" initial-value="@com.freshdirect.framework.util.TimeOfDay@MIDNIGHT"/>
+	<property name="logEntry"/>
+
+    <component id="border" type="Border"/>
+
+    <component id="datePickerEnd" type="DatePicker">
+    	<binding name="displayName" value='literal:Date'/>
+        <binding name="format" value='literal:MM-dd-yy'/>
+        <binding name="value" value='ognl:endDate'/>
+        <binding name="validators" value='validators:required'/>
+    </component>
+
+    <component id="datePickerStart" type="DatePicker">
+    	<binding name="displayName" value='literal:Date'/>
+        <binding name="format" value='literal:MM-dd-yy'/>
+        <binding name="value" value='ognl:startDate'/>
+        <binding name="validators" value='validators:required'/>
+    </component>
+
+    <component id="inputStartTime" type="ValidField">
+        <binding name="displayName" value="literal:Time"/>
+        <binding name="validator" value='bean:timeValidator'/>
+        <binding name="value" value='ognl:startTime'/>
+    </component>
+    
+    <component id="inputEndTime" type="ValidField">
+        <binding name="displayName" value="literal:Time"/>
+        <binding name="validator" value='bean:timeValidator'/>
+        <binding name="value" value='ognl:endTime'/>
+    </component>
+
+    <component id="formFilter" type="Form">
+        <binding name="stateful" value='ognl:false'/>
+        <binding name="delegate" value="bean:delegate"/>
+        <binding name="success" value="listener:runReport"/>
+    </component>
+
+    <component id="sumbitFilterForm" type="Submit">
+        <binding name="label" value='literal:Submit'/>
+    </component>
+
+    <component id="foreachLogEntry" type="Foreach">
+        <binding name="source" value='ognl:report'/>
+        <binding name="value" value='ognl:logEntry'/>
+    </component>
+
+    <bean name="delegate" class="org.apache.tapestry.valid.ValidationDelegate" lifecycle="request"/>
+    <bean name="timeValidator" class="com.freshdirect.dlvadmin.components.TimeValidator" lifecycle="request">
+        <set name="required" value='ognl:true'/>
+    </bean>
+
+</page-specification>

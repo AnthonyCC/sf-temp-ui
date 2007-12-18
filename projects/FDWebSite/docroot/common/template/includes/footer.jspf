@@ -1,0 +1,51 @@
+<%@ page import="java.net.URLEncoder" %>
+<%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties'%>
+
+<table width="745" cellpadding="0" cellspacing="0" border="0">
+<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5"><br>
+<img src="/media_stat/images/navigation/global_nav/bottom_links.gif" width="745" height="21" alt="" border="0" usemap="#bottomlinks">
+</td></tr>
+<tr>
+	<td align="center" class="text11bold"><img src="/media_stat/images/layout/clear.gif" width="1" height="14">
+		<br><a href="/index.jsp">Home</a>
+		&nbsp;&nbsp;<font color="#999999"><b>|</b></font>
+		&nbsp;&nbsp;<a href="/your_account/manage_account.jsp">Your Account</a>
+		&nbsp;&nbsp;<font color="#999999"><b>|</b></font>
+		&nbsp;&nbsp;<a href="/search.jsp">Search</a>
+		&nbsp;&nbsp;<font color="#999999"><b>|</b></font>
+		&nbsp;&nbsp;<a href="/help/index.jsp">Help/FAQ</a>
+		&nbsp;&nbsp;<font color="#999999"><b>|</b></font>
+		&nbsp;&nbsp;<a href="/help/contact_fd.jsp">Contact Us</a>
+		<br><img src="/media_stat/images/layout/clear.gif" width="1" height="20">
+	</td>
+</tr>
+<tr>
+<td align="center" class="text11">
+<%@ include file="/shared/template/includes/copyright.jspf" %>
+<br><img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br>
+<a href="/help/privacy_policy.jsp">Privacy Policy</a>&nbsp;<font color="#999999">|</font>&nbsp;<a href="/help/terms_of_service.jsp">Customer Agreement</a>&nbsp;<font color="#999999">|</font>&nbsp;<a href="/help/aol_note.jsp">A note on images for AOL users</a></td>
+</tr>
+</table>
+<%
+String turi = request.getRequestURI();
+String faqLink = "javascript:popup('/help/faq_index.jsp','large')";
+
+if(turi.indexOf("help") > -1){
+faqLink = "/help/faq_home.jsp?page=faqHome";
+}
+%>
+
+
+<MAP NAME="bottomlinks">
+<AREA SHAPE="RECT" COORDS="10,0,74,21" HREF="/department.jsp?deptId=about" alt="About Us">
+<AREA SHAPE="RECT" COORDS="75,0,155,21" HREF="/department.jsp?deptId=COS&trk=gnav" alt="At the Office">
+<AREA SHAPE="RECT" COORDS="156,0,213,21" HREF="/category.jsp?catId=picks_celeb" alt="Our Ads">
+<AREA SHAPE="RECT" COORDS="214,0,299,21" HREF="/category.jsp?catId=about_test" alt="Testimonials">
+<AREA SHAPE="RECT" COORDS="300,0,392,21" HREF="javascript:popup('/help/freshness.jsp','small')" alt="Our Guarantee">
+<AREA SHAPE="RECT" COORDS="393,0,452,21" HREF="<%=FDStoreProperties.getCareerLink()%>" alt="Careers">
+<AREA SHAPE="RECT" COORDS="637,0,740,21" HREF="/newproducts.jsp" alt="New Products">
+</MAP>
+
+
+<%@ include file="/common/template/includes/i_data_collection.jspf" %>

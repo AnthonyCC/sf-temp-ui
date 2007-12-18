@@ -1,0 +1,42 @@
+<%@ page import='com.freshdirect.fdstore.content.util.*' %>
+<%
+//**************************************************************
+//***          Unavailable display                           ***
+//**************************************************************
+List unAvailableList = new ArrayList();
+List unAvailSortStrategy = new ArrayList();
+
+String unAvailableHdrImg = "/media_stat/images/template/currently_not_available21.gif";
+String unAvailTxtImg = "/media_stat/images/template/not_available.gif";
+for(Iterator availItr = sortedColl.iterator();availItr.hasNext();) {
+    Object availObject = availItr.next();
+    if (availObject instanceof ProductModel && ((ProductModel)availObject).isUnavailable()) {
+        unAvailableList.add(availObject);
+    } 
+}
+
+String altText=null;
+String organicFlag = "";
+
+String prodNameAttribute = JspMethods.getProductNameToUse(currentFolder);
+unAvailSortStrategy.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, prodNameAttribute, false));
+
+DisplayObject displayObj = null;
+if (unAvailableList.size() > 0) {
+%>
+<table width="400">
+	<TR VALIGN="TOP"><TD WIDTH="400"><IMG src="/media_stat/images/layout/cccccc.gif" height="1" width="400"></TD></TR>
+	<TR><TD WIDTH="400"><IMG src="/media_stat/images/layout/clear.gif" ALT="" WIDTH="1" HEIGHT="1"><br></td></tr>
+	<TR><TD WIDTH="400" align="Left"><br><br><img src="<%=unAvailableHdrImg%>" border="0" alt=""><br><br></td></tr>
+	<fd:ItemSorter nodes='<%= unAvailableList %>' strategy='<%= unAvailSortStrategy %>'/>
+	<logic:iterate id="displayThing" collection="<%= unAvailableList %>" type="com.freshdirect.fdstore.content.ContentNodeModel">
+    	<fd:FDProductInfo id="productInfo" skuCode="<%=((ProductModel)displayThing).getSku(0).getSkuCode()%>">
+<%
+    	displayObj = JspMethods.loadLayoutDisplayStrings(response,displayThing.getParentNode().getContentName(),displayThing,prodNameAttribute);
+%>
+		<tr><td>&nbsp;&nbsp;&nbsp;<a href="<%=displayObj.getItemURL()%>" style="color:#999999;"><%=displayObj.getItemName()%></a>
+		&nbsp;<font color="#999999"><%=(productInfo.isOutOfSeason()? "(out of season)" : "")%></font><br></td></tr>
+    	</fd:FDProductInfo>
+	</logic:iterate>
+</table>
+<% } %>

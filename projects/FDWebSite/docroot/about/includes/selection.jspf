@@ -1,0 +1,26 @@
+<%@ page import='com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.*'%>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
+<%@ page import='java.util.*'%>
+<%@ page import='java.net.*'%>
+
+		<table width="600" border="0" cellspacing="0" cellpadding="0">
+		<TR>
+			<td width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
+			<TD WIDTH="400" valign="top">
+				<font class="text13">
+				<img src="/media_stat/images/template/about/abo_selection_hdr.gif"  alt="" border="0">	
+				<font class="space8pix"><BR><br></font>
+					Whether you're looking for a juicy Sunday roast, a week's worth of fruit and vegetables, or a nice crusty bread with your favorite cheese, we've got it. We specialize in perishables, offering over 3,000 fresh foods from the season's best sources. We also carry all the most popular brands of specialty, frozen, grocery, and household items, so you can do all your shopping in one place.
+				<font class="space8pix"><BR><br></font>
+					You'll find full-service options that you'd get with a personal butcher, baker, or chef. We'll fill your order exactly as you want, from the thickness of your steak to the grind of your coffee.
+				<font class="space8pix"><BR><br></font>
+					And we back it all up with a <a href="javascript:pop('/help/freshness.jsp',335,375)">100% satisfaction guarantee</a>.
+				<font class="space8pix"><BR><br></font>
+				<font class="space8pix"><BR><br></font>
+				</font>
+			</td>
+			<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
+			<td valign="top"><img src="/media_stat/images/template/about/del_manager_abo.jpg" width="150" height="270" alt="" border="0"></td>
+		</tr>
+		</TABLE>

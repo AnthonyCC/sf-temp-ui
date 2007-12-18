@@ -1,0 +1,267 @@
+<%@ page import='com.freshdirect.common.customer.*,com.freshdirect.fdstore.*' %>
+<%@ page import ='com.freshdirect.fdstore.customer.*'%>
+<%@ page import ='com.freshdirect.fdstore.promotion.*'%>
+<%@ page import='java.util.*'%>
+<%@ page import='com.freshdirect.customer.*'%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import='com.freshdirect.webapp.util.JspMethods' %>
+<%@ page import='com.freshdirect.framework.webapp.*' %>
+<%@ page import ='com.freshdirect.payment.*'%>
+<%@ page import ='com.freshdirect.payment.fraud.*'%>
+
+<%!
+String[] checkPaymentMethodForm = {PaymentMethodName.ACCOUNT_HOLDER, PaymentMethodName.ABA_ROUTE_NUMBER, 
+														PaymentMethodName.ACCOUNT_NUMBER, PaymentMethodName.ACCOUNT_NUMBER_VERIFY, 
+														PaymentMethodName.BANK_ACCOUNT_TYPE, EnumUserInfoName.BIL_ADDRESS_1.getCode(), 
+														EnumUserInfoName.BIL_CITY.getCode(), EnumUserInfoName.BIL_STATE.getCode(), 
+														EnumUserInfoName.BIL_APARTMENT.getCode(), EnumUserInfoName.BIL_ZIPCODE.getCode(), 
+														PaymentMethodName.TERMS};
+String[] checkErrorType = {"technical_difficulty", "payment_method_fraud"};
+%>
+
+<%
+String successPage = null;
+String cancelPage = null;
+if(request.getRequestURI().toLowerCase().indexOf("checkout")>-1) {
+    successPage = "/checkout/step_4_submit.jsp";
+    cancelPage = "/checkout/step_3_choose.jsp";
+} else {
+    successPage = "/your_account/payment_information.jsp";
+    cancelPage = successPage;
+}
+
+
+
+FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+FDIdentity identity  = user.getIdentity();
+String paymentId = request.getParameter("paymentId");
+ErpPaymentMethodI thisPaymentMethod =null; //(ErpPaymentMethodI) recentOrder.getPaymentMethod();
+ErpCustomerInfoModel customerModel = FDCustomerFactory.getErpCustomerInfo(identity);
+
+String paymentMethodType = EnumPaymentMethodType.ECHECK.getName();
+boolean isValidPaymentId = false;
+String ccNameOnCard = "";
+String ccAddress1 = "";
+String ccAddress2 = "";
+String ccApartment = "";
+String ccCity = "";
+String ccState = "";
+String ccCountry = "";
+String ccAbaRouteNumber = "";
+String ccBankAccountType = "";
+String ccBankName = "";
+String ccZipCode = "";
+String ccAccountNumber = "";
+String ccAccountNumberVerify = "";
+String custFname = null;
+String custLname = null;
+boolean isDisplayTerms = true;
+
+java.util.Collection paymentMethods = FDCustomerManager.getPaymentMethods(identity);
+
+//
+//   EChecks terms only needs to be displayed when adding the first Echeck account
+//
+if(PaymentMethodUtil.hasECheckAccount(identity)) {
+	isDisplayTerms = false;
+}
+
+if (paymentId!=null && paymentId.trim().length()>0) {
+    Iterator iterator = paymentMethods.iterator();
+
+    while ( iterator.hasNext() && paymentId !=null ) {
+        thisPaymentMethod = (ErpPaymentMethodI) iterator.next();
+        String thisPaymentId = ((ErpPaymentMethodModel)thisPaymentMethod).getPK().getId();
+        if ( thisPaymentId.equals(paymentId) ) {
+            isValidPaymentId = true;
+            break;
+        }
+    }
+}
+
+if (isValidPaymentId) {
+    custFname=customerModel.getFirstName();
+    custLname=customerModel.getLastName();
+    ccNameOnCard = thisPaymentMethod.getName();
+    ccAddress1 = thisPaymentMethod.getAddress1();
+    ccAddress2 = thisPaymentMethod.getAddress2();
+    ccApartment = thisPaymentMethod.getApartment();
+    ccCity = thisPaymentMethod.getCity();
+    ccState = thisPaymentMethod.getState();
+    ccCountry = thisPaymentMethod.getCountry();
+    ccAccountNumber = thisPaymentMethod.getMaskedAccountNumber();
+    ccAccountNumberVerify = "";
+    ccAbaRouteNumber = thisPaymentMethod.getAbaRouteNumber();
+    if (thisPaymentMethod.getBankAccountType() != null) {
+	    ccBankAccountType = thisPaymentMethod.getBankAccountType().getName();
+	}
+    ccBankName = thisPaymentMethod.getBankName();
+    ccZipCode = thisPaymentMethod.getZipCode();
+}
+
+	//
+	// If user is new (i.e., no orders placed), prepopulate billing address fields with delivery address
+	//
+	if (user.getOrderHistory().getTotalOrderCount() == 0) {
+		try {
+			Collection dlvAddresses = FDCustomerManager.getShipToAddresses(identity);
+			if (dlvAddresses.size() > 0) {
+				ErpAddressModel defaultAddress = (ErpAddressModel) dlvAddresses.iterator().next();
+	    		ccAddress1 = defaultAddress.getAddress1();
+	    		ccAddress2 = defaultAddress.getAddress2();
+			    ccApartment = defaultAddress.getApartment();
+    			ccCity = defaultAddress.getCity();
+		    	ccState = defaultAddress.getState();
+				ccZipCode = defaultAddress.getZipCode();
+		    	ccCountry = defaultAddress.getCountry();
+			}
+		} catch (FDResourceException fe) {
+			System.out.println("Could not retrieve any delivery addresses for new user fdCustId #" + identity.getFDCustomerPK() );
+			fe.printStackTrace();
+		}
+	}
+
+	//get the fields from the request, if the request field is not empty
+    if (request.getParameter(PaymentMethodName.ACCOUNT_HOLDER)!=null) { 
+        ccNameOnCard = request.getParameter(PaymentMethodName.ACCOUNT_HOLDER);
+    }
+    if (request.getParameter(PaymentMethodName.ACCOUNT_NUMBER)!=null) { 
+        ccAccountNumber = request.getParameter(PaymentMethodName.ACCOUNT_NUMBER);
+    }
+    if (request.getParameter(PaymentMethodName.ACCOUNT_NUMBER_VERIFY)!=null) { 
+        ccAccountNumberVerify = request.getParameter(PaymentMethodName.ACCOUNT_NUMBER_VERIFY);
+    }
+    if (request.getParameter(PaymentMethodName.BANK_NAME)!=null) { 
+        ccBankName = request.getParameter(PaymentMethodName.BANK_NAME);
+    }
+    if (request.getParameter(PaymentMethodName.ABA_ROUTE_NUMBER)!=null) { 
+        ccAbaRouteNumber = request.getParameter(PaymentMethodName.ABA_ROUTE_NUMBER);
+    }
+    if (request.getParameter(PaymentMethodName.BANK_ACCOUNT_TYPE)!=null) { 
+        ccBankAccountType = request.getParameter(PaymentMethodName.BANK_ACCOUNT_TYPE);
+    }
+    if (request.getParameter(EnumUserInfoName.BIL_ADDRESS_1.getCode())!=null) { 
+        ccAddress1 = request.getParameter(EnumUserInfoName.BIL_ADDRESS_1.getCode());
+    }
+    if (request.getParameter(EnumUserInfoName.BIL_ADDRESS_2.getCode())!=null) { 
+        ccAddress2 = request.getParameter(EnumUserInfoName.BIL_ADDRESS_2.getCode());
+    }
+    if (request.getParameter(EnumUserInfoName.BIL_APARTMENT.getCode())!=null) { 
+        ccApartment =request.getParameter(EnumUserInfoName.BIL_APARTMENT.getCode());
+    }
+    if (request.getParameter(EnumUserInfoName.BIL_CITY.getCode())!=null) { 
+        ccCity = request.getParameter(EnumUserInfoName.BIL_CITY.getCode());
+    }
+    if (request.getParameter(EnumUserInfoName.BIL_STATE.getCode())!=null) { 
+        ccState = request.getParameter(EnumUserInfoName.BIL_STATE.getCode());
+    }
+    if (request.getParameter(EnumUserInfoName.BIL_ZIPCODE.getCode())!=null) { 
+        ccZipCode = request.getParameter(EnumUserInfoName.BIL_ZIPCODE.getCode());
+    }
+
+%>
+
+<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="693" HEIGHT="1" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+	<br>
+	<table border="0" cellspacing="0" cellpadding="2" width="693">
+	<tr valign="top">
+	<td class="text12"><img src="/media_stat/images/headers/check_acct_details.gif" width="181" height="9" border="0" alt="CHECKING ACCOUNT DETAILS">&nbsp;&nbsp;&nbsp;* Required information<br>
+<img src="/media_stat/images/layout/999966.gif" width="693" height="1" border="0" VSPACE="3"><br></td>
+</tr></table>
+<br>
+
+<input type="hidden" name="<%=PaymentMethodName.PAYMENT_METHOD_TYPE%>" value="<%=paymentMethodType%>">
+<table border="0" cellspacing="1" cellpadding="0" width="693">
+<tr valign="top" >
+	<td width="150" align="right" class="text12">*&nbsp;Name&nbsp;&nbsp;</td>
+	<td width="160"><input class="text11" maxlength="50" SIZE="21" type="text" name="<%=PaymentMethodName.ACCOUNT_HOLDER%>" required="true" value="<%=ccNameOnCard%>"><fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.ACCOUNT_HOLDER%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+	<td rowspan="6" width="379" align="right"><img src="/media_stat/images/template/youraccount/check.gif" width="375" height="120" border="0"></td>
+</tr>
+<tr valign="top">
+	<td align="right" class="text12">*&nbsp;Account Type&nbsp;&nbsp;</td>
+	<td class="text12">
+<%
+		Iterator iter = EnumBankAccountType.iterator();
+		while (iter.hasNext()) {
+			EnumBankAccountType bankAccountType = (EnumBankAccountType) iter.next();
+%>
+		<input type="radio" name="<%=PaymentMethodName.BANK_ACCOUNT_TYPE%>" value="<%=bankAccountType.getName()%>" <%=(bankAccountType.getName().equals(ccBankAccountType)) ? "CHECKED" : ""%>><%=bankAccountType.getDescription()%><br>
+<% 		
+		} 
+%>
+	<fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.BANK_ACCOUNT_TYPE%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler><span class="space2pix"><br></span></td>
+</tr>
+<tr valign="middle">
+	<td align="right" class="text12">*&nbsp;Routing #&nbsp;&nbsp;</td>
+	<td><input class="text11" maxlength="50" SIZE="21" type="text" name="<%=PaymentMethodName.ABA_ROUTE_NUMBER%>" required="true" value="<%=ccAbaRouteNumber%>"><fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.ABA_ROUTE_NUMBER%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+</tr>
+<tr valign="middle">
+	<td align="right" class="text12">*&nbsp;Account #&nbsp;&nbsp;</td>
+	<td><input class="text11" maxlength="25" SIZE="21" type="text" name="<%=PaymentMethodName.ACCOUNT_NUMBER%>" required="true" value="<%=ccAccountNumber%>"><fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.ACCOUNT_NUMBER%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+</tr>
+<tr valign="middle">
+	<td align="right" class="text12">*&nbsp;Verify Account #&nbsp;&nbsp;</td>
+	<td><input class="text11" maxlength="25" SIZE="21" type="text" name="<%=PaymentMethodName.ACCOUNT_NUMBER_VERIFY%>" required="true" value="<%=ccAccountNumberVerify%>"><fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.ACCOUNT_NUMBER_VERIFY%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+</tr>
+<tr valign="middle">
+	<td align="right" class="text12">*&nbsp;Bank Name&nbsp;&nbsp;</td>
+	<td><input class="text11" maxlength="100" SIZE="21" type="text" name="<%=PaymentMethodName.BANK_NAME%>" required="true" value="<%=ccBankName%>"><fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.BANK_NAME%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+</tr>
+</table>
+
+<br><br>
+<table border="0" cellspacing="0" cellpadding="2" width="693">
+<tr valign="top">
+	<td width="693" class="text12"><img src="/media_stat/images/headers/address_for_acct.gif" width="179" height="9" border="0" alt="ADDRESS FOR THIS ACCOUNT">&nbsp;&nbsp;&nbsp;* Required information<BR>
+		<img src="/media_stat/images/layout/999966.gif" width="693" height="1" border="0" vspace="3"><br>
+		<br><img src="/media_stat/images/layout/clear.gif" width="1" height="4" alt="" border="0"><br></td></tr>
+</table>
+<table border="0" cellspacing="1" cellpadding="0" width="693">
+	<tr valign="middle">
+	    <td width="150" align="right" class="text12">*&nbsp;Street Address&nbsp;&nbsp;</td>
+		<td width="542"  class="text12"><input type="text" maxlength="50" SIZE="21" class="text11" name="<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>" required="true" value ="<%=ccAddress1%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ADDRESS_1.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+		&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>Apt./Floor Number&nbsp;&nbsp;<input type="text" maxlength="10" size="4" class="text11" name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>" value ="<%=ccApartment%>"></td>
+	</tr>
+	<tr valign="middle">
+	    <td align="right" class="text12">&nbsp;Address Line 2&nbsp;&nbsp;</td>
+		<td><input type="text" maxlength="50" SIZE="21" class="text11" name="<%=EnumUserInfoName.BIL_ADDRESS_2.getCode()%>"  value="<%=ccAddress2%>">&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ADDRESS_2.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+	</tr>
+	<tr valign="middle">
+	    <td align="right" class="text12">*&nbsp;City&nbsp;&nbsp;</td>
+		<td><input type="text" class="text11" SIZE="21" name="<%=EnumUserInfoName.BIL_CITY.getCode()%>" required="true" value="<%=ccCity%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_CITY.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+	</tr>
+	<tr valign="middle">
+	    <td align="right" class="text12">*&nbsp;State&nbsp;&nbsp;</td>
+		<td  class="text12"><input size="3" class="text11" name="<%=EnumUserInfoName.BIL_STATE.getCode()%>" required="true" value="<%=ccState%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_STATE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;&nbsp;&nbsp;*&nbsp;Zip/Postal Code&nbsp;&nbsp;<input type="text" maxlength="5" class="text11" name="<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>" required="true" size="6"  value = "<%=ccZipCode%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.BIL_ZIPCODE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+	</tr>
+</table>
+
+<% if (isDisplayTerms) { %>
+<%-- if first time, need to agree to terms --%><br><br>
+<table border="0" cellspacing="0" cellpadding="2" width="693">
+<tr valign="top">
+<td width="693" class="text12"><img src="/media_stat/images/headers/terms_of_use.gif" width="86" height="9" border="0" alt="TERMS OF USE">&nbsp;&nbsp;&nbsp;* Required information<BR>
+<IMG src="/media_stat/images/layout/999966.gif" width="693" height="1" border="0" VSPACE="3"><br>
+<span class="text11">These terms form part of the FreshDirect <a href="javascript:popup('/registration/user_agreement.jsp?show=terms','large')">Customer Agreement</a>.</span>
+</td>
+</tr></table><br>
+<textarea cols="60" rows="7" readonly xname="tos">
+	<%@ include file="/includes/registration/checkacct_terms.txt" %>
+</textarea><br><br>
+<table cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+	<td width="45" align="right">*&nbsp;<input type="checkbox" value="yes" name="<%=PaymentMethodName.TERMS%>" required="true"></td>
+	<td>
+		<FONT class="space4pix"><br></FONT><FONT class="text12bold">I have read and agree to the Customer Agreement</FONT><br><span class="space2pix"><br></span>
+		<a href="javascript:popup('/registration/checkacct_terms.jsp','large')"><FONT class="text12">Click here for a printable version</FONT></a><br><br>
+	</td>
+</tr>
+<fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.TERMS%>' id='errorMsg'><tr valign="top"><td colspan="2"><span class="text11rbold"><%=errorMsg%></span></td></tr></fd:ErrorHandler>
+</table>
+<% } else { %>
+<input type="hidden" name="<%=PaymentMethodName.TERMS%>" value="yes">
+<% } %>
+<%-- if first time, need to agree to terms --%>
+<br><br>

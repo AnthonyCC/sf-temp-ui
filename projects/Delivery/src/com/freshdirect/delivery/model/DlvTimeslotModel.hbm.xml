@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.freshdirect.delivery.model" schema="dlv">
+
+	<typedef name="EnumTimeslotStatus" class="com.freshdirect.framework.hibernate.ValuedEnumUserType">
+		<param name="enumClassName">com.freshdirect.delivery.EnumTimeslotStatus</param>
+	</typedef>
+	<typedef name="fdBoolean" class="com.freshdirect.framework.hibernate.BooleanType" />
+    
+    <class name="DlvTimeslotModel" table="TIMESLOT">
+        <id name="id" column="ID">
+            <generator class="sequence">
+            	<param name="sequence">SYSTEM_SEQ</param>
+            </generator>
+        </id>
+
+        <property name="trafficFactor" column="TRAFFIC_FACTOR" type="double" />
+        <property name="status" column="STATUS" type="EnumTimeslotStatus" not-null="true"/>
+        <property name="baseDate" column="BASE_DATE" type="date" not-null="true"/>
+        <property name="zoneId" column="ZONE_ID" not-null="true"/>
+        <property name="capacity" column="CAPACITY" />
+        <property name="chefsTableCapacity" column="CT_CAPACITY" />
+        <property name="plannedCapacity" column="PLANNED_CAPACITY" />
+        <property name="chefsTableAllocation" formula="(select count(*) from dlv.reservation r where r.timeslot_id=ID and r.status_code &lt;&gt; '15' and r.status_code &lt;&gt; '20' and r.chefstable = 'X')"/>
+        <property name="baseAllocation" formula="(select count(*) from dlv.reservation r where r.timeslot_id=ID and r.status_code &lt;&gt; '15' and r.status_code &lt;&gt; '20' and r.chefstable = ' ')"/>
+        <property name="preAllocation" formula="(select count(*) from dlv.reservation r where r.timeslot_id=ID and r.status_code ='5' and r.type &lt;&gt; 'STD')"/>
+        <property name="order" formula="(select count(*) from dlv.reservation r where r.timeslot_id=ID and r.status_code = '10')"/>
+        <property name="ctReleaseTime" formula="(select z.ct_release_time from dlv.zone z where z.id = ZONE_ID)" />
+        <property name="ctActive" type="fdBoolean" formula="(select z.ct_active from dlv.zone z where z.id = ZONE_ID)" />
+        <!-- property name="chefstableReservationCount" formula="(select count(*) from dlv.reservation r where r.timeslot_id=ID and chefstable = 'X')"/ -->
+       
+     	<component name="startTime" class="com.freshdirect.framework.util.TimeOfDay"> 
+        	<property name="normalDate" column="START_TIME" type="timestamp" not-null="true"/>
+        </component>       
+     	<component name="endTime" class="com.freshdirect.framework.util.TimeOfDay"> 
+        	<property name="normalDate" column="END_TIME" type="timestamp" not-null="true"/>
+        </component>       
+     	<component name="cutoffTime" class="com.freshdirect.framework.util.TimeOfDay"> 
+        	<property name="normalDate" column="CUTOFF_TIME" type="timestamp" not-null="true"/>
+        </component>       
+
+    </class>
+
+</hibernate-mapping>

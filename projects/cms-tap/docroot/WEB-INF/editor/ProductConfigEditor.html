@@ -1,0 +1,31 @@
+<td colspan="2">
+	<table width="100%">
+		<tr>
+			<td class="label">
+				<label for="SKU">SKU</label>
+			</td>
+			<td>
+				<span jwcid="@RelationshipEditor" relationship="ognl:node.attributes['SKU']" contextNode="ognl:contextNode"/>
+			</td>
+		</tr>
+	<span jwcid="@If" condition="ognl:node.attributes['SKU'].value != null">
+		<tr>
+			<td class="label">
+				<label>Quantity</label>
+			</td>
+			<td>
+				<span jwcid="@PrimitiveField" attribute="ognl:node.attributes['QUANTITY']" contextNode="ognl:contextNode" />
+				<span jwcid="@PrimitiveField" attribute="ognl:node.attributes['SALES_UNIT']" contextNode="ognl:contextNode" definition="ognl:salesUnitDefinition"/>
+			</td>
+		</tr>
+		<tr jwcid="@For" element="tr" source="ognl:configurationDefinition.entrySet()" value="ognl:currDefEntry" volatile="ognl:true">
+			<td class="label">
+				<label><span jwcid="@Insert" value="ognl:currDefEntry.key"/></label>
+			</td>
+			<td>
+				<select jwcid="selectCurrValue" />
+			</td>
+		</tr>
+	</span>
+	</table>
+</td>

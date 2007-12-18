@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/myworkspace-0.2.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/standard.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/log4j.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/jstl.jar"/>
+	<classpathentry kind="var" path="WL_HOME/lib/weblogic.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/hibernate3.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-logging-1.0.3.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/extremecomponents-1.0.1.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-collections-3.1.jar"/>
+	<classpathentry kind="output" path="docroot/WEB-INF/classes"/>
+</classpath>

@@ -1,0 +1,5 @@
+<%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US); %>
+<%-- if there is a promotion the page including this files will put the counter in here --%>
+<tmpl:get name='banner'/>
+<tmpl:get name='promotion' />
+<%@ include file="/common/template/includes/your_cart.jspf" %>

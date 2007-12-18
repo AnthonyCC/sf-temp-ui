@@ -1,0 +1,152 @@
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ page import="com.freshdirect.customer.ErpAddressModel" %>
+<%@ page import="com.freshdirect.customer.EnumUnattendedDeliveryFlag" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDCartModel" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
+
+<% if ("true".equals(request.getAttribute("CHECK_UNATTENDED_DELIVERY"))) { // LOCAL BLOCK
+     FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+     FDCartModel cart = user.getShoppingCart();
+     ErpAddressModel dlvAddress = cart.getDeliveryAddress();
+
+     if (dlvAddress != null) {
+        if (EnumUnattendedDeliveryFlag.NOT_SEEN.equals(dlvAddress.getUnattendedDeliveryFlag())) {
+%>
+        <fd:UnattendedDelivery id='zone' address='<%= dlvAddress %>'>
+<%
+	   // TURN UNATTENDED DELIVERY ON FOR THE ORDER ! TODO VERIFY SEMANTICS
+	   dlvAddress.setUnattendedDeliveryFlag(EnumUnattendedDeliveryFlag.OPT_IN);
+%>
+        <fd:IncludeMedia name="/media/editorial/site_pages/unattended_delivery/checkout_availibility_note.html">
+        <div class="text11">
+        <center>
+	<font color="orange">
+	    <b>Unattended Delivery Now Available in Your Area!</b>
+	</font>
+	<br/>
+	If you need to run out during your delivery timeslot, we will leave your order at your home.
+	<br/>
+	Your order is guarnateed fresh outside for up to 30 minutes, and certain restrictions apply.
+	<br/>
+	<a href="javascript:popup('/help/unattended_delivery.jsp','large')"><b>Click here to learn more about Unattended Delivery</b></a>
+	</center>
+	</div>
+	</fd:IncludeMedia>
+        </fd:UnattendedDelivery>
+<%
+        } else if (EnumUnattendedDeliveryFlag.DISCARD_OPT_IN.equals(dlvAddress.getUnattendedDeliveryFlag())) {
+%>
+        <fd:IncludeMedia name="/media/editorial/site_pages/unattended_delivery/checkout_unavailability_note.html">
+        <div class="text11">
+        <center>
+	<font color="orange">
+	    <b>Please note: unattended delivery is no longer available</b>
+	</font>
+	<br/>
+	We're sorry, but unattended delivery is no longer available for this address.
+	<br/>
+	Please be sure to have someone available to revieve your order during your selected delivery time slot.
+	<br/>
+	<a href="javascript:popup('/help/unattended_delivery.jsp','large')"><b>Click here to learn more about Unattended Delivery</b></a>
+	</center>
+	</div>
+	</fd:IncludeMedia>
+<%
+	}
+
+     }
+%>
+<% } // if %>
+
+<%@ include file="/common/template/includes/globalnav_top.jspf" %>
+
+<%
+String prefix = "ck";
+    if (modOrder) {
+        prefix = "cg";
+    }
+%> 
+<%
+String stepViewCartImgPath = "/media_stat/images/navigation/"+prefix+"_nav_view_cart.gif";
+String stepDlvAddrImgPath = "/media_stat/images/navigation/"+prefix+"_nav_address_off.gif" ;
+String stepDlvTimeImgPath = "/media_stat/images/navigation/"+prefix+"_nav_time_off.gif";
+String stepPayImgPath = "/media_stat/images/navigation/"+prefix+"_nav_payment_off.gif";
+String stepSubmitOrdImgPath = "/media_stat/images/navigation/"+prefix+"_nav_submit_off.gif";
+
+String stepViewCartImgPath_r = "/media_stat/images/navigation/"+prefix+"_nav_view_cart_over.gif";
+String stepDlvAddrImgPath_r = "";
+String stepDlvTimeImgPath_r = "";
+String stepPayImgPath_r = "";
+String stepSubmitOrdImgPath_r = "";
+
+String viewCartPage = response.encodeURL("/checkout/view_cart.jsp?trk=chktop");
+String dlvAddrPage = "";
+String dlvTimePage = "";
+String paymentPage = "";
+
+/* IMAGES FOR DELIVERY ADDRESS PORTION 
+        ck_ cg_ nav_address_edit.gif
+        ck_ cg_ nav_address_off.gif 
+        ck_ cg_ nav_address_on.gif
+        ck_ cg_ nav_address_over.gif
+
+    IMAGES FOR DELIVERY TIMESLOT 
+        ck_ cg_ nav_time_edit.gif - passed this step
+        ck_ cg_ nav_time_off.gif  -- not at this step yet
+        ck_ cg_ nav_time_on.gif -- this is the current step
+        ck_ cg_ nav_time_over.gif -- rollover when this step has been passed
+
+    IMAGES FOR PAYMENT TIME PORTION
+        ck_ cg_ nav_payment_edit.gif
+        ck_ cg_ nav_payment_off.gif
+        ck_ cg_ nav_payment_on.gif
+        ck_ cg_ nav_payment_over.gif
+
+    IMAGES FOR THE SUBMIT ORDER PORTION OF THE NAV BAR
+        ck_ cg_ nav_submit_off.gif
+        ck_ cg_ nav_submit_on.gif
+
+    Images for the ViewCart portion
+        ck_ cg_ nav_view_cart.gif
+        ck_ cg_ nav_view_cart_over.gif
+
+*********************************************/
+
+// based on the current step (via jsp name in URI) set the appropriate image for the steps
+String uri = request.getRequestURI().toLowerCase();
+if(uri.indexOf("step_1")!=-1) { // delivery address
+  stepDlvAddrImgPath = "/media_stat/images/navigation/"+prefix+"_nav_address_on.gif" ;
+} else if(uri.indexOf("step_2")!=-1) { // delivery time
+  stepDlvAddrImgPath_r = "/media_stat/images/navigation/"+prefix+"_nav_address_over.gif";
+  stepDlvAddrImgPath = "/media_stat/images/navigation/"+prefix+"_nav_address_edit.gif" ;
+  stepDlvTimeImgPath = "/media_stat/images/navigation/"+prefix+"_nav_time_on.gif";
+  dlvAddrPage = "<a href=\""+response.encodeURL("/checkout/step_1_choose.jsp")+"\"" + "onMouseOver=\"swapImage('dlvAddrImg','" + stepDlvAddrImgPath_r + "')\" onMouseOut=\"swapImage('dlvAddrImg','" + stepDlvAddrImgPath + "')\"" + ">";
+} else if(uri.indexOf("step_3")!=-1) { // payment 
+  stepDlvAddrImgPath_r = "/media_stat/images/navigation/"+prefix+"_nav_address_over.gif";
+  stepDlvAddrImgPath = "/media_stat/images/navigation/"+prefix+"_nav_address_edit.gif" ;
+  stepDlvTimeImgPath = "/media_stat/images/navigation/"+prefix+"_nav_time_edit.gif";
+  stepDlvTimeImgPath_r = "/media_stat/images/navigation/"+prefix+"_nav_time_over.gif";
+  stepPayImgPath = "/media_stat/images/navigation/"+prefix+"_nav_payment_on.gif";
+  dlvAddrPage = "<a href=\""+response.encodeURL("/checkout/step_1_choose.jsp")+"\"" + "onMouseOver=\"swapImage('dlvAddrImg','" + stepDlvAddrImgPath_r + "')\" onMouseOut=\"swapImage('dlvAddrImg','" + stepDlvAddrImgPath + "')\"" + ">";
+  dlvTimePage = "<a href=\""+response.encodeURL("/checkout/step_2_select.jsp")+"\"" + "onMouseOver=\"swapImage('dlvTimeImg','" + stepDlvTimeImgPath_r + "')\" onMouseOut=\"swapImage('dlvTimeImg','" + stepDlvTimeImgPath + "')\"" + ">";
+} else if(uri.indexOf("step_4")!=-1) { // submit order
+  stepDlvAddrImgPath_r = "/media_stat/images/navigation/"+prefix+"_nav_address_over.gif";
+  stepDlvAddrImgPath = "/media_stat/images/navigation/"+prefix+"_nav_address_edit.gif" ;
+  stepDlvTimeImgPath = "/media_stat/images/navigation/"+prefix+"_nav_time_edit.gif";
+  stepDlvTimeImgPath_r = "/media_stat/images/navigation/"+prefix+"_nav_time_over.gif";
+  stepPayImgPath = "/media_stat/images/navigation/"+prefix+"_nav_payment_edit.gif";
+  stepPayImgPath_r = "/media_stat/images/navigation/"+prefix+"_nav_payment_over.gif";
+  stepSubmitOrdImgPath = "/media_stat/images/navigation/"+prefix+"_nav_submit_on.gif";
+  dlvAddrPage = "<a href=\""+response.encodeURL("/checkout/step_1_choose.jsp")+"\"" + "onMouseOver=\"swapImage('dlvAddrImg','" + stepDlvAddrImgPath_r + "')\" onMouseOut=\"swapImage('dlvAddrImg','" + stepDlvAddrImgPath + "')\"" + ">";
+  dlvTimePage = "<a href=\""+response.encodeURL("/checkout/step_2_select.jsp")+"\"" + "onMouseOver=\"swapImage('dlvTimeImg','" + stepDlvTimeImgPath_r + "')\" onMouseOut=\"swapImage('dlvTimeImg','" + stepDlvTimeImgPath + "')\"" + ">";
+  paymentPage = "<a href=\""+response.encodeURL("/checkout/step_3_choose.jsp")+"\"" + "onMouseOver=\"swapImage('paymentImg','" + stepPayImgPath_r + "')\" onMouseOut=\"swapImage('paymentImg','" + stepPayImgPath + "')\"" + ">";  
+}
+%>
+<FONT CLASS="space4pix"><BR></FONT>
+<TABLE WIDTH="745" BORDER="0" CELLPADDING="0" CELLSPACING="0"><tr>
+<td WIDTH="740"  BGCOLOR="#6699<%=modOrder?"CC":"33"%>"><img src="/media_stat/images/navigation/<%=prefix%>_nav_checkout.gif" width="137" height="34" border="0" alt="CHECKOUT" align="middle"><img src="/media_stat/images/layout/ffffff.gif" WIDTH="1" HEIGHT="22" align="middle"><a href="<%=viewCartPage%>" onMouseOver="swapImage('coNavViewCartImg','<%= stepViewCartImgPath_r%>')" onMouseOut="swapImage('coNavViewCartImg','<%= stepViewCartImgPath%>')"><img src="/media_stat/images/navigation/<%=prefix%>_nav_view_cart.gif" name="coNavViewCartImg" width="96" height="34" border="0" alt="VIEW CART" align="middle"></a><img src="/media_stat/images/layout/ffffff.gif" WIDTH="1" HEIGHT="22" align="middle"><%=dlvAddrPage%><img src="<%=stepDlvAddrImgPath%>" name="dlvAddrImg" width="124" height="34" border="0" alt="STEP 1: DELIVERY ADDRESS" align="middle" ><% if (dlvAddrPage.length()>0) {%></a><%}%><img src="/media_stat/images/layout/ffffff.gif" WIDTH="1" HEIGHT="22" align="middle"><%=dlvTimePage%><img src="<%=stepDlvTimeImgPath%>" name="dlvTimeImg" width="99" height="34" border="0" alt="STEP 2: CHOOSE TIME" align="middle"><% if (dlvTimePage.length()>0) {%></a><%}%><img src="/media_stat/images/layout/ffffff.gif" WIDTH="1" HEIGHT="22" align="middle"><%=paymentPage%><img src="<%=stepPayImgPath%>" name="paymentImg" width="102" height="34" border="0" alt="STEP 3: PAYMENT INFO" align="middle"><% if (paymentPage.length()>0) {%></a><%}%><img src="/media_stat/images/layout/ffffff.gif" WIDTH="1" HEIGHT="22" align="middle"><img src="<%=stepSubmitOrdImgPath%>" width="110" height="34" border="0" alt="STEP 4: SUBMIT ORDER" align="middle">
+</td>
+<TD WIDTH="5"><img src="/media_stat/images/layout/<%=prefix%>_nav_right.gif" width="5" height="34" border="0"></TD>
+</tr></table>
+<!-- end of checkoutnav -->

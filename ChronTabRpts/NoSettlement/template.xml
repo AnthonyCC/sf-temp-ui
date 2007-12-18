@@ -1,0 +1,39 @@
+<xlsReporting>
+ <sources>
+  <source> <!-- Perhaps we use connection pools later on? -->
+    <type>com.freshdirect.xls.datasource.DatabaseDataSource</type>
+    <name>STS01</name>
+    <url>jdbc:oracle:thin:@(DESCRIPTION =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb01-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb02-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (CONNECT_DATA =
+    (SERVER = DEDICATED)
+    (SERVICE_NAME = dbsto_prod)
+     (failover_mode =
+       (type = session)
+       (method = basic)
+       (retries = 20)
+     )
+  )
+ )</url>
+    <user>appdev</user>
+    <password>readn0wrt</password>
+  </source>
+ </sources>
+
+ <populate>
+  <sheet>
+   <name>Sheet1</name>
+   <delimiter>TAB</delimiter>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+  select 'NO SETTLEMENT SENT FOR: ' || trunc(sysdate) as Error
+  from dual where
+  (select count(*) from paylinx.cc_settlement where settle_date_time > trunc(sysdate)) = 0
+     </param>
+     <param>printHeader</param>
+   </dataSource>
+  </sheet>
+ </populate>
+</xlsReporting>

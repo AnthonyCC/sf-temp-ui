@@ -1,0 +1,73 @@
+<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import="com.freshdirect.framework.webapp.*"%>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.*, com.freshdirect.webapp.taglib.fdstore.*'%>
+
+
+
+<%------*************************  JSP STuff starts here *************** --------%>
+<%
+String trkCode= "";
+boolean isDept = (currentFolder instanceof DepartmentModel);
+boolean isCat = (currentFolder instanceof CategoryModel);
+Collection sortedColl=null; 
+boolean onlyOneProduct =false;
+ProductModel theOnlyProduct =  null;
+
+//** pass the code that should be used as the tracking code **/
+if (isDept) {
+	trkCode = "dpage";
+	request.setAttribute("trk","dpage");
+} else if(isCat) {
+	trkCode = "cpage";
+    request.setAttribute("trk","cpage");
+}
+boolean sortDescending = "true".equalsIgnoreCase(request.getParameter("sortDescending"));
+%>
+<fd:LayoutManager result='result' currentNode='<%=currentFolder%>' isDepartment='<%=isDept%>' isCategory='<%=isCat%>' layoutSettingsName='layoutSettings'>
+<fd:ItemGrabber category='<%=currentFolder %>' id='rtnColl'  
+        depth='<%=layoutSettings.getGrabberDepth()%>' ignoreShowChildren='<%=layoutSettings.isIgnoreShowChildren()%>' 
+        filterDiscontinued='<%= layoutSettings.isFilterDiscontinued() %>'
+        returnHiddenFolders='<%=layoutSettings.isReturnHiddenFolders()%>'
+                ignoreDuplicateProducts='<%=layoutSettings.isIgnoreDuplicateProducts()%>'
+        returnSecondaryFolders='<%=layoutSettings.isReturnSeocndaryFolders()%>' returnSkus='<%=layoutSettings.isReturnSkus()%>'>
+<%
+        sortedColl = rtnColl;
+        request.setAttribute("itemGrabberResult",sortedColl); //** expose result of item grabber to the layout **
+%>
+    </fd:ItemGrabber> 
+<%  
+ if (layoutSettings!=null && layoutSettings.getLayoutFileName()!=null) {
+       JspLogger.NAV.debug(" calling layout: "+layoutSettings.getLayoutFileName());
+%>          
+                <fd:ItemSorter nodes='<%=(List)sortedColl%>' strategy='<%=layoutSettings.getSortStrategy()%>'/>
+        <jsp:include page="<%=layoutSettings.getLayoutFileName()%>" flush="false"/> 
+<%  }
+    //the included layout will set two attributes in the response object (Boolean onlyOneProduct and ProductModel theOnlyProduct)
+
+    Object requestAttribute = request.getAttribute("theOnlyProduct");
+    theOnlyProduct = (requestAttribute !=null) ? (ProductModel)requestAttribute  : null;
+    
+    String successPage = (String)request.getAttribute("successPage");
+    if (request.getMethod().equalsIgnoreCase("post") && successPage!=null){
+        response.sendRedirect(response.encodeURL(successPage));
+    }
+    
+    if (!result.isFailure()) {
+        if (theOnlyProduct!=null) {  // need to go to the product page if only one product in the category
+
+            response.sendRedirect(response.encodeRedirectURL("/product.jsp?catId="+theOnlyProduct.getParentNode()+"&productId="+theOnlyProduct+"&trk="+trkCode));
+            out.close();
+            return;
+        }
+    
+        if (layoutSettings.isIncludeUnavailable()  && !isDept){ 
+               JspLogger.NAV.debug(" About to call the unavailable include");
+%>
+            <%@ include file="/includes/unavailable.jspf"%>
+<%      }
+    }
+%>
+</fd:LayoutManager>
+
+                                                                                                        

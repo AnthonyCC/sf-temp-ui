@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+   "-//Hibernate/Hibernate Mapping DTD//EN"
+   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.freshdirect.listadmin.db">
+  <class name="TemplateOrderBy" table="list_template_order_by" lazy="false">
+    <id name="templateOrderById" column="id" unsaved-value="null" length="16">
+      <generator class="uuid" />
+    </id>
+
+    <property name="templateId"    column="template_id"/>
+    <property name="fieldName"     column="field_name"/>
+    <property name="fieldPosition" column="field_position"/>
+
+  </class>
+</hibernate-mapping>

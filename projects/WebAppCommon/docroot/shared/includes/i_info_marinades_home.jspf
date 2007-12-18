@@ -1,0 +1,47 @@
+<%@ page import='com.freshdirect.fdstore.content.*'  %>
+<%@ taglib uri='bean' prefix='bean' %>
+
+<table width="379" border="0" cellpadding="0" cellspacing="2">
+
+	    <logic:iterate id="option" collection="<%= variation.getVariationOptions() %>" type="com.freshdirect.fdstore.FDVariationOption">
+		<%
+		if(option.getName().equals("N")){
+		}
+		else{
+			try{
+
+				ProductModel marProduct = null; 
+				Image prodImg = null;
+
+				marProduct =  ContentFactory.getInstance().getProduct(option.getAttribute("skucode",""));
+				if(marProduct.getAttribute("PROD_IMAGE")!=null){
+				prodImg = (Image)marProduct.getAttribute("PROD_IMAGE").getValue();
+		%>
+		
+		<tr valign="top">
+			<td width="60">
+			<img src="<%=prodImg.getPath()%>" width="<%=prodImg.getWidth()%>" height="<%=prodImg.getHeight()%>" alt="" border="0"><BR>
+			<font class="space4pix"><br><br></font>
+			</td>
+			<td width="10"><BR></td>
+			<td width="329"><font class="space4pix"><BR><BR></font><font class="text11bold"><a href="/shared/fd_def_popup.jsp?skucode=<%=option.getAttribute("skucode","")%>&catId=<%=catId%>&prodId=<%=prodId%>&charName=<%=charName%>&tmpl=<%=tmpl%>&level=detail"><%= option.getDescription() %></a></font><br>
+				
+					<%if(marProduct.getBlurb()!=null){%>
+						<%=marProduct.getBlurb()%>
+					<%}%>
+				<br>		
+				</td>
+		</tr>					
+
+		<%		}	
+			}
+			catch (FDSkuNotFoundException ex){
+
+			}
+
+		}
+		%>
+
+		</logic:iterate>	
+</table>
+

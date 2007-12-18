@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title><span jwcid="@InsertText" value="ognl:title"/></title>
+    <link rel="stylesheet" type="text/css" href="/listadmin/css/main.css"/>
+  </head>
+
+  <body jwcid="@Body">
+
+<table>
+  <tr>
+    <!-- Nav -->
+    <td width="275" valign="top">
+      <span jwcid="@Conditional" condition="ognl:(userType == 'analyst')">
+        <span jwcid="@RoundedContainer" width="175">
+          <a jwcid="@PageLink" page="NewObject"><b>Create a new Object</b></a>
+        </span>
+        <p></p>
+
+        <span jwcid="@RoundedContainer" width="175">
+          <b><u>Objects</u></b><br>
+            <dl>
+              <span jwcid="availableClasses">
+                <di><span jwcid="@InsertText" value="ognl:components.availableClasses.value"/></di>
+                <dd>
+                  <a jwcid="@ExternalLink" page="NewObject" parameters="ognl:components.availableClasses.value">Edit</a>&nbsp|&nbsp;<a jwcid="@ExternalLink" page="NewQuery" parameters="ognl:components.availableClasses.value">New&nbsp;Template</a>
+                </dd>
+              </span>
+            </dl>
+
+        </span>
+        <p></p>
+      </span>
+
+      <span jwcid="@RoundedContainer" width="175">
+        <b><u>Templates</u></b><br>
+        <dl>
+          <span jwcid="availableTemplates">
+            <di><span jwcid="@InsertText" value="ognl:components.availableTemplates.value.name"/></di>
+            <dd><a jwcid="@ExternalLink" page="NewQuery" parameters="ognl:{components.availableTemplates.value.objects.iterator().next().name,components.availableTemplates.value.templateId}">Edit</a>&nbsp;|&nbsp;<a jwcid="@ExternalLink" page="ConfigureQuery" parameters="ognl:components.availableTemplates.value.templateId">New&nbsp;Query</a></dd>
+          </span>
+        </dl>
+      </span>
+      <p></p>
+
+
+      <span jwcid="@RoundedContainer" width="175">
+        <b><u>Run a query</u></b><br>
+          <ul>
+            <span jwcid="availableStoredQueries">
+              <li><a jwcid="@ExternalLink" page="RunQuery" parameters="ognl:components.availableStoredQueries.value.storedQueryId" ><span jwcid="@InsertText" value="ognl:components.availableStoredQueries.value.name"/></a></li>
+            </span>
+          </ul>
+      </span>
+    </td>
+
+    <!-- spacer -->
+    <td width="20">&nbsp;</td>
+
+    <!-- content -->
+    <td width="700" valign="top">
+      <span jwcid="@RoundedContainer" width="600">
+        <span jwcid="@RenderBody"/>
+      </span>
+    <td>
+  </tr>
+</table>
+
+  </body>
+</html>

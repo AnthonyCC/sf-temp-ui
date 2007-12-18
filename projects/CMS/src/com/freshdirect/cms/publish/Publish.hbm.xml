@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+   "-//Hibernate/Hibernate Mapping DTD//EN"
+   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.freshdirect.cms.publish" schema="cms">
+
+	<typedef name="EnumPublishStatus" class="com.freshdirect.framework.hibernate.EnumUserType">
+		<param name="enumClassName">com.freshdirect.cms.publish.EnumPublishStatus</param>
+	</typedef>
+
+	<class name="Publish" table="Publish" lazy="false">
+		<id name="id" length="16">
+			<generator class="sequence">
+				<param name="sequence">publish_seq</param>
+			</generator>
+		</id>
+		
+		<property name="timestamp"/>
+		
+		<property name="userId" column="user_id"/>
+		
+		<property name="description"/>
+		
+		<property name="lastModified" column="last_modified"/>
+		
+		<property name="status" type="EnumPublishStatus"	/>
+		
+		<list name="messages" table="PublishMessages">
+			<key column="publish_id"/>
+			<list-index column="sort_order"/>
+			<composite-element class="PublishMessage">
+				<property name="timestamp"/>
+				<property name="severity"/>
+				<property name="message"/>
+				<!-- TODO: replace the below two types with a composite
+				           type mapping to ContentType -->
+				<property name="contentId"   column="CONTENT_ID"/>
+				<property name="contentType" column="CONTENT_TYPE"/>
+			</composite-element>
+		</list>
+				
+	</class>
+
+</hibernate-mapping>

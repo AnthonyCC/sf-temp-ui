@@ -1,0 +1,109 @@
+<xlsReporting>
+ <sources>
+  <source> <!-- Perhaps we use connection pools later on? -->
+    <type>com.freshdirect.xls.datasource.DatabaseDataSource</type>
+    <name>STS01</name>
+    <url>jdbc:oracle:thin:@(DESCRIPTION =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb01-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb02-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (CONNECT_DATA =
+    (SERVER = DEDICATED)
+    (SERVICE_NAME = dbsto_prod)
+     (failover_mode =
+       (type = session)
+       (method = basic)
+       (retries = 20)
+     )
+  )
+ )</url>
+    <user>appdev</user>
+    <password>readn0wrt</password>
+  </source>
+ </sources>
+
+ <populate>
+  <sheet>
+   <name>MG Created</name>
+   <beginOffsetRow>1</beginOffsetRow>
+   <beginOffsetColumn>0</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+      select sa.sale_id, s.customer_id, pi.referenced_order as Referenced, pi.name, pi.address1, pi.apartment, pi.city, pi.state, sa.action_type, sa.amount, s.status, sa.action_date, s.sap_number, rs.truck_number, rs.stop_sequence, ct.profile_name from cust.paymentinfo pi, cust.salesaction sa, cust.sale s, cust.sale rs, (select * from cust.profile where profile_name='ChefsTable') ct where pi.referenced_order is not null and pi.salesaction_id = sa.id and sa.sale_id = s.id and rs.id = pi.referenced_order and sa.action_date = (select max(action_date) from cust.salesaction where sale_id = s.id and action_type in ('CRO', 'MOD')) and s.customer_id +2 = ct.customer_id (+) and sa.action_date between sysdate - 1 and sysdate
+     </param>
+   </dataSource>
+  </sheet>
+
+  <sheet>
+   <name>MG For Delivery Today</name>
+   <beginOffsetRow>1</beginOffsetRow>
+   <beginOffsetColumn>0</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+select sa.sale_id, s.customer_id, pi.referenced_order as Referenced, pi.name, pi.address1, pi.apartment, pi.city, pi.state, sa.action_type,sa.amount, s.status, sa.action_date, s.sap_number, di.starttime, di.endtime from cust.paymentinfo pi, cust.salesaction sa, cust.sale s, cust.deliveryinfo di where pi.referenced_order is not null and pi.salesaction_id = sa.id and sa.sale_id = s.id and sa.action_date = (select max(action_date) from cust.salesaction where sale_id = s.id and action_type in ('CRO', 'MOD')) and sa.id = di.salesaction_id and to_char(di.starttime, 'DD-MON-YYYY') = to_char(sysdate, 'DD-MON-YYYY')
+     </param>
+   </dataSource>
+  </sheet>
+
+
+  <sheet>
+   <name>MG Delivered Yesterday</name>
+   <beginOffsetRow>1</beginOffsetRow>
+   <beginOffsetColumn>0</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+select sa.sale_id, s.customer_id, pi.referenced_order as Referenced, pi.name, pi.address1, pi.apartment, pi.city, pi.state, sa.action_type,sa.amount, s.status, sa.action_date, s.sap_number, di.starttime, di.endtime from cust.paymentinfo pi, cust.salesaction sa, cust.sale s, cust.deliveryinfo di where pi.referenced_order is not null and pi.salesaction_id = sa.id and sa.sale_id = s.id and sa.action_date = (select max(action_date) from cust.salesaction where sale_id = s.id and action_type in ('CRO', 'MOD')) and sa.id = di.salesaction_id and di.starttime BETWEEN sysdate - 1 and sysdate
+     </param>
+   </dataSource>
+  </sheet>
+
+  <sheet>
+   <name>Summary Queries</name>
+   <beginOffsetRow>2</beginOffsetRow>
+   <beginOffsetColumn>0</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+select count(sa.amount), sum(sa.amount), min(sa.amount), max(sa.amount), avg(sa.amount), percentile_cont(0.5) within group (order by sa.amount) from cust.paymentinfo pi, cust.salesaction sa, cust.sale s, cust.deliveryinfo di where pi.referenced_order is not null and pi.salesaction_id = sa.id and sa.sale_id = s.id and sa.action_date = (select max(action_date) from cust.salesaction where sale_id = s.id and action_type in ('CRO', 'MOD')) and sa.id = di.salesaction_id and to_char(di.starttime, 'MON') = to_char(sysdate, 'MON')
+     </param>
+   </dataSource>
+  </sheet>
+
+  <sheet>
+   <name>Summary Queries</name>
+   <beginOffsetRow>7</beginOffsetRow>
+   <beginOffsetColumn>0</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+select count(sa.amount), sum(sa.amount), min(sa.amount), max(sa.amount), avg(sa.amount), percentile_cont(0.5) within group (order by sa.amount) from cust.paymentinfo pi, cust.salesaction sa, cust.sale s, cust.deliveryinfo di where pi.referenced_order is not null and pi.salesaction_id = sa.id and sa.sale_id = s.id and sa.action_date = (select max(action_date) from cust.salesaction where sale_id = s.id and action_type in ('CRO', 'MOD')) and sa.id = di.salesaction_id and to_char(di.starttime, 'YY') = to_char(sysdate, 'YY')
+     </param>
+   </dataSource>
+  </sheet>
+
+  <sheet>
+   <name>Make Good Order Summary</name>
+   <beginOffsetRow>0</beginOffsetRow>
+   <beginOffsetColumn>4</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>select sysdate from dual
+     </param>
+   </dataSource>
+  </sheet>
+
+  <sheet>
+   <name>Make Good Order Summary</name>
+   <beginOffsetRow>1</beginOffsetRow>
+   <beginOffsetColumn>1</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>select to_char(sysdate - 1, 'MM/DD/YYYY') from dual
+     </param>
+   </dataSource>
+  </sheet>
+
+ </populate>
+</xlsReporting>

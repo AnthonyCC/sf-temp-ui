@@ -1,0 +1,30 @@
+    <form jwcid="@Any" id="sortByForm" action="#">
+      <table>
+        <tr>
+          <td>
+            <select jwcid="@Any" id="ognl:(name + '1')" name="ognl:(name + '1')" size="5" multiple>
+              <span jwcid="@Foreach" source="ognl:themThings" value="ognl:thatThing">
+              
+                <option jwcid="@Any" value="ognl:thatThing.value"><span jwcid="@InsertText" value="thatThing.value"/></option>
+              </span>
+            </select>
+          </td>
+
+          <td>
+            <a jwcid="@Any" href="#" onClick="ognl:('move12(\'' + name + '\')')">--&gt;</a><br>
+            <a jwcid="@Any" href="#" onClick="ognl:('move21(\'' + name + '\')')">&lt;--</a>
+          </td>
+
+          <td>
+            <select jwcid="@Any" id="ognl:(name + '2')" name="ognl:(name + '2')" size="5" multiple>
+              <option></option>
+            </select>
+          </td>
+
+          <td>
+            <a href="#" onClick="ognl:('moveUp(\'' + name + '\')')">/\</a><br>
+            <a href="#" onClick="ognl:('moveDown(\'' + name + '\')')">\/</a>
+          </td>
+        </tr>
+      </table>
+    </form>

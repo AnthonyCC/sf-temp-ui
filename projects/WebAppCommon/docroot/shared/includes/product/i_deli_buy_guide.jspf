@@ -1,0 +1,88 @@
+<% 
+    boolean container_half_pint = (productNode.getAttribute("CONTAINER_WEIGHT_HALF_PINT") != null);
+    boolean container_pint      = (productNode.getAttribute("CONTAINER_WEIGHT_PINT") != null);
+    boolean container_quart     = (productNode.getAttribute("CONTAINER_WEIGHT_QUART") != null);
+
+    if (container_half_pint || container_pint || container_quart) { 
+
+        int container_table_cols = 0;
+        if (container_half_pint) container_table_cols++;
+        if (container_half_pint && (container_pint || container_quart)) container_table_cols++;
+        if (container_pint) container_table_cols++;
+        if (container_pint && container_quart) container_table_cols++;
+        if (container_quart) container_table_cols++;
+%>
+
+<table border="0" cellspacing="0" cellpadding="0">
+	<tr><td colspan="<%= container_table_cols %>" align="right"><b>Buying Guide</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"></td></tr>
+	<tr>
+        <%  if (container_half_pint) { %>
+		<td valign="bottom" align="center"><img src="/media_stat/images/template/deli/container2_sm.jpg" width="35" height="26" alt="" border="0"></td>
+        <%  }
+            if (container_half_pint && (container_pint || container_quart)) {   %>
+		<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
+        <%  }
+            if (container_pint) { %>
+		<td valign="bottom" align="center"><img src="/media_stat/images/template/deli/container2_md.jpg" width="35" height="32" alt="" border="0"></td>
+        <%  }
+            if (container_pint && container_quart) {   %>
+		<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
+        <%  }
+            if (container_quart) { %>
+		<td valign="bottom" align="center"><img src="/media_stat/images/template/deli/container2_lg.jpg" width="35" height="47" alt="" border="0"></td>
+        <%  } %>
+	</tr>
+	<tr>
+        <%  if (container_half_pint) { %>
+		<td valign="bottom" align="center"><b>1/2 pint</b></td>
+        <%  }
+            if (container_half_pint && (container_pint || container_quart)) {   %>
+		<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
+        <%  }
+            if (container_pint) { %>
+		<td valign="bottom" align="center"><b>1 pint</b></td>
+        <%  }
+            if (container_pint && container_quart) {   %>
+		<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
+        <%  }
+            if (container_quart) { %>
+		<td valign="bottom" align="center"><b>1 quart</b></td>
+        <%  } %>
+	</tr>
+	<tr>
+        <%  if (container_half_pint) { %>
+		<td valign="bottom" align="center">about</td>
+        <%  }
+            if (container_half_pint && (container_pint || container_quart)) {   %>
+		<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
+        <%  }
+            if (container_pint) { %>
+		<td valign="bottom" align="center">about</td>
+        <%  }
+            if (container_pint && container_quart) {   %>
+		<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
+        <%  }
+            if (container_quart) { %>
+		<td valign="bottom" align="center">about</td>
+        <%  } %>
+	</tr>
+	<tr>
+        <%  if (container_half_pint) { %>
+		<td valign="bottom" align="center"><%= productNode.getAttribute("CONTAINER_WEIGHT_HALF_PINT").getValue() %> lb</td>
+        <%  }
+            if (container_half_pint && (container_pint || container_quart)) {   %>
+        <td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
+        <%  }
+            if (container_pint) { %>
+		<td valign="bottom" align="center"><%= productNode.getAttribute("CONTAINER_WEIGHT_PINT").getValue() %> lb</td>
+        <%  }
+            if (container_pint && container_quart) {   %>
+		<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
+        <%  }
+            if (container_quart) { %>
+		<td valign="bottom" align="center"><%= productNode.getAttribute("CONTAINER_WEIGHT_QUART").getValue() %> lb</td>
+        <%  }   %>
+	</tr>
+</table>
+<% }%>
+

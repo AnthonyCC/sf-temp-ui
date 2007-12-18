@@ -1,0 +1,126 @@
+<?xml version="1.0"?>
+<!--
+
+Symbols:
+
+	cms.publish.basePath
+	
+	cms.publish.script
+	
+	cms.publish.repositoryUrl
+
+-->
+<module id="com.freshdirect.cms.publish" version="1.0.0">
+
+	<service-point id="PublishStore" interface="com.freshdirect.cms.publish.PublishTask">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.publish.PublishXmlTask">
+				<service>com.freshdirect.cms.StoreContent</service>
+				<string>/Store.xml.gz</string>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<service-point id="PublishSlide" interface="com.freshdirect.cms.publish.PublishTask">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.publish.PublishXmlTask">
+				<service>com.freshdirect.cms.SlideService</service>
+				<string>/Media.xml.gz</string>
+			</construct>
+		</invoke-factory>
+	</service-point>
+	
+	<service-point id="PublishMedia" interface="com.freshdirect.cms.publish.PublishTask">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.publish.PublishMediaTask">
+				<service>PublishService</service>
+				<string>/media_deltas</string>
+				<string>${cms.publish.repositoryUrl}</string>
+				<set-service property="dataSource" service-id="com.freshdirect.cms.cmsdatasource" />
+			</construct>			
+		</invoke-factory>
+	</service-point>
+	
+	<service-point id="PublishValidation" interface="com.freshdirect.cms.publish.PublishTask">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.publish.ValidationTask">
+				<service>com.freshdirect.cms.StoreContent</service>
+				<configuration>com.freshdirect.cms.contentValidators</configuration>
+			</construct>
+		</invoke-factory>
+	</service-point>
+	
+	<service-point id="OASExport" interface="com.freshdirect.cms.publish.PublishTask">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.publish.StoreExportTask">
+				<service>com.freshdirect.cms.cmsdatasource</service>
+				<string>
+<![CDATA[
+-- regular store hierarchy
+select 'www.freshdirect.com' ||
+ replace(
+  SYS_CONNECT_BY_PATH(
+   substr(child_contentnode_id, instr(child_contentnode_id, ':') + 1),'|'),'|', '/') as "Location.Url",
+   child_contentnode_id as "Location.Description"
+from cms_all_nodes an 
+where an.def_contenttype in ('Department','Category','Product') 
+start with an.parent_contentnode_id = 'Store:FreshDirect' 
+connect by prior an.child_contentnode_id = an.parent_contentnode_id
+    union all
+-- recipes hierarchy
+select 'www.freshdirect.com' ||
+ replace(
+  SYS_CONNECT_BY_PATH(
+   substr(child_contentnode_id, instr(child_contentnode_id, ':') + 1),'|'),'|', '/') as "Location.Url",
+   child_contentnode_id as "Location.Description"
+from cms_all_nodes an 
+where an.def_contenttype in ('RecipeCategory','RecipeSubcategory') 
+start with an.parent_contentnode_id = 'RecipeDepartment:rec' 
+connect by prior an.child_contentnode_id = an.parent_contentnode_id
+    union all
+-- individual recipes by source
+select
+ 'www.freshdirect.com/rec/' ||
+ substr(child_contentnode_id, instr(child_contentnode_id, ':') + 1) || '/' ||
+ substr(parent_contentnode_id, instr(parent_contentnode_id, ':') + 1) as "Location.Url",
+ parent_contentnode_id as "Location.Description"
+from cms_relationship
+where def_contenttype='RecipeSource'
+and def_name='source'
+]]>
+				</string>
+				<string>/OAS_StoreExport.txt</string>
+				<string>^</string>
+			</construct>
+		</invoke-factory>
+	</service-point>
+	
+	<service-point id="RunScript" interface="com.freshdirect.cms.publish.PublishTask">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.publish.RunScriptTask">
+				<string>${cms.publish.script}</string>
+			</construct>
+		</invoke-factory>
+	</service-point>
+	
+	<configuration-point id="publishTasks" schema-id="com.freshdirect.cms.serviceList"/>
+	<contribution configuration-id="publishTasks" >
+		<service name="PublishValidation"/>
+		<service name="PublishStore"/>
+		<service name="PublishSlide"/>
+		<service name="PublishMedia"/>
+		<service name="OASExport"/>
+		<service name="RunScript"/>
+	</contribution>
+
+	<service-point id="PublishService" interface="com.freshdirect.cms.publish.PublishServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.publish.DbPublishService">
+				<set-service property="dataSource" service-id="com.freshdirect.cms.cmsdatasource" />
+				<set-object property="publishTasks" value="configuration:publishTasks"/>
+				<set property="basePath" value="${cms.publish.basePath}"/>
+			</construct>
+		</invoke-factory>
+	</service-point>
+	
+</module>

@@ -1,0 +1,24 @@
+<span jwcid="@Shell" title="Create a new query">
+  <font size="+1"><b>Create a new query</b></font><br>
+
+  <form jwcid="form" method="GET">
+    <hidden jwcid="@Hidden" name="templateId" value="ognl:templateId"/>
+
+    <table border="0">
+      <tr><td>Name</td><td><input jwcid="@TextField" value="ognl:storedQuery.name"/></td></tr>
+      <tr>
+        <td>Datasource</td>
+        <td>
+          <span jwcid="datasources"/>
+        </td>
+      </tr>
+
+      <span jwcid="paramClauses">
+        <span jwcid="@ParamPopulator" clause="ognl:components.paramClauses.value"/><br>
+      </span>
+    </table>
+
+    <input type="submit" jwcid="@Submit" name="Save" value="Save" listener="ognl:listeners.saveQuery"/>
+    
+  </form>
+</span>

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+   "-//Hibernate/Hibernate Mapping DTD//EN"
+   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.freshdirect.listadmin.db">
+  <class name="VirtualObject" table="list_virtual_object" lazy="false">
+    <id name="virtualObjectId" column="id" unsaved-value="null" length="16">
+      <generator class="uuid" />
+    </id>
+
+    <property name="name"/>
+    <property name="simpleSql" column="simple_sql"/>
+    <property name="sqlText"   column="sql_text"/>
+  </class>
+</hibernate-mapping>

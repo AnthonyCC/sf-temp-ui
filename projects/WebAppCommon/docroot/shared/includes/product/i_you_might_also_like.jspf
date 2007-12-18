@@ -1,0 +1,21 @@
+<%
+    ProductModel pm = null;
+    pm = ContentFactory.getInstance().getProductByName("sea_finder", productNode.getContentName());
+    
+    if(pm == null){
+        Attribute attr = productNode.getAttribute("ALSO_SOLD_AS");
+        List alsoSoldAs = attr == null ? Collections.EMPTY_LIST:(List)attr.getValue();
+        
+        
+        for(Iterator i = alsoSoldAs.iterator();i.hasNext() && pm == null;){ 
+            ProductRef productRef = (ProductRef)i.next();
+            pm = ContentFactory.getInstance().getProductByName("sea_finder", productRef.getProductName());
+        }
+    }
+    if(pm != null){
+%>
+<br>
+<br>
+<b>You Might Also Like</b><br>
+<a href="javascript:popup('fish_finder_popup.jsp?sel=<%=pm.getContentName()%>', 'large');">Similar Fish</a>
+<%}%>

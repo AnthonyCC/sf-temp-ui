@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Content>
+	<FooDefault id="fooNode">
+	</FooDefault>
+	<FooGenerateId id="fooNode">
+	</FooGenerateId>
+	<FooDontGenerateId id="fooNode">
+	</FooDontGenerateId>
+</Content>

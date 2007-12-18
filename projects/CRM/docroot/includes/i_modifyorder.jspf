@@ -1,0 +1,62 @@
+<%@ page import="com.freshdirect.fdstore.customer.*"%>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.*"%>
+<%
+String uri = request.getRequestURI();
+boolean isInDelivery = false;
+if(uri.indexOf("checkout_delivery_time") > -1){
+	isInDelivery = true;
+}
+
+boolean modifyOrderMode = false;
+{
+	FDSessionUser mUser = (FDSessionUser) session.getAttribute( SessionName.USER );
+	FDCartModel mCart = (FDCartModel) mUser.getShoppingCart();
+	
+	if (mCart instanceof FDModifyCartModel) {
+		modifyOrderMode = true;
+		FDModifyCartModel modCart = (FDModifyCartModel) mCart;
+		
+		java.text.SimpleDateFormat modDateFormat = new java.text.SimpleDateFormat("h:mm a 'on' EEEE MMMM d, yyyy");
+
+		java.text.SimpleDateFormat modDayDateFormat = new java.text.SimpleDateFormat("EEEE, MMM. d");		
+		java.text.SimpleDateFormat modStartDateFormat = new java.text.SimpleDateFormat("h:mm");
+		java.text.SimpleDateFormat modEndDateFormat = new java.text.SimpleDateFormat("h:mm a");		
+%>
+<table width="100%" cellspacing="0" cellpadding="1" border="0" class="order" style="border: 4px #6699CC solid; border-top: 4px solid #FF9900;">
+<tr height="22">   
+    <td class="order_modify" colspan="2"><b>You are changing order # <%= modCart.getOriginalOrder().getErpSalesId() %></b></td>
+</tr>
+<tr>
+    <td class="order_modify_content">
+		Make your changes and <b>complete Checkout by <%= modDateFormat.format(modCart.getOriginalOrder().getDeliveryReservation().getCutoffTime()) %></b>, or this order will be delivered as is.
+	</td>
+	<script language="javascript">
+	
+	function confirmModCancel(redirectURL) {
+		var doCancel = confirm ("Are you sure you want to cancel all changes and leave order as is?");
+		if (doCancel == true) {
+			jumpTo(redirectURL);
+		}
+	}
+	
+	function jumpTo(locationURL) {
+		if (locationURL==null) return false;
+		window.location=locationURL;
+	}
+	
+	</script>
+	<td class="order_modify_content" align="right"><a href="javascript:confirmModCancel('<%= response.encodeURL("/order/cancel_modify_order.jsp") %>')" class="order_modify_cancel" style="width:150px;">CANCEL ALL CHANGES</a></td>
+</tr>
+
+<%if(isInDelivery){%>
+<tr>
+	<td colspan="2" class="order_modify_content">
+		NOTE: If your new delivery date is on or after <%= modDayDateFormat.format(modCart.getOriginalOrder().getDeliveryReservation().getEndTime()) %>, all of your items will be updated to reflect today's prices. For full details of our pricing policy, <a href="javascript:popup('/help/faq_index.jsp?show=shopping#question7','large')">click here</a>.
+	</td>
+</tr>
+<%}%>
+</table>
+<%	
+	}
+}
+%>

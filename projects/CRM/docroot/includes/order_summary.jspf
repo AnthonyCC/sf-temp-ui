@@ -1,0 +1,42 @@
+<%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%-- =================================================
+		This include requires the following variables:
+		- FDOrderI order
+================================================= --%>
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="order_summary_text">
+<fd:OrderSummary id="summary" order="<%=order%>">
+	<tr class="order_summary_header">
+		<td width="12%">Delivery</td>
+		<td class="order_summary_separator" rowspan="2"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td>
+		<td width="11%">Status</td>
+		<td class="order_summary_separator" rowspan="2"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td>
+		<td width="9%">Amount</td>
+		<td class="order_summary_separator" rowspan="2"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td>
+		<td width="12%">Created</td>
+		<td class="order_summary_separator" rowspan="2"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td>
+		<td width="9%">by</td>
+		<td class="order_summary_separator" rowspan="2"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td>
+		<td width="7%">via</td>
+		<td class="order_summary_separator" rowspan="2"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td>
+		<td width="12%">Modified</td>
+		<td class="order_summary_separator" rowspan="2"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td>
+		<td width="9%">by</td>
+		<td class="order_summary_separator" rowspan="2"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td>
+		<td width="7%">via</td>
+		<td class="order_summary_separator" rowspan="2"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td>
+		<td width="12%" align="center">Credits Issued?</td>
+	</tr>
+	<tr valign="top">
+		<td><%=CCFormatter.formatDeliveryDate(summary.getDeliveryDate())%></td>
+		<td><b><%=summary.getOrderStatus()%></b></td>
+		<td><%=CCFormatter.formatCurrency(summary.getOrderTotal())%></td>
+		<td><%=CCFormatter.formatDateTime(summary.getCreateDate())%></td>
+		<td><%=summary.getCreatedBy()%></td>
+		<td><%=summary.getCreateSource()%></td>
+		<td><%=CCFormatter.formatDateTime(summary.getLastModifiedDate())%></td>
+		<td><%=summary.getLastModifiedBy()%></td>
+		<td><%=summary.getLastModifiedSource()%></td>
+		<td align="center"><%=summary.creditIssued()%></td> 
+	</tr>
+</fd:OrderSummary>
+</table>

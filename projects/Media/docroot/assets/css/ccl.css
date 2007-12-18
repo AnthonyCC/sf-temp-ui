@@ -1,0 +1,178 @@
+
+.mask {
+    z-index:0;
+    display:none;
+    position:absolute;
+    top:0;
+    left:0;
+    -moz-opacity: 0.5;
+    opacity:.50;
+    filter: alpha(opacity=50);
+    background-color:#FFF;
+}
+
+.ccl-panel {
+	visibility:hidden;
+	position:relative;
+	left:0px;
+	top:0px;
+	background-color: #FFF;
+	z-index:1;
+	overflow: visible;
+	border: solid 1px #333333;
+	padding: 0px;
+}
+
+.ccl-panel .hd {
+    padding: 0px; 
+    margin: 0px;
+    height:22px; 
+    text-align: left; 
+    overflow:visible;	
+    background-color: #996699;
+    border: solid 1px #996699;
+	color:#FFF;
+}
+
+.ccl-panel .hd .ccl-panel-title {
+	padding-top: 1px;
+	padding-left: 10px;
+}
+
+.ccl-panel .bd {
+	overflow:hidden;
+	padding:4px;
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: #FFF;
+	font-color: #333333;
+	z-index: 1;
+}
+
+.ccl-panel ul {
+	text-align: left;
+	list-style-type: none;
+	margin: 0;
+	padding: 5px 0 0 0;
+}
+
+.ccl-panel ul li {
+    margin: 0px;
+    padding: 0 0 0 24px;
+    background: url(/media_stat/ccl/lists_confirm_bullet.gif) 10px 8px no-repeat;    
+}
+
+.ccl-panel ul li a {
+    margin-left: -3px;
+}
+
+.ccl-panel img.ccl-confirm-hdr {
+	border: 0;
+	width: 159px;
+	height: 20px;
+}
+
+.ccl-panel div.toleft {
+    margin: 0;
+    padding: 5px 5px;
+    text-align: left;
+}
+
+.prod-name-text {
+    padding: 6px 20px 0 28px;
+}
+
+.ccl-edit-btn {
+    padding-left: 28px;
+}
+
+.ccl-edit-btn img {
+    padding: 5px 0 5px 0;
+	border: 0;
+}
+
+.list-text {
+    padding-left: 28px;
+}
+
+
+/*.ccl-panel .bd div {
+	text-align:   center;
+	margin-left:  auto;
+	margin-right: auto;
+}*/
+
+.ccl-panel .ft {
+    border-top: none; 
+	padding: 0px;
+	margin: 0px;
+	width: auto;
+	height: 0px;
+    overflow: visible;
+	background-color: #FFF;
+}
+
+
+.ccl-panel .ccl-panel-help {
+	position:absolute;
+	top:2px;
+	right:20px;
+	z-index:6;
+	height:12px;
+	width:12px;
+	margin:0px;
+	padding:0px;
+	background:url(/media_stat/ccl/list_diag_help.gif) no-repeat;
+	cursor:pointer;
+	visibility:inherit;
+}
+
+.ccl-panel .container-close {
+	position:absolute;
+	top:2px;
+	right:4px;
+	z-index:6;
+	height:12px;
+	width:12px;
+	margin:0px;
+	padding:0px;
+	background:url(/media_stat/ccl/list_diag_close.gif) no-repeat;
+	cursor:pointer;
+	visibility:inherit;
+}
+
+.ccl-panel .ccl-panel-text {
+	padding: 2ex;
+	z-index: 1;
+}
+
+.ccl-panel .ccl-panel-text-input {
+	z-index: 1;
+}
+
+.ccl-panel .ccl-panel-link-text {
+	padding: 1ex;
+	z-index: 1;
+}
+
+.ccl-panel .ccl-panel-link {
+	cursor: pointer;
+	z-index: 1;
+}
+
+.ccl-panel .ccl-panel-dropdown {
+	z-index: 1;
+	width: 220px;
+}
+
+.ccl-panel .bd .ccl-panel-needlogintext {
+	text-align: left;
+	margin-left: 0px; 
+	margin-right: 0px;
+}
+
+.ccl-panel .ccl-font-black {
+	font-color: #333333;
+	color: #333333;
+}

@@ -1,0 +1,4 @@
+
+      <li><label><input onclick="toggle_column('rec_id')" id="rec_id" type="checkbox" /> Recipe id</label>
+      <li><label><input onclick="toggle_column('spath')" id="spath" type="checkbox" /> Servlet path</label>
+      <li><label><input onclick="toggle_column('bpath')" id="bpath" type="checkbox" /> Browse path</label>

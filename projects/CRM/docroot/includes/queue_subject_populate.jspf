@@ -1,0 +1,54 @@
+<script language="JavaScript">
+<!--
+	var queues = new Array();
+	function Queue(code, name, subjects) {
+		this.code = code;
+		this.name = name;
+		this.subjects = subjects;
+	}
+	function Subject(code, name) {
+		this.code = code;
+		this.name = name;
+	}
+	
+	function populateSubject(queue, subjectField){
+		subjectField.options.length = 1;
+		var numSubj = queues[queue].subjects.length;
+		subjectField.options[0].text = numSubj==0 ? "-Select Queue then Subject-" : "-Select Subject-";
+		subjectField.disabled = numSubj==0;
+		for (i=0; i < numSubj; i++) {
+			var optName = queues[queue].subjects[i].name;
+			var optValue = queues[queue].subjects[i].code;
+			subjectField.options[subjectField.options.length]= new Option(optName, optValue, false, false);
+		}
+	<% if (template.getSubject() != null) { %>
+		if (queue == "<%=template.getSubject().getQueue().getCode()%>") {
+			subjectField.value = "<%= template.getSubject().getCode() %>";
+		}
+	<% } %>
+	}
+	
+	var queues = new Array();
+	queues[""] = new Queue("", "", []);
+	<%
+	for (Iterator i = CrmCaseQueue.getEnumList().iterator(); i.hasNext(); ) {
+		CrmCaseQueue q = (CrmCaseQueue)i.next();
+		if (!q.isObsolete()) {
+			%>
+			queues["<%= q.getCode() %>"] = new Queue("<%= q.getCode() %>", "<%= q.getName() %>", [
+			<%
+			int c = 0;
+			for (Iterator j = q.getSubjects().iterator(); j.hasNext(); ) {
+				CrmCaseSubject s = (CrmCaseSubject)j.next();				
+				if (!s.isObsolete()) {
+					if (c>0) out.print(", ");
+					c++;
+					%>new Subject("<%= s.getCode() %>", "<%= s.getName() %>")<%
+				}			
+			}
+			out.println("]);");
+		}
+	}
+	%>
+//-->
+</script>

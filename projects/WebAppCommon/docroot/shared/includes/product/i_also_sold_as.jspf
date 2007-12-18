@@ -1,0 +1,76 @@
+<%
+                        List alsoSoldAsList = null;
+                        String myPKID = productNode.getPK().getId();
+                        Map keepMap = new HashMap();
+                        // get the also sold as stuff
+
+                        Attribute prdAttrib = null;
+
+
+                        alsoSoldAsList = productNode.getAlsoSoldAsRefs();
+
+                        if (alsoSoldAsList!=null && alsoSoldAsList.size()>0) {
+                            // scan through the list to see if there are items in here that live at the same folder as this product
+                            CategoryModel pcat = (CategoryModel)productNode.getParentNode();
+							
+                            StringBuffer asaNames = new StringBuffer();
+
+                            for(Iterator asaItr = alsoSoldAsList.iterator();asaItr.hasNext();) {
+                                ContentRef cr = (ContentRef)asaItr.next();
+                                if (cr.getRefName().equals(pcat.getContentName())){
+                                    ProductModel asaProd = ((ProductRef)cr).lookupProduct();
+                                    if (asaProd.getParentNode().isHidden()) continue;
+                                    Attribute asaName = asaProd.getAttribute("ALSO_SOLD_AS_NAME");
+                                    String asaLabel = asaName==null ? asaProd.getFullName() : (String)asaName.getValue();
+                                    keepMap.put(cr,asaLabel);
+                                }
+
+                            }
+
+                            // ok..walk through the list again..now look for items that are missing from the keep list that have different display names
+                            //(note:seafood items need this logic. cause the whole and Steak and fillet items live in different folders
+                             for(Iterator asaItr = alsoSoldAsList.iterator();asaItr.hasNext();) {
+                                ContentRef cr = (ContentRef)asaItr.next();
+                                ProductModel asaProd = ((ProductRef)cr).lookupProduct();
+                                if (asaProd.getParentNode().isHidden()) continue;
+                                 Attribute asaName = asaProd.getAttribute("ALSO_SOLD_AS_NAME");
+                                 String asaLabel = asaName==null ? asaProd.getFullName() : (String)asaName.getValue();
+                                 if (!keepMap.containsKey(cr)  && !keepMap.containsValue(asaLabel)) {
+                                     keepMap.put(cr,asaLabel);
+                                 }
+                             }
+
+
+                            Set keepSet = keepMap.keySet();
+                            String asaURL = "";
+                            String asaLabel = "";
+                            StringBuffer asaHTML = new StringBuffer();
+                            boolean hasLinkableItem = false;
+                            for(Iterator asaItr = keepSet.iterator();asaItr.hasNext();) {
+                                ContentRef cr = (ContentRef)asaItr.next();
+                                ProductModel asaPM = ((ProductRef)cr).lookupProduct();
+                                if (asaPM==null || asaPM.isUnavailable()) continue;
+                                asaURL = response.encodeURL("/product.jsp?catId="+asaPM.getParentNode()+"&productId="+asaPM+"&trk=prod");
+                                asaLabel = (String)keepMap.get(cr);
+                                prdAttrib = asaPM.getAttribute("ALSO_SOLD_AS_NAME");
+                                if (asaHTML.length() > 0) {
+                                    asaHTML.append("&nbsp;&#183;&nbsp;");
+                                }
+                                if (asaPM.getPK().getId().equals(myPKID)) {
+                                    asaHTML.append(asaLabel);
+                                } else {
+                                    hasLinkableItem = true;
+                                    asaHTML.append("<a href=\"");
+                                    asaHTML.append(asaURL);
+                                    asaHTML.append("\">");
+                                    asaHTML.append(asaLabel);
+                                    asaHTML.append("</a>");
+                                }
+                            }
+                            if (asaHTML.length() > 0 && hasLinkableItem) {
+%>
+                <img src="/media_stat/images/template/also_avail.gif" border="0" alt=""><br><%=asaHTML.toString()%><br><br>
+<%
+                            }
+                        }
+%>

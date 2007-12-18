@@ -1,0 +1,20 @@
+<%
+	if (productNode.getAttribute("WINE_TYPE")!=null) {
+		String wineType = productNode.getAttribute("WINE_TYPE", null);
+	%>
+	<b>What:</b> <%= wineType %><br>
+<%	}%>
+
+<%
+	if (productNode.getAttribute("WINE_REGION")!=null) {
+		String wineRegion = productNode.getAttribute("WINE_REGION", null);
+	%>
+	<b>Where:</b> <%= wineRegion %><br>
+<%	}%>
+
+<%
+	if (productNode.getAttribute("WINE_FYI")!=null) {
+		String wineFyi = productNode.getAttribute("WINE_FYI", null);
+	%>
+	<b>FYI:</b> <%= wineFyi %><br>
+<%	}%>

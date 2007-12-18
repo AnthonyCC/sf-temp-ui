@@ -1,0 +1,1290 @@
+<%--
+
+This include expects the following:
+    - ProductModel productNode
+    - FDCartLineModel templateLine (if null, it's initialized from request - this is used on modify product: contains the original orderline)
+    - String cartMode (constant within com.freshdirect.webapp.taglib.fdstore.CartName)
+
+--%>
+<%@ page import='java.net.*'%>
+<%@ page import='java.text.SimpleDateFormat' %>
+<%@ page import='com.freshdirect.ErpServicesProperties' %>
+<%@ page import='com.freshdirect.content.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.customer.*' %>
+<%@ page import='com.freshdirect.fdstore.lists.*' %>
+<%@ page import='com.freshdirect.framework.util.*' %>
+<%@ page import='com.freshdirect.fdstore.util.*' %> 
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.CartName' %>
+<%@ page import='com.freshdirect.webapp.util.*' %>
+<%@ page import="com.freshdirect.delivery.restriction.EnumDlvRestrictionReason" %>
+<%@ page import='com.freshdirect.framework.util.DayOfWeekSet' %>
+<%@ taglib uri="logic" prefix="logic" %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+
+<%!
+    java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
+    java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
+
+    Comparator domainValueComp = new Comparator() {
+        public int compare(Object obj1, Object obj2) {
+            DomainValue dv1 = (DomainValue) obj1;
+            DomainValue dv2 = (DomainValue) obj2;
+            int diff = dv1.getPriority() - dv2.getPriority();
+            if (diff == 0) {
+            	return dv1.toString().compareTo(dv2.toString()) ;
+            }
+            return diff<0 ? -1 : 1;
+        }
+    };
+
+    Comparator skuDomainValueComp = new Comparator() {
+        public int compare(Object obj1, Object obj2) {
+            MultiAttribute atr1= null;
+            MultiAttribute atr2 =null;
+            DomainValue dv1=null;
+            DomainValue dv2=null;
+
+			atr1 = (MultiAttribute) ((SkuModel) obj1).getAttribute("VARIATION_MATRIX");
+			atr2 = (MultiAttribute) ((SkuModel) obj2).getAttribute("VARIATION_MATRIX");
+			dv1 = ((DomainValueRef) atr1.getValue(0)).getDomainValue();
+			dv2 = ((DomainValueRef) atr2.getValue(0)).getDomainValue();
+			int diff = dv1.getPriority() - dv2.getPriority();
+					// sort by secondary domain
+			if (diff==0 && (((List)atr1.getValue()).size() > 1) && (((List)atr2.getValue()).size() > 1)) {
+				dv1 = ((DomainValueRef) atr1.getValue(1)).getDomainValue();
+				dv2 = ((DomainValueRef) atr2.getValue(1)).getDomainValue();
+				diff = dv1.getPriority() - dv2.getPriority();
+				if (diff==0) {
+					return dv1.toString().compareTo(dv2.toString()); 
+				} 
+			} else if (diff==0) {
+			   return dv1.toString().compareTo(dv2.toString()) ;
+			}
+			return diff<0 ? -1 : 1;
+        }
+    };
+
+    Comparator skuSecDomainValueComp = new Comparator() {
+        public int compare(Object obj1, Object obj2) {
+            DomainValue dv1 = ((DomainValueRef) ((MultiAttribute)((SkuModel)obj1).getAttribute("VARIATION_MATRIX")).getValue(1)).getDomainValue();
+            DomainValue dv2 = ((DomainValueRef) ((MultiAttribute)((SkuModel)obj2).getAttribute("VARIATION_MATRIX")).getValue(1)).getDomainValue();
+			if (dv1.getPriority() > dv2.getPriority()) {
+				return 1;
+			} else {
+				return (dv1.getPriority() < dv2.getPriority()) ? -1 : 0;
+			}
+        }
+    };
+
+    Comparator variationComparator = new Comparator() {
+        public int compare(Object obj1, Object obj2) {
+            FDVariation var1 = (FDVariation) obj1;
+            FDVariation var2 = (FDVariation) obj2;
+            // required before optional
+            if (var1.isOptional() && !var2.isOptional()) {
+                return 1;
+            } else if (var2.isOptional() && !var1.isOptional()) {
+                return -1;
+            } else if (var1.isOptional() && var2.isOptional()) {
+                // menus before checkboxes
+                if ("checkbox".equalsIgnoreCase(var1.getDisplayFormat()) && !"checkbox".equalsIgnoreCase(var2.getDisplayFormat())) {
+                    return 1;
+                } else if ("checkbox".equalsIgnoreCase(var2.getDisplayFormat()) && !"checkbox".equalsIgnoreCase(var1.getDisplayFormat())) {
+                    return -1;
+                } else {
+                    // like elements are ordered by priority
+                    if (var1.getAttributeInt("priority", 0) < var2.getAttributeInt("priority", 0)) {
+                        return 1;
+                    } else if (var1.getAttributeInt("priority", 0) > var2.getAttributeInt("priority", 0)) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                }
+            } else {
+                return 0;
+            }
+        }
+    };
+%>
+
+<%
+int MAX_BRANDS_TO_SHOW = 2;
+String popup = "/shared/popup.jsp?catId="+productNode.getParentNode() + "&prodId="+productNode;
+boolean priceShown = false;
+EnumPopupType smallPopup = EnumPopupType.getPopupType("small");
+EnumPopupType largePopup = EnumPopupType.getPopupType("large");
+
+MediaI brandLogo = null;
+String brandPopupLink=null;
+String brandName = null;
+boolean isWineLayout = EnumProductLayout.WINE.equals(productNode.getProductLayout());
+
+
+// get the brand logo, if any.
+List prodBrands = productNode.getDisplayableBrands(MAX_BRANDS_TO_SHOW);
+List brandLogos = new ArrayList();
+List brandPopupLinks = new ArrayList();
+
+for (Iterator itr = prodBrands.iterator(); itr.hasNext(); ) {
+    BrandModel bm = (BrandModel)itr.next();
+    brandName= bm.getFullName();
+    Attribute brandAttrib = bm.getAttribute("BRAND_LOGO_SMALL");
+    // Attribute will not be null, since the getDisplayableBrands only returns brands that have a brand_logo_small
+    brandLogos.add(brandAttrib.getValue());
+    brandAttrib = bm.getAttribute("BRAND_POPUP_CONTENT");
+    
+    brandPopupLink=null;
+    if (brandAttrib!=null) {
+    	TitledMedia tm = (TitledMedia)brandAttrib.getValue();
+        EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
+        if (popupType !=null ) {
+            brandPopupLink="javascript:pop('"+response.encodeURL("/brandpop.jsp?brandId="+bm)+"',"+popupType.getHeight()+","+popupType.getWidth()+")";
+        } 
+   } 
+   brandPopupLinks.add(brandPopupLink);
+
+}
+
+List skus = productNode.getSkus();
+Map shortTermUnavailable = new HashMap();
+// VSZ - is this "sku filtering" neccessary?
+// MR - Yes, this is necessary.  For products with multiple skus, the default sku is the lowest priced sku.
+// If the lowest priced sku is discontinued, this causes errors.  Please leave this turned on.
+for (ListIterator li=skus.listIterator(); li.hasNext(); ) {
+    SkuModel sku = (SkuModel)li.next();
+    if ( sku.isUnavailable() ) {
+            li.remove();
+    } else {
+        Date earliestDate = sku.getEarliestAvailability();
+        Calendar testDate = new GregorianCalendar();
+        testDate.add(Calendar.DATE, 1);
+        // cheat: if no availability indication, show the horizon as the
+        //        earliest availability
+        if (earliestDate == null) {
+            earliestDate = DateUtil.addDays(DateUtil.truncate(new Date()),
+                                            ErpServicesProperties.getHorizonDays());
+        }
+        if(QuickDateFormat.SHORT_DATE_FORMATTER.format(testDate.getTime()).compareTo(QuickDateFormat.SHORT_DATE_FORMATTER.format(earliestDate)) < 0){
+            MultiAttribute varMatrix = (MultiAttribute) sku.getAttribute("VARIATION_MATRIX");
+            List domains = varMatrix==null ? Collections.EMPTY_LIST : (List)varMatrix.getValue();
+            StringBuffer key = new StringBuffer();
+            key.append("*");
+            for(Iterator i = domains.iterator(); i.hasNext(); ){
+                DomainValue domainValue = ((DomainValueRef)i.next()).getDomainValue();
+                key.append(domainValue.getLabel());
+                key.append(", ");
+                key.deleteCharAt(key.length()-2);
+            }
+            key.append(" avail");
+            shortTermUnavailable.put(key.toString(), earliestDate);
+        }
+    }
+}
+int skuSize = skus.size();
+
+// "THE BIG IF" :)
+if (skus.size() != 0) {
+    boolean hasTemplate = templateLine!=null;
+    String skuCode = hasTemplate ? templateLine.getSkuCode() : request.getParameter("skuCode");
+
+    //
+    // set up stuff for farther on down the page to use
+    //
+    boolean hasSingleSku = (skuSize == 1);
+    SkuModel defaultSku = null;
+    if (hasSingleSku) {
+        defaultSku = (SkuModel) skus.get(0);
+    } else {
+        if (skuCode!=null) {
+            // locate the proper sku based on request
+            defaultSku = productNode.getSku(skuCode);
+        }
+        if (defaultSku==null) {
+            // no sku from request: default is the one with lowest price
+            defaultSku = productNode.getDefaultSku();
+        }
+
+    }
+
+    FDProduct defaultProduct = FDCachedFactory.getProduct( FDCachedFactory.getProductInfo(defaultSku.getSkuCode()) );
+
+    if (!hasTemplate) {
+
+        // build a map of characteristic. / req. char.values, now that we know the default sku
+        Map tmpConfig = new HashMap();
+        FDVariation[] variations = defaultProduct.getVariations();
+        for (int i=0; i<variations.length; i++) {
+            String variation = variations[i].getName();
+            String reqVarOpt = request.getParameter( variation );
+            if (reqVarOpt!=null && !"".equals(reqVarOpt)) {
+                tmpConfig.put(variation, reqVarOpt);
+            }
+        }
+
+        String reqQuantity = request.getParameter("quantity");
+        double qty = reqQuantity==null ? productNode.getQuantityMinimum() :    Double.parseDouble(reqQuantity);
+        FDConfiguration cfg = new FDConfiguration(qty, request.getParameter("salesUnit"), tmpConfig);
+
+        templateLine = new FDCartLineModel( new FDSku(defaultProduct), productNode.getProductRef(), cfg );
+    }
+
+    double defaultQuantity = templateLine.getQuantity();
+    Map reqVariations = templateLine.getOptions();
+
+    StringBuffer formAction = new StringBuffer(request.getRequestURI()).append('?');
+    
+    if (CartName.QUICKSHOP.equals(cartMode) || CartName.ADD_TO_CART.equals(cartMode)) {
+        formAction
+	    .append("catId=").append(productNode.getParentNode())
+	    .append("&productId=").append(productNode);
+
+	           
+        String oid = request.getParameter("orderId=");
+	if (oid != null) formAction.append("&orderId=").append(oid);
+
+	String item = request.getParameter("item");
+	if (item != null) formAction.append("&item=").append(item);
+
+    } else if (CartName.MODIFY_LIST.equals(cartMode)) {
+	formAction.append(CclUtils.CC_LIST_ID).append('=').append(request.getAttribute(CclUtils.CC_LIST_ID));
+    } else {
+	formAction.append(request.getQueryString());
+    }
+
+    %>
+    <%@page import="java.util.List"%>
+<form id='product_form' method='post' name="productForm" action="<%= formAction %>">
+
+        <% if (CartName.MODIFY_CART.equals(cartMode)) { %>
+            <input type="hidden" name="cartLine" value="<%= templateLine.getRandomId() %>">
+            <input type="hidden" name="CCL_COPY_TYPE" value="SINGLE"/>
+            <input type="hidden" name="CCListId" value="<%=request.getAttribute(CclUtils.CC_LIST_ID)%>"/>
+        <% } %>
+    <%
+    boolean hasSingleSalesUnit = (1 == defaultProduct.getSalesUnits().length);
+    String defaultSalesUnit = templateLine.getSalesUnit();
+    
+    
+
+    boolean salesUnitsMatch = false;
+    boolean salesUnitDescrsMatch = false;
+    if (hasSingleSalesUnit) {
+        FDSalesUnit defSU = defaultProduct.getSalesUnits()[0];
+        defaultSalesUnit = defSU.getName();
+        salesUnitsMatch = true;
+        salesUnitDescrsMatch = true;
+        for (Iterator i=skus.iterator(); i.hasNext(); ) {
+            FDProduct fdp = FDCachedFactory.getProduct( FDCachedFactory.getProductInfo(((SkuModel) i.next() ).getSkuCode()) );
+               salesUnitsMatch &= defaultSalesUnit.equals( fdp.getSalesUnits()[0].getName() );
+            salesUnitDescrsMatch &= defSU.getDescription().equals( fdp.getSalesUnits()[0].getDescription() );
+        }
+    } else {
+     if (defaultSalesUnit==null && defaultProduct.getDefaultSalesUnit()!=null) {
+			defaultSalesUnit = defaultProduct.getDefaultSalesUnit().getName();
+    	}
+    }
+    //
+    // !!! need to look at isPricedByLB again with scaled pricing in effect
+    //
+    boolean isPricedByLB = ("LB".equalsIgnoreCase((defaultProduct.getPricing().getMaterialPrices()[0]).getPricingUnit()));
+    boolean isSoldByLB = isPricedByLB && ("LB".equalsIgnoreCase((defaultProduct.getSalesUnits()[0]).getName()));
+    String sellBySalesUnit = (null != productNode.getAttribute("SELL_BY_SALESUNIT")) ? (String) productNode.getAttribute("SELL_BY_SALESUNIT").getValue() : null;
+
+    if(sellBySalesUnit != null) {
+      if(sellBySalesUnit.equals("QUANTITY") || sellBySalesUnit.equals("")) {
+	      sellBySalesUnit = null;
+      }
+    }
+    // display sales unit dropdown only (qty is always one)
+    // null and "QUANTITY"
+    boolean displaySalesUnitsOnly = (sellBySalesUnit != null) || (!hasSingleSalesUnit && isSoldByLB && isPricedByLB);
+
+    // display estimated qty if there's no salesUnitDropdown, it's priced by the pound and not sold by the pount
+    boolean displayEstimatedQuantity = !displaySalesUnitsOnly && isPricedByLB && !isSoldByLB;
+
+    boolean salesUnitFirst = (sellBySalesUnit == null) && !hasSingleSalesUnit && isPricedByLB && !isSoldByLB;
+
+    boolean hasVariationMatrix = (defaultSku.getAttribute("VARIATION_MATRIX") != null);
+
+	boolean displayShortTermUnavailability = defaultProduct.getMaterial().getBlockedDays().isEmpty();
+    %>
+
+    <%@ include file="/shared/includes/product/i_pricing_script.jspf" %>
+
+    <script language="javascript">
+    <!--
+    var pricing = new Pricing();
+    var currentSelection = new Array();
+    //2 places sales_unit_description
+    function checkFDDefAndPrice(form,value,URL,popSize){
+        if(value=="FDD"){
+            popup(URL,popSize);
+            form.salesUnit.selectedIndex = 0;
+        } else {
+            pricing.setSalesUnit(value);
+        }
+    }
+
+    //2 places FD Defs > Characteristics
+    function checkFDDefAndSetOption(form,variation,value,URL,h,w){
+        if(value=="FDD"){
+            pop(URL,h,w);
+            form[variation].selectedIndex = 0;
+        } else {
+            pricing.setOption(variation,value);
+        }
+    }
+    //-->
+    </script>
+
+    <input type="hidden" name="productId" value='<%= templateLine.getProductName() %>'>
+    <input type="hidden" name="catId" value='<%= templateLine.getCategoryName() %>'>
+
+    <%
+    if (productNode.getAttribute("PARTIALLY_FROZEN")!=null && productNode.getDepartment().getFullName().equalsIgnoreCase("SEAFOOD")) {
+        %><img src="/media_stat/images/template/bakery/snowflake_grey.gif" width="15" height="17" alt="" border="0">&nbsp;<%
+    }
+    for (int bIdx = 0; bIdx < brandLogos.size();bIdx++) {
+    	   brandLogo = (MediaI) brandLogos.get(bIdx);
+    	   brandPopupLink = (String)brandPopupLinks.get(bIdx);
+	   String altText = ((BrandModel)prodBrands.get(bIdx)).getFullName(); 
+    	     if (bIdx > 0) {   %>
+    	     <img src="/media_stat/images/layout/clear.gif" width="10" height="1" border="0" hspace="0" vspace="0">
+<%	     }    	     
+	     if (brandPopupLink!=null) {
+	         %><a href="<%= brandPopupLink %>"><%
+	     }
+	     %><img src="<%=brandLogo.getPath()%>" width="<%=brandLogo.getWidth()%>"  height="<%=brandLogo.getHeight()%>" alt="<%=altText%>" border="0"><%
+	     if (brandPopupLink!=null) {
+%></a>
+<% 	     }
+    }
+    
+    if (brandLogos.size() > 0) { %>
+       <br><br>
+<%  }
+
+    
+    String productTitle = productNode.getFullName().toUpperCase(); 
+    String productTitle2 = null;
+    if (isWineLayout) {
+        String thisProdBrandLabel = productNode.getPrimaryBrandName();
+        StringBuffer tmpName = new StringBuffer();
+        if (thisProdBrandLabel.length()>0) {
+            tmpName.append(thisProdBrandLabel.toUpperCase());
+            tmpName.append("<br>");
+            tmpName.append("<FONT CLASS=\"title14\">");
+            tmpName.append(productNode.getFullName().substring(thisProdBrandLabel.length()).trim().toUpperCase());
+            tmpName.append("</font>");
+            productTitle = tmpName.toString();
+        }
+    }
+
+    %><FONT CLASS="title18"><%
+    //
+    // annotation mode
+    //
+    if (FDStoreProperties.isAnnotationMode()) {
+        %><%@ include file="/shared/includes/product/i_annotated_title.jspf" %><%
+    } else {
+        // no annotation, just display title
+        %><%= productTitle %><%
+    }
+    %></FONT><BR><%
+    if (productNode.getAttribute("PARTIALLY_FROZEN")!=null && productNode.getDepartment().getFullName().equalsIgnoreCase("BAKERY")) {
+        %><BR><img src="/media_stat/images/template/bakery/parbaked_frozen_prod.gif" width="147" height="16" alt="" border="0"><br><%
+    }
+
+    String akaName = productNode.getAka();
+    if ((akaName != null) && !"".equals(akaName)) {
+        %>"<%= akaName %>"<BR><%
+    }
+    if (productNode.getAttribute("PACKAGE_DESCRIPTION") != null) {
+        %><BR><%= productNode.getAttribute("PACKAGE_DESCRIPTION").getValue() %><BR><%
+    }
+
+    if (displayShortTermUnavailability && shortTermUnavailable.size() > 0) {
+        if (!hasSingleSku) {
+          %><font class="text10rbold">* Some Items Unavailable Tomorrow</font><br><%
+        }  else {
+        Date earliestDate = defaultSku.getEarliestAvailability();
+        // cheat: if no availability indication, show the horizon as the
+        //        earliest availability
+        if (earliestDate == null) {
+            earliestDate = DateUtil.addDays(DateUtil.truncate(new Date()),
+                                            ErpServicesProperties.getHorizonDays());
+        }
+          %><font class="text10rbold">* Earliest delivery-<%=CCFormatter.formatAvailabilityDate(earliestDate)%></font><br><%
+        }
+    }
+    if ((salesUnitDescrsMatch && hasSingleSalesUnit && !hasSingleSku) || (hasSingleSku && hasVariationMatrix && hasSingleSalesUnit)) {
+        String salesUnitDescr = defaultProduct.getSalesUnits()[0].getDescription();
+        if (!"nm".equalsIgnoreCase(salesUnitDescr)) {
+            %><BR><%= salesUnitDescr %><BR><%
+        }
+    }
+
+    %><br><%
+
+    MultiAttribute matrixAttrib = (MultiAttribute)productNode.getAttribute("VARIATION_MATRIX");
+    List domains = matrixAttrib==null ? Collections.EMPTY_LIST : (List)matrixAttrib.getValue();
+
+    if (hasSingleSku) {
+
+        DomainValue domainValue = null;
+        if (domains.size()!=0) {
+            // there should be a single domainvalue on it
+            domainValue = ((DomainValueRef)(((MultiAttribute) defaultSku.getAttribute("VARIATION_MATRIX")).getValue(0))).getDomainValue();
+        }
+        %>
+        <fd:FDProductInfo id="productInfo" skuCode="<%= defaultSku.getSkuCode() %>">
+            <fd:FDProduct id="product" productInfo="<%= productInfo %>">
+                <%
+                if (domainValue!=null) {
+                    if (productNode.getAttribute("FDDEF_SOURCE")!=null) {
+                        TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_SOURCE").getValue();
+                        EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
+                        String path = popup + "&attrib=FDDEF_SOURCE" + "&tmpl=" + tm.getPopupSize();
+                        %>
+                        <font CLASS="text11bold"><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= domainValue.getLabel().toUpperCase() %></a></FONT>
+                        <%
+                    } else if (productNode.getAttribute("FDDEF_GRADE")!=null) {
+                        TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_GRADE").getValue();
+                        EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
+                        String path = popup + "&attrib=FDDEF_GRADE" + "&tmpl=" + tm.getPopupSize();
+                        %>
+                        <font CLASS="text11bold"><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= domainValue.getLabel().toUpperCase() %></a></FONT>
+                        <%
+                    } else {
+                        %><font CLASS="text11bold"><%= domainValue.getLabel().toUpperCase() %></FONT><%
+                    }
+                    if (domains.size() > 1) {
+                        DomainValue secDomainValue = ((DomainValueRef) ((MultiAttribute) defaultSku.getAttribute("VARIATION_MATRIX")).getValue(1)).getDomainValue();
+                        %>(<%= secDomainValue.getLabel() %>)<%
+                    }
+                    %>
+                    <font class="productPageSecondaryVarPrice"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font><font class="productPageSecondaryVarPriceUnit">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase()%></font><br>
+                    <%
+                } else {
+                    %>
+                    <FONT CLASS="text13bold">
+                    <% if (hasSingleSalesUnit && !hasVariationMatrix) {
+                        String salesUnitDescr = defaultProduct.getSalesUnits()[0].getDescription();
+                        if (!"nm".equalsIgnoreCase(salesUnitDescr) && !"ea".equalsIgnoreCase(salesUnitDescr) && !"".equalsIgnoreCase(salesUnitDescr)) { %>
+                        <%= salesUnitDescr %> -
+                    <%  }
+                      } %>
+                    <FONT CLASS="productPageSinglePrice"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font><FONT CLASS="productPageSinglePriceUnit">/<%=productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
+                    <br></FONT>
+                    <%
+                }
+                %>
+                <%@ include file="/shared/includes/product/i_scaled_prices.jspf" %>
+                <input type="hidden" name="skuCode" value="<%= defaultSku.getSkuCode() %>">
+            </fd:FDProduct>
+        </fd:FDProductInfo>
+        <%
+    } else {
+        // multiple skus
+
+        // if more than 50 _AVAILABLE_ SKUs -> dropdown    10/2004: RGayle: request to remove this feature, but I just set number to 50.. , just in case
+        if (productNode.getAttribute("VARIATION_OPTIONS")==null && skuSize >= 50) {
+            // since 9 or more skus get rendered as a dropdown menu
+            // sort by however many domains in a single list
+            ArrayList group = new ArrayList(skus);
+            Collections.sort(group, skuDomainValueComp);
+            %>
+            <select name="skuCode" onClick="pricing.setSKU(this.value);">
+                <logic:iterate id="sku" collection="<%= group %>" type="SkuModel" indexId="idx">
+                    <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
+                        <option value="<%= sku.getSkuCode() %>"<%= defaultSku==sku? " selected" : "" %>><%= ((DomainValueRef)((MultiAttribute)sku.getAttribute("VARIATION_MATRIX")).getValue(0)).getDomainValue().getLabel() %> - <%= currencyFormatter.format(productInfo.getDefaultPrice()) %>/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %>
+                    </fd:FDProductInfo>
+                </logic:iterate>
+            </select>
+            <%
+        } else {
+            // build matrix (map of primary DomainValues / List of SkuModels)
+
+            boolean hasSecondaryDomain = domains.size()==2;
+
+            Map matrix = new TreeMap(domainValueComp);
+            //Map matrix= new HashMap();
+            for (Iterator skui=skus.iterator(); skui.hasNext(); ) {
+                SkuModel sku = (SkuModel)skui.next();
+                MultiAttribute skuMatrix = (MultiAttribute)sku.getAttribute("VARIATION_MATRIX");
+                DomainValue key = ((DomainValueRef)skuMatrix.getValue(0)).getDomainValue();
+                if (matrix.containsKey(key)) {
+                    List coll = (List)matrix.get(key);
+                    coll.add(sku);
+                } else {
+                    List coll = new ArrayList();
+                    coll.add(sku);
+                    matrix.put(key, coll);
+                }
+
+            }
+
+            ProductModel.PriceComparator priceComparator = new ProductModel.PriceComparator();
+            for (Iterator keyIter = matrix.keySet().iterator(); keyIter.hasNext(); ) {
+                DomainValue priDomainValue = (DomainValue) keyIter.next();
+                List group = (List)matrix.get(priDomainValue);
+
+                // are the skus all the same price?
+                boolean allSamePrice = false;
+                if (hasSecondaryDomain || group.size()>1) {
+                    priceComparator.reset();
+                    Collections.sort(group, priceComparator);
+                    allSamePrice = priceComparator.allTheSame();
+                }
+
+                // do all skus have the same optional variations?
+                boolean allSameOption = true;
+                if ( ((SkuModel)group.get(0)).getAttribute("VARIATION_OPTIONS")!=null ) {
+                    String dvId = ((DomainValueRef) ((MultiAttribute)((SkuModel)group.get(0)).getAttribute("VARIATION_OPTIONS")).getValue(0)).getDomainValue().getPK().getId();
+                    for (Iterator skuIter = group.iterator(); skuIter.hasNext(); ) {
+                        SkuModel sku = (SkuModel) skuIter.next();
+                        allSameOption &= dvId.equals(((DomainValueRef) ((MultiAttribute)sku.getAttribute("VARIATION_OPTIONS")).getValue(0)).getDomainValue().getPK().getId());
+                    }
+                }
+
+                if (hasSecondaryDomain) {
+                    // sort the group by secondary domainvalue priority
+                    Collections.sort(group, skuSecDomainValueComp);
+                }
+
+                %>
+                <TABLE WIDTH="187" CELLPADDING="1" CELLSPACING="1" BORDER="0">
+                <%
+                if (hasSecondaryDomain) {
+                    %>
+                    <tr valign="bottom">
+                        <td width="187" colspan="2" align="right">
+                            <%
+                            if (productNode.getAttribute("FDDEF_SOURCE")!=null) {
+                                TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_SOURCE").getValue();
+                                EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
+                                String path = popup + "&attrib=FDDEF_SOURCE" + "&tmpl=" + tm.getPopupSize();
+                                %>
+                                <A HREF="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><b><%= priDomainValue.getLabel().toUpperCase() %></b></a>
+                                <%
+                            } else if (productNode.getAttribute("FDDEF_GRADE")!=null) {
+                                TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_GRADE").getValue();
+                                EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
+                                String path = popup + "&attrib=FDDEF_GRADE" + "&tmpl=" + tm.getPopupSize();
+                                %>
+                                <A HREF="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><b><%= priDomainValue.getLabel().toUpperCase() %></b></a>
+                                <%
+                            } else {
+                                %><b><%= priDomainValue.getLabel().toUpperCase() %></b>    <%
+                            }
+
+                            if (allSamePrice) {
+                                %>
+                                <fd:FDProductInfo id="prdinfo" skuCode="<%= ((SkuModel)group.get(0)).getSkuCode() %>">
+                                    <font class="productPageSecondaryVarPrice"><%= currencyFormatter.format(prdinfo.getDefaultPrice()) %></font><FONT CLASS="productPageSecondaryVarPriceUnit">/<%=prdinfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
+                                </fd:FDProductInfo>
+                                <%
+                            }
+                            %>
+                            <br><br>
+                        </td>
+                    </tr>
+                <%
+                }
+                %>
+                <logic:iterate id="sku" collection="<%= group %>" type="SkuModel">
+                    <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
+                        <fd:FDProduct id="product" productInfo="<%= productInfo %>">
+                            <%
+                            String labelLink1 = "";
+                            String labelLink2 = "";
+                            String labelLink3 = ")</b>";
+                            String labelNolink = "";
+                            if (hasSecondaryDomain) {
+                                DomainValue secDomainValue = ((DomainValueRef) ((MultiAttribute)sku.getAttribute("VARIATION_MATRIX")).getValue(1)).getDomainValue();
+                                labelLink1 = secDomainValue.getLabel() + " <b>(";
+                                labelNolink = secDomainValue.getLabel();
+                                if ((sku.getAttribute("VARIATION_OPTIONS") != null) && (group.size() > 1) && !allSameOption) {
+                                    DomainValue optDomainValue = ((DomainValueRef) ((MultiAttribute)sku.getAttribute("VARIATION_OPTIONS")).getValue(0)).getDomainValue();
+                                    labelNolink += " <b>(" + optDomainValue.getLabel() +")</b>";
+                                    labelLink2 = optDomainValue.getLabel();
+                                }
+                            }
+                            String priceLabel = currencyFormatter.format(productInfo.getDefaultPrice());
+                            String priceUnit = "/" + productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
+                            %>
+                            <fd:ErrorHandler result='<%=result%>' name='skuCode' id='errorMsg'>
+                                <TR VALIGN="TOP">
+                                    <TD WIDTH="187" COLSPAN="2" ALIGN="RIGHT"><span class="text11rbold"><%=errorMsg%></span></TD>
+                                </TR>
+                            </fd:ErrorHandler>
+                            <TR VALIGN="TOP">
+                            <TD WIDTH="172" ALIGN="RIGHT" CLASS="text10">
+                            <%
+                            if (!hasSecondaryDomain) {
+                                if (productNode.getAttribute("FDDEF_GRADE")!=null) {
+                                    TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_GRADE").getValue();
+                                    EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
+                                    String path = popup + "&attrib=FDDEF_GRADE" + "&tmpl=" + tm.getPopupSize();
+                                    %>
+                                    <b><A HREF="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= priDomainValue.getLabel().toUpperCase() %></A><%= labelNolink %></b>
+                                    <%
+                                } else if (productNode.getAttribute("FDDEF_SOURCE")!=null) {
+                                    TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_SOURCE").getValue();
+                                    EnumPopupType popupType = EnumPopupType.getPopupType(tm.getPopupSize());
+                                    String path = popup + "&attrib=FDDEF_SOURCE" + "&tmpl=" + tm.getPopupSize();
+                                    %>
+                                    <b><A HREF="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= priDomainValue.getLabel().toUpperCase() %></A> <%= labelNolink %></b>
+                                    <%
+                                } else if (productNode.getAttribute("FDDEF_FRENCHING")!=null) {
+                                    TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_FRENCHING").getValue();
+                                    EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
+                                    String path = popup + "&attrib=FDDEF_FRENCHING" + "&tmpl=" + tm.getPopupSize();
+                                    %>
+                                    <b><A HREF="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= priDomainValue.getLabel().toUpperCase() %></A> <%= labelNolink %></b>
+                                    <%
+                                } else {
+                                    %>
+                                    <b><%= priDomainValue.getLabel().toUpperCase() %> <%= labelNolink %></b>
+                                    <%
+                                }
+
+                                if (hasSingleSalesUnit && !isSoldByLB && (!salesUnitsMatch || !salesUnitDescrsMatch)) {
+                                    String suDescr = product.getSalesUnits()[0].getDescription();
+                                    if (!"nm".equalsIgnoreCase(suDescr)) {
+                                        %><%= suDescr %><%
+                                    }
+                                }
+
+                                if (!allSamePrice) {
+                                    %>
+                                    <font class="productPagePrimaryVarPrice"><%= priceLabel %></font><font class="productPagePrimaryVarPriceUnit"><%=priceUnit%></font>
+                                    <%
+                                }
+
+                                %><%@ include file="/shared/includes/product/i_scaled_prices.jspf" %><%
+
+                            } else {
+                                if (productNode.getAttribute("FDDEF_RIPENESS")!=null && !"".equals(labelLink2)) {
+                                    TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_RIPENESS").getValue();
+                                    EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
+                                    String path = popup + "&attrib=FDDEF_RIPENESS" + "&tmpl=" + tm.getPopupSize();
+                                    %>
+                                    <font class="text11bold"><%=labelLink1%><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%=labelLink2%></a><%=labelLink3%></font>
+                                    <%
+                                } else {
+                                    %><%= labelNolink %><%
+                                    if (hasSingleSalesUnit && !isSoldByLB && (!salesUnitsMatch || !salesUnitDescrsMatch)) {
+                                        String suDescr = product.getSalesUnits()[0].getDescription();
+                                        if (!"nm".equalsIgnoreCase(suDescr)) {
+                                            %><%= suDescr %><%
+                                        }
+                                    }
+                                }
+                                if (!allSamePrice) {
+                                    %><font class="productPageSecondaryVarPrice"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font><font class="productPageSecondaryVarPriceUnit">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font><%
+                                }
+                                if (product.getPricing().getScaleDisplay().length==0) {
+                                    %><br><br><%
+                                }
+                                %><%@ include file="/shared/includes/product/i_scaled_prices.jspf" %><%
+                                Date earliestDate = sku.getEarliestAvailability();
+                                Calendar testDate = new GregorianCalendar();
+                                testDate.add(Calendar.DATE, 1);
+                                // cheat: if no availability indication, show the horizon as the
+                                //        earliest availability
+                                if (earliestDate == null) {
+                                    earliestDate = DateUtil.addDays(DateUtil.truncate(new Date()),
+                                                                    ErpServicesProperties.getHorizonDays());
+                                }
+                                if (QuickDateFormat.SHORT_DATE_FORMATTER.format(testDate.getTime()).compareTo(QuickDateFormat.SHORT_DATE_FORMATTER.format(earliestDate)) < 0) {
+                                    %><font class="text11rbold">*</font><%
+                                }
+                            }
+                            %></TD>
+                            <TD WIDTH="15"><input type="radio" name="skuCode" value="<%= sku.getSkuCode() %>" onClick="pricing.setSKU(this.value);" <% if (defaultSku == sku) out.print("checked"); %>><BR></TD>
+                            </TR>
+                        </fd:FDProduct>
+                    </fd:FDProductInfo>
+                </logic:iterate>
+                </TABLE>
+                <%
+            }
+        }
+    }
+
+    if (salesUnitFirst) {
+        %>
+        <br><span class="text11bold">Please Choose</span><br><span class="space2pix"><br></span>
+        <fd:ErrorHandler result='<%=result%>' name='salesUnit' id='errorMsg'>
+            <span class="text11rbold"><%=errorMsg%></span><br>
+            <% if(errorMsg!="") { %><img src="/media_stat/images/layout/error.gif" border="0"><% } %>
+        </fd:ErrorHandler>
+
+        <%
+        if (productNode.getAttribute("SALES_UNIT_DESCRIPTION")!=null) {
+            //String salesUnitDesc = "/sales_unit_desc_popup.jsp";
+            //String salesUnitDesc = ((MediaI)productNode.getAttribute("SALES_UNIT_DESCRIPTION").getValue()).getPath();
+            //String popupSize = ((MediaI)productNode.getAttribute("SALES_UNIT_DESCRIPTION").getValue()).getPopupSize();
+            String currCat = productNode.getParentNode().toString(); //hack for small popup in fish steak&fillet, porkchop, beef roast
+            %>
+            <select name="salesUnit" CLASS="text11" STYLE="WIDTH:165px"
+                onChange="checkFDDefAndPrice(this.form,this.options[this.selectedIndex].value,'<%=popup%>&attrib=SALES_UNIT_DESCRIPTION&tmpl=<% if (currCat.equalsIgnoreCase("fwhl") ||currCat.equalsIgnoreCase("fstk") || currCat.equalsIgnoreCase("fflt") || currCat.equalsIgnoreCase("prchp") || currCat.equalsIgnoreCase("bovnrst") || currCat.equalsIgnoreCase("bpotrst") || currCat.equalsIgnoreCase("kosher_meat_beef_roast") || currCat.indexOf("kosher_seafood") > -1 ){ %>small','small'<% } else { %>large','large'<% } %>);">
+            <%
+        } else {
+            %>
+            <select name="salesUnit" CLASS="text11" STYLE="WIDTH:165px"
+                onChange="pricing.setSalesUnit(this.value);">
+            <%
+        }
+        %>
+        <option value=""><%= productNode.getAttribute("SALES_UNIT_LABEL").getValue() %>
+        <logic:iterate id="salesUnit" collection="<%= defaultProduct.getSalesUnits() %>" type="com.freshdirect.fdstore.FDSalesUnit">
+            <option value="<%= salesUnit.getName() %>"<%= salesUnit.getName().equals(defaultSalesUnit) ? " SELECTED" : ""%>>&nbsp;<%= salesUnit.getDescription() %>
+        </logic:iterate>
+        <%
+        if (productNode.getAttribute("SALES_UNIT_DESCRIPTION")!=null) {
+            // size
+            %><option value="FDD">NEED HELP CHOOSING?<%
+        }
+        %></select><BR><%
+    } else if ((sellBySalesUnit != null) && (hasSingleSalesUnit)) {
+        %><input type="hidden" name="salesUnit" value="<%= defaultProduct.getSalesUnits()[0].getName() %>"><%
+    }
+    %>
+
+    <%-- set the default SKU for pricing --%>
+    <script language="javascript">
+        pricing.setSKU("<%= defaultSku.getSkuCode() %>");
+        <%
+        if (displaySalesUnitsOnly) {
+            %>
+            pricing.setQuantity(1);
+            pricing.setSalesUnit("<%= defaultSalesUnit==null ? defaultProduct.getSalesUnits()[0].getName() : defaultSalesUnit %>");
+            <%
+        } else {
+            %>pricing.setQuantity(<%= defaultQuantity %>);<%
+            if (defaultSalesUnit!=null) {
+                %>pricing.setSalesUnit("<%= defaultSalesUnit %>");<%
+            }
+        }
+
+        // set selected variation options
+        for (Iterator i=reqVariations.entrySet().iterator(); i.hasNext(); ) {
+            Map.Entry entry = (Map.Entry)i.next();
+            %>
+            pricing.setOption('<%= entry.getKey() %>', '<%= entry.getValue() %>');
+            <%
+        }
+        %>
+    </script>
+
+    <%
+    // sort the variations: required, optional, then checkboxes
+    List variations = Arrays.asList(defaultProduct.getVariations());
+    Collections.sort(variations, variationComparator);
+    boolean lastVariationOptional = false;
+    %>
+
+    <logic:iterate id="variation" collection="<%= variations %>" type="com.freshdirect.fdstore.FDVariation" indexId="idx">
+        <FONT CLASS="space4pix"><BR></FONT>
+        <%
+        String reqVariationOption = (String)reqVariations.get( variation.getName() );
+
+        // space between last required variation and first optional variation
+        if ((!lastVariationOptional) && variation.isOptional()) {
+            %><br><%
+        }
+
+        if (variation.getVariationOptions().length == 1) {
+            //
+            // only one option for this variation, select it and display the description
+            //
+            FDVariationOption onlyOption = variation.getVariationOptions()[0]; %>
+            <input type="hidden" name="<%= variation.getName() %>" value="<%= onlyOption.getName() %>">
+            <%
+            if (!"nm".equals(onlyOption.getDescription())) {
+                double cvprice = 0.0;
+                CharacteristicValuePrice cvp = defaultProduct.getPricing().findCharacteristicValuePrice(variation.getName(), onlyOption.getName());
+                if (cvp != null) cvprice = cvp.getPrice(); %>
+                <FONT CLASS="text11"><%= onlyOption.getDescription() %>
+                <% if (cvprice > 0.0) { %>
+                    - <%= currencyFormatter.format(cvp.getPrice()) %>/<%= cvp.getPricingUnit() %>
+                <% } else { %>
+                    - no charge
+                <% } %>
+                </FONT>
+                <%
+            }
+        } else if (!"checkbox".equals(variation.getDisplayFormat())) {
+            // are all variation options free?
+            Pricing defaultPricing = defaultProduct.getPricing();
+            boolean allOptionsFree = true;
+            FDVariationOption[] options = variation.getVariationOptions();
+            for (int i=0;i<options.length;i++) {
+                if (null != defaultPricing.findCharacteristicValuePrice(variation.getName(), options[i].getName())) {
+                    allOptionsFree = false;
+                    break;
+                }
+            }
+
+            if ((idx.intValue() == 0) && !variation.isOptional() && !salesUnitFirst) {
+                %><BR><span class="text11bold">Please Choose</span><br><span class="space2pix"><br></span><%
+            }
+            %>
+            <fd:ErrorHandler result='<%=result%>' name='<%= variation.getName() %>' id='errorMsg'>
+                <span class="text11rbold"><%=errorMsg%></span><br>
+                <% if(errorMsg!=""){%><img src="/media_stat/images/layout/error.gif" border="0"><%}%>
+            </fd:ErrorHandler>
+            <%-- Help FD Defs > Characteristics --%>
+            <%
+            String fddefPop = "/shared/fd_def_popup.jsp";
+            String charId = variation.getName();
+            String charName = charId.toLowerCase();
+            String spop = "small_pop";
+            String lpop = "large_pop";
+            String title = variation.getDescription();
+            if (title.equalsIgnoreCase("MARINADE/RUB") || productNode.getParentNode().toString().indexOf("kosher_meat") > -1) {
+                %>
+                <select name="<%= charId %>" CLASS="text11" STYLE="WIDTH:165px" onChange="checkFDDefAndSetOption(this.form,'<%= charId %>',this.options[this.selectedIndex].value,'<%=fddefPop%>?catId=<%= templateLine.getCategoryName() %>&prodId=<%= templateLine.getProductName() %>&charName=<%=charName%>&tmpl=<%=lpop%>&title=<%=title%>',<%=largePopup.getHeight()%>,<%=largePopup.getWidth()%>);">
+                <%
+            } else {
+                %>
+                <select name="<%= charId %>" CLASS="text11" STYLE="WIDTH:165px" onChange="checkFDDefAndSetOption(this.form,'<%= charId %>',this.options[this.selectedIndex].value,'<%=fddefPop%>?catId=<%= templateLine.getCategoryName() %>&prodId=<%= templateLine.getProductName() %>&charName=<%=charName%>&tmpl=<%=spop%>&title=<%=title%>',<%=smallPopup.getHeight()%>,<%=smallPopup.getWidth()%>);">
+                <%
+            }
+            %>
+            <option value=""><%= variation.getDescription() %><% if (variation.isOptional()) { %> (optional) <% } %>
+
+            <logic:iterate id="option" collection="<%= variation.getVariationOptions() %>" type="com.freshdirect.fdstore.FDVariationOption">
+                <%
+                double cvprice = 0.0;
+                CharacteristicValuePrice cvp = defaultPricing.findCharacteristicValuePrice(variation.getName(), option.getName());
+                if (cvp != null) {
+                    cvprice = cvp.getPrice();
+                }
+                %>
+                <option value="<%= option.getName() %>"<%= option.getName().equals(reqVariationOption) ? " SELECTED" : "" %>>&nbsp;<%= option.getDescription() %>
+                <%
+                if (cvprice > 0.0) {
+                    %> - <%= currencyFormatter.format(cvp.getPrice()) %>/<%= cvp.getPricingUnit() %><%
+                } else if (!allOptionsFree) {
+                    %> - no charge<%
+                }
+                %>
+            </logic:iterate>
+            <option value="FDD">NEED HELP CHOOSING?<%// packaging/mar/preparation%>
+            </select>
+
+                <%
+                if (!variation.hasAttribute(EnumAttributeName.UNDER_LABEL.getName())) {
+                    // space between multiple optional pulldowns
+                    %><FONT CLASS="space4pix"><BR></FONT><%
+                } else {
+                    %><br><FONT CLASS="text9"><I><%= variation.getAttribute(EnumAttributeName.UNDER_LABEL) %></I></FONT><br><font CLASS="space4pix"><br></font><%
+                }
+
+        } else {
+            Pricing defaultPricing = defaultProduct.getPricing();
+            FDVariationOption cboxValue = null;
+            FDVariationOption[] options = variation.getVariationOptions();
+            for (int i=0; i<options.length; i++) {
+                if (options[i].isLabelValue()) cboxValue = options[i];
+            }
+            boolean isChecked = (cboxValue != null) && cboxValue.getName().equals(reqVariationOption);
+            %>
+            <FONT CLASS="text13">
+                <%
+                String fddefPop = "/shared/fd_def_popup.jsp";
+                String charName = variation.getName();
+                String charFileName = "media/editorial/fd_defs/characteristics/"+charName.toLowerCase()+ ".html";
+                String spop = "small_pop";
+                String title = variation.getDescription();
+
+                boolean theFileExists = false;
+
+				try {
+			      URL url = MediaUtils.resolve(FDStoreProperties.getMediaPath(), charFileName);
+				  InputStream in = url.openStream();
+				  if(in != null) {
+				    in.close();
+				    theFileExists = true;
+				  }
+				} catch(Exception ex) {
+				}
+				
+                if (theFileExists) {
+                    %>
+                    <a href="javascript:pop('<%=fddefPop%>?charName=<%=charName%>&tmpl=<%=spop%>&title=<%=title%>',<%=smallPopup.getHeight()%>,<%=smallPopup.getWidth()%>)"><%= variation.getAttribute(EnumAttributeName.DESCRIPTION) %></a>
+                    <%
+                } else {
+                    %><%= variation.getAttribute(EnumAttributeName.DESCRIPTION) %><%
+                }
+                %>
+                &nbsp;
+            </FONT>
+            <%
+            double cvprice = 0.0;
+            CharacteristicValuePrice cvp = defaultPricing.findCharacteristicValuePrice(variation.getName(), cboxValue.getName());
+            if (cvp != null) cvprice = cvp.getPrice();
+            if (cvprice > 0.0) {
+                %> - <%= currencyFormatter.format(cvp.getPrice()) %>/<%= cvp.getPricingUnit() %><%
+            }
+            %>
+            <input type="checkbox"<%= isChecked ? " CHECKED " : "" %> name="<%= variation.getName() %>" value="<%= cboxValue.getName() %>" onClick="pricing.setOption('<%= variation.getName() %>', this.checked ? this.value : '');"><BR>
+            <%
+        }
+
+        lastVariationOptional = variation.isOptional();
+        %>
+    </logic:iterate>
+    <%-- start render quantity --%>
+<%  if (!isWineLayout) {  %>  
+    <img src="/media_stat/images/layout/333333.gif" width="180" height="1" border="0" VSPACE="10">
+<%  } %>    
+    <BR>
+    <fd:ErrorHandler result='<%=result%>' name='quantity' id='errorMsg'>
+        <span class="text11rbold"><%=errorMsg%></span><br>
+    </fd:ErrorHandler>
+    <table CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="187">
+        <%
+        if (displaySalesUnitsOnly) {
+            %>
+            <tr VALIGN="MIDDLE">
+            <td WIDTH="187" colspan="2" CLASS="text11" ALIGN="RIGHT">
+            <fd:ErrorHandler result='<%=result%>' name='salesUnit' id='errorMsg'>
+                <span class="text11rbold"><%=errorMsg%></span><br>
+            </fd:ErrorHandler>
+            <%
+            if ("SALES_UNIT".equalsIgnoreCase(sellBySalesUnit) || (sellBySalesUnit == null)) {
+                // select by sales unit only
+                %><FONT CLASS="text11bold"><%= productNode.getAttribute("QUANTITY_TEXT").getValue() %></FONT>&nbsp;<%
+            } else if ("BOTH".equalsIgnoreCase(sellBySalesUnit)) {
+                // select by sales unit and quantity
+                %><FONT CLASS="text11bold"><%= productNode.getAttribute("SALES_UNIT_LABEL").getValue() %></FONT>&nbsp;<%
+            }
+            %>
+            <!-- Help -->
+            <%
+
+            Attribute salesUnitDescAttr = productNode.getAttribute("SALES_UNIT_DESCRIPTION");
+            if (salesUnitDescAttr!=null){
+                //String salesUnitDesc = "/sales_unit_desc_popup.jsp";
+                //String salesUnitDesc = ((MediaI)productNode.getAttribute("SALES_UNIT_DESCRIPTION").getValue()).getPath();
+                %>
+                <select name="salesUnit" CLASS="text11" onChange="checkFDDefAndPrice(this.form,this.options[this.selectedIndex].value,'<%=popup%>&attrib=SALES_UNIT_DESCRIPTION&tmpl=small','small');">
+                <%
+            } else {
+                %>
+                <select name="salesUnit" CLASS="text11" onChange="pricing.setSalesUnit(this.value);">
+                <%
+            }
+            %>
+            <logic:iterate id="salesUnit" collection="<%= defaultProduct.getSalesUnits() %>" type="com.freshdirect.fdstore.FDSalesUnit">
+                <option value="<%= salesUnit.getName() %>"<%= salesUnit.getName().equals(defaultSalesUnit) ? " SELECTED" : ""%>><%= salesUnit.getDescription().trim() %>
+            </logic:iterate>
+            <%
+            if (salesUnitDescAttr!=null) {
+                String salesUnitDesc = ((MediaI)productNode.getAttribute("SALES_UNIT_DESCRIPTION").getValue()).getPath();
+                %>
+                <option value="FDD">NEED HELP CHOOSING?
+                <%
+            }
+            %>
+            </select><br></TD></TR>
+            <TR><TD WIDTH="187" COLSPAN="2"><BR></TD></TR>
+            <%
+        }
+
+        if ("BOTH".equalsIgnoreCase(sellBySalesUnit) || ((sellBySalesUnit == null) && !(!hasSingleSalesUnit && isSoldByLB && isPricedByLB))) {
+            // quantity is normal
+             if (isWineLayout && !CartName.MODIFY_CART.equals(cartMode) ) { 
+                priceShown=true;%>
+                 <tr><td colspan="2"><table align="left">
+                <TR VALIGN="BOTTOM"><TD>
+                <FONT CLASS="text11bold"><%= productNode.getAttribute("QUANTITY_TEXT").getValue() %></td>
+                <td><% if (productNode.getQuantityMinimum() != 1) { out.println(" *"); } %></FONT>&nbsp;<input type=text CLASS="text11" size=4 name=quantity value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);" maxlength="2"></TD>
+                <td WIDTH="14" VALIGN="BOTTOM"><a HREF="javascript:chgQty(<%= productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br>
+                    <a HREF="javascript:chgQty(<%= -productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a>
+                </td><td><FONT CLASS="text11bold">Price</FONT>&nbsp;
+                <INPUT class="text11bold" TYPE="text" NAME="PRICE" SIZE="6" onChange="" onFocus="blur()" value="">
+                </td>
+                </tr>
+                </table></td></tr>
+<%          } else {  %>
+                <TR VALIGN="BOTTOM" align="right"><TD WIDTH="173">
+                <FONT CLASS="text11bold"><%= productNode.getAttribute("QUANTITY_TEXT").getValue() %><% if (productNode.getQuantityMinimum() != 1) { out.println(" *"); } %></FONT>&nbsp;<input type=text CLASS="text11" size=4 name=quantity value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);"></TD>
+                <td WIDTH="14" VALIGN="BOTTOM"><a HREF="javascript:chgQty(<%= productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br>
+                    <a HREF="javascript:chgQty(<%= -productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a>
+                </td>
+                </tr>
+<%
+            }
+        } else {
+            // assumed quantity of 1
+            %><input type="hidden" name="quantity" value="1"><%
+        }
+        %>
+    </table><P>
+    <%
+    if (!priceShown) {
+        if (displayEstimatedQuantity) {
+            %>
+            <FONT CLASS="text11bold"><A HREF="javascript:popup('/help/estimated_price.jsp','small')">Estimated</A></FONT>
+            &nbsp;<INPUT class="text11" TYPE="text" NAME="EST_QTY" SIZE="7" onChange="" onFocus="blur()" value="">
+            <%
+        } else if (isPricedByLB) {
+            %><FONT CLASS="text11bold"><A HREF="javascript:popup('/help/estimated_price.jsp','small')">Estimated Price</A></FONT><%
+        } else {
+            %><FONT CLASS="text11bold">Price</FONT><%
+        }
+
+    %>&nbsp;<INPUT class="text11bold" TYPE="text" NAME="PRICE" SIZE="6" onChange="" onFocus="blur()" value=""><P>
+<%  }  %>
+    <%-- end render quantity --%>
+
+    <%-- Set up the pricing callback, now that the field exists on the page --%>
+    <script language="javascript">
+    function chgQty(delta) {
+        qty = parseFloat(document.productForm.quantity.value) + delta;
+        if (isNaN(qty) || qty < <%= productNode.getQuantityMinimum() %>) {
+            qty = <%= productNode.getQuantityMinimum() %>;
+        } else if (qty >= <%= user.getQuantityMaximum(productNode) %>) {
+            qty = <%= user.getQuantityMaximum(productNode) %>;
+        }
+        qty = Math.floor( (qty-<%= productNode.getQuantityMinimum() %>)/<%=productNode.getQuantityIncrement()%> )*<%=productNode.getQuantityIncrement()%>  + <%= productNode.getQuantityMinimum() %>;
+        pricing.setQuantity(qty);
+        document.productForm.quantity.value = qty;
+    }
+    function updatePriceField() {
+        document.productForm.PRICE.value = pricing.getPrice();
+        <% if (displayEstimatedQuantity) { %>
+        document.productForm.EST_QTY.value = pricing.getEstimatedQuantity();
+        <% } %>
+    }
+    pricing.setCallbackFunction( updatePriceField );
+    document.productForm.PRICE.value = pricing.getPrice();
+    <% if (displayEstimatedQuantity) { %>
+        document.productForm.EST_QTY.value = pricing.getEstimatedQuantity();
+    <% } %>
+    </script>
+
+
+    <%
+
+    String referer = request.getParameter("referer");
+    if (referer==null) referer = request.getHeader("Referer");
+
+    if ( CartName.MODIFY_CART.equals(cartMode) ) {
+
+        if (referer==null) referer = "/view_cart.jsp";
+        %>
+        <input type="image" name="save_changes" src="/media_stat/images/buttons/save_changes_cart.gif" width="109" height="20" border="0" alt="SAVE CHANGES" VSPACE="2"><BR>
+        <input type="image" name="remove_from_cart" src="/media_stat/images/buttons/remove_item.gif" width="109" height="20" border="0" alt="REMOVE ITEM" VSPACE="2"><BR>
+        <input type="hidden" name="referer" value="<%=referer%>">
+        <a href="<%=referer%>"><img src="/media_stat/images/buttons/no_change.gif" width="109" height="20" border="0" alt="NO CHANGE" VSPACE="2"></a><BR>
+        <%
+    // CCL
+    } else if (CartName.MODIFY_LIST.equals(cartMode) ||
+               CartName.ACCEPT_ALTERNATIVE.equals(cartMode)) {
+	if (referer == null) referer = "/quickshop/all_lists.jsp";
+	String ccListIdStr = (String)request.getAttribute(CclUtils.CC_LIST_ID);
+	String lineId = (String)request.getAttribute("lineId");
+        %>
+	
+	<% {
+	     String prodLink = (String)request.getAttribute("productLink");
+	     if (prodLink != null && !"".equals(prodLink)) {
+	%>
+	     <input type="hidden" name="productLink" value="<%=prodLink%>">
+	<%
+             } // if
+           } // local block
+	%>
+	
+	<input type="hidden" name="list_action" value="">
+
+	<%
+	if (CartName.ACCEPT_ALTERNATIVE.equals(cartMode)) {
+	%>
+
+        <input type="image" name="save_changes" src="/media_stat/images/template/quickshop/alt_replace_item_btn.gif" 
+	       onclick="document.productForm.list_action.value='modify';document.productForm.submit();"
+	       HSPACE="2" BORDER="0"><BR><FONT CLASS="space4pix"><BR></FONT>
+
+        <%
+	} else {
+	%>
+        <input type="image" name="save_changes" src="/media_stat/images/buttons/list_save_changes.gif" 
+	       onclick="document.productForm.list_action.value='modify';document.productForm.submit();"
+	       HSPACE="2" BORDER="0"><BR><FONT CLASS="space4pix"><BR></FONT>
+
+        <input type="image" name="remove_from_list" src="/media_stat/images/buttons/remove_item.gif" HSPACE="2" BORDER="0" 
+	       onclick="document.productForm.list_action.value='remove';document.productForm.submit();"><BR><FONT CLASS="space4pix"><BR></FONT>
+
+	<%
+	} // cartMode
+	%>
+
+        
+
+        <input type="hidden" name="referer" value="<%= referer %>"/>
+	<input type="hidden" name="<%=CclUtils.CC_LIST_ID%>" value="<%=ccListIdStr%>"/>
+	<input type="hidden" name="originalSku" value="<%=skuCode%>"/>
+	<input type="hidden" name="lineId" value="<%=lineId%>"/>
+	<% if (request.getParameter("recipeId") != null) { %>
+	<input type="hidden" name="recipeId" value="<%=request.getParameter("recipeId")%>"/>
+	<% } %>
+    
+        <a href="<%=referer%>"><img name="no_changes" src="/media_stat/images/buttons/no_change.gif" HSPACE="2" BORDER="0"></a><BR><FONT CLASS="space4pix"><BR></FONT>
+	<%
+    } else {
+        %>
+        <input type="image" name="add_to_cart" src="/media_stat/images/buttons/add_to_cart.gif" HSPACE="2" BORDER="0"><BR><FONT CLASS="space4pix"><BR></FONT>
+        <%
+    }
+
+    if (CartName.QUICKSHOP.equals(cartMode)) {
+        %>
+                <fd:QuickShopController id="quickCart">
+	        <fd:GetBackToListLink id='backToList' quickCart='<%= quickCart %>' deptId='<%=request.getParameter("qsDeptId")%>'>
+                <a href="<%=backToList.toString()%>"><img src="/media_stat/images/buttons/back_to_list.gif" width="99" height="21" border="0" alt="Back to List" vspace="2"></a><br>
+
+		</fd:GetBackToListLink>
+                </fd:QuickShopController>
+        <%
+    }
+
+	// Short term availability info. (avail)
+	
+	if (displayShortTermUnavailability) {
+		StringBuffer earliestAvailability = new StringBuffer();
+		SimpleDateFormat sf = new SimpleDateFormat("EEE M/dd");
+		for (Iterator i = shortTermUnavailable.keySet().iterator(); i.hasNext(); ) {
+			String key = (String) i.next();
+			earliestAvailability.append(key);
+			earliestAvailability.append(" ");
+			earliestAvailability.append(sf.format((Date)shortTermUnavailable.get(key)));
+			earliestAvailability.append("<br>");
+		}
+		%><%= earliestAvailability.toString() %><%
+	}
+
+	SkuModel _defaultSku = !productNode.isUnavailable()? productNode.getDefaultSku():(SkuModel)productNode.getSkus().get(0);
+    if (_defaultSku!=null) {
+        FDProduct fdprd = productNode.isUnavailable()? null:_defaultSku.getProduct();
+        if (fdprd.getKosherInfo().isKosherProduction()) { %>
+            <br><span class="kosher">*</span> Not available for delivery on Friday, Saturday, or Sunday morning.
+            <fd:GetDlvRestrictions id="kosherRestrictions" reason="<%=EnumDlvRestrictionReason.KOSHER%>" withinHorizon="true">
+            <%
+            if (kosherRestrictions.size() > 0) {
+                %>Also unavailable during
+                <logic:iterate indexId='i' collection="<%= kosherRestrictions %>" id="restriction" type="com.freshdirect.delivery.restriction.RestrictionI">
+                    <b><%=restriction.getName()%></b>, <%=restriction.getDisplayDate()%><% if (i.intValue() < kosherRestrictions.size() -1) {%>; <% } else { %>.<% } %>
+                </logic:iterate>
+            <%
+            }
+            %>
+            </fd:GetDlvRestrictions> <a href="javascript:popup('/shared/departments/kosher/delivery_info.jsp','small')">Learn More</a>
+            <%
+        }
+    }
+    if (isWineLayout) {     %>
+    <img src="/media_stat/images/layout/cccccc.gif" width="100%" height="1" border="0" VSPACE="10"><BR>
+<%  } else  {   %>
+    <img src="/media_stat/images/layout/333333.gif" width="180" height="1" border="0" VSPACE="10"><BR>
+<%  }  %>
+    <%-- START INLCUDES AT BOTTOM OF i_product --%>
+    <%@ include file="/shared/includes/product/i_minmax_note.jspf" %>
+    
+
+    <%
+    if (CartName.MODIFY_LIST.equals(cartMode)) {
+       //if (FDCustomerManager.getCustomerCreatedLists(user).size() > 1) {
+    %>
+       To copy to another list, <a href="/unsupported.jsp" onclick="return CCL.copy_items('product_form',this,'action=CCL:copyToList','action=CCL:copyToList')">click here</a>
+    <%
+       //}
+    } else if (CartName.ADD_TO_CART.equals(cartMode)) {
+    %>
+<fd:CCLCheck>
+	    <div style="text-align: right;">
+	        <fd:CCLNew/><a id="ccl-add-action" class="text12" href="/unsupported.jsp" onclick="return CCL.save_items('product_form',this,'action=CCL:AddToList')"><img src="/media_stat/ccl/lists_link_with_icon.gif" width="112" height="16" style="border: 0; padding-left: 14px"></a>
+	        <div style="text-align: right; margin-bottom: 1ex;">       
+	            <fd:CCLNew template="/common/template/includes/ccl_moreabout.jspf"/>
+	        </div>
+	    </div>
+</fd:CCLCheck>
+    <%
+    } 
+    %>
+    
+    <%@ include file="/shared/includes/product/i_deli_buy_guide.jspf" %>
+
+    <%@ include file="/shared/includes/product/i_serving_suggestion.jspf" %>
+
+    <%@ include file="/shared/includes/product/i_partially_frozen.jspf" %>
+
+    <%@ include file="/includes/product/i_cancellation_note.jspf" %>
+
+    </form>
+    <%
+    
+    // END OF "THE BIG IF" :)
+} else {
+    // product is unavailable, display reason
+
+    if (brandLogos.size()>0) {
+        brandLogo = (MediaI) brandLogos.get(0);
+        brandPopupLink = (String) brandPopupLinks.get(0);
+        if (brandPopupLink!=null) {
+            %>
+            <a href="<%=brandPopupLink%>"><img src="<%=brandLogo.getPath()%>" width="<%=brandLogo.getWidth()%>"  height="<%=brandLogo.getHeight()%>" alt="<%=brandName%>" border="0"></a><br><br>
+            <%
+        } else {
+            %>
+            <img src="<%=brandLogo.getPath()%>" width="<%=brandLogo.getWidth()%>"  height="<%=brandLogo.getHeight()%>" alt="<%=brandName%>" border="0"><br><br>
+            <%
+        }
+    }
+    %>
+    &nbsp; <BR>
+    <FONT CLASS="title18" color="#999999"><%= productNode.getFullName().toUpperCase() %></FONT><BR>
+    <%
+    String akaName = productNode.getAka();
+    if ((akaName != null) && !"".equals(akaName)) {
+        %>"<%= akaName %>"<BR><%
+    }
+    %>
+    <br>
+    <div align="right"><font class="text12" color="#999999">
+    <%
+    if (productNode.isTempUnavailable()) {
+        %>
+        <b>We're sorry! This item is temporarily unavailable.</b><br>
+        <br>
+        We're proud to offer New York's widest selections of fresh foods. Unfortunately, this product is temporarily unavailable.
+        Please check back on your next visit.
+        <%
+    } else if (productNode.isOutOfSeason()) {
+        %>
+        <b>We're sorry! This item is out of season.</b><br>
+        <br>
+        We're proud to offer New York's widest selections of fresh foods. Unfortunately, this product happens to be out of season. The moment it is available and meets our standards, we'll stock it.
+        <!-- Check out our rating chart to find something similar. -->
+
+        <%
+    } else {
+        %>
+        <b>We're sorry! This item is temporarily unavailable.</b>
+        <%
+    }
+    // !!! display earliest availability (not correct yet)
+    //JspLogger.PRODUCT.debug("Earliest availability: "+productNode.getEarliestAvailability());
+    %>
+    </font></div>
+    <%
+}
+
+%>

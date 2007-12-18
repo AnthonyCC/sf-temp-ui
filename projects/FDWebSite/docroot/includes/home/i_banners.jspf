@@ -1,0 +1,21 @@
+<%@ page import='java.util.*'  %>
+<%
+String[] quotes = {"Not only would I recommend you to friends, but I have talked you people up to virtually everyone I know in New York. You guys are the best invention since ice cream!<br><b>Rosina, Upper East Side</b>",
+					"You blow the (non-existent) competition out of the East River!<br><b>Adrienne, Ridgewood</b>",
+					"Thanks for being a terrific service that has allowed me to eat better, cook better and spend less time running out for groceries and household products!<br><b>Teresa, Forest Hills</b>",
+					"My orders are on time, and the food is of excellent quality. I would be miserable if I had to move to a neighborhood that did not have FreshDirect!<br><b>Kristiana, Astoria</b>",
+					"Easily the best shopping experience in NYC. There is nothing more valuable than time and you guys really save a lot of that for me.<br><b>Sandra, Upper West Side</b>"
+};
+int choose = (int)(Math.random() * 4.0);
+%>
+<table width="470" cellpadding="0" cellpadding="0" border="0" align="center">
+	<tr><td colspan="3" align="center"><a href="/category.jsp?catId=about_test"><img src="/media_stat/images/template/homepages/testimonial_hdr.gif" width="397" height="11" vspace="8" border="0"></a></td></tr>
+	<tr valign="top">
+		<td width="32"><img src="/media_stat/images/template/homepages/quote_left.gif" width="22" height="17"></td>
+		<td class="text12" align="center" width="406"><%= quotes[choose]%></td>
+		<td width="32" align="right"><img src="/media_stat/images/template/homepages/quote_right.gif" width="22" height="17"></td>
+	</tr>
+	<tr><td colspan="3" align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br><a href="/category.jsp?catId=about_test">Click here for more customer testimonials!</a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
+</table>
+
+

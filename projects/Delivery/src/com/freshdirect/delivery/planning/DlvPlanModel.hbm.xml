@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.freshdirect.delivery.planning" schema="dlv">
+
+    <class name="DlvPlanModel" table="PLAN" lazy="false">
+        <id name="id" column="ID">
+            <generator class="sequence">
+            	<param name="sequence">SYSTEM_SEQ</param>
+            </generator>
+        </id>
+
+        <property name="name" column="NAME" not-null="true"/>
+        <property name="regionId" column="REGION_ID" not-null="true"/>
+  
+        <bag name="shifts" cascade="all,delete-orphan" lazy="false">
+            <key column="PLAN_ID" not-null="true"/>
+            
+            <one-to-many class="DlvShiftModel"/>
+        </bag>
+
+    </class>
+
+    <class name="DlvPlan" table="PLAN">
+        <id name="id" column="ID">
+            <generator class="sequence">
+            	<param name="sequence">SYSTEM_SEQ</param>
+            </generator>
+        </id>
+        <property name="name" column="NAME" not-null="true"/>
+    </class>    
+
+<sql-query name="getPlanForRegion">
+    <return alias="plan" class="com.freshdirect.delivery.planning.DlvPlan">
+        <return-property name="id" column="planId"/>
+        <return-property name="name" column="planName"/>
+    </return>
+    SELECT p.ID AS planId, p.NAME AS planName
+    FROM DLV.PLAN p
+    WHERE p.REGION_ID= :regionId
+</sql-query>
+
+</hibernate-mapping>

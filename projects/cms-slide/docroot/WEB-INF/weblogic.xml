@@ -1,0 +1,18 @@
+<!DOCTYPE weblogic-web-app PUBLIC "-//BEA Systems, Inc.//DTD Web Application 8.1//EN" "http://www.bea.com/servers/wls810/dtd/weblogic810-web-jar.dtd">
+<weblogic-web-app>
+
+	<!--
+	<reference-descriptor>
+		<resource-env-description>
+			<res-env-ref-name>jdbc/slide</res-env-ref-name>
+			<jndi-name>slide</jndi-name>
+		</resource-env-description>
+	</reference-descriptor>
+	-->
+
+	<security-role-assignment>
+		<role-name>cms_slide</role-name>
+		<externally-defined/>
+	</security-role-assignment>
+
+</weblogic-web-app>

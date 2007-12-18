@@ -1,0 +1,45 @@
+<body jwcid="@Border" title="Publish History - Publish">
+
+	<table id="pageTitle" width="100%" cellpadding="0" cellspacing="0">
+		<tr>
+			<td valign="bottom">
+				<h1>View changes</h1>
+			</td>
+			<td align="right" valign="bottom" width="75" style="line-height:0;">
+				<img src="img/banner_versions.gif" width="75" height="66"></img>
+			</td>
+		</tr>
+	</table>
+	
+	<div class="buttonBar">
+		<br/>
+	</div>
+
+    	<span jwcid="@If" condition="ognl:publish != null">
+        Publish id: <span jwcid="@Insert" value="ognl:publish.id"/><br/>
+		<br/>
+		Publish Date: <span jwcid="@Insert" value="ognl:publish.timestamp"/><br/>
+		<br/>
+	</span>
+
+    <!-- create a tab pane to tabulate the info, see http://webfx.eae.net/dhtml/tabpane/tabpane.html -->	
+    	<script type="text/javascript" src="js/tabpane.js"></script>
+	<div jwcid="@Any" class="dynamic-tab-pane-control" id="ognl:'tab-pane-1'">
+		
+		<div class="tab-page">
+			<h2 class="tab"><span jwcid="@Insert" value="Changes"/></h2>
+            
+			<span jwcid="@HistoryTable" changes="ognl:changes"/>
+        </div>
+
+        	<span jwcid="@If" condition="ognl:publish != null">
+			<div class="tab-page">
+				<h2 class="tab"><span jwcid="@Insert" value="Validation Messages"/></h2>
+
+        			<span jwcid="@PublishMessagesTable" publishMessages="ognl:publish.messages"/>
+            </div>
+		</span>
+
+	</div>
+	
+</body>

@@ -1,0 +1,85 @@
+<html>
+<head>
+<title>Delivery Reservation Overview</title>
+<link rel="stylesheet" href="../../../../docroot/css/pc_ie.css"/>
+</head>
+<body bgcolor="#ffffff" jwcid="$content$">
+<span jwcid="border">
+	
+<form jwcid="formAddSlot">
+<input type="hidden" jwcid="timeslotCount"/>
+
+<span jwcid="showErrors"/>
+
+<table width="100%" cellpadding="0" cellspacing="1" border="0">
+		<tr>
+			<td WIDTH="100%">
+				<br>
+				<br>
+				<table width="400" cellpadding="1" cellspacing="0" border="0">
+					<tr>
+						<td width="30"> &nbsp;<br></td>
+						<th colspan="4" bgcolor="c00cc3d">Add A TimeSlot</th>
+					</tr>
+					<tr>
+						<td colspan="5"><font color="#ffffff" class="space2pix">.</font></td>
+					</tr>
+					<tr>
+						<td width="30"> &nbsp;<br></td>
+						<td nowrap><b>Start Time-End Time</b></td>
+						<td><b>Status</b></td>
+						<td><b>Cutoff Time</b></td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td colspan="5"><font COLOR="#ffffff" class="space2pix">.</font></td>
+					</tr>
+					<span jwcid="forEachTimeslot">
+					<tr>
+						<td WIDTH="30"> &nbsp;<br></td>
+						<td><input size="9" class="text10" jwcid="inputStartTime" /> - <input size="9" class="text10" jwcid="inputEndTime" /></td>
+						<td>
+							<select jwcid="selectStatus">
+								<option value="0">N/A</option>
+			
+								<option value="1">STD</option>
+								<option value="2">PRE</option>
+							</select>
+						</td>
+						<td><input size="9" class="text10" jwcid="inputCutoffTime" /></td>
+						<td><input jwcid="submitDeleteTimeslot" type="submit" value="X" CLASS="button" /></td>
+					</tr>
+					</span>
+					<tr>
+						<td colspan="5" align="center"><input type="submit" value="Add Timeslot" jwcid="submitAddTimeslot" class="button" /></td>
+					</tr>
+	
+				</table>
+
+				<br><br><br><br><br>
+			</td>
+		</tr>
+		<tr>
+			<td WIDTH="100%"><font CLASS="space8pix"><br></font></td>
+		</tr>
+		<tr BGCOLOR="#FF9933">
+			<td WIDTH="100%" ALIGN="RIGHT"><font CLASS="space2pix">.</font></td>
+		</tr>
+		<tr>
+			<td WIDTH="100%">
+				<font CLASS="space8pix"><br></font>
+
+				<input jwcid="submitCommitChanges" type="submit" value="Commit changes" class="button"/>
+				
+				<font CLASS="space8pix"><br><br></font>
+			</td>
+		</tr>
+</table>
+
+</form>
+
+
+</span>
+</body>
+
+</html>

@@ -1,0 +1,47 @@
+<%
+
+int leaveIndex;
+int firstComaIndex;
+int noteIndex;
+int doormanIndex;
+int telephoneIndex;
+int apartmentIndex;
+boolean leaveWithDoorman = false;
+boolean leaveWithNeighbor = false;
+
+//value of tmpFldDlvInstructions is defined in files that include this file.  i_delivery_address_select.jsp and i_delivery_address_field.jsp
+if(tmpFldDlvInstructions!=null){
+
+	leaveIndex = tmpFldDlvInstructions.indexOf("Leave package with");
+	firstComaIndex = tmpFldDlvInstructions.indexOf(",");
+	noteIndex = tmpFldDlvInstructions.indexOf("NOTE");
+	doormanIndex = tmpFldDlvInstructions.indexOf("doorman");
+	apartmentIndex = tmpFldDlvInstructions.indexOf("in apartment");
+	telephoneIndex = tmpFldDlvInstructions.indexOf("Telephone");
+		
+		try{
+			if(leaveIndex > -1){
+	
+				if(doormanIndex > -1){
+					leaveWithDoorman = true;
+				}else{
+					leaveWithNeighbor = true;			
+					fldAltLastName = tmpFldDlvInstructions.substring( 19, firstComaIndex);
+					fldAltFirstName = tmpFldDlvInstructions.substring( firstComaIndex+2, apartmentIndex-1 );
+					fldAltApartment = tmpFldDlvInstructions.substring( apartmentIndex + 13 , telephoneIndex-2);					
+				
+					if(noteIndex > -1){
+					fldAltPhone = tmpFldDlvInstructions.substring( telephoneIndex + 11, noteIndex-1 );
+					}else{
+					fldAltPhone = tmpFldDlvInstructions.substring( telephoneIndex + 11);			
+					}
+				}
+			}
+				if(noteIndex > -1){
+					fldDlvInstructions = tmpFldDlvInstructions.substring( noteIndex+6 );
+				}
+		}catch(StringIndexOutOfBoundsException ob){
+			System.out.println("The Special instructions broke");
+		}
+}
+%>

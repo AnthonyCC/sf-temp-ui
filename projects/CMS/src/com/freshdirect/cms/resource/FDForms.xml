@@ -1,0 +1,1073 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Content>
+	
+	
+	<CmsFolder id="forms">
+		<name>CMS Forms</name>
+		<editors>
+			<CmsEditor ref="department" />
+			<CmsEditor ref="category" />
+			<CmsEditor ref="product" />
+			<CmsEditor ref="configured_product" />
+			<CmsEditor ref="fdFolder" />
+			<CmsEditor ref="recipe" />
+			<CmsEditor ref="recipeDepartment" />
+			<CmsEditor ref="recipeCategory" />
+			<CmsEditor ref="recipeSubcategory" />
+			<CmsEditor ref="recipeSource" />
+			<CmsEditor ref="recipeAuthor" />
+			<CmsEditor ref="recipeSection" />
+			<CmsEditor ref="recipeVariant" />
+			<CmsEditor ref="configuredProductGroup" />
+			<CmsEditor ref="ymalSet" />
+			<CmsEditor ref="starterList" />
+		</editors>
+	</CmsFolder>
+	
+	
+	<CmsEditor id="department">
+		<contentType>Department</contentType>
+		<pages>
+			<CmsPage>
+				<title>Core Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>NAME</title>
+						<fields>
+							<CmsField><attribute>FULL_NAME</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>LAYOUT</title>
+						<fields>
+							<CmsField><attribute>LAYOUT</attribute></CmsField>
+							<CmsField><attribute>NOT_SEARCHABLE</attribute></CmsField>
+							<CmsField><attribute>DEPT_NAV</attribute></CmsField>
+							<CmsField><attribute>MAX_ROWCOUNT</attribute></CmsField>
+							<CmsField><attribute>DEPT_NAVBAR</attribute></CmsField>
+							<CmsField><attribute>DEPT_NAVBAR_ROLLOVER</attribute></CmsField>
+							<CmsField><attribute>HIDE_URL</attribute></CmsField>
+							<CmsField><attribute>REDIRECT_URL</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>IMAGES</title>
+						<fields>
+							<CmsField><attribute>DEPT_PHOTO</attribute></CmsField>
+							<CmsField><attribute>DEPT_PHOTO_SMALL</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>EDITORIAL</title>
+						<fields>
+							<CmsField><attribute>ALT_TEXT</attribute></CmsField>
+							<CmsField><attribute>BLURB</attribute></CmsField>
+							<CmsField><attribute>EDITORIAL_TITLE</attribute></CmsField>
+							<CmsField><attribute>EDITORIAL</attribute></CmsField>
+							<CmsField><attribute>ASSOC_EDITORIAL</attribute></CmsField>
+							<CmsField><attribute>DEPT_TITLE</attribute></CmsField>
+							<CmsField><attribute>DEPARTMENT_MIDDLE_MEDIA</attribute></CmsField>
+							<CmsField><attribute>BOTTOM_RIGHT_DISPLAY</attribute></CmsField>
+							<CmsField><attribute>DEPARTMENT_BOTTOM</attribute></CmsField>
+							<CmsField><attribute>DEPT_MGR</attribute></CmsField>
+							<CmsField><attribute>DEPT_MGR_NONAME</attribute></CmsField>
+							<CmsField><attribute>DEPT_MGR_BIO</attribute></CmsField>
+							<CmsField><attribute>DEPT_STORAGE_GUIDE_MEDIA</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+			<CmsPage>
+				<title>Relationships</title>
+				<sections>
+					<CmsSection>
+						<title>RELATIONSHIPS</title>
+						<fields>
+							<CmsField><attribute>FEATURED_CATEGORIES</attribute></CmsField>
+							<CmsField><attribute>FEATURED_PRODUCTS</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+			<CmsPage>
+				<title>Children</title>
+				<sections>
+					<CmsSection>
+						<title>Children</title>
+						<fields>
+							<CmsField><attribute>categories</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+			<CmsPage ref="ratings"/>
+			<CmsPage ref="category_setup"/>
+			<CmsPage ref="product_setup"/>
+		</pages>
+	</CmsEditor>
+	
+	
+	<CmsEditor id="category">
+		<contentType>Category</contentType>
+		<pages>
+			<CmsPage>
+				<title>Core Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>NAME</title>
+						<fields>
+							<CmsField><attribute>FULL_NAME</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>LAYOUT BASIC</title>
+						<fields>
+							<CmsField><attribute>LAYOUT</attribute></CmsField>
+							<CmsField><attribute>TEMPLATE_TYPE</attribute></CmsField>
+							<CmsField><attribute>FEATURED</attribute></CmsField>
+							<CmsField><attribute>SECONDARY_CATEGORY</attribute></CmsField>
+							<CmsField><attribute>SHOWSELF</attribute></CmsField>
+							<CmsField><attribute>SHOWCHILDREN</attribute></CmsField>
+							<CmsField><attribute>LIST_AS</attribute></CmsField>
+							<CmsField><attribute>HIDE_URL</attribute></CmsField>
+							<CmsField><attribute>REDIRECT_URL</attribute></CmsField>
+							<CmsField><attribute>RELATED_PRODUCTS_HEADER</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>LAYOUT SPECIAL</title>
+						<fields>
+							<CmsField><attribute>COLUMN_NUM</attribute></CmsField>
+							<CmsField><attribute>COLUMN_SPAN</attribute></CmsField>
+							<CmsField><attribute>FAVORITE_ALL_SHOW_PRICE</attribute></CmsField>
+							<CmsField><attribute>FAKE_ALL_FOLDER</attribute></CmsField>
+							<CmsField><attribute>CONTAINS_BEER</attribute></CmsField>
+							<CmsField><attribute>NUTRITION_SORT</attribute></CmsField>
+							<CmsField><attribute>NOT_SEARCHABLE</attribute></CmsField>
+							<CmsField><attribute>ALIAS</attribute></CmsField>
+							<CmsField><attribute>TREAT_AS_PRODUCT</attribute></CmsField>
+							<CmsField><attribute>PRODUCT_LAYOUT</attribute></CmsField>
+							<CmsField><attribute>MATERIAL_CHARACTERISTIC</attribute></CmsField>
+							<CmsField><attribute>SEPARATOR_MEDIA</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>LAYOUT SIDE NAV</title>
+						<fields>
+							<CmsField><attribute>SHOW_SIDE_NAV</attribute></CmsField>
+							<CmsField><attribute>SIDENAV_SHOWSELF</attribute></CmsField>
+							<CmsField><attribute>SIDENAV_PRIORITY</attribute></CmsField>
+							<CmsField><attribute>SIDENAV_LINK</attribute></CmsField>
+							<CmsField><attribute>SIDENAV_BOLD</attribute></CmsField>
+							<CmsField><attribute>SIDENAV_SHOWCHILDREN</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>IMAGES</title>
+						<fields>
+							<CmsField><attribute>CAT_PHOTO</attribute></CmsField>
+							<CmsField><attribute>CATEGORY_DETAIL_IMAGE</attribute></CmsField>
+							<CmsField><attribute>CAT_LABEL</attribute></CmsField>
+							<CmsField><attribute>CAT_TITLE</attribute></CmsField>
+							<CmsField><attribute>SIDENAV_IMAGE</attribute></CmsField>
+							<CmsField><attribute>DEPT_MGR</attribute></CmsField>
+							<CmsField><attribute>CATEGORY_NAVBAR</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>EDITORIAL</title>
+						<fields>
+							<CmsField><attribute>BLURB</attribute></CmsField>
+							<CmsField><attribute>EDITORIAL_TITLE</attribute></CmsField>
+							<CmsField><attribute>EDITORIAL</attribute></CmsField>
+							<CmsField><attribute>CATEGORY_TOP_MEDIA</attribute></CmsField>
+							<CmsField><attribute>CATEGORY_MIDDLE_MEDIA</attribute></CmsField>
+							<CmsField><attribute>CATEGORY_BOTTOM_MEDIA</attribute></CmsField>
+							<CmsField><attribute>CAT_STORAGE_GUIDE_MEDIA</attribute></CmsField>
+							<CmsField><attribute>CATEGORY_PREVIEW_MEDIA</attribute></CmsField>
+							<CmsField><attribute>ALT_TEXT</attribute></CmsField>
+							<CmsField><attribute>ALTERNATE_CONTENT</attribute></CmsField>
+							<CmsField><attribute>ARTICLES</attribute></CmsField>
+							<CmsField><attribute>KEYWORDS</attribute></CmsField>
+							<CmsField><attribute>SEASON_TEXT</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+			<CmsPage>
+				<title>Relationships</title>
+				<sections>
+					<CmsSection>
+						<title>RELATIONSHIPS</title>
+						<fields>
+							<CmsField><attribute>FEATURED_PRODUCTS</attribute></CmsField>
+							<CmsField><attribute>FEATURED_BRANDS</attribute></CmsField>
+							<CmsField><attribute>VIRTUAL_GROUP</attribute></CmsField>
+							<CmsField><attribute>FILTER_LIST</attribute></CmsField>
+							<CmsField><attribute>HOWTOCOOKIT_USAGE</attribute></CmsField>
+							<CmsField><attribute>HOW_TO_COOK_IT_PRODUCTS</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+			<CmsPage id="ratings">
+				<title>Ratings/Usage</title>
+				<sections>
+					<CmsSection>
+						<title>RATING TABLE</title>
+						<fields>
+							<CmsField><attribute>RATING</attribute></CmsField>
+							<CmsField><attribute>RATING_GROUP_NAMES</attribute></CmsField>
+							<CmsField><attribute>RATING_HOME</attribute></CmsField>
+							<CmsField><attribute>RATING_BREAK_ON_SUBFOLDERS</attribute></CmsField>
+							<CmsField><attribute>RATING_CHECK_SUBFOLDERS</attribute></CmsField>
+							<CmsField><attribute>SHOW_RATING_RELATED_IMAGE</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>RATING DEFINITIONS</title>
+						<fields>
+							<CmsField><attribute>RG_MORE_USAGE</attribute></CmsField>
+							<CmsField><attribute>RG_MORE_USAGE_LABEL</attribute></CmsField>
+							<CmsField><attribute>RG_POP_USAGE</attribute></CmsField>
+							<CmsField><attribute>RG_POP_USAGE_LABEL</attribute></CmsField>
+							<CmsField><attribute>RG_SIZE_PRICE</attribute></CmsField>
+							<CmsField><attribute>RG_SIZE_PRICE_LABEL</attribute></CmsField>
+							<CmsField><attribute>RG_TASTE_PRICE</attribute></CmsField>
+							<CmsField><attribute>RG_TASTE_PRICE_LABEL</attribute></CmsField>
+							<CmsField><attribute>RG_TASTE_TYPE_PRICE</attribute></CmsField>
+							<CmsField><attribute>RG_TASTE_TYPE_PRICE_LABEL</attribute></CmsField>
+							<CmsField><attribute>RG_TASTE_USE_PRICE</attribute></CmsField>
+							<CmsField><attribute>RG_TASTE_USE_PRICE_LABEL</attribute></CmsField>
+							<CmsField><attribute>RG_TEXTURE_PRICE</attribute></CmsField>
+							<CmsField><attribute>RG_TEXTURE_PRICE_LABEL</attribute></CmsField>
+							<CmsField><attribute>RG_TYPE_PRICE</attribute></CmsField>
+							<CmsField><attribute>RG_TYPE_PRICE_LABEL</attribute></CmsField>
+							<CmsField><attribute>RG_USAGE</attribute></CmsField>
+							<CmsField><attribute>RG_USAGE_LABEL</attribute></CmsField>
+							<CmsField><attribute>RG_USAGE_PRICE</attribute></CmsField>
+							<CmsField><attribute>RG_USAGE_PRICE_LABEL</attribute></CmsField>
+							<CmsField><attribute>RG_PRICE_LABEL</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>PRODUCT PAGE RATINGS DISPLAY</title>
+						<fields>
+							<CmsField><attribute>RATING_PROD_NAME</attribute></CmsField>
+							<CmsField><attribute>PROD_PAGE_RATINGS</attribute></CmsField>
+							<CmsField><attribute>PROD_PAGE_TEXT_RATINGS</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+			<CmsPage>
+				<title>Children</title>
+				<sections>
+					<CmsSection>
+						<title>Children</title>
+						<fields>
+							<CmsField><attribute>subcategories</attribute></CmsField>
+							<CmsField><attribute>products</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+			<CmsPage ref="product_setup"/>
+		</pages>
+	</CmsEditor>
+	
+	
+	<CmsEditor id="product">
+		<contentType>Product</contentType>
+		<pages>
+			<CmsPage>
+				<title>Core Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>HOME</title>
+						<fields>
+							<CmsCustomField>
+								<attribute>PRIMARY_HOME</attribute>
+								<component>PrimaryHomeSelection</component>
+							</CmsCustomField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>NAMES/EDITORIAL</title>
+						<fields>
+							<CmsField><attribute>FULL_NAME</attribute></CmsField>
+							<CmsField><attribute>NAV_NAME</attribute></CmsField>
+							<CmsField><attribute>GLANCE_NAME</attribute></CmsField>
+							<CmsField><attribute>KEYWORDS</attribute></CmsField>
+							<CmsField><attribute>brands</attribute></CmsField>
+							<CmsField><attribute>PROD_DESCR</attribute></CmsField>
+							<CmsField><attribute>BLURB</attribute></CmsField>
+							<CmsField><attribute>SUBTITLE</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>IMAGES</title>
+						<fields>
+							<CmsField><attribute>PROD_IMAGE</attribute></CmsField>
+							<CmsField><attribute>PROD_IMAGE_DETAIL</attribute></CmsField>
+							<CmsField><attribute>PROD_IMAGE_ZOOM</attribute></CmsField>
+							<CmsField><attribute>PROD_IMAGE_FEATURE</attribute></CmsField>
+							<CmsField><attribute>RATING_RELATED_IMAGE</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>SALES UNITS/QUANTITY</title>
+						<fields>
+							<CmsField><attribute>SELL_BY_SALESUNIT</attribute></CmsField>
+							<CmsField><attribute>SALES_UNIT_LABEL</attribute></CmsField>
+							<CmsField><attribute>QUANTITY_TEXT</attribute></CmsField>
+							<CmsField><attribute>QUANTITY_MINIMUM</attribute></CmsField>
+							<CmsField><attribute>QUANTITY_MAXIMUM</attribute></CmsField>
+							<CmsField><attribute>QUANTITY_INCREMENT</attribute></CmsField>
+							<CmsField><attribute>INCREMENT_MAX_ENFORCE</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+			<CmsPage>
+				<title>Descriptive Content</title>
+				<sections>
+					<CmsSection>
+						<title>NAMES/EDITORIAL</title>
+						<fields>
+							<CmsField><attribute>PROD_DESCRIPTION_NOTE</attribute></CmsField>
+							<CmsField><attribute>PRODUCT_QUALITY_NOTE</attribute></CmsField>
+							<CmsField><attribute>PRODUCT_ABOUT</attribute></CmsField>
+							<CmsField><attribute>PRODUCT_TERMS_MEDIA</attribute></CmsField>
+							<CmsField><attribute>AKA</attribute></CmsField>
+							<CmsField><attribute>ALSO_SOLD_AS_NAME</attribute></CmsField>
+							<CmsField><attribute>ALT_TEXT</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>IMAGES</title>
+						<fields>
+							<CmsField><attribute>PROD_IMAGE_CONFIRM</attribute></CmsField>
+							<CmsField><attribute>ALTERNATE_IMAGE</attribute></CmsField>
+							<CmsField><attribute>DESCRIPTIVE_IMAGE</attribute></CmsField>
+							<CmsField><attribute>PROD_IMAGE_ROLLOVER</attribute></CmsField>
+							<CmsField><attribute>WE_RECOMMEND_IMAGE</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>LINKS/RATINGS/LABELS</title>
+						<fields>
+							<CmsField><attribute>DONENESS_GUIDE</attribute></CmsField>
+							<CmsField><attribute>HOWTOCOOKIT_FOLDERS</attribute></CmsField>
+							<CmsField><attribute>PARTIALLY_FROZEN</attribute></CmsField>
+							<CmsField><attribute>SEAFOOD_ORIGIN</attribute></CmsField>
+							<CmsField><attribute>SEASON_TEXT</attribute></CmsField>
+							<CmsField><attribute>WINE_COUNTRY</attribute></CmsField>
+							<CmsField><attribute>WINE_FYI</attribute></CmsField>
+							<CmsField><attribute>WINE_REGION</attribute></CmsField>
+							<CmsField><attribute>WINE_TYPE</attribute></CmsField>
+							<CmsField><attribute>SERVING_SUGGESTION</attribute></CmsField>
+							<CmsField><attribute>PACKAGE_DESCRIPTION</attribute></CmsField>
+							<CmsField><attribute>WE_RECOMMEND_TEXT</attribute></CmsField>
+							<CmsField><attribute>FRESH_TIPS</attribute></CmsField>
+							<CmsField><attribute>RATING</attribute></CmsField>
+							<CmsField><attribute>USAGE_LIST</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>CHARACTERISTICS/SALES UNITS</title>
+						<fields>
+							<CmsField><attribute>RECOMMEND_TABLE</attribute></CmsField>
+							<CmsField><attribute>FDDEF_FRENCHING</attribute></CmsField>
+							<CmsField><attribute>FDDEF_GRADE</attribute></CmsField>
+							<CmsField><attribute>FDDEF_RIPENESS</attribute></CmsField>
+							<CmsField><attribute>FDDEF_SOURCE</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+			<CmsPage>
+				<title>Layout/Config</title>
+				<sections>
+					<CmsSection>
+						<title>PRODUCT</title>
+						<fields>
+							<CmsField><attribute>PRODUCT_LAYOUT</attribute></CmsField>
+							<CmsField><attribute>PERISHABLE</attribute></CmsField>
+							<CmsField><attribute>FROZEN</attribute></CmsField>
+							<CmsField><attribute>GROCERY</attribute></CmsField>
+							<CmsField><attribute>NOT_SEARCHABLE</attribute></CmsField>
+							<CmsField><attribute>INVISIBLE</attribute></CmsField>
+							<CmsField><attribute>HIDE_URL</attribute></CmsField>
+							<CmsField><attribute>REDIRECT_URL</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>SALES UNITS/QUANTITY</title>
+						<fields>
+							<CmsField><attribute>QUANTITY_TEXT_SECONDARY</attribute></CmsField>
+							<CmsField><attribute>CONTAINER_WEIGHT_HALF_PINT</attribute></CmsField>
+							<CmsField><attribute>CONTAINER_WEIGHT_PINT</attribute></CmsField>
+							<CmsField><attribute>CONTAINER_WEIGHT_QUART</attribute></CmsField>
+							<CmsField><attribute>SHOW_SALES_UNIT_IMAGE</attribute></CmsField>
+							<CmsField><attribute>SHOW_TOP_TEN_IMAGE</attribute></CmsField>
+							<CmsField><attribute>SALES_UNIT_DESCRIPTION</attribute></CmsField>
+							<CmsField><attribute>UNIT_OF_MEASURE</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>SKU SETUP</title>
+						<fields>
+							<CmsField><attribute>NUTRITION_MULTIPLE</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+			<CmsPage>
+				<title>Relationships</title>
+				<sections>
+					<CmsSection>
+						<fields>
+							<CmsField><attribute>ALSO_SOLD_AS</attribute></CmsField>
+							<CmsField><attribute>RELATED_PRODUCTS_HEADER</attribute></CmsField>
+							<CmsField><attribute>RELATED_PRODUCTS</attribute></CmsField>
+							<CmsField><attribute>RELATED_RECIPES</attribute></CmsField>
+							<CmsField><attribute>ymalSets</attribute></CmsField>
+							<CmsField><attribute>RECOMMENDED_ALTERNATIVES</attribute></CmsField>
+							<CmsField><attribute>PRODUCT_BUNDLE</attribute></CmsField>
+							<CmsField><attribute>PREFERRED_SKU</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+			<CmsPage>
+				<title>Children</title>
+				<sections>
+					<CmsSection>
+						<title>Domains</title>
+						<fields>
+							<CmsField><attribute>VARIATION_MATRIX</attribute></CmsField>
+							<CmsField><attribute>VARIATION_OPTIONS</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>Variation Matrix</title>
+						<fields>
+							<CmsCustomField>
+								<attribute>skus</attribute>
+								<component>VariationMatrix</component>
+							</CmsCustomField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>Composite Product</title>
+						<fields>
+							<CmsField><attribute>COMPONENT_GROUPS</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+		</pages>
+	</CmsEditor>
+	
+	
+	<CmsEditor id="domain">
+		<contentType>Domain</contentType>
+		<pages>
+			<CmsPage>
+				<title>Core Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>Name</title>
+						<fields>
+							<!--CmsField><attribute>NAME</attribute></CmsField-->
+							<CmsField><attribute>Label</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+			<CmsPage>
+				<title>Children</title>
+				<sections>
+					<CmsSection>
+						<title>Domain Values</title>
+						<fields>
+							<CmsGridField>
+								<attribute>domainValues</attribute>
+								<columns>
+									<!--CmsField><attribute>VALUE</attribute></CmsField-->
+									<CmsField><attribute>Label</attribute></CmsField>
+								</columns>
+							</CmsGridField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+		</pages>
+	</CmsEditor>
+	
+	
+	<CmsPage id="category_setup">
+		<title>Category Setup</title>
+		<sections>
+			<CmsSection>
+				<title>LAYOUT BASIC</title>
+				<fields>
+					<CmsField><attribute>SHOWSELF</attribute></CmsField>
+					<CmsField><attribute>SHOW_SIDE_NAV</attribute></CmsField>
+					<CmsField><attribute>LIST_AS</attribute></CmsField>
+					<CmsField><attribute>TEMPLATE_TYPE</attribute></CmsField>
+					<CmsField><attribute>PRODUCT_LAYOUT</attribute></CmsField>
+					<CmsField><attribute>NUTRITION_SORT</attribute></CmsField>
+				</fields>
+			</CmsSection>
+			<CmsSection>
+				<title>LAYOUT SIDE NAV</title>
+				<fields>
+					<CmsField><attribute>SIDENAV_SHOWSELF</attribute></CmsField>
+					<CmsField><attribute>SIDENAV_LINK</attribute></CmsField>
+					<CmsField><attribute>SIDENAV_SHOWCHILDREN</attribute></CmsField>
+					<CmsField><attribute>SIDENAV_IMAGE</attribute></CmsField>
+				</fields>
+			</CmsSection>
+			<CmsSection>
+				<title>IMAGES</title>
+				<fields>
+					<CmsField><attribute>CAT_PHOTO</attribute></CmsField>
+					<CmsField><attribute>CAT_TITLE</attribute></CmsField>
+				</fields>
+			</CmsSection>
+			<!--CmsSection>
+				<title>EDITORIAL</title>
+				<fields>
+					<CmsField><attribute>EDITORIAL</attribute></CmsField>
+					<CmsField><attribute>EDITORIAL_TITLE</attribute></CmsField>
+					<CmsField><attribute>PROD_PAGE_RATINGS</attribute></CmsField>
+				</fields>
+			</CmsSection-->
+		</sections>
+	</CmsPage>
+	
+	
+	<CmsPage id="product_setup">
+		<title>Product Setup</title>
+		<sections>
+			<CmsSection>
+				<title>NAMES/EDITORIAL</title>
+				<fields>
+					<CmsField><attribute>PROD_DESCR</attribute></CmsField>
+					<CmsField><attribute>PROD_DESCRIPTION_NOTE</attribute></CmsField>
+					<CmsField><attribute>PRODUCT_QUALITY_NOTE</attribute></CmsField>
+					<CmsField><attribute>FRESH_TIPS</attribute></CmsField>	
+				</fields>
+			</CmsSection>
+			<CmsSection>
+				<title>IMAGES</title>
+				<fields>
+					<CmsField><attribute>PROD_IMAGE</attribute></CmsField>
+					<CmsField><attribute>PROD_IMAGE_DETAIL</attribute></CmsField>
+				</fields>
+			</CmsSection>
+			<CmsSection>
+				<title>SALES UNITS/QUANTITY</title>
+				<fields>
+					<CmsField><attribute>SELL_BY_SALESUNIT</attribute></CmsField>
+					<CmsField><attribute>SALES_UNIT_LABEL</attribute></CmsField>
+					<CmsField><attribute>QUANTITY_TEXT</attribute></CmsField>
+					<CmsField><attribute>QUANTITY_MINIMUM</attribute></CmsField>
+					<CmsField><attribute>QUANTITY_MAXIMUM</attribute></CmsField>
+					<CmsField><attribute>QUANTITY_INCREMENT</attribute></CmsField>
+					<CmsField><attribute>INCREMENT_MAX_ENFORCE</attribute></CmsField>
+				</fields>
+			</CmsSection>
+			<CmsSection>
+				<title>RELATIONSHIPS</title>
+				<fields>
+					<CmsField><attribute>RELATED_PRODUCTS_HEADER</attribute></CmsField>
+					<CmsField><attribute>RELATED_PRODUCTS</attribute></CmsField>
+					<CmsField><attribute>RELATED_RECIPES</attribute></CmsField>
+					<CmsField><attribute>ymalSets</attribute></CmsField>
+				</fields>
+			</CmsSection>
+		</sections>
+	</CmsPage>
+	
+	
+	<CmsEditor id="configured_product">
+		<contentType>ConfiguredProduct</contentType>
+		<pages>
+			<CmsPage>
+				<title>Core Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>CONFIGURATION</title>
+						<fields>
+							<!--
+							<CmsField><attribute>SKU</attribute></CmsField>
+							<CmsField><attribute>SALES_UNIT</attribute></CmsField>
+							<CmsField><attribute>QUANTITY</attribute></CmsField>
+							<CmsField><attribute>OPTIONS</attribute></CmsField>
+							-->
+							<CmsCustomField>
+								<attribute>SKU</attribute>
+								<component>ProductConfigEditor</component>
+							</CmsCustomField>
+							<CmsField><attribute>REQUIRED</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+			<CmsPage>
+				<title>Product Details</title>
+				<sections>
+					<CmsSection>
+						<title>NAMES/EDITORIAL</title>
+						<fields>
+							<CmsField><attribute>FULL_NAME</attribute></CmsField>
+							<CmsField><attribute>NAV_NAME</attribute></CmsField>
+							<CmsField><attribute>GLANCE_NAME</attribute></CmsField>
+							<CmsField><attribute>BLURB</attribute></CmsField>							
+							<CmsField><attribute>ALSO_SOLD_AS</attribute></CmsField>
+							<CmsField><attribute>ALSO_SOLD_AS_NAME</attribute></CmsField>
+							<CmsField><attribute>SUBTITLE</attribute></CmsField>
+							<CmsField><attribute>INVISIBLE</attribute></CmsField>
+							<CmsField><attribute>PACKAGE_DESCRIPTION</attribute></CmsField>
+							<CmsField><attribute>PROD_DESCR</attribute></CmsField>
+							<CmsField><attribute>PROD_DESCRIPTION_NOTE</attribute></CmsField>
+							<CmsField><attribute>PRODUCT_QUALITY_NOTE</attribute></CmsField>
+							<CmsField><attribute>RELATED_PRODUCTS</attribute></CmsField>
+							<CmsField><attribute>ymalSets</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>IMAGES</title>
+						<fields>
+							<CmsField><attribute>PROD_IMAGE</attribute></CmsField>
+							<CmsField><attribute>PROD_IMAGE_DETAIL</attribute></CmsField>
+							<CmsField><attribute>PROD_IMAGE_ZOOM</attribute></CmsField>
+							<CmsField><attribute>PROD_IMAGE_FEATURE</attribute></CmsField>
+							<CmsField><attribute>PROD_IMAGE_CONFIRM</attribute></CmsField>
+							<CmsField><attribute>ALTERNATE_IMAGE</attribute></CmsField>
+							<CmsField><attribute>DESCRIPTIVE_IMAGE</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+		</pages>
+	</CmsEditor>
+	
+
+	<CmsEditor id="fdFolder">
+		<contentType>FDFolder</contentType>
+		<pages>
+			<CmsPage>
+				<title>Core Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>Core</title>
+						<fields>
+							<CmsField><attribute>name</attribute></CmsField>
+							<CmsField><attribute>children</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+		</pages>
+	</CmsEditor>
+	
+	
+	<CmsEditor id="recipe">
+		<contentType>Recipe</contentType>
+		<pages>
+			<CmsPage>
+				<title>Core Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>Names</title>
+						<fields>
+							<CmsField><attribute>name</attribute></CmsField>
+							<CmsField><attribute>label</attribute></CmsField>
+							<CmsField><attribute>keywords</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection ref="workflow"/>
+					<CmsSection>
+						<title>Relationships</title>
+						<fields>
+							<CmsField><attribute>variants</attribute></CmsField>
+							<CmsField><attribute>classifications</attribute></CmsField>
+							<CmsField><attribute>source</attribute></CmsField>
+							<CmsField><attribute>authors</attribute></CmsField>
+							<CmsField><attribute>RELATED_PRODUCTS</attribute></CmsField>
+							<CmsField><attribute>ymalSets</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+			<CmsPage>
+				<title>Media</title>
+				<sections>
+					<CmsSection>
+						<title>Media</title>
+						<fields>
+							<CmsField><attribute>description</attribute></CmsField>
+							<CmsField><attribute>ingredientsMedia</attribute></CmsField>
+							<CmsField><attribute>preparationMedia</attribute></CmsField>
+							<CmsField><attribute>copyrightMedia</attribute></CmsField>
+							<CmsField><attribute>titleImage</attribute></CmsField>
+							<CmsField><attribute>photo</attribute></CmsField>
+							<CmsField><attribute>theme_color</attribute></CmsField>
+							<CmsField><attribute>logo</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+		</pages>
+	</CmsEditor>
+
+    <CmsEditor id="ymalSet">
+        <contentType>YmalSet</contentType>
+        <pages>
+            <CmsPage>
+                <title>Core Attributes</title>
+                <sections>
+                    <CmsSection>
+                        <title>Main attributes</title>
+                        <fields>
+                            <CmsField><attribute>productsHeader</attribute></CmsField>
+                            <CmsField><attribute>title</attribute></CmsField>
+                            <CmsField><attribute>workflowStatus</attribute></CmsField>
+                            <CmsField><attribute>startDate</attribute></CmsField>
+                            <CmsField><attribute>endDate</attribute></CmsField>
+                            <CmsField><attribute>transactional</attribute></CmsField>
+                            <CmsField><attribute>notes</attribute></CmsField>
+                        </fields>
+                    </CmsSection>
+                    <CmsSection>
+                        <title>Relationships</title>
+                        <fields>
+                            <CmsField><attribute>ymals</attribute></CmsField>
+                        </fields>
+                    </CmsSection>
+                </sections>
+            </CmsPage>
+        </pages>
+    </CmsEditor>
+
+    <CmsEditor id="starterList">
+        <contentType>StarterList</contentType>
+        <pages>
+            <CmsPage>
+                <title>Core Attributes</title>
+                <sections>
+                    <CmsSection>
+                        <title>Main attributes</title>
+                        <fields>
+                            <CmsField><attribute>FULL_NAME</attribute></CmsField>
+                            <CmsField><attribute>BLURB</attribute></CmsField>
+                        </fields>
+                    </CmsSection>
+                    <CmsSection ref="workflow"/>
+                    <CmsSection>
+                        <title>Relationships</title>
+                        <fields>
+                            <CmsField><attribute>listContents</attribute></CmsField>
+                        </fields>
+                    </CmsSection>
+                </sections>
+            </CmsPage>
+        </pages>
+    </CmsEditor>
+
+    <CmsEditor id="recipeSection">
+        <contentType>RecipeSection</contentType>
+        <pages>
+            <CmsPage>
+                <title>Core Attributes</title>
+                <sections>
+                    <CmsSection>
+                        <title>Main attributes</title>
+                        <fields>
+                            <CmsField><attribute>name</attribute></CmsField>
+                            <CmsField><attribute>SHOW_QUANTITY</attribute></CmsField>
+                        </fields>
+                    </CmsSection>
+                    <CmsSection>
+                        <title>Relationships</title>
+                        <fields>
+                            <CmsField><attribute>ingredients</attribute></CmsField>
+                        </fields>
+                    </CmsSection>
+                </sections>
+            </CmsPage>
+        </pages>
+    </CmsEditor>
+
+    <CmsEditor id="recipeVariant">
+        <contentType>RecipeVariant</contentType>
+        <pages>
+            <CmsPage>
+                <title>Core Attributes</title>
+                <sections>
+                    <CmsSection>
+                        <title>Main attributes</title>
+                        <fields>
+                            <CmsField><attribute>name</attribute></CmsField>
+                        </fields>
+                    </CmsSection>
+                    <CmsSection>
+                        <title>Relationships</title>
+                        <fields>
+                            <CmsField><attribute>sections</attribute></CmsField>
+                        </fields>
+                    </CmsSection>
+                </sections>
+            </CmsPage>
+        </pages>
+    </CmsEditor>
+
+	<CmsEditor id="recipeDepartment">
+		<contentType>RecipeDepartment</contentType>
+		<pages>
+			<CmsPage>
+				<title>Core Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>Name</title>
+						<fields>
+							<CmsField><attribute>name</attribute></CmsField>
+							<CmsField><attribute>REDIRECT_URL</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>Categories</title>
+						<fields>
+							<CmsField><attribute>categories</attribute></CmsField>
+							<CmsField><attribute>departmentNav</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>Relationships</title>
+						<fields>
+							<CmsField><attribute>featuredRecipes</attribute></CmsField>
+							<CmsField><attribute>featuredRecipeCategory</attribute></CmsField>
+							<CmsField><attribute>featuredProducts</attribute></CmsField>
+							<CmsField><attribute>featuredProductCategory</attribute></CmsField>
+							<CmsField><attribute>featuredSource</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>Layout</title>
+						<fields>
+							<CmsField><attribute>editorial</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+		</pages>
+	</CmsEditor>
+	
+	
+	<CmsEditor id="recipeCategory">
+		<contentType>RecipeCategory</contentType>
+		<pages>
+			<CmsPage>
+				<title>Core Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>Name</title>
+						<fields>
+							<CmsField><attribute>name</attribute></CmsField>
+							<CmsField><attribute>SECONDARY_CATEGORY</attribute></CmsField>
+							<CmsField><attribute>REDIRECT_URL</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>Classification &amp; Children</title>
+						<fields>
+							<CmsField><attribute>classification</attribute></CmsField>
+							<CmsField><attribute>subcategories</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>Relationships</title>
+						<fields>
+							<CmsField><attribute>featuredRecipes</attribute></CmsField>
+							<CmsField><attribute>featuredProducts</attribute></CmsField>
+							<CmsField><attribute>featuredSource</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>Images &amp; Media</title>
+						<fields>
+							<CmsField><attribute>label</attribute></CmsField>
+							<CmsField><attribute>zoomLabel</attribute></CmsField>
+							<CmsField><attribute>editorial</attribute></CmsField>
+							<CmsField><attribute>photo</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+		</pages>
+	</CmsEditor>
+	
+	
+	<CmsEditor id="recipeSubcategory">
+		<contentType>RecipeSubcategory</contentType>
+		<pages>
+			<CmsPage>
+				<title>Core Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>Name</title>
+						<fields>
+							<CmsField><attribute>name</attribute></CmsField>
+							<CmsField><attribute>REDIRECT_URL</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>Classification &amp; Children</title>
+						<fields>
+							<CmsField><attribute>classification</attribute></CmsField>
+							<CmsField><attribute>filterBy</attribute></CmsField>
+							<CmsField><attribute>groupBy</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>Relationships</title>
+						<fields>
+							<CmsField><attribute>featuredRecipes</attribute></CmsField>
+							<CmsField><attribute>featuredProducts</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>Images &amp; Media</title>
+						<fields>
+							<CmsField><attribute>label</attribute></CmsField>
+							<CmsField><attribute>editorial</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+		</pages>
+	</CmsEditor>
+	
+	<CmsEditor id="recipeSource">
+		<contentType>RecipeSource</contentType>
+		<pages>
+			<CmsPage>
+				<title>Core Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>Details</title>
+						<fields>
+							<CmsField><attribute>name</attribute></CmsField>
+							<CmsField><attribute>ISBN</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>Workflow</title>
+						<fields>
+							<CmsField><attribute>productionStatus</attribute></CmsField>
+							<CmsField><attribute>notes</attribute></CmsField>	
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>Relationships</title>
+						<fields>
+							<CmsField><attribute>authors</attribute></CmsField>
+							<CmsField><attribute>featuredRecipes</attribute></CmsField>
+							<CmsField><attribute>featuredProducts</attribute></CmsField>
+							<CmsField><attribute>bookRetailers</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>Images &amp; Media</title>
+						<fields>
+							<CmsField><attribute>image</attribute></CmsField>
+							<CmsField><attribute>zoomImage</attribute></CmsField>
+							<CmsField><attribute>topContent</attribute></CmsField>
+							<CmsField><attribute>bottomContent</attribute></CmsField>
+							<CmsField><attribute>leftContent</attribute></CmsField>
+							<CmsField><attribute>emailContent</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+		</pages>
+	</CmsEditor>
+	
+	<CmsEditor id="recipeAuthor">
+		<contentType>RecipeAuthor</contentType>
+		<pages>
+			<CmsPage>
+				<title>Core Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>Details</title>
+						<fields>
+							<CmsField><attribute>firstName</attribute></CmsField>
+							<CmsField><attribute>name</attribute></CmsField>
+							<CmsField><attribute>notes</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+		</pages>
+	</CmsEditor>
+	
+	<CmsEditor id="configuredProductGroup">
+		<contentType>ConfiguredProductGroup</contentType>
+		<pages>
+			<CmsPage>
+				<title>Core Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>Details</title>
+						<fields>
+							<CmsField><attribute>name</attribute></CmsField>
+							<CmsField><attribute>required</attribute></CmsField>
+							<CmsField><attribute>unavailabilityMessage</attribute></CmsField>
+							<CmsField><attribute>items</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>Workflow</title>
+						<fields>
+							<CmsField><attribute>notes</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+		</pages>
+	</CmsEditor>
+	<!--
+	<CmsEditor id="template">
+		<contentType>Template</contentType>
+		<pages>
+			<CmsPage>
+				<title>Page</title>
+				<sections>
+					<CmsSection>
+						<title>Section</title>
+						<fields>
+							<CmsField><attribute>attribute</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+		</pages>
+	</CmsEditor>
+	-->
+	
+	<CmsSection id="workflow">
+		<title>Workflow</title>
+		<fields>
+			<CmsField><attribute>productionStatus</attribute></CmsField>
+			<CmsField><attribute>startDate</attribute></CmsField>
+			<CmsField><attribute>endDate</attribute></CmsField>
+			<CmsField><attribute>notes</attribute></CmsField>
+		</fields>
+	</CmsSection>
+	
+</Content>

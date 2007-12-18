@@ -1,0 +1,19 @@
+export JAVA_HOME=/usr/local/j2sdk1.4.2_04
+export PATH=$JAVA_HOME/bin:$PATH
+
+export RUN_HOME=/home/oracle/xls
+
+FILEDATE=`date '+%y%m%d%H%M%S'`
+
+LOG=$RUN_HOME/run.log
+
+echo "`date` Running for $1 $FILEDATE" >> $LOG
+export CLASSPATH=$RUN_HOME/classes12.jar:$RUN_HOME/dom4j.jar:$RUN_HOME/jaxen-1.1-beta-4.jar:$RUN_HOME/poi.jar:$RUN_HOME/fdxls.jar
+
+java -Xmx768m com.freshdirect.flatfile.Processor $RUN_HOME/$1/template.xml $RUN_HOME/$1/$1_$FILEDATE.prn >> $LOG
+
+export EMAIL=ApplicationDevelopment@freshdirect.com
+
+/usr/local/bin/mutt -a $RUN_HOME/$1/$1_$FILEDATE.prn -s "$1: $FILEDATE" $2 < /dev/null >> $LOG 
+
+echo "`date` Task complete for $1 $FILEDATE" >> $LOG

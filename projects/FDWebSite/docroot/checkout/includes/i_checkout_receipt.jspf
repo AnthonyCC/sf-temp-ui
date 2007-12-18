@@ -1,0 +1,310 @@
+<%@ page import="java.util.*"%>
+<%@ page import="com.freshdirect.delivery.EnumReservationType"%>
+<%@ page import="com.freshdirect.webapp.util.CCFormatter" %>
+<%@ page import='com.freshdirect.common.customer.*,com.freshdirect.fdstore.*' %>
+<%@ page import ='com.freshdirect.fdstore.customer.*'%>
+<%@ page import='com.freshdirect.customer.*'%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import='com.freshdirect.customer.*' %>
+<%@ page import='com.freshdirect.framework.webapp.*'%>
+<%@ page import ='com.freshdirect.fdstore.FDReservation'%>
+<%@ page import='com.freshdirect.delivery.depot.*'%>
+<%@ page import='com.freshdirect.webapp.util.JspMethods' %>
+<%@ page import='com.freshdirect.framework.util.NVL'%>
+<%@ page import='com.freshdirect.fdstore.promotion.*'%>
+<%@ page import='com.freshdirect.fdstore.survey.*'%>
+<%@ taglib uri='template' prefix='tmpl' %>
+<%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+
+<%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US); %>
+
+<%
+	ErpCustomerInfoModel custInfo = FDCustomerFactory.getErpCustomerInfo(identity);
+%>
+
+<%
+FDReservation reservation = cart.getDeliveryReservation();
+ErpAddressModel dlvAddress = cart.getDeliveryAddress(); 
+ErpPaymentMethodI paymentMethod = (ErpPaymentMethodI) cart.getPaymentMethod();
+ErpCustomerInfoModel customerModel = FDCustomerFactory.getErpCustomerInfo(identity);
+FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(identity);
+
+String fmtDlvDateTime = dateFormatter.format(reservation.getStartTime()).toUpperCase();
+String deliveryTime = FDTimeslot.format(reservation.getStartTime(), reservation.getEndTime());
+ 
+boolean modifyOrderMode = cart.isModifiedOrder();
+
+boolean displayReminder = false;
+if (user.getAdjustedValidOrderCount() > 1 && custInfo.getReminderFrequency() == 0){
+    displayReminder = true;
+}
+
+%>
+
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="630">
+<TR valign="top">
+    <TD><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></TD>
+</TR>
+<TR VALIGN="top">
+	<td width="430" style="border-right: solid 1px #CCCCCC; padding-right: 10px;">
+		<%
+		if (modifyOrderMode){
+			%>
+			<FONT CLASS="title16"><BIG>Your order has been modified.</BIG></FONT><BR><BR>
+			<%
+		} else {
+			%>
+			<FONT CLASS="title16"><BIG>Your order has been placed.</BIG></FONT><BR><BR>
+			<%
+		}
+		%>
+		<font class="text12">
+			Thank you for shopping with us! Your order is complete. To check your order status anytime, just visit the "<A HREF="/your_account/order_history.jsp">Your Orders</A>" section of Your Account.
+			<br><br>
+			Your estimated receipt is below. On the day of delivery, once we've assembled and weighed your goods, we'll e-mail your final receipt and include a printed copy with your order.
+			<% if (EnumUnattendedDeliveryFlag.OPT_IN.equals(dlvAddress.getUnattendedDeliveryFlag())) { %>
+			<br><br>
+			<fd:IncludeMedia name="/media/editorial/site_pages/unattended_delivery/receipt_notice.html">
+			<b>Unattended delivery service.</b> If you need to run out during your delivery time slot, we will leave your order at your home. Alcohol cannot be left unattended, and will be removed from your order if you are not home. To learn more about Unattended Delivery, click <a href="javascript:popup('/help/unattended_delivery.jsp','large')">here</a>.
+			</fd:IncludeMedia>
+			<% } %>
+			<% boolean pickupOrder = cart instanceof FDOrderI ? 
+                    EnumDeliveryType.PICKUP.equals( ((FDOrderI)cart).getDeliveryType() ) :
+                    dlvAddress instanceof ErpDepotAddressModel && ((ErpDepotAddressModel)dlvAddress).isPickup(); 
+		    boolean isHomeOrder = cart instanceof FDOrderI ? 
+                    EnumDeliveryType.HOME.equals( ((FDOrderI)cart).getDeliveryType() ) :
+                    dlvAddress instanceof ErpAddressModel;
+				boolean isCorporateOrder = cart instanceof FDOrderI ? 
+                    EnumDeliveryType.CORPORATE.equals( ((FDOrderI)cart).getDeliveryType() ) :
+                    dlvAddress instanceof ErpAddressModel;
+				if (pickupOrder) {
+					DlvDepotModel dm =  com.freshdirect.fdstore.FDDepotManager.getInstance().getDepotByLocationId( ((ErpDepotAddressModel)dlvAddress).getLocationId());
+					String depotCode = dm!=null ? dm.getDepotCode() : null;
+			%><br><br>
+                  <% 		  if ("HAM".equalsIgnoreCase(depotCode)) {    %>
+				If you get lost call our Customer Service department at <%=user.getCustomerServiceContact()%>.
+		<%                } else { %>
+				<b>New!</b> Call our Order Pickup desk at 718-928-1575 five to ten minutes before you arrive and we'll have your order ready and waiting when you pull up. If you get lost - or have questions about your account or previous orders - call our Customer Service department at <%=user.getCustomerServiceContact()%>.
+			<%        }
+			} %>
+		</font>
+	</TD>
+		<td width="200" align="right" style="padding-left: 10px;">
+		<%
+        // get all recipe sources that can be found related to this order
+        Set recipeSources = new HashSet();
+
+		for (Iterator i = cart.getOrderLines().iterator(); i.hasNext(); ) {
+			FDCartLineI line = (FDCartLineI) i.next();
+			String recipeId = line.getRecipeSourceId();
+			if (recipeId != null) {
+				Recipe recipe = (Recipe) ContentFactory.getInstance().getContentNode(recipeId);
+				if (recipe != null) {
+					if (recipe.getSource() != null &&
+							!recipe.getSource().getBookRetailers().isEmpty()) {
+                        recipeSources.add(recipe.getSource());
+					}
+				}
+			}
+		}
+	
+        if (recipeSources.size() > 0) {
+			%>
+			<style>
+				#recipeSource {
+					text-align: center;
+					width: 100%;
+					font-size: 7pt;
+				}
+				#recipeSource h2 {
+					font-family: Verdana, sans-serif;
+					color: #f93;
+					text-transform: uppercase;
+					margin: 0;
+					font-size:9pt;
+				}
+			</style>
+            <%
+        }
+
+		if (recipeSources.size() == 1) {
+            RecipeSource recipeSource = (RecipeSource)
+                                              recipeSources.iterator().next();
+            %>
+			<div id="recipeSource">
+				<h2>You might like...</h2>
+				<p>
+					<%
+					Image img = recipeSource.getImage();
+					if (img != null) {
+						%>
+						<img src="<%= img.getPath() %>" width="<%= img.getWidth() %>" height="<%= img.getHeight() %>" /><br/>
+						<%
+					}
+					%>
+					We hope you enjoy your recipe from<br/>
+					<b>"<%= recipeSource.getName() %>"</b><br/>
+					<%= recipeSource.getAuthorNames() %><br/>
+					<br/>
+					<%
+					List retailers = recipeSource.getBookRetailers();
+					if (!retailers.isEmpty()) {
+						%>
+						Get it online:<br/>
+						<b>
+						<%
+						for (Iterator i = retailers.iterator(); i.hasNext(); ) {
+							BookRetailer retailer = (BookRetailer) i.next();
+							String link = retailer.createIsbnLink(recipeSource.getIsbn());
+							%><a href="<%= link %>" target="retailer"><%= retailer.getName() %></a><%
+							if (i.hasNext()) {
+								%> &middot; <%
+							}
+						}
+						%>
+						</b>
+						<%
+					}
+					%>
+				</p>
+			</div>
+			<%
+        } else if(recipeSources.size() > 1) {
+            %>
+            <div id="recipeSource">
+                <h2>You might like...</h2>
+                <p>
+                    Enjoy your recipes from
+                </p>
+            <logic:iterate id         = "recipeSource"
+                           collection = "<%= recipeSources %>"
+                           type       = "com.freshdirect.fdstore.content.RecipeSource"
+            >
+                <p>
+                    <b>"<%= recipeSource.getName() %>"</b><br/>
+                    <%
+                    List retailers = recipeSource.getBookRetailers();
+                    if (!retailers.isEmpty()) {
+                        %>
+                        Get it online:<br/>
+                        <b>
+                        <%
+                        for (Iterator i = retailers.iterator(); i.hasNext(); ) {
+                            BookRetailer retailer = (BookRetailer) i.next();
+                            String link = retailer.createIsbnLink(recipeSource.getIsbn());
+                            %><a href="<%= link %>" target="retailer"><%= retailer.getName() %></a><%
+                            if (i.hasNext()) {
+                                %> &middot; <%
+                            }
+                        }
+                        %>
+                        </b>
+                        <%
+                    }
+                    %>
+                </p>
+            </logic:iterate>
+            </div>
+            <%
+		} else {
+			%>
+			<SCRIPT LANGUAGE=JavaScript>
+			<!--
+			OAS_AD('ReceiptTop');
+			//-->
+			</SCRIPT>
+			<%
+		}
+		%>
+		</td>
+</TR>
+</TABLE>
+<BR>
+
+<%if(user.isEligibleForPreReservation() && user.getReservation() == null && EnumReservationType.STANDARD_RESERVATION.equals(reservation.getReservationType()) && custInfo.getRsvAddressId() == null){%>
+	<table border="1" cellspacing="0" cellpadding="0" width="630">
+		<form method="POST" name="updateWeeklyReservation">
+		<tr>
+			<td align="center">
+				<br>
+				<b>May we hold this time for you?</b><br>
+				Use the "Reserve Delivery" function in Your Account to reserve a delivery time.<br>
+				Please note that you can update or cancel your timeslot reservation at any time.<br><br>
+				<a href="/your_account/reserve_timeslot.jsp?addressId=<%=fdCustomer.getDefaultShipToAddressPK()%>">Click here to reserve a delivery time.</a><br><br>
+			</td>
+		</tr>
+		</form>
+	</table>
+	<br>
+	<br>
+<%} %>
+
+<%-- INCLUDE RECEIPT PAGE SURVEY, let include figure out show/ not --%>
+<%@ include file="/survey/includes/post_order.jspf" %><br><br>
+<%-- END INCLUDE SURVEY --%>
+
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="630">
+<tr><td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+<tr><td align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>
+<a name="receiptDetails"></a><span class="title14">COMPLETE DETAILS FOR ORDER #<span class="titleor14"><%=orderNumber%></span></span>
+<br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"></td></tr>
+<tr><td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+<tr><td><br><br></td></tr>
+<tr>
+	<td align="left">
+	<%@ include file="/includes/ckt_acct/i_step_4_delivery_payment.jspf" %><br>
+	</td>
+</tr>
+<tr>
+<td class="text13">
+<% if (!isHomeOrder && !isCorporateOrder) { %>
+	<table width="100%" cellpadding="2" cellspacing="0" border="0">
+		<tr>
+			<td bgcolor="#FFFFFF" style="padding-top: 8px;" class="text12">
+<b>Please bring photo ID when picking up your order.</b></span><br>
+Before releasing your order to you - or your authorized representative - our dispensing agents<br>are required to ask for photo ID as proof of identity.
+			</td>
+		</tr>
+	</table><br><br>
+<% } %>
+<img src="/media_stat/images/navigation/receipt_tipping_header.gif" WIDTH="173" HEIGHT="9" border="0" alt="FRESHDIRECT TIPPING POLICY"><br><IMG src="/media_stat/images/layout/999966.gif" WIDTH="630" HEIGHT="1" BORDER="0" VSPACE="4"><br>
+<span class="text12">You are under no obligation to tip but have the option of providing a nominal tip if you feel that you've received exceptional service. FreshDirect delivery personnel are not permitted to solicit tips under any circumstances.</span><br><font class="space8px"><br><br></font></td>
+</tr>
+<TR VALIGN="TOP">
+	<TD>
+	<img src="/media_stat/images/navigation/cart_details.gif" WIDTH="83" HEIGHT="9" border="0" alt="CART DETAILS"><br>
+	<IMG src="/media_stat/images/layout/999966.gif" WIDTH="630" HEIGHT="1" BORDER="0" VSPACE="4">
+	</TD>
+</TR>
+<tr>
+	<td align="left">
+<%@ include file="/includes/ckt_acct/i_step_4_cart_details.jspf" %>
+	</td>
+</tr>
+<tr><td><br><br>
+<%@ include file="/checkout/includes/i_footer_text.jspf" %></td></tr>
+<% if (FDStoreProperties.isAdServerEnabled()) { %>
+<tr><td><br><br></td></tr>
+<tr><td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td></tr>
+<tr><td>
+<table width="630" cellpadding="0" cellspacing="0">
+<tr><td width="50%" style="border-right: solid 1px #CCCCCC; padding-right: 10px;" align="center">
+<SCRIPT LANGUAGE=JavaScript>
+		<!--
+		OAS_AD('ReceiptBotLeft');
+		//-->
+</SCRIPT>
+</td>
+<td width="50%" style="padding-left: 10px;" align="center">
+<SCRIPT LANGUAGE=JavaScript>
+		<!--
+		OAS_AD('ReceiptBotRight');
+		//-->
+</SCRIPT>
+</td>		
+</table><br>
+</td></tr>
+<% } %>
+</table>

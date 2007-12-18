@@ -1,0 +1,135 @@
+<%@ page import="java.text.*, java.util.*" %>
+<%@ page import="com.freshdirect.customer.*" %>
+<%@ page import="com.freshdirect.fdstore.customer.*" %>
+<%@ page import="com.freshdirect.framework.webapp.*" %>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
+<%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@ page import="com.freshdirect.webapp.taglib.callcenter.GenericLocatorTag"%>
+<%@ page import="com.freshdirect.delivery.restriction.OneTimeRestriction"%>
+<%@ page import="com.freshdirect.delivery.restriction.RestrictionI"%>
+<%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri="crm" prefix="crm" %>
+<link rel="stylesheet" href="/ccassets/css/crm.css" type="text/css">
+<style type="text/css">
+</style>
+<% 
+			String blkStartDate = 
+			NVL.apply(request.getParameter("blkStartDate"), CCFormatter.formatDateYear(Calendar.getInstance().getTime()));
+            String blkEndDate = 
+			NVL.apply(request.getParameter("blkEndDate"), CCFormatter.formatDateYear(Calendar.getInstance().getTime()));			
+			String blkMessage = NVL.apply(request.getParameter("blkMessage"), "");			
+		%>
+
+<%
+    
+	//List restrictions = (List)session.getAttribute("DEL_RESTRICTION_SEARCH");
+    System.out.println("restrictions in jsp :"+result);
+	 ActionResult actResult=(ActionResult) request.getAttribute("admResult");
+%>
+<script>
+function openURL(inLocationURL) {
+
+    self.parent.location.href = inLocationURL;
+
+}
+
+function addBlockedDays() {
+    
+    //document.delRestrictions.restrictionId.value=id; 
+    //alert("document.delRestrictions.restrictionId.value :"+document.delRestrictions.restrictionId.value);
+    doAction('addBlockedDays');    
+
+}
+
+</script>
+
+<%
+    
+	//List restrictions = (List)session.getAttribute("DEL_RESTRICTION_SEARCH");
+    //System.out.println("restrictions in jsp :"+restrictions);
+	
+%>
+
+
+<table class="home_search_module_field" border="0" cellpadding="2" cellspacing="2" width="100%">
+    <tr>
+	<td>Start Date : </td>
+		<td>
+                <input type="hidden" name="blkStartDate" id="blkStartDate" value="<%=blkStartDate%>">
+                <input type="text" name="newBlkStartDate" id="newBlkStartDate" size="10" value="<%=blkStartDate%>" disabled="true" onchange="setDate1(this);"> &nbsp;<a href="#" id="trigger_blkStartDate" style="font-size: 9px;">>></a>
+ 		        <script language="javascript">
+			    function setDate1(field){
+			    document.getElementById("blkStartDate").value=field.value;
+
+			    }
+
+
+			    Calendar.setup(
+			    {
+			    showsTime : false,
+			    electric : false,
+			    inputField : "newBlkStartDate",
+			    ifFormat : "%Y-%m-%d",
+			    singleClick: true,
+			    button : "trigger_blkStartDate" 
+			    }
+			    );
+			    			 
+			</script><fd:ErrorHandler result='<%=actResult%>' name='newBlkStartDate' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>                			
+		</td>
+        <td>End Date : </td>
+		<td>
+                <input type="hidden" name="blkEndDate" id="blkEndDate" value="<%=blkEndDate%>">
+                <input type="text" name="newBlkEndDate" id="newBlkEndDate" size="10" value="<%=blkEndDate%>" disabled="true" onchange="setDate2(this);"> &nbsp;<a href="#" id="trigger_blkEndDate" style="font-size: 9px;">>></a>
+ 		        <script language="javascript">
+			    function setDate2(field){
+			    document.getElementById("blkEndDate").value=field.value;
+
+			    }
+
+
+			    Calendar.setup(
+			    {
+			    showsTime : false,
+			    electric : false,
+			    inputField : "newBlkEndDate",
+			    ifFormat : "%Y-%m-%d",
+			    singleClick: true,
+			    button : "trigger_blkEndDate" 
+			    }
+			    );
+			    
+			    function clearBlkDayAll(){
+			    	 var d = new Date();
+				     var date = d.getDate();
+				     var month = d.getMonth()+1;
+				     var year = d.getFullYear();
+			    	  var fd = year + "-" + month + "-" + date;                    
+                   document.getElementById("blkStartDate").value = fd;
+                   document.getElementById("newBlkStartDate").value = fd;
+			    	  document.getElementById("blkEndDate").value = fd;
+                   document.getElementById("newBlkEndDate").value = fd;
+			    	  document.getElementById("blkMessage").value = "";
+			    }
+			    			
+                
+			  
+					//document.getElementById("actionName").value = actionName;
+					//document.getElementById("searchcriteria").submit();													    				    			    
+
+			</script><fd:ErrorHandler result='<%=actResult%>' name='newBlkEndDate' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>                			
+		</td>
+        <td align="bottom">Message</td>
+		<td>
+			<input type="text" name="blkMessage" value="<%= blkMessage %>" class="input_text" style="width: 200px;">
+            <fd:ErrorHandler result='<%=actResult%>' name='blkMessage' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>                			
+		</td>
+	</tr>	    
+    <tr>
+		<td colspan="2" align="center">
+			<img src="/media_stat/crm/images/clear.gif" width="1" height="8"><br>
+			<input type="button" value="ADD BLOCKED DAY" class="submit" onClick='javascript:addBlockedDays()'>&nbsp;&nbsp;
+			<input type="button" value="CLEAR" class="submit" onclick="javascript:clearBlkDayAll();">
+		</td>
+    </tr>
+</table>

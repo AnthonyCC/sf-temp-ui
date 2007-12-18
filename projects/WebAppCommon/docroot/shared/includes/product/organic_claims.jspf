@@ -1,0 +1,22 @@
+<%@ page import='com.freshdirect.content.nutrition.*' %>
+<%-- CLAIMS 
+Only display claims applicable to all available SKUs
+--%>
+<%
+Set commonOrgs = productNode.getCommonNutritionInfo(ErpNutritionInfoType.ORGANIC);
+if (!commonOrgs.isEmpty()) {
+	%>
+	<%=productNode.hasAttribute("PROD_DESCRIPTION_NOTE") ? "" : "<br>"%>
+	<%
+	for (Iterator ic = commonOrgs.iterator(); ic.hasNext();) {
+		EnumOrganicValue claim = (EnumOrganicValue) ic.next();
+                if(!EnumOrganicValue.getValueForCode("NONE").equals(claim)){
+                    if(EnumOrganicValue.getValueForCode("ORGN").equals(claim)){%>
+			<li></li>Organic<br>
+                  <%} else { %>
+                        <li></li>Certified Organic<br>
+    <%              }
+                }  
+        } 
+}
+%>

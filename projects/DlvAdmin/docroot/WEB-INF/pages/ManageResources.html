@@ -1,0 +1,107 @@
+<html>
+<head>
+<title>Delivery Reservation Overview</title>
+<link rel="stylesheet" href="../../../../docroot/css/pc_ie.css"/>
+</head>
+<body jwcid="$content$">
+	<span jwcid="border">
+	<table>
+		<tr>
+			<td class="title16">Region: </td>
+				<form jwcid="formRegion"> 
+				<td><select jwcid="selectRegion" class="text10">
+					<option>URBAN</option>
+					<option>Cablevision</option>
+				</select>
+				</td>
+				</form>
+		</tr>
+		<span jwcid="ifRegionSelected">
+			<tr>
+				<td class="title16">Time Range: </td>
+					<form jwcid="formWeek">
+					<td><select jwcid="selectWeek" class="text10">
+						<option>12 JAN - 19 JAN</option>
+						<option>19 JAN - 26 JAN</option>
+						<option>26 JAN - 02 FEB</option>
+					</select>
+					</td>
+					</form>
+				</tr>
+		</span>
+		<span jwcid="ifRegionTimeSelected">
+			<tr>
+				<td class="title16">Zone: </td>
+					<form jwcid="formZone"> 
+					<td><select jwcid="selectZone" class="text10">
+						<option>Battery Park City</option>
+						<option>Roosevelt Island</option>
+						<option>Murray Hill</option>
+					</select>
+					</td>
+					</form>
+			</tr>
+		</span>
+	</table>
+	<span jwcid="ifZoneSelected">
+		<table>
+			<tr>
+				<td class="title12">Region: <span jwcid="insertRegionName">URBAN</span>&nbsp;&nbsp;Zone: <span jwcid="insertZoneName">Murray Hill</span>&nbsp;&nbsp;Time Duration: <span jwcid="insertWeek" /></td>
+			</tr>
+		</table>
+		<span jwcid="forEachDate">
+			<form jwcid="formCapacity">
+			<table align="left" class="timeslotTable">
+				<th bgcolor="c00cc3d" colspan="3" nowrap><b><span jwcid="insertDate">Friday (01/19)</span></th>
+				<span jwcid="forEachResource">
+					<tr bgcolor="#dfdfdf">
+						<td align="center" nowrap><b><span jwcid="insertShiftName">Monday PM Shift</span></b></td>
+						<td align="center" nowrap><b>Capacity</b></td>
+						<td align="center" nowrap><b>TF(%)</b></td>
+					</tr>
+					<span jwcid="forEachTimeslot">
+					<tr>
+						<td nowrap><span jwcid="insertTimeslotStartTime">04:30</span> - <span jwcid="insertTimeslotEndTime">06:00</span></td>
+						<td><input class="text10" size="4" jwcid="inputCapacity"/></td>
+						<td><input class="text10" size="4" jwcid="inputTrafficFactor"/></td>
+					</tr>
+					</span>
+					<tr bgcolor="#dfdfdf">
+						<td colspan="3" align="center"><b><span jwcid="insertShiftName2">Monday PM Shift</span></b></td>
+					</tr>
+					<tr>
+						<td colspan="3"><span jwcid="insertShiftStartTime">04:00 PM </span> - <span jwcid="insertShiftEndTime">12:00 AM</span></td>
+					</tr>
+					<tr>
+						<td colspan="2"><b>Drivers: </b></td>
+						<td><input class="text10" size="4" jwcid="inputDrivers"/></td>
+					</tr>
+					<span jwcid="forEachTruck">
+						<tr>
+							<td colspan="2"><b>Trucks: </b></td>
+							<td><input class="text10" size="4" jwcid="inputTruckCount"/></td>
+						</tr>
+						<tr>
+							<td colspan="2"><b>Orders per Truck: </b></td>
+							<td><input class="text10" size="4" jwcid="inputTruckCapacity"/></td>
+						</tr>
+					</span>
+					<tr>
+						<td colspan="2"><b>Delivery Rate: </b></td>
+						<td><input class="text10" size="4" jwcid="inputDeliveryRate" /></td>
+					</tr>
+					<tr>
+						<td colspan="3"><br><br><br></td>
+					</tr>
+					<tr>
+						<td align="right" colspan="3"><input type="button" class="button1" value="Update" jwcid="submitCapacities" /></td>
+					</tr>
+				</span>
+				</table>
+			</form>
+		</span>
+	</span>
+		
+	</span>
+</body>
+</html>

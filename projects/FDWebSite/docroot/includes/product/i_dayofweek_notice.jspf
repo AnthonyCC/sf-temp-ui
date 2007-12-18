@@ -1,0 +1,36 @@
+<%@ page import='com.freshdirect.framework.util.DayOfWeekSet' %>
+<%-- requires productNode --%>
+<%
+{
+	DayOfWeekSet blockedDays = productNode.getBlockedDays();
+	if (!blockedDays.isEmpty()) {
+		DayOfWeekSet allowedDays = blockedDays.inverted();
+		%>
+		<table width="420" cellpadding="0" cellspacing="0" border="0">
+			<tr>
+				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
+			</tr>
+			<tr>
+				<td bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+			</tr>
+			<tr>
+				<td align="center">
+					<img src="/media_stat/images/layout/clear.gif" width="1" height="5"><br>
+					<span class="text11orbold"><%= allowedDays.size() == 1 ?
+						"AVAILABLE FOR " + allowedDays.format(false) + " DELIVERY ONLY" :
+						"LIMITED DELIVERY DAYS ONLY" %></span><br>
+					This specially prepared item is available for delivery on <b><%= allowedDays.format(true) %> only</b>.<br>
+					<img src="/media_stat/images/layout/clear.gif" width="1" height="6">
+				</td>
+			</tr>
+			<tr>
+				<td bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+			</tr>
+			<tr>
+				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="6"></td>
+			</tr>
+		</table>
+		<%
+	}
+}
+%>

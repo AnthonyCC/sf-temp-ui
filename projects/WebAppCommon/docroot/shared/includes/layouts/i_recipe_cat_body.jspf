@@ -1,0 +1,109 @@
+<%
+/*
+-- This includes paints the recipe category body and bottom (no side navs)
+-- Expects the host page to define and set variable recipeCategory of type RecipeCategory
+-- Host page will need various Imports...(see recipe_cat.jsp)
+*/
+boolean isPreviewMode =ContentFactory.getInstance().getPreviewMode();
+
+Attribute rcpAttrib = recipeCategory.getAttribute("editorial");
+String editorialPath = rcpAttrib==null? null:((Html)rcpAttrib.getValue()).getPath(); 
+
+Image catPhoto = ((RecipeCategory)recipeCategory).getPhoto();
+
+String catPhotoPath = "/media_stat/images/layout/clear.gif";
+int catPhotoWidth = 1;
+int catPhotoHeight = 1;
+
+if (catPhoto!=null) {
+    catPhotoPath = catPhoto.getPath();
+catPhotoWidth = catPhoto.getWidth();
+catPhotoHeight = catPhoto.getHeight();
+}
+
+List featuredRecipes = ((RecipeCategory)recipeCategory).getFeaturedRecipes();
+RecipeSource featuredSource = ((RecipeCategory)recipeCategory).getFeaturedSource();
+%>   
+	
+   <table width="550" border="0" cellpadding="0" cellspacing="0">
+	<tr><td colspan="2">
+
+<%		 List subCats = ((RecipeCategory)recipeCategory).getSubcategories(); 
+		 boolean oneCol = false; //subCats.size() < 5;
+		 int rowSize = subCats.size()/2; 
+		 int rmdr = subCats.size()%2; 
+		 int cntr = 0;
+		 int colLimit = rowSize+(rmdr>0?1:0);
+%>
+		<table width="100%" border="0" cellpadding="0" cellspacing="0">
+		<tr valign="top">
+		<td width="110" rowspan="2"><%if (catPhotoPath!=null){%><img src="<%= catPhotoPath %>" width="<%=catPhotoWidth%>" height="<%=catPhotoHeight%>"><%}%></td>
+		<td width="440"><%if (editorialPath!=null){%><fd:IncludeMedia name='<%= editorialPath %>' /><%}%></td>
+		</tr>
+		<tr><td>
+		<table width="80%" border="0" cellpadding="0" cellspacing="0">
+			<tr valign="top" >
+	  			<td width="50%"> 
+					<logic:iterate id="recipeSubcategory" indexId="idx" collection="<%=((RecipeCategory)recipeCategory).getSubcategories() %>" type="com.freshdirect.fdstore.content.RecipeSubcategory">
+			  			<b><a href="<%=response.encodeURL("recipe_subcat.jsp?catId="+recipeCategory+"&subCatId="+recipeSubcategory+"&trk=cpage")%>" class="recipe_name"><%=recipeSubcategory.getName()%></a></b>
+			  			<br><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"><br>
+						<%			cntr++;
+						if ((idx.intValue()==subCats.size()-1) || (!oneCol && cntr==colLimit)) { %>
+					   </td>
+					<%			}
+						if(!oneCol && cntr==colLimit) { 
+			   			colLimit = rowSize+(rmdr>1?1:0);
+			   			cntr=0;
+			   			if (idx.intValue()<subCats.size()-1) { %>
+			     		<td width="4"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" border="0"></td>
+			     		<td valign="top" width="50%" align="left">
+					<%			   } 
+                    		    }%>
+					</logic:iterate>
+	  	</table>
+	  </td>
+	</tr>
+	</table>
+	</td>
+	</tr>
+	<tr><td colspan="2"><img src="/media_stat/images/layout/cccccc.gif" width="550" height="1" vspace="15"></td></tr>
+	<tr valign="top">
+	  <td width="400" style="padding-right: 10px; border-right: solid 1px #CCCCCC;">
+	  <img src="/media_stat/recipe/hdr_our_faves.gif" width="127" height="11"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="0"><br>
+	  <% if (featuredRecipes!=null && featuredRecipes.size() > 0) { %>
+          	  <logic:iterate id="aFeatRecipe" collection="<%=featuredRecipes%>" type="com.freshdirect.fdstore.content.Recipe">
+<%		   if (!isPreviewMode && !aFeatRecipe.isAvailable()) continue;  %>
+		<a href="<%=response.encodeURL("recipe.jsp?catId="+recipeCategory+"&recipeId="+aFeatRecipe+"&trk=cfeat")%>"><%=aFeatRecipe.getName()%></a><br>
+		  <span class="recipe_author"><%=aFeatRecipe.getDisplayableSource()%></span><br><br>
+                 </logic:iterate>
+	 		<% } %> 
+		</td>  
+	       <td width="150" style="padding-left: 10px;" align="center">
+<%		if (featuredSource!=null) {
+		    String ckbkURL = response.encodeURL("/recipe_search.jsp?recipeSource="+featuredSource+"&trk=cfeat");
+			MediaI srcImg = featuredSource.getImage();
+			List srcAuthors = featuredSource.getAuthors();
+			if (srcImg!=null) {  %>
+		   	  <a href="<%=ckbkURL%>"><img src="<%=srcImg.getPath()%>" border="0" width="<%=srcImg.getWidth()%>" height="<%=srcImg.getHeight()%>"></a>
+			  <br><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br>
+<% 			} %>
+			Browse recipes from<br>
+			<img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br>
+			<a href="<%=ckbkURL%>"><%=featuredSource.getName()%></a><br>
+<%			if (srcAuthors!=null && srcAuthors.size()>0) {
+				StringBuffer sbAuthors = new StringBuffer(200);
+				for (Iterator itr=srcAuthors.iterator(); itr.hasNext();) {
+					if (sbAuthors.length() > 0) { 
+					  sbAuthors.append(", ");
+					} else {
+					  sbAuthors.append("by ");
+					}
+					sbAuthors.append(((RecipeAuthor)itr.next()).getName());
+				}  %>
+				<font class="recipe_author"><%=sbAuthors.toString()%></font>
+<%			} 
+			
+		}     %>
+	       <td>
+	</tr>
+   </table>

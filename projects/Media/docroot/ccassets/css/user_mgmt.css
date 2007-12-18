@@ -1,0 +1,78 @@
+/* USER MANAGEMENT */
+
+.user_mgmt_nav_link {
+background-color: #996699;
+border-top: 1px #999999 solid;
+border-bottom: 1px #999999 solid;
+padding: 2px;
+margin-bottom: 2px;
+color: #FFFFFF;
+}
+
+.user_mgmt_agent 			{ width:100%; padding: 2px; color: #000000; text-decoration: none; }
+a.user_mgmt_agent:link 	{ color: #000000; text-decoration: none; }
+a.user_mgmt_agent:visited 	{ color: #000000; text-decoration: none; }
+a.user_mgmt_agent:active 	{ color: #000000; text-decoration: none; }
+a.user_mgmt_agent:hover 	{ background: #99CCCC; color: #000000; text-decoration: none; }
+
+.user_mgmt_agent_on,
+a.user_mgmt_agent_on:link,
+a.user_mgmt_agent_on:visited,
+a.user_mgmt_agent_on:active,
+a.user_mgmt_agent_on:hover
+{ width:100%; padding: 2px; color: #000000; text-decoration: none; background: #99CCCC; color: #000000; font-style: italic;}
+
+.user_mgmt_agent_inactive 			{ width:100%; padding: 2px; color: #999999; text-decoration: none; }
+a.user_mgmt_agent_inactive:link 	{ color: #999999; text-decoration: none; }
+a.user_mgmt_agent_inactive:visited 	{ color: #999999; text-decoration: none; }
+a.user_mgmt_agent_inactive:active 	{ color: #999999; text-decoration: none; }
+a.user_mgmt_agent_inactive:hover 	{ background: #DEDEDE; color: #666666; text-decoration: none; }
+
+.user_mgmt_profile 			{ font-size: 10pt; line-height: 1.4em; color: #000000;}
+.user_mgmt_profile_header 	{ font-weight: bold;}
+.user_mgmt_status 			{ font-size: 9pt; color: #FF6600;}
+
+.user_mgmt_profile_nav {
+position: relative;
+width: 100%;
+height: auto;
+margin-top: 10px;
+border-bottom: 1px #000000 solid;
+}
+
+.user_mgmt_tab {
+position: relative;
+float: left;
+padding: 4px;
+padding-left: 10px;
+padding-right: 10px;
+margin-left: 4px;
+margin-right: 8px;
+color: #999999;
+font-weight: bold;
+background-color: #CCCCCC;
+}
+
+a.user_mgmt_tab:link 	{ color: #999999; text-decoration: none; }
+a.user_mgmt_tab:visited { color: #999999; text-decoration: none; }
+a.user_mgmt_tab:active 	{ color: #999999; text-decoration: none; }
+a.user_mgmt_tab:hover 	{ color: #333333; text-decoration: none; }
+
+.user_mgmt_tab_on {
+position: relative;
+float: left;
+padding: 4px;
+padding-left: 10px;
+padding-right: 10px;
+margin-left: 4px;
+margin-right: 8px;
+color: #000000;
+font-weight: bold;
+background-color: #99CCCC;
+}
+
+.user_mgmt_header 	{ font-size: 13pt; color: #000000; font-weight: bold; }
+.user_mgmt_content 	{ font-size: 10pt; line-height: 1.4em; color: #000000; padding-top:4px; padding-bottom: 4px; }
+.user_mgmt_selected { background-color: #FFFFCC; }
+
+/* USER MANAGEMENT */

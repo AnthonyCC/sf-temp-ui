@@ -1,0 +1,62 @@
+<%@ page import="com.freshdirect.delivery.restriction.EnumDlvRestrictionReason"%>
+<%@ page import="com.freshdirect.fdstore.FDDeliveryManager"%>
+<%@ page import="com.freshdirect.delivery.restriction.DlvRestrictionsList"%>
+<%@ page import="com.freshdirect.webapp.util.TimeslotPageUtil"%>
+
+<table border="0" cellspacing="2" cellpadding="0">
+	<tr align="center">
+		<logic:iterate id="day" collection="<%=timeslots.getDays()%>" type="java.util.Date">
+			<td width="97"></td>
+		</logic:iterate>
+	</tr>
+<%
+/* show advance order band if cart has an item and the advance range has not passed. */
+	if (showAdvanceOrderBand && cart.hasAdvanceOrderItem() && advOrdRangeOK ){%>
+		<tr align="center">
+			<td colspan="<%=timeslots.getDays().size()%>" bgcolor="#CC9933" align="center">
+			<img src='/media/editorial/holiday/advance_order/delivbar_adv.gif'></td>
+		</tr>
+<% 	}
+
+	DlvRestrictionsList restrictionList = FDDeliveryManager.getInstance().getDlvRestrictions();
+	for(Iterator j = cart.getApplicableRestrictions().iterator(); j.hasNext(); ){
+		EnumDlvRestrictionReason reason = (EnumDlvRestrictionReason)j.next();
+		if(EnumDlvRestrictionReason.ALCOHOL.equals(reason)){
+			continue;
+		}
+		boolean isHolidayRestriction = ( EnumDlvRestrictionReason.THANKSGIVING.equals(reason) 
+			                        || EnumDlvRestrictionReason.VALENTINES.equals(reason) ) ;
+	%>
+		<tr>
+		<%List spans = TimeslotPageUtil.getBand(reason, restrictionList, timeslots.getStartDate(), timeslots.getEndDate());
+		for(int i = 0, size = spans.size(); i < size; i++){
+			TimeslotPageUtil.Span span = (TimeslotPageUtil.Span)spans.get(i);
+			if(( ( isHolidayRestriction && span.getSpan() == 6 && i > 0) 
+			     || span.getSpan() == timeslots.getDays().size()) && span.isValue() ){
+				continue;
+			}
+			if(EnumDlvRestrictionReason.KOSHER.equals(reason)){
+		%>
+				<td colspan="<%=span.getSpan()%>" bgcolor="#<%= !span.isValue() ? "3399cc":"dfe3d0"%>" align="center">
+					<%=!span.isValue() ? "<img src='/media_stat/images/template/checkout/dlv_kosher.gif'":"&nbsp;"%>
+				</td>
+			<%}%>
+			<%if(EnumDlvRestrictionReason.THANKSGIVING.equals(reason)){%>
+				<td colspan="<%=span.getSpan()%>" bgcolor="#<%= !span.isValue() ? "996600":"dfe3d0"%>" align="center">
+					<%=!span.isValue() ? "<img src='/media_stat/images/template/checkout/dlv_thanksgiving.gif'":"&nbsp;"%>
+				</td>
+			<%}%>
+			<%if(EnumDlvRestrictionReason.VALENTINES.equals(reason)){%>
+				<td colspan="<%=span.getSpan()%>" bgcolor="#<%= !span.isValue() ? "ff6699":"dfe3d0"%>" align="center">
+					<%=!span.isValue() ? "<img src='/media_stat/images/template/checkout/dlv_valentines.gif'":"&nbsp;"%>
+				</td>
+			<%}%>
+			<%if(EnumDlvRestrictionReason.EASTER.equals(reason)){%>
+				<td colspan="<%=span.getSpan()%>" bgcolor="#<%= !span.isValue() ? "339966":"dfe3d0"%>" align="center">
+					<%=!span.isValue() ? "<img src='/media_stat/images/template/checkout/dlv_easter.gif'":"&nbsp;"%>
+				</td>
+			<%}%>
+		<%}%>
+		</tr>
+	<%}%>
+</table>

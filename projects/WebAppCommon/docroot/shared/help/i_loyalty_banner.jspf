@@ -1,0 +1,33 @@
+<%@ page import="com.freshdirect.webapp.util.TimeslotPageUtil" %>
+<%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
+<% if (user.isChefsTable()) {  %>
+<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
+<table cellspacing="0" cellpadding="0" border="0" width="695">
+	<tr>
+		<td colspan="3" align="center"><br />
+		<IMG
+			src="/media_stat/images/template/checkout/loy_hdr_dedicatedspecialist.gif"
+			WIDTH="540" HEIGHT="19" BORDER="0"
+			ALT="Dedicated Chef's Table assitants are standing by to help.">
+		</td>
+	</tr>
+	<tr>
+		<td colspan="3" align="center">
+		<% if (loyaltyHelpContact) {
+			%>
+			Your satisfaction is our priority, this message will be sent directly to our Chef's Table staff.
+			<%
+		} else {
+			%>
+			Contact us at <a href="mailto:<%= FDStoreProperties.getChefsTableEmail() %>"><b><%= FDStoreProperties.getChefsTableEmail() %></b></a>
+			or toll-free: <b><%= user.getCustomerServiceContact() %></b>
+			<%
+		}
+		%>
+		<br />
+		<br />
+		</td>
+	</tr>
+</table>
+<% } %>
+

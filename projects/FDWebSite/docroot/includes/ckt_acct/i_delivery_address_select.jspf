@@ -1,0 +1,129 @@
+<%
+boolean isInYourAccount = (request.getRequestURI().indexOf("your_account") > -1);
+
+FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+FDIdentity identity = user.getIdentity();
+boolean allowSelection = false;
+
+Map addresses = new HashMap();
+
+for(Iterator i = FDCustomerManager.getShipToAddresses(identity).iterator(); i.hasNext(); ){
+	ErpAddressModel address = (ErpAddressModel) i.next();
+	if(EnumServiceType.CORPORATE.equals(address.getServiceType())){
+		List cl = (List)addresses.get(EnumServiceType.CORPORATE);
+		if(cl == null){
+			cl = new ArrayList();
+			addresses.put(EnumServiceType.CORPORATE, cl);
+		}
+		cl.add(address);
+	}else {
+		List hl = (List)addresses.get(EnumServiceType.HOME);
+		if(hl == null){
+			hl = new ArrayList();
+			addresses.put(EnumServiceType.HOME, hl);
+		}
+		hl.add(address);
+	}
+}
+String shipToDepotLocation = FDCustomerManager.getDefaultDepotLocationPK(user.getIdentity() );
+
+String linkURL = null;
+if (request.getRequestURI().toLowerCase().indexOf("your_account/") == -1) {
+    linkURL = response.encodeURL("/checkout/step_1_edit.jsp"); 
+    allowSelection = true;
+
+} else if (request.getRequestURI().toLowerCase().indexOf("reservation/") == 1) {
+    linkURL = "/reservation/res_delivery_address_edit.jsp"; 
+
+} else {
+    linkURL = response.encodeURL("/your_account/edit_delivery_address.jsp"); 
+    allowSelection = false;
+}
+%>
+<table border="0" cellspacing="0" cellpadding="2" width="675" >
+	<TR VALIGN="TOP">
+		<TD WIDTH="675">
+			<%if(user.isPickupOnly()) {
+				%>
+				<font class="text12"><b>Unfortunately, we do not currently deliver to your neighborhood.</b></font><br>
+				<img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
+				<%
+			}%>
+			<font class="text13">If you need to enter a different address: <a href="<%=response.encodeURL( isInYourAccount?"/your_account/add_delivery_address.jsp" : "/checkout/step_1_enter.jsp")%>"><img src="/media_stat/images/buttons/add_new_address.gif" WIDTH="106" HEIGHT="16" VSPACE="3" HSPACE="4" ALIGN="middle" border="0"></a></font>
+		</TD>
+	</TR>
+	<%
+	if(!user.isPickupOnly()){
+		if(!isInYourAccount && user.isDepotUser()) {
+			%>
+			<tr>
+				<td class="text11orbold">
+					Depot customers please note: FreshDirect may not offer delivery to your home address at this time. To see where we deliver, please <a href="javascript:popup('/help/delivery_zones.jsp','large')">click here</a>.   
+				</td>
+			</tr>   
+			<%
+		}
+	}
+	%>
+</table><br><br>
+
+<% // BEGINING D E P O T   L O C A T I O N S 
+if(user.isDepotUser()){
+	%>
+    <%@ include file="/shared/includes/i_depot_locations.jspf" %><br><br>
+	<%
+}
+ // END D E P O T   L O C A T I O N S %>
+
+<%// BEGINING C O R P ADDRESSES
+	boolean showingCorporateAddress = false;
+	List shipToAddresses = (List) addresses.get(EnumServiceType.CORPORATE);
+	if (shipToAddresses != null && !shipToAddresses.isEmpty()) {
+		showingCorporateAddress = true;
+		%>
+		<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="675" >
+			<TR VALIGN="TOP">
+				<TD WIDTH="675" class="text12">
+					<img src="/media_stat/images/template/youraccount/hdr_corp_delivery.gif" width="135" height="9" alt="CORPORATE DELIVERY">&nbsp;&nbsp;&nbsp;&nbsp;(minimum order $<%=(int)user.getMinCorpOrderAmount() %>)
+					<IMG src="/media_stat/images/layout/999966.gif" WIDTH="675" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+					<img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br>
+				</td>
+			</tr>
+		</TABLE>
+		<br>
+		<%@ include file="/includes/ckt_acct/i_dlv_address_select_display.jspf" %>
+		<%
+	}%>
+<%// END C O R P ADDRESSES%>
+
+<%// BEGINING H O M E ADDRESSES
+	shipToAddresses = (List) addresses.get(EnumServiceType.HOME);
+	if (shipToAddresses != null && !shipToAddresses.isEmpty()) {
+		showingCorporateAddress = false;
+		%>
+		<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="675" >
+			<TR  VALIGN="TOP">
+				<TD class="text12" WIDTH="675">
+					<img src="/media_stat/images/template/youraccount/hdr_home_delivery.gif" width="98" height="9" alt="HOME DELIVERY">&nbsp;&nbsp;&nbsp;&nbsp;(minimum order $<%=(int)user.getMinimumOrderAmount()%>)
+					<IMG src="/media_stat/images/layout/999966.gif" WIDTH="675" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+					<img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br>
+					<% if (FDStoreProperties.getHamptons() ) { %>
+					  <fd:IncludeMedia name='/media/editorial/hamptons/hamptons_home_address.html' />
+					<% } %>
+				</td>
+			</tr>
+		</TABLE>
+		<br>
+		<%@ include file="/includes/ckt_acct/i_dlv_address_select_display.jspf" %>
+		<%
+	}%>
+<%// END H O M E ADDRESSES%>
+
+<%
+// PICKUP   L O C A T I O N S
+if(user.isPickupUser()){
+%>
+    <%@ include file="/includes/i_pickup_depot_locations.jspf"%>
+<%
+// END PICKUP   L O C A T I O N S
+}%>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JDK 1.4"/>
+	<classpathentry kind="src" path="/Framework"/>
+	<classpathentry kind="src" path="/ERPServices"/>
+	<classpathentry kind="src" path="/FDStore"/>
+	<classpathentry kind="src" path="/ERPSWebApp"/>
+	<classpathentry kind="src" path="/Delivery"/>
+	<classpathentry kind="src" path="/DataLoader"/>
+	<classpathentry kind="src" path="/CMS"/>
+	<classpathentry kind="src" path="/listadmin"/>
+	<classpathentry kind="src" path="/cms-slide"/>
+	<classpathentry kind="src" path="/cms-tap"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

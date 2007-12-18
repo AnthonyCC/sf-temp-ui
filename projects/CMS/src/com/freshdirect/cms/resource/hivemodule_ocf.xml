@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<module id="com.freshdirect.cms.hibernate" version="1.0.0">
+
+	<service-point id="HibernateContentService" interface="com.freshdirect.cms.application.service.hibernate.HibernateContentServiceI"> 
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.hibernate.HibernateContentService" service-id-property="name"/>
+		</invoke-factory> 
+	</service-point>
+	
+	<contribution configuration-id="com.freshdirect.cms.composedServices">
+		<service name="HibernateContentService"/>
+	</contribution>
+
+	<service-point id="HibernateQueryDecorator" interface="com.freshdirect.cms.application.service.ContentDecoratorI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.hibernate.HibernateQueryDecorator">
+				<service>HibernateContentService</service>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<contribution configuration-id="com.freshdirect.cms.contentDecorators">
+		<service name="HibernateQueryDecorator"/>
+	</contribution>
+
+</module>

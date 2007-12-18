@@ -1,0 +1,1470 @@
+package com.freshdirect.fdstore.promotion.management.ejb;
+
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.Map.Entry;
+
+import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
+import com.freshdirect.fdstore.promotion.EnumDCPDContentType;
+import com.freshdirect.fdstore.promotion.management.FDPromoCustomerInfo;
+import com.freshdirect.fdstore.promotion.management.FDPromoZipRestriction;
+import com.freshdirect.fdstore.promotion.management.FDPromotionAttributeParam;
+import com.freshdirect.fdstore.promotion.management.FDPromotionModel;
+import com.freshdirect.framework.core.ModelI;
+import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.core.SequenceGenerator;
+import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.framework.util.EnumMonth;
+import com.freshdirect.framework.util.FormatterUtil;
+import com.freshdirect.framework.util.NVL;
+import com.freshdirect.framework.util.StringUtil;
+
+public class FDPromotionManagerDAO {
+	
+	public static PrimaryKey createPromotion(Connection conn, ModelI model) throws SQLException {
+		FDPromotionModel promotion = (FDPromotionModel) model;
+		String id = SequenceGenerator.getNextId(conn, "CUST");
+		//String id = promotion.getPK().getId()!=null?promotion.getPK().getId():SequenceGenerator.getNextId(conn, "CUST");
+		PreparedStatement ps =
+			conn.prepareStatement(
+				"INSERT INTO CUST.PROMOTION"
+				+ " (ID, CODE, NAME, DESCRIPTION, MAX_USAGE, START_DATE, EXPIRATION_DATE, REDEMPTION_CODE,"
+				+ " CAMPAIGN_CODE, MIN_SUBTOTAL, MAX_AMOUNT, PERCENT_OFF, WAIVE_CHARGE_TYPE, UNIQUE_USE, CATEGORY_NAME, PRODUCT_NAME,"
+				+ " ORDERTYPE_HOME, ORDERTYPE_PICKUP, ORDERTYPE_DEPOT, ORDERTYPE_CORPORATE, NEEDDRYGOODS,"
+				+ " ORDERCOUNT, NEEDITEMSFROM, EXCLUDESKUPREFIX, NEEDBRANDS, EXCLUDEBRANDS, RULE_BASED, REF_PROG_CAMPAIGN_CODE,"
+				+ " IS_MAX_USAGE_PER_CUST, ROLLING_EXPIRATION_DAYS, NOTES, ACTIVE, MODIFY_DATE, MODIFIED_BY, DONOT_APPLY_FRAUD, PROFILE_OPERATOR)"
+				+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,SYSDATE,?,?,?)");
+		
+		int i = 1;
+		ps.setString(i++, id);
+		ps.setString(i++, promotion.getPromotionCode());
+		ps.setString(i++, promotion.getName());
+		ps.setString(i++, promotion.getDescription());		
+		String maxUsage = !"".equals(promotion.getMaxUsage()) ? promotion.getMaxUsage() : "0"; 
+		ps.setInt(i++, Integer.parseInt(maxUsage));
+		if (promotion.getStartDate() != null) {
+			ps.setDate(i++, new java.sql.Date(promotion.getStartDate().getTime()));
+		} else {
+			ps.setNull(i++, Types.DATE);		
+		}
+		if (promotion.getExpirationDate() != null) {
+			ps.setTimestamp(i++, new java.sql.Timestamp(promotion.getExpirationDate().getTime()));
+		} else {
+			ps.setNull(i++, Types.DATE);		
+		}
+		if (!"".equals(promotion.getRedemptionCode())) {
+			ps.setString(i++, promotion.getRedemptionCode());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);		
+		}
+		ps.setString(i++, promotion.getPromotionType());
+		if (!"".equals(promotion.getMinSubtotal())) {
+			ps.setDouble(i++, Double.parseDouble(promotion.getMinSubtotal()));
+		} else {
+			ps.setNull(i++, Types.DOUBLE);					
+		}		
+		if (!"".equals(promotion.getMaxAmount())) {
+			ps.setDouble(i++, Double.parseDouble(promotion.getMaxAmount()));
+		} else {
+			ps.setNull(i++, Types.DOUBLE);					
+		}
+		if (!"".equals(promotion.getPercentOff())) {
+			ps.setDouble(i++, Double.parseDouble(promotion.getPercentOff())/100);
+		} else {
+			ps.setNull(i++, Types.DOUBLE);					
+		}
+		if (!"".equals(promotion.getWaiveChargeType())) {
+			ps.setString(i++, promotion.getWaiveChargeType());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}		
+		if(promotion.isUniqueUse()){
+			ps.setString(i++, "X");
+		}else{
+			ps.setNull(i++, Types.VARCHAR);
+		}
+		if (!"".equals(promotion.getCategoryName())) {
+			ps.setString(i++, promotion.getCategoryName());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);								
+		}		
+		if (!"".equals(promotion.getProductName())) {
+			ps.setString(i++, promotion.getProductName());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);								
+		}
+		if (promotion.isOrderTypeHomeAllowed()) {
+			ps.setString(i++, "X");
+		} else {
+			ps.setNull(i++, Types.VARCHAR);								
+		}
+		if (promotion.isOrderTypePickupAllowed()) {
+			ps.setString(i++, "X");
+		} else {
+			ps.setNull(i++, Types.VARCHAR);								
+		}
+		if (promotion.isOrderTypeDepotAllowed()) {
+			ps.setString(i++, "X");
+		} else {
+			ps.setNull(i++, Types.VARCHAR);								
+		}
+		if (promotion.isOrderTypeCorporateAllowed()) {
+			ps.setString(i++, "X");
+		} else {
+			ps.setNull(i++, Types.VARCHAR);								
+		}		
+		if (promotion.getNeedDryGoods()) {
+			ps.setString(i++, "X");
+		} else {
+			ps.setNull(i++, Types.VARCHAR);								
+		}
+		if (!"".equals(promotion.getOrderCount())) {
+			ps.setInt(i++, Integer.parseInt(promotion.getOrderCount()));
+		} else {
+			ps.setNull(i++, Types.INTEGER);								
+		}
+		if (!"".equals(promotion.getNeedItemsFrom())) {
+			ps.setString(i++, promotion.getNeedItemsFrom());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);								
+		}
+		if (!"".equals(promotion.getExcludeSkuPrefix())) {
+			ps.setString(i++, promotion.getExcludeSkuPrefix());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);								
+		}
+		if (!"".equals(promotion.getNeedBrands())) {
+			ps.setString(i++, promotion.getNeedBrands());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);								
+		}
+		if (!"".equals(promotion.getExcludeBrands())) {
+			ps.setString(i++, promotion.getExcludeBrands());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);								
+		}
+		
+		if(promotion.isRuleBasedPromotion()) {
+			ps.setString(i++, "X");
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
+		
+		if (!"".equals(promotion.getRefProgCampaignCode())) {
+			ps.setString(i++, promotion.getRefProgCampaignCode());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}		
+
+		if(promotion.isMaxUsagePerCustomer()) {
+			ps.setString(i++, "X");
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
+
+		if(promotion.getRollingExpirationDays() != null) {
+			ps.setInt(i++, promotion.getRollingExpirationDays().intValue());
+		} else {
+			ps.setNull(i++, Types.INTEGER);
+		}
+		
+		if(promotion.getNotes() !=null) {
+			ps.setString(i++, promotion.getNotes());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
+		
+		if(promotion.isActive()){
+			ps.setString(i++, "X");
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
+		
+		if (promotion.getModifiedBy() != null) {
+			ps.setString(i++, promotion.getModifiedBy());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
+		
+		if(!promotion.isApplyFraud()){
+			ps.setString(i++, "X");
+		}else{
+			ps.setNull(i++, Types.VARCHAR);
+		}
+		
+		if(promotion.getProfileOperator() != null && 
+				promotion.getAttributeList() != null && promotion.getAttributeList().size() > 1){
+			ps.setString(i++, promotion.getProfileOperator());
+		}else{
+			ps.setNull(i++, Types.VARCHAR);
+		}
+
+		if (ps.executeUpdate() != 1) {
+			ps.close();
+			throw new SQLException("row not created");
+		}
+		ps.close();
+		
+		FDPromotionManagerDAO.storeAssignedCustomers(conn, id, promotion.getTmpAssignedCustomerUserIds());
+		FDPromotionManagerDAO.storeAssignedGroups(conn, id, promotion);
+		FDPromotionManagerDAO.storeAttributeList(conn, id, promotion.getAttributeList());
+		
+		if(!promotion.getZipRestrictions().isEmpty()){
+			storeGeography(conn, id, promotion.getZipRestrictions());
+		}
+		return new PrimaryKey(id);
+	}
+	
+	private final static String getAllPromotionCodes = "SELECT CODE, MODIFY_DATE FROM CUST.PROMOTION";
+
+	/**
+	 * This method returns all promotion codes along
+	 * with their last modified timestamp.
+	 * TODO Later the Promotion codes has to be replaced with Promotion IDs when
+	 * new data model changes for AI is implemented.
+	 * @param conn
+	 * @return
+	 * @throws SQLException
+	 */
+	public static Map getPromotionCodes(Connection conn) throws SQLException {
+		Map promoCodes = new HashMap();
+		//TODO later the where clause need to be changed to point to ID column instead of Code. 
+		PreparedStatement ps = conn.prepareStatement(getAllPromotionCodes);
+		ResultSet rs = ps.executeQuery();
+	
+		while (rs.next()) {
+			String promoCode = rs.getString("CODE");
+			Timestamp lastModified = rs.getTimestamp("MODIFY_DATE");
+			promoCodes.put(promoCode, lastModified);
+		}
+	
+		rs.close();
+		ps.close();
+	
+		return promoCodes;
+	}
+
+	public static List getPromotions(Connection conn) throws SQLException {
+		
+		PreparedStatement ps = conn.prepareStatement("SELECT * FROM CUST.PROMOTION");
+		ResultSet rs = ps.executeQuery();
+
+		List promoList = new ArrayList();
+		
+		while (rs.next()) {			
+			FDPromotionModel promotion = loadPromotionResult(rs);
+			/*List assignedCustomerUserIds = FDPromotionManagerDAO.loadAssignedCustomerUserIds(conn, promotion.getId());
+			if (assignedCustomerUserIds != null && assignedCustomerUserIds.size() > 0) {
+				promotion.setAssignedCustomerUserIds(encodeString(assignedCustomerUserIds));
+			} else {
+				promotion.setAssignedCustomerUserIds("");				
+			}*/
+			if (promotion != null) {
+				PrimaryKey pk = promotion.getPK();
+				promotion.setZipRestrictions(loadZipRestrictions(conn, pk.getId()));
+			}
+			promoList.add(promotion);
+		}
+
+		rs.close();
+		ps.close();
+
+		return promoList;
+		
+	}
+
+	/**
+	 * Load Promotion for a given Promotion PK.
+	 * @param conn
+	 * @param promoId -TODO The current value passed is Promotion CODE. Later when new data model
+	 * for AI is implemented, value passed will be promotion ID.
+	 * @return
+	 * @throws SQLException
+	 */
+	public static FDPromotionModel getPromotion(Connection conn, String promoId) throws SQLException {
+
+		PreparedStatement ps = conn.prepareStatement("SELECT * FROM CUST.PROMOTION WHERE CODE = ?");
+		ps.setString(1, promoId);
+		ResultSet rs = ps.executeQuery();
+	
+		FDPromotionModel promotion = null;
+		
+		if (rs.next()) {			
+			promotion = loadPromotionResult(rs);
+			List assignedCustomerUserIds = FDPromotionManagerDAO.loadAssignedCustomerUserIds(conn, promotion.getId());
+			if (assignedCustomerUserIds != null && assignedCustomerUserIds.size() > 0) {
+				promotion.setAssignedCustomerUserIds(StringUtil.encodeString(assignedCustomerUserIds));
+			} else {
+				promotion.setAssignedCustomerUserIds("");				
+			}
+		}
+
+		rs.close();
+		ps.close();
+		if (promotion != null) {
+			String id = promotion.getId();
+			Map assignedCustomerParams = loadAssignedCustomerParams(conn, id);
+			promotion.setAssignedCustomerParams(assignedCustomerParams);
+			promotion.setZipRestrictions(loadZipRestrictions(conn, id));
+			
+			Map assignedGroups = loadAssignedGroups(conn, id);
+			promotion.setAssignedCategories(StringUtil.encodeString((List)assignedGroups.get(EnumDCPDContentType.CATEGORY)));
+			promotion.setAssignedDepartments(StringUtil.encodeString((List)assignedGroups.get(EnumDCPDContentType.DEPARTMENT)));
+			promotion.setAssignedRecipes(StringUtil.encodeString((List)assignedGroups.get(EnumDCPDContentType.RECIPE)));
+			
+			promotion.setAttributeList(loadAttributeList(conn, id));
+		}
+		return promotion;
+	}
+	
+	private static FDPromotionModel loadPromotionResult(ResultSet rs) throws SQLException {
+		
+		String id = rs.getString("ID");
+		FDPromotionModel promotion = new FDPromotionModel(new PrimaryKey(id));
+		promotion.setId(id);
+		promotion.setPromotionCode( rs.getString("CODE"));
+		promotion.setDescription(rs.getString("DESCRIPTION"));
+		promotion.setName(rs.getString("NAME"));
+		promotion.setPromotionType(rs.getString("CAMPAIGN_CODE"));
+		promotion.setMaxUsage(String.valueOf(rs.getInt("MAX_USAGE")));
+		promotion.setStartDate(rs.getTimestamp("START_DATE"));
+		if (promotion.getStartDate() != null) {
+			Calendar cal = DateUtil.toCalendar(promotion.getStartDate());
+			EnumMonth startMonth = EnumMonth.getEnum(String.valueOf(cal.get(Calendar.MONTH)+1));
+			if (startMonth != null) {
+				promotion.setStartMonth(startMonth.getDescription());
+			}
+			promotion.setStartDay(String.valueOf(cal.get(Calendar.DAY_OF_MONTH)));
+			promotion.setStartYear(String.valueOf(cal.get(Calendar.YEAR)));
+		}		
+		promotion.setExpirationDate(rs.getTimestamp("EXPIRATION_DATE"));
+		if (promotion.getExpirationDate() != null) {
+			Calendar cal = DateUtil.toCalendar(promotion.getExpirationDate());
+			EnumMonth expirationMonth = EnumMonth.getEnum(String.valueOf(cal.get(Calendar.MONTH)+1));
+			if (expirationMonth != null) {
+				promotion.setExpirationMonth(expirationMonth.getDescription());
+			}
+			promotion.setExpirationDay(String.valueOf(cal.get(Calendar.DAY_OF_MONTH)));
+			promotion.setExpirationYear(String.valueOf(cal.get(Calendar.YEAR)));
+		}
+		String redemptionCode = rs.getString("REDEMPTION_CODE");
+		if (!rs.wasNull()) {
+			promotion.setRedemptionCode(redemptionCode);
+		} else {
+			promotion.setRedemptionCode("");			
+		}
+		if ("X".equals(rs.getString("ORDERTYPE_HOME"))) {
+			promotion.setIsOrderTypeHomeAllowed(true);
+		}
+		if ("X".equals(rs.getString("ORDERTYPE_DEPOT"))) {
+			promotion.setIsOrderTypeDepotAllowed(true);
+		}
+		if ("X".equals(rs.getString("ORDERTYPE_PICKUP"))) {
+			promotion.setIsOrderTypePickupAllowed(true);
+		}
+		if ("X".equals(rs.getString("ORDERTYPE_CORPORATE"))) {
+			promotion.setIsOrderTypeCorporateAllowed(true);
+		}
+		boolean needDryGoods = "X".equals(rs.getString("NEEDDRYGOODS"));
+		if (!rs.wasNull()) {
+			promotion.setNeedsDryGoods(true);
+		}
+		int orderCount = rs.getInt("ORDERCOUNT");
+		if (!rs.wasNull()) {
+			promotion.setOrderCount(String.valueOf(orderCount));
+		} else {
+			promotion.setOrderCount("");
+		}
+		String needItemsFrom = rs.getString("NEEDITEMSFROM");
+		if (!rs.wasNull()) {
+			promotion.setNeedItemsFrom(needItemsFrom);
+		} else {
+			promotion.setNeedItemsFrom("");			
+		}
+		String excludeSkuPrefix = rs.getString("EXCLUDESKUPREFIX");
+		if (!rs.wasNull()) {
+			promotion.setExcludeSkuPrefix(excludeSkuPrefix);
+		} else {
+			promotion.setExcludeSkuPrefix("");
+			
+		}
+		String needBrands = rs.getString("NEEDBRANDS");
+		if (!rs.wasNull()) {
+			promotion.setNeedBrands(needBrands);
+		} else {
+			promotion.setNeedBrands("");			
+		}
+		String excludeBrands = rs.getString("EXCLUDEBRANDS");
+		if (!rs.wasNull()) {
+			promotion.setExcludeBrands(excludeBrands);
+		} else {
+			promotion.setExcludeBrands("");			
+		}
+		double minSubtotal = rs.getDouble("MIN_SUBTOTAL");
+		if (!rs.wasNull()) {
+			promotion.setMinSubtotal(String.valueOf(minSubtotal));
+		} else {
+			promotion.setMinSubtotal("");
+		}
+		double maxAmount = rs.getDouble("MAX_AMOUNT");
+		if (!rs.wasNull()) {
+			promotion.setMaxAmount(FormatterUtil.formatToTwoDecimal(maxAmount));
+		} else {
+			promotion.setMaxAmount("");			
+		}
+		double percentOff = rs.getDouble("PERCENT_OFF")*100;
+		if (!rs.wasNull()) {
+			promotion.setPercentOff(String.valueOf((int)percentOff));
+		} else {
+			promotion.setPercentOff("");			
+		}
+		String waiveChargeType = rs.getString("WAIVE_CHARGE_TYPE");
+		if (!rs.wasNull()) {
+			promotion.setWaiveChargeType(waiveChargeType);
+		} else {
+			promotion.setWaiveChargeType("");			
+		}
+		String categoryName = rs.getString("CATEGORY_NAME");
+		if (!rs.wasNull()) {
+			promotion.setCategoryName(categoryName);
+		} else {
+			promotion.setCategoryName("");			
+		}
+		String productName = rs.getString("PRODUCT_NAME");
+		if (!rs.wasNull()) {
+			promotion.setProductName(productName);
+		} else {
+			promotion.setProductName("");			
+		}
+		if (!"".equals(promotion.getCategoryName()) && !"".equals(promotion.getProductName())) {
+			promotion.setValueType("sample");
+		} else if (!"".equals(promotion.getMaxAmount())) {
+			promotion.setValueType("discount");
+		} else if (!"".equals(promotion.getPercentOff())) {
+			promotion.setValueType("percentOff");
+		} else if (!"".equals(promotion.getWaiveChargeType())) {
+			promotion.setValueType("waiveCharge");
+		} else {
+			promotion.setValueType("");						
+		}
+		promotion.setRuleBasePromotion("X".equalsIgnoreCase(rs.getString("RULE_BASED")));
+		
+		promotion.setRefProgCampaignCode(rs.getString("REF_PROG_CAMPAIGN_CODE"));
+
+		promotion.setIsMaxUsagePerCustomer("X".equalsIgnoreCase(rs.getString("IS_MAX_USAGE_PER_CUST")));
+
+		int expirationDays = rs.getInt("ROLLING_EXPIRATION_DAYS");
+		if (!rs.wasNull()) {
+			promotion.setRollingExpirationDays(new Integer(expirationDays));
+		}
+
+		promotion.setUniqueUse("X".equalsIgnoreCase(rs.getString("UNIQUE_USE")));
+
+		String notes = rs.getString("NOTES");
+		if(!rs.wasNull()){
+			promotion.setNotes(notes);
+		} else {
+			promotion.setNotes("");
+		}
+		
+		promotion.setActive("X".equalsIgnoreCase(rs.getString("ACTIVE")));
+		promotion.setApplyFraud((!"X".equalsIgnoreCase(rs.getString("DONOT_APPLY_FRAUD"))));
+		promotion.setModifyDate(rs.getTimestamp("MODIFY_DATE"));
+		
+		promotion.setProfileOperator(rs.getString("PROFILE_OPERATOR"));
+		
+		String modifiedBy = rs.getString("MODIFIED_BY");
+		if(!rs.wasNull()){
+			promotion.setModifiedBy(modifiedBy);
+		} else {
+			promotion.setModifiedBy("");
+		}
+		return promotion;
+	}
+	
+	public static void storePromotion(Connection conn,  ModelI model) throws SQLException {
+		FDPromotionModel promotion = (FDPromotionModel) model;
+		PreparedStatement ps =
+			conn.prepareStatement(
+				"UPDATE CUST.PROMOTION"
+				+ " SET"
+				+ " CODE = ?, NAME = ?, DESCRIPTION = ?, MAX_USAGE = ?, START_DATE = ?, EXPIRATION_DATE = ?, REDEMPTION_CODE = ?,"
+				+ " CAMPAIGN_CODE = ?, MIN_SUBTOTAL = ?, MAX_AMOUNT = ?, PERCENT_OFF = ?, WAIVE_CHARGE_TYPE = ?, UNIQUE_USE = ?, CATEGORY_NAME = ?, PRODUCT_NAME = ?,"
+				+ " ORDERTYPE_HOME = ?, ORDERTYPE_PICKUP = ?, ORDERTYPE_DEPOT = ?, ORDERTYPE_CORPORATE = ?, NEEDDRYGOODS = ?,"
+				+ " ORDERCOUNT = ?, NEEDITEMSFROM = ?, EXCLUDESKUPREFIX = ?, NEEDBRANDS = ?, EXCLUDEBRANDS = ?, RULE_BASED = ?, REF_PROG_CAMPAIGN_CODE = ?, IS_MAX_USAGE_PER_CUST = ?,"
+				+ " ROLLING_EXPIRATION_DAYS = ?, NOTES = ?, ACTIVE = ?, MODIFY_DATE = SYSDATE, MODIFIED_BY = ?, DONOT_APPLY_FRAUD = ? , PROFILE_OPERATOR = ? "
+				+ " WHERE ID = ?");
+		int i = 1;
+		ps.setString(i++, promotion.getPromotionCode());
+		ps.setString(i++, promotion.getName());
+		ps.setString(i++, promotion.getDescription());
+		String maxUsage = !"".equals(promotion.getMaxUsage()) ? promotion.getMaxUsage() : "0"; 
+		ps.setInt(i++, Integer.parseInt(maxUsage));
+		if (promotion.getStartDate() != null) {
+			ps.setDate(i++, new java.sql.Date(promotion.getStartDate().getTime()));
+		} else {
+			ps.setNull(i++, Types.DATE);		
+		}
+		if (promotion.getExpirationDate() != null) {
+			ps.setTimestamp(i++, new java.sql.Timestamp(promotion.getExpirationDate().getTime()));
+		} else {
+			ps.setNull(i++, Types.DATE);		
+		}
+		if (!"".equals(promotion.getRedemptionCode())) {
+			ps.setString(i++, promotion.getRedemptionCode());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);		
+		}
+		ps.setString(i++, promotion.getPromotionType());
+		if (!"".equals(promotion.getMinSubtotal())) {
+			ps.setDouble(i++, Double.parseDouble(promotion.getMinSubtotal()));
+		} else {
+			ps.setNull(i++, Types.DOUBLE);					
+		}		
+		if (!"".equals(promotion.getMaxAmount())) {
+			ps.setDouble(i++, Double.parseDouble(promotion.getMaxAmount()));
+		} else {
+			ps.setNull(i++, Types.DOUBLE);					
+		}
+		if (!"".equals(promotion.getPercentOff())) {
+			ps.setDouble(i++, Double.parseDouble(promotion.getPercentOff())/100);
+		} else {
+			ps.setNull(i++, Types.DOUBLE);					
+		}
+		if (!"".equals(promotion.getWaiveChargeType())) {
+			ps.setString(i++, promotion.getWaiveChargeType());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);								
+		}		
+
+		if(promotion.isUniqueUse()){
+			ps.setString(i++, "X");
+		}else{
+			ps.setNull(i++, Types.VARCHAR);
+		}
+
+		if (!"".equals(promotion.getCategoryName())) {
+			ps.setString(i++, promotion.getCategoryName());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);								
+		}		
+		if (!"".equals(promotion.getProductName())) {
+			ps.setString(i++, promotion.getProductName());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);								
+		}
+		if (promotion.isOrderTypeHomeAllowed()) {
+			ps.setString(i++, "X");
+		} else {
+			ps.setNull(i++, Types.VARCHAR);								
+		}
+		if (promotion.isOrderTypePickupAllowed()) {
+			ps.setString(i++, "X");
+		} else {
+			ps.setNull(i++, Types.VARCHAR);								
+		}
+		if (promotion.isOrderTypeDepotAllowed()) {
+			ps.setString(i++, "X");
+		} else {
+			ps.setNull(i++, Types.VARCHAR);								
+		}
+		if (promotion.isOrderTypeCorporateAllowed()) {
+			ps.setString(i++, "X");
+		} else {
+			ps.setNull(i++, Types.VARCHAR);								
+		}		
+		if (promotion.getNeedDryGoods()) {
+			ps.setString(i++, "X");
+		} else {
+			ps.setNull(i++, Types.VARCHAR);								
+		}
+		if (!"".equals(promotion.getOrderCount())) {
+			ps.setInt(i++, Integer.parseInt(promotion.getOrderCount()));
+		} else {
+			ps.setNull(i++, Types.INTEGER);								
+		}
+		if (!"".equals(promotion.getNeedItemsFrom())) {
+			ps.setString(i++,promotion.getNeedItemsFrom());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);								
+		}
+		if (!"".equals(promotion.getExcludeSkuPrefix())) {
+			ps.setString(i++, promotion.getExcludeSkuPrefix());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);								
+		}
+		if (!"".equals(promotion.getNeedBrands())) {
+			ps.setString(i++,promotion.getNeedBrands());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);								
+		}
+		if (!"".equals(promotion.getExcludeBrands())) {
+			ps.setString(i++,promotion.getExcludeBrands());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);								
+		}
+		if(promotion.isRuleBasedPromotion()){
+			ps.setString(i++, "X");
+		}else{
+			ps.setNull(i++, Types.VARCHAR);
+		}
+		if (!"".equals(promotion.getRefProgCampaignCode())) {
+			ps.setString(i++,promotion.getRefProgCampaignCode());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);								
+		}
+		if(promotion.isMaxUsagePerCustomer()){
+			ps.setString(i++, "X");
+		}else{
+			ps.setNull(i++, Types.VARCHAR);
+		}
+		if(promotion.getRollingExpirationDays() != null) {
+			ps.setInt(i++, promotion.getRollingExpirationDays().intValue());
+		} else {
+			ps.setNull(i++, Types.INTEGER);
+		}
+		ps.setString(i++, promotion.getNotes());
+
+		if(promotion.isActive()){
+			ps.setString(i++, "X");
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
+		ps.setString(i++, promotion.getModifiedBy());
+		if(!promotion.isApplyFraud()){
+			ps.setString(i++, "X");
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
+		
+		if(promotion.getProfileOperator() != null && 
+				promotion.getAttributeList() != null && promotion.getAttributeList().size() > 1){
+			ps.setString(i++, promotion.getProfileOperator());
+		}else{
+			ps.setNull(i++, Types.VARCHAR);
+		}
+		
+		ps.setString(i++, promotion.getPK().getId());
+		if (ps.executeUpdate() != 1) {
+			ps.close();
+			throw new SQLException("row not created to update Promotion");
+		}
+		ps.close();
+		
+		storeAssignedCustomers(conn, promotion.getPK().getId(), promotion.getTmpAssignedCustomerUserIds());
+		if(!promotion.getZipRestrictions().isEmpty()){
+			storeGeography(conn, promotion.getPK().getId(), promotion.getZipRestrictions());
+		}
+		
+		storeAssignedGroups(conn, promotion.getPK().getId(), promotion);
+		storeAttributeList(conn, promotion.getPK().getId(), promotion.getAttributeList());
+		
+	}
+
+	public static void removePromotion (Connection conn, PrimaryKey pk) throws SQLException {
+		
+		removeAssignedCustomerIds(conn, pk.getId());
+		
+		removeAssignedGroups(conn, pk.getId());
+		
+		removeAttributeList(conn, pk.getId());
+
+		PreparedStatement ps =
+			conn.prepareStatement("DELETE CUST.PROMOTION WHERE ID = ?");
+		ps.setString(1, pk.getId());
+		ps.executeUpdate();
+		ps.close();
+		
+	}
+
+	protected static void storeAssignedCustomers(Connection conn, String promotionId, String assignedCustomerUserIds) throws SQLException {
+		
+		Map assignedCustomerStrategyParams = loadAssignedCustomerParams(conn, promotionId);
+		
+		// for saftey
+		
+				
+		if (assignedCustomerUserIds != null) {
+			String aci[] = StringUtil.decodeStrings(assignedCustomerUserIds); 
+			List custIdList = getAssignedCustomerIds(conn, aci);
+			if (custIdList == null) return;
+			removeDuplicateCustomerIds(conn, promotionId, custIdList);
+			PreparedStatement ps =
+				conn.prepareStatement("INSERT INTO CUST.PROMO_CUSTOMER (PROMOTION_ID, CUSTOMER_ID, USAGE_CNT, EXPIRATION_DATE) VALUES(?,?,?,?)");
+			Iterator iter = custIdList.iterator();
+			while (iter.hasNext()) {
+				String customerId = (String)iter.next();
+				AssignedCustomerParam param = (AssignedCustomerParam)assignedCustomerStrategyParams.get(customerId);
+				ps.setString(1, promotionId);				
+				ps.setString(2, customerId);
+				if (param != null && param.getUsageCount() != null) {
+					ps.setInt(3, param.getUsageCount().intValue());					
+				} else {
+					ps.setNull(3, Types.INTEGER);										
+				}
+				if (param != null && param.getExpirationDate() != null) {
+					ps.setDate(4, new Date(param.getExpirationDate().getTime()));					
+				} else {
+					ps.setNull(4, Types.DATE);										
+				}
+				if (ps.executeUpdate() == -1) {
+					ps.close();
+					throw new SQLException("row not stored");					
+				}
+			}
+			ps.close();
+		}
+	}
+	
+	
+	public static final String GET_RESTRICTED_CUSTOMERS="select customer_id from CUST.PROMO_CUSTOMER where promotion_id=? and customer_id in ('";
+	
+	public static void removeDuplicateCustomerIds(Connection conn, String promotionId, List custIdList) throws SQLException {
+		final StringBuffer customerIdStr=new StringBuffer();
+		final StringBuffer sql=new StringBuffer(GET_RESTRICTED_CUSTOMERS);
+		Iterator iterator=custIdList.iterator();
+		int i=0;
+        while(iterator.hasNext()){
+        	String customerId=(String)iterator.next();        	
+        	i=i+1;
+        	if(i==1){
+        		customerIdStr.append(customerId);
+				if(i!=custIdList.size()) customerIdStr.append(customerId).append("',"); 
+			}
+			else{
+				if(i==custIdList.size())	
+				{
+					customerIdStr.append("'").append(customerId);					
+				}
+				else{
+					customerIdStr.append("'").append(customerId).append("',");					
+				}				
+			}        	        	        	
+        }
+        sql.append(customerIdStr.toString()).append("')");
+        System.out.println(sql.toString());
+        PreparedStatement ps =
+			conn.prepareStatement(sql.toString());
+        ps.setString(1, promotionId);
+        ResultSet rs = ps.executeQuery();
+        while(rs.next()){
+        	String existingId=(String)rs.getString("customer_id");
+        	custIdList.remove(existingId);
+        }		
+	}
+	
+	private static String INSERT_PROMO_GROUP =  	"INSERT INTO cust.promo_dcpd_data" +
+															" (id, promotion_id, content_type, content_id)" +
+																	" VALUES(?,?,?,?)";
+
+	private static void storeAssignedGroups(Connection conn, String id, FDPromotionModel promotion) throws SQLException {		
+		PreparedStatement ps = null;
+		
+		removeAssignedGroups(conn, id);
+		try {			
+			ps = conn.prepareStatement(INSERT_PROMO_GROUP);			
+			prepareAssignedGroupSave(conn, ps, StringUtil.decodeStrings(promotion.getAssignedDepartments()), 
+											id, EnumDCPDContentType.DEPARTMENT.getName());
+			prepareAssignedGroupSave(conn, ps, StringUtil.decodeStrings(promotion.getAssignedCategories()), 
+											id, EnumDCPDContentType.CATEGORY.getName());
+			prepareAssignedGroupSave(conn, ps, StringUtil.decodeStrings(promotion.getAssignedRecipes()), 
+											id, EnumDCPDContentType.RECIPE.getName());
+			ps.executeBatch();
+		} finally {
+			if (ps != null) ps.close();			
+		}	
+	}
+	
+	private static void prepareAssignedGroupSave(Connection conn,PreparedStatement ps, String[] dataList
+						, String promotionId, String grpType) throws SQLException  {
+				
+		if(dataList != null) {
+			int intLength = dataList.length;
+			int intCount = 0;
+			for(;intCount<intLength; intCount++) {
+				int index = 1;				
+				ps.setString(index++, SequenceGenerator.getNextId(conn, "CUST"));
+				ps.setString(index++, promotionId);	
+				ps.setString(index++, grpType);
+				ps.setString(index++, dataList[intCount]);
+				ps.addBatch();
+			}
+		}
+	}
+	
+	private static String INSERT_PROMO_ATTR =  	"INSERT INTO cust.promo_attr" +
+							" (id, promotion_id, promo_attr_name, attr_value, attr_index)" +
+									" VALUES(?,?,?,?,?)";
+
+	private static void storeAttributeList(Connection conn, String promotionId, List attrList) throws SQLException {		
+		PreparedStatement ps = null;
+		removeAttributeList(conn, promotionId);
+		try {			
+			ps = conn.prepareStatement(INSERT_PROMO_ATTR);
+			if(attrList != null) {
+				Iterator tmpiterator = attrList.iterator();
+				FDPromotionAttributeParam tmpParam = null;
+				int indexAttr = 1;
+				while(tmpiterator.hasNext()) {
+					int index = 1;
+					tmpParam = (FDPromotionAttributeParam)tmpiterator.next();
+					ps.setString(index++, SequenceGenerator.getNextId(conn, "CUST"));
+					ps.setString(index++, promotionId);	
+					ps.setString(index++, tmpParam.getAttributeName());
+					ps.setString(index++, tmpParam.getDesiredValue());					
+					ps.setInt(index++, indexAttr++);
+					ps.addBatch();
+				}
+			}
+			ps.executeBatch();
+		} finally {
+			if (ps != null) ps.close();			
+		}	
+	}
+
+	protected static List getAssignedCustomerIds(Connection conn, String assignedCustomerUserIds[]) throws SQLException {
+		
+		List custUserIdList = null;
+		String invalidCustomerIds = "";
+		
+		if (assignedCustomerUserIds != null && assignedCustomerUserIds.length > 0) {
+			custUserIdList = new ArrayList();			
+			PreparedStatement ps = conn.prepareStatement("SELECT ID FROM CUST.CUSTOMER WHERE USER_ID = LOWER(?)");
+			for (int i = 0; i < assignedCustomerUserIds.length; i++) {
+				ps.setString(1, assignedCustomerUserIds[i]);
+				ResultSet rs = ps.executeQuery();
+				if (rs.next()) {			
+					custUserIdList.add(rs.getString(1));
+				} else {
+					if (!"".equals(invalidCustomerIds)) invalidCustomerIds += ","; 
+					invalidCustomerIds += assignedCustomerUserIds[i];
+				}
+				rs.close();
+			}
+			ps.close();
+			
+			if (!"".equals(invalidCustomerIds)) {
+				throw new SQLException("Invalid customer id(s): " + invalidCustomerIds);
+			}
+		}
+		
+		return custUserIdList;
+	}
+	
+	protected static void removeAssignedCustomerIds(Connection conn, String promotionId) throws SQLException {
+		PreparedStatement ps =	conn.prepareStatement("DELETE CUST.PROMO_CUSTOMER WHERE PROMOTION_ID = ?");
+		ps.setString(1, promotionId);
+		ps.executeUpdate();		
+		ps.close();
+	}
+	
+	protected static void removeAssignedGroups(Connection conn, String promotionId) throws SQLException {
+		PreparedStatement ps =	conn.prepareStatement("DELETE CUST.PROMO_DCPD_DATA WHERE PROMOTION_ID = ?");
+		ps.setString(1, promotionId);
+		ps.executeUpdate();		
+		ps.close();
+	}
+	
+	protected static void removeAttributeList(Connection conn, String promotionId) throws SQLException {
+		PreparedStatement ps =	conn.prepareStatement("DELETE CUST.PROMO_ATTR WHERE PROMOTION_ID = ?");
+		ps.setString(1, promotionId);
+		ps.executeUpdate();		
+		ps.close();
+	}
+	
+	
+
+	private static TreeMap loadZipRestrictions(Connection conn, String promotionId) throws SQLException{
+		TreeMap map = new TreeMap();
+		List dateList = loadDatesByZipRestriction(conn, promotionId);
+		if(!dateList.isEmpty()){
+			for(Iterator i=dateList.iterator(); i.hasNext();){
+				FDPromoZipRestriction zipRestriction = new FDPromoZipRestriction();
+				java.util.Date curDate = (java.util.Date)i.next();
+				zipRestriction.setStartDate(curDate);
+				zipRestriction.setType(loadZipRestrictionByDate(conn, promotionId, (Date)curDate));
+				
+				if(zipRestriction.getType().equals("SUSPENDED")){
+					zipRestriction.setType("EXCEPT");
+					zipRestriction.setZipCodes("ALL");
+				}
+				else if(zipRestriction.getType().equals("ALL")){
+					zipRestriction.setType("ONLY");
+					zipRestriction.setZipCodes("ALL");
+				}
+				else {
+					zipRestriction.setZipCodes(NVL.apply(StringUtil.encodeString(loadZipCodesByDate(conn, promotionId, (Date)curDate, zipRestriction.getType())), ""));
+				}
+				map.put(curDate, zipRestriction);
+			}
+		}
+
+		return map;
+	}	
+	
+	private final static String zipRestrictionDates = 
+		"SELECT START_DATE FROM CUST.PROMO_GEOGRAPHY WHERE PROMOTION_ID = ? ORDER BY START_DATE DESC";
+	
+	protected static List loadDatesByZipRestriction (Connection conn, String promotionId) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement(zipRestrictionDates);
+		ps.setString(1, promotionId);
+		ResultSet rs = ps.executeQuery();
+		
+		List list = new ArrayList();
+		
+		while(rs.next()){
+			list.add(rs.getDate("START_DATE"));
+		}
+		rs.close();
+		ps.close();
+		return list;
+	}
+	
+	protected static String loadZipRestrictionByDate(Connection conn, String promotionId, Date date) throws SQLException {
+		String query = "SELECT CODE, SIGN FROM " +
+							" CUST.PROMO_GEOGRAPHY_DATA PGD, CUST.PROMO_GEOGRAPHY PG " +
+							" WHERE PGD.GEOGRAPHY_ID = PG.ID AND PG.START_DATE = ? AND " +
+							" PG.PROMOTION_ID = ? AND TYPE = 'Z' ORDER BY CODE DESC";
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try{
+			ps = conn.prepareStatement(query);
+			String restriction = "";
+			ps.setDate(1, date);
+			ps.setString(2, promotionId);
+			
+			rs = ps.executeQuery();
+			while(rs.next()){
+				if(rs.getString("SIGN").equals("S") && rs.getString("CODE").equals("ALL")){
+					restriction = "ONLY";
+				}
+				else if(rs.getString("SIGN").equals("A") && rs.getString("CODE").equals("ALL")){
+					restriction = "EXCEPT";
+				}
+				else if (rs.getString("SIGN").equals("A") && restriction.equals("ONLY")){
+					return "ONLY";
+				}
+				else if(rs.getString("SIGN").equals("A")){
+					return "ONLY";
+				}
+				else if(rs.getString("SIGN").equals("S") && restriction.equals("EXCEPT")){
+					return "EXCEPT";
+				}
+			}
+			if(restriction.equals("ONLY")){
+				return "SUSPENDED";
+			}
+			else { //if(restriction.equals("EXCEPT")){
+				return "ALL";
+			}
+		}
+		finally{
+			if (rs != null) {
+				rs.close();
+			}
+			if (ps != null){
+				ps.close();	
+			}
+		}
+	}
+	
+	protected static void removeGeographyData(Connection conn, String promotionId) throws SQLException{
+		PreparedStatement ps = null;
+		try {	
+			ps = conn.prepareStatement("DELETE FROM CUST.PROMO_GEOGRAPHY_DATA WHERE GEOGRAPHY_ID IN (SELECT ID FROM CUST.PROMO_GEOGRAPHY WHERE PROMOTION_ID=?)");
+			ps.setString(1, promotionId);
+			ps.executeUpdate();
+			ps = null;
+			ps =conn.prepareStatement("DELETE FROM CUST.PROMO_GEOGRAPHY WHERE PROMOTION_ID = ?");
+			ps.setString(1, promotionId);
+			ps.executeUpdate();
+		} finally {
+			if (ps != null){
+				ps.close();			
+			}
+		}	
+	}
+	
+	private final static String GEOGRAPHY_DATA_INSERT = "INSERT INTO CUST.PROMO_GEOGRAPHY_DATA (GEOGRAPHY_ID, TYPE, CODE, SIGN) " +
+											" VALUES ( ? ,?, ?, ?)";
+	private final static String GEOGRAPHY_INSERT = "INSERT INTO CUST.PROMO_GEOGRAPHY (ID, PROMOTION_ID, START_DATE) " +
+											" VALUES (?,?,?)";
+	
+	private static void storeGeographyData(Connection conn, FDPromoZipRestriction zipRestriction, String geographyId, String promotionId) throws SQLException {
+		String finalZipSign = "";
+		String finalDepotSign = "";
+		PreparedStatement ps = conn.prepareStatement(GEOGRAPHY_DATA_INSERT);
+		try{
+			String[] zipList = (NVL.apply(zipRestriction.getZipCodes(), "")).split("\\,");
+			for(int x=0; x<zipList.length; x++){
+				String[] a = getZipRestrictionSign(zipRestriction.getType(), zipRestriction.getZipCodes(), zipList[x]);
+				ps.setString(1, geographyId);
+				ps.setString(2, "Z");
+				ps.setString(3, a[0]);
+				ps.setString(4, a[1]);
+				if(ps.executeUpdate()!=1){
+					throw new SQLException("row not created to store Geography Data");
+				}				
+				finalZipSign = a[2];
+				finalDepotSign=a[3];
+			}		
+			if(finalZipSign != ""){
+				ps.setString(1, geographyId);
+				ps.setString(2, "Z");
+				ps.setString(3, "ALL");
+				ps.setString(4, finalZipSign);
+				if(ps.executeUpdate()!=1){
+					throw new SQLException("row not created to store Geography Data");
+				}
+			}
+			if(finalDepotSign !=""){
+				ps.setString(1, geographyId);
+				ps.setString(2, "D");
+				ps.setString(3, "ALL");
+				ps.setString(4, finalDepotSign);
+				if(ps.executeUpdate()!=1){
+					throw new SQLException("row not created to store Geography Data");
+				}
+			}
+		}
+		finally{
+			if(ps!=null){
+				ps.close();
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * @param type
+	 * @param zips
+	 * @param currentZip
+	 * @return String [] -> 
+	 * 					0 = code
+	 * 					1 = sign
+	 * 					2 = final Zip sign
+	 * 					3 = final Depot sign
+	 */
+	
+	private static String[] getZipRestrictionSign (String type, String zips, String currentZip) {
+		String[] a = new String[4];
+		if("ONLY".equals(type) && "ALL".equals(zips)){
+			a[0] = "ALL";
+			a[1] = "A";
+			a[2] = "";
+			a[3] = "A";
+		} else if("EXCEPT".equals(type) && "ALL".equals(zips)){
+			a[0] = "ALL";
+			a[1] =  "S";
+			a[2] = "";
+			a[3] = "S";
+		} else if(type.equals("EXCEPT")){
+			a[0] = currentZip;
+			a[1] = "S";
+			a[2] = "A";
+			a[3] = "A";
+		} else if(type.equals("ONLY")){
+			a[0] = currentZip;
+			a[1] = "A";
+			a[2] = "S";
+			a[3] = "S";
+		}
+		
+		return a;
+	}
+	
+	protected static void storeGeography(Connection conn, String promotionId, TreeMap zipMap) throws SQLException{
+		removeGeographyData(conn, promotionId);
+		PreparedStatement ps = null;
+		try{
+			ps =conn.prepareStatement(GEOGRAPHY_INSERT);
+			for (Iterator i = zipMap.entrySet().iterator(); i.hasNext(); ){
+				Map.Entry e = (Entry) i.next();				
+				java.util.Date d = (java.util.Date) e.getKey();
+				String id = SequenceGenerator.getNextId(conn, "CUST");
+				ps.setString(1, id);
+				ps.setString(2, promotionId);
+				ps.setDate(3, new Date(d.getTime()));
+				if(ps.executeUpdate()==1){
+					storeGeographyData(conn, ((FDPromoZipRestriction)e.getValue()), id, promotionId);
+				} else {
+					throw new SQLException("row not created to store Geography Information");
+				}
+			}
+		} finally {
+			if(ps!=null){
+				ps.close();
+			}
+		}
+	}
+	
+	
+	protected static List loadZipCodesByDate(Connection conn, String promotionId, Date date, String restriction) throws SQLException {
+		List list = new ArrayList();
+		if(restriction.equals("ALL")){
+			list.add("ALL");
+			return list;
+		}
+		else {
+			String query = "SELECT CODE, SIGN FROM " +
+							" CUST.PROMO_GEOGRAPHY_DATA PGD, CUST.PROMO_GEOGRAPHY PG " +
+							" WHERE PGD.GEOGRAPHY_ID = PG.ID AND PG.START_DATE = TO_DATE('"+date+"', 'YYYY-MM-DD') AND " +
+							" PG.PROMOTION_ID = '"+promotionId+"' AND TYPE = 'Z' AND CODE !='ALL' ";
+			PreparedStatement ps = conn.prepareStatement(query);
+			ResultSet rs = ps.executeQuery();
+			int counter = 0;
+			while(rs.next()){
+				list.add(rs.getString("CODE"));
+				counter++;
+			}
+			if(counter == 0){
+				list.add("");
+			}
+			rs.close();
+			ps.close();
+			
+			return list;
+		}
+	}
+		
+	
+	private final static String assignedCustomerStrategyForPromoQuery =
+		"select c.user_id, pc.customer_id "
+			+ "from cust.promotion p, cust.promo_customer pc, cust.customer c "
+			+ "where p.id=pc.promotion_id and pc.customer_id=c.id "
+			+ "and pc.promotion_id = ?";
+
+	/** @return List of assigned customer ids */
+	protected static List loadAssignedCustomerUserIds(Connection conn, String promotionId) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement(assignedCustomerStrategyForPromoQuery);
+		ps.setString(1, promotionId);
+		ResultSet rs = ps.executeQuery();
+
+		// promotionPK -> AssignedCustomerStrategy 
+		List list = new ArrayList();
+
+		while (rs.next()) {
+			list.add(rs.getString("USER_ID"));
+		}
+
+		rs.close();
+		ps.close();
+
+		return list;
+	}
+	
+	private final static String LOAD_PROMO_GROUP =
+		"select id, promotion_id, content_type, content_id "
+			+ "from cust.promo_dcpd_data pcpd "
+			+ "where pcpd.promotion_id = ?";
+
+	/** @return List of assigned dcpd content data */
+	protected static Map loadAssignedGroups(Connection conn, String promotionId) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement(LOAD_PROMO_GROUP);
+		ps.setString(1, promotionId);
+		ResultSet rs = ps.executeQuery();
+		
+		Map groupMap = new HashMap();
+		groupMap.put(EnumDCPDContentType.DEPARTMENT, new ArrayList());
+		groupMap.put(EnumDCPDContentType.CATEGORY, new ArrayList());
+		groupMap.put(EnumDCPDContentType.RECIPE, new ArrayList());
+			
+		List tmpSet = null;
+		String grpType = null;
+		while (rs.next()) {
+			grpType = rs.getString("content_type");
+			tmpSet = (List)groupMap.get(EnumDCPDContentType.getEnum(grpType));			
+			if(tmpSet != null) {
+				tmpSet.add(rs.getString("content_id"));
+			}
+		}
+
+		rs.close();
+		ps.close();
+
+		return groupMap;
+	}
+	
+	private final static String LOAD_PROMO_ATTR =
+		"select id, promotion_id, promo_attr_name, attr_value,  attr_index "
+			+ "from cust.PROMO_ATTR pa "
+			+ "where pa.promotion_id = ? order by attr_index";
+
+	/** @return List of assigned profile attribute list */
+	protected static List loadAttributeList(Connection conn, String promotionId) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement(LOAD_PROMO_ATTR);
+		ps.setString(1, promotionId);
+		ResultSet rs = ps.executeQuery();
+		
+		List attrList = new ArrayList();
+					
+		FDPromotionAttributeParam tmpAttr = null;
+		
+		while (rs.next()) {
+			tmpAttr = new FDPromotionAttributeParam();
+			tmpAttr.setId(rs.getString("id"));
+			tmpAttr.setAttributeName(rs.getString("promo_attr_name"));
+			tmpAttr.setDesiredValue(rs.getString("attr_value"));			
+			tmpAttr.setAttributeIndex(rs.getString("attr_index"));
+			
+			attrList.add(tmpAttr);
+			
+		}
+
+		rs.close();
+		ps.close();
+
+		return attrList;
+	}
+	
+	/** @return Map of assigned customer ids and the usage counts */
+	protected static Map loadAssignedCustomerParams(Connection conn, String promotionId) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement("SELECT CUSTOMER_ID, USAGE_CNT, EXPIRATION_DATE FROM CUST.PROMO_CUSTOMER WHERE PROMOTION_ID=?");
+		ps.setString(1, promotionId);
+		ResultSet rs = ps.executeQuery();
+
+		Map map = new HashMap();
+
+		while (rs.next()) {
+			String customerId = rs.getString("CUSTOMER_ID");
+			int usageCnt = rs.getInt("USAGE_CNT");
+			Integer usageCntInt = null;
+			if (!rs.wasNull()) {  // only save if there's a usage count
+				usageCntInt = new Integer(usageCnt);
+			}
+			java.util.Date expirationDate = rs.getDate("EXPIRATION_DATE");
+			map.put(customerId, new AssignedCustomerParam(usageCntInt, expirationDate));
+		}
+
+		rs.close();
+		ps.close();
+
+		return map;
+	}
+
+	
+	private static String PROMO_CUSTOMER_INFO_QUERY =  "SELECT" + 
+														"	p.id AS promotion_id," + 
+														"	p.description AS promotion_desc," + 
+														"	NVL(p.is_max_usage_per_cust, ' ') AS is_max_usage_per_cust," + 
+														"	NVL(p.rolling_expiration_days, 0) AS rolling_expiration_days," + 
+														"	c.id AS customer_id," + 
+														"	c.user_id," + 
+														"	NVL(pc.usage_cnt, DECODE(p.is_max_usage_per_cust, 'X', NULL, p.max_usage)) AS usage_cnt," +
+														"	p.max_usage AS promo_usage_cnt," +
+														"	NVL(pc.expiration_date, DECODE(rolling_expiration_days, 0, p.expiration_date, NULL, p.expiration_date, pc.expiration_date)) AS expiration_date," +
+														"	p.expiration_date AS promo_expiration_date," +
+														"	(" +
+														"		 SELECT COUNT(1)" + 
+														"		 FROM cust.promotion_participation pp, cust.sale s" + 
+														"		 WHERE pp.sale_id=s.id" + 
+														"		 AND s.customer_id=c.id" +
+														"		 AND pp.promotion_id=p.id" + 
+														"	) AS num_used" +
+														" FROM cust.promotion p, cust.promo_customer pc, cust.customer c" + 
+														" WHERE p.id=pc.promotion_id" +
+														" AND pc.customer_id=c.id";
+		
+		
+	public static List getPromoCustomerInfoListFromPromotionId(Connection conn, PrimaryKey pk) throws SQLException {		
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(PROMO_CUSTOMER_INFO_QUERY + " AND p.id = ?");
+			ps.setString(1, pk.getId());
+			rs = ps.executeQuery();	
+			List list = new ArrayList();			
+			while (rs.next()) {			
+				FDPromoCustomerInfo pci = loadPromoCustomerInfoListResult(rs);
+				pci.setIsLoadedFromPromotionId(true);
+				list.add(pci);
+			}
+			return list;
+		} finally {
+			if (rs != null) rs.close();
+			if (ps != null) ps.close();			
+		}
+	}	
+	
+	public static List getPromoCustomerInfoListFromCustomerId(Connection conn, PrimaryKey pk) throws SQLException {		
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(PROMO_CUSTOMER_INFO_QUERY + " AND c.id = ?");
+			ps.setString(1, pk.getId());
+			rs = ps.executeQuery();	
+			List list = new ArrayList();			
+			while (rs.next()) {			
+				FDPromoCustomerInfo pci = loadPromoCustomerInfoListResult(rs);
+				pci.setIsLoadedFromCustomerId(true);
+				list.add(pci);
+			}
+			return list;
+		} finally {
+			if (rs != null) rs.close();
+			if (ps != null) ps.close();			
+		}
+	}
+
+	private static FDPromoCustomerInfo loadPromoCustomerInfoListResult(ResultSet rs) throws SQLException {		
+		FDPromoCustomerInfo pci = new FDPromoCustomerInfo();
+		pci.setPromotionId(rs.getString("promotion_id"));
+		pci.setPromotionDesc(rs.getString("promotion_desc"));
+		pci.setIsMaxUsagePerCust("X".equalsIgnoreCase(rs.getString("is_max_usage_per_cust")));
+		pci.setRollingExpirationDays(rs.getInt("rolling_expiration_days"));
+		pci.setCustomerId(rs.getString("customer_id"));
+		pci.setUserId(rs.getString("user_id"));
+		pci.setUsageCount(rs.getInt("usage_cnt"));
+		if (!rs.wasNull()) { 
+			pci.setUsageCountStr(pci.getUsageCount()+"");
+		} else {
+			pci.setUsageCountStr("");			
+		}
+		pci.setPromoUsageCount(rs.getInt("promo_usage_cnt"));
+		pci.setExpirationDate(rs.getTimestamp("expiration_date"));
+		if (pci.getExpirationDate() != null) {
+			Calendar cal = DateUtil.toCalendar(pci.getExpirationDate());
+			EnumMonth expirationMonth = EnumMonth.getEnum(String.valueOf(cal.get(Calendar.MONTH)+1));
+			if (expirationMonth != null) {
+				pci.setExpirationMonth(expirationMonth.getDescription());
+			}
+			pci.setExpirationDay(String.valueOf(cal.get(Calendar.DAY_OF_MONTH)));
+			pci.setExpirationYear(String.valueOf(cal.get(Calendar.YEAR)));			
+		}
+		pci.setPromoExpirationDate(rs.getTimestamp("promo_expiration_date"));
+		pci.setNumUsed(rs.getInt("num_used"));
+		return pci;
+	}
+
+	private static String AVAILABLE_PROMOS_FOR_CUST_QUERY =  
+		 "SELECT p.* FROM cust.promotion p" +
+		 " WHERE p.id NOT IN"+ 
+		 " ("+
+		 " SELECT DISTINCT pc.promotion_id FROM cust.promo_customer pc" +
+		 " WHERE pc.customer_id = ?" +
+		 " )" +
+		" AND p.expiration_date >= TO_DATE(TO_CHAR(SYSDATE, 'MM-DD-YYYY'), 'MM-DD-YYYY')";
+
+	public static List getAvailablePromosForCustomer(Connection conn, PrimaryKey pk) throws SQLException {		
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(AVAILABLE_PROMOS_FOR_CUST_QUERY);
+			ps.setString(1, pk.getId());
+			rs = ps.executeQuery();	
+			List promoList = new ArrayList();
+			
+			while (rs.next()) {			
+				FDPromotionModel promotion = loadPromotionResult(rs);
+				List assignedCustomerUserIds = FDPromotionManagerDAO.loadAssignedCustomerUserIds(conn, promotion.getId());
+				if (assignedCustomerUserIds != null && assignedCustomerUserIds.size() > 0) {
+					promotion.setAssignedCustomerUserIds(StringUtil.encodeString(assignedCustomerUserIds));
+				} else {
+					promotion.setAssignedCustomerUserIds("");				
+				}
+				promoList.add(promotion);
+			}
+			return promoList;
+		} finally {
+			if (rs != null) rs.close();
+			if (ps != null) ps.close();			
+		}
+	}
+
+
+	private static String INSERT_PROMO_CUSTOMER_QUERY =  	"INSERT INTO cust.promo_customer" +
+															" (promotion_id, customer_id, usage_cnt, expiration_date)" +
+															" VALUES(?,?,?,?)";
+
+	public static void insertPromoCustomers(Connection conn, List promoCustomers) throws SQLException {		
+	PreparedStatement ps = null;
+		try {			
+			ps = conn.prepareStatement(INSERT_PROMO_CUSTOMER_QUERY);
+			for (Iterator i = promoCustomers.iterator(); i.hasNext();) {
+				FDPromoCustomerInfo oc = (FDPromoCustomerInfo) i.next();
+				int index = 1;
+				ps.setString(index++, oc.getPromotionId());
+				ps.setString(index++, oc.getCustomerId());				
+				if (oc.getUsageCountStr() != null && !"".equals(oc.getUsageCountStr())) {
+					ps.setInt(index++, oc.getUsageCount());					
+				} else {
+					ps.setNull(index++, Types.INTEGER);										
+				}
+				if (oc.getExpirationDate() != null) {
+					ps.setDate(index++, new java.sql.Date(oc.getExpirationDate().getTime()));
+				} else {
+					ps.setNull(index++, Types.DATE);					
+				}
+				ps.addBatch();
+			}
+			ps.executeBatch();
+		} finally {
+			if (ps != null) ps.close();			
+		}	
+	}
+
+	private static String UPDATE_PROMO_CUSTOMER_QUERY =  "UPDATE cust.promo_customer" + 
+	" SET usage_cnt = ?, expiration_date = ?" + 
+	" WHERE promotion_id = ?" +
+	" AND customer_id = ?";
+
+	public static void updatePromoCustomers(Connection conn, List promoCustomers) throws SQLException {		
+		PreparedStatement ps = null;
+		try {			
+			ps = conn.prepareStatement(UPDATE_PROMO_CUSTOMER_QUERY);
+			for (Iterator i = promoCustomers.iterator(); i.hasNext();) {
+				FDPromoCustomerInfo oc = (FDPromoCustomerInfo) i.next();
+				int index = 1;
+				if (oc.getUsageCountStr() != null && !"".equals(oc.getUsageCountStr())) {
+					ps.setInt(index++, oc.getUsageCount());					
+				} else {
+					ps.setNull(index++, Types.INTEGER);										
+				}
+				if (oc.getExpirationDate() != null) {
+					ps.setDate(index++, new java.sql.Date(oc.getExpirationDate().getTime()));
+				} else {
+					ps.setNull(index++, Types.DATE);					
+				}
+				ps.setString(index++, oc.getPromotionId());
+				ps.setString(index++, oc.getCustomerId());				
+				ps.addBatch();
+			}
+			ps.executeBatch();
+		} finally {
+			if (ps != null) ps.close();			
+		}	
+	}
+
+	private static String REMOVE_PROMO_CUSTOMER_QUERY =  	"DELETE cust.promo_customer" +
+															" WHERE promotion_id = ? AND customer_id=?";
+
+	public static void removePromoCustomers(Connection conn, List promoCustomers) throws SQLException {		
+		PreparedStatement ps = null;
+		try {			
+			ps = conn.prepareStatement(REMOVE_PROMO_CUSTOMER_QUERY);
+			for (Iterator i = promoCustomers.iterator(); i.hasNext();) {
+				FDPromoCustomerInfo oc = (FDPromoCustomerInfo) i.next();
+				int index = 1;
+				ps.setString(index++, oc.getPromotionId());
+				ps.setString(index++, oc.getCustomerId());				
+				ps.addBatch();
+			}
+			ps.executeBatch();
+		} finally {
+		if (ps != null) ps.close();			
+		}	
+	}
+	
+}

@@ -1,0 +1,133 @@
+<body jwcid="@Border" title="Campaigns">
+  <script language="javascript">
+  function changeToSql() {
+    frames['criteria_frame'].location.href = 'app?service=external&page=EnterSql';
+    return false;
+  }
+  
+  function changeToQuery() {
+    frames['criteria_frame'].location.href = 'query.html';
+    return false;
+  }
+  
+  function changeToTemplate() {
+    frames['criteria_frame'].location.href = 'app?service=external&page=SelectTemplate';
+    return false;
+  }
+  </script>
+  
+<form jwcid="@Form" delegate="ognl:beans.delegate"  class="marginForm">
+	<span jwcid="@Conditional" condition="ognl:beans.delegate.hasErrors">
+		<span jwcid="@Delegator" delegate="ognl:beans.delegate.firstError">Error Message</span>
+	</span>
+	
+	<h2>Flight Editor</h2>
+	
+	<table class="form">
+		<tr>
+			<td class="label"><label for="name" class="first"><span jwcid="@FieldLabel" field="ognl:components.name"/></label></td>
+			<td><input jwcid="name" id="name" type="text" size="55"/></td>
+		</tr>
+		<tr>
+			<td class="label"><label for="schedule">Schedule</label></td>
+			<td><span jwcid="schedules"/></td>
+		</tr>
+		<tr>
+			<td colspan="2">
+			 	<input type="checkbox" jwcid="@Checkbox" selected="ognl:flight.multipleContact" /> Allow Multiple Contacts
+			</td>
+		</tr>
+	</table>
+	
+	<h3>Segmentation Criteria</h3>
+	<table>
+	  <tr>
+	    <td width="50">&nbsp</td>
+	    <td align="center"><button onClick="changeToSql(); return false;">Enter SQL</button></td>
+	    <td align="center"><button onClick="changeToTemplate(); return false;">Select template</button></td>
+	    <td width="50">&nbsp</td>
+	  </tr>
+	  <tr>
+	    <td colspan="4">
+          <span jwcid="@RoundedContainer" width="350">
+
+            <span jwcid="@Conditional" condition="ognl:flight.listGenerator.storedQuery != null">
+              <iframe frameborder="0" src="app?service=external&page=FillInTemplate" width="350" height="350" id="criteria_frame" name="criteria_frame"></iframe>
+            </span>
+
+            <span jwcid="@Conditional" condition="ognl:flight.listGenerator.storedQuery == null">
+              <iframe frameborder="0" src="app?service=external&page=EnterSql" width="350" height="350" id="criteria_frame" name="criteria_frame"></iframe>
+            </span>
+
+          </span>
+        </td>
+      </tr>
+    </table>
+	
+	<P></P>
+	
+	<h3>Available tokens</h3>
+	<span jwcid="@InsertText" value="ognl:availableTokens"/>
+	
+	<P></P>
+	
+	<h3>Action Editor</h3>
+	<table class="grid history">
+		<span jwcid="forEachAction">
+			<tr>
+				<span jwcid="@contrib:FormConditional" condition="ognl:action instanceof com.freshdirect.ocf.core.PromotionPopulator">
+					<td>Promo Id: </td>
+					<td>
+						<input jwcid="@ValidField" size="15" displayName="Promo Id" value="ognl:action.promoId" validator="ognl:beans.stringValidator"/>
+					</td>
+				</span>
+				
+				<span jwcid="@contrib:FormConditional" condition="ognl:action instanceof com.freshdirect.ocf.core.Emailer">
+					<td>Email Info: </td>
+					<td>
+						Mailing Id <input jwcid="@ValidField" size="15" displayName="MailingId" value="ognl:action.mailingId" validator="ognl:beans.stringValidator"/>
+						Poll Frequency <input jwcid="@ValidField" size="5" displayName="Frequency" value="ognl:action.enqueueFrequency" validator="ognl:beans.numberValidator"/>								
+					</td>
+				</span>
+				
+				<span jwcid="@contrib:FormConditional" condition="ognl:action instanceof com.freshdirect.ocf.core.CaseAction">
+					<td>Case Info:</td>
+					<td>
+						Subject Code <input jwcid="@TextField" size="15" displayName="Subject Code" value="ognl:action.subjectCode" validators="validators:required"/><br>
+						Summary <input jwcid="@TextArea" displayName="Summary" value="ognl:action.summary" validators="validators:required"/><br>
+						Note <input jwcid="@TextArea" displayName="Note" value="ognl:action.note" validators="validators:required"/>
+					</td>
+				</span>
+				
+				<span jwcid="@contrib:FormConditional" condition="ognl:action instanceof com.freshdirect.ocf.core.ProfileAction">
+					<td>Profle Info: </td>
+					<td>
+						Key <input jwcid="@ValidField" size="15" displayName="Key" value="ognl:action.key" validator="ognl:beans.stringValidator"/><br>
+						Value <input jwcid="@ValidField" size="15" displayName="Value" value="ognl:action.value" validator="ognl:beans.stringValidator"/>
+					</td>
+				</span>
+				
+				<td>
+					<a jwcid="@DirectLink" listener="ognl:listeners.deleteAction" parameters="ognl:ix">Remove</a>
+				</td>
+			</tr>
+		</span>
+	</table>
+	
+	<table>
+		<tr>
+			<td><select jwcid="@PropertySelection" model="ognl:actionSelectionModel" value="ognl:actionType"/></td>
+			<td><input jwcid="@Submit" label="Add" listener="ognl:listeners.addAction" class="submit"/></td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td align="left">
+			<input jwcid="@Submit" label="Cancel" listener="ognl:listeners.cancelAction" class="cancel"/>
+			<input jwcid="@Submit" label="Save" listener="ognl:listeners.saveFlight" class="submit"/>
+			</td>
+		</tr>
+	</table>
+</form>
+
+</body>
+

@@ -1,0 +1,16 @@
+<!--
+    Paints the billing ref little section
+    
+    Requires a cart object
+-->
+
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="693">
+<TR>
+    <TD>
+        <img src="/media_stat/images/navigation/client_code.gif" WIDTH="313" HEIGHT="10" border="0" alt="BILLING REFERENCE/CLIENT CODE">&nbsp;&nbsp;&nbsp;<BR>
+        <IMG src="/media_stat/images/layout/999966.gif" WIDTH="693" HEIGHT="1" BORDER="0"><BR>
+        <FONT CLASS="space4pix"><BR></FONT>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<INPUT TYPE="text" size="20" name="billingRef" value="<%=cart.getPaymentMethod() != null ? cart.getPaymentMethod().getBillingRef() : ""%>"><BR>
+    </TD>
+<TR>
+</TABLE>

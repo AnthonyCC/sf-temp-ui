@@ -1,0 +1,77 @@
+<%@ page import="com.freshdirect.fdstore.customer.adapter.FDOrderAdapter"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCartonInfo"%>
+<%@ page import="com.freshdirect.framework.webapp.*"%>
+
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri='template' prefix='tmpl' %>
+<%@ taglib uri='logic' prefix='logic' %>
+
+<%	List cartonInfo = null; %>
+<%  List cartonDetails = null; %>
+<%  cartonInfo = ((FDOrderAdapter)order).getCartonContents(); %>
+<% int idx = 0; %>
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="order">
+	<tr valign="top">
+  <% if( (cartonInfo != null) && (cartonInfo.size() > 0) ) { %>
+    <th width="5%" align="left">&nbsp;</th>
+	  <th align="left">Quantity</th>
+	  <th align="left">Product</th>
+	  <th align="left">Final Weight</th>
+	  <th align="left">Unit Price</th>
+		<logic:iterate id="carton" collection="<%= cartonInfo %>" type="com.freshdirect.fdstore.customer.FDCartonInfo" indexId="counter"> 
+
+    <input type="hidden" name="itemCount" value="<%= carton.getCartonDetails().size() %>">
+    <input type="hidden" name="cartUpdated" value="true">
+	<tr valign="top" class="list_odd_row">
+		<td colspan="2">Carton: <%= carton.getCartonInfo().getCartonNumber() %> &nbsp;&nbsp;&nbsp;&nbsp;
+		Type: <%= carton.getCartonInfo().getCartonType() %></td>
+		<td colspan="3">
+            &nbsp;
+   		</td>
+	</tr>
+	<tr>
+		<td colspan="5" class="list_separator" style="padding: 0px;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+	</tr>
+	
+	<% idx = 0; %>
+			<logic:iterate id="cartonDetail" collection="<%= carton.getCartonDetails() %>" type="com.freshdirect.fdstore.customer.FDCartonDetail" indexId="det"> 
+    <% if(cartonDetail.getCartLine() != null) { %>
+		    <input type="hidden" name="skuCode_<%=idx%>" value="<%= cartonDetail.getCartLine().getSkuCode() %>">
+		    <input type="hidden" name="quantity_<%=idx%>" value="<%= cartonDetail.getCartonDetail().getPackedQuantity() %>">
+		    <input type="hidden" name="salesUnit_<%=idx%>" value="<%= cartonDetail.getCartLine().getSalesUnit() %>">
+		    <input type="hidden" name="estPrice_<%=idx%>" value="">
+        <logic:iterate id="entry" collection="<%= cartonDetail.getCartLine().getConfiguration().getOptions().entrySet() %>" type="java.util.Map.Entry">
+            <input type="hidden" name='<%= entry.getKey() + "_" + idx %>' value="<%= entry.getValue() %>">
+        </logic:iterate>
+
+			<tr valign="top">
+                <td><input type="checkbox"></td>
+				<td> 
+					<%= cartonDetail.getCartonDetail().getPackedQuantity() %>&nbsp;
+					<% if(cartonDetail.getCartonDetail().getWeightUnit() != null) { %>
+ 						<%= cartonDetail.getCartonDetail().getWeightUnit().toLowerCase() %>
+ 					<% } %>
+				</td>
+				<td>
+					&nbsp;&nbsp;&nbsp;&nbsp;<%= cartonDetail.getCartLine().getDescription() %>
+					(<%= cartonDetail.getCartLine().getSkuCode() %>)
+				</td>
+				<td> 
+					<%= cartonDetail.getCartonDetail().getNetWeight() %>
+				</td>
+				<td>
+					<%= cartonDetail.getCartLine().getUnitPrice() %>
+				</td>
+			</tr>
+    <%    idx++;
+    	} // cartonDetail.getCartLine() != null %>
+
+			</logic:iterate>
+	</logic:iterate>
+  <% } else { %>
+	<tr valign="top">
+	  No cartons found!
+	</tr>
+  <% } %>
+</table>

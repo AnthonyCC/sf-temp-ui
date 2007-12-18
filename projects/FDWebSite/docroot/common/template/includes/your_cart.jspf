@@ -1,0 +1,103 @@
+<fd:GetCart id='cart'>
+    <table border="0" cellspacing="0" cellpadding="0" width="140">
+        <tr>
+            <td colspan="3" width="140"><a href="/view_cart.jsp?trk=sidcrt" id="your_cart"><img src="/media_stat/images/template/lists/cart_hdr.gif" width="140" height="18" border="0" alt="Your Cart"></a><br>
+            <table border="0" cellspacing="0" cellpadding="0" width="140">
+                <tr valign="top">
+                    <td width="11"><img src="/media_stat/images/template/lists/cart_lft.gif" width="11" height="16" border="0"></td>
+                    <td width="118" valign="middle">Subtotal: <font class="text11bold"><%= currencyFormatter.format(cart.getSubTotal()) %></font><br></td>
+                    <td width="11"><img src="/media_stat/images/template/lists/cart_rt.gif" width="11" height="16" border="0"></td>
+                </tr>
+                <tr valign="top">
+                    <td width="140" colspan="3" bgcolor="#FF9933"><img src="/media_stat/images/layout/ff9933.gif" width="1" height="4"></td>
+                </tr>
+            </table>
+            </td>
+        </tr>  
+        <tr>
+            <td bgcolor="#FF9933" valign="bottom" width="1"><img src="/media_stat/images/layout/ff9933.gif" 
+                width="1" height="1"><br></td>
+            <td align="center" width="138"><img src="/media_stat/images/layout/clear.gif"  
+                width="138" height="7"><br>
+                <!-- nested table with content -->
+                <table width="138" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td width="12"><img src="/media_stat/images/layout/dot_white.gif" width="10" height="1"><br></td>
+                        <td width="118" class="text9_lh12">
+                        <%
+                        boolean modifyOrderMode = false;
+                            FDUserI mUser = (FDUserI) session.getAttribute( SessionName.USER );
+                            FDCartModel mCart = (FDCartModel) mUser.getShoppingCart();
+                            
+                            if (mCart instanceof FDModifyCartModel) {
+                                modifyOrderMode = true;
+                        }
+                        %>
+                        
+                        <% if (modifyOrderMode){%>
+                        <b>You are changing a placed order.  <a href="/view_cart.jsp?trk=sidcrt">Click for details</a>.</b><br>
+                        <%}%>
+						
+						<%
+						String lastDept = null;
+						boolean firstRecipe = true;
+						%>
+                        <logic:iterate id="orderLine" collection="<%= cart.getOrderLines() %>" type="com.freshdirect.fdstore.customer.FDCartLineI">
+                         <fd:ProductGroup id='productNode' categoryId='<%= orderLine.getCategoryName() %>' productId='<%= orderLine.getProductName() %>'>
+                        <%
+							if (lastDept==null || !lastDept.equalsIgnoreCase(orderLine.getDepartmentDesc())) {
+								lastDept = orderLine.getDepartmentDesc();  %>
+									<br><b><%= lastDept %></b><br>
+<%						} %>
+
+                        <A HREF="/product_modify.jsp?cartLine=<%=orderLine.getRandomId()%>&skuCode=<%=orderLine.getSku().getSkuCode()%>&trk=sidcrt" title="<%=productNode.getFullName()%>"><%= productNode.getGlanceName() %></a><br>
+     </fd:ProductGroup>             
+    </logic:iterate>
+                        </td>
+                    </tr>
+                </table><br><A HREF="/view_cart.jsp?trk=sidcrt"><img src="/media_stat/images/template/lists/cart_lg.gif" width="67" height="56" border="0" alt="Shopping Cart"></A><br>
+<img src="/media_stat/images/layout/cccccc.gif"  width="125" height="1" VSPACE="10"><font class="space4pix"><br></font>
+        
+<% 
+//DUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+	if (user!=null && user.getIdentity() !=null) { %>
+	        <fd:CustomerCreditHistoryGetterTag id='customerCreditHistory'>
+	            <% if (customerCreditHistory.getRemainingAmount()>0.00) { %>
+	                   <font class="text11"><%= currencyFormatter.format(customerCreditHistory.getRemainingAmount()) %> credit will be applied at Checkout.</font><br>
+                        <img src="/media_stat/images/layout/cccccc.gif" width="125" height="1" VSPACE="10"><font class="space4pix"><br></font>
+	  			<% } %>
+	       </fd:CustomerCreditHistoryGetterTag>
+<% } %>
+                <font class="text12bold"><a href="/checkout/view_cart.jsp?trk=sidcrt">Check Out</A></font><br><font class="space4pix"><br></font>
+                <!-- end nested table with content -->
+            </td>
+            <td bgcolor="#FF9933" valign="bottom" width="1"><img src="/media_stat/images/layout/ff9933.gif" 
+                width="1" height="1"><br></td>
+        </tr>
+        <% if (lastDept != null) { %>
+        <tr valign="top">
+            <td width="140" colspan="3">
+                <table border="0" cellspacing="0" cellpadding="0" width="140">
+                    <tr valign="top">
+                    <td width="140" colspan="3" bgcolor="#FF9933"><img src="/media_stat/images/layout/ff9933.gif" width="1" height="4"></td>
+                    </tr>
+                    <tr valign="top">
+                        <td width="11"><img src="/media_stat/images/template/lists/cart_lft.gif" width="11" height="17" border="0"></td>
+                        <td width="118" valign="middle">Subtotal: <font class="text11bold"><%= currencyFormatter.format(cart.getSubTotal()) %></font><br>
+                            <img src="/media_stat/images/layout/clear.gif" width="118" height="1"></td>
+                        <td width="11"><img src="/media_stat/images/template/lists/cart_rt.gif" width="11" height="17" border="0"></td>
+                    </tr>
+                    <tr valign="top">
+                        <td width="140" colspan="3" bgcolor="#FF9933"><img src="/media_stat/images/template/lists/cart_btm_crnrs.gif" width="140" height="5" border="0"></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+<% } 
+    else { %>
+    <tr valign="top">
+            <td width="140" colspan="3"><img src="/media_stat/images/template/lists/cart_btm_crnrs2.gif" width="140" height="5" border="0"></td>
+    </tr>
+<% } %>
+</table>
+</fd:GetCart>

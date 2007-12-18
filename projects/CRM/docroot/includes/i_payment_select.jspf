@@ -1,0 +1,61 @@
+<%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%-- **************************************************
+	THIS FILE REQUIRES:
+	- import com.freshdirect.customer.*
+	- ErpPaymentMethodI payment
+	- SimpleDateFormat monthYearFormatter
+	- boolean showCCButtons
+	- boolean showDeleteButtons
+************************************************** --%>
+			<TABLE WIDTH="100%" CELLPADDING="0" CELLSPACING="0" BORDER="0" ALIGN="CENTER" class="order">
+				<TR>
+					<TD WIDTH="35%" ALIGN="RIGHT" class="order_detail">Name on account&nbsp;&nbsp;</TD>
+					<TD WIDTH="65%"><%= payment.getName() %></TD>
+				</TR>
+				<% if (payment.getCardType() != null) {	%>
+				<TR>
+					<TD WIDTH="35%" ALIGN="RIGHT" class="order_detail">Card Type&nbsp;&nbsp;</TD>
+					<TD WIDTH="65%"><%= payment.getCardType() %></TD>
+				</TR>
+				<% } %>
+				<TR>
+					<TD WIDTH="35%" ALIGN="RIGHT" class="order_detail">Account Number&nbsp;&nbsp;</TD>
+					<TD WIDTH="65%"><%= PaymentMethodUtil.getDisplayableAccountNumber(payment) %></TD>
+				</TR>
+				<% if (payment.getExpirationDate() != null) { %>
+				<TR>
+					<TD WIDTH="35%" ALIGN="RIGHT" class="order_detail">Expires&nbsp;&nbsp;</TD>
+					<TD WIDTH="65%"><%= CCFormatter.formatCreditCardExpDate( payment.getExpirationDate() ) %></TD>
+				</TR>
+				<% } %>
+				<% if (payment.getAbaRouteNumber() != null) {	%>
+				<TR>
+					<TD WIDTH="35%" ALIGN="RIGHT" class="order_detail">ABA Route Number&nbsp;&nbsp;</TD>
+					<TD WIDTH="65%"><%= payment.getAbaRouteNumber() %></TD>
+				</TR>
+				<% } %>
+				<% if (payment.getBankAccountType() != null) {	%>
+				<TR>
+					<TD WIDTH="35%" ALIGN="RIGHT" class="order_detail">Bank Account Type&nbsp;&nbsp;</TD>
+					<TD WIDTH="65%"><%= payment.getBankAccountType() %></TD>
+				</TR>
+				<% } %>
+				<tr valign="top">
+					<td width="35%" align="right" class="order_detail">Billing Address&nbsp;</td>
+					<td width="65%"><%=payment.getAddress1()%>&nbsp;Apt. <%=payment.getApartment()%>
+                                    <%if(payment.getAddress2() != null && !"".equalsIgnoreCase(payment.getAddress2())){%>
+                                        <br><%=payment.getAddress2()%><%}%><br><%=payment.getCity()%>,&nbsp;<%=payment.getState()%>&nbsp;<%=payment.getZipCode()%></td>
+				</tr>
+			</TABLE><BR>
+<% 	if (showCCButtons) { 
+String currPage = request.getRequestURI();
+String editPage = currPage.indexOf("checkout") > -1 ? "/checkout/checkout_edit_credit_card" : "/customer_account/edit_credit_card";
+String retPage = "";
+if (currPage.indexOf("charge_order") > -1) {
+ retPage += "&returnPage=/order/charge_order.jsp?orderId=" + request.getParameter("orderId");
+}
+%>
+			<CENTER>
+				<% if (showDeleteButtons) { %><a href="javascript:confirmDeletePayment(this.form,'<%= ((ErpPaymentMethodModel)payment).getPK().getId() %>');" class="delete">DELETE</a><% } %> <a href="<%=editPage%>.jsp?paymentId=<%= ((ErpPaymentMethodModel)payment).getPK().getId() %><%=retPage%>" class="edit">EDIT</a>
+			</CENTER>
+<%	} %>

@@ -1,0 +1,44 @@
+<body jwcid="@Border" title="Content History - Publish">
+	<table id="pageTitle" width="100%" cellpadding="0" cellspacing="0">
+		<tr>
+			<td valign="bottom">
+				<h1>View changes</h1>
+			</td>
+			<td align="right" valign="bottom" width="75" style="line-height:0;">
+				<img src="img/banner_versions.gif" width="75" height="66"></img>
+			</td>
+		</tr>
+	</table>
+	
+	<div class="buttonBar">
+		<br>
+	</div>
+	
+	<script type="text/javascript" src="js/tabpane.js"></script>
+	<div jwcid="@Any" class="dynamic-tab-pane-control" id="ognl:'tab-pane-' + (showVersions ? 'hist' : 'hist2')">
+		
+		<div class="tab-page">
+			<h2 class="tab"><span jwcid="@Insert" value="Changes"/></h2>
+			<table><tr><td>
+				<span jwcid="@If" condition="ognl:contentKey != null">
+					<br>
+					Name: <span jwcid="@Insert" value="ognl:contentKey.id"/><br>
+					Type: <span jwcid="@Insert" value="ognl:contentKey.type.name"/><br>
+					<br>
+				</span>	
+				
+				<span jwcid="@HistoryTable" changes="ognl:changes"/>
+			</td></tr></table>
+		</div>
+		
+		<span jwcid="@If" condition="ognl:showVersions">
+			<div class="tab-page">
+				<h2 class="tab"><span jwcid="@Insert" value="Versioning"/></h2>
+				
+				<span jwcid="@VersionHistory" contentKey="ognl:contentKey"/>
+			</div>
+		</span>
+		
+	</div>
+
+</body>

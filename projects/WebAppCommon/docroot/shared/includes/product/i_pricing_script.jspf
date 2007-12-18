@@ -1,0 +1,47 @@
+<%@ page import='com.freshdirect.common.pricing.*' %>
+<%--
+	builds javascript pricing structures
+	expects a collection of SkuModel objects, called "sku"
+--%>
+<%-- import the pricing engine --%>
+<script language="javascript" src="/assets/javascript/pricing.js"></script>
+<script language="javascript">
+var materialPricesArray = new Array();  
+var cvPricesArray = new Array();
+var salesUnitRatiosArray = new Array();
+<logic:iterate id="sku" collection="<%= skus %>" type="SkuModel">
+ <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
+  <fd:FDProduct id="product" productInfo="<%= productInfo %>">
+<%				
+	Pricing pricing = product.getPricing();
+	MaterialPrice[] matPrices = pricing.getMaterialPrices();
+	CharacteristicValuePrice[] cvPrices = pricing.getCharacteristicValuePrices();
+	SalesUnitRatio[] suRatios = pricing.getSalesUnitRatios();
+%>
+	var mp = materialPricesArray['<%= productInfo.getSkuCode() %>'] = new Array();
+<%
+	for(int j=0; j<matPrices.length; j++) {
+%>	mp[<%=j%>] = new MaterialPrice(<%= matPrices[j].getPrice() %>, '<%= matPrices[j].getPricingUnit() %>', '<%= matPrices[j].getScaleLowerBound() %>', '<%= matPrices[j].getScaleUpperBound() %>', '<%=matPrices[j].getScaleUnit()%>');
+<%
+	}
+%>
+
+	var cvp = cvPricesArray['<%= productInfo.getSkuCode() %>'] = new Array();
+<%
+	for (int j=0; j<cvPrices.length; j++) { 
+%>	cvp[<%=j%>] = new CharValuePrice('<%= cvPrices[j].getCharacteristicName() %>', '<%= cvPrices[j].getCharValueName() %>', <%= cvPrices[j].getPrice() %>, '<%= cvPrices[j].getPricingUnit() %>', <%= cvPrices[j].getApplyHow() %>);
+<%
+	}
+%>
+	var su = salesUnitRatiosArray['<%= productInfo.getSkuCode() %>'] = new Array();
+<%
+	for(int j=0; j<suRatios.length; j++) {
+%>	su[<%=j%>] = new SalesUnitRatio('<%= suRatios[j].getAlternateUnit() %>', '<%= suRatios[j].getSalesUnit() %>', <%= suRatios[j].getRatio() %>);
+<%
+	}
+%>
+   </fd:FDProduct>
+  </fd:FDProductInfo>
+</logic:iterate>
+</script>
+<%-- end of javascript pricing structures --%>

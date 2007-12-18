@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE component-specification PUBLIC
+  "-//Apache Software Foundation//Tapestry Specification 3.0//EN"
+  "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<component-specification class="com.freshdirect.cms.ui.tapestry.component.Defer"
+    allow-body="yes"
+    allow-informal-parameters="no">
+    
+    <description>Defer takes a Block as a parameter.
+		It renders the Block into a buffer, then renders its body,
+		then outputs the buffered content from the Block.
+		See http://howardlewisship.com/blog/2004/12/back-from-shoppingcom-defer-component.html
+		</description>
+    
+	<parameter name="block" direction="auto" required="yes" type="org.apache.tapestry.components.Block"/>
+    
+</component-specification>

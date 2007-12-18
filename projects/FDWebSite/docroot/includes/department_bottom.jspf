@@ -1,0 +1,158 @@
+<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import="com.freshdirect.framework.webapp.*"%>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.*, com.freshdirect.webapp.taglib.fdstore.*'%>
+
+
+<%
+/*------ page dependencies:   --------------------------------------------------
+    - DepartmentModel department
+    - layout type constants defined in catLayoutManager.jsp
+--------------------------------------------------------------------------------*/
+Image deptMngrImg = null;
+MediaI deptMngrFile = null;
+Attribute dptBottAttrib = null;
+
+dptBottAttrib=department.getAttribute("DEPT_MGR"); //department manager image with name
+
+if (dptBottAttrib !=null) {
+    deptMngrImg = (Image)dptBottAttrib.getValue();
+}
+
+dptBottAttrib=department.getAttribute("DEPT_MGR_BIO"); //department manager bio with file
+
+if (dptBottAttrib !=null) {
+    deptMngrFile = (MediaI)dptBottAttrib.getValue();
+}
+
+String bioLink = "#";
+if (deptMngrFile !=null) {
+    bioLink = "javascript:popup('/shared/popup.jsp?deptId="+ request.getParameter("deptId") +"&attrib=DEPT_MGR_BIO&tmpl=large','large');";
+}
+
+dptBottAttrib = department.getAttribute("LAYOUT_TYPE");
+int dptLayout = dptBottAttrib==null?-1:((Integer)dptBottAttrib.getValue()).intValue();
+String scURL = "";
+
+dptBottAttrib = department.getAttribute("ASSOC_EDITORIAL");
+List assocEditorial = new ArrayList();
+if (dptBottAttrib !=null) {
+    assocEditorial = (List)dptBottAttrib.getValue();
+}
+
+dptBottAttrib = department.getAttribute("DEPARTMENT_BOTTOM");
+List deptBottom = new ArrayList();
+if (dptBottAttrib !=null) {
+    deptBottom = (List)dptBottAttrib.getValue();
+}
+
+Map secondaryCategories = new TreeMap();
+List categories = ((DepartmentModel)department).getCategories();
+//** place the secondary categories into the list
+for(Iterator catItr = categories.iterator();catItr.hasNext();){
+    CategoryModel catModl = (CategoryModel)catItr.next();
+    if (catModl.isSecondaryCategory() && catModl.getShowSelf()) {
+        int priority =  new Integer(catModl.getPriority()).intValue();
+        secondaryCategories.put(JspMethods.leadZeroes(priority,5)+catModl.getFullName().toUpperCase(),catModl);
+    }
+}
+
+boolean showBars = (deptMngrImg!=null || deptBottom.size() > 0 || secondaryCategories.size() > 0);
+%>
+
+<BR>
+        <%if(showBars){%><IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="550" HEIGHT="1" BORDER="0"><BR><%}%>
+        <FONT CLASS="space4pix"><BR></FONT>
+        <FONT CLASS="space4pix"><BR></FONT>
+        <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="550">
+
+<%-- There are three types of bottoms. Grocery, Tea, and standard (within the Standard, their are several styles--%>
+<%-- we should create an attribute called bottom_layout, that will help in deciding which one to use
+    but for now, just check the department content id
+--%>
+<%
+if ("OUR_PICKS, FRO, GRO, DAI, SPE".indexOf(department.getContentName().toUpperCase())==-1) {
+
+
+%>
+              <TR VALIGN="TOP">
+<%-- The Left side of the bottom template --%>
+                   <TD WIDTH="110" ROWSPAN="2">
+                      <A HREF="<%=bioLink%>"><img src="<%=deptMngrImg.getPath()%>" <%=JspMethods.getImageDimensions(deptMngrImg) %> border="0" alt="<%=department.getFullName()%>: MANAGER"></A><BR><IMG src="/media_stat/images/layout/clear.gif"   WIDTH="110" HEIGHT="1" BORDER="0">
+                   </TD>
+                   <TD WIDTH="220" ROWSPAN="2"> <%--left side title content --%><BR>
+<%
+                                    for(Iterator edItr = assocEditorial.iterator();edItr.hasNext();) {
+                                        String edItm = ((Html)edItr.next()).getPath();
+                                        %> <fd:IncludeMedia name='<%= edItm %>' /><br>
+<%                                  }%>
+                                      <BR>
+                                        <BR>
+                                        <%-- left side contents type-1 here --%>
+                                        <%--paint seperator if other left side content type --%>
+                      <BR>
+<%-- column seperator --%>
+                   <TD WIDTH="15" ROWSPAN="2"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="15" HEIGHT="1" BORDER="0"></TD>
+                            <%-- The Right Side of the Bottom Template  --%>
+                   <TD WIDTH="1" <%if(showBars){%>BGCOLOR="#CCCCCC"<%}%> ROWSPAN="4"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="1" BORDER="0"><BR></TD>
+<%-- paint the secondary Categories --%>
+                   <TD WIDTH="204">
+<%
+if (deptBottom.size() > 0 ) {
+
+    for(Iterator deptBotItr = deptBottom.iterator(); deptBotItr.hasNext();) {
+        String deptBotItm = ((Html)deptBotItr.next()).getPath();
+  %> <fd:IncludeMedia name='<%= deptBotItm %>' /> <%
+    }
+
+}else{
+    if (secondaryCategories.size() > 0) {
+%>
+                        <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="204">
+<%
+        int scInCol = 0;
+        int cntr=0;
+        Set scKeys = secondaryCategories.keySet();
+           for (Iterator scItr=scKeys.iterator(); scItr.hasNext();) {
+            CategoryModel sc = (CategoryModel)secondaryCategories.get(scItr.next());
+            String scImgPath="";
+            String scImgDims="";
+            boolean makeNewRow=false;
+            scURL = response.encodeURL("/category.jsp?catId="+sc+"&trk="+trkCode);
+            if (sc.getAttribute("ALIAS") !=null) {
+                ContentRef contentRef = (ContentRef)sc.getAttribute("ALIAS").getValue();
+                if (contentRef instanceof CategoryRef) {
+                    scURL = response.encodeURL("/category.jsp?catId="+contentRef.getRefName()+"&trk="+trkCode);
+               } else if (contentRef instanceof DepartmentRef) {
+                    scURL = response.encodeURL("/department.jsp?catId="+contentRef.getRefName()+"&trk="+trkCode);
+               }
+             }
+
+            dptBottAttrib = sc.getAttribute("CAT_PHOTO");
+            if (dptBottAttrib!=null) {
+                scImgPath = ((Image)dptBottAttrib.getValue()).getPath();
+                scImgDims = JspMethods.getImageDimensions((Image)dptBottAttrib.getValue());
+            }
+            if ((scInCol%2)==0  || makeNewRow) {
+                scInCol=0;
+                if(cntr !=0 ) {%></tr><% } %>
+                        <tr VALIGN="top" ALIGN="CENTER">
+<%          }%>
+                            <TD WIDTH="14"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="14" HEIGHT="1" BORDER="0"></TD>
+                            <TD WIDTH="87">
+                                <A HREF="<%=scURL%>"><img src="<%=scImgPath%>" <%=scImgDims%> border="0" alt="<%=sc.getFullName()%>"></A><BR>
+                                <A HREF="<%=scURL%>"><%=sc.getFullName()%></A>
+                                <BR><%--indicator image --%><FONT CLASS="space4pix"><BR><BR></FONT>
+                            </TD>
+<%          scInCol++;
+            cntr++;
+          }%>
+                        </tr>
+                        </TABLE>
+<%  }
+}%>
+                    </TD>
+                </TR>
+<%}// end if not GroceryLayout ...RGayle 8/02 dfgs do not show a bottom anymore  %>
+
+    </TABLE>

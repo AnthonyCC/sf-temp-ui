@@ -1,0 +1,114 @@
+<logic:iterate id="cartLine" collection="<%= view.getOrderLines() %>" type="com.freshdirect.fdstore.customer.FDCartLineI">
+<%
+ErpInvoiceLineI invoiceLine = null;
+StringBuffer quantity = new StringBuffer();
+quantity.append(cartLine.getOrderedQuantity());
+if(cartLine.hasInvoiceLine()){
+	quantity.append("/").append(cartLine.getDeliveredQuantity());
+	invoiceLine = cartLine.getInvoiceLine();
+}
+if (lastDept==null || !lastDept.equalsIgnoreCase(cartLine.getDepartmentDesc())) {;
+	lastDept = cartLine.getDepartmentDesc() ;
+
+	if (view.isDisplayDepartment()) {
+		if (lastDept.startsWith("Recipe: ")) {
+			if (firstRecipe) {
+				%>
+				<tr>
+					<td>&nbsp;</td>
+					<td colspan="8" class="text11orbold"><br>Recipes</td>
+				</tr>
+				<%
+			}
+			%>
+			<tr>
+				<td>&nbsp;</td>
+				<td colspan="8" class="text11bold"><%= lastDept.substring("Recipe: ".length()) %></td>
+			</tr>
+			<%
+			firstRecipe = false;
+		} else {
+			%>
+			<tr>
+				<td>&nbsp;</td>
+				<td colspan="8" class="text11orbold"><br><%=lastDept%></td>
+			</tr>
+			<%
+		}
+	}
+} 
+%>
+<tr valign="top" align="center">
+	<td><%=quantity.toString()%><%=(cart.hasSettledReturn() && cartLine.hasReturnLine())? "<span style='color:#cc0000'>/"+cartLine.getReturnedQuantity()+"</span>":""%><%=" "+cartLine.getUnitsOfMeasure()%> <%=cartLine.getLabel()%><%=cartLine.hasRestockingFee()?"**":""%></td>
+	<td align="left"><div style="margin-left:8px; text-indent:-7px;"><font class="text10bold"><%= cartLine.getDescription() %></font>
+		<% if (cartLine.getConfigurationDesc()!=null && !"".equals(cartLine.getConfigurationDesc().trim())) { %>(<%= cartLine.getConfigurationDesc() %>)<% } %></div><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br></td>
+	<td><%if(cartLine.hasInvoiceLine() && cartLine.isPricedByLb()){%><%=invoiceLine.getWeight()%>&nbsp;lb <%}%></td>
+	<td><%=cartLine.getUnitPrice()%></td>
+	<td><%= ((cartLine.hasInvoiceLine() && invoiceLine.getCustomizationPrice()>0) ? currencyFormatter.format(invoiceLine.getCustomizationPrice()) : "&nbsp;") %></td>
+	<td align="right" class="text10bold"><b><%= (cartLine.hasInvoiceLine()) ? currencyFormatter.format(invoiceLine.getPrice()) : currencyFormatter.format(cartLine.getPrice()) %></b></td>
+	<td class="text10bold"><%
+		if (cartLine.isEstimatedPrice()) {
+			if (!cartLine.hasInvoiceLine()) {
+	        	out.print("*");
+			}
+		 }%><%=(cartLine.hasTax() ? "<b>T</b>" : "")%></td>
+	<td class="text10bold"><b><%= cartLine.hasScaledPricing() ? "S" : "" %></b></td>
+	<td class="text10bold"><b><%= cartLine.hasDepositValue() ? "D" : "" %></b></td>
+</tr>
+</logic:iterate>
+
+<%
+if (cart.hasInvoice()) {
+	List deliveredSamples = view.getSampleLines();//invoice.getDeliveredSampleLines();
+	if (deliveredSamples.size()>0) {
+%>
+	<tr>
+		<td>&nbsp;</td>
+		<td colspan="8" class="text11orbold"><br>Special Promotions</td>
+	</tr>
+	<logic:iterate id="cartLine" collection="<%= deliveredSamples %>" type="com.freshdirect.fdstore.customer.FDCartLineI">
+		<tr valign="top" align="center">
+			<td align="right"><%=cartLine.getDisplayQuantity()%></td>
+			<td class="text10bold"><%= cartLine.getDescription() %></td>
+			<td colspan="3">&nbsp;</td>
+			<td align="right" class="text10bold">FREE!</td>
+			<td colspan="3">&nbsp;</td>
+		</tr>
+	</logic:iterate>
+	<%
+	}
+}
+%>
+
+<tr><td colspan="9">
+	<div class="orderViewSeparator" />
+</td></tr>
+
+<tr align="right">
+	<td colspan="5"><%= view.getDescription() %> <% if (view.isEstimatedPrice()) { %>Estimated <% } %>Subtotal:</td>
+	<td><% if (cart.hasInvoice() && invoiceView != null) { %><%= currencyFormatter.format( invoiceView.getSubtotal() ) %><% } else { %><%= currencyFormatter.format(view.getSubtotal()) %><% } %></td>
+	<td colspan="3" align="left"><%=(view.isEstimatedPrice() || cart.hasSettledReturn())?"*":""%></td>
+</tr>
+
+<%
+tax = (cart.hasInvoice() && invoiceView != null) ? invoiceView.getTax() : view.getTax();
+if (tax > 0) {
+	%>
+	<tr align="right">
+		<td colspan="5">Tax:</td>
+		<td><%= currencyFormatter.format(tax) %></td>
+		<td colspan="3">&nbsp;</td>
+	</tr>
+	<%
+}
+deposit = (cart.hasInvoice() && invoiceView != null) ? invoiceView.getDepositValue() : view.getDepositValue();
+if (deposit > 0) {
+	%>
+	<tr align="right">
+		<td colspan="5">Bottle Deposit:</td>
+		<td><%=currencyFormatter.format(deposit)%></td>
+		<td colspan="3">&nbsp;</td>
+	</tr>
+	<%
+}
+%>

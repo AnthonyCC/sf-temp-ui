@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.freshdirect.delivery.planning" schema="dlv">
+
+    <class name="DlvResourceModel" table="PLANNING_RESOURCE" lazy="false">
+        <id name="id" column="ID">
+            <generator class="sequence">
+            	<param name="sequence">SYSTEM_SEQ</param>
+            </generator>
+        </id>
+
+        <property name="name" column="NAME" not-null="true"/>
+        <property name="day" column="DAY" type="date" not-null="true"/>
+        <property name="zoneCode" column="ZONE_CODE" not-null="true"/>
+        <property name="people" column="PEOPLE" not-null="true"/>
+        <property name="deliveryRate" column="DELIVERY_RATE" not-null="true"/>
+          
+        <bag name="timeslots" cascade="all,delete-orphan" lazy="false">
+            <key column="RESOURCE_ID" not-null="true"/>
+            <one-to-many class="com.freshdirect.delivery.model.DlvTimeslotModel"/>
+        </bag>
+
+        <bag name="truckAllocations" cascade="all" lazy="false">
+            <key column="RESOURCE_ID" not-null="true"/>
+            <one-to-many class="DlvTruckAllocation"/>
+        </bag>
+
+    </class>
+    
+   
+<sql-query name="findByRegionAndDate">
+	<return-scalar column="resourceID" type="string"/>
+	select ID AS resourceID
+	from dlv.planning_resource 
+	where zone_code in 
+	(select zone_code from dlv.zone where region_data_id = 
+		(select id from dlv.region_data 
+			where region_id = :region_id 
+			and start_date = 
+				(select max(start_date) 
+				 from dlv.region_data 
+				 where start_date &lt;= :start_date
+				 and region_id = :region_id
+				 )
+		)
+	) 
+	and day = :day 
+	order by zone_code, name
+
+</sql-query>
+
+<query name="findResourcesByZoneCodeAndDay">
+	from DlvResourceModel where zoneCode = :zoneCode and day = :day
+</query>
+
+
+<sql-query name="zoneIdQuery">
+	<return-scalar column="zone_id" type="string"/>
+	<return-scalar column="plan_id" type="string"/>
+	select z.id as zone_id, z.plan_id as plan_id
+	from dlv.region_data rd, dlv.zone z 
+	where rd.id = z.region_data_id
+		and rd.region_id = (select id from dlv.region where name = :region_name) 
+		and rd.start_date = (select max(start_date) from dlv.region_data where start_date &lt;= :start_date 
+			and region_id=(select id from dlv.region where name = :region_name))
+		and z.zone_code = :zone_code 
+</sql-query>			
+</hibernate-mapping>

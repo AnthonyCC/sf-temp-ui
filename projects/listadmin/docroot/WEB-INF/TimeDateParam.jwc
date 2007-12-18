@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE component-specification PUBLIC
+  "-//Apache Software Foundation//Tapestry Specification 3.0//EN"
+  "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<component-specification class="org.apache.tapestry.BaseComponent"
+    allow-body="yes"
+    allow-informal-parameters="yes">
+    
+  <description>add a description</description>
+
+  <parameter name="clause" direction="in" type="com.freshdirect.listadmin.db.Clause" required="yes" property-name="theClause" />
+
+  <property-specification
+    name="dateFormat"
+    type="java.lang.String"
+    initial-value='"%d-%b-%Y"'/>
+
+  <bean name="dateValidator" class="org.apache.tapestry.valid.DateValidator" lifecycle="page">
+    <!-- set-property name="required" expression="true"/ -->
+    <!-- set-property name="clientScriptingEnabled" expression="true"/ -->
+  </bean>
+
+  <component id="theDate" type="myws:DateTimePicker">
+    <static-binding name="displayName" value="Start Date"/>
+    <binding name="validator" expression="beans.dateValidator"/>
+    <binding name="value" expression="theClause.runtimeValue"/>
+    <binding name="includeWeek" expression="false"/>
+    <binding name="showsTime" expression="false"/>
+  </component>
+
+</component-specification>

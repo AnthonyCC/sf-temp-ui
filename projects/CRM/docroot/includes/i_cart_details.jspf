@@ -1,0 +1,398 @@
+<script language="javascript">	function returnAll(formName){
+		var frmObj = document.forms[formName];
+		var frmFldsCnt = frmObj.elements.length;
+		for (var i = 0; i<frmFldsCnt;i++) {
+			var fldElement = frmObj.elements[i];
+			if (fldElement.name.substring(0,4) !="h_q_") continue;			
+			var newName = "ret_qty_" + fldElement.name.substring(4);			
+			frmObj[newName].value = fldElement.value; 
+		}
+	}
+		
+</script>
+
+<%@ page import="com.freshdirect.fdstore.customer.adapter.FDInvoiceAdapter"%>
+<%@ page import="com.freshdirect.webapp.taglib.callcenter.ComplaintUtil" %>
+<%@ page import="com.freshdirect.affiliate.ErpAffiliate" %>
+<%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@ page import="com.freshdirect.fdstore.FDSalesUnit"%>
+<%@ page import="com.freshdirect.customer.ErpComplaintLineModel" %>
+<%@ page import="com.freshdirect.customer.ErpDiscountLineModel" %>
+<%@ page import="com.freshdirect.common.pricing.Discount" %>
+<%@ page import="com.freshdirect.fdstore.promotion.PromotionI" %>
+<%@ page import="com.freshdirect.fdstore.promotion.PromotionFactory" %>
+<%@ page import="com.freshdirect.fdstore.promotion.EnumPromotionType" %>
+<%@ page import="com.freshdirect.fdstore.deliverypass.DeliveryPassUtil" %>
+<%-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	THIS INCLUDE REQUIRES:
+	- boolean showFeesSection
+	- boolean showEditOrderButtons
+	- FDCartI order
+	- Collection lineComplaints
+	- Collection deptComplaints
+	- Collection miscComplaints
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --%>
+
+<%	
+    TreeMap allDeptsMap = new TreeMap();
+    boolean isSubmitOrderStep = request.getRequestURI().toLowerCase().indexOf("checkout/checkout_preview.jsp")!=-1?true:false;
+    boolean _forPrint = "print".equalsIgnoreCase(request.getParameter("for"));
+    String show = (request.getParameter("show")!=null && request.getParameter("show").equals("carton"))?"carton":"details";
+    boolean hasEstimatedItems = false;
+	boolean hasInvoice = false;
+	boolean hasReturn = false;
+	if (order.hasInvoice()) {
+		hasInvoice = true;
+		hasReturn = order.hasSettledReturn() || order.hasRefusedDelivery();
+	}
+%>
+    <div class="cust_sub_nav" style="width: 120px; <%=(show.equals("details"))?"background-color:orange;":"background-color:lightblue"%>"><a href="/main/order_details.jsp?orderId=<%=orderId%>&show=details<%=(_forPrint)?"&for=print":""%>">Details</a></div>
+    <%if ( (order.getCartonContents() != null) &&  (order.getCartonContents().size() > 0) ){ %>
+        <div class="cust_sub_nav" style="width: 120px; <%=(show.equals("carton"))?"background-color:orange;":"background-color:lightblue"%>"><a href="/main/order_details.jsp?orderId=<%=orderId%>&show=carton<%=(_forPrint)?"&for=print":""%>">Missing</a></div>
+    <%}%>
+<div class="sub_nav">&nbsp;</div>
+<br>
+
+<% if(show.equals("details")){%>
+<%-- ======================= BEGIN LINE ITEM & CREDIT DETAILS SECTION ======================= --%>
+<table border="0" cellspacing="0" cellpadding="1" width="100%" class="order_detail">
+<%if(hasInvoice){%>
+	<tr>
+		<td colspan="2" align="center"><b>Quantity <br>Ord./Del.<%if(hasReturn){%>/Ret.<%}%></b></td>
+        <td></td>
+		<td align="center"><b>Final Weight</b></td>
+		<td align="center"><b>Unit Price</b></td>
+		<td align="right"><b>Options Price</b></td>
+		<td align="right"><b>Total Est./Final</b></td>
+		<td colspan="4"></td>
+        <td colspan="2">Credit/Refund</td>
+        <td>Reason</td>
+	</tr>
+<%} else {%>
+    <tr>
+		<td colspan="2" align="center"><b>Quantity<b></td>
+        <td></td>
+        <td colspan="2" align="center"><b>Unit Price</b></td>
+        <td colspan="2" align="right"><b>Total Price</b></td>
+        <td colspan="4"></td>
+    </tr>
+<%
+    }
+%>
+<logic:iterate id="view" collection="<%= order.getOrderViews() %>" type="com.freshdirect.fdstore.customer.WebOrderViewI">
+	<%
+	WebOrderViewI invoicedView = null;
+	if(order.hasInvoice()) {
+		invoicedView = order.getInvoicedOrderView(view.getAffiliate());
+	}
+	String lastDept = null;
+	double tax = 0.0;
+	double deposit = 0.0;
+
+	if (!view.isDisplayDepartment()) {
+		%>
+		<tr class="order_item_dept">
+			<td colspan="2"></td>
+			<td colspan="<%= (hasInvoice)?"12":"9" %>"><b><%= view.getDescription() %> Charges</b></td>
+		</tr>
+		<%
+	}
+	%>
+
+	<%@ include file="/includes/i_cartline_details.jspf"%>
+
+</logic:iterate>
+
+<tr><td colspan="<%= hasInvoice ? "14" : "11"%>"><br></td></tr>
+<tr>
+	<td colspan="3" align="right"><b>Order Totals and Extras</b></td>
+<%if(hasInvoice){%>
+		<td colspan="4" align="right">Total Est./Final</td>
+		<td colspan="4"></td>
+        <td colspan="2">Credit/Refund</td>
+        <td>Reason</td>
+<%} else {%>
+	<td colspan="4" align="right">Total Price</td>
+	<td colspan="4"></td>
+<%}%>
+</tr>
+<tr><td colspan="<%= hasInvoice ? "14" : "11"%>" class="list_separator" style="padding: 0px;"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td></tr>	
+
+        <%  if (order.getTotalDiscountValue() > 0.0) { 
+	    		if (hasInvoice) {
+					List discounts = order.getDiscounts();
+					List actualDiscounts = order.getActualDiscounts();
+					for (Iterator iter = discounts.iterator(), iter2 = actualDiscounts.iterator(); iter.hasNext() && iter2.hasNext();) {
+						ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
+						Discount discount = discountLine.getDiscount();
+						ErpDiscountLineModel discountLine2 = (ErpDiscountLineModel) iter2.next();
+						Discount discount2 = discountLine2.getDiscount();
+						PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
+						String desc = EnumPromotionType.SIGNUP.equals(promotion.getPromotionType()) ? "Free Food" : promotion.getDescription();		
+        %>        
+				<tr>
+		            <td colspan="3"></td>
+				    <td colspan="2"><%=desc%>:</td>
+				    <td colspan="2" align="right">(<%=CCFormatter.formatCurrency(discount.getAmount()) %>)<% if (hasInvoice) { %> / <b>(<%=CCFormatter.formatCurrency( discount2.getAmount() ) %>)</b><% } %></td>
+		            <td colspan="4"></td>
+		            <td colspan="3"></td>
+		        </tr>
+			<% 		}
+				}  else {  // no invoice --> show itemized discounts 
+					List discounts = order.getDiscounts();
+					for (Iterator iter = discounts.iterator(); iter.hasNext();) {
+						ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
+						Discount discount = discountLine.getDiscount();
+						PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
+						String desc = EnumPromotionType.SIGNUP.equals(promotion.getPromotionType()) ? "Free Food" : promotion.getDescription();		
+		%>
+				<tr>
+		            <td colspan="3"></td>
+				    <td colspan="2"><%=desc%>:</td>
+				    <td colspan="2" align="right">(<%=CCFormatter.formatCurrency(discount.getAmount()) %>)</td>
+		            <td colspan="4"></td>
+		        </tr>		
+		<%
+					} // end of for
+				}
+		}
+		%>
+
+        <%  if (order.getCustomerCreditsValue() > 0.0) {%>
+		<tr>
+            <td colspan="3"></td>
+		    <td colspan="2">Credits:</td>
+		    <td colspan="2" align="right">(<%=CCFormatter.formatCurrency(order.getCustomerCreditsValue())%>)<% if (hasInvoice) {%> / <b>(<%=CCFormatter.formatCurrency( order.getActualCustomerCreditsValue() )%>)</b><%}%></td>
+		    <td colspan="4"></td>
+            <% if (hasInvoice) { %>
+            <td colspan="3"></td>
+            <% } %>
+		</tr>
+		<%  } %>
+            
+         <%
+       	    String displayString = "";
+	    StringBuffer value = new StringBuffer();
+	    StringBuffer returnValue = new StringBuffer();
+         
+            if(order.isDlvPassApplied()) {
+            	displayString = "Delivery Charge:";
+		value.append(DeliveryPassUtil.getDlvPassAppliedMessage(user));
+	    } else if(order.isDeliveryChargeWaived()) {
+		displayString = "Delivery Charge (waived):";
+		value.append("$0.00");
+	    } else {
+		displayString = "Delivery Charge:";
+		value.append(CCFormatter.formatCurrency(order.hasInvoice() ? order.getInvoicedDeliveryCharge() : order.getDeliverySurcharge()));
+		value.append(order.isDeliveryChargeTaxable() ? "&nbsp;T" : "");
+	    }
+	    
+	    if(order.hasReturn()) {
+	     	value.append(" / ");
+	        if(order.isDlvPassAppliedOnReturn()) {
+		   returnValue.append(DeliveryPassUtil.getDlvPassAppliedMessage(user));
+	        } else if(order.isChargedWaivedForReturn(EnumChargeType.DELIVERY)) {
+		   returnValue.append("$0.00 (waived)");
+	        } else {
+		   returnValue.append(CCFormatter.formatCurrency(order.getDeliverySurchargeOnReturn()));
+		   returnValue.append(order.isDeliveryChargeTaxable() ? "&nbsp;T" : "");
+	        }
+	     	
+	    }
+	  %>   
+        <tr>
+            <td colspan="3"></td>
+            <td colspan="2"><%= displayString %></td>
+            <td colspan="2" align="right"><%= value %><b><%= returnValue %></b></td>
+            <td colspan="3"></td>
+            <%  if (hasInvoice) { %>
+	             <td colspan="3"></td>
+            <%  }   %>
+        </tr>    
+	  
+	    <%  if (order.getMiscellaneousCharge() > 0.0) { %>
+		<tr>
+            <td colspan="3"></td>
+			<td colspan="2"><a href="javascript:popup('/shared/fee_info.jsp?type=fuel','large');">Fuel Surcharge</a><%if(order.isMiscellaneousChargeWaived()){%> (waived)<%}%>:</td>
+			<td colspan="2" align="right"><%if(order.isMiscellaneousChargeWaived()){%>$0.00<%}else{%><%= CCFormatter.formatCurrency(order.getMiscellaneousCharge()) %><%}%></td>
+		    <td><b><%=order.isMiscellaneousChargeTaxable() && !order.isMiscellaneousChargeWaived() ? "&nbsp;T" : "" %></b></td>
+		    <td colspan="3"></td>
+            <%  if (hasInvoice) { %>
+            <td colspan="3"></td>
+            <%  }   %>
+		</tr>
+		<%  } %>
+		
+			
+		<%if(order.getTaxValue() > 0){%>
+			</tr>
+				<td colspan="3"></td>
+				<td colspan="2">Total Tax: </td>
+				<td colspan="2" align="right"><%=CCFormatter.formatCurrency(hasInvoice ? order.getInvoicedTaxValue() : order.getTaxValue())%></td>
+			<tr>
+		<%}%>
+		
+		</tr>
+
+        <% if ((order.getPhoneCharge() > 0) || ((order.getPhoneCharge() == 0.0) && order.isChargeWaived(EnumChargeType.PHONE))) { %>
+        <tr>
+            <td colspan="3"></td>
+        <%
+            if (order.isChargeWaived(EnumChargeType.PHONE) && !isSubmitOrderStep) { %>
+            <td colspan="2">Phone Handling Charge (waived): </td>
+			<td colspan="2" align="right">$0.00</td>
+<%          } else if (order.getPhoneCharge() > 0) { %>
+			<td colspan="2">Phone Handling Charge:
+<%
+                      if (isSubmitOrderStep ) {
+%>
+                        &nbsp;&nbsp;Waive <input type="checkbox" value="true" <%=order.isChargeWaived(EnumChargeType.PHONE)?"checked":""%> name="waive_phone_fee">
+<% } %>
+                        </td>
+			<td colspan="2" align="right"><%=CCFormatter.formatCurrency(order.isChargeWaived(EnumChargeType.PHONE)?0.0:order.getPhoneCharge())%></td>
+		    <td><b><%=order.isPhoneChargeTaxable() && !order.isPhoneChargeWaived() ? "&nbsp;T" : "" %></b></td>
+		    <td colspan="3"></td>
+            <%  if (hasInvoice) { %>
+            <td colspan="3"></td>
+            <%  }   %>
+		<%  } %>
+        </tr>
+        <%  }   %>
+
+        <%  if (order.getCCDeclinedCharge() > 0.0) { %>
+		<tr>
+            <td colspan="3"></td>
+			<td colspan="2">CC Declined Charge: </td>
+			<td colspan="2" align="right"><%=CCFormatter.formatCurrency(order.getCCDeclinedCharge())%></td>
+		    <td colspan="4"></td>
+            <%  if (hasInvoice) { %>
+            <td colspan="3"></td>
+            <%  }   %>
+		</tr>
+		<%  } %>
+        <%  if (order.getRestockingCharges(ErpAffiliate.getEnum(ErpAffiliate.CODE_FD)) > 0.0) { %>
+		<tr>
+            <td colspan="3"></td>
+			<td colspan="2">Restocking Charge Freshdirect:</td>
+			<td colspan="2" align="right"><%=CCFormatter.formatCurrency(order.getRestockingCharges(ErpAffiliate.getEnum(ErpAffiliate.CODE_FD)))%></td>
+		    <td colspan="4"></td>
+            <%  if (hasInvoice) { %>
+            <td colspan="3"></td>
+            <%  }   %>
+		</tr>
+		<%  } %>
+		<%  if (order.getRestockingCharges(ErpAffiliate.getEnum(ErpAffiliate.CODE_WBL)) > 0.0) { %>
+		<tr>
+            <td colspan="3"></td>
+			<td colspan="2">Restocking Charge WBL:</td>
+			<td colspan="2" align="right"><%=CCFormatter.formatCurrency(order.getRestockingCharges(ErpAffiliate.getEnum(ErpAffiliate.CODE_WBL)))%></td>
+		    <td colspan="4"></td>
+            <%  if (hasInvoice) { %>
+            <td colspan="3"></td>
+            <%  }   %>
+		</tr>
+		<%  } %>
+		<%  if (order.getRestockingCharges(ErpAffiliate.getEnum(ErpAffiliate.CODE_BC)) > 0.0) { %>
+		<tr>
+            <td colspan="3"></td>
+			<td colspan="2">Restocking Charge Best Cellars:</td>
+			<td colspan="2" align="right"><%=CCFormatter.formatCurrency(order.getRestockingCharges(ErpAffiliate.getEnum(ErpAffiliate.CODE_BC)))%></td>
+		    <td colspan="4"></td>
+            <%  if (hasInvoice) { %>
+            <td colspan="3"></td>
+            <%  }   %>
+		</tr>
+		<%  } %>
+		<tr>
+            <td colspan="3"></td>
+		    <td colspan="2"><b><% if (hasEstimatedItems) { %>Estimated <% } %>Order Total</b></td>
+		    <td colspan="2" align="right"><b><%=CCFormatter.formatCurrency(order.getTotal()) %><% if (hasInvoice) { %> / <%=CCFormatter.formatCurrency( order.getInvoicedTotal() ) %></b><% } %></td>
+		    <td><% if (hasEstimatedItems) out.print("*"); %></td>
+            <td colspan="3"></td>
+            <% if (hasInvoice) { %>
+            <td colspan="3"></td>
+            <% } %>
+		</tr>
+
+		<%  if (order.hasChargeInvoice()) { %>
+		<tr>
+            <td colspan="3"></td>
+			<td colspan="2">Returned Check Fee:</td>
+			<td colspan="2" align="right"><%=CCFormatter.formatCurrency(order.getChargeInvoiceTotal())%></td>
+		    <td colspan="4"></td>
+            <%  if (hasInvoice) { %>
+            <td colspan="3"></td>
+            <%  }   %>
+		</tr>
+		<%  } %>
+
+<%  if (hasInvoice) {   
+    double totalRefunds = 0.0;
+    double totalCredits = 0.0;
+
+    for (Iterator lIter = lineComplaints.iterator(); lIter.hasNext(); ) {
+        ErpComplaintLineModel line = (ErpComplaintLineModel) lIter.next();
+        if (line.getMethod().equals(EnumComplaintLineMethod.CASH_BACK)) totalRefunds += line.getAmount();
+        if (line.getMethod().equals(EnumComplaintLineMethod.STORE_CREDIT)) totalCredits += line.getAmount();
+    }
+
+    for (Iterator lIter = deptComplaints.iterator(); lIter.hasNext(); ) {
+        ErpComplaintLineModel line = (ErpComplaintLineModel) lIter.next();
+        if (line.getMethod().equals(EnumComplaintLineMethod.CASH_BACK)) totalRefunds += line.getAmount();
+        if (line.getMethod().equals(EnumComplaintLineMethod.STORE_CREDIT)) totalCredits += line.getAmount();
+    }
+
+    for (Iterator lIter = miscComplaints.iterator(); lIter.hasNext(); ) {
+        ErpComplaintLineModel line = (ErpComplaintLineModel) lIter.next();
+        if (line.getMethod().equals(EnumComplaintLineMethod.CASH_BACK)) totalRefunds += line.getAmount();
+        if (line.getMethod().equals(EnumComplaintLineMethod.STORE_CREDIT)) totalCredits += line.getAmount();
+    }
+%>
+    <tr>
+		<td colspan="3" align="right"><br><b>Credit/Refund Totals</b></td>
+		<td colspan="<%= (hasInvoice)?"11":"8" %>"></td>
+    </tr>
+	<tr><td colspan="<%= hasInvoice ? "14" : "11"%>" class="list_separator" style="padding: 0px;"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td>
+	</tr>
+
+	<tr>
+        <td colspan="3"></td>
+        <td colspan="2">Total Store Credits: </td>
+        <td colspan="2" align="right"><%= CCFormatter.formatCurrency(totalCredits) %></td>
+        <td colspan="4"></td>
+            <% if (hasInvoice) { %>
+        	<td colspan="3"></td>
+            <% } %>
+    </tr>
+	
+	<tr>
+        <td colspan="3"></td>
+        <td colspan="2">Total Refunds: </td>
+        <td colspan="2" align="right"><%=CCFormatter.formatCurrency(totalRefunds) %></td>
+        <td colspan="4"></td>
+            <% if (hasInvoice) { %>
+        	<td colspan="3"></td>
+            <% } %>
+    </tr>
+	
+	<tr>
+        <td colspan="3"></td>
+        <td colspan="2">Total Credits/Refunds Issued: </td>
+        <td colspan="2" align="right"><%=CCFormatter.formatCurrency(totalRefunds + totalCredits) %></td>
+        <td colspan="4"></td>
+            <% if (hasInvoice) { %>
+        	<td colspan="3"></td>
+            <% } %>
+    </tr>
+	
+<%  } %>
+	<tr>
+		<td colspan="<%= (hasInvoice)?"14":"11" %>">
+			<b>Ord.</b>= Ordered/<b>Del.</b>= Delivered/<b>Ret.</b>= Returned &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; <b>T</b> = Taxable Item &nbsp;&nbsp;&nbsp; <b>S</b> = Special Price &nbsp;&nbsp;&nbsp; <b>D</b> = Bottle Deposit
+		</td>
+	</tr>
+</table>
+<%}%>
+<% if(show.equals("carton")){%>
+    <%@ include file="/includes/i_carton_details.jspf"%>
+<%}%>

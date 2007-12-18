@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE component-specification PUBLIC
+  "-//Apache Software Foundation//Tapestry Specification 3.0//EN"
+  "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<component-specification class="com.freshdirect.cms.ui.tapestry.component.ContentEditor"
+    allow-body="no"
+    allow-informal-parameters="no">
+    
+    <description>Form-based editor for a ContentNode</description>
+    
+	<parameter name="node" type="com.freshdirect.cms.ContentNodeI" required="yes" direction="auto"/>
+	<parameter name="contextNode" required="no" direction="auto" default-value="null" type="com.freshdirect.cms.context.ContextualContentNodeI"/>
+
+	<component id="foreachPage" type="For">
+		<binding name="source" expression='editor.attributes.pages.value.{lookupContentNode()}.{? #this.key.type.name=="CmsPage"}'/>
+		<binding name="value" expression="currPage"/>
+		<binding name="volatile" expression="true"/>
+	</component>
+
+	<component id="foreachSection" type="For">
+		<binding name="source" expression="currPage.attributes.sections.value.{lookupContentNode()}"/>
+		<binding name="value" expression="currSection"/>
+		<binding name="volatile" expression="true"/>
+	</component>
+
+	<component id="foreachField" type="For">
+		<binding name="source" expression="currSection.attributes.fields.value.{lookupContentNode()}"/>
+		<binding name="value" expression="currField"/>
+		<binding name="volatile" expression="true"/>
+	</component>
+
+	<component id="foreachAttr" type="For">
+		<binding name="source" expression="new java.util.TreeMap(node.attributes).values()"/>
+		<binding name="value" expression="currAttr"/>
+		<binding name="volatile" expression="true"/>
+	</component>
+	
+	<property-specification name="currPage" type="com.freshdirect.cms.ContentNodeI"/>
+	<property-specification name="currSection" type="com.freshdirect.cms.ContentNodeI"/>
+	<property-specification name="currField" type="com.freshdirect.cms.ContentNodeI"/>
+
+	<property-specification name="currAttr" type="com.freshdirect.cms.AttributeI"/>
+    
+	<bean name="evenOdd" class="org.apache.tapestry.bean.EvenOdd" lifecycle="render"/>
+	
+</component-specification>

@@ -1,0 +1,286 @@
+<%@ page import='com.freshdirect.framework.util.NVL'%>
+
+<%
+
+String unattendedInstructions = null;
+boolean unattendedOptIn = false;
+
+if (shipToAddresses.size() > 0) {
+	String selectedAddrPKId = request.getParameter("selectAddressList");
+	String addressStatus = NVL.apply(request.getParameter("addressStatus"), "");
+    
+	if(!addressStatus.equalsIgnoreCase("new")){
+		if(selectedAddrPKId==null){ 
+			selectedAddrPKId = request.getParameter("addressId");
+		}
+		if(selectedAddrPKId==null) { 
+			selectedAddrPKId = FDCustomerManager.getDefaultShipToAddressPK(identity);
+		}
+	}
+	int itemCounter = 0;
+	for(Iterator saItr=shipToAddresses.iterator();saItr.hasNext();) {
+		boolean showDeleteButtons = shipToAddresses.size() > 1?true:false;
+		ErpAddressModel shipAddress = (ErpAddressModel)saItr.next();
+		String addrPKId = shipAddress.getPK().getId();
+		boolean checkedAddress =false;
+		if(shipToDepotLocation == null || shipToDepotLocation.length() == 0){  // This is to deal with preselection of Depot Addresses
+			if (addressStatus.equalsIgnoreCase("new")){
+				checkedAddress = true;
+			} else if (selectedAddrPKId==null) {  
+				selectedAddrPKId = addrPKId;
+				// !!! should get default pk from customerManager
+				checkedAddress = true;
+			} else if(addrPKId.equals(selectedAddrPKId)){
+				checkedAddress = true;
+				unattendedOptIn = !EnumUnattendedDeliveryFlag.OPT_OUT.equals(shipAddress.getUnattendedDeliveryFlag());
+				unattendedInstructions = shipAddress.getUnattendedDeliveryInstructions();
+
+			}
+		}
+		if((itemCounter % 3)==0) {
+			if(itemCounter!=0) {%>
+				</TR></TABLE><br>
+				<%
+			} %>
+			<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" width="475">
+				<TR>
+					<%itemCounter=0;
+				}%>
+            <%if (allowSelection) {
+				%>
+				<TD width="20" valign="top"><input type="radio" name="selectAddressList" class="radio" value="<%=shipAddress.getPK().getId()%>" <%=checkedAddress?"checked":"" %> ><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="20" HEIGHT="1"><BR><!--must test for checked--></TD>
+				<%
+			} else { 
+				%>
+				<TD width="20" valign="top">&nbsp;</TD>
+				<%
+			} %>
+            <TD valign="top" width="195">
+				<font class="text12bold"><%=shipAddress.getFirstName()%> <%=shipAddress.getLastName()%></FONT><BR>
+				<font class="text13">
+				<%if(showingCorporateAddress){%>
+					<%=shipAddress.getCompanyName()%><br>
+				<%}%>
+				<%=shipAddress.getAddress1()%><% if(shipAddress.getApartment()!=null && shipAddress.getApartment().trim().length()>0) { %>, Apt. <%=shipAddress.getApartment()%><% } %><BR>
+					
+				<% if(shipAddress.getAddress2()!=null && shipAddress.getAddress2().trim().length()>0) { %>
+					<%=shipAddress.getAddress2()%><br>
+				<%}%>
+				<%= shipAddress.getCity()%>, <%=shipAddress.getState()%> <%=shipAddress.getZipCode()%><BR><BR>
+				<!-- special delivery -->               
+				<%if(shipAddress.getInstructions()!= null && !shipAddress.getInstructions().equals("") && !"NONE".equalsIgnoreCase(shipAddress.getInstructions())){%>   
+					<font class="text12bold">Special delivery instructions:</font><br>              
+					<%=shipAddress.getInstructions()%><br><br>
+				<%}%>
+				<!-- unattended delivery -->
+				<fd:UnattendedDelivery id="zone" address="<%= shipAddress %>" checkUserOptions="false">
+				<% if (zone.isUnattended() && !EnumUnattendedDeliveryFlag.OPT_OUT.equals(shipAddress.getUnattendedDeliveryFlag())) { %>
+				<font class="text12bold">Unattended delivery</font>:<br>
+				<%= NVL.apply(shipAddress.getUnattendedDeliveryInstructions(),"OK") %> 
+				<BR><BR>
+				<% } %>
+				</fd:UnattendedDelivery>
+				<!-- alternate delivery -->
+				<%if (shipAddress.getAltDelivery() != null && shipAddress.getAltDelivery().getId() > 0 && !showingCorporateAddress) { %>
+					<font class="text12bold">Alternate delivery</font>:<br>
+					<%=shipAddress.getAltDelivery().getName()%><br><br> 
+					<%if("NEIGHBOR".equalsIgnoreCase(shipAddress.getAltDelivery().getDeliveryCode())) {%>
+						<%=shipAddress.getAltFirstName()%> <%=shipAddress.getAltLastName()%><BR>
+						Apt. #: <%=shipAddress.getAltApartment()%><br>
+						<%if (shipAddress.getAltPhone()!=null) {%>
+							<%=shipAddress.getAltPhone().getPhone()%> 
+							<%if( !"".equals(shipAddress.getAltPhone().getExtension()) ){%>
+								Ext. <%= shipAddress.getAltPhone().getExtension() %> 
+							<%}%>
+						<%}%><br><br>
+					<%}%>
+				<%}%>
+				</font>
+				<A HREF="<%=linkURL + "?addressId=" + addrPKId %>"><IMG src="/media_stat/images/buttons/edit.gif" WIDTH="51" HEIGHT="16" ALT="EDIT" BORDER="0"></A>&nbsp;
+				<%if (showDeleteButtons) {%>
+					<input type="image" name="delete_<%= addrPKId %>" src="/media_stat/images/buttons/delete.gif" WIDTH="51" HEIGHT="16" ALT="DELETE" BORDER="0">
+				<% } %>
+				<IMG src="/media_stat/images/layout/clear.gif" WIDTH="185" HEIGHT="1">
+			</TD>
+			<%itemCounter++;
+			if (saItr.hasNext() && (itemCounter % 3 != 0 )) {  
+				%>
+				<TD width="15"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="15" HEIGHT="1"></TD>
+				<TD width="1" bgcolor="#CCCCCC"><IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="1" HEIGHT="1"></TD>
+				<TD width="14"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="14" HEIGHT="1"></TD>
+				<%
+			}
+        }//End of the loop
+        if (itemCounter==1) {
+			%>
+			<TD WIDTH="470"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="470" HEIGHT="1" BORDER="0"><BR></TD>
+			<%
+        } else if (itemCounter==2) {
+			%>
+			<TD WIDTH="235"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="235" HEIGHT="1" BORDER="0"><BR></TD>
+			<%
+        }
+		%>
+    </TR>
+</TABLE>
+<%--
+<br>
+<%if(user.getAdjustedValidOrderCount() == 0){
+    String specialInstructions = request.getParameter(EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode());
+    String doormanChecked = request.getParameter(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode());
+
+    if ("true".equals(request.getParameter(EnumUserInfoName.DLV_UNATTENDED_CONSENT_SEEN.getCode()))) {
+    	unattendedInstructions = request.getParameter(EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode());
+    	String unattendedFlag = request.getParameter(EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode());
+    	unattendedOptIn = ("true".equals(request.getParameter(EnumUserInfoName.DLV_UNATTENDED_CONSENT_SEEN.getCode())) && 
+    					"OPT_IN".equals(unattendedFlag)) || unattendedFlag == null;
+    }
+
+    boolean deliverToDoorman = false;
+    
+    if(specialInstructions == null){
+        ErpAddressModel address = user.getShoppingCart().getDeliveryAddress();
+        if(address != null){
+            specialInstructions = address.getInstructions();
+            if(doormanChecked == null){
+                if(EnumDeliverySetting.DOORMAN.equals(address.getAltDelivery())){
+                    deliverToDoorman = true;
+                }
+            }else{
+                deliverToDoorman = true;
+            }
+	    unattendedInstructions = address.getUnattendedDeliveryInstructions();
+	    unattendedOptIn = !EnumUnattendedDeliveryFlag.OPT_OUT.equals(address.getUnattendedDeliveryFlag());
+        }
+    }       
+%>
+    <table border="0" cellspacing="0" cellpadding="0" width="640">
+        <tr valign="top">
+            <td rowspan="9"><img src="/media_stat/images/layout/clear.gif" width="20" height="1"></td>
+            <td width="550" colspan="2" class="text12">
+                <b>IMPORTANT: Enter cross street and any special delivery instructions</b><br>Please enter any information our delivery person will need to get your order to your door.<br>
+                <input type="text" class="text11" name="<%=EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode()%>" size="50" maxLength="80" value="<%=specialInstructions%>"><br><br>
+            </td>
+        </tr>
+		<%if(!showingCorporateAddress) {
+			%>
+		<fd:UnattendedDelivery id="zone" addressId="<%= selectedAddrPKId %>" checkUserOptions="true">
+			<tr valign="top">
+				<td width="550" colspan="2" class="text12">
+					<img src="/media_stat/images/navigation/unattended_delivery_hdr.gif" border="0" width="262" height="11" alt="UNATTENDED DELIVERY (Limited Availability)"/><br>
+					<img src="/media_stat/images/layout/999966.gif" width="550" HEIGHT="1" BORDER="0" VSPACE="3"><br>
+				</td>
+			</tr>
+
+		<script type="text/javascript">
+			function resetUnattendedDeliveryInstructions() {
+				var inputElem = document.getElementById('<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>');
+				if (!document.getElementById('<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode()%>').checked) {
+					inputElem.value = '';
+					inputElem.disabled = true;
+				} else {
+					inputElem.disabled = false;
+				}
+			}
+		</script>
+
+		<% if (zone.isUnattended()) { %>
+			<tr valign="top">
+				<td width="550" colspan="2" class="text12">
+				<p>
+				<fd:IncludeMedia name="/media/editorial/site_pages/unattended_delivery/consent_note.html">
+				<b>Unattended delivery is now available in Westchester!</b> If you need to run out during your
+				delivery time slot, we will leave your order at your home. Alcohol cannot be left unattended and 
+				will be removed from your order if you are not home. To learn more about Unattended Delivery,
+				<a href="javascript:popup('/help/unattended_delivery.jsp','large')">click here</a>. 
+				<br/><br/>
+				</fd:IncludeMedia>
+				</td>
+			</tr>
+			<tr>
+				<td width="20">
+				<input type="hidden" name="<%=EnumUserInfoName.DLV_UNATTENDED_CONSENT_SEEN.getCode() %>" value="true"/>
+				<input type="checkbox" class="checkbox"
+					name="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode()%>"
+					id="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode()%>"
+					value="OPT_IN" 
+					onclick="resetUnattendedDeliveryInstructions()"
+					<%= unattendedOptIn ? "checked" : "" %>
+				/>
+			
+				</td>
+				<td><b>I authorize FreshDirect to leave deliveries to this address unattended if nobody is home</b></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+				 <br/><br/>
+				IMPORTANT: Please let us know your preferred location for unattended deliveries (front door, side door,<br/>
+				back door, garage, etc).<br/>
+				<input type="text" class="text11" size="50" maxlength="80" 
+					name="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>"
+					id="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>" 
+					value="<%= unattendedInstructions == null ? "" : unattendedInstructions %>"
+					<%= !unattendedOptIn ? "disabled" : ""%>
+				/>
+				<br/><br/>
+				</td>
+			</tr>
+		<% } else { %>
+			<tr valign="top">
+			<td colspan="2"> 
+				<font color="orange"><b>Unfortunately Unattended service is no longer offered at this address</b></font>
+				<br/><br/>
+			</td>
+			</tr>
+		<% } %>
+		</fd:UnattendedDelivery>
+
+			<tr valign="top">
+				<td width="550" colspan="2" class="text12">
+					<img src="/media_stat/images/navigation/ttcgi.gif" border="0" width="291" height="11" alt="LET YOUR DOORMAN TAKE DELIVERY (Optional)"/><br>
+					<img src="/media_stat/images/layout/999966.gif" width="550" HEIGHT="1" BORDER="0" VSPACE="3"><br>
+				</td>
+			</tr>
+	
+			<tr valign="top">
+				<td width="550" colspan="2" class="text12">
+					We'll always try to bring your order directly to you. However, if your building has a doorman, you may authorize him to receive orders on your behalf &#151; just check the box below.<br>
+					<br>
+                                </td>
+                        </tr>
+                        <tr valign="top">
+				<td width="550" colspan="2" class="text12">
+					Please let the doorman know about deliveries in advance. Frozen items should be placed in a freezer immediately. Your other products will remain fresh in the delivery box at room temperature (78 degrees) for two hours from the time of delivery. To learn more about this, <a href="javascript:popup('/help/faq_index.jsp?show=delivery#question7','large')">click here</a>.
+					<FONT class="space4pix"><br><br><br></FONT>
+				</td>
+			</tr>
+			<tr>
+				<td width="20"><input type="checkbox" name="<%=EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode()%>" <%=deliverToDoorman ? "checked" : ""%>></td>
+				<td class="text12"><b>Leave with Doorman</b> (Please make sure doorman will accept packages.)<br/></td>
+			</tr>
+			<%
+		} %>
+    </table>
+    <br>
+<%}%>
+--%>
+<%
+if (user.getAdjustedValidOrderCount()==2 && !showingCorporateAddress) {
+	// placing the third order, show alternate delivery info
+	%>
+    <br>
+    <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" width="640">
+		<tr>
+			<td valign="top"><img src="/media_stat/images/template/homepages/truck.gif"  alt="" border="0"></td>
+			<td width=15>&nbsp;</td>
+			<td valign="top" class="bodyCopy">
+				<font class="text12bold">Not home in time? We can deliver to a neighbor.</font><br>
+				Now you can select a neighbor in your building to receive your order if you're not home when we arrive. Just click "edit."
+			</td>
+		</tr>
+	</table>
+    <br>
+	<% 
+} %>
+<br>
+<% } %>

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<dataset>
+	
+	<CUST.ROLE CODE="CSR" NAME="Agent" DESCRIPTION="blah blah blah" />
+	<CUST.ROLE CODE="SUP" NAME="Supervisor" DESCRIPTION="blah blah blah" />
+	
+	<CUST.AGENT ID="a2" USER_ID="rgayle" PASSWORD="blue" FIRST_NAME="Robert" LAST_NAME="Gayle" ACTIVE="X" ROLE="SUP" CREATED="2003-07-20 00:00:00.0"/>
+	
+	<CUST.CASE_PRIORITY CODE="HI" NAME="High Pri" DESCRIPTION="High Priority" PRIORITY="1"/>
+	<CUST.CASE_PRIORITY CODE="LO" NAME="Low Pri" DESCRIPTION="Low Priority" PRIORITY="0"/>
+
+	<CUST.CASE_QUEUE CODE="QA" NAME="Queue A" DESCRIPTION="Queue A Description" OBSOLETE="X"/>
+	<CUST.CASE_QUEUE CODE="QB" NAME="Queue B" DESCRIPTION="Queue B Description"/>
+
+	<CUST.CASE_SUBJECT CODE="SA1" CASE_QUEUE="QA" CASE_PRIORITY="LO" NAME="Subject A1" DESCRIPTION="Subject A1 Description" OBSOLETE="X"/>
+	<CUST.CASE_SUBJECT CODE="SB1" CASE_QUEUE="QB" CASE_PRIORITY="LO" NAME="Subject B1" DESCRIPTION="Subject B1 Description"/>
+	<CUST.CASE_SUBJECT CODE="SB2" CASE_QUEUE="QB" CASE_PRIORITY="HI" NAME="Subject B2" DESCRIPTION="Subject B2 Description"/>
+                                                                                                                                                                                                                                            
+	<CUST.AGENT_QUEUE AGENT_ID="a2" CASE_QUEUE="QA" /> 
+	
+</dataset>

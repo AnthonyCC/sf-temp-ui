@@ -1,0 +1,165 @@
+<%@ taglib uri="crm" prefix="crm" %>
+<%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
+<%@ page import="com.freshdirect.customer.EnumUnattendedDeliveryFlag" %>
+<%@ page import="com.freshdirect.framework.util.NVL" %>
+
+<%-- **************************************************
+    THIS FILE REQUIRES:
+    - import com.freshdirect.webapp.taglib.fdstore.SessionName
+    - ErpAddressModel dlvAddress
+    - boolean showAddressButtons
+    - boolean showDeleteButtons
+************************************************** --%>
+<crm:GetFDUser id="thisUser">
+<%  boolean isDepotLocation = (dlvAddress instanceof ErpDepotAddressModel);
+    String depotFacility = "";
+    if (order instanceof com.freshdirect.fdstore.customer.adapter.FDOrderAdapter) {
+        depotFacility = ((com.freshdirect.fdstore.customer.adapter.FDOrderAdapter)order).getDepotFacility();
+    }
+%>
+<fd:AltAddressInfo altDeliveryInfo="<%= dlvAddress.getInstructions() %>">
+            <table width="100%" cellpadding="1" cellspacing="0" border="0" class="order_detail">
+                <%if(dlvAddress.getServiceType().equals(EnumServiceType.CORPORATE)){%>
+					<tr>
+						<td width="35%">Company&nbsp;</td>
+	                    <td width="65%"><%=dlvAddress.getCompanyName()%></td>
+					</tr>
+				<%}%>
+				<tr>
+                    <td width="35%">First Name&nbsp;</td>
+                    <td width="65%"><%= dlvAddress.getFirstName() %></td>
+                </tr>
+                <tr>
+                    <td>Last Name&nbsp;</td>
+                    <td><%= dlvAddress.getLastName() %></td>
+                </tr>
+            <%  if (isDepotLocation) {  
+                    ErpDepotAddressModel dAddr = (ErpDepotAddressModel) dlvAddress;  %>
+                <tr>
+                    <td>Facility&nbsp;</td>
+                    <td><%= dAddr.getFacility() %></td>
+                </tr>
+            <%  } else if (depotFacility != null && !"".equals(depotFacility)) { %>
+                <tr>
+                    <td>Facility&nbsp;</td>
+                    <td><%= depotFacility %></td>
+                </tr>
+            <%  }   %>
+                <tr>
+                    <td>Address&nbsp;</td>
+                    <td><%= dlvAddress.getAddress1() %></td>
+                </tr>
+            <%  if ((dlvAddress.getAddress2() != null) && !"".equals(dlvAddress.getAddress2().trim())) { %>
+                <tr>
+                    <td>Addr. Line 2&nbsp;</td>
+                    <td><%= dlvAddress.getAddress2() %></td>
+                </tr>
+            <%  }   
+                if (!isDepotLocation) { %>
+                <tr>
+                    <td>Apt./Floor&nbsp;</td>
+                    <td><%= dlvAddress.getApartment() %></td>
+                </tr>
+            <%  }   %>
+                <tr>
+                    <td>City&nbsp;</td>
+                    <td><%= dlvAddress.getCity() %></td>
+                </tr>
+                <tr>
+                    <td>State&nbsp;</td>
+                    <td><%= dlvAddress.getState() %></td>
+                </tr>
+                <tr>
+                    <td>Zip&nbsp;</td>
+                    <td><%= dlvAddress.getZipCode() %></td>
+                </tr>
+				<%if(dlvAddress.getAltContactPhone() != null) {%>
+					<tr>
+						<td>Alt Contact#&nbsp;</td>
+						<td><%= dlvAddress.getAltContactPhone().getPhone() %></td>
+					</tr>
+				<%}%>
+            <%  if ((order.getDeliveryZone() != null) && !"".equals(order.getDeliveryZone())) { %>
+                <tr>
+                    <td>Zone&nbsp;</td>
+                    <td><%= order.getDeliveryZone() %></td>
+                </tr>
+            <%  } 
+                if (isDepotLocation) {  
+                    ErpDepotAddressModel dAddr = (ErpDepotAddressModel) dlvAddress;  %>
+                <tr>
+                    <td>Instructions&nbsp;</td>
+                    <td><%= dAddr.getInstructions() %></td>
+                </tr>
+            <%  }
+                if (!"".equals(fldDlvInstructions)) {   %>  
+                <tr>
+                    <td>Special instructions&nbsp;</td>
+                    <td><%=fldDlvInstructions%></td>
+                </tr>
+            <%  }   
+
+    		if(dlvAddress.getInstructions()!= null && !dlvAddress.getInstructions().equals("") && !"NONE".equalsIgnoreCase(dlvAddress.getInstructions())){%>  
+               		 <tr><td colspan="2" height="4"></td></tr>
+          		      <tr>
+            		        <td colspan="2" style="padding-left: 12px;"><b>Special delivery instructions</b><br><%=dlvAddress.getInstructions()%></td>
+              		  </tr>
+   		<%  }  
+	        if (EnumUnattendedDeliveryFlag.OPT_IN.equals(order.getDeliveryAddress().getUnattendedDeliveryFlag())) { %>
+	     
+                <tr><td colspan="2" height="4"></td></tr>
+		<tr>
+		    <td colspan="2" style="padding-left: 12px;"><font color="blue"><b>Unattended Delivery:</b></font><br/>
+		    <%= NVL.apply(order.getDeliveryAddress().getUnattendedDeliveryInstructions(),"OK") %></td>
+		</tr>
+	    <%	}
+            
+                int orderCount = thisUser.getAdjustedValidOrderCount();
+                if ((orderCount < AddressName.DLV_ALTERNATE_THRESHHOLD) && !isDepotLocation) {
+                    if (leaveWithDoorman.booleanValue()) { %>
+                            <tr><td colspan="2" height="4"></td></tr>
+                            <tr>
+                                <td colspan="2" style="padding-left: 12px;"><b>Alternate Delivery</b><br>Leave package with doorman</td>
+                            </tr>
+            <%      }
+    }
+    if ((orderCount >= AddressName.DLV_ALTERNATE_THRESHHOLD) && !isDepotLocation) {
+    
+        if (dlvAddress.getAltDelivery() != null && dlvAddress.getAltDelivery().getId() > 0) { %>
+                <tr><td colspan="2" height="4"></td></tr>
+                <tr>
+                    <td colspan="2" style="padding-left: 12px;"><b>Alternate Delivery</b><br><%= dlvAddress.getAltDelivery().getName()%></td>
+                </tr>
+<%           if("NEIGHBOR".equalsIgnoreCase(dlvAddress.getAltDelivery().getDeliveryCode())) {%>
+                <tr>
+                    <td align="right">First Name&nbsp;</td>
+                    <td><%=dlvAddress.getAltFirstName()%></td>
+                </tr>
+                <tr>
+                    <td align="right">Last Name&nbsp;</td>
+                    <td><%=dlvAddress.getAltLastName()%></td>
+                </tr>
+                <tr>
+                    <td align="right">Apartment #&nbsp;</td>
+                    <td><%=dlvAddress.getAltApartment()%></td>
+                </tr>
+                <tr>
+                    <td align="right">Contact #&nbsp;</td>
+                    <td><% if (dlvAddress.getAltPhone()!=null) {%><%=dlvAddress.getAltPhone().getPhone()%> <%if( !"".equals(dlvAddress.getAltPhone().getExtension()) ){%>Ext. <%= dlvAddress.getAltPhone().getExtension() %> <%} }%></td>
+                </tr>
+
+            <%}%>
+
+        <%}               
+
+    }
+    
+    %>
+    </table>
+</fd:AltAddressInfo>
+<%  if (showAddressButtons) { %>
+            <CENTER>
+                <% if (showDeleteButtons) { %><a href="javascript:setAction(this.form,'deleteDeliveryAddress');setIdToDelete(this.form,'<%= dlvAddress.getPK().getId() %>');" class="delete">DELETE</a> <% } %><A HREF="<%= response.encodeURL("/checkout/checkout_edit_address.jsp?addressId=" + dlvAddress.getPK().getId()) %>" class="edit">EDIT</A>
+            </CENTER>
+<%  } %>
+</crm:GetFDUser>

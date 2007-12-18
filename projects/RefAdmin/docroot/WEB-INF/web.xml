@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC '-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN' 'http://java.sun.com/j2ee/dtds/web-app_2_3.dtd'>
+<web-app>
+	<display-name>RefAdmin</display-name>
+	<description>Provides Admin tools for managing Referral Tracking</description>
+	<session-config>
+		<session-timeout>30</session-timeout>
+	</session-config>
+	<welcome-file-list>
+		<welcome-file>ref_prg1.jsp</welcome-file>
+	</welcome-file-list>
+	<taglib>
+		<taglib-uri>refProgram</taglib-uri>
+		<taglib-location>/WEB-INF/tld/refProgram.tld</taglib-location>
+	</taglib>
+	<taglib>
+		<taglib-uri>template</taglib-uri>
+		<taglib-location>/WEB-INF/shared/tld/struts-template.tld</taglib-location>
+	</taglib>
+	<taglib>
+		<taglib-uri>logic</taglib-uri>
+		<taglib-location>/WEB-INF/shared/tld/struts-logic.tld</taglib-location>
+	</taglib>
+    
+    	<security-constraint>
+		<display-name/>
+		<web-resource-collection>
+			<web-resource-name>RefAdmin</web-resource-name>
+			<description>Security Constraints for RefProgram</description>
+			<url-pattern>/*</url-pattern>
+			<http-method>POST</http-method>
+			<http-method>GET</http-method>
+		</web-resource-collection>
+		<auth-constraint>
+			<description>Authorization Constraints for DlvConfirm</description>
+			<role-name>referralAdmin</role-name>
+		</auth-constraint>
+		<user-data-constraint>
+			<description>SSL not required</description>
+			<transport-guarantee>NONE</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
+	<login-config>
+		<auth-method>BASIC</auth-method>
+		<realm-name>weblogic</realm-name>
+	</login-config>
+	<security-role>
+		<description>RefTracking Users</description>
+		<role-name>referralAdmin</role-name>
+	</security-role>
+    
+</web-app>

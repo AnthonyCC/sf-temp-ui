@@ -1,0 +1,27 @@
+<span jwcid="@Shell" title="Create a new Object">
+  <form jwcid="form">
+    <hidden jwcid="@Hidden" value="ognl:objectName"/>
+
+    <p>Name: <input jwcid="@TextField" value="ognl:virtualObject.name"/></p>
+  	
+    <p>Enter arbitrary sql.  Run-time parameters may be specified in
+    braces as:
+    <ul>
+      <li>name  &mdash; a fill-in field</li>
+      <li>name:options=opt1|opt2|... &mdash; a dropdown with hard-coded values</li>
+      <li>name:query=query_name &mdash; a dropdown whose values come from another query</li>
+      <li>name:enum=enum.class &mdash; a dropdown whose values come from a Java enum type</li>
+      <li>name:select=table_name,name_column,value+column &mdash; a dropdown whose values come from an on-the-fly query</li>
+      <li>name:date &mdash; a date field</li>
+    </ul>
+    </p>
+
+    <textarea jwcid="@TextArea" value="ognl:virtualObject.sqlText" rows="5" cols="30"></textarea><br>
+
+    <input jwcid="@Checkbox" selected="ognl:createTemplate"/>Click to automatically create a template from this object.<br>
+
+    <input type="submit" jwcid="@Submit" name="Save" value="Save" listener="ognl:listeners.saveObject"/>
+  </form>
+</span>
+
+

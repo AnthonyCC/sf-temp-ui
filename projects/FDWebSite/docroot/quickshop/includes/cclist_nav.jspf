@@ -1,0 +1,52 @@
+<%-- expects selectedListId:String --%>
+<%-- expects user:FDUser --%>
+<%-- expects showLists:boolean --%>
+
+
+<%@ page import='java.util.Set'%>
+<%@ page import='java.util.TreeSet'%>
+<%@ page import='com.freshdirect.fdstore.lists.FDCustomerCreatedList'%>
+
+
+<fd:FDCustomerCreatedList id="list" action="loadLists">
+<%//build order navigation
+  
+      if (list.size() > 0) {
+         TreeSet sorted = new TreeSet(FDCustomerCreatedList.getNameComparator());
+	 sorted.addAll(lists);
+         %>
+         <!--<b><%= user.getFirstName()%>'s Lists</b> -->
+	 <font class="space4pix"><br/><br/></font>
+
+         <table cellpadding="0" cellspacing="0" border="0" class="text11" >
+         <tbody>
+         <%
+         for (Iterator hIter = sorted.iterator(); hIter.hasNext(); ) {
+            FDCustomerCreatedList CCList = (FDCustomerCreatedList) hIter.next();
+            boolean isSelected = CCList.getId().equals(selectedListId);
+            %>
+            <tr><td class="text11">
+	    <div style="margin-left: 5px; text-indent: -5px;">
+            <%
+            if (!isSelected) {
+               %>
+               <a href="/quickshop/shop_from_list.jsp?<%=CclUtils.CC_LIST_ID%>=<%= CCList.getId() %>"><b><%= StringUtil.escapeHTML(CCList.getName()) %></b></a> 
+               <%
+            } else {
+               %>
+                <b><%= StringUtil.escapeHTML(CCList.getName()) %></b>
+               <%
+            } 
+            %>
+	    </div>
+            </td></tr>
+         <%
+         } // for each list
+         %>
+         </tbody>
+      </table>
+      <%
+      } // list at all
+%>
+</fd:FDCustomerCreatedList>
+

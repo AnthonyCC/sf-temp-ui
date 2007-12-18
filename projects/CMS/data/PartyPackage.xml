@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Content xmlns:dc="http://purl.org/dc/elements/1.1">
+	<Category id="cat_pack">
+		<SIDENAV_PRIORITY>0</SIDENAV_PRIORITY>
+		<FAKE_ALL_FOLDER>false</FAKE_ALL_FOLDER>
+		<SECONDARY_CATEGORY>false</SECONDARY_CATEGORY>
+		<COLUMN_NUM>1</COLUMN_NUM>
+		<SHOW_SIDE_NAV>false</SHOW_SIDE_NAV>
+		<LAYOUT>24</LAYOUT>
+		<FULL_NAME>Party Packages</FULL_NAME>
+		<CAT_TITLE>
+			<Image ref="/media/images/navigation/department/catering/cat_party_catnav.gif"/>
+		</CAT_TITLE>
+		<EDITORIAL_TITLE>nm</EDITORIAL_TITLE>
+		<RATING_BREAK_ON_SUBFOLDERS>true</RATING_BREAK_ON_SUBFOLDERS>
+		<EDITORIAL>
+			<Html ref="/media/editorial/catering/party_packages/cat_pak_intro.txt"/>
+		</EDITORIAL>
+		<subcategories>
+			<Category ref="cat_pack_a"/>
+			<Category ref="cat_pack_b"/>
+			<Category ref="cat_pack_c"/>
+			<Category ref="cat_pack_d"/>
+			<Category ref="cat_pack_e"/>
+			<Category ref="cat_pack_f"/>
+		</subcategories>
+		<RATING_CHECK_SUBFOLDERS>false</RATING_CHECK_SUBFOLDERS>
+		<CAT_PHOTO>
+			<Image ref="/media/images/temp/soon_70x70.gif"/>
+		</CAT_PHOTO>
+		<FEATURED>false</FEATURED>
+		<SHOWCHILDREN>0</SHOWCHILDREN>
+		<SHOWSELF>false</SHOWSELF>
+		<SIDENAV_LINK>true</SIDENAV_LINK>
+		<PRIORITY>0</PRIORITY>
+		<PRODUCT_LAYOUT>5</PRODUCT_LAYOUT>
+		<SIDENAV_BOLD>true</SIDENAV_BOLD>
+		<SIDENAV_SHOWSELF>true</SIDENAV_SHOWSELF>
+		<CONTAINS_BEER>false</CONTAINS_BEER>
+		<PROD_DESCRIPTION_NOTE>
+			<Html ref="/media/editorial/catering/product/cat_utensil_note.html"/>
+		</PROD_DESCRIPTION_NOTE>
+	</Category>
+	<ConfiguredProduct id="cat_pack_x_conf">
+		<SKU>
+			<Sku ref="XXX0066737"/>
+		</SKU>
+		<SALES_UNIT>C01</SALES_UNIT>
+		<OPTIONS>C_HMR_PP_HAS_PLATTER1=300700301,C_HMR_PP_DES1=300720055,C_HMR_PP_RTS_PLATTER2=300720018,C_HMR_PP_RTS_PLATTER1=300720028</OPTIONS>
+
+	</ConfiguredProduct>
+
+	<Product id="cat_pack_x">
+		<PROD_DESCR>
+			<Html ref="/media/editorial/kitchen/product/hmrside/hmr_kside_kashvar_desc.txt"/>
+		</PROD_DESCR>
+		<brands>
+			<Brand ref="bd_freshdirect"/>
+		</brands>
+		<PROD_IMAGE_DETAIL>
+			<Image ref="/media/images/temp/soon_190x150.gif"/>
+		</PROD_IMAGE_DETAIL>
+		<NUTRITION_MULTIPLE>true</NUTRITION_MULTIPLE>
+		<PRIMARY_HOME>
+			<Category ref="cat_pack"/>
+		</PRIMARY_HOME>
+		<GROCERY>false</GROCERY>
+		<PACKAGE_DESCRIPTION>Serves 8-10</PACKAGE_DESCRIPTION>
+		<BLURB>Buy this meal and save 10% a-la-carte</BLURB>
+		<RATING>
+			<DomainValue ref="organic_false"/>
+		</RATING>
+		<PROD_IMAGE>
+			<Image ref="/media/images/temp/soon_90x70.gif"/>
+		</PROD_IMAGE>
+		<PERISHABLE>false</PERISHABLE>
+		<FULL_NAME>Hors d'Oeuvres Party Package for 8-10 People</FULL_NAME>
+		<QUANTITY_MINIMUM>1.0</QUANTITY_MINIMUM>
+		<NOT_SEARCHABLE>false</NOT_SEARCHABLE>
+		<FROZEN>false</FROZEN>
+		<GLANCE_NAME>Party Package</GLANCE_NAME>
+		<INVISIBLE>false</INVISIBLE>
+		<skus>
+			<Sku ref="XXX0066737"/>
+		</skus>
+		<QUANTITY_TEXT>Quantity</QUANTITY_TEXT>
+		<QUANTITY_INCREMENT>1.0</QUANTITY_INCREMENT>
+		<QUANTITY_MAXIMUM>99.99</QUANTITY_MAXIMUM>
+		<NAV_NAME>Serves 8-10</NAV_NAME>
+		<PRODUCT_LAYOUT>7</PRODUCT_LAYOUT>
+		<PROD_IMAGE_CONFIRM>
+			<Image ref="/media/images/layout/clear.gif"/>
+		</PROD_IMAGE_CONFIRM>
+		
+		<COMPONENT_GROUPS>
+			<ComponentGroup ref="cat_pack_x_step_1"/>
+			<ComponentGroup ref="cat_pack_x_step_2"/>
+			<ComponentGroup ref="cat_pack_x_step_3"/>
+			<ComponentGroup ref="cat_pack_x_step_4"/>
+		</COMPONENT_GROUPS>
+		
+	</Product>
+
+	<Sku id="XXX0066737">
+		<KOSHER>false</KOSHER>
+		<ORGANIC>false</ORGANIC>
+	</Sku>
+
+
+	<ComponentGroup id="cat_pack_x_step_1">
+		<FULL_NAME>Step 1</FULL_NAME>
+		<SHOW_OPTIONS>false</SHOW_OPTIONS>
+		<EDITORIAL>
+			<Html ref="/media/editorial/catering/party_packages/cat_plat_rtc_intro.txt"/>
+		</EDITORIAL>
+		<HEADER_IMAGE>
+			<Image ref="/media/images/navigation/department/catering/step_1_1.gif"/>
+		</HEADER_IMAGE>
+		<CHARACTERISTICS>
+			<ErpCharacteristic ref="CL_HMR_PP_800008/C_HMR_PP_RTS_PLATTER1"/>
+			<ErpCharacteristic ref="CL_HMR_PP_800008/C_HMR_PP_RTS_PLATTER2"/>
+		</CHARACTERISTICS>
+	</ComponentGroup>
+
+	<ComponentGroup id="cat_pack_x_step_2">
+		<FULL_NAME>Step 2</FULL_NAME>
+		<SHOW_OPTIONS>true</SHOW_OPTIONS>
+		<EDITORIAL>
+			<Html ref="/media/editorial/catering/party_packages/cat_plat_has_intro.txt"/>
+		</EDITORIAL>
+		<HEADER_IMAGE>
+			<Image ref="/media/images/navigation/department/catering/step_2_1.gif"/>
+		</HEADER_IMAGE>
+		<CHARACTERISTICS>
+			<ErpCharacteristic ref="CL_HMR_PP_800008/C_HMR_PP_HAS_PLATTER1"/>
+		</CHARACTERISTICS>
+	</ComponentGroup>
+
+
+	<ComponentGroup id="cat_pack_x_step_3">
+		<FULL_NAME>Step 3</FULL_NAME>
+		<SHOW_OPTIONS>true</SHOW_OPTIONS>
+		<EDITORIAL>
+			<Html ref="/media/editorial/catering/party_packages/cat_plat_dess_intro.txt"/>
+		</EDITORIAL>
+		<HEADER_IMAGE>
+			<Image ref="/media/images/navigation/department/catering/step_3_1.gif"/>
+		</HEADER_IMAGE>
+		<CHARACTERISTICS>
+			<ErpCharacteristic ref="CL_HMR_PP_800008/C_HMR_PP_DES1"/>
+			<ErpCharacteristic ref="CL_HMR_PP_800008/C_HMR_PP_DES2"/>
+		</CHARACTERISTICS>
+	</ComponentGroup>
+
+	<ComponentGroup id="cat_pack_x_step_4">
+		<FULL_NAME>Optional Items</FULL_NAME>
+		<SHOW_OPTIONS>true</SHOW_OPTIONS>
+		<EDITORIAL>
+			<Html ref="/media/editorial/catering/party_packages/cat_plat_wine_intro.txt"/>
+		</EDITORIAL>
+		<HEADER_IMAGE>
+			<Image ref="/media/images/navigation/department/catering/opt_wine.gif"/>
+		</HEADER_IMAGE>
+		<OPTIONAL_PRODUCTS>
+			<Product ref="spe_plum_gradplates"/>
+			<Product ref="spe_plum_gradpak"/>
+			<Product ref="spe_harpoon_mixpk"/>
+			<Product ref="beer_mich_ultra_twlvbt"/>
+			<Product ref="beer_sierra_pale"/>
+			<Product ref="wine_bc_veuvecliquot_2"/>
+		</OPTIONAL_PRODUCTS>
+	</ComponentGroup>
+
+
+
+	<dc:author>vszathmary</dc:author>
+</Content>

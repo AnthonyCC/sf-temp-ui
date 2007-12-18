@@ -1,0 +1,24 @@
+<%
+ProductModel relProduct = ContentFactory.getInstance().getProductByName(
+	request.getParameter("catId"),
+	request.getParameter("productId")
+);
+
+List relatedRecipes = relProduct.getRelatedRecipes();
+if (relatedRecipes!=null && !relatedRecipes.isEmpty()) {
+	%>
+	<br><b>Great Recipes</b><br>
+	<%
+	for (Iterator i = relatedRecipes.iterator(); i.hasNext();) {
+		Recipe recipe = (Recipe) i.next();
+		if (recipe.isAvailable()) {
+			%>
+			<div class="recipe_related"><a href="/recipe.jsp?recipeId=<%= recipe.getContentName() %>&catId=<%= request.getParameter("catId") %>&trk=prod"><%= recipe.getName() %></a></div>
+			<%
+		}
+	}
+	%>
+	<br>
+	<%
+}
+%>

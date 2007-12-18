@@ -1,0 +1,223 @@
+<%
+/*
+-- This includes paints the recipe category body and bottom (no side navs)
+-- Expects the host page to define and set:
+	RecipeCategory recipeCategory
+	RecipeSubcategory recipeSubCat
+-- Host page will need various Imports...(see recipe_cat.jsp)
+*/
+String subCatIdParam = recipeSubCat!=null ? "&subCatId="+recipeSubCat.getContentName() :"";
+String filterParam= com.freshdirect.webapp.util.RecipesUtil.getFilterParam(request);
+%>
+<%--
+	The findRecipes code from here moved to com.freshdirect.webapp.util.RecipesUtil (CMS)
+--%>
+<%
+
+//-- pagination prep stuff
+int itemsToDisplay = 30;
+
+{
+	String reqItemsToDisp = request.getParameter("DisplayPerPage");
+	String sessItemsToDisp = (String)session.getAttribute("itemsToDisplay");
+
+	if ( reqItemsToDisp!=null && (sessItemsToDisp==null || !sessItemsToDisp.equals(reqItemsToDisp)) && "true".equalsIgnoreCase(request.getParameter("set")) ) {
+		// we have to update the session with the value from the request
+		sessItemsToDisp = reqItemsToDisp;
+		session.setAttribute("itemsToDisplay", sessItemsToDisp);
+	}
+	try {
+		if (reqItemsToDisp!=null) {
+			itemsToDisplay = Integer.valueOf(reqItemsToDisp).intValue();
+		} else if (sessItemsToDisp!=null) {
+			itemsToDisplay = Integer.valueOf(sessItemsToDisp).intValue();
+		}
+		if (itemsToDisplay!=15 && itemsToDisplay!=30 && itemsToDisplay!=45) {
+			itemsToDisplay = 30;
+		}
+	} catch (NumberFormatException nfe) {
+		itemsToDisplay = 30;
+	}
+}
+
+int pageNumber = 0;
+try {
+	pageNumber = Integer.valueOf(request.getParameter("pageNumber")).intValue();
+} catch (NumberFormatException nfe) {
+	pageNumber=1;
+}
+
+//create URL 
+StringTokenizer qryStringTokn = new StringTokenizer(request.getQueryString(),"&");
+StringBuffer baseUrl = new StringBuffer(200);
+baseUrl.append("recipe_subcat.jsp?");
+int pcount=0;
+for (;qryStringTokn.hasMoreTokens();) {
+	String aParam=qryStringTokn.nextToken();
+	if (aParam.startsWith("pageNumber") || aParam.startsWith("DisplayPerPage") || aParam.startsWith("pgPart") || aParam.startsWith("set")) {
+	    continue;
+	}
+	
+	if (pcount!=0) {
+
+		baseUrl.append("&");
+	}
+	
+	baseUrl.append(aParam);
+	pcount++;
+}
+//-- end pagination prep stuff
+
+%>
+
+<table width="400" cellpadding="0" cellspacing="0">
+<tr>
+	<td>
+	<% 
+	Attribute rcpAttrib = recipeSubCat.getAttribute("label");
+	Attribute rcpAttrib2 = recipeSubCat.getAttribute("editorial");
+	String editorialPath = rcpAttrib2==null?"":((Html)rcpAttrib2.getValue()).getPath(); 
+	Image catLabelImg = null;
+	String catLabelPath = null;
+	if (rcpAttrib!=null) {
+	  catLabelImg = (Image)rcpAttrib.getValue();
+	  catLabelPath = catLabelImg.getPath();
+	} 
+	if (catLabelImg != null) {
+		%>
+		<img src="<%=catLabelPath%>"  width="<%=catLabelImg.getWidth()%>" height="<%=catLabelImg.getHeight()%>" border="0">
+		<br><img src="/media_stat/images/layout/clear.gif" width="1" height="<%=editorialPath!=null && !"".equals(editorialPath.trim())?"6":"8"%>"><br>
+		<%
+	}
+	%>
+
+	<%
+	if (editorialPath!=null && !"".equals(editorialPath.trim())) {
+		%>
+		<div style="width: 400px; text-align:left;" class="text11">
+			<fd:IncludeMedia name='<%= editorialPath %>' />
+			<br><img src="/media_stat/images/layout/clear.gif" width="1" height="2"><br><img src="/media_stat/images/layout/cccccc.gif" width="400" height="1" vspace="4">
+		</div>
+		<%
+	}
+	%>
+	
+	<%
+	List filterByKeys = recipeSubCat.getFilterBy();
+	filterByKeys = filterByKeys == null ? Collections.EMPTY_LIST : new ArrayList(filterByKeys);
+	
+	// find the specified filter DomainValue among subcat filterBy
+	DomainValue filter = com.freshdirect.webapp.util.RecipesUtil.getFilter(filterByKeys, request);
+
+	// filter and group
+	Map groupByMap = com.freshdirect.webapp.util.RecipesUtil.findRecipes(recipeSubCat, filter, filterByKeys, request);
+
+	// add fake group since there is none
+	List groupBy = new ArrayList(recipeSubCat.getGroupBy());
+	if (groupBy.isEmpty()) {
+		groupBy = new ArrayList();
+		groupBy.add("noGroupBy");
+	} else {
+		groupBy.add("Other");
+	}
+
+	//-- More pagination stuff: 
+	//-- count items that will be painted
+
+	List allRecipes = new ArrayList();
+	for (Iterator keyItr = groupByMap.keySet().iterator(); keyItr.hasNext(); ) {
+		List recipesList = (List) groupByMap.get(keyItr.next() );
+		allRecipes.addAll(recipesList);
+	}
+	int cntRecipes = allRecipes.size();
+	
+	
+	int pageNumbers=cntRecipes/itemsToDisplay;
+	if (cntRecipes % itemsToDisplay !=0) {
+	    pageNumbers+=1;  //adjust for remainder
+	}
+	
+	// check current page number and adjust if invalid
+	if (pageNumber>pageNumbers) pageNumber=pageNumbers;
+		
+	if (filterByKeys!=null && filterByKeys.size() > 0) {
+		if ("ALL".equalsIgnoreCase(filterParam) || "".equals(filterParam.trim())) {
+			%><b>All</b><%
+		} else {
+			%>
+			<a href="<%=response.encodeURL("recipe_subcat.jsp?catId="+recipeCategory+"&subCatId="+recipeSubCat+"&trk=filt")%>&filter=All">All</a>
+			<%
+		}
+		%>
+		<logic:iterate id="filterDV" collection="<%= filterByKeys %>" type="com.freshdirect.fdstore.content.DomainValue">
+			<span class="dot_separator">&#149;</span>
+			<%
+			if (filterDV.getContentName().equals(filterParam) ) { 
+				%>
+				<b><%=filterDV.getLabel()%></b>
+				<%
+			}  else {
+				%>
+				<a href="<%=response.encodeURL("recipe_subcat.jsp?catId="+recipeCategory+"&subCatId="+recipeSubCat)%>&filter=<%=filterDV.getContentName()%>&trk=filt"><%=filterDV.getLabel()%></a>
+				<%
+			}
+		%>
+		</logic:iterate>
+		</td></tr>
+		
+		<%
+	} 
+
+
+
+%>
+
+
+
+<tr><td>
+<div style="margin-top: 1em; margin-bottom: 2em;  padding-top: 4px; padding-bottom: 4px; border-top: 1px solid #f93;">
+<%@ include file="i_recipe_subcat_body_pagenav.jspf"%></div>
+</td></tr>
+
+<%	
+	//-- paint items
+	int paintCount=0;
+	int itmCount=0;
+	int itmStart = (itemsToDisplay * (pageNumber-1)+1);
+
+	for (Iterator grpByItr = groupBy.iterator(); grpByItr.hasNext() && paintCount < itemsToDisplay;) {
+		Object groupByDV = grpByItr.next();
+		if (!groupByMap.containsKey(groupByDV)) continue;
+		
+		String grpLabel=null;
+		if (groupByDV instanceof DomainValue) {
+			grpLabel = ((DomainValue)groupByDV).getLabel().toUpperCase();
+		} else if (groupByDV instanceof String  && "Other".equalsIgnoreCase((String)groupByDV)) {
+			grpLabel="OTHER";
+		}
+		
+		boolean labelPrinted = false;
+		for (Iterator rcpItr =	 ((List)NVL.apply((List)groupByMap.get(groupByDV),Collections.EMPTY_LIST)).iterator(); rcpItr.hasNext() && paintCount < itemsToDisplay;) {
+		  Recipe oneRecipe = (Recipe) rcpItr.next(); 
+		  if (++itmCount  < itmStart)  continue;
+		  
+		  if (!labelPrinted) { 
+		     labelPrinted=true;%>
+			<tr>
+			  <td align="center" valign="top"><%if (grpLabel!=null) {%><span class="recipe_header"><%=grpLabel %></span><br><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br><%}%>
+<%		}  	  	   %>
+			    <a href="<%=response.encodeURL("recipe.jsp?catId="+recipeCategory+subCatIdParam+"&recipeId="+oneRecipe+"&trk=cpage")%>" class="recipe_name"><b><%=oneRecipe.getName()%></b></a><br><span class="recipe_author"><%=oneRecipe.getDisplayableSource()%></span><br><br>
+ <% 		   paintCount++;
+		} 
+		if (labelPrinted) { // close cell and row %>
+				<br>
+			  </td>
+			</tr>
+<%		}    
+
+	} //	 %>
+
+
+<tr><td><div style="margin-top: 1.25em; margin-bottom: 1em; padding-top: 4px; padding-bottom: 4px; border-top: 1px solid #f93;">
+<%@ include file="i_recipe_subcat_body_pagenav.jspf"%></div></td></tr>
+</table>

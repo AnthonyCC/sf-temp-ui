@@ -1,0 +1,73 @@
+
+	<table width="550" cellpadding="0" cellspacing="0">
+		<tr>
+			<td colspan="7" align="center">
+			<img src="/media_stat/images/template/wine/bc_logo_home.gif" width="555" height="80" border="0" vspace="6" alt="Best Cellars"><br>
+			Welcome to Best Cellars. We feature Great Wines for Every Day<font color="#AAAAAA"><span class="text9">&reg;</span></font> &mdash; 150 or<br>so of the greatest tasting wine values in the world, mostly priced at $15 or<br>less, and organized by how they taste.<br><font class="space8pix"><br></font>
+			<img src="/media_stat/images/template/wine/choose_cat_below.gif" width="251" height="9" border="0" alt="CHOOSE A CATEGORY BELOW"><br>
+			<fd:IncludeMedia name="/media/editorial/wine/bc_home_nav.html"/>
+			<br>
+			<font class="space8pix"><br></font><font class="text12"><%@ include file="/includes/wine_system.jspf" %></font><br><font class="space8pix"><br></font>
+			<img src="/media_stat/images/layout/cccccc.gif" width="550" height="1" border="0" vspace="6">
+			</td>
+		</tr>
+		<tr><td colspan="7" align="center"><a href="/category.jsp?catId=win_all_region"><img src="/media_stat/images/template/wine/by_region.gif" width="524" height="10" border="0"></a>
+		<br><img src="/media_stat/images/layout/cccccc.gif" width="550" height="1" border="0" vspace="6"></td></tr>
+		<tr>
+			<td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="6"></td>
+			<td rowspan="2" align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br>
+			<a href="/category.jsp?catId=win_beyond"><img src="/media_stat/images/template/wine/beyond_best.gif" width="142" height="47" border="0" alt="Beyond the Best"></a><br><font class="space4pix"><br></font>
+			A collection of the best wine values from<br>around the world, irrespective of price.
+			<br><font class="space4pix"><br></font>
+			<b><a href="/category.jsp?catId=win_beyond">Click here for wines that are<br>Beyond the Best.</a></b>
+			<br><font class="space2pix"><br><br><br></font>
+			</td>
+			<td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="6"></td>
+		</tr>
+		<tr>
+			<td>
+			<a href="/category.jsp?catId=win_six&trk=snav"><img src="/media_stat/images/template/wine/bc_six_packs.gif" width="114" height="14" border="0" alt="BC Six-Packs"></a><br><a href="/category.jsp?catId=win_six&trk=snav"><font class="space2pix"><br></font><b>Click here.</b></a>
+			<br><img src="/media_stat/images/layout/clear.gif" width="1" height="20"><br>
+			<a href="/category.jsp?catId=win_case"><img src="/media_stat/images/template/wine/case.gif" width="136" height="17" border="0" alt="Wine by the Case"></a><br><a href="/category.jsp?catId=win_case"><font class="space2pix"><br></font><b>Click here.</b></a>
+			</td>
+			<td></td>
+			<td bgcolor="#CCCCCC"></td>
+			<td bgcolor="#CCCCCC"></td>
+			<td></td>
+			<td style="padding-left: 5px;">
+			<a href="/category.jsp?catId=win_kos"><img src="/media_stat/images/template/wine/kosher_wine.gif" width="130" height="17" border="0" alt="Kosher Wine"></a><br><a href="/category.jsp?catId=win_kos"><font class="space2pix"><br></font><b>Click here.</b></a>
+			<br><img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br>
+			<a href="/category.jsp?catId=win_org"><img src="/media_stat/images/template/wine/organic_wine.gif" width="117" height="18" border="0" alt="Organic Wine"></a><br><a href="/category.jsp?catId=win_org"><font class="space2pix"><br></font><b>Click here.</b></a>
+			<br><img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br>
+			<a href="/category.jsp?catId=win_new"><img src="/media_stat/images/template/wine/new_at_bc.gif" width="96" height="18" border="0" alt="New @ BC!"></a><br><a href="/category.jsp?catId=win_new"><font class="space2pix"><br></font><b>Click here.</b></a>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="7">
+			<img src="/media_stat/images/layout/cccccc.gif" width="550" height="1" border="0" vspace="8">
+			<img src="/media_stat/images/template/wine/about_best_cellars.gif" width="126" height="12" border="0" vspace="4" alt="About Best Cellars" align="center"><br>
+			When we opened Best Cellars in 1996 at 87th Street and Lexington Avenue, our goal was simple and straightforward: to make buying wine every bit as enjoyable as drinking it. To this day, we remain committed to this ideal.
+			<br><br>
+			We do this in a number of unique ways. We organize our wines <b>by taste</b>. We sell <b>only</b> wines that offer great taste and great value. And we also talk and write about wines in ways we hope you will find both informative and entertaining.
+			<br><font class="space8pix"><br></font>
+			<div align="center" style="margin: 4px;"><a href="/category.jsp?catId=win_about"><b>To learn more about Best Cellars click here!</b></a></div>
+			</td>
+		</tr>
+		<tr>
+			<td><img src="/media_stat/images/layout/clear.gif" width="144" height="1"></td>
+			<td><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
+			<td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+			<td><img src="/media_stat/images/layout/clear.gif" width="240" height="1"></td>
+			<td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+			<td><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
+			<td><img src="/media_stat/images/layout/clear.gif" width="144" height="6"></td>
+		</tr>
+		<tr>
+			<td colspan="7" align="center"><br><br><br><font class="space2pix"><br></font><%@ include file="/shared/includes/wine_copyright.jspf" %> <%@ include file="/includes/wine_privacy.jspf" %></td>
+		</tr>
+		</table>
+
+<fd:IncludeMedia name="/media/editorial/wine/bc_home_nav_map.html"/>
+
+
+

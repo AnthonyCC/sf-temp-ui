@@ -1,0 +1,36 @@
+<span jwcid="foreachGroup@For" source="ognl:tableGroups.entrySet()" value="ognl:currGroup" volatile="ognl:true">
+
+	<span jwcid="@If" condition="ognl:'' != currGroup.key">
+		<h3 class="report"><span jwcid="@Insert" value="ognl:currGroup.key"/></h3>
+	</span>
+		
+	<table class="report">
+		<thead>
+			<tr>
+				<th jwcid="foreachHeader@For" source="ognl:currGroup.value.columnDefinitions" element="th" volatile="true">
+					<span jwcid="@Insert" value="ognl:components.foreachHeader.value.label"/> 
+				</th>
+			</tr>
+		</thead>
+				
+		<tbody>
+			<tr jwcid="foreachRow@For"
+				source="ognl:currGroup.value.rows"
+				value="ognl:currRow"
+				element="tr"
+				volatile="true"
+				class="ognl:currRow.metaClass==null ?  beans.evenOdd.next : (currRow.metaClass + '-' + beans.evenOdd.next)">
+				<td jwcid="foreachValue@For" source="ognl:currRow.values" value="ognl:currValue" element="td" volatile="true">
+					<span jwcid="@If" condition="ognl:currValue instanceof com.freshdirect.cms.ContentKey">
+						<span jwcid="@ContentLink" key="ognl:currValue"/>
+					</span>
+					<span jwcid="@If" condition="ognl:not currValue instanceof com.freshdirect.cms.ContentKey">
+						<span jwcid="@Insert" value="ognl:currValue"/> 
+					</span>
+				</td>
+			</tr>
+		</tbody>
+		
+	</table>
+	
+</span>

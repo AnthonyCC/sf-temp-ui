@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="/CMS"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/tapestry-4.0.2.jar" sourcepath="/FD_LIB_SRC/tapestry-4.0.2/framework/src/java"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/tapestry-contrib-4.0.2.jar"/>
+	<classpathentry kind="src" path="/Framework"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/tacos-core-4.0.2-20070420.095420-14.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-fileupload-1.0.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/poi.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

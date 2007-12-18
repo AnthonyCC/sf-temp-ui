@@ -1,0 +1,182 @@
+<%@ page import="java.text.SimpleDateFormat"%>
+<%@ page import='java.util.*'  %>
+<%@ page import='com.freshdirect.fdstore.content.*' %>
+<%@ page import='com.freshdirect.fdstore.customer.*' %>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import='com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.*'%>
+
+<%@ taglib prefix="fd" uri="freshdirect"%>
+<%@ taglib prefix="logic" uri="logic" %>
+
+<jsp:include page="/shared/template/includes/server_info.jsp" flush="false"/>
+<jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
+
+<%
+//*****************************************************************
+FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+
+if(user != null) {
+	//	Defaults to Guest User;
+	String yourImageButton = "/media_stat/images/navigation/global_nav/nav_button_sign_up.gif";
+	String validURLForButton = "/registration/signup.jsp";
+	String depotName = "";
+	if(user.isDepotUser()){
+		depotName = com.freshdirect.fdstore.FDDepotManager.getInstance().getDepot(user.getDepotCode()).getName();
+	}
+	
+	request.setAttribute("listPos", "SystemMessage");
+	%>
+	<% if (FDStoreProperties.isAdServerEnabled()) { %>
+	    <SCRIPT LANGUAGE=JavaScript>
+	    <!--
+	    OAS_AD('SystemMessage');
+	    //-->
+	    </SCRIPT>
+	<% } else { %>
+	<fd:GetSiteAnnouncements id="announcments" user="<%=user%>">
+	
+		<logic:iterate id="ann" collection="<%=announcments%>" type="com.freshdirect.fdstore.FDSiteAnnouncementI">
+			<table width="745" cellpadding="0" cellspacing="0" border="0">
+				<tr align="center">
+					<td>
+						<font class="text12rbold"><%=ann.getHeader()%></font><br>
+						<%=ann.getCopy()%>
+						<br><img src="/media_stat/images/layout/clear.gif" width="1" height="6">
+					</td>
+				</tr>
+				<tr bgcolor="#999966"><td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+			</table><br>
+		</logic:iterate>
+	</fd:GetSiteAnnouncements>
+	<% } %>
+		<%@ include file="/common/template/includes/i_cutoff_warning.jspf"%>
+		<%
+		if (!cutoffInfoDisplayed) {
+			%>
+			<%@ include file="/common/template/includes/i_platter_warning.jspf"%>
+			<%@ include file="/common/template/includes/i_reservation_warning.jspf"%>
+			<%
+		}
+		%>
+	
+	<%  if (user.isNotServiceable()) { %>
+	<table width="745" border="0" cellpadding="0" cellspacing="0">
+		<tr><td class="text18gr "><img src="/media_stat/images/navigation/fd_not_in_area.gif" width="404" height="13" alt="" border="0"></td></tr>
+		<tr><td class="text10grbold">
+		We'll send you an e-mail a few weeks before we arrive in your neighborhood. In the meantime, please feel free to browse around our online store &#151; just remember that you will not be able to sign up or place an order. 
+		<a href="javascript:popup('/help/delivery_zones.jsp','large')">Click here</a> to see current delivery zones. To enter a different zip code, <a href="/site_access/site_access.jsp">click here</a>.
+		</td></tr>
+		<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"></td></tr>
+		<tr><td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="745" height="1" alt="" border="0"></td></tr>
+	</table>
+	<br>
+	<% } else if (user.isPickupOnly() && !user.isDepotUser() && !(request.getRequestURI().toLowerCase().indexOf("/checkout") > -1)) { %>
+	<table width="745" border="0" cellpadding="0" cellspacing="0">
+		<tr valign="top">
+	     <td><img src="/media_stat/images/navigation/banners/home_dlv_not_avail.gif" width="366" height="10" alt="HOME DELIVERY IS NOT CURRENTLY AVAILABLE IN YOUR AREA.">
+	     <br><a href="javascript:popup('/help/delivery_zones.jsp','large')">View our current delivery zones</a> or enter a <a href="/site_access/site_access.jsp">different zip code</a>.
+	     <br>If you’d like to pick up your order, <a href="/help/delivery_lic_pickup.jsp">click here to learn more.<b>
+	     </td>
+	     <fd:IncludeMedia name="/media/editorial/global_nav/top_right_content.html" />
+	    <!--
+	    <td align="right"><a href="/help/delivery_lic_pickup.jsp"><img src="/media/editorial/hamptons/pickupbar_hdr_hamptons.gif" width="294" height="12" alt="Summer pickup in The Hamptons" border="0"><a>
+	     <br>We make weekday home deliveries and offer convenient pickup locations on Fridays and Saturdays. <a href="">Click here for info.</a></td>
+	     </tr> -->
+		<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" border="0"></td></tr>
+		<tr bgcolor="#CCCCCC">
+	     <td><img src="/media_stat/images/layout/clear.gif" width="420" height="1" alt="" border="0"></td>
+	     <td><img src="/media_stat/images/layout/clear.gif" width="325" height="1" alt="" border="0"></td>
+	     </tr>
+	</table>
+	<br>
+	<% } %>
+	<table width="745" border="0" cellpadding="0" cellspacing="0">
+	<tr>
+		<td width="182" ROWSPAN="3" valign="BOTTOM">
+	<%
+	if(user.isDepotUser()){%>
+		<a href="/index.jsp"><img src="/media_stat/images/logos/<%=user.getDepotCode()%>_depot_logo.gif"  alt="" border="0"></a>
+	 <% } else { %>
+	    <a href="/index.jsp" onMouseover="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_on.gif')" onMouseout="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_off.gif')"><img src="/media/images/navigation/global_nav/fd_logo_off.gif" width="195" height="81" border="0" alt="FreshDirect" name="FD_LOGO"></a>
+	 <% } %>	
+		</td>
+		<td colspan="13" align="right" valign="bottom">
+		<% if (user.isChefsTable()) {
+			%>
+			<img src="/media_stat/images/template/checkout/loy_global_member_stars.gif" width="170" height="9" alt="Chef's Table Member" vspace="2"/><br />
+			<%
+		}
+		%>
+	   <% if (user.getLevel() == FDUserI.SIGNED_IN) {
+	%>		        <a href="/login/logout.jsp"><b>Click here to log out</b></a>
+	<%             } else if (user.getLevel() == FDUserI.RECOGNIZED) {	%>
+			          <a href="/login/login.jsp"><b>Click here to log in</b></a>
+	<%	} else {	%>
+				<b>New customer?</b> <a href="/registration/signup.jsp">Sign Up</a><img src="/media_stat/images/layout/clear.gif" width="25" height="1" hspace="2" vspace="3"><b>Current customer?</b> <a href="/login/login.jsp">Log In</a>
+	<%
+	     }
+	%>
+	    </td>
+	</tr>
+	<tr>
+		<td colspan="13"><img src="/media_stat/images/layout/clear.gif" width="1" height="18" alt="" border="0"></td>
+	</tr>
+	<tr valign="bottom">
+		<td align="right" valign="bottom">
+			<table width="120" cellpadding="0" cellspacing="0" border="0">
+			<form name="search" action="/search.jsp" method="get">
+			<tr valign="bottom">
+				<td width="5">&nbsp;</td>
+				<td align="left" colspan="2" width="115"><a href="/search.jsp"><img src="/media_stat/images/navigation/global_nav/nav_button_search.gif" width="46" height="11" alt="SEARCH" hspace="4" vspace="1" align="bottom" border="0"></a></td>
+			</tr>
+			<tr valign="bottom">
+				<td width="5">&nbsp;</td>
+				<td width="74"><input type="text" name="searchParams" style="width:74px;" maxlength="100" value="<%= request.getParameter("searchParams")!=null ? request.getParameter("searchParams") : "" %>" class="search"></td>
+				<td width="41"><input type="image" src="/media_stat/images/navigation/global_nav/nav_button_find.gif" width="35" height="14" border="0" alt="FIND" hspace="3" vspace="3" align="bottom"></td>
+			</tr>
+			</form>
+			</table>
+		</td>
+		<td width="11" align="center"><img src="/media_stat/images/layout/clear.gif" width="11" height="1" border="0"><br><img src="/media_stat/images/layout/999966.gif" width="1" height="24"></td>
+		<td width="54"><a href="/view_cart.jsp?trk=gnav" onMouseover="swapImage('NAV_CART_IMG','/media_stat/images/navigation/global_nav/nav_button_view_cart_r.gif')" onMouseout="swapImage('NAV_CART_IMG','/media_stat/images/navigation/global_nav/nav_button_view_cart.gif')"><img src="/media_stat/images/navigation/global_nav/nav_button_view_cart.gif" name="NAV_CART_IMG" width="54" height="26" alt="VIEW CART" border="0"></a></td>
+		<td width="11" align="center"><img src="/media_stat/images/layout/clear.gif" width="11" height="1" border="0"><br><img src="/media_stat/images/layout/999966.gif" width="1" height="24"></td>
+		<td width="58"><a href="/checkout/view_cart.jsp?trk=gnav" onMouseover="swapImage('NAV_CHECKOUT_IMG','/media_stat/images/navigation/global_nav/nav_button_check_out_r.gif')" onMouseout="swapImage('NAV_CHECKOUT_IMG','/media_stat/images/navigation/global_nav/nav_button_check_out.gif')"><img src="/media_stat/images/navigation/global_nav/nav_button_check_out.gif" name="NAV_CHECKOUT_IMG" width="58" height="26" alt="CHECK OUT" border="0"></a></td>
+		<td width="11" align="center"><img src="/media_stat/images/layout/clear.gif" width="11" height="1" border="0"><br><img src="/media_stat/images/layout/999966.gif" width="1" height="24"></td>
+		<% String dlvInfoLink = ""; 
+			if (user.isPickupOnly()) {
+				dlvInfoLink = "/help/delivery_lic_pickup";
+			} else if (user.isDepotUser()) {
+				dlvInfoLink = "/help/delivery_info_depot";
+			} else if (user.getAdjustedValidOrderCount() >= 1) {
+				dlvInfoLink = "/your_account/delivery_info_avail_slots";
+			} else {
+				dlvInfoLink = "/help/delivery_info";
+					if (EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())) {
+						dlvInfoLink += "_cos";
+					} 
+			}
+		%>
+		<td><a href="<%=dlvInfoLink%>.jsp" onMouseover="swapImage('DELIVERY_IMG','/media_stat/images/navigation/global_nav/delivery_r.gif')" onMouseout="swapImage('DELIVERY_IMG','/media_stat/images/navigation/global_nav/delivery.gif')"><img src="/media_stat/images/navigation/global_nav/delivery.gif" name="DELIVERY_IMG" height="26" alt="DELIVERY INFO" border="0"></a></td>
+		<td align="center"><img src="/media_stat/images/layout/clear.gif" width="11" height="1" border="0"><br><img src="/media_stat/images/layout/999966.gif" width="1" height="24"></td>
+		<td width="54"><a href="/quickshop/index.jsp" onMouseover="swapImage('NAV_QUICKSHOP_IMG','/media_stat/images/navigation/global_nav/nav_button_quick_shop_r.gif')" onMouseout="swapImage('NAV_QUICKSHOP_IMG','/media_stat/images/navigation/global_nav/nav_button_quick_shop.gif')"><img src="/media_stat/images/navigation/global_nav/nav_button_quick_shop.gif" name="NAV_QUICKSHOP_IMG" width="54" height="26" alt="QUICK SHOP" border="0"></a></td>
+		<td width="11" align="center"><img src="/media_stat/images/layout/clear.gif" width="11" height="1" border="0"><br><img src="/media_stat/images/layout/999966.gif" width="1" height="24"></td>
+		<td width="71"><a href="/your_account/manage_account.jsp" onMouseover="swapImage('NAV_YOURACCOUNT_IMG','/media_stat/images/navigation/global_nav/nav_button_your_account2_r.gif')" onMouseout="swapImage('NAV_YOURACCOUNT_IMG','/media_stat/images/navigation/global_nav/nav_button_your_account2.gif')"><img src="/media_stat/images/navigation/global_nav/nav_button_your_account2.gif" name="NAV_YOURACCOUNT_IMG" width="71" height="25" alt="YOUR ACCOUNT" border="0"></a></td>
+		<td width="11" align="center"><img src="/media_stat/images/layout/clear.gif" width="11" height="1" border="0"><br><img src="/media_stat/images/layout/999966.gif" width="1" height="24"></td>
+		<td width="54"><a href="/help/index.jsp" onMouseover="swapImage('NAV_HELP_IMG','/media_stat/images/navigation/global_nav/nav_button_get_help_r.gif')" onMouseout="swapImage('NAV_HELP_IMG','/media_stat/images/navigation/global_nav/nav_button_get_help.gif')"><img src="/media_stat/images/navigation/global_nav/nav_button_get_help.gif" name="NAV_HELP_IMG" width="54" height="26" alt="GET HELP" border="0"></a></td>
+	</tr>
+	</table>
+<% } else { %>
+	<table width="745" border="0" cellpadding="0" cellspacing="0">
+	<tr>
+		<td width="182" ROWSPAN="3" valign="BOTTOM">
+	
+	    <a href="/index.jsp" onMouseover="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_on.gif')" onMouseout="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_off.gif')"><img src="/media/images/navigation/global_nav/fd_logo_off.gif" width="195" height="81" border="0" alt="FreshDirect" name="FD_LOGO"></a>
+	    </td>
+	</tr>
+	<tr>
+		<td colspan="13"><img src="/media_stat/images/layout/clear.gif" width="1" height="18" alt="" border="0"></td>
+	</tr>
+	</table>
+<%} %>	

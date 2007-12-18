@@ -1,0 +1,34 @@
+<% // displays a preview of the email:  Used in issue_credit.jsp  %>            
+                <input type="hidden" value="<%=send_email%>" name="send_email">
+                <input type="hidden" value="<%=email_type%>" name="email_type">
+                <input type="hidden" value="<%=email_template_code%>" name="email_template_code">
+                <input type="hidden" value="<%= custom_message%>" name="custom_message">
+                <%
+                    String ep;
+                    boolean previewOK= true;
+                    if (agent_signature) { %>
+                      <input type="hidden" value="yes" name="agent_signature">
+                <%  } 
+
+                    XSLTransformer transformer = new XSLTransformer();
+                    try {
+                        ep=transformer.transform(emailPreview.getXML(), emailPreview.getXslPath());
+                    } catch (javax.xml.transform.TransformerException te) {
+                        ep="ERROR !!! Unable to transform and preview the email !!!";
+                        previewOK=false;
+                    }
+                
+                %>
+				<% if (!emailPreview.isHtmlEmail() && previewOK ) {%>
+					<textarea readonly style="width: 60em;" rows="20" wrap="virtual"> 
+                    	<%=ep%>
+ 					</textarea>
+				<% } else { %>
+	                <table width="60em" bgcolor="#FFFFFF">
+	                <tr>
+	                    <td>
+	                    <%=ep%>
+	 					</td>
+					</tr>
+					</table>
+				<% } %>

@@ -1,0 +1,25 @@
+/*
+ * $Workfile$
+ *
+ * $Date$
+ *
+ * Copyright (c) 2001 FreshDirect, Inc.
+ *
+ */
+package com.freshdirect.customer.ejb;
+
+import javax.ejb.*;
+import java.rmi.RemoteException;
+
+/**
+ *
+ *
+ * @version $Revision$
+ * @author $Author$
+ */
+public interface ErpFraudPreventionHome extends EJBHome {
+
+    public ErpFraudPreventionSB create() throws CreateException, RemoteException;
+
+}
+

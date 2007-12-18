@@ -1,0 +1,113 @@
+<span jwcid="@If" condition='ognl:relationship.definition.cardinality.name == "One"'>
+
+	<table class="relationships" cellspacing="0" cellpadding="0" width="416" border="0" style="border: none;"
+		jwcid="relationshipsTable">
+		<tr>
+			<td width="16">
+				<a jwcid="relationshipPopupLink" title="Change relationship">
+					<img jwcid="@Image" class="image" image="ognl:assets.link" border="0" width="16" height="16"/>
+				</a>
+			</td>
+			<td width="384">
+				<span jwcid="@ContentLink" key='ognl:relationshipValue'/>
+			</td>
+			<td width="16">
+				<span jwcid="@If" condition="ognl:not disabled and relationshipValue != null">
+					<input jwcid="clear" class="image"/>
+				</span>
+			</td>
+		</tr>
+	</table>
+
+</span>
+
+<span jwcid="@If" condition='ognl:relationship.definition.cardinality.name == "Many"'>
+
+	<span jwcid="@contrib:CheckboxGroup">
+	
+	<table class="relationships" cellspacing="0" cellpadding="0" jwcid="relationshipsTable2">
+	
+		<span jwcid="@Defer" block="ognl:components.mainBlock">
+		<tr>
+			<th jwcid="@Any" colspan="ognl:disabled ? 1 : 3">
+				<span jwcid="@If" condition="ognl:not disabled">
+					<span jwcid="@If" condition="ognl:showCreate">
+						<script src="js/popout.js" language="JavaScript"></script>
+						<span onmouseover="return popout(this);" onmouseout="return popin(this);">
+							<img jwcid="@Image" class="image" image="ognl:assets.create" border="0" width="16" height="16"/>
+							<div jwcid="@Any" class="popout" style='ognl:"width: " + (relationship.definition.contentTypes.size * 24) + "px;"'>
+								<span jwcid="foreachType">
+									<a jwcid="createContentPopupLink" title="ognl:'Create new ' + currType.name" size="large">
+										<img jwcid="@Any" src='ognl:"img/icons/" + currType.name + ".gif"' class="image" width="16" height="16" border="0"/></a>
+								</span>
+							</div>
+						</span>
+					</span>
+					<a jwcid="relationshipPopupLink2" title="Add relationship">
+						<img jwcid="@Image" class="image" image="ognl:assets.add" border="0" width="16" height="16"/>
+					</a>
+					<span jwcid="@If" condition="ognl:showSort">
+						<input jwcid="sort" class="image"/>
+					</span>
+				</span>
+			</th>
+			<span jwcid="@RenderBlock" block="ognl:headerBlock"/>
+			<th jwcid="@If" element="th" style="text-align: right"
+				condition="ognl:showMove or showCopy or showDelete"
+				width="ognl:22 + (showMove?22:0) + (showCopy?22:0) + (showDelete?22:0)">
+				
+				<span jwcid="@If" condition="ognl:showDelete">
+					<input jwcid="delete" class="image" title="Delete"/>
+				</span>
+				
+				<span jwcid="@If" condition="ognl:showMove or showCopy">
+					
+					<input jwcid="moveTarget@Hidden" value="ognl:selectedTarget" id="ognl:relationshipId"/>
+						
+					<span jwcid="@If" condition="ognl:showCopy">
+						<input jwcid="copy" class="image" title="Copy"/>
+					</span>
+		
+					<span jwcid="@If" condition="ognl:showMove">
+						<input jwcid="move" class="image" title="Move"/>
+					</span>
+				</span>
+				
+				<span jwcid="@contrib:ControlCheckbox" title="Select All"/>
+			</th>
+		</tr>
+		</span>
+
+		<span jwcid="mainBlock@Block">
+		<span jwcid="@If" condition="ognl:relationshipValue != null">
+			<tr jwcid="foreachKey" element="tr" class='ognl:(highlighted ? "highlight " : "" ) + beans.evenOdd.next'>
+				<span jwcid="@If" condition="ognl:not disabled">
+					<td width="16">
+						<input jwcid="shiftUp" class="image"/>
+					</td>
+					<td width="16">
+						<input jwcid="shiftDown" class="image"/>
+					</td>
+					<td width="24" style="color: #999; text-align: right;">
+						<span jwcid="@Insert" value="ognl:currIndex + 1"/>&nbsp;
+					</td>
+					<span jwcid="@RenderBody"/>
+				</span>
+				<span jwcid="@If" condition="ognl:disabled">
+					<td width="24" style="color: #999; text-align: right;">
+						<span jwcid="@Insert" value="ognl:currIndex + 1"/>&nbsp;
+					</td>
+					<span jwcid="@RenderBody"/>
+				</span>
+				<td jwcid="@If" condition="ognl:showMove or showCopy or showDelete" element="td" align="right">
+					<input jwcid="@contrib:ControlledCheckbox" value="ognl:currIndexSelected"/>
+				</td>
+			</tr>
+		</span>
+		</span>
+		
+	</table>
+
+	</span>
+	
+</span>

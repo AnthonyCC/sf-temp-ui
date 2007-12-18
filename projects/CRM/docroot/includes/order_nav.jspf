@@ -1,0 +1,166 @@
+<%@ page import="com.freshdirect.crm.*"%>
+<%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession" %>
+<%@ page import="com.freshdirect.fdstore.customer.*"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCustomerCreditHistoryModel"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDComplaintUtil"%>
+<%@ page import="com.freshdirect.framework.core.*"%>
+<%@ page import="com.freshdirect.webapp.util.OrderPermissionsI"%>
+<%@ page import="com.freshdirect.webapp.util.OrderPermissionsImpl"%>
+
+<%@ taglib uri='crm' prefix='crm' %>
+
+<%
+String pageURI = request.getRequestURI();
+boolean hasCustomerCase = CrmSession.hasCustomerCase(session);
+
+boolean o_details = pageURI.indexOf("order_details") > -1;
+boolean o_transactions = pageURI.indexOf("order_transaction_details") > -1;
+boolean o_reverse_credits = pageURI.indexOf("reverse_credit") > -1;
+boolean o_return = pageURI.indexOf("return_order") > -1;
+boolean o_modify = pageURI.indexOf("order_modify") > -1;
+boolean o_cancel = pageURI.indexOf("cancel_order") > -1;
+boolean o_issue_credit = pageURI.indexOf("issue_credit") > -1;
+boolean o_issue_credit_confirm = pageURI.indexOf("issue_credit_confirm") > -1;
+boolean o_approve_credit = pageURI.indexOf("approve_credit") > -1;
+boolean o_payment_exception = pageURI.indexOf("payment_exception") > -1;
+boolean o_charge_order = pageURI.indexOf("charge_order") > -1;
+boolean o_order_cases = pageURI.indexOf("order_cases") > -1;
+
+String nav_orderId = request.getParameter("orderId");
+
+FDOrderI nav_order = CrmSession.getOrder(session, nav_orderId);
+
+String app = (String) session.getAttribute(SessionName.APPLICATION);
+boolean makeGood = EnumPaymentType.MAKE_GOOD.equals(nav_order.getPaymentMethod().getPaymentType());
+OrderPermissionsI orderPermissions = new OrderPermissionsImpl(nav_order.getOrderStatus(), app, makeGood, nav_order.hasCreditIssued());
+
+boolean displayChargeOrderLink = EnumSaleStatus.SETTLEMENT_FAILED.equals(nav_order.getOrderStatus()) || EnumSaleStatus.PAYMENT_PENDING.equals(nav_order.getOrderStatus());
+
+CrmCaseTemplate ordNav_caseTemplate = new CrmCaseTemplate();
+ordNav_caseTemplate.setSalePK(new PrimaryKey(nav_orderId));
+boolean hasCasesForOrder = CrmSession.findCases(session,ordNav_caseTemplate).size() > 0;
+String nav_custId = nav_order.getCustomerId();
+
+String nav_successPage = "/order/order_modify.jsp?orderId=" + nav_orderId;
+if ( "resubmit".equalsIgnoreCase(request.getParameter("action")) ) {
+	nav_successPage = "/main/order_details.jsp?orderId=" + nav_orderId;
+}
+
+String nav_complaintId = "";
+boolean isReversible = false;
+
+FDCustomerCreditHistoryModel _creditHistory = FDCustomerManager.getCreditHistory(new FDIdentity(nav_order.getCustomerId()));
+
+Collection nav_complaints = nav_order.getComplaints();
+for (Iterator it = nav_complaints.iterator(); it.hasNext(); ) {
+	ErpComplaintModel complaint = (ErpComplaintModel) it.next();
+	if(FDComplaintUtil.isComplaintReversable(complaint, _creditHistory.getCreditsForComplaint(complaint.getPK().getId())))
+		isReversible = true;
+	if ( EnumComplaintStatus.PENDING.equals(complaint.getStatus()) ) {
+		nav_complaintId = complaint.getPK().getId();
+		break;
+	}
+}
+boolean hasCase = false;
+%>
+<crm:ResubmitOrderController orderId="<%= nav_orderId %>" actionName='<%=request.getParameter("action")%>' result="nav_result" successPage="<%= nav_successPage %>">
+<crm:GetCurrentAgent id="currentAgent">
+<crm:GetLockedCase id="cm">
+	<% if (cm!= null) hasCase = true; %>
+</crm:GetLockedCase>
+<% boolean resubmitted = "resubmitted".equalsIgnoreCase(request.getParameter("status")); %>
+<script language="JavaScript" type="text/javascript">
+	function setAction(formObj, val) {
+		formObj.action.value=val;
+		formObj.submit();
+	}
+</script>
+<div class="order_header">
+	<table width="100%" cellpadding="0" cellspacing="3" border="0">
+		<form name="order_details" action="/main/order_details.jsp?orderId=<%= nav_orderId %>" method="POST">
+		<input type="hidden" name="action" value="modify">
+		<tr>
+			<td width="29%">&nbsp;<nobr><b>Order # <span class="order_number"><%= nav_orderId %></span>
+				<% if (o_details) { %>
+					Details <span class="order_detail">(<a href="javascript:pop('/main/order_details.jsp?orderId=<%= nav_orderId %>&for=print','600','680')" class="order_detail">Print Version</a>)</span>
+				<% } else if (o_transactions) { %>
+					Transactions
+				<% } else if (o_reverse_credits) { %>
+					Reverse Credits
+				<% } else if (o_modify) { %>
+					Modify
+				<% } else if (o_cancel) { %>
+					Cancel
+				<% } else if (o_return) { %>
+					<% if ("approve_return".equalsIgnoreCase(request.getParameter("action"))) { %>Approve <% } %>
+					Return
+				<% } else if (o_issue_credit) { %>
+					Issue Credit <% if (o_issue_credit_confirm) {%>Confirmation<%}%>
+				<% } else if (o_approve_credit) { %>
+					Approve Credit
+				<% } else if (o_payment_exception) { %>
+					Payment Exception
+				<% } else if (o_charge_order && displayChargeOrderLink) { %>
+					Charge Order
+				<% } else if (o_order_cases ) { %>
+					Linked Cases
+				<% } %>
+				</b></nobr></td>
+			<td width="61%" style="padding: 0px;">
+				<% if (!o_details) { %>
+					<div class="cust_sub_nav" style="width: 120px;"><a href="/main/order_details.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text">Order Details</a></div>
+				<% } %>
+				<% if (!o_order_cases && hasCasesForOrder) { %>
+					<div class="cust_sub_nav_new" style="width: 140px;"><a name="linked_cases" href="<%= response.encodeURL("/main/order_cases.jsp?orderId=" + nav_orderId) %>" class="cust_sub_nav_text_new" onmouseover="return overlib('Cases linked to this order', AUTOSTATUS, WRAP, REF,'linked_cases',REFP,'LL');"
+ onmouseout="nd();">Linked Cases</div>
+				<% } %>
+				<% if (o_details && currentAgent.isAuthorizedToSeeAuthAndCCInfo()){%>
+					<div class="cust_sub_nav" style="width: 120px;"><a href="javascript:pop('/supervisor/credit_card_info.jsp?orderId=<%= nav_orderId %>', '500', '580')" class="cust_sub_nav_text">CC Details</a></div>
+				<%}%>
+				<% if (!o_charge_order && displayChargeOrderLink) { //and charge option required%>
+					<div class="cust_sub_nav" style="width: 140px;"><%if(hasCustomerCase){%><a href="/order/charge_order.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text"><%}%>Charge Order<%if(hasCustomerCase){%></a><%}%></div>
+				<% } %>
+				<% if (!o_transactions) { %>
+					<div class="cust_sub_nav" style="width: 120px;"><a href="/main/order_transaction_details.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text">View Transactions</a></div>
+				<% } %>
+				<% if (!o_reverse_credits && isReversible ) { %>
+					<div class="cust_sub_nav" style="width: 120px;"><%if(hasCustomerCase){%><a href="/order/reverse_credit.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text"><%}%>Reverse Credit<%if(hasCustomerCase){%></a><%}%></div>
+				<% } %>
+				<% if (!o_return || "approve_return".equalsIgnoreCase(request.getParameter("action"))) { %>
+					<% if (orderPermissions.allowReturnOrder() || orderPermissions.isRefusedOrder()) {%>
+						<div class="cust_sub_nav" style="width: 120px;"><%if(hasCustomerCase){%><a href="/returns/return_order.jsp?orderId=<%= nav_orderId %>&action=add_return" class="cust_sub_nav_text"><%}%>Process Return<%if(hasCustomerCase){%></a><%}%></div>
+					<% } %>
+				<% } %>
+				<% if (!o_return || !"approve_return".equalsIgnoreCase(request.getParameter("action"))) { %>
+					<% if ((currentAgent.isSupervisor() || currentAgent.isMonitor()) && orderPermissions.allowReturnOrder()) { %>
+						<div class="cust_sub_nav" style="width: 120px;"><%if(hasCustomerCase){%><a href="/returns/return_order.jsp?orderId=<%= nav_orderId %>&action=approve_return" class="cust_sub_nav_text"><%}%>Approve Return<%if(hasCustomerCase){%></a><%}%></div>
+					<% } %>
+				<% } %> 
+				<% if ( o_details && orderPermissions.allowResubmitOrder() && currentAgent.isSupervisor() ) { %>
+					<div class="cust_sub_nav" style="width: 120px;"><% if (!resubmitted) {%><a href="javascript:setAction(document.order_details, 'resubmit')" class="cust_sub_nav_text"><%}%>Resubmit Order<% if (!resubmitted) {%></a><%}%></div>
+				<% } %>
+				<% if (!o_modify && orderPermissions.allowModifyOrder()) { %>
+					<div class="cust_sub_nav" style="width: 120px;"><%if(hasCustomerCase){%><a href="/order/order_modify.jsp?orderId=<%=nav_orderId%>" class="cust_sub_nav_text"><%}%>Modify Order<%if(hasCustomerCase){%></a><%}%></div>
+				<% } %>
+				<% if (!o_cancel && orderPermissions.allowCancelOrder()) { %>
+					<div class="cust_sub_nav" style="width: 120px;"><%if(hasCustomerCase){%><a href="/order/cancel_order.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text"><%}%>Cancel Order<%if(hasCustomerCase){%></a><%}%></div>
+				<% } %>
+				<% if (!o_issue_credit && orderPermissions.allowComplaint()) { %>
+					<div class="cust_sub_nav" style="width: 120px;"><%if(hasCustomerCase){%><a href="/returns/issue_credit.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text"><%}%>Issue Credit<%if(hasCustomerCase){%></a><%}%></div>
+				<% } else if ( !o_approve_credit && nav_order.hasCreditIssued() == 2 ) { %>
+					<div class="cust_sub_nav" style="width: 120px;"><a href="/returns/approve_credit.jsp?orderId=<%= nav_orderId %>&complaintId=<%= nav_complaintId %>" class="cust_sub_nav_text"><%=(currentAgent.isSupervisor() || currentAgent.isMonitor()) ? "Approve Credit" : currentAgent.isCSR() ? "Deny Credit" : ""%></a></div>
+				<% } %>
+				<% if (!o_payment_exception && orderPermissions.hasPaymentException()) { %>
+					<div class="cust_sub_nav" style="width: 140px;"><%if(hasCustomerCase){%><a href="<%= response.encodeURL("/order/payment_exception.jsp?orderId=" + nav_orderId) %>" class="cust_sub_nav_text"><%}%>Payment Exception<%if(hasCustomerCase){%></a><%}%></div>
+				<% } %>
+				<div class="cust_sub_nav" style="width: 120px;"><a href="/order/quickshop/shop_from_order.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text">QuickShop Order</a></div>
+			</td>
+			<td width="10%" align="center">
+				<a href="/case/<%= hasCase ? "unlock" : "new_case"%>.jsp?<%= hasCase ? "redirect=new_case&" : ""%>erpCustId=<%= nav_custId %>&orderId=<%= nav_orderId %>" class="new">NEW CASE</a>
+			</td>
+		</tr>
+		</form>
+	</table>
+</div>
+</crm:GetCurrentAgent>
+</crm:ResubmitOrderController>

@@ -1,0 +1,49 @@
+<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000"></div>
+<script type="text/javascript" src="/ccassets/javascript/overlibmws.js"></script>
+<script type="text/javascript" src="/ccassets/javascript/overlibmws_iframe.js"></script>
+<script type="text/javascript" src="/ccassets/javascript/overlibmws_overtwo.js"></script>
+<script type="text/javascript" src="/ccassets/javascript/iframecontentmws.js"></script>
+<script type="text/javascript" src="/ccassets/javascript/overlibmws_scroll.js"></script>
+<script type="text/javascript" src="/ccassets/javascript/overlibmws_shadow.js"></script>
+<script type="text/javascript" src="/ccassets/javascript/overlibmws_draggable.js"></script>
+
+<%--
+String c_define = "Click to define."; 
+String c_help = "Click for help."; 
+String c_more = "Click for more."; 
+--%>
+
+<script language="javascript">
+	   function OLiframeContent(src, width, height, name) {
+    return ('<iframe src="'+src+'" width="'+width+'" height="'+height+'"'
+     + (name?' name="'+name+'" id="'+name+'"':'')+' marginheight="0" marginwidth="0" frameborder="0" scrolling="auto">'
+     + '<div>[iframe not supported]</div></iframe>');
+   }
+   
+   function hoverMedia(caption, path, width, height) {
+    overlib(OLiframeContent(path , width, height, 'mediaHover'),
+     CAPTIONPADDING, 4, CAPTION, caption,
+           WRAP, TEXTPADDING, 0, BORDER, 2, STICKY, DRAGGABLE, CLOSECLICK,
+     CLOSETEXT, '<img src="img/popup_close.gif" alt="Close" width="12" height="11" border="0">',
+     SHADOW, SHADOWX, 3, SHADOWY, 3, SHADOWOPACITY, 40,
+     STATUS, path);
+   }
+   
+   function hoverHelp(id,caption, path, width, height) {
+    overlib(OLiframeContent(path , width, height, 'mediaHover'),
+     CAPTIONPADDING, 4, CAPTION, caption,
+     WRAP, TEXTPADDING, 0, BORDER, 2, STICKY, DRAGGABLE, 
+     CLOSETEXT, '<span class=\"close\">x</span>',
+     SHADOW, SHADOWX, 2, SHADOWY, 2, SHADOWOPACITY, 30,
+	 BASE, 2, REF,id,REFP,'LL',
+     STATUS, path);
+   }
+   
+   function hoverTopic(id,caption, content) {
+   	overlib(content, STICKY, CAPTION, caption, REF,id,REFP,'LL',
+	DRAGGABLE, CLOSETEXT, '<span class=\"close\">x</span>',
+	SHADOW, SHADOWX, 2, SHADOWY, 2, SHADOWOPACITY, 30
+	);
+   }
+   
+</script>

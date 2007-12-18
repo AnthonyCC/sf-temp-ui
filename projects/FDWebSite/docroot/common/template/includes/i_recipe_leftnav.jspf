@@ -1,0 +1,57 @@
+
+<table border="0" cellspacing="0" cellpadding="0" align="center" width="125">
+<tr><td width="1"><%-- spacer 1x1 --%></td>
+<td width="120"><%-- spacer 120x1 --%></td>
+<td width="4"><%-- spacer 4x1 --%></td></tr>
+<%
+ String lnav_catId = request.getParameter("catId");
+ RecipeCategory rcpCategory = null;
+ if (lnav_catId!=null && !"".equals(lnav_catId.trim())) {
+   rcpCategory = (RecipeCategory) ContentFactory.getInstance().getContentNode(lnav_catId);
+ }
+ 
+ //try again,if no cat and a recipe id is in URL
+ if (rcpCategory==null && request.getParameter("recipeId") !=null) {
+   Recipe lnav_recipe = (Recipe) ContentFactory.getInstance().getContentNode(request.getParameter("recipeId"));
+   if (lnav_recipe!=null ) {
+       RecipeSubcategory rcpSubcat = lnav_recipe.getPrimarySubcategory();
+       rcpCategory = rcpSubcat!=null ? (RecipeCategory)rcpSubcat.getParentNode() : null;
+   }
+ }
+ 
+ if (rcpCategory!=null) {
+//attribute doesn't exist yet using zoomLabel temporarily
+   Attribute atrCatImage = rcpCategory.getAttribute("zoomLabel");
+   if (atrCatImage!=null) {
+	Image catImage = (Image)atrCatImage.getValue();		%>
+	<tr><td><a href="<%=response.encodeURL("recipe_cat.jsp?catId="+rcpCategory+"&trk=snav")%>">
+	<img src="<%=catImage.getPath()%>" width="<%=catImage.getWidth()%>" height="<%=catImage.getHeight()%>" border="0"></a><br>&nbsp;
+	</td></tr>
+<% 
+   }   %>
+<logic:iterate id="recipeSubcategory" collection="<%= rcpCategory.getSubcategories() %>" type="com.freshdirect.fdstore.content.RecipeSubcategory">
+     <tr><td width="120">
+       <div style="margin-left: 8px; text-indent: -8px; font-weight: bold; ">
+      <a href="<%=response.encodeURL("/recipe_subcat.jsp?catId="+rcpCategory+"&subCatId="+recipeSubcategory+"&trk=snav")%>"><%=recipeSubcategory.getName()%></a>
+      	<%
+      		if(recipeSubcategory.getContentName().equals(request.getParameter("subCatId"))){
+      	    	List filterByKeys = recipeSubcategory.getFilterBy();
+      	    	filterByKeys = filterByKeys == null ? Collections.EMPTY_LIST : new ArrayList(filterByKeys);
+      	      	Map groupByMap = com.freshdirect.webapp.util.RecipesUtil.findRecipes(recipeSubcategory, com.freshdirect.webapp.util.RecipesUtil.getFilter(filterByKeys, request), filterByKeys, request);
+      			%>
+      			<logic:iterate id="filter" collection="<%= filterByKeys %>" type="com.freshdirect.fdstore.content.DomainValue">
+      			<div style="margin-left:8px; text-indent: -8px; font-weight: normal">
+	      				<a href="<%=response.encodeURL("/recipe_subcat.jsp?catId="+rcpCategory+"&subCatId="+recipeSubcategory+"&trk=snav&filter="+filter.getContentName())%>">
+	      					<%= filter.getLabel() %>
+	      				</a>
+      			</div>
+      			</logic:iterate>
+      			<%
+      		}
+      	%>
+      </div>
+     </td></tr>
+
+</logic:iterate>
+<% } %>
+</table><br>

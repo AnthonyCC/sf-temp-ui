@@ -1,0 +1,17 @@
+<span jwcid="@If" condition="ognl:delegate.hasErrors and ((showHeaderErrors and not delegate.unassociatedTrackings.{?inError}.isEmpty()) or (showFieldErrors and delegate.fieldTracking.{?inError}.isEmpty()))" volatile="true">
+	<div class="error">
+        <span jwcid="@If" condition="ognl:showHeaderErrors" volatile="true">
+        <ul>
+			<span jwcid="headerErrors">
+				<li><span jwcid="@Delegator" delegate="ognl:currTracking.errorRenderer"/></li>
+			</span>
+		</ul>
+        </span>
+        <span jwcid="@If" condition="ognl:showFieldErrors" volatile="true">
+			<span jwcid="fieldErrors">
+				<span jwcid="@Delegator" delegate="ognl:currTracking.errorRenderer"/>
+			</span>
+        </span>
+        <span jwcid="@RenderBody"/>
+	</div>
+</span>

@@ -1,0 +1,1 @@
+ALTER TABLE cust.customerlist_details ADD RECIPE_SOURCE_ID VARCHAR2(128);

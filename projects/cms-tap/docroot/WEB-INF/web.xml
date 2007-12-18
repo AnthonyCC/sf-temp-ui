@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app
+      PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+      "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+	<display-name>FreshDirect CMS</display-name>
+
+    <filter>
+        <filter-name>CmsTapMonitor</filter-name>
+        <display-name>CMS Tap Request Monitor</display-name>
+        <description>Monitors the execution time FDWebSite Requests</description>
+        <filter-class>com.freshdirect.framework.monitor.WebRequestMonitor</filter-class>
+	</filter>
+
+	<filter>
+		<filter-name>redirect</filter-name>
+		<filter-class>org.apache.tapestry.RedirectFilter</filter-class>
+	</filter>
+
+    <filter>
+		<filter-name>WLContentTypeFilter</filter-name>
+		<filter-class>com.freshdirect.framework.webapp.WLContentTypeFilter</filter-class>
+	</filter>
+	
+	<filter>
+		<filter-name>CmsHibernateSession</filter-name>
+		<filter-class>com.freshdirect.cms.core.CmsHibernateSessionFilter</filter-class>
+	</filter>
+	
+	<filter>
+		<filter-name>registry</filter-name>
+		<filter-class>com.freshdirect.framework.conf.FDRegistryFilter</filter-class>
+	</filter>	
+
+	<filter-mapping>
+        <filter-name>CmsTapMonitor</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+	<filter-mapping>
+		<filter-name>redirect</filter-name>
+		<url-pattern>/</url-pattern>
+	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>WLContentTypeFilter</filter-name>
+		<url-pattern>/</url-pattern>
+	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>CmsHibernateSession</filter-name>
+		<url-pattern>/app</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>registry</filter-name>
+		<url-pattern>/app</url-pattern>
+	</filter-mapping>
+	
+	<servlet>
+		<servlet-name>cms</servlet-name>
+	 	<servlet-class>com.freshdirect.cms.ui.tapestry.CmsApplicationServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>cms</servlet-name>
+		<url-pattern>/app</url-pattern>
+	</servlet-mapping>
+	
+	<mime-mapping>
+		<extension>css</extension>
+		<mime-type>text/css</mime-type>
+	</mime-mapping>
+
+	<security-constraint>
+		<display-name>CMS Security Constraint</display-name>
+		<web-resource-collection>
+			<web-resource-name>CMS Application</web-resource-name>
+			<url-pattern>/app</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>cms_editor</role-name>
+		</auth-constraint>
+		<user-data-constraint>
+			<transport-guarantee>NONE</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
+
+	<login-config>
+		<auth-method>FORM</auth-method>
+		<realm-name>FreshDirect</realm-name>
+		<form-login-config>
+			<form-login-page>/Login.html</form-login-page>
+			<form-error-page>/Login.html</form-error-page>
+		</form-login-config>
+	</login-config>
+
+	<security-role>
+		<description>CMS Editors</description>
+		<role-name>cms_editor</role-name>
+	</security-role>
+
+</web-app>

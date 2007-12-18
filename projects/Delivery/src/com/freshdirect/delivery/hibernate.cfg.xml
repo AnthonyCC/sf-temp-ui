@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+	"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+
+	<session-factory>
+<!--	
+		<property name="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</property>
+		<property name="hibernate.cache.use_query_cache">true</property>
+-->		
+		<property name="hibernate.max_fetch_depth">0</property>
+		<property name="hibernate.use_outer_join">false</property>
+	
+		<property name="connection.driver_class">oracle.jdbc.driver.OracleDriver</property>
+		<property name="dialect">org.hibernate.dialect.Oracle9Dialect</property>
+		<property name="show_sql">true</property>
+		<property name="connection.datasource">fddatasource</property>
+		<property name="hibernate.transaction.factory_class">org.hibernate.transaction.CMTTransactionFactory</property>		
+		<property name="hibernate.transaction.manager_lookup_class">org.hibernate.transaction.WeblogicTransactionManagerLookup</property>
+
+
+
+		<mapping resource="com/freshdirect/delivery/model/DlvRegion.hbm.xml"/>
+		<mapping resource="com/freshdirect/delivery/model/DlvRegionDataModel.hbm.xml"/>
+		<mapping resource="com/freshdirect/delivery/model/DlvZoneModel.hbm.xml"/>
+		<mapping resource="com/freshdirect/delivery/model/DlvZoneDescriptor.hbm.xml"/>		
+	
+		<mapping resource="com/freshdirect/delivery/planning/DlvPlanModel.hbm.xml"/>
+		<mapping resource="com/freshdirect/delivery/planning/DlvShiftModel.hbm.xml"/>
+		<mapping resource="com/freshdirect/delivery/planning/DlvShiftTimeslotModel.hbm.xml"/>
+
+		<mapping resource="com/freshdirect/delivery/planning/DlvResource.hbm.xml"/>
+		<mapping resource="com/freshdirect/delivery/model/DlvTimeslotModel.hbm.xml"/>
+		<mapping resource="com/freshdirect/delivery/planning/DlvTruckAllocation.hbm.xml"/>
+
+		<mapping resource="com/freshdirect/delivery/audit/SessionAuditEntry.hbm.xml"/>
+
+	</session-factory>
+
+</hibernate-configuration>

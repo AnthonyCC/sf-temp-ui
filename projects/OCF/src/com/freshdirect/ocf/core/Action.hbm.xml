@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+   "-//Hibernate/Hibernate Mapping DTD//EN"
+   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.freshdirect.ocf.core" schema="cust" >
+	<class name="Action" table="OCF_ACTION" lazy="false">
+		<cache usage="nonstrict-read-write" />
+		
+		<id name="id" length="16">
+			<generator class="native"/>
+		</id>
+		
+		<discriminator type="string" column="TYPE"/>
+
+		<many-to-one name="flight" class="Flight" column="flight_id" foreign-key="fk_action_flight"/>
+		 
+		<subclass name="PromotionPopulator" discriminator-value="PP" >		
+			<join table="OCF_PROMOTIONPOPULATOR">
+				<key column="action_id" foreign-key="fk_promo_action"/>
+				<property name="promoId" not-null="true" length="16"/>
+			</join>
+		</subclass>
+		
+		<subclass name="Emailer" discriminator-value="E" >		
+			<join table="OCF_EMAILER">
+				<key column="action_id" foreign-key="fk_emailer_action"/>
+				<property name="mailingId" not-null="true" column="MAILING_ID"/>
+				<property name="notifyEmailAddress" column="NOTIFY_EMAIL_ADDRESS"/>
+				<property name="nextEnqueueDate" column="NEXT_ENQUEUE_DATE" type="timestamp" not-null="false" />
+				<property name="enqueueFrequency" column="ENQUEUE_FREQUENCY"  not-null="true"/>
+				<property name="silverpopJobId" column="SILVERPOP_JOB_ID"/>
+				<property name="silverpopFilePath" column="SILVERPOP_FILE_PATH"/>
+			</join>
+		</subclass>
+		
+		<subclass name="ProfileAction" discriminator-value="PA" >		
+			<join table="OCF_PROFILEACTION">
+				<key column="action_id" foreign-key="fk_profile_action"/>
+				<property name="key" not-null="true" />
+				<property name="value" not-null="true" />
+			</join>
+		</subclass>
+		
+		<subclass name="CaseAction" discriminator-value="C" >		
+			<join table="OCF_CASEACTION">
+				<key column="action_id" foreign-key="fk_case_action"/>
+				<property name="summary" not-null="true" />
+				<property name="note" not-null="false" />
+				<property name="subjectCode" not-null="true"/>
+			</join>
+		</subclass>
+		
+	</class>
+
+</hibernate-mapping>

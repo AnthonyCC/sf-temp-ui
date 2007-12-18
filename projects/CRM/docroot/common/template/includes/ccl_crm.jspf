@@ -1,0 +1,6 @@
+<script type="text/javascript">
+   CCLLinkTargets.set_target("selection_check","/api/check_selection.jsp");
+   CCLLinkTargets.set_target("visitLists","/order/quickshop/all_lists.jsp");
+   CCLLinkTargets.set_target("visitThisList","/order/quickshop/shop_from_list.jsp");
+   CCLLinkTargets.set_target("modifyItem","/order/quickshop/ccl_item_modify.jsp");
+</script>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application PUBLIC
+  "-//Apache Software Foundation//Tapestry Specification 3.0//EN"
+  "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+<application name="DlvAdmin" engine-class="com.freshdirect.dlvadmin.DlvAdminEngine" >
+	
+    <page name="AddPlan" specification-path="pages/AddPlan.page"/>
+    <page name="AddTimeslots" specification-path="pages/AddTimeslots.page"/>
+    <page name="CapacityDashboard" specification-path="pages/CapacityDashboard.page"/>
+    <page name="EarlyWarningPage" specification-path="pages/EarlyWarningPage.page"/>
+    <page name="EditPlan" specification-path="pages/EditPlan.page"/>
+    <page name="EditRegion" specification-path="pages/EditRegion.page"/>
+    <page name="ViewTimeslots" specification-path="pages/ViewTimeslots.page"/>
+    <page name="Home" specification-path="pages/Home.page"/>
+    <page name="ManageResources" specification-path="pages/ManageResources.page"/>
+    <page name="MapPage" specification-path="pages/MapPage.page"/>
+    <page name="ShowCurrentTimeslots" specification-path="pages/ShowCurrentTimeslots.page"/>
+    <page name="CapacityReportPage" specification-path="pages/CapacityReportPage.page"/>
+    <page name="ManageCTZones" specification-path="pages/ManageCTZones.page"/>    
+    <page name="UserAudit" specification-path="pages/UserAudit.page"/>
+    <page name="ManageUnattendedDeliveryZones" specification-path="pages/ManageUnattendedDeliveryZones.page"/>
+
+    <component-type type="Border" specification-path="components/Border.jwc" />
+    <component-type type="EditResource" specification-path="components/EditResource.jwc" />
+    <component-type type="EditShift" specification-path="components/EditShift.jwc" />
+    <component-type type="EditTimeslots" specification-path="components/EditTimeslots.jwc" />
+    <component-type type="ShowErrors" specification-path="components/ShowErrors.jwc" />
+    <component-type type="viewResource" specification-path="components/viewResource.jwc" />
+        
+</application>

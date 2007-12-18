@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<cms:CMSDef xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cms="http://www.freshdirect.com/xsd/CMS"
+	xsi:schemaLocation="http://www.freshdirect.com/xsd/CMS CMS.xsd">
+
+	<cms:ContentTypeDef name="Foo">
+		<cms:AttributeDefs>
+			<cms:AttributeDef type="S" name="label" />
+			<cms:AttributeDef type="DT" name="date" />
+			<cms:EnumDef type="I" name="enum">
+				<cms:EnumValue value="10" label="ten"/>
+				<cms:EnumValue value="20" label="twenty"/>
+			</cms:EnumDef>
+		</cms:AttributeDefs>
+		<cms:RelationshipDefs>
+			<cms:RelationshipDef name="children" navigable="true" cardinality="Many">
+				<cms:DestinationDef contentType="Foo" />
+			</cms:RelationshipDef>
+		</cms:RelationshipDefs>
+	</cms:ContentTypeDef>
+
+</cms:CMSDef>

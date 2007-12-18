@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="src-tst"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="/CMS"/>
+	<classpathentry kind="src" path="/Framework"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/slide/slide-kernel-2.1.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/slide/slide-webdavservlet-2.1.jar"/>
+	<classpathentry kind="src" path="/FDStore"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/slide/jakarta-slide-webdavlib-2.1.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/commons-codec-1.3.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/commons-collections-3.1.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/commons-dbcp-1.2.1.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/commons-pool-1.2.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/commons-transaction-1.0.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/ehcache-1.1.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/slide/geronimo-jta.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/slide/jakarta-slide-commandline-2.1.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/slide/jaxen-core.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/slide/jaxen-jdom.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/slide/jdom-1.0.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/slide/PDFBox-0.6.5.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/slide/saxpath.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/slide/slide-jaas-2.1.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/slide/slide-jdk14logger-2.1.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/slide/slide-log4jlogger-2.1.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/slide/slide-roles-2.1.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/slide/slide-stores-2.1.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/slide/tm-extractors-0.4.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/slide/xml-im-exporter1.1.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/poi.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-fileupload-1.2.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/lucene-core-2.2.0.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/lucene-queries-2.2.0.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/lucene-spellchecker-2.2.0.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

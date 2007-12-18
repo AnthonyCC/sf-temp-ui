@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename" value="messages"/>
+	</bean>
+
+
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.ResourceBundleViewResolver">
+		<property name="basename" value="views"/>
+	</bean>
+
+	<bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+			<props>
+				<prop key="com.freshdirect.transadmin.exception.TransAdminSystemException">SystemLevelFailure</prop>
+				<prop key="org.springframework.dao.DataAccessException">SystemLevelFailure</prop>
+			</props>
+		</property>
+	</bean>
+
+	
+	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="mappings">
+			<props>   				
+ 		 	    <prop key="/welcome.do">domainController</prop>
+ 		 	    <prop key="/employee.do">domainController</prop>					                
+ 		 	    <prop key="/route.do">domainController</prop>					                
+ 		 	    <prop key="/zone.do">domainController</prop>					                
+ 		 	    <prop key="/truck.do">domainController</prop>		                
+ 		 	    <prop key="/editemployee.do">employeeFormController</prop>
+ 		 	    <prop key="/deleteemployee.do">domainController</prop>
+ 		 	    <prop key="/editroute.do">routeFormController</prop>
+ 		 	    <prop key="/deleteroute.do">domainController</prop>
+ 		 	    <prop key="/editzone.do">zoneFormController</prop>
+ 		 	    <prop key="/deletezone.do">domainController</prop>
+ 		 	    <prop key="/edittruck.do">truckFormController</prop>
+ 		 	    <prop key="/deletetruck.do">domainController</prop>
+ 		 	    <prop key="/plan.do">dispatchController</prop>
+ 		 	    <prop key="/deleteplan.do">dispatchController</prop>
+ 		 	    <prop key="/editplan.do">planningFormController</prop>
+ 		 	    <prop key="/assignment.do">assignmentFormController</prop>
+ 		 	    <prop key="/dispatch.do">dispatchController</prop>
+ 		 	    <prop key="/deletedispatch.do">dispatchController</prop>
+ 		 	    <prop key="/editdispatch.do">dispatchFormController</prop>
+			</props>
+		</property>
+	</bean>
+
+
+	<!-- ========================= CONTROLLER DEFINITIONS ========================= -->
+	
+	
+	<bean id="domainController" class="com.freshdirect.transadmin.web.DomainController">
+		<property name="methodNameResolver" ref="transAdminControllerResolver"/>
+        <property name="domainManagerService" ref="domainManager"/>
+	</bean>
+	
+	<bean id="dispatchController" class="com.freshdirect.transadmin.web.DispatchController">
+		<property name="methodNameResolver" ref="transAdminControllerResolver"/>
+        <property name="dispatchManagerService" ref="dispatchManager"/>
+	</bean>
+
+	<!--
+	  - This bean is a MethodNameResolver definition for a MultiActionController.
+	  -->
+	<bean id="transAdminControllerResolver" class="org.springframework.web.servlet.mvc.multiaction.PropertiesMethodNameResolver">
+		<property name="mappings">
+		<props>			
+			<prop key="/welcome.do">welcomeHandler</prop>
+			<prop key="/employee.do">employeeHandler</prop>					                
+ 		 	<prop key="/route.do">routeHandler</prop>					                
+ 		 	<prop key="/zone.do">zoneHandler</prop>					                
+ 		 	<prop key="/truck.do">truckHandler</prop>
+ 		 	<prop key="/deleteemployee.do">employeeDeleteHandler</prop>
+ 		 	<prop key="/deleteroute.do">routeDeleteHandler</prop>	
+ 		 	<prop key="/deletezone.do">zoneDeleteHandler</prop>	
+ 		 	<prop key="/deletetruck.do">truckDeleteHandler</prop>
+ 		 	<prop key="/plan.do">planHandler</prop>			      
+ 		 	<prop key="/deleteplan.do">planDeleteHandler</prop>
+ 		 	<prop key="/dispatch.do">dispatchHandler</prop>			      
+ 		 	<prop key="/deletedispatch.do">dispatchDeleteHandler</prop>
+		</props>
+		</property>
+	</bean>
+       	
+	<bean id="employeeFormController" class="com.freshdirect.transadmin.web.EmployeeFormController">
+		<property name="domainManagerService" ref="domainManager"/>
+		<property name="sessionForm" value="true"/>
+        <property name="commandName" value="employeeForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.model.TrnEmployee"/>
+        <property name="validator" ref="employeeValidator"/>
+        <property name="successView" value="employeeEdit" />
+        <property name="formView" value="employeeEdit" />
+	</bean>
+	
+	<bean id="zoneFormController" class="com.freshdirect.transadmin.web.ZoneFormController">
+		<property name="domainManagerService" ref="domainManager"/>
+		<property name="sessionForm" value="true"/>
+        <property name="commandName" value="zoneForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.model.TrnZone"/>
+        <property name="validator" ref="zoneValidator"/>
+        <property name="successView" value="zoneEdit" />
+        <property name="formView" value="zoneEdit" />
+	</bean>
+	
+	<bean id="truckFormController" class="com.freshdirect.transadmin.web.TruckFormController">
+		<property name="domainManagerService" ref="domainManager"/>
+		<property name="sessionForm" value="true"/>
+        <property name="commandName" value="truckForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.model.TrnTruck"/>
+        <property name="validator" ref="truckValidator"/>
+        <property name="successView" value="truckEdit" />
+        <property name="formView" value="truckEdit" />
+	</bean>
+	
+	<bean id="routeFormController" class="com.freshdirect.transadmin.web.RouteFormController">
+		<property name="domainManagerService" ref="domainManager"/>
+		<property name="sessionForm" value="true"/>
+        <property name="commandName" value="routeForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.model.TrnRoute"/>
+        <property name="validator" ref="routeValidator"/>
+        <property name="successView" value="routeEdit" />
+        <property name="formView" value="routeEdit" />
+	</bean>
+	
+	<bean id="planningFormController" class="com.freshdirect.transadmin.web.PlanningFormController">
+		<property name="domainManagerService" ref="domainManager"/>
+		<property name="dispatchManagerService" ref="dispatchManager"/>
+		<property name="sessionForm" value="true"/>
+        <property name="commandName" value="planForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.model.TrnDispatchPlan"/>
+        <property name="validator" ref="planValidator"/>
+        <property name="successView" value="planEdit" />
+        <property name="formView" value="planEdit" />
+	</bean>
+	
+	<bean id="dispatchFormController" class="com.freshdirect.transadmin.web.DispatchFormController">
+		<property name="domainManagerService" ref="domainManager"/>
+		<property name="dispatchManagerService" ref="dispatchManager"/>
+		<property name="sessionForm" value="true"/>
+        <property name="commandName" value="dispatchForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.model.TrnDispatch"/>
+        <property name="validator" ref="dispatchValidator"/>
+        <property name="successView" value="dispatchEdit" />
+        <property name="formView" value="dispatchEdit" />
+	</bean>
+	
+	<bean id="assignmentFormController" class="com.freshdirect.transadmin.web.AssignmentFormController">
+		<property name="domainManagerService" ref="domainManager"/>
+		<property name="dispatchManagerService" ref="dispatchManager"/>
+		<property name="sessionForm" value="true"/>
+        <property name="commandName" value="assignmentForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.web.model.AssignmentCommand"/>        
+        <property name="successView" value="assignmentView" />
+        <property name="formView" value="assignmentView" />
+	</bean>
+	
+	<bean id="employeeValidator" class="com.freshdirect.transadmin.web.validation.EmployeeValidator"/>
+	<bean id="zoneValidator" class="com.freshdirect.transadmin.web.validation.ZoneValidator"/>
+	<bean id="truckValidator" class="com.freshdirect.transadmin.web.validation.TruckValidator"/>
+	<bean id="routeValidator" class="com.freshdirect.transadmin.web.validation.RouteValidator"/>
+	<bean id="planValidator" class="com.freshdirect.transadmin.web.validation.PlanValidator"/>
+	<bean id="dispatchValidator" class="com.freshdirect.transadmin.web.validation.DispatchValidator"/>
+
+</beans>

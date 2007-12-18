@@ -1,0 +1,70 @@
+<tr jwcid="tableRow">
+
+	<span jwcid="ifPrimitiveField">
+		<span jwcid="@PrimitiveField" attribute="ognl:attribute" renderLabel="true" contextNode="ognl:contextNode"/>
+	</span>
+	
+	<span jwcid="ifRelationship">
+		<td class="label" valign="top">
+			<label jwcid="@Any" for="ognl:def.name" title="ognl:def.name">
+				<span jwcid="@Insert" value="ognl:def.label"/>
+			</label>
+		</td>
+		<td>
+			<span jwcid="@RelationshipEditor" relationship="ognl:attribute" currentKey="ognl:relCurrKey" headerBlock="ognl:components.relHeader1" contextNode="ognl:contextNode">
+				<span jwcid="relHeader1@Block">
+					<th></th>
+				</span>
+				<td width="340">
+					<span jwcid="@ContentLink" key="ognl:relCurrKey"/>
+				</td>
+			</span>
+		</td>
+	</span>
+
+	<span jwcid="ifGridRelationship">
+		<td colspan="2">
+			<span jwcid="@RelationshipEditor" relationship="ognl:attribute" currentKey="ognl:relCurrKey" headerBlock="ognl:components.relHeader2" contextNode="ognl:contextNode">
+				<span jwcid="relHeader2@Block" >
+					<span jwcid="@For" source="ognl:field.attributes.columns.value.{lookupContentNode()}" value="ognl:currColumn" volatile="ognl:true">
+						<th><span jwcid="@Insert" value="ognl:currColumn.attributes.attribute.value"/></th>
+					</span>
+				</span>
+				<span jwcid="foreachColumn">
+					<td>
+						<table>
+							<tr>
+								<span jwcid="@PrimitiveField" attribute="ognl:page.visit.getWorkingSet(attribute.contentNode.key).getContentNode(relCurrKey).attributes[currColumn.attributes.attribute.value]" />
+							</tr>
+						</table>
+					</td>
+				</span>
+			</span>
+		</td>
+	</span>
+
+	<span jwcid="ifCustomField">
+		<span jwcid="@If" condition="ognl:field.attributes.component.value == 'VariationMatrix'">
+			<span jwcid="@VariationMatrix" attribute="ognl:attribute" field="ognl:field"/>
+		</span>
+		<span jwcid="@If" condition="ognl:field.attributes.component.value == 'PrimaryHomeSelection'">
+			<span jwcid="@PrimaryHomeSelection" attribute="ognl:attribute" field="ognl:field" contextNode="ognl:contextNode"/>
+		</span>
+		<span jwcid="@If" condition="ognl:field.attributes.component.value == 'ProductConfigEditor'">
+			<span jwcid="@ProductConfigEditor" node="ognl:attribute.contentNode" contextNode="ognl:contextNode"/>
+		</span>
+	</span>
+	
+	<span jwcid="@If" condition='ognl:type.name == "T"'>
+		<td colspan="2">
+			<div jwcid="@ReportTable" table="ognl:attribute.value"/>
+		</td>
+	</span>
+	
+	<td valign="top" width="16">
+		<span jwcid="@If" condition="ognl:def.inheritable">
+			<input class="checkbox" jwcid="@Checkbox" value="ognl:valueSet" onclick="if (window.setDirtyFormWarning) setDirtyFormWarning(false); this.form.submit();"/>
+		</span>
+	</td>
+
+</tr>

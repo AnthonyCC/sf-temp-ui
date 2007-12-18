@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE page-specification PUBLIC
+  "-//Apache Software Foundation//Tapestry Specification 3.0//EN"
+  "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<page-specification class="com.freshdirect.listadmin.ui.page.NewQuery">
+  <description>add a description</description>
+
+  <component id="form" type="Form">
+  </component>
+
+
+  <component id="allFields" type="Foreach">
+    <binding name="source" expression="allFields"/>
+  </component>
+
+  <component id="allFields2" type="Foreach">
+    <binding name="source" expression="allFields"/>
+  </component>
+
+
+
+  <component id="fields" type="Foreach">
+    <binding name="source" expression="fields"/>
+  </component>
+
+  <component id="selectedFields" type="Foreach">
+    <binding name="source" expression="selectedFields"/>
+  </component>
+
+
+
+  <component id="orderBys" type="Foreach">
+    <binding name="source" expression="orderBys"/>
+  </component>
+
+  <component id="selectedOrderBys" type="Foreach">
+    <binding name="source" expression="selectedOrderBys"/>
+  </component>
+
+
+
+  <component id="groupBys" type="Foreach">
+    <binding name="source" expression="groupBys"/>
+  </component>
+
+  <component id="selectedGroupBys" type="Foreach">
+    <binding name="source" expression="selectedGroupBys"/>
+  </component>
+
+
+
+  <component id="queries" type="Foreach">
+    <binding name="source" expression="availableStoredQueries"/>
+  </component>
+
+
+  <component id="constraints" type="Foreach">
+    <binding name="source" expression="constraints"/>
+  </component>
+
+  <component id="constraints2" type="Foreach">
+    <binding name="source" expression="constraints"/>
+  </component>
+
+
+
+</page-specification>

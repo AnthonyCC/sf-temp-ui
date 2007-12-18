@@ -1,0 +1,122 @@
+<table class="home_search_module_field" border="0" cellpadding="2" cellspacing="2" width="100%">
+
+    
+	<tr>
+		<% 
+			String startDate = 
+			NVL.apply(request.getParameter("startDate"), CCFormatter.formatDateYear(Calendar.getInstance().getTime()));
+			String reason = NVL.apply(request.getParameter("reason"), "all");
+			String message = NVL.apply(request.getParameter("message"), "");
+			String restrictedType = NVL.apply(request.getParameter("restrictedType"), "");
+		%>
+		
+		<td>Reason : </td>
+        <td><select name="reason" style="width: 120px;">
+				<option value="All">All</option>
+            <%
+			List enumReasons=EnumDlvRestrictionReason.getEnumList();
+			%>
+			<logic:iterate collection="<%= enumReasons %>" id="enumReason" type="com.freshdirect.delivery.restriction.EnumDlvRestrictionReason">
+			<%  
+				EnumDlvRestrictionReason eReason=(EnumDlvRestrictionReason)enumReason;
+			%>
+				<option value="<%= eReason.getName() %>" <%= reason.equals(eReason.getName()) ? "SELECTED" : "" %>><%= eReason.getName() %></option>
+			</logic:iterate>
+
+			</select>
+			 </td>
+            <td>Start Date : </td>
+		<td>
+        
+			<input type="hidden" name="actionName" id="actionName" value="">
+			<input type="hidden" name="searchFlag" value="">
+			<input type="hidden" name="startDate" id="startDate" value="<%=startDate%>">                        
+            <input type="text" name="newStartDate" id="newStartDate" size="10" value="<%=startDate%>" disabled="true" onchange="setDate(this);"> &nbsp;<a href="#" id="trigger_startDate" style="font-size: 9px;">>></a>
+ 		        <script language="javascript">
+			    function setDate(field){
+			    document.getElementById("startDate").value=field.value;
+
+			    }
+
+
+			    Calendar.setup(
+			    {
+			    showsTime : false,
+			    electric : false,
+			    inputField : "newStartDate",
+			    ifFormat : "%Y-%m-%d",
+			    singleClick: true,
+			    button : "trigger_startDate" 
+			    }
+			    );
+			    
+			    function clearAll(){
+			    	 var d = new Date();
+				    var date = d.getDate();
+				    var month = d.getMonth()+1;
+				    var year = d.getFullYear();
+			    	var fd = year + "-" + month + "-" + date;                    
+			    	document.getElementById("startDate").value = fd;
+                  document.getElementById("newStartDate").value = fd;
+			    	document.getElementById("reason").value = "";
+			    	document.getElementById("message").value = "all";
+			    	//document.getElementById("restrictedType").value = "";
+			    }
+			    
+			    function doFilter(){
+			    	var filterType = document.getElementById("filterType").value;
+			    	document.getElementById("searchcriteria").submit();
+			    }
+			    function doSearch() {
+			    	document.getElementById("searchFlag").value = "true";
+			    }
+                
+			    function doAction(actionName) {
+			    	if(actionName == 'deleteRestrctions'){
+					var doCancel = confirm ("Are you sure you want to delete these Restriction?");
+                        if(doCancel == false){
+                            return;
+                        }            
+                  }
+					document.getElementById("actionName").value = actionName;
+					document.getElementById("delRestrictions").submit();	
+					
+				}
+					//document.getElementById("actionName").value = actionName;
+					//document.getElementById("searchcriteria").submit();	
+					
+				
+			    	
+			    
+
+			    function openURL(inLocationURL) {
+
+			    	popResize(inLocationURL, 400,400,'');
+
+			    }
+
+			</script>
+		</td>
+			
+			
+		<td align="bottom">Message</td>
+		<td>
+			<input type="text" name="message" value="<%= message %>" class="input_text" style="width: 200px;">
+		</td>
+			
+		<td>Type : </td>
+		<td>					
+			<select name="restrictedType" style="width: 45px;">
+            <%
+			    List enumTypes=EnumDlvRestrictionType.getEnumList();
+			%>
+			<logic:iterate collection="<%= enumTypes %>" id="enumType" type="com.freshdirect.delivery.restriction.EnumDlvRestrictionType">
+			<%  
+				EnumDlvRestrictionType eType=(EnumDlvRestrictionType)enumType;
+			%>
+				<option value="<%= eType.getName() %>" <%= restrictedType.equals(eType.getName()) ? "SELECTED" : "" %>><%= eType.getName() %></option>
+			</logic:iterate>
+			</select>
+		</td>				
+	</tr>		
+</table>

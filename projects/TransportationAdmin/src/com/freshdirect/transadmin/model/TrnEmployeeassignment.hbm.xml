@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jul 30, 2007 6:23:08 PM by Hibernate Tools 3.2.0.b9 -->
+<hibernate-mapping schema="transp">
+    <class name="com.freshdirect.transadmin.model.TrnEmployeeassignment" table="TRN_EMPLOYEEASSIGNMENT">
+        <id name="employeeassignmentid" type="string">
+            <column name="EMPLOYEEASSIGNMENTID" length="16" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="trnEmployee" class="com.freshdirect.transadmin.model.TrnEmployee" fetch="select">
+            <column name="EMPLOYEE_ID" length="16" />
+        </many-to-one>
+        <many-to-one name="trnRoute" class="com.freshdirect.transadmin.model.TrnRoute" fetch="select">
+            <column name="ROUTE_ID" length="16" />
+        </many-to-one>
+        <property name="assignDate" type="date">
+            <column name="ASSIGN_DATE" length="7" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,74 @@
+<%@ page import="com.freshdirect.fdstore.FDReservation" %>
+<%@ page import="com.freshdirect.webapp.util.CCFormatter" %>
+<%@ page import="com.freshdirect.framework.util.DateUtil" %>
+<%@ page import="com.freshdirect.framework.util.NVL" %>
+<%if(user.isEligibleForPreReservation()){%>
+	<%String uri = request.getRequestURI().toLowerCase();
+	  FDReservation rsv = user.getReservation();
+	  %>
+	<%if(rsv != null){%>
+	<%
+		Calendar today = Calendar.getInstance();
+	    int diff = DateUtil.getDiffInMinutes(today.getTime(), rsv.getExpirationDateTime());
+		String extended = NVL.apply(request.getParameter("extended"), "");
+		if("true".equals(extended)){%>
+			<table width="745" cellpadding="0" cellspacing="0" border="0">
+				<tr align="center" style="padding-bottom:5px;">
+					<td><b><font color="#990000">DELIVERY TIMESLOT RESERVATION EXTENDED</font></b><br>
+					Your delivery reservation (<%=CCFormatter.formatReservationDate(rsv.getStartTime())%> @ <%=CCFormatter.formatTime(rsv.getStartTime())%> - <%=CCFormatter.formatDeliveryTime(rsv.getEndTime())%>) has been extended until <b><%=CCFormatter.formatDeliveryTime(rsv.getExpirationDateTime())%></b><br>
+					Please complete checkout before that time or your reservation will be released.
+					</td>
+				</tr>
+				<tr bgcolor="#999966">
+					<td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+				</tr>
+			</table>
+		<%} else {%>
+			<%if(uri.endsWith("view_cart.jsp") && diff > 60){%>
+			<table width="745" cellpadding="0" cellspacing="0" border="0">
+				<tr align="center">
+					<td style="padding-bottom:5px;"><b><font color="#990000">You have a reserved delivery time for <%=CCFormatter.formatShortDlvDate(rsv.getStartTime())%> @ <%=CCFormatter.formatTime(rsv.getStartTime())%> - <%=CCFormatter.formatDeliveryTime(rsv.getEndTime())%></font></b><br>
+						<a href="/your_account/reserve_timeslot.jsp"><b>Click here to change or cancel.</b></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="6">
+					</td>
+				</tr>
+				<tr bgcolor="#999966">
+					<td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+				</tr>
+			</table>
+			<%}else if(diff > 40 && diff <= 60){ // was 20 %>
+				<table width="745" cellpadding="0" cellspacing="0" border="0">
+					<tr align="center">
+						<td style="padding-bottom:5px;"><b><font color="#990000">Your Delivery Timeslot Reservation Expires in <%=diff%> Minutes</font></b><br>
+						Your delivery timeslot reservation (<%=CCFormatter.formatReservationDate(rsv.getStartTime())%> @ <%=CCFormatter.formatTime(rsv.getStartTime())%> - <%=CCFormatter.formatDeliveryTime(rsv.getEndTime())%>) will expire at <b><%=CCFormatter.formatDeliveryTime(rsv.getExpirationDateTime())%></b><br>
+						Please complete checkout before that time or your reservation will be released.
+						</td>
+					</tr>
+					<tr bgcolor="#999966">
+						<td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+					</tr>
+				</table>
+			<%}else if(diff > 0 && diff <= 40){ // was 20 %>
+				<% 
+				Calendar extendedCal = DateUtil.toCalendar(rsv.getExpirationDateTime());
+				extendedCal.add(Calendar.HOUR, 1);
+				String queryString = NVL.apply(request.getQueryString(), "");
+				String successPage = request.getRequestURI();
+				if(!"".equals(queryString)){
+					successPage += "?"+queryString;
+				}
+				%>
+				<table width="745" cellpadding="0" cellspacing="0" border="0">
+				<tr align="center">
+					<td style="padding-bottom:5px;"><b><font color="#990000">Your Delivery Timeslot Reservation Expires in <%=diff%> Minutes</font></b><br>
+					Your delivery reservation (<%=CCFormatter.formatReservationDate(rsv.getStartTime())%> @ <%=CCFormatter.formatTime(rsv.getStartTime())%> - <%=CCFormatter.formatDeliveryTime(rsv.getEndTime())%>) will expire tonight at <b><%=CCFormatter.formatDeliveryTime(rsv.getExpirationDateTime())%></b><br>
+					<a href="/your_account/extend_reservation.jsp?successPage=<%=successPage%>"><b>Click here to extend your reservation for one hour. Today's cutoff time for this timeslot is <%=CCFormatter.formatDeliveryTime(rsv.getCutoffTime())%>.</b></a>
+					</td>
+				</tr>
+				<tr bgcolor="#999966">
+					<td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+				</tr>
+			</table>
+			<%}%>
+		<%}%>
+	<%}%>
+<%}%>

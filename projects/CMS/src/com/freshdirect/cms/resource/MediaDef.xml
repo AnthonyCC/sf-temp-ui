@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<cms:CMSDef xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cms="http://www.freshdirect.com/xsd/CMS"
+	xsi:schemaLocation="http://www.freshdirect.com/xsd/CMS CMS.xsd">
+
+	<cms:ContentTypeDef name="Image">
+		
+		<cms:AttributeDefs>
+			<cms:AttributeDef type="I" name="height" required="true" readOnly="true"/>
+			<cms:AttributeDef type="I" name="width" required="true" readOnly="true"/>
+			<cms:AttributeDef type="S" name="path" required="true" readOnly="true"/>
+		</cms:AttributeDefs>
+		
+		<cms:RelationshipDefs />
+		
+	</cms:ContentTypeDef>
+	
+	
+	<cms:ContentTypeDef name="Html">
+		
+		<cms:AttributeDefs>
+			<cms:AttributeDef type="S" name="path" required="true"  readOnly="true"/>
+		</cms:AttributeDefs>
+		
+		<cms:RelationshipDefs />
+		
+	</cms:ContentTypeDef>
+
+	<cms:ContentTypeDef name="Template">
+		
+		<cms:AttributeDefs>
+			<cms:AttributeDef type="S" name="path" required="true"  readOnly="true"/>
+		</cms:AttributeDefs>
+		
+		<cms:RelationshipDefs />
+		
+	</cms:ContentTypeDef>
+
+	<cms:ContentTypeDef name="MediaFolder">
+		
+		<cms:AttributeDefs>
+			<cms:AttributeDef type="S" name="name" required="true" readOnly="true"/>
+			<cms:AttributeDef type="S" name="path" required="true" readOnly="true" />
+		</cms:AttributeDefs>
+		
+		<cms:RelationshipDefs>
+			
+			<cms:RelationshipDef name="subFolders" cardinality="Many" navigable="true" readOnly="true">
+				<cms:DestinationDef contentType="MediaFolder" />
+			</cms:RelationshipDef>
+			
+			<cms:RelationshipDef name="files" cardinality="Many" navigable="true" readOnly="true">
+				<cms:DestinationDef contentType="Image" />
+				<cms:DestinationDef contentType="Html" />
+			</cms:RelationshipDef>
+			
+		</cms:RelationshipDefs>
+		
+	</cms:ContentTypeDef>
+
+</cms:CMSDef>

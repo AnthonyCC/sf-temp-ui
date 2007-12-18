@@ -1,0 +1,95 @@
+<body jwcid="@Border" title="Home">
+
+	<div id="editor" jwcid="@If" element="div" condition="ognl:selectedRule!=null and selectedSubsystem==selectedRule.subsystem">
+		<h2>Editing Rule: <span jwcid="@Insert" value="ognl:selectedRule.name" /></h2>
+		
+		<span jwcid="@If" condition="ognl:beans.delegate.hasErrors">
+			ERRORS
+			<ul>
+			<span jwcid="foreachError@Foreach" source="ognl:beans.delegate.fieldTracking.{?inError}">
+				<li>
+					<span jwcid="@Delegator" delegate="ognl:components.foreachError.value.errorRenderer"/>
+				</li>
+			</span>
+			</ul>
+		</span> 
+
+		<form jwcid="@Form" delegate="ognl:beans.delegate" listener="ognl:listeners.formSubmit">
+			<table border="0" cellspacing="0" cellpadding="4">
+				<tr>
+					<td colspan="2" align="right">
+						<input jwcid="@ImageSubmit" image="ognl:assets.delCondition" listener="ognl:listeners.deleteRule" align="absbottom"/>
+					</td>
+				</tr>
+				<tr>
+					<td><span jwcid="@FieldLabel" field="ognl:components.ruleName"/>:</td>
+					<td><input jwcid="ruleName@TextField" displayName="Name" type="text" size="25" value="ognl:selectedRule.name" validators="validators:required"/></td>
+				</tr>
+				<tr>
+					<td><span jwcid="@FieldLabel" field="ognl:components.priority"/>:</td>
+					<td><input jwcid="priority@TextField" displayName="Priority" validators="validators:required" type="text" size="25" value="ognl:selectedRule.priority"/></td>
+				</tr>
+				<tr>
+					<td>Start Date: </td>
+					<td><input jwcid="@DatePicker" value="ognl:selectedRule.startDate" type="text" size="10"/></td>
+				</tr>
+				<tr>
+					<td>End Date: </td>
+					<td><input jwcid="@DatePicker" value="ognl:selectedRule.endDate" type="text" size="10"/></td>
+				</tr>
+				<tr>
+					<td>Outcome: </td>
+					<td>
+						<select jwcid="@PropertySelection" model="ognl:outcomeSelectionModel" value="ognl:outcomeType" submitOnChange="ognl:true"/>
+						<span jwcid="@If" condition="ognl:selectedRule.outcome instanceof com.freshdirect.fdstore.rules.BasePrice">
+							<input jwcid="@TextField" validators="validators:required" value="ognl:selectedRule.outcome.price" displayName="price" size="5" />
+						</span>
+
+						<span jwcid="@If" condition="ognl:selectedRule.outcome instanceof com.freshdirect.fdstore.rules.Adjustment">
+							<input jwcid="@TextField" validators="validators:required" value="ognl:selectedRule.outcome.value" displayName="price" size="5" />
+						</span>
+						<span jwcid="@If" condition="ognl:selectedRule.outcome instanceof java.lang.String">
+							<input jwcid="@TextField" validators="validators:required" value="ognl:selectedRule.outcome" displayName="Promo Code" size="20" />
+						</span>
+					</td>
+					
+				</tr>
+				
+				<span jwcid="@Foreach" source="ognl:new java.util.ArrayList(selectedRule.conditions)" value="ognl:condition" index="ognl:currConditionIndex">
+					<tr class="conditionHeading">
+						<td>
+							<span jwcid="@Insert" value="ognl:condition.class.name.substring(condition.class.name.lastIndexOf('.') + 1)"/>
+						</td>
+						<td align="right">
+							<input jwcid="@ImageSubmit" image="ognl:assets.delCondition" listener="ognl:listeners.removeCondition" align="absbottom"/>
+						</td>
+					</tr>
+					<tr>
+						<span jwcid="@ConditionEditor" condition="ognl:condition" selectedRule="ognl:selectedRule" />
+					</tr>
+				</span>
+				<tr>
+					<td colspan="2" style="border-bottom: 1px solid black; padding-top: 4px; font-weight: bold; padding-top: 4px; width: 245px;">ADD New Condition</td>
+				</tr>
+				<tr>
+					<td><select jwcid="@PropertySelection" model="ognl:conditionTypeModel" value="ognl:conditionType"/></td>
+					<td><input jwcid="@Submit" label="Add" listener="ognl:listeners.addCondition" class="submit"/></td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td align="left">
+						<input jwcid="@Submit" label="Cancel" listener="ognl:listeners.cancelEdit" class="cancel"/>
+						<input jwcid="@Submit" label="Save" listener="ognl:listeners.saveRule" class="submit"/>
+					</td>
+				</tr>	
+			</table>
+		</form>
+		
+	</div>
+	<div id="tree">
+		<span jwcid="@If" condition="ognl:visit.subsystem!=null">
+			<span jwcid="ruleTree"><a jwcid="nodeLink"><img jwcid="nodeIcon" width="16" height="16" align="absbottom" border="0"/><span jwcid="nodeLabel"/></a></span>
+		</span>
+	</div>
+
+</body>

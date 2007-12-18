@@ -1,0 +1,90 @@
+<%@ page import='com.freshdirect.fdstore.content.*'  %>
+<%@ page import='com.freshdirect.fdstore.attributes.*'  %>
+<%@ page import='com.freshdirect.fdstore.customer.*'  %>
+<%@ page import='com.freshdirect.fdstore.*' %>
+<%@ taglib uri='bean' prefix='bean' %>
+<%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri='template' prefix='tmpl' %>
+
+<%
+
+Image deptMngrImg = null;
+Attribute dptBottAttrib = null;
+
+dptBottAttrib = dept.getAttribute("DEPT_MGR"); //department manager image with name
+
+if (dptBottAttrib !=null) {
+    deptMngrImg = (Image)dptBottAttrib.getValue();
+}
+
+%>
+	<logic:iterate id="variation" collection="<%= variations %>" type="com.freshdirect.fdstore.FDVariation" indexId="idx">	
+	<%
+	if(variation.getDescription().equalsIgnoreCase("marinade/rub")){
+	%>
+
+<table border="0" cellpadding="0" cellspacing="0" width="520">
+<tr valign="top"><td colspan="5" width="520"></td></tr>
+
+<tr valign="top">
+<td width="115" align="right" rowspan="2"><a href="/shared/fd_def_popup.jsp?catId=<%=catId%>&prodId=<%=prodId%>&charName=<%=charName%>&tmpl=<%=tmpl%>&level=home"><% if(deptName.equals("Meat")) { %>
+<img src="/media/images/fd_defs/meat/meat_marinades.gif" border="0"><% } else{ %><img src="/media/images/fd_defs/seafood/seafood_marinades.gif" border="0"><% } %></a>
+<br><br>
+	    <logic:iterate id="option" collection="<%= variation.getVariationOptions() %>" type="com.freshdirect.fdstore.FDVariationOption">
+		<%
+		if(!option.getName().equals("N")){
+			if(option.getAttribute("skucode","").equals(skucode)){
+			%>
+			<b><%= option.getDescription() %></b><br>
+			<%
+			}else{
+		%>
+			<a href="/shared/fd_def_popup.jsp?skucode=<%=option.getAttribute("skucode","")%>&catId=<%=catId%>&prodId=<%=prodId%>&charName=<%=charName%>&tmpl=<%=tmpl%>&level=detail"><%= option.getDescription() %></a><br>
+		<%
+			}
+		}
+		%>
+		</logic:iterate>
+	<br><img src="/media_stat/images/layout/clear.gif" width="1" height="45"><br>
+	<img src="<%=deptMngrImg.getPath()%>" width="<%=deptMngrImg.getWidth()%>" height="<%=deptMngrImg.getHeight()%>" alt="" border="0">
+
+</td>
+<td width="10" rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
+<td width="1" bgcolor="#999966" rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+<td width="15" rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="15" height="1"></td>
+<td valign="top" width="379">
+
+<%
+
+if (level.equals("home")){
+	%>
+
+<img src="/media_stat/images/layout/clear.gif" width="379" height="3"><br>
+
+<%if(deptName.equals("Meat")){%>
+Select a tangy marinade or a flavor-packed spice rub to season your favorite cut of meat or poultry. We make all our marinades and rubs fresh in our kitchen using natural ingredients that you'd find in your own pantry. We'll send enough marinade or spice rub &#151; packed separately in airtight baggies &#151; for the cut you are purchasing. All you have to do is choose which one you want, follow the instructions on the packet, and enjoy.
+<%}else{%>
+Select a tangy marinade, a flavor-packed seasoning flour, or spicy rub to season your seafood. We make all our marinades and rubs fresh in our kitchen using natural ingredients that you'd find in your own pantry. We'll send enough marinade or spice rub &#151; packed separately in airtight baggies &#151; for the fish you are purchasing. All you have to do is choose which one you want, follow the instructions on the packet, and enjoy.
+<%}%>
+ 
+<br><br>
+
+	<%@ include file="/shared/includes/i_info_marinades_home.jspf"%>
+
+<% } else { %>
+
+	<%@ include file="/shared/includes/i_info_marinades.jspf"%>
+
+	<%
+}
+%>
+</td>
+</tr>				
+</table>
+
+
+	<%
+	}
+	
+	%>
+	</logic:iterate>		

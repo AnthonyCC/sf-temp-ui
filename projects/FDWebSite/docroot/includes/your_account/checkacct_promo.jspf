@@ -1,0 +1,24 @@
+<%
+String currentPage = request.getRequestURI(); 
+boolean fromCheckout = currentPage.indexOf("checkout") > -1;
+String fromParam = fromCheckout ? "?from=checkout":"";
+String addCheckPage = fromCheckout ? "/checkout/step_3_checkacct_add.jsp" : "/your_account/add_checkacct.jsp";
+%>
+
+<table width="675" border="0" cellpadding="0" cellspacing="0">
+<tr>
+<%-- if new to check --%>
+<td width="40%"><img src="/media_stat/images/headers/new_pay_by_check.gif" width="155" height="9" alt="NEW! PAY BY CHECK ONLINE" vspace="2"><br>
+Now FreshDirect's <b>online check-payment service</b> gives you another easy option for payment.<br>
+<a href="javascript:popup('/pay_by_check.jsp<%=fromParam%>','large')"><b>Learn how it works</b></a><br><span class="space2pix"><br></span>
+<a href="<%=addCheckPage%>"><img src="/media_stat/images/buttons/add_check_acct.gif" width="145" height="15" border="0" alt="ADD CHECKING ACCOUNT" vspace="12"></a>
+</td>
+<!--<td align="center">CHECK PAYMENT PROMOTION<br><a href="javascript:popup('/pay_by_check.jsp<%=fromParam%>','large')">Learn how it works</a></td></tr></table>-->
+<td width="60%">
+	<SCRIPT LANGUAGE=JavaScript>
+		<!--
+		OAS_AD('ProductNote');
+		//-->
+	</SCRIPT>
+</td>
+</table>

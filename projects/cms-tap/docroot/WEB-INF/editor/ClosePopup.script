@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script PUBLIC
+  "-//Apache Software Foundation//Tapestry Script Specification 3.0//EN"
+  "http://jakarta.apache.org/tapestry/dtd/Script_3_0.dtd">
+
+<script>
+
+	<input-symbol key="context" class="java.lang.String" required="yes"/>
+	<input-symbol key="pagename" class="java.lang.String" required="yes"/>
+	
+	<body>
+		<unique>
+			<![CDATA[
+			function refreshOpenerWithoutSubmit() {
+				if (opener.setDirtyFormWarning) opener.setDirtyFormWarning(false);
+				opener.location.replace("${context}?service=page&page=${pagename}");
+			}
+			]]>
+		</unique>
+	</body>
+
+</script>

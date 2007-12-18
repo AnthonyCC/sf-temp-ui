@@ -1,0 +1,43 @@
+<%@ page import="java.util.Calendar"%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+
+<% 
+boolean yourAccount = request.getRequestURI().indexOf("/your_account/reminder_service.jsp") > -1; 
+String fontClass = yourAccount? "text12" : "text11";
+%>
+<table width="100%" cellpadding="<%= yourAccount? "6" : "0" %>" cellspacing="0" border="0">
+	<% if (yourAccount) { %>
+	<tr>
+		<td class="<%= fontClass %>"><input type="checkbox" name="sendReminder" <%=custInfo.getReminderFrequency() > 0 ? "checked" : ""%>> <b>Send me an e-mail reminder</b> (Uncheck if you don't want a reminder).<br><br></td>
+	</tr>
+	<% } else{%>
+		<input type="hidden" name="sendReminder">
+	<%}%>
+	<tr>
+		<td class="<%= fontClass %>"><b>What day of the week would you like a reminder?</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
+		&nbsp;<select name="dayOfWeek">
+		<option value="<%=Calendar.SUNDAY%>" <%=custInfo.getReminderDayOfWeek() == Calendar.SUNDAY ? "selected" : "" %>>Sunday</option>
+		<option value="<%=Calendar.MONDAY%>" <%=custInfo.getReminderDayOfWeek() == Calendar.MONDAY ? "selected" : "" %>>Monday</option>
+		<option value="<%=Calendar.TUESDAY%>" <%=custInfo.getReminderDayOfWeek() == Calendar.TUESDAY ? "selected" : "" %>>Tuesday</option>
+		<option value="<%=Calendar.WEDNESDAY%>" <%=custInfo.getReminderDayOfWeek() == Calendar.WEDNESDAY ? "selected" : "" %>>Wednesday</option>
+		<option value="<%=Calendar.THURSDAY%>" <%=custInfo.getReminderDayOfWeek() == Calendar.THURSDAY ? "selected" : "" %>>Thursday</option>
+		<option value="<%=Calendar.FRIDAY%>" <%=custInfo.getReminderDayOfWeek() == Calendar.FRIDAY ? "selected" : "" %>>Friday</option>
+		<option value="<%=Calendar.SATURDAY%>" <%=custInfo.getReminderDayOfWeek() == Calendar.SATURDAY ? "selected" : "" %>>Saturday</option>
+		</select><br><br>
+		</td>
+	</tr>
+	<tr>
+		<td class="<%= fontClass %>"><b>How often would you like us to send it?</b><br>
+		&nbsp;<input type="radio" name="frequencyOption" value="7" <%=custInfo.getReminderFrequency() == 0 || custInfo.getReminderFrequency() == 7 ? "checked" : ""%>>every week &nbsp; <input type="radio" name="frequencyOption" value="14" <%=custInfo.getReminderFrequency() == 14 ? "checked" : ""%>>every other week
+		<br><br>
+		</td>
+	</tr>
+	<tr>
+		<td class="<%= fontClass %>">
+		The reminder will be sent to <b><%= custInfo.getEmail() %></b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br>
+		If you like, we can also send it to your alternate email addresses:<br><img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br>
+		&nbsp;&nbsp;&nbsp;<input type="checkbox" name="altEmailOption" value="checkbox" <%=custInfo.isReminderAltEmail() && custInfo.getAlternateEmail() != null && !"".equals(custInfo.getAlternateEmail()) ? "checked" : ""%>> Also send to
+		<% if (custInfo.getAlternateEmail() != null && !"".equals(custInfo.getAlternateEmail()) && !result.hasError(EnumUserInfoName.ALT_EMAIL.getCode())) { %> <b><%= custInfo.getAlternateEmail() %></b><input type="hidden" name="<%=EnumUserInfoName.ALT_EMAIL.getCode()%>" value="<%=custInfo.getAlternateEmail()%>"><% } else { %>: <input type="text" size="25" name="<%=EnumUserInfoName.ALT_EMAIL.getCode()%>" value="<%=custInfo.getAlternateEmail()%>"><% } %>&nbsp;<fd:ErrorHandler result='<%= result %>' name='<%=EnumUserInfoName.ALT_EMAIL.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+		</td>
+	</tr>
+</table>

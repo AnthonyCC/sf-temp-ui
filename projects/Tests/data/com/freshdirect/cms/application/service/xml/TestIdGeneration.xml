@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<cms:CMSDef xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cms="http://www.freshdirect.com/xsd/CMS"
+	xsi:schemaLocation="http://www.freshdirect.com/xsd/CMS CMS.xsd">
+
+	<cms:ContentTypeDef name="FooDefault">
+		<cms:AttributeDefs>
+			<cms:AttributeDef type="S" name="label" />
+		</cms:AttributeDefs>
+	</cms:ContentTypeDef>
+
+	<cms:ContentTypeDef name="FooGenerateId" generateId="true">
+		<cms:AttributeDefs>
+			<cms:AttributeDef type="S" name="label" />
+		</cms:AttributeDefs>
+	</cms:ContentTypeDef>
+
+	<cms:ContentTypeDef name="FooDontGenerateId" generateId="false">
+		<cms:AttributeDefs>
+			<cms:AttributeDef type="S" name="label" />
+		</cms:AttributeDefs>
+	</cms:ContentTypeDef>
+
+</cms:CMSDef>

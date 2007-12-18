@@ -1,0 +1,273 @@
+<script language="javascript">
+<!--
+function returnAll(formName){
+		var frmObj = document.forms[formName];
+		var frmFldsCnt = frmObj.elements.length;
+		for (var i = 0; i<frmFldsCnt;i++) {
+			var fldElement = frmObj.elements[i];
+			if (fldElement.name.substring(0,4) !="h_q_") continue;			
+			if(fldElement.name.indexOf('_d_p') != -1){
+				var newName = "ret_qty_" + fldElement.name.substring(4);
+				var temp = newName.split('_d_p');				
+				frmObj[temp[0]].value = fldElement.value; 
+			} else {
+				var newName = "ret_qty_" + fldElement.name.substring(4);
+				frmObj[newName].value = fldElement.value; 
+			}
+		}
+	}
+    
+function clearReturnAll(formName){
+		var frmObj = document.forms[formName];
+		var frmFldsCnt = frmObj.elements.length;
+		for (var i = 0; i<frmFldsCnt;i++) {
+			var fldElement = frmObj.elements[i];
+			if (fldElement.name.substring(0,4) !="h_q_") continue;	
+			if(fldElement.name.indexOf('_d_p') != -1){
+				var newName = "ret_qty_" + fldElement.name.substring(4);	
+				var temp = newName.split('_d_p');				
+				frmObj[temp[0]].value = ""; 
+			
+			} else {
+				var newName = "ret_qty_" + fldElement.name.substring(4);			
+				frmObj[newName].value = ""; 
+			}
+			
+		}
+        setFeeButtons( formName,"no_fee");
+	}
+    
+ function setFeeButtons( formName,feeSetting) {
+    var frmObj = document.forms[formName];
+    if (frmObj==null){ alert("Hmmm. bad form name");  return false; }
+    var frmElementCnt = frmObj.elements.length;
+    for (var i=0; i<frmElementCnt; i++) {
+        var fldElement = frmObj.elements[i];
+        if (fldElement.type=="radio" && fldElement.name.substring(0,4)=="fee_") {
+            if (fldElement.value==feeSetting) {
+                fldElement.checked = true;
+            }
+        }
+    }
+ }   
+    
+function processReturn(formName){
+	var qty = 0;
+	var frmObj = document.forms[formName];
+	var frmFldsCnt = frmObj.elements.length;
+	for (var i = 0; i<frmFldsCnt;i++) {
+		var fldElement = frmObj.elements[i];
+		if (fldElement.name.substring(0,4) !="h_q_") continue;
+		if(fldElement.name.indexOf('_d_p') != -1){
+			var newName = "ret_qty_" + fldElement.name.substring(4);
+			var temp = newName.split('_d_p');
+			if(frmObj[temp[0]].value != ''){
+				qty = frmObj[temp[0]].value;
+			}
+		}
+	}
+	if(qty > 0){
+		var doReturn = confirm ("Are you sure you want to return the delivery pass as well?. If yes delivery charges may apply.");
+		if(doReturn == false){
+			return false;
+		} 		
+	}
+}
+    
+//-->		
+</script>
+<%@ page import="com.freshdirect.fdstore.customer.adapter.FDInvoiceAdapter,
+                 com.freshdirect.fdstore.customer.WebOrderViewI"%>
+<%@ page import="com.freshdirect.webapp.taglib.callcenter.ComplaintUtil" %>
+<%@ page import="com.freshdirect.fdstore.FDSalesUnit"%>
+<%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@ page import="com.freshdirect.customer.ErpDiscountLineModel" %>
+<%@ page import="com.freshdirect.common.pricing.Discount" %>
+<%@ page import="com.freshdirect.fdstore.deliverypass.DeliveryPassUtil" %>
+
+<%-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	THIS INCLUDE REQUIRES:
+	- FDCartI order
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --%>
+
+<%	
+    TreeMap allDeptsMap = new TreeMap();
+    boolean isSubmitOrderStep = request.getRequestURI().toLowerCase().indexOf("checkout/checkout_preview.jsp")!=-1?true:false;
+    boolean hasEstimatedItems = false;
+	boolean hasInvoice = false;
+	boolean hasReturn = false;
+	if (order.hasInvoice()) {
+		hasInvoice = true;
+		hasReturn = order.hasRefusedDelivery();
+	}
+%>
+<div class="content_fixed">
+<input type="button" class="submit" value="Return All" onclick="javascript:returnAll('return_order');"> <input type="button" class="submit" value="Clear Return All" onclick="javascript:clearReturnAll('return_order');"> &mdash; <input type="button" class="submit" value="No Fee All" onclick="javascript:setFeeButtons('return_order', 'no_fee');"> <input type="button" class="submit" value="Restock Fee All" onclick="javascript:setFeeButtons('return_order', 'restock_fee');">
+</div> 
+<div class="content_scroll" style="height: 50%; padding-top: 0px;">
+<%-- ======================= BEGIN LINE ITEM & CREDIT DETAILS SECTION ======================= --%>
+<table border="0" cellspacing="0" cellpadding="2" width="100%" class="order_detail">
+	<tr>
+		<td align="center"><b>Quantity<br>Ord./Del./Ret.</b></td>
+		<td align="center"><b>Fee<br>None/Restock</b></td>
+        <td colspan="2">&nbsp;</td>
+		<td align="center"><b>Final Weight</b></td>
+		<td><b>Unit Price</b></td>
+		<td align="right"><b>Options Price</b></td>
+		<td align="right"><b>Total Est./Final</b></td>
+		<td colspan="7">&nbsp;</td>
+	</tr>
+	<logic:iterate id="view" collection="<%= order.getOrderViews() %>" type="com.freshdirect.fdstore.customer.WebOrderViewI">
+	<%
+	WebOrderViewI invoicedView = null;
+	if(order.hasInvoice()) {
+		invoicedView = order.getInvoicedOrderView(view.getAffiliate());
+	}
+	String lastDept = null;
+	double tax = 0.0;
+	double deposit = 0.0;
+
+	if (!view.isDisplayDepartment()) {
+		%>
+		<tr class="order_item_dept">
+			<td colspan="2"></td>
+			<td colspan="13"><b><%= view.getDescription() %> Charges</b></td>
+		</tr>
+		<%
+	}
+	%>
+
+	<%@ include file="/includes/i_return_cartline_details.jspf"%>
+
+</logic:iterate>
+	<tr><td colspan="15"><br></td></tr>
+	<tr>
+		<td colspan="6" align="right"><b>Order Totals and Extras</b></td>
+		<td colspan="2" align="right"><b>Total Est./Final</b></td>
+		<td colspan="4">&nbsp;</td>
+        <td colspan="3">&nbsp;</td>
+	</tr>	
+	<tr><td colspan="15" class="list_separator" style="padding: 0px;"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td></tr>	
+
+    <%if (order.getTotalDiscountValue() > 0.0){%>
+		<tr>
+            <td align="right"><input type="checkbox" name="promo_checkbox" value="promo"></td>
+            <td colspan="2">carry over Promotion</td>
+		    <td colspan="3" align="right">Promotion:</td>
+		    <td colspan="2" align="right">(<%= CCFormatter.formatCurrency(order.getTotalDiscountValue()) %>) / <b>(<%= CCFormatter.formatCurrency( order.getActualDiscountValue() ) %>)</b></td>
+            <td colspan="4">&nbsp;</td>
+            <td colspan="3">&nbsp;</td>
+        </tr>
+	<%}%>
+
+    <%if(order.getCustomerCreditsValue() > 0.0){%>
+		<tr align="right">
+            <td>&nbsp;</td>
+            <td colspan="2">&nbsp;</td>
+		    <td colspan="3">Credits:</td>
+		    <td colspan="2">(<%= CCFormatter.formatCurrency(order.getCustomerCreditsValue()) %>) / <b>(<%= CCFormatter.formatCurrency( order.getActualCustomerCreditsValue() ) %>)</b></td>
+		    <td colspan="4">&nbsp;</td>
+            <td colspan="3">&nbsp;</td>
+		</tr>
+	<%}%>
+         <%
+       	    String displayString = "";
+	    StringBuffer value = new StringBuffer();
+	    StringBuffer returnValue = new StringBuffer();
+         
+            if(order.isDlvPassApplied()) {
+            	displayString = "Delivery Charge:";
+		value.append(DeliveryPassUtil.getDlvPassAppliedMessage(user));
+	    } else if(order.isDeliveryChargeWaived()) {
+		displayString = "Delivery Charge (waived):";
+		value.append("$0.00");
+	    } else {
+		displayString = "Delivery Charge:";
+		value.append(CCFormatter.formatCurrency(order.hasInvoice() ? order.getInvoicedDeliveryCharge() : order.getDeliverySurcharge()));
+		value.append(order.isDeliveryChargeTaxable() ? "&nbsp;T" : "");
+	    }
+	    
+	    if(order.hasReturn()) {
+	     	value.append(" / ");
+	        if(order.isDlvPassAppliedOnReturn()) {
+		   returnValue.append(DeliveryPassUtil.getDlvPassAppliedMessage(user));
+	        } else if(order.isChargedWaivedForReturn(EnumChargeType.DELIVERY)) {
+		   returnValue.append("$0.00 (waived)");
+	        } else {
+		   returnValue.append(CCFormatter.formatCurrency(order.getDeliverySurchargeOnReturn()));
+		   returnValue.append(order.isDeliveryChargeTaxable() ? "&nbsp;T" : "");
+	        }
+	     	
+	    }
+	  %>   
+	
+    <tr align="right">
+        <td><%if(!order.isDeliveryChargeWaived() || order.isDlvPassApplied()){%><input type="checkbox" name="delivery_checkbox" value="delivery" <%=order.isChargeWaivedByCSROnReturn(EnumChargeType.DELIVERY) ? "checked" : ""%>><%}%></td>
+        <td colspan="2" align="left"><% if(!order.isDeliveryChargeWaived() || order.isDlvPassApplied()){%>waive Delivery Fee<%}%></td>
+	<td colspan="3"><%= displayString %></td>
+	<td colspan="2" align="right"><%= value %><b><%= returnValue %></b></td>
+     </tr>
+
+    <%if(order.getPhoneCharge() > 0) { %>
+        <tr align="right">
+            <td><%if(!order.isChargeWaived(EnumChargeType.PHONE)){%><input type="checkbox" name="phone_checkbox" value="phone" <%=order.isChargedWaivedForReturn(EnumChargeType.PHONE) ? "checked" : ""%>><%}%></td>
+            <td colspan="2" align="left"><%if(!order.isChargeWaived(EnumChargeType.PHONE)){%>waive Telephone Fee<%}%></td>
+            <td colspan="3">Phone Handling Charge<%=(order.isChargeWaived(EnumChargeType.PHONE)? "(waived)" : "")%>: </td>
+			<td colspan="2"><%= CCFormatter.formatCurrency(order.isChargeWaived(EnumChargeType.PHONE)? 0.0: order.getPhoneCharge())%></td>
+		    <td colspan="4">&nbsp;</td>
+        </tr>
+    <%}%>
+
+    <%if(order.getMiscellaneousCharge() > 0.0){%>
+		<tr align="right">
+            <td><input type="checkbox" name="misc_checkbox" value="misc" <%=order.isChargeWaivedByCSROnReturn(EnumChargeType.MISCELLANEOUS) ? "checked" : ""%>></td>
+            <td colspan="2" align="left">waive Miscellaneous Fee</td>
+			<td colspan="3">Misc Charge: </td>
+			<td colspan="2"><%=CCFormatter.formatCurrency(order.getMiscellaneousCharge())%></td>
+		    <td colspan="4">&nbsp;</td>
+		</tr>
+	<%}%>
+
+    <%if(order.getCCDeclinedCharge() > 0.0){%>
+		<tr align="right">
+            <td colspan="3">&nbsp;</td>
+			<td colspan="3">CC Declined Charge: </td>
+			<td colspan="2"><%= CCFormatter.formatCurrency(order.getCCDeclinedCharge()) %></td>
+		    <td colspan="4">&nbsp;</td>
+		</tr>
+	<%}%>
+
+    <%if(order.getFDRestockingCharges() > 0.0){%>
+		<tr align="right">
+            <td colspan="3"></td>
+			<td colspan="3">Restocking Charge FD: </td>
+			<td colspan="2"><%= CCFormatter.formatCurrency(order.getFDRestockingCharges()) %></td>
+		    <td colspan="4">&nbsp;</td>
+		</tr>
+	<%}%>
+	
+	<%if(order.getWBLRestockingCharges() > 0.0){%>
+		<tr align="right">
+            <td colspan="3"></td>
+			<td colspan="3">Restocking Charge WBL: </td>
+			<td colspan="2" ><%= CCFormatter.formatCurrency(order.getWBLRestockingCharges()) %></td>
+		    <td colspan="4">&nbsp;</td>
+		</tr>
+	<%}%>
+		
+	<tr align="right">
+		<td colspan="3">&nbsp;</td>
+		<td colspan="3">Order Total:</td>
+		<td colspan="2"><%= CCFormatter.formatCurrency(order.getTotal()) %> / <b><%= CCFormatter.formatCurrency( order.getInvoicedTotal() ) %></b></td>
+		<td><% if (hasEstimatedItems) out.print("*"); %></td>
+        <td colspan="3">&nbsp;</td>          
+        <td colspan="3">&nbsp;</td>
+	</tr>
+	
+	<tr>
+		<td colspan="15"><br>
+			<b>Ord.</b>= Ordered/<b>Del.</b>= Delivered/<b>Ret.</b>= Returned &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; <b>T</b> = Taxable Item &nbsp;&nbsp;&nbsp; <b>S</b> = Special Price &nbsp;&nbsp;&nbsp; <b>D</b> = Bottle Deposit
+		</td>
+	</tr>
+</table>
+</div>

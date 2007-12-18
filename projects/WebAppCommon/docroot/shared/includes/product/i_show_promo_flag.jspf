@@ -1,0 +1,19 @@
+		<%
+                    boolean qualifies = productNode.isQualifiedForPromotions() && user.getMaxSignupPromotion()>0;
+                    double promotionValue = 0.0;
+                    if (qualifies) {
+                        promotionValue = user.getMaxSignupPromotion();
+                    }
+                    
+                    String prefix = String.valueOf(promotionValue);
+                    prefix = prefix.substring(0, prefix.indexOf('.'));
+                    
+                    if(qualifies && !productNode.isUnavailable()){%>
+			<table>
+				<tr>
+					<td><img src="/media_stat/images/template/offer_icon.gif" alt="Promotion icon"></td>
+					<td><font class="title12">Free!<br></font><A HREF="promotion.jsp?cat=<%=request.getParameter("catId")%>">See offer details</a></td>
+				</tr>
+			</table>
+			<br>
+		<%  }%>

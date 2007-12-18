@@ -1,0 +1,89 @@
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import='com.freshdirect.framework.webapp.*'%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
+<%@ page import='com.freshdirect.content.attributes.*'%>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
+<%@ page import='com.freshdirect.customer.*' %>
+<%@ page import="com.freshdirect.common.pricing.Discount" %>
+
+<%
+/**
+ *  A JSP fragment page to display the YMALs for a specific product
+ *  or recipe. This fragment displays a table row containing the YMALs,
+ *  with recipes in a separate fragment - thus the fragment assumes that
+ *  it is put into a table.
+ *
+ *
+ *  Parameters:
+ *
+ *  @param user the active user, and FDUserI instance
+ *  @param productNode the active product to display the YMALs for,
+ *         a ProductModel instance
+ *  @param recipe if the active product is a recipe, this parameter
+ *         points to the related Recipe object
+ *  @param spacer a string containing a URL to a spacer image
+ *         (totally clear image)
+ *  @param currencyFormatter a NumberFormat instance, to format currency
+ *         values to strings
+ */
+
+    // setup for FDShoppingCart tag
+    //String ptrk  = request.getParameter("trk") != null ? request.getParameter("trk") : "";
+    String ptrk = "txymal";
+    String sPage = productNode != null
+                 ? "/grocery_cart_confirm.jsp?catId="+productNode.getParentNode().getContentName()+"&productId="+productNode.getContentName()+"&trk="+ptrk
+                 : "";
+%>		
+<fd:FDShoppingCart id='cart' result='result' action='addMultipleToCart' successPage='<%= sPage %>' source='TxYmal'>
+<%  //hand the action results off to the dynamic include
+    String      cartMode     = CartName.ADD_TO_CART;
+    FDCartLineI templateLine = null ;
+
+    request.setAttribute("actionResult", result);
+    request.setAttribute("user", user);
+    request.setAttribute("cartMode", cartMode);
+    request.setAttribute("templateLine", templateLine);
+
+    List    relatedProducts   = null;
+    List    relatedRecipes    = null;
+    List    relatedCategories = null;
+    String  ymalHeader        = null;
+    YmalSet activeYmalSet     = null;
+    Set     removeSkus        = new HashSet();
+
+    for (Iterator it = cart.getOrderLines().iterator(); it.hasNext(); ) {
+        FDCartLineModel cartLine = (FDCartLineModel) it.next();
+        removeSkus.add(cartLine.getSku());
+    }
+
+	if (recipe != null) {
+	    relatedProducts   = recipe.getYmalProducts(removeSkus);
+	    relatedRecipes    = recipe.getYmalRecipes();
+	    relatedCategories = recipe.getYmalCategories();
+        activeYmalSet     = recipe.getActiveYmalSet();
+    }
+    if ((relatedProducts == null || relatedProducts.size() == 0)
+     && (relatedRecipes == null || relatedRecipes.size() == 0)
+     && (relatedCategories == null || relatedCategories.size() == 0)
+     && activeYmalSet == null) {
+        // get YMALs from the first product, in case we don't have a recipe
+        // or, if the recipes don't have YMALs
+	    relatedProducts   = productNode.getYmalProducts(removeSkus);
+	    relatedRecipes    = productNode.getYmalRecipes();
+	    relatedCategories = productNode.getYmalCategories();
+        activeYmalSet     = productNode.getActiveYmalSet();
+
+        if (productNode.getAttribute("RELATED_PRODUCTS_HEADER") != null) {
+            ymalHeader = (String) productNode.getAttribute("RELATED_PRODUCTS_HEADER").getValue();
+        }
+	}
+
+    if (activeYmalSet != null && activeYmalSet.getProductsHeader() != null) {
+        ymalHeader = activeYmalSet.getProductsHeader();
+    }
+
+%>
+
+<%@ include file="/includes/i_ymal_lists.jspf"%>
+
+</fd:FDShoppingCart>

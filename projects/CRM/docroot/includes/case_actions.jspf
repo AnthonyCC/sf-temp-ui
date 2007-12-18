@@ -1,0 +1,28 @@
+<%@ page import='java.text.*' %>
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="case_action_text">
+	<%
+	List actions = new ArrayList(cm.getActions());
+	Collections.reverse(actions);
+	DateFormat actionDateFormat = new SimpleDateFormat("MM.dd.yyyy");
+	DateFormat actionTimeFormat = new SimpleDateFormat("H:mm");
+	%>
+	<logic:iterate id='action' collection="<%= actions %>" type="com.freshdirect.crm.CrmCaseAction">
+		<tr valign="top">
+			<td><img src="/media_stat/crm/images/clear.gif" width="4" height="1"></td>
+			<td width="10%" class="case_action_timestamp">
+				<%= actionDateFormat.format(action.getTimestamp()) %><br>
+				<%= actionTimeFormat.format(action.getTimestamp()) %><br>
+				<crm:GetAgent id="agent" agentId="<%= action.getAgentPK().getId() %>">
+				<span class="case_action_user"><%= agent.getUserId() %></span>
+				</crm:GetAgent>
+			</td>
+			<td><img src="/media_stat/crm/images/clear.gif" width="6" height="1"></td>
+			<td width="90%">
+				<b><%= action.getType().getName() %></b><br>
+				<%= action.getNote() %>
+			</td>
+			<td><img src="/media_stat/crm/images/clear.gif" width="4" height="1"></td>
+		</tr>
+		<tr><td colspan="5"><hr class="gray1px"></td></tr>
+	</logic:iterate>
+</table>

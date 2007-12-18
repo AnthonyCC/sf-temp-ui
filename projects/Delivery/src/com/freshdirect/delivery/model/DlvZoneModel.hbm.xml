@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.freshdirect.delivery.model" schema="dlv">
+
+	<typedef name="fdBoolean" class="com.freshdirect.framework.hibernate.BooleanType" />
+
+    <class name="DlvZoneModel" table="ZONE">
+        <id name="id" column="ID">
+            <generator class="sequence">
+            	<param name="sequence">SYSTEM_SEQ</param>
+            </generator>
+        </id>
+
+        <property name="name" column="NAME" not-null="true"/>
+        <!-- <property name="zoneCode" column="ZONE_CODE" not-null="true"/> -->
+        <property name="planId" column="PLAN_ID"/> 
+        <property name="ctActive" column="CT_ACTIVE" not-null="true" type="fdBoolean"/>
+        <property name="ctReleaseTime" column="CT_RELEASE_TIME" not-null="true"/>
+
+		<many-to-one name="zoneDescriptor" class="DlvZoneDescriptor" column="ZONE_CODE">
+		</many-to-one>
+    </class>
+    
+    <query name="updateChefsTableZone">
+		update DlvZoneModel
+		set ctActive = :ctActive, ctReleaseTime = :ctReleaseTime
+		where zoneDescriptor = :zoneCode
+    </query>
+    
+    <query name="deactivateCtTimeslots">
+    	update DlvTimeslotModel
+    	set chefsTableCapacity = 0
+    	where
+    		zoneId in (select id from DlvZoneModel where zoneDescriptor = :zoneCode)
+    		and baseDate >= trunc(sysdate)
+    		and chefsTableCapacity != 0
+    </query>
+  
+
+</hibernate-mapping>

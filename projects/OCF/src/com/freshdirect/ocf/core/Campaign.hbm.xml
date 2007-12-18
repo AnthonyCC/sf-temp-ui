@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+   "-//Hibernate/Hibernate Mapping DTD//EN"
+   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.freshdirect.ocf.core" schema="cust">
+	<class name="Campaign" table="OCF_CAMPAIGN" lazy="false">
+		<cache usage="nonstrict-read-write" />
+		
+		<id name="id" length="16">
+			<generator class="native" />
+		</id>
+		
+		<property name="name"/>
+		
+		<property name="description"/>
+		
+		<property name="startDate"/>
+		
+		<property name="endDate"/>
+		
+		<set name="flights" inverse="true" cascade="all-delete-orphan" lazy="false">
+			<key column="campaign_id" foreign-key="fk_camp_flight"/>
+			<one-to-many class="Flight"/>
+		</set>
+				
+	</class>
+
+</hibernate-mapping>

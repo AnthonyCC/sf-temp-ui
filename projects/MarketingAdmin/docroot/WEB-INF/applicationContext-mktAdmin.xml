@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<!--
+  - Application context definition for PetClinic on Hibernate.
+  -->
+<beans>
+
+	<!-- ========================= RESOURCE DEFINITIONS ========================= -->
+  
+	<!-- Configurer that replaces ${...} placeholders with values from a properties file -->
+	<!-- (in this case, JDBC-related settings for the dataSource definition below) -->
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="/WEB-INF/jdbc.properties"/>
+	</bean>
+
+	<!-- Local DataSource that works in any environment -->
+	<!-- Note that DriverManagerDataSource does not pool; it is not intended for production -->
+	<!-- See JPetStore for an example of using Commons DBCP BasicDataSource as alternative -->
+	<!-- See Image Database for an example of using C3P0 ComboPooledDataSource as alternative -->
+   <!-- 
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${jdbc.driverClassName}"/>
+		<property name="url" value="${jdbc.url}"/>
+		<property name="username" value="${jdbc.username}"/>
+		<property name="password" value="${jdbc.password}"/>
+	</bean>
+   -->
+	<!-- JNDI DataSource for J2EE environments -->
+	
+	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="fddatasource"/>
+	</bean>
+	
+
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+   </bean>
+
+	<bean id="mktAdminDAO" class="com.freshdirect.mktAdmin.dao.oracle.OracleMarketAdminDAOImpl">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>	 
+    
+    <bean id="mktAdminTarget" class="com.freshdirect.mktAdmin.service.MarketAdminServiceImpl">
+           <property name="mktAdminDAOImpl" ref="mktAdminDAO"/>    		
+	</bean>
+    
+    <bean id="marketAdminService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager" ref="transactionManager"/>
+		<property name="target" ref="mktAdminTarget"/>
+		<property name="transactionAttributes">
+			<props>
+				<!-- <prop key="get*">PROPAGATION_REQUIRED,readOnly</prop> -->
+				<prop key="store*">PROPAGATION_REQUIRED</prop>
+				<prop key="remove*">PROPAGATION_REQUIRED</prop>
+			    <prop key="add*">PROPAGATION_REQUIRED</prop> 
+			    <prop key="parse*">PROPAGATION_REQUIRED</prop> 
+			    <prop key="append*">PROPAGATION_REQUIRED</prop> 
+			</props>
+		</property>
+	</bean>
+    
+</beans>

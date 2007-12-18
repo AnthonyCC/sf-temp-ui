@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.freshdirect.delivery.planning" schema="dlv">
+
+	<typedef name="EnumTruckType" class="com.freshdirect.framework.hibernate.ValuedEnumUserType">
+		<param name="enumClassName">com.freshdirect.delivery.EnumTruckType</param>
+	</typedef>
+
+    <class name="DlvTruckAllocation" table="TRUCK_RESOURCE">
+        <id name="id" column="ID">
+            <generator class="sequence">
+            	<param name="sequence">SYSTEM_SEQ</param>
+            </generator>
+        </id>
+
+        <property name="count" column="TRUCK_COUNT" not-null="true"/>
+        <property name="capacity" column="TRUCK_CAPACITY" not-null="true"/>        
+        <property name="truckType" column="TRUCK_TYPE" type="EnumTruckType" not-null="true"/>
+    </class>
+
+</hibernate-mapping>

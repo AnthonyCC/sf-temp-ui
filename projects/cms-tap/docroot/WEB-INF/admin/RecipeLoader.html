@@ -1,0 +1,39 @@
+<body jwcid="@Border" title="Recipe Loader">
+
+	<table id="pageTitle" width="100%" cellpadding="0" cellspacing="0">
+		<tr>
+			<td valign="bottom">
+				<h1>Bulk load recipes</h1>
+			</td>
+			<td align="right" valign="bottom" width="75" style="line-height:0;">
+				<img src="img/banner_admin.gif" width="75" height="66"/>
+			</td>
+		</tr>
+	</table>
+	
+	<div class="buttonBar">
+		<br/>
+	</div>
+	
+	<p>
+        <span jwcid="@If" condition="ognl:loadedKey != null">
+            Successfully loaded: 
+            <a jwcid="@ContentLink" key="ognl:loadedKey"/>
+                
+        </span>
+        
+        <div jwcid="@ShowErrors" delegate="ognl:beans.delegate"/>
+        
+		<form jwcid="@Form" listener="ognl:listeners.processFile" delegate="ognl:beans.delegate">
+			<input jwcid="@Upload" file="ognl:file" type="file"/>
+            <br/>
+            <span jwcid="uploadType@RadioGroup" selected="ognl:uploadType" displayName="upload type">
+                <input type="radio" jwcid="@Radio" value="ognl:@com.freshdirect.cms.fdstore.recipes.BulkLoader@RECIPE"/>recipe
+                <input type="radio" jwcid="@Radio" value="ognl:@com.freshdirect.cms.fdstore.recipes.BulkLoader@CONFIGURED_PRODUCT_GROUP"/>configured product group
+            </span>
+            <br/>
+            <input jwcid="@Submit"/>
+		</form>
+	</p>
+	
+</body>

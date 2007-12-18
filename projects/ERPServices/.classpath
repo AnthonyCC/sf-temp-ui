@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry sourcepath="JRE_SRC" kind="var" path="JRE_LIB"/>
+	<classpathentry kind="src" path="/Framework"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/sapjco.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/lcc.jar"/>
+	<classpathentry exported="true" kind="src" path="/Resources"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

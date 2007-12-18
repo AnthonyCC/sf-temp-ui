@@ -1,0 +1,12 @@
+<span jwcid="@Conditional" condition="ognl:(theClause instanceof com.freshdirect.listadmin.db.ParamClause)">
+  <span jwcid="simpleParam"/>
+</span>
+
+<span jwcid="@Conditional" condition="ognl:(theClause instanceof com.freshdirect.listadmin.nvp.NVPSourceI)">
+  <span jwcid="nvpDropdownParam"/>
+</span>
+
+<span jwcid="@Conditional" condition="ognl:(theClause instanceof com.freshdirect.listadmin.db.DateTimeClause)">
+  <span jwcid="timeDateParam"/>
+</span>
+

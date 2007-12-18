@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE weblogic-web-app PUBLIC '-//BEA Systems, Inc.//DTD Web Application 8.1//EN' 'http://www.bea.com/servers/wls810/dtd/weblogic810-web-jar.dtd'>
+<weblogic-web-app>
+	<security-role-assignment>
+		<role-name>confirm</role-name>
+		<principal-name>dlvConfirm</principal-name>
+	</security-role-assignment>
+	<session-descriptor>
+        <session-param>
+            <param-name>PersistentStoreType</param-name>
+            <param-value>replicated_if_clustered</param-value>
+        </session-param>
+    </session-descriptor>
+	<jsp-descriptor>
+		<jsp-param>
+			<param-name>keepgenerated</param-name>
+			<param-value>true</param-value>
+		</jsp-param>
+		<jsp-param>
+			<param-name>verbose</param-name>
+			<param-value>true</param-value>
+		</jsp-param>
+		<jsp-param>
+			<param-name>printNulls</param-name>
+			<param-value>false</param-value>
+		</jsp-param>
+	</jsp-descriptor>
+</weblogic-web-app>

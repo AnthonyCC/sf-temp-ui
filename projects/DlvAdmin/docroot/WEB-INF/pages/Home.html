@@ -1,0 +1,38 @@
+<html>
+<head>
+
+</head>
+<span jwcid="$content$">
+<body jwcid="border">
+<div class="bodycol">
+<div class="app">
+	
+<form jwcid="@Form">
+
+<table width="100%" cellpadding="8" cellspacing="0" border="0">
+	
+	<tr>
+		<td><div class="h3"><h3><a name="Region">Region: </a>
+			<select jwcid="@PropertySelection" model="ognl:engine.regionSelectionModel" value="ognl:selectedRegion" submitOnChange="ognl:true" /></h3></div></td>
+	</tr>
+</table>
+</form>
+<span jwcid="@If" condition="ognl:selectedRegion != null">
+	<table cellpadding="8" cellspacing="0" border="0">
+		<span jwcid="@Foreach" source="ognl:engine.getRegion(selectedRegion.name).versions" value="ognl:version">
+			<tr>
+				<td><a href="#" jwcid="@ExternalLink" page="EditRegion" parameters="ognl:{selectedRegion.name, version}">
+						<span jwcid="@Insert" value="ognl:version" format="ognl:dateFormatter"/>
+					</a>
+				</td>
+			</tr>
+		</span>
+	</table>
+</span>
+</div>
+</div>
+
+</body>
+</span>
+
+</html>

@@ -1,0 +1,78 @@
+<%//build department navigation
+	StringBuffer departmentNav = new StringBuffer();
+	List storeDepartments = ContentFactory.getInstance().getStore().getDepartments();
+	String currentDepartment = ""; 
+	
+	if (storeDepartments.size() > 0) {
+		Collections.sort(storeDepartments, DepartmentModel.DepartmentNameComparator);
+                    
+                    selected = hasDeptId && qsDeptId.equalsIgnoreCase("all");
+                    showLink = !hasDeptId || !qsDeptId.equalsIgnoreCase("all");
+                    
+                    if (showLink) { 
+                        departmentNav.append("<a href=\"");
+                        departmentNav.append("/quickshop/every_item.jsp?qsDeptId="); 
+                        departmentNav.append("all");
+                        departmentNav.append("\">");
+                    }
+                    if (selected) {
+                            departmentNav.append("<b>");
+                    }
+                    if (selected) {
+                            departmentNav.append("ALL");
+                    } else {
+                        if(request.getRequestURI().indexOf("index.jsp") != -1 || request.getParameter("qsDeptId") == null){
+                            departmentNav.append("ALL DEPARTMENTS");
+                        } else{
+                            departmentNav.append("ALL");
+                        }
+                    }
+                    if (selected) {
+                            departmentNav.append("</b>");
+                    }
+                    if (showLink) { 
+                            departmentNav.append("</a>");
+                    }
+                    departmentNav.append("<font class=\"space2pix\"><br><br></font>");
+                    
+                    
+			for (Iterator dIter = storeDepartments.iterator(); dIter.hasNext();) {
+				DepartmentModel thisDept = (DepartmentModel) dIter.next();
+				
+				showLink = !hasDeptId || !thisDept.getContentName().equalsIgnoreCase(qsDeptId);
+				selected = hasDeptId && thisDept.getContentName().equalsIgnoreCase(qsDeptId);
+				
+				if (selected) {
+					currentDepartment = thisDept.getFullName();
+				}
+
+				if (!thisDept.isHidden() && "[big], [test_picks], [our_picks], [about], [spe], [mkt], [kosher_temp], [tea], [pas]".indexOf("["+thisDept.getContentName().toLowerCase()+"]")== -1 ) {
+					if (showLink) { 
+						departmentNav.append("<a href=\"");
+						departmentNav.append("/quickshop/every_item.jsp?qsDeptId="); 
+						departmentNav.append(thisDept.getContentName());
+						departmentNav.append("\">");
+					}
+					if (selected) {
+						departmentNav.append("<b>");
+					}
+					departmentNav.append("<div style=\"margin-left: 5px; text-indent: -5px;\">");
+					if (showLink) departmentNav.append("<u>");
+					if (selected) {
+						departmentNav.append(thisDept.getFullName().toUpperCase());
+					} else {
+						departmentNav.append(thisDept.getFullName());
+					}
+					if (showLink) departmentNav.append("</u>");
+					departmentNav.append("</div>");
+					if (selected) {
+						departmentNav.append("</b>");
+					}
+					if (showLink) { 
+						departmentNav.append("</a>");
+					}
+					departmentNav.append("<font class=\"space2pix\"><br><br></font>");
+				}
+			} 
+		}
+%>

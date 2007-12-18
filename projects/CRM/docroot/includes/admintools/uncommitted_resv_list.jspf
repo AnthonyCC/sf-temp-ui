@@ -1,0 +1,84 @@
+<%@ page import="java.text.*, java.util.*" %>
+<%@ page import="com.freshdirect.customer.*" %>
+<%@ page import="com.freshdirect.fdstore.customer.*" %>
+<%@ page import="com.freshdirect.framework.webapp.*" %>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
+<%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@ page import="com.freshdirect.fdstore.customer.*" %>
+<%@ page import="com.freshdirect.fdstore.*" %>
+
+<%@ taglib uri='template' prefix='tmpl' %>
+<%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri='crm' prefix='crm' %>
+
+<link rel="stylesheet" href="/ccassets/css/crm.css" type="text/css">
+<style type="text/css">
+</style>
+<logic:present name="reservations">
+<table width="100%" cellpadding="0" cellspacing="0 border="0" bgcolor="#FFFFFF"> 
+	<tr>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Customer ID</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>First Name</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Last Name</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" align="center"  class="border_bold"><span class="detail_text"><b>Email</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Home Phone</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Alt. Phone</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Base Date</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>CutOff Time</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Start Time</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>End Time</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Zone</b></span></td>	
+	
+	</tr>
+	
+	<%
+		if(reservations ==  null || reservations.size() == 0) {
+	%>
+	<tr><td><span class="error">No Reservations available for the given criteria.</span></td></tr>
+
+	<%
+		} else {
+	%>	
+
+	<logic:iterate id="reservation" collection="<%= reservations %>" type="com.freshdirect.fdstore.customer.FDCustomerReservationInfo">
+	<tr>
+	<td class="border_bottom"><span class="detail_text"><%= reservation.getIdentity().getErpCustomerPK() %></span></td>	
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= reservation.getFirstName() %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= reservation.getLastName() %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= reservation.getEmail() %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= reservation.getPhone() %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= reservation.getAltPhone() != null && reservation.getAltPhone().length() > 0 ?  reservation.getAltPhone() : "-" %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= CCFormatter.defaultFormatDate(reservation.getBaseDate()) %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= CCFormatter.formatDeliveryTime(reservation.getCutoffTime()) %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= CCFormatter.formatDeliveryTime(reservation.getStartTime()) %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= CCFormatter.formatDeliveryTime(reservation.getEndTime()) %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= reservation.getZone() %></span></td>
+	</tr>
+	</logic:iterate>
+	<%
+		}
+	%>	
+</table>
+</logic:present>
+

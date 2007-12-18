@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE page-specification PUBLIC
+  "-//Apache Software Foundation//Tapestry Specification 3.0//EN"
+  "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<page-specification class="com.freshdirect.cms.ui.tapestry.page.RecipeLoader">
+
+    <description>Recipe Bulk Loader</description>
+	
+    <property-specification name="file" type="org.apache.tapestry.request.IUploadFile"/>
+    
+    <property-specification name="uploadType" type="java.lang.Integer"/>
+    
+    <property-specification name="loadedKey" type="com.freshdirect.cms.ContentKey"/>
+    
+    <bean name="delegate" class="org.apache.tapestry.valid.ValidationDelegate"/>
+    
+</page-specification>

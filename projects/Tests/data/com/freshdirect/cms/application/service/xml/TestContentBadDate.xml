@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Content>
+
+	<Foo id="Dneg">
+		<label>an element with a bad date attribute</label>
+		<date>2006.01.25</date>
+	</Foo>
+	
+</Content>

@@ -1,0 +1,125 @@
+<%--
+	Content delivery_special_field_page = webconnect.getTemplateContent();
+	dnaFormData.setString("previousTemplate", delivery_special_field_page.getRelativePath());
+--%><TABLE BORDER="0" CELLSPACING="1" CELLPADDING="0" WIDTH="675">
+<TR VALIGN="TOP">
+<TD WIDTH="30" ROWSPAN="2"><BR></TD>
+<TD WIDTH="645" COLSPAN="2"><FONT CLASS="text10bold">Special delivery instructions (optional)</FONT><BR>Please enter any information our delivery person will need to get your order to your door.</TD>
+</TR>
+<TR VALIGN="TOP">
+<TD WIDTH="645"><%--
+			BusinessObject boDelivery = dnaFormData.getBusinessObject("DELIVERY");
+			String deliveryInstructions = "";
+			String deliveryAuthToAccept = "None";
+			String deliveryAuthAddress = "";
+			String deliveryPhone = "";
+
+			if (boDelivery!=null){
+
+				deliveryInstructions = boDelivery.getString("deliveryInstructions", "None");
+			   	deliveryAuthToAccept = boDelivery.getString("deliveryAuthToAccept", "None");
+				if (deliveryAuthToAccept.equals("None") && deliveryAuthToAccept.equals("Doorman")){
+					boDelivery.setString("deliveryAuthAddress","");
+					boDelivery.setString("dlv_contact_ph","");
+
+					if (deliveryAuthToAccept.equals("None")){
+						boDelivery.setString("deliveryAuthToAccept","");
+					}
+				}
+			   	deliveryAuthAddress = boDelivery.getString("deliveryAuthAddress", "");
+				deliveryPhone = boDelivery.getString("dlv_contact_ph", "");
+			}
+
+		--%><input type="text" class="text11" maxLength="80" name="deliveryInstructions" size="50" value=""><br>
+<BR></TD>
+</TR>
+</TABLE>
+
+
+<%--if(showAltDelivery()){
+--%>
+<%-- this stuff won't be active until after several orders 
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="675">
+<TR VALIGN="TOP">
+<TD WIDTH="675"><img src="/media_stat/images/navigation/other_person_auth_delivery.gif" WIDTH="487" HEIGHT="10" border="0" alt="OTHER PERSON AUTHORIZED TO ACCEPT DELIVERY AT THIS ADDRESS (Optional)"><BR>
+<IMG src="/media_stat/images/layout/999966.gif" WIDTH="675" HEIGHT="1" BORDER="0" VSPACE="3"><BR></TD>
+</TR></TABLE>
+<TABLE BORDER="0" CELLSPACING="1" CELLPADDING="0" WIDTH="675">
+<TR VALIGN="TOP">
+<TD WIDTH="675" COLSPAN="2">
+We will always attempt to deliver your order directly to you.<BR>
+<BR>
+In the event that you are not home, you may authorize FreshDirect to
+deliver to someone else, either in your building or anywhere on your block.
+Should you choose to authorize an alternate for delivery, please make sure you will
+be able to get your groceries. To learn more about our <FONT CLASS="text10bold">Alternates Policy</FONT>,
+<A HREF="#">click here</A>.
+<FONT CLASS="space4pix"><BR></FONT></TD>
+</TR>
+<TR VALIGN="MIDDLE">
+<TD WIDTH="55" ALIGN="RIGHT"><input type="radio" CLASS="radio" name="deliveryAuthToAccept" value="None" onClick="chooseNone(this.form)"></TD>
+<TD WIDTH="620" CLASS="text9"><FONT CLASS="text9bold">None</FONT><BR></TD>
+</TR>
+<TR VALIGN="MIDDLE">
+<TD WIDTH="55" ALIGN="RIGHT"><input type="radio" CLASS="radio" name="deliveryAuthToAccept" value="Doorman" onClick="chooseDoorman(this.form)"><%-- THIS was: (deliveryAuthToAccept.equals("Doorman"))? "CHECKED" : "" --%><!--/TD>
+<TD WIDTH="620" CLASS="text9"><FONT CLASS="text9bold">Doorman</FONT> (Please make sure doorman will accept packages)<BR></TD>
+</TR>
+	<%--
+				String someoneElseValue = "Someone Else";
+				if(!deliveryAuthToAccept.equals("None") && !deliveryAuthToAccept.equals("Doorman") && !deliveryAuthToAccept.equals("Someone Else")) {
+					someoneElseValue = deliveryAuthToAccept;
+				}
+			--%>
+<TR VALIGN="TOP">
+<TD WIDTH="55" ALIGN="RIGHT"><input type="radio" CLASS="radio" name="deliveryAuthToAccept" value="" onClick="chooseSomeoneElse(this.form)"
+><%-- (deliveryAuthToAccept.equals("None") || deliveryAuthToAccept.equals("Doorman"))? "" : "CHECKED" --%></TD>
+<TD WIDTH="620" CLASS="text9"><FONT CLASS="space2pix"><BR></FONT><FONT CLASS="text9bold">Someone else on your block</FONT>&nbsp;&nbsp;&nbsp;<FONT CLASS="text9">* Required information</FONT><BR>
+Must be on your square block, please enter contact info below.<BR></TD>
+</TR>
+</TABLE>
+<%--
+			String deliveryWhoValue = "";
+			if(!deliveryAuthToAccept.equals("None") && !deliveryAuthToAccept.equals("Doorman") && !deliveryAuthToAccept.equals("Someone Else")) {
+				deliveryWhoValue = deliveryAuthToAccept;
+			}
+--%>
+<TABLE BORDER="0" CELLSPACING="1" CELLPADDING="0" WIDTH="675">
+<TR VALIGN="MIDDLE">
+<TD WIDTH="15" ROWSPAN="7"><IMG src="/media_stat/images/layout/clear.gif"
+WIDTH="13" HEIGHT="1" BORDER="0"></TD>
+<TD WIDTH="95" ALIGN="RIGHT" CLASS="text9"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="93" HEIGHT="8" BORDER="0"><BR>First Name&nbsp;&nbsp;</TD>
+<TD WIDTH="565"><IMG src="/media_stat/images/layout/clear.gif"
+WIDTH="559" HEIGHT="8" BORDER="0"><BR><input type="text" SIZE="21" maxlength="25" class="text11" name="first_name"></TD>
+</TR>
+<TR VALIGN="MIDDLE">
+<TD WIDTH="95" ALIGN="RIGHT" CLASS="text9">Last Name&nbsp;&nbsp;</TD>
+<TD WIDTH="565"><input type="text" class="text11" maxlength="50" name="deliveryWho" size="21"
+value="" onFocus="disableField(this.form)"><!-- error message handling here --</TD>
+</TR>
+<TR VALIGN="MIDDLE">
+<TD WIDTH="95" ALIGN="RIGHT" CLASS="text9">Address Line 1&nbsp;&nbsp;</TD>
+<TD WIDTH="565"><input type="text" maxlength="10" SIZE="21" class="text11" name="deliveryAuthAddress" onFocus="disableField(this.form)" value=""><!-- error message handling here --</TD>
+</TR>
+<TR VALIGN="MIDDLE">
+<TD WIDTH="95" ALIGN="RIGHT" CLASS="text9">Address Line 2&nbsp;&nbsp;</TD>
+<TD WIDTH="565"><input type="text" maxlength="50" class="text11" size="21" name="address_line_2">&nbsp;&nbsp;&nbsp;
+<FONT CLASS="text9">Apt./Floor Number&nbsp;&nbsp;</FONT><input type="text" maxlength="10" class="text11" size="4" name="address_line3"></TD>
+</TR>
+<TR VALIGN="MIDDLE">
+<TD WIDTH="95" ALIGN="RIGHT" CLASS="text9">City&nbsp;&nbsp;</TD>
+<TD WIDTH="565" VALIGN="MIDDLE"><input type="text" size="21" class="text11" name="city" ></TD>
+</TR>
+<TR VALIGN="MIDDLE">
+<TD WIDTH="95" ALIGN="RIGHT" CLASS="text9">State&nbsp;&nbsp;</TD>
+<TD WIDTH="565"><input type="text" size="3" class="text11" name="state">&nbsp;
+<FONT CLASS="text9">Zip/Postal Code</FONT>&nbsp;&nbsp;<input type="text" onChange="changed(this.form, this.name)" onKeyPress="return checkLength(this.form, this.name, event)" maxlength="10" class="text11" size="4" name="zipcode"></TD>
+</TR>
+<TR VALIGN="MIDDLE">
+<TD WIDTH="95" ALIGN="RIGHT" CLASS="text9">Contact #&nbsp;&nbsp;</TD>
+<TD WIDTH="565" VALIGN="MIDDLE"><input type="text" maxlength="13" SIZE="21" class="text11" name="contact_phone" onFocus="disableField(this.form)" value=""><!-- error message handling here --&nbsp;
+<FONT CLASS="text9">Ext.</FONT>&nbsp;&nbsp;<input type="text" maxlength="10" class="text11" size="4" name="phone_2"></TD>
+</TR>
+</TABLE-->
+<%--}else{%>
+<%}%>
+<%@ include file="/include/i_delivery_javascript.jsp" --%>

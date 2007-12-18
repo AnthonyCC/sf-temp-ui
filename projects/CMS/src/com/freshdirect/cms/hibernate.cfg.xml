@@ -1,0 +1,40 @@
+<!DOCTYPE hibernate-configuration PUBLIC
+	"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+  	<session-factory name="default">
+    		<!-- database connection info -->
+		<property name="hibernate.max_fetch_depth">0</property>
+		<property name="hibernate.use_outer_join">false</property>
+		
+		<!-- don't use a second level cache just now, because of multi-threading issues -->
+		<property name="hibernate.cache.use_second_level_cache">false</property>
+
+		<!-- using thread-bound transaction demarcation instead of JTA
+		     see http://www.hibernate.org/42.html#A6 
+		-->
+		<property name="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</property>
+		<property name="hibernate.current_session_context_class">thread</property>
+		
+		<!--
+		<property name="connection.driver_class">oracle.jdbc.driver.OracleDriver</property>
+		<property name="dialect">org.hibernate.dialect.Oracle9Dialect</property>
+		<property name="show_sql">true</property>
+		-->
+		  
+		<property name="connection.datasource">fddatasource</property>
+		
+		<!--
+		<property name="connection.driver_class">oracle.jdbc.driver.OracleDriver</property>
+		<property name="connection.url">jdbc:oracle:thin:@zetor:1521:DBEU01</property>
+		<property name="connection.url">jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=vsrac1.nyc1.freshdirect.com)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=vsrac2.nyc1.freshdirect.com)(PORT=1521))(LOAD_BALANCE=yes)(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=appdev.nyc.freshdirect.com)(FAILOVER_MODE=(TYPE=SELECT)(METHOD=BASIC)(RETRIES=180)(DELAY=5))))</property>
+		<property name="connection.username">FDSTORE</property>
+		<property name="connection.password">FDSTORE</property>
+		-->
+
+		<!-- mapping -->
+		<mapping resource="com/freshdirect/cms/publish/Publish.hbm.xml"/>
+
+  	</session-factory>
+</hibernate-configuration>

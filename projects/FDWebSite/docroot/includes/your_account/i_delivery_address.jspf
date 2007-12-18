@@ -1,0 +1,106 @@
+<%@ page import="com.freshdirect.delivery.DlvZoneInfoModel" %>
+<%@ page import="com.freshdirect.customer.EnumUnattendedDeliveryFlag" %>
+<%@ page import="com.freshdirect.framework.util.NVL" %>
+
+<%
+int itemCounter = 0;
+boolean showDeleteButtons = shipToAddresses.size() > 1 ? true : false;
+for(Iterator saItr=shipToAddresses.iterator();saItr.hasNext();) {
+	ErpAddressModel shipAddress = (ErpAddressModel)saItr.next();
+	String addrPKId = shipAddress.getPK().getId();
+	if((itemCounter % 3)==0) {
+		if(itemCounter!=0) {
+			%>
+			</TR></TABLE>
+			<%
+		} %>
+		<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" width="705">
+			<TR>
+		<%
+	}
+	%>
+	<TD width="20" valign="top"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" border="0"/></TD>
+	<TD valign="top" width="195"><font class="text12bold"><%=shipAddress.getFirstName()%> <%=shipAddress.getLastName()%></FONT><BR>
+		<font class="text13">
+		<%if(showingCorporateAddress){%>
+			<%=shipAddress.getCompanyName()%><br>
+		<%}%>
+		<%=shipAddress.getAddress1()%><% if(shipAddress.getApartment()!=null && shipAddress.getApartment().trim().length()>0) { %>, Apt. <%=shipAddress.getApartment()%><% } %><BR>
+		<%if(shipAddress.getAddress2()!=null && shipAddress.getAddress2().trim().length()>0) { %>
+			<%=shipAddress.getAddress2()%><br>
+			<%  
+		}%>	
+		<%= shipAddress.getCity()%>, <%=shipAddress.getState()%> <%=shipAddress.getZipCode()%><BR><BR>
+		<%if(shipAddress.getInstructions()!= null && !shipAddress.getInstructions().equals("") && !"NONE".equalsIgnoreCase(shipAddress.getInstructions())){%>   
+			<font class="text12bold">Special delivery instructions:</font><br>              
+			<%=shipAddress.getInstructions()%><br><BR>
+		<%}%>   
+		</font> 
+		<fd:UnattendedDelivery id="zone" address="<%= shipAddress %>" checkUserOptions="true">
+		<% if (zone.isUnattended() && !EnumUnattendedDeliveryFlag.OPT_OUT.equals(shipAddress.getUnattendedDeliveryFlag())) { %>
+		<font class="text12bold">Unattended delivery</font>:<br>
+		<%= NVL.apply(shipAddress.getUnattendedDeliveryInstructions(),"OK") %>
+		<BR><BR>
+		<% } %>
+		</fd:UnattendedDelivery>
+
+		<%if (shipAddress.getAltDelivery() != null && shipAddress.getAltDelivery().getId() > 0 && !showingCorporateAddress) { %>
+			<font class="text12bold">Alternate delivery</font>:<br>
+			<%= shipAddress.getAltDelivery().getName()%><br><br> 
+			<%if("NEIGHBOR".equalsIgnoreCase(shipAddress.getAltDelivery().getDeliveryCode())) {%>
+				<%=shipAddress.getAltFirstName()%> <%=shipAddress.getAltLastName()%><BR>
+				Apt. #: <%=shipAddress.getAltApartment()%><br>
+				<%if(shipAddress.getAltPhone()!=null) {%><%=shipAddress.getAltPhone().getPhone()%> <%if( !"".equals(shipAddress.getAltPhone().getExtension()) ){%>Ext. <%= shipAddress.getAltPhone().getExtension() %> <%}}%><br>
+				<br>
+			<%}%>
+		<%}%>               
+	
+		<A HREF="<%=linkURL + "?addressId=" + addrPKId %>"><IMG src="/media_stat/images/buttons/edit.gif" WIDTH="51" HEIGHT="16" ALT="EDIT" BORDER="0"></A>&nbsp;
+		<%if (showDeleteButtons) {  %>
+			<input type="image" src="/media_stat/images/buttons/delete.gif" WIDTH="51" HEIGHT="16" onClick="setDlvAction(this.form,'deleteDeliveryAddress');setIdToDelete(this.form,'<%=addrPKId%>');" ALT="DELETE" BORDER="0">
+		<% } %>
+		<IMG src="/media_stat/images/layout/clear.gif" WIDTH="185" HEIGHT="1">
+	</TD>
+
+	<%itemCounter++;
+	if (saItr.hasNext() && (itemCounter % 3 != 0 )) {  %>
+		<TD width="15"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="15" HEIGHT="1"></TD>
+		<TD width="1" bgcolor="#CCCCCC"><IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="1" HEIGHT="1"></TD>
+		<TD width="14"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="14" HEIGHT="1"></TD>
+		<%        
+	}
+}
+	if ( (itemCounter%3)==1) {%>
+		<TD WIDTH="490"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="490" HEIGHT="1" BORDER="0"><BR></TD>
+		<%
+	} else if ( (itemCounter%3)==2) {%>
+		<TD WIDTH="245"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="245" HEIGHT="1" BORDER="0"><BR></TD>
+		<%
+	}%>
+    </TR>
+</TABLE>
+<%
+    if (user.getAdjustedValidOrderCount()==2 && !showingCorporateAddress) {
+        // placing the third order, show alternate delivery info
+%>
+    <br>
+    <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" width="705">
+    <tr>
+        <td align="left">
+            <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" width="470">
+            <tr>
+                <td valign="top"><img src="/media_stat/images/template/homepages/truck.gif"  alt="" border="0"></td>
+                <td width=15>&nbsp;</td>
+                <td valign="top" class="bodyCopy">
+                    <font class="text12bold">Not home in time? We can deliver to a neighbor.</font><br>
+                    Now you can select a neighbor in your building to receive your order if you're not home when we arrive. Just click "edit."
+                </td>
+            </tr>
+            </table>    
+        </td>
+    </tr>
+    </table>
+<%
+}
+%>
+<br>

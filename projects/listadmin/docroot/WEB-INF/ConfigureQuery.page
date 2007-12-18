@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE page-specification PUBLIC
+  "-//Apache Software Foundation//Tapestry Specification 3.0//EN"
+  "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<page-specification class="com.freshdirect.listadmin.ui.page.ConfigureQuery">
+  <description>add a description</description>
+  
+  <component id="paramClauses" type="Foreach">
+    <binding name="source" expression="storedQuery.template.allClauses"/>
+  </component>
+    
+  <component id="datasources" type="PropertySelection">
+    <binding name="value" expression="storedQuery.dataSourceName"/>
+    <binding name="model" expression="datasourceSelectionModel"/>
+  </component>
+  
+  <bean
+    name="ValidationDelegate" 
+    class="org.apache.tapestry.valid.ValidationDelegate"
+    lifecycle="request"/>
+
+  <component id="form" type="Form">
+        <binding name="delegate" expression="beans.ValidationDelegate"/> 
+        <!-- binding name="listener" property-path="listeners.myListener/ -->
+  </component>
+</page-specification>

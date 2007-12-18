@@ -1,0 +1,160 @@
+<table class="home_search_module_field" border="0" cellpadding="2" cellspacing="2" width="100%">
+
+	<tr>
+		<% 
+			String dlvDate = 
+			NVL.apply(request.getParameter("deliveryDate"), CCFormatter.formatDateYear(Calendar.getInstance().getTime()));
+			String cutoff = NVL.apply(request.getParameter("cutoffTime"), "all");
+			String zone = NVL.apply(request.getParameter("zone"), "");
+			String fromTimeSlot = NVL.apply(request.getParameter("fromTimeSlot"), "");
+			String fromTimePeriod = NVL.apply(request.getParameter("fromTimePeriod"), "AM");
+			String toTimeSlot = NVL.apply(request.getParameter("toTimeSlot"), "");
+			String toTimePeriod = NVL.apply(request.getParameter("toTimePeriod"), "AM");
+			String sendEmail = NVL.apply(request.getParameter("sendEmail"), "false");
+			String notes = NVL.apply(request.getParameter("notes"), "");
+		%>
+		
+		<td>Delivery Date : </td>
+		<td>
+			<input type="hidden" name="actionName" id="actionName" value="">
+			<input type="hidden" name="searchFlag" value="">
+			<input type="hidden" name="deliveryDate" id="deliveryDate" value="<%=dlvDate%>">
+                        <input type="text" name="newDeliveryDate" id="newDeliveryDate" size="10" value="<%=dlvDate%>" disabled="true" onchange="setDate(this);"> &nbsp;<a href="#" id="trigger_dlvDate" style="font-size: 9px;">>></a>
+ 		        <script language="javascript">
+
+			    function setDate(field){
+			    document.getElementById("deliveryDate").value=field.value;
+
+			    }
+
+
+			    Calendar.setup(
+			    {
+			    showsTime : false,
+			    electric : false,
+			    inputField : "newDeliveryDate",
+			    ifFormat : "%Y-%m-%d",
+			    singleClick: true,
+			    button : "trigger_dlvDate" 
+			    }
+			    );
+			    
+			    function clearAll(){
+			    	var d = new Date();
+				var date = d.getDate();
+				var month = d.getMonth()+1;
+				var year = d.getFullYear();
+			    	var fd = year + "-" + month + "-" + date;
+			    	document.getElementById("newDeliveryDate").value = fd;
+			    	document.getElementById("deliveryDate").value = fd;
+			    	document.getElementById("cutoffTime").value = "all";
+			    	document.getElementById("zone").value = "";
+			    	document.getElementById("fromTimeSlot").value = "";
+			    	document.getElementById("fromTimePeriod").value = "AM";
+			    	document.getElementById("toTimeSlot").value = "";
+			    	document.getElementById("toTimePeriod").value = "AM";
+			    }
+			    
+			    function doFilter(){
+			    	var filterType = document.getElementById("filterType").value;
+			    	document.getElementById("searchcriteria").submit();
+			    }
+			    function doSearch() {
+			    	document.getElementById("searchFlag").value = "true";
+			    }
+			    function doAction(actionName) {
+			    	if(actionName == 'cancelOrders'){
+					var doCancel = confirm ("Are you sure you want to cancel these Orders?");
+					if(doCancel == false){
+						return;
+					}            
+					var notes = document.getElementById("notes").value;
+					if(notes == ''){
+						alert('Notes required');
+						document.getElementById("notes").focus();
+						return;
+										
+					}
+					if(document.getElementById("sendEmail").checked == true){
+						document.getElementById("sendEmail").value = "true";
+					}
+					document.getElementById("actionName").value = actionName;
+					document.getElementById("cancelorders").submit();	
+					
+				}
+				if(actionName == 'deleteReservations'){
+					if(document.getElementById("exportResv").disabled == false) {
+						var doDelete = confirm ("Are you sure you want to delete these Reservations?");
+						if(doDelete == false){
+							return;
+						}            		
+
+					}
+					var notes = document.getElementById("notes").value;
+					if(notes == ''){
+						alert('Notes required');
+						document.getElementById("notes").focus();
+						return;
+
+					}
+					document.getElementById("actionName").value = actionName;
+					document.getElementById("searchcriteria").submit();	
+					
+				}
+			    	
+			    }
+
+			    function openURL(inLocationURL) {
+
+			    	popResize(inLocationURL, 400,400,'');
+
+			    }
+
+			</script>
+		</td>
+	
+		<td>Cutoff Time : </td>
+		<td>
+			<select name="cutoffTime" value="" style="width: 120px;">
+				<option value="all">All Cutoff Times</option>
+
+			<%
+				Date requestedDate = DateUtil.parse(dlvDate);
+				FDDeliveryManager dlvMgr = FDDeliveryManager.getInstance();
+				List cutoffTimes = dlvMgr.getCutofftimesByDate(requestedDate);
+			%>
+			<logic:iterate collection="<%= cutoffTimes %>" id="cutoffTime" type="java.util.Date">
+			<%  
+				String cutoffvalue = CCFormatter.formatDeliveryTime(cutoffTime); 
+			%>
+				<option value="<%= cutoffvalue %>" <%= cutoff.equals(cutoffvalue) ? "SELECTED" : "" %>><%= cutoffvalue %></option>
+			</logic:iterate>
+
+			</select>
+		</td>
+			
+		<td align="bottom">Zone :(, seperated)</td>
+		<td>
+			<input type="text" name="zone" value="<%= zone %>" class="input_text" style="width: 200px;">
+		</td>
+			
+		<td>Time Slot : </td>
+		<td>From(HH:MI)&nbsp;
+		
+			<input type = "text" name="fromTimeSlot" value= "<%= fromTimeSlot %>" style="width: 55px;">&nbsp;
+			<select name="fromTimePeriod" style="width: 45px;">
+				<option value="AM" <%= fromTimePeriod.equals("AM") ? "SELECTED" : "" %>>AM</option>
+				<option value="PM" <%= fromTimePeriod.equals("PM") ? "SELECTED" : "" %>>PM</option>
+			</select>
+		</td>
+		<td>To(HH:MI)&nbsp;
+		
+			<input type = "text" name="toTimeSlot" value= "<%= toTimeSlot %>" style="width: 55px;">&nbsp;
+			<select name="toTimePeriod" style="width: 45px;">
+				<option value="AM" <%= toTimePeriod.equals("AM") ? "SELECTED" : "" %>>AM</option>
+				<option value="PM" <%= toTimePeriod.equals("PM") ? "SELECTED" : "" %>>PM</option>
+			</select>
+		</td>
+		
+	</tr>		
+</table>

@@ -1,0 +1,63 @@
+<xlsReporting>
+ <sources>
+  <source> <!-- Perhaps we use connection pools later on? -->
+    <type>com.freshdirect.xls.datasource.DatabaseDataSource</type>
+    <name>STS01</name>
+    <url>jdbc:oracle:thin:@(DESCRIPTION =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb01-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb02-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (CONNECT_DATA =
+    (SERVER = DEDICATED)
+    (SERVICE_NAME = dbsto_prod)
+     (failover_mode =
+       (type = session)
+       (method = basic)
+       (retries = 20)
+     )
+  )
+ )</url>
+    <user>appdev</user>
+    <password>readn0wrt</password>
+  </source>
+ </sources>
+
+ <populate>
+  <sheet>
+   <name>Sheet1</name>
+   <beginOffsetRow>0</beginOffsetRow>
+   <beginOffsetColumn>5</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+     select to_char(sysdate, 'DD-MON-YYYY') from dual
+     </param>
+   </dataSource>
+  </sheet>
+
+  <sheet>
+   <name>Sheet1</name>
+   <beginOffsetRow>3</beginOffsetRow>
+   <beginOffsetColumn>2</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+select sa.sale_id, sa.requested_date, starttime as dlv_Window_Start,endtime as dlv_Window_End, ol.description, ol.quantity, ol.price
+from cust.salesaction sa, cust.deliveryinfo di, cust.sale s, cust.orderline ol
+where sa.requested_date = trunc(sysdate)
+and sa.action_type in ('CRO', 'MOD')
+and sa.action_date = (select max(action_date) 
+                               from cust.salesaction sz
+                               where sz.action_type in ('CRO', 'MOD')
+                               and sz.sale_id = sa.sale_id)
+and sa.ID = di.SALESACTION_ID
+and sa.sale_id = s.id
+and s.status != 'CAN'
+and sa.id = ol.salesaction_id
+and (ol.material_number between '000000000300800008' and '000000000300899999' or 
+ol.material_number between '000000000300720000' and '000000000300729999') order by dlv_Window_Start
+     </param>
+   </dataSource>
+  </sheet>
+
+ </populate>
+</xlsReporting>

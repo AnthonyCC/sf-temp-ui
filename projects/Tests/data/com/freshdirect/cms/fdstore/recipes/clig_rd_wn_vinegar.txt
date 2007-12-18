@@ -1,0 +1,5 @@
+ORD	REQ	SECTION	SKU_CODE	QUANTITY	SALES_UNIT	CONFIGURATION	DESCRIPTION	CONFIGURATION_DESC	MATERIAL_ID	PRICE	
+		Main	SPE0058840	1	EA		Roland Aged French Red Wine Vinegar	16.9oz		
+		Main	SPE0057966	1	EA		De Nigris Red Wine Vinegar	500ml		
+		Main	SPE0061939	1	EA		Monari Red Wine Vinegar	17oz		
+		Main	GRO0062622	1	EA		Regina Red Wine Vinegar	12oz		

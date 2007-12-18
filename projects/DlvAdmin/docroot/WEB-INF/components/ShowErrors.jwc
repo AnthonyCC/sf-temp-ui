@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE component-specification PUBLIC
+  "-//Apache Software Foundation//Tapestry Specification 3.0//EN"
+  "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<component-specification class="org.apache.tapestry.BaseComponent"
+    allow-body="yes"
+    allow-informal-parameters="no">
+    
+    <description>Shows error notification based on a validation delegate</description>
+   
+    <parameter name="delegate" direction="in" required="yes" type="org.apache.tapestry.valid.IValidationDelegate"/>
+    
+    <parameter name="showHeaderErrors" default-value="true" direction="in" type="boolean"/>
+
+    <parameter name="showFieldErrors" default-value="true" direction="in" type="boolean"/>
+    
+   	<component id="forHeaderErrors" type="For">
+		<binding name="source" expression="delegate.unassociatedTrackings.{?inError}"/>
+		<binding name="value" expression="currTracking"/>
+		<binding name="volatile" expression="true"/>
+	</component>
+    
+   	<component id="forFieldErrors" type="For">
+		<binding name="source" expression="delegate.associatedTrackings.{?inError}"/>
+		<binding name="value" expression="currTracking"/>
+		<binding name="volatile" expression="true"/>
+	</component>
+
+	<component id="ifErrors" type="If">
+		<binding name="condition" expression="delegate.hasErrors and ((showHeaderErrors and not delegate.unassociatedTrackings.{?inError}.isEmpty()) or (showFieldErrors and not delegate.associatedTrackings.{?inError}.isEmpty()))"/>
+		<binding name="volatile" expression="true"/>
+	</component>
+
+	<component id="ifHeaderErrors" type="If">
+		<binding name="condition" expression="showHeaderErrors"/>
+		<binding name="volatile" expression="true"/>
+	</component>
+
+	<component id="ifFieldErrors" type="If">
+		<binding name="condition" expression="showFieldErrors"/>
+		<binding name="volatile" expression="true"/>
+	</component>
+	
+	<component id="renderHeaderError" type="Delegator">
+		<binding name="delegate" expression="currTracking.errorRenderer"/>
+	</component>
+	<component id="renderFieldError" copy-of="renderHeaderError"/>
+	
+   	<property-specification name="currTracking" type="org.apache.tapestry.valid.IFieldTracking"/>
+   	
+</component-specification>

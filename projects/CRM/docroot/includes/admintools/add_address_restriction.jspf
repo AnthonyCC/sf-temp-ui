@@ -1,0 +1,101 @@
+<%@ page import="java.text.*, java.util.*" %>
+<%@ page import="com.freshdirect.customer.*" %>
+<%@ page import="com.freshdirect.fdstore.customer.*" %>
+<%@ page import="com.freshdirect.framework.webapp.*" %>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
+<%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@ page import="com.freshdirect.webapp.taglib.callcenter.GenericLocatorTag"%>
+<%@ page import="com.freshdirect.delivery.EnumRestrictedAddressReason"%>
+<%@ page import="com.freshdirect.delivery.model.RestrictedAddressModel"%>
+<%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri="crm" prefix="crm" %>
+<link rel="stylesheet" href="/ccassets/css/crm.css" type="text/css">
+<style type="text/css">
+</style>
+<% 
+			String address1 = 
+			NVL.apply(request.getParameter("address1"), "");
+            String apartment = 
+			NVL.apply(request.getParameter("apartment"), "");			
+			String zipCode = NVL.apply(request.getParameter("zipCode"), "");		
+            String reason = NVL.apply(request.getParameter("reason"), "all");            
+            
+		%>
+
+<script>
+function openURL(inLocationURL) {
+
+    self.parent.location.href = inLocationURL;
+
+}
+
+function addAddressRestriction() {
+    
+    //document.delRestrictions.restrictionId.value=id; 
+    //alert("document.delRestrictions.restrictionId.value :"+document.delRestrictions.restrictionId.value);
+    doAction('addAddressRestriction');    
+
+}
+
+ function clearADDRAll(){			   
+			      document.getElementById("address1").value = "";
+                 document.getElementById("apartment").value = "";
+			      document.getElementById("zipCode").value = "";
+			    	//document.getElementById("restrictedType").value = "";
+			    }
+
+</script>
+
+<%
+    
+	//List restrictions = (List)session.getAttribute("DEL_RESTRICTION_SEARCH");
+    System.out.println("restrictions in jsp :"+result);
+	 ActionResult actResult=(ActionResult) request.getAttribute("admResult");
+%>
+
+<fd:ErrorHandler result='<%=actResult%>' name='GLOBAL_ERROR' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
+<table class="home_search_module_field" border="0" cellpadding="2" cellspacing="2" width="100%">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b3> <font color="red"> <%=successMsg%> </font> <b3>
+<br>			        	
+	<tr>
+		<td class="case_content_field">reason</td>        
+		<td>		
+			<select name="reason" value="" style="width: 120px;">				
+            <%
+			List enumAddrReasons=EnumRestrictedAddressReason.getEnumList();
+			%>
+			<logic:iterate collection="<%= enumAddrReasons %>" id="enumReason1" type="com.freshdirect.delivery.EnumRestrictedAddressReason">
+			<%  
+				EnumRestrictedAddressReason eReason1=(EnumRestrictedAddressReason)enumReason1;
+			%>
+				<option value="<%= eReason1.getCode() %>" <%= reason.equals(eReason1.getCode()) ? "SELECTED" : "" %>><%= eReason1.getDescription() %></option>
+			</logic:iterate>
+
+			</select>    <fd:ErrorHandler result='<%=actResult%>' name='reason' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>                			
+		</td>			
+		<td class="case_content_field">Scrubbed Address</td>
+		<td>			            
+            <input type="text" length="50" size="50" name="address1" id="address1" value="<%=address1%>">        
+			<fd:ErrorHandler result='<%=actResult%>' name='address1' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
+		</td>
+		<td class="case_content_field">Apartment</td>
+		<td>			            
+            <input type="text" length="50" size="50" name="apartment" id="apartment" value="<%=apartment%>">        
+			<fd:ErrorHandler result='<%=actResult%>' name='apartment' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
+		</td>
+		<td class="case_content_field">Zip Code</td>
+		<td>			            
+            <input type="text" length="50" size="50" name="zipCode" id="zipCode" value="<%=zipCode%>">        
+			<fd:ErrorHandler result='<%=actResult%>' name='zipCode' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
+		</td>		
+		</tr>
+        <tr>
+		    <td colspan="2" align="center">
+			<img src="/media_stat/crm/images/clear.gif" width="1" height="8"><br>
+			<input type="button" value="ADD RESTRICTION" class="submit" onClick='javascript:addAddressRestriction()'>&nbsp;&nbsp;
+			<input type="button" value="CLEAR" class="submit" onclick="javascript:clearADDRAll();">
+		    </td>
+    </tr>            
+	</tr>
+        
+</table>

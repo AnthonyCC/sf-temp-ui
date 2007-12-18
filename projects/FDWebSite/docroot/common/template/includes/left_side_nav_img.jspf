@@ -1,0 +1,139 @@
+<!-- Left side nav -->
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%!
+
+	/** @return number of displayed rows */
+	private static int appendElement(StringBuffer buf, List breakDepths, NavigationElement ne, boolean isUnavailable) {
+
+		int displayedRows = 0;
+
+		//System.out.println("ne: "+ne);
+		//System.out.println("   sort: "+ne.getSortString());
+		//System.out.println("   depth "+ne.getDepth());
+		//System.out.println("   brk "+ne.breakBefore() +" "+ne.breakAfter());
+
+		boolean paintBreak = ne.breakBefore();
+
+		// !!! VS: the breakdepths implementation seems pretty inefficient
+		for (Iterator j = breakDepths.iterator(); j.hasNext(); ) {
+			int lastBreakDepth = ((Integer) j.next()).intValue();
+			if (lastBreakDepth >= ne.getDepth()) {
+				//We're back on the level of what we wanted to break on
+				j.remove();
+				paintBreak = true;
+			}
+		}
+
+		if (ne.breakAfter()) {
+			breakDepths.add(new Integer( ne.getDepth() ));
+		}
+
+		if (paintBreak) {
+			buf.append("<tr><td>&nbsp;</td></tr>");
+			displayedRows++;
+		}
+
+		displayedRows++;
+		buf.append("<tr><td align=\"right\" width=\"120\"><div style=\"margin-left:");
+		buf.append((ne.getDepth() * 4) + 8);
+		buf.append("px; text-indent: -8px;\">");
+
+
+                if (ne.isBold()) buf.append("<b>");
+		if (ne.showLink()) {
+			buf.append("<a href=\"");
+			buf.append(ne.getURL());
+			buf.append("\">");
+		}
+
+		if (isUnavailable) {
+			buf.append("<font color=\"#999999\">");
+		}
+                if (ne.hasSideNavImage()) {
+                
+                    buf.append("<img src=\"");
+                    buf.append(ne.getSideNavImage().getPath());
+                    buf.append("\" border=\"0\" alt=\"");
+                    String altText = ne.getAltText();
+                    if (altText!=null && !"".equals(altText)) {
+                        buf.append(altText);
+                    } else {
+                        buf.append(ne.getDisplayString());
+                    }
+                    buf.append("\">");
+                } else {
+                    buf.append(ne.getDisplayString());
+                }
+
+		if (isUnavailable) {
+			buf.append("</font>");
+		}
+
+		if (ne.showLink()) {
+			buf.append("</a>");
+		}
+		if (ne.isBold()) buf.append("</b>");
+
+		buf.append("</div></TD>");
+                buf.append("<td  width=\"4\"><img src=\"/media_stat/images/layout/clear.gif\" height=\"1\" width=\"4\" border=\"0\">");
+                buf.append("<td  width=\"1\" bgcolor=\"#cccccc\"><img src=\"/media_stat/images/layout/clear.gif\" height=\"1\" width=\"1\" border=\"0\">");
+                buf.append("</td>");
+                buf.append("</td></tr>\n");
+
+		return displayedRows;
+	}
+
+%>
+<oscache:cache key='<%= "sideNav_"+request.getQueryString() %>' time='300'>
+<% try { %>
+
+<fd:SideNav catId='<%= request.getParameter("catId") %>' topCategory="topCategory" sortByPriority="true"
+     startFromDept="true" navList="leftNavItemsList" unavailableList="unavailableNavItems">
+<%
+int displayedRows = 1;
+StringBuffer buf = new StringBuffer(10000);
+ContentNodeModel aliasNode=null;
+String deptLink="";
+DepartmentModel dept = topCategory.getDepartment();
+deptLink="/department.jsp?deptId="+dept;
+
+MediaI deptImage = dept.getTitleImage();
+if (deptImage!=null) {
+	buf.append("<tr><td align=\"right\"><a href=\"");
+	buf.append(deptLink);
+	buf.append("&trk=snav\">");
+
+	buf.append("<IMG SRC=\"").append(deptImage.getPath());
+	buf.append("\" WIDTH=\"").append(deptImage.getWidth());
+	buf.append("\" HEIGHT=\"").append(deptImage.getHeight());
+	buf.append("\" border=\"0\">");
+	buf.append("</a><br>&nbsp;</td></tr>");
+	displayedRows++;
+}
+
+List breakDepths = new LinkedList();
+
+for (Iterator i = leftNavItemsList.iterator(); i.hasNext(); ) {
+	displayedRows += appendElement(buf, breakDepths, (NavigationElement) i.next(), false);
+}
+
+if (displayedRows > 0) {
+%>
+<table border="0" cellspacing="0" cellpadding="0" align="right" width="125">
+<%= buf.toString() %>
+</table><br>
+<%-- spacer 130x20 --%>
+<%
+}
+%>
+</fd:SideNav>
+
+<% } catch (Exception ex) {
+		ex.printStackTrace();
+%>
+	<oscache:usecached />
+<% } %>
+</oscache:cache>
+
+<!-- END YOUR STORE table -->

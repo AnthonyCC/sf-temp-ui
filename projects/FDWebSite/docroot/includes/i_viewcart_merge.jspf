@@ -1,0 +1,37 @@
+<%@ page import='com.freshdirect.fdstore.*,com.freshdirect.fdstore.customer.*,com.freshdirect.fdstore.content.*' %>
+
+<% 
+{
+String lastDept = null;
+%>	
+<table width="150" cellspacing="0" cellpadding="0" border="0">
+<tr>
+	<td width="150">
+		<font class="text11">Est. Total:&nbsp;<b><%= currencyFormatter.format(cart.getTotal()) %></b></font><br>
+		<IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="150" HEIGHT="1" BORDER="0" vspace="3"><BR>
+		<br>
+	</td>
+</tr>
+<tr>
+	<td>
+		<font class=\"space4pix\">
+<logic:iterate id="orderLine" collection="<%= cart.getOrderLines() %>" type="com.freshdirect.fdstore.customer.FDCartLineI" indexId="idx">
+<%
+    
+    if (lastDept==null || !lastDept.equalsIgnoreCase(orderLine.getDepartmentDesc())) {;
+        lastDept = orderLine.getDepartmentDesc() ;
+%>
+	<font class="text11orbold"><%=lastDept%></font>
+<%  }%>
+<div style="margin-left: 8px; text-indent: -8px;"><%=orderLine.getDescription()%></div>
+</logic:iterate>	
+		</font>
+	</td>
+</tr>
+</table>
+<%
+}
+%>	
+	
+
+

@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Sample content for recipes
+-->
+<Content>
+	<FDFolder id="recipes">
+		<children>
+			<RecipeDepartment ref="department"/>
+			<FDFolder ref="recipeAuthors"/>
+			<FDFolder ref="recipeSources"/>
+			<FDFolder ref="recipeItems"/>
+			<Recipe ref="baked_potatoes"/>
+			<Recipe ref="yummy_steak"/>
+		</children>
+	</FDFolder>
+	
+	<FDFolder id="recipeAuthors">
+		<name>Authors</name>
+		<children>
+			<RecipeAuthor id="john_doe">
+				<name>John Doe</name>
+			</RecipeAuthor>
+			<RecipeAuthor id="jane_doe">
+				<name>Jane Doe</name>
+			</RecipeAuthor>
+			<RecipeAuthor id="dear_doe">
+				<name>Dear Doe</name>
+			</RecipeAuthor>
+			<RecipeAuthor id="ray_doe">
+				<name>Ray Doe</name>
+			</RecipeAuthor>
+		</children>
+	</FDFolder>
+	
+	<FDFolder id="recipeSources">
+		<name>Sources</name>
+		<children>
+			<RecipeSource id="foobar">
+				<name>FooBar Inc</name>
+				<notes></notes>
+				<authors>
+					<RecipeAuthor ref="john_doe"/>
+				</authors>
+			</RecipeSource>
+			<RecipeSource id="seven_8_9">
+				<name>Seven Ate Nine</name>
+				<notes>Seven delicious ethnic meals you can prepare in nine minutes of less</notes>
+				<authors>
+					<RecipeAuthor ref="ray_doe"/>
+					<RecipeAuthor ref="jane_doe"/>
+				</authors>
+			</RecipeSource>
+		</children>
+	</FDFolder>
+
+	<Domain id="dom_cuisine">
+		<NAME>cuisine</NAME>
+		<Label>Cuisine</Label>
+		<domainValues>
+			<DomainValue id="dv_cuisine_hungarian">
+				<VALUE>cuisine_hungarian</VALUE>
+				<Label>Hungarian Cuisine</Label>
+			</DomainValue>
+			<DomainValue id="dv_cuisine_american">
+				<VALUE>cuisine_american</VALUE>
+				<Label>American Cuisine</Label>
+			</DomainValue>
+		</domainValues>
+	</Domain>
+	
+	<Domain id="recipe_course">
+		<NAME>course</NAME>
+		<Label>Course</Label>
+		<domainValues>
+			<DomainValue id="appetizer">
+				<VALUE>appetizer</VALUE>
+				<Label>Appetizers</Label>
+			</DomainValue>
+			<DomainValue id="entree">
+				<VALUE>entrees</VALUE>
+				<Label>Entres</Label>
+			</DomainValue>
+			<DomainValue id="side_dish">
+				<VALUE>sides</VALUE>
+				<Label>Side Dishes</Label>
+			</DomainValue>
+			<DomainValue id="dessert">
+				<VALUE>dessert</VALUE>
+				<Label>Desserts</Label>
+			</DomainValue>
+			<DomainValue id="beef_and_chicken">
+				<VALUE>beef_and_chicken</VALUE>
+				<Label>Beef &amp; Chicken</Label>
+			</DomainValue>
+		</domainValues>
+	</Domain>
+
+	
+	<RecipeDepartment id="department">
+		<name>Recipe department</name>
+		<categories>
+
+			<RecipeCategory id="cuisine">
+				<name>Cuisine</name>
+				<classification>
+					<Domain ref="dom_cuisine"/>
+				</classification>
+				<subcategories>
+					
+					<RecipeSubcategory id="cuisine_american">
+						<name>American</name>
+						<classification>
+							<DomainValue ref="dv_cuisine_american"/>
+						</classification>
+						<filterBy>
+							<DomainValue ref="entree"/>
+							<DomainValue ref="side_dish"/>
+							<DomainValue ref="appetizer"/>
+						</filterBy>
+					</RecipeSubcategory>
+
+					<RecipeSubcategory id="cuisine_hungarian">
+						<name>Hungarian</name>
+						<classification>
+							<DomainValue ref="dv_cuisine_hungarian"/>
+						</classification>
+						<filterBy>
+							<DomainValue ref="entree"/>
+							<DomainValue ref="side_dish"/>
+							<DomainValue ref="beef_and_chicken"/>
+						</filterBy>
+					</RecipeSubcategory>
+		
+				</subcategories>
+			</RecipeCategory>
+			
+		</categories>
+	</RecipeDepartment>
+	
+	<FDFolder id="recipeItems">
+		<name>Items</name>
+		<children>
+			<ConfiguredProductGroup id="butter">
+				<name>Butter</name>
+				<required>false</required>
+				<items>
+					<ConfiguredProduct id="butter_1">
+						<SKU>
+							<Sku ref="DAI0060578"/>
+						</SKU>
+						<QUANTITY>0</QUANTITY>
+						<SALES_UNIT>EA</SALES_UNIT>
+						<OPTIONS></OPTIONS>
+					</ConfiguredProduct>
+					<ConfiguredProduct id="butter_2">
+						<SKU>
+							<Sku ref="DAI0067835"/>
+						</SKU>
+						<QUANTITY>0</QUANTITY>
+						<SALES_UNIT>EA</SALES_UNIT>
+						<OPTIONS></OPTIONS>
+					</ConfiguredProduct>
+				</items>
+			</ConfiguredProductGroup>
+		</children>
+	</FDFolder>
+	
+	<Recipe id="baked_potatoes">
+		<name>Baked Potatoes</name>
+		<label></label>
+		<keywords></keywords>
+		<notes></notes>
+		<productionStatus>PENDING</productionStatus>
+		<startDate>2006-01-01</startDate>
+		<endDate>2006-06-04</endDate>
+		<source>
+			<RecipeSource ref="foobar"/>
+		</source>
+		<variants>
+			<RecipeVariant id="baked_potatoes_default">
+				<name>default</name>
+				<sections>
+					<RecipeSection id="baked_potatoes_default_main">
+						<name>main</name>
+						<ingredients>
+							<ConfiguredProduct id="baked_pot1">
+								<SKU>
+									<Sku ref="VEG0011272"/>
+								</SKU>
+								<QUANTITY>2</QUANTITY>
+								<SALES_UNIT>EA</SALES_UNIT>
+								<OPTIONS></OPTIONS>
+								<REQUIRED>true</REQUIRED>
+							</ConfiguredProduct>
+						</ingredients>
+					</RecipeSection>
+					<RecipeSection id="baked_potatoes_default_ymah">
+						<name>You May Already Have</name>
+						<ingredients>
+							<ConfiguredProductGroup ref="butter"/>
+						</ingredients>
+						<SHOW_QUANTITY>false</SHOW_QUANTITY>
+					</RecipeSection>
+				</sections>
+			</RecipeVariant>
+			<RecipeVariant id="baked_potatoes_lowfat">
+				<name>Low Fat</name>
+				<sections>
+					<RecipeSection id="baked_potatoes_lowfat_main">
+						<name>main</name>
+						<ingredients>
+							<ConfiguredProduct id="baked_pot2">
+								<SKU>
+									<Sku ref="VEG0011272"/>
+								</SKU>
+								<QUANTITY>2</QUANTITY>
+								<SALES_UNIT>EA</SALES_UNIT>
+								<OPTIONS></OPTIONS>
+								<REQUIRED>true</REQUIRED>
+							</ConfiguredProduct>
+						</ingredients>
+					</RecipeSection>
+				</sections>
+			</RecipeVariant>
+		</variants>
+		<classifications>
+			<DomainValue ref="dv_cuisine_american"/>
+		</classifications>
+	</Recipe>
+			
+	<Recipe id="yummy_steak">
+		<name>Yummy Steak</name>
+		<label></label>
+		<keywords></keywords>
+		<notes></notes>
+		<productionStatus>ACTIVE</productionStatus>
+		<startDate>2006-01-01</startDate>
+		<endDate>2006-06-01</endDate>
+		<source>
+			<RecipeSource ref="foobar"/>
+		</source>
+		<variants>
+			<RecipeVariant id="yummy_steak_default">
+				<name>default</name>
+				<sections>
+					<RecipeSection id="yummy_steak_default_main">
+						<name>main</name>
+						<ingredients>
+							<ConfiguredProduct id="yummy_steak1">
+								<SKU>
+									<Sku ref="MEA0004671"/>
+								</SKU>
+								<QUANTITY>1</QUANTITY>
+								<SALES_UNIT>E04</SALES_UNIT>
+								<OPTIONS>C_MT_BF_MAR=GRS,C_MT_BF_PAK=VP</OPTIONS>
+								<REQUIRED>true</REQUIRED>
+							</ConfiguredProduct>
+							<ConfiguredProductGroup ref="butter"/>
+						</ingredients>
+					</RecipeSection>
+				</sections>
+			</RecipeVariant>
+		</variants>
+		<classifications>
+			<DomainValue ref="dv_cuisine_hungarian"/>
+		</classifications>
+	</Recipe>
+
+</Content>

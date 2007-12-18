@@ -1,0 +1,18 @@
+<%
+	Image productImage = productNode.getDetailImage();
+        Image zoomImage=(Image) productNode.getZoomImage();
+        
+        if( zoomImage!=null && zoomImage.getPath().indexOf("clear.gif")==-1 ){
+%>
+
+		<A HREF="javascript:pop('/shared/prodpop.jsp?productId=<%= productNode %>&catId=<%= productNode.getParentNode() %>',335,375)"><img border=0 src="<%= productImage.getPath() %>" width="<%= productImage.getWidth() %>" height="<%= productImage.getHeight() %>"></A><br>
+<%	} else { %>
+		<img border=0 src="<%= productImage.getPath() %>" width="<%= productImage.getWidth() %>" height="<%= productImage.getHeight() %>"><br>
+<%	} %>
+		<FONT CLASS="space2pix"><BR></FONT>
+			
+		<% 
+		//Show product summary link only in test environments
+		 if (FDStoreProperties.isAnnotationMode()) { %>
+			<br><br><a href="javascript:popResize('/shared/product_summary.jsp?productId=<%= productNode %>&catId=<%= productNode.getParentNode() %>',800,555)" class="text12">Product Summary</a><br><br>
+		<% } %>

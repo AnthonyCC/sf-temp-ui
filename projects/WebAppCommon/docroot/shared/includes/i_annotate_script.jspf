@@ -1,0 +1,43 @@
+<script language="JavaScript">
+	var annotation = "<B>SKUs</B><BR>";
+	var detailAnnotation = annotation;
+	<%
+	for (Iterator skuIter = productNode.getSkus().iterator(); skuIter.hasNext(); ) {
+    	SkuModel skuModel = (SkuModel) skuIter.next();
+
+    	String variation = "";
+    	{
+			MultiAttribute varMtx = (MultiAttribute)skuModel.getAttribute("VARIATION_MATRIX");
+			if (varMtx!=null) {
+				variation="<B>";
+				for (Iterator vi=varMtx.getValues().iterator(); vi.hasNext(); ) {
+					DomainValueRef v = (DomainValueRef)vi.next();
+					variation+= v.getRefName2()+" ";
+				}
+				variation+="</B>";
+			}
+		}
+
+    	FDProductInfo fdProdInfo = null;
+    	FDProduct fdProd = null;
+    	try {
+    		fdProdInfo = FDCachedFactory.getProductInfo( skuModel.getSkuCode() );
+    		fdProd = FDCachedFactory.getProduct( fdProdInfo );
+    	} catch (FDSkuNotFoundException ex) {}
+    %>
+    ann="&nbsp;";
+    ann+="<A target='_blank' href='<%= FDStoreProperties.getAnnotationErpsy() %>/attribute/material/material_search.jsp?searchterm=<%= skuModel.getSkuCode() %>&searchtype=WEBID'><%= skuModel.getSkuCode() %></A>";
+    ann+=" <%= variation %>";
+    ann+="<BR>";
+    
+    annotation+=ann;
+    detailAnnotation+=ann;
+
+    detailAnnotation+="&nbsp;&nbsp;&nbsp;";
+    detailAnnotation+="<%= fdProd==null ? "NO PROD" : fdProd.getMaterial().getMaterialNumber().substring(9) %>";
+    detailAnnotation+=" <%= fdProdInfo==null ? "NO PRODINFO" :fdProdInfo.getAvailabilityStatus().getShortDescription() %>";
+    detailAnnotation+="<BR><BR>";
+    <%
+    }
+	%>		
+</script>

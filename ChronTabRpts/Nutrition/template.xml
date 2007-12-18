@@ -1,0 +1,81 @@
+<xlsReporting>
+ <sources>
+  <source> <!-- Perhaps we use connection pools later on? -->
+    <name>DB</name>
+    <type>com.freshdirect.xls.datasource.DatabaseDataSourceKeyValue</type>
+    <url>jdbc:oracle:thin:@(DESCRIPTION =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb01-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb02-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (CONNECT_DATA =
+    (SERVER = DEDICATED)
+    (SERVICE_NAME = dbsto_prod)
+     (failover_mode =
+       (type = session)
+       (method = basic)
+       (retries = 20)
+     )
+  )
+ )</url>
+    <user>appdev</user>
+    <password>readn0wrt</password>
+  </source>
+ </sources>
+
+ <populate>
+  <sheet>
+   <name>Nutrition</name>
+   <beginOffsetRow>0</beginOffsetRow>
+   <beginOffsetColumn>0</beginOffsetColumn>
+   <dataSource>
+     <name>DB</name>
+     <param>
+select skucode, full_name, key, nvl(value, ' ') from (
+select sku.skucode, cn.full_name, n.nutrition_type as key, n.value || n.uom as value, 1 as rank
+from fdstore_prda.contentnode cn, fdstore_prda.sku sku,
+     erps.nutrition n
+where cn.id = sku.product_id
+and sku.skucode = n.sku_code
+UNION /* Other Nutrition Info */
+select sku.skucode, cn.full_name, n.type as key, n.INFO, 4 as rank
+from fdstore_prda.contentnode cn, fdstore_prda.sku sku,
+     erps.nutrition_info n
+where cn.id = sku.product_id
+and sku.skucode = n.skucode
+and n.type not in ('CLAM', 'ALRG')
+) where full_name is not null
+order by skucode, rank, key
+     </param>
+     <param></param>
+     <param>printHeader</param>
+   </dataSource>
+  </sheet>
+  <sheet>
+   <name>AllergenClaims</name>
+   <beginOffsetRow>0</beginOffsetRow>
+   <beginOffsetColumn>0</beginOffsetColumn>
+   <dataSource>
+     <name>DB</name>
+     <param>
+select skucode, full_name, key, nvl(value, ' ') from (
+select sku.skucode, cn.full_name, n.type||'.'||n.info as key, 'X' as value, 2 as rank
+from fdstore_prda.contentnode cn, fdstore_prda.sku sku,
+     erps.nutrition_info n
+where cn.id = sku.product_id
+and sku.skucode = n.skucode
+and n.type = 'ALRG'
+UNION 
+select sku.skucode, cn.full_name, n.type||'.'||n.info as key, 'X', 3 as rank
+from fdstore_prda.contentnode cn, fdstore_prda.sku sku,
+     erps.nutrition_info n
+where cn.id = sku.product_id
+and sku.skucode = n.skucode
+and n.type = 'CLAM'
+) where full_name is not null
+order by skucode, rank, key
+     </param>
+     <param></param>
+     <param>printHeader</param>
+   </dataSource>
+  </sheet>
+ </populate>
+</xlsReporting>

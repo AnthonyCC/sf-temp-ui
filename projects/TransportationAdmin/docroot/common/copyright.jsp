@@ -1,0 +1,1 @@
+&copy; 2002 - 2007 FreshDirect. All Rights Reserved.

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<module id="com.freshdirect.fdstore.ocf" version="1.0.0">
+	
+	<service-point id="ListGenerator" interface="com.freshdirect.ocf.core.ListGeneratorServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.ocf.core.DbListGeneratorService">
+				<set-service property="dataSource" service-id="com.freshdirect.fdstore.DataSource" />
+			</construct>
+		</invoke-factory>
+	</service-point>
+	
+	<service-point id="SilverpopService" interface="com.freshdirect.ocf.silverpop.SilverpopServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.ocf.silverpop.SilverpopService">
+				<set property="url" value="${ocf.silverpop.url}"/>
+				<set property="ftp" value="${ocf.silverpop.ftp}"/>
+				<set property="username" value="${ocf.silverpop.username}"/>
+				<set property="password" value="${ocf.silverpop.password}"/>
+				<set property="basePath" value="${ocf.silverpop.basePath}"/>
+				<set property="timeout" value="${ocf.silverpop.timeout}"/>
+				<set property="printXml" value="${ocf.silverpop.printXml}"/>
+				<set property="allowExternal" value="${ocf.silverpop.allowExternal}"/>
+				<set property="appendTimeStamp" value="${ocf.silverpop.appendTimeStamp}"/>
+			</construct>
+		</invoke-factory>
+	</service-point>
+	
+</module>

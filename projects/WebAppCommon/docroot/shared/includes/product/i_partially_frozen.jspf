@@ -1,0 +1,6 @@
+<%
+	if (productNode.getAttribute("PARTIALLY_FROZEN")!=null) {
+		String parFrozen = ((Html)productNode.getAttribute("PARTIALLY_FROZEN").getValue()).getPath();
+	%>
+	<fd:IncludeMedia name='<%= parFrozen %>' />
+<%	}%>

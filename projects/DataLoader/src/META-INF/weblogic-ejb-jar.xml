@@ -1,0 +1,178 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE weblogic-ejb-jar PUBLIC '-//BEA Systems, Inc.//DTD WebLogic 6.0.0 EJB//EN' 'http://www.bea.com/servers/wls600/dtd/weblogic-ejb-jar.dtd'>
+
+<weblogic-ejb-jar>
+
+    <weblogic-enterprise-bean>
+        <ejb-name>VirtualProductLoader</ejb-name>
+        <stateless-session-descriptor>
+			<pool>
+				<max-beans-in-free-pool>3</max-beans-in-free-pool>
+			</pool>
+			<stateless-clustering></stateless-clustering>
+		</stateless-session-descriptor>
+        <reference-descriptor>
+            <resource-description>
+                <res-ref-name>jdbc/dbpool</res-ref-name>
+                <jndi-name>fddatasource</jndi-name>
+            </resource-description>
+			<ejb-reference-description>
+				<ejb-ref-name>ejb/ErpProduct</ejb-ref-name>
+				<jndi-name>freshdirect.erp.Product</jndi-name>
+			</ejb-reference-description>
+        </reference-descriptor>
+        <enable-call-by-reference>True</enable-call-by-reference>
+        <jndi-name>freshdirect.dataloader.VirtualProductLoader</jndi-name>
+    </weblogic-enterprise-bean>
+    
+    
+     <weblogic-enterprise-bean>
+        <ejb-name>GeoCodeLoader</ejb-name>
+        <stateless-session-descriptor>
+			<pool>
+				<max-beans-in-free-pool>10</max-beans-in-free-pool>
+			</pool>
+			<stateless-clustering></stateless-clustering>
+		</stateless-session-descriptor>
+        <reference-descriptor>
+            <resource-description>
+                <res-ref-name>jdbc/dbpool</res-ref-name>
+                <jndi-name>fddatasource</jndi-name>
+            </resource-description>
+        </reference-descriptor>
+        <enable-call-by-reference>True</enable-call-by-reference>
+        <jndi-name>freshdirect.dataloader.GeoCodeLoader</jndi-name>
+    </weblogic-enterprise-bean>
+    
+    
+    <weblogic-enterprise-bean>
+        <ejb-name>SAPLoader</ejb-name>
+        <stateless-session-descriptor>
+			<pool>
+				<max-beans-in-free-pool>3</max-beans-in-free-pool>
+			</pool>
+			<stateless-clustering></stateless-clustering>
+		</stateless-session-descriptor>
+        <reference-descriptor>
+            <resource-description>
+                <res-ref-name>jdbc/dbpool</res-ref-name>
+                <jndi-name>fddatasource</jndi-name>
+            </resource-description>
+            <ejb-reference-description>
+				<ejb-ref-name>ejb/ErpClass</ejb-ref-name>
+				<jndi-name>freshdirect.erp.Class</jndi-name>
+			</ejb-reference-description>
+			<ejb-reference-description>
+				<ejb-ref-name>ejb/ErpMaterial</ejb-ref-name>
+				<jndi-name>freshdirect.erp.Material</jndi-name>
+			</ejb-reference-description>
+			<ejb-reference-description>
+				<ejb-ref-name>ejb/ErpCharacteristicValuePrice</ejb-ref-name>
+				<jndi-name>freshdirect.erp.CharacteristicValuePrice</jndi-name>
+			</ejb-reference-description>
+			<ejb-reference-description>
+				<ejb-ref-name>ejb/ErpProduct</ejb-ref-name>
+				<jndi-name>freshdirect.erp.Product</jndi-name>
+			</ejb-reference-description>
+			<ejb-reference-description>
+				<ejb-ref-name>ejb/BatchManager</ejb-ref-name>
+				<jndi-name>freshdirect.erp.BatchManager</jndi-name>
+			</ejb-reference-description>
+        </reference-descriptor>
+        <enable-call-by-reference>True</enable-call-by-reference>
+        <jndi-name>freshdirect.dataloader.SAPLoader</jndi-name>
+    </weblogic-enterprise-bean>
+    
+    
+    <weblogic-enterprise-bean>
+    	<ejb-name>InvoiceLoader</ejb-name>
+    	<stateless-session-descriptor>
+			<pool>
+				<max-beans-in-free-pool>5</max-beans-in-free-pool>
+			</pool>
+			<stateless-clustering></stateless-clustering>
+		</stateless-session-descriptor>
+    	<reference-descriptor>
+    		<resource-description>
+    			<res-ref-name>jdbc/dbpool</res-ref-name>
+    			<jndi-name>fddatasource</jndi-name>
+    		</resource-description>
+    	</reference-descriptor>
+    	<enable-call-by-reference>True</enable-call-by-reference>
+    	<jndi-name>freshdirect.dataloader.InvoiceLoader</jndi-name>
+    </weblogic-enterprise-bean>
+    
+    <weblogic-enterprise-bean>
+		<ejb-name>SaleCron</ejb-name>
+		<stateless-session-descriptor>
+			<pool>
+				<max-beans-in-free-pool>1</max-beans-in-free-pool>
+			</pool>
+			<stateless-clustering></stateless-clustering>
+		</stateless-session-descriptor>
+		<transaction-descriptor></transaction-descriptor>
+		<reference-descriptor>
+			<resource-description>
+				<res-ref-name>jdbc/dbpool</res-ref-name>
+				<jndi-name>fddatasource</jndi-name>
+			</resource-description>
+			<ejb-reference-description>
+				<ejb-ref-name>ejb/ErpCustomerManager</ejb-ref-name>
+				<jndi-name>freshdirect.erp.CustomerManager</jndi-name>
+			</ejb-reference-description>
+			<ejb-reference-description>
+				<ejb-ref-name>ejb/FDCustomerManager</ejb-ref-name>
+				<jndi-name>freshdirect.fdstore.CustomerManager</jndi-name>
+			</ejb-reference-description>
+			<ejb-reference-description>
+				<ejb-ref-name>ejb/Payment</ejb-ref-name>
+				<jndi-name>freshdirect.payment.Payment</jndi-name>
+			</ejb-reference-description>
+		</reference-descriptor>
+		<jndi-name>freshdirect.dataloader.SaleCron</jndi-name>
+	</weblogic-enterprise-bean>
+	
+	<transaction-isolation>
+	    <isolation-level>TRANSACTION_READ_COMMITTED</isolation-level>
+	    <method>
+    		<ejb-name>VirtualProductLoader</ejb-name>
+    		<method-name>loadData</method-name>
+    	</method>
+    </transaction-isolation>
+	
+	<transaction-isolation>
+	    <isolation-level>TRANSACTION_READ_COMMITTED</isolation-level>
+	    <method>
+            <ejb-name>SAPLoader</ejb-name>
+        	<method-name>*</method-name>
+    	</method>
+    </transaction-isolation>
+	
+	<transaction-isolation>
+    	<isolation-level>TRANSACTION_READ_COMMITTED</isolation-level>
+    	<method>
+    		<ejb-name>InvoiceLoader</ejb-name>
+    		<method-name>*</method-name>
+    	</method>
+    </transaction-isolation>
+	<transaction-isolation>
+		<isolation-level>TRANSACTION_READ_COMMITTED</isolation-level>
+		<method>
+			<ejb-name>SaleCron</ejb-name>
+			<method-intf>Remote</method-intf>
+			<method-name>*</method-name>
+		</method>
+	</transaction-isolation>
+ <!--   
+    <transaction-isolation>
+		<isolation-level>TRANSACTION_READ_COMMITTED</isolation-level>
+		<method>
+			<ejb-name>GeoCodeLoader</ejb-name>
+			<method-intf>Remote</method-intf>
+			<method-name>*</method-name>
+		</method>
+	</transaction-isolation>
+  -->  	     
+</weblogic-ejb-jar>
+

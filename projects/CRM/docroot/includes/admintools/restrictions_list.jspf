@@ -1,0 +1,129 @@
+<%@ page import="java.text.*, java.util.*" %>
+<%@ page import="com.freshdirect.customer.*" %>
+<%@ page import="com.freshdirect.fdstore.customer.*" %>
+<%@ page import="com.freshdirect.framework.webapp.*" %>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
+<%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@ page import="com.freshdirect.webapp.taglib.callcenter.GenericLocatorTag"%>
+<%@ page import="com.freshdirect.delivery.restriction.OneTimeRestriction"%>
+<%@ page import="com.freshdirect.delivery.restriction.OneTimeReverseRestriction"%>
+<%@ page import="com.freshdirect.delivery.restriction.RecurringRestriction"%>
+
+
+<%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri="crm" prefix="crm" %>
+<link rel="stylesheet" href="/ccassets/css/crm.css" type="text/css">
+<style type="text/css">
+</style>
+<script>
+function openURL(inLocationURL) {
+
+    self.parent.location.href = inLocationURL;
+
+}
+
+function deleteRestriction(id) {
+    
+    document.delRestrictions.restrictionId.value=id;     
+    doAction('deleteRestrctions');    
+
+}
+
+function sortRestriction(colName) {
+    if(colName==document.getElementById("sortColumn").value){       
+       document.getElementById("ascending").value="desc";
+    }
+    document.getElementById("sortColumn").value=colName;            
+    doAction('sortAddressRestrctions');    
+
+}
+
+</script>
+<logic:present name="restrictions">
+<%
+    
+	//List restrictions = (List)session.getAttribute("DEL_RESTRICTION_SEARCH");
+    System.out.println("restrictions in jsp :"+restrictions);
+    String sortColumn = NVL.apply(request.getParameter("sortColumn"), "start_time");
+	
+%>
+<input type="hidden" name="sortColumn" id="sortColumn"  value="<%=sortColumn%>" />
+<input type="hidden" name="ascending" id="ascending"  value="asc" />
+
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+	<tr>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b><a href="javascript:sortRestriction('reason')"> Reason # </a></b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b><a href="javascript:sortRestriction('start_time')"> Start Date</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b><a href="javascript:sortRestriction('end_time')"> End Date</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" align="center"  class="border_bold"><span class="detail_text"><b><a href="javascript:sortRestriction('name')"> Name </a></b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b><a href="javascript:sortRestriction('message')"> Message </a></b></span></td>	
+	<td class="border_bold">&nbsp;</td>	
+    <td class="border_bold">&nbsp;</td>	
+	</tr>
+	
+	<%
+		
+		if(restrictions == null || restrictions.size() == 0) {
+	%>
+	<tr><td><span class="error">No Restrictions found for the given criteria.</span></td></tr>
+	
+	<%
+		} else {
+	%>	
+	<logic:iterate id="restriction" collection="<%= restrictions %>" type="com.freshdirect.delivery.restriction.RestrictionI" indexId="cnt">
+    	
+	<%                
+		    	if (restriction instanceof OneTimeRestriction) {
+				    OneTimeRestriction rev = (OneTimeRestriction) restriction;
+                    System.out.println("rev.getId() :"+rev.getId());
+	%>
+	    <input type="hidden" name="custIds" value="<%= rev.getReason().getName() %>" />       
+        <tr>
+        <td class="border_bottom"><span class="detail_text"><%= rev.getReason().getName() %></span></td>	
+        <td class="border_bottom">&nbsp;</td>
+        <td class="border_bottom"><span class="detail_text"><%= rev.getDateRange().getStartDate() %></span></td>	
+        <td class="border_bottom">&nbsp;</td>
+        <td class="border_bottom"><span class="detail_text"><%= rev.getDateRange().getEndDate() %></span></td>
+        <td class="border_bottom">&nbsp;</td>
+        <td class="border_bottom"><span class="detail_text"><%= rev.getName() %></span></td>
+        <td class="border_bottom">&nbsp;</td>
+        <td class="border_bottom"><span class="detail_text"><%= rev.getMessage() %></span></td>        
+        <td class="border_bottom"><A HREF="javascript:void(0)" onclick="window.open('/admintools/restrictionForm_save.jsp?restrictionId=<%= rev.getId() %>&actionType=editRestriction','editRestriction','width=350,height=400,menubar=no,status=no')">Detail<a/>&nbsp;|</td>
+        <td class="border_bottom"><A HREF="javascript:void(0)" onclick="window.open('/admintools/restrictionForm.jsp?restrictionId=<%= rev.getId() %>&actionType=editRestriction','editRestriction','width=350,height=400,menubar=no,status=no')">Edit<a/>&nbsp;|</td>        
+        <td class="border_bottom"><a href="javascript:deleteRestriction('<%= rev.getId() %>')">&nbsp;Delete<a/></td>                
+              <%
+                  }else if(restriction instanceof RecurringRestriction){
+                  RecurringRestriction rev = (RecurringRestriction) restriction;
+                    System.out.println("rev.getId() :"+rev.getId());
+               %>
+	    <input type="hidden" name="custIds" value="<%= rev.getReason().getName() %>" />
+        <tr>
+        <td class="border_bottom"><span class="detail_text"><%= rev.getReason().getName() %></span></td>	
+        <td class="border_bottom">&nbsp;</td>
+        <td class="border_bottom"><span class="detail_text"><%= rev.getTimeRange().getStartTime() %></span></td>	
+        <td class="border_bottom">&nbsp;</td>
+        <td class="border_bottom"><span class="detail_text"><%= rev.getTimeRange().getEndTime() %></span></td>
+        <td class="border_bottom">&nbsp;</td>
+        <td class="border_bottom"><span class="detail_text"><%= rev.getName() %></span></td>
+        <td class="border_bottom">&nbsp;</td>
+        <td class="border_bottom"><span class="detail_text"><%= rev.getMessage() %></span></td>        
+        <td class="border_bottom"><A HREF="javascript:void(0)" onclick="window.open('/admintools/restrictionForm_save.jsp?restrictionId=<%= rev.getId() %>&actionType=editRestriction','editRestriction','width=350,height=400,menubar=no,status=no')">Detail<a/>&nbsp;|</td>
+        <td class="border_bottom"><A HREF="javascript:void(0)" onclick="window.open('/admintools/restrictionForm.jsp?restrictionId=<%= rev.getId() %>&actionType=editRestriction','editRestriction','width=350,height=400,menubar=no,status=no')">Edit<a/>&nbsp;|</td>        
+        <td class="border_bottom"><a href="javascript:deleteRestriction('<%= rev.getId() %>')">&nbsp;Delete<a/></td>
+               
+              <%
+                 }
+              %>
+              </tr>
+	</logic:iterate>
+	<%
+		}
+	%>	
+	
+</table>
+</logic:present>

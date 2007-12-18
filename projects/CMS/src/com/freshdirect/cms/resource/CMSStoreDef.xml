@@ -1,0 +1,1258 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<CMSDef xmlns="http://www.freshdirect.com/xsd/CMS"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.freshdirect.com/xsd/CMS CMS.xsd">
+	<!--
+		
+		FDFolder
+		
+	-->
+	<ContentTypeDef name="FDFolder">
+		<AttributeDefs>
+			<AttributeDef type="S" name="name" />
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="children" navigable="true" cardinality="Many">
+				<DestinationDef contentType="FDFolder" />
+				<DestinationDef contentType="Brand" />
+				<DestinationDef contentType="Domain" />
+				<DestinationDef contentType="RecipeDepartment" />
+				<DestinationDef contentType="Recipe" />
+				<DestinationDef contentType="RecipeSource" />
+				<DestinationDef contentType="RecipeAuthor" />
+				<DestinationDef contentType="BookRetailer" />
+				<DestinationDef contentType="ConfiguredProduct" />
+				<DestinationDef contentType="ConfiguredProductGroup" />
+				<DestinationDef contentType="RecipeSearchPage" />
+				<DestinationDef contentType="YmalSet" />
+				<DestinationDef contentType="StarterList" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+	<!--
+		
+		Store
+		
+	-->
+	<ContentTypeDef name="Store">
+		<AttributeDefs>
+			<AttributeDef type="S" name="NAME" />
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="folders" navigable="true" cardinality="Many">
+				<DestinationDef contentType="FDFolder" />
+			</RelationshipDef>
+			<RelationshipDef name="departments" navigable="true" cardinality="Many">
+				<DestinationDef contentType="Department" />
+			</RelationshipDef>
+			<RelationshipDef name="HOME_FEATURED_PRODUCTS" cardinality="Many">
+				<DestinationDef contentType="Product" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+	<!--
+		
+		Domain
+		
+	-->
+	<ContentTypeDef name="Domain">
+		<AttributeDefs>
+			<AttributeDef type="S" name="NAME" />
+			<AttributeDef type="S" name="Label" />
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="domainValues" navigable="true" cardinality="Many">
+				<DestinationDef contentType="DomainValue" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+	<!--
+		
+		Domain Value
+		
+	-->
+	<ContentTypeDef name="DomainValue">
+		<AttributeDefs>
+			<AttributeDef type="S" name="Label" />
+			<AttributeDef type="S" name="VALUE" />
+		</AttributeDefs>
+	</ContentTypeDef>
+	<!--
+		
+		Department
+		
+	-->
+	<ContentTypeDef name="Department">
+		<AttributeDefs>
+			<!-- basic descriptive stuff -->
+			<AttributeDef type="S" name="FULL_NAME" label="Full Name"/>
+			<AttributeDef type="S" name="ALT_TEXT"  label="Alt Text"/>
+			<!--AttributeDef type="S" name="EDITORIAL_TITLE"  label="Editorial Title"/-->
+			<AttributeDef type="S" name="BLURB"  label="Blurb"/>
+			<!-- layout related stuff -->
+			<EnumDef type="I" name="BOTTOM_RIGHT_DISPLAY"  label="Bottom Right Display">
+				<EnumValue value="1" label="SECONDARY_FOLDERS"/>
+				<EnumValue value="2" label="BLURB_AND_IMAGE"/>
+				<EnumValue value="26" label="Vertical Categories"/>
+			</EnumDef>
+			<AttributeDef type="I" name="MAX_ROWCOUNT"  label="Max Rowcount" />
+			<AttributeDef type="I" name="PRIORITY"  label="Priority" />
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="categories" navigable="true" cardinality="Many">
+				<DestinationDef contentType="Category" />
+			</RelationshipDef>
+			<RelationshipDef name="FEATURED_CATEGORIES" cardinality="Many"  label="Featured Categories" >
+				<DestinationDef contentType="Category" />
+			</RelationshipDef>
+			<RelationshipDef name="FEATURED_PRODUCTS" cardinality="Many"  label="Featured Products" >
+				<DestinationDef contentType="Product" />
+				<DestinationDef contentType="ConfiguredProduct"/>
+			</RelationshipDef>
+			<RelationshipDef name="DEPT_NAV" cardinality="Many"  label="Dept Nav" >
+				<Description>Alternate list of Categories to render for department navigation.</Description>
+				<DestinationDef contentType="Category" />
+			</RelationshipDef>
+			<!-- descriptive images -->
+			<RelationshipDef name="DEPT_MGR_NONAME" cardinality="One"  label="Dept Mgr Noname" >
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="DEPT_PHOTO" cardinality="One"  label="Dept Photo" >
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="DEPT_PHOTO_SMALL" cardinality="One"  label="Dept Photo Small" >
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="DEPT_TITLE" cardinality="One"  label="Dept Title" >
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="DEPARTMENT_MIDDLE_MEDIA" cardinality="Many"  label="Dept Middle Media" >
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="DEPT_NAVBAR_ROLLOVER" cardinality="One"  label="Dept Navbar Rollover" >
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="DEPT_NAVBAR" cardinality="One"  label="Dept Navbar" >
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<!-- descriptive text -->
+			<RelationshipDef name="EDITORIAL" cardinality="One"  label="Editorial" >
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="DEPT_MGR_BIO" cardinality="One"  label="Dept Mgr Bio" >
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="DEPT_STORAGE_GUIDE_MEDIA"  label="Dept Storage Guide Media" >
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="ASSOC_EDITORIAL" cardinality="Many"  label="Assoc Editorial" >
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="DEPARTMENT_BOTTOM" cardinality="Many"  label="Dept Bottom" >
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+	<!--
+		
+		Category
+		
+	-->
+	<ContentTypeDef name="Category">
+		<AttributeDefs>
+			<!-- basic descriptive stuff -->
+			<AttributeDef type="S" name="FULL_NAME"   label="Full Name" />
+			<AttributeDef type="S" name="ALT_TEXT"   label="Alt Text" />
+			<AttributeDef type="S" name="KEYWORDS" />
+			<AttributeDef type="S" name="EDITORIAL_TITLE" inheritable="true"  label="Editorial Title" />
+			<AttributeDef type="S" name="BLURB"  label="Blurb"/>
+			<!-- miscellaneous stuff -->
+			<AttributeDef type="B" name="CONTAINS_BEER"  label="Contains Beer"/>
+			<!-- <AttributeDef type="S" name="SEASON_TEXT"  label="Season Text"/> -->
+			<AttributeDef type="S" name="FILTER_LIST"  label="Filter List"/>
+			<!-- layout related stuff -->
+			<AttributeDef type="B" name="FAVORITE_ALL_SHOW_PRICE"  label="Favorite All Show Price" inheritable="true" />
+			
+			<EnumDef type="S" name="LIST_AS"   label="List As Name" inheritable="true">
+				<EnumValue value="full" label="Full Name"/>
+				<EnumValue value="glance" label="Glance Name"/>
+				<EnumValue value="nav" label="Nav Name"/>
+			</EnumDef>
+			<AttributeDef type="I" name="TEMPLATE_TYPE"   label="Template Type" inheritable="true"/>
+			<AttributeDef type="I" name="COLUMN_NUM"  label="Column Number" inheritable="true"/>
+			<AttributeDef type="I" name="COLUMN_SPAN"  label="Column Span"/>
+			<AttributeDef type="B" name="FAKE_ALL_FOLDER" label="Fake All Folder"/>
+			<AttributeDef type="B" name="SHOW_SIDE_NAV"  label="Show Side Nav" inheritable="true"/>
+			<AttributeDef type="B" name="TREAT_AS_PRODUCT"  label="Treat as Product" inheritable="true"/>
+			<AttributeDef type="B" name="NUTRITION_SORT"  label="Nutrition Sort" inheritable="true"/>
+			<AttributeDef type="B" name="SIDENAV_BOLD"  label="Side Nav Bold"/>
+			<AttributeDef type="B" name="SIDENAV_LINK" label="Side Nav Link" inheritable="true"/>
+			<AttributeDef type="I" name="SIDENAV_PRIORITY"  label="Side Nav Priority"/>
+			<EnumDef type="I" name="SIDENAV_SHOWCHILDREN"  label="Side Nav Show Children" inheritable="true">
+				<EnumValue value="0" label="IF_IN_BROWSE_PATH"/>
+				<EnumValue value="1" label="ALWAYS"/>
+				<EnumValue value="2" label="NEVER"/>
+				<EnumValue value="3" label="ALWAYS_FOLDERS"/>
+			</EnumDef>
+			<AttributeDef type="B" name="SIDENAV_SHOWSELF"  label="Side Nav Show Self" inheritable="true"/>
+			<AttributeDef type="B" name="SHOWSELF"  label="Show Self" inheritable="true"/>
+			<EnumDef type="I" name="SHOWCHILDREN"  label="Show Children">
+				<EnumValue value="0" label="FALSE"/>
+				<EnumValue value="1" label="TRUE"/>
+				<EnumValue value="2" label="never"/>
+			</EnumDef>
+			<AttributeDef type="I" name="PRIORITY"  label="Priority"/>
+			<AttributeDef type="B" name="FEATURED"  label="Featured"/>
+			<AttributeDef type="B" name="SECONDARY_CATEGORY"  label="Secondary Category" />
+			<AttributeDef type="S" name="MATERIAL_CHARACTERISTIC" label="Material Characteristic"/>
+			<!-- rating groups -->
+			<AttributeDef type="B" name="RATING_BREAK_ON_SUBFOLDERS" inheritable="true"   label="Rating Break on Subfolders" />
+			<AttributeDef type="B" name="RATING_CHECK_SUBFOLDERS"  inheritable="true"  label="Rating Check Subfolders" />
+			<AttributeDef type="S" name="RATING_GROUP_NAMES" label="Rating Group Names" inheritable="true"/>
+			<AttributeDef type="S" name="RG_MORE_USAGE_LABEL" label="Label for More Usage" inheritable="true"/>
+			<AttributeDef type="S" name="RG_POP_USAGE_LABEL" label="Label for Popular Usage" inheritable="true"/>
+			<AttributeDef type="S" name="RG_PRICE_LABEL" label="Label for Price" inheritable="true"/>
+			<AttributeDef type="S" name="RG_SIZE_PRICE_LABEL" label="Label for Popular Usage" inheritable="true"/>
+			<AttributeDef type="S" name="RG_TASTE_PRICE_LABEL" label="Label for Taste &amp; Price" inheritable="true"/>
+			<AttributeDef type="S" name="RG_TASTE_TYPE_PRICE_LABEL" label="Label for Taste &amp; Type &amp; Price" inheritable="true"/>
+			<AttributeDef type="S" name="RG_TASTE_USE_PRICE_LABEL" label="Label for Taste &amp; Use &amp; Price" inheritable="true"/>
+			<AttributeDef type="S" name="RG_TEXTURE_PRICE_LABEL" label="Label for Texture &amp; Price" inheritable="true"/>
+			<AttributeDef type="S" name="RG_TYPE_PRICE_LABEL" label="Label for Type &amp; Price" inheritable="true"/>
+			<AttributeDef type="S" name="RG_USAGE_LABEL" label="Label for Usage" inheritable="true"/>
+			<AttributeDef type="S" name="RG_USAGE_PRICE_LABEL" label="Label for Usage &amp; Price" inheritable="true"/>
+			<AttributeDef type="B" name="SHOW_RATING_RELATED_IMAGE" label="Show Rating Related Image" inheritable="true"/>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="ALTERNATE_CONTENT" label="Alternate Content">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="CATEGORY_MIDDLE_MEDIA" label="Cat Middle Media" cardinality="Many">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="SEPARATOR_MEDIA" label="Separator Media" cardinality="One">
+			    <DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="ALIAS" label="Alias">
+				<DestinationDef contentType="Category" />
+			</RelationshipDef>
+			<RelationshipDef name="subcategories" navigable="true" cardinality="Many">
+				<DestinationDef contentType="Category" />
+			</RelationshipDef>
+			<RelationshipDef name="VIRTUAL_GROUP" cardinality="Many"  label="Virtual Group" >
+				<DestinationDef contentType="Category" />
+			</RelationshipDef>
+			<RelationshipDef name="products" navigable="true" cardinality="Many">
+				<DestinationDef contentType="Product" />
+				<DestinationDef contentType="ConfiguredProduct"/>
+			</RelationshipDef>
+			<RelationshipDef name="FEATURED_PRODUCTS"  label="Featured Prods" cardinality="Many">
+				<DestinationDef contentType="Product" />
+				<DestinationDef contentType="ConfiguredProduct"/>
+			</RelationshipDef>
+			<RelationshipDef name="FEATURED_BRANDS"  label="Featured Brands" cardinality="Many">
+				<DestinationDef contentType="Brand" />
+			</RelationshipDef>
+			<RelationshipDef name="HOWTOCOOKIT_USAGE"  label="HTCI Usage" cardinality="Many">
+				<DestinationDef contentType="Domain" />
+			</RelationshipDef>
+			<RelationshipDef name="HOW_TO_COOK_IT_PRODUCTS"  label="HTCI Prods" cardinality="Many">
+				<DestinationDef contentType="Product" />
+				<DestinationDef contentType="ConfiguredProduct"/>
+			</RelationshipDef>
+			<RelationshipDef name="RATING"  label="Rating" cardinality="Many" inheritable="true">
+				<DestinationDef contentType="Domain" />
+			</RelationshipDef>
+			<RelationshipDef name="RATING_HOME" label="Rating Home Folder" inheritable="true">
+				<DestinationDef contentType="Category" />
+			</RelationshipDef>
+			<RelationshipDef name="RG_MORE_USAGE"  label="More Usage Rating Group" cardinality="Many" inheritable="true">
+				<DestinationDef contentType="Domain"/>
+			</RelationshipDef>
+			<RelationshipDef name="RG_POP_USAGE"  label="Popular Usage Rating Group" cardinality="Many" inheritable="true">
+				<DestinationDef contentType="Domain"/>
+			</RelationshipDef>
+			<RelationshipDef name="RG_SIZE_PRICE"  label="Size &amp; Price Rating Group" cardinality="Many" inheritable="true">
+				<DestinationDef contentType="Domain"/>
+			</RelationshipDef>
+			<RelationshipDef name="RG_TASTE_PRICE"  label="Taste &amp; Price Rating Group"  cardinality="Many" inheritable="true">
+				<DestinationDef contentType="Domain"/>
+			</RelationshipDef>
+			<RelationshipDef name="RG_TASTE_TYPE_PRICE" cardinality="Many"  label="Taste &amp; Type &amp; Price Rating Group" inheritable="true">
+				<DestinationDef contentType="Domain"/>
+			</RelationshipDef>
+			<RelationshipDef name="RG_TASTE_USE_PRICE" cardinality="Many" label="Taste &amp; Use &amp; Price Rating Group" inheritable="true">
+				<DestinationDef contentType="Domain"/>
+			</RelationshipDef>
+			<RelationshipDef name="RG_TEXTURE_PRICE" cardinality="Many" label="Texture &amp; Price Rating Group" inheritable="true">
+				<DestinationDef contentType="Domain"/>
+			</RelationshipDef>
+			<RelationshipDef name="RG_TYPE_PRICE" cardinality="Many" label="Type &amp; Price Rating Group" inheritable="true">
+				<DestinationDef contentType="Domain"/>
+			</RelationshipDef>
+			<RelationshipDef name="RG_USAGE" cardinality="Many" label="Usage Rating Group" inheritable="true">
+				<DestinationDef contentType="Domain"/>
+			</RelationshipDef>
+			<RelationshipDef name="RG_USAGE_PRICE" cardinality="Many" label="Usage &amp; Price Rating Group" inheritable="true">
+				<DestinationDef contentType="Domain"/>
+			</RelationshipDef>
+			<!-- images -->
+			<RelationshipDef name="CAT_LABEL"  label="Cat Label" cardinality="One">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="CAT_PHOTO" label="Cat Photo" cardinality="One" inheritable="true">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="CAT_TITLE" label="Cat Title" cardinality="One" inheritable="true">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="CATEGORY_DETAIL_IMAGE" label="Cat Detail Image" cardinality="One">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<!-- cms:RelationshipDef name="BANNERS" label="Banners" cardinality="Many" inheritable="true">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef-->
+			<RelationshipDef name="DEPT_MGR" label="Dept Mgr" cardinality="One"  inheritable="true">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="SIDENAV_IMAGE" label="Side Nav Image" cardinality="One" inheritable="true">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="CATEGORY_NAVBAR" label="Category Navbar" cardinality="One">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<!-- text media -->
+			<RelationshipDef name="EDITORIAL" label="Editorial" cardinality="One">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="ARTICLES" label="Articles" cardinality="Many">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="CATEGORY_BOTTOM_MEDIA" label="Category Bottom Media" cardinality="Many">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="CATEGORY_TOP_MEDIA" label="Category Top Media" cardinality="Many">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="CAT_STORAGE_GUIDE_MEDIA" label="Cat Storage Guide Media">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="CATEGORY_PREVIEW_MEDIA" label="Category Preview Media">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			
+		</RelationshipDefs>
+	</ContentTypeDef>
+	<!--
+		
+		Product
+		
+	-->
+	<ContentTypeDef name="Product">
+		<AttributeDefs>
+			<!-- basic descriptive stuff -->
+			<AttributeDef type="S" name="FULL_NAME" label="Full Name"/>
+			<AttributeDef type="S" name="GLANCE_NAME" label="Glance Name"/>
+			<AttributeDef type="S" name="NAV_NAME" label="Nav Name"/>
+			<AttributeDef type="S" name="ALT_TEXT" label="Alt text"/>
+			<AttributeDef type="S" name="KEYWORDS" label="Keywords"/>
+			<AttributeDef type="S" name="AKA" label="AKA Name"/>
+			<AttributeDef type="S" name="BLURB"  label="Blurb"/>
+			<AttributeDef type="S" name="SUBTITLE" label="Subtitle"/>
+			<!-- layout -->
+			<AttributeDef type="S" name="HIDE_URL"  label="Hide URL" inheritable="true"/>
+			<EnumDef type="I" name="PRODUCT_LAYOUT" label="Prod Layout" inheritable="true">
+				<EnumValue value="1" label="Perishable Product"/>
+				<EnumValue value="2" label="Composite Product"/>
+				<EnumValue value="3" label="Wine Product"/>
+				<EnumValue value="4" label="Valentine Composite"/>
+				<EnumValue value="5" label="Party Platter"/>
+				<EnumValue value="6" label="Multi Menu Layout"/>
+				<EnumValue value="7" label="Component Group Meal"/>
+			</EnumDef>
+			<!-- LAYOUT needs to be on Product for inheritance, even though no prods override -->
+			<EnumDef type="I" name="LAYOUT"  label="Layout" inheritable="true">
+				<EnumValue value="0" label="Generic"/>
+				<EnumValue value="1" label="Horizontal"/>
+				<EnumValue value="2" label="Vertical"/>
+				<EnumValue value="3" label="Featured_All"/>
+				<EnumValue value="4" label="Featured_Category"/>
+				<EnumValue value="5" label="By Region"/>
+				<EnumValue value="6" label="Product Sort"/>
+				<EnumValue value="7" label="Product_Folder_ List"/>
+				<EnumValue value="8" label="Coffee_Cheese Department"/>
+				<EnumValue value="9" label="Grocery_Style_Department"/>
+				<EnumValue value="10" label="Grocery_Style_Category"/>
+				<EnumValue value="11" label="Grocery _Style_Product"/>
+				<EnumValue value="12" label="Bulk_Meat"/>
+				<EnumValue value="13" label="How_To_Cook_It"/>
+				<EnumValue value="14" label="Meals_Style"/>
+				<EnumValue value="15" label="Multi_Category_Layout"/>
+				<EnumValue value="16" label="Transactional Multi Category"/>
+				<EnumValue value="17" label="Multi_Cat_prod_Redirect"/>
+				<EnumValue value="18" label="Transactional_Paired_Items"/>
+				<EnumValue value="19" label="Holiday Menu"/>
+				<EnumValue value="20" label="Composite Category 1"/>
+				<EnumValue value="21" label="ThanksGiving Category"/>
+				<EnumValue value="22" label="Generic with Paging"/>
+				<EnumValue value="23" label="Valentines Category"/>
+				<EnumValue value="24" label="Package Layout 1"/>
+				<EnumValue value="25" label="All Static Media"/>
+				<EnumValue value="26" label="Vertical Labeled Category"/>
+				<EnumValue value="27" label="Featured Menu"/>
+				<EnumValue value="98" label="Multi Item Layout - Horizontal"/>
+				<EnumValue value="99" label="Multi Item Layout - Vertical"/>
+			</EnumDef>
+			<EnumDef type="I" name="TEMPLATE_TYPE"  label="Template Type" inheritable="true">
+				<EnumValue value="1" label="Fresh Direct Default Template"/>
+				<EnumValue value="2" label="FreshDirect Best Cellars Template"/>
+			</EnumDef>
+			<!-- miscellaneous descriptions -->
+			<AttributeDef type="S" name="ALSO_SOLD_AS_NAME" label="Also Sold As Name"/>
+			<AttributeDef type="S" name="REDIRECT_URL"  label="Redirect URL" inheritable="true"/>
+			<EnumDef type="S" name="SELL_BY_SALESUNIT" label="Sell by Sales Unit" inheritable="true">
+				<EnumValue value="BOTH" label="Both"/>
+				<EnumValue value="BOTH_SEPARATE" label="Both Separate"/>
+				<EnumValue value="QUANTITY" label="Quantity"/>
+				<EnumValue value="SALES_UNIT" label="Sales Unit"/>
+			</EnumDef>
+			<AttributeDef type="S" name="SALES_UNIT_LABEL" label="Sales Unit Label" inheritable="true"/>
+			<AttributeDef type="S" name="QUANTITY_TEXT" label="Quantity Text" inheritable="true"/>
+			<AttributeDef type="S" name="QUANTITY_TEXT_SECONDARY" label="Secondary Quantity Text"/>
+			<AttributeDef type="S" name="SERVING_SUGGESTION" label="Serving Suggestion" />
+			<AttributeDef type="S" name="PACKAGE_DESCRIPTION" label="Package Description"/>
+			<AttributeDef type="S" name="SEASON_TEXT" label="Season Text" inheritable="true"/>
+			<AttributeDef type="S" name="WINE_FYI" label="Wine FYI"/>
+			<AttributeDef type="S" name="WINE_REGION" label="Wine Region"/>
+			<AttributeDef type="S" name="WINE_TYPE" label="Wine Type"/>
+			<AttributeDef type="S" name="SEAFOOD_ORIGIN" label="Seafood Origin"/>
+			<AttributeDef type="S" name="RELATED_PRODUCTS_HEADER" label="Related Products Header" inheritable="true"/>
+			<!-- boolean descriptions -->
+			<AttributeDef type="B" name="SHOW_SALES_UNIT_IMAGE" label="Show Sales Unit Image"/>
+			<AttributeDef type="B" name="NUTRITION_MULTIPLE" label="Nutrition Multiple"/>
+			<AttributeDef type="B" name="SHOW_TOP_TEN_IMAGE" label="Show Top Ten Image"/>
+			<!-- hiding things -->
+			<AttributeDef type="B" name="NOT_SEARCHABLE" label="Not Searchable" inheritable="true"/>
+			<!-- numeric descriptions -->
+			<AttributeDef type="D" name="CONTAINER_WEIGHT_HALF_PINT" label="Container Weight Half Pint"/>
+			<AttributeDef type="D" name="CONTAINER_WEIGHT_PINT" label="Container Weight Pint"/>
+			<AttributeDef type="D" name="CONTAINER_WEIGHT_QUART" label="Container Weight Quart"/>
+			<!-- more stuff -->
+			<AttributeDef type="B" name="INCREMENT_MAX_ENFORCE" label="Increment Max Enforce" inheritable="true"/>
+			<AttributeDef type="D" name="QUANTITY_MINIMUM" label="Quantity Minimum" inheritable="true"/>
+			<AttributeDef type="D" name="QUANTITY_MAXIMUM" label="Quantity Maximum" inheritable="true"/>
+			<AttributeDef type="D" name="QUANTITY_INCREMENT" label="Quantity Increment" inheritable="true"/>
+			<AttributeDef type="B" name="INVISIBLE" label="Invisible"/>
+			<AttributeDef type="B" name="PERISHABLE" label="Perishable"/>
+			<AttributeDef type="B" name="FROZEN" label="Frozen"/>
+			<AttributeDef type="B" name="GROCERY" label="Grocery"/>
+			<AttributeDef type="S" name="PROD_PAGE_RATINGS" inheritable="true"  label="Prod Page Ratings" />
+			<AttributeDef type="S" name="PROD_PAGE_TEXT_RATINGS" inheritable="true"   label="Prod Page Text Ratings" />
+			<AttributeDef type="S" name="RATING_PROD_NAME"  label="Prod Page Rating Name" inheritable="true"/>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="skus" cardinality="Many" navigable="true">
+				<DestinationDef contentType="Sku" />
+			</RelationshipDef>
+			
+			<RelationshipDef name="brands" cardinality="Many" navigable="false">
+				<DestinationDef contentType="Brand" />
+			</RelationshipDef>
+
+			<RelationshipDef name="youMightAlsoLike"  cardinality="Many">
+			<!-- No such attribute.. this is really RELATED_PRODUCTS -->
+				<DestinationDef contentType="Product" />
+				<DestinationDef contentType="Category" />
+			</RelationshipDef>
+			<RelationshipDef name="WE_RECOMMEND_TEXT" cardinality="Many"  label="We Recommend Text">
+				<DestinationDef contentType="Product" />
+			</RelationshipDef>
+			<RelationshipDef name="WE_RECOMMEND_IMAGE" cardinality="Many"  label="We Recommend Image">
+				<DestinationDef contentType="Product" />
+			</RelationshipDef>
+			<RelationshipDef name="RELATED_PRODUCTS" cardinality="Many"   label="Related Prods" inheritable="true">
+				<DestinationDef contentType="Product" />
+				<DestinationDef contentType="ConfiguredProduct"/>
+				<DestinationDef contentType="Category" />
+				<!--  confusing, but can have categories :) -->
+				<DestinationDef contentType="Recipe" />
+			</RelationshipDef>
+
+			<!-- ALTERNATIVES -->
+			<RelationshipDef name="RECOMMENDED_ALTERNATIVES" cardinality="Many"   label="Recommended Alternatives" inheritable="true" navigable="false">
+				<DestinationDef contentType="Product" />
+				<DestinationDef contentType="ConfiguredProduct"/>
+				<DestinationDef contentType="ConfiguredProductGroup"/>
+				<DestinationDef contentType="Sku"/>
+			</RelationshipDef>
+			<!--  ALTERNATIVES-->
+
+			<RelationshipDef name="RELATED_RECIPES" cardinality="Many" inheritable="true">
+				<DestinationDef contentType="Recipe" />
+			</RelationshipDef>
+			<RelationshipDef name="ymalSets" cardinality="Many" label="YMAL sets" inheritable="true">
+				<DestinationDef contentType="YmalSet" />
+			</RelationshipDef>
+			<RelationshipDef name="PRODUCT_BUNDLE"  label="Prod Bundle" cardinality="Many">
+				<DestinationDef contentType="Product" />
+				<DestinationDef contentType="ConfiguredProduct"/>
+			</RelationshipDef>
+			<RelationshipDef name="ALSO_SOLD_AS" label="Also Sold As" cardinality="Many">
+				<DestinationDef contentType="Product" />
+				<DestinationDef contentType="ConfiguredProduct"/>
+			</RelationshipDef>
+			<RelationshipDef name="HOWTOCOOKIT_FOLDERS" label="HTCI Folders" cardinality="Many">
+				<DestinationDef contentType="Category" />
+			</RelationshipDef>
+			<RelationshipDef name="PRIMARY_HOME" label="Primary Home" cardinality="One">
+				<DestinationDef contentType="Category" />
+			</RelationshipDef>
+			<RelationshipDef name="PREFERRED_SKU" label="Preferred SKU" cardinality="One">
+				<DestinationDef contentType="Sku" />
+			</RelationshipDef>
+			<RelationshipDef name="RATING" label="Ratings" cardinality="Many">
+				<DestinationDef contentType="DomainValue" />
+			</RelationshipDef>
+			<RelationshipDef name="USAGE_LIST" label="Usage List" cardinality="Many">
+				<DestinationDef contentType="Domain" />
+			</RelationshipDef>
+			<RelationshipDef name="UNIT_OF_MEASURE" label="Unit of Measure" cardinality="One">
+				<DestinationDef contentType="DomainValue" />
+			</RelationshipDef>
+			<RelationshipDef name="VARIATION_MATRIX" label="Variation Matrix" cardinality="Many">
+				<DestinationDef contentType="Domain" />
+			</RelationshipDef>
+			<RelationshipDef name="VARIATION_OPTIONS" label="Variation Options" cardinality="Many">
+				<DestinationDef contentType="Domain" />
+			</RelationshipDef>
+			<RelationshipDef name="WINE_COUNTRY" label="Wine Country" cardinality="One">
+				<DestinationDef contentType="DomainValue" />
+			</RelationshipDef>
+			<!-- image media -->
+			<RelationshipDef name="PROD_IMAGE" label="Prod Image" inheritable="true">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="PROD_IMAGE_CONFIRM" label="Prod Image Confirm">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="PROD_IMAGE_DETAIL" label="Prod Image Detail" inheritable="true">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="PROD_IMAGE_FEATURE" label="Prod Image Feature">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="PROD_IMAGE_ZOOM" label="Prod Image Zoom">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="RATING_RELATED_IMAGE" label="Rating Related Image">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="ALTERNATE_IMAGE" label="Alternate Image">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="DESCRIPTIVE_IMAGE" label="Descriptive Image">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="PROD_IMAGE_ROLLOVER" label="Prod Image Rollover">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<!-- text media -->
+			<RelationshipDef name="PRODUCT_ABOUT" label="Prod About">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="PROD_DESCR" label="Prod Description" inheritable="true">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="RECOMMEND_TABLE">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="PRODUCT_QUALITY_NOTE" label="Prod Quality Note" inheritable="true">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="PROD_DESCRIPTION_NOTE" label="Prod Description Note" inheritable="true">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="FRESH_TIPS" cardinality="Many" label="Fresh Tips" inheritable="true">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="DONENESS_GUIDE" label="Doneness Guide"  cardinality="Many">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="FDDEF_FRENCHING" label="FD Def Frenching" >
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="FDDEF_GRADE" label="FD Def Grade" >
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="FDDEF_RIPENESS" label="FD Def Ripeness" >
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="FDDEF_SOURCE" label="FD Def Source" >
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="SALES_UNIT_DESCRIPTION" label="Sales Unit Description" >
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="PARTIALLY_FROZEN" label="Partially Frozen" inheritable="true">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="COMPONENT_GROUPS" label="Component Groups" cardinality="Many" navigable="true">
+				<DestinationDef contentType="ComponentGroup"/>
+			</RelationshipDef>
+			<RelationshipDef name="PRODUCT_TERMS_MEDIA" label="Product Confirmation Media">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<!-- TODO: add related recipes relation below
+			<RelationshipDef name="RELATED_RECIPES" label="Related Recipes" cardinality="Many">
+				<DestinationDef contentType="Recipe"/>
+			</RelationshipDef>
+			-->
+		</RelationshipDefs>
+	</ContentTypeDef>
+	<!--
+		
+		Sku
+		
+	-->
+	<ContentTypeDef name="Sku">
+		<AttributeDefs>
+			<AttributeDef type="B" name="ORGANIC" inheritable="true"/>
+			<AttributeDef type="B" name="KOSHER" inheritable="true"/>
+			<AttributeDef type="S" name="FULL_NAME" label="Full Name" inheritable="true"/>
+			<AttributeDef type="S" name="GLANCE_NAME" label="Glance Name"/>
+			<AttributeDef type="S" name="NAV_NAME" label="Nav Name"/>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="VARIATION_MATRIX" cardinality="Many">
+				<DestinationDef contentType="DomainValue" />
+			</RelationshipDef>
+			<RelationshipDef name="VARIATION_OPTIONS" cardinality="Many">
+				<DestinationDef contentType="DomainValue" />
+			</RelationshipDef>
+			<RelationshipDef name="brands" cardinality="Many" navigable="false">
+				<DestinationDef contentType="Brand" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+	
+	<!--
+		
+		ConfiguredProduct
+		
+	-->
+	<ContentTypeDef name="ConfiguredProduct" generateId="true">
+		<AttributeDefs>
+			<AttributeDef type="S" name="SALES_UNIT" label="Sales Unit"/>
+			<AttributeDef type="D" name="QUANTITY" label="Quantity"/>
+			<AttributeDef type="S" name="OPTIONS" label="Configuration Options"/>
+			<AttributeDef type="B" name="REQUIRED" label="Required product"/>
+			
+			<!-- Product attributes -->
+			<AttributeDef type="S" name="FULL_NAME" label="Full Name"/>
+			<AttributeDef type="S" name="GLANCE_NAME" label="Glance Name"/>
+			<AttributeDef type="S" name="NAV_NAME" label="Nav Name"/>
+			<AttributeDef type="S" name="BLURB"  label="Blurb"/>
+			<AttributeDef type="S" name="ALSO_SOLD_AS_NAME" label="Also Sold As Name"/>
+			<AttributeDef type="S" name="SUBTITLE" label="Subtitle"/>
+			<AttributeDef type="B" name="INVISIBLE" label="Invisible"/>
+			<AttributeDef type="S" name="PACKAGE_DESCRIPTION" label="Package Description"/>
+
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="SKU" cardinality="One" >
+				<DestinationDef contentType="Sku"/>
+			</RelationshipDef>
+			
+			
+			<!-- Product relationships -->
+			<RelationshipDef name="PROD_DESCR" label="Prod Description">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="PROD_DESCRIPTION_NOTE" label="Prod Description Note">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="PRODUCT_QUALITY_NOTE" label="Prod Quality Note">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			
+			<RelationshipDef name="PROD_IMAGE" label="Prod Image">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="PROD_IMAGE_CONFIRM" label="Prod Image Confirm">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="PROD_IMAGE_DETAIL" label="Prod Image Detail">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="PROD_IMAGE_FEATURE" label="Prod Image Feature">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="PROD_IMAGE_ZOOM" label="Prod Image Zoom">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+
+			<RelationshipDef name="ALTERNATE_IMAGE" label="Alternate Image">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			
+			<RelationshipDef name="DESCRIPTIVE_IMAGE" label="Descriptive Image">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+
+
+			<RelationshipDef name="ALSO_SOLD_AS" label="Also Sold As" cardinality="Many">
+				<DestinationDef contentType="Product" />
+				<DestinationDef contentType="ConfiguredProduct"/>
+			</RelationshipDef>
+
+			<RelationshipDef name="RELATED_PRODUCTS" cardinality="Many"   label="Related Prods">
+				<DestinationDef contentType="Product" />
+				<DestinationDef contentType="ConfiguredProduct"/>
+				<DestinationDef contentType="Category" />
+				<!--  confusing, but can have categories :) -->
+				<DestinationDef contentType="Recipe" />
+			</RelationshipDef>			
+			<RelationshipDef name="ymalSets" cardinality="Many" label="YMAL sets" inheritable="true">
+				<DestinationDef contentType="YmalSet" />
+			</RelationshipDef>
+			
+		</RelationshipDefs>
+	</ContentTypeDef>
+	
+	<!--
+		
+		ConfiguredProductGroup
+		
+	-->
+	<ContentTypeDef name="ConfiguredProductGroup">
+		<AttributeDefs>
+			<AttributeDef type="S" name="name" />
+			<AttributeDef type="S" name="unavailabilityMessage" />
+			<AttributeDef type="B" name="required" />
+			<AttributeDef type="S" name="notes" />
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="items" navigable="true" cardinality="Many">
+				<DestinationDef contentType="ConfiguredProduct" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+	
+	<!--
+		
+		ComponentGroup
+		
+	-->
+	<ContentTypeDef name="ComponentGroup">
+		<AttributeDefs>
+			<AttributeDef type="S" name="FULL_NAME" label="Full Name" />
+			<AttributeDef type="B" name="SHOW_OPTIONS" label="Show Options">
+				<Description>Determines whether or not to show options of in a component group.</Description>
+			</AttributeDef>
+			<EnumDef type="I" name="COMPONENTGROUP_LAYOUT" label="Component Group Layout">
+				<EnumValue value="0" label="Horizontal" description="paint options horizontally"/>
+				<EnumValue value="1" label="Vertical" description="paint options vertically"/>
+				<EnumValue value="2" label="Show in Popup Only" description="show in popup only"/>
+			</EnumDef>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="HEADER_IMAGE" label="Header Image">
+				<Description>Header title image for a section of a meal</Description>
+				<DestinationDef contentType="Image"/>
+			</RelationshipDef>
+			<RelationshipDef name="EDITORIAL" label="Editorial">
+				<Description>Header information for a particular section of a meal</Description>
+				<DestinationDef contentType="Html"/>
+			</RelationshipDef>
+			<RelationshipDef name="CHARACTERISTICS" label="Characteristics" cardinality="Many">
+				<Description>SAP Characteristics to show in this section</Description>
+				<DestinationDef contentType="ErpCharacteristic"/>
+			</RelationshipDef>
+			<RelationshipDef name="OPTIONAL_PRODUCTS" label="Optional Products" cardinality="Many">
+				<Description>List of optional products to show</Description>
+				<DestinationDef contentType="Product"/>
+			</RelationshipDef>
+			<RelationshipDef name="CHEFS_PICKS" label="Chefs Picks" cardinality="Many">
+				<Description>List of Chefs Picks</Description>
+				<DestinationDef contentType="Product"/>
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+	
+	<ContentTypeDef name="ErpCharacteristic">
+		<AttributeDefs />
+		<RelationshipDefs />
+	</ContentTypeDef>
+	
+	<!--
+		
+		Brand
+		
+	-->
+	<ContentTypeDef name="Brand">
+		<AttributeDefs>
+			<!-- basic descriptive stuff -->
+			<AttributeDef type="S" name="FULL_NAME" label="Full Name" />
+			<AttributeDef type="S" name="GLANCE_NAME" label="Glance Name" />
+			<AttributeDef type="S" name="NAV_NAME" label="Nav Name" />
+			<AttributeDef type="S" name="ALT_TEXT" label="Alt Text" />
+			<AttributeDef type="S" name="KEYWORDS" label="Keywords" />
+			<AttributeDef type="S" name="BLURB"  label="Blurb"/>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="FEATURED_PRODUCTS" label="Featured Products" cardinality="Many" inheritable="true">
+				<DestinationDef contentType="Product" />
+			</RelationshipDef>
+			<!-- images -->
+			<RelationshipDef name="BRAND_LOGO" label="Large Brand Logo">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="BRAND_LOGO_SMALL" label="Small Brand Logo">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="BRAND_LOGO_MEDIUM" label="Medium Brand Logo">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<!-- text stuff -->
+			<RelationshipDef name="BRAND_POPUP_CONTENT" label="Brand Popup Content">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+	<!--
+		
+		Media
+		
+	-->
+	<ContentTypeDef name="Image">
+		<AttributeDefs/>
+		<RelationshipDefs />
+	</ContentTypeDef>
+	<ContentTypeDef name="Html">
+		<AttributeDefs>
+			<AttributeDef type="S" name="title" />
+			<AttributeDef type="S" name="popupSize" />
+		</AttributeDefs>
+		<RelationshipDefs />
+	</ContentTypeDef>
+	
+	<!--
+		
+		Recipe Department
+		
+	-->
+	<ContentTypeDef name="RecipeDepartment">
+		<AttributeDefs>
+			<AttributeDef type="S" name="name" />
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="categories" navigable="true" cardinality="Many">
+				<DestinationDef contentType="RecipeCategory" />
+			</RelationshipDef>
+			<RelationshipDef name="departmentNav" cardinality="Many">
+				<Description>Alternate list of RecipeCategories to render for department navigation.</Description>
+				<DestinationDef contentType="RecipeCategory" />
+			</RelationshipDef>
+			<RelationshipDef name="featuredSource" navigable="false" cardinality="Many">
+				<Description>Featured recipe sources.</Description>
+				<DestinationDef contentType="RecipeSource" />
+			</RelationshipDef>
+			<!-- it's not a typo: the featured recipe category is actually a RecipeSubcategory -->
+			<RelationshipDef name="featuredRecipeCategory" navigable="false" cardinality="One">
+				<DestinationDef contentType="RecipeSubcategory" />
+			</RelationshipDef>
+			<RelationshipDef name="featuredProductCategory" navigable="false" cardinality="One">
+				<DestinationDef contentType="Category" />
+			</RelationshipDef>
+			<!-- media -->
+			<RelationshipDef name="editorial" navigable="false" cardinality="One">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+	
+	<!--
+		
+		Recipe Category
+		
+	-->	
+	<ContentTypeDef name="RecipeCategory">
+		<AttributeDefs>
+			<AttributeDef type="S" name="name" />
+			<AttributeDef type="B" name="SECONDARY_CATEGORY"  label="Secondary Category" />
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="subcategories" navigable="true" cardinality="Many">
+				<DestinationDef contentType="RecipeSubcategory" />
+			</RelationshipDef>
+			<RelationshipDef name="classification" cardinality="One">
+				<DestinationDef contentType="Domain" />
+			</RelationshipDef>
+			<RelationshipDef name="featuredSource" navigable="false" cardinality="One">
+				<DestinationDef contentType="RecipeSource" />
+			</RelationshipDef>
+			<!-- media -->
+			<RelationshipDef name="label" cardinality="One">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="zoomLabel" cardinality="One">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="editorial" navigable="false" cardinality="One">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="photo" cardinality="One">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+
+	<!--
+		
+		Recipe Sub-Category
+		
+	-->	
+	<ContentTypeDef name="RecipeSubcategory">
+		<AttributeDefs>
+			<AttributeDef type="S" name="name" />
+			<AttributeDef type="S" name="REDIRECT_URL"  label="Redirect URL" inheritable="true"/>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="classification" cardinality="One">
+				<DestinationDef contentType="DomainValue" />
+			</RelationshipDef>
+			<RelationshipDef name="groupBy" cardinality="Many">
+				<DestinationDef contentType="DomainValue" />
+			</RelationshipDef>
+			<RelationshipDef name="filterBy" cardinality="Many">
+				<DestinationDef contentType="DomainValue" />
+			</RelationshipDef>
+			<RelationshipDef name="featuredRecipes" cardinality="Many" inheritable="true">
+				<DestinationDef contentType="Recipe" />
+			</RelationshipDef>
+			<RelationshipDef name="featuredProducts" cardinality="Many" inheritable="true">
+				<DestinationDef contentType="Product" />
+			</RelationshipDef>
+			<!-- media -->
+			<RelationshipDef name="label" cardinality="One">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="editorial" navigable="false" cardinality="One">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+
+	<!--
+		
+		Recipe
+		
+	-->	
+	<ContentTypeDef name="Recipe">
+		<AttributeDefs>
+			<AttributeDef type="S" name="name" />
+			<AttributeDef type="S" name="label" />
+			<AttributeDef type="S" name="keywords" />
+			<EnumDef type="S" name="theme_color" label="Theme">
+				<EnumValue value="DEFAULT" label="Default"/>
+				<EnumValue value="6699CC" label="Real Simple"/>
+			</EnumDef>
+			<!-- workflow -->
+			<AttributeDef type="S" name="notes" />
+			<EnumDef type="S" name="productionStatus">
+				<EnumValue value="PENDING" label="Pending Approval"
+					description="Displays internally only"/>
+				<EnumValue value="ACTIVE" label="Active"
+					description="Available to all customers (show in general browse path)"/>
+				<EnumValue value="LIMITED" label="Limited"
+					description="Available to previous customers only (show in Quickshop only)"/>
+				<EnumValue value="COMPLETED" label="Completed"
+					description="Displays internally only"/>
+			</EnumDef>
+			<AttributeDef type="DT" name="startDate" />
+			<AttributeDef type="DT" name="endDate" />
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="source" cardinality="One">
+				<DestinationDef contentType="RecipeSource" />
+			</RelationshipDef>
+			<RelationshipDef name="authors" cardinality="Many">
+				<DestinationDef contentType="RecipeAuthor" />
+			</RelationshipDef>
+			<RelationshipDef name="variants" navigable="true" cardinality="Many">
+				<DestinationDef contentType="RecipeVariant" />
+			</RelationshipDef>
+			<RelationshipDef name="classifications" cardinality="Many">
+				<DestinationDef contentType="DomainValue" />
+			</RelationshipDef>
+			
+			<RelationshipDef name="RELATED_PRODUCTS" cardinality="Many" label="Related Prods" inheritable="true">
+				<DestinationDef contentType="Product" />
+				<DestinationDef contentType="ConfiguredProduct"/>
+				<DestinationDef contentType="Category" />
+				<DestinationDef contentType="Recipe" />
+			</RelationshipDef>
+			
+			<RelationshipDef name="ymalSets" cardinality="Many" label="YMAL sets" inheritable="true">
+				<DestinationDef contentType="YmalSet" />
+			</RelationshipDef>
+
+			<RelationshipDef name="description" cardinality="One">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="ingredientsMedia" cardinality="One">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="preparationMedia" cardinality="One">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="titleImage" cardinality="One">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="logo" cardinality="One">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>			
+			<RelationshipDef name="photo" cardinality="One">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>			
+			<RelationshipDef name="copyrightMedia" cardinality="One">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+
+	<!--
+		
+		Recipe Variant
+		
+	-->	
+	<ContentTypeDef name="RecipeVariant">
+		<AttributeDefs>
+			<AttributeDef type="S" name="name" />
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="sections" navigable="true" cardinality="Many">
+				<DestinationDef contentType="RecipeSection" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+
+	<!--
+		
+		Recipe Section
+		
+	-->	
+	<ContentTypeDef name="RecipeSection" generateId="true">
+		<AttributeDefs>
+			<AttributeDef type="S" name="name" />
+			<AttributeDef type="B" name="SHOW_QUANTITY" label="Show Quantity"/>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="ingredients" navigable="true" cardinality="Many">
+				<DestinationDef contentType="ConfiguredProduct" />
+				<DestinationDef contentType="ConfiguredProductGroup" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+	
+	<!--
+		
+		Recipe Source
+		
+	-->	
+	<ContentTypeDef name="RecipeSource">
+		<AttributeDefs>
+			<AttributeDef type="S" name="name" />
+			<AttributeDef type="S" name="ISBN" />
+			
+			<EnumDef type="S" name="productionStatus">
+				<EnumValue value="PENDING" label="Pending Approval"
+					description="Displays internally only"/>
+				<EnumValue value="ACTIVE" label="Active"
+					description="Available to all customers (show in general browse path)"/>
+				<EnumValue value="LIMITED" label="Limited"
+					description="Available to previous customers only (show in Quickshop only)"/>
+				<EnumValue value="COMPLETED" label="Completed"
+					description="Displays internally only"/>
+			</EnumDef>
+			<AttributeDef type="S" name="notes" />
+
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="authors" cardinality="Many">
+				<DestinationDef contentType="RecipeAuthor" />
+			</RelationshipDef>
+			<RelationshipDef name="featuredRecipes" cardinality="Many">
+				<DestinationDef contentType="Recipe" />
+			</RelationshipDef>
+			<RelationshipDef name="featuredProducts" cardinality="Many">
+				<DestinationDef contentType="Product" />
+			</RelationshipDef>
+			<!-- media -->
+			<RelationshipDef name="leftContent" cardinality="One">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="topContent" cardinality="One">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="bottomContent" cardinality="One">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="emailContent" cardinality="One">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="image" cardinality="One">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="zoomImage" cardinality="One">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="bookRetailers" cardinality="Many">
+				<DestinationDef contentType="BookRetailer" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+
+	<!--
+		
+		Recipe Author
+		
+	-->	
+	<ContentTypeDef name="RecipeAuthor">
+		<AttributeDefs>
+			<AttributeDef type="S" name="firstName"/>
+			<!-- the name attribute is either the given name,
+			     or the full name if firstName is not given -->
+			<AttributeDef type="S" name="name" />
+			<AttributeDef type="S" name="notes" />
+		</AttributeDefs>
+		<RelationshipDefs>
+		</RelationshipDefs>
+	</ContentTypeDef>
+
+    <!--
+
+        YMAL set
+
+    -->
+    <ContentTypeDef name="YmalSet">
+		<AttributeDefs>
+			<AttributeDef type="S" name="title" />
+			<EnumDef type="S" name="workflowStatus">
+				<EnumValue value="PENDING_APPROVAL" label="Pending Approval"
+					description="Displays internally only"/>
+				<EnumValue value="ACTIVE" label="Active"
+					description="Available to all customers (show in general browse path)"/>
+				<EnumValue value="COMPLETED" label="Completed"
+					description="Displays internally only"/>
+			</EnumDef>
+			<AttributeDef type="DT" name="startDate" />
+			<AttributeDef type="DT" name="endDate" />
+			<AttributeDef type="S" name="notes" />
+			<AttributeDef type="B" name="transactional" />
+			<AttributeDef type="S" name="productsHeader" />
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="ymals" cardinality="Many" label="Ymals" inheritable="false">
+				<DestinationDef contentType="Product" />
+				<DestinationDef contentType="Category" />
+				<DestinationDef contentType="ConfiguredProduct"/>
+				<DestinationDef contentType="ConfiguredProductGroup"/>
+				<DestinationDef contentType="Recipe" />
+			</RelationshipDef>
+		</RelationshipDefs>
+    </ContentTypeDef>
+
+
+    <!--
+
+        Starter list
+
+    -->
+    <ContentTypeDef name="StarterList">
+		<AttributeDefs>
+		    <AttributeDef type="S" name="FULL_NAME" label="Full Name"/>
+			<AttributeDef type="S" name="BLURB"  label="Blurb"/>
+			<EnumDef type="S" name="productionStatus">
+				<EnumValue value="PENDING" label="Pending Approval"
+					description="Displays internally only"/>
+				<EnumValue value="ACTIVE" label="Active"
+					description="Available to all customers (show in general browse path)"/>
+				<EnumValue value="COMPLETED" label="Completed"
+					description="Displays internally only"/>
+				<EnumValue value="LIMITED" label="Limited"
+				    description="Limited"/>
+			</EnumDef>
+			<AttributeDef type="DT" name="startDate" />
+			<AttributeDef type="DT" name="endDate" />
+			<AttributeDef type="S" name="notes" />
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="listContents" cardinality="Many" label="List Contents" inheritable="false" navigable="true">
+				<DestinationDef contentType="ConfiguredProduct"/>
+				<DestinationDef contentType="ConfiguredProductGroup"/>
+			</RelationshipDef>
+		</RelationshipDefs>
+    </ContentTypeDef>
+    
+	<!--
+		
+		Book Retailer
+		
+	-->	
+	<ContentTypeDef name="BookRetailer">
+		<AttributeDefs>
+			<AttributeDef type="S" name="name" />
+			<AttributeDef type="S" name="notes" />
+			<AttributeDef type="S" name="isbnLink" />
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="logo" cardinality="One">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+
+	<!--
+		
+		RecipeSearchPage
+		
+	-->	
+	<ContentTypeDef name="RecipeSearchPage">
+		<AttributeDefs>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="criteria" cardinality="Many" label="Search Criteria" navigable="true">
+				<DestinationDef contentType="RecipeSearchCriteria" />
+			</RelationshipDef>
+			<RelationshipDef name="filterByDomains" cardinality="Many">
+				<DestinationDef contentType="Domain" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+
+	<!--
+		
+		RecipeSearchCriteria
+		
+	-->	
+	<ContentTypeDef name="RecipeSearchCriteria" generateId="true">
+		<AttributeDefs>
+			<AttributeDef type="S" name="name" required="true"/>
+			<EnumDef type="S" name="selectionType" required="true">
+				<EnumValue value="ONE" label="Single"/>
+				<EnumValue value="MANY" label="Multiple"/>
+			</EnumDef>
+			<EnumDef type="S" name="logicalOperation" required="true">
+				<EnumValue value="AND" label="AND"/>
+				<EnumValue value="OR" label="OR"/>
+			</EnumDef>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="criteriaDomainValues" cardinality="Many">
+				<DestinationDef contentType="DomainValue" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+	
+	
+</CMSDef>

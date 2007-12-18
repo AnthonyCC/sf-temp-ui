@@ -1,0 +1,12 @@
+<%@ page import='java.util.*'  %>
+<% 
+int choose = (int)(Math.random() * 10.0);
+String pathToMedia = "/media/images/promotions/homepage/home_promo_" + choose + ".html"; 
+	if (user.isCorporateUser()) {
+		choose = (int)(Math.random() * 3.0);
+		pathToMedia = "/media/images/promotions/homepage/home_promo_cos_" + choose + ".html"; 
+	}
+%>
+
+<fd:IncludeMedia name="<%=pathToMedia%>" />
+

@@ -1,0 +1,36 @@
+<%
+  //get content model from session, using the sessionName that is reutned by the controller tag in the host page
+String pageURI = request.getRequestURI();
+String deptPage;
+String catPage;
+
+    if (pageURI.toLowerCase().indexOf("attributes.jsp")!=-1 || pageURI.toLowerCase().indexOf("_info.jsp")!=-1 )  {
+       catPage = "/StoreAdmin/web_store/hierarchy/attributes.jsp";
+       deptPage = "/StoreAdmin/web_store/hierarchy/dept_attributes.jsp";
+    }  else {
+       catPage = "/StoreAdmin/web_store/hierarchy/cat_contents.jsp";
+       deptPage = "/StoreAdmin/web_store/hierarchy/dept_contents.jsp";
+    }
+
+      List parentList = new ArrayList();
+      ContentNodeModel tmpModel = (ContentNodeModel)session.getAttribute(sessionName);
+      if (tmpModel!=null && tmpModel.getPK()==null) {
+         tmpModel = ContentFactory.getInstance().getContentNode(request.getParameter("parentNodeId"));
+      } else if (tmpModel!=null) {
+          tmpModel = tmpModel.getParentNode();
+      }
+
+      while (tmpModel !=null) {
+         parentList.add(tmpModel);
+         tmpModel=tmpModel.getParentNode();
+      }
+      String crumbLink;
+      for (int indx=parentList.size()-1; indx>-1;indx--){
+          tmpModel = (ContentNodeModel)parentList.get(indx);
+           if(tmpModel.getContentType().equals(ContentNodeI.TYPE_DEPARTMENT)) {
+             crumbLink=deptPage+"?nodeId="+tmpModel.getPK().getId()+"&parentNodeId="+tmpModel.getParentNode().getPK().getId()+"&deptId="+tmpModel;
+           } else if(tmpModel.getContentType().equals(ContentNodeI.TYPE_CATEGORY)) {
+             crumbLink=catPage+"?nodeId="+tmpModel.getPK().getId()+"&parentNodeId="+tmpModel.getParentNode().getPK().getId()+"&catId="+tmpModel;
+           } else {crumbLink="#"; }   %>
+   <a href="<%=crumbLink%>"><%=tmpModel.getFullName()%></a> /
+<%    } %>

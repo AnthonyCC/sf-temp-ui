@@ -1,0 +1,540 @@
+<%@ page import='com.freshdirect.fdstore.*' %>
+<%@ page import='com.freshdirect.fdstore.customer.*' %>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import='com.freshdirect.customer.*' %>
+<%@ page import='com.freshdirect.common.customer.EnumServiceType' %>
+<%@ page import="com.freshdirect.framework.webapp.*" %>
+<%@ page import="com.freshdirect.delivery.*" %>
+<%@ page import="com.freshdirect.framework.util.NVL" %>
+
+<%!
+String[] checkAddressForm = {
+    EnumUserInfoName.DLV_FIRST_NAME.getCode(), EnumUserInfoName.DLV_LAST_NAME.getCode(),
+    EnumUserInfoName.DLV_COMPANY_NAME.getCode(),    
+    EnumUserInfoName.DLV_ADDRESS_1.getCode(), EnumUserInfoName.DLV_ADDRESS_SUGGEST.getCode(), 
+    EnumUserInfoName.DLV_APARTMENT.getCode(), EnumUserInfoName.DLV_CITY.getCode(), 
+    EnumUserInfoName.DLV_STATE.getCode(), EnumUserInfoName.DLV_ZIPCODE.getCode(), 
+    EnumUserInfoName.DLV_HOME_PHONE.getCode(), EnumUserInfoName.DLV_ALT_FIRSTNAME.getCode(),
+    EnumUserInfoName.DLV_ALT_LASTNAME.getCode(), EnumUserInfoName.DLV_ALT_APARTMENT.getCode(),
+    EnumUserInfoName.DLV_ALT_PHONE.getCode(), EnumUserInfoName.DLV_SERVICE_TYPE.getCode(),
+    EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode(),
+    EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()
+};
+
+String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_ZONE.getCode(), EnumUserInfoName.DLV_CANT_GEOCODE.getCode()};
+%>
+
+<%
+    FDUserI _user = (FDUserI) session.getAttribute(SessionName.USER);
+    FDIdentity _identity = null;
+    if (_user != null){
+        _identity = _user.getIdentity();
+    }else {
+        throw new JspException("Missing Identity.");
+    }
+    //DLV_ALTERNATE_THRESHHOLD
+    boolean showDoorman = _user.getAdjustedValidOrderCount() < AddressName.DLV_ALTERNATE_THRESHHOLD;
+    boolean showAltDelivery = _user.getAdjustedValidOrderCount() >= AddressName.DLV_ALTERNATE_THRESHHOLD;
+
+    ErpCustomerInfoModel _customerModel = FDCustomerFactory.getErpCustomerInfo(_identity);
+    String fldLastName = "";
+    String fldFirstName = "";
+    String fldAddress1 = "";
+    String fldAddress2 = "";
+    String fldApartment = "";
+    String fldHomePhone = _customerModel.getHomePhone() == null ? "" : _customerModel.getHomePhone().getPhone();
+    String fldHomePhoneExt = _customerModel.getHomePhone()==null?"":_customerModel.getHomePhone().getExtension();
+    String fldAltContactPhone = "";
+    String fldAltContactExt = "";
+    String fldCity = "";
+    String fldZipCode = "";
+    String fldState = "NY";
+    String fldDlvInstructions = "none";
+    String tmpFldDlvInstructions = "";
+    String fldCompanyName = "";
+    EnumServiceType fldServiceType = EnumServiceType.HOME;
+        
+    String fldAltDelivery = EnumUserInfoName.NO_ALT_DELIVERY.getCode();
+    boolean isAltDelivery = false;
+    boolean deliverToDoorman = false;
+    boolean deliverToNeighbor = false;
+    String fldAltLastName = "";
+    String fldAltFirstName = "";
+    String fldAltApartment = "";
+    String fldAltPhone = "";
+    String fldAltExt = "";
+
+    boolean unattendedOptIn = true;
+    String fldUnattendedDeliveryInstructions = "";
+
+    String addressId = request.getParameter("addressId");
+    if (addressId !=null  && request.getParameter(EnumUserInfoName.DLV_FIRST_NAME.getCode())==null) {
+        ErpAddressModel thisAddress= null;
+        java.util.Collection shpToAddrs = null;
+        shpToAddrs = FDCustomerManager.getShipToAddresses(_identity);
+        for (Iterator saItr = shpToAddrs.iterator(); saItr.hasNext(); ) {
+            ErpAddressModel addrModel = (ErpAddressModel) saItr.next();
+            if ( addrModel.getPK().getId().equals(addressId) ) {
+                thisAddress = addrModel;
+                break;
+            }
+        }
+        if (thisAddress!=null) {
+        
+             fldFirstName = thisAddress.getFirstName();
+             fldLastName = thisAddress.getLastName();
+             fldAddress1 = thisAddress.getAddress1();
+             fldAddress2 = thisAddress.getAddress2();
+             fldApartment = thisAddress.getApartment();
+             fldHomePhone = thisAddress.getPhone().getPhone();
+             fldHomePhoneExt = thisAddress.getPhone().getPhone()==null?"":thisAddress.getPhone().getExtension();
+             fldAltContactPhone = thisAddress.getAltContactPhone() != null ? thisAddress.getAltContactPhone().getPhone() : "" ;
+             fldAltContactExt = thisAddress.getAltContactPhone() != null ? thisAddress.getAltContactPhone().getExtension() : "" ;
+             fldCity = thisAddress.getCity();
+             fldZipCode = thisAddress.getZipCode();
+             fldState = thisAddress.getState();
+             fldDlvInstructions = thisAddress.getInstructions();
+             fldCompanyName = thisAddress.getCompanyName();
+             fldServiceType = thisAddress.getServiceType();
+
+             if (EnumUnattendedDeliveryFlag.OPT_OUT.equals(thisAddress.getUnattendedDeliveryFlag())) unattendedOptIn = false;
+             fldUnattendedDeliveryInstructions = thisAddress.getUnattendedDeliveryInstructions();
+
+
+        if (thisAddress.getAltDelivery() != null && "NEIGHBOR".equalsIgnoreCase(thisAddress.getAltDelivery().getDeliveryCode())) { 
+            
+            isAltDelivery = true;
+            deliverToNeighbor = true;
+            fldAltDelivery = thisAddress.getAltDelivery().getName();
+            fldAltLastName = thisAddress.getAltLastName();
+            fldAltFirstName = thisAddress.getAltFirstName();
+            fldAltApartment = thisAddress.getAltApartment();
+            if (thisAddress.getAltPhone()!=null) {          
+                fldAltPhone = thisAddress.getAltPhone().getPhone() ;
+                fldAltExt = thisAddress.getAltPhone().getExtension();
+            } else {
+                fldAltPhone = "";
+                fldAltExt = "";
+            }
+        }
+
+        if (thisAddress.getAltDelivery() != null && "DOORMAN".equalsIgnoreCase(thisAddress.getAltDelivery().getDeliveryCode())) { 
+            isAltDelivery = true;
+            deliverToDoorman = true;
+        }
+
+             if (fldAltDelivery.equalsIgnoreCase(EnumUserInfoName.LEAVE_WITH_NEIGHBOR.getCode())) { 
+             }
+        }else {
+            throw new JspException("Cannot find address with id="+addressId);
+        }
+    } else {
+        // get the stuff from off the fields in the request object
+        if (request.getParameter(EnumUserInfoName.DLV_ADDRESS_1.getCode()) !=null) {
+            fldAddress1 =  request.getParameter(EnumUserInfoName.DLV_ADDRESS_1.getCode());
+        }
+        if (request.getParameter(EnumUserInfoName.DLV_ADDRESS_2.getCode()) !=null) {
+            fldAddress2 =  request.getParameter(EnumUserInfoName.DLV_ADDRESS_2.getCode());
+        }
+        if (request.getParameter(EnumUserInfoName.DLV_APARTMENT.getCode()) !=null) {
+            fldApartment =  request.getParameter(EnumUserInfoName.DLV_APARTMENT.getCode());
+        }
+        if (request.getParameter(EnumUserInfoName.DLV_CITY.getCode()) !=null) {
+            fldCity =  request.getParameter(EnumUserInfoName.DLV_CITY.getCode());
+        }
+        if (request.getParameter(EnumUserInfoName.DLV_STATE.getCode()) !=null) {
+            fldState =  request.getParameter(EnumUserInfoName.DLV_STATE.getCode());
+        }
+        if (request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode()) !=null) {
+            fldZipCode =  request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode());
+        }
+        if (request.getParameter(EnumUserInfoName.DLV_HOME_PHONE.getCode()) !=null) {
+            fldHomePhone =  request.getParameter(EnumUserInfoName.DLV_HOME_PHONE.getCode());
+        }
+        if (request.getParameter("homephoneext") !=null) {
+            fldHomePhoneExt =  request.getParameter("homephoneext");
+        }
+        fldAltContactPhone = NVL.apply(request.getParameter(EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode()), "");
+        fldAltContactExt = NVL.apply(request.getParameter(EnumUserInfoName.DLV_ALT_CONTACT_EXT.getCode()), "");
+        if (request.getParameter(EnumUserInfoName.DLV_LAST_NAME.getCode()) !=null) {
+            fldLastName =  request.getParameter(EnumUserInfoName.DLV_LAST_NAME.getCode());
+        }
+        if (request.getParameter(EnumUserInfoName.DLV_FIRST_NAME.getCode()) !=null) {
+            fldFirstName =  request.getParameter(EnumUserInfoName.DLV_FIRST_NAME.getCode());
+        }
+        if (request.getParameter(EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode()) !=null) {
+           fldDlvInstructions =  request.getParameter(EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode());
+        }
+        if (request.getParameter(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode()) !=null) {
+            fldAltDelivery =  request.getParameter(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode());
+            if((EnumUserInfoName.NO_ALT_DELIVERY.getCode()).equalsIgnoreCase(fldAltDelivery)){
+                isAltDelivery = false;
+            }
+            if((EnumUserInfoName.LEAVE_WITH_DOORMAN.getCode()).equalsIgnoreCase(fldAltDelivery)){
+                deliverToDoorman = true;
+            }
+            if((EnumUserInfoName.LEAVE_WITH_NEIGHBOR.getCode()).equalsIgnoreCase(fldAltDelivery)){
+                deliverToNeighbor = true;
+            }
+        }
+        if (request.getParameter(EnumUserInfoName.DLV_ALT_LASTNAME.getCode()) !=null) {
+            fldAltLastName =  request.getParameter(EnumUserInfoName.DLV_ALT_LASTNAME.getCode());
+        }
+        if (request.getParameter(EnumUserInfoName.DLV_ALT_FIRSTNAME.getCode()) !=null) {
+            fldAltFirstName =  request.getParameter(EnumUserInfoName.DLV_ALT_FIRSTNAME.getCode());
+        }
+        if (request.getParameter(EnumUserInfoName.DLV_ALT_APARTMENT.getCode()) !=null) {
+            fldAltApartment =  request.getParameter(EnumUserInfoName.DLV_ALT_APARTMENT.getCode());
+        }
+        if (request.getParameter(EnumUserInfoName.DLV_ALT_PHONE.getCode()) !=null) {
+            fldAltPhone =  request.getParameter(EnumUserInfoName.DLV_ALT_PHONE.getCode());
+        }
+        if (request.getParameter(EnumUserInfoName.DLV_ALT_EXT.getCode()) !=null) {
+            fldAltExt =  request.getParameter(EnumUserInfoName.DLV_ALT_EXT.getCode());
+        }
+        if (request.getParameter(EnumUserInfoName.DLV_COMPANY_NAME.getCode()) !=null) {
+            fldCompanyName =  request.getParameter(EnumUserInfoName.DLV_COMPANY_NAME.getCode());
+        }
+        if (request.getParameter(EnumUserInfoName.DLV_SERVICE_TYPE.getCode()) !=null) {
+            fldServiceType =  EnumServiceType.getEnum(request.getParameter(EnumUserInfoName.DLV_SERVICE_TYPE.getCode()));
+        }
+    }
+%>
+
+<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ADDRESS_SUGGEST.getCode()%>' id='errorMsg'>
+    <%@ include file="/shared/includes/messages/i_error_suggested_address.jspf" %>
+</fd:ErrorHandler>
+
+<table border="0" cellspacing="1" cellpadding="0" width="675">
+    <tr>
+        <td colspan="4"><fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler> <fd:ErrorHandler result='<%=result%>' name='duplicate_user_address' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+    </tr>
+    <tr valign="TOP">
+        <td ROWSPAN="10"><img src="/media_stat/images/layout/clear.gif" width="15" height="1" border="0"></td>
+        <td align="right" class="text12"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>*&nbsp;First Name&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>"></span></fd:ErrorHandler></td>
+        <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br><input type="text" SIZE="21" maxlength="25" class="text11" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" required="true" value="<%=fldFirstName %>">&nbsp;(full name or first initial)<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>' id='errorMsg'>&nbsp;<span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+    </tr>
+    <tr valign="MIDDLE">
+        <td align="right" class="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>*&nbsp;Last Name&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>"></span></fd:ErrorHandler></td>
+        <td colspan="2"><input type="text" maxlength="25" SIZE="21" class="text11" name="<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>" required="true" value="<%=fldLastName %>">&nbsp;&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_LAST_NAME.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+    </tr>
+    <tr valign="MIDDLE">
+        <td align="right" class="text12"><img src="/media_stat/images/layout/clear.gif" width="1" height="6" border="0"><br><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>* Service&nbsp;Type&nbsp;&nbsp;</td>
+        <td colspan="2">
+            <input type="radio" class="text11" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode() %>" value="<%= EnumServiceType.HOME.getName()%>" <%= EnumServiceType.HOME.equals(fldServiceType) ? "CHECKED" : "" %>><b>Residential</b>&nbsp;&nbsp;<input type="radio" class="text11" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode() %>" value="<%= EnumServiceType.CORPORATE.getName()%>" <%= EnumServiceType.CORPORATE.equals(fldServiceType) ? "CHECKED" : "" %>><a href="javascript:popup('/cos_info.jsp','small')"><b>Commercial</b></a><br>
+            <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+        </td>
+    </tr>
+    <tr valign="MIDDLE">
+        <td align="right" class="text12"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_COMPANY_NAME.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>
+        Company&nbsp;Name&nbsp;&nbsp;
+        <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_COMPANY_NAME.getCode()%>'></span></fd:ErrorHandler>
+        </td>
+        <td colspan="2"><input type="text" maxlength="50" class="text11" size="21" name="<%= EnumUserInfoName.DLV_COMPANY_NAME.getCode() %>" value="<%= fldCompanyName%>"> (required for commercial addresses only)
+        <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_COMPANY_NAME.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+        </td>
+    </tr>
+    <tr valign="MIDDLE">
+        <td align="right" class="text12">
+        <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>
+        *&nbsp;Street Address&nbsp;&nbsp;
+        <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>"></span></fd:ErrorHandler>
+        </td>
+        <td colspan="2">
+        <input type="text" SIZE="21" maxlength="50" class="text11" name="<%= EnumUserInfoName.DLV_ADDRESS_1.getCode() %>" required="true" value="<%= fldAddress1 %>">&nbsp;&nbsp;
+        <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ADDRESS_1.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;&nbsp;
+        <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>
+        &nbsp;Apt. #
+        <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>"></span></fd:ErrorHandler>
+        &nbsp;&nbsp;<input type="text" maxlength="10" class="text11" size="4" name="<%= EnumUserInfoName.DLV_APARTMENT.getCode() %>" value="<%= fldApartment %>">&nbsp;&nbsp;
+        <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+    </tr>
+    <tr valign="MIDDLE">
+        <td align="right" class="text12">Address Line 2&nbsp;&nbsp;</td>
+        <td colspan="2"><input type="text" maxlength="50" class="text11" size="21" name="<%= EnumUserInfoName.DLV_ADDRESS_2.getCode() %>" value="<%= fldAddress2%>"></td>
+    </tr>
+    <tr valign="MIDDLE">
+        <td align="right" class="text12">
+            <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_CITY.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>
+            *&nbsp;City&nbsp;&nbsp;
+            <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_CITY.getCode()%>"></span></fd:ErrorHandler>
+        </td>
+        <td colspan="2">
+            <input type="text" size="21" class="text11" name="<%= EnumUserInfoName.DLV_CITY.getCode()%>" required="true" value="<%= fldCity %>">&nbsp;&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_CITY.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+    </tr>
+    <tr>
+        <td align="right" class="text12">
+            <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_STATE.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>
+            *&nbsp;State&nbsp;&nbsp;
+            <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_STATE.getCode()%>"></span></fd:ErrorHandler>
+        </td>
+        <td colspan="2">
+            <input type="text" class="text11" name="<%= EnumUserInfoName.DLV_STATE.getCode()%>" required="true" size="3" value="<%= fldState%>">&nbsp;&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_STATE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;
+            <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>
+            &nbsp;&nbsp;*&nbsp;Zip Code
+            <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>"></span></fd:ErrorHandler>&nbsp;&nbsp;
+            <input type="text" class="text11" name="<%= EnumUserInfoName.DLV_ZIPCODE.getCode() %>" required="true" size="6" value="<%= fldZipCode %>">&nbsp;&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ZIPCODE.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+        </td>
+    </tr>
+    <tr>
+        <td align="right" class="text12">
+            <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_HOME_PHONE.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>
+            *&nbsp;Contact #&nbsp;&nbsp;
+            <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_HOME_PHONE.getCode()%>"></span></fd:ErrorHandler>
+        </td>
+        <td colspan="2" class="text12"><input type="text" size="16" class="text11" name="<%=EnumUserInfoName.DLV_HOME_PHONE.getCode()%>" value="<%=fldHomePhone%>">&nbsp;&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_HOME_PHONE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+        &nbsp;&nbsp;Ext.&nbsp;&nbsp;<input type="text" maxlength="6" size="4" class="text11" name="homephoneext" value="<%=fldHomePhoneExt%>"></td>
+    </tr>
+        <tr>
+        <td align="right" class="text12">
+            <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>
+            &nbsp;Alt Contact #&nbsp;&nbsp;
+            <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode()%>"></span></fd:ErrorHandler>
+        </td>
+        <td colspan="2" class="text12"><input type="text" size="16" class="text11" name="<%=EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode()%>" value="<%=fldAltContactPhone%>">&nbsp;&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+        &nbsp;&nbsp;Ext.&nbsp;&nbsp;<input type="text" maxlength="6" size="4" class="text11" name="<%=EnumUserInfoName.DLV_ALT_CONTACT_EXT.getCode()%>" value="<%=fldAltContactExt%>"></td>
+    </tr>
+    <tr>
+        <td><img src="/media_stat/images/layout/clear.gif" width="15" height="1"></td>
+        <td><img src="/media_stat/images/layout/clear.gif" width="115" height="1"></td>
+        <td><img src="/media_stat/images/layout/clear.gif" width="210" height="1"></td>
+        <td><img src="/media_stat/images/layout/clear.gif" width="335" height="1"></td>
+    </tr>
+</table>
+
+<%--	Special Delivery instructions for this address	--%>
+<%--	This inlcude has the logic to parse out the information for spacial delivery instructions	--%>
+<%--	This inlcudes the name, last name, apt. phone of alternate delivery address.	--%>
+
+<%@ include file="/includes/ckt_acct/i_delivery_address_util.jspf" %>
+<%
+String altDelivery; 
+if(request.getParameter(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode()) != null){
+    altDelivery = request.getParameter(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode());
+
+    if(altDelivery.equalsIgnoreCase("neighbor")){
+    leaveWithNeighbor = true;} // Will prepopulate radio button if there was any missing information.
+}
+%>
+
+
+<table border="0" cellspacing="1" cellpadding="0" width="675">
+<tr valign="top">
+    <td width="30" ROWSPAN="2">&nbsp;</td>
+    <td width="645" colspan="2" class="text12"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br><font class="text12bold">IMPORTANT: Enter cross street and any special delivery instructions
+</font><BR>Please enter any information our delivery person will need to get your order to your door.</td>
+</tr>
+<tr valign="top">
+    <td width="645"><input type="text" class="text11" name="<%=EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode()%>" size="50" maxLength="80" value="<%=(fldDlvInstructions!=null)?fldDlvInstructions.replaceAll("\"","&quot;"):"none"%>"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="27"><br></td>
+</tr>
+</table>
+
+
+<fd:UnattendedDelivery id="zone" addressId="<%= addressId %>" checkUserOptions="true">
+
+<script type="text/javascript">
+function resetUnattendedDeliveryInstructions() {
+    var inputElem = document.getElementById('<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>');
+    if (!document.getElementById('<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode()%>').checked) {
+        inputElem.value = '';
+        inputElem.disabled = true;
+    } else {
+        inputElem.disabled = false;
+    }
+}
+</script>
+
+<table border="0" cellspacing="0" cellpadding="2" width="675">
+<tr valign="top">
+   <td width="675">
+       <img src="/media_stat/images/navigation/unattended_delivery_hdr.gif" alt="UNATTENDED DELIVERY (Limited Availability)" border="0"><br>
+       <img width="675" vspace="3" height="1" border="0" src="/media_stat/images/layout/999966.gif"/><br>
+   </td>
+ </tr>
+ </table>
+
+<% if (zone.isUnattended()) { %>
+ <table border="0" cellspacing="1" cellpadding="0" width="675">
+ <tbody>
+ <tr valign="top">
+    <td width="675" colspan="2" class="bodyCopySmall">
+    <fd:IncludeMedia name="/media/editorial/site_pages/unattended_delivery/consent_note.html">
+       <b>Unattended delivery is now available in Westchester!</b> If you need to run out during your delivery time slot,
+       we will leave your order at your home. Alcohol cannot be left unattended and will be removed from your order 
+       if you are not home. To learn more about Unattended Delivery, <a href="javascript:popup('/help/unattended_delivery.jsp','large')">click here</a>. 
+    </fd:IncludeMedia>
+    </td>
+</tr>
+<tr>
+    <td width="30"/>
+    <td width="645" class="text12bold">
+       <div style="margin-top: 1em; margin-bottom: 1em;">
+       <input type="hidden" name="<%=EnumUserInfoName.DLV_UNATTENDED_CONSENT_SEEN.getCode() %>" value="true"/>
+       <input type="checkbox" class="checkbox"
+              name="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode()%>"
+              id="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode()%>"
+              value="OPT_IN" 
+              onclick="resetUnattendedDeliveryInstructions()"
+              <%= unattendedOptIn ? "checked" : "" %>
+       />
+       I authorize FreshDirect to leave deliveries to this address unattended if nobody is home
+	</div>
+    </td>
+</tr>
+<tr>
+    <td width="30"/>
+    <td width="645" class="text12">
+       IMPORTANT: Please let us know your preferred location for unattended deliveries (front door, side door,<br/>
+       back door, garage, etc).<br/>
+       <input type="text" SIZE="50" maxlength="80" 
+              name="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>"
+              id="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>"  value="<%= fldUnattendedDeliveryInstructions %>"
+              <%= !unattendedOptIn ? "disabled" : ""%>
+	/>
+       <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span><br/></fd:ErrorHandler>
+       <br/><img width="1" height="27" src="/media_stat/images/layout/clear.gif"/><br/>
+</tr>
+</table>
+<% } else { %>
+
+<table border="0" cellspacing="1" cellpadding="0" width="675">
+ <tbody>
+ <tr valign="top">
+ <td> 
+     <font color="orange"><b>Unfortunately Unattended service is no longer offered at this address</b></font>
+     <br/><br/>
+ </td>
+ </tbody>
+</table>
+<% } %>
+
+</fd:UnattendedDelivery>
+
+<%----   Doorman option:  On first order ---%>
+<%
+if(showDoorman){
+%>
+<table border="0" cellspacing="0" cellpadding="2" width="675">
+<tr valign="top">
+    <td width="675">
+        <img src="/media_stat/images/navigation/ttcgi.gif"  border="0" alt="OTHER PERSON AUTHORIZED TO ACCEPT DELIVERY AT THIS ADDRESS (Optional)"><br>
+        <img src="/media_stat/images/layout/999966.gif" width="675" height="1" border="0" VSPACE="3"><br>
+    </td>
+</tr>
+</table>
+<table border="0" cellspacing="1" cellpadding="0" width="675">
+<tr valign="top">
+    <td width="675" colspan="2" class="bodyCopySmall">
+        We'll always try to bring your order directly to you. However, if your building has a doorman, you may authorize him to receive orders on your behalf &#151; just check the box below.<br>
+        <br>
+        Please let the doorman know about deliveries in advance. Frozen items should be placed in a freezer immediately. Your other products will remain fresh in the delivery box at room temperature (78 degrees) for two hours from the time of delivery. To learn more about this, <a href="javascript:popup('/help/faq_index.jsp?show=delivery#question7','large')">click here</a>.
+        <font class="space4pix"><br><br><br></font>
+    </td>
+</tr>
+
+<tr valign="MIDDLE">
+    <td width="55" align="right">
+    <input type="checkbox" name="<%=EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode() %>" value="<%=EnumUserInfoName.LEAVE_WITH_DOORMAN.getCode()%>" <%=deliverToDoorman==true?"checked":""%>/>
+    
+    </td>
+    <td width="620" class="text12"><font class="text12bold">Leave with Doorman</font> (Please make sure doorman will accept packages.)<br></td>
+</tr>
+
+</table>
+<table border="0" cellspacing="1" cellpadding="0" width="675">
+<tr valign="MIDDLE">
+    <td></td>
+    <td><img src="/media_stat/images/layout/clear.gif" width="105" height="1" border="0"></td>
+    <td></td>
+</tr>
+</table>
+<%}%>
+
+
+<%----   Alternate Delivery information...Only shown when the customer has had several orders ---%>
+
+<%
+if(showAltDelivery){
+%>
+<table border="0" cellspacing="0" cellpadding="2" width="675">
+<tr valign="top">
+    <td width="675">
+<%if(_user.isDepotUser()){%>
+        <img src="/media_stat/images/template/depot/other_person_auth.gif" width="429" height="9" alt="" border="0">
+<%}else{%>
+        <img src="/media_stat/images/navigation/other_person_auth_delivery.gif" width="487" height="10" border="0" alt="OTHER PERSON AUTHORIZED TO ACCEPT DELIVERY AT THIS ADDRESS (Optional)"><br>
+<%}%>
+        <img src="/media_stat/images/layout/999966.gif" width="675" height="1" border="0" VSPACE="3"><br>
+    </td>
+</tr>
+</table>
+<table border="0" cellspacing="1" cellpadding="0" width="675">
+<tr valign="top">
+<td width="675" colspan="2" class="bodyCopySmall">
+
+
+We will always attempt to deliver your order directly to you.<br>
+<br>
+You may authorize FreshDirect to deliver to someone else in your building in the event you are not home to receive your order. Should you choose to authorize an alternate for delivery, please make sure that he or she knows about your delivery in advance. Frozen items should be placed in a freezer immediately. Your other products will remain fresh in the delivery box at room temperature (78 degrees) for two hours from the time of delivery. To learn more about our Alternates Policy, <a href="javascript:popup('/help/faq_index.jsp?show=delivery#question7','large')">click here</a>.
+
+<font class="space4pix"><br><br><br></font></td>
+</tr>
+<tr valign="MIDDLE">
+    <td width="55" align="right"><input type="radio" class="radio" name="<%=EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode() %>" value="<%=EnumUserInfoName.NO_ALT_DELIVERY.getCode()%>" <%=isAltDelivery==false?"checked":""%> ></td>
+    <td width="620" class="text12"><b>None</b><br></td>
+</tr>
+<tr>
+    <td width="55" align="right"><input type="radio" class="radio" name="<%=EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode() %>" value="<%=EnumUserInfoName.LEAVE_WITH_DOORMAN.getCode()%>" <%=deliverToDoorman==true?"checked":""%> ></td>
+    <td width="620" class="text12"><b>Doorman</b> (Please make sure doorman will accept packages)<br></td>
+</tr>
+<tr valign="top">
+    <td width="55" align="right"><input type="radio" class="radio" name="<%=EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode() %>" value="<%=EnumUserInfoName.LEAVE_WITH_NEIGHBOR.getCode()%>" <%=deliverToNeighbor==true?"checked":""%>></td>
+    <td width="620" class="text12">
+        <font class="space2pix"><br></font><b>Someone else in your building</b>&nbsp;&nbsp;&nbsp;<br>
+        Must be in your building, please enter all contact info below.<br></td> 
+</tr>
+</table>
+<table border="0" cellspacing="1" cellpadding="0" width="675">
+<tr>
+    <td></td>
+    <td><img src="/media_stat/images/layout/clear.gif" width="115" height="8" border="0"></td>
+    <td></td>
+</tr>
+<tr>
+    <td width="15" ROWSPAN="5"><img src="/media_stat/images/layout/clear.gif" width="13" height="1" border="0"></td>
+    <td width="115" align="right" class="text12">
+        <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ALT_FIRSTNAME.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>
+        *First Name&nbsp;&nbsp;
+        <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ALT_FIRSTNAME.getCode()%>"></span></fd:ErrorHandler>
+    </td>
+    <td width="565"><input type="text" SIZE="21" maxlength="25" class="text11" name="<%=EnumUserInfoName.DLV_ALT_FIRSTNAME.getCode()%>" value ="<%=fldAltFirstName%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ALT_FIRSTNAME.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+</tr>
+<tr>
+    <td width="115" align="right" class="text12">
+        <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ALT_LASTNAME.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>
+        *Last Name&nbsp;&nbsp;
+        <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ALT_LASTNAME.getCode()%>"></span></fd:ErrorHandler>
+    </td>
+    <td width="565"><input type="text" class="text11" maxlength="50" name="<%=EnumUserInfoName.DLV_ALT_LASTNAME.getCode()%>" size="21" value="<%=fldAltLastName%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ALT_LASTNAME.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+</tr>
+<tr>
+    <td width="115" align="right" class="text12">
+        <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ALT_APARTMENT.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>
+        *Apt. #&nbsp;&nbsp;
+        <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ALT_APARTMENT.getCode()%>"></span></fd:ErrorHandler>
+    </td>
+    <td width="565"><input type="text" maxlength="10" class="text11" size="4" name="<%=EnumUserInfoName.DLV_ALT_APARTMENT.getCode()%>" value="<%=fldAltApartment%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ALT_APARTMENT.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+</tr>
+<tr>
+    <td width="115" align="right" class="text12">
+        <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ALT_PHONE.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>
+        *Home Phone #&nbsp;&nbsp;
+        <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ALT_PHONE.getCode()%>"></span></fd:ErrorHandler>
+    </td>
+    <td width="565" valign="middle">
+    <input type="text" maxlength="13" SIZE="21" class="text11" name="<%=EnumUserInfoName.DLV_ALT_PHONE.getCode()%>" value="<%=fldAltPhone%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ALT_PHONE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+    &nbsp;&nbsp;Ext. <input type="text" maxlength="6" size="4" class="text11" name="<%=EnumUserInfoName.DLV_ALT_EXT.getCode()%>" value="<%=fldAltExt%>">
+    </td>
+</tr>
+</table>
+<%}%>

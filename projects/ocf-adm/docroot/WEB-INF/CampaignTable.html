@@ -1,0 +1,13 @@
+<table jwcid="table" class="grid history">
+<tr>
+	<td jwcid="NameColumnValue@Block">
+		<a jwcid="@ExternalLink" page="CampaignEditor" parameters="ognl:campaign.id" ><span jwcid="@Insert" value="ognl:campaign.name"/></a>
+	</td>
+	<td jwcid="StartDateColumnValue@Block">
+		<span jwcid="@Insert" value="ognl:campaign.startDate" format="ognl:dateFormat"/>
+	</td>
+	<td jwcid="EndDateColumnValue@Block">
+		<span jwcid="@Insert" value="ognl:campaign.endDate" format="ognl:dateFormat"/>
+	</td>
+</tr>
+</table>

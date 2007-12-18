@@ -1,0 +1,792 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Content>
+
+  <Store id="FreshDirect">
+  </Store>
+
+
+  <Product id="product_ymal_simple">
+    <FULL_NAME>product ymal simple</FULL_NAME>
+    <RELATED_PRODUCTS>
+      <Product ref="product_mea0004561"/>
+      <Product ref="product_mea0004562"/>
+      <Product ref="product_mea0004563"/>
+      <Category ref="category_mea0004561"/>
+      <Category ref="category_mea0004562"/>
+      <Category ref="category_mea0004563"/>
+      <Recipe ref="recipe_mea0004561"/>
+      <Recipe ref="recipe_mea0004562"/>
+      <Recipe ref="recipe_mea0004563"/>
+    </RELATED_PRODUCTS>
+  </Product>
+
+  <Product id="product_ymal_self_ref">
+    <FULL_NAME>product ymal self ref</FULL_NAME>
+    <RELATED_PRODUCTS>
+      <Product ref="product_mea0004561"/>
+      <Product ref="product_mea0004562"/>
+      <Product ref="product_ymal_self_ref"/>
+      <Product ref="product_mea0004563"/>
+      <Category ref="category_mea0004561"/>
+      <Category ref="category_mea0004562"/>
+      <Category ref="category_mea0004563"/>
+      <Recipe ref="recipe_mea0004561"/>
+      <Recipe ref="recipe_mea0004562"/>
+      <Recipe ref="recipe_mea0004563"/>
+    </RELATED_PRODUCTS>
+  </Product>
+
+  <Product id="product_ymal_set_self_ref">
+    <FULL_NAME>product ymal set self ref</FULL_NAME>
+    <RELATED_PRODUCTS>
+      <Product ref="product_mea0004561"/>
+      <Product ref="product_mea0004562"/>
+      <Product ref="product_mea0004563"/>
+      <Category ref="category_mea0004561"/>
+      <Category ref="category_mea0004562"/>
+      <Category ref="category_mea0004563"/>
+      <Recipe ref="recipe_mea0004561"/>
+      <Recipe ref="recipe_mea0004562"/>
+      <Recipe ref="recipe_mea0004563"/>
+    </RELATED_PRODUCTS>
+    <ymalSets>
+      <YmalSet ref="ymal_set_self_ref"/>
+    </ymalSets>
+  </Product>
+  
+  <Product id="product_ymal_more_than_6">
+    <FULL_NAME>product ymal simple</FULL_NAME>
+    <RELATED_PRODUCTS>
+      <Product ref="product_mea0004561"/>
+      <Product ref="product_mea0004562"/>
+      <Product ref="product_mea0004563"/>
+      <Product ref="product_mea0004564"/>
+      <Product ref="product_mea0004565"/>
+      <Product ref="product_mea0004566"/>
+      <Product ref="product_mea0004567"/>
+      <Product ref="product_mea0004568"/>
+      <Category ref="category_mea0004561"/>
+      <Category ref="category_mea0004562"/>
+      <Category ref="category_mea0004563"/>
+      <Category ref="category_mea0004564"/>
+      <Category ref="category_mea0004565"/>
+      <Category ref="category_mea0004566"/>
+      <Category ref="category_mea0004567"/>
+      <Category ref="category_mea0004568"/>
+      <Recipe ref="recipe_mea0004561"/>
+      <Recipe ref="recipe_mea0004562"/>
+      <Recipe ref="recipe_mea0004563"/>
+      <Recipe ref="recipe_mea0004564"/>
+      <Recipe ref="recipe_mea0004565"/>
+      <Recipe ref="recipe_mea0004566"/>
+      <Recipe ref="recipe_mea0004567"/>
+      <Recipe ref="recipe_mea0004568"/>
+    </RELATED_PRODUCTS>
+  </Product>
+
+  <Product id="product_ymal_set_overlapping">
+    <FULL_NAME>product ymal simple</FULL_NAME>
+    <RELATED_PRODUCTS>
+      <Product ref="product_mea0004561"/>
+      <Product ref="product_mea0004562"/>
+      <Product ref="product_mea0004563"/>
+      <Category ref="category_mea0004561"/>
+      <Category ref="category_mea0004562"/>
+      <Category ref="category_mea0004563"/>
+      <Recipe ref="recipe_mea0004561"/>
+      <Recipe ref="recipe_mea0004562"/>
+      <Recipe ref="recipe_mea0004563"/>
+    </RELATED_PRODUCTS>
+    <ymalSets>
+      <YmalSet ref="ymal_set_simple"/>
+    </ymalSets>
+  </Product>
+  
+  <Product id="product_ymal_set_simple">
+    <FULL_NAME>product ymal simple</FULL_NAME>
+    <RELATED_PRODUCTS>
+      <Product ref="product_mea0004561"/>
+      <Product ref="product_mea0004562"/>
+      <Product ref="product_mea0004563"/>
+      <Category ref="category_mea0004561"/>
+      <Category ref="category_mea0004562"/>
+      <Category ref="category_mea0004563"/>
+      <Recipe ref="recipe_mea0004561"/>
+      <Recipe ref="recipe_mea0004562"/>
+      <Recipe ref="recipe_mea0004563"/>
+    </RELATED_PRODUCTS>
+    <ymalSets>
+      <YmalSet ref="ymal_set_4_to_6"/>
+    </ymalSets>
+  </Product>
+  
+  <Product id="product_ymal_set_more_than_6">
+    <FULL_NAME>product ymal simple</FULL_NAME>
+    <RELATED_PRODUCTS>
+      <Product ref="product_mea0004561"/>
+      <Product ref="product_mea0004562"/>
+      <Product ref="product_mea0004563"/>
+      <Category ref="category_mea0004561"/>
+      <Category ref="category_mea0004562"/>
+      <Category ref="category_mea0004563"/>
+      <Recipe ref="recipe_mea0004561"/>
+      <Recipe ref="recipe_mea0004562"/>
+      <Recipe ref="recipe_mea0004563"/>
+    </RELATED_PRODUCTS>
+    <ymalSets>
+      <YmalSet ref="ymal_set_4_to_8"/>
+    </ymalSets>
+  </Product>
+
+  <Product id="product_ymal_some_unavailable">
+    <FULL_NAME>product ymal some unavailable</FULL_NAME>
+    <RELATED_PRODUCTS>
+      <Product ref="product_mea0004561"/>
+      <Product ref="product_mea0004562_unavailable"/>
+      <Product ref="product_mea0004563"/>
+      <Category ref="category_mea0004561"/>
+      <Category ref="category_mea0004562"/>
+      <Category ref="category_mea0004563"/>
+      <Recipe ref="recipe_mea0004561"/>
+      <Recipe ref="recipe_mea0004562_unavailable"/>
+      <Recipe ref="recipe_mea0004563"/>
+    </RELATED_PRODUCTS>
+    <ymalSets>
+      <YmalSet ref="ymal_set_4_to_6_some_unavailable"/>
+    </ymalSets>
+  </Product>
+
+  <Product id="product_ymal_set_multiple">
+    <FULL_NAME>product ymal set multiple</FULL_NAME>
+    <RELATED_PRODUCTS>
+      <Product ref="product_mea0004561"/>
+      <Product ref="product_mea0004562"/>
+      <Product ref="product_mea0004563"/>
+      <Category ref="category_mea0004561"/>
+      <Category ref="category_mea0004562"/>
+      <Category ref="category_mea0004563"/>
+      <Recipe ref="recipe_mea0004561"/>
+      <Recipe ref="recipe_mea0004562"/>
+      <Recipe ref="recipe_mea0004563"/>
+    </RELATED_PRODUCTS>
+    <ymalSets>
+      <YmalSet ref="ymal_set_4_to_6"/>
+      <YmalSet ref="ymal_set_simple"/>
+    </ymalSets>
+  </Product>
+  
+  <Product id="product_ymal_set_inactive">
+    <FULL_NAME>product ymal set inactive</FULL_NAME>
+    <RELATED_PRODUCTS>
+      <Product ref="product_mea0004561"/>
+      <Product ref="product_mea0004562"/>
+      <Product ref="product_mea0004563"/>
+      <Category ref="category_mea0004561"/>
+      <Category ref="category_mea0004562"/>
+      <Category ref="category_mea0004563"/>
+      <Recipe ref="recipe_mea0004561"/>
+      <Recipe ref="recipe_mea0004562"/>
+      <Recipe ref="recipe_mea0004563"/>
+    </RELATED_PRODUCTS>
+    <ymalSets>
+      <YmalSet ref="ymal_set_pending"/>
+      <YmalSet ref="ymal_set_completed"/>
+    </ymalSets>
+  </Product>
+
+  <Product id="product_ymal_set_multiple_inactive">
+    <FULL_NAME>product ymal set multiple inactive</FULL_NAME>
+    <RELATED_PRODUCTS>
+      <Product ref="product_mea0004561"/>
+      <Product ref="product_mea0004562"/>
+      <Product ref="product_mea0004563"/>
+      <Category ref="category_mea0004561"/>
+      <Category ref="category_mea0004562"/>
+      <Category ref="category_mea0004563"/>
+      <Recipe ref="recipe_mea0004561"/>
+      <Recipe ref="recipe_mea0004562"/>
+      <Recipe ref="recipe_mea0004563"/>
+    </RELATED_PRODUCTS>
+    <ymalSets>
+      <YmalSet ref="ymal_set_pending"/>
+      <YmalSet ref="ymal_set_4_to_6"/>
+      <YmalSet ref="ymal_set_completed"/>
+    </ymalSets>
+  </Product>
+
+
+  <YmalSet id="ymal_set_simple">
+    <title>ymal set mea0004561</title>
+    <workflowStatus>ACTIVE</workflowStatus>
+    <ymals>
+      <Product ref="product_mea0004561"/>
+      <Product ref="product_mea0004562"/>
+      <Product ref="product_mea0004563"/>
+      <Category ref="category_mea0004561"/>
+      <Category ref="category_mea0004562"/>
+      <Category ref="category_mea0004563"/>
+      <Recipe ref="recipe_mea0004561"/>
+      <Recipe ref="recipe_mea0004562"/>
+      <Recipe ref="recipe_mea0004563"/>
+    </ymals>
+  </YmalSet>
+
+  <YmalSet id="ymal_set_self_ref">
+    <title>ymal set self ref</title>
+    <workflowStatus>ACTIVE</workflowStatus>
+    <ymals>
+      <Product ref="product_ymal_set_self_ref"/>
+    </ymals>
+  </YmalSet>
+
+  <YmalSet id="ymal_set_4_to_6_some_unavailable">
+    <title>ymal set mea0004561</title>
+    <workflowStatus>ACTIVE</workflowStatus>
+    <ymals>
+      <Product ref="product_mea0004564"/>
+      <Product ref="product_mea0004565_unavailable"/>
+      <Product ref="product_mea0004566"/>
+      <Category ref="category_mea0004564"/>
+      <Category ref="category_mea0004565"/>
+      <Category ref="category_mea0004566"/>
+      <Recipe ref="recipe_mea0004564"/>
+      <Recipe ref="recipe_mea0004565_unavailable"/>
+      <Recipe ref="recipe_mea0004566"/>
+    </ymals>
+  </YmalSet>
+
+  <YmalSet id="ymal_set_4_to_6">
+    <title>ymal set mea0004561</title>
+    <workflowStatus>ACTIVE</workflowStatus>
+    <ymals>
+      <Product ref="product_mea0004564"/>
+      <Product ref="product_mea0004565"/>
+      <Product ref="product_mea0004566"/>
+      <Category ref="category_mea0004564"/>
+      <Category ref="category_mea0004565"/>
+      <Category ref="category_mea0004566"/>
+      <Recipe ref="recipe_mea0004564"/>
+      <Recipe ref="recipe_mea0004565"/>
+      <Recipe ref="recipe_mea0004566"/>
+    </ymals>
+  </YmalSet>
+
+  <YmalSet id="ymal_set_4_to_8">
+    <title>ymal set mea0004561</title>
+    <workflowStatus>ACTIVE</workflowStatus>
+    <ymals>
+      <Product ref="product_mea0004564"/>
+      <Product ref="product_mea0004565"/>
+      <Product ref="product_mea0004566"/>
+      <Product ref="product_mea0004567"/>
+      <Product ref="product_mea0004568"/>
+      <Category ref="category_mea0004564"/>
+      <Category ref="category_mea0004565"/>
+      <Category ref="category_mea0004566"/>
+      <Category ref="category_mea0004567"/>
+      <Category ref="category_mea0004568"/>
+      <Recipe ref="recipe_mea0004564"/>
+      <Recipe ref="recipe_mea0004565"/>
+      <Recipe ref="recipe_mea0004566"/>
+      <Recipe ref="recipe_mea0004567"/>
+      <Recipe ref="recipe_mea0004568"/>
+    </ymals>
+  </YmalSet>
+
+  <YmalSet id="ymal_set_pending">
+    <title>ymal set mea0004561</title>
+    <workflowStatus>PENDING_APPROVAL</workflowStatus>
+    <ymals>
+      <Product ref="product_mea0004561"/>
+    </ymals>
+  </YmalSet>
+
+  <YmalSet id="ymal_set_completed">
+    <title>ymal set completed</title>
+    <workflowStatus>COMPLETED</workflowStatus>
+    <ymals>
+      <Product ref="product_mea0004566"/>
+    </ymals>
+  </YmalSet>
+
+  <YmalSet id="ymal_set_ends_in_past">
+    <title>ymal set mea0004561</title>
+    <workflowStatus>ACTIVE</workflowStatus>
+    <startDate>1970-01-01</startDate>
+    <endDate>1971-01-01</endDate>
+    <ymals>
+      <Product ref="product_mea0004561"/>
+    </ymals>
+  </YmalSet>
+
+  <YmalSet id="ymal_set_starts_in_future">
+    <title>ymal set mea0004561</title>
+    <workflowStatus>ACTIVE</workflowStatus>
+    <startDate>2030-01-01</startDate>
+    <endDate>2031-01-01</endDate>
+    <ymals>
+      <Product ref="product_mea0004561"/>
+    </ymals>
+  </YmalSet>
+
+  <YmalSet id="ymal_set_ends_before_start">
+    <title>ymal set mea0004561</title>
+    <workflowStatus>ACTIVE</workflowStatus>
+    <startDate>2000-01-01</startDate>
+    <endDate>1999-01-01</endDate>
+    <ymals>
+      <Product ref="product_mea0004561"/>
+    </ymals>
+  </YmalSet>
+
+
+  <Product id="product_mea0004561">
+    <FULL_NAME>product mea0004561</FULL_NAME>
+    <skus>
+      <Sku ref="MEA0004561"/>
+    </skus>
+  </Product>
+
+  <Product id="product_mea0004562">
+    <FULL_NAME>product mea0004562</FULL_NAME>
+    <skus>
+      <Sku ref="MEA0004562"/>
+    </skus>
+  </Product>
+
+  <Product id="product_mea0004563">
+    <FULL_NAME>product mea0004563</FULL_NAME>
+    <skus>
+      <Sku ref="MEA0004563"/>
+    </skus>
+  </Product>
+
+  <Product id="product_mea0004564">
+    <FULL_NAME>product mea0004564</FULL_NAME>
+    <skus>
+      <Sku ref="MEA0004564"/>
+    </skus>
+  </Product>
+
+  <Product id="product_mea0004565">
+    <FULL_NAME>product mea0004565</FULL_NAME>
+    <skus>
+      <Sku ref="MEA0004565"/>
+    </skus>
+  </Product>
+
+  <Product id="product_mea0004566">
+    <FULL_NAME>product mea0004566</FULL_NAME>
+    <skus>
+      <Sku ref="MEA0004566"/>
+    </skus>
+  </Product>
+
+  <Product id="product_mea0004567">
+    <FULL_NAME>product mea0004567</FULL_NAME>
+    <skus>
+      <Sku ref="MEA0004567"/>
+    </skus>
+  </Product>
+  
+  <Product id="product_mea0004568">
+    <FULL_NAME>product mea0004568</FULL_NAME>
+    <skus>
+      <Sku ref="MEA0004568"/>
+    </skus>
+  </Product>
+
+  <Product id="product_mea0004561_unavailable">
+    <FULL_NAME>product mea0004561 unavailable</FULL_NAME>
+    <skus>
+      <Sku ref="MEA0004561_unavailable"/>
+    </skus>
+  </Product>
+
+  <Product id="product_mea0004562_unavailable">
+    <FULL_NAME>product mea0004562 unavailable</FULL_NAME>
+    <skus>
+      <Sku ref="MEA0004562_unavailable"/>
+    </skus>
+  </Product>
+
+  <Product id="product_mea0004563_unavailable">
+    <FULL_NAME>product mea0004563 unavailable</FULL_NAME>
+    <skus>
+      <Sku ref="MEA0004563_unavailable"/>
+    </skus>
+  </Product>
+
+  <Product id="product_mea0004564_unavailable">
+    <FULL_NAME>product mea0004564 unavailable</FULL_NAME>
+    <skus>
+      <Sku ref="MEA0004564_unavailable"/>
+    </skus>
+  </Product>
+
+  <Product id="product_mea0004565_unavailable">
+    <FULL_NAME>product mea0004565 unavailable</FULL_NAME>
+    <skus>
+      <Sku ref="MEA0004565_unavailable"/>
+    </skus>
+  </Product>
+
+  <Product id="product_mea0004566_unavailable">
+    <FULL_NAME>product mea0004566 unavailable</FULL_NAME>
+    <skus>
+      <Sku ref="MEA0004566_unavailable"/>
+    </skus>
+  </Product>
+
+  <Product id="product_mea0004567_unavailable">
+    <FULL_NAME>product mea0004567 unavailable</FULL_NAME>
+    <skus>
+      <Sku ref="MEA0004567_unavailable"/>
+    </skus>
+  </Product>
+  
+  <Product id="product_mea0004568_unavailable">
+    <FULL_NAME>product mea0004568 unavailable</FULL_NAME>
+    <skus>
+      <Sku ref="MEA0004568_unavailable"/>
+    </skus>
+  </Product>
+    
+  <Category id="category_mea0004561">
+    <products>
+      <Product ref="product_mea0004561"/>
+    </products>
+  </Category>
+  
+  <Category id="category_mea0004562">
+    <products>
+      <Product ref="product_mea0004562"/>
+    </products>
+  </Category>
+  
+  <Category id="category_mea0004563">
+    <products>
+      <Product ref="product_mea0004563"/>
+    </products>
+  </Category>
+  
+  <Category id="category_mea0004564">
+    <products>
+      <Product ref="product_mea0004564"/>
+    </products>
+  </Category>
+  
+  <Category id="category_mea0004565">
+    <products>
+      <Product ref="product_mea0004565"/>
+    </products>
+  </Category>
+  
+  <Category id="category_mea0004566">
+    <products>
+      <Product ref="product_mea0004566"/>
+    </products>
+  </Category>
+  
+  <Category id="category_mea0004567">
+    <products>
+      <Product ref="product_mea0004567"/>
+    </products>
+  </Category>
+  
+  <Category id="category_mea0004568">
+    <products>
+      <Product ref="product_mea0004568"/>
+    </products>
+  </Category>
+  
+  <Recipe id="recipe_mea0004561">
+    <productionStatus>ACTIVE</productionStatus>
+    <variants>
+      <RecipeVariant ref="recipe_variant_mea0004561"/>
+    </variants>
+  </Recipe>
+
+  <RecipeVariant id="recipe_variant_mea0004561">
+    <name>main</name>
+    <sections>
+      <RecipeSection ref="recipe_section_mea0004561"/>
+    </sections>
+  </RecipeVariant>
+  
+  <RecipeSection id="recipe_section_mea0004561">
+    <ingredients>
+      <ConfiguredProduct ref="configured_product_mea0004561"/>
+    </ingredients>
+  </RecipeSection>
+
+  <ConfiguredProduct id="configured_product_mea0004561">
+    <SKU>
+      <Sku ref="MEA0004561"/>
+    </SKU>
+  </ConfiguredProduct>
+
+  <Recipe id="recipe_mea0004562">
+    <productionStatus>ACTIVE</productionStatus>
+    <variants>
+      <RecipeVariant ref="recipe_variant_mea0004562"/>
+    </variants>
+  </Recipe>
+
+  <RecipeVariant id="recipe_variant_mea0004562">
+    <name>main</name>
+    <sections>
+      <RecipeSection ref="recipe_section_mea0004562"/>
+    </sections>
+  </RecipeVariant>
+  
+  <RecipeSection id="recipe_section_mea0004562">
+    <ingredients>
+      <ConfiguredProduct ref="configured_product_mea0004562"/>
+    </ingredients>
+  </RecipeSection>
+
+  <ConfiguredProduct id="configured_product_mea0004562">
+    <SKU>
+      <Sku ref="MEA0004562"/>
+    </SKU>
+  </ConfiguredProduct>
+
+  <Recipe id="recipe_mea0004563">
+    <productionStatus>ACTIVE</productionStatus>
+    <variants>
+      <RecipeVariant ref="recipe_variant_mea0004563"/>
+    </variants>
+  </Recipe>
+
+  <RecipeVariant id="recipe_variant_mea0004563">
+    <name>main</name>
+    <sections>
+      <RecipeSection ref="recipe_section_mea0004563"/>
+    </sections>
+  </RecipeVariant>
+  
+  <RecipeSection id="recipe_section_mea0004563">
+    <ingredients>
+      <ConfiguredProduct ref="configured_product_mea0004563"/>
+    </ingredients>
+  </RecipeSection>
+
+  <ConfiguredProduct id="configured_product_mea0004563">
+    <SKU>
+      <Sku ref="MEA0004563"/>
+    </SKU>
+  </ConfiguredProduct>
+
+  <Recipe id="recipe_mea0004564">
+    <productionStatus>ACTIVE</productionStatus>
+    <variants>
+      <RecipeVariant ref="recipe_variant_mea0004564"/>
+    </variants>
+  </Recipe>
+
+  <RecipeVariant id="recipe_variant_mea0004564">
+    <name>main</name>
+    <sections>
+      <RecipeSection ref="recipe_section_mea0004564"/>
+    </sections>
+  </RecipeVariant>
+  
+  <RecipeSection id="recipe_section_mea0004564">
+    <ingredients>
+      <ConfiguredProduct ref="configured_product_mea0004564"/>
+    </ingredients>
+  </RecipeSection>
+
+  <ConfiguredProduct id="configured_product_mea0004564">
+    <SKU>
+      <Sku ref="MEA0004564"/>
+    </SKU>
+  </ConfiguredProduct>
+
+  <Recipe id="recipe_mea0004565">
+    <productionStatus>ACTIVE</productionStatus>
+    <variants>
+      <RecipeVariant ref="recipe_variant_mea0004565"/>
+    </variants>
+  </Recipe>
+
+  <RecipeVariant id="recipe_variant_mea0004565">
+    <name>main</name>
+    <sections>
+      <RecipeSection ref="recipe_section_mea0004565"/>
+    </sections>
+  </RecipeVariant>
+  
+  <RecipeSection id="recipe_section_mea0004565">
+    <ingredients>
+      <ConfiguredProduct ref="configured_product_mea0004565"/>
+    </ingredients>
+  </RecipeSection>
+
+  <ConfiguredProduct id="configured_product_mea0004565">
+    <SKU>
+      <Sku ref="MEA0004565"/>
+    </SKU>
+  </ConfiguredProduct>
+
+  <Recipe id="recipe_mea0004566">
+    <productionStatus>ACTIVE</productionStatus>
+    <variants>
+      <RecipeVariant ref="recipe_variant_mea0004566"/>
+    </variants>
+  </Recipe>
+
+  <RecipeVariant id="recipe_variant_mea0004566">
+    <name>main</name>
+    <sections>
+      <RecipeSection ref="recipe_section_mea0004566"/>
+    </sections>
+  </RecipeVariant>
+  
+  <RecipeSection id="recipe_section_mea0004566">
+    <ingredients>
+      <ConfiguredProduct ref="configured_product_mea0004566"/>
+    </ingredients>
+  </RecipeSection>
+
+  <ConfiguredProduct id="configured_product_mea0004566">
+    <SKU>
+      <Sku ref="MEA0004566"/>
+    </SKU>
+  </ConfiguredProduct>
+
+  <Recipe id="recipe_mea0004567">
+    <productionStatus>ACTIVE</productionStatus>
+    <variants>
+      <RecipeVariant ref="recipe_variant_mea0004567"/>
+    </variants>
+  </Recipe>
+
+  <RecipeVariant id="recipe_variant_mea0004567">
+    <name>main</name>
+    <sections>
+      <RecipeSection ref="recipe_section_mea0004567"/>
+    </sections>
+  </RecipeVariant>
+  
+  <RecipeSection id="recipe_section_mea0004567">
+    <ingredients>
+      <ConfiguredProduct ref="configured_product_mea0004567"/>
+    </ingredients>
+  </RecipeSection>
+
+  <ConfiguredProduct id="configured_product_mea0004567">
+    <SKU>
+      <Sku ref="MEA0004567"/>
+    </SKU>
+  </ConfiguredProduct>
+
+  <Recipe id="recipe_mea0004568">
+    <productionStatus>ACTIVE</productionStatus>
+    <variants>
+      <RecipeVariant ref="recipe_variant_mea0004568"/>
+    </variants>
+  </Recipe>
+
+  <RecipeVariant id="recipe_variant_mea0004568">
+    <name>main</name>
+    <sections>
+      <RecipeSection ref="recipe_section_mea0004568"/>
+    </sections>
+  </RecipeVariant>
+  
+  <RecipeSection id="recipe_section_mea0004568">
+    <ingredients>
+      <ConfiguredProduct ref="configured_product_mea0004568"/>
+    </ingredients>
+  </RecipeSection>
+
+  <ConfiguredProduct id="configured_product_mea0004568">
+    <SKU>
+      <Sku ref="MEA0004568"/>
+    </SKU>
+  </ConfiguredProduct>
+
+  <Recipe id="recipe_mea0004561_unavailable">
+    <productionStatus>PENDING</productionStatus>
+  </Recipe>
+
+  <Recipe id="recipe_mea0004562_unavailable">
+    <productionStatus>PENDING</productionStatus>
+  </Recipe>
+
+  <Recipe id="recipe_mea0004563_unavailable">
+    <productionStatus>PENDING</productionStatus>
+  </Recipe>
+
+  <Recipe id="recipe_mea0004564_unavailable">
+    <productionStatus>PENDING</productionStatus>
+  </Recipe>
+
+  <Recipe id="recipe_mea0004565_unavailable">
+    <productionStatus>PENDING</productionStatus>
+  </Recipe>
+
+  <Recipe id="recipe_mea0004566_unavailable">
+    <productionStatus>PENDING</productionStatus>
+  </Recipe>
+
+  <Recipe id="recipe_mea0004567_unavailable">
+    <productionStatus>PENDING</productionStatus>
+  </Recipe>
+
+  <Recipe id="recipe_mea0004568_unavailable">
+    <productionStatus>PENDING</productionStatus>
+  </Recipe>
+
+
+  <Sku id="MEA0004561">
+  </Sku>
+
+  <Sku id="MEA0004562">
+  </Sku>
+
+  <Sku id="MEA0004563">
+  </Sku>
+
+  <Sku id="MEA0004564">
+  </Sku>
+
+  <Sku id="MEA0004565">
+  </Sku>
+
+  <Sku id="MEA0004566">
+  </Sku>
+
+  <Sku id="MEA0004567">
+  </Sku>
+
+  <Sku id="MEA0004568">
+  </Sku>
+
+  <Sku id="MEA0004561_unavailable">
+  </Sku>
+
+  <Sku id="MEA0004562_unavailable">
+  </Sku>
+
+  <Sku id="MEA0004563_unavailable">
+  </Sku>
+
+  <Sku id="MEA0004564_unavailable">
+  </Sku>
+
+  <Sku id="MEA0004565_unavailable">
+  </Sku>
+
+  <Sku id="MEA0004566_unavailable">
+  </Sku>
+
+  <Sku id="MEA0004567_unavailable">
+  </Sku>
+
+  <Sku id="MEA0004568_unavailable">
+  </Sku>
+
+</Content>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE page-specification PUBLIC
+  "-//Apache Software Foundation//Tapestry Specification 3.0//EN"
+  "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<page-specification class="com.freshdirect.cms.ui.tapestry.page.EditContent">
+
+	<description>CMS homepage</description>
+
+	<property-specification name="successMsg" type="java.lang.String" persistent="yes"/>
+	<property-specification name="changeSet" type="com.freshdirect.cms.changecontrol.ChangeSet" persistent="yes"/>
+			
+	<property-specification name="context" type="com.freshdirect.cms.context.Context" persistent="yes"/>
+	<property-specification name="dirtyForm" type="boolean" initial-value="false" persistent="yes"/>
+
+	<component id="editForm" type="Form">
+		<binding name="delegate" expression="beans.delegate"/>
+		<binding name="listener" expression="listeners.formSubmit"/>
+	</component>
+	
+	<component id="dirtyWarning" type="tacos:DirtyFormWarning">
+		<binding name="form" expression="components.editForm"/>
+		<binding name="message">selectedNode.label + ' has unsaved changes.'</binding>
+		<binding name="forceWarning" expression="dirtyForm"/>
+	</component>
+	
+	<component id="save" type="Submit">
+		<static-binding name="value">Save</static-binding>
+		<binding name="action" expression="listeners.saveContent"/>
+	</component>
+	<component id="save2" copy-of="save"/>
+
+	<component id="cancel" type="Submit">
+		<static-binding name="value">Cancel</static-binding>
+		<binding name="action" expression="listeners.cancelEdit"/>
+		<static-binding name="onclick">form.onsubmit=null; setDirtyFormWarning(false);</static-binding>
+	</component>
+	<component id="cancel2" copy-of="cancel"/>
+
+	<component id="selectContext" type="PropertySelection">
+		<binding name="model" expression="contextSelectionModel"/>
+		<binding name="value" expression="context"/>
+		<binding name="disabled" expression="allContexts.length==1"/>
+	</component>
+	
+	<context-asset name="sync" path="/img/sync.gif"/>
+	
+	<property-specification name="contentKey" type="com.freshdirect.cms.ContentKey" persistent="yes"/>
+	<bean name="delegate" class="org.apache.tapestry.valid.ValidationDelegate"/>
+
+</page-specification>

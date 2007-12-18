@@ -1,0 +1,78 @@
+<%
+int grabberDepth = 99;
+boolean ignoreShowChildren = false;
+boolean filterDiscontinued = true;
+boolean returnHiddenFolders = false;
+boolean ignoreDuplicateProducts = true;
+boolean returnSecondaryFolders = true;
+String storageMedia = null;
+Image catImg = null;
+String currentFolder = null;
+%>
+<% //check & get topCat if necessary 
+if (!(cat.getParentNode() instanceof DepartmentModel)) {
+        ContentNodeModel topCat = cat;
+                while (!(topCat.getParentNode() instanceof DepartmentModel)) {
+                topCat = topCat.getParentNode();
+                }
+        cat = (CategoryModel)topCat;
+        catId = cat.getContentName();
+}
+List sortStrategy = new ArrayList();
+sortStrategy.add(new SortStrategyElement(SortStrategyElement.GROUP_BY_CATEGORY_NAME,false));
+%>
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+<td width="110" align="right"><a href="/shared/popup.jsp?deptId=<%=cat.getDepartment().getContentName()%>&attrib=DEPT_STORAGE_GUIDE_MEDIA&tmpl=large"><% if ( "veg".equalsIgnoreCase(cat.getDepartment().toString())) {%><img src="/media_stat/images/template/vegetable/veg_sto_catnav.gif" width="100" height="56" border="0" alt="Vegetable Storage Guide"><% } else { %><img src="/media_stat/images/template/fruit/fru_sto_catnav.gif" width="86" height="55" border="0" alt="Fruit Storage Guide"><% } %></a><br><img src="/media_stat/images/layout/clear.gif" width="110" height="6"><br>
+<fd:ItemGrabber category='<%= cat.getDepartment() %>' id='sortedColl' depth='<%=grabberDepth%>' ignoreShowChildren='<%=ignoreShowChildren%>' filterDiscontinued='<%= filterDiscontinued %>' returnHiddenFolders='<%=returnHiddenFolders%>' ignoreDuplicateProducts='<%=ignoreDuplicateProducts%>' returnSecondaryFolders='<%=returnSecondaryFolders%>'>
+
+<fd:ItemSorter nodes='<%=(List)sortedColl %>' strategy='<%=sortStrategy%>'/>
+<%
+//get folder back based on alphabetical folder name
+//remove items with no storage guide attribute
+boolean selected = false;
+for(Iterator thisList = sortedColl.iterator(); thisList.hasNext();) {
+	ContentNodeModel cm = (ContentNodeModel) thisList.next();
+	if (!(cm instanceof CategoryModel)) continue;
+    CategoryModel thisCat = (CategoryModel)cm;
+    if ( thisCat instanceof CategoryModel  && thisCat.hasAttribute("CAT_STORAGE_GUIDE_MEDIA") ) {
+                Attribute alias = thisCat.getAttribute("ALIAS");
+                String folder = null;
+                    if (alias!=null) {
+                        ContentRef aliasRef = (ContentRef)alias.getValue();
+                        if (aliasRef instanceof CategoryRef) {
+                            folder = aliasRef.getRefName();
+                        }
+                    } else {
+                            folder = thisCat.getContentName();
+                    }
+                if ( catId.equalsIgnoreCase(folder) ) {
+                selected = true;
+                currentFolder = folder;
+                storageMedia = ((MediaI)thisCat.getAttribute("CAT_STORAGE_GUIDE_MEDIA").getValue()).getPath();
+                catImg = (Image)thisCat.getAttribute("CAT_PHOTO").getValue();
+                }
+%>
+<% if (selected) { %><font class="text11bold" color="#000000"><%} else {%><a href="/shared/popup.jsp?catId=<%=thisCat.getContentName()%>&attrib=CAT_STORAGE_GUIDE_MEDIA&tmpl=large"><% } %><%=thisCat.getFullName()%><% if (selected) { %></font><%} else {%></a><% } %><br><img src="/media_stat/images/layout/clear.gif" width="1" height="2"><br>
+<%
+    selected = false;
+    } 
+} 
+%>
+</fd:ItemGrabber>
+<div align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br><img src="<%=catImg.getPath()%>" width="<%=catImg.getWidth()%>" height="<%=catImg.getHeight()%>"></div>
+</td>
+<td width="10"><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
+<td width="1" bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+<td width="10"><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
+<td><fd:IncludeMedia name="<%=storageMedia%>" /><br><img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br><a href="javascript:goToPage('/category.jsp?catId=<%=currentFolder%>')">Click here to buy some <%=cat.getFullName().toLowerCase()%></a></td>
+</tr>
+</table>
+<SCRIPT LANGUAGE="Javascript1.1">
+
+function goToPage(pagePath) {
+    redirectUrl = "http://" + location.host + pagePath;
+    self.opener.location = redirectUrl;
+    self.opener.focus();
+}
+</SCRIPT>

@@ -1,0 +1,62 @@
+<%
+/**
+ * Used by i_recipe_sbucat_body.jspf
+ */
+%>
+
+<%
+{
+
+%>
+
+<table border="0" cellspacing="0" cellpadding="0" width="400">
+<tr valign="top"><td class="text10bold" width="220">
+<%
+StringBuffer sb = new StringBuffer();
+String pgPart="pgPart=" + itemsToDisplay;
+for (int pgNum = 0; pgNum < pageNumbers; ) {
+	pgNum++; 
+	if (pgNum > 1) {
+		sb.append(" &middot; ");
+	}
+
+	if (pgNum==pageNumber) {
+		sb.append("<b>").append(pgNum).append("</b>"); 
+	} else {
+		sb.append("<a href=\"");
+		String url = baseUrl + "&" + pgPart + "&pageNumber=" + pgNum;
+		sb.append(response.encodeURL(url));
+		sb.append("\">").append(pgNum).append("</a>");
+	}
+}
+%>
+<%= cntRecipes %> recipe<%= cntRecipes > 1 ? "s" : ""%> &mdash; Page: <%= sb %>
+<br></td>
+<td align="right" width="180">Display <%
+if (itemsToDisplay == 15) {
+%>
+<b>15</b> |
+<a href="<%= response.encodeURL(baseUrl+"&set=true&DisplayPerPage=30") %>">30</a> |
+<a href="<%= response.encodeURL(baseUrl+"&set=true&DisplayPerPage=45") %>">45</a>
+<%
+} else if (itemsToDisplay == 30) {
+%>
+<a href="<%= response.encodeURL(baseUrl+"&set=true&DisplayPerPage=15") %>">15</a> |
+<b>30</b> |
+<a href="<%= response.encodeURL(baseUrl+"&set=true&DisplayPerPage=45") %>">45</a>
+<%
+} else {
+%>
+<a href="<%= response.encodeURL(baseUrl+"&set=true&DisplayPerPage=15")%>">15</a> |
+<a href="<%= response.encodeURL(baseUrl+"&set=true&DisplayPerPage=30")%>">30</a> |
+<b>45</b><%
+}
+%> per page</td>
+</tr>
+</table>
+
+
+<%
+}
+
+%>

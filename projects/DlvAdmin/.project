@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>DlvAdminTest</name>
+	<comment></comment>
+	<projects>
+		<project>Delivery</project>
+		<project>Framework</project>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>com.iw.plugins.spindle.project.TapestryProject</nature>
+	</natures>
+</projectDescription>

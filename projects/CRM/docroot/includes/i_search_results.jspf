@@ -1,0 +1,264 @@
+<%@ page import="com.freshdirect.framework.util.NVL" %>
+<%@ page import="com.freshdirect.webapp.util.JspLogger" %>
+<%@ page import="java.net.URLEncoder" %>
+<%-- ===========================================================
+		This file expects the following objects:
+		- Collection products: Collection of ProductModels
+		- Collection recipes:  Collection Recipes
+		- String offSet: indicates the starting position within the products Collection for the iterate tag
+=========================================================== --%>
+
+<%!	java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");%>
+
+<%!
+
+ 	  ////////////////////////////////////////
+	 ///////// tree builder methods /////////
+	////////////////////////////////////////
+
+	public static class ProductMappingComparator implements Comparator {
+		public int compare(Object o1, Object o2) {
+			ProductMapping mapping1 = (ProductMapping) o1;
+			ProductMapping mapping2 = (ProductMapping) o2;
+			return (mapping1.getPath().compareTo(mapping2.getPath()));
+		}
+	}
+	
+	public static class RecipeComparator implements Comparator {
+		public int compare(Object o1, Object o2) {
+			if (! (o1 instanceof Recipe) || !(o2 instanceof Recipe)) {
+			    return 0;
+			}
+			
+			Recipe rcp1 = (Recipe) o1;
+			Recipe rcp2 = (Recipe) o2;
+			return (rcp1.getName().compareTo(rcp2.getName()) );
+		}
+	
+	}
+	
+	public class ProductMapping {
+		String path;
+		ProductModel product;
+		
+		public ProductMapping(String myPath, ProductModel myProd) {
+			path = myPath;
+			product = myProd;
+		}
+		
+		public String getPath() { return path; }
+		public ProductModel getProduct() { return product; }
+	}
+	
+	public List buildProductPath(List products) throws FDResourceException {
+		List productList = new ArrayList();
+		for (Iterator i=products.iterator(); i.hasNext(); ) {
+			ContentNodeModel content = (ContentNodeModel) i.next();
+			String path = buildProductPath(content);
+			productList.add(new ProductMapping(path, (ProductModel)content));
+		}
+		Collections.sort(productList, new ProductMappingComparator());
+		return productList;
+	}
+	
+	public String buildProductPath(ContentNodeModel content) {
+		String pathFragment = null;
+		if (content instanceof ProductModel || content instanceof CategoryModel) {
+			pathFragment = buildProductPath( content.getParentNode() );
+		}
+		if (pathFragment == null) {
+			return content.getFullName();
+		} else if (content instanceof ProductModel) {
+			return pathFragment;
+		} else {
+			return pathFragment + " : " + content.getFullName();
+		}
+	}
+
+%>
+<%
+	FDUserI searchUser = (FDUserI) session.getAttribute(SessionName.USER);
+%>
+		<TABLE WIDTH="100%" CELLPADDING="2" CELLSPACING="0" BORDER="0" class="order">
+<%		List sortedProducts = new ArrayList();
+		sortedProducts.addAll(recipes);
+		Collections.sort(sortedProducts,new RecipeComparator());
+		
+		sortedProducts.addAll(buildProductPath(products));   // now stick the sorted products in
+		String lastCatName = null;
+		int productCounter = 0;
+		int minimumQuantity = 1;
+		int recipesShown  =0;
+		int itemsShown = 0; 
+                String qryString = request.getQueryString();
+%>
+		<logic:iterate id="mapping" collection="<%= sortedProducts %>" type="java.lang.Object" indexId="i" length="75" offset="<%= offSet %>">
+<%		Object itemToShow = mapping;
+		if (mapping instanceof Recipe) {
+		   Recipe rcpProduct=(Recipe)mapping;
+		   if (!rcpProduct.isAvailable() || !rcpProduct.isActive()) continue;
+		   if ( lastCatName == null ) {
+            	      lastCatName = "Recipes:";
+%>
+			<TR>
+				<TD COLSPAN="7" class="item_path">Recipes</TD>
+			</TR>
+<%		    } %>
+
+		  <TR><td colspan=7"><a href="recipe.jsp?recipeId=<%=rcpProduct.getContentKey().getId()%>"><%=rcpProduct.getName()%></a>
+			</td></tr>
+
+<%		   recipesShown++;
+		   continue;
+		} 
+
+		ProductModel productNode = ((ProductMapping)mapping).getProduct();
+		String path = ((ProductMapping)mapping).getPath(); 
+
+		if ( productNode == null || productNode.isDiscontinued() ) continue;
+		CategoryModel cat = (CategoryModel) productNode.getParentNode();
+		boolean isAvailable = true;
+		if ( productNode.isUnavailable() )
+			isAvailable = false;
+
+
+        String prodPageLink  = "javascript:view_product(document.build_list, "+ productCounter+ ", document.build_list.configQty_" + productCounter+","+searchIndex +")";
+%>
+		<fd:ConfigProduct product="<%= productNode %>" configProduct="configuredProd" configDesc="description" sku="configSku">
+<%		String salesUnitDesc = (configuredProd.getSalesUnit() != null) ? configuredProd.getSalesUnit() : "";
+        configuredProd.setQuantity(productNode.getQuantityMinimum());
+	    //FDProduct theProduct = FDCachedFactory.getProduct( FDCachedFactory.getProductInfo(configuredProd.getSkuCode()));
+    	boolean isPricedByLB = ("LB".equalsIgnoreCase(salesUnitDesc));
+	    boolean isSoldByLB = isPricedByLB && ("LB".equalsIgnoreCase(salesUnitDesc));
+	//	ProductModel productNode = product;
+	    String sellBySalesUnit = (null != productNode.getAttribute("SELL_BY_SALESUNIT")) ? (String) productNode.getAttribute("SELL_BY_SALESUNIT").getValue() : null;
+
+	    if (isSoldByLB)
+    	    salesUnitDesc = "lb";
+	    else
+    	    salesUnitDesc = "";
+
+		if ( lastCatName == null || !lastCatName.equalsIgnoreCase( cat.getFullName() ) ) {
+        	lastCatName = cat.getFullName();
+%>
+			<TR>
+				<TD COLSPAN="7" class="item_path"><%= path %></TD>
+			</TR>
+<%		} %>
+
+<%
+		Map options = configuredProd.getOptions();
+		//
+		// check for cross-sells
+		//
+		boolean showCrossSells = false;
+		
+		if ( productNode.hasAttribute("RELATED_PRODUCTS") ) {
+			showCrossSells = true;
+		}
+%>
+
+<%
+		// Construct the vc names and vc values strings
+		StringBuffer namesBuf = new StringBuffer();
+		StringBuffer valuesBuf = new StringBuffer();
+		for (Iterator it = options.keySet().iterator(); it.hasNext(); ) {
+			String name = (String) it.next();
+			namesBuf.append(name);
+			valuesBuf.append( (String) options.get(name) );
+			if ( it.hasNext() ) {
+				namesBuf.append(",");
+				valuesBuf.append(",");
+			}
+ 		}
+%>
+			<TR>
+<%		if ("SALES_UNIT".equals(sellBySalesUnit)) {
+			String selectedSalesUnit = configuredProd.getSalesUnit();
+%>
+<fd:FDProductInfo id="productInfo" skuCode="<%= productNode.getSku(0).getSkuCode() %>">
+ <fd:FDProduct id="fdproduct" productInfo="<%= productInfo %>">
+<TD WIDTH="9%" colspan="3">
+	<select name="salesUnit_<%=itemsShown%>" CLASS="text10" onChange="selectSalesUnit(document.build_list, <%= itemsShown %>, this)">
+	<logic:iterate id="salesUnit" collection="<%= fdproduct.getSalesUnits() %>" type="com.freshdirect.fdstore.FDSalesUnit">
+		<option value="<%= salesUnit.getName() %>"<%= salesUnit.getName().equals(selectedSalesUnit) ? " SELECTED" : ""%>><%= salesUnit.getDescription().trim() %>
+	</logic:iterate>
+	</select>
+	<input type="hidden" name="configQty_<%=itemsShown%>" VALUE="1">
+	<input type="hidden" name="salesUnit" value="<%= configuredProd.getSalesUnit() %>">
+	<script language="JavaScript" type="text/javascript">
+		function selectSalesUnit(formObj, idx, srcObj) {
+<%	if (sortedProducts.size() > 1) { %>
+			formObj.salesUnit[idx].value = srcObj.value;
+<%	} else { %>
+			formObj.salesUnit.value = srcObj.value;
+<%	} %>
+		}
+	</script>
+</TD>
+ </fd:FDProduct>
+</fd:FDProductInfo>
+<%		} else { %>
+<TD ALIGN="RIGHT" WIDTH="3%">
+<%	if (isAvailable) { %>
+	<script>
+	function chgConfigQty<%=itemsShown%>(delta) {
+		qty = parseFloat(document.build_list.configQty_<%=itemsShown%>.value) + delta;
+		if (isNaN(qty) || qty < <%= productNode.getQuantityMinimum() %>) {
+			qty = <%= productNode.getQuantityMinimum() %>;
+		} else if (qty >= <%= searchUser.getQuantityMaximum(productNode) %>) {
+			qty = <%= searchUser.getQuantityMaximum(productNode) %>;
+		}
+		qty = Math.floor( (qty-<%= productNode.getQuantityMinimum() %>)/<%=productNode.getQuantityIncrement()%> )*<%=productNode.getQuantityIncrement()%>  + <%= productNode.getQuantityMinimum() %>;
+		document.build_list.configQty_<%=itemsShown%>.value = qty;
+	}
+	</script>
+	<input name="configQty_<%=itemsShown%>" type="text" size="3" MAXLENGTH="5" CLASS="text10" VALUE="0" onBlur="chgConfigQty<%=itemsShown%>(0);">
+<%			} else { %>
+	<span class="text7silver">N/A</span>&nbsp;&nbsp;
+	<input type="hidden" name="configQty_<%=itemsShown%>" value="<%= productNode.getQuantityMinimum() %>">
+<%			} %>
+	<input type="hidden" name="salesUnit" value="<%= configuredProd.getSalesUnit() %>">
+</TD>
+<td WIDTH="3%"><% if (isAvailable) { %><A HREF="javascript:chgConfigQty<%=itemsShown%>(<%= productNode.getQuantityIncrement() %>);"><img src="/media_stat/crm/images/arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></A><BR><A HREF="javascript:chgConfigQty<%=itemsShown%>(<%= -productNode.getQuantityIncrement() %>);"><img src="/media_stat/crm/images/arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></A><% } else { %>&nbsp;<% } %></td>
+<td WIDTH="3%">&nbsp;<%= salesUnitDesc %></td>
+<%		} // if sellBySalesUnit %>
+				<TD WIDTH="5%">
+<% if (isAvailable) {
+	%><a href="javascript:addConfigToCart(document.build_list, <%= productCounter %>, document.build_list.configQty_<%= productCounter %>, 'add_config_to_cart.jsp',
+'<%= response.encodeURL(request.getRequestURI() + URLEncoder.encode((qryString!=null?"?"+qryString:""))) %>',
+ <%=searchIndex%>,<%= productNode.getQuantityMinimum() %>, <%= searchUser.getQuantityMaximum(productNode) %>);" class="add_to_cart">
+ADD</a><% } else { %>&nbsp;<% } %></TD>
+<%		Image productImage = productNode.getThumbnailImage();
+		String imgSrc = "/media_stat/crm/images/clear.gif";
+		int imgHeight = 30;
+		int imgWidth = 30;
+
+		if (productImage != null) {
+			imgSrc = productImage.getPath();
+			imgHeight = productImage.getHeight();
+			imgWidth = productImage.getWidth();
+		} %>
+				<TD WIDTH="69%" <%= (isAvailable) ? "" : "class='text7silver'" %>>
+					&nbsp;&nbsp;<a href="<%= prodPageLink %>"><img border="0" src="<%= imgSrc %>" width="<%= imgWidth %>" height="<%= imgHeight %>"></a>&nbsp;<a href="<%=prodPageLink%>" class="product<%= (isAvailable) ? "" : "unavailable" %>"><%= productNode.getFullName() %></a> <%= configuredProd.getConfigurationDesc() != null ? "("+ configuredProd.getConfigurationDesc() +")":"" %></TD>
+			<fd:FDProductInfo id="productInfo" skuCode="<%= configSku %>">
+				<TD WIDTH="8%" class="product<%= (isAvailable) ? "" : "_unavailable" %>"><% if (isAvailable) { %><%= currencyFormatter.format(productInfo.getDefaultPrice()) %>/<%= productInfo.getDisplayableDefaultPriceUnit() %><% } else { %>Not Available<% } %></td>
+			</fd:FDProductInfo>
+				<TD WIDTH="5%" ALIGN="CENTER"><a href="javascript:popResize('/shared/product_summary.jsp?productId=<%=productNode%>&catId=<%=cat%>','740','555','summ')" class="help" title="Product description & Information" style="font-size: 6pt;">?</a><B><% if (showCrossSells) { %><a href="place_order_related_items.jsp?searchIndex=<%= searchIndex %>&productId=<%= productNode %>&catId=<%= cat%>" title="Related Products">&reg;</a><% } else { %><% } %></B></TD>
+				<input type="hidden" name="productId" value="<%= productNode.isPreconfigured() ? ((ConfiguredProduct)productNode).getProduct() : productNode %>">
+				<input type="hidden" name="catId" value="<%= cat %>">
+				<input type="hidden" name="skuCode" value="<%= configuredProd.getSkuCode() %>">
+				<input type="hidden" name="vcNames" value="<%= namesBuf.toString() %>">
+				<input type="hidden" name="vcValues" value="<%= valuesBuf.toString() %>">
+				<input type="hidden" name="configDesc" value="<%= description %>">
+			</TR>
+<%		productCounter++;
+		itemsShown++; %>
+		</fd:ConfigProduct>
+		</logic:iterate>
+		<% if ((recipesShown+itemsShown) == 0) {  %>
+			<TR>
+				<TD COLSPAN="7" style="padding-left: 20px;"><i>No items available.</i></TD>
+			</TR>
+		<% } %>
+			</TABLE>

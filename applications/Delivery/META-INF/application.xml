@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <!DOCTYPE application PUBLIC '-//Sun Microsystems, Inc.//DTD J2EE Application 1.3//EN' 'http://java.sun.com/dtd/application_1_3.dtd'>
+  <application>
+  
+    <display-name>FreshDirect Transportation Server</display-name>
+    
+    <!-- EJB modules -->
+    
+    <!-- web apps -->
+    
+    <module>
+      <web>
+        <web-uri>DlvAdmin.war</web-uri>
+        <context-root>DlvAdmin</context-root>
+      </web>
+    </module>
+    
+    <module>
+      <web>
+        <web-uri>DlvConfirm.war</web-uri>
+        <context-root>DlvConfirm</context-root>
+      </web>
+    </module>
+	
+	<module>
+	  <web>
+		<web-uri>ocf-adm.war</web-uri>
+		<context-root>ocf-adm</context-root>
+	  </web>
+	</module>
+	
+	<module>
+	  <web>
+		<web-uri>listadmin.war</web-uri>
+		<context-root>listadmin</context-root>
+	  </web>
+	</module>
+  </application>

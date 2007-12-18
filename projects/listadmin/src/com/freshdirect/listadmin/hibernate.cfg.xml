@@ -1,0 +1,30 @@
+<!DOCTYPE hibernate-configuration PUBLIC
+	"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+  <session-factory name="default">
+    <!-- database connection info -->
+    <property name="hibernate.max_fetch_depth">0</property>
+    <property name="hibernate.use_outer_join">false</property>
+    <property name="connection.driver_class">oracle.jdbc.driver.OracleDriver</property>
+    <property name="dialect">org.hibernate.dialect.Oracle9Dialect</property>
+    <property name="show_sql">true</property>
+    <property name="connection.datasource">fddatasource</property>
+
+<!-- listadmin classes -->
+		<mapping resource="com/freshdirect/listadmin/db/VirtualObject.hbm.xml"/>
+	
+		<mapping resource="com/freshdirect/listadmin/db/Template.hbm.xml"/>
+		<mapping resource="com/freshdirect/listadmin/db/TemplateField.hbm.xml"/>
+		<mapping resource="com/freshdirect/listadmin/db/TemplateOrderBy.hbm.xml"/>
+		<mapping resource="com/freshdirect/listadmin/db/TemplateGroupBy.hbm.xml"/>
+	
+		<mapping resource="com/freshdirect/listadmin/db/Clause.hbm.xml"/>
+	
+		<mapping resource="com/freshdirect/listadmin/db/StoredQuery.hbm.xml"/>
+		<mapping resource="com/freshdirect/listadmin/db/StoredQueryValue.hbm.xml"/>
+
+
+  </session-factory>
+</hibernate-configuration>

@@ -1,0 +1,70 @@
+TD			{ font-size: 12px;  font-family: Verdana, Arial, sans-serif;	}
+td			 { font-size: 12px;  font-family: Verdana, Arial, sans-serif;	}
+BODY                  { font-color: #333333; font-family : Verdana, Arial, sans-serif; font-size : 12px; }
+A:link                 { color : #336600; }
+A:visited      	     { color : #336600; }
+A:active             { color : #FF9900; }
+.title13g2	     { font-size: 13px;  line-height: 18px;  font-weight: bold; font-family: Verdana, Arial, sans-serif; }
+.text10g2 	    { color: #338800;  font-size: 9px; font-family: Verdana, Arial, sans-serif; }
+.space2pix         { font-size: 2px; }
+
+.header               { font-size: 18px;  font-family: Verdana, Arial, sans-serif; }
+.bodyCopy	    { font-size: 12px;  font-family: Verdana, Arial, sans-serif; }
+.bodyCopySmall	 { font-size: 11px;  font-family: Verdana, Arial, sans-serif; }
+.red12px             { font-size: 12px;  font-color:#CC0000; font-family: Verdana, Arial, sans-serif; }
+
+.mainLink    { font-size: 16px; color: #336600; font-weight: bold; font-family: Arial, Helvetica, sans-serif; }
+a.mainLink:link {color: #336600; text-decoration: underline; }
+a.mainLink:visited {color: #336600; text-decoration: underline; }
+a.mainLink:active {color: #FF9933; text-decoration: underline; }
+a.mainLink:hover {color: #336600; text-decoration: underline; }
+
+.fdFooter    { font-size: 12px; color: #333333; font-family: Verdana, Arial, sans-serif; }
+a.fdFooter:link {color: #336600; text-decoration: underline; }
+a.fdFooter:visited {color: #336600; text-decoration: underline; }
+a.fdFooter:active {color: #FF9933; text-decoration: underline; }
+a.fdFooter:hover {color: #336600; text-decoration: underline; }
+
+.fdFooter_s    { font-size: 11px; color: #333333; font-family: Verdana, Arial, sans-serif; }
+a.fdFooter_s:link {color: #336600; text-decoration: underline; }
+a.fdFooter_s:visited {color: #336600; text-decoration: underline; }
+a.fdFooter_s:active {color: #FF9933; text-decoration: underline; }
+a.fdFooter_s:hover {color: #336600; text-decoration: underline; }
+
+.noteFooter    { font-size: 9px; color: #333333; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
+a.noteFooter:link {color: #336600; text-decoration: underline; }
+a.noteFooter:visited {color: #336600; text-decoration: underline; }
+a.noteFooter:active {color: #FF9933; text-decoration: underline; }
+a.noteFooter:hover {color: #336600; text-decoration: underline; }
+
+.orderViewHeader {
+	background-color: #e0e3d0;
+	padding: 4px;
+	font-weight: bold;
+	text-align: left;
+}
+.orderViewSeparator {
+	height: 8px;
+	border-bottom: 2px dashed #e0e3d0;
+	margin-bottom: 8px;
+}
+.orderViewSummary {
+	line-height: 13pt;
+}
+.orderSeparator {
+	height: 8px;
+	border-bottom: 1px solid #996;
+	margin-bottom: 8px;
+}
+.orderSummary {
+	background-color: #e0e3d0;
+	line-height: 20px;
+}
+.orderTotal {
+	background-color: #969;
+	color: white;
+	line-height: 20px;
+}
+.orderTotal td {
+	font-size: 13px;
+}

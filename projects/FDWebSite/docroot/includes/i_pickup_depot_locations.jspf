@@ -1,0 +1,179 @@
+<%@ page import="com.freshdirect.fdstore.FDDepotManager"%>
+<%@ page import="java.util.Collection"%>
+<%@ page import="com.freshdirect.framework.core.*"%>
+<%@ page import="com.freshdirect.customer.ErpCustomerInfoModel"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCustomerFactory"%>
+<%@ page import="com.freshdirect.common.address.*"%>
+<%
+Collection pickups = FDDepotManager.getInstance().getPickupDepots();
+boolean theHamptonsIsOn = FDStoreProperties.getHamptons();
+String  defaultDepotLocation = "";
+if (user !=null && user.getIdentity() != null){
+ 	defaultDepotLocation = FDCustomerManager.getDefaultDepotLocationPK(user.getIdentity() );
+}
+String fldDepotLocation = request.getParameter("selectAddressList");
+boolean checkedAddress = false;
+
+String otherPhone = request.getParameter("contact_phone_");
+if (otherPhone==null || otherPhone.trim().length() < 1) {
+	PhoneNumber pn = FDCustomerFactory.getErpCustomerInfo(user.getIdentity()).getOtherPhone();
+	otherPhone = pn!=null ? pn.getPhone() :"";
+}
+if(fldDepotLocation != null && fldDepotLocation.startsWith("DEPOT_")){
+	fldDepotLocation = fldDepotLocation.substring("DEPOT_".length());
+}else if (fldDepotLocation==null) {
+	fldDepotLocation = defaultDepotLocation;
+}
+
+String hamptonsPickup = request.getParameter("hamptons_pickup");
+if( hamptonsPickup==null) hamptonsPickup="";
+
+if(pickups.size() > 0){  %>
+	<table border="0" cellpadding="0" cellspacing="0" width="675">
+		<tr>
+			<td><img src="/media_stat/images/template/checkout/pickup_locations.gif" alt="PICK UP LOCATIONS"></td>
+		</tr>
+		<tr>
+			<td><img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br>
+				<img src="/media_stat/images/layout/999966.gif" WIDTH="675" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+			</td>
+		</tr>
+
+<% if(!user.isFraudulent() && user.isEligibleForSignupPromotion()){  %>
+		<tr>
+			<td><b>Please note:</b> The free fresh food promotion applies to home and depot delivery only. <a href="javascript:pop('/shared/promotion_popup.jsp',400,585)">Click here for details.</a></td>
+		</tr>
+<% } %>
+	</table><br>
+<%}%>
+
+<script LANGUAGE=JavaScript1.1>
+	function setSelectedDlvAddress(theForm) {
+		for(var i=0;i< theForm.selectAddressList.length;i++ ) {
+		 if (theForm.selectAddressList[i].value=="field_hamptons_pickup") {
+			theForm.selectAddressList[i].checked=true;
+			break;
+		 } 
+		}
+	}
+</script>
+
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" width="675">
+<TR VALIGN="TOP">
+<%
+int cnt = 0;
+
+if (theHamptonsIsOn) {
+%>
+
+<logic:iterate id="depot" collection="<%=pickups%>" type="com.freshdirect.delivery.depot.DlvDepotModel">
+<% 
+	if (!"HAM".equalsIgnoreCase(depot.getDepotCode()) || "HAM".equalsIgnoreCase(depot.getDepotCode())) continue; //skip it
+    Date now = new Date();
+%>	
+<logic:iterate id="location" collection="<%= depot.getLocations() %>" type="com.freshdirect.delivery.depot.DlvLocationModel">
+<%
+	if (location.getPK().getId().equalsIgnoreCase(fldDepotLocation) || (user.isPickupOnly() && pickups.size() == 1)) {
+		checkedAddress = true;
+    }
+
+	if(cnt%2 == 0){
+		if(cnt != 0){%>
+		</TR>
+		<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"></td></tr>
+		<tr><td bgcolor="#cccccc" colspan=6><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" border="0"></td></tr>
+		<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"></td></tr>
+			<%}%>
+		<TR VALIGN="TOP">
+<%  }
+	cnt++;
+%>
+
+	<%if(allowSelection){%>		
+			<TD width="20" valign="top"><input type="radio" name="selectAddressList" id='xx' class="radio" value="DEPOT_<%=location.getPK().getId()%>" <%=checkedAddress?"checked":"" %>>
+			<BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="20" HEIGHT="1"><BR></TD>
+	<%} else { %>		
+			<TD width="<%=(cnt-1)%2==0?"1":"20"%>" valign="top"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=(cnt-1)%2==0?"1":"20"%>" HEIGHT="1"><BR></TD>	
+	<%} %>	
+			<TD valign="top" width="50%" class="text13">
+				<% if (cnt==1) {  %><fd:IncludeMedia name='/media/editorial/hamptons/hamptons_pickup_blurb.html' />	<% }  %>
+
+			<b><%=location.getFacility()%></b>&nbsp;(<a href="javascript:popup('/delivery_popup.jsp','large');">Click for details</a>)<br>
+			<%=location.getAddress().getAddress1()%><br>
+			<% if(location.getAddress().getAddress2()!= null ){%>
+				<%=location.getAddress().getAddress2()%><br>
+			<%}%>
+			<%=location.getAddress().getCity()%> <%=location.getAddress().getState()%>, <%=location.getAddress().getZipCode()%><br>
+			<br>
+			<%if(location.getInstructions() != null && location.getInstructions().length() > 1  ){%>
+				<b>Pickup instructions:</b><br>
+				<%=location.getInstructions()%><br>
+			<%}%>
+            <%-- req phone # for Fire Island pickup --%>
+			<b>Local Contact Number/Cell Phone</b><br>
+			<%ErpCustomerInfoModel customerInfo = FDCustomerFactory.getErpCustomerInfo(user.getIdentity()); %> 
+			<input type="text" maxlength="14" size="21" class="text11" name="contact_phone_<%=location.getPK().getId()%>" value="<%=customerInfo.getOtherPhone()%>"><br><br>				
+		</td>
+<% checkedAddress = false;%>
+
+	</logic:iterate>
+</logic:iterate>	
+<% }  %>
+<logic:iterate id="depot" collection="<%=pickups%>" type="com.freshdirect.delivery.depot.DlvDepotModel">
+<% 
+	if ("HAM".equalsIgnoreCase(depot.getDepotCode())) continue; //skipp it
+    Date now = new Date();
+%>	
+<logic:iterate id="location" collection="<%= depot.getLocations() %>" type="com.freshdirect.delivery.depot.DlvLocationModel">
+<%
+	if (location.getPK().getId().equalsIgnoreCase(fldDepotLocation) || (user.isPickupOnly() && pickups.size() == 1)) {
+		checkedAddress = true;
+    }
+
+	if(cnt%2 == 0){
+		if(cnt != 0){%>
+		</TR>
+		<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"></td></tr>
+		<tr><td bgcolor="#cccccc" colspan=6><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" border="0"></td></tr>
+		<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"></td></tr>
+			<%}%>
+		<TR VALIGN="TOP">
+<%  }
+	cnt++;
+%>
+
+	<%if(allowSelection){%>		
+			<TD width="20" valign="top"><input type="radio" name="selectAddressList" id='xx' class="radio" value="DEPOT_<%=location.getPK().getId()%>" <%=checkedAddress?"checked":"" %>><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="20" HEIGHT="1"><BR></TD>
+	<%} else { %>		
+			<TD width="<%=(cnt-1)%2==0?"1":"20"%>" valign="top"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=(cnt-1)%2==0?"1":"20"%>" HEIGHT="1"><BR></TD>	
+	<%} %>	
+			<TD valign="top" width="50%" class="text13">
+		
+			<b><%=location.getFacility()%></b>&nbsp;(<a href="javascript:popup('/delivery_popup.jsp','large');">Click for details</a>)<br>
+			<%=location.getAddress().getAddress1()%><br>
+			<% if(location.getAddress().getAddress2()!= null ){%>
+				<%=location.getAddress().getAddress2()%><br>
+			<%}%>
+			<%=location.getAddress().getCity()%> <%=location.getAddress().getState()%>, <%=location.getAddress().getZipCode()%><br>
+			<br>
+			<%if(location.getInstructions() != null && location.getInstructions().length() > 1  ){%>
+				<b>Pickup instructions:</b><br>
+				<%=location.getInstructions()%><br>
+			<%}%>
+            <%-- req phone # for Fire Island pickup
+			<b>Local Contact Number/Cell Phone</b><br>
+			Required for Fire Island orders<br>
+			<%ErpCustomerInfoModel customerInfo = FDCustomerFactory.getErpCustomerInfo(user.getIdentity()); %> 
+			<input type="text" maxlength="14" size="21" class="text11" name="contact_phone_<%=location.getPK().getId()%>" value="<%=customerInfo.getOtherPhone()%>"><br>--%><br>				
+		</td>
+<% checkedAddress = false;%>
+
+	</logic:iterate>
+</logic:iterate>	
+<%if(cnt !=0) {
+   if (cnt%2 != 0){ %>
+	  <td colspan="2"></td>
+<% } %>
+</tr>
+<%}%>
+</TABLE>

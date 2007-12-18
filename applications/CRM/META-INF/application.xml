@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <!DOCTYPE application PUBLIC '-//Sun Microsystems, Inc.//DTD J2EE Application 1.3//EN' 'http://java.sun.com/dtd/application_1_3.dtd'>
+  <application>
+  
+    <display-name>FreshDirect CRM Server</display-name>
+    
+    <!-- EJB modules -->
+    
+    <module>
+      <ejb>ERPServicesEJB-WL.jar</ejb>
+    </module>
+    <module>
+      <ejb>DeliveryEJB-WL.jar</ejb>
+    </module>
+    <module>
+      <ejb>FDStoreEJB-WL.jar</ejb>
+    </module>
+    
+    <!-- web apps -->
+        
+    <module>
+      <web>
+        <web-uri>CRM.war</web-uri>
+        <context-root>/</context-root>
+      </web>
+    </module>
+        
+     <module>
+          <web>
+            <web-uri>RefAdmin.war</web-uri>
+            <context-root>RefAdmin</context-root>
+          </web>
+    </module>   
+    
+  </application>

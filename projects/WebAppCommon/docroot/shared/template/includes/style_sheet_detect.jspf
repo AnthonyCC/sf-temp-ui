@@ -1,0 +1,21 @@
+<%
+String browser = request.getHeader("User-Agent");
+
+
+int Mac = browser.indexOf("Mac");
+
+String cssStylesheet = "/assets/css/";
+
+
+if (Mac > -1) {
+	cssStylesheet = cssStylesheet + "mac_";
+} else {
+	cssStylesheet = cssStylesheet + "pc_";
+}
+
+// we only have 2 stylesheets now, mac & pc
+
+	cssStylesheet = cssStylesheet + "ie.css";
+%>
+
+<link rel="stylesheet" href="<%=cssStylesheet%>" type="text/css">

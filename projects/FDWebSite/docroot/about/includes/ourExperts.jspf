@@ -1,0 +1,22 @@
+<% String servletContext = request.getContextPath(); %>	
+		<table width="600" border="0" cellspacing="0" cellpadding="0">
+		<TR>
+			<td width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
+			<TD WIDTH="400" valign="top">
+				<font class="text13">			
+				<img src="/media_stat/images/template/about/abo_experts_hdr.gif" width="179" height="22" alt="" border="0">			
+				<font class="space8pix"><BR><br></font>
+				With more than two centuries' combined experience, we know our product inside and out. We've worked with farmers, ranchers, fishermen, and food producers from New Guinea to the North Fork. We know where to find the premium stuff all year round, and how to get it to your table in perfect shape.
+				<font class="space8pix"><BR><br></font>
+				Only your mom cares more about what you eat.
+				<font class="space8pix"><BR><br></font>
+				Click on the name of a department to find out more about the manager behind it: 
+				<a href="javascript:popup('<%=servletContext%>/shared/popup.jps?deptId=fru&attrib=DEPT_MGR_BIO&tmpl=large','large')">Fruit</a> & <a href="javascript:popup('<%=servletContext%>/shared/popup.jps?deptId=veg&attrib=DEPT_MGR_BIO&tmpl=large','large')">Vegetables</a>, <a href="javascript:popup('<%=servletContext%>/shared/popup.jps?deptId=cof&attrib=DEPT_MGR_BIO&tmpl=large','large')">Coffee</a> & <a href="javascript:popup('<%=servletContext%>/shared/popup.jps?deptId=tea&attrib=DEPT_MGR_BIO&tmpl=large','large')">Tea</a>, <a href="javascript:popup('<%=servletContext%>/shared/popup.jps?deptId=mea&attrib=DEPT_MGR_BIO&tmpl=large','large')">Meat</a>, 
+				<a href="javascript:popup('<%=servletContext%>/shared/popup.jps?deptId=sea&attrib=DEPT_MGR_BIO&tmpl=large','large')">Seafood</a>, <a href="javascript:popup('<%=servletContext%>/shared/popup.jps?deptId=del&attrib=DEPT_MGR_BIO&tmpl=large','large')">Deli</a>, <a href="javascript:popup('<%=servletContext%>/shared/popup.jps?deptId=che&attrib=DEPT_MGR_BIO&tmpl=large','large')">Cheese</a>, <a href="javascript:popup('<%=servletContext%>/shared/popup.jps?deptId=bak&attrib=DEPT_MGR_BIO&tmpl=large&spec=craig_kominiak','large')">Bakery</a>, <a href="javascript:popup('<%=servletContext%>/shared/popup.jps?deptId=bak&attrib=DEPT_MGR_BIO&tmpl=large&spec=fredy_ayala','large')">Pastry</a>, <a href="javascript:popup('<%=servletContext%>/shared/popup.jps?deptId=pas&attrib=DEPT_MGR_BIO&tmpl=large','large')">Pasta</a>, <a href="javascript:popup('<%=servletContext%>/shared/popup.jps?deptId=hmr&attrib=DEPT_MGR_BIO&tmpl=large&spec=david_mcInerney','large')">Kitchen</a>, Dairy, Frozen, Grocery, or Specialty. 
+				<font class="space8pix"><BR><br></font>
+				</font>
+			</td>
+			<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
+			<td valign="top"><img src="/media_stat/images/template/about/cof_manager_abo.jpg" width="150" height="270" alt="" border="0"></td>
+		</tr>
+		</TABLE>

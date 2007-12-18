@@ -1,0 +1,50 @@
+<html jwcid="shell">
+<span jwcid="extraHead@Block">
+	<script type="text/javascript">
+		djConfig = {
+			isDebug: false,
+			baseRelativePath: "js/dojo",
+			preventBackButtonFix: false,
+			parseWidgets: false,
+			disableFlashStorage: true
+		};
+	</script>
+	<script jwcid="@Any" type="text/javascript" src="ognl:webRequest.contextPath + '/js/dojo/dojo.js'"></script>
+</span>
+<body jwcid="@Body">
+
+
+<table>
+  <tr>
+    <!-- Nav -->
+    <td width="250" valign="top">
+      <span jwcid="@RoundedContainer" width="150">
+	<a jwcid="@ExternalLink" page="CampaignEditor"><b>Create new Campaign</b></a>
+      </span>
+      <p></p>
+
+      <span jwcid="@RoundedContainer" width="150">
+        <b><u>Existing campaigns</u></b><br>
+        <dl>
+          <span jwcid="campaigns">
+            <di><span jwcid="@InsertText" value="ognl:components.campaigns.value.name"/></di><dd><a jwcid="@ExternalLink" page="CampaignEditor" parameters="ognl:components.campaigns.value.id">Edit</a>&nbsp;|&nbsp;<a jwcid="@ExternalLink" page="FlightEditor" parameters="ognl:components.campaigns.value.id">New flight</a></dd>
+          </span>
+        </dl>
+      </span>
+    </td>
+
+    <!-- spacer -->
+    <td width="20">&nbsp;</td>
+
+    <!-- content -->
+    <td width="700" valign="top">
+      <span jwcid="@RoundedContainer" width="600">
+        <span jwcid="@RenderBody"/>
+      </span>
+    <td>
+  </tr>
+</table>
+
+
+</body>
+</html>

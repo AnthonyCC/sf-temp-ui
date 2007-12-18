@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE web-app PUBLIC
+	"-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+	"http://java.sun.com/dtd/web-app_2_3.dtd">
+	
+	
+<web-app>
+	<display-name>Spring OnlineFoodFacilitator</display-name>
+	<description>Spring OFF sample application</description>
+          
+	<!--
+	  - Key of the system property that should specify the root directory of this
+	  - web app. Applied by WebAppRootListener or Log4jConfigListener.
+	  -->
+	
+ 	<context-param>
+		<param-name>webAppRootKey</param-name>
+		<param-value>MarketingProject.root</param-value>
+	</context-param>
+    
+	<!--
+	  - Location of the Log4J config file, for initialization and refresh checks.
+	  - Applied by Log4jConfigListener.
+	  -->
+	  
+	<!--
+	<context-param>
+		<param-name>log4jConfigLocation</param-name>
+		<param-value>/WEB-INF/log4j.properties</param-value>
+	</context-param>
+    -->
+	<!--
+	  - Location of the XML file that defines the root application context.
+	  - Applied by ContextLoaderServlet.
+		-
+		- Can be set to "/WEB-INF/applicationContext-hibernate.xml" for the Hibernate
+		- implementation, "/WEB-INF/applicationContext-ojb.xml" for the Apache OJB one,
+		- "/WEB-INF/applicationContext-toplink.xml" for the Oracle TopLink one,
+		- or "/WEB-INF/applicationContext-jdbc.xml" for the JDBC one.
+	  -->
+  
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/applicationContext-mktAdmin.xml</param-value>				
+	</context-param>		  
+
+	<!--
+	  - Configures Log4J for this web app.
+	  - As this context specifies a context-param "log4jConfigLocation", its file path
+	  - is used to load the Log4J configuration, including periodic refresh checks.
+	  -
+	  - Would fall back to default Log4J initialization (non-refreshing) if no special
+	  - context-params are given.
+	  -
+	  - Exports a "web app root key", i.e. a system property that specifies the root
+	  - directory of this web app, for usage in log file paths.
+	  - This web app specifies "petclinic.root" (see log4j.properties file).
+	  -->
+	<!-- Leave the listener commented-out if using JBoss -->
+	<!--
+	<listener>
+		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+	</listener>
+	-->
+
+	<!--
+	  - Loads the root application context of this web app at startup,
+	  - by default from "/WEB-INF/applicationContext.xml".
+		- Note that you need to fall back to Spring's ContextLoaderServlet for
+		- J2EE servers that do not follow the Servlet 2.4 initialization order.
+		-
+	  - Use WebApplicationContextUtils.getWebApplicationContext(servletContext)
+	  - to access it anywhere in the web application, outside of the framework.
+	  -
+	  - The root context is the parent of all servlet-specific contexts.
+	  - This means that its beans are automatically available in these child contexts,
+	  - both for getBean(name) calls and (external) bean references.
+	  -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<!--
+	  - Servlet that dispatches request to registered handlers (Controller implementations).
+	  - Has its own application context, by default defined in "{servlet-name}-servlet.xml",
+	  - i.e. "petclinic-servlet.xml".
+	  -
+	  - A web app can contain any number of such servlets.
+	  - Note that this web app has a shared root application context, serving as parent
+	  - of all DispatcherServlet contexts.
+	  -->
+	<servlet>
+		<servlet-name>mktAdmin</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+
+
+
+	<!--
+	  - Maps the petclinic dispatcher to *.htm. All handler mappings in
+	  - petclinic-servlet.xml will by default be applied to this subpath.
+	  - If a mapping isn't a /* subpath, the handler mappings are considered
+	  - relative to the web app root.
+	  -
+	  - NOTE: A single dispatcher can be mapped to multiple paths, like any servlet.
+	  -->
+	<servlet-mapping>
+		<servlet-name>mktAdmin</servlet-name>
+		<url-pattern>*.do</url-pattern>
+	</servlet-mapping>
+
+	<session-config>
+		<session-timeout>10</session-timeout>
+	</session-config>
+
+	<welcome-file-list>
+		<welcome-file>/index.jsp</welcome-file>
+		<welcome-file>/index.html</welcome-file>
+		<welcome-file>/index.htm</welcome-file>
+		<welcome-file>/default.html</welcome-file>
+		<welcome-file>/default.htm</welcome-file>
+		<welcome-file>/default.jsp</welcome-file>
+	</welcome-file-list>
+	<error-page>
+		<exception-type>java.lang.Exception</exception-type>
+		<!-- Displays a stack trace -->
+		<location>/WEB-INF/jsp/uncaughtException.jsp</location>
+	</error-page>
+    
+    <taglib> 
+    <taglib-uri>http://www.springframework.org/tags</taglib-uri> 
+    <taglib-location>/WEB-INF/tld/spring.tld</taglib-location> 
+  </taglib> 
+
+    <taglib>
+        <taglib-uri>template</taglib-uri>
+        <taglib-location>/WEB-INF/tld/struts-template.tld</taglib-location>
+    </taglib>   
+	
+	<taglib>
+	   <taglib-uri>/tld/extremecomponents</taglib-uri>
+	   <taglib-location>/WEB-INF/tld/extremecomponents.tld</taglib-location>
+	</taglib>
+    
+      	<taglib> 
+    	<taglib-uri>http://java.sun.com/jstl/core</taglib-uri> 
+    	<taglib-location>/WEB-INF/tld/c.tld</taglib-location> 
+  	</taglib> 
+  	<taglib> 
+    	<taglib-uri>http://www.springframework.org/tags/form</taglib-uri> 
+    	<taglib-location>/WEB-INF/tld/spring-form.tld</taglib-location> 
+  	</taglib>  
+
+
+	<security-constraint>
+		<display-name/>
+		<web-resource-collection>
+			<web-resource-name>MrktAdmin</web-resource-name>
+			<description>Security Constraints for DlvConfirm</description>
+			<url-pattern>/*</url-pattern>
+			<http-method>POST</http-method>
+			<http-method>GET</http-method>
+		</web-resource-collection>
+		<auth-constraint>
+			<description>Authorization Constraints for DlvConfirm</description>
+			<role-name>mktAdmin</role-name>
+		</auth-constraint>
+		<user-data-constraint>
+			<description>SSL not required</description>
+			<transport-guarantee>NONE</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
+	<login-config>
+		<auth-method>BASIC</auth-method>
+		<realm-name>weblogic</realm-name>
+	</login-config>
+	<security-role>
+		<description>DlvConfirmation Users</description>
+		<role-name>mktAdmin</role-name>
+	</security-role>
+
+</web-app>

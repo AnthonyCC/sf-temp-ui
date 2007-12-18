@@ -1,0 +1,65 @@
+<span jwcid="@If" condition="ognl:not renderLabel">
+	<span jwcid="@If" condition='ognl:"B" == type.name'>
+		<input jwcid="checkbox" class="checkbox"/>
+	</span>
+	
+	<span jwcid="@If" condition='ognl:type.name in {"I", "D", "S"}'>
+		<input jwcid="textField"/>
+	</span>
+
+	<span jwcid="@If" condition='ognl:"E" == type.name'>
+		<select jwcid="select"/>
+	</span>
+
+    <span jwcid="@If" condition='ognl:"DT" == type.name'>
+        <span jwcid="datePicker"/>
+    </span>
+</span>
+
+<span jwcid="@If" condition="ognl:renderLabel">
+	<span jwcid="@If" condition='ognl:"B" == type.name'>
+		<td class="label">
+			<label jwcid="@Any" for="ognl:def.name" title="ognl:def.name">
+				<span jwcid="@Insert" value="ognl:def.label"/>
+			</label>
+		</td>
+		<td>
+			<input jwcid="checkbox2" class="checkbox"/>
+		</td>
+	</span>
+
+    <span jwcid="@If" condition='ognl:"DT" == type.name'>
+		<td class="label">
+			<label jwcid="@Any" for="ognl:def.name" title="ognl:def.name">
+				<span jwcid="@Insert" value="ognl:def.label"/>
+			</label>
+		</td>
+		<td>
+	        <span jwcid="datePicker2"/>
+		</td>
+    </span>
+    
+	<span jwcid="@If" condition='ognl:type.name in {"I", "D", "S"}'>
+		<td class="label">
+			<label jwcid="@Any" for="ognl:def.name" title="ognl:def.name">
+				<span jwcid="@FieldLabel" field="ognl:components.textField2"/>
+			</label>
+		</td>
+	
+		<td>
+			<input jwcid="textField2"/>
+		</td>
+	</span>
+
+	<span jwcid="@If" condition='ognl:"E" == type.name'>
+		<td class="label">
+			<label jwcid="@Any" for="ognl:def.name" title="ognl:def.name">
+				<span jwcid="@Insert" value="ognl:def.label"/>
+			</label>
+		</td>
+		<td>
+			<select jwcid="select2"/>
+		</td>
+	</span>
+	
+</span>

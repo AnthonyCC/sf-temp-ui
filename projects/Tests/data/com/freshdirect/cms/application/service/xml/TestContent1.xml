@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Content>
+
+	<Foo id="A">
+		<label>aaa</label>
+	</Foo>
+
+	<UnknownType id="xxx">
+		<Dummy>foo</Dummy>
+		<Blah>blah</Blah>
+	</UnknownType>
+
+	<Foo id="B">
+		<label>bbb</label>
+		<children>
+			<Foo ref="A" />
+			<Foo ref="B" />
+		</children>
+		<BogusAttribute>bogus</BogusAttribute>
+	</Foo>
+
+	<Foo id="C">
+		<label>ccc</label>
+		<children>
+			<Foo ref="A" />
+			<Foo id="D">
+				<label>ddd</label>
+			</Foo>
+			<Foo>
+				<label>xxx</label>
+			</Foo>
+			<Foo ref="B" />
+			<Bogus>bogus</Bogus>
+			<!-- FIXME bad refs are not checked
+			<BogusRelationship ref="bogus"/>
+			-->
+		</children>
+	</Foo>
+
+	<Foo id="D">
+		<label>an element with a date attribute</label>
+		<date>2006-01-25</date>
+	</Foo>
+
+</Content>

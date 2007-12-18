@@ -1,0 +1,236 @@
+<%
+/*
+-- This includes paints the recipe department body and bottom (no side navs)
+-- Expects the host page to define and set variable recipeDepartment of type RecipeDepartment
+-- Host page will need various Imports...(see recipe_dept.jsp)
+*/
+
+    Comparator priceComp = new ProductModel.PriceComparator();
+    boolean isPreviewMode =ContentFactory.getInstance().getPreviewMode();
+
+    Attribute editorialAttrib = recipeDepartment.getAttribute("editorial");
+    String editorialPath = editorialAttrib==null?"":((Html)editorialAttrib.getValue()).getPath(); 
+    String deptIdentifier = recipeDepartment.getFullName(); 
+    List featuredRecipes = ((RecipeDepartment)recipeDepartment).getFeaturedRecipes();
+    List featuredProducts =((RecipeDepartment)recipeDepartment).getAvailableFeaturedProducts();
+    List featuredSources = ((RecipeDepartment)recipeDepartment).getAvailableFeaturedSources();
+    CategoryModel featProdCat = ((RecipeDepartment)recipeDepartment).getFeaturedProductCategory();	
+    RecipeSubcategory rcpSubCat = recipeDepartment.getFeaturedRecipeCategory();
+    RecipeCategory rcpCat = rcpSubCat!=null ? (RecipeCategory)rcpSubCat.getParentNode() : null;
+    %>
+	
+<% 
+if (editorialPath!=null && !"".equals(editorialPath.trim())) {  %>
+	<div style="width: 550px; text-align:left;" class="text11">
+		<img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br>
+		<fd:IncludeMedia name='<%= editorialPath %>' />
+		<br><img src="/media_stat/images/layout/clear.gif" width="1" height="12">
+	</div>
+<% } %>
+		
+	<table width="550" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td colspan="3" width="206" height="25" valign="bottom"><img src="/media_stat/recipe/rechm_tab_choose.gif" width="206" height="25"></td>
+        <td colspan="2" height="25" style="border-bottom: solid 2px #FF9933;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+        <td rowspan="2" width="8" valign="bottom" height="31"><img src="/media_stat/recipe/rechm_corn_tr.gif" width="8" height="8" border="0"></td>
+      </tr>
+      <tr>
+        <td width="8" style="border-left: solid 2px #FF9933;"><img src="/media_stat/images/layout/clear.gif" width="6" height="6"></td>
+        <td width="11"><img src="/media_stat/images/layout/clear.gif" width="11" height="1"></td>
+        <td width="187"><img src="/media_stat/images/layout/clear.gif" width="187" height="1"></td>
+        <td width="159"><img src="/media_stat/images/layout/clear.gif" width="159" height="1"></td>
+        <td width="177"><img src="/media_stat/images/layout/clear.gif" width="177" height="1"></td>
+      </tr>
+      <tr>
+        <td style="border-left: solid 2px #FF9933;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+        <td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+        <td valign="top" colspan="2" rowspan="2" style="padding-top: 10px; padding-right: 10px;">
+			<logic:iterate id="recipeCategory" collection="<%= recipeDepartment.getCategories() %>" type="com.freshdirect.fdstore.content.RecipeCategory">
+			<% 
+				if (recipeCategory.isSecondaryCategory()) continue;  
+				Attribute rcpAttrib = recipeCategory.getAttribute("label");
+				Image catLabelImg = null;
+				String catLabelPath = null;
+				if (rcpAttrib!=null) {
+					catLabelImg = (Image)rcpAttrib.getValue();
+			    	catLabelPath = catLabelImg.getPath();
+				} 
+		        Domain catClassification = recipeCategory.getClassification(); 
+    	    %>
+		    	<a href="<%=response.encodeURL("recipe_cat.jsp?catId="+recipeCategory)%>&trk=dpage" class="recipe_category"><% if (catLabelImg!=null) {%><img src="<%=catLabelPath%>" width="<%=catLabelImg.getWidth()%>" height="<%=catLabelImg.getHeight()%>" border="0"><%} else {%><%=recipeCategory.getName().toUpperCase()%><%}%></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="1"><br>
+			<% int subcatItemCount = 0; %>
+			<logic:iterate id="recipeSubcategory" collection="<%= recipeCategory.getSubcategories() %>" type="com.freshdirect.fdstore.content.RecipeSubcategory">
+		        <%
+					if (subcatItemCount > 0) {
+				%>
+					<span class="dot_separator">&#149;</span>
+				<% } %>
+				<a href="<%=response.encodeURL("recipe_subcat.jsp?catId="+recipeCategory+"&subCatId="+recipeSubcategory+"&trk=dpage")%>" class="recipe_subcategory"><%=recipeSubcategory.getName()%></a>
+				<% subcatItemCount++; %>
+			</logic:iterate><br><br>
+		  </logic:iterate>
+		  <br>
+		  <table cellpadding="0" cellspacing="0" border="0">
+		  	<form name="recipeSearch" method="get" action="/recipe_search.jsp?trk=rdsrch">
+			<tr>
+				<td colspan="3" style="padding-bottom: 4px;"><img src="/media_stat/recipe/rechm_recipe_search.gif" width="98" height="10" alt="RECIPE SEARCH"></td>
+			</tr>
+		  	<tr>
+				<td style="padding-right: 6px;"><input name="keyword" size="20"></td>
+				<td style="padding-right: 10px;"><input type="image" src="/media_stat/recipe/rechm_find_button.gif" border="0" alt="FIND"></td>
+				<td><a href="/recipe_search.jsp?trk=dpage">Advanced recipe search</a></td>
+			</tr>
+		  	</form>
+		  </table>
+		  <img src="/media_stat/images/layout/clear.gif" width="1" height="10">
+		</td>
+        <td valign="top">
+			<img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
+			<img src="/media_stat/recipe/rechm_by_cookbook.gif" border="0" width="93" height="9" vspace="5"><br>
+		    <select class="text9" name="cookbook" style="width:170px;"
+				onchange="if (this.value!='') window.location='/recipe_search.jsp?recipeSource=' + this.value+'&trk=pcbk';">
+				<option>Search by Source</option>
+		        <logic:iterate id="recipeSource" collection="<%= RecipeSource.findAllAvailable(true) %>" type="com.freshdirect.fdstore.content.RecipeSource">
+<%
+		                  String srcName = recipeSource.getName().toUpperCase().startsWith("THE ") ? recipeSource.getName().substring(4)+", The" : recipeSource.getName();
+%>
+					<option value="<%= recipeSource.getContentName() %>"><%=srcName%></option>
+				</logic:iterate>
+			</select>
+			<br><img src="/media_stat/images/layout/clear.gif" width="1" height="5"><br>
+			<img src="/media_stat/recipe/rechm_by_author.gif" border="0" width="71" height="10" vspace="5"><br>
+			<select class="text9" name="author" style="width:170px;"
+				onchange="if (this.value!='') window.location='/recipe_search.jsp?recipeAuthor=' + this.value+'&trk=paut';">
+			   <option>Search by Author</option>
+			   <logic:iterate id="recipeAuthor" collection="<%= RecipeAuthor.findAllAvailable() %>" type="com.freshdirect.fdstore.content.RecipeAuthor">
+					<option value="<%= recipeAuthor.getContentName() %>"><%=recipeAuthor.getNameLastFirst()%></option>
+               </logic:iterate>
+			</select>
+		</td>
+
+        <td width="8" style="border-right: solid 2px #FF9933;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+      </tr>
+      <tr>
+        <td valign="bottom" style="border-left: solid 2px #FF9933;" height="402"><img src="/media_stat/images/layout/clear.gif" width="6" height="402"></td>
+		<td height="402"><img src="/media_stat/images/layout/clear.gif" width="1" height="402"></td>
+        <td width="185" height="410" colspan="2" rowspan="2" align="right" valign="bottom" style="background-image: url('/media_stat/recipe/bg_bot_image.gif');"><img src="/media/images/navigation/department/recipes/rechome/rechm_bot_image.jpg" width="185" height="410"></td>
+      </tr>
+      <tr>
+        <td width="8" height="8" valign="bottom" style="background-image: url('/media_stat/recipe/bg_left_image.gif');"><img src="/media_stat/recipe/rechm_corn_bl.gif" width="8" height="8"></td>
+        <td height="8" colspan="3" style="border-bottom: solid 2px #FF9933;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+      </tr>
+    </table>
+	<img src="/media_stat/images/layout/clear.gif" width="1" height="15">
+	<table width="550" cellpadding="0" cellspacing="0" border="0">
+	  <tr valign="top">
+	  	<td width="275" style="padding-right: 10px; border-right: solid 1px #CCCCCC;"><img src="/media_stat/images/layout/clear.gif" width="272" height="1"><br>
+	       <% if (rcpCat!= null &&  featuredRecipes!=null && featuredRecipes.size() > 0) { 	       %>
+	          <img src="/media/images/navigation/department/recipes/rechome/rechm_seasonal_graphic.gif" border="0" width="267"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br>
+          	  <logic:iterate id="aFeatRecipe" collection="<%=featuredRecipes%>" type="com.freshdirect.fdstore.content.Recipe">
+			  <% if (!isPreviewMode && !aFeatRecipe.isAvailable()) continue; 
+			  if (rcpCat!=null) { %>
+		          <a href="<%=response.encodeURL("recipe.jsp?catId="+rcpCat+"&recipeId="+aFeatRecipe+"&trk=dfeat")%>"><%=aFeatRecipe.getName()%></a>
+			<% } else { %><%=aFeatRecipe.getName()%><% } %>
+			<br>
+		  	<span class="recipe_author"><%=aFeatRecipe.getDisplayableSource()%></span><br><br>
+           </logic:iterate>
+	  	<a href="<%=response.encodeURL("recipe_subcat.jsp?catId="+rcpCat+"&subCatId="+rcpSubCat+"&trk=feat")%>" class="text12"><strong>More seasonal recipes...</strong></a>
+	       <% } %>
+	  	</td>
+		<td width="275" align="center" style="padding-left:10px;">
+ 
+	       <% if (featProdCat!=null && featuredProducts!=null && featuredProducts.size() > 0) { 	       
+	            int itmCount = 0;
+	       %>
+			<img src="/media_stat/recipe/rechm_fave_coookbooks.gif" width="161" height="28"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10">
+		   <table width="100%" align="center" cellpadding="0" cellspacing="0" border="0">
+		    <logic:iterate id='product' collection="<%=featuredProducts%>" type="com.freshdirect.fdstore.content.ProductModel">
+<% 
+			ContentNodeModel prodParent = product.getParentNode(); 
+			List skus = product.getSkus(); 
+			
+			for (ListIterator li=skus.listIterator(); li.hasNext(); ) {
+				SkuModel sku = (SkuModel)li.next();
+				if ( sku.isUnavailable() ) {
+				li.remove();
+				}
+			}
+			int skuSize = skus.size();
+
+			SkuModel sku = null;
+			String prodPrice = null;
+			if (skuSize==1) {
+			    sku = (SkuModel)skus.get(0);  // we only need one sku
+			}
+			else {
+			    sku = (SkuModel) Collections.min(skus, priceComp);
+			}
+%>
+			<fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>"> 
+<% 
+                prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
+%>                      
+			</fd:FDProductInfo>
+<%
+			String prodBrandLabel = product.getPrimaryBrandName();
+        		String prodName = product.getFullName().substring(prodBrandLabel.length()).trim(); 
+			String prodPageLnk = response.encodeURL("product.jsp?catId="+ featProdCat + "&productId=" + product+"&trk=fckbk");
+        		Image prodImg  = (Image)product.getCategoryImage();
+			    if ((itmCount%2)==0) {
+				if(itmCount !=0 ) {%>
+			</tr>
+			<% } %>
+					<tr valign="top" align="center">
+		<%          }%>
+					    <td width="50%">
+						<a href="<%=prodPageLnk%>"><img src="<%=prodImg.getPath()%>" <%=JspMethods.getImageDimensions(prodImg)%> border="0" alt="<%=product.getFullName()%>"></a><br>
+						<a href="<%=prodPageLnk%>"><% if (prodBrandLabel.length()>0) {%><font class="text10bold"><%=prodBrandLabel%></font><br><%}%><%=prodName%></a><br><font class="favoritePrice"><%=prodPrice%></font>
+						<br><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0">
+					    </td>
+		<%          itmCount++;  
+					if (itmCount % 2 == 1 ) { //add middle space
+		%>
+					<td><img src="/media_stat/images/layout/clear.gif" width="10" height="1" border="0"></td>
+		<% } %>
+            		    </logic:iterate>
+			</tr>
+		   </table>
+	  	   <img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br>
+	  	   <a href="<%=response.encodeURL("category.jsp?catId=" + featProdCat)%>" class="text12"><strong>Click here for more...</strong></a>
+<%		} else if (featuredSources!=null && !featuredSources.isEmpty() ){ //end of if featureProducts  
+	            int itmCount = 0;       %>
+		   <img src="/media/images/navigation/department/recipes/rechome/rechm_fave_coookbooks2.gif" width="195" height="28"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10">
+		   <table width="100%" align="center" cellpadding="0" cellspacing="0" border="0">
+		    <logic:iterate id='rcpSource' collection="<%=featuredSources%>" type="com.freshdirect.fdstore.content.RecipeSource">
+<% 
+		        String ckbkURL = response.encodeURL("/recipe_search.jsp?recipeSource="+rcpSource.getContentName()+"&trk=dfeat");
+			Image srcImg = (Image)rcpSource.getImage();
+
+			if ((itmCount%2)==0) {
+			   if(itmCount !=0 ) {%>
+			       </tr>
+		<%      } %>
+			  <tr valign="top" align="center">
+		<%      }   %>
+			<td width="50%">
+			  <% if (srcImg!=null) { %>
+			    <a href="<%=ckbkURL%>"><img src="<%=srcImg.getPath()%>" <%=JspMethods.getImageDimensions(srcImg)%> border="0" alt="<%=rcpSource.getName()%>"></a><br>
+			 <% }  %>
+			   <a href="<%=ckbkURL%>"><font class="text10bold"><%=rcpSource.getName()%></font></a>
+			   <br><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0">
+			 </td>
+
+		<% //      itmCount++;  
+			 if (itmCount==4) break;// get out, we're only showing 4 items max
+			 if (itmCount == 0 || itmCount==2 ) { //add middle space   		%>
+				<td><img src="/media_stat/images/layout/clear.gif" width="10" height="1" border="0"></td>
+		<%       }   %>
+		<%       itmCount++;  %>
+
+            	      </logic:iterate>
+			</tr>
+		   </table>
+<%              }   // end of else-if featured source.. %>
+		</td>
+	  </tr>
+	</table>

@@ -1,0 +1,195 @@
+<%@ page import='java.lang.*'  %>
+<%@ page import='java.lang.Math'  %>
+<%@ page import='java.text.*'  %>
+
+<%!
+private final static String[] NUMERALS = new String[] { "1st", "2nd", "3rd", "4th", "5th", "6th", "7th" };
+
+private static final SimpleDateFormat EXPIRATION_DATE = new SimpleDateFormat("MMMM d, yyyy");
+%>
+
+<%
+int oneMonthMilisecond = 30*24*60*60*1000;
+int currentDateMilisecond = (int)System.currentTimeMillis() ;
+
+boolean isDepotUser = user==null?false:user.isDepotUser();
+boolean isSignup = (request.getRequestURI()).indexOf("registration_status_change.jsp") > -1;
+
+Promotion promo = request.getParameter("cc") != null ? (Promotion)PromotionFactory.getInstance().getPromotion(request.getParameter("promoCode")) : (Promotion) user.getEligibleSignupPromotion();
+List rules = promo != null ? promo.getHeaderDiscountRules() : null;
+int promoValue = promo!=null ? (int)promo.getHeaderDiscountTotal() : 0;
+Date promoExpire = promo!=null ? (Date)promo.getExpirationDate() : null;
+boolean promoEligible = user != null ? user.isEligibleForSignupPromotion() : false;
+%>
+
+<% if (isSignup) { %>
+<table width="500" cellpadding="0" cellspacing="0" border="0">
+	<tr>
+		<td></td>
+		<td colspan="2" class="text12"><br>
+		1.	Look for this icon on qualifying products:
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2"></td>
+		<td>
+			<table>
+				<tr>
+					<td><img src="/media_stat/images/template/offer_icon.gif" alt="Promotion icon"></td>
+					<td><font class="title12">Free!<br></font><font color="#336600">See offer details</font></td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td><img src="/media_stat/images/layout/clear.gif" width="20" height="8" border="0"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="20" height="8" border="0"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="460" height="8" border="0"></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td colspan="2" class="text12">
+		2. Add them to your shopping cart.<br><span class="space8pix"><br></span>
+		</td>
+	</tr>
+	<% if (rules.size() == 1) { 
+			SignupDiscountRule rule = (SignupDiscountRule)rules.get(0);
+	%>
+	<tr>
+		<td></td>
+		<td colspan="2" class="text12">3. When you check out you'll get $<%= (int)rule.getMaxAmount() %> worth of free food if your first order subtotal meets the qualifying minimum of $<%= (int)rule.getMinSubtotal() %>.
+		</td>
+	</tr>
+	<% } else { %>
+	<tr>
+		<td></td>
+		<td colspan="2" class="text12">3. When you check out you'll get:<br><span class="space8pix"><br></span>
+		</td>
+	</tr>
+		<%
+		int count = 0;
+		for (Iterator i= rules.iterator(); i.hasNext();) { 
+			SignupDiscountRule rule = (SignupDiscountRule)i.next();
+			count++;
+		%>
+		<tr>
+			<td colspan="2"></td>
+			<td class="text12">$<%=(int)rule.getMaxAmount()%> off your <%=NUMERALS[count-1]%> order ($<%=rule.getMinSubtotal() <= FDUserI.MINIMUM_ORDER_AMOUNT ? (int)FDUserI.MINIMUM_ORDER_AMOUNT:(int)rule.getMinSubtotal()%> min. order)
+			</td>
+		</tr>
+		<% } %>
+	<% } %>
+<% } %>
+
+<% if (!isSignup) { %>
+		<table border="0" cellpadding="0" cellspacing="0">
+		<tr>
+			<td valign="top"><img src="/media_stat/images/template/promotions/offer_img_<%=promoValue%>.gif" width="180" height="300" alt="" border="0"></td>
+			<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>			
+			<td valign=top>
+
+				<table border=0 cellpadding="0" cellspacing="0">
+					<% if (isPopup) { %>
+                    <tr>
+					<td><a href="javascript:self.close()"><img src="/media_stat/images/layout/pop_up_header_sm.gif" alt="" border="0"></a></td>
+					</tr>
+                    <% } %>
+				<tr>
+				<td><img src="/media_stat/images/<%= promoValue == 0 ? "layout/clear" : "template/promotions/offer_hdr_" + promoValue %>.gif" width="159" height="<%=promoValue > 0 ? "1":""%>6" alt="" border="0"></td>
+				</tr>
+				
+				<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="<%=promoValue > 0 ? "1":""%>5" border="0"></td></tr>
+				
+				<tr>
+					<td>
+					<% if (promoValue == 0) { %>
+					<b>We're sorry, our introductory trial offer is no longer available in your area.</b> We're confident that you'll love our food - and back it with our satisfaction guarantee. Though our introductory offer has expired in your area, we encourage you to find out for yourself why thousands of New Yorkers have made us their source for better food at a better price.
+					<% } else { %>
+					We're confident that you'll love our food. That's why we're treating you to $<%=promoValue%> worth of free fresh food just for trying us.
+						<% if (rules.size() == 1) { 
+							SignupDiscountRule rule = (SignupDiscountRule)rules.get(0);
+						%>
+						You'll partake in our free fresh food promotion if your first order subtotal meets the qualifying minimum of $<%= (int)rule.getMinSubtotal() %>.* 
+						<% } else { %>
+						On each of your first <%= rules.size() %> orders, you'll partake in our free fresh food promotion when your order subtotal meets the qualifying minimums below.*
+						<% } %>
+					Here's how it works:
+					<% } %>
+					</td>
+				</tr>
+				
+				<% if (promoValue > 0) {%>
+				<tr>
+					<td>
+					<% if (rules.size() > 1) { %>
+					<br>
+					<table width="90%" cellpadding="2" cellspacing="0" align="center">
+						<tr valign="bottom">
+							<td><b>Order</b></td>
+							<td align="center"><b>Free<br>Fresh Food</b></td>
+							<td align="center"><b>Qualifying Order</b></td>
+						</tr>
+						<tr><td colspan="3"><img src="/media_stat/images/layout/cccccc.gif" width="100%" height="1" vspace="1"></td></tr>
+						<%
+						int count = 0;
+						for (Iterator i= rules.iterator(); i.hasNext();) { 
+							SignupDiscountRule rule = (SignupDiscountRule)i.next();
+							count++;
+						%>
+						<tr>
+							<td><%=NUMERALS[count-1]%> order</td>
+							<td align="center">$<%=(int)rule.getMaxAmount()%> off</td>
+							<td align="center"><%=(int)rule.getMinSubtotal() <= FDUserI.MINIMUM_ORDER_AMOUNT ? "(":""%>$<%=rule.getMinSubtotal() <= FDUserI.MINIMUM_ORDER_AMOUNT ? (int)FDUserI.MINIMUM_ORDER_AMOUNT:(int)rule.getMinSubtotal()%> minimum<%=rule.getMinSubtotal() <= FDUserI.MINIMUM_ORDER_AMOUNT ? ")":""%></td>
+						</tr>
+						<% } %>
+					</table>
+					<% } %>
+					<br>
+					As you shop, load up your cart with all your favorite Fruit, Vegetables, Meat, Seafood, Meals from our kitchen, Deli goods, Cheeses, Coffee, and Tea. Almost all of our fresh foods are included in this offer, with only a few exceptions - just look for this icon on the top of the product page.
+					</td>
+				</tr>				
+				
+				<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"></td></tr>				
+				<tr>
+					<td>
+					<table border="0" cellspacing="0" cellpadding="0">
+						<tr>
+						<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
+						<td valign="top" class="text11orbold" align=right>Qualifies for<br>Trial offer!</td>
+						<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
+						<td><img src="/media_stat/images/template/promotions/offer_icon.gif" width="26" height="26" alt="" border="0"></td>
+						</tr>
+					</table>
+					</td>
+				</tr>
+				<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"></td></tr>		
+		<% } %>
+<% } %>
+
+<% if (promoValue > 0) { 
+	SignupDiscountRule rule = (SignupDiscountRule)rules.get(0); %>
+				<tr>
+					<td <%=isSignup? "colspan=\"3\"": ""%>><% if (!isSignup) { %>
+						Go ahead and start shopping. From all of us at FreshDirect - Happy Eating!
+						<% } %><br><br>
+						<b>*Important Offer Details<br>
+						<% if (promoExpire == null || (promoExpire != null && (Math.abs((int)promoExpire.getTime()) - Math.abs(currentDateMilisecond)) > (oneMonthMilisecond)) ) { %>
+							Limited time offer.
+						<% } else {%>
+							Offer expires <%= EXPIRATION_DATE.format(promoExpire) %>. To qualify, orders must be placed no later than midnight on <%= EXPIRATION_DATE.format(promoExpire) %>.
+						<% } %> To qualify for this offer, your credit card billing address and delivery address must match. One per household.</b> We have not included branded and packaged products in this offer because we want you to try our fresh goods. Offer will only be applied if order subtotal at checkout is equal to or greater than the qualifying order minimum specified above. Offer includes selected items, with a maximum of $<%=(int)rule.getMaxAmountPerSku()%> off any single item. Unused balance cannot be carried forward. Offer valid for web and home delivery orders only. Pickup orders and telephone orders are not eligible. Available in selected zones.
+									
+					</td>
+				</tr>
+<% } %>
+
+<% if (!isSignup) { %>							
+				</table>
+			</td>
+			<td><img src="/media_stat/images/layout/clear.gif" width="10" height="1" alt="" border="0"></td>
+		</tr>
+		</table>
+<% } else { %>
+</table>
+<% } %>
+<br>

@@ -1,0 +1,62 @@
+<%-- --%>
+<%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDCustomerManager" %>
+
+<%@ page import='com.freshdirect.framework.util.StringUtil' %>
+
+<%@ page import="java.util.TreeSet" %>
+<%@page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
+
+<fd:FDCustomerCreatedList id="lists" action="loadLists"> 
+<table cellpadding="0" cellspacing="4" border="0">
+<tr><td class="text13">
+<table id="CCL_lists" cellpadding="0" cellspacing="4">
+<tbody>
+<%
+{ // anonymous block
+    // ADD all lists
+    TreeSet sorted = new TreeSet(FDCustomerCreatedList.getModificationDateComparator());
+    sorted.addAll(lists);
+    
+    int i=0;
+    for(Iterator I = sorted.iterator(); I.hasNext() && i < 5; ++i) {
+       FDCustomerCreatedList CCList = (FDCustomerCreatedList)I.next();
+       int n = CCList.getCount();
+%>
+       <tr><td class="text13">
+       <span id="list:<%=CCList.getId()%>,<%=n%>">
+       <b>
+       <a href="/quickshop/shop_from_list.jsp?ccListId=<%=CCList.getId()%>"><%= StringUtil.escapeHTML(CCList.getName())%> (<%=n%> <%=(n == 1 ? " Item" : " Items")%>)</a></b>
+       </span>
+       </td></tr>
+<%
+    } // for
+
+%>
+</tbody>
+</table>
+</td></tr>
+<tr><td  colspan="2">
+	<img src="/media_stat/images/layout/clear.gif" width="1" height="2" border="0">
+</td></tr>
+<tr><td class="text11">
+<font class="space2pix"><br><br><br></font>
+		To create a new list <a onclick="return CCL.create_list(true, this);" href="/unsupported.jsp">click here.</a>
+</td></tr>
+<tr><td  colspan="2">
+	<img src="/media_stat/images/layout/clear.gif" width="1" height="2" border="0">
+</td></tr>
+<tr><td class="text13" colspan="2">
+<% if (sorted.size() > 1) { %>
+<br><a href="/quickshop/all_lists.jsp"><b>All Lists &amp; Details &gt;&gt;</b></a>
+<% } else { %>
+<br><a href="/quickshop/all_lists.jsp"><b>More List Details &gt;&gt;</b></a>
+<% } 
+} // anonymous block
+%>
+
+<br><br>
+</td>
+</tr>
+</table>
+</fd:FDCustomerCreatedList>

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+   "-//Hibernate/Hibernate Mapping DTD//EN"
+   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.freshdirect.listadmin.db">
+  <class name="StoredQueryValue" table="list_stored_query_value" lazy="false">
+    <id name="storedQueryValueId" column="id" unsaved-value="null" length="16">
+      <generator class="uuid" />
+    </id>
+
+    <property name="name"/>
+    <property name="value"/>
+    <property name="storedQueryId" column="stored_query_id"/>
+  </class>
+</hibernate-mapping>

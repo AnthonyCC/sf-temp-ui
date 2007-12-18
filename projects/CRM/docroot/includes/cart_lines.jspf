@@ -1,0 +1,172 @@
+<%@ page import="com.freshdirect.fdstore.*" %>
+<%@ page import="com.freshdirect.fdstore.content.*" %>
+<%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+
+			<TABLE WIDTH="100%" CELLPADDING="0" CELLSPACING="0" BORDER="0" class="order_detail">
+<%
+	if (cart.getOrderLines().size() < 1) { // Cart is empty, so print out empty cart message...
+%>
+			<tr>
+				<td></td>
+				<td colspan="7">There are currently no items in your cart.</td>
+				<td></td>
+			</tr>
+<%
+	} else { // ...otherwise loop through and display the items in the cart
+		//int itemsShown = -1;
+		int minQuantity = 1; // will have to make this smarter at some point
+		String lastDept = null;
+		Enumeration reqParams = request.getParameterNames();
+		StringBuffer paramBuf = new StringBuffer();
+		while (reqParams.hasMoreElements()) {
+			String param = (String) reqParams.nextElement();
+			paramBuf.append("&");
+			paramBuf.append(param);
+			paramBuf.append("=");
+			paramBuf.append(request.getParameter(param));
+		} 
+
+%>
+<script language="javascript">
+	<!--
+	function setCartLineRemoveID(id) {
+    	document.viewcart["cartLineRemove"].value = id;
+	    setSubmitAction("removeCartLine");
+    	return true;
+	}
+
+	function submitRemove(){
+	    //perform a form submission on the viewCart form.
+    	document.viewcart.submit();
+	}
+
+	function setSubmitAction(action){
+    	document.viewcart["action"].value = action;
+	}
+
+	function setZeroQuantities(formObj) {
+		for (var i = 0; i < formObj.elements.length; i++) {
+			formObj.element[i].value = 0;
+		}
+	}
+
+	function confirmClearIngredients() {
+		var doClear = confirm("Are you sure you want to remove all the ingredients for this recipe from the cart?");
+		return doClear;
+	}
+
+
+	function confirmClearCart(formObj) {
+		var doClear = confirm("Are you sure you want to clear all items from the cart?");
+		if (doClear == true) {
+			setSubmitAction('removeAllCartLines');
+			formObj.submit();
+		}
+	}
+
+	setSubmitAction("nothing");
+
+	// Use this method to change Quantity field values.
+	//Takes the field index and the change quantity as params
+	function chgCartQty(formElement, delta) {
+		qty = parseFloat(formElement.value) + delta;
+		if (qty < <%= minQuantity %>) return;
+		formElement.value = qty;
+	}
+	// -->
+</script>
+<input type="hidden" name="ignoreAction" value="true">
+<!--<input type="hidden" name="cartLineRemove" value="-1">
+<input type="hidden" name="action" value="">-->
+<input type="hidden" name="action" value="updateQuantities">
+<%
+    boolean firstRecipe = true;
+%>
+<logic:iterate id="cartLine" collection="<%= cart.getOrderLines() %>" type="com.freshdirect.fdstore.customer.FDCartLineI" indexId="i">
+<%		ProductModel _productNode = cartLine.lookupProduct();
+		int itemsShown = i.intValue();
+	    if (lastDept==null || !lastDept.equalsIgnoreCase(cartLine.getDepartmentDesc())) {
+    	    lastDept = cartLine.getDepartmentDesc();
+
+            if (lastDept.startsWith("Recipe: ")) {
+                if (firstRecipe) {
+%>
+                <tr>
+                    <td>&nbsp;</td>
+                </tr>
+                <TR>
+                    <TD WIDTH="20%" COLSPAN="7" style="color: #f93;"><b><a href="<%=response.encodeURL("/order/build_order_recipes.jsp")%>">RECIPES</a></b></TD>
+                </TR>
+<%
+                    firstRecipe = false;
+                }
+
+                String  recipeName = lastDept.substring("Recipe: ".length());
+%>
+                <TR valign="bottom">
+                    <TD WIDTH="20%" COLSPAN="3">&nbsp;</TD>
+                    <TD WIDTH="80%" COLSPAN="5"><b><a href="<%=response.encodeURL("/order/recipe.jsp?recipeId="+cartLine.getRecipeSourceId())%>"><%=recipeName%></a></b>&nbsp;&nbsp;
+                       <a href="javascript:if (confirmClearIngredients()){  window.location='<%= request.getRequestURI() %>?removeRecipe=<%= cartLine.getRecipeSourceId() %><%= paramBuf.toString() %>';}" class="remove" title="Remove all ingredinets for this recipe">X</A>
+                    </td>
+                </TR>
+<%  	    
+            } else {
+%>
+                <TR valign="bottom">
+                    <TD WIDTH="20%" COLSPAN="3">&nbsp;</TD>
+                    <TD WIDTH="80%" COLSPAN="5"><b><%=lastDept%></b></TD>
+                </TR>
+<%  	    
+            }
+        }
+%>
+			<TR valign="top">
+<%	if (cartLine.isSoldBySalesUnits()) { %>
+<TD WIDTH="17%" colspan="3">
+	<select name="salesUnit_<%=itemsShown%>" CLASS="text10">
+	<logic:iterate id="salesUnit" collection="<%= cartLine.lookupFDProduct().getSalesUnits() %>" type="com.freshdirect.fdstore.FDSalesUnit">
+		<%
+			String salesUnitDescr = salesUnit.getDescription();
+			// clean parenthesis
+			int ppos = salesUnitDescr.indexOf("(");
+			if (ppos>-1) salesUnitDescr = salesUnitDescr.substring(0, ppos).trim();
+		%>
+		<option value="<%= salesUnit.getName() %>"<%= cartLine.getSalesUnit().equals( salesUnit.getName() ) ? " SELECTED" : ""%>><%= salesUnit.getDescription().trim() %>
+	</logic:iterate>
+	</select>
+	<input name="rnd_<%=itemsShown%>" type="hidden" value="<%= cartLine.getRandomId() %>">
+</TD>
+<%	} else { %>
+<TD ALIGN="RIGHT" WIDTH="10%">
+	<script>
+	function cartChgQty<%=itemsShown%>(delta) {
+		val = document.viewcart.quantity_<%=itemsShown%>.value;
+		qty = parseFloat(val) + delta;
+		if (delta>0 && val == "") {
+			qty = delta;
+		} else if (isNaN(qty) || qty < <%= _productNode.getQuantityMinimum() %>) {
+			document.viewcart.quantity_<%=itemsShown%>.value = "";
+			return;
+		} else if (qty >= <%= _productNode.getQuantityMaximum() %>) {
+			qty = <%= _productNode.getQuantityMaximum() %>;
+		}
+		qty = Math.floor( (qty-<%= _productNode.getQuantityMinimum() %>)/<%=_productNode.getQuantityIncrement()%> )*<%=_productNode.getQuantityIncrement()%>  + <%= _productNode.getQuantityMinimum() %>;
+		document.viewcart.quantity_<%=itemsShown%>.value = qty;
+	}
+	</script>
+	<input name="quantity_<%=itemsShown%>" type="text" size="5" MAXLENGTH="5" CLASS="text10" VALUE="<%= cartLine.getQuantity() %>" onBlur="cartChgQty<%=itemsShown%>(0);">
+	<input name="rnd_<%=itemsShown%>" type="hidden" value="<%= cartLine.getRandomId() %>">
+</TD>
+<td WIDTH="3%"><A HREF="javascript:cartChgQty<%=itemsShown%>(<%= _productNode.getQuantityIncrement() %>);"><img src="/media_stat/crm/images/arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></A><BR><A HREF="javascript:cartChgQty<%=itemsShown%>(<%= -_productNode.getQuantityIncrement() %>);"><img src="/media_stat/crm/images/arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></A></td>
+<td WIDTH="3%"><%= cartLine.getSalesUnitDescription() %></td>
+<%	} %>
+				<TD WIDTH="46%"><A HREF="<%= response.encodeURL("/order/product_modify.jsp?cartLine=" + cartLine.getRandomId()) %>"><%= cartLine.getDescription() %></A></TD>
+				<TD WIDTH="18%"><a href="javascript:popResize('/shared/product_summary.jsp?productId=<%=_productNode%>&catId=<%=_productNode.getParentNode()%>','740','555','summ')" title="Product description & Information" class="help" style="font-size: 4pt; padding: 1px;">?</a> (<%= cartLine.getUnitPrice() %>)</TD>
+				<TD WIDTH="14%" align="right"><%= CCFormatter.formatCurrency(cartLine.getPrice()) %></TD>
+				<TD WIDTH="5%" align="right"><A HREF="<%= request.getRequestURI() %>?remove=1&cartLine=<%= cartLine.getRandomId() %><%= paramBuf.toString() %>" class="remove" title="Remove">X</A></TD>
+			</TR>
+</logic:iterate>
+<%
+	} // end if-else empty shopping cart
+%>
+			</TABLE>

@@ -1,0 +1,21 @@
+<%-- requires boolean isPopup --%>
+<font class="title16">Summer Dockside Delivery to Fire Island</font><br>
+          Our trucks are taking to the water this summer, delivering the best food in New York to Fire Island in partnership with <a href="http://www.pagelinx.com/fififerry/index.shtml" target="fi_sched">Fire Island Ferries</a>. All summer long, we'll be making weekly deliveries every Friday to Fair Harbor and Ocean Beach, direct to the dock.<br><img src="/media_stat/images/layout/clear.gif" width="1" height="18"><br>
+          <img src="/media_stat/images/template/pickup/fi_how_it_works.gif" width="97" height="10" alt="How it works"><br>
+          <% if (isPopup || user.getLevel() >= FDUserI.RECOGNIZED) {%>Sign up<% } else { %><a href="/registration/signup.jsp">Sign up</a><% } %>, browse our site for your favorite summertime foods, and complete Checkout to place your order. You may place your order up to one week before delivery and as late as the night before (order early because delivery slots fill up quickly). When you check out, select from one of our Fire Island locations.
+          <blockquote>
+          <b>Every Friday</b>, we'll be at:<br>
+          <b>Fair Harbor dock</b> from <b>4 pm</b> to <b>6 pm</b><br>
+          <b>Ocean Beach dock</b> from <b>6:15 pm</b> to <b>9:30 pm</b>
+          </blockquote>
+          We'll bring your order on our hard-to-miss floating truck. Bring a wagon (or a boat) for your boxes and a cooler for frozen items if you have a long way to go. Your food will be kept cool in our refrigerated truck until you pick it up. We'll ask to see an ID but shirt and shoes are not required.
+          <br><br>
+          FreshDirect will use its best efforts to meet the posted delivery windows. In some cases weather, choppy seas, and other factors may cause delays. Should this occur please bear with us.
+           <br><br>
+           <b>Please note:</b> Unclaimed orders will be left on the dock at the end of the pickup window. You will be charged the full price even if you do not pick up your order.  If you think you may not be able to make it in time, during checkout we recommend that you provide a list of people authorized to pick up your order on your behalf. FRESHDIRECT IS NOT RESPONSIBLE FOR ORDERS THAT ARE NOT PICKED UP DURING THE DESIGNATED PICKUP WINDOW. For details, please see our <% if (isPopup) {%>Customer Agreement<% } else { %><a href="javascript:popup('/registration/user_agreement.jsp','large')">Customer Agreement</a><% } %>.
+          <br><img src="/media_stat/images/layout/clear.gif" width="1" height="18"><br>
+           <img src="/media_stat/images/template/pickup/fi_service_charges.gif" width="187" height="10" alt="Handled with Extra Care"><br>
+          Prepaid credit card orders only. Delivery costs $9.95 and there's a minimum order of $40. Delivery personnel will not accept tips. You may bring empty, flattened cardboard boxes to the boat and we will return them to FreshDirect.
+           <br><img src="/media_stat/images/layout/clear.gif" width="1" height="18"><br>
+          <img src="/media_stat/images/template/pickup/fi_handled_extra_care.gif" width="172" height="10" alt="Handled with Extra Care"><br>
+Fresh foods need extra care in handling, and we do all the right things to make sure your food gets to you in top shape. After we prepare everything to fill your order, our trained packers carefully assemble it in sturdy boxes. We put the boxes straight into our own FreshDirect fridge/freeze trucks, keeping everything cool and dry until it reaches your door.

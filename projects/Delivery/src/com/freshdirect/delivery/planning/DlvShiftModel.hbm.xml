@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.freshdirect.delivery.planning" schema="dlv">
+
+	<typedef name="EnumDayCode" class="com.freshdirect.framework.hibernate.ValuedEnumUserType">
+		<param name="enumClassName">com.freshdirect.delivery.EnumDayCode</param>
+	</typedef>
+
+    <class name="DlvShiftModel" table="SHIFT">
+        <id name="id" column="ID">
+            <generator class="sequence">
+            	<param name="sequence">SYSTEM_SEQ</param>
+            </generator>
+        </id>
+
+        <property name="name" column="NAME" not-null="true"/>
+        
+        <property name="dayOfWeek" column="DAY_OF_WEEK" type="EnumDayCode" not-null="true"/>
+
+     	<component name="start" class="com.freshdirect.framework.util.TimeOfDay"> 
+        	<property name="normalDate" column="START_TIME" type="timestamp"/>
+        </component>       
+     	<component name="end" class="com.freshdirect.framework.util.TimeOfDay"> 
+        	<property name="normalDate" column="END_TIME" type="timestamp"/>
+        </component>       
+
+        <bag name="timeslots" cascade="all,delete-orphan" lazy="false">
+            <key column="SHIFT_ID" not-null="true"/>
+            
+            <one-to-many class="DlvShiftTimeslotModel"/>
+        </bag>
+
+    </class>
+
+</hibernate-mapping>

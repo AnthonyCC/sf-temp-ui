@@ -1,0 +1,83 @@
+<%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
+<%@ page import="com.freshdirect.common.pricing.Discount" %>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
+<%@ page import='com.freshdirect.webapp.util.JspMethods' %>
+<%@ page import='com.freshdirect.fdstore.promotion.*' %>
+<%@ page import='com.freshdirect.framework.util.*' %>
+<%@ page import="com.freshdirect.customer.ErpDiscountLineModel" %>
+
+<%!
+java.text.NumberFormat CURRENCY_FORMATTER = java.text.NumberFormat.getCurrencyInstance(Locale.US);
+SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yy");
+%>
+<%
+	FDUserI promo_user = (FDUserI) session.getAttribute(SessionName.USER);
+	
+	if (promo_user.isEligibleForSignupPromotion()){
+                PromotionI signupPromo = user.getEligibleSignupPromotion();
+                Date expDate = signupPromo.getExpirationDate();
+                int totalDiscount = (int)signupPromo.getHeaderDiscountTotal();
+                
+                SignupDiscountRule discountRule = user.getSignupDiscountRule();
+                double minSubtotal = discountRule.getMinSubtotal();
+                double maxAmount   = discountRule.getMaxAmount();
+		
+               double totalPromotionValue = promo_user.getShoppingCart().getTotalDiscountValue();
+		double left = maxAmount;
+		if (totalPromotionValue > 0.0) {
+			left -= totalPromotionValue;
+		}
+		String maxAmountPrefix = String.valueOf(maxAmount);
+		maxAmountPrefix = maxAmountPrefix.substring(0, maxAmountPrefix.indexOf('.'));
+                
+		String minSubtotalPrefix = String.valueOf(minSubtotal);
+		minSubtotalPrefix = minSubtotalPrefix.substring(0, minSubtotalPrefix.indexOf('.'));
+                
+		String offerDuration = "<img src='/media_stat/images/layout/clear.gif' width='140' height='10'>";
+		if(expDate != null && DateUtil.getDiffInDays(new Date(), expDate) <= 30) 
+			offerDuration = "Exipres " + DATE_FORMATTER.format(expDate);
+%>
+
+<% 
+String servletContext = request.getContextPath();
+String pageURI = request.getRequestURI();
+boolean isQuickshop = pageURI.indexOf("quickshop")>-1;
+
+String params = "?";
+
+if (request.getParameter("deptId") != null ) {
+        params += "dept="+ request.getParameter("deptId");
+} else if (request.getParameter("catId") != null ) {
+        params += "cat="+ request.getParameter("catId");
+}
+
+if (isQuickshop) {
+        params += "fr=qs";
+}
+ %>
+    <table border="0" cellspacing="0" cellpadding="0" width="140">
+        <tr>
+            <td><img src="/media_stat/images/template/promotions/free_fresh_food_<%=totalDiscount%>.gif" vspace="2"><br></td>
+        </tr>
+		<tr>
+			<td align='center'>
+				<img src="/media_stat/images/template/promotions/off_this_order_<%=maxAmountPrefix%>.gif" border="0"><br>
+                                <img src="/media_stat/images/template/promotions/order_or_more_<%=minSubtotalPrefix%>.gif" vspace="2" border="0"><br>
+                                <a href="/promotion.jsp<%=params%>">See offer details</a><br>
+                                <img src="/media_stat/images/layout/clear.gif" width="1" height="2"><br>
+				<%  if (promo_user.getShoppingCart().getSubTotal() >= minSubtotal) { %>
+				You have <b><%=CURRENCY_FORMATTER.format(left)%></b> left.
+                                <font class="space2pix"><br><br></font>
+				<%  }  %>
+                        </td>
+		</tr>
+                <!--<tr>
+			<td align="left"><a href="/promotion.jsp<%=params%>">See offer details</a>
+			<br><img src="/media_stat/images/layout/clear.gif" width="1" height="2"></td>
+		</tr>-->
+		<tr>
+            <td bgcolor='#CC0033' align="center" style="color: #FFFFFF;"><%=offerDuration%></td>
+        </tr>
+	</table>
+	<br>
+<%}%>

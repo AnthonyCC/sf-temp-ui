@@ -1,0 +1,6 @@
+
+      <li><label><input onclick="toggle_column('category_id')" id="category_id" type="checkbox" /> Category id</label>
+      <li><label><input onclick="toggle_column('parent_id')" id="category_id" type="checkbox" /> Parent Category id</label>
+      <li><label><input onclick="toggle_column('depth')" id="category_id" type="checkbox" /> Node depth</label>
+      <li><label><input onclick="toggle_column('spath')" id="rpath" type="checkbox" /> Servlet path</label>
+      <li><label><input onclick="toggle_column('bpath')" id="rpath" type="checkbox" /> Browse path</label>

@@ -1,0 +1,811 @@
+<%@ page import='com.freshdirect.customer.EnumChargeType'%>
+<%@ page import='com.freshdirect.fdstore.promotion.management.FDPromoZipRestriction'%>
+<%@ page import='com.freshdirect.webapp.util.CCFormatter'%>
+<%@ page import='com.freshdirect.framework.util.StringUtil'%>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties'%>
+<%@ page import="com.freshdirect.fdstore.customer.ProfileAttributeName"%>
+<%@ page import="com.freshdirect.fdstore.promotion.management.FDPromotionAttributeParam"%>
+
+<script language="javascript">
+                      function handleValueType(chkFld) {
+                      	var fldVal = chkFld.value;                      	
+                      	if(fldVal != "discount") {
+                        	document.getElementById("maximum_discount").value = "";                        	
+                        }                                                                         	
+                        if(fldVal != "percentOff") {
+                        	document.getElementById("percentOff").value = "";
+                        	document.getElementById("department_ids").value = "";
+                        	document.getElementById("category_ids").value = "";
+                        	document.getElementById("recipe_ids").value = "";
+                        } 
+                        if(fldVal != "waiveCharge") {
+                        	document.getElementById("waiveChargeType").value = "";
+                        }
+                        if(fldVal != "sample") {
+                        	document.getElementById("prod_name").value = "";
+                        	document.getElementById("prod_category").value = "";
+                        	document.getElementById("prod_name").disabled = true;
+                        	document.getElementById("prod_category").disabled = true;
+                        }
+                        document.getElementById("maximum_discount").disabled = (fldVal != "discount");
+                        document.getElementById("percentOff").disabled = (fldVal != "percentOff");
+                        document.getElementById("department_ids").disabled = (fldVal != "percentOff");
+                        document.getElementById("category_ids").disabled = (fldVal != "percentOff");
+                        document.getElementById("recipe_ids").disabled = (fldVal != "percentOff");
+                        document.getElementById("waiveChargeType").disabled = (fldVal != "waiveCharge");
+                        document.getElementById("prod_name").disabled = (fldVal != "sample");
+                        document.getElementById("prod_category").disabled = (fldVal != "sample");
+                      }
+                      
+                      function handleCampaignType(selectChamFld) {
+                      	var fldVal = selectChamFld.value;
+                      	document.getElementById("unique_use").checked = (fldVal != null && fldVal == "GIFT_CARD");
+                      }
+                      
+ </script> 
+<input type="hidden" name="promo_id" class="input" value="<%=promotion.getId()%>" />
+
+<table cellpadding="0" cellspacing="5" border="0" width="99%">
+		
+		<tr>
+			<td colspan="1" align="right"> Active:</td>
+			<td colspan="3">&nbsp;<input type="checkbox" name="active" <%=promotion.isActive() ? "CHECKED" : ""%>>&nbsp;</td>
+			
+			<td rowspan="12" style="border-left: solid 1px #CCCCCC;">&nbsp;</td>
+			
+			<td colspan="1" align="right">Start Date:</td>
+			<td colspan="3">&nbsp;<select name="start_month" class="pulldown">
+				<option></option>
+				<%for(Iterator i = EnumMonth.getEnumList().iterator(); i.hasNext(); ){
+					EnumMonth month = (EnumMonth)i.next(); %>
+					<option <%=month.getDescription().equals(promotion.getStartMonth()) ? "selected" : "" %> value="<%=month.getDescription()%>"><%=month.getDescription()%></option>
+				<%}%>
+			</select>&nbsp;<select name="start_date" class="pulldown">
+				<option></option>
+				<%for(int day = 1; day <=31; day++){
+					String d = String.valueOf(day); %>
+					<option <%=d.equals(promotion.getStartDay()) ? "selected" : "" %> value="<%=d%>"><%=d%></option>
+				<%}%>
+			</select>&nbsp;<select name="start_year" class="pulldown">
+				<option></option>
+				<%for(int year = 2002; year <=2015; year++){
+					String y = String.valueOf(year); %>
+					<option <%=y.equals(promotion.getStartYear()) ? "selected" : "" %> value="<%=y%>"><%=y%></option>
+				<%}%>
+			</select>&nbsp;<fd:ErrorHandler result="<%= result %>" name="start_year" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+
+		</tr>
+		<tr valign="top">
+            <td colspan="1" align="right">Promotion ID:</td>
+			<td colspan="3">&nbsp;<span class="field_note"><strong><%=promotion.getId()%></strong></span>&nbsp;</td>
+			
+			<td colspan="1" align="right">End Date:</td>
+			<td colspan="3">&nbsp;<select name="end_month" class="pulldown">
+				<option></option>
+				<%for(Iterator i = EnumMonth.getEnumList().iterator(); i.hasNext(); ){
+					EnumMonth month = (EnumMonth)i.next(); %>
+					<option <%=month.getDescription().equals(promotion.getExpirationMonth()) ? "selected" : "" %> value="<%=month.getDescription()%>"><%=month.getDescription()%></option>
+				<%}%>
+			</select>&nbsp;<select name="end_date" class="pulldown">
+				<option></option>
+				<%for(int day = 1; day <=31; day++){
+					String d = String.valueOf(day); %>
+					<option <%=d.equals(promotion.getExpirationDay()) ? "selected" : "" %> value="<%=d%>"><%=d%></option>
+				<%}%>
+			</select>&nbsp;<select name="end_year" class="pulldown">
+				<option></option>
+				<%for(int year = 2002; year <=2015; year++){
+					String y = String.valueOf(year); %>
+					<option <%=y.equals(promotion.getExpirationYear()) ? "selected" : "" %> value="<%=y%>"><%=y%></option>
+				<%}%>
+			</select>&nbsp;<fd:ErrorHandler result="<%= result %>" name="end_year" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+		</tr>
+		<tr valign="top">
+			<td colspan="1" align="right">* System Code:</td>
+			<td colspan="3">&nbsp;<input type="text" name="code_name" maxlength="16" class="input" style="width: 200px;" value="<%=promotion.getPromotionCode()%>">&nbsp;<fd:ErrorHandler result="<%= result %>" name="code_name" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+			
+			<td colspan="1" align="right">* Maximum Usage:</td>
+			<td colspan="3">&nbsp;<input type="text" name="usage_limit" maxlength="3" class="input" style="width: 50px;" value="<%=StringUtil.isEmpty(promotion.getMaxUsage()) ? "1" : promotion.getMaxUsage()%>"> time(s)&nbsp;<fd:ErrorHandler result="<%= result %>" name="usage_limit" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+									
+		</tr>
+		<tr valign="top">
+			<td colspan="1" align="right">* Campaign Type:</td>
+			<td colspan="3">&nbsp;<select name="campaign_type" class="pulldown" onChange="handleCampaignType(this)">
+				<option></option>
+				<%for(Iterator i = EnumPromotionType.getEnumList().iterator(); i.hasNext(); ){
+					EnumPromotionType type = (EnumPromotionType)i.next(); %>
+					<option <%=type.getName().equals(promotion.getPromotionType()) ? "selected" : "" %> value="<%=type.getName()%>"><%=type.getDescription()%></option>
+				<%}%>
+			</select>&nbsp;<fd:ErrorHandler result="<%= result %>" name="campaign_type" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+			
+			<td colspan="1" align="right">Redemption Code:</td>
+			<td colspan="3">&nbsp;<input type="text" name="redemption_code" maxlength="16" class="input" style="width: 200px;" value="<%=promotion.getRedemptionCode()%>">&nbsp;<fd:ErrorHandler result="<%= result %>" name="redemption_code" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+			
+		</tr>
+		<tr valign="top">
+			<td colspan="1" align="right">* Name:</td>
+			<td colspan="3">&nbsp;<input type="text" name="promo_name" maxlength="32" class="input" style="width: 250px;" value="<%=promotion.getName()%>">&nbsp;<fd:ErrorHandler result="<%= result %>" name="promo_name" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+			
+			<td colspan="1" align="right">&nbsp;</td>
+			<td colspan="3"><span class="field_note">If none, promotion is applied automatically</span></td>			
+		            			
+		</tr>
+        <tr valign="top">
+			<td colspan="1" rowspan="3" align="right">* Description:<br/>
+			<span class="field_note">This is shown upon<br/> redemption to customer</span></td>
+			<td rowspan="3" colspan="3">&nbsp;<textarea name="promo_description" class="input" style="width: 300px;" wrap="virtual" rows="3" maxlength="256"><%=promotion.getDescription()%></textarea>&nbsp;<fd:ErrorHandler result="<%= result %>" name="promo_description" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+				            
+			<td colspan="1" align="right">Unique Use:</td>
+			<td colspan="3">&nbsp;<input type="checkbox" id="unique_use" name="unique_use" <%=promotion.isUniqueUse() ? "CHECKED" : ""%>>&nbsp;
+				<span class="field_note">One-time, one single user.</span>&nbsp;<fd:ErrorHandler result="<%= result %>" name="unique_use" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+		</tr>
+		
+		<tr valign="top">
+			
+			<td colspan="1" align="right" nowrap>Do Not Apply Fraud Rules:</td>
+			<td colspan="3">&nbsp;<input type="checkbox" name="dontApplyFraud" <%=promotion.isApplyFraud() ? "" : "CHECKED"%>>&nbsp;
+				<span class="field_note">Rule checks for duplicate address or phone #</span></td>
+			
+		</tr>	
+		
+		<tr valign="top">
+			<td colspan="1" align="right">Rule Based Promotion:</td>
+			<td colspan="3">&nbsp;<input type="checkbox" name="ruleBased" <%=promotion.isRuleBasedPromotion() ? "CHECKED" : ""%>>&nbsp;
+			<span class="field_note">Additional rules govern this promotion, see notes.</span>&nbsp;<fd:ErrorHandler result="<%= result %>" name="ruleBased" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>			
+		</tr>
+		
+        <tr valign="top">
+			 <td colspan="1" rowspan="4"  align="right">Notes:<br/>
+			 <span class="field_note">internal notes regarding<br/> promotion setup<br/> & scenarios</span></td>
+			 <td colspan="3" rowspan="4" >&nbsp;<textarea name="notes" class="input" style="width: 300px;" wrap="virtual" rows="5"><%=promotion.getNotes()%></textarea>&nbsp;<fd:ErrorHandler result="<%= result %>" name="notes" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+			
+			<td colspan="1" align="right">&nbsp;</td>
+  			<td colspan="3">&nbsp;<span class="field_note">These fields are deprecated.</span></td>					
+  						 
+		</tr>
+		
+		<tr valign="top">
+			<td colspan="1" align="right">Max. Limit Per Customer:</td>
+  			<td colspan="3">&nbsp;<input type="checkbox" name="is_max_usage_per_cust" <%=promotion.isMaxUsagePerCustomer() ? "CHECKED" : ""%>>&nbsp;&nbsp;&nbsp;&nbsp;<% if (promotion.getId() != null && !"".equals(promotion.getId()) && (promotion.isMaxUsagePerCustomer() || promotion.getRollingExpirationDays() != null)) { %><a href="javascript:pop('/main/edit_promo_customer.jsp?reload=true&promotion_id=<%=promotion.getId()%>', 375, 780);">Edit Customers</a>&nbsp;<% } %></td>					
+		</tr>
+				
+		<tr valign="top">
+			<td colspan="1" align="right">Rolling Expiration Days:</td>
+			<td colspan="3">&nbsp;<input type="text" name="rolling_expiration_days" maxlength="6" class="input" style="width: 40px;" value="<%=(promotion.getRollingExpirationDays() != null) ? promotion.getRollingExpirationDays().toString() : ""%>">&nbsp;<fd:ErrorHandler result="<%= result %>" name="rolling_expiration_days" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+		</tr>
+					
+		<tr valign="top">
+			<td colspan="1" align="right">Referral Program Code:</td>
+			<td colspan="3">&nbsp;<input type="text" name="ref_prog_campaign_code" class="input" style="width: 150px;" maxlength="16" value="<%=promotion.getRefProgCampaignCode()%>">&nbsp;<fd:ErrorHandler result="<%= result %>" name="ref_prog_campaign_code" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+		</tr>						
+		
+		  <tr>
+      		<td colspan="12" style="border-bottom: solid 1px #999999;"><br/>*&nbsp;<strong>VALUE:</strong> (Dollar Off discount/ Percent off discount/ Waive Charge/ Sample Item)&nbsp;<fd:ErrorHandler result="<%= result %>" name="value_type" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+    	 </tr>
+    	  <tr valign="top">
+			 <td colspan="1" align="right"><input type="radio" name="value_type" onClick="handleValueType(this)" value="discount" <%=("discount".equals(promotion.getValueType())) ? "CHECKED" : ""%>> <strong>DOLLAR OFF DISCOUNT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong>
+			 </td>
+			 <td colspan="3">&nbsp;$<input type="text"  id="maximum_discount" name="maximum_discount" class="input" style="width: 40px;" value="<%=promotion.getMaxAmount()%>" <%=("discount".equals(promotion.getValueType())) ?  "" : "DISABLED"%>>&nbsp;<fd:ErrorHandler result="<%= result %>" name="maximum_discount" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+			
+			<td rowspan="5" style="border-left: solid 1px #CCCCCC;">&nbsp;</td>
+			
+			<td colspan="1" align="left"><input type="radio" name="value_type" onClick="handleValueType(this)" value="waiveCharge" <%=("waiveCharge".equals(promotion.getValueType())) ? "CHECKED" : ""%>> <strong>WAIVE CHARGE</strong>
+			 </td>
+			 <td colspan="3">&nbsp;<select id="waiveChargeType" name="waiveChargeType" class="pulldown" <%=("waiveCharge".equals(promotion.getValueType())) ?  "" : "DISABLED"%>>
+						<option></option>
+						<% for (Iterator i = EnumChargeType.getEnumList().iterator(); i.hasNext(); ) {
+							EnumChargeType type = (EnumChargeType)i.next(); %>
+							<option <%=type.getName().equals(promotion.getWaiveChargeType()) ? "selected" : "" %> value="<%=type.getName()%>"><%=type.getDescription()%></option>
+						<%}%>	
+					</select>
+					<fd:ErrorHandler result="<%= result %>" name="waiveChargeType" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+
+		</tr>
+		
+		<tr valign="top">
+			<td colspan="4" style="border-bottom: dashed 1px #999999;">&nbsp;</td>
+			<td colspan="4" style="border-bottom: dashed 1px #999999;">&nbsp;</td>
+		</tr>
+		
+		<tr valign="top">
+			 <td nowrap colspan="1" align="right"><input type="radio" name="value_type" onClick="handleValueType(this)" value="percentOff" <%=("percentOff".equals(promotion.getValueType())) ? "CHECKED" : ""%>> <strong>PERCENT OFF DISCOUNT (0 - 100)</strong>
+			 </td>
+			 <td colspan="3" >&nbsp;&nbsp;<input type="text" id="percentOff" name="percentOff" class="input" style="width: 40px;" value="<%= promotion.getPercentOff() %>" <%=("percentOff".equals(promotion.getValueType())) ?  "" : "DISABLED"%>>%&nbsp;
+			 	<span class="field_note">&nbsp;e.g. 20</span><fd:ErrorHandler result="<%= result %>" name="percentOff" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
+			 </td>
+						
+			
+			<td colspan="1" align="left"><input type="radio" name="value_type" onClick="handleValueType(this)" value="sample" <%=("sample".equals(promotion.getValueType())) ? "CHECKED" : ""%>> <strong>SAMPLE ITEM</strong>
+			 </td>
+			 <td colspan="3">&nbsp;</td>
+
+		</tr>
+		
+		<tr valign="top">
+			<td colspan="1" align="right">Restrict to:</td>
+			<td colspan="3" style="padding-right: 0px;" >
+				<table>
+					<tr>
+						<td class="label" style="width: 110px;" >Department ID:</td>
+						<td class="label" style="width: 110px;" >Category ID:</td>
+						<td class="label" style="width: 110px;" >Recipe ID:</td>
+					</tr>
+				</table>
+			</td>
+			
+			
+			<td colspan="1" align="right">Product ID:</td>
+			<td colspan="3">
+				<input type="text" id="prod_name"  name="prod_name" class="input" style="width: 200px;" value="<%=promotion.getProductName()%>" <%=("sample".equals(promotion.getValueType())) ?  "" : "DISABLED"%>>&nbsp;
+				<span class="field_note">e.g. corn_local_bl</span>&nbsp;<fd:ErrorHandler result="<%= result %>" name="prod_name" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
+				</td>
+				
+			
+		</tr>
+		
+		<tr valign="top">
+			<td colspan="1" align="right"><span class="field_note">enter comma separated<br/> department or category id(s)<br/> no whitespaces</span></td>
+			<td colspan="3" >
+				<table>
+					<tr>
+						<td class="label"><textarea id="department_ids" name="department_ids" class="input" style="width: 110px;" wrap="virtual" rows="6" <%=("percentOff".equals(promotion.getValueType())) ?  "" : "DISABLED"%>><%=promotion.getAssignedDepartments()%></textarea></td>
+						<td class="label"><textarea id="category_ids" name="category_ids" class="input" style="width: 110px;" wrap="virtual" rows="6" <%=("percentOff".equals(promotion.getValueType())) ?  "" : "DISABLED"%>><%=promotion.getAssignedCategories()%></textarea></td>		
+						<td class="label"><textarea id="recipe_ids" name="recipe_ids" class="input" style="width: 110px;" wrap="virtual" rows="6" <%=("percentOff".equals(promotion.getValueType())) ?  "" : "DISABLED"%>><%=promotion.getAssignedRecipes()%></textarea></td>		
+					</tr>
+					<tr>
+						<td class="label"><span class="field_note">&nbsp;e.g. mea</span></td>
+						<td class="label"><span class="field_note">&nbsp;e.g. fstk</span></td>
+						<td class="label"><span class="field_note">&nbsp;e.g. rec_ingrdnt</span></td>
+					</tr>
+				</table>
+			</td>
+			
+			<td colspan="1" align="right">Category ID:</td>
+			<td colspan="3"><input type="text" id="prod_category" name="prod_category" class="input" style="width: 200px;" value="<%=promotion.getCategoryName()%>" <%=("sample".equals(promotion.getValueType())) ?  "" : "DISABLED"%>>&nbsp;
+			<span class="field_note">e.g. corn</span>&nbsp;<fd:ErrorHandler result="<%= result %>" name="prod_category" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+		</tr>				
+		
+		<tr>
+      		<td colspan="12" style="border-bottom: solid 1px #999999;"><br/>&nbsp;<strong>CUSTOMER REQUIREMENT</strong></td>
+   		 </tr>
+         
+<script language="JavaScript">
+  
+      function deleteRestriction(url)
+      {
+        var config='width=300,height=400,menubar=no,status=no,scrollbars=yes,resizable=yes';
+        
+        var doCancel = confirm ("Are you sure you want to delete these Restriction?");
+        if(doCancel == false){
+                return;
+        } 
+        
+        pop = window.open (url,"deleteRestriction",config);
+     }
+</script>
+   		 <tr valign="top">
+			<td colspan="1" align="right">Customer Restriction:</td>
+			<% if(StringUtil.isEmpty(promotion.getId())) { %>
+				<td colspan="3">To upload a list you must first create your promotion</td>					
+			<% } else if(promotion.getAssignedCustomerSize() == 0){ %>
+      		<td colspan="3"><a href="javascript:void(0)" onclick="window.open('<%=FDStoreProperties.getMarketingAdminUrl()%>/editRestriction.do?promotionCode=<%=promotion.getPromotionCode()%>','editRestriction','width=600,height=700,menubar=no,status=no,scrollbars=yes,resizable=yes')">Upload new list</a></td>
+      		<% } else { %>
+      			<td colspan="3">
+	      			<table>
+		      			<tr>
+		      				<td><strong><%=promotion.getAssignedCustomerSize()%></strong></td>
+		      				<td style="padding-left: 5px;padding-right: 5px;border-right: solid 1px #999999;"><a href="javascript:void(0)" onclick="window.open('<%=FDStoreProperties.getMarketingAdminUrl()%>/searchRestriction.do?promotionCode=<%=promotion.getPromotionCode()%>','searchRestriction','width=600,height=700,menubar=no,status=no,scrollbars=yes,resizable=yes')">Search list</a></td>
+	                        <td style="padding-left: 5px;padding-right: 5px;border-right: solid 1px #999999;"><a href="javascript:void(0)" onclick="window.open('<%=FDStoreProperties.getMarketingAdminUrl()%>/editRestriction.do?promotionCode=<%=promotion.getPromotionCode()%>','editRestriction','width=600,height=700,menubar=no,status=no,scrollbars=yes,resizable=yes')">Mass Edit list</a></td>
+		      				<td style="padding-left: 5px;padding-right: 5px;"><a href="javascript:deleteRestriction('<%=FDStoreProperties.getMarketingAdminUrl()%>/deleteRestriction.do?promotionCode=<%=promotion.getPromotionCode()%>')">Delete list</a></td>
+		      			</tr>
+	      			</table>
+      			</td>
+      		<% } %>
+      		<td rowspan="4" style="border-left: solid 1px #CCCCCC;">&nbsp;</td>
+      		
+      		<td colspan="4">&nbsp;</td>
+      		
+      	</tr>      	
+		<tr valign="top">
+			<% if(promotion.getAssignedCustomerSize() == 0){ %>
+			<td colspan="1" align="right">Create List:<br/>
+      			<span class="field_note">comma separated<br/>
+      				customer email IDs<br/>
+      					no whitespaces</span></td>
+      		<td colspan="3">&nbsp;<textarea name="user_ids" class="input" style="width: 300px;" wrap="virtual" rows="6"><%=promotion.getTmpAssignedCustomerUserIds()%></textarea></td>
+      		<% } else { %>
+      		<td colspan="1" align="right">Append:<br/>
+      			<span class="field_note">comma separated<br/>
+      				customer email IDs<br/>
+      					no whitespaces</span></td>
+      		<td colspan="3">&nbsp;<textarea name="user_ids" class="input" style="width: 300px;" wrap="virtual" rows="6"><%=promotion.getTmpAssignedCustomerUserIds()%></textarea>
+      		 <br/>
+             <a href="javascript:void(0)" onclick="window.open('<%=FDStoreProperties.getMarketingAdminUrl()%>/downloadRestriction.do?promotionCode=<%=promotion.getPromotionCode()%>','deleteRestriction','width=600,height=700,menubar=no,status=no,scrollbars=yes,resizable=yes')">Download Full List</a></td>             
+             <% } %>
+             <td colspan="4">&nbsp;</td>
+      	</tr>
+		     
+      
+		<tr valign="top">
+			<td colspan="1" align="right">Profile Specification(s):</td>
+			<td colspan="3">
+				<input type="radio" id="profile_condition0" name="profile_condition" value="AND" <%=("AND".equalsIgnoreCase(promotion.getProfileOperator()) || StringUtil.isEmpty(promotion.getProfileOperator())) ? "CHECKED" : "" %> /> <strong>Match All(AND)</strong>
+				&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" id="profile_condition1" name="profile_condition" value="OR" <%="OR".equalsIgnoreCase(promotion.getProfileOperator()) ? "CHECKED" : "" %>/> <strong>Match Any(OR)</strong>
+				<input type="hidden" id="profileOperator" name="profileOperator" class="input" value='<%=promotion.getProfileOperator() != null ? promotion.getProfileOperator() : "" %>' /> 
+			</td>
+			
+			<td colspan="1" align="right">Selected Profiles</td>
+			<td colspan="3">&nbsp;</td>
+		</tr>
+		
+		<tr valign="top">
+			<td colspan="4" align="middle">
+				<table>
+				<tr>
+					<td><select id="profile_name" name="profile_name" class="pulldown" >
+				<option></option>
+				<%for(Iterator i = profileAttributeNames.keySet().iterator(); i.hasNext(); ){
+			        String iName = (String) i.next();			        
+			     %>   
+					<option value="<%=iName%>"><%=iName%></option>
+				<%	} %>
+			</select>&nbsp;<fd:ErrorHandler result="<%= result %>" name="profile_name" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+					<td>with Value:</td>
+					<td>&nbsp;<input type="text" id="profile_value" name="profile_value" maxlength="16" class="input" style="width: 200px;" value="">&nbsp;<fd:ErrorHandler result="<%= result %>" name="profile_value" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>	
+				</tr>
+				<tr>
+					<td colspan="3">&nbsp;</td>
+				</tr>
+				<tr>
+					<td colspan="3">
+						<table width="100%" style="border-top: solid 1px #999999;">
+							<tr>
+								<td><input type="checkbox" id="sc_chefstable"/>Chefs Table</td>
+								<td><input type="checkbox" id="sc_vip"/>VIP/Reserved Dlv</td>
+								<td><input type="checkbox" id="sc_inactive"/>Inactive</td>
+							</tr>
+							<tr>
+								<td><input type="checkbox" id="sc_gold"/>Gold</td>
+								<td><input type="checkbox" id="sc_silver"/>Silver</td>
+								<td><input type="checkbox" id="sc_bronze"/>Bronze</td>
+							</tr>
+							<tr>
+								<td><input type="checkbox" id="sc_copper"/>Copper</td>
+								<td><input type="checkbox" id="sc_tin"/>Tin</td>
+								<td><input type="checkbox" id="sc_new"/>New</td>
+							</tr>
+							<tr>
+								<td colspan="2"><input type="button" value="Add Profile/Update Operator" class="submit" onclick="javascript:addProfile();"></td>
+								<td >&nbsp;</td>
+							</tr>			
+						</table>
+					</td>
+				</tr>
+				
+				
+				</table>
+			</td>
+			
+			
+			<td colspan="4" align="middle">				
+				<script language="javascript">
+				<!--
+					   function ShortCut(name, value) {
+							this.name = name;
+							this.value = value;
+					  }
+					  
+					  var shortcuts = new Array();		    	      
+		    	      shortcuts['sc_chefstable'] = new ShortCut('ChefsTable','1');
+					  shortcuts['sc_vip'] = new ShortCut('VIPCustomer','true');
+					  shortcuts['sc_inactive'] = new ShortCut('MetalCategory','0');
+					  shortcuts['sc_gold'] = new ShortCut('MetalCategory','1');
+					  shortcuts['sc_silver'] = new ShortCut('MetalCategory','2');
+					  shortcuts['sc_bronze'] = new ShortCut('MetalCategory','3');
+					  shortcuts['sc_copper'] = new ShortCut('MetalCategory','4');
+					  shortcuts['sc_tin'] = new ShortCut('MetalCategory','5');
+					  shortcuts['sc_new'] = new ShortCut('MetalCategory','6');
+					  
+					  var rollingIndex = 0;
+					  
+                      function addProfile() {
+                      		var profileValueFld = document.getElementById('profile_value');
+							var profileNameFld = document.getElementById('profile_name');
+							var tmpANDCondition = document.getElementById('profile_condition0');							
+							var tmpConditionValue = 'OR';
+							if(tmpANDCondition.checked) {
+								tmpConditionValue = 'AND';
+							}
+							document.getElementById('profileOperator').value = tmpConditionValue;													
+							if(profileNameFld != null && 
+										profileNameFld.value.length > 0 &&
+											profileValueFld != null	&& 
+												profileValueFld.value.length > 0) {																														
+								addProfleRow(tmpConditionValue, profileNameFld.value, profileValueFld.value);	
+								profileNameFld.selectedIndex=0;
+								profileValueFld.value='';									
+							}				
+							for( var i in shortcuts ) {
+								if(document.getElementById(i).checked) {
+									addProfleRow(tmpConditionValue, shortcuts[i].name, shortcuts[i].value);
+									document.getElementById(i).checked = false;	
+								}
+							}
+							reArrangeCondition();		
+					  }
+					 					  
+					  function addProfleRow(cellCondition, cellName, cellValue) {
+					  		if( document.createElement && document.childNodes ) {
+								var profileTableFld = document.getElementById('profileListTB').tBodies[0];																
+								if(profileTableFld != null) {									
+										var row = document.createElement('tr');
+										rollingIndex++;
+										var tmpID = 'attributeList['+rollingIndex+']';
+										row.id = tmpID;
+									    var td1 = document.createElement('td');
+									    td1.appendChild(document.createTextNode(cellCondition));
+									    var td2 = document.createElement('td');
+									    td2.appendChild (document.createTextNode(cellName));
+									    var td3 = document.createElement('td');
+									    td3.appendChild (document.createTextNode(cellValue));
+									    var td4 = document.createElement('td');
+									    var tdDelete = document.createElement('a');
+									    tdDelete.innerHTML = 'Delete';
+									    tdDelete.href = "javascript:deleteProfile('"+tmpID+"')";
+									    td4.appendChild (tdDelete);
+									    row.appendChild(td1);
+									    row.appendChild(td2);
+									    row.appendChild(td3);
+									    row.appendChild(td4);
+									    profileTableFld.appendChild(row);
+									    createHiddenInput(rollingIndex, cellName, cellValue, cellCondition);
+								}								
+							}
+					 }
+					 
+					function createHiddenInput(indexVal, cellName, cellValue, cellCondition) {
+						
+						var tmpId = 'attributeList['+indexVal+']'+'.';
+						var newElementName = document.createElement("input");
+						newElementName.setAttribute("type", "hidden");
+						newElementName.setAttribute("name", tmpId+'attributeName');
+						newElementName.setAttribute("id", tmpId+'attributeName');
+						newElementName.setAttribute("value", cellName);
+						
+						var newElementValue = document.createElement("input");
+						newElementValue.setAttribute("type", "hidden");
+						newElementValue.setAttribute("name", tmpId+'desiredValue');
+						newElementValue.setAttribute("id", tmpId+'desiredValue');
+						newElementValue.setAttribute("value", cellValue);
+										
+						//document.getElementById('profileContainer').appendChild(newElementName);
+						//document.getElementById('profileContainer').appendChild(newElementValue);	
+						document.forms[0].appendChild(newElementName);
+						document.forms[0].appendChild(newElementValue);						
+												
+					}
+
+					function deleteProfile(theCell) {
+						var profileTableFld = document.getElementById('profileListTB');
+						var profileTableRow = document.getElementById(theCell);
+						
+						if( document.createElement && document.childNodes 
+								&& profileTableFld != null 
+								&& profileTableRow != null) {
+														
+							var rowIndex = profileTableRow.rowIndex;
+							var hiddenNameElement = document.getElementById(profileTableRow.id+'.attributeName');
+						    var hiddenValueElement = document.getElementById(profileTableRow.id+'.desiredValue');						    
+						    var parentElementNode = hiddenNameElement.parentNode;
+						   						   				    									    				
+						    parentElementNode.removeChild(hiddenNameElement);
+						   	parentElementNode.removeChild(hiddenValueElement);							
+							profileTableFld.deleteRow(rowIndex);							
+							reArrangeCondition();						
+						}
+					}
+					
+					function reArrangeCondition() {
+						var profileTableFld = document.getElementById('profileListTB').tBodies[0];
+						var profileTableCondition = document.getElementById('profileOperator').value;						
+						var allTrElements = profileTableFld.getElementsByTagName("tr");
+						for ( var i=0; i < allTrElements.length; i++ ) {							
+						    var firstCell = allTrElements[i].getElementsByTagName("td")[0];						    
+						    if(i == 0) {						    	
+							    firstCell.innerHTML = '&nbsp;';								    
+							} else {
+								firstCell.innerHTML = profileTableCondition;
+							}
+						}
+					}					
+					//--> 						
+                    </script>   
+                  <% int intRowIndex = 0;
+                  	 StringBuffer strProfileHidBuf = new StringBuffer();
+                   %>
+				<table id="profileListTB" border="1" cellpadding="2" cellspacing="0" >
+					<thead>
+					<tr> <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th> 
+						<th>Profile Name</th> 
+						<th>Profile Value</th> 
+						<th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th> 
+					</tr>
+					</thead>	
+					<tbody>	
+					<%if(promotion.getAttributeList() != null) {
+						FDPromotionAttributeParam tmpParam = null; 												
+						 for(Iterator i = promotion.getAttributeList().iterator(); i.hasNext(); ) {
+				        	tmpParam = (FDPromotionAttributeParam) i.next(); 
+				        	intRowIndex++; 
+				        	strProfileHidBuf.append("<input type='hidden' name='attributeList[").append(intRowIndex).append("].attributeName' ");
+				        	strProfileHidBuf.append("id='attributeList[").append(intRowIndex).append("].attributeName' ");
+				        	strProfileHidBuf.append("value='").append(tmpParam.getAttributeName()).append("' />");
+				        	strProfileHidBuf.append("<input type='hidden' name='attributeList[").append(intRowIndex).append("].desiredValue' ");
+				        	strProfileHidBuf.append("id='attributeList[").append(intRowIndex).append("].desiredValue' ");
+				        	strProfileHidBuf.append("value='").append(tmpParam.getDesiredValue()).append("' />");
+				        %>
+				        	<tr id='attributeList[<%=intRowIndex%>]'> 
+				        		<td><%=(StringUtil.isEmpty(promotion.getProfileOperator())|| intRowIndex == 1) ? "&nbsp;" : promotion.getProfileOperator() %></td> 
+								<td><%=tmpParam.getAttributeName() %></td> 
+								<td><%=tmpParam.getDesiredValue() %></td> 
+								<td><a href="javascript:deleteProfile('attributeList[<%=intRowIndex %>]')">Delete</a></td> 
+							</tr>
+				     <%   
+				     	}				     				     
+				     }  %>   
+				     </tbody> 				
+				</table>				
+				<script>rollingIndex = <%=intRowIndex%>;</script>
+			</td>
+		</tr>		    	
+
+		<tr>
+      		<td colspan="12" style="border-bottom: solid 1px #999999;"><br/>&nbsp;<strong>ORDER REQUIREMENT</strong></td>
+   		 </tr>
+    <tr valign="top">      
+      
+      <td colspan="1" align="right">Order Type:</td>
+      <td colspan="3">
+                &nbsp;<input type="checkbox" name="dlv_home" <%=promotion.isOrderTypeHomeAllowed() ? "CHECKED" : ""%>> Home
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="checkbox" name="dlv_pickup" <%=promotion.isOrderTypePickupAllowed() ? "CHECKED" : ""%>> Pickup
+       </td>
+       <td rowspan="8" style="border-left: solid 1px #CCCCCC;">&nbsp;</td>
+       <td colspan="1" align="right">Exclude SKU prefix:</td>
+      <td colspan="3">&nbsp;<input type="text" name="excluded_sku" class="input" style="width: 40px;" value="<%=promotion.getExcludeSkuPrefix()%>"></td>
+    </tr>
+    <tr>
+      
+      <td colspan="1" align="right">&nbsp;</td>
+      <td colspan="3">
+                &nbsp;<input type="checkbox" name="dlv_corp"  <%=promotion.isOrderTypeCorporateAllowed() ? "CHECKED" : ""%>>Corporate 
+                &nbsp;&nbsp;&nbsp;<input type="checkbox" name="dlv_depot" <%=promotion.isOrderTypeDepotAllowed() ? "CHECKED" : ""%>> Depot 
+       </td>
+       
+       <td colspan="1" align="right">Need Dry Goods:</td>
+      <td colspan="3">
+                &nbsp;<input type="radio" name="need_dry_goods" value="yes_dry_goods" <%=promotion.getNeedDryGoods() ? "CHECKED" : ""%>> Yes
+                &nbsp;&nbsp;&nbsp;<input type="radio" name="need_dry_goods" value="no_dry_goods" <%=(!promotion.getNeedDryGoods()) ? "CHECKED" : ""%>> No
+            </td>
+    </tr>
+    <tr>
+      <td colspan="1" rowspan="2" align="right">Minimum Order Subtotal:</td>
+      <td colspan="3" rowspan="2">&nbsp;$ <input type="text" name="min_subtotal" class="input" style="width: 40px;" maxlength="12" value="<%=promotion.getMinSubtotal()%>">&nbsp;<fd:ErrorHandler result="<%= result %>" name="min_subtotal" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+    </tr>
+    
+    <tr valign="top">
+      <td colspan="1" rowspan="2" align="right">Need Category items:<br/>
+      	<span class="field_note">one of the categories<br/> cart. comma separated<br/> no whitespaces</span></td>
+       <td colspan="3" rowspan="2">&nbsp;<textarea name="required_items" class="input" style="width: 300px;" wrap="virtual" rows="5"><%=promotion.getNeedItemsFrom()%></textarea>
+      </td>
+     </tr>   
+      
+    <tr>
+      <td colspan="1" align="right">Apply on Order #:</td>
+      <td colspan="3">&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="order_number" class="input" style="width: 40px;" value="<%=promotion.getOrderCount()%>">&nbsp;<fd:ErrorHandler result="<%= result %>" name="order_number" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+    </tr>
+        
+    
+    <tr valign="top">
+            <td colspan="1" rowspan="4" align="right">Zip Code Restrictions:</td>
+      		<td colspan="3" rowspan="4">
+                      <script language="javascript">
+                      function cancelNewZip(){
+                        document.getElementById("newZipDate").value = "";
+                        document.getElementById("newDisabledZipDate").value = "";
+                        document.getElementById("newZipCodes").value= "";
+                        document.getElementById("newZipCheck").value = "no";
+                      }
+                      function newZip(){
+                        document.getElementById("newZipCheck").value="yes";
+                      }
+                      function newZipChange(field){
+                        document.getElementById("newZipDate").value=field.value;
+                      }
+                      function zipDateChange(field){
+                        document.getElementById("editedZipDate").value=field.value;
+                      }
+                    </script>    
+                <%if(!promotion.getZipRestrictions().isEmpty()){%>
+                    <span class="postshown" id="lessDetails">
+                    <%
+                      String jsArray = ""; 
+                      int counter=0; 
+                      TreeMap map = promotion.getZipRestrictions();
+                      for(Iterator x=promotion.getZipRestrictions().keySet().iterator(); x.hasNext(); ) {
+                          FDPromoZipRestriction restrict = (FDPromoZipRestriction)promotion.getZipRestrictions().get((Date)x.next());
+                            if(counter>0){
+                                jsArray +=" , ";
+                            }
+                            int count = 1;
+                            List zipCodeList = restrict.getZipCodeList();
+                            StringBuffer sb = new StringBuffer();
+                            for(Iterator i = zipCodeList.iterator(); i.hasNext(); ){
+                                String zipsCode = (String)i.next();
+                                if(count == zipCodeList.size()){
+                                    sb.append(zipsCode);
+                                }
+                                else {
+                                    sb.append(zipsCode+",");
+                                }
+                                if(count !=0 && count%5==0){
+                                    sb.append("\\r\\n");
+                                }
+                                count++;
+                            }
+
+                            jsArray += "new Array(\""+sb.toString()+"\",\""+restrict.getType()+"\", \""+CCFormatter.formatDateYear(restrict.getStartDate())+"\")";
+                            counter++;
+                      }
+                    %>
+                       <script language="Javascript">
+                      zipDDList = new Array(<%=jsArray%>); 
+                      function fillSelectFromArray(selectCtrl, itemArray, selectIndex, goodPrompt, badPrompt, defaultItem) {
+                        var i, j;
+                        var prompt;
+                        // empty existing items
+                        selectCtrl.value="";   
+                        
+                        prompt = (itemArray != null) ? goodPrompt : badPrompt;
+                        if (prompt == null) {
+                            j = 0;
+                        }
+                        else {
+                            selectCtrl.options[0] = new Option(prompt);
+                            j = 1;
+                        }
+                        if (itemArray != null) {
+                            // add new items
+                            selectCtrl.value = (itemArray[0]=="null")?"":itemArray[0];
+                            document.editPromotions.zipRestrictionDate.selectedIndex = selectIndex;
+                            document.editPromotions.zipDate.value = itemArray[2];
+                            document.editPromotions.editedZipDate.value=itemArray[2];
+                            document.editPromotions.previousZip.value = itemArray[2];
+                            if(itemArray[1]=="EXCEPT"){
+                                document.editPromotions.zipRestrictionType[0].checked=true;
+                            }
+                            else {
+                                document.editPromotions.zipRestrictionType[1].checked=true;
+                            }                            
+                        }
+                      }
+                    </script>                    
+                      &nbsp;<select name="zipRestrictionDate" class="pulldown" onChange="javascript:fillSelectFromArray(document.editPromotions.zipCodes, zipDDList[this.selectedIndex], this.selectedIndex);">
+                      <% for(Iterator x=promotion.getZipRestrictions().keySet().iterator(); x.hasNext(); ) {
+                          FDPromoZipRestriction restrict = (FDPromoZipRestriction)promotion.getZipRestrictions().get((Date)x.next());
+                      %>
+                            <option value="<%=CCFormatter.formatDateYear(restrict.getStartDate())%>"><%=CCFormatter.formatDateYear(restrict.getStartDate())%></option>
+                      <%}%>
+                      </select>
+                        
+                        &nbsp;<input type="text" name="zipDate" id="zipDate" onChange="zipDateChange(this);" value="" size="12" disabled="true" style="color:#000000;background-color:#FFFFFF;">
+                        <input type="hidden" name="editedZipDate" id="editedZipDate">
+                        <input type="hidden" name="previousZip" id="previousZip" value="false">
+                        &nbsp;<a href="#" id="trigger_zipDate"  style="font-size: 9px;">Edit Date</a>
+                        &nbsp;<a href="javascript:expandcollapse('moreDetails');expandcollapse('lessDetails'); newZip();" style="font-size: 9px;">Add New</a><br/>
+                        &nbsp;<input type="radio" name="zipRestrictionType" value="EXCEPT">All Except&nbsp;&nbsp;&nbsp;
+                        &nbsp;<input type="radio" name="zipRestrictionType" value="ONLY" CHECKED>Only <br/>
+                        <fd:ErrorHandler result="<%= result %>" name="zip_codes" id='errorMsg'><span class="error"><%=errorMsg%></span><br/></fd:ErrorHandler>
+                        <fd:ErrorHandler result="<%= result %>" name="zip_length" id='errorMsg'><span class="error"><%=errorMsg%></span><br/></fd:ErrorHandler>
+                        <fd:ErrorHandler result="<%= result %>" name="zip_pattern" id='errorMsg'><span class="error"><%=errorMsg%><span><br/></fd:ErrorHandler>
+                        &nbsp;<textarea name="zipCodes" class="input" style="width: 300px;" wrap="virtual" rows="5" COLS="25"></textarea><br/>
+                        </span>
+                        <script type="text/javascript">
+                        var date = new Date().getDate();
+                        if(date<10) {date = "0"+date;}   
+                        var month = new Date().getMonth()+1;
+                        if(month<10) {month = "0"+month;}
+                        var year = new Date().getYear();
+                        if(navigator.userAgent.toLowerCase().indexOf("msie")<0){
+                            year = year + 1900;
+                        }
+                        var today = year+"-"+month+"-"+date;
+                        var selectIndex = "0";
+                        for (var i=(zipDDList.length-1); i>0; i--){
+                            if(today>=zipDDList[i][2]){
+                                selectIndex = i;
+                                break;
+                            }
+                        }
+                        fillSelectFromArray(document.editPromotions.zipCodes, zipDDList[selectIndex], selectIndex);
+                        
+                        Calendar.setup(
+                          {
+                           showsTime : false,
+                           electric : false,
+                           inputField : "zipDate",
+                           ifFormat : "%Y-%m-%d",
+                           singleClick: true,
+                          button : "trigger_zipDate" 
+                          }
+                        );
+                    
+                     </script>  
+                <%}%>
+                <%if(promotion.getZipRestrictions().isEmpty()) {%>
+                    <span class="postshown" id="lessDetails">
+                        No Zip Restrictions &nbsp;
+                        <a href="javascript:expandcollapse('moreDetails');expandcollapse('lessDetails'); newZip();" style="font-size: 9px;">
+                            Add New
+                        </a>
+                    </span>
+                <%}%>
+                <span class="posthidden" id="moreDetails">
+                        <input type="hidden" name="newZipCheck" id="newZipCheck" value="no">
+                        <input type="hidden" name="newZipDate" id="newZipDate">
+                        &nbsp;<input type="text" name="newDisabledZipDate" id="newDisabledZipDate" onChange="newZipChange(this);" style="text-color:#000000;background-color:#FFFFFF;" size="12" disabled="true">
+                        &nbsp;<a href="#" id="trigger_newZipDate"  style="font-size: 12px;">Date</a>
+                        &nbsp; <a href="javascript:expandcollapse('moreDetails');expandcollapse('lessDetails');cancelNewZip();" style="font-size: 12px;">Cancel</a><br/>
+                        &nbsp;<input type="radio" name="newZipRestrictionType" value="EXCEPT">All Except&nbsp;&nbsp;&nbsp;
+                        &nbsp;<input type="radio" name="newZipRestrictionType" value="ONLY" CHECKED>Only <br/>
+                        &nbsp;<textarea name="newZipCodes" id="newZipCodes" class="input" style="width: 300px;" wrap="SOFT" rows="5"></textarea><br/>
+                </span>
+                    <script type="text/javascript">
+                    Calendar.setup(
+                      {
+                       showsTime : false,
+                       electric : false,
+                       inputField : "newDisabledZipDate", 
+                       ifFormat : "%Y-%m-%d",           
+                       singleClick: true,
+                       button : "trigger_newZipDate"                   
+                      }
+                    );
+                </script> 
+        </td>         
+      
+    </tr>
+    
+       
+   
+   <tr valign="top">
+   	<td colspan="1" align="right">Need Brands:<br/>
+          <span class="field_note">comma separated<br/> no whitespaces</span></td>
+      <td colspan="3">&nbsp;<textarea name="required_brands" class="input" style="width: 300px;" wrap="virtual"><%=promotion.getNeedBrands()%></textarea></td>
+   </tr>
+      
+    <tr valign="top">
+      <td colspan="1" align="right">Exclude Brands:<br/>
+      <span class="field_note">comma separated<br/> no whitespaces</span></td>
+      <td colspan="3">&nbsp;<textarea name="excluded_brands" class="input" style="width: 300px;" wrap="virtual"><%=promotion.getExcludeBrands()%></textarea></td>
+    </tr>			
+		
+	</table>
+ 
+	<style>
+        .posthidden {
+            display:none;
+            text-align: center;
+        } 
+        .postshown {
+            display:inline;
+            text-align: center;
+        }
+		.promoValue {
+			border-bottom: 1px dotted grey;
+		}
+		.promoValue table td.label {
+			text-align: right;
+			width: 14em;
+		}
+	</style>
+	<%= strProfileHidBuf%>

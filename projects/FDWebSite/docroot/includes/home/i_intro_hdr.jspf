@@ -1,0 +1,42 @@
+<% int promoValue = user!= null ? (int)user.getMaxSignupPromotion() : 0; %>
+<table width="490" cellpadding="0" cellspacing="0" border="0">
+<tr align="center"><td><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
+<% if (user.getLevel() < FDUserI.RECOGNIZED) { %>
+     <tr align="center"><td>
+     <% if(user.isDepotUser()){
+               String depotName = com.freshdirect.fdstore.FDDepotManager.getInstance().getDepot(user.getDepotCode()).getName(); %>
+               <font class="title14">Welcome to FreshDirect <%=depotName%> Depot.</font>
+     <% } else { %>
+               <font class="title16">Welcome to FreshDirect!</font>
+     <%}%>
+     <br><img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br>
+	Learn more <a href="/about/index.jsp">About Us</a>, or get <a href="/help/<% if(user.isDepotUser()){ %>delivery_info_depot.jsp<% } else { %>delivery_info.jsp<% } %>">Delivery & Pickup Info</a>.<br>
+     </td></tr>
+<% } else if (validOrderCount == 0) { %>
+     <tr align="center"><td><font class="title14">Welcome <%=custFirstName%>. Thank you for signing up!</font><br><font class="text9">(If you're not <font color="#336600"><%=custFirstName%>, <a href="/login/logout.jsp?logoutPage=site_access">click here</a>!</font>)</font>
+     <% if (user.isEligibleForSignupPromotion()){ 
+	 		Promotion promo = (Promotion) user.getEligibleSignupPromotion();
+			%>
+     <br><br>Enjoy your $<%=(int)promo.getHeaderDiscountTotal()%> worth of the best fresh foods in New York. <a href="/promotion.jsp">See offer details</a>.
+     <% } else { %>
+     <br><br>Get ready to enjoy the best fresh foods in New York.
+     <% } %></td></tr>
+     
+<% } else { //orders > 0 %>
+
+     <% if (user.isEligibleForSignupPromotion()) { //has promo 
+			SignupDiscountRule rule = user.getSignupDiscountRule();
+%>
+         <tr align="center">
+			 <td>
+				 <font class="title14">Welcome back, <%=custFirstName%>!</font><br><font class="text9">(If you're not <font color="#336600"><%=custFirstName%>, <a href="/login/logout.jsp?logoutPage=site_access">click here</A>!</font>)</font>
+				 <% if (rule != null) { %><br><br>Get $<%=(int)rule.getMaxAmount()%> off your next order when you order $<%=(int)rule.getMinSubtotal()%> or more. <a href="/promotion.jsp">See offer details</a>.<% } %>
+			</td>
+		</tr>
+     <% 
+		} else { %>
+          <tr align="center"><td><font class="title14">Welcome back, <%=custFirstName%>!</font>&nbsp;&nbsp;
+          <font class="text9">(If you're not <font color="#336600"><%=custFirstName%>, <a href="/login/logout.jsp?logoutPage=site_access">click here</A>!</font>)</font></td></tr>
+     <% } %>
+<% } %>
+</table>

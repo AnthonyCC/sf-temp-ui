@@ -1,0 +1,227 @@
+<%@ page import='com.freshdirect.webapp.util.*'%>
+<%@ page import='com.freshdirect.framework.util.*'%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCustomerModel" %>
+<%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
+
+<%!
+    private String getQueryString(HttpServletRequest request){
+        Map m = request.getParameterMap();
+        Enumeration e = request.getParameterNames();
+        StringBuffer buf = new StringBuffer("?");
+        while(e.hasMoreElements()) {
+            String name = (String) e.nextElement();
+            if(!"startRecord".equalsIgnoreCase(name) && !"endRecord".equalsIgnoreCase(name)){
+                String [] values = (String[]) m.get(name);
+                if(values != null){
+                    for(int i = 0; i < values.length; i++){
+                        buf.append(name).append("=").append(values[i]).append("&");
+                    }
+                }
+            }
+        }
+        return buf.toString();
+    }
+%>
+
+<%
+/*
+**  This file expects CrmCaseSearchTemplate variable "template"
+**
+*/
+
+int startRecord = template.getStartRecord();
+int endRecord = template.getEndRecord();
+int increment = Integer.parseInt(FDStoreProperties.getCaseListLength(request.getRequestURI().indexOf("case_history.jsp")>-1));
+
+String queryString = getQueryString(request);
+String nextLink = template.getEndRecord()<template.getTotalRows()?"<a href="+request.getRequestURI() + queryString + "startRecord="+(startRecord+increment) + "&endRecord="+(endRecord+increment)+">>></a>":"";
+String previousLink = template.getStartRecord()!=0?"<a href="+request.getRequestURI() + queryString + "startRecord="+(startRecord-increment) + "&endRecord="+(endRecord-increment)+"><<</a>":"";
+String allLink = template.getTotalRows() > increment ? "<a href="+request.getRequestURI() + queryString + "startRecord="+0 + "&endRecord="+template.getTotalRows()+">Display all</a>" : "";
+
+if(template.getTotalRows() > increment && template.getStartRecord() == 0 && template.getEndRecord()==template.getTotalRows()){
+    allLink = "<a href="+request.getRequestURI() + queryString + "startRecord=0&endRecord="+increment+">Paginate results</a>";
+}
+%>
+    <div class="sub_nav">
+        <span class="case_mgmt_header">
+        <% if (template.getQueue() != null) { %>
+            <%= previousLink + "&nbsp;&nbsp;" + template.getQueue().getCode() %> &middot; <%= template.getQueue().getName() + "&nbsp;&nbsp;" + nextLink%> 
+            (<span class="result"><%=template.getStartRecord()+ " - "%>
+                <%= ( template.getEndRecord()>template.getTotalRows())? template.getTotalRows() : template.getEndRecord()%>
+                <%=" / "+ template.getTotalRows()%></span>)
+        <% } else if ("searchCase".equalsIgnoreCase(request.getParameter("action"))) { %>
+            <%=previousLink%>&nbsp;&nbsp;Search Results &nbsp;&nbsp; <%=nextLink%>
+            (<span class="result"><%=template.getStartRecord()+ " - "%>
+                <%= ( template.getEndRecord()>template.getTotalRows())? template.getTotalRows() : template.getEndRecord()%>
+                <%=" / "+ template.getTotalRows()%></span>) 
+        <% } else if(request.getRequestURI().indexOf("main/case_history.jsp")<0){ %>
+            < Select Queue to view
+        <% } %>
+        &nbsp;&nbsp;
+        <%=allLink%>
+        </span>
+    </div>
+    <%
+    if(template!=null){
+        if(template.getStartDate()!=null){
+            %><b>Start Date:</b><%=CCFormatter.formatDateYear(template.getStartDate())%>&nbsp;&nbsp;&nbsp;&nbsp;<%
+        }
+        if(template.getEndDate()!=null){
+            %><b>End Date:</b><%=CCFormatter.formatDateYear(template.getEndDate())%>&nbsp;&nbsp;&nbsp;&nbsp;<%
+        }
+        if(template.getQueue()!=null){
+            %><b>Queue:</b><%=template.getQueue()%>&nbsp;&nbsp;&nbsp;&nbsp;<%
+        }
+        if(template.getSubject()!=null){
+            %><b>Subject:</b><%=template.getSubject()%>&nbsp;&nbsp;&nbsp;&nbsp;<%
+        }
+        if(template.getStates() !=null && template.getStates().size() > 0){
+            %><b>Status:</b><%=template.getStates()%>&nbsp;&nbsp;&nbsp;&nbsp;<%
+        }
+        if(template.getPriority() !=null){
+            %><b>Priority:</b><%=template.getPriority()%>&nbsp;&nbsp;&nbsp;&nbsp;<%
+        }
+        if(template.getOrigin()!=null){
+            %><b>Origin:</b><%=template.getOrigin()%>&nbsp;&nbsp;&nbsp;&nbsp;<%
+        }
+        
+    }    
+%>
+<%
+
+String page_URI = request.getRequestURI();
+String height = "42";
+boolean monitor = false;
+boolean own_worklist = page_URI.indexOf("/main/worklist") > -1;
+boolean user_mgmt = false;
+boolean case_history = false;
+String caseLink = "/includes/case_summary.jsp";
+
+if (page_URI.indexOf("case_history") > -1) {
+	height = "40";
+	case_history = true;
+}
+
+if (page_URI.indexOf("order_cases") > -1) {
+	height = "32";
+	case_history = true;
+}
+
+if (page_URI.indexOf("/main/index") > -1 ) {
+	monitor = true;
+	height = "25";
+	caseLink = "/main/worklist.jsp";
+}
+
+if (page_URI.indexOf("case_mgmt/index") > -1) {
+	height = "37";
+}
+
+if (page_URI.indexOf("user_mgmt") > -1 || page_URI.indexOf("supervisor/index") > -1 ) {
+	user_mgmt = true;
+	height = "94";
+	caseLink = "/case_mgmt/index.jsp";
+}
+
+boolean showAssigned = !monitor && !own_worklist && !user_mgmt;
+
+JspTableSorter sort = new JspTableSorter(request);
+
+%>
+<div class="case_list_header">
+	<table width="100%" cellpadding="0" cellspacing="2" border="0" class="case_list_header_text">
+		<tr>
+			<td width="2%" align="center"><a href="?<%= sort.getFieldParams("case_priority") %>" class="case_list_header_text">P</a></td>
+			<% if (!case_history) { %>
+				<td width="12%"><a href="?<%= sort.getFieldParams("last_name") %>" class="case_list_header_text">Customer</a></td>
+			<% } %>
+			<td width="<%= case_history ? "11" : "7"%>%"><a href="?<%= sort.getFieldParams("case_state") %>" class="case_list_header_text">Status</a></td>
+			<td width="<%= case_history ? "16" : "12"%>%"><a href="?<%= sort.getFieldParams("create_date") %>" class="case_list_header_text">Created</a></td>
+			<td width="<%= case_history ? "11" : "7"%>%"><a href="?<%= sort.getFieldParams("case_origin") %>" class="case_list_header_text">Origin</a></td>
+			<td width="<%= showAssigned ? "5" : "6"%>%"><a href="?<%= sort.getFieldParams("case_subject") %>" class="case_list_header_text">Queue</a></td>
+			<td width="18%"><a href="?<%= sort.getFieldParams("subject_name") %>" class="case_list_header_text">Subject</a></td>
+			<td width="<%= showAssigned ? "21" : "25"%>%"><a href="?<%= sort.getFieldParams("summary") %>" class="case_list_header_text">Summary</a></td>
+			<% if (showAssigned) { %><td width="8%" align="center"><a href="?<%= sort.getFieldParams("assigned") %>" class="case_list_header_text">Assigned</a></td><% } %>
+			<td width="<%= showAssigned ? "12" : "14"%>%" align="right">Idle/Locked</td>
+			<td><img src="/media_stat/crm/images/clear.gif" width="12" height="1"></td>
+		</tr>
+	</table>
+</div>
+	
+<div class="case_list_content" style="height: <%= height %>%;">
+
+	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="case_list_content_text">
+		<%String caseId = request.getParameter("case");%>
+		<logic:iterate id='cm' indexId='i' collection="<%= cases %>" type="com.freshdirect.crm.CrmCaseModel">
+			<%
+            String caseRowLink = caseLink;
+            caseRowLink += "?";
+            caseRowLink += cm.getCustomerPK()!=null ? "erpCustId=" + cm.getCustomerPK().getId() : "";
+            caseRowLink += cm.getSalePK()!=null ? "&orderId=" + cm.getSalePK().getId() : "";
+            caseRowLink += "&case="+cm.getPK().getId() + (user_mgmt ? "&action=searchCase&assignedAgent="+ request.getParameter("agent_pk") : "");
+            caseRowLink += "&startRecord="+template.getStartRecord()+"&endRecord="+template.getEndRecord()+"#" + caseId;
+			boolean selected = cm.getPK().getId().equals( caseId );
+			
+			%>
+			<tr id="<%=cm.getPK().getId()%>" valign="top" style="cursor: pointer;"
+				class='<%= selected ? "case_selected_header" : (i.intValue()%2==0 ? "list_odd_row" : "list_even_row") %>' 
+				<% if(caseRowLink.indexOf("case_summary.jsp")>-1){ %>
+                  onClick="changeColors('<%=cm.getPK().getId()%>','<%=i.intValue()%2==0?"list_odd_row":"list_even_row"%>');document.getElementById('case_summary').src='<%= caseRowLink %>'; ">
+                <% }
+                else {
+                %>
+                  onClick="document.location.href='<%= caseRowLink %>'; this.className='case_selected_header'; ">
+                <%}%>
+				<td width="2%" align="center" 
+                    <% if (case_history) { %>
+                        <% if (cm.getState().equals(CrmCaseState.getEnum("OPEN"))) %> 
+                            style="background:<%= selected? "#CC0066;'" : "#CC9999;"%>;"
+                        <% } %>
+                >
+                    <img src="/media_stat/crm/images/priority_<%= cm.getPriority().getCode().toLowerCase() %>.gif" width="11" height="11" vspace="2">
+                </td>
+				<% if (!case_history) { %>
+					<td width="12%">
+                        <%if (cm.getCustomerPK()!=null){%>
+                            <%= cm.getCustomerFirstName().toUpperCase().charAt(0) %> 
+                            <%= cm.getCustomerLastName().toUpperCase().charAt(0) + cm.getCustomerLastName().substring(1,cm.getCustomerLastName().length()).toLowerCase()%>
+                        <%}else{%>
+                            <%= cm.getPK().getId() %>
+                        <%}%>
+                    </td>
+				<% } %>
+				<td width="<%= case_history ? "11" : "7"%>%" <% if (case_history) { %><% if (cm.getState().equals(CrmCaseState.getEnum("OPEN"))) %> style="background:<%= selected? "#CC0066;'" : "#CC9999;"%>;"<% } %>><%= cm.getState().getName() %></td>
+				<td width="<%= case_history ? "16" : "12"%>%"><%= CCFormatter.formatCaseDate(cm.getCreateDate()) %></td>
+				<td width="<%= case_history ? "11" : "7"%>%"><%= cm.getOrigin().getName() %></td>
+				<td width="<%= case_history ? "5" : "6"%>%"><%= cm.getSubject().getQueue().getCode() %></td>
+				<td width="18%"><%= cm.getSubjectName()%></td>
+				<td width="<%= showAssigned ? "21" : "25"%>%"><%= cm.getSummary() %></td>
+				<% if (showAssigned) { %>
+				<td width="8%" align="center">
+					<%if(cm.getAssignedAgentPK() != null){%>
+						<%= CrmManager.getInstance().getAgentUserId(cm.getAssignedAgentPK().getId()) %>
+					<% } else { %>
+						<span class="not_set">-None-</span>
+					<% } %>
+				</td>
+				<% } %>
+				<td width="<%= showAssigned ? "12" : "14"%>%" align="right" <% if (case_history) { %><% if (cm.getState().equals(CrmCaseState.getEnum("OPEN"))) %> style="background:<%= selected? "#CC0066;'" : "#CC9999;"%>;"<% } %>>
+					<% if (cm.getState().equals(CrmCaseState.getEnum("CLSD")) && cm.getLockedAgentPK()==null){ %>
+					--
+					<% } else if (cm.getLockedAgentPK()!=null) { %>
+						<crm:GetCurrentAgent id='currAgent'>
+							<%=CrmManager.getInstance().getAgentUserId(cm.getLockedAgentPK().getId()) %>
+							<% if (currAgent.getPK().equals(cm.getLockedAgentPK())) { %>
+								<img src="/media_stat/crm/images/locked.gif" width="8" height="12" border="0" hspace="0" vspace="0">
+							<% } %>
+						</crm:GetCurrentAgent>
+					<% } else { %>
+						<%= CCFormatter.formatDuration( cm.getIdleTime() ) %>
+					<% } %>
+				</td>
+				
+			</tr>
+			<tr class="list_separator" style="padding: 0px;"><td colspan="<%= case_history ? "9" : "10"  %>"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td></tr>
+		</logic:iterate>
+	</table>
+</div>

@@ -1,0 +1,126 @@
+<html>
+<head>
+	<title>DLVAdmin View Timeslots</title>
+	<link rel="stylesheet" href="../../../../docroot/css/pc_ie.css"/>
+</head>
+
+<body bgcolor="#ffffff" jwcid="$content$">
+	<span jwcid="border">
+		<table>
+			<tr>
+				<form jwcid="formRegion">
+				<td width="100"><b>Region: </b></td>
+				<td><span jwcid="selectRegion" /></td>
+				</form>
+			</tr>
+			<tr>
+				<td cospan="2">&nbsp;&nbsp;</td>
+			</tr>
+		</table>
+		<span jwcid="ifRegionSelected">
+			<table>
+				<form jwcid="formFilter">
+				<tr>
+					<td width="100"><b>Zone: </b></td>
+					<td><span jwcid="selectZone" /></td>
+				</tr>
+				<tr>
+					<td cospan="2">&nbsp;&nbsp;</td>
+				</tr>
+				<tr>
+					<td width="100"><b>Day: </b></td>
+					<td><span jwcid="selectDay" /></td>
+				</tr>
+				<tr>
+					<td cospan="2">&nbsp;&nbsp;</td>
+				</tr>
+				<tr>
+					<td width="100"><b>Start Date: </b></td>
+					<td><span jwcid="datePickerStart" validators="validators:required" /></td>
+				</tr>
+				<tr>
+					<td cospan="2">&nbsp;&nbsp;</td>
+				</tr>
+				<tr>
+					<td width="100"><b>End Date: </b></td>
+					<td><span jwcid="datePickerEnd"  validators="validators:required" /></td>
+				</tr>
+				<tr>
+					<td cospan="2">&nbsp;&nbsp;</td>
+				</tr>
+				<tr>
+					<td>&nbsp;&nbsp;</td>
+					<td><span jwcid="sumbitFilterForm" /></td>
+				</tr>
+				</form>
+			</table>
+			<table>
+				
+				<span jwcid="forEachZone">
+                    
+					<tr>
+						<td colspan="2" class="dbHeader"><span jwcid="insertZoneName" /></td>
+					</tr> 
+					<tr>
+						<td colspan="2">
+						<span jwcid="forEachDay">
+							<table align="left" cellpadding="1" cellspacing="1" border="0" class="timeslotTable">
+								<tr>
+									<td class="dbSubHeader" colspan="8"><span jwcid="insertDayHeader">Thursday<br>January 2, 2003</span></td>
+								</tr>
+                                <tr bgcolor='dfdfdf'>
+									<td nowrap><b></b></td>
+									<td align="center" colspan="2" class="total"><b>Total</b></td>
+									<td align="center" colspan="2" class="base"><b>Base</b></td>  
+									<td align="center" colspan="3" class="ct" nowrap><b>Chef's Table</b></td>              
+								</tr>        
+
+								<tr bgcolor='dfdfdf'>
+									<td nowrap><b>Start Time-End Time-Cutoff</b></td>
+									<td class="total"><b>Cap</b></td>
+									<td class="total"><b>Alloc</b></td>
+									<td class="base"><b>Cap</b></td>
+									<td class="base"><b>Alloc</b></td>
+									<td class="ct"><b>Cap</b></td>
+									<td class="ct"><b>Alloc</b></td>
+									<td class="ct"><b>% CT <br>Alloc/<br>Total <br>Alloc</b></td>            
+								</tr>
+								<span jwcid="forEachTimeslot">
+									<tr>
+										<td nowrap><span jwcid="@Insert" value="ognl:currentTimeslot.startTime">04:00 PM</span> - <span jwcid="@Insert" value="ognl:currentTimeslot.endTime">06:00 PM</span>- <span jwcid="@Insert" value="ognl:currentTimeslot.cutoffTime">11:00 PM</span></td>
+										<td align="right" class="total"><b><span jwcid="@Insert" value="ognl:currentTimeslot.capacity">12</span></b></td>
+										<td align="right" class="total"><b><span jwcid="@Insert" value="ognl:currentTimeslot.calculateCurrentAllocation(currentDate)">32</span></b></td>
+                                        <span jwcid="@If" condition="ognl:currentTimeslot.ctActive">
+											<td align="right" class="base"><b><span jwcid="@Insert" value="ognl:currentTimeslot.baseCapacity">32</span></b></td>                
+							                <td align="right" class="base"><b><span jwcid="@Insert" value="ognl:currentTimeslot.baseAllocation">32</span></b></td>
+							                <td align="right" class="ct"><b><span jwcid="@Insert" value="ognl:currentTimeslot.chefsTableCapacity">32</span></b></td>
+							                <td align="right" class="ct"><b><span jwcid="@Insert" value="ognl:currentTimeslot.chefsTableAllocation">32</span></b></td>
+							                <td align="right" class="ct"><b><span jwcid="insertPercentage">32</span></b></td>
+                                        </span>
+									</tr>
+								</span>
+								<tr bgcolor="dfdfdf">
+									<td><b>Total:</b></td>
+									<td class="total"><b><span jwcid="insertCapacityTotal" /></b></td>
+                                    <td class="total"><b><span jwcid="insertAllocationTotal" /></b></td>
+                                    <span jwcid="@If" condition="ognl:currentZone.ctActive">
+			                            <td class="base"><b><span jwcid="insertBaseCapacityTotal" /></b></td>
+            	                        <td class="base"><b><span jwcid="insertBaseAllocationTotal" /></b></td>
+                	                    <td class="ct"><b><span jwcid="insertCTCapacityTotal" /></b></td>
+                    	                <td class="ct"><b><span jwcid="insertCTAllocationTotal" /></b></td>
+										<td class="ct"><b><span jwcid="insertPercentageTotal" /></b></td>
+                                    </span>
+								</tr>
+							</table>
+						</span>
+						</td>
+					</tr>
+					<tr colspan="2" bgcolot="dfdfdf">
+						<td><b>Total Capacity: <span jwcid="insertZoneCapTotal" />&nbsp;&nbsp;Total Allocations: <span jwcid="insertZoneAllocationTotal" /></td>
+					</tr>
+				</span>
+			</table>
+		</span>
+	</span>
+</body>
+</html>

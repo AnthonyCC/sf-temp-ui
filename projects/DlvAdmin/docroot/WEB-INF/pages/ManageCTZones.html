@@ -1,0 +1,54 @@
+<html>
+<head>
+<title>Delivery Reservation Overview</title>
+<link rel="stylesheet" href="../../../../docroot/css/pc_ie.css"/>
+
+</head>
+<body bgcolor="#ffffff" jwcid="$content$">
+<span jwcid="border"> 
+
+<form jwcid="@Form" stateful="false">
+<table cellpadding="0" cellspacing="1" border="0">    
+	<tr>
+		<td class="title16">Region: </td>
+		<td><select jwcid="selectRegion" class="text10"> 
+				<option>Urban</option>
+				<option>Blah</option>
+			</select>
+		</td>
+	</tr>
+</table>
+</form>
+
+
+<form jwcid="@Form" delegate="ognl:beans.delegate">
+<table cellpadding="0" cellspacing="1" border="0">
+
+<span jwcid="@If" condition="ognl:region!=null">
+    <tr><td colspan="3"><span jwcid="showErrors" /></td><tr>
+	<tr>
+        <td>Zone</td>
+        <td align="center">Auto-release minutes</td>
+        <td>Action</td>
+	</tr>   
+	<span jwcid="@Foreach" source="ognl:engine.getZones(region)" value="ognl:zone">
+		<tr>
+			<td><span jwcid="@Insert" value="ognl:zone.displayName">Zone Name</span></td>
+			<td align="center"><span jwcid="releaseTime">0</span></td>
+			<td><span jwcid="@If" condition="ognl:zone.ctActive">
+                <input jwcid="@Submit" label="Update" listener="ognl:listeners.updateCTZone" parameters="ognl:true" class="button"/>
+            	<input jwcid="deactivate" label="Deactivate" class="button" />
+            </span>
+            <span jwcid="@Else">
+               <input jwcid="activate" label="Activate" class="button" /> 
+            </span>
+            </td>            
+		</tr>
+	</span>
+</span>    
+</table>    
+</form>        
+</span>
+
+</body>
+</html>

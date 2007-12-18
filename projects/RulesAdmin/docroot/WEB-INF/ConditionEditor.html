@@ -1,0 +1,39 @@
+<span jwcid="@If" condition="ognl:condition instanceof com.freshdirect.rules.OgnlCondition">
+	<td>OGNL Script: </td>
+	<td>
+		<textarea jwcid="@TextArea" rows="15" cols="55" displayName="ognl Condition" value="ognl:condition.expression" validators="validators:required" />
+	</td>
+</span>
+<span jwcid="@If" condition="ognl:condition instanceof com.freshdirect.fdstore.rules.CountyCondition">
+	<td>County: </td>
+	<td>
+		<input jwcid="@TextField" size="55" displayName="County" value="ognl:condition.county" validators="validators:required"/>
+	</td>
+</span>
+<span jwcid="@If" condition="ognl:condition instanceof com.freshdirect.rules.RuleRef">
+	<td>Rule: </td>
+	<td>
+		<select jwcid="@PropertySelection" model="ognl:ruleRefSelectionModel" value="ognl:currRuleRefId"/>
+	</td>
+</span>
+<span jwcid="@If" condition="ognl:condition instanceof com.freshdirect.fdstore.rules.OrderAmount" >
+	<td>Range: </td>
+	<td>
+		Min <input jwcid="@TextField" value="ognl:condition.minimum" displayName="orderMinimum" size="5" />
+		Max <input jwcid="@TextField" value="ognl:condition.maximum" displayName="orderMaximum" size="5" />
+	</td>
+</span>
+<span jwcid="@If" condition="ognl:condition instanceof com.freshdirect.fdstore.rules.ProfileCondition">
+	<td>Profile Attribute: </td>
+	<td>
+		Attribute Name: <input jwcid="@TextField" validators="validators:required" value="ognl:condition.attributeName" displayName="attributeName" size="15" />
+		<br /><br />
+		Attribute Value: <input jwcid="@TextField" validator="validators:required" value="ognl:condition.attributeValue" displayName="attributeValue" size="15" />
+	</td>
+</span>
+<span jwcid="@If" condition="ognl:condition instanceof com.freshdirect.fdstore.rules.ServiceTypeCondition">
+	<td>Service Type: </td>
+	<td>
+		<select jwcid="@PropertySelection" model="ognl:serviceTypeSelectionModel" value="ognl:currServiceType"/>
+	</td>
+</span>

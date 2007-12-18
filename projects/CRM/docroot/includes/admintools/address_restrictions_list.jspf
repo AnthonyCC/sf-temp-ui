@@ -1,0 +1,125 @@
+<%@ page import="java.text.*, java.util.*" %>
+<%@ page import="com.freshdirect.customer.*" %>
+<%@ page import="com.freshdirect.fdstore.customer.*" %>
+<%@ page import="com.freshdirect.framework.webapp.*" %>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
+<%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@ page import="com.freshdirect.delivery.EnumRestrictedAddressReason"%>
+<%@ page import="com.freshdirect.delivery.model.RestrictedAddressModel"%>
+
+<%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri="crm" prefix="crm" %>
+<link rel="stylesheet" href="/ccassets/css/crm.css" type="text/css">
+<style type="text/css">
+</style>
+<script>
+function openURL(inLocationURL) {
+
+    self.parent.location.href = inLocationURL;
+
+}
+
+function deleteRestriction(address1,apartment,zipCode) {    
+    document.getElementById("delete_address1").value=address1;    
+    document.getElementById("delete_apartment").value=apartment;     
+    document.getElementById("delete_zipCode").value=zipCode;    
+    doAction('deleteAddressRestrctions');    
+
+
+}
+
+function doAction(actionName) {
+			    	if(actionName == 'deleteAddressRestrctions'){
+					var doCancel = confirm ("Are you sure you want to delete these Restriction?");
+                        if(doCancel == false){
+                            return;
+                        }            
+                  }
+					document.getElementById("actionName").value = actionName;
+					document.getElementById("addrRestrictions").submit();	
+					
+				}
+                
+function sortRestriction(colName) {
+    if(colName==document.getElementById("sortColumn").value){
+       
+       document.getElementById("ascending").value="desc";
+    }
+    document.getElementById("sortColumn").value=colName;            
+    doAction('sortAddressRestrctions');    
+
+}
+
+
+</script>
+
+<input type="hidden" name="actionName" id="actionName" value="">
+
+<logic:present name="restrictions">
+<%
+    
+	//List restrictions = (List)session.getAttribute("DEL_RESTRICTION_SEARCH");
+    System.out.println("restrictions in jsp :"+restrictions);
+    String sortColumn = NVL.apply(request.getParameter("sortColumn"), "date_modified");
+	
+%>
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<input type="hidden" name="sortColumn" id="sortColumn"  value="<%=sortColumn%>" />
+<input type="hidden" name="ascending" id="ascending"  value="asc" />
+	<tr>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b><a href="javascript:sortRestriction('reason')"> Reason # </a></b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b> <a href="javascript:sortRestriction('scrubbed_address')"> Street Address </a> </b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b><a href="javascript:sortRestriction('apartment')">  Apartment </a></b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" align="center"  class="border_bold"><span class="detail_text"><b><a href="javascript:sortRestriction('zipCode')"> Zip Code</a></b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b> <a href="javascript:sortRestriction('date_modified')"> Last modification Date </a></b></span></td>	
+	<td class="border_bold">&nbsp;</td>	
+    <td valign="bottom" class="border_bold"><span class="detail_text"><b> <a href="javascript:sortRestriction('date_modified')"> Last modified by</b></span></td>	
+	<td class="border_bold">&nbsp;</td>	
+    <td class="border_bold">&nbsp;</td>	
+	</tr>
+	
+    
+	<%
+		
+		if(restrictions == null || restrictions.size() == 0) {
+	%>
+	<tr><td><span class="error">No Restrictions found for the given criteria.</span></td></tr>
+	
+	<%
+		} else {
+	%>	
+	<logic:iterate id="restriction" collection="<%= restrictions %>" type="com.freshdirect.delivery.model.RestrictedAddressModel" indexId="cnt">
+	<%                
+		    	
+	%>
+		<input type="hidden" name="delete_address1" id="delete_address1" value="" />
+        <input type="hidden" name="delete_apartment" id="delete_apartment" value="" />
+        <input type="hidden" name="delete_zipCode" id="delete_zipCode" value="" />        
+        <tr>
+        <td class="border_bottom"><span class="detail_text"><%= restriction.getReason().getCode() %></span></td>	
+        <td class="border_bottom">&nbsp;</td>
+        <td class="border_bottom"><span class="detail_text"><%= restriction.getAddress1() %></span></td>	
+        <td class="border_bottom">&nbsp;</td>
+        <td class="border_bottom"><span class="detail_text"><%= restriction.getApartment() %></span></td>	
+        <td class="border_bottom">&nbsp;</td>
+        <td class="border_bottom"><span class="detail_text"><%= restriction.getZipCode() %></span></td>
+        <td class="border_bottom">&nbsp;</td>
+        <td class="border_bottom"><span class="detail_text"><%= restriction.getLastModified() %></span></td>
+        <td class="border_bottom">&nbsp;</td>
+        <td class="border_bottom"><span class="detail_text"><%= restriction.getModifiedBy() %></span></td>        
+        <td class="border_bottom"></td>
+        <td class="border_bottom"><A HREF="javascript:void(0)" onclick="window.open('/admintools/addrRestrictionForm.jsp?addr1=<%= restriction.getAddress1() %>&apart=<%= restriction.getApartment() %>&zip=<%= restriction.getZipCode() %>&actionType=editAddrRestriction','editAddrRestriction','width=350,height=400,menubar=no,status=no')">Edit<a/>&nbsp;|</td>        
+        <td class="border_bottom"><a href="javascript:deleteRestriction('<%= restriction.getAddress1() %>','<%= restriction.getApartment() %>','<%= restriction.getZipCode() %>')">&nbsp;Delete<a/></td>
+        
+        </tr>
+        	</logic:iterate>
+	<%
+		}
+	%>	
+	
+</table>
+</logic:present>

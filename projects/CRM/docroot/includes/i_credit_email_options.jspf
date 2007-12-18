@@ -1,0 +1,55 @@
+<% // displays the editable email options:  Used in issue_credit.jsp  %>            
+            <table width="100%" class="order_detail">
+                <tr>
+                    <td colspan="3">Send this email<img src="/media_stat/crm/images/clear.gif" width="50" height="1"></td>
+                </tr>
+                <tr><td colspan="3"><input <%=(EnumSendCreditEmail.DONT_SEND.getName().equals(send_email)?"checked":"")%> type="radio" value="<%=EnumSendCreditEmail.DONT_SEND.getName()%>" name="send_email"> Dont send </td></tr>
+                <tr><td colspan="3"><input <%=(EnumSendCreditEmail.SEND_ON_COMPLAINT_CREATION.getName().equals(send_email)?"checked":"")%> type="radio" value="<%=EnumSendCreditEmail.SEND_ON_COMPLAINT_CREATION.getName()%>" name="send_email"> On credit submission</td></tr>
+                <tr><td colspan="3"><input <%=(EnumSendCreditEmail.SEND_ON_APPROVAL.getName().equals(send_email) ?"checked":"")%> type="radio" value="<%=EnumSendCreditEmail.SEND_ON_APPROVAL.getName()%>" name="send_email"> On credit approval</td></tr>
+                <tr>
+                    <td colspan="3"><hr></td>
+                </tr>
+                <tr>
+                    <td><input type="radio" <%=("generic".equalsIgnoreCase(email_type)?"checked":"")%> value="generic" name="email_type"> Generic</td>
+                    <td colspan="2"><input type="radio" <%=("custom".equalsIgnoreCase(email_type)?"checked":"")%>  value="custom" name="email_type"> Custom (<a href="javascript:setPreviewEmailOn()">Preview</a>)</td>
+                </tr>
+                <tr>
+                    <td width="10"></td>
+                    <td width="250" colspan="2">
+                        Select template<br><select name="email_template_code" onchange="selectCustom(document.forms['issue_credit'].elements['email_template_code']); return false;">
+                            <option value="">---Select---</option>
+<%                      for(Iterator iTypes = EnumCreditEmailType.getEnumList().iterator(); iTypes.hasNext();) {
+                            EnumCreditEmailType cet = (EnumCreditEmailType)iTypes.next();
+                            if (cet.equals(EnumCreditEmailType.DEFAULT_EMAIL)) continue;
+                            boolean selected = email_template_code.equalsIgnoreCase(cet.getName());  %>
+                            <option <%=(selected ? "selected" : "" )%> value="<%=cet.getName()%>"><%=cet.getDescription()%></option>
+<%                      }  %>
+                        </select><br>
+                         <fd:ErrorHandler result='<%=result%>' name='email_template_code' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler><BR>
+                         <fd:ErrorHandler result='<%=result%>' name='previewEmail' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler><BR>
+                        <span class="space2pix"><br></span>
+                        Enter custom paragraph:<br>
+                        <textarea cols="30" rows="5" name="custom_message" wrap="virtual" style="width: 250px;"><%= custom_message%></TEXTAREA><br><input type="checkbox" <%=(agent_signature?"checked":"")%> value="yes" name="agent_signature"> Include agent name in the signature.
+                    </td>
+                    <td width="100%"></td>
+                </tr>
+				<script language="Javascript">
+				<!--
+				function selectCustom (thisTemplate) {
+					var generic = window.document.issue_credit.email_type[0];
+					var custom = window.document.issue_credit.email_type[1];
+					if (thisTemplate.value == "") {
+						if(custom.checked) {
+							custom.checked = false;
+							generic.checked = true;
+						}
+					} else {
+						if(generic.checked) {
+							generic.checked = false;
+							custom.checked = true;
+						}
+					}
+				}
+				//-->
+				</script>
+            </table>

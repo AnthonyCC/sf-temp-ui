@@ -1,0 +1,63 @@
+/* CASE MANAGEMENT */
+
+.case_mgmt_nav_link {
+background-color: #666699;
+border-top: 1px #999999 solid;
+border-bottom: 1px #999999 solid;
+padding: 2px;
+margin-bottom: 2px;
+color: #FFFFFF;
+}
+
+.case_mgmt_module_content 			{ width:100%; padding: 2px; color: #000000; text-decoration: none; }
+a.case_mgmt_module_content:link 	{ color: #000000; text-decoration: none; }
+a.case_mgmt_module_content:visited 	{ color: #000000; text-decoration: none; }
+a.case_mgmt_module_content:active 	{ color: #000000; text-decoration: none; }
+a.case_mgmt_module_content:hover 	{ background: #666699; color: #FFFFFF; text-decoration: none; }
+
+.case_mgmt_module_note 			{ font-size: 8pt; color: #666666; text-decoration: none; }
+a.case_mgmt_module_note:link 	{ color: #666666; text-decoration: none; }
+a.case_mgmt_module_note:visited { color: #666666; text-decoration: none; }
+a.case_mgmt_module_note:active 	{ color: #666666; text-decoration: none; }
+a.case_mgmt_module_note:hover 	{ color: #666699; text-decoration: underline; }
+
+.case_mgmt_header {
+font-size: 12pt;
+font-weight: bold;
+}
+
+.case_mgmt_text {
+font-size: 10pt;
+}
+
+.case_mgmt_search_header {
+position: relative;
+width: 100%;
+background-color: #FFD9B3;
+/* border-top: 4px #FFD9B3 dashed; */
+border-bottom: 1px #000000 solid;
+padding: 2px;
+padding-left: 6px;
+padding-right: 6px;
+}
+
+.case_mgmt_search {
+position: relative;
+width: 100%;
+/* overflow-y: scroll; */
+background-color: #FFD9B3;
+padding: 0px;
+padding-left: 6px;
+padding-right: 6px;
+margin: 0px;
+}
+
+.case_mgmt_search_hilite {
+background-color: #FFFFCE;
+padding: 6px;
+padding-left: 8px;
+padding-right: 8px;
+font-size: 10pt;
+}
+
+/* CASE MANAGEMENT */

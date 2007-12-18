@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE component-specification PUBLIC
+  "-//Apache Software Foundation//Tapestry Specification 4.0//EN"
+  "http://jakarta.apache.org/tapestry/dtd/Tapestry_4_0.dtd">
+<component-specification class="com.freshdirect.ocf.ui.component.Border"
+    allow-body="yes"
+    allow-informal-parameters="no">
+    
+    <description>Generic empty border component</description>
+  
+	<parameter name="title" required="yes" />
+
+	<component id="shell" type="Shell">
+		<binding name="doctype" value="literal:HTML PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;"/>
+		<binding name="stylesheets" value="assets.css"/>
+		<binding name="title" value="title + ' - FreshDirect OCF'"/>
+		<binding name="renderBaseTag" value="false"/>
+        <binding name="delegate" value="new org.apache.tapestry.components.BlockRenderer(components.extraHead)"/>
+	</component>  
+
+	<component id="campaigns" type="Foreach">
+		<binding name="source" value="campaigns"/>
+	</component>
+	
+	<asset name="css" path="css/main.css"/>
+
+    <inject property="webRequest" object="infrastructure:request"/>
+    
+</component-specification>

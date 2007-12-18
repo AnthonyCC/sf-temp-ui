@@ -1,0 +1,17 @@
+<%
+String catId = request.getParameter("catId");
+String thisDept = "";
+
+if (catId != null){
+	String parentId = findParentOfCategory (catId);
+	DepartmentModel thisDeptObj = findDepartment(parentId);
+	thisDept = thisDeptObj.getContentName();
+}
+%>
+				
+<%if(thisDept.equalsIgnoreCase("CHE")){%>
+	<br>
+	<b>Cheese 101</b><br>
+	<a href="javascript:pop('/departments/cheese/101_selecting.jsp',400 , 585)">Learn the essentials &#151; from buying to serving</a>
+	<br>
+<%}%>

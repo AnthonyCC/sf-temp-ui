@@ -1,0 +1,230 @@
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.AddressName,
+                 com.freshdirect.customer.EnumDeliverySetting"%>
+<%@ page import="com.freshdirect.customer.ErpCustomerInfoModel"%>
+<%@ page import="com.freshdirect.common.customer.EnumServiceType"%>
+<%@ page import="com.freshdirect.customer.EnumUnattendedDeliveryFlag"%>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.*"%>
+<%@ taglib uri="crm" prefix="crm" %>
+<%@ taglib uri="freshdirect" prefix="fd" %>
+
+<%
+String pageURI = request.getRequestURI();
+boolean inCheckout = pageURI.indexOf("checkout") > -1;
+String cancelLink = inCheckout ? "/checkout/checkout_select_address.jsp" : "/main/account_details.jsp";
+
+//for suggested addresses
+String fldAddress1 = address.getAddress1();
+String fldAddress2 = address.getAddress2();
+String fldApartment = address.getApartment();
+String fldCity = address.getCity();
+String fldState = address.getState();
+String fldZipCode = address.getZipCode();
+
+boolean unattendedOptIn = !EnumUnattendedDeliveryFlag.OPT_OUT.equals(address.getUnattendedDeliveryFlag());
+String fldUnattendedDeliveryInstructions = address.getUnattendedDeliveryInstructions();
+
+EnumServiceType fldServiceType = address.getServiceType() == null ? EnumServiceType.HOME : address.getServiceType();
+%>
+
+		<script language="JavaScript" type="text/javascript">
+			function useDefaultName(formObj, formElement) {
+				flipBoolean(formElement);
+				if (formElement.value == "true") {
+					<crm:GetErpCustomer id="customer" user="<%= user %>">
+						<% ErpCustomerInfoModel custInfo = customer.getCustomerInfo(); %>
+						formObj.<%= AddressName.DLV_FIRST_NAME %>.value = "<%= custInfo.getFirstName() %>";
+						formObj.<%= AddressName.DLV_LAST_NAME %>.value = "<%= custInfo.getLastName() %>";
+						formObj.<%=AddressName.DLV_HOME_PHONE%>.value = "<%= custInfo.getHomePhone() %>";
+					</crm:GetErpCustomer>
+				} else {
+					formObj.<%= AddressName.DLV_FIRST_NAME %>.value = "<%=address.getFirstName()%>";
+					formObj.<%= AddressName.DLV_LAST_NAME %>.value = "<%=address.getLastName()%>";
+					formObj.<%=AddressName.DLV_HOME_PHONE%>.value = "<%=address.getPhone() != null ? address.getPhone().toString() : "" %>";
+				}
+			}
+		</script>
+		
+			<div class="cust_module" style="width: 90%;">
+			        <form name="delivery_address" method="POST">
+					<table width="100%" cellpadding="0" cellspacing="0" class="cust_module_header"><tr><td class="cust_module_header_text" width="25%"><%= (pageURI.indexOf("edit") > -1) ? "Edit" : "Add" %> Address</td><td width="50%" align="center"><a href="<%=cancelLink%>" class="cancel">CANCEL</a>&nbsp;&nbsp;<a href="javascript:document.delivery_address.submit();" class="save">SAVE</a></td><td width="25%" align="right" class="note" style="padding-right: 8px;">* Required</td></tr></table>
+					<div class="cust_module_content" style="padding-top: 10px; padding-bottom: 18px;">
+					<div style="width: 50%; float: left; border-right: solid 1px;">
+						<table cellpadding="3" cellspacing="0" class="cust_module_text" align="center">
+						<% String[] checkAddressForm = {"duplicate_address","duplicate_user_address","technical_difficulty", EnumUserInfoName.DLV_NOT_IN_ZONE.getCode(), EnumUserInfoName.DLV_CANT_GEOCODE.getCode()}; %>
+							
+							<fd:ErrorHandler result='<%=result%>' field='<%= checkAddressForm %>' id='errorMsg'>
+								<tr><td colspan="3"><span class="error_detail"><%=errorMsg%></span></td></tr>
+							</fd:ErrorHandler>
+							<tr><td align="right"><input type="checkbox" name="use_defaults" onClick="useDefaultName(document.delivery_address, document.delivery_address.use_defaults)" value="false"></td><td colspan="2">Use customer name & home contact #?</td></tr>
+							<tr>
+                                                            <td valign="top" align="right">Service Type:&nbsp;&nbsp;</td>
+                                                            <td colspan='2'>
+                                                                <input type="radio" name="<%=AddressName.DLV_SERVICE_TYPE%>" value="<%=EnumServiceType.HOME.getName()%>" <%= EnumServiceType.HOME.equals(fldServiceType) ? "CHECKED" : "" %>>&nbsp;&nbsp;Residential</br>
+                                                                <input type="radio" name="<%=AddressName.DLV_SERVICE_TYPE%>" value="<%=EnumServiceType.CORPORATE.getName()%>" <%= EnumServiceType.CORPORATE.equals(fldServiceType) ? "CHECKED" : "" %>>&nbsp;&nbsp;Commercial<br>
+                                                                <fd:ErrorHandler result="<%=result%>" name="<%=AddressName.DLV_SERVICE_TYPE%>" id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler>
+                                                            </td>
+                                                        </tr>
+                                                        <tr valign="top">
+								<td align="right" valign="middle">* Name:&nbsp;&nbsp;</td>
+								<td>First<br><input type="text" class="input_text" style="width: 100px;" name="<%=AddressName.DLV_FIRST_NAME%>" value="<%= request.getParameter(AddressName.DLV_FIRST_NAME) != null ? request.getParameter(AddressName.DLV_FIRST_NAME):address.getFirstName()%>"><fd:ErrorHandler result="<%=result%>" name="<%=AddressName.DLV_FIRST_NAME%>" id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
+								<td>Last<br><input type="text" class="input_text" style="width: 120px;" name="<%=AddressName.DLV_LAST_NAME%>" value="<%=request.getParameter(AddressName.DLV_LAST_NAME) != null ? request.getParameter(AddressName.DLV_LAST_NAME):address.getLastName()%>"><fd:ErrorHandler result="<%=result%>" name="<%=AddressName.DLV_LAST_NAME%>" id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
+							</tr>
+							<tr>
+								<td align="right">Company&nbsp;Name:&nbsp;&nbsp;</td>
+								<td colspan="2"><input type="text" class="input_text" style="width: 250px;" name="<%=AddressName.DLV_COMPANY_NAME%>" value="<%=request.getParameter(AddressName.DLV_COMPANY_NAME) != null ? request.getParameter(AddressName.DLV_COMPANY_NAME):address.getCompanyName()%>"><fd:ErrorHandler result="<%=result%>" name="<%=AddressName.DLV_COMPANY_NAME%>" id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
+							</tr>                                                        
+							<tr>
+								<td align="right">* Address1:&nbsp;&nbsp;</td>
+								<td colspan="2"><input type="text" class="input_text" style="width: 250px;" name="<%=AddressName.DLV_ADDRESS_1%>" value="<%=request.getParameter(AddressName.DLV_ADDRESS_1) != null ? request.getParameter(AddressName.DLV_ADDRESS_1):address.getAddress1()%>"><fd:ErrorHandler result="<%=result%>" name="<%=AddressName.DLV_ADDRESS_1%>" id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
+							</tr>
+							<tr>
+								<td align="right">Address2:&nbsp;&nbsp;</td>
+								<td colspan="2"><input type="text" class="input_text" style="width: 250px;" name="<%=AddressName.DLV_ADDRESS_2%>" value="<%=request.getParameter(AddressName.DLV_ADDRESS_2) != null ? request.getParameter(AddressName.DLV_ADDRESS_2):address.getAddress2()%>"></td>
+							</tr>
+
+							<tr>
+								<td align="right">Apt/Ste:&nbsp;&nbsp;</td>
+								<td colspan="2"><input type="text" class="input_text" style="width: 80px;" name="<%=AddressName.DLV_APARTMENT%>" value="<%=request.getParameter(AddressName.DLV_APARTMENT) != null ? request.getParameter(AddressName.DLV_APARTMENT):address.getApartment()%>"><fd:ErrorHandler result="<%=result%>" name="<%=AddressName.DLV_APARTMENT%>" id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
+							</tr>
+							<tr>
+								<td align="right">* City:&nbsp;&nbsp;</td>
+								<td colspan="2"><input type="text" class="input_text" style="width: 150px;" name="<%=AddressName.DLV_CITY%>" value="<%=request.getParameter(AddressName.DLV_CITY) != null ? request.getParameter(AddressName.DLV_CITY):address.getCity()%>"><fd:ErrorHandler result="<%=result%>" name="<%=AddressName.DLV_CITY%>" id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
+							</tr>
+							<tr>
+								<td align="right">* State:&nbsp;&nbsp;</td>
+								<td colspan="2">
+									<select class="pulldown" name="<%=AddressName.DLV_STATE%>">
+										<option value="">State</option>
+										<option value="NY" <%="NY".equalsIgnoreCase(address.getState()) || "NY".equalsIgnoreCase(request.getParameter(AddressName.DLV_STATE)) ? "selected" : "" %>>NY</option>
+										<option value="NJ" <%="NJ".equalsIgnoreCase(address.getState()) || "NJ".equalsIgnoreCase(request.getParameter(AddressName.DLV_STATE)) ? "selected" : "" %>>NJ</option>
+										<option value="CT" <%="CT".equalsIgnoreCase(address.getState()) || "CT".equalsIgnoreCase(request.getParameter(AddressName.DLV_STATE)) ? "selected" : "" %>>CT</option>
+									</select><fd:ErrorHandler result="<%=result%>" name="<%=AddressName.DLV_STATE%>" id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler>
+								</td>
+							</tr>
+							<tr>
+								<td align="right">* Zip:&nbsp;&nbsp;</td>
+								<td colspan="2"><input type="text" class="input_text" style="width: 80px;" name="<%=AddressName.DLV_ZIPCODE%>" value="<%=request.getParameter(AddressName.DLV_ZIPCODE) != null ? request.getParameter(AddressName.DLV_ZIPCODE):address.getZipCode()%>"><fd:ErrorHandler result="<%=result%>" name="<%=AddressName.DLV_ZIPCODE%>" id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
+							</tr>
+							<tr>
+								<td align="right">* Contact #:&nbsp;&nbsp;</td>
+								<td colspan="2"><input type="text" class="input_text" style="width: 100px;" name="<%=AddressName.DLV_HOME_PHONE%>" value="<%=request.getParameter(AddressName.DLV_HOME_PHONE) != null ? request.getParameter(AddressName.DLV_HOME_PHONE):address.getPhone().getPhone()%>"><fd:ErrorHandler result="<%=result%>" name="<%=AddressName.DLV_HOME_PHONE%>" id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
+							</tr>
+							<tr>
+								<td align="right">Alt Contact #:&nbsp;&nbsp;</td>
+								<td colspan="2">
+									<input type="text" class="input_text" style="width: 100px;" name="<%=AddressName.DLV_ALT_CONTACT_PHONE%>" value="<%=request.getParameter(AddressName.DLV_ALT_CONTACT_PHONE) != null ? request.getParameter(AddressName.DLV_ALT_CONTACT_PHONE): address.getAltContactPhone() != null ? address.getAltContactPhone().getPhone() : "" %>"><fd:ErrorHandler result="<%=result%>" name="<%=AddressName.DLV_ALT_CONTACT_PHONE%>" id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
+							</tr>
+						</table>
+						<br>
+						</div>
+						<div style="width: 49%; float: right;">
+
+						<table cellpadding="3" cellspacing="0" class="cust_module_text" align="center">
+							<fd:UnattendedDelivery id='zone' address='<%= "true".equals(request.getAttribute("addAddress")) ? null : address %>'>
+							<script type="text/javascript">
+							function resetUnattendedDeliveryInstructions() {
+								var inputElem = document.getElementById('<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>');
+								if (!document.getElementById('<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode()%>').checked) {
+									inputElem.value = '';
+									inputElem.disabled = true;
+								} else {
+									inputElem.disabled = false;
+								}
+							}
+							</script>
+							<tr>
+								<td colspan="3">
+									<% if (zone.isUnattended()) { %>
+									<font color="blue">Unattended Delivery is available for this address</font> 
+									<a href="javascript:popup('/help/unattended_delivery.jsp','large')">(Details)</a><br/><br/>
+									<input type="hidden" name="<%=EnumUserInfoName.DLV_UNATTENDED_CONSENT_SEEN.getCode()%>" value="true"/>
+									<input type="checkbox" class="checkbox"
+										name="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode()%>"
+										id="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode()%>"
+										value="OPT_IN" 
+										onclick="resetUnattendedDeliveryInstructions()"
+										<%= unattendedOptIn ? "checked" : "" %>
+									/>
+									I authorize FreshDirect to leave deliveries to this address unattended if nobody is home
+									<br/><br/>
+									Preferred location (front door, side door, back doors, garage, etc).<br/>
+									<input type="text" SIZE="50" maxlength="80" class="text11" 
+										name="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>"
+										id="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>"
+										value="<%= fldUnattendedDeliveryInstructions %>"
+										<%= !unattendedOptIn ? "disabled" : "" %>
+									/>
+									<br/><br/>
+									<% } else { %>
+										<font color="orange"><b>Unattended delivery is no longer available in this zone!</b></font>
+										<br/>
+										When it was available, the user had opted <%= unattendedOptIn ? "in" : "out" %>
+										<% if (unattendedOptIn) { %>
+										<%= fldUnattendedDeliveryInstructions == null ?  "and left no specific instructions" :
+										    ("and had left the following unattended delivery instructions: <i>" + fldUnattendedDeliveryInstructions + "</i>") %>
+										<% } %>
+									<% } %>
+									<br/>
+								</td>
+							</tr>
+							</fd:UnattendedDelivery>
+							<tr>
+								<td></td>
+								<td colspan="2">
+								Special Delivery instructions (optional)<br>
+								<textarea rows="3" class="input_text" style="width: 250px;" name="<%=AddressName.DLV_DELIVERY_INSTRUCTIONS%>"><%=request.getParameter(AddressName.DLV_DELIVERY_INSTRUCTIONS) != null ? request.getParameter(AddressName.DLV_DELIVERY_INSTRUCTIONS):address.getInstructions()%></textarea>
+								</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td colspan="2">Alternate Delivery</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td colspan="2"><input type="radio" name="<%=AddressName.DLV_ALTERNATE_DELIVERY%>" value="<%=EnumDeliverySetting.NONE.getDeliveryCode()%>" <%=EnumDeliverySetting.NONE.equals(address.getAltDelivery()) || (!EnumDeliverySetting.DOORMAN.equals(address.getAltDelivery()) && !EnumDeliverySetting.NEIGHBOR.equals(address.getAltDelivery())) ? "checked" : ""%>> None</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td colspan="2"><input type="radio" name="<%=AddressName.DLV_ALTERNATE_DELIVERY%>" value="<%=EnumDeliverySetting.DOORMAN.getDeliveryCode()%>" <%=EnumDeliverySetting.DOORMAN.equals(address.getAltDelivery()) ? "checked" : ""%>> Doorman</td>
+							</tr>
+							<%  if (user.getAdjustedValidOrderCount() >= AddressName.DLV_ALTERNATE_THRESHHOLD) { %>
+								<tr>
+									<td></td>
+									<td colspan="2" valign="top">
+									<table width="100%" cellpadding="2" cellspacing="0" border="0">
+										<tr><td colspan="3" style="padding: 0px;"><input type="radio" name="<%=AddressName.DLV_ALTERNATE_DELIVERY%>" value="<%=EnumDeliverySetting.NEIGHBOR.getDeliveryCode()%>" <%=EnumDeliverySetting.NEIGHBOR.equals(address.getAltDelivery()) ? "checked" : ""%>> Neighbor</td></tr>
+										<tr>
+			                                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			                                <td>* First Name:&nbsp;&nbsp;</td>
+			                                <td><input type="text" class="input_text" style="width: 130px;" name="<%=AddressName.DLV_ALT_FIRSTNAME%>" value="<%=address.getAltFirstName()%>"><fd:ErrorHandler result="<%=result%>" name="<%=AddressName.DLV_ALT_FIRSTNAME%>" id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
+		                            	</tr>
+			                            <tr>
+			                                <td></td>
+			                                <td>* Last Name:&nbsp;&nbsp;</td>
+			                                <td><input type="text" class="input_text" style="width: 130px;" name="<%=AddressName.DLV_ALT_LASTNAME%>" value="<%=address.getAltLastName()%>"><fd:ErrorHandler result="<%=result%>" name="<%=AddressName.DLV_ALT_LASTNAME%>" id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
+			                            </tr>
+			
+			                            <tr>
+			                                <td></td>
+			                                <td>* Apartment #:&nbsp;&nbsp;</td>
+			                                <td><input type="text" class="input_text" style="width: 100px;" name="<%=AddressName.DLV_ALT_APARTMENT%>" value="<%=address.getAltApartment()%>"><fd:ErrorHandler result="<%=result%>" name="<%=AddressName.DLV_ALT_APARTMENT%>" id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
+			                            </tr>
+			
+			                            <tr>
+			                                <td></td>
+			                                <td>* Contact #:&nbsp;&nbsp;</td>
+			                                <td><input type="text" class="input_text" style="width: 120px;" name="<%=AddressName.DLV_ALT_PHONE%>" value="<%=address.getAltPhone()!=null?address.getAltPhone().getPhone():""%>"><fd:ErrorHandler result="<%=result%>" name="<%=AddressName.DLV_ALT_PHONE%>" id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
+			                            </tr>
+									</table>
+									</td>
+								</tr>
+							<% } %>
+						</table>
+						</div>
+					</div>
+                    <input type="hidden" name="addressId" value="<%=address.isAnonymous() ? "" : address.getPK().getId()%>">
+					<% if (inCheckout) { %>
+						<input type="hidden" name="updateShipToAddressId" value="<%= address.isAnonymous() ? "" : address.getPK().getId() %>">
+					<% } %>
+					</form>
+				</div>

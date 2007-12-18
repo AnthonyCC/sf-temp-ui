@@ -1,0 +1,17 @@
+<% if (productNode.getAttribute("SERVING_SUGGESTION")!=null) {%>
+<br>
+<table width="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td valign="top" align="left">
+		<img src="/media_stat/images/layout/measuring_cup.gif" alt="" border="0">
+		</td>
+		<td>
+		<img src="/media_stat/images/layout/clear.gif" width="10" height="1" alt="" border="0">
+		</td>		
+		<td align=right>
+			<b>How much should I buy?</b><br>
+			<%=productNode.getAttribute("SERVING_SUGGESTION").getValue()%>
+		</td>
+	</tr>
+</table>
+<% }%>

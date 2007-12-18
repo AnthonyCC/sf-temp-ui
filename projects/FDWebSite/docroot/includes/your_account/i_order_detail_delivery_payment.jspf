@@ -1,0 +1,119 @@
+<%@ page import='com.freshdirect.common.customer.EnumServiceType' %>
+<%@ page import='com.freshdirect.customer.EnumUnattendedDeliveryFlag' %>
+<%@ page import='com.freshdirect.framework.util.NVL' %>
+
+<%
+    boolean showModify=true;
+    if (request.getRequestURI().toLowerCase().indexOf("step_4_receipt")>-1 || request.getRequestURI().toLowerCase().indexOf("order_detail")>-1 ){
+        showModify = false;
+    }
+    
+%>
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="693">
+<TR VALIGN="TOP">
+    <TD WIDTH="310">
+        <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="310">
+        <TR VALIGN="TOP">
+            <TD WIDTH="310" COLSPAN="2">
+            <img src="/media_stat/images/navigation/delivery_info.gif" WIDTH="92" HEIGHT="9" border="0" alt="DELIVERY INFO"><BR>
+            <IMG src="/media_stat/images/layout/999966.gif" WIDTH="260" HEIGHT="1" BORDER="0" VSPACE="3" ><BR>
+            </TD>
+        </TR>
+        <TR VALIGN="TOP">
+            <TD WIDTH="10"><BR></TD>
+            <TD WIDTH="300">
+            <font class="space4pix"><br></font>
+            <FONT CLASS="text12">
+            <b>Time:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% if (showModify) {%><A HREF="/checkout/step_2_select.jsp">Modify</A><%}%><BR>
+            <font class="space4pix"><br></font>
+            <%=fmtDlvDateTime%> <br>
+            <%=deliveryTime%><BR>
+            <BR>
+            <b>Address:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% if (showModify) {%><A HREF="/checkout/step_1_choose.jsp">Modify</A><%}%><font class="space4pix"><br><br></font>
+            <%= dlvAddress.getFirstName() %> <%= dlvAddress.getLastName() %><BR>
+            <%= dlvAddress.getAddress1() %><% if(dlvAddress.getApartment()!=null && dlvAddress.getApartment().trim().length()>0) { %>, Apt. <%=dlvAddress.getApartment()%><% } %><BR>
+            <% if(dlvAddress.getAddress2()!=null && dlvAddress.getAddress2().trim().length()>0) {
+            %><%= dlvAddress.getAddress2() %><BR>
+            <% }%>
+            <%= dlvAddress.getCity() %>, <%= dlvAddress.getState() %> <%= dlvAddress.getZipCode() %><BR>
+            <BR>
+            Phone: <%= dlvAddress.getPhone().getPhone() %> <%if( !"".equals(dlvAddress.getPhone().getExtension()) ){%>Ext. <%= dlvAddress.getPhone().getExtension() %> <%}%><br>
+			<% if (dlvAddress.getAltContactPhone()!=null) { %>
+            Alt Contact: <%= dlvAddress.getAltContactPhone().getPhone() %> <%if( !"".equals(dlvAddress.getAltContactPhone().getExtension()) ){%>Ext. <%= dlvAddress.getAltContactPhone().getExtension() %> <%}%><br>
+            <% } %>
+			<br>
+
+        <%if(dlvAddress.getInstructions()!= null && !dlvAddress.getInstructions().equals("") && !"NONE".equalsIgnoreCase(dlvAddress.getInstructions())){%>  
+            <font class="text12bold">Special delivery instructions:</font><br>              
+            <%=dlvAddress.getInstructions()%><br><BR>
+        <%}%>   
+
+        <% if (EnumUnattendedDeliveryFlag.OPT_IN.equals(dlvAddress.getUnattendedDeliveryFlag())) {%>  
+            <font class="text12bold">Unattended delivery:</font><br>              
+            <%=NVL.apply(dlvAddress.getUnattendedDeliveryInstructions(),"OK")%><br><BR>
+        <% } %>
+
+<%
+
+        if (dlvAddress.getAltDelivery() != null && dlvAddress.getAltDelivery().getId() > 0) { %>
+            <font class="text12bold">Alternate delivery</font>:<br>
+            <%= dlvAddress.getAltDelivery().getName()%><br><br> 
+<%           if("NEIGHBOR".equalsIgnoreCase(dlvAddress.getAltDelivery().getDeliveryCode())) {%>
+                <%=dlvAddress.getAltFirstName()%> <%=dlvAddress.getAltLastName()%><BR>
+                Apt. #: <%=dlvAddress.getAltApartment()%><br>
+                <%if(dlvAddress.getAltPhone()!=null) {%><%=dlvAddress.getAltPhone().getPhone()%> <%if( !"".equals(dlvAddress.getAltPhone().getExtension()) ){%>Ext. <%= dlvAddress.getAltPhone().getExtension() %> <%}}%><br>
+                <br>
+            <%}%>
+        <%}%>               
+        
+            </FONT>
+            </TD>
+        </TR>
+        </TABLE>
+    </TD>
+    <TD WIDTH="73"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="73" HEIGHT="1" BORDER="0"></TD>
+    <TD WIDTH="310">
+        <img src="/media_stat/images/navigation/payment_info.gif" WIDTH="91" HEIGHT="9" border="0" alt="PAYMENT INFO"><BR>
+        <IMG src="/media_stat/images/layout/999966.gif" WIDTH="260" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+        <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="310">
+        <TR VALIGN="TOP">
+            <TD WIDTH="10"><BR></TD>
+            <TD WIDTH="300">
+            <font class="space4pix"><br></font>
+            <FONT CLASS="text12">
+            <b>Order Total:</b><BR>
+            <font class="space4pix"><br></font>
+            <%if(cart.hasInvoice()){%>
+                <%= currencyFormatter.format(cart.getInvoicedTotal())%>
+            <%}else{%>
+                <%= currencyFormatter.format(cart.getTotal()) %>*<br>
+            <%}%>
+            <BR>
+            <b><%=paymentMethod.getPaymentMethodType().getDescription()%>:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% if (showModify) {%><A HREF="/checkout/step_3_choose.jsp">Modify</A><%}%><BR>
+            <font class="space4pix"><br></font>
+            <%= paymentMethod.getName() %><BR>
+            <%= paymentMethod.getCardType() %> - <%= paymentMethod.getMaskedAccountNumber() %><br>
+            <BR>
+            <b>Billing Address:</b><BR>
+            <font class="space4pix"><br></font>
+            <%= paymentMethod.getName() %><BR>
+            <%= paymentMethod.getAddress1() %><% if(paymentMethod.getApartment()!=null && paymentMethod.getApartment().trim().length()>0) { %>, Apt. <%=paymentMethod.getApartment()%><% } %><BR>
+            <% if(paymentMethod.getAddress2()!=null && paymentMethod.getAddress2().trim().length()>0) { %>
+            <%=paymentMethod.getAddress2()%><BR>
+            <%}%>
+            <%= paymentMethod.getCity() %>, <%= paymentMethod.getState() %> <%= paymentMethod.getZipCode() %><BR>
+            <BR>
+            <%
+            if(EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())){%>
+            <b>Billing Reference/Client Code:</b><BR>
+            <font class="space4pix"><br></font>
+            <%= paymentMethod.getBillingRef() %>
+            <%
+            }%>
+            </FONT>
+            </TD>
+        </TR>
+        </TABLE>
+        </TD>
+    </TR>
+</TABLE>

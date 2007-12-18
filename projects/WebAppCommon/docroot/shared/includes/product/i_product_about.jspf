@@ -1,0 +1,5 @@
+<%if (productDesc!=null) { %>
+<FONT CLASS="space2pix"><BR></FONT>
+<fd:IncludeMedia name="<%= productDesc.getPath() %>" />
+<br>
+<%}%>

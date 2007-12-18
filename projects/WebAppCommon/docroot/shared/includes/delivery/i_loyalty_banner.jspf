@@ -1,0 +1,54 @@
+<%@ page import='com.freshdirect.delivery.model.*'%>
+<% if (user.isChefsTable() && zoneCtActive ) { 
+	%>
+	<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
+	<table cellspacing="0" cellpadding="0" border="0" width="695">
+		<tr>
+			<td colspan="3" align="center"><br />
+			<%
+			boolean chefsTable = timeslot_page_type == TimeslotLogic.PAGE_CHEFSTABLE;
+			if (!chefsTable) { 
+				String loyaltyAddressId = request.getParameter("addressId");
+				if (loyaltyAddressId == null && rsv != null) loyaltyAddressId = rsv.getAddressId();
+				if (loyaltyAddressId == null) loyaltyAddressId = address.getPK().getId();
+	    		%>
+				<a href="?chefstable=true&addressId=<%= loyaltyAddressId %>"><img
+				src="/media_stat/images/template/checkout/loy_hdr_wevemademore.gif"
+				width="608" height="19" border="0"
+				alt="We've made more delivery slots available to our best customers."></a>
+				<%	
+			} else {
+				%> <img
+				src="/media_stat/images/template/checkout/loy_hdr_preferredaccess.gif"
+				border="0" alt="Preferred access to our best delivery times.">
+				<%
+			}
+	    %>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3" align="center">
+			<%
+	    	if (!chefsTable) {
+	    		%> If the time you're looking for is full, click the button below
+					for Chef's Table preferred access.
+				<%	
+	    	} else {
+				%> We've <a href="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/site_pages/ct/preferred_access.html&windowSize=large&name=Chefs+Table','large')">held space for you</a> in our most popular time slots &#8212;
+				our thanks to you for being a great customer.
+				<div style="text-align: center; margin-top: 4px;">
+					<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/prp1x1.gif"> <b> = Only Chef's Table access remaining</b>
+				</div>
+				<%
+	    	}
+	    	%>
+			<br />
+			<br />
+			</td>
+		</tr>
+	</table>
+
+	<%
+}
+%>
+

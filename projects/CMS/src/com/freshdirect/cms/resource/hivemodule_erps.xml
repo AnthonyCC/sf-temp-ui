@@ -1,0 +1,192 @@
+<?xml version="1.0"?>
+<module id="com.freshdirect.cms.dbmapping" version="1.0.0">
+	
+	<schema id="DbMapping">
+		<element name="Table">
+			<attribute name="query" required="true"/>
+			<attribute name="contentType" required="true"/>
+			<conversion class="com.freshdirect.cms.dbmapping.TableMapping"/>
+			<!--
+			<element name="query">
+				<rules>
+					<push-content/>
+					<invoke-parent method="setQuery"/>
+				</rules>
+			</element>
+			-->
+		</element>
+		<element name="Relationship">
+			<attribute name="name" required="true"/>
+			<attribute name="label" required="false"/>
+			<attribute name="query" required="true"/>
+			<attribute name="sourceContentType" required="true"/>
+			<attribute name="destinationContentType" required="true"/>
+			<attribute name="navigable" required="false"/>
+			<conversion class="com.freshdirect.cms.dbmapping.RelationshipMapping"/>
+		</element>
+	</schema>
+
+	<service-point id="DbMappingService" interface="com.freshdirect.cms.dbmapping.DbMappingContentServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.dbmapping.DbMappingContentService" service-id-property="name">
+				<service>com.freshdirect.cms.cmsdatasource</service>
+				<configuration>DbMappings</configuration>
+			</construct>
+		</invoke-factory>
+
+		<interceptor service-id="hivemind.lib.MethodInterceptorFactory">
+			<impl object="service:DbMappingCacheInterceptor"/>
+		</interceptor>
+
+	</service-point>
+
+	<contribution configuration-id="com.freshdirect.cms.composedServices">
+		<service name="DbMappingService"/>
+	</contribution>
+
+	<configuration-point id="DbMappings" schema-id="DbMapping"/>
+
+
+	<!--
+		CACHE
+	-->	
+
+<!-- DB Mapping Cache set to 1000 elements with 20 minutes timeout. -->
+
+
+<!-- EHCache definition -->
+<!-- 	<service-point id="DbMappingCache" interface="com.freshdirect.framework.cache.CacheI">
+		<invoke-factory>
+			<construct class="com.freshdirect.framework.cache.EHCache" service-id-property="cacheName">
+				<set property="lruCacheSize" value="1000"/>
+				<set property="timeToLiveSeconds" value="1200"/>
+				<set property="timeToIdleSeconds" value="1200"/>
+			</construct>
+		</invoke-factory>
+	</service-point>  -->
+
+<!-- SimpleLruCache definition --> 
+ <service-point id="DbMappingCache" interface="com.freshdirect.framework.cache.CacheI">
+	<invoke-factory>
+			<construct class="com.freshdirect.framework.cache.SimpleLruCache" service-id-property="name">
+				<set property="capacity" value="1000"/>
+				<set property="timeout" value="1200"/>
+			</construct>
+		</invoke-factory>
+	</service-point>  
+
+	<service-point id="DbMappingCacheInterceptor" interface="org.aopalliance.intercept.MethodInterceptor">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.cache.ContentCacheMethodInterceptor">
+				<service>DbMappingCache</service>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<!--
+		VALIDATOR
+	-->
+	
+	<contribution configuration-id="com.freshdirect.cms.contentValidators">
+		<Object value="instance:com.freshdirect.cms.fdstore.ConfiguredProductValidator"/>
+	</contribution>
+
+	<!--
+		ERPS MAPPINGS
+	-->
+	
+	<contribution configuration-id="DbMappings">
+		
+		<!--
+		<Table contentType="Sku"
+			query="select /*+ INDEX (p idx_prd_sku_ver_unv) */ sku_code as ID, '$'||default_price||'/'||default_unit as price, unavailability_status
+from erps.product p where p.version=(select max(version) from erps.product where sku_code=p.sku_code)"/>
+		-->
+		
+		<Table contentType="Sku"
+			query="SELECT id, price, unavailability_status FROM (
+SELECT sku_code AS ID, '$' || default_price || '/' || default_unit AS price, unavailability_status,
+RANK() OVER (PARTITION BY sku_code ORDER BY VERSION DESC) AS RANK
+FROM erps.product p) WHERE RANK=1"/>
+		
+		<Relationship
+			name="materials"
+			label="Materials"
+			sourceContentType="Sku"
+			destinationContentType="ErpMaterial"
+			navigable="true"
+			query="select p.sku_code as source_id, m.sap_id as destination_id
+from erps.product p, erps.materialproxy px, erps.material m
+where p.version=(select max(version) from erps.product where sku_code=p.sku_code)
+and p.id=px.product_id
+and px.mat_id=m.id"/>
+
+		<Table contentType="ErpMaterial"
+			query="select sap_id as ID, ltrim(sap_id, '0') as &quot;name&quot;, description, atp_rule, lead_time, upc, alcoholic_content, taxable, kosher_production, platter, blocked_days
+from erps.material m where m.version=(select max(version) from erps.material where sap_id=m.sap_id)"/>
+
+		<Relationship
+			name="classes"
+			label="Classes"
+			sourceContentType="ErpMaterial"
+			destinationContentType="ErpClass"
+			navigable="true"
+			query="select m.sap_id as source_id, c.sap_id as destination_id
+from erps.material m, erps.material_class mc, erps.class c
+where m.version=(select max(version) from erps.material where sap_id=m.sap_id)
+and m.id=mc.mat_id
+and mc.class_id=c.id"/>
+		
+		<Table contentType="ErpClass"
+			query="select sap_id as ID from erps.class c where c.version=(select max(version) from erps.class where sap_id=c.sap_id)"/>
+
+		<Relationship
+			name="characteristics"
+			label="Characteristics"
+			sourceContentType="ErpClass"
+			destinationContentType="ErpCharacteristic"
+			navigable="true"
+			query="select c.sap_id as source_id, c.sap_id||'/'||ch.name as destination_id
+from erps.class c, erps.characteristic ch
+where c.version=(select max(version) from erps.class where sap_id=c.sap_id)
+and c.id=ch.class_id"/>
+
+		<Table contentType="ErpCharacteristic"
+			query="select c.sap_id||'/'||ch.name as ID, ch.name as &quot;name&quot; from erps.class c, erps.characteristic ch
+where c.version=(select max(version) from erps.class where sap_id=c.sap_id) and ch.class_id=c.id"/>
+
+		<Relationship
+			name="values"
+			label="Characteristic Values"
+			sourceContentType="ErpCharacteristic"
+			destinationContentType="ErpCharacteristicValue"
+			navigable="true"
+			query="select c.sap_id||'/'||ch.name as source_id, c.sap_id||'/'||ch.name||'/'||cv.name as destination_id
+from erps.class c, erps.characteristic ch, erps.charvalue cv
+where c.version=(select max(version) from erps.class where sap_id=c.sap_id)
+and c.id=ch.class_id and ch.id=cv.char_id"/>
+
+		<Table contentType="ErpCharacteristicValue"
+			query="select c.sap_id||'/'||ch.name||'/'||cv.name as ID, cv.name as &quot;name&quot;, cv.description as FULL_NAME
+from erps.class c, erps.characteristic ch, erps.charvalue cv
+where c.version=(select max(version) from erps.class where sap_id=c.sap_id) and ch.class_id=c.id and cv.char_id=ch.id"/>
+
+		<Table contentType="ErpSalesUnit"
+			query="select distinct alternative_unit as ID, description as &quot;name&quot; from erps.salesunit su
+where su.version=(select max(version) from erps.salesunit where alternative_unit=su.alternative_unit)"/>
+		
+		<Relationship
+			name="salesUnits"
+			label="Sales Units"
+			sourceContentType="ErpMaterial"
+			destinationContentType="ErpSalesUnit"
+			navigable="true"
+			query="select m.sap_id as source_id, su.alternative_unit as destination_id
+from erps.material m, erps.salesunit su
+where m.version=(select max(version) from erps.material where sap_id=m.sap_id)
+and m.id=su.mat_id"/>
+
+	</contribution>
+
+
+</module>

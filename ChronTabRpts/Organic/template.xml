@@ -1,0 +1,90 @@
+<xlsReporting>
+ <sources>
+  <source> <!-- Perhaps we use connection pools later on? -->
+    <name>DB</name>
+    <type>com.freshdirect.xls.datasource.DatabaseDataSourceKeyValue</type>
+    <url>jdbc:oracle:thin:@(DESCRIPTION =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb01-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb02-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (CONNECT_DATA =
+    (SERVER = DEDICATED)
+    (SERVICE_NAME = dbsto_prod)
+     (failover_mode =
+       (type = session)
+       (method = basic)
+       (retries = 20)
+     )
+  )
+ )</url>
+    <user>appdev</user>
+    <password>readn0wrt</password>
+    <!--url>jdbc:oracle:thin:@(DESCRIPTION =
+      (ADDRESS_LIST =
+	(ADDRESS = (PROTOCOL = TCP)(HOST = localhost)(PORT = 1521))
+      )
+      (CONNECT_DATA =
+	(SERVICE_NAME = ORCL)
+      )
+    )</url>
+    <user>cms</user>
+    <password>cms</password-->
+  </source>
+  <source> <!-- Perhaps we use connection pools later on? -->
+    <name>DB2</name>
+    <type>com.freshdirect.xls.datasource.DatabaseDataSource</type>
+    <url>jdbc:oracle:thin:@(DESCRIPTION =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb01-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb02-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (CONNECT_DATA =
+    (SERVER = DEDICATED)
+    (SERVICE_NAME = dbsto_prod)
+     (failover_mode =
+       (type = session)
+       (method = basic)
+       (retries = 20)
+     )
+  )
+ )</url>
+    <user>appdev</user>
+    <password>readn0wrt</password>
+    <!--url>jdbc:oracle:thin:@(DESCRIPTION =
+      (ADDRESS_LIST =
+        (ADDRESS = (PROTOCOL = TCP)(HOST = localhost)(PORT = 1521))
+      )
+      (CONNECT_DATA =
+        (SERVICE_NAME = ORCL)
+      )
+    )</url>
+    <user>cms</user>
+    <password>cms</password-->
+  </source>
+ </sources>
+
+ <populate>
+  <sheet>
+   <name>DataSheet</name>
+   <beginOffsetRow>1</beginOffsetRow>
+   <beginOffsetColumn>0</beginOffsetColumn>
+   <dataSource>
+     <name>DB</name>
+     <param>
+   select distinct c.first_name || ' ' || c.last_name as NAME, sv.create_date, sd.question, sd.answer 
+from cust.survey sv, 
+         cust.customerinfo c, 
+         cust.surveydata sd, 
+         cust.fdcustomer fdc
+where sv.survey_name = 'Organic2' 
+  and sv.id = sd.survey_id 
+  and sv.customer_id = fdc.id 
+  and fdc.erp_customer_id = c.customer_id 
+  and sd.answer is not null 
+  order by sv.create_date asc
+     </param>
+     <param>
+q1_loyalty,q2_reason,q2_reason_other,q3_current,q4_desired,q5_store,q5_store_other,q6_brand,q6_brand_other,q7_type,q7_type_other,q8_household,q9_age,q10_gender,q11_income,q12_feedback
+     </param>
+     <param>printHeader</param>
+   </dataSource>
+  </sheet>
+ </populate>
+</xlsReporting>

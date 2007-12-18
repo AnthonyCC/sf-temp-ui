@@ -1,0 +1,123 @@
+body {
+	background: #fff;
+	font-family: Tahoma, sans-serif;
+	font-size: 9pt;
+	padding:0;
+	margin:0;
+}
+
+code, pre {
+	font-family: Lucida Console;
+	font-size: 9pt;
+}
+
+th, h1, h2, h3, h4, h5, h6 {
+	font-family: Georgia, serif;
+}
+
+/* Table colors */
+.TableHeadingColor * {
+	border: 0;
+	font-size: 14pt;
+	font-weight: normal;
+	text-align: left;
+}
+.TableHeadingColor {
+	background: #666;
+	color: #fff;
+}
+.TableSubHeadingColor * {
+	border: 0;
+}
+.TableSubHeadingColor  {
+	background: #ccc;
+}
+.TableRowColor {
+	background: #fff;
+}
+.TableRowColor td {
+	border: 1px solid #ddd;
+}
+
+
+/* Navigation bar fonts and colors */
+.NavBarCell1 {
+	background: #666;
+}
+.NavBarFont1 {
+	padding: 1em;
+	font-family: Tahoma, sans-serif;
+	font-weight: bold;
+	color: #ccc;
+}
+.NavBarCell1 a * {
+	text-decoration: none;
+	color: #fff;
+}
+.NavBarCell1 a:hover {
+	text-decoration: none;
+	background: #333;
+}
+
+.NavBarCell1Rev {
+	background: #333;
+}
+.NavBarFont1Rev {
+	padding: 1em;
+	font-family: Tahoma, sans-serif;
+	color: #fc0;
+}
+
+.NavBarCell2 {
+	font-family: Tahoma, sans-serif;
+	background: #ccc;
+}
+.NavBarCell3 {
+	font-family: Tahoma, sans-serif;
+	background: #eee;
+}
+
+
+/* Font used in left-hand frame lists */
+.FrameTitleFont  {
+	font-size: normal;
+	font-family: Georgia, serif;
+	display: block;
+/*	border-bottom: 1px solid black;
+*/
+	background: #666;
+	padding: 0.2em;
+	font-size: 12pt;
+}
+.FrameTitleFont a {
+color: #fff !important;
+}
+.FrameHeadingFont {
+	font-size: normal;
+	font-family: Georgia, serif;
+	padding: 0.2em;
+	display: block;
+	font-size: 12pt;
+	border-bottom: 1px dotted #666;
+}
+.FrameItemFont {
+	font-size: 8pt;
+	font-family: Tahoma, serif;
+}
+
+/* Link colors styling */
+a {
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: underline;
+}
+a:link {
+	color: #00a;
+}
+a:visited {
+	color: #339;
+}
+a:active {
+	color: #a00;
+}

@@ -1,0 +1,14 @@
+ORD	REQ	SECTION	SKU_CODE	QUANTITY	SALES_UNIT	CONFIGURATION	DESCRIPTION	CONFIGURATION_DESC	MATERIAL_ID	PRICE	
+2	YES	Main	SEA0007114	1	EA		Backfin/Lump Wild Crabmeat (pasteurized)	1lb	123456789	0.89
+3		Main	SPE0058834	1	EA		Roland Grained Dijon Mustard	12.3oz	123456789	1.99
+4		Main	DAI0068691	1	EA		New England Fresh Grade A Large White Eggs	1 dozen	123456789	3.49
+5		Main	DAI0008771	1	EA		Breakstone's All Natural Unsalted Butter	2 sticks	123456789	0.79
+6		Main	VEG0011235	2	EA		Yellow Onion	"Farm Fresh, Sm"	123456789	3.39
+7		Main	VEG0058758	1	EA		Red Bell Pepper	"Farm Fresh, Lg"	123456789	0.89
+8		Main	SPE0000580	1	EA		Sherry Wine Vinegar Capirete	12.7oz	123456789	1.99
+9		Main	VEG0011090	1	EA		Curly Parsley	Farm Fresh	123456789	3.49
+13		Main	GRO001138	1	EA		Progresso Italian Style Breadcrumbs	24oz	123456789	0.79
+1		Staple	FRU0005131	3	EA		Lemons	"Farm Fresh, Med"	123456789	0.79
+10		Staple	GRO002572	1	EA		Diamond Crystal Salt	26oz	123456789	0.79
+11		Staple	[clig_pepper]						123456789	0.79
+12		Staple	GRO002521	1	EA		Spice Supreme Cayenne Pepper	3.5oz	123456789	0.79

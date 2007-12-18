@@ -1,0 +1,27 @@
+<%
+String categoryId = request.getParameter("catId");
+String productId = request.getParameter("productId");
+if (categoryId!=null && productId!=null) {
+	ProductModel product = ContentFactory.getInstance().getProductByName(categoryId, productId);
+	String wSize = "400,585";
+	if (product.getAttribute("DONENESS_GUIDE")!=null) {%>
+	  <br><b>Fresh Tip</b><br>
+<%
+		Collection donenessGuides = (Collection)product.getAttribute("DONENESS_GUIDE").getValue();
+
+		for (Iterator i= donenessGuides.iterator(); i.hasNext();) {
+		    TitledMedia dg = (TitledMedia) i.next();
+
+			String windowSize = dg.getPopupSize();
+			if(!windowSize.equalsIgnoreCase("large")){
+				wSize = "335,375";
+			}
+		%>
+
+		<a href="javascript:pop('/shared/template/generic_popup.jsp?contentPath=<%=dg.getMedia().getPath()%>&windowSize=<%=windowSize%>&name=<%=dg.getMediaTitle()%>',<%=wSize%>)"><%=dg.getMediaTitle()%></a><br>
+		<%}%>
+	<br>	
+<%
+	 }
+
+}  %>

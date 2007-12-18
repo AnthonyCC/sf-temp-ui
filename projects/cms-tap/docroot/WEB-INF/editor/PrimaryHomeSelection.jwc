@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE component-specification PUBLIC
+  "-//Apache Software Foundation//Tapestry Specification 3.0//EN"
+  "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<component-specification class="com.freshdirect.cms.ui.tapestry.component.PrimaryHomeSelection"
+	allow-body="no"
+	allow-informal-parameters="no">
+	
+	<description>Selection dropdown for FD Primary Homes</description>
+	
+	<parameter name="field" type="com.freshdirect.cms.ContentNodeI" required="yes" direction="auto"/>
+	<parameter name="attribute" type="com.freshdirect.cms.AttributeI" required="yes" direction="auto"/>
+	<parameter name="contextNode" required="no" direction="auto" default-value="null" type="com.freshdirect.cms.context.ContextualContentNodeI"/>
+	
+</component-specification>

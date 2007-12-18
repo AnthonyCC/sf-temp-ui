@@ -1,0 +1,34 @@
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+	<tr>
+		<td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"></td>
+	</tr>
+	<tr>
+		<td>
+			<table cellpadding="0" cellspacing="1" border="0">
+				<%int colCounter = 1;%>
+				<tr>
+				<logic:iterate id="zipInfo" collection="<%=zipCodes%>" type="com.freshdirect.delivery.DlvZipInfoModel">
+					<td width="20%"><%=zipInfo.getZipCode()%><%=zipInfo.getCoverage() <= 0.9 ? "*" : "" %></td>
+					<td><img src="/media_stat/images/layout/clear.gif" width="8" height="1" alt="" border="0"></td>
+					<%if(colCounter % 6 == 0) {%>
+						</tr>
+					<%}
+					colCounter++;%>
+				</logic:iterate>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" alt="" border="0"></td>
+	</tr>
+	<tr>
+		<td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+	</tr>
+	<tr>
+		<td><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>* we deliver to parts of this zip code.</td>
+	</tr>
+</table>

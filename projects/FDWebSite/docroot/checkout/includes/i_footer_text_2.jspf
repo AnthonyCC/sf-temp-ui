@@ -1,0 +1,22 @@
+<table border="0" cellspacing="0" cellpadding="0" width="693">
+<tr valign="middle">
+	<td width="30%">
+		<font class="space4pix"><br></font><font class="text12">
+		<b>Having problems checking out?</b><br>
+		 <a href="/help/index.jsp">Click here for help</a>.</font><br>
+	</td>
+	<td width="70%" align="right">
+		<% if (cart.isEstimatedPrice()) {
+			%>
+			* Find out more about <a href="javascript:popup('/help/estimated_price.jsp','small')">estimated prices</a>, <a href="javascript:popup('/help/taxes_fees.jsp','small')">taxes, deposits, and fees</a>,<br>and other aspects of our
+			<a href="javascript:popup('/registration/user_agreement.jsp','large')">customer agreement</a>.<br>
+			<%
+		} else {
+			%>View the <a href="javascript:popup('/registration/user_agreement.jsp','large')">customer agreement</a>.<%
+		}
+		%>
+	</td>
+</tr>
+</table>
+<br>
+<br>

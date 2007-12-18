@@ -1,0 +1,162 @@
+/**
+ * @author ekracoff
+ * Created on Dec 17, 2004*/
+
+package com.freshdirect.cms.listeners;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.sql.Types;
+
+import com.freshdirect.cms.ContentType;
+import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.core.SequenceGenerator;
+
+public class MediaDao {
+
+	public Media insert(Connection conn, Media media) throws SQLException {
+		PrimaryKey key = new PrimaryKey(getNextId(conn));
+		Media m = new Media(key, media.getUri(), media.getType(), media.getWidth(), media.getHeight(), media.getMimeType(), media.getLastModified());
+
+		PreparedStatement ps = conn
+			.prepareStatement("INSERT INTO CMS_MEDIA (ID, URI, WIDTH, HEIGHT, TYPE, mime_type, last_modified) VALUES (?,?,?,?,?,?,?)");
+		
+		ps.setString(1, m.getPK().getId());
+		ps.setString(2, m.getUri());
+		
+		if(m.getWidth() == null){
+			ps.setNull(3, Types.INTEGER);
+		} else {
+			ps.setInt(3, m.getWidth().intValue());
+		}
+		
+		if(m.getHeight() == null){
+			ps.setNull(4, Types.INTEGER);
+		} else {
+			ps.setInt(4, m.getHeight().intValue());
+		}
+		
+		ps.setString(5, m.getType().getName());
+		ps.setString(6, m.getMimeType());
+		ps.setTimestamp(7, new Timestamp(m.getLastModified().getTime()));
+
+		ps.execute();
+		ps.close();
+		return m;
+	}
+
+	public void update(Connection conn, Media media) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement("Update CMS_Media set Uri=?,width=?,height=?,type=?,mime_type=?,last_modified=? Where uri = ?");
+		ps.setString(1, media.getUri());
+		
+		if(media.getWidth() == null){
+			ps.setNull(2, Types.INTEGER);
+		} else {
+			ps.setInt(2, media.getWidth().intValue());
+		}
+		
+		if(media.getHeight() == null){
+			ps.setNull(3, Types.INTEGER);
+		} else {
+			ps.setInt(3, media.getHeight().intValue());
+		}
+		
+		ps.setString(4, media.getType().getName());
+		ps.setString(5, media.getMimeType());
+		ps.setTimestamp(6, new Timestamp(media.getLastModified().getTime()));
+		ps.setString(7, media.getUri());
+		
+		ps.executeUpdate();
+		ps.close();
+	}
+
+	public Media lookup(Connection conn, String id) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement("SELECT * FROM CMS_MEDIA WHERE id = ?");
+
+		ps.setString(1, id);
+		ResultSet rs = ps.executeQuery();
+
+		Media media = null;
+		if (rs.next()) {
+			media = new Media(
+				new PrimaryKey(rs.getString("ID")),
+				rs.getString("URI"),
+				ContentType.get(rs.getString("TYPE")),
+				new Integer(rs.getInt("WIDTH")),
+				new Integer(rs.getInt("HEIGHT")),
+				rs.getString("mime_type"),
+				rs.getTimestamp("last_modified"));
+		}
+		rs.close();
+		ps.close();
+		return media;
+	}
+	
+	public Media lookupByUri(Connection conn, String uri) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement("SELECT * FROM CMS_MEDIA WHERE uri = ?");
+
+		ps.setString(1, uri);
+		ResultSet rs = ps.executeQuery();
+
+		Media media = null;
+		if (rs.next()) {
+			media = new Media(
+				new PrimaryKey(rs.getString("ID")),
+				rs.getString("URI"),
+				ContentType.get(rs.getString("TYPE")),
+				new Integer(rs.getInt("WIDTH")),
+				new Integer(rs.getInt("HEIGHT")),
+				rs.getString("mime_type"),
+				rs.getTimestamp("last_modified"));
+		}
+		rs.close();
+		ps.close();
+		return media;
+	}
+	
+
+	public void delete(Connection conn, String uri) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement("Delete from CMS_media where uri = ? or uri like ?");
+		ps.setString(1, uri);
+		ps.setString(2, uri + "/%");
+		ps.execute();
+		ps.close();
+		conn.commit();
+	}
+	
+	public void move(Connection conn, String sourceUri, String targetUri) throws SQLException{
+		PreparedStatement ps = conn.prepareStatement("Update CMS_media set uri = REPLACE(URI,?,?), last_modified = sysdate WHERE URI = ? or URI LIKE ?");
+		ps.setString(1, sourceUri);
+		ps.setString(2, targetUri);
+		ps.setString(3, sourceUri);
+		ps.setString(4, sourceUri + "/%");
+		
+		ps.execute();
+		conn.commit();
+		ps.close();
+	}
+	
+	public void copy(Connection conn, String sourceUri, String targetUri) throws SQLException{
+		PreparedStatement ps = conn.prepareStatement(
+			"INSERT INTO CMS_MEDIA (ID, URI, width, height, TYPE, mime_type, last_modified) " + 
+			"SELECT CMS_system_seq.NEXTVAL, REPLACE(URI,?,?), width, height, TYPE, mime_type, sysdate FROM cms_MEDIA WHERE URI = ? or URI LIKE ?");
+		
+		ps.setString(1, sourceUri);
+		ps.setString(2, targetUri);
+		ps.setString(3, sourceUri);
+		ps.setString(4, sourceUri + "/%");
+		
+		ps.execute();
+		conn.commit();
+		ps.close();
+	}
+	
+	private static String getNextId(Connection conn) throws SQLException {
+		return SequenceGenerator.getNextIdFromSequence(conn, "CMS_SYSTEM_SEQ");
+	}
+
+
+}

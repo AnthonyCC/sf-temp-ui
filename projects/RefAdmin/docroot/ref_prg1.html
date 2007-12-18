@@ -1,0 +1,378 @@
+
+<!DOCTYPE HTML PUBLIC "-//CollabNet//DTD XHTML 1.0 Transitional//EN">
+<!-- Application: DlvAdminTest -->
+<!-- Page: Home -->
+<!-- Generated: Fri Oct 06 12:07:27 EDT 2006 -->
+<html>
+<head>
+<meta name="generator" content="Tapestry Application Framework, version 2.3"/>
+<title>Delivery admin</title>
+<link rel="stylesheet" type="text/css" href="/DlvAdmin/css/tigris.css"/>
+</head>
+<style>
+td.dbHeader {
+	background-color: #f90;
+	text-align: center;
+	font-size: 12pt;
+	font-weight: bold;
+}
+td.dbSubHeader {
+	background-color: #c6cfd6;
+	text-align: center;
+	font-size: 10pt;
+	font-weight: bold;
+}
+.timeslotTable {
+	border-top:1px solid #c6cfd6;
+	margin-top:4px;
+	border-right:1px solid #c6cfd6;
+	margin-right: 4px;
+	border-left:1px solid #c6cfd6;
+	margin-left:4px;
+	border-bottom:1px solid #c6cfd6
+}
+.timeslotTable td {
+	font-size: 8pt;
+}
+
+.overriden {
+	background:#ff9933;
+}
+
+.belowSixty {
+	background:#a4ffa4;
+}
+
+.aboveSixty {
+	background:#ffffce;
+}
+
+.aboveSeventyFive {
+	background:#ffdba6;
+}
+
+.critical {
+	background:#ffa6a6;
+}
+
+.odd{
+	background:#eeeeee;
+}
+
+.even{
+	background:#ffffff;
+}
+</style>
+<body marginwidth="0" marginheight="0" class="composite">
+<div id="banner">
+	<table border="0" width="100%" cellpadding="8" cellspacing="0">
+		<tr>
+			<td>FreshDirect - DLVAdmin</td>
+	    </tr>
+	</table>
+</div>
+<div id="breadcrumbs">
+	<table border="0" width="100%" cellpadding="4" cellspacing="0">
+		<tr>
+			<td>
+
+
+Referral Program
+
+
+	&nbsp; | &nbsp;
+
+
+
+<a href="/DlvAdmin/auth?service=external&amp;context=ShowCurrentTimeslots">Referral Program</a>
+
+
+	&nbsp; | &nbsp;
+
+
+
+<a href="/DlvAdmin/auth?service=external&amp;context=ViewTimeslots">Referral Channel</a>
+
+
+	&nbsp; | &nbsp;
+
+
+
+<a href="/DlvAdmin/auth?service=external&amp;context=ManageResources">Referral Campaign</a>
+
+
+	&nbsp; | &nbsp;
+
+
+
+<a href="/DlvAdmin/auth?service=external&amp;context=ReportPage">Referral Partner</a>
+
+
+	&nbsp; | &nbsp;
+
+
+
+<a href="/DlvAdmin/auth?service=external&amp;context=CapacityReportPage">Referral Objective</a>
+
+
+	&nbsp; | &nbsp;
+
+
+	</td>
+			<td>
+				<div align="right">
+				</div>
+			</td>
+		</tr>
+	</table>
+</div>
+<br>
+<br>
+<div class="bodycol">
+<div class="app">
+<form method="post" name="Form0" action="/DlvAdmin/auth">
+<input type="hidden" name="service" value="direct"/>
+<input type="hidden" name="context" value="Home/regionForm"/>
+<input type="hidden" name="sp" value="S0"/>
+
+<table width="100%" cellpadding="8" cellspacing="0" border="0">
+	<tr>
+		<td><div class="h3"><h3><a name="Region">Region: </a>
+<select name="selectRegion" onchange="javascript:this.form.submit();">
+<option value="0"></option>
+<option value="1">Brookhaven Natl Labs</option>
+<option value="2" selected="selected">URBAN</option>
+<option value="3">CABLEVISION1</option>
+<option value="4">Corporate Services</option>
+<option value="5">FreshDirect</option>
+<option value="6">CMP Media</option>
+<option value="7">Robert Plan Corp.</option>
+<option value="8">North Shore LIJ Health System</option>
+<option value="9">Symbol</option>
+<option value="10">Computer Associates</option>
+<option value="11">Hamptons</option>
+<option value="12">Hamptons Pickup</option>
+<option value="13">New Jersey</option>
+<option value="14">Riverdale</option>
+<option value="15">Fire Island</option>
+<option value="16">FreshDirect Pickup</option>
+<option value="17">Brooklyn</option>
+</select></h3></div></td>
+	</tr>
+</table>
+<input type="hidden" name="Form0" value="1"/>
+</form>
+	<table cellpadding="8" cellspacing="0" border="0">
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAyvM1oEGiqADAYAnC63WVsAAAA.">2002-01-15</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAxvODRNGiqADAYAk1uy7VsAAAA.">2002-02-15</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAxv3j9PaKgAMhgAEC9TC1sAAAA.">2002-04-01</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAzvvl_ax1ABZDAAAJ0u3zBbAAAA">2002-07-11</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAzvDSo2MVQAGQwAErqW_1sAAAA.">2002-07-22</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAzvKybuYqgAMhgAIGusNVsAAAA.">2002-08-05</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAzv58yzY6gAMhgAimcP91sAAAA.">2002-08-12</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAzvr7oYMVQAGQwAdtJD1VsAAAA.">2002-08-23</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAwfOA6fYqgAMhgAAFbB6FsAAAA.">2002-09-02</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAwfbJyTGCqADAYADd9jvFsAAAA.">2002-09-12</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAwfVmS8Y6gAMhgAuTKwwFsAAAA.">2002-10-03</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAwfPjR-Y6gAMhgAND2UwVsAAAA.">2002-10-17</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAwffbNjGiqADAYAkdAGeFsAAAA.">2002-11-04</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAwfC8sfNFQAGQwA5-LCfFsAAAA.">2002-11-11</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAwfl3yvaKgAMhgAEFtOrVsAAAA.">2002-11-21</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAwfD99d0FABZDAAAMGE1mVbAAAA">2002-11-27</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAwfz2lFNFQAGQwAewqmNlsAAAA.">2002-11-29</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAwf787NaagAMhgAMCr0I1sAAAA.">2002-12-02</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAyfGFd-aKgAMhgA0WIfE1sAAAA.">2002-12-09</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAyfPA_9aKgAMhgARDE7yFsAAAA.">2002-12-23</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAyf_jH2NFQAGQwA_CgwCFsAAAA.">2003-01-27</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAyf831LGiqADAYAo7a_E1sAAAA.">2003-02-18</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAxf5FLXNFQAGQwAjU4EpFsAAAA.">2003-03-24</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAxfnIoMGiqADAYAldh0blsAAAA.">2003-03-31</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAxfsvOUGCqADAYANlHDhVsAAAA.">2003-04-08</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAxf-quWMVQAGQwA4XCxZlsAAAA.">2003-04-15</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAxfrk9ex1ABZDAAAKLjSwBbAAAA">2003-04-29</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAxfvlVeY6gAMhgAp9JWWFsAAAA.">2003-05-05</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAxf5ddsY6gAMhgAtLpK5FsAAAA.">2003-05-13</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAxfnXdaMVQAGQwAH7fBC1sAAAA.">2003-05-20</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAxf04_uY6gAMhgAji56U1sAAAA.">2003-05-27</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAxf21Y_Y6gAMhgAf65sq1sAAAA.">2003-06-02</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAxfV-3IYqgAMhgAhmkrclsAAAA.">2003-06-09</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAxf71kwMVQAGQwAB3wGNFsAAAA.">2003-06-19</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAzfvGL7GCqADAYAb_r1n1sAAAA.">2003-07-10</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAzfOjTvMVQAGQwAfKcLAlsAAAA.">2003-07-22</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAzfvvhnMVQAGQwAMlUi1lsAAAA.">2003-08-12</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAzfE0q-MVQAGQwAXX5WXlsAAAA.">2003-09-02</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAw_5BmcGCqADAYADd1nfFsAAAA.">2003-10-09</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAw_wpeZMVQAGQwAIWYobVsAAAA.">2003-10-20</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAw_umP2NFQAGQwA6n1mw1sAAAA.">2003-10-30</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAw_DTRsGiqADAYADD2ZRlsAAAA.">2003-12-01</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAw_Q0wONFQAGQwAbZncz1sAAAA.">2003-12-08</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAw_5_ieaKgAMhgA4fwzTFsAAAA.">2003-12-22</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAy_Lbw6GiqADAYAXINAv1sAAAA.">2004-03-11</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAy_0xYfaagAMhgA_zjkGlsAAAA.">2004-03-20</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAy_WzvfNFQAGQwAtIy7jVsAAAA.">2004-03-26</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAy_lxSINFQAGQwAi2GEr1sAAAA.">2004-04-01</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAx_Isp3MVQAGQwAjv97PlsAAAA.">2004-05-06</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAx_Vt2tYqgAMhgAXXDrcVsAAAA.">2004-05-22</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAx_teeUMVQAGQwAaKeQzVsAAAA.">2004-06-16</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAx__Vf8YqgAMhgAwaouglsAAAA.">2004-06-23</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAx_57yIY6gAMhgAreLdNVsAAAA.">2004-07-08</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAz_lM5uY6gAMhgA48aV31sAAAA.">2004-08-03</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAz_AtU-MVQAGQwArlFFeFsAAAA.">2004-08-12</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAz_dqgpMVQAGQwAW2UTRVsAAAA.">2004-09-01</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAz_c1K2MVQAGQwA74kFk1sAAAA.">2004-10-06</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDAz_n_8NY6gAMhgAsB5qRFsAAAA.">2004-10-30</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDIwMVrNYGioYgAAA7vU_8VsAAAA.">2004-11-15</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDIwMLs_2NFQwAAEAsWg7IVsAAAA.">2004-11-17</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDIwMFWkhDRUMQAAA3TZKilsAAAA.">2004-11-27</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDIwMp86INFQwAAEA-1Bek1sAAAA.">2004-12-13</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDIxMTnsCGioYgAAAa-IyVlsAAAA.">2005-02-24</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDIwsdepuDBUMQAAAYbR9-1sAAAA.">2005-06-15</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDIxcfmsEGioYgAAA2RVhm1sAAAA.">2006-03-31</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDIxcyxjtGCoYgAAAbpL1qlsAAAA.">2006-04-17</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=ViewRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDIy8jR5uDBUMQAAA9yHsR1sAAAA.">2006-09-06</a></td>
+			</tr>
+	<tr>
+				<td><a href="/DlvAdmin/auth?service=external&amp;context=EditRegion&amp;sp=URBAN&amp;sp=OH4sIAAAAAAAAAFvzloG1uIhBKCuxLFGvuDBHLyQzN7W4JDG3QE3i6gnG4P2pTAyMngyseYl5-cUVRQx8YIWlJZk5ei6JJakZWY2M3pElkswMDBUF5RwMDIyiX_JUGioYgAAAtEQh9FsAAAA.">2007-10-31</a></td>
+			</tr>
+	</table>
+</div>
+</div>
+
+</body>
+</html>
+<!-- Render time: ~ 333 ms -->
+
+

@@ -1,0 +1,90 @@
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%
+int grabberDepth = 1;
+boolean ignoreShowChildren = false;
+boolean filterDiscontinued = true;
+boolean returnHiddenFolders = false;
+boolean ignoreDuplicateProducts = true;
+boolean returnSecondaryFolders = true;
+String storageMedia = ((MediaI)dep.getAttribute("DEPT_STORAGE_GUIDE_MEDIA").getValue()).getPath();
+%>
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr><td><fd:IncludeMedia name="<%=storageMedia%>" /></td></tr>
+<tr><td class="text12gr"><img src="/media_stat/images/layout/clear.gif" width="1" height="18"><br><font color="#999999"><b>SEE STORAGE TIPS FOR:</b></font><br><img src="/media_stat/images/layout/clear.gif" width="1" height="2"></td></tr>
+<tr><td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
+</table>
+<% 
+List catList = new ArrayList();
+List sortStrategy = new ArrayList();
+sortStrategy.add(new SortStrategyElement(SortStrategyElement.GROUP_BY_CATEGORY_NAME, false));
+%>
+<fd:ItemGrabber category='<%= dep %>' id='sortedColl'  depth='<%=grabberDepth%>' ignoreShowChildren='<%=ignoreShowChildren%>' filterDiscontinued='<%= filterDiscontinued %>' returnHiddenFolders='<%=returnHiddenFolders%>' ignoreDuplicateProducts='<%=ignoreDuplicateProducts%>' returnSecondaryFolders='<%=returnSecondaryFolders%>'>
+<%
+//get folder back based on alphabetical folder name
+//remove items with no storage guide attribute
+for(Iterator thisList = sortedColl.iterator(); thisList.hasNext();) {
+    Object catObject = thisList.next();
+    if ( catObject instanceof CategoryModel  && ( ((CategoryModel)catObject).hasAttribute("DEPT_STORAGE_GUIDE_MEDIA") || ((CategoryModel)catObject).hasAttribute("CAT_STORAGE_GUIDE_MEDIA")  )) {
+       catList.add(catObject);
+    } else {
+        continue;
+    }
+} 
+%>
+</fd:ItemGrabber>
+
+<fd:ItemSorter nodes='<%=catList %>' strategy='<%=sortStrategy%>'/>
+<%
+Image initCatImg = (Image)((CategoryModel)catList.get(0)).getAttribute("CAT_PHOTO").getValue();
+%>
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr valign="top">
+<td width="110" height="90"><img src="<%=initCatImg.getPath()%>" name="catImage"></td>
+<td><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
+<td><img src="/media_stat/images/layout/clear.gif" width="1" height="4">
+<%
+        int itemCount = catList.size();
+        int maxCols = 3;
+    int maxRows = itemCount/maxCols + (itemCount%maxCols!=0?1:0);
+        int rowCount = 0;
+        int colCount = 0;
+%>
+            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+<%
+    for (int rowIndex = 0; rowIndex < maxRows; rowIndex++) { 
+%>
+                <tr>
+<%
+        for (int colIndex = 0; colIndex < maxCols && itemCount > 0; colIndex++) {
+                        CategoryModel thisCat = null;
+                        Image catImg = null;
+                        String catLink=null;
+                        String mouseOver = null;
+                        int itemIndex = (maxRows * colIndex) + rowIndex;
+                        if (itemIndex < itemCount) {
+                    thisCat = (CategoryModel)catList.get(itemIndex);
+                                catImg =  (Image)thisCat.getAttribute("CAT_PHOTO").getValue();
+                                mouseOver = "swapImage('catImage','"+ catImg.getPath() +"')";
+                        }
+%>
+
+            <td class="text12"><% if (thisCat != null) {%><a href="/shared/popup.jsp?catId=<%=thisCat.getContentName()%>&attrib=CAT_STORAGE_GUIDE_MEDIA&tmpl=large" onMouseOver="<%=mouseOver%>"><%= thisCat.getFullName() %></a><%} else {%>&nbsp;<%}%></td>
+
+<%
+            // paint a spacer cell after every category cell, except for the last category in the row
+            if (colIndex < maxCols-1 ) {
+%>
+                    <td><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>
+                    <td width="1" bgcolor="999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="16"></td>
+                    <td><img src="/media_stat/images/layout/clear.gif" width="5" height="1"></td>
+<%
+            }
+        }
+%>
+                </tr>
+<%  } %>
+            </table>
+</td>
+</tr>
+</table>

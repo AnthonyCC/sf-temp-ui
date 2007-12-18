@@ -1,0 +1,22 @@
+<span jwcid="$content$">
+<span jwcid="border">
+
+<span jwcid="@Form" stateful="false" delegate="ognl:beans.delegate">
+<table>
+	<tr>
+		<td>
+			<input jwcid="@TextField" validators="validators:required" value="ognl:plan.name" displayName="Name" class="text10"/> &nbsp;&nbsp;
+			<select jwcid="@PropertySelection" model="ognl:engine.regionSelectionModel" value="ognl:region" />
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<input type="submit" value="Add Plan" jwcid="@Submit" listener="ognl:listeners.submitAddPlan" class="text12wbold" style="background-color:669933;color:ffffff" />
+		</td>
+	</tr>
+</table>
+</span>
+
+</span>
+
+</span>

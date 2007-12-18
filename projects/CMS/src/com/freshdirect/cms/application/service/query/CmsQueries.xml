@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Content>
+
+	<CmsQueryFolder id="queries">
+		<name>CMS Queries</name>
+		<queries/>
+		<subFolders>
+			
+			<CmsQueryFolder>
+				<name>Store Objects</name>
+				<queries>
+					<CmsQuery id="orphans">
+						<name>Orphan Store Objects</name>
+						<description>Show objects that do not have a parent</description>
+						<script>
+<![CDATA[
+select id from cms_contentnode cn
+where contenttype_id not in ('Html','Image','Store','ErpCharacteristic')
+and id not in ('FDFolder:recipes')
+and not exists (select child_contentnode_id from cms_all_nodes where child_contentnode_id=cn.id)
+]]>
+						</script>
+					</CmsQuery>
+					<CmsQuery id="unreachable">
+						<name>Unreachable Store Objects</name>
+						<description>Show objects that are unreachable from the Store</description>
+						<script>
+<![CDATA[
+select id from cms_contentnode cn
+where contenttype_id not in ('Html','Image','Store','ErpCharacteristic')
+and id not in ('FDFolder:recipes')
+minus
+select child_contentnode_id from cms_all_nodes 
+start with parent_contentnode_id = 'Store:FreshDirect' 
+connect by prior child_contentnode_id = parent_contentnode_id
+]]>
+						</script>
+					</CmsQuery>
+					<CmsQuery id="recent">
+						<name>Recently modified</name>
+						<description>Last 100 changes</description>
+						<script>
+<![CDATA[
+select distinct id from (
+ select contenttype||':'||contentnode_id id
+ from cms_changeset cs, cms_contentnodechange cnc
+ where cs.timestamp>sysdate-7
+ and cnc.changeset_id=cs.id
+ order by timestamp desc
+) where rownum<100
+]]>
+						</script>
+					</CmsQuery>
+					
+					<CmsQuery id="ocfCampaigns">
+						<name>OCF Campaigns</name>
+						<description>OCF Campaigns</description>
+						<language>HQL</language>
+						<script>from Campaign</script>
+					</CmsQuery>
+					
+				</queries>
+			</CmsQueryFolder>
+			
+			<CmsQueryFolder>
+				<name>Reports</name>
+				<queries>
+					
+					<CmsReport id="multiHome">
+						<name>Products with multiple homes</name>
+						<script>
+<![CDATA[
+select child_contentnode_id as content_key$, count(*) as homes
+from cms_all_nodes where def_contenttype='Product'
+group by child_contentnode_id
+having count(*) > 1
+order by homes desc
+]]>
+						</script>
+					</CmsReport>
+					
+					<CmsReport id="recentChanges">
+						<name>Recent changes</name>
+						<description>Show the most recent changes in the last N days, grouped by content type</description>
+						<script>
+<![CDATA[
+select * from (
+ select cnc.contenttype as group$, cnc.changetype as class$, contenttype||':'||contentnode_id as content_key$, user_id, timestamp
+ from cms_changeset cs, cms_contentnodechange cnc
+ where cs.timestamp>sysdate-{Days}
+ and cnc.changeset_id=cs.id
+ order by timestamp desc
+) where rownum<{MaxRows} order by group$ asc
+]]>
+						</script>
+						<parameters>Days=7|MaxRows=1000</parameters>
+					</CmsReport>
+					
+					<CmsReport id="invisibleProducts">
+						<name>Invisible products</name>
+						<script>
+<![CDATA[
+select cn.id as content_key$ from cms.contentnode cn, cms.attribute a where
+cn.contenttype_id='Product' and a.def_name = 'INVISIBLE' and a.value='true' and cn.id=a.contentnode_id 
+]]>
+						</script>
+					</CmsReport>
+					
+					<CmsReport id="hierarchyReport">
+						<name>Hierarchy Report</name>
+						<script>
+<![CDATA[
+select level, parent_contentnode_id as parent_key$, child_contentnode_id as child_key$,
+child_contentnode_id||':{Attribute_1}' as {Attribute_1}_1_attribute$,
+child_contentnode_id||':{Attribute_2}' as {Attribute_2}_2_attribute$,
+child_contentnode_id||':{Attribute_3}' as {Attribute_3}_3_attribute$,
+child_contentnode_id||':{Attribute_4}' as {Attribute_4}_4_attribute$,
+child_contentnode_id||':{Attribute_5}' as {Attribute_5}_5_attribute$
+from cms_all_nodes
+where def_contenttype in ({ContentTypes})
+start with parent_contentnode_id = '{RootNode}'
+connect by prior child_contentnode_id = parent_contentnode_id
+order siblings by def_name, ordinal
+]]>
+						</script>
+						<parameters>RootNode=Category:bstk|ContentTypes='Category','Product'|Attribute_1=FULL_NAME|Attribute_2=NAV_NAME</parameters>
+					</CmsReport>
+					
+<!--
+					<CmsReport id="orphans">
+						<name>Orphan Report</name>
+						<script>
+<![CDATA[
+select
+ id as content_key$,
+ id||':FULL_NAME' as name_attribute$,
+ id||':SHOWSELF' as show_self_attribute$,
+ id||':SIDENAV_SHOWSELF' as sidenav_show_self_attribute$
+from cms_contentnode cn
+where
+ contenttype_id in ('Department','Category','Product','Sku')
+ and not exists (select child_contentnode_id from cms_all_nodes where child_contentnode_id=cn.id)
+order by contenttype_id
+]]>
+						</script>
+					</CmsReport>
+-->
+					
+					
+					<CmsReport id="recipesSummary">
+						<name>Recipes summary</name>
+						<script>
+<![CDATA[
+select cn.id as content_key$, 
+      name.value as name, 
+      productionStatus.value as productionStatus, 
+      source.CHILD_CONTENTNODE_ID as source_key$, 
+      photoPath.uri as photo, 
+      ingredientsMediaPath.uri as ingredientsMedia, 
+      copyrightMediaPath.uri as copyrightMedia, 
+      titleImagePath.uri as titleImage 
+from cms.contentnode cn, 
+       cms.attribute name, 
+       cms.attribute productionStatus, 
+       cms.relationship source, 
+       cms.relationship photo, cms.media photoPath, 
+       cms.relationship ingredientsMedia, cms.media ingredientsMediaPath, 
+       cms.relationship copyrightMedia, cms.media copyrightMediaPath, 
+       cms.relationship titleImage, cms.media titleImagePath 
+where cn.contenttype_id = 'Recipe' 
+    and name.contentnode_id(+)=cn.id 
+        and name.def_name(+)='name' 
+    and productionStatus.contentnode_id(+)=cn.id 
+        and productionStatus.def_name(+)='productionStatus' 
+    and source.parent_contentnode_id(+)=cn.id 
+        and source.def_name(+)='source' 
+    and photo.parent_contentnode_id(+)=cn.id 
+        and photo.def_name(+)='photo' 
+        and photoPath.id(+)=substr(photo.child_contentnode_id, instr(photo.child_contentnode_id, ':')+1) 
+    and ingredientsMedia.parent_contentnode_id(+)=cn.id 
+        and ingredientsMedia.def_name(+)='ingredientsMedia' 
+        and ingredientsMediaPath.id(+)=substr(ingredientsMedia.child_contentnode_id, instr(ingredientsMedia.child_contentnode_id, ':')+1) 
+    and copyrightMedia.parent_contentnode_id(+)=cn.id 
+        and copyrightMedia.def_name(+)='copyrightMedia' 
+        and copyrightMediaPath.id(+)=substr(copyrightMedia.child_contentnode_id, instr(copyrightMedia.child_contentnode_id, ':')+1) 
+    and titleImage.parent_contentnode_id(+)=cn.id 
+        and titleImage.def_name(+)='titleImage' 
+        and titleImagePath.id(+)=substr(titleImage.child_contentnode_id, instr(titleImage.child_contentnode_id, ':')+1) 
+order by cn.id
+]]>
+						</script>
+					</CmsReport>
+					
+					
+				</queries>
+			</CmsQueryFolder>
+			
+		</subFolders>
+		
+	</CmsQueryFolder>
+
+</Content>

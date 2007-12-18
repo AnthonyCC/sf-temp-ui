@@ -1,0 +1,182 @@
+<%
+response.setHeader("Cache-Control", "no-cache");
+response.setHeader("Pragma", "no-cache");
+response.setDateHeader ("Expires", 0);
+
+String surveyStatus = NVL.apply(user.getFDCustomer().getProfile().getAttribute("ReceiptPageSurvey2"),"");
+String actionName = "submitSurvey";
+boolean submitted = "filled".equalsIgnoreCase(request.getParameter("info")) && "FILL".equalsIgnoreCase(surveyStatus);
+boolean skipped =   "skipped".equalsIgnoreCase(request.getParameter("info"));
+boolean alreadyTookSecondSurvey = "FILL".equals(user.getFDCustomer().getProfile().getAttribute("signup_survey_v2"))
+                                       || "FILL".equals(user.getFDCustomer().getProfile().getAttribute("fourth_order_survey"))
+									   || "FILL".equals(user.getFDCustomer().getProfile().getAttribute("fourth_order_cos_survey"))
+									   || "FILL".equals(user.getFDCustomer().getProfile().getAttribute("second_order_survey"));
+
+if (submitted) {
+%>
+<table width="630" cellpadding="0" cellspacing="0" border="0" class="text12">
+<tr>
+	<td colspan="11" class="text12" align="center"><br>
+	<span class="title18">Thank you for your feedback.</span><br>Your information has been submitted.<br>We greatly appreciate your time and interest.<br><img src="/media_stat/images/template/tell_a_friend/confirm_berry.jpg" width="70" height="70"><br><br></td></tr>
+</table>
+<%	
+} else if (!skipped) {
+	
+	FDSurvey survey = null;
+	
+System.out.println("User object is: "+user.getClass().getName());
+   boolean showSurvey = !alreadyTookSecondSurvey  && !"skip_3".equalsIgnoreCase(surveyStatus) && !"FILL".equalsIgnoreCase(surveyStatus)
+   &   ((FDSessionUser)user).getDeliveredOrderCount()>2;
+   if (showSurvey) {
+
+	survey = FDSurveyFactory.getInstance().getSurvey("ReceiptPageSurvey2");
+  
+       	List questions = survey.getQuestions();
+	
+      	String[] checkSurveyForm = new String[questions.size()];
+   
+       if (questions.size() > 0) {
+	   int c = 0;
+	   for(Iterator it = questions.iterator();it.hasNext();c++){
+	       FDSurveyQuestion question = (FDSurveyQuestion)it.next();
+	       checkSurveyForm[c] = question.getName();
+	    }
+	}
+	
+	
+%>
+    
+<table width="630" cellpadding="0" cellspacing="0" border="0" class="text12">
+<fd:ReceiptSurvey actionName="<%=actionName%>" result="result" successPage="/checkout/step_4_receipt.jsp" survey="<%=survey%>">
+<form name="postOrderSurvey" method="POST">
+<script>
+   function doSubmitForm(skipForm) {
+	if (skipForm) {
+	     document.postOrderSurvey.skipSurvey.value="yes";
+	} else {
+	     document.postOrderSurvey.skipSurvey.value="no";
+	}
+	document.postOrderSurvey.submit();
+   }
+
+</script>
+<input type="hidden" value="" name="skipSurvey">
+	<tr>
+		<td colspan="11" class="text11"><img src="/media_stat/images/layout/999966.gif" width="630" height="1" vspace="8"><br><span class="title18" style="color:#990000;">HELP US SERVE YOU BETTER</span><br><span class="space4pix"><br></span>
+		We want to make your FreshDirect experience the best it can be. Please help us by filling out this survey. Of course we keep all your information private. Whether you choose to fill out the survey or not, your feedback is greatly appreciated.
+		<br><img src="/media_stat/images/layout/cccccc.gif" width="630" height="1" vspace="8"><br>
+		<%  if (questions.size() > 0) { %>
+			<fd:ErrorHandler result='<%=result%>' field='<%=checkSurveyForm%>'>
+				<% String errorMsg = SystemMessageList.MSG_MISSING_SURVEY_INFO; %>
+				<br><%@ include file="/includes/i_error_messages.jspf" %><span class="space8pix"><br></span>
+			</fd:ErrorHandler>
+		<% } %>
+		</td>
+	</tr>
+	<tr>
+		<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="20" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="110" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="130" height="1"></td>
+	</tr>
+	<% int quesCount = 0; %>
+	    <logic:iterate id="question" collection="<%= questions %>" type="com.freshdirect.fdstore.survey.FDSurveyQuestion" indexId='index'>
+            <% 
+				String input = "radio";
+				String surveyQuestion = "text11";
+                if(question.isMultiselect())input = "checkbox";
+                
+                List prevAnswers = new ArrayList();
+                String[] paramValues = request.getParameterValues(question.getName());
+                if(paramValues != null)
+                    for (int j = 0; j < paramValues.length; j++) {
+					prevAnswers.add(paramValues[j]);
+				}
+            %>
+            <fd:ErrorHandler result='<%=result%>' name='<%=question.getName()%>'>
+                    <% surveyQuestion = "text11rbold"; %>
+            </fd:ErrorHandler>
+			
+			<% if (question.getName().indexOf("RcptPageSurveyCOS1") >-1) { //COS Survey 1 %>
+				<tr><td colspan="11"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" alt="" border="0"><br>
+				<img src="/media_stat/images/layout/cccccc.gif" width="100%" height="1">
+				<table width="100%" cellpadding="0" cellspacing="0">
+					<tr><td colspan="4" valign="top"><img src="/media_stat/images/template/corp/food.jpg" width="229" height="79" vspace="8" align="right"><br><span style="font-size: 11px; font-weight: bold; color:#000099;">We now deliver to the office!</span> If you work for a mid-town or Downtown Manhattan company that either stocks an office pantry/kitchen with food or regularly orders platters/catering for business meetings, we'd like to see if your company is interested in ordering from FreshDirect. We'd appreciate the following information and permission to use your name as a reference:</td></tr>
+					<tr>
+						<td class="text12" align="right"><strong><%=question.getDescription()%></strong>&nbsp;&nbsp;</td>
+						<td width="170"><input type="text" name="<%=question.getName()%>" value="<%=request.getParameter(question.getName())%>"></td>
+			<% } else if (question.getName().indexOf("RcptPageSurveyCOS2") >-1) { //COS Survey 2 %>
+						<td class="text12" align="right"><strong><%=question.getDescription()%></strong>&nbsp;&nbsp;</td>
+						<td width="170"><input type="text" name="<%=question.getName()%>" value="<%=request.getParameter(question.getName())%>"></td>
+					</tr>
+					</table><br>
+					</td></tr>
+			<% } else if ("other".equalsIgnoreCase(question.getDescription())) { %>
+				<% if (index.intValue() == 2) {%>
+				</td></tr>
+				<tr><td></td><td colspan="10" style="padding-left: 25px;"><textarea wrap="virtual" cols="50" rows="2" style="margin-top: 4px;" class="text13" name="<%=question.getName()%>"><%=request.getParameter(question.getName())%></textarea></td></tr>
+				<% } else { %>
+					<input type="text" name="<%=question.getName()%>" value="<%=request.getParameter(question.getName())%>"></td></tr>
+				<% } %>
+			<% } else { %>
+					<% quesCount++; %>
+				 	<tr><td colspan="11" class="<%=surveyQuestion%>"><%=quesCount > 1 ? "<br>": ""%><b><%=quesCount%>. <%=question.getDescription()%></b> <%= question.isRequired() || !question.isShowOptionalText() ? "":" (optional)" %><%= question.isMultiselect() ? "(check all that apply)":""%><span class="space4pix"><br><br></span></td></tr>
+					<% if (question.isOpenEnded()) { //textarea %>
+						<tr>
+							<td></td>
+							<td colspan="10" class="text11"><textarea wrap="virtual" cols="80" rows="4" class="text13" name="<%=question.getName()%>"><%=request.getParameter(question.getName())%></textarea>
+						<br><span class="space8pix"><br></span></td>
+						</tr>
+					<% } else if (question.getDescription().indexOf("recommend") >-1) { %>
+						<tr>
+							<td></td>
+							<td colspan="10" class="text11">
+								<table border="0" cellspacing="0" cellpadding="0">
+									<tr>
+										<td width="70"><img src="/media_stat/images/layout/clear.gif" width="70" height="6" alt="" border="0"></td>
+										<td width="70"><img src="/media_stat/images/layout/clear.gif" width="70" height="6" alt="" border="0"></td>
+										<td width="70"><img src="/media_stat/images/layout/clear.gif" width="70" height="6" alt="" border="0"></td>
+										<td width="70"><img src="/media_stat/images/layout/clear.gif" width="70" height="6" alt="" border="0"></td>
+										<td width="70"><img src="/media_stat/images/layout/clear.gif" width="70" height="6" alt="" border="0"></td>
+									</tr>
+									<tr></tr>
+										<td colspan="3"><i>Definitely No</i></td>	
+										<td colspan="2" align="right"><i>Definitely Yes</i></td>
+									</tr>
+									<tr>
+									<logic:iterate id="answer" collection="<%= question.getAnswers() %>" type="com.freshdirect.fdstore.survey.FDSurveyAnswer" indexId="i">
+										<td class="text11" align="center"><input type="<%=input%>" name="<%=question.getName()%>" value="<%=answer.getDescription()%>" <%=prevAnswers.contains(answer.getDescription()) ? "CHECKED" : "" %>></td>
+									</logic:iterate>
+									</tr>
+									</table>
+							</td>
+						</tr>
+					<% } else { 
+					int col = 0; 
+					%>
+					<logic:iterate id="answer" collection="<%= question.getAnswers() %>" type="com.freshdirect.fdstore.survey.FDSurveyAnswer" indexId="i">
+							<tr><td></td><td><input type="<%=input%>" name="<%=question.getName()%>" value="<%=answer.getDescription()%>" <%=prevAnswers.contains(answer.getDescription()) ? "CHECKED" : "" %>></td><td colspan="9" class="text11"><%=answer.getDescription()%> <%="other".equalsIgnoreCase(answer.getName()) ? " (please specify)" : "" %>
+							<% if (!"other".equalsIgnoreCase(answer.getName())) { %>
+								</td></tr>
+							<% } else { continue; } %>
+	        		</logic:iterate>
+					<% } %>
+				<% } %>
+				
+		</logic:iterate>
+	<tr><td colspan="11" align="center"><img src="/media_stat/images/layout/cccccc.gif" width="630" height="1" vspace="12"><br><input type="image" src="/media_stat/images/buttons/b_submit_survey.gif" width="176" height="21" alt="SUBMIT SURVEY" onclick="doSubmitForm(false);"><br><img src="/media_stat/images/layout/999966.gif" width="630" height="1" vspace="18"><br>
+	<input type="image" src="/media_stat/images/buttons/b_ask_me_later.gif" width="120" height="21" alt="SKIP SURVEY" onclick="doSubmitForm(true);"><br><br>
+	</td></tr>
+
+</form>
+</fd:ReceiptSurvey>
+</table>
+<% } //if show survey%>
+<% } //if not submitted %>

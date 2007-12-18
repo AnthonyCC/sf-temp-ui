@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.freshdirect.delivery.model" schema="dlv">
+
+	<typedef name="fdBoolean" class="com.freshdirect.framework.hibernate.BooleanType" />
+
+    <class name="DlvZoneDescriptor" table="ZONE_DESC" lazy="false">
+        <id name="zoneCode" column="ZONE_CODE">
+            <generator class="assigned"/>
+        </id>
+
+		<property name="unattended" column="UNATTENDED" not-null="true" type="fdBoolean"/>
+	</class>
+
+	<query name="updateZoneUnattendedDeliveryStatus">
+		update DlvZoneDescriptor
+		set unattended = :unattended
+		where zoneCode = :zoneCode
+    </query>
+
+
+</hibernate-mapping>
+
+

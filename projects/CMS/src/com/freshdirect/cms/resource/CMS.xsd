@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xsd:schema xmlns="http://www.freshdirect.com/xsd/CMS" xmlns:cms="http://www.freshdirect.com/xsd/CMS" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.freshdirect.com/xsd/CMS" elementFormDefault="qualified" version="1.0">
+	<xsd:annotation>
+		<xsd:documentation xml:lang="en"> Schema describing FreshDirect
+			storefront definitions and implementations Copyright 2004
+			FreshDirect </xsd:documentation>
+	</xsd:annotation>
+	<!--
+		
+		Mix-in attribute groups
+
+	-->
+	<xsd:attributeGroup name="InheritableDef">
+		<xsd:attribute name="inheritable" type="xsd:boolean" default="false"/>
+		<xsd:attribute name="required" type="xsd:boolean" default="false"/>
+		<xsd:attribute name="readOnly" type="xsd:boolean" default="false"/>
+	</xsd:attributeGroup>
+	<xsd:attributeGroup name="KeyedObjectDef">
+		<xsd:attribute name="name" type="xsd:string" use="required"/>
+		<xsd:attribute name="cardinality" use="optional" default="One">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="One">
+						<xsd:annotation>
+							<xsd:documentation>One: denotes that this property
+								is single valued</xsd:documentation>
+						</xsd:annotation>
+					</xsd:enumeration>
+					<xsd:enumeration value="Many">
+						<xsd:annotation>
+							<xsd:documentation>Many: denotes that this property
+								is multi valued</xsd:documentation>
+						</xsd:annotation>
+					</xsd:enumeration>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+	</xsd:attributeGroup>
+	<!--
+
+		a simple type that defines mappings to common primitive types
+
+	-->
+	<xsd:simpleType name="PrimitiveType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="B">
+				<xsd:annotation>
+					<xsd:documentation>Boolean</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="I">
+				<xsd:annotation>
+					<xsd:documentation>Integer</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="D">
+				<xsd:annotation>
+					<xsd:documentation>Double</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="S">
+				<xsd:annotation>
+					<xsd:documentation>String</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="DT">
+				<xsd:annotation>
+					<xsd:documentation>Date</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--
+
+		a simple type that can be reused to define descriptions of definitions
+
+	-->
+	<xsd:simpleType name="DescriptionType">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="128"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<!--
+
+		Base type consisting of zero or more elements
+
+	-->
+	<xsd:complexType name="BaseElementOnlyType" abstract="true" mixed="false"/>
+	<!--
+
+		Base type for attribute and relationship definitions
+
+	-->
+	<xsd:complexType name="BaseDefType" abstract="true" mixed="false">
+		<xsd:complexContent mixed="false">
+			<xsd:extension base="BaseElementOnlyType">
+				<xsd:sequence>
+					<xsd:element name="Description" type="DescriptionType" minOccurs="0"/>
+				</xsd:sequence>
+				<xsd:attributeGroup ref="KeyedObjectDef"/>
+				<xsd:attributeGroup ref="InheritableDef"/>
+				<xsd:attribute name="label" use="optional" type="xsd:string"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!--
+	
+		definition of a content node
+		
+	-->
+	<xsd:complexType name="ContentNodeDefType">
+		<xsd:complexContent>
+			<xsd:extension base="BaseElementOnlyType">
+				<xsd:sequence>
+					<xsd:element name="AttributeDefs">
+						<xsd:complexType mixed="false">
+							<xsd:complexContent mixed="false">
+								<xsd:extension base="BaseElementOnlyType">
+									<xsd:choice minOccurs="0" maxOccurs="unbounded">
+										<xsd:element name="AttributeDef" type="AttributeDefType"/>
+									</xsd:choice>
+								</xsd:extension>
+							</xsd:complexContent>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="RelationshipDefs" minOccurs="0">
+						<xsd:complexType mixed="false">
+							<xsd:complexContent mixed="false">
+								<xsd:extension base="BaseElementOnlyType">
+									<xsd:sequence>
+										<xsd:element name="RelationshipDef" type="RelationshipDefType" minOccurs="0" maxOccurs="unbounded"/>
+									</xsd:sequence>
+								</xsd:extension>
+							</xsd:complexContent>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:sequence>
+				<xsd:attribute name="name" type="xsd:string"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!--
+
+		Attribute type structure
+
+	-->
+	<xsd:complexType name="AttributeDefType">
+		<xsd:complexContent>
+			<xsd:extension base="BaseDefType">
+				<xsd:attribute name="type" use="required" type="PrimitiveType"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!--
+
+		Relationship type structure
+
+	-->
+	<!-- definition of a relationship -->
+	<xsd:complexType name="RelationshipDefType">
+		<xsd:complexContent>
+			<xsd:extension base="BaseDefType">
+				<xsd:sequence>
+					<xsd:element name="DestinationDef" maxOccurs="unbounded">
+						<xsd:complexType>
+							<xsd:complexContent>
+								<xsd:extension base="BaseElementOnlyType">
+									<xsd:attribute name="contentType"/>
+								</xsd:extension>
+							</xsd:complexContent>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:sequence>
+				<xsd:attribute name="navigable" type="xsd:boolean" use="optional" default="false"/>
+				<xsd:attribute name="type" use="optional" default="A">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:enumeration value="C">
+								<xsd:annotation>
+									<xsd:documentation>Composition: denotes a
+										"containment" or "whole-part" relationship</xsd:documentation>
+								</xsd:annotation>
+							</xsd:enumeration>
+							<xsd:enumeration value="A">
+								<xsd:annotation>
+									<xsd:documentation>Aggregation: denotes a
+										"refers to" relationsip</xsd:documentation>
+								</xsd:annotation>
+							</xsd:enumeration>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:attribute>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!--
+
+		CMS definition structure
+
+	-->
+	<xsd:element name="CMSDef" type="CMSDefType">
+		<!-- content type names are considered keys -->
+		<xsd:key name="ContentTypeUniqueness">
+			<xsd:selector xpath="ContentTypeDef"/>
+			<xsd:field xpath="@name"/>
+		</xsd:key>
+		<!-- relationship destinations must be content types -->
+		<xsd:keyref name="RelationshipEndpointDef" refer="ContentTypeUniqueness">
+			<xsd:selector xpath="ContentTypeDef/RelationshipDefs/RealtionshipDef/Destination"/>
+			<xsd:field xpath="@ref"/>
+		</xsd:keyref>
+	</xsd:element>
+	<xsd:complexType name="CMSDefType" mixed="false">
+		<xsd:complexContent mixed="false">
+			<xsd:extension base="BaseElementOnlyType">
+				<xsd:sequence>
+					<xsd:element name="ContentTypeDef" type="ContentNodeDefType" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!--
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+		CMS implementation structure
+
+	-->
+	<xsd:element name="CMSData" type="CMSDataType">
+		<!-- content ids are considered keys -->
+		<xsd:key name="ContentIdUniqueness">
+			<xsd:selector xpath="ContentNode"/>
+			<xsd:field xpath="@contentId"/>
+		</xsd:key>
+		<!-- relationship destinations must be content nodes-->
+		<xsd:keyref name="RelationshipEndpoint" refer="ContentIdUniqueness">
+			<xsd:selector xpath="ContentNode/Relationships/Realtionship/Destinations/Destination"/>
+			<xsd:field xpath="@ref"/>
+		</xsd:keyref>
+	</xsd:element>
+	<xsd:complexType name="CMSDataType" mixed="false">
+		<xsd:complexContent mixed="false">
+			<xsd:extension base="BaseElementOnlyType">
+				<xsd:sequence>
+					<xsd:element name="ContentNode" type="ContentNodeType" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!--
+
+		ContentNode implementation structure
+
+	-->
+	<xsd:complexType name="ContentNodeType">
+		<xsd:complexContent>
+			<xsd:extension base="BaseElementOnlyType">
+				<xsd:sequence>
+					<xsd:element name="Attributes">
+						<xsd:complexType mixed="false">
+							<xsd:complexContent mixed="false">
+								<xsd:extension base="BaseElementOnlyType">
+									<xsd:choice minOccurs="0" maxOccurs="unbounded">
+										<xsd:element name="Attribute" type="AttributeType"/>
+									</xsd:choice>
+								</xsd:extension>
+							</xsd:complexContent>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="Relationships" minOccurs="0">
+						<xsd:complexType mixed="false">
+							<xsd:complexContent mixed="false">
+								<xsd:extension base="BaseElementOnlyType">
+									<xsd:sequence>
+										<xsd:element name="Relationship" type="RelationshipType" maxOccurs="unbounded"/>
+									</xsd:sequence>
+								</xsd:extension>
+							</xsd:complexContent>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:sequence>
+				<xsd:attribute name="contentType" type="xsd:string"/>
+				<xsd:attribute name="contentId" type="xsd:string"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!--
+
+		Attribute implementation structure
+
+	-->
+	<xsd:complexType name="AttributeType">
+		<xsd:complexContent>
+			<xsd:extension base="BaseElementOnlyType">
+				<xsd:attributeGroup ref="KeyedObjectDef"/>
+				<xsd:attributeGroup ref="InheritableDef"/>
+				<xsd:attribute name="type" use="required" type="PrimitiveType"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!--
+
+		Relationship implementation structure
+
+	-->
+	<xsd:complexType name="RelationshipType">
+		<xsd:complexContent>
+			<xsd:extension base="BaseElementOnlyType">
+				<xsd:sequence>
+					<xsd:element name="Destinations">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="Destination" minOccurs="0" maxOccurs="unbounded">
+									<xsd:complexType>
+										<xsd:complexContent>
+											<xsd:extension base="BaseElementOnlyType">
+												<xsd:attribute name="contentId"/>
+											</xsd:extension>
+										</xsd:complexContent>
+									</xsd:complexType>
+								</xsd:element>
+							</xsd:sequence>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:sequence>
+				<xsd:attributeGroup ref="KeyedObjectDef"/>
+				<xsd:attributeGroup ref="InheritableDef"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+</xsd:schema>

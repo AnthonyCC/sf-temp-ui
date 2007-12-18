@@ -1,0 +1,199 @@
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.PaymentMethodName"%>
+<%@ page import="com.freshdirect.common.customer.EnumCardType"%>
+<%@ page import="com.freshdirect.common.address.ContactAddressModel"%>
+<%@ page import="java.util.Calendar"%>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.AddressName"%>
+<%@ page import="com.freshdirect.customer.ErpPaymentMethodModel"%>
+<%@ page import="com.freshdirect.customer.ErpPaymentMethodI"%>
+<%@ page import="java.util.Date"%>
+<%@ page import="com.freshdirect.customer.ErpAddressModel"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCustomerFactory"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCustomerManager"%>
+<%@ page import="import com.freshdirect.fdstore.customer.FDCustomerModel"%>
+
+<%@ taglib uri="template" prefix="tmpl" %>
+<%@ page import="com.freshdirect.customer.ErpCustomerInfoModel"%>
+<%@ taglib uri="logic" prefix="logic" %>
+<%@ taglib uri="crm" prefix="crm" %>
+<%@ taglib uri="freshdirect" prefix="fd" %>
+
+<%
+String pageURI = request.getRequestURI(); 
+boolean isNew = pageURI.indexOf("new_credit_card") > -1;
+boolean inCheckout = pageURI.indexOf("checkout") > -1;
+String returnPage = request.getParameter("returnPage");
+String cancelLink = "/main/account_details.jsp";
+if (returnPage != null) {
+	cancelLink = returnPage;
+} else if (inCheckout) {
+	cancelLink = "/checkout/checkout_select_payment.jsp";
+}
+
+ErpAddressModel defaultAddress = null;
+Collection addresses = FDCustomerManager.getShipToAddresses(user.getIdentity());
+%>
+	<logic:iterate id="address" collection="<%=addresses%>" type="com.freshdirect.customer.ErpAddressModel" indexId="idx">
+		<% if (idx.intValue() == 0) {
+			defaultAddress = address;
+			continue;
+		}%>
+	</logic:iterate>
+
+		<script language="JavaScript" type="text/javascript">
+			function useDefaultName(formObj, formElement) {
+				flipBoolean(formElement);
+				if (formElement.value == "true") {
+					<crm:GetErpCustomer id="customer" user="<%= user %>">
+						<% ErpCustomerInfoModel custInfo = customer.getCustomerInfo(); %>
+						formObj.<%=PaymentMethodName.ACCOUNT_HOLDER%>.value = "<%= custInfo.getFirstName() %> <%= custInfo.getMiddleName() %> <%= custInfo.getLastName() %>";
+					</crm:GetErpCustomer>
+				} else {
+					formObj.<%=PaymentMethodName.ACCOUNT_HOLDER%>.value = "";
+				}
+			}
+			
+			function useDefaultAddress(formObj, formElement) {
+				flipBoolean(formElement);
+				if (formElement.value == "true") {
+						<% if (defaultAddress!=null) {	%>
+						formObj.<%=AddressName.BIL_ADDRESS_1%>.value = "<%= defaultAddress.getAddress1() %>";
+						formObj.<%=AddressName.BIL_ADDRESS_2%>.value = "<%= defaultAddress.getAddress2() %>";
+						formObj.<%=AddressName.BIL_APARTMENT%>.value = "<%= defaultAddress.getApartment() %>";
+						formObj.<%=AddressName.BIL_CITY%>.value = "<%= defaultAddress.getCity() %>";
+						formObj.<%=AddressName.BIL_STATE%>.value = "<%= defaultAddress.getState() %>";
+						formObj.<%=AddressName.BIL_ZIPCODE%>.value = "<%= defaultAddress.getZipCode() %>";
+						<% } %>
+				} else {
+					formObj.<%=AddressName.BIL_ADDRESS_1%>.value = "";
+					formObj.<%=AddressName.BIL_ADDRESS_2%>.value = "";
+					formObj.<%=AddressName.BIL_APARTMENT%>.value = "";
+					formObj.<%=AddressName.BIL_CITY%>.value = "";
+					formObj.<%=AddressName.BIL_STATE%>.value = "";
+					formObj.<%=AddressName.BIL_ZIPCODE%>.value = "";
+				}
+			}
+		</script>
+
+	<div class="cust_module" style="width: 60%;">
+	<form name="credit_card" method="POST">
+		<table width="100%" cellpadding="0" cellspacing="0" class="cust_module_header">
+			<tr>
+				<td class="cust_module_header_text"><%= isNew ? "New" : "Edit" %> Credit Card</td>
+				<td width="50%"><a href="<%=cancelLink%>" class="cancel">CANCEL</a>&nbsp;&nbsp;<a href="javascript:document.credit_card.submit();" class="save">SAVE</a></td>
+				<td align="center" class="note">* Required</td>
+			</tr>
+		</table>
+	<div class="cust_module_content">
+		<table cellpadding="3" cellspacing="5" class="cust_module_text" align="center">
+			<% if (isNew) { %><tr><td></td><td><input type="checkbox" name="use_default_name" onClick="useDefaultName(document.credit_card, document.credit_card.use_default_name)" value="false"> Use customer name?</td>
+			</tr><% } %>
+			<tr>
+				<td width="30%" align="right">Name on card:</td>
+				<td width="70%"><input type="text" class="input_text" style="width: 200px;" name="<%=PaymentMethodName.ACCOUNT_HOLDER%>" value="<%=paymentMethod.getName()%>"><fd:ErrorHandler result="<%=result%>" name="<%= PaymentMethodName.ACCOUNT_HOLDER %>" id='errorMsg'> <span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
+			</tr>
+			<tr>
+				<td align="right">Card Type:</td>
+				<td>
+					<select class="pulldown" name="<%=PaymentMethodName.CARD_BRAND%>">
+						<option value="">Card Type</option>
+						<logic:iterate id="cardType" collection="<%=EnumCardType.getCardTypes()%>" type="com.freshdirect.common.customer.EnumCardType">
+						    <option value="<%=cardType.getFdName()%>" <%=cardType.equals(paymentMethod.getCardType()) ? "selected" : "" %>><%=cardType.getFdName()%></option>
+						</logic:iterate>
+					</select><fd:ErrorHandler result="<%=result%>" name="<%= PaymentMethodName.CARD_BRAND %>" id='errorMsg'><br> <span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler>
+				</td>
+			</tr>
+			<tr>
+				<% String[] checkCcNumber = {PaymentMethodName.ACCOUNT_NUMBER, "payment_method_fraud"}; %>
+				<td align="right">Card Number:</td>
+				<td><input type="text" maxLength="25" class="input_text" style="width: 150px;" name="<%=PaymentMethodName.ACCOUNT_NUMBER%>" value="<% if (isNew) {%><%=paymentMethod.getAccountNumber()%><% } else { %><%=paymentMethod.getAccountNumber()!=null?((ErpPaymentMethodModel)paymentMethod).getDisplayableAccountNumber():""%><% } %>">
+<fd:ErrorHandler result="<%=result%>" field="<%= checkCcNumber %>" id='errorMsg'> <span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
+			</tr>
+			<tr>
+				<td align="right">Expires:</td>
+                <%
+                Calendar expCalendar = Calendar.getInstance();
+                Date expDate = paymentMethod.getExpirationDate();
+                String expYear;
+                String expMonth;
+                if(expDate != null){
+                    expCalendar.setTime(paymentMethod.getExpirationDate());
+                    expYear = String.valueOf(expCalendar.get(Calendar.YEAR));
+                    int month = expCalendar.get(Calendar.MONTH)+1;
+                    expMonth = month < 10 ? "0"+String.valueOf(month) : String.valueOf(month);
+                }else{
+                    expYear = request.getParameter(PaymentMethodName.CARD_EXP_YEAR) != null ? request.getParameter(PaymentMethodName.CARD_EXP_YEAR) : "";
+                    expMonth = request.getParameter(PaymentMethodName.CARD_EXP_MONTH) != null ? request.getParameter(PaymentMethodName.CARD_EXP_MONTH) : "";
+                }
+                %>
+				<td>
+					<select class="pulldown" name="<%=PaymentMethodName.CARD_EXP_MONTH%>">
+						<option value="">Month</option>
+						<option value="01" <%="01".equals(expMonth) ? "selected" : ""%>>JAN</option>
+						<option value="02" <%="02".equals(expMonth) ? "selected" : ""%>>FEB</option>
+						<option value="03" <%="03".equals(expMonth) ? "selected" : ""%>>MAR</option>
+						<option value="04" <%="04".equals(expMonth) ? "selected" : ""%>>APR</option>
+						<option value="05" <%="05".equals(expMonth) ? "selected" : ""%>>MAY</option>
+						<option value="06" <%="06".equals(expMonth) ? "selected" : ""%>>JUN</option>
+						<option value="07" <%="07".equals(expMonth) ? "selected" : ""%>>JUL</option>
+						<option value="08" <%="08".equals(expMonth) ? "selected" : ""%>>AUG</option>
+						<option value="09" <%="09".equals(expMonth) ? "selected" : ""%>>SEP</option>
+						<option value="10" <%="10".equals(expMonth) ? "selected" : ""%>>OCT</option>
+						<option value="11" <%="11".equals(expMonth) ? "selected" : ""%>>NOV</option>
+						<option value="12" <%="12".equals(expMonth) ? "selected" : ""%>>DEC</option>
+					</select>
+					&nbsp;/&nbsp;
+					<select class="pulldown" name="<%=PaymentMethodName.CARD_EXP_YEAR%>">
+						<option value="">Year</option>
+					<%	int startYear = Calendar.getInstance().get(Calendar.YEAR);
+						int endYear = startYear + 12;
+                        for(int year = startYear; year <= endYear; year++){%>
+							<option value="<%=year%>" <%=expYear.equals(year+"")? "selected" : ""%>><%=year%></option>
+					<%}%>
+					</select>
+					<fd:ErrorHandler result="<%=result%>" name="expiration" id='errorMsg'> <span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler>
+				</td>
+			</tr>
+			<tr>
+				<td align="right"><b>Billing Address:</b></td><td><% if (defaultAddress!=null) { %><input type="checkbox" name="use_default_address" onClick="useDefaultAddress(document.credit_card, document.credit_card.use_default_address)" value="false"> Use default address?<% } %></td>
+			</tr>
+			<tr>
+            <%
+				ContactAddressModel address = paymentMethod.getAddress();
+			%>
+				<td align="right">* Address1:</td>
+				<td><input type="text" class="input_text" style="width: 250px;" name="<%=AddressName.BIL_ADDRESS_1%>" value="<%=address != null ? address.getAddress1() : ""%>"><fd:ErrorHandler result="<%=result%>" name="<%=AddressName.BIL_ADDRESS_1%>" id='errorMsg'> <span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
+			</tr>
+			<tr>
+				<td align="right">Address2:</td>
+				<td><input type="text" class="input_text" style="width: 250px;" name="<%=AddressName.BIL_ADDRESS_2%>" value="<%=address != null ? address.getAddress2() : ""%>"><fd:ErrorHandler result="<%=result%>" name="<%=AddressName.BIL_ADDRESS_2%>" id='errorMsg'> <span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
+			</tr>
+
+			<tr>
+				<td align="right">Apt/ Floor:</td>
+				<td><input type="text" class="input_text" style="width: 80px;" name="<%=AddressName.BIL_APARTMENT%>" value="<%=address != null ? address.getApartment() : ""%>"><fd:ErrorHandler result="<%=result%>" name="<%=AddressName.BIL_APARTMENT%>" id='errorMsg'> <span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
+			</tr>
+			<tr>
+				<td align="right">* City:</td>
+				<td><input type="text" class="input_text" style="width: 150px;" name="<%=AddressName.BIL_CITY%>" value="<%=address != null ? address.getCity() : ""%>"><fd:ErrorHandler result="<%=result%>" name="<%=AddressName.BIL_CITY%>" id='errorMsg'> <span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
+			</tr>
+			<tr>
+				<td align="right">* State:</td>
+				<td><input type="text" maxlength="2" class="input_text" style="width: 80px;" name="<%=AddressName.BIL_STATE%>" value="<%=address != null ? address.getState() : "NY"%>"> 
+					<%--select class="pulldown" name="<%=AddressName.BIL_STATE%>">
+						<option value="">State</option>
+						<option value="NY" <%="NY".equalsIgnoreCase(address != null ? address.getState() : "") ? "selected" : ""%>>NY</option>
+						<option value="NJ" <%="NJ".equalsIgnoreCase(address != null ? address.getState() : "") ? "selected" : ""%>>NJ</option>
+						<option value="CT" <%="CT".equalsIgnoreCase(address != null ? address.getState() : "") ? "selected" : ""%>>CT</option>
+					</select--%><fd:ErrorHandler result="<%=result%>" name="<%=AddressName.BIL_STATE%>" id='errorMsg'> <span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler>
+				</td>
+			</tr>
+			<tr>
+				<td align="right">* Zip:</td>
+				<td><input type="text" maxlength="5" class="input_text" style="width: 80px;" name="<%=AddressName.BIL_ZIPCODE%>" value="<%=address != null ? address.getZipCode() : ""%>"><fd:ErrorHandler result="<%=result%>" name="<%=AddressName.BIL_ZIPCODE%>" id='errorMsg'> <span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
+			</tr>
+		</table><br>
+	</div>
+    <input type="hidden" name="paymentId" value="<%=((ErpPaymentMethodModel)paymentMethod).isAnonymous() ? "" : ((ErpPaymentMethodModel)paymentMethod).getPK().getId()%>">
+	</form>
+	<br clear="all">
+	</div>

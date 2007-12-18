@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!--
+
+Symbols:
+
+	cms.index.path
+
+-->
+<module id="com.freshdirect.cms.search" version="1.0.0">
+	
+	<schema id="IndexConfiguration">
+		<element name="AttributeIndex">
+			<attribute name="contentType" required="true"/>
+			<attribute name="attributeName" required="true" />
+			<conversion class="com.freshdirect.cms.search.AttributeIndex"/>
+		</element>
+		<element name="ContentIndex">
+			<attribute name="contentType" required="true"/>
+			<conversion class="com.freshdirect.cms.search.ContentIndex"/>
+		</element>
+	</schema>
+
+	<service-point id="SearchService" interface="com.freshdirect.cms.search.ContentSearchServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.search.LuceneSearchService" initialize-method="initialize">
+				<set property="indexLocation" value="${cms.index.path}"/>
+				<set-object property="indexes" value="configuration:SearchIndex"/>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
+	<configuration-point id="SearchIndex" schema-id="IndexConfiguration"/>
+
+	<!-- describe which attributes are supposed to be indexed/searched on which content types -->
+	<contribution configuration-id="SearchIndex">
+		<AttributeIndex contentType="Category" attributeName="FULL_NAME"/>
+		<AttributeIndex contentType="Product"  attributeName="FULL_NAME"/>
+		<AttributeIndex contentType="Product"  attributeName="AKA"/>
+		<AttributeIndex contentType="Product"  attributeName="KEYWORDS"/>
+		<AttributeIndex contentType="Product"  attributeName="GLANCE_NAME"/>
+		<AttributeIndex contentType="Brand"    attributeName="FULL_NAME"/>
+		<AttributeIndex contentType="Recipe"   attributeName="name"/>
+		<AttributeIndex contentType="Recipe"   attributeName="keywords"/>
+		<AttributeIndex contentType="YmalSet"  attributeName="title"/>
+		<AttributeIndex contentType="ConfiguredProductGroup" attributeName="name"/>
+		<ContentIndex contentType="Sku"/>
+		<ContentIndex contentType="ConfiguredProduct"/>
+		<!--
+		<AttributeIndex contentType="Html" attributeName="path"/>
+		<AttributeIndex contentType="Image" attributeName="path"/>
+		-->
+	</contribution>
+
+</module>

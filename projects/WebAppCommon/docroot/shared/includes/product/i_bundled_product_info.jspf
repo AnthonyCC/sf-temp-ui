@@ -1,0 +1,9 @@
+<%
+    Attribute bundleAttr = productNode.getAttribute("PRODUCT_BUNDLE");
+    if(bundleAttr != null){
+        String prodSku = ((SkuModel)productNode.getSku(0)).getSkuCode();
+        
+%>
+<br>
+<a href="javascript:popup('/bundled_product_popup.jsp?catId=<%=catId%>&parent=<%=prodSku%>&title=<%=productNode.getFullName()%>', 'large');">More information about these products</a>
+<%}%>

@@ -1,0 +1,311 @@
+<script language="javascript">	function returnAll(formName){
+		var frmObj = document.forms[formName];
+		var frmFldsCnt = frmObj.elements.length;
+		for (var i = 0; i<frmFldsCnt;i++) {
+			var fldElement = frmObj.elements[i];
+			if (fldElement.name.substring(0,4) !="h_q_") continue;			
+			var newName = "ret_qty_" + fldElement.name.substring(4);			
+			frmObj[newName].value = fldElement.value; 
+		}
+	}
+		
+</script>
+<%@ page import="java.text.NumberFormat"%>
+<%@ page import="com.freshdirect.fdstore.customer.adapter.FDInvoiceAdapter"%>
+<%@ page import="com.freshdirect.webapp.taglib.callcenter.ComplaintUtil" %>
+<%@ page import="com.freshdirect.fdstore.FDSalesUnit"%>
+<%@ page import="com.freshdirect.customer.ErpComplaintLineModel" %>
+<%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@ page import="com.freshdirect.customer.ErpDiscountLineModel" %>
+<%@ page import="com.freshdirect.common.pricing.Discount" %>
+<%@ page import="com.freshdirect.fdstore.promotion.PromotionI" %>
+<%@ page import="com.freshdirect.fdstore.promotion.PromotionFactory" %>
+<%@ page import="com.freshdirect.fdstore.promotion.EnumPromotionType" %>
+<%@ page import="com.freshdirect.fdstore.deliverypass.DeliveryPassUtil" %>
+<%-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	THIS INCLUDE REQUIRES:
+	- boolean showFeesSection
+	- boolean showEditOrderButtons
+	- Map allDeptsMap
+	- FDCartI order
+	- Collection lineComplaints
+	- Collection deptComplaints
+	- Collection miscComplaints
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --%>
+
+<%	
+    TreeMap allDeptsMap = new TreeMap();
+
+    String lastDept = null;
+    boolean isSubmitOrderStep = request.getRequestURI().toLowerCase().indexOf("checkout/checkout_preview.jsp")!=-1?true:false;
+    boolean hasEstimatedItems = false;
+    boolean firstRecipe = true;
+%>
+ 
+<%-- ======================= BEGIN LINE ITEM & CREDIT DETAILS SECTION ======================= --%>
+<table width="100%" cellpadding="1" cellspacing="0" border="0" class="order_detail">
+    <tr>
+        <td colspan="3"><b>Quantity<b></td>
+        <td><b>Unit Price</b></td>
+        <td align="right"><b>Total Price</b></td>
+        <td></td>
+        <td></td>
+        <td></td>
+		<td></td>
+		<td></td>
+    </tr>
+<logic:iterate id="cartLine" collection="<%= order.getOrderLines() %>" type="com.freshdirect.fdstore.customer.FDCartLineI" indexId="lineNumber">
+<%  
+
+    if (lastDept==null || !lastDept.equalsIgnoreCase(cartLine.getDepartmentDesc())) {
+        lastDept = cartLine.getDepartmentDesc() ;
+
+        if (lastDept.startsWith("Recipe: ")) {
+            if (firstRecipe) {
+%>
+                <tr>
+                    <td colspan="3"><b>RECIPES</b></td>
+                    <td colspan="7"></td>
+                </tr>
+<%
+                firstRecipe = false;
+            }
+
+            String  recipeName = lastDept.substring("Recipe: ".length());
+
+%>
+            <tr>
+                <td colspan="2"></td>
+                <td><b><%=recipeName%></b></td>
+                <td colspan="7"></td>
+            </tr>
+<%
+        } else {
+%>
+            <tr>
+                <td colspan="2"></td>
+                <td><b><%=lastDept%></b></td>
+                <td colspan="7"></td>
+            </tr>
+<%
+        }
+    }
+    //
+    // collect department totals along the way
+    //
+    Map deptTotalMap = null;
+	if ( allDeptsMap.containsKey(cartLine.getDepartmentDesc()) ) {
+		deptTotalMap = (Map) allDeptsMap.get(cartLine.getDepartmentDesc());
+	} else {
+        deptTotalMap = new HashMap();
+        deptTotalMap.put("est", new Double(0.0));
+        deptTotalMap.put("final", new Double(0.0));
+    }
+    deptTotalMap.put("est", new Double(((Double)deptTotalMap.get("est")).doubleValue() + cartLine.getPrice()));
+	allDeptsMap.put(cartLine.getDepartmentDesc(), deptTotalMap);
+%>
+<tr valign="middle">
+	<td align="center">
+		<%=cartLine.getDisplayQuantity()%>
+	</td>
+	<td>
+		<%=cartLine.getLabel()%>
+  	</td>
+	<TD>
+		&nbsp;<FONT CLASS="text10"><%= cartLine.getDescription() %></FONT>
+		<%=cartLine.getConfigurationDesc()%>
+        <font color="#888888"><%= cartLine.getSkuCode() %></font>
+	</TD>
+	<td>(<%= cartLine.getUnitPrice() %>)</td>
+	<td ALIGN="RIGHT"><%= CCFormatter.formatCurrency(cartLine.getPrice()) %></td>
+	<TD>
+		<%if (cartLine.isEstimatedPrice()) {
+				hasEstimatedItems = true;
+		        out.print("*");
+		 }%>
+	</TD>
+	<td colspan="3"><b><%= cartLine.hasTax() ? "&nbsp;T" : "&nbsp;" %><%= cartLine.hasScaledPricing() ? "&nbsp;S" : "&nbsp;" %><%= cartLine.hasDepositValue() ? "&nbsp;D" : "&nbsp;" %></b></td>
+	<td></td>
+</TR>
+</logic:iterate>
+
+
+<tr>
+    <TD colspan="4">
+        <b>Department Subtotals (for reference only, not included in order totals)</b>
+    </TD>
+	<TD colspan="2"></TD>
+	<TD align="right"><b>Total Price</b></TD>
+    <td></td>
+    <td></td>
+    <td></td>
+</tr>
+<%  for (Iterator dIter = allDeptsMap.keySet().iterator(); dIter.hasNext(); ) {
+        String deptName = (String) dIter.next();
+        Map deptTotalMap = (Map) allDeptsMap.get(deptName);
+%>
+<tr>
+    <td colspan="4"></td>
+    <td colspan="2"><b><%= deptName %></b></td>
+    <td align="right">
+        <%= CCFormatter.formatCurrency(((Double)deptTotalMap.get("est")).doubleValue()) %>
+    </td>
+    <td></td>
+    <td></td>
+    <td></td>
+</tr>
+<%  }%>
+<tr>
+    <TD colspan="4">
+        <b>Order Totals and Extras</b>
+    </TD>
+	<TD colspan="2"></TD>
+	<TD align="right"><b>Total Price</b></TD>
+    <td></td>
+    <td></td>
+    <td></td>
+</tr>
+
+        <TR VALIGN="TOP">
+            <td colspan="4"></td>
+		    <TD colspan="2">
+		        <% if (hasEstimatedItems) { %>Estimated Subtotal<%if(user.getAdjustedValidOrderCount()>=1){%> ($40 min.)<%}%>: <% } %>
+			</td>
+		    <td align="right"><%= CCFormatter.formatCurrency(order.getSubTotal()) %></td>
+		    <td><% if (hasEstimatedItems) out.print("*"); %></td>
+            <td></td>
+            <td></td>
+		</tr>
+		
+		<tr>
+            <td colspan="4"></td>
+		<% if(order.isDeliveryChargeWaived() && !isSubmitOrderStep) {%>
+			<td colspan="2">Delivery Charge (waived): </td>
+			<td align="right">$0.00</td>
+		<%}else{%>
+			<td colspan="2">Delivery Charge: &nbsp;&nbsp; 
+			<%if (isSubmitOrderStep ) {%>
+            	Force Waive <input type="checkbox" value="true" <%=((FDCartModel)order).isCsrWaivedDeliveryCharge()?"checked":"" %> name="waive_delivery_fee">
+			<%}%>
+            </td>
+			<td align="right">
+			<%
+				if (cart.isDlvPassApplied()) {
+			%>	
+				<%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
+			<% } else { %>
+				<%= CCFormatter.formatCurrency(order.isDeliveryChargeWaived()?0.0:order.getDeliverySurcharge()) %>
+			<%}%>	
+			</td>
+		<%}%>
+			<td><b><%=order.isDeliveryChargeTaxable() && !order.isDeliveryChargeWaived() ? "&nbsp;T" : "" %></b></td>
+			<td colspan="2"></td>
+		</tr>
+
+		<tr>
+            <td colspan="4"></td>
+			<td colspan="2"><a href="javascript:popup('/shared/fee_info.jsp?type=fuel','large');">Fuel Surcharge</a><%if(order.isMiscellaneousChargeWaived()){%> (waived)<%}%>:</td>
+			<td align="right"><%if(order.isMiscellaneousChargeWaived()){%>$0.00<%}else{%><%= CCFormatter.formatCurrency(order.getMiscellaneousCharge()) %><%}%></td>
+		    <td><b><%=order.isMiscellaneousChargeTaxable() && !order.isMiscellaneousChargeWaived() ? "&nbsp;T" : "" %></b></td>
+			<td colspan="2"></td>
+		</tr>
+
+
+		<tr>
+            <td colspan="4"></td>
+		    <td colspan="2">Bottle Deposit:</td>
+		    <td align="right"><%= CCFormatter.formatCurrency(order.getDepositValue()) %></td>
+		    <td></td>
+            <td></td>
+            <td></td>
+		</tr>
+		
+		<tr>
+            <td colspan="4"></td>
+		    <td colspan="2">Total Tax:</td>
+		    <td align="right"><%= CCFormatter.formatCurrency(order.getTaxValue()) %></td>
+		    <td></td>
+            <td></td>
+            <td></td>
+		</tr>
+
+        <%  if (order.getTotalDiscountValue() > 0.0) { 
+			List discounts = cart.getDiscounts();
+			for (Iterator iter = discounts.iterator(); iter.hasNext();) {
+				ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
+				Discount discount = discountLine.getDiscount();
+				PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
+				String desc = EnumPromotionType.SIGNUP.equals(promotion.getPromotionType()) ? "Free Food" : promotion.getDescription();						        
+        %>
+		<tr>
+            <td colspan="4"></td>
+		    <td colspan="2"><%=desc%>:</td>
+		    <td align="right">(<%= CCFormatter.formatCurrency(discount.getAmount()) %>)</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+		<% 
+			}
+		} 
+		%>
+
+        <%  if (order.getCustomerCreditsValue() > 0.0) {%>
+		<tr>
+            <td colspan="4"></td>
+		    <td colspan="2">Credits:</td>
+		    <td align="right">(<%= CCFormatter.formatCurrency(order.getCustomerCreditsValue()) %>)</td>
+		    <td></td>
+            <td></td>
+            <td></td>
+		</tr>
+		<%  } %>
+
+
+        <% if ((order.getPhoneCharge() > 0) || ((order.getPhoneCharge() == 0.0) && order.isChargeWaived(EnumChargeType.PHONE))) { %>
+        <tr>
+            <td colspan="4"></td>
+			<%if (order.isChargeWaived(EnumChargeType.PHONE) && !isSubmitOrderStep) { %>
+            	<td colspan="2">Phone Handling Charge (waived): </td>
+				<td align="right">$0.00</td>
+			<%} else if (order.getPhoneCharge() > 0) { %>
+				<td colspan="2">Phone Handling Charge:
+					<% if (isSubmitOrderStep ) {%>
+                        &nbsp;&nbsp;Waive <input type="checkbox" value="true" <%=order.isChargeWaived(EnumChargeType.PHONE)?"checked":""%> name="waive_phone_fee">
+					<%}%>
+                </td>
+			<td align="right"><%= CCFormatter.formatCurrency(order.isChargeWaived(EnumChargeType.PHONE)?0.0:order.getPhoneCharge()) %></td>
+		    <td><b><%=order.isPhoneChargeTaxable() ? "&nbsp;T" : "" %></b></td>
+			<td colspan="2"></td>
+			<%}%>
+        </tr>
+        <%}%>
+
+        <%  if (order.getCCDeclinedCharge() > 0.0) { %>
+		<tr>
+            <td colspan="4"></td>
+			<td colspan="2">CC Declined Charge: </td>
+			<td align="right"><%= CCFormatter.formatCurrency(order.getCCDeclinedCharge()) %></td>
+		    <td></td>
+            <td></td>
+            <td></td>
+		</tr>
+		<%}%>
+		<tr>
+            <td colspan="4"></td>
+		    <td colspan="2">
+		        <% if (hasEstimatedItems) { %>Estimated<% } %>
+		        <b>Order Total:</b>
+		    </td>
+		    <td align="right"><%= CCFormatter.formatCurrency(order.getTotal()) %></td>
+		    <td><% if (hasEstimatedItems) out.print("*"); %></td>
+            <td></td>
+            <td></td>
+		</tr>
+</TABLE>
+
+<table class="order_detail">
+    <tr>
+        <td><b>T</b> = Taxable Item &nbsp;&nbsp;&nbsp; <b>S</b> = Special Price &nbsp;&nbsp;&nbsp; <b>D</b> = Bottle Deposit</td>
+	</tr>
+</table>

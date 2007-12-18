@@ -1,0 +1,24 @@
+<body jwcid="@Border" title="Publish">
+	<h2>Publish</h2>
+	<div style="border-bottom: 1px dotted #999; background-color: #ccc; text-align: right;">
+		<table>
+			<form jwcid="@Form">
+			<tr>
+				<td>Subsystem: </td>
+				<td><select jwcid="@PropertySelection" model="ognl:subSystemSelectionModel" value="ognl:subsystem"/></td>
+			</tr>
+			<tr>
+				<td>ENV: </td>
+				<td>
+					<select jwcid="@PropertySelection" model="ognl:publishEnvModel" value="ognl:publishEnv" />
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<input jwcid="@Submit" label="Publish" listener="ognl:listeners.publish" class="submit"/>
+				</td>
+			</tr>
+			</form>
+		</table>
+	</div>
+</body>

@@ -1,0 +1,16 @@
+<%@ taglib uri='freshdirect' prefix='fd' %>
+		<table width="600" border="0" cellspacing="0" cellpadding="0">
+		<TR>
+			<td width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
+			<TD WIDTH="400" valign="top">
+				<font class="text13">			
+				<img src="/media_stat/images/template/about/abo_guarntee_hdr.gif" width="320" height="23" alt="" border="0">
+				<font class="space8pix"><BR><br></font>	
+				We take pride in the high quality of our fresh food and packaged goods. That's why we guarantee your satisfaction with every product, every time. If you are dissatisfied with any item in your order, please contact us right away &#151; we'll either replace it with an acceptable item or refund 100% of the cost for that item. E-mail us at <a href="mailto:<fd:GetServiceEmail />"><fd:GetServiceEmail /></a> or call us toll free <%=user.getCustomerServiceContact()%>.
+				<font class="space8pix"><BR><br></font>
+				</font>
+			</td>
+			<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
+			<td valign="top"><img src="/media_stat/images/template/about/fru_manager_abo.jpg" width="150" height="270" alt="" border="0"></td>
+		</tr>
+		</TABLE>

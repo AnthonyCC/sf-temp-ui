@@ -1,0 +1,148 @@
+package com.freshdirect.fdstore.customer.adapter;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.commons.collections.CollectionUtils;
+
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.fdstore.content.ContentNodeModelUtil;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.FDCartLineI;
+import com.freshdirect.fdstore.customer.FDCartModel;
+import com.freshdirect.fdstore.promotion.EnumDCPDContentType;
+import com.freshdirect.framework.util.MathUtil;
+
+public class OrderPromotionHelper {
+
+	private OrderPromotionHelper() {
+		
+	}
+
+	/**
+	 * @return applicable discount
+	 */
+	public static double getApplicableSignupAmount(FDCartModel cart, double amount, double maxAmountPerSku) {
+		List lines = cart.getOrderLines();
+
+		double promotionValue = 0.0;
+
+		HashMap appliedValue = new HashMap();
+
+		for (Iterator i = lines.iterator(); i.hasNext();) {
+			FDCartLineI line = (FDCartLineI) i.next();
+
+			if (line.lookupFDProduct().isQualifiedForPromotions()) {
+				double applicablePromotion = 0.0;
+				if (promotionValue < amount) {
+					double lineValue = line.getPrice();
+					if (lineValue < maxAmountPerSku) {
+						applicablePromotion = lineValue;
+					} else {
+						applicablePromotion = maxAmountPerSku;
+					}
+					if ((amount - promotionValue) < applicablePromotion) {
+						applicablePromotion = amount - promotionValue;
+					}
+				}
+
+				//
+				// only apply up to maxAmountPerSku
+				//
+				if (!appliedValue.containsKey(line.getSkuCode())) {
+					appliedValue.put(line.getSkuCode(), new Double(applicablePromotion));
+				} else {
+					double previousAppliedPerSku = ((Double) appliedValue.get(line.getSkuCode())).doubleValue();
+					applicablePromotion = Math.min(applicablePromotion, (maxAmountPerSku - previousAppliedPerSku));
+					appliedValue.put(line.getSkuCode(), new Double(previousAppliedPerSku + applicablePromotion));
+				}
+
+				promotionValue += applicablePromotion;
+			}
+		}
+
+		return promotionValue;
+	}
+	/**
+	 * 
+	 * @param eligibleCartLines
+	 * @param percentOff
+	 * @return
+	 */
+	public static double getApplicableCategoryDiscount(List eligibleCartLines, double percentOff) { 
+		double promotionValue = 0.0;
+		//HashMap appliedValue = new HashMap();
+		for (Iterator i = eligibleCartLines.iterator(); i.hasNext();) {
+			FDCartLineI line = (FDCartLineI) i.next();
+			//Calculate the line discount value.
+			double lineValue = MathUtil.roundDecimal(line.getPrice() * percentOff);
+			promotionValue += lineValue;
+
+
+		}
+		return promotionValue;
+	}
+
+
+	/**
+	 * 
+	 * @param cart
+	 * @param deptKeys
+	 * @param catKeys
+	 * @param recipeIds
+	 * @return List of cartlines eligible for category discount.
+	 */
+	
+	public static boolean evaluateCartLineForEligibleCategoryOrDept(FDCartLineI cartLine, Set contentKeys) {
+		Set virtualCats = null;
+		ProductModel model = cartLine.getProductRef().lookupProduct();
+		/*
+		 * Load all parents of this cartline product if either eligible
+		 * department set or category set is not empty.
+		 * 
+		 */
+		ContentKey cKey = model.getContentKey();
+		Set parentKeys = ContentNodeModelUtil.getAllParentKeys(cKey);
+		//Handling Products in Eligible Departments/Categories.
+		if(CollectionUtils.containsAny(contentKeys, parentKeys)){
+			return true;
+		}else{
+			//Check for virtual category.
+			if(virtualCats == null){
+				//Load the first time only within this method.
+				virtualCats = findVirtualCategories(contentKeys);
+			}
+			//Handling Products in Eligible Virtual Categories.
+			if(virtualCats.size() > 0 && ContentNodeModelUtil.isProductInVirtualCategories(virtualCats, model)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static boolean isRecipeEligible(String recipeSourceId , Set contentKeys) {
+		ContentKey rkey = getContentKey(EnumDCPDContentType.RECIPE.getName(),recipeSourceId); 
+		if(rkey != null && contentKeys.contains(rkey)){
+			//Line item is eligible for the recipe-id-level discount.
+			return true;
+		}
+		return false;
+	}
+	
+	public static ContentKey getContentKey(String type,String contentId ){
+		return ContentNodeModelUtil.getContentKey(type, contentId);
+	}
+	
+	public static ContentKey getAliasCategoryRef(String type, String contentId){
+		return ContentNodeModelUtil.getAliasCategoryRef(type, contentId);
+	}
+
+	public static Set findVirtualCategories(Set contentKeys){
+		return ContentNodeModelUtil.findVirtualCategories(contentKeys);
+	}
+	
+	
+}

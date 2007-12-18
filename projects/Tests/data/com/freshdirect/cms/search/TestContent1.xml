@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Content>
+	<Foo id="foo1">
+		<name>foo one</name>
+	</Foo>
+	<Foo id="foo2">
+		<name>foo two</name>
+	</Foo>
+	<Foo id="foo3">
+		<name>stemming words</name>
+	</Foo>
+</Content>

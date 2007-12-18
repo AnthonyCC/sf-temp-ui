@@ -1,0 +1,10 @@
+ORD	REQ	SECTION	SKU_CODE	QUANTITY	SALES_UNIT	CONFIGURATION	DESCRIPTION	CONFIGURATION_DESC	MATERIAL_ID	PRICE	
+1	YES	Main	BAK0010385	1	EA		FreshDirect Parbaked White Boule	16oz		
+2	YES	Main	HMR0060750	1	EA		FreshDirect Peeled Garlic	6oz			
+4		Main	SPE0060767	1	EA		Monini Originale Extra Virgin Olive Oil	34oz		
+5		Main	[clig_rd_wn_vinegar]							
+6	YES	Main	VEG0011066	2	EA		Green Cucumber	"Farm Fresh, Med"		
+7		Main	VEG0011093	1	EA		Italian Parsley	Farm Fresh		
+8	YES	Main	DEL0008226	1	EA		Capotes Capers				
+9	YES	Main	VEG0011096	1	EA		Mint	Farm Fresh		
+3		Staple	[clig_salt]							

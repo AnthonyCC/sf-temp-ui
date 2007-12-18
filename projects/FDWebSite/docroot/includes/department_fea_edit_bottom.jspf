@@ -1,0 +1,128 @@
+<img src="/media_stat/images/layout/cccccc.gif" width="550" height="1" border="0"><br/>
+        <font class="space4pix"><br/></font>
+        <font class="space4pix"><br/></font>
+        <table border="0" celspacing="0" cellpadding="0" width="550">
+        <tr valign="TOP">
+        <td width="350">
+        <table border="0" celspacing="0" cellpadding="0">
+        	<tr valign="top">
+        		<td width="100%" align="center" colspan="2">
+	<%  
+	Image deptFeatImage = null;
+	Attribute dptBottAttrib = null;
+	DepartmentModel dept = (DepartmentModel) currentFolder;
+	
+	dptBottAttrib = department.getAttribute("ASSOC_EDITORIAL");
+	List assocEditorial = new ArrayList();
+	if (dptBottAttrib !=null) {
+	    assocEditorial = (List)dptBottAttrib.getValue();
+	}
+	
+	dptBottAttrib = department.getAttribute("DEPARTMENT_BOTTOM");
+	List deptBottom = new ArrayList();
+	if (dptBottAttrib !=null) {
+	    deptBottom = (List)dptBottAttrib.getValue();
+	}
+	
+    List favorites = dept.getFeaturedProducts();
+    
+    StringBuffer favoriteProducts = new StringBuffer();
+    ContentNodeModel prodParent = null;
+    ContentFactory contentFactory = ContentFactory.getInstance();
+    Comparator priceComp = new ProductModel.PriceComparator();
+    int favoritesToShow = 0;  %>
+	
+	
+<%
+                                    for(Iterator edItr = assocEditorial.iterator();edItr.hasNext();) {
+                                        String edItm = ((Html)edItr.next()).getPath();
+                                        %> <fd:IncludeMedia name='<%= edItm %>' /><br/></td></tr>
+<%                                  }%>
+<%-- Featured Products column --%>
+
+<logic:iterate id='contentNode' collection="<%=favorites%>" type="com.freshdirect.fdstore.content.ProductModel">
+<% 
+        ProductModel product = contentNode;; //(ProductModel)contentFactory.getProduct(contentRef.getCategoryId(),contentRef.getProductId());
+System.out.println("Processing product: " + product);
+        if (product==null) continue;
+        prodParent = product.getParentNode(); 
+System.out.println("Processing product parent: " + prodParent);
+        List skus = product.getSkus(); 
+        if (product.isDiscontinued() || product.isUnavailable() || prodParent==null || !(prodParent instanceof CategoryModel)) continue;
+        SkuModel sku = null;
+        String prodPrice = null;
+
+        if (skus.size()==0) continue;  // skip this item..it has no skus.  Hmmm?
+        if (skus.size()==1) {
+            sku = (SkuModel)skus.get(0);  // we only need one sku
+        }
+        else {
+            sku = (SkuModel) Collections.min(skus, priceComp);
+        }
+%>      <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>"> <% 
+        	prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()) +"/"+ productInfo.getDefaultPriceUnit();
+%>      </fd:FDProductInfo> <%
+        String productPageLink_ = response.encodeURL("/product.jsp?catId=" + prodParent
+            +"&prodCatId="+prodParent
+            +"&productId="+product+"&trk=feat");
+
+        deptFeatImage = (Image)product.getAlternateImage();
+		System.out.println("deptFeatImage: "+deptFeatImage);
+		favoriteProducts.append("<tr valign=\"top\">");
+        favoriteProducts.append("<td width=\"20%\"><a href=\"");
+        favoriteProducts.append(productPageLink_);
+        favoriteProducts.append("\">");
+        if (deptFeatImage !=null) {
+            favoriteProducts.append("<img SRC=\"");
+            favoriteProducts.append(deptFeatImage.getPath());
+            favoriteProducts.append("\"");
+            favoriteProducts.append(JspMethods.getImageDimensions(deptFeatImage));
+            favoriteProducts.append(" border=\"0\" alt=\"");
+            favoriteProducts.append(product.getFullName());
+            favoriteProducts.append("\">");
+        }
+        favoriteProducts.append("</a></td>");
+        favoriteProducts.append("<td align=\"left\" width=\"80%\">");
+        favoriteProducts.append("<a href=\"");
+        favoriteProducts.append(productPageLink_);
+        favoriteProducts.append("\">");
+        String thisProdBrandLabel = product.getPrimaryBrandName();
+        if (thisProdBrandLabel.length()>0) {
+            favoriteProducts.append("<font class=\"text10bold\">");
+            favoriteProducts.append(thisProdBrandLabel);
+            favoriteProducts.append("</font><br/>");
+        } 
+        favoriteProducts.append(product.getFullName().substring(thisProdBrandLabel.length()).trim()); 
+        favoriteProducts.append("</a><br/>");
+        favoriteProducts.append("<font class=\"favoritePrice\">");
+        favoriteProducts.append(prodPrice);
+        favoriteProducts.append("</font><br/><img src='/media_stat/images/layout/clear.gif' width='1' height='5' border='0'><br/></td>");
+        favoritesToShow++;
+        favoriteProducts.append("</tr>");
+        if (favoritesToShow==4) break;
+%>
+    </logic:iterate>
+<%
+
+  if (favoritesToShow>0) {
+%>
+            <%=favoriteProducts.toString()%>
+<%
+    }
+%>
+</table>
+</td>
+<td width="15" ><img src="/media_stat/images/layout/clear.gif" width="15" height="1" border="0"></td>
+<td width="1" bgcolor="#cccccc"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0"><br/></td>
+<td WIDTH="170">
+<%
+	if (deptBottom.size() > 0 ) {
+
+	    for(Iterator deptBotItr = deptBottom.iterator(); deptBotItr.hasNext();) {
+	        String deptBotItm = ((Html)deptBotItr.next()).getPath();
+	  %> <fd:IncludeMedia name='<%= deptBotItm %>' /> <%
+	    }
+    } %>
+ </td>
+ </tr>   
+</table>

@@ -1,0 +1,87 @@
+<script language="JavaScript">
+	function refreshForm(form) {
+		if (form == null) {form = document.forms[0];}
+		form.refresh_form.value = 'Y';
+		form.submit();
+	}	
+</script>
+<table cellpadding="0" cellspacing="5" border="0" width="99%">
+<%
+	if ("addProfileAttr".equalsIgnoreCase(actionType)) {
+%>
+		<tr>
+			<td colspan="2" align="right">Category:</td>
+			<td colspan="2">&nbsp;<select name="category" class="pulldown" onChange="javascript:refreshForm(this.form);">
+				<option></option>
+				<%
+				for(Iterator i = categories.iterator(); i.hasNext(); ){
+			        String cat = (String) i.next();
+			        if (cat == null) continue;
+			     %>
+					<option <%=cat.equals(category) ? "selected" : "" %> value="<%=cat%>"><%=cat%></option>
+				<%}%>
+			</select>&nbsp;</td>
+			
+		</tr>
+		<tr>
+			<td colspan="2" align="right">Name:</td>
+			<td colspan="2">&nbsp;<select name="name" class="pulldown" onChange="javascript:refreshForm(this.form);">
+				<option></option>
+				<%for(Iterator i = profileAttributeNames.keySet().iterator(); i.hasNext(); ){
+			        String iName = (String) i.next();
+			        ProfileAttributeName profileAttributeName = (ProfileAttributeName) profileAttributeNames.get(iName); 
+			        boolean isSameCategory = ("".equals(category) || (profileAttributeName != null && category.equalsIgnoreCase(profileAttributeName.getCategory()))); 
+			        if (profileAttributeName != null && profileAttributeName.getIsEditable() && isSameCategory) { %>
+					<option <%=iName.equals(name) ? "selected" : "" %> value="<%=iName%>"><%=profileAttributeName.getDescription()%></option>
+				<%	}
+				}%>
+			</select>&nbsp;<fd:ErrorHandler result="<%= result %>" name="name" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+		</tr>
+<%
+	} else {
+%>
+		<tr>
+			<td colspan="2" align="right">Name:</td>
+			<td colspan="2">&nbsp;<input type="text" name="name" class="input" style="width: 300px;" readonly value="<%=name%>"></td>
+		</tr>
+<% } %>
+		<tr>
+			<td colspan="2" align="right">Value:</td>
+			<% 
+			String profileAttrValueType = EnumProfileAttrValueType.TEXT.getName();
+			ProfileAttributeName profileAttributeName = null;
+			if (!"".equals(name) && ((profileAttributeName = (ProfileAttributeName) profileAttributeNames.get(name)) != null)
+				&& profileAttributeName.getAttributeValueType() != null) {
+				profileAttrValueType = profileAttributeName.getAttributeValueType(); 			
+			}
+			if (EnumProfileAttrValueType.TEXT.getName().equals(profileAttrValueType)) { 
+			%>
+			<td colspan="2">&nbsp;<input type="text" name="value" class="input" style="width: 300px;" value="<%=value%>">&nbsp;<fd:ErrorHandler result="<%= result %>" name="value" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+			<%
+			} else if (EnumProfileAttrValueType.SET.getName().equals(profileAttrValueType)) {			
+			%>
+			<td colspan="2">&nbsp;<input type="checkbox" name="value" class="input" value="on" <%=("on".equalsIgnoreCase(value) ? "CHECKED" : "")%>>&nbsp;Set&nbsp;&nbsp;<fd:ErrorHandler result="<%= result %>" name="value" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+			<%
+			} else if (EnumProfileAttrValueType.ON_OFF.getName().equals(profileAttrValueType)) {			
+			%>
+			<td colspan="2">&nbsp;<input type="radio" name="value" class="input" value="on" <%=("on".equalsIgnoreCase(value) ? "CHECKED" : "")%>>&nbsp;On&nbsp;&nbsp;&nbsp;
+			<input type="radio" name="value" class="input" value="off" <%=("off".equalsIgnoreCase(value) ? "CHECKED" : "")%>>&nbsp;Off&nbsp;&nbsp;&nbsp;
+			<fd:ErrorHandler result="<%= result %>" name="value" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+			<%
+			} else if (EnumProfileAttrValueType.TRUE_FALSE.getName().equals(profileAttrValueType)) {			
+			%>
+			<td colspan="2">&nbsp;<input type="radio" name="value" class="input" value="true" <%=("true".equalsIgnoreCase(value) ? "CHECKED" : "")%>>&nbsp;True&nbsp;&nbsp;
+			&nbsp;<input type="radio" name="value" class="input" value="false" <%=("false".equalsIgnoreCase(value) ? "CHECKED" : "")%>>&nbsp;False&nbsp;&nbsp;&nbsp;<fd:ErrorHandler result="<%= result %>" name="value" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+			} else if (EnumProfileAttrValueType.YES_NO.getName().equals(profileAttrValueType)) {			
+			%>
+			<td colspan="2">&nbsp;<input type="radio" name="value" class="input" value="yes" <%=("yes".equalsIgnoreCase(value) ? "CHECKED" : "")%>>&nbsp;Yes&nbsp;&nbsp;
+			&nbsp;<input type="radio" name="value" class="input" value="no" <%=("no".equalsIgnoreCase(value) ? "CHECKED" : "")%>>&nbsp;No&nbsp;&nbsp;&nbsp;<fd:ErrorHandler result="<%= result %>" name="value" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+			<% } %>
+		</tr>
+		<tr>
+			<td colspan="2" rowspan="3" align="right">Note:</td>
+			<td colspan="2" rowspan="3">&nbsp;<textarea name="notes" class="input" style="width: 300px;" wrap="virtual" rows="3"><%=notes%></textarea>&nbsp;<fd:ErrorHandler result="<%= result %>" name="notes" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+		</tr>
+		<input type="hidden" name="refresh_form" value="">
+</table>
+		

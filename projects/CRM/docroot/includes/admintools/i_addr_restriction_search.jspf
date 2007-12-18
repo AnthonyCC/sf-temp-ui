@@ -1,0 +1,70 @@
+<table class="home_search_module_field" border="0" cellpadding="2" cellspacing="2" width="100%">
+
+<script>
+ 
+			    function clearAll(){			   
+			      document.getElementById("sAddress1").value = "";
+                 document.getElementById("sApartment").value = "";
+			      document.getElementById("sZipCode").value = "";
+			    	//document.getElementById("restrictedType").value = "";
+			    }
+</script>
+    
+	<tr>
+		<% 
+			
+			String sReason = NVL.apply(request.getParameter("sReason"), "all");
+			String sAddress1 = NVL.apply(request.getParameter("sAddress"), "");
+			String sZipCode = NVL.apply(request.getParameter("sZipCode"), "");
+            String sApartment = NVL.apply(request.getParameter("sApartment"), "");
+		%>
+        
+        <script language="javascript">
+         function doAction(actionName) {
+			    	if(actionName == 'deleteAddressRestrctions'){
+					var doCancel = confirm ("Are you sure you want to delete these Restriction?");
+                        if(doCancel == false){
+                            return;
+                        }            
+                  }
+					document.getElementById("actionName").value = actionName;
+					document.getElementById("addrRestrictions").submit();	
+					
+				}
+        
+		</script>
+        
+         
+        
+		<td>Reason : </td>
+        <td><select name="sReason" value="" style="width: 120px;">				
+            <%
+			List enumReasons=EnumRestrictedAddressReason.getEnumList();
+			%>
+			<logic:iterate collection="<%= enumReasons %>" id="enumReason" type="com.freshdirect.delivery.EnumRestrictedAddressReason">
+			<%  
+				EnumRestrictedAddressReason eReason=(EnumRestrictedAddressReason)enumReason;
+			%>
+				<option value="<%= eReason.getCode() %>" <%= sReason.equals(eReason.getCode()) ? "SELECTED" : "" %>><%= eReason.getDescription() %></option>
+			</logic:iterate>
+
+			</select>
+			 </td>
+            <td>Street Address : </td>
+		<td>
+        
+			<input type="text" name="sAddress1" id="sAddress1" value="<%= sAddress1 %>" class="input_text" style="width: 200px;">
+		</td>
+			
+			
+		<td align="bottom">Apt</td>
+		<td>
+			<input type="text" name="sApartment" id="sApartment" value="<%= sApartment %>" class="input_text" style="width: 200px;">
+		</td>
+			
+		<td>Zip Code : </td>
+		<td>					
+			<input type="text" name="sZipCode" id="sZipCode" value="<%= sZipCode %>" class="input_text" style="width: 200px;">
+		</td>				
+	</tr>		
+</table>

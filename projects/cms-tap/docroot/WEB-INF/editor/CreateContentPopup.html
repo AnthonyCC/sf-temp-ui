@@ -1,0 +1,79 @@
+<body jwcid="@Border" title="Edit relationship">
+	<span jwcid="@If" condition="ognl:closing">
+		<script jwcid="@Script" script="ClosePopup.script" symbols='ognl:scriptSymbols'/>
+		<script>
+			refreshOpenerWithoutSubmit();
+			window.close();
+		</script>
+	</span>
+	<span jwcid="@If" condition="ognl:!closing">
+		<table id="pageTitle" width="100%" cellpadding="0" cellspacing="0">
+			<tr>
+				<td class="context">
+					<span jwcid="@If" condition="ognl:context != null">
+						<span jwcid="@Insert" value="ognl:context.label"/>
+					</span>
+				</td>				
+				<td align="right" valign="bottom" width="75" style="line-height:0;" rowspan="2">
+					<img jwcid="@Any" src='ognl:"img/banners/" + contentType.name + ".gif"' width="75" height="66"/>
+				</td>
+			</tr>
+			<tr>
+				<td valign="bottom">
+					<h1>
+						<nobr>Create <span jwcid="@Insert" value="ognl:contentType"/></nobr>
+					</h1>
+				</td>
+			</tr>
+		</table>
+
+		<span jwcid="@If" condition="ognl:contentKey == null">
+
+			<form jwcid="@Form" listener="ognl:listeners.performCreate">
+				<div class="buttonBar">
+					<input jwcid="@Submit" label="OK" class="button submit"/>
+					<input type="submit" value="Cancel" class="button cancel" onclick="form.onsubmit=null; window.close();"/>
+				</div>
+
+                <div jwcid="@ShowErrors" delegate="ognl:beans.delegate">
+                	<span jwcid="@If" condition="ognl:duplicateKey != null">
+                		<br/><br/>You may edit the original object: 
+                		<a href="#" jwcid="@ContentLink" key="ognl:duplicateKey">node</a>.
+                	</span>
+                </div>
+                
+				<table class="form">
+					<tr>
+						<td class="label"><label for="contentId"><span jwcid="@Insert" value="ognl:contentType"/> ID:</label></td>
+						<td><input id="contentId" jwcid="@TextField" value="ognl:contentId"/></td>
+					</tr>
+					<tr>
+						<td colspan="2" align="center">
+						</td>
+					</tr>
+				</table>
+				
+			</form>
+		</span>
+		
+		<span jwcid="@If" condition="ognl:contentKey != null">
+			<form jwcid="@Form" delegate="ognl:beans.delegate" style="margin:0; padding:0;">
+                
+                <div jwcid="@ShowErrors" delegate="ognl:beans.delegate" showFieldErrors="false"/>
+                
+				<div class="buttonBar">
+					<span style="color: #999; font-size: 8pt;">
+						<span jwcid="@Insert" value="ognl:contentKey.type"/>
+						<span jwcid="@Insert" value="ognl:contentKey.id"/>
+					</span>
+					<input jwcid="save@Submit" label="Save" class="button submit" action="ognl:listeners.performSave"/>
+					<input type="submit" value="Cancel" class="button cancel" onclick="form.onsubmit=null; window.close();"/>
+				</div>
+				
+				<div jwcid="@ContentEditor" node="ognl:visit.getWorkingSet(contentKey).getContentNode(contentKey)" contextNode="ognl:contextNode"/>
+				
+			</form>
+		</span>
+
+	</span>
+</body>

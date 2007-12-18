@@ -1,0 +1,17 @@
+		<table width="600" border="0" cellspacing="0" cellpadding="0">
+		<TR>
+			<td width="20"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
+			<TD WIDTH="400" valign="top">
+				<font class="text13">			
+				<img src="/media_stat/images/template/about/abo_store_hdr.gif" width="177" height="22" alt="" border="0">
+				<font class="space8pix"><BR><br></font>				
+				Our online store is easy to use and loaded with great information. Learn about what you're buying. Compare products by price, nutrition and flavor. Get recommendations for foods to suit your taste. When you come back, we'll remember what you got, so you can reorder in minutes.
+				<font class="space8pix"><BR><br></font>
+				Place an order today &#151; log on to <a href="/index.jsp">www.FreshDirect.com</a> or call toll free <%=user.getCustomerServiceContact()%>.
+				
+				</font>
+			</td>
+			<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" border="0"></td>
+			<td valign="top"><img src="/media_stat/images/template/about/sea_manager_abo.jpg" width="150" height="270" alt="" border="0"></td>
+		</tr>
+		</TABLE>

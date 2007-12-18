@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CMSDef xmlns="http://www.freshdirect.com/xsd/CMS" schemaLocation="http://www.freshdirect.com/xsd/CMS CMS.xsd">
+
+	<ContentTypeDef name="CmsQueryFolder">
+		<AttributeDefs>
+			<AttributeDef type="S" name="name" readOnly="true"/>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="subFolders" navigable="true" cardinality="Many" readOnly="true">
+				<DestinationDef contentType="CmsQueryFolder" />
+			</RelationshipDef>
+			<RelationshipDef name="queries" navigable="true" cardinality="Many"  readOnly="true">
+				<DestinationDef contentType="CmsQuery" />
+				<DestinationDef contentType="CmsReport" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+
+	<ContentTypeDef name="CmsReport">
+		<AttributeDefs>
+			<AttributeDef type="S" name="name" readOnly="true"/>
+			<AttributeDef type="S" name="description" readOnly="true"/>
+			<AttributeDef type="S" name="script" readOnly="true"/>
+			<AttributeDef type="S" name="parameters" readOnly="true"/>
+			<AttributeDef type="T" name="results" readOnly="true"/>
+			<AttributeDef type="S" name="language" readOnly="true"/>
+		</AttributeDefs>
+	</ContentTypeDef>
+
+	<ContentTypeDef name="CmsQuery">
+		<AttributeDefs>
+			<AttributeDef type="S" name="name" readOnly="true"/>
+			<AttributeDef type="S" name="description" readOnly="true"/>
+			<AttributeDef type="S" name="script" readOnly="true"/>
+			<AttributeDef type="S" name="language" readOnly="true"/>
+		</AttributeDefs>
+		<RelationshipDef name="results" navigable="true" cardinality="Many" readOnly="true"/>
+	</ContentTypeDef>
+
+</CMSDef>

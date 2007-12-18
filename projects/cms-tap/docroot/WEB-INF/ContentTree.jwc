@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE component-specification PUBLIC
+  "-//Apache Software Foundation//Tapestry Specification 3.0//EN"
+  "http://jakarta.apache.org/tapestry/dtd/Tapestry_3_0.dtd">
+
+<component-specification class="com.freshdirect.cms.ui.tapestry.component.ContentTree"
+    allow-body="yes"
+    allow-informal-parameters="no">
+    
+    <description>add a description</description>
+	<parameter name="node" direction="auto" type="com.freshdirect.cms.ContentNodeI" required="yes"/>
+
+	<property-specification name="treeState" type="java.util.Set" persistent="yes" initial-value="new java.util.HashSet()"/>
+	<property-specification name="searchQuery" type="java.lang.String" persistent="yes"/>
+
+	<component id="tree" type="tacos:Tree">
+		<binding name="state" expression="treeState"/>
+		<binding name="contentProvider" expression="contentProvider"/>
+		<binding name="keyProvider" expression="@com.freshdirect.cms.ui.tapestry.tree.ContentKeyProvider@INSTANCE"/>
+		<inherited-binding name="value" parameter-name="node"/>
+		<binding name="sorter" expression="sorter"/>
+		<binding name="nodeLinkAjax" expression="false"/>
+	</component>
+
+	<!--	
+	<component id="imageHover" type="Any">
+		<binding name="onclick">
+			#n = node.getKey().lookupContentNode(),
+			"hoverMedia('" + #n.label +"','"
+			+ @com.freshdirect.fdstore.FDStoreProperties@getCmsMediaBaseURL() + #n.attributes.path.value +"',"
+			+ #n.attributes.width.value + "," + #n.attributes.height.value + "); return false;"
+		</binding>
+		<static-binding name="href">javascript:void(0);</static-binding>
+	</component>
+	-->
+
+	<component id="imagePopup" type="GenericLink">
+		<binding name="href" expression="@com.freshdirect.fdstore.FDStoreProperties@getCmsMediaBaseURL() + node.attributes.path.value"/>
+		<binding name="renderer">new org.apache.tapestry.contrib.link.PopupLinkRenderer(
+			"imagePopup",
+			"width=" + (node.attributes.width==null ? 640 : node.attributes.width.value) +
+			",height=" + (node.attributes.height==null ? 480 : node.attributes.height.value) +
+			",toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1")
+		</binding>
+	</component>
+	    
+	<context-asset name="home" path="/img/home.gif"/>
+	<context-asset name="homeDisabled" path="/img/home_disabled.gif"/>
+	<context-asset name="refresh" path="img/refresh.gif"/>
+	<context-asset name="collapseAll" path="img/collapse_all.gif"/>
+    
+</component-specification>

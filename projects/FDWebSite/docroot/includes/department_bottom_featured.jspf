@@ -1,0 +1,90 @@
+<table width="550" cellpadding="0" cellspacing="0" border="0">
+	<tr>
+		<td colspan="5" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0"></td>
+	</tr>
+	<tr>
+		<td colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="0"><br><span class="title16"><b>Popular Items</b></span><br><br></td>
+	</tr>
+	<%  
+	Image deptFeatImage = null;
+	DepartmentModel dept = (DepartmentModel) currentFolder;
+    List favorites = dept.getFeaturedProducts();
+
+    System.out.println("FAVS:" + favorites.toString());
+    StringBuffer favoriteProducts = new StringBuffer();
+    ContentNodeModel prodParent = null;
+    ContentFactory contentFactory = ContentFactory.getInstance();
+    Comparator priceComp = new ProductModel.PriceComparator();
+    int favoritesToShow = 0;  %>
+
+<%-- Featured Products column --%>
+<tr valign="top" align="center">
+<logic:iterate id='contentNode' collection="<%=favorites%>" type="com.freshdirect.fdstore.content.ProductModel">
+<% 
+        ProductModel product = contentNode;; //(ProductModel)contentFactory.getProduct(contentRef.getCategoryId(),contentRef.getProductId());
+System.out.println("Processing product: " + product);
+        if (product==null) continue;
+        prodParent = product.getParentNode(); 
+System.out.println("Processing product parent: " + prodParent);
+        List skus = product.getSkus(); 
+        if (product.isDiscontinued() || product.isUnavailable() || prodParent==null || !(prodParent instanceof CategoryModel)) continue;
+        SkuModel sku = null;
+        String prodPrice = null;
+        if (skus.size()==0) continue;  // skip this item..it has no skus.  Hmmm?
+        if (skus.size()==1) {
+            sku = (SkuModel)skus.get(0);  // we only need one sku
+        }
+        else {
+            sku = (SkuModel) Collections.min(skus, priceComp);
+        }
+%>        <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>"> <% 
+        prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()); //+"/"+ productInfo.getDefaultPriceUnit();
+%>      </fd:FDProductInfo> <%
+        String productPageLink_ = response.encodeURL("/product.jsp?catId=" + prodParent
+            +"&prodCatId="+prodParent
+            +"&productId="+product+"&trk=feat");
+
+        deptFeatImage = (Image)product.getCategoryImage();
+		System.out.println("deptFeatImage: "+deptFeatImage);
+        favoriteProducts.append("<td width=\"20%\"><a href=\"");
+        favoriteProducts.append(productPageLink_);
+        favoriteProducts.append("\">");
+        if (deptFeatImage !=null) {
+            favoriteProducts.append("<img SRC=\"");
+            favoriteProducts.append(deptFeatImage.getPath());
+            favoriteProducts.append("\"");
+            favoriteProducts.append(JspMethods.getImageDimensions(deptFeatImage));
+            favoriteProducts.append(" border=\"0\" alt=\"");
+            favoriteProducts.append(product.getFullName());
+            favoriteProducts.append("\">");
+        }
+        favoriteProducts.append("</A><BR>");
+        favoriteProducts.append("<a href=\"");
+        favoriteProducts.append(productPageLink_);
+        favoriteProducts.append("\">");
+        String thisProdBrandLabel = product.getPrimaryBrandName();
+        if (thisProdBrandLabel.length()>0) {
+            favoriteProducts.append("<FONT CLASS=\"text10bold\">");
+            favoriteProducts.append(thisProdBrandLabel);
+            favoriteProducts.append("</font><BR>");
+        }
+        favoriteProducts.append(product.getFullName().substring(thisProdBrandLabel.length()).trim()); 
+        favoriteProducts.append("</A><BR>");
+        favoriteProducts.append("<font class=\"favoritePrice\">");
+        favoriteProducts.append(prodPrice);
+        favoriteProducts.append("</font></td>");
+        favoritesToShow++;
+        if (favoritesToShow==5) break;
+%>
+    </logic:iterate>
+<%
+
+  if (favoritesToShow>0) {
+%>
+            <%=favoriteProducts.toString()%>
+<%
+    }
+%>
+</tr>
+</table>
+<br>

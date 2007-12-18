@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+   "-//Hibernate/Hibernate Mapping DTD//EN"
+   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.freshdirect.ocf.core" schema="cust">
+	<class name="RunLog" table="OCF_RUN_LOG" >
+		<cache usage="nonstrict-read-write" />
+		
+		<id name="id" length="16">
+			<generator class="native" />
+		</id>
+		
+		<property name="flightId"/>
+		
+		<property name="timestamp" type="timestamp"/>
+		
+		<set name="customers" cascade="all-delete-orphan" table="OCF_RUN_CUSTS">
+			<key column="run_id" foreign-key="fk_runcusts_runlog"/>
+			<composite-element class="com.freshdirect.ocf.core.RunCust">
+				<property name="customerId" column="customer_id" length="16"/>
+				<property name="email"/>
+			</composite-element>			
+		</set>
+		
+		<property name="status"/>
+		
+	</class>
+</hibernate-mapping>

@@ -1,0 +1,75 @@
+<%@ page import = "com.freshdirect.customer.EnumSaleStatus" %>
+<%!
+	NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance( Locale.US );
+	
+	private String getTimeslotString(Calendar startTimeCal, Calendar endTimeCal){
+		StringBuffer sb = new StringBuffer();
+		int startHour = startTimeCal.get(Calendar.HOUR_OF_DAY);
+		sb.append(startHour==12 ? "noon" : (startHour > 12 ? startHour - 12+"": startHour+""));
+		int startMin = startTimeCal.get(Calendar.MINUTE);
+		if(startMin != 0){
+			sb.append(":"+startMin);
+		}
+		sb.append(" - ");
+		int endHour = endTimeCal.get(Calendar.HOUR_OF_DAY); 
+		sb.append(endHour == 0 ? "12" : (endHour == 12 ? "noon" : (endHour > 12 ? endHour - 12+"" : endHour+"")));
+		int endMin = endTimeCal.get(Calendar.MINUTE);
+		if(endMin != 0){
+			sb.append(":"+endMin);
+		}
+		return sb.toString();
+	}
+	
+	DateFormat dateFormatter = new SimpleDateFormat("MM/dd EEE");
+	DateFormat dateFormatter_2 = new SimpleDateFormat("EEE MM/dd/yy");
+%>
+<fd:OrderHistoryInfo id='orderHistoryInfo'>
+<%
+     //
+	// also need to know how many orders the customer has that are not still pending
+	//
+	int pendingOrderCount = 0;
+     
+	for (Iterator hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
+		FDOrderInfoI orderInfo = (FDOrderInfoI) hIter.next();
+		if (orderInfo.isPending()) {
+			pendingOrderCount++;
+		}
+	}  
+%>
+<%
+if (orderHistoryInfo != null && orderHistoryInfo.size() != 0 && pendingOrderCount > 0) {
+%>
+<table width="490" cellpadding="0" cellspacing="0" border="0">
+<%
+for (Iterator hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
+     FDOrderInfoI orderInfo = (FDOrderInfoI) hIter.next();
+     Calendar dlvStart = Calendar.getInstance();
+     dlvStart.setTime(orderInfo.getDeliveryStartTime());
+     Calendar dlvEnd = Calendar.getInstance();
+     dlvEnd.setTime(orderInfo.getDeliveryEndTime());
+     
+     String deliveryTime = getTimeslotString(dlvStart, dlvEnd);
+
+          if (orderInfo.isPending() && orderInfo.getOrderStatus() != EnumSaleStatus.REFUSED_ORDER) {
+%>
+               <tr><td><img src="/media_stat/images/layout/clear.gif" width="310" height="6"></td>
+<td><img src="/media_stat/images/layout/clear.gif" width="150" height="6"></td></tr>
+               <tr><td colspan="2" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+               <tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td></tr>
+               <tr><td><font class="text9"><b>Your order will be delivered on:</b></font> <a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>"><%= dateFormatter_2.format( orderInfo.getRequestedDate() ) %> @ <%=deliveryTime%> <%=dlvStart.get(Calendar.AM_PM)==1?" PM":" AM"%></a></td>
+               <td align="right">
+               <% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
+               <font class="text9">To make changes, <a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>">click here</a>.</font>
+               <% } else { %>&nbsp;<% } %></td></tr>
+
+     <% } else if (orderInfo.getOrderStatus() == EnumSaleStatus.REFUSED_ORDER) { %>
+               <tr><td colspan="2" class="text10rbold"><b>Pending Order: Please contact us at <%=user.getCustomerServiceContact()%> as soon as possible to reschedule delivery.</b></td></tr>	
+<%      }
+break;
+     }
+     %>
+	
+</table>
+<% } %>
+</fd:OrderHistoryInfo>

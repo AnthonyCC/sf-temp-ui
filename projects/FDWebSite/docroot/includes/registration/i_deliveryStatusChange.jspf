@@ -1,0 +1,31 @@
+<%@page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
+<%@ page import='com.freshdirect.webapp.util.JspMethods' %>
+<%
+    Boolean warning = (Boolean)session.getAttribute(SessionName.BLOCKED_ADDRESS_WARNING);
+    session.removeAttribute(SessionName.BLOCKED_ADDRESS_WARNING);
+    boolean restrictedAddress = warning != null;
+%>
+
+<%  if (user.isPickupOnly()) {  %>
+Unfortunately we do not currently deliver to your home address. Although your address is not in a FreshDirect delivery zone, you are eligible for service at our <a href="javascript:popup('/delivery_popup.jsp','large')">pickup</a> location.
+<%  } else if (user.isHomeUser()) { %>
+    <% if (user.isDepotUser()) { %>
+
+	    <b>Good news! Your home address is in a FreshDirect delivery zone.</b> 
+		<br><br>
+		This means that you can enjoy the freshest foods delivered right to your door. Of course, you can still opt to receive an order at your employee depot location.
+
+    <% } else { // home user only
+            if(!restrictedAddress){%>
+				<b>Good news! Your home address is in a FreshDirect delivery zone.</b>
+				<br><br>
+				This means that  you can enjoy the freshest foods delivered right to your door. Of course, you can still opt to <a href="javascript:popup('/delivery_popup.jsp','large')">pick up</a> your order from FreshDirect.
+
+        <%  }else{   %>
+				We're sorry; FreshDirect does not deliver to this address because it is a commercial building. Unfortunately we are only able to make deliveries to residential buildings. You may enter another address <a href="/your_account/add_delivery_address.jsp">here</a>. To see where we deliver, <a href="javascript:popup('/help/delivery_zones.jsp','large')">click here</a>.
+				<br><br>
+				Of course, you can still opt to receive an order at our <a href="javascript:popup('/delivery_popup.jsp','large')">pickup location</a>.
+    <%  }%>
+<%  }   %>
+<%}%>
+<br><br>

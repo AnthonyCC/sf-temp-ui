@@ -1,0 +1,22 @@
+<table BORDER="0" CELLSPACING="0" CELLPADDING="2">
+	<tr VALIGN="top">
+    	<td CLASS="text9">
+        	<font CLASS="title18">Ingredients</font> <br/>
+         </td>
+    </tr>
+	<tr>
+    	<td><img src="/media_stat/images/layout/330000.gif" ALT="" WIDTH="220" HEIGHT="6"/></td>
+    </tr>
+    <tr>
+		<td>
+            <%= fdprd.getIngredients() %>
+            <br><br>
+
+			<%@ include file="/shared/includes/product/allergens.jspf" %>
+
+            <% if (request.getRequestURI().indexOf("meal_item_detail.jsp") < 0) { %>
+				<br><a href="javascript:pop('/product_nutrition_note.jsp',335,375)">An important note about our nutrition and ingredients information.</a>
+			<% } %>
+        </td>
+	</tr>
+</table>

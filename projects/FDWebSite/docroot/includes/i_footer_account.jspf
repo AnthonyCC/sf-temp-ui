@@ -1,0 +1,7 @@
+<%@ page import='com.freshdirect.fdstore.customer.*' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%
+// get the user.. don't assume host page  has created the var for us
+FDUserI i_fa_user = (FDUserI)session.getAttribute(SessionName.USER);
+%>
+If you have any questions, please e-mail <a href="mailto:<fd:GetServiceEmail />"><fd:GetServiceEmail /></a> anytime or call us at <%=i_fa_user.getCustomerServiceContact()%>, Monday through Thursday from 6.30 a.m. to 1 a.m., Friday from 6.30 a.m. to 10 p.m., Saturday from 7:30 a.m. to 10 p.m., and Sunday from 7:30 a.m. to 1 a.m. If you need to disconnect from the Internet, please <a href="/login/logout.jsp">Log Out</a> first. 

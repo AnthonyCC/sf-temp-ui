@@ -1,0 +1,68 @@
+<xlsReporting>
+ <sources>
+  <source> <!-- Perhaps we use connection pools later on? -->
+    <type>com.freshdirect.xls.datasource.DatabaseDataSource</type>
+    <name>STS01</name>
+    <url>jdbc:oracle:thin:@(DESCRIPTION =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb01-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (ADDRESS = (PROTOCOL = TCP)(HOST = nyc2stdb02-vip.nyc2.freshdirect.com)(PORT = 1521))
+  (CONNECT_DATA =
+    (SERVER = DEDICATED)
+    (SERVICE_NAME = dbsto_prod)
+     (failover_mode =
+       (type = session)
+       (method = basic)
+       (retries = 20)
+     )
+  )
+ )</url>
+    <user>appdev</user>
+    <password>readn0wrt</password>
+  </source>
+ </sources>
+
+ <populate>
+  <sheet>
+   <name>Sheet1</name>
+   <beginOffsetRow>21</beginOffsetRow>
+   <beginOffsetColumn>0</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+select decode(p.profile_name, 'juldelwin', 'July Delivery Window ', 'July Delivery Day ') ||
+	   decode(p.profile_value, 'HalfOffDelivery', '1', 'Control', 'Control', '2') as PromotionType,
+	   count(*) as TotalOrderCount
+from cust.profile p, cust.fdcustomer fdc, cust.customerinfo ci, 
+	 cust.sale s, cust.salesaction sa
+where p.profile_name like 'jul%'
+  and p.customer_id = fdc.id
+  and fdc.erp_customer_id = ci.customer_id
+  and s.id = sa.sale_id
+  and sa.action_date = (select max(action_date) from cust.salesaction where sale_id = s.id and action_type in ('CRO', 'MOD'))
+  and sa.action_type in ('CRO', 'MOD')
+  and sa.action_date >= '15-JUL-2005'
+  and s.customer_id = ci.customer_id
+group by decode(p.profile_name, 'juldelwin', 'July Delivery Window ', 'July Delivery Day ') ||
+	   decode(p.profile_value, 'HalfOffDelivery', '1', 'Control', 'Control', '2')
+order by decode(p.profile_name, 'juldelwin', 'July Delivery Window ', 'July Delivery Day ') ||
+	   decode(p.profile_value, 'HalfOffDelivery', '1', 'Control', 'Control', '2')
+     </param>
+   </dataSource>
+  </sheet>
+  <sheet>
+   <name>Sheet1</name>
+   <beginOffsetRow>30</beginOffsetRow>
+   <beginOffsetColumn>0</beginOffsetColumn>
+   <dataSource>
+     <name>STS01</name>
+     <param>
+select p.name, p.description, count(*) 
+from cust.promotion p, cust.promotion_participation pp
+where p.code like 'JULY_DLV%'
+  and p.id = pp.promotion_id (+)
+  group by p.name, p.description
+     </param>
+   </dataSource>
+  </sheet>
+ </populate>
+</xlsReporting>

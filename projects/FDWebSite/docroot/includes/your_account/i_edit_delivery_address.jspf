@@ -1,0 +1,101 @@
+<%@page import="com.freshdirect.common.customer.EnumServiceType"%>
+<script language="javascript">
+    function setDlvAction(frmObj,actionName) {
+        if (frmObj.dlvActionName==null) return;
+        frmObj.dlvActionName.value=actionName;
+    }
+    
+    function setIdToDelete(frmObj,dlvID) {
+        if (frmObj.deleteShipToAddressId==null) return;
+        frmObj.deleteShipToAddressId.value=dlvID;
+    }
+</script>
+<%
+FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+FDIdentity identity = user.getIdentity();
+
+Map addresses = new HashMap();
+
+for(Iterator i = FDCustomerManager.getShipToAddresses(identity).iterator(); i.hasNext(); ){
+	ErpAddressModel address = (ErpAddressModel) i.next();
+	if(EnumServiceType.CORPORATE.equals(address.getServiceType())){
+		List cl = (List)addresses.get(EnumServiceType.CORPORATE);
+		if(cl == null){
+			cl = new ArrayList();
+			addresses.put(EnumServiceType.CORPORATE, cl);
+		}
+		cl.add(address);
+	}else {
+		List hl = (List)addresses.get(EnumServiceType.HOME);
+		if(hl == null){
+			hl = new ArrayList();
+			addresses.put(EnumServiceType.HOME, hl);
+		}
+		hl.add(address);
+	}
+}
+
+String linkURL = response.encodeURL("/your_account/edit_delivery_address.jsp");
+%>
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="675">
+<TR VALIGN="TOP">
+    <TD>
+        <span class="text13">If you need to enter a different address:</span> <a href="<%=response.encodeURL("/your_account/add_delivery_address.jsp")%>"><img src="/media_stat/images/buttons/add_new_address.gif" WIDTH="106" HEIGHT="16" VSPACE="3" HSPACE="4" ALIGN="middle" border="0"></a>
+    </TD>
+</TR>
+</TABLE>
+<br>
+<%
+// BEGINING D E P O T   L O C A T I O N S
+if(user.isDepotUser()){
+	boolean allowSelection = false;
+%>
+    <%@ include file="/shared/includes/i_depot_locations.jspf" %><br>
+<%
+// END D E P O T   L O C A T I O N S
+}%> 
+
+
+
+<%// BEGINING C O R P ADDRESSES
+	boolean showingCorporateAddress = false;
+	List shipToAddresses = (List) addresses.get(EnumServiceType.CORPORATE);
+	if (shipToAddresses != null && !shipToAddresses.isEmpty()) {
+		showingCorporateAddress = true;
+		%>
+		<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="675" >
+			<TR VALIGN="TOP">
+				<TD WIDTH="675">
+					<img src="/media_stat/images/template/youraccount/hdr_corp_delivery.gif" width="135" height="9" alt="CORPORATE DELIVERY">&nbsp;
+					<IMG src="/media_stat/images/layout/999966.gif" WIDTH="675" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+					<img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br>
+				</td>
+			</tr>
+		</TABLE>
+		<br>
+		<%@ include file="/includes/your_account/i_delivery_address.jspf" %>
+		<%
+	}%>
+<%// END C O R P ADDRESSES%>
+
+<%// BEGINING H O M E ADDRESSES
+	shipToAddresses = (List) addresses.get(EnumServiceType.HOME);
+	if (shipToAddresses != null && !shipToAddresses.isEmpty()) {
+		showingCorporateAddress = false;
+		%>
+		<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="675" >
+			<TR VALIGN="TOP">
+				<TD WIDTH="675">
+					<img src="/media_stat/images/template/youraccount/hdr_home_delivery.gif" width="98" height="9" alt="CORPORATE DELIVERY">&nbsp;
+					<IMG src="/media_stat/images/layout/999966.gif" WIDTH="675" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+					<img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br>
+				</td>
+			</tr>
+		</TABLE>
+		<br>
+		<%@ include file="/includes/your_account/i_delivery_address.jspf" %>
+		<%
+	}%>
+<%// END H O M E ADDRESSES%>
+    <input type="hidden" name="deleteShipToAddressId" value="">
+    <input type="hidden"  name="dlvActionName" value="">

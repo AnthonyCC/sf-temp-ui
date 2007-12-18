@@ -1,0 +1,48 @@
+<%
+// Get index of current search term
+int srchIdx = 0;
+if (request.getParameter("searchIndex") != null) {
+        srchIdx = Integer.parseInt( request.getParameter("searchIndex") );
+}
+
+
+// Build the bread crumb trail
+StringBuffer browsePath = new StringBuffer("<a href=\"");
+browsePath.append( response.encodeURL("build_order_browse.jsp") );
+browsePath.append("\">Home</a>");
+if (requestNode != null) {
+        boolean atTopLevel = false;
+        ArrayList folders = new ArrayList();
+        ContentNodeModel node = requestNode;
+        while (!atTopLevel) {
+                HashMap nodeMap = new HashMap();
+                nodeMap.put("name", node.getFullName());
+                nodeMap.put("link", node);
+                folders.add(nodeMap);
+                node = node.getParentNode();
+                atTopLevel = (node instanceof StoreModel);
+        }
+        ListIterator it = folders.listIterator();
+        while (it.hasNext()) { it.next(); }
+        if (folders.size() > 0)
+                browsePath.append(" : ");
+        while (it.hasPrevious()) {
+                HashMap map = (HashMap) it.previous();
+                if ( it.hasPrevious() ) {
+                        String linkURL = "build_order_browse.jsp?catId=" + ((ContentNodeModel) map.get("link")).toString();
+                        browsePath.append("<a href=\"");
+                        browsePath.append( response.encodeURL(linkURL) );
+                        browsePath.append("\">");
+                }
+                browsePath.append((String) map.get("name"));
+                if ( it.hasPrevious() ) {
+                        browsePath.append("</a>");
+                        browsePath.append(" : ");
+                }
+        }
+}
+%>
+
+<div class="column"><%= browsePath.toString() %></div><div class="column" style="float: right;">[ <A HREF="place_order_batch_search_results.jsp?searchIndex=<%= srchIdx %>">back to list in progress</A> ]</div>
+<br clear="all">
+<hr class="gray1px">
