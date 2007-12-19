@@ -1,0 +1,71 @@
+########################################################################
+# FD-Build Configuration file
+########################################################################
+
+#################
+# Build Settings
+#################
+# Java settings
+export JAVA_HOME=<java install dir>
+export JDK_HOME=$JAVA_HOME
+export PATH=$JAVA_HOME/bin:$PATH
+
+# WebLogic settings 
+export WEBLOGIC_HOME=<WebLogic install dir>
+
+# Ant settings (1.6.5 supported + ant-contrib.jar)
+export ANT_HOME=<ant install dir>
+export PATH=$ANT_HOME/bin:$PATH
+
+# StarTeam settings (6.0)
+export STARTEAM_HOME=<StarTeam install dir>
+export CLASSPATH=$STARTEAM_HOME/lib/starteam60.jar
+STARTEAM_USER=<starteam user name>
+STARTEAM_PASSWORD=<starteam password>
+
+########################################################################
+
+#######################
+# Deployment settings
+#######################
+
+# Ssh private key to log on to the deployment host without a password
+DEPLOYMENT_KEY=<path to private key>
+
+DEPLOYMENT_HOST=<deployment host name>
+DEPLOYMENT_USER=<deployment user>
+
+DEPLOY_SCRIPT=<full path to the deploy script on the deployment host>
+
+##########################################################################
+
+#######################
+# AFTERBUILD SETTINGS
+#######################
+
+AFTERBUILD_TARGETS="func_test perf_test"
+
+#######################
+# JMX Connection
+#######################
+
+JMX_USERNAME=weblogic
+JMX_PASSWORD=weblogic
+JMX_URL=t3://localhost:7001
+
+#######################
+# Selenium settings
+#######################
+
+# Firefox directory (contains firefox-bin)
+FIREFOX_DIR=/home/fdadmin/CI/usr/firefox
+JDK15_EXECUTABLE=/usr/java/jdk1.5.0_11/bin/java
+SELENIUM_TARGET="selenium_test"
+SELENIUM_TEST_BASE="http://fd-ccl/"
+SELENIUM_DISPLAY=":5"
+
+#######################
+# WebStat Settings
+#######################
+
+WEBSTATS_MONITORNAME=FDWebSiteMonitor

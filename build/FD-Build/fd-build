@@ -1,0 +1,313 @@
+#!/bin/bash
+
+set -o nounset
+set -o errexit
+
+
+
+# Dark Magic to determine the ROOTPATH
+relpath="$0"
+D=`dirname "$relpath"`
+B=`basename "$relpath"`
+ROOTPATH="`cd \"$D\" 2>/dev/null && pwd || echo \"$D\"`"
+
+currentdir=$PWD
+
+cd $ROOTPATH
+
+# Default ROOTDIR
+ROOTDIR=$ROOTPATH/src/FreshDirect
+# Default view
+VIEW="Development"
+# Defait ant target
+ANT_TARGETS=""
+# Default config file
+CONFIG_FILE="config.sh"
+DEPLOYDIR="/home/fdadmin/FD-Deploy"
+
+# Maximum wait for weblogic startup in minutes
+WEBLOGIC_MAX_WAIT=10
+
+relroot=0
+deploy=0
+deploybuild=0
+deploylatest=0
+runant=1
+afterdeploy=0
+setbuildlabel=0
+tag=0
+
+# Do some argument parsing
+while [ $# -gt 0 ]
+do
+case "$1" in
+-relroot)
+    relroot=1
+    ;;
+-d|--root) 
+    # Specify a different rootdir
+    shift
+    ROOTDIR="$1"
+    ;;
+-c|--config) 
+    # Specify a different config file
+    shift
+    CONFIG_FILE="$1"
+    ;;
+-v|--view)
+    # Specify view
+    shift
+    VIEW="$1"
+    ;;
+-afterdeploy)
+    # Specify after build test step
+    afterdeploy=1
+    ;;
+-deploy)
+    # Deploy
+    deploy=1
+    ;;
+-deploylatest)
+    # Deploy
+    deploylatest=1
+    deploy=1
+    shift
+    DEPLOY_JOB="$1"
+    ;;
+-tag)
+    # Tag
+    tag=1
+    shift
+    SVN_TAG="$1"
+    ;;
+-buildlabel)
+    # Set Build label
+    setbuildlabel=1
+    shift
+    BUILD_LABEL="$1"
+    ;;
+-deploybuild)
+    # Deploy
+    deploybuild=1
+    deploy=1
+    shift
+    DEPLOY_JOB="$1"
+    shift
+    DEPLOY_BUILD_NUMBER="$1"
+    ;;
+-noant)
+    # Don't run main ant
+    runant=0
+    ;;
+--)
+    shift
+    ANT_TARGETS="$@"
+    break
+    ;;
+*)
+    echo "Usage: $0 [-tag <tag path relative to repository root>] [-d|--root <rootdir> [-relroot]] [-deploybuild <job> <number>] [-deploylatest <job>] [-afterdeploy] [-deploy] [-buildlabel <label>] [-noant] [-c|--config <config file>]  [-v <view>] [-- <ant targets>]"
+    exit 1
+    ;;
+esac
+shift
+done
+
+if [ ! -f $CONFIG_FILE ]
+then
+    echo "Config file $CONFIG_FILE does not exist!!!"
+    exit 1
+fi
+
+source $CONFIG_FILE
+
+REL_ROOTDIR="$ROOTDIR"
+if [ $relroot -ne 0 ]
+then
+    ROOTDIR=$currentdir/$ROOTDIR
+fi
+
+BUILD_DIR=$ROOTDIR/build
+BUILD_PROPERTIES_DIR=$BUILD_DIR/properties
+
+
+echo "ROOTDIR=$ROOTDIR"
+echo "BUILD_DIR=$BUILD_DIR"
+echo "BUILD_PROPERTIES_DIR=$BUILD_PROPERTIES_DIR"
+echo "ANT_TARGETS=$ANT_TARGETS"
+echo "VIEW=$VIEW"
+echo "BOOTSTRAP=$bootstrap"
+
+# Usage: $0 <job name> <build number>
+function find_deploy_source() {
+job="$1"
+number="$2"
+currdir="$(pwd)"
+cd "$HUDSON_HOME/jobs/$job/builds"
+for dir in *
+do
+    if [ -d $dir ]
+    then
+	cd $dir
+	status="$(grep -o '<result>.*</result>' build.xml | sed 's#</\?result>##g')"
+	num="$(grep -o '<number>.*</number>' build.xml | sed 's#</\?number>##g')"
+	if [ $num -eq $number ] && [ -d "$(pwd)/archive" ]
+	then
+	    # Found our 
+	    echo "$(pwd)/archive"
+	    cd $currdir
+	    return 0
+	fi
+	cd ..
+    fi
+done
+return 1
+}
+
+# Usage: $0 <job name> 
+function find_latest_deploy_source() {
+job="$1"
+x="$HUDSON_HOME/jobs/$job/lastSuccessful/archive"
+if [ -d $x ]
+then
+    echo $x
+    return 0
+fi
+return 1
+}
+
+
+
+# Helper function to write build properties
+function write_build_props() {
+
+cat >$1 <<EOF
+jdk.home=$JDK_HOME
+weblogic.home=$WEBLOGIC_HOME
+build.prefix=test
+build.counter=$BUILD_NUMBER
+starteam.user=$STARTEAM_USER
+starteam.password=$STARTEAM_PASSWORD
+starteam.view=$VIEW
+freshdirect.buildroot=$ROOTDIR
+jdk15.executable=$JDK15_EXECUTABLE
+selenium.test_base=$SELENIUM_TEST_BASE
+jmx.url=$JMX_URL
+jmx.username=$JMX_USERNAME
+jmx.password=$JMX_PASSWORD
+webstats.monitorname=$WEBSTATS_MONITORNAME
+EOF
+
+if [ $setbuildlabel -eq 1 ]
+then
+    echo "build.label=$BUILD_LABEL" >> $1
+fi
+
+}
+
+# Magic to test whether the build number is specified 
+# (should come from the build server)
+if ! (set -u; : $BUILD_NUMBER) 2>/dev/null
+then
+echo "BUILD NUMBER not set"
+BUILD_NUMBER=0
+fi
+
+echo $BUILD_NUMBER
+
+if [ $tag -ne 0 ]
+then
+    cd $ROOTDIR
+    echo "Calling svn revert..."
+    svn revert -R .
+    REPO_ROOT=$(svn info | grep "Repository Root:" | sed "s/Repository Root:[[:space:]]*//")
+    echo "REPO_ROOT=$REPO_ROOT"
+    REPO_URL=$(svn info | grep "URL:" | sed "s/URL:[[:space:]]*//")
+    echo "REPO_URL=$REPO_URL"
+    proptmp=$(mktemp)
+    echo "Fixing up svn:externals...(in $proptmp):" 
+    svn propget svn:externals . | sed "s#$REPO_URL#$REPO_ROOT/$SVN_TAG#" | tee -a $proptmp
+    svn propset -F $proptmp svn:externals . 
+    rm -f $proptmp
+    echo "Tagging $REPO_URL to $REPO_ROOT/$SVN_TAG ..."
+    svn --username=hudson cp -m "Tagging $REPO_URL to $REPO_ROOT/$SVN_TAG" . $REPO_ROOT/$SVN_TAG
+    echo "Cleaning up...(svn revert again)"
+    svn revert -R .
+fi
+
+if [ $runant -eq 1 ]
+then
+    write_build_props $BUILD_PROPERTIES_DIR/build.properties
+
+    cd $BUILD_DIR
+
+    if ! ant $ANT_TARGETS 
+    then
+	echo "Build Failed!!!"
+	cd $currentdir
+	exit 1
+    fi
+fi
+
+if [ $deploy -eq 1 ]
+then
+    if [ $deploybuild -eq 1 ]
+    then
+	echo "Deploying from job $DEPLOY_JOB build $DEPLOY_BUILD_NUMBER"
+	DEPLOY_ROOT="$(find_deploy_source "$DEPLOY_JOB" "$DEPLOY_BUILD_NUMBER")/$REL_ROOTDIR"
+    elif [ $deploylatest -eq 1 ]
+    then
+	echo "Deploying from job $DEPLOY_JOB the latest successful build"
+	DEPLOY_ROOT="$(find_latest_deploy_source "$DEPLOY_JOB")/$REL_ROOTDIR"
+    else 
+	DEPLOY_ROOT="$ROOTDIR"
+    fi
+
+    cd "$DEPLOY_ROOT"
+
+
+    # First create temp directory on the deployment host
+    ssh -i $DEPLOYMENT_KEY ${DEPLOYMENT_USER}@${DEPLOYMENT_HOST} "mkdir -p $DEPLOYDIR"
+    source_dir=$(ssh -i $DEPLOYMENT_KEY ${DEPLOYMENT_USER}@${DEPLOYMENT_HOST} "mktemp -d -p $DEPLOYDIR")
+    if [ "$source_dir" = "" ]
+    then
+	echo "Deployment failed: could not create temporary directory on server $DEPLOYMENT_HOST"
+	exit 1
+    fi
+    
+    echo "Copying build artifacts (*.ear, *.jar, media-stat)..."
+    scp -i $DEPLOYMENT_KEY $DEPLOY_ROOT/release/applications/* $DEPLOY_ROOT/release/media/media-stat.tar.gz \
+	    ${DEPLOYMENT_USER}@${DEPLOYMENT_HOST}:$source_dir
+
+    echo "Executing deployment script..."
+    if ! ssh -i $DEPLOYMENT_KEY ${DEPLOYMENT_USER}@${DEPLOYMENT_HOST} "$DEPLOY_SCRIPT $source_dir"
+    then
+	echo "Deployment failed: execution of $DEPLOY_SCRIPT on ${DEPLOYMENT_USER}@${DEPLOYMENT_HOST} failed."
+	exit 1
+    fi
+        
+    cd $DEPLOY_ROOT
+    
+    echo "Deployment complete."
+fi
+
+if [ $afterdeploy -eq 1 ]
+then
+    write_build_props $BUILD_PROPERTIES_DIR/build.properties
+
+    cd $BUILD_DIR
+    
+    export PATH="$FIREFOX_DIR:$PATH"
+    export LD_LIBRARY_PATH="$FIREFOX_DIR"
+    export DISPLAY="$SELENIUM_DISPLAY"
+    
+    if ! ant $AFTERBUILD_TARGETS
+    then
+	echo "Selenium tests failed!!!"
+	cd $currentdir
+	exit 1
+    fi
+fi
+
+
+cd $currentdir
+exit 0
