@@ -18,6 +18,7 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.framework.util.CartesianProduct;
 import com.freshdirect.framework.util.ListConcatenation;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.UniqueRandomSequence;
 
 
@@ -64,6 +65,7 @@ public abstract class ColumnExtractor {
 	public final static String CONFIGURATION_VARIATION = "CONFIGURATION_VARIATION";	
 	public final static String RANDOM_CONFIGURATION = "RANDOM_CONFIGURATION";
 	public final static String RENDER_PATH_PARAMS = "RENDER_PATH_PARAMS";
+	public final static String CHILD = "CHILD";
 	
 	
 	// name of extractor
@@ -158,6 +160,18 @@ public abstract class ColumnExtractor {
 		public void cacheAttribute(ContentBundle.RowCache cache) throws AbortRowException {
 			if (!(cache.getContentNodeModel() instanceof ProductModel)) abortRow();
 			cache.putSequence(SKU_CODE, ((ProductModel)cache.getContentNodeModel()).getSkuCodes());
+		}
+	};
+	
+	public static ColumnExtractor Children = new ColumnExtractor("Children") {
+		
+		public Object extract(ContentBundle.RowCache cache) throws AbortRowException {
+			return null;
+		}
+		
+		public void cacheAttribute(ContentBundle.RowCache cache) throws AbortRowException {
+			ContentNodeModel model = cache.getContentNodeModel();
+			cache.putSequence(CHILD,new ArrayList(model.getContentKey().getContentNode().getChildKeys()));
 		}
 	};
 
@@ -287,6 +301,24 @@ public abstract class ColumnExtractor {
 				path.append(':').append(params.getClass().getName());
 			}
 			return path;
+		}
+	};
+	
+	public static class LinkedBrowsePath extends BrowsePath {
+		
+		public LinkedBrowsePath() {
+			super();
+		}
+		
+		public LinkedBrowsePath(java.util.Random R, int maxPick) {
+			super(R,maxPick);
+		}
+		
+		public Object extract(ContentBundle.RowCache cache) throws AbortRowException {
+			String unLinked = super.extract(cache).toString();
+			return new StringBuffer("<a href=\"").
+				append(StringUtil.escapeHTML(StringUtil.escapeUri(unLinked))).
+				append("\">").append(StringUtil.escapeHTML(unLinked)).append("</a>").toString();
 		}
 	};
 	

@@ -34,6 +34,7 @@ Symbols:
 	<!-- describe which attributes are supposed to be indexed/searched on which content types -->
 	<contribution configuration-id="SearchIndex">
 		<AttributeIndex contentType="Category" attributeName="FULL_NAME"/>
+		<AttributeIndex contentType="Category" attributeName="KEYWORDS"/>
 		<AttributeIndex contentType="Product"  attributeName="FULL_NAME"/>
 		<AttributeIndex contentType="Product"  attributeName="AKA"/>
 		<AttributeIndex contentType="Product"  attributeName="KEYWORDS"/>
