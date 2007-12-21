@@ -10,7 +10,7 @@
 	<jsp-descriptor>
 		<jsp-param>
 			<param-name>precompile</param-name>
-			<param-value>false</param-value>
+			<param-value>true</param-value>
 		</jsp-param>
 		<jsp-param>
 			<param-name>keepgenerated</param-name>
