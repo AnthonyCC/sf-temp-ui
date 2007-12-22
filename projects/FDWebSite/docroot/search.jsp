@@ -24,7 +24,7 @@ String searchParams = request.getParameter("searchParams");
 %>
 
 <tmpl:insert template='/common/template/search_nav.jsp'>
-<tmpl:put name='title' direct='true'><%= searchParams != null && searchParams.length() > 0 ?  searchParams + " -" : ""%> FreshDirect - Search</tmpl:put>
+<tmpl:put name='title' direct='true'>FreshDirect - Search<%= searchParams != null && searchParams.length() > 0 ?  (" - " + searchParams) : ""%></tmpl:put>
 <tmpl:put name='content' direct='true'>
 
 <oscache:cache time="1" key='<%= "search_"+searchParams %>'>
@@ -51,8 +51,11 @@ try {
 		if (results.isSuggestionMoreRelevant()) {
 			String sug = results.getSpellingSuggestion();
 		%>
-		<div>
-		<b>Did you mean <a href="/search.jsp?searchParams=<%=StringUtil.escapeUri(sug)%>"><%=sug%></a>?</b><br/><br/>
+		<div class="text15" style="line-height: 3em">
+			<b><%=results.numberOfResults() == 1 ? "One match was " : ("" + results.numberOfResults() + " matches were ")%> found for <i>"<%=criteria%>"</i></b>
+		</div>
+		<div class="text15">
+		Did you mean <a href="/search.jsp?searchParams=<%=StringUtil.escapeUri(sug)%>"><b><%=sug%></b></a>?<br/><br/>
 		</div>
 		<%
 		}
@@ -74,22 +77,29 @@ try {
 		List recipes = results.getRecipes();
 		if (recipes.size()>0) {
 			%>
-			<div class="title12"><span style="color: #c00">NEW!</span> <%= recipes.size() %> recipe<%= recipes.size() > 1 ? "s were":" was" %> found</div>
+			<div class="title12">
+				<span style="color: #c00">NEW!</span> <%= recipes.size() %> recipe<%= recipes.size() > 1 ? "s were":" was" %> found
+			<%
+				if (recipes.size() > 5) {
+			%>
+				(<b>Show <a href="#" onclick="toggleRecipes(); return false;" id="recipe_label">All</a></b>)
+			<%
+				}
+			%>
+			</div>
 			<img src="/media_stat/images/layout/ff9933.gif" width="520" height="1" border="0" vspace="4"><br><br>
 
 <%
 			Iterator ri = recipes.iterator();
-			StringBuffer hiddenLines = new StringBuffer();
+			StringBuffer allRecipeLines = new StringBuffer();
+			StringBuffer fiveRecipes = new StringBuffer();
 			for(int c= 0; ri.hasNext(); ++c) {
 				Recipe recipe = (Recipe)ri.next();
 				StringBuffer line = new StringBuffer();
 
 				if (c == 5) {
 %>
-				<div id="all_link">
-				<br/>
-				<a href="#" onclick="javascript:document.getElementById('all_link').innerHTML=hiddenRecipeLines" ><b>Show all <%=recipes.size()%> recipes &raquo;</b></a>
-				</div>
+				<div id="all_link"> </div>
 <%
 				}
 
@@ -103,7 +113,7 @@ try {
 				}
 				line.append("<br/>");
 					
-				if (c >= 5) hiddenLines.append(line);
+				if (c >= 5) allRecipeLines.append(line);
 				else {
 %>
 					<%= line %>
@@ -111,6 +121,8 @@ try {
 				}
 
 %>
+
+			<%-- <div style="display: none" id='a'> .... <div style="display: block" id='a');
 
 			<%-- <logic:iterate id="recipe" collection="<%= recipes %>" type="com.freshdirect.fdstore.content.Recipe"> 
 			<b><a href="/recipe.jsp?recipeId=<%= recipe.getContentName() %>&trk=srch"><%= recipe.getName() %></a></b>
@@ -124,7 +136,23 @@ try {
 
 %>
 			<script language="javascript">
-			hiddenRecipeLines = '<%=StringUtil.escapeJavaScript(hiddenLines.toString())%>';
+			var hiddenRecipeLines = '<%=StringUtil.escapeJavaScript(allRecipeLines.toString())%>';
+			var allShown = false;
+
+			function toggleRecipes() {
+				var contents = document.getElementById('all_link');
+				var label = document.getElementById('recipe_label');
+
+				if (allShown) {
+					contents.innerHTML = "";
+					label.innerHTML = "All";
+				} else {
+					contents.innerHTML = hiddenRecipeLines ;
+					label.innerHTML = "First 5";
+				}
+
+				allShown = !allShown;
+			}
 			</script>
 
 			<br>

@@ -5,7 +5,7 @@
 
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
-<div class="text13" style="line-height: 3em">
+<div class="text15" style="line-height: 1em">
 <font class="title16">No matches were found for <i>"<%=criteria%>"</i></font>
 </div>
 
@@ -13,8 +13,8 @@
 	String suggestion = results.getSpellingSuggestion();
 
 %>
-<div class="text13" style="line-height: 3em">
-Did you mean <a href="/search.jsp?searchParams=<%=StringUtil.escapeUri(suggestion)%>"><%=suggestion%></a>?
+<div class="text15" style="line-height: 4em">
+Did you mean <a href="/search.jsp?searchParams=<%=StringUtil.escapeUri(suggestion)%>"><b><%=suggestion%></b></a>?
 </div>
 <% } %>
 
