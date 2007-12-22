@@ -1748,7 +1748,7 @@ if (!YAHOO.util.Event) {
         if (EU.isIE) {
 	
             document.write(
-'<scr' + 'ipt id="_yui_eu_dr" defer="true" src="//:"></script>');
+'<scr' + 'ipt id="_yui_eu_dr" defer="true" src="javascript:void"></script>');
         
             var el = document.getElementById("_yui_eu_dr");
             el.onreadystatechange = function() {
