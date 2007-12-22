@@ -97,7 +97,7 @@ public class FDProduct extends FDSku implements AttributesI {
 	 *          false otherwise.
 	 */
 	public boolean isAutoconfigurable() {
-		if (salesUnits.length > 1) {
+		if (getDefaultSalesUnit() == null /* salesUnits.length > 1 */) {
 			return false;
 		}
 		
@@ -126,8 +126,9 @@ public class FDProduct extends FDSku implements AttributesI {
 		}
 		
 		return new FDConfiguration(quantity,
-								   salesUnits[0].getName(),
-								   getOptions());
+			getDefaultSalesUnit().getName() /* salesUnits[0].getName() */,
+			getOptions()
+		);
 	}
 
 	/**
@@ -152,7 +153,7 @@ public class FDProduct extends FDSku implements AttributesI {
 	}
 	
 	/**
-	 * Get the varations for this product.
+	 * Get the variations for this product.
 	 *
 	 * @return array of FDVariation objects
 	 */

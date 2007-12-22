@@ -173,45 +173,13 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 *  This is equivalent to saying it has only one SKU,
 	 *  and only one possible configuration,
 	 *  with regards to variation options and sales units.
+	 *  [segabor]: condition extended, see APPREQ-26
 	 *  
 	 *  @return true if the product can be auto-configured,
 	 *          false otherwise.
 	 */
 	public boolean isAutoconfigurable() {
-		List      skus = getSkus();
-		SkuModel  sku  = null;
-		
-		// get the one and only available SKU for this product
-		// make sure there's exactly one available SKU for the product
-		for (Iterator it = skus.iterator(); it.hasNext(); ) {
-			SkuModel ssku = (SkuModel) it.next();
-			
-			if (!ssku.isUnavailable()) {
-				if (sku != null) {
-					// if there are more than 1 available SKUs, this product
-					// can not be autoconfigured
-					return false;
-				}
-				
-				sku = ssku;
-			}
-		}
-		
-		if (sku == null) {
-			// if no available SKU, this product can not be auto-configured
-			return false;
-		}
-
-		try {
-			FDProduct product	= sku.getProduct();
-			
-			return product.isAutoconfigurable();
-			
-		} catch (FDResourceException e) {
-			return false;
-		} catch (FDSkuNotFoundException e) {
-			return false;
-		}		
+		return getAutoconfiguration() != null;
 	}
 
 	/**
@@ -221,21 +189,16 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 *          product, or null if the product can not be auto-configured.
 	 */
 	public FDConfigurableI getAutoconfiguration() {
-		if (!isAutoconfigurable()) {
-			return null;
+		FDConfigurableI ret = null;
+		SkuModel sku = getDefaultSku();
+		if (sku != null) {
+			try {
+				if (sku.getProduct().isAutoconfigurable()) {
+					ret = sku.getProduct().getAutoconfiguration(getQuantityMinimum());
+				}
+			} catch(Exception exc) {}
 		}
-		
-		try {
-			SkuModel  sku 		= getDefaultSku();
-			FDProduct product	= sku.getProduct();
-
-			return product.getAutoconfiguration(getQuantityMinimum());
-			
-		} catch (FDResourceException e) {
-			return null;
-		} catch (FDSkuNotFoundException e) {
-			return null;
-		}		
+		return ret;
 	}
 	
 	/** Getter for property brands.

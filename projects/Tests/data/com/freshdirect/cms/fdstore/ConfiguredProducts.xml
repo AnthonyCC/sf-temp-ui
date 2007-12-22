@@ -1178,6 +1178,15 @@
         <ORGANIC>false</ORGANIC>
   </Sku>
 
+  <Sku id="FRU0005131A">
+        <KOSHER>false</KOSHER>
+        <VARIATION_MATRIX>
+                <DomainValue ref="source_Farm_Fresh"/>
+                <DomainValue ref="size_Medium"/>
+        </VARIATION_MATRIX>
+        <ORGANIC>false</ORGANIC>
+  </Sku>
+
   <Sku id="FRU0005133">
         <KOSHER>false</KOSHER>
         <VARIATION_MATRIX>
@@ -1353,6 +1362,13 @@
   <Product id="product_multi_sales_units">
     <skus>
 	    <Sku ref="FRU0005131"/>
+    </skus>
+  </Product>
+
+  <Product id="product_multi_sales_units_having_selected_unit">
+    <skus>
+	    <Sku ref="FRU0005131"/>
+	    <Sku ref="FRU0005131A"/><!-- it is marked as selected sku -->
     </skus>
   </Product>
 

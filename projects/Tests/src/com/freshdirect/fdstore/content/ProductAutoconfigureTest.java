@@ -8,10 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.naming.Context;
-import javax.naming.NamingException;
 
-import junit.framework.TestCase;
-
+import org.apache.xerces.validators.datatype.FloatDatatypeValidator;
 import org.mockejb.interceptor.Aspect;
 import org.mockejb.interceptor.InvocationContext;
 import org.mockejb.interceptor.Pointcut;
@@ -25,6 +23,8 @@ import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.common.pricing.Pricing;
 import com.freshdirect.content.attributes.AttributeCollection;
+import com.freshdirect.content.attributes.AttributesI;
+import com.freshdirect.content.attributes.EnumAttributeName;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
@@ -39,8 +39,6 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
-import com.freshdirect.fdstore.content.ConfiguredProductGroupAvailabilityTest.FDFactoryProductAspect;
-import com.freshdirect.fdstore.content.ConfiguredProductGroupAvailabilityTest.FDFactoryProductInfoAspect;
 import com.freshdirect.fdstore.customer.DebugMethodPatternPointCut;
 import com.freshdirect.fdstore.customer.FDCustomerManagerTestSupport;
 
@@ -48,7 +46,10 @@ import com.freshdirect.fdstore.customer.FDCustomerManagerTestSupport;
  * Test case for the availability of ConfiguredProducts.
  */
 public class ProductAutoconfigureTest extends FDCustomerManagerTestSupport {
-
+	public static final AttributesI			EMPTY_ATTRIBUTES		= new AttributeCollection();
+	public static final FDVariationOption[]	EMPTY_VARIATION_OPTIONS	= new FDVariationOption[0];
+	public static final FDVariationOption[] dummyVariationOptions = {new FDVariationOption(EMPTY_ATTRIBUTES, "simple", "simpleVal")};
+	
 	public ProductAutoconfigureTest(String name) {
 		super(name);
 	}
@@ -84,7 +85,7 @@ public class ProductAutoconfigureTest extends FDCustomerManagerTestSupport {
 		context = mockContextFactory.getInitialContext(env);
 
 		aspectSystem.add(new FDFactoryProductAspect());
-		aspectSystem.add(new FDFactoryProductInfoAspect());		
+		aspectSystem.add(new FDFactoryProductInfoAspect());
 	}
 	
 	public void tearDown() {
@@ -135,8 +136,20 @@ public class ProductAutoconfigureTest extends FDCustomerManagerTestSupport {
 	}
 
 	/**
+	 *  Test to see if a product with multiple sales units
+	 *  CAN BE auto-configured having one selected.
+	 */
+	public void testMultipleSalesUnitsHavingSelectedSalesUnit() {
+		ProductModelImpl product = (ProductModelImpl)
+								findProduct("product_multi_sales_units_having_selected_unit");
+		assertNotNull(product);
+		assertTrue(product.isAutoconfigurable());
+		assertNotNull(product.getAutoconfiguration());
+	}
+
+	/**
 	 *  Test to see if a product with a single sales unit and no variation
-	 *  options can be auto-confifgured.
+	 *  options can be auto-configured.
 	 */
 	public void testAutoconfigurable() {
 		ProductModelImpl product = (ProductModelImpl)
@@ -268,19 +281,19 @@ public class ProductAutoconfigureTest extends FDCustomerManagerTestSupport {
 		    	material       = null;
 		    	
 		    	variationOptions = new FDVariationOption[2];
-		    	variationOptions[0] = new FDVariationOption(null,
+		    	variationOptions[0] = new FDVariationOption(EMPTY_ATTRIBUTES,
 						"VariationOption1",
 						"test variation option 1");
-		    	variationOptions[1] = new FDVariationOption(null,
+		    	variationOptions[1] = new FDVariationOption(EMPTY_ATTRIBUTES,
 						"VariationOption2",
 						"test variation option 2");
 				variations     = new FDVariation[1];
-				variations[0] = new FDVariation(new AttributeCollection(),
+				variations[0] = new FDVariation(EMPTY_ATTRIBUTES,
 						                        "variation",
 						                        variationOptions);
 				
 				salesUnits     = new FDSalesUnit[1];
-				salesUnits[0] = new FDSalesUnit(null,
+				salesUnits[0] = new FDSalesUnit(EMPTY_ATTRIBUTES,
 												"SalesUnit1",
 												"test sales unit 1");
 				pricing        = null;
@@ -292,21 +305,47 @@ public class ProductAutoconfigureTest extends FDCustomerManagerTestSupport {
 		    	now            = new Date();
 		    	material       = null;
 				variations     = new FDVariation[1];
-				variations[0] = new FDVariation(new AttributeCollection(),
+				variations[0] = new FDVariation(EMPTY_ATTRIBUTES,
 						                        "variation",
-						                        null);
+						                        dummyVariationOptions);
 				
 				salesUnits     = new FDSalesUnit[2];
-				salesUnits[0] = new FDSalesUnit(null,
+				salesUnits[0] = new FDSalesUnit(EMPTY_ATTRIBUTES,
 						"SalesUnit1",
 						"test sales unit 1");
-				salesUnits[1] = new FDSalesUnit(null,
+				salesUnits[1] = new FDSalesUnit(EMPTY_ATTRIBUTES,
 						"SalesUnit2",
 						"test sales unit 2");
 				pricing        = null;
 				nutrition      = null;
 				nutritionInfo  = null;
 				
+	    	} else if ("FRU0005131A".equals(sku)) {
+	    		// Prepared for test case 'testMultipleSalesUnitsHavingSelectedSalesUnit'
+	    		// set SELECTED SKU flag
+	    		// [segabor] This is to make new autoconfig magic work
+	    		//           For more please see APPREQ-26
+	    		AttributeCollection sel_unit_attrs = new AttributeCollection();
+	    		sel_unit_attrs.setAttribute(EnumAttributeName.SELECTED.getName(), true);
+
+		    	// this is a product with multiple sales units
+		    	now            = new Date();
+		    	material       = null;
+				variations     = new FDVariation[1];
+				variations[0] = new FDVariation(EMPTY_ATTRIBUTES,
+						                        "variation",
+						                        dummyVariationOptions);
+				
+				salesUnits     = new FDSalesUnit[2];
+				salesUnits[0] = new FDSalesUnit(sel_unit_attrs,
+						"SalesUnit1",
+						"test sales unit 1");
+				salesUnits[1] = new FDSalesUnit(EMPTY_ATTRIBUTES,
+						"SalesUnit2",
+						"test sales unit 2");
+				pricing        = null;
+				nutrition      = null;
+				nutritionInfo  = null;
 	    	} else if ("FRU0005133".equals(sku)) {
 		    	// this is a product which can be auto-configured, and
 	    		// has no variation options
@@ -314,7 +353,7 @@ public class ProductAutoconfigureTest extends FDCustomerManagerTestSupport {
 		    	material       = null;
 				variations     = new FDVariation[0];
 				salesUnits     = new FDSalesUnit[1];
-				salesUnits[0] = new FDSalesUnit(null,
+				salesUnits[0] = new FDSalesUnit(EMPTY_ATTRIBUTES,
 						"SalesUnit1",
 						"test sales unit 1");
 				pricing        = null;
@@ -329,22 +368,22 @@ public class ProductAutoconfigureTest extends FDCustomerManagerTestSupport {
 		    	
 				variations     = new FDVariation[2];
 		    	variationOptions = new FDVariationOption[1];
-		    	variationOptions[0] = new FDVariationOption(null,
+		    	variationOptions[0] = new FDVariationOption(EMPTY_ATTRIBUTES,
 						"VariationOption1",
 						"test variation option 1");
-				variations[0] = new FDVariation(new AttributeCollection(),
+				variations[0] = new FDVariation(EMPTY_ATTRIBUTES,
 						                        "variation1",
 						                        variationOptions);
 		    	variationOptions = new FDVariationOption[1];
-		    	variationOptions[0] = new FDVariationOption(null,
+		    	variationOptions[0] = new FDVariationOption(EMPTY_ATTRIBUTES,
 						"VariationOption2",
 						"test variation option 2");
-				variations[1] = new FDVariation(new AttributeCollection(),
+				variations[1] = new FDVariation(EMPTY_ATTRIBUTES,
 						                        "variation2",
 						                        variationOptions);
 				
 				salesUnits     = new FDSalesUnit[1];
-				salesUnits[0] = new FDSalesUnit(null,
+				salesUnits[0] = new FDSalesUnit(EMPTY_ATTRIBUTES,
 						"SalesUnit1",
 						"test sales unit 1");
 				pricing        = null;
@@ -355,9 +394,9 @@ public class ProductAutoconfigureTest extends FDCustomerManagerTestSupport {
 		    	now            = new Date();
 		    	material       = null;
 				variations     = new FDVariation[1];
-				variations[0] = new FDVariation(new AttributeCollection(),
+				variations[0] = new FDVariation(EMPTY_ATTRIBUTES,
 						                        "variation",
-						                        null);
+						                        dummyVariationOptions);
 				salesUnits     = null;
 				pricing        = null;
 				nutrition      = null;
