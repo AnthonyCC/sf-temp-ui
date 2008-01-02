@@ -541,7 +541,7 @@ public class JspMethods {
 			 	if (dfltSku !=null && showPrice) {
 					  FDProductInfo pi = FDCachedFactory.getProductInfo( dfltSku.getSkuCode() );
 					  //pi.getAttribute(EnumAttributeName.PRICING_UNIT_DESCRIPTION.getName(), pi.getDefaultPriceUnit().toLowerCase())
-					  displayObj.setPrice( currencyFormatter.format(pi.getDefaultPrice())+"/"+ pi.getDisplayableDefaultPriceUnit());
+					  displayObj.setPrice( currencyFormatter.format(pi.getDefaultPrice())+"/"+ pi.getDisplayableDefaultPriceUnit().toLowerCase());
                       String salesUnitDescr =  FDCachedFactory.getProduct( pi).getSalesUnits()[0].getDescription();
                       if (!"nm".equalsIgnoreCase(salesUnitDescr) && !"ea".equalsIgnoreCase(salesUnitDescr) && !"".equalsIgnoreCase(salesUnitDescr)) { 
                       	displayObj.setSalesUnitDescription(salesUnitDescr);
