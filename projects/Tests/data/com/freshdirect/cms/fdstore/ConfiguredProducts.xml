@@ -1366,6 +1366,9 @@
   </Product>
 
   <Product id="product_multi_sales_units_having_selected_unit">
+    <PREFERRED_SKU>
+        <Sku ref="FRU0005131A"/>
+    </PREFERRED_SKU>
     <skus>
 	    <Sku ref="FRU0005131"/>
 	    <Sku ref="FRU0005131A"/><!-- it is marked as selected sku -->
