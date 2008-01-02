@@ -2,9 +2,46 @@
 <%-- requires productNode --%>
 <%
 {
+/*
+ * if the Number of days available is 3 or less, then 
+ *   show message; This item is ONLY available for delivery on ...
+ * Else 
+ *  show message:This item is Not available for delivery on ....
+ *  
+ *  Days orders is from Monday-Sunday, and must be in the plural form
+ *
+*/
+
 	DayOfWeekSet blockedDays = productNode.getBlockedDays();
 	if (!blockedDays.isEmpty()) {
-		DayOfWeekSet allowedDays = blockedDays.inverted();
+		int numOfDays=0;
+		StringBuffer daysStringBuffer = null;
+		boolean isInverted=true;
+		
+		if (blockedDays.size() > 3) {
+			numOfDays = (7-blockedDays.size() );
+		 	daysStringBuffer= new StringBuffer(blockedDays.inverted().format(true));
+		} else {
+			isInverted=false;
+		  	daysStringBuffer = new StringBuffer(blockedDays.format(true));
+			numOfDays = blockedDays.size();
+		}
+		
+		
+		if (numOfDays > 1 ) {
+			//** make sundays the last day, if more than one in the list 
+			if (daysStringBuffer.indexOf("Sundays, ")!=-1)  {
+				daysStringBuffer.delete(0,9);
+				daysStringBuffer.append(" ,Sundays");
+			}
+			
+			//replace final comma with "and" or "or"
+			int li = daysStringBuffer.lastIndexOf(",");
+			daysStringBuffer.replace(li,li+1,(isInverted ?" and ": " or ") );
+		}
+		
+		
+		
 		%>
 		<table width="420" cellpadding="0" cellspacing="0" border="0">
 			<tr>
@@ -16,10 +53,8 @@
 			<tr>
 				<td align="center">
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="5"><br>
-					<span class="text11orbold"><%= allowedDays.size() == 1 ?
-						"AVAILABLE FOR " + allowedDays.format(false) + " DELIVERY ONLY" :
-						"LIMITED DELIVERY DAYS ONLY" %></span><br>
-					This specially prepared item is available for delivery on <b><%= allowedDays.format(true) %> only</b>.<br>
+					<span class="text11orbold">SPECIALLY PREPARED ITEM - LIMITED AVAILABILITY</span><br>
+					This item is <b><%=isInverted?"only" : "not"%></b> available for delivery on <b><%= daysStringBuffer.toString() %></b>.<br>
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="6">
 				</td>
 			</tr>
