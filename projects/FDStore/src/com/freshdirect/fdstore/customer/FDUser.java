@@ -26,6 +26,8 @@ import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
+import com.freshdirect.customer.ErpPromotionHistory;
+import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.deliverypass.DeliveryPassType;
 import com.freshdirect.deliverypass.DlvPassConstants;
@@ -85,7 +87,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     private boolean surveySkipped = false;
 
     private transient ErpCustomerInfoModel customerInfoModel;
-    private transient FDOrderHistory cachedOrderHistory;
+    private transient OrderHistoryI cachedOrderHistory;
     private transient FDCustomerModel cachedFDCustomer;
 	private transient FDPromotionEligibility promotionEligibility;
 	private transient Boolean checkEligible;
@@ -109,12 +111,15 @@ public class FDUser extends ModelSupport implements FDUserI {
 	private FDUserDlvPassInfo dlvPassInfo;
 	
 	private Map assignedCustomerParams;
+
 	/*
-	 * This Map contains the list of product keys that are already
-	 * evaluated for a specific DCPD promo.
-	 * product key -> FDProductPromoEligiblityList
+	 * This attribute caches the list of product keys that are already
+	 * evaluated for DCPD along with its DCPD promo info. Only used by
+	 * Web tier for applying promotions. So transient.
 	 */
-	private transient Map eligibleProductMap;
+	private transient DCPDPromoProductCache dcpdPromoProductCache;
+	//New Promotion History cache. PERF-22.
+	private transient ErpPromotionHistory cachedPromoHistory;
 	
 	public FDUserDlvPassInfo getDlvPassInfo() {
 		return dlvPassInfo;
@@ -290,7 +295,6 @@ public class FDUser extends ModelSupport implements FDUserI {
 		
 		this.getShoppingCart().clearSampleLines();
 		this.getShoppingCart().setDiscounts(new ArrayList());
-		this.cleanUpProductPromoEligiblityList();
 		// evaluate special dlv charge override
 		WaiveDeliveryCharge.apply(this);
 
@@ -298,21 +302,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 		this.promotionEligibility = FDPromotionVisitor.applyPromotions(new PromotionContextAdapter(this));
     }
 
-    private void cleanUpProductPromoEligiblityList(){
-    	if(this.eligibleProductMap == null || this.eligibleProductMap.isEmpty()){
-    		return;
-    	}
-    	Set prodKeysInCart = new HashSet();
-    	for (Iterator i = this.shoppingCart.getOrderLines().iterator(); i.hasNext();) {
-    		FDCartLineI cartLine = (FDCartLineI) i.next();
-			ProductModel model = cartLine.getProductRef().lookupProduct();
-			String productId = model.getContentKey().getId();
-			prodKeysInCart.add(productId);
-    	}
-    	Set eligibleProdKeys = eligibleProductMap.keySet();
-    	//Retain only the product keys thar are in the cart.
-    	eligibleProdKeys.retainAll(prodKeysInCart);
-    }
+
     private void updateSurcharges() {
 		this.getShoppingCart().clearCharge(EnumChargeType.DELIVERY);
 		this.getShoppingCart().clearCharge(EnumChargeType.MISCELLANEOUS);
@@ -385,7 +375,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
     
     public void invalidateCache() {
-        this.cachedOrderHistory = null;
+    	//Commented as part of PERF-22 task.
+        //this.cachedOrderHistory = null;
         this.signupDiscountRule = null;
         this.cachedFDCustomer = null;
         this.customerInfoModel = null;
@@ -394,13 +385,38 @@ public class FDUser extends ModelSupport implements FDUserI {
 		this.referrerEligible = null;
 		this.regRefTrackingCode = null;
 		this.cclListInfos = null;
+		this.cachedPromoHistory = null;
+    }
+    /*
+     * This method was introduced as part of PERF-22 task.
+     * Seperate invalidation of Order History Cache from other caches.
+     */
+    public void invalidateOrderHistoryCache() {
+    	this.cachedOrderHistory = null;
     }
     
-    public FDOrderHistory getOrderHistory() throws FDResourceException {
+    public OrderHistoryI getOrderHistory() throws FDResourceException {
         if (this.cachedOrderHistory==null) {
             this.cachedOrderHistory = FDCustomerManager.getOrderHistoryInfo(this.identity);
         }
         return this.cachedOrderHistory;
+    }
+    
+   private OrderHistoryI getOrderHistoryInfo() throws FDResourceException {
+    	if(EnumTransactionSource.CUSTOMER_REP.equals(application)){
+    		//If CRM load entire order history.
+    		return FDCustomerManager.getOrderHistoryInfo(this.identity);
+    	} else {
+    		//Load only Order History Summary.
+    		return FDCustomerManager.getWebOrderHistoryInfo(this.identity);
+    	}
+    }
+   
+    public ErpPromotionHistory getPromotionHistory() throws FDResourceException {
+        if (this.cachedPromoHistory==null) {
+            this.cachedPromoHistory = FDCustomerManager.getPromoHistoryInfo(this.identity);
+        }
+        return this.cachedPromoHistory;
     }
     
     /**
@@ -1024,41 +1040,12 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public void setAssignedCustomerParams(Map assignedCustomerParams) {
 		this.assignedCustomerParams = assignedCustomerParams;
 	}
-    
-	public void setProductPromoEligibilty(String productId, String promoId, boolean eligible){
-		if(this.eligibleProductMap == null){
-			//For the very first time.
-			this.eligibleProductMap = new HashMap();
-		}
-		FDProductPromoEligibilityList eligibilityList = (FDProductPromoEligibilityList)
-														this.eligibleProductMap.get(productId);
-		if(eligibilityList == null){
-			eligibilityList = new FDProductPromoEligibilityList();
-		}
-		eligibilityList.setEligibility(promoId, eligible);
-		this.eligibleProductMap.put(productId, eligibilityList);
-	}
 	
-	public boolean isProductEligible(String productId, String promoId) {
-		if(this.eligibleProductMap != null){
-			FDProductPromoEligibilityList eligibilityList = (FDProductPromoEligibilityList)
-													this.eligibleProductMap.get(productId);
-			if(eligibilityList != null){
-				return eligibilityList.isEligibleFor(promoId);
-			}
+	public DCPDPromoProductCache getDCPDPromoProductCache(){
+		if(this.dcpdPromoProductCache == null){
+			this.dcpdPromoProductCache = new DCPDPromoProductCache();
 		}
-		return false;
-	}
-	
-	public boolean isProductEvaluated(String productId, String promoId) {
-		if(this.eligibleProductMap != null){
-			FDProductPromoEligibilityList eligibilityList = (FDProductPromoEligibilityList)
-														this.eligibleProductMap.get(productId);
-			if(eligibilityList != null){
-				return eligibilityList.isEvaluatedFor(promoId);
-			}
-		}
-		return false;
+		return dcpdPromoProductCache;
 	}
 }
 	

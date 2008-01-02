@@ -28,7 +28,7 @@
 	FDCustomerModel customer = FDCustomerFactory.getFDCustomer(yuzer.getIdentity());
     boolean isManualRetention = "true".equals(customer.getProfile().getAttribute("ManualRetention-$5")) ;
 
-	ErpSaleInfo firstOrder = yuzer.getOrderHistory().getLastSale();
+	//Commented out as it is never used. ErpSaleInfo firstOrder = yuzer.getOrderHistory().getLastSale();
 	
 	/*if(promoAvailable && (id % 4 == 0 || isManualRetention) && firstOrder.getRequestedDate().after(startPromo.getTime())) {
 		incentivize = true;

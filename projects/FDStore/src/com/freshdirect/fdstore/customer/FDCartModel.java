@@ -1116,4 +1116,19 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	public boolean isEmpty() {
 		return this.getOrderLines().isEmpty();
 	}
+	
+	/*
+	 * Get the product keys of the line items.
+	 */
+	public Set getProductKeysForLineItems() {
+		Set prodKeysInCart = new HashSet();
+		for (Iterator i = this.getOrderLines().iterator(); i.hasNext();) {
+			FDCartLineI cartLine = (FDCartLineI) i.next();
+			ProductModel model = cartLine.getProductRef().lookupProduct();
+			String productId = model.getContentKey().getId();
+			prodKeysInCart.add(productId);
+		}
+		return prodKeysInCart;
+	}
+
 }

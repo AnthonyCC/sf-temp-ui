@@ -78,6 +78,7 @@ import com.freshdirect.customer.ErpModifyOrderModel;
 import com.freshdirect.customer.ErpOrderHistory;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
+import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.customer.ErpRedeliveryModel;
 import com.freshdirect.customer.ErpResubmitPaymentModel;
 import com.freshdirect.customer.ErpReturnOrderModel;
@@ -87,6 +88,8 @@ import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpSettlementModel;
 import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.customer.ErpWebOrderHistory;
+import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.customer.adapter.CustomerAdapter;
 import com.freshdirect.customer.adapter.SapOrderAdapter;
 import com.freshdirect.deliverypass.DlvPassUsageInfo;
@@ -598,7 +601,9 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			conn = this.getConnection();
 			Collection history = ErpSaleInfoDAO.getOrderHistoryInfo(conn, erpCustomerPk.getId());
 
-			Map promoParticipation = ErpPromotionDAO.loadPromotionParticipation(conn, erpCustomerPk);
+/*			This block has been commented out as loading of Promotion History is seperated
+ * 			from Order History. Jira Task PERF - 22.
+ * 			Map promoParticipation = ErpPromotionDAO.loadPromotionParticipation(conn, erpCustomerPk);
 			for (Iterator i = history.iterator(); i.hasNext();) {
 				ErpSaleInfo saleInfo = (ErpSaleInfo) i.next();
 				Set promoCodes = (Set) promoParticipation.get(saleInfo.getSaleId());
@@ -606,7 +611,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 					saleInfo.setUsedPromotionCodes(promoCodes);
 				}
 			}
-
+*/
 			return new ErpOrderHistory(history);
 
 		} catch (SQLException ex) {
@@ -621,6 +626,26 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
+	
+	 public ErpPromotionHistory getPromoHistoryInfo(PrimaryKey erpCustomerPk) {
+			Connection conn = null;
+			try {
+				conn = this.getConnection();
+				Map promoParticipation = ErpPromotionDAO.loadPromotionParticipation(conn, erpCustomerPk);
+				return new ErpPromotionHistory(promoParticipation);
+
+			} catch (SQLException ex) {
+				throw new EJBException(ex);
+			} finally {
+				if (conn != null) {
+					try {
+						conn.close();
+					} catch (SQLException ex) {
+						LOGGER.warn("Unable to close connection", ex);
+					}
+				}
+			}
+	 }
 
 	/**
 	 * Add an invoice to ErpSale
@@ -2264,5 +2289,53 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	
+	public boolean isOrderBelongsToUser(PrimaryKey erpCustomerPk, String saleId) {
+		Connection conn = null;
+		try {
+			conn = this.getConnection();
+			return ErpSaleInfoDAO.isOrderBelongsToUser(conn, erpCustomerPk.getId(), saleId);
+		} catch (SQLException se) {
+			throw new EJBException(se);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+					conn = null;
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("SQLException while cleaning up", se);
+			}
+		}
+	}
+	 public OrderHistoryI getWebOrderHistoryInfo(PrimaryKey erpCustomerPk) {
+			Connection conn = null;
+			try {
+				conn = this.getConnection();
+				Collection history = ErpSaleInfoDAO.getOrderHistoryInfo(conn, erpCustomerPk.getId());
+
+	/*			This block has been commented out as loading of Promotion History is seperated
+	 * 			from Order History. Jira Task PERF - 22.
+	 * 			Map promoParticipation = ErpPromotionDAO.loadPromotionParticipation(conn, erpCustomerPk);
+				for (Iterator i = history.iterator(); i.hasNext();) {
+					ErpSaleInfo saleInfo = (ErpSaleInfo) i.next();
+					Set promoCodes = (Set) promoParticipation.get(saleInfo.getSaleId());
+					if (promoCodes != null) {
+						saleInfo.setUsedPromotionCodes(promoCodes);
+					}
+				}
+	*/
+				return new ErpWebOrderHistory(history);
+
+			} catch (SQLException ex) {
+				throw new EJBException(ex);
+			} finally {
+				if (conn != null) {
+					try {
+						conn.close();
+					} catch (SQLException ex) {
+						LOGGER.warn("Unable to close connection", ex);
+					}
+				}
+			}		 
+	 }
 }

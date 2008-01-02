@@ -14,6 +14,8 @@ import java.util.List;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpPromotionHistory;
+import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassProfileType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
@@ -111,7 +113,7 @@ public interface FDUserI extends java.io.Serializable {
 	 */
 	public void invalidateCache();
 
-	public FDOrderHistory getOrderHistory() throws FDResourceException;
+	public OrderHistoryI getOrderHistory() throws FDResourceException;
 
     public int getAdjustedValidOrderCount() throws FDResourceException;
     
@@ -245,4 +247,14 @@ public interface FDUserI extends java.io.Serializable {
 	public boolean isCCLInExperienced();
 	
 	public List getCustomerCreatedListInfos();
+	
+	public DCPDPromoProductCache getDCPDPromoProductCache();
+	
+	public ErpPromotionHistory getPromotionHistory() throws FDResourceException;
+	
+    /*
+     * This method was introduced as part of PERF-22 task.
+     * Seperate invalidation of Order History Cache from other caches.
+     */
+    public void invalidateOrderHistoryCache();
 }

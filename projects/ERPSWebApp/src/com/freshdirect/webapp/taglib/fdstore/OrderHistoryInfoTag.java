@@ -16,6 +16,7 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDOrderHistory;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -39,8 +40,10 @@ public class OrderHistoryInfoTag extends AbstractGetterTag {
 
 		HttpSession session = pageContext.getSession();
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
-
-		FDOrderHistory history = user.getOrderHistory();
+		//Commented By Sai - as part of PERF 22. Now onwards the page will directly call
+		//FDCustomerManager.getOrderHistoryInfo() method.
+		//FDOrderHistory history = user.getOrderHistory();
+		FDOrderHistory history = FDCustomerManager.getOrderHistoryInfo(user.getIdentity());
 		List orderHistoryInfo = new ArrayList(history.getFDOrderInfos());
 
 		Collections.sort(orderHistoryInfo, ORDER_COMPARATOR);

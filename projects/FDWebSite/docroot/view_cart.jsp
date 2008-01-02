@@ -53,6 +53,8 @@ request.setAttribute("listPos", "SystemMessage");
     String custFirstName = user.getLevel()==FDUser.GUEST ? "Your" : user.getFirstName() + "'s"; 
     //Reload the DP status from Database to make the session and DB are in sync.
     user.updateDlvPassInfo();
+    //TODO - Reset the DCPD eligiblity map to re-calculate the promo if in case promotion was modified.
+   user.getDCPDPromoProductCache().clear();
 
 %>
 

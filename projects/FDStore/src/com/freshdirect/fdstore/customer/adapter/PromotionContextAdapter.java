@@ -21,6 +21,7 @@ import com.freshdirect.fdstore.FDDepotManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.DCPDPromoProductCache;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -90,7 +91,7 @@ public class PromotionContextAdapter implements PromotionContextI {
 	public int getPromotionUsageCount(String promotionCode) {
 		String ignoreSaleId = this.getModifiedSaleId();
 		try {
-			return user.getOrderHistory().getPromotionUsageCount(promotionCode, ignoreSaleId);
+			return user.getPromotionHistory().getPromotionUsageCount(promotionCode, ignoreSaleId);
 		} catch (FDResourceException e) {
 			throw new FDRuntimeException(e);
 		}
@@ -101,7 +102,7 @@ public class PromotionContextAdapter implements PromotionContextI {
 		Set promoCodes = PromotionFactory.getInstance().getPromotionCodesByType(EnumPromotionType.SIGNUP);
 		try {
 
-			Set allPromos = user.getOrderHistory().getUsedPromotionCodes(ignoreSaleId);
+			Set allPromos = user.getPromotionHistory().getUsedPromotionCodes(ignoreSaleId);
 			promoCodes.retainAll(allPromos);
 
 			if (promoCodes.isEmpty()) {
@@ -247,34 +248,37 @@ public class PromotionContextAdapter implements PromotionContextI {
 	public AssignedCustomerParam getAssignedCustomerParam(String promoId){
 		return this.user.getAssignedCustomerParam(promoId);
 	}
+	
 	public List getEligibleLinesForDCPDiscount(String promoId, Set contentKeys){
-		if(this.getShoppingCart().isEmpty()){
+		if(getShoppingCart().isEmpty()){
 			return Collections.EMPTY_LIST;
 		}
 		List eligibleLines = new ArrayList();
 
-		List orderLines = this.getShoppingCart().getOrderLines();
+		List orderLines = getShoppingCart().getOrderLines();
 		for(Iterator i = orderLines.iterator(); i.hasNext();){
 			FDCartLineI cartLine = (FDCartLineI)i.next();
 			boolean eligible = false;
 			String recipeSourceId = cartLine.getRecipeSourceId();
-			if(recipeSourceId != null && recipeSourceId.length() >0 ){
+			if(recipeSourceId != null && recipeSourceId.length() > 0){
 				////Check if the line item is eligible for a recipe discount.
 				eligible = OrderPromotionHelper.isRecipeEligible(recipeSourceId, contentKeys);
 			}
 			if(!eligible){
-				//Check if the lien item product is already evaluated.
 				ProductModel model = cartLine.getProductRef().lookupProduct();
 				String productId = model.getContentKey().getId();
-				if(this.user.isProductEvaluated(productId, promoId)){
+				DCPDPromoProductCache info = this.user.getDCPDPromoProductCache();
+				//Check if the line item product is already evaluated.
+				if(info.isEvaluated(productId, promoId)){
 					LOGGER.info("Product id "+productId+" already evaluated");
-					eligible = this.user.isProductEligible(productId, promoId);
-					LOGGER.info("Product id "+productId+" "+eligible);
+					eligible = info.isEligible(productId, promoId);
+					LOGGER.info("Product id "+productId+" eligible 	"+eligible);
 				}else{
 					//Check if the line item is eligible for a category or department discount.
 					eligible = OrderPromotionHelper.evaluateCartLineForEligibleCategoryOrDept(cartLine, contentKeys);
 					//Set the eligiblity info to user session.
-					this.user.setProductPromoEligibilty(productId, promoId, eligible);
+					LOGGER.info("Setting Info for Product id "+productId+" to "+eligible);
+					info.setPromoProductInfo(productId, promoId, eligible);
 				}
 			}
 			if(eligible){

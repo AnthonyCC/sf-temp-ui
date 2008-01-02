@@ -408,11 +408,12 @@ public class FDShoppingCartControllerTag extends
 				LOGGER.warn("Error refreshing cart", e);
 				throw new JspException(e.getMessage());
 			}
-
+			//This method retains all product keys that are in the cart in the dcpd promo product info.
+			user.getDCPDPromoProductCache().retainAll(cart.getProductKeysForLineItems());
+			
 			user.updateUserState();
-
+			
 			cart.sortOrderLines();
-
 		}
 
 		// Check for expired or cancelled passes if already used.

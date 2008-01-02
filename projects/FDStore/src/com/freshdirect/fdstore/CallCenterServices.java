@@ -337,7 +337,7 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if (!orderBelongsToUser(identity, saleId)) {
+			if (!FDCustomerManager.orderBelongsToUser(identity, saleId)) {
 				throw new FDResourceException("Order not found in current user's order history.");
 			}
 			CallCenterManagerSB sb = callCenterHome.create();
@@ -358,7 +358,7 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if (!orderBelongsToUser(identity, saleId)) {
+			if (!FDCustomerManager.orderBelongsToUser(identity, saleId)) {
 				throw new FDResourceException("Order not found in current user's order history.");
 			}
 			CallCenterManagerSB sb = callCenterHome.create();
@@ -379,7 +379,7 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if (!orderBelongsToUser(identity, saleId)) {
+			if (!FDCustomerManager.orderBelongsToUser(identity, saleId)) {
 				throw new FDResourceException("Order not found in current user's order history.");
 			}
 			CallCenterManagerSB sb = callCenterHome.create();
@@ -399,7 +399,7 @@ public class CallCenterServices {
 			lookupManagerHome();
 		}
 		try {
-			if (!orderBelongsToUser(identity, saleId)) {
+			if (!FDCustomerManager.orderBelongsToUser(identity, saleId)) {
 				throw new FDResourceException("Order not found in current user's order history.");
 			}
 			CallCenterManagerSB sb = callCenterHome.create();
@@ -606,7 +606,10 @@ public class CallCenterServices {
 	 * @param String sale id
 	 * @return boolean
 	 */
-	private static boolean orderBelongsToUser(FDIdentity identity, String saleId) throws FDResourceException {
+/*	
+    This method is obsolete. Replaced by FDCustomerManager.orderBelongsToUser(FDIdentity identity, String saleId)
+    
+    private static boolean orderBelongsToUser(FDIdentity identity, String saleId) throws FDResourceException {
 		Collection orders = FDCustomerManager.getOrderHistoryInfo(identity).getFDOrderInfos();
 		for (Iterator it = orders.iterator(); it.hasNext();) {
 			FDOrderInfoI orderInfo = (FDOrderInfoI) it.next();
@@ -616,7 +619,7 @@ public class CallCenterServices {
 			}
 		}
 		return false;
-	}
+	}*/
 	
 	public static List getOrderStatusReport(String[] statusCodes) throws FDResourceException {
 		if (callCenterHome == null) {

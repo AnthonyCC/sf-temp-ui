@@ -55,7 +55,10 @@ import com.freshdirect.customer.ErpOrderHistory;
 import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
+import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.customer.ErpWebOrderHistory;
+import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.delivery.DlvServiceSelectionResult;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumDeliveryStatus;
@@ -1069,6 +1072,29 @@ public class FDCustomerManager {
 		return new FDOrderHistory(history.getErpSaleInfos());
 	}
 
+	public static ErpPromotionHistory getPromoHistoryInfo(FDIdentity identity) throws FDResourceException {
+
+		if (identity == null) {
+			// !!! this happens eg. when calculating promotions for an anon user..
+			// but i don't think this should be called then...
+			return new ErpPromotionHistory(Collections.EMPTY_MAP);
+		}
+
+		lookupManagerHome();
+
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			return sb.getPromoHistoryInfo(identity);
+
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
 /*	public static List loadPromotions() throws FDResourceException {
 		lookupManagerHome();
 		try {
@@ -1199,8 +1225,8 @@ public class FDCustomerManager {
 	 * @param String sale id
 	 * @return boolean
 	 */
-	private static boolean orderBelongsToUser(FDIdentity identity, String saleId) throws FDResourceException {
-		Collection orders = getOrderHistoryInfo(identity).getFDOrderInfos();
+	public static boolean orderBelongsToUser(FDIdentity identity, String saleId) throws FDResourceException {
+	/*	Collection orders = getOrderHistoryInfo(identity).getFDOrderInfos();
 		for (Iterator it = orders.iterator(); it.hasNext();) {
 			FDOrderInfoI orderInfo = (FDOrderInfoI) it.next();
 			if (orderInfo.getErpSalesId().equals(saleId)) {
@@ -1208,7 +1234,27 @@ public class FDCustomerManager {
 				return true;
 			}
 		}
-		return false;
+		return false;*/
+		
+		if (identity == null) {
+			// !!! this happens eg. when calculating promotions for an anon user..
+			// but i don't think this should be called then...
+			return false;
+		}
+
+		lookupManagerHome();
+
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			return sb.isOrderBelongsToUser(identity, saleId);
+
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}		
 	}
 
 	/**
@@ -2224,6 +2270,25 @@ public class FDCustomerManager {
 		
 	}
 
-	
+	public static OrderHistoryI getWebOrderHistoryInfo(FDIdentity identity) throws FDResourceException {
+
+		if (identity == null) {
+			// !!! this happens eg. when calculating promotions for an anon user..
+			// but i don't think this should be called then...
+			return new ErpWebOrderHistory(Collections.EMPTY_LIST);
+		}
+		lookupManagerHome();
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			return sb.getWebOrderHistoryInfo(identity);
+
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}	
 	
 }

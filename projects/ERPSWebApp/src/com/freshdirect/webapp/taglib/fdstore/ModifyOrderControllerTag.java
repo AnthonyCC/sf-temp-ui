@@ -277,6 +277,8 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		}
 
 		user.invalidateCache();
+        // make sure we're not using stale order history data.
+		user.invalidateOrderHistoryCache();
 		session.setAttribute( SessionName.USER, user );
 
 	}

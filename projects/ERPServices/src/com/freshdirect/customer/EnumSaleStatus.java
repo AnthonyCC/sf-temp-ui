@@ -118,5 +118,7 @@ public class EnumSaleStatus implements java.io.Serializable {
 	public boolean isCanceled() {
 		return this.equals(CANCELED) || this.equals(MODIFIED_CANCELED);
 	}
-
+	public boolean isReturned() {
+		return this.equals(RETURNED);
+	}
 }

@@ -40,7 +40,9 @@ import com.freshdirect.customer.ErpModifyOrderModel;
 import com.freshdirect.customer.ErpOrderHistory;
 import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
+import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.deliverypass.DeliveryPassException;
@@ -276,6 +278,14 @@ public interface FDCustomerManagerSB extends EJBObject {
      */
     public ErpOrderHistory getOrderHistoryInfo(FDIdentity identity) throws FDResourceException, RemoteException;
     
+    
+    /**
+     * Get lightweight info about a customer's used promotions.
+     *
+     * @param identity the customer's identity reference
+     */
+    public ErpPromotionHistory getPromoHistoryInfo(FDIdentity identity) throws FDResourceException, RemoteException;
+    
     /**
      * Place an order (send msg to SAP, persist order).
      *
@@ -493,6 +503,13 @@ public interface FDCustomerManagerSB extends EJBObject {
 	
 	public void flipAutoRenewDP(String customerPK, EnumTransactionSource source, String initiator)throws FDResourceException, RemoteException;
 
-
+	public boolean isOrderBelongsToUser(FDIdentity identity, String saleId) throws RemoteException, FDResourceException;
+	/**
+     * Get lightweight info about a customer's orders.
+     *
+     * @param identity the customer's identity reference
+     */
+    public OrderHistoryI getWebOrderHistoryInfo(FDIdentity identity) throws FDResourceException, RemoteException;
+    
 }
  

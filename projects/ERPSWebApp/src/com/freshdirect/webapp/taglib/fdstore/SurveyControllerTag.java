@@ -3,6 +3,7 @@ package com.freshdirect.webapp.taglib.fdstore;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
 
@@ -88,14 +89,16 @@ public class SurveyControllerTag extends com.freshdirect.framework.webapp.BodyTa
 						boolean promoAvailable = PromotionFactory.getInstance().getPromotion("2ND_ORDER_SURVEY") != null;
 						BigInteger id = new BigInteger(user.getIdentity().getFDCustomerPK());
 						BigInteger modVal = new BigInteger("4");
-						ErpSaleInfo firstOrder = user.getOrderHistory().getLastSale();
+						//Commented as part of PERF-22.
+						//ErpSaleInfo firstOrder = user.getOrderHistory().getLastSale();
+						Date firstOrderRequestedDate = user.getOrderHistory().getLastOrderDlvDate();
 						Calendar startPromo = Calendar.getInstance();
 						startPromo.set(2005, Calendar.MAY, 1, 0, 0, 0);
 						
 						FDCustomerModel customer = FDCustomerFactory.getFDCustomer(user.getIdentity());
 					    boolean isManualRetention = "true".equals(customer.getProfile().getAttribute("ManualRetention-$5")) ;
 
-						if (promoAvailable && (id.mod(modVal).intValue() == 0 || isManualRetention) && firstOrder.getRequestedDate().after(startPromo.getTime())) {
+						if (promoAvailable && (id.mod(modVal).intValue() == 0 || isManualRetention) && firstOrderRequestedDate.after(startPromo.getTime())) {
 							FDCustomerManager.setProfileAttribute(identity, "second_order_promo", "true");
 						}
 

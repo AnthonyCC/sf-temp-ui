@@ -10,6 +10,7 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import="com.freshdirect.fdstore.FDReservation" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDOrderHistory" %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -171,7 +172,8 @@
 				<b>IN REFERENCE TO</b><% if (cart instanceof FDModifyCartModel && makeGoodOrder) {%> order #<b><%=referencedOrder %></b><input type="hidden" name="referencedOrder" value="<%=referencedOrder%>"><% } else { %>
 				<select name="referencedOrder">
 					<option value="">Order number</option>
-					<logic:iterate id="order" collection="<%=user.getOrderHistory().getMakeGoodReferenceInfos()%>" type="com.freshdirect.fdstore.customer.FDOrderInfoI">
+					<% Collection makeGoodRefInfos = ((FDOrderHistory)user.getOrderHistory()).getMakeGoodReferenceInfos(); %>
+					<logic:iterate id="order" collection="<%=makeGoodRefInfos%>" type="com.freshdirect.fdstore.customer.FDOrderInfoI">
 						<option value="<%=order.getErpSalesId()%>" <%=order.getErpSalesId().equals(referencedOrder) ? "selected" : "" %>><%=order.getErpSalesId()%> ($<%= order.getTotal() %>)</option>
 					</logic:iterate>
 				</select><% } %>

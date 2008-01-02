@@ -94,10 +94,11 @@ static {
 <%
 FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 List promoRows = new ArrayList();
-
-for(Iterator i = user.getOrderHistory().getErpSaleInfos().iterator(); i.hasNext();){
+Set erpSaleInfos = ((ErpOrderHistory)user.getOrderHistory()).getErpSaleInfos()
+for(Iterator i = erpSaleInfos.iterator(); i.hasNext();){
     ErpSaleInfo saleInfo = (ErpSaleInfo)i.next();
-    for(Iterator pc = saleInfo.getUsedPromotionCodes().iterator();pc.hasNext();){
+    Set usedPromoCodes = user.getPromotionHistory().getUsedPromotionCodesFor(saleInfo.getSaleId());
+    for(Iterator pc = usedPromoCodes.iterator();pc.hasNext();){
         String promoCode = (String)pc.next();
         PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
         if(promo != null){

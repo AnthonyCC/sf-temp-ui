@@ -51,7 +51,9 @@ public class ReturnSummaryTag extends com.freshdirect.framework.webapp.BodyTagSu
 		HttpSession session = pageContext.getSession();
 
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
-		FDIdentity identity  = user.getIdentity();
+		//Commented as part of PERF-22 task.
+		//BEGIN
+		//FDIdentity identity  = user.getIdentity();
 
 		double perishablesValue = 0;
 		double nonPerishablesValue = 0;
@@ -61,14 +63,16 @@ public class ReturnSummaryTag extends com.freshdirect.framework.webapp.BodyTagSu
 			//
 			// Number of previous returns determines how we calculate an order's return value
 			//
-			int numPreviousReturns = 0;
+			//Commented as part of PERF-22 task.
+			/*int numPreviousReturns = 0;
 			Collection orderHistoryInfo = FDCustomerManager.getOrderHistoryInfo(identity).getFDOrderInfos();
 			for (Iterator it = orderHistoryInfo.iterator(); it.hasNext(); ) {
 				FDOrderInfoI orderInfo = (FDOrderInfoI) it.next();
 				if ( EnumSaleStatus.RETURNED.equals(orderInfo.getOrderStatus()) )
 					numPreviousReturns++;
-			}
-
+			}*/
+			int numPreviousReturns = user.getOrderHistory().getReturnOrderCount();
+			//END
 			LOGGER.debug("Found " + numPreviousReturns + " previous returns by this user.");
 
 			if (numPreviousReturns == 0) {

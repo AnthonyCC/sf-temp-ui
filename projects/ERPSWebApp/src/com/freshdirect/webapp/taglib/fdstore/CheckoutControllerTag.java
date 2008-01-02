@@ -702,7 +702,11 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 		if (!"CALLCENTER".equalsIgnoreCase(app)) {
 			return;
 		}
+		//Changes as part of PERF-22 task.
+		//BEGIN
+		/*
 		int phoneOrders = 0;
+
 		FDIdentity identity = getIdentity();	
 		Collection orderInfos = FDCustomerManager.getOrderHistoryInfo(identity).getFDOrderInfos();
 		for (Iterator it = orderInfos.iterator(); it.hasNext(); ) {
@@ -710,7 +714,9 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 			if (orderInfo.getOrderSource().equals(EnumTransactionSource.CUSTOMER_REP)) {
 				phoneOrders++;
 			}
-		}
+		}*/
+		int phoneOrders = getUser().getOrderHistory().getPhoneOrderCount();
+		//END
 		if (phoneOrders >= 3) {
 			LOGGER.debug("setting phone handling charge of $" + ErpServicesProperties.getPhoneHandlingFee());
 			FDCartModel cart = getCart();

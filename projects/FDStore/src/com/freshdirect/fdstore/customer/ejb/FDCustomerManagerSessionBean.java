@@ -77,8 +77,10 @@ import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
+import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.customer.ejb.ErpCustomerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
@@ -2282,6 +2284,17 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
+	public ErpPromotionHistory getPromoHistoryInfo(FDIdentity identity) throws FDResourceException {
+		try {
+			ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
+			return sb.getPromoHistoryInfo(new PrimaryKey(identity.getErpCustomerPK()));
+
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+	}
 
 	/**
 	 * 
@@ -3664,6 +3677,27 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 		
-		
+		public boolean isOrderBelongsToUser(FDIdentity identity, String saleId) throws FDResourceException {
+			try {
+				ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
+				return sb.isOrderBelongsToUser(new PrimaryKey(identity.getErpCustomerPK()), saleId);
+
+			} catch (CreateException ce) {
+				throw new FDResourceException(ce);
+			} catch (RemoteException re) {
+				throw new FDResourceException(re);
+			}
+		}
+		 public OrderHistoryI getWebOrderHistoryInfo(FDIdentity identity) throws FDResourceException {
+			try {
+				ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
+				return sb.getWebOrderHistoryInfo(new PrimaryKey(identity.getErpCustomerPK()));
+
+			} catch (CreateException ce) {
+				throw new FDResourceException(ce);
+			} catch (RemoteException re) {
+				throw new FDResourceException(re);
+			}
+		 }
 		
 }

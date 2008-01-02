@@ -204,7 +204,8 @@ public class SubmitOrderAction extends WebActionSupport {
 
 		// make sure we're not using stale data
 		user.invalidateCache();
-        
+        // make sure we're not using stale order history data
+		user.invalidateOrderHistoryCache();
 		// recalculate promotion
 		user.updateUserState( );		
 						
@@ -282,7 +283,8 @@ public class SubmitOrderAction extends WebActionSupport {
 
 			user.setRedeemedPromotion(null);
 			user.invalidateCache();
-            
+	        // make sure we're not using stale order history data.
+			user.invalidateOrderHistoryCache();
 			//Now store the user to update the service_Type
 			FDCustomerManager.storeUser(fdUser);
 			session.setAttribute(SessionName.USER, user);

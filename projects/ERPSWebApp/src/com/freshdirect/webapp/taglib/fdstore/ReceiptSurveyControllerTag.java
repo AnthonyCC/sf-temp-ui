@@ -136,8 +136,11 @@ public class ReceiptSurveyControllerTag  extends AbstractControllerTag implement
 				if (!surveySkipped) {
 					PrimaryKey saleId = null;
 					if(survey.isOrderSurvey()){	
+						/* Commented as part of PERF-22.
 						ErpSaleInfo secondToLastSale = user.getOrderHistory().getSecondToLastSale();
 						if(secondToLastSale != null) saleId = new PrimaryKey(secondToLastSale.getSaleId());
+						*/
+						saleId = new PrimaryKey(user.getOrderHistory().getSecondToLastSaleId());
 					}
 					
 					if(isPostOrderSurvey) {

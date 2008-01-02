@@ -22,12 +22,15 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpPromotionHistory;
+import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassProfileType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.DCPDPromoProductCache;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
@@ -267,7 +270,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     	this.user.invalidateCache();
 	}
 
-	public FDOrderHistory getOrderHistory() throws FDResourceException {
+	public OrderHistoryI getOrderHistory() throws FDResourceException {
 		return this.user.getOrderHistory();
 	}
 
@@ -553,4 +556,20 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public List getCustomerCreatedListInfos() {
 		return this.user.getCustomerCreatedListInfos();
 	}
+	
+	public DCPDPromoProductCache getDCPDPromoProductCache(){
+		return this.user.getDCPDPromoProductCache();
+	}
+	
+	public ErpPromotionHistory getPromotionHistory() throws FDResourceException {
+		return this.user.getPromotionHistory();
+	}
+	
+    /*
+     * This method was introduced as part of PERF-22 task.
+     * Seperate invalidation of Order History Cache from other caches.
+     */
+    public void invalidateOrderHistoryCache() {
+    	this.user.invalidateOrderHistoryCache();
+    }
 }

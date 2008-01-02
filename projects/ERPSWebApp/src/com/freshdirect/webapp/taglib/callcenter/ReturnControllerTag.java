@@ -92,6 +92,8 @@ public class ReturnControllerTag extends AbstractControllerTag implements Sessio
 						if(returnOrder.isContainsDeliveryPass()) {
 							//Load the delivery pass status from DB.
 							currentUser.updateDlvPassInfo();
+					        // Invalidate order history data to reload them the next time.
+							currentUser.invalidateOrderHistoryCache();
 						}
 					}
 				}

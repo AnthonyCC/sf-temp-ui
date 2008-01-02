@@ -39,6 +39,7 @@ import com.freshdirect.customer.ErpInvoiceModel;
 import com.freshdirect.customer.ErpModifyOrderModel;
 import com.freshdirect.customer.ErpOrderHistory;
 import com.freshdirect.customer.ErpPaymentMethodI;
+import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.customer.ErpRedeliveryModel;
 import com.freshdirect.customer.ErpReturnOrderModel;
 import com.freshdirect.customer.ErpSaleModel;
@@ -46,6 +47,7 @@ import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpSettlementModel;
 import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
@@ -232,5 +234,24 @@ public interface ErpCustomerManagerSB extends EJBObject {
 	public int getValidOrderCount(PrimaryKey erpCustomerPk) throws RemoteException;
 	
 	public String getLastOrderID(PrimaryKey erpCustomerPk) throws RemoteException;
+	
+	public boolean isOrderBelongsToUser(PrimaryKey erpCustomerPk, String saleId) throws RemoteException;
 
+	   /**
+     * Get lightweight info about a customer's used promotions.
+     *
+     * @param erpCustomerPk primary key of ErpCustomer
+     *
+     * @return ErpPromotionHistory
+     */
+    public ErpPromotionHistory getPromoHistoryInfo(PrimaryKey erpCustomerPk) throws RemoteException;
+    
+    /**
+     * Get lightweight info about a customer's orders.
+     *
+     * @param erpCustomerPk primary key of ErpCustomer
+     *
+     * @return collection of ErpSaleInfo objects
+     */
+    public OrderHistoryI getWebOrderHistoryInfo(PrimaryKey erpCustomerPk) throws RemoteException;
 }

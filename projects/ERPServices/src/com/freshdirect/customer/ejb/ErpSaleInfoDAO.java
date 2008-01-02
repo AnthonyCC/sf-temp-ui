@@ -515,5 +515,74 @@ public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpC
 
 		return orderAmount;
 	}
-
+	// Check if this order belongs to the user. This method has been added to replace the
+	// existing logic which loops through the order history info to get the same information. 
+	
+	private static final String orderBelongsToUserQuery = "select count(*) from cust.sale where id = ? and customer_id = ?";
+	
+	public static boolean isOrderBelongsToUser(Connection conn, String erpCustomerId, String saleId) throws SQLException {
+		int orderCount =0;
+		PreparedStatement ps = conn.prepareStatement(orderBelongsToUserQuery);
+		ps.setString(1, saleId);
+		ps.setString(2, erpCustomerId);
+		ResultSet rs = ps.executeQuery();
+		if(rs.next()){
+			orderCount = rs.getInt(1);	
+		}
+		rs.close();
+		ps.close();
+		if(orderCount > 0)
+			return true;
+		else
+			return false;
+	}
+	
+	private static final String QUERY_WEB_ORDER_HISTORY =
+		"select s.id, s.status, sa.action_date as mod_date, sa.requested_date, sa.action_type, sa.source as mod_source, "
+		+ "(select action_date from cust.salesaction where sale_id = s.id and action_type = 'CRO') as create_date, "
+		+ "(select source from cust.salesaction where sale_id = s.id and action_type = 'CRO') as create_source, "
+		+ "di.delivery_type, di.zone, pi.payment_method_type "
+		+ "from cust.sale s, cust.salesaction sa, " 
+		+ "cust.deliveryinfo di, cust.paymentinfo pi "
+		+ "where s.id = sa.sale_id and s.customer_id = ? " 
+		+ "and sa.action_date = (select max_date from cust.sale_cro_mod_date sco where sco.sale_id = s.id) " 
+		+ "and sa.action_type in ('CRO', 'MOD') "
+		+ "and sa.id = di.salesaction_id and sa.id = pi.salesaction_id";
+		
+	public static Collection getWebOrderHistoryInfo(Connection conn, String erpCustomerId) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement(QUERY_WEB_ORDER_HISTORY);
+		ps.setString(1, erpCustomerId);
+		ps.setString(2, erpCustomerId);
+		ResultSet rs = ps.executeQuery();
+		List extendedInfos = new ArrayList();
+		while (rs.next()) {
+			extendedInfos.add(
+				new ErpSaleInfo(
+					rs.getString("ID"),
+					"",
+					EnumSaleStatus.getSaleStatus(rs.getString("STATUS")),
+					0.0,
+					rs.getDate("REQUESTED_DATE"),
+					EnumTransactionSource.getTransactionSource(rs.getString("CREATE_SOURCE")),
+					rs.getTimestamp("CREATE_DATE"),
+					"",
+					EnumTransactionSource.getTransactionSource(rs.getString("MOD_SOURCE")),
+					rs.getTimestamp("MOD_DATE"),
+					"",
+					null,
+					null,
+					null,
+					EnumDeliveryType.getDeliveryType(rs.getString("DELIVERY_TYPE")),
+					0.0,
+					0.0,
+					rs.getString("ZONE"),
+					EnumPaymentMethodType.getEnum(rs.getString("PAYMENT_METHOD_TYPE")),
+					""
+					));
+		}
+		rs.close();
+		ps.close();
+		LOGGER.info("*****run get WEB order history info query");
+		return extendedInfos;
+	}
 }

@@ -40,6 +40,11 @@
         actionName = "redeemCode";
     }
 %>
+<%
+    //Reset the DCPD eligiblity map to re-calculate the promo if in case promotion was modified.
+    user.getDCPDPromoProductCache().clear();
+%>
+
 <fd:FDShoppingCart id='cart' result='result' action='<%= actionName%>'>
 <fd:RedemptionCodeController actionName="<%=actionName%>" result="redemptionResult">
 
