@@ -9,7 +9,6 @@ import java.util.Map;
 
 import javax.naming.Context;
 
-import org.apache.xerces.validators.datatype.FloatDatatypeValidator;
 import org.mockejb.interceptor.Aspect;
 import org.mockejb.interceptor.InvocationContext;
 import org.mockejb.interceptor.Pointcut;
