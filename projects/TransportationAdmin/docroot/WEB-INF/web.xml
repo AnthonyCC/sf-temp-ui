@@ -114,4 +114,45 @@
 	   <taglib-uri>/tld/extremecomponents</taglib-uri>
 	   <taglib-location>/WEB-INF/tld/extremecomponents.tld</taglib-location>
 	</taglib>
+	
+	<security-constraint>
+    <display-name></display-name>
+    <web-resource-collection>
+      <web-resource-name>TrnAdmin</web-resource-name>
+      <description>Security Constraints for TrnAdmin</description>
+      <url-pattern>/*</url-pattern>
+      <http-method>POST</http-method>
+      <http-method>GET</http-method>
+    </web-resource-collection>
+    <auth-constraint>
+      <description>Security Constraints for TrnAdmin</description>
+      <role-name>TrnAdmin</role-name>
+      <role-name>TrnGuest</role-name>
+      <role-name>TrnDispatch</role-name>
+    </auth-constraint>
+    <user-data-constraint>
+      <description>SSL not required</description>
+      <transport-guarantee>NONE</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
+
+	<login-config>
+		<auth-method>BASIC</auth-method>
+		<realm-name>FreshDirect</realm-name>		
+	</login-config>
+
+  <security-role>
+    <description>TrnAdmin administrators</description>
+    <role-name>TrnAdmin</role-name>
+  </security-role>
+
+  <security-role>
+    <description>TrnAdmin Guest users</description>
+    <role-name>TrnGuest</role-name>
+  </security-role>
+
+  <security-role>
+    <description>TrnAdmin Dispatch users</description>
+    <role-name>TrnDispatch</role-name>
+  </security-role>
 </web-app>
