@@ -94,7 +94,7 @@ static {
 <%
 FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 List promoRows = new ArrayList();
-Set erpSaleInfos = ((ErpOrderHistory)user.getOrderHistory()).getErpSaleInfos();
+Collection erpSaleInfos = ((ErpOrderHistory)user.getOrderHistory()).getErpSaleInfos();
 for(Iterator i = erpSaleInfos.iterator(); i.hasNext();){
     ErpSaleInfo saleInfo = (ErpSaleInfo)i.next();
     Set usedPromoCodes = user.getPromotionHistory().getUsedPromotionCodesFor(saleInfo.getSaleId());
