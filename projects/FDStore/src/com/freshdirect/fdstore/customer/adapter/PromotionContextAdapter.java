@@ -47,20 +47,20 @@ public class PromotionContextAdapter implements PromotionContextI {
 	private List rulePromoCodes;
 	private Date now;
 	private static Category LOGGER = LoggerFactory.getInstance(FDPromotionVisitor.class);
-	
+
 	public PromotionContextAdapter(FDUser user) {
 		this.user = user;
 		now = new Date();
 	}
-	
-	/**	
+
+	/**
 	 * @return total price of orderlines in USD, with taxes, charges without discounts applied
 	 */
 	public double getPreDeductionTotal(){
 		return this.user.getShoppingCart().getPreDeductionTotal();
 	}
-	
-	public double getSubTotal() {		  
+
+	public double getSubTotal() {
 		return this.user.getShoppingCart().getSubTotal();
 	}
 
@@ -238,12 +238,12 @@ public class PromotionContextAdapter implements PromotionContextI {
 	public FDIdentity getIdentity() {
 		return user.getIdentity();
 	}
-	
+
 	public void setRulePromoCode(List rulePromoCodes) {
 		this.rulePromoCodes = rulePromoCodes;
 
 	}
-	
+
 	public boolean hasRulePromoCode(String promoCode) {
 		if(this.rulePromoCodes.isEmpty()) {
 			return false;
@@ -254,7 +254,7 @@ public class PromotionContextAdapter implements PromotionContextI {
 	public FDUserI getUser() {
 		return user;
 	}
-	
+
 	public void addDiscount(Discount discount) {
 		this.user.getShoppingCart().addDiscount(discount);
 	}
@@ -265,7 +265,7 @@ public class PromotionContextAdapter implements PromotionContextI {
 	public AssignedCustomerParam getAssignedCustomerParam(String promoId){
 		return this.user.getAssignedCustomerParam(promoId);
 	}
-	
+
 	public List getEligibleLinesForDCPDiscount(String promoId, Set contentKeys){
 		if(getShoppingCart().isEmpty()){
 			return Collections.EMPTY_LIST;
@@ -284,18 +284,18 @@ public class PromotionContextAdapter implements PromotionContextI {
 			if(!eligible){
 				ProductModel model = cartLine.getProductRef().lookupProduct();
 				String productId = model.getContentKey().getId();
-				DCPDPromoProductCache dcpdCache = this.user.getDCPDPromoProductCache();
+				DCPDPromoProductCache info = this.user.getDCPDPromoProductCache();
 				//Check if the line item product is already evaluated.
-				if(dcpdCache.isEvaluated(productId, promoId)){
+				if(info.isEvaluated(productId, promoId)){
 					LOGGER.info("Product id "+productId+" already evaluated");
-					eligible = dcpdCache.isEligible(productId, promoId);
+					eligible = info.isEligible(productId, promoId);
 					LOGGER.info("Product id "+productId+" eligible 	"+eligible);
 				}else{
 					//Check if the line item is eligible for a category or department discount.
-					eligible = OrderPromotionHelper.evaluateProductForDCPDPromo(model, contentKeys);
+					eligible = OrderPromotionHelper.evaluateCartLineForEligibleCategoryOrDept(cartLine, contentKeys);
 					//Set the eligiblity info to user session.
 					LOGGER.info("Setting Info for Product id "+productId+" to "+eligible);
-					dcpdCache.setPromoProductInfo(productId, promoId, eligible);
+					info.setPromoProductInfo(productId, promoId, eligible);
 				}
 			}
 			if(eligible){
@@ -305,7 +305,7 @@ public class PromotionContextAdapter implements PromotionContextI {
 		}
 		return eligibleLines;
 	}
-	
+
 	public boolean applyHeaderDiscount(String promoCode, double promotionAmt, EnumPromotionType type){
 		//Poll the promotion context to know if this is the max discount amount.
 		if(this.isMaxDiscountAmount(promotionAmt, type)){
@@ -313,12 +313,12 @@ public class PromotionContextAdapter implements PromotionContextI {
 			this.clearDiscounts();
 			//Add this discount.
 			Discount discount = new Discount(promoCode, EnumDiscountType.DOLLAR_OFF, promotionAmt);
-			this.addDiscount(discount);	
+			this.addDiscount(discount);
 			return true;
 		}
 		return false;
 	}
-	
+
 	private void clearDiscounts(){
 		//Clear all header discounts.
 		this.user.getShoppingCart().setDiscounts(new ArrayList());
@@ -335,8 +335,8 @@ public class PromotionContextAdapter implements PromotionContextI {
 		String appliedCode = applied.getPromotionCode();
 		PromotionI appliedPromo = PromotionFactory.getInstance().getPromotion(appliedCode);
 		EnumPromotionType appliedType = appliedPromo.getPromotionType();
-		if((type.getPriority() < appliedType.getPriority()) || 
-				(type.getPriority() == appliedType.getPriority() &&  
+		if((type.getPriority() < appliedType.getPriority()) ||
+				(type.getPriority() == appliedType.getPriority() &&
 						promotionAmt > applied.getAmount())){
 			//The applied promo priority is less than the one that is being applied.
 			//or the applied promo amount is less than the one that is being applied.
