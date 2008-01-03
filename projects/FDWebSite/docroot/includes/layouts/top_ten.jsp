@@ -19,7 +19,8 @@
 String catId = request.getParameter("catId"); 
 String deptId = request.getParameter("deptId"); 
 boolean isDepartment = false;
-String trkCode = (String)request.getAttribute("trkCode");
+//Siva-Changed Tracking Code Retrieval
+String trkCode = (String)request.getAttribute("trk");
 
 ContentNodeModel currentFolder = null;
 if(deptId!=null) {

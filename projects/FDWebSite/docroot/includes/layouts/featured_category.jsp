@@ -101,7 +101,8 @@ static class DisplayObjectRepo implements TableLayoutHelper.WidthCalculator {
 
 String catId = request.getParameter("catId"); 
 String deptId = request.getParameter("deptId"); 
-String trkCode = (String)request.getAttribute("trkCode");
+//Siva-Changed Tracking Code Retrieval
+String trkCode = (String)request.getAttribute("trk");
 String pageTrkCode = "";
 
 ContentNodeModel currentFolder = null;

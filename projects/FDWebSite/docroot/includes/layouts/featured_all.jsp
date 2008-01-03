@@ -33,7 +33,7 @@ if(deptId!=null) {
 
 boolean onlyOneProduct = false;
 ProductModel theOnlyProduct = null;
-String trkCode = (String)request.getAttribute("trkCode");
+String trkCode = (String)request.getAttribute("trk");
 
 
 Collection sortedColl = (Collection) request.getAttribute("itemGrabberResult");

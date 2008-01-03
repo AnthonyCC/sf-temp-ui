@@ -34,7 +34,8 @@ if (deptId!=null) {
 
 boolean onlyOneProduct = false;
 ProductModel theOnlyProduct = null;
-String trkCode = (String)request.getAttribute("trkCode");
+//Siva-Changed Tracking Code Retrieval
+String trkCode = (String)request.getAttribute("trk");
 
 if (trkCode!=null && !"".equals(trkCode.trim()) ) {
     trkCode = "&trk="+trkCode.trim();
