@@ -397,7 +397,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     
     public OrderHistoryI getOrderHistory() throws FDResourceException {
         if (this.cachedOrderHistory==null) {
-            this.cachedOrderHistory = FDCustomerManager.getOrderHistoryInfo(this.identity);
+            this.cachedOrderHistory = getOrderHistoryInfo();
         }
         return this.cachedOrderHistory;
     }

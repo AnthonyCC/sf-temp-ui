@@ -81,6 +81,7 @@ public class ErpOrderHistory implements OrderHistoryI {
 	
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
+		buf.append("ErpOrderHistory version $$$$$$$$$$$$$$$$$$$"+"\n");
 		buf.append("ValidOrderCount "+getValidOrderCount()+"\n");
 		buf.append("LastOrderId "+getLastOrderId()+"\n");
 		buf.append("ValidPhoneOrderCount "+getValidPhoneOrderCount()+"\n");

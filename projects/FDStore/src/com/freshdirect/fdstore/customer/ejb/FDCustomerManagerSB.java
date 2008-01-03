@@ -505,7 +505,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 
 	public boolean isOrderBelongsToUser(FDIdentity identity, String saleId) throws RemoteException, FDResourceException;
 	/**
-     * Get lightweight info about a customer's orders.
+     * Get lightweight info object about a customer's past orders.
      *
      * @param identity the customer's identity reference
      */

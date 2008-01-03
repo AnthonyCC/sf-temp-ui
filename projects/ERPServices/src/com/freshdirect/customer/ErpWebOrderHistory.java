@@ -107,4 +107,21 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 		return ((Integer)orderHistoryInfo.get(VALID_PHONE_ORDER_COUNT)).intValue();
 	}
 
+	public String toString() {
+		StringBuffer buf = new StringBuffer();
+		buf.append("ErpWebOrderHistory version $$$$$$$$$$$$$$$$$$$"+"\n");
+		buf.append("ValidOrderCount "+getValidOrderCount()+"\n");
+		buf.append("LastOrderId "+getLastOrderId()+"\n");
+		buf.append("ValidPhoneOrderCount "+getValidPhoneOrderCount()+"\n");
+		buf.append("TotalOrderCount "+getTotalOrderCount()+"\n");
+		buf.append("LastOrderCreateDate "+getLastOrderCreateDate()+"\n");
+		buf.append("SecondToLastSaleId "+getSecondToLastSaleId()+"\n");
+		buf.append("FirstNonPickupOrderDate "+getFirstNonPickupOrderDate()+"\n");
+		buf.append("lastOrderType "+getLastOrderType()+"\n");
+		buf.append("lastOrderDlvDate "+getLastOrderDlvDate());
+		buf.append("ValidECheckOrderCount "+getValidECheckOrderCount()+"\n");
+		buf.append("PhoneOrderCount "+getPhoneOrderCount()+"\n");
+		buf.append("ReturnOrderCount "+getReturnOrderCount()+"\n");
+		return buf.toString();
+	}
 }

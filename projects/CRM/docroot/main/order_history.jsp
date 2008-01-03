@@ -22,7 +22,7 @@
 	<tmpl:put name='title' direct='true'>Order History</tmpl:put>
 	
 		<tmpl:put name='content' direct='true'>
-<% Collection orderInfos = user.getOrderHistory().getFDOrderInfos(); %>
+<% Collection orderInfos = ((FDOrderHistory)user.getOrderHistory()).getFDOrderInfos(); %>
 
 <div class="list_header">
 <table width="100%" cellpadding="0" cellspacing="2" border="0" class="list_header_text">

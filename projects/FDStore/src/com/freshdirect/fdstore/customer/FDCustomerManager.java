@@ -288,7 +288,17 @@ public class FDCustomerManager {
     		lookupManagerHome();
     		try{
     			FDCustomerManagerSB sb = managerHome.create();
-    			ErpAddressModel address = sb.assumeDeliveryAddress(identity, user.getOrderHistory().getLastOrderId());
+    			/*
+    			 * This line is commented as part of PERF-22 task.
+    			 * Getting the entire order history is unnecessary here as we need
+    			 * only last order id.
+    			 * So we are getting just the last order id from the backend.
+    			 */
+    			//BEGIN
+    			//ErpAddressModel address = sb.assumeDeliveryAddress(identity, user.getOrderHistory().getLastOrderId());
+    			String lastOrderId = sb.getLastOrderID(identity);
+    			ErpAddressModel address = sb.assumeDeliveryAddress(identity, lastOrderId);
+    			//END
     			if(address != null && user.getShoppingCart() != null){
     				user.getShoppingCart().setDeliveryAddress(address);
     			}
@@ -2291,4 +2301,33 @@ public class FDCustomerManager {
 		}
 	}	
 	
+	/**
+	 * This method was added to avoid unnecessary calls to getOrderHistoryInfo() 
+	 * method. Eg: CrmResubmitOrdersTag keeps calling the getOrderHistoryInfo()
+	 * for every resubmitted order where you actually need just the valid order
+	 * count. 
+	 * @param identity
+	 * @return
+	 * @throws FDResourceException
+	 */
+	public static int getValidOrderCount(FDIdentity identity) throws FDResourceException {
+
+		if (identity == null) {
+			// !!! this happens eg. when calculating promotions for an anon user..
+			// but i don't think this should be called then...
+			return 0;
+		}
+		lookupManagerHome();
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			return sb.getValidOrderCount(identity);
+
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
 }
