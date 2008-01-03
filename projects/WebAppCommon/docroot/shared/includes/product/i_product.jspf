@@ -238,6 +238,9 @@ if (skus.size() != 0) {
         formAction
 	    .append("catId=").append(productNode.getParentNode())
 	    .append("&productId=").append(productNode);
+	    if(request.getParameter("trk") != null) {
+		    formAction.append("&trk=").append(request.getParameter("trk"));
+		}
 
 	           
         String oid = request.getParameter("orderId=");
