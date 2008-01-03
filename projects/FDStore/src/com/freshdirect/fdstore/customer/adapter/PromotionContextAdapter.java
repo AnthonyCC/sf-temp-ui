@@ -24,6 +24,7 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.DCPDPromoProductCache;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUser;
@@ -159,7 +160,23 @@ public class PromotionContextAdapter implements PromotionContextI {
 
 	public int getAdjustedValidOrderCount() {
 		try {
-			return this.user.getAdjustedValidOrderCount();
+			//The change has been made as part of PERF-22
+			//BEGIN
+			//return this.user.getAdjustedValidOrderCount();
+			int orderCount = 0;
+			if(this.user.getApplication() == null){
+				//FDSessionUser object is not available. So directly hit the DB.
+				orderCount = FDCustomerManager.getValidOrderCount(this.user.getIdentity());
+		        if (this.getShoppingCart() instanceof FDModifyCartModel) {
+		            // we're in modify order mode, subtract one
+		            orderCount--;
+		        }
+			} else{
+				//Get it from the order history cache.
+				orderCount = this.user.getAdjustedValidOrderCount();
+			}
+			return orderCount;
+	        //END
 		} catch (FDResourceException e) {
 			throw new FDRuntimeException();
 		}
@@ -267,18 +284,18 @@ public class PromotionContextAdapter implements PromotionContextI {
 			if(!eligible){
 				ProductModel model = cartLine.getProductRef().lookupProduct();
 				String productId = model.getContentKey().getId();
-				DCPDPromoProductCache info = this.user.getDCPDPromoProductCache();
+				DCPDPromoProductCache dcpdCache = this.user.getDCPDPromoProductCache();
 				//Check if the line item product is already evaluated.
-				if(info.isEvaluated(productId, promoId)){
+				if(dcpdCache.isEvaluated(productId, promoId)){
 					LOGGER.info("Product id "+productId+" already evaluated");
-					eligible = info.isEligible(productId, promoId);
+					eligible = dcpdCache.isEligible(productId, promoId);
 					LOGGER.info("Product id "+productId+" eligible 	"+eligible);
 				}else{
 					//Check if the line item is eligible for a category or department discount.
-					eligible = OrderPromotionHelper.evaluateCartLineForEligibleCategoryOrDept(cartLine, contentKeys);
+					eligible = OrderPromotionHelper.evaluateProductForDCPDPromo(model, contentKeys);
 					//Set the eligiblity info to user session.
 					LOGGER.info("Setting Info for Product id "+productId+" to "+eligible);
-					info.setPromoProductInfo(productId, promoId, eligible);
+					dcpdCache.setPromoProductInfo(productId, promoId, eligible);
 				}
 			}
 			if(eligible){
