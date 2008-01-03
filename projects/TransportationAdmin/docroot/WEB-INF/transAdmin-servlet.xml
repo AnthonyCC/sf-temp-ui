@@ -45,6 +45,7 @@
  		 	    <prop key="/dispatch.do">dispatchController</prop>
  		 	    <prop key="/deletedispatch.do">dispatchController</prop>
  		 	    <prop key="/editdispatch.do">dispatchFormController</prop>
+ 		 	    <prop key="/confirmdispatch.do">dispatchController</prop>
 			</props>
 		</property>
 	</bean>
@@ -82,6 +83,7 @@
  		 	<prop key="/deleteplan.do">planDeleteHandler</prop>
  		 	<prop key="/dispatch.do">dispatchHandler</prop>			      
  		 	<prop key="/deletedispatch.do">dispatchDeleteHandler</prop>
+ 		 	<prop key="/confirmdispatch.do">dispatchConfirmHandler</prop>
 		</props>
 		</property>
 	</bean>

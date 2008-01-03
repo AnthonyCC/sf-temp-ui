@@ -42,5 +42,8 @@
         <property name="comments" type="string">
             <column name="COMMENTS" length="1024" />
         </property>
+        <property name="status" type="string">
+            <column name="STATUS" length="16" />
+        </property>
     </class>
 </hibernate-mapping>

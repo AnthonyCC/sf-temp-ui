@@ -12,6 +12,7 @@ public class FDStatusBarBuilder extends ToolbarBuilder {
 	
 	private final static String TOOLBAR_ADD_IMAGE = "add_new";
 	private final static String TOOLBAR_DELETE_IMAGE = "delete";
+	private final static String TOOLBAR_CONFIRM_IMAGE = "confirm-unconfirm";
 	
 	public FDStatusBarBuilder(TableModel model) {
         super(model);
@@ -29,7 +30,7 @@ public class FDStatusBarBuilder extends ToolbarBuilder {
         item.setStyle("border:0");
         buildAdd(getHtmlBuilder(), getTableModel(), item);
     }
-    
+       
     public void deleteItemAsImage() {
         ImageItem item = new ImageItem();
         item.setTooltip(getMessages().getMessage(BuilderConstants.TOOLBAR_FILTER_TOOLTIP));
@@ -39,6 +40,15 @@ public class FDStatusBarBuilder extends ToolbarBuilder {
         buildDelete(getHtmlBuilder(), getTableModel(), item);
     }
     
+    public void confirmItemAsImage() {
+        ImageItem item = new ImageItem();
+        item.setTooltip(getMessages().getMessage(BuilderConstants.TOOLBAR_FILTER_TOOLTIP));
+        item.setImage(BuilderUtils.getImage(getTableModel(), TOOLBAR_CONFIRM_IMAGE));
+        item.setAlt("Confirm");
+        item.setStyle("border:0");
+        buildConfirm(getHtmlBuilder(), getTableModel(), item);
+    }
+    
     public void buildAdd(HtmlBuilder html, TableModel model, ToolbarItem item) {
         item.setAction(getAddAction("edit",model));
         item.enabled(html, model);
@@ -46,6 +56,11 @@ public class FDStatusBarBuilder extends ToolbarBuilder {
 
     public void buildDelete(HtmlBuilder html, TableModel model, ToolbarItem item) {
         item.setAction(getDeleteAction("delete",model));
+        item.enabled(html, model);
+    }
+    
+    public void buildConfirm(HtmlBuilder html, TableModel model, ToolbarItem item) {
+        item.setAction(getConfirmAction("confirm",model));
         item.enabled(html, model);
     }
     
@@ -63,6 +78,15 @@ public class FDStatusBarBuilder extends ToolbarBuilder {
 
     	String action = model.getTableHandler().getTable().getAction();
         result.append("doDelete('").append(model.getTableHandler().getTable().getTableId())
+        				.append("_table','").append(formatAction(action,key)).append("')");                       
+        return result.toString();
+    }
+    
+    public String getConfirmAction(String key, TableModel model) {
+    	StringBuffer result = new StringBuffer("javascript:");
+
+    	String action = model.getTableHandler().getTable().getAction();
+        result.append("doConfirm('").append(model.getTableHandler().getTable().getTableId())
         				.append("_table','").append(formatAction(action,key)).append("')");                       
         return result.toString();
     }

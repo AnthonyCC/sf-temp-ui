@@ -40,12 +40,21 @@ public class FDStatusBar extends DefaultStatusBar {
         
         String hasAdd = (String)model.getContext().getPageAttribute("HAS_ADDBUTTON");
         
+        String hasConfirm = (String)model.getContext().getPageAttribute("HAS_CONFIRMBUTTON");
+        
         if(hasAdd == null || TransStringUtil.isEmpty(hasAdd)
         	|| hasAdd.equalsIgnoreCase("TRUE")) {
 
 	        toolbarBuilder.addItemAsImage();
 	        
 	        html.nbsp();
+        }
+        
+        if(hasConfirm != null && hasConfirm.equalsIgnoreCase("TRUE")) {
+
+    	    toolbarBuilder.confirmItemAsImage();
+    	     
+    	    html.nbsp();
         }
 
         toolbarBuilder.deleteItemAsImage();

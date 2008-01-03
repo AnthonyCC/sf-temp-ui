@@ -1,5 +1,7 @@
 package com.freshdirect.transadmin.model;
 
+import com.freshdirect.transadmin.constants.EnumDispatchStatusType;
+
 
 // Generated Jul 30, 2007 6:23:08 PM by Hibernate Tools 3.2.0.b9
 
@@ -20,7 +22,24 @@ public class TrnDispatch implements java.io.Serializable, TrnBaseEntityI {
 	private TrnRoute trnRoute;
 	private String nextelId;
 	private String comments;
+	private String status;
+		
+
+	public String getStatus() {		
+		return status;
+	}
 	
+	public String getStatusDescription() {
+		if(status == null) {
+			return EnumDispatchStatusType.NOTCONFIRMED.getDescription();
+		}
+		return EnumDispatchStatusType.getEnum(status).getDescription();
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	public String getComments() {
 		return comments;
 	}

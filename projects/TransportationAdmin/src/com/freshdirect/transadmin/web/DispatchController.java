@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.transadmin.constants.EnumDispatchStatusType;
+import com.freshdirect.transadmin.model.TrnDispatch;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
@@ -116,6 +118,42 @@ public class DispatchController extends AbstractMultiActionController {
 		}		
 		dispatchManagerService.removeEntity(dispatchSet);
 		saveMessage(request, getMessage("app.actionmessage.103", null));
+
+		return dispatchHandler(request, response);
+	}
+	
+	/**
+	 * Custom handler for welcome
+	 * @param request current HTTP request
+	 * @param response current HTTP response
+	 * @return a ModelAndView to render the response
+	 */
+	public ModelAndView dispatchConfirmHandler(HttpServletRequest request, HttpServletResponse response) 
+								throws ServletException, ParseException {
+		
+		Set dispatchSet=new HashSet();
+		String arrEntityList[] = getParamList(request);
+		StringTokenizer splitter = null;
+		TrnDispatch tmpDispatch = null;
+		if (arrEntityList != null) {			
+			int arrLength = arrEntityList.length;
+			for (int intCount = 0; intCount < arrLength; intCount++) {
+				splitter = new StringTokenizer(arrEntityList[intCount], "$");
+				tmpDispatch = dispatchManagerService.getDispatch(splitter.nextToken()
+						, TransStringUtil.getServerDate(splitter.nextToken()));
+				if(tmpDispatch != null) {
+					if(TransStringUtil.isEmpty(tmpDispatch.getStatus()) || 
+							EnumDispatchStatusType.NOTCONFIRMED.getName().equals(tmpDispatch.getStatus())) {
+						tmpDispatch.setStatus(EnumDispatchStatusType.CONFIRMED.getName());
+					} else {
+						tmpDispatch.setStatus(EnumDispatchStatusType.NOTCONFIRMED.getName());
+					}
+					dispatchSet.add(tmpDispatch);
+				}
+			}
+		}		
+		dispatchManagerService.saveEntityList(dispatchSet);
+		saveMessage(request, getMessage("app.actionmessage.104", null));
 
 		return dispatchHandler(request, response);
 	}

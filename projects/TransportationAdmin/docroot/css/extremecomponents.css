@@ -97,12 +97,12 @@
 	border-color: white;
 }
 
-.eXtremeTable .odd a, .even a , .even obsoleteRow {
+.eXtremeTable .odd a, .even a , .even obsoleteRow, .even confirmedRow  {
 	color: Black;
 	font-size: 10px;
 }
 
-.eXtremeTable .odd td, .eXtremeTable .even td, .eXtremeTable .obsoleteRow td {
+.eXtremeTable .odd td, .eXtremeTable .even td, .eXtremeTable .obsoleteRow td , .eXtremeTable .confirmedRow td{
 	padding-top: 2px;
 	padding-right: 3px;
 	padding-bottom: 2px;
@@ -122,6 +122,10 @@
 
 .eXtremeTable .obsoleteRow {
   	background-color: #deb887;
+}
+
+.eXtremeTable .confirmedRow {
+  	background-color: green;
 }
 
 .eXtremeTable .highlight td {

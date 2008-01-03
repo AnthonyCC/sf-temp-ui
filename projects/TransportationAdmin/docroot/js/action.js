@@ -21,6 +21,7 @@ function doDelete(tableId, url) {
     	alert('Please Select a Row!');
     }
   } 
+   
   
   function doLink(compId, url) {
     var param = document.getElementById(compId).value;
