@@ -466,7 +466,7 @@ public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpC
 	private static final String lastOrderIDQuery = "select id from (select s.id from cust.sale s, cust.salesaction sa where s.customer_id =? and s.id= sa.sale_id and sa.action_type='CRO' order by action_date desc) where rownum =1";
 	
 	public static String getLastOrderID(Connection conn, String erpCustomerId) throws SQLException {
-		String lastOrderID = "";
+		String lastOrderID = null;
 		PreparedStatement ps = conn.prepareStatement(lastOrderIDQuery);
 		ps.setString(1, erpCustomerId);
 		ResultSet rs = ps.executeQuery();

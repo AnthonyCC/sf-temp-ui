@@ -290,7 +290,7 @@ public class FDCustomerManager {
     			FDCustomerManagerSB sb = managerHome.create();
     			/*
     			 * This line is commented as part of PERF-22 task.
-    			 * Getting the entire order history is unnecessary here as we need
+    			 * Getting the entire order history is unnecessary and expensive here as we need
     			 * only last order id.
     			 * So we are getting just the last order id from the backend.
     			 */
