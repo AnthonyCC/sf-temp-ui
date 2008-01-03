@@ -135,7 +135,6 @@ echo "BUILD_DIR=$BUILD_DIR"
 echo "BUILD_PROPERTIES_DIR=$BUILD_PROPERTIES_DIR"
 echo "ANT_TARGETS=$ANT_TARGETS"
 echo "VIEW=$VIEW"
-echo "BOOTSTRAP=$bootstrap"
 
 # Usage: $0 <job name> <build number>
 function find_deploy_source() {
