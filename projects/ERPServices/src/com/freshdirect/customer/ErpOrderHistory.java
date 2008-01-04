@@ -79,6 +79,10 @@ public class ErpOrderHistory implements OrderHistoryI {
 		return ErpOrderHistoryUtil.getValidPhoneOrderCount(this.erpSaleInfos);
 	}
 	
+	public int getSettledOrderCount() {
+		return ErpOrderHistoryUtil.getSettledOrderCount(this.erpSaleInfos);
+	}
+	
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		buf.append("ErpOrderHistory version $$$$$$$$$$$$$$$$$$$"+"\n");
@@ -94,6 +98,8 @@ public class ErpOrderHistory implements OrderHistoryI {
 		buf.append("ValidECheckOrderCount "+getValidECheckOrderCount()+"\n");
 		buf.append("PhoneOrderCount "+getPhoneOrderCount()+"\n");
 		buf.append("ReturnOrderCount "+getReturnOrderCount()+"\n");
+		buf.append("DeliveredOrderCount "+getDeliveredOrderCount()+"\n");
+		buf.append("SettledOrderCount "+getSettledOrderCount()+"\n");
 		return buf.toString();
 	}
 }

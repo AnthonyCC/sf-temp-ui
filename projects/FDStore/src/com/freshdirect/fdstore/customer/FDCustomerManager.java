@@ -226,10 +226,23 @@ public class FDCustomerManager {
 	}
 
 	public static FDUser recognize(FDIdentity identity) throws FDAuthenticationException, FDResourceException {
+		//The method was changed as part of task PERF-22.
+		return recognize(identity, null);
+	}
+	
+	/*
+	 * This new method was added as part of task PERF-22. This method
+	 * will be called directly from CrmGetFDUserTag to set the application
+	 * source as CSR so that the CRM application knows which order history
+	 * object should be loaded before the FDSessionUser object is created
+	 * where it is actually set.
+	 */
+	public static FDUser recognize(FDIdentity identity, EnumTransactionSource source) throws FDAuthenticationException, FDResourceException {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
 			FDUser user = sb.recognize(identity);
+			user.setApplication(source);
 			user.getShoppingCart().doCleanup();
 			classifyUser(user);
 			assumeDeliveryAddress(user);

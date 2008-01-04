@@ -18,15 +18,12 @@ public class UniqueUseStrategy implements PromotionStrategyI {
 	}
 
 	public int evaluate(String promotionCode, PromotionContextI context) {
-		System.out.println("Inside unique use evaluate ");
-		System.out.println("usedSaleIds "+usedSaleIds);
 		if (usedSaleIds.isEmpty()) {
 			return ALLOW;
 		}
 
 		// also allow if modifying that order
 		String saleId = context.getModifiedSaleId();
-		System.out.println("Modify Sale id "+saleId);
 		if (saleId != null) {
 			return usedSaleIds.contains(saleId) ? ALLOW : DENY;
 		}

@@ -160,23 +160,7 @@ public class PromotionContextAdapter implements PromotionContextI {
 
 	public int getAdjustedValidOrderCount() {
 		try {
-			//The change has been made as part of PERF-22
-			//BEGIN
-			//return this.user.getAdjustedValidOrderCount();
-			int orderCount = 0;
-			if(this.user.getApplication() == null){
-				//FDSessionUser object is not available. So directly hit the DB.
-				orderCount = FDCustomerManager.getValidOrderCount(this.user.getIdentity());
-		        if (this.getShoppingCart() instanceof FDModifyCartModel) {
-		            // we're in modify order mode, subtract one
-		            orderCount--;
-		        }
-			} else{
-				//Get it from the order history cache.
-				orderCount = this.user.getAdjustedValidOrderCount();
-			}
-			return orderCount;
-	        //END
+			return this.user.getAdjustedValidOrderCount();
 		} catch (FDResourceException e) {
 			throw new FDRuntimeException();
 		}

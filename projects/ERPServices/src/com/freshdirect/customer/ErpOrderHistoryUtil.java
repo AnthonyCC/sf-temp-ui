@@ -29,6 +29,17 @@ public class ErpOrderHistoryUtil {
 		return ret;
 	}
 
+	public static int getSettledOrderCount(Collection erpSaleInfos){
+		int ret = 0;
+		for(Iterator i = erpSaleInfos.iterator(); i.hasNext(); ){
+			ErpSaleInfo saleInfo = (ErpSaleInfo)i.next();
+			if (saleInfo.isSettled()) {
+				ret++;
+			}
+		}
+		return ret;
+	}
+	
 	/**
 	 * 
 	 * @param erpSaleInfos

@@ -97,7 +97,7 @@ public class SurveyControllerTag extends com.freshdirect.framework.webapp.BodyTa
 						
 						FDCustomerModel customer = FDCustomerFactory.getFDCustomer(user.getIdentity());
 					    boolean isManualRetention = "true".equals(customer.getProfile().getAttribute("ManualRetention-$5")) ;
-
+						//if (promoAvailable && (id.mod(modVal).intValue() == 0 || isManualRetention) && firstOrder.getRequestedDate().after(startPromo.getTime())) {
 						if (promoAvailable && (id.mod(modVal).intValue() == 0 || isManualRetention) && firstOrderRequestedDate.after(startPromo.getTime())) {
 							FDCustomerManager.setProfileAttribute(identity, "second_order_promo", "true");
 						}

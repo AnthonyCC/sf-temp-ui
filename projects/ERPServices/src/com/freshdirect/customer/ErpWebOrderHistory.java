@@ -28,7 +28,7 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 	private static final String VALID_ECHECK_ORDER_COUNT = "validECheckOrderCount";
 	private static final String VALID_ORDER_COUNT = "validOrderCount";
 	private static final String VALID_PHONE_ORDER_COUNT = "validPhoneOrderCount";
-	
+	private static final String SETTLED_ORDER_COUNT = "settledOrderCount";
 	/**
 	 * 
 	 * @param erpSaleInfos
@@ -49,6 +49,7 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 		orderHistoryInfo.put(VALID_ECHECK_ORDER_COUNT, new Integer(ErpOrderHistoryUtil.getValidECheckOrderCount(erpSaleInfos)));
 		orderHistoryInfo.put(VALID_ORDER_COUNT, new Integer(ErpOrderHistoryUtil.getValidOrderCount(erpSaleInfos)));
 		orderHistoryInfo.put(VALID_PHONE_ORDER_COUNT, new Integer(ErpOrderHistoryUtil.getValidPhoneOrderCount(erpSaleInfos)));
+		orderHistoryInfo.put(SETTLED_ORDER_COUNT, new Integer(ErpOrderHistoryUtil.getSettledOrderCount(erpSaleInfos)));
 	}
 
 	public int getDeliveredOrderCount(){
@@ -107,6 +108,10 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 		return ((Integer)orderHistoryInfo.get(VALID_PHONE_ORDER_COUNT)).intValue();
 	}
 
+	public int getSettledOrderCount() {
+		return ((Integer)orderHistoryInfo.get(SETTLED_ORDER_COUNT)).intValue();
+	}
+	
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		buf.append("ErpWebOrderHistory version $$$$$$$$$$$$$$$$$$$"+"\n");
@@ -122,6 +127,8 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 		buf.append("ValidECheckOrderCount "+getValidECheckOrderCount()+"\n");
 		buf.append("PhoneOrderCount "+getPhoneOrderCount()+"\n");
 		buf.append("ReturnOrderCount "+getReturnOrderCount()+"\n");
+		buf.append("DeliveredOrderCount "+getDeliveredOrderCount()+"\n");
+		buf.append("SettledOrderCount "+getSettledOrderCount()+"\n");
 		return buf.toString();
 	}
 }

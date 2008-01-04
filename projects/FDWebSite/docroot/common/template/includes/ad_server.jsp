@@ -8,7 +8,6 @@
 <%@ page import='com.freshdirect.fdstore.customer.FDOrderI' %>
 <%@ page import='com.freshdirect.fdstore.customer.FDCartLineI' %>
 <%@ page import='com.freshdirect.fdstore.customer.ProfileModel' %>
-<%@ page import='com.freshdirect.customer.EnumDeliveryType' %>
 <%@ page import='com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor' %>
 <%@ page import='com.freshdirect.fdstore.customer.FDCustomerManager' %>
 <%@ page import='com.freshdirect.fdstore.customer.FDProductSelectionI' %>
@@ -96,7 +95,7 @@ if(FDStoreProperties.isAdServerEnabled()){
 	    String lastOrderType = orderType != null ? orderType.getCode().toLowerCase() : "";
 	    String orderZone = user.getOrderHistory().getLastOrderZone();
 	    String lastOrderZone = orderZone != null ? orderZone : "";
-
+	    
             // Set of String (product department Ids, "rec" for recipe items)
             Set cartDeptIds = new HashSet();
             for(Iterator i = user.getShoppingCart().getOrderLines().iterator(); i.hasNext();){
@@ -289,6 +288,7 @@ if(FDStoreProperties.isAdServerEnabled()){
 	String sitePage = request.getAttribute("sitePage") == null ? "www.freshdirect.com" : (String) request.getAttribute("sitePage");
 	String listPos = request.getAttribute("listPos") == null ? "SystemMessage" : (String) request.getAttribute("listPos");
 	
+	String[] listPosArray = listPos.split(",");
 %>
 
 <!------ OAS SETUP begin ------>
@@ -341,50 +341,110 @@ function OAS_AD(pos) {
 }
 //-->
 </SCRIPT><% } // ! %>
-<% if (FDStoreProperties.getAdServerUsesDeferredImageLoading()) { %><SCRIPT type="text/javascript">
-OAD_POS = [];
+<% if (FDStoreProperties.getAdServerUsesDeferredImageLoading()) { %>
+<iframe name="oasif" id="OAS_IF" width="1" height="1" src="about:blank" style="visibility: hidden; border: 0; position: absolute; top: 1px; left: 1px;"></iframe>
+<SCRIPT type="text/javascript">
+OAD_POS = OAS_listpos.split(/,/);
+
+function createOASFrame() {
+	// write static content to iframe
+	var ifr = document.getElementById('OAS_IF');
+	var idoc;
+	if (ifr.contentWindow) {
+	  // IE way
+	  idoc = ifr.contentWindow.document;
+	} else if (ifr.contentDocument) {
+	  // Mozilla way
+	  idoc = ifr.contentDocument.document ? ifr.contentDocument.document : ifr.contentDocument;
+	}
+
+	// Inject IFRAME content
+	idoc.open();
+	idoc.writeln("<html><body>");
+	
+	// modified document.write function
+	idoc.writeln("<SCR" + "IPT TYPE='text/javascript'>");
+	idoc.writeln("document._fragment='';");
+	idoc.writeln("document.fwrite=function(str){document._fragment+=str};");
+	idoc.writeln("document._write=document.write;");
+	
+    idoc.writeln("var ads_done = [];");
+    idoc.writeln("var tries = 2;");
+<% for (int k=0; k<listPosArray.length; k++) { %>
+    idoc.writeln("ads_done['<%= listPosArray[k] %>'] = false;");
+<% } %>
+	
+    idoc.writeln("function copy_ad(oas_id) {");
+    idoc.writeln("  var done=false; document._fragment='';");
+    idoc.writeln("  document.write=document.fwrite;OAS_RICH(oas_id);document.write=document._write;");
+    idoc.writeln("  document.getElementById(oas_id).innerHTML = document._fragment;");
+    idoc.writeln("  var pdiv = window.parent.document.getElementById('OAS_' + oas_id);");
+    idoc.writeln("  if (pdiv) {");
+    idoc.writeln("    pdiv.innerHTML = document.getElementById(oas_id).innerHTML;done=true;");
+    idoc.writeln("  }");
+    idoc.writeln("  return done;");
+    idoc.writeln("}");
+
+    idoc.writeln("function copy_ads() {");
+    idoc.writeln("  var k = 0;");
+<% for (int k=0; k<listPosArray.length; k++) { %>
+    idoc.writeln("  if (ads_done['<%= listPosArray[k] %>'] == true) {");
+    idoc.writeln("    ++k;");
+    idoc.writeln("  } else if (copy_ad('<%= listPosArray[k] %>')) {");
+    idoc.writeln("    ads_done['<%= listPosArray[k] %>'] = true;");
+    idoc.writeln("    ++k;");
+    idoc.writeln("  }");
+<% } %>
+    idoc.writeln("  return (k == <%= listPosArray.length %>);");
+    idoc.writeln("}");
+
+    idoc.writeln("function do_copy() {");
+    idoc.writeln("  if (tries > 0 && copy_ads() == false) {");
+    idoc.writeln("    --tries;");
+    idoc.writeln("    window.setTimeout(do_copy, 200);");
+    idoc.writeln("  }");
+    idoc.writeln("}");
+
+
+	idoc.writeln("<\/SCRIPT>");
+	
+	// Put placeholder DIVs
+<% for (int k=0; k<listPosArray.length; k++) { %>
+	idoc.writeln("<DIV ID='<%= listPosArray[k] %>'></DIV>");
+<% } %>
+	
+	// bootstrap loader
+	idoc.writeln('<SCR' + 'IPT TYPE="text/javascript" SRC="' + OAS_url + 'adstream_mjx.ads/' +
+	  OAS_sitepage + '/1' + OAS_rns + '@' +
+	  OAS_listpos + '?' + OAS_query + '" defer="defer"><\/SCRIPT>');
+	
+    // handlers
+	idoc.writeln("<SCR" + "IPT TYPE='text/javascript' defer='defer'>");
+	idoc.writeln("do_copy();");
+	idoc.writeln("<\/SCRIPT>");
+	idoc.writeln("</body></html>");
+	idoc.close();
+}
+
+// detect Safar 2 or older
+var m=navigator.appVersion.match(/Safari\/(\d+)/);
+var isOldSafari = (m && Number(m[1]) < 500);
+
+if (isOldSafari) {
+    // delayed iframe creation for Safari 2
+    document.onDocumentLoaded = createOASFrame;
+} else {
+    createOASFrame();
+}
+
 
 function OAS_AD(pos) {
-	OAD_POS.push(pos);
-	document.writeln('<div id="OAS_' + pos + '">&nbsp;</div>');
+	document.writeln('<div id="OAS_' + pos + '"></div>');
 }
 
-document.onDocumentLoaded = function() {
-  var ifrm = this.getElementById('OAS_IF');
-  ifrm = (ifrm.contentWindow) ? ifrm.contentWindow : (ifrm.contentDocument.document) ? ifrm.contentDocument.document : ifrm.contentDocument
-  ifrm.document.open();
-  ifrm.document.writeln("<BODY>");
-
-  var p;
-  for (p in OAD_POS) {
-  	  ifrm.document.writeln("<DIV ID='" + OAD_POS[p] + "'></DIV>");
-  }
-
-  ifrm.document.writeln('<SCR' + 'IPT TYPE="text/javascript" SRC="' + OAS_url + 'adstream_mjx.ads/' +
-	OAS_sitepage + '/1' + OAS_rns + '@' +
-	OAS_listpos + '?' + OAS_query + '" defer="defer"><\/SCRIPT>');
-
-
-  ifrm.document.writeln("<SCR" + "IPT TYPE='text/javascript'>");
-  ifrm.document.writeln("document._fragment='';");
-  ifrm.document.writeln("document.fwrite=function(str){document._fragment+=str};");
-  ifrm.document.writeln("document._write=document.write;");
-  ifrm.document.writeln("<\/SCRIPT>");
-
-  ifrm.document.writeln("<SCR" + "IPT TYPE='text/javascript' defer='defer'>");
-  for (p in OAD_POS) {
-	  ifrm.document.writeln("document._fragment='';");
-	  ifrm.document.writeln("document.write=document.fwrite;OAS_RICH('" + OAD_POS[p] + "');document.write=document._write;");
-	  ifrm.document.writeln("document.getElementById('" + OAD_POS[p] + "').innerHTML = document._fragment;");
-      ifrm.document.writeln("var pdiv = window.parent.document.getElementById('OAS_" + OAD_POS[p] + "');");
-      ifrm.document.writeln("if(pdiv){pdiv.innerHTML = document.getElementById('" + OAD_POS[p] + "').innerHTML;}");
-  }
-  ifrm.document.writeln("<\/SCRIPT>");
-  ifrm.document.writeln("</BODY>");
-  ifrm.document.close();
-}
+// document.onDocumentLoaded = createOASIFrame;
 </SCRIPT>
-<IFRAME ID="OAS_IF" WIDTH="1" HEIGHT="1" SRC="about:blank" STYLE="display: none;"></IFRAME><% } //  %>
+<% } //  %>
 <!------ OAS SETUP end ------>
 <%
 }

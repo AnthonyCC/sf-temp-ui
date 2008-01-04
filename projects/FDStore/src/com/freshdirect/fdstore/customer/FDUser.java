@@ -423,7 +423,13 @@ public class FDUser extends ModelSupport implements FDUserI {
      * @return number of valid orders, corrected in modify order mode
      */
     public int getAdjustedValidOrderCount() throws FDResourceException {
-        int orderCount = this.getOrderHistory().getValidOrderCount();
+    	int orderCount = 0;
+    	if(this.application == null){
+    		//Trying to avoid a hit to order history query when the user object is first loaded.
+    		orderCount = FDCustomerManager.getValidOrderCount(this.identity);
+    	} else {
+    		orderCount = this.getOrderHistory().getValidOrderCount();	
+    	}
         if (this.getShoppingCart() instanceof FDModifyCartModel) {
             // we're in modify order mode, subtract one
             orderCount--;

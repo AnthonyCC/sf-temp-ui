@@ -140,7 +140,9 @@ public class ReceiptSurveyControllerTag  extends AbstractControllerTag implement
 						ErpSaleInfo secondToLastSale = user.getOrderHistory().getSecondToLastSale();
 						if(secondToLastSale != null) saleId = new PrimaryKey(secondToLastSale.getSaleId());
 						*/
-						saleId = new PrimaryKey(user.getOrderHistory().getSecondToLastSaleId());
+						String secondToLastSaleId = user.getOrderHistory().getSecondToLastSaleId();
+						if(secondToLastSaleId != null)
+								saleId = new PrimaryKey(secondToLastSaleId);
 					}
 					
 					if(isPostOrderSurvey) {

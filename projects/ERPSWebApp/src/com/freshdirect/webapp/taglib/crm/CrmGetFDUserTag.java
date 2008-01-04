@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
+import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.framework.util.NVL;
@@ -47,7 +48,7 @@ public class CrmGetFDUserTag extends AbstractGetterTag {
 		if(!"".equals(erpCustId)) {
 			user = (FDSessionUser) session.getAttribute(SessionName.USER);
 			if(user == null || user.getIdentity() == null || !user.getIdentity().getErpCustomerPK().equals(erpCustId)){
-				user = new FDSessionUser(FDCustomerManager.recognize(new FDIdentity(erpCustId)), session);
+				user = new FDSessionUser(FDCustomerManager.recognize(new FDIdentity(erpCustId), EnumTransactionSource.CUSTOMER_REP), session);
 				session.removeAttribute(SessionName.LIST_SEARCH_RAW);
 				user.isLoggedIn(true);
 			}

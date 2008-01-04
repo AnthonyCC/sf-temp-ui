@@ -37,4 +37,6 @@ public interface OrderHistoryI extends Serializable {
 	public int getValidOrderCount();
 	
 	public int getValidPhoneOrderCount();
+	
+	public int getSettledOrderCount();
 }

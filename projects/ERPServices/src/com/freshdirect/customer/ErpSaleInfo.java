@@ -154,6 +154,10 @@ public class ErpSaleInfo extends BasicSaleInfo {
 		return EnumSaleStatus.PAYMENT_PENDING.equals(this.getStatus()) || EnumSaleStatus.SETTLED.equals(this.getStatus());
 	}
 	
+	public boolean isSettled() {
+		return EnumSaleStatus.SETTLED.equals(this.getStatus());
+	}
+	
 	public String getZone() {
 		return zone;
 	}
