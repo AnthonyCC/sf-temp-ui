@@ -36,6 +36,7 @@ faqLink = "/help/faq_home.jsp?page=faqHome";
 }
 %>
 
+<br><img src="/media_stat/images/layout/clear.gif" width="1" height="6">
 
 <MAP NAME="bottomlinks">
 <AREA SHAPE="RECT" COORDS="10,0,74,21" HREF="/department.jsp?deptId=about" alt="About Us">
