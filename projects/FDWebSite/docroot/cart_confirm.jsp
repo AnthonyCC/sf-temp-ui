@@ -161,7 +161,7 @@ Recipe recipe = null;
 	    Est. Price: <font class="text10bold"><%= currencyFormatter.format(orderLine.getPrice()) %></font><br><br>
 	    <fd:CCLCheck>
 			<!-- Add to Shopping List  -->
-			<a href="#" onclick="CCL.add_recent_cart_items(); return false;"><img src="/media_stat/ccl/lists_link_all_with_icon_dfgs.gif" style="border: 0;"/></a><span style="padding-left: 15px"><fd:CCLNew/></span>
+			<a href="#" onclick="CCL.add_recent_cart_items(); return false;"><img src="/media_stat/ccl/lists_link_with_icon_dfgs.gif" style="border: 0;"/></a><span style="padding-left: 15px"><fd:CCLNew/></span>
 			<div><fd:CCLNew template="/common/template/includes/ccl_moreabout.jspf"/></div>
         </fd:CCLCheck>
      </td>
