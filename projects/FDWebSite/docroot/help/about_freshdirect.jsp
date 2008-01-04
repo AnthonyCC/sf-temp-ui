@@ -80,9 +80,7 @@ function linkTo(url){
 			<tr><td class="bodyCopy"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"></td></tr>		
 			<tr><td valign=top><li type="dot"></li></td><td class="bodyCopy"><A HREF="#question5">Does FreshDirect offer organic products?</A></td></tr>
 			<tr><td class="bodyCopy"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"></td></tr>		
-			<tr><td valign=top><li type="dot"></li></td><td class="bodyCopy"><A HREF="#question6">Does FreshDirect have sales?</A></td></tr>
-			<tr><td class="bodyCopy"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"></td></tr>		
-			<tr><td valign=top><li type="dot"></li></td><td class="bodyCopy"><A HREF="#question7">How can I find out more about FreshDirect?</A></td></tr>
+			<tr><td valign=top><li type="dot"></li></td><td class="bodyCopy"><A HREF="#question6">How can I find out more about FreshDirect?</A></td></tr>
 			</table>
 	   </TD>
 	</TR>
@@ -154,18 +152,6 @@ function linkTo(url){
 </TABLE>
 <br><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border=0><br>
 <A NAME="question6"></A>
-<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="<%=tableWidth%>" class="bodyCopy">
-	<TR VALIGN="TOP">
-		<TD WIDTH="15"><img src="/media/images/layout/clear.gif" width="15" height="1" alt="" border="0"></TD>
-		<TD WIDTH="<%=tableWidth%>" class="bodyCopy">
-			<b>Does FreshDirect have sales?</b><BR>
-			No, instead of holding sales on some of the items, some of the time, we give you the lowest possible price on every item every day. This amounts to a lower total cost for your entire order.<BR>
-			 </b>
-	   </TD>
-	</TR>
-</TABLE>
-<br><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border=0><br>
-<A NAME="question7"></A>
 <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="<%=tableWidth%>" class="bodyCopy">
 	<TR VALIGN="TOP">
 		<TD WIDTH="15"><img src="/media/images/layout/clear.gif" width="15" height="1" alt="" border="0"></TD>
