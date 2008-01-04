@@ -124,12 +124,12 @@ public class SearchResultUtil {
 	///////// tree display methods /////////
 	////////////////////////////////////////
 
-	public static void displayNodeTree(JspWriter out, Map map) throws FDResourceException, IOException {
+	public static void displayNodeTree(JspWriter out, Map map, String trk) throws FDResourceException, IOException {
 		Collection root = (Collection) map.get(null);
-		displayNodeTree(out, map, 0, root);
+		displayNodeTree(out, map, 0, root, trk);
 	}
 
-	private static void displayNodeTree(JspWriter out, Map map, int depth, Collection ls) throws FDResourceException, IOException {
+	private static void displayNodeTree(JspWriter out, Map map, int depth, Collection ls, String trk) throws FDResourceException, IOException {
 		for (Iterator i = ls.iterator(); i.hasNext();) {
 			Object o = i.next();
 
@@ -137,26 +137,26 @@ public class SearchResultUtil {
 				out.print("&nbsp;&nbsp;");
 
 			if (o instanceof ProductModel) {
-				displayTreeProduct(out, (ProductModel) o);
+				displayTreeProduct(out, (ProductModel) o, trk);
 
 			} else if (o instanceof CategoryModel) {
-				displayTreeCategory(out, (CategoryModel) o);
-				displayNodeTree(out, map, depth + 1, (Collection) map.get(o));
+				displayTreeCategory(out, (CategoryModel) o, trk);
+				displayNodeTree(out, map, depth + 1, (Collection) map.get(o), trk);
 				out.println("<br>");
 
 			} else if (o instanceof DepartmentModel) {
 				displayTreeDepartment(out, (DepartmentModel) o);
-				displayNodeTree(out, map, depth + 1, (Collection) map.get(o));
+				displayNodeTree(out, map, depth + 1, (Collection) map.get(o), trk);
 				out.println("<br>");
 
 			} else {
-				displayNodeTree(out, map, depth + 1, (Collection) map.get(o));
+				displayNodeTree(out, map, depth + 1, (Collection) map.get(o), trk);
 				//out.println("<br>");
 			}
 		}
 	}
 
-	private static void displayTreeProduct(JspWriter out, ProductModel product) throws FDResourceException, IOException {
+	private static void displayTreeProduct(JspWriter out, ProductModel product, String trk) throws FDResourceException, IOException {
 		boolean unav = product.isUnavailable();
 		String productName = product.getFullName();
 		String brandName = product.getPrimaryBrandName();
@@ -172,7 +172,9 @@ public class SearchResultUtil {
 		out.print(product);
 		out.print("&catId=");
 		out.print(product.getParentNode());
-		out.print("&trk=srch'");
+		out.print("&trk=");
+		out.print(trk);
+		out.print("\'");
 		if (unav)
 			out.print(" style='color:#999999'");
 		out.print(">");
@@ -244,10 +246,12 @@ public class SearchResultUtil {
 		out.println("<br>");
 	}
 
-	private static void displayTreeCategory(JspWriter out, CategoryModel category) throws IOException {
+	private static void displayTreeCategory(JspWriter out, CategoryModel category, String trk) throws IOException {
 		out.print("<b><a href='/category.jsp?catId=");
 		out.print(getLinkCat(category));
-		out.print("&trk=srch'>");
+		out.print("&trk=");
+		out.print(trk);
+		out.print("\'>");
 		out.print(category.getFullName());
 		out.println("</a></b><br>");
 	}
@@ -264,7 +268,7 @@ public class SearchResultUtil {
 	///////// path display methods /////////
 	////////////////////////////////////////
 
-	public static String getPathDisplay(ProductModel prod) throws FDResourceException {
+	public static String getPathDisplay(ProductModel prod, String trk) throws FDResourceException {
 		StringBuffer buf = new StringBuffer();
 
 		buf.append("<div style='padding: 1em;'>");
@@ -280,7 +284,7 @@ public class SearchResultUtil {
 			buf.append("'>");
 			buf.append("</a>");
 			buf.append("<a href='/product.jsp?productId=").append(prod);
-			buf.append("&catId=").append(prod.getParentNode()).append("&trk=srch'>");
+			buf.append("&catId=").append(prod.getParentNode()).append("&trk=").append(trk).append("\'>");
 		}
 		
 		buf.append("<b>");
@@ -309,17 +313,17 @@ public class SearchResultUtil {
 		}
 		buf.append("</div>");
 
-		generatePath(true, buf, prod.getParentNode());
+		generatePath(true, buf, prod.getParentNode(),trk);
 		return buf.toString();
 	}
 
-	public static String getPathDisplay(CategoryModel cat) throws FDResourceException {
+	public static String getPathDisplay(CategoryModel cat, String trk) throws FDResourceException {
 		StringBuffer buf = new StringBuffer();
-		generatePath(false, buf, cat);
+		generatePath(false, buf, cat,trk);
 		return buf.toString();
 	}
 
-	private static void generatePath(boolean separator, StringBuffer buf, ContentNodeModel node) throws FDResourceException {
+	private static void generatePath(boolean separator, StringBuffer buf, ContentNodeModel node, String trk) throws FDResourceException {
 		boolean firstItem = buf.length() == 0;
 		
 		if (separator)
@@ -330,9 +334,9 @@ public class SearchResultUtil {
 		}
 		
 		if (node instanceof CategoryModel) {
-			buf.insert(0, getPathCategory((CategoryModel) node));
+			buf.insert(0, getPathCategory((CategoryModel) node,trk));
 		} else if (node instanceof DepartmentModel) {
-			buf.insert(0, getPathDepartment((DepartmentModel) node));
+			buf.insert(0, getPathDepartment((DepartmentModel) node,trk));
 		}
 		
 		if (firstItem) {
@@ -340,16 +344,16 @@ public class SearchResultUtil {
 		}
 		
 		if (!(node.getParentNode() instanceof StoreModel)) {
-			generatePath(true, buf, node.getParentNode());
+			generatePath(true, buf, node.getParentNode(),trk);
 		}
 	}
 
-	private static String getPathCategory(CategoryModel cat) {
-		return "<a href='/category.jsp?catId=" + getLinkCat(cat) + "&trk=srch'>" + cat.getFullName() + "</a>";
+	private static String getPathCategory(CategoryModel cat, String trk) {
+		return "<a href='/category.jsp?catId=" + getLinkCat(cat) + "&trk=" + trk + "\'>" + cat.getFullName() + "</a>";
 	}
 
-	private static String getPathDepartment(DepartmentModel dept) {
-		return "<a href='/department.jsp?deptId=" + dept + "&trk=srch'>" + dept.getFullName().toUpperCase() + "</a>";
+	private static String getPathDepartment(DepartmentModel dept, String trk) {
+		return "<a href='/department.jsp?deptId=" + dept + "&trk=" + trk + "\'>" + dept.getFullName().toUpperCase() + "</a>";
 	}
 
 	///////////////////////////////////

@@ -21,6 +21,10 @@
 
 <%
 String searchParams = request.getParameter("searchParams");
+// Uncomment these two lines below if trk=dym needs to be propagated to search links
+//String trk = request.getParameter("trk");
+//if (trk == null) trk = "srch";
+String trk = "srch";
 %>
 
 <tmpl:insert template='/common/template/search_nav.jsp'>
@@ -55,7 +59,7 @@ try {
 			<b><%=results.numberOfResults() == 1 ? "One match was " : ("" + results.numberOfResults() + " matches were ")%> found for <i>"<%=criteria%>"</i></b>
 		</div>
 		<div class="text15">
-		Did you mean <a href="/search.jsp?searchParams=<%=StringUtil.escapeUri(sug)%>"><b><%=sug%></b></a>?<br/><br/>
+		Did you mean <a href="/search.jsp?searchParams=<%=StringUtil.escapeUri(sug)%>&trk=dym"><b><%=sug%></b></a>?<br/><br/>
 		</div>
 		<%
 		}
@@ -67,7 +71,7 @@ try {
 <img src="/media_stat/images/layout/ff9933.gif" width="520" height="1" border="0" vspace="4"><br><br>
 <div style="padding-left: 1em">
 <logic:iterate id="prod" collection="<%= exactProducts %>" type="com.freshdirect.fdstore.content.ProductModel">
-<%= SearchResultUtil.getPathDisplay(prod) %><br>
+<%= SearchResultUtil.getPathDisplay(prod,trk) %><br>
 </logic:iterate>
 </div>
 <br><br>
@@ -104,11 +108,11 @@ try {
 				}
 
 				line.append("<b><a href=\"/recipe.jsp?recipeId=").
-					append(recipe.getContentName()).append("&trk=srch\">").
+					append(recipe.getContentName()).append("&trk=").append(trk).append("\">").
 					append(recipe.getName()).append("</a></b>");
 				if (recipe.getSource() != null) { 
 					line.append(" from <a href=\"javascript:popup(\'/recipe_source.jsp?recipeId=").
-						append(recipe.getContentName()).append("&trk=srch\',\'large_long\')\">").
+						append(recipe.getContentName()).append("&trk=").append(trk).append("\',\'large_long\')\">").
 						append(recipe.getSource().getName()).append("</a>");
 				}
 				line.append("<br/>");
@@ -125,9 +129,9 @@ try {
 			<%-- <div style="display: none" id='a'> .... <div style="display: block" id='a');
 
 			<%-- <logic:iterate id="recipe" collection="<%= recipes %>" type="com.freshdirect.fdstore.content.Recipe"> 
-			<b><a href="/recipe.jsp?recipeId=<%= recipe.getContentName() %>&trk=srch"><%= recipe.getName() %></a></b>
+			<b><a href="/recipe.jsp?recipeId=<%= recipe.getContentName() %>&trk=<%=trk%>"><%= recipe.getName() %></a></b>
 			<% if (recipe.getSource()!=null) { %>
-				from <a href="javascript:popup('/recipe_source.jsp?recipeId=<%= recipe.getContentName() %>&trk=srch','large_long')"><%= recipe.getSource().getName() %></a>
+				from <a href="javascript:popup('/recipe_source.jsp?recipeId=<%= recipe.getContentName() %>&trk=<%=trk%>','large_long')"><%= recipe.getSource().getName() %></a>
 			<% } %><br>
 			</logic:iterate> --%>
 
@@ -156,7 +160,7 @@ try {
 			</script>
 
 			<br>
-			For more, <a href="<%=response.encodeURL("department.jsp?deptId="+RecipeDepartment.getDefault().getContentName())%>&trk=srch">click here to Shop By Recipe!</a>
+			For more, <a href="<%=response.encodeURL("department.jsp?deptId="+RecipeDepartment.getDefault().getContentName())%>&trk=<%=trk%>">click here to Shop By Recipe!</a>
 			<br>
 			<br><br>
 			<%
@@ -168,7 +172,7 @@ try {
 %><FONT CLASS="title12"><%= exactCategories.size() %> categor<%= exactCategories.size() > 1 ? "ies were":"y was" %> found</FONT><br>
 <IMG src="/media_stat/images/layout/ff9933.gif" width="520" height="1" border="0" vspace="4"><br>
 <logic:iterate id="cat" collection="<%= exactCategories %>" type="com.freshdirect.fdstore.content.CategoryModel">
-&nbsp;&nbsp;&nbsp;<%= SearchResultUtil.getPathDisplay(cat) %><br>
+&nbsp;&nbsp;&nbsp;<%= SearchResultUtil.getPathDisplay(cat,trk) %><br>
 </logic:iterate>
 <br><br>
 <%
@@ -194,7 +198,7 @@ try {
 	<table border="0" cellspacing="0" cellpadding="0">
 		<tr>	
 			<td width=10><img src="/media_stat/images/layout/clear.gif" width="10" height="1" alt="" border="0"></td>
-			<td><% SearchResultUtil.displayNodeTree( out, nodeTree );%></td>
+			<td><% SearchResultUtil.displayNodeTree( out, nodeTree, trk );%></td>
 		</tr>
 	</table>
 

@@ -14,7 +14,7 @@
 
 %>
 <div class="text15" style="line-height: 4em">
-Did you mean <a href="/search.jsp?searchParams=<%=StringUtil.escapeUri(suggestion)%>"><b><%=suggestion%></b></a>?
+Did you mean <a href="/search.jsp?searchParams=<%=StringUtil.escapeUri(suggestion)%>&trk=dym"><b><%=suggestion%></b></a>?
 </div>
 <% } %>
 
