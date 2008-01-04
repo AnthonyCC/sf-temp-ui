@@ -25,6 +25,8 @@
 <%@ page import='com.freshdirect.framework.util.DateUtil' %>
 <%@ page import='com.freshdirect.framework.util.StringUtil' %>
 <%@ page import='com.freshdirect.framework.util.QueryStringBuilder' %>
+<%@ page import='com.freshdirect.deliverypass.EnumDPAutoRenewalType' %>
+
 <%!
 
 private final static String CCL_NONELIGIBLE  = "0";
@@ -239,8 +241,14 @@ if(FDStoreProperties.isAdServerEnabled()){
 	        
 	        String dprem = null;
 	        String dpused = null;
+		  String dpar="n";	
 	        boolean expired = false;
 	        EnumDlvPassStatus status = user.getDeliveryPassStatus();
+              EnumDPAutoRenewalType dparType=user.hasAutoRenewDP();
+              if((EnumDPAutoRenewalType.YES.equals(dparType))&&(user.getDlvPassInfo().getAutoRenewUsablePassCount()>0)) {
+			dpar="y";
+              }
+              queryString.addParam("dpar",dpar);
 	        if(DeliveryPassUtil.isEligibleStatus(status)&& (user.isDlvPassExpired()==false)) {
 	            //Eligible to Buy. But not purchased.
 	            dprem = "n";
@@ -257,7 +265,8 @@ if(FDStoreProperties.isAdServerEnabled()){
 	        }else {
 	            //If UNLIMITED pass then pass the used count if not expired.
 	            if(user.isDlvPassExpired()) {
-			queryString.addParam("expd",'y');
+				int days=DeliveryPassUtil.getDaysSinceLastDPExpiry(user);
+				queryString.addParam("expd",days);
 	            }
                   else if( (user.getDlvPassInfo()!=null) && user.getDlvPassInfo().isUnlimited()==false) {
 	      	      //If BSGS pass then pass the remaining count.
@@ -267,7 +276,8 @@ if(FDStoreProperties.isAdServerEnabled()){
                   }
 			else if(user.getUsableDeliveryPassCount()>0) {
 	                //Not Purchased yet or Purchased not expired.
-	            	int days=DateUtil.getDiffInDays(user.getDlvPassInfo().getExpDate(), new Date());
+	            	//int days=DateUtil.getDiffInDays(user.getDlvPassInfo().getExpDate(), new Date());
+				int days=DateUtil.getDiffInDays(DeliveryPassUtil.getDPExpDate(user), new Date());
 			queryString.
 				addParam("dpu",dpused).
 				addParam("expd",days);

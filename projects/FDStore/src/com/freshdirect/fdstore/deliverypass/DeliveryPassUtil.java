@@ -123,7 +123,7 @@ public class DeliveryPassUtil {
 	   }
    }
    
-   public static String getExpDate(FDUserI user) {
+   public static Date getDPExpDate(FDUserI user) {
 
 	   Calendar exp_date=Calendar.getInstance();
 	   try {
@@ -131,7 +131,7 @@ public class DeliveryPassUtil {
 		   
 		   DeliveryPassInfo dp=(DeliveryPassInfo) passInfo.get(DlvPassConstants.ACTIVE_ITEM);
 		   if(dp==null)
-			   return "";
+			   return null;
 		   
 		   DeliveryPassModel dpModel=null;
 		   exp_date.setTime(dp.getExpirationDate());
@@ -151,10 +151,21 @@ public class DeliveryPassUtil {
 	   }
 	   catch(Exception e) {
 		  LOGGER.error(e);
-		  return "";
+		  return null;
 	   }
+	   return exp_date.getTime();
+   }
+   
+   public static String getExpDate(FDUserI user) {
+
+	   Date exp_date=getDPExpDate(user);
 	   //String returnVal=String.valueOf(renew_date.get(Calendar.MONTH)+1)+"/"+String.valueOf(renew_date.get(Calendar.DATE))+"/"+String.valueOf(renew_date.get(Calendar.YEAR));
-	   return DATE_FORMATTER.format(exp_date.getTime());
+	   if(exp_date!=null) {
+		   return DATE_FORMATTER.format(exp_date);
+	   }
+	   else {
+		   return "";
+	   }
 
    }
    
@@ -330,6 +341,35 @@ public class DeliveryPassUtil {
 	   }
    }
    
+   public static int getDaysSinceLastDPExpiry(FDUserI user) {
+	   
+	   Calendar now=Calendar.getInstance();
+	   try {
+		   Map passInfo=FDCustomerManager.getDeliveryPassesInfo(user);
+		   DeliveryPassInfo dp=null;
+		   DeliveryPassModel dpModel=null;
+		   List passes=(List)passInfo.get(DlvPassConstants.PASS_HISTORY);
+		   int days=0;
+		   if(passes!=null) {
+			   int _tempDays=0;
+			   for(int i=0;i<passes.size();i++) {
+				   dp=(DeliveryPassInfo)passes.get(i);
+				   dpModel=dp.getModel();
+				   if((EnumDlvPassStatus.ACTIVE==dpModel.getStatus())||(EnumDlvPassStatus.CANCELLED==dpModel.getStatus())) {
+					   _tempDays=DateUtil.getDiffInDays(dpModel.getExpirationDate(), now.getTime());
+					   if(days==0||(days>_tempDays)) {
+						   days=_tempDays;
+					   }
+				   }
+			   }
+		   }
+		   return days*-1;
+	   }
+	   catch(Exception e) {
+		  LOGGER.error(e);
+		  return 0;
+	   }
+   }
    
    
    

@@ -37,13 +37,13 @@
 						   We have issued you the following credit:<br/><br/>
 					<xsl:if test="dpName='UNLIMITED'">
 						<xsl:if test="number(creditCount)=1">
-                                        	Your six-month DeliveryPass has been extended by one additional week. 
+                                        	Your DeliveryPass has been extended by one additional week. 
                               	</xsl:if>
 						<xsl:if test="number(creditCount)=2">
-                                        	Your six-month DeliveryPass has been extended by two additional weeks. 
+                                        	Your DeliveryPass has been extended by two additional weeks. 
                               	</xsl:if>
 						<xsl:if test="creditCount=3">
-                                        	Your six-month DeliveryPass has been extended by three additional weeks. 
+                                        	Your DeliveryPass has been extended by three additional weeks. 
                               	</xsl:if>
 					</xsl:if>
 					<xsl:if test="dpName='BSGS'">

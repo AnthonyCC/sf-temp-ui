@@ -84,7 +84,12 @@
 			<%
 			FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 			EnumDlvPassStatus status = user.getDeliveryPassStatus();
-			if(user.isEligibleForDeliveryPass() && (user.getUsableDeliveryPassCount()==FDStoreProperties.getMaxDlvPassPurchaseLimit()) &&(user.hasAutoRenewDP().equals(EnumDPAutoRenewalType.NONE))) { %>
+                  EnumDPAutoRenewalType arType=user.hasAutoRenewDP();
+                  if(user.getDlvPassInfo().getAutoRenewUsablePassCount()==0)  {
+				arType=EnumDPAutoRenewalType.NONE;
+                  } 
+
+			if(user.isEligibleForDeliveryPass() && (user.getUsableDeliveryPassCount()==FDStoreProperties.getMaxDlvPassPurchaseLimit()) &&(EnumDPAutoRenewalType.NONE.equals(arType))) { %>
 			<form name="signup" method="POST">
 			<input type="hidden" name="action" value="">
 				<tr>
@@ -94,7 +99,7 @@
 					</td>
 				</tr>	
 			</form>
-			<%} else if (user.isEligibleForDeliveryPass() && (user.getUsableDeliveryPassCount()>1)&&(user.hasAutoRenewDP().equals(EnumDPAutoRenewalType.NONE)) ) {%>
+			<%} else if (user.isEligibleForDeliveryPass() && (user.getUsableDeliveryPassCount()>1)&&(EnumDPAutoRenewalType.NONE.equals(arType)) ) {%>
 			<form name="signup" method="POST">
 			<input type="hidden" name="action" value="">
 				<tr>
@@ -107,7 +112,7 @@
 					</td>
 				</tr>	
 			</form>
-			<%} else if (user.isEligibleForDeliveryPass() && (user.getUsableDeliveryPassCount()==1)&&(user.hasAutoRenewDP().equals(EnumDPAutoRenewalType.NONE))&& (user.getDlvPassInfo().getAutoRenewUsablePassCount()==0)) {%>
+			<%} else if (user.isEligibleForDeliveryPass() && (user.getUsableDeliveryPassCount()==1)&&(EnumDPAutoRenewalType.NONE.equals(arType))&& (user.getDlvPassInfo().getAutoRenewUsablePassCount()==0)) {%>
 			<form name="signup" method="POST">
 			<input type="hidden" name="action" value="">
 				<tr>
@@ -119,7 +124,7 @@
 					</td>
 				</tr>	
 			</form>
-                  <%}else if (user.isEligibleForDeliveryPass() && (user.getUsableDeliveryPassCount()==0)&&(user.hasAutoRenewDP().equals(EnumDPAutoRenewalType.NONE))) {%>
+                  <%}else if (user.isEligibleForDeliveryPass() && (user.getUsableDeliveryPassCount()==0)&&(EnumDPAutoRenewalType.NONE.equals(arType))) {%>
 			<form name="signup" method="POST">
 			<input type="hidden" name="action" value="">
 				<tr>
@@ -132,7 +137,7 @@
 			</form>
                   <%}%>
 
-		      <% if(user.hasAutoRenewDP().equals(EnumDPAutoRenewalType.YES) || user.hasAutoRenewDP().equals(EnumDPAutoRenewalType.NO)) {%>
+		      <% if(EnumDPAutoRenewalType.YES.equals(arType) || EnumDPAutoRenewalType.NO.equals(arType)) {%>
                         <% if(user.getUsableDeliveryPassCount()>1) {%>
 				<tr>
 					<td colspan="2">
@@ -154,7 +159,7 @@
 							
 						
 
-						<% if(user.hasAutoRenewDP().equals(EnumDPAutoRenewalType.YES)) {%>
+						<% if(EnumDPAutoRenewalType.YES.equals(arType)) {%>
 
 							<% if(user.getDlvPassInfo().getAutoRenewUsablePassCount()>0) {%>
 								<IMG src="/media_stat/images/layout/999966.gif" WIDTH="675" HEIGHT="1" BORDER="0" VSPACE="3"><br>	
