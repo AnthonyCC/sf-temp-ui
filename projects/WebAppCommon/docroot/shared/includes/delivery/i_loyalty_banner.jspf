@@ -34,7 +34,7 @@
 					for Chef's Table preferred access.
 				<%	
 	    	} else {
-				%> We've <a href="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/site_pages/ct/preferred_access.html&windowSize=large&name=Chefs+Table','large')">held space for you</a> in our most popular time slots &#8212;
+				%> We've <a href="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/site_pages/ct/preferred_access.html&windowSize=large&name=Chefs+Table','large')"><b>held space for you</b></a> in our most popular time slots &#8212;
 				our thanks to you for being a great customer.
 				<div style="text-align: center; margin-top: 4px;">
 					<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/prp1x1.gif"> <b> = Only Chef's Table access remaining</b>

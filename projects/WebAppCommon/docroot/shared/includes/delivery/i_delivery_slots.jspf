@@ -32,8 +32,8 @@ private final static String TIMESLOT_BG_ODD = "f7f7f7";
 					<td width="1" bgcolor="#222222"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0" alt=""></td>
 					<td width="3"><img src="/media_stat/images/layout/clear.gif" width="3" height="3" border="0" alt=""></td>
 					<td align="center" width="89">
-						<div class="day_name"><%= TimeslotPageUtil.formatDayName(day) %></div>
-						<div class="day_date"><%= TimeslotPageUtil.formatDeliveryDate(day) %></div>
+						<div class="day_name"><b><%= TimeslotPageUtil.formatDayName(day) %></b></div>
+						<div class="day_date"><b><%= TimeslotPageUtil.formatDeliveryDate(day) %></b></div>
 					</td>
 					<td width="3"><img src="/media_stat/images/layout/clear.gif" width="3" height="3" border="0" alt=""></td>
 					<td width="1" bgcolor="#222222"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0" alt=""></td>
@@ -72,7 +72,7 @@ private final static String TIMESLOT_BG_ODD = "f7f7f7";
 									(cutoffTimeHour >= DateUtil.MORNING_END && startdlvHour <= TimeslotPageUtil.EVENING_END)  ? "pm" : "am"
 								);
 								%>
-								<div class="cutoffTime" style="background: #<%= bgcolor %>">Order by <%= cutoffDisp %></div>
+								<div class="cutoffTime" style="background: #<%= bgcolor %>;padding:3px;padding-top:4px;"><b>Order by <%= cutoffDisp %></b></div>
 								<%
 							}
 							
@@ -90,7 +90,7 @@ private final static String TIMESLOT_BG_ODD = "f7f7f7";
 
 
 							%>
-							<div class="slotRow" style="background:#<%= highlightPreReserved ? "f93" : normalAvailCapacity < 1 && availCapacity > 0 ? "996699" : bgcolor %>">
+							<div class="slotRow" style="background:#<%= highlightPreReserved ? "f93" : normalAvailCapacity < 1 && availCapacity > 0 ? "996699" : bgcolor %>;padding:1px;padding-top:2px;padding-bottom:2px;">
 								<span class="control">
 									<% 
 									if (availCapacity < 1 && !(selectedSlot || preReservedSlot)) {
