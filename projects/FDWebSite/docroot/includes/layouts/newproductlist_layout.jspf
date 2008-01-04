@@ -59,7 +59,7 @@ set in calling page
 
 		<fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
 		<% 
-			productPrice = "<b>"+currencyFormatter.format(productInfo.getDefaultPrice())+"/"+ productInfo.getDefaultPriceUnit().toLowerCase()+"</b>";
+			productPrice = "<b>"+currencyFormatter.format(productInfo.getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase()+"</b>";
 		%>						
 		</fd:FDProductInfo>
 		<% 

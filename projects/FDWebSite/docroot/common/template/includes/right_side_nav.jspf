@@ -198,7 +198,7 @@ if(weRecommendImgProds.size() > 0) {
             String weRecPrice = null;
             if (weRecSku==null) continue;
             
-            weRecPrice = currencyFormatter.format(weRecSku.getProductInfo().getDefaultPrice())+"/"+ weRecSku.getProductInfo().getDefaultPriceUnit();
+            weRecPrice = currencyFormatter.format(weRecSku.getProductInfo().getDefaultPrice())+"/"+ weRecSku.getProductInfo().getDisplayableDefaultPriceUnit().toLowerCase();
 %>						
         <tr valign="top"><td width="12"><br></td>
             <td width="35"><A HREF="<%=prdURL%>"><img src="<%=prdImgPath%>" <%=prdImgDim%> border="0" alt="<%=prdMdl.getGlanceName()%>"></A><br><font class="space4pix"><br></font></td>
