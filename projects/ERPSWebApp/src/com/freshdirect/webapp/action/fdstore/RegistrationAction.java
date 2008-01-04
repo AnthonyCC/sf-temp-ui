@@ -10,18 +10,15 @@ import com.freshdirect.common.address.EnumAddressType;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpAddressModel;
-import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
-import com.freshdirect.delivery.DlvAddressGeocodeResponse;
+import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.delivery.DlvServiceSelectionResult;
 import com.freshdirect.delivery.EnumDeliveryStatus;
 import com.freshdirect.delivery.depot.DlvDepotModel;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
-import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDDepotManager;
-import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
@@ -39,10 +36,11 @@ import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.webapp.action.WebActionSupport;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.AddressUtil;
-import com.freshdirect.webapp.taglib.fdstore.PaymentMethodName;
-import com.freshdirect.webapp.taglib.fdstore.PaymentMethodUtil;
+import com.freshdirect.webapp.taglib.fdstore.DeliveryAddressValidator;
 import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
+import com.freshdirect.webapp.taglib.fdstore.PaymentMethodName;
+import com.freshdirect.webapp.taglib.fdstore.PaymentMethodUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.util.AccountUtil;
@@ -110,170 +108,131 @@ public class RegistrationAction extends WebActionSupport {
 		// we'll bail out here if the
 		//
 		
-		AddressModel address = addInfo.getDlvAddress();
-		address = AddressUtil.scrubAddress(address, actionResult);
+		// VALIDATE DELIVERY ADDRESS
+		// NOTE: don't be strict in USPS service checking if user is pickup or depot
+		AddressModel dlvAddress = addInfo.getDlvAddress();
+		dlvAddress.setServiceType(serviceType);
+		DeliveryAddressValidator validator = new DeliveryAddressValidator(dlvAddress, user.isHomeUser() || user.isCorporateUser());
 		
-		if(actionResult.isFailure()){
-			return ERROR;
-		}
-		
-		if (EnumAddressType.FIRM.equals(address.getAddressType()) && !EnumServiceType.CORPORATE.equals(serviceType)) {
-			actionResult.addError(true, EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), SystemMessageList.MSG_COMMERCIAL_ADDRESS);
-			return ERROR;
-		}
+		boolean addressValid = validator.validateAddress(actionResult);
+		AddressModel address = validator.getScrubbedAddress();
 
-		DlvServiceSelectionResult serviceResult = null;
-		try {
-			serviceResult = FDDeliveryManager.getInstance().checkAddress(address);
-		} catch (FDInvalidAddressException iae) {
-			//
-			// geocoding failed. if user is pickup or depot, we don't care
-			//
-			if (user.isHomeUser() || user.isCorporateUser()) {
-				actionResult.addError(true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);
-				return ERROR;
-			}
-		}
-		EnumDeliveryStatus status = serviceResult.getServiceStatus(serviceType);
-		if (!EnumDeliveryStatus.DELIVER.equals(status)) {
-			if (EnumServiceType.CORPORATE.equals(serviceType) && !EnumAddressType.FIRM.equals(address.getAddressType())) {
-				actionResult.addError(true, EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), SystemMessageList.MSG_HOME_NO_COS_DLV_ADDRESS);
-				return ERROR;
-			}
-		}
-		
-		if (serviceResult.isServiceRestricted()) {
+
+		if (validator.getServiceResult().isServiceRestricted()) {
 			restrictedAddress = true;
 			session.setAttribute(SessionName.BLOCKED_ADDRESS_WARNING, Boolean.TRUE);
 		}
-		
-//		 since address looks alright need geocode
-		try {
-			DlvAddressGeocodeResponse geocodeResponse = FDDeliveryManager.getInstance().geocodeAddress(address);		
-		    String geocodeResult = geocodeResponse.getResult();
-		    
-		    if(!"GEOCODE_OK".equalsIgnoreCase(geocodeResult))
-		    {
-		    	//
-				// since geocoding is not happening silently ignore it  
-		    	LOGGER.warn("GEOCODE FAILED FOR ADDRESS :"+address);		    	
-				//actionResult.addError(true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);
-		
-		    }
-		    else{
-		    	LOGGER.debug("geocodeResponse.getAddress() :"+geocodeResponse.getAddress());			    	
-		    	address= geocodeResponse.getAddress();		    
-		    }
-		} catch (FDInvalidAddressException iae) {				
-			LOGGER.warn("GEOCODE FAILED FOR ADDRESS FDInvalidAddressException :"+address+"EXCEPTION :"+iae);
-			//actionResult.addError(true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);				
-		}				    
-		
-		
-		this.reclassifyUser(user, address, serviceType, serviceResult);
 
-		String application = (String) session.getAttribute(SessionName.APPLICATION);
+		if (addressValid) {
 
-		//
-		// Absence of an FDIdentity in session means this is a new registration.
-		// Presence of an FDIdentity might indicate a registered user but failed predicate function
-		// (like adding a credit card in CallCenter), so don't attempt to re-register if one is found.
-		//
-		if (user.getIdentity() == null) {
+			this.reclassifyUser(user, address, serviceType, validator.getServiceResult());
 
-			ErpCustomerModel erpCustomer = aInfo.getErpCustomerModel();
-			ErpCustomerInfoModel customerInfo = new ErpCustomerInfoModel();
-			aInfo.decorateCustomerInfo(customerInfo);
-			cInfo.decorateCustomerInfo(customerInfo);
-			customerInfo.setRegRefTrackingCode(user.getLastRefTrackingCode());
-			// changes done by gopal
-			customerInfo.setReferralProgId(user.getLastRefProgId());
-			customerInfo.setReferralProgInvtId(user.getLastRefProgInvtId());
-			
-			erpCustomer.setCustomerInfo(customerInfo);
+			String application = (String) session.getAttribute(SessionName.APPLICATION);
 
-			ErpAddressModel erpAddress = new ErpAddressModel(address);
-			erpAddress.setFirstName(customerInfo.getFirstName());
-			erpAddress.setLastName(customerInfo.getLastName());
-			erpAddress.setPhone(customerInfo.getHomePhone());
-			erpAddress.setAddressInfo(address.getAddressInfo());
-			erpAddress.setServiceType(serviceType);
-			erpAddress.setCompanyName(addInfo.getCompanyName());
-
-			erpCustomer.addShipToAddress(erpAddress);
-
-			FDCustomerModel fdCustomer = new FDCustomerModel();
-
-			fdCustomer.setPasswordHint(aInfo.getPasswordHint());
-			fdCustomer.setDepotCode(user.getDepotCode());
-			fdCustomer.setDefaultDepotLocationPK(addInfo.getLocationId());
-			fdCustomer.setDepotCode(user.getDepotCode());
-
-			FDSurveyResponse survey = aInfo.getMarketingSurvey(null, "Registration_survey");
-
-			try {
-				FDIdentity regIdent = this.doRegistration(fdCustomer, erpCustomer, survey, serviceType);
-				//user.getShoppingCart().setZoneInfo(zoneInfo);
-				user.setIdentity(regIdent);
-				user.invalidateCache();
-				user.isLoggedIn(true);
-				user.updateUserState();
-				//Set the Default Delivery pass status.
-				FDUserDlvPassInfo dlvpassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE, null, null, null,0,0,0,false,0,null,0);
-				user.getUser().setDlvPassInfo(dlvpassInfo);
-				session.setAttribute(SessionName.USER, user);
-			} catch (ErpDuplicateUserIdException de) {
-				LOGGER.warn("User registration failed due to duplicate id", de);
-				actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(), SystemMessageList.MSG_UNIQUE_USERNAME));
-			}
-
-		}
-
-		boolean inCallCenter = "callcenter".equalsIgnoreCase(application);
-		
-		if (inCallCenter && actionResult.isSuccess()) {
 			//
-			// Do CallCenter-specific stuff
+			// Absence of an FDIdentity in session means this is a new registration.
+			// Presence of an FDIdentity might indicate a registered user but failed predicate function
+			// (like adding a credit card in CallCenter), so don't attempt to re-register if one is found.
 			//
-			LOGGER.debug("Creating payment method for customer, check first to see if basic info entered account num");
-			if (!"".equals(request.getParameter(PaymentMethodName.ACCOUNT_NUMBER))) {
-				LOGGER.debug("CREATING PAYMENT METHOD");
-				ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processForm(request, actionResult, user.getIdentity());
-				PaymentMethodUtil.validatePaymentMethod(request, paymentMethod, actionResult, user);
-				if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
-			        String terms = request.getParameter(PaymentMethodName.TERMS);
-			        actionResult.addError(
-			    	        terms == null || terms.length() <= 0,
-			    	        PaymentMethodName.TERMS,SystemMessageList.MSG_REQUIRED
-			    	        );
-			        if (actionResult.isSuccess()  && !PaymentMethodUtil.hasECheckAccount(user.getIdentity())) {
-			        	paymentMethod.setIsTermsAccepted(true);
-			        }
-				}
-				if (actionResult.isSuccess())
-					PaymentMethodUtil.addPaymentMethod(request, actionResult, paymentMethod);
+			if (user.getIdentity() == null) {
+
+				ErpCustomerModel erpCustomer = aInfo.getErpCustomerModel();
+				ErpCustomerInfoModel customerInfo = new ErpCustomerInfoModel();
+				aInfo.decorateCustomerInfo(customerInfo);
+				cInfo.decorateCustomerInfo(customerInfo);
+				customerInfo.setRegRefTrackingCode(user.getLastRefTrackingCode());
+				// changes done by gopal
+				customerInfo.setReferralProgId(user.getLastRefProgId());
+				customerInfo.setReferralProgInvtId(user.getLastRefProgInvtId());
 				
-			} else {
-				LOGGER.debug("NO CARD REDIRECT");
-				this.setSuccessPage("/main/account_details.jsp?cc=no");
-			}
-		}
+				erpCustomer.setCustomerInfo(customerInfo);
 
-		//
-		// we need to see if the user's delivery status changed as a result of registration
-		//
-		if (this.statusChangePage != null) {
-			boolean promoChanged = startedPromoEligible != user.isEligibleForSignupPromotion();
-			boolean dlvChanged = (startedAsHomeUser && user.isPickupOnly())
-				|| (startedAsPickupOnly && user.isHomeUser())
-				|| (user.isDepotUser() && user.isHomeUser())
-				|| restrictedAddress;
-			if (user.isEligibleForSignupPromotion() && (promoChanged || dlvChanged || !signupFromCheckout)) {
-				this.setSuccessPage(this.statusChangePage + "?promoChange=" + promoChanged + "&dlvChange=" + dlvChanged);
+				ErpAddressModel erpAddress = new ErpAddressModel(address);
+				erpAddress.setFirstName(customerInfo.getFirstName());
+				erpAddress.setLastName(customerInfo.getLastName());
+				erpAddress.setPhone(customerInfo.getHomePhone());
+				erpAddress.setAddressInfo(address.getAddressInfo());
+				erpAddress.setServiceType(serviceType);
+				erpAddress.setCompanyName(addInfo.getCompanyName());
+
+				erpCustomer.addShipToAddress(erpAddress);
+
+				FDCustomerModel fdCustomer = new FDCustomerModel();
+
+				fdCustomer.setPasswordHint(aInfo.getPasswordHint());
+				fdCustomer.setDepotCode(user.getDepotCode());
+				fdCustomer.setDefaultDepotLocationPK(addInfo.getLocationId());
+				fdCustomer.setDepotCode(user.getDepotCode());
+
+				FDSurveyResponse survey = aInfo.getMarketingSurvey(null, "Registration_survey");
+
+				try {
+					FDIdentity regIdent = this.doRegistration(fdCustomer, erpCustomer, survey, serviceType);
+					//user.getShoppingCart().setZoneInfo(zoneInfo);
+					user.setIdentity(regIdent);
+					user.invalidateCache();
+					user.isLoggedIn(true);
+					user.updateUserState();
+					//Set the Default Delivery pass status.
+					FDUserDlvPassInfo dlvpassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE, null, null, null,0,0,0,false,0,null,0);
+					user.getUser().setDlvPassInfo(dlvpassInfo);
+					session.setAttribute(SessionName.USER, user);
+				} catch (ErpDuplicateUserIdException de) {
+					LOGGER.warn("User registration failed due to duplicate id", de);
+					actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(), SystemMessageList.MSG_UNIQUE_USERNAME));
+				}
+
 			}
+
+			boolean inCallCenter = "callcenter".equalsIgnoreCase(application);
+			
+			if (inCallCenter && actionResult.isSuccess()) {
+				//
+				// Do CallCenter-specific stuff
+				//
+				LOGGER.debug("Creating payment method for customer, check first to see if basic info entered account num");
+				if (!"".equals(request.getParameter(PaymentMethodName.ACCOUNT_NUMBER))) {
+					LOGGER.debug("CREATING PAYMENT METHOD");
+					ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processForm(request, actionResult, user.getIdentity());
+					PaymentMethodUtil.validatePaymentMethod(request, paymentMethod, actionResult, user);
+					if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
+				        String terms = request.getParameter(PaymentMethodName.TERMS);
+				        actionResult.addError(
+				    	        terms == null || terms.length() <= 0,
+				    	        PaymentMethodName.TERMS,SystemMessageList.MSG_REQUIRED
+				    	        );
+				        if (actionResult.isSuccess()  && !PaymentMethodUtil.hasECheckAccount(user.getIdentity())) {
+				        	paymentMethod.setIsTermsAccepted(true);
+				        }
+					}
+					if (actionResult.isSuccess())
+						PaymentMethodUtil.addPaymentMethod(request, actionResult, paymentMethod);
+					
+				} else {
+					LOGGER.debug("NO CARD REDIRECT");
+					this.setSuccessPage("/main/account_details.jsp?cc=no");
+				}
+			}
+
+			//
+			// we need to see if the user's delivery status changed as a result of registration
+			//
+			if (this.statusChangePage != null) {
+				boolean promoChanged = startedPromoEligible != user.isEligibleForSignupPromotion();
+				boolean dlvChanged = (startedAsHomeUser && user.isPickupOnly())
+					|| (startedAsPickupOnly && user.isHomeUser())
+					|| (user.isDepotUser() && user.isHomeUser())
+					|| restrictedAddress;
+				if (user.isEligibleForSignupPromotion() && (promoChanged || dlvChanged || !signupFromCheckout)) {
+					this.setSuccessPage(this.statusChangePage + "?promoChange=" + promoChanged + "&dlvChange=" + dlvChanged);
+				}
+			}
+			//Set the
+			return SUCCESS;
+		} else {
+			// Delivery Address check failed
+			return ERROR;
 		}
-		//Set the
-		return SUCCESS;
 	}
 
 	private void reclassifyUser(
