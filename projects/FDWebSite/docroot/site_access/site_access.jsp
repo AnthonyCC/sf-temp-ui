@@ -46,6 +46,7 @@ request.setAttribute("listPos", "CategoryNote");
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 	<head>
+		<meta name="verify-v1" content="2MXiorvt33Hqj6QEBylmr/TwpVMfiUQArG0etUIxV2c=" />
 		<title><%= isBestCellars ? "Best Cellars" : "FreshDirect"%></title>
 		<script language="javascript" src="/assets/javascript/common_javascript.js"></script>
 		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>                        
