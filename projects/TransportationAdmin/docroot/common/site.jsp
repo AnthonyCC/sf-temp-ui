@@ -2,6 +2,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
+<%@ page import='com.freshdirect.transadmin.security.SecurityManager' %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
@@ -17,16 +18,28 @@
     <script type="text/javascript" language="javascript" src="js/jscalendar-1.0/lang/calendar-en.js"></script>
     <script type="text/javascript" language="javascript" src="js/jscalendar-1.0/calendar-setup.js"></script>
 </head>
- <body marginwidth="0" marginheight="0" >
+ <body marginwidth="0" marginheight="0" border="0">
 	<table class="appframe" width="100%" cellpadding="0" cellspacing="0" border="0">
 			<tr class="apptitle" >
 				<td width="40%">
 					<img src="images/urban-highway2.jpg" width="129" height="82" border="0" alt="Urban" />
 				</td>
-				<td width="60%">Transportation Department</td>
+				<td width="50%">Transportation Department</td>
+				<td width="10%">
+					<table class="appframe" width="100%" cellpadding="0" cellspacing="0" border="0">
+					<tr class="appusertitle">
+						<td><img src="images/user.gif" border="0" alt="User:" /></td>
+						<td><%=SecurityManager.getUserName(request)%></td>
+					</tr>
+					<tr class="appusertitle">
+						<td><img src="images/role.gif" border="0" alt="Role:" /></td>
+						<td><%=SecurityManager.getUserRole(request)%></td>
+					</tr>
+					</table>					
+				</td>
 			</tr>
 			<tr>
-				<td class="navlist" colspan="2" bgcolor="c00cc3d">
+				<td class="navlist" colspan="3" bgcolor="c00cc3d">
 				<table class="navtbl" border="0" width="100%">
 					<tr>
 						<td width="10%" align="center"><a href="index.jsp" >&nbsp;Home&nbsp;</a></td>

@@ -12,6 +12,12 @@ body {
 	height:82px;
 }
 
+.appusertitle {
+	font-size: 7pt;
+	font-family: Verdana, Arial, Helvetica,sans-serif;
+	background-color:#e7e7d6;
+}
+
 .appframe {
 	vertical-align:top;
 }
