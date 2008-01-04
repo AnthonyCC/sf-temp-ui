@@ -17,21 +17,15 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressModel;
-import com.freshdirect.common.address.EnumAddressType;
 import com.freshdirect.common.address.PhoneNumber;
-import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDuplicateAddressException;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpInvalidPasswordException;
-import com.freshdirect.delivery.DlvAddressGeocodeResponse;
-import com.freshdirect.delivery.DlvServiceSelectionResult;
-import com.freshdirect.delivery.EnumDeliveryStatus;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDDepotManager;
-import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
@@ -149,90 +143,67 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		}
 	}
 
-	protected void performEditDeliveryAddress(HttpServletRequest request, ActionResult actionResult) throws FDResourceException {
+
+
+	// [segabor] refactored from performEditDeliveryAddress and performAddDeliveryAddess
+	public static ErpAddressModel checkDeliveryAddressInForm(HttpServletRequest request, ActionResult actionResult, HttpSession session) throws FDResourceException {
+		ErpAddressModel erpAddress = null; // return
+
+
 		AddressForm addressForm = new AddressForm();
 		addressForm.populateForm(request);
 		addressForm.validateForm(actionResult);
 		if (!actionResult.isSuccess())
-			return;
+			return null;
 
-		AddressModel scrubbedAddress = AddressUtil.scrubAddress(addressForm.getDeliveryAddress(), actionResult);
-				
-		if(EnumAddressType.FIRM.equals(scrubbedAddress.getAddressType()) && !addressForm.getDeliveryAddress().getServiceType().equals(EnumServiceType.CORPORATE)){
-			actionResult.addError(new ActionError(EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), SystemMessageList.MSG_COMMERCIAL_ADDRESS));
-		}
+		AddressModel deliveryAddress = addressForm.getDeliveryAddress();
+		deliveryAddress.setServiceType(addressForm.getDeliveryAddress().getServiceType());
+		DeliveryAddressValidator validator = new DeliveryAddressValidator(deliveryAddress);
 		
-		if (!actionResult.isSuccess()){
-			return;
-		}
-		
-		scrubbedAddress.setServiceType(addressForm.getDeliveryAddress().getServiceType());
+		if (validator.validateAddress(actionResult)) {
+			AddressModel scrubbedAddress = validator.getScrubbedAddress(); // get 'normalized' address
 
-		HttpSession session = (HttpSession) pageContext.getSession();
-		FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
-		boolean wasPickupOnlyUser = user.isPickupOnly();
-		//boolean wasHomeUser = user.isHomeUser();
-		
-		try {
-			DlvServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().checkAddress(scrubbedAddress);
-			EnumDeliveryStatus status = serviceResult.getServiceStatus(scrubbedAddress.getServiceType());
-			if (EnumDeliveryStatus.DELIVER.equals(status) || EnumDeliveryStatus.PARTIALLY_DELIVER.equals(status)) {
-				if (wasPickupOnlyUser) {
+			if (validator.isAddressDeliverable()) {
+				FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
+				if (user.isPickupOnly()) {
 					//
 					// now eligible for home delivery
 					//
-					user.setZipCode(scrubbedAddress.getZipCode());
 					user.setSelectedServiceType(scrubbedAddress.getServiceType());
+					user.setZipCode(scrubbedAddress.getZipCode());
 					FDCustomerManager.storeUser(user.getUser());
 					session.setAttribute(USER, user);
 				}
 			}
-			//
-			// !!! TO DO: if wasHomeUser, need to check all addresses to see if they are still a homeUser
-			//            in any of their addresses, otherwise, make them pickupOnly
-			//
-		} catch (FDInvalidAddressException iae) {
-			//
-			// this shouldn't really happen here because this would get caught first by the scrubAddress step
-			// but just in case...
-			//
-			actionResult.addError(true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);
+			
+			erpAddress = addressForm.getErpAddress();
+			erpAddress.setFrom(scrubbedAddress);
+			erpAddress.setCity(scrubbedAddress.getCity());
+			erpAddress.setAddressInfo(scrubbedAddress.getAddressInfo());				
+
+			LOGGER.debug("ErpAddressModel:"+scrubbedAddress);
+
+			if("SUFFOLK".equals(FDDeliveryManager.getInstance().getCounty(scrubbedAddress)) && erpAddress.getAltContactPhone() == null){
+				actionResult.addError(true, EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode(), SystemMessageList.MSG_REQUIRED);
+				return null;
+			}
+		}
+
+		return erpAddress;
+	}
+	
+
+	protected void performEditDeliveryAddress(HttpServletRequest request, ActionResult actionResult) throws FDResourceException {
+		HttpSession session = (HttpSession) pageContext.getSession();
+		FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
+
+		// call common delivery address check
+		ErpAddressModel erpAddress = checkDeliveryAddressInForm(request, actionResult, session);
+		if (erpAddress == null) {
 			return;
 		}
 		
-//		 since address looks alright need geocode 
-		try {
-			DlvAddressGeocodeResponse geocodeResponse = FDDeliveryManager.getInstance().geocodeAddress(scrubbedAddress);		
-		    String geocodeResult = geocodeResponse.getResult();
-		    
-		    if(!"GEOCODE_OK".equalsIgnoreCase(geocodeResult))
-		    {
-		    	//
-				// since geocoding is not happening silently ignore it  
-		    	LOGGER.warn("GEOCODE FAILED FOR ADDRESS :"+scrubbedAddress);		    	
-				//actionResult.addError(true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);
 		
-		    }
-		    else{
-		    	LOGGER.debug("geocodeResponse.getAddress() :"+geocodeResponse.getAddress());			    	
-		    	scrubbedAddress= geocodeResponse.getAddress();		    
-		    }
-
-		} catch (FDInvalidAddressException iae) {				
-			LOGGER.warn("GEOCODE FAILED FOR ADDRESS FDInvalidAddressException :"+scrubbedAddress+"EXCEPTION :"+iae);
-			//actionResult.addError(true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);				
-		}				    
-
-		ErpAddressModel erpAddress = addressForm.getErpAddress();
-		erpAddress.setFrom(scrubbedAddress);
-		erpAddress.setAddressInfo(scrubbedAddress.getAddressInfo());
-		erpAddress.setCity(scrubbedAddress.getCity());
-		
-		if("SUFFOLK".equals(FDDeliveryManager.getInstance().getCounty(scrubbedAddress)) && erpAddress.getAltContactPhone() == null){
-			actionResult.addError(true, EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode(), SystemMessageList.MSG_REQUIRED);
-			return;
-		}
-
 		String shipToAddressId = request.getParameter("updateShipToAddressId");
 		boolean foundFraud = AddressUtil.updateShipToAddress(request, actionResult, user, shipToAddressId, erpAddress);
 		if(foundFraud){
@@ -254,90 +225,15 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 	}
 
 	protected void performAddDeliveryAddress(HttpServletRequest request, ActionResult actionResult) throws FDResourceException {
-
-		AddressForm addressForm = new AddressForm();
-		addressForm.populateForm(request);
-		addressForm.validateForm(actionResult);
-		if (!actionResult.isSuccess())
-			return;
-
-		AddressModel scrubbedAddress = AddressUtil.scrubAddress(addressForm.getDeliveryAddress(), actionResult);
-				
-		
-		LOGGER.debug("scrubbedAddress after scrub:"+scrubbedAddress);
-		
-		//restrict corporate addresses from registering for home delivery
-		if(EnumAddressType.FIRM.equals(scrubbedAddress.getAddressType()) && !EnumServiceType.CORPORATE.equals(addressForm.getDeliveryAddress().getServiceType())){
-			actionResult.addError(new ActionError(EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), SystemMessageList.MSG_COMMERCIAL_ADDRESS));
-		}
-		
-		if (!actionResult.isSuccess()){
-			return;
-		}
-			
-		scrubbedAddress.setServiceType(addressForm.getDeliveryAddress().getServiceType());
-
 		HttpSession session = (HttpSession) pageContext.getSession();
 		FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
-		boolean wasPickupOnlyUser = user.isPickupOnly();
-		//boolean wasHomeUser = user.isHomeUser();
 
-		try {
-			DlvServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().checkAddress(scrubbedAddress);
-			EnumDeliveryStatus status = serviceResult.getServiceStatus(scrubbedAddress.getServiceType());
-			
-			if (EnumDeliveryStatus.DELIVER.equals(status) || EnumDeliveryStatus.PARTIALLY_DELIVER.equals(status)) {
-				if (wasPickupOnlyUser) {
-					//
-					// now eligible for home delivery
-					//
-					user.setSelectedServiceType(scrubbedAddress.getServiceType());
-					user.setZipCode(scrubbedAddress.getZipCode());
-					FDCustomerManager.storeUser(user.getUser());
-					session.setAttribute(USER, user);
-				}
-			}
-		} catch (FDInvalidAddressException iae) {
-			//
-			// this shouldn't really happen here because this would get caught first by the scrubAddress step
-			// but just in case...
-			//
-			actionResult.addError(true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);
+		// call common delivery address check
+		ErpAddressModel erpAddress = checkDeliveryAddressInForm(request, actionResult, session);
+		if (erpAddress == null) {
 			return;
 		}
-		
-		// since address looks alright need geocode
-		try {
-			DlvAddressGeocodeResponse geocodeResponse = FDDeliveryManager.getInstance().geocodeAddress(scrubbedAddress);		
-		    String geocodeResult = geocodeResponse.getResult();
-		    
-		    if(!"GEOCODE_OK".equalsIgnoreCase(geocodeResult))
-		    {
-		    	//
-				// since geocoding is not happening silently ignore it  
-		    	LOGGER.warn("GEOCODE FAILED FOR ADDRESS :"+scrubbedAddress);		    	
-				//actionResult.addError(true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);
-		
-		    }
-		    else{
-		    	LOGGER.debug("geocodeResponse.getAddress() :"+geocodeResponse.getAddress());			    	
-		    	scrubbedAddress= geocodeResponse.getAddress();		    
-		    }
-		} catch (FDInvalidAddressException iae) {				
-			LOGGER.warn("GEOCODE FAILED FOR ADDRESS FDInvalidAddressException :"+scrubbedAddress+"EXCEPTION :"+iae);
-			//actionResult.addError(true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);				
-		}				    
-		ErpAddressModel erpAddress = addressForm.getErpAddress();
-		erpAddress.setFrom(scrubbedAddress);
-		erpAddress.setCity(scrubbedAddress.getCity());
-		erpAddress.setAddressInfo(scrubbedAddress.getAddressInfo());				
-		
-		LOGGER.debug("ErpAddressModel:"+scrubbedAddress);
-		
-		if("SUFFOLK".equals(FDDeliveryManager.getInstance().getCounty(scrubbedAddress)) && erpAddress.getAltContactPhone() == null){
-			actionResult.addError(true, EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode(), SystemMessageList.MSG_REQUIRED);
-			return;
-		}
+
 
 		try {
 			boolean foundFraud =
@@ -358,7 +254,6 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 					"duplicate_user_address",
 					"The information entered for this address matches an existing address in your account."));
 		}
-
 	}
 
 	protected void performChangeUserID(HttpServletRequest request, ActionResult result) throws FDResourceException {
@@ -584,3 +479,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		return user;
 	}
 }
+
+
+
+

@@ -40,7 +40,8 @@ public interface SystemMessageList {
 	public final static String MSG_CANT_GEOCODE 						= "We''re sorry! You cannot continue at this time because your address isn''t set up in our system. We''re working to enter it as quickly as possible. Please call us toll free at {0} and we''ll inform you when the problem is corrected.<br><br>Meanwhile, feel free to continue browsing our site. We''ll store everything in your cart until you''re able to check out.";
 	public final static String MSG_CANT_GEOCODE_ZIP_CHECK				= "We''re sorry! Your address isn''t set up in our system. We''re working to enter it as quickly as possible. Please call us toll free at {0} and we''ll inform you when the problem is corrected.";
 	public final static String MSG_RESTRICTED_ADDRESS 					= "We're sorry; FreshDirect does not deliver to this address because it is a commercial building. Unfortunately we are only able to make deliveries to residential buildings. You may enter another address <a href=\"/checkout/step_1_enter.jsp\">here</a> or choose the Pickup option below. To see where we deliver, <a href=\"javascript:popup('/help/delivery_zones.jsp','large')\">click here</a>.";
-
+	public final static String MSG_CORP_ADDR_OUT_OF_ZONE				= "We're sorry; FreshDirect does not offer Corporate Office Service delivery at this location.";
+	
 
 	// checkout
 	public final static String MSG_CHECKOUT_AMOUNT_TOO_LARGE	= "For your protection, FreshDirect will not accept orders over $750 online. Please call FreshDirect at {0} and a customer service representative will assist you in placing this order.";
