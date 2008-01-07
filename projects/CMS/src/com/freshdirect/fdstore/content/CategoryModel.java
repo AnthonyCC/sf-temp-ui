@@ -100,6 +100,13 @@ public class CategoryModel extends ContentNodeModelImpl {
 
 		return new ArrayList(productModels);
 	}
+	
+	
+	/** @return List of {@link CategoryRef} */
+	public List getVirtualGroupRefs() {
+		com.freshdirect.fdstore.attributes.Attribute vGroup = this.getAttribute("VIRTUAL_GROUP");
+		return vGroup == null ? null : (List) vGroup.getValue();
+	}
 
 	public List getProducts() {
 		List prodList = getPrivateProducts();
@@ -120,9 +127,8 @@ public class CategoryModel extends ContentNodeModelImpl {
 		}
 
 		if (!hasCategoryAlias()) {
-			com.freshdirect.fdstore.attributes.Attribute vGroup = this.getAttribute("VIRTUAL_GROUP");
-			if (vGroup != null) {
-				List l = (List) vGroup.getValue();
+			List l = getVirtualGroupRefs();
+			if (l != null) {
 				this.categoryAlias = new CategoryAlias(l, filterList);
 			}
 		}
@@ -216,7 +222,7 @@ public class CategoryModel extends ContentNodeModelImpl {
 	
 	/**
 	 * @return content key of the category/department this alias category
-	 * points to. If it this category is not a alias categiry , return null.
+	 * points to. If it this category is not a alias category , return null.
 	 */
 
 	public ContentKey getAliasAttributeValue() {
