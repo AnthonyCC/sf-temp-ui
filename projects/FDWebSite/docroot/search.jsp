@@ -82,7 +82,7 @@ try {
 		if (recipes.size()>0) {
 			%>
 			<div class="title12">
-				<span style="color: #c00">NEW!</span> <%= recipes.size() %> recipe<%= recipes.size() > 1 ? "s were":" was" %> found
+				<%-- <span style="color: #c00">NEW!</span> --%> <%= recipes.size() %> recipe<%= recipes.size() > 1 ? "s were":" was" %> found
 			<%
 				if (recipes.size() > 5) {
 			%>
@@ -159,9 +159,11 @@ try {
 			}
 			</script>
 
+			<%--
 			<br>
 			For more, <a href="<%=response.encodeURL("department.jsp?deptId="+RecipeDepartment.getDefault().getContentName())%>&trk=<%=trk%>">click here to Shop By Recipe!</a>
 			<br>
+			--%>
 			<br><br>
 			<%
 		}
