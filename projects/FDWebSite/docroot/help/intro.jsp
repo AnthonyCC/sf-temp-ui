@@ -54,7 +54,6 @@ Find out who we are and what we sell.<br>
 		<tr><td><li type="dot"></li></td><td>What kind of food does FreshDirect sell?</td></tr>
 		<tr><td><li type="dot"></li></td><td>Where is my order prepared?</td></tr>
 		<tr><td><li type="dot"></li></td><td>Does FreshDirect offer organic products?</td></tr>
-		<tr><td><li type="dot"></li></td><td>Does FreshDirect have sales?</td></tr>
 		<tr><td><li type="dot"></li></td><td>How can I find out more about FreshDirect?</td></tr>
 		</table>
 	</td>
