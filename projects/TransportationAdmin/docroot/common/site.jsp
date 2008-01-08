@@ -21,20 +21,23 @@
  <body marginwidth="0" marginheight="0" border="0">
 	<table class="appframe" width="100%" cellpadding="0" cellspacing="0" border="0">
 			<tr class="apptitle" >
-				<td width="40%">
+				<td width="40%"> 
 					<img src="images/urban-highway2.jpg" width="129" height="82" border="0" alt="Urban" />
 				</td>
 				<td width="50%">Transportation Department</td>
 				<td width="10%">
 					<table class="appframe" width="100%" cellpadding="0" cellspacing="0" border="0">
-					<tr class="appusertitle">
-						<td><img src="images/user.gif" border="0" alt="User:" /></td>
-						<td><%=SecurityManager.getUserName(request)%></td>
-					</tr>
-					<tr class="appusertitle">
-						<td><img src="images/role.gif" border="0" alt="Role:" /></td>
-						<td><%=SecurityManager.getUserRole(request)%></td>
-					</tr>
+						<tr class="appusertitle">
+							<td><img src="images/user.gif" border="0" alt="User:" /></td>
+							<td><%=SecurityManager.getUserName(request)%></td>
+						</tr>
+						<tr class="appusertitle">
+							<td><img src="images/role.gif" border="0" alt="Role:" /></td>
+							<td><%=SecurityManager.getUserRole(request)%></td>
+						</tr>
+						<tr class="appusertitle">
+							<td colspan="2" align="center"><a href="logout.jsp"><img src="images/logout.gif" border="0" alt="Logout" /></a></td>
+						</tr>
 					</table>					
 				</td>
 			</tr>
