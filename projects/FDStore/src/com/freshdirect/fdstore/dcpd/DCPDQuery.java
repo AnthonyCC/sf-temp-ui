@@ -80,6 +80,8 @@ public class DCPDQuery {
 		Iterator it=keys.iterator();
 		while(it.hasNext()) {
 			String key = (String) it.next();
+			if ("".equals(key))
+				continue;
 			ContentNodeModel node = cf.getContentNode(key);
 			if (node == null) {
 				badKeys.add(key);
