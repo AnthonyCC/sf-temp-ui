@@ -16,6 +16,8 @@ public class DCPDQuery {
 	List badKeys = Collections.EMPTY_LIST;
 
 	List nodes = Collections.EMPTY_LIST;
+	//Holds the content keys of all the good nodes.
+	List contentKeys = Collections.EMPTY_LIST;
 	
 	List deptNodes = Collections.EMPTY_LIST; 	// department model results
 	List catNodes = Collections.EMPTY_LIST;		// category model results
@@ -60,7 +62,9 @@ public class DCPDQuery {
 		return rcpNodes;
 	}
 
-
+	public List getContentKeys() {
+		return contentKeys;
+	}
 
 	public boolean doQuery() {
 		boolean ret = true;
@@ -69,7 +73,7 @@ public class DCPDQuery {
 		this.badKeys = new ArrayList();
 
 		this.nodes = new ArrayList();
-
+		this.contentKeys = new ArrayList();
 		this.deptNodes = new ArrayList();
 		this.catNodes = new ArrayList();
 		this.rcpNodes = new ArrayList();
@@ -87,7 +91,7 @@ public class DCPDQuery {
 				badKeys.add(key);
 			} else {
 				nodes.add(node);
-				
+				contentKeys.add(node.getContentKey());
 				if (node instanceof DepartmentModel) {
 					deptNodes.add(node);
 				} else if (node instanceof CategoryModel) {

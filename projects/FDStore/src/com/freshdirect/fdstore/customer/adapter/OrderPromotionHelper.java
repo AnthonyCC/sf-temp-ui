@@ -96,9 +96,9 @@ public class OrderPromotionHelper {
 	 * @return List of cartlines eligible for category discount.
 	 */
 	
-	public static boolean evaluateCartLineForEligibleCategoryOrDept(FDCartLineI cartLine, Set contentKeys) {
+	public static boolean evaluateProductForDCPDPromo(ProductModel model, Set contentKeys) {
 		Set virtualCats = null;
-		ProductModel model = cartLine.getProductRef().lookupProduct();
+		//ProductModel model = cartLine.getProductRef().lookupProduct();
 		/*
 		 * Load all parents of this cartline product if either eligible
 		 * department set or category set is not empty.
@@ -106,6 +106,12 @@ public class OrderPromotionHelper {
 		 */
 		ContentKey cKey = model.getContentKey();
 		Set parentKeys = ContentNodeModelUtil.getAllParentKeys(cKey);
+		/*
+		 * The reason for adding the productModel's parent node to the parent set
+		 * is when a product has its parent category set at runtime.
+		 */ 
+		//parentKeys.add(model.getParentNode().getContentKey());
+		
 		//Handling Products in Eligible Departments/Categories.
 		if(CollectionUtils.containsAny(contentKeys, parentKeys)){
 			return true;
