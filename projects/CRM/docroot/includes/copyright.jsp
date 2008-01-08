@@ -11,5 +11,5 @@
 onclick="hoverHelp('news','News & Updates','/includes/news.jsp',250,300); return false;" 
 href="javascript:void(0);" style="height: 18px; background: #FFFFFF; color: #666666; font-size: 8pt; text-decoration: none; text-style: small caps;"><font color="#FF0000" style="text-decoration: none;"><b>News</b></font></a>&nbsp;</span>
 </td>
-<td width="20%" align="right" valign="middle">&copy; 2002 - 2007 FreshDirect. All Rights Reserved.
+<td width="20%" align="right" valign="middle">&copy; 2002 - 2008 FreshDirect. All Rights Reserved.
 </td></tr></table>
