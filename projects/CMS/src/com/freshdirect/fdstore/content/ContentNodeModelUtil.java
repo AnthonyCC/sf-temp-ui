@@ -368,7 +368,7 @@ public class ContentNodeModelUtil {
 			ContentKey key = (ContentKey) i.next();
 			ContentNodeModel cn = ContentFactory.getInstance().getContentNodeByKey(key);
 			//Make sure the category is not hidden.
-			if(cn != null && !cn.isHidden() && cn instanceof CategoryModel){
+			if(cn != null && cn instanceof CategoryModel && !cn.isHidden()){
 				CategoryModel cm = (CategoryModel)cn;
 				if(cm.getAttribute("VIRTUAL_GROUP", (Object)null) != null){
 					s.add(cm);

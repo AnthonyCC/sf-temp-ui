@@ -186,6 +186,8 @@ public class FDStoreProperties {
 
 	private static final String MRKTING_ADMIN_URL="fdstore.mktAdmin.URL";
 	
+	//Enable/Disable DCPD Alias Category Handling.
+	private static final String DCPD_ALIAS_HANDLING_ENABLED="fdstore.dcpd.alias.handling.enabled";
 	
 	private static Properties config;
 
@@ -327,7 +329,8 @@ public class FDStoreProperties {
 		
 		// mrkting admin
 		defaults.put(MRKTING_ADMIN_URL, "http://adm.freshdirect.com/MrktAdmin");
-		
+		//DCPD ALIAS Handling.
+		defaults.put(DCPD_ALIAS_HANDLING_ENABLED, "true");
 		
 		refresh();
 	}
@@ -729,6 +732,10 @@ public class FDStoreProperties {
 	public static boolean isNewGeocodeFormat() {
         return (new Boolean(get(PROP_GEOCODE_ISNEWFORMAT))).booleanValue();
     }
+	
+	public static boolean isDCPDAliasHandlingEnabled() {
+		return Boolean.valueOf(get(DCPD_ALIAS_HANDLING_ENABLED)).booleanValue();
+	}
 	
 	public static DateRange getAdvanceOrderRange() {
 		Date dStart = null;

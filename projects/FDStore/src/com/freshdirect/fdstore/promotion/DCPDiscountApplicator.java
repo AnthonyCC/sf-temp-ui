@@ -9,6 +9,7 @@ import java.util.Set;
 
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.adapter.OrderPromotionHelper;
 
 /**
@@ -28,7 +29,7 @@ public class DCPDiscountApplicator  implements PromotionApplicatorI {
 	
 	public void addContent(String type, String id){
 		Object refKey = OrderPromotionHelper.getAliasCategoryRef(type, id);
-		if(refKey != null){
+		if(FDStoreProperties.isDCPDAliasHandlingEnabled() && refKey != null){
 			/*
 			 * refKey is not null when content id is pointing to a ALIAS category.
 			 * So instead of adding the alias category id add the referencing category
