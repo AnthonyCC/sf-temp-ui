@@ -95,7 +95,7 @@ for(Iterator itr=sortedColl.iterator(); itr.hasNext() && allSoldOut;) {
 <%            if (pm.isUnavailable()) {     %>
                  <td align="left"><font color="#cccccc"><b><%=pm.getFullName()%></b></a></td><td>&nbsp;-&nbsp;<font color="#ff0000"><b>SOLD OUT</b></font></td>
 <%            } else {   %>
-                <td><a href="/product.jsp?catId=<%=pm.getParentNode()%>&productId=<%=pm%>"><b><%=pm.getFullName()%></b></a></td><td>&nbsp;-&nbsp;<b><%=JspMethods.currencyFormatter.format(productInfo.getDefaultPrice())%></td></b></td>
+                <td><a href="/product.jsp?catId=<%=pm.getParentNode()%>&productId=<%=pm%>&trk=cpage"><b><%=pm.getFullName()%></b></a></td><td>&nbsp;-&nbsp;<b><%=JspMethods.currencyFormatter.format(productInfo.getDefaultPrice())%></td></b></td>
 <%            }  %> </tr>
           </fd:FDProductInfo>
 <%      }  %></table>
