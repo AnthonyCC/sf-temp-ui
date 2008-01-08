@@ -257,4 +257,6 @@ public interface FDUserI extends java.io.Serializable {
      * Seperate invalidation of Order History Cache from other caches.
      */
     public void invalidateOrderHistoryCache();
+    
+    public int getAdjustedValidECheckOrderCount()  throws FDResourceException;
 }

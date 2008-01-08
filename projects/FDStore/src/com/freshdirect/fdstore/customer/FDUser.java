@@ -438,6 +438,17 @@ public class FDUser extends ModelSupport implements FDUserI {
     }
     
     /**
+     * @return number of valid ECheck orders, corrected in modify order mode
+     */
+    public int getAdjustedValidECheckOrderCount() throws FDResourceException {
+    	int orderCount = this.getOrderHistory().getValidECheckOrderCount();	
+        if (this.getShoppingCart() instanceof FDModifyCartModel) {
+            // we're in modify order mode, subtract one
+            orderCount--;
+        }
+        return orderCount;
+    }
+    /**
      * @return number of delivered orders
      */
     public int getDeliveredOrderCount() throws FDResourceException {

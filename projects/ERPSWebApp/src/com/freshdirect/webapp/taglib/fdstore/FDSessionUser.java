@@ -74,7 +74,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 			src = EnumTransactionSource.CUSTOMER_REP;  
 		}
 		this.user.setApplication(src); 
-
+		
         lastCartSaveTime = System.currentTimeMillis();
     }
     
@@ -572,4 +572,9 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     public void invalidateOrderHistoryCache() {
     	this.user.invalidateOrderHistoryCache();
     }
+    
+    public int getAdjustedValidECheckOrderCount() throws FDResourceException{
+    	return this.user.getAdjustedValidECheckOrderCount();
+    }
 }
+
