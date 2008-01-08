@@ -332,32 +332,12 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 		addressForm.validateForm(result);
 		if (!result.isSuccess()) return;
 		
-		AddressModel dlvAddress = AddressUtil.scrubAddress(addressForm.getDeliveryAddress(), result);
-		
-		if (!result.isSuccess()) return;
-		
-//		 since address looks alright need geocode 
-		try {
-			DlvAddressGeocodeResponse geocodeResponse = FDDeliveryManager.getInstance().geocodeAddress(dlvAddress);		
-		    String geocodeResult = geocodeResponse.getResult();
-		    
-		    if(!"GEOCODE_OK".equalsIgnoreCase(geocodeResult))
-		    {
-		    	//
-				// since geocoding is not happening silently ignore it  
-		    	LOGGER.warn("GEOCODE FAILED FOR ADDRESS :"+dlvAddress);		    	
-				//actionResult.addError(true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);
-		
-		    }
-		    else{
-		    	LOGGER.debug("performEditAndSetDeliveryAddress : geocodeResponse.getAddress() :"+geocodeResponse.getAddress());			    	
-		    	dlvAddress= geocodeResponse.getAddress();		    
-		    }
-
-		} catch (FDInvalidAddressException iae) {				
-			LOGGER.warn("GEOCODE FAILED FOR ADDRESS FDInvalidAddressException :"+dlvAddress+"EXCEPTION :"+iae);
-			//actionResult.addError(true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);				
-		}		
+		AddressModel deliveryAddress = addressForm.getDeliveryAddress();
+		DeliveryAddressValidator dav = new DeliveryAddressValidator(deliveryAddress);
+		if (!dav.validateAddress(result)) {
+			return;
+		}
+		AddressModel dlvAddress = dav.getScrubbedAddress();
 		
 		Calendar date = new GregorianCalendar();
 		date.add(Calendar.DATE, 7);

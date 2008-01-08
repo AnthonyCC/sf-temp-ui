@@ -147,8 +147,6 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 
 	// [segabor] refactored from performEditDeliveryAddress and performAddDeliveryAddess
 	public static ErpAddressModel checkDeliveryAddressInForm(HttpServletRequest request, ActionResult actionResult, HttpSession session) throws FDResourceException {
-		ErpAddressModel erpAddress = null; // return
-
 
 		AddressForm addressForm = new AddressForm();
 		addressForm.populateForm(request);
@@ -160,33 +158,35 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		deliveryAddress.setServiceType(addressForm.getDeliveryAddress().getServiceType());
 		DeliveryAddressValidator validator = new DeliveryAddressValidator(deliveryAddress);
 		
-		if (validator.validateAddress(actionResult)) {
-			AddressModel scrubbedAddress = validator.getScrubbedAddress(); // get 'normalized' address
+		if (!validator.validateAddress(actionResult)) {
+			return  null;
+		}
+	
+		AddressModel scrubbedAddress = validator.getScrubbedAddress(); // get 'normalized' address
 
-			if (validator.isAddressDeliverable()) {
-				FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
-				if (user.isPickupOnly()) {
-					//
-					// now eligible for home delivery
-					//
-					user.setSelectedServiceType(scrubbedAddress.getServiceType());
-					user.setZipCode(scrubbedAddress.getZipCode());
-					FDCustomerManager.storeUser(user.getUser());
-					session.setAttribute(USER, user);
-				}
+		if (validator.isAddressDeliverable()) {
+			FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
+			if (user.isPickupOnly()) {
+				//
+				// now eligible for home delivery
+				//
+				user.setSelectedServiceType(scrubbedAddress.getServiceType());
+				user.setZipCode(scrubbedAddress.getZipCode());
+				FDCustomerManager.storeUser(user.getUser());
+				session.setAttribute(USER, user);
 			}
-			
-			erpAddress = addressForm.getErpAddress();
-			erpAddress.setFrom(scrubbedAddress);
-			erpAddress.setCity(scrubbedAddress.getCity());
-			erpAddress.setAddressInfo(scrubbedAddress.getAddressInfo());				
+		}
+		
+		ErpAddressModel erpAddress = addressForm.getErpAddress();
+		erpAddress.setFrom(scrubbedAddress);
+		erpAddress.setCity(scrubbedAddress.getCity());
+		erpAddress.setAddressInfo(scrubbedAddress.getAddressInfo());				
 
-			LOGGER.debug("ErpAddressModel:"+scrubbedAddress);
+		LOGGER.debug("ErpAddressModel:"+scrubbedAddress);
 
-			if("SUFFOLK".equals(FDDeliveryManager.getInstance().getCounty(scrubbedAddress)) && erpAddress.getAltContactPhone() == null){
-				actionResult.addError(true, EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode(), SystemMessageList.MSG_REQUIRED);
-				return null;
-			}
+		if("SUFFOLK".equals(FDDeliveryManager.getInstance().getCounty(scrubbedAddress)) && erpAddress.getAltContactPhone() == null){
+			actionResult.addError(true, EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode(), SystemMessageList.MSG_REQUIRED);
+			return null;
 		}
 
 		return erpAddress;
