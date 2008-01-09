@@ -563,7 +563,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 			String contactNumber = request.getParameter("contact_phone_"+locationId);
 			LOGGER.debug("setDepotDeliveryLocation(): contactNumber=" + contactNumber);
 
-			if (contactNumber != null) {
+			if (contactNumber != null && !"".equals(contactNumber)) {
 				contactPhone = new PhoneNumber(contactNumber);
 				
 				ErpCustomerInfoModel infoModel = FDCustomerFactory.getErpCustomerInfo(identity);
