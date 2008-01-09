@@ -1,3 +1,4 @@
+@echo off
 rem Windows script to set up shared directories in the development environment
 rem using junctions.
 rem
@@ -6,7 +7,7 @@ rem
 rem for more on junctions,
 rem see http://www.microsoft.com/technet/sysinternals/FileAndDisk/Junction.mspx
 
-set DEL=del /s /f /q
+set DEL=rd /s /q
 set JUNCTION=util\bin\windows\junction.exe
 
 
@@ -62,10 +63,10 @@ rem create the junctions themselves
 %JUNCTION% projects\CRM\docroot\shared                     projects\WebAppCommon\docroot\shared
 %JUNCTION% projects\FDWebSite\docroot\shared               projects\WebAppCommon\docroot\shared
 
-%JUNCTION% projects\Media\docroot\assets                   projects\FDWebSite\docroot\assets
-%JUNCTION% projects\Media\docroot\ccassets                 projects\FDWebSite\docroot\ccassets
-%JUNCTION% projects\Media\docroot\media_stat               projects\FDWebSite\docroot\media_stat
-%JUNCTION% projects\Media\docroot\assets                   projects\CRM\docroot\assets
-%JUNCTION% projects\Media\docroot\ccassets                 projects\CRM\docroot\ccassets
-%JUNCTION% projects\Media\docroot\media_stat               projects\CRM\docroot\media_stat
+%JUNCTION% projects\FDWebSite\docroot\assets               projects\Media\docroot\assets
+%JUNCTION% projects\FDWebSite\docroot\ccassets             projects\Media\docroot\ccassets
+%JUNCTION% projects\FDWebSite\docroot\media_stat           projects\Media\docroot\media_stat
+%JUNCTION% projects\CRM\docroot\assets                     projects\Media\docroot\assets
+%JUNCTION% projects\CRM\docroot\ccassets                   projects\Media\docroot\ccassets
+%JUNCTION% projects\CRM\docroot\media_stat                 projects\Media\docroot\media_stat
 
