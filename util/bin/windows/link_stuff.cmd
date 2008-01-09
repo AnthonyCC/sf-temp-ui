@@ -39,7 +39,7 @@ rem       thus this is safe to run even if junctions are already there
 %DEL% projects\FDWebSite\docroot\media_stat
 %DEL% projects\CRM\docroot\assets
 %DEL% projects\CRM\docroot\ccassets
-%DEL% rojects\CRM\docroot\media_stat
+%DEL% projects\CRM\docroot\media_stat
 
 
 rem create the junctions themselves
