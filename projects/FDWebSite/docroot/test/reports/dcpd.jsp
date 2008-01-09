@@ -160,7 +160,7 @@ void renderSKUs(List skuNodes, String parentCName, int level, JspWriter out, boo
 void renderRecipeNode(Recipe recipeNode, int level, JspWriter out, boolean toCSV, List goodKeys) throws IOException, FDResourceException, FDSkuNotFoundException {
     // I. RENDER RECIPE
     if (toCSV) {
-        out.println(level + ";R;V;\"" + recipeNode.getContentName() + "\";\"" + recipeNode.getFullName() + "\";;");
+        out.println(level + ";R;V;;\"" + recipeNode.getContentName() + "\";\"" + recipeNode.getFullName() + "\";;");
     } else {
 	    out.println("<tr>");
 	    out.println("<td style='padding-left: " + (level*15) + "px'>R: " + recipeNode.getContentName() + "</td>");
@@ -186,7 +186,7 @@ void renderRecipeNode(Recipe recipeNode, int level, JspWriter out, boolean toCSV
 void renderVariantNode(RecipeVariant vNode, int level, JspWriter out, boolean toCSV, List goodKeys, String recipeSourceId) throws IOException, FDResourceException, FDSkuNotFoundException {
     // I. RENDER VARIANT
     if (toCSV) {
-        out.println(level + ";V;;\"" + vNode.getContentName() + "\";;;");
+        out.println(level + ";V;;;\"" + vNode.getContentName() + "\";;;");
     } else {
 	    out.println("<tr>");
 	    out.println("<td style='padding-left: " + (level*15) + "px'>V: " + vNode.getContentName() + "</td>");
@@ -211,7 +211,7 @@ void renderVariantNode(RecipeVariant vNode, int level, JspWriter out, boolean to
 void renderSectionNode(RecipeSection rNode, int level, JspWriter out, boolean toCSV, List goodKeys, String recipeSourceId) throws IOException, FDResourceException, FDSkuNotFoundException {
     // I. RENDER SECTION
     if (toCSV) {
-        out.println(level + ";S;;\"" + rNode.getContentName() + "\";;;");
+        out.println(level + ";S;;;\"" + rNode.getContentName() + "\";;;");
     } else {
 	    out.println("<tr>");
 	    out.println("<td style='padding-left: " + (level*15) + "px'>S: " + rNode.getContentName() + "</td>");
