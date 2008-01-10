@@ -21,19 +21,17 @@ public class YmalAutoconfigurableProductHelper extends YmalProductHelper {
 	}
 	
 	/**
-	 * Gets the first available sku, which must be the only one.
+	 * Gets the default sku.
+	 * 
 	 * @return sku
 	 */
 	public SkuModel getSku() {
-		for(Iterator i = getProduct().getSkus().iterator(); i.hasNext();) {
-			SkuModel sku = (SkuModel)i.next();
-			if (!sku.isUnavailable()) return sku;
-		}
-		return null;
+		return getProduct().getDefaultSku();
 	}
 	
 	/**
 	 * Get sku code.
+	 * 
 	 * @see #getSku()
 	 * @return sku code
 	 */
@@ -41,7 +39,4 @@ public class YmalAutoconfigurableProductHelper extends YmalProductHelper {
 		SkuModel sku = getSku();
 		return sku == null ? null : sku.getSkuCode();
 	}
-	
-	
-
 }
