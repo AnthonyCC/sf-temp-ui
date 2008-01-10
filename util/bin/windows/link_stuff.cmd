@@ -12,8 +12,9 @@ set JUNCTION=util\bin\windows\junction.exe
 
 
 rem first delete the junction targets, if anything was there..
-rem note: the del command can not (and will not) delete junctions
-rem       thus this is safe to run even if junctions are already there
+rem note: if junctions are already there, this will delete everything below them
+rem       including the stuff the junction is pointing to
+rem       thus, after running the script, a subversion update is advised
 
 %DEL% projects\DlvAdmin\docroot\WEB-INF\shared
 %DEL% projects\RefAdmin\docroot\WEB-INF\shared
