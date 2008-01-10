@@ -324,7 +324,11 @@
 		<delete dir="${work.dir}" />
 	</target>
 
-	<target name="prereq" depends="clean" description="Prerequisites">
+    <target name="prereq" depends="clean,make_dirs,copy_shared_dirs" description="Prerequisites">
+    </target>
+
+    <target name="make_dirs"
+            description="create necessary working directories">
 		<mkdir dir="${work.dir}" />
 		<mkdir dir="${work.dir}/Framework" />
 		<mkdir dir="${work.dir}/ERPServices" />
@@ -353,11 +357,107 @@
 		<mkdir dir="${work.dir}/ocf-adm" />
 		<mkdir dir="${work.dir}/docs" />
 		<mkdir dir="${work.dir}/RefAdmin"/>
-        	<mkdir dir="${work.dir}/MrktAdmin"/>
-        	<mkdir dir="${work.dir}/TransportationAdmin"/>
-     
+        <mkdir dir="${work.dir}/MrktAdmin"/>
+        <mkdir dir="${work.dir}/TransportationAdmin"/>
 	</target>
 
+    <target name        = "copy_shared_dirs"
+            description = "copy directories that are shared among projects">
+
+        <delete dir="${basedir}/projects/DlvAdmin/docroot/WEB-INF/shared"/>
+        <delete dir="${basedir}/projects/RefAdmin/docroot/WEB-INF/shared"/>
+        <delete dir="${basedir}/projects/FDWebSite/docroot/WEB-INF/shared"/>
+        <delete dir="${basedir}/projects/DlvConfirm/docroot/WEB-INF/shared"/>
+        <delete dir="${basedir}/projects/CRM/docroot/WEB-INF/shared"/>
+        <delete dir="${basedir}/projects/ERPSAdmin/docroot/WEB-INF/shared"/>
+        <delete dir="${basedir}/projects/CRM/docroot/help"/>
+        <delete dir="${basedir}/projects/CRM/docroot/survey"/>
+        <delete dir="${basedir}/projects/CRM/docroot/includes/delivery"/>
+        <delete dir="${basedir}/projects/CRM/docroot/includes/product"/>
+        <delete dir="${basedir}/projects/CRM/docroot/includes/registration"/>
+        <delete dir="${basedir}/projects/CRM/docroot/includes/promotions"/>
+        <delete dir="${basedir}/projects/CRM/docroot/supervisor/test/debug"/>
+        <delete dir="${basedir}/projects/CRM/docroot/api"/>
+        <delete dir="${basedir}/projects/CRM/docroot/shared"/>
+        <delete dir="${basedir}/projects/FDWebSite/docroot/shared"/>
+        <delete dir="${basedir}/projects/FDWebSite/docroot/assets"/>
+        <delete dir="${basedir}/projects/FDWebSite/docroot/ccassets"/>
+        <delete dir="${basedir}/projects/FDWebSite/docroot/media_stat"/>
+        <delete dir="${basedir}/projects/CRM/docroot/assets"/>
+        <delete dir="${basedir}/projects/CRM/docroot/ccassets"/>
+        <delete dir="${basedir}/projects/CRM/docroot/media_stat"/>
+
+
+        <copy todir="${basedir}/projects/DlvAdmin/docroot/WEB-INF/shared">
+            <fileset dir="${basedir}/projects/WebAppCommon/docroot/WEB-INF/shared"/>
+        </copy>
+        <copy todir="${basedir}/projects/RefAdmin/docroot/WEB-INF/shared">
+            <fileset dir="${basedir}/projects/WebAppCommon/docroot/WEB-INF/shared"/>
+        </copy>
+        <copy todir="${basedir}/projects/FDWebSite/docroot/WEB-INF/shared">
+            <fileset dir="${basedir}/projects/WebAppCommon/docroot/WEB-INF/shared"/>
+        </copy>
+        <copy todir="${basedir}/projects/DlvConfirm/docroot/WEB-INF/shared">
+            <fileset dir="${basedir}/projects/WebAppCommon/docroot/WEB-INF/shared"/>
+        </copy>
+        <copy todir="${basedir}/projects/CRM/docroot/WEB-INF/shared">
+            <fileset dir="${basedir}/projects/WebAppCommon/docroot/WEB-INF/shared"/>
+        </copy>
+        <copy todir="${basedir}/projects/ERPSAdmin/docroot/WEB-INF/shared">
+            <fileset dir="${basedir}/projects/WebAppCommon/docroot/WEB-INF/shared"/>
+        </copy>
+
+        <copy todir="${basedir}/projects/CRM/docroot/help">
+            <fileset dir="${basedir}/projects/FDWebSite/docroot/help"/>
+        </copy>
+        <copy todir="${basedir}/projects/CRM/docroot/survey">
+            <fileset dir="${basedir}/projects/FDWebSite/docroot/survey"/>
+        </copy>
+        <copy todir="${basedir}/projects/CRM/docroot/includes/delivery">
+            <fileset dir="${basedir}/projects/FDWebSite/docroot/includes/delivery"/>
+        </copy>
+        <copy todir="${basedir}/projects/CRM/docroot/includes/product">
+            <fileset dir="${basedir}/projects/FDWebSite/docroot/includes/product"/>
+        </copy>
+        <copy todir="${basedir}/projects/CRM/docroot/includes/registration">
+            <fileset dir="${basedir}/projects/FDWebSite/docroot/includes/registration"/>
+        </copy>
+        <copy todir="${basedir}/projects/CRM/docroot/includes/promotions">
+            <fileset dir="${basedir}/projects/FDWebSite/docroot/includes/promotions"/>
+        </copy>
+        <copy todir="${basedir}/projects/CRM/docroot/supervisor/test/debug">
+            <fileset dir="${basedir}/projects/FDWebSite/docroot/test/debug"/>
+        </copy>
+        <copy todir="${basedir}/projects/CRM/docroot/api">
+            <fileset dir="${basedir}/projects/FDWebSite/docroot/api"/>
+        </copy>
+
+        <copy todir="${basedir}/projects/CRM/docroot/shared">
+            <fileset dir="${basedir}/projects/WebAppCommon/docroot/shared"/>
+        </copy>
+        <copy todir="${basedir}/projects/FDWebSite/docroot/shared">
+            <fileset dir="${basedir}/projects/WebAppCommon/docroot/shared"/>
+        </copy>
+
+        <copy todir="${basedir}/projects/FDWebSite/docroot/assets">
+            <fileset dir="${basedir}/projects/Media/docroot/assets"/>
+        </copy>
+        <copy todir="${basedir}/projects/FDWebSite/docroot/ccassets">
+            <fileset dir="${basedir}/projects/Media/docroot/ccassets"/>
+        </copy>
+        <copy todir="${basedir}/projects/FDWebSite/docroot/media_stat">
+            <fileset dir="${basedir}/projects/Media/docroot/media_stat"/>
+        </copy>
+        <copy todir="${basedir}/projects/CRM/docroot/assets">
+            <fileset dir="${basedir}/projects/Media/docroot/assets"/>
+        </copy>
+        <copy todir="${basedir}/projects/CRM/docroot/ccassets">
+            <fileset dir="${basedir}/projects/Media/docroot/ccassets"/>
+        </copy>
+        <copy todir="${basedir}/projects/CRM/docroot/media_stat">
+            <fileset dir="${basedir}/projects/Media/docroot/media_stat"/>
+        </copy>
+    </target>
 
 	<target name="build" depends="framework,erpservices,delivery,cms,fdstore,listadmin-lib,ocf,dataloader,erpswebapp,tools,resources,cms-slide" description="Build everything">
 	</target>
