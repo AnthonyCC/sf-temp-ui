@@ -73,7 +73,6 @@ public class Warmup {
 					ContentSearchServiceI search = 
 						(ContentSearchServiceI) FDRegistry.getInstance().getService(ContentSearchServiceI.class);
 
-					search.search("zizi",1);
 					warmupProducts();
 
 					LOGGER.info("Warmup done");

@@ -2168,6 +2168,12 @@
 			<zipfileset src="${thirdparty.home}/commons-collections-3.1.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/commons-httpclient-2.0.2.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/commons-net-1.0.jar" excludes="META-INF/*"/>
+
+
+			<zipfileset location="${thirdparty.home}/lucene-core-2.2.0.jar" excludes="META-INF/*"/>
+			<zipfileset location="${thirdparty.home}/lucene-queries-2.2.0.jar" excludes="META-INF/*"/>
+			<zipfileset location="${thirdparty.home}/lucene-spellchecker-2.2.0.jar" excludes="META-INF/*"/>
+
 			<!-- zipfileset src="${thirdparty.home}/commons-fileupload-1.0.jar" excludes="META-INF/*"/ -->
 			<zipfileset src="${thirdparty.home}/commons-fileupload-1.1.1.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/dom4j-1.6.1.jar" excludes="META-INF/*"/>
