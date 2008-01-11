@@ -10,9 +10,9 @@
 %><%@	page import="java.util.*"
 %><%!
 
-void renderDepartmentNode(DepartmentModel deptNode, int level, JspWriter out, boolean toCSV, List goodKeys) throws IOException, FDResourceException, FDSkuNotFoundException {
+void renderDepartmentNode(DepartmentModel deptNode, int level, JspWriter out, DCPDQueryContext ctx) throws IOException, FDResourceException, FDSkuNotFoundException {
 	// I. RENDER DEPARTMENT
-	if (toCSV) {
+	if (ctx.isRenderCSV()) {
         out.println(level + ";D;;;" + deptNode.getContentName() + ";" + deptNode.getFullName() + ";;"); 
     } else {
 		out.println("<tr>");
@@ -29,18 +29,18 @@ void renderDepartmentNode(DepartmentModel deptNode, int level, JspWriter out, bo
 	Iterator cit = deptNode.getCategories().iterator();
 	while(cit.hasNext()) {
 		CategoryModel catNode = (CategoryModel) cit.next();
-		renderCategoryNode(catNode, level, out, toCSV, goodKeys);
+		renderCategoryNode(catNode, level, out, ctx);
 	}
 }
 
 %><%!
 
-void renderCategoryNode(CategoryModel catNode, int level, JspWriter out, boolean toCSV, List goodKeys) throws IOException, FDResourceException, FDSkuNotFoundException {
+void renderCategoryNode(CategoryModel catNode, int level, JspWriter out, DCPDQueryContext ctx) throws IOException, FDResourceException, FDSkuNotFoundException {
 	// II. ITERATE SUBCATEGORIES
 	// I. RENDER DEPARTMENT
 	ContentKey alias = catNode.getAliasAttributeValue();
 	
-	if (toCSV) {
+	if (ctx.isRenderCSV()) {
         out.println(level + ";C;;;\"" + catNode.getContentName() + "\";\"" + catNode.getFullName() + "\";;"); 
 	} else {
 		out.println("<tr>");
@@ -57,7 +57,7 @@ void renderCategoryNode(CategoryModel catNode, int level, JspWriter out, boolean
     // RENDER ALIAS GROUP
     if (alias != null) {
         com.freshdirect.cms.ContentNodeI ct = alias.getContentNode();
-        if (toCSV) {
+        if (ctx.isRenderCSV()) {
             out.println(level + ";C;A;;\"" + alias.getId() + "\";\"" + ct.getLabel() + "\";;"); 
         } else {
 	        out.println("<tr>");
@@ -74,7 +74,7 @@ void renderCategoryNode(CategoryModel catNode, int level, JspWriter out, boolean
 	Iterator pit = catNode.getPrivateProducts().iterator();
 	while(pit.hasNext()) {
 		ProductModel prodNode = (ProductModel) pit.next();
-		renderSKUs(prodNode.getSkus(), prodNode.getContentName(), level, out, toCSV, goodKeys, null);
+		renderSKUs(prodNode.getSkus(), prodNode.getContentName(), level, out, ctx, null);
 	}
 	
 
@@ -86,7 +86,7 @@ void renderCategoryNode(CategoryModel catNode, int level, JspWriter out, boolean
     		CategoryRef cref = (CategoryRef) vit.next();
     		CategoryModel vcatNode = cref.getCategory();
 
-            if (toCSV) {
+            if (ctx.isRenderCSV()) {
                 out.println(level + ";C;V;;\"" + vcatNode.getContentName() + "\";\"" + vcatNode.getFullName() + "\";;");
             } else {
 	    	    out.println("<tr>");
@@ -105,16 +105,21 @@ void renderCategoryNode(CategoryModel catNode, int level, JspWriter out, boolean
 	Iterator cit = catNode.getSubcategories().iterator();
 	while(cit.hasNext()) {
 		CategoryModel subCatNode = (CategoryModel) cit.next();
-		renderCategoryNode(subCatNode, level, out, toCSV, goodKeys);
+		renderCategoryNode(subCatNode, level, out, ctx);
 	}
 }
 %><%!
 
-void renderSKUs(List skuNodes, String parentCName, int level, JspWriter out, boolean toCSV, List goodKeys, String recipeSourceId) throws IOException, FDResourceException, FDSkuNotFoundException {
+void renderSKUs(List skuNodes, String parentCName, int level, JspWriter out, DCPDQueryContext ctx, String recipeSourceId) throws IOException, FDResourceException, FDSkuNotFoundException {
     Iterator sit = skuNodes.iterator();
     while(sit.hasNext()) {
         SkuModel skuNode = (SkuModel) sit.next();
         boolean isUna = skuNode.isUnavailable();
+        
+        // skip unavailable items if flag is on
+        if (ctx.isSkipUnavailableItems() && isUna)
+        	continue;
+        
         String cs = (isUna ? "color: grey;" : " ");
 
         String sku_val;
@@ -128,21 +133,24 @@ void renderSKUs(List skuNodes, String parentCName, int level, JspWriter out, boo
             sku_val = null;            
         }
         String eligible;
-	//Test for DCPD Promo Eligiblity.
-	ProductModel prodModel = skuNode.getProductModel();
-	//prodModel.setParent(
-	boolean result = OrderPromotionHelper.evaluateProductForDCPDPromo(prodModel, new HashSet(goodKeys));
-	if(!result && recipeSourceId != null) {
-		//This SKU is part of a Recipe. Evaluate Recipe.
-		result = OrderPromotionHelper.isRecipeEligible(recipeSourceId , new HashSet(goodKeys));
 
-	}
-	if(result) {
-		eligible = "Yes";
-	} else {
-		eligible = "No";
-	}
-        if (toCSV) {
+		//Test for DCPD Promo Eligiblity.
+		ProductModel prodModel = skuNode.getProductModel();
+		//prodModel.setParent(
+		boolean result = OrderPromotionHelper.evaluateProductForDCPDPromo(prodModel, new HashSet(ctx.getGoodKeys()));
+		if (!result && recipeSourceId != null) {
+			//This SKU is part of a Recipe. Evaluate Recipe.
+			result = OrderPromotionHelper.isRecipeEligible(recipeSourceId , new HashSet(ctx.getGoodKeys()));
+	
+		}
+
+		if (result) {
+			eligible = "Yes";
+		} else {
+			eligible = "No";
+		}
+
+		if (ctx.isRenderCSV()) {
             out.println(level + ";P;;" + (isUna ? "N" : "") + ";\"" + parentCName + "\";\"" + skuNode.getFullName() + "\";\"" + skuNode.getContentName() + "\";\"" + (sku_val!=null ? sku_val : "N/A") + "\"");
         } else {
 	        out.println("<tr>");
@@ -157,9 +165,9 @@ void renderSKUs(List skuNodes, String parentCName, int level, JspWriter out, boo
 }
 %><%!
 
-void renderRecipeNode(Recipe recipeNode, int level, JspWriter out, boolean toCSV, List goodKeys) throws IOException, FDResourceException, FDSkuNotFoundException {
+void renderRecipeNode(Recipe recipeNode, int level, JspWriter out, DCPDQueryContext ctx) throws IOException, FDResourceException, FDSkuNotFoundException {
     // I. RENDER RECIPE
-    if (toCSV) {
+    if (ctx.isRenderCSV()) {
         out.println(level + ";R;V;;\"" + recipeNode.getContentName() + "\";\"" + recipeNode.getFullName() + "\";;");
     } else {
 	    out.println("<tr>");
@@ -177,15 +185,15 @@ void renderRecipeNode(Recipe recipeNode, int level, JspWriter out, boolean toCSV
     Iterator cit = recipeNode.getVariants().iterator();
     while(cit.hasNext()) {
     	RecipeVariant vNode = (RecipeVariant) cit.next();
-        renderVariantNode(vNode, level, out, toCSV, goodKeys, recipeNode.getContentName());
+        renderVariantNode(vNode, level, out, ctx, recipeNode.getContentName());
     }
 }
 
 %><%!
 
-void renderVariantNode(RecipeVariant vNode, int level, JspWriter out, boolean toCSV, List goodKeys, String recipeSourceId) throws IOException, FDResourceException, FDSkuNotFoundException {
+void renderVariantNode(RecipeVariant vNode, int level, JspWriter out, DCPDQueryContext ctx, String recipeSourceId) throws IOException, FDResourceException, FDSkuNotFoundException {
     // I. RENDER VARIANT
-    if (toCSV) {
+    if (ctx.isRenderCSV()) {
         out.println(level + ";V;;;\"" + vNode.getContentName() + "\";;;");
     } else {
 	    out.println("<tr>");
@@ -202,15 +210,15 @@ void renderVariantNode(RecipeVariant vNode, int level, JspWriter out, boolean to
     Iterator cit = vNode.getSections().iterator();
     while(cit.hasNext()) {
     	RecipeSection sNode = (RecipeSection) cit.next();
-        renderSectionNode(sNode, level, out, toCSV, goodKeys, recipeSourceId);
+        renderSectionNode(sNode, level, out, ctx, recipeSourceId);
     }
 }
 
 %><%!
 
-void renderSectionNode(RecipeSection rNode, int level, JspWriter out, boolean toCSV, List goodKeys, String recipeSourceId) throws IOException, FDResourceException, FDSkuNotFoundException {
+void renderSectionNode(RecipeSection rNode, int level, JspWriter out, DCPDQueryContext ctx, String recipeSourceId) throws IOException, FDResourceException, FDSkuNotFoundException {
     // I. RENDER SECTION
-    if (toCSV) {
+    if (ctx.isRenderCSV()) {
         out.println(level + ";S;;;\"" + rNode.getContentName() + "\";;;");
     } else {
 	    out.println("<tr>");
@@ -228,24 +236,21 @@ void renderSectionNode(RecipeSection rNode, int level, JspWriter out, boolean to
     Iterator cit = rNode.getIngredients().iterator();
     while(cit.hasNext()) {
         ConfiguredProduct cpNode = (ConfiguredProduct) cit.next();
-        renderSKUs(cpNode.getSkus(), cpNode.getContentName(), level, out, toCSV, goodKeys, recipeSourceId);
+        renderSKUs(cpNode.getSkus(), cpNode.getContentName(), level, out, ctx, recipeSourceId);
     }
 }
 
 %><%
+boolean renderCSV = "csv".equals(request.getParameter("action"));
+boolean skipUnavailableItems = "1".equals(request.getParameter("availablesonly"));
+
 List contentKeys = new ArrayList();
 List deptKeyz = Collections.EMPTY_LIST;
 List catKeyz = Collections.EMPTY_LIST;
 List recipeKeyz = Collections.EMPTY_LIST;
-List goodKeys = Collections.EMPTY_LIST;
 DCPDQuery q = null;
-Iterator it;
 
 
-
-
-
-boolean renderCSV = "csv".equals(request.getParameter("action"));
 
 if (request.getParameter("keyz1") != null) {
 	deptKeyz = Arrays.asList(request.getParameter("keyz1").trim().split(",\\s*"));
@@ -266,6 +271,7 @@ if (contentKeys.size() > 0) {
 }
 
 if (!renderCSV) {
+    Iterator it;
 %><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
    "http://www.w3.org/TR/html4/loose.dtd">
 
@@ -345,6 +351,10 @@ if (!renderCSV) {
       color: grey;
       font: 10px "Trebuchet MS";
 	}
+	
+	span.text12 {
+      font: 12px "Trebuchet MS";
+	}
 	</style>
 </head>
 <body>
@@ -370,16 +380,23 @@ if (!renderCSV) {
 			} // badKeys.size
 			%></span></td>
 		</tr>
+        <tr>
+            <td valign="top" align="right"></td>
+            <td colspan="3"><input type="checkbox" name="availablesonly" value="1" <%= (skipUnavailableItems ? "checked" : null ) %>></input> <span class="text12">Exclude unavailable products</span></td>
+        </tr>
 		<tr>
 			<td valign="top" align="right"></td>
-			<td><button class="ibutton" type="submit">FIND PRODUCTS</button></td>
-			<td>&nbsp;</td>
+			<td colspan="3"><button class="ibutton" type="submit">FIND PRODUCTS</button></td>
 		</tr>
 	</table>
 </form>
 <!-- result -->
 <% if (q != null) { 
-	goodKeys = q.getContentKeys(); 
+    // create and initialize context object
+	DCPDQueryContext ctx = new DCPDQueryContext(q);
+	ctx.setSkipUnavailableItems(skipUnavailableItems);
+	ctx.setRenderCSV(renderCSV);
+	
 	if (q.resultCount() == 0) {%>Not found...
 <%	} else { %>
 <h2>Found <%= q.resultCount() %> node<%= (q.resultCount()>1?"s":"") %></h2>
@@ -392,7 +409,7 @@ if (!renderCSV) {
 <table class="dcpd" cellpadding="0" cellspacing="0">
 	<tr>
 		<th style='text-align: center'>Product / Folder ID</th>
-        	<th>Full Name</th>
+        <th>Full Name</th>
 		<th>SKU</th>
 		<th>Material</th>
 		<th>Eligible</th>
@@ -404,13 +421,12 @@ if (!renderCSV) {
 	ContentNodeModel rootNode = (ContentNodeModel) it.next();
 	
 	if (rootNode instanceof DepartmentModel) {
-		renderDepartmentNode( (DepartmentModel) rootNode, 1, out, false, goodKeys);
+		renderDepartmentNode( (DepartmentModel) rootNode, 1, out, ctx);
 	} else if (rootNode instanceof CategoryModel) {
-		renderCategoryNode( (CategoryModel) rootNode, 1, out, false, goodKeys);
+		renderCategoryNode( (CategoryModel) rootNode, 1, out, ctx);
 	} else if (rootNode instanceof Recipe) {
-		renderRecipeNode( (Recipe) rootNode, 1, out, false, goodKeys);
+		renderRecipeNode( (Recipe) rootNode, 1, out, ctx);
 	} else {
-		// TODO
 		System.out.println("Nothing to do with " + rootNode.getClass() + "/" + rootNode);
 	}
 %>
@@ -427,24 +443,34 @@ if (!renderCSV) {
 	 * Generate CSV output
 	 */
 	if (q != null && q.resultCount() > 0) {
-	    goodKeys = q.getContentKeys();
+	    Iterator it;
+
+	    // create and initialize context object
+	    DCPDQueryContext ctx = new DCPDQueryContext(q);
+	    ctx.setSkipUnavailableItems(skipUnavailableItems);
+	    ctx.setRenderCSV(renderCSV);
+
+	    // set response header
 	    response.setContentType("application/vnd.ms-excel");
-        // response.setContentType("application/csv");
 	    response.setHeader("Content-Disposition", "inline; filename=\"dcpd-promo.csv\"");
+
+	    // write header
 	    out.println("Depth;Type;Flag;Available;\"Product / Folder ID\";\"Full Name\";SKU;Material;Eligible");
-	    it=q.getNodes().iterator(); while(it.hasNext()) {
+
+	    // output found items	    
+	    it=q.getNodes().iterator();
+	    while(it.hasNext()) {
 	        // Use Breadth-first search algorithm
 	        // INIT
 	        ContentNodeModel rootNode = (ContentNodeModel) it.next();
 	        
 	        if (rootNode instanceof DepartmentModel) {
-	            renderDepartmentNode( (DepartmentModel) rootNode, 1, out, true, goodKeys);
+	            renderDepartmentNode( (DepartmentModel) rootNode, 1, out, ctx);
 	        } else if (rootNode instanceof CategoryModel) {
-	            renderCategoryNode( (CategoryModel) rootNode, 1, out, true, goodKeys);
+	            renderCategoryNode( (CategoryModel) rootNode, 1, out, ctx);
 	        } else if (rootNode instanceof Recipe) {
-	            renderRecipeNode( (Recipe) rootNode, 1, out, true, goodKeys);
+	            renderRecipeNode( (Recipe) rootNode, 1, out, ctx);
 	        } else {
-	            // TODO
 	            System.out.println("Nothing to do with " + rootNode.getClass() + "/" + rootNode);
 	        }
 	    }
