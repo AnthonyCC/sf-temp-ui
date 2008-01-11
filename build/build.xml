@@ -1822,9 +1822,11 @@
 		</copy>
 	</target>
 
-	<target name="tools" description="Build Tools" depends="framework">
+	<target name="tools" description="Build Tools" depends="framework,cms,fdstore">
 		<path id="tools.classpath">
             <pathelement location="${work.dir}/Framework.jar"/>
+			<pathelement location="${work.dir}/CMS.jar"/>
+			<pathelement location="${work.dir}/FDStore.jar"/>
 		</path>
 
 		<makeProject
@@ -2170,9 +2172,9 @@
 			<zipfileset src="${thirdparty.home}/commons-net-1.0.jar" excludes="META-INF/*"/>
 
 
-			<zipfileset location="${thirdparty.home}/lucene-core-2.2.0.jar" excludes="META-INF/*"/>
-			<zipfileset location="${thirdparty.home}/lucene-queries-2.2.0.jar" excludes="META-INF/*"/>
-			<zipfileset location="${thirdparty.home}/lucene-spellchecker-2.2.0.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/lucene-core-2.2.0.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/lucene-queries-2.2.0.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/lucene-spellchecker-2.2.0.jar" excludes="META-INF/*"/>
 
 			<!-- zipfileset src="${thirdparty.home}/commons-fileupload-1.0.jar" excludes="META-INF/*"/ -->
 			<zipfileset src="${thirdparty.home}/commons-fileupload-1.1.1.jar" excludes="META-INF/*"/>
