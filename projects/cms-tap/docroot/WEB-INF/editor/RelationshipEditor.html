@@ -1,3 +1,4 @@
+<script type="text/javascript" src="js/popout.js"></script>
 <span jwcid="@If" condition='ognl:relationship.definition.cardinality.name == "One"'>
 
 	<table class="relationships" cellspacing="0" cellpadding="0" width="416" border="0" style="border: none;"
@@ -32,7 +33,6 @@
 			<th jwcid="@Any" colspan="ognl:disabled ? 1 : 3">
 				<span jwcid="@If" condition="ognl:not disabled">
 					<span jwcid="@If" condition="ognl:showCreate">
-						<script src="js/popout.js" language="JavaScript"></script>
 						<span onmouseover="return popout(this);" onmouseout="return popin(this);">
 							<img jwcid="@Image" class="image" image="ognl:assets.create" border="0" width="16" height="16"/>
 							<div jwcid="@Any" class="popout" style='ognl:"width: " + (relationship.definition.contentTypes.size * 24) + "px;"'>

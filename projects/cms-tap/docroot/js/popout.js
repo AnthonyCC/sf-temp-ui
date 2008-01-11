@@ -9,12 +9,13 @@ function popout(src) {
 
 function findNearestElementByClass(src, className) {
 	// check immediate children
-	for (var i in src.childNodes) {
-		var n = src.childNodes[i];
-		if (n.className==className) {
-			return n;
-		} 
-	}
+    var i;
+    for (i=0; i<src.childNodes.length; i++) {
+        var n = src.childNodes[i];
+        if (n.className==className) {
+            return n;
+        }
+    }
 	// check siblings
 	var target = src;
 	while (target && target.className != className) {
