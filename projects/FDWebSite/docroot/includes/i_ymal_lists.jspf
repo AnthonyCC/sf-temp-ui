@@ -319,7 +319,7 @@
 
                                 String[] ymalScales = helper.getFDProduct().getPricing().getScaleDisplay();
                                 if (ymalScales.length>0) {
-                                    outputP4.append("<br><span class=\"text11\"></span><font color=\"#FF9933\">Save!</font><br>\n");
+                                    outputP4.append("<br><font color=\"#FF9933\">Save!</font><br>\n");
                                 
                                     for (int ymalSci = 0; ymalSci < ymalScales.length; ymalSci++) {
                                         if (ymalSci != 0) {

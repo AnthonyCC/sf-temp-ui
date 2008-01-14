@@ -249,7 +249,7 @@ public class YmalProductHelper implements YmalHelper {
 	 *  @true if the product is sold by sales unit, false if by quantity.
 	 */
 	public boolean isSoldBySalesUnits() {
-		return false;
+		return getProduct().isSoldBySalesUnits();
 	}
 
 	/**

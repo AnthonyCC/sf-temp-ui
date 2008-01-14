@@ -424,4 +424,6 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI {
 	public boolean isShowTopTenImage();
 
 	String getDefaultPrice();
+
+	public boolean isSoldBySalesUnits();
 }

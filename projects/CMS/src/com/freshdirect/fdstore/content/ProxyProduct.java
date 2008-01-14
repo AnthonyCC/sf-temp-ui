@@ -1,15 +1,11 @@
 package com.freshdirect.fdstore.content;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDResourceException;
@@ -105,6 +101,10 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 
 	public boolean isGrocery() {
 		return getProduct().isGrocery();
+	}
+	
+	public boolean isSoldBySalesUnits() {
+		return getProduct().isSoldBySalesUnits();
 	}
 
 	public boolean isQualifiedForPromotions() throws FDResourceException {

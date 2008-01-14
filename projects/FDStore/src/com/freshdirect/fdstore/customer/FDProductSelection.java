@@ -302,7 +302,7 @@ public class FDProductSelection implements FDProductSelectionI {
 
 	public boolean isSoldBySalesUnits() {
 		ProductModel productNode = this.lookupProduct();
-		return productNode == null ? false : "SALES_UNIT".equals(productNode.getAttribute("SELL_BY_SALESUNIT", ""));
+		return productNode == null ? false : productNode.isSoldBySalesUnits();
 	}
 
 	public boolean isPricedByLb() {

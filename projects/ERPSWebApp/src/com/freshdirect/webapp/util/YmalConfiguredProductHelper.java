@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.freshdirect.fdstore.FDConfigurableI;
-import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -124,7 +123,8 @@ public class YmalConfiguredProductHelper extends YmalProductHelper
 		FDConfigurableI         configuration = confProduct.getConfiguration(); 
 		FDProductSelectionI	    productSel;
 				
-		salesDesc.append(super.getSalesDescription());
+		final String prdSalesDesc = super.getSalesDescription();
+		salesDesc.append(prdSalesDesc);
 		
 		try {
 			productSel = new FDProductSelection(confProduct.getFDProduct(),
@@ -133,7 +133,10 @@ public class YmalConfiguredProductHelper extends YmalProductHelper
 
 			OrderLineUtil.describe(productSel);
 
-			salesDesc.append("<br/>");
+			if (!"&nbsp;".equals(prdSalesDesc)) {
+				// break line if product sales description is NOT empty (!= '&nbsp;')
+				salesDesc.append("<br/>");
+			}
 			salesDesc.append(productSel.getConfigurationDesc());
 		} catch (FDInvalidConfigurationException e) {
 			// well, if no configuration, then just leaven de description as is
@@ -148,15 +151,8 @@ public class YmalConfiguredProductHelper extends YmalProductHelper
 	 *  @true if the product is sold by sales unit, false if by quantity.
 	 */
 	public boolean isSoldBySalesUnits() {
-		ConfiguredProduct       confProduct   = getConfiguredProduct();
-		FDConfigurableI         configuration = confProduct.getConfiguration(); 
-		FDProductSelectionI	    productSel;
-
-		productSel = new FDProductSelection(confProduct.getFDProduct(),
-            								confProduct.getProduct().getProductRef(),
-            								configuration);
-
-		return productSel.isSoldBySalesUnits();
+		ConfiguredProduct       confProduct   = getConfiguredProduct();		
+		return confProduct.isSoldBySalesUnits();
 	}
 	
 	/**

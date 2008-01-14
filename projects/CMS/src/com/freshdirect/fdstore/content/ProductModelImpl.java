@@ -193,8 +193,9 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 		SkuModel sku = getDefaultSku();
 		if (sku != null) {
 			try {
-				if (sku.getProduct().isAutoconfigurable()) {
-					ret = sku.getProduct().getAutoconfiguration(getQuantityMinimum());
+				boolean soldBySalesUnits = isSoldBySalesUnits();
+				if (sku.getProduct().isAutoconfigurable(soldBySalesUnits)) {
+					ret = sku.getProduct().getAutoconfiguration(soldBySalesUnits, getQuantityMinimum());
 				}
 			} catch(Exception exc) {}
 		}
@@ -228,6 +229,10 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 
 	public boolean isGrocery() {
 		return getAttribute("GROCERY", false);
+	}
+	
+	public boolean isSoldBySalesUnits() {
+		return "SALES_UNIT".equals(getAttribute("SELL_BY_SALESUNIT", ""));
 	}
 
 	public boolean isQualifiedForPromotions() throws FDResourceException {
