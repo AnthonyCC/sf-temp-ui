@@ -20,8 +20,7 @@ import java.util.Set;
 
 import org.apache.log4j.Category;
 
-
-import edu.emory.mathcs.backport.java.util.concurrent.ConcurrentHashMap;
+import weblogic.utils.collections.ConcurrentHashMap;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
