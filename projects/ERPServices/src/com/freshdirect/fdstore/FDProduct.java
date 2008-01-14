@@ -9,6 +9,7 @@
 package com.freshdirect.fdstore;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -96,16 +97,16 @@ public class FDProduct extends FDSku implements AttributesI {
 	 *  @return true if the product can be auto-configured,
 	 *          false otherwise.
 	 */
-	public boolean isAutoconfigurable() {
-		if (getDefaultSalesUnit() == null /* salesUnits.length > 1 */) {
+	public boolean isAutoconfigurable(boolean isSoldBySalesUnit) {
+		if (!isSoldBySalesUnit && getDefaultSalesUnit() == null) {
 			return false;
 		}
-		
+
 		for (int i = 0; i < variations.length; i++) {
-			FDVariation 		variation = variations[i];
-			FDVariationOption	options[] = variation.getVariationOptions();
+			// FDVariation 		variation = variations[i];
+			// FDVariationOption	options[] = variation.getVariationOptions();
 			
-			if (options.length > 1) {
+			if (variations[i].getVariationOptions().length > 1) {
 				return false;
 			}
 		}
@@ -120,15 +121,22 @@ public class FDProduct extends FDSku implements AttributesI {
 	 *  @return the configuration describing the auto-configuration of the
 	 *          product, or null if the product can not be auto-configured.
 	 */
-	public FDConfigurableI getAutoconfiguration(double quantity) {
-		if (!isAutoconfigurable()) {
+	public FDConfigurableI getAutoconfiguration(boolean isSoldBySalesUnit, double quantity) {
+		if (!isAutoconfigurable(isSoldBySalesUnit)) {
 			return null;
 		}
+
+		FDConfiguration ret = null;
 		
-		return new FDConfiguration(quantity,
-			getDefaultSalesUnit().getName() /* salesUnits[0].getName() */,
-			getOptions()
-		);
+		if (isSoldBySalesUnit) {
+			ret = new FDConfiguration(quantity, salesUnits[0].getName(), Collections.EMPTY_MAP);
+		} else {
+			ret = new FDConfiguration(quantity,
+				getDefaultSalesUnit().getName() /* salesUnits[0].getName() */,
+				getOptions()
+			);
+		}
+		return ret;
 	}
 
 	/**
