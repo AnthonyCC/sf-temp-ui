@@ -47,6 +47,8 @@ request.setAttribute("listPos", "CategoryNote");
 <html>
 	<head>
 		<meta name="verify-v1" content="2MXiorvt33Hqj6QEBylmr/TwpVMfiUQArG0etUIxV2c=" />
+		<meta name="description" content="Online grocer providing high quality fresh foods and popular grocery and household items at incredible prices delivered to the New York area.">
+		<meta name="keywords" content="FreshDirect, Fresh Direct, Online Groceries, Online food, Grocery delivery, Food delivery, New York food delivery, New York food, New York grocer, Online grocery shopping">
 		<title><%= isBestCellars ? "Best Cellars" : "FreshDirect"%></title>
 		<script language="javascript" src="/assets/javascript/common_javascript.js"></script>
 		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>                        
