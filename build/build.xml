@@ -324,7 +324,7 @@
 		<delete dir="${work.dir}" />
 	</target>
 
-    <target name="prereq" depends="clean,make_dirs,copy_shared_dirs" description="Prerequisites">
+    <target name="prereq" depends="clean,make_dirs" description="Prerequisites">
     </target>
 
     <target name="make_dirs"
