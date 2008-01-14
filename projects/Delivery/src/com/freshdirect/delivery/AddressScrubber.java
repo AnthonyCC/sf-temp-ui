@@ -9,6 +9,7 @@ package com.freshdirect.delivery;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -25,14 +26,18 @@ public class AddressScrubber {
     }
     
     public static String standardizeForUSPS(String streetAddress) throws InvalidAddressException {
-        return standardize(streetAddress, false);
+        return standardize(streetAddress, false, false);
     }
     
     public static String standardizeForGeocode(String streetAddress) throws InvalidAddressException {
-        return standardize(streetAddress, true);
+        return standardize(streetAddress, true, false);
+    }
+    
+    public static String standardizeForGeocodeNoSubstitution(String streetAddress) throws InvalidAddressException {
+        return standardize(streetAddress, true, true);
     }
 
-    private static String standardize(String address, boolean forGeocode) throws InvalidAddressException {
+    private static String standardize(String address, boolean forGeocode, boolean canReverseDirections) throws InvalidAddressException {
         //
         // clean leading and trailing whitespace
         //
@@ -68,6 +73,7 @@ public class AddressScrubber {
                 	// Fix is done to remove the new building no format which is changed
                 	//(Ex: 23-30 is stored as 2330 instead of 23)
                     if (forGeocode && !isNewGeocodeFormat()) {
+                    	System.out.println("GOT HERE");                    
                         break;
                     }
                 }
@@ -90,10 +96,10 @@ public class AddressScrubber {
                 throw new InvalidAddressException("Unable to find a building number in : " + address);
             }
         }
-       return String.valueOf(bldgNumber) + " " + standardizeStreet(streetName, forGeocode).getAddress();
+       return String.valueOf(bldgNumber) + " " + standardizeStreet(streetName, forGeocode, canReverseDirections).getAddress();
     }
 
-    private static StreetName standardizeStreet(String street, boolean forGeocode) {
+    private static StreetName standardizeStreet(String street, boolean forGeocode, boolean canReverseDirections ) {
         //
         // remove any leading and trailing whitespace
         // upper case everything
@@ -128,6 +134,7 @@ public class AddressScrubber {
         String postDir = "";
         int postDirToken = -1;
         String name = "";
+        HashMap dirMap = ( canReverseDirections ? reverseDirections : directions);
         if (nameParts.size() == 1) {
             // its all base (e.g. Broadway)
         } else if (nameParts.size() == 2) {
@@ -135,8 +142,8 @@ public class AddressScrubber {
             // - prefix and base (e.g. West Broadway)
             // - base and suffix (very, very rare, no good example)
             // - base and type (e.g. Broome Street)
-            boolean firstIsPreDir = canMakeSubstitution((String) nameParts.get(0), directions, true);
-            boolean secondIsPostDir = canMakeSubstitution((String) nameParts.get(1), directions, true);
+            boolean firstIsPreDir = canMakeSubstitution((String) nameParts.get(0), dirMap, true);
+            boolean secondIsPostDir = canMakeSubstitution((String) nameParts.get(1), dirMap, true);
             boolean secondIsSuffix = canMakeSubstitution((String) nameParts.get(1), streetTypes, true);
             if (firstIsPreDir && !secondIsSuffix) {
                 preDirToken = 0;
@@ -153,8 +160,8 @@ public class AddressScrubber {
             // - predir, name, suffix (e.g. East 5th Street)
             // - name, suffix (e.g. Saint Nicholas Avenue, La Guardia Place)
             // - name, suffix, postdir (e.g. Central Park West, 7th Avenue South)
-            boolean firstIsPreDir = canMakeSubstitution((String) nameParts.get(0), directions, true);
-            boolean lastIsPostDir = canMakeSubstitution((String) nameParts.get(nameParts.size()-1), directions, true);
+            boolean firstIsPreDir = canMakeSubstitution((String) nameParts.get(0), dirMap, true);
+            boolean lastIsPostDir = canMakeSubstitution((String) nameParts.get(nameParts.size()-1), dirMap, true);
             boolean lastIsSuffix = canMakeSubstitution((String) nameParts.get(nameParts.size()-1), streetTypes, true);
             if (firstIsPreDir) {
                 preDirToken = 0;
@@ -189,10 +196,10 @@ public class AddressScrubber {
         }
         name = nameBuffer.toString();
 
-        preDir = makeSubstitutions(preDir, directions, true);
+        preDir = makeSubstitutions(preDir, dirMap, true);
         name   = makeSubstitutions(name, numberNames);
         name   = fixNumberSuffixes(name);
-        postDir = makeSubstitutions(postDir, directions, true);
+        postDir = makeSubstitutions(postDir, dirMap, true);
         suffix   = makeSubstitutions(suffix, streetTypes, true);
         
         if(forGeocode){
@@ -357,6 +364,21 @@ public class AddressScrubber {
         directions.put("NORTHWEST", "NW");
         directions.put("SOUTHEAST", "SE");
         directions.put("SOUTHWEST", "SW");
+    }
+    
+    //
+    // used for prefix and suffix
+    //
+    private final static java.util.HashMap reverseDirections = new java.util.HashMap();
+    static {
+    	reverseDirections.put("N", "NORTH");
+    	reverseDirections.put("S", "SOUTH");
+    	reverseDirections.put("E", "EAST");
+    	reverseDirections.put("W", "WEST");
+    	reverseDirections.put("NE", "NORTHEAST");
+    	reverseDirections.put("NW", "NORTHWEST");
+    	reverseDirections.put("SE", "SOUTHEAST");
+    	reverseDirections.put("SW", "SOUTHWEST");
     }
 
     private final static java.util.HashMap numberNames = new java.util.HashMap();

@@ -29,6 +29,7 @@ import com.freshdirect.delivery.InvalidAddressException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.StateCounty;
 import com.freshdirect.framework.core.SequenceGenerator;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -439,7 +440,7 @@ public class GeographyDAO {
 		+ "AND DECODE (l_addrsch,'M', 1,'E', decode(mod(?,2), 0, 1, 0), 'O', decode(mod(?,2), 1, 1, 0),0) = 1) "
 		+ "OR   (((? BETWEEN ng.r_nrefaddr AND ng.r_refaddr) OR (? BETWEEN ng.r_refaddr AND ng.r_nrefaddr)) "
 		+ "AND DECODE (r_addrsch,'M', 1,'E', decode(mod(?,2), 0, 1, 0), 'O', decode(mod(?,2), 1, 1, 0),0) = 1)) ";
-
+	
 	public static final String GEOCODE_OK = "GEOCODE_OK";
 	public final static String GEOCODE_FAILED = "GEOCODE_FAILED";
 
@@ -450,12 +451,18 @@ public class GeographyDAO {
 	public String geocode(AddressModel address, boolean munge, Connection conn) throws SQLException, InvalidAddressException {
 		
 		//LOGGER.debug("--------- START GEOCODE BASE---------------------\n"+address);
-		String result = reallyGeocode(address, conn);
+		String result = reallyGeocode(address, conn, false);
 		if (GEOCODE_OK.equals(result)) {
 			//LOGGER.debug(address+"\n--------- END GEOCODE BASE1---------------------\n");
 			return result;
 		}
-
+		
+		result = reallyGeocode(address, conn, true);
+		if (GEOCODE_OK.equals(result)) {
+			//LOGGER.debug(address+"\n--------- END GEOCODE BASE2---------------------\n");
+			return result;
+		}
+		
 		//
 		// failed, check exceptions table
 		//
@@ -464,7 +471,7 @@ public class GeographyDAO {
 			//LOGGER.debug(address+"\n--------- END GEOCODE BASE2---------------------\n");
 			return result;
 		}
-
+		
 		if (munge) {
 			//
 			// failed, guess where the '-' is
@@ -483,7 +490,7 @@ public class GeographyDAO {
 			String theRest = streetAddress.substring(numBreak + 1);
 			bldgNum = bldgNum.substring(0, bldgNum.length() - 2) + "-" + bldgNum.substring(bldgNum.length() - 2, bldgNum.length());
 			address.setAddress1(bldgNum + " " + theRest);
-			String resultTmp = reallyGeocode(address, conn);
+			String resultTmp = reallyGeocode(address, conn, false);
 			
 			//LOGGER.debug(address+"\n--------- END GEOCODE BASE3---------------------\n");
 			return resultTmp;
@@ -503,14 +510,19 @@ public class GeographyDAO {
 	// if successful, it returns GEOCODE_OK and sets the longitude and latitude of the address it was given as a paramter
 	// otherwise, it just returns GEOCODE_FAILED
 	//
-	private String reallyGeocode(AddressModel address, Connection conn) throws SQLException, InvalidAddressException {
+	private String reallyGeocode(AddressModel address, Connection conn
+									, boolean reverseDirectionSubstition) throws SQLException, InvalidAddressException {
 		String streetAddress = null;
 		String oldStreetAddress = address.getAddress1();
 		try {
-			streetAddress = AddressScrubber.standardizeForGeocode(address.getAddress1());
+			streetAddress = (reverseDirectionSubstition ? AddressScrubber.standardizeForGeocodeNoSubstitution(address.getAddress1())
+								: AddressScrubber.standardizeForGeocode(address.getAddress1()));
+			//streetAddress = AddressScrubber.standardizeForGeocode(address.getAddress1());	
 		} catch (InvalidAddressException iae1) {
 			try {
-				streetAddress = AddressScrubber.standardizeForGeocode(address.getAddress2());
+				streetAddress = (reverseDirectionSubstition ? AddressScrubber.standardizeForGeocodeNoSubstitution(address.getAddress2())
+						: AddressScrubber.standardizeForGeocode(address.getAddress2()));
+				//streetAddress = AddressScrubber.standardizeForGeocode(address.getAddress2());
 			} catch (InvalidAddressException iae2) {
 				throw iae2;
 			}
@@ -542,205 +554,218 @@ public class GeographyDAO {
 
 		String leftAddressScheme = "";
 		String rightAddressScheme = "";
-		String zipCode = getZipCodeFromAddress(address);
-		//
-		// find row in db for street segment with a zip code
-		//
-		PreparedStatement ps = conn.prepareStatement(streetSegQuery);
-		ps.setString(1, streetNormal);
-		ps.setString(2, zipCode);
-		ps.setString(3, zipCode);
-		ps.setInt(4, bldgNumber);
-		ps.setInt(5, bldgNumber);
-		ps.setInt(6, newBldgNumber);
-		ps.setInt(7, newBldgNumber);
-		ps.setInt(8, bldgNumber);
-		ps.setInt(9, bldgNumber);
-		ps.setInt(10, newBldgNumber);
-		ps.setInt(11, newBldgNumber);
-		ResultSet rs = ps.executeQuery();
+		String[] zipCode = getZipCodeFromAddress(address);
 		
-		//LOGGER.debug("--------- START REALLY GEOCODE ---------------------\n"+address);
-		if (rs.next()) {
-			//LOGGER.debug("--------- HAS GEOCODE SEGMENT---------------------");
-			segment = new StreetSegment();
-			leftAddressScheme = rs.getString("L_ADDRSCH");
-			rightAddressScheme = rs.getString("R_ADDRSCH");
-			segment.leftNearNum = rs.getInt("L_REFADDR");
-			segment.leftFarNum = rs.getInt("L_NREFADDR");
-
-			segment.rightNearNum = rs.getInt("R_REFADDR");
-			segment.rightFarNum = rs.getInt("R_NREFADDR");
-
-			segment.leftZipcode = rs.getString("L_POSTCODE");
-			segment.rightZipcode = rs.getString("R_POSTCODE");
-
-			segment.nearX = rs.getDouble("COORD");
-
-			if (rs.next()) {
-				segment.nearY = rs.getDouble("COORD");
-			}
-
-			if (rs.next()) {
-				segment.farX = rs.getDouble("COORD");
-			}
-
-			if (rs.next()) {
-				segment.farY = rs.getDouble("COORD");
-			}
-		}
-		rs.close();
-		ps.close();
-		if (segment == null) {
-			//LOGGER.debug("--------- GEOCODE FAILED ---------------------");	
-			return GEOCODE_FAILED;
-		}
-		//
-		// which of the street segments returned and which side of the the street is the correct one?
-		//
-		if (leftAddressScheme == null || leftAddressScheme.equals("")) {
-			leftAddressScheme = "";
-			if (rightAddressScheme != null) {
-				if (rightAddressScheme.equals("E")) {
-					leftAddressScheme = "O";
+		if(zipCode != null) {
+			int intLength = zipCode.length;
+			for(int intCount=0; intCount<intLength; intCount++) {
+				//
+				// find row in db for street segment with a zip code
+				//
+				//System.out.println("zipCode[intCount]>"+zipCode[intCount]);
+				PreparedStatement ps = null;
+				ps = conn.prepareStatement(streetSegQuery);
+				ps.setString(1, streetNormal);
+				ps.setString(2, zipCode[intCount]);
+				ps.setString(3, zipCode[intCount]);
+				ps.setInt(4, bldgNumber);
+				ps.setInt(5, bldgNumber);
+				ps.setInt(6, newBldgNumber);
+				ps.setInt(7, newBldgNumber);
+				ps.setInt(8, bldgNumber);
+				ps.setInt(9, bldgNumber);
+				ps.setInt(10, newBldgNumber);
+				ps.setInt(11, newBldgNumber);
+				ResultSet rs = ps.executeQuery();
+				
+				//LOGGER.debug("--------- START REALLY GEOCODE ---------------------\n"+address);
+				if (rs.next()) {
+					//LOGGER.debug("--------- HAS GEOCODE SEGMENT---------------------");
+					segment = new StreetSegment();
+					leftAddressScheme = rs.getString("L_ADDRSCH");
+					rightAddressScheme = rs.getString("R_ADDRSCH");
+					segment.leftNearNum = rs.getInt("L_REFADDR");
+					segment.leftFarNum = rs.getInt("L_NREFADDR");
+		
+					segment.rightNearNum = rs.getInt("R_REFADDR");
+					segment.rightFarNum = rs.getInt("R_NREFADDR");
+		
+					segment.leftZipcode = rs.getString("L_POSTCODE");
+					segment.rightZipcode = rs.getString("R_POSTCODE");
+		
+					segment.nearX = rs.getDouble("COORD");
+		
+					if (rs.next()) {
+						segment.nearY = rs.getDouble("COORD");
+					}
+		
+					if (rs.next()) {
+						segment.farX = rs.getDouble("COORD");
+					}
+		
+					if (rs.next()) {
+						segment.farY = rs.getDouble("COORD");
+					}
 				}
-				if (rightAddressScheme.equals("O")) {
-					leftAddressScheme = "E";
+				rs.close();
+				ps.close();
+				if (segment == null) {
+					//LOGGER.debug("--------- GEOCODE FAILED ---------------------");
+					if(intCount==intLength-1) {
+						return GEOCODE_FAILED;
+					} else {
+						continue;
+					}
 				}
-			}
-		}
-
-		boolean onLeft = false;
-		boolean doOffset = true;
-		if (leftAddressScheme.equals("E") || leftAddressScheme.equals("O")) {
-
-			if (leftAddressScheme.equals("E") && (newBldgNumber % 2 == 0)) {
-				onLeft = true;
-			}
-			if (leftAddressScheme.equals("O") && (newBldgNumber % 2 == 1)) {
-				onLeft = true;
-			}
-		} else { // Don't do offset.  If can't figure out; always default to right side of street
-			doOffset = false;
-		}
-
-		double dX = segment.farX - segment.nearX;
-		double dY = segment.farY - segment.nearY;
-		double distance = Math.sqrt(dX * dX + dY * dY);
-
-		double slope = dY / dX;
-
-		//
-		// how far along the segment is the street address?
-		//
-		double perc = 0.0;
-		if (onLeft) {
-			perc = ((double) (bldgNumber - segment.leftNearNum)) / ((double) (segment.leftFarNum - segment.leftNearNum));
-		} else {
-			perc = ((double) (bldgNumber - segment.rightNearNum)) / ((double) (segment.rightFarNum - segment.rightNearNum));
-		}
-
-		// Fix boundary conditions
-		if (new Double(perc).isNaN() || (perc == Double.NEGATIVE_INFINITY) || (perc == Double.POSITIVE_INFINITY)) {
-			perc = 0.5;
-		}
-
-		// This is one one corner, offset it by a wee bit.
-		if (perc == 0)
-			perc = 0.05;
-
-		// On another corner
-		if (perc == 1.0)
-			perc = 0.95;
-
-		//
-		// find the X,Y point on the street
-		//
-		double pX, pY;
-		double newDistance = distance * perc;
-
-		if (new Double(slope).isNaN() || (slope == Double.NEGATIVE_INFINITY) || (slope == Double.POSITIVE_INFINITY)) {
-			pX = segment.nearX;
-			pY = newDistance + segment.nearY;
-		} else if (slope == 0) {
-			pX = newDistance + segment.nearX;
-			pY = segment.nearY;
-		} else {
-			if (segment.nearX > segment.farX) {
-				pX = -newDistance / Math.sqrt(slope * slope + 1) + segment.nearX;
-			} else {
-				pX = newDistance / Math.sqrt(slope * slope + 1) + segment.nearX;
-			}
-			pY = slope * (pX - segment.nearX) + segment.nearY;
-		}
-
-		// Now offset this 20 meters
-		double newSlope = -1 / slope;
-
-		// Approximate actual offset
-		double newX, newY;
-		if (doOffset) {
-			double offsetDistance;
-
-			if (pX >= segment.farX) {
-				offsetDistance = offsetFromStreet * XmetersToDeg;
-			} else {
-				offsetDistance = -offsetFromStreet * XmetersToDeg;
-			}
-
-			//	Assign Left is negative
-			if (onLeft)
-				offsetDistance *= -1;
-
-			if (newSlope < 0)
-				offsetDistance *= -1;
-
-			newX = offsetDistance / Math.sqrt(newSlope * newSlope + 1) + pX;
-
-			if (slope == 0.0)
-				newY = pY;
-			else {
-				newY = newSlope * (newX - pX) + pY;
-			}
-
-		} else {
-			newX = pX;
-			newY = pY;
-		}
-
-		AddressInfo info = address.getAddressInfo();
+				//
+				// which of the street segments returned and which side of the the street is the correct one?
+				//
+				if (leftAddressScheme == null || leftAddressScheme.equals("")) {
+					leftAddressScheme = "";
+					if (rightAddressScheme != null) {
+						if (rightAddressScheme.equals("E")) {
+							leftAddressScheme = "O";
+						}
+						if (rightAddressScheme.equals("O")) {
+							leftAddressScheme = "E";
+						}
+					}
+				}
 		
-		//LOGGER.debug("--------- LAT, LONG---------------------"+newX+"-->"+newY);
-
-		if (info == null) {
-			info = new AddressInfo();
-		}
-
-		info.setLongitude(newX);
-		info.setLatitude(newY);
-		/*
-		 if (onLeft) {
-		 //
-		 // rotate unit vector counter-clockwise
-		 // find displacement by (-dY, dX)
-		 //
-		 info.setLongitude(pX - dYunit * offsetFromStreet * XmetersToDeg);
-		 info.setLatitude(pY + dXunit * offsetFromStreet * YmetersToDeg);
-		 } else {
-		 //
-		 // rotate unit vector clockwise
-		 // find displacement by (dY, -dX)
-		 //
-		 info.setLongitude(pX + dYunit * offsetFromStreet * XmetersToDeg);
-		 info.setLatitude(pY - dXunit * offsetFromStreet * YmetersToDeg);
-		 }
-		 */
-		address.setAddressInfo(info);
-
-		//System.out.println("point offset from street is X = " + retval.x + ", Y = " + retval.y);
+				boolean onLeft = false;
+				boolean doOffset = true;
+				if (leftAddressScheme.equals("E") || leftAddressScheme.equals("O")) {
 		
-		LOGGER.debug(address+"\n--------- END REALLY GEOCODE ---------------------");
-		return GEOCODE_OK;
+					if (leftAddressScheme.equals("E") && (newBldgNumber % 2 == 0)) {
+						onLeft = true;
+					}
+					if (leftAddressScheme.equals("O") && (newBldgNumber % 2 == 1)) {
+						onLeft = true;
+					}
+				} else { // Don't do offset.  If can't figure out; always default to right side of street
+					doOffset = false;
+				}
+		
+				double dX = segment.farX - segment.nearX;
+				double dY = segment.farY - segment.nearY;
+				double distance = Math.sqrt(dX * dX + dY * dY);
+		
+				double slope = dY / dX;
+		
+				//
+				// how far along the segment is the street address?
+				//
+				double perc = 0.0;
+				if (onLeft) {
+					perc = ((double) (bldgNumber - segment.leftNearNum)) / ((double) (segment.leftFarNum - segment.leftNearNum));
+				} else {
+					perc = ((double) (bldgNumber - segment.rightNearNum)) / ((double) (segment.rightFarNum - segment.rightNearNum));
+				}
+		
+				// Fix boundary conditions
+				if (new Double(perc).isNaN() || (perc == Double.NEGATIVE_INFINITY) || (perc == Double.POSITIVE_INFINITY)) {
+					perc = 0.5;
+				}
+		
+				// This is one one corner, offset it by a wee bit.
+				if (perc == 0)
+					perc = 0.05;
+		
+				// On another corner
+				if (perc == 1.0)
+					perc = 0.95;
+		
+				//
+				// find the X,Y point on the street
+				//
+				double pX, pY;
+				double newDistance = distance * perc;
+		
+				if (new Double(slope).isNaN() || (slope == Double.NEGATIVE_INFINITY) || (slope == Double.POSITIVE_INFINITY)) {
+					pX = segment.nearX;
+					pY = newDistance + segment.nearY;
+				} else if (slope == 0) {
+					pX = newDistance + segment.nearX;
+					pY = segment.nearY;
+				} else {
+					if (segment.nearX > segment.farX) {
+						pX = -newDistance / Math.sqrt(slope * slope + 1) + segment.nearX;
+					} else {
+						pX = newDistance / Math.sqrt(slope * slope + 1) + segment.nearX;
+					}
+					pY = slope * (pX - segment.nearX) + segment.nearY;
+				}
+		
+				// Now offset this 20 meters
+				double newSlope = -1 / slope;
+		
+				// Approximate actual offset
+				double newX, newY;
+				if (doOffset) {
+					double offsetDistance;
+		
+					if (pX >= segment.farX) {
+						offsetDistance = offsetFromStreet * XmetersToDeg;
+					} else {
+						offsetDistance = -offsetFromStreet * XmetersToDeg;
+					}
+		
+					//	Assign Left is negative
+					if (onLeft)
+						offsetDistance *= -1;
+		
+					if (newSlope < 0)
+						offsetDistance *= -1;
+		
+					newX = offsetDistance / Math.sqrt(newSlope * newSlope + 1) + pX;
+		
+					if (slope == 0.0)
+						newY = pY;
+					else {
+						newY = newSlope * (newX - pX) + pY;
+					}
+		
+				} else {
+					newX = pX;
+					newY = pY;
+				}
+		
+				AddressInfo info = address.getAddressInfo();
+				
+				//LOGGER.debug("--------- LAT, LONG---------------------"+newX+"-->"+newY);
+		
+				if (info == null) {
+					info = new AddressInfo();
+				}
+		
+				info.setLongitude(newX);
+				info.setLatitude(newY);
+				/*
+				 if (onLeft) {
+				 //
+				 // rotate unit vector counter-clockwise
+				 // find displacement by (-dY, dX)
+				 //
+				 info.setLongitude(pX - dYunit * offsetFromStreet * XmetersToDeg);
+				 info.setLatitude(pY + dXunit * offsetFromStreet * YmetersToDeg);
+				 } else {
+				 //
+				 // rotate unit vector clockwise
+				 // find displacement by (dY, -dX)
+				 //
+				 info.setLongitude(pX + dYunit * offsetFromStreet * XmetersToDeg);
+				 info.setLatitude(pY - dXunit * offsetFromStreet * YmetersToDeg);
+				 }
+				 */
+				address.setAddressInfo(info);
+		
+				//System.out.println("point offset from street is X = " + retval.x + ", Y = " + retval.y);
+				
+				LOGGER.debug(address+"\n--------- END REALLY GEOCODE ---------------------");
+				return GEOCODE_OK;
+			}
+		}
+		return GEOCODE_FAILED;
 	}
 
 	/*
@@ -1086,6 +1111,7 @@ public class GeographyDAO {
 		PreparedStatement ps = conn.prepareStatement(sql);
 
 		String apt = address.getApartment();
+		String city = null;
 
 		ps.setString(1, streetAddress.toUpperCase());
 		ps.setString(2, apt != null ? apt.toUpperCase().trim() : null);
@@ -1094,7 +1120,10 @@ public class GeographyDAO {
 
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
-			address.setCity(StringUtils.capitaliseAllWords(rs.getString("CITY").toLowerCase()));
+			city = rs.getString("CITY");
+			if(city != null) {
+				address.setCity(StringUtils.capitaliseAllWords(city.toLowerCase()));
+			}
 			info.setAddressType(EnumAddressType.getEnum(rs.getString("ADDRESS_TYPE")));
 			info.setCounty(rs.getString("COUNTY"));
 			address.setAddressInfo(info);
@@ -1291,7 +1320,7 @@ public class GeographyDAO {
 		AddressModel address,
 		Connection conn,
 		EnumAddressVerificationResult result) throws SQLException {
-		try {
+		try {			
 			if (GEOCODE_OK.equals(geocode(address, false, conn))) {
 				String county = getCounty(conn, address.getCity(), address.getState());
 				if(county == null){
@@ -1371,14 +1400,13 @@ public class GeographyDAO {
     	return null;
     }
     
-    private String getZipCodeFromAddress(AddressModel addressModel) {
-    	String zipCode = null;
-    	String alternateZipCode = FDStoreProperties.getAlternateZipcodeForGeocode(addressModel.getZipCode());
-    	if(alternateZipCode != null && alternateZipCode.trim().length() > 0) {
-    		zipCode = alternateZipCode;
-    	} else {
-    		zipCode = addressModel.getZipCode();
-    	}
-    	return zipCode;
+    private String[] getZipCodeFromAddress(AddressModel addressModel) {    	
+    	StringBuffer tmpBufZipCode = new StringBuffer();
+    	tmpBufZipCode.append(addressModel.getZipCode());
+    	String tmpZipCode = FDStoreProperties.getAlternateZipcodeForGeocode(addressModel.getZipCode());
+    	if(!StringUtil.isEmpty(tmpZipCode)) {
+    		tmpBufZipCode.append(",").append(tmpZipCode);
+    	}    	
+    	return StringUtil.decodeStrings(tmpBufZipCode.toString());
     }
 }
