@@ -2184,6 +2184,11 @@
 			<zipfileset src="${thirdparty.home}/log4j.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/sapjco.jar" excludes="META-INF/*"/>
 
+			<!-- hivemind -->
+			<zipfileset src="${thirdparty.home}/hivemind-1.1.1.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/hivemind-lib-1.1.1.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/javassist-3.0.jar" excludes="META-INF/*"/>
+
 			<!-- FD classes -->
 			<zipfileset src="${work.dir}/Framework.jar"/>
 			<zipfileset src="${work.dir}/ERPServicesEJB-WL.jar" excludes="META-INF/*"/>
