@@ -2183,6 +2183,7 @@
 			<zipfileset src="${thirdparty.home}/jakarta-oro-2.0.5.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/log4j.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/sapjco.jar" excludes="META-INF/*"/>
+
 			<!-- FD classes -->
 			<zipfileset src="${work.dir}/Framework.jar"/>
 			<zipfileset src="${work.dir}/ERPServicesEJB-WL.jar" excludes="META-INF/*"/>
@@ -2190,6 +2191,10 @@
 			<zipfileset src="${work.dir}/CMS.jar" excludes="META-INF/*"/>
 			<zipfileset src="${work.dir}/DataLoaderEJB-WL.jar" excludes="META-INF/*"/>
 			<zipfileset src="${work.dir}/FDStoreEJB-WL.jar" excludes="META-INF/*"/>
+
+			<!-- Tools -->
+			<zipfileset src="${work.dir}/Tools.jar" excludes="META-INF/*"/>
+
 		</jar>
 	</target>
 
