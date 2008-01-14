@@ -647,6 +647,11 @@ public class PromotionControllerTag extends AbstractControllerTag {
 				.equals(this.promotion.getPromotionType()) && !("percentOff".equals(this.promotion.getValueType()))
 										, "campaign_type", "DCPD Promotion can only be percent off");
 		
+		result.addError(EnumPromotionType.DCP_DISCOUNT.getName()
+				.equals(this.promotion.getPromotionType()) && (StringUtil.isEmpty(this.promotion.getAssignedDepartments()) && 
+						StringUtil.isEmpty(this.promotion.getAssignedCategories()) && StringUtil.isEmpty(this.promotion.getAssignedRecipes()))
+										, "percentOff", "DCPD Promotion should have atleast one department,category or recipe restriction");
+		
 		result.addError(EnumPromotionType.SAMPLE.getName()
 				.equals(this.promotion.getPromotionType()) && !("sample".equals(this.promotion.getValueType()))
 										, "campaign_type", "Sample Promotion can only be sample items");
