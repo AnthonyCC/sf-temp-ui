@@ -120,7 +120,7 @@ void renderSKUs(List skuNodes, String parentCName, int level, JspWriter out, DCP
         if (ctx.isSkipUnavailableItems() && isUna)
         	continue;
         
-        String cs = (isUna ? "color: grey;" : " ");
+        final String cs = (isUna ? "color: grey;" : " ");
 
         String sku_val;
         try {
@@ -153,14 +153,30 @@ void renderSKUs(List skuNodes, String parentCName, int level, JspWriter out, DCP
 		if (ctx.isRenderCSV()) {
             out.println(level + ";P;;" + (isUna ? "N" : "") + ";\"" + parentCName + "\";\"" + skuNode.getFullName() + "\";\"" + skuNode.getContentName() + "\";\"" + (sku_val!=null ? sku_val : "N/A") + "\"");
         } else {
-	        out.println("<tr>");
+            out.println("<tr>");
 	        out.println("<td style='padding-left: " + (level*15) + "px; "+cs+"'>"+parentCName+"</td>");
 	        out.println("<td style='"+cs+"'>" + skuNode.getFullName() + "</td>");
 	        out.println("<td style='"+cs+"'>" + skuNode.getContentName() + "</td>");
-            	out.println("<td style='"+cs+"'>" + (sku_val!=null ? sku_val : "N/A") + "</td>");
-            	out.println("<td style='"+cs+"'>" + (eligible!=null ? eligible : "N/A") + "</td>");
-	        out.println("</tr>");
+	        out.println("<td style='"+cs+"'>" + (sku_val!=null ? sku_val : "N/A") + "</td>");
+            out.println("<td style='"+cs+"'>" + (eligible!=null ? eligible : "N/A") + "</td>");
+            out.println("</tr>");
         }
+    }
+}
+%><%!
+
+void renderUnavailableProduct(String parentCName, int level, JspWriter out, DCPDQueryContext ctx) throws IOException, FDResourceException, FDSkuNotFoundException {
+    final String cs = "color: grey;";
+    if (ctx.isRenderCSV()) {
+        out.println(level + ";P;;N;\"" + parentCName + "\";;;");
+    } else {
+        out.println("<tr>");
+        out.println("<td style='padding-left: " + (level*15) + "px; "+cs+"'>"+parentCName+"</td>");
+        out.println("<td style='"+cs+"'>&nbsp;</td>");
+        out.println("<td style='"+cs+"'>&nbsp;</td>");
+        out.println("<td style='"+cs+"'>&nbsp;</td>");
+        out.println("<td style='"+cs+"'>&nbsp;</td>");
+        out.println("</tr>");
     }
 }
 %><%!
@@ -236,7 +252,13 @@ void renderSectionNode(RecipeSection rNode, int level, JspWriter out, DCPDQueryC
     Iterator cit = rNode.getIngredients().iterator();
     while(cit.hasNext()) {
         ConfiguredProduct cpNode = (ConfiguredProduct) cit.next();
-        renderSKUs(cpNode.getSkus(), cpNode.getContentName(), level, out, ctx, recipeSourceId);
+        if (cpNode.isUnavailable()) {
+        	if (!ctx.isSkipUnavailableItems()) {
+        	    renderUnavailableProduct(cpNode.getContentName(), level, out, ctx);
+        	}
+        } else {
+            renderSKUs(cpNode.getSkus(), cpNode.getContentName(), level, out, ctx, recipeSourceId);
+        }
     }
 }
 
