@@ -115,6 +115,10 @@ public class RegistrationAction extends WebActionSupport {
 		DeliveryAddressValidator validator = new DeliveryAddressValidator(dlvAddress, user.isHomeUser() || user.isCorporateUser());
 		
 		boolean addressValid = validator.validateAddress(actionResult);
+		if (!actionResult.isSuccess()) {
+			return ERROR;
+		}
+
 		AddressModel address = validator.getScrubbedAddress();
 
 
