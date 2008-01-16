@@ -2311,19 +2311,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			Connection conn = null;
 			try {
 				conn = this.getConnection();
-				Collection history = ErpSaleInfoDAO.getOrderHistoryInfo(conn, erpCustomerPk.getId());
-
-	/*			This block has been commented out as loading of Promotion History is seperated
-	 * 			from Order History. Jira Task PERF - 22.
-	 * 			Map promoParticipation = ErpPromotionDAO.loadPromotionParticipation(conn, erpCustomerPk);
-				for (Iterator i = history.iterator(); i.hasNext();) {
-					ErpSaleInfo saleInfo = (ErpSaleInfo) i.next();
-					Set promoCodes = (Set) promoParticipation.get(saleInfo.getSaleId());
-					if (promoCodes != null) {
-						saleInfo.setUsedPromotionCodes(promoCodes);
-					}
-				}
-	*/
+				Collection history = ErpSaleInfoDAO.getWebOrderHistoryInfo(conn, erpCustomerPk.getId());
 				return new ErpWebOrderHistory(history);
 
 			} catch (SQLException ex) {

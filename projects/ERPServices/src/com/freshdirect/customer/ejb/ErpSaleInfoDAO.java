@@ -43,7 +43,7 @@ import com.freshdirect.payment.EnumPaymentMethodType;
  * @version $Revision:24$
  * @author $Author:Viktor Szathmary$
  */
-class ErpSaleInfoDAO {
+public class ErpSaleInfoDAO {
 
 	private final static Category LOGGER = LoggerFactory.getInstance(ErpSaleInfoDAO.class);
 
@@ -552,7 +552,6 @@ public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpC
 	public static Collection getWebOrderHistoryInfo(Connection conn, String erpCustomerId) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(QUERY_WEB_ORDER_HISTORY);
 		ps.setString(1, erpCustomerId);
-		ps.setString(2, erpCustomerId);
 		ResultSet rs = ps.executeQuery();
 		List extendedInfos = new ArrayList();
 		while (rs.next()) {
