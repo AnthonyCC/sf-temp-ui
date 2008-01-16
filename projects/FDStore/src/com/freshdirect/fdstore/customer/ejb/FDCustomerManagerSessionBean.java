@@ -442,10 +442,11 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				String originalOrderId = null;
 				int remDlvs = 0;
 				int usedDlvs = 0;
+				DeliveryPassModel model=null;
 				if(!EnumDlvPassStatus.NONE.equals(dlvPassStatus)){
 					String recentDPId = (String)statusMap.get(dlvPassStatus);
 
-					DeliveryPassModel model = sb.getDeliveryPassInfo(recentDPId);
+					model = sb.getDeliveryPassInfo(recentDPId);
 					if(model == null){
 						throw new FDResourceException("Unable to locate the delivery pass for this user's account.");
 					}
@@ -514,6 +515,13 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 					autoRenewDPType=(DeliveryPassType)statusMap.get(DlvPassConstants.AUTORENEW_DP_TYPE);
 				}
 				dlvPassInfo = new FDUserDlvPassInfo(dlvPassStatus, type, expDate, originalOrderId, remDlvs, usedDlvs,usablePassCount,isFreeTrialRestricted,autoRenewUsablePassCount,autoRenewDPType,autoRenewDPPrice.doubleValue());				
+				if((type.isUnlimited())&&(EnumDlvPassStatus.CANCELLED.equals(dlvPassStatus)||EnumDlvPassStatus.EXPIRED.equals(dlvPassStatus))) {
+					dlvPassInfo.setDaysSinceDPExpiry(sb.getDaysSinceDPExpiry(customerPk));
+				}
+				else if (type.isUnlimited()) {
+					dlvPassInfo.setDaysToDPExpiry(sb.getDaysToDPExpiry(customerPk,model.getId()));
+				}
+
 			} else{
 				//Identity will be null when he/she is a anonymous user. Create a default info object.
 				dlvPassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE, null, null, null,0,0,0,false,0,null,0);

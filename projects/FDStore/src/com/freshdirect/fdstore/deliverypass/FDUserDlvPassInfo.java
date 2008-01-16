@@ -22,6 +22,9 @@ public class FDUserDlvPassInfo implements Serializable{
 	private DeliveryPassType autoRenewDPType;
 	private double autoRenewPrice;
 	private NumberFormat CURRENCY_FORMATTER=NumberFormat.getCurrencyInstance(Locale.US);
+	private int daysSinceDPExpiry=0;
+	private int daysToDPExpiry=0;
+
 	
 	
 	
@@ -128,5 +131,21 @@ public class FDUserDlvPassInfo implements Serializable{
 			return name;
 		}
 	}
+	public void setDaysSinceDPExpiry(int _daysSinceDPExpiry) {
+		this.daysSinceDPExpiry=_daysSinceDPExpiry;
+	}
+	
+	public int getDaysSinceDPExpiry() {
+		return daysSinceDPExpiry;
+	}
+	
+	public void setDaysToDPExpiry(int _daysToDPExpiry) {
+		this.daysToDPExpiry=_daysToDPExpiry;
+	}
+	
+	public int getDaysToDPExpiry() {
+		return daysToDPExpiry;
+	}
+
 	
 }

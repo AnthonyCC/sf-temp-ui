@@ -396,4 +396,69 @@ public class DeliveryPassDAO {
 
 		
 	}
+
+	private final static String GET_DAYS_SINCE_DP_EXPIRED_QUERY ="select CEIL(sysdate-max(exp_date)) from cust.delivery_pass where customer_id=? and ((status ='ACT' and exp_date<sysdate) OR (status='CAN'))";
+	public static int getDaysSinceDPExpiry(Connection conn, String customerID) throws SQLException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		int days=0;
+		List customer=new ArrayList(10);
+		
+		try{
+			ps = conn.prepareStatement(GET_DAYS_SINCE_DP_EXPIRED_QUERY);
+			ps.setString(1, customerID);
+			rs = ps.executeQuery();
+
+			if(rs.next()) {
+				days=rs.getInt(1);
+			}
+			return days;
+		}catch(SQLException sexp){
+			throw sexp;
+		}
+		finally{
+			if(rs != null)
+				rs.close();
+			if(ps != null)
+				ps.close();
+		}	
+
+	}
+	
+	
+	private final static String GET_DAYS_TO_DP_EXPIRED_QUERY="select ceil((select exp_date from cust.delivery_pass where id=?) -sysdate)+"+
+	                                                         " NVL((select sum(duration) from cust.delivery_pass dp, cust.dlv_pass_type dpt where customer_id=? and dp.id!=? and dp.type=dpt.SKU_CODE and dp.status IN ('PEN','RTU')),0) as days "
+	                                                         +" from cust.delivery_pass where customer_id=? and rownum=1";
+	
+	public static int getDaysToDPExpiry(Connection conn, String customerID, String dpID) throws SQLException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		int days=0;
+		List customer=new ArrayList(10);
+		
+		try{
+			ps = conn.prepareStatement(GET_DAYS_TO_DP_EXPIRED_QUERY);
+			ps.setString(1, dpID);
+			ps.setString(2, customerID);
+			ps.setString(3, dpID);
+			ps.setString(4, customerID);
+			
+			rs = ps.executeQuery();
+
+			if(rs.next()) {
+				days=rs.getInt(1);
+			}
+			return days;
+		}catch(SQLException sexp){
+			throw sexp;
+		}
+		finally{
+			if(rs != null)
+				rs.close();
+			if(ps != null)
+				ps.close();
+		}	
+
+	}
+
 }

@@ -978,6 +978,49 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			}
 		   return autoRenewPasses;
 	   }
+
+	    public int getDaysSinceDPExpiry(String customerID) {
+	    	
+			Connection conn = null;
+			try {
+				conn = getConnection();
+				return DeliveryPassDAO.getDaysSinceDPExpiry(conn,customerID);
+			} catch (Exception e) {
+				LOGGER.warn("Exception during getAutoRenewalInfo()",e);
+				throw new EJBException(e);
+			} 
+			finally {
+				try {
+					if (conn != null) {
+						conn.close();
+					}
+				} catch (SQLException e) {
+					LOGGER.warn("SQLException while closing conn in cleanup", e);
+				}
+			}
+	    }
+	    
+	    public int getDaysToDPExpiry(String customerID, String activeDPID) {
+	    	
+			Connection conn = null;
+			try {
+				conn = getConnection();
+				return DeliveryPassDAO.getDaysToDPExpiry(conn,customerID,activeDPID);
+			} catch (Exception e) {
+				LOGGER.warn("Exception during getAutoRenewalInfo()",e);
+				throw new EJBException(e);
+			} 
+			finally {
+				try {
+					if (conn != null) {
+						conn.close();
+					}
+				} catch (SQLException e) {
+					LOGGER.warn("SQLException while closing conn in cleanup", e);
+				}
+			}
+	    }
+
 	   
 	   
 }

@@ -50,5 +50,10 @@ public interface DlvPassManagerSB extends EJBObject {
 	public boolean hasPurchasedPass(String customerPK) throws RemoteException;
 	
 	public List getUsableAutoRenewPasses(String customerPK )throws RemoteException;
+
+	public int getDaysSinceDPExpiry(String customerID) throws RemoteException;
+
+	public int getDaysToDPExpiry(String customerID, String activeDPID)throws RemoteException;
+
 }
 

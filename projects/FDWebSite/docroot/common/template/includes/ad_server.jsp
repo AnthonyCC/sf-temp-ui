@@ -265,7 +265,8 @@ if(FDStoreProperties.isAdServerEnabled()){
 	        }else {
 	            //If UNLIMITED pass then pass the used count if not expired.
 	            if(user.isDlvPassExpired()) {
-				int days=DeliveryPassUtil.getDaysSinceLastDPExpiry(user);
+				int days=user.getDlvPassInfo().getDaysSinceDPExpiry()*-1;
+
 				queryString.addParam("expd",days);
 	            }
                   else if( (user.getDlvPassInfo()!=null) && user.getDlvPassInfo().isUnlimited()==false) {
@@ -277,7 +278,7 @@ if(FDStoreProperties.isAdServerEnabled()){
 			else if(user.getUsableDeliveryPassCount()>0) {
 	                //Not Purchased yet or Purchased not expired.
 	            	//int days=DateUtil.getDiffInDays(user.getDlvPassInfo().getExpDate(), new Date());
-				int days=DateUtil.getDiffInDays(DeliveryPassUtil.getDPExpDate(user), new Date());
+				int days=user.getDlvPassInfo().getDaysToDPExpiry();
 			queryString.
 				addParam("dpu",dpused).
 				addParam("expd",days);
