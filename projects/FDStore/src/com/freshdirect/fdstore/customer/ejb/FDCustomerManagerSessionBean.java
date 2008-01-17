@@ -514,11 +514,11 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				if(statusMap.get(DlvPassConstants.AUTORENEW_DP_TYPE)!=null) {
 					autoRenewDPType=(DeliveryPassType)statusMap.get(DlvPassConstants.AUTORENEW_DP_TYPE);
 				}
-				dlvPassInfo = new FDUserDlvPassInfo(dlvPassStatus, type, expDate, originalOrderId, remDlvs, usedDlvs,usablePassCount,isFreeTrialRestricted,autoRenewUsablePassCount,autoRenewDPType,autoRenewDPPrice.doubleValue());				
-				if((type.isUnlimited())&&(EnumDlvPassStatus.CANCELLED.equals(dlvPassStatus)||EnumDlvPassStatus.EXPIRED.equals(dlvPassStatus))) {
+				dlvPassInfo = new FDUserDlvPassInfo(dlvPassStatus, type, expDate, originalOrderId, remDlvs, usedDlvs,usablePassCount,isFreeTrialRestricted,autoRenewUsablePassCount,autoRenewDPType,autoRenewDPPrice.doubleValue());
+				if(!EnumDlvPassStatus.NONE.equals(dlvPassStatus) && (type.isUnlimited())&&(EnumDlvPassStatus.CANCELLED.equals(dlvPassStatus)||EnumDlvPassStatus.EXPIRED.equals(dlvPassStatus))) {
 					dlvPassInfo.setDaysSinceDPExpiry(sb.getDaysSinceDPExpiry(customerPk));
 				}
-				else if (type.isUnlimited()) {
+				else if (!EnumDlvPassStatus.NONE.equals(dlvPassStatus)&& type.isUnlimited()) {
 					dlvPassInfo.setDaysToDPExpiry(sb.getDaysToDPExpiry(customerPk,model.getId()));
 				}
 
