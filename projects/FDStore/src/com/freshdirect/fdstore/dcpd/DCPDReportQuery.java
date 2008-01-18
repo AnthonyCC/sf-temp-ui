@@ -42,15 +42,20 @@ public class DCPDReportQuery {
 	}
 
 
-	
+	/**
+	 * Returns found content nodes
+	 * @return
+	 */
 	public List getNodes() {
 		return nodes;
 	}
 
+
+
 	/**
 	 * @return List of {@link CategoryModel} nodes
 	 */
-	public List getCatNodes() {
+	public List getCategoryNodes() {
 		return catNodes;
 	}
 
@@ -58,7 +63,7 @@ public class DCPDReportQuery {
 	/**
 	 * @return List of {@link DepartmentModel} nodes
 	 */
-	public List getDeptNodes() {
+	public List getDepartmentNodes() {
 		return deptNodes;
 	}
 
@@ -66,47 +71,41 @@ public class DCPDReportQuery {
 	/**
 	 * @return List of {@link Recipe} nodes
 	 */
-	public List getRcpNodes() {
+	public List getRecipeNodes() {
 		return rcpNodes;
 	}
 
 
 
-	public List getDeptKeys() {
+	public List getDepartmentKeys() {
 		return deptKeys;
 	}
 
 
 
-	public List getRcpKeys() {
+	public List getRecipeKeys() {
 		return rcpKeys;
 	}
 
 
 
-	public List getBadDeptKeys() {
+	public List getBadDepartmentKeys() {
 		return badDeptKeys;
 	}
 
 
 
-	public List getBadCatKeys() {
+	public List getBadCategoryKeys() {
 		return badCatKeys;
 	}
 
 
 
-	public List getBadRcpKeys() {
+	public List getBadRecipeKeys() {
 		return badRcpKeys;
 	}
 
 
-	/**
-	 * @deprecated
-	 */
-	public List getOtherNodes() {
-		return otherNodes;
-	}
 
 
 

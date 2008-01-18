@@ -15,9 +15,11 @@ public class DCPDReportQueryContext {
 	boolean skipUnavailableItems = false; // don't display unavailable SKUs
 	boolean renderCSV = false; // render CSV output instead of HTML
 	boolean productsOnlyView = false; // hide left-side node tree view
-
-	int prodsCnt = 0; // products counter
+	String delimiter = ",";		// CSV delimiter
 	
+	int prodsCnt = 0; // products counter
+
+
 
 	public DCPDReportQueryContext(DCPDReportQuery query) {
 		this.query = query;
@@ -73,5 +75,15 @@ public class DCPDReportQueryContext {
 
 	public void addToProductsCounter(int amount) {
 		this.prodsCnt += amount;
+	}
+
+
+	
+	public String getDelimiter() {
+		return delimiter;
+	}
+
+	public void setDelimiter(String delimiter) {
+		this.delimiter = delimiter;
 	}
 }
