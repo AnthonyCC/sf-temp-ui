@@ -240,71 +240,86 @@ public class GeographyDAO {
 		//
 		// check for incomplete addresses and see if we can automatically fix it
 		//
-		if (EnumAddressVerificationResult.NOT_VERIFIED.equals(result)) {
-			ps = conn.prepareStatement(zp4StreetIncompleteQuery);
-			ps.setString(1, "%" + streetNormal + "%");
-			ps.setString(2, address.getZipCode());
-			ps.setString(3, String.valueOf(bldgNumber));
-			rs = ps.executeQuery();
-			ArrayList streetNames = new ArrayList();
-			while (rs.next()) {
-				StreetName sname = new StreetName();
-				sname.preDir = rs.getString("STREET_PRE_DIR");
-				sname.name = rs.getString("STREET_NAME");
-				sname.suffix = rs.getString("STREET_SUFFIX");
-				sname.postDir = rs.getString("STREET_POST_DIR");
-				sname.normal = rs.getString("STREET_NORMAL");
-				streetNames.add(sname);
-			}
-			rs.close();
-			ps.close();
-			boolean multiples = (streetNames.size() > 1);
-			//
-			// reject false positives...
-			//
-			StreetName correctName = null;
-			if (streetNames.size() == 1) {
-				correctName = (StreetName) streetNames.get(0);
-			} else if (multiples) {
-				for (Iterator nIter = streetNames.iterator(); nIter.hasNext();) {
-					StreetName aName = (StreetName) nIter.next();
-					if (aName.normal.equals(streetNormal)) {
-						multiples = false;
-						correctName = aName;
+		String[] zipCodeList = getZipCodeFromAddress(address);
+		String zipCode = null;
+		if(zipCodeList != null) {
+			int intLength = zipCodeList.length;
+			for(int intCount=0; intCount<intLength; intCount++) {
+				zipCode = zipCodeList[intCount];
+				
+				if (EnumAddressVerificationResult.NOT_VERIFIED.equals(result)) {
+					ps = conn.prepareStatement(zp4StreetIncompleteQuery);
+					ps.setString(1, "%" + streetNormal + "%");
+					ps.setString(2, zipCode);
+					ps.setString(3, String.valueOf(bldgNumber));
+					rs = ps.executeQuery();
+					ArrayList streetNames = new ArrayList();
+					while (rs.next()) {
+						StreetName sname = new StreetName();
+						sname.preDir = rs.getString("STREET_PRE_DIR");
+						sname.name = rs.getString("STREET_NAME");
+						sname.suffix = rs.getString("STREET_SUFFIX");
+						sname.postDir = rs.getString("STREET_POST_DIR");
+						sname.normal = rs.getString("STREET_NORMAL");
+						streetNames.add(sname);
+					}
+					rs.close();
+					ps.close();
+					boolean multiples = (streetNames.size() > 1);
+					//
+					// reject false positives...
+					//
+					StreetName correctName = null;
+					if (streetNames.size() == 1) {
+						correctName = (StreetName) streetNames.get(0);
+					} else if (multiples) {
+						for (Iterator nIter = streetNames.iterator(); nIter.hasNext();) {
+							StreetName aName = (StreetName) nIter.next();
+							if (aName.normal.equals(streetNormal)) {
+								multiples = false;
+								correctName = aName;
+								break;
+							}
+						}
+					}
+					if (streetNames.size() == 0) {
+						// if this didn't match anything at all, the subsequent queries wouldn't help either
+						if(intCount == intLength -1) {
+							return zipplusfourGeocodeHack(address, conn, result);
+						} else {
+							continue;
+						}
+		
+					} else if (!multiples) {
+						//
+						// hey, it worked! fix the address and call it a day
+						//
+						String origStreet = address.getAddress1();
+						int b = origStreet.indexOf(" ");
+						String bldg = origStreet.substring(0, b);
+						String correctedStreetName = composeStreetName(
+							correctName.preDir,
+							correctName.name,
+							correctName.suffix,
+							correctName.postDir);
+						bldg = stripImproperDir(bldg);
+						address.setAddress1(bldg + " " + correctedStreetName);
+		
+						b = streetAddress.indexOf(" ");
+						bldg = streetAddress.substring(0, b);
+		
+						streetAddress = bldg + " " + correctedStreetName;
+						streetNormal = compress(correctedStreetName);
+						result = EnumAddressVerificationResult.NOT_VERIFIED;
+						break;
+					} else {
+						//
+						// hmmm, there's more than one street that satisfies the criteria
+						//
+						result = EnumAddressVerificationResult.ADDRESS_NOT_UNIQUE;
 						break;
 					}
 				}
-			}
-			if (streetNames.size() == 0) {
-				// if this didn't match anything at all, the subsequent queries wouldn't help either
-				return zipplusfourGeocodeHack(address, conn, result);
-
-			} else if (!multiples) {
-				//
-				// hey, it worked! fix the address and call it a day
-				//
-				String origStreet = address.getAddress1();
-				int b = origStreet.indexOf(" ");
-				String bldg = origStreet.substring(0, b);
-				String correctedStreetName = composeStreetName(
-					correctName.preDir,
-					correctName.name,
-					correctName.suffix,
-					correctName.postDir);
-				bldg = stripImproperDir(bldg);
-				address.setAddress1(bldg + " " + correctedStreetName);
-
-				b = streetAddress.indexOf(" ");
-				bldg = streetAddress.substring(0, b);
-
-				streetAddress = bldg + " " + correctedStreetName;
-				streetNormal = compress(correctedStreetName);
-				result = EnumAddressVerificationResult.NOT_VERIFIED;
-			} else {
-				//
-				// hmmm, there's more than one street that satisfies the criteria
-				//
-				result = EnumAddressVerificationResult.ADDRESS_NOT_UNIQUE;
 			}
 		}
 		//
@@ -321,7 +336,7 @@ public class GeographyDAO {
 			ps.setString(1, String.valueOf(bldgNumber));
 			ps.setString(2, String.valueOf(bldgNumber));
 			ps.setString(3, streetNormal);
-			ps.setString(4, address.getZipCode());
+			ps.setString(4, zipCode);
 			ps.setString(5, apt);
 			rs = ps.executeQuery();
 			if (rs.next()) {
@@ -342,7 +357,7 @@ public class GeographyDAO {
 			ps.setString(1, String.valueOf(bldgNumber));
 			ps.setString(2, String.valueOf(bldgNumber));
 			ps.setString(3, streetNormal);
-			ps.setString(4, address.getZipCode());
+			ps.setString(4, zipCode);
 			rs = ps.executeQuery();
 			if (rs.next()) {
 				int rows = rs.getInt(1);
@@ -361,7 +376,7 @@ public class GeographyDAO {
 		if (EnumAddressVerificationResult.NOT_VERIFIED.equals(result)) {
 			ps = conn.prepareStatement(zp4StreetQuery);
 			ps.setString(1, streetNormal);
-			ps.setString(2, address.getZipCode());
+			ps.setString(2, zipCode);
 			ps.setString(3, String.valueOf(bldgNumber));
 			rs = ps.executeQuery();
 			if (rs.next()) {
@@ -380,7 +395,7 @@ public class GeographyDAO {
 		if (EnumAddressVerificationResult.NOT_VERIFIED.equals(result)) {
 			ps = conn.prepareStatement(simpleStreetQuery);
 			ps.setString(1, "%" + streetNormal + "%");
-			ps.setString(2, address.getZipCode());
+			ps.setString(2, zipCode);
 			rs = ps.executeQuery();
 			if (rs.next()) {
 				result = EnumAddressVerificationResult.BUILDING_WRONG;
@@ -1008,22 +1023,35 @@ public class GeographyDAO {
 		String streetNormal = compress(streetName);
 
 		ArrayList ranges = new ArrayList();
+		
+		String[] zipCodeList = getZipCodeFromAddress(address);
+		String zipCode = null;
 		PreparedStatement ps = conn
-			.prepareStatement("SELECT apt_num_low, apt_num_high, address_type FROM (SELECT apt_num_low, apt_num_high, address_type FROM dlv.zipplusfour WHERE zipcode=? AND street_normal=? AND bldg_num_low=? AND bldg_num_high=? "
-				+ "UNION SELECT apt_num_low, apt_num_high, address_type FROM dlv.zipplusfour_exceptions WHERE zipcode=? AND scrubbed_address =?) "
-				+ "ORDER BY LPAD(apt_num_low,10,'0')");
-		ps.setString(1, address.getZipCode());
-		ps.setString(2, streetNormal);
-		ps.setString(3, bldgNumber);
-		ps.setString(4, bldgNumber);
-		ps.setString(5, address.getZipCode());
-		ps.setString(6, streetAddress);
-		ResultSet rs = ps.executeQuery();
-		while (rs.next()) {
-			ranges.add(new DlvApartmentRange(rs.getString(1), rs.getString(2), rs.getString(3)));
+								.prepareStatement("SELECT apt_num_low, apt_num_high, address_type FROM (SELECT apt_num_low, apt_num_high, address_type FROM dlv.zipplusfour WHERE zipcode=? AND street_normal=? AND bldg_num_low=? AND bldg_num_high=? "
+										+ "UNION SELECT apt_num_low, apt_num_high, address_type FROM dlv.zipplusfour_exceptions WHERE zipcode=? AND scrubbed_address =?) "
+											+ "ORDER BY LPAD(apt_num_low,10,'0')");
+		ResultSet rs = null;
+		if(zipCodeList != null) {
+			int intLength = zipCodeList.length;
+			for(int intCount=0; intCount<intLength; intCount++) {
+				zipCode = zipCodeList[intCount];				
+				ps.setString(1, zipCode);
+				ps.setString(2, streetNormal);
+				ps.setString(3, bldgNumber);
+				ps.setString(4, bldgNumber);
+				ps.setString(5, zipCode);
+				ps.setString(6, streetAddress);
+				rs = ps.executeQuery();
+				while (rs.next()) {
+					ranges.add(new DlvApartmentRange(rs.getString(1), rs.getString(2), rs.getString(3)));
+				}
+				if(ranges.size() > 0) {
+					break;
+				}
+			}
+			rs.close();
+			ps.close();
 		}
-		rs.close();
-		ps.close();
 		return ranges;
 
 	}
