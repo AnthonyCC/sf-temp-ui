@@ -1026,15 +1026,16 @@ public class GeographyDAO {
 		
 		String[] zipCodeList = getZipCodeFromAddress(address);
 		String zipCode = null;
-		PreparedStatement ps = conn
-								.prepareStatement("SELECT apt_num_low, apt_num_high, address_type FROM (SELECT apt_num_low, apt_num_high, address_type FROM dlv.zipplusfour WHERE zipcode=? AND street_normal=? AND bldg_num_low=? AND bldg_num_high=? "
-										+ "UNION SELECT apt_num_low, apt_num_high, address_type FROM dlv.zipplusfour_exceptions WHERE zipcode=? AND scrubbed_address =?) "
-											+ "ORDER BY LPAD(apt_num_low,10,'0')");
+		PreparedStatement ps = null;
 		ResultSet rs = null;
 		if(zipCodeList != null) {
 			int intLength = zipCodeList.length;
 			for(int intCount=0; intCount<intLength; intCount++) {
-				zipCode = zipCodeList[intCount];				
+				zipCode = zipCodeList[intCount];
+				ps = conn
+						.prepareStatement("SELECT apt_num_low, apt_num_high, address_type FROM (SELECT apt_num_low, apt_num_high, address_type FROM dlv.zipplusfour WHERE zipcode=? AND street_normal=? AND bldg_num_low=? AND bldg_num_high=? "
+								+ "UNION SELECT apt_num_low, apt_num_high, address_type FROM dlv.zipplusfour_exceptions WHERE zipcode=? AND scrubbed_address =?) "
+								+ "ORDER BY LPAD(apt_num_low,10,'0')");
 				ps.setString(1, zipCode);
 				ps.setString(2, streetNormal);
 				ps.setString(3, bldgNumber);
@@ -1045,12 +1046,12 @@ public class GeographyDAO {
 				while (rs.next()) {
 					ranges.add(new DlvApartmentRange(rs.getString(1), rs.getString(2), rs.getString(3)));
 				}
+				rs.close();
+				ps.close();
 				if(ranges.size() > 0) {
 					break;
 				}
-			}
-			rs.close();
-			ps.close();
+			}			
 		}
 		return ranges;
 
