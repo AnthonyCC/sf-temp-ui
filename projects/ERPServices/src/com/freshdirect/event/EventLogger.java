@@ -2,17 +2,22 @@ package com.freshdirect.event;
 
 import javax.naming.NamingException;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.framework.event.AsyncEventSink;
 import com.freshdirect.framework.event.ConsoleEventSink;
 import com.freshdirect.framework.event.EventSinkI;
 import com.freshdirect.framework.event.FDEvent;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
  * @author knadeem Date May 4, 2005
  */
 public class EventLogger {
+	
+	private static Category LOGGER = LoggerFactory.getInstance(EventLogger.class);
 	
 	private static EventLogger instance;
 	private EventSinkI consoleSink;
@@ -45,6 +50,9 @@ public class EventLogger {
 	}
 	
 	public void logEvent(FDEvent event) {
+		if (event.getSource() == null) {
+			LOGGER.warn("Null source in " + event.getSource());
+		}
 		this.consoleSink.log(event);
 		this.asyncSink.log(event);
 		lastEvent = event;

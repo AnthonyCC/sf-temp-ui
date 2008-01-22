@@ -22,6 +22,7 @@ import com.freshdirect.framework.event.FDEvent;
 
 
 public class FDCartLineEvent extends FDEvent {
+	
 
 	public String getProductId() {
 		return this.eventValues[0];
