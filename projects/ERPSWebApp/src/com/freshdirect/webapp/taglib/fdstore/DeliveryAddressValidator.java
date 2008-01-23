@@ -80,14 +80,27 @@ public class DeliveryAddressValidator {
 
 			if (!isAddressDeliverable()) {
 				// post validations
-				if (EnumServiceType.CORPORATE.equals(address.getServiceType()) && !EnumAddressType.FIRM.equals(address.getAddressType())) {
-					// Possible bug: this message suggests home delivery without ensuring its possibility
-					actionResult.addError(true, EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), SystemMessageList.MSG_HOME_NO_COS_DLV_ADDRESS);
+				if (EnumServiceType.HOME.equals(address.getServiceType())
+						&& !serviceResult.getServiceStatus(
+								EnumServiceType.PICKUP).equals(
+								EnumDeliveryStatus.DONOT_DELIVER)) {
+
+
 				} else {
 					actionResult.addError(true, EnumUserInfoName.DLV_ADDRESS_1.getCode(),
 							SystemMessageList.MSG_DONT_DELIVER_TO_ADDRESS);
+					return false;
+				}
+				/*
+				if (EnumServiceType.CORPORATE.equals(address.getServiceType()) && !EnumAddressType.FIRM.equals(address.getAddressType())) {
+					// Possible bug: this message suggests home delivery without ensuring its possibility
+					actionResult.addError(true, EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), SystemMessageList.MSG_HOME_NO_COS_DLV_ADDRESS);
+					return false;
+				}
+				else {
 				}
 				return false;
+				*/
 			}
 			
 			// [3] since address looks alright need geocode
