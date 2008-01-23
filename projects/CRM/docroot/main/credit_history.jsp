@@ -33,7 +33,8 @@
                 <tr>
                         <td width="1%"></td>
                         <td width="9%">Date/Time</td>
-                        <td width="10%">Order #</td>
+                        <td width="8%">Order #</td>
+                        <td width="2%">Type</td>
                         <td width="19%">Department</td>
                         <td width="12%">Status</td>
                         <td width="12%">Store Credit</td>
@@ -58,7 +59,8 @@
                     <tr valign="top" <%= counter.intValue() % 2 == 0 ? "class='list_odd_row'" : "" %> style="padding-top: 3px; padding-bottom: 3px;">
                             <td width="1%" class="border_bottom">&nbsp;</td>
                             <td width="9%" class="border_bottom"><span class="time_stamp"><%=CCFormatter.formatDateTime(credit.getCreateDate()) %>&nbsp;</span></td>
-                            <td width="10%" class="border_bottom"><a href="/main/order_details.jsp?orderId=<%= credit.getSaleId() %>" class="key"><%= credit.getSaleId() %></a>&nbsp;</td>
+                            <td width="8%" class="border_bottom"><a href="/main/order_details.jsp?orderId=<%= credit.getSaleId() %>" class="key"><%= credit.getSaleId() %></a>&nbsp;</td>
+                            <td width="2%" class="border_bottom"><% if(EnumSaleType.REGULAR.equals(credit.getOrderType())){%>M<%}else if(EnumSaleType.SUBSCRIPTION.equals(credit.getOrderType())){%>A<%}%>&nbsp;</td>
                             <td width="19%" class="border_bottom"><%= credit.getDepartment() %>&nbsp;</td>
                             <td width="12%" class="border_bottom"><%= credit.getStatus().getName() %>&nbsp;</td>
                             <td width="12%" class="border_bottom"><%= EnumComplaintLineMethod.STORE_CREDIT.equals(credit.getMethod())?CCFormatter.formatCurrency(credit.getOriginalAmount()):"&nbsp;" %></td>
