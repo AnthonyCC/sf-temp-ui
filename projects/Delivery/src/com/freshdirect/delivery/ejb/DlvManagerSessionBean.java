@@ -1121,15 +1121,16 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 
 	}
 
-	public void saveFutureZoneNotification(String email, String zip) {
+	public void saveFutureZoneNotification(String email, String zip,String serviceType) {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		try {
 			conn = getConnection();
-			ps = conn.prepareStatement("INSERT INTO DLV.ZONENOTIFICATION (EMAIL, ZIPCODE, CREATE_DATE) VALUES (?, ?, ?)");
+			ps = conn.prepareStatement("INSERT INTO DLV.ZONENOTIFICATION (EMAIL, ZIPCODE, SERVICE_TYPE, CREATE_DATE) VALUES (?, ?, ?, ?)");
 			ps.setString(1, email);
 			ps.setString(2, zip);
-			ps.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+			ps.setString(3, serviceType);
+			ps.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
 
 			int rowsaffected = ps.executeUpdate();
 			if (rowsaffected != 1) {
