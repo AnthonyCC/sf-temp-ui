@@ -14,7 +14,7 @@
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import='com.freshdirect.deliverypass.EnumDPAutoRenewalType' %>
 <%@ page import='com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo' %>
-<%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession"%>
+
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -102,7 +102,7 @@
 
 <%
 	FDUserI	user = (FDSessionUser) session.getAttribute(SessionName.USER);
-	boolean hasCustomerCase = CrmSession.hasCustomerCase(session);
+	
 %>
 <% boolean editable = false; %>
 <crm:GetLockedCase id="cm">
@@ -146,7 +146,6 @@ String case_required = "<span class=\"cust_module_content_edit\">-Case required 
 				<input type="hidden" name="action" value="">
 					<a href="#" onClick="javascript:redirectToSignup()"><span class="cust_header_field"><b>Buy DeliveryPass</b></span></a>, deliverable item required.
 				</form>
-                <%if(hasCustomerCase){%><a href="/main/place_auto_renew_order.jsp"><%}%>click here to place auto_renew order manually.<%if(hasCustomerCase){%></a><%}%>(case required)
 				<%
 				} else {
 				%>
@@ -159,7 +158,6 @@ String case_required = "<span class=\"cust_module_content_edit\">-Case required 
 
 						<% if(user.hasAutoRenewDP().equals(EnumDPAutoRenewalType.YES) && (user.getDlvPassInfo().getAutoRenewUsablePassCount()>0)) {%>
 							<A HREF="#" onClick="javascript:flipAutoRenew()"><font class="text12bold">Click here to turn off renewal.</A>
-                            
 						<%} else if(user.hasAutoRenewDP().equals(EnumDPAutoRenewalType.NO) && (user.getDlvPassInfo().getAutoRenewUsablePassCount()>0)) {%>
 							<A HREF="#" onClick="javascript:flipAutoRenew()"><font class="text12bold">Click here to turn renewal ON.</A>
 						<%}%>
@@ -184,7 +182,6 @@ String case_required = "<span class=\"cust_module_content_edit\">-Case required 
 						<%} else if(user.hasAutoRenewDP().equals(EnumDPAutoRenewalType.NO)&& (user.getDlvPassInfo().getAutoRenewUsablePassCount()>0)) {%>
 							<A HREF="#" onClick="javascript:flipAutoRenew()"><font class="text12bold">Click here to turn renewal ON.</A>
 						<%}%>
-                        <%if(hasCustomerCase){%><a href="/main/place_auto_renew_order.jsp"><%}%>click here to place auto_renew order manually.<%if(hasCustomerCase){%></a><%}%>(case required)
 					</form>
 						
 					

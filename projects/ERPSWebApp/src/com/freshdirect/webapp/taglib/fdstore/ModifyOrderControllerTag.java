@@ -30,8 +30,6 @@ import org.apache.log4j.Category;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumPaymentType;
-import com.freshdirect.customer.EnumSaleStatus;
-import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpChargeLineModel;
@@ -40,9 +38,7 @@ import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.customer.ErpTransactionException;
-import com.freshdirect.dataloader.subscriptions.DeliveryPassRenewalCron;
 import com.freshdirect.delivery.DlvZoneInfoModel;
-import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.fdstore.CallCenterServices;
@@ -50,7 +46,6 @@ import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -66,7 +61,6 @@ import com.freshdirect.fdstore.promotion.EnumPromotionType;
 import com.freshdirect.fdstore.promotion.Promotion;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.RedemptionCodeStrategy;
-import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
@@ -93,9 +87,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 	private final String NEW_AUTHORIZATION_FAILED_SETTLEMENT = "new_payment_for_failed_settlement";
 	private final String REDELIVERY_ACTION		= "redelivery";
 	private final String CHARGE_ORDER_ACTION	= "charge_order";
-	private final String AUTO_RENEW_AUTH	= "auto_renew_auth";
-	private final String PLACE_AUTO_RENEW_ORDER	= "place_auto_renew_order";
-	
+
 	private String action;
 	private String orderId;
 	private String result;
@@ -169,16 +161,6 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			} else if ( CHARGE_ORDER_ACTION.equalsIgnoreCase(this.action) ) {
 				this.chargeOrder(request, results);
 				actionPerformed = true;
-			} else if ( AUTO_RENEW_AUTH.equalsIgnoreCase(this.action) ) {
-				this.auto_renew_auth(request, results);
-				actionPerformed = true;
-			}else if ( PLACE_AUTO_RENEW_ORDER.equalsIgnoreCase(this.action) ) {
-				this.place_auto_renew_order(request, results);
-				actionPerformed = true;
-				StringBuffer successPage = new StringBuffer();
-				successPage.append(this.successPage);
-				successPage.append(this.orderId);
-				setSuccessPage(successPage.toString());
 			}
 
 
@@ -207,8 +189,8 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 				throw new JspException(ioe.getMessage());
 			}
 		}
-		if ( !PLACE_AUTO_RENEW_ORDER.equalsIgnoreCase(this.action) && this.action != null )
-			this.setOrderActivityPermissions(results);
+
+		this.setOrderActivityPermissions(results);
 
 		pageContext.setAttribute(result, results);
 		return EVAL_BODY_BUFFERED;
@@ -531,147 +513,6 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		}
 	} // method doNewAuthorization
 
-	protected void auto_renew_auth(HttpServletRequest request, ActionResult results) throws JspException {
-		HttpSession session = request.getSession();
-
-		FDSessionUser currentUser = (FDSessionUser) session.getAttribute(SessionName.USER);
-		if (currentUser.getLevel() < FDUserI.SIGNED_IN) {
-			throw new JspException("No customer was found for the requested action.");
-		}
-		//
-		// Select new payment and resubmit order
-		//
-		String paymentId = request.getParameter("payment_id");
-		if (paymentId != null && !"".equals(paymentId.trim())) {
-			try {
-				ErpCustomerModel erpCustomer = FDCustomerFactory.getErpCustomer(currentUser.getIdentity());
-				String erpCustomerID = currentUser.getIdentity().getErpCustomerPK();
-				//
-				// Get payment method
-				//
-				ErpPaymentMethodI paymentMethod = null;
-				ErpPaymentMethodI tmpPM = null;
-				Collection payments = erpCustomer.getPaymentMethods();
-				for (Iterator it = payments.iterator(); it.hasNext(); ) {
-					ErpPaymentMethodI p = (ErpPaymentMethodI) it.next();
-					tmpPM = (ErpPaymentMethodModel) p;
-					if (((ErpPaymentMethodModel)tmpPM).getPK().getId().equals(paymentId)) {
-						paymentMethod = tmpPM;
-						break;
-					}
-				}
-				//
-				// Get order to modify
-				//
-				FDOrderAdapter order = (FDOrderAdapter) FDCustomerManager.getOrder( currentUser.getIdentity(), this.orderId );
-				//
-				// Get ModifyCart model
-				//
-				FDCustomerManager.storeUser(currentUser.getUser());
-				FDModifyCartModel modCart = new FDModifyCartModel(order);
-				String addressID = modCart.getDeliveryAddress().getId();
-				if ( results.isSuccess() ) {
-
-		        	modCart.setPaymentMethod(paymentMethod);
-		        	modCart.setDeliveryReservation(getFDReservation(erpCustomerID,addressID));
-		        	modCart.recalculateTaxAndBottleDeposit(modCart.getDeliveryAddress().getZipCode());
-		        	modCart.handleDeliveryPass();
-
-					FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
-		        	CustomerRatingAdaptor cra = new CustomerRatingAdaptor(user.getFDCustomer().getProfile(),user.isCorporateUser(),user.getAdjustedValidOrderCount());
-					Set appliedPromos = null;
-					if(user.isEligibleForSignupPromotion()){
-						//If applied promo is signup then store the eligibilty list.
-						appliedPromos = user.getPromotionEligibility().getEligiblePromotionCodes();
-					}else{
-						//Otherwise store the applied list.
-						appliedPromos = user.getPromotionEligibility().getAppliedPromotionCodes();; 
-					}
-					modCart.refreshAll();
-					FDCustomerManager.modifyOrder(AccountActivityUtil.getActionInfo(session), modCart, appliedPromos, false,cra, user.getDeliveryPassStatus());
-
-				}
-			} catch (ErpFraudException ex) {
-				LOGGER.warn("Possible fraud occured", ex);
-				results.addError(new ActionError("order_status", "Possible fraud occured. "+ex.getFraudReason().getDescription()));
-
-			}catch (FDResourceException ex) {
-				LOGGER.error("FDResourceException while attempting to perform reauthorization.", ex);
-				results.addError(new ActionError("technical_difficulty", "We're currently experiencing technical difficulties. Please try again later."));
-			} catch(DeliveryPassException ex) {
-				LOGGER.error("Error performing a Delivery pass operation. ", ex);
-				//There was delivery pass validation failure.
-				results.addError(new ActionError(ex.getMessage()));
-			} catch (ErpTransactionException ex) {
-				LOGGER.error("Current sale status incompatible with requested action", ex);
-				results.addError(new ActionError("order_status", "This current order status does not permit the requested action."));
-			}catch (ErpAuthorizationException ex) {
-				LOGGER.warn("Authorization failed", ex);
-				results.addError(new ActionError("order_status", "Authorization failed."));
-			} catch (FDInvalidConfigurationException ex) {
-				LOGGER.warn("invalid config", ex);
-				results.addError(new ActionError("order_status", "Invalid configuration."));
-			}
-		} else {
-			LOGGER.warn("No payment id selected by user");
-			results.addError(new ActionError("no_payment_selected", "Please select a payment option below."));
-		}
-	} 
-	protected void place_auto_renew_order(HttpServletRequest request, ActionResult results) throws JspException {
-		HttpSession session = request.getSession();
-
-		FDSessionUser currentUser = (FDSessionUser) session.getAttribute(SessionName.USER);
-		if (currentUser.getLevel() < FDUserI.SIGNED_IN) {
-			throw new JspException("No customer was found for the requested action.");
-		}
-		//
-		// Select new payment and resubmit order
-		//
-		String paymentId = request.getParameter("payment_id");
-		if (paymentId != null && !"".equals(paymentId.trim())) {
-			try {
-				ErpCustomerModel erpCustomer = FDCustomerFactory.getErpCustomer(currentUser.getIdentity());
-				String erpCustomerID = currentUser.getIdentity().getErpCustomerPK();
-				//
-				// Get payment method
-				//
-				ErpPaymentMethodI paymentMethod = null;
-				ErpPaymentMethodI tmpPM = null;
-				Collection payments = erpCustomer.getPaymentMethods();
-				for (Iterator it = payments.iterator(); it.hasNext(); ) {
-					ErpPaymentMethodI p = (ErpPaymentMethodI) it.next();
-					tmpPM = (ErpPaymentMethodModel) p;
-					if (((ErpPaymentMethodModel)tmpPM).getPK().getId().equals(paymentId)) {
-						paymentMethod = tmpPM;
-						break;
-					}
-				}
-				if ( results.isSuccess() ) {
-					FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
-		        	CustomerRatingAdaptor cra = new CustomerRatingAdaptor(user.getFDCustomer().getProfile(),user.isCorporateUser(),user.getAdjustedValidOrderCount());
-
-					FDOrderI lastOrder= FDCustomerManager.getLastNonCOSOrderUsingCC(erpCustomerID, EnumSaleType.REGULAR, EnumSaleStatus.SETTLED);
-					String arSKU = FDCustomerManager.getAutoRenewSKU(currentUser.getIdentity().getErpCustomerPK());
-					if (arSKU != null){
-						this.orderId = DeliveryPassRenewalCron.placeOrder(AccountActivityUtil.getActionInfo(session),cra, arSKU, paymentMethod, lastOrder.getDeliveryAddress());
-					}else{
-						throw new DeliveryPassException("Customer has no valid auto_renew DP. ",currentUser.getIdentity().getErpCustomerPK());
-					
-					}
-				}
-			} catch (FDResourceException ex) {
-				LOGGER.error("FDResourceException while attempting to perform reauthorization.", ex);
-				results.addError(new ActionError("technical_difficulty", "We're currently experiencing technical difficulties. Please try again later."));
-			} catch(DeliveryPassException ex) {
-				LOGGER.error("Error performing a Delivery pass operation. ", ex);
-				//There was delivery pass validation failure.
-				results.addError(new ActionError("delivery_pass_error","Error performing a Delivery pass operation. "+ex.getMessage()));
-			} 
-		} else {
-			LOGGER.warn("No payment id selected by user");
-			results.addError(new ActionError("no_payment_selected", "Please select a payment option below."));
-		}
-	} 
 
 	protected void doResubmitPayment(HttpServletRequest request, ActionResult results) throws JspException {
 		HttpSession session = request.getSession();
@@ -836,12 +677,6 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		}
 		
 	}
-	private static FDReservation getFDReservation(String customerID, String addressID) {
-		Date expirationDT = new Date(System.currentTimeMillis() + 1000);
-		FDTimeslot timeSlot=null;
-		FDReservation reservation=new FDReservation(new PrimaryKey("1"), timeSlot, expirationDT, EnumReservationType.STANDARD_RESERVATION, customerID, addressID, false);
-		return reservation;
-		
-	}
+
 	
 } // ModifyOrderControllerTag

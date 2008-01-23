@@ -28,7 +28,6 @@ import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumComplaintStatus;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumSaleStatus;
-import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.EnumTransactionType;
 import com.freshdirect.customer.ErpAbstractInvoiceModel;
@@ -1097,9 +1096,5 @@ public class FDOrderAdapter implements FDOrderI {
 			preTotal += MathUtil.roundDecimal(((ErpChargeLineModel) i.next()).getTotalAmount());
 		}
        return MathUtil.roundDecimal(preTotal);
-	}
-	
-	public EnumSaleType getOrderType(){
-		return this.sale.getType();
 	}
 }

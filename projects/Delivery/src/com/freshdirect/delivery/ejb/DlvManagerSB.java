@@ -61,7 +61,7 @@ public interface DlvManagerSB extends EJBObject {
 	public DlvZoneInfoModel getZoneInfo(AddressModel address, Date date) throws InvalidAddressException, RemoteException;
 	public List getCutoffInfo(String zoneCode, Date day) throws RemoteException;
 	public DlvZoneCapacityInfo getZoneCapacity(String zoneCode, Date day) throws RemoteException;
-	public void saveFutureZoneNotification(String email, String zip, String serviceType) throws RemoteException;
+	public void saveFutureZoneNotification(String email, String zip) throws RemoteException;
     
     public List getDeliverableZipCodes(EnumServiceType serviceType) throws RemoteException;
     public DlvServiceSelectionResult checkServicesForZipCode(String zipCode) throws RemoteException;

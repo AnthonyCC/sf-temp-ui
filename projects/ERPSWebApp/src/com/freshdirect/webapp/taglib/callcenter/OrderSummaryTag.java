@@ -21,7 +21,7 @@ import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.customer.CCOrderSummaryI;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
-import com.freshdirect.customer.EnumSaleType;
+
 /**
  *
  * @version $Revision:8$
@@ -106,10 +106,6 @@ public class OrderSummaryTag extends com.freshdirect.framework.webapp.BodyTagSup
 
 		public String creditIssued() {
 			return (order.hasCreditIssued() > 0) ? ((order.hasCreditIssued() == 1) ? "YES" : "PENDING" ) : "NO";
-		}
-		
-		public EnumSaleType getOrderType(){
-			return order.getOrderType();
 		}
 	}
 	

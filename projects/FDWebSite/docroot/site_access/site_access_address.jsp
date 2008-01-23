@@ -12,7 +12,7 @@
     boolean isBestCellars = request.getServerName().toLowerCase().indexOf("bestcellars") > -1;
 	boolean isCorporate = "corporate".equalsIgnoreCase(serviceType);
 	String moreInfoPage = "site_access_address.jsp?successPage="+ URLEncoder.encode(successPage);
-	String failurePage = "delivery.jsp?successPage="+ URLEncoder.encode(successPage)+"&serviceType="+serviceType;
+	String failurePage = "delivery.jsp?successPage="+ URLEncoder.encode(successPage);
 	String failureCorporatePage	= "/survey/cos_site_access_survey.jsp?successPage="+ URLEncoder.encode(successPage);
 %>	
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -110,7 +110,7 @@ Please enter your street address so that we can make sure your building is in a 
 								<td width="300" class="bodyCopy">
 									To check out, you'll need to enter a valid street address, but to browse our site now, click below.
 									<br>
-									<form name="site_access" method="post" action="<%= response.encodeURL("/site_access/delivery.jsp?serviceType="+serviceType+"&successPage=") +URLEncoder.encode(successPage) %>">
+									<form name="site_access" method="post" action="<%= response.encodeURL("/site_access/delivery.jsp?successPage=") +URLEncoder.encode(successPage) %>">
 										<input type="image" src="/media_stat/images/template/site_access/just_let_me_in.gif" width="112" height="16"  alt="" border="0" value="submit">
 									</form>
 								</td>

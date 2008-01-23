@@ -6,7 +6,6 @@
 FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 boolean notServiceable = false;
 String successPage = request.getParameter("successPage");
-String serviceType = request.getParameter("serviceType");
 if (user.isNotServiceable()) {
 	notServiceable = true;
 }
@@ -22,7 +21,7 @@ boolean emailSent = request.getParameter("email") != null && "sent".equalsIgnore
 <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 </head>
 <body bgcolor="white" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20">
-<fd:SiteAccessController action='saveEmail' successPage='<%= successPage %>' result='result' serviceType='<%=serviceType%>'>
+<fd:SiteAccessController action='saveEmail' successPage='<%= successPage %>' result='result'>
 
 <%!
     java.text.SimpleDateFormat dFormat = new java.text.SimpleDateFormat("MMMMMMMM d");
@@ -30,7 +29,6 @@ boolean emailSent = request.getParameter("email") != null && "sent".equalsIgnore
 <div align="center">
 <form name="site_access" method="post" action="<%= request.getRequestURI() %>">
 <input type="hidden" name="successPage" value="<%= successPage %>">
-<input type="hidden" name="serviceType" value="<%= serviceType %>">
 <% if (isBestCellars) { %>
 	<img src="/media_stat/images/template/wine/bc_logo_home_original.gif" width="336" height="52">
 	<br><img src="/media_stat/images/layout/clear.gif" width="1" height="16"><br>

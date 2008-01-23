@@ -6,7 +6,6 @@ import java.util.Date;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.payment.EnumBankAccountType;
 import com.freshdirect.payment.EnumPaymentMethodType;
-import com.freshdirect.customer.EnumSaleType;
 
 public class FDAuthInfo implements Serializable {
 	
@@ -25,7 +24,6 @@ public class FDAuthInfo implements Serializable {
 	private EnumPaymentMethodType paymentMethodType;
 	private String abaRouteNumber;
 	private EnumBankAccountType bankAccountType;
-	private EnumSaleType orderType;
 	
 	public FDAuthInfo (String saleId){
 		this.saleId = saleId;
@@ -142,14 +140,6 @@ public class FDAuthInfo implements Serializable {
 	}
 	public void setBankAccountType(EnumBankAccountType bankAccountType){
 		this.bankAccountType = bankAccountType;
-	}
-
-	public EnumSaleType getOrderType() {
-		return orderType;
-	}
-
-	public void setOrderType(String orderType) {
-		this.orderType = EnumSaleType.getSaleType(orderType);
 	}
 	
 }

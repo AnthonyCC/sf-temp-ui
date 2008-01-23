@@ -17,7 +17,7 @@
 <%	Collection sales = CallCenterServices.getFailedAuthorizationSales(); %>
 <jsp:include page="/includes/supervisor_nav.jsp" />
 <div class="sub_nav">
-<span class="sub_nav_title">Payment Exceptions ( <span class="result"><%= sales.size() %></span> )</span> A = Automatic Order   M = Manual Order
+<span class="sub_nav_title">Payment Exceptions ( <span class="result"><%= sales.size() %></span> )</span>
 </div>
 
 <div class="content" style="height: 80%;">
@@ -25,8 +25,7 @@
 <table width="100%" cellpadding="0" cellspacing="2" border="0" class="list_header_text">
 	<tr>
 		<td width="1%"></td>
-		<td width="5%">Order #</td>
-        <td width="2%">Type</td>
+		<td width="7%">Order #</td>
 		<td width="12%">Delivery</td>
 		<td width="12%">Status</td>
 		<td width="10%" align="center">Amount</td>
@@ -47,8 +46,7 @@
 	<fd:OrderSummary id="summary" order="<%= order %>">
 	<tr valign="top" <%= idx.intValue() % 2 == 0 ? "class='list_odd_row'" : "" %> style="cursor: pointer;" onClick="document.location='/main/order_details.jsp?orderId=<%=summary.getOrderId()%>'">
 		<td width="1%"></td>
-		<td width="5%"><a class="key"><b><%=summary.getOrderId()%></b></a></td>
-        <td width="2%"><% if(EnumSaleType.REGULAR.equals(summary.getOrderType())){%>M<%}else if(EnumSaleType.SUBSCRIPTION.equals(summary.getOrderType())){%>A<%}%></td>
+		<td width="7%"><a class="key"><b><%=summary.getOrderId()%></b></a></td>
 		<td width="12%"><%=CCFormatter.formatDeliveryDate(summary.getDeliveryDate())%></td>
 		<td width="12%"><%=summary.getOrderStatus()%></td>
 		<td width="10%" align="center"><%=CCFormatter.formatCurrency(summary.getOrderTotal())%></td>

@@ -581,10 +581,10 @@ public class FDDeliveryManager {
 		}
 	}
 
-	public void saveFutureZoneNotification(String email, String zip,EnumServiceType serviceType) throws FDResourceException {
+	public void saveFutureZoneNotification(String email, String zip) throws FDResourceException {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
-			sb.saveFutureZoneNotification(email, zip,serviceType.getName());
+			sb.saveFutureZoneNotification(email, zip);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {

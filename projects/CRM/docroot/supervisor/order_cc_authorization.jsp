@@ -5,7 +5,7 @@
 <%@ page import="com.freshdirect.common.customer.EnumCardType" %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
-<%@ page import="com.freshdirect.customer.EnumSaleType"%>
+
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 
 <%@ taglib uri="template" prefix="tmpl" %>
@@ -184,8 +184,7 @@ criteria.setTransYear(NVL.apply(request.getParameter("transYear"), ""));
 <div class="list_header">
 <table width="100%" cellpadding="0" cellspacing="2" border="0" class="list_header_text">
 <tr valign="bottom">
-		<td width="6%">Order #</td>
-        <td width="2%">Type</td>
+		<td width="8%">Order #</td>
         <td width="10%">Delivery Date</td>
         <td width="12%">Transaction Date</td>
         <td width="6%">Status</td>
@@ -201,9 +200,8 @@ criteria.setTransYear(NVL.apply(request.getParameter("transYear"), ""));
 		<table width="100%" cellpadding="0" cellspacing="0" border="0" class="list_content_text">
 		<logic:iterate id="info" collection="<%= searchResults %>" type="com.freshdirect.fdstore.customer.FDAuthInfo" indexId="counter">
 			<tr valign="top" <%= counter.intValue() % 2 == 0 ? "class='list_odd_row'" : "" %> style="cursor: pointer;" onClick="document.location='<%= response.encodeURL("/main/order_details.jsp?orderId=" + info.getSaleId()) %>'">
-				<td width="6%" class="border_bottom"><a href="/main/order_details.jsp?orderId=<%=info.getSaleId()%>"><b><%=info.getSaleId()%></b></a>&nbsp;</td>
-				<td width="2%" class="border_bottom"><% if(EnumSaleType.REGULAR.equals(info.getOrderType())){%>M<%}else if(EnumSaleType.SUBSCRIPTION.equals(info.getOrderType())){%>A<%}%>&nbsp;</td>
-                <td width="10%" class="border_bottom"><%=CCFormatter.formatDate(info.getDeliveryDate())%>&nbsp;</td>
+				<td width="8%" class="border_bottom"><a href="/main/order_details.jsp?orderId=<%=info.getSaleId()%>"><b><%=info.getSaleId()%></b></a>&nbsp;</td>
+				<td width="10%" class="border_bottom"><%=CCFormatter.formatDate(info.getDeliveryDate())%>&nbsp;</td>
 				<td width="12%" class="border_bottom"><%=CCFormatter.formatDateTime(info.getTransactionDateTime())%>&nbsp;</td>
 				<td width="6%" class="border_bottom"><%=info.getSaleStatus().getName()%>&nbsp;</td>
 				<td width="9%" class="border_bottom"><%=CCFormatter.formatCurrency(info.getAuthAmount())%>&nbsp;</td>

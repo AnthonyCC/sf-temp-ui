@@ -57,15 +57,6 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		this.successPage = successPage;
 	}
 
-	public void setServiceType(String serviceTypeStr) {
-		if(serviceTypeStr!=null){
-			this.serviceType=EnumServiceType.getEnum(serviceTypeStr); 
-		}
-		if(this.serviceType==null){
-			throw new IllegalArgumentException("Invalid ServiceType specified");
-		}
-	}
-	
 	public void setMoreInfoPage(String moreInfoPage) {
 		this.moreInfoPage = moreInfoPage;
 	}
@@ -285,7 +276,6 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 			result.addError(true, "email", SystemMessageList.MSG_EMAIL_FORMAT);
 			return;
 		}
-		
 
 		if (!result.isSuccess()) {
 			LOGGER.debug("THERE IS AN ERROR!!");
@@ -295,7 +285,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 
 		if ((email != null) && (!"".equals(email))) {
-			FDDeliveryManager.getInstance().saveFutureZoneNotification(email, user.getZipCode(),this.serviceType);
+			FDDeliveryManager.getInstance().saveFutureZoneNotification(email, user.getZipCode());
 			LOGGER.debug("SAVED FUTURE ZONE TO NOTIFY");
 		}
 	}
@@ -347,7 +337,5 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 						
 		}
 	}
-
-	
 
 }
