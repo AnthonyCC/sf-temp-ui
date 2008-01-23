@@ -117,8 +117,28 @@ function sortRestriction(colName) {
         <td class="border_bottom"><a href="javascript:deleteRestriction('<%= rev.getId() %>')">&nbsp;Delete<a/></td>
                
               <%
+                 }else if(restriction instanceof OneTimeReverseRestriction){
+                  OneTimeReverseRestriction rRev = (OneTimeReverseRestriction) restriction;
+                    System.out.println("rRev.getId() :"+rRev.getId());
+               %>
+	    <input type="hidden" name="custIds" value="<%= rRev.getReason().getName() %>" />
+        <tr>
+        <td class="border_bottom"><span class="detail_text"><%= rRev.getReason().getName() %></span></td>	
+        <td class="border_bottom">&nbsp;</td>
+        <td class="border_bottom"><span class="detail_text"><%= rRev.getDateRange().getStartDate() %></span></td>	
+        <td class="border_bottom">&nbsp;</td>
+        <td class="border_bottom"><span class="detail_text"><%= rRev.getDateRange().getEndDate() %></span></td>
+        <td class="border_bottom">&nbsp;</td>
+        <td class="border_bottom"><span class="detail_text"><%= rRev.getName() %></span></td>
+        <td class="border_bottom">&nbsp;</td>
+        <td class="border_bottom"><span class="detail_text"><%= rRev.getMessage() %></span></td>        
+        <td class="border_bottom"><A HREF="javascript:void(0)" onclick="window.open('/admintools/restrictionForm_save.jsp?restrictionId=<%= rRev.getId() %>&actionType=editRestriction','editRestriction','width=350,height=400,menubar=no,status=no')">Detail<a/>&nbsp;|</td>
+        <td class="border_bottom"><A HREF="javascript:void(0)" onclick="window.open('/admintools/restrictionForm.jsp?restrictionId=<%= rRev.getId() %>&actionType=editRestriction','editRestriction','width=350,height=400,menubar=no,status=no')">Edit<a/>&nbsp;|</td>        
+        <td class="border_bottom"><a href="javascript:deleteRestriction('<%= rRev.getId() %>')">&nbsp;Delete<a/></td>
+               
+              <%
                  }
-              %>
+              %>              
               </tr>
 	</logic:iterate>
 	<%
