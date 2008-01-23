@@ -1199,7 +1199,6 @@ public class FDShoppingCartControllerTag extends
 						i.set(null);
 						cartChanged = true;
 						// Log that the item has been removed.
-						orderLine.setSource(getEventSource());
 						FDEventUtil.logRemoveCartEvent(orderLine, request);
 						continue;
 					}

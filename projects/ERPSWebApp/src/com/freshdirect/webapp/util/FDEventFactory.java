@@ -16,7 +16,6 @@ import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.lists.CclUtils;
-import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.event.FDEvent;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
@@ -76,7 +75,6 @@ public class FDEventFactory {
 	public static BookRetailerRedirectEvent getBookRetailerRedirectEvent(HttpServletRequest request) {
 		BookRetailerRedirectEvent event = new BookRetailerRedirectEvent();
 		populateEvent(event, request, BOOK_RETAILER_REDIRECT_EVENT);
-		if (event.getSource() == null) event.setSource(EnumEventSource.UNKNOWN);
 		event.setBookRetailerId(request.getParameter("bookRetailerId"));
 		event.setRecipeSourceId(request.getParameter("recipeSourceId"));
 		return event;

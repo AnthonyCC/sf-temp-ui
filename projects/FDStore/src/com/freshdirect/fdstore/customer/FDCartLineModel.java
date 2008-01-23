@@ -75,7 +75,6 @@ public class FDCartLineModel extends AbstractCartLine {
 				.getProductRef(), this.getConfiguration());
 		newLine.setRecipeSourceId(this.getRecipeSourceId());
 		newLine.setRequestNotification(this.isRequestNotification());
-		newLine.setSource(this.source);
 		return newLine;
 	}
 
