@@ -5,6 +5,7 @@
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDComplaintInfo" %>
 <%@ page import="com.freshdirect.webapp.taglib.callcenter.ComplaintUtil"%>
+<%@ page import="com.freshdirect.customer.EnumSaleType"%>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -47,7 +48,7 @@ Set key = complaintCodes.keySet();
 	<option value="<%=thisKey%>" <%= thisKey.equalsIgnoreCase(reason)? "selected":""%>><%=thisValue%></option>
 	<% } %>
 </select>
-
+A = Automatic Order   M = Manual Order
 <% } %>
 </div>
 <div class="content" style="height: 80%;">
@@ -55,7 +56,8 @@ Set key = complaintCodes.keySet();
 	<TABLE WIDTH="100%" CELLPADDING="0" CELLSPACING="2" BORDER="0" class="list_header_text">
 		<TR>
 			<td width="1%"></td>
-			<td width="12%">Order #</td>
+			<td width="10%">Order #</td>
+            <td width="2%">Type</td>
 			<td width="10%">Delivery Date</td>
 			<td width="10%">Status</td>
 			<td width="8%">Amount</td>
@@ -74,8 +76,9 @@ Set key = complaintCodes.keySet();
 	
 		<TR VALIGN="top" <%= counter.intValue() % 2 == 0 ? "class='list_odd_row'" : "" %> style="cursor: pointer;" onClick="document.location='<%= response.encodeURL("/main/order_details.jsp?orderId=" + info.getSaleId()) %>'">
 			<td width="1%"></td>
-			<TD width="12%"><u><a href="/main/order_details.jsp?orderId=<%= info.getSaleId() %>"><%= info.getSaleId() %></u></a>&nbsp;&nbsp;&nbsp;<a href="javascript:pop('/returns/approve_credit.jsp?orderId=<%= info.getSaleId() %>&complaintId=<%= info.getComplaintId() %>&inPopup=true', 700, 800)">App/Dec</a></TD>
-			<TD width="10%"><%= CCFormatter.formatDate(info.getDeliveryDate()) %></TD>
+			<TD width="10%"><u><a href="/main/order_details.jsp?orderId=<%= info.getSaleId() %>"><%= info.getSaleId() %></u></a>&nbsp;&nbsp;&nbsp;<a href="javascript:pop('/returns/approve_credit.jsp?orderId=<%= info.getSaleId() %>&complaintId=<%= info.getComplaintId() %>&inPopup=true', 700, 800)">App/Dec</a></TD>
+			<TD width="2%"><% if(EnumSaleType.REGULAR.equals(info.getOrderType())){%>M<%}else if(EnumSaleType.SUBSCRIPTION.equals(info.getOrderType())){%>A<%}%></TD>
+            <TD width="10%"><%= CCFormatter.formatDate(info.getDeliveryDate()) %></TD>
 			<TD width="10%"><%= (info.getSaleStatus() != null) ? info.getSaleStatus().getName() : "--" %></TD>
 			<TD width="8%"><%= CCFormatter.formatCurrency(info.getOrderAmount()) %></TD>
 			<TD width="18%"><%= info.getLastName() %>, <%= info.getFirstName() %></TD>
