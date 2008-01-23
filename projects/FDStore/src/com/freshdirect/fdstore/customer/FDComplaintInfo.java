@@ -5,6 +5,7 @@ import java.util.Date;
 
 import com.freshdirect.customer.EnumComplaintStatus;
 import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.customer.EnumSaleType;
 
 public class FDComplaintInfo implements Serializable {
 	
@@ -23,7 +24,8 @@ public class FDComplaintInfo implements Serializable {
 	private String issuedBy;
 	private String approvedBy;
 	private EnumComplaintStatus complaintStatus;
-
+	private EnumSaleType orderType;
+	
 	public FDComplaintInfo (String saleId){
 		this.saleId = saleId;
 	}
@@ -134,6 +136,14 @@ public class FDComplaintInfo implements Serializable {
 	
 	public void setComplaintStatus(EnumComplaintStatus complaintStatus){
 		this.complaintStatus = complaintStatus;
+	}
+
+	public EnumSaleType getOrderType() {
+		return orderType;
+	}
+
+	public void setOrderType(String orderType) {
+		this.orderType = EnumSaleType.getSaleType(orderType);
 	}
 	
 }

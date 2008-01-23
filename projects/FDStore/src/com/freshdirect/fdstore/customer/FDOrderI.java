@@ -19,6 +19,7 @@ import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpShippingInfo;
+import com.freshdirect.customer.EnumSaleType;
 
 /**
  * FDOrder interface
@@ -146,4 +147,6 @@ public interface FDOrderI extends FDCartI {
 	public boolean isChargeWaivedByCSROnReturn(EnumChargeType type);
 	
 	public double getDeliverySurchargeOnReturn();
+	
+	public EnumSaleType getOrderType();
 }
