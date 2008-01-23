@@ -147,7 +147,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 	private static final String PEN_COMPLAINT_FILTER_QUERY = "and exists (select * from cust.complaintline cl where cl.complaint_id=c.id and "
 		+ "complaint_dept_code_id in (select id from cust.complaint_dept_code where comp_code=?))";
 
-	private static final String PEN_COMPLAINT_QUERY_2 = "select s.id, s.status, sa.requested_date, ci.first_name, ci.last_name, ci.email, (select max(amount) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD','INV') "
+	private static final String PEN_COMPLAINT_QUERY_2 = "select s.id, s.status,s.type, sa.requested_date, ci.first_name, ci.last_name, ci.email, (select max(amount) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD','INV') "
 		+ "and action_date = (select max(action_date) from cust.salesaction where action_type in ('CRO','MOD','INV') and sale_id = s.id)) as order_amount "
 		+ "from cust.sale s, cust.salesaction sa, cust.customerinfo ci "
 		+ "where sa.sale_id in ( ? ) and sa.action_type in ('CRO', 'MOD') "
@@ -199,7 +199,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				info.setComplaintAmount(rs.getDouble("COMPLAINT_AMOUNT"));
 				info.setComplaintType(EnumComplaintType.getEnum(NVL.apply(rs.getString("COMPLAINT_TYPE"), "FDC")).getName());
 				info.setComplaintNote(rs.getString("COMPLAINT_NOTE"));
-				
+								
 				infoMap.put(saleId, info);
 				idCount++;
 			}
@@ -222,6 +222,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				info.setEmail(rs.getString("EMAIL"));
 				info.setFirstName(rs.getString("FIRST_NAME"));
 				info.setLastName(rs.getString("LAST_NAME"));
+				info.setOrderType(rs.getString("TYPE"));
 			}
 
 			rs.close();
@@ -361,7 +362,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 	}
 	
 	public static String authInfoSearchQuery =
-		"select distinct sa1.sale_id, sa1.requested_date, sa.amount, s.status, sa1.action_date, ci.first_name, ci.last_name, pi.name, p.description, p.auth_code, pi.card_type, p.ccnum_last4, pi.payment_method_type, pi.aba_route_number, pi.bank_account_type "
+		"select distinct sa1.sale_id, sa1.requested_date, sa.amount, s.status, s.type, sa1.action_date, ci.first_name, ci.last_name, pi.name, p.description, p.auth_code, pi.card_type, p.ccnum_last4, pi.payment_method_type, pi.aba_route_number, pi.bank_account_type "
 		+"from (select sale_id, amount from cust.salesaction where "
 		+"action_date >= to_date(?) - 10 "
 		+"and action_date < to_date(?) + 10 "
@@ -429,6 +430,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				info.setPaymentMethodType(EnumPaymentMethodType.getEnum(rs.getString("PAYMENT_METHOD_TYPE")));
 				info.setAbaRouteNumber(rs.getString("ABA_ROUTE_NUMBER"));
 				info.setBankAccountType(EnumBankAccountType.getEnum(rs.getString("BANK_ACCOUNT_TYPE")));
+				info.setOrderType(rs.getString("TYPE"));
 				l.add(info);
 			}
 			
