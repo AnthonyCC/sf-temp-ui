@@ -41,9 +41,11 @@ public class OrderHistoryInfoTag extends AbstractGetterTag {
 		HttpSession session = pageContext.getSession();
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 		//Commented By Sai - as part of PERF 22. Now onwards the page will directly call
-		//FDCustomerManager.getOrderHistoryInfo() method.
-		//FDOrderHistory history = user.getOrderHistory();
-		FDOrderHistory history = FDCustomerManager.getOrderHistoryInfo(user.getIdentity());
+		//FDCustomerManager.getOrderHistoryInfo() method. This Change is temporarily
+		//rollbacked.
+		//FDOrderHistory history = FDCustomerManager.getOrderHistoryInfo(user.getIdentity());		
+		FDOrderHistory history = (FDOrderHistory) user.getOrderHistory();
+
 		List orderHistoryInfo = new ArrayList(history.getFDOrderInfos());
 
 		Collections.sort(orderHistoryInfo, ORDER_COMPARATOR);

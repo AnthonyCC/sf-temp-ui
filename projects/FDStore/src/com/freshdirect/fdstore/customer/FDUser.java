@@ -403,6 +403,8 @@ public class FDUser extends ModelSupport implements FDUserI {
     }
     
    private OrderHistoryI getOrderHistoryInfo() throws FDResourceException {
+	   /*
+	    * This change is rollbacked temporarily.
     	if(EnumTransactionSource.CUSTOMER_REP.equals(application)){
     		//If CRM load entire order history.
     		return FDCustomerManager.getOrderHistoryInfo(this.identity);
@@ -410,6 +412,9 @@ public class FDUser extends ModelSupport implements FDUserI {
     		//Load only Order History Summary.
     		return FDCustomerManager.getWebOrderHistoryInfo(this.identity);
     	}
+    	*/
+	   //Load Entire order history inspite of CRM or WEB.
+	   return FDCustomerManager.getOrderHistoryInfo(this.identity);
     }
    
     public ErpPromotionHistory getPromotionHistory() throws FDResourceException {
