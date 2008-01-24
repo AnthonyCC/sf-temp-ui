@@ -11,8 +11,6 @@ package com.freshdirect.fdstore.warmup;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
-import com.freshdirect.cms.search.ContentSearchServiceI;
-import com.freshdirect.framework.conf.FDRegistry;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import org.apache.log4j.*;
 
@@ -70,9 +68,6 @@ public class Warmup {
 			public void run() {
 				try {
 					// Warmup
-					ContentSearchServiceI search = 
-						(ContentSearchServiceI) FDRegistry.getInstance().getService(ContentSearchServiceI.class);
-
 					warmupProducts();
 
 					LOGGER.info("Warmup done");

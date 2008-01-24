@@ -23,8 +23,6 @@ import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.spell.Dictionary;
-import org.apache.lucene.search.spell.LuceneDictionary;
 import org.apache.lucene.search.spell.SpellChecker;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -99,13 +97,15 @@ public class LuceneSpellingSuggestionService {
 		
 		this.indexes = indexes;
 		
+		if (!IndexReader.indexExists(directory)) {
+			LOGGER.warn(
+					"Directory index does not exist, the the spell checker will try to obtain a write lock to create the index");
+		} else {
+			LOGGER.debug(
+					"Directory index exists, OK the spell checker will just use it");
+		}
 		this.checker = new SpellChecker(directory);
 		
-		for(Iterator i = indexes.iterator(); i.hasNext(); ) {
-			String index = (String)i.next();
-			Dictionary dictionary = new LuceneDictionary(reader,index);
-			checker.indexDictionary(dictionary);
-		}
 		searcher = new IndexSearcher(directory);
 	}
 	
