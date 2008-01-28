@@ -482,7 +482,7 @@ class FDCustomerListDAO {
 	 }
 	
 	// CCL
-	private static final String GET_LIST_ID = "SELECT id FROM CUST.CUSTOMERLIST cl WHERE cl.name = ? AND cl.type = ?";
+	private static final String GET_LIST_ID = "SELECT id FROM CUST.CUSTOMERLIST cl WHERE cl.name = ? AND cl.type = ? AND cl.customer_id = ?";
     private static final String DELETE_LIST = "DELETE FROM CUST.CUSTOMERLIST cl WHERE cl.id = ?";
     
 	// CCL, 
@@ -490,6 +490,7 @@ class FDCustomerListDAO {
 		PreparedStatement ps = conn.prepareStatement(GET_LIST_ID);
 		ps.setString(1, listName);
 		ps.setString(2, EnumCustomerListType.CC_LIST.getName());
+		ps.setString(3, identity.getErpCustomerPK());
 		ResultSet rs = ps.executeQuery();
 		
 		if (!rs.next()) {
