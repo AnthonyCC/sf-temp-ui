@@ -293,12 +293,12 @@ public class DCPDReportGenerator {
 			if (ctx.isRenderCSV()) {
 			    if (ctx.isProductsOnlyView()) {
 					printToCSV(new Object[]{
-						(isUna ? "N" : ""), quoted(parentCName), quoted(skuNode.getFullName()), quoted(skuNode.getContentName()), quoted(sku_val!=null ? sku_val : "N/A")
+						(isUna ? "N" : ""), quoted(parentCName), quoted(skuNode.getFullName()), quoted(skuNode.getContentName()), quoted(sku_val!=null ? sku_val : "N/A"), eligible
 					});
 	                /// out.println((isUna ? "N" : "") + ";\"" + parentCName + "\";\"" + skuNode.getFullName() + "\";\"" + skuNode.getContentName() + "\";\"" + (sku_val!=null ? sku_val : "N/A") + "\"");
 			    } else {
 					printToCSV(new Object[]{
-						Integer.toString(level), "P", "", (isUna ? "N" : ""), quoted(parentCName), quoted(skuNode.getFullName()), quoted(skuNode.getContentName()), quoted(sku_val!=null ? sku_val : "N/A")
+						Integer.toString(level), "P", "", (isUna ? "N" : ""), quoted(parentCName), quoted(skuNode.getFullName()), quoted(skuNode.getContentName()), quoted(sku_val!=null ? sku_val : "N/A"), eligible
 					});
 			    	/// out.println(level + ";P;;" + (isUna ? "N" : "") + ";\"" + parentCName + "\";\"" + skuNode.getFullName() + "\";\"" + skuNode.getContentName() + "\";\"" + (sku_val!=null ? sku_val : "N/A") + "\"");
 			    }
