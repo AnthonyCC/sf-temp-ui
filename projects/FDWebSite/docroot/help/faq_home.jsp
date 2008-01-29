@@ -1,18 +1,33 @@
-<%
+<%@ page import="com.freshdirect.webapp.util.MediaHelper" %><%
 String faqPage = "faqHome";
+Map params = new HashMap();
+params.put("baseUrl", "");
+params.put("helper", new MediaHelper()); // include helper object. It allows to include media templates into template
 
 if (request.getParameter("page")!= null){
-faqPage = request.getParameter("page");
+    faqPage = request.getParameter("page");
 }
 
-%>
-<%@ taglib uri='template' prefix='tmpl' %>
-<%@ taglib uri='logic' prefix='logic' %>
-<%@ taglib uri='bean' prefix='bean' %>
-<%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
-<fd:CheckLoginStatus />
-<tmpl:insert template='/common/template/faq_help.jsp'>
+//set up template parameters
+params.put("isPage", new Boolean(request.getParameter("page") != null) );
+params.put("isPageNull", new Boolean(request.getParameter("page") == null) );
+%><%@ taglib uri='template' prefix='tmpl' 
+%><%@ taglib uri='logic' prefix='logic'
+%><%@ taglib uri='bean' prefix='bean'
+%><%@ taglib uri='freshdirect' prefix='fd'
+%><%@ page import='com.freshdirect.webapp.taglib.fdstore.*'
+%><fd:CheckLoginStatus /><%
+FDUserI user2 = (FDUserI)session.getAttribute(SessionName.USER);
+if (user2 != null) {
+	params.put("minimumOrderAmount", new Integer((int)user2.getMinimumOrderAmount()) );
+	params.put("isUserCheckEligible", new Boolean((user2 != null && user2.isCheckEligible())) );
+	params.put("customerServiceContact", user2.getCustomerServiceContact() );
+	params.put("baseDeliveryFee", new Double(user2.getBaseDeliveryFee()) );
+} else {
+    params.put("minimumOrderAmount", new Integer(0) );
+    params.put("isUserCheckEligible", Boolean.FALSE );
+}
+%><tmpl:insert template='/common/template/faq_help.jsp'>
     <tmpl:put name='title' direct='true'>FreshDirect - Help - FAQs</tmpl:put>
 	<tmpl:put name='leftnav' direct='true'>
 	</tmpl:put>
@@ -22,29 +37,58 @@ faqPage = request.getParameter("page");
 			<td valign="top">
 				<img src="/media/images/layout/clear.gif" width="10" height="1" alt="" border="0">
 			</td>
-			<td>
-			<%if(faqPage.equals("faqHome")){%>
-				<%@ include file="/help/intro.jsp"%>
-			<%}else if(faqPage.equals("about")){%>
-				<%@ include file="/help/about_freshdirect.jsp"%>	
-			<%}else if(faqPage.equals("signup")){%>
-				<%@ include file="/help/signing_up.jsp"%>
+			<td><%
+			if(faqPage.equals("about")){%>
+				<fd:IncludeMedia name="/media/editorial/faq/about.ftl" parameters="<%=params%>" withErrorReport="true"/>	
+			<%}else if(faqPage.equals("signup")){
+				if (user2 != null && user2.isEligibleForSignupPromotion()) {
+                    final java.text.DecimalFormat promoFormatter = new java.text.DecimalFormat("$#,##0");
+					params.put("eligibleForSignupPromotion", Boolean.TRUE);
+					params.put("maxSignupPromotion", promoFormatter.format(user2.getMaxSignupPromotion()) );
+				} else {
+                    params.put("eligibleForSignupPromotion", Boolean.FALSE);
+                    params.put("maxSignupPromotion", "" );
+				}
+			%>
+				<fd:IncludeMedia name="/media/editorial/faq/signup.ftl" parameters="<%=params%>" withErrorReport="true"/>
 			<%}else if(faqPage.equals("security")){%>
-				<%@ include file="/help/security.jsp"%>
-			<%}else if(faqPage.equals("shopping")){%>
-				<%@ include file="/help/shopping.jsp"%>
+				<fd:IncludeMedia name="/media/editorial/faq/security.ftl" parameters="<%=params%>" withErrorReport="true"/>
+			<%}else if(faqPage.equals("shopping")){
+                params.put("customerServiceContact", user2.getCustomerServiceContact() );
+			%>
+				<!-- leave as-is --><%@ include file="/help/shopping.jsp"%>
 			<%}else if(faqPage.equals("payment")){%>
-				<%@ include file="/help/payment.jsp"%>
-			<%}else if(faqPage.equals("deliveryHome")){%>
-				<%@ include file="/help/delivery_home.jsp"%>
+				<fd:IncludeMedia name="/media/editorial/faq/payment.ftl" parameters="<%=params%>" withErrorReport="true"/>
+			<%}else if(faqPage.equals("deliveryHome")){
+                boolean flag = request.getRequestURI().toLowerCase().endsWith("delivery_info_faq.jsp");
+                params.put("deliveryInfoFaq", new Boolean(flag) );
+			%>
+				<fd:IncludeMedia name="/media/editorial/faq/delivery_home.ftl" parameters="<%=params%>" withErrorReport="true"/>
 			<%}else if(faqPage.equals("deliveryDepot")){%>
-				<%@ include file="/help/delivery_depot.jsp"%>				
-			<%}else if(faqPage.equals("inside")){%>
-				<%@ include file="/help/inside_fd.jsp"%>
-            <%}else if(faqPage.equals("cos")){%>
-                <%@ include file="/help/cos.jsp"%>
-			<%}else{%>
-				<%@ include file="/help/index.jsp"%>
+				<!-- leave as-is --><%@ include file="/help/delivery_depot.jsp"%>				
+			<%}else if(faqPage.equals("inside")){
+				params.put("careerLink", FDStoreProperties.getCareerLink());
+			%><fd:IncludeMedia name="/media/editorial/faq/inside.ftl" parameters="<%=params%>" withErrorReport="true"/>
+            <%}else if(faqPage.equals("cos")){
+            	boolean flag = request.getRequestURI().toLowerCase().endsWith("delivery_info_faq.jsp");
+            	params.put("deliveryInfoFaq", new Boolean(flag) );
+            	if (user2 != null) {
+	            	params.put("corpDeliveryFee", new Double(user2.getCorpDeliveryFee()) );
+	                params.put("minCorpOrderAmount", new Integer((int)user2.getMinCorpOrderAmount()) );
+            	} else {
+                    params.put("corpDeliveryFee", new Double(0) );
+                    params.put("minCorpOrderAmount", new Integer(0) );
+            	}
+            %><fd:IncludeMedia name="/media/editorial/faq/cos.ftl" parameters="<%=params%>" withErrorReport="true"/>
+			<%}else{ // page = faqHome or other not handled in any conditions above
+				if (user2 != null) {
+				    params.put("isCorp", new Boolean(user2.isCorporateUser()) );
+				    params.put("isDepotUser", new Boolean(user2.isDepotUser()) );
+				} else {
+                    params.put("isCorp", Boolean.FALSE );
+                    params.put("isDepotUser", Boolean.FALSE );
+				}
+			    %><fd:IncludeMedia name="/media/editorial/faq/intro.ftl" parameters="<%=params%>" withErrorReport="true"/>
 			<%}%>
 			</td>
 		</tr>

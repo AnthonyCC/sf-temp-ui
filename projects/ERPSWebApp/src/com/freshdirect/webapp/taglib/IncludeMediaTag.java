@@ -2,6 +2,7 @@ package com.freshdirect.webapp.taglib;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.net.URL;
 import java.util.Map;
 
@@ -39,21 +40,12 @@ public class IncludeMediaTag extends BodyTagSupport {
 	public void setWithErrorReport(Boolean withErrorReport) {
 		this.withErrorReport = withErrorReport;
 	}
-	
+
 	public int doStartTag() throws JspException {
 		try {
-
-			URL url = MediaUtils.resolve(FDStoreProperties.getMediaPath(), this.name);
-
-			JspWriter out = this.pageContext.getOut();
-
-			TemplateContext context = this.parameters != null ? new TemplateContext(this.parameters) : null;
-			boolean errorReport = this.withErrorReport == null ? false : this.withErrorReport.booleanValue();
-
-			MediaUtils.renderMedia(url, out, context, errorReport);
-
+			MediaUtils.render(this.name, this.pageContext.getOut(), this.parameters, this.withErrorReport);
+			
 			return SKIP_BODY;
-
 		} catch (FileNotFoundException e) {
 			LOGGER.warn("Media file not found " + name);
 			return EVAL_BODY_INCLUDE;

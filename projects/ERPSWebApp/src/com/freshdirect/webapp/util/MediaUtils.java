@@ -5,12 +5,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.net.URL;
-
-import javax.servlet.jsp.JspException;
+import java.util.Map;
 
 import com.freshdirect.cms.template.ITemplateRenderer;
 import com.freshdirect.cms.template.TemplateException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.TemplateRenderer;
+import com.freshdirect.webapp.taglib.IncludeMediaTag;
 import com.freshdirect.webapp.template.TemplateContext;
 
 public class MediaUtils {
@@ -61,4 +62,27 @@ public class MediaUtils {
 		}
 	}
 	
+
+
+	/**
+	 * Helper method to support {@link IncludeMediaTag#doStartTag()}
+	 * 
+	 * @param name
+	 * @param out Writer
+	 * @param parameters Template parameters
+	 * @param withErrorReport
+	 * @return
+	 * @throws IOException
+	 * @throws TemplateException
+	 */
+	public static void render(String name, Writer out, Map parameters, Boolean withErrorReport) throws IOException, TemplateException {
+		URL url = MediaUtils.resolve(FDStoreProperties.getMediaPath(), name);
+
+		// JspWriter out = this.pageContext.getOut();
+		
+		TemplateContext context = parameters != null ? new TemplateContext(parameters) : null;
+		boolean errorReport = withErrorReport == null ? false : withErrorReport.booleanValue();
+
+		MediaUtils.renderMedia(url, out, context, errorReport);
+	}
 }
