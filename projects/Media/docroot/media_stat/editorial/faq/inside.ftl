@@ -17,6 +17,7 @@
 <#assign hdrImgHeight="30"/>
 </#if>
 <#assign securityPolicyLink="/help/privacy_policy.jsp"/>
+<#assign user=parameters["fd_user"]/>
 <#assign helper=parameters["helper"]/>
 <script>
 function linkTo(url){
@@ -76,7 +77,7 @@ function linkTo(url){
 			</tr>
 			</table>
 			<br><br>
-			For all other inquiries please e-mail <a href="mailto:<fd:GetServiceEmail />"><fd:GetServiceEmail /></a> or call us at ${customerServiceContact}.
+			For all other inquiries please e-mail <a href="mailto:${user.getCustomerServiceEmail()!"service@freshdirect.com"}">${user.getCustomerServiceEmail()!"service@freshdirect.com"}</a> or call us at ${customerServiceContact}.
 			<br>
 	   </TD>
 	</TR>

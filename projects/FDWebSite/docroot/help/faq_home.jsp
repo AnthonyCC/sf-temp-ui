@@ -19,6 +19,7 @@ params.put("isPageNull", new Boolean(request.getParameter("page") == null) );
 %><fd:CheckLoginStatus /><%
 FDUserI user2 = (FDUserI)session.getAttribute(SessionName.USER);
 if (user2 != null) {
+    params.put("fd_user", user2);
 	params.put("minimumOrderAmount", new Integer((int)user2.getMinimumOrderAmount()) );
 	params.put("isUserCheckEligible", new Boolean((user2 != null && user2.isCheckEligible())) );
 	params.put("customerServiceContact", user2.getCustomerServiceContact() );
