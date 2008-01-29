@@ -36,29 +36,20 @@ public class GetServiceEmailTag extends TagSupport {
 			FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 			
 			if(user != null) {
-				if(user.isDepotUser()){
-					this.serviceEmail = FDDepotManager.getInstance().getCustomerServiceEmail(user.getDepotCode());
-				} else if(user.isCorporateUser()){
-					this.serviceEmail = "corporateservice@freshdirect.com";
-				}
-				if(user.isChefsTable()){
-				    this.serviceEmail = FDStoreProperties.getChefsTableEmail();
-				}
+				this.serviceEmail = user.getCustomerServiceEmail();
 			}
-
-			
+		
 			pageContext.getOut().print(this.serviceEmail);
-			
 		} catch (Exception ex) {
 			LOGGER.warn("Exception occured in GetServiceEmail:", ex);
 			throw new JspException(ex);
-	
 		}
     	return SKIP_BODY;
   	}
-  	
+
+
   	public int doEndTag() {
-    return SKIP_BODY;
+  		return SKIP_BODY;
   	}
 }
 

@@ -36,6 +36,7 @@ import com.freshdirect.deliverypass.EnumDlvPassProfileType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
 import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDDepotManager;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
@@ -65,6 +66,7 @@ import com.freshdirect.fdstore.promotion.AudienceStrategy;
  * @author $Author$
  */
 public class FDUser extends ModelSupport implements FDUserI {
+	public static final String SERVICE_EMAIL = "service@freshdirect.com";
 
 	private EnumTransactionSource application; 
     private String depotCode;
@@ -598,7 +600,27 @@ public class FDUser extends ModelSupport implements FDUserI {
 			throw new FDRuntimeException(e);
 		}
 	}
-	
+
+
+	/**
+	 * Returns the appropriate customer service email address
+	 * 
+	 * @return serviceEmail email address
+	 */
+	public String getCustomerServiceEmail() throws FDResourceException {
+		String serviceEmail = SERVICE_EMAIL;
+		if (isDepotUser()){
+			serviceEmail = FDDepotManager.getInstance().getCustomerServiceEmail(getDepotCode());
+		} else if(isCorporateUser()){
+			serviceEmail = "corporateservice@freshdirect.com";
+		}
+		if (isChefsTable()){
+		    serviceEmail = FDStoreProperties.getChefsTableEmail();
+		}
+		return serviceEmail;
+	}
+
+
 	public boolean isCheckEligible()  {
 		if (checkEligible == null) {			
 			EligibilityCalculator calc = new EligibilityCalculator("ECHECK");

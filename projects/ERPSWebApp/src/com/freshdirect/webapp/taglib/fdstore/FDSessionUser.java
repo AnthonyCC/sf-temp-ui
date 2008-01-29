@@ -53,7 +53,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  */
 public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
      
-    private static Category LOGGER = LoggerFactory.getInstance( FDUser.class );
+	private static Category LOGGER = LoggerFactory.getInstance( FDUser.class );
     
     private final FDUser user;
     
@@ -365,7 +365,11 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public String getCustomerServiceContact() {
 		return this.user.getCustomerServiceContact();
 	}
-	
+
+    public String getCustomerServiceEmail() throws FDResourceException {
+		return this.user.getCustomerServiceEmail();
+	}
+
 	public boolean isCheckEligible() {
         return (user != null) ? user.isCheckEligible() : false;
     }

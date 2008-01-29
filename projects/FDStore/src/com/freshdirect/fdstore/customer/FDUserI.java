@@ -155,6 +155,8 @@ public interface FDUserI extends java.io.Serializable {
 	
 	public String getCustomerServiceContact();
 	
+	public String getCustomerServiceEmail() throws FDResourceException;
+
 	public boolean isCheckEligible();
     
 	public Collection getPaymentMethods();
