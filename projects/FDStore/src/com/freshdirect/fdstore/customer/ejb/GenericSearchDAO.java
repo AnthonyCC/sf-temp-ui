@@ -208,7 +208,7 @@ public class GenericSearchDAO {
 	}
 	
 	private static String CUSTOMER_COMP_QUERY = 
-		"select "
+		"select distinct "
 		+ " c.id, ci.first_name, ci.last_name, c.user_id, ci.home_phone, ci.business_phone, ci.cell_phone, " 
 		+ " (select p.profile_value from cust.profile p where p.customer_id = fc.id and p.profile_name='VIPCustomer') VIP_CUST, " 
 		+ " (select p.profile_value from cust.profile p where p.customer_id = fc.id and p.profile_name='ChefsTable') CHEFS_TABLE "
