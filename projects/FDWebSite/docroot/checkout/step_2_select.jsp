@@ -282,7 +282,7 @@ if (errorMsg!=null) {%>
 	<td width="100%" align="center"><font class="text12bold" color="#FF0000">IMPORTANT INFORMATION FOR OFFICE DELIVERIES</font></td>	
 	</TR>
 	<TR>
-	<td class="text12" align="center">DeliveryPass only applies for residential delivery and will not apply to this order.<br><br></td>	
+		<td class="text12" align="center">Unlimited DeliveryPass is only good for residential deliveries and will not apply to this order.<br><br></td>	
 	</TR>	
 <%}%>	
 

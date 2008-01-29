@@ -48,13 +48,12 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 
 public class DlvPassAvailabilityControllerTag extends AbstractControllerTag {
-	private static final String REASON_NOT_ELIGIBLE = "Not Eligible. Please contact Customer Service.";
-	private static final String REASON_TOO_MANY_PASSES = "Too many passes added";
-	private static final String REASON_PASS_EXISTS = "Account contains an Active/Pending Delivery Pass.<br>Please see Your Accounts section for more information";
-	private static final String REASON_MAX_PASSES="Account already has the maximum number of allowable passes.";
-	private static final String REASON_PROMOTIONAL_PASS="Not eligible. Please contact Customer Service at {0}. ";
-	private static final String REASON_MULTIPLE_AUTORENEW_PASSES="You already have a DeliveryPass that will renew."
-;
+	private static final String REASON_NOT_ELIGIBLE = "Not currently eligible for DeliveryPass. Please contact Customer Service.";
+	private static final String REASON_TOO_MANY_PASSES = "Too many DeliveryPasses added";
+	private static final String REASON_PASS_EXISTS = "Account contains an active or pending DeliveryPass.<br>Please see the Your Account section for more information";
+	private static final String REASON_MAX_PASSES="Account already has the maximum number of allowable DeliveryPasses.";
+	private static final String REASON_PROMOTIONAL_PASS="Not currently eligible for DeliveryPasses. Please contact Customer Service at {0}. ";
+	private static final String REASON_MULTIPLE_AUTORENEW_PASSES="You already have a DeliveryPass scheduled to automatically renew.";
 	
 	private static Category LOGGER = LoggerFactory.getInstance(DlvPassAvailabilityControllerTag.class);
 	private final static Comparator PRICE_COMPARATOR = new Comparator() {

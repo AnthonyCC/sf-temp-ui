@@ -85,16 +85,16 @@ your account information, this is the place to do it.<br></td>
 		<br><br>
 		<%if(user.isEligibleForPreReservation()){%>
 			<font class="text13bold">
-			<a href="<%=response.encodeURL("/your_account/reserve_timeslot.jsp")%>">Reserve a Delivery Time (NEW)</a>
+						<a href="<%=response.encodeURL("/your_account/reserve_timeslot.jsp")%>">Reserve a Delivery Time </a>
 			</font><br>
 			Reserve a delivery slot before you place your order.
 			<br><br>
 		<%}%>
 		<%if(user.isEligibleForDeliveryPass()){%>
 			<font class="text13bold">
-			<a href="<%=response.encodeURL("/your_account/delivery_pass.jsp")%>">DeliveryPass (NEW)</a>
+						<a href="<%=response.encodeURL("/your_account/delivery_pass.jsp")%>">FreshDirect Unlimited DeliveryPass</a>
 			</font><br>
-			See all of your DeliveryPass details.
+						See  your membership details.
 			<br><br>
 		<%}%>
 		
@@ -116,7 +116,7 @@ your account information, this is the place to do it.<br></td>
 		<font class="text13bold">
 		<a href="<%=response.encodeURL("/your_account/newsletter.jsp")%>">President's Picks Newsletter</a>
 		</font><br>
-		<b>NEW!</b> Subscribe to the President's Picks alert to get each week's deals delivered right to your inbox.
+				Subscribe to the President's Picks alert to get each week's deals delivered right to your inbox.
 		<br><br>
 		<font class="text13bold">
 		<a href="<%=response.encodeURL("/your_account/reminder_service.jsp")%>">Reminder Service</a>

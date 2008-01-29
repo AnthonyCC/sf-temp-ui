@@ -55,7 +55,7 @@ public class WebViewDeliveryPassTag extends AbstractGetterTag {
 																currentUser.getDeliveryPassStatus());
 			if(dlvPasses == null || ((dlvPasses!=null) && dlvPasses.size() == 0)){
 				throw new FDResourceException("We are unable to load the DeliveryPass information due to " +
-						"technical difficulty. Please try again later.");
+				"technical difficulties. Please try again later.");
 			}
 			DeliveryPassModel model =null;
 			boolean found=false;

@@ -80,7 +80,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			if(statusMap != null && statusMap.size() > 0){
 				if(Integer.parseInt(statusMap.get("UsablePassCount").toString()) >=3){//make it read from property file.
 					//HAs a pending delivery pass in the system.
-					throw new DeliveryPassException("We're sorry. The order cannot be submitted since this account has reached the delivery pass limit.");
+					throw new DeliveryPassException("We're sorry. The order cannot be submitted since this account has reached the DeliveryPass limit.");
 				}
 			}
 			conn = getConnection();
@@ -155,7 +155,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 		if (today.after(expDate)) {
 			// There are no remaining days to apply.
 			throw new DeliveryPassException(
-					"This customer's unlimited pass has expired.",
+					"This customer's Unlimited DeliveryPass has expired.",
 					dlvPassInfo.getCustomerId());
 		}
 
@@ -337,7 +337,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 					
 			if (deliveryPasses == null || deliveryPasses.size() == 0) {
 				throw new DeliveryPassException(
-						"There is no delivery pass found for this purchase order id.",
+						"There is no DeliveryPass found for this purchase order id.",
 						purchaseOrderId);
 			}
 			DeliveryPassModel dlvPassInfo = (DeliveryPassModel) deliveryPasses
@@ -476,7 +476,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 							e);
 			throw new EJBException(e);
 		} catch (Exception exp) {
-			LOGGER.warn("Unknown error while reactivating the delivery pass.",
+			LOGGER.warn("Unknown error while reactivating the DeliveryPass.",
 					exp);
 			throw new EJBException(exp);
 		} finally {
@@ -737,7 +737,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 		} catch (Exception exp) {
 			LOGGER
 					.warn(
-							"Unknown errorwhile retreiving the delivery passes based on status.",
+							"Unknown error while retreiving the delivery passes based on status.",
 							exp);
 			throw new EJBException(exp);
 		} finally {
@@ -850,7 +850,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException e) {
 			LOGGER
 					.warn(
-							"SQLException while updating the new price for Delivery pass.",
+							"SQLException while updating the new price for DeliveryPass.",
 							e);
 			throw new EJBException(e);
 		} catch (Exception exp) {

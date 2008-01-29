@@ -23,16 +23,16 @@ public class WebDeliveryPassView {
 	private static Category LOGGER = LoggerFactory.getInstance(WebDeliveryPassView.class);
 	
 	private DeliveryPassModel model;
-	private static final String DEFAULT_HEADER_INFO_TEXT = "Your ? DeliveryPass details.";
-	private static final String NO_PASS_DETAIL_INFO_TEXT = "No active DeliveryPass";
+	private static final String DEFAULT_HEADER_INFO_TEXT = "Your membership details.";
+	private static final String NO_PASS_DETAIL_INFO_TEXT = "You are not currently a member";
 	private static final String BSGS_PASS_DETAIL_INFO_TEXT = ": ? deliveries remaining";
 	private static final String UNLIMITED_PASS_DETAIL_INFO_TEXT = " - Good for orders placed on or before ?";
 	private static final String PASS_USAGE_INFO_TEXT = "You have used this pass for ? deliveries.";
 	private static final String SINGLE_PASS_USAGE_INFO_TEXT="You have used this pass for ? delivery.";
 	private static final String PASS_PURCHASE_INFO_TEXT = "Purchased on ? for ?";
 	
-	private static final String PASS_USAGE_PURCHASE_INFO_TEXT_1 = "Your ? pass was purchased on ? for ? and used for ? delivery";
-	private static final String PASS_USAGE_PURCHASE_INFO_TEXT_2 = "Your ? pass was purchased on ? for ? and used for ? deliveries";
+	private static final String PASS_USAGE_PURCHASE_INFO_TEXT_1 = "Your current membership was purchased on ? for ? and has been used for ? delivery";
+	private static final String PASS_USAGE_PURCHASE_INFO_TEXT_2 = "Your current membership was purchased on ? for ? and has been used for ? deliveries";
 	
 	protected static SimpleDateFormat dateFmtDisplay = new SimpleDateFormat("MM/dd/yyyy",Locale.US);
 	NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance( Locale.US );
@@ -118,7 +118,9 @@ public class WebDeliveryPassView {
 			String purchaseDate = dateFmtDisplay.format(model.getPurchaseDate());
 			String purchasePrice = currencyFormatter.format(model.getAmount());
 
-			String[] params = new String[] {model.getStatus().getDisplayName().toLowerCase(),purchaseDate,purchasePrice,String.valueOf(usedDlvsCount)};
+			// String[] params = new String[] {model.getStatus().getDisplayName().toLowerCase(),purchaseDate,purchasePrice,String.valueOf(usedDlvsCount)};
+			String[] params = new String[] {purchaseDate,purchasePrice,String.valueOf(usedDlvsCount)};
+
 			
 			if(usedDlvsCount!=1){
 			    usageInfo = getTextAfterSetParams(PASS_USAGE_PURCHASE_INFO_TEXT_2, params); 

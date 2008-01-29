@@ -12,24 +12,25 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) {
 							<a href="<%=response.encodeURL("/your_account/reserve_timeslot.jsp")%>">Reserve Delivery</a><br>
 						<%}%>
 						<%if(user.isDlvPassActive() || user.isEligibleForDeliveryPass()){%>
-							<a href="<%=response.encodeURL("/your_account/delivery_pass.jsp")%>">DeliveryPass</a><br>
+                            <a href="<%=response.encodeURL("/your_account/delivery_pass.jsp")%>">Unlimited DeliveryPass</a><br>
 						<%}%>
-						
-						<a href="<%=response.encodeURL("/your_account/delivery_information.jsp")%>">Delivery Addresses</a><br>
-						<%if(!user.isEligibleForPreReservation()){%>
-						<a href="<%=response.encodeURL("/your_account/payment_information.jsp")%>">Payment Options</a>
-						<%}%>
+						                
 					</td>
 					<td>&nbsp;&nbsp;&nbsp;&nbsp;<img src="/media_stat/images/layout/999966.gif" width="1" height="34" border="0" hspace="0" vspace="0" ALIGN="TOP">&nbsp;</td>
 					<td class="text9_lh12" valign="top">
+                       <a href="<%=response.encodeURL("/your_account/delivery_information.jsp")%>">Delivery Addresses</a><br>
+    					<%if(!user.isEligibleForPreReservation()){%>
+						<a href="<%=response.encodeURL("/your_account/payment_information.jsp")%>">Payment Options</a>
+						<%}%>
 						<%if(user.isEligibleForPreReservation()){%>
 						<a href="<%=response.encodeURL("/your_account/payment_information.jsp")%>">Payment Options</a><br>
 						<%}%>
 					    <a href="<%=response.encodeURL("/your_account/signin_information.jsp")%>">User Name, Password &amp; Contact Information</a><br>
-						<a href="<%=response.encodeURL("/your_account/newsletter.jsp")%>">President's Picks Newsletter</a>
 					</td>
 					<td>&nbsp;&nbsp;&nbsp;&nbsp;<img src="/media_stat/images/layout/999966.gif" width="1" height="34" border="0" hspace="0" vspace="0" ALIGN="TOP">&nbsp;</td>
-					<td class="text9_lh12" valign="top"><a href="<%=response.encodeURL("/your_account/reminder_service.jsp")%>">Reminder Service</a>
+					<td class="text9_lh12" valign="top">
+                    <a href="<%=response.encodeURL("/your_account/newsletter.jsp")%>">President's Picks Newsletter</a><br>
+                    <a href="<%=response.encodeURL("/your_account/reminder_service.jsp")%>">Reminder Service</a>
 					</td>
 				</tr>
 				<tr><td colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="6" border="0"></td></tr>
