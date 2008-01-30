@@ -121,7 +121,7 @@ Recipe recipe = null;
     Image confirmImage = prdNode.getConfirmImage();
 %>
     <tr valign="top">
-     <td><font class="title18"><%= orderLine.getDescription() %></font>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/product_modify.jsp?cartLine=<%= orderLine.getRandomId() %>&skuCode=<%=orderLine.getSku().getSkuCode()%>&trk=conf"><img src="/media_stat/images/buttons/edit_product.gif" width="32" height="14" alt="Edit" border="0"></a>
+     <td><font class="title18"><%= orderLine.getDescription() %></font>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/product_modify.jsp?cartLine=<%= orderLine.getRandomId() %>&trk=conf"><img src="/media_stat/images/buttons/edit_product.gif" width="32" height="14" alt="Edit" border="0"></a>
      <br><font class="space4pix"><br></font>
      Quantity: <font class="text10bold">
      <%  Attribute sell_by = prdNode.getAttribute("SELL_BY_SALESUNIT");
