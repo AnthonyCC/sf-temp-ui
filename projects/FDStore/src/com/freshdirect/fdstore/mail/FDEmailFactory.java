@@ -39,17 +39,30 @@ import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class FDEmailFactory {
+	private static FDEmailFactory _sharedInstance; // singleton holder
 
-	private static Category LOGGER = LoggerFactory.getInstance(FDEmailFactory.class);
-	private static SimpleDateFormat df = new SimpleDateFormat("EEEE, MMM d yyyy");
-	private static final SimpleDateFormat DT_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-	private static String GENERAL_CS_EMAIL = FDStoreProperties.getCustomerServiceEmail();
-	private static String PRODUCT_EMAIL = FDStoreProperties.getProductEmail();
-	private static String FEEDBACK_EMAIL = FDStoreProperties.getFeedbackEmail();
-	private static String CHEFSTABLE_EMAIL = FDStoreProperties.getChefsTableEmail();
-	private static String GENERAL_LABEL = "FreshDirect";
 
-	public static XMLEmailI createFinalAmountEmail(FDCustomerInfo customer, FDOrderI order) {
+
+	public static final Category LOGGER = LoggerFactory.getInstance(FDEmailFactory.class);
+	public static final SimpleDateFormat df = new SimpleDateFormat("EEEE, MMM d yyyy");
+	public static final SimpleDateFormat DT_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+	public static final String GENERAL_CS_EMAIL = FDStoreProperties.getCustomerServiceEmail();
+	public static final String PRODUCT_EMAIL = FDStoreProperties.getProductEmail();
+	public static final String FEEDBACK_EMAIL = FDStoreProperties.getFeedbackEmail();
+	public static final String CHEFSTABLE_EMAIL = FDStoreProperties.getChefsTableEmail();
+	public static final String GENERAL_LABEL = "FreshDirect";
+
+
+	// default instance getter
+	public static FDEmailFactory getInstance() {
+		if (_sharedInstance == null) {
+			_sharedInstance = new FDEmailFactory();
+		}
+		return _sharedInstance;
+	}
+
+
+	public XMLEmailI createFinalAmountEmail(FDCustomerInfo customer, FDOrderI order) {
 		FDTransactionalEmail email = new FDTransactionalEmail(customer, order);
 		email.setXslPath("h_final_amount_confirm_v2.xsl", "x_final_amount_confirm_v2.xsl");
 
@@ -64,7 +77,7 @@ public class FDEmailFactory {
 		return email;
 	}
 
-	public static XMLEmailI createConfirmOrderEmail(FDCustomerInfo customer, FDOrderI order) {
+	public XMLEmailI createConfirmOrderEmail(FDCustomerInfo customer, FDOrderI order) {
 		FDTransactionalEmail email = new FDTransactionalEmail(customer, order);
 
 		email.setXslPath("h_order_confirm_v1.xsl", "x_order_confirm_v1.xsl");
@@ -76,7 +89,7 @@ public class FDEmailFactory {
 		return email;
 	}
 
-	public static XMLEmailI createModifyOrderEmail(FDCustomerInfo customer, FDOrderI order) {
+	public XMLEmailI createModifyOrderEmail(FDCustomerInfo customer, FDOrderI order) {
 		FDTransactionalEmail email = new FDTransactionalEmail(customer, order);
 
 		email.setXslPath("h_order_change_v1.xsl", "x_order_change_v1.xsl");
@@ -86,7 +99,7 @@ public class FDEmailFactory {
 		return email;
 	}
 
-	public static XMLEmailI createChargeOrderEmail(FDCustomerInfo customer, FDOrderI order, double additionalCharge) {
+	public XMLEmailI createChargeOrderEmail(FDCustomerInfo customer, FDOrderI order, double additionalCharge) {
 		FDTransactionalEmail email = new FDTransactionalEmail(customer, order);
 
 		email.setXslPath("h_order_charge_v1.xsl", "x_order_charge_v1.xsl");
@@ -100,7 +113,7 @@ public class FDEmailFactory {
 		return email;
 	}
 
-	public static XMLEmailI createCancelOrderEmail(FDCustomerInfo customer, String orderNumber, Date startTime, Date endTime) {
+	public XMLEmailI createCancelOrderEmail(FDCustomerInfo customer, String orderNumber, Date startTime, Date endTime) {
 		FDCancelOrderConfirmEmail email = new FDCancelOrderConfirmEmail(customer, orderNumber, startTime, endTime);
 
 		email.setXslPath("h_order_cancel_v1.xsl", "x_order_cancel_v1.xsl");
@@ -109,7 +122,7 @@ public class FDEmailFactory {
 		return email;
 	}
 
-	public static XMLEmailI createConfirmCreditEmail(FDCustomerInfo customer, String saleId, ErpComplaintModel complaint) {
+	public XMLEmailI createConfirmCreditEmail(FDCustomerInfo customer, String saleId, ErpComplaintModel complaint) {
 		FDConfirmCreditEmail email = new FDConfirmCreditEmail(customer, saleId, complaint);
 		//email.setXslPath("h_credit_confirm_v1.xsl", "x_credit_confirm_v1.xsl");
 		
@@ -122,7 +135,7 @@ public class FDEmailFactory {
 		return email;
 	}
 
-	public static XMLEmailI createForgotPasswordEmail(FDCustomerInfo customer, String requestId, Date expiration, List ccList) {
+	public XMLEmailI createForgotPasswordEmail(FDCustomerInfo customer, String requestId, Date expiration, List ccList) {
 		String passwordLink =
 			ErpServicesProperties.getForgotPasswordPage() + "?email=" + customer.getEmailAddress() + "&link=" + requestId;
 
@@ -136,7 +149,7 @@ public class FDEmailFactory {
 		return email;
 	}
 
-	public static XMLEmailI createConfirmSignupEmail(FDCustomerInfo customer) {
+	public XMLEmailI createConfirmSignupEmail(FDCustomerInfo customer) {
 		FDInfoEmail email = new FDInfoEmail(customer);
 		if (customer.isPickupOnly()) {
 			email.setXslPath("h_pickup_signup_confirm.xsl", "x_pickup_signup_confirm.xsl");
@@ -151,16 +164,17 @@ public class FDEmailFactory {
 		return email;
 	}
 	
-	public static XMLEmailI createAuthorizationFailedEmail(FDCustomerInfo customer, String orderNumber, Date startTime, Date endTime, Date cutoffTime){
+	public XMLEmailI createAuthorizationFailedEmail(FDCustomerInfo customer, String orderNumber, Date startTime, Date endTime, Date cutoffTime){
 		FDAuthorizationFailedEmail email = new FDAuthorizationFailedEmail(customer, orderNumber, startTime, endTime, cutoffTime);
 		email.setXslPath("h_authorization_failure.xsl", "x_authorization_failure.xsl");
 		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
 		email.setSubject("Credit Card Authorization Failure");
 		
+
 		return email; 
 	}
 
-	public static XMLEmailI createReminderEmail(FDCustomerInfo customer, boolean sendToAltEmail) {
+	public XMLEmailI createReminderEmail(FDCustomerInfo customer, boolean sendToAltEmail) {
 		FDInfoEmail email = new FDInfoEmail(customer);
 		email.setXslPath("h_reminder_service.xsl", "x_reminder_service.xsl");
 		if(sendToAltEmail){
@@ -173,7 +187,7 @@ public class FDEmailFactory {
 		return email;
 	}
 
-	public static XMLEmailI createGenericEmail(FDCustomerInfo customer, String subject, Document body) {
+	public XMLEmailI createGenericEmail(FDCustomerInfo customer, String subject, Document body) {
 		FDGenericEmail email = new FDGenericEmail(customer, body);
 
 		email.setXslPath("h_generic.xsl", "x_generic.xsl");
@@ -183,7 +197,7 @@ public class FDEmailFactory {
 		return email;
 	}
 
-	public static XMLEmailI createRecipeEmail(FDCustomerInfo customer, Recipe recipe) {
+	public XMLEmailI createRecipeEmail(FDCustomerInfo customer, Recipe recipe) {
 		FDRecipeEmail email = new FDRecipeEmail(customer, recipe);
 
 		email.setXslPath("h_recipe.xsl", "x_recipe.xsl");
@@ -193,14 +207,14 @@ public class FDEmailFactory {
 		return email;
 	}
 
-	public static XMLEmailI createTellAFriendEmail(TellAFriend mailInfo, boolean preview) {
+	public XMLEmailI createTellAFriendEmail(TellAFriend mailInfo, boolean preview) {
 		FDTellAFriendEmail email = new FDTellAFriendEmail(mailInfo, preview);
 		email.setXslPath(mailInfo.getXsltPath());
 
 		return email;
 	}
 
-	public static XMLEmailI createProductRequestEmail(FDCustomerInfo customerInfo, String subject, String body) {
+	public XMLEmailI createProductRequestEmail(FDCustomerInfo customerInfo, String subject, String body) {
 		FDProductRequestEmail email = new FDProductRequestEmail(body);
 
 		if (customerInfo == null) {
@@ -215,7 +229,7 @@ public class FDEmailFactory {
 		return email;
 	}
 
-	public static XMLEmailI createChefsTableEmail(FDCustomerInfo customerInfo, String subject, String body) {
+	public XMLEmailI createChefsTableEmail(FDCustomerInfo customerInfo, String subject, String body) {
 		ChefsTableEmail email = new ChefsTableEmail(body);
 
 		if (customerInfo == null) {
@@ -229,7 +243,8 @@ public class FDEmailFactory {
 
 		return email;
 	}
-	public static XMLEmailI createContactServiceEmail(FDCustomerInfo customerInfo, String subject, String body) {
+
+	public XMLEmailI createContactServiceEmail(FDCustomerInfo customerInfo, String subject, String body) {
 		FDContactServiceEmail email = new FDContactServiceEmail(body);
 
 		if (customerInfo == null) {
@@ -244,7 +259,7 @@ public class FDEmailFactory {
 		return email;
 	}
 	
-	public static XMLEmailI createCorporateServiceInterestEmail(ErpCustomerInfoModel erpCustomerInfo, String subject, String body) {
+	public XMLEmailI createCorporateServiceInterestEmail(ErpCustomerInfoModel erpCustomerInfo, String subject, String body) {
 		FDContactServiceEmail email = new CorporateServiceEmail(body);
 
 		if (erpCustomerInfo == null) {
@@ -259,7 +274,7 @@ public class FDEmailFactory {
 		return email;
 	}
 	
-	public static XMLEmailI createCateringEmail(ErpCustomerInfoModel erpCustomerInfo, String subject, String body) {
+	public XMLEmailI createCateringEmail(ErpCustomerInfoModel erpCustomerInfo, String subject, String body) {
 		FDContactServiceEmail email = new CateringEmail(body);
 
 		if (erpCustomerInfo == null) {
@@ -274,7 +289,7 @@ public class FDEmailFactory {
 		return email;
 	}
 	
-	public static XMLEmailI createFeedbackEmail(FDCustomerInfo customerInfo, String subject, String body) {
+	public XMLEmailI createFeedbackEmail(FDCustomerInfo customerInfo, String subject, String body) {
 		FeedbackEmail email = new FeedbackEmail(body);
 			
 		if (customerInfo == null) {
@@ -291,7 +306,7 @@ public class FDEmailFactory {
 	
 	////////
 
-	private static String getFromAddress(String depotCode) {
+	protected String getFromAddress(String depotCode) {
 		if (depotCode == null || "".equals(depotCode)) {
 			return GENERAL_CS_EMAIL;
 		}
@@ -525,7 +540,7 @@ public class FDEmailFactory {
 
 	}
 	
-	private static class FDAuthorizationFailedEmail extends FDInfoEmail {
+	static class FDAuthorizationFailedEmail extends FDInfoEmail {
 
 		private String orderNumber;
 		private Date deliveryStartTime;
@@ -872,7 +887,7 @@ public class FDEmailFactory {
 	}
 	
 	
-	public static XMLEmailI createDPCreditEmail(FDCustomerInfo customer, String saleId, int creditCount, String dpName) {
+	public XMLEmailI createDPCreditEmail(FDCustomerInfo customer, String saleId, int creditCount, String dpName) {
 		FDDPCreditEmail email = new FDDPCreditEmail(customer, saleId, creditCount,dpName);
 
 		email.setXslPath("h_dp_credits_v1.xsl", "x_dp_credits_v1.xsl");

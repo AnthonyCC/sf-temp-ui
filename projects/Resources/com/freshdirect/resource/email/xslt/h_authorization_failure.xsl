@@ -38,9 +38,9 @@
 							and <xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="deliveryEndTime"/></xsl:call-template></b>
 							on <b><xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="deliveryStartTime"/></xsl:call-template></b>
 							using the payment method you have chosen. Credit card authorization can fail for a number of reasons -- often the cause is an incorrect expiration date.
-							So that we can process your order as soon as possible, to make changes to the information you submitted or to enter a different credit card, <xsl:element name = "a"><xsl:attribute name = "href">http://www.freshdirect.com/your_account/order_details.jsp?orderId=<xsl:value-of select="orderNumber"/></xsl:attribute>click here</xsl:element>.</p>
+							So that we can process your order as soon as possible, please call customer service at <xsl:value-of select="customer/customerServiceContact"/>.</p>
 
-							<p>To be sure that your order  is delivered, please make any changes before <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="cutoffTime"/></xsl:call-template> on <b><xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="cutoffTime"/></xsl:call-template></b>.
+							<p>To be sure that your order is delivered, please make any changes before <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="cutoffTime"/></xsl:call-template> on <b><xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="cutoffTime"/></xsl:call-template></b>.
 							If you would like to speak with a Customer Service Representative please call us toll-free at 1-866 283-7374. We're here Sunday-Friday 8am-1am and Saturdays from 8am-9pm.</p>
 							<br/>
 								<p>Sincerely,

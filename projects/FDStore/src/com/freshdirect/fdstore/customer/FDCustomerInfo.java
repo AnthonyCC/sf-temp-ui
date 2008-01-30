@@ -32,7 +32,7 @@ public class FDCustomerInfo implements java.io.Serializable{
     private PhoneNumber workPhone;
     private PhoneNumber cellPhone;
     private boolean chefsTable;
-    
+    private String customerServiceContact;
 	
 	public FDCustomerInfo(String firstName, String lastName){
 		this.firstName = firstName;
@@ -174,5 +174,12 @@ public class FDCustomerInfo implements java.io.Serializable{
 	public void setChefsTable(boolean chefsTable) {
 		this.chefsTable = chefsTable;
 	}
-    
+
+	public String getCustomerServiceContact() {
+		return customerServiceContact;
+	}
+
+	public void setCustomerServiceContact(String customerServiceContact) {
+		this.customerServiceContact = customerServiceContact;
+	}
 }

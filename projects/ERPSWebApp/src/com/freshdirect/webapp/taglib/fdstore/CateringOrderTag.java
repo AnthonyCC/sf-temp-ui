@@ -211,7 +211,7 @@ public class CateringOrderTag extends AbstractControllerTag implements SessionNa
 					+ "\n";
 			}*/
 
-			XMLEmailI email = FDEmailFactory.createCateringEmail(erpCust, subject, body);
+			XMLEmailI email = FDEmailFactory.getInstance().createCateringEmail(erpCust, subject, body);
 			FDCustomerManager.doEmail(email);
 
 			this.setSuccessPage(this.getSuccessPage() + "&info=thankyou");

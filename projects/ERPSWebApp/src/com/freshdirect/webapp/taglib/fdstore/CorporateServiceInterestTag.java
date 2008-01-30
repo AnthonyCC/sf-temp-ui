@@ -120,7 +120,7 @@ public class CorporateServiceInterestTag extends AbstractControllerTag implement
 				"Customer Email:\t" + erpCust.getEmail() + "\n";
 			}
 
-			XMLEmailI email = FDEmailFactory.createCorporateServiceInterestEmail(erpCust, subject, body);
+			XMLEmailI email = FDEmailFactory.getInstance().createCorporateServiceInterestEmail(erpCust, subject, body);
 			FDCustomerManager.doEmail(email);
 
 			this.setSuccessPage(this.getSuccessPage() + "?info=thankyou"); 

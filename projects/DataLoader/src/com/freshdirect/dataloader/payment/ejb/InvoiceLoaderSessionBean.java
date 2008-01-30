@@ -134,7 +134,7 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 			fdInfo.setEmailAddress(erpInfo.getEmail());
 			
 			MailerGatewaySB mailBean = this.getMailerGatewayHome().create();
-			mailBean.enqueueEmail(FDEmailFactory.createFinalAmountEmail(fdInfo, fdOrder));
+			mailBean.enqueueEmail(FDEmailFactory.getInstance().createFinalAmountEmail(fdInfo, fdOrder));
 			
 			// collect recipes that will be sent to the users
 			List orderLines = fdOrder.getOrderLines();
@@ -153,7 +153,7 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 			for (Iterator it = recipes.iterator(); it.hasNext();) {
 				Recipe recipe = (Recipe) it.next();
 				
-				mailBean.enqueueEmail(FDEmailFactory.createRecipeEmail(fdInfo, recipe));
+				mailBean.enqueueEmail(FDEmailFactory.getInstance().createRecipeEmail(fdInfo, recipe));
 			}
 				
 		} catch (ErpTransactionException e) {

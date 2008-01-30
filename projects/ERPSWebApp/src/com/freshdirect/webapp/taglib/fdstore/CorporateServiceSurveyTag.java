@@ -237,7 +237,7 @@ public class CorporateServiceSurveyTag extends AbstractControllerTag implements 
 							"Phone:\t\t" + phone + "\n" +
 							"Email:\t\t" + email + "\n";
 		
-			XMLEmailI email = FDEmailFactory.createCorporateServiceInterestEmail(erpCust, subject, body);
+			XMLEmailI email = FDEmailFactory.getInstance().createCorporateServiceInterestEmail(erpCust, subject, body);
 			FDCustomerManager.doEmail(email);
 
 			this.setSuccessPage(this.getSuccessPage() + "?successPage="+URLEncoder.encode(redirectSuccessPage)+"&info=thankyou#survey"); 

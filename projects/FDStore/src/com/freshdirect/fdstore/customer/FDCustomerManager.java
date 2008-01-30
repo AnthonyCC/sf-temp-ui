@@ -310,6 +310,9 @@ public class FDCustomerManager {
     			//BEGIN
     			//ErpAddressModel address = sb.assumeDeliveryAddress(identity, user.getOrderHistory().getLastOrderId());
     			String lastOrderId = sb.getLastOrderID(identity);
+    			if (lastOrderId==null) {
+    				return;
+    			}
     			ErpAddressModel address = sb.assumeDeliveryAddress(identity, lastOrderId);
     			//END
     			if(address != null && user.getShoppingCart() != null){
@@ -1332,7 +1335,7 @@ public class FDCustomerManager {
 	}
 
 	public static XMLEmailI makePreviewCreditEmail(FDCustomerInfo custInfo,String saleId,ErpComplaintModel complaint) {
-		return FDEmailFactory.createConfirmCreditEmail(custInfo,saleId,complaint);
+		return FDEmailFactory.getInstance().createConfirmCreditEmail(custInfo,saleId,complaint);
 	}
 
 
@@ -1751,7 +1754,7 @@ public class FDCustomerManager {
 		try {			
 			//FDReferralProgramModel referralProgram = FDReferralManager.loadLastestActiveReferralProgram();
 			//mailInfo.setReferralProgram(referralProgram);
-			XMLEmailI email = FDEmailFactory.createTellAFriendEmail(mailInfo, true);
+			XMLEmailI email = FDEmailFactory.getInstance().createTellAFriendEmail(mailInfo, true);
 			XSLTransformer transformer = new XSLTransformer();	
 			return transformer.transform(email.getXML(), email.getXslPath());
 		} catch (TransformerException te) {
@@ -1787,7 +1790,7 @@ public class FDCustomerManager {
 		try {
 			lookupMailerGatewayHome();
 			MailerGatewaySB mailer = mailerHome.create();
-			XMLEmailI email = FDEmailFactory.createTellAFriendEmail(mailInfo, false);
+			XMLEmailI email = FDEmailFactory.getInstance().createTellAFriendEmail(mailInfo, false);
 			LOGGER.info(
 				"Sending TAF email to: "
 					+ email.getRecipient()
@@ -1810,12 +1813,12 @@ public class FDCustomerManager {
 			MailerGatewaySB mailer = mailerHome.create();
 			XMLEmailI email = null;
 			if(chefstable){
-				email = FDEmailFactory.createChefsTableEmail(customer, subject, body);
+				email = FDEmailFactory.getInstance().createChefsTableEmail(customer, subject, body);
 			}else{
 				if(feedback){
-					email = FDEmailFactory.createFeedbackEmail(customer, subject, body);
+					email = FDEmailFactory.getInstance().createFeedbackEmail(customer, subject, body);
 				}else{
-					email = FDEmailFactory.createContactServiceEmail(customer, subject, body);
+					email = FDEmailFactory.getInstance().createContactServiceEmail(customer, subject, body);
 				}
 			}
 			mailer.enqueueEmail(email);

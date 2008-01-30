@@ -237,7 +237,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			emailInfo.setPickupOnly(pickupOnly);
 			emailInfo.setEligibleForPromotion(eligibleForPromotion);
 
-			this.doEmail(FDEmailFactory.createConfirmSignupEmail(emailInfo));
+			this.doEmail(FDEmailFactory.getInstance().createConfirmSignupEmail(emailInfo));
 
 			FDIdentity identity = new FDIdentity(fdCustomer.getErpCustomerPK(), fdCustomerEB.getPK().getId());
 
@@ -767,6 +767,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			String depotCode = this.getDepotCode(identity);
 			fdInfo.setDepotCode(depotCode);
 			fdInfo.setChefsTable(fduser.isChefsTable());
+			fdInfo.setCustomerServiceContact(fduser.getCustomerServiceContact());
 			return fdInfo;
 
 		} catch (FinderException fe) {
@@ -1395,7 +1396,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				int orderCount = getValidOrderCount(identity);
 				fdInfo.setNumberOfOrders(orderCount);
 
-				this.doEmail(FDEmailFactory.createConfirmOrderEmail(fdInfo, order));
+				this.doEmail(FDEmailFactory.getInstance().createConfirmOrderEmail(fdInfo, order));
 			}
 			
 			return pk.getId();
@@ -1598,7 +1599,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			
 			if (sendEmail) {
 				FDCustomerInfo fdInfo = this.getCustomerInfo(info.getIdentity());
-				this.doEmail(FDEmailFactory.createCancelOrderEmail(
+				this.doEmail(FDEmailFactory.getInstance().createCancelOrderEmail(
 					fdInfo,
 					saleId,
 					order.getDeliveryReservation().getStartTime(),
@@ -1798,7 +1799,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				int orderCount = getValidOrderCount(identity);
 				fdInfo.setNumberOfOrders(orderCount);
 
-				this.doEmail(FDEmailFactory.createModifyOrderEmail(fdInfo, fdOrder));
+				this.doEmail(FDEmailFactory.getInstance().createModifyOrderEmail(fdInfo, fdOrder));
 			}
 
 		}catch (DeliveryPassException de) {
@@ -2024,7 +2025,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				fdInfo.setNumberOfOrders(orderCount);
 				// get order again with new payment method
 				fdOrder = (FDOrderAdapter)getOrder(identity, saleId);
-				this.doEmail(FDEmailFactory.createChargeOrderEmail(fdInfo, fdOrder, additionalCharge));
+				this.doEmail(FDEmailFactory.getInstance().createChargeOrderEmail(fdInfo, fdOrder, additionalCharge));
 			}
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
@@ -2064,7 +2065,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				|| (alteredComplaint.getStatus().equals(EnumComplaintStatus.APPROVED) && (alteredComplaint.okToSendEmailOnCreate() || alteredComplaint
 					.okToSendEmailOnApproval()))) {
 				FDCustomerInfo fdInfo = getCustomerInfo(new FDIdentity(erpCustomerId, fdCustomerId));
-				this.doEmail(FDEmailFactory.createConfirmCreditEmail(fdInfo, saleId, alteredComplaint));
+				this.doEmail(FDEmailFactory.getInstance().createConfirmCreditEmail(fdInfo, saleId, alteredComplaint));
 				alteredComplaint.getCustomerEmail().setMailSent(true);
 				sb.updateEmailSentFlag(alteredComplaint.getCustomerEmail());
 			}
@@ -2129,7 +2130,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 
 				boolean otherEmailConditions = (cem != null && !cem.isMailSent() && !complaintInfo.getComplaint().dontSendEmail());
 				if (sendMail && otherEmailConditions) {
-					this.doEmail(FDEmailFactory.createConfirmCreditEmail(fdInfo, saleId, complaintInfo.getComplaint()));
+					this.doEmail(FDEmailFactory.getInstance().createConfirmCreditEmail(fdInfo, saleId, complaintInfo.getComplaint()));
 					complaintInfo.getComplaint().getCustomerEmail().setMailSent(true);
 					sb.updateEmailSentFlag(complaintInfo.getComplaint().getCustomerEmail());
 				}
@@ -2466,7 +2467,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 
 			FDCustomerInfo fdInfo = this.getCustomerInfo(new FDIdentity(fdCustomer.getErpCustomerPK(), fdCustomer.getPK().getId()));
 
-			this.doEmail(FDEmailFactory.createForgotPasswordEmail(fdInfo, requestId, expiration, ccList));
+			this.doEmail(FDEmailFactory.getInstance().createForgotPasswordEmail(fdInfo, requestId, expiration, ccList));
 
 			return true;
 
@@ -2689,7 +2690,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			}
 			String lastOrderID = getLastOrderID(identity);
 			fdInfo.setLastOrderId(lastOrderID);
-			this.doEmail(FDEmailFactory.createReminderEmail(fdInfo, custInfo.isReminderAltEmail()));
+			this.doEmail(FDEmailFactory.getInstance().createReminderEmail(fdInfo, custInfo.isReminderAltEmail()));
 
 			custInfo.setLastReminderEmailSend(new java.util.Date());
 			erpCustomer.setCustomerInfo(custInfo);
@@ -2715,7 +2716,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(order.getDeliveryReservation().getCutoffTime());
 				cal.add(Calendar.HOUR_OF_DAY, -1*ErpServicesProperties.getCancelOrdersB4Cutoff());
-				this.doEmail(FDEmailFactory.createAuthorizationFailedEmail(custInfo, salesId, 
+				this.doEmail(FDEmailFactory.getInstance().createAuthorizationFailedEmail(custInfo, salesId, 
 					order.getDeliveryReservation().getStartTime(), 
 					order.getDeliveryReservation().getEndTime(), cal.getTime()));
 			}
