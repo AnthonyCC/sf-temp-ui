@@ -141,7 +141,7 @@ public class DeliveryPassControllerTag extends AbstractControllerTag {
 	
 	private void sendEmail(FDCustomerInfo customer, String saleId, int creditCount, EnumDlvPassProfileType dlvPassProfile) throws FDResourceException {
 		
-		FDCustomerManager.doEmail(FDEmailFactory.createDPCreditEmail(customer, saleId, creditCount,dlvPassProfile.getName()));
+		FDCustomerManager.doEmail(FDEmailFactory.getInstance().createDPCreditEmail(customer, saleId, creditCount,dlvPassProfile.getName()));
 	}
 
 	public static class TagEI extends AbstractControllerTag.TagEI {

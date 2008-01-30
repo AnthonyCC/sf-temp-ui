@@ -67,7 +67,7 @@
 			Document doc = DocumentHelper.parseText("<body>" + body + "</body>");
 
 			for (Iterator i=customers.iterator(); i.hasNext(); ) {
-				XMLEmailI m = FDEmailFactory.createGenericEmail( (FDCustomerInfo)i.next(), subject, doc );
+				XMLEmailI m = FDEmailFactory.getInstance().createGenericEmail( (FDCustomerInfo)i.next(), subject, doc );
 				FDCustomerManager.doEmail(m);
 			}
 

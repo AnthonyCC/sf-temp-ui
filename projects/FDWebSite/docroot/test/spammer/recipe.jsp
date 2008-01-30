@@ -87,7 +87,7 @@
 System.out.println("customers: " + customers.size());
 
         for (Iterator i=customers.iterator(); i.hasNext(); ) {
-            XMLEmailI m = FDEmailFactory.createRecipeEmail( (FDCustomerInfo)i.next(), recipe);
+            XMLEmailI m = FDEmailFactory.getInstance().createRecipeEmail( (FDCustomerInfo)i.next(), recipe);
             FDCustomerManager.doEmail(m);
         }
 
