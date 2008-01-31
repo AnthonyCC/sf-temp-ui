@@ -1,9 +1,20 @@
 package com.freshdirect.fdstore.mail;
 
+import java.io.InputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.Date;
 import java.util.regex.Pattern;
 
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.URIResolver;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
+import org.apache.log4j.Logger;
 
 import junit.framework.TestCase;
 
@@ -13,6 +24,9 @@ import com.freshdirect.framework.xml.XSLTransformer;
 import com.freshdirect.mail.MailName;
 
 public class FDEmailFactoryTest extends TestCase implements MailName {
+	
+	public static final Logger LOG = Logger.getLogger(FDEmailFactoryTest.class);
+	
 	/**
 	 * Fulfill a customer info instance 
 	 * @param isChefsTable
@@ -48,7 +62,11 @@ public class FDEmailFactoryTest extends TestCase implements MailName {
 		XMLEmailI email = FDEmailFactoryHack.getInstance().createAuthorizationFailedEmail(custInfo, "123456", stDate, endDate, endDate);
 
 		// compile mail template to string content
-		String mailBody = new XSLTransformer().transform(email.getXML(), email.getXslPath());
+		String xml = email.getXML();
+		String xslPath = email.getXslPath();
+	
+		LOG.info("testAuthorizationFailedHtml: xml="+xml+" xslPath:"+xslPath);
+		String mailBody = transform(xml, xslPath);
 		
 		/// debug System.out.println(mailBody);
 		
@@ -59,6 +77,42 @@ public class FDEmailFactoryTest extends TestCase implements MailName {
 		// check customer service contact number in email
 		p = Pattern.compile("please\\scall\\scustomer\\sservice\\sat\\s" + custInfo.getCustomerServiceContact() + "\\.");
 		assertTrue(p.matcher(mailBody).find());
+	}
+	
+	
+	public String transform(String xml, String xslPath) throws TransformerException {
+		
+		StringWriter mailBody = new StringWriter();
+		XslPathResolver resolver = new XslPathResolver(xslPath.substring(0, xslPath.lastIndexOf("/")));
+		TransformerFactory tFactory = TransformerFactory.newInstance();
+		tFactory.setURIResolver(resolver);
+		InputStream stream = this.getClass().getClassLoader().getResourceAsStream(xslPath);
+		
+		LOG.info("Found stream "+stream+" for xslPath "+xslPath);
+		
+		Transformer transformer = tFactory.newTransformer(new StreamSource(stream));
+		transformer.transform(new StreamSource(new StringReader(xml)), new StreamResult(mailBody));
+
+		return mailBody.toString();
+	}
+
+	
+	static class XslPathResolver implements URIResolver {
+
+		private String xslRoot = null;
+
+		public XslPathResolver(String xslRoot) {
+			this.xslRoot = xslRoot;
+		}
+
+		public Source resolve(String href, String base) throws TransformerException {
+			try {
+				LOG.info("resolve href:"+href+" base:"+base);
+				return new StreamSource( this.getClass().getClassLoader().getResourceAsStream(xslRoot+"/"+href) );
+			} catch (Exception e) {
+				throw new TransformerException(e);
+			}
+		}
 	}
 
 
