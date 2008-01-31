@@ -211,8 +211,10 @@ if (errorMsg!=null) {%>
 	<%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
 	
 <%	} else if (cart.isDeliveryChargeWaived()) {
-%>
-		Free! We've waived the standard <%= dlvCharge %> delivery charge for this order.	
+        if((int)cart.getDeliverySurcharge() == 0){
+%>     
+		Free! <% }else{ %> Free! We've waived the standard <%= dlvCharge %> delivery charge for this order. <% } %>	
+                
 	<%}else {%>
 		<%= (int)cart.getDeliverySurcharge() == 0 ? "Free!" : dlvCharge %>
 	<%}%>		
