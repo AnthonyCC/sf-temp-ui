@@ -177,6 +177,33 @@ public class StringUtil {
 	}
 	
 	/**
+	 * Escape only the well known potentially XSS vulnerability causing characters in a URI.
+	 * 
+	 * Escapes the &lt;, &quot; and &gt; characters.
+	 * @param queryString
+	 * @return escaped queryString
+	 */
+	public static String escapeXssUri(String queryString) {
+		if (queryString == null) return "";
+		
+		StringBuffer buff = new StringBuffer(queryString.length()+1);
+		for(int i=0; i< queryString.length(); ++i) {
+			char c = queryString.charAt(i);
+			switch(c) {
+				case '<':
+				case '>':
+				case '\"':
+					buff.append('%');
+					appendHexCode(c, buff);
+					break;
+				default:
+					buff.append(c);
+			}
+		}
+		return buff.toString();
+	}
+	
+	/**
 	 * Append the string URI escaped.
 	 * @param str
 	 * @param buff
