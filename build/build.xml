@@ -30,7 +30,7 @@
 	<property name="checkout.delete_projects"			value="true" />
 	<property name="selenium.server_host"	value="localhost" />
 	<property name="selenium.server_port"	value="4444" />
-	<property name="emma.enabled"           value="true"/>
+	<property name="emma.enabled"           value="false"/>
     <property name="jmeter.hostname"        value="localhost" />
     <property name="jmeter.port"            value="7001" />
 
@@ -491,6 +491,7 @@
 		            <fileset dir="${work.dir}" includes="FDStore.jar" />
 		            <fileset dir="${work.dir}" includes="DataLoader.jar" />
 		            <fileset dir="${dest.dir}" includes="ERPSWebApp.jar" />
+		            <!--  fileset dir="${work.dir}" includes="Resources.jar" / -->
 		        </copy>
 
 				<junit fork="yes">
@@ -511,9 +512,9 @@
 						<path refid="testing.classpath" />
 
 		                <pathelement location="${thirdparty.home}/lcc.jar"/>
-				<pathelement location="${thirdparty.home}/lucene-core-2.2.0.jar"/>
-				<pathelement location="${thirdparty.home}/lucene-queries-2.2.0.jar"/>
-				<pathelement location="${thirdparty.home}/lucene-spellchecker-2.2.0.jar"/>
+						<pathelement location="${thirdparty.home}/lucene-core-2.2.0.jar"/>
+						<pathelement location="${thirdparty.home}/lucene-queries-2.2.0.jar"/>
+						<pathelement location="${thirdparty.home}/lucene-spellchecker-2.2.0.jar"/>
 
 		                <pathelement location="${work.dir}/Framework-emma.jar"/>
 		                <pathelement location="${work.dir}/ERPServices-emma.jar"/>
@@ -524,6 +525,7 @@
 		                <pathelement location="${work.dir}/DataLoader-emma.jar"/>
 		                <pathelement location="${work.dir}/ERPSWebApp-emma.jar"/>
 		                <pathelement location="${work.dir}/listadmin-emma.jar"/>
+		                <pathelement location="${work.dir}/Resources.jar"/>
 		            </classpath>
 		            <!-- emma -->
 		            <jvmarg value="-Demma.coverage.out.file=${work.dir}/logs/coverage.emma" />
@@ -1007,12 +1009,14 @@
 							</tstamp>
 							<echo message="Started Compiling (jsp) @{project} at:${compileStart}"/>
 							<javac
-						srcdir="${projects.dir}/@{project}/src"
-						destdir="${work.dir}/@{project}/WEB-INF/classes"
-						deprecation="${javac.deprecation}"
-						optimize="${javac.optimize}"
-						debug="${javac.debug}"
-						source="${javac.source}">
+								fork="true"
+								memoryMaximumSize="1536m"
+								srcdir="${projects.dir}/@{project}/src"
+								destdir="${work.dir}/@{project}/WEB-INF/classes"
+								deprecation="${javac.deprecation}"
+								optimize="${javac.optimize}"
+								debug="${javac.debug}"
+								source="${javac.source}">
 								<classpath>
 									<path refid="common.classpath"/>
 									<path refid="@{classpathref}"/>
@@ -1042,8 +1046,8 @@
 			</touch>
 			<trycatch>
 				<try>
-					<record name="${work.dir}/logs/log.txt" action="start" append="yes" loglevel="info"/>
-					<java classname="weblogic.jspc" fork="yes" failonerror="yes">
+					<record name="${work.dir}/logs/log.txt" action="start" append="yes" loglevel="debug"/>
+					<java classname="weblogic.jspc" fork="yes" maxmemory="1024m" failonerror="yes">
 						<arg value="-verbose"/>
 						<arg value="-lineNumbers"/>
 						<arg value="-compileAll"/>
