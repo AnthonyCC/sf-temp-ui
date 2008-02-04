@@ -249,7 +249,26 @@
 			}
 		} 
 		%>
-
+	//MNT-111 Bug Fix
+	<%
+		PromotionI redemptionPromo = user.getRedeemedPromotion();
+		if (redemptionPromo != null
+		&& user.getPromotionEligibility().isEligible(redemptionPromo.getPromotionCode())
+		&& user.getPromotionEligibility().isApplied(redemptionPromo.getPromotionCode())
+		&& redemptionPromo.isSampleItem()) {
+		String desc = redemptionPromo.getDescription();
+	%>
+		<tr>
+	            <td colspan="4"></td>
+		    <td colspan="2"><%=desc%>:</td>
+		    <td align="right">FREE!</td>
+	            <td></td>
+	            <td></td>
+                    <td></td>
+		</tr>	
+	<%
+		}
+	%>
         <%  if (order.getCustomerCreditsValue() > 0.0) {%>
 		<tr>
             <td colspan="4"></td>
