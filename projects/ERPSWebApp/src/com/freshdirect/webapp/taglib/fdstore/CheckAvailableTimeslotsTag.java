@@ -13,6 +13,7 @@ import com.freshdirect.delivery.EnumDeliveryStatus;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.framework.webapp.WebFormI;
@@ -70,8 +71,7 @@ public class CheckAvailableTimeslotsTag extends AbstractControllerTag {
 	 			pageContext.getSession().setAttribute(SessionName.USER, user);
 
 	 		}
-
-
+	 		
 	 	}
 	 	return true;
 
@@ -81,11 +81,17 @@ public class CheckAvailableTimeslotsTag extends AbstractControllerTag {
 	 private static class AddressForm implements WebFormI {
 
 	 	private String address1;
+	 	private String apartment;
 	 	private String zipCode;
+	 	private String city;
+	 	private String state;
 
 	 	public void populateForm(HttpServletRequest request) {
 	 		this.address1 = request.getParameter(EnumUserInfoName.DLV_ADDRESS_1.getCode());
+	 		this.apartment=NVL.apply(request.getParameter(EnumUserInfoName.DLV_APARTMENT.getCode()), "").trim();
 	 		this.zipCode = request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode());
+	 		this.city= NVL.apply(request.getParameter(EnumUserInfoName.DLV_CITY.getCode()), "").trim();
+			this.state=NVL.apply(request.getParameter(EnumUserInfoName.DLV_STATE.getCode()), "").trim();	
 	 	}
 
 
@@ -93,19 +99,26 @@ public class CheckAvailableTimeslotsTag extends AbstractControllerTag {
 	 		result.addError(address1==null || address1.length() < 1,
 	 			 EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_REQUIRED
         	);
+	 		        		 		
         	if(zipCode==null || zipCode.length() < 5) {
             	result.addError(new ActionError(EnumUserInfoName.DLV_ZIPCODE.getCode(), SystemMessageList.MSG_REQUIRED));
         	}
-        	
-        	
+        	if(city==null || city.trim().length()==0) {
+            	result.addError(new ActionError(EnumUserInfoName.DLV_CITY.getCode(), SystemMessageList.MSG_REQUIRED));
+        	}
+        	if(state==null || state.trim().length()==0) {
+            	result.addError(new ActionError(EnumUserInfoName.DLV_STATE.getCode(), SystemMessageList.MSG_REQUIRED));
+        	}        	        	
 	 	}
 
 	 	public ErpAddressModel getAddress(){
 
 	 		ErpAddressModel address = new ErpAddressModel();
 	 		address.setAddress1(this.address1);
+	 		address.setApartment(this.apartment);
 	 		address.setZipCode(this.zipCode);
-
+            address.setCity(this.city);
+            address.setState(this.state);
 	 		return address;
 	 	}
 	 }

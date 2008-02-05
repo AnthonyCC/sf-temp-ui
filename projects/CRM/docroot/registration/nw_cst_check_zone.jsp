@@ -1,7 +1,7 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*"%>
 <%@ page import="com.freshdirect.fdstore.customer.*"%>
 <%@ page import="com.freshdirect.common.customer.EnumServiceType"%>
-
+<%@ page import="com.freshdirect.framework.util.NVL" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -11,6 +11,14 @@
 <tmpl:put name='title' direct='true'>New Customer > Check Zone</tmpl:put>
 
 <tmpl:put name='content' direct='true'>
+<%
+
+String serviceType=NVL.apply(request.getParameter("serviceType"), "");
+
+String moreInfoPage = "more_info.jsp?successPage=nw_cst_enter_details.jsp";
+String failurePage = "delivery.jsp?successPage=nw_cst_enter_details.jsp&serviceType="+serviceType;
+%>
+
 <TABLE WIDTH="100%" CELLPADDING="0" CELLSPACING="2" BORDER="0" ALIGN="CENTER" class="sub_nav">
 	<TR VALIGN="MIDDLE">
 		<TD WIDTH="50%" class="sub_nav_title">&nbsp;Create New Customer: 1. Check Zone</TD>
@@ -20,7 +28,7 @@
 			String depotCodeError = "";
 			String depotAccessCodeError = "";
 			%>
-			<fd:SiteAccessController action='<%= request.getParameter("action") %>' successPage='nw_cst_enter_details.jsp' moreInfoPage='more_info.jsp' failureHomePage='delivery.jsp' result='zipResult'>
+			<fd:SiteAccessController action='<%= request.getParameter("action") %>' successPage='nw_cst_enter_details.jsp' moreInfoPage='<%=moreInfoPage%>' failureHomePage='<%=failurePage%>' result='zipResult'>
                         <% if (zipResult.isSuccess()) { %>
 			<fd:DepotLoginController actionName='<%= request.getParameter("action") %>' successPage='nw_cst_enter_details.jsp' result='depotResult'>
                                         
@@ -61,6 +69,7 @@
 			<TABLE WIDTH="100%" CELLPADDING="2" CELLSPACING="0" BORDER="0" class="register">
 			<form name="zipCheck" method="POST" action="nw_cst_check_zone.jsp?serviceType=<%=EnumServiceType.HOME.getName()%>">
             <input type="hidden" name="action" value="checkByZipCode">
+            <input type="hidden" name="serviceType" value="<%= EnumServiceType.HOME.getName()%>">
 				<TR>
 					<TD WIDTH="30%" ALIGN="RIGHT">Enter Zip&nbsp;&nbsp;</TD>
 					<TD WIDTH="70%"><INPUT TYPE="text" SIZE="10" name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" value="<%=request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode())%>"> <fd:ErrorHandler result='<%= zipResult %>' name='zipCode' id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></TD>
@@ -78,6 +87,7 @@
 			<TABLE WIDTH="100%" CELLPADDING="2" CELLSPACING="0" BORDER="0" class="register">
 			<form name="zipCheck" method="POST" action="nw_cst_check_zone.jsp?serviceType=<%=EnumServiceType.CORPORATE.getName()%>">
             <input type="hidden" name="action" value="checkByZipCode">
+            <input type="hidden" name="serviceType" value="<%= EnumServiceType.CORPORATE.getName()%>">
 				<TR>
 					<TD WIDTH="30%" ALIGN="RIGHT">Enter Zip&nbsp;&nbsp;</TD>
 					<TD WIDTH="70%"><INPUT TYPE="text" SIZE="10" name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" value="<%=request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode())%>"> <fd:ErrorHandler result='<%= zipResult %>' name='zipCode' id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></TD>

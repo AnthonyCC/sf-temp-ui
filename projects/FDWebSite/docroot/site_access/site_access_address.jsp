@@ -12,7 +12,7 @@
     boolean isBestCellars = request.getServerName().toLowerCase().indexOf("bestcellars") > -1;
 	boolean isCorporate = "corporate".equalsIgnoreCase(serviceType);
 	String moreInfoPage = "site_access_address.jsp?successPage="+ URLEncoder.encode(successPage);
-	String failurePage = "delivery.jsp?successPage="+ URLEncoder.encode(successPage);
+	String failurePage = "delivery.jsp?successPage="+ URLEncoder.encode(successPage)+"&serviceType="+serviceType;
 	String failureCorporatePage	= "/survey/cos_site_access_survey.jsp?successPage="+ URLEncoder.encode(successPage);
 %>	
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -90,6 +90,16 @@ Please enter your street address so that we can make sure your building is in a 
 							</td>
 						</tr>
 						<tr><td colspan="4"></td></tr>
+                        <tr valign="top">
+							<td width="130" ALIGN="RIGHT" class="bodyCopy">* City </td>
+							<td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="7" border="0" height="10" alt=""><input type="text"  maxlength="50" class="text9" size="21" name="<%=EnumUserInfoName.DLV_CITY.getCode()%>" value="<%=fldCity%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_CITY.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+							</td>
+							</tr>
+                            <tr valign="top">
+							<td width="130" ALIGN="RIGHT" class="bodyCopy">* State </td>
+							<td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="7" border="0" height="10" alt=""><input type="text"  maxlength="2" class="text9" size="2" name="<%=EnumUserInfoName.DLV_STATE.getCode()%>" value="<%=fldState%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_STATE.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+							</td>
+							</tr>                                                        
 						<tr valign="top">
 							<td width="130" ALIGN="RIGHT" class="bodyCopy">* Zip/Postal Code</td>
 							<td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="7" border="0" height="10" alt=""><input type="text"  maxlength="5" class="text9" size="6" name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" value="<%=fldZipCode%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>

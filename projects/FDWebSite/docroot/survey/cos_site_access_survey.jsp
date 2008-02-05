@@ -16,6 +16,7 @@
     if ("".equals(successPage)) {
 	    successPage = "/index.jsp";
     }
+    request.setAttribute("survey_source","SiteAccess Page");
 %>	
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"

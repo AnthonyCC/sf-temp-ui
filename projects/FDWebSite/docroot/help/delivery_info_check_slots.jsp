@@ -9,6 +9,7 @@
 <%@ page import='java.net.URLEncoder'%>
 <%@ page import='java.text.DateFormat' %>
 <%@ page import='java.text.SimpleDateFormat' %>
+<%@ page import="com.freshdirect.framework.util.NVL" %>
 
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.SessionName' %>
 
@@ -26,7 +27,10 @@ FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 //}
 
 	String fldAddress1 = request.getParameter(EnumUserInfoName.DLV_ADDRESS_1.getCode());
+    String fldApartment = NVL.apply(request.getParameter(EnumUserInfoName.DLV_APARTMENT.getCode()), "");
 	String fldZipCode = request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode());
+    String fldCity = NVL.apply(request.getParameter(EnumUserInfoName.DLV_CITY.getCode()), "");
+	String fldState = NVL.apply(request.getParameter(EnumUserInfoName.DLV_STATE.getCode()), "");
 
     if ((fldZipCode == null) || "".equals(fldZipCode)) {
         if (user != null) {
@@ -54,8 +58,21 @@ FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 <form name="address" method="POST">
 <tr valign="top"><td class="text12" align="right">* Street Address&nbsp;&nbsp;</td>
 <td><input type="text" class="text11" maxlength="50" size="21" name="<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>" value="<%=fldAddress1%>">
-&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td></tr>
+&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+<td align="right" class="bodyCopy">&nbsp;&nbsp;Apt./Ste.#</td>
+<td><img src="/media_stat/images/layout/clear.gif" width="7" border="0" height="10" alt=""><input type="text" class="text11" maxlength="10" size="8" name="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>" value="<%=fldApartment%>"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>" id='errorMsg'><br><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+</td>
+</tr>
 <tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
+
+<tr valign="top"><td class="text12" align="right">* City&nbsp;&nbsp;</td>
+<td><input type="text" class="text11" maxlength="50" size="21" name="<%=EnumUserInfoName.DLV_CITY.getCode()%>" value="<%=fldCity%>">
+&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_CITY.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td></tr>
+
+<tr valign="top"><td class="text12" align="right">* State&nbsp;&nbsp;</td>
+<td><input type="text" class="text11" maxlength="2" size="2" name="<%=EnumUserInfoName.DLV_STATE.getCode()%>" value="<%=fldState%>">
+&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_STATE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td></tr>
+
 <tr valign="top"><td class="text12" align="right"><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>* Zip Code&nbsp;&nbsp;</td>
 <td><input type="text"  maxlength="5" class="text11" size="6" name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" value="<%=fldZipCode%>">
 &nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td></tr>

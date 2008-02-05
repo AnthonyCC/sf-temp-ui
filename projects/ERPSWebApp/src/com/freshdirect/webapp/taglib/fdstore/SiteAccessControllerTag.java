@@ -81,6 +81,16 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		this.resultName = resultName;
 	}
 	
+	public void setServiceType(String serviceTypeStr) {
+		if(serviceTypeStr!=null){
+			this.serviceType=EnumServiceType.getEnum(serviceTypeStr); 
+		}
+		if(this.serviceType==null){
+			throw new IllegalArgumentException("Invalid ServiceType specified");
+		}
+	}
+	
+	
 	private void newSession() {
 		HttpSession session = pageContext.getSession();
 		// clear session
@@ -105,6 +115,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					DlvServiceSelectionResult serviceResult = checkByZipCode(request, result);
 					if (result.isSuccess()) {
 						newSession();
+						System.out.println("this.serviceType :"+this.serviceType);
 						EnumDeliveryStatus dlvStatus = serviceResult.getServiceStatus(this.serviceType);
 						
 						if (EnumDeliveryStatus.DELIVER.equals(dlvStatus)) {
@@ -121,6 +132,10 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 						}
 						
 						if (EnumServiceType.CORPORATE.equals(this.serviceType)) {
+							if(EnumDeliveryStatus.DONOT_DELIVER.equals(dlvStatus)){
+								System.out.println(" EnumDeliveryStatus.DONOT_DELIVER :"+EnumDeliveryStatus.DONOT_DELIVER);
+								return doRedirect(failureHomePage);
+							}
 							return doRedirect(moreInfoPage);
 						}
 						if (EnumDeliveryStatus.PARTIALLY_DELIVER.equals(dlvStatus)) {
@@ -169,8 +184,10 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 	private void populate(HttpServletRequest request) {
 		this.address = new AddressModel();
 		this.address.setZipCode(NVL.apply(request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode()), "").trim());
-		this.address.setAddress1(NVL.apply(request.getParameter(EnumUserInfoName.DLV_ADDRESS_1.getCode()), "").trim());
+		this.address.setAddress1(NVL.apply(request.getParameter(EnumUserInfoName.DLV_ADDRESS_1.getCode()), "").trim());		
 		this.address.setApartment(NVL.apply(request.getParameter(EnumUserInfoName.DLV_APARTMENT.getCode()), "").trim());
+		this.address.setCity(NVL.apply(request.getParameter(EnumUserInfoName.DLV_CITY.getCode()), "").trim());
+		this.address.setState(NVL.apply(request.getParameter(EnumUserInfoName.DLV_STATE.getCode()), "").trim());		
 		this.serviceType = EnumServiceType.getEnum(NVL.apply(request.getParameter("serviceType"), "").trim());
 	}
 
@@ -193,6 +210,13 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 			if ("".equals(this.address.getAddress1())) {
 				result.addError(true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_REQUIRED);
 			}
+			if (address.getCity()==null || address.getCity().trim().length()==0) {
+				result.addError(true, EnumUserInfoName.DLV_CITY.getCode(), SystemMessageList.MSG_REQUIRED);
+			}
+			if (address.getState()==null || address.getState().trim().length()==0) {
+				result.addError(true, EnumUserInfoName.DLV_STATE.getCode(), SystemMessageList.MSG_REQUIRED);
+			}
+
 			if (result.isSuccess()) {
 				this.address = AddressUtil.scrubAddress(this.address, true, result);
 			}
@@ -223,7 +247,8 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 
 			EnumServiceType st = serviceAvailability==AV_REQUESTED ? this.serviceType : (serviceAvailability==AV_ALTERNATE ? altServiceType : EnumServiceType.PICKUP);
 			this.createUser(st, serviceResult.getAvailableServices());
-
+    
+	        System.out.println(" EnumServiceType :"+st);		 
 			String page = getRedirectPage(this.serviceType, serviceAvailability);
 			return this.doRedirect(page);
 
@@ -269,6 +294,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 	private void saveEmail(HttpServletRequest request, ActionResult result) throws FDResourceException {
 		HttpSession session = pageContext.getSession();
 		String email = request.getParameter("email");
+		
 
 		if (email != null)
 			email = email.trim();
@@ -285,7 +311,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 
 		if ((email != null) && (!"".equals(email))) {
-			FDDeliveryManager.getInstance().saveFutureZoneNotification(email, user.getZipCode());
+			FDDeliveryManager.getInstance().saveFutureZoneNotification(email, user.getZipCode(),this.serviceType);
 			LOGGER.debug("SAVED FUTURE ZONE TO NOTIFY");
 		}
 	}

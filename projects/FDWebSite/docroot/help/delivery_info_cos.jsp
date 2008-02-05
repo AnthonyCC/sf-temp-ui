@@ -26,6 +26,9 @@ if (user != null) {
     params.put("minCorpOrderAmount", new Integer(0) );
     params.put("corpDeliveryFee", new Integer(0) );
 }
+
+request.setAttribute("survey_source","deliveryInfo Page");
+
 %>
 <tmpl:insert template='/common/template/delivery_info_nav.jsp'>
 	<tmpl:put name='title' direct='true'>Delivery Information</tmpl:put>

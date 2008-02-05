@@ -5,6 +5,7 @@
 <%
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 AddressModel address = user.getAddress();
+request.setAttribute("survey_source","SiteAccess Page");
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"

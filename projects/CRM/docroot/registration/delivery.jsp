@@ -7,8 +7,13 @@
 
 <tmpl:put name='title' direct='true'>New Customer > Delivery Zone</tmpl:put>
 
+
 <tmpl:put name='content' direct='true'>
-<fd:SiteAccessController action='saveEmail' successPage='/main/index.jsp' result='result'>
+
+<%
+String serviceType = request.getParameter("serviceType");
+%>
+<fd:SiteAccessController action='saveEmail' successPage='/main/index.jsp' result='result' serviceType='<%=serviceType%>'>
 <%  FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER); %>
 <%!
     java.text.SimpleDateFormat dFormat = new java.text.SimpleDateFormat("MMMMMMMM d");
@@ -33,6 +38,7 @@
 <table cellpadding="0" cellspacing="15" border="0">
 <form name="site_access" method="post" action="<%= response.encodeURL(request.getRequestURI()) %>">
 <tr align="center">
+     <input type="hidden" name="serviceType" value="<%= serviceType %>">
      <td valign="bottom" width="212">
      <img src="/media_stat/images/template/site_access/truck.jpg" width="90" height="65"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
      Give us your e-mail address and we'll drop you a note when we begin delivering to your area.<br>
@@ -55,6 +61,7 @@
 <% } else { %>
 <table cellpadding="0" cellspacing="0" border="0">
 <form name="site_access" method="post" action="<%= response.encodeURL(request.getRequestURI()) %>">
+<input type="hidden" name="serviceType" value="<%= serviceType %>">
 <tr align="center"><td class="text12">Give us your e-mail address and we'll drop you a note<br>when we begin delivering to your area.</td></tr>
 <tr align="center">
      <td class="text12"><br><b>Enter your e-mail:</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>

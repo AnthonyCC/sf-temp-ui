@@ -13,7 +13,8 @@
 	boolean isBestCellars = request.getServerName().toLowerCase().indexOf("bestcellars") > -1;
 	String successPage = request.getParameter("successPage");
 	String zipcode = NVL.apply(request.getParameter("zipCode"), "");
-	
+	String serviceType=NVL.apply(request.getParameter("serviceType"), "");
+    
 	if (successPage == null) {
   		// null, default to index.jsp
   		successPage = "/index.jsp";
@@ -31,7 +32,7 @@
     }
 
 	String moreInfoPage = "site_access_address.jsp?successPage="+ URLEncoder.encode(successPage);
-	String failurePage = "delivery.jsp?successPage="+ URLEncoder.encode(successPage);	
+	String failurePage = "delivery.jsp?successPage="+ URLEncoder.encode(successPage)+"&serviceType="+serviceType;	
     
     
     //--------OAS Page Variables-----------------------

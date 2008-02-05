@@ -2,16 +2,22 @@
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ page import="com.freshdirect.framework.util.NVL" %>
 
 <tmpl:insert template='/template/top_nav.jsp'>
 
 <tmpl:put name='title' direct='true'>New Customer > More Information Required</tmpl:put>
 
-<fd:SiteAccessController action='checkByAddress' successPage='nw_cst_enter_details.jsp' moreInfoPage='more_info.jsp' failureHomePage='delivery.jsp' result='result'>
 <% 
     String address1 = request.getParameter("address1");
     String zipcode = request.getParameter("zipcode");
     String apartment = request.getParameter("apartment");
+    String serviceType = NVL.apply(request.getParameter("serviceType"), "").trim();
+    
+   	String city = NVL.apply(request.getParameter("city"), "");
+	String state = NVL.apply(request.getParameter("state"), "");
+
+    
     if ((zipcode == null) || "".equals(zipcode)) {
         FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
         if (user != null) {
@@ -19,7 +25,11 @@
         }
     }
     if (zipcode == null) zipcode = "";
+    String failurePage = "delivery.jsp?successPage=nw_cst_enter_details.jsp&serviceType="+serviceType;
+    
 %>
+<fd:SiteAccessController action='checkByAddress' successPage='nw_cst_enter_details.jsp' moreInfoPage='more_info.jsp' failureHomePage='<%=failurePage%>' result='result'>
+
 
 <tmpl:put name='content' direct='true'>
 
@@ -42,6 +52,13 @@
                 <tr>
 			<td ALIGN="RIGHT">Apartment&nbsp;</td>
 			<td><input type="text" class="text11" maxlength="50" size="21" name="apartment" value="<%=apartment%>"> <fd:ErrorHandler result='<%=result%>' name='apartment' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td></tr>
+        <tr>
+			<td ALIGN="RIGHT">* City&nbsp;</td>
+			<td><input type="text"  maxlength="16" class="text9" size="10" name="city" value="<%=city%>"> <fd:ErrorHandler result='<%=result%>' name='state' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td></tr>		
+
+        <tr>
+			<td ALIGN="RIGHT">* State&nbsp;</td>
+			<td><input type="text"  maxlength="2" class="text9" size="2" name="state" value="<%=state%>"> <fd:ErrorHandler result='<%=result%>' name='state' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td></tr>		
 		<tr>
 			<td ALIGN="RIGHT">* Zip/Postal Code&nbsp;</td>
 			<td><input type="text"  maxlength="5" class="text9" size="6" name="zipcode" value="<%=zipcode%>"> <fd:ErrorHandler result='<%=result%>' name='zipcode' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td></tr>

@@ -17,6 +17,8 @@ if ("".equals(redirectSuccessPage)) {
     redirectSuccessPage = "/index.jsp";
 }
 
+String survey_source=(String)request.getAttribute("survey_source");
+
 %>
     
 <fd:CorporateServiceSurvey result='result' actionName='submitCorporateServiceSurvey' successPage='<%=request.getRequestURI()%>'>
@@ -102,6 +104,12 @@ if ("".equals(redirectSuccessPage)) {
             <img src="/media_stat/images/layout/999966.gif" width="100%" height="1" vspace="10">
         </tr>
 	<input type="hidden" name="successPage" value="<%=redirectSuccessPage%>">
+   <% 
+       if(survey_source!=null && survey_source.trim().length()>0)
+       {
+    %>
+      <input type="hidden" name="survey_source" value="<%=survey_source%>">
+    <%  }  %>  
 </table>
 </form>
 <% } %>
