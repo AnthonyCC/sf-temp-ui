@@ -30,7 +30,7 @@
 	<property name="checkout.delete_projects"			value="true" />
 	<property name="selenium.server_host"	value="localhost" />
 	<property name="selenium.server_port"	value="4444" />
-	<property name="emma.enabled"           value="false"/>
+	<property name="emma.enabled"           value="true"/>
     <property name="jmeter.hostname"        value="localhost" />
     <property name="jmeter.port"            value="7001" />
 
