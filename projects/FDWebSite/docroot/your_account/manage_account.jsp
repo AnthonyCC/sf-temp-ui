@@ -78,8 +78,29 @@ your account information, this is the place to do it.<br></td>
 <table width="675" border="0" cellspacing="0" cellpadding="0">
 <tr>
 <td width="500">
+<!-- ct user logo -->
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
-<tr>
+<tr><td valign="top" class="text13">
+	<% if(user.isChefsTable()) { %>
+	<table align="left" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td><img src="/media_stat/images/template/checkout/loy_ctcard_top.gif"/></td>
+	</tr>
+	<tr>
+		<td style="color: white; background: #221e1f; left: inherit; text-align: center;">
+			<%= user.getFirstName() %> <%= user.getLastName() %>
+			<br/>
+			Since <%= TimeslotPageUtil.formatFirstOrderYear(user.getOrderHistory().getFirstNonPickupOrderDate()) %>
+			<br/>
+			<br/>
+		</td>
+	</tr>
+	<tr>
+		<td><img src="/media_stat/images/template/checkout/loy_ctcard_bot.gif"/></td>
+	</tr>
+	</table>
+	<% } %>
+    </td></tr><tr>
 	<td valign="top" class="text13">
 		<font class="text13bold"><a href="<%=response.encodeURL("/your_account/order_history.jsp")%>">Your Orders</a></font><br>Check your order status and update open orders.
 		<br><br>
@@ -134,22 +155,20 @@ your account information, this is the place to do it.<br></td>
 	<% if(user.isChefsTable()) { %>
 	<table align="center" border="0" cellspacing="0" cellpadding="0">
 	<tr>
-		<td><img src="/media_stat/images/template/checkout/loy_ctcard_top.gif"/></td>
-	</tr>
-	<tr>
-		<td style="color: white; background: #221e1f; left: inherit; text-align: center;">
-			<%= user.getFirstName() %> <%= user.getLastName() %>
-			<br/>
-			Since <%= TimeslotPageUtil.formatFirstOrderYear(user.getOrderHistory().getFirstNonPickupOrderDate()) %>
-			<br/>
-			<br/>
-		</td>
-	</tr>
-	<tr>
-		<td><img src="/media_stat/images/template/checkout/loy_ctcard_bot.gif"/></td>
+		<td>
+        <fd:IncludeMedia name="/media/editorial/site_pages/account/right_ct.html" />
+        </td>
 	</tr>
 	</table>
-	<% } %>
+	<% }else{ %>
+    	<table align="center" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td>
+        <fd:IncludeMedia name="/media/editorial/site_pages/account/right_all.html" />
+        </td>
+	</tr>
+	</table>
+    <% } %>
 </td>
 </tr>
 </table>
