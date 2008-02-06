@@ -315,7 +315,7 @@ if (errorMsg!=null) {%>
 <table cellpadding="0" cellspacing="0" width="675">
 	<tr>
 		<td align="left">
-			<img src="/media_stat/images/template/checkout/x_trans.gif" width="10" height="10" border="0" valign="bottom">
+			<img src="/media_stat/images/template/checkout/x_trans.gif" width="10" height="10" border="0" valign="bottom" alt="X">
 			= Delivery slot full
 		</td>
 		<td align="right">You must complete checkout for next-day deliveries before the "Order by" time.</td>
@@ -346,17 +346,7 @@ if (timeslot_page_type != TimeslotLogic.PAGE_CHEFSTABLE) {
 <% if ( !user.isPickupOnly() && user.isEligibleForSignupPromotion() && isDepotAddress && depotAddress.isPickup()) {%>
 <tr><td colspan="2" align="center" class="text12"><b>PLEASE NOTE: PICKUP ORDERS ARE NOT ELIGIBLE FOR OUR FREE FOOD PROMOTION.</b><br>The free fresh food promotion will not be applied to this order. When you place your first home or depot delivery order you will be eligible for any promotions in effect at that time.<br><br></td></tr>
 <% } %>
-<%  if ("005".equals(cart.getDeliveryZone()) || "008".equals(cart.getDeliveryZone())) { %>
-<tr>
-    <td colspan="2" class="text12">
-    <b><font class="text12">DELIVERY TIME SLOT NOTE:</font></b><br>
-    Due to heightened security around the Midtown Tunnel and the 59th Street Bridge
-    we have limited the number of deliveries in your area during the 4-6 PM and 6-8 PM time slots.
-    This will allow us to deliver orders in a more timely manner.
-    We hope this situation improves soon and will add more delivery availability as soon as possible.
-    </td>
-</tr>
-<%  }   %>
+
 </TABLE>
 
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="675">
