@@ -68,9 +68,9 @@ SimpleDateFormat deliveryDayFormat = new SimpleDateFormat("EEE MM/d");
 <%@ include file="/shared/includes/delivery/i_loyalty_banner.jspf" %>
 </td>
 </tr>
-<tr><td align="right"><img src="/media_stat/images/template/help/greendot_trans.gif" width="10" height="10"></td>
+<tr><td align="right"><img src="/media_stat/images/template/help/greendot_trans.gif" width="10" height="10" alt="Green"></td>
 <td colspan="2" class="text12">&nbsp;=&nbsp;Time Slot Available *</td></tr>
-<tr><td align="right"><img src="/media_stat/images/template/help/orangedot_trans.gif" width="10" height="10"></td>
+<tr><td align="right"><img src="/media_stat/images/template/help/orangedot_trans.gif" width="10" height="10" alt="Orange"></td>
 <td colspan="2" class="text12">&nbsp;=&nbsp;Time Slot Full</td></tr>
 <tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
 </table>
