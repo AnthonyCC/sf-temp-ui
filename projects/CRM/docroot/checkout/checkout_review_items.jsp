@@ -66,7 +66,7 @@
 <input type="hidden" name="cartLineRemove" value="-1">
 <input type="hidden" name="action" value="updateQuantities">
 	<tr valign="TOP">
-	<td width="80%">&nbsp;Review Items in Cart before proceeding<% if (!user.isActive()) { %>&nbsp;&nbsp;&nbsp;!!! Checkout prevented until account is <a href="<%= response.encodeURL("/main/deactivate_account.jsp?successPage="+request.getRequestURI()) %>" class="new">REACTIVATED</a><% } %></td>
+	<td width="80%">&nbsp;Review Items in Cart before proceeding<% if (!user.isActive()) { %>&nbsp;&nbsp;&nbsp;!!! Checkout prevented until account is <a href="<%= response.encodeURL("/customer_account/deactivate_account.jsp?successPage="+request.getRequestURI()) %>" class="new">REACTIVATED</a><% } %></td>
 	<td align="right"><a href="<%= response.encodeURL("/checkout/checkout_select_address.jsp") %>" class="checkout">CONTINUE CHECKOUT >></a></td>
 	</tr>
 </table>
