@@ -40,6 +40,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -210,6 +211,8 @@ public class LuceneSearchService implements ContentSearchServiceI {
 	 * 		or null if this node should not be indexed
 	 */
 	private Document createDocument(ContentNodeI node) {
+		
+		BrandNameExtractor brandNameExtractor = new BrandNameExtractor();
 
 		List indexes = (List) contentIndexes.get(node.getKey().getType());
 		if (indexes == null) {
@@ -272,6 +275,13 @@ public class LuceneSearchService implements ContentSearchServiceI {
 				doc.add(new Field(ad.getAttributeName(), value, Field.Store.YES, Field.Index.TOKENIZED));
 				// CHANGED doc.add(Field.Text(ad.getAttributeName() + STEMMED_SUFFIX, value));
 				doc.add(new Field(ad.getAttributeName() + STEMMED_SUFFIX, value, Field.Store.YES, Field.Index.TOKENIZED));
+				
+				// extract potential brand names and add them to the search
+				List brandNames = brandNameExtractor.extract(value);
+				for(Iterator bni = brandNames.iterator(); bni.hasNext(); ) {
+					String canonicalBrandName = StringUtil.removeAllWhiteSpace(bni.next().toString());
+					doc.add(new Field(ad.getAttributeName(), canonicalBrandName, Field.Store.YES, Field.Index.UN_TOKENIZED));
+				}
 			}
 
 		}

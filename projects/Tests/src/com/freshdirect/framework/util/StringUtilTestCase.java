@@ -95,4 +95,9 @@ public class StringUtilTestCase extends TestCase {
 		
 		assertEquals("%2F%2F%20",buff.toString());
 	}
+	
+	public void testRemoveWhiteSpace() {
+		String fullOfWhite = " A\t\tB\nC&\rD\r& \rE  ";
+		assertEquals("ABC&D&E", StringUtil.removeAllWhiteSpace(fullOfWhite));
+	}
 }

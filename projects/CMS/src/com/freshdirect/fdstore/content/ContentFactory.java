@@ -28,6 +28,7 @@ import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.search.BrandNameExtractor;
 import com.freshdirect.cms.search.LuceneSpellingSuggestionService;
 import com.freshdirect.cms.search.SpellingHit;
 import com.freshdirect.fdstore.FDCachedFactory;
@@ -36,6 +37,7 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.attributes.Attribute;
 import com.freshdirect.framework.util.LruCache;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -265,18 +267,31 @@ public class ContentFactory {
 	 * @return search results
 	 */
 	public SearchResults simpleSearch(String criteria) {
+		
+		
 		String term = ContentSearchUtil.normalizeTerm(criteria);
 		if ("".equals(term)) {
 			return new SearchResults(Collections.EMPTY_LIST,
 					Collections.EMPTY_LIST, Collections.EMPTY_LIST,
 					Collections.EMPTY_LIST,false);
 		}
-
-		Collection hits = CmsManager.getInstance().search(term, 2000);
+		
+		StringBuffer luceneTerm = new StringBuffer(term);
+		BrandNameExtractor brandNameExtractor = new BrandNameExtractor(); 
+		
+		String[] tokens = ContentSearchUtil.tokenizeTerm(term);
+		
+		for(Iterator i = brandNameExtractor.extract(criteria).iterator(); i.hasNext(); ) {
+			String canonicalBrandName = StringUtil.removeAllWhiteSpace(i.next().toString()).toLowerCase();
+			if (luceneTerm.indexOf(canonicalBrandName) == -1) luceneTerm.append(' ').append(canonicalBrandName);
+			if (tokens.length == 0) tokens = new String[] { canonicalBrandName };
+		}
+		
+		Collection hits = CmsManager.getInstance().search(luceneTerm.toString(), 2000);
+		
 		
 		Map hitsByType = ContentSearchUtil.mapHitsByType(hits);
 
-		String[] tokens = ContentSearchUtil.tokenizeTerm(term);
 		
 		List allProducts = ContentSearchUtil
 				.resolveHits(ContentSearchUtil

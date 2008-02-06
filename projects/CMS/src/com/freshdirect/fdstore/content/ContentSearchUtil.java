@@ -15,8 +15,10 @@ import java.util.TreeSet;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
+import com.freshdirect.cms.search.BrandNameExtractor;
 import com.freshdirect.cms.search.SearchHit;
 import com.freshdirect.framework.util.NVL;
+import com.freshdirect.framework.util.StringUtil;
 
 public class ContentSearchUtil {
 
@@ -70,6 +72,16 @@ public class ContentSearchUtil {
 		return l;
 	}
 	
+	private static void appendBrandNames(StringBuffer buffer) {
+		BrandNameExtractor extractor = new BrandNameExtractor();
+		
+		List brandNames = extractor.extract(buffer);
+		for(Iterator i = brandNames.iterator(); i.hasNext();) {
+			String canonicalBrandName = StringUtil.removeAllWhiteSpace(i.next().toString());
+			if (buffer.indexOf(canonicalBrandName) != -1) buffer.append(' ').append(canonicalBrandName);
+		}
+	}
+	
 	// if min not reached, returns 0
 	// TODO: This is grossly inefficient, IMPROVE!
 	private static int countTokens(ContentNodeModel node, String[] tokens, int min) {
@@ -78,7 +90,7 @@ public class ContentSearchUtil {
 		StringBuffer name = 
 			new StringBuffer(NVL.apply(node.getFullName(), "").toLowerCase()).
 				append(' ').append(NVL.apply(node.getKeywords(), "").toLowerCase());
-		
+		appendBrandNames(name);
 		int remainingErrors = tokens.length - min;
 		int total = 0;
 		
@@ -87,8 +99,9 @@ public class ContentSearchUtil {
 			else ++total;
 		}
 
-		return remainingErrors >= 0 ? total : 0;
-		
+
+		int tokenCount = remainingErrors >= 0 ? total : 0;
+		return tokenCount;
 	}
 	
 	/**

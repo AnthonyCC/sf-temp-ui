@@ -1,8 +1,6 @@
 package com.freshdirect.framework.util;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -617,4 +615,31 @@ public class StringUtil {
         }
         return escaped;
     }
+	
+	/**
+	 * Removes all, including internal whitespace.
+	 * 
+	 * For example, it makes "A&W" from " A &    W ".
+	 * 
+	 * @param string string to remove white space from
+	 * @return a new string without the white space.
+	 */
+	public static String removeAllWhiteSpace(CharSequence string) {
+		StringBuffer buffer = new StringBuffer(string.length());
+		
+		for(int i = 0; i< string.length(); ++i) {
+			char c = string.charAt(i);
+			switch(c) {
+				case ' ':
+				case '\t':
+				case '\r':
+				case '\n':
+					break;
+				default:
+					buffer.append(c);
+			}
+		}
+		
+		return buffer.toString();
+	}
 }
