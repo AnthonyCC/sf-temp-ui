@@ -95,13 +95,13 @@ private final static String TIMESLOT_BG_ODD = "f7f7f7";
 									<% 
 									if (availCapacity < 1 && !(selectedSlot || preReservedSlot)) {
 										if (isStaticSlot) {
-											%><img src="/media_stat/images/template/help/orangedot_trans.gif" width="10" height="10"><%
+											%><img src="/media_stat/images/template/help/orangedot_trans.gif" width="10" height="10" alt="Orange = Full"><%
 										} else {
-											%><img src="/media_stat/images/template/checkout/x_trans.gif" width="10" height="10" border="0" hspace="4"><%
+											%><img src="/media_stat/images/template/checkout/x_trans.gif" width="10" height="10" border="0" hspace="4" alt="X = Full"><%
 										}
 									} else {
 										if (isStaticSlot){
-											%><img src="/media_stat/images/template/help/greendot_trans.gif" width="10" height="10"><%
+											%><img src="/media_stat/images/template/help/greendot_trans.gif" width="10" height="10" alt="Green = Available<%= normalAvailCapacity < 1 && availCapacity > 0 ? " - Chef's Table Only":"" %>"><%
 										} else {
 											%><input type="radio"
 												id="deliveryTimeslotId<%= slot.getTimeslotId() %>" name="deliveryTimeslotId"
