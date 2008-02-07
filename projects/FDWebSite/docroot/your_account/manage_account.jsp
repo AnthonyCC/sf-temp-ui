@@ -101,7 +101,7 @@ your account information, this is the place to do it.<br></td>
 	</table>
 	<% } %>
     </td></tr><tr>
-	<td valign="top" class="text13">
+	<td valign="top" class="text13"><br><br>
 		<font class="text13bold"><a href="<%=response.encodeURL("/your_account/order_history.jsp")%>">Your Orders</a></font><br>Check your order status and update open orders.
 		<br><br>
 		<%if(user.isEligibleForPreReservation()){%>
@@ -143,6 +143,11 @@ your account information, this is the place to do it.<br></td>
 		<a href="<%=response.encodeURL("/your_account/reminder_service.jsp")%>">Reminder Service</a>
 		</font><br>
 		Change your e-mail reminder preferences.
+		<br><br>
+        <font class="text13bold">
+		<a href="<%=response.encodeURL("/quickshop/all_lists.jsp")%>">Your Shopping Lists</a> </font>  <font class="text13bold" color="#990000">*NEW </font>
+		<br>
+		Visit Quickshop for your shopping lists
 		<br><br>
 		
 	</td>
