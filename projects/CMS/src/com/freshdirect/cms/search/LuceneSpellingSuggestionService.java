@@ -23,6 +23,8 @@ import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.spell.Dictionary;
+import org.apache.lucene.search.spell.LuceneDictionary;
 import org.apache.lucene.search.spell.SpellChecker;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -43,7 +45,7 @@ public class LuceneSpellingSuggestionService {
 	// Do not try to search for these
 	private final static Set stopWords = new HashSet(Arrays.asList(new String[] {"with","and","of","or"}));
 	
-	// spell checker instace, created at construction
+	// spell checker instance, created at construction
 	private SpellChecker checker;
 	
 	// searcher instance, created at construction
@@ -98,8 +100,13 @@ public class LuceneSpellingSuggestionService {
 		this.indexes = indexes;
 		
 		if (!IndexReader.indexExists(directory)) {
-			LOGGER.warn(
-					"Directory index does not exist, the the spell checker will try to obtain a write lock to create the index");
+			try {
+				LOGGER.warn(
+				"Directory index does not exist, the the spell checker will try to obtain a write lock to create the index");
+				indexWords(reader);
+			} catch (Exception e) {
+				LOGGER.error("Spellcheker indexing of words have failed.",e);
+			}
 		} else {
 			LOGGER.debug(
 					"Directory index exists, OK the spell checker will just use it");
@@ -108,6 +115,24 @@ public class LuceneSpellingSuggestionService {
 		
 		searcher = new IndexSearcher(directory);
 	}
+	
+	/**
+	 * Index specifically the words for spell-checking of the index files used. 
+	 * @param reader index reader
+	 * @throws IOException
+	 */
+	public void indexWords(IndexReader reader) throws IOException {
+		LOGGER.info("Started indexing words for spell-checker");
+		for(Iterator i = indexes.iterator(); i.hasNext(); ) {
+			String index = (String)i.next();
+			LOGGER.info("About to index field \"" + index + "\" for spell-checker");
+			Dictionary dictionary = new LuceneDictionary(reader,index);
+			this.checker.indexDictionary(dictionary);
+			LOGGER.info("Indexing of field \"" + index + "\" completed");
+		}
+		LOGGER.info("Indexing words for spell-checker complete");
+	}
+	
 	
 	/**
 	 * The work horse method.

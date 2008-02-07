@@ -154,17 +154,17 @@ public class LuceneSearchService implements ContentSearchServiceI {
 	public synchronized void index(Collection contentNodes) {
 		try {
 			// delete old documents
-			IndexReader reader = createReader();
+			IndexReader localReader = createReader();
 			int count = 0;
 			for (Iterator i = contentNodes.iterator(); i.hasNext();) {
 				ContentNodeI node = (ContentNodeI) i.next();
 				// CHANGED count += reader.delete(new Term(FIELD_CONTENT_KEY, node.getKey().getEncoded()));
-				count += reader.deleteDocuments(new Term(FIELD_CONTENT_KEY, node.getKey().getEncoded()));
+				count += localReader.deleteDocuments(new Term(FIELD_CONTENT_KEY, node.getKey().getEncoded()));
 				
 
 			}
 			LOGGER.debug("Deleted " + count + " content nodes");
-			reader.close();
+			localReader.close();
 
 			// index new documents
 			IndexWriter writer = new IndexWriter(getIndexLocation(), STEMMER, false);
@@ -181,13 +181,18 @@ public class LuceneSearchService implements ContentSearchServiceI {
 
 			writer.optimize();
 			writer.close();
+			
+			
 
 			// replace old reader
-			reader = this.reader;
+			localReader = this.reader;
 			this.reader = createReader();
-			if (reader != null) {
-				reader.close();
+			if (localReader != null) {
+				localReader.close();
 			}
+			
+			spellService.indexWords(reader);
+			
 		} catch (IOException e) {
 			throw new CmsRuntimeException(e);
 		}
@@ -321,7 +326,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
 			
 			if (!exists) {
 				LOGGER.info("Creating index at " + getIndexLocation());
-				IndexWriter writer = new IndexWriter(getIndexLocation(), STEMMER, true);
+				IndexWriter writer = new IndexWriter(getIndexLocation(), STEMMER, false);
 				writer.optimize();
 				writer.close();
 			}
