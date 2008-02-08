@@ -27,11 +27,11 @@ public class PlanValidator implements Validator {
 			errors.rejectValue("timeslot", "app.error.112", new Object[]{"Time Slot"},"required field");
 		}
 		
-		if(model != null && (model.getTrnDriver() == null || model.getTrnDriver().getEmployeeId() == null)) {
+		/*if(model != null && (model.getTrnDriver() == null || model.getTrnDriver().getEmployeeId() == null)) {
 			errors.rejectValue("driver", "app.error.112", new Object[]{"Driver"},"required field");
 		}
 		
-		/*if(model != null && (model.getTrnPrimaryHelper() == null || model.getTrnPrimaryHelper().getEmployeeId() == null)) {
+		if(model != null && (model.getTrnPrimaryHelper() == null || model.getTrnPrimaryHelper().getEmployeeId() == null)) {
 			errors.rejectValue("primaryHelper", "app.error.112", new Object[]{"Helper1"},"required field");
 		}
 		
