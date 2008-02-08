@@ -62,18 +62,33 @@ public class PlanningFormController extends AbstractFormController {
 		List errorList = new ArrayList();
 		try {
 			String strSourceDate = TransStringUtil.getServerDate(tmpCommand.getPlanDate());
-			Collection sourceData = dispatchManagerService.getPlanList(strSourceDate);
-			if(sourceData.isEmpty() && !"true".equalsIgnoreCase(tmpCommand.getIgnoreErrors())) {
-				errorList.add("Plan does not exists for date "+strSourceDate);
-			}
+			if(canIgnoreError(tmpCommand)) {
+				savePlan(tmpCommand);
+			} else {
+				Collection sourceData = dispatchManagerService.getPlanList(strSourceDate);
+				if(sourceData.isEmpty()) {
+					errorList.add("Plan does not exists for date "+strSourceDate);
+					tmpCommand.setErrorDate(tmpCommand.getPlanDate());					
+				} else {
+					savePlan(tmpCommand);
+				}
+			}			
+			
 		} catch(ParseException parseExp) {
 			errorList.add("Error Processing Request");
 		}
-		if(errorList.isEmpty()) {
-			getDomainManagerService().saveEntity(tmpCommand);			
-			tmpCommand.setIgnoreErrors(null);
-		}
+		
 		return errorList;
+	}
+	
+	private boolean canIgnoreError(TrnDispatchPlan tmpCommand) {
+		return "true".equalsIgnoreCase(tmpCommand.getIgnoreErrors()) && tmpCommand.getPlanDate().equals(tmpCommand.getErrorDate());
+	}
+	
+	private void savePlan(TrnDispatchPlan tmpCommand) {
+		getDomainManagerService().saveEntity(tmpCommand);			
+		tmpCommand.setIgnoreErrors(null);
+		tmpCommand.setErrorDate(null);
 	}
 	
 		

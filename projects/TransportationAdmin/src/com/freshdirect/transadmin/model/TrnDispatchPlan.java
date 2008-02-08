@@ -22,7 +22,15 @@ public class TrnDispatchPlan implements java.io.Serializable, TrnBaseEntityI {
 	private Date planDate;
 	
 	private String ignoreErrors;
+	
+	private Date errorDate;
 		
+	public Date getErrorDate() {
+		return errorDate;
+	}
+	public void setErrorDate(Date errorDate) {
+		this.errorDate = errorDate;
+	}
 	public String getIgnoreErrors() {
 		return ignoreErrors;
 	}

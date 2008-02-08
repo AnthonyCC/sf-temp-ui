@@ -45,26 +45,42 @@ public class CopyPlanFormController extends AbstractFormController {
 	protected ModelAndView onSubmit(HttpServletRequest request,
 			HttpServletResponse response, Object command, BindException errors)
 			throws Exception {
-		
-		System.out.println("<<<<<<<<<<<< COPYPLAN ONSUBMIT CALLED >>>>>>>>>>>>>>>>>>>");
-		//List messages = new ArrayList();
+						
 		String messageKey = "app.actionmessage.105";
+		CopyPlanCommand tmpCommand = (CopyPlanCommand)command;
+				
+		if(canIgnoreError(tmpCommand)) {
+			executeCopyPlan(tmpCommand);
+			saveMessage(request, getMessage(messageKey,	new Object[] { getDomainObjectName() }));
+		} else {
+			List messages = validateCopyPlan((CopyPlanCommand)command);
+					
+			if(messages.isEmpty()) {
+				executeCopyPlan(tmpCommand);
+				saveMessage(request, getMessage(messageKey,	new Object[] { getDomainObjectName() }));
+			} else {
+				saveErrorMessage(request, messages);
+				tmpCommand.setErrorSourceDate(tmpCommand.getSourceDate());
+				tmpCommand.setErrorDestinationDate(tmpCommand.getDestinationDate());
+			}
+		}
 		
-		//copyPlan((CopyPlanCommand)command, messages);
-		List messages = validateCopyPlan((CopyPlanCommand)command);
 		ModelAndView mav = new ModelAndView(getSuccessView());
 		mav.getModel().put(this.getCommandName(), command);
 		mav.getModel().putAll(referenceData(request));
-		
-		if(messages.isEmpty() || "true".equalsIgnoreCase(((CopyPlanCommand)command).getIgnoreErrors())) {
-			copyPlan((CopyPlanCommand)command, messages);
-			((CopyPlanCommand)command).setIgnoreErrors(null);
-			saveMessage(request, getMessage(messageKey,
-				new Object[] { getDomainObjectName() }));
-		} else {
-			saveErrorMessage(request, messages);
-		}
 		return mav;
+	}
+	
+	private boolean canIgnoreError(CopyPlanCommand tmpCommand) {
+		return "true".equalsIgnoreCase(tmpCommand.getIgnoreErrors()) && tmpCommand.getSourceDate().equals(tmpCommand.getErrorSourceDate())
+				&& tmpCommand.getDestinationDate().equals(tmpCommand.getErrorDestinationDate());
+	}
+	
+	private void executeCopyPlan(CopyPlanCommand tmpCommand) throws Exception  {
+		copyPlan(tmpCommand);
+		tmpCommand.setIgnoreErrors(null);
+		tmpCommand.setErrorSourceDate(null);
+		tmpCommand.setErrorDestinationDate(null);
 	}
 	
 	private List validateCopyPlan(CopyPlanCommand model) throws ParseException {
@@ -108,7 +124,7 @@ public class CopyPlanFormController extends AbstractFormController {
 		return messages;
 	}
 	
-	private void copyPlan(CopyPlanCommand model, List messages) throws ParseException {
+	private void copyPlan(CopyPlanCommand model) throws ParseException {
 		
 		if(model != null) {
 			Date startDate = TransStringUtil.getDate(model.getSourceDate());
@@ -121,14 +137,14 @@ public class CopyPlanFormController extends AbstractFormController {
 			if(TransStringUtil.isEmpty(dayOfWeek) || "null".equals(dayOfWeek)) {				
 				for(int intCount = 0;intCount<7;intCount++) {
 					retList = copyPlanForDate(TransStringUtil.addDays(startDate, intCount),
-							TransStringUtil.addDays(endDate, intCount), messages, includeEmpDetails);
+							TransStringUtil.addDays(endDate, intCount), includeEmpDetails);
 					deleteList.addAll((List)retList.get(0));
 					addList.addAll((List)retList.get(1));
 				}
 				
 			} else {
 				retList = copyPlanForDate(TransStringUtil.addDays(startDate, TransStringUtil.getDayinWeek(dayOfWeek)),
-						TransStringUtil.addDays(endDate, TransStringUtil.getDayinWeek(dayOfWeek)), messages, includeEmpDetails);
+						TransStringUtil.addDays(endDate, TransStringUtil.getDayinWeek(dayOfWeek)), includeEmpDetails);
 				deleteList.addAll((List)retList.get(0));
 				addList.addAll((List)retList.get(1));
 			}			
@@ -137,7 +153,7 @@ public class CopyPlanFormController extends AbstractFormController {
 		
 	}
 	
-	private List copyPlanForDate(Date sourceDate, Date destinationDate, List messages,boolean includeEmpDetails) throws ParseException  {
+	private List copyPlanForDate(Date sourceDate, Date destinationDate,boolean includeEmpDetails) throws ParseException  {
 		
 		String strSourceDate = TransStringUtil.getServerDate(sourceDate);
 		String strDestinationDate = TransStringUtil.getServerDate(destinationDate);
@@ -150,8 +166,7 @@ public class CopyPlanFormController extends AbstractFormController {
 		returnList.add(deleteList);
 		returnList.add(addList);
 		
-		if(!destinationData.isEmpty()) {
-			messages.add("Destination Plan already exists for date "+strDestinationDate);
+		if(!destinationData.isEmpty()) {			
 			deleteList.addAll(destinationData);
 		} 
 				

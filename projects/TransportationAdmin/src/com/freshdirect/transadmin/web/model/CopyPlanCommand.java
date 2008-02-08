@@ -13,6 +13,10 @@ public class CopyPlanCommand extends BaseCommand {
 	
 	private String ignoreErrors;
 	
+	private String errorSourceDate;
+	
+	private String errorDestinationDate;
+	
 	public String getIgnoreErrors() {
 		return ignoreErrors;
 	}
@@ -72,6 +76,26 @@ public class CopyPlanCommand extends BaseCommand {
 		
 		return sourceDate+"|"+dispatchDay+"|"
 				+destinationDate+"|"+includeEmployees+"\n";
+	}
+
+
+	public String getErrorDestinationDate() {
+		return errorDestinationDate;
+	}
+
+
+	public void setErrorDestinationDate(String errorDestinationDate) {
+		this.errorDestinationDate = errorDestinationDate;
+	}
+
+
+	public String getErrorSourceDate() {
+		return errorSourceDate;
+	}
+
+
+	public void setErrorSourceDate(String errorSourceDate) {
+		this.errorSourceDate = errorSourceDate;
 	}
 
 }
