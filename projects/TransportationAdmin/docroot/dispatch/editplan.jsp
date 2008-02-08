@@ -68,63 +68,63 @@
 							 <tr>
 							    <td>Zone Number</td>
 							    <td> 
-								  <form:select path="zoneId">
+								  <form:select path="zone">
 							  	  		<form:option value="null" label="--Please Select Zone"/>
 										<form:options items="${zones}" itemLabel="zoneNumber" itemValue="zoneId" />
 							     </form:select>
 							 	</td>
 							 	<td>
-							 		&nbsp;<form:errors path="zoneId" />
+							 		&nbsp;<form:errors path="zone" />
 							 	</td>
 							 </tr>
 							 <tr>
 							    <td>Time Slot</td>
 							    <td> 
-								  <form:select path="slotId">
+								  <form:select path="timeslot">
 							  	  		<form:option value="null" label="--Please Select Time Slot"/>
 										<form:options items="${timeslots}" itemLabel="slotName" itemValue="slotId" />
 							     </form:select>
 							 	</td>
 							 	<td>
-							 		&nbsp;<form:errors path="slotId" />
+							 		&nbsp;<form:errors path="timeslot" />
 							 	</td>
 							 </tr>
 							 <tr>
 							    <td>Driver</td>
 							    <td> 
-								  <form:select path="driverId">
+								  <form:select path="driver">
 							  	  		<form:option value="null" label="--Please Select Driver"/>
 										<form:options items="${drivers}" itemLabel="name" itemValue="employeeId" />
 							     </form:select>
 							 	</td>
 							 	<td>
-							 		&nbsp;<form:errors path="driverId" />
+							 		&nbsp;<form:errors path="driver" />
 							 	</td>
 							 </tr>
 							 
 							 <tr>
 							    <td>Primary Helper</td>
 							    <td> 
-								  <form:select path="primaryHelperId">
+								  <form:select path="primaryHelper">
 							  	  		<form:option value="null" label="--Please Select Helper1"/>
 										<form:options items="${helpers}" itemLabel="name" itemValue="employeeId" />
 							     </form:select>
 							 	</td>
 							 	<td>
-							 		&nbsp;<form:errors path="primaryHelperId" />
+							 		&nbsp;<form:errors path="primaryHelper" />
 							 	</td>
 							 </tr>
 							 
 							 <tr>
 							    <td>Secondary Helper</td>
 							    <td> 
-								  <form:select path="secondaryHelperId">
+								  <form:select path="secondaryHelper">
 							  	  		<form:option value="null" label="--Please Select Helper2"/>
 										<form:options items="${helpers}" itemLabel="name" itemValue="employeeId" />
 							     </form:select>
 							 	</td>
 							 	<td>
-							 		&nbsp;<form:errors path="secondaryHelperId" />
+							 		&nbsp;<form:errors path="secondaryHelper" />
 							 	</td>
 							 </tr>
 							

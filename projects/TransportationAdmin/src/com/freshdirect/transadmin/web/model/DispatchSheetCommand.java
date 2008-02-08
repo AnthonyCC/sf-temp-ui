@@ -1,12 +1,6 @@
 package com.freshdirect.transadmin.web.model;
 
-import java.text.ParseException;
-
 import com.freshdirect.transadmin.model.TrnDispatchPlan;
-import com.freshdirect.transadmin.model.TrnEmployee;
-import com.freshdirect.transadmin.model.TrnTimeslot;
-import com.freshdirect.transadmin.model.TrnZone;
-import com.freshdirect.transadmin.util.TransStringUtil;
 
 
 public class DispatchSheetCommand extends BaseCommand {
@@ -24,24 +18,6 @@ public class DispatchSheetCommand extends BaseCommand {
 	private String truckId;
 	private String nextelId;
 	
-	private String dispatchDay;
-	
-	private String planDate;
-	
-	private String ignoreErrors;
-	
-	public String getIgnoreErrors() {
-		return ignoreErrors;
-	}
-	public void setIgnoreErrors(String ignoreErrors) {
-		this.ignoreErrors = ignoreErrors;
-	}
-	public String getPlanDate() {
-		return planDate;
-	}
-	public void setPlanDate(String planDate) {
-		this.planDate = planDate;
-	}
 	public DispatchSheetCommand() {
 	
 	}
@@ -53,16 +29,8 @@ public class DispatchSheetCommand extends BaseCommand {
 		this.setDriverId(plan.getTrnDriver() != null ? plan.getTrnDriver().getEmployeeId() : null);
 		this.setPrimaryHelperId(plan.getTrnPrimaryHelper() != null ? plan.getTrnPrimaryHelper().getEmployeeId() : null);
 		this.setSecondaryHelperId(plan.getTrnSecondaryHelper() != null ? plan.getTrnSecondaryHelper().getEmployeeId() : null);
-		try {
-			this.setPlanDate(plan.getPlanDate() != null ? TransStringUtil.getDate(plan.getPlanDate()) : null);
-			this.setDispatchDay(plan.getPlanDate() != null 
-						? TransStringUtil.getDayofWeek(plan.getPlanDate()) : null);
-		} catch(ParseException parseExp) {
-			//do nothing
-		}
 	}
 	
-		
 	public String getDriverId() {
 		return driverId;
 	}
@@ -135,12 +103,6 @@ public class DispatchSheetCommand extends BaseCommand {
 		return selected+"|"+zoneId+"|"
 				+slotId+"|"+driverId+"|"+primaryHelperId+"|"+secondaryHelperId+"|"
 					+routeId+"|"+supervisorId+"|"+truckId+"|"+nextelId+"|"+planId+"\n";
-	}
-	public String getDispatchDay() {
-		return dispatchDay;
-	}
-	public void setDispatchDay(String dispatchDay) {
-		this.dispatchDay = dispatchDay;
 	}
 
 }

@@ -40,12 +40,13 @@
  		 	    <prop key="/deletetruck.do">domainController</prop>
  		 	    <prop key="/plan.do">dispatchController</prop>
  		 	    <prop key="/deleteplan.do">dispatchController</prop>
- 		 	    <prop key="/editplan.do">planningFormController</prop>
+ 		 	    <prop key="/editplan.do">planningFormController</prop> 		 	    
  		 	    <prop key="/assignment.do">assignmentFormController</prop>
  		 	    <prop key="/dispatch.do">dispatchController</prop>
  		 	    <prop key="/deletedispatch.do">dispatchController</prop>
  		 	    <prop key="/editdispatch.do">dispatchFormController</prop>
  		 	    <prop key="/confirmdispatch.do">dispatchController</prop>
+ 		 	    <prop key="/copyplan.do">copyPlanFormController</prop>
 			</props>
 		</property>
 	</bean>
@@ -160,11 +161,23 @@
         <property name="formView" value="assignmentView" />
 	</bean>
 	
+	<bean id="copyPlanFormController" class="com.freshdirect.transadmin.web.CopyPlanFormController">		
+		<property name="domainManagerService" ref="domainManager"/>
+		<property name="dispatchManagerService" ref="dispatchManager"/>
+		<property name="sessionForm" value="true"/>
+        <property name="commandName" value="copyPlanForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.web.model.CopyPlanCommand"/>
+        <property name="validator" ref="copyPlanValidator"/>
+        <property name="successView" value="copyPlan" />
+        <property name="formView" value="copyPlan" />
+	</bean>
+	
 	<bean id="employeeValidator" class="com.freshdirect.transadmin.web.validation.EmployeeValidator"/>
 	<bean id="zoneValidator" class="com.freshdirect.transadmin.web.validation.ZoneValidator"/>
 	<bean id="truckValidator" class="com.freshdirect.transadmin.web.validation.TruckValidator"/>
 	<bean id="routeValidator" class="com.freshdirect.transadmin.web.validation.RouteValidator"/>
 	<bean id="planValidator" class="com.freshdirect.transadmin.web.validation.PlanValidator"/>
 	<bean id="dispatchValidator" class="com.freshdirect.transadmin.web.validation.DispatchValidator"/>
+	<bean id="copyPlanValidator" class="com.freshdirect.transadmin.web.validation.CopyPlanValidator"/>
 
 </beans>

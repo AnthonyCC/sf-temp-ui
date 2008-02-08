@@ -20,7 +20,15 @@ public class TrnDispatchPlan implements java.io.Serializable, TrnBaseEntityI {
 	private TrnEmployee trnSecondaryHelper;
 	
 	private Date planDate;
+	
+	private String ignoreErrors;
 		
+	public String getIgnoreErrors() {
+		return ignoreErrors;
+	}
+	public void setIgnoreErrors(String ignoreErrors) {
+		this.ignoreErrors = ignoreErrors;
+	}
 	public Long getPlanId() {
 		return planId;
 	}

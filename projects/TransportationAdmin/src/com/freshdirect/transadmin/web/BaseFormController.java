@@ -20,7 +20,8 @@ public class BaseFormController extends SimpleFormController {
 
 	protected void initBinder(HttpServletRequest request,
 			ServletRequestDataBinder dataBinder) throws Exception {				
-		super.initBinder(request, dataBinder);		
+		CustomDateEditor editor = new CustomDateEditor(TransStringUtil.dateFormat, true);
+		dataBinder.registerCustomEditor(Date.class, editor);		
 	}
 
 	public void saveMessage(HttpServletRequest request, Object msg) {
