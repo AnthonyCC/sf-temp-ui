@@ -3,6 +3,8 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
+<% boolean hasErrors = session.getAttribute("apperrors") != null; %>
+
 <tmpl:insert template='/common/site.jsp'>
 
     <tmpl:put name='title' direct='true'>Copy Planning Data</tmpl:put>
@@ -11,7 +13,7 @@
 		<br/>	
 		<div align="center">
 			<form:form commandName = "copyPlanForm" method="post">
-						
+			<form:hidden path="ignoreErrors"/>			
 			<table width="100%" cellpadding="0" cellspacing="0" border="0">
 					<tr>
 						<td class="screentitle">Copy Planning Data</td>
@@ -98,12 +100,28 @@
 							 
 							<tr><td colspan="3">&nbsp;</td></tr>
 							<tr>
-							    <td colspan="3" align="center">
-								   <input type = "submit" value="&nbsp;Copy&nbsp;"  />
-								</td>			
+							    <% if(hasErrors) { %>
+							    <td align="center">
+								   <input type= "button" align="center" value="&nbsp;Continue&nbsp;" 
+								   			onclick="submitData()" />
+								</td>
+								<td align="center">
+								   <input type = "button" value="&nbsp;Cancel&nbsp;" onclick="javascript:location.href ='plan.do'" />
+								</td>
+								<td/>
+								<% } else { %>
+								<td colspan="3" align="center">
+								   <input type = "submit" value="&nbsp;Save&nbsp;"  />
+								</td>	
+								<% } %>		
 							</tr>
 							</table>				
-							
+							<script language="javascript">									
+			   		function submitData() {
+			   			document.getElementById("ignoreErrors").value = "true";
+			   			document.getElementById("copyPlanForm").submit();
+			   		}
+			  </script>
 						</td>
 					</tr>								
 				</table>

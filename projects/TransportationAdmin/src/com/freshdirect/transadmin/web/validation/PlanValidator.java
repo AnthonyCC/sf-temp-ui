@@ -16,7 +16,8 @@ public class PlanValidator implements Validator {
 		
 		TrnDispatchPlan model = (TrnDispatchPlan)obj;
 		//  need to decide about the validation part
-		ValidationUtils.rejectIfEmpty(errors, "dispatchDay", "app.error.112", new Object[]{"Dispatch Day"},"required field");
+		ValidationUtils.rejectIfEmpty(errors, "planDate", "app.error.112", new Object[]{"Plan Date"},"required field");
+				
 				
 		if(model != null && (model.getTrnZone() == null || model.getTrnZone().getZoneId() == null)) {
 			errors.rejectValue("zone", "app.error.112", new Object[]{"Zone"},"required field");

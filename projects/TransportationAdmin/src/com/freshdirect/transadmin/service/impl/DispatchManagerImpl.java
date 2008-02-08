@@ -62,4 +62,9 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 		
 		return getDispatchManagerDao().getPlan(id);	
 	}
+	
+	public void copyPlan(Collection addPlanList, Collection removePlanList) {
+		this.removeEntity(removePlanList);
+		this.saveEntityList(addPlanList);
+	}
 }

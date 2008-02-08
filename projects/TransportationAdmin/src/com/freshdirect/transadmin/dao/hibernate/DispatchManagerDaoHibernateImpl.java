@@ -39,7 +39,7 @@ public class DispatchManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("from TrnDispatchPlan tp");
-		strBuf.append(" where tp.dispatchDay='").append(day).append("'");
+		strBuf.append(" where tp.planDate='").append(date).append("'");
 
 		if (!TransStringUtil.isEmpty(zone) && !zone.equals("0") && !zone.equals("null")) {
 			strBuf.append(" and tp.trnZone.zoneId='").append(zone).append("'");

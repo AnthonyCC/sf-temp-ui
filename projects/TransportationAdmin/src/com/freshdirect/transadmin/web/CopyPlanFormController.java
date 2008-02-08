@@ -47,20 +47,65 @@ public class CopyPlanFormController extends AbstractFormController {
 			throws Exception {
 		
 		System.out.println("<<<<<<<<<<<< COPYPLAN ONSUBMIT CALLED >>>>>>>>>>>>>>>>>>>");
-		List messages = new ArrayList();
+		//List messages = new ArrayList();
 		String messageKey = "app.actionmessage.105";
 		
-		copyPlan((CopyPlanCommand)command, messages);
+		//copyPlan((CopyPlanCommand)command, messages);
+		List messages = validateCopyPlan((CopyPlanCommand)command);
 		ModelAndView mav = new ModelAndView(getSuccessView());
 		mav.getModel().put(this.getCommandName(), command);
 		mav.getModel().putAll(referenceData(request));
-		if(messages.isEmpty()) {
+		
+		if(messages.isEmpty() || "true".equalsIgnoreCase(((CopyPlanCommand)command).getIgnoreErrors())) {
+			copyPlan((CopyPlanCommand)command, messages);
+			((CopyPlanCommand)command).setIgnoreErrors(null);
 			saveMessage(request, getMessage(messageKey,
 				new Object[] { getDomainObjectName() }));
 		} else {
-			saveMessage(request, messages);
+			saveErrorMessage(request, messages);
 		}
 		return mav;
+	}
+	
+	private List validateCopyPlan(CopyPlanCommand model) throws ParseException {
+		
+		List returnList = new ArrayList(); 
+		if(model != null) {
+			Date startDate = TransStringUtil.getDate(model.getSourceDate());
+			Date endDate = TransStringUtil.getDate(model.getDestinationDate());
+			String dayOfWeek = model.getDispatchDay();			
+			
+			if(TransStringUtil.isEmpty(dayOfWeek) || "null".equals(dayOfWeek)) {				
+				for(int intCount = 0;intCount<7;intCount++) {
+					returnList.addAll(validateCopyPlanForDate(TransStringUtil.addDays(startDate, intCount),
+							TransStringUtil.addDays(endDate, intCount)));
+				}
+				
+			} else {
+				returnList.addAll(validateCopyPlanForDate(TransStringUtil.addDays(startDate, TransStringUtil.getDayinWeek(dayOfWeek)),
+						TransStringUtil.addDays(endDate, TransStringUtil.getDayinWeek(dayOfWeek))));
+			}
+			
+		}
+		return returnList;
+	}
+	
+	private List validateCopyPlanForDate(Date sourceDate, Date destinationDate) throws ParseException  {
+		
+		String strSourceDate = TransStringUtil.getServerDate(sourceDate);
+		String strDestinationDate = TransStringUtil.getServerDate(destinationDate);
+		Collection sourceData = dispatchManagerService.getPlanList(strSourceDate);
+		Collection destinationData = dispatchManagerService.getPlanList(strDestinationDate);
+		List messages = new ArrayList();		
+		if(!destinationData.isEmpty()) {
+			messages.add("Destination Plan already exists for date "+strDestinationDate);			
+		} 
+		
+		if(sourceData.isEmpty()) {
+			messages.add("Source Plan does not exists for date "+strSourceDate);			
+		} 
+				
+		return messages;
 	}
 	
 	private void copyPlan(CopyPlanCommand model, List messages) throws ParseException {
@@ -70,19 +115,24 @@ public class CopyPlanFormController extends AbstractFormController {
 			Date endDate = TransStringUtil.getDate(model.getDestinationDate());
 			String dayOfWeek = model.getDispatchDay();
 			boolean includeEmpDetails = "true".equalsIgnoreCase(model.getIncludeEmployees());
-			List returnList = new ArrayList(); 
+			List deleteList = new ArrayList();
+			List addList = new ArrayList();
+			List retList = null;
 			if(TransStringUtil.isEmpty(dayOfWeek) || "null".equals(dayOfWeek)) {				
 				for(int intCount = 0;intCount<7;intCount++) {
-					returnList.addAll(copyPlanForDate(TransStringUtil.addDays(startDate, intCount),
-							TransStringUtil.addDays(endDate, intCount), messages, includeEmpDetails));
+					retList = copyPlanForDate(TransStringUtil.addDays(startDate, intCount),
+							TransStringUtil.addDays(endDate, intCount), messages, includeEmpDetails);
+					deleteList.addAll((List)retList.get(0));
+					addList.addAll((List)retList.get(1));
 				}
 				
 			} else {
-				returnList.addAll(copyPlanForDate(TransStringUtil.addDays(startDate, TransStringUtil.getDayinWeek(dayOfWeek)),
-						TransStringUtil.addDays(endDate, TransStringUtil.getDayinWeek(dayOfWeek)), messages, includeEmpDetails));
-			}
-			System.out.println(returnList);
-			dispatchManagerService.saveEntityList(returnList);
+				retList = copyPlanForDate(TransStringUtil.addDays(startDate, TransStringUtil.getDayinWeek(dayOfWeek)),
+						TransStringUtil.addDays(endDate, TransStringUtil.getDayinWeek(dayOfWeek)), messages, includeEmpDetails);
+				deleteList.addAll((List)retList.get(0));
+				addList.addAll((List)retList.get(1));
+			}			
+			dispatchManagerService.copyPlan(addList, deleteList);
 		}
 		
 	}
@@ -94,37 +144,35 @@ public class CopyPlanFormController extends AbstractFormController {
 		Collection sourceData = dispatchManagerService.getPlanList(strSourceDate);
 		Collection destinationData = dispatchManagerService.getPlanList(strDestinationDate);
 		List returnList = new ArrayList();
-		boolean hasError =  false;
+		
+		List deleteList = new ArrayList();
+		List addList = new ArrayList();
+		returnList.add(deleteList);
+		returnList.add(addList);
+		
 		if(!destinationData.isEmpty()) {
 			messages.add("Destination Plan already exists for date "+strDestinationDate);
-			hasError =  true;
+			deleteList.addAll(destinationData);
 		} 
-		
-		if(sourceData.isEmpty()) {
-			messages.add("Source Plan does not exists for date "+strSourceDate);
-			hasError =  true;
-		} 
-		
-		if(!hasError) {
-			Iterator iterator = sourceData.iterator();
-			TrnDispatchPlan tmpPlan = null;
-			TrnDispatchPlan tmpNewPlan = null;
-			while(iterator.hasNext()) {
-				tmpPlan = (TrnDispatchPlan)iterator.next();
-				tmpNewPlan = new TrnDispatchPlan();
-				tmpNewPlan.setDispatchDay(tmpPlan.getDispatchDay());				
-				tmpNewPlan.setTrnZone(tmpPlan.getTrnZone());
-				tmpNewPlan.setTrnTimeslot(tmpPlan.getTrnTimeslot());
-				if(includeEmpDetails) {
-					tmpNewPlan.setTrnDriver(tmpPlan.getTrnDriver());
-					tmpNewPlan.setTrnPrimaryHelper(tmpPlan.getTrnPrimaryHelper());
-					tmpNewPlan.setTrnSecondaryHelper(tmpPlan.getTrnSecondaryHelper());
-					tmpNewPlan.setTrnSupervisor(tmpPlan.getTrnSupervisor());
-				}
 				
-				tmpNewPlan.setPlanDate(destinationDate);
-				returnList.add(tmpNewPlan);
+		Iterator iterator = sourceData.iterator();
+		TrnDispatchPlan tmpPlan = null;
+		TrnDispatchPlan tmpNewPlan = null;
+		while(iterator.hasNext()) {
+			tmpPlan = (TrnDispatchPlan)iterator.next();
+			tmpNewPlan = new TrnDispatchPlan();
+			tmpNewPlan.setDispatchDay(tmpPlan.getDispatchDay());				
+			tmpNewPlan.setTrnZone(tmpPlan.getTrnZone());
+			tmpNewPlan.setTrnTimeslot(tmpPlan.getTrnTimeslot());
+			if(includeEmpDetails) {
+				tmpNewPlan.setTrnDriver(tmpPlan.getTrnDriver());
+				tmpNewPlan.setTrnPrimaryHelper(tmpPlan.getTrnPrimaryHelper());
+				tmpNewPlan.setTrnSecondaryHelper(tmpPlan.getTrnSecondaryHelper());
+				tmpNewPlan.setTrnSupervisor(tmpPlan.getTrnSupervisor());
 			}
+			
+			tmpNewPlan.setPlanDate(destinationDate);
+			addList.add(tmpNewPlan);
 		}
 		return returnList;
 	}
@@ -156,6 +204,7 @@ public class CopyPlanFormController extends AbstractFormController {
 	public void setDomainManagerService(DomainManagerI domainManagerService) {
 		this.domainManagerService = domainManagerService;
 	}	
+	
 	
 	
 }

@@ -11,6 +11,18 @@ public class CopyPlanCommand extends BaseCommand {
 	
 	private String includeEmployees;
 	
+	private String ignoreErrors;
+	
+	public String getIgnoreErrors() {
+		return ignoreErrors;
+	}
+
+
+	public void setIgnoreErrors(String ignoreErrors) {
+		this.ignoreErrors = ignoreErrors;
+	}
+
+
 	public CopyPlanCommand() {
 	
 	}

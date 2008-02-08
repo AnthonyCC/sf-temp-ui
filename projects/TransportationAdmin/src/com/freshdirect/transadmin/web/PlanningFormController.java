@@ -9,10 +9,6 @@ import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.validation.BindException;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.transadmin.model.TrnDispatchPlan;
 import com.freshdirect.transadmin.service.DispatchManagerI;
@@ -33,29 +29,7 @@ public class PlanningFormController extends AbstractFormController {
 		this.dispatchManagerService = dispatchManagerService;
 	}
 	
-	protected ModelAndView onSubmit(HttpServletRequest request,
-			HttpServletResponse response, Object command, BindException errors)
-			throws Exception {
-				
-		String messageKey = isNew(command) ? "app.actionmessage.101"
-				: "app.actionmessage.102";
-
-		preProcessDomainObject(command);
-		List errorList = saveDomainObject(command);
-
-		ModelAndView mav = new ModelAndView(getSuccessView(), errors.getModel());
-		
-		mav.getModel().put(this.getCommandName(), command);
-		mav.getModel().putAll(referenceData(request));
-		if(errorList == null || errorList.isEmpty()) {
-			saveMessage(request, getMessage(messageKey,
-					new Object[] { getDomainObjectName() }));
-		} else {
-			saveErrorMessage(request, errorList);
-		}
-		return mav;
-	}
-
+	
 	protected Map referenceData(HttpServletRequest request) throws ServletException {
 		Map refData = new HashMap();		
 		refData.put("days", domainManagerService.getDays());

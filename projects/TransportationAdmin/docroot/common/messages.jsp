@@ -10,7 +10,7 @@
 <c:if test="${not empty apperrors}">
 		<br/>      
        <c:forEach var="err" items="${apperrors}">            
-            <div class="errortxt"><c:out value="${err}" escapeXml="false"/></div><br />
+            <div class="apperrortxt"><c:out value="${err}" escapeXml="false"/></div><br />
        </c:forEach>   
     <c:remove var="apperrors" scope="session"/>
 </c:if>

@@ -33,7 +33,7 @@ public abstract class AbstractFormController extends BaseFormController {
 		preProcessDomainObject(command);
 		List errorList = saveDomainObject(command);
 
-		ModelAndView mav = new ModelAndView(getSuccessView());
+		ModelAndView mav = new ModelAndView(getSuccessView(), errors.getModel());
 		mav.getModel().put(this.getCommandName(), command);
 		mav.getModel().putAll(referenceData(request));
 		if(errorList == null || errorList.isEmpty()) {

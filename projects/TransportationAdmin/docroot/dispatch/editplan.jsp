@@ -44,9 +44,15 @@
 										    inputField : "planDate",
 										    ifFormat : "%Y-%m-%d",
 										    singleClick: true,  	                                        
-										    button : "trigger_planDate" 
-										   }
+										    button : "trigger_planDate",
+										    onUpdate : updateDate,										     
+										 }
 									    );
+									    function updateDate(cal) {
+									    		var selIndex = cal.date.getDay();
+									    		if(selIndex == 0) selIndex = 7;
+										    	document.getElementById('dispatchDay').selectedIndex =  selIndex;
+										    };
 									  </script>
 								</td>	  
 							 	<td>
@@ -56,7 +62,7 @@
 							  <tr>
 							    <td>Day</td>
 							    <td>
-							    <form:select path="dispatchDay">
+							    <form:select path="dispatchDay" >
 							  	  		<form:option value="null" label="--Please Select Day"/>
 										<form:options items="${days}" />
 							     </form:select>

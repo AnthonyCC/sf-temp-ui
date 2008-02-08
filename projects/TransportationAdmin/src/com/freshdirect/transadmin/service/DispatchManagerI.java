@@ -22,4 +22,6 @@ public interface DispatchManagerI extends BaseManagerI {
 	Collection getDrivers();
 	
 	Collection getHelpers();
+	
+	void copyPlan(Collection addPlanList, Collection removePlanList);
 }
