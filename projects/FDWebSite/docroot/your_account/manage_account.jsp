@@ -101,7 +101,7 @@ your account information, this is the place to do it.<br></td>
 	</table>
 	<% } %>
     </td></tr><tr>
-	<td valign="top" class="text13"><br><br>
+	<td valign="top" class="text13"> <% if(user.isChefsTable()) { %> <br><br> <% } %>
 		<font class="text13bold"><a href="<%=response.encodeURL("/your_account/order_history.jsp")%>">Your Orders</a></font><br>Check your order status and update open orders.
 		<br><br>
 		<%if(user.isEligibleForPreReservation()){%>
