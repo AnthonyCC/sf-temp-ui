@@ -105,7 +105,7 @@ if(user != null) {
 		<td colspan="13" align="right" valign="bottom">
 		<% if (user.isChefsTable()) {
 			%>
-			<a href="/your_account/manage_account.jsp"><img src="/media_stat/images/template/checkout/loy_global_member_stars.gif" width="170" height="9" alt="Chef's Table Member" vspace="2"/></a><br />
+			<a href="/your_account/manage_account.jsp"><img src="/media_stat/images/template/checkout/loy_global_member_stars_2008.gif" width="170" height="9" alt="Chef's Table Member" vspace="2"/></a><br />
 			<%
 		}
 		%>
