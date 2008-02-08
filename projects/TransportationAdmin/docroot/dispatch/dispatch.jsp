@@ -11,8 +11,7 @@
 
 	<tmpl:put name='content' direct='true'>
 		<br/>	
-		<div class="contentroot">
-								
+		<div class="contentroot">								
 			<table width="100%" cellpadding="0" cellspacing="0" border="0">
 					<tr>
 						<td class="screentitle">Dispatch Sheet</td>

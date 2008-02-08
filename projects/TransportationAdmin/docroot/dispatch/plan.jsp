@@ -2,6 +2,8 @@
 <%@ taglib uri="/tld/extremecomponents" prefix="ec" %>
 <%@ page import='com.freshdirect.transadmin.web.ui.*' %>
 
+<%	pageContext.setAttribute("HAS_COPYBUTTON", "true");  %>
+	
 <tmpl:insert template='/common/site.jsp'>
 
     <tmpl:put name='title' direct='true'>Transportation Planning</tmpl:put>
@@ -10,7 +12,7 @@
 		<br/>	
 		<div align="center">
 			<form id="planListForm" action="" method="post">	
-				<ec:table items="planlist"   action="${pageContext.request.contextPath}/plan.do"
+				<ec:table items="planlist"  filterRowsCallback="exactMatch" action="${pageContext.request.contextPath}/plan.do"
 				    imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="Transportation Planning"
 				    width="98%"  view="fd" form="planListForm" autoIncludeParameters="false" rowsDisplayed="25"  >
 				    
@@ -23,6 +25,7 @@
 				    	<ec:column title=" " width="5px" 
 					          filterable="false" sortable="false" cell="selectcol"
 					          property="planId" />				    	
+				      <ec:column cell="date" property="planDate" sortable="true" title="Week Of"/>
 				      <ec:column property="dispatchDay" sortable="true" title="Day"/>
 				      <ec:column alias="trnZonezoneNumber" property="trnZone.zoneNumber" title="Zone"/>
 				      <ec:column alias="trnTimeslotslotName" property="trnTimeslot.slotName" title="Timeslot"/>

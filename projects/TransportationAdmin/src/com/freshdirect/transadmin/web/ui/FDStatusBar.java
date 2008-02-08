@@ -42,6 +42,8 @@ public class FDStatusBar extends DefaultStatusBar {
         
         String hasConfirm = (String)model.getContext().getPageAttribute("HAS_CONFIRMBUTTON");
         
+        String hasCopy = (String)model.getContext().getPageAttribute("HAS_COPYBUTTON");
+        
         if(hasAdd == null || TransStringUtil.isEmpty(hasAdd)
         	|| hasAdd.equalsIgnoreCase("TRUE")) {
 
@@ -53,6 +55,13 @@ public class FDStatusBar extends DefaultStatusBar {
         if(hasConfirm != null && hasConfirm.equalsIgnoreCase("TRUE")) {
 
     	    toolbarBuilder.confirmItemAsImage();
+    	     
+    	    html.nbsp();
+        }
+        
+        if(hasCopy != null && hasCopy.equalsIgnoreCase("TRUE")) {
+
+    	    toolbarBuilder.copyItemAsImage();
     	     
     	    html.nbsp();
         }

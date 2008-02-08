@@ -10,6 +10,8 @@ import com.freshdirect.transadmin.model.TrnDispatchPlan;
 public interface DispatchManagerDaoI extends BaseManagerDaoI {
 
 	Collection getPlan(String day, String zone, String date) throws DataAccessException;
+	
+	Collection getPlanList(String date) throws DataAccessException;
 
 	Collection getDispatchList(String date, String zone) throws DataAccessException;
 

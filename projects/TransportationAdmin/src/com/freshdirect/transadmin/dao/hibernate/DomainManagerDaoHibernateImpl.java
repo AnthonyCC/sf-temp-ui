@@ -9,6 +9,7 @@ import com.freshdirect.transadmin.model.TrnEmployee;
 import com.freshdirect.transadmin.model.TrnRoute;
 import com.freshdirect.transadmin.model.TrnTruck;
 import com.freshdirect.transadmin.model.TrnZone;
+import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class DomainManagerDaoHibernateImpl
 		extends BaseManagerDaoHibernateImpl  implements DomainManagerDaoI {
@@ -47,7 +48,7 @@ public class DomainManagerDaoHibernateImpl
 	}
 
 	public String[] getDays() throws DataAccessException {
-		return new String[]{"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
+		return TransStringUtil.getDays();
 	}
 
 	public String[] getTimings() throws DataAccessException {

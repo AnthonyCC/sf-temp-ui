@@ -1,21 +1,26 @@
 package com.freshdirect.transadmin.web;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
+import com.freshdirect.transadmin.util.TransStringUtil;
+
 public class BaseFormController extends SimpleFormController {
 
 	protected void initBinder(HttpServletRequest request,
-			ServletRequestDataBinder dataBinder) throws Exception {
-		super.initBinder(request, dataBinder);
+			ServletRequestDataBinder dataBinder) throws Exception {				
+		super.initBinder(request, dataBinder);		
 	}
 
 	public void saveMessage(HttpServletRequest request, Object msg) {
@@ -23,8 +28,25 @@ public class BaseFormController extends SimpleFormController {
 		if (messages == null) {
 			messages = new ArrayList();
 		}
-		messages.add(msg);
+		if(msg instanceof Collection) {
+			messages.addAll((Collection)msg);
+		} else {
+			messages.add(msg);
+		}
 		request.getSession().setAttribute("messages", messages);
+	}
+	
+	public void saveErrorMessage(HttpServletRequest request, Object msg) {
+		List messages = (List) request.getSession().getAttribute("apperrors");
+		if (messages == null) {
+			messages = new ArrayList();
+		}
+		if(msg instanceof Collection) {
+			messages.addAll((Collection)msg);
+		} else {
+			messages.add(msg);
+		}
+		request.getSession().setAttribute("apperrors", messages);
 	}
 
 	public String getMessage(String key, Object[] param) {

@@ -13,6 +13,7 @@ public class FDStatusBarBuilder extends ToolbarBuilder {
 	private final static String TOOLBAR_ADD_IMAGE = "add_new";
 	private final static String TOOLBAR_DELETE_IMAGE = "delete";
 	private final static String TOOLBAR_CONFIRM_IMAGE = "confirm-unconfirm";
+	private final static String TOOLBAR_COPY_IMAGE = "copy";
 	
 	public FDStatusBarBuilder(TableModel model) {
         super(model);
@@ -49,6 +50,15 @@ public class FDStatusBarBuilder extends ToolbarBuilder {
         buildConfirm(getHtmlBuilder(), getTableModel(), item);
     }
     
+    public void copyItemAsImage() {
+        ImageItem item = new ImageItem();
+        item.setTooltip(getMessages().getMessage(BuilderConstants.TOOLBAR_FILTER_TOOLTIP));
+        item.setImage(BuilderUtils.getImage(getTableModel(), TOOLBAR_COPY_IMAGE));
+        item.setAlt("Copy");
+        item.setStyle("border:0");
+        buildCopy(getHtmlBuilder(), getTableModel(), item);
+    }
+            
     public void buildAdd(HtmlBuilder html, TableModel model, ToolbarItem item) {
         item.setAction(getAddAction("edit",model));
         item.enabled(html, model);
@@ -61,6 +71,11 @@ public class FDStatusBarBuilder extends ToolbarBuilder {
     
     public void buildConfirm(HtmlBuilder html, TableModel model, ToolbarItem item) {
         item.setAction(getConfirmAction("confirm",model));
+        item.enabled(html, model);
+    }
+    
+    public void buildCopy(HtmlBuilder html, TableModel model, ToolbarItem item) {
+        item.setAction(getAddAction("copy",model));
         item.enabled(html, model);
     }
     

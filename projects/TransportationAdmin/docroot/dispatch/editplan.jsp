@@ -3,6 +3,8 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
+<% boolean hasErrors = session.getAttribute("apperrors") != null; %>
+
 <tmpl:insert template='/common/site.jsp'>
 
     <tmpl:put name='title' direct='true'>Add/Edit Plan</tmpl:put>
@@ -12,6 +14,8 @@
 		<div align="center">
 			<form:form commandName = "planForm" method="post">
 			<form:hidden path="planId"/>
+			
+			<form:hidden path="ignoreErrors"/>
 			
 			<table width="100%" cellpadding="0" cellspacing="0" border="0">
 					<tr>
@@ -23,7 +27,32 @@
 					
 					<tr>
 						<td class="screencontent">
-							<table class="forms1">			  	
+							<table class="forms1">	
+							 <tr>
+							    <td>Week Of</td>
+							    <td>
+							    	<form:input maxlength="50" size="24" path="planDate" />
+							    
+							    &nbsp;<a href="#" id="trigger_planDate" style="font-size: 9px;">
+							  	 			<img src="images/calendar.gif"  style="border:0"  alt=">>" />
+							  	 		  </a>
+							  	 	 <script language="javascript">									
+									    Calendar.setup(
+									    {
+										    showsTime : false,
+										    electric : false,
+										    inputField : "planDate",
+										    ifFormat : "%Y-%m-%d",
+										    singleClick: true,  	                                        
+										    button : "trigger_planDate" 
+										   }
+									    );
+									  </script>
+								</td>	  
+							 	<td>
+							 		&nbsp;<form:errors path="planDate" />
+							 	</td>
+							 </tr>		  	
 							  <tr>
 							    <td>Day</td>
 							    <td>
@@ -31,6 +60,7 @@
 							  	  		<form:option value="null" label="--Please Select Day"/>
 										<form:options items="${days}" />
 							     </form:select>
+							     </td>
 							 	<td>
 							 		&nbsp;<form:errors path="dispatchDay" />
 							 	</td>
@@ -38,78 +68,94 @@
 							 <tr>
 							    <td>Zone Number</td>
 							    <td> 
-								  <form:select path="zone">
+								  <form:select path="zoneId">
 							  	  		<form:option value="null" label="--Please Select Zone"/>
 										<form:options items="${zones}" itemLabel="zoneNumber" itemValue="zoneId" />
 							     </form:select>
 							 	</td>
 							 	<td>
-							 		&nbsp;<form:errors path="zone" />
+							 		&nbsp;<form:errors path="zoneId" />
 							 	</td>
 							 </tr>
 							 <tr>
 							    <td>Time Slot</td>
 							    <td> 
-								  <form:select path="timeslot">
+								  <form:select path="slotId">
 							  	  		<form:option value="null" label="--Please Select Time Slot"/>
 										<form:options items="${timeslots}" itemLabel="slotName" itemValue="slotId" />
 							     </form:select>
 							 	</td>
 							 	<td>
-							 		&nbsp;<form:errors path="timeslot" />
+							 		&nbsp;<form:errors path="slotId" />
 							 	</td>
 							 </tr>
 							 <tr>
 							    <td>Driver</td>
 							    <td> 
-								  <form:select path="driver">
+								  <form:select path="driverId">
 							  	  		<form:option value="null" label="--Please Select Driver"/>
 										<form:options items="${drivers}" itemLabel="name" itemValue="employeeId" />
 							     </form:select>
 							 	</td>
 							 	<td>
-							 		&nbsp;<form:errors path="driver" />
+							 		&nbsp;<form:errors path="driverId" />
 							 	</td>
 							 </tr>
 							 
 							 <tr>
 							    <td>Primary Helper</td>
 							    <td> 
-								  <form:select path="primaryHelper">
+								  <form:select path="primaryHelperId">
 							  	  		<form:option value="null" label="--Please Select Helper1"/>
 										<form:options items="${helpers}" itemLabel="name" itemValue="employeeId" />
 							     </form:select>
 							 	</td>
 							 	<td>
-							 		&nbsp;<form:errors path="primaryHelper" />
+							 		&nbsp;<form:errors path="primaryHelperId" />
 							 	</td>
 							 </tr>
 							 
 							 <tr>
 							    <td>Secondary Helper</td>
 							    <td> 
-								  <form:select path="secondaryHelper">
+								  <form:select path="secondaryHelperId">
 							  	  		<form:option value="null" label="--Please Select Helper2"/>
 										<form:options items="${helpers}" itemLabel="name" itemValue="employeeId" />
 							     </form:select>
 							 	</td>
 							 	<td>
-							 		&nbsp;<form:errors path="secondaryHelper" />
+							 		&nbsp;<form:errors path="secondaryHelperId" />
 							 	</td>
 							 </tr>
 							
 							<tr><td colspan="3">&nbsp;</td></tr>
 							<tr>
-							    <td colspan="3" align="center">
+							    <% if(hasErrors) { %>
+							    <td align="center">
+								   <input type= "button" align="center" value="&nbsp;Continue&nbsp;" 
+								   			onclick="submitData()" />
+								</td>
+								<td align="center">
+								   <input type = "button" value="&nbsp;Cancel&nbsp;" onclick="javascript:location.href ='plan.do'" />
+								</td>
+								<td/>
+								<% } else { %>
+								<td colspan="3" align="center">
 								   <input type = "submit" value="&nbsp;Save&nbsp;"  />
-								</td>			
+								</td>	
+								<% } %>		
 							</tr>
 							</table>				
 							
 						</td>
 					</tr>								
 				</table>
-			
+				<script language="javascript">									
+			   		function submitData() {
+			   			document.getElementById("ignoreErrors").value = "true";
+			   			document.getElementById("planForm").submit();
+			   		}
+			  </script>
 			</form:form>
 		 </div>
 		 

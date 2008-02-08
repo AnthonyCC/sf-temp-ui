@@ -32,7 +32,7 @@ public class DispatchManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 
 	public Collection getPlan() throws DataAccessException {
 
-		return getDataList("TrnDispatchPlan");
+		return getDataList("TrnDispatchPlan Order By  PLAN_DATE");
 	}
 
 	public Collection getPlan(String day, String zone, String date) throws DataAccessException {
@@ -47,6 +47,15 @@ public class DispatchManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 
 		strBuf.append(" and tp.planId").append(" not in(")
 			.append("select id.planId from TrnDispatch where id.dispatchDate='").append(date).append("')");
+
+		return (Collection) getHibernateTemplate().find(strBuf.toString());
+	}
+	
+	public Collection getPlanList(String date) throws DataAccessException {
+
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from TrnDispatchPlan tp");
+		strBuf.append(" where tp.planDate='").append(date).append("'");
 
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
 	}

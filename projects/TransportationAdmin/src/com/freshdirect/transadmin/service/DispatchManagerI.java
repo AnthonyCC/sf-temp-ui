@@ -9,6 +9,8 @@ public interface DispatchManagerI extends BaseManagerI {
 	
 	Collection getPlan(String day, String zone, String date);
 	
+	Collection getPlanList(String date);
+	
 	Collection getDispatchList(String date, String zone);
 	
 	TrnDispatch getDispatch(String planId, String date);

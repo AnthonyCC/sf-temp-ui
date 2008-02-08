@@ -1,5 +1,7 @@
 package com.freshdirect.transadmin.model;
 
+import java.util.Date;
+
 
 // Generated Jul 30, 2007 6:23:08 PM by Hibernate Tools 3.2.0.b9
 
@@ -17,6 +19,8 @@ public class TrnDispatchPlan implements java.io.Serializable, TrnBaseEntityI {
 	private TrnEmployee trnPrimaryHelper;
 	private TrnEmployee trnSecondaryHelper;
 	
+	private Date planDate;
+		
 	public Long getPlanId() {
 		return planId;
 	}
@@ -152,6 +156,14 @@ public class TrnDispatchPlan implements java.io.Serializable, TrnBaseEntityI {
 		}
 	}
 	
+		
+	public Date getPlanDate() {
+		return planDate;
+	}
+	public void setPlanDate(Date planDate) {
+		this.planDate = planDate;
+	}
+	
 	public boolean isObsoleteEntity() {
 		return ((trnSupervisor != null && trnSupervisor.getObsolete() != null) ||
 				(trnDriver != null && trnDriver.getObsolete() != null) ||
@@ -159,6 +171,7 @@ public class TrnDispatchPlan implements java.io.Serializable, TrnBaseEntityI {
 				(trnPrimaryHelper != null && trnPrimaryHelper.getObsolete() != null) ||
 				(trnSecondaryHelper != null && trnSecondaryHelper.getObsolete() != null));
 	}
+	
 	
 
 }

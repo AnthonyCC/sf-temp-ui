@@ -1,5 +1,7 @@
 package com.freshdirect.transadmin.web;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -24,19 +26,22 @@ public abstract class AbstractFormController extends BaseFormController {
 	protected ModelAndView onSubmit(HttpServletRequest request,
 			HttpServletResponse response, Object command, BindException errors)
 			throws Exception {
-		
-		System.out.println("<<<<<<<<<<<< ONSUBMIT CALLED >>>>>>>>>>>>>>>>>>>");
+				
 		String messageKey = isNew(command) ? "app.actionmessage.101"
 				: "app.actionmessage.102";
 
 		preProcessDomainObject(command);
-		saveDomainObject(command);
+		List errorList = saveDomainObject(command);
 
 		ModelAndView mav = new ModelAndView(getSuccessView());
 		mav.getModel().put(this.getCommandName(), command);
 		mav.getModel().putAll(referenceData(request));
-		saveMessage(request, getMessage(messageKey,
-				new Object[] { getDomainObjectName() }));
+		if(errorList == null || errorList.isEmpty()) {
+			saveMessage(request, getMessage(messageKey,
+					new Object[] { getDomainObjectName() }));
+		} else {
+			saveErrorMessage(request, errorList);
+		}
 		return mav;
 	}
 
@@ -48,10 +53,10 @@ public abstract class AbstractFormController extends BaseFormController {
 
 	public abstract String getDomainObjectName();
 
-	public abstract void saveDomainObject(Object domainObject);
+	public abstract List saveDomainObject(Object domainObject);
 
 	protected void preProcessDomainObject(Object domainObject) {
 		// Default Impl
 	}
-
+		
 }

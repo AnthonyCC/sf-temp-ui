@@ -31,5 +31,8 @@
         <property name="dispatchDay" type="string">
             <column name="DISPATCH_DAY" length="16" />
         </property>
+         <property name="planDate" type="date">
+            <column name="PLAN_DATE" length="7" />
+        </property>
     </class>
 </hibernate-mapping>

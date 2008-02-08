@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -88,8 +89,9 @@ public class DispatchFormController extends AbstractFormController {
 		return "Dispatch";
 	}
 	
-	public void saveDomainObject(Object domainObject) {
+	public List saveDomainObject(Object domainObject) {
 		getDomainManagerService().saveEntity(domainObject);
+		return null;
 	}
 	
 	public DomainManagerI getDomainManagerService() {

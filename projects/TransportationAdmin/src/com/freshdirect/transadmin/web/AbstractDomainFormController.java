@@ -1,5 +1,7 @@
 package com.freshdirect.transadmin.web;
 
+import java.util.List;
+
 import com.freshdirect.transadmin.service.DomainManagerI;
 
 public abstract class AbstractDomainFormController extends AbstractFormController {
@@ -14,8 +16,9 @@ public abstract class AbstractDomainFormController extends AbstractFormControlle
 		this.domainManagerService = domainManagerService;
 	}
 	
-	public void saveDomainObject(Object domainObject) {
+	public List saveDomainObject(Object domainObject) {
 		getDomainManagerService().saveEntity(domainObject);
+		return null;
 	}
 	
 	
