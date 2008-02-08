@@ -71,6 +71,14 @@ public class CopyPlanFormController extends AbstractFormController {
 		return mav;
 	}
 	
+	public void saveErrorMessage(HttpServletRequest request, Object msg) {
+		List messages = (List)msg;
+		if (messages != null) {
+			messages.add(getMessage("app.actionmessage.110", new Object[]{}));
+		}
+		super.saveErrorMessage(request, msg);
+	}
+	
 	private boolean canIgnoreError(CopyPlanCommand tmpCommand) {
 		return "true".equalsIgnoreCase(tmpCommand.getIgnoreErrors()) && tmpCommand.getSourceDate().equals(tmpCommand.getErrorSourceDate())
 				&& tmpCommand.getDestinationDate().equals(tmpCommand.getErrorDestinationDate());
@@ -86,23 +94,33 @@ public class CopyPlanFormController extends AbstractFormController {
 	private List validateCopyPlan(CopyPlanCommand model) throws ParseException {
 		
 		List returnList = new ArrayList(); 
+		List sourceList = new ArrayList();
+		List destinationList = new ArrayList();
+		
 		if(model != null) {
 			Date startDate = TransStringUtil.getDate(model.getSourceDate());
 			Date endDate = TransStringUtil.getDate(model.getDestinationDate());
 			String dayOfWeek = model.getDispatchDay();			
-			
+						
+			List retList = null;
 			if(TransStringUtil.isEmpty(dayOfWeek) || "null".equals(dayOfWeek)) {				
 				for(int intCount = 0;intCount<7;intCount++) {
-					returnList.addAll(validateCopyPlanForDate(TransStringUtil.addDays(startDate, intCount),
-							TransStringUtil.addDays(endDate, intCount)));
+					retList = validateCopyPlanForDate(TransStringUtil.addDays(startDate, intCount),
+							TransStringUtil.addDays(endDate, intCount));
+					sourceList.addAll((List)retList.get(0));
+					destinationList.addAll((List)retList.get(1));
 				}
 				
 			} else {
-				returnList.addAll(validateCopyPlanForDate(TransStringUtil.addDays(startDate, TransStringUtil.getDayinWeek(dayOfWeek)),
-						TransStringUtil.addDays(endDate, TransStringUtil.getDayinWeek(dayOfWeek))));
+				retList = validateCopyPlanForDate(TransStringUtil.addDays(startDate, TransStringUtil.getDayinWeek(dayOfWeek)),
+						TransStringUtil.addDays(endDate, TransStringUtil.getDayinWeek(dayOfWeek)));
+				sourceList.addAll((List)retList.get(0));
+				destinationList.addAll((List)retList.get(1));
 			}
 			
 		}
+		returnList.addAll(sourceList);
+		returnList.addAll(destinationList);
 		return returnList;
 	}
 	
@@ -112,13 +130,17 @@ public class CopyPlanFormController extends AbstractFormController {
 		String strDestinationDate = TransStringUtil.getServerDate(destinationDate);
 		Collection sourceData = dispatchManagerService.getPlanList(strSourceDate);
 		Collection destinationData = dispatchManagerService.getPlanList(strDestinationDate);
-		List messages = new ArrayList();		
+		List messages = new ArrayList();	
+		List sourceList = new ArrayList();
+		List destinationList = new ArrayList();
+		messages.add(sourceList);
+		messages.add(destinationList);
 		if(!destinationData.isEmpty()) {
-			messages.add("Destination Plan already exists for date "+strDestinationDate);			
+			destinationList.add(getMessage("app.actionmessage.107", new Object[]{strDestinationDate}));						
 		} 
 		
 		if(sourceData.isEmpty()) {
-			messages.add("Source Plan does not exists for date "+strSourceDate);			
+			sourceList.add(getMessage("app.actionmessage.108", new Object[]{strSourceDate}));			
 		} 
 				
 		return messages;

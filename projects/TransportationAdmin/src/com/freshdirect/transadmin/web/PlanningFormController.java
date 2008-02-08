@@ -67,7 +67,7 @@ public class PlanningFormController extends AbstractFormController {
 			} else {
 				Collection sourceData = dispatchManagerService.getPlanList(strSourceDate);
 				if(sourceData.isEmpty()) {
-					errorList.add("Plan does not exists for date "+strSourceDate);
+					errorList.add(getMessage("app.actionmessage.106", new Object[]{strSourceDate}));
 					tmpCommand.setErrorDate(tmpCommand.getPlanDate());					
 				} else {
 					savePlan(tmpCommand);
@@ -79,6 +79,14 @@ public class PlanningFormController extends AbstractFormController {
 		}
 		
 		return errorList;
+	}
+	
+	public void saveErrorMessage(HttpServletRequest request, Object msg) {
+		List messages = (List)msg;
+		if (messages != null) {
+			messages.add(getMessage("app.actionmessage.109", new Object[]{}));
+		}
+		super.saveErrorMessage(request, msg);
 	}
 	
 	private boolean canIgnoreError(TrnDispatchPlan tmpCommand) {
