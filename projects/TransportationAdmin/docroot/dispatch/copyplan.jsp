@@ -56,7 +56,7 @@
 							    <td>Source Day</td>
 							    <td>
 								    <form:select path="dispatchDay">
-								  	  		<form:option value="null" label="--Please Select Day"/>
+								  	  		<form:option value="null" label="--All Days"/>
 											<form:options items="${days}" />
 								     </form:select>
 							     </td>

@@ -25,7 +25,7 @@
 				    	<ec:column title=" " width="5px" 
 					          filterable="false" sortable="false" cell="selectcol"
 					          property="planId" />				    	
-				      <ec:column cell="date" property="planDate" sortable="true" title="Week Of"/>
+				      <ec:column cell="date" property="planDate" sortable="true" title="Date"/>
 				      <ec:column property="dispatchDay" sortable="true" title="Day"/>
 				      <ec:column alias="trnZonezoneNumber" property="trnZone.zoneNumber" title="Zone"/>
 				      <ec:column alias="trnTimeslotslotName" property="trnTimeslot.slotName" title="Timeslot"/>

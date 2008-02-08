@@ -30,7 +30,7 @@
 						<td class="screencontent">
 							<table class="forms1">	
 							 <tr>
-							    <td>Week Of</td>
+							    <td>Date</td>
 							    <td>
 							    	<form:input maxlength="50" size="24" path="planDate" />
 							    
@@ -63,7 +63,7 @@
 							  <tr>
 							    <td>Day</td>
 							    <td>
-							    <form:select path="dispatchDay" >
+							    <form:select path="dispatchDay" disabled="true">
 							  	  		<form:option value="null" label="--Please Select Day"/>
 										<form:options items="${days}" />
 							     </form:select>

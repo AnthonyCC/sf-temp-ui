@@ -93,7 +93,8 @@ public class PlanningFormController extends AbstractFormController {
 		return "true".equalsIgnoreCase(tmpCommand.getIgnoreErrors()) && tmpCommand.getPlanDate().equals(tmpCommand.getErrorDate());
 	}
 	
-	private void savePlan(TrnDispatchPlan tmpCommand) {
+	private void savePlan(TrnDispatchPlan tmpCommand) throws ParseException {
+		tmpCommand.setDispatchDay(TransStringUtil.getDayofWeek(tmpCommand.getPlanDate()));
 		getDomainManagerService().saveEntity(tmpCommand);			
 		tmpCommand.setIgnoreErrors(null);
 		tmpCommand.setErrorDate(null);

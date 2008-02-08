@@ -53,16 +53,20 @@ public class CopyPlanFormController extends AbstractFormController {
 			executeCopyPlan(tmpCommand);
 			saveMessage(request, getMessage(messageKey,	new Object[] { getDomainObjectName() }));
 		} else {
-			List messages = validateCopyPlan((CopyPlanCommand)command);
-					
-			if(messages.isEmpty()) {
-				executeCopyPlan(tmpCommand);
-				saveMessage(request, getMessage(messageKey,	new Object[] { getDomainObjectName() }));
+			PlanValidationResult validationResult = validateCopyPlan((CopyPlanCommand)command);
+			
+			if(validationResult.isHasSourceData() ) {
+				if(validationResult.hasErrors()) {
+					saveErrorMessage(request, validationResult);
+					tmpCommand.setErrorSourceDate(tmpCommand.getSourceDate());
+					tmpCommand.setErrorDestinationDate(tmpCommand.getDestinationDate());
+				} else {				
+					executeCopyPlan(tmpCommand);
+					saveMessage(request, getMessage(messageKey,	new Object[] { getDomainObjectName() }));
+				}
 			} else {
-				saveErrorMessage(request, messages);
-				tmpCommand.setErrorSourceDate(tmpCommand.getSourceDate());
-				tmpCommand.setErrorDestinationDate(tmpCommand.getDestinationDate());
-			}
+				saveMessage(request, getMessage("app.actionmessage.112",	new Object[] { }));
+			}			
 		}
 		
 		ModelAndView mav = new ModelAndView(getSuccessView());
@@ -71,12 +75,16 @@ public class CopyPlanFormController extends AbstractFormController {
 		return mav;
 	}
 	
-	public void saveErrorMessage(HttpServletRequest request, Object msg) {
-		List messages = (List)msg;
+	public void saveErrorMessage(HttpServletRequest request, PlanValidationResult validationResult) {
+		List messages = validationResult.getErrorMessages();
 		if (messages != null) {
-			messages.add(getMessage("app.actionmessage.110", new Object[]{}));
+			if(validationResult.getDestinationErrors().isEmpty()) {
+				messages.add(getMessage("app.actionmessage.111", new Object[]{}));
+			} else {
+				messages.add(getMessage("app.actionmessage.110", new Object[]{}));
+			}
 		}
-		super.saveErrorMessage(request, msg);
+		saveErrorMessage(request, messages);
 	}
 	
 	private boolean canIgnoreError(CopyPlanCommand tmpCommand) {
@@ -91,37 +99,47 @@ public class CopyPlanFormController extends AbstractFormController {
 		tmpCommand.setErrorDestinationDate(null);
 	}
 	
-	private List validateCopyPlan(CopyPlanCommand model) throws ParseException {
+	private PlanValidationResult validateCopyPlan(CopyPlanCommand model) throws ParseException {
 		
-		List returnList = new ArrayList(); 
+		PlanValidationResult validationResult = new PlanValidationResult(); 
 		List sourceList = new ArrayList();
 		List destinationList = new ArrayList();
-		
+		boolean hasSourceData = false;
 		if(model != null) {
 			Date startDate = TransStringUtil.getDate(model.getSourceDate());
 			Date endDate = TransStringUtil.getDate(model.getDestinationDate());
 			String dayOfWeek = model.getDispatchDay();			
 						
 			List retList = null;
+			List retSourceList = null;
 			if(TransStringUtil.isEmpty(dayOfWeek) || "null".equals(dayOfWeek)) {				
 				for(int intCount = 0;intCount<7;intCount++) {
 					retList = validateCopyPlanForDate(TransStringUtil.addDays(startDate, intCount),
 							TransStringUtil.addDays(endDate, intCount));
-					sourceList.addAll((List)retList.get(0));
+					retSourceList = (List)retList.get(0);
+					sourceList.addAll(retSourceList);
 					destinationList.addAll((List)retList.get(1));
+					if(retSourceList.isEmpty()) {
+						hasSourceData = true;
+					}
 				}
 				
 			} else {
 				retList = validateCopyPlanForDate(TransStringUtil.addDays(startDate, TransStringUtil.getDayinWeek(dayOfWeek)),
 						TransStringUtil.addDays(endDate, TransStringUtil.getDayinWeek(dayOfWeek)));
-				sourceList.addAll((List)retList.get(0));
+				retSourceList = (List)retList.get(0);
+				sourceList.addAll(retSourceList);
 				destinationList.addAll((List)retList.get(1));
+				if(retSourceList.isEmpty()) {
+					hasSourceData = true;
+				}
 			}
 			
 		}
-		returnList.addAll(sourceList);
-		returnList.addAll(destinationList);
-		return returnList;
+		validationResult.setSourceErrors(sourceList);
+		validationResult.setDestinationErrors(destinationList);
+		validationResult.setHasSourceData(hasSourceData);
+		return validationResult;
 	}
 	
 	private List validateCopyPlanForDate(Date sourceDate, Date destinationDate) throws ParseException  {
@@ -133,6 +151,7 @@ public class CopyPlanFormController extends AbstractFormController {
 		List messages = new ArrayList();	
 		List sourceList = new ArrayList();
 		List destinationList = new ArrayList();
+		
 		messages.add(sourceList);
 		messages.add(destinationList);
 		if(!destinationData.isEmpty()) {
@@ -242,6 +261,41 @@ public class CopyPlanFormController extends AbstractFormController {
 		this.domainManagerService = domainManagerService;
 	}	
 	
-	
+	class PlanValidationResult {
+		
+		private List sourceErrors;
+		private List destinationErrors;
+		private boolean hasSourceData;
+		
+		public List getDestinationErrors() {
+			return destinationErrors;
+		}
+		public void setDestinationErrors(List destinationErrors) {
+			this.destinationErrors = destinationErrors;
+		}
+		public boolean isHasSourceData() {
+			return hasSourceData;
+		}
+		public void setHasSourceData(boolean hasSourceData) {
+			this.hasSourceData = hasSourceData;
+		}
+		public List getSourceErrors() {
+			return sourceErrors;
+		}
+		public void setSourceErrors(List sourceErrors) {
+			this.sourceErrors = sourceErrors;
+		}
+		
+		public boolean hasErrors() {
+			return !sourceErrors.isEmpty() || !destinationErrors.isEmpty();
+		}
+		
+		public List getErrorMessages() {
+			List fullList = new ArrayList();
+			fullList.addAll(getSourceErrors());
+			fullList.addAll(getDestinationErrors());
+			return fullList;
+		}
+	}
 	
 }
