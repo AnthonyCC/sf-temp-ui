@@ -31,22 +31,25 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 			FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 			
 			PromotionI promo = user.getRedeemedPromotion();
-			PromotionApplicatorI applicator = ((Promotion)promo).getApplicator();
-			if(applicator instanceof WaiveChargeApplicator){
-				WaiveChargeApplicator waiveChargeApplicator = (WaiveChargeApplicator)applicator;
-				if(waiveChargeApplicator.getChargeType() == EnumChargeType.DELIVERY){
-					/*
-					 * Then its a delivery promotion. So reset the isDlvPromoApplied flag
-					 * since the redemption code is removed.
-					 */
-					user.getShoppingCart().setDlvPromotionApplied(false);
+			if(promo != null){
+				//MNT - 144 Bug fix.
+				PromotionApplicatorI applicator = ((Promotion)promo).getApplicator();
+				if(applicator instanceof WaiveChargeApplicator){
+					WaiveChargeApplicator waiveChargeApplicator = (WaiveChargeApplicator)applicator;
+					if(waiveChargeApplicator.getChargeType() == EnumChargeType.DELIVERY){
+						/*
+						 * Then its a delivery promotion. So reset the isDlvPromoApplied flag
+						 * since the redemption code is removed.
+						 */
+						user.getShoppingCart().setDlvPromotionApplied(false);
+					}
 				}
+				
+				user.setRedeemedPromotion(null);
+				
+				user.updateUserState();
+				session.setAttribute(SessionName.USER, user);
 			}
-			
-			user.setRedeemedPromotion(null);
-			
-			user.updateUserState();
-			session.setAttribute(SessionName.USER, user);
 		}
 
 		return true;
