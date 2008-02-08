@@ -6,20 +6,20 @@
 <link rel="stylesheet" href="css/transportation.css" type="text/css" />	
 <script language="javascript" type="text/javascript">
 function logOutApp() {
-	alert('Step1');	
+	//alert('Step1');	
 	try{
 	  var agt=navigator.userAgent.toLowerCase();
 	  if (agt.indexOf("msie") != -1) {
 	    // IE clear HTTP Authentication
 	    document.execCommand("ClearAuthenticationCache");   
-	    alert('Step2'); 
+	    //alert('Step2'); 
 	  } 
 	  else {
 		var xmlhttp = createXMLObject();
 	    xmlhttp.open("GET",".force_logout_offer_login_mozilla",true,"logout","");
 	    xmlhttp.send("");
 	    xmlhttp.abort();
-	    alert('Step3');     
+	    //alert('Step3');     
 	  }
 	
 	} catch(e) {
