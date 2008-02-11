@@ -132,8 +132,25 @@ public class FDStoreProperties {
 	private final static String DLV_PASS_PROMOTION_PREFIX = "fdstore.dlvPassPromotionPrefix";
 	private final static String DLV_PASS_MAX_PURCHASE_LIMIT="fdstore.dlvPass.maxPurchaseLimit";
 	
+	
 	// Referral Program admin
 	private final static String RFL_PRG_PAGINATION_SIZE="fdstore.referral.paginationSize"; 
+	
+	// cut off time properties
+	
+	private static final String CUT_OFF_TIME_SUN="fdstore.cut_off_day_1";
+	
+	private static final String CUT_OFF_TIME_MON="fdstore.cut_off_day_2";
+	
+	private static final String CUT_OFF_TIME_TUES="fdstore.cut_off_day_3";
+	
+	private static final String CUT_OFF_TIME_WED="fdstore.cut_off_day_4";
+	
+	private static final String CUT_OFF_TIME_THUS="fdstore.cut_off_day_5";
+	
+	private static final String CUT_OFF_TIME_FRI="fdstore.cut_off_day_6";
+	
+	private static final String CUT_OFF_TIME_SAT="fdstore.cut_off_day_7";
 	
 	private final static String SKU_AVAILABILITY_REFRESH_PERIOD = "fdstore.sku.availability.refresh";
 
@@ -193,6 +210,8 @@ public class FDStoreProperties {
 
 	private final static Properties defaults = new Properties();
 
+	private static final Object CUT_OFF_TIME_TUE = null;
+
 	static {
 
 		defaults.put(PROP_PROVIDER_URL, 	"t3://localhost:7006");
@@ -230,6 +249,18 @@ public class FDStoreProperties {
 		defaults.put(PROP_CONTENTMANAGER_HOME,"freshdirect.content.ContentManager");
 		defaults.put(PROP_HOLIDAY_LOOKAHEAD_DAYS, "21");
 		defaults.put(PROP_AD_SERVER_ENABLED, "false");
+		
+		// cut off time 
+		
+		defaults.put(CUT_OFF_TIME_SUN, "12-21");
+		defaults.put(CUT_OFF_TIME_MON, "12-21");
+		defaults.put(CUT_OFF_TIME_TUES, "12-21");
+		defaults.put(CUT_OFF_TIME_WED, "12-21");
+		defaults.put(CUT_OFF_TIME_THUS, "12-21");
+		defaults.put(CUT_OFF_TIME_FRI, "12-18");
+		defaults.put(CUT_OFF_TIME_SAT, "12-21");
+		defaults.put(CUT_OFF_TIME_SUN, "12-21");
+		
 		
 		defaults.put(PROP_AD_SERVER_PROFILE_ATTRIBS, "");
 		
@@ -728,6 +759,13 @@ public class FDStoreProperties {
 	public static String getAlternateZipcodeForGeocode(String srcZipcode) {
 		return get(PROP_GEOCODE_ALTZIPCODE+"."+srcZipcode);
 	}
+	
+	// cut off time
+	public static String getCutOffTimeRange(int day) {
+		return get("fdstore.cut_off_day_"+day);
+	}
+	
+	
 	
 	public static boolean isNewGeocodeFormat() {
         return (new Boolean(get(PROP_GEOCODE_ISNEWFORMAT))).booleanValue();

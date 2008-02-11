@@ -1,4 +1,19 @@
 <%@ page import='com.freshdirect.delivery.model.*'%>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties'%>
+<%@ page import='java.util.Calendar'%>
+
+
+<%
+Calendar calNow=Calendar.getInstance();
+		calNow.setTime(new java.util.Date());
+		System.out.println("calNow.calNowHOUR_OF_DAY"+calNow.get(Calendar.HOUR_OF_DAY));
+	    String hourRange=(String)FDStoreProperties.getCutOffTimeRange(calNow.get(Calendar.DAY_OF_WEEK));
+		String startHour=hourRange.substring(0,hourRange.indexOf('-'));
+		String endHour=hourRange.substring(hourRange.indexOf('-')+1,hourRange.length());
+		//System.out.println("startHour :"+startHour);
+		//System.out.println("endHour :"+endHour);
+%>
+
 <% if (user.isChefsTable() && zoneCtActive ) { 
 	%>
 	<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
@@ -34,14 +49,25 @@
 					for Chef's Table preferred access.
 				<%	
 	    	} else {
-				%> We've <a href="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/site_pages/ct/preferred_access.html&windowSize=large&name=Chefs+Table','large')"><b>held space for you</b></a> in our most popular time slots &#8212;
-				our thanks to you for being a great customer.
-				<div style="text-align: center; margin-top: 4px;">
-					<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/prp1x1.gif"> <b> = Only Chef's Table access remaining</b>
-				</div>
-				<%
-	    	}
-	    	%>
+            
+            
+                if(calNow.get(Calendar.HOUR_OF_DAY)>=Integer.parseInt(startHour) && calNow.get(Calendar.HOUR_OF_DAY)<=Integer.parseInt(endHour))
+                {
+                    System.out.println("before cutoff");
+                    
+                %>
+                <fd:IncludeMedia name="/media/editorial/site_pages/ct/timeslot_note_pre.html" />            
+                <%        
+                    
+                }else
+                {
+                    System.out.println("after cutoff");
+                %>
+                <fd:IncludeMedia name="/media/editorial/site_pages/ct/timeslot_note_post.html" />                        
+                <%                            
+		        }            
+            }
+    	   %>
 			<br />
 			<br />
 			</td>
