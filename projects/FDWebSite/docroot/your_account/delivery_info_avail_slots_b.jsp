@@ -197,10 +197,10 @@ if(user.isHomeUser())
 	<table cellpadding="0" cellspacing="0" width="693"/>
 		<tr>
 			<td align="left">
-				<img src="/media_stat/images/template/help/greendot_trans.gif" width="10" height="10" border="0" valign="bottom">
+				<img src="/media_stat/images/template/help/greendot_trans.gif" width="10" height="10" border="0" valign="bottom" alt="Green">
 				Time Slot Available*
 				&nbsp;
-				<img src="/media_stat/images/template/help/orangedot_trans.gif" width="10" height="10" border="0" valign="bottom">
+				<img src="/media_stat/images/template/help/orangedot_trans.gif" width="10" height="10" border="0" valign="bottom" alt="Orange">
 				Time Slot Full
 			</td>
 			<td align="right" width="450">You must complete checkout for next-day deliveries before the "Order by" time.</td>
