@@ -46,7 +46,7 @@
 										    ifFormat : "%Y-%m-%d",
 										    singleClick: true,  	                                        
 										    button : "trigger_planDate",
-										    onUpdate : updateDate,										     
+										    onUpdate : updateDate										     
 										 }
 									    );
 									    function updateDate(cal) {
