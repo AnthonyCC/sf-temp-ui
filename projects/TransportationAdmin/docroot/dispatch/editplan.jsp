@@ -43,7 +43,7 @@
 										    showsTime : false,
 										    electric : false,
 										    inputField : "planDate",
-										    ifFormat : "%Y-%m-%d",
+										    ifFormat : "%m/%d/%Y",
 										    singleClick: true,  	                                        
 										    button : "trigger_planDate",
 										    onUpdate : updateDate										     

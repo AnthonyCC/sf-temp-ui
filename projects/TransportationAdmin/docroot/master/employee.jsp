@@ -27,7 +27,7 @@
 				      <ec:column property="employeenumber" title="KronosID"/>
 				      <ec:column alias="trnSupervisorname" property="trnSupervisor.name" title="Supervisor"/>
 				      <ec:column alias="trnEmployeeJobTypejobTypeName" property="trnEmployeeJobType.jobTypeName" title="Job Type"/>
-				      <ec:column alias="trnEmployeeJobTypehireDate" property="hireDate" title="Hire Date"/>
+				      <ec:column alias="trnEmployeeJobTypehireDate" cell="date" property="hireDate" title="Hire Date"/>
 				    </ec:row>
 				  </ec:table>
 			 </form> 	

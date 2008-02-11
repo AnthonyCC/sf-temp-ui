@@ -6,10 +6,13 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TransStringUtil {
 	
-	public static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	//public static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	public static DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 	
 	public static DateFormat serverDateFormat = new SimpleDateFormat("dd-MMM-yyyy");
 			
@@ -23,6 +26,12 @@ public class TransStringUtil {
 														"Friday",
 														"Saturday",
 														"Sunday"};
+	private static Map daysMap = new HashMap();
+	static {
+			for(int intCount=0;intCount<daysList.length;intCount++) {
+				daysMap.put(daysList[intCount], new Integer(intCount));
+			}
+	}
 		
 	static {
 		dateFormat.setLenient(false);
@@ -86,7 +95,7 @@ public class TransStringUtil {
 	}
 	
 	public static int getDayinWeek(String day) {
-		return Arrays.binarySearch(daysList, day);
+		return ((Integer)daysMap.get(day)).intValue();
 	}
 	
 	public static Date addDays(Date srcDate, int days) {
