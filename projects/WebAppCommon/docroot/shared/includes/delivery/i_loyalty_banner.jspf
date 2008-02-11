@@ -33,9 +33,9 @@ Calendar calNow=Calendar.getInstance();
 				alt="We've made more delivery slots available to our best customers."></a>
 				<%	
 			} else {
-				%> <img
+				%> <!-- <img
 				src="/media_stat/images/template/checkout/loy_hdr_preferredaccess.gif"
-				border="0" alt="Preferred access to our best delivery times.">
+				border="0" alt="Preferred access to our best delivery times."> -->
 				<%
 			}
 	    %>
@@ -67,9 +67,7 @@ Calendar calNow=Calendar.getInstance();
                 <%                            
 		        }            
             }
-    	   %>
-			<br />
-			<br />
+    	   %>			
 			</td>
 		</tr>
 	</table>
