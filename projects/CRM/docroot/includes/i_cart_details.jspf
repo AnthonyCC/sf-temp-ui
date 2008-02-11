@@ -157,7 +157,21 @@
 				}
 		}
 		%>
-
+	<%
+		//MNT-111 Bug Fix
+		String desc = order.getRedeemedSampleDescription();
+		if(desc != null && !desc.equals("NONE")) {
+	%>
+		<tr>
+		    <td colspan="3"></td>
+		    <td colspan="2"><%=desc%>:</td>
+		    <td colspan="2" align="right">FREE!</td>
+		    <td colspan="4"></td>
+		    <td colspan="3"></td>
+		</tr>	
+	<%
+		}
+	%>
         <%  if (order.getCustomerCreditsValue() > 0.0) {%>
 		<tr>
             <td colspan="3"></td>

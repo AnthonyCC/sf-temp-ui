@@ -182,6 +182,17 @@ if (discountAmt > 0) {
 	<%
 	}
 }
+	//MNT-111 Bug Fix
+	String desc = cart.getRedeemedSampleDescription();
+	if(desc != null && !desc.equals("NONE")) {
+%>
+	<tr align="right" class="orderSummary">
+	    <td colspan="2"><%=desc%>:</td>
+	    <td>FREE!</td>
+	    <td colspan="3">&nbsp;</td>
+	</tr>	
+<%
+	}
 
 if (cart.getCustomerCreditsValue() > 0) {
 	%>

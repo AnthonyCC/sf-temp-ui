@@ -112,4 +112,6 @@ public interface FDCartI extends java.io.Serializable {
 	
 	public double getTotalDiscountValue();
 	
+	public String getRedeemedSampleDescription();
+	
 }

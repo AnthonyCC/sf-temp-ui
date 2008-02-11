@@ -146,4 +146,7 @@ public interface FDOrderI extends FDCartI {
 	public boolean isChargeWaivedByCSROnReturn(EnumChargeType type);
 	
 	public double getDeliverySurchargeOnReturn();
+	
+	public String getRedeemedSampleDescription();
+	
 }

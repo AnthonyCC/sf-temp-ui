@@ -54,6 +54,8 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeSource;
+import com.freshdirect.fdstore.promotion.PromotionFactory;
+import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
@@ -1129,6 +1131,26 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			prodKeysInCart.add(productId);
 		}
 		return prodKeysInCart;
+	}
+	/**
+	 * This returns a redeem sample promo desc if any otherwise returns Empty String.
+	 * @return java.lang.String.
+	 */
+	public String getRedeemedSampleDescription() {
+		String desc = "NONE";
+		//Show any redeemed sample line if any.
+		if ( this.sampleLines != null && this.sampleLines.size() > 0) {
+			for(Iterator i = this.sampleLines.iterator(); i.hasNext();){
+				FDCartLineI cartLine = (FDCartLineI)i.next();
+				Discount discount =  cartLine.getDiscount();
+				String code = discount.getPromotionCode();
+				PromotionI promotion = PromotionFactory.getInstance().getPromotion(code);
+				if (promotion != null && promotion.isRedemption()) {
+					desc = promotion.getDescription();
+				}
+			}
+		}
+		return desc;
 	}
 
 }

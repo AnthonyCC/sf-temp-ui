@@ -252,12 +252,8 @@
 	
 	<%
 		//MNT-111 Bug Fix
-		PromotionI redemptionPromo = user.getRedeemedPromotion();
-		if (redemptionPromo != null
-		&& user.getPromotionEligibility().isEligible(redemptionPromo.getPromotionCode())
-		&& user.getPromotionEligibility().isApplied(redemptionPromo.getPromotionCode())
-		&& redemptionPromo.isSampleItem()) {
-		String desc = redemptionPromo.getDescription();
+		String desc = order.getRedeemedSampleDescription();
+		if(desc != null && !desc.equals("NONE")) {
 	%>
 		<tr>
 	            <td colspan="4"></td>

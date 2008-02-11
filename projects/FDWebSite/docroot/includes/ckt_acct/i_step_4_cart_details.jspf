@@ -218,12 +218,8 @@ int idx = 0;
 	
 	<%
 		//MNT-111 Bug Fix
-		PromotionI redemptionPromo = user.getRedeemedPromotion();
-		if (redemptionPromo != null
-		&& user.getPromotionEligibility().isEligible(redemptionPromo.getPromotionCode())
-		&& user.getPromotionEligibility().isApplied(redemptionPromo.getPromotionCode())
-		&& redemptionPromo.isSampleItem()) {
-		String desc = redemptionPromo.getDescription();
+		String desc = cart.getRedeemedSampleDescription();
+		if(desc != null && !desc.equals("NONE")) {
 	%>
 		<tr valign="top" class="orderSummary">
 			<td colspan="3" align="right"><%= desc %>:</td>
