@@ -177,6 +177,7 @@
 				<EnumValue value="full" label="Full Name"/>
 				<EnumValue value="glance" label="Glance Name"/>
 				<EnumValue value="nav" label="Nav Name"/>
+                <EnumValue value="no_nav" label="Nav Name"/>
 			</EnumDef>
 			<AttributeDef type="I" name="TEMPLATE_TYPE"   label="Template Type" inheritable="true"/>
 			<AttributeDef type="I" name="COLUMN_NUM"  label="Column Number" inheritable="true"/>
@@ -399,12 +400,14 @@
 				<EnumValue value="25" label="All Static Media"/>
 				<EnumValue value="26" label="Vertical Labeled Category"/>
 				<EnumValue value="27" label="Featured Menu"/>
+                <EnumValue value="97" label="Media No Nav"/><!-- [APPREQ-77] new layout -->
 				<EnumValue value="98" label="Multi Item Layout - Horizontal"/>
 				<EnumValue value="99" label="Multi Item Layout - Vertical"/>
 			</EnumDef>
 			<EnumDef type="I" name="TEMPLATE_TYPE"  label="Template Type" inheritable="true">
 				<EnumValue value="1" label="Fresh Direct Default Template"/>
 				<EnumValue value="2" label="FreshDirect Best Cellars Template"/>
+                <EnumValue value="3" label="Media"/><!-- [APPREQ-77] new media template type -->
 			</EnumDef>
 			<!-- miscellaneous descriptions -->
 			<AttributeDef type="S" name="ALSO_SOLD_AS_NAME" label="Also Sold As Name"/>
@@ -601,6 +604,9 @@
 			<RelationshipDef name="PRODUCT_TERMS_MEDIA" label="Product Confirmation Media">
 				<DestinationDef contentType="Html" />
 			</RelationshipDef>
+            <RelationshipDef name="MEDIA_CONTENT" label="Media Content" inheritable="true"><!-- [APPREQ-77] new media type -->
+                <DestinationDef contentType="Html" />
+            </RelationshipDef>
 			<!-- TODO: add related recipes relation below
 			<RelationshipDef name="RELATED_RECIPES" label="Related Recipes" cardinality="Many">
 				<DestinationDef contentType="Recipe"/>

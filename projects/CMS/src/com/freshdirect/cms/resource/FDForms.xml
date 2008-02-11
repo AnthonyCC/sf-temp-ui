@@ -48,6 +48,7 @@
 							<CmsField><attribute>DEPT_NAVBAR_ROLLOVER</attribute></CmsField>
 							<CmsField><attribute>HIDE_URL</attribute></CmsField>
 							<CmsField><attribute>REDIRECT_URL</attribute></CmsField>
+                            <CmsField><attribute>MEDIA_CONTENT</attribute></CmsField><!-- [APPREQ-77] -->
 						</fields>
 					</CmsSection>
 					<CmsSection>
@@ -132,6 +133,7 @@
 							<CmsField><attribute>HIDE_URL</attribute></CmsField>
 							<CmsField><attribute>REDIRECT_URL</attribute></CmsField>
 							<CmsField><attribute>RELATED_PRODUCTS_HEADER</attribute></CmsField>
+                            <CmsField><attribute>MEDIA_CONTENT</attribute></CmsField><!-- [APPREQ-77] -->
 						</fields>
 					</CmsSection>
 					<CmsSection>

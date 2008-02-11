@@ -83,8 +83,16 @@ if (!isGroceryVirtual && (layouttype==EnumLayoutType.COFFEE_BY_REGION.getId() ||
 } else if (isGroceryVirtual) noLeftNav=false;
 
 
+// [APPREQ-77] Page uses include media type layout
+boolean isIncludeMediaLayout = (layouttype == EnumLayoutType.MEDIA_NO_NAV.getId()); // [APPREQ-77]
+
+                                                                               
 // Assign the correct template
-if (noLeftNav) {
+if (isIncludeMediaLayout) {
+	// [APPREQ-77] this special layout type needs 'naked' layout
+	jspTemplate = "/common/template/no_nav.jsp";
+	noLeftNav = false;
+} else if (noLeftNav) {
     jspTemplate = "/common/template/right_dnav.jsp";
 } else {
     if (EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(templateType))) {
@@ -129,20 +137,17 @@ int tablewid = noLeftNav ? 550 : 400;
 
 // Beginning of ifAlternateContent
 if(alternateContentFile != null){
-%>
-	<fd:IncludeMedia name='<%= alternateContentFile %>' />
-<%
+%><fd:IncludeMedia name='<%= alternateContentFile %>' /><%
 } else {
-
-
 	Attribute introCopyAttribute = currentFolder.getAttribute("EDITORIAL");
 	String introCopy = introCopyAttribute==null?"":((Html)introCopyAttribute.getValue()).getPath();
 	String introTitle = currentFolder.getEditorialTitle();
 	boolean showLine=false;   // if true, the last gray line prior to the categories-display will be printed
 	//  get the rating & ranking stuff
-	    Attribute tmpAttribute = currentFolder.getAttribute("RATING_GROUP_NAMES");
-	    StringBuffer rateNRankLinks = new StringBuffer();
-	if (EnumLayoutType.BULK_MEAT_PRODUCT.getId()!=layouttype
+    Attribute tmpAttribute = currentFolder.getAttribute("RATING_GROUP_NAMES");
+    StringBuffer rateNRankLinks = new StringBuffer();
+
+    if (!isIncludeMediaLayout && EnumLayoutType.BULK_MEAT_PRODUCT.getId()!=layouttype
              && EnumLayoutType.VALENTINES_CATEGORY.getId()!=layouttype  && EnumLayoutType.PARTY_PLATTER_CATEGORY.getId()!=layouttype ){ // don't paint intro stuff if we'll be using bulkMeat layout
 	    if (tmpAttribute !=null) {
 	        StringTokenizer stRRNames = new StringTokenizer((String)tmpAttribute.getValue(),",");

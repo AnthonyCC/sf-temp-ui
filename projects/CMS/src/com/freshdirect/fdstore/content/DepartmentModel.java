@@ -94,6 +94,12 @@ public class DepartmentModel extends ContentNodeModelImpl {
 		return new ArrayList(featuredProductModels);
 	}
 
+	/* [APPREQ-77] */
+	public Html getMediaContent() {
+		return (Html)getAttribute("MEDIA_CONTENT",(Html)null);
+	}
+
+
 	public static Comparator DepartmentNameComparator = new Comparator() {
 		public int compare(Object o1, Object o2) {
 			DepartmentModel dept1 = (DepartmentModel) o1;

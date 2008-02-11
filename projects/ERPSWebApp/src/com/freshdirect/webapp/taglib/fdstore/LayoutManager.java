@@ -337,7 +337,11 @@ public class LayoutManager extends BodyTagSupport {
 			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_CATEGORY_PRIORITY, sortDescending));
 			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRIORITY, sortDescending));
 			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, sortNameAttrib, false));	
-} else {
+		} else if (layoutType == EnumLayoutType.MEDIA_NO_NAV.getId()) {
+			// [APPREQ-77]
+			s.setLayoutFileName("/includes/layouts/media_no_nav.jsp");
+			// TODO: what more I need to do here?
+		} else {
 			// default to the generic layout using the default settings for the ItemGrabber
 			s.setLayoutFileName("/includes/layouts/generic_layout.jsp");
 		}

@@ -101,7 +101,11 @@ public class CategoryModel extends ContentNodeModelImpl {
 		return new ArrayList(productModels);
 	}
 	
-	
+	/* [APPREQ-77] */
+	public Html getMediaContent() {
+		return (Html)getAttribute("MEDIA_CONTENT",(Html)null);
+	}
+
 	/** @return List of {@link CategoryRef} */
 	public List getVirtualGroupRefs() {
 		com.freshdirect.fdstore.attributes.Attribute vGroup = this.getAttribute("VIRTUAL_GROUP");
