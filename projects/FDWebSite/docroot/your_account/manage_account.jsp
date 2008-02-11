@@ -33,6 +33,9 @@ private String getTimeslotString(Calendar startTimeCal, Calendar endTimeCal){
 		sb.append(endTimeCal.get(Calendar.AM_PM)==1?" PM":" AM");
 		return sb.toString();
 	}
+    
+
+
 %>
 
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
@@ -157,7 +160,14 @@ your account information, this is the place to do it.<br></td>
 </td>
 <td valign="top">
 	<!-- ct user logo -->
-	<% if(user.isChefsTable()) { %>
+	<% 
+    if(user.isChefsTable()) {
+    
+        //--------OAS Page Variables-----------------------
+request.setAttribute("sitePage", "www.freshdirect.com/your_account");
+request.setAttribute("listPos", "SystemMessage,CategoryNote");
+
+%>
 	<table align="center" border="0" cellspacing="0" cellpadding="0">
 	<tr>
 		<td>
