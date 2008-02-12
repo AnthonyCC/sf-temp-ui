@@ -220,6 +220,7 @@ public class CopyPlanFormController extends AbstractFormController {
 			tmpNewPlan.setDispatchDay(tmpPlan.getDispatchDay());				
 			tmpNewPlan.setTrnZone(tmpPlan.getTrnZone());
 			tmpNewPlan.setTrnTimeslot(tmpPlan.getTrnTimeslot());
+			tmpNewPlan.setTrnEndTimeslot(tmpPlan.getTrnEndTimeslot());
 			if(includeEmpDetails) {
 				tmpNewPlan.setTrnDriver(tmpPlan.getTrnDriver());
 				tmpNewPlan.setTrnPrimaryHelper(tmpPlan.getTrnPrimaryHelper());

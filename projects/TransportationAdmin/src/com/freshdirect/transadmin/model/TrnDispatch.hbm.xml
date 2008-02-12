@@ -24,6 +24,9 @@
         <many-to-one name="trnTimeslot" class="com.freshdirect.transadmin.model.TrnTimeslot" fetch="select" lazy="false">
 	     	<column name="SLOT_ID" length="16" />
         </many-to-one>
+        <many-to-one name="trnEndTimeslot" class="com.freshdirect.transadmin.model.TrnTimeslot" fetch="select" lazy="false">
+	     	<column name="END_SLOT_ID" length="16" />
+        </many-to-one>
         <many-to-one name="trnDriver" class="com.freshdirect.transadmin.model.TrnEmployee" fetch="select" lazy="false">
 	        <column name="DRIVER_ID" length="16" />
         </many-to-one>

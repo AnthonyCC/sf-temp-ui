@@ -15,6 +15,7 @@ public class TrnDispatchPlan implements java.io.Serializable, TrnBaseEntityI {
 	private TrnEmployee trnSupervisor;
 	private TrnZone trnZone;
 	private TrnTimeslot trnTimeslot;
+	private TrnTimeslot trnEndTimeslot;
 	private TrnEmployee trnDriver;
 	private TrnEmployee trnPrimaryHelper;
 	private TrnEmployee trnSecondaryHelper;
@@ -73,6 +74,14 @@ public class TrnDispatchPlan implements java.io.Serializable, TrnBaseEntityI {
 	public void setTrnTimeslot(TrnTimeslot trnTimeslot) {
 		this.trnTimeslot = trnTimeslot;
 	}
+	
+	public TrnTimeslot getTrnEndTimeslot() {
+		return trnEndTimeslot;
+	}
+	public void setTrnEndTimeslot(TrnTimeslot trnEndTimeslot) {
+		this.trnEndTimeslot = trnEndTimeslot;
+	}
+	
 	public TrnZone getTrnZone() {
 		return trnZone;
 	}
@@ -117,6 +126,23 @@ public class TrnDispatchPlan implements java.io.Serializable, TrnBaseEntityI {
 			TrnTimeslot trnTimeslot = new TrnTimeslot();
 			trnTimeslot.setSlotId(slotId);
 			setTrnTimeslot(trnTimeslot);
+		}
+	}
+	
+	public String getEndTimeslot() {
+		if(getTrnEndTimeslot() == null) {
+			return null;
+		}
+		return getTrnEndTimeslot().getSlotId();
+	}
+
+	public void setEndTimeslot(String slotId) {
+		if("null".equals(slotId)) {
+			setTrnEndTimeslot(null);
+		} else {
+			TrnTimeslot trnTimeslot = new TrnTimeslot();
+			trnTimeslot.setSlotId(slotId);
+			setTrnEndTimeslot(trnTimeslot);
 		}
 	}
 	

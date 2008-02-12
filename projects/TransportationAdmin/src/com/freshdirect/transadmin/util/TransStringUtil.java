@@ -18,6 +18,8 @@ public class TransStringUtil {
 			
 	public static DateFormat dayFormat = new SimpleDateFormat("EEEE");
 	
+	public static DateFormat timeFormat = new SimpleDateFormat("hh:mm aaa");
+	
 	private static Calendar clientCalendar = Calendar.getInstance();
 	
 	private static String[] daysList = new String[] {"Monday","Tuesday",
@@ -98,9 +100,18 @@ public class TransStringUtil {
 		return ((Integer)daysMap.get(day)).intValue();
 	}
 	
+	public static boolean compareTime(String startTime, String endTime) throws NumberFormatException{
+		//return ((Date)timeFormat.parse(endTime)).after((Date)timeFormat.parse(startTime));
+		return getInt(startTime) > getInt(endTime);
+	}
+	
 	public static Date addDays(Date srcDate, int days) {
 		clientCalendar.setTime(srcDate);
 		clientCalendar.add(Calendar.DATE, days);
 		return clientCalendar.getTime();
+	}
+	
+	public static int getInt(String intVal) throws NumberFormatException {		
+		return Integer.parseInt(intVal);
 	}
 }

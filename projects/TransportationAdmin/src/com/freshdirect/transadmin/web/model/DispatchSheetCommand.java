@@ -12,6 +12,7 @@ public class DispatchSheetCommand extends BaseCommand {
 	private String supervisorId;
 	private String zoneId;
 	private String slotId;
+	private String endSlotId;
 	private String driverId;
 	private String primaryHelperId;
 	private String secondaryHelperId;	
@@ -26,6 +27,7 @@ public class DispatchSheetCommand extends BaseCommand {
 		this.setSupervisorId(plan.getTrnSupervisor() != null ? plan.getTrnSupervisor().getEmployeeId() : null);
 		this.setZoneId(plan.getTrnZone() != null ? plan.getTrnZone().getZoneId() : null);
 		this.setSlotId(plan.getTrnTimeslot() != null ? plan.getTrnTimeslot().getSlotId() : null);
+		this.setEndSlotId(plan.getTrnEndTimeslot() != null ? plan.getTrnEndTimeslot().getSlotId() : null);
 		this.setDriverId(plan.getTrnDriver() != null ? plan.getTrnDriver().getEmployeeId() : null);
 		this.setPrimaryHelperId(plan.getTrnPrimaryHelper() != null ? plan.getTrnPrimaryHelper().getEmployeeId() : null);
 		this.setSecondaryHelperId(plan.getTrnSecondaryHelper() != null ? plan.getTrnSecondaryHelper().getEmployeeId() : null);
@@ -103,6 +105,12 @@ public class DispatchSheetCommand extends BaseCommand {
 		return selected+"|"+zoneId+"|"
 				+slotId+"|"+driverId+"|"+primaryHelperId+"|"+secondaryHelperId+"|"
 					+routeId+"|"+supervisorId+"|"+truckId+"|"+nextelId+"|"+planId+"\n";
+	}
+	public String getEndSlotId() {
+		return endSlotId;
+	}
+	public void setEndSlotId(String endSlotId) {
+		this.endSlotId = endSlotId;
 	}
 
 }

@@ -100,15 +100,22 @@
                               <option selected value="<c:out value="${zoneFilterRow.zoneId}"/>"><c:out value="${zoneFilterRow.zoneNumber}"/></option>
                             </c:when>
                             <c:otherwise> 
-                            <option value="<c:out value="${zoneFilterRow.zoneId}"/>"><c:out value="${zoneFilterRow.zoneNumber}"/></option>
-                          </c:otherwise> 
-                        </c:choose>      
+                            	<option value="<c:out value="${zoneFilterRow.zoneId}"/>"><c:out value="${zoneFilterRow.zoneNumber}"/></option>
+                          	</c:otherwise> 
+                        	</c:choose>      
                         </c:forEach>   
                   </select>
                    </spring:bind>
                 </td>
                 <td>
                   &nbsp;
+                   <spring:bind path="assignmentForm.zoneId">
+                  <span id="planDate.errors">      
+	                    <c:forEach items="${status.errorMessages}" var="error">
+					        <c:out value="${error}"/>&nbsp;
+				        </c:forEach>
+				     </span>
+				   </spring:bind>
                 </td>
               
               
@@ -135,7 +142,8 @@
         <thead> 
         <tr>
           <td class="tableHeader" width="5px">Zone</td>
-          <td class="tableHeader">TimeSlot</td>
+          <td class="tableHeader" width="5px">Start Time</td>
+          <td class="tableHeader" width="5px">End Time</td>
           <td class="tableHeader">Driver</td>
           <td class="tableHeader">Helper1</td>
           <td class="tableHeader">Helper2</td>  
@@ -169,7 +177,18 @@
               <td>
                 <spring:bind path="assignmentForm.planDataList[${gridRow.index}].slotId">                                 
                     <select class="editselect" id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>">
-                      <option value="">--Select TimeSlot</option>  
+                      <option value="">--Start Time</option>  
+                     <c:forEach var="timeRow" items="${timeslots}">       
+                        <option <c:if test='${status.value == timeRow.slotId}'> SELECTED </c:if>
+                          value="<c:out value="${timeRow.slotId}"/>"><c:out value="${timeRow.slotName}"/></option>                         
+                      </c:forEach>
+                    </select>
+                  </spring:bind>
+              </td>
+               <td>
+                <spring:bind path="assignmentForm.planDataList[${gridRow.index}].endSlotId">                                 
+                    <select class="editselect" id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>">
+                      <option value="">--End Time</option>  
                      <c:forEach var="timeRow" items="${timeslots}">       
                         <option <c:if test='${status.value == timeRow.slotId}'> SELECTED </c:if>
                           value="<c:out value="${timeRow.slotId}"/>"><c:out value="${timeRow.slotName}"/></option>                         

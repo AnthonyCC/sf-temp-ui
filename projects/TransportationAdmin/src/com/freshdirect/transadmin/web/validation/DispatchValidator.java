@@ -4,6 +4,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import com.freshdirect.transadmin.model.TrnDispatch;
+import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class DispatchValidator implements Validator {
 	
@@ -21,8 +22,19 @@ public class DispatchValidator implements Validator {
 			errors.rejectValue("zone", "app.error.112", new Object[]{"Zone"},"required field");
 		}*/
 		
+		boolean hasTimeSlots = true;
 		if(model != null && (model.getTrnTimeslot() == null || model.getTrnTimeslot().getSlotId() == null)) {
-			errors.rejectValue("timeslot", "app.error.112", new Object[]{"Time Slot"},"required field");
+			errors.rejectValue("timeslot", "app.error.112", new Object[]{"Start Time Slot"},"required field");
+			hasTimeSlots = false;
+		}
+		
+		if(model != null && (model.getTrnEndTimeslot() == null || model.getTrnEndTimeslot().getSlotId() == null)) {
+			errors.rejectValue("endTimeslot", "app.error.112", new Object[]{"End Time Slot"},"required field");
+			hasTimeSlots = false;
+		}
+				
+		if(hasTimeSlots) {
+			checkDate("timeslot", model.getTrnTimeslot().getSlotId(), model.getTrnEndTimeslot().getSlotId(), errors);
 		}
 		
 		if(model != null && (model.getTrnDriver() == null || model.getTrnDriver().getEmployeeId() == null)) {
@@ -47,6 +59,18 @@ public class DispatchValidator implements Validator {
 		
 		if(model != null && (model.getTrnRoute() == null || model.getTrnRoute().getRouteId() == null)) {
 			errors.rejectValue("route", "app.error.112", new Object[]{"Route"},"required field");
+		}
+		
+	}
+	
+	private void checkDate(String field, String startTime, String endTime, Errors errors) {
+		
+		try {
+			if(TransStringUtil.compareTime(startTime, endTime)) {
+				errors.rejectValue(field, "app.error.116", new Object[]{},"Invalid Time");
+			}
+		} catch(NumberFormatException exp) {
+			errors.rejectValue(field, "typeMismatch.time", new Object[]{},"Invalid Time");			
 		}
 		
 	}

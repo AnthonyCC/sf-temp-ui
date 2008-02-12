@@ -130,6 +130,7 @@ public class AssignmentFormController extends BaseFormController {
 					tmpDispatch.setTrnSupervisor(new TrnEmployee(tmpCommand.getSupervisorId()));
 					tmpDispatch.setTrnZone(new TrnZone(tmpCommand.getZoneId()));
 					tmpDispatch.setTrnTimeslot(new TrnTimeslot(tmpCommand.getSlotId()));
+					tmpDispatch.setTrnEndTimeslot(new TrnTimeslot(tmpCommand.getEndSlotId()));
 					tmpDispatch.setTrnDriver(new TrnEmployee(tmpCommand.getDriverId()));
 					tmpDispatch.setTrnPrimaryHelper(new TrnEmployee(tmpCommand.getPrimaryHelperId()));
 					tmpDispatch.setTrnSecondaryHelper(new TrnEmployee(tmpCommand.getSecondaryHelperId()));	

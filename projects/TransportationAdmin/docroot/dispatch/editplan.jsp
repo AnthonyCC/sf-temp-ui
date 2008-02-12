@@ -85,15 +85,27 @@
 							 	</td>
 							 </tr>
 							 <tr>
-							    <td>Time Slot</td>
+							    <td>Start Time</td>
 							    <td> 
 								  <form:select path="timeslot">
-							  	  		<form:option value="null" label="--Please Select Time Slot"/>
+							  	  		<form:option value="null" label="--Please Select Start Time"/>
 										<form:options items="${timeslots}" itemLabel="slotName" itemValue="slotId" />
 							     </form:select>
 							 	</td>
 							 	<td>
 							 		&nbsp;<form:errors path="timeslot" />
+							 	</td>
+							 </tr>
+							 <tr>
+							    <td>End Time</td>
+							    <td> 
+								  <form:select path="endTimeslot">
+							  	  		<form:option value="null" label="--Please Select End Time"/>
+										<form:options items="${timeslots}" itemLabel="slotName" itemValue="slotId" />
+							     </form:select>
+							 	</td>
+							 	<td>
+							 		&nbsp;<form:errors path="endTimeslot" />
 							 	</td>
 							 </tr>
 							 <tr>

@@ -111,9 +111,10 @@
               <ec:column title=" " width="5px" 
                     filterable="false" sortable="false" cell="selectcol"
                     property="id.planId" />                           
-              <ec:column alias="trnZonezoneNumber" width="10" property="trnZone.zoneNumber" title="Zone"/>
-              <ec:column alias="trnTimeslotslotName" width="10"  property="trnTimeslot.slotName" title="Slot"/>
-              <ec:column alias="trnRouterouteNumber" property="trnRoute.routeNumber" title="Route"/>
+              <ec:column alias="trnZonezoneNumber" width="5" property="trnZone.zoneNumber" title="Zone"/>
+              <ec:column alias="trnTimeslotslotName" width="12"  property="trnTimeslot.slotName" title="Start Time"/>
+              <ec:column alias="trnTimeEndslotslotName" width="12"  property="trnEndTimeslot.slotName" title="End Time"/>
+              <ec:column alias="trnRouterouteNumber" width="10"  property="trnRoute.routeNumber" title="Route"/>
               <ec:column alias="trnSupervisorname" property="trnSupervisor.name" title="Supervisor"/>
               <ec:column alias="trnTrucktruckNumber" property="trnTruck.truckNumber" title="Truck"/>
               <ec:column alias="trnDrivername" property="trnDriver.name" title="Driver"/>
