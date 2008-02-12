@@ -152,28 +152,7 @@ if(user.isHomeUser())
 <td class="text12"><img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br><b><%=address.getAddress1()%><br><%=address.getCity()%>, <%=address.getState()%> <%=address.getZipCode()%></b></td>
 <% } %>
 </tr>
-<%  
-    if(user.isHomeUser())
-        zone = FDDeliveryManager.getInstance().getZoneInfo(address, tomorrow.getTime()).getZoneCode();
-        
-    if ("005".equals(zone) || "008".equals(zone)) { %>
-<tr><td colspan="3"><table width="693" cellpadding="0" cellspacing="0" border="0">
-<tr>
-    <td valign="top" align="center" class="text11" width="97"></td>
-    <td valign="top" align="center" colspan="5" class="text11">
-    <b><font class="text12" color="#CC0000">DELIVERY TIME SLOT NOTE: </font></b><br>
-    Due to heightened security around the Midtown Tunnel and the 59th Street Bridge
-    we have limited the number of deliveries in your area during the 4-6 PM and 6-8 PM time slots.
-    This will allow us to deliver orders in a more timely manner.
-    We hope this situation improves soon and will add more delivery availability as soon as possible.
-    </td>
-    <td valign="top" align="center" class="text11" width="97"></td>
-</tr>
-<TR>
-	<td align="center" valign="top" colspan="7"><br></TD>
-</TR>
-</table></td></tr>
-<%  }   %>
+
 <fd:DeliveryTimeSlot id="DeliveryTimeSlotResult" address="<%=address%>" deliveryInfo="<%=true%>">
 	<%
 	List timeslotList = DeliveryTimeSlotResult.getTimeslots();
