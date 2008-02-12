@@ -141,14 +141,6 @@ function changeColors(currentId, currentCss){
  * This snippet is based on a part of Prototype source code
  * See: http://prototypejs.org
  */
-Browser = {
-  IE:     !!(window.attachEvent && !window.opera),
-  Opera:  !!window.opera,
-  WebKit: navigator.userAgent.indexOf('AppleWebKit/') > -1,
-  Gecko:  navigator.userAgent.indexOf('Gecko') > -1 && navigator.userAgent.indexOf('KHTML') == -1,
-  MobileSafari: !!navigator.userAgent.match(/Apple.*Mobile.*Safari/)
-};
-
 (function() {
   /* Support for the DOMContentLoaded event is based on work by Dan Webb,
      Matthias Miller, Dean Edwards and John Resig. */
@@ -186,7 +178,7 @@ Browser = {
     }
 
   } else {
-    document.write("<script id=__onDOMContentLoaded defer src=://><\/script>");
+    document.write("<script id=__onDOMContentLoaded defer src=//:><\/script>");
     document.getElementById("__onDOMContentLoaded").onreadystatechange = function() {
       if (this.readyState == "complete") {
         this.onreadystatechange = null;
