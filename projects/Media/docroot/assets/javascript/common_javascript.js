@@ -186,7 +186,7 @@ Browser = {
     }
 
   } else {
-    document.write("<script id=__onDOMContentLoaded defer src=//:><\/script>");
+    document.write("<script id=__onDOMContentLoaded defer src=://><\/script>");
     document.getElementById("__onDOMContentLoaded").onreadystatechange = function() {
       if (this.readyState == "complete") {
         this.onreadystatechange = null;
