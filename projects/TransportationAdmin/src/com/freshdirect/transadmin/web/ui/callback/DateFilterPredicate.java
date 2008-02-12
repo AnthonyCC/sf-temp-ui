@@ -25,6 +25,12 @@ public class DateFilterPredicate implements Predicate
 
     /** greater than or equal. usage: >= 18-12-1997 */
     public static final String GREATER_THAN_OR_EQUAL = ">=";
+    
+    /** less than or equal. usage: <= 18-12-1997 */
+    public static final String LESS_THAN = "<";
+
+    /** greater than or equal. usage: >= 18-12-1997 */
+    public static final String GREATER_THAN = ">";
 
     /** date between. usage: <> 18-12-1997 19-12-1997 */
     public static final String BETWEEN = "<>";
@@ -138,47 +144,53 @@ public class DateFilterPredicate implements Predicate
             Date dateToCompare = null;
             Date dateToCompare2 = null;
 
-            try
-            {
+            try {
                 Date dateValue = dateFormat.parse(value.toString());
 
                 String[] result = search.split(DELIM);
 
                 String operator = result[0];
+                
+                if (operator.equals(LESS_THAN)) {
+                    dateToCompare = dateFormat.parse(result[1]);
 
-                if (operator.equals(LESS_THAN_OR_EQUAL))
-                {
+                    return dateValue.getTime() < dateToCompare.getTime();
+                }
+                else if (operator.equals(GREATER_THAN)) {
+                    dateToCompare = dateFormat.parse(result[1]);
+
+                    return dateValue.getTime() > dateToCompare.getTime();
+                }
+                else if (operator.equals(LESS_THAN_OR_EQUAL)) {
                     dateToCompare = dateFormat.parse(result[1]);
 
                     return dateValue.getTime() <= dateToCompare.getTime();
                 }
-                else if (operator.equals(GREATER_THAN_OR_EQUAL))
-                {
+                else if (operator.equals(GREATER_THAN_OR_EQUAL)) {
                     dateToCompare = dateFormat.parse(result[1]);
 
                     return dateValue.getTime() >= dateToCompare.getTime();
                 }
-                else if (operator.equals(BETWEEN))
-                {
+                else if (operator.equals(BETWEEN))  {
                     dateToCompare = dateFormat.parse(result[1]);
                     dateToCompare2 = dateFormat.parse(result[2]);
 
                     return (dateValue.getTime() >= dateToCompare.getTime()) &&
                     (dateValue.getTime() <= dateToCompare2.getTime());
                 }
-                else if (operator.equals(NOT_EQUAL))
-                {
+                else if (operator.equals(NOT_EQUAL)) {
                     dateToCompare = dateFormat.parse(result[1]);
 
                     return dateValue.getTime() != dateToCompare.getTime();
                 }
-                else
-                {
-                    return StringUtils.contains(valueStr, search);
+                else {
+                    //return StringUtils.contains(valueStr, search);
+                	//Modified to make equals the default condition
+                	dateToCompare = dateFormat.parse(result[0]);
+                    return dateValue.getTime() == dateToCompare.getTime();
                 }
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 logger.error(
                     "The parse was incorrectly defined for date String [" +
                     search + "].");

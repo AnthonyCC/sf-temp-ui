@@ -32,10 +32,11 @@
                 <tr>
                   <td>Select Date</td>
                   <td> 
-                    <spring:bind path="assignmentForm.planDate">                    
+                    <spring:bind path="assignmentForm.planDate"> 
+                                     
                     <input maxlength="10" size="10" name="<c:out value="${status.expression}"/>"
                       id="<c:out value="${status.expression}"/>"
-                            value="<c:out value="${status.value}"/>" />
+                            value="<c:out value="${status.value}"/>" />                          
                     </spring:bind>
                     &nbsp;<a href="#" id="trigger_planDate" style="font-size: 9px;">
                         <img src="images/calendar.gif"  style="border:0"  alt=">>" />
@@ -78,7 +79,14 @@
                   </script>
                 </td>
                 <td>
-                  &nbsp;<form:errors path="planDate" />
+                  &nbsp;
+                  <spring:bind path="assignmentForm.planDate">
+                  <span id="planDate.errors">      
+	                    <c:forEach items="${status.errorMessages}" var="error">
+					        <c:out value="${error}"/>&nbsp;
+				        </c:forEach>
+				     </span>
+				   </spring:bind>   
                 </td>
                
                   <td>Select Zone</td>
@@ -100,7 +108,7 @@
                    </spring:bind>
                 </td>
                 <td>
-                  &nbsp;<form:errors path="zoneId" />
+                  &nbsp;
                 </td>
               
               

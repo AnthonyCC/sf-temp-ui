@@ -156,7 +156,8 @@
 		<property name="dispatchManagerService" ref="dispatchManager"/>
 		<property name="sessionForm" value="true"/>
         <property name="commandName" value="assignmentForm"/>
-        <property name="commandClass" value="com.freshdirect.transadmin.web.model.AssignmentCommand"/>        
+        <property name="commandClass" value="com.freshdirect.transadmin.web.model.AssignmentCommand"/> 
+        <property name="validator" ref="assignmentValidator"/>       
         <property name="successView" value="assignmentView" />
         <property name="formView" value="assignmentView" />
 	</bean>
@@ -179,5 +180,6 @@
 	<bean id="planValidator" class="com.freshdirect.transadmin.web.validation.PlanValidator"/>
 	<bean id="dispatchValidator" class="com.freshdirect.transadmin.web.validation.DispatchValidator"/>
 	<bean id="copyPlanValidator" class="com.freshdirect.transadmin.web.validation.CopyPlanValidator"/>
+	<bean id="assignmentValidator" class="com.freshdirect.transadmin.web.validation.AssignmentValidator"/>
 
 </beans>
