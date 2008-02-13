@@ -326,7 +326,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
 			
 			if (!exists) {
 				LOGGER.info("Creating index at " + getIndexLocation());
-				IndexWriter writer = new IndexWriter(getIndexLocation(), STEMMER, false);
+				IndexWriter writer = new IndexWriter(getIndexLocation(), STEMMER, true);
 				writer.optimize();
 				writer.close();
 			}
