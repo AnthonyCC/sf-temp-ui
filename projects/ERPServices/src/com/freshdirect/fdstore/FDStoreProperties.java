@@ -252,14 +252,14 @@ public class FDStoreProperties {
 		
 		// cut off time 
 		
-		defaults.put(CUT_OFF_TIME_SUN, "0-21");
-		defaults.put(CUT_OFF_TIME_MON, "0-21");
-		defaults.put(CUT_OFF_TIME_TUES, "0-21");
-		defaults.put(CUT_OFF_TIME_WED, "0-21");
-		defaults.put(CUT_OFF_TIME_THUS, "0-21");
-		defaults.put(CUT_OFF_TIME_FRI, "0-18");
-		defaults.put(CUT_OFF_TIME_SAT, "0-21");
-		defaults.put(CUT_OFF_TIME_SUN, "0-21");
+		defaults.put(CUT_OFF_TIME_SUN, "0-20");
+		defaults.put(CUT_OFF_TIME_MON, "0-20");
+		defaults.put(CUT_OFF_TIME_TUES, "0-20");
+		defaults.put(CUT_OFF_TIME_WED, "0-20");
+		defaults.put(CUT_OFF_TIME_THUS, "0-20");
+		defaults.put(CUT_OFF_TIME_FRI, "0-17");
+		defaults.put(CUT_OFF_TIME_SAT, "0-20");
+		defaults.put(CUT_OFF_TIME_SUN, "0-20");
 		
 		
 		defaults.put(PROP_AD_SERVER_PROFILE_ATTRIBS, "");
