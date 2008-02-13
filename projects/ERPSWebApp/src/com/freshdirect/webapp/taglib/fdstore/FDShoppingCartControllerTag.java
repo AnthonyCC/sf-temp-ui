@@ -701,7 +701,13 @@ public class FDShoppingCartControllerTag extends
 
 	protected int removeRecipe() {
 		String recipeId = request.getParameter("removeRecipe");
-		return cart.removeOrderLinesByRecipe(recipeId);
+		List cartLinesRemoved = cart.removeOrderLinesByRecipe(recipeId);
+		for(Iterator i = cartLinesRemoved.iterator(); i.hasNext(); ) {
+			FDCartLineI removedLine = (FDCartLineI) i.next();
+			removedLine.setSource(getEventSource());
+			FDEventUtil.logRemoveCartEvent(removedLine, request);
+		}
+		return cartLinesRemoved.size();
 	}
 
 	protected boolean removeOrderLine() throws JspException {

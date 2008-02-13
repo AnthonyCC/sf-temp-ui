@@ -362,18 +362,19 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	 * 
 	 * @return number of items removed
 	 */
-	public int removeOrderLinesByRecipe(String recipeId) {
+	public List removeOrderLinesByRecipe(String recipeId) {
+		List cartLinesRemoved = new ArrayList();
 		int count = 0;
 		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
 			FDCartLineI line = (FDCartLineI) i.next();
 			if (recipeId.equals(line.getRecipeSourceId())) {
+				cartLinesRemoved.add(line);
 				i.remove();
-				count++;
 			}
 		}
 		this.recentOrderLines.clear();
 		this.clearAvailability();
-		return count;
+		return cartLinesRemoved;
 	}
 
 	public void clearOrderLines() {
