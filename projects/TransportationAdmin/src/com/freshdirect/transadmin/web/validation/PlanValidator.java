@@ -39,7 +39,7 @@ public class PlanValidator implements Validator {
 		}
 				
 		if(hasTimeSlots) {
-			checkDate("timeslot", model.getTrnTimeslot().getSlotId(), model.getTrnEndTimeslot().getSlotId(), errors);
+			//checkDate("timeslot", model.getTrnTimeslot().getSlotId(), model.getTrnEndTimeslot().getSlotId(), errors);
 		}
 		/*if(model != null && (model.getTrnDriver() == null || model.getTrnDriver().getEmployeeId() == null)) {
 			errors.rejectValue("driver", "app.error.112", new Object[]{"Driver"},"required field");

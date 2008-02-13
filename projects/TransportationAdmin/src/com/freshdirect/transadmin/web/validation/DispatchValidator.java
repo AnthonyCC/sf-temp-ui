@@ -34,7 +34,7 @@ public class DispatchValidator implements Validator {
 		}
 				
 		if(hasTimeSlots) {
-			checkDate("timeslot", model.getTrnTimeslot().getSlotId(), model.getTrnEndTimeslot().getSlotId(), errors);
+			//checkDate("timeslot", model.getTrnTimeslot().getSlotId(), model.getTrnEndTimeslot().getSlotId(), errors);
 		}
 		
 		if(model != null && (model.getTrnDriver() == null || model.getTrnDriver().getEmployeeId() == null)) {
