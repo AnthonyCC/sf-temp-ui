@@ -45,6 +45,11 @@ private String getTimeslotString(Calendar startTimeCal, Calendar endTimeCal){
 <% 
 DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yy EEEE");
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+
+        //--------OAS Page Variables-----------------------
+request.setAttribute("sitePage", "www.freshdirect.com/your_account");
+request.setAttribute("listPos", "SystemMessage,CategoryNote");
+
 %>
 <fd:OrderHistoryInfo id='orderHistoryInfo'>		
 <%  if (orderHistoryInfo != null && orderHistoryInfo.size() != 0) {
@@ -163,9 +168,6 @@ your account information, this is the place to do it.<br></td>
 	<% 
     if(user.isChefsTable()) {
     
-        //--------OAS Page Variables-----------------------
-request.setAttribute("sitePage", "www.freshdirect.com/your_account");
-request.setAttribute("listPos", "SystemMessage,CategoryNote");
 
 %>
 	<table align="center" border="0" cellspacing="0" cellpadding="0">
