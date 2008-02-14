@@ -38,7 +38,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  * @version
  */
 public class GeographyDAO {
-	
+
 	private static final Category LOGGER = LoggerFactory.getInstance(GeographyDAO.class);
 
 	public GeographyDAO() {
@@ -246,7 +246,7 @@ public class GeographyDAO {
 			int intLength = zipCodeList.length;
 			for(int intCount=0; intCount<intLength; intCount++) {
 				zipCode = zipCodeList[intCount];
-				
+
 				if (EnumAddressVerificationResult.NOT_VERIFIED.equals(result)) {
 					ps = conn.prepareStatement(zp4StreetIncompleteQuery);
 					ps.setString(1, "%" + streetNormal + "%");
@@ -289,7 +289,7 @@ public class GeographyDAO {
 						} else {
 							continue;
 						}
-		
+
 					} else if (!multiples) {
 						//
 						// hey, it worked! fix the address and call it a day
@@ -304,10 +304,10 @@ public class GeographyDAO {
 							correctName.postDir);
 						bldg = stripImproperDir(bldg);
 						address.setAddress1(bldg + " " + correctedStreetName);
-		
+
 						b = streetAddress.indexOf(" ");
 						bldg = streetAddress.substring(0, b);
-		
+
 						streetAddress = bldg + " " + correctedStreetName;
 						streetNormal = compress(correctedStreetName);
 						result = EnumAddressVerificationResult.NOT_VERIFIED;
@@ -455,7 +455,7 @@ public class GeographyDAO {
 		+ "AND DECODE (l_addrsch,'M', 1,'E', decode(mod(?,2), 0, 1, 0), 'O', decode(mod(?,2), 1, 1, 0),0) = 1) "
 		+ "OR   (((? BETWEEN ng.r_nrefaddr AND ng.r_refaddr) OR (? BETWEEN ng.r_refaddr AND ng.r_nrefaddr)) "
 		+ "AND DECODE (r_addrsch,'M', 1,'E', decode(mod(?,2), 0, 1, 0), 'O', decode(mod(?,2), 1, 1, 0),0) = 1)) ";
-	
+
 	public static final String GEOCODE_OK = "GEOCODE_OK";
 	public final static String GEOCODE_FAILED = "GEOCODE_FAILED";
 
@@ -464,29 +464,31 @@ public class GeographyDAO {
 	// by guessing where a '-' might be in the building number
 	//
 	public String geocode(AddressModel address, boolean munge, Connection conn) throws SQLException, InvalidAddressException {
-		
+
 		//LOGGER.debug("--------- START GEOCODE BASE---------------------\n"+address);
-		String result = reallyGeocode(address, conn, false);
+		//
+		// failed, check exceptions table
+		//
+		String result = checkGeocodeExceptions(address, conn);
+		if (GEOCODE_OK.equals(result)) {
+			//LOGGER.debug(address+"\n--------- END GEOCODE BASE2---------------------\n");
+			return result;
+		}
+
+		result = reallyGeocode(address, conn, false);
 		if (GEOCODE_OK.equals(result)) {
 			//LOGGER.debug(address+"\n--------- END GEOCODE BASE1---------------------\n");
 			return result;
 		}
-		
+
 		result = reallyGeocode(address, conn, true);
 		if (GEOCODE_OK.equals(result)) {
 			//LOGGER.debug(address+"\n--------- END GEOCODE BASE2---------------------\n");
 			return result;
 		}
-		
-		//
-		// failed, check exceptions table
-		//
-		result = checkGeocodeExceptions(address, conn);
-		if (GEOCODE_OK.equals(result)) {
-			//LOGGER.debug(address+"\n--------- END GEOCODE BASE2---------------------\n");
-			return result;
-		}
-		
+
+
+
 		if (munge) {
 			//
 			// failed, guess where the '-' is
@@ -506,7 +508,7 @@ public class GeographyDAO {
 			bldgNum = bldgNum.substring(0, bldgNum.length() - 2) + "-" + bldgNum.substring(bldgNum.length() - 2, bldgNum.length());
 			address.setAddress1(bldgNum + " " + theRest);
 			String resultTmp = reallyGeocode(address, conn, false);
-			
+
 			//LOGGER.debug(address+"\n--------- END GEOCODE BASE3---------------------\n");
 			return resultTmp;
 		}
@@ -532,7 +534,7 @@ public class GeographyDAO {
 		try {
 			streetAddress = (reverseDirectionSubstition ? AddressScrubber.standardizeForGeocodeNoSubstitution(address.getAddress1())
 								: AddressScrubber.standardizeForGeocode(address.getAddress1()));
-			//streetAddress = AddressScrubber.standardizeForGeocode(address.getAddress1());	
+			//streetAddress = AddressScrubber.standardizeForGeocode(address.getAddress1());
 		} catch (InvalidAddressException iae1) {
 			try {
 				streetAddress = (reverseDirectionSubstition ? AddressScrubber.standardizeForGeocodeNoSubstitution(address.getAddress2())
@@ -570,7 +572,7 @@ public class GeographyDAO {
 		String leftAddressScheme = "";
 		String rightAddressScheme = "";
 		String[] zipCode = getZipCodeFromAddress(address);
-		
+
 		if(zipCode != null) {
 			int intLength = zipCode.length;
 			for(int intCount=0; intCount<intLength; intCount++) {
@@ -592,7 +594,7 @@ public class GeographyDAO {
 				ps.setInt(10, newBldgNumber);
 				ps.setInt(11, newBldgNumber);
 				ResultSet rs = ps.executeQuery();
-				
+
 				//LOGGER.debug("--------- START REALLY GEOCODE ---------------------\n"+address);
 				if (rs.next()) {
 					//LOGGER.debug("--------- HAS GEOCODE SEGMENT---------------------");
@@ -601,23 +603,23 @@ public class GeographyDAO {
 					rightAddressScheme = rs.getString("R_ADDRSCH");
 					segment.leftNearNum = rs.getInt("L_REFADDR");
 					segment.leftFarNum = rs.getInt("L_NREFADDR");
-		
+
 					segment.rightNearNum = rs.getInt("R_REFADDR");
 					segment.rightFarNum = rs.getInt("R_NREFADDR");
-		
+
 					segment.leftZipcode = rs.getString("L_POSTCODE");
 					segment.rightZipcode = rs.getString("R_POSTCODE");
-		
+
 					segment.nearX = rs.getDouble("COORD");
-		
+
 					if (rs.next()) {
 						segment.nearY = rs.getDouble("COORD");
 					}
-		
+
 					if (rs.next()) {
 						segment.farX = rs.getDouble("COORD");
 					}
-		
+
 					if (rs.next()) {
 						segment.farY = rs.getDouble("COORD");
 					}
@@ -646,11 +648,11 @@ public class GeographyDAO {
 						}
 					}
 				}
-		
+
 				boolean onLeft = false;
 				boolean doOffset = true;
 				if (leftAddressScheme.equals("E") || leftAddressScheme.equals("O")) {
-		
+
 					if (leftAddressScheme.equals("E") && (newBldgNumber % 2 == 0)) {
 						onLeft = true;
 					}
@@ -660,13 +662,13 @@ public class GeographyDAO {
 				} else { // Don't do offset.  If can't figure out; always default to right side of street
 					doOffset = false;
 				}
-		
+
 				double dX = segment.farX - segment.nearX;
 				double dY = segment.farY - segment.nearY;
 				double distance = Math.sqrt(dX * dX + dY * dY);
-		
+
 				double slope = dY / dX;
-		
+
 				//
 				// how far along the segment is the street address?
 				//
@@ -676,26 +678,26 @@ public class GeographyDAO {
 				} else {
 					perc = ((double) (bldgNumber - segment.rightNearNum)) / ((double) (segment.rightFarNum - segment.rightNearNum));
 				}
-		
+
 				// Fix boundary conditions
 				if (new Double(perc).isNaN() || (perc == Double.NEGATIVE_INFINITY) || (perc == Double.POSITIVE_INFINITY)) {
 					perc = 0.5;
 				}
-		
+
 				// This is one one corner, offset it by a wee bit.
 				if (perc == 0)
 					perc = 0.05;
-		
+
 				// On another corner
 				if (perc == 1.0)
 					perc = 0.95;
-		
+
 				//
 				// find the X,Y point on the street
 				//
 				double pX, pY;
 				double newDistance = distance * perc;
-		
+
 				if (new Double(slope).isNaN() || (slope == Double.NEGATIVE_INFINITY) || (slope == Double.POSITIVE_INFINITY)) {
 					pX = segment.nearX;
 					pY = newDistance + segment.nearY;
@@ -710,49 +712,49 @@ public class GeographyDAO {
 					}
 					pY = slope * (pX - segment.nearX) + segment.nearY;
 				}
-		
+
 				// Now offset this 20 meters
 				double newSlope = -1 / slope;
-		
+
 				// Approximate actual offset
 				double newX, newY;
 				if (doOffset) {
 					double offsetDistance;
-		
+
 					if (pX >= segment.farX) {
 						offsetDistance = offsetFromStreet * XmetersToDeg;
 					} else {
 						offsetDistance = -offsetFromStreet * XmetersToDeg;
 					}
-		
+
 					//	Assign Left is negative
 					if (onLeft)
 						offsetDistance *= -1;
-		
+
 					if (newSlope < 0)
 						offsetDistance *= -1;
-		
+
 					newX = offsetDistance / Math.sqrt(newSlope * newSlope + 1) + pX;
-		
+
 					if (slope == 0.0)
 						newY = pY;
 					else {
 						newY = newSlope * (newX - pX) + pY;
 					}
-		
+
 				} else {
 					newX = pX;
 					newY = pY;
 				}
-		
+
 				AddressInfo info = address.getAddressInfo();
-				
+
 				//LOGGER.debug("--------- LAT, LONG---------------------"+newX+"-->"+newY);
-		
+
 				if (info == null) {
 					info = new AddressInfo();
 				}
-		
+
 				info.setLongitude(newX);
 				info.setLatitude(newY);
 				/*
@@ -773,9 +775,9 @@ public class GeographyDAO {
 				 }
 				 */
 				address.setAddressInfo(info);
-		
+
 				//System.out.println("point offset from street is X = " + retval.x + ", Y = " + retval.y);
-				
+
 				LOGGER.debug(address+"\n--------- END REALLY GEOCODE ---------------------");
 				return GEOCODE_OK;
 			}
@@ -825,7 +827,7 @@ public class GeographyDAO {
 	 ps.setInt(10, bldgNumber);
 	 ps.setInt(11, bldgNumber);
 	 ResultSet rs = ps.executeQuery();
-	 
+
 	 if (rs.next()) {
 	 segment = new StreetSegment();
 	 segment.leftNearNum = rs.getInt("L_REFADDR");
@@ -834,21 +836,21 @@ public class GeographyDAO {
 	 segment.rightNearNum = rs.getInt("R_REFADDR");
 	 segment.rightFarNum = rs.getInt("R_NREFADDR");
 
-	 
-	 
+
+
 	 segment.leftZipcode = rs.getString("L_POSTCODE");
 	 segment.rightZipcode = rs.getString("R_POSTCODE");
-	 
+
 	 segment.nearX = rs.getDouble("COORD");
-	 
+
 	 if (rs.next()) {
 	 segment.nearY = rs.getDouble("COORD");
 	 }
-	 
+
 	 if (rs.next()) {
 	 segment.farX = rs.getDouble("COORD");
 	 }
-	 
+
 	 if (rs.next()) {
 	 segment.farY = rs.getDouble("COORD");
 	 }
@@ -863,7 +865,7 @@ public class GeographyDAO {
 	 // which of the street segments returned and which side of the the street is the correct one?
 	 //
 	 boolean onLeft = false;
-	 
+
 	 double distanceNear = segment.nearX * segment.nearX + segment.nearY * segment.nearY;
 	 double distanceFar = segment.farX * segment.farX + segment.farY * segment.farY;
 
@@ -886,9 +888,9 @@ public class GeographyDAO {
 	 double dX = segment.farX - segment.nearX;
 	 double dY = segment.farY - segment.nearY;
 	 double length = Math.sqrt(dX * dX + dY * dY);
-	 
+
 	 double slope = dX / dY;
-	 
+
 	 double dXunit = dX / length;
 	 //System.out.println("dXunit = " + dXunit);
 	 double dYunit = dY / length;
@@ -927,12 +929,12 @@ public class GeographyDAO {
 	 //
 	 // move the endpoints of the street back from the intersection
 	 //
-	 
+
 	 segment.nearX += dXunit * offsetFromStreet * XmetersToDeg;
 	 segment.nearY += dYunit * offsetFromStreet * YmetersToDeg;
 	 segment.farX -= dXunit * offsetFromStreet * XmetersToDeg;
 	 segment.farY -= dYunit * offsetFromStreet * YmetersToDeg;
-	 
+
 	 //
 	 // find the X,Y point on the street
 	 //
@@ -952,7 +954,7 @@ public class GeographyDAO {
 	 if (info == null) {
 	 info = new AddressInfo();
 	 }
-	 
+
 	 info.setLongitude(pX);
 	 info.setLatitude(pY);
 
@@ -1023,7 +1025,7 @@ public class GeographyDAO {
 		String streetNormal = compress(streetName);
 
 		ArrayList ranges = new ArrayList();
-		
+
 		String[] zipCodeList = getZipCodeFromAddress(address);
 		String zipCode = null;
 		PreparedStatement ps = null;
@@ -1051,7 +1053,7 @@ public class GeographyDAO {
 				if(ranges.size() > 0) {
 					break;
 				}
-			}			
+			}
 		}
 		return ranges;
 
@@ -1200,21 +1202,21 @@ public class GeographyDAO {
 	}
 
 	private final static String SEARCH_GEOCODE_EXCEPTION = "select SCRUBBED_ADDRESS, ZIPCODE, LATITUDE, LONGITUDE from dlv.geocode_exceptions where scrubbed_address LIKE ? and zipcode LIKE ? ";
-	
+
 	public List searchGeocodeException(Connection conn, ExceptionAddress ex) throws SQLException {
 
 			PreparedStatement ps = conn.prepareStatement(SEARCH_GEOCODE_EXCEPTION);
 			ps.setString(1, "".equals(ex.getScrubbedAddress()) ? "%" : "%" + ex.getScrubbedAddress().toUpperCase() + "%");
 			ps.setString(2, "".equals(ex.getZip()) ? "%" : ex.getZip());
 			ResultSet rs = ps.executeQuery();
-			
+
 			List exceptions = new ArrayList();
 			while(rs.next()){
 				ExceptionAddress ea = new ExceptionAddress();
 				ea.setScrubbedAddress(rs.getString("SCRUBBED_ADDRESS"));
 				ea.setZip(rs.getString("ZIPCODE"));
 				ea.setLatitude(rs.getDouble("LATITUDE"));
-				ea.setLongitude(rs.getDouble("LONGITUDE"));				
+				ea.setLongitude(rs.getDouble("LONGITUDE"));
 				exceptions.add(ea);
 			}
 			rs.close();
@@ -1223,7 +1225,7 @@ public class GeographyDAO {
 	}
 
 	private final static String DELETE_GEOCODE_EXCEPTION = "delete from dlv.geocode_exceptions where scrubbed_address = ? and zipcode = ? ";
-	
+
 	public void deleteGeocodeException(Connection conn, ExceptionAddress ex) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(DELETE_GEOCODE_EXCEPTION);
 		ps.setString(1, ex.getScrubbedAddress().toUpperCase());
@@ -1231,11 +1233,11 @@ public class GeographyDAO {
 		if (ps.executeUpdate() !=1) {
 			throw new SQLException ("Address: "+ex.getScrubbedAddress()+" and zipcode: "+ex.getZip()+" does not exist in geocode_exceptions table");
 		}
-		ps.close();			
+		ps.close();
 	}
-	
+
 	private final static String ADD_GEOCODE_EXCEPTION = "insert into dlv.geocode_exceptions (scrubbed_address, zipcode, latitude, longitude, created_by) values (?,?,?,?,?)";
-	
+
 	public void addGeocodeException(Connection conn, ExceptionAddress ex, String userId) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(ADD_GEOCODE_EXCEPTION);
 		ps.setString(1, ex.getScrubbedAddress().toUpperCase());
@@ -1289,22 +1291,22 @@ public class GeographyDAO {
 
 		return counties;
 	}
-	
-	private final static String CITY_ZIP = "select city from dlv.zipplusfour zpf, dlv.city_state cs " + 
+
+	private final static String CITY_ZIP = "select city from dlv.zipplusfour zpf, dlv.city_state cs " +
 											"where zpf.CITY_STATE_KEY = cs.CITY_STATE_KEY " +
 											"and zipcode = ? " +
 											"group by city";
 	public List lookupCitiesByZip(Connection conn, String zipcode) throws SQLException {
 		List cities = new ArrayList();
-		
+
 		PreparedStatement ps = conn.prepareStatement(CITY_ZIP);
 		ps.setString(1, zipcode);
 		ResultSet rs = ps.executeQuery();
-		
+
 		while(rs.next()){
 			cities.add(rs.getString("CITY").toUpperCase());
 		}
-		
+
 		return cities;
 	}
 
@@ -1349,7 +1351,7 @@ public class GeographyDAO {
 		AddressModel address,
 		Connection conn,
 		EnumAddressVerificationResult result) throws SQLException {
-		try {			
+		try {
 			if (GEOCODE_OK.equals(geocode(address, false, conn))) {
 				String county = getCounty(conn, address.getCity(), address.getState());
 				if(county == null){
@@ -1358,7 +1360,7 @@ public class GeographyDAO {
 				address.setCity(StringUtils.capitaliseAllWords(address.getCity().toLowerCase()));
 				address.getAddressInfo().setCounty(county);
 				address.getAddressInfo().setAddressType(EnumAddressType.STREET);
-				
+
 				//validate city
 				if(lookupCitiesByZip(conn, address.getZipCode()).contains(address.getCity().toUpperCase())){
 					return EnumAddressVerificationResult.ADDRESS_OK;
@@ -1369,17 +1371,17 @@ public class GeographyDAO {
 		}
 		return result;
 	}
-	
-	private final static String ZPF_EXCEPTION_SEARCH = 
+
+	private final static String ZPF_EXCEPTION_SEARCH =
 		"select  ID, SCRUBBED_ADDRESS, APT_NUM_LOW, APT_NUM_HIGH, ZIPCODE, ADDRESS_TYPE, REASON, CREATED_BY, MODTIME, COUNTY, STATE, CITY"
 		+" from dlv.zipplusfour_exceptions where scrubbed_address like ? and zipcode like ? order by scrubbed_address";
-	
+
 	public List searchExceptionAddresses(Connection conn, ExceptionAddress address) throws SQLException{
 		PreparedStatement ps = conn.prepareStatement(ZPF_EXCEPTION_SEARCH);
 		ps.setString(1, "".equals(address.getStreetAddress()) ? "%" : "%" + address.getStreetAddress().toUpperCase() + "%");
 		ps.setString(2, "".equals(address.getZip()) ? "%" : address.getZip());
 		ResultSet rs = ps.executeQuery();
-		
+
 		List exceptions = new ArrayList();
 		while(rs.next()){
 			ExceptionAddress ea = new ExceptionAddress();
@@ -1393,49 +1395,49 @@ public class GeographyDAO {
 			ea.setCounty(rs.getString("COUNTY"));
 			ea.setReason(EnumAddressExceptionReason.getEnum(rs.getString("REASON")));
 			ea.setAddressType(EnumAddressType.getEnum(rs.getString("ADDRESS_TYPE")));
-			
+
 			exceptions.add(ea);
 		}
 		rs.close();
 		ps.close();
-		
+
 		return exceptions;
 	}
-	
+
 	public void deleteAddressException(Connection conn, String id) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement("DELETE FROM DLV.ZIPPLUSFOUR_EXCEPTIONS WHERE ID = ?");
-		
+
 		ps.setString(1, id);
 		ps.executeUpdate();
-		
+
 		ps.close();
-		
+
 	}
-	
+
 	private final static String STATE_BY_ZIP = "select cs.STATE, cs.COUNTY from dlv.zipplusfour zpf, dlv.city_state cs where zipcode = ? " +
 											   " and zpf.CITY_STATE_KEY = cs.CITY_STATE_KEY group by state, county order by county";
     public StateCounty lookupStateCountyByZip(Connection conn, String zip) throws SQLException{
     	PreparedStatement ps = conn.prepareStatement(STATE_BY_ZIP);
     	ps.setString(1, zip);
     	ResultSet rs = ps.executeQuery();
-    	
+
     	if(rs.next()){
     		return new StateCounty(rs.getString("STATE"), rs.getString("COUNTY"));
     	}
-    	
+
     	rs.close();
     	ps.close();
-    	
+
     	return null;
     }
-    
-    private String[] getZipCodeFromAddress(AddressModel addressModel) {    	
+
+    private String[] getZipCodeFromAddress(AddressModel addressModel) {
     	StringBuffer tmpBufZipCode = new StringBuffer();
     	tmpBufZipCode.append(addressModel.getZipCode());
     	String tmpZipCode = FDStoreProperties.getAlternateZipcodeForGeocode(addressModel.getZipCode());
     	if(!StringUtil.isEmpty(tmpZipCode)) {
     		tmpBufZipCode.append(",").append(tmpZipCode);
-    	}    	
+    	}
     	return StringUtil.decodeStrings(tmpBufZipCode.toString());
     }
 }
