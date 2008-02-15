@@ -21,6 +21,9 @@ FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 
 	String fldAddress1 = request.getParameter(EnumUserInfoName.DLV_ADDRESS_1.getCode());
 	String fldZipCode = request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode());
+    String fldCity = request.getParameter(EnumUserInfoName.DLV_CITY.getCode());
+    String fldState=request.getParameter(EnumUserInfoName.DLV_STATE.getCode());
+    String fldApartment=request.getParameter(EnumUserInfoName.DLV_APARTMENT.getCode());
 
     if ((fldZipCode == null) || "".equals(fldZipCode)) {
         if (user != null) {
@@ -48,7 +51,17 @@ FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 <tr valign="top"><td class="text12" align="right">* Street Address&nbsp;&nbsp;</td>
 <td><input type="text" class="text11" maxlength="50" size="21" name="<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>" value="<%=fldAddress1%>">
 &nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td></tr>
+<tr valign="top"><td class="text12" align="right"> Apartment&nbsp;&nbsp;</td>
+<td><input type="text" class="text11" maxlength="50" size="21" name="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>" value="<%=fldApartment%>">
+&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td></tr>
 <tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
+<tr valign="top"><td class="text12" align="right">* City&nbsp;&nbsp;</td>
+<td><input type="text" class="text11" maxlength="50" size="21" name="<%=EnumUserInfoName.DLV_CITY.getCode()%>" value="<%=fldCity%>">
+&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_CITY.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td></tr>
+<br>
+<tr valign="top"><td class="text12" align="right">* State&nbsp;&nbsp;</td>
+<td><input type="text" class="text11" maxlength="50" size="21" name="<%=EnumUserInfoName.DLV_STATE.getCode()%>" value="<%=fldState%>">
+&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_STATE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td></tr>
 <tr valign="top"><td class="text12" align="right"><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>* Zip Code&nbsp;&nbsp;</td>
 <td><input type="text"  maxlength="5" class="text11" size="6" name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" value="<%=fldZipCode%>">
 &nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td></tr>
@@ -56,6 +69,7 @@ FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 <br><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_NOT_IN_ZONE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_CANT_GEOCODE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 <fd:ErrorHandler result='<%=result%>' name='technicalDifficulty' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td></tr>
+
 </form>
 <%
 	for (Iterator i=result.getErrors().iterator();i.hasNext();) {
