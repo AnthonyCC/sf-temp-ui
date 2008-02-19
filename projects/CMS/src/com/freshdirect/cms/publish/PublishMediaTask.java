@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.net.*;
 
 import org.apache.commons.httpclient.HttpURL;
 import org.apache.webdav.lib.WebdavResource;
@@ -85,18 +86,18 @@ public class PublishMediaTask extends DbService implements PublishTask {
 			if (username != null && password != null) {
 				slideUrl.setUserinfo(username, password);
 			}
-			WebdavResource webdav = new WebdavResource(slideUrl);
+			WebdavResource webdav = new WebdavResource(slideUrl); //  "http://<dav-host>/<slide-path>/files/"
 
-			URL basePath = new URL(slideUrl.getURI());
+			URL basePath = new URL(slideUrl.getURI()); // same as slideUrl
 			for (Iterator i = getUris(lastPublish.getLastModified()).iterator(); i.hasNext();) {
-				String childPath = (String) i.next();
+				String childPath = (String) i.next(); // 	"/file1.ext"
 
 				if (childPath.startsWith("/")) {
 					childPath = childPath.substring(1, childPath.length());
 				}
 
-				URL url = new URL(basePath, childPath);
-				webdav.setPath(url.getPath());
+				URL url = new URL(basePath, URLEncoder.encode(childPath, "UTF-8") ); //  "http://<dav-host>/<slide-path>/files/file1.ext"
+				webdav.setPath(URLDecoder.decode(url.getPath(), "UTF-8") ); //  "/<slide-path>/files/file1.ext"
 
 				File file = new File(rootDir, childPath);
 				createParentDirectory(file);
