@@ -392,7 +392,7 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
 </tr>
 <%
 
-} else if (productNode==null || productNode.isUnavailable() || orderLine.isInvalidConfig()) {
+} else if (productNode==null || productNode.getSku(orderLine.getSkuCode()).isUnavailable() || orderLine.isInvalidConfig()) {
         // product not found, or unavailable, or cfg is invalid
 
 %>
