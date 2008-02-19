@@ -22,6 +22,7 @@ import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.AddressUtil;
+import com.freshdirect.webapp.taglib.fdstore.DeliveryAddressValidator;
 import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 
@@ -147,18 +148,22 @@ public class CrmAddressControllerTag extends AbstractControllerTag {
 			SystemMessageList.MSG_UNRECOGNIZE_STATE);
 		result.addError("".equals(this.address.getZipCode()), EnumUserInfoName.DLV_ZIPCODE.getCode(), "required");
 		result.addError(address.getPhone() == null || "".equals(this.address.getPhone().getPhone()), EnumUserInfoName.DLV_HOME_PHONE.getCode(), "required");
-		if(result.isSuccess()){
-			AddressModel scrubbedAddress = AddressUtil.scrubAddress(this.address, result);
-			if(result.isSuccess()){
-				this.address.setAddressInfo(scrubbedAddress.getAddressInfo());
-				if(scrubbedAddress.getAddressType().equals(EnumAddressType.FIRM) && !this.address.getServiceType().equals(EnumServiceType.CORPORATE)){
-					result.addError(new ActionError(EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), SystemMessageList.MSG_COMMERCIAL_ADDRESS));
+
+		
+		if (result.isSuccess()) {
+			DeliveryAddressValidator validator = new DeliveryAddressValidator(this.address);
+
+			// validate address
+			if (validator.validateAddress(result)) {
+				// Second turn: Check SUFFOLK condition 
+				if("SUFFOLK".equals(FDDeliveryManager.getInstance().getCounty(validator.getScrubbedAddress()))
+					&& (this.address.getAltContactPhone() == null
+						|| "".equals(this.address.getAltContactPhone().getPhone())
+					)
+				) {
+					result.addError(true, EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode(), SystemMessageList.MSG_REQUIRED);
+					return;
 				}
-			}
-			
-			if("SUFFOLK".equals(FDDeliveryManager.getInstance().getCounty(scrubbedAddress)) && (this.address.getAltContactPhone() == null || "".equals(this.address.getAltContactPhone().getPhone()))){
-				result.addError(true, EnumUserInfoName.DLV_ALT_CONTACT_PHONE.getCode(), SystemMessageList.MSG_REQUIRED);
-				return;
 			}
 		}
 		
