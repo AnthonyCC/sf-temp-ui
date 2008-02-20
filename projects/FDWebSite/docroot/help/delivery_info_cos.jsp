@@ -45,7 +45,10 @@ request.setAttribute("survey_source","deliveryInfo Page");
 		    <tr valign="top">
 		        <td class="text12">
 					<fd:IncludeMedia name="/media/editorial/site_pages/delivery_info/corp/main.ftl" parameters="<%=params%>" withErrorReport="true"/>
-					<%@ include file="/survey/includes/cos.jsp" %>
+                    <a name="survey"></a><b>Interested? Let Us Know!</b><br>
+                    If you (or maybe someone you know) are interested in FreshDirect At The Office, please let us know by giving us the following information:
+                    <br><br>
+                    <%@ include file="/survey/includes/cos.jsp" %>
 					<br><br>
 		        </td>
 		        <td rowspan="2" bgcolor="#CCCCCC">&nbsp;</td>
