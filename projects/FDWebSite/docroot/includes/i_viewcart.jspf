@@ -307,7 +307,7 @@ FDIdentity identity = user.getIdentity();
 			<td colspan="1" align="right"><%=currencyFormatter.format(cart.getTaxValue())%></td>
 			<td colspan="3"></td>
 		</tr>
-		<%
+<%
 	}
 
 	if (cart.getDepositValue() > 0) {
@@ -317,7 +317,7 @@ FDIdentity identity = user.getIdentity();
 			<td colspan="1" align="right"><%=currencyFormatter.format(cart.getDepositValue())%></td>
 			<td colspan="3"></td>
 		</tr>
-		<%
+<%
 	}
 	if (cart.isDlvPassApplied()) {
 	%>
@@ -326,10 +326,8 @@ FDIdentity identity = user.getIdentity();
 			<td colspan="1" align="right"><%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %></td>
 			<td colspan="3"></td>
 		</tr>
-		<%
-	}
-
-	else if (cart.getDeliverySurcharge() > 0) {
+<%
+	} else if (cart.getDeliverySurcharge() > 0) {
 		%>
 		<tr valign="top" class="orderSummary">
 			<td colspan="3" align="right">Delivery Charge<% if(cart.isDeliveryChargeWaived()){%> (waived)<%}%>:</td>
@@ -339,21 +337,21 @@ FDIdentity identity = user.getIdentity();
 		</tr>
 		<%
 	}
-	%>
 	
-	<% if (cart.getMiscellaneousCharge() > 0.0) {%>
+	if (cart.getMiscellaneousCharge() > 0.0) {%>
 		<tr valign="top" class="orderSummary">
            	<td colspan="3" align="right"><a href="javascript:popup('/shared/fee_info.jsp?type=fuel','large');">Fuel Surcharge</a><%if(cart.isMiscellaneousChargeWaived()){%> (waived)<%}%>:</td>
 			<td align="right"><%if(cart.isMiscellaneousChargeWaived()){%>$0.00<%}else{%><%= currencyFormatter.format(cart.getMiscellaneousCharge()) %><%}%></td>
 		    <td><b><%=cart.isMiscellaneousChargeTaxable() && !cart.isMiscellaneousChargeWaived()  ? "&nbsp;T" : "" %></b></td>
 			<td colspan="2"></td>
 		</tr>
-	<%  } %>
-	
-	<%
+<%
+	}
 	double maxPromotion = user.getMaxSignupPromotion();
 	PromotionI redemptionPromo = user.getRedeemedPromotion();
-	List discounts = cart.getDiscounts();
+    boolean isRedemptionApplied = (redemptionPromo != null && user.getPromotionEligibility().isApplied(redemptionPromo.getPromotionCode()) );
+
+    List discounts = cart.getDiscounts();
 	for (Iterator iter = discounts.iterator(); iter.hasNext();) {
 		ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
 		Discount discount = discountLine.getDiscount();							
@@ -365,8 +363,7 @@ FDIdentity identity = user.getIdentity();
 				<td colspan="3"></td>	   
 			</tr>	   
 			<%
-		} else if (redemptionPromo != null && user.getPromotionEligibility().isApplied(redemptionPromo.getPromotionCode()) && 
-					redemptionPromo.getPromotionCode().equalsIgnoreCase(discount.getPromotionCode())) { 
+		} else if (isRedemptionApplied && redemptionPromo.getPromotionCode().equalsIgnoreCase(discount.getPromotionCode())) { 
 			%>
 			<tr valign="top" class="orderSummary">
 				<td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= redemptionPromo.getPromotionCode()%>','small')"><%= redemptionPromo.getDescription()%></a></b>:</td>
@@ -391,17 +388,18 @@ FDIdentity identity = user.getIdentity();
     <%		
     		}
 	}
-    if(redemptionPromo != null && redemptionPromo.isSampleItem() && user.getPromotionEligibility().isApplied(redemptionPromo.getPromotionCode())){
-    %>
+	
+	if (isRedemptionApplied) {
+	    if (redemptionPromo.isSampleItem()) {
+    	%>
         <tr valign="top" class="orderSummary">
             <td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= redemptionPromo.getPromotionCode()%>','small')"><%= redemptionPromo.getDescription()%></a></b>:</td>
             <td colspan="1" align="right"><b>FREE!</b></td>
             <td colspan="1"></td>
             <td colspan="2">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
         </tr>
-    <%
-    }
-    if(redemptionPromo != null && redemptionPromo.isWaiveCharge() && user.getPromotionEligibility().isApplied(redemptionPromo.getPromotionCode())){
+        <%
+	    } else if (redemptionPromo.isWaiveCharge()) {
         %>
             <tr valign="top" class="orderSummary">
                 <td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= redemptionPromo.getPromotionCode()%>','small')"><%= redemptionPromo.getDescription()%></a></b>:</td>
@@ -410,16 +408,19 @@ FDIdentity identity = user.getIdentity();
                 <td colspan="2">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
             </tr>
         <%
-    }
+        }
+	}
  
-	%>
-	<%  if (cart.getCustomerCreditsValue() > 0) { %>
+	if (cart.getCustomerCreditsValue() > 0) {
+	    %>
 		<tr valign="top" class="orderSummary">
 			<td colspan="3" align="right">Credit Applied:</td>
 			<td colspan="1" align="right">-<%=currencyFormatter.format(cart.getCustomerCreditsValue())%></td>
 			<td colspan="3"></td>
 		</tr>		   
-	<%  } %>
+        <% 
+	}
+	%>
 	<tr valign="top" class="orderTotal">
 		<td colspan="3" align="right"><b><% if (cart.isEstimatedPrice()) { %>ESTIMATED TOTAL<% } else { %>ORDER TOTAL<%}%></b>:</td>
 		<td colspan="1" align="right"><b><%= currencyFormatter.format(cart.getTotal()) %></b></td>
@@ -427,8 +428,8 @@ FDIdentity identity = user.getIdentity();
 		<td colspan="2"></td>
 	</tr>
 	<%
-	   if(redemptionPromo != null && redemptionPromo.isHeaderDiscount() && user.getPromotionEligibility().isApplied(redemptionPromo.getPromotionCode())){
-	    		if(request.getAttribute("redeem_override_msg") != null) {
+    if (isRedemptionApplied && redemptionPromo.isHeaderDiscount()) {
+        if (request.getAttribute("redeem_override_msg") != null) {
 		%>
 		<%--
 			<SCRIPT LANGUAGE='JavaScript'>
@@ -441,11 +442,13 @@ FDIdentity identity = user.getIdentity();
 		</tr>
 
 		<%
-			}
+		}
 	}
-	%>
-	<%
-	if(redemptionPromo == null && maxPromotion <= 0.0){
+
+
+	
+	if ( (redemptionPromo == null && maxPromotion <= 0.0)
+		|| (redemptionPromo != null && !isRedemptionApplied) ) {
 		%>
 		<tr>
 			<td colspan="7"><br></td>
@@ -461,8 +464,7 @@ FDIdentity identity = user.getIdentity();
 		<%
 	}
 
-	if (redemptionPromo != null
-		&& user.getPromotionEligibility().isEligible(redemptionPromo.getPromotionCode())
+	if (redemptionPromo != null	&& user.getPromotionEligibility().isEligible(redemptionPromo.getPromotionCode())
 		&& ( ! user.getPromotionEligibility().isApplied(redemptionPromo.getPromotionCode())
 			|| (redemptionPromo.getHeaderDiscountRules()!=null && !(redemptionPromo.getHeaderDiscountTotal()==0) && cart.getTotalDiscountValue() == 0)  )
 		) {
@@ -479,8 +481,7 @@ FDIdentity identity = user.getIdentity();
 			
 		} else if (redemptionPromo.isCategoryDiscount()) {
 			warningMessage = SystemMessageList.MSG_REDEMPTION_NO_ELIGIBLE_CARTLINES;
-		}
-		else if (redemptionPromo.isSampleItem()) {
+		} else if (redemptionPromo.isSampleItem()) {
 			warningMessage = SystemMessageList.MSG_REDEMPTION_PRODUCT_UNAVAILABLE;
 		}
 		%>
@@ -498,42 +499,44 @@ FDIdentity identity = user.getIdentity();
 	%>
 
 	<tr>
-		<td colspan="7" align="right">
-		<%
-		if (identity == null || user.isEligibleForSignupPromotion()) {
-			if (user.isEligibleForSignupPromotion()) {
-				PromotionI signupPromo = user.getEligibleSignupPromotion();
-				
-				SignupDiscountRule discountRule = user.getSignupDiscountRule();
-				int minSubtotal = (int)discountRule.getMinSubtotal();
-				int maxAmount   = (int)discountRule.getMaxAmount();
-				%><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>Spend $<%=minSubtotal%> on this order to get $<%=maxAmount%> free, fresh food. <a href="javascript:popup('/shared/promotion_popup.jsp','large')">Click for details</a>.<% if (cart.getSubTotal() < minSubtotal) { %><br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br><b>This order does not yet qualify for $<%=maxAmount%> offer. Subtotal must be $<%=minSubtotal%> or more.</b>
-				<% } %><br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>Applies to home delivery orders only.<% } %>
+		<td colspan="7" align="right"><%
+	if (identity == null || user.isEligibleForSignupPromotion()) {
+		if (user.isEligibleForSignupPromotion()) {
+			PromotionI signupPromo = user.getEligibleSignupPromotion();
 			
-			<% if (user.isPickupOnly()) { %><br><font color="#CC0000"><b>Pickup orders are not eligible for our free food promotion.</b></font><% } %>
-			
-			<%
+			SignupDiscountRule discountRule = user.getSignupDiscountRule();
+			int minSubtotal = (int)discountRule.getMinSubtotal();
+			int maxAmount   = (int)discountRule.getMaxAmount();
+			%><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>Spend $<%=minSubtotal%> on this order to get $<%=maxAmount%> free, fresh food. <a href="javascript:popup('/shared/promotion_popup.jsp','large')">Click for details</a>.<%
+			if (cart.getSubTotal() < minSubtotal) {
+			    %><br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br><b>This order does not yet qualify for $<%=maxAmount%> offer. Subtotal must be $<%=minSubtotal%> or more.</b><%
+			}
+			%><br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>Applies to home delivery orders only.<%
 		}
-		%>
+
+		if (user.isPickupOnly()) {
+		     %><br><font color="#CC0000"><b>Pickup orders are not eligible for our free food promotion.</b></font><%
+		}
+	}
+	%>
 		</td>
 	</tr>
 	
 	<% 
-	if (user!=null && user.getIdentity() !=null) { %>
-		<fd:CustomerCreditHistoryGetterTag id='customerCreditHistory'>
-			<% if (customerCreditHistory.getRemainingAmount()>0.00) {
-				%>
-				<tr>
-				 	<td colspan="7"align="right">
-						<span class="text11">You have <%= currencyFormatter.format(customerCreditHistory.getRemainingAmount()) %> credit. Credits will be applied during check out.</span><br>
-					</td>
-				</tr>
-				<%
-				}
+	if (user!=null && user.getIdentity() !=null) {
+	    %><fd:CustomerCreditHistoryGetterTag id='customerCreditHistory'><%
+		if (customerCreditHistory.getRemainingAmount()>0.00) {
 			%>
-	   </fd:CustomerCreditHistoryGetterTag>
-	<% } %>
-	
+			<tr>
+			 	<td colspan="7"align="right">
+					<span class="text11">You have <%= currencyFormatter.format(customerCreditHistory.getRemainingAmount()) %> credit. Credits will be applied during check out.</span><br>
+				</td>
+			</tr>
+			<%
+		}
+		%></fd:CustomerCreditHistoryGetterTag><%
+	}
+	%>
 	<tr><td colspan="7" align="right"><br><strong>T</strong> = Taxable Item&nbsp;&nbsp;&nbsp;&nbsp;<strong>S</strong> = Special Price&nbsp;&nbsp;&nbsp;&nbsp;<strong>D</strong> = Bottle Deposit</td></tr>
 </table>
 </div>
