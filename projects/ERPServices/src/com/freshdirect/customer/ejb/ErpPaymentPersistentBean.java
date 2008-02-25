@@ -25,7 +25,7 @@ public abstract class ErpPaymentPersistentBean extends ErpTransactionPersistentB
 		
 		String id = this.getNextId(conn, "CUST");
 		
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SALESACTION (ID, SALE_ID, ACTION_TYPE, ACTION_DATE, SOURCE, AMOUNT, TAX) values (?,?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SALESACTION (ID, SALE_ID, ACTION_TYPE, ACTION_DATE, SOURCE, AMOUNT, TAX, CUSTOMER_ID) values (?,?,?,?,?,?,?,?)");
 		ps.setString(1, id);
 		ps.setString(2, this.getParentPK().getId());
 		ps.setString(3, model.getTransactionType().getCode());
@@ -33,6 +33,7 @@ public abstract class ErpPaymentPersistentBean extends ErpTransactionPersistentB
 		ps.setString(5, model.getTransactionSource().getCode());
 		ps.setDouble(6, model.getAmount());
 		ps.setDouble(7, model.getTax());
+		ps.setString(8, model.getCustomerId());
 		if (ps.executeUpdate() != 1) {
 			throw new SQLException("Row not created");
 		}

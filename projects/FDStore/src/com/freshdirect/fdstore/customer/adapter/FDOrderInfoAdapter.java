@@ -108,4 +108,8 @@ public class FDOrderInfoAdapter implements FDOrderInfoI {
 	public boolean isDlvPassApplied() {
 		return ((this.saleInfo.getDlvPassId() != null) ? true : false);
 	}
+	
+	public String getDlvPassId(){
+		return this.saleInfo.getDlvPassId();
+	}
 }

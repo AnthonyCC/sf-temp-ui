@@ -121,7 +121,7 @@ public class ErpRedeliveryPersistentBean extends ErpTransactionPersistentBean {
 	
 	public PrimaryKey create(Connection conn) throws SQLException {
 		String id = this.getNextId(conn, "CUST");
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SALESACTION (ID, SALE_ID, ACTION_DATE, ACTION_TYPE, AMOUNT, SOURCE) values (?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SALESACTION (ID, SALE_ID, ACTION_DATE, ACTION_TYPE, AMOUNT, SOURCE, CUSTOMER_ID) values (?,?,?,?,?,?,?)");
 		
 		ps.setString(1, id);
 		ps.setString(2, this.getParentPK().getId());
@@ -129,6 +129,7 @@ public class ErpRedeliveryPersistentBean extends ErpTransactionPersistentBean {
 		ps.setString(4, EnumTransactionType.REDELIVERY.getCode());
 		ps.setDouble(5, this.model.getAmount());
 		ps.setString(6, this.model.getTransactionSource().getCode()); 
+		ps.setString(7, this.model.getCustomerId());
 		
 		try {
 			if (ps.executeUpdate() != 1) {

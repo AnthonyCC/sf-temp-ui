@@ -271,7 +271,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 
 	public PrimaryKey create(Connection conn) throws SQLException {
 		this.setPK(new PrimaryKey(this.getNextId(conn, "CUST")));
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SALE (ID,CUSTOMER_ID,STATUS,SAP_NUMBER, DLV_PASS_ID) values (?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SALE (ID,CUSTOMER_ID,STATUS,SAP_NUMBER, DLV_PASS_ID, CROMOD_DATE) values (?,?,?,?,?,?)");
 		ps.setString(1, this.getPK().getId());
 		ps.setString(2, this.model.getCustomerPk().getId());
 		ps.setString(3, this.model.getStatus().getStatusCode());
@@ -284,6 +284,8 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			//True when this order contains a delivery pass.
 			ps.setNull(5, Types.VARCHAR);
 		}
+		//Added as part of PERF-27 task.
+		ps.setTimestamp(6, new java.sql.Timestamp(this.model.getCurrentOrder().getTransactionDate().getTime()));
 		try {
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not created");
@@ -327,6 +329,8 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		for(Iterator i = this.model.getTransactions().iterator(); i.hasNext(); ){
 			ErpTransactionModel m = (ErpTransactionModel) i.next();
 			ErpTransactionPersistentBean pb = ErpTransactionList.createPersistentBean(m.getTransactionType(), m.getPK(), this.getPK());
+			//Added as part of PERF-27 task.
+			m.setCustomerId(this.model.getCustomerPk().getId());
 			pb.setFromModel(m);
 			txList.add(pb);
 		}
@@ -384,10 +388,10 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	}
 
 	String saleUpdateWithWaveSQL =
-		"UPDATE CUST.SALE SET STATUS=?, SAP_NUMBER=?, TRUCK_NUMBER=?, STOP_SEQUENCE=?, NUM_REGULAR_CARTONS=?, NUM_FREEZER_CARTONS=?, NUM_ALCOHOL_CARTONS=?, DLV_PASS_ID=?, WAVE_NUMBER=? WHERE ID=?";
+		"UPDATE CUST.SALE SET STATUS=?, SAP_NUMBER=?, TRUCK_NUMBER=?, STOP_SEQUENCE=?, NUM_REGULAR_CARTONS=?, NUM_FREEZER_CARTONS=?, NUM_ALCOHOL_CARTONS=?, DLV_PASS_ID=?, CROMOD_DATE=?, WAVE_NUMBER=? WHERE ID=?";
 		
 	String saleUpdateWithNoWaveSQL =
-		"UPDATE CUST.SALE SET STATUS=?, SAP_NUMBER=?, TRUCK_NUMBER=?, STOP_SEQUENCE=?, NUM_REGULAR_CARTONS=?, NUM_FREEZER_CARTONS=?, NUM_ALCOHOL_CARTONS=?, DLV_PASS_ID=? WHERE ID=?";
+		"UPDATE CUST.SALE SET STATUS=?, SAP_NUMBER=?, TRUCK_NUMBER=?, STOP_SEQUENCE=?, NUM_REGULAR_CARTONS=?, NUM_FREEZER_CARTONS=?, NUM_ALCOHOL_CARTONS=?, DLV_PASS_ID=?, CROMOD_DATE=? WHERE ID=?";
 	
 	public void store(Connection conn) throws SQLException {
 		if (isModified()) {
@@ -413,10 +417,15 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			}else{
 				ps.setNull(index++, Types.VARCHAR);
 			}
+			
+			//Added as part of PERF-27 task.
+			ps.setTimestamp(index++, new java.sql.Timestamp(this.model.getCurrentOrder().getTransactionDate().getTime()));
+			
 			// DO NOT UPDATE SALE.wave_number in database if getWaveNumber returns null 
 			if (sInfo != null && sInfo.getWaveNumber() != null) {		
 				ps.setString(index++, sInfo.getWaveNumber());
 			}
+			
 			ps.setString(index++, this.getPK().getId());
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not updated");

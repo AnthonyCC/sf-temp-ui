@@ -95,7 +95,7 @@ public class ErpChargeInvoicePersistentBean extends ErpTransactionPersistentBean
 	
 	public PrimaryKey create(Connection conn) throws SQLException {
 		String id = this.getNextId(conn, "CUST");
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SALESACTION (ID, SALE_ID, ACTION_DATE, ACTION_TYPE, AMOUNT, SOURCE, INVOICE_NUMBER, TAX, SUB_TOTAL) values (?,?,?,?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SALESACTION (ID, SALE_ID, ACTION_DATE, ACTION_TYPE, AMOUNT, SOURCE, INVOICE_NUMBER, TAX, SUB_TOTAL, CUSTOMER_ID) values (?,?,?,?,?,?,?,?,?,?)");
 		ps.setString(1, id);
 		ps.setString(2, this.getParentPK().getId());
 		ps.setTimestamp(3, new java.sql.Timestamp(this.model.getTransactionDate().getTime()));
@@ -105,6 +105,7 @@ public class ErpChargeInvoicePersistentBean extends ErpTransactionPersistentBean
 		ps.setString(7, this.model.getInvoiceNumber());
 		ps.setDouble(8, this.model.getTax());
 		ps.setDouble(9, this.model.getSubTotal()); 
+		ps.setString(10, this.model.getCustomerId());
 		
 		try {
 			if (ps.executeUpdate() != 1) {

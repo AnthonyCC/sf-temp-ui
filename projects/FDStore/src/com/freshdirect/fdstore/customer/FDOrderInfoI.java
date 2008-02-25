@@ -64,4 +64,6 @@ public interface FDOrderInfoI extends Serializable {
 	public EnumPaymentMethodType getPaymentMethodType();
 	
 	public boolean isDlvPassApplied(); 
+	
+	public String getDlvPassId();
 }

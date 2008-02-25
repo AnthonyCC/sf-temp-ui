@@ -17,6 +17,7 @@ import javax.servlet.http.HttpSession;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDOrderHistory;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -34,7 +35,9 @@ public class GetOrdersByDeliveryPassTag extends AbstractGetterTag {
 		HttpSession session = pageContext.getSession();
 		FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 		FDIdentity identity = user.getIdentity();
-		Collection orderInfos = FDCustomerManager.getOrdersByDlvPassId(identity, deliveryPassId).getFDOrderInfos();
+		//Commented as part of PERF-27 task. Avoiding DB hit. Utilizing the order history cache.
+		//Collection orderInfos = FDCustomerManager.getOrdersByDlvPassId(identity, deliveryPassId).getFDOrderInfos();
+		Collection orderInfos = ((FDOrderHistory) user.getOrderHistory()).getDlvPassOrderInfos(deliveryPassId);
 		return orderInfos;
 	}
 

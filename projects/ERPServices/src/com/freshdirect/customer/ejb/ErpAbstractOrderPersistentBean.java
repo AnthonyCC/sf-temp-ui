@@ -104,7 +104,7 @@ abstract class ErpAbstractOrderPersistentBean extends ErpTransactionPersistentBe
 	public PrimaryKey create(Connection conn) throws SQLException {
 		
 		String id = this.getNextId(conn, "CUST");
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SALESACTION (ID, SALE_ID, ACTION_DATE, ACTION_TYPE, AMOUNT, SOURCE, PRICING_DATE, REQUESTED_DATE, SUB_TOTAL, TAX, CUST_SRVC_MESSAGE, MARKETING_MESSAGE,INITIATOR, GL_CODE) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SALESACTION (ID, SALE_ID, ACTION_DATE, ACTION_TYPE, AMOUNT, SOURCE, PRICING_DATE, REQUESTED_DATE, SUB_TOTAL, TAX, CUST_SRVC_MESSAGE, MARKETING_MESSAGE,INITIATOR, GL_CODE, CUSTOMER_ID) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		ps.setString(1, id);
 		ps.setString(2, this.getParentPK().getId());
 		ps.setTimestamp(3, new java.sql.Timestamp(this.model.getTransactionDate().getTime()));
@@ -119,7 +119,7 @@ abstract class ErpAbstractOrderPersistentBean extends ErpTransactionPersistentBe
 		ps.setString(12, this.model.getMarketingMessage());
 		ps.setString(13, this.model.getTransactionInitiator());
 		ps.setString(14, this.model.getGlCode());
-
+		ps.setString(15, this.model.getCustomerId());
 		try {
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not created");

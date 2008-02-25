@@ -26,6 +26,8 @@ public abstract class ErpTransactionModel extends ModelSupport implements ErpTra
 	private Date transactionDate;
     private EnumTransactionSource transactionSource;
     private String transactionInitiator;
+    //Added as part of PERF-27 task.
+    private String customerId;
     
 	public ErpTransactionModel(EnumTransactionType transType) {
 		this.transactionType = transType;
@@ -61,6 +63,14 @@ public abstract class ErpTransactionModel extends ModelSupport implements ErpTra
 		this.transactionInitiator = ti;
 	}
     public abstract double getAmount();
+
+    //Added as part of PERF-27 task.	
+    public String getCustomerId() {
+		return customerId;
+	}
+	public void setCustomerId(String customerId) {
+		this.customerId = customerId;
+	}
 
 }
 

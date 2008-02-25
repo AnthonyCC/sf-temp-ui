@@ -46,7 +46,7 @@ public class PromotionContextAdapter implements PromotionContextI {
 	private final FDUser user;
 	private List rulePromoCodes;
 	private Date now;
-	private static Category LOGGER = LoggerFactory.getInstance(FDPromotionVisitor.class);
+	private static Category LOGGER = LoggerFactory.getInstance(PromotionContextAdapter.class);
 
 	public PromotionContextAdapter(FDUser user) {
 		this.user = user;
@@ -271,14 +271,11 @@ public class PromotionContextAdapter implements PromotionContextI {
 				DCPDPromoProductCache dcpdCache = this.user.getDCPDPromoProductCache();
 				//Check if the line item product is already evaluated.
 				if(dcpdCache.isEvaluated(productId, promoId)){
-					LOGGER.info("Product id "+productId+" already evaluated");
 					eligible = dcpdCache.isEligible(productId, promoId);
-					LOGGER.info("Product id "+productId+" eligible 	"+eligible);
 				}else{
 					//Check if the line item is eligible for a category or department discount.
 					eligible = OrderPromotionHelper.evaluateProductForDCPDPromo(model, contentKeys);
 					//Set the eligiblity info to user session.
-					LOGGER.info("Setting Info for Product id "+productId+" to "+eligible);
 					dcpdCache.setPromoProductInfo(productId, promoId, eligible);
 				}
 			}

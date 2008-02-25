@@ -46,5 +46,20 @@ public class FDOrderHistory extends ErpOrderHistory {
 		}
 		return l;
 	}
-
+	
+	/**
+	 * This method returns a list of orders that used the given delivery pass.
+	 * @ return Collection of FDOrderInfoI.
+	 */
+	public Collection getDlvPassOrderInfos(String dlvPassId) {
+		List l = new ArrayList();
+		for (Iterator i = this.fdOrderInfos.iterator(); i.hasNext();) {
+			FDOrderInfoI o = (FDOrderInfoI) i.next();
+			if (o.getDlvPassId() != null && o.getDlvPassId().equals(dlvPassId)) {
+				//This Order used the delivery pass. So add it to the list.
+				l.add(o);				
+			}
+		}
+		return l;
+	}
 }

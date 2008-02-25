@@ -123,7 +123,7 @@ public class ErpReturnOrderPersistentBean extends ErpTransactionPersistentBean {
 		String id = this.getNextId(conn, "CUST");
 		PreparedStatement ps = null;
 		
-		ps = conn.prepareStatement("INSERT INTO CUST.SALESACTION (ID, SALE_ID, ACTION_DATE, ACTION_TYPE, AMOUNT, SOURCE, TAX, SUB_TOTAL) values (?,?,?,?,?,?,?,?)");
+		ps = conn.prepareStatement("INSERT INTO CUST.SALESACTION (ID, SALE_ID, ACTION_DATE, ACTION_TYPE, AMOUNT, SOURCE, TAX, SUB_TOTAL, CUSTOMER_ID) values (?,?,?,?,?,?,?,?,?)");
 		ps.setString(1, id);
 		ps.setString(2, this.getParentPK().getId());
 		ps.setTimestamp(3, new java.sql.Timestamp(this.model.getTransactionDate().getTime()));
@@ -132,6 +132,7 @@ public class ErpReturnOrderPersistentBean extends ErpTransactionPersistentBean {
 		ps.setString(6, this.model.getTransactionSource().getCode());
 		ps.setDouble(7, this.model.getTax());
 		ps.setDouble(8, this.model.getSubTotal()); 
+		ps.setString(9, this.model.getCustomerId());
 		
 		try {
 			if (ps.executeUpdate() != 1) {

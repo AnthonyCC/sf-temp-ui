@@ -112,7 +112,7 @@ public class ErpSubmitFailedPersistentBean extends ErpTransactionPersistentBean 
 	 */
 	public PrimaryKey create(Connection conn) throws SQLException {
 		String id = this.getNextId(conn, "CUST");
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SALESACTION (ID, SALE_ID, ACTION_DATE, ACTION_TYPE, AMOUNT, SOURCE) values (?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SALESACTION (ID, SALE_ID, ACTION_DATE, ACTION_TYPE, AMOUNT, SOURCE, CUSTOMER_ID) values (?,?,?,?,?,?,?)");
 		PreparedStatement ps1 = conn.prepareStatement("INSERT INTO CUST.ACTIONNOTE (SALESACTION_ID, MESSAGE) values (?,?)");
 		
 		ps.setString(1, id);
@@ -121,6 +121,7 @@ public class ErpSubmitFailedPersistentBean extends ErpTransactionPersistentBean 
 		ps.setString(4, EnumTransactionType.SUBMIT_FAILED.getCode());
 		ps.setDouble(5, 0);			// amount always zero, what else?
 		ps.setString(6, this.model.getTransactionSource().getCode());
+		ps.setString(7, this.model.getCustomerId());
 		
 		ps1.setString(1, id);
 		ps1.setString(2, model.getMessage().substring( 0, Math.min(4000, model.getMessage().length())));

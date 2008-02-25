@@ -106,7 +106,7 @@ public class ErpCancelOrderPersistentBean extends ErpTransactionPersistentBean {
 		PreparedStatement ps = null;
 		
 		try{
-			ps = conn.prepareStatement("INSERT INTO CUST.SALESACTION (ID, SALE_ID, ACTION_DATE, ACTION_TYPE, AMOUNT, SOURCE,INITIATOR) values (?,?,?,?,?,?,?)");
+			ps = conn.prepareStatement("INSERT INTO CUST.SALESACTION (ID, SALE_ID, ACTION_DATE, ACTION_TYPE, AMOUNT, SOURCE,INITIATOR, CUSTOMER_ID) values (?,?,?,?,?,?,?,?)");
 			ps.setString(1, id);
 			ps.setString(2, this.getParentPK().getId());
 			ps.setTimestamp(3, new java.sql.Timestamp(this.model.getTransactionDate().getTime()));
@@ -114,6 +114,7 @@ public class ErpCancelOrderPersistentBean extends ErpTransactionPersistentBean {
 			ps.setDouble(5, this.model.getAmount());
 			ps.setString(6, this.model.getTransactionSource().getCode());
 			ps.setString(7,this.model.getTransactionInitiator());
+			ps.setString(8, this.model.getCustomerId());
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not created");
 			}

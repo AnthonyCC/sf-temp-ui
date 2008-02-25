@@ -301,20 +301,7 @@ public class FDCustomerManager {
     		lookupManagerHome();
     		try{
     			FDCustomerManagerSB sb = managerHome.create();
-    			/*
-    			 * This line is commented as part of PERF-22 task.
-    			 * Getting the entire order history is unnecessary and expensive here as we need
-    			 * only last order id.
-    			 * So we are getting just the last order id from the backend.
-    			 */
-    			//BEGIN
-    			//ErpAddressModel address = sb.assumeDeliveryAddress(identity, user.getOrderHistory().getLastOrderId());
-    			String lastOrderId = sb.getLastOrderID(identity);
-    			if (lastOrderId==null) {
-    				return;
-    			}
-    			ErpAddressModel address = sb.assumeDeliveryAddress(identity, lastOrderId);
-    			//END
+    			ErpAddressModel address = sb.assumeDeliveryAddress(identity, user.getOrderHistory().getLastOrderId());
     			if(address != null && user.getShoppingCart() != null){
     				user.getShoppingCart().setDeliveryAddress(address);
     			}

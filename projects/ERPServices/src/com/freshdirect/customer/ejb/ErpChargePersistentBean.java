@@ -104,13 +104,14 @@ public class ErpChargePersistentBean extends ErpTransactionPersistentBean {
 		String id = this.getNextId(conn, "CUST");
 		/* -------- Commenting out this query until ISSUED_BY column created into DB -------- */
 		//PreparedStatement ps = conn.prepareStatement("INSERT INTO SALESACTION (ID, SALE_ID, ACTION_DATE, ACTION_TYPE, SOURCE, AMOUNT, ISSUED_BY) values (?,?,?,?,?,?,?)");
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SALESACTION (ID, SALE_ID, ACTION_DATE, ACTION_TYPE, SOURCE, AMOUNT) values (?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SALESACTION (ID, SALE_ID, ACTION_DATE, ACTION_TYPE, SOURCE, AMOUNT, CUSTOMER_ID) values (?,?,?,?,?,?,?)");
 		ps.setString(1, id);
 		ps.setString(2, this.getParentPK().getId());
 		ps.setTimestamp(3, new java.sql.Timestamp(this.model.getTransactionDate().getTime()));
 		ps.setString(4, EnumTransactionType.CHARGE.getCode());
 		ps.setString(5, this.model.getTransactionSource().getCode() );
 		ps.setDouble(6, this.model.getAmount());
+		ps.setString(7, this.model.getCustomerId());
 		/* -------- Commenting out this line until ISSUED_BY column created into DB -------- */
 		//ps.setString(7, this.issuedBy);
 		try {

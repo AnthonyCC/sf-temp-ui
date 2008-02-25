@@ -55,7 +55,7 @@ public abstract class ErpPaymentMethodTransactionPersistentBean extends ErpTrans
 	public PrimaryKey create(Connection conn, ErpPaymentMethodTransactionModel model) throws SQLException {
 		String id = this.getNextId(conn, "CUST");
 		String id1 = this.getNextId(conn, "CUST");
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SALESACTION (ID, SALE_ID, ACTION_DATE, ACTION_TYPE, AMOUNT, SOURCE) values (?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SALESACTION (ID, SALE_ID, ACTION_DATE, ACTION_TYPE, AMOUNT, SOURCE, CUSTOMER_ID) values (?,?,?,?,?,?,?)");
 		PreparedStatement ps1 = conn.prepareStatement("INSERT INTO CUST.PAYMENTMETHODTRANSACTIONS (ID, SALEACTION_ID, RETURN_CODE, RETURN_MESSAGE, APPROVAL_CODE, RESPONSE_CODE, RESPONSE_MESSAGE, SEQUENCE_NUMBER, ADDRESS_MATCH, ZIP_MATCH, PROCESSOR_RESPONSE_CODE, PROCESSOR_AVS_RESULT) values (?,?,?,?,?,?,?,?,?,?,?,?)");
 		
 		ps.setString(1, id);
@@ -64,6 +64,7 @@ public abstract class ErpPaymentMethodTransactionPersistentBean extends ErpTrans
 		ps.setString(4, this.getTransactionType());
 		ps.setDouble(5, model.getAmount());
 		ps.setString(6, model.getTransactionSource().getCode());
+		ps.setString(7, model.getCustomerId());
 		
 		ps1.setString(1, id1);
 		ps1.setString(2, id);
