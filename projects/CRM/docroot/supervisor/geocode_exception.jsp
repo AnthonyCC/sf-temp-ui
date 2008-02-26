@@ -45,6 +45,15 @@
         document.addressSearch.submit();
         return true;
     }
+    function linkGeocodePostion(){
+        var street1 = document.getElementById('streetAddress').value;
+        var zipVal = document.getElementById('zip').value;
+        if(street1.length == 0 || zipVal.length == 0) {
+        	alert('Street and ZipCode are required');
+        } else {
+        	javascript:pop('http://mygeoposition.com/loc/'+street1+' '+zipVal+'/?zoomLevel=17&mapType=', 600,800)
+        }                
+    }
 </script>
 <tmpl:insert template='/template/top_nav.jsp'>
 
@@ -73,7 +82,7 @@
             <table>
                 <tr>
                     <td>Street Address</td>
-                    <td><input type="text" name="streetAddress" value="<%=request.getParameter("streetAddress")%>"></td>
+                    <td><input type="text" id="streetAddress" name="streetAddress" value="<%=request.getParameter("streetAddress")%>"></td>
                     <fd:ErrorHandler result='<%=result%>' name='streetAddress' id='errorMsg'>
                         <td><span class="error_detail"><%=errorMsg%></span></td>
                     </fd:ErrorHandler>
@@ -81,17 +90,24 @@
                 
                 <tr>
                     <td>Zip</td>
-                    <td><input type="text" size="5" name="zip" value="<%=request.getParameter("zip")%>">
+                    <td><input type="text" size="5" id="zip"  name="zip" value="<%=request.getParameter("zip")%>">
                     <fd:ErrorHandler result='<%=result%>' name='zip' id='errorMsg'>
                         <td><span class="error_detail"><%=errorMsg%></span></td>
                     </fd:ErrorHandler>
                 </tr>
                 
                 <tr>
-                    <td colspan="2" align="center">
+                    <td align="center">
                         <br>
                         <a href='javascript:pop("<%=FDStoreProperties.getGeocodeLink()%>", 400,720)'>
                             Geocode
+                        </a>
+                        <br><br>
+                    </td>
+                    <td align="center">
+                        <br>
+                        <a href='javascript:linkGeocodePostion()'>
+                            Geocode(Recommended)
                         </a>
                         <br><br>
                     </td>
