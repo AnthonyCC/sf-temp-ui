@@ -1,6 +1,7 @@
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.customer.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.customer.*' %>
 <%@ page import='java.net.URLEncoder'%>
@@ -31,10 +32,11 @@
 <tr><td colspan="4" class="text12">
 Unfortunately, FreshDirect does not deliver alcohol to your building. You may choose a different address or continue checkout -- without the alcohol but with all of the other items in your cart.<br> 
 <%
-     boolean belowMinimum = false;
-	if(!user.isOrderMinimumMet(true)){
-          belowMinimum = true;
-		out.println("<br><b>Because your order falls below our $40 minimum when alcohol is removed, please return to your cart to add items before continuing checkout.</b><br>");
+    boolean belowMinimum = !user.isOrderMinimumMet(true);
+	if (belowMinimum) {
+        %><br>
+        <b>Because your order falls below our <%= CCFormatter.formatCurrency(user.getMinimumOrderAmount()) %> minimum when alcohol is removed, please return to your cart to add items before continuing checkout.</b><br>
+<%
 	}
 %>
 <%--<br>
