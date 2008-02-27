@@ -7,16 +7,24 @@
 
 <page-specification class="com.freshdirect.dlvadmin.ViewTimeslots">
 
+
+
 	<property-specification name="selectedRegion" type="com.freshdirect.delivery.model.DlvRegionModel" persistent="yes"/>
 	<property-specification name="selectedZone" type="java.lang.String" persistent="yes"/>
 	<property-specification name="selectedDay" type="java.lang.Integer" persistent="yes"/>
 
 	<property-specification name="startDate" initial-value="calculateDate(-7)" type="java.util.Date"/>
 	<property-specification name="endDate" initial-value="calculateDate(7)" type="java.util.Date"/>
+	
+	<property-specification name="currentTimeslot" type="com.freshdirect.delivery.model.DlvTimeslotModel"/>
+
+	<property-specification name="window" type="com.freshdirect.framework.util.DateRange"/>
+	<property-specification name="cutoff" type="java.util.Date"/>
 
 	<property-specification name="currentZone" type="com.freshdirect.delivery.model.DlvZoneModel"/>
 	<property-specification name="currentDay" type="java.util.Date"/>
-	<property-specification name="currentTimeslot" type="com.freshdirect.delivery.model.DlvTimeslotModel"/>
+	<property-specification name="displayTimeslot" type="com.freshdirect.delivery.model.DlvTimeslotModel"/>
+	<property-specification name="currentZoneTimeslot" type="java.util.Map$Entry"/>
 
     <component id="border" type="Border"/>
 
@@ -29,20 +37,41 @@
         <binding name="format" expression='"MM-dd-yy"'/>
         <binding name="value" expression='startDate'/>
     </component>
+    
+    <component id="forEachZone_Z" type="Foreach">
+    	<binding name="source" expression='getZones()'/>
+    	<binding name="value" expression='currentZone'/>
+    </component>
+    
 
-    <component id="forEachDay" type="Foreach">
+    <component id="forEachDay_Z" type="Foreach">
         <binding name="source" expression='getDays()'/>
         <binding name="value" expression='currentDay'/>
     </component>
-
-    <component id="forEachTimeslot" type="Foreach">
-        <binding name="source" expression='getTimeslots(currentZone.zoneCode,  currentDay)'/>
+    
+    <component id="forEachDay_T" type="Foreach">
+        <binding name="source" expression='getDays()'/>
+        <binding name="value" expression='currentDay'/>
+    </component>
+    
+    <component id="forEachTimeslot_Z" type="Foreach">
+        <binding name="source" expression='getTimeslots(currentZone.zoneCode,currentDay)'/>
         <binding name="value" expression='currentTimeslot'/>
     </component>
 
-    <component id="forEachZone" type="Foreach">
-        <binding name="source" expression='getZones()'/>
-        <binding name="value" expression='currentZone'/>
+    <component id="forEachTimeslot_T" type="Foreach">
+        <binding name="source" expression='getWindows(currentDay)'/>
+        <binding name="value" expression='window'/>
+    </component>
+    
+    <component id="forEachCutoff" type="Foreach">
+    	<binding name="source" expression='getCutoffTimes(currentDay,window)'/>
+    	<binding name="value" expression='cutoff'/>
+    </component>
+
+    <component id="forEachZone_T" type="Foreach">
+        <binding name="source" expression='getZoneTimeslots(currentDay,window,cutoff)'/>
+        <binding name="value" expression='currentZoneTimeslot'/>
     </component>
 
     <component id="formFilter" type="Form">
@@ -57,58 +86,103 @@
     <component id="ifRegionSelected" type="Conditional">
         <binding name="condition" expression='selectedRegion != null'/>
     </component>
-
-    <component id="insertCapacityTotal" type="Insert">
-        <binding name="value" expression='getCapacityTotal(currentZone.zoneCode, currentDay)'/>
+    
+    <component id="ifZoneDetailSelected" type="Conditional">
+        <binding name="condition" expression='selectedDetailLevel == null || "byZone".equals(selectedDetailLevel)'/>
+    </component>
+    
+    <component id="ifTimeslotDetailSelected" type="Conditional">
+        <binding name="condition" expression='"byTimeslot".equals(selectedDetailLevel)'/>
     </component>
 
-    <component id="insertAllocationTotal" type="Insert">
-        <binding name="value" expression='getAllocationTotal(currentZone.zoneCode, currentDay)'/>
+	<component id="insertCapacityTotal_Z" type="Insert">
+        <binding name="value" expression='getCapacityTotal(currentZone.zoneCode,currentDay)'/>
+    </component>
+    
+    <component id="insertCapacityTotal_T" type="Insert">
+        <binding name="value" expression='getCapacityTotal(currentDay,window,cutoff)'/>
     </component>
 
-    <component id="insertBaseCapacityTotal" type="Insert">
-        <binding name="value" expression='getBaseCapacityTotal(currentZone.zoneCode, currentDay)'/>
+	<component id="insertAllocationTotal_Z" type="Insert">
+        <binding name="value" expression='getAllocationTotal(currentZone.zoneCode,currentDay)'/>
+    </component>
+    
+    <component id="insertAllocationTotal_T" type="Insert">
+        <binding name="value" expression='getAllocationTotal(currentDay,window,cutoff)'/>
+    </component>
+    
+    <component id="insertBaseCapacityTotal_Z" type="Insert">
+        <binding name="value" expression='getBaseCapacityTotal(currentZone.zoneCode,currentDay)'/>
     </component>
 
-    <component id="insertBaseAllocationTotal" type="Insert">
-        <binding name="value" expression='getBaseAllocationTotal(currentZone.zoneCode, currentDay)'/>
+    <component id="insertBaseCapacityTotal_T" type="Insert">
+        <binding name="value" expression='getBaseCapacityTotal(currentDay,window,cutoff)'/>
+    </component>
+    
+   	<component id="insertBaseAllocationTotal_Z" type="Insert">
+        <binding name="value" expression='getBaseAllocationTotal(currentZone.zoneCode,currentDay)'/>
     </component>
 
-    <component id="insertCTCapacityTotal" type="Insert">
-        <binding name="value" expression='getCTCapacityTotal(currentZone.zoneCode, currentDay)'/>
+    <component id="insertBaseAllocationTotal_T" type="Insert">
+        <binding name="value" expression='getBaseAllocationTotal(currentDay,window,cutoff)'/>
+    </component>
+    
+    <component id="insertCTCapacityTotal_Z" type="Insert">
+        <binding name="value" expression='getCTCapacityTotal(currentZone.zoneCode,currentDay)'/>
     </component>
 
-    <component id="insertCTAllocationTotal" type="Insert">
-        <binding name="value" expression='getCTAllocationTotal(currentZone.zoneCode, currentDay)'/>
+    <component id="insertCTCapacityTotal_T" type="Insert">
+        <binding name="value" expression='getCTCapacityTotal(currentDay,window,cutoff)'/>
+    </component>
+    
+    <component id="insertCTAllocationTotal_Z" type="Insert">
+        <binding name="value" expression='getCTAllocationTotal(currentZone.zoneCode,currentDay)'/>
     </component>
 
-    <component id="insertDayHeader" type="Insert">
+    <component id="insertCTAllocationTotal_T" type="Insert">
+        <binding name="value" expression='getCTAllocationTotal(currentDay,window,cutoff)'/>
+    </component>
+
+    <component id="insertDayHeader_T" type="Insert">
         <binding name="format" expression='dateFormatter'/>
         <static-binding name="raw">true</static-binding>
-        <binding name="value" expression='components.forEachDay.value'/>
+        <binding name="value" expression='components.forEachDay_T.value'/>
     </component>
-
-    <component id="insertZoneCapTotal" type="Insert">
-        <binding name="value" expression='getZoneCapacityTotal(currentZone.zoneCode, getDays())'/>
+    
+    <component id="insertDayHeader_Z" type="Insert">
+        <binding name="format" expression='dateFormatter'/>
+        <static-binding name="raw">true</static-binding>
+        <binding name="value" expression='components.forEachDay_Z.value'/>
+    </component>
+    
+    <component id="insertTimeWindow" type="Insert">
+        <binding name="value" expression='getTimeWindowString(window)'/>
+    </component>
+    
+    <component id="insertCutoff" type="Insert">
+    	<binding name="value" expression='cutoff'/>
+    	<binding name="format" expression='getTimeFormatter()'/>
     </component>
 
     <component id="insertZoneName" type="Insert">
         <binding name="value" expression='currentZone.displayName'/>
     </component>
 
-    <component id="insertZoneAllocationTotal" type="Insert">
-        <binding name="value" expression='getZoneAllocationTotal(currentZone.zoneCode, getDays())'/>
-    </component>
-
     <component id="selectDay" type="PropertySelection">
         <binding name="model" expression='engine.getDaySelectionModel()'/>
         <binding name="value" expression='selectedDay'/>
     </component>
-
+    
     <component id="selectRegion" type="PropertySelection">
         <binding name="model" expression='engine.getRegionSelectionModel()'/>
         <binding name="submitOnChange" expression='true'/>
         <binding name="value" expression='selectedRegion'/>
+    </component>
+    
+
+    <component id="selectedDetailLevel" type="PropertySelection">
+        <binding name="model" expression='getDetailLevelSelectionModel()'/>
+        <binding name="value" expression='selectedDetailLevel'/>
     </component>
 
     <component id="selectZone" type="PropertySelection">
@@ -120,14 +194,32 @@
         <binding name="label" expression='"Submit"'/>
     </component>
     
-    <component id="insertPercentage" type="Insert">
+    <component id="insertPercentage_T" type="Insert">
+        <binding name="format" expression='getPercentageFormatter()'/>
+        <binding name="value" expression='getPercentage(currentZoneTimeslot.value)'/>
+    </component>
+    
+    <component id="insertPercentage_Z" type="Insert">
         <binding name="format" expression='getPercentageFormatter()'/>
         <binding name="value" expression='getPercentage(currentTimeslot)'/>
     </component>
 
-    <component id="insertPercentageTotal" type="Insert">
+    <component id="insertPercentageTotal_Z" type="Insert">
         <binding name="format" expression='getPercentageFormatter()'/>
         <binding name="value" expression='getPercentageTotal(currentZone.zoneCode,currentDay)'/>
     </component>
-
+    
+    <component id="insertPercentageTotal_T" type="Insert">
+        <binding name="format" expression='getPercentageFormatter()'/>
+        <binding name="value" expression='getPercentageTotal(currentDay,window,cutoff)'/>
+    </component>
+    
+    <component id="insertZoneCapTotal" type="Insert">
+        <binding name="value" expression='getZoneCapacityTotal(currentZone.zoneCode)'/>
+    </component>
+    
+	<component id="insertZoneAllocationTotal" type="Insert">
+        <binding name="value" expression='getZoneAllocationTotal(currentZone.zoneCode)'/>
+    </component>
+    
 </page-specification>
