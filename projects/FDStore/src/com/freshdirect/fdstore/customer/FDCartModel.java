@@ -364,7 +364,6 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	 */
 	public List removeOrderLinesByRecipe(String recipeId) {
 		List cartLinesRemoved = new ArrayList();
-		int count = 0;
 		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
 			FDCartLineI line = (FDCartLineI) i.next();
 			if (recipeId.equals(line.getRecipeSourceId())) {
@@ -688,6 +687,10 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	
 	private void clearAvailability() {
 		this.availability = null;
+	}
+	
+	public boolean isAvailabilityChecked() {
+		return null != this.availability && getUnavailabilityMap().size() == 0;
 	}
 	
 	/**

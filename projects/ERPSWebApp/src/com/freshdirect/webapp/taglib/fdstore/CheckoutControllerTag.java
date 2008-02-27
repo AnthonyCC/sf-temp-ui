@@ -86,6 +86,8 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 	private String authCutoffPage = "/checkout/account_problem.jsp";
 	private String ageVerificationPage = "/checkout/step_2_verify_age.jsp";
 	private String noContactPhonePage = "/checkout/step_1_edit.jsp";
+	private String backToViewCart = "/checkout/view_cart.jsp";
+	
 	public void setCcdProblemPage(String ccdProblemPage){
 		this.ccdProblemPage = ccdProblemPage;
 	}
@@ -122,7 +124,12 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				}				
 
 			} else if ("submitOrder".equalsIgnoreCase(action)) {
-				
+				LOGGER.debug("AVAILABILITY IS: " + getCart().getAvailability());
+				if (!getCart().isAvailabilityChecked()) {
+					
+					this.setSuccessPage(backToViewCart);
+					return true;
+				}
 				String outcome = performSubmitOrder(request, result);
 				saveCart = true;
 				if (outcome.equals( Action.NONE )) {

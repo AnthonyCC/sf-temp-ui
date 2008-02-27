@@ -23,6 +23,7 @@ import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDStockAvailabilityInfo;
+import com.freshdirect.fdstore.atp.NullAvailability;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -117,6 +118,8 @@ public class AdjustAvailabilityTag extends
 		//Revalidate the cart for deliverypass.
 		cart.handleDeliveryPass();
 		user.updateUserState();
+		
+		cart.setAvailability(NullAvailability.AVAILABLE);
 		return SKIP_BODY;
 	}
 }
