@@ -13,7 +13,7 @@
     if(request.getParameter("card")!=null){
             cardStatus = request.getParameter("card");
     }
-	
+
     String selectedPaymPKId = request.getParameter("paymentId");
 
 	if (request.getParameter("paymentMethodList") != null){
@@ -22,7 +22,7 @@
     	selectedPaymPKId = "new";
     }
     else if (selectedPaymPKId==null ) {
-        if(_cart.getPaymentMethod() != null	&& !(_cart instanceof FDModifyCartModel)) {
+        if(_cart.getPaymentMethod() != null && !(_cart instanceof FDModifyCartModel)) {
             selectedPaymPKId = ((ErpPaymentMethodModel)_cart.getPaymentMethod()).getPK().getId();
         } else {
 			selectedPaymPKId = FDCustomerManager.getDefaultPaymentMethodPK(_user.getIdentity());
@@ -32,28 +32,30 @@
     boolean showRadioButtons = false;
     if (request.getRequestURI().toLowerCase().indexOf("your_account")>-1) {
         editPage = "/your_account/edit_creditcard.jsp";
-
     }else {
         editPage = "/checkout/step_3_card_edit.jsp";
         showRadioButtons=true;
     }
+
     if (paymentMethods!=null && paymentMethods.size() > 0){
-    	int numCreditCards = 0;
-    	int numEChecks = 0;
+        int numCreditCards = 0;
+        int numEChecks = 0;
         int itemCounter = 0;
-        int itemNum = 0;        
-		boolean isNewOrder = !(_cart instanceof FDModifyCartModel);
+        int itemNum = 0;
+        boolean isNewOrder = !(_cart instanceof FDModifyCartModel);
         if (selectedPaymPKId==null) selectedPaymPKId="";
         String methodChecked = "";
 		ArrayList payMethodsList = new ArrayList(paymentMethods);
-		for(ListIterator saItr=payMethodsList.listIterator();saItr.hasNext();) {
+
+        for(ListIterator saItr=payMethodsList.listIterator();saItr.hasNext();) {
             ErpPaymentMethodI paymentM = (ErpPaymentMethodI)saItr.next();
             if (EnumPaymentMethodType.CREDITCARD.equals(paymentM.getPaymentMethodType())) {
-            	numCreditCards++;
+                numCreditCards++;
             } else if (EnumPaymentMethodType.ECHECK.equals(paymentM.getPaymentMethodType())) {
-            	numEChecks++;
+                numEChecks++;
             }
-		}		
+        }
+
 		for(ListIterator saItr=payMethodsList.listIterator();saItr.hasNext();) {
             boolean showDeleteButtons = numCreditCards > 1?true:false;
             methodChecked = "";
@@ -114,25 +116,28 @@
 	</TD>
 <%          itemCounter++;
 			itemNum++;
-          if (itemNum < numCreditCards && (itemCounter % 3)!=0){     %>
+            if (itemNum < numCreditCards && (itemCounter % 3)!=0){     %>
 			<TD width="15"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="15" HEIGHT="1"></TD>
 			<TD width="1" bgcolor="#CCCCCC"><IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="1" HEIGHT="1"></TD>
 			<TD width="14"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="14" HEIGHT="1"></TD>
 <%          }
+        } // end of loop
+
+        if (itemNum > 0) { // if table ever opened close it gracefully
+            if (itemCounter==1) {
+%>
+        <%-- this spacer cell and image width should be dynamic: when no second payment method, 460 --%>
+        <TD WIDTH="470"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="470" HEIGHT="1" BORDER="0"><BR></TD>
+<%
+            } else if(itemCounter==2) {
+%>
+        <%-- this spacer cell  --%>
+        <TD WIDTH="235"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="235" HEIGHT="1" BORDER="0"><BR></TD>
+<%
+            }
+%>
+    </TR></TABLE>
+<%
         }
-        if (itemCounter==1) {
-%>
-		<%-- this spacer cell and image width should be dynamic: when no second payment method, 460 --%>
-		<TD WIDTH="470"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="470" HEIGHT="1" BORDER="0"><BR></TD>
-<%
-        }else if(itemCounter==2){
-%>
-		<%-- this spacer cell  --%>
-		<TD WIDTH="235"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="235" HEIGHT="1" BORDER="0"><BR></TD>
-<%
-        }
-%>
-	</TR></TABLE>
-<%
-}
+    }
 %>
