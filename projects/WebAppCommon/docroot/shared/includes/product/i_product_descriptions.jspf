@@ -160,12 +160,19 @@
                         <%      }
                             }   %>
 				<%@ include file="/includes/product/i_product_ingredients.jspf" %>
-			<%} else if (showAbout) {%>
-				<%@ include file="/shared/includes/product/i_product_about.jspf" %>
-				<% if (productNode.getAttribute("PRODUCT_ABOUT")!=null) { %>
-					<br><a href="javascript:popup('/shared/popup.jsp?prodId=<%= request.getParameter("productId") %>&catId=<%= request.getParameter("catId")%>&attrib=PRODUCT_ABOUT&tmpl=large','large');"><b>Learn more about this <%=productNode.getDepartment().getFullName().toLowerCase()%>.</b></a>
-				<% } %>
-			<%
+			<%} else if (showAbout) {
+				boolean isProductWine = defaultSku.getProduct().isWine();
+	            // [MNT-26] In case of wines show popup link only in wine department and
+	            //   skip on other departments like our picks
+	            boolean doShowAbout = (!isProductWine ||
+	                (isProductWine && "wine".equalsIgnoreCase(productNode.getDepartment().getFullName().toLowerCase()) ) );
+	            %><%@ include file="/shared/includes/product/i_product_about.jspf" %>
+<%
+	            if (productNode.getAttribute("PRODUCT_ABOUT")!=null && doShowAbout) {
+	                %><br><a href="javascript:popup('/shared/popup.jsp?prodId=<%= request.getParameter("productId") %>&catId=<%= request.getParameter("catId")%>&attrib=PRODUCT_ABOUT&tmpl=large','large');"><b>Learn more about this <%=productNode.getDepartment().getFullName().toLowerCase()%>.</b></a>
+<%
+	            }
+
 			Attribute seasonTextAttrib = productNode.getAttribute("SEASON_TEXT");
 			if (seasonTextAttrib!=null) {
 			%><br>
