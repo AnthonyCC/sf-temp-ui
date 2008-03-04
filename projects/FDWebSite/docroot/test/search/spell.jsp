@@ -11,6 +11,8 @@
 <%@ page import='com.freshdirect.fdstore.content.SearchResults' %>
 
 <%@ page import='java.util.List' %>
+<%@ page import='java.util.Iterator' %>
+<%@ page import='java.util.ArrayList' %>
 <%@ page import='java.util.Random' %>
 
 <%@ page import='java.io.FileOutputStream' %>
@@ -22,6 +24,70 @@
 </head>
 
 <body style="font-family: arial">
+
+<%!
+
+private interface Sampler {
+	public void addValue(Object o, long freq);
+	public String getNextQuery();
+	public long getFrequency();
+};
+
+private class RandomSampler implements Sampler {
+	private DiscreteRandomSampler sampler = new DiscreteRandomSampler();
+	private Random R = new Random();
+	private long freq = -1;
+
+	public void addValue(Object o, long freq) {
+		sampler.addValue(o,freq);
+	}
+
+	public String getNextQuery() {
+		Object query = sampler.getRandomValue(R);
+		freq = sampler.getFrequency(query);
+		return query.toString();
+	}
+
+	public long getFrequency() {
+		return freq;
+	}
+};
+
+private class ExhaustiveSampler implements Sampler {
+	private class Query {
+		private String query;
+		private long frequency;
+		private Query(String query, long frequency) {
+			this.query = query;
+			this.frequency = frequency;
+		}
+	};
+
+	private List values = new ArrayList();
+	private Query q = null;
+	private Iterator qI = null;
+
+	private ExhaustiveSampler() {
+	}
+
+	public void addValue(Object o, long freq) {
+		values.add(new Query(o.toString(),freq));
+	}
+
+	public String getNextQuery() {
+		if (qI == null) qI = values.iterator();
+		q= (Query)qI.next();
+		return q.query;
+	}
+		
+	public long getFrequency() {
+		return q.frequency;
+	}
+};
+
+
+
+%>
 
 <% 
 if (ServletFileUpload.isMultipartContent(request)) {
@@ -36,30 +102,46 @@ List /* FileItem */ items = upload.parseRequest(request);
 
 long samples = 0;
 
-DiscreteRandomSampler sampler = new DiscreteRandomSampler();
+boolean exhaustive = false;
+long max = Long.MAX_VALUE;
+
+for(Iterator i = items.iterator(); i.hasNext(); ) {
+	FileItem item = (FileItem)i.next();
+	if ("exhaustive".equals(item.getFieldName())) {
+		exhaustive = true;
+	} else if ("n".equals(item.getFieldName())) {
+		max = Long.parseLong(item.getString());
+	}
+}
+
+Sampler sampler = exhaustive ?
+	(Sampler)new ExhaustiveSampler() :
+	(Sampler)new RandomSampler();
 
 for(Iterator i = items.iterator(); i.hasNext(); ) {
 	FileItem item = (FileItem)i.next();
 	if ("file".equals(item.getFieldName())) {
   		List distro = CSVUtils.parse(item.getInputStream(),false,false);
+		if (exhaustive) samples = (long)distro.size();
 %>
    		<%= distro.size() %> rows!<br/>
 
 <%
-		for(Iterator di=distro.iterator(); di.hasNext(); ) {
+		long c = 0;
+		for(Iterator di=distro.iterator(); c < max && di.hasNext(); ++c) {
 			List row = (List)di.next();
 			sampler.addValue(row.get(0),Long.parseLong(row.get(1).toString()));
 		}
 	} else if ("n".equals(item.getFieldName())) {
 		samples = Long.parseLong(item.getString());
-		%>Will use <%=samples%> samples!<%
-	}
+		%>Will use <%=exhaustive ? (max == Long.MAX_VALUE ? "all" : "" + max) : ("" + samples)%> samples!<%
+	} 
 }
 
 %>
 
 <%
-	final DiscreteRandomSampler threadSampler = sampler;
+	final Sampler threadSampler = sampler;
 	final long threadSamples = samples;
 	new Thread(
 		new Runnable() {
@@ -73,8 +155,8 @@ for(Iterator i = items.iterator(); i.hasNext(); ) {
 					for(int i=0; i< threadSamples; ++i) {
 						try {
 							StringBuffer row = new StringBuffer();
-							String query = threadSampler.getRandomValue(R).toString();
-							long freq = threadSampler.getFrequency(query);
+							String query = threadSampler.getNextQuery();
+							long freq = threadSampler.getFrequency();
 							SearchResults results = ContentFactory.getInstance().search(query);
 
 							String suggestion = results.getSpellingSuggestion();
@@ -127,19 +209,42 @@ for(Iterator i = items.iterator(); i.hasNext(); ) {
 %>
 <% } else { // work file
 %>
+
+<script type="text/javascript">
+function toggleExhaustive() {
+	var toggle = document.getElementById('toggle');
+	var label = document.getElementById('lab');
+	var boo = document.getElementById('boo');
+	if (toggle.checked) {
+		label.innerHTML = "first entries. (If not set, ALL!)";	
+		boo.innerHTML = " and the ";
+	} else {
+		label.innerHTML = "random samples.";
+		boo.innerHTML = " or ";
+	}
+
+}
+</script>
+
 <b>Upload the Distribution CSV file and the number of samples you want!</b>
 <p>
 <form action="/test/search/spell.jsp" method="post" enctype="multipart/form-data">
 
-<input type="file" name="file"/><br/>
-How many?  <input type="text" name="n" size="10"/><br/>
-<input type="submit">
+<div>
+CSV file: <input type="file" name="file"/>
+</div>
+<br/>
+<div>
+<label>Exhaustive <input id="toggle" type="checkbox" name="exhaustive" value="true" onclick="toggleExhaustive()"/></label>
+<span id="boo">or</span> <input type="text" id="n" name="n" size="10"/> <span id="lab">random samples</span>  
+</div>
+<input type="submit" value="go"/>
 </form>
 </p>
 <hr/>
 <p>
 <b>What is this?</b>
-<p>
+<div>
 You need to obtain (or create) a CSV file with two columns. The first is a search term and the second is its 
 frequency (or weight if you wish). E.g.
 <pre>
@@ -148,10 +253,20 @@ frequency (or weight if you wish). E.g.
    "<a href="/search.jsp?searchParams=mgnum+condoms">mgnum condoms</a>",2003
    ...
 </pre>
-Then provide how many samples you want to pull from this file. It will sample according to the distribution
-you provided. The test will run in its own thread, so you can inspect partial results as the report is
-being compiled.
+</div>
 </p>
+
+<p>
+<b>Sampling</b>
+<div>
+In random (non-exhaustive) sampling, this tool will sample according to the distribution you provided. 
+In the case of exhaustive sampling, all queries in the file will be searched for in order and exactly once. For 
+exhaustive sampling make sure that the file is <i>sufficiently small</i> or set the <i>Only the first ...</i> field!
+</div>
+</p>
+<p>
+The test will run in its own thread, so you can inspect partial results as the report is
+being compiled.
 </p>
 <%
    }
