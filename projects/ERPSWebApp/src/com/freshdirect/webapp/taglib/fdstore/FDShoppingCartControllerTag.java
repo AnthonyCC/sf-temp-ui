@@ -13,6 +13,7 @@ package com.freshdirect.webapp.taglib.fdstore;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -105,6 +106,11 @@ public class FDShoppingCartControllerTag extends
 	private ActionResult result;
 
 	private FDCartModel cart;
+	
+	/**
+	 * Cartlines already processed, BUT not yet added to the cart.
+	 */
+	private List cartLinesToAdd = Collections.EMPTY_LIST;
 
 	private List frmSkuIds = new ArrayList();
 
@@ -161,6 +167,10 @@ public class FDShoppingCartControllerTag extends
 		if (source != null && source.equalsIgnoreCase("CCL")) return true;
 		// else see if the action had a CCL tag
 		return action != null && action.startsWith("CCL:");
+	}
+	
+	private boolean isAddToCartRequest() {
+		return "addMultipleToCart".equals(action) || "addToCart".equals(action);
 	}
 	
 	public int doStartTag() throws JspException {
@@ -801,7 +811,7 @@ public class FDShoppingCartControllerTag extends
 			}
 			int itemCount = Integer.parseInt(itemCountParam);
 
-			List cartLines = new ArrayList(itemCount);
+			cartLinesToAdd = new ArrayList(itemCount);
 			int addedLines = 0;
 
 			//
@@ -815,7 +825,7 @@ public class FDShoppingCartControllerTag extends
 					// skip
 					continue;
 				}
-				cartLines.add(cartLine);
+				cartLinesToAdd.add(cartLine);
 				// Log that an item has been added.
 				// Make sure to describe it first
 				try {
@@ -834,7 +844,8 @@ public class FDShoppingCartControllerTag extends
 			if (result.isSuccess()) {
 				if (addedLines > 0) {
 					// all is well, if ends well
-					cart.addOrderLines(cartLines);
+					cart.addOrderLines(cartLinesToAdd);
+					cartLinesToAdd.clear();
 				} else {
 					String errorMsg = "ccl_actual_selection".equalsIgnoreCase(request.getParameter("source")) ?
 							SystemMessageList.MSG_CCL_QUANTITY_REQUIRED :
@@ -994,7 +1005,7 @@ public class FDShoppingCartControllerTag extends
 		result.addError(salesUnit == null, paramSalesUnit, "Please select "
 				+ prodNode.getAttribute("SALES_UNIT_LABEL", "Sales Unit"));
 
-		LOGGER.debug("ZIZIZIZIZ " + request.getParameter("consented" + suffix));
+		LOGGER.debug("Consented " + request.getParameter("consented" + suffix));
 		if (prodNode.hasTerms() && !"true".equals(request.getParameter("consented" + suffix))) {
 			LOGGER.debug("ADDING ERROR, since consented" + suffix + "=" + request.getParameter("consented" + suffix));
 			if (!"yes".equalsIgnoreCase(request.getParameter("agreeToTerms"))) {
@@ -1135,6 +1146,24 @@ public class FDShoppingCartControllerTag extends
 
 		return cartLine;
 	}
+	
+	/**
+	 * Deduce the quantity that has already been processed but not yet added to the cart.
+	 * @param product
+	 * @return total quantity of product already proccessed
+	 */
+	private double getCartlinesQuantity(ProductModel product) {
+		String categoryName = product.getParentNode().getContentName();
+		String productName = product.getContentName();
+		double sum = 0;
+		for (Iterator i = this.cartLinesToAdd.iterator(); i.hasNext();) {
+			FDCartLineI line = (FDCartLineI) i.next();
+			if (productName.equals(line.getProductName()) && categoryName.equals(line.getCategoryName())) {
+				sum += line.getQuantity();
+			}
+		}
+		return sum;
+	}
 
 	private String validateQuantity(FDUserI user, ProductModel prodNode,
 			double quantity, double adjustmentQuantity) {
@@ -1150,8 +1179,10 @@ public class FDShoppingCartControllerTag extends
 					+ prodNode.getQuantityIncrement();
 		}
 
-		if (!isCCLRequest()) {
-			if (cart.getTotalQuantity(prodNode) + quantity - adjustmentQuantity > user
+		// For CCL Requests (other than cart events)
+		// quantity limits do not apply
+		if (!isCCLRequest() || isAddToCartRequest()) {
+			if (getCartlinesQuantity(prodNode) + cart.getTotalQuantity(prodNode) + quantity - adjustmentQuantity > user
 				.getQuantityMaximum(prodNode)) {
 				return MessageFormat
 						.format(
