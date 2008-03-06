@@ -81,27 +81,22 @@ public abstract class CreateContentPopup extends BasePopupPage implements IExter
 			return;
 		}
 
-		/**
-		Matcher matcher = ContentKey.NAME_PATTERN.matcher(getContentId());
-		if(!matcher.matches()) {
+		try {
+			ContentKey key = ContentKey.create(getContentType(), getContentId());
+			
+			ContentNodeI node = CmsManager.getInstance().getContentNode(key);
+			if (node != null) {
+				delegate.record(key.getEncoded() + " already exists", null);
+				setDuplicateKey(key);
+				return;
+			}
+	
+			setContentKey(key);
+			((CmsVisit) getVisit()).getWorkingSet(key).createContentNode(key);
+		} catch (Exception exc) {
 			LOGGER.info("requested content id \'"+getContentId()+"\' does not match pattern "+ContentKey.NAME_PATTERN.pattern());
 			delegate.record(" \""+getContentId() + "\" must contain only letters, numbers, underscore and '-'", null);
-			return;
 		}
-
-		ContentKey key = new ContentKey(getContentType(), getContentId());
-		**/
-		ContentKey key = ContentKey.create(getContentType(), getContentId());
-		
-		ContentNodeI node = CmsManager.getInstance().getContentNode(key);
-		if (node != null) {
-			delegate.record(key.getEncoded() + " already exists", null);
-			setDuplicateKey(key);
-			return;
-		}
-
-		setContentKey(key);
-		((CmsVisit) getVisit()).getWorkingSet(key).createContentNode(key);
 	}
 
 	public void performSave(IRequestCycle cycle) {
