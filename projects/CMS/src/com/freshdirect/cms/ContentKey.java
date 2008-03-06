@@ -1,8 +1,11 @@
 package com.freshdirect.cms;
 
 import java.io.Serializable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.fdstore.FDException;
 
 /**
  * Unmutable, typed key for a {@link com.freshdirect.cms.ContentNodeI} instance.
@@ -16,6 +19,8 @@ public class ContentKey implements Serializable {
 
 	private final ContentType type;
 	private final String id;
+
+	public final static Pattern NAME_PATTERN = Pattern.compile("([a-zA-Z]|\\d|_|-)+");
 
 	/**
 	 * @param type content type (non-null)
@@ -103,6 +108,36 @@ public class ContentKey implements Serializable {
 		String type = key.substring(0, p);
 		String id = key.substring(p + 1);
 		return new ContentKey(ContentType.get(type), id);
+	}
+
+
+	/**
+	 * Factory method to valid create key instance. This is useful when ID's come from
+	 * user input (Excel sheet, plain text, etc).
+	 * 
+	 * @param type Content type
+	 * @param id Content ID / Key
+	 * @return ContentKey instance
+	 * @throws InvalidContentKeyException if key format is invalid (ie. contains white space)
+	 */
+	public static ContentKey create(ContentType type, String id) throws InvalidContentKeyException {
+		ContentKey key = new ContentKey(type, id);
+
+		// validate key.id
+		Matcher matcher = ContentKey.NAME_PATTERN.matcher(id);
+		if(!matcher.matches()) {
+			/*
+			LOGGER.info("requested content id \'"+id+"\' does not match pattern "+ContentKey.NAME_PATTERN.pattern());
+			delegate.record(" \""+ id + "\" must contain only letters, numbers, underscore and '-'", null);
+			return;*/
+			throw new InvalidContentKeyException();
+		}
+
+		return key;
+	}
+	
+
+	public static class InvalidContentKeyException extends FDException {
 	}
 
 }

@@ -14,15 +14,16 @@ import org.apache.tapestry.valid.IValidationDelegate;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.CmsRequest;
-import com.freshdirect.cms.fdstore.recipes.BulkLoader;
+import com.freshdirect.cms.fdstore.recipes.RecipeBulkLoader;
 import com.freshdirect.cms.ui.tapestry.CmsVisit;
 import com.freshdirect.framework.util.StringUtil;
 
 public abstract class RecipeLoader extends BasePage {
 
-	public void processFile(IRequestCycle cycle) {
+	public void processFile(IRequestCycle cycle) throws InvalidContentKeyException {
 		IUploadFile file = getFile();
 
 		if (getUploadType() == null) {
@@ -51,22 +52,6 @@ public abstract class RecipeLoader extends BasePage {
 		}
 	}
 
-	/*
-	static String parseFilename(String fileName) {
-		int start = fileName.lastIndexOf('/') + 1;
-		if (start == 0) {
-			start = fileName.lastIndexOf('\\') + 1;
-		}
-		
-		int lastDot = fileName.lastIndexOf(".");
-		if (lastDot == -1) {
-			lastDot = fileName.length();
-		}
-		
-		return fileName.substring(start, lastDot);
-	}
-	*/
-	
 	public IValidationDelegate getDelegate() {
 		return (IValidationDelegate) getBeans().getBean("delegate");
 	}
@@ -85,15 +70,16 @@ public abstract class RecipeLoader extends BasePage {
 	 * @param recipeId the id of the recipe to process.
 	 * @param type specify what to process: a ConfiguredProductGroup
 	 *        or a Recipe
-	 * @see BulkLoader#CONFIGURED_PRODUCT_GROUP
-	 * @see BulkLoader#RECIPE
+	 * @throws InvalidContentKeyException 
+	 * @see RecipeBulkLoader#CONFIGURED_PRODUCT_GROUP
+	 * @see RecipeBulkLoader#RECIPE
 	 */
 	private ContentKey load(Reader reader,
 			                String recipeId,
-			                int    type) throws IOException {
+			                int    type) throws IOException, InvalidContentKeyException {
 		
 		List			 	list;
-		BulkLoader 	 	loader = new BulkLoader(CmsManager.getInstance(),
+		RecipeBulkLoader 	loader = new RecipeBulkLoader(CmsManager.getInstance(),
 				                                reader,
 				                                recipeId,
 				                                type);

@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.log4j.Category;
 import org.apache.tapestry.IExternalPage;
@@ -19,6 +18,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.RelationshipI;
+import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.context.Context;
 import com.freshdirect.cms.context.ContextService;
@@ -35,7 +35,6 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  */
 public abstract class CreateContentPopup extends BasePopupPage implements IExternalPage {
 
-	private final static Pattern NAME_PATTERN = Pattern.compile("([a-zA-Z]|\\d|_|-)+");
 	private final static Category LOGGER = LoggerFactory.getInstance(CreateContentPopup.class);
 	
 	public void activateExternalPage(Object[] parameters, IRequestCycle cycle) {
@@ -71,7 +70,7 @@ public abstract class CreateContentPopup extends BasePopupPage implements IExter
 		return ctxNode;
 	}
 
-	public void performCreate(IRequestCycle cycle) {
+	public void performCreate(IRequestCycle cycle) throws InvalidContentKeyException {
 		IValidationDelegate delegate = (IValidationDelegate) getBeans().getBean("delegate");
 		if (delegate.getHasErrors()) {
 			return;
@@ -81,16 +80,19 @@ public abstract class CreateContentPopup extends BasePopupPage implements IExter
 			delegate.record("Content ID is required", null);
 			return;
 		}
-		
-		Matcher matcher = NAME_PATTERN.matcher(getContentId());
+
+		/**
+		Matcher matcher = ContentKey.NAME_PATTERN.matcher(getContentId());
 		if(!matcher.matches()) {
-			LOGGER.info("requested content id \'"+getContentId()+"\' does not match pattern "+NAME_PATTERN.pattern());
+			LOGGER.info("requested content id \'"+getContentId()+"\' does not match pattern "+ContentKey.NAME_PATTERN.pattern());
 			delegate.record(" \""+getContentId() + "\" must contain only letters, numbers, underscore and '-'", null);
 			return;
 		}
 
 		ContentKey key = new ContentKey(getContentType(), getContentId());
-
+		**/
+		ContentKey key = ContentKey.create(getContentType(), getContentId());
+		
 		ContentNodeI node = CmsManager.getInstance().getContentNode(key);
 		if (node != null) {
 			delegate.record(key.getEncoded() + " already exists", null);

@@ -19,6 +19,7 @@ import com.freshdirect.cms.ContentTypeDefI;
 import com.freshdirect.cms.EnumCardinality;
 import com.freshdirect.cms.EnumDefI;
 import com.freshdirect.cms.RelationshipDefI;
+import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.meta.ContentTypeUtil;
 import com.freshdirect.cms.publish.PublishXmlTask;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -140,8 +141,16 @@ public class FlexContentHandler extends CmsNodeHandler {
 		if (id == null) {
 			id = "flex_" + ID_GENERATOR++;
 		}
-		ContentKey key = new ContentKey(type, id);
-		return createNode(key);
+		
+		ContentNodeI node = null;
+		try {
+			ContentKey key = ContentKey.create(type, id);
+			node = createNode(key);
+		} catch (InvalidContentKeyException exc) {
+			LOGGER.warn("parseNode failed with ID " + id);
+		}
+
+		return node;
 	}
 
 	private Slot parseSlot(String localName) {

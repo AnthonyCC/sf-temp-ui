@@ -11,6 +11,7 @@ import java.util.StringTokenizer;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.RelationshipI;
+import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.node.ContentNodeUtil;
@@ -18,7 +19,7 @@ import com.freshdirect.cms.node.ContentNodeUtil;
 /**
  * Recipe bulk loader class.
  */
-public class BulkLoader {
+public class RecipeBulkLoader {
 
 	/**
 	 *  The delimiters used for tokenization of input lines.
@@ -130,7 +131,7 @@ public class BulkLoader {
 	 * @see #CONFIGURED_PRODUCT_GROUP
 	 * @see #RECIPE
 	 */
-	public BulkLoader(ContentServiceI	service,
+	public RecipeBulkLoader(ContentServiceI	service,
 					  Reader 			input,
 		              String 			recipeId,
 					  int    			type) {
@@ -187,10 +188,11 @@ public class BulkLoader {
 	 *          while parsing and processing the input.
 	 *          The last item in the list is the Recipe or the ConiguredProductGroup
 	 *          itself
+	 *  @throws InvalidContentKeyException key is invalid
 	 *  @see #CONFIGURED_PRODUCT_GROUP
 	 *  @see #RECIPE
 	 */
-	public List process() {
+	public List process() throws InvalidContentKeyException {
 		List		list;
 		
 		switch (type) {
@@ -220,9 +222,10 @@ public class BulkLoader {
 	 *  @return a list, with still the last item being the Recipe or
 	 *          the ConfiguredProductGroup, but including changes to
 	 *          add the node to the newborn folder as well, if one exists.  
+	 * @throws InvalidContentKeyException 
 	 */
-	private List addToNewbornFolder(List list) {
-		ContentKey		newbornKey    = new ContentKey(FDContentTypes.FDFOLDER, NEWBORN_FOLDER_NAME);
+	private List addToNewbornFolder(List list) throws InvalidContentKeyException {
+		ContentKey		newbornKey    = ContentKey.create(FDContentTypes.FDFOLDER, NEWBORN_FOLDER_NAME);
 		ContentNodeI		newbornFolder = service.getContentNode(newbornKey);
 		
 		if (newbornFolder == null) {
@@ -246,11 +249,12 @@ public class BulkLoader {
 	 * 
 	 *  @return a list of ContentNodeI objects, all the nodes created
 	 *          while parsing and processing the input. 
+	 *  @throws InvalidContentKeyException 
 	 */
-	private List processConfiguredProductGroup() {
-		ContentKey		groupKey  = new ContentKey(FDContentTypes.CONFIGURED_PRODUCT_GROUP, recipeId);
+	private List processConfiguredProductGroup() throws InvalidContentKeyException {
+		ContentKey		groupKey  = ContentKey.create(FDContentTypes.CONFIGURED_PRODUCT_GROUP, recipeId);
 		ContentNodeI    groupNode = service.createPrototypeContentNode(groupKey);
-		List				keyList   = new ArrayList();
+		List			keyList   = new ArrayList();
 		
 		// get the list of keys of the existing nodes
 		for (Iterator it = nodes.iterator(); it.hasNext();) {
@@ -273,8 +277,9 @@ public class BulkLoader {
 	 * 
 	 *  @return a list of ContentNodeI objects, all the nodes created
 	 *          while parsing and processing the input. 
+	 *  @throws InvalidContentKeyException 
 	 */
-	private List processRecipe() {
+	private List processRecipe() throws InvalidContentKeyException {
 		ContentNodeI 	recipe;
 		ContentNodeI 	variant;
 		ContentNodeI 	section;
@@ -285,12 +290,12 @@ public class BulkLoader {
 		List				sectionList;
 		
 		// create a recipe
-		key    = new ContentKey(FDContentTypes.RECIPE, recipeId);
+		key    = ContentKey.create(FDContentTypes.RECIPE, recipeId);
 		recipe = service.createPrototypeContentNode(key);
 		
 		// add the main variant to the recipe
 		variantId = recipeId + "_default";
-		key       = new ContentKey(FDContentTypes.RECIPE_VARIANT, variantId);
+		key       = ContentKey.create(FDContentTypes.RECIPE_VARIANT, variantId);
 		variant   = service.createPrototypeContentNode(key);
 		ContentNodeUtil.addRelationshipKey((RelationshipI) recipe.getAttribute("variants"), key);
 
@@ -317,7 +322,7 @@ public class BulkLoader {
 			   : variantId + "_" + sectionName;
 
 			// add the section to the main variant
-			key     = new ContentKey(FDContentTypes.RECIPE_SECTION, id);
+			key     = ContentKey.create(FDContentTypes.RECIPE_SECTION, id);
 			section = service.createPrototypeContentNode(key);
 			ContentNodeUtil.addRelationshipKey((RelationshipI) variant.getAttribute("sections"), key);
 			
@@ -341,9 +346,9 @@ public class BulkLoader {
 						
 						sku = sku.substring(1, sku.length());
 						sku = sku.substring(0, sku.length() - 1);
-						key = new ContentKey(FDContentTypes.CONFIGURED_PRODUCT_GROUP, sku);
+						key = ContentKey.create(FDContentTypes.CONFIGURED_PRODUCT_GROUP, sku);
 					}
-					
+
 					keyList.add(key);
 				}
 			}

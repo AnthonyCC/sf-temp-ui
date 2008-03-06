@@ -10,7 +10,7 @@ import org.apache.tapestry.html.BasePage;
 import org.apache.tapestry.request.IUploadFile;
 import org.apache.tapestry.valid.IValidationDelegate;
 
-import com.freshdirect.cms.node.ContentNodeUtil;
+import com.freshdirect.cms.fdstore.ProductBulkLoader;
 import com.freshdirect.cms.ui.tapestry.CmsVisit;
 import com.freshdirect.framework.util.StringUtil;
 
@@ -52,7 +52,7 @@ public abstract class XLSBulkLoader extends BasePage {
 		List successes = new LinkedList();
 		Map failures = new TreeMap();
 		try {
-			ContentNodeUtil.XLSBulkLoad(file.getStream(), ((CmsVisit)getVisit()).getUser().getName(), successes, failures);
+			ProductBulkLoader.XLSBulkLoad(file.getStream(), ((CmsVisit)getVisit()).getUser().getName(), successes, failures);
 		} catch (Exception e) {
 			getDelegate().setFormComponent(null);
 			getDelegate().record("Exception occured: " + e.toString(),null);

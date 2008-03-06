@@ -12,6 +12,7 @@ import junit.framework.TestCase;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.application.CmsRequest;
 import com.freshdirect.cms.application.CmsUser;
 import com.freshdirect.cms.application.ContentServiceI;
@@ -55,13 +56,13 @@ public class BulkLoaderTest extends TestCase {
 			return;
 		}
 		
-		BulkLoader 	 			loader = new BulkLoader(service,
+		RecipeBulkLoader 	 			loader = new RecipeBulkLoader(service,
 														reader,
 														"fruitRecipe",
-														BulkLoader.RECIPE);
+														RecipeBulkLoader.RECIPE);
 		List			 			list;
 		Iterator	   	 			it;
-		BulkLoader.SectionNode	sectionNode;
+		RecipeBulkLoader.SectionNode	sectionNode;
 		ContentKey	 			key;
 		
 		try {
@@ -76,17 +77,17 @@ public class BulkLoaderTest extends TestCase {
 		// check on the five content node values
 		it   = list.iterator();
 		
-	    sectionNode = (BulkLoader.SectionNode) it.next();
+	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals("Main", sectionNode.section);
 		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
 		assertEquals("FRU0005203", key.getId());
 		
-	    sectionNode = (BulkLoader.SectionNode) it.next();
+	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals("Main", sectionNode.section);
 		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
 		assertEquals("FRU0005090", key.getId());
 		
-	    sectionNode = (BulkLoader.SectionNode) it.next();
+	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals("Main", sectionNode.section);
 		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
 		assertEquals("MEA0063339", key.getId());
@@ -105,13 +106,13 @@ public class BulkLoaderTest extends TestCase {
 			return;
 		}
 		
-		BulkLoader 	 			loader = new BulkLoader(service,
+		RecipeBulkLoader 	 			loader = new RecipeBulkLoader(service,
 														reader,
 														"simpleGroup",
-														BulkLoader.CONFIGURED_PRODUCT_GROUP);
+														RecipeBulkLoader.CONFIGURED_PRODUCT_GROUP);
 		List			 			list;
 		Iterator	   	 			it;
-		BulkLoader.SectionNode	sectionNode;
+		RecipeBulkLoader.SectionNode	sectionNode;
 		ContentKey	 			key;
 		
 		try {
@@ -126,27 +127,27 @@ public class BulkLoaderTest extends TestCase {
 		// check on the five content node values
 		it   = list.iterator();
 		
-	    sectionNode = (BulkLoader.SectionNode) it.next();
+	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Main");
 		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
 		assertEquals(key.getId(), "GRO058390");
 		
-	    sectionNode = (BulkLoader.SectionNode) it.next();
+	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Main");
 		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
 		assertEquals(key.getId(), "SPE0066161");
 
-	    sectionNode = (BulkLoader.SectionNode) it.next();
+	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Main");
 		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
 		assertEquals(key.getId(), "SPE0058949");
 
-	    sectionNode = (BulkLoader.SectionNode) it.next();
+	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Main");
 		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
 		assertEquals(key.getId(), "GRO002558");
 
-	    sectionNode = (BulkLoader.SectionNode) it.next();
+	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Main");
 		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
 		assertEquals(key.getId(), "SPE0058948");
@@ -165,13 +166,13 @@ public class BulkLoaderTest extends TestCase {
 			return;
 		}
 		
-		BulkLoader 	 loader = new BulkLoader(service,
+		RecipeBulkLoader 	 loader = new RecipeBulkLoader(service,
 											 reader,
 											 "twoSectionRecipe",
-											 BulkLoader.RECIPE);
+											 RecipeBulkLoader.RECIPE);
 		List			 			list;
 		Iterator	   	 			it;
-		BulkLoader.SectionNode	sectionNode;
+		RecipeBulkLoader.SectionNode	sectionNode;
 		ContentKey	 			key;
 		
 		try {
@@ -187,67 +188,67 @@ public class BulkLoaderTest extends TestCase {
 		// check on the content node values
 		it   = list.iterator();
 		
-	    sectionNode = (BulkLoader.SectionNode) it.next();
+	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Main");
 		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
 		assertEquals(key.getId(), "SEA0007114");
 		
-	    sectionNode = (BulkLoader.SectionNode) it.next();
+	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Main");
 		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
 		assertEquals(key.getId(), "SPE0058834");
 
-	    sectionNode = (BulkLoader.SectionNode) it.next();
+	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Main");
 		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
 		assertEquals(key.getId(), "DAI0068691");
 
-	    sectionNode = (BulkLoader.SectionNode) it.next();
+	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Main");
 		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
 		assertEquals(key.getId(), "DAI0008771");
 
-	    sectionNode = (BulkLoader.SectionNode) it.next();
+	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Main");
 		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
 		assertEquals(key.getId(), "VEG0011235");
 
-	    sectionNode = (BulkLoader.SectionNode) it.next();
+	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Main");
 		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
 		assertEquals(key.getId(), "VEG0058758");
 
-	    sectionNode = (BulkLoader.SectionNode) it.next();
+	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Main");
 		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
 		assertEquals(key.getId(), "SPE0000580");
 
-	    sectionNode = (BulkLoader.SectionNode) it.next();
+	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Main");
 		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
 		assertEquals(key.getId(), "VEG0011090");
 
-	    sectionNode = (BulkLoader.SectionNode) it.next();
+	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Main");
 		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
 		assertEquals(key.getId(), "GRO001138");
 
-	    sectionNode = (BulkLoader.SectionNode) it.next();
+	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Staple");
 		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
 		assertEquals(key.getId(), "FRU0005131");
 		
-	    sectionNode = (BulkLoader.SectionNode) it.next();
+	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Staple");
 		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
 		assertEquals(key.getId(), "GRO002572");
 		
-	    sectionNode = (BulkLoader.SectionNode) it.next();
+	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Staple");
 		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
 		assertEquals(key.getId(), "[clig_pepper]");
 		
-	    sectionNode = (BulkLoader.SectionNode) it.next();
+	    sectionNode = (RecipeBulkLoader.SectionNode) it.next();
 		assertEquals(sectionNode.section, "Staple");
 		key  = (ContentKey) sectionNode.node.getAttribute("SKU").getValue();
 		assertEquals(key.getId(), "GRO002521");
@@ -266,10 +267,10 @@ public class BulkLoaderTest extends TestCase {
 			return;
 		}
 		
-		BulkLoader 	 	loader = new BulkLoader(service,
+		RecipeBulkLoader 	 	loader = new RecipeBulkLoader(service,
 												reader,
 												"simpleGroup",
-												BulkLoader.CONFIGURED_PRODUCT_GROUP);
+												RecipeBulkLoader.CONFIGURED_PRODUCT_GROUP);
 		List			 	list;
 		Iterator	   	 	it;
 		ContentNodeI		node;
@@ -286,7 +287,12 @@ public class BulkLoaderTest extends TestCase {
 		assertEquals(list.size(), 5);
 
 		// process the input
-		list = loader.process();
+		try {
+			list = loader.process();
+		} catch (InvalidContentKeyException e) {
+			fail("error processing input: " + e.toString());
+			return;
+		}
 		
 		// check on the six content node values
 		it   = list.iterator();
@@ -334,10 +340,10 @@ public class BulkLoaderTest extends TestCase {
 			return;
 		}
 		
-		BulkLoader 	 	loader = new BulkLoader(service,
+		RecipeBulkLoader 	 	loader = new RecipeBulkLoader(service,
 												reader,
 												"fruitRecipe",
-												BulkLoader.RECIPE);
+												RecipeBulkLoader.RECIPE);
 		List			 	list;
 		Iterator	   	 	it;
 		ContentNodeI		node;
@@ -356,7 +362,12 @@ public class BulkLoaderTest extends TestCase {
 		assertEquals(3, list.size());
 
 		// process the input
-		list = loader.process();
+		try {
+			list = loader.process();
+		} catch (InvalidContentKeyException e) {
+			fail("error processing input: " + e.toString());
+			return;
+		}
 		
 		// check on the six content node values
 		it   = list.iterator();
@@ -438,10 +449,10 @@ public class BulkLoaderTest extends TestCase {
 			return;
 		}
 		
-		BulkLoader 	 	loader = new BulkLoader(service,
+		RecipeBulkLoader 	 	loader = new RecipeBulkLoader(service,
 												reader,
 												"pate",
-												BulkLoader.RECIPE);
+												RecipeBulkLoader.RECIPE);
 		List			 	list;
 		Iterator	   	 	it;
 		ContentNodeI		node;
@@ -460,7 +471,12 @@ public class BulkLoaderTest extends TestCase {
 		assertEquals(1, list.size());
 
 		// process the input
-		list = loader.process();
+		try {
+			list = loader.process();
+		} catch (InvalidContentKeyException e) {
+			fail("error processing input: " + e.toString());
+			return;
+		}
 		
 		// check on the six content node values
 		it   = list.iterator();
@@ -524,10 +540,10 @@ public class BulkLoaderTest extends TestCase {
 			return;
 		}
 		
-		BulkLoader 	 	loader = new BulkLoader(service,
+		RecipeBulkLoader 	 	loader = new RecipeBulkLoader(service,
 												reader,
 												"twoSectionRecipe",
-												BulkLoader.RECIPE);
+												RecipeBulkLoader.RECIPE);
 		List			 	list;
 		Iterator	   	 	it;
 		ContentNodeI		node;
@@ -546,7 +562,12 @@ public class BulkLoaderTest extends TestCase {
 		assertEquals(list.size(), 13);
 
 		// process the input
-		list = loader.process();
+		try {
+			list = loader.process();
+		} catch (InvalidContentKeyException e) {
+			fail("error processing input: " + e.toString());
+			return;
+		}
 		
 		// check on the six content node values
 		it   = list.iterator();
@@ -674,15 +695,15 @@ public class BulkLoaderTest extends TestCase {
 	 * @param recipeId the id of the recipe to process.
 	 * @param type specify what to process: a ConfiguredProductGroup
 	 *        or a Recipe
-	 * @see BulkLoader#CONFIGURED_PRODUCT_GROUP
-	 * @see BulkLoader#RECIPE
+	 * @see RecipeBulkLoader#CONFIGURED_PRODUCT_GROUP
+	 * @see RecipeBulkLoader#RECIPE
 	 */
 	private void load(Reader reader,
 			          String recipeId,
 			          int    type) {
 		
 		List			list;
-		BulkLoader 	 	loader = new BulkLoader(service, reader, recipeId, type);
+		RecipeBulkLoader 	 	loader = new RecipeBulkLoader(service, reader, recipeId, type);
 		
 		// parse the input
 		try {
@@ -693,7 +714,12 @@ public class BulkLoaderTest extends TestCase {
 		}
 		
 		// process the input
-		list = loader.process();
+		try {
+			list = loader.process();
+		} catch (InvalidContentKeyException e) {
+			fail("error processing input: " + e.toString());
+			return;
+		}
 		
 		// create a new request with all nodes, and add it to the content service
 		CmsRequest   request = new CmsRequest(user);
@@ -716,15 +742,15 @@ public class BulkLoaderTest extends TestCase {
 		try { 
 			reader = new InputStreamReader(ResourceUtil.openResource(
 						"classpath:/com/freshdirect/cms/fdstore/recipes/recwk_brd_soup_garlic.txt"));
-			load(reader, "recwk_brd_soup_garlic", BulkLoader.RECIPE);
+			load(reader, "recwk_brd_soup_garlic", RecipeBulkLoader.RECIPE);
 
 			reader = new InputStreamReader(ResourceUtil.openResource(
 						"classpath:/com/freshdirect/cms/fdstore/recipes/recwk_pchdpear_rdwn.txt"));
-			load(reader, "recwk_pchdpear_rdwn", BulkLoader.RECIPE);
+			load(reader, "recwk_pchdpear_rdwn", RecipeBulkLoader.RECIPE);
 
 			reader = new InputStreamReader(ResourceUtil.openResource(
 						"classpath:/com/freshdirect/cms/fdstore/recipes/recwk_pnfry_crabcake.txt"));
-			load(reader, "recwk_pnfry_crabcake", BulkLoader.RECIPE);
+			load(reader, "recwk_pnfry_crabcake", RecipeBulkLoader.RECIPE);
 
 		} catch (IOException e) {
 			fail("can't open input file");
@@ -749,23 +775,23 @@ public class BulkLoaderTest extends TestCase {
 		try { 
 			reader = new InputStreamReader(ResourceUtil.openResource(
 						"classpath:/com/freshdirect/cms/fdstore/recipes/clig_butter_unslt_2stk.txt"));
-			load(reader, "clig_butter_unslt_2stk.txt", BulkLoader.CONFIGURED_PRODUCT_GROUP);
+			load(reader, "clig_butter_unslt_2stk.txt", RecipeBulkLoader.CONFIGURED_PRODUCT_GROUP);
 
 			reader = new InputStreamReader(ResourceUtil.openResource(
 						"classpath:/com/freshdirect/cms/fdstore/recipes/clig_butter_unslt_4stk.txt"));
-			load(reader, "clig_butter_unslt_4stk", BulkLoader.CONFIGURED_PRODUCT_GROUP);
+			load(reader, "clig_butter_unslt_4stk", RecipeBulkLoader.CONFIGURED_PRODUCT_GROUP);
 
 			reader = new InputStreamReader(ResourceUtil.openResource(
 						"classpath:/com/freshdirect/cms/fdstore/recipes/clig_pepper.txt"));
-			load(reader, "clig_pepper", BulkLoader.CONFIGURED_PRODUCT_GROUP);
+			load(reader, "clig_pepper", RecipeBulkLoader.CONFIGURED_PRODUCT_GROUP);
 
 			reader = new InputStreamReader(ResourceUtil.openResource(
 						"classpath:/com/freshdirect/cms/fdstore/recipes/clig_rd_wn_vinegar.txt"));
-			load(reader, "clig_rd_wn_vinegar", BulkLoader.CONFIGURED_PRODUCT_GROUP);
+			load(reader, "clig_rd_wn_vinegar", RecipeBulkLoader.CONFIGURED_PRODUCT_GROUP);
 			
 			reader = new InputStreamReader(ResourceUtil.openResource(
 						"classpath:/com/freshdirect/cms/fdstore/recipes/clig_salt.txt"));
-			load(reader, "clig_salt", BulkLoader.CONFIGURED_PRODUCT_GROUP);
+			load(reader, "clig_salt", RecipeBulkLoader.CONFIGURED_PRODUCT_GROUP);
 
 		} catch (IOException e) {
 			fail("can't open input file");
@@ -812,15 +838,15 @@ public class BulkLoaderTest extends TestCase {
 		try { 
 			reader = new InputStreamReader(ResourceUtil.openResource(
 						"classpath:/com/freshdirect/cms/fdstore/recipes/recwk_brd_soup_garlic.txt"));
-			load(reader, "recwk_brd_soup_garlic", BulkLoader.RECIPE);
+			load(reader, "recwk_brd_soup_garlic", RecipeBulkLoader.RECIPE);
 
 			reader = new InputStreamReader(ResourceUtil.openResource(
 						"classpath:/com/freshdirect/cms/fdstore/recipes/recwk_pchdpear_rdwn.txt"));
-			load(reader, "recwk_pchdpear_rdwn", BulkLoader.RECIPE);
+			load(reader, "recwk_pchdpear_rdwn", RecipeBulkLoader.RECIPE);
 
 			reader = new InputStreamReader(ResourceUtil.openResource(
 						"classpath:/com/freshdirect/cms/fdstore/recipes/recwk_pnfry_crabcake.txt"));
-			load(reader, "recwk_pnfry_crabcake", BulkLoader.RECIPE);
+			load(reader, "recwk_pnfry_crabcake", RecipeBulkLoader.RECIPE);
 
 		} catch (IOException e) {
 			fail("can't open input file");
@@ -851,7 +877,7 @@ public class BulkLoaderTest extends TestCase {
 		try { 
 			reader = new InputStreamReader(ResourceUtil.openResource(
 						"classpath:/com/freshdirect/cms/fdstore/recipes/rec_test_pate.txt"));
-			load(reader, "rec_test_pate", BulkLoader.RECIPE);
+			load(reader, "rec_test_pate", RecipeBulkLoader.RECIPE);
 
 		} catch (IOException e) {
 			fail("can't open input file");

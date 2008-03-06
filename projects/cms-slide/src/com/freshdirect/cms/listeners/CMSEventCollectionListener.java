@@ -42,7 +42,7 @@ import org.apache.slide.webdav.event.WebdavEvent;
 
 import com.freshdirect.cms.CmsRuntimeException;
 import com.freshdirect.cms.fdstore.FDContentTypes;
-import com.freshdirect.cms.node.ContentNodeUtil;
+import com.freshdirect.cms.fdstore.ProductBulkLoader;
 import com.freshdirect.cms.validation.ContentValidationException;
 import com.freshdirect.framework.conf.FDRegistry;
 
@@ -146,7 +146,7 @@ public class CMSEventCollectionListener implements EventCollectionListener {
 			report.append("\n");
 			
 			try {
-				ContentNodeUtil.XLSBulkLoad(retrieveContent(event).streamContent(), userId, successes, failures);
+				ProductBulkLoader.XLSBulkLoad(retrieveContent(event).streamContent(), userId, successes, failures);
 			} catch(Exception e) {
 				report.append("Exception: " + e);
 			} finally {
