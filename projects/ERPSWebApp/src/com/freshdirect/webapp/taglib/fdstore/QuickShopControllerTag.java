@@ -151,7 +151,7 @@ public class QuickShopControllerTag extends com.freshdirect.framework.webapp.Bod
 						quickCart.setOrderId(this.ccListId);
 						quickCart.setProductType(QuickCart.PRODUCT_TYPE_CCL);
 						quickCart.setDeliveryDate(new Date());
-						quickCart.setName(FDListManager.getListName(EnumCustomerListType.CC_LIST, ccListId));
+						quickCart.setName(FDListManager.getListName(user.getIdentity(), EnumCustomerListType.CC_LIST, ccListId));
 
 					
 						FDCustomerCreatedList ccList = FDListManager.getCustomerCreatedList(user.getIdentity(), this.ccListId);					

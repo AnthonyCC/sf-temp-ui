@@ -317,7 +317,7 @@ public class FDShoppingCartControllerTag extends
 				   String ccListId = (String)request.getParameter(CclUtils.CC_LIST_ID);					
 					String listName=null;
 					try {
-						listName = FDListManager.getListName(EnumCustomerListType.CC_LIST, ccListId);
+						listName = FDListManager.getListName(user.getIdentity(), EnumCustomerListType.CC_LIST, ccListId);
 						if (listName == null) throw new JspException("List with id " + ccListId + " not found");
 					} catch (FDResourceException e) {
 						e.printStackTrace();
