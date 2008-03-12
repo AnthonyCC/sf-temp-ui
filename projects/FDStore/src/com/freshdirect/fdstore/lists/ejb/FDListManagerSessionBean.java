@@ -43,12 +43,12 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 			FDCustomerListDAO dao = new FDCustomerListDAO();
 
 			List retList = new ArrayList();
-			FDCustomerShoppingList list = (FDCustomerShoppingList) dao.load(conn, new PrimaryKey(identity.getErpCustomerPK()), EnumCustomerListType.SHOPPING_LIST, FDCustomerShoppingList.EVERY_ITEM_LIST);
+			FDCustomerShoppingList list = (FDCustomerShoppingList) dao.load(conn, identity /* new PrimaryKey(identity.getErpCustomerPK()) */, EnumCustomerListType.SHOPPING_LIST, FDCustomerShoppingList.EVERY_ITEM_LIST);
 
 			if (list == null) {
 				list = dao.generateEveryItemEverOrderedList(conn, identity);
 				dao.store(conn, list);
-				list = (FDCustomerShoppingList) dao.load(conn, new PrimaryKey(identity.getErpCustomerPK()), EnumCustomerListType.SHOPPING_LIST, FDCustomerShoppingList.EVERY_ITEM_LIST);
+				list = (FDCustomerShoppingList) dao.load(conn, identity /* new PrimaryKey(identity.getErpCustomerPK()) */, EnumCustomerListType.SHOPPING_LIST, FDCustomerShoppingList.EVERY_ITEM_LIST);
 			}
 
 			for (Iterator i = list.getLineItems().iterator(); i.hasNext();) {
@@ -99,7 +99,7 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 		try {
 			conn = getConnection();
 			FDCustomerListDAO dao = new FDCustomerListDAO();
-			return dao.load(conn, new PrimaryKey(identity.getErpCustomerPK()), type, listName);
+			return dao.load(conn, identity /* new PrimaryKey(identity.getErpCustomerPK()) */, type, listName);
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
@@ -132,12 +132,13 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public void removeCustomerListItem(PrimaryKey id) throws FDResourceException {
+	public boolean removeCustomerListItem(FDIdentity identity, PrimaryKey id) throws FDResourceException {
 		Connection conn = null;
+		boolean result = false;
 		try {
 			conn = getConnection();
 			FDCustomerListDAO dao = new FDCustomerListDAO();
-			dao.removeItem(conn, id);
+			result = dao.removeItem(conn, identity, id);
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
@@ -149,6 +150,7 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 				}
 			}
 		}
+		return result;
 	}
 
     // CCL
@@ -381,12 +383,12 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 		}			
 	}
 	
-	public String getListName(EnumCustomerListType type, String ccListId) throws FDResourceException, RemoteException {
+	public String getListName(FDIdentity identity, EnumCustomerListType type, String ccListId) throws FDResourceException, RemoteException {
 		Connection conn = null;			
 		try {
 			conn = getConnection();
 			FDCustomerListDAO dao = new FDCustomerListDAO();
-			return dao.getListName(conn, type, ccListId);
+			return dao.getListName(conn, identity, type, ccListId);
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {

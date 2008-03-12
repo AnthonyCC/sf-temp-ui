@@ -271,7 +271,7 @@ public class QuickShopControllerTag extends com.freshdirect.framework.webapp.Bod
 					}
 
 					if (action.equals("deleteItem")) {
-						FDListManager.removeCustomerListItem(new PrimaryKey(request.getParameter("deleteId")));
+						FDListManager.removeCustomerListItem(user, new PrimaryKey(request.getParameter("deleteId")));
 						quickCart.removeProduct(delPos);
 					}
 				}

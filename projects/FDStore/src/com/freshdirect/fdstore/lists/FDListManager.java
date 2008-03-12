@@ -86,11 +86,11 @@ public class FDListManager {
 		
 	}
 	
-	public static void removeCustomerListItem(PrimaryKey id) throws FDResourceException {
+	public static void removeCustomerListItem(FDUserI user, PrimaryKey id) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDListManagerSB sb = managerHome.create();
-			sb.removeCustomerListItem(id);
+			sb.removeCustomerListItem(user.getIdentity(), id);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -246,11 +246,11 @@ public class FDListManager {
 			}		
 		}
 		
-		public static String getListName(EnumCustomerListType type, String ccListId) throws FDResourceException {
+		public static String getListName(FDIdentity identity, EnumCustomerListType type, String ccListId) throws FDResourceException {
 			lookupManagerHome();
 		    try {
 		    	FDListManagerSB sb = managerHome.create();
-		    	return sb.getListName(type, ccListId);
+		    	return sb.getListName(identity, type, ccListId);
 		    } catch (CreateException ce) {
 				invalidateManagerHome();
 				throw new FDResourceException(ce, "Error creating session bean");

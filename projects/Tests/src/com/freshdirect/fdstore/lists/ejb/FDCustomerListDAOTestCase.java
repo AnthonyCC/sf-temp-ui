@@ -77,8 +77,10 @@ public class FDCustomerListDAOTestCase extends DbTestCaseSupport{
 		this.setUpDataSet("SampleList.xml");
 
 		String customerPk = "C1";
+		FDIdentity identity = new FDIdentity(customerPk);
+
 		String name = "Test list 1";
-		FDCustomerShoppingList list = (FDCustomerShoppingList) dao.load(conn, new PrimaryKey(customerPk), EnumCustomerListType.SHOPPING_LIST, name);
+		FDCustomerShoppingList list = (FDCustomerShoppingList) dao.load(conn, identity, EnumCustomerListType.SHOPPING_LIST, name);
 		assertEquals(list.getName(), name);
 		assertEquals(list.getCustomerPk().getId(), customerPk);
 		assertEquals(2, list.getLineItems().size());
@@ -110,8 +112,10 @@ public class FDCustomerListDAOTestCase extends DbTestCaseSupport{
 		this.setUpDataSet("SampleList.xml");
 
 		String customerPk = "C1";
+		FDIdentity identity = new FDIdentity(customerPk);
+
 		String name = "Test recipe list 1";
-		FDCustomerRecipeList list = (FDCustomerRecipeList) dao.load(conn, new PrimaryKey(customerPk), EnumCustomerListType.RECIPE_LIST, name);
+		FDCustomerRecipeList list = (FDCustomerRecipeList) dao.load(conn, identity, EnumCustomerListType.RECIPE_LIST, name);
 		assertEquals(list.getName(), name);
 		assertEquals(list.getCustomerPk().getId(), customerPk);
 		assertEquals(2, list.getLineItems().size());
@@ -120,8 +124,10 @@ public class FDCustomerListDAOTestCase extends DbTestCaseSupport{
 	public void testShoppingListStore() throws Exception {
 		this.setUpDataSet("SampleList.xml");
 
-		PrimaryKey pk = new PrimaryKey("C1");
-		FDCustomerShoppingList list = (FDCustomerShoppingList) dao.load(conn, pk, EnumCustomerListType.SHOPPING_LIST, "Test list 1");
+		String customerPk = "C1";
+		FDIdentity identity = new FDIdentity(customerPk);
+
+ 		FDCustomerShoppingList list = (FDCustomerShoppingList) dao.load(conn, identity, EnumCustomerListType.SHOPPING_LIST, "Test list 1");
 
 		idGenerator.add("D1");
 		idGenerator.add("D2");
@@ -134,8 +140,10 @@ public class FDCustomerListDAOTestCase extends DbTestCaseSupport{
 	public void testRecipeListStore() throws Exception {
 		this.setUpDataSet("SampleList.xml");
 
-		PrimaryKey pk = new PrimaryKey("C1");
-		FDCustomerRecipeList list = (FDCustomerRecipeList) dao.load(conn, pk, EnumCustomerListType.RECIPE_LIST, "Test recipe list 1");
+		String customerPk = "C1";
+		FDIdentity identity = new FDIdentity(customerPk);
+
+		FDCustomerRecipeList list = (FDCustomerRecipeList) dao.load(conn, identity, EnumCustomerListType.RECIPE_LIST, "Test recipe list 1");
 
 		idGenerator.add("R1");
 		idGenerator.add("R2");
@@ -596,8 +604,58 @@ public class FDCustomerListDAOTestCase extends DbTestCaseSupport{
 		} catch (SQLException e) {
 			// Catch expected exception
 		}
-		
 	}
 	
 
+	/**
+	 * Try to access CCL list created by other user which is prohibited
+	 * 
+	 * @throws Exception
+	 */
+	public void testLoadOtherUsersList() throws Exception {
+		this.setUpDataSet("CCLList.xml");
+		
+		String customerPk = "C2"; // other user
+		FDIdentity identity = new FDIdentity(customerPk);
+
+		FDCustomerCreatedList list = (FDCustomerCreatedList) dao.getCustomerCreatedList(conn, identity, "L1");
+		assertNull(list);
+	}
+
+
+	/**
+	 * Try to remove a list item from a list which is not mine
+	 * 
+	 * @throws Exception
+	 */
+	public void testRemoveItemFromOthersList() throws Exception {
+		this.setUpDataSet("CCLList.xml");
+
+		String customerPk = "C2"; // other user
+		FDIdentity identity = new FDIdentity(customerPk);
+
+		PrimaryKey itemPK = new PrimaryKey("D3");
+		
+		boolean result = dao.removeItem(conn, identity, itemPK);
+		assertFalse(result);
+	}
+
+
+	/**
+	 * Try to enquire the name of a list which is not mine
+	 * 
+	 * @throws Exception
+	 */
+	public void testGetOtherUsersListName() throws Exception {
+		this.setUpDataSet("CCLList.xml");
+
+		FDIdentity identityOrig = new FDIdentity("C1");
+		FDIdentity identity = new FDIdentity("C2");
+
+		assertNotNull(dao.getListName(conn, identityOrig, EnumCustomerListType.CC_LIST, "L3"));
+
+		assertNull(dao.getListName(conn, identity, EnumCustomerListType.CC_LIST, "L3"));
+		assertNull(dao.getListName(conn, identity, EnumCustomerListType.CC_LIST, "L4"));
+		assertNull(dao.getListName(conn, identity, EnumCustomerListType.CC_LIST, "L5"));
+	}
 }

@@ -24,7 +24,7 @@ public interface FDListManagerSB extends EJBObject {
 
     public void storeCustomerList(FDCustomerList list) throws FDResourceException, RemoteException;
     
-    public void removeCustomerListItem(PrimaryKey id) throws FDResourceException, RemoteException;
+    public boolean removeCustomerListItem(FDIdentity identity, PrimaryKey id) throws FDResourceException, RemoteException;
 
 	public void createCustomerCreatedList(FDIdentity identity, String listName) throws FDResourceException, RemoteException,  FDCustomerListExistsException;
 	
@@ -42,7 +42,7 @@ public interface FDListManagerSB extends EJBObject {
 	
 	public FDCustomerCreatedList getCustomerCreatedList(FDIdentity identity,String ccListId) throws FDResourceException, RemoteException;
 	
-	public String getListName(EnumCustomerListType type, String ccListId) throws FDResourceException, RemoteException;
+	public String getListName(FDIdentity identity, EnumCustomerListType type, String ccListId) throws FDResourceException, RemoteException;
 	
 	public void renameCustomerCreatedList(FDIdentity identity, String oldName, String newName) throws FDCustomerListExistsException, FDResourceException, RemoteException;
 

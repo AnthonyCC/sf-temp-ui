@@ -202,7 +202,7 @@ public class CustomerCreatedListAjaxFacade implements Serializable {
 	 */
 	public void removeLineItem(HttpSession session, String lineId) throws FDResourceException, AjaxFacadeException {
 		FDUserI user = getUser(session, FDUserI.SIGNED_IN);
-		FDListManager.removeCustomerListItem(new PrimaryKey(lineId));
+		FDListManager.removeCustomerListItem(user, new PrimaryKey(lineId));
 		QuickCartCache.invalidateOnChange(session, QuickCart.PRODUCT_TYPE_CCL,null,null);
 
 		user.invalidateCache();

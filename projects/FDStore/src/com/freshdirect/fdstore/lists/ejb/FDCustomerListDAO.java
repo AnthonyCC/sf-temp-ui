@@ -112,16 +112,16 @@ class FDCustomerListDAO {
 
 	private static final String LOAD_CUSTOMER_LIST = "SELECT * from CUST.CUSTOMERLIST cl WHERE cl.customer_id = ? AND cl.name = ? AND cl.type = ?";
 
-   
-	public FDCustomerList load(Connection conn, PrimaryKey customerPk, EnumCustomerListType type, String name) throws SQLException {
+	/* 2 */
+	public FDCustomerList load(Connection conn, FDIdentity identity, EnumCustomerListType type, String name) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(LOAD_CUSTOMER_LIST);
-		ps.setString(1, customerPk.getId());
+		ps.setString(1, identity.getErpCustomerPK());
 		ps.setString(2, name);
 		ps.setString(3, type.getName());
 		ResultSet rs = ps.executeQuery();
 
 		if (!rs.next()) {
-			LOGGER.debug("Attempted to load list of type "+ type.getName()+" with name " + name + " for customer " + customerPk.getId() + ": no list found.");
+			LOGGER.debug("Attempted to load list of type "+ type.getName()+" with name " + name + " for customer " + identity.getErpCustomerPK() + ": no list found.");
 			rs.close();
 			ps.close();
 			return null;
@@ -133,6 +133,8 @@ class FDCustomerListDAO {
 		rs.close();
 		ps.close();
 		
+		
+		PrimaryKey customerPk = new PrimaryKey(identity.getErpCustomerPK());
 		
 		if (EnumCustomerListType.RECIPE_LIST.equals(type)) {
 			return loadRecipeList(conn, customerPk, name, pk);
@@ -335,12 +337,38 @@ class FDCustomerListDAO {
 		list.setModificationDate(persistedList.getModificationDate());
 	}
 
+	// ensure list item is on a list owned by logged in user
+	private static final String LIST_ITEM_OWNED = "SELECT count(*) AS CNT FROM CUST.CUSTOMERLIST_DETAILS D JOIN CUST.CUSTOMERLIST L ON(D.LIST_ID = L.ID) WHERE D.ID = ? AND L.CUSTOMER_ID = ?";
 	private static final String REMOVE_DETAIL = "UPDATE CUST.CUSTOMERLIST_DETAILS SET DELETE_DATE = ?, RECENT_DATE = ? WHERE ID = ?";
 	private static final String UPDATE_LIST_MODIFICATION_DATE_BY_ITEM_ID = 		
 		"UPDATE cust.customerlist SET modification_date = ? WHERE id in (SELECT cl.id FROM cust.customerlist cl, cust.customerlist_details cld WHERE cl.id = cld.list_id AND cld.id = ?)";
 	
-	public void removeItem(Connection conn, PrimaryKey id) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement(REMOVE_DETAIL);
+
+
+	/**
+	 * Removes a list item from its list
+	 * 
+	 * @param conn DB connection
+	 * @param identity Identity of current user
+	 * @param id item ID
+	 * @throws SQLException
+	 */
+	/* 2 */
+	public boolean removeItem(Connection conn, FDIdentity identity, PrimaryKey id) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement(LIST_ITEM_OWNED);
+		ps.setString(1, id.getId()); // list item ID
+		ps.setString(2, identity.getErpCustomerPK()); // customer ID
+		ResultSet rs = ps.executeQuery();
+		boolean itemOwnedByCurrentUser = (rs.next() && rs.getInt("CNT") == 1);
+		ps.close();
+
+		if (!itemOwnedByCurrentUser) {
+			// list item is not owned by current user
+			return false;
+		}
+
+
+		ps = conn.prepareStatement(REMOVE_DETAIL);
 		Timestamp ts = new Timestamp(getCurrentDate().getTime());
 		ps.setTimestamp(1, ts);
 		ps.setTimestamp(2, ts);
@@ -353,6 +381,8 @@ class FDCustomerListDAO {
 		ps.setString(2,id.getId());
 		ps.execute();
 		ps.close();
+		
+		return true;
 	}
 
 	private String QUERY_EVERY_ITEM = "SELECT ol.sku_code, ol.sales_unit, ol.configuration, "
@@ -567,12 +597,14 @@ class FDCustomerListDAO {
 		return CCList;
 	 }
 	
-	private static final String GET_LIST_NAME = "SELECT name FROM cust.customerlist cl WHERE cl.id=? AND cl.type=?";
+	private static final String GET_LIST_NAME = "SELECT name FROM cust.customerlist cl WHERE cl.id= ? AND cl.type= ? AND cl.customer_id = ?";
 	
-	public String getListName(Connection conn, EnumCustomerListType type, String ccListId) throws SQLException {
+	/* 2 */
+	public String getListName(Connection conn, FDIdentity identity, EnumCustomerListType type, String ccListId) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(GET_LIST_NAME);
 		ps.setString(1, ccListId );
 		ps.setString(2, type.getName());
+		ps.setString(3, identity.getErpCustomerPK());
 		ResultSet rs = ps.executeQuery();
 		String name = null;
 

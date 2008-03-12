@@ -259,7 +259,7 @@ public class FDShoppingCartControllerTag extends
 							} // item
 				        } // items
 				    } else if ("remove".equalsIgnoreCase(listAction)){
-				    	FDListManager.removeCustomerListItem(new PrimaryKey(lineId));
+				    	FDListManager.removeCustomerListItem(user, new PrimaryKey(lineId));
 						QuickCartCache.invalidateOnChange(session, QuickCart.PRODUCT_TYPE_CCL,ccListId,null);
 						user.invalidateCache();
 						worked = true;
