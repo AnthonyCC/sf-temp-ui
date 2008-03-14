@@ -230,19 +230,20 @@ public abstract class ColumnExtractor {
 	
 	public static class BrowsePath extends ColumnExtractor {
 		
+		protected boolean linked = false;
 		protected int maxPick = -1;
 		protected java.util.Random R = null;
 		
-		public BrowsePath() {
-			this(null,-1);
+		public BrowsePath(boolean linked) {
+			this(linked,null,-1);
 		}
 		
-		public BrowsePath(java.util.Random R, int maxPick) {
+		public BrowsePath(boolean linked, java.util.Random R, int maxPick) {
 			super("BrowsePath");
+			this.linked = linked;
 			this.R = R;
 			this.maxPick = maxPick;
 		}
-		
 	
 		public void cacheAttribute(ContentBundle.RowCache cache) throws AbortRowException {
 			com.freshdirect.cms.ContentType type = cache.getContentNodeModel().getContentKey().getType();
@@ -300,28 +301,14 @@ public abstract class ColumnExtractor {
 			} else {
 				path.append(':').append(params.getClass().getName());
 			}
-			return path;
+			
+			if (linked) {
+				return new StringBuffer("<a href=\"").
+				append(StringUtil.escapeHTML(path.toString())).
+				append("\">").append(StringUtil.escapeHTML(path.toString())).append("</a>").toString();
+			} else return path;
 		}
 	};
-	
-	public static class LinkedBrowsePath extends BrowsePath {
-		
-		public LinkedBrowsePath() {
-			super();
-		}
-		
-		public LinkedBrowsePath(java.util.Random R, int maxPick) {
-			super(R,maxPick);
-		}
-		
-		public Object extract(ContentBundle.RowCache cache) throws AbortRowException {
-			String unLinked = super.extract(cache).toString();
-			return new StringBuffer("<a href=\"").
-				append(StringUtil.escapeHTML(StringUtil.escapeUri(unLinked))).
-				append("\">").append(StringUtil.escapeHTML(unLinked)).append("</a>").toString();
-		}
-	};
-	
 	
 	protected static List getProductConfigurationVariations(ProductModel productModel, int maxPick, java.util.Random R) {
 

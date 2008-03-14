@@ -22,7 +22,7 @@
             for(int i=0; i< columns.length; ++i) {
                 if("rec_id".equals(columns[i])) columnExtractors.add(ColumnExtractor.Id);
 		else if ("spath".equals(columns[i])) columnExtractors.add(ColumnExtractor.ServletPath);
-		else if ("bpath".equals(columns[i])) columnExtractors.add(new ColumnExtractor.BrowsePath());
+		else if ("bpath".equals(columns[i])) columnExtractors.add(new ColumnExtractor.BrowsePath(html));
             }
          }
       }

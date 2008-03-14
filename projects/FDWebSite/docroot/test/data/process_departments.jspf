@@ -19,7 +19,7 @@
             String[] columns = request.getParameter(name).split("\\.");
             for(int i=0; i< columns.length; ++i) {
                 if("dept_id".equals(columns[i])) columnExtractors.add(ColumnExtractor.Id);
-                else if("bpath".equals(columns[i])) columnExtractors.add(new ColumnExtractor.BrowsePath());
+                else if("bpath".equals(columns[i])) columnExtractors.add(new ColumnExtractor.BrowsePath(html));
             }
          }
       }

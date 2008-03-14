@@ -35,10 +35,17 @@ END {
       #    VAR = \sum_{i=1}^n (x_i - A)^2 == (\sum_{i=1}^n) - nA^2
       A = n ? S[i]/n : 0;
       STD = n > 1 ? sqrt((SS[i] - n*A*A)/(n-1)) : 0;
-      printf("YVALUE=%.4lf\n",MIN[i]) > F[i]"_min.property";
-      printf("YVALUE=%.4lf\n",MAX[i]) > F[i]"_max.property";
-      printf("YVALUE=%.4lf\n",A) > F[i]"_ave.property";
-      printf("YVALUE=%.4lf\n",A-STD/2) > F[i]"_stdlow.property";
-      printf("YVALUE=%.4lf\n",A+STD/2) > F[i]"_stdhigh.property";
+      Fmin=F[i]"_min.property";
+      Fmax=F[i]"_max.property";
+      Fave=F[i]"_ave.property";
+      Flow=F[i]"_stdlow.property";
+      Fhigh=F[i]"_stdhigh.property";
+
+   
+      printf("YVALUE=%.4lf\n",MIN[i]) > Fmin;
+      printf("YVALUE=%.4lf\n",MAX[i]) > Fmax;
+      printf("YVALUE=%.4lf\n",A) > Fave;
+      printf("YVALUE=%.4lf\n",A-STD/2) > Flow;
+      printf("YVALUE=%.4lf\n",A+STD/2) > Fhigh;
    }
 }

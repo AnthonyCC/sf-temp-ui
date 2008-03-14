@@ -24,7 +24,7 @@
                 else if ("parent_id".equals(columns[i])) columnExtractors.add(ColumnExtractor.ParentNodeId);
                 else if ("depth".equals(columns[i])) columnExtractors.add(ColumnExtractor.Depth);
                 else if ("spath".equals(columns[i])) columnExtractors.add(ColumnExtractor.ServletPath);
-                else if ("bpath".equals(columns[i])) columnExtractors.add(new ColumnExtractor.BrowsePath());
+                else if ("bpath".equals(columns[i])) columnExtractors.add(new ColumnExtractor.BrowsePath(html));
             }
          }
       }

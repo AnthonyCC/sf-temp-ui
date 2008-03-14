@@ -2,6 +2,8 @@
 #
 # @author istvan
 
+echo hello
+
 # -- load option utils
 source `dirname $0`/optutil.sh
 

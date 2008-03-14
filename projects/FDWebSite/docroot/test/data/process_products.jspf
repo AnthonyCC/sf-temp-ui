@@ -92,8 +92,8 @@
 	       else if ("min_quantity".equals(columns[i])) columnExtractors.add(ColumnExtractor.MinimumQuantity);
 	       else if ("bpath".equals(columns[i])) {
 	          String bmax = (String)request.getParameter("bvar_max");
-		  if (bmax == null || "".equals(bmax)) columnExtractors.add(new ColumnExtractor.BrowsePath());
-		  else columnExtractors.add(new ColumnExtractor.BrowsePath(new Random(seed), Integer.parseInt(bmax)));
+		  if (bmax == null || "".equals(bmax)) columnExtractors.add(new ColumnExtractor.BrowsePath(html));
+		  else columnExtractors.add(new ColumnExtractor.BrowsePath(html,new Random(seed), Integer.parseInt(bmax)));
 	       } else if ("avail_skus".equals(columns[i])) columnExtractors.add(ColumnExtractor.AvailableSkuCodes);
 	       else if ("skus".equals(columns[i])) columnExtractors.add(ColumnExtractor.SkuCodes);
 	       else if ("perm_skus".equals(columns[i])) columnExtractors.add(variationsExtractor.getExtractor(ColumnExtractorSet.SKU_CODE));

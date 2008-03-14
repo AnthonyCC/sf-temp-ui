@@ -161,8 +161,8 @@
                 else if ("spath".equals(columns[i])) columnExtractors.add(ColumnExtractor.ServletPath);
                 else if ("bpath".equals(columns[i])) {
                    String bmax = (String)request.getParameter("bvar_max");
-                   if (bmax == null || "".equals(bmax)) columnExtractors.add(new ColumnExtractor.BrowsePath());
-                   else columnExtractors.add(new ColumnExtractor.BrowsePath(new Random(seed), Integer.parseInt(bmax)));
+                   if (bmax == null || "".equals(bmax)) columnExtractors.add(new ColumnExtractor.BrowsePath(html));
+                   else columnExtractors.add(new ColumnExtractor.BrowsePath(html,new Random(seed), Integer.parseInt(bmax)));
                 }
             }
          }
@@ -239,13 +239,13 @@
 <%   
       }  // if HTML
 
-      for(Iterator c = row.iterator(); c.hasNext(); ) {
+      for(int c = 0; c < row.size(); ++c) {
          if (html) {
 %>
-         <td><tt><%= c.next()%></tt></td>
+         <td><tt><%= row.get(c)%></tt></td>
 <%        
          } else { // CVS
-%><%= c.next()%><% if (c.hasNext()) {%>,<% } %><%
+%><%= row.get(c)%><% if (c < row.size() - 1) {%>,<% } %><%
          } 
       } // each column
       ++rowCount;
