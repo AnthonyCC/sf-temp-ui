@@ -1504,7 +1504,9 @@
 			<pathelement location="${thirdparty.home}/commons-codec-1.2.jar"/>
 
 			<pathelement location="${work.dir}/CMS.jar"/>
-			<pathelement location="${work.dir}/Framework.jar" />
+			<pathelement location="${work.dir}/Framework.jar"/>
+			<pathelement location="${work.dir}/ERPServices.jar"/>
+			
 		</path>
 		<trycatch>
 			<try>
