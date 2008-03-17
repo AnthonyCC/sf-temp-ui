@@ -6,7 +6,6 @@ echo -1
 
 # -- read config file
 
-echo 0
 LOCALDIR=`dirname $0`;
 
 echo 1
