@@ -5,6 +5,7 @@
 
 
 # -- read config file
+echo 0
 LOCALDIR=`dirname $0`;
 echo 1
 source "$LOCALDIR"/optutil.sh
