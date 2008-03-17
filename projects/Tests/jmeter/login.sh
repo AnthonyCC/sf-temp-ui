@@ -3,24 +3,19 @@
 #
 # @author saik
 echo -1
-
 # -- read config file
-
 LOCALDIR=`dirname $0`;
-
 echo 1
 source "$LOCALDIR"/optutil.sh
 echo 2
 source "$LOCALDIR"/calcutil.sh
 echo 3
-
 source "$LOCALDIR"/login.conf
 echo 4
 HOST=`echo "$SERVER" | cut -f1 -d:`;
 echo 5
 PORT=`echo "$SERVER" | cut -f2 -d:`;
 echo 6
-
 if [ -z "$PORT" -o "$PORT" = "$HOST" ]; then
    PORT=80;
 fi
