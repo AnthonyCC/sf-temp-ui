@@ -22,7 +22,7 @@ fi
 
 RESULTFILE="$WORKDIR"/login_user.out;
 rm -f "$RESULTFILE";
-echo "$JMETERJAR"
+echo $JMETERJAR
 
 # -- run test
 sh -e "$LOCALDIR"/jmeter.sh -jar "$JMETERJAR" \
