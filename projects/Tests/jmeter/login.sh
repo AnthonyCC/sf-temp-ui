@@ -4,8 +4,8 @@
 # @author saik
 echo -1
 # -- read config file
+echo `dirname $0`
 LOCALDIR=`dirname $0`;
-echo LOCALDIR
 source "$LOCALDIR"/optutil.sh
 echo 2
 source "$LOCALDIR"/calcutil.sh
