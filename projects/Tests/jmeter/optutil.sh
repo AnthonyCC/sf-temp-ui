@@ -164,7 +164,6 @@ function runprogs() {
    PROGS="$1";
    checkvars "s d w j";
    for program in $PROGS; do
-      echo $program
       sh -e $program -d "$OUTDIR" -s "$SERVER" -w "$WORKDIR" -j "$JMETERJAR";
    done
 }

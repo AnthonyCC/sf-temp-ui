@@ -22,7 +22,7 @@ parseopts "s d p w j h" $*
 
 # -- check param values
 checkvars "s d p j w"
-echo before
+
 # -- run test scripts
 runprogs "$PROGS" 
-echo after
+
