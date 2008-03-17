@@ -775,7 +775,7 @@ public class BulkLoaderTest extends TestCase {
 		try { 
 			reader = new InputStreamReader(ResourceUtil.openResource(
 						"classpath:/com/freshdirect/cms/fdstore/recipes/clig_butter_unslt_2stk.txt"));
-			load(reader, "clig_butter_unslt_2stk.txt", RecipeBulkLoader.CONFIGURED_PRODUCT_GROUP);
+			load(reader, "clig_butter_unslt_2stk", RecipeBulkLoader.CONFIGURED_PRODUCT_GROUP);
 
 			reader = new InputStreamReader(ResourceUtil.openResource(
 						"classpath:/com/freshdirect/cms/fdstore/recipes/clig_butter_unslt_4stk.txt"));
@@ -794,7 +794,7 @@ public class BulkLoaderTest extends TestCase {
 			load(reader, "clig_salt", RecipeBulkLoader.CONFIGURED_PRODUCT_GROUP);
 
 		} catch (IOException e) {
-			fail("can't open input file");
+			fail("can't open input file; exc=" + e);
 			return;
 		}
 
