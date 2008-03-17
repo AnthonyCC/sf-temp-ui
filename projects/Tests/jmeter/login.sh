@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 #
-# @author istvan
+# @author saik
 
 
 # -- read config file
@@ -37,14 +37,14 @@ rm -f "$RESULTFILE";
 # -- run test
 sh -e "$LOCALDIR"/jmeter.sh -jar "$JMETERJAR" \
       -Jhostname="$HOST" -Jport="$PORT" \
-      -Jbrowser_threads="$BROWSER_THREADS" -Jn="$LOOP_COUNTER" \
+      -Jlogin_threads="$LOGIN_THREADS" -Jlogin_outerloop_counter="$LOOP_COUNTER" \
       -Jtest_user="$TESTUSER" -Juser_pass="$USERPASS" \
       -Jlogin_output="$RESULTFILE" \
       -l "$WORKDIR/login_jmeter.log" -n \
       -t "$LOCALDIR"/login.jmx 
 
 calc_total /login\.jsp/ "$RESULTFILE" > "$OUTDIR"/"$LOGIN_STEM"_total.property;
-calc_error /login\.jsp/ "$RESULTFILE" 200 > "$OUTDIR"/"$LOGIN_STEM"_error.property
+calc_error /login\.jsp/ "$RESULTFILE" 302 > "$OUTDIR"/"$LOGIN_STEM"_error.property
 
 cat "$RESULTFILE" | calc_response_and_latency `dirname $0` /login\.jsp/ "$LOGIN_STEM" "$OUTDIR"
 
