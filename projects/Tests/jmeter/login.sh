@@ -2,7 +2,7 @@
 #
 #
 # @author saik
-
+echo -1
 
 # -- read config file
 echo 0
