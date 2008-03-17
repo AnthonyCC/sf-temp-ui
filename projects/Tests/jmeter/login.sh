@@ -12,18 +12,6 @@ source "$LOCALDIR"/calcutil.sh
 
 source "$LOCALDIR"/login.conf
 
-# -- parse command line
-#  -s SERVER
-#  -v VARMAX
-#  -n MAXKEYS
-#  -r SEED
-#  -d OUTDIR
-#  -w WORKDIR
-parseopts "s d w j" $*;
-
-# -- check for valid values
-checkvars "s d w j";
-
 HOST=`echo "$SERVER" | cut -f1 -d:`;
 PORT=`echo "$SERVER" | cut -f2 -d:`;
 
