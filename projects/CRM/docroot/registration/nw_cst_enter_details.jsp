@@ -16,38 +16,85 @@
 <tmpl:insert template='/template/top_nav.jsp'>
 
 <tmpl:put name='title' direct='true'>New Customer > Enter Details</tmpl:put>
-
-<%  FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER); %>
-
+<%
+FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+%>
 <fd:RegistrationController actionName="register" successPage='/main/account_details.jsp' result='result' fraudPage='/registration/proceed_w_caution.jsp'>
 <tmpl:put name='content' direct='true'>
+<form name="registration" method="POST" action="nw_cst_enter_details.jsp">
+<input type="hidden" name="terms" value="true">
 <table width="100%" cellpadding="0" cellspacing="2" border="0" align="CENTER" class="sub_nav">
-	<form name="registration" method="POST" action="nw_cst_enter_details.jsp">
-	<input type="hidden" name="terms" value="true">
 	<TR valign="MIDDLE">
 		<TD width="35%" class="sub_nav_title">&nbsp;Create New Customer: 2. Enter Details</TD>
 		<TD width="45%" class="error_detail">
 			<FONT class="space4pix"><BR></FONT>&nbsp;
 			<%= (result.isFailure() && !result.hasError("technical_difficulty") && !result.hasError("fraud")) ? "&raquo; The marked fields contain invalid or missing data. " : "" %>
+			<% if (result.isFailure()) { %><a href="#" onclick="var k=document.getElementById('detail-err-view');if(k){k.style.display = (k.style.display=='none'?'':'none');};return false;">(error list)</a><% } %>
 			<fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'><span class="error_detail"><%= errorMsg %></span><br></fd:ErrorHandler>
 			<fd:ErrorHandler result='<%=result%>' name='fraud' id='errorMsg'><span class="error_detail"><%= errorMsg %></span><br></fd:ErrorHandler>
 		</TD>
-		<TD width="20%" align="RIGHT"><a href="<%= response.encodeURL("/registration/nw_cst_check_zone.jsp") %>" class="cancel">CANCEL</a> </TD><td width="20%" align="right"><input type="submit" class="submit" value="CREATE ACCOUNT"></td>
+		<TD width="20%" align="RIGHT"><a href="<%= response.encodeURL("/registration/nw_cst_check_zone.jsp") %>" class="cancel">CANCEL</a> </TD>
+		<td width="20%" align="right"><input type="submit" class="submit" value="CREATE ACCOUNT"></td>
 	</TR>
-</TABLE>
-<div class="content_scroll" style="padding: 0px; height: 85%;">
-
-
-
-<% // remove after testing....dumps out the errors.
- if (!result.isSuccess()){
+<!-- detail error list view START -->
+<%
+if (result.isFailure()) {
     Collection errs = result.getErrors();
-    Iterator itr = errs.iterator();
-    while (itr.hasNext()){
-		ActionError err = (ActionError)itr.next();
-    }
+    Collection wrns = result.getWarnings();
+%>
+    <tr id="detail-err-view" style="display:none">
+       <td style="width: 100%; border: 4px solid red; padding: 6px 6px" colspan="4">
+<%
+    // iterate errors
+    if (errs.size() > 0) {
+%>
+	       <b>Errors:</b><br/>
+	       <table border="0" width="100%">
+<%
+        Iterator it = errs.iterator();
+        while (it.hasNext()) {
+            ActionError msg = (ActionError) it.next();
+%>
+                <tr>
+                    <td style="vertical-align: top; color: red"><%= msg.getType() %></td>
+                    <td style="width:100%" nowrap><%= msg.getDescription() %></td>
+                </tr>
+<%
+        }
+%>
+            </table>
+<%
+    } // end of errors
+
+    // iterate warnings
+    if (wrns.size() > 0) {
+%>
+            <b>Warnings:</b><br/>
+            <table cellspacing="0" cellpadding="0" width="100%">
+<%
+        Iterator it = wrns.iterator();
+        while (it.hasNext()) {
+            ActionWarning msg = (ActionWarning) it.next();
+%>
+                <tr>
+                    <td style="vertical-align: top; color: red"><%= msg.getType() %></td>
+                    <td style="width:100%" nowrap><%= msg.getDescription() %></td>
+                </tr>
+<%
+        }
+%>
+            </table>
+<%
+    } // end of warnings
+%>
+        </td>
+    </tr>
+<%
 }
 %>
+<!-- detail error list view END -->
+</TABLE>
+<div class="content_scroll" style="padding: 0px; height: 85%;">
 <script language="JavaScript" type="text/javascript">
 	function toggleUseDelivery(formObj) {
 		if (formObj.useDelivery.checked == true) {
@@ -586,7 +633,7 @@ function fillAddress(arg_address, arg_apt){
 	</div>
 </tmpl:put>
 
-
+</form>
 
 </fd:RegistrationController>
 
