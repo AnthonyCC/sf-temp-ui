@@ -50,6 +50,7 @@ import com.freshdirect.delivery.EnumZipCheckResponses;
 import com.freshdirect.delivery.ExceptionAddress;
 import com.freshdirect.delivery.InvalidAddressException;
 import com.freshdirect.delivery.ReservationException;
+import com.freshdirect.delivery.ReservationUnavailableException;
 import com.freshdirect.delivery.model.DlvRegionModel;
 import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
@@ -258,7 +259,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		//
 		if (!chefsTable && (timeslotModel.getCapacity()-timeslotModel.calculateCurrentAllocation(new Date())) <= 0) {
 			this.getSessionContext().setRollbackOnly();
-			throw new ReservationException("No more capacity available for this timeslot");
+			throw new ReservationUnavailableException("No more capacity available for this timeslot");
 		}
 
 		//

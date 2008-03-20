@@ -12,6 +12,7 @@ import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.ReservationException;
+import com.freshdirect.delivery.ReservationUnavailableException;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
@@ -23,6 +24,7 @@ import com.freshdirect.webapp.action.WebActionSupport;
 import com.freshdirect.webapp.taglib.fdstore.AddressUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 
 /**
  * @author knadeem
@@ -138,9 +140,11 @@ public class ChooseTimeslotAction extends WebActionSupport {
 
 			return this.getResult().isSuccess() ? SUCCESS : ERROR;
 
+		} catch (ReservationUnavailableException re) {
+			this.addError("technical_difficulty", SystemMessageList.MSG_CHECKOUT_TIMESLOT_NA);
+			return ERROR;
 		} catch (ReservationException re) {
 			throw new FDResourceException(re);
 		}
 	}
-
 }

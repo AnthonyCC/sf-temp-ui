@@ -58,7 +58,7 @@ public interface SystemMessageList {
 	public final static String MSG_CHECKOUT_PICKUP_CONTACT_NUMBER = "Local Contact Number is required for Fire Island orders.";
 	public final static String MSG_CHECKOUT_GENERIC_FRAUD		= "Please call FreshDirect at {0} and a customer service representative will assist you in placing this order.";
 	public final static String MSG_CHECKOUT_MAKEGOOD_TOO_LARGE = "Make-good order amount too large. Please contact a supervisor to process the order.";
-	
+	public final static String MSG_CHECKOUT_TIMESLOT_NA			= "Sorry, the selected timeslot is no longer available. Please try again.";
 	// Credit Card
 	public final static String MSG_INVALID_ACCOUNT_NUMBER 	= "This number is invalid, please double-check your account number and enter the information again.";
 	public final static String MSG_CARD_EXPIRATION_DATE			= "Please double-check your credit card's expiration date and enter it again.";
