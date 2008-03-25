@@ -3,7 +3,9 @@
 package com.freshdirect.fdstore.content;
 
 public class Html extends MediaModel {
-    
+	// name of default (blank) file
+    public static final String BLANK_FILE_NAME = "blank_file.txt";
+
     public Html() {
         super();
         mediaType = MediaModel.TYPE_HTML;
@@ -18,4 +20,17 @@ public class Html extends MediaModel {
     	return "Html["+ getPK() +", "+ getPath() +"]";
     }
 
+
+    /**
+     * Returns true IF path is NULL OR path is EMPTY OR it points to the default blank file 
+     *
+     * @author segabor
+     * @return path is blank
+     * 
+     */
+    public boolean isBlank() {
+    	String path = getPath();
+
+    	return path == null || path.trim().length() == 0 || path.indexOf(BLANK_FILE_NAME) >= 0;
+    }
 }

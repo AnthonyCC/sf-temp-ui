@@ -55,6 +55,14 @@ public class CategoryModel extends ContentNodeModelImpl {
 		return getAttribute("SIDENAV_PRIORITY", 1);
 	}
 
+	public int getColumnSpan() {
+		return getAttribute("COLUMN_SPAN", 2);
+	}
+
+	public boolean getFakeAllFolders() {
+		return getAttribute("FAKE_ALL_FOLDER", false);
+	}
+	
 	public EnumShowChildrenType getSideNavShowChildren() {
 		return EnumShowChildrenType.getShowChildrenType(getAttribute("SIDENAV_SHOWCHILDREN", EnumShowChildrenType.ALWAYS_FOLDERS
 			.getId()));
@@ -64,6 +72,10 @@ public class CategoryModel extends ContentNodeModelImpl {
 		return getAttribute("SIDENAV_SHOWSELF", false);
 	}
 
+	public Image getCategoryLabel() {
+		return (Image)getAttribute("CAT_LABEL", (Object)null);
+	}
+	
 	public Image getCategoryPhoto() {
 		return (Image)getAttribute("CAT_PHOTO", (Object)null);
 	}

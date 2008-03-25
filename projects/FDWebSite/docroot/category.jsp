@@ -116,10 +116,10 @@ if (isIncludeMediaLayout) {
     <tmpl:put name='title' direct='true'>FreshDirect - <%= currentFolder.getFullName() %></tmpl:put>
     <tmpl:put name='content' direct='true'>
 <%
-boolean virtualGrocerySpecified = request.getParameter("groceryVirtual")!=null;
+// TODO duplicated -- boolean virtualGrocerySpecified = request.getParameter("groceryVirtual")!=null;
 //if (layouttype==EnumLayoutType.FEATURED_ALL.getId()) layouttype=19;
 boolean noCache =  (EnumLayoutType.GROCERY_PRODUCT.getId()==layouttype
-                    || virtualGrocerySpecified
+                    || isGroceryVirtual /* virtualGrocerySpecified */
                     || EnumLayoutType.BULK_MEAT_PRODUCT.getId()==layouttype
                     || EnumLayoutType.TRANSAC_MULTI_CATEGORY.getId()==layouttype
                     || EnumLayoutType.TRANSAC_GROUPED_ITEMS.getId()==layouttype

@@ -29,12 +29,19 @@ String deptId = request.getParameter("deptId");
 boolean isDepartment = false;
 
 ContentNodeModel currentFolder = null;
-if(deptId!=null) {
-        currentFolder=ContentFactory.getInstance().getContentNodeByName(deptId);
-        isDepartment = true;
-} else {
-        currentFolder=ContentFactory.getInstance().getContentNodeByName(catId);
+CategoryModel currentCategory = null;
+if (deptId != null) {
+    currentFolder=ContentFactory.getInstance().getContentNode(deptId);
+    isDepartment = true;
+} else if (catId != null) {
+    currentFolder=ContentFactory.getInstance().getContentNode(catId);
+    if (currentFolder != null)
+        currentCategory = (CategoryModel) currentFolder;
 }
+
+//DO render Editorial (if exists)
+//[APPREQ-92] skip Editorial on Brand and on Virtual All pages
+boolean doRenderEditorialPartial = (request.getParameter("brandValue") == null && !"All".equals(request.getParameter("groceryVirtual")));
 
 
 boolean onlyOneProduct = false;
@@ -228,12 +235,13 @@ request.setAttribute("successPage","/grocery_cart_confirm.jsp?catId="+request.ge
 <%
 //*** if we got this far..then we need to remove the sucess page attribute from the request.
 request.removeAttribute("successPage");
- {
+
+{
         // there are errors..Display them
         Collection myErrs=((ActionResult)result).getErrors();
 %>
         <table border="0" cellspacing="0" cellpadding="0" width="425">
-	<div id="error_descriptions">
+	    <div id="error_descriptions">
 <%
         for (Iterator errItr = myErrs.iterator();errItr.hasNext(); ) {
                 String errDesc = ((ActionError)errItr.next()).getDescription();
@@ -269,7 +277,7 @@ for (Iterator itr = sortedColl.iterator(); itr.hasNext(); ){
         boolean matchingBrand = false;
         if (!(item instanceof SkuModel)) {
                 itr.remove();
-         } else {
+        } else {
                 List prodBrands = ((ProductModel)((SkuModel)item).getParentNode()).getBrands();
 
                 if (prodBrands!=null && prodBrands.size() > 0 && brandValue!=null && brandValue.length()>0) {
@@ -641,34 +649,43 @@ if (brandLogo !=null) {
 %>
 <table border="0" cellspacing="0" cellpadding="0" width="425">
 <tr valign="BOTTOM">
-<td><%if (brandPopupLink!=null) { %><a href="<%=brandPopupLink%>"><%}%><FONT CLASS="title12"><%=brandOrFolderName%></FONT><%if (brandPopupLink!=null) { %></a><%}%> (<%= skuCount %>&nbsp;items)</td>
-<td ALIGN="RIGHT">
-<SELECT NAME="brand" onChange="javascript:gotoWindow(this.options[this.selectedIndex].value)" CLASS="text10">
+    <td><% if (brandPopupLink!=null) { %><a href="<%=brandPopupLink%>"><% } %><FONT CLASS="title12"><%=brandOrFolderName%></FONT><%if (brandPopupLink!=null) { %></a><% } %> (<%= skuCount %>&nbsp;items)
+    </td>
+    <td ALIGN="RIGHT">
+        <SELECT NAME="brand" onChange="javascript:gotoWindow(this.options[this.selectedIndex].value)" CLASS="text10">
 <%
         String categoryTitle = groceryCategory.getFullName();
         String optionURL = response.encodeURL("/category.jsp?catId=" + groceryCategory + buildOtherParams(showThumbnails,itemsToDisplay,-1,"",sortBy,nutriName,request,groceryCategory.getContentName()) + "&disp=" + display + "&sortDescending=" + descending + "&trk=trans");
 %>
-<OPTION NAME="ACK">Find a Brand in  <%= categoryTitle %>
+            <OPTION NAME="ACK">Find a Brand in  <%= categoryTitle %>
 <%
         if(!"".equals(brandValue)) {
 %>
-<OPTION NAME="ACK" value="<%=optionURL%>">All Brands<%
+            <OPTION NAME="ACK" value="<%=optionURL%>">All Brands<%
         }
+
         for (Iterator br = groceryCategory.getAllBrands().iterator(); br.hasNext(); ) {
                 BrandModel myBrand = (BrandModel)br.next();
                 optionURL = response.encodeURL("/category.jsp?catId=" + groceryCategory + buildOtherParams(showThumbnails,itemsToDisplay,-1,myBrand.getContentName(),sortBy,nutriName,request,groceryCategory.getContentName())+ "&disp=" + display + "&sortDescending=" + descending + "&trk=trans");
 %>
-<OPTION  value="<%=optionURL%>"><%=myBrand.getFullName()%></OPTION>
-<%        } %>
-</SELECT></td>
+            <OPTION  value="<%=optionURL%>"><%=myBrand.getFullName()%></OPTION>
+<%
+        }
+%>
+        </SELECT>
+    </td>
 </tr>
 <tr>
-<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
+    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
 </tr>
 <tr>
-<td colspan="2" bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+    <td colspan="2" bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 </tr>
-<%if (FDStoreProperties.isAdServerEnabled()) {%>
+<%
+
+
+if (FDStoreProperties.isAdServerEnabled()) {
+%>
 <tr>
     <td colspan="2">
         <SCRIPT LANGUAGE=JavaScript>
@@ -678,62 +695,81 @@ if (brandLogo !=null) {
         </SCRIPT>
     </td>
 </tr>
-<%}%>
 <%
-Attribute introAttr = currentFolder.getAttribute("EDITORIAL");
-String intro = introAttr==null?"":((Html)introAttr.getValue()).getPath();
-if (intro !=null && intro.trim().length()>0 && intro.indexOf("blank_file.txt") == -1) {
+}
+
+//
+// EDITORIAL PARTIAL
+//
+
+Html editorialMedia = currentFolder.getEditorial();
+if (doRenderEditorialPartial && editorialMedia != null && !editorialMedia.isBlank()) {
 %>
 <tr>
-<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td>
+    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td>
 </tr>
 <tr>
-<td colspan="2"><fd:IncludeMedia name='<%= intro %>'/></td>
-</tr>
-<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td>
+    <td colspan="2"><fd:IncludeMedia name='<%= editorialMedia.getPath() %>'/></td>
 </tr>
 <tr>
-<td colspan="2" bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td>
 </tr>
-<% } %>
 <tr>
-<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
+    <td colspan="2" bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 </tr>
 <%
-                if (!bigProdShown && brandPopupLink!=null) { %>
+}
+
+%>
 <tr>
-<td colspan="2"><a href="<%=brandPopupLink%>">Learn more about <%=brandName%></a></td></tr>
-<tr>
-<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
-<tr valign="top">
-<td colspan="2" bgcolor="#FF9933"><IMG src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0"></td></tr>
-<tr>
-<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
+    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
 </tr>
-<%          }%>
+<%
+
+
+if (!bigProdShown && brandPopupLink!=null) {
+%>
+<tr>
+    <td colspan="2"><a href="<%=brandPopupLink%>">Learn more about <%=brandName%></a></td>
+</tr>
+<tr>
+    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
+</tr>
+<tr valign="top">
+    <td colspan="2" bgcolor="#FF9933"><IMG src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0"></td>
+</tr>
+<tr>
+    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
+</tr>
+<%
+}
+
+%>
 </table>
+
 <table border="0" cellspacing="0" cellpadding="0" width="425">
 <tr valign="top">
-<td CLASS="text10bold" width="215">Page: <%= pageNumberLinks %></td>
-<td ALIGN="RIGHT"><b>Sort by:</b> <SELECT NAME="sort" onChange="javascript:gotoWindow(this.options[this.selectedIndex].value!=''?this.options[this.selectedIndex].value:null)" CLASS="text10">
+    <td CLASS="text10bold" width="215">Page: <%= pageNumberLinks %></td>
+    <td ALIGN="RIGHT"><b>Sort by:</b>
+        <SELECT NAME="sort" onChange="javascript:gotoWindow(this.options[this.selectedIndex].value!=''?this.options[this.selectedIndex].value:null)" CLASS="text10">
 <%
         optionURL = response.encodeURL("/category.jsp?catId=" + currentFolder + "&groceryVirtual=All&trk=cpage");
 %>
-<OPTION NAME="Ack" <%="name".equalsIgnoreCase(sortBy)?"selected":""%> value="<%=optionURL%>">Name</option>
+        <OPTION NAME="Ack" <%="name".equalsIgnoreCase(sortBy)?"selected":""%> value="<%=optionURL%>">Name</option>
 <%
         optionURL = response.encodeURL("/category.jsp?catId=" + currentFolder + "&sortBy=price&groceryVirtual=All&trk=cpage");
 %>
-<OPTION NAME="Ack" <%="price".equalsIgnoreCase(sortBy)?"selected":""%>  value="<%=optionURL%>">Price</option>
+        <OPTION NAME="Ack" <%="price".equalsIgnoreCase(sortBy)?"selected":""%>  value="<%=optionURL%>">Price</option>
 <%
         optionURL = response.encodeURL("/category.jsp?catId=" + currentFolder + "&sortBy=kosher&groceryVirtual=All&trk=cpage");
 %>
-<OPTION NAME="Ack" <%="kosher".equalsIgnoreCase(sortBy)?"selected":""%>  value="<%=optionURL%>">Kosher</option>
+        <OPTION NAME="Ack" <%="kosher".equalsIgnoreCase(sortBy)?"selected":""%>  value="<%=optionURL%>">Kosher</option>
 <%
         Attribute attrAllowNutSort = currentFolder.getAttribute("NUTRITION_SORT");
         boolean allowNutSort = attrAllowNutSort != null?((Boolean)attrAllowNutSort.getValue()).booleanValue():true;
         if(allowNutSort){
 %>
-<OPTION value="">Nutrition:</option>
+        <OPTION value="">Nutrition:</option>
 <%
             for(Iterator i = ErpNutritionType.getCommonList().iterator(); i.hasNext();){
                 ErpNutritionType.Type nutriType = (ErpNutritionType.Type)i.next();
@@ -742,13 +778,15 @@ if (intro !=null && intro.trim().length()>0 && intro.indexOf("blank_file.txt") =
                 if(nutriType.getUom().equals("%"))
                     optionDisplay = optionDisplay + " % daily value";
 %>
-<OPTION NAME="Ack" <%=nutriType.getName().equalsIgnoreCase(display)?"selected":""%>  value="<%=optionURL%>">&nbsp;&nbsp;<%= optionDisplay %></option>
+        <OPTION NAME="Ack" <%=nutriType.getName().equalsIgnoreCase(display)?"selected":""%>  value="<%=optionURL%>">&nbsp;&nbsp;<%= optionDisplay %></option>
 <%
             }
         }
 %>
 
-</SELECT></td></tr>
+        </SELECT>
+    </td>
+</tr>
 </table>
 <%//========================  end header area ===============================================
 
