@@ -14,6 +14,44 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
+<%!
+
+public void produceBrandsAndTypes(Set brands, List typesList, Collection sortedColl) {
+	boolean checkParent = false;
+	ContentNodeModel lastNode = null;
+
+	if (sortedColl == null || sortedColl.size() == 0)
+		return;
+
+	Iterator itr = sortedColl.iterator();
+	while (itr.hasNext()) {
+	    ContentNodeModel item = (ContentNodeModel)itr.next();
+
+	    if (checkParent) {
+	        checkParent = false;
+	        //if the next item is not a product or not a folder that is a descend
+	        if(!(item instanceof ProductModel) && !item.getParentNode().getContentName().equals(lastNode.getContentName()) ) {
+	            typesList.remove(typesList.size()-1);
+	        }
+	    }
+
+	    if (item instanceof CategoryModel) {
+	        // check to see if there is any children of this category (prod or cat)
+	        typesList.add(item);
+	        checkParent = true;
+	        lastNode = item;
+	    } else {
+	        List prodBrands = ((ProductModel)item).getBrands();
+	        if (prodBrands!=null && prodBrands.size()>0) {
+	            for (Iterator brandItr = prodBrands.iterator();brandItr.hasNext();) {
+	                brands.add((BrandModel)brandItr.next());
+	            }
+	        }
+	    }
+	}	
+}
+
+%>
 <%
 
 //********** Start of Stuff to let JSPF's become JSP's **************
@@ -23,99 +61,83 @@ String deptId = request.getParameter("deptId");
 boolean isDepartment = false;
 
 ContentNodeModel currentFolder = null;
-if(deptId!=null) {
-    currentFolder=ContentFactory.getInstance().getContentNodeByName(deptId);
+CategoryModel currentCategory = null;
+if (deptId != null) {
+    currentFolder=ContentFactory.getInstance().getContentNode(deptId);
     isDepartment = true;
-} else {
-    currentFolder=ContentFactory.getInstance().getContentNodeByName(catId);
+} else if (catId != null) {
+    currentFolder=ContentFactory.getInstance().getContentNode(catId);
+    if (currentFolder != null)
+        currentCategory = (CategoryModel) currentFolder;
 }
 
-
-boolean onlyOneProduct = false;
-ProductModel theOnlyProduct = null;
-//Siva-Changed Tracking Code Retrieval
-String trkCode = (String)request.getAttribute("trk");
-if (trkCode!=null && !"".equals(trkCode.trim()) ) {
-    trkCode = "&trk="+trkCode.trim();
-}else {
-    trkCode = "";
-}
-
-Collection sortedColl = (Collection) request.getAttribute("itemGrabberResult");
-if (sortedColl==null) sortedColl = new ArrayList();
-// This include  requires the host page to define the variable 'brands of type Set
+// DO render Editorial (if exists)
+// [APPREQ-92] skip Editorial on Brand and on Virtual All pages
+boolean doRenderEditorialPartial = (request.getParameter("brandValue") == null && !"All".equals(request.getParameter("groceryVirtual")));
 
 
 Set brands = new TreeSet(ContentNodeModel.FULL_NAME_COMPARATOR);
-String prodNameAttribute = JspMethods.getProductNameToUse(currentFolder);
-com.freshdirect.fdstore.content.CategoryModel categoryModel = null;
-Attribute attribGroDept = null;
-Image groDeptImage = null;
 List typesList = new ArrayList();
-int typesCount = 0;
-ContentNodeModel lastNode=null;
-boolean checkParent = false;
-for(Iterator itr= sortedColl.iterator();itr.hasNext();){
-    ContentNodeModel item = (ContentNodeModel)itr.next();
-     if (checkParent) {
-        checkParent = false;
-        //if the next item is not a product or not a folder that is a descend
-    if(!(item instanceof ProductModel) && !item.getParentNode().getPK().equals(lastNode.getPK()) ) {
-      typesList.remove(typesList.size()-1);
-        }
-     }
 
-    if (item instanceof CategoryModel) {
-        // check to see if there is any children of this category (prod or cat)
-        typesList.add(item);
-        checkParent = true;
-    lastNode = item;
-    }
-    else {
-        List prodBrands = ((ProductModel)item).getBrands();
-        if (prodBrands!=null && prodBrands.size()>0) {
-            for (Iterator brandItr = prodBrands.iterator();brandItr.hasNext();) {
-                brands.add((BrandModel)brandItr.next());
-            }
-        }
-    }
-}
-typesCount = typesList.size();
-String categoryLabelPath="";
-attribGroDept = currentFolder.getAttribute("CAT_LABEL");
-if (attribGroDept!=null) {
-    categoryLabelPath = ((Image)attribGroDept.getValue()).getPath();
-}
+produceBrandsAndTypes(brands, typesList, (Collection) request.getAttribute("itemGrabberResult"));
+
+int typesCount = typesList.size();
+
+
 %>
 <TABLE CELLPADDING="0" CELLSPACING="0" WIDTH="550" BORDER="0">
-<TR VALIGN="TOP"><TD WIDTH="550">
-<IMG SRC="<%=categoryLabelPath%>" border="0" ALT="<%=currentFolder.getFullName()%>">
+    <TR VALIGN="TOP">
+        <TD WIDTH="550">
 <%
-Attribute introCopyAttribute = currentFolder.getAttribute("EDITORIAL");
-if (introCopyAttribute!=null && currentFolder.getAttribute("CAT_LABEL")!=null) {
-    String introText = ((Html)introCopyAttribute.getValue()).getPath();
-    if (introText !=null && introText.trim().length()>0 && introText.indexOf("blank_file.txt") == -1) { 
-    
+if (currentCategory != null) {
+    //
+    // Category Label (Image)
+    //
+    if (currentCategory.getCategoryLabel() != null) {
+        String categoryLabelPath = currentCategory.getCategoryLabel().getPath() /* ((Image)anAttib.getValue()).getPath() */;
 %>
-<br><img src="/media_stat/images/layout/cccccc.gif" height="1" width="100%" vspace="5"><br><fd:IncludeMedia name='<%= introText %>'/>
-<% }
-  }%>
-<br><IMG SRC="media/images/layout/clear.gif" WIDTH="1" HEIGHT="8"></TD></TR>
+            <IMG SRC="<%= categoryLabelPath %>" border="0" ALT="<%= currentCategory.getFullName() %>"><br>
+<%
+    }
+    
+    //
+    // Render Editorial (partial HTML)
+    //
+    Html editorialMedia = currentFolder.getEditorial();
+    if (doRenderEditorialPartial &&
+    		editorialMedia != null &&
+    		currentCategory.getCategoryLabel() != null &&
+    		!editorialMedia.isBlank()) {
+%>
+            <img src="/media_stat/images/layout/cccccc.gif" height="1" width="100%" vspace="5"><br>
+            <fd:IncludeMedia name='<%= editorialMedia.getPath() %>'/><br>
+<%
+    }
+}
+%>
+            <IMG SRC="media/images/layout/clear.gif" WIDTH="1" HEIGHT="8">
+        </TD>
+    </TR>
 </TABLE>
 <%
-    Attribute attribFeatProds = currentFolder.getAttribute("FEATURED_PRODUCTS");
+
+
+//
+// Favorite Products
+//
 
     List favorites = Collections.EMPTY_LIST;
-    if(currentFolder instanceof DepartmentModel) {
+    if (currentFolder instanceof DepartmentModel) {
     	favorites = ((DepartmentModel) currentFolder).getFeaturedProducts();
-    } else if (currentFolder instanceof CategoryModel) {
-    	favorites = ((CategoryModel) currentFolder).getFeaturedProducts();
+    } else if (currentCategory != null) {
+    	favorites = currentCategory.getFeaturedProducts();
     } else {
-    	attribFeatProds = currentFolder.getAttribute("FEATURED_PRODUCTS");
-    	if(attribFeatProds != null) {
+    	Attribute attribFeatProds = currentFolder.getAttribute("FEATURED_PRODUCTS");
+    	if (attribFeatProds != null) {
     	    favorites = (List) attribFeatProds.getValue();
     	}
     }
+
 
     StringBuffer favoriteProducts = new StringBuffer();
     ContentNodeModel prodParent = null;
@@ -126,18 +148,24 @@ if (introCopyAttribute!=null && currentFolder.getAttribute("CAT_LABEL")!=null) {
 %>
     <logic:iterate id='contentNode' collection="<%=favorites%>" type="com.freshdirect.fdstore.content.ProductModel">
 <%
+        Image groDeptImage = null;
         ProductModel product = contentNode;  //(ProductModel)contentFactory.getProduct(contentRef.getCategoryId(),contentRef.getProductId());
-        if(product==null || product.isDiscontinued() || product.isUnavailable()) continue;
+        if (product==null || product.isDiscontinued() || product.isUnavailable())
+        	continue;
+
         prodParent = product.getParentNode(); 
         List skus = product.getSkus(); 
-        if (prodParent==null || !(prodParent instanceof CategoryModel)) continue;
+        if (prodParent==null || !(prodParent instanceof CategoryModel))
+        	continue;
+
         SkuModel sku = null;
         String prodPrice = null;
-        if (skus.size()==0) continue;  // skip this item..it has no skus.  Hmmm?
+        if (skus.size()==0)
+        	continue;  // skip this item..it has no skus.  Hmmm?
+
         if (skus.size()==1) {
             sku = (SkuModel)skus.get(0);  // we only need one sku
-        }
-        else {
+        } else {
             sku = (SkuModel) Collections.min(skus, priceComp);
         }
 %>
@@ -178,10 +206,10 @@ if (introCopyAttribute!=null && currentFolder.getAttribute("CAT_LABEL")!=null) {
         }
         
         productName = product.getFullName();
-          if (productName != null && productName.substring(thisProdBrandLabel.length()).trim().length() > 0) {
-          favoriteProducts.append("<br>");
-          favoriteProducts.append(productName.substring(thisProdBrandLabel.length()).trim()); 
-          }
+        if (productName != null && productName.substring(thisProdBrandLabel.length()).trim().length() > 0) {
+            favoriteProducts.append("<br>");
+            favoriteProducts.append(productName.substring(thisProdBrandLabel.length()).trim()); 
+        }
           
         favoriteProducts.append("</A><BR>");
         favoriteProducts.append("<font class=\"favoritePrice\">");
@@ -193,84 +221,84 @@ if (introCopyAttribute!=null && currentFolder.getAttribute("CAT_LABEL")!=null) {
         favoriteProducts.append("media/images/layout/clear.gif");
         favoriteProducts.append("\" WIDTH=\"8\" HEIGHT=\"1\"></TD>");
         favoritesShown++;
-        if (favoritesShown ==5) break;
+        if (favoritesShown ==5)
+        	break;
 %>
     </logic:iterate>
 <%
+
     if (favoriteProducts.length()>1) {
 %>
 <TABLE CELLPADDING="0" CELLSPACING="0" WIDTH="550" BORDER="0">
-<TR VALIGN="TOP"><TD WIDTH="550">
-<TR><TD CLASS="title14">Popular Items<br><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8"></TD></TR>
+    <TR VALIGN="TOP">
+        <TD CLASS="title14">Popular Items<br>
+            <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8">
+        </TD>
+    </TR>
 </TABLE>
 <TABLE CELLPADDING="0" CELLSPACING="0" WIDTH="550" BORDER="0">
 <TR VALIGN="TOP">
-<%=favoriteProducts.toString()%></tr>
+<%= favoriteProducts.toString() %></tr>
 </TABLE>
-<%}
-int typeSpan = 2;
-attribGroDept = currentFolder.getAttribute("COLUMN_SPAN");
-if (attribGroDept!=null) {
-    typeSpan =((Integer)attribGroDept.getValue()).intValue();
-}
-int brandSpan = 4 - typeSpan;
-String chooseTypeImg = "/media/images/navigation/department/grocery/gro_choose_type.gif";
-String chooseBrandImg ="/media/images/navigation/department/grocery/gro_choose_brand.gif";
+<%
+    }
+
+
+
+
+
+    int typeSpan = (currentCategory != null ? currentCategory.getColumnSpan() : 2);
+	int brandSpan = 4 - typeSpan;
+
 %>
 <BR><BR>
 <IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="550" HEIGHT="1"><BR>
 <FONT CLASS="space4pix"><BR></FONT>
 <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="550">
 <tr VALIGN="TOP">
-<td WIDTH="550" colspan="6"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="5"></td></tr>
+    <td WIDTH="550" colspan="6"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="5"></td>
+</tr>
 <TR VALIGN="TOP">
     <TD WIDTH="10"><BR></TD>
     <TD ALIGN="CENTER">
         <table cellpadding="0" cellspacing="0" border="0">
             <tr>
                 <td colspan="<%=typeSpan+(typeSpan-1)%>">
-                <IMG SRC="<%=chooseTypeImg%>" WIDTH="107" HEIGHT="10" ALT="CHOOSE A TYPE"><BR>
+                <IMG SRC="/media/images/navigation/department/grocery/gro_choose_type.gif" WIDTH="107" HEIGHT="10" ALT="CHOOSE A TYPE"><BR>
                 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="4" >
                 </td>
             </tr>
             <tr VALIGN="TOP"><%
             
     int[] columnRows = new int[4];
-    attribGroDept=currentFolder.getAttribute("FAKE_ALL_FOLDER");
-    boolean makeFakeAllLink = false;
-    if (attribGroDept !=null) {
-        makeFakeAllLink = ((Boolean)attribGroDept.getValue()).booleanValue();
-    }
+    boolean makeFakeAllLink = (currentCategory != null ? currentCategory.getFakeAllFolders() : false);
     if (typesCount > 1 && makeFakeAllLink) {
          typesCount++;
     }
+
     int visitingParentCount = 0;    
     int currentRow = 0;
 
-    out.print("<TD WIDTH=\"125\">");
-
-        if (makeFakeAllLink) {
-            out.print("<div style=\"margin-left: 8px; text-indent: -8px;\"><A HREF=\"");
-            out.print(response.encodeURL("/category.jsp?catId=" + currentFolder + "&groceryVirtual=All"+trkCode));
-            out.print("\">");
-            out.print("<b>");
-            out.print("All "+currentFolder.getFullName());
-            out.print("</b>");
-            out.print("</A>");
-            out.println("<BR></div>");
-            currentRow = 1;
-            visitingParentCount++;
-        }
+    %>
+                <TD WIDTH="125"><%
+    
+    if (makeFakeAllLink) {
+    	%><div style="margin-left: 8px; text-indent: -8px;">
+    	   <a href="/category.jsp?catId=<%= response.encodeURL(currentFolder.getContentName()) %>"><b>All <%= currentFolder.getFullName() %></b></a>
+    	   <br/>
+        <div>
+<%
+        currentRow = 1;
+        visitingParentCount++;
+    }
 
     int currentColumn = 0;
 
-    //typeRows = columnRows[0];
     int numInColsDesired = 0;
     for(int h=0; h<typeSpan;h++){
         numInColsDesired += columnRows[h];
     }
 
-    //Object[] foldersAndProds = sortedColl.toArray();
     int typeProdsCount = 0;
     CategoryModel type = null;
     //skip through the product
@@ -299,29 +327,37 @@ String chooseBrandImg ="/media/images/navigation/department/grocery/gro_choose_b
     breakPoint = breakPoints[currentColumn];
     for (int idx = 0; idx < typesList.size();idx++) {
         ContentNodeModel contentItem = (ContentNodeModel) typesList.get(idx);
-    type = (CategoryModel) contentItem;
+        type = (CategoryModel) contentItem;
         typesShown++;
         typeProdsCount = 0;
         unlink =  false;
         indent =  false;
         canBreak = false;
         currentRow++;
-        if(type.getParentNode()!=null && lastFolder!=null && type.getParentNode().getPK().equals(lastFolder.getPK())) {
+
+        if (type.getParentNode() != null && lastFolder != null &&
+        	type.getParentNode().getContentName().equals(lastFolder.getContentName())) {
             indent = true;
-        }else if(currentRow > breakPoint){
+        } else if (currentRow > breakPoint) {
             canBreak = true;
-    }
-        if (canBreak) {
-                out.print("</TD><TD WIDTH=\"8\"><IMG SRC=\"media/images/layout/clear.gif\" HEIGHT=\"1\" WIDTH=\"8\"></TD>");
-                if (idx != typesCount) out.print("<TD WIDTH=\"125\">");
-                currentRow = 0;
-                breakPoint = breakPoints[++currentColumn];
         }
 
-        categoryURL = response.encodeURL("/category.jsp?catId="+type+"&trk=cpage");
+        if (canBreak) {
+        	%></TD>
+        	<TD WIDTH="8"><IMG SRC="media/images/layout/clear.gif" HEIGHT="1" WIDTH="8"></TD>
+<%
+            if (idx != typesCount) {
+            	%>
+            	<TD WIDTH="125">
+<%
+            }
+            currentRow = 0;
+            breakPoint = breakPoints[++currentColumn];
+        }
+
+        categoryURL = response.encodeURL("/category.jsp?catId="+type.getContentName()+"&trk=cpage");
 
         if (indent) {
-            //out.print("&nbsp;&nbsp;");
             out.print("<div style=\"margin-left: 12px; text-indent: -12px;\">");
             out.print("&nbsp;&nbsp;");
         } else {
@@ -331,9 +367,11 @@ String chooseBrandImg ="/media/images/navigation/department/grocery/gro_choose_b
             out.print("<A HREF=\"");
             out.print(categoryURL);
             out.print("\">");
-        } //else {
+        }
+        
+        //else {
             //out.print("<div margin-left: 8px text-indent: -8px>");
-       // }
+        // }
         if (!indent) out.print("<b>");
         out.print(type.getFullName());
         if (!indent) out.print("</b>");
@@ -342,8 +380,8 @@ String chooseBrandImg ="/media/images/navigation/department/grocery/gro_choose_b
         out.println("<BR></div>");
 
 
-        if(lastFolder==null || (type.getParentNode()!=null && lastFolder!=null && !type.getParentNode().getPK().equals(lastFolder.getPK()) )){
-           lastFolder = type;
+        if (lastFolder==null || (type.getParentNode()!=null && lastFolder!=null && !type.getParentNode().getContentName().equals(lastFolder.getContentName()) )){
+            lastFolder = type;
         }
     }
     // if we dont use the other col, when the span is > 1 then assign the rest to the brand span
@@ -352,20 +390,24 @@ String chooseBrandImg ="/media/images/navigation/department/grocery/gro_choose_b
     }
     out.println("</TD>");
 %>
-</tr>
-</table></TD>
-    <TD WIDTH="10"><BR></TD>
-    <TD BGCOLOR="#CCCCCC" WIDTH="1">
-        <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="1">
+	       </tr>
+    	</table>
     </TD>
+    <TD WIDTH="10"><BR></TD>
+    <TD BGCOLOR="#CCCCCC" WIDTH="1"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="1"></TD>
     <TD WIDTH="10"><BR></TD>
     <TD WIDTH="<%=125*brandSpan+((brandSpan+1)*6)%>">
     
-<table WIDTH="<%=125*brandSpan+((brandSpan+1)*6)%>" cellpadding="0" cellspacing="0" border="0">
-                        <tr><TD WIDTH="6"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="6" HEIGHT="1"></TD><td colspan="<%=(2*brandSpan)+1%>"><IMG SRC="<%=chooseBrandImg%>" WIDTH="123" HEIGHT="10" ALT="CHOOSE A BRAND" BORDER=0><br>
-                        <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10"></TD></tr>
-                        <tr VALIGN="TOP"><%
-    //String brandlink = response.encodeURL("/grocery_product.jsp");
+		<table WIDTH="<%=125*brandSpan+((brandSpan+1)*6)%>" cellpadding="0" cellspacing="0" border="0">
+		<tr>
+		    <TD WIDTH="6"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="6" HEIGHT="1"></TD>
+		    <td colspan="<%=(2*brandSpan)+1%>">
+		        <IMG SRC="/media/images/navigation/department/grocery/gro_choose_brand.gif" WIDTH="123" HEIGHT="10" ALT="CHOOSE A BRAND" BORDER=0><br>
+		        <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10">
+		    </TD>
+		</tr>
+		<tr VALIGN="TOP"><%
+
 
     columnRows = new int[4];
     int availableBrands = brands.size();
@@ -379,7 +421,10 @@ String chooseBrandImg ="/media/images/navigation/department/grocery/gro_choose_b
     if (availableBrands % 2 != 0) brandsRows++;
     columnRows[1] = brandsRows;
     columnRows[2] = availableBrands - brandsRows;
-    out.print("<TD WIDTH=\"6\"><IMG SRC=\"/media_stat/images/layout/clear.gif\" WIDTH=\"6\" HEIGHT=\"1\"></TD><TD WIDTH=\"125\">");
+    %>
+            <TD WIDTH="6"><IMG SRC="/media_stat/images/layout/clear.gif" WIDTH="6" HEIGHT="1"></TD>
+		    <TD WIDTH="125">
+<%
     currentColumn = 0;
     currentRow = 0;
     brandsRows = columnRows[0];
@@ -389,7 +434,7 @@ String chooseBrandImg ="/media/images/navigation/department/grocery/gro_choose_b
         numInColsDesired += columnRows[h];
     }
 
-    if(numInColsDesired != brandSize){
+    if (numInColsDesired != brandSize){
         int remainder = brandSize - numInColsDesired;
         switch (brandSpan){
             case 1:
@@ -412,39 +457,42 @@ String chooseBrandImg ="/media/images/navigation/department/grocery/gro_choose_b
     }
     StringBuffer brandLink = new StringBuffer();
     for (Iterator i = brands.iterator(); i.hasNext(); ) {
-            BrandModel brand = (BrandModel) i.next();
-            brandLink.setLength(0);
-            brandLink.append(response.encodeUrl("/category.jsp?catId="));
-            brandLink.append(currentFolder);
-            brandLink.append("&brandValue=");
-            brandLink.append(URLEncoder.encode(brand.getContentName()));
-            brandLink.append("&groceryVirtual=");
-            brandLink.append(currentFolder);
-            brandLink.append("&trk=cpage");
-
-            out.print("<div style=\"margin-left: 8px; text-indent: -8px;\"><A HREF=\"");
-            out.print(brandLink);
-            out.print("\">");
-            out.print(brand.getFullName());
-            out.println("</A><BR></div>");
-
-            if (++currentRow == brandsRows) {
-                out.print("</TD><TD WIDTH=\"6\"><IMG SRC=\"/media_stat/images/layout/clear.gif\" HEIGHT=\"1\" WIDTH=\"6\"></TD>");
-                if (i.hasNext()) out.print("<TD WIDTH=\"125\">");
-                currentRow = 0;
-                brandsRows = columnRows[++currentColumn];
+        BrandModel brand = (BrandModel) i.next();
+        %>
+                <div style="margin-left: 8px; text-indent: -8px;">
+                    <a href="/category.jsp?catId=<%= currentFolder.getContentName() %>&brandValue=<%= URLEncoder.encode(brand.getContentName()) %>&groceryVirtual=<%= currentFolder.getContentName() %>&trk=cpage"><%= brand.getFullName() %></a>
+                    <br/>
+                </div>
+<%
+            
+            
+        if (++currentRow == brandsRows) {
+            	%>
+            	</TD>
+            	<TD WIDTH="6"><IMG SRC="/media_stat/images/layout/clear.gif" HEIGHT="1" WIDTH="6"></TD>
+<%
+            if (i.hasNext()) {
+            	%>
+            	<TD WIDTH="125"><%
             }
+            currentRow = 0;
+            brandsRows = columnRows[++currentColumn];
+        }
     }
-    out.println("</TD>"); 
+%>
+                </td>
+<%
     
     if (brands.size() > 0 ) {
         request.setAttribute("brandsList",brands);
     }
 %>
-</tr>
-</table>
-</TD>
+            </tr>
+        </table>
+    </TD>
 </TR>
-<td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td></tr>
+<tr>
+    <td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td>
+</tr>
 </TABLE>
 
