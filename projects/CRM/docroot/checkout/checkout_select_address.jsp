@@ -98,8 +98,8 @@
 <tmpl:put name='content' direct='true'>
 <jsp:include page='/includes/order_header.jsp'/>
 <%-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~ START DELIVERY ADDRESS SECTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~ --%>
-<table width="100%" cellpadding="2" cellspacing="0" border="0" class="checkout_header<%= ( user.isActive()) ? "" : "_warning" %>">
 <form name="address" method="POST" action="">
+<table width="100%" cellpadding="2" cellspacing="0" border="0" class="checkout_header<%= ( user.isActive()) ? "" : "_warning" %>">
     <tr>
 
     <td>
