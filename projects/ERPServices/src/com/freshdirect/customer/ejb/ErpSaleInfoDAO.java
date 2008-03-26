@@ -549,7 +549,9 @@ public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpC
 	}
 	
 	// get order number for a customer during specific past time.
-	private static final String orderCountPastQuery = "select count(*) from cust.sale s, cust.salesaction sa where s.customer_id =? and s.id= sa.sale_id and sa.action_type='CRO' and sa.action_date> ?";
+	//private static final String orderCountPastQuery = "select count(*) from cust.sale s, cust.salesaction sa where s.customer_id =? and s.id= sa.sale_id and sa.action_type='CRO' and sa.action_date> ?";
+	//Added the new customer index to prevent aging out the index from cache.
+	private static final String orderCountPastQuery = "select count(*) from cust.sale s, cust.salesaction sa where s.customer_id =? and s.id= sa.sale_id and sa.action_type='CRO' and sa.action_date> ? and sa.customer_id = s.customer_id";
 	
 	public static int getOrderCountPast(Connection conn, String erpCustomerId, Date day) throws SQLException {
 		int orderCount =0;
