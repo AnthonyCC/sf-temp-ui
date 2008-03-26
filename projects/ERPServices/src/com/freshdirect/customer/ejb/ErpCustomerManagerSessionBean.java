@@ -1378,6 +1378,9 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 						dc.getDepartment(),
 						dc.getAmount(),
 						dc.getAffiliate());
+				//Bug fix MNT-172. BEGIN
+				custCreditModel.setCreateDate(new Date());
+				//END.				
 				customerEB.addCustomerCredit(custCreditModel);
 			}
 		} catch (RemoteException ex) {
