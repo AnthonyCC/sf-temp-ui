@@ -71,6 +71,14 @@ if (deptId != null) {
         currentCategory = (CategoryModel) currentFolder;
 }
 
+//Siva-Changed Tracking Code Retrieval
+String trkCode = (String)request.getAttribute("trk");
+if (trkCode!=null && !"".equals(trkCode.trim()) ) {
+    trkCode = "&trk="+trkCode.trim();
+} else {
+    trkCode = "";
+}
+
 // DO render Editorial (if exists)
 // [APPREQ-92] skip Editorial on Brand and on Virtual All pages
 boolean doRenderEditorialPartial = (request.getParameter("brandValue") == null && !"All".equals(request.getParameter("groceryVirtual")));
@@ -284,9 +292,9 @@ if (currentCategory != null) {
     
     if (makeFakeAllLink) {
     	%><div style="margin-left: 8px; text-indent: -8px;">
-    	   <a href="/category.jsp?catId=<%= response.encodeURL(currentFolder.getContentName()) %>"><b>All <%= currentFolder.getFullName() %></b></a>
+    	   <a href="/category.jsp?catId=<%= response.encodeURL(currentFolder.getContentName()) %>&groceryVirtual=All<%= trkCode %>"><b>All <%= currentFolder.getFullName() %></b></a>
     	   <br/>
-        <div>
+        </div>
 <%
         currentRow = 1;
         visitingParentCount++;
