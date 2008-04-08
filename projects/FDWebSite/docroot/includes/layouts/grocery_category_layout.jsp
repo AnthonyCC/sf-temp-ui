@@ -277,7 +277,14 @@ if (currentCategory != null) {
                 </td>
             </tr>
             <tr VALIGN="TOP"><%
-            
+
+
+
+    //
+    // "CHOOSE A TYPE" COLUMNS
+    //
+                
+
     int[] columnRows = new int[4];
     boolean makeFakeAllLink = (currentCategory != null ? currentCategory.getFakeAllFolders() : false);
     if (typesCount > 1 && makeFakeAllLink) {
@@ -287,12 +294,12 @@ if (currentCategory != null) {
     int visitingParentCount = 0;    
     int currentRow = 0;
 
-    %>
+%>
                 <TD WIDTH="125"><%
     
     if (makeFakeAllLink) {
     	%><div style="margin-left: 8px; text-indent: -8px;">
-    	   <a href="/category.jsp?catId=<%= response.encodeURL(currentFolder.getContentName()) %>&groceryVirtual=All<%= trkCode %>"><b>All <%= currentFolder.getFullName() %></b></a>
+    	   <a href="/category.jsp?catId=<%= currentFolder.getContentName() %>&groceryVirtual=All<%= trkCode %>"><b>All <%= currentFolder.getFullName() %></b></a>
     	   <br/>
         </div>
 <%
@@ -315,7 +322,6 @@ if (currentCategory != null) {
     boolean unlink =  false;
     boolean indent =  false;
     boolean canBreak = true;
-    String categoryURL=null;
     int skipIdx = 0;
     int typesShown=0;
     CategoryModel lastFolder = null;
@@ -363,32 +369,38 @@ if (currentCategory != null) {
             breakPoint = breakPoints[++currentColumn];
         }
 
-        categoryURL = response.encodeURL("/category.jsp?catId="+type.getContentName()+"&trk=cpage");
 
+        // display type entry
         if (indent) {
-            out.print("<div style=\"margin-left: 12px; text-indent: -12px;\">");
-            out.print("&nbsp;&nbsp;");
+        	if (unlink) {
+        		// indented text
+        		%><div style="margin-left: 12px; text-indent: -12px;">&nbsp;&nbsp;<%= type.getFullName() %><br/>
+        		</div>
+<%
+        	} else {
+        		// indented link
+                %><div style="margin-left: 12px; text-indent: -12px;">&nbsp;&nbsp;<a href="/category.jsp?catId=<%= type.getContentName() %>&trk=cpage"><%= type.getFullName() %></a><br/>
+                </div>
+<%
+        	}
         } else {
-            out.print("<div style=\"margin-left: 8px; text-indent: -8px;\">");
+            if (unlink) {
+                // unindented text
+                %><div style="margin-left: 8px; text-indent: -8px;"><b><%= type.getFullName() %></b><br/>
+                </div>
+<%
+            } else {
+                // unindented link
+                %><div style="margin-left: 8px; text-indent: -8px;"><a href="/category.jsp?catId=<%= type.getContentName() %>&trk=cpage"><b><%= type.getFullName() %></b></a><br/>
+                </div>
+<%
+            }
         }
-        if (!unlink) {
-            out.print("<A HREF=\"");
-            out.print(categoryURL);
-            out.print("\">");
-        }
-        
-        //else {
-            //out.print("<div margin-left: 8px text-indent: -8px>");
-        // }
-        if (!indent) out.print("<b>");
-        out.print(type.getFullName());
-        if (!indent) out.print("</b>");
-
-        if (!unlink) out.print("</A>");
-        out.println("<BR></div>");
 
 
-        if (lastFolder==null || (type.getParentNode()!=null && lastFolder!=null && !type.getParentNode().getContentName().equals(lastFolder.getContentName()) )){
+
+        if (lastFolder==null ||
+        		(type.getParentNode() != null && lastFolder != null && !type.getParentNode().getContentName().equals(lastFolder.getContentName()) )) {
             lastFolder = type;
         }
     }
@@ -396,9 +408,8 @@ if (currentCategory != null) {
     if (currentColumn<(typeSpan-1)) {
         brandSpan += (typeSpan-1)-currentColumn;
     }
-    out.println("</TD>");
 %>
-	       </tr>
+	       </TD></tr>
     	</table>
     </TD>
     <TD WIDTH="10"><BR></TD>
@@ -417,6 +428,11 @@ if (currentCategory != null) {
 		<tr VALIGN="TOP"><%
 
 
+
+	//
+	// "CHOOSE A BRAND" COLUMN
+	//
+		
     columnRows = new int[4];
     int availableBrands = brands.size();
     int brandSize = availableBrands;
@@ -468,7 +484,7 @@ if (currentCategory != null) {
         BrandModel brand = (BrandModel) i.next();
         %>
                 <div style="margin-left: 8px; text-indent: -8px;">
-                    <a href="/category.jsp?catId=<%= currentFolder.getContentName() %>&brandValue=<%= URLEncoder.encode(brand.getContentName()) %>&groceryVirtual=<%= currentFolder.getContentName() %>&trk=cpage"><%= brand.getFullName() %></a>
+                    <a href="/category.jsp?catId=<%= currentFolder.getContentName() %>&brandValue=<%= brand.getContentName() %>&groceryVirtual=<%= currentFolder.getContentName() %>&trk=cpage"><%= brand.getFullName() %></a>
                     <br/>
                 </div>
 <%
