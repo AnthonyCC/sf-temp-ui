@@ -318,7 +318,7 @@ if(user.isHomeUser()){
 			<tr valign="top">
 				<td><input type="radio" name="reservationType" <%=(rsv != null && EnumReservationType.RECURRING_RESERVATION.equals(rsv.getReservationType())) ? "checked" : "" %> value="<%=EnumReservationType.RECURRING_RESERVATION.getName()%>" class="radio">&nbsp;</td>
 				<td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br><span class="text12"><b>Reserve this day and time for me every week</b></span><br>
-					Select this option to make this a standing weekly reservation. Please note that reservations not used for two weeks will be released. At any time you can return to this page to update your reservation.
+					Select this option to make this a standing weekly reservation. Please note that reservations not used will be released. At any time you can return to this page to update your reservation.
 				</td>
 			</tr>
 				<input type="hidden" name="addressId" value="<%=addressId%>">
