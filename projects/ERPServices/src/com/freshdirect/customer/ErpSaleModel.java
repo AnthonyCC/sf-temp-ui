@@ -24,8 +24,8 @@ import com.freshdirect.payment.AuthorizationStrategy;
  * @stereotype fd-model
  */
 public class ErpSaleModel extends ModelSupport implements ErpSaleI {
-	
-	private static final String AVS_MATCH = "Y"; 
+
+	private static final String AVS_MATCH = "Y";
 
 	private PrimaryKey customerPk;
 	private List transactions;
@@ -36,7 +36,10 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	private Set usedPromotionCodes;
 	private List cartonInfo = new ArrayList();
 	private String deliveryPassId;
-	
+	private EnumSaleType type;
+
+
+
 	/**
 	 * @return Returns the deliveryPassId.
 	 */
@@ -50,14 +53,16 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	public void setDeliveryPassId(String deliveryPassId) {
 		this.deliveryPassId = deliveryPassId;
 	}
+
+
 	/**
-	 * 
+	 *
 	 * @param customerPk
 	 * @param order
 	 * @param usedPromotionCodes
 	 * @param dlvPassId
 	 */
-	public ErpSaleModel(PrimaryKey customerPk, ErpAbstractOrderModel order, Set usedPromotionCodes, String dlvPassId) {
+	public ErpSaleModel(PrimaryKey customerPk, ErpAbstractOrderModel order, Set usedPromotionCodes, String dlvPassId,EnumSaleType type) {
 		this.customerPk = customerPk;
 		this.transactions = new ArrayList();
 		this.transactions.add(order);
@@ -65,9 +70,11 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		this.complaints = new ArrayList();
 		this.usedPromotionCodes = usedPromotionCodes;
 		this.deliveryPassId = dlvPassId;
+		this.type=type;
+
 	}
 	/**
-	 * 
+	 *
 	 * @param customerPk
 	 * @param status
 	 * @param transactions
@@ -79,7 +86,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	 * @param dlvPassId
 	 */
 	public ErpSaleModel(PrimaryKey customerPk, EnumSaleStatus status, List transactions, List complaints, String sapOrderNumber, ErpShippingInfo shippingInfo,
-		Set usedPromotionCodes, List cartonInfo, String dlvPassId) {
+		Set usedPromotionCodes, List cartonInfo, String dlvPassId,EnumSaleType type) {
 		this.customerPk = customerPk;
 		this.status = status;
 		this.transactions = transactions;
@@ -89,6 +96,8 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		this.cartonInfo = cartonInfo;
 		this.usedPromotionCodes = usedPromotionCodes;
 		this.deliveryPassId = dlvPassId;
+		this.type=type;
+
 	}
 
 	private boolean isStatus(EnumSaleStatus[] states) {
@@ -120,9 +129,9 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 			throw new ErpTransactionException(msg.toString());
 		}
 	}
-	
+
 	private EnumSaleStatus getNextState() {
-		
+
 		if (!isFullyAuthorized()) {
 			List auths = this.filterTransaction(ErpAuthorizationModel.class);
 			if(auths.isEmpty()) {
@@ -132,7 +141,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 				return a.isApproved() ? EnumSaleStatus.SUBMITTED : EnumSaleStatus.AUTHORIZATION_FAILED;
 			}
 		}
-		
+
 		boolean avsMatch = true;
 		for (Iterator i = this.getApprovedAuthorizations().iterator(); i.hasNext();) {
 			ErpAuthorizationModel auth = (ErpAuthorizationModel) i.next();
@@ -143,35 +152,35 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 		return avsMatch ? EnumSaleStatus.AUTHORIZED : EnumSaleStatus.AVS_EXCEPTION;
 	}
-	
+
 	private boolean isFullyAuthorized() {
 		AuthorizationStrategy s = new AuthorizationStrategy(this);
 		return s.getOutstandingAuthorizations().isEmpty();
 	}
-	
+
 	public  ErpChargeInvoiceModel getLastChargeInvoice () {
 		List lst = this.filterTransaction(ErpChargeInvoiceModel.class);
 		if(lst.isEmpty()) {
 			return null;
 		}
-		
+
 		return (ErpChargeInvoiceModel) lst.get(lst.size() - 1);
 	}
-	
+
 	private List filterTransaction(Class klazz) {
 		List lst = new ArrayList();
-		
+
 		for(Iterator i = this.transactions.iterator(); i.hasNext(); ) {
 			Object o = i.next();
 			if(klazz.isInstance(o)) {
 				lst.add(o);
 			}
 		}
-		
+
 		Collections.sort(lst, ErpTransactionModel.TX_DATE_COMPARATOR);
 		return Collections.unmodifiableList(lst);
 	}
-	
+
 	public double getOutstandingCaptureAmount() {
 		ErpInvoiceModel inv = this.getLastInvoice();
 		double amount = MathUtil.roundDecimal(inv.getAmount());
@@ -179,10 +188,10 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 			ErpCaptureModel cm = (ErpCaptureModel) i.next();
 			amount -= MathUtil.roundDecimal(cm.getAmount());
 		}
-		
+
 		return MathUtil.roundDecimal(amount);
 	}
-	
+
 	public List getCaptures(ErpAffiliate affiliate) {
 		List lst = new ArrayList();
 		for(Iterator i = this.getGoodCaptures().iterator(); i.hasNext(); ) {
@@ -193,10 +202,10 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 		return lst;
 	}
-	
+
 	public List getApprovedAuthorizations(ErpAffiliate affiliate, ErpPaymentMethodI pm) {
 		List auths = new ArrayList();
-		
+
 		for(Iterator i = this.getApprovedAuthorizations().iterator(); i.hasNext(); ) {
 			ErpAuthorizationModel auth = (ErpAuthorizationModel) i.next();
 			if(affiliate.equals(auth.getAffiliate())) {
@@ -205,10 +214,10 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 				}
 			}
 		}
-		
+
 		return auths;
 	}
-	
+
 	public List getApprovedAuthorizations() {
 		List capturedAuthCodes = new ArrayList();
 		for (Iterator i = this.transactions.iterator(); i.hasNext();) {
@@ -233,7 +242,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 		return lst;
 	}
-	
+
 	public ErpAbstractOrderModel getCurrentOrder() {
 		ErpAbstractOrderModel lastOrder = null;
 		List txs = new ArrayList(this.transactions);
@@ -246,7 +255,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 		return lastOrder;
 	}
-	
+
 	public void submitFailed(String message) throws ErpTransactionException {
 		this.assertStatus(
 			new EnumSaleStatus[] {
@@ -262,13 +271,20 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		this.transactions.add(m);
 		this.status = EnumSaleStatus.NOT_SUBMITTED;
 	}
-	
+
 	public void createOrderComplete(String sapOrderNumber) throws ErpTransactionException {
-		this.assertStatus(new EnumSaleStatus[] { EnumSaleStatus.NEW, EnumSaleStatus.NOT_SUBMITTED });
+
+		if(EnumSaleType.REGULAR.equals(this.type)) {
+				this.assertStatus(new EnumSaleStatus[] { EnumSaleStatus.NEW, EnumSaleStatus.NOT_SUBMITTED });
+		}
+		else if(EnumSaleType.SUBSCRIPTION.equals(this.type)) {
+				this.assertStatus(new EnumSaleStatus[] { EnumSaleStatus.NEW, EnumSaleStatus.MODIFIED,EnumSaleStatus.NOT_SUBMITTED });
+		}
+
 		this.sapOrderNumber = sapOrderNumber;
 		this.status = this.getNextState();
 	}
-	
+
 	public void modifyOrder(ErpModifyOrderModel model, Set usedPromotionCodes) throws ErpTransactionException {
 		this.assertStatus(
 			new EnumSaleStatus[] {
@@ -282,18 +298,18 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		this.transactions.add(model);
 		if (this.status != EnumSaleStatus.SETTLEMENT_FAILED) {
 			this.status = EnumSaleStatus.MODIFIED;
-		} 
-		
+		}
+
 		this.usedPromotionCodes = usedPromotionCodes;
 	}
-	
+
 	public void modifyOrderComplete() throws ErpTransactionException {
 		this.assertStatus(
 			new EnumSaleStatus[] { EnumSaleStatus.MODIFIED, EnumSaleStatus.NOT_SUBMITTED, EnumSaleStatus.AVS_EXCEPTION });
 
 		this.status = getNextState();
 	}
-	
+
 	public void cancelOrder(ErpCancelOrderModel cancelOrder) throws ErpTransactionException {
 		this.assertStatus(
 			new EnumSaleStatus[] {
@@ -307,12 +323,12 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		this.transactions.add(cancelOrder);
 		this.status = EnumSaleStatus.MODIFIED_CANCELED;
 	}
-	
+
 	public void cancelOrderComplete() throws ErpTransactionException {
 		this.assertStatus(new EnumSaleStatus[] { EnumSaleStatus.MODIFIED_CANCELED, EnumSaleStatus.NOT_SUBMITTED });
 		this.status = EnumSaleStatus.CANCELED;
 	}
-	
+
 	public void addInvoice(ErpInvoiceModel invoiceModel) throws ErpTransactionException {
 
 		this.assertStatus(new EnumSaleStatus[] { EnumSaleStatus.INPROCESS, EnumSaleStatus.RETURNED });
@@ -328,7 +344,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 			this.status = EnumSaleStatus.ENROUTE;
 		}
 	}
-	
+
 	public void addChargeInvoice(ErpChargeInvoiceModel chargeInvoiceModel) throws ErpTransactionException {
 
 		this.assertStatus(new EnumSaleStatus[] { EnumSaleStatus.SUBMITTED, EnumSaleStatus.AUTHORIZED, EnumSaleStatus.SETTLEMENT_FAILED });
@@ -383,7 +399,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 
 		return caseBuilder.getCases();
 	}
-	
+
 	public ErpInvoiceModel getInvoice() throws ErpTransactionException {
 		this.assertStatus(
 			new EnumSaleStatus[] {
@@ -413,7 +429,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 		return lastInvoice;
 	}
-	
+
 	public void updateShippingInfo(ErpShippingInfo shippingInfo) {
 		this.shippingInfo = shippingInfo;
 	}
@@ -432,13 +448,13 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		this.assertStatus(new EnumSaleStatus[] { EnumSaleStatus.ENROUTE, EnumSaleStatus.REDELIVERY, EnumSaleStatus.PENDING });
 		this.status = EnumSaleStatus.REFUSED_ORDER;
 	}
-	
+
 	public void addReturn(ErpReturnOrderModel returnModel) throws ErpTransactionException {
 		this.assertStatus(new EnumSaleStatus[] { EnumSaleStatus.REFUSED_ORDER, EnumSaleStatus.RETURNED });
 		this.transactions.add(returnModel);
 		this.status = EnumSaleStatus.RETURNED;
 	}
-	
+
 	public void addRedelivery(ErpRedeliveryModel redeliveryModel) throws ErpTransactionException {
 		this.assertStatus(EnumSaleStatus.PENDING);
 		this.transactions.add(redeliveryModel);
@@ -450,7 +466,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		this.transactions.add(deliveryConfirmModel);
 		this.status = EnumSaleStatus.CAPTURE_PENDING;
 	}
-	
+
 	public void addComplaint(ErpComplaintModel complaintModel) throws ErpTransactionException {
 		this.assertStatus(
 			new EnumSaleStatus[] {
@@ -462,7 +478,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 
 		this.complaints.add(complaintModel);
 	}
-	
+
 	public void updateComplaint(ErpComplaintModel newComplaint) throws ErpTransactionException {
 		List allowedStatus = new ArrayList();
 		allowedStatus.add(EnumSaleStatus.PENDING);
@@ -507,14 +523,14 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 			}
 		}
 	}
-	
+
 	public void addChargeback(ErpChargebackModel chargebackModel) throws ErpTransactionException {
 		this.assertStatus(new EnumSaleStatus[] { EnumSaleStatus.SETTLED, EnumSaleStatus.CHARGEBACK });
 		copyLastCapturePaymentMethodInfo(chargebackModel);
 		this.transactions.add(chargebackModel);
 		this.status = EnumSaleStatus.CHARGEBACK;
 	}
-	
+
 	public void addChargebackReversal(ErpChargebackReversalModel cbkReversal) throws ErpTransactionException {
 		this.assertStatus(EnumSaleStatus.CHARGEBACK);
 		copyLastCapturePaymentMethodInfo(cbkReversal);
@@ -526,7 +542,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 			if(o instanceof ErpChargebackModel){
 				cbk = MathUtil.roundDecimal(cbk + ((ErpChargebackModel)o).getAmount());
 			}
-			
+
 			if(o instanceof ErpChargebackReversalModel){
 				cbr = MathUtil.roundDecimal(cbr + ((ErpChargebackReversalModel)o).getAmount());
 			}
@@ -535,19 +551,19 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 			this.status = EnumSaleStatus.SETTLED;
 		}
 	}
-	
+
 	public void addAdjustment(ErpAdjustmentModel adjustmentModel) throws ErpTransactionException {
 		this.assertStatus(EnumSaleStatus.PAYMENT_PENDING);
 		copyLastCapturePaymentMethodInfo(adjustmentModel);
 		this.transactions.add(adjustmentModel);
 		this.status = EnumSaleStatus.SETTLEMENT_FAILED;
 	}
-	
+
 	public void addResubmitPayment(ErpResubmitPaymentModel model) throws ErpTransactionException {
 		this.assertStatus(EnumSaleStatus.SETTLEMENT_FAILED);
 		this.transactions.add(model);
 	}
-	
+
 	public void addAuthorization(ErpAuthorizationModel auth) throws ErpTransactionException {
 		this.assertStatus(
 			new EnumSaleStatus[] {
@@ -558,25 +574,28 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 				EnumSaleStatus.MODIFIED,
 				EnumSaleStatus.SETTLEMENT_FAILED
 				});
-		
+
 		if(EnumSaleStatus.SETTLEMENT_FAILED.equals(this.status) && !auth.isApproved()) {
 			throw new ErpTransactionException("Cannot add failed authorization in SETTLEMENT FAILED status");
 		}
 
 		this.transactions.add(auth);
-		
+
 		boolean fullyAuthorized = this.isFullyAuthorized();
-		
+
 		if(!fullyAuthorized && auth.isApproved()) {
 			return;
 		} else if(!auth.isApproved()) {
-			if(EnumSaleStatus.SUBMITTED.equals(this.status)){
-				this.status = EnumSaleStatus.AUTHORIZATION_FAILED;
-			}
+			if( EnumSaleStatus.SUBMITTED.equals(this.status)||
+                ((EnumSaleStatus.NEW.equals(this.status)||EnumSaleStatus.MODIFIED.equals(this.status)) && EnumSaleType.SUBSCRIPTION.equals(type))) {
+                    this.status = EnumSaleStatus.AUTHORIZATION_FAILED;
+            }
+
+
 		} else {
 			if(EnumSaleStatus.INPROCESS_NO_AUTHORIZATION.equals(this.status)) {
 				this.status = EnumSaleStatus.INPROCESS;
-			}else if(EnumSaleStatus.AUTHORIZATION_FAILED.equals(this.status) 
+			}else if(EnumSaleStatus.AUTHORIZATION_FAILED.equals(this.status)
 				|| EnumSaleStatus.SUBMITTED.equals(this.status)){
 				if(auth.hasAvsMatched()) {
 					this.status = EnumSaleStatus.AUTHORIZED;
@@ -584,16 +603,16 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 					this.status = EnumSaleStatus.AVS_EXCEPTION;
 				}
 			}
-			
+
 		}
 	}
-	
+
 	public void addSettlement(ErpSettlementModel settlementModel) throws ErpTransactionException {
 		this.assertStatus(
 			new EnumSaleStatus[] { EnumSaleStatus.PAYMENT_PENDING, EnumSaleStatus.SETTLED, EnumSaleStatus.SETTLEMENT_FAILED });
 
 		copyLastCapturePaymentMethodInfo(settlementModel);
-		
+
 		this.transactions.add(settlementModel);
 
 		if (!this.status.equals(EnumSaleStatus.SETTLED)) {
@@ -601,7 +620,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 			for (Iterator i = this.getGoodCaptures().iterator(); i.hasNext();) {
 				Object o = i.next();
 				if (o instanceof ErpCaptureModel) {
-					double amount = ((ErpCaptureModel) o).getAmount();					
+					double amount = ((ErpCaptureModel) o).getAmount();
 					if (!getIsChargePayment(amount)) { // don't include any settlements pertaining to charges (i.e bounced check fee)
 						capturedAmt += amount;
 					}
@@ -619,7 +638,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 					stlFail = MathUtil.roundDecimal(stlFail + ((ErpFailedSettlementModel)o).getAmount());
 				}
 			}
-			
+
 			int settle = (int) Math.round(MathUtil.roundDecimal(settledAmt - stlFail) * 100);
 			int capture = (int) Math.round(capturedAmt * 100);
 			if (settle >= capture) {
@@ -627,29 +646,29 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 			}
 		}
 	}
-	
+
 	public void addFailedSettlement(ErpFailedSettlementModel failedSettlementModel) throws ErpTransactionException {
 		this.assertStatus(new EnumSaleStatus[] { EnumSaleStatus.PAYMENT_PENDING, EnumSaleStatus.SETTLED, EnumSaleStatus.SETTLEMENT_FAILED });
-		copyLastCapturePaymentMethodInfo(failedSettlementModel);		
+		copyLastCapturePaymentMethodInfo(failedSettlementModel);
 		this.transactions.add(failedSettlementModel);
 		this.status = EnumSaleStatus.SETTLEMENT_FAILED;
 	}
 
 	public void addChargeSettlement(ErpChargeSettlementModel chargeSettlementModel) throws ErpTransactionException {
 		this.assertStatus(new EnumSaleStatus[] { EnumSaleStatus.PAYMENT_PENDING, EnumSaleStatus.SETTLED, EnumSaleStatus.SETTLEMENT_FAILED });
-		copyLastCapturePaymentMethodInfo(chargeSettlementModel);		
+		copyLastCapturePaymentMethodInfo(chargeSettlementModel);
 		this.transactions.add(chargeSettlementModel);
 	}
 
 	public void addFundsRedeposit(ErpFundsRedepositModel fundsRedepositModel) throws ErpTransactionException {
 		this.assertStatus(new EnumSaleStatus[] { EnumSaleStatus.PAYMENT_PENDING, EnumSaleStatus.SETTLED });
-		copyLastCapturePaymentMethodInfo(fundsRedepositModel);		
+		copyLastCapturePaymentMethodInfo(fundsRedepositModel);
 		this.transactions.add(fundsRedepositModel);
 	}
 
 	public void addFailedChargeSettlement(ErpFailedChargeSettlementModel failedChargeSettlementModel) throws ErpTransactionException {
 		this.assertStatus(new EnumSaleStatus[] { EnumSaleStatus.PAYMENT_PENDING, EnumSaleStatus.SETTLED, EnumSaleStatus.SETTLEMENT_FAILED });
-		copyLastCapturePaymentMethodInfo(failedChargeSettlementModel);		
+		copyLastCapturePaymentMethodInfo(failedChargeSettlementModel);
 		this.transactions.add(failedChargeSettlementModel);
 	}
 
@@ -657,7 +676,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		this.assertStatus(EnumSaleStatus.AUTHORIZATION_FAILED);
 		this.transactions.add(authorizationModel);
 	}
-	
+
 	public void addReversal(ErpReversalModel reversalModel) throws ErpTransactionException {
 		this.assertStatus(new EnumSaleStatus[] { EnumSaleStatus.AUTHORIZED, EnumSaleStatus.AVS_EXCEPTION });
 		this.transactions.add(reversalModel);
@@ -667,13 +686,13 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		this.assertStatus(EnumSaleStatus.SETTLED);
 		this.transactions.add(cashbackModel);
 	}
-	
+
 	public void addCapture(ErpCaptureModel captureModel) throws ErpTransactionException {
-		this.assertStatus(new EnumSaleStatus[] 
-			{EnumSaleStatus.ENROUTE, 
-			 EnumSaleStatus.CAPTURE_PENDING, 
-			 EnumSaleStatus.PENDING, 
-			 EnumSaleStatus.REDELIVERY, 
+		this.assertStatus(new EnumSaleStatus[]
+			{EnumSaleStatus.ENROUTE,
+			 EnumSaleStatus.CAPTURE_PENDING,
+			 EnumSaleStatus.PENDING,
+			 EnumSaleStatus.REDELIVERY,
 			 EnumSaleStatus.PAYMENT_PENDING,
 			 EnumSaleStatus.SETTLEMENT_FAILED
 			 });
@@ -698,7 +717,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 			this.status = EnumSaleStatus.PAYMENT_PENDING;
 		}
 	}
-	
+
 	public void addVoidCapture(ErpVoidCaptureModel voidCapture) throws ErpTransactionException {
 		this.assertStatus(new EnumSaleStatus[] {EnumSaleStatus.PAYMENT_PENDING, EnumSaleStatus.ENROUTE});
 		// if status is ENROUTE already nothing needs to be done.  All captures have been voided at this point
@@ -712,7 +731,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 			}
 		}
 	}
-	
+
 	public java.util.Date getCaptureDate() throws ErpTransactionException {
 		this.assertStatus(new EnumSaleStatus[] { EnumSaleStatus.PAYMENT_PENDING, EnumSaleStatus.SETTLED });
 
@@ -729,7 +748,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 		return captureDate;
 	}
-	
+
 	public List getCaptures() {
 		List captures = new ArrayList();
 		for (Iterator i = this.transactions.iterator(); i.hasNext();) {
@@ -740,7 +759,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 		return captures;
 	}
-	
+
 	public List getVoidCaptures() {
 		List voidCaptures = new ArrayList();
 		for (Iterator i = this.transactions.iterator(); i.hasNext();) {
@@ -763,7 +782,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 		return settlements;
 	}
-	
+
 	public List getAdjustments() throws ErpTransactionException {
 		this.assertStatus(new EnumSaleStatus[] { EnumSaleStatus.SETTLED, EnumSaleStatus.SETTLEMENT_FAILED });
 		List adjustments = new ArrayList();
@@ -792,7 +811,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 			this.status = EnumSaleStatus.PAYMENT_PENDING;
 		}
 	}
-	
+
 	public void cutoff() throws ErpTransactionException {
 		this.assertStatus(new EnumSaleStatus[] { EnumSaleStatus.AUTHORIZED, EnumSaleStatus.AVS_EXCEPTION });
 		this.status = EnumSaleStatus.INPROCESS;
@@ -923,12 +942,16 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	public Set getUsedPromotionCodes() {
 		return Collections.unmodifiableSet(this.usedPromotionCodes);
 	}
-	
+	public boolean hasUsedPromotionCodes() {
+		if((usedPromotionCodes!=null))
+			return true;
+		return false;
+	}
 	public List getCartonInfo() {
 		return cartonInfo;
 	}
-		
-	
+
+
 	public ErpChargeInvoiceModel getChargeInvoice() {
 
 		ErpChargeInvoiceModel lastChargeInvoice = null;
@@ -944,10 +967,10 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	}
 
 	public  boolean getIsChargePayment(String authId) {
-	
+
 		for (Iterator i = this.transactions.iterator(); i.hasNext();) {
 			Object obj = i.next();
-			if (obj instanceof ErpAuthorizationModel) {					
+			if (obj instanceof ErpAuthorizationModel) {
 				ErpAuthorizationModel auth = ((ErpAuthorizationModel) obj);
 				if (authId.equalsIgnoreCase(auth.getAuthCode()) && auth.getIsChargePayment()) {
 					return true;
@@ -956,14 +979,14 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 
 		return false;
-		
+
 	}
-	
+
 	public  boolean getIsChargePayment(double chargeAmount) {
-		
+
 			for (Iterator i = this.transactions.iterator(); i.hasNext();) {
 				Object obj = i.next();
-				if (obj instanceof ErpAuthorizationModel) {					
+				if (obj instanceof ErpAuthorizationModel) {
 					ErpAuthorizationModel auth = ((ErpAuthorizationModel) obj);
 					if (auth.getIsChargePayment() && MathUtil.roundDecimal(chargeAmount) == MathUtil.roundDecimal(auth.getAmount())) {
 						return true;
@@ -972,33 +995,33 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 			}
 
 			return false;
-			
+
 		}
 
 	public boolean hasChargeSettlement() {
-		
+
 		for (Iterator i = this.transactions.iterator(); i.hasNext();) {
 			Object obj = i.next();
 			if (obj instanceof ErpChargeSettlementModel) {
 				return true;
 			}
 		}
-		return false;			
+		return false;
 	}
 
 	public boolean hasFundsRedeposit() {
-		
+
 		for (Iterator i = this.transactions.iterator(); i.hasNext();) {
 			Object obj = i.next();
 			if (obj instanceof ErpFundsRedepositModel) {
 				return true;
 			}
 		}
-		return false;			
+		return false;
 	}
 
 	public EnumTransactionType getCurrentTransactionType() {
-		
+
 		List txs = new ArrayList(this.transactions);
 		Collections.sort(txs, ErpTransactionI.TX_DATE_COMPARATOR);
 		if (txs != null && txs.size() > 0) {
@@ -1057,15 +1080,15 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 				EnumSaleStatus.ENROUTE,
 				EnumSaleStatus.PAYMENT_PENDING
 				});
-		this.status = EnumSaleStatus.SETTLEMENT_FAILED;			
+		this.status = EnumSaleStatus.SETTLEMENT_FAILED;
 	}
 
 	public List getGoodCaptures() {
-		
+
 		ArrayList goodCaptures = new ArrayList();
 		List voidCaptures = this.getVoidCaptures();
 		List failedSettlements = this.getFailedSettlements();
-		
+
 		for(Iterator iterCaptures = this.getCaptures().iterator(); iterCaptures.hasNext(); ){
 			ErpCaptureModel cm = (ErpCaptureModel) iterCaptures.next();
 			boolean found = false;
@@ -1098,10 +1121,10 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 
 		return goodCaptures;
 	}
-	
+
 
 	public boolean getIsSettlementFailedAfterSettled() {
-		
+
 		if(EnumSaleStatus.SETTLEMENT_FAILED.equals(this.status)){
 			return true;
 		}
@@ -1111,7 +1134,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		int failSettlements = 0;
 		int settlements = 0;
 		boolean stf = false;
-		
+
 		for (Iterator i = txs.iterator(); i.hasNext();) {
 			Object o = i.next();
 			if (o instanceof ErpFailedSettlementModel) {
@@ -1122,17 +1145,17 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 				settlements++;
 			}
 		}
-		
+
 		return stf ? failSettlements >= settlements : false;
 	}
 
 	private void copyLastCapturePaymentMethodInfo(ErpPaymentModel destPaymentModel) {
-		
+
 		if (destPaymentModel != null) {
 			List txs = new ArrayList(this.transactions);
-			Collections.sort(txs, ErpTransactionI.TX_DATE_COMPARATOR);			
+			Collections.sort(txs, ErpTransactionI.TX_DATE_COMPARATOR);
 			Collections.reverse(txs);
-			// get the last captured 
+			// get the last captured
 			for (Iterator i = txs.iterator(); i.hasNext();) {
 				Object o = i.next();
 				if (o instanceof ErpCaptureModel) {
@@ -1146,9 +1169,9 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 				}
 			}
 		}
-		
+
 	}
-	
+
 	public int getNumberOfCaptures(){
 		List l = this.getGoodCaptures();
 		for(ListIterator i = l.listIterator(); i.hasNext();) {
@@ -1159,11 +1182,11 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		}
 		return l.size();
 	}
-	
+
 	public List getCashbacks(){
 		return this.filterTransaction(ErpCashbackModel.class);
 	}
-	
+
 	public ErpSettlementModel getSettlement (ErpAffiliate affiliate, double amount, String authCode) {
 		List l = this.filterTransaction(ErpSettlementModel.class);
 		ErpSettlementModel model = null;
@@ -1174,82 +1197,82 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 				break;
 			}
 		}
-		
+
 		return model;
 	}
-	
+
 	public ErpFailedSettlementModel getLastFailSettlement() {
 		List l = this.filterTransaction(ErpFailedSettlementModel.class);
 		if(l.isEmpty()) {
 			return null;
 		}
-		
+
 		return (ErpFailedSettlementModel) l.get(l.size() - 1);
 	}
-	
+
 	public ErpChargebackModel getLastChargeback(){
 		List l = this.filterTransaction(ErpChargebackModel.class);
 		if(l.isEmpty()) {
 			return null;
 		}
-		
+
 		return (ErpChargebackModel) l.get(l.size() - 1);
 	}
-	
+
 	public ErpChargebackReversalModel getLastChargebackReversal(){
 		List l = this.filterTransaction(ErpChargebackReversalModel.class);
 		if(l.isEmpty()) {
 			return null;
 		}
-		
+
 		return (ErpChargebackReversalModel)l.get(l.size() - 1);
 	}
-	
+
 	public ErpChargeSettlementModel getLastChargeSettlement() {
 		List l = this.filterTransaction(ErpChargeSettlementModel.class);
 		if(l.isEmpty()) {
 			return null;
 		}
-		
+
 		return (ErpChargeSettlementModel) l.get(l.size() - 1);
 	}
-	
+
 	public boolean hasSplitTransaction() {
 		boolean fd = false;
 		boolean bc = false;
-		
+
 		final ErpAffiliate fdAff = ErpAffiliate.getPrimaryAffiliate();
 		final ErpAffiliate bcAff = ErpAffiliate.getEnum(ErpAffiliate.CODE_BC);
-		
+
 		for(Iterator i = this.getGoodCaptures().iterator(); i.hasNext(); ){
 			ErpCaptureModel c = (ErpCaptureModel) i.next();
 			if(fdAff.equals(c.getAffiliate())) {
 				fd = true;
 			}
-			
+
 			if(bcAff.equals(c.getAffiliate())) {
 				bc = true;
 			}
 		}
-		
+
 		return fd && bc;
 	}
-	
+
 	public String getPreviousSettlementId(ErpAbstractSettlementModel settlement, boolean stlForStf) {
 		List l = this.filterTransaction(ErpSettlementModel.class);
 		String id = "";
 		for(Iterator i = l.iterator(); i.hasNext(); ){
 			ErpSettlementModel s = (ErpSettlementModel) i.next();
-			if(MathUtil.roundDecimal(s.getAmount()) == MathUtil.roundDecimal(settlement.getAmount()) && s.getAffiliate().equals(settlement.getAffiliate()) 
+			if(MathUtil.roundDecimal(s.getAmount()) == MathUtil.roundDecimal(settlement.getAmount()) && s.getAffiliate().equals(settlement.getAffiliate())
 				&& (s.getCcNumLast4().equals(settlement.getCcNumLast4()) || stlForStf)){
 				id = s.getPK().getId();
 				break;
 			}
 		}
-		
+
 		return id;
 	}
-	
+
 	public String getCashbackId(ErpAffiliate affiliate, double amount) {
 		for(Iterator i = this.getCashbacks().iterator(); i.hasNext(); ){
 			ErpCashbackModel c = (ErpCashbackModel) i.next();
@@ -1257,8 +1280,11 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 				return c.getPK().getId();
 			}
 		}
-		
+
 		return null;
+	}
+	public EnumSaleType getType() {
+		return type;
 	}
 
 }

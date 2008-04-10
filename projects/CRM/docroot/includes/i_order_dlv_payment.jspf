@@ -9,12 +9,14 @@
 	- boolean showPaymentButtons
 	- boolean showAddressButtons
 	- boolean showDeleteButtons
+    - boolean displayDeliveryInfo
 --%>
 <%-- ~~~~~~~~~~~~~~~~~~~~~~~ BEGIN DELIVERY & PAYMENT INFO SECTION ~~~~~~~~~~~~~~~~~~~~~~~ --%>
 <%	
 	String fmtDlvDate = CCFormatter.formatDeliveryDate( order.getDeliveryReservation().getStartTime() );
 	String fmtDlvTime = CCFormatter.formatDeliveryTime( order.getDeliveryReservation().getStartTime() ) + " - " + CCFormatter.formatDeliveryTime( order.getDeliveryReservation().getEndTime() );
 	CrmLateIssueModel lateIssue = (order instanceof FDOrderI) ? CrmManager.getInstance().getRecentLateIssueForOrder(((FDOrderI)order).getErpSalesId()) : null;
+            
 	if (lateIssue!=null) {
 %>
 <table width="100%" cellpadding="0" cellspacing="0" border="0" class="order_detail" style="padding: 1px;">
@@ -26,11 +28,14 @@
 <%  }  %>
 <table width="100%" cellpadding="0" cellspacing="0" border="0" class="order_detail" style="padding: 1px;">
 	<tr class="inactive">
+    <% if(displayDeliveryInfo){%>
 		<td width="22%">DELIVERY TIME</td>
 		<td width="38%">DELIVERY ADDRESS</td>
+    <%}%>   
 		<td width="40%">PAYMENT INFORMATION</td>
 	</tr>
 	<tr valign="top">
+        <% if(displayDeliveryInfo){%>
 		<td style="padding-left: 8px;">
 			<%= fmtDlvDate %><br>
 			<%= fmtDlvTime %><br>
@@ -70,6 +75,7 @@
 		<td>
 			<%@ include file="/includes/i_delivery_address_select.jspf"%>
 		</td>
+        <%}%>
 		<td>
 			<table width="100%" cellpadding="0" cellspacing="0" border="0" class="order_detail" style="padding: 1px;">
 				<tr>

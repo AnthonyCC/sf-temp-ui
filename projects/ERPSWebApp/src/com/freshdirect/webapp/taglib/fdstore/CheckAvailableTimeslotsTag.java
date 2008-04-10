@@ -99,16 +99,25 @@ public class CheckAvailableTimeslotsTag extends AbstractControllerTag {
 	 		result.addError(address1==null || address1.length() < 1,
 	 			 EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_REQUIRED
         	);
+	 		
+	 		
+	 		
 	 		        		 		
-        	if(zipCode==null || zipCode.length() < 5) {
-            	result.addError(new ActionError(EnumUserInfoName.DLV_ZIPCODE.getCode(), SystemMessageList.MSG_REQUIRED));
+        	if(zipCode==null || zipCode.length() < 5){
+            	result.addError(new ActionError (EnumUserInfoName.DLV_ZIPCODE.getCode(), SystemMessageList.MSG_REQUIRED));
         	}
+        	
         	if(city==null || city.trim().length()==0) {
             	result.addError(new ActionError(EnumUserInfoName.DLV_CITY.getCode(), SystemMessageList.MSG_REQUIRED));
         	}
-        	if(state==null || state.trim().length()==0) {
-            	result.addError(new ActionError(EnumUserInfoName.DLV_STATE.getCode(), SystemMessageList.MSG_REQUIRED));
-        	}        	        	
+        	if (state==null || state.trim().length()==0) {
+				result.addError(true, EnumUserInfoName.DLV_STATE.getCode(), SystemMessageList.MSG_REQUIRED);
+			}else if (state.length() < 2) {
+				result.addError(new ActionError(EnumUserInfoName.DLV_STATE.getCode(), SystemMessageList.MSG_REQUIRED));
+			} else {
+				result.addError(!AddressUtil.validateState(state), EnumUserInfoName.DLV_STATE.getCode(),
+					SystemMessageList.MSG_UNRECOGNIZE_STATE);
+			}        	        	
 	 	}
 
 	 	public ErpAddressModel getAddress(){

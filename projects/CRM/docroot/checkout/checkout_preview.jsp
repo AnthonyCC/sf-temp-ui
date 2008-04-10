@@ -111,7 +111,9 @@
 <%
     boolean showPaymentButtons = true;
 	boolean showAddressButtons = !(user.getShoppingCart().getDeliveryAddress() instanceof ErpDepotAddressModel);
-	boolean showDeleteButtons = false; %>
+	boolean showDeleteButtons = false; 
+    boolean displayDeliveryInfo = true;
+%>
 	
 <%@ include file="/includes/i_order_dlv_payment.jspf"%>
 <hr class="black1px">

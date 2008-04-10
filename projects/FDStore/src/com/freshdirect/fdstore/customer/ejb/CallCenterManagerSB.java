@@ -45,7 +45,7 @@ public interface CallCenterManagerSB extends EJBObject {
 
 	public EnumPaymentResponse resubmitPayment(String saleId, ErpPaymentMethodI payment, Collection charges) throws FDResourceException, ErpTransactionException, RemoteException;
 
-	public void resubmitOrder(String saleId,CustomerRatingI cra) throws RemoteException, FDResourceException, ErpTransactionException;
+	public void resubmitOrder(String saleId,CustomerRatingI cra,EnumSaleType saleType) throws RemoteException, FDResourceException, ErpTransactionException;
 	
 	public void resubmitCustomer(String customerID) throws FDResourceException, RemoteException;
 	

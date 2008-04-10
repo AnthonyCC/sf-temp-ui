@@ -387,6 +387,7 @@ public class GenericSearchDAO {
 		+ "di.cutofftime, rs.type "
 		+ "from cust.customer c, cust.fdcustomer fdc, cust.customerinfo ci, cust.sale s, cust.salesaction sa, cust.deliveryinfo di, dlv.reservation rs "
 		+ "where c.id = ci.customer_id and c.id = fdc.erp_customer_id and c.id = s.customer_id and s.id = sa.sale_id and sa.action_type IN ('CRO', 'MOD') "
+		+ "and s.type ='REG' "
 		+ "and s.status in('SUB','AVE','AUT','AUF') and sa.action_date = "
 		+ "(SELECT MAX(action_date) FROM cust.salesaction WHERE sale_id = s.id AND action_type IN ('CRO', 'MOD')) "
 		+ "and sa.id = di.salesaction_id and rs.id = di.reservation_id";

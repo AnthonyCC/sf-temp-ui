@@ -61,7 +61,7 @@ public class CrmResubmitOrdersTag extends AbstractControllerTag {
 					//CustomerRatingAdaptor cra = new CustomerRatingAdaptor(fdCustomer.getProfile(),user.isCorporateUser(),user.getAdjustedValidOrderCount());
 					CustomerRatingAdaptor cra = new CustomerRatingAdaptor(fdCustomer.getProfile(),user.isCorporateUser(),FDCustomerManager.getValidOrderCount(fdIdentity));
 					//END
-					CallCenterServices.resubmitOrder(saleIds[idIdx],cra);
+					CallCenterServices.resubmitOrder(saleIds[idIdx],cra,order.getOrderType());
 					actionResult.addError(new ActionError("submitted_"+idIdx, "Order id: "+saleIds[idIdx]+" was resubmitted."));
 				} catch (FDResourceException ex) {
 					LOGGER.warn("Caught FDResoureException in CrmResubmitOrdersTag.performAction() ",ex);

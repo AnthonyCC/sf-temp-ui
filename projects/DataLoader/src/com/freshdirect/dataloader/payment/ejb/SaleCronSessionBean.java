@@ -21,10 +21,14 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.delivery.DlvProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDUser;
+import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
 import com.freshdirect.framework.core.ServiceLocator;
@@ -45,11 +49,23 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 
 	private final static String QUERY_AUTH_NEEDED =
 		"select s.id from cust.sale s, cust.salesaction sa, cust.deliveryinfo di "
-			+ "where s.status in ('SUB', 'PNA') and sa.sale_id=s.id and sa.action_type in ('CRO','MOD') "
+			+ "where s.status in ('SUB', 'PNA')and s.type='REG' and sa.sale_id=s.id and sa.action_type in ('CRO','MOD') "
 			+ "and sa.action_date=(select max(action_date) "
 			+ "from cust.salesaction za where za.action_type in ('CRO','MOD') and za.sale_id=s.id) and di.SALESACTION_ID=sa.ID and di.starttime > sysdate - 1 and di.starttime<SYSDATE+2";
 
-	private final static String QUERY_SALE_IN_CPG_STATUS = 
+
+	private final static String QUERY_AUTH_NEEDED_SUBSCRIPTIONS=
+		"SELECT S.ID,S.CUSTOMER_ID FROM CUST.SALE S,CUST.SALESACTION SA WHERE S.CROMOD_DATE BETWEEN (SYSDATE-5) AND (SYSDATE-1/48) AND "+
+	    "S.ID=SA.SALE_ID AND "+
+	    "S.CUSTOMER_ID=SA.CUSTOMER_ID AND "+
+	    "S.CROMOD_DATE=SA.ACTION_DATE AND "+
+	    "SA.ACTION_TYPE IN ('CRO','MOD') AND "+
+	    "S.STATUS='NEW' AND S.TYPE='SUB' AND "+
+	    " NOT EXISTS (SELECT 1 FROM CUST.SALESACTION SA WHERE SALE_ID=S.ID AND ACTION_TYPE='AUT')";
+
+
+
+	private final static String QUERY_SALE_IN_CPG_STATUS =
 		"select distinct s.id from cust.sale s, cust.salesaction sa where s.status = ? "
 			+ "and sa.sale_id=s.id and (sa.action_type='RET' or(sa.action_type='DLC' "
 			+ "and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='DLC' and za.sale_id = s.id))*24 >=?))";
@@ -62,7 +78,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 	private final static String LOCK_AUF_SALES =
 		"update cust.sale set status = ? where status = ? "
 			+ "and exists (select s.id from cust.sale s, cust.salesaction sa, cust.deliveryinfo di "
-			+ "where sale.id = s.id and sa.sale_id=s.id and sa.action_type in ('CRO','MOD') "
+			+ "where sale.id = s.id and s.type='REG' and sa.sale_id=s.id and sa.action_type in ('CRO','MOD')  "
 			+ "and sa.action_date=(select max(action_date) from cust.salesaction za where za.action_type in ('CRO','MOD') and za.sale_id=s.id) "
 			+ "and di.salesaction_id=sa.id and di.starttime > sysdate - 1 and (di.cutofftime - sysdate) * 24 <= ?)";
 
@@ -74,14 +90,14 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 	private final static String UPDATE_TO_PROCESS_STATUS =
 		"update cust.sale set status = decode(status, 'SUB', 'PNA', 'PRC') where status in ('AUT', 'AVE', 'SUB') "
 			+ "and exists (select s.id from cust.sale s, cust.salesaction sa, cust.deliveryinfo di "
-			+ "where sale.id = s.id and sa.sale_id=s.id and sa.action_type in ('CRO','MOD') "
+			+ "where sale.id = s.id and sale.type='REG' and sa.sale_id=s.id and sa.action_type in ('CRO','MOD') "
 			+ "and sa.action_date=(select max(action_date) from cust.salesaction za where za.action_type in ('CRO','MOD') and za.sale_id=s.id) "
 			+ "and di.salesaction_id=sa.id and di.starttime > sysdate - 1 and di.cutofftime < sysdate)";
 
 	/**
 	 * This method runs a AUTH_QUERY against the erpcustomer and get all the sales, that need payment authorization
 	 * and then authorizes them one by one by calling ErpCustomerManager.
-	 * 
+	 *
 	 */
 	public void authorizeSales(long timeout) {
 		Connection con = null;
@@ -134,7 +150,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 				try {
 					utx = this.getSessionContext().getUserTransaction();
 					utx.begin();
-					
+
 					String saleId = (String) i.next();
 					LOGGER.info("Going to authorize: " + saleId);
 					sb.authorizeSale(saleId);
@@ -153,6 +169,86 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
+
+
+	public void authorizeSubscriptions(long timeout) {
+		Connection con = null;
+		List saleIds = new ArrayList();
+		List customerIds=new ArrayList();
+
+		UserTransaction utx = null;
+		try {
+			utx = this.getSessionContext().getUserTransaction();
+			utx.begin();
+			con = this.getConnection();
+			PreparedStatement ps = con.prepareStatement(QUERY_AUTH_NEEDED_SUBSCRIPTIONS);
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				saleIds.add(rs.getString(1));
+				customerIds.add(rs.getString(2));
+			}
+
+			rs.close();
+			ps.close();
+
+			utx.commit();
+
+		} catch (Exception e) {
+			LOGGER.warn(e);
+			try {
+				utx.rollback();
+			} catch (SystemException se) {
+				LOGGER.warn("Error while trying to rollback transaction", se);
+			}
+			throw new EJBException(e);
+		} finally {
+			try {
+				if (con != null) {
+					con.close();
+					con = null;
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("SQLException while cleaning up", se);
+			}
+		}
+
+		FDCustomerManagerSB sb = this.getFDCustomerManagerSB();
+		if (saleIds.size() > 0) {
+			long startTime = System.currentTimeMillis();
+			for (int i=0;i<saleIds.size();i++) {
+				if (System.currentTimeMillis() - startTime > timeout) {
+					LOGGER.warn("Authorization process was running longer than" + timeout / 60 / 1000);
+					break;
+				}
+				utx = null;
+				try {
+					utx = this.getSessionContext().getUserTransaction();
+					utx.begin();
+
+					String saleId = (String)saleIds.get(i);
+					String customerId=(String)customerIds.get(i);
+					FDIdentity identity=getFDIdentity(customerId);
+					FDUser user=FDCustomerManager.getFDUser(identity);
+					CustomerRatingAdaptor cra=new CustomerRatingAdaptor(user.getFDCustomer().getProfile(),user.isCorporateUser(),user.getAdjustedValidOrderCount());
+					LOGGER.info("Going to authorize subscription: " + saleId);
+					sb.authorizeSale(customerId,saleId,EnumSaleType.SUBSCRIPTION,null);
+					utx.commit();
+
+				} catch (Exception e) {
+					LOGGER.warn("Exception occured during authorization", e);
+					if (utx != null)
+						try {
+							utx.rollback();
+						} catch (SystemException se) {
+							LOGGER.warn("Error while trying to rollback transaction", se);
+						}
+					// just keep going :)
+				}
+			}
+		}
+	}
+
 
 	private void lockAuthFaileSales(Connection conn, EnumSaleStatus from, EnumSaleStatus to) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(LOCK_AUF_SALES);
@@ -198,8 +294,8 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 	}
 
 	/**
-	 * It also make sure that if the system. was unable to obtain an authorization for this sale, 
-	 * then it cancels the order both in ERPS and SAP. it also locks the sale from further modifications until 
+	 * It also make sure that if the system. was unable to obtain an authorization for this sale,
+	 * then it cancels the order both in ERPS and SAP. it also locks the sale from further modifications until
 	 * the process is funished by changing the state of the order to LOCKED.
 	 */
 	public void cancelAuthorizationFailed() {
@@ -214,7 +310,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			con = this.getConnection();
 
 			this.lockAuthFaileSales(con, EnumSaleStatus.AUTHORIZATION_FAILED, EnumSaleStatus.LOCKED);
-	
+
 			// get LOCKED sale IDs
 			saleIds = this.querySaleAndIdentityByStatus(con, EnumSaleStatus.LOCKED);
 			utx.commit();
@@ -237,7 +333,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			}
 		}
 
-		
+
 		// cancel all LOCKED sales
 		FDCustomerManagerSB sb = this.getFDCustomerManagerSB();
 		for (Iterator i = saleIds.keySet().iterator(); i.hasNext();) {
@@ -251,7 +347,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 					new FDActionInfo(EnumTransactionSource.SYSTEM, identity, "SYSTEM", "Could not get AUTHORIZATION", null);
 
 				LOGGER.debug("cancel sale-start: " + saleId);
-				
+
 
 				sb.cancelOrder(info, saleId, false);
 				LOGGER.debug("cancel sale-complete: " + saleId);
@@ -266,9 +362,9 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 					}
 				// just keep going :)
 			}
-		}		
+		}
 	}
-	
+
 	/**
 	 * This method updates status for sales whose cutoff time has elapsed.
 	 */
@@ -342,7 +438,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			}
 		}
 		long startTime = System.currentTimeMillis();
-		
+
 		PaymentGatewaySB sb = null;
 		PaymentSB psb = null;
 		PaymentCommandI command = null;
@@ -372,7 +468,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 					psb.captureAuthorization((String) saleIds.get(i));
 					LOGGER.info("*******do capture transaction for order:"+saleIds.get(i));
 				}
-				
+
 				utx.commit();
 			} catch (Exception e) {
 				LOGGER.warn("Exception occured during capture", e);
@@ -388,6 +484,11 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		}
 
 	}
+
+	private static FDIdentity getFDIdentity(String erpCustomerID) {
+		return new FDIdentity(erpCustomerID,null);
+	}
+
 
 	private FDCustomerManagerSB getFDCustomerManagerSB() {
 		try {
@@ -416,11 +517,11 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			throw new EJBException(e);
 		}
 	}
-	
+
 	private PaymentGatewaySB getPaymentGatewaySB() {
 		try {
 			PaymentGatewayHome home = (PaymentGatewayHome)LOCATOR.getRemoteHome(DlvProperties.getPaymentGatewayHome(), PaymentGatewayHome.class);
-			return home.create(); 
+			return home.create();
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}catch (CreateException e){

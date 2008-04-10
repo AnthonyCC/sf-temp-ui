@@ -15,6 +15,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDOrderHistory;
@@ -45,8 +46,7 @@ public class OrderHistoryInfoTag extends AbstractGetterTag {
 		//rollbacked.
 		//FDOrderHistory history = FDCustomerManager.getOrderHistoryInfo(user.getIdentity());		
 		FDOrderHistory history = (FDOrderHistory) user.getOrderHistory();
-
-		List orderHistoryInfo = new ArrayList(history.getFDOrderInfos());
+		List orderHistoryInfo = new ArrayList(history.getFDOrderInfos(EnumSaleType.REGULAR));
 
 		Collections.sort(orderHistoryInfo, ORDER_COMPARATOR);
 

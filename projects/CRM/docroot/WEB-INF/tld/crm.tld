@@ -1126,5 +1126,27 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>	
-    </tag>          	
+    </tag> 
+        <tag>
+            <name>SubscriptionController</name>
+            <tagclass>com.freshdirect.webapp.taglib.crm.CrmSubscriptionControllerTag</tagclass>
+            <teiclass>com.freshdirect.webapp.taglib.crm.CrmSubscriptionControllerTag$TagEI</teiclass>
+            <bodycontent>JSP</bodycontent>
+            <info></info>
+        	<attribute>
+            	<name>PaymentMethod</name>
+            	<required>false</required>
+            	<rtexprvalue>true</rtexprvalue>
+        	</attribute>
+            <attribute>
+                <name>successPage</name>
+                <required>true</required>
+                <rtexprvalue>true</rtexprvalue>
+            </attribute>
+            <attribute>
+                <name>result</name>
+                <required>true</required>
+                <rtexprvalue>false</rtexprvalue>
+            </attribute>
+        </tag>
 </taglib>

@@ -19,6 +19,7 @@ import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpActivityRecord;
@@ -108,6 +109,14 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 
 			List auths = cmd.getAuthorizations();
 			EnumPaymentResponse response = EnumPaymentResponse.APPROVED;
+			EnumSaleType saleType=sale.getType();
+			if(EnumSaleType.SUBSCRIPTION.equals(saleType) && auths.size()==0) {
+							/* SessionContext ctx = getSessionContext();
+							   ctx.setRollbackOnly();
+							*/
+				return EnumPaymentResponse.ERROR;
+			}
+
 			for (Iterator i = auths.iterator(); i.hasNext();) {
 				ErpAuthorizationModel auth = (ErpAuthorizationModel) i.next();
 				saleEB.addAuthorization(auth);
@@ -118,7 +127,7 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 
 				CrmSystemCaseInfo caseInfo = this.buildAuthorizationCase(customerId, saleId, auth);
 				if (caseInfo != null) {
-					// create a case in seperate tx so even if case creation fails we 
+					// create a case in seperate tx so even if case creation fails we
 					// still have record of failed authorization
 					this.createCase(caseInfo, true);
 				}
@@ -134,7 +143,7 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 	}
 
 	/**
-	 * Adds auth failures to cusotmer activity log. 
+	 * Adds auth failures to cusotmer activity log.
 	 */
 	private void logAuthorizationActivity(String customerPK, ErpAuthorizationModel auth) {
 		if (!auth.isApproved()) {
@@ -263,5 +272,42 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			throw new EJBException(e);
 		}
 	}
+	public List authorizeSaleRealtime(String saleId, EnumSaleType saleType) throws ErpAuthorizationException {
+
+		if(EnumSaleType.REGULAR.equals(saleType)) {
+			return authorizeSaleRealtime(saleId);
+		}
+
+		try {
+			ErpSaleEB saleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
+			ErpSaleModel sale = (ErpSaleModel) saleEB.getModel();
+			ErpAbstractOrderModel order = sale.getCurrentOrder();
+			AuthorizationStrategy strategy = new AuthorizationStrategy(sale);
+			AuthorizationCommand cmd = null;
+			cmd=new AuthorizationCommand(strategy.getOutstandingAuthorizations(), order.getRequestedDate(), saleEB.getAuthorizations().size());
+			cmd.execute();
+			List auths = cmd.getAuthorizations();
+			for (Iterator i = auths.iterator(); i.hasNext();) {
+				ErpAuthorizationModel auth = (ErpAuthorizationModel) i.next();
+				if (auth.isApproved()) {
+					saleEB.addAuthorization(auth);
+				} else {
+					logAuthorizationActivity(saleEB.getCustomerPk().getId(), auth);
+					SessionContext ctx = getSessionContext();
+					ctx.setRollbackOnly();
+					throw new ErpAuthorizationException("There was a problem with the given payment method");
+				}
+			}
+
+			return auths;
+		} catch (RemoteException e) {
+			throw new EJBException(e);
+		} catch (ErpTransactionException e) {
+			throw new EJBException(e);
+		} catch (FinderException e) {
+			throw new EJBException(e);
+		}
+	}
+
 
 }

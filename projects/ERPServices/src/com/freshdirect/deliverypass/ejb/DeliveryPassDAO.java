@@ -20,6 +20,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.deliverypass.DeliveryPassType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -396,6 +397,54 @@ public class DeliveryPassDAO {
 
 		
 	}
+
+	private final static String GET_AUTORENEWAL_INFO_QUERY = "select ci.customer_id,ci.autorenew_dp_type from cust.customerinfo ci, cust.customer c  where "+
+															 "ci.customer_id=c.id and c.ACTIVE='1' and ci.HAS_AUTORENEW_DP='Y' and "+
+															 " exists ( select 1 from cust.delivery_pass dp where dp.customer_id=ci.customer_id "+
+															 "          and status='ACT' and trunc(exp_date)<=trunc(sysdate-1) and dp.TYPE IN "+
+															 "          (select sku_code from cust.dlv_pass_type where is_autorenew_dp='Y') "+
+															 "        )"+
+															 " and not exists ( select 1 from cust.delivery_pass dp where dp.customer_id=ci.customer_id "+
+															 "                  and status IN ('ACT','RTU','PEN') and trunc(exp_date)>trunc(sysdate-1) "+
+															 "                 ) "+
+															 " and not exists ( select 1 from cust.case where customer_id=ci.customer_id and case_subject='DPQ-009' and case_state<>'CLSD')";
+	public static Object[] getAutoRenewalInfo(Connection conn) throws SQLException{
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Object[] autoRenewalInfo=new Object[2];
+		List customer=new ArrayList(10);
+		List autoRenewalSKU=new ArrayList(10);
+		autoRenewalInfo[0]=customer;
+		autoRenewalInfo[1]=autoRenewalSKU;
+		
+		try{
+			ps = conn.prepareStatement(GET_AUTORENEWAL_INFO_QUERY);
+			rs = ps.executeQuery();
+			String defaultRenewalSKU=FDStoreProperties.getDefaultRenewalDP();
+			 
+			while (rs.next()) {
+				customer.add(rs.getString(1));
+				if((rs.getString(2)!=null)&& !("".equals(rs.getString(2)))) {
+					autoRenewalSKU.add(rs.getString(2));
+				}
+				else {
+					autoRenewalSKU.add(defaultRenewalSKU);
+				}
+			}
+			return autoRenewalInfo;
+		}catch(SQLException sexp){
+			throw sexp;
+		}
+		finally{
+			if(rs != null)
+				rs.close();
+			if(ps != null)
+				ps.close();
+		}	
+
+		
+	}
+
 
 	private final static String GET_DAYS_SINCE_DP_EXPIRED_QUERY ="select CEIL(sysdate-max(exp_date)) from cust.delivery_pass where customer_id=? and ((status ='ACT' and exp_date<sysdate) OR (status='CAN'))";
 	public static int getDaysSinceDPExpiry(Connection conn, String customerID) throws SQLException {

@@ -41,6 +41,7 @@ import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.crm.CrmCaseSubject;
@@ -55,10 +56,13 @@ import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumFraudReason;
 import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAuthorizationException;
+import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpComplaintException;
 import com.freshdirect.customer.ErpComplaintInfoModel;
 import com.freshdirect.customer.ErpComplaintModel;
@@ -67,10 +71,12 @@ import com.freshdirect.customer.ErpCustomerAlertModel;
 import com.freshdirect.customer.ErpCustomerEmailModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
+import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.customer.ErpDuplicateAddressException;
 import com.freshdirect.customer.ErpDuplicatePaymentMethodException;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpFraudException;
+import com.freshdirect.customer.ErpInvoiceModel;
 import com.freshdirect.customer.ErpModifyOrderModel;
 import com.freshdirect.customer.ErpOrderHistory;
 import com.freshdirect.customer.ErpOrderLineModel;
@@ -79,8 +85,11 @@ import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.customer.ErpSaleModel;
+import com.freshdirect.customer.ErpSaleNotFoundException;
+import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.OrderHistoryI;
+import com.freshdirect.customer.ejb.ErpCreateCaseCommand;
 import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.customer.ejb.ErpCustomerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
@@ -88,6 +97,8 @@ import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.customer.ejb.ErpFraudPreventionHome;
 import com.freshdirect.customer.ejb.ErpFraudPreventionSB;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
+import com.freshdirect.customer.ejb.ErpSaleEB;
+import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
@@ -155,14 +166,15 @@ import com.freshdirect.framework.util.MD5Hasher;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
+import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.ejb.PaymentManagerHome;
 import com.freshdirect.payment.ejb.PaymentManagerSB;
 import com.freshdirect.payment.fraud.PaymentFraudManager;
 
 
 /**
- * 
- * 
+ *
+ *
  * @version $Revision:78$
  * @author $Author:Kashif Nadeem$
  */
@@ -174,12 +186,12 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 
 	/**
 	 * Register and log in a new customer.
-	 * 
+	 *
 	 * @param ErpCustomerModel
 	 *            erpCustomer
 	 * @param FDCustomerModel
 	 *            fdCustomer
-	 * 
+	 *
 	 * @return the resulting FDIdentity
 	 * @throws FDResourceException
 	 *             if an error occured using remote resources
@@ -366,7 +378,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			}
 			//Load Promo Audience Details for this customer.
 			user.setAssignedCustomerParams(getAssignedCustomerParams(user, conn));
-			
+
 			user.setDlvPassInfo(getDeliveryPassInfo(user));
 			return user;
 
@@ -390,11 +402,11 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		try {
 			FDIdentity identity = user.getIdentity();
 			if(identity != null) {
-				String customerPk = identity.getErpCustomerPK(); 
+				String customerPk = identity.getErpCustomerPK();
 				DlvPassManagerSB sb = (DlvPassManagerSB) this.getDlvPassManagerHome().create();
 				Map statusMap = sb.getAllStatusMap(customerPk);
 				EnumDlvPassStatus dlvPassStatus = EnumDlvPassStatus.NONE;
-				
+
 				if(statusMap != null && statusMap.size() > 0){
 					if(statusMap.get(EnumDlvPassStatus.ACTIVE) != null){
 						//User has a active delivery pass.
@@ -434,9 +446,9 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 					 * the dlvPassStatus is defaulted to NONE. In other words he is
 					 * eligible for buying a new Pass.
 					 */
-					
+
 				}
-				
+
 				DeliveryPassType type = null;
 				Date expDate = null;
 				String originalOrderId = null;
@@ -450,7 +462,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 					if(model == null){
 						throw new FDResourceException("Unable to locate the delivery pass for this user's account.");
 					}
-					
+
 					if(DeliveryPassUtil.isReadyToUse(dlvPassStatus)) {
 						 if(model.getType().isUnlimited() && statusMap.get(EnumDlvPassStatus.EXPIRED)!=null) {
 							 String oldDPId = (String)statusMap.get(EnumDlvPassStatus.EXPIRED);
@@ -459,7 +471,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 								 if(model.getPurchaseDate().before(oldPass.getExpirationDate())) {
 									 model.setExpirationDate(DateUtil.addDays(oldPass.getExpirationDate(), model.getType().getDuration()));
 									 model.setOrgExpirationDate(model.getExpirationDate());
-									 
+
 								 }
 							 }
 							 else {
@@ -479,7 +491,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 							 DeliveryPassModel oldPass = sb.getDeliveryPassInfo(oldDPId);
 							 if(oldPass.getType().isUnlimited()) {
 								 if(model.getPurchaseDate().before(oldPass.getExpirationDate())) {
-									 
+
 									 Calendar cal=Calendar.getInstance(Locale.US);
 									 cal.setTime(oldPass.getExpirationDate());
 									 cal.set(Calendar.HOUR, 11);
@@ -501,7 +513,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 					if(type.isUnlimited()){
 						expDate = model.getExpirationDate();
 					}
-					originalOrderId = model.getPurchaseOrderId();	
+					originalOrderId = model.getPurchaseOrderId();
 					remDlvs = model.getRemainingDlvs();
 					usedDlvs = model.getUsageCount();
 				}
@@ -530,7 +542,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
-		} 
+		}
 		return dlvPassInfo;
 	}
 	public FDUser recognize(String cookie) throws FDAuthenticationException, FDResourceException {
@@ -546,10 +558,10 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			if (user.isAnonymous()) {
 				throw new FDAuthenticationException("Unrecognized user");
 			}
-			
+
 			//Load Promo Audience Details for this customer.
 			user.setAssignedCustomerParams(getAssignedCustomerParams(user, conn));
-			
+
 			user.setDlvPassInfo(getDeliveryPassInfo(user));
 			return user;
 
@@ -589,7 +601,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 	}
 
 
-	
+
 	public ErpAddressModel assumeDeliveryAddress(FDIdentity identity, String lastOrderId) throws FDResourceException {
 		try{
 			FDCustomerEB eb = getFdCustomerHome().findByPrimaryKey(new PrimaryKey(identity.getFDCustomerPK()));
@@ -619,9 +631,9 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			throw new FDResourceException(e);
 		}
 	}
-	
+
 	private static final String SHIP_TO_ADDRESS_QUERY = "SELECT * FROM CUST.ADDRESS WHERE ID = ?";
-	
+
 	private ErpAddressModel getShipToAddress(String addressId) throws SQLException {
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -651,15 +663,16 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
-	
-	private static final String LAST_ORDER_ADDRESS_QUERY = 
-		"select di.* " 
+
+	private static final String LAST_ORDER_ADDRESS_QUERY =
+		"select di.* "
 		+ "from cust.sale s, cust.salesaction sa, cust.deliveryinfo di "
 		+ "where s.id = ? and s.id = sa.sale_id and sa.id = di.salesaction_id "
+		+ "and s.type = 'REG' "
 		+ "and sa.action_type in ('CRO', 'MOD') "
 		+ "and sa.action_date = (select max(action_date) from cust.salesaction where s.id = sale_id and action_type in ('CRO', 'MOD'))";
-	
-	private ErpAddressModel getLastOrderAddress(String lastOrderId) throws SQLException {
+
+	public ErpAddressModel getLastOrderAddress(String lastOrderId) throws SQLException {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -685,10 +698,10 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
-	
+
 	private ErpAddressModel loadAddressFromResultSet(ResultSet rs) throws SQLException {
 		ErpAddressModel address = new ErpAddressModel();
-		
+
 		address.setFirstName(rs.getString("FIRST_NAME"));
 		address.setLastName(rs.getString("LAST_NAME"));
 		address.setAddress1(rs.getString("ADDRESS1"));
@@ -706,19 +719,19 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		address.setAltContactPhone(new PhoneNumber(rs.getString("ALT_CONTACT_PHONE")));
 		address.setInstructions(rs.getString("DELIVERY_INSTRUCTIONS"));
 		address.setAltDelivery(EnumDeliverySetting.getDeliverySetting(rs.getString("ALT_DEST")));
-		
+
 		return address;
 	}
-	
+
 
 	/**
 	 * Authenticate and log in a customer.
-	 * 
+	 *
 	 * @param userId
 	 * @param password
-	 * 
+	 *
 	 * @return user identity reference
-	 * 
+	 *
 	 * @throws FDAuthenticationException
 	 *             if the userId/password was not found
 	 * @throws FDResourceException
@@ -758,16 +771,15 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			ErpCustomerEB eb = getErpCustomerHome().findByPrimaryKey(new PrimaryKey(identity.getErpCustomerPK()));
 
 			FDUser fduser = this.recognize(identity);
-			
+
 			ErpCustomerInfoModel erpCustomerInfo = eb.getCustomerInfo();
 			FDCustomerInfo fdInfo = new FDCustomerInfo(erpCustomerInfo.getFirstName(), erpCustomerInfo.getLastName());
 			fdInfo.setHtmlEmail(!erpCustomerInfo.isEmailPlaintext());
 			fdInfo.setEmailAddress(erpCustomerInfo.getEmail());
-			
+
 			String depotCode = this.getDepotCode(identity);
 			fdInfo.setDepotCode(depotCode);
 			fdInfo.setChefsTable(fduser.isChefsTable());
-			fdInfo.setCustomerServiceContact(fduser.getCustomerServiceContact());
 			return fdInfo;
 
 		} catch (FinderException fe) {
@@ -776,15 +788,15 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			throw new FDResourceException(re);
 		} catch(FDAuthenticationException au){
 			throw new FDResourceException(au);
-		} 
+		}
 	}
 
 	/**
 	 * Get all the payment methods of the customer.
-	 * 
+	 *
 	 * @param identity
 	 *            the customer's identity reference
-	 * 
+	 *
 	 * @return collection of ErpPaymentMethodModel objects
 	 * @throws FDResourceException
 	 *             if an error occured using remote resources
@@ -802,12 +814,12 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 
 	/**
 	 * Add a payment method for the customer.
-	 * 
+	 *
 	 * @param identity
 	 *            the customer's identity reference
 	 * @param paymentMethod
 	 *            ErpPaymentMethodI to add
-	 * 
+	 *
 	 * @throws FDResourceException
 	 *             if an error occured using remote resources
 	 */
@@ -834,10 +846,10 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			//
 			foundFraud = false;
 			try {
-				PaymentFraudManager paymentFraudManager = new PaymentFraudManager(); 
+				PaymentFraudManager paymentFraudManager = new PaymentFraudManager();
 				if (!paymentFraudManager.verifyAccountExternal(paymentMethod)) {
 					foundFraud = true;
-				}				
+				}
 			} catch (ErpTransactionException e) {
 				foundFraud = false;  // if there's an exception (can't communication with external source) --> allow user to add payment method
 			}
@@ -845,7 +857,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				this.getSessionContext().setRollbackOnly();
 				throw new ErpPaymentMethodException("Account is not valid");
 			}
-					
+
 			erpCustomerEB.addPaymentMethod(paymentMethod);
 
 			String note = paymentMethod.getMaskedAccountNumber() + (paymentMethod.getIsTermsAccepted() ? ", enrollment agreement" : "");
@@ -862,12 +874,12 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 
 	/**
 	 * set the default payment method on the customer
-	 * 
+	 *
 	 * @param identy
 	 *            the customer's identity
 	 * @param PK
 	 *            primary key of the paymentMethod that will be referenced.
-	 * 
+	 *
 	 * Throws FDResourceException
 	 */
 	public void setDefaultPaymentMethod(FDActionInfo info, PrimaryKey paymentMethodPK) throws FDResourceException {
@@ -900,7 +912,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 	/***************************************************************************
 	 * return the Pk Id that is stored in the defaultPaymentMethodPK field @ param
 	 * Identity the customers Identity
-	 * 
+	 *
 	 * Throws FDresourceException
 	 */
 	public String getDefaultPaymentMethodPK(FDIdentity identity) throws FDResourceException {
@@ -938,12 +950,12 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 
 	/**
 	 * update a payment method for the customer
-	 * 
+	 *
 	 * @param identity
 	 *            the customer's identity reference
 	 * @param paymentMethod
 	 *            ErpPaymentMethodI to update
-	 * 
+	 *
 	 * @throws FDResourceException
 	 *             if an error occured using remote resources
 	 */
@@ -970,10 +982,10 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			//
 			foundFraud = false;
 			try {
-				PaymentFraudManager paymentFraudManager = new PaymentFraudManager(); 
+				PaymentFraudManager paymentFraudManager = new PaymentFraudManager();
 				if (!paymentFraudManager.verifyAccountExternal(paymentMethod)) {
 					foundFraud = true;
-				}				
+				}
 			} catch (ErpTransactionException e) {
 				foundFraud = false;  // if there's an exception (can't communication with external source) --> allow user to add payment method
 			}
@@ -981,7 +993,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				this.getSessionContext().setRollbackOnly();
 				throw new ErpPaymentMethodException("Account is not valid");
 			}
-			
+
 			erpCustomerEB.updatePaymentMethod(paymentMethod);
 
 			this.logActivity(info.createActivity(EnumAccountActivityType.UPDATE_PAYMENT_METHOD, ((ErpPaymentMethodModel)paymentMethod).getPK().getId()));
@@ -998,12 +1010,12 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 
 	/**
 	 * remove a payment method for the customer
-	 * 
+	 *
 	 * @param identity
 	 *            the customer's identity reference
 	 * @param pk
 	 *            PrimaryKey of the paymentMethod to remove
-	 * 
+	 *
 	 * throws FDResourceException if an error occured using remote resources
 	 */
 	public void removePaymentMethod(FDActionInfo info, PrimaryKey pk) throws FDResourceException {
@@ -1023,14 +1035,14 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 
 	/**
 	 * update the customer info
-	 * 
+	 *
 	 * @param identity
 	 *            the customer's identity reference
 	 * @param ErpCustomerInfoModel
 	 *            to update
 	 * @param String
 	 *            password hint
-	 * 
+	 *
 	 * @throws FDResourceException
 	 *             if an error occured using remote resources
 	 */
@@ -1064,7 +1076,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			}
 
 			this.logActivity(info.createActivity(EnumAccountActivityType.UPDATE_ERP_CUSTOMERINFO));
-			
+
 			return foundFraud;
 
 		} catch (RemoteException ex) {
@@ -1107,12 +1119,12 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 
 	/**
 	 * Get the customer's every ship to address.
-	 * 
+	 *
 	 * @param identity
 	 *            the customer's identity reference
-	 * 
+	 *
 	 * @return collection of ErpAddresModel objects
-	 * 
+	 *
 	 * @throws FDResourceException
 	 *             if an error occured using remote resources
 	 */
@@ -1129,12 +1141,12 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 
 	/**
 	 * Add a ship to address for the customer.
-	 * 
+	 *
 	 * @param identity
 	 *            the customer's identity reference
 	 * @param address
 	 *            ErpAddressModel to add
-	 * 
+	 *
 	 * @throws FDResourceException
 	 *             if an error occured using remote resources
 	 */
@@ -1177,12 +1189,12 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 
 	/**
 	 * update a ship to address for the customer
-	 * 
+	 *
 	 * @param identity
 	 *            the customer's identity reference
 	 * @param address
 	 *            ErpAddressModel to update
-	 * 
+	 *
 	 * @throws FDResourceException
 	 *             if an error occured using remote resources
 	 */
@@ -1225,12 +1237,12 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 
 	/**
 	 * set the default ship to Address PK on the customer
-	 * 
+	 *
 	 * @param identy
 	 *            the customer's identity
 	 * @param PK
 	 *            primary key of the Ship-To-Address.
-	 * 
+	 *
 	 * Throws FDResourceException
 	 */
 	public void setDefaultShipToAddressPK(FDIdentity identity, String shipToAddressPK) throws FDResourceException {
@@ -1247,7 +1259,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 	/***************************************************************************
 	 * return the Pk Id that is stored in the defaultPShipToAddressPK field @ param
 	 * Identity the customers Identity
-	 * 
+	 *
 	 * Throws FDresourceException
 	 */
 	public String getDefaultShipToAddressPK(FDIdentity identity) throws FDResourceException {
@@ -1263,12 +1275,12 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 
 	/**
 	 * remove a ship to address for the customer
-	 * 
+	 *
 	 * @param identity
 	 *            the customer's identity reference
 	 * @param pk
 	 *            PrimaryKey of the address to remove
-	 * 
+	 *
 	 * @throws FDResourceException
 	 *             if an error occured using remote resources
 	 */
@@ -1314,7 +1326,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			String customerPk = identity.getErpCustomerPK();
 			//Begin Handle Delivery Pass.
 			/*
-			 * Check if there is a active delivery pass and delivery pass was applied. 
+			 * Check if there is a active delivery pass and delivery pass was applied.
 			 * If yes create order by passing the delivery pass id.
 			 */
 			if(EnumDlvPassStatus.ACTIVE.equals(status) && createOrder.isDlvPassApplied()) {
@@ -1328,7 +1340,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				DeliveryPassModel dlvPass = (DeliveryPassModel)dlvPasses.get(0);
 				//pass has to be applied to this order.
 				dlvpsb.apply(dlvPass);
-				pk = sb.placeOrder(new PrimaryKey(customerPk), createOrder, usedPromotionCodes, cra, agentRole,dlvPass.getPK().getId());
+				pk = sb.placeOrder(new PrimaryKey(customerPk), createOrder, usedPromotionCodes, cra, agentRole,dlvPass.getPK().getId(),EnumSaleType.REGULAR);
 				if(createOrder.getDeliveryPassCount()>0) {
 					//order contains delivery pass.
 					DeliveryPassModel newPass = DeliveryPassUtil.constructDeliveryPassFromOrder(customerPk, pk.getId(), createOrder);
@@ -1336,8 +1348,8 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				}
 			}
 			else if(EnumDlvPassStatus.ACTIVE.equals(status)&& createOrder.isDlvPromotionApplied()) {
-				
-				pk = sb.placeOrder(new PrimaryKey(customerPk), createOrder, usedPromotionCodes, cra, agentRole,null);
+
+				pk = sb.placeOrder(new PrimaryKey(customerPk), createOrder, usedPromotionCodes, cra, agentRole,null,EnumSaleType.REGULAR);
 				DlvPassManagerSB dlvpsb = (DlvPassManagerSB) this.getDlvPassManagerHome().create();
 				if(createOrder.getDeliveryPassCount()>0) {
 					//order contains delivery pass.
@@ -1347,17 +1359,17 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				DeliveryPassModel dlvPass=getActiveDPForCustomer(customerPk, dlvpsb);
 				if(dlvPass.getType().isUnlimited() && EnumDeliveryType.HOME.equals(createOrder.getDeliveryInfo().getDeliveryType())) {
 					extendDeliveryPass(dlvpsb, dlvPass,1,pk.getId(),"Extend DP by a week.",EnumDlvPassExtendReason.DLV_PROMOTION_APPLIED.getName());
-					
+
 				}
-				
+
 			}
  			else{
 				/*
-				 *  create order by passing dlvPassid as null. Check if order contains delivery pass. 
+				 *  create order by passing dlvPassid as null. Check if order contains delivery pass.
 				 *  If yes create delivery pass.And if pass was applied
 				 *  then apply the delivery pass and update the order with dlv pass id.
 				 */
-				pk = sb.placeOrder(new PrimaryKey(customerPk), createOrder, usedPromotionCodes, cra, agentRole,null);
+ 				pk = sb.placeOrder(new PrimaryKey(customerPk), createOrder, usedPromotionCodes, cra, agentRole,null,EnumSaleType.REGULAR);
 				LOGGER.debug("In Place order getDeliveryPassCount "+createOrder.getDeliveryPassCount());
 				if(createOrder.getDeliveryPassCount() > 0){
 					//order contains delivery pass.
@@ -1365,7 +1377,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 					DlvPassManagerSB dlvpsb = (DlvPassManagerSB) this.getDlvPassManagerHome().create();
 					String dlvPassId = dlvpsb.create(newPass);
 					newPass.setPK(new PrimaryKey(dlvPassId));
-					
+
 					if(createOrder.isDlvPassApplied()){
 						LOGGER.debug("Inside dlv pass applied ");
 						//pass was applied to this order.
@@ -1380,7 +1392,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				}
 			}
 			//End Handle Delivery Pass.
-			
+
 			//commit reservation in DLV
 			//DlvManagerSB dlvSB = this.getDlvManagerHome().create();
 			dlvSB.commitReservation(reservationId, identity.getErpCustomerPK(), pk.getId());
@@ -1398,7 +1410,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 
 				this.doEmail(FDEmailFactory.getInstance().createConfirmOrderEmail(fdInfo, order));
 			}
-			
+
 			return pk.getId();
 
 		} catch (DeliveryPassException de) {
@@ -1458,7 +1470,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			FDCustomerEB eb = getFdCustomerHome().findByPrimaryKey(new PrimaryKey(identity.getFDCustomerPK()));
 			eb.setProfileAttribute(key, value);
 			if (info != null) {
-				this.logActivity(info.createActivity(EnumAccountActivityType.SET_CUSTOMER_PROFILE));				
+				this.logActivity(info.createActivity(EnumAccountActivityType.SET_CUSTOMER_PROFILE));
 			}
 		} catch (FinderException fe) {
 			throw new FDResourceException(fe, "Could not update customer profile");
@@ -1473,7 +1485,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			FDCustomerEB eb = getFdCustomerHome().findByPrimaryKey(new PrimaryKey(identity.getFDCustomerPK()));
 			eb.removeProfileAttribute(key);
 			if (info != null) {
-				this.logActivity(info.createActivity(EnumAccountActivityType.REMOVE_CUSTOMER_PROFILE));				
+				this.logActivity(info.createActivity(EnumAccountActivityType.REMOVE_CUSTOMER_PROFILE));
 			}
 		} catch (FinderException fe) {
 			throw new FDResourceException(fe, "Could not update customer profile");
@@ -1482,9 +1494,9 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 
 	}
-	
+
 	private boolean existsDPInOrder(List deliveryPasses) {
-		
+
 		if (deliveryPasses != null && deliveryPasses.size() > 0) {
 			return true;
 		}
@@ -1492,15 +1504,15 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			return false;
 		}
 	}
-	
+
 	private void cancelDeliveryPass(DlvPassManagerSB dlvpassSB, DeliveryPassModel dlvPass, EnumDlvPassStatus status ) throws RemoteException {
-		
+
 		dlvPass.setStatus(status);
 		dlvpassSB.cancel(dlvPass);
 	}
-	
+
 	private void revokeDeliveryPassUsage(DlvPassManagerSB dlvPassSB, String appliedPass_ID) throws DeliveryPassException, RemoteException {
-		
+
 
 		DeliveryPassModel appliedPass=dlvPassSB.getDeliveryPassInfo(appliedPass_ID);
 		if(appliedPass.getType().isUnlimited()) {
@@ -1522,37 +1534,37 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
-	
-	
-	
+
+
+
 	private boolean isValued(String input) {
-		
+
 		if( (null==input)||"".equals(input.trim()) ) {
 			return false;
 		}
 		return true;
 	}
-	
+
 	private boolean isPurchasedDPAppliedOnOrder(String purchasedDP_ID, String appliedDP_ID) {
-		
+
 		if(purchasedDP_ID.equals(appliedDP_ID)) {
 			return true;
 		}
 		return false;
 	}
-	
+
 	private DeliveryPassModel getActivePass(DlvPassManagerSB dlvpsb, String customerID) throws RemoteException {
-		
+
 		List dlvPasses =dlvpsb.getDlvPassesByStatus(customerID, EnumDlvPassStatus.ACTIVE);
 		if(dlvPasses != null && dlvPasses.size() > 0)
 			return (DeliveryPassModel)dlvPasses.get(0);
-		else 
+		else
 			return null;
-		
+
 	}
-	
-	
-	
+
+
+
 	public FDReservation cancelOrder(FDActionInfo info, String saleId, boolean sendEmail)
 		throws FDResourceException,
 		ErpTransactionException, DeliveryPassException {
@@ -1567,14 +1579,14 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			//Cancel any delivery pass linked with the order.
 			DlvPassManagerSB dlvpsb = (DlvPassManagerSB) this.getDlvPassManagerHome().create();
 			List deliveryPasses = dlvpsb.getDlvPassesByOrderId(saleId);
-			
+
 			if(existsDPInOrder(deliveryPasses)) {
-				
+
 				/* Customer has purchased delivery pass in the order. CANCEL the purchased pass. */
 				DeliveryPassModel purchasedPass = (DeliveryPassModel) deliveryPasses.get(0);
 				cancelDeliveryPass(dlvpsb,purchasedPass,EnumDlvPassStatus.ORDER_CANCELLED);
 				if( isValued(appliedPass_ID)&& !isPurchasedDPAppliedOnOrder(purchasedPass.getPK().getId(),appliedPass_ID ) ) {
-					
+
 					/*Delivery pass is applied on the order and the applied delivery pass is not the purchased pass */
 					revokeDeliveryPassUsage(dlvpsb,appliedPass_ID);
 				}
@@ -1589,14 +1601,15 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				cancelPassExtension(dlvpsb,null,order);
 			}
 			//End Handle Delivery Pass.
-			
-			DlvManagerSB dlvSB = this.getDlvManagerHome().create();
-			boolean isRestored = dlvSB.releaseReservation(reservationId);
-
+			boolean isRestored =false;
+			if(EnumSaleType.REGULAR.equals(order.getOrderType())) {
+				DlvManagerSB dlvSB = this.getDlvManagerHome().create();
+				isRestored = dlvSB.releaseReservation(reservationId);
+			}
 			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.CANCEL_ORDER);
 			this.logActivity(rec);
 
-			
+
 			if (sendEmail) {
 				FDCustomerInfo fdInfo = this.getCustomerInfo(info.getIdentity());
 				this.doEmail(FDEmailFactory.getInstance().createCancelOrderEmail(
@@ -1617,9 +1630,9 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 	}
 
 	private void cancelPassExtension(DlvPassManagerSB dlvPassSB, DeliveryPassModel dlvPass, FDOrderI order) throws RemoteException {
-		
+
 		if(dlvPass==null) {
-			
+
 			List dlvPasses = dlvPassSB.getDlvPassesByStatus(order.getCustomerId(), EnumDlvPassStatus.ACTIVE);
 			if(dlvPasses != null && dlvPasses.size() > 0){
 				dlvPass=(DeliveryPassModel)dlvPasses.get(0);
@@ -1632,13 +1645,13 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				extendDeliveryPass(dlvPassSB, dlvPass,-1,order.getErpSalesId(),"Curtail DP by a week. Order cancelled.",EnumDlvPassExtendReason.DLV_PROMOTION_REMOVED.getName());
 		}
 	}
-	
+
 	private boolean isDeliveryPromotionApplied(FDOrderI order) {
-		
-		if( order.isDeliveryChargeWaived()&& 
-			!isValued(order.getDeliveryPassId()) && 
+
+		if( order.isDeliveryChargeWaived()&&
+			!isValued(order.getDeliveryPassId()) &&
 			EnumDeliveryType.HOME.equals(order.getDeliveryType())) {
-			
+
 			return true;
 		}
 		return false;
@@ -1646,7 +1659,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 
 	/**
 	 * Modify an order (modify & send msg to SAP).
-	 * 
+	 *
 	 * @param identity
 	 *            the customer's identity reference
 	 * @throws FDResourceException
@@ -1662,7 +1675,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		CustomerRatingI cra,
 		CrmAgentRole agentRole,
 		EnumDlvPassStatus status) throws FDResourceException, ErpTransactionException, ErpFraudException, ErpAuthorizationException, DeliveryPassException {
-		
+
 		try {
 			// !!! verify that the sale belongs to the customer
 
@@ -1679,12 +1692,12 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			//Modify order in SAP and ERP
 			ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
 			sb.modifyOrder(saleId, order, usedPromotionCodes, cra, agentRole, true);
-			
+
 			//Begin Handle Delivery Pass.
 			/*
 			 * Check if there is a active delivery pass and delivery pass was applied.
 			 * Also check if the modified order does not have any dlv pass applied on it
-			 * during create. 
+			 * during create.
 			 * If yes then apply the delivery pass.
 			 */
 			DeliveryPassModel appliedDlvPass=null;
@@ -1712,7 +1725,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			}else if ((EnumDlvPassStatus.ACTIVE.equals(status) || EnumDlvPassStatus.EXPIRED_PENDING.equals(status)) && !order.isDlvPassApplied() && fdOrder.getDeliveryPassId() != null) {
 				/*
 				 * Note: Expired pending state is valid only for BSGS pass.
-				 * Then it means dlvPass was applied during create order and now 
+				 * Then it means dlvPass was applied during create order and now
 				 * user wants to  either apply delivery promotion/changed
 				 * the address to corporate address. So revoke the delivery
 				 * pass that was applied to the order.
@@ -1724,7 +1737,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 					throw new DeliveryPassException("Unable to locate the delivery pass that was used for this order.");
 				}
 
-				dlvpsb.revoke(dlvPass);	
+				dlvpsb.revoke(dlvPass);
 				sb.updateDlvPassIdToSale(saleId, null);
 				if(order.isDlvPromotionApplied() && dlvPass.getType().isUnlimited()) {
 					extendDeliveryPass(dlvpsb, dlvPass,1,saleId,"Extend DP by a week.",EnumDlvPassExtendReason.DLV_PROMOTION_APPLIED.getName());
@@ -1736,12 +1749,12 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			 * The order is modified to PICKUP delivery type.
 			 * Revert back the Unlimited pass extension.
 			 */
-			else if( EnumDlvPassStatus.ACTIVE.equals(status) && 
-					 fdOrder.isDeliveryChargeWaived() && 
+			else if( EnumDlvPassStatus.ACTIVE.equals(status) &&
+					 fdOrder.isDeliveryChargeWaived() &&
 					 EnumDeliveryType.HOME.equals(fdOrder.getDeliveryType()) &&
 					 EnumDeliveryType.PICKUP.equals(order.getDeliveryInfo().getDeliveryType())
 					 ) {
-				
+
 				//Get the Active delivery Pass for this account.
 				DlvPassManagerSB dlvpsb = (DlvPassManagerSB) this.getDlvPassManagerHome().create();
 				DeliveryPassModel dlvPass = getActiveDPForCustomer(identity.getErpCustomerPK(), dlvpsb);
@@ -1750,7 +1763,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				if(dlvPass.getType().isUnlimited()) {
 					extendDeliveryPass(dlvpsb, dlvPass,-1,saleId,"Curtail DP by a week.",EnumDlvPassExtendReason.DLV_PROMOTION_REMOVED.getName());
 				}
-				
+
 			}
 			/*
 			 * Customer has ACTIVE Delivery pass.
@@ -1758,8 +1771,8 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			 * The order is modified to HOME delivery with Delivery promotion applied.
 			 * Extend the unlimited Delivery pass by a week.
 			 */
-			else if(EnumDlvPassStatus.ACTIVE.equals(status) && 
-					 order.isDlvPromotionApplied() && 
+			else if(EnumDlvPassStatus.ACTIVE.equals(status) &&
+					 order.isDlvPromotionApplied() &&
 					 EnumDeliveryType.PICKUP.equals(fdOrder.getDeliveryType()) &&
 					 EnumDeliveryType.HOME.equals(order.getDeliveryInfo().getDeliveryType())
 					 ) {
@@ -1769,14 +1782,14 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				if(dlvPass.getType().isUnlimited()) {
 					extendDeliveryPass(dlvpsb, dlvPass,1,saleId,"Extend DP by a week.",EnumDlvPassExtendReason.DLV_PROMOTION_APPLIED.getName());
 				}
-				
-				
+
+
 			}
 			//else {
 				handleDeliveryPass(identity, saleId, order, fdOrder,appliedDlvPass,status);
 			//}
 			//End Handle Delivery Pass.
-			
+
 			//Deal with Reservation in DLV
 			String newReservationId = order.getDeliveryInfo().getDeliveryReservationId();
 			if (!newReservationId.equals(oldReservationId)) {
@@ -1816,19 +1829,56 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 
 	}
 
+	public void modifyAutoRenewOrder(
+			FDIdentity identity,
+			String saleId,
+			ErpModifyOrderModel order,
+			Set usedPromotionCodes,
+			String oldReservationId,
+			boolean sendEmail,
+			CustomerRatingI cra,
+			CrmAgentRole agentRole,
+			EnumDlvPassStatus status) throws FDResourceException, ErpTransactionException, ErpFraudException, ErpAuthorizationException, DeliveryPassException {
+
+			try {
+
+				FDOrderI fdOrder = getOrder(identity, saleId);
+				order.setRequestedDate(Calendar.getInstance().getTime());
+				//Modify order, don't send to SAP
+				ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
+				sb.modifyOrder(saleId, order, usedPromotionCodes, cra, agentRole, false);
+
+				if (sendEmail) {
+
+					fdOrder = getOrder(saleId);
+					FDCustomerInfo fdInfo = this.getCustomerInfo(identity);
+					int orderCount = getValidOrderCount(identity);
+					fdInfo.setNumberOfOrders(orderCount);
+
+					this.doEmail(FDEmailFactory.getInstance().createModifyOrderEmail(fdInfo, fdOrder));
+				}
+
+			}catch (CreateException ce) {
+				throw new FDResourceException(ce);
+			} catch (RemoteException re) {
+				throw new FDResourceException(re);
+			}
+
+		}
+
 	private void handleDeliveryPass(FDIdentity identity, String saleId, ErpModifyOrderModel order, FDOrderI fdOrder, DeliveryPassModel appliedDlvPass,EnumDlvPassStatus status) throws CreateException, RemoteException, DeliveryPassException {
 		//Handle Delivery Pass.
 		DlvPassManagerSB dlvpsb = (DlvPassManagerSB) this.getDlvPassManagerHome().create();
 		ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
-		
+
 		String customerPk = identity.getErpCustomerPK();
 
 		//Check if order contains a delivery pass.
 		if(order.getDeliveryPassCount() > 0){
 			//Check if it was added during modify order.
 			List dlvPasses = dlvpsb.getDlvPassesByOrderId(saleId);
-			
-			
+
+
 			if(dlvPasses == null || dlvPasses.size() == 0){
 				/*
 				 * The delivery pass does not exist for this order.
@@ -1839,7 +1889,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				if(order.isDlvPassApplied() && fdOrder.getDeliveryPassId() == null && appliedDlvPass==null){
 					/*
 					 * fdOrder.getDeliveryPassId() == null this check make sures the modified order
-					 * does not have any acitve delivery pass applied during create order. 
+					 * does not have any acitve delivery pass applied during create order.
 					 */
 					dlvpsb.applyNew(newPass);
 					sb.updateDlvPassIdToSale(saleId, newPass.getPK().getId());
@@ -1860,10 +1910,10 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				DeliveryPassModel  modifyPass = DeliveryPassUtil.constructDeliveryPassFromOrder(customerPk, saleId, order);
 				if(modifyPass.getType() != existingPass.getType()){
 					if(existingPass.getPK().getId().equals(fdOrder.getDeliveryPassId())){
-						/* 
+						/*
 						 * The existing pass was used for this order. So nullify the exisitng dlv pass id
 						 *  in sale table before moving to new delivery pass.
-						 *  
+						 *
 						 */
 						sb.updateDlvPassIdToSale(saleId, null);
 					}//Else it was a different pass that was applied. Possibly the active one. So Nothing to worry:)
@@ -1873,23 +1923,23 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 					if(order.isDlvPassApplied() && fdOrder.getDeliveryPassId() == null){
 						/*
 						 * fdOrder.getDeliveryPassId() == null this check make sures the modified order
-						 * does not have any active delivery pass applied during create order. 
+						 * does not have any active delivery pass applied during create order.
 						 */
-						
+
 						dlvpsb.applyNew(modifyPass);
 						sb.updateDlvPassIdToSale(saleId, modifyPass.getPK().getId());
 					}
 				}else{
 					//The pass was not modified during modify order.
 					/*
-					 *  If Unlimited pass, check if there was a discount applied during 
+					 *  If Unlimited pass, check if there was a discount applied during
 					 *  modify order. If yes update the new price to the
-					 *  DP table. 
+					 *  DP table.
 					 */
 					if(modifyPass.getType().isUnlimited() && (modifyPass.getAmount() != existingPass.getAmount())){
 						//Update the new price to the DP table.
 						dlvpsb.updatePrice(existingPass, modifyPass.getAmount());
-						
+
 					}
 					if(order.isDlvPassApplied() && fdOrder.getDeliveryPassId() == null){
 						/*
@@ -1901,13 +1951,13 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 					}
 					else if(!order.isDlvPassApplied() &&  (fdOrder.getDeliveryPassId() != null)  && (order.isDlvPromotionApplied())){
 						/*
-						 * Then it means dlvPass was applied during create order and now 
+						 * Then it means dlvPass was applied during create order and now
 						 * user wants to apply delivery promotion/changed to corporate address.
 						 * So revoke the delivery pass that was applied to the order.
 						 * Then nullify the dlvPassId in sale table.
 						 */
 						if(existingPass.getPK().getId().equals(fdOrder.getDeliveryPassId())){
-							dlvpsb.revoke(existingPass);	
+							dlvpsb.revoke(existingPass);
 							/*
 							 * Customer has purchased Unlimited DP using Delivery promo.
 							 * Extend by a week.
@@ -1915,13 +1965,13 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 							if(existingPass.getType().isUnlimited()) {
 								extendDeliveryPass(dlvpsb, existingPass,1,saleId,"Extend DP by a week.",EnumDlvPassExtendReason.DLV_PROMOTION_APPLIED.getName());
 							}
-						} 
-						
+						}
+
 						sb.updateDlvPassIdToSale(saleId, null);
-						
+
 					}
 				}
-				
+
 			}
 		}else{
 			/*
@@ -1930,7 +1980,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			 */
 			List dlvPasses = dlvpsb.getDlvPassesByOrderId(saleId);
 			if(dlvPasses != null && dlvPasses.size() > 0){
-				
+
 				 /*
 				  * If the delivery pass removed from the cart is the same as the applied delivery pass,
 				  * Order doesn't use delivery pass anymore
@@ -1939,23 +1989,23 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				 if(purchasedPass.getPK().getId().equals(fdOrder.getDeliveryPassId())) {
 					 sb.updateDlvPassIdToSale(saleId, null);
 				 }
-				
+
 				/*
 				 * Delivery pass already exists for this order. So it was removed now.
-				 * So remove it from the database as well and nullify the dlvPassId in 
+				 * So remove it from the database as well and nullify the dlvPassId in
 				 * sale table.
 				 */
 				//So nullify the exisitng dlv pass id in sale table before removing the delivery pass.
-				 
+
 				 dlvpsb.remove(purchasedPass);
-				 
+
 			}
 		}
 	}
 
 	/**
 	 * charge an order (modify & send msg to SAP) due to Insufficent funds.
-	 * 
+	 *
 	 * @param identity
 	 *            the customer's identity reference
 	 * @throws FDResourceException
@@ -1969,47 +2019,47 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		CustomerRatingI cra,
 		CrmAgentModel agent,
 		double additionalCharge) throws FDResourceException, ErpTransactionException, ErpFraudException, ErpAuthorizationException {
-		
+
 		try {
 			FDOrderAdapter fdOrder = (FDOrderAdapter)getOrder(identity, saleId);
 			ErpSaleModel sale = fdOrder.getSale();
 			EnumSaleStatus status = sale.getStatus();
-			
+
 			if (!EnumSaleStatus.SETTLEMENT_FAILED.equals(status) && !EnumSaleStatus.PAYMENT_PENDING.equals(status)) {
 				throw new ErpTransactionException(
 					"This order cannot be charged because payment is not pending or settlement did not fail.");
 			}
-			
+
 			ErpCustomerManagerSB custManager = this.getErpCustomerManagerHome().create();
-			
+
 			PaymentManagerSB paymentManager = this.getPaymentManagerHome().create();
-			
+
 			// void all previous captures WITHOUT being in an explicit transaction
 				if (EnumSaleStatus.PAYMENT_PENDING.equals(status)) {
 					paymentManager.voidCapturesNoTrans(saleId);
 				}
 
 				ErpPaymentMethodModel oldPaymentMethod = (ErpPaymentMethodModel)sale.getCurrentOrder().getPaymentMethod();
-				
+
 				ErpModifyOrderModel modifyOrder = new ErpModifyOrderModel();
 				// want to add a NEW modify order with new payment method, so we need to set all primary keys to null
-				modifyOrder.set(sale.getCurrentOrder(), true);				
+				modifyOrder.set(sale.getCurrentOrder(), true);
 				modifyOrder.setPaymentMethod(paymentMethod);
 				modifyOrder.setTransactionDate(new Date());
 				modifyOrder.setTransactionInitiator(agent.getUserId());
 				modifyOrder.setTransactionSource(EnumTransactionSource.CUSTOMER_REP);
-				
+
 				// this changes the payment information for the order
 				custManager.modifyOrder(saleId, modifyOrder, sale.getUsedPromotionCodes(), cra, agent.getRole(), false);
-				
+
 				if(additionalCharge > 0) {
 					//create a charge invoice sales action
 					custManager.addChargeInvoice(saleId, additionalCharge);
 				}
-				
+
 				//authorize the sale with new payment method
 				List auths = paymentManager.authorizeSaleRealtime(saleId);
-				
+
 				//capture the sale authorization
 				paymentManager.captureAuthorizations(saleId, auths);
 
@@ -2018,7 +2068,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 					CrmSystemCaseInfo caseInfo = this.buildBadAccountReviewCase(sale.getCustomerPk().getId(), saleId);
 					custManager.createCase(caseInfo, false);
 				}
-			
+
 			if (sendEmail) {
 				FDCustomerInfo fdInfo = this.getCustomerInfo(identity);
 				int orderCount = getValidOrderCount(identity);
@@ -2033,7 +2083,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			throw new FDResourceException(re);
 		}
 	}
-	
+
 	private CrmSystemCaseInfo buildBadAccountReviewCase(String customerPK, String saleId) {
 		CrmCaseSubject subject = CrmCaseSubject.getEnum(CrmCaseSubject.CODE_BAD_ACCOUNT_REVIEW);
 		String summary =
@@ -2045,7 +2095,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 	/**
 	 * Adds a complaint to the user's list of complaints and begins the
 	 * associated credit issuing process
-	 * 
+	 *
 	 * @param ErpComplaintModel
 	 *            represents the complaint
 	 * @param String
@@ -2076,13 +2126,13 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	private static final String PENDING_COMPLAINT_QUERY = "select c.id as complaint_id " + 
+	private static final String PENDING_COMPLAINT_QUERY = "select c.id as complaint_id " +
 		"from cust.sale s, cust.complaint c " +
-		"where s.status = 'PPG' and c.sale_id=s.id and c.amount <= ? and c.status = 'PEN' " + 
+		"where s.status = 'PPG' and c.sale_id=s.id and c.amount <= ? and c.status = 'PEN' " +
 		"and c.id not in (select complaint_id from cust.complaintline where c.id = complaint_id and method = 'CSH') " +
 		"union all " +
-		"select c.id as complaint_id " + 
-		"from cust.sale s, cust.complaint c " + 
+		"select c.id as complaint_id " +
+		"from cust.sale s, cust.complaint c " +
 		"where s.status = 'STL' and c.sale_id=s.id and c.amount <= ? and c.status = 'PEN' ";
 
 	public List getComplaintsForAutoApproval() throws FDResourceException, ErpComplaintException {
@@ -2146,7 +2196,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 
 	/**
 	 * Check availability of an order.
-	 * 
+	 *
 	 * @return Map of order line number / FDAvailabilityI objects
 	 */
 	public Map checkAvailability(FDIdentity identity, ErpCreateOrderModel createOrder, long timeout) throws FDResourceException {
@@ -2270,7 +2320,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public List getOrdersByTruck(String truckNumber,Date dlvDate) throws FDResourceException{ 
+	public List getOrdersByTruck(String truckNumber,Date dlvDate) throws FDResourceException{
 		try {
 			ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
 			return sb.getOrdersByTruckNumber(truckNumber,dlvDate);
@@ -2306,7 +2356,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return Map of String (productId) -> Integer (score)
 	 * @throws FDResourceException
 	 */
@@ -2314,10 +2364,10 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			
+
 			PreparedStatement ps = conn.prepareStatement("select substr(content_key, instr(content_key, ':')+1) as product_id, score from cust.popularity where content_key like 'Product:%'");
 			ResultSet rs = ps.executeQuery();
-			
+
 			Map m = new HashMap();
 			while (rs.next()) {
 				m.put(rs.getString("product_id"), new Integer(rs.getInt("score")));
@@ -2325,7 +2375,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 
 			rs.close();
 			ps.close();
-			
+
 			return m;
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
@@ -2338,20 +2388,20 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				}
 			}
 		}
-	}	
+	}
 
 	/**
 	 * Locate customer records matching the specified criteria
-	 * 
+	 *
 	 * @param custNumber
 	 * @param firstName
 	 * @param middleName
 	 * @param lastName
 	 * @param email
 	 * @param phone
-	 * 
+	 *
 	 * @return Collection of CustomerSearchResult objects
-	 * 
+	 *
 	 * @throws FDResourceException
 	 *             if an error occured using remote resources
 	 */
@@ -2543,10 +2593,10 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 
 	/**
 	 * Store the user.
-	 * 
+	 *
 	 * @param user
 	 *            the customer's user object
-	 * 
+	 *
 	 * @throws FDResourceException
 	 *             if an error occured using remote resources
 	 */
@@ -2707,24 +2757,33 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		try {
 			PaymentManagerSB sb = this.getPaymentManagerHome().create();
 			EnumPaymentResponse response = sb.authorizeSale(salesId);
-			
+
 			if (!EnumPaymentResponse.APPROVED.equals(response) && !EnumPaymentResponse.ERROR.equals(response)) {
-				FDOrderI order = this.getOrder(salesId);
-				FDCustomerEB fdCustomer = getFdCustomerHome().findByErpCustomerId(order.getCustomerId());
-				FDIdentity identity = new FDIdentity(order.getCustomerId(), fdCustomer.getPK().getId());
-				FDCustomerInfo custInfo = this.getCustomerInfo(identity);
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(order.getDeliveryReservation().getCutoffTime());
-				cal.add(Calendar.HOUR_OF_DAY, -1*ErpServicesProperties.getCancelOrdersB4Cutoff());
-				this.doEmail(FDEmailFactory.getInstance().createAuthorizationFailedEmail(custInfo, salesId, 
-					order.getDeliveryReservation().getStartTime(), 
-					order.getDeliveryReservation().getEndTime(), cal.getTime()));
+				sendAuthFailedEmail(salesId);
 			}
-		} catch (FinderException e) {
-			throw new FDResourceException(e);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e);
 		} catch (CreateException e) {
+			throw new FDResourceException(e);
+		}
+	}
+
+	private void sendAuthFailedEmail(String saleID) throws FDResourceException {
+
+		try {
+			FDOrderI order = this.getOrder(saleID);
+			FDCustomerEB fdCustomer = getFdCustomerHome().findByErpCustomerId(order.getCustomerId());
+			FDIdentity identity = new FDIdentity(order.getCustomerId(), fdCustomer.getPK().getId());
+			FDCustomerInfo custInfo = this.getCustomerInfo(identity);
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(order.getDeliveryReservation().getCutoffTime());
+			cal.add(Calendar.HOUR_OF_DAY, -1*ErpServicesProperties.getCancelOrdersB4Cutoff());
+			this.doEmail(FDEmailFactory.getInstance().createAuthorizationFailedEmail(custInfo, saleID,
+				order.getDeliveryReservation().getStartTime(),
+				order.getDeliveryReservation().getEndTime(), cal.getTime()));
+		} catch (FinderException e) {
+			throw new FDResourceException(e);
+		} catch (RemoteException e) {
 			throw new FDResourceException(e);
 		}
 	}
@@ -2766,7 +2825,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		EnumReservationType rsvType,
 		String addressId,
 		FDActionInfo aInfo, boolean chefsTable) throws FDResourceException, ReservationException {
-		
+
 		long duration = timeslot.getCutoffDateTime().getTime()
 			- System.currentTimeMillis()
 			- (FDStoreProperties.getPreReserveHours() * DateUtil.HOUR);
@@ -2910,7 +2969,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 
 	/**
 	 * Template method that returns the cache key to use for caching resources.
-	 * 
+	 *
 	 * @return the bean's home interface name
 	 */
 	protected String getResourceCacheKey() {
@@ -2964,7 +3023,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			throw new EJBException(e);
 		}
 	}
-	
+
 	private PaymentManagerHome getPaymentManagerHome() {
 		try {
 			return (PaymentManagerHome) LOCATOR.getRemoteHome("java:comp/env/ejb/PaymentManager", PaymentManagerHome.class);
@@ -2980,7 +3039,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
             throw new EJBException(e);
         }
     }
-	
+
 	public void createCase(CrmSystemCaseInfo caseInfo) throws FDResourceException {
 		try {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
@@ -3000,17 +3059,17 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		try {
 			conn = this.getConnection();
 			ps = conn
-				.prepareStatement("SELECT ct.sale_id, ct.id AS complaint_id, cc.amount, SUM(cl.amount) AS original_amount, cl.method, cd.name AS department, "
-				+ "cc.create_date, ct.STATUS, ct.CREATED_BY, ct.APPROVED_BY " 
+				.prepareStatement("SELECT ct.sale_id, s.type, ct.id AS complaint_id, cc.amount, SUM(cl.amount) AS original_amount, cl.method, cd.name AS department, "
+				+ "cc.create_date, ct.STATUS, ct.CREATED_BY, ct.APPROVED_BY "
 				+ "FROM (select SUM(amount) as amount, complaint_id, create_date from cust.customercredit where customer_id= ? GROUP BY complaint_id, create_date) cc, CUST.COMPLAINT ct, "
-				+ "CUST.COMPLAINTLINE cl, CUST.COMPLAINT_DEPT_CODE cdc, CUST.COMPLAINT_DEPT cd "
+				+ "CUST.COMPLAINTLINE cl, CUST.COMPLAINT_DEPT_CODE cdc, CUST.COMPLAINT_DEPT cd, CUST.SALE s "
 				+ "WHERE cc.COMPLAINT_ID = ct.id AND ct.id=cl.complaint_id "
 				+ "AND cl.complaint_dept_code_id = cdc.id "
-				+ "AND cdc.comp_dept = cd.code "
+				+ "AND cdc.comp_dept = cd.code and ct.sale_id = s.id "
 				+ "and cl.method = 'FDC' and ct.status='APP' "
-				+ "GROUP BY ct.sale_id, ct.id, cc.amount, cl.method, cd.name, cc.create_date, ct.status, ct.created_by, ct.approved_by "
+				+ "GROUP BY ct.sale_id, s.type, ct.id, cc.amount, cl.method, cd.name, cc.create_date, ct.status, ct.created_by, ct.approved_by "
 				+ "UNION "
-				+ "SELECT ct.sale_id, ct.id AS complaint_id, 0 as amount, cl.amount as ORIGINAL_AMOUNT, cl.method, cd.name AS department, ct.create_date, "
+				+ "SELECT ct.sale_id, sa.type, ct.id AS complaint_id, 0 as amount, cl.amount as ORIGINAL_AMOUNT, cl.method, cd.name AS department, ct.create_date, "
 				+ "ct.status, ct.created_by, ct.approved_by "
 				+ "FROM CUST.COMPLAINT ct, "
 				+ "CUST.COMPLAINTLINE cl, CUST.SALE sa, "
@@ -3019,19 +3078,19 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				+ "AND sa.id = ct.sale_id AND ct.id = cl.complaint_id AND cl.complaint_dept_code_id = cdc.id "
 				+ "and cl.method = 'CSH' and ct.status='APP' "
 				+ "AND cdc.comp_dept = cd.code "
-				+ "GROUP BY ct.sale_id, ct.id, cl.amount, cl.method, ct.create_date, ct.status, cd.name, ct.created_by, ct.approved_by "
+				+ "GROUP BY ct.sale_id, sa.type, ct.id, cl.amount, cl.method, ct.create_date, ct.status, cd.name, ct.created_by, ct.approved_by "
 				+ "ORDER BY create_date DESC, complaint_id, department, method");
 			ps.setString(1, identity.getErpCustomerPK());
 			ps.setString(2, identity.getErpCustomerPK());
 			rs = ps.executeQuery();
-			
+
 			List lst = new ArrayList();
 			FDCustomerCreditModel prevCredit = null;
 
 			while (rs.next()) {
 
 				FDCustomerCreditModel credit = new FDCustomerCreditModel();
-				
+
 				//Block to handle a single complaint across multiple
 				//departments
 				if (prevCredit != null
@@ -3043,7 +3102,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 					prevCredit.setOriginalAmount(prevCredit.getOriginalAmount() + rs.getDouble("ORIGINAL_AMOUNT"));
 					continue;
 				}
-				
+
 				credit.setSaleId(rs.getString("SALE_ID"));
 				credit.setComplaintPk(new PrimaryKey(rs.getString("COMPLAINT_ID")));
 				credit.setRemainingAmount(rs.getDouble("AMOUNT"));
@@ -3054,6 +3113,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				credit.setStatus(EnumComplaintStatus.getComplaintStatus(rs.getString("STATUS")));
 				credit.setIssuedBy(rs.getString("CREATED_BY"));
 				credit.setApprovedBy(rs.getString("APPROVED_BY"));
+				credit.setOrderType(rs.getString("TYPE"));
 
 				lst.add(credit);
 				prevCredit = credit;
@@ -3191,14 +3251,14 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 	 * @param PrimaryKey customer indentifier
 	 * @param boolean indicates active/deactivated status
 	 */
-	
+
 	public void setAlert(FDActionInfo info, ErpCustomerAlertModel customerAlert, boolean isOnAlert) {
 		try {
 			ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
 			if (sb.setAlert(new PrimaryKey(info.getIdentity().getErpCustomerPK()), customerAlert, isOnAlert)) {
 				this.logActivity(info.createActivity(isOnAlert
 						? EnumAccountActivityType.PLACE_ALERT
-						: EnumAccountActivityType.REMOVE_ALERT));				
+						: EnumAccountActivityType.REMOVE_ALERT));
 			}
 		} catch (RemoteException ex) {
 			LOGGER.warn(ex);
@@ -3208,7 +3268,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			throw new EJBException(ex);
 		}
 	}
-	
+
 	public List getAlerts(PrimaryKey pk) {
 		try {
 			ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
@@ -3247,8 +3307,8 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			throw new EJBException(ex);
 		}
 	}
-	
-	
+
+
 	public boolean isCustomerActive(PrimaryKey pk){
 		try {
 			ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
@@ -3259,21 +3319,21 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		} catch (CreateException ex) {
 			LOGGER.warn(ex);
 			throw new EJBException(ex);
-		}		
+		}
 	}
-	
+
 	public boolean isECheckRestricted(FDIdentity identity)  throws FDResourceException {
 		try {
 			ErpCustomerEB eb = getErpCustomerHome().findByPrimaryKey(new PrimaryKey(identity.getErpCustomerPK()));
 			// if customer has any restricted payment methods --> disable eChecks
-			List paymentMethodList = eb.getPaymentMethods();			
+			List paymentMethodList = eb.getPaymentMethods();
 			if (paymentMethodList != null && paymentMethodList.size() > 0) {
 				Iterator iter = paymentMethodList.iterator();
 				while (iter.hasNext()) {
 					ErpPaymentMethodI paymentMethod = (ErpPaymentMethodI) iter.next();
 					if (PaymentFraudManager.checkBadAccount(paymentMethod, false)) {
 						return true;
-	
+
 					}
 				}
 			}
@@ -3284,16 +3344,16 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			return false;
 		} catch (Exception e) {
 			throw new FDResourceException(e);
-		}			
+		}
 	}
-	
+
 	public boolean isReferrerRestricted(FDIdentity identity)  throws FDResourceException {
-		return isOnAlert(new PrimaryKey(identity.getErpCustomerPK()), EnumAlertType.REFERRER.getName());		
+		return isOnAlert(new PrimaryKey(identity.getErpCustomerPK()), EnumAlertType.REFERRER.getName());
 	}
-	
+
 	public List loadRewriteRules() throws FDResourceException {
 		Connection conn = null;
-		
+
 		try {
 			conn = this.getConnection();
 			PreparedStatement ps = conn.prepareStatement("SELECT ID, NAME, DISABLED, FROM_URL, REDIRECT, COMMENTS, OPTIONS, PRIORITY FROM CUST.URL_REWRITE_RULES ORDER BY PRIORITY");
@@ -3309,15 +3369,15 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				rule.setRedirect(rs.getString("REDIRECT"));
 				rule.setComments(rs.getString("COMMENTS"));
 				rule.setPriority(rs.getInt("PRIORITY"));
-				
+
 				if(rule.isValid()) {
 					lst.add(rule);
 				}
 			}
-			
+
 			rs.close();
 			ps.close();
-			
+
 			return lst;
 		} catch (SQLException e) {
 			throw new FDResourceException (e);
@@ -3331,7 +3391,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
-	
+
 	private List getRewriteOptions(String options) {
 		if(options == null || "".equals(options.trim())){
 			return Collections.EMPTY_LIST;
@@ -3341,7 +3401,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		for(int i = 0; i < tokens.length; i++) {
 			lst.add(tokens[i].trim());
 		}
-		
+
 		return lst;
 	}
 
@@ -3427,7 +3487,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		return mapInfo;
 
 	}
-	
+
 	/**
 	 * This method returns the list of orders that used the specified
 	 * delivery pass.
@@ -3449,8 +3509,8 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 		return orders;
 	}
-	
-	
+
+
 	public List getRecentOrdersByDlvPassId(FDIdentity identity, String dlvPassId, int noOfDaysOld) throws FDResourceException {
 		try {
 			ErpCustomerManagerSB erpCustomerManagerSB = this.getErpCustomerManagerHome().create();
@@ -3462,7 +3522,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	
+
 	/**
 	 * This method returns the one or more delivery passes that are linked
 	 * to this customer's account for the specified delivery pass status.
@@ -3483,9 +3543,9 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 		return deliveryPasses;
 	}
-	
+
 	public Map cancelOrders(FDActionInfo actionInfo,  List customerOrders, boolean sendEmail)  {
-		
+
 		List successOrders = new ArrayList();
 		List failureOrders = new ArrayList();
 		String saleId = null;
@@ -3514,16 +3574,16 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		results.put("FAILURE_ORDERS", failureOrders);
 		return results;
 	}
-	
+
 	public void storeRetentionSurvey(FDIdentity fdIdentity, String profileAttr
 			, String profileValue, CrmSystemCaseInfo caseInfo) throws RemoteException, FDResourceException {
 
 		setProfileAttribute(fdIdentity, profileAttr, profileValue, null);
 		if(caseInfo != null) {
 			createCase(caseInfo);
-		}			
+		}
 	}
-	
+
 	private DeliveryPassModel getActiveDPForCustomer(String customerPK, DlvPassManagerSB dlvPassSB) throws FDResourceException, RemoteException  {
 
 		List dlvPasses = dlvPassSB.getDlvPassesByStatus(customerPK, EnumDlvPassStatus.ACTIVE);
@@ -3540,7 +3600,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 									 String note,
 									 String reason
 									) throws RemoteException {
-		
+
 		EnumAccountActivityType action=null;
 		if(numOfWeeks<0) {
 			action=EnumAccountActivityType.REDUCE_DLV_PASS;
@@ -3550,7 +3610,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			 *   when you cancel the order. Since you've not given an extension for the pass, dont reduce.
 			 * 2) The pass purchased is pending, Delivery promo applied on subsequent order before the pass being activated.
 			 *    If that order(using delivery promo) is cancelled after the DP is active, dont curtail his expiration date.
-			 *        
+			 *
 			 */
 			if((dlvPass.getOrgExpirationDate()!=null) && (dlvPass.getOrgExpirationDate().compareTo(dlvPass.getExpirationDate())==0)) {
 				return;
@@ -3563,26 +3623,26 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			return;
 		}
 		dlvpsb.extendExpirationPeriod(dlvPass, numOfWeeks*7);
-		
-		
+
+
 		//Create a activity log to track the delivery credits.
-		ErpActivityRecord activityRecord = createActivity( action, 
-														   note, 
+		ErpActivityRecord activityRecord = createActivity( action,
+														   note,
 														   dlvPass,
 														   saleID,
 														   reason);
 		logActivity(activityRecord);
 
-		
+
 	}
 
 
-		private ErpActivityRecord createActivity( EnumAccountActivityType type, 
+		private ErpActivityRecord createActivity( EnumAccountActivityType type,
 												  String note,
-												  DeliveryPassModel dlvPass, 
-												  String saleId, 
+												  DeliveryPassModel dlvPass,
+												  String saleId,
 												  String reasonCode) {
-			
+
 				ErpActivityRecord rec = new ErpActivityRecord();
 				rec.setActivityType(type);
 				rec.setSource(EnumTransactionSource.SYSTEM);
@@ -3600,7 +3660,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 
 		public boolean hasPurchasedPass(String customerPK) throws FDResourceException {
-			
+
 			boolean hasPurchased=false;
 			try {
 				DlvPassManagerSB sb = (DlvPassManagerSB) this.getDlvPassManagerHome().create();
@@ -3612,10 +3672,10 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				throw new FDResourceException(e);
 			}
 
-			
+
 			return hasPurchased;
 		}
-		
+
 		public int getValidOrderCount(FDIdentity identity) throws FDResourceException {
 			try {
 				ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
@@ -3627,7 +3687,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				throw new FDResourceException(re);
 			}
 		}
-	
+
 		public String getLastOrderID(FDIdentity identity) throws FDResourceException {
 			try {
 				ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
@@ -3640,7 +3700,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 		public String hasAutoRenewDP(String customerPK) throws FDResourceException {
-			
+
 			ErpCustomerEB eb;
 			try {
 				eb = this.getErpCustomerHome().findByPrimaryKey(new PrimaryKey(customerPK));
@@ -3652,10 +3712,10 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				throw new FDResourceException(e);
 			}
 
-			
+
 		}
-		
-		public void flipAutoRenewDP(String customerPK, EnumTransactionSource source, String initiator)throws FDResourceException {
+
+		public void setHasAutoRenewDP(String customerPK, EnumTransactionSource source, String initiator, boolean autoRenew)throws FDResourceException {
 		//public void flipAutoRenewDP(String customerPK)throws FDResourceException {
 			ErpCustomerEB eb;
 			try {
@@ -3663,20 +3723,26 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				ErpCustomerInfoModel info = eb.getCustomerInfo();
 				String value=info.getHasAutoRenewDP();
 				if(value!=null && !value.equals("")) {
-					if(value.equalsIgnoreCase("Y")) {
-						info.setHasAutoRenewDP("N");
-					}
-					else if(value.equalsIgnoreCase("N")) {
-						info.setHasAutoRenewDP("Y");
-					}
-					eb.setCustomerInfo(info);
 					ErpActivityRecord rec = new ErpActivityRecord();
-					rec.setActivityType(EnumAccountActivityType.FLIP_AUTORENEW_DP_FLAG);
+					if(autoRenew) {
+						info.setHasAutoRenewDP("Y");
+						rec.setActivityType(EnumAccountActivityType.AUTORENEW_DP_FLAG_ON);
+					}
+					else {
+						info.setHasAutoRenewDP("N");
+						rec.setActivityType(EnumAccountActivityType.AUTORENEW_DP_FLAG_OFF);
+					}
+
+
+
+					eb.setCustomerInfo(info);
+
+
 					rec.setCustomerId(customerPK);
 					rec.setSource(source);
 					rec.setInitiator(initiator);
 					logActivity(rec);
-					
+
 
 				}
 			} catch (RemoteException e) {
@@ -3685,7 +3751,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				throw new FDResourceException(e);
 			}
 		}
-		
+
 		public boolean isOrderBelongsToUser(FDIdentity identity, String saleId) throws FDResourceException {
 			try {
 				ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
@@ -3708,5 +3774,230 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				throw new FDResourceException(re);
 			}
 		 }
-		
+
+			public FDOrderI getLastNonCOSOrderUsingCC(String customerID, EnumSaleType saleType, EnumSaleStatus saleStatus) throws FDResourceException,ErpSaleNotFoundException {
+
+				try {
+					ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
+					ErpSaleModel saleModel = sb.getLastNonCOSOrder(customerID, saleType,saleStatus,EnumPaymentMethodType.CREDITCARD);
+					return new FDOrderAdapter(saleModel);
+
+				} catch (CreateException ce) {
+					throw new FDResourceException(ce);
+				} catch (RemoteException re) {
+					throw new FDResourceException(re);
+				}
+			}
+
+
+		    /**
+		     * Place an order (send msg to SAP, persist order).
+		     *
+		     * @param identity the customer's identity reference
+		     * @return String sale id
+		     * @throws FDResourceException if an error occured while accessing remote resources
+		     */
+			public String placeSubscriptionOrder( FDIdentity identity,
+				                      ErpCreateOrderModel createOrder,
+				                      Set usedPromotionCodes,
+				                      String rsvId,
+				                      boolean sendEmail,
+				                      CustomerRatingI cra,
+				                      CrmAgentRole agentRole,
+				                      EnumDlvPassStatus status
+				                    ) throws FDResourceException,
+				                             ErpFraudException,
+				                             DeliveryPassException {
+
+				PrimaryKey pk = null;
+				try {
+					ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
+					String customerPk = identity.getErpCustomerPK();
+					pk = sb.placeOrder(new PrimaryKey(customerPk), createOrder, usedPromotionCodes, cra, agentRole,null,EnumSaleType.SUBSCRIPTION);
+					LOGGER.debug("In Place order getDeliveryPassCount "+createOrder.getDeliveryPassCount());
+					if(createOrder.getDeliveryPassCount() > 0){
+							//order contains delivery pass.
+							DeliveryPassModel newPass = DeliveryPassUtil.constructDeliveryPassFromOrder(customerPk, pk.getId(), createOrder);
+							DlvPassManagerSB dlvpsb = (DlvPassManagerSB) this.getDlvPassManagerHome().create();
+							String dlvPassId = dlvpsb.create(newPass);
+							newPass.setPK(new PrimaryKey(dlvPassId));
+					}
+					if (sendEmail) {
+						FDOrderI order = getOrder(pk.getId());
+						FDCustomerInfo fdInfo = this.getCustomerInfo(identity);
+
+						int orderCount = getValidOrderCount(identity);
+						fdInfo.setNumberOfOrders(orderCount);
+
+						this.doEmail(FDEmailFactory.getInstance().createConfirmOrderEmail(fdInfo, order));
+					}
+
+					return pk.getId();
+
+				} catch (DeliveryPassException de) {
+					LOGGER.warn("Error placing the order.", de);
+					throw de;
+				} catch (CreateException ce) {
+					LOGGER.warn("Cannot Create ErpCustomerManagerSessionBean", ce);
+					throw new FDResourceException(ce);
+				} catch (RemoteException re) {
+					throw new FDResourceException(re);
+				}
+			}
+
+
+			public void addAndReconcileInvoice(String saleId, ErpInvoiceModel invoice, ErpShippingInfo shippingInfo)
+			throws ErpTransactionException {
+
+			try {
+				ErpSaleEB eb = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
+
+				ErpSaleModel saleModel = (ErpSaleModel)eb.getModel();
+
+				EnumSaleStatus status = saleModel.getStatus();
+
+		        if (status.equals(EnumSaleStatus.ENROUTE) || status.equals(EnumSaleStatus.PAYMENT_PENDING) || status.equals(EnumSaleStatus.REFUSED_ORDER)
+		            || status.equals(EnumSaleStatus.PENDING) || status.equals(EnumSaleStatus.RETURNED) || status.equals(EnumSaleStatus.REDELIVERY)
+		            || status.equals(EnumSaleStatus.CAPTURE_PENDING))
+		        {
+		            ErpInvoiceModel invoiceOnSale = saleModel.getFirstInvoice();
+					if (invoiceOnSale.equals(invoice)) {
+						LOGGER.info("Got duplicate invoice for sale#: " + saleId);
+						return;
+					} else {
+						throw new EJBException("Got another different invoice for sale#: " + saleId);
+					}
+
+				}
+
+				if (!status.equals(EnumSaleStatus.INPROCESS)) {
+					throw new EJBException("Sale#: " + saleId + " is not in correct status to add invoice");
+				}
+
+				// FIXME fix Discount promotionCode, since parser cannot provide it
+
+				List invDiscountLines = invoice.getDiscounts();
+				List oldDiscountLines = saleModel.getRecentOrderTransaction().getDiscounts();
+				if (invDiscountLines != null && !invDiscountLines.isEmpty() && oldDiscountLines != null && !oldDiscountLines.isEmpty()) {
+
+					if (oldDiscountLines.size() != invDiscountLines.size()) {
+						throw new EJBException("Discount line count mismatch, expected "
+							+ oldDiscountLines.size()
+							+ ", invoice had "
+							+ invDiscountLines.size());
+					}
+
+					// FIXME furhter validation should be performed to ensure discount lines match up (no can do, w/o promo codes)
+
+					List pList = new ArrayList();
+					for (Iterator invPromosIter = invDiscountLines.iterator(), oldPromosIter = oldDiscountLines.iterator();
+						invPromosIter.hasNext() && oldPromosIter.hasNext(); ) {
+						ErpDiscountLineModel  invDiscountLine = (ErpDiscountLineModel) invPromosIter.next();
+						ErpDiscountLineModel  oldDiscountLine = (ErpDiscountLineModel) oldPromosIter.next();
+						Discount invDisc = invDiscountLine.getDiscount();
+						Discount oldDisc = oldDiscountLine.getDiscount();
+						pList.add(new ErpDiscountLineModel(new Discount(oldDisc.getPromotionCode(), oldDisc.getDiscountType(), invDisc.getAmount())));
+					}
+					invoice.setDiscounts(pList);
+				}
+
+				// !!! fix Delivery charge tax
+				double tax = invoice.getTax();
+				if(tax > 0){
+					ErpAbstractOrderModel order = saleModel.getRecentOrderTransaction();
+					for(Iterator i = invoice.getCharges().iterator(); i.hasNext(); ) {
+						ErpChargeLineModel invCharge = (ErpChargeLineModel) i.next();
+						ErpChargeLineModel orderCharge = order.getCharge(invCharge.getType());
+
+						if(orderCharge != null) {
+							invCharge.setTaxRate(orderCharge.getTaxRate());
+						}
+					}
+				}
+
+
+				ErpCustomerManagerSB managerSB = this.getErpCustomerManagerHome().create();
+				managerSB.addInvoice(invoice, saleId, shippingInfo);
+				managerSB.reconcileSale(saleId);
+
+
+
+			} catch (ErpTransactionException e) {
+				throw e;
+			} catch (Exception e) {
+				LOGGER.warn("Unexpected Exception while trying to process invoice for order#: "+saleId, e);
+				throw new EJBException("Unexpected Exception while trying to process invoice for order#: "+saleId, e);
+			}
+		}
+
+
+		private ErpSaleHome getErpSaleHome() {
+				try {
+					return (ErpSaleHome) LOCATOR.getRemoteHome("java:comp/env/ejb/ErpSale", ErpSaleHome.class);
+				} catch (NamingException e) {
+					throw new EJBException(e);
+				}
+		}
+
+		public void authorizeSale(String erpCustomerID, String saleID, EnumSaleType type,CustomerRatingI cra) throws FDResourceException, ErpSaleNotFoundException {
+
+			if(EnumSaleType.REGULAR.equals(type)) {
+				authorizeSale(saleID);
+				return;
+			}
+			else if(EnumSaleType.SUBSCRIPTION.equals(type)) {
+				try {
+					PaymentManagerSB sb = this.getPaymentManagerHome().create();
+					EnumPaymentResponse response = sb.authorizeSale(saleID);
+
+					if (!EnumPaymentResponse.APPROVED.equals(response) && !EnumPaymentResponse.ERROR.equals(response)) {
+						sendAuthFailedEmail(saleID);//Should we send email?
+
+					}
+					else if(EnumPaymentResponse.APPROVED.equals(response)) {
+						//what should be done in case of Error response??.TBD.
+						ErpCustomerManagerSB erpCMsb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
+						erpCMsb.sendCreateOrderToSAP(erpCustomerID, saleID, type, cra);
+					}
+
+				} catch (CreateException ce) {
+					LOGGER.warn("Cannot Create ErpCustomerManagerSessionBean", ce);
+					throw new FDResourceException(ce);
+				} catch (RemoteException re) {
+					throw new FDResourceException(re);
+				}
+			}
+		}
+		public  Object[] getAutoRenewalInfo() throws FDResourceException {
+
+		try {
+			DlvPassManagerSB sb = (DlvPassManagerSB) this.getDlvPassManagerHome().create();
+			return sb.getAutoRenewalInfo();
+
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		}
+
+
+		}
+
+		public  String getAutoRenewSKU(String customerPK) throws FDResourceException {
+			String arSKU = null;
+			ErpCustomerEB eb;
+			try {
+				eb = this.getErpCustomerHome().findByPrimaryKey(new PrimaryKey(customerPK));
+				ErpCustomerInfoModel info = eb.getCustomerInfo();
+				arSKU = info.getAutoRenewDPSKU();
+				return arSKU;
+
+			} catch (RemoteException e) {
+				throw new FDResourceException(e);
+			} catch (FinderException e) {
+				throw new FDResourceException(e);
+			}
+		}
+
+
 }

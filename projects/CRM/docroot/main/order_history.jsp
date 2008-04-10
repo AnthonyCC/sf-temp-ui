@@ -28,13 +28,14 @@
 <table width="100%" cellpadding="0" cellspacing="2" border="0" class="list_header_text">
 	<tr>
 		<td width="7%">Order #</td>
+		<td width="3%">Type</td>
 		<td width="8%">Delivery</td>
 		<td width="8%">Status</td>
 		<td width="7%" align="center">Amount</td>
 		<td width="8%" align="center">Method</td>
 		<td width="11%">Created</td>
 		<td width="8%">by</td>
-		<td width="7%">via</td>
+		<td width="6%">via</td>
 		<td width="11%">Modified</td>
 		<td width="8%">by</td>
 		<td width="6%">via</td>
@@ -59,17 +60,19 @@
 		String modifiedBy = sourceToMethod(order.getModificationSource())+ (order.getModifiedBy()!=null ? " / "+order.getModifiedBy() : "");
 		String paymentMethodType = (order.getPaymentMethodType() != null) ? order.getPaymentMethodType().getDescription() : "&nbsp;";
 		String styleClassName = order.isDlvPassApplied() ? "dlv_pass_used" : "border_bottom";
+		styleClassName=EnumSaleType.SUBSCRIPTION.equals(order.getSaleType())?"subscription_order" :styleClassName;
 %>
 	
 	<tr valign="top" <%= counter.intValue() % 2 == 0 ? "class='list_odd_row'" : "" %> style="cursor: pointer; padding: 2px;" onClick="document.location='/main/order_details.jsp?orderId=<%= order.getErpSalesId() %>'">
 		<td width="7%" class='<%= styleClassName %>'><a class="key"><%= order.getErpSalesId() %></a></td>
-		<td width="8%" class='<%= styleClassName %>'><%= CCFormatter.formatDate(order.getRequestedDate()) %></td>
+		<td width="3%" class='<%= styleClassName %>'><% if(EnumSaleType.REGULAR.equals(order.getSaleType())){%>M<%}else if(EnumSaleType.SUBSCRIPTION.equals(order.getSaleType())){%><Font color="red">A</Font><%}%>&nbsp;</td>
+		<td width="8%" class='<%= styleClassName %>'><% if(EnumSaleType.REGULAR.equals(order.getSaleType())){%><%= CCFormatter.formatDate(order.getRequestedDate()) %><%}else {}%>&nbsp;</td>
 		<td width="8%" class='<%= styleClassName %>'><span class="log_info"><%= order.getSaleStatus().getName() %></span></td>
 		<td width="7%" align="center" class='<%= styleClassName %>'><%= CCFormatter.formatCurrency(order.getTotal()) %></td>
 		<td width="8%" align="center" class='<%= styleClassName %>'><%=paymentMethodType%></td>
 		<td width="11%" class='<%= styleClassName %>'><span class="time_stamp"><%= CCFormatter.formatDateTime(order.getCreateDate()) %></span></td>
 		<td width="8%" class='<%= styleClassName %>'><span class="log_info"><%= createdBy %></span></td>
-		<td width="7%" class='<%= styleClassName %>'><span class="log_info"><%= order.getOrderSource().getName() %></span></td>
+		<td width="6%" class='<%= styleClassName %>'><span class="log_info"><%= order.getOrderSource().getName() %></span></td>
 		<td width="11%" class='<%= styleClassName %>'><span class="time_stamp"><%= CCFormatter.formatDateTime(order.getModificationDate()) %></span></td>
 		<td width="8%" class='<%= styleClassName %>'><span class="log_info"><%= modifiedBy %></span></td>
 		<td width="6%" class='<%= styleClassName %>'><span class="log_info"><%= order.getModificationSource().getName() %></span></td>

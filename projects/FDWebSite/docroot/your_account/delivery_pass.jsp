@@ -21,9 +21,18 @@
 	    return false;
     	
     	}
-    	function flipAutoRenew() {
+    	
+    	function flipAutoRenewalOFF() {
 	    var form = document.forms['autoRenew'];
-	    form.elements['action'].value='FLIP_AUTORENEW';
+	    form.elements['action'].value='FLIP_AUTORENEW_OFF';
+	    form.method='POST';
+	    form.submit();
+	    return false;
+    	
+    	}
+    	function flipAutoRenewalON() {
+	    var form = document.forms['autoRenew'];
+	    form.elements['action'].value='FLIP_AUTORENEW_ON';
 	    form.method='POST';
 	    form.submit();
 	    return false;
@@ -34,7 +43,7 @@
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 
 <tmpl:insert template='/common/template/dnav.jsp'>
-        <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Unlimited DeliveryPass</tmpl:put>
+    <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Unlimited DeliveryPass</tmpl:put>
     <tmpl:put name='content' direct='true'>
     <fd:DlvPassSignupController result="result" callCenter="false">
 	<fd:ErrorHandler result='<%=result%>' name='dlvpass_discontinued' id='errorMsg'>
@@ -46,7 +55,7 @@
 		<table width="675" align="center" border="0" cellpadding="0" cellspacing="0">
 			<tr>
 				<td colspan="2" class="text11">
-										<font class="title18">FreshDirect Unlimited DeliveryPass</font>
+					<font class="title18">FreshDirect Unlimited DeliveryPass</font>
 				</td>
 			</tr>
 			<tr>
@@ -106,7 +115,7 @@
 					<td colspan="2">
 					<b>DeliveryPass Refills </b>&nbsp;You have <%=DeliveryPassUtil.getAsText(user.getUsableDeliveryPassCount()-1)%> DeliveryPass refill
   on your account. Now you can purchase a refill DeliveryPass which renews automatically! Simply 
-						<A HREF="#" onClick="javascript:redirectToSignup()">purchase an additional DeliveryPass</A> and you'll never need to worry about running out.
+						<A HREF="#" onClick="javascript:redirectToSignup()">purchase an additional Unlimited DeliveryPass</A> and you'll never need to worry about running out.
 
 						<br><br><br>
 					</td>
@@ -130,7 +139,7 @@
 				<tr>
 					<td colspan="2">
 						<br>
-												<A HREF="#" onClick="javascript:redirectToSignup()"><font class="text11bold">Click here</font></A> to sign up for Unlimited DeliveryPass today!. 
+						<A HREF="#" onClick="javascript:redirectToSignup()"><font class="text11bold">Click here</font></A> to sign up for Unlimited DeliveryPass today!. 
 
 					</td>
 				</tr>	
@@ -144,10 +153,10 @@
 						You have <%=DeliveryPassUtil.getAsText(user.getUsableDeliveryPassCount()-1)%> 
 						<% if(user.getUsableDeliveryPassCount()>2) {%>
 
-                                    	                                    	<b>Unlimited DeliveryPass refills</b>
+                                    	<b>Unlimited DeliveryPass refills</b>
 						<%} else {%>
-	                                    	                                    <b>Unlimited DeliveryPass refill</b>
-												<%}%> on your account. A refill will go into effect when your current membership expires.<br><br><br>
+	                                    <b>Unlimited DeliveryPass refill</b>
+						<%}%> on your account. A refill will go into effect when your current membership expires.<br><br><br>
 
 						
 					</td>
@@ -166,23 +175,23 @@
 
 								<form name="autoRenew" method="POST">
 								<% if(!DeliveryPassUtil.getAutoRenewalDate(user).equals("")) {%>
-																	<font class="text12bold">Unlimited DeliveryPass Renewal</font>
-																		<font class="text12"> Your membership will be renewed automatically on the day your current membership expires.
+									<font class="text12bold">Unlimited DeliveryPass Renewal</font>
+									<font class="text12"> Your membership will be renewed automatically on the day your current membership expires.
 									<A HREF="javascript:pop('/about/aboutRenewal.jsp?term=<%=user.getDlvPassInfo().getAutoRenewDPTerm()%>&price=<%=user.getDlvPassInfo().getAutoRenewPriceAsText()%>',400,560)">	
 										Click here to learn more about renewals.
 									</A>
-																	<br><br>Your membership is set to renew on <%=DeliveryPassUtil.getAutoRenewalDate(user)%>.
+									<br><br>Your membership is set to renew on <%=DeliveryPassUtil.getAutoRenewalDate(user)%>.
 								<%} %>
 
 								
 									<input type="hidden" name="action" value="">
-									<A HREF="#" onClick="javascript:flipAutoRenew()"><font class="text12">Click here to turn off renewal.</A>
+									<A HREF="#" onClick="javascript:flipAutoRenewalOFF()"><font class="text12">Click here to turn off renewal.</A>
 								</form>
 								<IMG src="/media_stat/images/layout/999966.gif" WIDTH="675" HEIGHT="1" BORDER="0" VSPACE="3"><br><br>	
                                           <%} else if (user.getUsableDeliveryPassCount()==0) {%>
 								<form name="signup" method="POST">
 									<input type="hidden" name="action" value="">
-									<br><A HREF="#" onClick="javascript:redirectToSignup()"><font class="text11bold">Click here</font></A> to sign up for DeliveryPass today!. 
+									<br><A HREF="#" onClick="javascript:redirectToSignup()"><font class="text11bold">Click here</font></A> to sign up for Unlimited DeliveryPass today!. 
 								</form>
 							<% }%>
 						<%} else {%>
@@ -191,23 +200,23 @@
 								<br><br>	
 
 
-																<font class="text12bold">Unlimited DeliveryPass Renewal</font>
-																<font class="text12"> Membership can be renewed automatically.
+								<font class="text12bold">Unlimited DeliveryPass Renewal</font>
+								<font class="text12"> Passes can be renewed automatically when your current pass (or refill) expires.
 								<A HREF="javascript:pop('/about/aboutRenewal.jsp?term=<%=user.getDlvPassInfo().getAutoRenewDPTerm()%>&price=<%=user.getDlvPassInfo().getAutoRenewPriceAsText()%>',400,560)">								Click here to learn more about renewals.
 								</A><br><br>
 								<form name="autoRenew" method="POST">
 									<% if(!DeliveryPassUtil.getExpDate(user).equals("")) {%>
-																		<b>Your membership will expire on <%=DeliveryPassUtil.getExpDate(user)%>.<b>
+									<b>Your pass will expire on <%=DeliveryPassUtil.getExpDate(user)%>.<b>
 								<%}%>
 								
 									<input type="hidden" name="action" value="">
-																		<A HREF="#" onClick="javascript:flipAutoRenew()"><font class="text12bold">Click here to turn renewal back ON.</A>
+									<A HREF="#" onClick="javascript:flipAutoRenewalON()"><font class="text12bold">Click here to turn renewal ON.</A>
 								</form>
 								<IMG src="/media_stat/images/layout/999966.gif" WIDTH="675" HEIGHT="1" BORDER="0" VSPACE="3"><br><br>	
                                           <%} else if (user.getUsableDeliveryPassCount()==0){%>
 								<form name="signup" method="POST">
 									<input type="hidden" name="action" value="">
-									<br><A HREF="#" onClick="javascript:redirectToSignup()"><font class="text11bold">Click here</font></A> to sign up for DeliveryPass today!. 
+									<br><A HREF="#" onClick="javascript:redirectToSignup()"><font class="text11bold">Click here</font></A> to sign up for Unlimited DeliveryPass today!. 
 								</form>
 							<% }%>
 
@@ -286,7 +295,7 @@
 			<td align="center" colspan="2">
 				<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="20" BORDER="0"><BR>
 <A HREF="javascript:pop('/shared/template/generic_popup.jsp?contentPath=/media/editorial/picks/deliverypass/dp_tc.html&windowSize=large&name=Delivery Pass Information',400,560)">
-								<font class="text11bold">Click here to learn more about Unlimited DeliveryPass.</font>
+				<font class="text11bold">Click here to learn more about Unlimited DeliveryPass.</font>
 				</A>
 			</td>
 		</tr>				

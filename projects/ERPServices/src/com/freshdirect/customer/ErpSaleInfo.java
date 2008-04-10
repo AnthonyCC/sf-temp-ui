@@ -38,6 +38,7 @@ public class ErpSaleInfo extends BasicSaleInfo {
 	private final double appliedCreditAmount;
 	private final String zone;
 	private final EnumPaymentMethodType paymentMethodType;
+	private final EnumSaleType saleType;
 
 	private Set usedPromotionCodes = Collections.EMPTY_SET;
 	//DlvPassId will be not null if delivery pass was applied to this order.
@@ -63,7 +64,8 @@ public class ErpSaleInfo extends BasicSaleInfo {
 		double appliedCreditAmount,		
 		String zone,
 		EnumPaymentMethodType paymentMethodType,
-		String dlvPassId) {
+		String dlvPassId,
+		EnumSaleType saleType) {
 
 		super(saleId, erpCustomerId,status);
 		this.amount = amount;
@@ -84,6 +86,7 @@ public class ErpSaleInfo extends BasicSaleInfo {
 		this.zone = zone;
 		this.paymentMethodType = paymentMethodType;
 		this.dlvPassId = dlvPassId;
+		this.saleType=saleType;
 	}
 
 	public double getAmount() {
@@ -168,5 +171,9 @@ public class ErpSaleInfo extends BasicSaleInfo {
 
 	public String getDlvPassId() {
 		return dlvPassId;
+	}
+	
+	public EnumSaleType getSaleType() {
+		return saleType;
 	}
 }

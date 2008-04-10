@@ -11,6 +11,10 @@ package com.freshdirect.sap.ejb;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
@@ -24,12 +28,30 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.affiliate.ErpAffiliate;
+import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmSystemCaseInfo;
+import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.customer.EnumSaleType;
+import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpAbstractOrderModel;
+import com.freshdirect.customer.ErpAppliedCreditModel;
+import com.freshdirect.customer.ErpChargeLineModel;
+import com.freshdirect.customer.ErpDeliveryConfirmModel;
+import com.freshdirect.customer.ErpDiscountLineModel;
+import com.freshdirect.customer.ErpInvoiceLineModel;
+import com.freshdirect.customer.ErpInvoiceModel;
+import com.freshdirect.customer.ErpInvoicedCreditModel;
+import com.freshdirect.customer.ErpOrderLineModel;
+import com.freshdirect.customer.ErpSaleModel;
+import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ejb.ErpCreateCaseCommand;
 import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.customer.ejb.ErpCustomerHome;
+import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
+import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.framework.core.MessageDrivenBeanSupport;
@@ -37,6 +59,7 @@ import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
+import com.freshdirect.payment.PaymentManager;
 import com.freshdirect.sap.command.SapCancelSalesOrder;
 import com.freshdirect.sap.command.SapChangeSalesOrder;
 import com.freshdirect.sap.command.SapCommandI;
@@ -44,6 +67,7 @@ import com.freshdirect.sap.command.SapCreateCustomer;
 import com.freshdirect.sap.command.SapCreateSalesOrder;
 import com.freshdirect.sap.command.SapOrderCommand;
 import com.freshdirect.sap.command.SapPostReturnCommand;
+
 
 /**
  *
@@ -154,6 +178,12 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 
 				if (command instanceof SapCreateSalesOrder) {
 					saleEB.createOrderComplete(((SapCreateSalesOrder) command).getSapOrderNumber());
+					EnumSaleType saleType=((SapCreateSalesOrder) command).getSaleType();
+					if(EnumSaleType.SUBSCRIPTION.equals(saleType)) {
+						saleEB.cutoff();
+						addInvoice(saleEB,saleId,((SapCreateSalesOrder) command).getInvoiceNumber());
+						ErpDeliveryConfirmModel deliveryConfirmModel = new ErpDeliveryConfirmModel();
+						saleEB.addDeliveryConfirm(deliveryConfirmModel);					}
 
 				} else if (command instanceof SapCancelSalesOrder) {
 					saleEB.cancelOrderComplete();
@@ -161,7 +191,12 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 				} else if (command instanceof SapChangeSalesOrder) {
 					saleEB.modifyOrderComplete();
 
-				} else {
+				}
+				/*else if (command instanceof SapCreateSubscriptionOrder) {
+					saleEB.createOrderComplete(((SapCreateSubscriptionOrder) command).getSapOrderNumber());
+					
+					
+				}*/ else {
 					LOGGER.error("Unknown command " + command + " for sale " + saleId);
 
 				}
@@ -232,4 +267,172 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 			throw new EJBException(e);
 		}
 	}
+	
+	public void addInvoice(ErpSaleEB saleEB,String saleId, String invoiceNumber) throws EJBException, ErpTransactionException, RemoteException  {
+		
+		ErpAbstractOrderModel order = saleEB.getCurrentOrder();
+		ErpInvoiceModel invoice = new ErpInvoiceModel();
+		
+		invoice.setAmount(order.getAmount());
+		invoice.setInvoiceNumber(invoiceNumber);
+		//Discount discount = order.getDiscount();
+		Discount invDiscount = null;
+		//if(discount != null){
+			//invDiscount = new Discount("UNKNOWN", discount.getDiscountType(), discount.getAmount());
+		//}
+		//invoice.setDiscount(invDiscount);
+		invoice.setDiscounts(order.getDiscounts());
+		invoice.setSubTotal(order.getSubTotal());
+		invoice.setTax(order.getTax());
+		invoice.setTransactionSource(EnumTransactionSource.SYSTEM);
+		invoice.setTransactionDate(new Date());
+		
+		List orderLines = order.getOrderLines();
+		List invoiceLines = new ArrayList();
+		ErpOrderLineModel orderLine = null;
+		ErpInvoiceLineModel invoiceLine = null;
+
+		for(int i = 0, size = orderLines.size(); i < size; i++){
+			orderLine = (ErpOrderLineModel)orderLines.get(i);
+			invoiceLine = new ErpInvoiceLineModel();
+			invoiceLine.setPrice(orderLine.getPrice());
+			invoiceLine.setQuantity(orderLine.getQuantity());
+			invoiceLine.setWeight(orderLine.getQuantity());
+			invoiceLine.setDepositValue(orderLine.getDepositValue());
+			invoiceLine.setMaterialNumber(orderLine.getMaterialNumber());
+			invoiceLine.setOrderLineNumber(orderLine.getOrderLineNumber());
+			invoiceLine.setTaxValue(orderLine.getPrice() * orderLine.getTaxRate());
+			
+			invoiceLines.add(invoiceLine);
+		}
+		
+		invoice.setInvoiceLines(invoiceLines);
+
+		List invoicedCharges = new ArrayList();
+		for(Iterator i = order.getCharges().iterator(); i.hasNext(); ){
+			ErpChargeLineModel charge = (ErpChargeLineModel) i.next();			
+			ErpChargeLineModel invoicedCharge = new ErpChargeLineModel();			
+			invoicedCharge.setAmount(charge.getAmount());
+			invoicedCharge.setDiscount(charge.getDiscount());
+			invoicedCharge.setReasonCode(charge.getReasonCode());
+			invoicedCharge.setTaxRate(charge.getTaxRate());
+			invoicedCharge.setType(charge.getType());			
+			invoicedCharges.add(invoicedCharge);
+		}
+		invoice.setCharges(invoicedCharges);
+			
+		List invoicedCredits = new ArrayList();
+		int sapCreditNumber = 1;
+		for(Iterator i = order.getAppliedCredits().iterator(); i.hasNext(); ){
+			ErpAppliedCreditModel appliedCredit = (ErpAppliedCreditModel) i.next();
+			
+			ErpInvoicedCreditModel invoicedCredit = new ErpInvoicedCreditModel();
+			invoicedCredit.setAffiliate(ErpAffiliate.getEnum(ErpAffiliate.CODE_FD));
+			invoicedCredit.setAmount(appliedCredit.getAmount());
+			invoicedCredit.setDepartment(appliedCredit.getDepartment());
+			invoicedCredit.setCustomerCreditPk(appliedCredit.getCustomerCreditPk());
+			invoicedCredit.setOriginalCreditId(appliedCredit.getPK().getId());
+			invoicedCredit.setSapNumber("0000"+sapCreditNumber++);
+			
+			invoicedCredits.add(invoicedCredit);
+			
+		}
+		invoice.setAppliedCredits(invoicedCredits);
+		ErpShippingInfo sInfo=null;
+		addAndReconcileInvoice(saleId,invoice,sInfo);
+		
+	}
+	public void addAndReconcileInvoice(String saleId, ErpInvoiceModel invoice, ErpShippingInfo shippingInfo)
+	throws ErpTransactionException {
+	
+	try {
+		ErpSaleEB eb = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
+		
+		ErpSaleModel saleModel = (ErpSaleModel)eb.getModel();
+		
+		EnumSaleStatus status = saleModel.getStatus();
+        
+        if (status.equals(EnumSaleStatus.ENROUTE) || status.equals(EnumSaleStatus.PAYMENT_PENDING) || status.equals(EnumSaleStatus.REFUSED_ORDER)
+            || status.equals(EnumSaleStatus.PENDING) || status.equals(EnumSaleStatus.RETURNED) || status.equals(EnumSaleStatus.REDELIVERY)
+            || status.equals(EnumSaleStatus.CAPTURE_PENDING))
+        {
+            ErpInvoiceModel invoiceOnSale = saleModel.getFirstInvoice();
+			if (invoiceOnSale.equals(invoice)) {
+				LOGGER.info("Got duplicate invoice for sale#: " + saleId);
+				return;
+			} else {
+				throw new EJBException("Got another different invoice for sale#: " + saleId);
+			}
+
+		} 
+		
+		if (!status.equals(EnumSaleStatus.INPROCESS)) {
+			throw new EJBException("Sale#: " + saleId + " is not in correct status to add invoice");
+		}
+		
+		// FIXME fix Discount promotionCode, since parser cannot provide it
+		
+		List invDiscountLines = invoice.getDiscounts();
+		List oldDiscountLines = saleModel.getRecentOrderTransaction().getDiscounts();
+		if (invDiscountLines != null && !invDiscountLines.isEmpty() && oldDiscountLines != null && !oldDiscountLines.isEmpty()) {
+			
+			if (oldDiscountLines.size() != invDiscountLines.size()) {
+				throw new EJBException("Discount line count mismatch, expected "
+					+ oldDiscountLines.size()
+					+ ", invoice had "
+					+ invDiscountLines.size());
+			}
+
+			// FIXME furhter validation should be performed to ensure discount lines match up (no can do, w/o promo codes)
+
+			List pList = new ArrayList();
+			for (Iterator invPromosIter = invDiscountLines.iterator(), oldPromosIter = oldDiscountLines.iterator(); 
+				invPromosIter.hasNext() && oldPromosIter.hasNext(); ) {
+				ErpDiscountLineModel  invDiscountLine = (ErpDiscountLineModel) invPromosIter.next();
+				ErpDiscountLineModel  oldDiscountLine = (ErpDiscountLineModel) oldPromosIter.next();
+				Discount invDisc = invDiscountLine.getDiscount();
+				Discount oldDisc = oldDiscountLine.getDiscount();
+				pList.add(new ErpDiscountLineModel(new Discount(oldDisc.getPromotionCode(), oldDisc.getDiscountType(), invDisc.getAmount())));																	
+			}
+			invoice.setDiscounts(pList);
+		}
+
+		// !!! fix Delivery charge tax
+		double tax = invoice.getTax();
+		if(tax > 0){
+			ErpAbstractOrderModel order = saleModel.getRecentOrderTransaction();
+			for(Iterator i = invoice.getCharges().iterator(); i.hasNext(); ) {
+				ErpChargeLineModel invCharge = (ErpChargeLineModel) i.next();
+				ErpChargeLineModel orderCharge = order.getCharge(invCharge.getType());
+				
+				if(orderCharge != null) {
+					invCharge.setTaxRate(orderCharge.getTaxRate());
+				}
+			}
+		}
+		
+		
+		ErpCustomerManagerSB managerSB = this.getErpCustomerManagerHome().create();
+		managerSB.addInvoice(invoice, saleId, shippingInfo);
+		managerSB.reconcileSale(saleId);
+		
+		
+			
+	} catch (ErpTransactionException e) {
+		throw e;
+	} catch (Exception e) {
+		LOGGER.warn("Unexpected Exception while trying to process invoice for order#: "+saleId, e);
+		throw new EJBException("Unexpected Exception while trying to process invoice for order#: "+saleId, e);
+	}
+}
+
+	private ErpCustomerManagerHome getErpCustomerManagerHome() {
+		try {
+			return (ErpCustomerManagerHome) LOCATOR.getRemoteHome("freshdirect.erp.CustomerManager", ErpCustomerManagerHome.class);
+		} catch (NamingException e) {
+			throw new EJBException(e);
+		}
+	}
+
+	
 }

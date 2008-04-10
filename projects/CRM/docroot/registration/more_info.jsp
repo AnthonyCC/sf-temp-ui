@@ -24,7 +24,7 @@
             zipcode = user.getZipCode();
         }
     }
-    if (zipcode == null) zipcode = "";
+    if (zipcode == null) zipcode = "";    
     String failurePage = "delivery.jsp?successPage=nw_cst_enter_details.jsp&serviceType="+serviceType;
     
 %>
@@ -54,11 +54,12 @@
 			<td><input type="text" class="text11" maxlength="50" size="21" name="apartment" value="<%=apartment%>"> <fd:ErrorHandler result='<%=result%>' name='apartment' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td></tr>
         <tr>
 			<td ALIGN="RIGHT">* City&nbsp;</td>
-			<td><input type="text"  maxlength="16" class="text9" size="10" name="city" value="<%=city%>"> <fd:ErrorHandler result='<%=result%>' name='state' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td></tr>		
+			<td><input type="text"  maxlength="16" class="text9" size="10" name="city" value="<%=city%>"> <fd:ErrorHandler result='<%=result%>' name='city' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td></tr>		
 
         <tr>
 			<td ALIGN="RIGHT">* State&nbsp;</td>
 			<td><input type="text"  maxlength="2" class="text9" size="2" name="state" value="<%=state%>"> <fd:ErrorHandler result='<%=result%>' name='state' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td></tr>		
+
 		<tr>
 			<td ALIGN="RIGHT">* Zip/Postal Code&nbsp;</td>
 			<td><input type="text"  maxlength="5" class="text9" size="6" name="zipcode" value="<%=zipcode%>"> <fd:ErrorHandler result='<%=result%>' name='zipcode' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td></tr>

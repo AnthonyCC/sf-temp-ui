@@ -26,6 +26,7 @@ import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.framework.webapp.ActionError;
 
 public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.BodyTagSupport {
 
@@ -50,10 +51,12 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		this.action = action;
 	}
 
-	public void setSuccessPage(String successPage) {
+	public void setSuccessPage(String successPage) {		
 		if (successPage != null && successPage.indexOf("://") != -1) {
+			LOGGER.debug("successPage before throwing IllegalArgument Exception :"+successPage);
 			throw new IllegalArgumentException("Invalid successPage specified");
 		}
+		
 		this.successPage = successPage;
 	}
 
@@ -113,11 +116,12 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					}
 				} else if ("checkByZipCode".equalsIgnoreCase(action)) {
 					DlvServiceSelectionResult serviceResult = checkByZipCode(request, result);
+					System.out.println("serviceResult :"+serviceResult);
 					if (result.isSuccess()) {
 						newSession();
 						System.out.println("this.serviceType :"+this.serviceType);
 						EnumDeliveryStatus dlvStatus = serviceResult.getServiceStatus(this.serviceType);
-						
+						System.out.println("dlvStatus :"+dlvStatus);
 						if (EnumDeliveryStatus.DELIVER.equals(dlvStatus)) {
 							this.createUser(this.serviceType, serviceResult.getAvailableServices());
 						} else { 
@@ -131,16 +135,44 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 							this.moreInfoPage += "&serviceType=" + this.serviceType.getName();
 						}
 						
-						if (EnumServiceType.CORPORATE.equals(this.serviceType)) {
+						if (EnumServiceType.CORPORATE.equals(this.serviceType)) {																					
 							if(EnumDeliveryStatus.DONOT_DELIVER.equals(dlvStatus)){
-								System.out.println(" EnumDeliveryStatus.DONOT_DELIVER :"+EnumDeliveryStatus.DONOT_DELIVER);
+								// check home delivry is available
+								if(EnumDeliveryStatus.DELIVER.equals(serviceResult.getServiceStatus(EnumServiceType.HOME))){
+									// show E No Corporate HOME delivarable Survey presented /site_access/alt_dlv_home.jsp
+									doRedirect(altDeliveryHomePage);
+								}
+								else if(EnumDeliveryStatus.DONOT_DELIVER.equals(serviceResult.getServiceStatus(EnumServiceType.HOME))){
+									// forward to site_access/cos_site_access_survey.jsp
+									doRedirect(failureCorporatePage);
+								}
+								else if(EnumDeliveryStatus.PARTIALLY_DELIVER.equals(serviceResult.getServiceStatus(EnumServiceType.HOME))){
+									// forward to more address page									
+									doRedirect(moreInfoPage);
+								}
+								//System.out.println(" EnumDeliveryStatus.DONOT_DELIVER :"+EnumDeliveryStatus.DONOT_DELIVER);
+								//return doRedirect(failureHomePage);
+							}
+//							else if(EnumDeliveryStatus.PARTIALLY_DELIVER.equals(dlvStatus)){
+//								// forward to more address page
+//								doRedirect(moreInfoPage);
+//							}
+							//return doRedirect(moreInfoPage);
+						}
+						
+						if (EnumServiceType.HOME.equals(this.serviceType)) {
+							if(EnumDeliveryStatus.RARELY_DELIVER.equals(dlvStatus)){								
+								// forward to /site_access/delivery.jsp with rarely deliver message( not required now)
 								return doRedirect(failureHomePage);
 							}
-							return doRedirect(moreInfoPage);
-						}
+							else if(EnumDeliveryStatus.DONOT_DELIVER.equals(dlvStatus)){								
+								// forward to /site_access/delivery.jsp with no deliver message(not required now) 
+								return doRedirect(failureHomePage);
+							}
+						}						
 						if (EnumDeliveryStatus.PARTIALLY_DELIVER.equals(dlvStatus)) {
 							return doRedirect(moreInfoPage);
-						}
+						}							
 						if (EnumDeliveryStatus.DELIVER.equals(dlvStatus)) {
 							return doRedirect(successPage);
 						}
@@ -187,7 +219,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		this.address.setAddress1(NVL.apply(request.getParameter(EnumUserInfoName.DLV_ADDRESS_1.getCode()), "").trim());		
 		this.address.setApartment(NVL.apply(request.getParameter(EnumUserInfoName.DLV_APARTMENT.getCode()), "").trim());
 		this.address.setCity(NVL.apply(request.getParameter(EnumUserInfoName.DLV_CITY.getCode()), "").trim());
-		this.address.setState(NVL.apply(request.getParameter(EnumUserInfoName.DLV_STATE.getCode()), "").trim());		
+		this.address.setState(NVL.apply(request.getParameter(EnumUserInfoName.DLV_STATE.getCode()), "").trim());				
 		this.serviceType = EnumServiceType.getEnum(NVL.apply(request.getParameter("serviceType"), "").trim());
 	}
 
@@ -215,8 +247,13 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 			}
 			if (address.getState()==null || address.getState().trim().length()==0) {
 				result.addError(true, EnumUserInfoName.DLV_STATE.getCode(), SystemMessageList.MSG_REQUIRED);
+			}else if (address.getState().length() < 2) {
+				result.addError(new ActionError(EnumUserInfoName.DLV_STATE.getCode(), SystemMessageList.MSG_REQUIRED));
+			} else {
+				result.addError(!AddressUtil.validateState(address.getState()), EnumUserInfoName.DLV_STATE.getCode(),
+					SystemMessageList.MSG_UNRECOGNIZE_STATE);
 			}
-
+			
 			if (result.isSuccess()) {
 				this.address = AddressUtil.scrubAddress(this.address, true, result);
 			}
@@ -247,8 +284,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 
 			EnumServiceType st = serviceAvailability==AV_REQUESTED ? this.serviceType : (serviceAvailability==AV_ALTERNATE ? altServiceType : EnumServiceType.PICKUP);
 			this.createUser(st, serviceResult.getAvailableServices());
-    
-	        System.out.println(" EnumServiceType :"+st);		 
+    	       		
 			String page = getRedirectPage(this.serviceType, serviceAvailability);
 			return this.doRedirect(page);
 
@@ -310,7 +346,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 
 		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 
-		if ((email != null) && (!"".equals(email))) {
+		if ((email != null) && (!"".equals(email))) {					
 			FDDeliveryManager.getInstance().saveFutureZoneNotification(email, user.getZipCode(),this.serviceType);
 			LOGGER.debug("SAVED FUTURE ZONE TO NOTIFY");
 		}

@@ -11,12 +11,14 @@ import java.util.Date;
 public class ErpOrderHistory implements OrderHistoryI {
 
 	private Collection erpSaleInfos;
+	private Collection erpRegSaleInfos;
 	/**
 	 * 
 	 * @param erpsaleInfos
 	 */
 	public ErpOrderHistory(Collection erpsaleInfos){
 		this.erpSaleInfos = erpsaleInfos;
+		erpRegSaleInfos=ErpOrderHistoryUtil.filterOrders(this.erpSaleInfos,EnumSaleType.REGULAR);
 	}
 
 	public Collection getErpSaleInfos() {
@@ -24,63 +26,63 @@ public class ErpOrderHistory implements OrderHistoryI {
 	}
 	
 	public int getDeliveredOrderCount(){
-		return ErpOrderHistoryUtil.getDeliveredOrderCount(this.erpSaleInfos);
+		return ErpOrderHistoryUtil.getDeliveredOrderCount(erpRegSaleInfos);
 	}
 
 	public Date getFirstNonPickupOrderDate(){
-		return ErpOrderHistoryUtil.getFirstNonPickupOrderDate(this.erpSaleInfos);
+		return ErpOrderHistoryUtil.getFirstNonPickupOrderDate(erpRegSaleInfos);
 	}
 
 	public Date getLastOrderCreateDate(){
-		return ErpOrderHistoryUtil.getLastOrderCreateDate(this.erpSaleInfos);
+		return ErpOrderHistoryUtil.getLastOrderCreateDate(erpRegSaleInfos);
 	}
 
 	public Date getLastOrderDlvDate(){
-		return ErpOrderHistoryUtil.getLastOrderDlvDate(this.erpSaleInfos);
+		return ErpOrderHistoryUtil.getLastOrderDlvDate(erpRegSaleInfos);
 	}
 
 	public String getLastOrderId(){
-		return ErpOrderHistoryUtil.getLastOrderId(this.erpSaleInfos);
+		return ErpOrderHistoryUtil.getLastOrderId(erpRegSaleInfos);
 	}
 
 	public EnumDeliveryType getLastOrderType(){
-		return ErpOrderHistoryUtil.getLastOrderType(this.erpSaleInfos);
+		return ErpOrderHistoryUtil.getLastOrderType(erpRegSaleInfos);
 	}
 
 	public String getLastOrderZone(){
-		return ErpOrderHistoryUtil.getLastOrderZone(this.erpSaleInfos);
+		return ErpOrderHistoryUtil.getLastOrderZone(erpRegSaleInfos);
 	}
 
 	public int getPhoneOrderCount(){
-		return ErpOrderHistoryUtil.getPhoneOrderCount(this.erpSaleInfos);
+		return ErpOrderHistoryUtil.getPhoneOrderCount(erpRegSaleInfos);
 	}
 
 	public int getReturnOrderCount(){
-		return ErpOrderHistoryUtil.getReturnOrderCount(this.erpSaleInfos);
+		return ErpOrderHistoryUtil.getReturnOrderCount(erpRegSaleInfos);
 	}
 
 	public String getSecondToLastSaleId(){
-		return ErpOrderHistoryUtil.getSecondToLastSaleId(erpSaleInfos);
+		return ErpOrderHistoryUtil.getSecondToLastSaleId(erpRegSaleInfos);
 	}
 
 	public int getTotalOrderCount(){
-		return ErpOrderHistoryUtil.getTotalOrderCount(this.erpSaleInfos);
+		return ErpOrderHistoryUtil.getTotalOrderCount(erpRegSaleInfos);
 	}
 
 	public int getValidECheckOrderCount(){
-		return ErpOrderHistoryUtil.getValidECheckOrderCount(this.erpSaleInfos);
+		return ErpOrderHistoryUtil.getValidECheckOrderCount(erpRegSaleInfos);
 	}
 
 	public int getValidOrderCount(){
-		return ErpOrderHistoryUtil.getValidOrderCount(this.erpSaleInfos);
+		return ErpOrderHistoryUtil.getValidOrderCount(erpRegSaleInfos);
 	}
 
 	public int getValidPhoneOrderCount(){
-		return ErpOrderHistoryUtil.getValidPhoneOrderCount(this.erpSaleInfos);
+		return ErpOrderHistoryUtil.getValidPhoneOrderCount(erpRegSaleInfos);
 	}
 	
 	public int getSettledOrderCount() {
-		return ErpOrderHistoryUtil.getSettledOrderCount(this.erpSaleInfos);
+		return ErpOrderHistoryUtil.getSettledOrderCount(erpRegSaleInfos);
 	}
 	
 	public String toString() {

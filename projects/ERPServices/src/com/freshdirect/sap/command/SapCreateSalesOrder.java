@@ -15,6 +15,7 @@ import java.util.Date;
 import org.apache.commons.lang.StringUtils;
 
 import com.freshdirect.common.customer.PaymentMethodI;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.QuickDateFormat;
 import com.freshdirect.sap.SapOrderI;
@@ -34,9 +35,14 @@ public class SapCreateSalesOrder extends SapCommandSupport implements SapOrderCo
 	private final SapOrderI order;
 
 	private String sapOrderNumber;
+	
+	private String invoiceNumber;
+	
+	private EnumSaleType saleType;
 
-	public SapCreateSalesOrder(SapOrderI order) {
+	public SapCreateSalesOrder(SapOrderI order,EnumSaleType saleType) {
 		this.order = order;
+		this.saleType=saleType;
 	}
 
 	public String getWebOrderNumber() {
@@ -46,12 +52,18 @@ public class SapCreateSalesOrder extends SapCommandSupport implements SapOrderCo
 	public String getSapOrderNumber() {
 		return this.sapOrderNumber;
 	}
+	
+	public EnumSaleType getSaleType() {
+		return saleType;
+	}
 
 	public void execute() throws SapException {
-		BapiSalesOrderCreate bapi = BapiFactory.getInstance().getSalesOrderCreateBuilder();
+		BapiSalesOrderCreate bapi = null;
+		
+		bapi=BapiFactory.getInstance().getSalesOrderCreateBuilder(saleType);
 		SalesOrderHelper helper = new SalesOrderHelper(bapi);
 
-		this.buildOrderHeader(bapi);
+		this.buildOrderHeader(bapi,saleType);
 		helper.buildOrderText(order);
 		//this.buildCreditCard( order.getCustomer().getCreditCard() );
 		helper.buildCreditMemos(order.getCreditMemos());
@@ -69,12 +81,15 @@ public class SapCreateSalesOrder extends SapCommandSupport implements SapOrderCo
 		this.invoke(bapi);
 
 		this.sapOrderNumber = ((BapiSalesOrderCreate) bapi).getSalesDocument();
+		if(EnumSaleType.SUBSCRIPTION.equals(saleType)) {
+			this.invoiceNumber=((BapiSalesOrderCreate) bapi).getInvoiceNumber();
+		}
 		if (this.sapOrderNumber == null) {
 			throw new SapException("No salesdocument number in response");
 		}
 	}
 
-	protected void buildOrderHeader(BapiSalesOrderCreate bapi) {
+	protected void buildOrderHeader(BapiSalesOrderCreate bapi,final EnumSaleType saleType) {
 		final Date currentDate = new Date();
 		final PaymentMethodI cc = order.getCustomer().getPaymentMethod();
 
@@ -92,7 +107,15 @@ public class SapCreateSalesOrder extends SapCommandSupport implements SapOrderCo
 			}
 
 			public String getDocumentType() {
-				return "ZOR";
+				if(EnumSaleType.REGULAR.equals(saleType)){
+					return "ZOR";
+				}
+				else if(EnumSaleType.SUBSCRIPTION.equals(saleType)){
+					return "XOR";
+				}
+				else {
+					return "";
+				}
 			}
 
 			public String getPurchaseOrderNumber() {
@@ -110,24 +133,26 @@ public class SapCreateSalesOrder extends SapCommandSupport implements SapOrderCo
 			}
 
 			public String getCustGrp1() {
-				return order.getDeliveryModel();
+				
+					return order.getDeliveryModel();
+				
 			}
 
 			public String getRef1() {
 				// Delivery Start & End time as HHmmssHHmmss (eg 120000125959)
-				String dlvStart = QuickDateFormat.SHORT_TIME_FORMATTER.format(order.getDeliveryStartTime());
-
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(order.getDeliveryEndTime());
-				cal.add(Calendar.SECOND, -1);
-				String dlvEnd = QuickDateFormat.SHORT_TIME_FORMATTER.format(cal);
-
-				return dlvStart + dlvEnd;
+					String dlvStart = QuickDateFormat.SHORT_TIME_FORMATTER.format(order.getDeliveryStartTime());
+	
+					Calendar cal = Calendar.getInstance();
+					cal.setTime(order.getDeliveryEndTime());
+					cal.add(Calendar.SECOND, -1);
+					String dlvEnd = QuickDateFormat.SHORT_TIME_FORMATTER.format(cal);
+	
+					return dlvStart + dlvEnd;
 			}
 
 			public String getRef1S() {
-				SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmm");
-				return df.format(order.getCutoffTime());
+					SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmm");
+					return df.format(order.getCutoffTime());
 			}
 
 			public String getPoSupplement() {
@@ -192,6 +217,10 @@ public class SapCreateSalesOrder extends SapCommandSupport implements SapOrderCo
 			+ StringUtils.left(NVL.apply(order.getDeliveryRegionId(), "").trim(), 20)  // offset 126  --> 145
 			);
 
+	}
+	
+	public String getInvoiceNumber() {
+		return invoiceNumber;
 	}
 
 }

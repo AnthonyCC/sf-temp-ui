@@ -112,4 +112,8 @@ public class FDOrderInfoAdapter implements FDOrderInfoI {
 	public String getDlvPassId(){
 		return this.saleInfo.getDlvPassId();
 	}
+
+	public EnumSaleType getSaleType() {
+		return this.saleInfo.getSaleType();
+	}
 }

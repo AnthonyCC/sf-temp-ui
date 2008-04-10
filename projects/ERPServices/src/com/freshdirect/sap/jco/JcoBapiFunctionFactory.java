@@ -8,6 +8,7 @@
  */
 package com.freshdirect.sap.jco;
 
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.sap.bapi.BapiCreateCustomer;
 import com.freshdirect.sap.bapi.BapiFactory;
 import com.freshdirect.sap.bapi.BapiMaterialAvailability;
@@ -18,6 +19,7 @@ import com.freshdirect.sap.bapi.BapiSalesOrderCreate;
 import com.freshdirect.sap.bapi.BapiSalesOrderSimulate;
 import com.freshdirect.sap.bapi.BapiSendSettlement;
 
+
 /**
  * Abstract factory for builders.
  *
@@ -25,13 +27,23 @@ import com.freshdirect.sap.bapi.BapiSendSettlement;
  * @author $Author$
  */
 public class JcoBapiFunctionFactory extends BapiFactory {
-
+    
 	public BapiCreateCustomer getCreateCustomerBuilder() {
 		return new JcoBapiCreateCustomer();
 	}
 
-	public BapiSalesOrderCreate getSalesOrderCreateBuilder() {
-		return new JcoBapiSalesOrderCreate();
+	public BapiSalesOrderCreate getSalesOrderCreateBuilder(EnumSaleType saleType) {
+		String functionName="";
+		if(EnumSaleType.REGULAR.equals(saleType)) {
+			functionName="ZBAPI_SALESORDER_CREATEFROMDAT";
+		}
+		else if(EnumSaleType.SUBSCRIPTION.equals(saleType)) {
+			functionName="ZBAPI_SALESORDER_XOR_CREATE";
+		} 
+		else {
+			return new JcoBapiSalesOrderCreate();
+		}
+		return new JcoBapiSalesOrderCreate(functionName);
 	}
 
 	public BapiMaterialAvailability getMaterialAvailabilityBuilder() {
@@ -61,5 +73,11 @@ public class JcoBapiFunctionFactory extends BapiFactory {
 	public BapiPostReturnI getPostReturnBuilder(){
 		return new JcoBapiPostReturn();
 	}
+	
+	
+	/*public BapiSubscriptionOrderCreate getSubscriptionOrderCreateBuilder() {
+		return new JcoBapiSubscriptionOrderCreate();
+		
+	}*/
 
 }

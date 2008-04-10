@@ -85,13 +85,13 @@ your account information, this is the place to do it.<br></td>
 
 <table width="675" border="0" cellspacing="0" cellpadding="0">
 <tr>
-<td width="500">
+<td width="500" valign="top" >
 <!-- ct user logo -->
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 <tr><td valign="top" class="text13">
 	<% if(user.isChefsTable()) { %>
 	<table align="left" border="0" cellspacing="0" cellpadding="0">
-	<tr>
+	<tr valign="top">
 		<td><img src="/media_stat/images/template/checkout/loy_ctcard_top.gif"/></td>
 	</tr>
 	<tr>
@@ -171,16 +171,16 @@ your account information, this is the place to do it.<br></td>
 
 %>
 	<table align="center" border="0" cellspacing="0" cellpadding="0">
-	<tr>
-		<td>
+	<tr valign="top">
+		<td valign="top" class="text13">
         <fd:IncludeMedia name="/media/editorial/site_pages/account/right_ct.html" />
         </td>
 	</tr>
 	</table>
 	<% }else{ %>
     	<table align="center" border="0" cellspacing="0" cellpadding="0">
-	<tr>
-		<td>
+	<tr valign="top">
+		<td valign="top" class="text13">
         <fd:IncludeMedia name="/media/editorial/site_pages/account/right_all.html" />
         </td>
 	</tr>

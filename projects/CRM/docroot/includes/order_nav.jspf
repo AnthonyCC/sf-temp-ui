@@ -6,6 +6,7 @@
 <%@ page import="com.freshdirect.framework.core.*"%>
 <%@ page import="com.freshdirect.webapp.util.OrderPermissionsI"%>
 <%@ page import="com.freshdirect.webapp.util.OrderPermissionsImpl"%>
+<%@ page import="com.freshdirect.customer.EnumSaleType"%>
 
 <%@ taglib uri='crm' prefix='crm' %>
 
@@ -29,6 +30,8 @@ boolean o_order_cases = pageURI.indexOf("order_cases") > -1;
 String nav_orderId = request.getParameter("orderId");
 
 FDOrderI nav_order = CrmSession.getOrder(session, nav_orderId);
+EnumSaleType orderType = nav_order.getOrderType();
+boolean isRegularOrder = EnumSaleType.REGULAR.equals(orderType);
 
 String app = (String) session.getAttribute(SessionName.APPLICATION);
 boolean makeGood = EnumPaymentType.MAKE_GOOD.equals(nav_order.getPaymentMethod().getPaymentType());
@@ -128,22 +131,22 @@ boolean hasCase = false;
 				<% } %>
 				<% if (!o_return || "approve_return".equalsIgnoreCase(request.getParameter("action"))) { %>
 					<% if (orderPermissions.allowReturnOrder() || orderPermissions.isRefusedOrder()) {%>
-						<div class="cust_sub_nav" style="width: 120px;"><%if(hasCustomerCase){%><a href="/returns/return_order.jsp?orderId=<%= nav_orderId %>&action=add_return" class="cust_sub_nav_text"><%}%>Process Return<%if(hasCustomerCase){%></a><%}%></div>
+						<div class="cust_sub_nav" style="width: 120px;"><%if(hasCustomerCase && isRegularOrder){%><a href="/returns/return_order.jsp?orderId=<%= nav_orderId %>&action=add_return" class="cust_sub_nav_text"><%}%>Process Return<%if(hasCustomerCase && isRegularOrder){%></a><%}%></div>
 					<% } %>
 				<% } %>
 				<% if (!o_return || !"approve_return".equalsIgnoreCase(request.getParameter("action"))) { %>
 					<% if ((currentAgent.isSupervisor() || currentAgent.isMonitor()) && orderPermissions.allowReturnOrder()) { %>
-						<div class="cust_sub_nav" style="width: 120px;"><%if(hasCustomerCase){%><a href="/returns/return_order.jsp?orderId=<%= nav_orderId %>&action=approve_return" class="cust_sub_nav_text"><%}%>Approve Return<%if(hasCustomerCase){%></a><%}%></div>
+						<div class="cust_sub_nav" style="width: 120px;"><%if(hasCustomerCase && isRegularOrder){%><a href="/returns/return_order.jsp?orderId=<%= nav_orderId %>&action=approve_return" class="cust_sub_nav_text"><%}%>Approve Return<%if(hasCustomerCase && isRegularOrder){%></a><%}%></div>
 					<% } %>
 				<% } %> 
 				<% if ( o_details && orderPermissions.allowResubmitOrder() && currentAgent.isSupervisor() ) { %>
 					<div class="cust_sub_nav" style="width: 120px;"><% if (!resubmitted) {%><a href="javascript:setAction(document.order_details, 'resubmit')" class="cust_sub_nav_text"><%}%>Resubmit Order<% if (!resubmitted) {%></a><%}%></div>
 				<% } %>
 				<% if (!o_modify && orderPermissions.allowModifyOrder()) { %>
-					<div class="cust_sub_nav" style="width: 120px;"><%if(hasCustomerCase){%><a href="/order/order_modify.jsp?orderId=<%=nav_orderId%>" class="cust_sub_nav_text"><%}%>Modify Order<%if(hasCustomerCase){%></a><%}%></div>
+					<div class="cust_sub_nav" style="width: 120px;"><%if(hasCustomerCase && isRegularOrder){%><a href="/order/order_modify.jsp?orderId=<%=nav_orderId%>" class="cust_sub_nav_text"><%}%>Modify Order<%if(hasCustomerCase && isRegularOrder){%></a><%}%></div>
 				<% } %>
 				<% if (!o_cancel && orderPermissions.allowCancelOrder()) { %>
-					<div class="cust_sub_nav" style="width: 120px;"><%if(hasCustomerCase){%><a href="/order/cancel_order.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text"><%}%>Cancel Order<%if(hasCustomerCase){%></a><%}%></div>
+					<div class="cust_sub_nav" style="width: 120px;"><%if(hasCustomerCase){%><a href="/order/cancel_order.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text"><%}%>Cancel Order<%if(hasCustomerCase ){%></a><%}%></div>
 				<% } %>
 				<% if (!o_issue_credit && orderPermissions.allowComplaint()) { %>
 					<div class="cust_sub_nav" style="width: 120px;"><%if(hasCustomerCase){%><a href="/returns/issue_credit.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text"><%}%>Issue Credit<%if(hasCustomerCase){%></a><%}%></div>
@@ -153,7 +156,9 @@ boolean hasCase = false;
 				<% if (!o_payment_exception && orderPermissions.hasPaymentException()) { %>
 					<div class="cust_sub_nav" style="width: 140px;"><%if(hasCustomerCase){%><a href="<%= response.encodeURL("/order/payment_exception.jsp?orderId=" + nav_orderId) %>" class="cust_sub_nav_text"><%}%>Payment Exception<%if(hasCustomerCase){%></a><%}%></div>
 				<% } %>
-				<div class="cust_sub_nav" style="width: 120px;"><a href="/order/quickshop/shop_from_order.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text">QuickShop Order</a></div>
+                <%if(isRegularOrder){%>
+				    <div class="cust_sub_nav" style="width: 120px;"><a href="/order/quickshop/shop_from_order.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text">QuickShop Order</a></div>
+                <% } %>
 			</td>
 			<td width="10%" align="center">
 				<a href="/case/<%= hasCase ? "unlock" : "new_case"%>.jsp?<%= hasCase ? "redirect=new_case&" : ""%>erpCustId=<%= nav_custId %>&orderId=<%= nav_orderId %>" class="new">NEW CASE</a>

@@ -7,6 +7,7 @@
  *
  */
 package com.freshdirect.sap.bapi;
+import com.freshdirect.customer.EnumSaleType;
 
 import com.freshdirect.sap.jco.JcoBapiFunctionFactory;
 
@@ -25,9 +26,9 @@ public abstract class BapiFactory {
 	}
 
 	public abstract BapiCreateCustomer getCreateCustomerBuilder();
-	
-	public abstract BapiSalesOrderCreate getSalesOrderCreateBuilder();
 
+    public abstract BapiSalesOrderCreate getSalesOrderCreateBuilder(EnumSaleType saleType);
+	
 	public abstract BapiMaterialAvailability getMaterialAvailabilityBuilder();
 	
 	public abstract BapiSalesOrderSimulate getSalesOrderSimulateBuilder();

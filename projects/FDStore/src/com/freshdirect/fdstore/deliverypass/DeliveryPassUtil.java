@@ -250,7 +250,7 @@ public class DeliveryPassUtil {
    
    public static double calculateRefund(DeliveryPassInfo passInfo) throws FDResourceException{
 	   //Refund formula
-	   //(Retail Price paid – Discount, Unlimited pass only) x (Remaining # days/ Bought & Credited # of days)
+	   //(Retail Price paid –Discount, Unlimited pass only) x (Remaining # days/ Bought & Credited # of days)
 	   double refundAmt = 0.0;
 	   //Get the Tax Rate and original retail price of the delivery pass purchased from the orderlines.
 	   double taxRate = 0.0;
@@ -279,6 +279,9 @@ public class DeliveryPassUtil {
 		   int daysCredited = 7 * passInfo.getExtendedWeeks();
 		   int daysBought = passInfo.getModel().getType().getDuration();
 		   int totalDays =  daysBought + daysCredited;
+		   if(passInfo.getModel().getType().isAutoRenewDP()&& passInfo.getModel().getUsageCount()==0) {
+			   return pricePaid;
+		   }
 		   refundAmt =  (pricePaid *  remDays) / totalDays ;
 	   } else {
 		   //For BSGS Pass. PricePaid = (RetailPrice + taxPaid)
@@ -374,5 +377,3 @@ public class DeliveryPassUtil {
    
    
 }
-
-

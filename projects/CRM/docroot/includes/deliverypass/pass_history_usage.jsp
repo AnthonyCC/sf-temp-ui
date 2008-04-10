@@ -109,6 +109,7 @@ body {
 			}            		
            	
             }
+            form.notes.value=form.notes.value+". The refund amount is "+form.elements['refundAmount'].value;
             form.method='POST';
             form.submit();
             return false;
@@ -320,6 +321,7 @@ String case_required = "<span class=\"cust_module_content_edit\">-Case required 
 			<form name="deliverypass_<%=counter%>" method="POST">
 			<input type="hidden" name="action_name" value="cancelPass">
 			<input type="hidden" name="passNum" value="">
+			
 
 							<table width="100%" cellpadding="2" cellspacing="2" border="0">
 							<%
@@ -328,6 +330,7 @@ String case_required = "<span class=\"cust_module_content_edit\">-Case required 
 							<tr>
 								<td colspan="2">	
 									<% Double refundAmt = new Double(DeliveryPassUtil.getPricePaid(historyPass)); %>
+									<input type="hidden" name="refundAmount" value=<%=CCFormatter.formatCurrency(refundAmt.doubleValue())%>>
 									<span class="info_text">Current refund amount: <b><%= CCFormatter.formatCurrency(refundAmt.doubleValue()) %></b> <br>(includes refundable tax)</span>
 								</td>
 							</tr>	

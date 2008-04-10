@@ -83,7 +83,11 @@
 
 <%	boolean showPaymentButtons = false;
 	boolean showAddressButtons = false;
-	boolean showDeleteButtons = false; %>
+	boolean showDeleteButtons = false;
+    boolean displayDeliveryInfo = true;
+    if(EnumSaleType.SUBSCRIPTION.equals(order.getOrderType()))
+            displayDeliveryInfo = false;
+%>
 <div class="content_<%=forPrint?"fixed":"scroll"%>" style="height:72%;">
 	<%@ include file="/includes/i_order_dlv_payment.jspf"%>
 	

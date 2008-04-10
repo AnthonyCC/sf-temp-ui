@@ -1066,6 +1066,7 @@ public class FDReferralManagerDAO {
 		 "FROM  CUST.CUSTOMERINFO ci_2, CUST.SALE s_2 "+   
 		 "WHERE ci_2.REF_PROG_INVT_ID=r.id "+
 		 "AND ci_2.customer_id=s_2.customer_id "+
+		 "and s_2.type = 'REG' "+
 		 "AND s_2.status IN (?, ?, ?) "+
 		 "AND s_2.customer_id=signup_info.referral_cust_id "+
 		 ") AS num_delivered_orders, "+
@@ -1137,6 +1138,7 @@ public class FDReferralManagerDAO {
 		 "FROM CUST.CUSTOMERINFO ci_2, CUST.SALE s_2 "+    
 		 "WHERE ci_2.REF_PROG_INVT_ID=r.id "+ 
 		 "AND ci_2.customer_id=s_2.customer_id "+ 
+		 "and s_2.type = 'REG' "+
 		 "AND s_2.status IN (?,?,?) "+ 
 		 "AND s_2.customer_id=? "+ 
 		 ") AS num_delivered_orders, "+ 

@@ -6,6 +6,7 @@ import java.util.List;
 import javax.ejb.EJBObject;
 
 import com.freshdirect.customer.EnumPaymentResponse;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpTransactionException;
 
@@ -18,5 +19,7 @@ public interface PaymentManagerSB extends EJBObject {
 	public void voidCapturesNoTrans(String saleId) throws ErpTransactionException, RemoteException;
 	
 	public void captureAuthorizations(String saleId, List auths) throws ErpTransactionException, RemoteException;
+	
+	public List authorizeSaleRealtime(String saleId,EnumSaleType saleType) throws ErpAuthorizationException, RemoteException;
 
 }

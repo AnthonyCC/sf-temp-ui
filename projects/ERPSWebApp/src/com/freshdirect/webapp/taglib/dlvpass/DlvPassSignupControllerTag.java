@@ -145,7 +145,7 @@ public class DlvPassSignupControllerTag extends AbstractControllerTag {
 					this.setSuccessPage(signupUrl);
 				}*/				
 			}
-			else if(actionName.equalsIgnoreCase("FLIP_AUTORENEW")) {
+			else if(actionName.equalsIgnoreCase("FLIP_AUTORENEW_ON")||actionName.equalsIgnoreCase("FLIP_AUTORENEW_OFF")) {
 				HttpSession session = pageContext.getSession();
 				FDSessionUser currentUser = (FDSessionUser)session.getAttribute(SessionName.USER);
 				CrmAgentModel agentModel = CrmSession.getCurrentAgent(session);
@@ -157,7 +157,11 @@ public class DlvPassSignupControllerTag extends AbstractControllerTag {
 				}
 				String customerID=currentUser.getIdentity().getErpCustomerPK();
 				//FDCustomerManager.flipAutoRenewDP(customerID);
-				FDCustomerManager.flipAutoRenewDP(customerID, source, initiator);
+				boolean autoRenew=false;
+				if(actionName.equalsIgnoreCase("FLIP_AUTORENEW_ON")) {
+					autoRenew=true;
+				}
+				FDCustomerManager.setHasAutoRenewDP(customerID, source, initiator,autoRenew);
 			}
 		}
 		catch (Exception ex) {

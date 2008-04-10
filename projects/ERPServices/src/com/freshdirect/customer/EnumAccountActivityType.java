@@ -72,6 +72,8 @@ public class EnumAccountActivityType implements java.io.Serializable {
     public final static EnumAccountActivityType MASS_RETURN				= new EnumAccountActivityType(37, "Mass Return", "Mass Return");
     
     public final static EnumAccountActivityType FLIP_AUTORENEW_DP_FLAG				= new EnumAccountActivityType(38, "Flip AutoRenew", "Flip AutoRenew DP Flag");
+    public final static EnumAccountActivityType AUTORENEW_DP_FLAG_ON				= new EnumAccountActivityType(40, "DP AR ON", "AutoRenew DP flag turned ON");
+    public final static EnumAccountActivityType AUTORENEW_DP_FLAG_OFF				= new EnumAccountActivityType(41, "DP AR OFF", "AutoRenew DP flag turned OFF");
     public final static EnumAccountActivityType VIEW_CC_ECHECK				= new EnumAccountActivityType(39, "View CC/ECHECK", "View cc/echeck account number");
 
     private EnumAccountActivityType(int id, String code, String name) {

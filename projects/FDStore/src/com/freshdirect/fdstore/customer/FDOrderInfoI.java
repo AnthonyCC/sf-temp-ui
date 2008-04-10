@@ -14,6 +14,7 @@ import java.util.Date;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
@@ -66,4 +67,6 @@ public interface FDOrderInfoI extends Serializable {
 	public boolean isDlvPassApplied(); 
 	
 	public String getDlvPassId();
+	
+	public EnumSaleType getSaleType();
 }

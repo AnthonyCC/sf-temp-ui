@@ -1,8 +1,10 @@
 package com.freshdirect.customer;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 import com.freshdirect.payment.EnumPaymentMethodType;
 
@@ -204,5 +206,26 @@ public class ErpOrderHistoryUtil {
 	public static String getSecondToLastSaleId(Collection erpSaleInfos){
 		ErpSaleInfo secondToLastOrder = getSecondToLastSale(erpSaleInfos);
 		return secondToLastOrder==null ? null : secondToLastOrder.getSaleId();
+	}
+	
+	
+
+	public static Collection filterOrders(Collection erpSaleInfos, EnumSaleType saleType) {
+		
+		if(saleType==null) {
+			return erpSaleInfos;
+		}
+		List filteredOrders=new ArrayList();
+		if(erpSaleInfos!=null) {
+			ErpSaleInfo saleInfo =null;
+			for (Iterator i = erpSaleInfos.iterator(); i.hasNext();) {
+				saleInfo = (ErpSaleInfo) i.next();
+				if(saleType.equals(saleInfo.getSaleType())) {
+					filteredOrders.add(saleInfo);
+				}
+			}
+		}
+		
+		return filteredOrders;
 	}
 }

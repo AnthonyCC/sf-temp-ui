@@ -25,6 +25,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpComplaintException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpRedeliveryModel;
@@ -296,13 +297,13 @@ public class CallCenterServices {
 		}
 	}
 
-	public static void resubmitOrder(String saleId,CustomerRatingI cra) throws FDResourceException, ErpTransactionException {
+	public static void resubmitOrder(String saleId,CustomerRatingI cra,EnumSaleType saleType) throws FDResourceException, ErpTransactionException {
 		if (callCenterHome == null) {
 			lookupManagerHome();
 		}
 		try {
 			CallCenterManagerSB sb = callCenterHome.create();
-			sb.resubmitOrder(saleId,cra);
+			sb.resubmitOrder(saleId,cra,saleType);
 
 		} catch (CreateException ce) {
 			callCenterHome = null;

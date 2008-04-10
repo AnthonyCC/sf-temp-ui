@@ -14,6 +14,7 @@ import javax.jms.ObjectMessage;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.framework.core.GatewaySessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.sap.SapCustomerI;
@@ -54,13 +55,13 @@ public class SapGatewaySessionBean extends GatewaySessionBeanSupport {
 		return command.getOrder();
 	}
 
-	public void sendCreateSalesOrder(SapOrderI order) {
+	public void sendCreateSalesOrder(SapOrderI order,EnumSaleType saleType) {
 		LOGGER.debug("Sending sales order create request " + order);
 		if (SapProperties.isBlackhole()) {
 			LOGGER.debug("Message blackholed.");
 			return;
 		}
-		this.enqueue(new SapCreateSalesOrder(order));
+		this.enqueue(new SapCreateSalesOrder(order,saleType));
 	}
 
 	public void sendCreateCustomer(String erpCustomerNumber, SapCustomerI customer) {

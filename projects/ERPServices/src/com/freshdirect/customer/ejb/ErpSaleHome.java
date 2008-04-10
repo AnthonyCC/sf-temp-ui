@@ -11,8 +11,10 @@ import javax.ejb.EJBHome;
 import javax.ejb.FinderException;
 
 import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpCreateOrderModel;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.payment.EnumPaymentMethodType;
 
 /**
  * ErpSale entity home interface.
@@ -24,7 +26,7 @@ public interface ErpSaleHome extends EJBHome {
     /**
      * Create sales with a create order transcation. Status will be NEW.
      */
-	public ErpSaleEB create(PrimaryKey customerPk, ErpCreateOrderModel createOrder, Set usedPromotionCodes, String dlvPassId) throws CreateException, RemoteException;
+	public ErpSaleEB create(PrimaryKey customerPk, ErpCreateOrderModel createOrder, Set usedPromotionCodes, String dlvPassId,EnumSaleType type) throws CreateException, RemoteException;
 
 	public ErpSaleEB findByPrimaryKey(PrimaryKey pk) throws FinderException, RemoteException;
 	
@@ -33,5 +35,7 @@ public interface ErpSaleHome extends EJBHome {
 	public Collection findByStatus(EnumSaleStatus status) throws FinderException, RemoteException;
 
 	public Collection findByDeliveryPassId(String dlvPassId) throws FinderException, RemoteException;
+	
+	public ErpSaleEB findByCriteria(String customerID, EnumSaleType saleType, EnumSaleStatus saleStatus, EnumPaymentMethodType pymtMethodType) throws FinderException, RemoteException;
 	
 }

@@ -47,6 +47,8 @@ public class CrmCaseSubject extends EnumModel implements TerminableI {
 	
 	public static final String CODE_SHORTOUTITEM = "OUT-007";
 
+	public static final String CODE_AUTO_BILL_PAYMENT_MISSING="DPQ-009";
+
 	private final boolean obsolete;
 	private final String queueCode;
 	private final String priorityCode;

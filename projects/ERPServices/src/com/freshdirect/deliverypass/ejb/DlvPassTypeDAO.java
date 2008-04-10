@@ -14,7 +14,7 @@ import com.freshdirect.enum.EnumDAOI;
 public class DlvPassTypeDAO implements EnumDAOI{
 	
 	public List loadAll(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("SELECT SKU_CODE, NAME, NO_OF_DLVS, DURATION, IS_UNLIMITED,PROFILE_VAL, IS_AUTORENEW_DP, IS_FREETRIAL, RESTRICT_FREETRIAL FROM CUST.DLV_PASS_TYPE");
+		PreparedStatement ps = conn.prepareStatement("SELECT SKU_CODE, NAME, NO_OF_DLVS, DURATION, IS_UNLIMITED,PROFILE_VAL, IS_AUTORENEW_DP, IS_FREETRIAL, RESTRICT_FREETRIAL,AUTORENEWAL_SKU_CODE FROM CUST.DLV_PASS_TYPE");
 		ResultSet rs = ps.executeQuery();
 
 		List l = new ArrayList();
@@ -30,7 +30,11 @@ public class DlvPassTypeDAO implements EnumDAOI{
 			boolean isAutoRenewDP = ("Y".equals(rs.getString("IS_AUTORENEW_DP"))) ? true : false;
 			boolean isFreeTrial = ("Y".equals(rs.getString("IS_FREETRIAL"))) ? true : false;
 			boolean restrictFreeTrial = ("Y".equals(rs.getString("RESTRICT_FREETRIAL"))) ? true : false;
-			l.add(new DeliveryPassType(skuCode, name, noOfDlvs, duration,unlimited, profileValue.trim(),isAutoRenewDP,isFreeTrial,restrictFreeTrial));
+			String autoRenewalSKU=rs.getString("AUTORENEWAL_SKU_CODE");
+			if((isAutoRenewDP)&& ((autoRenewalSKU==null)||("".equals(autoRenewalSKU)))) {
+				autoRenewalSKU=skuCode;
+			}
+			l.add(new DeliveryPassType(skuCode, name, noOfDlvs, duration,unlimited, profileValue.trim(),isAutoRenewDP,isFreeTrial,restrictFreeTrial,autoRenewalSKU));
 		}
 
 		rs.close();

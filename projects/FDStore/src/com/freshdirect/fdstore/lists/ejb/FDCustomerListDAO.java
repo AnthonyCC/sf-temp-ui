@@ -390,6 +390,7 @@ class FDCustomerListDAO {
 		+ "min (sa.action_date) as first_purchase, ol.recipe_source_id, ol.description "
 		+ "FROM cust.sale s, cust.salesaction sa, cust.orderline ol "
 		+ "WHERE s.id=sa.sale_id AND sa.id=ol.salesaction_id AND sa.action_type IN ('CRO','MOD') "
+		+ "and s.type = 'REG' "
 		+ "AND sa.action_date=(SELECT MAX(action_date) FROM cust.salesaction WHERE sale_id=s.id AND action_type IN ('CRO','MOD')) "
 		+ "AND s.customer_id=? "
 		+ "AND NVL(ol.promotion_type,0)<> 3 "

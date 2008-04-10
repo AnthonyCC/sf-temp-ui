@@ -16,6 +16,7 @@ import java.util.List;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.EnumDeliveryType;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAppliedCreditModel;
@@ -36,8 +37,17 @@ import com.freshdirect.fdstore.FDResourceException;
  */
 public class FDOrderTranslator {
 
+	public static ErpCreateOrderModel getErpCreateOrderModel(FDCartModel cart, EnumSaleType saleType) throws FDResourceException {
+		return getErpCreateOrderModel(cart,saleType, false);
+	}
+
 	public static ErpCreateOrderModel getErpCreateOrderModel(FDCartModel cart) throws FDResourceException {
-		return getErpCreateOrderModel(cart, false);
+		return getErpCreateOrderModel(cart,false);
+	}
+	public static ErpCreateOrderModel getErpCreateOrderModel(FDCartModel cart, boolean skipModifyLines) throws FDResourceException {
+		ErpCreateOrderModel createOrder = new ErpCreateOrderModel();
+		translateOrder(cart, createOrder, skipModifyLines);
+		return createOrder;
 	}
 
 	public static ErpModifyOrderModel getErpModifyOrderModel(FDCartModel cart) throws FDResourceException {
@@ -46,9 +56,15 @@ public class FDOrderTranslator {
 		return modifyOrder;
 	}
 	
-	public static ErpCreateOrderModel getErpCreateOrderModel(FDCartModel cart, boolean skipModifyLines) throws FDResourceException {
+	public static ErpCreateOrderModel getErpCreateOrderModel(FDCartModel cart,EnumSaleType saleType, boolean skipModifyLines) throws FDResourceException {
 		ErpCreateOrderModel createOrder = new ErpCreateOrderModel();
-		translateOrder(cart, createOrder, skipModifyLines);
+		//createOrder.setSaleType(saleType);
+		//if(EnumSaleType.REGULAR.equals(saleType.getSaleType())) {
+			translateOrder(cart, createOrder, skipModifyLines);
+		//}
+		/*else if(EnumSaleType.SUBSCRIPTION.equals(saleType)) {
+			translateSubscriptionOrder(cart, createOrder, skipModifyLines);
+		}*/
 		return createOrder;
 	}
 
@@ -60,9 +76,23 @@ public class FDOrderTranslator {
 			ErpDeliveryInfoModel deliveryInfo = new ErpDeliveryInfoModel();
 			deliveryInfo.setDeliveryReservationId(deliveryReservation.getPK().getId());
 			deliveryInfo.setDeliveryAddress(cart.getDeliveryAddress());
-			deliveryInfo.setDeliveryStartTime(deliveryReservation.getStartTime());
-			deliveryInfo.setDeliveryEndTime(deliveryReservation.getEndTime());
-			deliveryInfo.setDeliveryCutoffTime(deliveryReservation.getCutoffTime());
+			if(deliveryReservation.getTimeslot()!=null) {
+				deliveryInfo.setDeliveryStartTime(deliveryReservation.getStartTime());
+				deliveryInfo.setDeliveryEndTime(deliveryReservation.getEndTime());
+				deliveryInfo.setDeliveryCutoffTime(deliveryReservation.getCutoffTime());
+				order.setRequestedDate(deliveryReservation.getStartTime());
+			}
+			else {
+				Calendar startTime=Calendar.getInstance();
+				Calendar endTime=Calendar.getInstance();
+				Calendar cutOffTime=Calendar.getInstance();
+				cutOffTime.add(Calendar.DATE, -1);
+				endTime.add(Calendar.HOUR, 2);
+				deliveryInfo.setDeliveryStartTime(startTime.getTime());
+				deliveryInfo.setDeliveryEndTime(endTime.getTime());
+				order.setRequestedDate(startTime.getTime());
+				deliveryInfo.setDeliveryCutoffTime(cutOffTime.getTime());
+			}
 			deliveryInfo.setDeliveryZone(cart.getZoneInfo().getZoneCode());
 			deliveryInfo.setDeliveryRegionId(cart.getZoneInfo().getRegionId());
 			if (cart.getDeliveryAddress() instanceof ErpDepotAddressModel) {
@@ -83,7 +113,7 @@ public class FDOrderTranslator {
 			}
 			order.setDeliveryInfo(deliveryInfo);
 			order.setPricingDate(Calendar.getInstance().getTime());
-			order.setRequestedDate(deliveryReservation.getStartTime());
+			
 			order.setTax(cart.getTaxValue());
 			order.setSubTotal(cart.getSubTotal());
 			
@@ -137,6 +167,59 @@ public class FDOrderTranslator {
 			order.setDeliveryPassCount(cart.getDeliveryPassCount());
 			order.setDlvPassApplied(cart.isDlvPassApplied());
 			order.setDlvPromotionApplied(cart.isDlvPromotionApplied());
+		} catch (FDInvalidConfigurationException ex) {
+			throw new FDResourceException(ex, "Invalid configuration encountered");
+		}
+	}
+
+	
+	public static void translateSubscriptionOrder(FDCartModel cart, ErpAbstractOrderModel order, boolean skipModifyLines) throws FDResourceException {
+		try {
+			order.setPaymentMethod(cart.getPaymentMethod());
+			
+			order.setPricingDate(Calendar.getInstance().getTime());
+			order.setRequestedDate(order.getPricingDate());
+			order.setTax(cart.getTaxValue());
+			order.setSubTotal(cart.getSubTotal());
+			
+
+			List orderLines = new ArrayList();
+			int num = 0;
+			for (Iterator i = cart.getOrderLines().iterator(); i.hasNext();) {
+				FDCartLineI line = (FDCartLineI) i.next();
+				if (skipModifyLines && (line instanceof FDModifyCartLineI)) {
+					continue;
+				}
+				num += addTranslatedLine(num, line, orderLines);
+			}
+			for (Iterator i = cart.getSampleLines().iterator(); i.hasNext();) {
+				num += addTranslatedLine(num, (FDCartLineI) i.next(), orderLines);
+			}
+			order.setOrderLines(orderLines);
+
+
+			//
+			// Transfer cart charges to order model
+			// We cannot just take charges from the original order and set them on 
+			// modify order as they will have the PK which is not correct
+			List cList = new ArrayList();
+			for(Iterator i = cart.getCharges().iterator(); i.hasNext(); ) {
+				cList.add(new ErpChargeLineModel((ErpChargeLineModel) i.next()));
+			}
+			order.setCharges(cList);
+
+			// add discount to promotion list
+			if (cart.getDiscounts() != null && cart.getDiscounts().size() > 0) {
+				order.setDiscounts(cart.getDiscounts());				
+			}
+			
+			//
+			// Set miscellaneous messages
+			//
+			order.setCustomerServiceMessage(cart.getCustomerServiceMessage() == null ? "" : cart.getCustomerServiceMessage());
+			order.setMarketingMessage(cart.getMarketingMessage() == null ? "" : cart.getMarketingMessage());
+			//set the delivery pass info.
+			order.setDeliveryPassCount(cart.getDeliveryPassCount());
 		} catch (FDInvalidConfigurationException ex) {
 			throw new FDResourceException(ex, "Invalid configuration encountered");
 		}

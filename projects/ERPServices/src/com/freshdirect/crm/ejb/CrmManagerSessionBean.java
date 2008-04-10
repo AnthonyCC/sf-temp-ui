@@ -817,7 +817,7 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 							custInfo.setHasAutoRenewDP("N");
 							erpCustomer.setCustomerInfo(custInfo);
 							ErpActivityRecord rec = new ErpActivityRecord();
-							rec.setActivityType(EnumAccountActivityType.FLIP_AUTORENEW_DP_FLAG);
+							rec.setActivityType(EnumAccountActivityType.AUTORENEW_DP_FLAG_OFF);
 							rec.setCustomerId(model.getCustomerId());
 							rec.setSource(EnumTransactionSource.SYSTEM);
 							rec.setInitiator(agentmodel.getUserId());

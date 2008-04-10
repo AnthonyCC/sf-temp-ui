@@ -29,7 +29,7 @@
    <dataSource>
      <name>STS01</name>
      <param>
-      select sa.sale_id, s.customer_id, pi.referenced_order as Referenced, pi.name, pi.address1, pi.apartment, pi.city, pi.state, sa.action_type, sa.amount, s.status, sa.action_date, s.sap_number, rs.truck_number, rs.stop_sequence, ct.profile_name from cust.paymentinfo pi, cust.salesaction sa, cust.sale s, cust.sale rs, (select * from cust.profile where profile_name='ChefsTable') ct where pi.referenced_order is not null and pi.salesaction_id = sa.id and sa.sale_id = s.id and rs.id = pi.referenced_order and sa.action_date = (select max(action_date) from cust.salesaction where sale_id = s.id and action_type in ('CRO', 'MOD')) and s.customer_id +2 = ct.customer_id (+) and sa.action_date between sysdate - 1 and sysdate
+      select sa.sale_id, s.customer_id, pi.referenced_order as Referenced, pi.name, pi.address1, pi.apartment, pi.city, pi.state, sa.action_type, sa.amount, s.status, sa.action_date, s.sap_number, rs.truck_number, rs.stop_sequence, ct.profile_name from cust.paymentinfo pi, cust.salesaction sa, cust.sale s, cust.sale rs, (select * from cust.profile where profile_name='ChefsTable') ct where pi.on_fd_account='M' and pi.salesaction_id = sa.id and sa.sale_id = s.id and rs.id = pi.referenced_order and sa.action_date = (select max(action_date) from cust.salesaction where sale_id = s.id and action_type in ('CRO', 'MOD')) and s.customer_id +2 = ct.customer_id (+) and sa.action_date between sysdate - 1 and sysdate
      </param>
    </dataSource>
   </sheet>
@@ -41,7 +41,7 @@
    <dataSource>
      <name>STS01</name>
      <param>
-select sa.sale_id, s.customer_id, pi.referenced_order as Referenced, pi.name, pi.address1, pi.apartment, pi.city, pi.state, sa.action_type,sa.amount, s.status, sa.action_date, s.sap_number, di.starttime, di.endtime from cust.paymentinfo pi, cust.salesaction sa, cust.sale s, cust.deliveryinfo di where pi.referenced_order is not null and pi.salesaction_id = sa.id and sa.sale_id = s.id and sa.action_date = (select max(action_date) from cust.salesaction where sale_id = s.id and action_type in ('CRO', 'MOD')) and sa.id = di.salesaction_id and to_char(di.starttime, 'DD-MON-YYYY') = to_char(sysdate, 'DD-MON-YYYY')
+select sa.sale_id, s.customer_id, pi.referenced_order as Referenced, pi.name, pi.address1, pi.apartment, pi.city, pi.state, sa.action_type,sa.amount, s.status, sa.action_date, s.sap_number, di.starttime, di.endtime from cust.paymentinfo pi, cust.salesaction sa, cust.sale s, cust.deliveryinfo di where pi.on_fd_account='M' and pi.salesaction_id = sa.id and sa.sale_id = s.id and sa.action_date = (select max(action_date) from cust.salesaction where sale_id = s.id and action_type in ('CRO', 'MOD')) and sa.id = di.salesaction_id and to_char(di.starttime, 'DD-MON-YYYY') = to_char(sysdate, 'DD-MON-YYYY')
      </param>
    </dataSource>
   </sheet>
@@ -54,7 +54,7 @@ select sa.sale_id, s.customer_id, pi.referenced_order as Referenced, pi.name, pi
    <dataSource>
      <name>STS01</name>
      <param>
-select sa.sale_id, s.customer_id, pi.referenced_order as Referenced, pi.name, pi.address1, pi.apartment, pi.city, pi.state, sa.action_type,sa.amount, s.status, sa.action_date, s.sap_number, di.starttime, di.endtime from cust.paymentinfo pi, cust.salesaction sa, cust.sale s, cust.deliveryinfo di where pi.referenced_order is not null and pi.salesaction_id = sa.id and sa.sale_id = s.id and sa.action_date = (select max(action_date) from cust.salesaction where sale_id = s.id and action_type in ('CRO', 'MOD')) and sa.id = di.salesaction_id and di.starttime BETWEEN sysdate - 1 and sysdate
+select sa.sale_id, s.customer_id, pi.referenced_order as Referenced, pi.name, pi.address1, pi.apartment, pi.city, pi.state, sa.action_type,sa.amount, s.status, sa.action_date, s.sap_number, di.starttime, di.endtime from cust.paymentinfo pi, cust.salesaction sa, cust.sale s, cust.deliveryinfo di where pi.on_fd_account='M' and pi.salesaction_id = sa.id and sa.sale_id = s.id and sa.action_date = (select max(action_date) from cust.salesaction where sale_id = s.id and action_type in ('CRO', 'MOD')) and sa.id = di.salesaction_id and di.starttime BETWEEN sysdate - 1 and sysdate
      </param>
    </dataSource>
   </sheet>
@@ -66,7 +66,7 @@ select sa.sale_id, s.customer_id, pi.referenced_order as Referenced, pi.name, pi
    <dataSource>
      <name>STS01</name>
      <param>
-select count(sa.amount), sum(sa.amount), min(sa.amount), max(sa.amount), avg(sa.amount), percentile_cont(0.5) within group (order by sa.amount) from cust.paymentinfo pi, cust.salesaction sa, cust.sale s, cust.deliveryinfo di where pi.referenced_order is not null and pi.salesaction_id = sa.id and sa.sale_id = s.id and sa.action_date = (select max(action_date) from cust.salesaction where sale_id = s.id and action_type in ('CRO', 'MOD')) and sa.id = di.salesaction_id and to_char(di.starttime, 'MON') = to_char(sysdate, 'MON')
+select count(sa.amount), sum(sa.amount), min(sa.amount), max(sa.amount), avg(sa.amount), percentile_cont(0.5) within group (order by sa.amount) from cust.paymentinfo pi, cust.salesaction sa, cust.sale s, cust.deliveryinfo di where pi.on_fd_account='M' and pi.salesaction_id = sa.id and sa.sale_id = s.id and sa.action_date = (select max(action_date) from cust.salesaction where sale_id = s.id and action_type in ('CRO', 'MOD')) and sa.id = di.salesaction_id and to_char(di.starttime, 'MON') = to_char(sysdate, 'MON')
      </param>
    </dataSource>
   </sheet>
@@ -78,7 +78,7 @@ select count(sa.amount), sum(sa.amount), min(sa.amount), max(sa.amount), avg(sa.
    <dataSource>
      <name>STS01</name>
      <param>
-select count(sa.amount), sum(sa.amount), min(sa.amount), max(sa.amount), avg(sa.amount), percentile_cont(0.5) within group (order by sa.amount) from cust.paymentinfo pi, cust.salesaction sa, cust.sale s, cust.deliveryinfo di where pi.referenced_order is not null and pi.salesaction_id = sa.id and sa.sale_id = s.id and sa.action_date = (select max(action_date) from cust.salesaction where sale_id = s.id and action_type in ('CRO', 'MOD')) and sa.id = di.salesaction_id and to_char(di.starttime, 'YY') = to_char(sysdate, 'YY')
+select count(sa.amount), sum(sa.amount), min(sa.amount), max(sa.amount), avg(sa.amount), percentile_cont(0.5) within group (order by sa.amount) from cust.paymentinfo pi, cust.salesaction sa, cust.sale s, cust.deliveryinfo di where pi.on_fd_account='M' and pi.salesaction_id = sa.id and sa.sale_id = s.id and sa.action_date = (select max(action_date) from cust.salesaction where sale_id = s.id and action_type in ('CRO', 'MOD')) and sa.id = di.salesaction_id and to_char(di.starttime, 'YY') = to_char(sysdate, 'YY')
      </param>
    </dataSource>
   </sheet>

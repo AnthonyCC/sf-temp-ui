@@ -21,6 +21,7 @@ import javax.ejb.ObjectNotFoundException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionType;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpAdjustmentModel;
@@ -56,6 +57,7 @@ import com.freshdirect.framework.core.EntityBeanSupport;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.EnumPaymentMethodType;
 
 /**
  * ErpSale entity bean implementation.
@@ -75,7 +77,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	private ErpComplaintList complaints;
 
 	public void initialize() {
-		this.model = new ErpSaleModel(null, null, new ArrayList(), new ArrayList(), null, null, Collections.EMPTY_SET, new ArrayList(), null);
+		this.model = new ErpSaleModel(null, null, new ArrayList(), new ArrayList(), null, null, Collections.EMPTY_SET, new ArrayList(), null,null);
 		this.complaints = new ErpComplaintList();
 	}
 
@@ -242,12 +244,12 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	/**
 	 * Create sales with a create order transcation and uses a delivery pass. Status will be NEW.
 	 */
-	public PrimaryKey ejbCreate(PrimaryKey customerPk, ErpCreateOrderModel createOrder, Set usedPromotionCodes, String dlvPassId)
+	public PrimaryKey ejbCreate(PrimaryKey customerPk, ErpCreateOrderModel createOrder, Set usedPromotionCodes, String dlvPassId,EnumSaleType saleType)
 		throws CreateException {
 		Connection conn = null;
 		try {
 			this.initialize();
-			this.model = new ErpSaleModel(customerPk, createOrder, usedPromotionCodes, dlvPassId);
+			this.model = new ErpSaleModel(customerPk, createOrder, usedPromotionCodes, dlvPassId,saleType);
 			conn = this.getConnection();
 			return this.create(conn);
 
@@ -265,13 +267,13 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		}
 	}
 	
-	public void ejbPostCreate(PrimaryKey customerPk, ErpCreateOrderModel createOrder, Set usedPromotionCodes, String dlvPassId) {
+	public void ejbPostCreate(PrimaryKey customerPk, ErpCreateOrderModel createOrder, Set usedPromotionCodes, String dlvPassId,EnumSaleType type) {
 		// this space is intentionally blank :)
 	}
 
 	public PrimaryKey create(Connection conn) throws SQLException {
 		this.setPK(new PrimaryKey(this.getNextId(conn, "CUST")));
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SALE (ID,CUSTOMER_ID,STATUS,SAP_NUMBER, DLV_PASS_ID, CROMOD_DATE) values (?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SALE (ID,CUSTOMER_ID,STATUS,SAP_NUMBER, DLV_PASS_ID,TYPE,CROMOD_DATE) values (?,?,?,?,?,?,?)");
 		ps.setString(1, this.getPK().getId());
 		ps.setString(2, this.model.getCustomerPk().getId());
 		ps.setString(3, this.model.getStatus().getStatusCode());
@@ -284,8 +286,11 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			//True when this order contains a delivery pass.
 			ps.setNull(5, Types.VARCHAR);
 		}
+
+		ps.setString(6,this.model.getType().getSaleType());
 		//Added as part of PERF-27 task.
-		ps.setTimestamp(6, new java.sql.Timestamp(this.model.getCurrentOrder().getTransactionDate().getTime()));
+		ps.setTimestamp(7, new java.sql.Timestamp(this.model.getCurrentOrder().getTransactionDate().getTime()));
+
 		try {
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not created");
@@ -302,8 +307,9 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		txList.create(conn);
 		
 		complaints.create(conn);
-
-		ErpPromotionDAO.insert(conn, this.getPK(), this.model.getUsedPromotionCodes());
+		if(this.model.hasUsedPromotionCodes()==true) {
+			ErpPromotionDAO.insert(conn, this.getPK(), this.model.getUsedPromotionCodes());
+		}
 		this.createCroModMaxDate(conn);
 		
 		return this.getPK();
@@ -351,7 +357,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	public void load(Connection conn) throws SQLException {
 		PreparedStatement ps =
 			conn.prepareStatement(
-			"SELECT CUSTOMER_ID, STATUS, SAP_NUMBER, WAVE_NUMBER, TRUCK_NUMBER, STOP_SEQUENCE, NUM_REGULAR_CARTONS, NUM_FREEZER_CARTONS, NUM_ALCOHOL_CARTONS, DLV_PASS_ID FROM CUST.SALE WHERE ID=?");
+			"SELECT CUSTOMER_ID, STATUS, SAP_NUMBER, WAVE_NUMBER, TRUCK_NUMBER, STOP_SEQUENCE, NUM_REGULAR_CARTONS, NUM_FREEZER_CARTONS, NUM_ALCOHOL_CARTONS, DLV_PASS_ID,TYPE FROM CUST.SALE WHERE ID=?");
 		ps.setString(1, this.getPK().getId());
 		ResultSet rs = ps.executeQuery();
 		if (!rs.next()) {
@@ -363,6 +369,11 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		String sapOrderNumber = rs.getString(3);
 		ErpShippingInfo shippingInfo = new ErpShippingInfo(rs.getString(4), rs.getString(5), rs.getString(6), rs.getInt(7), rs.getInt(8), rs.getInt(9));
 		String dlvPassId = rs.getString(10);
+		String _saleType=rs.getString(11);
+		EnumSaleType saleType=EnumSaleType.REGULAR;
+		if(_saleType!=null) {
+			saleType=EnumSaleType.getSaleType(_saleType);
+		}
 		rs.close();
 		ps.close();
 
@@ -381,7 +392,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		PrimaryKey oldPk = model.getPK();
 		
 		List cartonInfo = ErpCartonsDAO.getCartonInfo(conn, this.getPK());
-		this.model = new ErpSaleModel(customerPk, status, txList.getModelList(), compList.getModelList(), sapOrderNumber, shippingInfo, usedPromotionCodes, cartonInfo, dlvPassId);
+		this.model = new ErpSaleModel(customerPk, status, txList.getModelList(), compList.getModelList(), sapOrderNumber, shippingInfo, usedPromotionCodes, cartonInfo, dlvPassId,saleType);
 		this.model.setPK(oldPk);
 			
 		super.decorateModel(this.model);
@@ -433,7 +444,8 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			ps.close();
 			
 			ErpPromotionDAO.delete(conn, this.getPK());
-			ErpPromotionDAO.insert(conn, this.getPK(), this.model.getUsedPromotionCodes());
+			if(this.model.hasUsedPromotionCodes())
+				ErpPromotionDAO.insert(conn, this.getPK(), this.model.getUsedPromotionCodes());
 		}
 		//store children
 		ErpTransactionList txList = this.getTransactionPBList();
@@ -1166,4 +1178,62 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			this.model.setDeliveryPassId(dlvPassId);
 			this.setModified();
 	}
+	
+	private final static String GET_NTH_NONCOS_REG_ORDER_QUERY="select id from ( select s.id,sa.requested_date, row_number() over (order by sa.REQUESTED_DATE DESC) row_num from cust.sale s, cust.salesaction sa, cust.deliveryinfo di,cust.paymentinfo pi where "+ 
+                                                                   " s.CUSTOMER_ID=? and s.type='REG' and s.id=sa.sale_id and pi.salesaction_id=sa.id and "+
+                                                                   " sa.action_type IN ('CRO','MOD') and sa.action_date=(select max_date from cust.sale_cro_mod_date scmd where scmd.sale_id=s.id) and "+ 
+                                                                   " di.salesaction_id=sa.id AND s.status=?  and di.delivery_type <>'C' and pi.payment_method_type=? ) where row_num=1";
+	
+	private final static String GET_NTH_NONCOS_SUB_ORDER_QUERY="select id from ( select s.id,sa.requested_date, row_number() over (order by sa.REQUESTED_DATE DESC) row_num from cust.sale s, cust.salesaction sa, cust.deliveryinfo di,cust.paymentinfo pi where "+ 
+    " s.CUSTOMER_ID=? and s.type='SUB' and s.id=sa.sale_id and pi.salesaction_id=sa.id and "+
+    " sa.action_type IN ('CRO','MOD') and sa.action_date=(select max_date from cust.sale_cro_mod_date scmd where scmd.sale_id=s.id) and "+ 
+    " di.salesaction_id=sa.id AND s.status=?  and di.delivery_type <>'C' and pi.payment_method_type=? ) where row_num=1";
+	
+	public PrimaryKey ejbFindByCriteria(String customerID, EnumSaleType saleType, EnumSaleStatus saleStatus, EnumPaymentMethodType pymtMethodType) throws ObjectNotFoundException, FinderException {
+		Connection conn = null;
+		PreparedStatement ps =null;
+		try {
+			if(null==saleType) {
+				saleType=EnumSaleType.REGULAR;
+			}
+			conn = this.getConnection();
+			if(EnumSaleType.REGULAR.equals(saleType)) {
+			  ps=conn.prepareStatement(GET_NTH_NONCOS_REG_ORDER_QUERY);
+			}
+			else {
+				ps=conn.prepareStatement(GET_NTH_NONCOS_SUB_ORDER_QUERY);
+			}
+			ps.setString(1, customerID);
+			ps.setString(2, saleStatus.getStatusCode());
+			ps.setString(3,pymtMethodType.getName());
+			ResultSet rs = ps.executeQuery();
+			if (!rs.next()) {
+				throw new ObjectNotFoundException(new StringBuffer(100).append("Unable to find ErpSale for customer : " )
+						                                               .append(customerID)
+						                                               .append(" with sale status as ")
+						                                               .append(saleStatus.getStatusCode())
+						                                               .append(" and payment type as ")
+						                                               .append(pymtMethodType.getDescription())
+						                                               .toString());
+			}
+
+			PrimaryKey foundPk = new PrimaryKey(rs.getString(1));
+			rs.close();
+			ps.close();
+
+			return foundPk;
+
+		} catch (SQLException sqle) {
+			throw new FinderException(sqle.getMessage());
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException sqle2) {
+				LOGGER.warn("Error closing connection", sqle2);
+			}
+		}
+	}
+
 }

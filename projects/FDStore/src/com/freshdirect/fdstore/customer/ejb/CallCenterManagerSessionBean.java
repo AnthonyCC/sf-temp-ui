@@ -48,6 +48,7 @@ import com.freshdirect.customer.EnumComplaintStatus;
 import com.freshdirect.customer.EnumComplaintType;
 import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.EnumTransactionType;
 import com.freshdirect.customer.ErpActivityRecord;
@@ -127,7 +128,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			throw new FDResourceException(ce);
 		}
 	}
-	
+
 	public Map getComplaintCodes() throws FDResourceException {
 		try {
 			ErpComplaintManagerSB complaintSB = this.getComplaintManagerHome().create();
@@ -139,15 +140,15 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	private static final String PEN_COMPLAINT_QUERY_1 = "select c.sale_id, c.id as complaint_id, c.amount as complaint_amount, " 
+	private static final String PEN_COMPLAINT_QUERY_1 = "select c.sale_id, c.id as complaint_id, c.amount as complaint_amount, "
 		+ "c.note as complaint_note, c.complaint_type "
 		+ "from cust.complaint c "
 		+ "where c.status = 'PEN' ";
-	
+
 	private static final String PEN_COMPLAINT_FILTER_QUERY = "and exists (select * from cust.complaintline cl where cl.complaint_id=c.id and "
 		+ "complaint_dept_code_id in (select id from cust.complaint_dept_code where comp_code=?))";
 
-	private static final String PEN_COMPLAINT_QUERY_2 = "select s.id, s.status, sa.requested_date, ci.first_name, ci.last_name, ci.email, (select max(amount) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD','INV') "
+	private static final String PEN_COMPLAINT_QUERY_2 = "select s.id, s.status,s.type, sa.requested_date, ci.first_name, ci.last_name, ci.email, (select max(amount) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD','INV') "
 		+ "and action_date = (select max(action_date) from cust.salesaction where action_type in ('CRO','MOD','INV') and sale_id = s.id)) as order_amount "
 		+ "from cust.sale s, cust.salesaction sa, cust.customerinfo ci "
 		+ "where sa.sale_id in ( ? ) and sa.action_type in ('CRO', 'MOD') "
@@ -182,7 +183,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			if (reasonCode!=null && !"".equals(reasonCode)) {
 				ps.setString(1,reasonCode);
 			}
-			
+
 			ResultSet rs = ps.executeQuery();
 			Map infoMap = new HashMap();
 			StringBuffer saleIds = new StringBuffer();
@@ -199,7 +200,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				info.setComplaintAmount(rs.getDouble("COMPLAINT_AMOUNT"));
 				info.setComplaintType(EnumComplaintType.getEnum(NVL.apply(rs.getString("COMPLAINT_TYPE"), "FDC")).getName());
 				info.setComplaintNote(rs.getString("COMPLAINT_NOTE"));
-				
+
 				infoMap.put(saleId, info);
 				idCount++;
 			}
@@ -209,7 +210,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			if (infoMap.isEmpty()) {
 				return Collections.EMPTY_LIST;
 			}
-			
+
 			ps = conn.prepareStatement(this.substitute(PEN_COMPLAINT_QUERY_2, '?', saleIds.toString()));
 			rs = ps.executeQuery();
 
@@ -222,6 +223,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				info.setEmail(rs.getString("EMAIL"));
 				info.setFirstName(rs.getString("FIRST_NAME"));
 				info.setLastName(rs.getString("LAST_NAME"));
+				info.setOrderType(rs.getString("TYPE"));
 			}
 
 			rs.close();
@@ -244,7 +246,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
-	
+
 	public List locateCompanyCustomers(GenericSearchCriteria criteria) throws FDResourceException {
 		Connection conn = null;
 		try {
@@ -262,7 +264,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
-	
+
 	public List orderSummarySearch(GenericSearchCriteria criteria) throws FDResourceException {
 		Connection conn = null;
 		try {
@@ -280,7 +282,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
-	
+
 	private String getComplaintType (int fdcCount, int cshCount){
 		if (fdcCount > 0 && cshCount > 0) {
 			return "MIXED";
@@ -290,19 +292,19 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			return "Store Credit";
 		}
 	}
-	
+
 	private static final String COMPLAINT_REPORT = "select c.amount , c.status, c.created_by, c.approved_by, c.sale_id, ci.first_name, ci.last_name, "
 		+"(select count(1) from cust.complaintline xc where xc.method ='CSH' and xc.complaint_id =c.id) COUNT_CSH, "
-		+"(select count(1) from cust.complaintline yc where yc.method ='FDC' and yc.complaint_id =c.id) COUNT_FDC " 
+		+"(select count(1) from cust.complaintline yc where yc.method ='FDC' and yc.complaint_id =c.id) COUNT_FDC "
 		+"from cust.complaint c, cust.sale s, cust.customerinfo ci "
-		+"where c.sale_id = s.id and s.customer_id = ci.customer_id "; 
-	
+		+"where c.sale_id = s.id and s.customer_id = ci.customer_id ";
+
 	public List runComplaintReport(FDComplaintReportCriteria criteria) throws FDResourceException {
 		if (criteria.isBlank()) {
 			return Collections.EMPTY_LIST;
 		}
 		CriteriaBuilder builder = new CriteriaBuilder();
-		
+
 		Date d = criteria.getStartDate();
 		if(d != null){
 			builder.addSql("c.create_date >= ?", new Object[] { new java.sql.Date(d.getTime())});
@@ -319,7 +321,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		if(!"".equals(value)){
 			builder.addString("c.approved_by", value);
 		}
-		
+
 		Connection conn = null;
 		try{
 			conn = this.getConnection();
@@ -341,12 +343,12 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				info.setFirstName(rs.getString("FIRST_NAME"));
 				info.setLastName(rs.getString("LAST_NAME"));
 				info.setComplaintType(this.getComplaintType(rs.getInt("COUNT_FDC"), rs.getInt("COUNT_CSH")));
-				
+
 				l.add(info);
 			}
-			
+
 			return l;
-			
+
 		} catch (SQLException e){
 			throw new FDResourceException(e);
 		} finally {
@@ -359,9 +361,9 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
-	
+
 	public static String authInfoSearchQuery =
-		"select distinct sa1.sale_id, sa1.requested_date, sa.amount, s.status, sa1.action_date, ci.first_name, ci.last_name, pi.name, p.description, p.auth_code, pi.card_type, p.ccnum_last4, pi.payment_method_type, pi.aba_route_number, pi.bank_account_type "
+		"select distinct sa1.sale_id, sa1.requested_date, sa.amount, s.status, s.type, sa1.action_date, ci.first_name, ci.last_name, pi.name, p.description, p.auth_code, pi.card_type, p.ccnum_last4, pi.payment_method_type, pi.aba_route_number, pi.bank_account_type "
 		+"from (select sale_id, amount from cust.salesaction where "
 		+"action_date >= to_date(?) - 10 "
 		+"and action_date < to_date(?) + 10 "
@@ -369,29 +371,29 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		+"cust.salesaction sa1, cust.salesaction sa2, cust.paymentinfo pi, cust.sale s, cust.customerinfo ci, cust.payment p "
 		+"where sa.sale_id = sa1.sale_id and sa.sale_id = sa2.sale_id and sa.sale_id = s.id and ci.customer_id = s.customer_id and sa1.action_type in ('CRO', 'MOD') and sa2.action_type = 'AUT' and  p.salesaction_id = sa2.id "
 		+"and sa1.id = pi.salesaction_id and pi.account_number like ?";
-		
+
 	public List runAuthInfoSearch(FDAuthInfoSearchCriteria criteria) throws FDResourceException {
 		if(criteria.isBlank()){
 			return Collections.EMPTY_LIST;
 		}
-		
+
 		Connection conn = null;
 		try{
 			conn = this.getConnection();
 			String sql = authInfoSearchQuery;
 			if (criteria.getCardType() != null) {
-				sql += " and pi.card_type = ?"; 
+				sql += " and pi.card_type = ?";
 			}
 			if (criteria.getPaymentMethodType() != null) {
-				sql += " and pi.payment_method_type = ?"; 
+				sql += " and pi.payment_method_type = ?";
 			}
 			if (criteria.getAbaRouteNumber() != null) {
-				sql += " and pi.aba_route_number = ?"; 
+				sql += " and pi.aba_route_number = ?";
 			}
 			if (criteria.getBankAccountType() != null) {
-				sql += " and pi.bank_account_type = ?"; 
+				sql += " and pi.bank_account_type = ?";
 			}
-				 
+
 			PreparedStatement ps = conn.prepareStatement(sql);
 			int index = 1;
 			ps.setDate(index++, new java.sql.Date(criteria.getTransactionDate().getTime()));
@@ -429,11 +431,12 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				info.setPaymentMethodType(EnumPaymentMethodType.getEnum(rs.getString("PAYMENT_METHOD_TYPE")));
 				info.setAbaRouteNumber(rs.getString("ABA_ROUTE_NUMBER"));
 				info.setBankAccountType(EnumBankAccountType.getEnum(rs.getString("BANK_ACCOUNT_TYPE")));
+				info.setOrderType(rs.getString("TYPE"));
 				l.add(info);
 			}
-			
+
 			return l;
-			
+
 		} catch (SQLException e){
 			throw new FDResourceException(e);
 		} finally {
@@ -493,16 +496,16 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		model.setStatus(EnumDlvPassStatus.PASS_RETURNED);
 		dlvPassManagerSB.cancel(model);
 		//Create a activity log to track the delivery credits.
-		ErpActivityRecord activityRecord = createActivity(EnumAccountActivityType.CANCEL_DLV_PASS, 
-															"SYSTEM", 
-															DlvPassConstants.CANCEL_NOTE, 
+		ErpActivityRecord activityRecord = createActivity(EnumAccountActivityType.CANCEL_DLV_PASS,
+															"SYSTEM",
+															DlvPassConstants.CANCEL_NOTE,
 															model,
 															saleId,
 															EnumDlvPassExtendReason.OTHER.getName());
 		logActivity(activityRecord);
-		
+
 	}
-	
+
 	private void handleDeliveryPass(String saleId, ErpReturnOrderModel returnOrder) throws FDResourceException, CreateException, RemoteException {
 		boolean isDlvChargeWaived = false;
 		List charges = returnOrder.getCharges();
@@ -520,10 +523,10 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		/*
 		 * Check if delivery charge has been waived by CSR due to FD's Fault or
 		 * If restocking fee was not applied to the order.
-		 * If either one of them is true and if delivery pass was applied then 
+		 * If either one of them is true and if delivery pass was applied then
 		 * credit the delivery back to the pass.
 		 */
-		if(isDlvChargeWaived || !returnOrder.isRestockingApplied()){ 
+		if(isDlvChargeWaived || !returnOrder.isRestockingApplied()){
 			//Get the delivery pass id.
 			String dlvPassId = returnOrder.getDeliveryPassId();
 			DlvPassManagerSB dlvPassManagerSB = this.getDlvPassManagerHome().create();
@@ -531,18 +534,18 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			DeliveryPassModel passModel = dlvPassManagerSB.getDeliveryPassInfo(dlvPassId);
 			//Increment the pass by 1 if BSGS pass. For Unlimited it will handled on a case by case basis.
 			if(!(passModel.getType().isUnlimited())){
-				dlvPassManagerSB.creditDelivery(passModel, 1);	
+				dlvPassManagerSB.creditDelivery(passModel, 1);
 				//Create a activity log to track the delivery credits.
-				ErpActivityRecord activityRecord = createActivity(EnumAccountActivityType.CREDIT_DLV_PASS, 
-																	"SYSTEM", 
-																	DlvPassConstants.RETURN_NOTE, 
+				ErpActivityRecord activityRecord = createActivity(EnumAccountActivityType.CREDIT_DLV_PASS,
+																	"SYSTEM",
+																	DlvPassConstants.RETURN_NOTE,
 																	passModel,
 																	saleId,
 																	EnumDlvPassExtendReason.OTHER.getName());
 				logActivity(activityRecord);
-				
+
 			}
-			
+
 		}
 	}
 
@@ -551,17 +554,17 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
 			sb.approveReturn(saleId, returnOrder);
 			/*
-			 * Check if the return order contains a delivery pass. if yes cancel the 
-			 * delivery pass. 
+			 * Check if the return order contains a delivery pass. if yes cancel the
+			 * delivery pass.
 			 */
 			if(returnOrder.isContainsDeliveryPass()){
 				returnDeliveryPass(saleId);
 			}else if(returnOrder.isDlvPassApplied()){
 				//Delivery pass was applied.
-				handleDeliveryPass(saleId,returnOrder);	
+				handleDeliveryPass(saleId,returnOrder);
 			}
-			
-			
+
+
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
@@ -614,13 +617,13 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			CriteriaBuilder builder = new CriteriaBuilder();
 			builder.addInString("s.status", status);
 			PreparedStatement ps = conn.prepareStatement(orderByStatusQuery + " and " +builder.getCriteria());
-			
+
 			Object[] par = builder.getParams();
 			for (int i = 0; i < par.length; i++) {
 				ps.setObject(i + 1, par[i]);
 			}
 			ResultSet rs = ps.executeQuery();
-			
+
 			processOrderQueryResults(rs, retval);
 			rs.close();
 			ps.close();
@@ -638,14 +641,16 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
-	private static final String NSM_ORDERS_QUERY = 
-		"select /*use_nl(s, sa)*/ s.id as sale_id, s.status, sa.requested_date, sa.amount, sa.action_date, ci.last_name, ci.first_name " 
+	private static final String NSM_ORDERS_QUERY =
+		"select /*use_nl(s, sa)*/ s.id as sale_id, s.status, sa.requested_date, sa.amount, sa.action_date, ci.last_name, ci.first_name "
 			+ "from cust.sale s, cust.sale_cro_mod_date scm, cust.salesaction sa, cust.customerinfo ci "
 			+ "where sa.action_date <= (sysdate - 1/48) and s.id = scm.sale_id "
+			//+ "and s.type = 'REG' "
 			+ "and scm.sale_id = sa.sale_id and scm.max_date = sa.action_date "
 			+ "and s.customer_id = ci.customer_id and s.status in ('NSM', 'MOD', 'MOC', 'NEW') "
-			+ "and sa.requested_date >= sysdate order by action_date ";
-	
+			//+ "and sa.requested_date >= sysdate order by action_date ";
+						+"AND ((sa.requested_date >= SYSDATE) OR (s.TYPE='SUB' AND sa.requested_date<=(SYSDATE))) ORDER BY action_date ";
+
 	public List getNSMOrders() throws FDResourceException {
 		Connection conn = null;
 		try {
@@ -666,7 +671,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			}
 			rs.close();
 			ps.close();
-			
+
 			return lst;
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage());
@@ -681,12 +686,12 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
-	
+
 	private static final String NSM_CUST_QUERY = "select c.id, c.user_id, ci.first_name, ci.last_name "
 		+ "from cust.customer c, cust.customerinfo ci "
-		+ "where c.sap_id is null and c.id = ci.customer_id " 
+		+ "where c.sap_id is null and c.id = ci.customer_id "
 		+ "order by c.id";
-	
+
 	public List getNSMCustomers() throws FDResourceException {
 		Connection conn = null;
 		try {
@@ -704,7 +709,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			}
 			rs.close();
 			ps.close();
-			
+
 			return lst;
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage());
@@ -742,6 +747,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 	private final static String signupPromoAVSQuery = "select s.id as sale_id, sa.requested_date, s.status, sa.amount, ci.last_name, ci.first_name, c.id as erp_id, fdc.id as fd_id, ci.email, ci.home_phone, ci.business_phone, ci.cell_phone "
 		+ "from cust.sale s, cust.salesaction sa, cust.customer c, cust.customerinfo ci, cust.fdcustomer fdc "
 		+ "where s.id=sa.sale_id and s.customer_id=c.id and c.id=ci.customer_id and fdc.erp_customer_id=c.id "
+		+ "and s.type = 'REG' "
 		+ "and sa.requested_date > trunc(SYSDATE) and s.status='AVE' and sa.promotion_campaign='SIGNUP' and sa.action_type in ('CRO','MOD') "
 		+ "and sa.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD'))";
 
@@ -860,10 +866,10 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public void resubmitOrder(String saleId, CustomerRatingI cra) throws FDResourceException, ErpTransactionException {
+	public void resubmitOrder(String saleId, CustomerRatingI cra,EnumSaleType saleType) throws FDResourceException, ErpTransactionException {
 		try {
 			ErpCustomerManagerSB customerManagerSB = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
-			customerManagerSB.resubmitOrder(saleId, cra);
+			customerManagerSB.resubmitOrder(saleId, cra,saleType);
 
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
@@ -988,7 +994,8 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 
 	private static final String CUTOFF_REPORT_QUERY = "select s.status, di.cutofftime, count(*) as order_count "
 		+ "from cust.sale s, cust.salesaction sa, cust.deliveryinfo di "
-		+ "where s.id=sa.sale_id and sa.id=di.salesaction_id and sa.action_type in ('CRO','MOD') and sa.requested_date=? "
+		+ "where s.id=sa.sale_id and sa.id=di.salesaction_id and s.type<>'SUB' and sa.action_type in ('CRO','MOD') and sa.requested_date=? "
+		+ "and s.type = 'REG' "
 		+ "and sa.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD')) "
 		+ "and di.starttime > ? and di.starttime < ? "
 		+ "group by s.status, di.cutofftime "
@@ -1035,14 +1042,14 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			deliveryDate = DateUtil.truncate(deliveryDate);
 			Calendar cutoffDate = DateUtil.toCalendar(deliveryDate);
 			cutoffDate.add(Calendar.DATE, -1);
-						
+
 			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
 			/*
 			LOGGER.debug("Getting cutoff times for " + new SimpleDateFormat().format(cutoffDate.getTime()));
 			List cutoffTimes = this.getCutoffTimeForDate(cutoffDate.getTime());
 			Collections.sort(cutoffTimes);
 			TimeOfDay cutoff = null;
-			
+
 			for(Iterator cIter = cutoffTimes.iterator(); cIter.hasNext();){
 				Date c = (Date)cIter.next();
 
@@ -1051,16 +1058,16 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 					break;
 				}
 			}*/
-			
+
 			List cReport = getCutoffTimeReport(deliveryDate);
 			StringBuffer buff = new StringBuffer();
 			String br = "\n";
-			
+
 			buff.append("Cutoff Time Report for ").append(dateFormatter.format(deliveryDate)).append(br);
 			buff.append(br);
 			buff.append("Cutoff Time").append("\t\t\t").append("Order Count").append("\t\t").append("Sale Status").append(br);
 			buff.append("----------------------------------------------------------------------------------").append(br);
-			
+
 			for(Iterator i = cReport.iterator(); i.hasNext();){
 				FDCutoffTimeInfo info = (FDCutoffTimeInfo) i.next();
 				//if(info.getCutoffTime().equals(deliveryDate)){
@@ -1068,19 +1075,19 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 
 				//}
 			}
-			
+
 			buff.append("----------------------------------------------------------------------------------");
-			
+
 			ErpMailSender mailer = new ErpMailSender();
-			mailer.sendMail(ErpServicesProperties.getSapMailFrom(), 
-							ErpServicesProperties.getSapMailTo(), 
-							ErpServicesProperties.getSapMailCC(), 
+			mailer.sendMail(ErpServicesProperties.getSapMailFrom(),
+							ErpServicesProperties.getSapMailTo(),
+							ErpServicesProperties.getSapMailCC(),
 							"Cutoff Report For " + dateFormatter.format(deliveryDate), buff.toString());
-			
+
 		} catch (MessagingException e) {
 			LOGGER.warn("Error Sending cutoff time report: ", e);
 		}
-	}	
+	}
 
 	public List getSubjectReport(Date day1, Date day2, boolean showAutoCases) throws FDResourceException {
 		String sql = "select cq.name as queue, cs.name as subject, count(*) as caseCount"
@@ -1094,7 +1101,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			+ (!showAutoCases ? " AND c.CASE_ORIGIN NOT IN ('" + CrmCaseOrigin.CODE_SYS + "')" : "")
 			+ " group by  cq.name, cs.name"
 			+ " order by  cq.name, cs.name";
-		
+
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
@@ -1103,7 +1110,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			ps.setTimestamp(3, new Timestamp(day1.getTime()));
 			ps.setTimestamp(2, new Timestamp(day2.getTime()));
 			ps.setTimestamp(4, new Timestamp(day2.getTime()));
-			
+
 			ResultSet rs = ps.executeQuery();
 			List rpt = new ArrayList();
 
@@ -1133,6 +1140,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		+ " (select decode(count(*),2,'X',3,'X',4,'X',NULL) from cust.sale where customer_id=s.customer_id and status<>'CAN') as undeclared"
 		+ " from cust.case c, cust.sale s, cust.salesaction sa, cust.deliveryinfo di"
 		+ " where c.sale_id=s.id and s.id=sa.sale_id and sa.id=di.salesaction_id"
+		+ " and s.type = 'REG' "
 		+ " and sa.requested_date= ? and sa.action_type in ('CRO','MOD') and s.status <> 'CAN'"
 		+ " and sa.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD'))"
 		+ " and c.case_subject in ('LDQ-005','LDQ-006','LDQ-007')"
@@ -1142,6 +1150,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		+ " (select decode(count(*),2,'X',3,'X',4,'X',NULL) from cust.sale where customer_id=s.customer_id and status<>'CAN') as undeclared"
 		+ " from cust.complaint_dept_code cdc, cust.complaintline cl, cust.complaint c, cust.sale s, cust.salesaction sa, cust.deliveryinfo di"
 		+ " where cdc.id=cl.complaint_dept_code_id and cl.complaint_id=c.id and c.sale_id=s.id and s.id=sa.sale_id and sa.id=di.salesaction_id"
+		+ " and s.type = 'REG' "
 		+ " and sa.requested_date=? and sa.action_type in ('CRO','MOD') and s.status <> 'CAN'"
 		+ " and sa.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD'))"
 		+ " and cdc.comp_code='LATEDEL' and cdc.comp_dept='TRN'"
@@ -1197,7 +1206,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		+ " select s.wave_number, s.truck_number, s.stop_sequence, s.id as order_number, di.first_name, di.last_name, di.phone, di.phone_ext,"
 		+ " ci.email, decode(ci.email_plain_text, 'X', 'TEXT', 'HTML') as email_format_type"
 		+ " from cust.sale s, cust.salesaction sa, cust.deliveryinfo di, cust.customerinfo ci"
-		+ " where s.id=sa.sale_id and sa.id=di.salesaction_id and s.customer_id=ci.customer_id and sa.requested_date=?";
+		+ " where s.id=sa.sale_id and s.type ='REG' and sa.id=di.salesaction_id and s.customer_id=ci.customer_id and sa.requested_date=?";
 
 	private String finalRouteStopQuery;
 
@@ -1232,7 +1241,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			if ((stop1 != null && !"".equals(stop1)) || (stop2 != null && !"".equals(stop2))) {
 				finalRouteStopQuery += ROUTE_STOP_QRY_WHERE_STOP;
 			}
-			
+
 			finalRouteStopQuery += ROUTE_STOP_QRY_END;
 
 			PreparedStatement ps = conn.prepareStatement(finalRouteStopQuery);
@@ -1345,31 +1354,31 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		}
 
 	}
-	
-	private static final String SETTLEMENT_PROBLEM_QUERY = 
+
+	private static final String SETTLEMENT_PROBLEM_QUERY =
 		"SELECT s1.id, s1.status, sa1.amount, sa1.action_type, sa1.action_date AS failure_date,"
 		+ " ci.first_name || ' ' || ci.last_name AS customer_name, p.payment_method_type,"
 			+ " ("
-			+ "	SELECT di.starttime " 
+			+ "	SELECT di.starttime "
 				+ " FROM cust.DELIVERYINFO di, cust.SALESACTION sa2, cust.SALE s2"
 				+ " WHERE di.SALESACTION_ID = sa2.ID"
 				+ " AND sa2.sale_id = s2.id"
 				+ " AND s2.id = s1.id"
 				+ " AND sa2.ACTION_TYPE IN ('CRO', 'MOD')"
 				+ " AND sa2.action_date = ("
-									+ " SELECT MAX(sa3.action_date)" 
-									+ " FROM cust.SALESACTION sa3" 
+									+ " SELECT MAX(sa3.action_date)"
+									+ " FROM cust.SALESACTION sa3"
 									+ " WHERE sa3.sale_id=s1.id AND sa3.action_type IN ('CRO','MOD')"
-									+ " )" 
+									+ " )"
 			+ " ) AS delivery_date"
-		+ " FROM  CUST.SALE s1, CUST.SALESACTION sa1, cust.CUSTOMERINFO ci, cust.PAYMENT p" 
-		+ " WHERE sa1.sale_id=s1.id" 
+		+ " FROM  CUST.SALE s1, CUST.SALESACTION sa1, cust.CUSTOMERINFO ci, cust.PAYMENT p"
+		+ " WHERE sa1.sale_id=s1.id"
 		+ " AND s1.customer_id = ci.customer_id"
 		+ " AND sa1.id = p.salesaction_id"
 		+ "	AND  sa1.action_type = ?"
 		+ " AND sa1.action_date = (SELECT MAX(sa4.action_date) FROM CUST.SALESACTION sa4 WHERE sa4.sale_id=s1.id AND sa4.action_type = ?)"
 		+ " AND  s1.status = ?";
-		
+
 	public List getSettlementProblemReport(String[] statusCodes, String[] transactionTypes, Date failureStartDate, Date failureEndDate) throws FDResourceException {
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -1378,7 +1387,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		try {
 			StringBuffer sb = new StringBuffer();
 			for (int i = 0; i < statusCodes.length && i < transactionTypes.length; i++) {
-				if (i != 0) {					
+				if (i != 0) {
 					sb.append(" UNION ");
 				}
 				sb.append(SETTLEMENT_PROBLEM_QUERY);
@@ -1387,11 +1396,11 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				}
 				if (failureEndDate != null) {
 					sb.append(" AND sa1.action_date <= ?");
-				}				
+				}
 			}
 			sb.append(" ORDER BY failure_date");
 			System.err.println("SALE_STATUS_OR_LAST_ACTION_TYPE_QUERY sql = " + sb.toString());
-			
+
 			conn = this.getConnection();
 			ps = conn.prepareStatement(sb.toString());
 
@@ -1407,17 +1416,17 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 					ps.setDate(index++, new java.sql.Date(DateUtil.truncate(failureEndDate).getTime()));
 				}
 			}
-						
+
 			rs = ps.executeQuery();
 
 			List lst = new ArrayList();
 			while (rs.next()) {
 				CrmSettlementProblemReportLine rl = new CrmSettlementProblemReportLine(
-																			rs.getString("ID"), 
-																			rs.getString("CUSTOMER_NAME"), 
+																			rs.getString("ID"),
+																			rs.getString("CUSTOMER_NAME"),
 																			rs.getDouble("AMOUNT"),
-																			rs.getDate("DELIVERY_DATE"), 
-																			rs.getDate("FAILURE_DATE"), 
+																			rs.getDate("DELIVERY_DATE"),
+																			rs.getDate("FAILURE_DATE"),
 																			EnumSaleStatus.getSaleStatus(rs.getString("STATUS")),
 																			EnumTransactionType.getTransactionType(rs.getString("ACTION_TYPE")),
 																			EnumPaymentMethodType.getEnum(rs.getString("PAYMENT_METHOD_TYPE"))
@@ -1442,14 +1451,14 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			} catch (SQLException e) {
 				LOGGER.warn("error while cleanup", e);
 			}
-		}		
+		}
 	}
-	
+
 	public List getMakeGoodOrder(Date date) throws FDResourceException {
 		if(date == null){
 			return Collections.EMPTY_LIST;
 		}
-		
+
 		Connection conn = null;
 		try{
 			conn = this.getConnection();
@@ -1459,6 +1468,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				+ "and action_type in ('CRO','MOD') "
 				+ "and action_date=(select max(action_date) from cust.salesaction where sale_id=sa.sale_id and action_type in ('CRO','MOD')) "
 				+ "and sa.sale_id = s.id "
+				+ "and s.type = 'REG' "
 				+ "and s.customer_id=ci.customer_id "
 				+ "and pi.salesaction_id=sa.id "
 				+ "and pi.on_fd_account='M'"
@@ -1479,9 +1489,9 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				info.setStop(rs.getString("STOP"));
 				l.add(info);
 			}
-			
+
 			return l;
-			
+
 		} catch (SQLException e){
 			throw new FDResourceException(e);
 		} finally {
@@ -1544,19 +1554,19 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
         }
     }
 
-	private ErpActivityRecord createActivity(EnumAccountActivityType type, 
-			String initiator, 
-			String note, 
-			DeliveryPassModel model, 
-			String saleId, 
+	private ErpActivityRecord createActivity(EnumAccountActivityType type,
+			String initiator,
+			String note,
+			DeliveryPassModel model,
+			String saleId,
 			String reasonCode) {
 			ErpActivityRecord rec = new ErpActivityRecord();
 			rec.setActivityType(type);
-			
+
 			rec.setSource(EnumTransactionSource.SYSTEM);
 			rec.setInitiator(initiator);
 			rec.setCustomerId(model.getCustomerId());
-			
+
 			StringBuffer sb = new StringBuffer();
 			if (note != null) {
 			sb.append(note);
@@ -1571,7 +1581,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 	private void logActivity(ErpActivityRecord record) {
 		new ErpLogActivityCommand(LOCATOR, record).execute();
 	}
-	
+
 	public List doGenericSearch(GenericSearchCriteria criteria) throws FDResourceException {
 		Connection conn = null;
 		try {
@@ -1590,16 +1600,16 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	
+
 	public int cancelReservations(GenericSearchCriteria resvCriteria, String initiator, String notes) throws FDResourceException{
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			/*
 			 * Get the reservations for the given search criteria for
-			 * logging into the activity log after deleting the reservations. 
-			 */ 
- 
+			 * logging into the activity log after deleting the reservations.
+			 */
+
 			List reservations = doGenericSearch(resvCriteria);
 			//cancel reservations for the given criteria.
 			int updateCount = DlvManagerDAO.cancelReservations(conn, resvCriteria);
@@ -1638,7 +1648,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
-	
+
 	public Map returnOrders(FDActionInfo info, List customerOrders) throws FDResourceException{
 			List successOrders = new ArrayList();
 			List failureOrders = new ArrayList();
@@ -1662,7 +1672,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 						//Set it to actionInfo object to write to the activity log.
 						info.setIdentity(identity);
 						ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.MASS_RETURN);
-						this.logActivity(rec);						
+						this.logActivity(rec);
 					}catch(FDResourceException fe){
 						fe.printStackTrace();
 						LOGGER.error("System Error occurred while processing Sale ID : "+saleId+"\n"+fe.getMessage());
@@ -1678,7 +1688,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			} catch (CreateException ce) {
 				throw new FDResourceException(ce);
 			}
-				
+
 			Map results = new HashMap();
 			results.put("SUCCESS_ORDERS", successOrders);
 			results.put("FAILURE_ORDERS", failureOrders);
@@ -1701,7 +1711,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				//Return order contains a delivery pass.
 				containsDeliveryPass = true;
 			}
-			
+
 		}
 		List charges = new ArrayList();
 		for(Iterator i = order.getCharges().iterator(); i.hasNext(); ){
@@ -1731,7 +1741,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		returnModel.setRestockingApplied(false);
 		return returnModel;
 	}
-	
+
 
 	public int fixSettlemnentBatch(String batch_id) throws FDResourceException {
 		Connection conn = null;
@@ -1752,6 +1762,6 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	
-	
+
+
 }

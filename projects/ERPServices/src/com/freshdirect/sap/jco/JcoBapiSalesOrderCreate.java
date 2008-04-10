@@ -20,7 +20,10 @@ import com.sap.mw.jco.JCO;
 class JcoBapiSalesOrderCreate extends JcoBapiOrder implements BapiSalesOrderCreate {
 
 	public JcoBapiSalesOrderCreate() {
-		super("ZBAPI_SALESORDER_CREATEFROMDAT");
+			super("ZBAPI_SALESORDER_CREATEFROMDAT");
+	}
+	public JcoBapiSalesOrderCreate(String functionName ) {
+		super(functionName);
 	}
 
 	public void setOrderHeaderIn(OrderHeaderIn hdr) {
@@ -94,5 +97,10 @@ class JcoBapiSalesOrderCreate extends JcoBapiOrder implements BapiSalesOrderCrea
 	public String getSalesDocument() {
 		return function.getExportParameterList().getString("SALESDOCUMENT");
 	}
+	
+	public String getInvoiceNumber() {
+		return function.getExportParameterList().getString("INVOICE");
+	}
+
 
 }

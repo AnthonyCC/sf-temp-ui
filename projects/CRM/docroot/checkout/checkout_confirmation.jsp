@@ -57,7 +57,9 @@
 <div class="content_scroll" style="height: 72%;">
 <%	boolean showPaymentButtons = false;
 	boolean showAddressButtons = false;
-	boolean showDeleteButtons = false; %>
+	boolean showDeleteButtons = false; 
+    boolean displayDeliveryInfo = true;    
+%>
 	
 <%@ include file="/includes/i_order_dlv_payment.jspf"%>
 <hr class="gray1px">

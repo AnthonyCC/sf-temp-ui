@@ -25,4 +25,7 @@ public class DlvPassConstants {
 	public static final String AUTORENEW_DP_TYPE="AutoRenewDPType";
 	public static final String AUTORENEW_DP_PRICE="AutoRenewDPPrice";
 	public static final String UNLIMITED="Unlimited";
+	public final static String AUTORENEW_PYMT_METHOD_INVALID="Default payment method invalid";
+	public final static String AUTORENEW_PYMT_METHOD_UNKNOWN="Default payment method unknown";
+
 }

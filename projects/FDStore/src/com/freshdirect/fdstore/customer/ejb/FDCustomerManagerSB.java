@@ -9,6 +9,7 @@
 package com.freshdirect.fdstore.customer.ejb;
 
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -23,6 +24,8 @@ import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.CustomerRatingI;
+import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAuthorizationException;
@@ -36,11 +39,14 @@ import com.freshdirect.customer.ErpDuplicateAddressException;
 import com.freshdirect.customer.ErpDuplicatePaymentMethodException;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpFraudException;
+import com.freshdirect.customer.ErpInvoiceModel;
 import com.freshdirect.customer.ErpModifyOrderModel;
 import com.freshdirect.customer.ErpOrderHistory;
 import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPromotionHistory;
+import com.freshdirect.customer.ErpSaleNotFoundException;
+import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.delivery.EnumReservationType;
@@ -339,7 +345,30 @@ public interface FDCustomerManagerSB extends EJBObject {
 		ErpTransactionException,
 		DeliveryPassException,
 		RemoteException;
-    
+
+    /**
+     * Modify an auto renew order (modify, don't send msg to SAP).
+     *
+     * @param identity the customer's identity reference
+     * @throws FDResourceException if an error occured while accessing remote resources
+     */
+    public void modifyAutoRenewOrder(
+		FDIdentity identity,
+		String saleId,
+		ErpModifyOrderModel order,
+		Set usedPromotionCodes,
+		String oldReservationId,
+		boolean sendEmail,
+		CustomerRatingI cra,
+		CrmAgentRole agentRole,
+		EnumDlvPassStatus status)
+		throws FDResourceException,
+		ErpFraudException,
+		ErpAuthorizationException,
+		ErpTransactionException,
+		DeliveryPassException,
+		RemoteException;
+
     /**
      * Charge an order (modify & send msg to SAP).
      *
@@ -501,7 +530,37 @@ public interface FDCustomerManagerSB extends EJBObject {
 	
 	public String hasAutoRenewDP(String customerPK) throws FDResourceException, RemoteException;
 	
-	public void flipAutoRenewDP(String customerPK, EnumTransactionSource source, String initiator)throws FDResourceException, RemoteException;
+	public void setHasAutoRenewDP(String customerPK, EnumTransactionSource source, String initiator,boolean autoRenew)throws FDResourceException, RemoteException;
+	
+	public FDOrderI getLastNonCOSOrderUsingCC(String customerID,EnumSaleType saleType, EnumSaleStatus saleStatus) throws FDResourceException, RemoteException,ErpSaleNotFoundException;
+	
+	/**
+     * Place an order (send msg to SAP, persist order).
+
+     *
+     * @param identity the customer's identity reference
+     * @return String sale id
+     * @throws FDResourceException if an error occured while accessing remote resources
+     */
+	public String placeSubscriptionOrder( FDIdentity identity,
+		                      ErpCreateOrderModel createOrder,
+		                      Set usedPromotionCodes,
+		                      String rsvId,
+		                      boolean sendEmail,
+		                      CustomerRatingI cra,
+		                      CrmAgentRole agentRole,
+		                      EnumDlvPassStatus status
+		                    ) throws FDResourceException,
+		                             ErpFraudException,
+		                             //ReservationException,
+		                             DeliveryPassException,
+		                             RemoteException;	
+
+	public void addAndReconcileInvoice(String saleId, ErpInvoiceModel invoice, ErpShippingInfo shippingInfo)
+	throws ErpTransactionException, RemoteException;
+	
+	public void authorizeSale(String erpCustomerID, String saleID, EnumSaleType type,CustomerRatingI cra) throws FDResourceException, ErpSaleNotFoundException, RemoteException;
+	public  Object[] getAutoRenewalInfo()throws FDResourceException, RemoteException;
 
 	public boolean isOrderBelongsToUser(FDIdentity identity, String saleId) throws RemoteException, FDResourceException;
 	/**
@@ -510,6 +569,9 @@ public interface FDCustomerManagerSB extends EJBObject {
      * @param identity the customer's identity reference
      */
     public OrderHistoryI getWebOrderHistoryInfo(FDIdentity identity) throws FDResourceException, RemoteException;
+        
+    public  String getAutoRenewSKU(String customerPK)throws FDResourceException, RemoteException;
     
+    public ErpAddressModel getLastOrderAddress(String lastOrderId) throws FDResourceException, RemoteException, SQLException; 
 }
  

@@ -7,6 +7,8 @@ import javax.servlet.jsp.JspException;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.fdstore.CallCenterServices;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.framework.webapp.ActionError;
@@ -63,9 +65,10 @@ public class CrmResubmitOrderControllerTag extends AbstractControllerTag {
 		//
 		try {
 			FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+			FDOrderI order = FDCustomerManager.getOrder(this.orderId);
 			CustomerRatingAdaptor cra = new CustomerRatingAdaptor(user.getFDCustomer().getProfile(), user.isCorporateUser(), user
 				.getAdjustedValidOrderCount());
-			CallCenterServices.resubmitOrder(this.orderId, cra);
+			CallCenterServices.resubmitOrder(this.orderId, cra,order.getOrderType());
 
 		} catch (FDResourceException ex) {
 			throw new JspException(ex.getMessage());

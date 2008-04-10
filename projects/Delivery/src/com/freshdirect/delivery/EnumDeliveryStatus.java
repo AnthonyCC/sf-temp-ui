@@ -11,6 +11,7 @@ public class EnumDeliveryStatus extends Enum {
 	public static final EnumDeliveryStatus DELIVER = new EnumDeliveryStatus("Deliver");
 	public static final EnumDeliveryStatus DONOT_DELIVER = new EnumDeliveryStatus("Donot Deliver");
 	public static final EnumDeliveryStatus PARTIALLY_DELIVER = new EnumDeliveryStatus("Partially Deliver");
+	public static final EnumDeliveryStatus RARELY_DELIVER = new EnumDeliveryStatus("Rarely Deliver");
 
 	private EnumDeliveryStatus(String name) {
 		super(name);

@@ -23,6 +23,8 @@ import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.DlvSaleInfo;
 import com.freshdirect.customer.EnumPaymentResponse;
+import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAdjustmentModel;
 import com.freshdirect.customer.ErpComplaintException;
@@ -83,7 +85,10 @@ public interface ErpCustomerManagerSB extends EJBObject {
 		Set usedPromotionCodes,
 		CustomerRatingI rating,
 		CrmAgentRole agentRole,
-		String dlvPassId) throws ErpFraudException, RemoteException;
+		String dlvPassId,
+		EnumSaleType saleType) throws ErpFraudException, RemoteException;
+
+    
     
     /**
      * Resubmit a failed ("not submitted") order to SAP.
@@ -92,7 +97,7 @@ public interface ErpCustomerManagerSB extends EJBObject {
      * @param saleId
      * @throws ErpTransactionException if the order is not in the NOT_SUBMITTED STATE
      */
-    public void resubmitOrder(String saleId,CustomerRatingI cra) throws ErpTransactionException, RemoteException;
+    public void resubmitOrder(String saleId,CustomerRatingI cra,EnumSaleType saleType) throws ErpTransactionException, RemoteException;
     
     /**
      * Cancels a sale, enqueues request in SAP.
@@ -254,4 +259,10 @@ public interface ErpCustomerManagerSB extends EJBObject {
      * @return collection of ErpSaleInfo objects
      */
     public OrderHistoryI getWebOrderHistoryInfo(PrimaryKey erpCustomerPk) throws RemoteException;
+    
+	public ErpSaleModel getLastNonCOSOrder(String customerID, EnumSaleType saleType, EnumSaleStatus saleStatus, EnumPaymentMethodType paymentType) throws ErpSaleNotFoundException, RemoteException; 
+    
+    public void cutOffSale(String saleId) throws ErpSaleNotFoundException, RemoteException;
+    
+    public void sendCreateOrderToSAP(String erpCustomerID, String saleID,EnumSaleType saleType, CustomerRatingI rating) throws RemoteException, ErpSaleNotFoundException;
 }

@@ -24,6 +24,7 @@ import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.customer.DlvSaleInfo;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpSaleInfo;
 import com.freshdirect.customer.ErpTruckInfo;
@@ -65,8 +66,8 @@ public class ErpSaleInfoDAO {
 		+ "and s.id=del.id order by to_number(s.id) desc";
 	*/
 	//New query using Customer_id index in SALESACTION table. As part of PERF-27 task.
-	private static final String QUERY_ORDER_HISTORY = "select cre.customer_id, cre.id, cre.dlv_pass_id, del.requested_date, cre.status, sac.amount, del.payment_method_type,  cre.action_date as create_date, cre.source as create_source, cre.initiator as create_by, del.action_date as mod_date,  del.source as mod_source, del.initiator as mod_by, del.starttime, del.endtime, del.cutofftime, del.delivery_type,  NVL(app.amount, 0) as credit_approved, NVL(pen.amount, 0) as credit_pending, del.zone"
-		+ " from   (select  s.customer_id, s.id, s.status, s.dlv_pass_id, "
+	private static final String QUERY_ORDER_HISTORY = "select cre.customer_id, cre.id, cre.dlv_pass_id,cre.type, del.requested_date, cre.status, sac.amount, del.payment_method_type,  cre.action_date as create_date, cre.source as create_source, cre.initiator as create_by, del.action_date as mod_date,  del.source as mod_source, del.initiator as mod_by, del.starttime, del.endtime, del.cutofftime, del.delivery_type,  NVL(app.amount, 0) as credit_approved, NVL(pen.amount, 0) as credit_pending, del.zone"
+		+ " from   (select  s.customer_id, s.id, s.status, s.dlv_pass_id,s.type,"
 		+ " sa.action_date, sa.source, sa.initiator"
 		+ "         from   cust.sale s, cust.salesaction sa"
 		+ "         where  sale_id = s.id"
@@ -164,7 +165,8 @@ public class ErpSaleInfoDAO {
 					rs.getDouble("CREDIT_APPROVED"),
 					rs.getString("ZONE"),
 					EnumPaymentMethodType.getEnum(rs.getString("PAYMENT_METHOD_TYPE")),
-					rs.getString("DLV_PASS_ID")
+					rs.getString("DLV_PASS_ID"),
+					EnumSaleType.getSaleType(rs.getString("TYPE"))
 					));
 		}
 		rs.close();
@@ -174,7 +176,7 @@ public class ErpSaleInfoDAO {
 	}
 	
 	private static final String ORDERS_BY_DLV_PASS =
-		"select s.customer_id,s.id, s.dlv_pass_id,del.requested_date, s.status, del.payment_method_type, sa.action_date as create_date, sa.source as create_source, sa.initiator as create_by, "
+		"select s.customer_id,s.id, s.dlv_pass_id,del.requested_date, s.status,s.type, del.payment_method_type, sa.action_date as create_date, sa.source as create_source, sa.initiator as create_by, "
 		+ "del.action_date as mod_date, del.source as mod_source, del.initiator as mod_by, del.starttime, del.endtime, del.cutofftime, del.delivery_type, del.zone, "
 		+ "NVL(( select sum(c.amount) as amount from cust.complaint c where c.sale_id=s.id and c.status='APP'), 0) as credit_approved, "
 		+ "NVL(( select sum(c.amount) as amount from cust.complaint c where c.sale_id=s.id and c.status='PEN'), 0) as credit_pending, "
@@ -184,7 +186,7 @@ public class ErpSaleInfoDAO {
 		+ "( select s.id, sa.requested_date, sa.action_date, sa.source, sa.initiator, di.starttime, di.endtime, di.cutofftime, di.delivery_type, di.zone, "
 		+ "(select pi.payment_method_type from cust.paymentinfo pi where pi.salesaction_id = sa.id) as payment_method_type "
 		+ "from cust.sale s, cust.sale_cro_mod_date sac, cust.salesaction sa, cust.deliveryinfo di "
-		+ "where s.id = sac.sale_id and s.id=sa.sale_id and sa.id=di.salesaction_id and sa.action_type in ('CRO','MOD') " 
+		+ "where s.id = sac.sale_id and s.id=sa.sale_id and s.type='REG' and sa.id=di.salesaction_id and sa.action_type in ('CRO','MOD') " 
 		+ "and sa.action_date=sac.max_date "
 		+ "and s.customer_id=?) del "
 		+ "where sale_id=s.id and sa.action_type = 'CRO' and s.customer_id=? and s.dlv_pass_id =? and s.id=del.id order by to_number(s.id) desc";
@@ -218,7 +220,8 @@ public class ErpSaleInfoDAO {
 					rs.getDouble("CREDIT_APPROVED"),
 					rs.getString("ZONE"),
 					EnumPaymentMethodType.getEnum(rs.getString("PAYMENT_METHOD_TYPE")),
-					rs.getString("DLV_PASS_ID")
+					rs.getString("DLV_PASS_ID"),
+					EnumSaleType.getSaleType(rs.getString("TYPE"))
 					));
 		}
 		rs.close();
@@ -227,7 +230,7 @@ public class ErpSaleInfoDAO {
 	}
 	
 	private static final String GET_ORDERS_USED_DLV_PASS ="select s.dlv_pass_id, s.id sale_id, sa.id saleaction_id, sa.requested_date, s.status "
-			+ "from cust.sale s, cust.salesaction sa where s.id = sa.sale_id and sa.action_type in ('CRO','MOD') "
+			+ "from cust.sale s, cust.salesaction sa where s.id = sa.sale_id and sa.action_type in ('CRO','MOD') and s.type='REG' "
 			+ "and s.status <> 'CAN' and sa.action_date=(select max(action_date) from cust.salesaction where action_type in ('CRO','MOD') and sale_id=s.id) "
 			+ "and s.customer_id = ? and s.dlv_pass_id in (select id from cust.delivery_pass where customer_id = ?) order by s.dlv_pass_id";
 
@@ -265,7 +268,7 @@ public class ErpSaleInfoDAO {
 	private static final String GET_RECENT_ORDERS_BY_DLV_PASS ="select s.id sale_id, s.status , sa.requested_date from cust.sale s, cust.salesaction sa "
 		+ "where s.id = sa.sale_id and s.status in ('PPG', 'STL','ENR','CPG') and sa.action_type in ('CRO','MOD') and sa.action_date = "
 		+ "(select max(action_date) from cust.salesaction where action_type in ('CRO','MOD') and sale_id=s.id) "
-		+ "and s.customer_id = ? and s.dlv_pass_id = ?";
+		+ "and s.customer_id = ? and s.type='REG' and s.dlv_pass_id = ?";
 
 public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpCustomerId, String dlvPassId, int noOfDaysOld) throws SQLException {
 	PreparedStatement ps = conn.prepareStatement(GET_RECENT_ORDERS_BY_DLV_PASS);
@@ -292,7 +295,7 @@ public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpC
 			+ "from cust.salesaction sa, cust.sale s,  cust.deliveryinfo di "
 			+ "where  sa.action_type in ('CRO', 'MOD')"
 			+ "and sa.action_date = (select max(action_date) from cust.salesaction where action_type in ('CRO', 'MOD') and sale_id = sa.sale_id) "
-			+ "and sa.requested_date = ? and s.id = sa.sale_id and sa.id=di.salesaction_id "
+			+ "and sa.requested_date = ? and s.id = sa.sale_id and s.type='REG' and sa.id=di.salesaction_id "
 			+ "and s.status <> 'CAN' and di.starttime >= ? and di.starttime < ? "
 			+ "and s.status in ('ENR', 'STL', 'PPG', 'CPG', 'REF', 'RET') "
 			+ "group by s.truck_number "
@@ -328,7 +331,7 @@ public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpC
 			+ "where  sa.action_type in ('CRO', 'MOD') "
 			+ "and sa.action_date = (select max(action_date) from cust.salesaction "
 			+ " where action_type in ('CRO', 'MOD') and sale_id = sa.sale_id) "
-			+ "and sa.requested_date = ? and sa.sale_id = s.id and s.status <> 'CAN' "
+			+ "and sa.requested_date = ? and sa.sale_id = s.id and s.type='REG' and s.status <> 'CAN' "
 			+ " and sa.id=di.salesaction_id  "
 			+ "and di.starttime >= ? and di.starttime < ? and truck_number = ? "
 			+ " and s.status in ('ENR', 'STL', 'PPG', 'CPG', 'REF', 'RET') "
@@ -374,7 +377,7 @@ public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpC
 		"select s.id,s.customer_id, s.stop_sequence, s.status, di.first_name, di.last_name from cust.sale s, cust.salesaction sa, cust.deliveryinfo di "
 			+ "where s.id = sa.sale_id and sa.action_type in ('CRO', 'MOD') "
 			+ "and sa.action_date = (select max(action_date) from cust.salesaction sa1 where sa1.action_type in ('CRO', 'MOD') and sa1.sale_id = s.id) "
-			+ "and sa.id = di.salesaction_id and s.id = ? ";
+			+ "and sa.id = di.salesaction_id and s.id = ? and s.type='REG'";
 
 	public static DlvSaleInfo getDlvSaleInfo(Connection conn, String saleId) throws SQLException {
 
@@ -403,7 +406,7 @@ public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpC
 			+ "from cust.sale s, cust.salesaction sa, cust.deliveryinfo di "
 			+ "where s.id=sa.sale_id and sa.id=di.salesaction_id and s.status<>'CAN' and sa.requested_date = ? "
 			+ "and sa.action_type in ('CRO','MOD') and sa.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD')) "
-			+ "and upper(di.address1) like upper(?) and di.zip = ? ";
+			+ "and upper(di.address1) like upper(?) and di.zip = ? and s.type='REG'";
 
 	public static List getOrdersForDateAndAddress(Connection conn, Date date, String address, String zipcode) throws SQLException {
 		List lst = new ArrayList();
@@ -532,7 +535,7 @@ public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpC
 	}
 	
 	// get last order's ID for a customer.
-	private static final String lastOrderIDQuery = "select id from (select s.id from cust.sale s, cust.salesaction sa where s.customer_id =? and s.id= sa.sale_id and sa.action_type='CRO' order by action_date desc) where rownum =1";
+	private static final String lastOrderIDQuery = "select id from (select s.id from cust.sale s, cust.salesaction sa where s.customer_id =? and s.id= sa.sale_id and s.type='REG' and sa.action_type='CRO' order by action_date desc) where rownum =1";
 	
 	public static String getLastOrderID(Connection conn, String erpCustomerId) throws SQLException {
 		String lastOrderID = null;
@@ -549,9 +552,7 @@ public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpC
 	}
 	
 	// get order number for a customer during specific past time.
-	//private static final String orderCountPastQuery = "select count(*) from cust.sale s, cust.salesaction sa where s.customer_id =? and s.id= sa.sale_id and sa.action_type='CRO' and sa.action_date> ?";
-	//Added the new customer index to prevent aging out the index from cache.
-	private static final String orderCountPastQuery = "select count(*) from cust.sale s, cust.salesaction sa where s.customer_id =? and s.id= sa.sale_id and sa.action_type='CRO' and sa.action_date> ? and sa.customer_id = s.customer_id";
+	private static final String orderCountPastQuery = "select count(*) from cust.sale s, cust.salesaction sa where s.customer_id =? and s.id= sa.sale_id and s.type='REG' and sa.action_type='CRO' and sa.action_date> ?";
 	
 	public static int getOrderCountPast(Connection conn, String erpCustomerId, Date day) throws SQLException {
 		int orderCount =0;
@@ -643,7 +644,7 @@ public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpC
 		+ "di.delivery_type, di.zone, pi.payment_method_type "
 		+ "from cust.sale_orig s, cust.salesaction_orig sa, " 
 		+ "cust.deliveryinfo di, cust.paymentinfo pi "
-		+ "where s.id = sa.sale_id and s.customer_id = ? " 
+		+ "where s.id = sa.sale_id and s.customer_id = ? and s.type='REG' " 
 		+ "and sa.action_date = (select max_date from cust.sale_cro_mod_date sco where sco.sale_id = s.id) " 
 		+ "and sa.action_type in ('CRO', 'MOD') "
 		+ "and sa.id = di.salesaction_id and sa.id = pi.salesaction_id";
@@ -675,7 +676,8 @@ public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpC
 					0.0,
 					rs.getString("ZONE"),
 					EnumPaymentMethodType.getEnum(rs.getString("PAYMENT_METHOD_TYPE")),
-					""
+					"",
+					EnumSaleType.REGULAR
 					));
 		}
 		rs.close();

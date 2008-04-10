@@ -1,5 +1,4 @@
-/*
- * $Workfile$
+/* $Workfile$
  *
  * $Date$
  * 
@@ -11,6 +10,7 @@ package com.freshdirect.sap.ejb;
 import javax.ejb.*;
 import java.rmi.RemoteException;
 
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.sap.SapCustomerI;
 import com.freshdirect.sap.SapOrderI;
 import com.freshdirect.sap.command.SapPostReturnCommand;
@@ -25,8 +25,8 @@ public interface SapGatewaySB extends EJBObject {
     
 	public SapOrderI checkAvailability(SapOrderI order, long timeout) throws RemoteException;
 
-	public void sendCreateSalesOrder(SapOrderI order) throws RemoteException;
-
+	public void sendCreateSalesOrder(SapOrderI order, EnumSaleType saleType) throws RemoteException;
+	
 	public void sendCreateCustomer(String erpCustomerNumber, SapCustomerI customer) throws RemoteException;
 	
 	public void sendCancelSalesOrder(String webOrderNumber, String sapOrderNumber) throws RemoteException;
@@ -36,4 +36,3 @@ public interface SapGatewaySB extends EJBObject {
 	public void sendReturnInvoice(SapPostReturnCommand command) throws RemoteException;
 
 }
-

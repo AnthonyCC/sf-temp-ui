@@ -173,6 +173,7 @@ public class CrmLateIssueDAO {
 	 +"       where action_type in ('CRO','MOD')"
 	 +"		and sale_id = sa.sale_id) "
 	 +" and sa.sale_id = sale.id   "
+	 +" and sale.type ='REG' "
      +" 	and truck_number = ?";
 
 		

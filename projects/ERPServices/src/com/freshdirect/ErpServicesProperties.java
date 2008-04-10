@@ -27,6 +27,7 @@ import com.freshdirect.framework.util.MathUtil;
 public class ErpServicesProperties {
 	private static Category LOGGER = LoggerFactory.getInstance( ErpServicesProperties.class );
 
+
 	private final static String PROP_PROVIDER_URL		= "erpservices.providerURL";
 	private final static String PROP_INIT_CTX_FACTORY	= "erpservices.initialContextFactory";
     
@@ -117,10 +118,18 @@ public class ErpServicesProperties {
 	
 	private final static String PROP_CART_ORDERLINE_LIMT = "cart.orderline.limit";
 
+	private final static String PROP_SUBSCRIPTION_MAIL_TO="subscription.mail.to";
+
+	private final static String PROP_SUBSCRIPTION_MAIL_CC="subscription.mail.cc";
+
+	private final static String PROP_SUBSCRIPTION_MAIL_FROM = "subscription.mail.from";
+
+	private final static String PROP_SUBSCRIPTION_SEND_EMAIL = "subscription.mail.send";
+
 	static {
 		Properties defaults = new Properties();
 
-		defaults.put(PROP_PROVIDER_URL, 	"t3://127.0.0.1:7006");
+		defaults.put(PROP_PROVIDER_URL, 	"t3://127.0.0.1:7001");
 		defaults.put(PROP_INIT_CTX_FACTORY,	"weblogic.jndi.WLInitialContextFactory");
 
         defaults.put(PROP_PRODUCTTREE_HOME,	"freshdirect.erp.ProductTree");
@@ -149,7 +158,7 @@ public class ErpServicesProperties {
 		defaults.put(PROP_LOST_PASSWORD_PAGE, "http://www.freshdirect.com/login/retrieve_password.jsp");
 
 		defaults.put(PROP_SEND_EMAIL, "true");
-		defaults.put(PROP_MAILER_HOST, "ns2.nyc1.freshdirect.com");
+		defaults.put(PROP_MAILER_HOST, "ns2.nyc2.freshdirect.com");
 		defaults.put(PROP_MAILER_PROTOCOL, "smtp");
 		defaults.put(PROP_MAILER_FROM, "orders@freshdirect.com");
 		defaults.put(PROP_FD_EMAIL, "customerservice@freshdirect.com");
@@ -196,6 +205,11 @@ public class ErpServicesProperties {
 		defaults.put(PROP_PROMOTION_RT_SIZE_LIMIT, "2000");
 		
 		defaults.put(PROP_CART_ORDERLINE_LIMT, "500");
+		
+		defaults.put(PROP_SUBSCRIPTION_MAIL_TO, "applicationdevelopment@freshdirect.com");
+		defaults.put(PROP_SUBSCRIPTION_MAIL_CC, "");
+		defaults.put(PROP_SUBSCRIPTION_MAIL_FROM, "applicationdevelopment@freshdirect.com");
+		defaults.put(PROP_SUBSCRIPTION_SEND_EMAIL, "true");
 		
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration: "+config);
@@ -472,4 +486,20 @@ public class ErpServicesProperties {
 	public static int getCartOrderLineLimit() {
 		return Integer.parseInt(config.getProperty(PROP_CART_ORDERLINE_LIMT));
 	}
+	public static String getSubscriptionMailTo() {
+		return config.getProperty(PROP_SUBSCRIPTION_MAIL_TO);
+	}
+	
+	public static String getSubscriptionMailCC() {
+		return config.getProperty(PROP_SUBSCRIPTION_MAIL_CC);
+	}
+	
+	public static String getSubscriptionMailFrom() {
+		return config.getProperty(PROP_SUBSCRIPTION_MAIL_FROM);
+	}
+	
+	public static boolean isSendSubscriptionEmail(){
+		return Boolean.valueOf(config.getProperty(PROP_SUBSCRIPTION_SEND_EMAIL)).booleanValue(); 
+	}
+
 }

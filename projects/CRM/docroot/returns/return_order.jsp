@@ -63,6 +63,7 @@
 	boolean showPaymentButtons = false;
 	boolean showAddressButtons = false;
 	boolean showDeleteButtons = false;
+    boolean displayDeliveryInfo = true;
 %>
 
 <div class="content_scroll" style="height: 15%; border-bottom: 1px solid;">

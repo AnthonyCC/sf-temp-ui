@@ -51,5 +51,7 @@ public interface BapiSalesOrderCreate extends BapiOrder {
 	public void setOrderHeaderIn(OrderHeaderIn header);
 
 	public String getSalesDocument();
+
+	public String getInvoiceNumber();
 	
 }

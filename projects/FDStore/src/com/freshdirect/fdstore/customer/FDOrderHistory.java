@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpOrderHistory;
 import com.freshdirect.customer.ErpSaleInfo;
 import com.freshdirect.fdstore.customer.adapter.FDOrderInfoAdapter;
@@ -28,6 +29,17 @@ public class FDOrderHistory extends ErpOrderHistory {
 		return fdOrderInfos;
 	}
 
+	public Collection getFDOrderInfos(EnumSaleType saleType) {
+
+		List l = new ArrayList();
+		for (Iterator i = this.fdOrderInfos.iterator(); i.hasNext();) {
+			FDOrderInfoI o = (FDOrderInfoI) i.next();
+			if(saleType.equals(o.getSaleType())) {
+				l.add(o);
+			}
+		}
+		return l;
+	}
 	/**
 	 * @return Collection of FDOrderInfoI where status allows creating make-good
 	 */

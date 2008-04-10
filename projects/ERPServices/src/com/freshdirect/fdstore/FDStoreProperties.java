@@ -131,6 +131,7 @@ public class FDStoreProperties {
 
 	private final static String DLV_PASS_PROMOTION_PREFIX = "fdstore.dlvPassPromotionPrefix";
 	private final static String DLV_PASS_MAX_PURCHASE_LIMIT="fdstore.dlvPass.maxPurchaseLimit";
+	private final static String DLV_PASS_AUTORENEWAL_DEFAULT="fdstore.dlvPass.defautRenewalSKU";
 	
 	
 	// Referral Program admin
@@ -329,6 +330,7 @@ public class FDStoreProperties {
 		defaults.put(UNLIMITED_PROFILE_POSFIX, "Unlimited");
 		defaults.put(UNLIMITED_PROMOTIONAL_PROFILE , "Unlimited");
 		defaults.put(UNLIMITED_AMAZON_PRIME_PROFILE , "Unlimited");
+		defaults.put(DLV_PASS_AUTORENEWAL_DEFAULT,"MKT0072630");
 		
 		defaults.put(DLV_PASS_PROMOTION_PREFIX, "FDDELIVERS");
 		defaults.put(DLV_PASS_MAX_PURCHASE_LIMIT,"1");
@@ -805,6 +807,10 @@ public class FDStoreProperties {
 	//  marketing admin changes
 	public static String getMarketingAdminUrl() {
 		return get(MRKTING_ADMIN_URL);
+	}
+	
+	public static String getDefaultRenewalDP() {
+		return get(DLV_PASS_AUTORENEWAL_DEFAULT);
 	}
 	
 }

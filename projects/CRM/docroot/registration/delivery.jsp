@@ -63,6 +63,7 @@ String serviceType = request.getParameter("serviceType");
 <form name="site_access" method="post" action="<%= response.encodeURL(request.getRequestURI()) %>">
 <input type="hidden" name="serviceType" value="<%= serviceType %>">
 <tr align="center"><td class="text12">Give us your e-mail address and we'll drop you a note<br>when we begin delivering to your area.</td></tr>
+<input type="hidden" name="serviceType" value="<%= serviceType %>">
 <tr align="center">
      <td class="text12"><br><b>Enter your e-mail:</b><br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>
      <input class="text11" type="text" size="30" name="email" value="<%= request.getParameter("email")!=null?request.getParameter("email"):"" %>">

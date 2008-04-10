@@ -1,0 +1,89 @@
+<%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@ page import="java.util.HashMap"%>
+<% boolean firstRecipe=true; 
+   Map allDeptsMap=new HashMap();
+   boolean hasEstimatedItems=false;
+%>
+<logic:iterate id="cartLine" collection="<%= view.getOrderLines() %>" type="com.freshdirect.fdstore.customer.FDCartLineI" indexId="lineNumber">
+<%  
+    ErpInvoiceLineI invoiceLine = null;
+    ErpReturnLineI returnLine = null;
+    String orderLineNumber = "";
+    if (lastDept==null || !lastDept.equalsIgnoreCase(cartLine.getDepartmentDesc())) {
+        lastDept = cartLine.getDepartmentDesc() ;
+
+        if (lastDept.startsWith("Recipe: ")) {
+            if (firstRecipe) {
+%>
+                <tr class="order_item_dept">
+                    <td colspan="1"></td>
+                    <td colspan="5"><b>RECIPES</b></td>
+                    <td colspan="5"></td>
+                   
+                </tr>
+<%
+                firstRecipe = false;
+            }
+
+            String  recipeName = lastDept.substring("Recipe: ".length());
+%>
+            <tr class="order_item_dept">
+                <td colspan="2"></td>
+                <td colspan="5"><b><%=recipeName%></b></td>
+                <td colspan="4"></td>
+               
+            </tr>
+<%
+
+        } else {
+            if(view.isDisplayDepartment()) {
+%>
+            <tr class="order_item_dept">
+                <td colspan="2"></td>
+                <td colspan="5"><b><%=lastDept%></b></td>
+                <td colspan="4"></td>
+               
+            </tr>
+<%
+            }
+        }
+    }
+    //
+    // collect department totals along the way
+    //
+    Map deptTotalMap = null;
+    if ( allDeptsMap.containsKey(cartLine.getDepartmentDesc()) ) {
+        deptTotalMap = (Map) allDeptsMap.get(cartLine.getDepartmentDesc());
+    } else {
+        deptTotalMap = new HashMap();
+        deptTotalMap.put("est", new Double(0.0));
+        deptTotalMap.put("final", new Double(0.0));
+    }
+    deptTotalMap.put("est", new Double(((Double)deptTotalMap.get("est")).doubleValue() + cartLine.getPrice()));
+    allDeptsMap.put(cartLine.getDepartmentDesc(), deptTotalMap);
+%>
+<tr valign="middle">
+    <td align="center">
+        <%=cartLine.getDisplayQuantity()%>
+    </td>
+    <td>
+        <%=cartLine.getLabel()%>
+    </td>
+    <td>&nbsp;<%= cartLine.getDescription() %> <%=cartLine.getConfigurationDesc()%> 
+    </td>
+    <td width="6%" align="center"> 
+    </td>
+    <td width="8%" align="center">(<%= cartLine.getUnitPrice() %>)</td>
+    <td width="6%" align="right">&nbsp;</td>
+    <td align="right"><%=CCFormatter.formatCurrency(cartLine.getPrice()) %></b></td>
+    <td width="1%" align="center">
+        <b><%= (cartLine.hasTax())  ? "T" : "&nbsp;" %></b>
+    </td>
+    <td width="1%" align="center">
+        <b><%= (cartLine.hasScaledPricing()) ? "S" : "&nbsp;" %></b>
+    </td>
+    <td width="1%" align="center">
+        <b><%=(cartLine.hasDepositValue())  ? "D" : "&nbsp;" %></b>
+    </td>
+</tr>
+</logic:iterate>

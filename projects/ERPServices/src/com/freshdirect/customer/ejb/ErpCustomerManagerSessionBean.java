@@ -49,6 +49,7 @@ import com.freshdirect.customer.EnumFraudReason;
 import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpActivityRecord;
@@ -198,7 +199,9 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		Set usedPromotionCodes,
 		CustomerRatingI rating,
 		CrmAgentRole agentRole,
-		String dlvPassId) throws ErpFraudException {
+		String dlvPassId,
+		EnumSaleType saleType) throws ErpFraudException {
+
 		
 		LOGGER.info("Placing order - start. CustomerPK=" + erpCustomerPk);
 
@@ -225,18 +228,18 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			//
 
 			LOGGER.info("Placing order - store in ERPS. CustomerPK=" + erpCustomerPk);
-			ErpSaleEB saleEB = this.getErpSaleHome().create(erpCustomerPk, order, usedPromotionCodes, dlvPassId);
+			ErpSaleEB saleEB = this.getErpSaleHome().create(erpCustomerPk, order, usedPromotionCodes, dlvPassId,saleType);
 			PrimaryKey salePK = saleEB.getPK();
 			ErpAbstractOrderModel orderModel = saleEB.getCurrentOrder();
 			postCheckOrderFraud(salePK,erpCustomerPk, orderModel, agentRole);// perform 
 
-			SapOrderAdapter sapOrder = this.adaptOrder(erpCustomerPk, orderModel, rating);
-
-			SapGatewaySB sapSB = this.getSapGatewayHome().create();
-			sapOrder.setWebOrderNumber(salePK.getId());
-			sapSB.sendCreateSalesOrder(sapOrder);
-
-			this.reconcileCustomerCredits(erpCustomerPk, order);
+			if(EnumSaleType.REGULAR.equals(saleType)) {
+				SapOrderAdapter sapOrder = this.adaptOrder(erpCustomerPk, orderModel, rating);
+				SapGatewaySB sapSB = this.getSapGatewayHome().create();
+				sapOrder.setWebOrderNumber(salePK.getId());
+				sapSB.sendCreateSalesOrder(sapOrder,saleType);
+				this.reconcileCustomerCredits(erpCustomerPk, order);
+			}
 
 			LOGGER.info("Placing order - successful. CustomerPK=" + erpCustomerPk);
 
@@ -263,7 +266,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	 * @param saleId
 	 * @throws ErpTransactionException if the order is not in the NOT_SUBMITTED, NEW or MODIFIED state
 	 */
-	public void resubmitOrder(String saleId,CustomerRatingI cra) throws ErpTransactionException {
+	public void resubmitOrder(String saleId,CustomerRatingI cra,EnumSaleType saleType) throws ErpTransactionException {
 		try {
 			ErpSaleEB saleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
 
@@ -295,7 +298,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 
 			if (sapOrderNumber == null) {
 				// it's not in SAP yet, create it
-				sapSB.sendCreateSalesOrder(sapOrder);
+				sapSB.sendCreateSalesOrder(sapOrder,saleType);
 			} else {
 				// it's already in SAP, so call change
 				sapSB.sendChangeSalesOrder(saleId, sapOrderNumber, sapOrder);
@@ -332,24 +335,32 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			HashMap creditsMap = new HashMap();
 
 			ErpAbstractOrderModel order = saleEB.getCurrentOrder();
-			reservationId = order.getDeliveryInfo().getDeliveryReservationId();
+			
 
 			for (Iterator i = order.getAppliedCredits().iterator(); i.hasNext();) {
 				ErpAppliedCreditModel ac = (ErpAppliedCreditModel) i.next();
 				creditsMap.put(ac.getCustomerCreditPk().getId(), new Double(ac.getAmount()));
 			}
-
-			reverseAppliedCredits(customerPk, creditsMap);
+            
+			
+			
 
 			ErpCancelOrderModel cancelOrder = new ErpCancelOrderModel();
 			cancelOrder.setTransactionSource(source);
 			cancelOrder.setTransactionInitiator(initiator);
 			saleEB.cancelOrder(cancelOrder);
-			SapGatewaySB sapSB = this.getSapGatewayHome().create();
+			ErpSaleModel sale=(ErpSaleModel)saleEB.getModel();
+			if(EnumSaleType.REGULAR.equals(sale.getType())) {
 
-			sapSB.sendCancelSalesOrder(saleId, saleEB.getSapOrderNumber());
-
-			return reservationId;
+				reservationId = order.getDeliveryInfo().getDeliveryReservationId();
+				reverseAppliedCredits(customerPk, creditsMap);
+				SapGatewaySB sapSB = this.getSapGatewayHome().create();
+				sapSB.sendCancelSalesOrder(saleId, saleEB.getSapOrderNumber());
+				return reservationId;
+			} else {
+				saleEB.cancelOrderComplete();
+				return "";
+			}
 
 		} catch (CreateException ce) {
 			throw new EJBException(ce);
@@ -2329,4 +2340,65 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				}
 			}		 
 	 }
+		/**
+		 * Get a specific sale.
+		 */
+		public ErpSaleModel getLastNonCOSOrder(String customerID, EnumSaleType saleType, EnumSaleStatus saleStatus, EnumPaymentMethodType paymentMethodType) throws ErpSaleNotFoundException {
+			try {
+				ErpSaleEB saleEB = getErpSaleHome().findByCriteria(customerID,saleType, saleStatus,paymentMethodType);
+
+				return (ErpSaleModel) saleEB.getModel();
+
+			} catch (FinderException fe) {
+				LOGGER.warn(fe);
+				throw new ErpSaleNotFoundException(fe);
+			} catch (RemoteException re) {
+				LOGGER.warn(re);
+				throw new EJBException(re);
+			}
+		}
+		
+		public void cutOffSale(String saleId) throws ErpSaleNotFoundException {
+			try {
+				ErpSaleEB saleEB = getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
+				ErpSaleModel saleModel=(ErpSaleModel) saleEB.getModel();
+				saleModel.cutoff();
+			} catch (RemoteException re) {
+				LOGGER.warn(re);
+				throw new EJBException(re);
+			} catch (FinderException fe) {
+				LOGGER.warn(fe);
+				throw new ErpSaleNotFoundException(fe);
+			}
+			catch (ErpTransactionException e) {
+				LOGGER.warn(e);
+				throw new EJBException(e);
+			}
+		}
+		
+		public void sendCreateOrderToSAP(String erpCustomerID, String saleID, EnumSaleType saleType, CustomerRatingI rating) throws ErpSaleNotFoundException {
+			
+			try {
+				
+				PrimaryKey erpCustomerPk=new PrimaryKey(erpCustomerID);
+				PrimaryKey salePK=new PrimaryKey(saleID);
+				ErpSaleEB saleEB = getErpSaleHome().findByPrimaryKey(salePK);
+				ErpAbstractOrderModel orderModel=saleEB.getCurrentOrder();
+				SapOrderAdapter sapOrder = this.adaptOrder(erpCustomerPk, orderModel, rating);
+				SapGatewaySB sapSB = this.getSapGatewayHome().create();
+				sapOrder.setWebOrderNumber(salePK.getId());
+				sapSB.sendCreateSalesOrder(sapOrder,saleType);
+				
+			} catch (RemoteException re) {
+				LOGGER.warn(re);
+				throw new EJBException(re);
+			} catch (FinderException fe) {
+				LOGGER.warn(fe);
+				throw new ErpSaleNotFoundException(fe);
+			} catch (CreateException ce) {
+				LOGGER.warn(ce);
+				throw new EJBException(ce);
+			}
+		}
+	 
 }

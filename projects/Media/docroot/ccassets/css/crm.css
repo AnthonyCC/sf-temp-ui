@@ -1493,6 +1493,10 @@ border: 1px #000000 solid;
  background-color: #00FFFF;
  border-bottom: 1px solid #CCCCCC;
 }
+.subscription_order {
+ background-color: yellow;
+ border-bottom: 1px solid #CCCCCC;
+}
 
 .usage_header {
 position: relative;

@@ -28,7 +28,7 @@ String failurePage = "delivery.jsp?successPage=nw_cst_enter_details.jsp&serviceT
 			String depotCodeError = "";
 			String depotAccessCodeError = "";
 			%>
-			<fd:SiteAccessController action='<%= request.getParameter("action") %>' successPage='nw_cst_enter_details.jsp' moreInfoPage='<%=moreInfoPage%>' failureHomePage='<%=failurePage%>' result='zipResult'>
+            <fd:SiteAccessController action='<%= request.getParameter("action") %>' successPage='nw_cst_enter_details.jsp' moreInfoPage='<%=moreInfoPage%>' failureHomePage='<%=failurePage%>' result='zipResult'>
                         <% if (zipResult.isSuccess()) { %>
 			<fd:DepotLoginController actionName='<%= request.getParameter("action") %>' successPage='nw_cst_enter_details.jsp' result='depotResult'>
                                         
@@ -88,6 +88,7 @@ String failurePage = "delivery.jsp?successPage=nw_cst_enter_details.jsp&serviceT
 			<form name="zipCheck" method="POST" action="nw_cst_check_zone.jsp?serviceType=<%=EnumServiceType.CORPORATE.getName()%>">
             <input type="hidden" name="action" value="checkByZipCode">
             <input type="hidden" name="serviceType" value="<%= EnumServiceType.CORPORATE.getName()%>">
+
 				<TR>
 					<TD WIDTH="30%" ALIGN="RIGHT">Enter Zip&nbsp;&nbsp;</TD>
 					<TD WIDTH="70%"><INPUT TYPE="text" SIZE="10" name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" value="<%=request.getParameter(EnumUserInfoName.DLV_ZIPCODE.getCode())%>"> <fd:ErrorHandler result='<%= zipResult %>' name='zipCode' id='errorMsg'><span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></TD>

@@ -14,7 +14,7 @@
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import='com.freshdirect.deliverypass.EnumDPAutoRenewalType' %>
 <%@ page import='com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo' %>
-
+<%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession"%>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -22,9 +22,17 @@
 <%@ taglib uri="crm" prefix="crm" %>
 
 <script language="javascript">
-    	function flipAutoRenew() {
+    	function flipAutoRenewalON() {
 	    var form = document.forms['autoRenew'];
-	    form.elements['action'].value='FLIP_AUTORENEW';
+	    form.elements['action'].value='FLIP_AUTORENEW_ON';
+	    form.method='POST';
+	    form.submit();
+	    return false;
+    	
+    	}
+    	function flipAutoRenewalOFF() {
+	    var form = document.forms['autoRenew'];
+	    form.elements['action'].value='FLIP_AUTORENEW_OFF';
 	    form.method='POST';
 	    form.submit();
 	    return false;
@@ -82,6 +90,7 @@
 			form.notes.focus();
 			return;
             	}
+		form.notes.value=form.notes.value+". The refund amount is "+form.elements['refundAmount'].value;
             	
             }
             form.method='POST';
@@ -102,7 +111,7 @@
 
 <%
 	FDUserI	user = (FDSessionUser) session.getAttribute(SessionName.USER);
-	
+	boolean hasCustomerCase = CrmSession.hasCustomerCase(session);
 %>
 <% boolean editable = false; %>
 <crm:GetLockedCase id="cm">
@@ -115,6 +124,8 @@
 </crm:GetLockedCase>
 <% 
 String case_required = "<span class=\"cust_module_content_edit\">-Case required to add/extend or cancel an Active DeliveryPass-</span>"; 
+String caseRequiredForRenewal = "<span class=\"cust_module_content_edit\">-Case required to change renewal settings-</span>"; 
+String caseRequiredForManualRenewal = "<span class=\"cust_module_content_edit\">-Case required to place auto-renewal order manually-</span>"; 
 %>
 
 <tmpl:insert template='/template/top_nav.jsp'>
@@ -146,6 +157,17 @@ String case_required = "<span class=\"cust_module_content_edit\">-Case required 
 				<input type="hidden" name="action" value="">
 					<a href="#" onClick="javascript:redirectToSignup()"><span class="cust_header_field"><b>Buy DeliveryPass</b></span></a>, deliverable item required.
 				</form>
+				<% if( (user.getDlvPassInfo().getAutoRenewUsablePassCount()==0) &&
+				     user.hasAutoRenewDP().equals(EnumDPAutoRenewalType.YES) ) {
+				     if(hasCustomerCase) {
+				 %> 
+				 <a href="/main/place_auto_renew_order.jsp"><b>Click here to buy Auto Renew FreshDirect Unlimited.<b></a>
+				 <%  } else {%>
+				 <%=caseRequiredForManualRenewal%>
+				 <%  }
+				   }
+				 %>  
+                
 				<%
 				} else {
 				%>
@@ -157,9 +179,23 @@ String case_required = "<span class=\"cust_module_content_edit\">-Case required 
 						<input type="hidden" name="action" value="">
 
 						<% if(user.hasAutoRenewDP().equals(EnumDPAutoRenewalType.YES) && (user.getDlvPassInfo().getAutoRenewUsablePassCount()>0)) {%>
-							<A HREF="#" onClick="javascript:flipAutoRenew()"><font class="text12bold">Click here to turn off renewal.</A>
+							<table border="0"><tr><td bgcolor=#00FF00><b>Auto-Renewal option: ON </b></td>
+							    <%if(editable){%> 
+							    	<td><A HREF="#" onClick="javascript:flipAutoRenewalOFF()"><font class="text12bold">Click here to turn off renewal.</A></td>
+							    <%} else {%> 
+							    	<td><%=caseRequiredForRenewal%></td>
+							    <%}%>
+							    </tr>
+							</table>                            
 						<%} else if(user.hasAutoRenewDP().equals(EnumDPAutoRenewalType.NO) && (user.getDlvPassInfo().getAutoRenewUsablePassCount()>0)) {%>
-							<A HREF="#" onClick="javascript:flipAutoRenew()"><font class="text12bold">Click here to turn renewal ON.</A>
+							<table border="0"><tr><td bgcolor=#FF0000><b>Auto-Renewal option: OFF</b></td>
+								<%if(editable){%> 
+									<td><A HREF="#" onClick="javascript:flipAutoRenewalON()"><font class="text12bold">Click here to turn renewal ON.</A></td>
+								<%} else {%> 
+							    		<td><%=caseRequiredForRenewal%></td>
+								<%}%>
+								</tr>
+							</table>
 						<%}%>
 					</form>
                         </td>  
@@ -174,14 +210,48 @@ String case_required = "<span class=\"cust_module_content_edit\">-Case required 
 					<a href="#" onClick="javascript:redirectToSignup()"><span class="cust_header_field"><b>Buy DeliveryPass</b></span></a>, deliverable item required.
 				</form>
 				     <% }%>
+				     <tr>
+				     
 					<form name="autoRenew" method="POST">
 						<input type="hidden" name="action" value="">
 
 						<% if(user.hasAutoRenewDP().equals(EnumDPAutoRenewalType.YES)&& (user.getDlvPassInfo().getAutoRenewUsablePassCount()>0))  {%>
-							<A HREF="#" onClick="javascript:flipAutoRenew()"><font class="text12bold">Click here to turn off renewal.</A>
+						<td width="40%">
+							<table border="0"><tr><td bgcolor=#00FF00><b>Auto-Renewal option: ON </b></td>
+							    <%if(editable){%> 
+							    	<td><A HREF="#" onClick="javascript:flipAutoRenewalOFF()"><font class="text12bold">Click here to turn off renewal.</A></td>
+							    <%} else {%> 
+							    	<td><%=caseRequiredForRenewal%></td>
+							    <%}%>
+							    </tr>
+							</table>
+							
+					        </td>
 						<%} else if(user.hasAutoRenewDP().equals(EnumDPAutoRenewalType.NO)&& (user.getDlvPassInfo().getAutoRenewUsablePassCount()>0)) {%>
-							<A HREF="#" onClick="javascript:flipAutoRenew()"><font class="text12bold">Click here to turn renewal ON.</A>
+						<td width="40%">
+							<table border="0"><tr><td bgcolor=#FF0000><b>Auto-Renewal option: OFF</b></td>
+								<%if(editable){%> 
+									<td><A HREF="#" onClick="javascript:flipAutoRenewalON()"><font class="text12bold">Click here to turn renewal ON.</A></td>
+								<%} else {%> 
+							    		<td><%=caseRequiredForRenewal%></td>
+								<%}%>
+								</tr>
+							</table>	
+						</td>	
 						<%}%>
+				   
+				   </tr>
+                        				<% if( (user.getDlvPassInfo().getAutoRenewUsablePassCount()==0) &&
+							     user.hasAutoRenewDP().equals(EnumDPAutoRenewalType.YES) ) {
+							     if(hasCustomerCase) {
+							 %> 
+							 <a href="/main/place_auto_renew_order.jsp"><b>Click here to buy Auto Renew FreshDirect Unlimited.<b></a>
+							 <%  } else {%>
+							 <%=caseRequiredForManualRenewal%>
+							 <%  }
+							   }
+							 %>  
+
 					</form>
 						
 					
@@ -254,6 +324,7 @@ String case_required = "<span class=\"cust_module_content_edit\">-Case required 
 							%>
 							<form name="deliverypass" method="POST">
 							<input type="hidden" name="action_name" value="extend_week">
+							<input type="hidden" name="refundAmount" value=<%=CCFormatter.formatCurrency(refundAmt.doubleValue())%>>
 							<tr>
 								<td colspan="2">	
 									<select name="orderAssigned" class="combo_text" style="width: 210px;">

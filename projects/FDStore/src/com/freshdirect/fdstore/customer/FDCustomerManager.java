@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.sql.SQLException;
 
 import javax.ejb.CreateException;
 import javax.naming.Context;
@@ -31,9 +32,12 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.crm.CrmAgentModel;
+import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumPaymentType;
+import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpAddressModel;
@@ -50,11 +54,14 @@ import com.freshdirect.customer.ErpDuplicatePaymentMethodException;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpInvalidPasswordException;
+import com.freshdirect.customer.ErpInvoiceModel;
 import com.freshdirect.customer.ErpModifyOrderModel;
 import com.freshdirect.customer.ErpOrderHistory;
 import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
+import com.freshdirect.customer.ErpSaleNotFoundException;
+import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ErpWebOrderHistory;
@@ -105,6 +112,8 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.xml.XSLTransformer;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
+import com.freshdirect.crm.CrmSystemCaseInfo;
+
 
 /**
  *
@@ -1207,21 +1216,37 @@ public class FDCustomerManager {
 			if (EnumPaymentType.REGULAR.equals(pt) && cra.isOnFDAccount()) {
 				cart.getPaymentMethod().setPaymentType(EnumPaymentType.ON_FD_ACCOUNT);
 			}
+			
 			ErpModifyOrderModel order = FDOrderTranslator.getErpModifyOrderModel(cart);
 			order.setTransactionSource(info.getSource());
 			order.setTransactionInitiator(info.getAgent() == null ? null : info.getAgent().getUserId());
 
 			FDCustomerManagerSB sb = managerHome.create();
-			sb.modifyOrder(
-				info.getIdentity(),
-				saleId,
-				order,
-				appliedPromos,
-				cart.getOriginalReservationId(),
-				sendEmail,
-				cra,
-				info.getAgent() == null ? null : info.getAgent().getRole(),
-				status);
+			EnumSaleType type = cart.getOriginalOrder().getOrderType();
+			if (EnumSaleType.REGULAR.equals(type)){
+				sb.modifyOrder(
+						info.getIdentity(),
+						saleId,
+						order,
+						appliedPromos,
+						cart.getOriginalReservationId(),
+						sendEmail,
+						cra,
+						info.getAgent() == null ? null : info.getAgent().getRole(),
+						status);
+			}else if (EnumSaleType.SUBSCRIPTION.equals(type)){
+				sb.modifyAutoRenewOrder(
+						info.getIdentity(),
+						saleId,
+						order,
+						appliedPromos,
+						cart.getOriginalReservationId(),
+						sendEmail,
+						cra,
+						info.getAgent() == null ? null : info.getAgent().getRole(),
+						status);
+				sb.authorizeSale(info.getIdentity().getErpCustomerPK().toString(), saleId, type, cra);
+			}
 
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -1229,6 +1254,9 @@ public class FDCustomerManager {
 		} catch (RemoteException re) {
 			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
+		}catch (ErpSaleNotFoundException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error talking to session bean");
 		}
 	}
 
@@ -2265,12 +2293,12 @@ public class FDCustomerManager {
 		}
 		
 	}
-	public static void flipAutoRenewDP(String customerPK, EnumTransactionSource source , String initiator)throws FDResourceException {
+	public static void setHasAutoRenewDP(String customerPK, EnumTransactionSource source , String initiator,boolean autoRenew)throws FDResourceException {
 	//public static void flipAutoRenewDP(String customerPK)throws FDResourceException {
 		lookupManagerHome();
 		try {
 				FDCustomerManagerSB sb = managerHome.create();
-				sb.flipAutoRenewDP(customerPK,source, initiator);
+				sb.setHasAutoRenewDP(customerPK,source, initiator, autoRenew);
 				//sb.flipAutoRenewDP(customerPK);
 
 		} catch (CreateException ce) {
@@ -2333,4 +2361,133 @@ public class FDCustomerManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
+	
+	public static FDOrderI getLastNonCOSOrderUsingCC(String customerID, EnumSaleType saleType, EnumSaleStatus saleStatus) throws FDResourceException,ErpSaleNotFoundException {
+		lookupManagerHome();
+		FDCustomerManagerSB sb=null;
+		try {
+				 sb= managerHome.create();
+				FDOrderI order=sb.getLastNonCOSOrderUsingCC(customerID, saleType, saleStatus);
+				return order;
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	
+	public static String placeSubscriptionOrder( FDActionInfo info,
+			 									 FDCartModel cart,
+			 									 Set appliedPromos,
+			 									 boolean sendEmail,
+			 									 CustomerRatingI cra,
+			 									 EnumDlvPassStatus status ) throws FDResourceException, 
+			                               						  				   ErpFraudException, 
+			                               						  				   //ReservationException,
+			                               						  				   DeliveryPassException
+			                               						  				    {
+		lookupManagerHome();
+		String orderId="";
+		try {
+			EnumPaymentType pt = cart.getPaymentMethod().getPaymentType();
+			if (EnumPaymentType.REGULAR.equals(pt) && cra.isOnFDAccount()) {
+				cart.getPaymentMethod().setPaymentType(EnumPaymentType.ON_FD_ACCOUNT);
+		    }
+			ErpCreateOrderModel createOrder = FDOrderTranslator.getErpCreateOrderModel(cart);
+			createOrder.setTransactionSource(info.getSource());
+			createOrder.setTransactionInitiator(info.getAgent() == null ? null : info.getAgent().getUserId());
+			
+			FDCustomerManagerSB sb = managerHome.create();
+				
+				orderId=sb.placeSubscriptionOrder( info.getIdentity(),
+				 								  createOrder,
+				                                 appliedPromos,
+				                                 cart.getDeliveryReservation().getPK().getId(),
+				                                 sendEmail,
+				                                 cra,
+				                                 info.getAgent() == null ? null : info.getAgent().getRole(),
+				                                 status
+				                               );
+				sb.authorizeSale(info.getIdentity().getErpCustomerPK().toString(), orderId, EnumSaleType.SUBSCRIPTION, cra);
+			return orderId;
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		} catch (ErpSaleNotFoundException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error talking to session bean");
+		}
+	}
+	
+    public static FDUser getFDUser(FDIdentity identity) throws FDAuthenticationException, FDResourceException {
+		   lookupManagerHome();
+		    try {
+				FDCustomerManagerSB sb = managerHome.create();
+				FDUser user = sb.recognize(identity);
+				return user;
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}
+	    }
+	   
+	    public static Object[] getAutoRenewalInfo() throws FDResourceException {
+	    	Object[] autoRenewInfo=null;
+			lookupManagerHome();
+			try {
+					FDCustomerManagerSB sb = managerHome.create();
+					autoRenewInfo = sb.getAutoRenewalInfo();
+					return autoRenewInfo;
+			} catch (CreateException ce) {
+					invalidateManagerHome();
+					throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+					invalidateManagerHome();
+					throw new FDResourceException(re, "Error talking to session bean");
+			}
+	    }
+	    
+	    public static String getAutoRenewSKU(String customerPK) throws FDResourceException {
+	    	String arSKU = null;
+			lookupManagerHome();
+			try {
+					FDCustomerManagerSB sb = managerHome.create();
+					arSKU = sb.getAutoRenewSKU(customerPK);
+					return arSKU;
+			} catch (CreateException ce) {
+					invalidateManagerHome();
+					throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+					invalidateManagerHome();
+					throw new FDResourceException(re, "Error talking to session bean");
+			}
+	    }	
+	    public static ErpAddressModel getLastOrderAddress(FDIdentity identity) throws FDResourceException {
+	    	ErpAddressModel address = null;
+			lookupManagerHome();
+			try {
+					FDCustomerManagerSB sb = managerHome.create();
+					String lastOrderId = sb.getLastOrderID(identity);
+					address = sb.getLastOrderAddress(lastOrderId);
+					return address;
+			} catch (CreateException ce) {
+					invalidateManagerHome();
+					throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+					invalidateManagerHome();
+					throw new FDResourceException(re, "Error talking to session bean");
+			}catch (SQLException se) {
+				invalidateManagerHome();
+				throw new FDResourceException(se, "Error running SQL");
+		}
+	    }	
 }

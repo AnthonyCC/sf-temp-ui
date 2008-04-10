@@ -17,7 +17,9 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
+import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUser;
@@ -61,7 +63,11 @@ public class DeactivateAccountTag extends com.freshdirect.framework.webapp.BodyT
 				try {
 					if ( "deactivate".equalsIgnoreCase(this.action) ) {
 
-						FDCustomerManager.setActive(AccountActivityUtil.getActionInfo(session, this.notes), false);
+						FDActionInfo action= AccountActivityUtil.getActionInfo(session, this.notes);
+						FDCustomerManager.setActive(action, false);
+						if (EnumDPAutoRenewalType.YES.equals(FDCustomerManager.hasAutoRenewDP(action.getIdentity().getErpCustomerPK()))) {
+							FDCustomerManager.setHasAutoRenewDP(action.getIdentity().getErpCustomerPK(), action.getSource(), action.getInitiator(), false);
+						}
 
 					} else if ( "activate".equalsIgnoreCase(this.action) ) {
 
