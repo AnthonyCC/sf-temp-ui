@@ -19,8 +19,8 @@
     <td>
 	
 	
-			<img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br>
-				<FONT CLASS="text11rbold"><%= errorMsg %><br>
+			<img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br/>
+				<font class="text11rbold"><%= errorMsg %><br/>
 				<%
 				String fieldDescription = "";
 				String fieldCode = "";
@@ -37,7 +37,7 @@
 					%>
 					<tr><td width=15>
 						</td><td>
- 							<a href="#<%=fieldCode%>"><%=fieldDescription%></a> <br>
+ 							<a href="#<%=fieldCode%>"><%=fieldDescription%></a> <br/>
 							<!-- <%=fieldDescription%>	 -->		
 						</td>
 					</tr>
@@ -66,7 +66,7 @@
 				%>
 			
 				</font>
-			<img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br>
+			<img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"><br/>
 	
 	</td>
     <td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
@@ -81,5 +81,5 @@
     <td colspan="2" bgcolor="#CC3300"><img src="/media_stat/images/layout/cc3300.gif" width="1" height="1"></td>
 </tr>
 </table>
-<br>
+<br/>
 <%} %>

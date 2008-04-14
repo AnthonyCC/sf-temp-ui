@@ -113,7 +113,7 @@
                 <a href="<%= response.encodeURL("/main/deactivate_account.jsp?successPage="+request.getRequestURI()) %>" class="new">REACTIVATED</a>
         <% } %>
     </td>
-    <td></td>
+    <td>&nbsp;</td>
 	<td align="right"><a href="javascript:address.submit()" class="checkout">CONTINUE CHECKOUT >></a></td>
     </tr>
 </table>
