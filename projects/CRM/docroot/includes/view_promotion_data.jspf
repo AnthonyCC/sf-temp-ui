@@ -237,18 +237,21 @@ int col2Width = 200;
       <td colspan="1" align="right">Order Type:</td>
       <td colspan="3"><strong><%=strOrderTypeBuf.toString()%></strong></td>
       
-       <td rowspan="4" style="border-left: solid 1px #CCCCCC;">&nbsp;</td>
+       <td rowspan="6" style="border-left: solid 1px #CCCCCC;">&nbsp;</td>
        
-       <td colspan="1" align="right" rowspan="3">Need Category items:<br/>
-      	<span class="field_note">one of the categories<br/> cart. comma separated<br/> no whitespaces</span></td>
-       <td colspan="3">&nbsp;<strong><%=promotion.getNeedItemsFrom()%></strong></td>
+      <td colspan="1" align="right">Exclude SKU prefix:</td>
+      <td colspan="3">&nbsp; <strong><%=promotion.getExcludeSkuPrefix()%></strong> </td>
     </tr>
     
      <tr valign="top">
 	    <td colspan="1" align="right">Minimum Order Subtotal:&nbsp;</td>
 	    <td colspan="3">$ <strong><%=promotion.getMinSubtotal()%></strong> </td>	    
 	           
-       <td colspan="4" align="right">&nbsp;</td>
+       <td colspan="1" align="right">Need Dry Goods:</td>
+      <td colspan="3">
+                &nbsp;<input type="radio" name="need_dry_goods" value="yes_dry_goods" <%=promotion.getNeedDryGoods() ? "CHECKED" : ""%> DISABLED> Yes
+                &nbsp;&nbsp;&nbsp;<input type="radio" name="need_dry_goods" value="no_dry_goods" <%=(!promotion.getNeedDryGoods()) ? "CHECKED" : ""%> DISABLED> No
+      </td>
        
 	  </tr>
 	  
@@ -256,7 +259,9 @@ int col2Width = 200;
 	    <td colspan="1" align="right">Apply on order #:&nbsp;</td>
 	    <td colspan="3"><strong><%=promotion.getOrderCount()%></strong></td>	    	    
        
-       	<td colspan="4" align="right">&nbsp;</td>
+       	<td colspan="1" align="right">Need Category items:<br/>
+      	<span class="field_note">one of the categories<br/> cart. comma separated<br/> no whitespaces</span></td>
+       <td colspan="3">&nbsp;<strong><%=promotion.getNeedItemsFrom()%></strong></td>
        
 	  </tr>
 	  
@@ -304,8 +309,19 @@ int col2Width = 200;
               <%}%>
         </td>
         
-        <td colspan="1" align="right">&nbsp;</td>
-		<td colspan="3">&nbsp;</td>	
+        	<td colspan="1" align="right">Need Brands:<br/>
+      	<span class="field_note">comma separated<br/>  no whitespaces<br/></span></td>
+       <td colspan="3">&nbsp;<strong><%=promotion.getNeedBrands()%></strong></td>
+	  </tr>
+          
+	  <tr valign="top">
+	    <td colspan="1" align="right">&nbsp;</td>
+	    <td colspan="3">&nbsp;</td>	    	    
+       
+       	<td colspan="1" align="right">Exclude Brands:<br/>
+      	<span class="field_note">comma separated<br/>  no whitespaces<br/></span></td>
+       <td colspan="3">&nbsp;<strong><%=promotion.getExcludeBrands()%></strong></td>
+       
 	  </tr>
                    				
 	</table>
