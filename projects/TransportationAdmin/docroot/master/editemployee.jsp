@@ -75,6 +75,31 @@
 							 		&nbsp;<form:errors path="employeeJobType" />
 							 	</td>
 							 </tr>
+							 <tr>
+							    <td>Hire Date</td>
+							    <td>
+							    	<form:input maxlength="50" size="24" path="hireDate" />
+							    
+							    &nbsp;<a href="#" id="trigger_hireDate" style="font-size: 9px;">
+							  	 			<img src="images/calendar.gif"  style="border:0"  alt=">>" />
+							  	 		  </a>
+							  	 	 <script language="javascript">									
+									    Calendar.setup(
+									    {
+										    showsTime : false,
+										    electric : false,
+										    inputField : "hireDate",
+										    ifFormat : "%m/%d/%Y",
+										    singleClick: true,  	                                        
+										    button : "trigger_hireDate"										     
+										 }
+									    );									    
+									  </script>
+								</td>	  
+							 	<td>
+							 		&nbsp;<form:errors path="hireDate" />
+							 	</td>
+							 </tr>		  	
 							<tr><td colspan="3">&nbsp;</td></tr>
 							<tr>
 							    <td colspan="3" align="center">
