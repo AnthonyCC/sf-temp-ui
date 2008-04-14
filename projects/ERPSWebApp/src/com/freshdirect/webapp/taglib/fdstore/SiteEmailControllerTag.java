@@ -71,7 +71,7 @@ public class SiteEmailControllerTag extends AbstractControllerTag implements Ses
  		form.validateForm(result);
  		
  		TellAFriend friend= form.getTellAFriend(customerInfo, customerIdentity);
- 		friend.setUser(user.getUser());
+ 		//friend.setUser(user.getUser());
  		//System.out.println("friend.setUser(user) :"+user); 		
 		session.setAttribute(TELL_A_FRIEND, friend);
 	
@@ -85,11 +85,13 @@ public class SiteEmailControllerTag extends AbstractControllerTag implements Ses
 	 private void sendEmail(HttpServletRequest request) throws FDResourceException {
 	 	
 	 	HttpSession session = pageContext.getSession();
+	 	FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
 
 	 	TellAFriend taf = (TellAFriend) session.getAttribute(TELL_A_FRIEND);
 	 	System.out.println("sending the mail");	
-		taf.setServer(request.getServerName()+":"+request.getServerPort());
-		taf.send(pageContext.getServletContext());
+		taf.setServer(request.getServerName()+":"+request.getServerPort());		
+ 		
+		taf.send(pageContext.getServletContext(), user.getUser());
 				
 		session.removeAttribute(TELL_A_FRIEND);
 	 }

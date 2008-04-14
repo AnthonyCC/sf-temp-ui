@@ -9,6 +9,7 @@
 package com.freshdirect.fdstore.customer;
 
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -20,7 +21,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.sql.SQLException;
 
 import javax.ejb.CreateException;
 import javax.naming.Context;
@@ -31,8 +31,6 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.crm.CrmAgentModel;
-import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumPaymentType;
@@ -54,15 +52,13 @@ import com.freshdirect.customer.ErpDuplicatePaymentMethodException;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpInvalidPasswordException;
-import com.freshdirect.customer.ErpInvoiceModel;
 import com.freshdirect.customer.ErpModifyOrderModel;
 import com.freshdirect.customer.ErpOrderHistory;
 import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
-import com.freshdirect.customer.ErpSaleNotFoundException;
-import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpPromotionHistory;
+import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ErpWebOrderHistory;
 import com.freshdirect.customer.OrderHistoryI;
@@ -79,7 +75,6 @@ import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.deliverypass.DlvPassUsageInfo;
 import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
-import com.freshdirect.deliverypass.EnumDlvPassProfileType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDDepotManager;
@@ -112,7 +107,6 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.xml.XSLTransformer;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
-import com.freshdirect.crm.CrmSystemCaseInfo;
 
 
 /**

@@ -10,6 +10,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.referral.FDInvalidReferralException;
 import com.freshdirect.fdstore.referral.FDReferralProgramModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -143,11 +144,11 @@ public class TellAFriend implements java.io.Serializable {
 	 *  @throws FDResourceException on FD resource issues
 	 *  @throws FDInvalidReferralException on referral issues
 	 */
-	public void send(ServletContext ctx) throws FDResourceException {
+	public void send(ServletContext ctx, FDUserI fdUser) throws FDResourceException {
 		
 		try {
-			decorate(ctx);
-			FDCustomerManager.sendTellAFriendEmail(this);
+			decorate(ctx);			
+			FDCustomerManager.sendTellAFriendEmail(this, fdUser);
 		} catch (IOException ie) {
 			ie.printStackTrace();
 			LOGGER.warn("Could not create a Referral", ie);

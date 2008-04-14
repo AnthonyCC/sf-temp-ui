@@ -35,7 +35,7 @@ public class TellAFriendUtil {
 		try {
 			
 			decorateTellAFriendProduct(tafp, ctx);
-			FDCustomerManager.sendTellAFriendEmail(tafp);
+			FDCustomerManager.sendTellAFriendEmail(tafp, null);
 
 		}catch(IOException ie){
 			LOGGER.warn("Product does not have a description", ie);
