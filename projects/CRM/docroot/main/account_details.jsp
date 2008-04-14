@@ -26,6 +26,7 @@
 <%@ page import="com.freshdirect.webapp.util.CCFormatter" %>
 <%@ page import="com.freshdirect.framework.core.PrimaryKey"  %>
 <%@ page import="com.freshdirect.fdstore.referral.FDReferralManager" %>
+<%@ page import='java.util.*' %>
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri="crm" prefix="crm" %>
@@ -33,13 +34,24 @@
 <crm:GetFDUser id="user">
 <%
 CrmSession.getSessionStatus(session).setSaleId(null);
-
+//request.setAttribute("bodyOnLoad","setInterval('blinkIt()',500)");
 boolean forPrint = "print".equalsIgnoreCase(request.getParameter("for"));
 String tmpl = "/template/" + (forPrint ? "print" : "top_nav") + ".jsp";
 String actionName = request.getParameter("actionName");
 String successPage = "resubmitCustomer".equals(actionName) ? "/main/resubmit_success.jsp" : null;
 boolean saveCart = request.getParameter("saveCart") == null ? false : true ;
 %>
+<script type="text/javascript">
+function blinkIt() {
+ if (!document.all) return;
+ else {
+   for(i=0;i<document.all.tags('blink').length;i++){
+      s=document.all.tags('blink')[i];
+      s.style.visibility=(s.style.visibility=='visible')?'hidden':'visible';
+   }
+ }
+}
+</script>
 <crm:CrmPaymentMethodController actionName="<%=actionName%>" result="ccResult">
 <crm:CrmAddressController actionName="<%=actionName%>" result="adResult">
 <% boolean editable = false; %>
@@ -471,9 +483,18 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
                         <tr><td colspan="2" style="border-top: 1px dashed #CCCCCC;" align="center">
                         <%
                             FDReservation rsv = user.getReservation();
-                                if (rsv != null && rsv.getAddressId().equals(address.getPK().getId())) {%><span style="color:#FF6600;">&raquo;</span> Reserved timeslot: <b><%=CCFormatter.formatShortDlvDate(rsv.getStartTime())%>, <%=CCFormatter.formatTime(rsv.getStartTime())%> - <%=CCFormatter.formatDeliveryTime(rsv.getEndTime())%></b> <% if (editable) {%>(<a href="/customer_account/reserve_timeslot.jsp?addressId=<%=address.getPK().getId()%>">Edit</a>)<% } else { %><br><%=case_required%><% } %>
+                                if (rsv != null && rsv.getAddressId().equals(address.getPK().getId())) {%>
+                                	<span style="color:#FF6600;">&raquo;</span> Reserved timeslot: <b><%=CCFormatter.formatShortDlvDate(rsv.getStartTime())%>, <%=CCFormatter.formatTime(rsv.getStartTime())%> - <%=CCFormatter.formatDeliveryTime(rsv.getEndTime())%></b> 
+                                		<% FDDeliveryManager.getInstance().geocodeAddress(address);
+                                		   String zoneId = FDDeliveryManager.getInstance().getZoneInfo(address, Calendar.getInstance().getTime()).getZoneId();
+                                		
+                                		if(zoneId == null || !zoneId.equalsIgnoreCase(rsv.getZoneId())) { %>
+                                			<blink><span class='no'>ZONE MISMATCH</span></blink>
+                                		<% }                                		
+                                		 if (editable) {%>(<a href="/customer_account/reserve_timeslot.jsp?addressId=<%=address.getPK().getId()%>">Edit</a>)
+                                			<% } else { %><br><%=case_required%><% } %>
                             <% } else { %>
-                            <% if (editable) {%><a href="/customer_account/reserve_timeslot.jsp?addressId=<%=address.getPK().getId()%>">Reserve Timeslot</a><% } else { %>Reserve Timeslot <br><%=case_required%><% } %>
+                           		 <% if (editable) {%><a href="/customer_account/reserve_timeslot.jsp?addressId=<%=address.getPK().getId()%>">Reserve Timeslot</a><% } else { %>Reserve Timeslot <br><%=case_required%><% } %>
                             <% } %>
                         </td></tr>
                         <% } %>

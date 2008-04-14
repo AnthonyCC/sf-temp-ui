@@ -126,9 +126,9 @@ public class DlvManagerDAO {
 		java.util.Date endDate)
 		throws SQLException, InvalidAddressException {
 
-		if ((address.getLatitude() == 0.0) || (address.getLongitude() == 0.0)) {
+		//if ((address.getLatitude() == 0.0) || (address.getLongitude() == 0.0)) {
 			geocodeAddress(conn, address, false);
-		}
+		//}
 		
 		PreparedStatement ps = conn.prepareStatement(TIMESLOTS);
 		
