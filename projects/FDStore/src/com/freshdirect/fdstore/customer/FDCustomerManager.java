@@ -1773,7 +1773,7 @@ public class FDCustomerManager {
 	}
 
 
-	public static void sendTellAFriendEmail(TellAFriend mailInfo) throws FDResourceException {	
+	public static void sendTellAFriendEmail(TellAFriend mailInfo, FDUserI fdUser) throws FDResourceException {	
 		
 		LOGGER.debug("inside sendTellAFriendEmail");
 		
@@ -1782,7 +1782,7 @@ public class FDCustomerManager {
 		} else {
 			ReferralProgramInvitaionModel model=new ReferralProgramInvitaionModel();
 			model.loadReferralProgInvtModel(mailInfo);
-			ReferralProgramInvitaionModel referral = FDReferralManager.createReferralInvitee(model,mailInfo.getUser());
+			ReferralProgramInvitaionModel referral = FDReferralManager.createReferralInvitee(model,fdUser);
 			if (referral != null && referral.getPK() != null &&
 					(referral.getStatus().equals(EnumReferralStatus.REFERRED))) { 
 				mailInfo.setReferralId(referral.getPK().getId());
