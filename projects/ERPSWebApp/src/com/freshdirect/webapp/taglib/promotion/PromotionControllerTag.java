@@ -590,7 +590,7 @@ public class PromotionControllerTag extends AbstractControllerTag {
 		String key = "attributeList["+index+"].";
 		tmpParam.setAttributeIndex(index);
 		tmpParam.setAttributeName(request.getParameter(key+"attributeName"));
-		tmpParam.setDesiredValue(request.getParameter(key+"desiredValue"));
+		tmpParam.setDesiredValue(request.getParameter(key+"desiredValue").trim());// Fix to trim invalid profiles with space.
 		//tmpParam.setOperator(request.getParameter(key+"operator"));
 		return tmpParam;			
 	}
