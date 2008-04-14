@@ -20,7 +20,7 @@ function chgQty(qtyFldName,delta,min,max) {
 	if (isNaN(qty)) qty=0;
 	qty = qty + delta;
 
-	if (qty < 0 || (qty < min && delta < 0) ){ 
+	if (qty <= 0 || (qty < min && delta < 0) ){ 
 		qty=0;
 	} else if(qty < min && delta >=0) {
 		qty=min;
