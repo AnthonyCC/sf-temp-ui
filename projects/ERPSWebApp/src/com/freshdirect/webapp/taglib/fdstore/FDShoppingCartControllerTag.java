@@ -1158,7 +1158,7 @@ public class FDShoppingCartControllerTag extends
 		double sum = 0;
 		for (Iterator i = this.cartLinesToAdd.iterator(); i.hasNext();) {
 			FDCartLineI line = (FDCartLineI) i.next();
-			if (productName.equals(line.getProductName()) && categoryName.equals(line.getCategoryName())) {
+			if (productName.equals(line.getProductName())) {
 				sum += line.getQuantity();
 			}
 		}
