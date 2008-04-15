@@ -177,6 +177,7 @@ public abstract class ViewTimeslots extends DlvPage implements PageDetachListene
 		 */
 		public Collection getTimeslots(String zoneCode, Date date) {
 			Map zoneTimeslots = (Map)zoneIndex.get(zoneCode);
+			if (zoneTimeslots == null) return Collections.EMPTY_SET;
 			Set res = (Set)zoneTimeslots.get(date);
 			return res == null ? Collections.EMPTY_SET : res;
 		}
@@ -188,6 +189,7 @@ public abstract class ViewTimeslots extends DlvPage implements PageDetachListene
 		public Collection getTimeslots(String zoneCode) {
 			List allTimeslots = new ArrayList();
 			Map zoneTimeslots = (Map)zoneIndex.get(zoneCode);
+			if (zoneTimeslots == null) return allTimeslots;
 			for(Iterator i = zoneTimeslots.values().iterator(); i.hasNext();) {
 				allTimeslots.addAll((Set)i.next());
 			}
