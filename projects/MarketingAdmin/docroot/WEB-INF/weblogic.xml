@@ -4,9 +4,9 @@
 
 
     <security-role-assignment>
-		<role-name>mktAdmin</role-name>
-		<principal-name>mktGrp</principal-name>
-	</security-role-assignment>
+  	<role-name>MrktAdmin</role-name>
+    <externally-defined/>
+  </security-role-assignment>
 
 <!--
 	<session-descriptor>

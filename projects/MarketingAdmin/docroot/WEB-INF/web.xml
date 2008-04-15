@@ -164,9 +164,9 @@
 			<http-method>GET</http-method>
 		</web-resource-collection>
 		<auth-constraint>
-			<description>Authorization Constraints for DlvConfirm</description>
-			<role-name>mktAdmin</role-name>
-		</auth-constraint>
+	      <description>Security Constraints for TrnAdmin</description>
+	      <role-name>MrktAdmin</role-name>	     
+    	</auth-constraint>
 		<user-data-constraint>
 			<description>SSL not required</description>
 			<transport-guarantee>NONE</transport-guarantee>
@@ -174,11 +174,12 @@
 	</security-constraint>
 	<login-config>
 		<auth-method>BASIC</auth-method>
-		<realm-name>weblogic</realm-name>
+		<realm-name>FreshDirect</realm-name>		
 	</login-config>
-	<security-role>
-		<description>DlvConfirmation Users</description>
-		<role-name>mktAdmin</role-name>
-	</security-role>
+
+	  <security-role>
+	    <description>MrktAdmin administrators</description>
+	    <role-name>MrktAdmin</role-name>
+	  </security-role>		  
 
 </web-app>
