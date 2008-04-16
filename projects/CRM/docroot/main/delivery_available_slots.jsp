@@ -40,45 +40,58 @@ Calendar tomorrow = Calendar.getInstance();
 tomorrow.add(Calendar.DATE, 1);
 
 if (user != null) {
-if(user.isHomeUser()){
-    shipToAddresses = FDCustomerManager.getShipToAddresses(user.getIdentity());
-	for (Iterator i=shipToAddresses.iterator(); i.hasNext(); ) {
-		ErpAddressModel a = (ErpAddressModel)i.next();
-		if ( a.getPK().getId().equals(addressId) || addressId == null ) {
-			address = a;
-			addressId = address.getPK().getId();
-			break;
-		} 
-	}
-} else {
-    DlvLocationModel location = null;
+	if (user.isHomeUser()) {
+	    shipToAddresses = FDCustomerManager.getShipToAddresses(user.getIdentity());
+		for (Iterator i=shipToAddresses.iterator(); i.hasNext(); ) {
+			ErpAddressModel a = (ErpAddressModel)i.next();
+			if (addressId == null || a.getPK().getId().equals(addressId) ) {
+				address = a;
+				addressId = address.getPK().getId();
+				break;
+			} 
+		}
+	} else {
 %>
 <fd:GetDepotLocations id='locations' depotCode='<%=user.getDepotCode()%>'>
-    
-    <%String dlocId = FDCustomerManager.getDefaultDepotLocationPK(user.getIdentity());%>
-    <logic:iterate id="loc" collection="<%= locations %>" type="com.freshdirect.delivery.depot.DlvLocationModel">
-        <%
-            DlvDepotModel depot = FDDepotManager.getInstance().getDepotByLocationId( loc.getPK().getId() );
+<%
+        // add locations
+        ArrayList extendedLocations = new ArrayList(locations);
+
+        // then add default locations
+        String defaultDepotLocationId = FDCustomerManager.getDefaultDepotLocationPK(user.getIdentity());
+        DlvDepotModel defaultDepot = FDDepotManager.getInstance().getDepotByLocationId( defaultDepotLocationId );
+
+        extendedLocations.addAll(defaultDepot.getLocations());
+
+
+        DlvLocationModel foundLocation = null;
+        Iterator it = extendedLocations.iterator();
+        while (it.hasNext()) {
+        	DlvLocationModel loc = (DlvLocationModel) it.next();
+
+        	DlvDepotModel depot = FDDepotManager.getInstance().getDepotByLocationId( loc.getPK().getId() );
             ErpDepotAddressModel address1 = new ErpDepotAddressModel(loc.getAddress());
             address1.setRegionId(depot.getRegionId());
             address1.setZoneCode(loc.getZoneCode());
             address1.setLocationId(loc.getPK().getId());
             address1.setFacility(loc.getFacility());
-        
+
             shipToAddresses.add(address1);
 
-            if(addressId == null && dlocId.equals(loc.getPK().getId())){
-                location = loc;
+            String locationId = loc.getPK().getId();
+            if (locationId.equals(addressId) ||
+                    (foundLocation == null && locationId.equals(defaultDepotLocationId) )) {
                 address = address1;
-            } else if(addressId.equals(loc.getPK().getId())){
-                location = loc;
-                address = address1;
+
+                foundLocation = loc;
             }
-        %>
-    </logic:iterate>
+        }
+%>
 </fd:GetDepotLocations>
-<%}
+<%
+    }
 }
+
 SimpleDateFormat deliveryDayFormat = new SimpleDateFormat("EEE MM/d");
 boolean isCheckAddress = "1address".equalsIgnoreCase(request.getParameter("show"));
 %>
