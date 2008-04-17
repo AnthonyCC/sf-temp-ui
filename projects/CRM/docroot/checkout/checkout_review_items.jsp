@@ -324,79 +324,87 @@
 	</td>
 	</tr>
 	
-	<tr><td valign="top" colspan="3" rowspan="18" class="note"><input type="image" name="update_quantities" src="/media_stat/images/buttons/update_quantities.gif" width="113" height="16" border="0" alt="UPDATE QUANTITIES" VSPACE="2" HSPACE="0"><br>After changing a<br>quantity, click to<br>update prices.</td><td colspan="7"></td></tr>
-	
+	<tr>
+        <td valign="top" colspan="3" rowspan="18" class="note">
+            <input type="image" name="update_quantities" src="/media_stat/images/buttons/update_quantities.gif" width="113" height="16" border="0" alt="UPDATE QUANTITIES" VSPACE="2" HSPACE="0">
+            <br>After changing a
+            <br>quantity, click to
+            <br>update prices.
+        </td>
+        <td colspan="7"></td>
+	</tr>
 	<tr valign="top" class="orderSummary">
 		<td colspan="3" align="right">Order Subtotal:</td>
-		<td align="right"><%=CCFormatter.formatCurrency(cart.getSubTotal())%></td>
+		<td colspan="1" align="right"><%=CCFormatter.formatCurrency(cart.getSubTotal())%></td>
 		<td><%= cart.isEstimatedPrice() ? "*":"" %></td>
 		<td colspan="2">&nbsp;</td>
 	</tr>
 
-	<%
+<%
 	if (cart.getTaxValue() > 0) {
 		%>
 		<tr valign="top" class="orderSummary">
 			<td colspan="3" align="right">Total Tax:</td>
-			<td align="right"><%=CCFormatter.formatCurrency(cart.getTaxValue())%></td>
+			<td colspan="1" align="right"><%=CCFormatter.formatCurrency(cart.getTaxValue())%></td>
 			<td colspan="3"></td>
 		</tr>
-		<%
+<%
 	}
 
 	if (cart.getDepositValue() > 0) {
 		%>
 		<tr valign="top" class="orderSummary">
 			<td colspan="3" align="right">Bottle Deposit:</td>
-			<td align="right"><%=CCFormatter.formatCurrency(cart.getDepositValue())%></td>
+			<td colspan="1" align="right"><%=CCFormatter.formatCurrency(cart.getDepositValue())%></td>
 			<td colspan="3"></td>
 		</tr>
-		<%
+<%
 	}
 	
 	if (cart.isDlvPassApplied()) {
-	%>	
+	%>
 		<tr valign="top" class="orderSummary">
 			<td colspan="3" align="right">Delivery Charge:</td>
-			<td align="right"><%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %></td>
+			<td colspan="1" align="right"><%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %></td>
 			<td colspan="3">&nbsp;</td>
 		</tr>
-	<%
-	}	
-	else if (cart.getDeliverySurcharge() > 0) {
+<%
+	} else if (cart.getDeliverySurcharge() > 0) {
 		%>
 		<tr valign="top" class="orderSummary">
 			<td colspan="3" align="right">Delivery Charge<%if(cart.isDeliveryChargeWaived()){%> (waived)<%}%>:</td>
-			<td align="right"><%if(cart.isDeliveryChargeWaived()){%>$0.00<%}else{%><%=CCFormatter.formatCurrency(cart.getDeliverySurcharge())%><%}%></td>
+			<td colspan="1" align="right"><%if(cart.isDeliveryChargeWaived()){%>$0.00<%}else{%><%=CCFormatter.formatCurrency(cart.getDeliverySurcharge())%><%}%></td>
 			<td><%= cart.isDeliveryChargeTaxable() && !cart.isDeliveryChargeWaived() ? "&nbsp;<strong>T</strong>":""%></td>
 			<td colspan="2"></td>
 		</tr>
 		<%
 	}
-	%>
-	
-	<% if (cart.getMiscellaneousCharge() > 0.0) {%>
+
+    if (cart.getMiscellaneousCharge() > 0.0) {%>
 		<tr valign="top" class="orderSummary">
-           	      	<td colspan="3" align="right"><a href="javascript:popup('/shared/fee_info.jsp?type=fuel','large');">Fuel Surcharge</a><%if(cart.isMiscellaneousChargeWaived()){%> (waived)<%}%>:</td>
+           	<td colspan="3" align="right"><a href="javascript:popup('/shared/fee_info.jsp?type=fuel','large');">Fuel Surcharge</a><%if(cart.isMiscellaneousChargeWaived()){%> (waived)<%}%>:</td>
 			<td align="right"><%if(cart.isMiscellaneousChargeWaived()){%>$0.00<%}else{%><%= CCFormatter.formatCurrency(cart.getMiscellaneousCharge()) %><%}%></td>
 		    <td><%= cart.isMiscellaneousChargeTaxable() && !cart.isMiscellaneousChargeWaived() ? "&nbsp;<strong>T</strong>":""%></td>
 			<td colspan="2"></td>
 		</tr>
-	<%  } %>
-	
-	<% if (cart.getPhoneCharge() > 0.0 || ((cart.getPhoneCharge() == 0.0) && cart.isPhoneChargeWaived())) {%>
+<%
+    }
+
+    // TODO: this conditional branch is not part of i_viewcart.jspf
+    if (cart.getPhoneCharge() > 0.0 || ((cart.getPhoneCharge() == 0.0) && cart.isPhoneChargeWaived())) {%>
 		<tr valign="top" class="orderSummary">
            	<td colspan="3" align="right">Phone Charge<%if(cart.isPhoneChargeWaived()){%> (waived)<%}%>:</td>
 			<td align="right"><%if(cart.isPhoneChargeWaived()){%>$0.00<%}else{%><%= CCFormatter.formatCurrency(cart.getPhoneCharge()) %><%}%></td>
 		    <td><%= cart.isPhoneChargeTaxable() && !cart.isPhoneChargeWaived() ? "&nbsp;<strong>T</strong>":""%></td>
 			<td colspan="2"></td>
 		</tr>
-	<%  } %>
-	
-	<%
+<% 
+    }
 	double maxPromotion = user.getMaxSignupPromotion();
 	PromotionI redemptionPromo = user.getRedeemedPromotion();
-	List discounts = cart.getDiscounts();
+    boolean isRedemptionApplied = (redemptionPromo != null && user.getPromotionEligibility().isApplied(redemptionPromo.getPromotionCode()) );
+
+    List discounts = cart.getDiscounts();
 	for (Iterator iter = discounts.iterator(); iter.hasNext();) {
 		ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
 		Discount discount = discountLine.getDiscount();							
@@ -404,12 +412,11 @@
 			%>
 			<tr valign="top" class="orderSummary">
 				<td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=signup','large')">FREE FOOD</a></b>:</td>
-				<td align="right">-<%=CCFormatter.formatCurrency(discount.getAmount())%></td>
+				<td colspan="1" align="right">-<%=CCFormatter.formatCurrency(discount.getAmount())%></td>
 				<td colspan="3"></td>	   
 			</tr>	   
 			<%
-		} else if (redemptionPromo != null && user.getPromotionEligibility().isApplied(redemptionPromo.getPromotionCode()) && 
-					redemptionPromo.getPromotionCode().equalsIgnoreCase(discount.getPromotionCode())) { 
+        } else if (isRedemptionApplied && redemptionPromo.getPromotionCode().equalsIgnoreCase(discount.getPromotionCode())) { 
 			%>
 			<tr valign="top" class="orderSummary">
 				<td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= redemptionPromo.getPromotionCode()%>','small')"><%= redemptionPromo.getDescription()%></a></b>:</td>
@@ -420,11 +427,10 @@
 				<td colspan="3">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
 			</tr>	   
 	<%
-		}
+		} // TODO: missing else branch.
 	}
-	%>
 	
-	<% if (cart.getTotalDiscountValue() > 0) { 
+    if (cart.getTotalDiscountValue() > 0) { 
 		discounts = cart.getDiscounts();
 		for (Iterator iter = discounts.iterator(); iter.hasNext();) {
 			ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
@@ -440,45 +446,48 @@
 		<%
 		}
 	}
-	%>
-	<%
-	    if(redemptionPromo != null && redemptionPromo.isSampleItem() && user.getPromotionEligibility().isApplied(redemptionPromo.getPromotionCode())){
+
+    if (isRedemptionApplied) {
+        if (redemptionPromo.isSampleItem()) {
 	    %>
-	        <tr valign="top" class="orderSummary">
-	            <td colspan="3"align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%=redemptionPromo.getPromotionCode()%>','small')"><%=redemptionPromo.getDescription()%></a></b></td>
-	            <td align="right"><b>FREE!</b></td>
-	            <td></td>
-	            <td colspan="3">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
-	        </tr>
+        <tr valign="top" class="orderSummary">
+            <td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%=redemptionPromo.getPromotionCode()%>','small')"><%=redemptionPromo.getDescription()%></a></b></td>
+            <td colspan="1" align="right"><b>FREE!</b></td>
+            <td colspan="1"></td>
+            <td colspan="3">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
+        </tr>
 	    <%
+        } else if (redemptionPromo.isWaiveCharge()) {
+        %>
+            <tr valign="top" class="orderSummary">
+    			<td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%=redemptionPromo.getPromotionCode()%>','small')"><%=redemptionPromo.getDescription()%></a></b></td>
+                <td colspan="1" align="right"><b>$0.00</b></td>
+                <td colspan="1"></td>
+                <td colspan="3">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
+            </tr>
+        <%
 	    }
-	    else if(redemptionPromo != null && redemptionPromo.isWaiveCharge() && user.getPromotionEligibility().isApplied(redemptionPromo.getPromotionCode())){
-	        %>
-	            <tr valign="top" class="orderSummary">
-			<td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%=redemptionPromo.getPromotionCode()%>','small')"><%=redemptionPromo.getDescription()%></a></b></td>
-	                <td align="right"><b>$0.00</b></td>
-	                <td></td>
-	                <td colspan="3">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
-	            </tr>
-	        <%
-	    }
-	%>
-	<%  if (cart.getCustomerCreditsValue() > 0) { %>
+    }
+
+    if (cart.getCustomerCreditsValue() > 0) {
+        %>
 		<tr valign="top" class="orderSummary">
 			<td colspan="3" align="right">Credit Applied:</td>
-			<td align="right">-<%=CCFormatter.formatCurrency(cart.getCustomerCreditsValue())%></td>
+			<td colspan="1" align="right">-<%=CCFormatter.formatCurrency(cart.getCustomerCreditsValue())%></td>
 			<td colspan="3"></td>
 		</tr>		   
-	<%  } %>
+        <%
+	}
+	%>
 	<tr valign="top" class="orderTotal">
 		<td colspan="3" align="right"><b><% if (cart.isEstimatedPrice()) { %>ESTIMATED TOTAL<% } else { %>ORDER TOTAL<%}%></b>:</td>
-		<td align="right"><b><%= CCFormatter.formatCurrency(cart.getTotal()) %></b></td>
-		<td><% if (cart.isEstimatedPrice()) { %>*<% } %></td>
+		<td colspan="1" align="right"><b><%= CCFormatter.formatCurrency(cart.getTotal()) %></b></td>
+		<td colspan="1"><% if (cart.isEstimatedPrice()) { %>*<% } %></td>
 		<td colspan="2"></td>
 	</tr>
 	<%
-	   if(redemptionPromo != null && redemptionPromo.isHeaderDiscount() && user.getPromotionEligibility().isApplied(redemptionPromo.getPromotionCode())){
-			if(request.getAttribute("redeem_override_msg") != null) {
+    if (isRedemptionApplied && redemptionPromo.isHeaderDiscount()) {
+        if (request.getAttribute("redeem_override_msg") != null) {
 		%>
 		<%--
 			<SCRIPT LANGUAGE='JavaScript'>
@@ -491,11 +500,13 @@
 		</tr>
 
 		<%
-			}
-	  }
-	%>
-	<%
-	if(redemptionPromo == null && maxPromotion <= 0.0){
+	    }
+    }
+
+
+
+    if ( (redemptionPromo == null && maxPromotion <= 0.0)
+        || (redemptionPromo != null && !isRedemptionApplied) ) {
 		%>
 		<tr bgcolor="FFFFCE">
 			<td colspan="3" align="right" style="padding: 4px;"><b>Enter promotion code: </b></td>
@@ -508,11 +519,10 @@
 		<%
 	}
 
-	if (redemptionPromo != null
-		&& user.getPromotionEligibility().isEligible(redemptionPromo.getPromotionCode())
-		&& ( ! user.getPromotionEligibility().isApplied(redemptionPromo.getPromotionCode())
-			|| (redemptionPromo.getHeaderDiscountRules()!=null && !(redemptionPromo.getHeaderDiscountTotal()==0) && cart.getTotalDiscountValue() == 0)  )
-		) {
+    if (redemptionPromo != null && user.getPromotionEligibility().isEligible(redemptionPromo.getPromotionCode())
+        && ( ! user.getPromotionEligibility().isApplied(redemptionPromo.getPromotionCode())
+            || (redemptionPromo.getHeaderDiscountRules()!=null && !(redemptionPromo.getHeaderDiscountTotal()==0) && cart.getTotalDiscountValue() == 0)  )
+        ) {
 		
 		double redemptionAmt = 0;
 		String warningMessage = "";
@@ -526,15 +536,14 @@
 			
 		} else if (redemptionPromo.isCategoryDiscount()) {
 			warningMessage = SystemMessageList.MSG_REDEMPTION_NO_ELIGIBLE_CARTLINES;
-		}
-		else if (redemptionPromo.isSampleItem()) {
+		} else if (redemptionPromo.isSampleItem()) {
 			warningMessage = SystemMessageList.MSG_REDEMPTION_PRODUCT_UNAVAILABLE;
 		}
 		%>
 		<tr valign="top">
 			<td colspan="3"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%=redemptionPromo.getPromotionCode()%>','small')"><%=redemptionPromo.getDescription()%></a></b></td>
-			<td align="right"><%= redemptionPromo.isSampleItem() ? "<b>FREE!</b>" : "-" + CCFormatter.formatCurrency(redemptionAmt) %></td>
-			<td></td>
+			<td colspan="1" align="right"><%= redemptionPromo.isSampleItem() ? "<b>FREE!</b>" : "-" + CCFormatter.formatCurrency(redemptionAmt) %></td>
+			<td colspan="1"></td>
 			<td colspan="2">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
 		</tr>
 		<tr align="right">
@@ -545,54 +554,44 @@
 	%>
 
 	<tr>
-		<td colspan="7" align="right">
-		<%
-		if (identity == null || user.isEligibleForSignupPromotion()) {
-			if (user.isEligibleForSignupPromotion()) {
-				PromotionI signupPromo = user.getEligibleSignupPromotion();
-				
-				SignupDiscountRule discountRule = user.getSignupDiscountRule();
-				int minSubtotal = (int)discountRule.getMinSubtotal();
-				int maxAmount   = (int)discountRule.getMaxAmount();
-				%>
-				
-				Spend $<%=minSubtotal%> on this order to get $<%=maxAmount%> free, fresh food. <a href="javascript:popup('/shared/promotion_popup.jsp','large')">Click for details</a>.
-				
-				<%
-				if (cart.getSubTotal() < minSubtotal) {
-					%>
-					<br><b>This order does not yet qualify for $<%=maxAmount%> offer. Subtotal must be $<%=minSubtotal%> or more.</b>
-					<%
-				}
-				%>
-				<br>Applies to home delivery orders only.
-				<%
+		<td colspan="7" align="right"><%
+	if (identity == null || user.isEligibleForSignupPromotion()) {
+		if (user.isEligibleForSignupPromotion()) {
+			PromotionI signupPromo = user.getEligibleSignupPromotion();
+			
+			SignupDiscountRule discountRule = user.getSignupDiscountRule();
+			int minSubtotal = (int)discountRule.getMinSubtotal();
+			int maxAmount   = (int)discountRule.getMaxAmount();
+			%>Spend $<%=minSubtotal%> on this order to get $<%=maxAmount%> free, fresh food. <a href="javascript:popup('/shared/promotion_popup.jsp','large')">Click for details</a>.<%
+			if (cart.getSubTotal() < minSubtotal) {
+				%><br><b>This order does not yet qualify for $<%=maxAmount%> offer. Subtotal must be $<%=minSubtotal%> or more.</b><%
 			}
-			%>
-			
-			<% if (user.isPickupOnly()) { %><br><font color="#CC0000"><b>Pickup orders are not eligible for our free food promotion.</b></font><% } %>
-			
-			<%
+			%><br>Applies to home delivery orders only.<%
 		}
-		%>
+		
+	    if (user.isPickupOnly()) {
+	        %><br><font color="#CC0000"><b>Pickup orders are not eligible for our free food promotion.</b></font><%
+	    }
+	}
+	%>
 		</td>
 	</tr>
 	
 	<% 
-	if (user!=null && user.getIdentity() !=null) { %>
-		<fd:CustomerCreditHistoryGetterTag id='customerCreditHistory'>
-			<% if (customerCreditHistory.getRemainingAmount()>0.00) {
-				%>
-				<tr>
-				 	<td colspan="7" align="right">
-						<span class="text11">You have <%= CCFormatter.formatCurrency(customerCreditHistory.getRemainingAmount()) %> credit. Credits will be applied during check out.</span><br>
-					</td>
-				</tr>
-				<%
-				}
+	if (user!=null && user.getIdentity() !=null) {
+	    %><fd:CustomerCreditHistoryGetterTag id='customerCreditHistory'><%
+	    if (customerCreditHistory.getRemainingAmount()>0.00) {
 			%>
-	   </fd:CustomerCreditHistoryGetterTag>
-	<% } %>
+			<tr>
+			 	<td colspan="7" align="right">
+					<span class="text11">You have <%= CCFormatter.formatCurrency(customerCreditHistory.getRemainingAmount()) %> credit. Credits will be applied during check out.</span><br>
+				</td>
+			</tr>
+			<%
+		}
+		%></fd:CustomerCreditHistoryGetterTag><%
+	}
+	%>
 	</form>
 	<tr><td colspan="7" align="right"><br><strong>T</strong> = Taxable Item&nbsp;&nbsp;&nbsp;&nbsp;<strong>S</strong> = Special Price&nbsp;&nbsp;&nbsp;&nbsp;<strong>D</strong> = Bottle Deposit</td></tr>
 </table>
