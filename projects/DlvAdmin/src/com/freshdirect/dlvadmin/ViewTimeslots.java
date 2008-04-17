@@ -400,8 +400,8 @@ public abstract class ViewTimeslots extends DlvPage implements PageDetachListene
 	// for view detail selection control
 	public IPropertySelectionModel getDetailLevelSelectionModel() {
 		ObjectSelectionModel sm = new ObjectSelectionModel();
-		sm.add("byZone","Zone");
 		sm.add("byTimeslot","Timeslot");
+		sm.add("byZone","Zone");
 		return sm;
 	}
 	

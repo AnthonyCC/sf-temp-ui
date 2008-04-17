@@ -99,13 +99,18 @@
 												<td nowrap><span jwcid="@Insert" value="ognl:currentTimeslot.startTime">04:00 PM</span> - <span jwcid="@Insert" value="ognl:currentTimeslot.endTime">06:00 PM</span>- <span jwcid="@Insert" value="ognl:currentTimeslot.cutoffTime">11:00 PM</span></td>
 												<td align="right" class="total"><b><span jwcid="@Insert" value="ognl:currentTimeslot.capacity">12</span></b></td>
 												<td align="right" class="total"><b><span jwcid="@Insert" value="ognl:currentTimeslot.calculateCurrentAllocation(currentDate)">32</span></b></td>
+		                                        <td align="right" class="base"><b><span jwcid="@Insert" value="ognl:currentTimeslot.baseCapacity">32</span></b></td>                
+									            <td align="right" class="base"><b><span jwcid="@Insert" value="ognl:currentTimeslot.baseAllocation">32</span></b></td>
+									            
 		                                        <span jwcid="@If" condition="ognl:currentTimeslot.ctActive">
-													<td align="right" class="base"><b><span jwcid="@Insert" value="ognl:currentTimeslot.baseCapacity">32</span></b></td>                
-									                <td align="right" class="base"><b><span jwcid="@Insert" value="ognl:currentTimeslot.baseAllocation">32</span></b></td>
-									                <td align="right" class="ct"><b><span jwcid="@Insert" value="ognl:currentTimeslot.chefsTableCapacity">32</span></b></td>
+												    <td align="right" class="ct"><b><span jwcid="@Insert" value="ognl:currentTimeslot.chefsTableCapacity">32</span></b></td>
 									                <td align="right" class="ct"><b><span jwcid="@Insert" value="ognl:currentTimeslot.chefsTableAllocation">32</span></b></td>
 									                <td align="right" class="ct"><b><span jwcid="insertPercentage_Z">32</span></b></td> 
 		                                        </span>
+		                                        <span jwcid="@Else">
+									            	<td colspan="3" style="text-align:center;"><b>N/A</b></td>
+									            </span>
+		                                        
 											</tr>
 										</span>
 									
@@ -114,13 +119,11 @@
 											<td class="total"><b><span jwcid="insertCapacityTotal_Z" /></b></td>
 		                                    <td class="total"><b><span jwcid="insertAllocationTotal_Z" /></b></td>
 		                            
-		                                    <span jwcid="@If" condition="ognl:currentZone.ctActive">
-					                            <td class="base"><b><span jwcid="insertBaseCapacityTotal_Z" /></b></td>
-		            	                        <td class="base"><b><span jwcid="insertBaseAllocationTotal_Z" /></b></td>
-		                	                    <td class="ct"><b><span jwcid="insertCTCapacityTotal_Z" /></b></td>
-		                    	                <td class="ct"><b><span jwcid="insertCTAllocationTotal_Z" /></b></td>
-												<td class="ct"><b><span jwcid="insertPercentageTotal_Z" /></b></td>
-		                                    </span>
+					                        <td class="base"><b><span jwcid="insertBaseCapacityTotal_Z" /></b></td>
+		            	                    <td class="base"><b><span jwcid="insertBaseAllocationTotal_Z" /></b></td>
+		                	                <td class="ct"><b><span jwcid="insertCTCapacityTotal_Z" /></b></td>
+		                    	            <td class="ct"><b><span jwcid="insertCTAllocationTotal_Z" /></b></td>
+											<td class="ct"><b><span jwcid="insertPercentageTotal_Z" /></b></td>
 										</tr>
 									
 									</table>
@@ -190,13 +193,17 @@
 											
 												<td align="right" class="total"><b><span jwcid="@Insert" value="ognl:currentZoneTimeslot.value.capacity">12</span></b></td>
 												<td align="right" class="total"><b><span jwcid="@Insert" value="ognl:currentZoneTimeslot.value.calculateCurrentAllocation(currentDate)">32</span></b></td>
-		                             			<span jwcid="@If" condition="ognl:currentZoneTimeslot.value.ctActive">
 		                             			
-													<td align="right" class="base"><b><span jwcid="@Insert" value="ognl:currentZoneTimeslot.value.baseCapacity">32</span></b></td>                
-									                <td align="right" class="base"><b><span jwcid="@Insert" value="ognl:currentZoneTimeslot.value.baseAllocation">32</span></b></td>
+												<td align="right" class="base"><b><span jwcid="@Insert" value="ognl:currentZoneTimeslot.value.baseCapacity">32</span></b></td>                
+									            <td align="right" class="base"><b><span jwcid="@Insert" value="ognl:currentZoneTimeslot.value.baseAllocation">32</span></b></td>
+									            
+									            <span jwcid="@If" condition="ognl:currentZoneTimeslot.value.ctActive">
 									                <td align="right" class="ct"><b><span jwcid="@Insert" value="ognl:currentZoneTimeslot.value.chefsTableCapacity">32</span></b></td>
 									                <td align="right" class="ct"><b><span jwcid="@Insert" value="ognl:currentZoneTimeslot.value.chefsTableAllocation">32</span></b></td>
 									                <td align="right" class="ct"><b><span jwcid="insertPercentage_T">32</span></b></td>
+									            </span>
+									            <span jwcid="@Else">
+									            	<td colspan="3" style="text-align:center;"><b>N/A</b></td>
 									            </span>
 		                                        
 											</tr>
@@ -208,14 +215,13 @@
 											<td class="total"><b><span jwcid="insertCapacityTotal_T" /></b></td>
 		                                    <td class="total"><b><span jwcid="insertAllocationTotal_T" /></b></td>
 		                                  
-		                                  	<span jwcid="@If" condition="ognl:currentZoneTimeslot.value.ctActive">
-					                            <td class="base"><b><span jwcid="insertBaseCapacityTotal_T" /></b></td>
-		            	                        <td class="base"><b><span jwcid="insertBaseAllocationTotal_T" /></b></td>
-		                	                    <td class="ct"><b><span jwcid="insertCTCapacityTotal_T" /></b></td>
-		                    	                <td class="ct"><b><span jwcid="insertCTAllocationTotal_T" /></b></td>
-												<td class="ct"><b><span jwcid="insertPercentageTotal_T" /></b></td>
-											</span>
-		                                    
+		                                  	
+					                        <td class="base"><b><span jwcid="insertBaseCapacityTotal_T" /></b></td>
+		            	                    <td class="base"><b><span jwcid="insertBaseAllocationTotal_T" /></b></td>
+		                	                <td class="ct"><b><span jwcid="insertCTCapacityTotal_T" /></b></td>
+		                    	            <td class="ct"><b><span jwcid="insertCTAllocationTotal_T" /></b></td>
+											<td class="ct"><b><span jwcid="insertPercentageTotal_T" /></b></td>
+											
 										</tr>
 										
 									</table>
