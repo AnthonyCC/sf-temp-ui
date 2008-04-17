@@ -58,7 +58,7 @@
         &nbsp;Step 4 of 4: Review & Submit Order 
         <% if (!user.isActive()) { %>
             &nbsp;&nbsp;&nbsp;!!! Checkout prevented until account is 
-            <a href="<%= response.encodeURL("/main/deactivate_account.jsp?successPage="+request.getRequestURI()) %>" class="new">REACTIVATED</a>
+            <a href="<%= response.encodeURL("/customer_account/deactivate_account.jsp?successPage="+request.getRequestURI()) %>" class="new">REACTIVATED</a>
         <% } %>
         <span class="checkout_header_detail">&nbsp; | &nbsp;<input type="checkbox" name="silent_mode"> Don't send email invoice</span>
     </TD>

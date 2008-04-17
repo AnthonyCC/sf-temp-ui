@@ -110,7 +110,7 @@
             onmouseout="nd();" class="help">?</a>
         <% if (!user.isActive()) { %>
             &nbsp;&nbsp;&nbsp;!!! Checkout prevented until account is 
-                <a href="<%= response.encodeURL("/main/deactivate_account.jsp?successPage="+request.getRequestURI()) %>" class="new">REACTIVATED</a>
+                <a href="<%= response.encodeURL("/customer_account/deactivate_account.jsp?successPage="+request.getRequestURI()) %>" class="new">REACTIVATED</a>
         <% } %>
     </td>
     <td>&nbsp;</td>

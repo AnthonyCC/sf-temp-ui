@@ -19,7 +19,7 @@
 <jsp:include page='/includes/order_header.jsp'/>
 <table width="100%" cellpadding="2" cellspacing="0" border="0" class="checkout_header<%= (user.isActive()) ? "" : "_warning" %>">
 	<tr>
-	<td width="80%">&nbsp;Step 1 of 4 <a href="/checkout/checkout_select_address.jsp" class="checkout_header_step">Select Delivery Address</a> > Add New Address <% if (!user.isActive()) { %>&nbsp;&nbsp;&nbsp;!!! Checkout prevented until account is <a href="<%= response.encodeURL("/main/deactivate_account.jsp?successPage="+request.getRequestURI()) %>" class="new">REACTIVATED</a><% } %></td>
+	<td width="80%">&nbsp;Step 1 of 4 <a href="/checkout/checkout_select_address.jsp" class="checkout_header_step">Select Delivery Address</a> > Add New Address <% if (!user.isActive()) { %>&nbsp;&nbsp;&nbsp;!!! Checkout prevented until account is <a href="<%= response.encodeURL("/customer_account/deactivate_account.jsp?successPage="+request.getRequestURI()) %>" class="new">REACTIVATED</a><% } %></td>
 	<td align="right"></td>
 	</tr>
 </table>

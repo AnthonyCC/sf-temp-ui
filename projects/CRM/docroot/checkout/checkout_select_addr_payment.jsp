@@ -137,7 +137,7 @@
     <input type="hidden" name="actionName" value="">
     <input type="hidden" name="deletePaymentId" value="">
     <tr>
-    <td width="80%">&nbsp;STEP 2 OF 5: Select Address &amp; Payment <% if (erpCustomer != null && !erpCustomer.isActive()) { %>&nbsp;&nbsp;&nbsp;!!! Checkout prevented until account is <a href="<%= response.encodeURL("/main/deactivate_account.jsp?successPage="+request.getRequestURI()) %>" class="new">REACTIVATED</a><% } %></td>
+    <td width="80%">&nbsp;STEP 2 OF 5: Select Address &amp; Payment <% if (erpCustomer != null && !erpCustomer.isActive()) { %>&nbsp;&nbsp;&nbsp;!!! Checkout prevented until account is <a href="<%= response.encodeURL("/customer_account/deactivate_account.jsp?successPage="+request.getRequestURI()) %>" class="new">REACTIVATED</a><% } %></td>
     <td align="right"><a href="javascript:address_and_payment.submit()" class="checkout">CONTINUE CHECKOUT >></a></td>
     </tr>
 </table>

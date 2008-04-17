@@ -92,7 +92,7 @@
         &nbsp;Step 2 of 4: Select Delivery Time
         <% if (!user.isActive()) { %>
             &nbsp;&nbsp;&nbsp;!!! Checkout prevented until account is 
-            <a href="<%= response.encodeURL("/main/deactivate_account.jsp?successPage="+request.getRequestURI()) %>" class="new">REACTIVATED</a>
+            <a href="<%= response.encodeURL("/customer_account/deactivate_account.jsp?successPage="+request.getRequestURI()) %>" class="new">REACTIVATED</a>
         <% } %>
     </TD>
 	<td align="right"><a href="javascript:select_delivery_slot.submit()" class="checkout">CONTINUE CHECKOUT >></a></td>
