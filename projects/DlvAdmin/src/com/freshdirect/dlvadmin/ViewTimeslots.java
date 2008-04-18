@@ -33,6 +33,9 @@ public abstract class ViewTimeslots extends DlvPage implements PageDetachListene
 	
 	private final SimpleDateFormat timeFormatter = new SimpleDateFormat("hh:mm aa");
 	private final SimpleDateFormat dateFormatter = new SimpleDateFormat("EEEE'<br>'MMMM d, yyyy");
+	
+	private final static String TIMESLOT_VIEW = "byTimeslot";
+	private final static String ZONE_VIEW = "byZone";
 
 	private DlvHistoricTimeslotData timeslotData;
 	private TimeslotIndex timeslotsByWindow;
@@ -72,6 +75,10 @@ public abstract class ViewTimeslots extends DlvPage implements PageDetachListene
 	public abstract String getSelectedZone();
 	
 	public abstract String getSelectedDetailLevel();
+	
+	public String getDefaultDetailLevel() {
+		return TIMESLOT_VIEW;
+	}
 	
 	public String getTimeWindowString(DateRange range) {
 		StringBuffer buffer = new StringBuffer(30);
@@ -400,8 +407,8 @@ public abstract class ViewTimeslots extends DlvPage implements PageDetachListene
 	// for view detail selection control
 	public IPropertySelectionModel getDetailLevelSelectionModel() {
 		ObjectSelectionModel sm = new ObjectSelectionModel();
-		sm.add("byTimeslot","Timeslot");
-		sm.add("byZone","Zone");
+		sm.add(TIMESLOT_VIEW,"Timeslot");
+		sm.add(ZONE_VIEW,"Zone");
 		return sm;
 	}
 	

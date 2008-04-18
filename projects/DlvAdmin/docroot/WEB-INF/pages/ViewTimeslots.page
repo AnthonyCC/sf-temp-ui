@@ -12,6 +12,7 @@
 	<property-specification name="selectedRegion" type="com.freshdirect.delivery.model.DlvRegionModel" persistent="yes"/>
 	<property-specification name="selectedZone" type="java.lang.String" persistent="yes"/>
 	<property-specification name="selectedDay" type="java.lang.Integer" persistent="yes"/>
+	<property-specification name="selectedDetailLevel" type="java.lang.String" persistent="yes" initial-value="defaultDetailLevel"/>
 
 	<property-specification name="startDate" initial-value="calculateDate(-7)" type="java.util.Date"/>
 	<property-specification name="endDate" initial-value="calculateDate(7)" type="java.util.Date"/>
