@@ -54,14 +54,35 @@ if (user != null) {
 %>
 <fd:GetDepotLocations id='locations' depotCode='<%=user.getDepotCode()%>'>
 <%
-        // add locations
+        // [1] Add depot locations
         ArrayList extendedLocations = new ArrayList(locations);
 
-        // then add default locations
+        // [2] then add default locations (if exist)
         String defaultDepotLocationId = FDCustomerManager.getDefaultDepotLocationPK(user.getIdentity());
-        DlvDepotModel defaultDepot = FDDepotManager.getInstance().getDepotByLocationId( defaultDepotLocationId );
+        if (defaultDepotLocationId != null) {
+	        DlvDepotModel defaultDepot = FDDepotManager.getInstance().getDepotByLocationId( defaultDepotLocationId );
+	        extendedLocations.addAll(defaultDepot.getLocations());
+        }
 
-        extendedLocations.addAll(defaultDepot.getLocations());
+        // [3] Pickup locations
+        Collection pickups = FDDepotManager.getInstance().getPickupDepots();
+        
+        Iterator dit = pickups.iterator();
+        while (dit.hasNext()) {
+        	DlvDepotModel pickupDepot = (DlvDepotModel) dit.next();
+        	
+        	// Skip The Hamptons locations
+        	if ("HAM".equalsIgnoreCase(pickupDepot.getDepotCode()) )
+        		continue;
+
+            if (defaultDepotLocationId == null && user.isPickupOnly() /** && pickups.size() > 0 **/) {
+                DlvLocationModel dl = (DlvLocationModel) pickupDepot.getLocations().iterator().next();
+                defaultDepotLocationId = dl.getPK().getId();
+            }
+
+            extendedLocations.addAll(pickupDepot.getLocations());
+        }
+
 
 
         DlvLocationModel foundLocation = null;
