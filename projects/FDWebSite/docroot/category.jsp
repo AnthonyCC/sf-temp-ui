@@ -23,7 +23,7 @@ ProductModel prodModel = ContentFactory.getInstance().getProductByName(request.g
 
 //--------OAS Page Variables-----------------------
 request.setAttribute("sitePage", prodModel == null ? currentFolder.getPath() : prodModel.getPath());
-request.setAttribute("listPos", "LittleRandy,SystemMessage,CategoryNote,ProductNote");
+request.setAttribute("listPos", "LittleRandy,SystemMessage,CategoryNote,ProductNote,SideCartBottom");
 %>
 
 <%

@@ -56,12 +56,14 @@ if(FDStoreProperties.isAdServerEnabled()){
             String metalRating = "";
             int vip = 0;
             int chefsTable = 0;
+            String test = "";
             ProfileModel profile = null;
             if(user.getIdentity() != null){
                 profile = user.getFDCustomer().getProfile();
                 metalRating = profile.getCustomerMetalType();
                 vip = profile.isVIPCustomer()? 1 : 0 ;
                 chefsTable = profile.isChefsTable()? 1 : 0 ;
+                test = profile.isOASTest() ? "true" : "false" ;
             }
         
             String type = "";
@@ -172,6 +174,7 @@ if(FDStoreProperties.isAdServerEnabled()){
 	    	addParam("v",metalRating).
 	    	addParam("hv",vip).
 	    	addParam("ct",chefsTable).
+            addParam("test",test).
 	    	addParam("sv",storeVersion).
 	    	addParam("zip",user.getZipCode()).
 	    	addParam("type",type).

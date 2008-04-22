@@ -37,6 +37,9 @@ public class ProfileModel extends ModelSupport {
 	public boolean isChefsTable() {
 		return "1".equalsIgnoreCase(getAttribute("ChefsTable"));
 	}
+	public boolean isOASTest() {
+		return "true".equalsIgnoreCase(getAttribute("OAS_TEST"));
+	}
 
 	public String getCustomerMetalType() {
 		String metalValue = getAttribute("MetalCategory");

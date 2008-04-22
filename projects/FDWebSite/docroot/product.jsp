@@ -28,7 +28,7 @@
 <%
 //--------OAS Page Variables-----------------------
 request.setAttribute("sitePage", productNode.getPath());
-request.setAttribute("listPos", "LittleRandy,SystemMessage,ProductNote");
+request.setAttribute("listPos", "LittleRandy,SystemMessage,ProductNote,SideCartBottom");
 %>
 
 <%

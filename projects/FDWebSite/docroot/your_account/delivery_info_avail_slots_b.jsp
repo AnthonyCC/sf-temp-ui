@@ -200,11 +200,38 @@ if(user.isHomeUser())
 
 
 <table width="693" cellpadding="0" cellspacing="0" border="0"><tr><td colspan="7"><img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br>
-<% if(user.isEligibleForPreReservation() && (!"true".equals(request.getParameter("chefstable"))) &&(!"true".equals(request.getParameter("chefstable")))) { %>
+<% if(user.isEligibleForPreReservation() && (!"true".equals(request.getParameter("chefstable"))) && user.isDlvPassActive()) { %>
 	<div align="center"><br>
 	<a href="/your_account/reserve_timeslot.jsp"><img src="/media_stat/images/template/youraccount/reserve_delivery_time.gif" width="200" height="15" border="0" alt="Reserve a Delivery Time" vspace="4"></a><br>
 	<span class="text12">Reserve a delivery timeslot before you place your order.<br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br><a href="/your_account/reserve_timeslot.jsp"><b>Click here</b></a></span><br><img src="/media_stat/images/template/homepages/truck.gif" width="61" height="43" border="0" vspace="6"></div>
-<% } %>
+<% }else if(!user.isDlvPassActive() && !(user.isEligibleForPreReservation() && (!"true".equals(request.getParameter("chefstable"))))) {%>
+
+	 <% if (FDStoreProperties.isAdServerEnabled()) { %>
+		<SCRIPT LANGUAGE=JavaScript>
+                <!--
+                OAS_AD('TimeslotBottom');
+                //-->
+      	</SCRIPT><br><br>
+	 <% } %>
+<% }else if(!user.isDlvPassActive() && user.isEligibleForPreReservation() && (!"true".equals(request.getParameter("chefstable")))) {%>
+	<div align="center">
+    <table>
+    <tr><td>
+     	<a href="/your_account/reserve_timeslot.jsp"><img src="/media_stat/images/template/youraccount/reserve_delivery_time.gif" width="200" height="15" border="0" alt="Reserve a Delivery Time" vspace="4"></a><br>
+	    <span class="text12">Reserve a delivery timeslot before you place your order.<br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br><a href="/your_account/reserve_timeslot.jsp"><b>Click here</b></a></span><br>
+    </td>
+    <td>
+    <img src="/media_stat/images/layout/clear.gif" width="1" height="34"><br>
+    	 <% if (FDStoreProperties.isAdServerEnabled()) { %>
+		<SCRIPT LANGUAGE=JavaScript>
+                <!--
+                OAS_AD('TimeslotBottom');
+                //-->
+      	</SCRIPT><br><br>
+	     <% } %>
+    </td></tr>
+     </div>
+<%}%>
 </td></tr></table>
 </tmpl:put>
 </tmpl:insert>

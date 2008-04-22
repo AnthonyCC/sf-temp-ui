@@ -33,7 +33,7 @@ if (department instanceof RecipeDepartment) {  %>
 
 //--------OAS Page Variables-----------------------
 request.setAttribute("sitePage", department.getPath());
-request.setAttribute("listPos", "LittleRandy,SystemMessage,CategoryNote");
+request.setAttribute("listPos", "LittleRandy,SystemMessage,CategoryNote,SideCartBottom");
 
 %>
 

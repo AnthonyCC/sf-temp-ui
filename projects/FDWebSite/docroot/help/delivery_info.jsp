@@ -36,6 +36,14 @@ params.put("helper", new MediaHelper());
                 </td>
 		        <td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 		        <td align="center">
+                    <% if (FDStoreProperties.isAdServerEnabled()) { %>
+		                <SCRIPT LANGUAGE=JavaScript>
+                        <!--
+                            OAS_AD('ZDeliveryRight');
+                        //-->
+      	                </SCRIPT><br><br>
+                	 <% } %>
+
 		            <fd:IncludeMedia name="/media/editorial/site_pages/delivery_info/home/right.ftl" parameters="<%=params%>" withErrorReport="true"/>
 		        </td>
 		    </tr>

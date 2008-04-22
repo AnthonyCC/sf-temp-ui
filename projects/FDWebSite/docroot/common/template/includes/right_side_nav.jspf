@@ -257,9 +257,13 @@ if(weRecommendImgProds.size() > 0) {
 <br><img src="/media_stat/images/layout/clear.gif" width="1" height="14"></div>
 
 </fd:GetCart>
-<%if (user != null && user.isReferrerEligible() && !user.isReferrerRestricted()) { %>
-<fd:IncludeMedia name="/media/editorial/tell_a_friend/tell_a_friend.html" />
-<% } %>
+	 <% if (FDStoreProperties.isAdServerEnabled()) { %>
+		<SCRIPT LANGUAGE=JavaScript>
+                <!--
+                OAS_AD('SideCartBottom');
+                //-->
+      	</SCRIPT><br><br>
+	 <% } %>
 <%
 }catch(Throwable t){
 t.printStackTrace();
