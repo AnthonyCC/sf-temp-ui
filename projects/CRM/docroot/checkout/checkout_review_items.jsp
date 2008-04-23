@@ -16,6 +16,8 @@
 <%@ page import='com.freshdirect.framework.util.TimeOfDay'%>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import="com.freshdirect.fdstore.deliverypass.DeliveryPassUtil" %>
+<%@ page import='com.freshdirect.framework.webapp.ActionResult' %>
+<%@ page import='com.freshdirect.framework.webapp.ActionError' %>
 
 
 <%@ taglib uri='template' prefix='tmpl' %>
@@ -524,6 +526,8 @@
             || (redemptionPromo.getHeaderDiscountRules()!=null && !(redemptionPromo.getHeaderDiscountTotal()==0) && cart.getTotalDiscountValue() == 0)  )
         ) {
 		
+        // TODO: some of these error handlers are already written in RedemptionCodeControllerTag
+        //   so error display duplication may occur! 
 		double redemptionAmt = 0;
 		String warningMessage = "";
 		if (cart.getSubTotal() < redemptionPromo.getMinSubtotal()) {
@@ -545,11 +549,22 @@
 			<td colspan="1" align="right"><%= redemptionPromo.isSampleItem() ? "<b>FREE!</b>" : "-" + CCFormatter.formatCurrency(redemptionAmt) %></td>
 			<td colspan="1"></td>
 			<td colspan="2">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
-		</tr>
-		<tr align="right">
-			<td colspan="7"><span class="text11rbold"><%= warningMessage %></span></td>
-		</tr>
-		<%
+        </tr><%
+
+
+        // MNT-113 Quick fix: to avoid duplicated error displays we check
+        //   whether the generated warning message is displayed already by ErrorHandlerTag 
+        ActionError rerr = redemptionResult.getError("redemption_error");
+        String rerrMsg = (rerr != null ? rerr.getDescription() : null);
+        
+        // display if message is not empty and does not match the previously displayed error message (if exists)
+        if (!"".equalsIgnoreCase(warningMessage) && !warningMessage.equalsIgnoreCase(rerrMsg)) {
+%>
+        <tr align="right">
+            <td colspan="7"><span class="text11rbold"><%= warningMessage %></span></td>
+        </tr>
+        <%
+        }
 	}
 	%>
 
