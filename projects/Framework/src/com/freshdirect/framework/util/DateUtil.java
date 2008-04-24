@@ -15,7 +15,11 @@ public class DateUtil {
 
 	public final static int MORNING_END = 12; // 12:00 PM
 	private static final DateFormat DATE_YEAR_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
-		
+	private static final DateFormat MONTH_DATE_YEAR_FORMATTER = new SimpleDateFormat("MM/dd/yyyy");
+	
+	private static final DateFormat MIN_HOUR_FORMATTER = new SimpleDateFormat("h:mm a");
+	private static final DateFormat DAY_INWEEK_FORMATTER = new SimpleDateFormat("E");
+			
 	private DateUtil() {
 	}
 
@@ -23,6 +27,10 @@ public class DateUtil {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
 		return cal;
+	}
+	
+	public static int getDayOfWeek(Date date) {		
+		return toCalendar(date).get(Calendar.DAY_OF_WEEK);
 	}
 
 	public static Date truncate(Date date) {
@@ -113,6 +121,23 @@ public class DateUtil {
 	public static Date parse(String dateValue) throws ParseException{
 		return DATE_YEAR_FORMATTER.parse(dateValue);
 	}
+	
+	public static String format(Date dateValue) throws ParseException{
+		return DATE_YEAR_FORMATTER.format(dateValue);
+	}
+	
+	public static String formatDate(Date dateValue) throws ParseException{
+		return MONTH_DATE_YEAR_FORMATTER.format(dateValue);
+	}
+	
+	public static String formatTime(Date dateValue) throws ParseException{
+		return MIN_HOUR_FORMATTER.format(dateValue);
+	}
+	
+	public static String formatDay(Date dateValue) throws ParseException{
+		return DAY_INWEEK_FORMATTER.format(dateValue);
+	}
+	
 	
 	
 	/** Report relative time difference as english text. 

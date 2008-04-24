@@ -14,6 +14,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -22,11 +23,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -89,7 +88,6 @@ import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.OrderHistoryI;
-import com.freshdirect.customer.ejb.ErpCreateCaseCommand;
 import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.customer.ejb.ErpCustomerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
@@ -151,8 +149,6 @@ import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
-import com.freshdirect.fdstore.promotion.Promotion;
-import com.freshdirect.fdstore.promotion.PromotionDecorator;
 import com.freshdirect.fdstore.promotion.ejb.FDPromotionDAO;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -2844,21 +2840,22 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 
 			if (EnumReservationType.RECURRING_RESERVATION.equals(rsvType)) {
 				this.updateRecurringReservation(identity, timeslot.getBegDateTime(), timeslot.getEndDateTime(), addressId);
-			}
-			this.logActivity(aInfo.createActivity(EnumAccountActivityType.MAKE_PRE_RESERVATION));
+			}						
+			this.logActivity(getReservationActivityLog(timeslot, aInfo, EnumAccountActivityType.MAKE_PRE_RESERVATION, rsvType));
 			return new FDReservation(rsv.getPK(), timeslot, rsv.getExpirationDateTime(), rsv.getReservationType(), rsv
 				.getCustomerId(), addressId, rsv.isChefsTable());
 		} catch (RemoteException e) {
 			throw new FDResourceException(e);
 		} catch (CreateException e) {
 			throw new FDResourceException(e);
-		}
+		} 
 	}
 
 	public void updateWeeklyReservation(FDIdentity identity, FDTimeslot timeslot, String addressId, FDActionInfo aInfo)
 		throws FDResourceException {
 		this.updateRecurringReservation(identity, timeslot.getBegDateTime(), timeslot.getEndDateTime(), addressId);
-		this.logActivity(aInfo.createActivity(EnumAccountActivityType.UPDATE_WEEKLY_RESERVATION));
+		this.logActivity(getReservationActivityLog(timeslot, aInfo, EnumAccountActivityType.UPDATE_WEEKLY_RESERVATION
+														, EnumReservationType.RECURRING_RESERVATION));		
 	}
 
 	private void updateRecurringReservation(FDIdentity identity, Date startTime, Date endTime, String addressId)
@@ -2894,7 +2891,9 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				this.updateRecurringReservation(identity, null, null, null);
 
 			}
-			this.logActivity(actionInfo.createActivity(EnumAccountActivityType.CANCEL_PRE_RESERVATION));
+			
+			this.logActivity(getReservationActivityLog(reservation.getTimeslot(), actionInfo
+								, EnumAccountActivityType.CANCEL_PRE_RESERVATION, reservation.getReservationType()));
 		} catch (RemoteException e) {
 			throw new FDResourceException(e);
 		} catch (CreateException e) {
@@ -3998,6 +3997,29 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				throw new FDResourceException(e);
 			}
 		}
-
+		
+		private ErpActivityRecord getReservationActivityLog(FDTimeslot timeslot, FDActionInfo aInfo
+																, EnumAccountActivityType activityType, EnumReservationType rsvType) {
+			ErpActivityRecord activityRecord = aInfo.createActivity(activityType);
+			try {
+				StringBuffer strBuf = new StringBuffer();
+				strBuf.append(DateUtil.formatDay(timeslot.getBaseDate()));
+				strBuf.append("  ");
+				strBuf.append(DateUtil.formatDate(timeslot.getBaseDate()));
+				strBuf.append(" ");
+				strBuf.append(DateUtil.formatTime(timeslot.getBegDateTime()));
+				strBuf.append("-");
+				strBuf.append(DateUtil.formatTime(timeslot.getEndDateTime()));
+						
+				if(rsvType != null) {
+					strBuf.append(" ");
+					strBuf.append(rsvType.getDescription());
+				}
+				activityRecord.setNote(strBuf.toString());
+			} catch (ParseException e) {
+				LOGGER.warn("Unable to format date for reservation activity log", e);
+			}
+			return activityRecord;
+		}
 
 }
