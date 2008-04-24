@@ -205,7 +205,7 @@ if(user.isHomeUser())
 	<a href="/your_account/reserve_timeslot.jsp"><img src="/media_stat/images/template/youraccount/reserve_delivery_time.gif" width="200" height="15" border="0" alt="Reserve a Delivery Time" vspace="4"></a><br>
 	<span class="text12">Reserve a delivery timeslot before you place your order.<br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br><a href="/your_account/reserve_timeslot.jsp"><b>Click here</b></a></span><br><img src="/media_stat/images/template/homepages/truck.gif" width="61" height="43" border="0" vspace="6"></div>
 <% }else if(!user.isDlvPassActive() && !(user.isEligibleForPreReservation() && (!"true".equals(request.getParameter("chefstable"))))) {%>
-
+    <div align="center"><br>
 	 <% if (FDStoreProperties.isAdServerEnabled()) { %>
 		<SCRIPT LANGUAGE=JavaScript>
                 <!--
@@ -213,6 +213,7 @@ if(user.isHomeUser())
                 //-->
       	</SCRIPT><br><br>
 	 <% } %>
+     </div>
 <% }else if(!user.isDlvPassActive() && user.isEligibleForPreReservation() && (!"true".equals(request.getParameter("chefstable")))) {%>
 	<div align="center">
     <table>
