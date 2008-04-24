@@ -19,7 +19,7 @@ params.put("baseUrl", "");
 params.put("helper", new MediaHelper());
 //--------OAS Page Variables-----------------------
 request.setAttribute("sitePage", "www.freshdirect.com/help/delivery_info.jsp");
-request.setAttribute("listPos", "ZDeliveryRight");
+request.setAttribute("listPos", "SystemMessage,ZDeliveryRight");
 %>
 <tmpl:insert template='/common/template/delivery_info_nav.jsp'>
     <tmpl:put name='title' direct='true'>Delivery Information</tmpl:put>
