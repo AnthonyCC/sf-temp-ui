@@ -205,6 +205,8 @@ public class FDUserDAO {
             user.setLastRefProgramId(rs.getString("last_ref_prog_id"));
             user.setLastRefProgInvtId(rs.getString("ref_prog_invt_id"));
             user.setLastRefTrkDtls(rs.getString("ref_trk_key_dtls"));
+            // for new COS customer
+            user.setUserServiceType(EnumServiceType.getEnum(rs.getString("SERVICE_TYPE")));
 			AddressModel addr = user.getAddress();
 			if(addr != null) {
 				addr.setAddress1(rs.getString("ADDRESS1"));

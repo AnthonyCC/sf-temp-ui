@@ -553,7 +553,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 
 			FDUser user = FDUserDAO.reconnizeWithCookie(conn, cookie);
 
-			LOGGER.debug("got FDUser via cookie id");
+			LOGGER.debug("got FDUser via cookie id"+user.getUserServiceType());
 
 			if (user.isAnonymous()) {
 				throw new FDAuthenticationException("Unrecognized user");

@@ -76,7 +76,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
             try {
                 LOGGER.debug("attempting to load user from cookie");
                 user = CookieMonster.loadCookie( (HttpServletRequest)pageContext.getRequest() );
-                
+
             } catch (FDResourceException ex) {
                 LOGGER.warn(ex);
             }
@@ -84,6 +84,22 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
                 LOGGER.debug("user was found!  placing in session");
                 session.setAttribute( SessionName.USER, user);
             }
+            
+//          // new COS changes redirct corporate user to corporate page
+            if(user!=null)
+              LOGGER.debug("entering the corporate check"+user.getUserServiceType());
+            
+            LOGGER.debug("request.getRequestURI() :"+request.getRequestURI());
+                                        
+            if (user!=null && EnumServiceType.CORPORATE.equals(user.getUserServiceType())) {
+            	// only index page request will be redirected to corporate page
+            	if(request.getRequestURI().indexOf("index.jsp")!=-1){
+            			this.redirectPage = "/department.jsp?deptId=COS";
+            			doRedirect(true);
+            			return SKIP_BODY;
+            	}
+            }
+            
         }
       
         if ((user==null) ||
@@ -128,6 +144,8 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
 			this.redirectPage = "/department.jsp?deptId=win";
 			doRedirect(true);
          }
+         
+
         
         return EVAL_BODY_INCLUDE;
     }

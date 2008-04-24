@@ -73,6 +73,8 @@ public class FDUser extends ModelSupport implements FDUserI {
     
     private Set availableServices = new HashSet();
     private EnumServiceType selectedServiceType = null;
+    // for new COS customers
+    private EnumServiceType userServiceType = null;
     
     private FDIdentity identity;
     private AddressModel address;
@@ -578,6 +580,16 @@ public class FDUser extends ModelSupport implements FDUserI {
 		AddressModel address = this.shoppingCart.getDeliveryAddress();
 		return address != null ? address.getServiceType() : this.selectedServiceType ;
 	}
+	
+	
+	public EnumServiceType getUserServiceType(){		
+		return this.userServiceType != null ? this.userServiceType : EnumServiceType.HOME ;
+	}
+
+	public void setUserServiceType(EnumServiceType serviceType) {
+		this.userServiceType = serviceType;
+	}
+
 	
 	public void setSelectedServiceType(EnumServiceType serviceType) {
 		this.selectedServiceType = serviceType;

@@ -19,6 +19,12 @@
   		// null, default to index.jsp
   		successPage = "/index.jsp";
  	}
+    
+    
+    
+    if (successPage.startsWith("/index.jsp") && EnumServiceType.CORPORATE.getName().equalsIgnoreCase(serviceType))  {
+		successPage = "/department.jsp?deptId=COS";
+	}
  
 	if (successPage.startsWith("/index.jsp") && isBestCellars) {
 		successPage = "/department.jsp?deptId=win";

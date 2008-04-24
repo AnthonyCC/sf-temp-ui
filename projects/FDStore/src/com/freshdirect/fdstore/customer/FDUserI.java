@@ -261,4 +261,11 @@ public interface FDUserI extends java.io.Serializable {
     public void invalidateOrderHistoryCache();
     
     public int getAdjustedValidECheckOrderCount()  throws FDResourceException;
+    
+    /*
+     * This method was introduced as part of new COS-changes
+     * This will return the service type of FDuser table entry
+     */
+ 
+    public EnumServiceType getUserServiceType();
 }
