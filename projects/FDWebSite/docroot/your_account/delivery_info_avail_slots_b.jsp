@@ -230,6 +230,7 @@ if(user.isHomeUser())
       	</SCRIPT><br><br>
 	     <% } %>
     </td></tr>
+    </table>
      </div>
 <%}%>
 </td></tr></table>

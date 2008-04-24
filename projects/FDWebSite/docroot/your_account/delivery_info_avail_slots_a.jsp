@@ -124,6 +124,7 @@ request.setAttribute("listPos", "CategoryNote,TimeslotBottom");
       	</SCRIPT><br><br>
 	     <% } %>
     </td></tr>
+    </table>
      </div>
 <%}%>
 </td></tr></table>
