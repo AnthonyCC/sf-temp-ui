@@ -35,7 +35,7 @@ ErpAddressModel address = ((FDUserI)session.getAttribute(SessionName.USER)).getS
 SimpleDateFormat deliveryDayFormat = new SimpleDateFormat("EEE MM/d");
 
 request.setAttribute("sitePage", "www.freshdirect.com/your_account");
-request.setAttribute("listPos", "CategoryNote");
+request.setAttribute("listPos", "CategoryNote,TimeslotBottom");
 %>
 <tmpl:insert template='/common/template/delivery_info_nav.jsp'>
 	<tmpl:put name='title' direct='true'>Available Delivery Slots</tmpl:put>
