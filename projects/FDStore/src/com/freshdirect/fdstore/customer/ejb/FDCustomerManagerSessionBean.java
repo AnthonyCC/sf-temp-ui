@@ -4003,13 +4003,15 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			ErpActivityRecord activityRecord = aInfo.createActivity(activityType);
 			try {
 				StringBuffer strBuf = new StringBuffer();
-				strBuf.append(DateUtil.formatDay(timeslot.getBaseDate()));
-				strBuf.append("  ");
-				strBuf.append(DateUtil.formatDate(timeslot.getBaseDate()));
-				strBuf.append(" ");
-				strBuf.append(DateUtil.formatTime(timeslot.getBegDateTime()));
-				strBuf.append("-");
-				strBuf.append(DateUtil.formatTime(timeslot.getEndDateTime()));
+				if(timeslot != null) {
+					strBuf.append(DateUtil.formatDay(timeslot.getBaseDate()));
+					strBuf.append("  ");
+					strBuf.append(DateUtil.formatDate(timeslot.getBaseDate()));
+					strBuf.append(" ");
+					strBuf.append(DateUtil.formatTime(timeslot.getBegDateTime()));
+					strBuf.append("-");
+					strBuf.append(DateUtil.formatTime(timeslot.getEndDateTime()));
+				}
 						
 				if(rsvType != null) {
 					strBuf.append(" ");
