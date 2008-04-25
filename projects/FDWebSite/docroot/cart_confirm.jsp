@@ -88,7 +88,7 @@ Recipe recipe = null;
 <%
     //--------OAS Page Variables-----------------------
     request.setAttribute("sitePage", productNode.getPath());
-    request.setAttribute("listPos", "LittleRandy,SystemMessage");
+    request.setAttribute("listPos", "LittleRandy,SystemMessage,SideCartBottom");
 %>
 
 <tmpl:insert template='<%=jspTemplate%>'>

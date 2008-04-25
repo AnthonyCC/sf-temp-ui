@@ -23,7 +23,7 @@ if (! (recipeDepartment instanceof RecipeDepartment)) {  %>
 
 //--------OAS Page Variables-----------------------
 request.setAttribute("sitePage", recipeDepartment.getPath());
-request.setAttribute("listPos", "LittleRandy,SystemMessage,CategoryNote");
+request.setAttribute("listPos", "LittleRandy,SystemMessage,CategoryNote,SideCartBottom");
 
 if (!ContentFactory.getInstance().getPreviewMode()) {
     if (recipeDepartment.isHidden()) {
