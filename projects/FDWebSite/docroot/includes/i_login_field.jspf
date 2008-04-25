@@ -8,13 +8,8 @@
 <%
 	String uri = request.getRequestURI();
 	String successPage = request.getParameter("successPage");
-	if (successPage == null) {      
-		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
-        if (user!=null && EnumServiceType.CORPORATE.equals(user.getUserServiceType())) {
-          successPage = "/department.jsp?deptId=COS";
-        }else{
-		    successPage = "/login/index.jsp";
-        }
+	if (successPage == null) {      		
+		    successPage = "/login/index.jsp";        
 	}
 %>
 <fd:LoginController successPage="<%= successPage %>" mergePage="/login/merge_cart.jsp" result='result'>

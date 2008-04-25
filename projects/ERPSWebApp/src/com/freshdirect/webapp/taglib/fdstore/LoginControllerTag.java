@@ -17,6 +17,7 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -69,7 +70,8 @@ public class LoginControllerTag extends AbstractControllerTag {
         	FDIdentity identity = FDCustomerManager.login(userId,password);
             LOGGER.info("Identity : erpId = " + identity.getErpCustomerPK() + " : fdId = " + identity.getFDCustomerPK());
             
-            FDUser loginUser = FDCustomerManager.recognize(identity);
+            FDUser loginUser = FDCustomerManager.recognize(identity);           
+            
             LOGGER.info("FDUser : erpId = " + loginUser.getIdentity().getErpCustomerPK() + " : " + loginUser.getIdentity().getFDCustomerPK());
             
             HttpSession session = pageContext.getSession();
@@ -110,6 +112,11 @@ public class LoginControllerTag extends AbstractControllerTag {
                 currentUser.isLoggedIn(true);
                 session.setAttribute(SessionName.USER, currentUser);
             }
+            
+          FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+          if (user!=null && EnumServiceType.CORPORATE.equals(user.getUserServiceType())) {
+            this.setSuccessPage("/department.jsp?deptId=COS");;
+          }
             
         } catch (FDResourceException fdre) {
             LOGGER.warn("Resource error during authentication", fdre);
