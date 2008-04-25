@@ -2892,8 +2892,10 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 
 			}
 			
-			this.logActivity(getReservationActivityLog(reservation.getTimeslot(), actionInfo
-								, EnumAccountActivityType.CANCEL_PRE_RESERVATION, reservation.getReservationType()));
+			if (reservation != null) {
+				this.logActivity(getReservationActivityLog(reservation.getTimeslot(), actionInfo
+									, EnumAccountActivityType.CANCEL_PRE_RESERVATION, reservation.getReservationType()));
+			}
 		} catch (RemoteException e) {
 			throw new FDResourceException(e);
 		} catch (CreateException e) {
