@@ -27,7 +27,7 @@ if (recipeSubCat==null) {
 
 //--------OAS Page Variables-----------------------
 request.setAttribute("sitePage", recipeCategory.getPath());
-request.setAttribute("listPos", "LittleRandy,SystemMessage,CategoryNote,ProductNote");
+request.setAttribute("listPos", "LittleRandy,SystemMessage,CategoryNote,ProductNote,SideCartBottom");
 
 attrib=recipeCategory.getAttribute("HIDE_URL");
 if (!contentFactory.getInstance().getPreviewMode()) {

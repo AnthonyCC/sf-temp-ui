@@ -18,6 +18,7 @@
 <%
 //RecipeDepartment recipeDepartment = (RecipeDepartment) RecipeDepartment.getDefault();
 RecipeSearchPage searchPage = RecipeSearchPage.getDefault();
+request.setAttribute("listPos", "SystemMessage,SideCartBottom");
 %>
 <tmpl:insert template='/common/template/recipe_DLRnavs.jsp'>
     <tmpl:put name='title' direct='true'>FreshDirect - Recipe Search</tmpl:put>
