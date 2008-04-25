@@ -320,7 +320,7 @@ public class GenericSearchDAO {
 	private static String RESERVATION_SEARCH_QUERY = 
 			"SELECT "
 			+ "ci.customer_id, ci.first_name, ci.last_name, c.user_id, ci.home_phone, ci.business_phone, "
-			+ "ci.cell_phone, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ze.zone_code, rs.id  "
+			+ "ci.cell_phone, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ze.zone_code, rs.id, rs.type  "
 			+ "from dlv.reservation rs, dlv.timeslot ts, dlv.zone ze, cust.customerinfo ci, cust.customer c "
 			+ "where ts.id = rs.timeslot_id and ze.id = ts.zone_id and rs.customer_id = c.id and ci.customer_id = c.id and rs.status_code = 5 "
 			+ "and rs.type in ('WRR','OTR')";
@@ -361,6 +361,7 @@ public class GenericSearchDAO {
 			java.util.Date startTime = rs.getTimestamp("START_TIME");
 			java.util.Date endTime = rs.getTimestamp("END_TIME");
 			String zone = rs.getString("ZONE_CODE");
+			EnumReservationType rsvType = EnumReservationType.getEnum(rs.getString("TYPE"));
 			
 			FDCustomerReservationInfo rInfo = new FDCustomerReservationInfo(id, 
 																			baseDate, 
@@ -374,7 +375,7 @@ public class GenericSearchDAO {
 																			bizPhone,
 																			startTime, 
 																			endTime,
-																			zone);
+																			zone,rsvType);
 			lst.add(rInfo);
 		}
 		return lst;

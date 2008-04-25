@@ -9,11 +9,9 @@
 package com.freshdirect.fdstore.customer;
 
 import java.io.Serializable;
-import java.util.Comparator;
 import java.util.Date;
 
-import com.freshdirect.customer.EnumPaymentType;
-import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.delivery.EnumReservationType;
 
 /**
  * Lightweight information about a Sale.
@@ -35,6 +33,7 @@ public class FDCustomerReservationInfo implements Serializable {
 	private Date startTime;
 	private Date endTime;
 	private String zone;
+	private final EnumReservationType type;
 	
 	public FDCustomerReservationInfo(String id,
 									 Date baseDate,
@@ -48,7 +47,8 @@ public class FDCustomerReservationInfo implements Serializable {
 									 String businessPhone, 
 									 Date startTime, 
 									 Date endTime, 
-									 String zone){
+									 String zone,
+									 EnumReservationType type){
 		this.id = id;
 		this.baseDate = baseDate;
 		this.cutoffTime = cutoffTime;
@@ -62,6 +62,7 @@ public class FDCustomerReservationInfo implements Serializable {
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.zone = zone;
+		this.type = type;
 		
 	}
 	public String getAltPhone() {
@@ -102,6 +103,9 @@ public class FDCustomerReservationInfo implements Serializable {
 	}
 	public String getZone() {
 		return zone;
+	}
+	public EnumReservationType getType() {
+		return type;
 	}
 	
 }

@@ -2,34 +2,16 @@ package com.freshdirect.fdstore.customer.ejb;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.sql.Types;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Category;
 
 import com.freshdirect.customer.EnumAccountActivityType;
-import com.freshdirect.delivery.EnumRestrictedAddressReason;
-import com.freshdirect.delivery.model.RestrictedAddressModel;
-import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
-import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
-import com.freshdirect.delivery.restriction.EnumDlvRestrictionType;
-import com.freshdirect.delivery.restriction.OneTimeRestriction;
-import com.freshdirect.delivery.restriction.OneTimeReverseRestriction;
-import com.freshdirect.delivery.restriction.RecurringRestriction;
-import com.freshdirect.delivery.restriction.RestrictionI;
-import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerReservationInfo;
-import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.util.DateUtil;
-import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class AdminToolsDAO {	
@@ -63,12 +45,12 @@ public class AdminToolsDAO {
 		PreparedStatement ps = conn.prepareStatement(CREATE_ACITIVITY_LOG);
 		
 		for (Iterator i = resvs.iterator(); i.hasNext();) {
-			FDCustomerReservationInfo info = (FDCustomerReservationInfo)i.next();
+			FDCustomerReservationInfo info = (FDCustomerReservationInfo)i.next();			
 			ps.setString(1, info.getIdentity().getErpCustomerPK());
 			ps.setString(2, EnumAccountActivityType.CANCEL_PRE_RESERVATION.getCode());
 			ps.setString(3, "CSR");
 			ps.setString(4, initiator);
-			ps.setString(5, notes);
+			ps.setString(5, getReservationActivityNotes(info)+" "+notes);
 			ps.addBatch();
 		}
 		ps.executeBatch();
@@ -83,7 +65,31 @@ public class AdminToolsDAO {
 		int updateCount = ps.executeUpdate();
 		return updateCount;
 	}
-
+	
+	private static String getReservationActivityNotes(FDCustomerReservationInfo info) {
+		StringBuffer strBuf = new StringBuffer();
+			try {
+			
+			if(info != null) {
+				strBuf.append(DateUtil.formatDay(info.getBaseDate()));
+				strBuf.append("  ");
+				strBuf.append(DateUtil.formatDate(info.getBaseDate()));
+				strBuf.append(" ");
+				strBuf.append(DateUtil.formatTime(info.getStartTime()));
+				strBuf.append("-");
+				strBuf.append(DateUtil.formatTime(info.getEndTime()));
+			}
+			
+			if(info.getType() != null) {
+				strBuf.append(" ");
+				strBuf.append(info.getType().getDescription());
+			}
+				
+			} catch (ParseException e) {
+			LOGGER.warn("Unable to format date for reservation activity log", e);
+			}
+			return strBuf.toString();
+	}
 		
 }
 
