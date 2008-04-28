@@ -27,7 +27,7 @@
 </fd:FDShoppingCart>
 
 <%
-request.setAttribute("listPos", "SystemMessage,LittleRandy,ProductNote");
+request.setAttribute("listPos", "SystemMessage,LittleRandy,ProductNote,SideCartBottom");
 String catIdParam       = request.getParameter("catId");
 String jspTemplate = "/common/template/both_dnav.jsp";
 
