@@ -2247,7 +2247,8 @@
 		</jar>
 	</target>
 
-	<target name="GeocodeFilter" depends="dataloader" description="build executable jar to run BRDGeocoder outside container">
+	<target name="geocodefilter" depends="dataloader" description="build executable jar to run BRDGeocoder outside container">
+		<mkdir dir="${release.dir}/applications" />
 		<jar destfile="${release.dir}/applications/GeocodeFilter.jar">
 			<!-- specify the manifest -->
 			<manifest>
@@ -2283,6 +2284,7 @@
 			<zipfileset src="${work.dir}/DeliveryEJB-WL.jar" excludes="META-INF/*"/>
 			<zipfileset src="${work.dir}/DataLoaderEJB-WL.jar" excludes="META-INF/*"/>
 			<zipfileset src="${work.dir}/FDStoreEJB-WL.jar" excludes="META-INF/*"/>
+			<zipfileset src="${work.dir}/opencsv-1.8.jar" excludes="META-INF/*"/>
 		</jar>
 	</target>
 
