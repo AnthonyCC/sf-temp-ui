@@ -1,9 +1,7 @@
 package com.freshdirect.dataloader.geocodefilter;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -11,16 +9,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Iterator;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
-import com.freshdirect.common.address.AddressModel;
-import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.dataloader.BadDataException;
 import com.freshdirect.dataloader.SynchronousParserClient;
-import com.freshdirect.delivery.EnumDeliveryStatus;
-import com.freshdirect.delivery.EnumRestrictedAddressReason;
-import com.freshdirect.delivery.ejb.DlvManagerDAO;
 import com.freshdirect.delivery.ejb.DlvManagerSessionBean;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -28,10 +20,11 @@ import edu.emory.mathcs.backport.java.util.concurrent.BlockingQueue;
 import edu.emory.mathcs.backport.java.util.concurrent.LinkedBlockingQueue;
 
 public class GFLoader implements SynchronousParserClient {
-	private GFParser parser;
+	private IParser parser;
+	private IGeoValidator validator;
 	private String filename;
 	private String destination;
-    private StringBuffer results;
+    //private StringBuffer results;
     private DlvManagerSessionBean dlvManager;
     private final BlockingQueue queue = new LinkedBlockingQueue();
     
@@ -54,7 +47,14 @@ public class GFLoader implements SynchronousParserClient {
     private final static Category LOGGER = LoggerFactory.getInstance( GFLoader.class );
 
 	public GFLoader(String filename, String destination, boolean filterRestricted) {
-        parser = new GFParser();
+		if(filename != null && filename.toUpperCase().endsWith(".CSV")) {
+			System.out.println("My Parser");
+			parser = new GFCSVParser();	
+			validator = new GFCSVValidator();
+		} else {
+			parser = new GFParser();
+			validator = new GFValidator();
+		}
         parser.setClient(this);
         
         this.filename = filename;
@@ -63,7 +63,7 @@ public class GFLoader implements SynchronousParserClient {
         this.numThreads = GFUtil.getNumThreads();
         this.connReset = GFUtil.getConnReset();
         
-        results = new StringBuffer();
+        //results = new StringBuffer();
         
         try {
 			total = countLines();
@@ -83,7 +83,7 @@ public class GFLoader implements SynchronousParserClient {
             for(int i = 0; i < numThreads; i++){
             	new Thread(new Consumer(queue)).start();
             }
-            
+            validator.initialize(dlvManager);
             parser.parseFile(filename);
             
             if (parser.getExceptions().size() > 0) {
@@ -98,7 +98,7 @@ public class GFLoader implements SynchronousParserClient {
             	//all parsed records were tested and all valid records were output
             	if(count == realTotal){
                     statusMessage = "writing out results...";
-                    writeDestinationFile(results);
+                    validator.flushResults(destination);
             		done = true;
             		break;
             	} else {
@@ -138,21 +138,17 @@ public class GFLoader implements SynchronousParserClient {
 	{
 		BufferedReader br = new BufferedReader(new FileReader(filename));
 		int lines = 0;
-		
-		while(br.readLine() != null){
-			lines++;
+		String line;
+		while((line = br.readLine()) != null){
+			if(line.trim().length() > 0) {
+				System.out.println("T >>>>>>"+line);
+				lines++;
+			}
 		}
 		
 		return lines;
 	}
-	
-	private void writeDestinationFile(StringBuffer string) throws IOException{
-		 PrintWriter out
-		   = new PrintWriter(new BufferedWriter(new FileWriter(destination)));
-		 
-		 out.write(string.toString());
-		 out.close();
-	}
+		
 
 	public synchronized int getCount() {
 		return count;
@@ -205,11 +201,7 @@ public class GFLoader implements SynchronousParserClient {
 	private synchronized void setStatusMessage(String statusMessage){
 		this.statusMessage = statusMessage;
 	}
-	
-	private synchronized void addResult(String resultLine){
-		results.append(resultLine);
-	}
-	
+			
 	public int getConnReset() {
 		return connReset;
 	}
@@ -247,20 +239,14 @@ public class GFLoader implements SynchronousParserClient {
 			
 		}
 		
-		private void consume(Object object){			
+		/*private void consume(Object object){			
 			try{
 				GFRecord record = (GFRecord) object;
 				
-				AddressModel address = new AddressModel();
-				address.setAddress1(record.getBldgNum() + " "
-						+ (record.getDirectional() != null ? record.getDirectional() + " " : "")
-						+ record.getStreetAddress() + " "
-						+ (record.getPostDirectional() != null ? record.getPostDirectional() + " " : ""));
-				address.setApartment(record.getAptNum());
-				address.setZipCode(record.getZip());
-				
+				AddressModel address = geocoder.getAddressModel(record, filterRestricted);				
 				
 				EnumDeliveryStatus result = dlvManager.getServiceStatus(DlvManagerDAO.checkAddress(conn, address, EnumServiceType.HOME));
+				EnumDeliveryStatus resultCorp = dlvManager.getServiceStatus(DlvManagerDAO.checkAddress(conn, address, EnumServiceType.CORPORATE));
 				boolean addressGood = EnumDeliveryStatus.DELIVER.equals(result);
 				if(addressGood && filterRestricted){
 					addressGood = EnumRestrictedAddressReason.NONE.equals(DlvManagerDAO.isAddressRestricted(conn, address));
@@ -291,7 +277,27 @@ public class GFLoader implements SynchronousParserClient {
 				localCount++;
 				setStatusMessage(getCount() + " records of " + total + " geocoded...");
 			}
+		}*/
+		private void consume(Object object){			
+			try{
+				boolean result = validator.validateAddress(conn,object, filterRestricted);
+					
+				if (result) {					
+					incrementValids();
+				} else {
+					incrementInvalids();
+				}
+				
+			} catch (Exception e){
+				e.printStackTrace();
+				incrementExceptions();
+			} finally {
+				incrementCount();
+				localCount++;
+				setStatusMessage(getCount() + " records of " + total + " geocoded...");
+			}
 		}
+		
 		
 	}
 

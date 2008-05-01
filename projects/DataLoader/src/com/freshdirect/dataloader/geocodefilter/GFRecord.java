@@ -8,10 +8,30 @@ public class GFRecord {
 	private String bldgNum;
 	private String directional;
 	private String streetAddress;
+	private String streetAddress2;
 	private String postDirectional;
 	private String aptDesignator;
 	private String aptNum;
+	private String city;
 	
+	private Object source;
+	
+	public Object getSource() {
+		return source;
+	}
+
+	public void setSource(Object source) {
+		this.source = source;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
 	public String getAptDesignator() {
 		return aptDesignator;
 	}
@@ -91,11 +111,21 @@ public class GFRecord {
 				" bldgNum:" + this.bldgNum + 
 				" directional:" + this.directional + 
 				" streetAddress:" + this.streetAddress + 
+				" streetAddress2:" + this.streetAddress2 +
+				" City:" + this.city +
 				" postDirectional:" + this.postDirectional +
 				" aptDesignator:" + this.aptDesignator +
 				" aptNum:" + this.aptNum;
 				
 		
+	}
+
+	public String getStreetAddress2() {
+		return streetAddress2;
+	}
+
+	public void setStreetAddress2(String streetAddress2) {
+		this.streetAddress2 = streetAddress2;
 	}
 	
 	

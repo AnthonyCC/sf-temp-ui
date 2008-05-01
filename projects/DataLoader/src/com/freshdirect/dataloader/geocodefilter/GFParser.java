@@ -1,10 +1,14 @@
 package com.freshdirect.dataloader.geocodefilter;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 
+import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.dataloader.*;
 
-public class GFParser extends FieldDelimitedFileParser implements SynchronousParser{
+public class GFParser extends FieldDelimitedFileParser implements IParser{
     public final static String ZIP_CODE                = "ZIP_CODE";
     public final static String ZPF                     = "ZPF";
     public final static String SEQ_NUM                 = "SEQ_NUM";
@@ -55,7 +59,7 @@ public class GFParser extends FieldDelimitedFileParser implements SynchronousPar
 	public SynchronousParserClient getClient() {
 		return this.client;
 	}
-
-
+	
+	
 
 }

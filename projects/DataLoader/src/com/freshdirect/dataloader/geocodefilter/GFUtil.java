@@ -26,7 +26,13 @@ public class GFUtil {
 	private final static int DEFAULT_NUMTHREADS=15;
 	private final static int DEFAULT_CONN_RESET=1000;
 	
-	public final static String PROP_FILENAME = "GeocodeFilter.properties";	
+	public final static String PROP_FILENAME = "GeocodeFilter.properties";
+	
+	public final static String PROP_ADDRESS_STREET1 = "address.street1";
+	public final static String PROP_ADDRESS_STREET2 = "address.street2";
+	public final static String PROP_ADDRESS_CITY = "address.city";
+	public final static String PROP_ADDRESS_STATE = "address.state";
+	public final static String PROP_ADDRESS_ZIPCODE = "address.zipcode";
 	
 	public static void loadProperties() throws IOException{
 			InputStream configStream =
@@ -62,7 +68,12 @@ public class GFUtil {
 				properties.getProperty(PROP_DATASOURCE_CONN), 
 				properties.getProperty(PROP_DATASOURCE_USER), 
 				properties.getProperty(PROP_DATASOURCE_PASSWORD));
+		
 		return c;
+	}
+	
+	public static String getProperty(String key) {
+		return properties.getProperty(key);
 	}
 	
 	public static int getNumThreads(){

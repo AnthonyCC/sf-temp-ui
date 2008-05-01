@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry sourcepath="JRE_SRC" kind="var" path="JRE_LIB"/>
+	<classpathentry kind="var" path="JRE_LIB" sourcepath="JRE_SRC"/>
 	<classpathentry kind="src" path="/Framework"/>
 	<classpathentry kind="src" path="/ERPServices"/>
 	<classpathentry kind="src" path="/FDStore"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/poi.jar"/>
 	<classpathentry kind="src" path="/Delivery"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/opencsv-1.8.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
