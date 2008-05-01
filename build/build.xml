@@ -2276,15 +2276,15 @@
 			<zipfileset src="${thirdparty.home}/log4j.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/sapjco.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/backport-util-concurrent.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/opencsv-1.8.jar" excludes="META-INF/*"/>
 			<zipfileset src="${weblogic.home}/server/ext/jdbc/oracle/10g/ojdbc14_g.jar" excludes="META-INF/*"/>
-			<zipfileset src="${weblogic.home}/server/lib/weblogic.jar" excludes="META-INF/*"/>
+			<zipfileset src="${weblogic.home}/server/lib/weblogic.jar" excludes="META-INF/*"/>			
 			<!-- FD classes -->
 			<zipfileset src="${work.dir}/Framework.jar"/>
 			<zipfileset src="${work.dir}/ERPServicesEJB-WL.jar" excludes="META-INF/*"/>
 			<zipfileset src="${work.dir}/DeliveryEJB-WL.jar" excludes="META-INF/*"/>
 			<zipfileset src="${work.dir}/DataLoaderEJB-WL.jar" excludes="META-INF/*"/>
-			<zipfileset src="${work.dir}/FDStoreEJB-WL.jar" excludes="META-INF/*"/>
-			<zipfileset src="${work.dir}/opencsv-1.8.jar" excludes="META-INF/*"/>
+			<zipfileset src="${work.dir}/FDStoreEJB-WL.jar" excludes="META-INF/*"/>			
 		</jar>
 	</target>
 
