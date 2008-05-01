@@ -1333,7 +1333,8 @@
 			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
 			<pathelement location="${work.dir}/CMS.jar"/>
 			<pathelement location="${work.dir}/FDStoreEJB-WL.jar"/>
-            <pathelement location="${thirdparty.home}/poi-3.0-rc4-20070503.jar"/>
+            		<pathelement location="${thirdparty.home}/poi-3.0-rc4-20070503.jar"/>
+            		<pathelement location="${thirdparty.home}/opencsv-1.8.jar"/>
 			<pathelement location="${thirdparty.home}/sapjco.jar"/>
 		</path>
 
