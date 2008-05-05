@@ -151,7 +151,10 @@ public class DeliveryPassRenewalCron {
 			identity=getFDIdentity(erpCustomerID);
 			pymtMethods=getPaymentMethods(identity);
 			if(pymtMethods!=null) {
-				if(exists(lastOrder.getPaymentMethod(),pymtMethods)) {
+				if(isExpiredCC(lastOrder.getPaymentMethod())) {
+					LOGGER.warn("Unable to find payment method for autoRenewal order for customer :"+erpCustomerID);
+					createCase(erpCustomerID,CrmCaseSubject.CODE_AUTO_BILL_PAYMENT_MISSING,DlvPassConstants.AUTORENEW_PYMT_METHOD_CC_EXPIRED);
+				} else if(exists(lastOrder.getPaymentMethod(),pymtMethods)) {
 					try {
 						user=FDCustomerManager.getFDUser(identity);
 						actionInfo=getFDActionInfo(identity);
@@ -385,5 +388,10 @@ public class DeliveryPassRenewalCron {
 		}
 	}
 
-
+	private static boolean isExpiredCC(ErpPaymentMethodI paymentMethod) {
+		System.out.println("CC Expiry Date is: "+paymentMethod.getExpirationDate().toString());
+		if(paymentMethod.getExpirationDate().before(java.util.Calendar.getInstance().getTime()))
+			return true;
+		return false;
+	}
 }
