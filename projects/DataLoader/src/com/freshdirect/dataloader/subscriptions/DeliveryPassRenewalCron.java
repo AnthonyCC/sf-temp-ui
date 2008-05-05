@@ -389,7 +389,6 @@ public class DeliveryPassRenewalCron {
 	}
 
 	private static boolean isExpiredCC(ErpPaymentMethodI paymentMethod) {
-		System.out.println("CC Expiry Date is: "+paymentMethod.getExpirationDate().toString());
 		if(paymentMethod.getExpirationDate().before(java.util.Calendar.getInstance().getTime()))
 			return true;
 		return false;

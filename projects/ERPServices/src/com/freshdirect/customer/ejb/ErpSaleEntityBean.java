@@ -71,9 +71,9 @@ import com.freshdirect.payment.EnumPaymentMethodType;
 public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 
 	private static Category LOGGER = LoggerFactory.getInstance(ErpSaleEntityBean.class);
-	
+
 	private ErpSaleModel model;
-	
+
 	private ErpComplaintList complaints;
 
 	public void initialize() {
@@ -89,11 +89,11 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	public void setFromModel(ModelI model) {
 		throw new UnsupportedOperationException("setFromModel not supported");
 	}
-	
+
 	public void setPK(PrimaryKey pk) {
 		model.setPK(pk);
 	}
-	
+
 	public PrimaryKey getPK() {
 		return model.getPK();
 	}
@@ -266,7 +266,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			}
 		}
 	}
-	
+
 	public void ejbPostCreate(PrimaryKey customerPk, ErpCreateOrderModel createOrder, Set usedPromotionCodes, String dlvPassId,EnumSaleType type) {
 		// this space is intentionally blank :)
 	}
@@ -305,16 +305,16 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		// create children
 		ErpTransactionList txList = this.getTransactionPBList();
 		txList.create(conn);
-		
+
 		complaints.create(conn);
 		if(this.model.hasUsedPromotionCodes()==true) {
 			ErpPromotionDAO.insert(conn, this.getPK(), this.model.getUsedPromotionCodes());
 		}
 		this.createCroModMaxDate(conn);
-		
+
 		return this.getPK();
 	}
-	
+
 	private void createCroModMaxDate(Connection conn)throws SQLException {
 		PreparedStatement ps = null;
 		try{
@@ -328,7 +328,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			}
 		}
 	}
-	
+
 	private ErpTransactionList getTransactionPBList() throws SQLException{
 		ErpTransactionList txList = new ErpTransactionList();
 		txList.setParentPK(this.getPK());
@@ -342,7 +342,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		}
 		return txList;
 	}
-	
+
 	private ErpComplaintList buildComplaintPBList() {
 		ErpComplaintList compList = new ErpComplaintList();
 		compList.setParentPK(this.getPK());
@@ -353,7 +353,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		}
 		return compList;
 	}
-	
+
 	public void load(Connection conn) throws SQLException {
 		PreparedStatement ps =
 			conn.prepareStatement(
@@ -386,24 +386,24 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		ErpComplaintList compList = new ErpComplaintList();
 		compList.setParentPK(this.getPK());
 		compList.load(conn);
-		
+
 		Set usedPromotionCodes = ErpPromotionDAO.select(conn, this.getPK());
-		
+
 		PrimaryKey oldPk = model.getPK();
-		
+
 		List cartonInfo = ErpCartonsDAO.getCartonInfo(conn, this.getPK());
 		this.model = new ErpSaleModel(customerPk, status, txList.getModelList(), compList.getModelList(), sapOrderNumber, shippingInfo, usedPromotionCodes, cartonInfo, dlvPassId,saleType);
 		this.model.setPK(oldPk);
-			
+
 		super.decorateModel(this.model);
 	}
 
 	String saleUpdateWithWaveSQL =
 		"UPDATE CUST.SALE SET STATUS=?, SAP_NUMBER=?, TRUCK_NUMBER=?, STOP_SEQUENCE=?, NUM_REGULAR_CARTONS=?, NUM_FREEZER_CARTONS=?, NUM_ALCOHOL_CARTONS=?, DLV_PASS_ID=?, CROMOD_DATE=?, WAVE_NUMBER=? WHERE ID=?";
-		
+
 	String saleUpdateWithNoWaveSQL =
 		"UPDATE CUST.SALE SET STATUS=?, SAP_NUMBER=?, TRUCK_NUMBER=?, STOP_SEQUENCE=?, NUM_REGULAR_CARTONS=?, NUM_FREEZER_CARTONS=?, NUM_ALCOHOL_CARTONS=?, DLV_PASS_ID=?, CROMOD_DATE=? WHERE ID=?";
-	
+
 	public void store(Connection conn) throws SQLException {
 		if (isModified()) {
 			PreparedStatement ps = null;
@@ -428,21 +428,21 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			}else{
 				ps.setNull(index++, Types.VARCHAR);
 			}
-			
+
 			//Added as part of PERF-27 task.
 			ps.setTimestamp(index++, new java.sql.Timestamp(this.model.getCurrentOrder().getTransactionDate().getTime()));
-			
-			// DO NOT UPDATE SALE.wave_number in database if getWaveNumber returns null 
-			if (sInfo != null && sInfo.getWaveNumber() != null) {		
+
+			// DO NOT UPDATE SALE.wave_number in database if getWaveNumber returns null
+			if (sInfo != null && sInfo.getWaveNumber() != null) {
 				ps.setString(index++, sInfo.getWaveNumber());
 			}
-			
+
 			ps.setString(index++, this.getPK().getId());
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not updated");
 			}
 			ps.close();
-			
+
 			ErpPromotionDAO.delete(conn, this.getPK());
 			if(this.model.hasUsedPromotionCodes())
 				ErpPromotionDAO.insert(conn, this.getPK(), this.model.getUsedPromotionCodes());
@@ -458,7 +458,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		}
 
 	}
-	
+
 	private void updateCroModMaxDate(Connection conn)throws SQLException {
 		PreparedStatement ps = null;
 		try{
@@ -912,7 +912,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	public ErpAbstractOrderModel getCurrentOrder() {
 		return this.model.getCurrentOrder();
 	}
-	
+
 	public List getAuthorizations() {
 		return this.model.getAuthorizations();
 	}
@@ -920,7 +920,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	public List getApprovedAuthorizations() {
 		return this.model.getApprovedAuthorizations();
 	}
-	
+
 	public double getOutstandingCaptureAmount() {
 		return this.model.getOutstandingCaptureAmount();
 	}
@@ -964,9 +964,9 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
-			
+
 			ErpCartonsDAO.delete(conn, getPK());
-			
+
 			ErpCartonsDAO.insert(conn, cartonInfo);
 
 		} catch (SQLException sqle) {
@@ -987,9 +987,9 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
-			
+
 			returnList = ErpCartonsDAO.getCartonInfo(conn, this.getPK());
-			
+
 		} catch (SQLException sqle) {
 			throw new ErpTransactionException(sqle.getMessage());
 		} finally {
@@ -1011,7 +1011,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	public  boolean getIsChargePayment(String authId) {
 		return this.model.getIsChargePayment(authId);
 	}
-	
+
 	public  boolean getIsChargePayment(double chargeAmount) {
 		return this.model.getIsChargePayment(chargeAmount);
 	}
@@ -1027,7 +1027,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	public EnumTransactionType getCurrentTransactionType() {
 		return this.model.getCurrentTransactionType();
 	}
-	
+
 	public List getFailedSettlements() {
 		return this.model.getFailedSettlements();
 	}
@@ -1039,7 +1039,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	public List getFundsRedeposits(){
 		return this.model.getFundsRedeposits();
 	}
-	
+
 	public List getFailedChargeSettlements() {
 		return this.model.getFailedChargeSettlements();
 	}
@@ -1055,9 +1055,9 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	}
 
 	public boolean getIsSettlementFailedAfterSettled() {
-		return this.model.getIsSettlementFailedAfterSettled();		
+		return this.model.getIsSettlementFailedAfterSettled();
 	}
-	
+
 	private static class ErpTransactionList extends DependentPersistentBeanList {
 		public void load(Connection conn) throws SQLException {
 			PrimaryKey ppk = (PrimaryKey) ErpTransactionList.this.getParentPK();
@@ -1079,7 +1079,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 
 			ErpTransactionList.this.set(txList);
 		}
-		
+
 		public static ErpTransactionPersistentBean createPersistentBean(EnumTransactionType txType, PrimaryKey txPk, PrimaryKey ppk) throws SQLException{
 			if(EnumTransactionType.CREATE_ORDER.equals(txType)){
 				return new ErpCreateOrderPersistentBean(txPk);
@@ -1089,46 +1089,46 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			}
 			if (EnumTransactionType.INVOICE.equals(txType)) {
 				return new ErpInvoicePersistentBean(txPk);
-			} 
+			}
 			if (EnumTransactionType.AUTHORIZATION.equals(txType)) {
 				return new ErpAuthorizationPersistentBean(txPk);
-			} 
+			}
 			if (EnumTransactionType.CAPTURE.equals(txType)) {
 				return new ErpCapturePersistentBean(txPk);
-			} 
+			}
 			if (EnumTransactionType.SUBMIT_FAILED.equals(txType)) {
 				return new ErpSubmitFailedPersistentBean(txPk);
-			} 
+			}
 			if (EnumTransactionType.REVERSAL.equals(txType)) {
 				return new ErpReversalPersistentBean(txPk);
-			} 
+			}
 			if (EnumTransactionType.CASHBACK.equals(txType)) {
 				return new ErpCashbackPersistentBean(txPk);
-			} 
+			}
 			if (EnumTransactionType.SETTLEMENT.equals(txType)) {
 				return new ErpSettlementPersistentBean(txPk);
-			} 
+			}
 			if (EnumTransactionType.CHARGEBACK.equals(txType)) {
 				return new ErpChargebackPersistentBean(txPk);
 			}
 			if (EnumTransactionType.ADJUSTMENT.equals(txType)) {
 				return new ErpAdjustmentPersistentBean(txPk);
-			} 
+			}
 			if (EnumTransactionType.CHARGE.equals(txType)) {
 				return new ErpChargePersistentBean(txPk);
-			} 
+			}
 			if (EnumTransactionType.CANCEL_ORDER.equals(txType)) {
 				return new ErpCancelOrderPersistentBean(txPk);
-			} 
+			}
 			if (EnumTransactionType.RETURN_ORDER.equals(txType)) {
 				return new ErpReturnOrderPersistentBean(txPk);
-			} 
+			}
 			if (EnumTransactionType.REDELIVERY.equals(txType)) {
 				return new ErpRedeliveryPersistentBean(txPk);
-			} 
+			}
 			if (EnumTransactionType.VOID_CAPTURE.equals(txType)) {
 				return new ErpVoidCapturePersistentBean(txPk);
-			} 
+			}
 			if (EnumTransactionType.CHARGEBACK_REVERSAL.equals(txType)) {
 				return new ErpChargebackReversalPersistentBean(txPk);
 			}
@@ -1139,7 +1139,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 				return new ErpChargeSettlementPersistentBean(txPk);
 			}
 			if (EnumTransactionType.FUNDS_REDEPOSIT.equals(txType)) {
-				return new ErpFundsRedepositPersistentBean(txPk); 
+				return new ErpFundsRedepositPersistentBean(txPk);
 			}
 			if (EnumTransactionType.SETTLEMENT_CHARGE_FAILED.equals(txType)) {
 				return new ErpFailedChargeSettlementPersistentBean(txPk);
@@ -1150,7 +1150,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			if (EnumTransactionType.DELIVERY_CONFIRM.equals(txType)) {
 				return new ErpDeliveryConfirmPersistentBean(txPk);
 			}
-			
+
 			throw new SQLException("Unknown transaction type " + txType.getCode() + " encountered in sale " + ppk);
 		}
 	}
@@ -1163,7 +1163,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			ErpComplaintList.this.set(complaintList);
 		}
 	}
-	
+
 	public Collection ejbFindByDeliveryPassId(String dlvPassId) throws FinderException {
 		return this.performFind("SELECT ID FROM CUST.SALE WHERE DLV_PASS_ID = ?", dlvPassId);
 	}
@@ -1178,17 +1178,17 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			this.model.setDeliveryPassId(dlvPassId);
 			this.setModified();
 	}
-	
-	private final static String GET_NTH_NONCOS_REG_ORDER_QUERY="select id from ( select s.id,sa.requested_date, row_number() over (order by sa.REQUESTED_DATE DESC) row_num from cust.sale s, cust.salesaction sa, cust.deliveryinfo di,cust.paymentinfo pi where "+ 
+
+	private final static String GET_NTH_NONCOS_REG_ORDER_QUERY="select id from ( select s.id,sa.requested_date, row_number() over (order by sa.REQUESTED_DATE DESC) row_num from cust.sale s, cust.salesaction sa, cust.deliveryinfo di,cust.paymentinfo pi where "+
                                                                    " s.CUSTOMER_ID=? and s.type='REG' and s.id=sa.sale_id and pi.salesaction_id=sa.id and "+
-                                                                   " sa.action_type IN ('CRO','MOD') and sa.action_date=(select max_date from cust.sale_cro_mod_date scmd where scmd.sale_id=s.id) and "+ 
-                                                                   " di.salesaction_id=sa.id AND s.status=?  and di.delivery_type <>'C' and pi.payment_method_type=? ) where row_num=1";
-	
-	private final static String GET_NTH_NONCOS_SUB_ORDER_QUERY="select id from ( select s.id,sa.requested_date, row_number() over (order by sa.REQUESTED_DATE DESC) row_num from cust.sale s, cust.salesaction sa, cust.deliveryinfo di,cust.paymentinfo pi where "+ 
+                                                                   " sa.action_type IN ('CRO','MOD') and sa.action_date=(select max_date from cust.sale_cro_mod_date scmd where scmd.sale_id=s.id) and "+
+                                                                   " di.salesaction_id=sa.id AND s.status=?  and di.delivery_type <>'C' and pi.payment_method_type=?  and pi.on_fd_account<>'M' ) where row_num=1";
+
+	private final static String GET_NTH_NONCOS_SUB_ORDER_QUERY="select id from ( select s.id,sa.requested_date, row_number() over (order by sa.REQUESTED_DATE DESC) row_num from cust.sale s, cust.salesaction sa, cust.deliveryinfo di,cust.paymentinfo pi where "+
     " s.CUSTOMER_ID=? and s.type='SUB' and s.id=sa.sale_id and pi.salesaction_id=sa.id and "+
-    " sa.action_type IN ('CRO','MOD') and sa.action_date=(select max_date from cust.sale_cro_mod_date scmd where scmd.sale_id=s.id) and "+ 
-    " di.salesaction_id=sa.id AND s.status=?  and di.delivery_type <>'C' and pi.payment_method_type=? ) where row_num=1";
-	
+    " sa.action_type IN ('CRO','MOD') and sa.action_date=(select max_date from cust.sale_cro_mod_date scmd where scmd.sale_id=s.id) and "+
+    " di.salesaction_id=sa.id AND s.status=?  and di.delivery_type <>'C' and pi.payment_method_type=?) where row_num=1";
+
 	public PrimaryKey ejbFindByCriteria(String customerID, EnumSaleType saleType, EnumSaleStatus saleStatus, EnumPaymentMethodType pymtMethodType) throws ObjectNotFoundException, FinderException {
 		Connection conn = null;
 		PreparedStatement ps =null;
