@@ -275,6 +275,18 @@
 				</sections>
 			</CmsPage>
 			<CmsPage ref="product_setup"/>
+            <CmsPage>
+				<title>Wine Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>Basic Information</title>
+						<fields>
+							<CmsField><attribute>WINE_SORTING</attribute></CmsField>
+							<CmsField><attribute>WINE_FILTER</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
 		</pages>
 	</CmsEditor>
 	
@@ -344,6 +356,7 @@
 							<CmsField><attribute>AKA</attribute></CmsField>
 							<CmsField><attribute>ALSO_SOLD_AS_NAME</attribute></CmsField>
 							<CmsField><attribute>ALT_TEXT</attribute></CmsField>
+							<CmsField><attribute>PRODUCT_BOTTOM_MEDIA</attribute></CmsField>                                                        
 						</fields>
 					</CmsSection>
 					<CmsSection>
@@ -366,13 +379,12 @@
 							<CmsField><attribute>SEASON_TEXT</attribute></CmsField>
 							<CmsField><attribute>WINE_COUNTRY</attribute></CmsField>
 							<CmsField><attribute>WINE_FYI</attribute></CmsField>
-							<CmsField><attribute>WINE_REGION</attribute></CmsField>
-							<CmsField><attribute>WINE_TYPE</attribute></CmsField>
+							<CmsField><attribute>WINE_REGION</attribute></CmsField>							
 							<CmsField><attribute>SERVING_SUGGESTION</attribute></CmsField>
 							<CmsField><attribute>PACKAGE_DESCRIPTION</attribute></CmsField>
 							<CmsField><attribute>WE_RECOMMEND_TEXT</attribute></CmsField>
 							<CmsField><attribute>FRESH_TIPS</attribute></CmsField>
-							<CmsField><attribute>RATING</attribute></CmsField>
+							<CmsField><attribute>RATING</attribute></CmsField>                            
 							<CmsField><attribute>USAGE_LIST</attribute></CmsField>
 						</fields>
 					</CmsSection>
@@ -433,7 +445,8 @@
 							<CmsField><attribute>ALSO_SOLD_AS</attribute></CmsField>
 							<CmsField><attribute>RELATED_PRODUCTS_HEADER</attribute></CmsField>
 							<CmsField><attribute>RELATED_PRODUCTS</attribute></CmsField>
-							<CmsField><attribute>RELATED_RECIPES</attribute></CmsField>
+                            <CmsField><attribute>PERFECT_PAIR</attribute></CmsField>
+							<CmsField><attribute>RELATED_RECIPES</attribute></CmsField>                            
 							<CmsField><attribute>ymalSets</attribute></CmsField>
 							<CmsField><attribute>RECOMMENDED_ALTERNATIVES</attribute></CmsField>
 							<CmsField><attribute>PRODUCT_BUNDLE</attribute></CmsField>
@@ -468,11 +481,43 @@
 						</fields>
 					</CmsSection>
 				</sections>
-			</CmsPage>
+			</CmsPage>                        
+            <CmsPage>
+				<title>Wine Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>PRODUCT DETAILS</title>
+						<fields>
+							<CmsField><attribute>WINE_CLASSIFICATION</attribute></CmsField>
+							<CmsField><attribute>WINE_IMPORTER</attribute></CmsField>
+							<CmsField><attribute>WINE_ALCH_CONTENT</attribute></CmsField>
+							<CmsField><attribute>WINE_AGING</attribute></CmsField>
+                            <CmsField><attribute>WINE_TYPE</attribute></CmsField>
+						</fields>
+					</CmsSection>
+                    <CmsSection>
+        				<title>BASIC INFORMATION</title>
+						<fields>							
+                            <CmsField><attribute>WINE_NEW_TYPE</attribute></CmsField>
+							<CmsField><attribute>WINE_VINTAGE</attribute></CmsField>
+							<CmsField><attribute>WINE_NEW_REGION</attribute></CmsField>                            
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>RATING/REVIEWS</title>
+						<fields>
+							<CmsField><attribute>WINE_RATING1</attribute></CmsField>
+							<CmsField><attribute>WINE_REVIEW1</attribute></CmsField>
+							<CmsField><attribute>WINE_RATING2</attribute></CmsField>
+							<CmsField><attribute>WINE_REVIEW2</attribute></CmsField>
+							<CmsField><attribute>WINE_RATING3</attribute></CmsField>
+							<CmsField><attribute>WINE_REVIEW3</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>            
 		</pages>
-	</CmsEditor>
-	
-	
+	</CmsEditor>    
 	<CmsEditor id="domain">
 		<contentType>Domain</contentType>
 		<pages>

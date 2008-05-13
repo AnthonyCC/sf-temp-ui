@@ -39,6 +39,9 @@ public class EnumLayoutType implements Serializable {
 	public final static EnumLayoutType TOP_TEN = new EnumLayoutType("Top Ten", 28); //(Top Ten Picks)
 
 	public final static EnumLayoutType MEDIA_NO_NAV = new EnumLayoutType("Media No Nav", 97); //[APPREQ-77]
+	
+	public final static EnumLayoutType WINE_CATEGORY = new EnumLayoutType("Wine Category", 100); //[APPREQ-77]
+	
 	//
 	// this is never rendered by layout manager
 	public final static EnumLayoutType MULTI_ITEM_MEAL_OPTION_HORZ = new EnumLayoutType("Multi Item Meal Layout Option 1", 98); //(Optional category layout 1, Salad Meal)
@@ -76,6 +79,7 @@ public class EnumLayoutType implements Serializable {
 		t.add(MEDIA_NO_NAV);
 		t.add(MULTI_ITEM_MEAL_OPTION_HORZ);
 		t.add(MULTI_ITEM_MEAL_OPTION_VERT);
+		t.add(WINE_CATEGORY);		
         types = Collections.unmodifiableList(t);
     }
 

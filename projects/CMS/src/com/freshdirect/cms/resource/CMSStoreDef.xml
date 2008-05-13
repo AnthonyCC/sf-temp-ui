@@ -256,6 +256,14 @@
 			<RelationshipDef name="HOWTOCOOKIT_USAGE"  label="HTCI Usage" cardinality="Many">
 				<DestinationDef contentType="Domain" />
 			</RelationshipDef>
+            <!--  UAQ changes -->                        
+            <RelationshipDef name="WINE_FILTER"  label="Wine Filter Criteria" cardinality="Many">
+				<DestinationDef contentType="Domain" />
+			</RelationshipDef>                                    
+            <RelationshipDef name="WINE_SORTING" label="Wine Sort Criteria" cardinality="Many">
+				<DestinationDef contentType="DomainValue" />
+			</RelationshipDef>            
+           <!--  USQ changes -->          
 			<RelationshipDef name="HOW_TO_COOK_IT_PRODUCTS"  label="HTCI Prods" cardinality="Many">
 				<DestinationDef contentType="Product" />
 				<DestinationDef contentType="ConfiguredProduct"/>
@@ -369,6 +377,7 @@
 				<EnumValue value="5" label="Party Platter"/>
 				<EnumValue value="6" label="Multi Menu Layout"/>
 				<EnumValue value="7" label="Component Group Meal"/>
+                <EnumValue value="8" label="New Wine Product"/>
 			</EnumDef>
 			<!-- LAYOUT needs to be on Product for inheritance, even though no prods override -->
 			<EnumDef type="I" name="LAYOUT"  label="Layout" inheritable="true">
@@ -403,6 +412,7 @@
                 <EnumValue value="97" label="Media No Nav"/><!-- [APPREQ-77] new layout -->
 				<EnumValue value="98" label="Multi Item Layout - Horizontal"/>
 				<EnumValue value="99" label="Multi Item Layout - Vertical"/>
+                <EnumValue value="100" label="Wine_Category"/><!-- [USQ] new layout -->
 			</EnumDef>
 			<EnumDef type="I" name="TEMPLATE_TYPE"  label="Template Type" inheritable="true">
 				<EnumValue value="1" label="Fresh Direct Default Template"/>
@@ -451,6 +461,13 @@
 			<AttributeDef type="S" name="PROD_PAGE_RATINGS" inheritable="true"  label="Prod Page Ratings" />
 			<AttributeDef type="S" name="PROD_PAGE_TEXT_RATINGS" inheritable="true"   label="Prod Page Text Ratings" />
 			<AttributeDef type="S" name="RATING_PROD_NAME"  label="Prod Page Rating Name" inheritable="true"/>
+            
+      <!--  USQ changes  -->                  
+            <AttributeDef type="S" name="WINE_CLASSIFICATION" label="Wine Classification Text" />
+            <AttributeDef type="S" name="WINE_IMPORTER" label="Wine Importer" />
+            <AttributeDef type="S" name="WINE_ALCH_CONTENT" label="Wine Alchohol Content" />
+            <AttributeDef type="S" name="WINE_AGING" label="WIne Aging Notes" />            
+      <!--  USQ changes  -->            
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="skus" cardinality="Many" navigable="true">
@@ -509,12 +526,38 @@
 			<RelationshipDef name="PRIMARY_HOME" label="Primary Home" cardinality="One">
 				<DestinationDef contentType="Category" />
 			</RelationshipDef>
+<!--  Usq changes -->                    
+            <RelationshipDef name="PERFECT_PAIR" label="Perfect Pair" cardinality="One">
+				<DestinationDef contentType="Category" />
+			</RelationshipDef>
+<!--  Usq changes -->                            
 			<RelationshipDef name="PREFERRED_SKU" label="Preferred SKU" cardinality="One">
 				<DestinationDef contentType="Sku" />
 			</RelationshipDef>
 			<RelationshipDef name="RATING" label="Ratings" cardinality="Many">
 				<DestinationDef contentType="DomainValue" />
 			</RelationshipDef>
+    <!--  Usq changes -->        
+        
+            <RelationshipDef name="WINE_NEW_TYPE" label="Wine Type" cardinality="Many">
+				<DestinationDef contentType="DomainValue" />
+			</RelationshipDef>   
+            <RelationshipDef name="WINE_VINTAGE"  label="Wine Vintage" cardinality="Many">
+				<DestinationDef contentType="DomainValue" />
+			</RelationshipDef>                            
+            <RelationshipDef name="WINE_NEW_REGION" label="Wine Region" cardinality="Many">
+				<DestinationDef contentType="DomainValue" />
+			</RelationshipDef>   
+            <RelationshipDef name="WINE_RATING1"  label="Wine Rating 1" cardinality="Many">
+				<DestinationDef contentType="DomainValue" />
+			</RelationshipDef>                        
+            <RelationshipDef name="WINE_RATING2"  label="Wine Rating 2" cardinality="Many">
+				<DestinationDef contentType="DomainValue" />
+			</RelationshipDef>            
+            <RelationshipDef name="WINE_RATING3"  label="Wine Rating 3" cardinality="Many">
+				<DestinationDef contentType="DomainValue" />
+			</RelationshipDef>            
+    <!--  Usq changes -->        
 			<RelationshipDef name="USAGE_LIST" label="Usage List" cardinality="Many">
 				<DestinationDef contentType="Domain" />
 			</RelationshipDef>
@@ -607,6 +650,22 @@
             <RelationshipDef name="MEDIA_CONTENT" label="Media Content" inheritable="true"><!-- [APPREQ-77] new media type -->
                 <DestinationDef contentType="Html" />
             </RelationshipDef>
+            
+        <!-- USQ  changes -->    
+            <RelationshipDef name="WINE_REVIEW1" label="Wine Review 1">
+                <DestinationDef contentType="Html" />
+            </RelationshipDef>    
+            <RelationshipDef name="WINE_REVIEW2" label="Wine Review 2">
+                <DestinationDef contentType="Html" />
+            </RelationshipDef>
+            <RelationshipDef name="WINE_REVIEW3" label="Wine Review 3">
+                <DestinationDef contentType="Html" />
+            </RelationshipDef>
+            <RelationshipDef name="PRODUCT_BOTTOM_MEDIA" label="Bottom Media">
+                <DestinationDef contentType="Html" />
+            </RelationshipDef>
+
+        <!-- USQ  changes -->    
 			<!-- TODO: add related recipes relation below
 			<RelationshipDef name="RELATED_RECIPES" label="Related Recipes" cardinality="Many">
 				<DestinationDef contentType="Recipe"/>

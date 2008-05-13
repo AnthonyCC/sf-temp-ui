@@ -15,7 +15,8 @@ public class EnumProductLayout implements Serializable {
 	public final static EnumProductLayout PARTY_PLATTER  = new EnumProductLayout("Party Platter Product Layout", 5,"/includes/product/party_platter.jsp",true);  //(Party Platter Template)
 	public final static EnumProductLayout MULTI_ITEM_MEAL  = new EnumProductLayout("Multi Item Meal Option Layout", 6,"/includes/product/party_platter.jsp",true);  //(Multi Item Meal Option Template)
 	public final static EnumProductLayout COMPONENTGROUP_MEAL  = new EnumProductLayout("Meal Layout using Component groups", 7,"/includes/product/componentGroupMeal.jsp",true);  //(Component group meal template)
-	public final static EnumProductLayout CONFIGURED_PRODUCT =   new EnumProductLayout("Configured Product Layout",8,"/includes/product/configProduct.jsp",false);
+	public final static EnumProductLayout NEW_WINE_PRODUCT =   new EnumProductLayout("New Wine Product",8,"/includes/product/new_wine_product.jsp",false);
+	public final static EnumProductLayout CONFIGURED_PRODUCT =   new EnumProductLayout("Configured Product Layout",9,"/includes/product/configProduct.jsp",false);	
 	private static List types = null;
 	
 	static {
@@ -27,6 +28,7 @@ public class EnumProductLayout implements Serializable {
 		t.add(PARTY_PLATTER);
 		t.add(MULTI_ITEM_MEAL);
 		t.add(COMPONENTGROUP_MEAL);
+		t.add(NEW_WINE_PRODUCT);
 		t.add(CONFIGURED_PRODUCT);
 		
 		types = Collections.unmodifiableList(t);
