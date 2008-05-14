@@ -31,6 +31,8 @@
 <BR>
 To return to Your Orders <a href="/your_account/order_history.jsp">click here</a>.
 <br>
+</TABLE>
+<!-- comment out the survey [APPDEV-65]
 <br>
 Your feedback will help us serve you better. Please let us know how you'd like to see us improve.
 <BR>
@@ -72,6 +74,7 @@ Your feedback will help us serve you better. Please let us know how you'd like t
 	</TD>
 </TR>
 </TABLE>
+-->
 <BR>
 <IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="675" HEIGHT="1" BORDER="0" HSPACE="0" VSPACE="8"><BR>
 <TABLE CELLPADDING="0" CELLSPACING="0" border="0" WIDTH="675">
