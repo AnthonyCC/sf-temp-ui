@@ -10,7 +10,8 @@
 private final static String TIMESLOT_BG_EVEN = "e8e8e8";
 private final static String TIMESLOT_BG_ODD = "f7f7f7";
 %>
-<% if (timeslots.size() > 0) { %>	
+<% if (timeslots.size() > 0) { 
+	DlvZoneModel zoneModel = null; %>	
 <table border="0" cellspacing="2" cellpadding="0" summary="timeslots">
 	<tr>
 	<logic:iterate id="day" collection="<%=timeslots.getDays()%>" type="java.util.Date">
@@ -48,7 +49,7 @@ private final static String TIMESLOT_BG_ODD = "f7f7f7";
 					<td width="95" colspan="3" bgcolor="#<%= bgcolor %>"><nobr>
 						<%
 						Date cutoffTime = null;
-						boolean firstSlot = true;
+						boolean firstSlot = true;						
 						%>
 						<logic:iterate id="slot" collection="<%= timeslots.getTimeslotsForDate(day) %>" type="com.freshdirect.fdstore.FDTimeslot">
 							<%
@@ -78,7 +79,7 @@ private final static String TIMESLOT_BG_ODD = "f7f7f7";
 							
 							boolean highlightPreReserved = preReservedSlot && hasPreReserved;
 
-							DlvZoneModel zoneModel = (DlvZoneModel) zones.get(slot.getZoneId());
+							zoneModel = (DlvZoneModel) zones.get(slot.getZoneId());
 							Date now = new Date();
 
 							int availCapacity = TimeslotLogic.getAvailableCapacity(slot.getDlvTimeslot(), now, timeslot_page_type, zoneModel.getCtReleaseTime());
@@ -135,4 +136,8 @@ private final static String TIMESLOT_BG_ODD = "f7f7f7";
 	</logic:iterate>
 	</tr>
 </table>
-<% } %>
+	<% 
+		if (zoneModel != null) { %>
+		<img width="1" height="1" border="0" alt="" src="/media_stat/images/template/tracker.gif?datakey=zone_data&dataval=<%= zoneModel.getZoneCode() %>">		
+		<% }
+ } %>
