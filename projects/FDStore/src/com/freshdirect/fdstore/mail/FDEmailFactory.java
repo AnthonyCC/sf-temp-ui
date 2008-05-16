@@ -173,7 +173,19 @@ public class FDEmailFactory {
 
 		return email; 
 	}
+	/*
+	 * Added for APPDEV-89 . Sending a seperate Auth failed email to auto renew DP customers.
+	 * AR - Stands for Auto Renew DP
+	 */
+	public XMLEmailI createARAuthorizationFailedEmail(FDCustomerInfo customer, String orderNumber, Date startTime, Date endTime, Date cutoffTime){
+		FDAuthorizationFailedEmail email = new FDAuthorizationFailedEmail(customer, orderNumber, startTime, endTime, cutoffTime);
+		email.setXslPath("h_ar_authorization_failure.xsl", "x_ar_authorization_failure.xsl");
+		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
+		email.setSubject("Credit Card Authorization Failure");
+		
 
+		return email; 
+	}
 	public XMLEmailI createReminderEmail(FDCustomerInfo customer, boolean sendToAltEmail) {
 		FDInfoEmail email = new FDInfoEmail(customer);
 		email.setXslPath("h_reminder_service.xsl", "x_reminder_service.xsl");

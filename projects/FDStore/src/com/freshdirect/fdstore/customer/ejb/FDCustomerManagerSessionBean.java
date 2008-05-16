@@ -2783,7 +2783,29 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			throw new FDResourceException(e);
 		}
 	}
+	/*
+	 * Added for APPDEV-89 . Sending a seperate Auth failed email to auto renew DP customers.
+	 * AR - Stands for Auto Renew DP
+	 */
+	private void sendARAuthFailedEmail(String saleID) throws FDResourceException {
 
+		try {
+			FDOrderI order = this.getOrder(saleID);
+			FDCustomerEB fdCustomer = getFdCustomerHome().findByErpCustomerId(order.getCustomerId());
+			FDIdentity identity = new FDIdentity(order.getCustomerId(), fdCustomer.getPK().getId());
+			FDCustomerInfo custInfo = this.getCustomerInfo(identity);
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(order.getDeliveryReservation().getCutoffTime());
+			cal.add(Calendar.HOUR_OF_DAY, -1*ErpServicesProperties.getCancelOrdersB4Cutoff());
+			this.doEmail(FDEmailFactory.getInstance().createARAuthorizationFailedEmail(custInfo, saleID,
+				order.getDeliveryReservation().getStartTime(),
+				order.getDeliveryReservation().getEndTime(), cal.getTime()));
+		} catch (FinderException e) {
+			throw new FDResourceException(e);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e);
+		}
+	}
 	private void storeATPFailureInfos(List infos) throws FDResourceException {
 		Connection conn = null;
 		try {
@@ -3952,7 +3974,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 					EnumPaymentResponse response = sb.authorizeSale(saleID);
 
 					if (!EnumPaymentResponse.APPROVED.equals(response) && !EnumPaymentResponse.ERROR.equals(response)) {
-						sendAuthFailedEmail(saleID);//Should we send email?
+						sendARAuthFailedEmail(saleID);//Should we send email?
 
 					}
 					else if(EnumPaymentResponse.APPROVED.equals(response)) {
