@@ -151,6 +151,7 @@
 							<CmsField><attribute>PRODUCT_LAYOUT</attribute></CmsField>
 							<CmsField><attribute>MATERIAL_CHARACTERISTIC</attribute></CmsField>
 							<CmsField><attribute>SEPARATOR_MEDIA</attribute></CmsField>
+                            <CmsField><attribute>TEMPLATE_PATH</attribute></CmsField>                            
 						</fields>
 					</CmsSection>
 					<CmsSection>
@@ -377,9 +378,6 @@
 							<CmsField><attribute>PARTIALLY_FROZEN</attribute></CmsField>
 							<CmsField><attribute>SEAFOOD_ORIGIN</attribute></CmsField>
 							<CmsField><attribute>SEASON_TEXT</attribute></CmsField>
-							<CmsField><attribute>WINE_COUNTRY</attribute></CmsField>
-							<CmsField><attribute>WINE_FYI</attribute></CmsField>
-							<CmsField><attribute>WINE_REGION</attribute></CmsField>							
 							<CmsField><attribute>SERVING_SUGGESTION</attribute></CmsField>
 							<CmsField><attribute>PACKAGE_DESCRIPTION</attribute></CmsField>
 							<CmsField><attribute>WE_RECOMMEND_TEXT</attribute></CmsField>
@@ -499,8 +497,10 @@
         				<title>BASIC INFORMATION</title>
 						<fields>							
                             <CmsField><attribute>WINE_NEW_TYPE</attribute></CmsField>
+                            <CmsField><attribute>WINE_COUNTRY</attribute></CmsField>
 							<CmsField><attribute>WINE_VINTAGE</attribute></CmsField>
 							<CmsField><attribute>WINE_NEW_REGION</attribute></CmsField>                            
+                            <CmsField><attribute>WINE_VARIETAL</attribute></CmsField>                                                
 						</fields>
 					</CmsSection>
 					<CmsSection>
@@ -512,6 +512,13 @@
 							<CmsField><attribute>WINE_REVIEW2</attribute></CmsField>
 							<CmsField><attribute>WINE_RATING3</attribute></CmsField>
 							<CmsField><attribute>WINE_REVIEW3</attribute></CmsField>
+						</fields>
+					</CmsSection>
+                    <CmsSection>
+						<title>BEST CELLARS</title>
+						<fields>
+							<CmsField><attribute>WINE_FYI</attribute></CmsField>
+							<CmsField><attribute>WINE_REGION</attribute></CmsField>							
 						</fields>
 					</CmsSection>
 				</sections>

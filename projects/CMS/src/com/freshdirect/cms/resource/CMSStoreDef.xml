@@ -188,7 +188,7 @@
 			<AttributeDef type="B" name="NUTRITION_SORT"  label="Nutrition Sort" inheritable="true"/>
 			<AttributeDef type="B" name="SIDENAV_BOLD"  label="Side Nav Bold"/>
 			<AttributeDef type="B" name="SIDENAV_LINK" label="Side Nav Link" inheritable="true"/>
-			<AttributeDef type="I" name="SIDENAV_PRIORITY"  label="Side Nav Priority"/>
+			<AttributeDef type="I" name="SIDENAV_PRIORITY"  label="Side Nav Priority"/>            
 			<EnumDef type="I" name="SIDENAV_SHOWCHILDREN"  label="Side Nav Show Children" inheritable="true">
 				<EnumValue value="0" label="IF_IN_BROWSE_PATH"/>
 				<EnumValue value="1" label="ALWAYS"/>
@@ -206,6 +206,9 @@
 			<AttributeDef type="B" name="FEATURED"  label="Featured"/>
 			<AttributeDef type="B" name="SECONDARY_CATEGORY"  label="Secondary Category" />
 			<AttributeDef type="S" name="MATERIAL_CHARACTERISTIC" label="Material Characteristic"/>
+           <!-- Wine Store Changes  --> 
+            <AttributeDef type="S" name="TEMPLATE_PATH" label="Content Template Path"/>
+            <!-- Wine Store Changes  --> 
 			<!-- rating groups -->
 			<AttributeDef type="B" name="RATING_BREAK_ON_SUBFOLDERS" inheritable="true"   label="Rating Break on Subfolders" />
 			<AttributeDef type="B" name="RATING_CHECK_SUBFOLDERS"  inheritable="true"  label="Rating Check Subfolders" />
@@ -548,6 +551,9 @@
             <RelationshipDef name="WINE_NEW_REGION" label="Wine Region" cardinality="Many">
 				<DestinationDef contentType="DomainValue" />
 			</RelationshipDef>   
+            <RelationshipDef name="WINE_VARIETAL"  label="Wine Varietal" cardinality="Many">
+				<DestinationDef contentType="DomainValue" />                                                
+			</RelationshipDef>            
             <RelationshipDef name="WINE_RATING1"  label="Wine Rating 1" cardinality="Many">
 				<DestinationDef contentType="DomainValue" />
 			</RelationshipDef>                        
@@ -555,7 +561,7 @@
 				<DestinationDef contentType="DomainValue" />
 			</RelationshipDef>            
             <RelationshipDef name="WINE_RATING3"  label="Wine Rating 3" cardinality="Many">
-				<DestinationDef contentType="DomainValue" />
+				<DestinationDef contentType="DomainValue" />                                                
 			</RelationshipDef>            
     <!--  Usq changes -->        
 			<RelationshipDef name="USAGE_LIST" label="Usage List" cardinality="Many">

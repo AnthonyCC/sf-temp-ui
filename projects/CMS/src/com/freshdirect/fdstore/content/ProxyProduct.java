@@ -525,4 +525,74 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 		return getProduct().getProductTermsMedia();
 	}
 	
+	// new Wine Store changes
+	
+	public String getWineClassification(){
+	     return getProduct().getWineClassification();
+	}
+	
+	public String getWineImporter(){
+		return getProduct().getWineImporter();
+	}
+	
+	public String getWineAlchoholContent(){
+		return getProduct().getWineAlchoholContent();
+	}
+	
+	public String getWineAging(){
+		return getProduct().getWineAging();	
+	}
+	
+	public String getWineType(){
+		return getProduct().getWineType();
+	}
+	
+	public List getNewWineType(){
+		return getProduct().getNewWineType();
+	}
+	
+	public List getWineVintage(){
+		return getProduct().getWineVintage();
+	}
+	
+	public List getNewWineRegion(){
+		return getProduct().getNewWineRegion();
+	}
+	
+	public List getWineVarietal() {
+		return getProduct().getWineVarietal();
+	}
+	
+	public List getWineRating1(){
+		return getProduct().getWineRating1();
+	}
+	
+	public List getWineRating2(){
+		return getProduct().getWineRating2();
+	}
+	
+	public List getWineRating3(){
+		return getProduct().getWineRating3();
+	}
+	
+	public Html getWineReview1(){
+		return getProduct().getWineReview1();	
+	}
+	
+	public Html getWineReview2(){
+		return getProduct().getWineReview2();
+	}
+	
+	
+	public Html getWineReview3(){
+		return getProduct().getWineReview3();	
+	}
+	
+	public Html getProductBottomMedia(){
+		return getProduct().getProductBottomMedia();
+	}
+	
+	public CategoryModel getPerfectPair(){
+		return getProduct().getPerfectPair();	
+	}		
 }

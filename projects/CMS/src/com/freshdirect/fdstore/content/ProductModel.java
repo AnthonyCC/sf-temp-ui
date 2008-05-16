@@ -426,4 +426,43 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI {
 	String getDefaultPrice();
 
 	public boolean isSoldBySalesUnits();
+	
+	// for new wine store
+	
+	public String getWineClassification();
+	
+	public String getWineImporter();
+	
+	public String getWineAlchoholContent();
+	
+	public String getWineAging();
+	
+	public String getWineType();
+	
+	public List getNewWineType();
+	
+	public List getWineVarietal();
+	
+	public List getWineVintage();
+	
+	public List getNewWineRegion();
+	
+	public List getWineRating1();
+	
+	public List getWineRating2();
+	
+	public List getWineRating3();
+	
+	public Html getWineReview1();
+	
+	public Html getWineReview2();
+	
+	public Html getWineReview3();
+	
+	public Html getProductBottomMedia();
+	
+	public CategoryModel getPerfectPair();
+	
+	
+	
 }

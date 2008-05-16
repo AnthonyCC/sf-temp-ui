@@ -28,7 +28,13 @@ public class CategoryModel extends ContentNodeModelImpl {
 	private List productModels = new ArrayList();
 
 	private List featuredProductModels = new ArrayList();
+	
+	// New Wine Store 
 
+	private List wineSortCriteriaList = new ArrayList();
+	
+	private List wineFilterCriteriaList = new ArrayList();
+	
 	public CategoryModel(com.freshdirect.cms.ContentKey cKey) {
 		super(cKey);
 		categoryAlias = null;
@@ -118,6 +124,26 @@ public class CategoryModel extends ContentNodeModelImpl {
 		return (Html)getAttribute("MEDIA_CONTENT",(Html)null);
 	}
 
+    /* [NEW WINE STORE CHANGES] */  
+	
+	 	
+	public List getWineSortCriteria() {
+		// TODO Auto-generated method stub		
+		ContentNodeModelUtil.refreshModels(this, "WINE_SORTING", wineSortCriteriaList, false);
+		return new ArrayList(wineSortCriteriaList);		
+	}
+	
+	public List getWineFilterCriteria() {
+		// TODO Auto-generated method stub		
+		ContentNodeModelUtil.refreshModels(this, "WINE_FILTER", wineFilterCriteriaList, false);
+		return new ArrayList(wineFilterCriteriaList);		
+	}
+	
+	public String getContentTemplatePath(){		
+		return this.getAttribute("TEMPLATE_PATH", null);		
+	}
+	
+	
 	/** @return List of {@link CategoryRef} */
 	public List getVirtualGroupRefs() {
 		com.freshdirect.fdstore.attributes.Attribute vGroup = this.getAttribute("VIRTUAL_GROUP");
