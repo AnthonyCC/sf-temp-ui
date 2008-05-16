@@ -18,7 +18,7 @@
 <%@ page import="com.freshdirect.fdstore.deliverypass.DeliveryPassUtil" %>
 <%@ page import='com.freshdirect.framework.webapp.ActionResult' %>
 <%@ page import='com.freshdirect.framework.webapp.ActionError' %>
-
+<%@ page import="com.freshdirect.webapp.taglib.callcenter.ComplaintUtil" %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -38,9 +38,20 @@
 <%
     String redemptionCode = request.getParameter("redemptionCode");
     String actionName = "updateQuantities";
+    if(request.getMethod().equalsIgnoreCase("POST") && "nextPage".equals(request.getParameter("action"))){
+        actionName="nextPage";
+    }
+
     if ((request.getMethod().equalsIgnoreCase("POST") && request.getParameter("redemptionCodeSubmit.x") != null) || (redemptionCode != null && !"".equals(redemptionCode))) {
         actionName = "redeemCode";
     }
+    String [] lineReason = request.getParameterValues("ol_credit_reason");
+
+    
+    List mg_reason = ComplaintUtil.getReasonsForDepartment("Makegood");
+    boolean makegood = "true".equals(request.getParameter("makegood")) ? true : false;
+    String referencedOrder = request.getParameter("orig_sale_id");
+
 %>
 <%
     //Reset the DCPD eligiblity map to re-calculate the promo if in case promotion was modified.
@@ -63,13 +74,22 @@
 <fd:ErrorHandler result='<%=result%>' name='pass_cancelled' id='errorMsg'>
     <%@ include file="/includes/i_error_messages.jspf" %>   
 </fd:ErrorHandler>
+<fd:ErrorHandler result='<%=result%>' name='system' id='errorMsg'>
+    <%@ include file="/includes/i_error_messages.jspf" %>   
+</fd:ErrorHandler>
 <table width="90%" CELLPADDING="2" CELLSPACING="0" BORDER="0" align="center" class="checkout_header<%= (user.isActive()) ? "" : "_warning" %>">
+
+
 <form name="viewcart" method="POST">
 <input type="hidden" name="cartLineRemove" value="-1">
 <input type="hidden" name="action" value="updateQuantities">
+<% if(makegood) {%>
+    <input type="hidden" name="makeGoodOrder" value="true">
+    <input type="hidden" name="referencedOrder" value="<%=referencedOrder%>">
+<%}%>
 	<tr valign="TOP">
 	<td width="80%">&nbsp;Review Items in Cart before proceeding<% if (!user.isActive()) { %>&nbsp;&nbsp;&nbsp;!!! Checkout prevented until account is <a href="<%= response.encodeURL("/customer_account/deactivate_account.jsp?successPage="+request.getRequestURI()) %>" class="new">REACTIVATED</a><% } %></td>
-	<td align="right"><a href="<%= response.encodeURL("/checkout/checkout_select_address.jsp") %>" class="checkout">CONTINUE CHECKOUT >></a></td>
+	<td align="right"><a href="javascript:nextPage()" class="checkout">CONTINUE CHECKOUT >></a></td>
 	</tr>
 </table>
 
@@ -97,6 +117,7 @@
 	boolean hadKosherRestriction = false;
 	boolean hadPlatterRestriction = false;
     boolean firstRecipe = true;
+    int j = 0;
 	%>
 	<logic:iterate id="cartLine" collection="<%= orderLines %>" type="com.freshdirect.fdstore.customer.FDCartLineI" indexId="viewIndex">
 		<%
@@ -228,11 +249,28 @@
 
 			</div>
 			</td>
-			<td align="right">(<%= cartLine.getUnitPrice() %>)</td>
+			<td align="right">(<%= cartLine.getUnitPrice() %>) </td>
+            <%if (makegood){%>
+                
+                <input type="hidden" name="orderlineId" value="<%= ((FDCartLineI)cartLine).getOrderLineId() %>">
+            <td align="right">
+               <SELECT name="ol_credit_reason" class="pulldown_detail">
+                    <OPTION value="">select make good reason</OPTION>
+                    <logic:iterate id="reason" collection="<%= mg_reason %>" type="com.freshdirect.customer.ErpComplaintReason">
+                        <OPTION value="<%= reason.getId() %>" <%= ( lineReason != null && reason.getId().equals(lineReason[j]) ) ? "SELECTED" : "" %>>
+                            <%= reason.getReason() %>
+                        </OPTION>
+                    </logic:iterate>
+                </SELECT>
+
+            </td>
+            <%}%>
 			<td align="right"><span class="text10bold"><%= CCFormatter.formatCurrency(cartLine.getPrice()) %></span></td>
 			<td><%= cartLine.isEstimatedPrice() ? "*" : "" %><b><%=cartLine.hasTax() ? "&nbsp;T" : ""%></b></td>
 			<td><b><%= cartLine.hasScaledPricing() ? "&nbsp;S" : "" %><%= cartLine.hasDepositValue() ? "&nbsp;D" : "" %></b></td>
-			<td align="right">&nbsp;<a href="<%= request.getRequestURI() %>?remove=1&cartLine=<%= cartLine.getRandomId() %>" class="note">Remove</a></td>
+            <%if (!makegood){%>
+			    <td align="right">&nbsp;<a href="<%= request.getRequestURI() %>?remove=1&cartLine=<%= cartLine.getRandomId() %>" class="note">Remove</a></td>
+            <%}%>   
 		</tr>
 	
 		<%
@@ -285,7 +323,7 @@
 		}
 		
 		%>
-
+    <%      j++; %>
 	</logic:iterate>
 
 	<tr><td colspan="10">
@@ -325,7 +363,7 @@
 		<span class="orderSeparator" />
 	</td>
 	</tr>
-	
+	<%if (!makegood){%>	
 	<tr>
         <td valign="top" colspan="3" rowspan="18" class="note">
             <input type="image" name="update_quantities" src="/media_stat/images/buttons/update_quantities.gif" width="113" height="16" border="0" alt="UPDATE QUANTITIES" VSPACE="2" HSPACE="0">
@@ -335,6 +373,14 @@
         </td>
         <td colspan="7"></td>
 	</tr>
+    <%} else{%>
+	<tr>
+        <td valign="top" colspan="3" rowspan="18" class="note">
+        </td>
+        <td colspan="7"></td>
+	</tr>
+    
+    <%}%>
 	<tr valign="top" class="orderSummary">
 		<td colspan="3" align="right">Order Subtotal:</td>
 		<td colspan="1" align="right"><%=CCFormatter.formatCurrency(cart.getSubTotal())%></td>
@@ -507,8 +553,8 @@
 
 
 
-    if ( (redemptionPromo == null && maxPromotion <= 0.0)
-        || (redemptionPromo != null && !isRedemptionApplied) ) {
+    if ( ((redemptionPromo == null && maxPromotion <= 0.0)
+        || (redemptionPromo != null && !isRedemptionApplied)) && makegood!=true ) {
 		%>
 		<tr bgcolor="FFFFCE">
 			<td colspan="3" align="right" style="padding: 4px;"><b>Enter promotion code: </b></td>
@@ -621,6 +667,10 @@
     	document.viewcart["cartLineRemove"].value = id;
 	    setSubmitAction("removeCartLine");
     	return true;
+	}
+	function nextPage(){
+	    setSubmitAction("nextPage");
+    	document.viewcart.submit();
 	}
 
 	function submitRemove(){

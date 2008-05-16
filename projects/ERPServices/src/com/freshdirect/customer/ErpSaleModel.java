@@ -472,6 +472,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 			new EnumSaleStatus[] {
 				EnumSaleStatus.ENROUTE,
 				EnumSaleStatus.PENDING,
+				EnumSaleStatus.CAPTURE_PENDING,
 				EnumSaleStatus.SETTLED,
 				EnumSaleStatus.PAYMENT_PENDING,
 				EnumSaleStatus.RETURNED });

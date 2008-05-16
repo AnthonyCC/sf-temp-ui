@@ -135,7 +135,10 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 	}
 
 	public String getOrderLineId() {
-		return this.orderLine.getPK() == null ? "" : this.orderLine.getPK().getId();
+		if(this.orderLine.getPK() == null)
+			return this.orderLine.getOrderLineId() == null? "": this.orderLine.getOrderLineId();
+		else
+			return this.orderLine.getPK().getId();
 	}
 
 	public String getOrderLineNumber() {
@@ -243,4 +246,8 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 		FDProduct fdp = this.lookupFDProduct();
 		return fdp.getAttributeBoolean(EnumAttributeName.ADVANCE_ORDER_FLAG.getName(),false);
 	}
+	public void setOrderLineId(String orderLineId){
+		this.orderLine.setOrderLineId(orderLineId);
+	}
+	
 }

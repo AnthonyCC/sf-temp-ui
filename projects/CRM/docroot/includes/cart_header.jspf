@@ -6,6 +6,7 @@
 	String cartAction = request.getParameter("action");
 	String sPage = request.getParameter("successPage");
 	boolean hasCustomerCase = CrmSession.hasCustomerCase(session);
+    String order_Id = request.getParameter("orderId");
 %>
 <fd:FDShoppingCart id='cart' result='result' action='<%= cartAction %>' successPage='<%= sPage %>'>
 <%
@@ -36,7 +37,11 @@
 			<td width='50%'><div align="left"><a href="/main/account_details.jsp?saveCart=true" class="checkout" style="width: 100px;"><< SAVE CART</a></div></td>
 			<td width='50%'><div align="right">
 				<%if(hasCustomerCase){%>
-					<a href="<%= response.encodeURL("/checkout/checkout_review_items.jsp") %>" class="checkout" style="width: 100px;">CHECKOUT >></a>
+                    <%if(request.getRequestURI().indexOf("makegood")>-1){%>
+					    <a href="<%= response.encodeURL("/checkout/checkout_review_items.jsp?orig_sale_id="+order_Id+"&makegood=true") %>" class="checkout" style="width: 100px;">CHECKOUT >></a>
+                    <%} else {%>
+                        <a href="<%= response.encodeURL("/checkout/checkout_review_items.jsp") %>" class="checkout" style="width: 100px;">CHECKOUT >></a>
+                    <% } %>
 				<%} else {%><span class="cust_module_content_edit">-Case required to checkout-</span><% } %>
 			</div></td>
 		</tr>

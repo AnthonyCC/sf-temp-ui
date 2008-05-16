@@ -90,6 +90,23 @@ public class ErpComplaintManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
+	public void rejectMakegoodComplaint(String makegood_sale_id) {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			dao.rejectMakegoodComplaint(conn, makegood_sale_id);
+		} catch (SQLException ex) {
+			LOGGER.error("SQLException occured", ex);
+			throw new EJBException( ex.getMessage() );
+		} finally {
+			try {
+				if (conn!=null) conn.close();
+			} catch (SQLException ex) {
+				LOGGER.warn("Unable to close Connection", ex);
+				throw new EJBException( ex.getMessage() );
+			}
+		}
+	}
 
 
 	public void ejbCreate() throws CreateException {

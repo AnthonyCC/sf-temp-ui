@@ -20,6 +20,7 @@ public interface SessionName {
     public final static String RECENT_ORDER			= "fd.cc.recentOrder";
     public final static String CUSTOMER_SERVICE_REP	= "fd.cc.csr";
     public final static String COMPLAINT_ID			= "fd.cc.complaintId";
+    public final static String MAKEGOOD_COMPLAINT	= "fd.cc.makegoodComplaint";
     public final static String CC_SEARCH_RESULTS		= "fd.cc.search.custOrders";
     public final static String LIST_SEARCH_RAW		= "fd.cc.search.listRaw";
     public final static String REMOVED_RESERVATION  = "fd.removedReservation";    

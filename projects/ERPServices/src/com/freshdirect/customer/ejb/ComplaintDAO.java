@@ -7,6 +7,7 @@
 package com.freshdirect.customer.ejb;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -79,6 +80,15 @@ public class ComplaintDAO implements java.io.Serializable {
 		stmt.close();
 
 		return results;
+	}
+	public void rejectMakegoodComplaint(Connection conn, String makegood_sale_id)throws SQLException {
+		PreparedStatement ps = conn.prepareStatement("UPDATE CUST.COMPLAINT SET STATUS='REJ' WHERE MAKEGOOD_SALE_ID = ? and status='APP'");
+		ps.setString(1,makegood_sale_id);
+		if (ps.executeUpdate() != 1) {
+			throw new SQLException("Row not updated");
+		}
+		ps.close();
+		ps = null;
 	}
 
 }

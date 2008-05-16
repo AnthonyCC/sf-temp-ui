@@ -160,7 +160,7 @@
 <td WIDTH="3%"><A HREF="javascript:cartChgQty<%=itemsShown%>(<%= _productNode.getQuantityIncrement() %>);"><img src="/media_stat/crm/images/arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></A><BR><A HREF="javascript:cartChgQty<%=itemsShown%>(<%= -_productNode.getQuantityIncrement() %>);"><img src="/media_stat/crm/images/arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></A></td>
 <td WIDTH="3%"><%= cartLine.getSalesUnitDescription() %></td>
 <%	} %>
-				<TD WIDTH="46%"><A HREF="<%= response.encodeURL("/order/product_modify.jsp?cartLine=" + cartLine.getRandomId()) %>"><%= cartLine.getDescription() %></A></TD>
+<TD WIDTH="46%"><A HREF="<%= response.encodeURL("/order/product_modify.jsp?cartLine=" + cartLine.getRandomId()) %>"><%= cartLine.getDescription() %></A> </TD>
 				<TD WIDTH="18%"><a href="javascript:popResize('/shared/product_summary.jsp?productId=<%=_productNode%>&catId=<%=_productNode.getParentNode()%>','740','555','summ')" title="Product description & Information" class="help" style="font-size: 4pt; padding: 1px;">?</a> (<%= cartLine.getUnitPrice() %>)</TD>
 				<TD WIDTH="14%" align="right"><%= CCFormatter.formatCurrency(cartLine.getPrice()) %></TD>
 				<TD WIDTH="5%" align="right"><A HREF="<%= request.getRequestURI() %>?remove=1&cartLine=<%= cartLine.getRandomId() %><%= paramBuf.toString() %>" class="remove" title="Remove">X</A></TD>

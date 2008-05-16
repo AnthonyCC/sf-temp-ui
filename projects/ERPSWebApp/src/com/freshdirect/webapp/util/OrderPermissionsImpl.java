@@ -21,7 +21,7 @@ public class OrderPermissionsImpl implements OrderPermissionsI {
 	public boolean allowCancelOrder(){
 		
 		if ( EnumSaleStatus.SUBMITTED.equals(status) || EnumSaleStatus.AVS_EXCEPTION.equals(status) 
-			|| EnumSaleStatus.AUTHORIZED.equals(status) || EnumSaleStatus.NEW.equals(status) 
+			|| EnumSaleStatus.AUTHORIZED.equals(status)  
 			|| EnumSaleStatus.PENDING.equals(status) ) {
 			 return true;
 		}
@@ -53,16 +53,16 @@ public class OrderPermissionsImpl implements OrderPermissionsI {
 	}
 	
 	public boolean allowModifyOrder(){
-
-		if ( EnumSaleStatus.SUBMITTED.equals(status) || EnumSaleStatus.AUTHORIZED.equals(status) 
-			|| EnumSaleStatus.AVS_EXCEPTION.equals(status)) {
-			return !this.makeGoodOrder || "CALLCENTER".equalsIgnoreCase(application);
+		if(!this.makeGoodOrder){
+			if ( EnumSaleStatus.SUBMITTED.equals(status) || EnumSaleStatus.AUTHORIZED.equals(status) 
+					|| EnumSaleStatus.AVS_EXCEPTION.equals(status)) {
+				return true;
+			}
+			if ( (EnumSaleStatus.NOT_SUBMITTED.equals(status) || EnumSaleStatus.AUTHORIZATION_FAILED.equals(status) ) 
+					&& "CALLCENTER".equalsIgnoreCase(application) ) {
+				return true;
+			}
 		}
-		if ( (EnumSaleStatus.NOT_SUBMITTED.equals(status) || EnumSaleStatus.AUTHORIZATION_FAILED.equals(status) ) 
-			&& "CALLCENTER".equalsIgnoreCase(application) ) {
-			return true;
-		}
-		
 		return false;
 	}
 	

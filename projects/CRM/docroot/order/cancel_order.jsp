@@ -56,6 +56,7 @@
 		
 		<input type="checkbox" name="silent_mode"> Do not send email confirmation
 		<br>
+       
 		<br>
 <%	String [] reasons = {"Product quality not acceptable",
 						 "Poor service experience",
@@ -79,6 +80,7 @@
 		Notes:<br>
 		<TEXTAREA NAME="cancel_notes" WRAP="virtual" COLS="50" ROWS="10"><%= request.getParameter("cancel_notes") %></TEXTAREA>
 		<br><br>
+
 		</td>
 	</tr>
 	</form>

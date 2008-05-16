@@ -27,6 +27,7 @@ import com.freshdirect.framework.core.ModelSupport;
 public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 
     private String orderLineNumber;
+    private String orderLineId;
     
     private String affiliateCode;
 
@@ -75,6 +76,13 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 	}
 	public String getOrderLineNumber(){ return orderLineNumber; }
     public void setOrderLineNumber(String orderLineNumber){ this.orderLineNumber = orderLineNumber; }
+	
+    public String getOrderLineId() {
+		return this.orderLineId;
+	}
+	public void setOrderLineId(String orderLineId) {
+		this.orderLineId = orderLineId;
+	}
 
 	public ErpAffiliate getAffiliate() {
 		ErpAffiliate affiliate = ErpAffiliate.getEnum(this.affiliateCode);

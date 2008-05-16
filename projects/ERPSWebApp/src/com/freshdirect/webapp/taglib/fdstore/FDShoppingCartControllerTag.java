@@ -29,7 +29,15 @@ import javax.servlet.jsp.JspWriter;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.customer.EnumChargeType;
+import com.freshdirect.customer.EnumComplaintLineMethod;
+import com.freshdirect.customer.EnumComplaintLineType;
+import com.freshdirect.customer.EnumComplaintStatus;
+import com.freshdirect.customer.EnumComplaintType;
+import com.freshdirect.customer.EnumSendCreditEmail;
+import com.freshdirect.customer.ErpComplaintLineModel;
+import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
@@ -48,12 +56,14 @@ import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDModifyCartLineI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.QuickCart;
+import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.lists.CclUtils;
 import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
@@ -65,6 +75,8 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.framework.webapp.ActionWarning;
+import com.freshdirect.webapp.taglib.callcenter.ComplaintUtil;
+import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.util.FDEventUtil;
 import com.freshdirect.webapp.util.ItemSelectionCheckResult;
 import com.freshdirect.webapp.util.QuickCartCache;
@@ -113,6 +125,19 @@ public class FDShoppingCartControllerTag extends
 	private List cartLinesToAdd = Collections.EMPTY_LIST;
 
 	private List frmSkuIds = new ArrayList();
+	
+    private final String GENERAL_ERR_MSG 		= "The marked lines have invalid or missing data.";
+    
+    // PK from original order
+    private String orderId					= null;
+    
+    // OrderLine credit inputs
+    private String [] orderLineId			= null;
+    private String [] orderLineReason		= null;
+    
+    
+    // Credit notes
+    String description				= "Make good 0 credit complaint";
 
 	public void setId(String id) {
 		this.id = id;
@@ -194,7 +219,9 @@ public class FDShoppingCartControllerTag extends
 		String application = (String) session
 				.getAttribute(SessionName.APPLICATION);
 		boolean inCallCenter = "callcenter".equalsIgnoreCase(application);		
-		
+
+        ErpComplaintModel complaintModel = new ErpComplaintModel();
+
 		if (action != null && ("POST".equalsIgnoreCase(request.getMethod()))) {
 			//
 			// an action was request, decide which one
@@ -364,7 +391,39 @@ public class FDShoppingCartControllerTag extends
 
 			} else if ("removeAllCartLines".equalsIgnoreCase(action)) {
 				affectedLines = this.removeAllCartLines();
-			} else {
+			} else if ("nextPage".equalsIgnoreCase(action)) {
+				successPage = "checkout_select_address.jsp";
+				//clean data in session
+				session.removeAttribute("makeGoodOrder");
+				session.removeAttribute("referencedOrder");
+				session.removeAttribute(SessionName.MAKEGOOD_COMPLAINT);
+				
+				if("true".equals(request.getParameter("makegood"))){
+		            this.getFormData(request, result);
+		            for(int i=0; i<orderLineId.length;i++){
+		            	if (orderLineId[i]==null || "".equals(orderLineId[i].trim())){
+		            		result.addError(new ActionError("system",
+		            				"Order line ID from original order is missing, please go back clean all items in cart and select items from original order again."));
+		            	}
+		            }
+		            for(int i=0; i<orderLineReason.length;i++){
+		            	if (orderLineReason[i]==null || "".equals(orderLineReason[i].trim())){
+		            		result.addError(new ActionError("system",
+		            				"Make good reason is missing"));
+		            	}
+		            }
+
+		            try {
+		                buildComplaint(result, complaintModel);
+		            } catch (FDResourceException ex) {
+		                LOGGER.warn("FDResourceException while building ErpComplaintModel", ex);
+		                throw new JspException(ex.getMessage());
+		            } 
+		            session.setAttribute(SessionName.MAKEGOOD_COMPLAINT, complaintModel);
+		            session.setAttribute("makeGoodOrder", request.getParameter("makeGoodOrder"));
+		            session.setAttribute("referencedOrder", request.getParameter("referencedOrder"));
+				}
+			}else {
 				// unrecognized action, it's probably not for this tag then
 				// return EVAL_BODY_BUFFERED;
 				LOGGER.warn("Unrecognized action:" + action);
@@ -1046,10 +1105,12 @@ public class FDShoppingCartControllerTag extends
 			String catId                = request.getParameter("catId");
 			String ymalSetId            = request.getParameter("ymalSetId");
 			String originatingProductId = request.getParameter("originatingProductId");
-	
+			String originalOrderLineId = request.getParameter("originalOrderLineId"+suffix);
+			
 			theCartLine.setYmalCategoryId(catId);
 			theCartLine.setYmalSetId(ymalSetId);
 			theCartLine.setOriginatingProductId(originatingProductId);
+			theCartLine.setOrderLineId(originalOrderLineId);
 		}
 		
 		return theCartLine;
@@ -1438,5 +1499,116 @@ public class FDShoppingCartControllerTag extends
 		}
 		return lines;
 	}
+    /**
+     * Builds a valid, well-formed ErpComplaintModel
+     *
+     */
+    private void buildComplaint(ActionResult result, ErpComplaintModel complaintModel) throws FDResourceException, JspException  {
+        
+        this.parseOrderLines(result, complaintModel);
+        this.setComplaintDetails(result, complaintModel);
+        
+    }
+    
+    
+    /**
+     * Build complaint lines for each order line and validate data.
+     *
+     */
+    private void parseOrderLines(ActionResult result, ErpComplaintModel complaintModel) throws FDResourceException, JspException {
+        
+        ArrayList lines = new ArrayList();
+        FDOrderAdapter order = (FDOrderAdapter) FDCustomerManager.getOrder(this.orderId);
+        
+        for (int i = 0; i < orderLineReason.length; i++) {
+            
+            ErpComplaintLineModel line = new ErpComplaintLineModel();
+            //
+            // allow complaints with a zero quantity...
+            //
+            //if ( orderLineQty[i] != null && !"".equals(orderLineQty[i]) && Double.parseDouble(orderLineQty[i]) <= 0 )
+            //    continue;
+            //
+            //
+            // ...but make sure they at least have a reason code
+            //
+            if (orderLineReason[i] == null || "".equals(orderLineReason[i])) continue;
+            
+            // Set up the Complaint Line Model with proper info
+            //
+            line.setType(EnumComplaintLineType.ORDER_LINE);
+            line.setOrderLineId(this.orderLineId[i]);
+            line.setComplaintLineNumber(""+i);
 
+            double quantity = 0.0;
+           	line.setQuantity(quantity);
+ 
+            
+            double amount = 0.0;
+            line.setAmount(amount);
+
+            if ( orderLineReason[i] != null && !"".equals(orderLineReason[i]) )
+                line.setReason( ComplaintUtil.getReasonById(orderLineReason[i]) );
+    
+                line.setMethod( EnumComplaintLineMethod.STORE_CREDIT );
+            
+            lines.add(line);
+            //
+            // Investigate for errors
+            //
+            if ( !line.isValidComplaintLine() ) {
+                result.addError(new ActionError("ol_error_"+i,"Missing or invalid data in this line."));
+                addGeneralError(result);
+            }
+ 
+        }
+        
+        if (lines.size() > 0)
+            complaintModel.addComplaintLines(lines);
+        complaintModel.setType(EnumComplaintType.STORE_CREDIT);  
+    } 
+   
+    private void setComplaintDetails(ActionResult result, ErpComplaintModel complaintModel) { 
+		CrmAgentModel agent = CrmSession.getCurrentAgent(pageContext.getSession());
+			if (agent != null) {
+				complaintModel.setCreatedBy(agent.getUserId());
+			} else {
+				CallcenterUser ccUser = (CallcenterUser) pageContext.getSession().getAttribute(SessionName.CUSTOMER_SERVICE_REP);	
+				complaintModel.setCreatedBy(ccUser.getId());
+			}
+
+        complaintModel.setDescription(this.description);
+        complaintModel.setCreateDate(new java.util.Date());
+        complaintModel.setStatus(EnumComplaintStatus.PENDING);
+        complaintModel.setEmailOption(EnumSendCreditEmail.DONT_SEND);
+        
+    } // method setComplaintDetails
+    
+  
+    
+    /**
+     * Checks for the presence of a general error message in the ActionResult parameter. If none is
+     * present, one is added.
+     *
+     * @param ActionResult
+     */
+    private void addGeneralError(ActionResult result) {
+        if ( !result.hasError("general_error_msg") )
+            result.addError(new ActionError("general_error_msg", GENERAL_ERR_MSG));
+    }
+    
+    
+    /**
+     * Gathers registration-specific data (i.e., customer data)
+     *
+     */
+    private void getFormData(HttpServletRequest request, ActionResult result) {
+        
+        orderId					= request.getParameter("orig_sale_id");
+        this.orderLineId 		= request.getParameterValues("orderlineId");
+        orderLineReason 		= request.getParameterValues("ol_credit_reason");
+
+        
+    } // method getFormData
+ 
 }

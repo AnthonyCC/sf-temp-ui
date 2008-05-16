@@ -9,6 +9,7 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
 import java.text.MessageFormat;
+import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -16,6 +17,7 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,6 +37,9 @@ import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.customer.ErpComplaintException;
+import com.freshdirect.customer.ErpComplaintLineModel;
+import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
@@ -102,6 +107,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 	
 	protected boolean performAction(HttpServletRequest request, ActionResult result) throws JspException {
 		String action = this.getActionName();
+		HttpSession session = request.getSession();
 		boolean saveCart = false;
 		
 		try {
@@ -131,6 +137,21 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 					return true;
 				}
 				String outcome = performSubmitOrder(request, result);
+				// add logic to process make good order complaint.
+				if("true".equals(session.getAttribute("makeGoodOrder"))){
+					ErpComplaintModel complaintModel = (ErpComplaintModel)session.getAttribute(SessionName.MAKEGOOD_COMPLAINT);
+					String makeGoodOrderId = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
+					complaintModel.setMakegood_sale_id(makeGoodOrderId);
+					try{
+						addMakeGoodComplaint(result, complaintModel);
+					}catch(Exception e){
+						LOGGER.error("Add 0 credit complaint failed for make good order:"+makeGoodOrderId, e);
+						//create case here
+					}
+					session.removeAttribute("makeGoodOrder");
+					session.removeAttribute("referencedOrder");
+				}
+				
 				saveCart = true;
 				if (outcome.equals( Action.NONE )) {
 					return false;		// SKIP_BODY
@@ -837,7 +858,33 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 		FDCustomerCreditUtil.applyCustomerCredit(cart, identity);
 		setCart(cart);
 	}
-	
+	private void addMakeGoodComplaint(ActionResult result, ErpComplaintModel complaintModel)
+	throws FDResourceException, ErpComplaintException {
+
+	NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
+
+	LOGGER.debug("Creating credits for the following departments:");
+	LOGGER.debug("  Method\t\tDepartment\t\t\tAmount\t\t\tReason");
+	LOGGER.debug("  ------\t\t----------\t\t\t------\t\t\t------");
+	List lines = complaintModel.getComplaintLines();
+	for (Iterator it = lines.iterator(); it.hasNext();) {
+		ErpComplaintLineModel line = (ErpComplaintLineModel) it.next();
+		LOGGER.debug(
+			line.getMethod().getStatusCode()
+				+ "\t\t"
+				+ line.getDepartmentCode()
+				+ "\t\t\t"
+				+ currencyFormatter.format(line.getAmount())
+				+ "\t\t\t"
+				+ line.getReason().getReason());
+	}
+	LOGGER.debug("  Credit Notes: " + complaintModel.getDescription());
+	HttpSession session = pageContext.getSession();
+	FDIdentity identity = ((FDUserI)session.getAttribute(SessionName.USER)).getIdentity();
+	String orderId = (String)session.getAttribute("referencedOrder");
+	FDCustomerManager.addComplaint(complaintModel, orderId,identity);
+}
+
 	public static class TagEI extends AbstractControllerTag.TagEI {
 		// default impl
 	}

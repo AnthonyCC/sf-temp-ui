@@ -78,6 +78,9 @@ public class FDCartLineModel extends AbstractCartLine {
 		newLine.setSource(this.source);
 		return newLine;
 	}
+	public void setOrderLineId(String orderLineId){
+		this.orderLine.setOrderLineId(orderLineId);
+	}
 
 	/**
 	 *  Set the source of the event.

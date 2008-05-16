@@ -21,6 +21,13 @@ boolean step2 = pageURI.indexOf("checkout_delivery_time") > -1;
 boolean step3 = pageURI.indexOf("checkout_select_payment") > -1;
 boolean step4 = pageURI.indexOf("checkout_preview") > -1;
 boolean step5 = pageURI.indexOf("checkout_confirmation") > -1;
+
+if(!isCheckout)
+    session.removeAttribute("makeGoodOrder");
+
+boolean makegood = "true".equals(request.getParameter("makegood")) || "true".equals(session.getAttribute("makeGoodOrder"));
+String referencedOrder = request.getParameter("orig_sale_id") != null ? request.getParameter("orig_sale_id") : (String)session.getAttribute("referencedOrder");
+
 %>
 
 <script language="javascript">
@@ -41,20 +48,32 @@ boolean step5 = pageURI.indexOf("checkout_confirmation") > -1;
 
 	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="sub_nav">
 		<tr>
-			<td width="70%"  class="sub_nav_text">
+			<td width="70%"  class="sub_nav_text" <% if(makegood){%> bgcolor='FF7700'<%}%>>
 			<% if (isCheckout) { %>
-			<b><a href="<%= response.encodeURL("/order/place_order_build.jsp") %>">Build Order</a><span class="order_step">&nbsp;&nbsp;|&nbsp;&nbsp;Checkout</span></b><% if (step1 || step2 || step3 || step4) { %>&nbsp;&nbsp;<a href="/checkout/checkout_review_items.jsp" class="order">Review items</a><% } %><% if (step2 || step3 || step4) { %>&nbsp;&nbsp;<a href="/checkout/checkout_select_address.jsp" class="order">1: Delivery address</a><% } %><% if (step3 || step4) { %>&nbsp;&nbsp;<a href="/checkout/checkout_delivery_time.jsp" class="order">2: Delivery time</a><% } %><% if (step4) { %>&nbsp;&nbsp;<a href="/checkout/checkout_select_payment.jsp" class="order">3: Payment Method</a><% } %>
+                <% if (makegood) { %>
+			        <b><a href="<%= response.encodeURL("/order/quickshop/makegood_from_order.jsp?orderId="+referencedOrder) %>">Build Make Good Order</a><span class="order_step">&nbsp;&nbsp;|&nbsp;&nbsp;Makegood Checkout</span></b><%if(step0){%><br>(Each item must have a make good reason assigned to it before proceeding.)<%}%><% if (step1 || step2 || step3 || step4) { %>&nbsp;&nbsp;<a href="<%= response.encodeURL("/checkout/checkout_review_items.jsp?makegood=true&orig_sale_id="+referencedOrder) %>"class="order">Review items</a><% } %><% if (step2 || step3 || step4) { %>&nbsp;&nbsp;<a href="/checkout/checkout_select_address.jsp" class="order">1: Delivery address</a><% } %><% if (step3 || step4) { %>&nbsp;&nbsp;<a href="/checkout/checkout_delivery_time.jsp" class="order">2: Delivery time</a><% } %><% if (step4) { %>&nbsp;&nbsp;<a href="/checkout/checkout_select_payment.jsp" class="order">3: Payment Method</a><% } %>
+			    <% } else { %>
+                    <b><a href="<%= response.encodeURL("/order/place_order_build.jsp") %>">Build Order</a><span class="order_step">&nbsp;&nbsp;|&nbsp;&nbsp;Checkout</span></b><% if (step1 || step2 || step3 || step4) { %>&nbsp;&nbsp;<a href="/checkout/checkout_review_items.jsp" class="order">Review items</a><% } %><% if (step2 || step3 || step4) { %>&nbsp;&nbsp;<a href="/checkout/checkout_select_address.jsp" class="order">1: Delivery address</a><% } %><% if (step3 || step4) { %>&nbsp;&nbsp;<a href="/checkout/checkout_delivery_time.jsp" class="order">2: Delivery time</a><% } %><% if (step4) { %>&nbsp;&nbsp;<a href="/checkout/checkout_select_payment.jsp" class="order">3: Payment Method</a><% } %>
+                <% } %>
 			<% } else { %>
 			<b><span class="order_step">Build Order: <a href="<%= response.encodeURL("/order/place_order_build.jsp") %>" class="order_step">Search</a> &middot; <a href="<%= response.encodeURL("/order/build_order_browse.jsp") %>" class="order_step">Browse</a><% if ( user != null && user.getIdentity() != null ) { %> &middot; <a href="/order/quickshop/index.jsp" class="order_step">QuickShop</a> &middot; <a href="<%= response.encodeURL("/order/build_order_recipes.jsp") %>" class="order_step">Recipes</a><fd:CCLCheck> &middot; <a href="/order/quickshop/all_lists.jsp" class="order_step">Lists</a></fd:CCLCheck><% } %>&nbsp;&nbsp;|&nbsp;&nbsp;</span><%if(hasCustomerCase){%><a href="<%= response.encodeURL("/checkout/checkout_review_items.jsp") %>">Checkout</a><%} else {%><span class="cust_module_content_edit">Case required to checkout</span><% } %></b>
 			<% } %>
 			</td>
-			<td width="30%" align="right"  class="sub_nav_text">
+			<td width="30%" align="right"  class="sub_nav_text" <% if(makegood){%> bgcolor='FF7700'<%}%>>
 			<% if (isCheckout) { %>
-				<% if (pageURI.indexOf("review_items") > -1) { %>
-					<a href="javascript:confirmCancel('checkout', 'shopping', '<%= response.encodeURL("/order/place_order_build.jsp") %>')" class="cancel">CANCEL</a>
-				<% } else if (pageURI.indexOf("confirmation") < 0) { %>
-					<a href="javascript:confirmCancel('checkout', 'review items', '<%= response.encodeURL("/checkout/checkout_review_items.jsp") %>')" class="cancel">CANCEL</a>
-				<% } %>
+                <% if (makegood) { %>
+				    <% if (pageURI.indexOf("review_items") > -1) { %>
+					    <a href="javascript:confirmCancel('checkout', 'shopping', '<%= response.encodeURL("/order/quickshop/makegood_from_order.jsp?orderId="+referencedOrder) %>')" class="new">CANCEL</a>
+				    <% } else if (pageURI.indexOf("confirmation") < 0) { %>
+					    <a href="javascript:confirmCancel('checkout', 'review items', '<%= response.encodeURL("/checkout/checkout_review_items.jsp?makegood=true&orig_sale_id="+referencedOrder) %>')" class="new">CANCEL</a>
+				    <% } %>
+                <% } else { %>
+				    <% if (pageURI.indexOf("review_items") > -1) { %>
+					    <a href="javascript:confirmCancel('checkout', 'shopping', '<%= response.encodeURL("/order/place_order_build.jsp") %>')" class="cancel">CANCEL</a>
+				    <% } else if (pageURI.indexOf("confirmation") < 0) { %>
+					    <a href="javascript:confirmCancel('checkout', 'review items', '<%= response.encodeURL("/checkout/checkout_review_items.jsp") %>')" class="cancel">CANCEL</a>
+				    <% } %>
+                <% } %>
 			<% } else { %>
 			<a href="javascript:confirmCancel('shopping', 'account details', '<%= response.encodeURL("/main/account_details.jsp") %>')" class="cancel">CANCEL</a>
 			<% } %></td>

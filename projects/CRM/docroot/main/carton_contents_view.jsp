@@ -90,6 +90,7 @@
 		    <input type="hidden" name="quantity_<%=idx%>" value="<%= cartonDetail.getCartonDetail().getPackedQuantity() %>">
 		    <input type="hidden" name="salesUnit_<%=idx%>" value="<%= cartonDetail.getCartLine().getSalesUnit() %>">
 		    <input type="hidden" name="estPrice_<%=idx%>" value="">
+            <input type="hidden" name="originalOrderLineId_<%=idx%>" value="<%= cartonDetail.getCartLine().getOrderLineId() %>">
         <logic:iterate id="entry" collection="<%= cartonDetail.getCartLine().getConfiguration().getOptions().entrySet() %>" type="java.util.Map.Entry">
             <input type="hidden" name='<%= entry.getKey() + "_" + idx %>' value="<%= entry.getValue() %>">
         </logic:iterate>

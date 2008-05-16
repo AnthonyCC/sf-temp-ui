@@ -146,37 +146,26 @@
 
 <div class="content_scroll" style="height: 72%;">
 <%-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~ START OF MAKE GOOD ORDER ~~~~~~~~~~~~~~~~~~~~~~~~~~ --%>
-<%	boolean makeGoodOrder = (selectedPayment != null && EnumPaymentType.MAKE_GOOD.equals(selectedPayment.getPaymentType())) || request.getParameter("makeGoodOrder") != null;
+<%	boolean makeGoodOrder = "true".equals(session.getAttribute("makeGoodOrder"));
 	String referencedOrder = "";
 	if(makeGoodOrder){
-		referencedOrder = selectedPayment != null ? selectedPayment.getReferencedOrder() : request.getParameter("referencedOrder");
+        referencedOrder = (String)session.getAttribute("referencedOrder");
 	}
 	
 %>
+
 <% if (!(cart instanceof FDModifyCartModel) || (cart instanceof FDModifyCartModel && makeGoodOrder)) {%>
 <div class="cust_inner_module" style="margin-bottom: 8px;">
 	<table width="100%" cellpadding="0" cellspacing="0" border="0" ALIGN="CENTER" class="order" style="background-color: #fcc">
 		<tr valign="top">
 			<td>
-                <% if (cart instanceof FDModifyCartModel && makeGoodOrder) {%>
+                <% if (makeGoodOrder) {%>
                     &nbsp;<b>This is a MAKE GOOD ORDER</b>
                     <input type="hidden" name="makeGoodOrder" value="true">
-                <% } else { %>
-                    <input type="checkbox" id="makeGoodOrder" name="makeGoodOrder" <%= makeGoodOrder ? "checked" : "" %>>
-                    <label for="makeGoodOrder"><b>This is a MAKE GOOD ORDER</b></label>
                 <% } %> 
-                <a href="javascript:popResize('/kbit/procedure.jsp?show=MakeGoodOrder','715','940','kbit')" 
-                    onmouseover="return overlib('Click for Make Good Order Steps.', AUTOSTATUS, WRAP);" onmouseout="nd();" class="help">?</a>
             </td>
 			<td>
-				<b>IN REFERENCE TO</b><% if (cart instanceof FDModifyCartModel && makeGoodOrder) {%> order #<b><%=referencedOrder %></b><input type="hidden" name="referencedOrder" value="<%=referencedOrder%>"><% } else { %>
-				<select name="referencedOrder">
-					<option value="">Order number</option>
-					<% Collection makeGoodRefInfos = ((FDOrderHistory)user.getOrderHistory()).getMakeGoodReferenceInfos(); %>
-					<logic:iterate id="order" collection="<%=makeGoodRefInfos%>" type="com.freshdirect.fdstore.customer.FDOrderInfoI">
-						<option value="<%=order.getErpSalesId()%>" <%=order.getErpSalesId().equals(referencedOrder) ? "selected" : "" %>><%=order.getErpSalesId()%> ($<%= order.getTotal() %>)</option>
-					</logic:iterate>
-				</select><% } %>
+				<% if (makeGoodOrder) {%><b>IN REFERENCE TO</b> order #<b><%=referencedOrder %></b><input type="hidden" name="referencedOrder" value="<%=referencedOrder%>"><% } %>
 			</td>
 		</tr>
 	</table>

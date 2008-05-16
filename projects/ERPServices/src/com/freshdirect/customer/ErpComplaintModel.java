@@ -36,6 +36,7 @@ public class ErpComplaintModel extends ModelSupport {
 	private EnumComplaintStatus status;
 	private ErpCustomerEmailModel customer_email;
     private EnumSendCreditEmail emailOption;
+    private String makegood_sale_id;
     
     public ErpComplaintModel() {
         this.complaintLines = new ArrayList();
@@ -67,6 +68,13 @@ public class ErpComplaintModel extends ModelSupport {
     public void setType(EnumComplaintType type) {
     	this.type = type;
     }
+    public String getMakegood_sale_id() {
+		return makegood_sale_id;
+	}
+
+	public void setMakegood_sale_id(String makegood_sale_id) {
+		this.makegood_sale_id = makegood_sale_id;
+	}
 
     public EnumComplaintStatus getStatus() { return status; }
     public void setStatus(EnumComplaintStatus e) { this.status = e; }

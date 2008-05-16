@@ -33,6 +33,8 @@ public interface CallCenterManagerSB extends EJBObject {
 	
 	public Map getComplaintCodes() throws FDResourceException, RemoteException;
 
+	public void rejectMakegoodComplaint(String makegood_sale_id) throws FDResourceException, RemoteException; 
+	
 	public List getPendingComplaintOrders(String reasonCode) throws FDResourceException, RemoteException;
     
     public List getSignupPromoAVSExceptions() throws FDResourceException, RemoteException;

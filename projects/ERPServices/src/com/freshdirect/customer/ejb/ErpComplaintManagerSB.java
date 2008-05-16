@@ -27,4 +27,5 @@ public interface ErpComplaintManagerSB extends EJBObject {
 
 	 public Collection getPendingComplaintSaleIds() throws RemoteException;
 
+	 public void rejectMakegoodComplaint(String makegood_sale_id) throws RemoteException;
 }

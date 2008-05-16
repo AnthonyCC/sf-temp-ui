@@ -101,7 +101,7 @@ public class ErpComplaintPersistentBean extends DependentPersistentBeanSupport {
 
 	public PrimaryKey create(Connection conn) throws SQLException {
 		String id = this.getNextId(conn, "CUST");
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.COMPLAINT (ID, SALE_ID, CREATE_DATE, CREATED_BY, APPROVED_DATE, APPROVED_BY, AMOUNT, NOTE, STATUS, EMAIL_ID,EMAIL_OPTION,COMPLAINT_TYPE) values (?,?,?,?,?,?,?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.COMPLAINT (ID, SALE_ID, CREATE_DATE, CREATED_BY, APPROVED_DATE, APPROVED_BY, AMOUNT, NOTE, STATUS, EMAIL_ID,EMAIL_OPTION,COMPLAINT_TYPE,MAKEGOOD_SALE_ID) values (?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		ps.setString(1, id);
 		ps.setString(2, this.getParentPK().getId());
 		ps.setTimestamp(3, new java.sql.Timestamp( model.getCreateDate().getTime()));
@@ -116,6 +116,7 @@ public class ErpComplaintPersistentBean extends DependentPersistentBeanSupport {
 		ps.setString(10,this.model.getCustomerEmail() !=null ? this.model.getCustomerEmail().getPK().getId(): "");
 		ps.setString(11,this.model.getEmailOption() !=null ? this.model.getEmailOption().getName(): "");
 		ps.setString(12, this.model.getType().getName());
+		ps.setString(13, this.model.getMakegood_sale_id());
 		
 		try {
 			if (ps.executeUpdate() != 1) {
@@ -138,7 +139,7 @@ public class ErpComplaintPersistentBean extends DependentPersistentBeanSupport {
 
 
 	public void store(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("UPDATE CUST.COMPLAINT SET SALE_ID = ?, CREATE_DATE = ?, CREATED_BY = ?, APPROVED_DATE = ?, APPROVED_BY = ?, AMOUNT = ?, NOTE = ?, STATUS = ?, EMAIL_ID = ? , EMAIL_OPTION=? WHERE ID=?");
+		PreparedStatement ps = conn.prepareStatement("UPDATE CUST.COMPLAINT SET SALE_ID = ?, CREATE_DATE = ?, CREATED_BY = ?, APPROVED_DATE = ?, APPROVED_BY = ?, AMOUNT = ?, NOTE = ?, STATUS = ?, EMAIL_ID = ? , EMAIL_OPTION=? , MAKEGOOD_SALE_ID=? WHERE ID=?");
 		
 		ps.setString(1, this.getParentPK().getId());
 		ps.setTimestamp(2, new java.sql.Timestamp(this.model.getCreateDate().getTime()));
@@ -156,7 +157,8 @@ public class ErpComplaintPersistentBean extends DependentPersistentBeanSupport {
 		ps.setString(8, this.model.getStatus().getStatusCode());
 		ps.setString(9, this.model.getCustomerEmail() !=null ? this.model.getCustomerEmail().getPK().getId() : null);
 		ps.setString(10, this.model.getEmailOption() !=null ? this.model.getEmailOption().getName() : "");
-		ps.setString(11, this.model.getPK().getId());
+		ps.setString(11, this.model.getMakegood_sale_id());
+		ps.setString(12, this.model.getPK().getId());
 
 		if (ps.executeUpdate() != 1) {
 			throw new SQLException("Row not updated");
@@ -186,7 +188,7 @@ public class ErpComplaintPersistentBean extends DependentPersistentBeanSupport {
 
 
 	public void load(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("SELECT CREATE_DATE, CREATED_BY, APPROVED_DATE, APPROVED_BY, AMOUNT, NOTE, STATUS,EMAIL_OPTION,EMAIL_ID, COMPLAINT_TYPE FROM CUST.COMPLAINT WHERE ID=?");
+		PreparedStatement ps = conn.prepareStatement("SELECT CREATE_DATE, CREATED_BY, APPROVED_DATE, APPROVED_BY, AMOUNT, NOTE, STATUS,EMAIL_OPTION,EMAIL_ID, COMPLAINT_TYPE, MAKEGOOD_SALE_ID FROM CUST.COMPLAINT WHERE ID=?");
 		ps.setString(1, this.getPK().getId());
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
@@ -199,6 +201,7 @@ public class ErpComplaintPersistentBean extends DependentPersistentBeanSupport {
 			this.model.setEmailOption(EnumSendCreditEmail.getEnum(rs.getString("EMAIL_OPTION")));
 			this.model.setCustomerEmail(this.getCustomerEmail(conn, rs.getString("EMAIL_ID"))); 
 			this.model.setType(EnumComplaintType.getEnum(rs.getString("COMPLAINT_TYPE")));
+			this.model.setMakegood_sale_id(rs.getString("MAKEGOOD_SALE_ID"));
 		} else {
 			throw new SQLException("No such ErpComplaint PK: " + this.getPK());
 		}

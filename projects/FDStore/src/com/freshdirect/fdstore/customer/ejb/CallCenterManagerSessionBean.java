@@ -139,7 +139,17 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			throw new FDResourceException(ce);
 		}
 	}
-
+	
+	public void rejectMakegoodComplaint(String makegood_sale_id) throws FDResourceException {
+		try {
+			ErpComplaintManagerSB complaintSB = this.getComplaintManagerHome().create();
+			complaintSB.rejectMakegoodComplaint(makegood_sale_id);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		}
+	}
 	private static final String PEN_COMPLAINT_QUERY_1 = "select c.sale_id, c.id as complaint_id, c.amount as complaint_amount, "
 		+ "c.note as complaint_note, c.complaint_type "
 		+ "from cust.complaint c "

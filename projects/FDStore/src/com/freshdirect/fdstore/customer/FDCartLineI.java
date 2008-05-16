@@ -87,6 +87,7 @@ public interface FDCartLineI extends FDProductSelectionI {
 	public Set getApplicableRestrictions();
 	
 	public String getOrderLineId();
+	public void setOrderLineId(String orderLineId);
 	public String getOrderLineNumber();
 	
 	public String getMaterialNumber();

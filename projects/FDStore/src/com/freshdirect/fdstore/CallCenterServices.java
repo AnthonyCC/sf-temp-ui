@@ -753,6 +753,21 @@ public class CallCenterServices {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
+	public static void rejectMakegoodComplaint(String makegood_sale_id) throws FDResourceException {
+		if(callCenterHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			CallCenterManagerSB sb = callCenterHome.create();
+			sb.rejectMakegoodComplaint(makegood_sale_id);
+		} catch (CreateException ce) {
+			callCenterHome = null;
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			callCenterHome = null;
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
 
 
 } // class CallCenterServices

@@ -257,10 +257,10 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		// Cancel the order
 		//
 		try {
-
+			FDOrderI origOrder = FDCustomerManager.getOrder(user.getIdentity(), orderId);
 			if (!EnumTransactionSource.CUSTOMER_REP.equals(transactionSource)) {
 				// check original cutoff
-				FDOrderI origOrder = FDCustomerManager.getOrder(user.getIdentity(), orderId);
+				
 
 				Date origCutoff = origOrder.getDeliveryReservation().getCutoffTime();
 				if (new Date().after(origCutoff)) {
@@ -283,6 +283,12 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			user.updateDlvPassInfo();
 			//Remove the Delivery Pass Session ID If any.
 			session.removeAttribute(DlvPassConstants.DLV_PASS_SESSION_ID);
+
+			//if it's make good order, reject complaints 
+			if(EnumPaymentType.MAKE_GOOD.equals(origOrder.getPaymentMethod().getPaymentType())){
+				CallCenterServices.rejectMakegoodComplaint(orderId);
+			}
+
 		} catch(DeliveryPassException ex) {
 			LOGGER.error("Error performing a Delivery pass operation. ", ex);
 			//There was delivery pass validation failure.

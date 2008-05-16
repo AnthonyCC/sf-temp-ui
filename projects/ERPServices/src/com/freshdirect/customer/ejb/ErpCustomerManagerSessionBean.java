@@ -1119,7 +1119,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	}
 
 	private void validateComplaintPayment(EnumPaymentType paymentType, ErpComplaintModel pendingComplaint) throws ErpComplaintException {
-		if (EnumPaymentType.MAKE_GOOD.equals(paymentType)) {
+		if (EnumPaymentType.MAKE_GOOD.equals(paymentType) && pendingComplaint.getMakegood_sale_id() == null) {
 			this.getSessionContext().setRollbackOnly();
 			throw new ErpComplaintException("Cannot issue credit for make-good orders.");
 		}

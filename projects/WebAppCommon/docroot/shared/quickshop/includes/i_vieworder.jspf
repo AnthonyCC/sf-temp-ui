@@ -551,6 +551,10 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
     <%@include file="/includes/product/i_price_taxdeposit.jspf"%>
     <%@include file="/includes/product/i_scaled_prices_nobr.jspf"%>
     <br>
+    <%if(request.getRequestURI().indexOf("makegood")>-1){%>
+        <input type="hidden" name="originalOrderLineId_<%=idx%>" value="<%= ((FDCartLineI)orderLine).getOrderLineId() %>">
+    <%}%>
+    
     <%
     String confDesc = orderLine.getConfigurationDesc();
     if (confDesc != null && !"".equals(confDesc)) {
@@ -567,7 +571,9 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
         <a name="remove_link" style="margin-left: 4px;" href="<%=servletRoot%>/shop_from_list.jsp?<%=CclUtils.CC_LIST_ID%>=<%=ccListIdStr%>" onclick="CCL.remove_item(<%=ccListIdStr%>,<%=orderLine.getStatistics().getPK().getId()%>);">REMOVE</a>
     <% } else if (QuickCart.PRODUCT_TYPE_STARTER_LIST == cartType) { %>
     <% } else { %>
+        <%if(!(request.getRequestURI().indexOf("makegood")>-1)){%>
               <a href="<%=qsLink%><%=qsExtra%>" onclick="FormChangeUtil.setWarningMessage('qs_cart','<%=itemModifyWarning%>'); addQuantToLink(this,'<%=qsLink%>',<%=idx%>);" class="text10" onMouseOver="window.status='Customize this product'">VIEW/MODIFY</A>&nbsp;
+        <%}%>      
     <%        if(orderLine.getStatistics() != null ){ %>
 				- <a href="javascript:doDelete('<%=orderLine.getStatistics().getPK().getId()%>')" onClick="return confirm('Are you sure you want to permanently DELETE this item from your Quickshop list?');">Delete</a>
     <%        }

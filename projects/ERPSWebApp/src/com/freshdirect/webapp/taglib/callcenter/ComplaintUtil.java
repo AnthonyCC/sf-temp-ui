@@ -78,7 +78,8 @@ public class ComplaintUtil {
         else if ( "Ready to Cook".equalsIgnoreCase(dept) ){ r = "RTC"; }
         else if ( dept.toLowerCase().indexOf("health") != -1 ) { r = "HBA"; }
         else if ( "Our Picks".equalsIgnoreCase(dept) ){ r = "OURPICKS"; }        
-        else if ( "4-Minute Meals".equalsIgnoreCase(dept) ){ r = "FDI"; } 
+        else if ( "4-Minute Meals".equalsIgnoreCase(dept) ){ r = "FDI"; }
+        else if ( "Makegood".equalsIgnoreCase(dept) ){ r = "MGD"; }              
         return r;
     }
 
