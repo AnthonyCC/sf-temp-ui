@@ -416,6 +416,8 @@
 				<EnumValue value="98" label="Multi Item Layout - Horizontal"/>
 				<EnumValue value="99" label="Multi Item Layout - Vertical"/>
                 <EnumValue value="100" label="Wine_Category"/><!-- [USQ] new layout -->
+                <EnumValue value="101" label="Transactional_multi_Paired_Items"/><!-- [USQ] new layout -->
+                <EnumValue value="102" label="Template_Layout"/><!-- [USQ] new layout -->
 			</EnumDef>
 			<EnumDef type="I" name="TEMPLATE_TYPE"  label="Template Type" inheritable="true">
 				<EnumValue value="1" label="Fresh Direct Default Template"/>
@@ -469,7 +471,8 @@
             <AttributeDef type="S" name="WINE_CLASSIFICATION" label="Wine Classification Text" />
             <AttributeDef type="S" name="WINE_IMPORTER" label="Wine Importer" />
             <AttributeDef type="S" name="WINE_ALCH_CONTENT" label="Wine Alchohol Content" />
-            <AttributeDef type="S" name="WINE_AGING" label="WIne Aging Notes" />            
+            <AttributeDef type="S" name="WINE_AGING" label="Wine Aging Notes" />    
+            <AttributeDef type="S" name="WINE_CITY" label="Wine City" />
       <!--  USQ changes  -->            
 		</AttributeDefs>
 		<RelationshipDefs>

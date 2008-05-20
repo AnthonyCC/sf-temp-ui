@@ -543,6 +543,12 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 		return getProduct().getWineAging();	
 	}
 	
+	public String getWineCity() {
+		// TODO Auto-generated method stub
+		return getProduct().getWineCity();
+	}
+
+	
 	public String getWineType(){
 		return getProduct().getWineType();
 	}

@@ -1347,6 +1347,11 @@ inner:
 		return getAttribute("WINE_AGING", "");
 	}
 
+	public String getWineCity() {
+		// TODO Auto-generated method stub
+		return getAttribute("WINE_CITY", "");
+	}
+	
 	public String getWineType() {
 		// TODO Auto-generated method stub
 		return getAttribute("WINE_TYPE", "");

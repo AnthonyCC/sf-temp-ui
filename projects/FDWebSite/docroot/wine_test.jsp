@@ -136,6 +136,10 @@
 <TD><font color='blue' size='4'><%=model.getWineImporter()%></font></TD>
 </TR>
 <TR>
+<TD><b>Wine City:</b></TD>
+<TD><font color='blue' size='4'><%=model.getWineCity()%></font></TD>
+</TR>
+<TR>
 <TD><b>Wine Type Domain Values:</b></TD>
 <TD><%
     List wineTypeList=model.getNewWineType();

@@ -437,6 +437,8 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI {
 	
 	public String getWineAging();
 	
+	public String getWineCity();
+	
 	public String getWineType();
 	
 	public List getNewWineType();

@@ -40,9 +40,10 @@ public class EnumLayoutType implements Serializable {
 
 	public final static EnumLayoutType MEDIA_NO_NAV = new EnumLayoutType("Media No Nav", 97); //[APPREQ-77]
 	
-	public final static EnumLayoutType WINE_CATEGORY = new EnumLayoutType("Wine Category", 100); //[APPREQ-77]
+	public final static EnumLayoutType WINE_CATEGORY = new EnumLayoutType("Wine Category", 100); // Wine Layout
+	public final static EnumLayoutType TRANSAC_MULTI_PAIRED_ITEMS	= new EnumLayoutType("Transactional Multi Paired Items", 101); // Wine Layout
+	public final static EnumLayoutType TEMPLATE_LAYOUT	= new EnumLayoutType("Template Layout", 102); // Wine Layout
 	
-	//
 	// this is never rendered by layout manager
 	public final static EnumLayoutType MULTI_ITEM_MEAL_OPTION_HORZ = new EnumLayoutType("Multi Item Meal Layout Option 1", 98); //(Optional category layout 1, Salad Meal)
 	public final static EnumLayoutType MULTI_ITEM_MEAL_OPTION_VERT = new EnumLayoutType("Multi Item Meal Layout Option 2", 99); //(Optional category layout 2, Salad Meal)
@@ -79,7 +80,9 @@ public class EnumLayoutType implements Serializable {
 		t.add(MEDIA_NO_NAV);
 		t.add(MULTI_ITEM_MEAL_OPTION_HORZ);
 		t.add(MULTI_ITEM_MEAL_OPTION_VERT);
-		t.add(WINE_CATEGORY);		
+		t.add(WINE_CATEGORY);
+		t.add(TRANSAC_MULTI_PAIRED_ITEMS);
+		t.add(TEMPLATE_LAYOUT);
         types = Collections.unmodifiableList(t);
     }
 

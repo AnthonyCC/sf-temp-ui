@@ -263,6 +263,18 @@
 					</CmsSection>
 				</sections>
 			</CmsPage>
+            <CmsPage>
+				<title>Wine Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>Basic Information</title>
+						<fields>
+							<CmsField><attribute>WINE_SORTING</attribute></CmsField>
+							<CmsField><attribute>WINE_FILTER</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
 			<CmsPage>
 				<title>Children</title>
 				<sections>
@@ -276,22 +288,9 @@
 				</sections>
 			</CmsPage>
 			<CmsPage ref="product_setup"/>
-            <CmsPage>
-				<title>Wine Attributes</title>
-				<sections>
-					<CmsSection>
-						<title>Basic Information</title>
-						<fields>
-							<CmsField><attribute>WINE_SORTING</attribute></CmsField>
-							<CmsField><attribute>WINE_FILTER</attribute></CmsField>
-						</fields>
-					</CmsSection>
-				</sections>
-			</CmsPage>
 		</pages>
 	</CmsEditor>
-	
-	
+		
 	<CmsEditor id="product">
 		<contentType>Product</contentType>
 		<pages>
@@ -453,6 +452,51 @@
 					</CmsSection>
 				</sections>
 			</CmsPage>
+            <CmsPage>
+				<title>Wine Attributes</title>
+				<sections>
+                    <CmsSection>
+        				<title>BASIC INFORMATION</title>
+						<fields>							                            
+                            <CmsField><attribute>WINE_COUNTRY</attribute></CmsField>                            
+                            <CmsField><attribute>WINE_NEW_REGION</attribute></CmsField>                            
+                            <CmsField><attribute>WINE_CITY</attribute></CmsField>
+                            <CmsField><attribute>WINE_NEW_TYPE</attribute></CmsField>
+                            <CmsField><attribute>WINE_VARIETAL</attribute></CmsField>
+							<CmsField><attribute>WINE_VINTAGE</attribute></CmsField>							                                                                            
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>RATING/REVIEWS</title>
+						<fields>
+							<CmsField><attribute>WINE_RATING1</attribute></CmsField>
+							<CmsField><attribute>WINE_REVIEW1</attribute></CmsField>
+							<CmsField><attribute>WINE_RATING2</attribute></CmsField>
+							<CmsField><attribute>WINE_REVIEW2</attribute></CmsField>
+							<CmsField><attribute>WINE_RATING3</attribute></CmsField>
+							<CmsField><attribute>WINE_REVIEW3</attribute></CmsField>
+						</fields>
+					</CmsSection>
+                    <CmsSection>
+	    				<title>PRODUCT DETAILS</title>
+						<fields>
+							<CmsField><attribute>WINE_CLASSIFICATION</attribute></CmsField>
+							<CmsField><attribute>WINE_IMPORTER</attribute></CmsField>
+							<CmsField><attribute>WINE_ALCH_CONTENT</attribute></CmsField>
+							<CmsField><attribute>WINE_AGING</attribute></CmsField>
+                            <CmsField><attribute>WINE_TYPE</attribute></CmsField>
+                                                        
+						</fields>
+					</CmsSection>
+                    <CmsSection>
+						<title>BEST CELLARS</title>
+						<fields>
+							<CmsField><attribute>WINE_FYI</attribute></CmsField>
+							<CmsField><attribute>WINE_REGION</attribute></CmsField>							
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>     
 			<CmsPage>
 				<title>Children</title>
 				<sections>
@@ -479,50 +523,7 @@
 						</fields>
 					</CmsSection>
 				</sections>
-			</CmsPage>                        
-            <CmsPage>
-				<title>Wine Attributes</title>
-				<sections>
-					<CmsSection>
-						<title>PRODUCT DETAILS</title>
-						<fields>
-							<CmsField><attribute>WINE_CLASSIFICATION</attribute></CmsField>
-							<CmsField><attribute>WINE_IMPORTER</attribute></CmsField>
-							<CmsField><attribute>WINE_ALCH_CONTENT</attribute></CmsField>
-							<CmsField><attribute>WINE_AGING</attribute></CmsField>
-                            <CmsField><attribute>WINE_TYPE</attribute></CmsField>
-						</fields>
-					</CmsSection>
-                    <CmsSection>
-        				<title>BASIC INFORMATION</title>
-						<fields>							
-                            <CmsField><attribute>WINE_NEW_TYPE</attribute></CmsField>
-                            <CmsField><attribute>WINE_COUNTRY</attribute></CmsField>
-							<CmsField><attribute>WINE_VINTAGE</attribute></CmsField>
-							<CmsField><attribute>WINE_NEW_REGION</attribute></CmsField>                            
-                            <CmsField><attribute>WINE_VARIETAL</attribute></CmsField>                                                
-						</fields>
-					</CmsSection>
-					<CmsSection>
-						<title>RATING/REVIEWS</title>
-						<fields>
-							<CmsField><attribute>WINE_RATING1</attribute></CmsField>
-							<CmsField><attribute>WINE_REVIEW1</attribute></CmsField>
-							<CmsField><attribute>WINE_RATING2</attribute></CmsField>
-							<CmsField><attribute>WINE_REVIEW2</attribute></CmsField>
-							<CmsField><attribute>WINE_RATING3</attribute></CmsField>
-							<CmsField><attribute>WINE_REVIEW3</attribute></CmsField>
-						</fields>
-					</CmsSection>
-                    <CmsSection>
-						<title>BEST CELLARS</title>
-						<fields>
-							<CmsField><attribute>WINE_FYI</attribute></CmsField>
-							<CmsField><attribute>WINE_REGION</attribute></CmsField>							
-						</fields>
-					</CmsSection>
-				</sections>
-			</CmsPage>            
+			</CmsPage>                               
 		</pages>
 	</CmsEditor>    
 	<CmsEditor id="domain">
