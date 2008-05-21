@@ -137,7 +137,19 @@ private final static String TIMESLOT_BG_ODD = "f7f7f7";
 	</tr>
 </table>
 	<% 
-		if (zoneModel != null) { %>
-		<img width="1" height="1" border="0" alt="" src="/media_stat/images/template/tracker.gif?datakey=zone_data&dataval=<%= zoneModel.getZoneCode() %>">		
-		<% }
- } %>
+ } 
+ 
+ if(zones != null) {
+  	DlvZoneModel tmpModel = null;
+  	String defZoneCode = null;
+ 	 for (Iterator it=zones.values().iterator(); it.hasNext(); ) {
+ 	     tmpModel = (DlvZoneModel)it.next();
+ 	     defZoneCode = tmpModel.getZoneCode();
+ 	     break;
+ 	 }
+ 	 if(defZoneCode != null) { %>		
+		<img width="1" height="1" border="0" alt="" src="/media_stat/images/template/tracker.gif?datakey=zone_code&dataval=<%= defZoneCode %>&refid=<%= System.currentTimeMillis() %>"/>		
+	<% }
+}	
+ 
+ %>
