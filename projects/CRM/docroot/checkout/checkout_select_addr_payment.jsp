@@ -176,34 +176,7 @@
         %>
 
 <div class="content_scroll" style="height: 72%;">
-<%-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~ START OF MAKE GOOD ORDER ~~~~~~~~~~~~~~~~~~~~~~~~~~ --%>
-<%	boolean makeGoodOrder = (selectedPayment != null && EnumPaymentType.MAKE_GOOD.equals(selectedPayment.getPaymentType())) || request.getParameter("makeGoodOrder") != null;
-	String referencedOrder = "";
-	if(makeGoodOrder){
-		referencedOrder = selectedPayment != null ? selectedPayment.getReferencedOrder() : request.getParameter("referencedOrder");
-	}
-	
-%>
-<% if (!(cart instanceof FDModifyCartModel) || (cart instanceof FDModifyCartModel && makeGoodOrder)) {%>
-<div class="cust_inner_module">
-	<table width="100%" cellpadding="0" cellspacing="0" border="0" ALIGN="CENTER" class="order" style="background-color: #fcc">
-		<tr valign="top">
-			<td><% if (cart instanceof FDModifyCartModel && makeGoodOrder) {%>&nbsp;<b>This is a MAKE GOOD ORDER</b><input type="hidden" name="makeGoodOrder" value="true"><% } else { %><input type="checkbox" id="makeGoodOrder" name="makeGoodOrder" <%= makeGoodOrder ? "checked" : "" %>><label for="makeGoodOrder"><b>This is a MAKE GOOD ORDER</b></label><% } %></td>
-			<td>
-				<b>IN REFERENCE TO</b><% if (cart instanceof FDModifyCartModel && makeGoodOrder) {%> order #<b><%=referencedOrder %></b><input type="hidden" name="referencedOrder" value="<%=referencedOrder%>"><% } else { %>
-				<select name="referencedOrder">
-					<option value="">Order number</option>
-					<% Collection makeGoodRefInfos = ((FDOrderHistory)user.getOrderHistory()).getMakeGoodReferenceInfos(); %>
-					<logic:iterate id="order" collection="<%=makeGoodRefInfos%>" type="com.freshdirect.fdstore.customer.FDOrderInfoI">
-						<option value="<%=order.getErpSalesId()%>" <%=order.getErpSalesId().equals(referencedOrder) ? "selected" : "" %>><%=order.getErpSalesId()%> ($<%= order.getTotal() %>)</option>
-					</logic:iterate>
-				</select><% } %>
-			</td>
-		</tr>
-	</table>
-</div>
-<% } %>
-<%-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~ END OF MAKE GOOD ORDER ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --%>
+
 <div class="cust_full_module_header" style="margin-top: 0px;">
 <table width="100%" cellpadding="0" cellspacing="0" border="0" class="order">
     <tr>
