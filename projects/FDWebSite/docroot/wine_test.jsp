@@ -106,6 +106,45 @@
 </TD>       
 </TR>
 <TR>
+<TD><b>Wine Side Nav Full List Domain :</b></TD>
+<TD>
+<%
+	List wineSideNavFullList=catModel1.getWineSideNavFullList();
+		if(wineSideNavFullList!=null && wineSideNavFullList.size()>0)
+        {
+			String domainName=null;			
+			for(int i=0;i<wineSideNavFullList.size();i++){				
+			   Domain dName=(Domain)wineSideNavFullList.get(i);
+%>
+			   <%="<b>DomainName:</b><font color='blue' size='4'>"+dName+"</font>"%>;
+		<%	}			
+		}
+       %> 
+</TD>       
+</TR>
+<TR>
+<TD><b>Wine Side Nav Sections Domain Values :</b></TD>
+<TD>
+<%	         
+            List wineSectionsList=catModel1.getWineSideNavSections();
+			if(wineSectionsList!=null && wineSectionsList.size()>0)
+            {
+				String domainName=null;				
+				for(int i=0;i<wineSectionsList.size();i++)
+                {					
+				   DomainValue dValue=(DomainValue)wineSectionsList.get(i);
+					if(i==0){
+						domainName=dValue.getDomain().getName();
+					}
+%>
+			   <%="<b>DomainName:</b><font color='blue' size='4'>"+domainName+":</font><b>domainValue :</b><font color='blue' size='4'>"+dValue.getLabel()+"</font>"%>;
+		<%	   }
+            }        
+		
+       %> 
+</TD>       
+</TR>
+<TR>
 <TD><b>Template Path:</b></TD>
 <TD><font color='blue' size='4'><%=catModel1.getContentTemplatePath()%></font></TD>
 </TR>
@@ -212,6 +251,22 @@
 				} %>
 			   <%="<b>DomainName:</b><font color='blue' size='4'>"+domainName+"</font>:<b>domainValue :</b><font color='blue' size='4'>"+dValue.getLabel()+"</font>"%>;
 		<%	}			
+		}
+       %> 
+</TD>
+</TR>
+
+
+<TR>
+<TD><b>Wine Country Domain Value:</b></TD>
+<TD><%
+
+DomainValue value=model.getWineCountry();
+		if(value!=null){
+			   System.out.println("WineCountry domainName:"+value.getDomain().getFullName()+":"+value.getLabel());
+ %>
+			   <%="<b>DomainName:</b><font color='blue' size='4'>"+value.getDomain().getName()+"</font>:<b>domainValue :</b><font color='blue' size='4'>"+value.getLabel()+"</font>"%>;
+		<%				
 		}
        %> 
 </TD>

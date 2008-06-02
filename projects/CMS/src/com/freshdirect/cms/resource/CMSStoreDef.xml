@@ -263,7 +263,13 @@
             <RelationshipDef name="WINE_FILTER"  label="Wine Filter Criteria" cardinality="Many">
 				<DestinationDef contentType="Domain" />
 			</RelationshipDef>                                    
+            <RelationshipDef name="SIDE_NAV_FULL_LIST"  label="Side Nav Full List" cardinality="Many">
+				<DestinationDef contentType="Domain" />
+			</RelationshipDef>                                    
             <RelationshipDef name="WINE_SORTING" label="Wine Sort Criteria" cardinality="Many">
+				<DestinationDef contentType="DomainValue" />
+			</RelationshipDef>            
+            <RelationshipDef name="SIDE_NAV_SECTIONS" label="Side Nav Sections" cardinality="Many">
 				<DestinationDef contentType="DomainValue" />
 			</RelationshipDef>            
            <!--  USQ changes -->          

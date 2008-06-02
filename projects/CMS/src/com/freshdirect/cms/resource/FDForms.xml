@@ -271,6 +271,8 @@
 						<fields>
 							<CmsField><attribute>WINE_SORTING</attribute></CmsField>
 							<CmsField><attribute>WINE_FILTER</attribute></CmsField>
+                            <CmsField><attribute>SIDE_NAV_SECTIONS</attribute></CmsField>
+                            <CmsField><attribute>SIDE_NAV_FULL_LIST</attribute></CmsField>
 						</fields>
 					</CmsSection>
 				</sections>

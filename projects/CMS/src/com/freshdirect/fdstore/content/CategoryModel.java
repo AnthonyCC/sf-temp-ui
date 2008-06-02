@@ -35,6 +35,11 @@ public class CategoryModel extends ContentNodeModelImpl {
 	
 	private List wineFilterCriteriaList = new ArrayList();
 	
+	private List wineSideNavSectionsList = new ArrayList();
+	
+	private List wineSideNavFullsList = new ArrayList();
+	
+	
 	public CategoryModel(com.freshdirect.cms.ContentKey cKey) {
 		super(cKey);
 		categoryAlias = null;
@@ -138,6 +143,19 @@ public class CategoryModel extends ContentNodeModelImpl {
 		ContentNodeModelUtil.refreshModels(this, "WINE_FILTER", wineFilterCriteriaList, false);
 		return new ArrayList(wineFilterCriteriaList);		
 	}
+	
+	public List getWineSideNavSections() {
+		// TODO Auto-generated method stub		
+		ContentNodeModelUtil.refreshModels(this, "SIDE_NAV_SECTIONS", wineSideNavSectionsList, false);
+		return new ArrayList(wineSideNavSectionsList);		
+	}
+
+	public List getWineSideNavFullList() {
+		// TODO Auto-generated method stub		
+		ContentNodeModelUtil.refreshModels(this, "SIDE_NAV_FULL_LIST", wineSideNavFullsList, false);
+		return new ArrayList(wineSideNavFullsList);		
+	}
+	
 	
 	public String getContentTemplatePath(){		
 		return this.getAttribute("TEMPLATE_PATH", null);		
