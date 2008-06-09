@@ -36,6 +36,8 @@ public class ResourceUtil {
 	private final static String CONSUMER_CLASS="com.freshdirect.autoorder.create.command.DefaultConsumer";
 	private final static String CONSUMER_PROP="app.consumerclass";
 	
+	private final static String CONSUMER_ORDERLINE_COUNT="app.orderlinecount";
+	
 	
 	public static void loadProperties() throws IOException{
 			InputStream configStream =
@@ -94,6 +96,13 @@ public class ResourceUtil {
 			consumerClass = properties.getProperty(CONSUMER_PROP);
 		}
 		return consumerClass; 
+	}
+	
+	public static int getOrderLineCount() {		
+		if(properties.getProperty(CONSUMER_ORDERLINE_COUNT) != null) {
+			Integer.parseInt(properties.getProperty(CONSUMER_PROP));
+		}
+		return 3; 
 	}
 	
 	public static int getNumThreads(){

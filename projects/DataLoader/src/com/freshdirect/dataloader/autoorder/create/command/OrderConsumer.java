@@ -21,6 +21,7 @@ import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.dataloader.autoorder.create.util.DateUtil;
 import com.freshdirect.dataloader.autoorder.create.util.IConstants;
+import com.freshdirect.dataloader.autoorder.create.util.ResourceUtil;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.ReservationException;
@@ -79,7 +80,7 @@ public class OrderConsumer implements IConsumer {
 	private void createOrder(FDIdentity identity) {
 		
 		// how many orderlines per order?
-		int lineCount = 30 + (int) (Math.random() * 20.0);
+		int lineCount = ResourceUtil.getOrderLineCount() + (int) (Math.random() * 20.0);
 
 		FDCartModel cart = makeOrder(identity, lineCount);
 
