@@ -3,6 +3,12 @@
 require 'optparse'
 require 'csv'
 
+class String
+	def escaped
+		self.gsub(/'/,"''")
+	end
+end
+
 # settings, options
 #
 $options = {}
@@ -18,41 +24,62 @@ def process_line(product, atype, attribute, value)
 		#
 		$stdout.puts <<__SQL
 DELETE FROM CMS.RELATIONSHIP
-WHERE PARENT_CONTENTNODE_ID='#{product}'
-AND CHILD_CONTENTNODE_ID='#{value}';
+WHERE PARENT_CONTENTNODE_ID='#{product.escaped}'
+AND CHILD_CONTENTNODE_ID='#{value.escaped}';
 __SQL
 
 		$stdout.puts <<__SQL
 INSERT INTO CMS.RELATIONSHIP(ID,PARENT_CONTENTNODE_ID,DEF_NAME,CHILD_CONTENTNODE_ID,ORDINAL,DEF_CONTENTTYPE)
-VALUES(CMS.SYSTEM_SEQ.NEXTVAL, '#{product}','#{attribute}','#{value}', 0, '#{value.match(/^(\w+):/)[1]}');
+VALUES(CMS.SYSTEM_SEQ.NEXTVAL, '#{product.escaped}','#{attribute.escaped}','#{value.escaped}', 0, '#{value.match(/^(\w+):/)[1].escaped}');
 __SQL
 	when "MEDIA"
 		## insert MEDIA item
 		#
 		$stdout.puts <<__SQL
 DELETE FROM CMS.RELATIONSHIP
-WHERE PARENT_CONTENTNODE_ID='#{product}'
+WHERE PARENT_CONTENTNODE_ID='#{product.escaped}'
 AND CHILD_CONTENTNODE_ID=(
   SELECT TYPE || ':' || ID
   FROM CMS.MEDIA
-  WHERE URI='#{value}'
+  WHERE URI='#{value.escaped}'
 );
 __SQL
 
-		$stdout.puts <<__SQL
-INSERT INTO CMS.RELATIONSHIP(ID,PARENT_CONTENTNODE_ID,DEF_NAME,CHILD_CONTENTNODE_ID,ORDINAL,DEF_CONTENTTYPE)
-SELECT CMS.SYSTEM_SEQ.NEXTVAL, '#{product}','#{attribute}', TYPE || ':' || ID, 0, TYPE
-FROM CMS.MEDIA
-WHERE URI='#{value}';
+		if $options[:debug]
+			$stdout.puts <<__SQL
+BEGIN
+  INSERT INTO CMS.RELATIONSHIP(ID,PARENT_CONTENTNODE_ID,DEF_NAME,CHILD_CONTENTNODE_ID,ORDINAL,DEF_CONTENTTYPE)
+  SELECT CMS.SYSTEM_SEQ.NEXTVAL, '#{product.escaped}','#{attribute.escaped}', TYPE || ':' || ID, 0, TYPE
+  FROM CMS.MEDIA
+  WHERE URI='#{value.escaped}';
+EXCEPTION
+  WHEN OTHERS THEN
+    SELECT 'Row #{$line_counter}; MEDIA ''#{value.escaped}''; ATTRIBUTE ''#{attribute.escaped}'': Missing content node ''' || TYPE || ':' || ID || '''' AS ERROR
+    INTO myerror
+    FROM CMS.MEDIA
+    WHERE URI='#{value.escaped}';
+    DBMS_OUTPUT.PUT_LINE(myerror);
+END;
 __SQL
+		else
+			$stdout.puts <<__SQL
+INSERT INTO CMS.RELATIONSHIP(ID,PARENT_CONTENTNODE_ID,DEF_NAME,CHILD_CONTENTNODE_ID,ORDINAL,DEF_CONTENTTYPE)
+SELECT CMS.SYSTEM_SEQ.NEXTVAL, '#{product.escaped}','#{attribute.escaped}', TYPE || ':' || ID, 0, TYPE
+FROM CMS.MEDIA
+WHERE URI='#{value.escaped}';
+__SQL
+		end
 	else
 		## insert simple value
 		#
 		$stdout.puts <<__SQL
 INSERT INTO CMS.ATTRIBUTE(ID,CONTENTNODE_ID,DEF_NAME,VALUE,ORDINAL,DEF_CONTENTTYPE)
-VALUES(CMS.SYSTEM_SEQ.NEXTVAL, '#{product}','#{attribute}','#{value}', 0, '#{product.match(/^(\w+):/)[1]}');
+VALUES(CMS.SYSTEM_SEQ.NEXTVAL, '#{product.escaped}','#{attribute.escaped}','#{value.escaped}', 0, '#{product.match(/^(\w+):/)[1].escaped}');
 __SQL
 	end
+	
+	
+	$stdout.puts "ROLLBACK;" if $options[:rollback]
 end
 
 
@@ -116,8 +143,28 @@ end
 #
 reader = CSV.open($options[:input_file], "r")
 # skip first line
-reader.shift if $options[:skip_header]
+$line_counter = 0
+
+if $options[:skip_header]
+	reader.shift 
+	$line_counter = $line_counter + 1
+end
+
+
+
+if $options[:debug]
+	$stdout.puts <<__SQL
+DECLARE
+  myerror VARCHAR2(256);
+BEGIN
+  dbms_output.enable(1000000);
+__SQL
+end
+
+
+
 reader.each do |row|
+	$line_counter = $line_counter + 1
 	next if row.compact.length == 0 # skip empty lines
 	
 	# simple field validation
@@ -125,13 +172,23 @@ reader.each do |row|
 
 	# DEBUG
 	if $options[:debug]
-		$stderr.puts "--"
-		$stderr.puts "-- #{row[2]} := '#{row[0]}','#{row[1]}','#{row[3]}' --"
-		$stderr.puts "--"
+		$stdout.puts "--"
+		$stdout.puts "-- Line #{$line_counter}, #{row[2]} := '#{row[0]}','#{row[1]}','#{row[3]}' --"
+		$stdout.puts "--"
 	end
 	
 	process_line(row[0], row[2], row[1], row[3])
 end
+
+
+
+if $options[:debug]
+	$stdout.puts <<__SQL
+END;
+__SQL
+end
+
+
 
 reader.close
 
