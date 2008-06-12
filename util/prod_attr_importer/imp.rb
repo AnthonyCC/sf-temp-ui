@@ -35,6 +35,8 @@ __SQL
 	when "MEDIA"
 		## insert MEDIA item
 		#
+
+		# remove old link
 		$stdout.puts <<__SQL
 DELETE FROM CMS.RELATIONSHIP
 WHERE PARENT_CONTENTNODE_ID='#{product.escaped}'
@@ -45,7 +47,24 @@ AND CHILD_CONTENTNODE_ID=(
 );
 __SQL
 
+		# insert child content node if missing
+		$stdout.puts <<__SQL
+INSERT INTO CMS.CONTENTNODE(ID,CONTENTTYPE_ID)
+SELECT M.TYPE || ':' || M.ID, M.TYPE
+FROM CMS.MEDIA M
+WHERE URI='#{value.escaped}'
+AND NOT EXISTS
+(
+  SELECT C.ID,C.CONTENTTYPE_ID
+  FROM CMS.CONTENTNODE C
+  WHERE C.ID = M.TYPE || ':' || M.ID
+  AND C.CONTENTTYPE_ID = M.TYPE
+);
+__SQL
+
+		# create link between media and content nodes
 		if $options[:debug]
+			# debug
 			$stdout.puts <<__SQL
 BEGIN
   INSERT INTO CMS.RELATIONSHIP(ID,PARENT_CONTENTNODE_ID,DEF_NAME,CHILD_CONTENTNODE_ID,ORDINAL,DEF_CONTENTTYPE)
@@ -62,6 +81,7 @@ EXCEPTION
 END;
 __SQL
 		else
+			# nodebug
 			$stdout.puts <<__SQL
 INSERT INTO CMS.RELATIONSHIP(ID,PARENT_CONTENTNODE_ID,DEF_NAME,CHILD_CONTENTNODE_ID,ORDINAL,DEF_CONTENTTYPE)
 SELECT CMS.SYSTEM_SEQ.NEXTVAL, '#{product.escaped}','#{attribute.escaped}', TYPE || ':' || ID, 0, TYPE
