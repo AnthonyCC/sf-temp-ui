@@ -3,6 +3,8 @@
 require 'optparse'
 require 'csv'
 
+require 'ent.rb'
+
 class String
 	def escaped
 		self.gsub(/'/,"''")
@@ -92,9 +94,19 @@ __SQL
 	else
 		## insert simple value
 		#
+		
+		# convert HTML Character entities to normal accented characters
+		v = if $options[:convert_html_ents]
+			value.gsub(/&\w+;/) do |s|
+				HTML2ENT[s]
+			end
+		else
+			value
+		end
+
 		$stdout.puts <<__SQL
 INSERT INTO CMS.ATTRIBUTE(ID,CONTENTNODE_ID,DEF_NAME,VALUE,ORDINAL,DEF_CONTENTTYPE)
-VALUES(CMS.SYSTEM_SEQ.NEXTVAL, '#{product.escaped}','#{attribute.escaped}','#{value.escaped}', 0, '#{product.match(/^(\w+):/)[1].escaped}');
+VALUES(CMS.SYSTEM_SEQ.NEXTVAL, '#{product.escaped}','#{attribute.escaped}','#{v.escaped}', 0, '#{product.match(/^(\w+):/)[1].escaped}');
 __SQL
 	end
 	
@@ -124,12 +136,16 @@ Usage: imp.rb [options]
 
 __BANNER
 
-	opts.on("-s", "--skip-header", "Skip first line") do |v|
+	opts.on("-s", "--skip-header", "Skip first line") do
 		$options[:skip_header] = true
 	end
 
-	opts.on("-d", "--debug", "Enable debug messages") do |v|
+	opts.on("-d", "--debug", "Enable debug messages") do
 		$options[:debug] = true
+	end
+
+	opts.on("-c", "--convert-html-ents", "Converts HTML Character Entities to UTF characters: &aacute; -> á") do
+		$options[:convert_html_ents] = true
 	end
 
 	opts.on("-i", "--input [FILE]", String, "Input CSV file") do |fname|
@@ -193,11 +209,11 @@ reader.each do |row|
 	# DEBUG
 	if $options[:debug]
 		$stdout.puts "--"
-		$stdout.puts "-- Line #{$line_counter}, #{row[2]} := '#{row[0]}','#{row[1]}','#{row[3]}' --"
+		$stdout.puts "-- Line #{$line_counter}, #{row[2]} := '#{row[0].strip}','#{row[1].strip}','#{row[3].strip}' --"
 		$stdout.puts "--"
 	end
 	
-	process_line(row[0], row[2], row[1], row[3])
+	process_line(row[0], row[2].strip, row[1].strip, row[3].strip)
 end
 
 
