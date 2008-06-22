@@ -1,0 +1,110 @@
+
+<fd:WineFilter domainName='<%= domainName %>' domainValue='<%= domainValue %>' id='filteredList' displayList='<%= displayList %>'>
+    <%
+         displayList = new ArrayList(filteredList);
+         contextList =  new ArrayList(filteredList);
+    %>
+</fd:WineFilter>    
+<fd:WineFilter domainName='<%= filterBy %>' domainValue='<%= filterByValue %>' id='filteredList' displayList='<%= displayList %>'>
+    <%
+        displayList = new ArrayList(filteredList);
+    %>
+</fd:WineFilter> 
+
+
+<%
+if(contextName != null && contextName.length() > 0) {
+%>
+
+<div class="cat_sum_top_l">
+	<span class="center_prod_name w50"><%=contextName%></span> (<%=displayList.size()%> items)     
+</div>
+
+<% } %>
+<div class="cat_sum_top_r w50 vbot right">
+<%
+        CategoryModel catModel=(CategoryModel)currentFolder;
+	    List wineFilterList=catModel.getWineFilterCriteria();		
+		if(wineFilterList!=null && wineFilterList.size()>0){
+			
+			for(int i=0;i<wineFilterList.size();i++){
+				
+			   Domain dName=(Domain)wineFilterList.get(i);			
+%>
+		<select name="show_filter" class="text10" onchange="javascript:filterFormSubmit(<%= i %>);">
+			<option value="<%= dName.getName() %>|ALL" <%= (filterByValue != null && filterByValue.equals("ALL")) ? "selected='yes'" : "" %>>Show: ALL <%=dName.getLabel()%></option>
+            <%
+               List dValuesList=dName.getDomainValues();
+			   if(dValuesList!=null){
+				   for(int j=0;j<dValuesList.size();j++){
+					   DomainValue dValue=(DomainValue)dValuesList.get(j);
+			            if(isProductAvailableForFilter(contextList, dValue)) {
+            %>
+		                    <option value="<%= dName.getName() %>|<%=dValue.getContentName()%>" <%= (filterByValue != null && filterByValue.equals(dValue.getContentName())) ? "selected='yes'" : "" %>><%=dValue.getValue()%></option>
+            <%
+                        }
+                    }
+			    }
+            %>
+			
+		</select>
+        
+   <%
+              }			
+		}
+ 
+   %>  
+</div>
+<div class="cat_sum_top_spacer"></div>
+<div class="cat_sum_top_sortbar left">
+	<div >
+    	<span class="bolder">Sort:</span> 
+<%
+
+List wineSortList=catModel.getWineSortCriteria();		
+		if(wineSortList!=null && wineSortList.size()>0){
+			String sortDomainName=null;
+            
+            for(int i=0;i<wineSortList.size();i++){
+				
+			   DomainValue dValue=(DomainValue)wineSortList.get(i);
+				if(i==0){
+					sortDomainName=dValue.getDomain().getName();
+				}
+%>
+		<span class="cat_sum_top_li">
+			&bull; <a href="javascript:sortFormSubmit('<%=dValue.getContentName()%>');" title=""><%= dValue.getContentName().equals(sortCol) ? "<b>"+dValue.getLabel()+"</b>" : dValue.getLabel() %></a>
+		</span>
+<%
+             }
+          }             
+%>
+		</div>
+</div>
+<div class="cat_sum_top_spacer"></div>
+
+<% WineSortStrategy sortStrategy = new WineSortStrategy(sortNameAttrib, sortDescending); %>
+
+<fd:ItemSorter nodes='<%=displayList%>' strategy='<%=sortStrategy.getSortStrategyElements(sortCol)%>'/>
+
+<script language='Javascript'>
+function filterFormSubmit(idx){
+<% if (wineFilterList.size() > 1) { %>
+    var selectedValue = document.wine_detail_form.show_filter[idx].options[document.wine_detail_form.show_filter[idx].selectedIndex].value;
+    
+ <% }else { %>
+    var selectedValue = document.wine_detail_form.show_filter.options[document.wine_detail_form.show_filter.selectedIndex].value;
+<% }  %>
+   
+    var tokens = selectedValue.split("|");
+    if(tokens == null || tokens.length < 2)
+        return;
+    //Need to append filterBy and filterByValue after doing the split from 
+    document.location.href="/category.jsp?catId=<%=currentFolder%>&trk=cpage<%= domainParams.toString() %>"+"&filterBy="+tokens[0]+"&filterByValue="+tokens[1]+"<%= sortParams.toString() %><%= viewParams.toString() %>";
+}
+
+function sortFormSubmit(sortval){
+    document.location.href="/category.jsp?catId=<%=currentFolder%>&trk=cpage<%= domainParams.toString() %><%= filterParams.toString() %><%= viewParams.toString() %>"+"&wine_sort="+sortval+"&sort_desc="+<%= !sortDescending %>;
+}
+
+</script>

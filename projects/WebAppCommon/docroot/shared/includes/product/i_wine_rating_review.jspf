@@ -1,0 +1,137 @@
+<script type="text/javascript" language="JavaScript">
+
+var cX = 0; var cY = 0; var rX = 0; var rY = 0;
+function UpdateCursorPosition(e){
+    cX = e.pageX; cY = e.pageY;
+}
+function UpdateCursorPositionDocAll(e){
+ cX = event.clientX; cY = event.clientY;}
+if(document.all) { document.onmousemove = UpdateCursorPositionDocAll; }
+else { document.onmousemove = UpdateCursorPosition; }
+function AssignPosition(d) {
+    if(self.pageYOffset) {
+        rX = self.pageXOffset;
+        rY = self.pageYOffset;
+        }
+    else if(document.documentElement && document.documentElement.scrollTop) {
+        rX = document.documentElement.scrollLeft;
+        rY = document.documentElement.scrollTop;
+        }
+    else if(document.body) {
+        rX = document.body.scrollLeft;
+        rY = document.body.scrollTop;
+        }
+    if(document.all) {
+        cX += rX; 
+        cY += rY;
+        }
+    d.style.left = (cX+10) + "px";
+    d.style.top = (cY+10) + "px";
+}
+function HideContent(d) {
+    if(d.length < 1) { return; }
+    document.getElementById(d).style.display = "none";
+}
+function ShowContent(d) {
+    if(d.length < 1) { return; }
+    var dd = document.getElementById(d);
+    AssignPosition(dd);
+    dd.style.display = "block";
+}
+
+//-->
+</script>
+
+<%! public List getIconPath(List domain, String mediaPath, String mediaType) {
+	
+        List iconPath=new ArrayList();
+        if(domain!=null && domain.size()>0) {
+            String domainName=null;
+            String imagePath="";
+            for(int i=0;i<domain.size();i++) {
+               DomainValue domainVal=(DomainValue)domain.get(i);
+               imagePath=mediaPath +domainVal.getContentName()+mediaType;
+               iconPath.add(imagePath);
+            }
+        } 
+        return iconPath;
+   }
+%>
+
+<%! public Html getReview(Html review) {
+        
+        if(review==null) {
+            return new Html();
+        }
+        return review;
+    }
+
+%>
+<%if (productNode!=null) { 
+
+    List wineRating1=productNode.getWineRating1();
+    List wineRating2=productNode.getWineRating2();
+    List wineRating3=productNode.getWineRating3();
+    List wineType=productNode.getNewWineType();
+    List ratings=productNode.getRating();
+    List wineTypeIcons=new ArrayList();
+    List ratingIcons=new ArrayList();
+    List reviews=new ArrayList(3);
+    reviews.add(getReview(productNode.getWineReview1()));
+    reviews.add(getReview(productNode.getWineReview2()));
+    reviews.add(getReview(productNode.getWineReview3()));
+
+
+    wineTypeIcons.addAll(getIconPath(wineType,"/media/editorial/win_usq/icons/",".gif"));
+    wineTypeIcons.addAll(getIconPath(ratings,"/media/editorial/win_usq/icons/",".gif"));
+
+    ratingIcons.addAll(getIconPath(wineRating1,"/media/editorial/win_usq/icons/rating/",".gif"));
+    ratingIcons.addAll(getIconPath(wineRating2,"/media/editorial/win_usq/icons/rating/",".gif"));
+    ratingIcons.addAll(getIconPath(wineRating3,"/media/editorial/win_usq/icons/rating/",".gif"));
+   
+%>	
+
+<% for(int i=0;i<reviews.size();i++) { 
+       Html _review=(Html)reviews.get(i);
+       if(!_review.isBlank()) {
+
+%>
+
+
+<div id="<%="review"+(i+1)%>" style="display:none; position:absolute; border:1px solid black; background-color: white; padding: 5px; width: 200px;">
+            <fd:IncludeMedia name="<%=_review.getPath()%>"/> 
+</div>
+<%      } 
+   } %>
+
+<div><!-- icons for type / rating / reviews -->
+	<span>
+					<!-- 7.1.5 type -->
+				
+<table>
+<% for (int i=0;i<wineTypeIcons.size();i++) {%>
+	<td class="padlr3" ><img border=0 src="<%= (String)wineTypeIcons.get(i) %>" width="25" height="72" border="0" alt=""></td>
+<% } %>	
+
+    <!-- 7.1.6 rating /reviews -->
+    
+
+<% for (int i=0;i<ratingIcons.size();i++) {
+        Html _review=(Html) reviews.get(i);
+        if(_review.getPath()!=null) {
+%>
+    
+	        <td class="padlr3"><img border=0 src="<%= (String)ratingIcons.get(i) %>" border="0" width="25" height="43" alt=""    onmouseover="ShowContent('review'+<%=(i+1)%>); return true;"   onmouseout="HideContent('review'+<%=(i+1)%>); return true;" /></td>
+    
+<%       } else { %>
+
+            <td class="padlr3"><img border=0 src="<%= (String)ratingIcons.get(i) %>" border="0" alt="" /></td>
+
+<%       }
+   } %>	
+
+	
+	</table></span>
+</div>
+<%}%>
+

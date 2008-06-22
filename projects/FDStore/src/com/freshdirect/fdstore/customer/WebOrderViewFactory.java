@@ -75,6 +75,7 @@ public class WebOrderViewFactory {
 		ErpAffiliate[] affils = new ErpAffiliate[] {
 			ErpAffiliate.getEnum(ErpAffiliate.CODE_FD),
 			ErpAffiliate.getEnum(ErpAffiliate.CODE_WBL),
+			ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ),
 			ErpAffiliate.getEnum(ErpAffiliate.CODE_BC)};
 		List l = new ArrayList();
 		for (int i = 0; i < affils.length; i++) {

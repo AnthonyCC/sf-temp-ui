@@ -1169,21 +1169,14 @@ inner:
 		return new ArrayList(variationOptions);
 	}
 
-	public DomainValue getWineCountry() {
-		ContentKey key = (ContentKey) getCmsAttribute("WINE_COUNTRY").getValue();
-		
-		return key == null
-  	         ? null
-             : (DomainValue) ContentFactory.getInstance().getContentNode(key.getId());
+	public DomainValue getWineCountry() {		
+		Attribute a = getAttribute("WINE_COUNTRY");
+		return a == null ? null : ((DomainValueRef) a.getValue()).getDomainValue();		
 	}
 			
 
 	public Image getProdImage() {
-		ContentKey key = (ContentKey) getCmsAttribute("PROD_IMAGE").getValue();
-		
-		return key == null
-  	         ? null
-             : (Image) ContentFactory.getInstance().getContentNode(key.getId());
+		return (Image) getAttribute("PROD_IMAGE", (Image) null); 
 	}
 
 	public Image getFeatureImage() {
@@ -1207,11 +1200,7 @@ inner:
 	}
 
 	public Image getDescriptiveImage() {
-		ContentKey key = (ContentKey) getCmsAttribute("DESCRIPTIVE_IMAGE").getValue();
-		
-		return key == null
-  	         ? null
-             : (Image) ContentFactory.getInstance().getContentNode(key.getId());
+		return (Image) getAttribute("DESCRIPTIVE_IMAGE", (Image) null); 
 	}
 
 	public Image getRolloverImage() {
@@ -1222,12 +1211,9 @@ inner:
              : (Image) ContentFactory.getInstance().getContentNode(key.getId());
 	}
 
-	public Html getProductAbout() {
-		ContentKey key = (ContentKey) getCmsAttribute("PRODUCT_ABOUT").getValue();
-		
-		return key == null
-  	         ? null
-             : (Html) ContentFactory.getInstance().getContentNode(key.getId());
+	public Html getProductAbout() {		
+		Attribute a = getAttribute("PRODUCT_ABOUT");
+		return a == null ? null : (Html) a.getValue();		
 	}
 
 	public Html getRecommendTable() {
@@ -1246,12 +1232,9 @@ inner:
              : (Html) ContentFactory.getInstance().getContentNode(key.getId());
 	}
 
-	public Html getProductDescriptionNote() {
-		ContentKey key = (ContentKey) getCmsAttribute("PROD_DESCRIPTION_NOTE").getValue();
-		
-		return key == null
-  	         ? null
-             : (Html) ContentFactory.getInstance().getContentNode(key.getId());
+	public Html getProductDescriptionNote() {		
+		Attribute a = getAttribute("PROD_DESCRIPTION_NOTE");
+		return a == null ? null : (Html) a.getValue();			
 	}
 
 	public Html getFreshTips() {
@@ -1449,6 +1432,17 @@ inner:
 
 	}
 
-	
+	public List getWineClassifications() {
+		List classifications = new ArrayList();
+		//Add Country domain Value.
+		classifications.add(getWineCountry());
+		//Add Type domain Values.
+		classifications.addAll(getNewWineType());
+		//Add Region domain Values.
+		classifications.addAll(getNewWineRegion());
+		//Add Varietal domain Values.
+		classifications.addAll(getWineVarietal());
+		return classifications;
+	}
 			
 }

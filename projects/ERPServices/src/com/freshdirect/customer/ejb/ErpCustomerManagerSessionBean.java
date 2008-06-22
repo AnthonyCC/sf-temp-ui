@@ -1318,13 +1318,17 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			ErpPaymentMethodI paymentMethod = order.getPaymentMethod();
 			double fdAmount = 0.0;
 			double bcAmount = 0.0;
+			double usqAmount = 0.0;
 			final ErpAffiliate FD = ErpAffiliate.getPrimaryAffiliate();
 			final ErpAffiliate BC = ErpAffiliate.getEnum(ErpAffiliate.CODE_BC);
+			final ErpAffiliate USQ = ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ);
 			for(Iterator i = lines.iterator(); i.hasNext(); ) {
 				ErpComplaintLineModel line = (ErpComplaintLineModel) i.next();
 				if(EnumComplaintLineType.ORDER_LINE.equals(line.getType())) {
 					ErpOrderLineModel orderline = order.getOrderLineByPK(line.getOrderLineId());
-					if(BC.equals(orderline.getAffiliate())) {
+					if(USQ.equals(orderline.getAffiliate())) {
+						usqAmount += line.getAmount();
+					}else if(BC.equals(orderline.getAffiliate())) {
 						bcAmount += line.getAmount();
 					} else {
 						fdAmount += line.getAmount();
@@ -1342,6 +1346,10 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			
 			if(bcAmount > 0) {
 				ErpCashbackModel cashback = paymentManager.returnCashback(saleId, paymentMethod, bcAmount, 0.0, BC);
+				saleEB.addCashback(cashback);
+			}
+			if(usqAmount > 0) {
+				ErpCashbackModel cashback = paymentManager.returnCashback(saleId, paymentMethod, usqAmount, 0.0, USQ);
 				saleEB.addCashback(cashback);
 			}
 			

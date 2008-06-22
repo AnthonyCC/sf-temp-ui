@@ -29,7 +29,7 @@ public class SideNavEI extends TagExtraInfo {
 
             new VariableInfo(data.getAttributeString("navList"),
                 "java.util.List", true, VariableInfo.NESTED),
-
+                
             new VariableInfo(data.getAttributeString("unavailableList"),
                 "java.util.List", true, VariableInfo.NESTED),
             

@@ -23,6 +23,7 @@ public class CaptureStrategy extends PaymentStrategy {
 	
 	private final CapInfo fdInfo;
 	private final CapInfo bcInfo;
+	private final CapInfo usqInfo;
 	
 	public CaptureStrategy (ErpSaleModel sale) {
 		super(sale);
@@ -30,6 +31,9 @@ public class CaptureStrategy extends PaymentStrategy {
 		this.fdInfo = new CapInfo(sale.getPK().getId(), fd, sale.getCaptures(fd));
 		ErpAffiliate bc = ErpAffiliate.getEnum(ErpAffiliate.CODE_BC);
 		this.bcInfo = new CapInfo(sale.getPK().getId(), bc, sale.getCaptures(bc));
+		ErpAffiliate usq = ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ);
+		this.usqInfo = new CapInfo(sale.getPK().getId(), usq, sale.getCaptures(usq));
+
 	}
 	
 	public Map getOutstandingCaptureAmounts(){
@@ -45,11 +49,14 @@ public class CaptureStrategy extends PaymentStrategy {
 		}
 		
 		final ErpAffiliate bc = ErpAffiliate.getEnum(ErpAffiliate.CODE_BC);
+		final ErpAffiliate usq = ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ);
 		
 		for (Iterator i = order.getOrderLines().iterator(); i.hasNext(); ) {
 			ErpOrderLineModel line = (ErpOrderLineModel) i.next();
 			ErpInvoiceLineModel invLine = invoice.getInvoiceLine(line.getOrderLineNumber());
-			if(bc.equals(line.getAffiliate())) {				
+			if(usq.equals(line.getAffiliate())) {				
+				this.usqInfo.addInvoiceLine(invLine);
+			}else if(bc.equals(line.getAffiliate())) {				
 				this.bcInfo.addInvoiceLine(invLine);
 			} else {		
 				this.fdInfo.addInvoiceLine(invLine);
@@ -77,10 +84,16 @@ public class CaptureStrategy extends PaymentStrategy {
 		
 		List fdAuths = this.sale.getApprovedAuthorizations(fdInfo.affiliate, order.getPaymentMethod());
 		List bcAuths = this.sale.getApprovedAuthorizations(bcInfo.affiliate, order.getPaymentMethod());
+		List usqAuths = this.sale.getApprovedAuthorizations(usqInfo.affiliate, order.getPaymentMethod());
 		
 		Map captures = new LinkedHashMap();
 		
-		if(bcInfo.getAmount() > 0 && bcAuths.isEmpty()) {
+		if(usqInfo.getAmount() > 0 && usqAuths.isEmpty()) {
+			if(!fdAuths.isEmpty()) {
+				fdInfo.merge(usqInfo);
+				captures.put(fdInfo.affiliate, new Double(fdInfo.getAmount()));
+			}
+		}else if(bcInfo.getAmount() > 0 && bcAuths.isEmpty()) {
 			if(!fdAuths.isEmpty()) {
 				fdInfo.merge(bcInfo);
 				captures.put(fdInfo.affiliate, new Double(fdInfo.getAmount()));
@@ -92,6 +105,10 @@ public class CaptureStrategy extends PaymentStrategy {
 			if(bcInfo.getAmount() > 0) {
 				captures.put(bcInfo.affiliate, new Double(bcInfo.getAmount()));
 			}
+			if(usqInfo.getAmount() > 0) {
+				captures.put(usqInfo.affiliate, new Double(usqInfo.getAmount()));
+			}
+
 		}
 		
 		return captures;
@@ -99,6 +116,9 @@ public class CaptureStrategy extends PaymentStrategy {
 	
 	private void addDeduction(double amount) {
 		double remainder = fdInfo.addDeduction(amount);
+		if(remainder > 0) {
+			remainder = usqInfo.addDeduction(remainder);
+		}
 		if(remainder > 0) {
 			remainder = bcInfo.addDeduction(remainder);
 		}

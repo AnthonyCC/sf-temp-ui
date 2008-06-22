@@ -110,6 +110,7 @@ This include expects the following:
 
 <%
 int MAX_BRANDS_TO_SHOW = 2;
+
 String popup = "/shared/popup.jsp?catId="+productNode.getParentNode() + "&prodId="+productNode;
 boolean priceShown = false;
 EnumPopupType smallPopup = EnumPopupType.getPopupType("small");
@@ -118,7 +119,12 @@ EnumPopupType largePopup = EnumPopupType.getPopupType("large");
 MediaI brandLogo = null;
 String brandPopupLink=null;
 String brandName = null;
-boolean isWineLayout = EnumProductLayout.WINE.equals(productNode.getProductLayout());
+boolean isWineLayout = EnumProductLayout.NEW_WINE_PRODUCT.equals(productNode.getProductLayout());
+
+if(isWineLayout) {
+    MAX_BRANDS_TO_SHOW = 1;	
+    
+}
 
 
 // get the brand logo, if any.
@@ -345,43 +351,45 @@ if (skus.size() != 0) {
     <input type="hidden" name="catId" value='<%= templateLine.getCategoryName() %>'>
 
     <%
-    if (productNode.getAttribute("PARTIALLY_FROZEN")!=null && productNode.getDepartment().getFullName().equalsIgnoreCase("SEAFOOD")) {
-        %><img src="/media_stat/images/template/bakery/snowflake_grey.gif" width="15" height="17" alt="" border="0">&nbsp;<%
-    }
-    for (int bIdx = 0; bIdx < brandLogos.size();bIdx++) {
-    	   brandLogo = (MediaI) brandLogos.get(bIdx);
-    	   brandPopupLink = (String)brandPopupLinks.get(bIdx);
-	   String altText = ((BrandModel)prodBrands.get(bIdx)).getFullName(); 
-    	     if (bIdx > 0) {   %>
-    	     <img src="/media_stat/images/layout/clear.gif" width="10" height="1" border="0" hspace="0" vspace="0">
-<%	     }    	     
-	     if (brandPopupLink!=null) {
-	         %><a href="<%= brandPopupLink %>"><%
-	     }
-	     %><img src="<%=brandLogo.getPath()%>" width="<%=brandLogo.getWidth()%>"  height="<%=brandLogo.getHeight()%>" alt="<%=altText%>" border="0"><%
-	     if (brandPopupLink!=null) {
-%></a>
-<% 	     }
-    }
     
-    if (brandLogos.size() > 0) { %>
-       <br><br>
-<%  }
+    if(!isWineLayout) {
+	    if (productNode.getAttribute("PARTIALLY_FROZEN")!=null && productNode.getDepartment().getFullName().equalsIgnoreCase("SEAFOOD")) {
+	        %><img src="/media_stat/images/template/bakery/snowflake_grey.gif" width="15" height="17" alt="" border="0">&nbsp;<%
+	    }
+	    for (int bIdx = 0; bIdx < brandLogos.size();bIdx++) {
+	    	   brandLogo = (MediaI) brandLogos.get(bIdx);
+	    	   brandPopupLink = (String)brandPopupLinks.get(bIdx);
+		   String altText = ((BrandModel)prodBrands.get(bIdx)).getFullName(); 
+	    	     if (bIdx > 0) {   %>
+	    	     
+	    	     <img src="/media_stat/images/layout/clear.gif" width="10" height="1" border="0" hspace="0" vspace="0">
+	<%	     }    	     
+		     if (brandPopupLink!=null) {
+		         %><a href="<%= brandPopupLink %>"><%
+		     }
+	%><img src="<%=brandLogo.getPath()%>" width="<%=brandLogo.getWidth()%>"  height="<%=brandLogo.getHeight()%>" alt="<%=altText%>" border="0">
+        <%
+	     if (brandPopupLink!=null) {
+	%></a>
+	<%   }
+         }
+    
+         if (brandLogos.size() > 0) { %>
+         <br><br>
+        <%  }
 
+    }
     
     String productTitle = productNode.getFullName().toUpperCase(); 
     String productTitle2 = null;
     if (isWineLayout) {
+    	productTitle = productNode.getFullName();
         String thisProdBrandLabel = productNode.getPrimaryBrandName();
-        StringBuffer tmpName = new StringBuffer();
-        if (thisProdBrandLabel.length()>0) {
-            tmpName.append(thisProdBrandLabel.toUpperCase());
-            tmpName.append("<br>");
-            tmpName.append("<FONT CLASS=\"title14\">");
-            tmpName.append(productNode.getFullName().substring(thisProdBrandLabel.length()).trim().toUpperCase());
-            tmpName.append("</font>");
-            productTitle = tmpName.toString();
-        }
+        List wineVintage=productNode.getWineVintage();		
+	if(wineVintage!=null && wineVintage.size()>0){
+		DomainValue dValue=(DomainValue)wineVintage.get(0);
+		productTitle=new StringBuffer(100).append(productTitle).append(" ").append(dValue.getLabel()).toString();
+	}    	
     }
 
     %><FONT CLASS="title18"><%
@@ -483,6 +491,9 @@ if (skus.size() != 0) {
                     <%
                 }
                 %>
+                
+               
+                
                 <%@ include file="/shared/includes/product/i_scaled_prices.jspf" %>
                 <input type="hidden" name="skuCode" value="<%= defaultSku.getSkuCode() %>">
             </fd:FDProduct>
@@ -783,7 +794,7 @@ if (skus.size() != 0) {
         %>
     </script>
 
-    <%
+           <%
     // sort the variations: required, optional, then checkboxes
     List variations = Arrays.asList(defaultProduct.getVariations());
     Collections.sort(variations, variationComparator);

@@ -127,7 +127,8 @@ public class MaterialParser extends SAPParser {
         // alcoholic content information is now preferred to be derived
         // from the material group
         //  if the material group starts with "B", it is a beer product
-        //  if the material group starts with "W", it is a wine product
+        //  if the material group starts with "W", it is a BC wine product
+        //	if the material group starts with "U", it is a USQ wine product
         //  any other value has no alcoholic content
         //
         String matGroup = getString(tokens, MATERIAL_GROUP);
@@ -136,7 +137,9 @@ public class MaterialParser extends SAPParser {
         if (matGroup.startsWith("B") || matGroup.startsWith("A")) {
         	material.setAlcoholicContent(EnumAlcoholicContent.BEER);
         } else if (matGroup.startsWith("W")) {
-        	material.setAlcoholicContent(EnumAlcoholicContent.WINE);
+        	material.setAlcoholicContent(EnumAlcoholicContent.BC_WINE);
+        }else if (matGroup.startsWith("U")) {
+        	material.setAlcoholicContent(EnumAlcoholicContent.USQ_WINE);
         } else {
         	//
         	// fall back to the old method of deriving alcoholic content

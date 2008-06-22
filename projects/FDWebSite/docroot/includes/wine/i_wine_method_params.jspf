@@ -1,0 +1,216 @@
+<%
+//********** Start getting the contents **************
+    //Setting the context name
+    String domainName = request.getParameter("domainName");
+    String domainValue = request.getParameter("domainValue");
+    String filterBy = request.getParameter("filterBy");
+    String filterByValue = request.getParameter("filterByValue");
+    String sortCol=request.getParameter("wine_sort");
+    String catView = request.getParameter("cat_view");
+    
+    if(sortCol==null){
+        //Defaults to ABC.
+        sortCol=com.freshdirect.fdstore.content.util.EnumWineSortType.ABC.getCode();
+    }
+    String sortDesc = request.getParameter("sort_desc");
+        if(sortDesc==null){
+        //Defaults to ABC.
+        sortDesc="false";
+    }
+    
+    StringBuffer domainParams = new StringBuffer();
+    domainParams.append(domainName != null && domainName.length() > 0 ? "&domainName=" : "");
+    domainParams.append(domainName != null && domainName.length() > 0 ? domainName : "");
+    domainParams.append(domainValue != null && domainValue.length() > 0 ? "&domainValue=" : "");
+    domainParams.append(domainValue != null && domainValue.length() > 0 ? domainValue : "");
+    
+    StringBuffer filterParams = new StringBuffer();
+    filterParams.append(filterBy != null && filterBy.length() > 0 ? "&filterBy=" : "");
+    filterParams.append(filterBy != null && filterBy.length() > 0 ? filterBy : "");    
+    filterParams.append(filterByValue != null && filterByValue.length() > 0 ? "&filterByValue=" : "");
+    filterParams.append(filterByValue != null && filterByValue.length() > 0 ? filterByValue : "");
+    
+    StringBuffer sortParams = new StringBuffer();
+    sortParams.append(sortCol != null && sortCol.length() > 0 ? "&wine_sort=" : "");
+    sortParams.append(sortCol != null && sortCol.length() > 0 ? sortCol : "");
+    sortParams.append(sortDesc != null && sortDesc.length() > 0 ? "&sort_desc=" : "");
+    sortParams.append(sortDesc != null && sortDesc.length() > 0 ? sortDesc : "");
+
+    StringBuffer viewParams = new StringBuffer();
+    viewParams.append(catView != null && catView.length() > 0 ? "&cat_view=" : "");
+    viewParams.append(catView != null && catView.length() > 0 ? catView : "");
+    
+    StringBuffer pageParams = new StringBuffer();
+    pageParams.append(domainParams.toString());
+    pageParams.append(filterParams.toString());
+    pageParams.append(sortParams.toString());
+    pageParams.append(viewParams.toString());
+    
+    String contextName = "";
+    if(domainValue != null && domainValue.length() > 0) {
+        //domainName is passed in the Url. Set domain name as context name.
+       contextName = ContentFactory.getInstance().getDomainValueById(domainValue).getLabel();
+    } else {
+        //Set current category name name as context name.
+        contextName =  currentFolder.getFullName();
+    }
+    //Setting the PageUrl
+    StringBuffer buffer = new StringBuffer();
+    buffer.append("/category.jsp?catId=");
+    buffer.append(catId);
+    buffer.append("&trk=trans");
+    buffer.append(domainParams.toString());
+    buffer.append(filterParams.toString());
+    buffer.append(sortParams.toString());
+    //buffer.append(viewParams.toString());
+    String pageUrl = buffer.toString();
+%>
+
+<%!
+public List getDisplayList(Collection sortedColl)  {
+    List displayList = new ArrayList();
+    for(Iterator availItr = sortedColl.iterator();availItr.hasNext();) {
+        Object availObject = availItr.next();
+        if (availObject instanceof ProductModel && ((ProductModel)availObject).isUnavailable()) {
+           continue;
+        } else {
+            //throw away hidden folders
+            if (availObject instanceof CategoryModel && ((CategoryModel)availObject).getShowSelf()==false) continue;
+            displayList.add(availObject);
+        }
+    } 
+    return displayList;
+}
+%>
+
+<%!
+
+public static java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
+
+public String getPageNumbers(HttpServletRequest requestObj, HttpServletResponse responseObj,int pageNumber, int itemsPerPage, ContentNodeModel currFolder, int itemsCount, StringBuffer pageParams) {
+	StringBuffer buf = new StringBuffer();
+	String urlParams = buildOtherParams(itemsPerPage, -1);
+	String urlStart = "/category.jsp?catId=" + currFolder +"&trk=trans";
+	String fullURL = null;
+	int startFrom = 1;
+
+	if(pageNumber > 1)   {
+		if (pageNumber/10 > 1) {
+			startFrom = ((pageNumber/10) * 10) + 1;
+			fullURL= responseObj.encodeURL(urlStart + urlParams + "&pageNumber=" + startFrom);
+
+			buf.append("<A HREF=\"");
+			buf.append(urlStart).append(urlParams).append(pageParams);
+			buf.append("\">previous</A> . ");
+		}
+
+		for (int i=startFrom; i<pageNumber; i++) {
+			fullURL= responseObj.encodeURL(urlStart+urlParams+"&pageNumber="+i);
+			buf.append("<A HREF=\"").append(fullURL).append(pageParams).append("\">");
+			buf.append(i).append("</A> . ");
+		}
+	}
+
+	buf.append("<B>").append(pageNumber).append("</B>");
+
+	if ( itemsCount >= (pageNumber * itemsPerPage) ) {
+		// figure out how many additional pages to display
+		int addToLoop = 0;
+		if(itemsCount % itemsPerPage > 0) {
+			addToLoop = 1;
+		}
+		for (int i=(pageNumber + 1); (i <= (itemsCount/itemsPerPage + addToLoop)); i++) {
+			fullURL= responseObj.encodeURL(urlStart + urlParams + "&pageNumber=" + i);
+			buf.append(" . <A HREF=\"");
+			buf.append(fullURL).append(pageParams);
+			buf.append("\">");
+			if (i%10 == 1) {
+				buf.append("more");
+				break;
+			} else {
+				 buf.append(i);
+			}
+			buf.append("</A>");
+		}
+	}
+	return buf.toString();
+}
+public String buildOtherParams(int displayPerPageSetting, int pageNumberValue) {
+
+	StringBuffer buf = new StringBuffer();
+
+	if (displayPerPageSetting  > 0 ) {
+		buf.append("&displayPerPage=").append(displayPerPageSetting);
+	}
+
+	if (pageNumberValue > 0) {
+		buf.append("&pageNumber=").append(pageNumberValue);
+	}
+
+	return buf.toString();
+}
+%>
+
+<%!
+    public int getItemsToDisplay(Collection displayList, HttpServletRequest request) {
+        int itemsToDisplay = 20;
+        {
+            String reqItemsToDisp = request.getParameter("displayPerPage");
+            HttpSession session = request.getSession();
+            String sessItemsToDisp = (String)session.getAttribute("gp_itemsToDisplay");
+
+            if ( reqItemsToDisp!=null && (sessItemsToDisp==null || !reqItemsToDisp.equals(sessItemsToDisp)) ) {
+                // we have to update the session with the value from the request
+                sessItemsToDisp = reqItemsToDisp;
+                session.setAttribute("gp_itemsToDisplay", sessItemsToDisp);
+            } else {
+                    reqItemsToDisp = (String) session.getAttribute("gp_itemsToDisplay");
+                }
+            try {
+                if (reqItemsToDisp!=null) {
+                    itemsToDisplay = Integer.valueOf(reqItemsToDisp).intValue();
+                } else if (sessItemsToDisp!=null) {
+                    itemsToDisplay = Integer.valueOf(sessItemsToDisp).intValue();
+                }
+                if (itemsToDisplay!=20 && itemsToDisplay!=40 && itemsToDisplay!=displayList.size()) {
+                    itemsToDisplay = 20;
+                }
+            } catch (NumberFormatException nfe) {
+                itemsToDisplay = 20;
+            }
+        }
+        return itemsToDisplay;
+    }    
+    
+    public int getPageNumber(List displayList, int itemsToDisplay, HttpServletRequest request) {
+            int pageNumber = 1;
+            try {
+                pageNumber = Integer.valueOf(request.getParameter("pageNumber")).intValue();
+            } catch (NumberFormatException nfe) {}
+            //cath bogus page number, and set to 1 
+            if (pageNumber > ((displayList.size()/itemsToDisplay)+(displayList.size() % itemsToDisplay)) ) {
+                pageNumber = 1;
+            }
+            return pageNumber;
+    }
+    
+    
+    public boolean isProductAvailableForFilter(List productList, DomainValue filter) {
+        boolean isAvailable = false;
+        for(Iterator iter=productList.iterator(); iter.hasNext();) {
+            ContentNodeModel contentNode = (ContentNodeModel) iter.next();
+            if (contentNode.getContentType().equals(ContentNodeI.TYPE_PRODUCT)){
+                ProductModel product = (ProductModel) contentNode;
+                List domainValues = product.getWineClassifications();
+                if(domainValues.contains(filter)){
+                    //Product exist for the filter.
+                    isAvailable = true;
+                    break;
+                }
+            }
+        }
+        return isAvailable;
+    
+    }
+
+%>

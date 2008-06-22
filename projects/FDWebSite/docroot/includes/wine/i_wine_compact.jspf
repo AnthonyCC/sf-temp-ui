@@ -1,0 +1,58 @@
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.LayoutManager.Settings,com.freshdirect.fdstore.content.util.SortStrategyElement' %>
+<%@ page import="java.text.SimpleDateFormat"%>
+<%@ page import='java.util.*'  %>
+<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*,com.freshdirect.fdstore.content.util.EnumWineSortType' %>
+<%@ page import='com.freshdirect.fdstore.attributes.Attribute' %>
+<%@ page import='com.freshdirect.fdstore.promotion.*'%>
+<%@ page import='java.net.URLEncoder'%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import='com.freshdirect.fdstore.*' %>
+<%@ page import="com.freshdirect.framework.webapp.*"%>
+<%@ page import='com.freshdirect.framework.util.*' %>
+<%@ taglib uri='template' prefix='tmpl' %>
+<%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri='oscache' prefix='oscache' %>
+<%@ page import='com.freshdirect.fdstore.content.CategoryModel' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
+
+<%@ include file="/includes/wine/i_wine_method_params.jspf" %> 
+<%
+Collection sortedColl=null; 
+boolean sortDescending = "true".equalsIgnoreCase(sortDesc);
+String sortNameAttrib = currentFolder.getAttribute("LIST_AS", "full");
+if (!sortNameAttrib.equalsIgnoreCase(SortStrategyElement.SORTNAME_GLANCE) && !sortNameAttrib.equalsIgnoreCase(SortStrategyElement.SORTNAME_NAV))
+    sortNameAttrib = SortStrategyElement.SORTNAME_FULL;
+    
+Settings layoutSettings = new Settings();
+layoutSettings.setReturnHiddenFolders(true);
+//layoutSettings.setIncludeUnavailable(false);
+layoutSettings.setIgnoreShowChildren(true);
+%>
+<fd:ItemGrabber category='<%=currentFolder %>' id='rtnColl'  
+        depth='<%=layoutSettings.getGrabberDepth()%>' ignoreShowChildren='<%=layoutSettings.isIgnoreShowChildren()%>' 
+        filterDiscontinued='<%= layoutSettings.isFilterDiscontinued() %>'
+        returnHiddenFolders='<%=layoutSettings.isReturnHiddenFolders()%>'
+        ignoreDuplicateProducts='<%=layoutSettings.isIgnoreDuplicateProducts()%>'
+        returnSecondaryFolders='<%=layoutSettings.isReturnSeocndaryFolders()%>' returnSkus='<%=layoutSettings.isReturnSkus()%>'>
+<%
+        sortedColl = rtnColl;
+        
+%>
+</fd:ItemGrabber> 
+
+<%
+    if (sortedColl==null) sortedColl = new ArrayList();
+    List displayList = getDisplayList(sortedColl);
+    //This list is to hold the list of products by clicking on the sidenav referenced by i_wine_category_top.jspf
+    List contextList = new ArrayList(displayList);
+    int itemsToDisplay = getItemsToDisplay(displayList, request);
+    int pageNumber = getPageNumber(displayList, itemsToDisplay, request);
+    Integer offset = new Integer((pageNumber-1)*itemsToDisplay);
+    Integer len = new Integer(itemsToDisplay);
+%>
+
+
+<%@ include file="/includes/wine/i_wine_category_top.jspf" %> 
+<%@ include file="/includes/wine/i_wine_compact_body.jspf"%>
+<%@ include file="/includes/wine/i_wine_category_bottom.jspf" %> 

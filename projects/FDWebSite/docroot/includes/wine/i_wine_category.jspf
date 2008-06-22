@@ -1,0 +1,29 @@
+<%@ page import='java.util.*'  %>
+<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.fdstore.attributes.Attribute' %>
+<%@ page import='com.freshdirect.fdstore.promotion.*'%>
+<%@ page import='java.net.URLEncoder'%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import='com.freshdirect.fdstore.*' %>
+<%@ page import="com.freshdirect.framework.webapp.*"%>
+<%@ page import='com.freshdirect.framework.util.*' %>
+<%@ taglib uri='template' prefix='tmpl' %>
+<%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri='oscache' prefix='oscache' %>
+
+    
+ <form name="wine_detail_form" method="POST">
+ 
+ <%
+String categoryView = request.getParameter("cat_view");
+if(categoryView != null && categoryView.equals("compact")) {
+%>
+	<%@ include file="/includes/wine/i_wine_compact.jspf" %>
+<%} else {%>
+    <%@ include file="/common/template/includes/catLayoutManager.jspf" %>
+<%
+    }
+
+%>
+</form>

@@ -80,21 +80,14 @@
 <TR VALIGN="TOP">
 	<TD BGCOLOR="#999966" VALIGN="BOTTOM" WIDTH="1"><IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="1"></TD>
 	<TD WIDTH="5" BGCOLOR="#FFFFFF"><BR></TD>
-	<TD WIDTH="125" BGCOLOR="#FFFFFF">
-		<% try { %><%@ include file="/common/template/includes/left_side_nav_img.jspf" %>
+	<TD WIDTH="125" class="left_nav">
+		<% try { %><%@ include file="/common/template/includes/left_side_nav_usq.jspf" %>
                 <% } catch (Exception ex) {ex.printStackTrace();} %><BR>
 		<img src="/media_stat/images/layout/clear.gif" height="1" width="125">
 	</TD>
 	<TD width="458" align="center">
-                <TABLE WIDTH="100%" align="center" cellspacing="0" cellpadding="0" border="0">
-                    <tr>
-                      <td align="center"><img src="/media_stat/images/layout/clear.gif" height="35" width="1"><br><img src="<%=tmplFldrLbl%>" border="0"></td>
-                    </tr>
-                    <tr>
-                      <td align="center"><img usemap="#categoryNav" src="<%=tmplNavBar%>" border="0"></td>
-                    </tr>
-                </table>
-                <tmpl:get name='topLegend'/>
+                
+               
                 <!-- content lands here -->
 		<tmpl:get name='content'/>
 		<!-- content ends above here-->

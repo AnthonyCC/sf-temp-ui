@@ -112,7 +112,8 @@ try {
 	    // temporary: if grocery, wine or bakery department..then we dont want to use the stantard logic
 	    if ( "OUR_PICKS, FRO, GRO, DAI, SPE".indexOf(department.getContentName().toUpperCase())==-1 &&
 	    		!"bak".equals(request.getParameter("deptId")) &&
-	    		!"win".equals(request.getParameter("deptId")) &&
+                !"win".equals(request.getParameter("deptId")) &&
+	    		!"usq".equals(request.getParameter("deptId")) &&
 	    		introCopy!=null &&
 	    		introCopy.trim().length()>0) {
 	        %><table width="550" CELLPADDING="0" CELLSPACING="0" BORDER="0">
@@ -169,9 +170,10 @@ try {
 <%
         } // false
 
-
 	    if ("win".equals(request.getParameter("deptId"))) { // bc wine page
 	        %><%@ include file="/departments/wine/bc_home.jspf"%><%
+	    } else if ("usq".equals(request.getParameter("deptId"))) { //usq wine page
+	        %><%@ include file="/departments/wine/usq_home.jspf"%><%
 	    } else if ("bak".equals(request.getParameter("deptId"))) { // bak needs top buffer 
 	        String trkCode= "dpage"; 
 	        %>

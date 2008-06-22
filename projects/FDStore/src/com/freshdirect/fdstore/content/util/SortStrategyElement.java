@@ -9,6 +9,7 @@ public class SortStrategyElement {
 	public final static int PRODUCTS_BY_KOSHER = 3;
 	public final static int PRODUCTS_BY_NUTRITION = 4;
 	public final static int PRODUCTS_BY_ATTRIBUTE = 5;
+	public final static int PRODUCTS_BY_WINE_ATTRIBUTE = 6;
 
 	public final static int GROUP_BY_CATEGORY_NAME = 200;
 	public final static int GROUP_BY_CATEGORY_PRIORITY = 201;

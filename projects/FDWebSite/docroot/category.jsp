@@ -96,7 +96,8 @@ if (isIncludeMediaLayout) {
     jspTemplate = "/common/template/right_dnav.jsp";
 } else {
     if (EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(templateType))) {
-        jspTemplate = "/common/template/bestcellars/all_navs.jsp";
+		// assuming only 1 wine store at a time
+        jspTemplate = "/common/template/usq_sidenav.jsp";
     } else { //assuming the default (Generic) Template
         jspTemplate = "/common/template/both_dnav.jsp";
     }
@@ -130,7 +131,7 @@ boolean noCache =  (EnumLayoutType.GROCERY_PRODUCT.getId()==layouttype
                     
 %>
 
-<oscache:cache key='<%= "catLayout_"+request.getQueryString() %>' time="300" refresh="<%= noCache %>">
+<oscache:cache key='<%= "catLayout_"+request.getQueryString() %>' time="1" refresh="<%= noCache %>">
 <% try {
 
 int tablewid = noLeftNav ? 550 : 400;
@@ -139,9 +140,17 @@ int tablewid = noLeftNav ? 550 : 400;
 if(alternateContentFile != null){
 %><fd:IncludeMedia name='<%= alternateContentFile %>' /><%
 } else {
+
 	Attribute introCopyAttribute = currentFolder.getAttribute("EDITORIAL");
 	String introCopy = introCopyAttribute==null?"":((Html)introCopyAttribute.getValue()).getPath();
 	String introTitle = currentFolder.getEditorialTitle();
+    
+    // no other option wine trouble
+    if(EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(templateType))) {
+      introCopy="";
+      introTitle="";
+    }
+    
 	boolean showLine=false;   // if true, the last gray line prior to the categories-display will be printed
 	//  get the rating & ranking stuff
     Attribute tmpAttribute = currentFolder.getAttribute("RATING_GROUP_NAMES");
@@ -287,9 +296,13 @@ if(alternateContentFile != null){
 <%-- end header stuff --%>
 		<% if ("hmr".equals(currentFolder.getParentNode().toString()) && currentFolder.getBlurb()!=null ){%><table width="<%=tablewid%>" border="0" cellspacing="0" cellpadding="0"><tr><td>
 <%=currentFolder.getBlurb()%><FONT CLASS="space4pix"><BR><BR></FONT></td></tr></table><br><%}%>
-	<%@ include file="/common/template/includes/catLayoutManager.jspf" %>
 <%
-}
+if(EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(templateType))) { %>
+        <%@ include file="/includes/wine/i_wine_category.jspf" %>
+<%    }  else  {  %>        
+        <%@ include file="/common/template/includes/catLayoutManager.jspf" %>
+<%      }     
+    }
 	/* Layout may have put a request attribute called brandsList, of type set...get it into the brands var */
   	if (request.getAttribute("brandsList")!=null) {
 		brands = (Set)request.getAttribute("brandsList");

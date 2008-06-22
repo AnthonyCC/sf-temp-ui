@@ -218,7 +218,9 @@ public class FDShoppingCartControllerTag extends
 		int affectedLines = 0;
 		String application = (String) session
 				.getAttribute(SessionName.APPLICATION);
-		boolean inCallCenter = "callcenter".equalsIgnoreCase(application);		
+		boolean inCallCenter = "callcenter".equalsIgnoreCase(application);
+		
+		
 
         ErpComplaintModel complaintModel = new ErpComplaintModel();
 
@@ -513,7 +515,9 @@ public class FDShoppingCartControllerTag extends
 					.getResponse();
 			try {
 				
-				response.sendRedirect(response.encodeRedirectURL(redir));
+												
+				
+				response.sendRedirect(response.encodeRedirectURL(redir));			
 				JspWriter writer = pageContext.getOut();
 				writer.close();
 
@@ -521,7 +525,7 @@ public class FDShoppingCartControllerTag extends
 			} catch (IOException ioe) {
 				// if there was a problem redirecting, well.. fuck it.. :)
 				throw new JspException("Error redirecting " + ioe.getMessage());
-			}
+			}						
 		}
 
 		if (this.cleanupCart) {
@@ -542,6 +546,8 @@ public class FDShoppingCartControllerTag extends
 		//
 		pageContext.setAttribute(id, cart);
 		pageContext.setAttribute(resultName, result);
+		
+		
 
 		return EVAL_BODY_BUFFERED;
 	}
@@ -949,15 +955,23 @@ public class FDShoppingCartControllerTag extends
 		final String paramSkuCode = "skuCode" + suffix;
 		final String paramCatId = "catId" + suffix;
 		final String paramProductId = "productId" + suffix;
+		// for wine usq changes
+		final String paramWineCatId="wineCatId" + suffix;
 
 		String skuCode = request.getParameter(paramSkuCode);
-
+					
 		if (!strictCheck && "".equals(skuCode)) {
 			return null;
 		}
+		String catName="";
 
-		String catName = request.getParameter(paramCatId);
+		if(request.getParameter(paramWineCatId)!=null)
+			catName=request.getParameter(paramWineCatId);
+		else
+		    catName= request.getParameter(paramCatId);
+		
 		String prodName = request.getParameter(paramProductId);
+						
 
 		boolean contentSpecified = !(prodName == null || prodName.length() == 0);
 

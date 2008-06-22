@@ -120,13 +120,7 @@ public String getProdPageRatings(ProductModel _productNode, HttpServletResponse 
 
 	<% if (prodPageRatingStuff != null && !"".equals(prodPageRatingStuff)) { %><%= prodPageRatingStuff %><br><br><% } %>
 	
-	<%
-	if (productNode.getAttribute("WINE_TYPE")!=null   || 
-            productNode.getAttribute("WINE_REGION")!=null || 
-	    productNode.getAttribute("WINE_FYI")!=null) {  %>
-	<%@ include file="/shared/includes/product/wine_info.jspf" %><br>
-<% } %>
-	
+		
 	<% Html productDesc = productNode.getProductDescription(); 
 	if ( productDesc != null && !"blank.txt".equals(productDesc) ) {
 	%><b>About:</b><br>

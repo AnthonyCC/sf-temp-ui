@@ -753,6 +753,7 @@ public class FDOrderAdapter implements FDOrderI {
 		charge += this.getChargeAmount(EnumChargeType.FD_RESTOCKING_FEE);
 		charge += this.getChargeAmount(EnumChargeType.WBL_RESTOCKING_FEE);
 		charge += this.getChargeAmount(EnumChargeType.BC_RESTOCKING_FEE);
+		charge += this.getChargeAmount(EnumChargeType.USQ_RESTOCKING_FEE);
 		return charge;
 	}
 
@@ -767,6 +768,9 @@ public class FDOrderAdapter implements FDOrderI {
 		}
 		if (ErpAffiliate.getEnum(ErpAffiliate.CODE_BC).equals(affiliate)) {
 			charge = this.getChargeAmount(EnumChargeType.BC_RESTOCKING_FEE);
+		}
+		if (ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ).equals(affiliate)) {
+			charge = this.getChargeAmount(EnumChargeType.USQ_RESTOCKING_FEE);
 		}
 		return charge;
 	}

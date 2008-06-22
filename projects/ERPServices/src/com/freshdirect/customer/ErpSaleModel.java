@@ -1241,10 +1241,12 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	public boolean hasSplitTransaction() {
 		boolean fd = false;
 		boolean bc = false;
-
+		boolean usq = false;
+		
 		final ErpAffiliate fdAff = ErpAffiliate.getPrimaryAffiliate();
 		final ErpAffiliate bcAff = ErpAffiliate.getEnum(ErpAffiliate.CODE_BC);
-
+		final ErpAffiliate usqAff = ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ);
+		
 		for(Iterator i = this.getGoodCaptures().iterator(); i.hasNext(); ){
 			ErpCaptureModel c = (ErpCaptureModel) i.next();
 			if(fdAff.equals(c.getAffiliate())) {
@@ -1254,9 +1256,13 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 			if(bcAff.equals(c.getAffiliate())) {
 				bc = true;
 			}
+			if(usqAff.equals(c.getAffiliate())) {
+				usq = true;
+			}
+
 		}
 
-		return fd && bc;
+		return fd && (bc || usq);
 	}
 
 	public String getPreviousSettlementId(ErpAbstractSettlementModel settlement, boolean stlForStf) {

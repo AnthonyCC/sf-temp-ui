@@ -104,7 +104,7 @@ String sPage = "/cart_confirm.jsp?catId="+productNode.getParentNode().getContent
 int templateType = productNode.getAttribute("TEMPLATE_TYPE", 1);
 String jspTemplate;
 if (EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(templateType))) {
-	jspTemplate = "/common/template/bestcellars/no_botcatnav.jsp";
+	jspTemplate = "/common/template/usq_sidenav.jsp";
 } else { //assuming the default (Generic) Template
 	jspTemplate = "/common/template/both_dnav.jsp";
 }

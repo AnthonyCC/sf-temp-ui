@@ -23,6 +23,7 @@ public class AuthorizationStrategy extends PaymentStrategy {
 
 	private final AuthInfo fdAuthInfo;
 	private final AuthInfo bcAuthInfo;
+	private final AuthInfo usqAuthInfo;
 
 	public AuthorizationStrategy(ErpSaleModel sale) {
 		super(sale);
@@ -34,16 +35,27 @@ public class AuthorizationStrategy extends PaymentStrategy {
 			sale.getPK().getId(),
 			sale.getCustomerPk().getId(),
 			ErpAffiliate.getEnum(ErpAffiliate.CODE_BC));
+		this.usqAuthInfo = new AuthInfo(
+				sale.getPK().getId(),
+				sale.getCustomerPk().getId(),
+				ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ));
 	}
 
 	public List getOutstandingAuthorizations() {
 		ErpAbstractOrderModel order = this.sale.getCurrentOrder();
 		ErpInvoiceModel inv = this.sale.getLastInvoice();
 		final ErpAffiliate bc = ErpAffiliate.getEnum(ErpAffiliate.CODE_BC);
+		final ErpAffiliate usq = ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ);
 
 		for (Iterator i = order.getOrderLines().iterator(); i.hasNext();) {
 			ErpOrderLineModel line = (ErpOrderLineModel) i.next();
-			if (bc.equals(line.getAffiliate())) {
+			if (usq.equals(line.getAffiliate())) {
+				if (inv != null) {
+					usqAuthInfo.addInvoiceLine(inv.getInvoiceLine(line.getOrderLineNumber()));
+				} else {
+					usqAuthInfo.addOrderline(line);
+				}
+			}else if (bc.equals(line.getAffiliate())) {
 				if (inv != null) {
 					bcAuthInfo.addInvoiceLine(inv.getInvoiceLine(line.getOrderLineNumber()));
 				} else {
@@ -59,7 +71,7 @@ public class AuthorizationStrategy extends PaymentStrategy {
 		}
 		
 		
-		if (fdAuthInfo.getSubtotal() <= 0 && bcAuthInfo.getSubtotal() <= 0) {
+		if (fdAuthInfo.getSubtotal() <= 0 && bcAuthInfo.getSubtotal() <= 0 && usqAuthInfo.getSubtotal() <= 0) {
 			throw new FDRuntimeException("Order with not orderlines");
 		}
 
@@ -88,6 +100,7 @@ public class AuthorizationStrategy extends PaymentStrategy {
 	private void addDeduction(double amount) {
 		double remainder = fdAuthInfo.addDeduction(amount);
 		remainder = bcAuthInfo.addDeduction(remainder);
+		remainder = usqAuthInfo.addDeduction(remainder);
 		
 		if (remainder > 0) {
 			throw new FDRuntimeException("Applied more discount than order pre deduction total");
@@ -98,7 +111,8 @@ public class AuthorizationStrategy extends PaymentStrategy {
 
 		this.fdAuthInfo.setAuthorizations(this.sale.getApprovedAuthorizations(this.fdAuthInfo.affiliate, pm));
 		this.bcAuthInfo.setAuthorizations(this.sale.getApprovedAuthorizations(this.bcAuthInfo.affiliate, pm));
-
+		this.usqAuthInfo.setAuthorizations(this.sale.getApprovedAuthorizations(this.usqAuthInfo.affiliate, pm));
+		
 		List auths = new ArrayList();
 		AuthorizationInfo fdInfo = fdAuthInfo.getAuthInfo(pm);				
 		if(fdInfo.getAmount() > 0) {
@@ -108,6 +122,11 @@ public class AuthorizationStrategy extends PaymentStrategy {
 		AuthorizationInfo bcInfo = bcAuthInfo.getAuthInfo(pm);		
 		if(bcInfo.getAmount() > 0) {
 			auths.add(bcInfo);
+		}
+
+		AuthorizationInfo usqInfo = usqAuthInfo.getAuthInfo(pm);		
+		if(usqInfo.getAmount() > 0) {
+			auths.add(usqInfo);
 		}
 
 		ErpChargeInvoiceModel chargeInvoice = this.sale.getLastChargeInvoice();

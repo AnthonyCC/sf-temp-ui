@@ -317,6 +317,18 @@
             <%  }   %>
 		</tr>
 		<%  } %>
+  		<%  if (order.getRestockingCharges(ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ)) > 0.0) { %>
+		<tr>
+            <td colspan="3"></td>
+			<td colspan="2">Restocking Charge USQ Wines:</td>
+			<td colspan="2" align="right"><%=CCFormatter.formatCurrency(order.getRestockingCharges(ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ)))%></td>
+		    <td colspan="4"></td>
+            <%  if (hasInvoice) { %>
+            <td colspan="3"></td>
+            <%  }   %>
+		</tr>
+		<%  } %>
+
 		<tr>
             <td colspan="3"></td>
 		    <td colspan="2"><b><% if (hasEstimatedItems) { %>Estimated <% } %>Order Total</b></td>

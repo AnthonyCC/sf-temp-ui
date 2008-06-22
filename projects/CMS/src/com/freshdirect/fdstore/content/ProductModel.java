@@ -463,8 +463,8 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI {
 	
 	public Html getProductBottomMedia();
 	
-	public CategoryModel getPerfectPair();
+	public CategoryModel getPerfectPair();		
 	
-	
+	public List getWineClassifications();
 	
 }

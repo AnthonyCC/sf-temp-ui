@@ -18,7 +18,9 @@ public class EnumAlcoholicContent implements java.io.Serializable {
 
 	public final static EnumAlcoholicContent NONE   = new EnumAlcoholicContent("",  "Non-alcoholic");
 	public final static EnumAlcoholicContent BEER   = new EnumAlcoholicContent("B", "Beer");
-	public final static EnumAlcoholicContent WINE   = new EnumAlcoholicContent("W", "Wine");
+	public final static EnumAlcoholicContent BC_WINE   = new EnumAlcoholicContent("W", "BC_Wine");
+	public final static EnumAlcoholicContent USQ_WINE   = new EnumAlcoholicContent("U", "USQ_Wine");
+
 
 	private final String code;
 	private final String name;
@@ -26,8 +28,10 @@ public class EnumAlcoholicContent implements java.io.Serializable {
     public static EnumAlcoholicContent getAlcoholicContent(String code) {
         if (BEER.getCode().equalsIgnoreCase(code))
             return BEER;
-        else if (WINE.getCode().equalsIgnoreCase(code))
-            return WINE;
+        else if (BC_WINE.getCode().equalsIgnoreCase(code))
+            return BC_WINE;
+        else if (USQ_WINE.getCode().equalsIgnoreCase(code))
+            return USQ_WINE;
         else
             return NONE;
     }

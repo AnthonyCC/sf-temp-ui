@@ -260,13 +260,13 @@
 				<DestinationDef contentType="Domain" />
 			</RelationshipDef>
             <!--  UAQ changes -->                        
-            <RelationshipDef name="WINE_FILTER"  label="Wine Filter Criteria" cardinality="Many">
+            <RelationshipDef name="WINE_FILTER"  label="Wine Filter Criteria" cardinality="Many" inheritable="true">
 				<DestinationDef contentType="Domain" />
 			</RelationshipDef>                                    
             <RelationshipDef name="SIDE_NAV_FULL_LIST"  label="Side Nav Full List" cardinality="Many">
 				<DestinationDef contentType="Domain" />
 			</RelationshipDef>                                    
-            <RelationshipDef name="WINE_SORTING" label="Wine Sort Criteria" cardinality="Many">
+            <RelationshipDef name="WINE_SORTING" label="Wine Sort Criteria" cardinality="Many" inheritable="true">
 				<DestinationDef contentType="DomainValue" />
 			</RelationshipDef>            
             <RelationshipDef name="SIDE_NAV_SECTIONS" label="Side Nav Sections" cardinality="Many">
@@ -585,7 +585,7 @@
 			<RelationshipDef name="VARIATION_OPTIONS" label="Variation Options" cardinality="Many">
 				<DestinationDef contentType="Domain" />
 			</RelationshipDef>
-			<RelationshipDef name="WINE_COUNTRY" label="Wine Country" cardinality="One">
+			<RelationshipDef name="WINE_COUNTRY" label="Wine Country" cardinality="One" inheritable="true">
 				<DestinationDef contentType="DomainValue" />
 			</RelationshipDef>
 			<!-- image media -->
@@ -777,7 +777,10 @@
 			<RelationshipDef name="DESCRIPTIVE_IMAGE" label="Descriptive Image">
 				<DestinationDef contentType="Image" />
 			</RelationshipDef>
-
+                        
+            <RelationshipDef name="WINE_COUNTRY" label="Wine Country" cardinality="One" inheritable="true">
+				<DestinationDef contentType="DomainValue" />
+			</RelationshipDef>
 
 			<RelationshipDef name="ALSO_SOLD_AS" label="Also Sold As" cardinality="Many">
 				<DestinationDef contentType="Product" />

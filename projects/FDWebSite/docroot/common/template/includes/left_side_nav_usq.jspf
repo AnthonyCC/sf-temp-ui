@@ -1,0 +1,260 @@
+<!-- Left side nav -->
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+	<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
+
+	<script type="text/javascript">
+		//uses the below set w/h instead of built in wrapping
+		//this allows wrapping on a per-element basis
+		//not using auto wrap affects centering
+		//var ol_wrap = '1'; //comment out to turn off
+
+		//set small width and height by default
+		var ol_width = '1';   //comment out to allow overlib to control
+		var ol_height = '1'; //width. centering will work, but min-width won't
+
+		//drop shadow setup
+		//the w and h above need to be commented out for drop shadow to work
+		//var ol_shadow = 1;
+		//var ol_shadowx = '5';
+		//var ol_shadowy = '5';
+		//var ol_shadowcolor = '#000000';
+		//var ol_shadowopacity = 50;
+
+		//here we're changing where the popup shows compared to the mouse
+		//this causes the popup to be under the mouse by default
+		var ol_offsetx = 8;
+		var ol_offsety = -2;
+
+		//send overlib the style to use, IE min-width workaround
+		var ol_textfontclass = 'usq_left_nav_submenu_container';
+		
+		//shorten br tag
+		var n = '<br />';
+		
+		//div starter
+//// mine
+		var divS = '<div class="usq_left_nav_menu">';
+		//var divS = '<div class="l_nav_sub">';
+//// .r926
+		//div ender
+		var divE = '</div>'
+
+//// don't think this is being used
+		//actual mock submenu
+		var nav_byregion = 
+					divS+
+						'<a class="l_nav_sub" href="http://www.freshdirect.com">example link</a>'+n
+						+'Argentinia'+n
+						+'Austrailia'+n
+						+'Australia'+n
+						+'Chile'+n
+						+'France'+n
+						+'Germany'+n
+						+'Israel'+n
+						+'Italy'+n
+						+'Japan'+n
+						+'New Zealand'+n
+						+'Portugal'+n
+						+'South Africa'+n
+						+'Spain'+n
+						+'United States'+n
+					+divE;
+////
+	</script>
+
+<%! 
+    private String getFormattedChildElements(List subCategories) {
+        StringBuffer sb = new StringBuffer();
+        sb.append("divS+");
+        for(Iterator iter = subCategories.iterator(); iter.hasNext();){
+            CategoryModel scm = (CategoryModel) iter.next();
+//// mine
+            sb.append("'<a class=\"usq_left_nav_submenu\" href=\"/category.jsp?catId=");     
+            //sb.append("'<a class=\"l_nav_sub\" href=\"/category.jsp?catId=");     
+
+            sb.append(scm.getContentKey().getId());
+            sb.append("&trk=snav\">");
+            sb.append(scm.getFullName());
+            sb.append("</a>'+n+");
+        }
+        sb.append("divE;");
+        return sb.toString();
+    }
+%>
+
+<%!
+
+	/** @return number of displayed rows */
+	private static int appendElement(StringBuffer buf, List breakDepths, NavigationElement nl, boolean isUnavailable, boolean showPopup, int index, boolean isSelectedCat) {
+
+		int displayedRows = 0;
+		
+		
+		displayedRows++;
+		String divClass="";
+		switch(nl.getDepth()) {
+		    case 0: if(isSelectedCat) {
+                        divClass="usq_left_nav_menu_on";
+                    } else {
+                        divClass="usq_left_nav_menu";
+                    }
+                    break;				        
+		    case 1: divClass="left_nav_subitem";
+                    break;				        
+		    default: divClass="left_nav_subsubitem";
+                    break;				        
+		
+		}
+        int depth=0;
+        if(breakDepths!=null && breakDepths.size()>0) {
+            depth=((Integer)breakDepths.get(0)).intValue();
+            if((nl.getDepth()==0) && depth!=0) { 
+				// end of children display
+                buf.append("<tr><td><div class=\"left_nav_divider\"></div>");
+            } else {
+				// other menu items or children display
+                buf.append("<tr><td>");
+            }
+            
+        } else {
+			// first menu item with bg
+			
+				buf.append("<tr><td>");
+
+        }
+        breakDepths.clear();
+        breakDepths.add(new Integer(nl.getDepth()));
+
+		if (nl.isBold()) buf.append("<b>");
+		if (nl.showLink() && !showPopup && !isSelectedCat) {
+			buf.append("<a href=\"");
+			buf.append(nl.getURL());
+			buf.append("\"");
+			if (isUnavailable) {
+				buf.append(" style=\"color:#999999\"");
+			} else {
+				buf.append(" class=\""+divClass+"\"");	
+			}
+			buf.append(">");
+		} else if (isSelectedCat) {
+			buf.append("<div class=\""+divClass+"\">");
+		}
+        
+        if(showPopup) {
+//// mine
+            buf.append("<a");
+			if (!isSelectedCat) buf.append(" class=\""+divClass+"\"");
+			buf.append(" onmouseover=\"");
+////
+            //buf.append("<div class=\"l_nav_item\" onmouseover=\"");
+////
+            buf.append("void(0);nd(); return overlib(childElements"+index);
+            buf.append(", STICKY, NOCLOSE, CENTER);\" onmouseout=\"nd();\">");
+           
+        }
+
+		buf.append(nl.getDisplayString());
+		if (nl.showLink() ) buf.append("</a>");
+		//&& !showPopup && !isSelectedCat if (nl.showLink() && (showPopup || isSelectedCat)) buf.append("</a>");
+		if (nl.isBold()) buf.append("</b>");
+		if(nl.getDepth()==0 ) {
+
+		        buf.append("</td></tr>\n");
+		}
+		else {
+		
+			buf.append("</td></tr>\n");
+		}
+
+
+
+
+		return displayedRows;
+	}
+
+%>
+<oscache:cache key='<%= "sideNav_"+request.getQueryString() %>' time='300'>
+<% 
+try { %>
+
+<fd:WineSideNav catId='<%= request.getParameter("catId") %>' topCategory="topCategory" navList="leftNavItemsList" unavailableList="unavailableNavItems" startFromDept="true" childCatMap="popupMap" sortByPriority="true">
+
+<%
+int displayedRows = 1;
+StringBuffer buf = new StringBuffer(10000);
+ContentNodeModel aliasNode=null;
+
+ContentNodeModel currCat = ContentFactory.getInstance().getContentNodeByName(request.getParameter("catId"));
+String parent=currCat.getParentNode().getContentName();
+String topCatLink="/category.jsp?catId="+currCat;	
+	//displayedRows++;
+
+// !!! implement grocery
+Attribute allFldrAttr = currCat.getAttribute("FAKE_ALL_FOLDER");
+
+boolean showAnAllFldrLink = false;
+if (allFldrAttr!=null ) {
+    showAnAllFldrLink = ((Boolean)allFldrAttr.getValue()).booleanValue();
+}
+
+List breakDepths = new LinkedList();
+NavigationElement navElem=null;
+boolean showPopup=false;
+int index=0;
+for (Iterator i = leftNavItemsList.iterator(); i.hasNext(); ) {
+
+	navElem=(NavigationElement) i.next();
+    if(popupMap.containsKey(navElem.getContentName())) {
+        showPopup=true;
+        
+%>  
+    <script type="text/javascript">
+         var childElements<%=index %> = <%= getFormattedChildElements((List)popupMap.get(navElem.getContentName()))%>;
+    </script>
+
+<%    }
+	displayedRows += appendElement(buf, breakDepths, navElem, false,showPopup, index,navElem.getContentName().equals(parent)?true:false);
+	if(showAnAllFldrLink && navElem.getDisplayString().equals(currCat.getFullName())) {
+	    buf.append("<tr><td width=\"120\"><div style=\"margin-left:");
+	    buf.append(((navElem.getDepth()+1) * 4) + 8);
+	    buf.append("px; text-indent: -8px;\">");
+	
+	    buf.append("<b>");
+	    buf.append("<a href=\"");
+	    buf.append(response.encodeURL(topCatLink+"&trk=snav"));
+	    buf.append("\">");
+	    buf.append("All");
+	    buf.append("</a>");
+	    buf.append("</b>");
+	    buf.append("</div></td></tr>");
+	    buf.append("\n");
+	    displayedRows++;
+	}
+    if(showPopup) {index++; }
+    showPopup=false;
+    
+    
+}
+
+
+if (displayedRows > 0) {
+%>
+<table border="0" cellspacing="0" cellpadding="0" align="center" width="130">
+<%= buf.toString() %>
+<tr><td><img src="/media/layout/images/clear.gif" width="130" height="1"></td></tr>
+</table><br>
+
+<%
+}
+%>
+</fd:WineSideNav>
+
+<% } catch (Exception ex) {
+		ex.printStackTrace();
+%>
+	<oscache:usecached />
+<% } %>
+</oscache:cache>
+
+<!-- END YOUR STORE table -->

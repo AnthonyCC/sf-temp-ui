@@ -43,7 +43,7 @@ ProductModel actProd = productNode.getProduct();
 
 // get the brand logo, if any.
 List prodBrands = productNode.getBrands();
-if (prodBrands!=null && prodBrands.size() > 0 ) {
+if (!isWineLayout && prodBrands!=null && prodBrands.size() > 0 ) {
     BrandModel bm = (BrandModel)prodBrands.get(0);
     if (bm!=null){
         brandName= bm.getFullName();

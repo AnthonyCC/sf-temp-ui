@@ -20,9 +20,9 @@ ErpCustomerInfoModel custInfo = FDCustomerFactory.getErpCustomerInfo(identity);%
 			<tr>
 				<td colspan="2" class="text12" valign="top">
 					<font class="title18">President's Picks: Great deals, direct to your inbox</font><br>
-					Each week, Steve chooses a few of his favorite products and mandates savings up to 50% off. 
+					Each week, we choose a few of our favorite products and decree savings up to 50% off. 
 					Some might call it an abuse of pricing power. You'll call it a great way to shop and save. 
-					Sign up here, and we'll email you Steve's picks &mdash; and special prices &mdash; each week.
+					Sign up here, and we'll email you our picks &mdash; and special prices &mdash; each week.
 					<br><img src="/media_stat/images/layout/clear.gif" width="1" height="20" border="0"><br>
 					<span class="title14"><strong>SUBSCRIBE TO PRESIDENT'S PICKS</strong></span>
 					<br><img src="/media_stat/images/layout/clear.gif" width="1" height="15" border="0">

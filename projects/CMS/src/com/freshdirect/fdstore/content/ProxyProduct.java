@@ -601,4 +601,8 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 	public CategoryModel getPerfectPair(){
 		return getProduct().getPerfectPair();	
 	}		
+	public List getWineClassifications(){
+		return getProduct().getWineClassifications();
+	}
+	
 }

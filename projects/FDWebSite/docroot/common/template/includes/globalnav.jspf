@@ -7,7 +7,15 @@
 <%@ page import='java.net.*'%>
 <%@ taglib uri='oscache' prefix='oscache' %>
 
+	<link href="/assets/css/wine.css" rel="stylesheet" type="text/css" />
+	<!-- this js is required for popup -->
+	<script type="text/javascript" src="/assets/javascript/overlib.js"></script>
+	<!-- these js are optional depending on features used -->
+	<script type="text/javascript" src="/assets/javascript/overlib_centerpopup.js"></script>
+	<script type="text/javascript" src="/assets/javascript/overlib_shadow.js"></script>
+    <script type="text/javascript" src="/assets/javascript/wine_popup.js"></script>
 <%@ include file="/common/template/includes/globalnav_top.jspf" %>
+
 <%!
 public ContentNodeModel findDepartment (String deptId) throws FDResourceException {
 		return ContentFactory.getInstance().getContentNodeByName(deptId);
@@ -117,5 +125,5 @@ if (catId != null){
 <AREA SHAPE="RECT" COORDS="498,23,597,44" HREF="/department.jsp?deptId=hba&trk=gnav" ALT="Health & Beauty">
 <AREA SHAPE="RECT" COORDS="597,23,647,44" HREF="/department.jsp?deptId=big&trk=gnav" ALT="Buy Big">
 <AREA SHAPE="RECT" COORDS="647,23,697,44" HREF="/department.jsp?deptId=fro&trk=gnav" ALT="Frozen">
-<AREA SHAPE="RECT" COORDS="697,23,735,44" HREF="/department.jsp?deptId=win&trk=gnav" ALT="Wine">
+<AREA SHAPE="RECT" COORDS="697,23,735,44" HREF="/department.jsp?deptId=usq&trk=gnav" ALT="USQ">
 </MAP>

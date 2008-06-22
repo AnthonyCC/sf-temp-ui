@@ -131,6 +131,11 @@ public class CategoryModel extends ContentNodeModelImpl {
 
     /* [NEW WINE STORE CHANGES] */  
 	
+	
+	
+	public Image getCategoryDetailImage() {
+		return (Image)getAttribute("CATEGORY_DETAIL_IMAGE", (Object)null);
+	}
 	 	
 	public List getWineSortCriteria() {
 		// TODO Auto-generated method stub		
@@ -143,7 +148,7 @@ public class CategoryModel extends ContentNodeModelImpl {
 		ContentNodeModelUtil.refreshModels(this, "WINE_FILTER", wineFilterCriteriaList, false);
 		return new ArrayList(wineFilterCriteriaList);		
 	}
-	
+
 	public List getWineSideNavSections() {
 		// TODO Auto-generated method stub		
 		ContentNodeModelUtil.refreshModels(this, "SIDE_NAV_SECTIONS", wineSideNavSectionsList, false);

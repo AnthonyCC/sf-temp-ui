@@ -94,6 +94,14 @@ public class ContentNodeComparator implements Comparator {
 			case SortStrategyElement.GROUP_BY_AVAILABILITY :
 				return compareByAvailability(node1, node2);
 
+			case SortStrategyElement.PRODUCTS_BY_WINE_ATTRIBUTE :
+				return compareByWineAttribute(
+						node1,
+						node2,
+						strategyElement.getSecondayAttrib(),
+						strategyElement.getMultiAttribName(),
+						descending);
+
 			default :
 				throw new IllegalArgumentException("Unknown sort type " + strategyElement.getSortType());
 		}
@@ -343,6 +351,78 @@ public class ContentNodeComparator implements Comparator {
 		}
 	}
 
+	private int compareByWineAttribute(
+			ContentNodeModel node1,
+			ContentNodeModel node2,
+			String attributeName,
+			String multiAttribName,
+			boolean descending) {
+			Object attrib1 = getWineAttribute(node1, attributeName);
+			Object attrib2 = getWineAttribute(node2, attributeName);
+			
+			if (attrib1 == null && attrib2 == null)
+				return 0;
+
+			if (attrib1 == null)
+				return descending ? -1 : 1;
+
+			if (attrib2 == null)
+				return descending ? 1 : -1;
+
+			if (attrib1.equals(attrib2))
+				return 0;
+
+			if (attrib1 instanceof Integer)
+				return ((Integer) attrib1).compareTo((Integer) attrib2);
+			else
+				return (attrib1.toString()).compareTo(attrib2.toString());
+
+		}
+	
+	private Object getWineAttribute(ContentNodeModel node, String attributeName) {
+		if(!(node instanceof ProductModel))
+			return null;
+		ProductModel pm = (ProductModel) node;	
+		Object attrValue = null;			
+		if(EnumWineSortType.RATING.equals(EnumWineSortType.getWineSortType(attributeName))){
+			List ratingValues = pm.getWineRating1();
+			if(ratingValues != null && ratingValues.size() > 0){
+				DomainValue dv = (DomainValue) ratingValues.get(0);
+				try {
+					attrValue = new Integer(dv.getValue());
+				}catch(NumberFormatException ne){
+					attrValue = null;
+				}
+			}
+		}
+		if(EnumWineSortType.REGION.equals(EnumWineSortType.getWineSortType(attributeName))) {
+			List regionValues = pm.getNewWineRegion();
+			if(regionValues != null && regionValues.size() > 0){
+				DomainValue dv = (DomainValue) regionValues.get(0);
+				attrValue = dv.getValue();
+			}
+		}
+		if(EnumWineSortType.VARIETY.equals(EnumWineSortType.getWineSortType(attributeName))) {
+			List varietalValues = pm.getWineVarietal();
+			if(varietalValues != null && varietalValues.size() > 0){
+				DomainValue dv = (DomainValue) varietalValues.get(0);
+				attrValue = dv.getValue();
+			}
+		}
+		if(EnumWineSortType.VINTAGE.equals(EnumWineSortType.getWineSortType(attributeName))){
+			List vintageValues = pm.getWineVintage();
+			if(vintageValues != null && vintageValues.size() > 0){
+				DomainValue dv = (DomainValue) vintageValues.get(0);
+				try {
+					attrValue = new Integer(dv.getValue());
+				}catch(NumberFormatException ne){
+					attrValue = null;
+				}
+			}
+		}
+		return attrValue;
+	}
+	
 	private int groupByCategory(ContentNodeModel node1, ContentNodeModel node2, int sortType) {
 		boolean isProduct1 = node1 instanceof ProductModel || node1 instanceof SkuModel || node1.getAttribute("TREAT_AS_PRODUCT", false);
 		boolean isProduct2 = node2 instanceof ProductModel || node2 instanceof SkuModel || node2.getAttribute("TREAT_AS_PRODUCT", false);

@@ -37,5 +37,13 @@ public class DomainValue extends ContentNodeModelImpl {
 	public String toString() {
 		return "DomainValue[" + getDomain().toString() + ", " + getLabel() + ", " + getValue() + ", " + getPriority() + "]";
 	}
+	
+	public boolean equals(Object obj){
+		if(obj!= null && obj instanceof DomainValue){
+			DomainValue dv = (DomainValue)obj;
+			return (this.getContentName().equals(dv.getContentName()) && this.getValue().equals(dv.getValue())); 
+		}
+		return false;
+	}
 
 }

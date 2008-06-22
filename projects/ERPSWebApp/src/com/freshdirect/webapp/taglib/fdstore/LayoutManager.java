@@ -365,7 +365,41 @@ public class LayoutManager extends BodyTagSupport {
 		if (("OUR_PICKS".indexOf(currentNode.getContentName().toUpperCase()) >= 0) && isDepartment) {
 			s.setGrabberDepth(99);
 		}
+        // new wine store layouts
+		if (layoutType == EnumLayoutType.WINE_CATEGORY.getId()) {
+			// [APPREQ-77]
+			s.setLayoutFileName("/includes/layouts/wine_cat_details.jsp");
+			//s.setGrabberDepth(1);
+			s.setReturnHiddenFolders(true);
+			s.setIgnoreShowChildren(true);
+			s.setIncludeUnavailable(false);
+			//Below Sort Strategy is handled by WineSortStrategy.
+			//s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_AVAILABILITY));
+			//s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_CATEGORY_PRIORITY, sortDescending));
+			//s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRIORITY, sortDescending));
+			//s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, sortNameAttrib, false));
+			// TODO: what more I need to do here?
+		}		
+		if (layoutType == EnumLayoutType.TRANSAC_MULTI_PAIRED_ITEMS.getId()) {				
+				s.setLayoutFileName("/includes/layouts/trans_multi_paired_items.jsp");
+				s.setGrabberDepth(1);
+				s.setReturnHiddenFolders(true);
+				s.setIgnoreShowChildren(false);
+				s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_AVAILABILITY));
+				s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_CATEGORY_PRIORITY, sortDescending));
+				s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRIORITY, sortDescending));
+				s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, sortNameAttrib, false));
+				// TODO: what more I need to do here?
+		} // top 10
+		if (layoutType == EnumLayoutType.TEMPLATE_LAYOUT.getId()) {				
+			s.setLayoutFileName("/includes/layouts/template_layouts.jsp");
+			// TODO: what more I need to do here?
+	}
 
+		
+		
+
+		
 		// ok.. create the layoutManager setting object
 		return s;
 	}

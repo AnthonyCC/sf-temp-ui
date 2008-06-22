@@ -9,7 +9,7 @@
 <head>
     <title><tmpl:get name='title'/></title>
     <%@ include file="/common/template/includes/metatags.jspf" %>
-    <script language="javascript" src="/assets/javascript/common_javascript.js"></script>
+	<script language="javascript" src="/assets/javascript/common_javascript.js"></script>
      <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
      <%@ include file="/shared/template/includes/ccl.jspf" %>
 </head>
@@ -67,8 +67,8 @@
 <TR VALIGN="TOP">
 	<TD BGCOLOR="#999966" VALIGN="BOTTOM" WIDTH="1"><IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="1"></TD>
 	<TD WIDTH="5" BGCOLOR="#FFFFFF"><BR></TD>
-	<TD WIDTH="125" BGCOLOR="#FFFFFF">
-		<% try { %><%@ include file="/common/template/includes/left_side_nav_img.jspf" %>
+	<TD WIDTH="125" class="left_nav">
+		<% try { %><%@ include file="/common/template/includes/left_side_nav_usq.jspf" %>
                 <% } catch (Exception ex) {ex.printStackTrace();} %><BR>
 		<img src="/media_stat/images/layout/clear.gif" height="1" width="125">
 	</TD>
