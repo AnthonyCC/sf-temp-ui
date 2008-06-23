@@ -97,7 +97,8 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
     tblCells.append(tdwidth);
     tblCells.append("\"><a href=\"");
     tblCells.append(displayObj.getItemURL());
-	tblCells.append("&trk="+trkCode);
+    tblCells.append("&trk="+trkCode);
+    tblCells.append(moreOptionParams.toString());
     tblCells.append("\"");
     tblCells.append(displayObj.getRolloverString());
     tblCells.append("><img src=\"");

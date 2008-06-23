@@ -100,11 +100,11 @@ function filterFormSubmit(idx){
     if(tokens == null || tokens.length < 2)
         return;
     //Need to append filterBy and filterByValue after doing the split from 
-    document.location.href="/category.jsp?catId=<%=currentFolder%>&trk=cpage<%= domainParams.toString() %>"+"&filterBy="+tokens[0]+"&filterByValue="+tokens[1]+"<%= sortParams.toString() %><%= viewParams.toString() %>";
+    document.location.href="/category.jsp?catId=<%=currentFolder%>&trk=cpage<%= domainParams.toString() %>"+"&filterBy="+tokens[0]+"&filterByValue="+tokens[1]+"<%= sortParams.toString() %><%= viewParams.toString() %><%= moreOptionParams.toString() %>";
 }
 
 function sortFormSubmit(sortval){
-    document.location.href="/category.jsp?catId=<%=currentFolder%>&trk=cpage<%= domainParams.toString() %><%= filterParams.toString() %><%= viewParams.toString() %>"+"&wine_sort="+sortval+"&sort_desc="+<%= !sortDescending %>;
+    document.location.href="/category.jsp?catId=<%=currentFolder%>&trk=cpage<%= domainParams.toString() %><%= filterParams.toString() %><%= viewParams.toString() %><%= moreOptionParams.toString() %>"+"&wine_sort="+sortval+"&sort_desc="+<%= !sortDescending %>;
 }
 
 </script>

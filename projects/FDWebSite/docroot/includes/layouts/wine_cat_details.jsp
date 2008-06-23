@@ -336,7 +336,7 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
 		<img src="<%=imagePath%>" width="41" height="100" border="0" alt="" title="">
 	</td>
 	<td style="width: 100%">
-		<div class="center_prod_name"><a href="product.jsp?productId=<%=displayProduct%>&catId=<%=displayProduct.getParentNode().getPK().getId()%>" title="product detail"><%=thisProdBrandLabel%></a></div>
+		<div class="center_prod_name"><a href="product.jsp?productId=<%=displayProduct%>&catId=<%=displayProduct.getParentNode().getPK().getId()%><%= moreOptionParams.toString() %>" title="product detail"><%=thisProdBrandLabel%></a></div>
 		<div class="bolder"> <%=wineRegion%> > <%=wineCity%> > <%=vintage%></div>
 		<div class="center_prod_descrip"><fd:IncludeMedia name="<%=productDescPath%>" /><></div>
 		<div class="top_spacer"></div>

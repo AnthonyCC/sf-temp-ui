@@ -19,3 +19,4 @@ if (Mac > -1) {
 %>
 
 <link rel="stylesheet" href="<%=cssStylesheet%>" type="text/css">
+<link href="/assets/css/wine.css" rel="stylesheet" type="text/css" />

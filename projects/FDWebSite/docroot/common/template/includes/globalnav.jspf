@@ -7,13 +7,16 @@
 <%@ page import='java.net.*'%>
 <%@ taglib uri='oscache' prefix='oscache' %>
 
-	<link href="/assets/css/wine.css" rel="stylesheet" type="text/css" />
-	<!-- this js is required for popup -->
-	<script type="text/javascript" src="/assets/javascript/overlib.js"></script>
-	<!-- these js are optional depending on features used -->
-	<script type="text/javascript" src="/assets/javascript/overlib_centerpopup.js"></script>
-	<script type="text/javascript" src="/assets/javascript/overlib_shadow.js"></script>
-    <script type="text/javascript" src="/assets/javascript/wine_popup.js"></script>
+     <%-- USQ wine related js --%>
+
+     <!-- this js is required for popup -->
+     <script type="text/javascript" src="/assets/javascript/overlib.js"></script>
+     <!-- these js are optional depending on features used -->
+     <script type="text/javascript" src="/assets/javascript/overlib_centerpopup.js"></script>
+     <script type="text/javascript" src="/assets/javascript/overlib_shadow.js"></script>
+     <script type="text/javascript" src="/assets/javascript/wine_popup.js"></script>    
+
+
 <%@ include file="/common/template/includes/globalnav_top.jspf" %>
 
 <%!
