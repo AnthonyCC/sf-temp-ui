@@ -27,6 +27,7 @@ public class WineSideNav extends com.freshdirect.framework.webapp.BodyTagSupport
 	private String catId;
 	private String navListName;
 	private String childCatMapName;
+	private String showMoreOptionsName;
 	private String unavailableListName;
 	private String topCategoryName;
     private boolean returnEmptyFolders=false;
@@ -39,6 +40,18 @@ public class WineSideNav extends com.freshdirect.framework.webapp.BodyTagSupport
 	/** List of ProductNavigationElement objects, that are temporarily unavailable */
 	private List unavailableList = new ArrayList();
 
+	private Boolean showMoreOptions=new Boolean(false);
+	
+	private boolean moreOptions=false;
+	
+	
+	public void setShowMoreOptions(String name ) {
+		this.showMoreOptionsName=name;
+	}
+	public void setMoreOptions(boolean flag) {
+		this.moreOptions=flag;
+	}
+	
     public void setReturnEmptyFolders(boolean flag) {
        this.returnEmptyFolders=flag;
     }
@@ -227,7 +240,7 @@ public class WineSideNav extends com.freshdirect.framework.webapp.BodyTagSupport
                     			DomainValue dValue=(DomainValue)prodDomainValue.get(j);
                     			if(sideNavDomainVals.contains(dValue) && !sideNavUsableDomainVals.contains(dValue)) { 
                     				sideNavUsableDomainVals.add(dValue);
-                    				domainNavElem.add(new DomainNavigationElement(depth+indent, (CategoryModel) f, isDept,dValue ));
+                    				domainNavElem.add(new DomainNavigationElement(depth+indent, (CategoryModel) f, isDept,dValue,moreOptions ));
                     				//this.navList.add(new DomainNavigationElement(depth+indent, (CategoryModel) f, isDept,dValue ));
                     			}
                     		}
@@ -283,7 +296,7 @@ public class WineSideNav extends com.freshdirect.framework.webapp.BodyTagSupport
 
     private List getSideNavDomainValues(CategoryModel model) {
     	
-    	List domainValues=new ArrayList();
+    	/*List domainValues=new ArrayList();
     	domainValues=model.getWineSideNavSections();
     	if(domainValues!=null && domainValues.size()==0) {
     		
@@ -294,6 +307,36 @@ public class WineSideNav extends com.freshdirect.framework.webapp.BodyTagSupport
         	}
     	}
 		return domainValues;
+		*/
+    	List domainValues=new ArrayList();
+    	if(moreOptions) {
+        	domainValues=model.getWineSideNavFullList();
+        	if(domainValues!=null && domainValues.size()>0) {
+        		Domain dName=(Domain)domainValues.get(0);
+        		domainValues=dName.getDomainValues();
+        		showMoreOptions=new Boolean(false);
+        	}
+    	}
+    	else {
+    		domainValues=model.getWineSideNavSections();
+    		if(domainValues!=null && domainValues.size()==0) {
+        		
+            	domainValues=model.getWineSideNavFullList();
+            	if(domainValues!=null && domainValues.size()>0) {
+            		Domain dName=(Domain)domainValues.get(0);
+            		domainValues=dName.getDomainValues();
+            		showMoreOptions=new Boolean(false);
+            	}
+        	}
+    		else {
+    			List _dVal=model.getWineSideNavFullList();
+    			if(_dVal!=null && _dVal.size()>0) {
+    				showMoreOptions=new Boolean(true);
+    			}
+    		}
+    	}
+    	return domainValues;
+    	
 	}
 
 	public int doStartTag() throws JspException {
@@ -320,6 +363,7 @@ public class WineSideNav extends com.freshdirect.framework.webapp.BodyTagSupport
 			pageContext.setAttribute(topCategoryName, topNode);
 			pageContext.setAttribute(navListName, this.navList);
 			pageContext.setAttribute(childCatMapName, this.childCatMap);
+			pageContext.setAttribute(showMoreOptionsName, this.showMoreOptions);
 			pageContext.setAttribute(unavailableListName, this.unavailableList);
 
 			return EVAL_BODY_BUFFERED;
@@ -344,7 +388,10 @@ public class WineSideNav extends com.freshdirect.framework.webapp.BodyTagSupport
 	                "java.util.List", true, VariableInfo.NESTED),
 	                
 	           new VariableInfo(data.getAttributeString("childCatMap"),
-	                        "java.util.Map", true, VariableInfo.NESTED),                
+	                        "java.util.Map", true, VariableInfo.NESTED), 
+	                        
+	         	           new VariableInfo(data.getAttributeString("showMoreOptions"),
+	   	                        "java.lang.Boolean", true, VariableInfo.NESTED),	                        
 
 	            new VariableInfo(data.getAttributeString("unavailableList"),
 	                "java.util.List", true, VariableInfo.NESTED),

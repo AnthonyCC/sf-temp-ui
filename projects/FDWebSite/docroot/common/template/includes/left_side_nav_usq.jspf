@@ -176,11 +176,18 @@
 %>
 <oscache:cache key='<%= "sideNav_"+request.getQueryString() %>' time='300'>
 <% 
+boolean showMore=false;
+String _moreOptions=request.getParameter("moreOptions");
+if(_moreOptions!=null && "true".equalsIgnoreCase(_moreOptions)) {
+    showMore=true;
+}
+
 try { %>
 
-<fd:WineSideNav catId='<%= request.getParameter("catId") %>' topCategory="topCategory" navList="leftNavItemsList" unavailableList="unavailableNavItems" startFromDept="true" childCatMap="popupMap" sortByPriority="true">
+<fd:WineSideNav catId='<%= request.getParameter("catId") %>' topCategory="topCategory" navList="leftNavItemsList" unavailableList="unavailableNavItems" startFromDept="true" childCatMap="popupMap"  showMoreOptions="displayMore" sortByPriority="true" moreOptions="<%=showMore%>" >
 
 <%
+
 int displayedRows = 1;
 StringBuffer buf = new StringBuffer(10000);
 ContentNodeModel aliasNode=null;
@@ -201,10 +208,33 @@ if (allFldrAttr!=null ) {
 List breakDepths = new LinkedList();
 NavigationElement navElem=null;
 boolean showPopup=false;
+boolean isDomainNavElement=false;
+boolean wasDomainNavElement=false;
 int index=0;
 for (Iterator i = leftNavItemsList.iterator(); i.hasNext(); ) {
 
 	navElem=(NavigationElement) i.next();
+    if(navElem instanceof DomainNavigationElement) {
+        isDomainNavElement=true;
+    }
+    if(displayMore.booleanValue()==true && !isDomainNavElement && wasDomainNavElement) {
+	    buf.append("<tr><td width=\"120\"><div style=\"margin-left:");
+	    buf.append(((navElem.getDepth()+1) * 4) + 8);
+	    buf.append("px; text-indent: -8px;\">");
+	
+	    buf.append("<b>");
+	    buf.append("<a href=\"");
+	    buf.append(response.encodeURL(topCatLink+"&moreOptions=true&trk=snav"));
+	    buf.append("\">");
+	    buf.append("More..");
+	    buf.append("</a>");
+	    buf.append("</b>");
+	    buf.append("</div></td></tr>");
+	    buf.append("\n");
+	    displayedRows++;
+        wasDomainNavElement=false;
+    
+    }
     if(popupMap.containsKey(navElem.getContentName())) {
         showPopup=true;
         
@@ -222,7 +252,7 @@ for (Iterator i = leftNavItemsList.iterator(); i.hasNext(); ) {
 	
 	    buf.append("<b>");
 	    buf.append("<a href=\"");
-	    buf.append(response.encodeURL(topCatLink+"&trk=snav"));
+	    buf.append(response.encodeURL(topCatLink+"&moreOptions="+showMore+"&trk=snav"));
 	    buf.append("\">");
 	    buf.append("All");
 	    buf.append("</a>");
@@ -233,6 +263,11 @@ for (Iterator i = leftNavItemsList.iterator(); i.hasNext(); ) {
 	}
     if(showPopup) {index++; }
     showPopup=false;
+    
+    if(isDomainNavElement) {
+        wasDomainNavElement=true;
+        isDomainNavElement=false;
+    }
     
     
 }

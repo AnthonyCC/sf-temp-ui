@@ -15,7 +15,7 @@ public class DomainNavigationElement extends NavigationElement {
 	private final DomainValue domainValue;
 	
 
-	public DomainNavigationElement(int depth, CategoryModel f, boolean isExpanded, DomainValue domainValue) throws FDResourceException {
+	public DomainNavigationElement(int depth, CategoryModel f, boolean isExpanded, DomainValue domainValue, boolean moreOptions) throws FDResourceException {
 		super(depth, f);
 		this.category = f;
 		this.breakAfter = isExpanded;
@@ -31,7 +31,7 @@ public class DomainNavigationElement extends NavigationElement {
 			//ContentNodeModel alias = ContentFactory.getInstance().getContentNode( ref.getCategoryId() );
 			//catId = alias.getContentName();
 		}
-		this.url = "/category.jsp?catId="+catId+"&domainName="+domainValue.getDomain().getName()+"&domainValue="+domainValue.getContentName()+"&trk=snav";
+		this.url = "/category.jsp?catId="+catId+"&domainName="+domainValue.getDomain().getName()+"&domainValue="+domainValue.getContentName()+"&moreOptions="+moreOptions+"&trk=snav";
 		
 	}
 
