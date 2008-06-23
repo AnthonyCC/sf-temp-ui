@@ -139,13 +139,13 @@ public class CategoryModel extends ContentNodeModelImpl {
 	 	
 	public List getWineSortCriteria() {
 		// TODO Auto-generated method stub		
-		ContentNodeModelUtil.refreshModels(this, "WINE_SORTING", wineSortCriteriaList, false);
+		ContentNodeModelUtil.refreshModels(this, "WINE_SORTING", wineSortCriteriaList, false,true);
 		return new ArrayList(wineSortCriteriaList);		
 	}
 	
 	public List getWineFilterCriteria() {
 		// TODO Auto-generated method stub		
-		ContentNodeModelUtil.refreshModels(this, "WINE_FILTER", wineFilterCriteriaList, false);
+		ContentNodeModelUtil.refreshModels(this, "WINE_FILTER", wineFilterCriteriaList, false,true);
 		return new ArrayList(wineFilterCriteriaList);		
 	}
 
