@@ -63,6 +63,7 @@ Html perfectDesc=categoryModel.getEditorial();
 request.setAttribute("successPage","/grocery_cart_confirm.jsp?catId="+request.getParameter("catId"));
 %>   
 
+</form>
 
 <fd:FDShoppingCart id='cart' action='addMultipleToCart' result='result' successPage='<%= "/grocery_cart_confirm.jsp?catId="+request.getParameter("catId") %>'>    
 
@@ -90,6 +91,8 @@ for(Iterator CatIter = subCatColl.iterator();CatIter.hasNext() ;) {
 
 catIndex++;
 
+catIndex++;
+
         Object catItem = CatIter.next(); 
     if (catItem instanceof CategoryModel) {   
       CategoryModel currentCat=(CategoryModel)catItem ;  
@@ -100,10 +103,11 @@ catIndex++;
 
 %>
 
-<script>
+<script language="Javascript">
+
     function chgQty<%=catIndex%>(idx,qtyFldName,delta,min,max) {
         alert("entering here"+qtyFldName);
-        var qty = parseFloat(document.wine_perfect_form_<%=catIndex%>[qtyFldName].value)
+        var qty = parseFloat(document.wine_perfect_form_<%=catIndex%>[qtyFldName].value);
         if (isNaN(qty)) qty=0;
         if (qty<1) qty=0;
         qty = qty + delta;

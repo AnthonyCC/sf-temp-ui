@@ -73,7 +73,7 @@ public class TemplateContext {
 	public String getHref(ContentNodeI node, String trackingCode) {
 		String link;
 		if (node instanceof ProductModel) {
-			// link to product in its category
+			// link to product in its category			
 			link = "/product.jsp?catId=" + node.getParentNode().getContentName() + "&productId=" + node.getContentName();
 		} else {
 			link = PreviewLinkProvider.getLink(node.getContentKey());
@@ -143,14 +143,15 @@ public class TemplateContext {
 	 * @param idMap Map of encoded ID Strings ("ContentType:id") -> Object
 	 * @return Map of {@link ContentNodeI} -> Object
 	 */
-	public Map getNodesMap(Map idMap) {
+	public Map getNodesMap(Map idMap) {		
+		
 		Map ret = new LinkedHashMap(idMap.size());
 		for (Iterator i=idMap.entrySet().iterator(); i.hasNext(); ) {
 			Map.Entry e = (Map.Entry) i.next();
 			String contentId = (String) e.getKey();
 			ContentNodeI node = getNode(contentId);
 			ret.put(node, e.getValue());
-		}
+		}		
 		return ret;
 	}
 
@@ -196,6 +197,33 @@ public class TemplateContext {
 					FDProductInfo pi    = FDCachedFactory.getProductInfo(defaultSku.getSkuCode());
 					//pi.getAttribute(EnumAttributeName.PRICING_UNIT_DESCRIPTION.getName(), pi.getDefaultPriceUnit().toLowerCase())
 					price =  currencyFormatter.format(pi.getDefaultPrice())+"/"+ pi.getDisplayableDefaultPriceUnit();
+					
+			 	}
+			} catch (FDResourceException e) {
+			} catch (FDSkuNotFoundException e) {
+			}
+		}
+		
+		return price;
+	}
+	
+	
+	/**
+	 *  Return the pricing with the correct sales unit for the node.
+	 *  Code copied from the JspMethods class.
+	 */
+	public String getWinePrice(ContentNodeI node) {
+		String       price = "";
+		
+		if (node.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
+			ProductModel product    = (ProductModel) node;
+			SkuModel     defaultSku = product.getDefaultSku();
+			
+			try {
+				if (defaultSku != null) {
+					FDProductInfo pi    = FDCachedFactory.getProductInfo(defaultSku.getSkuCode());
+					//pi.getAttribute(EnumAttributeName.PRICING_UNIT_DESCRIPTION.getName(), pi.getDefaultPriceUnit().toLowerCase())
+					price =  currencyFormatter.format(pi.getDefaultPrice());
 			 	}
 			} catch (FDResourceException e) {
 			} catch (FDSkuNotFoundException e) {
@@ -217,8 +245,7 @@ public class TemplateContext {
 		Map ret = new LinkedHashMap(nodeMap);
 		int count = 0;
 		for (Iterator i = ret.entrySet().iterator(); i.hasNext(); ) {
-			Map.Entry e = (Map.Entry) i.next();
-			System.out.println("TemplateContext.retainAvailableMap() "+e.getKey().getClass());
+			Map.Entry e = (Map.Entry) i.next();			
 			ContentNodeI node = (ContentNodeI) e.getKey();
 			if (count>=maxItemCount || !isAvailable(node)) {
 				i.remove();
@@ -240,10 +267,11 @@ public class TemplateContext {
 			Map.Entry e = (Entry) i.next();
 			l[c] = new Object[] {e.getKey(), e.getValue()};
 		}
+		
 		return l;
 	}
 
-	public Object[][] magic(Map idMap, int maxItemCount) {
+	public Object[][] magic(Map idMap, int maxItemCount) {		
 		return flatten( retainAvailableMap(getNodesMap(idMap), maxItemCount) );
 	}
 	
