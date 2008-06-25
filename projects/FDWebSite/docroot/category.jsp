@@ -127,7 +127,9 @@ boolean noCache =  (EnumLayoutType.GROCERY_PRODUCT.getId()==layouttype
                     || EnumLayoutType.THANKSGIVING_CATEGORY.getId()==layouttype
                     || EnumLayoutType.PARTY_PLATTER_CATEGORY.getId()==layouttype
                     || EnumLayoutType.HOLIDAY_MENU.getId()==layouttype
-                    || EnumLayoutType.VALENTINES_CATEGORY.getId()==layouttype);
+                    || EnumLayoutType.WINE_CATEGORY.getId()==layouttype
+                    || EnumLayoutType.VALENTINES_CATEGORY.getId()==layouttype
+                    || EnumLayoutType.TRANSAC_MULTI_PAIRED_ITEMS.getId()==layouttype);
                     
 %>
 

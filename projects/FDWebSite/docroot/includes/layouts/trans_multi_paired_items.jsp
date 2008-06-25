@@ -63,8 +63,6 @@ Html perfectDesc=categoryModel.getEditorial();
 request.setAttribute("successPage","/grocery_cart_confirm.jsp?catId="+request.getParameter("catId"));
 %>   
 
-</form>
-
 <fd:FDShoppingCart id='cart' action='addMultipleToCart' result='result' successPage='<%= "/grocery_cart_confirm.jsp?catId="+request.getParameter("catId") %>'>    
 
     <div class="left">
@@ -77,6 +75,10 @@ request.setAttribute("successPage","/grocery_cart_confirm.jsp?catId="+request.ge
 <div class="cat_sum_top_sortbar left">	
 </div>
 <%
+
+    //*** if we got this far..then we need to remove the sucess page attribute from the request.
+    request.removeAttribute("successPage");
+
 subCatColl = (Collection) request.getAttribute("itemGrabberResult");
 if (subCatColl==null) subCatColl = new ArrayList();
 
@@ -85,8 +87,6 @@ List subCategoryList = new ArrayList();
 int catIndex=0;
 
 for(Iterator CatIter = subCatColl.iterator();CatIter.hasNext() ;) {
-
-catIndex++;
 
 catIndex++;
 
@@ -103,6 +103,7 @@ catIndex++;
 <script language="Javascript">
 
     function chgQty<%=catIndex%>(idx,qtyFldName,delta,min,max) {
+
         var qty = parseFloat(document.wine_perfect_form_<%=catIndex%>[qtyFldName].value);
         if (isNaN(qty)) qty=0;
         if (qty<1) qty=0;
@@ -215,8 +216,6 @@ if (prodsAvailable>0) {
     <%
      
    
-    //*** if we got this far..then we need to remove the sucess page attribute from the request.
-    request.removeAttribute("successPage");
 
     // there are errors..Display them
     Collection myErrs=((ActionResult)result).getErrors();
