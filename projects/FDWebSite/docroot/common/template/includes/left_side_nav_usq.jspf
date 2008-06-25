@@ -3,82 +3,21 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 	<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 
-	<script type="text/javascript">
-		//uses the below set w/h instead of built in wrapping
-		//this allows wrapping on a per-element basis
-		//not using auto wrap affects centering
-		//var ol_wrap = '1'; //comment out to turn off
-
-		//set small width and height by default
-		var ol_width = '1';   //comment out to allow overlib to control
-		var ol_height = '1'; //width. centering will work, but min-width won't
-
-		//drop shadow setup
-		//the w and h above need to be commented out for drop shadow to work
-		//var ol_shadow = 1;
-		//var ol_shadowx = '5';
-		//var ol_shadowy = '5';
-		//var ol_shadowcolor = '#000000';
-		//var ol_shadowopacity = 50;
-
-		//here we're changing where the popup shows compared to the mouse
-		//this causes the popup to be under the mouse by default
-		var ol_offsetx = 8;
-		var ol_offsety = -2;
-
-		//send overlib the style to use, IE min-width workaround
-		var ol_textfontclass = 'usq_left_nav_submenu_container';
-		
-		//shorten br tag
-		var n = '<br />';
-		
-		//div starter
-//// mine
-		var divS = '<div class="usq_left_nav_menu">';
-		//var divS = '<div class="l_nav_sub">';
-//// .r926
-		//div ender
-		var divE = '</div>'
-
-//// don't think this is being used
-		//actual mock submenu
-		var nav_byregion = 
-					divS+
-						'<a class="l_nav_sub" href="http://www.freshdirect.com">example link</a>'+n
-						+'Argentinia'+n
-						+'Austrailia'+n
-						+'Australia'+n
-						+'Chile'+n
-						+'France'+n
-						+'Germany'+n
-						+'Israel'+n
-						+'Italy'+n
-						+'Japan'+n
-						+'New Zealand'+n
-						+'Portugal'+n
-						+'South Africa'+n
-						+'Spain'+n
-						+'United States'+n
-					+divE;
-////
-	</script>
-
 <%! 
-    private String getFormattedChildElements(List subCategories) {
+    private String getFormattedChildElements(List subCategories, int index) {
         StringBuffer sb = new StringBuffer();
-        sb.append("divS+");
+        sb.append("<div id=\"sideNavPopup");
+        sb.append(index);
+        sb.append("_menu\" class=\"nav_sub\">");
         for(Iterator iter = subCategories.iterator(); iter.hasNext();){
             CategoryModel scm = (CategoryModel) iter.next();
-//// mine
-            sb.append("'<a class=\"usq_left_nav_submenu\" href=\"/category.jsp?catId=");     
-            //sb.append("'<a class=\"l_nav_sub\" href=\"/category.jsp?catId=");     
-
+            sb.append("<a class=\"navFP_item\" href=\"/category.jsp?catId=");     
             sb.append(scm.getContentKey().getId());
-            sb.append("&trk=snav\">");
+            sb.append("&trk=dpage\">");
             sb.append(scm.getFullName());
-            sb.append("</a>'+n+");
+            sb.append("</a>");
         }
-        sb.append("divE;");
+        sb.append("</div>");
         return sb.toString();
     }
 %>
@@ -86,7 +25,7 @@
 <%!
 
 	/** @return number of displayed rows */
-	private static int appendElement(StringBuffer buf, List breakDepths, NavigationElement nl, boolean isUnavailable, boolean showPopup, int index, boolean isSelectedCat) {
+	private static int appendElement(StringBuffer buf, List breakDepths, NavigationElement nl, boolean isUnavailable, boolean showPopup, int index, boolean isSelectedCat, String childElements) {
 
 		int displayedRows = 0;
 		
@@ -95,9 +34,9 @@
 		String divClass="";
 		switch(nl.getDepth()) {
 		    case 0: if(isSelectedCat) {
-                        divClass="usq_left_nav_menu_on";
+                        divClass="left_nav_item_hoverfake";
                     } else {
-                        divClass="usq_left_nav_menu";
+                        divClass="left_nav_item";
                     }
                     break;				        
 		    case 1: divClass="left_nav_subitem";
@@ -109,19 +48,24 @@
         int depth=0;
         if(breakDepths!=null && breakDepths.size()>0) {
             depth=((Integer)breakDepths.get(0)).intValue();
-            if((nl.getDepth()==0) && depth!=0) { 
-				// end of children display
-                buf.append("<tr><td><div class=\"left_nav_divider\"></div>");
+            if((nl.getDepth()==0) && depth!=0 ) {
+                if(showPopup) 
+                    buf.append(
+                    "<tr><td width=\"120\"><div class='left_nav_divider'><!-- --></div>")
+                    .append("<div id=\"sideNavPopup").append(index).append("\" class=\"snav_nav_item\" onmouseover=\"show_lnav(this.id);\" onmouseout=\"hide(this.id);\">");
+                    else
+                    buf.append("<tr><td width=\"120\"><div class='left_nav_divider'><!-- --></div><div class=\""+divClass+"\">");
             } else {
-				// other menu items or children display
-                buf.append("<tr><td>");
+                if(showPopup) 
+                    buf.append(
+                    "<tr><td width=\"120\">")
+                    .append("<div id=\"sideNavPopup").append(index).append("\" class=\"snav_nav_item\" onmouseover=\"show_lnav(this.id);\" onmouseout=\"hide(this.id);\">");
+                    else
+                    buf.append("<tr><td width=\"120\"><div class=\""+divClass+"\">");
             }
             
         } else {
-			// first menu item with bg
-			
-				buf.append("<tr><td>");
-
+            buf.append("<tr><td width=\"120\"><div class=\""+divClass+"\">");
         }
         breakDepths.clear();
         breakDepths.add(new Integer(nl.getDepth()));
@@ -133,38 +77,35 @@
 			buf.append("\"");
 			if (isUnavailable) {
 				buf.append(" style=\"color:#999999\"");
-			} else {
-				buf.append(" class=\""+divClass+"\"");	
 			}
 			buf.append(">");
-		} else if (isSelectedCat) {
-			buf.append("<div class=\""+divClass+"\">");
 		}
         
         if(showPopup) {
-//// mine
-            buf.append("<a");
-			if (!isSelectedCat) buf.append(" class=\""+divClass+"\"");
-			buf.append(" onmouseover=\"");
-////
-            //buf.append("<div class=\"l_nav_item\" onmouseover=\"");
-////
-            buf.append("void(0);nd(); return overlib(childElements"+index);
-            buf.append(", STICKY, NOCLOSE, CENTER);\" onmouseout=\"nd();\">");
-           
+           // buf.append("<div id=\"sideNavPopup"+index+"\"");
+            //buf.append(" class=\"nav_item\" onmouseover=\"show_lnav(this.id);\"");
+            //buf.append(" onmouseout=\"hide(this.id);\">");
+            //buf.append("<a href=\""+nl.getURL()+"\" class=\"left_nav_item\" onclick=\"return false;\">");
+            buf.append(nl.getDisplayString());
+            //buf.append("</a>");
+            buf.append(childElements);
+            //buf.append("</div>");
+        }else {
+            buf.append(nl.getDisplayString());
         }
-
-		buf.append(nl.getDisplayString());
-		if (nl.showLink() ) buf.append("</a>");
-		//&& !showPopup && !isSelectedCat if (nl.showLink() && (showPopup || isSelectedCat)) buf.append("</a>");
+        
+        
+            
+          
+		if (nl.showLink() && !showPopup) buf.append("</a>");
 		if (nl.isBold()) buf.append("</b>");
 		if(nl.getDepth()==0 ) {
 
-		        buf.append("</td></tr>\n");
+		        buf.append("</div><div class='left_nav_divider'><!-- --></div></td></tr>\n");
 		}
 		else {
 		
-			buf.append("</td></tr>\n");
+			buf.append("</div></td></tr>\n");
 		}
 
 
@@ -181,13 +122,11 @@ String _moreOptions=request.getParameter("moreOptions");
 if(_moreOptions!=null && "true".equalsIgnoreCase(_moreOptions)) {
     showMore=true;
 }
-
 try { %>
 
 <fd:WineSideNav catId='<%= request.getParameter("catId") %>' topCategory="topCategory" navList="leftNavItemsList" unavailableList="unavailableNavItems" startFromDept="true" childCatMap="popupMap"  showMoreOptions="displayMore" sortByPriority="true" moreOptions="<%=showMore%>" >
 
 <%
-
 int displayedRows = 1;
 StringBuffer buf = new StringBuffer(10000);
 ContentNodeModel aliasNode=null;
@@ -196,6 +135,8 @@ ContentNodeModel currCat = ContentFactory.getInstance().getContentNodeByName(req
 String parent=currCat.getParentNode().getContentName();
 String topCatLink="/category.jsp?catId="+currCat;	
 	//displayedRows++;
+
+
 
 // !!! implement grocery
 Attribute allFldrAttr = currCat.getAttribute("FAKE_ALL_FOLDER");
@@ -234,17 +175,16 @@ for (Iterator i = leftNavItemsList.iterator(); i.hasNext(); ) {
 	    displayedRows++;
         wasDomainNavElement=false;
     
-    }
+    }    
+    String childElements = "";
     if(popupMap.containsKey(navElem.getContentName())) {
         showPopup=true;
-        
+        childElements = getFormattedChildElements((List)popupMap.get(navElem.getContentName()), index);
 %>  
-    <script type="text/javascript">
-         var childElements<%=index %> = <%= getFormattedChildElements((List)popupMap.get(navElem.getContentName()))%>;
-    </script>
 
 <%    }
-	displayedRows += appendElement(buf, breakDepths, navElem, false,showPopup, index,navElem.getContentName().equals(parent)?true:false);
+    
+	displayedRows += appendElement(buf, breakDepths, navElem, false,showPopup, index,navElem.getContentName().equals(parent)?true:false, childElements);
 	if(showAnAllFldrLink && navElem.getDisplayString().equals(currCat.getFullName())) {
 	    buf.append("<tr><td width=\"120\"><div style=\"margin-left:");
 	    buf.append(((navElem.getDepth()+1) * 4) + 8);
@@ -252,7 +192,7 @@ for (Iterator i = leftNavItemsList.iterator(); i.hasNext(); ) {
 	
 	    buf.append("<b>");
 	    buf.append("<a href=\"");
-	    buf.append(response.encodeURL(topCatLink+"&moreOptions="+showMore+"&trk=snav"));
+        buf.append(response.encodeURL(topCatLink+"&moreOptions="+showMore+"&trk=snav"));
 	    buf.append("\">");
 	    buf.append("All");
 	    buf.append("</a>");
@@ -263,12 +203,10 @@ for (Iterator i = leftNavItemsList.iterator(); i.hasNext(); ) {
 	}
     if(showPopup) {index++; }
     showPopup=false;
-    
     if(isDomainNavElement) {
         wasDomainNavElement=true;
         isDomainNavElement=false;
     }
-    
     
 }
 
@@ -279,6 +217,7 @@ if (displayedRows > 0) {
 <%= buf.toString() %>
 <tr><td><img src="/media/layout/images/clear.gif" width="130" height="1"></td></tr>
 </table><br>
+<%-- spacer 130x20 --%>
 
 <%
 }

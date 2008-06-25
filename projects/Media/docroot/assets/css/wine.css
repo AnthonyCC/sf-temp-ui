@@ -176,6 +176,26 @@ div.content
 		cursor: pointer;
 		display: block;
 	}
+.snav_nav_item
+	{
+		background-color: #FBF1D3;
+		font-weight: bold;
+		color: #665544;
+		height: 100%;
+		font-family: Tahoma;
+		font-size: 12px;
+		text-decoration: none;
+		display: block;
+		position: relative;
+		padding: 7px;
+	}
+.snav_nav_item:hover
+	{
+		background-color: #665544;
+		color: #FBF1D3;
+		cursor: pointer;
+		display: block;
+	}	
 .nav_sub
 	{
 		border: 1px solid #786F5E;
