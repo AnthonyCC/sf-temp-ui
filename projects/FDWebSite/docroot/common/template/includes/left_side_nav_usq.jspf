@@ -35,6 +35,8 @@
 		switch(nl.getDepth()) {
 		    case 0: if(isSelectedCat) {
                         divClass="left_nav_item_hoverfake";
+                    } else if(!showPopup) {
+                        divClass="nav_item";
                     } else {
                         divClass="left_nav_item";
                     }
@@ -51,21 +53,27 @@
             if((nl.getDepth()==0) && depth!=0 ) {
                 if(showPopup) 
                     buf.append(
-                    "<tr><td width=\"120\"><div class='left_nav_divider'><!-- --></div>")
-                    .append("<div id=\"sideNavPopup").append(index).append("\" class=\"snav_nav_item\" onmouseover=\"show_lnav(this.id);\" onmouseout=\"hide(this.id);\">");
+                    "<tr><td><div class='left_nav_divider'><!-- --></div>")
+                    .append("<div id=\"sideNavPopup").append(index).append("\" class=\"nav_item\" onmouseover=\"show_lnav(this.id);\" onmouseout=\"hide(this.id);\">");
                     else
-                    buf.append("<tr><td width=\"120\"><div class='left_nav_divider'><!-- --></div><div class=\""+divClass+"\">");
+                    buf.append("<tr><td ><div class='left_nav_divider'><!-- --></div><div class=\""+divClass+"\">");
             } else {
                 if(showPopup) 
                     buf.append(
-                    "<tr><td width=\"120\">")
-                    .append("<div id=\"sideNavPopup").append(index).append("\" class=\"snav_nav_item\" onmouseover=\"show_lnav(this.id);\" onmouseout=\"hide(this.id);\">");
+                    "<tr><td >")
+                    .append("<div id=\"sideNavPopup").append(index).append("\" class=\"nav_item\" onmouseover=\"show_lnav(this.id);\" onmouseout=\"hide(this.id);\">");
                     else
-                    buf.append("<tr><td width=\"120\"><div class=\""+divClass+"\">");
+                    buf.append("<tr><td ><div class=\""+divClass+"\">");
             }
             
         } else {
-            buf.append("<tr><td width=\"120\"><div class=\""+divClass+"\">");
+            if(showPopup) 
+                buf.append(
+                "<tr><td >")
+                .append("<div id=\"sideNavPopup").append(index).append("\" class=\"nav_item\" onmouseover=\"show_lnav(this.id);\" onmouseout=\"hide(this.id);\">");
+            else
+                buf.append("<tr><td ><div class=\""+divClass+"\">");
+
         }
         breakDepths.clear();
         breakDepths.add(new Integer(nl.getDepth()));
@@ -75,6 +83,8 @@
 			buf.append("<a href=\"");
 			buf.append(nl.getURL());
 			buf.append("\"");
+            if(nl.getDepth() == 0)
+                buf.append(" class=\"snav_nav_item\"");
 			if (isUnavailable) {
 				buf.append(" style=\"color:#999999\"");
 			}
@@ -82,14 +92,10 @@
 		}
         
         if(showPopup) {
-           // buf.append("<div id=\"sideNavPopup"+index+"\"");
-            //buf.append(" class=\"nav_item\" onmouseover=\"show_lnav(this.id);\"");
-            //buf.append(" onmouseout=\"hide(this.id);\">");
-            //buf.append("<a href=\""+nl.getURL()+"\" class=\"left_nav_item\" onclick=\"return false;\">");
+            buf.append("<a href=\"#\" class=\"snav_nav_item\" onclick=\"return false;\">");
             buf.append(nl.getDisplayString());
-            //buf.append("</a>");
+            buf.append("</a>");
             buf.append(childElements);
-            //buf.append("</div>");
         }else {
             buf.append(nl.getDisplayString());
         }
@@ -159,7 +165,7 @@ for (Iterator i = leftNavItemsList.iterator(); i.hasNext(); ) {
         isDomainNavElement=true;
     }
     if(displayMore.booleanValue()==true && !isDomainNavElement && wasDomainNavElement) {
-	    buf.append("<tr><td width=\"120\"><div style=\"margin-left:");
+	    buf.append("<tr><td ><div style=\"margin-left:");
 	    buf.append(((navElem.getDepth()+1) * 4) + 8);
 	    buf.append("px; text-indent: -8px;\">");
 	
@@ -186,7 +192,7 @@ for (Iterator i = leftNavItemsList.iterator(); i.hasNext(); ) {
     
 	displayedRows += appendElement(buf, breakDepths, navElem, false,showPopup, index,navElem.getContentName().equals(parent)?true:false, childElements);
 	if(showAnAllFldrLink && navElem.getDisplayString().equals(currCat.getFullName())) {
-	    buf.append("<tr><td width=\"120\"><div style=\"margin-left:");
+	    buf.append("<tr><td ><div style=\"margin-left:");
 	    buf.append(((navElem.getDepth()+1) * 4) + 8);
 	    buf.append("px; text-indent: -8px;\">");
 	

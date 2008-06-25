@@ -62,7 +62,7 @@ Recipe recipe = null;
    orderLineItems.add((FDCartLineI)cart.getRecentOrderLines().get(0));
     int templateType=prodNode.getAttribute("TEMPLATE_TYPE",1);
     if (EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(templateType))) {
-        jspTemplate = "/common/template/bestcellars/no_catnavs.jsp";
+       jspTemplate = "/common/template/usq_sidenav.jsp";
     } else { //assuming the default (Generic) Template
         jspTemplate = "/common/template/both_dnav.jsp";
     }

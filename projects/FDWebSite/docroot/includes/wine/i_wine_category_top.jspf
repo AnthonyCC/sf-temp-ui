@@ -1,3 +1,4 @@
+<form name="wine_detail_form" method="POST">
 
 <fd:WineFilter domainName='<%= domainName %>' domainValue='<%= domainValue %>' id='filteredList' displayList='<%= displayList %>'>
     <%
@@ -108,3 +109,5 @@ function sortFormSubmit(sortval){
 }
 
 </script>
+
+</form>

@@ -75,11 +75,16 @@
                 <!-- content lands here -->
          		<tmpl:get name='content'/>
                 <!-- content ends above here-->
-				<br />
-				<%@ include file="/shared/includes/usq_copyright.jspf" %>   
     </td>
     <td colspan="2" align="center"><%@ include file="/common/template/includes/right_side_nav.jspf" %></td>
     <td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0"></td>
+</tr>
+<tr>
+<TD BGCOLOR="#999966" VALIGN="BOTTOM" WIDTH="1"><IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="1"></TD>
+<td align="center" colspan="5">
+    <%@ include file="/shared/includes/usq_copyright.jspf" %>   
+</td>    
+<TD BGCOLOR="#999966" VALIGN="BOTTOM" WIDTH="1"><IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="1"></TD>
 </tr>
 <tr valign="bottom">
 	<td colspan="2" rowspan="2"><img src="/media_stat/images/layout/bottom_left_curve_nav_usq.gif" width="6" height="6" border="0"></td>

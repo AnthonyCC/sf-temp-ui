@@ -84,9 +84,6 @@ List subCategoryList = new ArrayList();
 
 int catIndex=0;
 
-System.out.println("perfect pirs list***************************** :"+subCatColl.size());
-
-
 for(Iterator CatIter = subCatColl.iterator();CatIter.hasNext() ;) {
 
 catIndex++;
@@ -106,7 +103,6 @@ catIndex++;
 <script language="Javascript">
 
     function chgQty<%=catIndex%>(idx,qtyFldName,delta,min,max) {
-        alert("entering here"+qtyFldName);
         var qty = parseFloat(document.wine_perfect_form_<%=catIndex%>[qtyFldName].value);
         if (isNaN(qty)) qty=0;
         if (qty<1) qty=0;

@@ -207,7 +207,6 @@ div.content
 		position: absolute;
 		display: none;
 		visibility: hidden;
-		margin: -1px;
 		text-align: left;
 		padding: 2px 0px;;
 		left: 0px; /*IE fix*/

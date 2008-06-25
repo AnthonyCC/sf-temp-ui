@@ -11,9 +11,6 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
-
-    
- <form name="wine_detail_form" method="POST">
  
  <%
 String categoryView = request.getParameter("cat_view");
@@ -24,6 +21,4 @@ if(categoryView != null && categoryView.equals("compact")) {
     <%@ include file="/common/template/includes/catLayoutManager.jspf" %>
 <%
     }
-
 %>
-</form>
