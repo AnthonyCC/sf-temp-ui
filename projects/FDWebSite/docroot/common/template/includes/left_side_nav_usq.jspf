@@ -13,7 +13,7 @@
             CategoryModel scm = (CategoryModel) iter.next();
             sb.append("<a class=\"navFP_item\" href=\"/category.jsp?catId=");     
             sb.append(scm.getContentKey().getId());
-            sb.append("&trk=dpage\">");
+            sb.append("&trk=snav\">");
             sb.append(scm.getFullName());
             sb.append("</a>");
         }
