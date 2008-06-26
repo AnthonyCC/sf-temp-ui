@@ -47,7 +47,7 @@ if (productId!=null && !"".equals(productId)) {
   int templateType=_prodNode.getAttribute("TEMPLATE_TYPE",1);
   if (EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(templateType))) {
        jspTemplate = "/common/template/usq_sidenav.jsp";
-       System.out.println("Hey!");
+       
   } 
   
 }
