@@ -140,10 +140,11 @@ public class YmalProductHelper implements YmalHelper {
 	 * @see com.freshdirect.webapp.util.YmalHelper#getImage()
 	 */
 	public Image getImage() {
-		Image image = product.getAlternateImage();
-		if (image == null) {
-            image = product.getCategoryImage();
-        }
+		// Not needed to look for alternate image as per creative.
+		//Image image = product.getAlternateImage();
+		
+        Image image = product.getCategoryImage();
+       
         return image;
 	}
 
