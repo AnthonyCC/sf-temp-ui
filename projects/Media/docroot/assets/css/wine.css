@@ -1,35 +1,3 @@
-/*
-	body
-	global body styles
-*/
-body
-	{
-		background-color: #fff;
-		color: #333333;
-	}
-
-/*
-	block elements
-	to eliminate padding, spacing and borders
-*/
-table, tr, td, div, img
-	{
-		padding: 0px;
-		border: 0px;
-		border-collapse: collapse;
-	}
-
-/*
-	content div
-	for centering of examples
-*/
-div.content
-	{
-		width: 745px;
-		text-align: center;
-		margin: 0px auto 0px auto;
-	}
-
 /* general global-use styles */
 .left
 	{
@@ -150,6 +118,8 @@ div.content
 		width: 560px;
 		line-height: 25px;
 		text-align: center;
+		padding: 0px;
+		border-collapse: collapse;
 	}
 .nav_spacer
 	{
@@ -545,7 +515,7 @@ td.center_qty_table
 	}
 .center_prod_name
 	{
-		font-size: 18px;
+		font-size: 13px;
 		font-weight: bolder;
 	}
 .center_prod_size

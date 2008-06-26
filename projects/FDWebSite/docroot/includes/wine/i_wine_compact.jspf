@@ -19,10 +19,7 @@
 <%@ include file="/includes/wine/i_wine_method_params.jspf" %> 
 <%
 Collection sortedColl=null; 
-boolean sortDescending = "true".equalsIgnoreCase(sortDesc);
-String sortNameAttrib = currentFolder.getAttribute("LIST_AS", "full");
-if (!sortNameAttrib.equalsIgnoreCase(SortStrategyElement.SORTNAME_GLANCE) && !sortNameAttrib.equalsIgnoreCase(SortStrategyElement.SORTNAME_NAV))
-    sortNameAttrib = SortStrategyElement.SORTNAME_FULL;
+
     
 Settings layoutSettings = new Settings();
 layoutSettings.setReturnHiddenFolders(true);

@@ -15,17 +15,18 @@ package com.freshdirect.fdstore.content.util;;
  * @author $Author$
  */
 public class EnumWineSortType implements java.io.Serializable {
-	public final static EnumWineSortType NONE   = new EnumWineSortType("none",  "none");
-	public final static EnumWineSortType ABC   = new EnumWineSortType("sort_abc",  "ABC");
-	public final static EnumWineSortType PRICE   = new EnumWineSortType("sort_price", "Price");
-	public final static EnumWineSortType RATING   = new EnumWineSortType("sort_rating", "Rating");
-	public final static EnumWineSortType REGION   = new EnumWineSortType("sort_region", "Region");
-	public final static EnumWineSortType VARIETY   = new EnumWineSortType("sort_variety", "Variety");
-	public final static EnumWineSortType VINTAGE   = new EnumWineSortType("sort_vintage", "Vintage");
+	public final static EnumWineSortType NONE   = new EnumWineSortType("none",  "none", false);
+	public final static EnumWineSortType ABC   = new EnumWineSortType("sort_abc",  "ABC", false);
+	public final static EnumWineSortType PRICE   = new EnumWineSortType("sort_price", "Price", false);
+	public final static EnumWineSortType RATING   = new EnumWineSortType("sort_rating", "Rating", true);
+	public final static EnumWineSortType REGION   = new EnumWineSortType("sort_region", "Region", false);
+	public final static EnumWineSortType VARIETY   = new EnumWineSortType("sort_variety", "Variety", false);
+	public final static EnumWineSortType VINTAGE   = new EnumWineSortType("sort_vintage", "Vintage", false);
 
 
 	private final String code;
 	private final String name;
+    private final boolean sortDesc;
     
     public static EnumWineSortType getWineSortType(String code) {
         if (ABC.getCode().equalsIgnoreCase(code))
@@ -44,9 +45,10 @@ public class EnumWineSortType implements java.io.Serializable {
             return NONE;
     }
 
-	private EnumWineSortType(String code, String name) {
+	private EnumWineSortType(String code, String name, boolean sortDesc) {
 		this.code = code;
 		this.name = name;
+		this.sortDesc = sortDesc;
 	}
 
 	public String getCode() {
@@ -57,6 +59,9 @@ public class EnumWineSortType implements java.io.Serializable {
         return this.name;
     }
 	
+    public boolean getSortDesc() {
+        return this.sortDesc;
+    }
 	public String toString() {
 		return this.name;
 	}

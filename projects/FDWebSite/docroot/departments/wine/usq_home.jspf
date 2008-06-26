@@ -3,7 +3,32 @@
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
 
     <div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
+    <%--
 	<fd:IncludeMedia name="/media/editorial/win_usq/home_top.html"/>
+    --%>
+    &nbsp;<br>
+<table class="content_row">
+		<tr>
+			<td>
+				<div class="ThirdPartyLogo">
+				<img src="/media/editorial/win_usq/usq_logo.gif" width="180px" height="180px" alt="3rd Party Logo" />
+				</div>
+			</td>
+			<td>
+				<div class="top_spacer"></div>
+			</td>
+			<td>
+				
+				<SCRIPT LANGUAGE=JavaScript>
+                <!--
+                OAS_AD('WineTopRight');
+                //-->
+      	        </SCRIPT>
+				
+			</td>
+		</tr>
+</table>
+
 <!-- //
 
 Fixed menu, things of note:
@@ -19,10 +44,10 @@ link = class in a tag instead, no span needed
   // -->
 
 <%! 
-    private String getFormattedChildElements(List subCategories, Integer index) {
+    private String getFormattedChildElements(List subCategories, int index) {
         StringBuffer sb = new StringBuffer();
         sb.append("<div id=\"popup");
-        sb.append(index.intValue());
+        sb.append(index);
         sb.append("_menu\" class=\"nav_sub\">");
         for(Iterator iter = subCategories.iterator(); iter.hasNext();){
             CategoryModel scm = (CategoryModel) iter.next();
@@ -93,12 +118,12 @@ layoutSettings.addSortStrategyElement(new SortStrategyElement(SortStrategyElemen
             %>
                         <% if (count == 0) { %>
                             <td>
-                                <%= EnumShowChildrenType.ALWAYS.equals(cm.getShowChildren()) ? "<div id=\"popup"+index+"\" class=\"nav_item\" onmouseover=\"show_t(this.id);\" onmouseout=\"hide(this.id);\"><a href=\"#\" class=\"navFP_item pad7\" onclick=\"return false;\">"+cm.getFullName()+"</a>"+getFormattedChildElements(cm.getSubcategories(), index)+"</div>" : "<a href=\"/category.jsp?catId="+ cm.getContentKey().getId() +"&trk=dpage\" class=\"nav_item\">"+cm.getFullName()+"</a>" %> 
+                                <%= EnumShowChildrenType.ALWAYS.equals(cm.getShowChildren()) ? "<div id=\"popup"+index+"\" class=\"nav_item\" onmouseover=\"show_t(this.id);\" onmouseout=\"hide(this.id);\"><a href=\"#\" class=\"navFP_item pad7\" onclick=\"return false;\">"+cm.getFullName()+"</a>"+getFormattedChildElements(cm.getSubcategories(), index.intValue())+"</div>" : "<a href=\"/category.jsp?catId="+ cm.getContentKey().getId() +"&trk=dpage\" class=\"nav_item\">"+cm.getFullName()+"</a>" %> 
                             </td>                                
                         <% } else {%>
                                 <td class="nav_spacer">|</td>
                                 <td>
-                                <%= EnumShowChildrenType.ALWAYS.equals(cm.getShowChildren()) ? "<div id=\"popup"+index+"\" class=\"nav_item\" onmouseover=\"show_t(this.id);\" onmouseout=\"hide(this.id);\"><a href=\"#\" class=\"navFP_item pad7\" onclick=\"return false;\">"+cm.getFullName()+"</a>"+getFormattedChildElements(cm.getSubcategories(), index)+"</div>" : "<a href=\"/category.jsp?catId="+ cm.getContentKey().getId() +"&trk=dpage\" class=\"nav_item\">"+cm.getFullName()+"</a>" %> 
+                                <%= EnumShowChildrenType.ALWAYS.equals(cm.getShowChildren()) ? "<div id=\"popup"+index+"\" class=\"nav_item\" onmouseover=\"show_t(this.id);\" onmouseout=\"hide(this.id);\"><a href=\"#\" class=\"navFP_item pad7\" onclick=\"return false;\">"+cm.getFullName()+"</a>"+getFormattedChildElements(cm.getSubcategories(), index.intValue())+"</div>" : "<a href=\"/category.jsp?catId="+ cm.getContentKey().getId() +"&trk=dpage\" class=\"nav_item\">"+cm.getFullName()+"</a>" %> 
                                 </td>                                
                         <% } %>                
             <%
@@ -111,8 +136,41 @@ layoutSettings.addSortStrategyElement(new SortStrategyElement(SortStrategyElemen
 	</table>
 
 	<div class="spacer"></div>
-
+    <%--
 	<fd:IncludeMedia name="/media/editorial/win_usq/home_bottom.html"/>
+    --%>
+    	<table class="content_row">
+		<tr>
+			<td>
+				<div class="MediaInclude">
+                    <SCRIPT LANGUAGE=JavaScript>
+                    <!--
+                    OAS_AD('WineBotLeft');
+                    //-->
+                    </SCRIPT>
+				</div>
+			</td>
+			<td>
+				<div class="MediaInclude">
+                    <SCRIPT LANGUAGE=JavaScript>
+                    <!--
+                    OAS_AD('WineBotMiddle');
+                    //-->
+                    </SCRIPT>
+				</div>
+			</td>
+			<td>
+				<div class="MediaInclude">
+                    <SCRIPT LANGUAGE=JavaScript>
+                    <!--
+                    OAS_AD('WineBotRight');
+                    //-->
+                    </SCRIPT>
+				</div>
+			</td>
+		</tr>
+	</table>
+
     
 	<div class="spacer"></div>
 
@@ -129,12 +187,12 @@ layoutSettings.addSortStrategyElement(new SortStrategyElement(SortStrategyElemen
 
                         <% if (count == 0) { %>
                             <td>
-                                <%= EnumShowChildrenType.ALWAYS.equals(cm.getShowChildren()) ? "<div id=\"popup"+index+"\" class=\"nav_item\" onmouseover=\"show_t(this.id);\" onmouseout=\"hide(this.id);\"><a href=\"#\" class=\"navFP_item pad7\" onclick=\"return false;\">"+cm.getFullName()+"</a>"+getFormattedChildElements(cm.getSubcategories(), index)+"</div>" : "<a href=\"/category.jsp?catId="+ cm.getContentKey().getId() +"&trk=dpage\" class=\"nav_item\">"+cm.getFullName()+"</a>" %> 
+                                <%= EnumShowChildrenType.ALWAYS.equals(cm.getShowChildren()) ? "<div id=\"popup"+index+"\" class=\"nav_item\" onmouseover=\"show_t(this.id);\" onmouseout=\"hide(this.id);\"><a href=\"#\" class=\"navFP_item pad7\" onclick=\"return false;\">"+cm.getFullName()+"</a>"+getFormattedChildElements(cm.getSubcategories(), index.intValue())+"</div>" : "<a href=\"/category.jsp?catId="+ cm.getContentKey().getId() +"&trk=dpage\" class=\"nav_item\">"+cm.getFullName()+"</a>" %> 
                             </td>                                
                         <% } else {%>
                                 <td class="nav_spacer">|</td>
                                 <td>
-                                <%= EnumShowChildrenType.ALWAYS.equals(cm.getShowChildren()) ? "<div id=\"popup"+index+"\" class=\"nav_item\" onmouseover=\"show_t(this.id);\" onmouseout=\"hide(this.id);\"><a href=\"#\" class=\"navFP_item pad7\" onclick=\"return false;\">"+cm.getFullName()+"</a>"+getFormattedChildElements(cm.getSubcategories(), index)+"</div>" : "<a href=\"/category.jsp?catId="+ cm.getContentKey().getId() +"&trk=dpage\" class=\"nav_item\">"+cm.getFullName()+"</a>" %> 
+                                <%= EnumShowChildrenType.ALWAYS.equals(cm.getShowChildren()) ? "<div id=\"popup"+index+"\" class=\"nav_item\" onmouseover=\"show_t(this.id);\" onmouseout=\"hide(this.id);\"><a href=\"#\" class=\"navFP_item pad7\" onclick=\"return false;\">"+cm.getFullName()+"</a>"+getFormattedChildElements(cm.getSubcategories(), index.intValue())+"</div>" : "<a href=\"/category.jsp?catId="+ cm.getContentKey().getId() +"&trk=dpage\" class=\"nav_item\">"+cm.getFullName()+"</a>" %> 
                                 </td>                                
                         <% } %>                
             <%

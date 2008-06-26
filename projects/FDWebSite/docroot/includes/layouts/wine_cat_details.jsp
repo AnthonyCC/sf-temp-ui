@@ -168,10 +168,6 @@ public Map getRatingImagePathMap(ProductModel displayProduct){
 
 %>
 <%
-    boolean sortDescending = "true".equalsIgnoreCase(sortDesc);
-    String sortNameAttrib = currentFolder.getAttribute("LIST_AS", "full");
-    if (!sortNameAttrib.equalsIgnoreCase(SortStrategyElement.SORTNAME_GLANCE) && !sortNameAttrib.equalsIgnoreCase(SortStrategyElement.SORTNAME_NAV))
-        sortNameAttrib = SortStrategyElement.SORTNAME_FULL;
     Collection sortedColl = (Collection) request.getAttribute("itemGrabberResult");
     FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
     String successPage="/cart_confirm.jsp?catId="+request.getParameter("catId");
@@ -400,7 +396,7 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
 		%>
 		<table width="<%=""+(labelWidth*0.98)%>"><tr><%=ratingString%></tr></table>
 		<% } %>
-		<img src="/media_stat/images/layout/clear.gif" width="1" height="2" border="1"><br>
+		<img src="/media_stat/images/layout/clear.gif" width="1" height="2" border="0"><br>
 		<img src="<%=ratingImagePath%>" width="<%=""+labelWidth%>" height="<%=""+labelHeight%>" border="0" alt="">
 	</td>
 </tr>

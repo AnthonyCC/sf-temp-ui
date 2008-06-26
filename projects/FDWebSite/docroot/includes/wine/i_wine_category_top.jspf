@@ -1,6 +1,18 @@
 <table width="443" cellpadding="0" cellspacing="0" border="0">
 <tr><form name="wine_detail_form" method="POST">
+<%
+boolean sortDescending = "true".equalsIgnoreCase(sortDesc);
+String prevSortCol = (String)session.getAttribute("prevSortCol");
+if(prevSortCol != null && sortCol != null && !prevSortCol.equals(sortCol)) {
+    sortDescending = EnumWineSortType.getWineSortType(sortCol).getSortDesc();
+}
+session.setAttribute("prevSortCol", sortCol);
 
+String sortNameAttrib = currentFolder.getAttribute("LIST_AS", "full");
+if (!sortNameAttrib.equalsIgnoreCase(SortStrategyElement.SORTNAME_GLANCE) && !sortNameAttrib.equalsIgnoreCase(SortStrategyElement.SORTNAME_NAV))
+    sortNameAttrib = SortStrategyElement.SORTNAME_FULL;
+    
+%>  
 <fd:WineFilter domainName='<%= domainName %>' domainValue='<%= domainValue %>' id='filteredList' displayList='<%= displayList %>'>
     <%
          displayList = new ArrayList(filteredList);
