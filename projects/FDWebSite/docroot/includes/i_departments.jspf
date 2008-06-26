@@ -14,7 +14,7 @@ String healthAndBeauty	= "/department.jsp?deptId=hba&trk=home";
 String coffee		= "/department.jsp?deptId=cof&trk=home";
 String dairy		= "/department.jsp?deptId=dai&trk=home";
 String kosher		= "/department.jsp?deptId=kos&trk=home";
-String wine		= "/department.jsp?deptId=win&trk=home";
+String wine		= "/department.jsp?deptId=usq&trk=home";
 String catering	= "/department.jsp?deptId=cat&trk=home";
 String organic	= "/department.jsp?deptId=orgnat&trk=home";
 String buyBig	= "/department.jsp?deptId=big&trk=home";
@@ -78,7 +78,7 @@ String fourMinMeals = "/department.jsp?deptId=fdi&trk=home";
       <table width="436" cellpadding="0" cellspacing="0" border="0">
         <tr> 
           <td colspan="6" align="center">
-            <img src="/media_stat/images/navigation/department/home/food_row4.jpg" width="436" height="50" usemap="#Row4" border="0"><br>
+            <img src="/media_stat/images/navigation/department/home/food_row4_new.jpg" width="436" height="50" usemap="#Row4" border="0"><br>
             <img src="/media_stat/images/layout/clear.gif" width="1" height="3"></td>
         </tr>
         <tr align="center" valign="top"> 

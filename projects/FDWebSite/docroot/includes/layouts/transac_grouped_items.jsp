@@ -113,7 +113,16 @@ for(Iterator collIter = sortedColl.iterator();collIter.hasNext() ;) {
 }  
 int itemsToDisplay = sortedList.size();
 // setup for succpage redirect ....
-request.setAttribute("successPage","/grocery_cart_confirm.jsp?catId="+request.getParameter("catId"));
+String succPage = "";
+int templateType=currentFolder.getAttribute("TEMPLATE_TYPE",1);
+if (EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(templateType))) {
+    System.out.println("Setting wine page ");
+    request.setAttribute("successPage","/wine_cart_confirm.jsp?catId="+request.getParameter("catId"));
+    succPage = "/wine_cart_confirm.jsp?catId="+request.getParameter("catId");
+} else {
+    request.setAttribute("successPage","/grocery_cart_confirm.jsp?catId="+request.getParameter("catId"));
+    succPage = "/grocery_cart_confirm.jsp?catId="+request.getParameter("catId");
+}
 
 
 if (prodsAvailable>0) {
@@ -123,7 +132,7 @@ if (prodsAvailable>0) {
         <tr><td align="center"><img src="media_stat/images/layout/cccccc.gif" width="100%" height="1" vspace="6"></td></tr>
         <tr><td align="center"><i>Click on name for more info.</i></td></tr>
     </table>
-<fd:FDShoppingCart id='cart' action='addMultipleToCart' result='result' successPage='<%= "/grocery_cart_confirm.jsp?catId="+request.getParameter("catId") %>'>
+<fd:FDShoppingCart id='cart' action='addMultipleToCart' result='result' successPage='<%= succPage %>'>
     <form name="transac_grouped_items" method="POST">
     <%
 
