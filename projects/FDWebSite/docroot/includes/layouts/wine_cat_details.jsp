@@ -136,15 +136,21 @@ public Map getRatingImagePathMap(ProductModel displayProduct){
         
         
         StringBuffer ratingStr=new StringBuffer("");
+		boolean onlyOne = true;
+		if (rating2!=0) onlyOne = false;
         if(rating1!=0){
-            ratingStr.append("<B><FONT color='red'>").append(rating1CoStr.toUpperCase()+"</FONT> "+rating1).append("</B>   ");
+            ratingStr.append("<td width='50%' class='usq_rating_label'");
+			if (onlyOne) {
+				ratingStr.append(" align='right'");
+			}
+			ratingStr.append(">"+rating1CoStr.toUpperCase()+" <span class='usq_rating'>"+rating1).append("</td>");
         }
         if(rating2!=0){
-            ratingStr.append("<B><FONT color='red'>").append(rating2CoStr.toUpperCase()+"</FONT> "+rating2).append("</B>   ");
+            ratingStr.append("<td width='50%' class='usq_rating_label' align='right'>").append(rating2CoStr.toUpperCase()+" <span class='usq_rating'>"+rating2).append("</td>   ");
         }
-        if(rating3!=0){
-            ratingStr.append("<B><FONT color='red'>").append(rating3CoStr.toUpperCase()+"</FONT> "+rating3).append("</B>   ");
-        }
+       // if(rating3!=0){
+            //ratingStr.append("<B><FONT color='red'>").append(rating3CoStr.toUpperCase()+"</FONT> "+rating3).append("</B>   ");
+       // }
 
         
         ratingMap=new HashMap();
@@ -249,27 +255,32 @@ SkuModel dfltSku = null;
  String price="";
  String salesUnitDesc="";
  String imagePath="";
+ int imageWidth=41;
+ int imageHeight=100;
+ int labelWidth=90;
+ int labelHeight=90;
  String productDescPath="";
  int index=0;
  
 %>
-
-
 <input type="hidden" name="quantity" value="1" />
 <input type="hidden" name="productId" value="" />
 <input type="hidden" name="wineCatId" value="" />
 <input type="hidden" name="skuCode" value="" />
+
+<table width="443" cellpadding="0" cellspacing="0" border="0">
+<tr><td><img src="/media_stat/images/layout/clear.gif" width="45" height="1"></td><td><img src="/media_stat/images/layout/clear.gif" width="263" height="1"></td><td><img src="/media_stat/images/layout/clear.gif" width="95" height="1"></td></tr>
 <logic:iterate indexId="idx" id="displayThing" length="<%= len.toString() %>" offset="<%= offset.toString() %>" collection="<%= displayList %>" type="com.freshdirect.fdstore.content.ContentNodeModel">
 <%
 index++;
 
 if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
    ProductModel displayProduct = (ProductModel)displayThing;
-   Image productImage=displayProduct.getAlternateImage();
+   Image productImage=displayProduct.getCategoryImage();
    
    String vintage="";
    List wineVintage=displayProduct.getWineVintage();		
-		if(wineVintage!=null && wineVintage.size()>0){									
+		if(wineVintage!=null && wineVintage.size()>0) {									
           DomainValue dValue=(DomainValue)wineVintage.get(0);
           vintage=dValue.getValue();
          }
@@ -285,7 +296,10 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
      String wineCity=displayProduct.getWineCity();
    
    if(productImage!=null){
-        imagePath=productImage.getPath();   
+        imagePath=productImage.getPath();  
+		System.out.println(">>>>>> width"+ productImage.getWidth()); 
+		imageWidth=productImage.getWidth();
+		imageHeight=productImage.getHeight();
    }
    
    Html htmlDesc=displayProduct.getProductAbout();
@@ -321,66 +335,60 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
     }
     
     Image descImage=displayProduct.getDescriptiveImage();
-    if(descImage!=null)
+    if(descImage!=null) {
          ratingImagePath=descImage.getPath();
-         
+		 System.out.println(">>>>>> width"+ descImage.getWidth()); 
+		 labelWidth= descImage.getWidth();
+		 labelHeight= descImage.getHeight();
+     }
+	     
      SkuModel skuModel=displayProduct.getSku(0);
      String skuCode=skuModel.getSkuCode();
 %>
-
-
-
-<table class="w100">
-<tr>
-	<td>
-		<img src="<%=imagePath%>" width="41" height="100" border="0" alt="" title="">
+<tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="1"></td></tr>
+<tr valign="top">
+	<td width="45" align="center" style="padding-top:2px;">
+		<img src="<%=imagePath%>" width="<%=""+imageWidth%>" height="<%=""+imageHeight%>" border="0" alt="">
 	</td>
-	<td style="width: 100%">
-		<div class="center_prod_name"><a href="product.jsp?productId=<%=displayProduct%>&catId=<%=displayProduct.getParentNode().getPK().getId()%><%= moreOptionParams.toString() %>" title="product detail"><%=thisProdBrandLabel%></a></div>
-		<div class="bolder"> <%=wineRegion%> > <%=wineCity%> > <%=vintage%></div>
-		<div class="center_prod_descrip"><fd:IncludeMedia name="<%=productDescPath%>" /><></div>
-		<div class="top_spacer"></div>
+	<td width="263">
+		<div class="title13"><a href="product.jsp?productId=<%=displayProduct%>&catId=<%=displayProduct.getParentNode().getPK().getId()%><%= moreOptionParams.toString() %>" title="product detail"><%=thisProdBrandLabel%></a></div>
+		<div class="usq_region" style="padding-top:5px;"><%=wineRegion%><%=(wineRegion!=null && wineCity!=null && wineCity.trim().length() != 0) ? " > ":""%><%=wineCity%><%=((vintage!=null && vintage.trim().length() != 0 ) && ((wineRegion != null && wineRegion.trim().length() != 0) || (wineCity != null && wineCity.trim().length() != 0))) ? ", ":""%><%=vintage%></div>
+		<div class="text11" style="padding-top:5px; padding-bottom:6px;"><fd:IncludeMedia name="<%=productDescPath%>" /></div>
 		<div>        
         <table class="left">
-            <tr valign="bottom padlr6">
-                  <td><span class="center_prod_price"><%=price%></span><span class="center_prod_size"><%="/"+salesUnitDesc%></span</td>
+            <tr>
+                  <td><span class="largePrice"><%=price%></span><span class="largePriceSalesUnit"><%="/"+salesUnitDesc%></span></td>
                     <td class="padlr6"> <INPUT TYPE="text" NAME="quantity_big_<%=index%>" SIZE="2" MAXLENGTH="2" CLASS="text11" value="<%=Math.round(displayProduct.getQuantityMinimum()) %>" onChange="chgQty('quantity_big_<%=index%>',0,<%= displayProduct.getQuantityMinimum() %>,<%= user.getQuantityMaximum(displayProduct) %>);"></td>
                     <td width="14" valign="bottom"><A HREF="javascript:chgQty('quantity_big_<%=index%>',<%= displayProduct.getQuantityIncrement()%>,<%= displayProduct.getQuantityMinimum() %>,<%= user.getQuantityMaximum(displayProduct) %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="2" alt="lesser quantity"></A><br/>
                     <A HREF="javascript:chgQty('quantity_big_<%=index%>',-<%= displayProduct.getQuantityIncrement()%>,<%= displayProduct.getQuantityMinimum() %>,<%= user.getQuantityMaximum(displayProduct) %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="2" alt="lesser quantity"></A>
                     </td>
                     <td>
-                    
                     <input type="image" name="addSingleToCart_big" src="/media_stat/images/buttons/add_to_cart.gif"  ALT="ADD THIS ITEM TO YOUR CART" width="93" height="20" HSPACE="2" VSPACE="2" border="0" onClick="javascript:sendForm('<%=displayProduct%>','<%=displayProduct.getParentNode().getPK().getId()%>','quantity_big_<%=index%>','<%=skuCode%>');" /><br>
                     </td>
+					<fd:CCLCheck>
+						<td><a href="/unsupported.jsp" onclick="return CCL.save_items('qs_cart',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_save_icon_lg.gif" width="12" height="14" style="margin: 0 0 1px 5px; border: 0"/></a></td>
+                	</fd:CCLCheck> 
             </tr>
       </table>                                
       </div>        
 	</td>
-	<td>
-		<div>
-			<%=ratingString%>
-		</div>
-		<div>
-			<img src="<%=ratingImagePath%>" width="90" height="90" border="0" alt="" title="">
-		</div>
+	<td width="95" align="center">
+		<%
+		if (!("".equals(ratingString)) && ratingString.trim().length() > 0) {
+		%>
+		<table width="<%=""+(labelWidth*0.98)%>"><tr><%=ratingString%></tr></table>
+		<% } %>
+		<img src="/media_stat/images/layout/clear.gif" width="1" height="2" border="1"><br>
+		<img src="<%=ratingImagePath%>" width="<%=""+labelWidth%>" height="<%=""+labelHeight%>" border="0" alt="">
 	</td>
 </tr>
-</table>
-
-
-<div class="hr_space"></div>
+<tr><td colspan="3" style="border-bottom:solid 1px #CCCCCC;"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="1"></td></tr>
 <% } %>
 </logic:iterate>
-
-
-
+</table>
 <%
 int templateType=currentFolder.getAttribute("TEMPLATE_TYPE",1);
 %>
 <%@ include file="/includes/wine/i_wine_category_bottom.jspf" %> 
-
 </fd:FDShoppingCart>
-
-<!-- end spacing -->
-<div class="center_spacer"></div>
-<div class="center_spacer"></div>
+<br>
