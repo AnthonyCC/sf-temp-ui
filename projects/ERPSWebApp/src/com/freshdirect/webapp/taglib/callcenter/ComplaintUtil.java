@@ -73,7 +73,7 @@ public class ComplaintUtil {
 		else if ( "transportation".equalsIgnoreCase(dept) ) { r = "TRN"; }
         else if ( "extraitem".equalsIgnoreCase(dept) ) { r = "XTR"; }
         else if ( "kosher".equalsIgnoreCase(dept) ) { r = "KOS"; }
-        else if ( "wine".equalsIgnoreCase(dept) ){ r = "WIN"; }
+        else if ( "wine".equalsIgnoreCase(dept) ||"usq".equalsIgnoreCase(dept)){ r = "WIN"; }
         else if ( "Easy Meals".equalsIgnoreCase(dept) ){ r = "EZM"; }
         else if ( "Ready to Cook".equalsIgnoreCase(dept) ){ r = "RTC"; }
         else if ( dept.toLowerCase().indexOf("health") != -1 ) { r = "HBA"; }
