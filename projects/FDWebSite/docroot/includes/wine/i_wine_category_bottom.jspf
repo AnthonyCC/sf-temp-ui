@@ -26,7 +26,7 @@ if(contextName != null && contextName.length() > 0) {
 		<div class="cat_sum_bot_bar">
 			<div class="cat_sum_top_spacer"></div>
 			<div class="cat_sum_top_l">
-				<span class="w50"><b>Page: </b><%=pagingLinks%>&nbsp;(<%=displayList.size()%> items)</span>
+				<span class="w50"><b>Page: </b><%=pagingLinks%></span>
 			</div>
 			<div class="cat_sum_top_r right"><!-- 6.8 -->
             Per Page: 
@@ -47,7 +47,7 @@ if(contextName != null && contextName.length() > 0) {
 } else {
 %>
 <span class="bolder"><A HREF="<%= response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(20,-1)+"&trk=numb"+pageParams.toString()) %>">20</A></span> |
-<span class="bolder"> <A HREF="<%= response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(displayList.size(),-1)+"&trk=numb"+pageParams.toString()) %>">40</A> </span>|
+<span class="bolder"><A HREF="<%= response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(40,-1)+"&trk=numb"+pageParams.toString()) %>">40</A> </span>|
 <B>ALL</B><%
 }
 %>

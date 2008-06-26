@@ -12,7 +12,6 @@
     %>
 </fd:WineFilter> 
 
-
 <%
 if(contextName != null && contextName.length() > 0) {
 %>
@@ -74,7 +73,7 @@ List wineSortList=catModel.getWineSortCriteria();
 				}
 %>
 		<span class="cat_sum_top_li">
-			&bull; <a href="javascript:sortFormSubmit('<%=dValue.getContentName()%>');" title=""><%= dValue.getContentName().equals(sortCol) ? "<b>"+dValue.getLabel()+"</b>" : dValue.getLabel() %></a>
+		<%= (i!=0)?"&bull; ":" " %><a href="javascript:sortFormSubmit('<%=dValue.getContentName()%>');" title=""><%= dValue.getContentName().equals(sortCol) ? "<b>"+dValue.getLabel()+"</b>" : dValue.getLabel() %></a>
 		</span>
 <%
              }
