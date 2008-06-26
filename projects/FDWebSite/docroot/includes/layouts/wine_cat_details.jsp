@@ -211,7 +211,7 @@ public Map getRatingImagePathMap(ProductModel displayProduct){
 
 function chgQty(qtyFldName,delta,min,max) {
 
-var qty = parseFloat(document.wine_detail_form[qtyFldName].value);
+var qty = parseFloat(document.wine_cat_detail[qtyFldName].value);
 	if (isNaN(qty)) qty=0;
 	qty = qty + delta;
 
@@ -224,9 +224,9 @@ var qty = parseFloat(document.wine_detail_form[qtyFldName].value);
 	}
 
 	if (qty<=0) {
-		document.wine_detail_form[qtyFldName].value='';
+		document.wine_cat_detail[qtyFldName].value='';
 	} else {
-		document.wine_detail_form[qtyFldName].value = qty;
+		document.wine_cat_detail[qtyFldName].value = qty;
 	}
 
 }
@@ -234,10 +234,10 @@ var qty = parseFloat(document.wine_detail_form[qtyFldName].value);
 function sendForm(productIdVar,catIdVar,quantityVar,skuVar){
 
   //alert("productIdVar:"+document.wine_detail_form.productId.value);  
-  document.wine_detail_form.quantity.value=document.wine_detail_form[quantityVar].value;
-  document.wine_detail_form.productId.value=productIdVar;
-  document.wine_detail_form.wineCatId.value=catIdVar;
-  document.wine_detail_form.skuCode.value=skuVar;
+  document.wine_cat_detail.quantity.value=document.wine_cat_detail[quantityVar].value;
+  document.wine_cat_detail.productId.value=productIdVar;
+  document.wine_cat_detail.wineCatId.value=catIdVar;
+  document.wine_cat_detail.skuCode.value=skuVar;
   //alert("submitting the formasda");
   //document.wine_detail_form.submit();
   //alert("shoudent be here");
@@ -249,6 +249,9 @@ function sendForm(productIdVar,catIdVar,quantityVar,skuVar){
 
 <%@ include file="/includes/wine/i_wine_category_top.jspf" %> 
 <!-- include 15 items -->
+
+<form name="wine_cat_detail" id="wine_cat_detail" method="POST">
+
 <%
 SkuModel dfltSku = null;
  String thisProdBrandLabel=null;
@@ -344,6 +347,25 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
 	     
      SkuModel skuModel=displayProduct.getSku(0);
      String skuCode=skuModel.getSkuCode();
+     
+     
+       StringBuffer wineTitle=new StringBuffer();
+     if((wineRegion!=null && wineRegion.trim().length()>0) &&  (wineCity!=null && wineCity.trim().length()>0) && (vintage!=null && vintage.trim().length()>0)){
+         
+            wineTitle.append(wineRegion).append(">").append(wineCity).append(",").append(vintage);         
+     }
+     else if((wineRegion!=null && wineRegion.trim().length()>0) &&  (wineCity==null || wineCity.trim().length()==0) && (vintage!=null && vintage.trim().length()>0)){
+           wineTitle.append(wineRegion).append(",").append(vintage);         
+     }
+     else if((wineRegion!=null && wineRegion.trim().length()>0) &&  (wineCity!=null && wineCity.trim().length()>0) && (vintage==null || vintage.trim().length()==0)){
+           wineTitle.append(wineRegion).append(",").append(wineCity);         
+     }
+     else{
+          wineTitle.append(wineRegion);         
+     }
+     
+     System.out.println("wineTitle :"+wineTitle.toString());
+     
 %>
 <tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="1"></td></tr>
 <tr valign="top">
@@ -352,7 +374,7 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
 	</td>
 	<td style="padding-right:2px; padding-left:3px;">
 		<div class="title13"><a href="product.jsp?productId=<%=displayProduct%>&catId=<%=displayProduct.getParentNode().getPK().getId()%><%= moreOptionParams.toString() %>" title="product detail"><%=thisProdBrandLabel%></a></div>
-		<div class="usq_region" style="padding-top:5px;"><%=wineRegion%><%=(wineRegion!=null && wineRegion.trim().length() != 0 && wineCity!=null && wineCity.trim().length() != 0) ? " &rsaquo; ":""%><%=wineCity%><%=((vintage!=null && vintage.trim().length() != 0 ) && ((wineRegion != null && wineRegion.trim().length() != 0) || (wineCity != null && wineCity.trim().length() != 0))) ? ", ":""%><%=vintage%></div>
+		<div class="usq_region" style="padding-top:5px;"><%=wineTitle.toString()%></div>
 		<div class="text11" style="padding-top:5px; padding-bottom:6px;"><fd:IncludeMedia name="<%=productDescPath%>" /></div>
 		<div>        
         <table class="left">
@@ -386,6 +408,8 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
 <% } %>
 </logic:iterate>
 </table>
+</form>
+
 <%
 int templateType=currentFolder.getAttribute("TEMPLATE_TYPE",1);
 %>
