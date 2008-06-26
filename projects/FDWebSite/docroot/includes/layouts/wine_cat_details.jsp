@@ -269,7 +269,7 @@ SkuModel dfltSku = null;
 <input type="hidden" name="skuCode" value="" />
 
 <table width="443" cellpadding="0" cellspacing="0" border="0">
-<tr><td><img src="/media_stat/images/layout/clear.gif" width="45" height="1"></td><td><img src="/media_stat/images/layout/clear.gif" width="263" height="1"></td><td><img src="/media_stat/images/layout/clear.gif" width="95" height="1"></td></tr>
+<tr><td><img src="/media_stat/images/layout/clear.gif" width="45" height="1"></td><td><img src="/media_stat/images/layout/clear.gif" width="303" height="1"></td><td><img src="/media_stat/images/layout/clear.gif" width="95" height="1"></td></tr>
 <logic:iterate indexId="idx" id="displayThing" length="<%= len.toString() %>" offset="<%= offset.toString() %>" collection="<%= displayList %>" type="com.freshdirect.fdstore.content.ContentNodeModel">
 <%
 index++;
@@ -347,12 +347,12 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
 %>
 <tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="1"></td></tr>
 <tr valign="top">
-	<td width="45" align="center" style="padding-top:2px;">
+	<td align="center" style="padding-top:2px;">
 		<img src="<%=imagePath%>" width="<%=""+imageWidth%>" height="<%=""+imageHeight%>" border="0" alt="">
 	</td>
-	<td width="263">
+	<td style="padding-right:2px; padding-left:3px;">
 		<div class="title13"><a href="product.jsp?productId=<%=displayProduct%>&catId=<%=displayProduct.getParentNode().getPK().getId()%><%= moreOptionParams.toString() %>" title="product detail"><%=thisProdBrandLabel%></a></div>
-		<div class="usq_region" style="padding-top:5px;"><%=wineRegion%><%=(wineRegion!=null && wineRegion.trim().length() != 0 && wineCity!=null && wineCity.trim().length() != 0) ? " > ":""%><%=wineCity%><%=((vintage!=null && vintage.trim().length() != 0 ) && ((wineRegion != null && wineRegion.trim().length() != 0) || (wineCity != null && wineCity.trim().length() != 0))) ? ", ":""%><%=vintage%></div>
+		<div class="usq_region" style="padding-top:5px;"><%=wineRegion%><%=(wineRegion!=null && wineRegion.trim().length() != 0 && wineCity!=null && wineCity.trim().length() != 0) ? " &rsaquo; ":""%><%=wineCity%><%=((vintage!=null && vintage.trim().length() != 0 ) && ((wineRegion != null && wineRegion.trim().length() != 0) || (wineCity != null && wineCity.trim().length() != 0))) ? ", ":""%><%=vintage%></div>
 		<div class="text11" style="padding-top:5px; padding-bottom:6px;"><fd:IncludeMedia name="<%=productDescPath%>" /></div>
 		<div>        
         <table class="left">
@@ -372,7 +372,7 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
       </table>                                
       </div>        
 	</td>
-	<td width="95" align="center">
+	<td align="center">
 		<%
 		if (!("".equals(ratingString)) && ratingString.trim().length() > 0) {
 		%>
