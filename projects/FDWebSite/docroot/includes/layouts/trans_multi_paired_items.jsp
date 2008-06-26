@@ -17,6 +17,7 @@
 
 <%!
     java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
+    java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 %>
 
 <%
@@ -60,10 +61,10 @@ Html perfectDesc=categoryModel.getEditorial();
 
 
 // setup for succpage redirect ....
-request.setAttribute("successPage","/grocery_cart_confirm.jsp?catId="+request.getParameter("catId"));
+request.setAttribute("successPage","/wine_cart_confirm.jsp?catId="+request.getParameter("catId"));
 %>   
 
-<fd:FDShoppingCart id='cart' action='addMultipleToCart' result='result' successPage='<%= "/grocery_cart_confirm.jsp?catId="+request.getParameter("catId") %>'>    
+<fd:FDShoppingCart id='cart' action='addMultipleToCart' result='result' successPage='<%= "/wine_cart_confirm.jsp?catId="+request.getParameter("catId") %>'>    
 
     <div class="left">
 	<span class="center_prod_name w100"><%=perfectTitle%></span>
@@ -133,7 +134,7 @@ catIndex++;
 </script>
 
 
-<form name="wine_perfect_form_<%=catIndex%>" method="POST">
+<form name="wine_perfect_form_<%=catIndex%>" id="wine_perfect_form_<%=catIndex%>" method="POST">
 
 <%
 //**************************************************
@@ -212,8 +213,19 @@ if (prodsAvailable>0) {
 				<fd:IncludeMedia name="<%=ediDescPath%>" />
 			</div>
 			<div class="padt6"><!-- items -->            
-  
-
+        </td>  
+        <td class="padlr3 vtop">
+				<img src="<%=catDetailImagePath%>" width="<%=""+catDetailWidth%>" height="<%=""+catDetailHeight%>" alt="" />
+        </td>
+   	 </tr>
+  </table>
+  <table class="w100 left">    
+  <tr>
+    	<td class="left">
+			<span class="ital text10 bold"><%=currentCat.getBlurb()%></span>
+		</td>
+   </tr>
+   </table>  <BR> 
     <input type="hidden" name="enableWineSubmit_<%=catIndex%>" value="false">
     <%
      
@@ -245,7 +257,7 @@ if (prodsAvailable>0) {
         }
     }
     %>
-    <table class="center_qty_table left">
+    <table class="w100 left">    
     <%
     int itemShownIndex=-1;
     List skus = new ArrayList();
@@ -282,6 +294,21 @@ if (prodsAvailable>0) {
                 JspLogger.PRODUCT.warn("Grocery Page: catching FDSkuNotFoundException and Continuing:\n FDProductInfo:="+productInfo+"\nException message:= "+fdsnf.getMessage());
         }
         String qtyFldName = "quantity_"+itemShownIndex*catIndex;
+                
+               SkuModel dfltSku=displayProduct.getDefaultSku();               
+               String priceStr="";
+               try {
+                    if (dfltSku !=null) {
+                          FDProductInfo pi = FDCachedFactory.getProductInfo( dfltSku.getSkuCode());                                                        
+                          priceStr=currencyFormatter.format(pi.getDefaultPrice())+"/"+ pi.getDisplayableDefaultPriceUnit().toLowerCase();
+                    }
+                } catch (FDResourceException fde) {
+                    throw new JspException(fde);
+              } catch (FDSkuNotFoundException sknf) {
+                    throw new JspException(sknf);
+              }
+
+
     %>
     <td width="40" align="center"><NOBR>
 <%
@@ -335,11 +362,10 @@ if (prodsAvailable>0) {
             <%  if (prodUnAvailable) {  %>
         <FONT CLASS="text10">Not&nbsp;Available</FONT>
     <%  } else {    %>
-        <FONT CLASS="text10"><%= "   -"+JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()) %>&nbsp;</font>
+        <FONT CLASS="text10"><%= "   -"+priceStr%>&nbsp;</font>
     <%  }   %>
-        <%= unAvailableFontStart %><NOBR>/ <%= salesUnitDescription %></NOBR><BR><%= unAvailableFontEnd %>
-        </A>
-        
+        <%= unAvailableFontStart %><NOBR></NOBR><BR><%= unAvailableFontEnd %>
+        </A>        
     <%
         Date earliestDate = displayProduct.getSku(0).getEarliestAvailability();
         Calendar testDate = new GregorianCalendar();
@@ -402,25 +428,17 @@ if (prodsAvailable>0) {
     
     <input type="hidden" name="itemCount" value="<%= Math.min(itemsToDisplay, idx) %>">
     
-   </td>  
-    <td class="padlr3 vtop">
-				<img src="<%=catDetailImagePath%>" width="<%=""+catDetailWidth%>" height="<%=""+catDetailHeight%>" alt="" />
-    </td>
-   	</tr>
-</table>
+ 
     
     <table class="w100">
 	<tr>
-		<td class="left">
-			<input type="image" name="addMultipleToCart<%=catIndex%>" src="media_stat/images/buttons/add_to_cart.gif" width="93" height="20" hspace="4" vspace="4" border="0" alt="ADD SELECTED ITEMS TO CART">
+		<td class="left vtop" >
+			<input type="image" name="addMultipleToCart<%=catIndex%>" src="media_stat/images/buttons/add_to_cart.gif" width="93" height="20" hspace="4" vspace="0" border="0" alt="ADD SELECTED ITEMS TO CART">
             <fd:CCLCheck>
               <fd:CCLNew/>
-                 <a href="/unsupported.jsp" onclick="return CCL.save_items('qs_cart',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_link_selected_dfgs.gif" width="112" height="13" style="border: 0; padding-left: 14px"><img src="/media_stat/ccl/lists_save_icon_lg.gif" width="12" height="14" style="margin: 0 0 1px 5px; border: 0"/></a>   		     		         
+                 <a href="/unsupported.jsp" onclick="return CCL.save_items('wine_perfect_form_<%=catIndex%>',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_link_selected_dfgs.gif" width="112" height="13" style="border: 0; padding-left: 14px"><img src="/media_stat/ccl/lists_save_icon_lg.gif" width="12" height="14" style="margin: 0 0 1px 5px; border: 0"/></a>   		     		         
                 </fd:CCLCheck>                        
-		</td>
-		<td class="right">
-			<span class="ital text10 bold"><%=currentCat.getBlurb()%></span>
-		</td>
+		</td>	
 	</tr>
     </table>
     

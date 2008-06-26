@@ -295,8 +295,7 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
      String wineCity=displayProduct.getWineCity();
    
    if(productImage!=null){
-        imagePath=productImage.getPath();  
-		System.out.println(">>>>>> width"+ productImage.getWidth()); 
+        imagePath=productImage.getPath();  		
 		imageWidth=productImage.getWidth();
 		imageHeight=productImage.getHeight();
    }
@@ -335,8 +334,7 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
     
     Image descImage=displayProduct.getDescriptiveImage();
     if(descImage!=null) {
-         ratingImagePath=descImage.getPath();
-		 System.out.println(">>>>>> width"+ descImage.getWidth()); 
+         ratingImagePath=descImage.getPath();		 
 		 labelWidth= descImage.getWidth();
 		 labelHeight= descImage.getHeight();
      }
@@ -359,8 +357,7 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
      else{
           wineTitle.append(wineRegion);         
      }
-     
-     System.out.println("wineTitle :"+wineTitle.toString());
+          
      */
 	 String wineLink = "";
 	 wineLink += "product.jsp?productId="+displayProduct +"&catId="+displayProduct.getParentNode().getPK().getId()+ moreOptionParams.toString();
@@ -384,7 +381,7 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
                     <input type="image" name="addSingleToCart_big" src="/media_stat/images/buttons/add_to_cart.gif"  ALT="ADD THIS ITEM TO YOUR CART" width="93" height="20" HSPACE="2" VSPACE="2" border="0" onClick="javascript:sendForm('<%=displayProduct%>','<%=displayProduct.getParentNode().getPK().getId()%>','quantity_big_<%=index%>','<%=skuCode%>');" /><br>
                     </td>
 					<fd:CCLCheck>
-						<td><a href="/unsupported.jsp" onclick="return CCL.save_items('qs_cart',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_save_icon_lg.gif" width="12" height="14" style="margin: 0 0 1px 5px; border: 0"/></a></td>
+						<td><a href="/unsupported.jsp" onclick="javascript:sendForm('<%=displayProduct%>','<%=displayProduct.getParentNode().getPK().getId()%>','quantity_big_<%=index%>','<%=skuCode%>'); return CCL.save_items('wine_cat_detail',this,'action=CCL:AddToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_save_icon_lg.gif" width="12" height="14" style="margin: 0 0 1px 5px; border: 0"/></a></td>
                 	</fd:CCLCheck> 
             </tr>
       </table>                                
