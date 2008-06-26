@@ -93,7 +93,7 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
     }
     
     totalWidth+=itemWidth;
-    tblCells.append("<td align=\"center\" width=\"");
+    tblCells.append("<td style=\"padding-left:3px; padding-right:3px;\" align=\"center\" width=\"");
     tblCells.append(tdwidth);
     tblCells.append("\"><a href=\"");
     tblCells.append(displayObj.getItemURL());
@@ -116,7 +116,7 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
 	
 	//////////////// text portion
 	
-	tblTextCells.append("<td align=\"center\" width=\"");
+	tblTextCells.append("<td style=\"padding-left:3px; padding-right:3px;\" align=\"center\" width=\"");
     tblTextCells.append(tdwidth);
     tblTextCells.append("\" style=\"padding-top:2px;\">");
     tblTextCells.append("<a href=\"");
