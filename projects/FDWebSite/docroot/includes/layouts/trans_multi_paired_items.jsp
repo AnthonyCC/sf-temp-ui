@@ -187,14 +187,14 @@ Html htmlDesc=currentCat.getEditorial();
    }
 
 String catDetailImagePath="";
-String catDetailWidth="120";
-String catDetailHeight="150";
+int catDetailWidth=120;
+int catDetailHeight=150;
 
      Image catImage=currentCat.getCategoryDetailImage();
      if(catImage!=null){
         catDetailImagePath=catImage.getPath();      
-         catDetailWidth= descImage.getWidth();
-		 catDetailHeight= descImage.getHeight();
+         catDetailWidth= catImage.getWidth();
+		 catDetailHeight= catImage.getHeight();
      }
 
 if (prodsAvailable>0) {
@@ -310,9 +310,10 @@ if (prodsAvailable>0) {
             <A HREF="javascript:chgQty<%=catIndex%>(<%=itemShownIndex%>,'<%= qtyFldName %>', <%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);">
             <img SRC="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="2" alt="Increase quantity"></A><BR>
             <A HREF="javascript:chgQty<%=catIndex%>(<%=itemShownIndex%>,'<%= qtyFldName %>', -<%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);">
-            <img SRC="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="2" alt="Decrease quantity"></A>
-        <%  }   %>
+            <img SRC="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="2" alt="Decrease quantity"></A>        
+        <%  }   %> 
     </td>
+    <td width="5">&nbsp;</td>
     <td width="290">
     <%
         String unAvailableFontStart = "";
