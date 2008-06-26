@@ -29,6 +29,7 @@
 <%
 request.setAttribute("listPos", "SystemMessage,LittleRandy,ProductNote,SideCartBottom");
 String catIdParam       = request.getParameter("catId");
+String productId=request.getParameter("productId");
 String jspTemplate = "/common/template/both_dnav.jsp";
 
 if (catIdParam!=null && !"".equals(catIdParam)) {
@@ -39,6 +40,17 @@ if (catIdParam!=null && !"".equals(catIdParam)) {
   } 
 }
 
+if (productId!=null && !"".equals(productId)) {
+
+  ContentNodeI _prodNode = null;
+  _prodNode = ContentFactory.getInstance().getContentNode(productId);
+  int templateType=_prodNode.getAttribute("TEMPLATE_TYPE",1);
+  if (EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(templateType))) {
+       jspTemplate = "/common/template/usq_sidenav.jsp";
+       System.out.println("Hey!");
+  } 
+  
+}
 Recipe recipe = null;
 
 %>
