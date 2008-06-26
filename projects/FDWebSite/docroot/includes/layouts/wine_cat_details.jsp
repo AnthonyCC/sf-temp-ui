@@ -367,7 +367,7 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
      System.out.println("wineTitle :"+wineTitle.toString());
      */
 %>
-<tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="0"></td></tr>
+<tr><td colspan="3" <%=index > 1 ? "style=\"border-top:solid 1px #CCCCCC;\"":""%>><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="0"></td></tr>
 <tr valign="top">
 	<td align="center" style="padding-top:2px;">
 		<img src="<%=imagePath%>" width="<%=""+imageWidth%>" height="<%=""+imageHeight%>" border="0" alt="">
@@ -404,7 +404,7 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
 		<img src="<%=ratingImagePath%>" width="<%=""+labelWidth%>" height="<%=""+labelHeight%>" border="0" alt="">
 	</td>
 </tr>
-<tr><td colspan="3" style="border-bottom:solid 1px #CCCCCC;"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="0"></td></tr>
+<tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="0"></td></tr>
 <% } %>
 </logic:iterate>
 </table>
@@ -412,7 +412,7 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
 
 <%
 int templateType=currentFolder.getAttribute("TEMPLATE_TYPE",1);
-%>
+%><br>
 <%@ include file="/includes/wine/i_wine_category_bottom.jspf" %> 
 </fd:FDShoppingCart>
 <br>

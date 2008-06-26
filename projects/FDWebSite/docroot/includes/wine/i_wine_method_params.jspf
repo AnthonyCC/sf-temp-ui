@@ -134,6 +134,7 @@ public String getPageNumbers(HttpServletRequest requestObj, HttpServletResponse 
 			buf.append("\">");
 			if (i%10 == 1) {
 				buf.append("more");
+				buf.append("</a>");
 				break;
 			} else {
 				 buf.append(i);
