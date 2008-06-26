@@ -187,9 +187,14 @@ Html htmlDesc=currentCat.getEditorial();
    }
 
 String catDetailImagePath="";
+String catDetailWidth="120";
+String catDetailHeight="150";
+
      Image catImage=currentCat.getCategoryDetailImage();
      if(catImage!=null){
         catDetailImagePath=catImage.getPath();      
+         catDetailWidth= descImage.getWidth();
+		 catDetailHeight= descImage.getHeight();
      }
 
 if (prodsAvailable>0) {
@@ -200,9 +205,6 @@ if (prodsAvailable>0) {
 <table class="w100 left">
 	<tr>
 		<td class="padlr3">
-			<div class="center_prod_name text_red">
-				<span>Parfect Pair #</span><span><%=catIndex%></span>
-			</div>
 			<div class="center_prod_name">
 				<a href="/category.jsp?catId=<%=currentCat.getPK().getId()%>&trk=cPage"><%=currentCat.getFullName()%></a>
 			</div>
@@ -401,7 +403,7 @@ if (prodsAvailable>0) {
     
    </td>  
     <td class="padlr3 vtop">
-				<img src="<%=catDetailImagePath%>" width="120" height="150" alt="" />
+				<img src="<%=catDetailImagePath%>" width="<%=""+catDetailWidth%>" height="<%=""+catDetailHeight%>" alt="" />
     </td>
    	</tr>
 </table>
