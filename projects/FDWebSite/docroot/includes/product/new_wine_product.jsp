@@ -53,52 +53,37 @@
     String alignment="align=\"left\"";
     String prodPageRatingStuff = getProdPageRatings(productNode,response); // get and format the product page ratings
 %>
-<% if(!_isModifyCart ) {%>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="407"><TR><TD><%@include file="/shared/includes/product/i_wine_rating_review.jspf"%></td></TR></TABLE>
-<%}%>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="407">
-    
-	<TR VALIGN="TOP">
-
-		<TD WIDTH="10"><IMG SRC="/media_stat/images/layout/clear.gif" WIDTH="10" HEIGHT="1" BORDER="0" HSPACE="0" VSPACE="0"></TD>
-
-		<TD "<%=alignment%>" WIDTH="250" CLASS="text12">
-                <img src="/media_stat/images/layout/clear.gif" border="0" width="250" height="1"><br>
-                <%@ include file="/shared/includes/product/i_show_promo_flag.jspf" %>
+<table border="0" cellspacing="0" cellpadding="0" width="440" align="center">
+<tr><td><img src="/media_stat/images/layout/clear.gif" width="5" height="8"></td><td><img src="/media_stat/images/layout/clear.gif" width="255" height="8"></td><td><img src="/media_stat/images/layout/clear.gif" width="180" height="8"></td></tr>
+	<tr valign="top">
+		<td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+		<td class="text12" style="padding-right:5px;">
+		<% if(!_isModifyCart ) {%>
+			<%@include file="/shared/includes/product/i_wine_rating_review.jspf"%>
+		<%}%>
+        <%@ include file="/shared/includes/product/i_show_promo_flag.jspf" %>
 		<%@ include file="/shared/includes/product/i_product.jspf" %>
 		<% if(qualifies && !productNode.isUnavailable()){%>
-			<table>
+			<table cellpadding="0" cellspacing="0" border="0">
 				<tr>
 					<td><img src="/media_stat/images/template/offer_icon.gif" alt="Promotion icon"></td>
-					<td><font class="title12">Free!<br></font><A HREF="promotion.jsp?cat=<%=request.getParameter("catId")%>">See our $<%=prefix%> offer</a></td>
+					<td><font class="title12">Free!<br></font><a href="promotion.jsp?cat=<%=request.getParameter("catId")%>">See our $<%=prefix%> offer</a></td>
 				</tr>
 			</table>
 			<br>
-		<%} %>
-        <!-- Content start -->
-        <oscache:cache time="1">
+		<%}%>
+        <%-- Content start --%>
+        <oscache:cache time="300">
 		<%@ include file="/shared/includes/product/i_product_descriptions.jspf" %>
-	</oscache:cache>
-
-
-	<!-- Content end -->
+		</oscache:cache>
 		</td>
-		
-			<TD WIDTH="250" ALIGN="center" CLASS="text11">
+		<td align="center" class="text11" style="padding-top:3px;">
 				<!-- Product transactional area include start -->
 				<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
 				<%@ include file="/shared/includes/product/i_product_image.jspf" %>
-		        </TD>
-
+		</td>
 	</tr>
-</table>
-<table>
-<% if(!_isModifyCart ) {%>
-<tr>
-      <td>  <br><img src="/media_stat/images/layout/cccccc.gif" border="0" width="250" height="1"><br><br>
-	<%@ include file="/shared/includes/product/usq_wine_info.jspf" %><br>
-    </td>
-
-</tr>
-<%}%>
+	<% if(!_isModifyCart ) {%>
+		<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td><td colspan="2"><%@ include file="/shared/includes/product/usq_wine_info.jspf" %></td></tr>
+	<%}%>
 </table>

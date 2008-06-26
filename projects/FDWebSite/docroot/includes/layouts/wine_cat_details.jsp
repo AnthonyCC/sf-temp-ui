@@ -381,7 +381,7 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
                     <input type="image" name="addSingleToCart_big" src="/media_stat/images/buttons/add_to_cart.gif"  ALT="ADD THIS ITEM TO YOUR CART" width="93" height="20" HSPACE="2" VSPACE="2" border="0" onClick="javascript:sendForm('<%=displayProduct%>','<%=displayProduct.getParentNode().getPK().getId()%>','quantity_big_<%=index%>','<%=skuCode%>');" /><br>
                     </td>
 					<fd:CCLCheck>
-						<td><a href="/unsupported.jsp" onclick="javascript:sendForm('<%=displayProduct%>','<%=displayProduct.getParentNode().getPK().getId()%>','quantity_big_<%=index%>','<%=skuCode%>'); return CCL.save_items('wine_cat_detail',this,'action=CCL:AddToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_save_icon_lg.gif" width="12" height="14" style="margin: 0 0 1px 5px; border: 0"/></a></td>
+						<td><a href="/unsupported.jsp" onclick="javascript:sendForm('<%=displayProduct%>','<%=displayProduct.getParentNode().getPK().getId()%>','quantity_big_<%=index%>','<%=skuCode%>'); return CCL.save_items('wine_cat_detail',this,'action=CCL:AddToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_save_icon_lg.gif" width="12" height="14" style="margin: 0 0 1px 5px; border: 0"/></a><fd:CCLNew/></td>
                 	</fd:CCLCheck> 
             </tr>
       </table>                                
@@ -393,7 +393,7 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
 		%>
 		<table width="<%=""+(labelWidth*0.98)%>"><tr><%=ratingString%></tr></table>
 		<% } %>
-		<img src="/media_stat/images/layout/clear.gif" width="1" height="2" border="0"><br>
+		<img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0"><br>
 		<a href="<%=wineLink%>"><img src="<%=ratingImagePath%>" width="<%=""+labelWidth%>" height="<%=""+labelHeight%>" border="0" alt="Label"></a>
 	</td>
 </tr>
