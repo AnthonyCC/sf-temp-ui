@@ -37,8 +37,7 @@
 			    }
    
    %>
-<table width=100%> <!-- holder table -->
-
+<table width="100%" cellpadding="0" cellspacing="0" border="0"> <!-- holder table -->
 <tr>
 	<td colspan="2">
 		<!-- spacing and hr, for usage after each section -->
@@ -49,9 +48,6 @@
 	    </div>
     </td>
 </tr>
-
-
-
 <tr>
     <td>
         <div class="center_region_left">
@@ -62,13 +58,13 @@
         </div>
     </td>    
     <td>   
-		<div class="center_region_right"><!-- 7.1.7.1 Flavor pairings Text -->
+		<div class="center_region_right" style="padding-bottom:8px;"><!-- 7.1.7.1 Flavor pairings Text -->
             <div class="perfect_pair_head">
 				<!-- Header Text/Image -->
 				<img src="/media/editorial/win_usq/perfect_pairings.gif" width="192" height="15" alt="" />
 			</div>
 			<div class="perfect_pair_try_with">
-				<!-- Try it with... --><span class="bolder">Try it with</span> <span class="bolder"><A HREF= "<%=perfPaitProdPaths.get(0)%>"><%=perfPairProdNames.get(0)%></a></span>
+				<!-- Try it with... --><span class="bolder">Try it with</span> <span class="bolder"><a href="<%=perfPaitProdPaths.get(0)%>"><%=perfPairProdNames.get(0)%></a></span>
 			</div>
 			<div class="perfect_pair_by_who">
 				<!-- paired by someone --><span class="ital"></span> <span class="ital"><%=pairedBy%></span>
@@ -109,40 +105,28 @@
 %>
 
 
-<table width=100%> <!-- holder table -->
+<table width="100%" cellpadding="0" cellspacing="0" border="0"> <!-- holder table -->
 <tr>
-	<td colspan="2">
-		<!-- spacing and hr, for usage after each section -->
-        <div class="center_topleft">
-		<!-- spacing and hr, for usage before each section -->
-		<div class="center_spacer"></div>
-		<div class="hr_space"><!-- --></div>
-	</td>
+	<td colspan="2" style="border-top: 1px solid #CCCCCC;"><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td>
 </tr>
-<tr>
-	<td>
-		<div class="center_region_left">
-		<% if(!"".equals(wineRegionName)) { %>
-			<div>
+<tr valign="top">
+	<% if(wineRegionName != null && !"".equals(wineRegionName) && wineRegionName.trim().length() > 0) { %>
+		<td class="center_region_left">
 			<fd:IncludeMedia name="<%=wineRegionName%>" />
-							
-			</div>
-		<%}%>	
-			
-		</div>
-	</td>
-	<td>	<div class="center_region_right">
-    
+		</td>
+		
+	<%}%>	
+	<td class="center_region_right" <%= ("".equals(wineRegionName)) ? "colspan='2'":"" %>>
             <% if(wineCountry!=null && !"".equals(wineCountry)) {%>
 			<div class="center_prod_descrip">
 				<!-- 7.2.3 Region --><span class="ucase bolder">REGION:</span> <span><%=wineCountry%>
                 
                 <%if (wineRegionLabel!=null && !"".equals(wineRegionLabel)) {%>
-                       <%=">"+wineRegionLabel%>
+                       <%=" &rsaquo; "+wineRegionLabel%>
                 <%}%>       
                        
                 <%if (wineCity!=null && !"".equals(wineCity)) {%>
-                       <%=">"+wineCity%>
+                       <%=" &rsaquo; "+wineCity%>
                 <%}%>       
 
 			</div>
@@ -154,10 +138,8 @@
                           String altText = ((BrandModel)prodBrands.get(bIdx)).getFullName(); 
                           if (brandPopupLink!=null) { %>
                           <div class="center_prod_descrip">
-                            <!-- 7.2.4 Producer --><span class="ucase bolder">PRODUCER:</span> 
-                            <span>
-                                <a href="<%= brandPopupLink %>"><span><%=altText%></span></a>
-                            </span>
+                            <!-- 7.2.4 Producer --><b>PRODUCER:</b> <a href="<%= brandPopupLink %>"><%=altText%></a>
+
                           </div>                            
                         <%}
                      }
@@ -168,40 +150,41 @@
 			
             <% if(grape!=null && !"".equals(grape) ) { %>
                 <div class="center_prod_descrip">
-                    <!-- 7.2.5 Grape --><span class="ucase bolder">GRAPE:</span> <span><%=grape%></span>
+                    <!-- 7.2.5 Grape --><b>GRAPE:</b> <%=grape%>
                 </div>
             <%}%>
             <% if(classification!=null && !"".equals(classification) ) { %>
                 <div class="center_prod_descrip">
-                    <!-- 7.2.6 Classification --><span class="ucase bolder">CLASSIFICATION:</span> <span><%=classification%></span>
+                    <!-- 7.2.6 Classification --><b>CLASSIFICATION:</b> <%=classification%>
                 </div>
             <%}%>    
             
             <% if(importer!=null && !"".equals(importer) ) { %>
 			<div class="center_prod_descrip">
-				<!-- 7.2.7 Importer --><span class="ucase bolder">IMPORTER:</span> <span><%=importer%></span>
+				<!-- 7.2.7 Importer --><b>IMPORTER:</b> <%=importer%>
 			</div>
             <% }%>
             <% if(alcohol!=null && !"".equals(alcohol) ) { %>
 			<div class="center_prod_descrip">
-				<!-- 7.1.13 Alcoholic Content --><span class="ucase bolder">ALCOHOL:</span> <span><%=alcohol%></span>
+				<!-- 7.1.13 Alcoholic Content --><b>ALCOHOL:</b> <%=alcohol%>
 			</div>
             <%}%>
             <% if(aging!=null && !"".equals(aging) ) { %>
 			<div class="center_prod_descrip">
-				<!-- 7.2.8 Aging --><span class="ucase bolder">AGING:</span> <span><%=aging%></span>
+				<!-- 7.2.8 Aging --><b>AGING:</b> <%=aging%>
 			</div>
             <%}%>
-		</div>
 	</td>
 </tr>
+<tr>
+	<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td>
+</tr>
 </table>
-
 
 <% Html bottomMedia=productNode.getProductBottomMedia(); 
    if(bottomMedia!=null && (bottomMedia.getPath()!=null && !"".equals(bottomMedia.getPath()))) {
  %>
-<table width=100%> <!-- About the Winery -->
+<table width="100%" cellpadding="0" cellspacing="0" border="0"> <!-- About the Winery -->
 <tr>
 	<td colspan="2">
 		<!-- spacing and hr, for usage after each section -->
@@ -229,16 +212,21 @@
    List productPrice=new ArrayList();
    List productName=new ArrayList();
    List productPagePath=new ArrayList();
-
+	int _pairingsCount=0;
    if((pairingsWithEase != null) && (pairingsWithEase.size() > 0)) {
    	for (Iterator it = pairingsWithEase.iterator(); it.hasNext(); ) {
+	
+	   if(_pairingsCount==3) {
+	   	  break;
+	   }  
 	   Object  itrObj  = it.next();
-	   ProductModel p       = (ProductModel) itrObj;
+	   ProductModel p = (ProductModel) itrObj;
 	   
 	   
 	   if (p == null || p.isDiscontinued() || p.isUnavailable()) {
 	      continue;
            } else {
+			   _pairingsCount++;
               productPagePath.add("product.jsp?catId="+p.getProductRef().getCategoryName()+"&productId="+p.getProductRef().getProductName()+"&trk=prod");
                try {
                    _productImage.add(p.getProdImage());
@@ -272,45 +260,45 @@
 
 <% if( (pairingsWithEase!=null) && (pairingsWithEase.size()>0)) {%>
 
-<table> <!-- holder table -->
+<table width="100%" cellpadding="0" cellspacing="0" border="0"> <!-- holder table -->
 <tr>
-	<td>
-        <div class="center_topleft">
-		    <!-- spacing and hr, for usage before each section -->
-		    <div class="center_spacer"></div>
-		    <div class="hr_space"><!-- --></div>
-	    </div>
-	</td>
+	<td style="border-top: 1px solid #CCCCCC;"><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td>
 </tr>
 <tr>
 	<td>
 		<div class="center_region_left center"><!-- Pairings with ease -->
-			<div>
-				<!-- header text/image --><img src="/media/editorial/win_usq/pairing_with_ease.gif" title=""/>
-			</div>
-			<div>
-				<!-- text --><span><b>Hand selected items to compliment this wine</b></span>
-			</div>
-			<div>
-				<!-- 3 items, pulled in layout? -->
-				<table>
+				<!-- header text/image --><img src="/media/editorial/win_usq/pairing_with_ease.gif" title=""/><br><img src="/media_stat/images/layout/clear.gif" width="1" height="5">
+				<!-- text --><b>Hand selected items to compliment this wine</b>
+
+				<table width="100%" cellpadding="3" cellspacing="0">
 				<tr>
-				<% for( int i=0;i<productName.size();i++) {
+				<%  
+				for( int i=0;i<productName.size();i++) {
                         Image _image=(Image)_productImage.get(i);
                 %>
-					<td class='center'>
+					<td class="center" valign="bottom">
 						<img src="<%=_image.getPath()%>" width="<%=_image.getWidth()%>" height="<%=_image.getHeight()%>" border="0" alt="" title="">
-
-						<A HREF= "<%=productPagePath.get(i)%>"><%=productName.get(i)%></A>
-						<%=productPrice.get(i)%>
-
 					</td>
-				<%}%>	
+				<% 
+				if (i == 2) break;
+				} %>	
+				</tr>
+				<tr>
+				<%  
+				for( int i=0;i<productName.size();i++) {
+                %>
+					<td class="center" valign="top" style="padding-top:3px;">
+						<a href= "<%=productPagePath.get(i)%>" class="text12"><%=productName.get(i)%></a><br>
+						<span class="price"><%=productPrice.get(i)%></span>
+					</td>
+				<% 
+				if (i == 2) break;
+				} %>	
 				</tr>
 				</table>
 			</div>
 		</div>
 	</td>
 </tr>
-</table>
+</table><br>
 <%}%>

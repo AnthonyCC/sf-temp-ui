@@ -263,8 +263,9 @@ if (skus.size() != 0) {
 
     %>
     <%@page import="java.util.List"%>
-<form id='product_form' method='post' name="productForm" action="<%= formAction %>">
-
+	<table>
+	<form id='product_form' method='post' name="productForm" action="<%= formAction %>">
+	<tr><td>
         <% if (CartName.MODIFY_CART.equals(cartMode)) { %>
             <input type="hidden" name="cartLine" value="<%= templateLine.getRandomId() %>">
             <input type="hidden" name="CCL_COPY_TYPE" value="SINGLE"/>
@@ -1017,19 +1018,22 @@ if (skus.size() != 0) {
                 priceShown=true;%>
                  
                 <TR VALIGN="BOTTOM"><TD>
-                <FONT CLASS="text11bold"><%= productNode.getAttribute("QUANTITY_TEXT").getValue() %></td>
-                <td><% if (productNode.getQuantityMinimum() != 1) { out.println(" *"); } %></FONT>&nbsp;<input type=text CLASS="text11" size=4 name=quantity value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);" maxlength="2"></TD>
-                <td WIDTH="14" VALIGN="BOTTOM"><a HREF="javascript:chgQty(<%= productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br>
-                    <a HREF="javascript:chgQty(<%= -productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a>
-                </td><td><FONT CLASS="text11bold">Price</FONT>&nbsp;
-                <INPUT class="text11bold" TYPE="text" NAME="PRICE" SIZE="6" onChange="" onFocus="blur()" value="">
-                </td>
-                
+   <%-- pricing section --%>
+		<table cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                  	<td style="padding-right:4px;" class="text11bold"><%= productNode.getAttribute("QUANTITY_TEXT").getValue() %></td>
+                    <td style="padding-right:2px;" class="text11"><% if (productNode.getQuantityMinimum() != 1) { out.println(" *"); } %> <input type="text" class="text11" size="4" name=quantity value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);" maxlength="2"></td>
+                    <td width="12" valign="bottom"><a HREF="javascript:chgQty(<%= productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br><a HREF="javascript:chgQty(<%= -productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a></td>
+                    <td style="padding-left:6px;" class="text11bold">Price</td>
+					<td style="padding-left:4px;"><INPUT class="text11bold" TYPE="text" NAME="PRICE" SIZE="6" onChange="" onFocus="blur()" value=""></td>
+            </tr>
+      </table>
+				</td>
                 </tr>
 <%          } else {  %>
-                <TR VALIGN="BOTTOM" align="left"><TD WIDTH="100">
+                <TR VALIGN="BOTTOM" align="left"><TD WIDTH="173">
                 <FONT CLASS="text11bold"><%= productNode.getAttribute("QUANTITY_TEXT").getValue() %><% if (productNode.getQuantityMinimum() != 1) { out.println(" *"); } %></FONT>&nbsp;<input type=text CLASS="text11" size=4 name=quantity value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);"></TD>
-                <td WIDTH="87" VALIGN="BOTTOM"><a HREF="javascript:chgQty(<%= productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br>
+                <td WIDTH="14" VALIGN="BOTTOM"><a HREF="javascript:chgQty(<%= productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br>
                     <a HREF="javascript:chgQty(<%= -productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a>
                 </td>
                 </tr>
@@ -1205,6 +1209,12 @@ if (skus.size() != 0) {
         }
     }
     if (isWineLayout) {     %>
+	<fd:CCLCheck>
+	    <% if (isWineLayout) { %>
+	        <fd:CCLNew/><a id="ccl-add-action" class="text12" href="/unsupported.jsp" onclick="return CCL.save_items('product_form',this,'action=CCL:AddToList')"><img src="/media_stat/ccl/lists_link_with_icon_dfgs.gif" width="112" height="15" vspace="5" style="border: 0; padding-left: 4px"></a>     
+			<fd:CCLNew template="/common/template/includes/ccl_break.jspf"/><fd:CCLNew template="/common/template/includes/ccl_moreabout.jspf"/>
+		<% } %>
+</fd:CCLCheck>
     <img src="/media_stat/images/layout/cccccc.gif" width="100%" height="1" border="0" VSPACE="10"><BR>
 <%  } else  {   %>
     <img src="/media_stat/images/layout/333333.gif" width="180" height="1" border="0" VSPACE="10"><BR>
@@ -1223,12 +1233,14 @@ if (skus.size() != 0) {
     } else if (CartName.ADD_TO_CART.equals(cartMode)) {
     %>
 <fd:CCLCheck>
-	    <div style="text-align: right;">
+	    <% if (!isWineLayout) { %>
+		<div style="text-align: right;">
 	        <fd:CCLNew/><a id="ccl-add-action" class="text12" href="/unsupported.jsp" onclick="return CCL.save_items('product_form',this,'action=CCL:AddToList')"><img src="/media_stat/ccl/lists_link_with_icon.gif" width="112" height="16" style="border: 0; padding-left: 14px"></a>
 	        <div style="text-align: right; margin-bottom: 1ex;">       
 	            <fd:CCLNew template="/common/template/includes/ccl_moreabout.jspf"/>
 	        </div>
-	    </div>
+	   	</div>
+		<% } %>
 </fd:CCLCheck>
     <%
     } 
@@ -1242,7 +1254,10 @@ if (skus.size() != 0) {
 
     <%@ include file="/includes/product/i_cancellation_note.jspf" %>
 
+	</td>
+	</tr>
     </form>
+	</table>
     <%
     
     // END OF "THE BIG IF" :)

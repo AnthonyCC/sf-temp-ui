@@ -104,13 +104,12 @@ function ShowContent(d) {
 <%      } 
    } %>
 
-<div><!-- icons for type / rating / reviews -->
-	<span>
-					<!-- 7.1.5 type -->
+<!-- icons for type / rating / reviews -->
+<!-- 7.1.5 type -->
 				
-<table>
+<table cellpadding="0" cellspacing="0" border="0"><tr valign="bottom">
 <% for (int i=0;i<wineTypeIcons.size();i++) {%>
-	<td class="padlr3" ><img border=0 src="<%= (String)wineTypeIcons.get(i) %>" width="25" height="72" border="0" alt=""></td>
+	<td class="padlr3" ><img border=0 src="<%= (String)wineTypeIcons.get(i) %>" border="0" alt=""></td>
 <% } %>	
 
     <!-- 7.1.6 rating /reviews -->
@@ -121,17 +120,14 @@ function ShowContent(d) {
         if(_review.getPath()!=null) {
 %>
     
-	        <td class="padlr3"><img border=0 src="<%= (String)ratingIcons.get(i) %>" border="0" width="25" height="43" alt=""    onmouseover="ShowContent('review'+<%=(i+1)%>); return true;"   onmouseout="HideContent('review'+<%=(i+1)%>); return true;" /></td>
+	        <td class="padlr3"><img border=0 src="<%= (String)ratingIcons.get(i) %>" border="0" alt="" onmouseover="ShowContent('review'+<%=(i+1)%>); return true;" onmouseout="HideContent('review'+<%=(i+1)%>); return true;" /></td>
     
 <%       } else { %>
 
-            <td class="padlr3"><img border=0 src="<%= (String)ratingIcons.get(i) %>" border="0" alt="" /></td>
+            <td class="padlr3"><img border=0 src="<%= (String)ratingIcons.get(i) %>" border="0" alt=""/></td>
 
 <%       }
    } %>	
-
-	
-	</table></span>
-</div>
+</tr></table>
 <%}%>
 
