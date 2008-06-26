@@ -1,4 +1,5 @@
-<form name="wine_detail_form" method="POST">
+<table width="443" cellpadding="0" cellspacing="0" border="0">
+<tr><form name="wine_detail_form" method="POST">
 
 <fd:WineFilter domainName='<%= domainName %>' domainValue='<%= domainValue %>' id='filteredList' displayList='<%= displayList %>'>
     <%
@@ -11,11 +12,10 @@
         displayList = new ArrayList(filteredList);
     %>
 </fd:WineFilter> 
-
+<td style="padding-top:8px;">
 <%
 if(contextName != null && contextName.length() > 0) {
 %>
-
 <div class="cat_sum_top_l">
 	<span class="center_prod_name w50"><%=contextName%></span> (<%=displayList.size()%> items)     
 </div>
@@ -53,10 +53,11 @@ if(contextName != null && contextName.length() > 0) {
               }			
 		}
  
-   %>  
-</div>
-<div class="cat_sum_top_spacer"></div>
-<div class="cat_sum_top_sortbar left">
+   %> 
+</div>    
+</td></tr>
+<tr><td class="cat_sum_top_spacer"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0"></td></tr>
+<tr><td class="cat_sum_top_sortbar left">
     	<span class="bolder">Sort:</span> 
 <%
 
@@ -76,13 +77,11 @@ List wineSortList=catModel.getWineSortCriteria();
              }
           }             
 %>
-</div>
-<div class="cat_sum_top_spacer"></div>
-
+</td>
+</tr>
 <% WineSortStrategy sortStrategy = new WineSortStrategy(sortNameAttrib, sortDescending); %>
 
 <fd:ItemSorter nodes='<%=displayList%>' strategy='<%=sortStrategy.getSortStrategyElements(sortCol)%>'/>
-
 <script language='Javascript'>
 function filterFormSubmit(idx){
 <% if (wineFilterList.size() > 1) { %>
@@ -102,7 +101,6 @@ function filterFormSubmit(idx){
 function sortFormSubmit(sortval){
     document.location.href="/category.jsp?catId=<%=currentFolder%>&trk=cpage<%= domainParams.toString() %><%= filterParams.toString() %><%= viewParams.toString() %><%= moreOptionParams.toString() %>"+"&wine_sort="+sortval+"&sort_desc="+<%= !sortDescending %>;
 }
-
 </script>
-
 </form>
+</table>

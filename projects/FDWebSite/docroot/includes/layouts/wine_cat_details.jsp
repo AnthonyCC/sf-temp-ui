@@ -248,7 +248,9 @@ function sendForm(productIdVar,catIdVar,quantityVar,skuVar){
 </script>
 
 <%@ include file="/includes/wine/i_wine_category_top.jspf" %> 
-<!-- include 15 items -->
+
+<table width="443" cellpadding="0" cellspacing="0" border="0">
+<%-- include 15 items --%>
 
 <form name="wine_cat_detail" id="wine_cat_detail" method="POST">
 
@@ -270,8 +272,6 @@ SkuModel dfltSku = null;
 <input type="hidden" name="productId" value="" />
 <input type="hidden" name="wineCatId" value="" />
 <input type="hidden" name="skuCode" value="" />
-
-<table width="443" cellpadding="0" cellspacing="0" border="0">
 <tr><td><img src="/media_stat/images/layout/clear.gif" width="45" height="1"></td><td><img src="/media_stat/images/layout/clear.gif" width="303" height="1"></td><td><img src="/media_stat/images/layout/clear.gif" width="95" height="1"></td></tr>
 <logic:iterate indexId="idx" id="displayThing" length="<%= len.toString() %>" offset="<%= offset.toString() %>" collection="<%= displayList %>" type="com.freshdirect.fdstore.content.ContentNodeModel">
 <%
@@ -348,33 +348,33 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
      SkuModel skuModel=displayProduct.getSku(0);
      String skuCode=skuModel.getSkuCode();
      
-     
-       StringBuffer wineTitle=new StringBuffer();
+     /*
+     StringBuffer wineTitle=new StringBuffer();
      if((wineRegion!=null && wineRegion.trim().length()>0) &&  (wineCity!=null && wineCity.trim().length()>0) && (vintage!=null && vintage.trim().length()>0)){
          
-            wineTitle.append(wineRegion).append(">").append(wineCity).append(",").append(vintage);         
+           wineTitle.append(wineRegion).append(" &rsaquo; ").append(wineCity).append(", ").append(vintage);         
      }
      else if((wineRegion!=null && wineRegion.trim().length()>0) &&  (wineCity==null || wineCity.trim().length()==0) && (vintage!=null && vintage.trim().length()>0)){
-           wineTitle.append(wineRegion).append(",").append(vintage);         
+           wineTitle.append(wineRegion).append(", ").append(vintage);         
      }
      else if((wineRegion!=null && wineRegion.trim().length()>0) &&  (wineCity!=null && wineCity.trim().length()>0) && (vintage==null || vintage.trim().length()==0)){
-           wineTitle.append(wineRegion).append(",").append(wineCity);         
+           wineTitle.append(wineRegion).append(" &rsaquo; ").append(wineCity);         
      }
      else{
           wineTitle.append(wineRegion);         
      }
      
      System.out.println("wineTitle :"+wineTitle.toString());
-     
+     */
 %>
-<tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="1"></td></tr>
+<tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="0"></td></tr>
 <tr valign="top">
 	<td align="center" style="padding-top:2px;">
 		<img src="<%=imagePath%>" width="<%=""+imageWidth%>" height="<%=""+imageHeight%>" border="0" alt="">
 	</td>
 	<td style="padding-right:2px; padding-left:3px;">
 		<div class="title13"><a href="product.jsp?productId=<%=displayProduct%>&catId=<%=displayProduct.getParentNode().getPK().getId()%><%= moreOptionParams.toString() %>" title="product detail"><%=thisProdBrandLabel%></a></div>
-		<div class="usq_region" style="padding-top:5px;"><%=wineTitle.toString()%></div>
+		<div class="usq_region" style="padding-top:5px;"><%=wineRegion%><%=(wineRegion!=null && wineRegion.trim().length() != 0 && wineCity!=null && wineCity.trim().length() != 0) ? " &rsaquo; ":""%><%=wineCity%><%=((vintage!=null && vintage.trim().length() != 0 ) && ((wineRegion != null && wineRegion.trim().length() != 0) || (wineCity != null && wineCity.trim().length() != 0))) ? ", ":""%><%=vintage%></div>
 		<div class="text11" style="padding-top:5px; padding-bottom:6px;"><fd:IncludeMedia name="<%=productDescPath%>" /></div>
 		<div>        
         <table class="left">
@@ -404,7 +404,7 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
 		<img src="<%=ratingImagePath%>" width="<%=""+labelWidth%>" height="<%=""+labelHeight%>" border="0" alt="">
 	</td>
 </tr>
-<tr><td colspan="3" style="border-bottom:solid 1px #CCCCCC;"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="1"></td></tr>
+<tr><td colspan="3" style="border-bottom:solid 1px #CCCCCC;"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="0"></td></tr>
 <% } %>
 </logic:iterate>
 </table>

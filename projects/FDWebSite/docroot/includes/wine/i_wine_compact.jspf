@@ -52,7 +52,6 @@ layoutSettings.setIgnoreShowChildren(true);
     Integer len = new Integer(itemsToDisplay);
 %>
 
-
 <%@ include file="/includes/wine/i_wine_category_top.jspf" %> 
 <%@ include file="/includes/wine/i_wine_compact_body.jspf"%>
 <%@ include file="/includes/wine/i_wine_category_bottom.jspf" %> 
