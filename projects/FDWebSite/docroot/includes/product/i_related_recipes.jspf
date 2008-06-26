@@ -1,10 +1,14 @@
 <%
+
 ProductModel relProduct = ContentFactory.getInstance().getProductByName(
 	request.getParameter("catId"),
 	request.getParameter("productId")
 );
 
-List relatedRecipes = relProduct.getRelatedRecipes();
+List relatedRecipes =null;
+if(relProduct!=null) {
+    relatedRecipes=relProduct.getRelatedRecipes();
+}
 if (relatedRecipes!=null && !relatedRecipes.isEmpty()) {
 	%>
 	<br><b>Great Recipes</b><br>

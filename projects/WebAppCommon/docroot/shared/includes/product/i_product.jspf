@@ -1015,7 +1015,7 @@ if (skus.size() != 0) {
             // quantity is normal
              if (isWineLayout && !CartName.MODIFY_CART.equals(cartMode) ) { 
                 priceShown=true;%>
-                 <tr><td colspan="2"><table align="left">
+                 
                 <TR VALIGN="BOTTOM"><TD>
                 <FONT CLASS="text11bold"><%= productNode.getAttribute("QUANTITY_TEXT").getValue() %></td>
                 <td><% if (productNode.getQuantityMinimum() != 1) { out.println(" *"); } %></FONT>&nbsp;<input type=text CLASS="text11" size=4 name=quantity value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);" maxlength="2"></TD>
@@ -1024,12 +1024,12 @@ if (skus.size() != 0) {
                 </td><td><FONT CLASS="text11bold">Price</FONT>&nbsp;
                 <INPUT class="text11bold" TYPE="text" NAME="PRICE" SIZE="6" onChange="" onFocus="blur()" value="">
                 </td>
+                
                 </tr>
-                </table></td></tr>
 <%          } else {  %>
-                <TR VALIGN="BOTTOM" align="right"><TD WIDTH="173">
+                <TR VALIGN="BOTTOM" align="left"><TD WIDTH="100">
                 <FONT CLASS="text11bold"><%= productNode.getAttribute("QUANTITY_TEXT").getValue() %><% if (productNode.getQuantityMinimum() != 1) { out.println(" *"); } %></FONT>&nbsp;<input type=text CLASS="text11" size=4 name=quantity value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);"></TD>
-                <td WIDTH="14" VALIGN="BOTTOM"><a HREF="javascript:chgQty(<%= productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br>
+                <td WIDTH="87" VALIGN="BOTTOM"><a HREF="javascript:chgQty(<%= productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br>
                     <a HREF="javascript:chgQty(<%= -productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a>
                 </td>
                 </tr>

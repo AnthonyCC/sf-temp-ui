@@ -23,6 +23,7 @@
     FDUserI user = 		  (FDUserI) request.getAttribute("user");
     ProductModel productNode= (ProductModel)request.getAttribute("productNode");
     String cartMode = 	  (String) request.getAttribute("cartMode");
+    
     FDCartLineI templateLine =(FDCartLineI) request.getAttribute("templateLine");
     ActionResult result = 	  (ActionResult)request.getAttribute("actionResult");
     if (result == null || productNode==null || cartMode==null || user==null ){
@@ -32,6 +33,13 @@
      
     String app = (String)session.getAttribute(SessionName.APPLICATION);
 
+    boolean isWebApp = "WEB".equalsIgnoreCase(app);
+    boolean _isModifyCart = cartMode.equals(CartName.MODIFY_CART);
+    System.out.println("cartMode :"+cartMode);
+    System.out.println("app :"+app);
+    System.out.println("isWebApp :"+isWebApp);
+    System.out.println("_isModifyCart :"+_isModifyCart);
+    
     if (productNode==null) {
             throw new JspException("Product not found in Content Management System");
     } else if (productNode.isDiscontinued()) {
@@ -42,10 +50,12 @@
     ContentNodeModel aliasNode = parentCat.getAttribute("ALIAS")!=null  
          ? ((CategoryRef) parentCat.getAttribute("ALIAS").getValue()).getCategory()
          : null;
-    String alignment="align=\"right\"";
+    String alignment="align=\"left\"";
     String prodPageRatingStuff = getProdPageRatings(productNode,response); // get and format the product page ratings
 %>
+<% if(!_isModifyCart ) {%>
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="407"><TR><TD><%@include file="/shared/includes/product/i_wine_rating_review.jspf"%></td></TR></TABLE>
+<%}%>
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="407">
     
 	<TR VALIGN="TOP">
@@ -83,10 +93,12 @@
 	</tr>
 </table>
 <table>
+<% if(!_isModifyCart ) {%>
 <tr>
       <td>  <br><img src="/media_stat/images/layout/cccccc.gif" border="0" width="250" height="1"><br><br>
 	<%@ include file="/shared/includes/product/usq_wine_info.jspf" %><br>
     </td>
 
 </tr>
+<%}%>
 </table>
