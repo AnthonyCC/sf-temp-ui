@@ -143,7 +143,6 @@ catIndex++;
 
 int itemTotal = sortedColl.size();
 
-System.out.println("sortedColl :"+sortedColl);
 
 if (request.getRequestURI().toLowerCase().indexOf("department.jsp")!=-1) {
     maxWidth = 550;
@@ -183,9 +182,10 @@ int itemsToDisplay = sortedList.size();
 
 String ediDescPath="";
 Html htmlDesc=currentCat.getEditorial();
-   if(htmlDesc!=null){
+   if(htmlDesc!=null){   
       ediDescPath=htmlDesc.getPath();
    }
+
 
 String catDetailImagePath="";
 int catDetailWidth=120;
@@ -310,7 +310,7 @@ if (prodsAvailable>0) {
 
 
     %>
-    <td width="40" align="center"><NOBR>
+    <td width="10" align="center"><NOBR>
 <%
     String displayQuantity="";
     if (prodUnAvailable) {
@@ -323,7 +323,11 @@ if (prodsAvailable>0) {
             skus.add( sku );
             qtyFldName = "quantity_"+itemShownIndex;
             displayQuantity=request.getParameter(qtyFldName);
-            if (displayQuantity==null) displayQuantity = quantityFormatter.format(displayProduct.getQuantityMinimum());
+            if (displayQuantity==null)
+            {
+                //displayQuantity = quantityFormatter.format(displayProduct.getQuantityMinimum());
+                displayQuantity="";
+            }
             prices.add(new Double(displayProduct.getQuantityMinimum()));
     %>
         <INPUT TYPE="text"
@@ -341,7 +345,7 @@ if (prodsAvailable>0) {
         <%  }   %> 
     </td>
     <td width="5">&nbsp;</td>
-    <td width="290">
+    <td>
     <%
         String unAvailableFontStart = "";
         String unAvailableFontEnd = "";
@@ -434,9 +438,8 @@ if (prodsAvailable>0) {
 	<tr>
 		<td class="left vtop" >
 			<input type="image" name="addMultipleToCart<%=catIndex%>" src="media_stat/images/buttons/add_to_cart.gif" width="93" height="20" hspace="4" vspace="0" border="0" alt="ADD SELECTED ITEMS TO CART">
-            <fd:CCLCheck>
-              <fd:CCLNew/>
-                 <a href="/unsupported.jsp" onclick="return CCL.save_items('wine_perfect_form_<%=catIndex%>',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_link_selected_dfgs.gif" width="112" height="13" style="border: 0; padding-left: 14px"><img src="/media_stat/ccl/lists_save_icon_lg.gif" width="12" height="14" style="margin: 0 0 1px 5px; border: 0"/></a>   		     		         
+                <fd:CCLCheck>              
+                  <a href="/unsupported.jsp" onclick="return CCL.save_items('wine_perfect_form_<%=catIndex%>',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_link_selected_dfgs.gif" width="112" height="13" style="border: 0; padding-left: 14px"><img src="/media_stat/ccl/lists_save_icon_lg.gif" width="12" height="14" style="margin: 0 0 1px 5px; border: 0"/></a>   		     		         
                 </fd:CCLCheck>                        
 		</td>	
 	</tr>

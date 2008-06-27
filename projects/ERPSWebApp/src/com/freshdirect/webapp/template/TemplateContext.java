@@ -2,6 +2,7 @@ package com.freshdirect.webapp.template;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -275,6 +276,31 @@ public class TemplateContext {
 		return flatten( retainAvailableMap(getNodesMap(idMap), maxItemCount) );
 	}
 	
+	
+	public String getDisplayProductNames(Map idMap, int maxItemCount) {
+		StringBuffer strBuffer=new StringBuffer();
+		Map avMap=retainAvailableMap(getNodesMap(idMap), maxItemCount);				
+		int c = 0;
+		for (Iterator i = avMap.entrySet().iterator(); i.hasNext(); c++) {
+			Map.Entry e = (Entry) i.next();
+			ContentNodeI nodeI=(ContentNodeI)e.getKey();
+									
+			if(nodeI!=null)
+			{		
+				if(nodeI instanceof ProductModel){
+					ProductModel node=(ProductModel)nodeI; 
+			     if(c==avMap.size()-1){
+			        //strBuffer.append("<a href='/product.jsp?productId="+node.getPK().getId()+"&catId="+node.getParentNode().getPK().getId()+"'>").append(node.getContentName()).append("</a>");
+			    	 strBuffer.append("<a href='"+getHref(node,"")+"'>").append(node.getFullName()).append("</a>");
+			     }else{
+			    	 strBuffer.append("<a href='"+getHref(node,"")+"'>").append(node.getFullName()).append("</a>").append(" | ");
+			     }
+				}
+			}
+		}		
+		return strBuffer.toString();
+	}
+	
 	/**
 	 * Filter a list of content nodes, retaining available nodes up to
 	 * a specified maximum count.
@@ -323,5 +349,17 @@ public class TemplateContext {
 		}
 		return img == null ? IMAGE_BLANK : img;
 	}
+//	
+//	public static void main(String args[]){
+//	     HashMap map=new HashMap();
+//	     map.put("Product:product1","");
+//	     map.put("Product:product2","");
+//	     map.put("Product:product3","");
+//	     map.put("Product:product4","");	
+//	     TemplateContext ctx=new TemplateContext();
+//	     ctx.getDisplayProductNames(map,99);
+//	     
+//	}
+	
 	
 }
