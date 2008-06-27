@@ -50,13 +50,13 @@
     String prodPageRatingStuff = getProdPageRatings(productNode,response); // get and format the product page ratings
 %>
 <table border="0" cellspacing="0" cellpadding="0" width="440" align="center">
-<tr><td><img src="/media_stat/images/layout/clear.gif" width="5" height="8"></td><td><img src="/media_stat/images/layout/clear.gif" width="255" height="8"></td><td><img src="/media_stat/images/layout/clear.gif" width="180" height="8"></td></tr>
+<tr><td><img src="/media_stat/images/layout/clear.gif" width="10" height="8"></td><td><img src="/media_stat/images/layout/clear.gif" width="265" height="8"></td><td><img src="/media_stat/images/layout/clear.gif" width="165" height="8"></td></tr>
 	<tr valign="top">
 		<td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-		<td class="text12" style="padding-right:5px;">
-		<% if(!_isModifyCart ) {%>
-			<%@include file="/shared/includes/product/i_wine_rating_review.jspf"%>
-		<%}%>
+		<td class="text12">
+		<%-- if(!_isModifyCart ) {% >
+			< %@include file="/shared/includes/product/i_wine_rating_review.jspf"%>
+		< %}--%>
         <%@ include file="/shared/includes/product/i_show_promo_flag.jspf" %>
 		<%@ include file="/shared/includes/product/i_product.jspf" %>
 		<% if(qualifies && !productNode.isUnavailable()){%>

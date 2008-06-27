@@ -24,18 +24,23 @@ if (!sortNameAttrib.equalsIgnoreCase(SortStrategyElement.SORTNAME_GLANCE) && !so
         displayList = new ArrayList(filteredList);
     %>
 </fd:WineFilter> 
-<td style="padding-top:8px;">
+<td style="padding-top:8px; padding-left: 0px; padding-right: 0px;">
 <%
 if(contextName != null && contextName.length() > 0) {
 %>
 <div class="cat_sum_top_l">
-	<span class="center_prod_name w50"><%=contextName%></span> (<%=displayList.size()%> items)     
+	<span class="title18"><%=contextName%></span> (<%=displayList.size()%> items)     
 </div>
 
 <% } %>
 <div class="cat_sum_top_r w50 vbot right">
 <%
         CategoryModel catModel=(CategoryModel)currentFolder;
+		Html wineIntroCopy = catModel.getEditorial();
+		String wineIntroCopyPath = "";
+		if (wineIntroCopy != null) {
+			wineIntroCopyPath = wineIntroCopy.getPath();
+		}
 	    List wineFilterList=catModel.getWineFilterCriteria();		
 		if(wineFilterList!=null && wineFilterList.size()>0){
 			
@@ -68,6 +73,9 @@ if(contextName != null && contextName.length() > 0) {
    %> 
 </div>    
 </td></tr>
+<% if (wineIntroCopyPath != null && wineIntroCopyPath.trim().length() > 0) { %>
+	<tr><td style="padding-top:8px; padding-bottom:5px;"><fd:IncludeMedia name="<%=wineIntroCopyPath%>" /></td></tr>
+<% } %>
 <tr><td class="cat_sum_top_spacer"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0"></td></tr>
 <tr><td class="cat_sum_top_sortbar left">
     	<span class="bolder">Sort:</span> 

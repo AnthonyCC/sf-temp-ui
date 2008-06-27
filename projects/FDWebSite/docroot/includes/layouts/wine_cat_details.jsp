@@ -326,6 +326,7 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
     
     String ratingString="";
     String ratingImagePath="";
+	String labelPath="";
     Map wineRatingMap=getRatingImagePathMap(displayProduct);
     if(wineRatingMap!=null){
         ratingString=(String)wineRatingMap.get("RATING_STRING");
@@ -334,7 +335,8 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
     
     Image descImage=displayProduct.getDescriptiveImage();
     if(descImage!=null) {
-         ratingImagePath=descImage.getPath();		 
+         ratingImagePath=descImage.getPath();	
+		 labelPath=descImage.getPath();			 
 		 labelWidth= descImage.getWidth();
 		 labelHeight= descImage.getHeight();
      }
@@ -363,14 +365,14 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
 	 wineLink += "product.jsp?productId="+displayProduct +"&catId="+displayProduct.getParentNode().getPK().getId()+ moreOptionParams.toString();
 %>
 <tr><td colspan="3" <%=index > 1 ? "style=\"border-top:solid 1px #CCCCCC;\"":""%>><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="0"></td></tr>
-<tr valign="top">
-	<td align="center" style="padding-top:2px;">
+<tr>
+	<td valign="bottom" align="center" style="padding-top:2px;">
 		<a href="<%=wineLink%>"><img src="<%=imagePath%>" width="<%=""+imageWidth%>" height="<%=""+imageHeight%>" border="0" alt="Wine"></a>
 	</td>
 	<td style="padding-right:2px; padding-left:3px;">
-		<div class="title13"><a href="<%=wineLink%>"><%=thisProdBrandLabel%></a></div>
+		<div class="title14"><a href="<%=wineLink%>"><%=thisProdBrandLabel%></a></div>
 		<div class="usq_region" style="padding-top:5px;"><%=wineRegion%><%=(wineRegion!=null && wineRegion.trim().length() != 0 && wineCity!=null && wineCity.trim().length() != 0) ? " &rsaquo; ":""%><%=wineCity%><%=((vintage!=null && vintage.trim().length() != 0 ) && ((wineRegion != null && wineRegion.trim().length() != 0) || (wineCity != null && wineCity.trim().length() != 0))) ? ", ":""%><%=vintage%></div>
-		<div class="text11" style="padding-top:5px; padding-bottom:6px;"><fd:IncludeMedia name="<%=productDescPath%>" /> <a href="<%=wineLink%>">More &raquo;</a></div>
+		<div class="text11" style="padding-top:5px; padding-bottom:8px;"><fd:IncludeMedia name="<%=productDescPath%>" /> <a href="<%=wineLink%>">More &raquo;</a></div>
 		<div>        
         <table cellpadding="0" cellspacing="0" border="0">
             <tr>
@@ -381,20 +383,22 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
                     <input type="image" name="addSingleToCart_big" src="/media_stat/images/buttons/add_to_cart.gif"  ALT="ADD THIS ITEM TO YOUR CART" width="93" height="20" HSPACE="2" VSPACE="2" border="0" onClick="javascript:sendForm('<%=displayProduct%>','<%=displayProduct.getParentNode().getPK().getId()%>','quantity_big_<%=index%>','<%=skuCode%>');" /><br>
                     </td>
 					<fd:CCLCheck>
-						<td><a href="/unsupported.jsp" onclick="javascript:sendForm('<%=displayProduct%>','<%=displayProduct.getParentNode().getPK().getId()%>','quantity_big_<%=index%>','<%=skuCode%>'); return CCL.save_items('wine_cat_detail',this,'action=CCL:AddToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_save_icon_lg.gif" width="12" height="14" style="margin: 0 0 1px 5px; border: 0"/></a><fd:CCLNew/></td>
+						<td><a href="/unsupported.jsp" onclick="javascript:sendForm('<%=displayProduct%>','<%=displayProduct.getParentNode().getPK().getId()%>','quantity_big_<%=index%>','<%=skuCode%>'); return CCL.save_items('wine_cat_detail',this,'action=CCL:AddToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_save_icon_lg.gif" width="12" height="14" style="margin: 0 0 1px 5px; border: 0"/></a></td>
                 	</fd:CCLCheck> 
             </tr>
       </table>                                
       </div>        
 	</td>
-	<td align="center">
+	<td align="center" valign="bottom">
 		<%
 		if (!("".equals(ratingString)) && ratingString.trim().length() > 0) {
 		%>
 		<table width="<%=""+(labelWidth*0.98)%>"><tr><%=ratingString%></tr></table>
 		<% } %>
 		<img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0"><br>
-		<a href="<%=wineLink%>"><img src="<%=ratingImagePath%>" width="<%=""+labelWidth%>" height="<%=""+labelHeight%>" border="0" alt="Label"></a>
+		<% if (labelPath.trim().length() > 0) { %>
+		<a href="<%=wineLink%>"><img src="<%=labelPath%>" width="<%=""+labelWidth%>" height="<%=""+labelHeight%>" border="0" alt="Label"></a>
+		<% } %>
 	</td>
 </tr>
 <tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="0"></td></tr>
