@@ -384,7 +384,7 @@ if (skus.size() != 0) {
     String productTitle = productNode.getFullName().toUpperCase(); 
     String productTitle2 = null;
     if (isWineLayout) {
-    	productTitle = productNode.getFullName();
+    	productTitle = productNode.getFullName().toUpperCase();
         String thisProdBrandLabel = productNode.getPrimaryBrandName();
         List wineVintage=productNode.getWineVintage();		
 	if(wineVintage!=null && wineVintage.size()>0){
@@ -1216,6 +1216,9 @@ if (skus.size() != 0) {
 		<% } %>
 </fd:CCLCheck>
     <img src="/media_stat/images/layout/cccccc.gif" width="100%" height="1" border="0" VSPACE="10"><BR>
+	<% if(!CartName.MODIFY_CART.equals(cartMode)) {%>
+			<%@include file="/shared/includes/product/i_wine_rating_review.jspf"%>
+	<%}%>
 <%  } else  {   %>
     <img src="/media_stat/images/layout/333333.gif" width="180" height="1" border="0" VSPACE="10"><BR>
 <%  }  %>
