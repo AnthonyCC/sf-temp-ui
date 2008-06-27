@@ -116,7 +116,6 @@ int itemsToDisplay = sortedList.size();
 String succPage = "";
 int templateType=currentFolder.getAttribute("TEMPLATE_TYPE",1);
 if (EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(templateType))) {
-    System.out.println("Setting wine page ");
     request.setAttribute("successPage","/wine_cart_confirm.jsp?catId="+request.getParameter("catId"));
     succPage = "/wine_cart_confirm.jsp?catId="+request.getParameter("catId");
 } else {

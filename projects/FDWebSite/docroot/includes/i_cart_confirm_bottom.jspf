@@ -45,7 +45,15 @@
               catNode = ContentFactory.getInstance().getContentNode(catIdParam);
               if(catNode!=null){
                 int templateType=catNode.getAttribute("TEMPLATE_TYPE",1);
-                if (EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(templateType))) {              
+                if (EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(templateType))) {   
+                   int layouttype = catNode.getAttribute("LAYOUT", -1);
+                   if( EnumLayoutType.TRANSAC_MULTI_PAIRED_ITEMS.getId()==layouttype ||
+                        EnumLayoutType.TRANSAC_GROUPED_ITEMS.getId()==layouttype) {
+                        //Then get the Top level parent.
+                        while ( catNode!=null && catNode.getParentNode() instanceof CategoryModel) {
+                             catNode = catNode.getParentNode();
+                        }
+                    }
                    continueShoppingLink = response.encodeURL("/category.jsp?catId="+catNode.getPK().getId()+"&trk=confcatlink");
                    continueShoppingName = catNode.getFullName();
                 }
