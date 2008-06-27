@@ -346,12 +346,12 @@ a.navFP_item:hover
 .cat_sum_top_l
 	{
 		float: left;
-		padding-left: 3px;
+		/*padding-left: 3px;*/
 	}
 .cat_sum_top_r
 	{
 		float: right;
-		padding-right: 3px;
+		/*padding-right: 3px;*/
 	}
 .cat_sum_top_sortbar
 	{
