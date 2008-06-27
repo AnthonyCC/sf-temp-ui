@@ -145,6 +145,7 @@ if(alternateContentFile != null){
 
 	Attribute introCopyAttribute = currentFolder.getAttribute("EDITORIAL");
 	String introCopy = introCopyAttribute==null?"":((Html)introCopyAttribute.getValue()).getPath();
+            
 	String introTitle = currentFolder.getEditorialTitle();
     
     // no other option wine trouble
@@ -279,6 +280,11 @@ if(alternateContentFile != null){
 	if (attrib!=null) {
 		catDetailImg = (MediaModel)attrib.getValue();
 	}
+    
+    Attribute editorialAttribute = currentFolder.getAttribute("EDITORIAL");
+	String editorialApth = editorialAttribute==null?"":((Html)editorialAttribute.getValue()).getPath();
+        
+    
 %>
     <table width="<%=tablewid%>" border="0" cellspacing="0" cellpadding="0">
 	<tr><td align="center" colspan="3"><FONT CLASS="title18"><%=currentFolder.getFullName()%></font><br><br></td></tr>
@@ -287,8 +293,8 @@ if(alternateContentFile != null){
 		<img src="<%=catDetailImg.getPath()%>" width="<%=catDetailImg.getWidth()%>" height="<%=catDetailImg.getHeight()%>" border="0">
 <%  } else { %><IMG src="/media_stat/images/layout/clear.gif" WIDTH="100" HEIGHT="1" border="0"><% } %>
 	</td><td><IMG src="/media_stat/images/layout/clear.gif" WIDTH="5" HEIGHT="1" border="0"></td><td>
-<%	if (introCopy !=null) { %>
-	  <fd:IncludeMedia name='<%= introCopy %>'/></td>
+<%	if (editorialApth !=null) { %>
+	  <fd:IncludeMedia name='<%= editorialApth %>'/></td>
 <%	} else {%>&nbsp;<% } %>
 	</td></tr>
 	</table>

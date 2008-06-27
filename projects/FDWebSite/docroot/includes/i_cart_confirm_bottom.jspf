@@ -17,7 +17,10 @@
         while ( topCategory!=null && topCategory.getParentNode() instanceof CategoryModel) {
             topCategory = topCategory.getParentNode();
         }
-	if (recipe !=null) {
+         
+        
+	if (recipe !=null) 
+    {
 		ContentNodeI cat  =  catIdParam==null ? null : ContentFactory.getInstance().getContentNode(catIdParam);
 		RecipeDepartment recDept = RecipeDepartment.getDefault();
 
@@ -34,13 +37,24 @@
 	 	  continueShoppingName = recDept.getName();
 	 	}
 
-        } else if (topCategory == null) {
+    } else if (topCategory == null) {
             continueShoppingLink = response.encodeURL("/department.jsp?deptId=" + department+"&trk=confcatlink");
             continueShoppingName = department.getFullName();
-        } else {
-            continueShoppingLink = response.encodeURL("/category.jsp?catId=" + topCategory+"&trk=confcatlink");
-            continueShoppingName = topCategory.getFullName();
-        }
+    } else {
+              ContentNodeModel catNode = null;
+              catNode = ContentFactory.getInstance().getContentNode(catIdParam);
+              if(catNode!=null){
+                int templateType=catNode.getAttribute("TEMPLATE_TYPE",1);
+                if (EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(templateType))) {              
+                   continueShoppingLink = response.encodeURL("/category.jsp?catId="+catNode.getPK().getId()+"&trk=confcatlink");
+                   continueShoppingName = catNode.getFullName();
+                }
+                else{
+                    continueShoppingLink = response.encodeURL("/category.jsp?catId=" + topCategory+"&trk=confcatlink");
+                    continueShoppingName = topCategory.getFullName();
+                }
+              }
+    }
 	
     FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 
@@ -53,7 +67,7 @@
 		<td><img src="<%=spacer%>" width="200" height="8"></td>
 		<td><img src="<%=spacer%>" width="30" height="8"></td>
 		</tr>
-		<tr valign="middle">
+		<tr valign="middle">                    
 					<td valign="top"><a href="<%=continueShoppingLink%>"><img src="/media_stat/images/template/confirmation/arrow_green_left.gif" width="28" height="28" border="0" alt="CONTINUE SHOPPING"></a></td>
 				    <td valign="top"><a href="<%=continueShoppingLink%>"><img src="/media_stat/images/template/confirmation/continue_shopping_text.gif" width="117" height="13" border="0" alt="CONTINUE SHOPPING"></a><br>for <font class="text11bold"><a href="<%=continueShoppingLink%>"><%=continueShoppingName%></a></font></td>
 					<td align="right" valign="middle">
