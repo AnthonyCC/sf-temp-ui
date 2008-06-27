@@ -35,10 +35,6 @@
 
     boolean isWebApp = "WEB".equalsIgnoreCase(app);
     boolean _isModifyCart = cartMode.equals(CartName.MODIFY_CART);
-    System.out.println("cartMode :"+cartMode);
-    System.out.println("app :"+app);
-    System.out.println("isWebApp :"+isWebApp);
-    System.out.println("_isModifyCart :"+_isModifyCart);
     
     if (productNode==null) {
             throw new JspException("Product not found in Content Management System");

@@ -141,6 +141,11 @@
                             <!-- 7.2.4 Producer --><b>PRODUCER:</b> <a href="<%= brandPopupLink %>"><%=altText%></a>
 
                           </div>                            
+                        <%} else { %>
+                             <div class="center_prod_descrip">
+                            <!-- 7.2.4 Producer --><b>PRODUCER:</b> <%=altText%>
+                             </div>    
+                 
                         <%}
                      }
                     

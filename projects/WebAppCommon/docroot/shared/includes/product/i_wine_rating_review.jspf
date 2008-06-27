@@ -70,8 +70,19 @@ function ShowContent(d) {
 <%if (productNode!=null) { 
 
     List wineRating1=productNode.getWineRating1();
+
+    if(wineRating1!=null && wineRating1.size()>1) {
+        wineRating1=wineRating1.subList(0,1);
+    }
     List wineRating2=productNode.getWineRating2();
+    if(wineRating2!=null && wineRating2.size()>1) {
+        wineRating2=wineRating2.subList(0,1);
+    }
+
     List wineRating3=productNode.getWineRating3();
+    if(wineRating3!=null && wineRating3.size()>1) {
+        wineRating3=wineRating3.subList(0,1);
+    }
     List wineType=productNode.getNewWineType();
     List ratings=productNode.getRating();
     List wineTypeIcons=new ArrayList();
