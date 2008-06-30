@@ -127,7 +127,7 @@ if (EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(templateType))
 if (prodsAvailable>0) {
     %>
     <table align="center" width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" >
-        <tr><td align="center"><br><br>CHOOSE QUANTITY</td></tr>
+        <!-- <tr><td align="center"><br><br>CHOOSE QUANTITY</td></tr> -->
         <tr><td align="center"><img src="media_stat/images/layout/cccccc.gif" width="100%" height="1" vspace="6"></td></tr>
         <tr><td align="center"><i>Click on name for more info.</i></td></tr>
     </table>

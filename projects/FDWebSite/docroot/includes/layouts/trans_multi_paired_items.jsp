@@ -366,7 +366,7 @@ if (prodsAvailable>0) {
             <%  if (prodUnAvailable) {  %>
         <FONT CLASS="text10">Not&nbsp;Available</FONT>
     <%  } else {    %>
-        <FONT CLASS="text10"><%= "   -"+priceStr%>&nbsp;</font>
+        <FONT CLASS="text10"><%=" "+salesUnitDescription+" - &nbsp;"+priceStr%>&nbsp;</font>
     <%  }   %>
         <%= unAvailableFontStart %><NOBR></NOBR><BR><%= unAvailableFontEnd %>
         </A>        
@@ -439,7 +439,7 @@ if (prodsAvailable>0) {
 		<td class="left vtop" >
 			<input type="image" name="addMultipleToCart<%=catIndex%>" src="media_stat/images/buttons/add_to_cart.gif" width="93" height="20" hspace="4" vspace="0" border="0" alt="ADD SELECTED ITEMS TO CART">
                 <fd:CCLCheck>              
-                  <a href="/unsupported.jsp" onclick="return CCL.save_items('wine_perfect_form_<%=catIndex%>',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_link_selected_dfgs.gif" width="112" height="13" style="border: 0; padding-left: 14px"><img src="/media_stat/ccl/lists_save_icon_lg.gif" width="12" height="14" style="margin: 0 0 1px 5px; border: 0"/></a>   		     		         
+                  <a href="/unsupported.jsp" onclick="return CCL.save_items('wine_perfect_form_<%=catIndex%>',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_save_icon_lg.gif" width="12" height="14" style="margin: 0 0 1px 5px; border: 0"/></a>   		     		         
                 </fd:CCLCheck>                        
 		</td>	
 	</tr>
