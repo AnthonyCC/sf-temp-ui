@@ -372,11 +372,13 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
 	<td style="padding-right:2px; padding-left:3px;">
 		<div class="title14"><a href="<%=wineLink%>"><%=thisProdBrandLabel%></a></div>
 		<div class="usq_region" style="padding-top:5px;"><%=wineRegion%><%=(wineRegion!=null && wineRegion.trim().length() != 0 && wineCity!=null && wineCity.trim().length() != 0) ? " &rsaquo; ":""%><%=wineCity%><%=((vintage!=null && vintage.trim().length() != 0 ) && ((wineRegion != null && wineRegion.trim().length() != 0) || (wineCity != null && wineCity.trim().length() != 0))) ? ", ":""%><%=vintage%></div>
-		<div class="text11" style="padding-top:5px; padding-bottom:8px;"><fd:IncludeMedia name="<%=productDescPath%>" /> <a href="<%=wineLink%>">More &raquo;</a></div>
+		<div class="text11" style="padding-top:5px; padding-bottom:8px;"><fd:IncludeMedia name="<%=productDescPath%>" />     <% if(productDescPath!=null && productDescPath.trim().length()>0){ %>     
+        <a href="<%=wineLink%>">More &raquo;</a></div>        
+        <%  } %>
 		<div>        
         <table cellpadding="0" cellspacing="0" border="0">
             <tr>
-                  <td style="padding-right:5px;"><span class="largePrice"><%=price%></span><span class="largePriceSalesUnit"><%="/"+salesUnitDesc%></span></td>
+                  <td style="padding-right:6px;"><span class="largePrice"><%=price%></span><span class="largePriceSalesUnit"><%="/"+salesUnitDesc%></span></td>
                     <td  style="padding-right:2px;"><INPUT TYPE="text" NAME="quantity_big_<%=index%>" SIZE="2" MAXLENGTH="2" CLASS="text11" value="<%=Math.round(displayProduct.getQuantityMinimum()) %>" onChange="chgQty('quantity_big_<%=index%>',0,<%= displayProduct.getQuantityMinimum() %>,<%= user.getQuantityMaximum(displayProduct) %>);"></td>
                     <td width="12" valign="bottom"><A HREF="javascript:chgQty('quantity_big_<%=index%>',<%= displayProduct.getQuantityIncrement()%>,<%= displayProduct.getQuantityMinimum() %>,<%= user.getQuantityMaximum(displayProduct) %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="lesser quantity"></A><br/><A HREF="javascript:chgQty('quantity_big_<%=index%>',-<%= displayProduct.getQuantityIncrement()%>,<%= displayProduct.getQuantityMinimum() %>,<%= user.getQuantityMaximum(displayProduct) %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="lesser quantity"></A></td>
                     <td style="padding-left:3px;">
