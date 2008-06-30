@@ -26,15 +26,12 @@
 
 	/** @return number of displayed rows */
 	private static int appendElement(StringBuffer buf, List breakDepths, NavigationElement nl, boolean isUnavailable, boolean showPopup, int index, boolean isSelectedCat, String childElements, boolean showChildren) {
-
 		int displayedRows = 0;
-		
-		
 		displayedRows++;
 		String divClass="";
 		switch(nl.getDepth()) {
 		    case 0: if(isSelectedCat) {
-                        divClass="left_nav_item_hoverfake";
+                        divClass= showChildren ? "left_nav_item_hoverfake" : "";
                     } else if(!showPopup) {
                         divClass="nav_item";
                     } else {
@@ -69,7 +66,7 @@
         } else {
             if(showPopup) 
                 buf.append(
-                "<tr><td >")
+                "<tr><td>")
                 .append("<div id=\"sideNavPopup").append(index).append("\" class=\"nav_item\" onclick=\"click_c(this.id);\" onmouseover=\"show_lnav(this.id);\" onmouseout=\"hide(this.id);\">");
             else
                 buf.append("<tr><td ><div class=\""+divClass+"\">");
@@ -79,17 +76,13 @@
         breakDepths.add(new Integer(nl.getDepth()));
 
 		if (nl.isBold()) buf.append("<b>");
-        System.out.println("diplay name "+nl.getDisplayString());
-        System.out.println("showLink "+nl.showLink());
-        System.out.println("showPopup "+showPopup);
-        System.out.println("isSelectedCat "+isSelectedCat);
-        
+       
 		if (nl.showLink() && !showPopup && (!isSelectedCat || !showChildren)) {
 			buf.append("<a href=\"");
 			buf.append(nl.getURL());
 			buf.append("\"");
             if(nl.getDepth() == 0)
-                buf.append(" class=\"snav_nav_item\"");
+                buf.append(isSelectedCat ? " class=\"left_nav_item_hoverfake\"" : " class=\"snav_nav_item\"");
 			if (isUnavailable) {
 				buf.append(" style=\"color:#999999\"");
 			}
@@ -108,23 +101,23 @@
         
             
           
-		if (nl.showLink() && !showPopup) buf.append("</a>");
+		if (nl.showLink() && !showPopup && (!isSelectedCat || !showChildren)) buf.append("</a>");
 		if (nl.isBold()) buf.append("</b>");
-		if(nl.getDepth()==0 ) {
-
-		        buf.append("</div><div class='left_nav_divider'><!-- --></div></td></tr>\n");
-		}
-		else {
-		
+		if(nl.getDepth()==0) {
+            buf.append("</div><div class='left_nav_divider'><!-- --></div></td></tr>\n");
+		}else {
 			buf.append("</div></td></tr>\n");
 		}
-
-
-
-
 		return displayedRows;
 	}
-
+    
+    /* Get top level parent category node */
+    private ContentNodeModel getTopParentCategory(ContentNodeModel topCategory) {
+        while ( topCategory!=null && topCategory.getParentNode() instanceof CategoryModel) {
+            topCategory = topCategory.getParentNode();
+        }
+        return topCategory;
+    }
 %>
 <oscache:cache key='<%= "sideNav_"+request.getQueryString() %>' time='300'>
 <% 
@@ -143,7 +136,7 @@ StringBuffer buf = new StringBuffer(10000);
 ContentNodeModel aliasNode=null;
 
 ContentNodeModel currCat = ContentFactory.getInstance().getContentNodeByName(request.getParameter("catId"));
-String parent=currCat.getParentNode().getContentName();
+String topParent= getTopParentCategory(currCat).getContentName();
 String topCatLink="/category.jsp?catId="+currCat;	
 	//displayedRows++;
 
@@ -163,6 +156,10 @@ boolean showPopup=false;
 boolean isDomainNavElement=false;
 boolean wasDomainNavElement=false;
 int index=0;
+int prevDepth = 0;
+int currDepth = 0;
+String spacer = "/media_stat/images/layout/clear.gif";
+
 for (Iterator i = leftNavItemsList.iterator(); i.hasNext(); ) {
 
 	navElem=(NavigationElement) i.next();
@@ -172,7 +169,7 @@ for (Iterator i = leftNavItemsList.iterator(); i.hasNext(); ) {
     if(displayMore.booleanValue()==true && !isDomainNavElement && wasDomainNavElement) {
 	    buf.append("<tr><td ><div style=\"margin-left:");
 	    buf.append(((navElem.getDepth()+1) * 4) + 8);
-	    buf.append("px; text-indent: 0px;\">");
+	    buf.append("px; text-indent: 0px; font-style: italic;\">");
 	    buf.append("<a href=\"");
 	    buf.append(response.encodeURL(topCatLink+"&moreOptions=true&trk=snav"));
 	    buf.append("\">");
@@ -197,28 +194,24 @@ for (Iterator i = leftNavItemsList.iterator(); i.hasNext(); ) {
     if(navCat != null && navCat instanceof CategoryModel && navElem.getDepth() == 0) {
         CategoryModel cm = (CategoryModel) navCat;
         showChildren = EnumShowChildrenType.ALWAYS.equals(cm.getShowChildren());
-        if(showChildren) {
-            isSelectedCat = navCat.getContentName().equals(parent);
-        } else {
-            //isSelectedCat = navCat.getContentName().equals(currCat.getContentName());
-        }        
+        isSelectedCat = navCat.getContentName().equals(topParent);
     }
-
-   
     
+    prevDepth = currDepth;
+    currDepth =  navElem.getDepth();
+    if(currDepth <= 1 && (currDepth > prevDepth || currDepth < prevDepth)) {
+        buf.append("</td></tr><tr><td><img src=\""+spacer+"\" height=\"5\"></td></tr>\n");
+    }
 	displayedRows += appendElement(buf, breakDepths, navElem, false, showPopup, index,isSelectedCat,childElements, showChildren);
 	if(showAnAllFldrLink && navElem.getDisplayString().equals(currCat.getFullName())) {
 	    buf.append("<tr><td ><div style=\"margin-left:");
 	    buf.append(((navElem.getDepth()+1) * 4) + 8);
-	    buf.append("px; text-indent: -8px;\">");
-	
-	    buf.append("<b>");
+	    buf.append("px; text-indent: 0px;\">");
 	    buf.append("<a href=\"");
         buf.append(response.encodeURL(topCatLink+"&moreOptions="+showMore+"&trk=snav"));
 	    buf.append("\">");
 	    buf.append("All");
 	    buf.append("</a>");
-	    buf.append("</b>");
 	    buf.append("</div></td></tr>");
 	    buf.append("\n");
 	    displayedRows++;

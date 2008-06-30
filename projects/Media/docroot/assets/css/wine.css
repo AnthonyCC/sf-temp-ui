@@ -230,10 +230,10 @@ a.nav_sub:active
 		background-color: #FBF1D3;
 		color: #665544;
 		font-weight: bold;
-		font-size: 12px;
+		font-size: 11px;
 		font-family: Tahoma;
 		text-decoration: none;
-		line-height: 13px;
+		line-height: 12px;
 		/*padding: 1px 1px;*/
 		display: block;
 		padding-left: 10px;
@@ -729,8 +729,19 @@ a.snav_nav_item:link, a.snav_nav_item:visited, a.snav_nav_item:active
             {
                   color:#665544;
             }
-a.snav_nav_item:hover	
+a.snav_nav_item:hover, a.left_nav_item_hoverfake:hover  
 	{
         color: #FBF1D3;
         background-color: #786F5E;
     }
+a.left_nav_item_hoverfake
+{
+	display: block;
+}
+a.left_nav_item_hoverfake:link, a.left_nav_item_hoverfake:visited, a.left_nav_item_hoverfake:active
+	{
+		color: #FBF1D3;
+        background-color: #786F5E;
+	}
+
+	
