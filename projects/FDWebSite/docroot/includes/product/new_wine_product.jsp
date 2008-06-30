@@ -49,8 +49,8 @@
     String alignment="align=\"left\"";
     String prodPageRatingStuff = getProdPageRatings(productNode,response); // get and format the product page ratings
 %>
-<table border="0" cellspacing="0" cellpadding="0" width="440" align="center">
-<tr><td><img src="/media_stat/images/layout/clear.gif" width="10" height="8"></td><td><img src="/media_stat/images/layout/clear.gif" width="265" height="8"></td><td><img src="/media_stat/images/layout/clear.gif" width="165" height="8"></td></tr>
+<table border="0" cellspacing="0" cellpadding="0" width="430" align="center">
+<tr><td><img src="/media_stat/images/layout/clear.gif" width="10" height="8"></td><td><img src="/media_stat/images/layout/clear.gif" width="255" height="8"></td><td><img src="/media_stat/images/layout/clear.gif" width="165" height="8"></td></tr>
 	<tr valign="top">
 		<td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 		<td class="text12">
