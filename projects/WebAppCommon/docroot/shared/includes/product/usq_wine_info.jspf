@@ -111,12 +111,12 @@
 </tr>
 <tr valign="top">
 	<% if(wineRegionName != null && !"".equals(wineRegionName) && wineRegionName.trim().length() > 0) { %>
-		<td class="center_region_left">
+		<td class="center_region_left" width="5%">
 			<fd:IncludeMedia name="<%=wineRegionName%>" />
 		</td>
 		
 	<%}%>	
-	<td class="center_region_right" <%= ("".equals(wineRegionName)) ? "colspan='2'":"" %>>
+	<td class="center_region_right" <%= ("".equals(wineRegionName)) ? "colspan='2'":"width='95%'" %>>
             <% if(wineCountry!=null && !"".equals(wineCountry)) {%>
 			<div class="center_prod_descrip">
 				<!-- 7.2.3 Region --><span class="ucase bolder">REGION:</span> <span><%=wineCountry%>

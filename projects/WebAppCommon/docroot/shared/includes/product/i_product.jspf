@@ -263,9 +263,9 @@ if (skus.size() != 0) {
 
     %>
     <%@page import="java.util.List"%>
-	<table>
+	<table width="100%" cellpadding="0" cellspacing="0" border="0"> <%-- Outermost table 1 --%>
 	<form id='product_form' method='post' name="productForm" action="<%= formAction %>">
-	<tr><td>
+	<tr><td <%= !isWineLayout ? "align=\"right\"":""%>>
         <% if (CartName.MODIFY_CART.equals(cartMode)) { %>
             <input type="hidden" name="cartLine" value="<%= templateLine.getRandomId() %>">
             <input type="hidden" name="CCL_COPY_TYPE" value="SINGLE"/>
@@ -368,8 +368,7 @@ if (skus.size() != 0) {
 		     if (brandPopupLink!=null) {
 		         %><a href="<%= brandPopupLink %>"><%
 		     }
-	%><img src="<%=brandLogo.getPath()%>" width="<%=brandLogo.getWidth()%>"  height="<%=brandLogo.getHeight()%>" alt="<%=altText%>" border="0">
-        <%
+	%><img src="<%=brandLogo.getPath()%>" width="<%=brandLogo.getWidth()%>"  height="<%=brandLogo.getHeight()%>" alt="<%=altText%>" border="0"><%
 	     if (brandPopupLink!=null) {
 	%></a>
 	<%   }
@@ -393,7 +392,7 @@ if (skus.size() != 0) {
 	}    	
     }
 
-    %><FONT CLASS="title18"><%
+    %><font class="title18"><%
     //
     // annotation mode
     //
@@ -403,17 +402,17 @@ if (skus.size() != 0) {
         // no annotation, just display title
         %><%= productTitle %><%
     }
-    %></FONT><BR><%
+    %></font><br><%
     if (productNode.getAttribute("PARTIALLY_FROZEN")!=null && productNode.getDepartment().getFullName().equalsIgnoreCase("BAKERY")) {
-        %><BR><img src="/media_stat/images/template/bakery/parbaked_frozen_prod.gif" width="147" height="16" alt="" border="0"><br><%
+        %><br><img src="/media_stat/images/template/bakery/parbaked_frozen_prod.gif" width="147" height="16" alt="" border="0"><br><%
     }
 
     String akaName = productNode.getAka();
     if ((akaName != null) && !"".equals(akaName)) {
-        %>"<%= akaName %>"<BR><%
+        %>"<%= akaName %>"<br><%
     }
     if (productNode.getAttribute("PACKAGE_DESCRIPTION") != null) {
-        %><BR><%= productNode.getAttribute("PACKAGE_DESCRIPTION").getValue() %><BR><%
+        %><br><%= productNode.getAttribute("PACKAGE_DESCRIPTION").getValue() %><br><%
     }
 
     if (displayShortTermUnavailability && shortTermUnavailable.size() > 0) {
@@ -433,7 +432,7 @@ if (skus.size() != 0) {
     if ((salesUnitDescrsMatch && hasSingleSalesUnit && !hasSingleSku) || (hasSingleSku && hasVariationMatrix && hasSingleSalesUnit)) {
         String salesUnitDescr = defaultProduct.getSalesUnits()[0].getDescription();
         if (!"nm".equalsIgnoreCase(salesUnitDescr)) {
-            %><BR><%= salesUnitDescr %><BR><%
+            %><br><%= salesUnitDescr %><br><%
         }
     }
 
@@ -459,17 +458,17 @@ if (skus.size() != 0) {
                         EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
                         String path = popup + "&attrib=FDDEF_SOURCE" + "&tmpl=" + tm.getPopupSize();
                         %>
-                        <font CLASS="text11bold"><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= domainValue.getLabel().toUpperCase() %></a></FONT>
+                        <font class="text11bold"><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= domainValue.getLabel().toUpperCase() %></a></font>
                         <%
                     } else if (productNode.getAttribute("FDDEF_GRADE")!=null) {
                         TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_GRADE").getValue();
                         EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
                         String path = popup + "&attrib=FDDEF_GRADE" + "&tmpl=" + tm.getPopupSize();
                         %>
-                        <font CLASS="text11bold"><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= domainValue.getLabel().toUpperCase() %></a></FONT>
+                        <font class="text11bold"><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= domainValue.getLabel().toUpperCase() %></a></font>
                         <%
                     } else {
-                        %><font CLASS="text11bold"><%= domainValue.getLabel().toUpperCase() %></FONT><%
+                        %><font class="text11bold"><%= domainValue.getLabel().toUpperCase() %></font><%
                     }
                     if (domains.size() > 1) {
                         DomainValue secDomainValue = ((DomainValueRef) ((MultiAttribute) defaultSku.getAttribute("VARIATION_MATRIX")).getValue(1)).getDomainValue();
@@ -480,15 +479,15 @@ if (skus.size() != 0) {
                     <%
                 } else {
                     %>
-                    <FONT CLASS="text13bold">
+                    <font class="text13bold">
                     <% if (hasSingleSalesUnit && !hasVariationMatrix) {
                         String salesUnitDescr = defaultProduct.getSalesUnits()[0].getDescription();
                         if (!"nm".equalsIgnoreCase(salesUnitDescr) && !"ea".equalsIgnoreCase(salesUnitDescr) && !"".equalsIgnoreCase(salesUnitDescr)) { %>
                         <%= salesUnitDescr %> -
                     <%  }
                       } %>
-                    <FONT CLASS="productPageSinglePrice"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font><FONT CLASS="productPageSinglePriceUnit">/<%=productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
-                    <br></FONT>
+                    <font class="productPageSinglePrice"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font><font class="productPageSinglePriceUnit">/<%=productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
+                    <br></font>
                     <%
                 }
                 %>
@@ -569,26 +568,26 @@ if (skus.size() != 0) {
                 }
 
                 %>
-                <TABLE WIDTH="187" CELLPADDING="1" CELLSPACING="1" BORDER="0">
+                <table width="187" cellpadding="1" cellspacing="1" border="0"> <%-- Nested Table 2 Options list - radio buttions/ multiple SKUs --%>
                 <%
                 if (hasSecondaryDomain) {
                     %>
                     <tr valign="bottom">
-                        <td width="187" colspan="2" align="right">
+                        <td colspan="2" align="right">
                             <%
                             if (productNode.getAttribute("FDDEF_SOURCE")!=null) {
                                 TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_SOURCE").getValue();
                                 EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
                                 String path = popup + "&attrib=FDDEF_SOURCE" + "&tmpl=" + tm.getPopupSize();
                                 %>
-                                <A HREF="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><b><%= priDomainValue.getLabel().toUpperCase() %></b></a>
+                                <a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><b><%= priDomainValue.getLabel().toUpperCase() %></b></a>
                                 <%
                             } else if (productNode.getAttribute("FDDEF_GRADE")!=null) {
                                 TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_GRADE").getValue();
                                 EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
                                 String path = popup + "&attrib=FDDEF_GRADE" + "&tmpl=" + tm.getPopupSize();
                                 %>
-                                <A HREF="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><b><%= priDomainValue.getLabel().toUpperCase() %></b></a>
+                                <a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><b><%= priDomainValue.getLabel().toUpperCase() %></b></a>
                                 <%
                             } else {
                                 %><b><%= priDomainValue.getLabel().toUpperCase() %></b>    <%
@@ -597,7 +596,7 @@ if (skus.size() != 0) {
                             if (allSamePrice) {
                                 %>
                                 <fd:FDProductInfo id="prdinfo" skuCode="<%= ((SkuModel)group.get(0)).getSkuCode() %>">
-                                    <font class="productPageSecondaryVarPrice"><%= currencyFormatter.format(prdinfo.getDefaultPrice()) %></font><FONT CLASS="productPageSecondaryVarPriceUnit">/<%=prdinfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
+                                    <font class="productPageSecondaryVarPrice"><%= currencyFormatter.format(prdinfo.getDefaultPrice()) %></font><font class="productPageSecondaryVarPriceUnit">/<%=prdinfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
                                 </fd:FDProductInfo>
                                 <%
                             }
@@ -630,12 +629,12 @@ if (skus.size() != 0) {
                             String priceUnit = "/" + productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
                             %>
                             <fd:ErrorHandler result='<%=result%>' name='skuCode' id='errorMsg'>
-                                <TR VALIGN="TOP">
-                                    <TD WIDTH="187" COLSPAN="2" ALIGN="RIGHT"><span class="text11rbold"><%=errorMsg%></span></TD>
-                                </TR>
+                                <tr valign="top">
+                                    <td colspan="2" align="right"><span class="text11rbold"><%=errorMsg%></span></td>
+                                </tr>
                             </fd:ErrorHandler>
-                            <TR VALIGN="TOP">
-                            <TD WIDTH="172" ALIGN="RIGHT" CLASS="text10">
+                            <tr valign="top">
+                            <td width="172" align="right" class="text10">
                             <%
                             if (!hasSecondaryDomain) {
                                 if (productNode.getAttribute("FDDEF_GRADE")!=null) {
@@ -643,21 +642,21 @@ if (skus.size() != 0) {
                                     EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
                                     String path = popup + "&attrib=FDDEF_GRADE" + "&tmpl=" + tm.getPopupSize();
                                     %>
-                                    <b><A HREF="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= priDomainValue.getLabel().toUpperCase() %></A><%= labelNolink %></b>
+                                    <b><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= priDomainValue.getLabel().toUpperCase() %></a><%= labelNolink %></b>
                                     <%
                                 } else if (productNode.getAttribute("FDDEF_SOURCE")!=null) {
                                     TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_SOURCE").getValue();
                                     EnumPopupType popupType = EnumPopupType.getPopupType(tm.getPopupSize());
                                     String path = popup + "&attrib=FDDEF_SOURCE" + "&tmpl=" + tm.getPopupSize();
                                     %>
-                                    <b><A HREF="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= priDomainValue.getLabel().toUpperCase() %></A> <%= labelNolink %></b>
+                                    <b><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= priDomainValue.getLabel().toUpperCase() %></a><%= labelNolink %></b>
                                     <%
                                 } else if (productNode.getAttribute("FDDEF_FRENCHING")!=null) {
                                     TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_FRENCHING").getValue();
                                     EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
                                     String path = popup + "&attrib=FDDEF_FRENCHING" + "&tmpl=" + tm.getPopupSize();
                                     %>
-                                    <b><A HREF="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= priDomainValue.getLabel().toUpperCase() %></A> <%= labelNolink %></b>
+                                    <b><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= priDomainValue.getLabel().toUpperCase() %></a><%= labelNolink %></b>
                                     <%
                                 } else {
                                     %>
@@ -697,8 +696,8 @@ if (skus.size() != 0) {
                                         }
                                     }
                                 }
-                                if (!allSamePrice) {
-                                    %><font class="productPageSecondaryVarPrice"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font><font class="productPageSecondaryVarPriceUnit">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font><%
+                                if (!allSamePrice) { // extra space below for Size desc and price
+                                    %> <font class="productPageSecondaryVarPrice"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font><font class="productPageSecondaryVarPriceUnit">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font><%
                                 }
                                 if (product.getPricing().getScaleDisplay().length==0) {
                                     %><br><br><%
@@ -717,9 +716,9 @@ if (skus.size() != 0) {
                                     %><font class="text11rbold">*</font><%
                                 }
                             }
-                            %></TD>
-                            <TD WIDTH="15"><input type="radio" name="skuCode" value="<%= sku.getSkuCode() %>" onClick="pricing.setSKU(this.value);" <% if (defaultSku == sku) out.print("checked"); %>><BR></TD>
-                            </TR>
+                            %></td>
+                            <td width="15"><input type="radio" name="skuCode" value="<%= sku.getSkuCode() %>" onClick="pricing.setSKU(this.value);" <% if (defaultSku == sku) out.print("checked"); %>><br></td>
+                            </tr>
                         </fd:FDProduct>
                     </fd:FDProductInfo>
                 </logic:iterate>
@@ -744,12 +743,12 @@ if (skus.size() != 0) {
             //String popupSize = ((MediaI)productNode.getAttribute("SALES_UNIT_DESCRIPTION").getValue()).getPopupSize();
             String currCat = productNode.getParentNode().toString(); //hack for small popup in fish steak&fillet, porkchop, beef roast
             %>
-            <select name="salesUnit" CLASS="text11" STYLE="WIDTH:165px"
+            <select name="salesUnit" class="text11" STYLE="WIDTH:165px"
                 onChange="checkFDDefAndPrice(this.form,this.options[this.selectedIndex].value,'<%=popup%>&attrib=SALES_UNIT_DESCRIPTION&tmpl=<% if (currCat.equalsIgnoreCase("fwhl") ||currCat.equalsIgnoreCase("fstk") || currCat.equalsIgnoreCase("fflt") || currCat.equalsIgnoreCase("prchp") || currCat.equalsIgnoreCase("bovnrst") || currCat.equalsIgnoreCase("bpotrst") || currCat.equalsIgnoreCase("kosher_meat_beef_roast") || currCat.indexOf("kosher_seafood") > -1 ){ %>small','small'<% } else { %>large','large'<% } %>);">
             <%
         } else {
             %>
-            <select name="salesUnit" CLASS="text11" STYLE="WIDTH:165px"
+            <select name="salesUnit" class="text11" STYLE="WIDTH:165px"
                 onChange="pricing.setSalesUnit(this.value);">
             <%
         }
@@ -763,7 +762,7 @@ if (skus.size() != 0) {
             // size
             %><option value="FDD">NEED HELP CHOOSING?<%
         }
-        %></select><BR><%
+        %></select><br><%
     } else if ((sellBySalesUnit != null) && (hasSingleSalesUnit)) {
         %><input type="hidden" name="salesUnit" value="<%= defaultProduct.getSalesUnits()[0].getName() %>"><%
     }
@@ -803,7 +802,7 @@ if (skus.size() != 0) {
     %>
 
     <logic:iterate id="variation" collection="<%= variations %>" type="com.freshdirect.fdstore.FDVariation" indexId="idx">
-        <FONT CLASS="space4pix"><BR></FONT>
+        <font class="space4pix"><br></font>
         <%
         String reqVariationOption = (String)reqVariations.get( variation.getName() );
 
@@ -823,13 +822,13 @@ if (skus.size() != 0) {
                 double cvprice = 0.0;
                 CharacteristicValuePrice cvp = defaultProduct.getPricing().findCharacteristicValuePrice(variation.getName(), onlyOption.getName());
                 if (cvp != null) cvprice = cvp.getPrice(); %>
-                <FONT CLASS="text11"><%= onlyOption.getDescription() %>
+                <font class="text11"><%= onlyOption.getDescription() %>
                 <% if (cvprice > 0.0) { %>
                     - <%= currencyFormatter.format(cvp.getPrice()) %>/<%= cvp.getPricingUnit() %>
                 <% } else { %>
                     - no charge
                 <% } %>
-                </FONT>
+                </font>
                 <%
             }
         } else if (!"checkbox".equals(variation.getDisplayFormat())) {
@@ -845,7 +844,7 @@ if (skus.size() != 0) {
             }
 
             if ((idx.intValue() == 0) && !variation.isOptional() && !salesUnitFirst) {
-                %><BR><span class="text11bold">Please Choose</span><br><span class="space2pix"><br></span><%
+                %><br><span class="text11bold">Please Choose</span><br><span class="space2pix"><br></span><%
             }
             %>
             <fd:ErrorHandler result='<%=result%>' name='<%= variation.getName() %>' id='errorMsg'>
@@ -862,11 +861,11 @@ if (skus.size() != 0) {
             String title = variation.getDescription();
             if (title.equalsIgnoreCase("MARINADE/RUB") || productNode.getParentNode().toString().indexOf("kosher_meat") > -1) {
                 %>
-                <select name="<%= charId %>" CLASS="text11" STYLE="WIDTH:165px" onChange="checkFDDefAndSetOption(this.form,'<%= charId %>',this.options[this.selectedIndex].value,'<%=fddefPop%>?catId=<%= templateLine.getCategoryName() %>&prodId=<%= templateLine.getProductName() %>&charName=<%=charName%>&tmpl=<%=lpop%>&title=<%=title%>',<%=largePopup.getHeight()%>,<%=largePopup.getWidth()%>);">
+                <select name="<%= charId %>" class="text11" STYLE="WIDTH:165px" onChange="checkFDDefAndSetOption(this.form,'<%= charId %>',this.options[this.selectedIndex].value,'<%=fddefPop%>?catId=<%= templateLine.getCategoryName() %>&prodId=<%= templateLine.getProductName() %>&charName=<%=charName%>&tmpl=<%=lpop%>&title=<%=title%>',<%=largePopup.getHeight()%>,<%=largePopup.getWidth()%>);">
                 <%
             } else {
                 %>
-                <select name="<%= charId %>" CLASS="text11" STYLE="WIDTH:165px" onChange="checkFDDefAndSetOption(this.form,'<%= charId %>',this.options[this.selectedIndex].value,'<%=fddefPop%>?catId=<%= templateLine.getCategoryName() %>&prodId=<%= templateLine.getProductName() %>&charName=<%=charName%>&tmpl=<%=spop%>&title=<%=title%>',<%=smallPopup.getHeight()%>,<%=smallPopup.getWidth()%>);">
+                <select name="<%= charId %>" class="text11" STYLE="WIDTH:165px" onChange="checkFDDefAndSetOption(this.form,'<%= charId %>',this.options[this.selectedIndex].value,'<%=fddefPop%>?catId=<%= templateLine.getCategoryName() %>&prodId=<%= templateLine.getProductName() %>&charName=<%=charName%>&tmpl=<%=spop%>&title=<%=title%>',<%=smallPopup.getHeight()%>,<%=smallPopup.getWidth()%>);">
                 <%
             }
             %>
@@ -895,9 +894,9 @@ if (skus.size() != 0) {
                 <%
                 if (!variation.hasAttribute(EnumAttributeName.UNDER_LABEL.getName())) {
                     // space between multiple optional pulldowns
-                    %><FONT CLASS="space4pix"><BR></FONT><%
+                    %><font class="space4pix"><br></font><%
                 } else {
-                    %><br><FONT CLASS="text9"><I><%= variation.getAttribute(EnumAttributeName.UNDER_LABEL) %></I></FONT><br><font CLASS="space4pix"><br></font><%
+                    %><br><font class="text9"><I><%= variation.getAttribute(EnumAttributeName.UNDER_LABEL) %></I></font><br><font class="space4pix"><br></font><%
                 }
 
         } else {
@@ -909,7 +908,7 @@ if (skus.size() != 0) {
             }
             boolean isChecked = (cboxValue != null) && cboxValue.getName().equals(reqVariationOption);
             %>
-            <FONT CLASS="text13">
+            <font class="text13">
                 <%
                 String fddefPop = "/shared/fd_def_popup.jsp";
                 String charName = variation.getName();
@@ -938,7 +937,7 @@ if (skus.size() != 0) {
                 }
                 %>
                 &nbsp;
-            </FONT>
+            </font>
             <%
             double cvprice = 0.0;
             CharacteristicValuePrice cvp = defaultPricing.findCharacteristicValuePrice(variation.getName(), cboxValue.getName());
@@ -947,7 +946,7 @@ if (skus.size() != 0) {
                 %> - <%= currencyFormatter.format(cvp.getPrice()) %>/<%= cvp.getPricingUnit() %><%
             }
             %>
-            <input type="checkbox"<%= isChecked ? " CHECKED " : "" %> name="<%= variation.getName() %>" value="<%= cboxValue.getName() %>" onClick="pricing.setOption('<%= variation.getName() %>', this.checked ? this.value : '');"><BR>
+            <input type="checkbox"<%= isChecked ? " CHECKED " : "" %> name="<%= variation.getName() %>" value="<%= cboxValue.getName() %>" onClick="pricing.setOption('<%= variation.getName() %>', this.checked ? this.value : '');"><br>
             <%
         }
 
@@ -956,60 +955,61 @@ if (skus.size() != 0) {
     </logic:iterate>
     <%-- start render quantity --%>
 <%  if (!isWineLayout) {  %>  
-    <img src="/media_stat/images/layout/333333.gif" width="180" height="1" border="0" VSPACE="10">
+    <img src="/media_stat/images/layout/333333.gif" width="187" height="1" border="0" VSPACE="10">
 <%  } %>    
-    <BR>
+    <br>
     <fd:ErrorHandler result='<%=result%>' name='quantity' id='errorMsg'>
         <span class="text11rbold"><%=errorMsg%></span><br>
     </fd:ErrorHandler>
-    <table CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="187">
-        <%
+    <table cellpadding="0" cellspacing="0" border="0" <%= !isWineLayout ? "align=\"right\"":""%>> <%-- Nested Table 3 for Quantity box (description) with increment/decrement arrows & price & add to cart display --%>
+        <% // SOLD BY EACHES
         if (displaySalesUnitsOnly) {
             %>
-            <tr VALIGN="MIDDLE">
-            <td WIDTH="187" colspan="2" CLASS="text11" ALIGN="RIGHT">
-            <fd:ErrorHandler result='<%=result%>' name='salesUnit' id='errorMsg'>
-                <span class="text11rbold"><%=errorMsg%></span><br>
-            </fd:ErrorHandler>
-            <%
-            if ("SALES_UNIT".equalsIgnoreCase(sellBySalesUnit) || (sellBySalesUnit == null)) {
-                // select by sales unit only
-                %><FONT CLASS="text11bold"><%= productNode.getAttribute("QUANTITY_TEXT").getValue() %></FONT>&nbsp;<%
-            } else if ("BOTH".equalsIgnoreCase(sellBySalesUnit)) {
-                // select by sales unit and quantity
-                %><FONT CLASS="text11bold"><%= productNode.getAttribute("SALES_UNIT_LABEL").getValue() %></FONT>&nbsp;<%
-            }
-            %>
-            <!-- Help -->
-            <%
-
-            Attribute salesUnitDescAttr = productNode.getAttribute("SALES_UNIT_DESCRIPTION");
-            if (salesUnitDescAttr!=null){
-                //String salesUnitDesc = "/sales_unit_desc_popup.jsp";
-                //String salesUnitDesc = ((MediaI)productNode.getAttribute("SALES_UNIT_DESCRIPTION").getValue()).getPath();
-                %>
-                <select name="salesUnit" CLASS="text11" onChange="checkFDDefAndPrice(this.form,this.options[this.selectedIndex].value,'<%=popup%>&attrib=SALES_UNIT_DESCRIPTION&tmpl=small','small');">
-                <%
-            } else {
-                %>
-                <select name="salesUnit" CLASS="text11" onChange="pricing.setSalesUnit(this.value);">
-                <%
-            }
-            %>
-            <logic:iterate id="salesUnit" collection="<%= defaultProduct.getSalesUnits() %>" type="com.freshdirect.fdstore.FDSalesUnit">
-                <option value="<%= salesUnit.getName() %>"<%= salesUnit.getName().equals(defaultSalesUnit) ? " SELECTED" : ""%>><%= salesUnit.getDescription().trim() %>
-            </logic:iterate>
-            <%
-            if (salesUnitDescAttr!=null) {
-                String salesUnitDesc = ((MediaI)productNode.getAttribute("SALES_UNIT_DESCRIPTION").getValue()).getPath();
-                %>
-                <option value="FDD">NEED HELP CHOOSING?
-                <%
-            }
-            %>
-            </select><br></TD></TR>
-            <TR><TD WIDTH="187" COLSPAN="2"><BR></TD></TR>
-            <%
+            <tr valign="middle">
+            <td colspan="2" class="text11" <%= !isWineLayout ? "align=\"right\"":""%>>
+				<fd:ErrorHandler result='<%=result%>' name='salesUnit' id='errorMsg'>
+					<span class="text11rbold"><%=errorMsg%></span><br>
+				</fd:ErrorHandler>
+				<%
+				if ("SALES_UNIT".equalsIgnoreCase(sellBySalesUnit) || (sellBySalesUnit == null)) {
+					// select by sales unit only
+					%><font class="text11bold"><%= productNode.getAttribute("QUANTITY_TEXT").getValue() %></font>&nbsp;<%
+				} else if ("BOTH".equalsIgnoreCase(sellBySalesUnit)) {
+					// select by sales unit and quantity
+					%><font class="text11bold"><%= productNode.getAttribute("SALES_UNIT_LABEL").getValue() %></font>&nbsp;<%
+				}
+				%>
+				<!-- Help -->
+				<%
+	
+				Attribute salesUnitDescAttr = productNode.getAttribute("SALES_UNIT_DESCRIPTION");
+				if (salesUnitDescAttr!=null){
+					//String salesUnitDesc = "/sales_unit_desc_popup.jsp";
+					//String salesUnitDesc = ((MediaI)productNode.getAttribute("SALES_UNIT_DESCRIPTION").getValue()).getPath();
+					%>
+					<select name="salesUnit" class="text11" onChange="checkFDDefAndPrice(this.form,this.options[this.selectedIndex].value,'<%=popup%>&attrib=SALES_UNIT_DESCRIPTION&tmpl=small','small');">
+					<%
+				} else {
+					%>
+					<select name="salesUnit" class="text11" onChange="pricing.setSalesUnit(this.value);">
+					<%
+				}
+				%>
+				<logic:iterate id="salesUnit" collection="<%= defaultProduct.getSalesUnits() %>" type="com.freshdirect.fdstore.FDSalesUnit">
+					<option value="<%= salesUnit.getName() %>"<%= salesUnit.getName().equals(defaultSalesUnit) ? " SELECTED" : ""%>><%= salesUnit.getDescription().trim() %>
+				</logic:iterate>
+				<%
+				if (salesUnitDescAttr!=null) {
+					String salesUnitDesc = ((MediaI)productNode.getAttribute("SALES_UNIT_DESCRIPTION").getValue()).getPath();
+					%>
+					<option value="FDD">NEED HELP CHOOSING?
+					<%
+				}
+				%>
+				</select><br>
+			</td>
+			</tr>
+       <%
         }
 
         if ("BOTH".equalsIgnoreCase(sellBySalesUnit) || ((sellBySalesUnit == null) && !(!hasSingleSalesUnit && isSoldByLB && isPricedByLB))) {
@@ -1017,49 +1017,56 @@ if (skus.size() != 0) {
              if (isWineLayout && !CartName.MODIFY_CART.equals(cartMode) ) { 
                 priceShown=true;%>
                  
-                <TR VALIGN="BOTTOM"><TD>
-   <%-- pricing section --%>
-		<table cellpadding="0" cellspacing="0" border="0">
-            <tr>
-                  	<td style="padding-right:4px;" class="text11bold"><%= productNode.getAttribute("QUANTITY_TEXT").getValue() %></td>
-                    <td style="padding-right:2px;" class="text11"><% if (productNode.getQuantityMinimum() != 1) { out.println(" *"); } %> <input type="text" class="text11" size="4" name=quantity value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);" maxlength="2"></td>
-                    <td width="12" valign="bottom"><a HREF="javascript:chgQty(<%= productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br><a HREF="javascript:chgQty(<%= -productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a></td>
-                    <td style="padding-left:6px;" class="text11bold">Price</td>
-					<td style="padding-left:4px;"><INPUT class="text11bold" TYPE="text" NAME="PRICE" SIZE="6" onChange="" onFocus="blur()" value=""></td>
-            </tr>
-      </table>
-				</td>
+                <tr>
+					<td>
+   					<%-- pricing section --%>
+						<table cellpadding="0" cellspacing="0" border="0" <%= !isWineLayout ? "align=\"right\"":""%>> <%-- Nested Table 4 Quantity box with increment/decrement arrows AND price --%>
+							<tr>
+									<td style="padding-right:4px;" class="text11bold"><%= productNode.getAttribute("QUANTITY_TEXT").getValue() %></td>
+									<td class="text11"><% if (productNode.getQuantityMinimum() != 1) { out.println(" *"); } %> <input type="text" class="text11" size="4" name=quantity value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);" maxlength="2"></td>
+									<td width="12" align="right"><a href="javascript:chgQty(<%= productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br><a href="javascript:chgQty(<%= -productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a></td>
+									<td style="padding-left:6px;" class="text11bold">Price</td>
+									<td style="padding-left:4px;"><input class="text11bold" type="text" name="PRICE" size="6" onChange="" onFocus="blur()" value=""></td>
+							</tr>
+						</table>
+					</td>
                 </tr>
 <%          } else {  %>
-                <TR VALIGN="BOTTOM" align="left"><TD WIDTH="173">
-                <FONT CLASS="text11bold"><%= productNode.getAttribute("QUANTITY_TEXT").getValue() %><% if (productNode.getQuantityMinimum() != 1) { out.println(" *"); } %></FONT>&nbsp;<input type=text CLASS="text11" size=4 name=quantity value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);"></TD>
-                <td WIDTH="14" VALIGN="BOTTOM"><a HREF="javascript:chgQty(<%= productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br>
-                    <a HREF="javascript:chgQty(<%= -productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a>
-                </td>
-                </tr>
+                <tr>
+					<td <%= !isWineLayout ? "align=\"right\"":""%>>
+						<table cellpadding="0" cellspacing="0" border="0"> <%-- Nested Table 5 Quantity box with increment/decrement arrows by each, price below --%>
+							<tr>
+								<td style="padding-right:4px;" class="text11bold"><%= productNode.getAttribute("QUANTITY_TEXT").getValue() %><% if (productNode.getQuantityMinimum() != 1) { out.println(" *"); } %></td>
+                				<td class="text11"><input type="text" class="text11" size="4" name="quantity" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);"></td>
+								<td width="12" align="right"><a href="javascript:chgQty(<%= productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br><a href="javascript:chgQty(<%= -productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a></td>
+                			</tr>
+						</table>
+					</td>
+				</tr>	
 <%
             }
         } else {
             // assumed quantity of 1
             %><input type="hidden" name="quantity" value="1"><%
         }
-        %>
-    </table><P>
-    <%
+	
     if (!priceShown) {
+	%>
+		<tr><td class="text11bold" <%= !isWineLayout ? "align=\"right\"":""%> style="padding-top:8px;">
+	<%
         if (displayEstimatedQuantity) {
             %>
-            <FONT CLASS="text11bold"><A HREF="javascript:popup('/help/estimated_price.jsp','small')">Estimated</A></FONT>
-            &nbsp;<INPUT class="text11" TYPE="text" NAME="EST_QTY" SIZE="7" onChange="" onFocus="blur()" value="">
+            <a href="javascript:popup('/help/estimated_price.jsp','small')" class="text11bold">Estimated</a>&nbsp;<input class="text11" type="text" name="EST_QTY" size="7" onChange="" onFocus="blur()" value="">
             <%
         } else if (isPricedByLB) {
-            %><FONT CLASS="text11bold"><A HREF="javascript:popup('/help/estimated_price.jsp','small')">Estimated Price</A></FONT><%
+            %><a href="javascript:popup('/help/estimated_price.jsp','small')" class="text11bold">Estimated Price</a><%
         } else {
-            %><FONT CLASS="text11bold">Price</FONT><%
+            %>Price<%
         }
 
-    %>&nbsp;<INPUT class="text11bold" TYPE="text" NAME="PRICE" SIZE="6" onChange="" onFocus="blur()" value=""><P>
+    %>&nbsp;<input class="text11bold" type="text" name="PRICE" size="6" onChange="" onFocus="blur()" value=""></td></tr>
 <%  }  %>
+	<tr><td class="text11" <%= !isWineLayout ? "align=\"right\"":""%> style="padding-top:5px;">
     <%-- end render quantity --%>
 
     <%-- Set up the pricing callback, now that the field exists on the page --%>
@@ -1098,10 +1105,10 @@ if (skus.size() != 0) {
 
         if (referer==null) referer = "/view_cart.jsp";
         %>
-        <input type="image" name="save_changes" src="/media_stat/images/buttons/save_changes_cart.gif" width="109" height="20" border="0" alt="SAVE CHANGES" VSPACE="2"><BR>
-        <input type="image" name="remove_from_cart" src="/media_stat/images/buttons/remove_item.gif" width="109" height="20" border="0" alt="REMOVE ITEM" VSPACE="2"><BR>
+        <input type="image" name="save_changes" src="/media_stat/images/buttons/save_changes_cart.gif" width="109" height="20" border="0" alt="SAVE CHANGES" VSPACE="2"><br>
+        <input type="image" name="remove_from_cart" src="/media_stat/images/buttons/remove_item.gif" width="109" height="20" border="0" alt="REMOVE ITEM" VSPACE="2"><br>
         <input type="hidden" name="referer" value="<%=referer%>">
-        <a href="<%=referer%>"><img src="/media_stat/images/buttons/no_change.gif" width="109" height="20" border="0" alt="NO CHANGE" VSPACE="2"></a><BR>
+        <a href="<%=referer%>"><img src="/media_stat/images/buttons/no_change.gif" width="109" height="20" border="0" alt="NO CHANGE" VSPACE="2"></a><br>
         <%
     // CCL
     } else if (CartName.MODIFY_LIST.equals(cartMode) ||
@@ -1129,17 +1136,17 @@ if (skus.size() != 0) {
 
         <input type="image" name="save_changes" src="/media_stat/images/template/quickshop/alt_replace_item_btn.gif" 
 	       onclick="document.productForm.list_action.value='modify';document.productForm.submit();"
-	       HSPACE="2" BORDER="0"><BR><FONT CLASS="space4pix"><BR></FONT>
+	       HSPACE="2" border="0"><br><font class="space4pix"><br></font>
 
         <%
 	} else {
 	%>
         <input type="image" name="save_changes" src="/media_stat/images/buttons/list_save_changes.gif" 
 	       onclick="document.productForm.list_action.value='modify';document.productForm.submit();"
-	       HSPACE="2" BORDER="0"><BR><FONT CLASS="space4pix"><BR></FONT>
+	       HSPACE="2" border="0"><br><font class="space4pix"><br></font>
 
-        <input type="image" name="remove_from_list" src="/media_stat/images/buttons/remove_item.gif" HSPACE="2" BORDER="0" 
-	       onclick="document.productForm.list_action.value='remove';document.productForm.submit();"><BR><FONT CLASS="space4pix"><BR></FONT>
+        <input type="image" name="remove_from_list" src="/media_stat/images/buttons/remove_item.gif" HSPACE="2" border="0" 
+	       onclick="document.productForm.list_action.value='remove';document.productForm.submit();"><br><font class="space4pix"><br></font>
 
 	<%
 	} // cartMode
@@ -1155,18 +1162,18 @@ if (skus.size() != 0) {
 	<input type="hidden" name="recipeId" value="<%=request.getParameter("recipeId")%>"/>
 	<% } %>
     
-        <a href="<%=referer%>"><img name="no_changes" src="/media_stat/images/buttons/no_change.gif" HSPACE="2" BORDER="0"></a><BR><FONT CLASS="space4pix"><BR></FONT>
+        <a href="<%=referer%>"><img name="no_changes" src="/media_stat/images/buttons/no_change.gif" border="0"></a><br><font class="space4pix"><br></font>
 	<%
     } else {
         %>
-        <input type="image" name="add_to_cart" src="/media_stat/images/buttons/add_to_cart.gif" HSPACE="2" BORDER="0"><BR><FONT CLASS="space4pix"><BR></FONT>
+        <input type="image" name="add_to_cart" src="/media_stat/images/buttons/add_to_cart.gif" width="93" height="20" border="0" style="padding-top:5px; padding-bottom:3px;">
         <%
     }
 
     if (CartName.QUICKSHOP.equals(cartMode)) {
         %>
                 <fd:QuickShopController id="quickCart">
-	        <fd:GetBackToListLink id='backToList' quickCart='<%= quickCart %>' deptId='<%=request.getParameter("qsDeptId")%>'>
+	        	<fd:GetBackToListLink id='backToList' quickCart='<%= quickCart %>' deptId='<%=request.getParameter("qsDeptId")%>'>
                 <a href="<%=backToList.toString()%>"><img src="/media_stat/images/buttons/back_to_list.gif" width="99" height="21" border="0" alt="Back to List" vspace="2"></a><br>
 
 		</fd:GetBackToListLink>
@@ -1209,18 +1216,16 @@ if (skus.size() != 0) {
         }
     }
     if (isWineLayout) {     %>
-	<fd:CCLCheck>
-	    <% if (isWineLayout) { %>
-	        <fd:CCLNew/><a id="ccl-add-action" class="text12" href="/unsupported.jsp" onclick="return CCL.save_items('product_form',this,'action=CCL:AddToList')"><img src="/media_stat/ccl/lists_link_with_icon_dfgs.gif" width="112" height="15" vspace="5" style="border: 0; padding-left: 4px"></a>     
-			<fd:CCLNew template="/common/template/includes/ccl_break.jspf"/><fd:CCLNew template="/common/template/includes/ccl_moreabout.jspf"/>
-		<% } %>
-</fd:CCLCheck>
-    <img src="/media_stat/images/layout/cccccc.gif" width="100%" height="1" border="0" VSPACE="10"><BR>
-	<% if(!CartName.MODIFY_CART.equals(cartMode)) {%>
-			<%@include file="/shared/includes/product/i_wine_rating_review.jspf"%>
-	<%}%>
+		<fd:CCLCheck>
+				<br><a id="ccl-add-action" class="text12" href="/unsupported.jsp" onclick="return CCL.save_items('product_form',this,'action=CCL:AddToList')"><img src="/media_stat/ccl/lists_link_with_icon_dfgs.gif" width="112" height="15" vspace="5" style="border: 0;"></a>     
+				<fd:CCLNew template="/common/template/includes/ccl_break.jspf"/><fd:CCLNew template="/common/template/includes/ccl_moreabout.jspf"/>
+		</fd:CCLCheck>
+		<img src="/media_stat/images/layout/cccccc.gif" width="255" height="1" border="0" vspace="10"><br>
+		<% if(!CartName.MODIFY_CART.equals(cartMode)) {%>
+				<%@include file="/shared/includes/product/i_wine_rating_review.jspf"%>
+		<%}%>
 <%  } else  {   %>
-    <img src="/media_stat/images/layout/333333.gif" width="180" height="1" border="0" VSPACE="10"><BR>
+    <img src="/media_stat/images/layout/333333.gif" width="187" height="1" border="0" vspace="10"><br>
 <%  }  %>
     <%-- START INLCUDES AT BOTTOM OF i_product --%>
     <%@ include file="/shared/includes/product/i_minmax_note.jspf" %>
@@ -1248,6 +1253,8 @@ if (skus.size() != 0) {
     <%
     } 
     %>
+	</td></tr>
+	</table>
     
     <%@ include file="/shared/includes/product/i_deli_buy_guide.jspf" %>
 
@@ -1281,12 +1288,12 @@ if (skus.size() != 0) {
         }
     }
     %>
-    &nbsp; <BR>
-    <FONT CLASS="title18" color="#999999"><%= productNode.getFullName().toUpperCase() %></FONT><BR>
+    &nbsp; <br>
+    <font class="title18" color="#999999"><%= productNode.getFullName().toUpperCase() %></font><br>
     <%
     String akaName = productNode.getAka();
     if ((akaName != null) && !"".equals(akaName)) {
-        %>"<%= akaName %>"<BR><%
+        %>"<%= akaName %>"<br><%
     }
     %>
     <br>
