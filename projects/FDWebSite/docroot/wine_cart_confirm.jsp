@@ -9,14 +9,14 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<script language="javascript" src="/assets/javascript/common_javascript.js"></script>
+
 <%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);%>
 <%! java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##"); %>
 
 <!-- ISTVAN 14/03/2007
      Check if cart has been emptied the item added in the meantime (obviously by someone manipulating it from another window)
 -->
-<% System.out.println("Starting wine cart confirm ....") ;%>
+
 <fd:FDShoppingCart id='cart' result='result'>
 <%
    if (cart.getRecentOrderLines().size() == 0) {
@@ -30,8 +30,25 @@
 <%
 request.setAttribute("listPos", "SystemMessage,LittleRandy,ProductNote,SideCartBottom");
 String catIdParam       = request.getParameter("catId");
-String jspTemplate = "/common/template/usq_sidenav.jsp";
+String jspTemplate = "/common/template/both_dnav.jsp";
 
+if (catIdParam!=null && !"".equals(catIdParam)) {
+  ContentNodeI catNode = null;
+  catNode = ContentFactory.getInstance().getContentNode(catIdParam);
+  if (catNode instanceof RecipeCategory) {
+        jspTemplate ="/common/template/recipe_DLRnavs.jsp" ;
+  }
+  
+
+    int templateType=catNode.getAttribute("TEMPLATE_TYPE",1);
+    if (EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(templateType))) {
+       jspTemplate = "/common/template/usq_sidenav.jsp";
+    } else { //assuming the default (Generic) Template
+        jspTemplate = "/common/template/both_dnav.jsp";
+    }
+        
+  
+}
 Recipe recipe = null;
 
 %>
