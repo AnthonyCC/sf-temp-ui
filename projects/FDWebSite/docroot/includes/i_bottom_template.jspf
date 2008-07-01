@@ -63,7 +63,13 @@ if (!isGroceryProdPage) {
         catBottAttrib = cm_ForBottom.getAttribute("CATEGORY_BOTTOM_MEDIA");
         List catBottomMedias =  catBottAttrib==null?new ArrayList():(List)catBottAttrib.getValue();
             if (catBottomMedias.size()>0) {
-    %>
+				if(EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(templateType))) { %>
+		 <logic:iterate id='mediaRef' indexId='indexNo' collection="<%=catBottomMedias%>" type="com.freshdirect.fdstore.content.MediaModel">
+         	<% if (((Html)mediaRef).getPath()!=null) { %>
+                            <fd:IncludeMedia name='<%= ((Html)mediaRef).getPath() %>' />
+    		<% } %>
+         </logic:iterate>
+	<% } else { %>
     <BR>
     <IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="<%=bottTblWidth%>" HEIGHT="1" BORDER="0"><BR>
     <FONT CLASS="space4pix"><br><br></FONT>
@@ -110,6 +116,7 @@ if (!isGroceryProdPage) {
     </TABLE>
     <%}
     }
+}
     %>
 <%
     // display the featured brands if there are any

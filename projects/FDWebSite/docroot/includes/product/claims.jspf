@@ -11,7 +11,7 @@ if (!common.isEmpty()) {%>
 		EnumClaimValue claim = (EnumClaimValue) ic.next();
 		if (!EnumClaimValue.getValueForCode("NONE").equals(claim) && !EnumClaimValue.getValueForCode("OAN").equals(claim)) {
 			%>
-			<li></li><%= claim %><br>
+			<div style="margin-left:8px; text-indent: -8px;">&bull; <%= claim %></div>
 			<% 
 		}
 	} 
