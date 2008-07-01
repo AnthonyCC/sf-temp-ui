@@ -28,11 +28,11 @@ link = class in a tag instead, no span needed
         sb.append("_menu\" class=\"nav_sub\">");
         for(Iterator iter = subCategories.iterator(); iter.hasNext();){
             CategoryModel scm = (CategoryModel) iter.next();
-            sb.append("<a class=\"navFP_item\" href=\"/category.jsp?catId=");     
+            sb.append("<div><a class=\"navFP_item\" href=\"/category.jsp?catId=");     
             sb.append(scm.getContentKey().getId());
             sb.append("&trk=dpage\">");
             sb.append(scm.getFullName());
-            sb.append("</a>");
+            sb.append("</a></div>");
         }
         sb.append("</div>");
         return sb.toString();

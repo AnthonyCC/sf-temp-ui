@@ -2,7 +2,7 @@
 
 //pre-set delay for submenu hiding (in milliseconds)
 //this fixes IE 'flicker'
-var delay_ms=100;
+var delay_ms=10;
 //hideID holds the id globally for checks
 var hideID;
 /*
@@ -20,7 +20,7 @@ var showing = new Array();
 	0 = onmouseover
 	1 = onclick
 */
-var events = 1;
+var events = 0;
 
 /* FUNCTIONS */
 
@@ -65,7 +65,7 @@ function show(id, type) {
 	//change to display block first for width check
 	$(id+'_menu').style.display = 'block';
 
-	//check widths
+	//check widths (should just always adjust)
 	if ($(id).offsetWidth > $(id+'_menu').offsetWidth) {
 		$(id+'_menu').style.width = $(id).offsetWidth+'px';
 	}
@@ -81,11 +81,11 @@ function show(id, type) {
 	}
 
 	if (type == 'lnav')	{
-		//move left and next to item
+		//move right and next to item
 		$(id+'_menu').style.left = $(id).offsetWidth+'px';
 		
-		//move up to item's top
-		$(id+'_menu').style.top = '0px';
+		//move up to item's top, -1px adjust for border
+		$(id+'_menu').style.top = '-1px';
 	}
 
 	//make visible
