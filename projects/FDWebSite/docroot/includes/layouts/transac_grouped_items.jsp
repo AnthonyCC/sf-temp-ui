@@ -129,10 +129,10 @@ if (prodsAvailable>0) {
     <table align="center" width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" >
         <!-- <tr><td align="center"><br><br>CHOOSE QUANTITY</td></tr> -->
         <tr><td align="center"><img src="media_stat/images/layout/cccccc.gif" width="100%" height="1" vspace="6"></td></tr>
-        <tr><td align="center"><i>Click on name for more info.</i></td></tr>
+        <tr><td align="center" style="padding-bottom:8px;"><i>Click on name for more info.</i></td></tr>
     </table>
 <fd:FDShoppingCart id='cart' action='addMultipleToCart' result='result' successPage='<%= succPage %>'>
-    <form name="transac_grouped_items" method="POST">
+    <table><form name="transac_grouped_items" method="POST"></table>
     <%
 
     //*** if we got this far..then we need to remove the sucess page attribute from the request.
@@ -203,7 +203,7 @@ if (prodsAvailable>0) {
         }
         String qtyFldName = "quantity_"+itemShownIndex;
     %>
-    <td width="40" align="center"><NOBR>
+    <td width="30" align="center"><NOBR>
 <%
     String displayQuantity="";
     if (prodUnAvailable) {
@@ -233,7 +233,7 @@ if (prodsAvailable>0) {
             <img SRC="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="2" alt="Decrease quantity"></A>
         <%  }   %>
     </td>
-    <td width="290">
+    <td width="<%= prodUnAvailable ? "275" : "305" %>" style="padding-left:8px; padding-right:3px;">
     <%
         String unAvailableFontStart = "";
         String unAvailableFontEnd = "";
@@ -248,10 +248,8 @@ if (prodsAvailable>0) {
             +"&prodId=" + displayProduct + "','small')";
 
     %>
-        <%= unAvailableFontStart %><A HREF="<%= productURL %>">
-        <FONT CLASS="text10bold"><%= unAvailableFontStart %><%= thisProdBrandLabel %><%= unAvailableFontEnd %></FONT>
-        <FONT CLASS="text10"><%= unAvailableFontStart %><%= displayProduct.getFullName().substring(thisProdBrandLabel.length()).trim() %><%= unAvailableFontEnd %></FONT>
-        </A>
+        <%= unAvailableFontStart %><A HREF="<%= productURL %>"><FONT CLASS="text10bold"><%= unAvailableFontStart %><%= thisProdBrandLabel %><%= unAvailableFontEnd %></FONT>
+        <FONT CLASS="text10"><%= unAvailableFontStart %><%= displayProduct.getFullName().substring(thisProdBrandLabel.length()).trim() %><%= unAvailableFontEnd %></FONT></A>
         <%= unAvailableFontStart %><NOBR>- <%= salesUnitDescription %></NOBR><BR><%= unAvailableFontEnd %>
     <%
         Date earliestDate = displayProduct.getSku(0).getEarliestAvailability();
@@ -272,7 +270,7 @@ if (prodsAvailable>0) {
     <%  if (prodUnAvailable) {  %>
     <td colspan="2" width="85" align="center"><font color="#999999">Not&nbsp;Available</font>
     <%  } else {    %>
-    <td width="55" align="right">&nbsp;<font class="groceryProductLinePrice"><%= JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()) %>&nbsp;</font>
+    <td width="55" align="right">&nbsp;<font class="groceryProductLinePrice"><%= JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()) %>/<%=productInfo.getDisplayableDefaultPriceUnit().toLowerCase()%></font>
     </td>
     <td width="30" align="center">
     <%  }   %>
@@ -329,8 +327,8 @@ if (prodsAvailable>0) {
         <tr><td colspan="4"><img src="media_stat/images/layout/cccccc.gif" width="100%" height="1" vspace="6"></td>
         </tr>
         <tr>
-            <td width="200" colspan="2" align="right"><input type="image" name="addMultipleToCart" src="media_stat/images/buttons/add_to_cart.gif" width="93" height="20" hspace="4" vspace="4" border="0" alt="ADD SELECTED ITEMS TO CART"></td>
-            <td align="right" >&nbsp;&nbsp;<b>Total Price:</b>&nbsp;&nbsp;&nbsp;
+            <td width="200"><input type="image" name="addMultipleToCart" src="media_stat/images/buttons/add_to_cart.gif" width="93" height="20" hspace="4" vspace="4" border="0" alt="ADD SELECTED ITEMS TO CART"></td>
+            <td align="right">&nbsp;&nbsp;<b>Total Price:</b>&nbsp;&nbsp;&nbsp;
             <input type="text" name="total" size="8" maxlength="8" class="text11" value="" onFocus="blur()"></td>
             <td><img src="media_stat/images/layout/clear.gif"  height="1" width="10"></td>
         </tr>
