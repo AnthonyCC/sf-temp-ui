@@ -27,8 +27,8 @@ if (isDepartment) {
 	trkCode = "dpage";
 } else {
      maxCols= 4;
-     maxWidth = 440;
-     tdwidth= 110;
+     maxWidth = 420;
+     tdwidth= 105;
 	 trkCode = "cpage";
 }
 String prodNameAttribute = JspMethods.getProductNameToUse(currentFolder);
@@ -39,6 +39,7 @@ DisplayObject displayObj = null;
 int rowsPrinted  =0;
 %>
 <% System.out.println("length "+len+" "+offset.toString()); %>
+<img src="/media_stat/images/layout/clear.gif" width="1" height="10">
 <logic:iterate indexId="idx" id="displayThing" length="<%= len.toString() %>" offset="<%= offset.toString() %>" collection="<%= displayList %>" type="com.freshdirect.fdstore.content.ContentNodeModel">
 <%
 System.out.println("index "+idx);

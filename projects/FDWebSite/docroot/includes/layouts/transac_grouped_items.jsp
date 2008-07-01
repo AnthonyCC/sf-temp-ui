@@ -227,10 +227,8 @@ if (prodsAvailable>0) {
     </NOBR></td>
     <td width="10">
         <%  if (prodUnAvailable) {  %>&nbsp;<%  } else {    %>
-            <A HREF="javascript:chgQty(<%=itemShownIndex%>,'<%= qtyFldName %>', <%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);">
-            <img SRC="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="2" alt="Increase quantity"></A><BR>
-            <A HREF="javascript:chgQty(<%=itemShownIndex%>,'<%= qtyFldName %>', -<%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);">
-            <img SRC="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="2" alt="Decrease quantity"></A>
+            <A HREF="javascript:chgQty(<%=itemShownIndex%>,'<%= qtyFldName %>', <%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);"><img SRC="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></A><BR>
+            <A HREF="javascript:chgQty(<%=itemShownIndex%>,'<%= qtyFldName %>', -<%= displayProduct.getQuantityIncrement() %>, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>);"><img SRC="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></A>
         <%  }   %>
     </td>
     <td width="<%= prodUnAvailable ? "275" : "305" %>" style="padding-left:8px; padding-right:3px;">
@@ -288,7 +286,7 @@ if (prodsAvailable>0) {
     //*****************  END Product Line *********************************
     }
     %>
-    </table><br>
+    </table>
     <%@ include file="/shared/includes/product/i_pricing_script.jspf" %>
     <script>
          
@@ -327,14 +325,15 @@ if (prodsAvailable>0) {
         <tr><td colspan="4"><img src="media_stat/images/layout/cccccc.gif" width="100%" height="1" vspace="6"></td>
         </tr>
         <tr>
-            <td width="200"><input type="image" name="addMultipleToCart" src="media_stat/images/buttons/add_to_cart.gif" width="93" height="20" hspace="4" vspace="4" border="0" alt="ADD SELECTED ITEMS TO CART"></td>
+            <td width="98" style="padding-right:4px;"><input type="image" name="addMultipleToCart" src="media_stat/images/buttons/add_to_cart.gif" width="93" height="20" border="0" alt="ADD SELECTED ITEMS TO CART"></td>
+			<td width="12"><fd:CCLCheck><a href="/unsupported.jsp" onclick="return CCL.save_items('transac_grouped_items',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_save_icon_lg.gif" width="12" height="14" border="0"/></a></fd:CCLCheck></td>
             <td align="right">&nbsp;&nbsp;<b>Total Price:</b>&nbsp;&nbsp;&nbsp;
             <input type="text" name="total" size="8" maxlength="8" class="text11" value="" onFocus="blur()"></td>
             <td><img src="media_stat/images/layout/clear.gif"  height="1" width="10"></td>
         </tr>
+		</form>
     </table>
     <br>
-    </form>
     
     <script>
     <% //set the quantities on the pricing object so that the total can be calculated 

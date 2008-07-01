@@ -3,6 +3,7 @@ String bottomCatId = request.getParameter("catId");
 // get the node for this category
 CategoryModel cm_ForBottom = (CategoryModel)ContentFactory.getInstance().getContentNodeByName(bottomCatId);
 DepartmentModel dm_ForBottom = (DepartmentModel) cm_ForBottom.getDepartment();
+int bot_templateType = cm_ForBottom.getAttribute("TEMPLATE_TYPE",1);
 
 Attribute bottmAttrib = cm_ForBottom.getAttribute("LAYOUT");
 int bottLayoutType = bottmAttrib==null?-1:((Integer)bottmAttrib.getValue()).intValue(); 
@@ -62,8 +63,8 @@ if (!isGroceryProdPage) {
 <%      }
         catBottAttrib = cm_ForBottom.getAttribute("CATEGORY_BOTTOM_MEDIA");
         List catBottomMedias =  catBottAttrib==null?new ArrayList():(List)catBottAttrib.getValue();
-            if (catBottomMedias.size()>0) {
-				if(EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(templateType))) { %>
+            if (catBottomMedias.size()>0 || catBottomMedias.size() == 0) {
+				if(EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(bot_templateType))) { %>
 		 <logic:iterate id='mediaRef' indexId='indexNo' collection="<%=catBottomMedias%>" type="com.freshdirect.fdstore.content.MediaModel">
          	<% if (((Html)mediaRef).getPath()!=null) { %>
                             <fd:IncludeMedia name='<%= ((Html)mediaRef).getPath() %>' />

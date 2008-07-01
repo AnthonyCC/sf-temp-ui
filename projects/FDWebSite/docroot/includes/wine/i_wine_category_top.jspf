@@ -1,4 +1,4 @@
-<table width="443" cellpadding="0" cellspacing="0" border="0">
+<table width="425" cellpadding="0" cellspacing="0" border="0">
 <tr><form name="wine_detail_form" method="POST">
 <%
 boolean sortDescending = "true".equalsIgnoreCase(sortDesc);

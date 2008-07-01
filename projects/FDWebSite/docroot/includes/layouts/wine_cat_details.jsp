@@ -143,10 +143,10 @@ public Map getRatingImagePathMap(ProductModel displayProduct){
 			if (onlyOne) {
 				ratingStr.append(" align='right'");
 			}
-			ratingStr.append(">"+rating1CoStr.toUpperCase()+" <span class='usq_rating'>"+rating1).append("</td>");
+			ratingStr.append(">"+rating1CoStr.toUpperCase()+"<span class='usq_rating' style='padding-left:2px;'>"+rating1).append("</td>");
         }
         if(rating2!=0){
-            ratingStr.append("<td width='50%' class='usq_rating_label' align='right'>").append(rating2CoStr.toUpperCase()+" <span class='usq_rating'>"+rating2).append("</td>   ");
+            ratingStr.append("<td width='50%' class='usq_rating_label' align='right'>").append(rating2CoStr.toUpperCase()+"<span class='usq_rating' style='padding-left:2px;'>"+rating2).append("</td>   ");
         }
        // if(rating3!=0){
             //ratingStr.append("<B><FONT color='red'>").append(rating3CoStr.toUpperCase()+"</FONT> "+rating3).append("</B>   ");
@@ -245,7 +245,7 @@ function sendForm(productIdVar,catIdVar,quantityVar,skuVar){
 
 <%@ include file="/includes/wine/i_wine_category_top.jspf" %> 
 
-<table width="443" cellpadding="0" cellspacing="0" border="0">
+<table width="425" cellpadding="0" cellspacing="0" border="0">
 <%-- include 15 items --%>
 
 <form name="wine_cat_detail" id="wine_cat_detail" method="POST">
@@ -268,7 +268,7 @@ SkuModel dfltSku = null;
 <input type="hidden" name="productId" value="" />
 <input type="hidden" name="wineCatId" value="" />
 <input type="hidden" name="skuCode" value="" />
-<tr><td><img src="/media_stat/images/layout/clear.gif" width="45" height="1"></td><td><img src="/media_stat/images/layout/clear.gif" width="303" height="1"></td><td><img src="/media_stat/images/layout/clear.gif" width="95" height="1"></td></tr>
+<tr><td><img src="/media_stat/images/layout/clear.gif" width="45" height="1"></td><td><img src="/media_stat/images/layout/clear.gif" width="285" height="1"></td><td><img src="/media_stat/images/layout/clear.gif" width="95" height="1"></td></tr>
 <logic:iterate indexId="idx" id="displayThing" length="<%= len.toString() %>" offset="<%= offset.toString() %>" collection="<%= displayList %>" type="com.freshdirect.fdstore.content.ContentNodeModel">
 <%
 index++;
@@ -382,7 +382,7 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
                     <td  style="padding-right:2px;"><INPUT TYPE="text" NAME="quantity_big_<%=index%>" SIZE="2" MAXLENGTH="2" CLASS="text11" value="<%=Math.round(displayProduct.getQuantityMinimum()) %>" onChange="chgQty('quantity_big_<%=index%>',0,<%= displayProduct.getQuantityMinimum() %>,<%= user.getQuantityMaximum(displayProduct) %>);"></td>
                     <td width="12" valign="bottom"><A HREF="javascript:chgQty('quantity_big_<%=index%>',<%= displayProduct.getQuantityIncrement()%>,<%= displayProduct.getQuantityMinimum() %>,<%= user.getQuantityMaximum(displayProduct) %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="lesser quantity"></A><br/><A HREF="javascript:chgQty('quantity_big_<%=index%>',-<%= displayProduct.getQuantityIncrement()%>,<%= displayProduct.getQuantityMinimum() %>,<%= user.getQuantityMaximum(displayProduct) %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="lesser quantity"></A></td>
                     <td style="padding-left:3px;">
-                    <input type="image" name="addSingleToCart_big" src="/media_stat/images/buttons/add_to_cart.gif"  ALT="ADD THIS ITEM TO YOUR CART" width="93" height="20" HSPACE="2" VSPACE="2" border="0" onClick="javascript:sendForm('<%=displayProduct%>','<%=displayProduct.getParentNode().getPK().getId()%>','quantity_big_<%=index%>','<%=skuCode%>');" /><br>
+                    <input type="image" name="addSingleToCart_big" src="/media_stat/images/buttons/add_to_cart_small.gif"  ALT="ADD THIS ITEM TO YOUR CART" width="76" height="17" HSPACE="2" VSPACE="2" border="0" onClick="javascript:sendForm('<%=displayProduct%>','<%=displayProduct.getParentNode().getPK().getId()%>','quantity_big_<%=index%>','<%=skuCode%>');" /><br>
                     </td>
 					<fd:CCLCheck>
 						<td><a href="/unsupported.jsp" onclick="javascript:sendForm('<%=displayProduct%>','<%=displayProduct.getParentNode().getPK().getId()%>','quantity_big_<%=index%>','<%=skuCode%>'); return CCL.save_items('wine_cat_detail',this,'action=CCL:AddToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_save_icon_lg.gif" width="12" height="14" style="margin: 0 0 1px 5px; border: 0"/></a></td>
