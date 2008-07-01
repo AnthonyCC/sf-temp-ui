@@ -391,8 +391,6 @@ if (skus.size() != 0) {
 		productTitle=new StringBuffer(100).append(productTitle).append(" ").append(dValue.getLabel()).toString();
 	}    	
     }
-
-    %><font class="title18"><%
     //
     // annotation mode
     //
@@ -400,9 +398,8 @@ if (skus.size() != 0) {
         %><%@ include file="/shared/includes/product/i_annotated_title.jspf" %><%
     } else {
         // no annotation, just display title
-        %><%= productTitle %><%
+        %><font class="title18"><%= productTitle %></font><br><%
     }
-    %></font><br><%
     if (productNode.getAttribute("PARTIALLY_FROZEN")!=null && productNode.getDepartment().getFullName().equalsIgnoreCase("BAKERY")) {
         %><br><img src="/media_stat/images/template/bakery/parbaked_frozen_prod.gif" width="147" height="16" alt="" border="0"><br><%
     }
@@ -432,7 +429,7 @@ if (skus.size() != 0) {
     if ((salesUnitDescrsMatch && hasSingleSalesUnit && !hasSingleSku) || (hasSingleSku && hasVariationMatrix && hasSingleSalesUnit)) {
         String salesUnitDescr = defaultProduct.getSalesUnits()[0].getDescription();
         if (!"nm".equalsIgnoreCase(salesUnitDescr)) {
-            %><br><%= salesUnitDescr %><br><%
+            %><br>here?<%= salesUnitDescr %><br><%
         }
     }
 
@@ -1218,9 +1215,8 @@ if (skus.size() != 0) {
     if (isWineLayout) {     %>
 		<fd:CCLCheck>
 				<br><a id="ccl-add-action" class="text12" href="/unsupported.jsp" onclick="return CCL.save_items('product_form',this,'action=CCL:AddToList')"><img src="/media_stat/ccl/lists_link_with_icon_dfgs.gif" width="112" height="15" vspace="5" style="border: 0;"></a>     
-				<fd:CCLNew template="/common/template/includes/ccl_break.jspf"/><fd:CCLNew template="/common/template/includes/ccl_moreabout.jspf"/>
 		</fd:CCLCheck>
-		<img src="/media_stat/images/layout/cccccc.gif" width="255" height="1" border="0" vspace="10"><br>
+		<img src="/media_stat/images/layout/cccccc.gif" width="255" height="1" border="0" vspace="6"><br>
 		<% if(!CartName.MODIFY_CART.equals(cartMode)) {%>
 				<%@include file="/shared/includes/product/i_wine_rating_review.jspf"%>
 		<%}%>

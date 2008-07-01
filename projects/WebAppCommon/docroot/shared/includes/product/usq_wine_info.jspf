@@ -37,41 +37,19 @@
 			    }
    
    %>
-<table width="100%" cellpadding="0" cellspacing="0" border="0"> <!-- holder table -->
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr><td style="border-top:solid 1px #CCCCCC;" colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
 <tr>
-	<td colspan="2">
-		<!-- spacing and hr, for usage after each section -->
-        <div class="center_topleft">
-		    <!-- spacing and hr, for usage before each section -->
-		    <div class="center_spacer"></div>
-		    <div class="hr_space"><!-- --></div>
-	    </div>
-    </td>
-</tr>
-<tr>
-    <td>
-        <div class="center_region_left">
-			<div>
-				<!-- 7.1.7.1 Flavor pairings Image -->
-					<img src="<%=perfPairThumbNail.getPath()%>" border="0" alt="test image" title="" />
-			</div>
-        </div>
+    <td width="5%">
+		<img src="<%=perfPairThumbNail.getPath()%>" border="0" alt="test image" title="" />
     </td>    
-    <td>   
-		<div class="center_region_right" style="padding-bottom:8px;"><!-- 7.1.7.1 Flavor pairings Text -->
-            <div class="perfect_pair_head">
-				<!-- Header Text/Image -->
-				<img src="/media/editorial/win_usq/perfect_pairings.gif" width="192" height="15" alt="" />
-			</div>
-			<div class="perfect_pair_try_with">
-				<!-- Try it with... --><span class="bolder">Try it with</span> <span class="bolder"><a href="<%=perfPaitProdPaths.get(0)%>"><%=perfPairProdNames.get(0)%></a></span>
-			</div>
-			<div class="perfect_pair_by_who">
-				<!-- paired by someone --><span class="ital"></span> <span class="ital"><%=pairedBy%></span>
-			</div>
-		</div>
+    <td width="95%" style="padding-left:8px;">   
+				<img src="/media/editorial/win_usq/perfect_pairings.gif" width="192" height="15" alt="" style="padding-bottom:2px;" /><br>
+				<b>Try it with <a href="<%=perfPaitProdPaths.get(0)%>"><%=perfPairProdNames.get(0)%></a></b>
+				<div style="padding-top:4px; font-style:italic;"><%=pairedBy%></div>
      </td>   
 </tr>
+<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
 </table>
 <%       }
        } %>
@@ -102,21 +80,24 @@
 				wineRegionName="/media/editorial/win_usq/maps/"+_wineRegion.getContentName()+".html";
 			}
 		}
+
+		boolean hasRegionImage = false;
+		if(wineRegionName != null && !"".equals(wineRegionName) && wineRegionName.trim().length() > 0) hasRegionImage = true;
 %>
 
 
-<table width="100%" cellpadding="0" cellspacing="0" border="0"> <!-- holder table -->
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr>
-	<td colspan="2" style="border-top: 1px solid #CCCCCC;"><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td>
+	<td <%= hasRegionImage ? "colspan=\"2\"":""%> style="border-top: 1px solid #CCCCCC;"><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td>
 </tr>
 <tr valign="top">
-	<% if(wineRegionName != null && !"".equals(wineRegionName) && wineRegionName.trim().length() > 0) { %>
-		<td class="center_region_left" width="5%">
+	<% if(hasRegionImage) { %>
+		<td class="center_region_left" width="5%" style="padding-right:8px;">
 			<fd:IncludeMedia name="<%=wineRegionName%>" />
 		</td>
 		
 	<%}%>	
-	<td class="center_region_right" <%= ("".equals(wineRegionName)) ? "colspan='2'":"width='95%'" %>>
+	<td class="center_region_right" <%= hasRegionImage ? "width=\"95%\"":"" %>>
             <% if(wineCountry!=null && !"".equals(wineCountry)) {%>
 			<div class="center_prod_descrip">
 				<!-- 7.2.3 Region --><span class="ucase bolder">REGION:</span> <span><%=wineCountry%>
