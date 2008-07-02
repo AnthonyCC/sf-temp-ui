@@ -69,6 +69,7 @@ boolean firstProduct = false;
 </script>
 <%
 sortedColl = (Collection) request.getAttribute("itemGrabberResult");
+
 if (sortedColl==null) sortedColl = new ArrayList();
 %>
 <%
@@ -132,7 +133,7 @@ if (prodsAvailable>0) {
         <tr><td align="center" style="padding-bottom:8px;"><i>Click on name for more info.</i></td></tr>
     </table>
 <fd:FDShoppingCart id='cart' action='addMultipleToCart' result='result' successPage='<%= succPage %>'>
-    <table><form name="transac_grouped_items" method="POST"></table>
+    <table><form name="transac_grouped_items" id="transac_grouped_items" method="POST"></table>
     <%
 
     //*** if we got this far..then we need to remove the sucess page attribute from the request.
