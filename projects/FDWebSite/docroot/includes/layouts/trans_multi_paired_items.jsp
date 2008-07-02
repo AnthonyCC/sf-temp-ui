@@ -166,7 +166,7 @@ for(Iterator collIter = sortedColl.iterator();collIter.hasNext() ;) {
         Object currItem = collIter.next();
     if (currItem instanceof ProductModel) {
       if  (((ProductModel)currItem).isUnavailable()) {
-        //oneNotAvailable = true;
+        oneNotAvailable = true;
         continue;  /* dont add unavailable items to the list, which makes the unavailable logic below useless
                     but I suspect that creative will want to display unavailable items...hope I'm wrong. (RG)  */
       }
@@ -195,7 +195,7 @@ int catDetailHeight=150;
 		 catDetailHeight= catImage.getHeight();
      }
 
-if (prodsAvailable > 0) {
+if (prodsAvailable > 0 && !oneNotAvailable) {
     %>                  
     
 <table cellspacing="0" cellpadding="0" border="0">
@@ -463,6 +463,7 @@ if (prodsAvailable > 0) {
 <table></form></table>
 <%
 // end of category loops
+
 
   } 
  }   
