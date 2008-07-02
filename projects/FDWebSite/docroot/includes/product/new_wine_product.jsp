@@ -80,6 +80,6 @@
 		</td>
 	</tr>
 	<% if(!_isModifyCart ) {%>
-		<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td><td colspan="2"><%@ include file="/shared/includes/product/usq_wine_info.jspf" %></td></tr>
+		<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td><td colspan="2" style="padding-top:10px;"><%@ include file="/shared/includes/product/usq_wine_info.jspf" %></td></tr>
 	<%}%>
 </table>
