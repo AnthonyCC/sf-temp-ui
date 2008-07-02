@@ -33,7 +33,7 @@ if(contextName != null && contextName.length() > 0) {
             if (itemsToDisplay == 20) {
     %>
 <B>20</B> |
-<%-- Need to append domainName,domainValue,filterBy and filterByValue to the page Urls --%>
+
 <span class="bolder"> <A HREF="<%= response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(40,-1)+"&trk=numb"+pageParams.toString()) %>">40</A> </span> |
 <span class="bolder"> <A HREF="<%= response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(displayList.size(),-1)+"&trk=numb"+pageParams.toString()) %>">ALL</A></span>
 <%

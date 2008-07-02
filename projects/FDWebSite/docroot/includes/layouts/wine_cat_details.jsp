@@ -191,11 +191,7 @@ public Map getRatingImagePathMap(ProductModel displayProduct){
     List displayList = getDisplayList(sortedColl);
     //This list is to hold the list of products by clicking on the sidenav referenced by i_wine_category_top.jspf
     List contextList = new ArrayList(displayList);
-    int itemsToDisplay = getItemsToDisplay(displayList, request);
-    int pageNumber = getPageNumber(displayList, itemsToDisplay, request);
-    Integer offset = new Integer((pageNumber-1)*itemsToDisplay);
-    Integer len = new Integer(itemsToDisplay);
-%>
+%>    
 
 
 
@@ -244,6 +240,12 @@ function sendForm(productIdVar,catIdVar,quantityVar,skuVar){
 </script>
 
 <%@ include file="/includes/wine/i_wine_category_top.jspf" %> 
+<%    
+    int itemsToDisplay = getItemsToDisplay(displayList, request);
+    int pageNumber = getPageNumber(displayList, itemsToDisplay, request);
+    Integer offset = new Integer((pageNumber-1)*itemsToDisplay);
+    Integer len = new Integer(itemsToDisplay);
+%>
 
 <table width="425" cellpadding="0" cellspacing="0" border="0">
 <%-- include 15 items --%>

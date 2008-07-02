@@ -61,6 +61,9 @@ function show(id, type) {
 
 	//mark as a showing menu
 	showing[id] = 1;
+	
+	//IE z-index bug fix. z-index: 1000 to be safe
+	$(id).style.zIndex = 1000;
 
 	//change to display block first for width check
 	$(id+'_menu').style.display = 'block';
@@ -172,6 +175,7 @@ function hide_delay(id) {
 	for (x in showing) {
 		if (showing[x] >= 0 ) {
 			showing[id] = -1;
+			$(id).style.zIndex = 1; //set back to 1 for bug fix
 			$(id+'_menu').style.visibility = 'hidden';
 			$(id+'_menu').style.display = 'none';
 		}

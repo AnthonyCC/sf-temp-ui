@@ -43,12 +43,15 @@ layoutSettings.setIgnoreShowChildren(true);
     List displayList = getDisplayList(sortedColl);
     //This list is to hold the list of products by clicking on the sidenav referenced by i_wine_category_top.jspf
     List contextList = new ArrayList(displayList);
+%>
+
+<%@ include file="/includes/wine/i_wine_category_top.jspf" %> 
+<%
     int itemsToDisplay = getItemsToDisplay(displayList, request);
     int pageNumber = getPageNumber(displayList, itemsToDisplay, request);
     Integer offset = new Integer((pageNumber-1)*itemsToDisplay);
     Integer len = new Integer(itemsToDisplay);
 %>
 
-<%@ include file="/includes/wine/i_wine_category_top.jspf" %> 
 <%@ include file="/includes/wine/i_wine_compact_body.jspf"%>
 <%@ include file="/includes/wine/i_wine_category_bottom.jspf" %> 
