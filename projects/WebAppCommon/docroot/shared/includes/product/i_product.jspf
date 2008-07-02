@@ -429,7 +429,7 @@ if (skus.size() != 0) {
     if ((salesUnitDescrsMatch && hasSingleSalesUnit && !hasSingleSku) || (hasSingleSku && hasVariationMatrix && hasSingleSalesUnit)) {
         String salesUnitDescr = defaultProduct.getSalesUnits()[0].getDescription();
         if (!"nm".equalsIgnoreCase(salesUnitDescr)) {
-            %><br>here?<%= salesUnitDescr %><br><%
+            %><br><%= salesUnitDescr %><br><%
         }
     }
 
@@ -488,8 +488,6 @@ if (skus.size() != 0) {
                     <%
                 }
                 %>
-                
-               
                 
                 <%@ include file="/shared/includes/product/i_scaled_prices.jspf" %>
                 <input type="hidden" name="skuCode" value="<%= defaultSku.getSkuCode() %>">
@@ -886,9 +884,7 @@ if (skus.size() != 0) {
                 %>
             </logic:iterate>
             <option value="FDD">NEED HELP CHOOSING?<%// packaging/mar/preparation%>
-            </select>
-
-                <%
+            </select><%
                 if (!variation.hasAttribute(EnumAttributeName.UNDER_LABEL.getName())) {
                     // space between multiple optional pulldowns
                     %><font class="space4pix"><br></font><%
