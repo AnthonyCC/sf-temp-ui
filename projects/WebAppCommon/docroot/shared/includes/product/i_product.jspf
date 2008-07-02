@@ -1234,12 +1234,7 @@ if (skus.size() != 0) {
     %>
 <fd:CCLCheck>
 	    <% if (!isWineLayout) { %>
-		<div style="text-align: right;">
-	        <fd:CCLNew/><a id="ccl-add-action" class="text12" href="/unsupported.jsp" onclick="return CCL.save_items('product_form',this,'action=CCL:AddToList')"><img src="/media_stat/ccl/lists_link_with_icon.gif" width="112" height="16" style="border: 0; padding-left: 14px"></a>
-	        <div style="text-align: right; margin-bottom: 1ex;">       
-	            <fd:CCLNew template="/common/template/includes/ccl_moreabout.jspf"/>
-	        </div>
-	   	</div>
+		<a id="ccl-add-action" class="text12" href="/unsupported.jsp" onclick="return CCL.save_items('product_form',this,'action=CCL:AddToList')"><img src="/media_stat/ccl/lists_link_with_icon.gif" width="112" height="16" style="border: 0; padding-left: 14px"></a>
 		<% } %>
 </fd:CCLCheck>
     <%
@@ -1247,17 +1242,17 @@ if (skus.size() != 0) {
     %>
 	</td></tr>
 	</table>
-    
-    <%@ include file="/shared/includes/product/i_deli_buy_guide.jspf" %>
+	</td>
+	</tr>
+	<tr><td><br>
+	<%@ include file="/shared/includes/product/i_deli_buy_guide.jspf" %>
 
     <%@ include file="/shared/includes/product/i_serving_suggestion.jspf" %>
 
     <%@ include file="/shared/includes/product/i_partially_frozen.jspf" %>
 
     <%@ include file="/includes/product/i_cancellation_note.jspf" %>
-
-	</td>
-	</tr>
+	</td></tr>
     </form>
 	</table>
     <%
