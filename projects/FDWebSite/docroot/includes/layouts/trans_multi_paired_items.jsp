@@ -448,6 +448,8 @@ if (prodsAvailable > 0 && !oneNotAvailable) {
 <%
 } else {// end of If !oneNotAvailable
 %>
+
+<!--
     <table align="center" width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0">
     <tr><td><br><font class="text12" color="#999999">
         <b>We're sorry! This item is temporarily unavailable.</b><br>
@@ -457,6 +459,7 @@ if (prodsAvailable > 0 && !oneNotAvailable) {
         </font></td>
     </tr>
     </table>
+-->    
 <%      
 }
 %>

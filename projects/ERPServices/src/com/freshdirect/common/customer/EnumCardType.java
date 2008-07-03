@@ -48,6 +48,7 @@ public class EnumCardType extends ValuedEnum {
 		CARDS_BY_PAYMENTECH_CODE.put(paymentechCode, this);
 	}
 	
+	
 	private final String sapName;
 	private final String paylinxId;
 	private final String settlementCode;
@@ -131,5 +132,10 @@ public class EnumCardType extends ValuedEnum {
 	public EnumPaymentMethodType getPaymentMethodType(){
 		return this.type;
 	}
-
+	
+	public Object readResolve()
+	{
+		return getEnum(EnumCardType.class,getValue());
+	}
+	
 }
