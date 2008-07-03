@@ -106,13 +106,8 @@ if (wineTypeIcons.size() > 0) {
 		   Html _review=(Html)reviews.get(i);
 		   if(!_review.isBlank()) {
 	
-	%>
-	
-	
-		<div id="<%="review"+(i+1)%>" style="display:none; position:absolute; border:1px solid black; background-color: white; padding: 5px; width: 200px;">
-					<fd:IncludeMedia name="<%=_review.getPath()%>"/> 
-		</div>
-	<%      } 
+	%><div id="<%="review"+(i+1)%>" style="display:none; position:absolute;"><fd:IncludeMedia name="<%=_review.getPath()%>"/></div><%      
+			} 
 	   } %>
 	
 	<!-- icons for type / rating / reviews -->
