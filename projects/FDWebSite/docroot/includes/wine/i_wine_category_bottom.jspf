@@ -1,4 +1,5 @@
 <div class="cat_sum_top_spacer"></div>
+<table cellpadding="0" cellspacing="0" border="0" width="425"><tr><td>
 <%
 String pagingLinks = getPageNumbers(request,response,pageNumber,itemsToDisplay,currentFolder,displayList.size(),pageParams);
 if(contextName != null && contextName.length() > 0) {
@@ -51,4 +52,5 @@ if(contextName != null && contextName.length() > 0) {
 <% } %>
 		</div>
 	</div>
+</td></tr></table>
 <div class="cat_sum_top_spacer"></div>

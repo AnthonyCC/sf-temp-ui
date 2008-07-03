@@ -72,6 +72,8 @@ public Map getRatingImagePathMap(ProductModel displayProduct){
 	    	ratingDvalue3=(DomainValue)list3.get(0);
 	    }
 	    
+		String mediaPath="/media/editorial/win_usq/icons/rating_small/";
+		String mediaType=".gif";
 	    
 	    String rating1Str=null;
 	    String rating2Str=null;
@@ -80,19 +82,26 @@ public Map getRatingImagePathMap(ProductModel displayProduct){
         String rating1CoStr="";
         String rating2CoStr="";
         String rating3CoStr="";
+		
+		String rating1Img="";
+        String rating2Img="";
+        String rating3Img="";
         
 	    if(ratingDvalue1!=null){
 	    	rating1Str=	ratingDvalue1.getValue();
+			rating1Img = mediaPath+ratingDvalue1.getContentName()+mediaType;
             Domain domain1=ratingDvalue1.getDomain();
             rating1CoStr=getLastStringToken(domain1.getName(),"_");            
 	    }
 	    if(ratingDvalue2!=null){
 	    	rating2Str=	ratingDvalue2.getValue();
-            Domain domain2=ratingDvalue2.getDomain();
+            rating2Img = mediaPath+ratingDvalue2.getContentName()+mediaType;
+			Domain domain2=ratingDvalue2.getDomain();
             rating2CoStr=getLastStringToken(domain2.getName(),"_");
 	    }
 	    if(ratingDvalue3!=null){
 	    	rating3Str=	ratingDvalue3.getValue();
+			rating3Img = mediaPath+ratingDvalue3.getContentName()+mediaType;
             Domain domain3=ratingDvalue3.getDomain();
             rating3CoStr=getLastStringToken(domain3.getName(),"_");
 	    }
@@ -101,7 +110,6 @@ public Map getRatingImagePathMap(ProductModel displayProduct){
 	    int rating2=0;
 	    int rating3=0;
        
-	    
 	    if(rating1Str!=null){
 	    	rating1=Integer.parseInt(rating1Str);
 	    }
@@ -111,7 +119,7 @@ public Map getRatingImagePathMap(ProductModel displayProduct){
 	    if(rating3Str!=null){
 	    	rating3=Integer.parseInt(rating3Str);
 	    }
-	    
+		
 	    int largeRating=0;
 	    String largeRatCo=null;
 	    
@@ -133,8 +141,6 @@ public Map getRatingImagePathMap(ProductModel displayProduct){
         String imageRootPath="/media/editorial/win_usq/icons/rating/";                
         StringBuffer imagePathStr=new StringBuffer(imageRootPath).append(largeRatCo).append("_").append(largeRating).append(".gif");
         
-        
-        
         StringBuffer ratingStr=new StringBuffer("");
 		boolean onlyOne = true;
 		if (rating2!=0) onlyOne = false;
@@ -143,11 +149,18 @@ public Map getRatingImagePathMap(ProductModel displayProduct){
 			if (onlyOne) {
 				ratingStr.append(" align='right'");
 			}
-			ratingStr.append(">"+rating1CoStr.toUpperCase()+"<span class='usq_rating' style='padding-left:2px;'>"+rating1).append("</td>");
-        }
+			// text version
+			//ratingStr.append(">"+rating1CoStr.toUpperCase()+"<span class='usq_rating' style='padding-left:2px;'>"+rating1).append("</td>");
+        	// image version
+			ratingStr.append("><img src=\""+rating1Img).append("\" width=\"42\" height=\"15\" border=\"0\" alt=\""+rating1CoStr.toUpperCase()+rating1+"\"></td>");
+		}
         if(rating2!=0){
-            ratingStr.append("<td width='50%' class='usq_rating_label' align='right'>").append(rating2CoStr.toUpperCase()+"<span class='usq_rating' style='padding-left:2px;'>"+rating2).append("</td>   ");
-        }
+            
+			// text version
+			//ratingStr.append("<td width='50%' class='usq_rating_label' align='right'>").append(rating2CoStr.toUpperCase()+"<span class='usq_rating' style='padding-left:2px;'>"+rating2).append("</td>   ");
+        	// image version
+			ratingStr.append("<td width='50%' class='usq_rating_label' align='right'><img src=\""+rating2Img).append("\" width=\"42\" height=\"15\" border=\"0\" alt=\""+rating2CoStr.toUpperCase()+rating2+"\"></td>");
+		}
        // if(rating3!=0){
             //ratingStr.append("<B><FONT color='red'>").append(rating3CoStr.toUpperCase()+"</FONT> "+rating3).append("</B>   ");
        // }
@@ -375,7 +388,7 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
 		<div class="title14"><a href="<%=wineLink%>"><%=thisProdBrandLabel%></a></div>
 		<div class="usq_region" style="padding-top:5px;"><%=wineRegion%><%=(wineRegion!=null && wineRegion.trim().length() != 0 && wineCity!=null && wineCity.trim().length() != 0) ? " &rsaquo; ":""%><%=wineCity%><%=((vintage!=null && vintage.trim().length() != 0 ) && ((wineRegion != null && wineRegion.trim().length() != 0) || (wineCity != null && wineCity.trim().length() != 0))) ? ", ":""%><%=vintage%></div>
 		<div class="text11" style="padding-top:5px; padding-bottom:8px;"><fd:IncludeMedia name="<%=productDescPath%>" />     <% if(productDescPath!=null && productDescPath.trim().length()>0){ %>     
-        <a href="<%=wineLink%>">More &raquo;</a></div>        
+        <nobr><a href="<%=wineLink%>">More &raquo;</a></nobr></div>        
         <%  } %>
 		<div>        
         <table cellpadding="0" cellspacing="0" border="0">
@@ -397,7 +410,7 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
 		<%
 		if (!("".equals(ratingString)) && ratingString.trim().length() > 0) {
 		%>
-		<table width="<%=""+(labelWidth*0.98)%>"><tr><%=ratingString%></tr></table>
+		<table width="<%=""+labelWidth%>"><tr><%=ratingString%></tr></table>
 		<% } %>
 		<img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0"><br>
 		<% if (labelPath.trim().length() > 0) { %>

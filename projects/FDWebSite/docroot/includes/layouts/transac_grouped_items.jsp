@@ -82,7 +82,7 @@ int itemTotal = sortedColl.size();
 if (request.getRequestURI().toLowerCase().indexOf("department.jsp")!=-1) {
     maxWidth = 550;
 } else {
-    maxWidth = 400;
+    maxWidth = 425;
 }
 
 String itemNameFont = null;
@@ -123,12 +123,9 @@ if (EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(templateType))
     request.setAttribute("successPage","/grocery_cart_confirm.jsp?catId="+request.getParameter("catId"));
     succPage = "/grocery_cart_confirm.jsp?catId="+request.getParameter("catId");
 }
-
-
 if (prodsAvailable>0) {
     %>
-    <table align="center" width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" >
-        <!-- <tr><td align="center"><br><br>CHOOSE QUANTITY</td></tr> -->
+	<table align="center" width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" >
         <tr><td align="center"><img src="media_stat/images/layout/cccccc.gif" width="100%" height="1" vspace="6"></td></tr>
         <tr><td align="center" style="padding-bottom:8px;"><i>Click on name for more info.</i></td></tr>
     </table>

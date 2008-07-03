@@ -33,7 +33,7 @@ if(contextName != null && contextName.length() > 0) {
 </div>
 
 <% } %>
-<div class="cat_sum_top_r w50 vbot right">
+<div class="cat_sum_top_r">
 <%
         CategoryModel catModel=(CategoryModel)currentFolder;
 		Html wineIntroCopy = catModel.getEditorial();

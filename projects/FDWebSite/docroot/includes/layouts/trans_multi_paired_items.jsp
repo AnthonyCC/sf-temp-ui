@@ -62,15 +62,19 @@ Html perfectDesc=categoryModel.getEditorial();
 
 // setup for succpage redirect ....
 request.setAttribute("successPage","/wine_cart_confirm.jsp?catId="+request.getParameter("catId"));
+
+if (request.getRequestURI().toLowerCase().indexOf("department.jsp")!=-1) {
+    maxWidth = 550;
+} else {
+    maxWidth = 425;
+}
 %>   
 
 <fd:FDShoppingCart id='cart' action='addMultipleToCart' result='result' successPage='<%= "/wine_cart_confirm.jsp?catId="+request.getParameter("catId") %>'>    
-
-    <div class="left" style="padding-top:8px; padding-bottom:5px; border-bottom: solid 5px #8C1920;">
+    <div class="left" style="padding-top:8px; padding-bottom:5px; border-bottom: solid 5px #8C1920; margin-bottom:15px; width:<%=maxWidth%>px;">
 		<span class="title18" style="padding-bottom:5px;"><%=perfectTitle%></span><br>
 		<fd:IncludeMedia name="<%=perfectEditPath%>" />
 	</div>
-<div class="cat_sum_top_spacer"></div>
 <%
 
     //*** if we got this far..then we need to remove the sucess page attribute from the request.
@@ -140,13 +144,6 @@ catIndex++;
 
 int itemTotal = sortedColl.size();
 
-
-if (request.getRequestURI().toLowerCase().indexOf("department.jsp")!=-1) {
-    maxWidth = 550;
-} else {
-    maxWidth = 400;
-}
-
 String itemNameFont = null;
 Image itemImage;
 String currentFolderPKId = currentFolder.getPK().getId();
@@ -198,27 +195,24 @@ int catDetailHeight=150;
 if (prodsAvailable > 0 && !oneNotAvailable) {
     %>                  
     
-<table cellspacing="0" cellpadding="0" border="0">
+<table width="<%=maxWidth%>" cellspacing="0" cellpadding="0" border="0">
 	<% if (!firstProduct) {%>
-		<tr><td colspan="3" style="border-top:solid 1px #CCCCCC;"><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td></tr>
+		<tr><td colspan="2" style="border-top:solid 1px #CCCCCC;"><img src="/media_stat/images/layout/clear.gif" width="1" height="15"></td></tr>
 	<% } %>
 	<tr valign="top">
-		<td><img src="/media_stat/images/layout/clear.gif" width="3" height="1"></td>
 		<td width="95%" style="padding-right:8px;">
 			<div class="center_prod_name">
-				<a href="/category.jsp?catId=<%=currentCat.getPK().getId()%>&trk=cPage"><%=currentCat.getFullName()%></a>
+				<%-- a href="/category.jsp?catId=< %=currentCat.getPK().getId()% >&trk=cPage" --%><%=currentCat.getFullName()%><%--/a--%>
 			</div>
 			<div class="padt6">
 				<fd:IncludeMedia name="<%=ediDescPath%>" />
-			</div>
-			<br>
-			<span class="ital text10 bold"><%=currentCat.getBlurb()%></span>           
+			</div>        
         </td>  
         <td width="5%">
-				<img src="<%=catDetailImagePath%>" width="<%=""+catDetailWidth%>" height="<%=""+catDetailHeight%>" alt="" />
+				<img src="<%=catDetailImagePath%>" width="<%=""+catDetailWidth%>" height="<%=""+catDetailHeight%>" alt="<%=currentCat.getFullName()%>" />
         </td>
    	 </tr>
-	 <tr><td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td></tr>
+	 <tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td></tr>
     <input type="hidden" name="enableWineSubmit_<%=catIndex%>" value="false">
     <%
 	firstProduct = false;
@@ -229,7 +223,6 @@ if (prodsAvailable > 0 && !oneNotAvailable) {
             String errDesc = ((ActionError)errItr.next()).getDescription();
     %>
         <tr>
-			<td></td>
             <td colspan="2">
                 <FONT class="text12bold" color="#CC3300"><%=errDesc%></FONT>
             </td>
@@ -244,7 +237,6 @@ if (prodsAvailable > 0 && !oneNotAvailable) {
     }
     %>
 	<tr>
-		<td></td>
 		<td colspan="2">
 		<table cellpadding="0" cellspacing="0" border="0">    
 			<%
@@ -379,7 +371,7 @@ if (prodsAvailable > 0 && !oneNotAvailable) {
 			%>
 		</table>
 	</td></tr>
-	<tr><td></td><td colspan="2" style="padding-bottom:10px;">
+	<tr><td colspan="2" style="padding-bottom:10px;">
     <%@ include file="/shared/includes/product/i_pricing_script.jspf" %>
     <script>
          
@@ -417,9 +409,9 @@ if (prodsAvailable > 0 && !oneNotAvailable) {
 		<br>
 		<table cellpadding="0" cellspacing="0" border="0">
 		<tr>
-			<td><input type="image" name="addMultipleToCart<%=catIndex%>" src="media_stat/images/buttons/add_to_cart.gif" width="93" height="20" border="0" alt="ADD SELECTED ITEMS TO CART"></td>
+			<td style="padding-bottom:10px;"><input type="image" name="addMultipleToCart<%=catIndex%>" src="media_stat/images/buttons/add_to_cart_small.gif"width="76" height="17" border="0" alt="ADD SELECTED ITEMS TO CART"></td>
 			<fd:CCLCheck>
-				<td>              
+				<td style="padding-bottom:10px;">              
                   <a href="/unsupported.jsp" onclick="return CCL.save_items('wine_perfect_form_<%=catIndex%>',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_save_icon_lg.gif" width="12" height="14" border="0" hspace="5"/></a>   		     		         
             	</td>
 			</fd:CCLCheck> 
@@ -446,10 +438,10 @@ if (prodsAvailable > 0 && !oneNotAvailable) {
     
     
 <%
-} else {// end of If !oneNotAvailable
+} 
 %>
-
-<!--
+<%-- else { // end of If !oneNotAvailable
+% >
     <table align="center" width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0">
     <tr><td><br><font class="text12" color="#999999">
         <b>We're sorry! This item is temporarily unavailable.</b><br>
@@ -459,10 +451,10 @@ if (prodsAvailable > 0 && !oneNotAvailable) {
         </font></td>
     </tr>
     </table>
--->    
-<%      
+< %      
+
 }
-%>
+--%>
 <table></form></table>
 <%
 // end of category loops
