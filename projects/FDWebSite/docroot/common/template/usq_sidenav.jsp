@@ -76,7 +76,7 @@
          		<tmpl:get name='content'/>
                 <!-- content ends above here-->
     </td>
-    <td colspan="2" align="center"><%@ include file="/common/template/includes/right_side_nav.jspf" %></td>
+    <td colspan="2" align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="0"><br /><%@ include file="/common/template/includes/right_side_nav.jspf" %></td>
     <td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0"></td>
 </tr>
 <tr valign="top">
