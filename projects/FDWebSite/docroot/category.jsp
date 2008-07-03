@@ -136,7 +136,7 @@ boolean noCache =  (EnumLayoutType.GROCERY_PRODUCT.getId()==layouttype
 <oscache:cache key='<%= "catLayout_"+request.getQueryString() %>' time="1" refresh="<%= noCache %>">
 <% try {
 
-int tablewid = noLeftNav ? 550 : 400;
+int tablewid = noLeftNav ? 550 : 425;
 
 // Beginning of ifAlternateContent
 if(alternateContentFile != null){
@@ -272,32 +272,36 @@ if(alternateContentFile != null){
 		//place the products in out temporary list..then assign it to the array itemsToDisplayArray
  %>
  </table>
- <%      if (rateNRankLinks.length() > 0 || ("hmr".equals(currentFolder.getParentNode().toString()) && currentFolder.getBlurb()==null )) {%><br><%}%>
+ <%      if (rateNRankLinks.length() > 0 || ("hmr".equals(currentFolder.getParentNode().toString()) && currentFolder.getBlurb()==null )) { %><br><%}%>
 <%  } else if (EnumLayoutType.TRANSAC_GROUPED_ITEMS.getId()==layouttype) {
  	//paint the category_detail_image, intro copy and full name
 	attrib = currentFolder.getAttribute("CATEGORY_DETAIL_IMAGE");
 	MediaModel catDetailImg = null;
 	if (attrib!=null) {
 		catDetailImg = (MediaModel)attrib.getValue();
-	}
+		}
     
     Attribute editorialAttribute = currentFolder.getAttribute("EDITORIAL");
-	String editorialApth = editorialAttribute==null?"":((Html)editorialAttribute.getValue()).getPath();
+	String catEditorialPath = editorialAttribute==null?"":((Html)editorialAttribute.getValue()).getPath();
         
     
 %>
     <table width="<%=tablewid%>" border="0" cellspacing="0" cellpadding="0">
-	<tr><td align="center" colspan="3"><FONT CLASS="title18"><%=currentFolder.getFullName()%></font><br><br></td></tr>
-	<tr valign="top"><td>
-<%	if(catDetailImg!=null) { %>
+	<tr><td align="center" colspan="3"><br><FONT CLASS="title18"><%=currentFolder.getFullName()%></font><br><br></td></tr>
+	<tr valign="top"><td width="<%=catDetailImg.getWidth() + 2%>">
+	<%	if(catDetailImg!=null) { %>
 		<img src="<%=catDetailImg.getPath()%>" width="<%=catDetailImg.getWidth()%>" height="<%=catDetailImg.getHeight()%>" border="0">
-<%  } else { %><IMG src="/media_stat/images/layout/clear.gif" WIDTH="100" HEIGHT="1" border="0"><% } %>
-	</td><td><IMG src="/media_stat/images/layout/clear.gif" WIDTH="5" HEIGHT="1" border="0"></td><td>
-<%	if (editorialApth !=null) { %>
-	  <fd:IncludeMedia name='<%= editorialApth %>'/></td>
+	<%  } else { %>
+		<img src="/media_stat/images/layout/clear.gif" width="100" HEIGHT="1" border="0">
+	<% } %>
+	</td>
+	<td><img src="/media_stat/images/layout/clear.gif" width="8" HEIGHT="1" border="0"></td>
+	<td>
+<%	if (catEditorialPath !=null) { %>
+	  <fd:IncludeMedia name='<%= catEditorialPath %>'/>
 <%	} else {%>&nbsp;<% } %>
 	</td></tr>
-	</table>
+ 	</table>
 <% }
 }%>
 
