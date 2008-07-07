@@ -68,7 +68,7 @@
   </tr>
 <tr valign="top">
 	<td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-	<td colspan="2" bgcolor="#FBF1D3"><a href="/department.jsp?deptId=usq"><img src="/media/editorial/win_usq/usq_logo_sidenav_bottom.gif" width="130" height="109" border="0"></a><br>
+	<td colspan="2" bgcolor="#FBF1D3"><a href="/department.jsp?deptId=usq&trk=snav"><img src="/media/editorial/win_usq/usq_logo_sidenav_bottom.gif" width="130" height="109" border="0"></a><br>
 	<% try { %><%@ include file="/common/template/includes/left_side_nav_usq.jspf" %>
                 <% } catch (Exception ex) {ex.printStackTrace();} %></td>
 	<td style="padding-left:10px;padding-right:5px;" align="center">   
