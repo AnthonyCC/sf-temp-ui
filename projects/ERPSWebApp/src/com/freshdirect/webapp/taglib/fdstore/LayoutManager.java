@@ -393,7 +393,7 @@ public class LayoutManager extends BodyTagSupport {
 		} // top 10
 		if (layoutType == EnumLayoutType.TEMPLATE_LAYOUT.getId()) {				
 			s.setLayoutFileName("/includes/layouts/template_layouts.jsp");
-			// TODO: what more I need to do here?
+			s.setIncludeUnavailable(false);
 	}
 
 		
