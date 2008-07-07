@@ -106,7 +106,7 @@ if (wineTypeIcons.size() > 0) {
 		   Html _review=(Html)reviews.get(i);
 		   if(!_review.isBlank()) {
 	
-	%><div id="<%="review"+(i+1)%>" style="display:none; position:absolute;"><fd:IncludeMedia name="<%=_review.getPath()%>"/></div><%      
+	%><div id="<%="review"+(i+1)%>" class="wine_review" style="display:none; position:absolute;"><fd:IncludeMedia name="<%=_review.getPath()%>"/></div><%      
 			} 
 	   } %>
 	
