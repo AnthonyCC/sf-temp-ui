@@ -377,7 +377,7 @@ if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
           
      */
 	 String wineLink = "";
-	 wineLink += "product.jsp?productId="+displayProduct +"&catId="+displayProduct.getParentNode().getPK().getId()+ moreOptionParams.toString();
+	 wineLink += "product.jsp?productId="+displayProduct +"&catId="+displayProduct.getParentNode().getPK().getId()+ moreOptionParams.toString()+"&trk=cpage";
 %>
 <tr><td colspan="3" <%=index > 1 ? "style=\"border-top:solid 1px #CCCCCC;\"":""%>><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="0"></td></tr>
 <tr>
