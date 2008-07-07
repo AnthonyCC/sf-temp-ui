@@ -16,6 +16,7 @@ Set brands = null ; // set in the grocery_category_layout page. will be referenc
 
 String catId = request.getParameter("catId");
 boolean isGroceryVirtual=false;
+boolean isWineLayout = false;
 
 ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNodeByName(catId);
 
@@ -152,6 +153,7 @@ if(alternateContentFile != null){
     if(EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(templateType))) {
       introCopy="";
       introTitle="";
+	  isWineLayout=true;
     }
     
 	boolean showLine=false;   // if true, the last gray line prior to the categories-display will be printed
@@ -195,20 +197,24 @@ if(alternateContentFile != null){
 	        }
 	    }
 %>
+
+<% if (!noCache || EnumLayoutType.TRANSAC_MULTI_CATEGORY.getId()==layouttype
+                || EnumLayoutType.HOLIDAY_MENU.getId()==layouttype  || EnumLayoutType.PARTY_PLATTER_CATEGORY.getId()==layouttype || EnumLayoutType.WINE_CATEGORY.getId()==layouttype || EnumLayoutType.TRANSAC_MULTI_PAIRED_ITEMS.getId()==layouttype || ( isWineLayout && EnumLayoutType.TRANSAC_GROUPED_ITEMS.getId()==layouttype) ) {
+	 if (FDStoreProperties.isAdServerEnabled()) { %>
+		 <SCRIPT LANGUAGE=JavaScript>
+			<!--
+			OAS_AD('CategoryNote');
+			//-->
+		</SCRIPT>
+		<%
+		}
+	} %>
+
 <% if (!noCache || EnumLayoutType.TRANSAC_MULTI_CATEGORY.getId()==layouttype
                 || EnumLayoutType.HOLIDAY_MENU.getId()==layouttype  || EnumLayoutType.PARTY_PLATTER_CATEGORY.getId()==layouttype   ) { //not DFGS %>
 <%-- start header stuff --%>
-     <table width="<%=tablewid%>" border="0" cellspacing="0" cellpadding="0">
-<% if (FDStoreProperties.isAdServerEnabled()) { %>
-	 <tr><td>
-	 <SCRIPT LANGUAGE=JavaScript>
-		<!--
-		OAS_AD('CategoryNote');
-		//-->
-	</SCRIPT><br>
-	 </td></tr>	 
+     <table width="<%=tablewid%>" border="0" cellspacing="0" cellpadding="0"> 
 	<%
-}
 	  if ( !"nm".equalsIgnoreCase(introTitle) && introTitle!=null && introTitle.trim().length() > 0) {
 	        showLine=true;
 	%>

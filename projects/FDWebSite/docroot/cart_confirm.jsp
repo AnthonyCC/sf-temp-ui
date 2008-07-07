@@ -42,7 +42,7 @@
       List orderLineItems = new ArrayList();
       String jspTemplate=null;
       String catIdParam       = request.getParameter("catId");
-
+	  boolean isWineProductAdded = false;
 
 Recipe recipe = null;
 
@@ -63,6 +63,7 @@ Recipe recipe = null;
     int templateType=prodNode.getAttribute("TEMPLATE_TYPE",1);
     if (EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(templateType))) {
        jspTemplate = "/common/template/usq_sidenav.jsp";
+	   isWineProductAdded = true;
     } else { //assuming the default (Generic) Template
         jspTemplate = "/common/template/both_dnav.jsp";
     }
@@ -96,7 +97,11 @@ Recipe recipe = null;
  <tmpl:put name='content' direct='true'>
             <table cellpadding="0" cellspacing="0" border="0" width="400">
                 <tr>
-                <td colspan="2"><img src="/media_stat/images/template/confirmation/you_have_just_added.gif" width="233" height="13" border="0" alt="YOU HAVE JUST ADDED TO YOUR CART:">
+                <td colspan="2">
+					<%  if (isWineProductAdded) { %>
+						<img src="/media_stat/images/layout/clear.gif" width="1" height="15"><br>
+					<% } %>
+					<img src="/media_stat/images/template/confirmation/you_have_just_added.gif" width="233" height="13" border="0" alt="YOU HAVE JUST ADDED TO YOUR CART:">
                     <br><img src="/media_stat/images/layout/clear.gif" width="1" height="6"></td>
                 </tr>
 
