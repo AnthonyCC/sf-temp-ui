@@ -784,7 +784,7 @@ div.nav_sub
 		overflow: hidden;
 	}
 	
-div[id="review1"], div[id="review2"], div[id="review3"]
+.wine_review
     {
         background-color: #FBF1D3;
         border: 2px solid #9B6644;
@@ -792,7 +792,7 @@ div[id="review1"], div[id="review2"], div[id="review3"]
         width: 220px;
     }
 
-div[id="review1"] b, div[id="review2"] b, div[id="review3"] b
+.wine_review b
     {
         white-space: nowrap;
     }	
