@@ -133,9 +133,4 @@ public class EnumCardType extends ValuedEnum {
 		return this.type;
 	}
 	
-	public Object readResolve()
-	{
-		return getEnum(EnumCardType.class,getValue());
-	}
-	
 }
