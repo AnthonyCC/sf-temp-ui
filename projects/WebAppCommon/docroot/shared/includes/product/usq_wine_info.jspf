@@ -25,7 +25,7 @@
 	    			perfPairProd=(ProductModel)perfPairProds.get(i);
 		    		if(!perfPairProd.getFullName().equals(productNode.getFullName())) {
 			    		perfPairProdNames.add(perfPairProd.getFullName());
-				    	perfPaitProdPaths.add("category.jsp?catId="+perfectPair.getContentName()+"&trk=prod");
+				    	perfPaitProdPaths.add("/category.jsp?catId="+perfectPair.getContentName()+"&trk=prod");
 					    if(perfPairThumbNail==null) {
 					        try {
 					    	    perfPairThumbNail=perfPairProd.getProdImage();
@@ -193,98 +193,3 @@
 
 <% } %>
 
-<% List pairingsWithEase=productNode.getYmalProducts();
-   List _productImage=new ArrayList();
-   List productPrice=new ArrayList();
-   List productName=new ArrayList();
-   List productPagePath=new ArrayList();
-	int _pairingsCount=0;
-   if((pairingsWithEase != null) && (pairingsWithEase.size() > 0)) {
-   	for (Iterator it = pairingsWithEase.iterator(); it.hasNext(); ) {
-	
-	   if(_pairingsCount==3) {
-	   	  break;
-	   }  
-	   Object  itrObj  = it.next();
-	   ProductModel p = (ProductModel) itrObj;
-	   
-	   
-	   if (p == null || p.isDiscontinued() || p.isUnavailable()) {
-	      continue;
-           } else {
-			   _pairingsCount++;
-              productPagePath.add("product.jsp?catId="+p.getProductRef().getCategoryName()+"&productId="+p.getProductRef().getProductName()+"&trk=prod");
-               try {
-                   _productImage.add(p.getProdImage());
-               } catch(Exception e) {
-                   _productImage.add(new Image());
-               }
-              
-               SkuModel dfltSku=p.getDefaultSku();
-               productName.add(p.getFullName());
-               try {
-	      	       if (dfltSku !=null) {
-
-                          FDProductInfo pi = FDCachedFactory.getProductInfo( dfltSku.getSkuCode() );                                                        
-                          productPrice.add(currencyFormatter.format(pi.getDefaultPrice())+"/"+ pi.getDisplayableDefaultPriceUnit().toLowerCase());
-                    } else {
-                          productPrice.add(" ");
-                    }
-
-              } catch (FDResourceException fde) {
-                    throw new JspException(fde);
-
-              } catch (FDSkuNotFoundException sknf) {
-                    throw new JspException(sknf);
-              }
-
-           }
-        } //for   
-   }//if
-  %>
-
-
-<% if( (pairingsWithEase!=null) && (pairingsWithEase.size()>0)) {%>
-
-<table width="100%" cellpadding="0" cellspacing="0" border="0"> <!-- holder table -->
-<tr>
-	<td style="border-top: 1px solid #CCCCCC;"><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td>
-</tr>
-<tr>
-	<td>
-		<div class="center_region_left center"><!-- Pairings with ease -->
-				<!-- header text/image --><img src="/media/editorial/win_usq/pairing_with_ease.gif" title=""/><br><img src="/media_stat/images/layout/clear.gif" width="1" height="5">
-				<!-- text --><b>Hand selected items to compliment this wine</b>
-
-				<table width="100%" cellpadding="3" cellspacing="0">
-				<tr>
-				<%  
-				for( int i=0;i<productName.size();i++) {
-                        Image _image=(Image)_productImage.get(i);
-                %>
-					<td class="center" valign="bottom">
-						<img src="<%=_image.getPath()%>" width="<%=_image.getWidth()%>" height="<%=_image.getHeight()%>" border="0" alt="" title="">
-					</td>
-				<% 
-				if (i == 2) break;
-				} %>	
-				</tr>
-				<tr>
-				<%  
-				for( int i=0;i<productName.size();i++) {
-                %>
-					<td class="center" valign="top" style="padding-top:3px;">
-						<a href= "<%=productPagePath.get(i)%>" class="text12"><%=productName.get(i)%></a><br>
-						<span class="price"><%=productPrice.get(i)%></span>
-					</td>
-				<% 
-				if (i == 2) break;
-				} %>	
-				</tr>
-				</table>
-			</div>
-		</div>
-	</td>
-</tr>
-</table><br>
-<%}%>
