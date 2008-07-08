@@ -170,7 +170,7 @@
 	            %><%@ include file="/shared/includes/product/i_product_about.jspf" %>
 <%
 	            if (productNode.getAttribute("PRODUCT_ABOUT")!=null && doShowAbout) {
-	                %><br>Here?<a href="javascript:popup('/shared/popup.jsp?prodId=<%= productNode.getContentName() %>&catId=<%= productNode.getParentNode().getContentName()%>&attrib=PRODUCT_ABOUT&tmpl=large','large');"><b>Learn more about this <%=productNode.getDepartment().getFullName().toLowerCase()%>.</b></a>
+	                %><br><a href="javascript:popup('/shared/popup.jsp?prodId=<%= productNode.getContentName() %>&catId=<%= productNode.getParentNode().getContentName()%>&attrib=PRODUCT_ABOUT&tmpl=large','large');"><b>Learn more about this <%=productNode.getDepartment().getFullName().toLowerCase()%>.</b></a>
 <%
 	            }
 
