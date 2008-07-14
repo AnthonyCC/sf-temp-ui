@@ -1,5 +1,11 @@
 package com.freshdirect.transadmin.web.ui.callback;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Locale;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
@@ -7,43 +13,18 @@ import org.apache.log4j.Logger;
 import org.extremecomponents.table.bean.Column;
 import org.extremecomponents.table.core.TableModel;
 import org.extremecomponents.util.ExtremeUtils;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Locale;
+
+import com.freshdirect.transadmin.util.IDateContants;
 
 /**
  * Filter Predicate implementation which enable date comparison.
- *
- * @author Nathan MA
+ * 
  */
-public class DateFilterPredicate implements Predicate
-{
-    /** less than or equal. usage: <= 18-12-1997 */
-    public static final String LESS_THAN_OR_EQUAL = "<=";
-
-    /** greater than or equal. usage: >= 18-12-1997 */
-    public static final String GREATER_THAN_OR_EQUAL = ">=";
+public class DateFilterPredicate implements Predicate, IDateContants {
     
-    /** less than or equal. usage: <= 18-12-1997 */
-    public static final String LESS_THAN = "<";
-
-    /** greater than or equal. usage: >= 18-12-1997 */
-    public static final String GREATER_THAN = ">";
-
-    /** date between. usage: <> 18-12-1997 19-12-1997 */
-    public static final String BETWEEN = "<>";
-
-    /** date not equal. ussage: != 18-12-2004 */
-    public static final String NOT_EQUAL = "!=";
-
-    /** delimiters */
-    public static final String DELIM = "\\s";
     
     private static final Logger logger = Logger.getLogger(DateFilterPredicate.class);
-    private static final String asterisk = "*";
-    private static final String emptyString = "";
+    
     private TableModel model;
 
     /**
@@ -206,4 +187,6 @@ public class DateFilterPredicate implements Predicate
 
         return false;
     }
+    
+    
 }
