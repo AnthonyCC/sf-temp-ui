@@ -2,7 +2,10 @@
 <%@ taglib uri="/tld/extremecomponents" prefix="ec" %>
 <%@ page import='com.freshdirect.transadmin.web.ui.*' %>
 
-<%	pageContext.setAttribute("HAS_COPYBUTTON", "true");  %>
+<%	pageContext.setAttribute("HAS_COPYBUTTON", "true");  
+	String dateRangeVal = request.getParameter("daterange") != null ? request.getParameter("daterange") : "";
+	String zoneVal = request.getParameter("zone") != null ? request.getParameter("zone") : "";
+%>
 	
 <tmpl:insert template='/common/site.jsp'>
 
@@ -27,14 +30,14 @@
                   <td> 
                                 
                     <input maxlength="40" size="40" name="daterange"
-                      id="daterange" value="" />                    
+                      id="daterange" value='<%=dateRangeVal %>' />                    
                	 </td>
                 
                 <td>Zone</td>
                   <td> 
                                 
                     <input maxlength="40" size="40" name="zone"
-                      id="zone" value="" />                    
+                      id="zone" value='<%=zoneVal %>' />                    
                   </td>
                                    
                                      

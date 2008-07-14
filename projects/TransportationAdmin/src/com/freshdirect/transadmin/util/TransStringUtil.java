@@ -169,7 +169,9 @@ public class TransStringUtil {
 	            return IDateContants.NOT_EQUAL + "'"+serverDateFormat.format(dateToCompare)+"'";
 	        }
 	        else {
-	            return null;
+	        	dateToCompare = IDateContants.FILTER_DATEFORMAT.parse(search);
+	        	
+	            return IDateContants.EQUAL + "'"+serverDateFormat.format(dateToCompare)+"'";	        	
 	        }
         } catch (Exception e) {
         	throw new DateFilterException();
