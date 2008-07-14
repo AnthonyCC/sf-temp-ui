@@ -137,7 +137,7 @@ public class FDDeliveryManager {
 		this.refreshRestrictionsCache();
 		return this.dlvRestrictions;
 	}
-
+		
 	public List getSiteAnnouncement() throws FDResourceException {
 		this.refreshSiteAnnouncementsCache();
 		return this.announcementList;
@@ -715,8 +715,8 @@ public class FDDeliveryManager {
 		try {
 			sb = getDlvManagerHome().create();
 			sb.addGeocodeException(ex, userId);
-		} catch (RemoteException e) {
-			throw new FDResourceException(e);
+		} catch (RemoteException e) {						
+			throw new FDResourceException(e, e.getMessage());
 		} catch (CreateException e) {
 			throw new FDResourceException(e);
 		}
