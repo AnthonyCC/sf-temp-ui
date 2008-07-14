@@ -3,11 +3,12 @@ package com.freshdirect.transadmin.util;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
 
 public class TransStringUtil {
 	
@@ -29,6 +30,9 @@ public class TransStringUtil {
 														"Saturday",
 														"Sunday"};
 	private static Map daysMap = new HashMap();
+	
+	
+	
 	static {
 			for(int intCount=0;intCount<daysList.length;intCount++) {
 				daysMap.put(daysList[intCount], new Integer(intCount));
@@ -114,4 +118,94 @@ public class TransStringUtil {
 	public static int getInt(String intVal) throws NumberFormatException {		
 		return Integer.parseInt(intVal);
 	}
-}
+	
+	public static String formatDateSearch(String search) throws DateFilterException {  
+		
+        try {		
+	        Date dateToCompare = null;
+	        Date dateToCompare2 = null;
+	        
+			search = search.toLowerCase().trim();
+	            
+			String[] result = search.split(IDateContants.DELIM);
+	
+	        String operator = result[0];
+	        
+	        if (operator.equals(IDateContants.EQUAL)) {
+	            dateToCompare = IDateContants.FILTER_DATEFORMAT.parse(result[1]);
+	
+	            return IDateContants.EQUAL + " '"+serverDateFormat.format(dateToCompare)+"'";
+	        }
+	        else if (operator.equals(IDateContants.LESS_THAN)) {
+	            dateToCompare = IDateContants.FILTER_DATEFORMAT.parse(result[1]);
+	
+	            return IDateContants.LESS_THAN + " '"+serverDateFormat.format(dateToCompare)+"'";
+	        }
+	        else if (operator.equals(IDateContants.GREATER_THAN)) {
+	        	dateToCompare = IDateContants.FILTER_DATEFORMAT.parse(result[1]);
+	
+	            return IDateContants.GREATER_THAN + " '"+serverDateFormat.format(dateToCompare)+"'";
+	        }
+	        else if (operator.equals(IDateContants.LESS_THAN_OR_EQUAL)) {
+	        	dateToCompare = IDateContants.FILTER_DATEFORMAT.parse(result[1]);
+	
+	            return IDateContants.LESS_THAN_OR_EQUAL + " '"+serverDateFormat.format(dateToCompare)+"'";
+	        }
+	        else if (operator.equals(IDateContants.GREATER_THAN_OR_EQUAL)) {
+	        	dateToCompare = IDateContants.FILTER_DATEFORMAT.parse(result[1]);
+	
+	            return IDateContants.GREATER_THAN_OR_EQUAL + " '"+serverDateFormat.format(dateToCompare)+"'";
+	        }
+	        else if (operator.equals(IDateContants.BETWEEN))  {
+	            dateToCompare = dateFormat.parse(result[1]);
+	            dateToCompare2 = dateFormat.parse(result[2]);
+	
+	            return IDateContants.SQL_BETWEEN+" '"+ serverDateFormat.format(dateToCompare)+"' "+ IDateContants.LOGICAL_AND
+	            	+" '"+ serverDateFormat.format(dateToCompare2)+"'";
+	        }
+	        else if (operator.equals(IDateContants.NOT_EQUAL)) {
+	        	dateToCompare = IDateContants.FILTER_DATEFORMAT.parse(result[1]);
+	
+	            return IDateContants.NOT_EQUAL + "'"+serverDateFormat.format(dateToCompare)+"'";
+	        }
+	        else {
+	            return null;
+	        }
+        } catch (Exception e) {
+        	throw new DateFilterException();
+        }
+	}
+	
+	public static String formatStringSearch(String search) throws StringFilterException {
+		String[] dataLst = StringUtils.split(search, ",");
+		StringBuffer strBuf = new StringBuffer();
+		boolean hasInfo = false;
+		String strTmp = null;
+		
+		if(dataLst != null) {
+			int length = dataLst.length;
+			for(int intCount=0;intCount<length;intCount++) {
+				strTmp = dataLst[intCount].trim();
+				if(strTmp.length() > 0) {
+					strBuf.append(((hasInfo) ? "," : "")).append("'").append(strTmp).append("'");
+					hasInfo = true;					
+				}
+			}
+		}
+		return (hasInfo ? "IN ("+strBuf.toString()+")" : null);
+	}
+	
+	public static class DateFilterException extends Exception {
+		
+		public DateFilterException() {
+			super();
+		}
+	}
+	
+	public static class StringFilterException extends Exception {
+		
+		public StringFilterException() {
+			super();
+		}
+	}
+ }

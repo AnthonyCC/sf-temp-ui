@@ -34,6 +34,29 @@ public class DispatchManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 
 		return getDataList("TrnDispatchPlan Order By  PLAN_DATE");
 	}
+	
+	public Collection getPlan(String dateRange, String zoneLst) throws DataAccessException {
+		
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("TrnDispatchPlan p ");
+		boolean hasDate = false;
+		if(dateRange != null) {
+			strBuf.append("where p.planDate ").append(dateRange);
+			hasDate = true;
+		}
+		
+		if(zoneLst != null) {
+			if(!hasDate) {
+				strBuf.append("where ");
+			} else {
+				strBuf.append(" and ");
+			}
+			strBuf.append("p.trnZone.zoneNumber ").append(zoneLst);
+		}
+		
+		strBuf.append(" ORDER BY  PLAN_DATE");
+		return getDataList(strBuf.toString());
+	}
 
 	public Collection getPlan(String day, String zone, String date) throws DataAccessException {
 

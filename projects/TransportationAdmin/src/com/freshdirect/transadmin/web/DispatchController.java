@@ -38,8 +38,26 @@ public class DispatchController extends AbstractMultiActionController {
 	 */
 	public ModelAndView planHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {		
 		
-		Collection dataList = dispatchManagerService.getPlan();
-		return new ModelAndView("planView","planlist",dataList);
+		String daterange = request.getParameter("daterange");
+		String zoneLst = request.getParameter("zone");
+		ModelAndView mav = new ModelAndView("planView");
+		
+		if(!TransStringUtil.isEmpty(daterange) || !TransStringUtil.isEmpty(zoneLst)) {
+			
+			try {
+				String dateQryStr = TransStringUtil.formatDateSearch(daterange);
+				String zoneQryStr = TransStringUtil.formatStringSearch(zoneLst);
+				if(dateQryStr != null || zoneQryStr != null) {
+					Collection dataList = dispatchManagerService.getPlan(dateQryStr, zoneQryStr);
+					mav.getModel().put("planlist",dataList);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				saveMessage(request, getMessage("app.actionmessage.123", null));
+			}
+		}
+		
+		return mav;		
 	}
 	
 	/**

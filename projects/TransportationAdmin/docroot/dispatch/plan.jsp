@@ -8,13 +8,61 @@
 
     <tmpl:put name='title' direct='true'>Transportation Planning</tmpl:put>
 
-	<tmpl:put name='content' direct='true'>
-		<br/>	
+	<tmpl:put name='content' direct='true'>		
+		<div class="contentroot">               
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            <td class="screentitle">Transportation Planning</td>
+          </tr>
+          <c:if test="${not empty messages}">
+	          <tr>
+	            <td class="screenmessages"><jsp:include page='/common/messages.jsp'/></td>
+	          </tr>
+          </c:if>         
+          <tr>
+            <td class="screencontent">
+              <table class="forms1">          
+                <tr>
+                  <td>Date</td>
+                  <td> 
+                                
+                    <input maxlength="40" size="40" name="daterange"
+                      id="daterange" value="" />                    
+               	 </td>
+                
+                <td>Zone</td>
+                  <td> 
+                                
+                    <input maxlength="40" size="40" name="zone"
+                      id="zone" value="" />                    
+                  </td>
+                                   
+                                     
+                   <td colspan="4" align="center">
+                     <input type = "button" value="&nbsp;Go&nbsp;" 
+                     	onclick="javascript:doCompositeLink('daterange','zone','plan.do')" />
+                </td>     
+                      
+              </tr>
+              </table>        
+              
+            </td>
+          </tr>               
+        </table>    
+       <script>
+	       function doCompositeLink(compId1,compId2, url) {
+	    		var param1 = document.getElementById(compId1).value;
+	    		var param2 = document.getElementById(compId2).value;
+	    		
+	    		location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2;
+	  		} 
+  		</script>  
+     </div>		
 		<div align="center">
 			<form id="planListForm" action="" method="post">	
 				<ec:table items="planlist"  filterRowsCallback="exactMatch" action="${pageContext.request.contextPath}/plan.do"
-				    imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="Transportation Planning"
-				    width="98%"  view="fd" form="planListForm" autoIncludeParameters="false" rowsDisplayed="25"  >
+				    imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title=""
+				    width="98%"  view="fd" form="planListForm" autoIncludeParameters="true" rowsDisplayed="25"  >
 				    
 				    <ec:exportPdf fileName="transportationplan.pdf" tooltip="Export PDF" 
 				        			headerTitle="Transportation Plan" />

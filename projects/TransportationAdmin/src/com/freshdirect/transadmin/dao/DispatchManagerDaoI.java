@@ -18,6 +18,8 @@ public interface DispatchManagerDaoI extends BaseManagerDaoI {
 	TrnDispatch getDispatch(String planId, String date) throws DataAccessException;
 
 	Collection getPlan() throws DataAccessException;
+	
+	Collection getPlan(String dateRange, String zoneLst) throws DataAccessException;
 
 	TrnDispatchPlan getPlan(String id) throws DataAccessException;
 

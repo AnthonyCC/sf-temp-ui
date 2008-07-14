@@ -15,6 +15,8 @@ public interface DispatchManagerI extends BaseManagerI {
 	
 	TrnDispatch getDispatch(String planId, String date);
 	
+	Collection getPlan(String dateRange, String zoneLst);
+	
 	Collection getPlan();
 	
 	TrnDispatchPlan getPlan(String id);
