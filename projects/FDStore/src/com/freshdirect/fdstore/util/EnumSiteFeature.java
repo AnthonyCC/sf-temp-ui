@@ -25,6 +25,7 @@ public class EnumSiteFeature extends Enum implements Serializable {
 
 	public final static EnumSiteFeature NEW_SEARCH = new EnumSiteFeature("newSearch");
 	public final static EnumSiteFeature CCL = new EnumSiteFeature("CCL");
+	public final static EnumSiteFeature DYF = new EnumSiteFeature("DYF");
 	public final static EnumSiteFeature YMAL = new EnumSiteFeature("YMAL");
 
 	protected EnumSiteFeature(String name) {

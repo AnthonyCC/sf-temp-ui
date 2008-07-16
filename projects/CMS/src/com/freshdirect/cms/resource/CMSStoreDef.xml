@@ -376,6 +376,8 @@
 			<AttributeDef type="S" name="AKA" label="AKA Name"/>
 			<AttributeDef type="S" name="BLURB"  label="Blurb"/>
 			<AttributeDef type="S" name="SUBTITLE" label="Subtitle"/>
+
+			<AttributeDef type="B" name="EXCLUDED_RECOMMENDATION" label="Excluded Recommendation" inheritable="false"/>
 			<!-- layout -->
 			<AttributeDef type="S" name="HIDE_URL"  label="Hide URL" inheritable="true"/>
 			<EnumDef type="I" name="PRODUCT_LAYOUT" label="Prod Layout" inheritable="true">

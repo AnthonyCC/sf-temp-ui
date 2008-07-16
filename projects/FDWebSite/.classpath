@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JDK 1.4"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/CMS"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/cms-slide"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/cms-tap"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/DataLoader"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Delivery"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/DlvAdminTest"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/DlvAdmin"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ERPServices"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ERPSWebApp"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/FDStore"/>
