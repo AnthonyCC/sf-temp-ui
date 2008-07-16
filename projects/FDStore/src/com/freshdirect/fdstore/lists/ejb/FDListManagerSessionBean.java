@@ -424,4 +424,25 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 			}
 		}	
 	}
+	
+	public FDCustomerProductList getOrderDetails(String erpCustomerId, List skus) throws FDResourceException, RemoteException {
+		Connection conn = null;			
+		try {
+			conn = getConnection();
+			FDCustomerListDAO dao = new FDCustomerListDAO();
+
+            return dao.getOrderDetails(conn,erpCustomerId,skus);
+		} catch (SQLException e) {
+			System.out.println(">>> " + e);
+			throw new FDResourceException(e);
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					LOGGER.warn("Trouble closing connection after renameList", e);
+				}
+			}
+		}	
+	}
 }

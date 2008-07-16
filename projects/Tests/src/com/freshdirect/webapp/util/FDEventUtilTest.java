@@ -54,6 +54,7 @@ import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.framework.event.FDEvent;
+import com.freshdirect.framework.event.FDWebEvent;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockHttpSession;
@@ -145,7 +146,7 @@ public class FDEventUtilTest extends FDCustomerManagerTestSupport {
 		assertNotNull(cartLine);
 		FDEventUtil.logAddToCartEvent(cartLine, request);
 		
-		FDEvent event = EventLogger.getInstance().getLastEvent();
+		FDWebEvent event = (FDWebEvent)EventLogger.getInstance().getLastEvent();
 		assertEquals(event.getEventValues()[0], "ok_product"); // product id
 		assertEquals(event.getEventValues()[1], "MEA0004561"); // SKU code
 		assertEquals(event.getEventValues()[2], "ok_category"); // category id
@@ -278,7 +279,7 @@ public class FDEventUtilTest extends FDCustomerManagerTestSupport {
 				new FDCartLineModel(
 					new FDSku(product),
 					prodNode.getProductRef(),
-					new FDConfiguration(quantity, salesUnit.getName(), varMap));
+					new FDConfiguration(quantity, salesUnit.getName(), varMap), null);
 		} else {
 			/*
 			 * When an existing item in the cart is modified, reuse the same
@@ -290,7 +291,7 @@ public class FDEventUtilTest extends FDCustomerManagerTestSupport {
 					new FDSku(product),
 					prodNode.getProductRef(),
 					new FDConfiguration(quantity, salesUnit.getName(), varMap),
-					origCartLineId, null, false);
+					origCartLineId, null, false, null);
 		}
 
 		try {

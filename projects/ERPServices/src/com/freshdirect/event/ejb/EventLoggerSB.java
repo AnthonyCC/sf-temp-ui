@@ -4,13 +4,13 @@ import java.rmi.RemoteException;
 
 import javax.ejb.EJBObject;
 
-import com.freshdirect.framework.event.FDEvent;
+import com.freshdirect.framework.event.FDWebEvent;
 
 /**
  * @author knadeem Date May 3, 2005
  */
 public interface EventLoggerSB extends EJBObject {
 	
-	public void log(FDEvent evnet) throws RemoteException; 
+	public void log(FDWebEvent evnet) throws RemoteException; 
 
 }

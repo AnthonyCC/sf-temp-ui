@@ -1,5 +1,6 @@
 package com.freshdirect.framework.util;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -96,6 +97,29 @@ public class DiscreteRandomSamplerTestCase extends TestCase {
 		
 		// Comment out below to see the real error
 		System.out.println("Error: " + error + '%');
+	}
+	
+	public void testOneValue() {	
+		DiscreteRandomSampler DS = new DiscreteRandomSampler(new Comparator() {
+
+			public int compare(Object arg0, Object arg1) {
+				return arg0.toString().compareTo(arg1.toString());
+			}
+			
+		});
+		Object csupo = new Object() {
+			public String toString() {
+				return "csupo";
+			}
+		};
+		
+		DS.addValue(csupo, 10);
+		
+		Random R = new Random();
+		for(int i=0; i< MAX; ++i) {
+			Object result = DS.getRandomValue(R);
+			assertTrue(result == csupo);
+		}
 	}
 
 }

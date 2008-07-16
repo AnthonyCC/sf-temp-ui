@@ -26,7 +26,7 @@ public class AsyncEventSink implements EventSinkI {
 		t.start();
 	}
 
-	public boolean log(FDEvent event) {
+	public boolean log(FDWebEvent event) {
 		return this.buffer.offer(event);
 	}
 
@@ -35,7 +35,7 @@ public class AsyncEventSink implements EventSinkI {
 		public void run() {
 			while (true) {
 				try {
-					FDEvent event = (FDEvent) buffer.take();
+					FDWebEvent event = (FDWebEvent) buffer.take();
 					sink.log(event);
 				} catch (RuntimeException e) {
 					LOGGER.warn("Could not log event due to: ", e);

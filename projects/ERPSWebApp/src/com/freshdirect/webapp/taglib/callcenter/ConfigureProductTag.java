@@ -73,10 +73,11 @@ public class ConfigureProductTag extends com.freshdirect.framework.webapp.BodyTa
 			//
 			// do this initial set up of the config product here
 			//
-			
+
+			// FIXME: variant ID is null here (last param). Is it correct?
 			String configDescValue = this.buildConfiguration(fdProd);
 			this.configProductValue = new FDCartLineModel(new FDSku(fdProd),
-					this.product.getProductRef(), this.configuration);
+					this.product.getProductRef(), this.configuration, null);
 
 			//
 			// Set variables in PageContext

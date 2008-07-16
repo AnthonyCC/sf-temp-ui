@@ -3607,6 +3607,53 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
+
+	/**
+	 * SmartStore
+	 * 
+	 * @param saleId order ID
+	 * @param FDIdentity Customer identity
+	 * @param feature Site Feature (eg. 'DYF')
+	 * @param variantId Variant ID
+	 * @throws FDResourceException 
+	 */
+	public void logCustomerVariant(String saleId, FDIdentity identity, String feature, String variantId) throws RemoteException, FDResourceException {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn = this.getConnection();
+			ps = conn.prepareStatement(
+					"INSERT INTO CUST.LOG_CUSTOMER_VARIANTS(TIMESTAMP, CUSTOMER_ID, SALE_ID, VARIANT_ID, FEATURE) " +
+					"VALUES(SYSDATE,?,?,?,?)");
+			ps.setString(1, identity.getErpCustomerPK());
+			ps.setString(2, saleId);
+			ps.setString(3, variantId);
+			ps.setString(4, feature);
+
+			rs = ps.executeQuery();
+		} catch (SQLException e) {
+			throw new FDResourceException(e);
+		} finally {
+			try {
+				if (rs != null) {rs.close();}
+				if (ps != null) {ps.close();}
+				if (conn != null) {conn.close();}
+			} catch (SQLException e) {
+				LOGGER.warn("SQLException occured: ", e);
+			}
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	private DeliveryPassModel getActiveDPForCustomer(String customerPK, DlvPassManagerSB dlvPassSB) throws FDResourceException, RemoteException  {
 
 		List dlvPasses = dlvPassSB.getDlvPassesByStatus(customerPK, EnumDlvPassStatus.ACTIVE);

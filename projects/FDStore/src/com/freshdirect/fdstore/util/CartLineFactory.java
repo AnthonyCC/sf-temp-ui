@@ -134,7 +134,7 @@ public class CartLineFactory {
 			}
 
 			FDConfiguration conf = new FDConfiguration(this.getQuantity(product.getSkuCode()), salesUnit.getName(), optionMap);
-			FDCartLineModel cartLine = new FDCartLineModel(new FDSku(product), prdModel.getProductRef(), conf);
+			FDCartLineModel cartLine = new FDCartLineModel(new FDSku(product), prdModel.getProductRef(), conf, null);
 			
 			try {
 				cartLine.refreshConfiguration();

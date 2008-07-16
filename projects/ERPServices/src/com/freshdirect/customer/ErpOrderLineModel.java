@@ -68,6 +68,14 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
      */
     private String originatingProductId;
    
+    
+    /**
+     * SmartStore DYF
+     * Variant ID of the recommended product
+     * Optional property.
+     */
+    private String variantId;
+    
     public boolean isDeliveryPass() {
 		return deliveryPass;
 	}
@@ -198,5 +206,13 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 		this.requestNotification = requestNotification;
 	}
 
+    
+    public String getVariantId() {
+    	return this.variantId;
+    }
+    
+    public void setVariantId(String variantId) {
+    	this.variantId = variantId;
+    }
 }
 

@@ -10,7 +10,7 @@ import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.framework.core.DataSourceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.event.EventSinkI;
-import com.freshdirect.framework.event.FDEvent;
+import com.freshdirect.framework.event.FDWebEvent;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -22,7 +22,7 @@ public class EventLoggerSessionBean extends SessionBeanSupport {
 	private static Category LOGGER = LoggerFactory.getInstance(EventLoggerSessionBean.class);
 	private static EventSinkI dbSink;
 	
-	public void log(FDEvent event) {
+	public void log(FDWebEvent event) {
 		if(dbSink == null) {
 			dbSink = new DBEventSink(this.getDataSource());
 		}

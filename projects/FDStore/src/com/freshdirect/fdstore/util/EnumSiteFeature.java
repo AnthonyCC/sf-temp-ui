@@ -3,12 +3,10 @@
  */
 package com.freshdirect.fdstore.util;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.enums.Enum;
 
@@ -16,12 +14,18 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
 
 
-public class EnumSiteFeature extends Enum {
+public class EnumSiteFeature extends Enum implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1944504955176270287L;
 
 	private final static String PROFILE_PREFIX = "siteFeature.";
 
 	public final static EnumSiteFeature NEW_SEARCH = new EnumSiteFeature("newSearch");
 	public final static EnumSiteFeature CCL = new EnumSiteFeature("CCL");
+	public final static EnumSiteFeature YMAL = new EnumSiteFeature("YMAL");
 
 	protected EnumSiteFeature(String name) {
 		super(name);

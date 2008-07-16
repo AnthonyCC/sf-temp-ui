@@ -18,6 +18,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.customer.ejb.ErpOrderLineUtil;
 import com.freshdirect.fdstore.FDConfiguration;
+import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
@@ -632,6 +633,66 @@ class FDCustomerListDAO {
 	
 	protected Date getCurrentDate() {
 		return new Date();
+	}
+	
+	/**
+	 * Get the order details for the selected skus for the customer.
+	 * @param conn
+	 * @param erpCustomerId 
+	 * @param skus selected skus
+	 * @return the line items as a product list
+	 * @throws SQLException
+	 */
+	public FDCustomerProductList getOrderDetails(Connection conn, String erpCustomerId, List skus) throws SQLException {
+		if (skus.size() == 0) throw new FDRuntimeException("Empty sku list");
+	
+		StringBuffer query = 
+			new StringBuffer(256).
+				append("SELECT ld.ID, QUANTITY, SKU_CODE, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, ").
+				append("ld.CREATE_DATE, ld.RECENT_DATE, ld.DELETE_DATE, FREQUENCY ").
+				append("FROM cust.customerlist l, cust.customerlist_details ld WHERE ").
+				append("ld.list_id = l.id and l.customer_id = ? AND ld.sku_code in (");
+		for(int i = 0; i < skus.size(); ++i) {
+			if (i > 0) query.append(',');
+			query.append('?');
+		}
+		query.append(')');
+		
+		PreparedStatement ps = conn.prepareStatement(query.toString());
+		ps.setString(1,erpCustomerId);
+		for(int i = 0; i< skus.size(); ++i) {
+			ps.setString(i+2,skus.get(i).toString());
+		}
+			
+		FDCustomerProductList products = new FDCustomerShoppingList();
+		
+		ResultSet rs = ps.executeQuery();
+		
+		List lineItems = new ArrayList();
+		while (rs.next()) {
+			PrimaryKey itemPK = new PrimaryKey(rs.getString("ID"));
+			FDCustomerProductListLineItem item = new FDCustomerProductListLineItem(
+				rs.getString("SKU_CODE"),
+				new FDConfiguration(rs.getDouble("QUANTITY"), 
+				rs.getString("SALES_UNIT"), 
+				ErpOrderLineUtil.convertStringToHashMap(rs.getString("CONFIGURATION"))),
+				rs.getString("RECIPE_SOURCE_ID")	
+			);
+			item.setPK(itemPK);
+			item.setFrequency(rs.getInt("FREQUENCY"));
+			item.setFirstPurchase(getTimestamp(rs, "CREATE_DATE"));
+			item.setLastPurchase(getTimestamp(rs, "RECENT_DATE"));
+			item.setDeleted(getTimestamp(rs, "DELETE_DATE"));
+			lineItems.add(item);
+		}
+		rs.close();
+		ps.close();
+
+		products.setLineItems(lineItems);
+		
+		products.setCustomerPk(new PrimaryKey(erpCustomerId));
+		
+		return products;
 	}
 
 	

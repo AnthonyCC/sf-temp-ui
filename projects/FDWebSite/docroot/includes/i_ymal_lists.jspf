@@ -9,6 +9,12 @@
 <%@ page import='com.freshdirect.cms.fdstore.*' %>
 <%@ page import="com.freshdirect.common.pricing.Discount" %>
 
+<%@ page import="com.freshdirect.webapp.util.FletoHelper" %>
+<%@ page import="com.freshdirect.webapp.util.ConfigurationContext" %>
+<%@ page import="com.freshdirect.webapp.util.ConfigurationStrategy" %>
+<%@ page import="com.freshdirect.webapp.util.ConfigurationStrategyFactory" %>
+<%@ page import="com.freshdirect.fdstore.util.EnumSiteFeature" %>
+
 <%
 /**
  *  A JSP fragment page to display the YMALs based on YMAL lists for
@@ -173,8 +179,16 @@
                                     continue;
                                 }
 
+				/*
                                 YmalHelperFactory   yhf         = YmalHelperFactory.getInstance();
                                 YmalHelper          helper      = yhf.getYmalHelper(p, transactional);
+				*/
+				ConfigurationStrategy confUtil    = ConfigurationStrategyFactory.getConfigurationStrategy(EnumSiteFeature.YMAL);
+				System.out.println("Transactional = " + transactional + ", IsProxy = " + (p instanceof ProxyProduct) + ", class = " + p.getClass());
+				FletoHelper     helper      = new FletoHelper(
+				                                        transactional || p instanceof ProxyProduct ? 
+										confUtil.configure(p,new ConfigurationContext()) :
+										new ProductImpression(p));
                                 FDConfigurableI     configuration = helper.getConfiguration();
 
                                 if (helper.isTransactional()) {

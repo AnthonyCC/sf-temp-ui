@@ -22,7 +22,7 @@ public class FDCartLineDAO {
 	}
 
 	private final static String QUERY_CARTLINES =
-		"SELECT ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION"
+		"SELECT ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID"
 			+ " FROM CUST.FDCARTLINE WHERE FDUSER_ID = ?";
 
 	public static List loadCartLines(Connection conn, PrimaryKey fdUserPk) throws SQLException {
@@ -45,7 +45,8 @@ public class FDCartLineDAO {
 			line.setCartlineId(rs.getString("ID"));
 			line.setRecipeSourceId(rs.getString("RECIPE_SOURCE_ID"));
 			line.setRequestNotification(NVL.apply(rs.getString("REQUEST_NOTIFICATION"), "").equals("X"));
-
+			line.setVariantId(rs.getString("VARIANT_ID"));
+			
 			lst.add(line);
 		}
 		rs.close();
@@ -62,7 +63,7 @@ public class FDCartLineDAO {
 
 		ps =
 			conn.prepareStatement(
-				"INSERT INTO CUST.FDCARTLINE (ID, FDUSER_ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION) values (?,?,?,?,?,?,?,?,?)");
+				"INSERT INTO CUST.FDCARTLINE (ID, FDUSER_ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID) values (?,?,?,?,?,?,?,?,?,?)");
 
 		for (Iterator i = erpOrderlines.iterator(); i.hasNext();) {
 			ErpOrderLineModel line = (ErpOrderLineModel) i.next();
@@ -76,7 +77,8 @@ public class FDCartLineDAO {
 			ps.setString(7, convertHashMapToString(line.getOptions()));
 			ps.setString(8, line.getRecipeSourceId());
 			ps.setString(9, line.isRequestNotification() ? "X" : "");
-
+			ps.setString(10, line.getVariantId());
+			
 			ps.addBatch();
 		}
 

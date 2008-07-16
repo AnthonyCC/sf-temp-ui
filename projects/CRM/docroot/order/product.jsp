@@ -193,9 +193,10 @@ termCounter++; %>
     		options.put(namesTokenizer.nextToken(), valuesTokenizer.nextToken());
     	}
 		FDConfiguration configuration = new FDConfiguration(Double.parseDouble( request.getParameter("qty") ), request.getParameter("salesUnit"), options);
+		String variantId = request.getParameter("variant");
     	templateLine = new FDCartLineModel( new FDSku(defaultProduct), 
     	     (productNode.isPreconfigured() ? ((ConfiguredProduct)productNode).getProduct().getProductRef() : productNode.getProductRef()), 
-    	      configuration);
+    	      configuration, variantId);
     }
 %>
 <fd:FDShoppingCart id='cart' result='result' action='<%= tgAction %>' successPage='<%= successPage %>'>

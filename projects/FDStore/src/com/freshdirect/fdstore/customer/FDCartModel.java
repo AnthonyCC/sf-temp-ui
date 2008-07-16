@@ -93,7 +93,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	public final static Comparator LINE_COMPARATOR = new Comparator() {
 		public int compare(Object o1, Object o2) {
 				///order by Department and then by product.
-	FDCartLineI cartLine1 = (FDCartLineI) o1;
+			FDCartLineI cartLine1 = (FDCartLineI) o1;
 			FDCartLineI cartLine2 = (FDCartLineI) o2;
 			int retValue = cartLine1.getDepartmentDesc().compareTo(cartLine2.getDepartmentDesc());
 			if (cartLine1.getDepartmentDesc().compareTo(cartLine2.getDepartmentDesc()) == 0) {

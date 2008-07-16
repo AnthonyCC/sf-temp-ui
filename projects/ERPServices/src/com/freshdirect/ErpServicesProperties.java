@@ -112,6 +112,15 @@ public class ErpServicesProperties {
     private final static String PROP_FEE_BOUNCED_CHECK = "payment.bouncedCheck.fee";
     private final static String PROP_PERISABLE_AUTH_BUFFER = "payment.perishable.auth.buffer";
     private final static String PROP_EVENT_QUEUE_SIZE="event.queue.size";
+    
+    private final static String PROP_IMPRESSIONS_COUNT_LIMIT = "impressions.count.limit";
+    private final static String PROP_IMPRESSIONS_ENTRY_LIMIT = "impressions.entry.limit";
+    private final static String PROP_IMPRESSIONS_FLUSH_SECONDS = "impressions.flush.seconds";
+    
+    private final static String PROP_CLICKTHROUGHS_COUNT_LIMIT = "clickthroughs.count.limit";
+    private final static String PROP_CLICKTHROUGHS_ENTRY_LIMIT = "clickthroughs.entry.limit";
+    private final static String PROP_CLICKTHROUGHS_FLUSH_SECONDS = "clickthroughs.flush.seconds";
+    
 	private final static Properties config;
 
 	private final static String PROP_PROMOTION_RT_SIZE_LIMIT = "promotion.rt.size.limit";
@@ -202,6 +211,15 @@ public class ErpServicesProperties {
 		defaults.put(PROP_FEE_BOUNCED_CHECK, "25.00");
 		defaults.put(PROP_PERISABLE_AUTH_BUFFER, ".25"); //25%
 		defaults.put(PROP_EVENT_QUEUE_SIZE, "1500"); 
+		
+		defaults.put(PROP_IMPRESSIONS_COUNT_LIMIT, "" + Integer.MAX_VALUE);
+		defaults.put(PROP_IMPRESSIONS_ENTRY_LIMIT, "7000");
+		defaults.put(PROP_IMPRESSIONS_FLUSH_SECONDS, "300");
+		
+		defaults.put(PROP_CLICKTHROUGHS_COUNT_LIMIT, "" + Integer.MAX_VALUE);
+		defaults.put(PROP_CLICKTHROUGHS_ENTRY_LIMIT, "7000");
+		defaults.put(PROP_CLICKTHROUGHS_FLUSH_SECONDS, "300");
+		
 		defaults.put(PROP_PROMOTION_RT_SIZE_LIMIT, "2000");
 		
 		defaults.put(PROP_CART_ORDERLINE_LIMT, "500");
@@ -469,9 +487,36 @@ public class ErpServicesProperties {
 	public static double getPerishableAuthBuffer() {
 		return Double.parseDouble(config.getProperty(PROP_PERISABLE_AUTH_BUFFER));
 	}
+	
 	public static int getEventQueueSize() {
 		return Integer.parseInt(config.getProperty(PROP_EVENT_QUEUE_SIZE));
 	}
+	
+	public static int getImpressionsCountLimit() {
+		return Integer.parseInt(config.getProperty(PROP_IMPRESSIONS_COUNT_LIMIT));
+	}
+	
+	public static int getImpressionsEntryLimit() {
+		return Integer.parseInt(config.getProperty(PROP_IMPRESSIONS_ENTRY_LIMIT));
+	}
+	
+	public static int getImpressionsFlushSeconds() {
+		return Integer.parseInt(config.getProperty(PROP_IMPRESSIONS_FLUSH_SECONDS));
+	}
+	
+	public static int getClickThroughsCountLimit() {
+		return Integer.parseInt(config.getProperty(PROP_CLICKTHROUGHS_COUNT_LIMIT));
+	}
+	
+	public static int getClickThroughsEntryLimit() {
+		return Integer.parseInt(config.getProperty(PROP_CLICKTHROUGHS_ENTRY_LIMIT));
+	}
+	
+	public static int getClickThroughsFlushSeconds() {
+		return Integer.parseInt(config.getProperty(PROP_CLICKTHROUGHS_FLUSH_SECONDS));
+	}
+	
+	
 	public static int getPromotionRTSizeLimit() {
 		return Integer.parseInt(config.getProperty(PROP_PROMOTION_RT_SIZE_LIMIT));
 	}

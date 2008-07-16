@@ -70,7 +70,9 @@ if (!hasTemplate) {
 	double qty = reqQuantity==null ? productNode.getQuantityMinimum() :    Double.parseDouble(reqQuantity);
 	FDConfiguration cfg = new FDConfiguration(qty, request.getParameter("salesUnit"), tmpConfig);
 
-	templateLine = new FDCartLineModel( new FDSku(defaultProduct), productNode.getProductRef(), cfg);
+	String variantId = request.getParameter("variant");
+
+	templateLine = new FDCartLineModel( new FDSku(defaultProduct), productNode.getProductRef(), cfg, variantId);
 }
 //* check to see if any of the mandatory variations are all unavailable.  (rule: platter unavailable if all comp of a var is unavail)
 //* while we're at it, save skucode and productModel for future use.

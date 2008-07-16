@@ -86,7 +86,7 @@ public class SampleLineApplicator implements PromotionApplicatorI {
 			new FDCartLineModel(
 				new FDSku(fdp),
 				product.getProductRef(),
-				new FDConfiguration(product.getQuantityMinimum(), su.getName()));
+				new FDConfiguration(product.getQuantityMinimum(), su.getName()), null);
 
 		cartLine.setDiscount(new Discount(promotionCode, EnumDiscountType.SAMPLE, 1.0));
 

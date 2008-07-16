@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<JMeterTests dir="$(jmx.directory)" jar="$(jmeter.lib)/bin/ApacheJMeter.jar">
+
+	<!-- Hit view carts -->
+	<JMeterScript file="dyf.jmx" enabled="true">
+		<!-- Obtain data -->
+		<CustomerData>
+			<Retrieve dir="$(output.directory)" server="$(server)" port="$(port)" file="dyf_custids.csv" type="dyfcustid"/>
+		</CustomerData>
+	</JMeterScript>
+
+	<!-- View cart test parameters -->
+	<JMeterParameters>
+		<Parameter name="hostname">$(server)</Parameter>
+		<Parameter name="port">$(port)</Parameter>
+		<Parameter name="dyf_threads">6</Parameter>
+		<Parameter name="counter">20</Parameter>
+		<Parameter name="dyf_data">$(output.directory)/dyf_custids.csv</Parameter>
+		<Parameter name="dyf_output">$(output.directory)/dyf_results.csv</Parameter>
+	</JMeterParameters>
+
+	<!-- -->
+	<Results dir="$(output.directory)">
+		<Aggregate file="dyf_results.csv">
+			<Rows>
+				<Match column="3">.*dyf_recommendations.jsp</Match>
+			</Rows>
+			<Calculate>
+				<Formula file="dyf_response_ave.property">ave($0)</Formula>
+				<Formula file="dyf_response_stdhigh.property">ave($0)+std($0)/2</Formula>
+
+				<Formula file="dyf_latency_ave.property">ave($4)</Formula>
+				<Formula file="dyf_latency_stdhigh.property">ave($4)+std($4)/2</Formula>
+
+				<Formula file="dyf_total.property">count($0)</Formula>
+
+			</Calculate>
+		</Aggregate>
+		<Aggregate file="dyf_results.csv">
+			<Rows>
+				<Match column="1" negate="true">200</Match>
+				<Match column="3">.*dyf_recommendations.jsp</Match>
+			</Rows>
+			<Calculate>
+				<Formula file="dyf_error.property">count($0)</Formula>
+			</Calculate>
+		</Aggregate>
+	</Results>
+
+</JMeterTests>
+

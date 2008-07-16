@@ -27,6 +27,7 @@ import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeCategory;
 import com.freshdirect.fdstore.content.RecipeSubcategory;
 import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.webapp.util.FDURLUtil;
 
 /**
  * Collection of helper methods made available to templates.
@@ -75,7 +76,8 @@ public class TemplateContext {
 		String link;
 		if (node instanceof ProductModel) {
 			// link to product in its category			
-			link = "/product.jsp?catId=" + node.getParentNode().getContentName() + "&productId=" + node.getContentName();
+			/// link = "/product.jsp?catId=" + node.getParentNode().getContentName() + "&productId=" + node.getContentName();
+			return FDURLUtil.getProductURI( (ProductModel)node, trackingCode);
 		} else {
 			link = PreviewLinkProvider.getLink(node.getContentKey());
 		}

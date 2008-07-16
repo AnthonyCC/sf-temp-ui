@@ -11,6 +11,7 @@
 <%@ page import="com.freshdirect.common.pricing.Discount" %>
 <%@ page import="java.util.Calendar" %>
 <%@ page import="com.freshdirect.fdstore.deliverypass.DeliveryPassUtil" %>
+<%@ page import="com.freshdirect.webapp.util.DYFUtil" %>
 <%@ page import='com.freshdirect.framework.webapp.ActionResult' %>
 <%@ page import='com.freshdirect.framework.webapp.ActionError' %>
 <%@ taglib uri="logic" prefix="logic" %>
@@ -425,7 +426,7 @@ FDIdentity identity = user.getIdentity();
         <% 
 	}
 	%>
-	<tr valign="top" class="orderTotal">
+	<tr valign="top" class="<%= DYFUtil.isCustomerEligible(user) ? "SS" : "" %>orderTotal">
 		<td colspan="3" align="right"><b><% if (cart.isEstimatedPrice()) { %>ESTIMATED TOTAL<% } else { %>ORDER TOTAL<%}%></b>:</td>
 		<td colspan="1" align="right"><b><%= CCFormatter.formatCurrency(cart.getTotal()) %></b></td>
 		<td colspan="1"><% if (cart.isEstimatedPrice()) { %>*<% } %></td>

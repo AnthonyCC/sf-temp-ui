@@ -43,16 +43,17 @@ public class FDCartLineModel extends AbstractCartLine {
 		super(orderLine, firstInvoiceLine, lastInvoiceLine, returnLine);
 	}
 
-	public FDCartLineModel(FDSku sku, ProductRef productRef, FDConfigurableI configuration) {
-		super(sku, productRef, configuration);
+	public FDCartLineModel(FDSku sku, ProductRef productRef, FDConfigurableI configuration, String variantId) {
+		super(sku, productRef, configuration, variantId);
 		this.orderLine.setCartlineId(ID_GENERATOR.getNextId());
 	}
 	
-	public FDCartLineModel(FDSku sku, ProductRef productRef, FDConfigurableI configuration, String cartlineId, String recipeSourceId, boolean requestNotification) {
-		super(sku, productRef, configuration);
+	public FDCartLineModel(FDSku sku, ProductRef productRef, FDConfigurableI configuration, String cartlineId, String recipeSourceId, boolean requestNotification, String variantId) {
+		super(sku, productRef, configuration, variantId);
 		this.orderLine.setCartlineId(cartlineId);
 		this.orderLine.setRecipeSourceId(recipeSourceId);
 		this.orderLine.setRequestNotification(requestNotification);
+		this.orderLine.setVariantId(variantId);
 	}
 
 	public List buildErpOrderLines(int baseLineNumber) throws FDResourceException, FDInvalidConfigurationException {
@@ -72,7 +73,7 @@ public class FDCartLineModel extends AbstractCartLine {
 
 	public FDCartLineI createCopy() {
 		FDCartLineModel newLine = new FDCartLineModel(this.getSku(), this
-				.getProductRef(), this.getConfiguration());
+				.getProductRef(), this.getConfiguration(), this.getVariantId());
 		newLine.setRecipeSourceId(this.getRecipeSourceId());
 		newLine.setRequestNotification(this.isRequestNotification());
 		newLine.setSource(this.source);
@@ -99,5 +100,4 @@ public class FDCartLineModel extends AbstractCartLine {
 	public EnumEventSource getSource() {
 		return source;
 	}
-
 }

@@ -56,7 +56,7 @@
 		
 		
 		FDConfiguration configuration = new FDConfiguration(Double.parseDouble( request.getParameter("quantity") ), salesUnit.getName(), options);		
-		FDCartLineModel cartLine = new FDCartLineModel(new FDSku(product), productModel.getProductRef(), configuration);
+		FDCartLineModel cartLine = new FDCartLineModel(new FDSku(product), productModel.getProductRef(), configuration, null);
 	
 		cart.addOrderLine(cartLine);
 		//Log that an item has been added.

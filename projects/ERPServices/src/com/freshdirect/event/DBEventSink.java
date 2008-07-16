@@ -11,7 +11,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.framework.event.EventSinkI;
-import com.freshdirect.framework.event.FDEvent;
+import com.freshdirect.framework.event.FDWebEvent;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -23,15 +23,21 @@ public class DBEventSink implements EventSinkI {
 
 	private final DataSource dataSource;
 
-	private static final String EVENT_INSERT = "INSERT INTO CUST.EVENTS (CUSTOMER_ID, COOKIE, URL, QUERY_STRING, EVENT_TYPE, TIMESTAMP, APPLICATION, "
-		+ "SERVER, TRACKING_CODE, SOURCE, PARAM_1, PARAM_2, PARAM_3, PARAM_4, PARAM_5, PARAM_6, PARAM_7, PARAM_8, PARAM_9, PARAM_10, PARAM_11, PARAM_12, PARAM_13, PARAM_14, PARAM_15) "
-		+ "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	private static final String EVENT_INSERT = "INSERT INTO CUST.LOG_CART_EVENTS"
+		// base FDEvent parameters (10)
+		+ "(ID, CUSTOMER_ID, COOKIE, URL, QUERY_STRING, EVENT_TYPE, TIMESTAMP, APPLICATION, "
+		+ "SERVER, TRACKING_CODE, SOURCE, "
+		// FDCartLineEvent parameters (12)
+		+ "PRODUCT_ID, SKU_CODE, CATEGORY_ID, DEPARTMENT_ID, "
+		+ "CARTLINE_ID, QUANTITY, SALES_UNIT, CONFIGURATION, "
+		+ "YMAL_CATEGORY, YMAL_PRODUCT, YMAL_SET_ID, CCL_ID, VARIANT_ID) "
+		+ "VALUES(CUST.LOG_CART_EVENTS_SEQ.NEXTVAL, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	public DBEventSink(DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
 
-	public boolean log(FDEvent event) {
+	public boolean log(FDWebEvent event) {
 		PreparedStatement ps = null;
 		Connection conn = null;
 		try {
@@ -39,6 +45,8 @@ public class DBEventSink implements EventSinkI {
 			ps = conn.prepareStatement(EVENT_INSERT);
 			int idx = 1;
 
+			// Set general attributes
+			//
 			ps.setString(idx++, event.getCustomerId());
 			ps.setString(idx++, event.getCookie());
 			ps.setString(idx++, event.getUrl());
@@ -48,12 +56,33 @@ public class DBEventSink implements EventSinkI {
 			ps.setString(idx++, event.getApplication());
 			ps.setString(idx++, event.getServer());
 			ps.setString(idx++, event.getTrackingCode());
-			ps.setString(idx++, event.getSource() == null ? null : event
-					.getSource().getName());
+			ps.setString(idx++, event.getSource() == null ? null : event.getSource().getName());
 
-			String[] values = event.getEventValues();
-			for (int i = 0; i < values.length; i++) {
-				ps.setString(idx++, values[i]);
+			// Set specific attributes
+			//
+			if (event instanceof FDCartLineEvent) {
+				FDCartLineEvent cle = (FDCartLineEvent) event;
+				
+				ps.setString(idx++, cle.getProductId());		// 0
+				ps.setString(idx++, cle.getSkuCode());			// 1
+				ps.setString(idx++, cle.getCategoryId());		// 2
+				ps.setString(idx++, cle.getDepartment());		// 3
+				ps.setString(idx++, cle.getCartlineId());		// 4
+
+				ps.setString(idx++, cle.getQuantity());			// 5
+				ps.setString(idx++, cle.getSalesUnit());		// 6
+				ps.setString(idx++, cle.getConfiguration());	// 7
+
+				ps.setString(idx++, cle.getYmalCategory());		// 8
+				ps.setString(idx++, cle.getOriginatingProduct());	// 9
+				ps.setString(idx++, cle.getYmalSet());			// 10
+
+				ps.setString(idx++, cle.getCclId());			// 11
+				
+				ps.setString(idx++, cle.getVariantId());		// 12
+			} else {
+				LOGGER.error("Skipped event with unknown class " + event.getClass().getName() );
+				return false;
 			}
 
 			if (ps.executeUpdate() != 1) {
@@ -64,19 +93,18 @@ public class DBEventSink implements EventSinkI {
 
 		} catch (SQLException e) {
 			throw new FDRuntimeException(e, "SQLException while trying to LOG event: " + event);
-		}finally {
-			try{
+		} finally {
+			try {
 				if(ps != null){
 					ps.close();
 				}
-			}catch(SQLException e){
+			} catch(SQLException e){
 				LOGGER.warn("Could not close Statement due to: ", e);
-			}
-			try{
+			} try {
 				if(conn != null){
 					conn.close();
 				}
-			}catch(SQLException e){
+			} catch(SQLException e){
 				LOGGER.warn("Could not close connection due to: ", e);
 			}
 		}

@@ -24,7 +24,7 @@
 	java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 %>
 <fd:ProductGroup id='productNode' categoryId='<%= request.getParameter("catId") %>' productId='<%= request.getParameter("productId") %>'>
-
+<fd:ClickThru product="<%= productNode %>"/>
 <%
 //--------OAS Page Variables-----------------------
 request.setAttribute("sitePage", productNode.getPath());
@@ -69,9 +69,14 @@ if (layoutAttrib!=null) {
         String trk = request.getParameter("trk");
         String redirectURL = response.encodeRedirectURL("/category.jsp?catId="+request.getParameter("catId")+"&prodCatId="+request.getParameter("catId")+"&productId="+productNode+"&trk=");
         if (trk !=null){
-        redirectURL += trk;
+	        redirectURL += trk;
+	        // SmartStore tracking (trk=dyf&variant=<variant ID>)
+	        //   include variant parameter as well
+	        if (request.getParameter("variant") != null) {
+	        	redirectURL += "&variant=" + URLEncoder.encode(request.getParameter("variant"), "UTF-8");
+	        }
         } else {
-        redirectURL += "prod";
+        	redirectURL += "prod";
         }
         response.sendRedirect(redirectURL);
         out.close();
@@ -100,6 +105,10 @@ if ( prodPageLayout.canAddMultipleToCart()  ) {
 //** values for the shopping cart controller
 String ptrk = request.getParameter("trk") != null ? request.getParameter("trk") : "";
 String sPage = "/cart_confirm.jsp?catId="+productNode.getParentNode().getContentName()+"&productId="+productNode.getContentName()+"&trk="+ptrk;
+if (request.getParameter("variant") != null) {
+	// SmartStore variant tracking, add variant to the URL of the confirmation page
+	sPage += "&variant=" + URLEncoder.encode(request.getParameter("variant"), "UTF-8");
+}
 
 int templateType = productNode.getAttribute("TEMPLATE_TYPE", 1);
 String jspTemplate;

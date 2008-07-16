@@ -134,7 +134,7 @@
             
 			FDConfiguration conf = new FDConfiguration(quantity, salesUnit.getName(), optionMap);
 
-			FDCartLineModel cartLine = new FDCartLineModel(new FDSku(productInfo), productmodel.getProductRef(), conf);
+			FDCartLineModel cartLine = new FDCartLineModel(new FDSku(productInfo), productmodel.getProductRef(), conf, null);
 
             lines.add(cartLine);
         }

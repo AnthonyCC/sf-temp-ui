@@ -2942,6 +2942,7 @@
 	       <rtexprvalue>true</rtexprvalue>
 	    </attribute>
     </tag>  
+
     <tag>
         <name>WineSideNav</name>
         <tagclass>com.freshdirect.webapp.taglib.fdstore.WineSideNav</tagclass>
@@ -2973,7 +2974,6 @@
             <required>true</required>
             <rtexprvalue>false</rtexprvalue>
         </attribute>
-
         <attribute>
             <name>unavailableList</name>
             <required>true</required>
@@ -2999,9 +2999,7 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
-</tag>
-
-    <tag>
+    </tag>    <tag>
             <name>WineFilter</name>
             <tagclass>com.freshdirect.webapp.taglib.content.WineFilterTag</tagclass>
             <teiclass>com.freshdirect.webapp.taglib.content.WineFilterTag$TagEI</teiclass>
@@ -3027,5 +3025,114 @@
     		<required>true</required>
     		<rtexprvalue>true</rtexprvalue>
             </attribute>
-    </tag>        
+    </tag>
+
+	<!-- SmartStore tags -->
+	<tag>
+		<name>DYFRecommendations</name>
+		<tagclass>com.freshdirect.webapp.taglib.smartstore.DYFRecommendationsTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.smartstore.DYFRecommendationsTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>itemCount</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>skipCheck</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>errorOccurred</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+
+	<tag>
+		<name>ClickThru</name>
+		<tagclass>com.freshdirect.webapp.taglib.smartstore.ClickThruTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.smartstore.ClickThruTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>product</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	
+	<!-- [APPREQ-122] Product Impression Presentation Tag Support -->
+	<tag>
+		<name>PIPLayout</name>
+		<tagclass>com.freshdirect.webapp.taglib.smartstore.PIPLayoutTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.smartstore.PIPLayoutTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>impressions</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>rowSize</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>singleRowMode</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>maxRowHeight</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>PIPRow</name>
+		<tagclass>com.freshdirect.webapp.taglib.smartstore.PIPRowTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.smartstore.PIPRowTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>impressionRow</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>shouldRenderBlankCells</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<!-- out -->
+		<attribute>
+			<name>isBlankCell</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>productImage</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
 </taglib>

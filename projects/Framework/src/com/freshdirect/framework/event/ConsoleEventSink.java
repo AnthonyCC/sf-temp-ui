@@ -11,8 +11,8 @@ public class ConsoleEventSink implements EventSinkI {
 	
 	private static Category LOGGER = LoggerFactory.getInstance(ConsoleEventSink.class);
 	
-	public boolean log(FDEvent event) {
-		LOGGER.warn(event);
+	public boolean log(FDWebEvent event) {
+		LOGGER.debug(event);
 		return true;
 	}
 

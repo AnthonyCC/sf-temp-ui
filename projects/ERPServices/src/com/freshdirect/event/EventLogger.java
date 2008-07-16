@@ -8,6 +8,7 @@ import com.freshdirect.framework.event.AsyncEventSink;
 import com.freshdirect.framework.event.ConsoleEventSink;
 import com.freshdirect.framework.event.EventSinkI;
 import com.freshdirect.framework.event.FDEvent;
+import com.freshdirect.framework.event.FDWebEvent;
 
 /**
  * @author knadeem Date May 4, 2005
@@ -44,7 +45,7 @@ public class EventLogger {
 		return instance;
 	}
 	
-	public void logEvent(FDEvent event) {
+	public void logEvent(FDWebEvent event) {
 		this.consoleSink.log(event);
 		this.asyncSink.log(event);
 		lastEvent = event;

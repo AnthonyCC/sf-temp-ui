@@ -1,6 +1,6 @@
 package com.freshdirect.event;
 
-import com.freshdirect.framework.event.FDEvent;
+import com.freshdirect.framework.event.FDWebEvent;
 
 /**
  * FDAddToCartEvent
@@ -17,11 +17,12 @@ import com.freshdirect.framework.event.FDEvent;
  * param_10 = eventValues[9]  = product the TX YMAL was obtained from ("originating product")
  * param_11 = eventValues[10] = YMAL set id, if the product is added through a YMAL set  
  * param_12 = eventValues[11] = Customer Created List id
+ * param_13 = eventValues[12] = Variant ID (SmartStore DYF)
  * @author Skrishnasamy Date April 26, 2006
  */
 
 
-public class FDCartLineEvent extends FDEvent {
+public class FDCartLineEvent extends FDWebEvent {
 
 	public String getProductId() {
 		return this.eventValues[0];
@@ -172,5 +173,23 @@ public class FDCartLineEvent extends FDEvent {
 	 */
 	public void setCclId(String cclId) {
 		eventValues[11] = cclId;
+	}
+
+	/**
+	 * Returns the Variant ID of a recommended product (SmartStore DYF)
+	 * 
+	 * @return Variant ID
+	 */
+	public String getVariantId() {
+		return eventValues[12];
+	}
+
+	/**
+	 * Sets the Variant ID of a recommended product (SmartStore DYF)
+	 * 
+	 * @param vid Variant ID
+	 */
+	public void setVariantId(String vid) {
+		eventValues[12] = vid;
 	}
 }

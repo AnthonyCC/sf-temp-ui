@@ -410,6 +410,7 @@
 							<CmsField><attribute>FROZEN</attribute></CmsField>
 							<CmsField><attribute>GROCERY</attribute></CmsField>
 							<CmsField><attribute>NOT_SEARCHABLE</attribute></CmsField>
+							<CmsField><attribute>EXCLUDED_RECOMMENDATION</attribute></CmsField>
 							<CmsField><attribute>INVISIBLE</attribute></CmsField>
 							<CmsField><attribute>HIDE_URL</attribute></CmsField>
 							<CmsField><attribute>REDIRECT_URL</attribute></CmsField>

@@ -7,6 +7,7 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
+import com.freshdirect.fdstore.util.SiteFeatureHelper;
 
 public class CclUtils {
 	
@@ -33,7 +34,12 @@ public class CclUtils {
 		return true;
 	}
 
-	public static boolean isCCLEnabled(FDUserI user) {	
-		return FDStoreProperties.isCclEnabled() || EnumSiteFeature.CCL.isEnabled(user);
-	}	
+	/**
+	 * @param user
+	 * @return
+	 * @deprecated use {@link SiteFeatureHelper.isEnabled(EnumSiteFeature feature, FDUserI user)} instead
+	 */
+	public static boolean isCCLEnabled(FDUserI user) {
+		return SiteFeatureHelper.isEnabled(EnumSiteFeature.CCL, user);
+	}
 }

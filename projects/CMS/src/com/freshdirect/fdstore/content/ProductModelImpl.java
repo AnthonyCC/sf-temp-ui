@@ -184,6 +184,14 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 		pm.skuModels = newList;
 		return pm;
 	}
+	
+	/**
+	 * Returns itself.
+	 * @return itself
+	 */
+	public ProductModel getSourceProduct() {
+		return this;
+	}
 
 	/**
 	 *  Tell if this product can be autoconfigured.

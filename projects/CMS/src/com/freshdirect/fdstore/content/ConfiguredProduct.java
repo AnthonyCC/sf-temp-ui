@@ -111,6 +111,11 @@ public class ConfiguredProduct extends ProxyProduct {
 
 		return product.getSku(getSkuCode());
 	}
+	
+	// TODO check impact
+	public SkuModel getDefaultSku() {
+		return getSku();
+	}
 
 	public Html getProductDescription() {
 		return (Html) getAttribute("PROD_DESCR", (Html) null);
@@ -184,6 +189,14 @@ public class ConfiguredProduct extends ProxyProduct {
 		} catch (FDSkuNotFoundException e) {
 			throw new FDRuntimeException(e);
 		}
+	}
+	
+	/**
+	 * Returns the original product this configuration wraps.
+	 * @return {@link #getProduct()}
+	 */
+	public ProductModel getSourceProduct() {
+		return getProduct();
 	}
 
 	/**

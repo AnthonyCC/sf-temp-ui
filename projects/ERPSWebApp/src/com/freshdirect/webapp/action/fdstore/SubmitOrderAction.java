@@ -40,6 +40,7 @@ import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.lists.FDCustomerRecipeList;
 import com.freshdirect.fdstore.lists.FDCustomerShoppingList;
 import com.freshdirect.fdstore.lists.FDListManager;
+import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.action.WebActionSupport;
@@ -263,6 +264,11 @@ public class SubmitOrderAction extends WebActionSupport {
 			}
 			
 			updateCustomerRecipeList(user, cart, modifying);
+			
+			// SmartStore
+			//  record customer and variant for the particular order
+			FDCustomerManager.logCustomerVariant(user, orderNumber, EnumSiteFeature.DYF);
+			
 			
 			//if customer utilized a prereserved slot then remove it from the user.
 			FDReservation rsv = user.getReservation();

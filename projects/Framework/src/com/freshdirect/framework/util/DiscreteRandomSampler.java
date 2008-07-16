@@ -1,6 +1,7 @@
 package com.freshdirect.framework.util;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.NoSuchElementException;
 import java.util.TreeMap;
@@ -66,6 +67,14 @@ public class DiscreteRandomSampler {
 		total = 0;
 		cdf = new long[0];
 		sortedValues = new String[0];
+	}
+	
+	/**
+	 * Get values (elements).
+	 * @return values stored
+	 */
+	public Collection getValues() {
+		return values.keySet();
 	}
 	
 	/**
@@ -182,6 +191,15 @@ public class DiscreteRandomSampler {
 	 * @return total number of object frequencies.
 	 */
 	public long getTotal() { return total; }
+	
+	
+	/**
+	 * Get the number of distinct objects.
+	 * @return number of distinct objects
+	 */
+	public int size() {
+		return values.size();
+	}
 	
 	/**
 	 * Get the frequency of an object.

@@ -105,11 +105,12 @@ public class YmalProductHelper implements YmalHelper {
 	 *  @return a link that leads to a page displaying the product in detail.
 	 */
 	public String getLink() {
-		return "/product.jsp?catId="
+		return FDURLUtil.getProductURI(this.product, "conf");
+		/** return "/product.jsp?catId="
 		     + getCatId()
 		     + "&productId="
 		     + product
-		     + "&trk=conf";
+		     + "&trk=conf";**/
 	}
 	
 	/**

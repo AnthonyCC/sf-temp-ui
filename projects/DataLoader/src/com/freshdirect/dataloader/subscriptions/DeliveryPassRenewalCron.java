@@ -27,13 +27,9 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpSaleNotFoundException;
-import com.freshdirect.customer.ejb.ErpCreateCaseCommand;
-import com.freshdirect.dataloader.payment.ejb.SaleCronHome;
-import com.freshdirect.dataloader.payment.ejb.SaleCronSB;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.EnumZipCheckResponses;
-import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.fdstore.FDCachedFactory;
@@ -228,7 +224,7 @@ public class DeliveryPassRenewalCron {
 		salesUnit=product.getSalesUnits()[0];
 		FDCartLineModel cartLine = new FDCartLineModel(new FDSku(product), prodNode
 				.getProductRef(), new FDConfiguration(quantity, salesUnit
-				.getName(), varMap));
+				.getName(), varMap), null);
 
 		try {
 			cartLine.refreshConfiguration();

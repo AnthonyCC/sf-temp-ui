@@ -572,6 +572,8 @@ public interface FDCustomerManagerSB extends EJBObject {
         
     public  String getAutoRenewSKU(String customerPK)throws FDResourceException, RemoteException;
     
+    public void logCustomerVariant(String saleId, FDIdentity identity, String feature, String variantId) throws RemoteException, FDResourceException;
+
     public ErpAddressModel getLastOrderAddress(String lastOrderId) throws FDResourceException, RemoteException, SQLException; 
 }
- 
+

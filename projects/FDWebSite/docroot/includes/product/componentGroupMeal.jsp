@@ -111,7 +111,9 @@ if (!hasTemplate) {
 	double qty = reqQuantity==null ? productNode.getQuantityMinimum() :    Double.parseDouble(reqQuantity);
 	FDConfiguration cfg = new FDConfiguration(qty, request.getParameter("salesUnit"), tmpConfig);
 
-	templateLine = new FDCartLineModel( new FDSku(defaultProduct), productNode.getProductRef(), cfg);
+	String variantId = request.getParameter("variant");
+	
+	templateLine = new FDCartLineModel( new FDSku(defaultProduct), productNode.getProductRef(), cfg, variantId);
 }
 
 

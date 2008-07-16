@@ -232,7 +232,8 @@ if (skus.size() != 0) {
         double qty = reqQuantity==null ? productNode.getQuantityMinimum() :    Double.parseDouble(reqQuantity);
         FDConfiguration cfg = new FDConfiguration(qty, request.getParameter("salesUnit"), tmpConfig);
 
-        templateLine = new FDCartLineModel( new FDSku(defaultProduct), productNode.getProductRef(), cfg );
+    	String variantId = request.getParameter("variant");
+        templateLine = new FDCartLineModel( new FDSku(defaultProduct), productNode.getProductRef(), cfg, variantId );
     }
 
     double defaultQuantity = templateLine.getQuantity();
@@ -245,7 +246,15 @@ if (skus.size() != 0) {
 	    .append("catId=").append(productNode.getParentNode())
 	    .append("&productId=").append(productNode);
 	    if(request.getParameter("trk") != null) {
-		    formAction.append("&trk=").append(request.getParameter("trk"));
+			formAction.append("&trk=").append(request.getParameter("trk"));
+			// SmartStore variant tracking .. track variant in case if ADD TO CART button pressed
+			if(request.getParameter("variant") != null) {
+				formAction.append("&variant=").append(request.getParameter("variant"));
+			}
+		}
+	    // SmartStore variant tracking .. track variant in case if ADD TO CART button pressed
+	    if(request.getParameter("variant") != null) {
+		    formAction.append("&variant=").append(request.getParameter("variant"));
 		}
 
 	           

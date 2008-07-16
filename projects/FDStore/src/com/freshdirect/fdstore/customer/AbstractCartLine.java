@@ -30,12 +30,16 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 	private final ErpInvoiceLineI lastInvoiceLine;
 	private final ErpReturnLineModel returnLine;
 
-	protected AbstractCartLine(FDSku sku, ProductRef productRef, FDConfigurableI configuration) {
-		super(sku, productRef, configuration);
+	private final String variantId;
+
+	protected AbstractCartLine(FDSku sku, ProductRef productRef, FDConfigurableI configuration, String variantId) {
+		super(sku, productRef, configuration, variantId);
 
 		this.firstInvoiceLine = null;
 		this.lastInvoiceLine = null;
 		this.returnLine = null;
+		
+		this.variantId = variantId;
 	}
 
 	public AbstractCartLine(
@@ -48,6 +52,8 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 		this.firstInvoiceLine = firstInvoiceLine;
 		this.lastInvoiceLine = lastInvoiceLine;
 		this.returnLine = returnLine;
+
+		this.variantId = orderLine.getVariantId();
 	}
 
 	public int getRandomId() {
@@ -246,6 +252,12 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 		FDProduct fdp = this.lookupFDProduct();
 		return fdp.getAttributeBoolean(EnumAttributeName.ADVANCE_ORDER_FLAG.getName(),false);
 	}
+	
+
+	public String getVariantId() {
+		return this.variantId;
+	}
+
 	public void setOrderLineId(String orderLineId){
 		this.orderLine.setOrderLineId(orderLineId);
 	}

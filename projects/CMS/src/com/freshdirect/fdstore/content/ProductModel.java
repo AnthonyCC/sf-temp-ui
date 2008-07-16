@@ -157,6 +157,14 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI {
 	
 	public String getRatingProdName();
 	
+	
+	/**
+	 * Can the product be recommended?
+	 * 
+	 * @return whether the product is excluded from SmartStore recommendations
+	 * @author istvan
+	 */
+	public boolean isExcludedRecommendation();
 
 	
 	/** Indexed getter for property skus.
@@ -173,6 +181,14 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI {
 	public List getSkus();
 
 	public List getSkuCodes();
+	
+	/**
+	 * Get the source product.
+	 * In case of a proxy product, the returned value is the (recursivelly :)) original
+	 * product that was wrapped. For a "simple" product, it is itself.
+	 * @return source product
+	 */
+	public ProductModel getSourceProduct();
 
 	
 	/** Getter for property brands.

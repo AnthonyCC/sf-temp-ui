@@ -24,7 +24,8 @@ public abstract class AbstractGetterTag extends com.freshdirect.framework.webapp
 
 	private static Category LOGGER = LoggerFactory.getInstance( AbstractGetterTag.class );
 
-	private String id = null;
+	// 'id' is already defined in TagSupport class therefore no need to overlap it
+	// private String id = null;
 
 	public void setId(String id) {
 		this.id = id;

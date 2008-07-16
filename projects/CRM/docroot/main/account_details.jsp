@@ -26,6 +26,9 @@
 <%@ page import="com.freshdirect.webapp.util.CCFormatter" %>
 <%@ page import="com.freshdirect.framework.core.PrimaryKey"  %>
 <%@ page import="com.freshdirect.fdstore.referral.FDReferralManager" %>
+<%@ page import="com.freshdirect.smartstore.fdstore.SmartStoreUtil" %>
+<%@ page import="com.freshdirect.fdstore.util.EnumSiteFeature" %>
+<%@ page import='java.util.*' %>
 <%@ page import='java.util.*' %>
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -178,7 +181,7 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
             
             <% if(customer.getSapId() == null && agent.isSupervisor()) { %> 
                 <crm:ResubmitCustomerController actionName="<%=actionName%>" result="resubmitResult" customerId="<%=user.getIdentity().getErpCustomerPK()%>" successPage="<%= successPage %>"/>
-                <form method='POST' action='<%=request.getRequestURI() + "?" + request.getQueryString()%>' name='resubmitCustomer'>
+                <form method='POST' action='<%=request.getRequestURI() + "?" + request.getQueryString()%>' name='resubmitCustomer' style="padding: 0; margin: 0">
                     <input type='hidden' name='actionName' value='resubmitCustomer'>
                     <div class="cust_sub_nav" style="width: 150x;"><a href="javascript:document.resubmitCustomer.submit()"><b>Resubmit Customer</b></a></div>
                 </form>
@@ -192,7 +195,14 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
             <div class="cust_sub_nav">
                 Referred by: <b><%= referrerName%></b>
             </div>
-           <% 	} %>
+            <% 	} %>
+            <!-- SmartStore -->
+            <div class="cust_sub_nav" title="SmartStore">
+                <b>DYF</b>
+                <% System.out.println("USER: " + user); %>
+                Variant: <b><%= SmartStoreUtil.getRecommendationService(user, EnumSiteFeature.DYF).getVariant().getId() %> <%= user.getFDCustomer().getProfile().getAttribute("DYF.VariantID") != null ? "<i>(Overridden)</i>" : null %></b>
+                Eligible: <b><%= DYFUtil.isCustomerEligible(user) ? "Yes" : "No" %></b>
+            </div>
         </td></tr>
 		</table>
 

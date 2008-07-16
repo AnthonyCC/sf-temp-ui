@@ -586,5 +586,9 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     public int getAdjustedValidECheckOrderCount() throws FDResourceException{
     	return this.user.getAdjustedValidECheckOrderCount();
     }
+
+	public boolean isDYFEnabled() {
+		return user.isDYFEnabled();
+	}
 }
 

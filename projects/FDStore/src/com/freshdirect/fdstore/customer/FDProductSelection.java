@@ -44,12 +44,17 @@ public class FDProductSelection implements FDProductSelectionI {
 	private boolean invalidConfig = false;
 
 	public FDProductSelection(FDSku sku, ProductRef productRef, FDConfigurableI configuration) {
+		this(sku, productRef, configuration, null);
+	}
+
+	public FDProductSelection(FDSku sku, ProductRef productRef, FDConfigurableI configuration, String variantId) {
 		this.orderLine = new ErpOrderLineModel();
 
 		this.orderLine.setSku(sku);
 		this.productRef = productRef;
 		this.orderLine.setConfiguration( new FDConfiguration(configuration) );
 		
+		this.orderLine.setVariantId(variantId);
 	}
 
 	protected FDProductSelection(ErpOrderLineModel orderLine) {

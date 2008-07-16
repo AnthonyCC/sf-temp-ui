@@ -254,6 +254,10 @@ public interface FDUserI extends java.io.Serializable {
 	
 	public ErpPromotionHistory getPromotionHistory() throws FDResourceException;
 	
+	/* SmartStore DYF */
+	public boolean isDYFEnabled();
+	
+	
     /*
      * This method was introduced as part of PERF-22 task.
      * Seperate invalidation of Order History Cache from other caches.

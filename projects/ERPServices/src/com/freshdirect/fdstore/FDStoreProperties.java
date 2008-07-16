@@ -133,6 +133,9 @@ public class FDStoreProperties {
 	private final static String DLV_PASS_MAX_PURCHASE_LIMIT="fdstore.dlvPass.maxPurchaseLimit";
 	private final static String DLV_PASS_AUTORENEWAL_DEFAULT="fdstore.dlvPass.defautRenewalSKU";
 	
+	// SmartStore 
+	private final static String DYF_STRATEGY_CACHE_ENTRIES = "fdstore.strategy.cache.entries";
+	
 	
 	// Referral Program admin
 	private final static String RFL_PRG_PAGINATION_SIZE="fdstore.referral.paginationSize"; 
@@ -171,6 +174,9 @@ public class FDStoreProperties {
 	private final static String CCL_AJAX_DEBUG_FACADE = "fdstore.ccl.ajax.debug.facade";
 
 	private final static String CCL_AJAX_DEBUG_FACADE_EXCEPTION = "fdstore.ccl.ajax.debug.facade_exception";
+
+	// SmartStore DYF Site Feature
+	private final static String DYF_ENABLED = "fdstore.dyf.enabled";
 	
 //	Added for controlling case creation during the retention program survey processing.
 	private final static String PROP_RETPRG_CREATECASE = "fdstore.retentionProgram.createCase";
@@ -335,6 +341,8 @@ public class FDStoreProperties {
 		defaults.put(DLV_PASS_PROMOTION_PREFIX, "FDDELIVERS");
 		defaults.put(DLV_PASS_MAX_PURCHASE_LIMIT,"1");
 		
+		defaults.put(DYF_STRATEGY_CACHE_ENTRIES, "1000");
+		
 		defaults.put(PROP_CRM_ORDER_PRC_LIMIT, "100");
 		defaults.put(RFL_PRG_PAGINATION_SIZE, "10");
 		
@@ -347,6 +355,8 @@ public class FDStoreProperties {
 		defaults.put(CCL_AJAX_DEBUG_JSONRPC, "false");
 		defaults.put(CCL_AJAX_DEBUG_FACADE, "false");
 		defaults.put(CCL_AJAX_DEBUG_FACADE_EXCEPTION, "");
+		
+		defaults.put(DYF_ENABLED, "false");
 		
 		defaults.put(DISTRIBUTION_SAMPLES_DIR,"");
 		
@@ -703,9 +713,14 @@ public class FDStoreProperties {
 	public static boolean isRetProgramCreateCase() {
         return (new Boolean(get(PROP_RETPRG_CREATECASE))).booleanValue();
     }
+	
 	public static int getMaxDlvPassPurchaseLimit() {
 		return Integer.parseInt(get(DLV_PASS_MAX_PURCHASE_LIMIT));
-        }
+    }
+	
+	public static int getMaxDyfStrategyCacheEntries() {
+		return Integer.parseInt(get(DYF_STRATEGY_CACHE_ENTRIES));
+	}
         
 	// Customer Created Lists
 	public static boolean isCclAjaxDebugClient() {
@@ -750,6 +765,11 @@ public class FDStoreProperties {
 		return Boolean.valueOf(get(CCL_ENABLED)).booleanValue();
 	}
 	
+	// Is SmartStore DYF feature enabled?
+	public static boolean isDYFEnabled() {
+		return Boolean.valueOf(get(DYF_ENABLED)).booleanValue();
+	}
+
 	public static String getSampleDistributionsPath() {
 		return (String)get(DISTRIBUTION_SAMPLES_DIR);
 	}

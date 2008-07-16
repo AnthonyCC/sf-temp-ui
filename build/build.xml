@@ -728,8 +728,11 @@
     <target name="jmeter_test" description="Run jmeter tests">
         <mkdir dir="${work.dir}/jmeter-logs"/>
         <mkdir dir="${work.dir}/jmeter-logs/results"/>
-        <exec failifexecutionfails="true" failonerror="true" dir="${projects.dir}/Tests/jmeter" executable="bash">
+        <exec failifexecutionfails="true" failonerror="true" dir="${projects.dir}" executable="java">
+		<!--
             <arg line="run.sh -p login.sh -p buy_groceries.sh -p buy_perishables.sh -p browse_products.sh -p browse_categories.sh -w ${work.dir}/jmeter-logs -d ${work.dir}/jmeter-logs/results -s ${jmeter.hostname}:${jmeter.port} -j ${lib.dir}/testing/jmeter/bin/ApacheJMeter.jar"/>
+	    	-->
+		<arg line="-classpath ${work.dir}/Tools.jar:${work.dir}/Framework.jar -Dserver=${jmeter.hostname} -Dport=${jmeter.port} -Doutput.directory=${work.dir}/jmeter-logs/results -Djmeter.lib=${lib.dir}/testing/jmeter -Djmx.directory=Tests/jmeter  com.freshdirect.tools.jmeter.ScriptRunner SmartStore.xml"/>
         </exec>
     </target>
 

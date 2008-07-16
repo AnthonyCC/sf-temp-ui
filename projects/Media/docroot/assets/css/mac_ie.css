@@ -306,6 +306,36 @@ table.ymal caption {
 	margin-bottom : 4px;
 }
 
+/** SMART STORE **/
+table.smartstore {
+    padding       : 10px;
+    border        : 0;
+    width         : 693px;
+    border-right  : 2px dashed #996699;
+    border-left   : 2px dashed #996699;
+    border-bottom : 2px dashed #996699;
+    /* margin-top    : 10px; */
+}
+
+table.smartstore caption {
+    color       : white;
+    background  : #996699;
+    font-size   : 12px;
+    font-weight : bold;
+    padding     : 4px;
+    width		: 693px;
+}
+
+.SSorderTotal {
+	background-color: #669933;
+	line-height: 20px;
+}
+.SSorderTotal td {
+	color: white;
+	font-size: 13px;
+}
+
+
 /** TIMESLOTS **/
 
 .timeslot thead {

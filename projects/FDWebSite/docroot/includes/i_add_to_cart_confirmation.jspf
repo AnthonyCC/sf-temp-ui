@@ -10,7 +10,7 @@
 String imgWidth;
 String tableWidth;
 
-DecimalFormat   quantityFormat = new DecimalFormat("0.#");
+java.text.DecimalFormat   quantityFormat = new java.text.DecimalFormat("0.#");
 
 String location = "";
 location = (String) request.getAttribute("confirmation.location");
@@ -24,7 +24,7 @@ imgWidth = "360";
 tableWidth = "400";
 }
 
-List    orderLines         = cart.getRecentOrderLines();
+List    _orderLines         = cart.getRecentOrderLines();
 
 // determine if there are multiple departments involved, and if the
 // the items should be displayed as grouped by departments
@@ -41,7 +41,7 @@ if (groupByDepartments) {
     groupByDepartments = false;
 
     if (recipe == null) {
-        for (Iterator it = orderLines.iterator(); it.hasNext(); ) {
+        for (Iterator it = _orderLines.iterator(); it.hasNext(); ) {
             FDCartLineModel line       = (FDCartLineModel) it.next();
             ProductModel    product    = line.lookupProduct();
             String          department = product.getDepartment().getContentName();
@@ -79,7 +79,7 @@ lastDepartmentName = null;
 		</TABLE>	
 		
 		<%
-		    boolean onlyOneItemAdded = orderLines.size()==1?true:false;
+		    boolean onlyOneItemAdded = _orderLines.size()==1?true:false;
 			String trkCode = "";
 			if (request.getRequestURI().toLowerCase().endsWith("quick_shop_confirm.jsp")){
 			trkCode = "?trk=qslist";
@@ -88,7 +88,7 @@ lastDepartmentName = null;
 			}
 		    String viewCartURL = response.encodeURL("/view_cart.jsp"+trkCode);
 		    String checkOutURL = response.encodeURL("/checkout/view_cart.jsp"+trkCode);
-		    if (orderLines.size()!=0) {
+		    if (_orderLines.size()!=0) {
 		%>
 		<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0">
 		<TR VALIGN="TOP">
@@ -108,14 +108,14 @@ lastDepartmentName = null;
 					<TR>
 						<TD WIDTH="224">
 				<%
-				    if (orderLines.size()==0) {
+				    if (_orderLines.size()==0) {
 				        //nothing was recently added, hmm how did we get to this page?.  Handle it anyway.
 				%>
 				<FONT CLASS="text11bold">No items were added to your cart</FONT><BR>
 				<%
 				    } else { 
 				%>
-				<FONT CLASS="text11bold"><%=orderLines.size()%> <%=orderLines.size()<2?"item":"items "%>
+				<FONT CLASS="text11bold"><%=_orderLines.size()%> <%=_orderLines.size()<2?"item":"items "%>
 				<%
 				    }
 				%>
@@ -223,10 +223,10 @@ lastDepartmentName = null;
 </table>
 <br>
 		
-		<%} // end if orderLines.size() !=1
+		<%} // end if _orderLines.size() !=1
 		 
 		  else { // only one item added to the cart..use a different table to show the stuff
-		        FDCartLineModel olm = (FDCartLineModel)orderLines.get(0);
+		        FDCartLineModel olm = (FDCartLineModel)_orderLines.get(0);
 		        long olmQty = (long)olm.getQuantity();
 		%>
 

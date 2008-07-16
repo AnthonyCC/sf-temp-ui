@@ -1,11 +1,10 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@page import="com.freshdirect.fdstore.util.EnumSiteFeature"%>
-<%@page import="com.freshdirect.webapp.util.SiteFeatureUtils"%>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<%@ page import="com.freshdirect.fdstore.util.EnumSiteFeature" %>
+<%@ page import="com.freshdirect.fdstore.util.SiteFeatureHelper" %>
 <html>
 <head>
     <title><tmpl:get name='title'/></title>
@@ -41,10 +40,9 @@
 				<td><img src="/media_stat/images/template/search/search_deptnav.gif" width="130" height="36" alt="" border="0"></td>
 				<td align="right" style="padding-right: 8px;">
 					<%
-					if (SiteFeatureUtils.isEnabled(EnumSiteFeature.NEW_SEARCH,request)) {
-						%>
-											<img src="/media_stat/images/layout/star11.gif" width="11" height="11" vspace="0"> <a href="/search2.jsp?q=<%=request.getParameter("searchParams")%>"><b>New!</b> Alternate search results view &raquo;</a>
-						<% 
+					if (SiteFeatureHelper.isEnabled(EnumSiteFeature.NEW_SEARCH, (FDUserI) session.getAttribute(SessionName.USER))) {
+						%><img src="/media_stat/images/layout/star11.gif" width="11" height="11" vspace="0"> <a href="/search2.jsp?q=<%=request.getParameter("searchParams")%>"><b>New!</b> Alternate search results view &raquo;</a>
+<% 
 					}
 					%>
 				</td>

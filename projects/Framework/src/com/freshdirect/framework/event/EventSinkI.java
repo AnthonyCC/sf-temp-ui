@@ -7,6 +7,6 @@ import java.io.Serializable;
  */
 public interface EventSinkI extends Serializable {
 	
-	public boolean log(FDEvent event);
+	public boolean log(FDWebEvent event);
 
 }

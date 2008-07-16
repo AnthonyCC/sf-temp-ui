@@ -75,6 +75,14 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	public ProductModel getAlsoSoldAs(int idx) {
 		return (ProductModel) getAlsoSoldAs().get(idx);
 	}
+	
+	/**
+	 * Can the product be recommended.
+	 * @return if the EXCLUDED_RECOMMENDATION flag is set to true (default false)
+	 */
+	public boolean isExcludedRecommendation() {
+		return getAttribute("EXCLUDED_RECOMMENDATION", false);
+	}
 
 	/** Getter for property skus.
 	 * @return Value of property skus.

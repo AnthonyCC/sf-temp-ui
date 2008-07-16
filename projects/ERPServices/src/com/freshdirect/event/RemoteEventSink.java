@@ -12,7 +12,7 @@ import com.freshdirect.event.ejb.EventLoggerSB;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.event.EventSinkI;
-import com.freshdirect.framework.event.FDEvent;
+import com.freshdirect.framework.event.FDWebEvent;
 
 /**
  * @author knadeem Date May 18, 2005
@@ -25,7 +25,7 @@ public class RemoteEventSink implements EventSinkI {
 		this.serviceLocator = new ServiceLocator(ErpServicesProperties.getInitialContext());
 	}
 
-	public boolean log(FDEvent event) {
+	public boolean log(FDWebEvent event) {
 		try {
 			EventLoggerSB sb = this.getEventLoggerHome().create();
 			sb.log(event);

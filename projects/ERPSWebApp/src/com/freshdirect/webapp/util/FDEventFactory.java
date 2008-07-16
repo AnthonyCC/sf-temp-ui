@@ -1,12 +1,13 @@
 package com.freshdirect.webapp.util;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.customer.EnumTransactionSource;
-import com.freshdirect.event.BookRetailerRedirectEvent;
 import com.freshdirect.event.FDAddToCartEvent;
 import com.freshdirect.event.FDCartLineEvent;
 import com.freshdirect.event.FDEditCartEvent;
@@ -16,8 +17,8 @@ import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.lists.CclUtils;
-import com.freshdirect.framework.event.EnumEventSource;
-import com.freshdirect.framework.event.FDEvent;
+import com.freshdirect.framework.event.FDRecommendationEvent;
+import com.freshdirect.framework.event.FDWebEvent;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 /**
@@ -30,8 +31,6 @@ public class FDEventFactory {
 	private final static String FD_MODIFY_CART_EVENT = "ModifyCart";
 	
 	private final static String FD_REMOVE_CART_EVENT = "RemoveFromCart";
-	
-	private final static String BOOK_RETAILER_REDIRECT_EVENT = "BookRetailerRedirect";
 
 	/**
 	 * This method creates and returns a new FDAddToCartEvent. 
@@ -73,16 +72,34 @@ public class FDEventFactory {
 		return event;
 	}
 	
-	public static BookRetailerRedirectEvent getBookRetailerRedirectEvent(HttpServletRequest request) {
-		BookRetailerRedirectEvent event = new BookRetailerRedirectEvent();
-		populateEvent(event, request, BOOK_RETAILER_REDIRECT_EVENT);
-		if (event.getSource() == null) event.setSource(EnumEventSource.UNKNOWN);
-		event.setBookRetailerId(request.getParameter("bookRetailerId"));
-		event.setRecipeSourceId(request.getParameter("recipeSourceId"));
-		return event;
+	
+	public static FDRecommendationEvent getImpressionEvent(String variantId, ContentKey contentKey) {
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.HOUR, 0);
+		cal.set(Calendar.MINUTE,0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND,0);
+		
+		StringBuffer idBuffer = new StringBuffer(contentKey.getId().length() + 12);
+		idBuffer.append(contentKey.getType()).append(':').append(contentKey.getId());
+		
+		return new FDRecommendationEvent.Impression(variantId,idBuffer.toString(),cal.getTime());
 	}
 	
-	private static void populateEvent (FDEvent event, HttpServletRequest request, String eventType) {
+	public static FDRecommendationEvent getClickThroughEvent(String variantId, ContentKey contentKey) {
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.HOUR, 0);
+		cal.set(Calendar.MINUTE,0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND,0);
+		
+		StringBuffer idBuffer = new StringBuffer(contentKey.getId().length() + 12);
+		idBuffer.append(contentKey.getType()).append(':').append(contentKey.getId());
+		
+		return new FDRecommendationEvent.ClickThrough(variantId,idBuffer.toString(),cal.getTime());
+	}
+	
+	private static void populateEvent (FDWebEvent event, HttpServletRequest request, String eventType) {
 		HttpSession session = request.getSession();
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 		FDIdentity identity = user.getIdentity();
@@ -117,6 +134,7 @@ public class FDEventFactory {
 		event.setOriginatingProduct(cartline.getOriginatingProductId()); // Param 10
 		event.setYmalSet(cartline.getYmalSetId()); // Param 11
 		event.setCclId(cclId); // Param 12
+		event.setVariantId(cartline.getVariantId());
 	}
 	
 	private static String add(String value){

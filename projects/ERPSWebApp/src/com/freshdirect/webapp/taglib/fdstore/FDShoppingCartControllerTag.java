@@ -971,6 +971,8 @@ public class FDShoppingCartControllerTag extends
 		    catName= request.getParameter(paramCatId);
 		
 		String prodName = request.getParameter(paramProductId);
+		String variantId = request.getParameter("variant"); // SmartStore variant tracking
+		
 						
 
 		boolean contentSpecified = !(prodName == null || prodName.length() == 0);
@@ -1094,7 +1096,7 @@ public class FDShoppingCartControllerTag extends
 				.getCartlineId();
 
 		FDCartLineI theCartLine = processSimple(suffix, prodNode, product,
-				quantity, salesUnit, origCartLineId);
+				quantity, salesUnit, origCartLineId, variantId);
 
 		// recipe source tracking
 		String recipeId;
@@ -1132,7 +1134,7 @@ public class FDShoppingCartControllerTag extends
 
 	private FDCartLineI processSimple(String suffix, ProductModel prodNode,
 			FDProduct product, double quantity, FDSalesUnit salesUnit,
-			String origCartLineId) {
+			String origCartLineId, String variantId) {
 
 		//
 		// walk through the variations to see what's been set and try to build a
@@ -1207,7 +1209,7 @@ public class FDShoppingCartControllerTag extends
 			 */
 			cartLine = new FDCartLineModel(new FDSku(product), prodNode
 					.getProductRef(), new FDConfiguration(quantity, salesUnit
-					.getName(), varMap));
+					.getName(), varMap), variantId);
 		} else {
 			/*
 			 * When an existing item in the cart is modified, reuse the same
@@ -1216,7 +1218,7 @@ public class FDShoppingCartControllerTag extends
 			 */
 			cartLine = new FDCartLineModel(new FDSku(product), prodNode
 					.getProductRef(), new FDConfiguration(quantity, salesUnit
-					.getName(), varMap), origCartLineId, null, false);
+					.getName(), varMap), origCartLineId, null, false, variantId);
 		}
 
 		return cartLine;

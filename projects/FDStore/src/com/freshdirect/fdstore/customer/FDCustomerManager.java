@@ -99,6 +99,7 @@ import com.freshdirect.fdstore.referral.EnumReferralStatus;
 import com.freshdirect.fdstore.referral.FDReferralManager;
 import com.freshdirect.fdstore.referral.ReferralProgramInvitaionModel;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
+import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.DateRange;
@@ -107,6 +108,10 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.xml.XSLTransformer;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
+import com.freshdirect.smartstore.Variant;
+import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
+import com.freshdirect.smartstore.fdstore.VariantSelector;
+import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
 
 
 /**
@@ -2356,6 +2361,34 @@ public class FDCustomerManager {
 		}
 	}
 	
+	/**
+	 * Logges customer ID and variant ID for a placed order.
+	 * 
+	 * @param identity Customer identity
+	 * @param saleId Order ID
+	 * @param siteFeature Site feature
+	 * @throws FDResourceException 
+	 */
+	public static void logCustomerVariant(FDUserI user, String saleId, EnumSiteFeature siteFeature) throws FDResourceException {
+		// VariantSelector f = VariantSelectorFactory.getInstance(siteFeature);
+		// Variant v = f.select(identity.getErpCustomerPK()).getVariant();
+		Variant v = SmartStoreUtil.getRecommendationService(user, siteFeature).getVariant();
+		
+		
+		lookupManagerHome();
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			sb.logCustomerVariant(saleId, user.getIdentity(), siteFeature.getName(), v.getId());
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+
+	
 	public static FDOrderI getLastNonCOSOrderUsingCC(String customerID, EnumSaleType saleType, EnumSaleStatus saleStatus) throws FDResourceException,ErpSaleNotFoundException {
 		lookupManagerHome();
 		FDCustomerManagerSB sb=null;
@@ -2419,7 +2452,7 @@ public class FDCustomerManager {
 		}
 	}
 	
-    public static FDUser getFDUser(FDIdentity identity) throws FDAuthenticationException, FDResourceException {
+	public static FDUser getFDUser(FDIdentity identity) throws FDAuthenticationException, FDResourceException {
 		   lookupManagerHome();
 		    try {
 				FDCustomerManagerSB sb = managerHome.create();
@@ -2484,4 +2517,5 @@ public class FDCustomerManager {
 				throw new FDResourceException(se, "Error running SQL");
 		}
 	    }	
+
 }

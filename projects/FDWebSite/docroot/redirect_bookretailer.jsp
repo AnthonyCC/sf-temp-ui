@@ -12,9 +12,6 @@ String recipeSourceId = request.getParameter("recipeSourceId");
 RecipeSource recipeSource = (RecipeSource) ContentFactory.getInstance().getContentNode(recipeSourceId);
 
 if (bookRetailer != null && recipeSource != null) {
-	
-	FDEventUtil.logBookRetailerRedirect(request);	
-	
 	String link = bookRetailer.createIsbnLink(recipeSource.getIsbn());
 	response.sendRedirect(response.encodeRedirectURL(link));
 }

@@ -6,9 +6,13 @@
 <%-- import the pricing engine --%>
 <script language="javascript" src="/assets/javascript/pricing.js"></script>
 <script language="javascript">
-var materialPricesArray = new Array();  
-var cvPricesArray = new Array();
-var salesUnitRatiosArray = new Array();
+if (typeof(materialPricesArray) == "undefined")
+	var materialPricesArray = new Array();
+if (typeof(cvPricesArray) == "undefined")
+	var cvPricesArray = new Array();
+if (typeof(salesUnitRatiosArray) == "undefined")
+	var salesUnitRatiosArray = new Array();
+
 <logic:iterate id="sku" collection="<%= skus %>" type="SkuModel">
  <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
   <fd:FDProduct id="product" productInfo="<%= productInfo %>">
@@ -17,27 +21,42 @@ var salesUnitRatiosArray = new Array();
 	MaterialPrice[] matPrices = pricing.getMaterialPrices();
 	CharacteristicValuePrice[] cvPrices = pricing.getCharacteristicValuePrices();
 	SalesUnitRatio[] suRatios = pricing.getSalesUnitRatios();
-%>
-	var mp = materialPricesArray['<%= productInfo.getSkuCode() %>'] = new Array();
-<%
-	for(int j=0; j<matPrices.length; j++) {
-%>	mp[<%=j%>] = new MaterialPrice(<%= matPrices[j].getPrice() %>, '<%= matPrices[j].getPricingUnit() %>', '<%= matPrices[j].getScaleLowerBound() %>', '<%= matPrices[j].getScaleUpperBound() %>', '<%=matPrices[j].getScaleUnit()%>');
-<%
-	}
-%>
 
-	var cvp = cvPricesArray['<%= productInfo.getSkuCode() %>'] = new Array();
-<%
-	for (int j=0; j<cvPrices.length; j++) { 
-%>	cvp[<%=j%>] = new CharValuePrice('<%= cvPrices[j].getCharacteristicName() %>', '<%= cvPrices[j].getCharValueName() %>', <%= cvPrices[j].getPrice() %>, '<%= cvPrices[j].getPricingUnit() %>', <%= cvPrices[j].getApplyHow() %>);
-<%
-	}
+	// material prices array
+	if (matPrices.length > 0) {
 %>
-	var su = salesUnitRatiosArray['<%= productInfo.getSkuCode() %>'] = new Array();
+if (materialPricesArray['<%= productInfo.getSkuCode() %>'] == null)
+	materialPricesArray['<%= productInfo.getSkuCode() %>'] = new Array();
+<% 
+		for(int j=0; j<matPrices.length; j++) {
+%>materialPricesArray['<%= productInfo.getSkuCode() %>'][<%=j%>] = new MaterialPrice(<%= matPrices[j].getPrice() %>, '<%= matPrices[j].getPricingUnit() %>', '<%= matPrices[j].getScaleLowerBound() %>', '<%= matPrices[j].getScaleUpperBound() %>', '<%=matPrices[j].getScaleUnit()%>');
 <%
-	for(int j=0; j<suRatios.length; j++) {
-%>	su[<%=j%>] = new SalesUnitRatio('<%= suRatios[j].getAlternateUnit() %>', '<%= suRatios[j].getSalesUnit() %>', <%= suRatios[j].getRatio() %>);
+		}
+	}
+
+
+	// characterisctic value prices
+	if (cvPrices.length > 0) {
+%>
+if (cvPricesArray['<%= productInfo.getSkuCode() %>'] == null)
+	cvPricesArray['<%= productInfo.getSkuCode() %>'] = new Array();
+<% 
+		for (int j=0; j<cvPrices.length; j++) { 
+%>cvPricesArray['<%= productInfo.getSkuCode() %>'][<%=j%>] = new CharValuePrice('<%= cvPrices[j].getCharacteristicName() %>', '<%= cvPrices[j].getCharValueName() %>', <%= cvPrices[j].getPrice() %>, '<%= cvPrices[j].getPricingUnit() %>', <%= cvPrices[j].getApplyHow() %>);
 <%
+		}
+	}
+
+	// sales unit ratios
+	if (suRatios.length > 0) {
+%>
+if (salesUnitRatiosArray['<%= productInfo.getSkuCode() %>'] == null)
+	salesUnitRatiosArray['<%= productInfo.getSkuCode() %>'] = new Array();
+<% 
+		for(int j=0; j<suRatios.length; j++) {
+%>salesUnitRatiosArray['<%= productInfo.getSkuCode() %>'][<%=j%>] = new SalesUnitRatio('<%= suRatios[j].getAlternateUnit() %>', '<%= suRatios[j].getSalesUnit() %>', <%= suRatios[j].getRatio() %>);
+<%
+		}
 	}
 %>
    </fd:FDProduct>

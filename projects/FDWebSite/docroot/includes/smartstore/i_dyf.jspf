@@ -1,0 +1,412 @@
+<%@ page import='java.util.*'
+%><%@ page import='com.freshdirect.fdstore.customer.*'
+%><%@ page import="com.freshdirect.fdstore.*"
+%><%@ page import='com.freshdirect.webapp.taglib.fdstore.*'
+%><%@ page import='com.freshdirect.fdstore.content.*'
+%><%@ page import='com.freshdirect.fdstore.promotion.*'
+%><%@ page import='com.freshdirect.cms.fdstore.FDContentTypes'
+%><%@ page import="com.freshdirect.webapp.util.FDEventUtil"
+%><%@ page import="com.freshdirect.smartstore.fdstore.Recommendations"
+%><%@ page import="com.freshdirect.smartstore.fdstore.FDStoreRecommender"
+%><%@ page import="com.freshdirect.smartstore.Trigger"
+%><%@ page import="com.freshdirect.fdstore.util.EnumSiteFeature"
+%><%@ page import="com.freshdirect.webapp.util.ConfigurationStrategyFactory"
+%><%@ page import="com.freshdirect.webapp.util.ConfigurationStrategy"
+%><%@ page import="com.freshdirect.webapp.util.ConfigurationContext"
+%><%@ page import="com.freshdirect.webapp.util.ProductImpression"
+%><%@ page import="com.freshdirect.webapp.util.TransactionalProductImpression"
+%><%@ page import="com.freshdirect.webapp.util.FDURLUtil"
+%><%@ page import="com.freshdirect.framework.webapp.ActionResult"
+%><%@ page import="com.freshdirect.framework.webapp.ActionError"
+%><%@ page import="java.net.URLEncoder"
+%><%@ taglib uri='template' prefix='tmpl'
+%><%@ taglib uri='logic' prefix='logic'
+%><%@ taglib uri='freshdirect' prefix='fd'
+%><%
+// SMARTSTORE - DYF Template
+// -------------------------
+//
+// @author segabor
+//
+// @input user instance of {@link FDUserI}
+// @input result {@link ActionResult}
+//
+Object val = request.getAttribute("skipDYFCheck");
+boolean skipDYFCheck = (val instanceof Boolean && ((Boolean)val).booleanValue() );
+
+// Transactional
+final java.text.DecimalFormat QUANTITY_FORMATTER = new java.text.DecimalFormat("0.##");
+final java.text.NumberFormat CURRENCY_FORMATTER = java.text.NumberFormat.getCurrencyInstance(Locale.US);
+
+
+
+// transactional pricing logic - 'template' parameters
+String tx_pricing_FormName = "dyfform"; // impression form name
+String tx_pricing_JSNameSpace = "DYF";
+
+
+
+if (request.getParameter("nodyf") == null) {
+%><fd:DYFRecommendations id="recommendations" skipCheck="<%= skipDYFCheck %>" errorOccurred="<%= !result.isSuccess() %>"><%
+	// List of recommendations
+	ConfigurationContext confContext = new ConfigurationContext();
+	confContext.setErpCustomerId(user.getIdentity().getErpCustomerPK());
+	if (recommendations != null && recommendations.getContentNodes().size() > 0) {
+		ConfigurationStrategy cUtil = ConfigurationStrategyFactory.getConfigurationStrategy(recommendations.getVariant().getSiteFeature());
+
+		List products = recommendations.getContentNodes();
+		
+		// List<ProductImpression> impressions : configured products enlisted in 'Your Favourites' table
+		List impressions = new ArrayList();
+
+		// List<SkuModel> skus : SKUs required by the pricing engine
+		List skus = new ArrayList();
+
+
+
+		// 'configure' products.
+		for (Iterator it = products.iterator(); it.hasNext();) {
+			ProductModel prd = (ProductModel) it.next();
+			ProductImpression pi = cUtil.configure(prd, confContext);
+
+			impressions.add(pi); skus.add(pi.getSku());
+		}
+
+
+
+
+		/**
+		 * Pricing Engine (JavaScript)
+		 *
+		 * Input: List<SkuModel> skus
+		 */
+%>
+<form name="<%= tx_pricing_FormName %>" method="post">
+	<input type="hidden" name="fdsc.action" value="addMultipleToCart"/>
+	<input type="hidden" name="fdsc.succpage" value="/view_cart.jsp?confirm=1"/>
+	<input type="hidden" name="fdsc.source"  value="dyf"/>
+
+<!-- PRICING -->
+<%@ include file="/shared/includes/product/i_pricing_script.jspf" %>
+<script type="text/javascript">
+	var <%= tx_pricing_JSNameSpace %> = new Object();
+
+
+	<%= tx_pricing_JSNameSpace %>.pricings = new Array(<%= products.size() %>);
+	<%= tx_pricing_JSNameSpace %>.updateTotal = function() {
+		var total=0;
+		var p;
+		for(i=0; i<<%= tx_pricing_JSNameSpace %>.pricings.length; i++ ) {
+			if (<%= tx_pricing_JSNameSpace %>.pricings[i] == undefined)
+				continue;
+
+			p = <%= tx_pricing_JSNameSpace %>.pricings[i].getPrice();
+			if (p!="") {
+				total+=Number(p.substring(1));
+			}
+		}
+		document.forms['<%= tx_pricing_FormName %>']["total"].value="$"+currencyFormat(total);
+	};
+
+
+
+    <%= tx_pricing_JSNameSpace %>.changeShopQty = function(idx, delta, min, max, increment, qty_inp) {
+        var val = qty_inp.value;
+ 
+        var qty = parseFloat(val) + delta;
+        var round = true;
+        if ((delta > 0) && (val == "")) {
+            if (delta < min) {
+                delta = min;
+            }
+            qty = delta;
+        } else if (isNaN(qty) || (qty < 0)) {
+            qty = 0;
+            round = false;
+        } else if ((qty > 0) && (qty < min) && (delta < 0)) {
+            qty = 0;
+            round = false;
+        } else if ((qty > 0) && (qty < min) && (delta >= 0)) {
+            qty = min;
+        } else if (qty >= max) {
+            qty = max;
+        }
+        if (round) {
+            qty = Math.floor( (qty-min)/increment )*increment + min;
+        }
+
+
+        // update 'total' form field
+        if (qty_inp != null)
+	        qty_inp.value = qty;
+
+        <%= tx_pricing_JSNameSpace %>.pricings[idx].setQuantity(qty);
+    };
+</script>
+<table class="smartstore">
+<fd:PIPLayout id="piRow" rowSize="5" impressions="<%= impressions %>" maxRowHeight="rowHeight" singleRowMode="<%= true %>">
+	<caption>YOUR FAVORITES</caption>
+	<tr>
+		<td colspan="<%= piRow.size() %>" style="text-align: center;">
+			<span class="text10">These are some of the items you've purchased most often.</span>
+		</td>
+	</tr>
+<%
+	// ERROR DISPLAY
+	//
+	if (result.isFailure()) {
+		%><tr>
+			<td colspan="<%= piRow.size() %>" style="text-align: center; font-weight: bold; color: red;">
+<%
+		for (Iterator it=((Collection)result.getErrors()).iterator(); it.hasNext();) {
+			ActionError errs = (ActionError) it.next();
+%>
+						<%=errs.getDescription()%><br/>
+<%
+		}
+%>
+			</td>
+		</tr><%
+	}
+
+
+	int txProdCount = 0; // transactional products counter
+%>
+	<!-- === NEW PART === -->
+	<tr>
+	<fd:PIPRow id="pi" impressionRow="<%= piRow %>" isBlankCell="isBlankCell" productImage="prodImage" shouldRenderBlankCells="<%= false %>">
+<%
+		// product cell
+		//
+		ProductModel product = pi.getProductModel();
+	
+
+		// cell renderning starts here		
+%>
+		<td style="width: <%= Math.round(100.0/impressions.size()) %>%; text-align: center;" valign="top" >
+			<!-- CELL CONTAINER -->
+			<table align="center">
+				<tr>
+					<!-- Product Image -->
+					<td style="padding: 0; height: <%= rowHeight.intValue() %>px; vertical-align: bottom; text-align: center">
+						<a href="<%= FDURLUtil.getProductURI(product, recommendations.getVariant()) %>"><img src="<%= prodImage.getPath() %>" style="border: 0"/></a>
+					</td>
+				</tr>
+<%
+
+
+
+
+			if (pi instanceof TransactionalProductImpression) {
+				//
+				// TRANSACTIONAL PRODUCT
+				//
+
+				TransactionalProductImpression tpi = (TransactionalProductImpression) pi;
+				FDConfigurableI configuration = tpi.getConfiguration();
+				String quant = QUANTITY_FORMATTER.format(configuration.getQuantity());
+
+				
+				//
+				// -- TX PRICING --
+				//
+%>
+<script type="text/javascript">
+	<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>] = new Pricing();
+	<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].setSKU("<%= pi.getSku() %>");
+	<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].setQuantity(<%= product.isSoldBySalesUnits() ? configuration.getQuantity() : 0 %>);
+	<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].setSalesUnit("<%= product.isSoldBySalesUnits() ? "" : configuration.getSalesUnit() %>");
+<%
+				for (Iterator iit = configuration.getOptions().entrySet().iterator(); iit.hasNext(); ) {
+					Map.Entry entry = (Map.Entry) iit.next();
+%>	<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].setOption("<%= entry.getKey() %>", "<%= entry.getValue() %>");
+<%
+				}				
+%>
+	<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].changeQty = function(delta) {
+		<%= tx_pricing_JSNameSpace %>.changeShopQty(<%=txProdCount%>, delta, <%= product.getQuantityMinimum() %>, <%= user.getQuantityMaximum(product) %>, <%= product.getQuantityIncrement() %>, document.forms['<%= tx_pricing_FormName %>']['quantity_<%= txProdCount %>']);
+	};
+	<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].setCallbackFunction( <%= tx_pricing_JSNameSpace %>.updateTotal );
+</script>
+<%
+
+
+
+
+				if (product.isSoldBySalesUnits()) {
+					//
+					// -- TX Sales Units Editor --
+					//
+					
+%>
+					<tr>
+						<td>
+							<table align="center">
+								<tr><td style="height: 28px">
+									<input type="hidden" name="productId_<%= txProdCount %>" value="<%= product.getContentName() %>"/>
+									<input type="hidden" name="catId_<%= txProdCount %>" value="<%= product.getParentNode().getContentName() %>"/>
+									<input type="hidden" name="skuCode_<%= txProdCount %>" value="<%= tpi.getSku() %>"/>
+									<input type="hidden" name="quantity_<%= txProdCount %>" value="1"/>
+<%
+					// render options
+					for (Iterator iit = configuration.getOptions().entrySet().iterator(); iit.hasNext(); ) {
+	    				Map.Entry   entry = (Map.Entry) iit.next();
+%>									<input type="hidden" name="<%= entry.getKey() %>_<%= txProdCount %>" value="<%= entry.getValue() %>"/>
+<%
+					}
+
+
+
+
+%>									<select name="salesUnit_<%= txProdCount %>" style="width: 60px" class="text10" onChange="<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].setSalesUnit(this.value);">
+										<option value="" selected="selected"></option>
+<%
+					FDSalesUnit     salesUnits[] = tpi.getFDProduct().getSalesUnits();
+                    for (int ii = 0; ii < salesUnits.length; ++ii) {
+                        FDSalesUnit salesUnit      = salesUnits[ii];
+                        String      salesUnitDescr = salesUnit.getDescription();
+
+                        // clean parenthesis
+                        int ppos = salesUnitDescr.indexOf("(");
+                        if (ppos > -1) {
+                            salesUnitDescr = salesUnitDescr.substring(0, ppos).trim();
+                        }
+%>										<option value="<%= salesUnit.getName() %>"><%= salesUnitDescr %></option>
+<%
+                    }
+%>									</select>
+								</td></tr>
+							</table>
+						</td>
+					</tr>
+<%
+				} else {
+					//
+					// -- TX Quantity Editor --
+					//
+%>
+					<tr>
+						<td>
+							<table align="center">
+								<tr>
+									<td style="height: 28px">
+										<input type="hidden" name="productId_<%= txProdCount %>" value="<%= product.getContentName() %>"/>
+										<input type="hidden" name="catId_<%= txProdCount %>" value="<%= product.getParentNode().getContentName() %>"/>
+										<input type="hidden" name="skuCode_<%= txProdCount %>" value="<%= tpi.getSku() %>"/>
+										<input type="hidden" name="salesUnit_<%= txProdCount %>" value="<%= configuration.getSalesUnit() %>"/>
+<%
+					for (Iterator it_opts = configuration.getOptions().entrySet().iterator(); it_opts.hasNext();) {
+						Map.Entry entry = (Map.Entry) it_opts.next();
+%>
+										<input type="hidden" name="<%= entry.getKey() %>_<%= txProdCount %>" value="<%= entry.getValue() %>"/>
+<%
+					}
+
+
+%>
+
+										<input type="text" name="quantity_<%= txProdCount %>"  value="" style="width: 36px" size="3" maxlength="4" class="text10" onChange="<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].changeQty<%= txProdCount %>(0);" onBlur="<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].setQuantity(this.value);"/>
+									</td>
+									<td style="height: 28px">
+										<img onclick="<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].changeQty(<%= product.getQuantityIncrement() %>);" src="/media_stat/images/template/quickshop/grn_arrow_up.gif" style="width: 10px; height: 9px; border: 0;  margin-bottom: 1px; margin-top: 1px" alt="Increase quantity"><br/>
+										<img onclick="<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].changeQty(<%= -product.getQuantityIncrement() %>);" src="/media_stat/images/template/quickshop/grn_arrow.gif" style="width: 10px; height: 9px; border: 0; margin-bottom: 1px; margin-top: 1px" alt="Decrease quantity">
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+<%					
+				} 
+
+				// Count transactional products only
+				txProdCount++;
+			} else { // transactional items
+				//
+				// NON-TRANSACTIONAL PRODUCT
+				//
+				%>
+				<tr>
+					<td style="height: 28px; text-align: center; vertical-align: middle;">
+						<span class="text8">(click name to buy)</span>
+					</td>
+				</tr>
+<%
+			} // !transactional
+%>
+			</table>
+<%
+
+			//
+			// PRODUCT NAME, ETC
+			//
+
+			//
+			// Display '<bold>product</bold>' OR '<bold>brand</bold>product'
+			//
+			String fullName = product.getFullName();
+		    String brandName = product.getPrimaryBrandName();
+		    String shortenedProductName = null;
+
+		    if (brandName != null
+				&& brandName.length() > 0
+				&& (fullName.length() >= brandName.length())
+				&& fullName.substring(0, brandName.length()).equalsIgnoreCase(brandName)) {
+		
+		        shortenedProductName = fullName.substring(brandName.length()).trim();
+		    }
+%>
+				<!-- product name, etc -->
+				<a href="<%= FDURLUtil.getProductURI(product, recommendations.getVariant()) %>"><font class="text11"><%
+			if (shortenedProductName != null) {
+				%><b><%= brandName %></b> <%= shortenedProductName %><%
+			} else {
+				%><b><%= fullName %></b><%
+			} %></font></a><%
+
+				if (product.getSizeDescription() != null) {
+				%> (<%= product.getSizeDescription() %>)<%
+			} %><br/>
+<%
+			// Display price
+%><fd:FDProductInfo id="productInfo" skuCode="<%= pi.getSku().getSkuCode() %>">
+				<b><%= CURRENCY_FORMATTER.format(productInfo.getDefaultPrice()) %>/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></b>
+				<br/>
+</fd:FDProductInfo>
+<%				
+
+
+			// Display "SAVE!" ... label
+            String[] ymalScales = pi.getFDProduct().getPricing().getScaleDisplay();
+            if (ymalScales.length>0) {
+%>				<span style="color: #FF9933; font-weight: bold;">Save!</span><br/>
+<%
+                for (int ymalSci = 0; ymalSci < ymalScales.length; ymalSci++) {
+                	%><b><%= ymalScales[ymalSci] %></b><br/>
+<%
+                }
+            }
+%>
+		</td>
+	</fd:PIPRow>
+	</tr>
+
+
+
+	<tr>
+		<td colspan="<%= impressions.size() %>" style="text-align: right">
+			<input type="hidden" style="width:60px" name="total" value="" size="6" class="text11bold" onChange="" onFocus="blur()"/>
+			<input type="hidden" name="itemCount" value="<%= txProdCount %>"/>
+			<input type="image" name="addMultipleToCart" src="/media_stat/images/template/quickshop/qs_add_selected_to_cart.gif" width="145" height="17" border="0" vspace="8" alt="ADD SELECTED TO CART"/>
+		</td>
+	</tr>
+</fd:PIPLayout>
+</table>
+<script type="text/javascript">
+	<%= tx_pricing_JSNameSpace %>.updateTotal();
+</script>
+</form>
+<%
+	} // recommendations.getContentNodes().size() > 0
+%></fd:DYFRecommendations><%
+} // !nodyf
+%>

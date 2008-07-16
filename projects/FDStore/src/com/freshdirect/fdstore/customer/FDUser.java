@@ -56,6 +56,8 @@ import com.freshdirect.fdstore.promotion.WaiveDeliveryCharge;
 import com.freshdirect.fdstore.rules.EligibilityCalculator;
 import com.freshdirect.fdstore.rules.FDRulesContextImpl;
 import com.freshdirect.fdstore.rules.FeeCalculator;
+import com.freshdirect.fdstore.util.EnumSiteFeature;
+import com.freshdirect.fdstore.util.SiteFeatureHelper;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.fdstore.promotion.AudienceStrategy;
@@ -1044,7 +1046,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 	
 	public boolean isCCLEnabled() {	
-		return CclUtils.isCCLEnabled(this);
+		return SiteFeatureHelper.isEnabled(EnumSiteFeature.CCL, this);
 	}
 
 	public boolean isCCLInExperienced() {
@@ -1054,7 +1056,17 @@ public class FDUser extends ModelSupport implements FDUserI {
 			return false;
 		}
 	}
-		
+
+
+	
+	// -- DYF --- //
+
+
+	public boolean isDYFEnabled() {
+		return SiteFeatureHelper.isEnabled(EnumSiteFeature.DYF, this);
+	}
+
+
 	public EnumDPAutoRenewalType hasAutoRenewDP() throws FDResourceException {
 	    if (this.identity != null) {
 			FDCustomerModel customer = this.getFDCustomer();

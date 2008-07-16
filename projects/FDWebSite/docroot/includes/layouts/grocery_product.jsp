@@ -228,7 +228,12 @@ try {
 } catch (NumberFormatException nfe) {}
 // setup for succpage redirect ....
 String ptrk = request.getParameter("trk") != null ? request.getParameter("trk") : "";
-request.setAttribute("successPage","/grocery_cart_confirm.jsp?catId="+request.getParameter("catId")+"&trk="+ptrk);
+String successPage = "/grocery_cart_confirm.jsp?catId="+request.getParameter("catId")+"&trk="+ptrk;
+if (request.getParameter("variant") != null) {
+	// SmartStore variant tracking, add variant to the URL of the confirmation page
+	successPage += "&variant=" + URLEncoder.encode(request.getParameter("variant"), "UTF-8");
+}
+request.setAttribute("successPage", successPage);
 //+"&productId="+request.getParameter("productId")
 %>
 <fd:FDShoppingCart id='cart' action='addMultipleToCart' result='result' successPage='<%= "/grocery_cart_confirm.jsp?catId="+request.getParameter("catId") %>'>

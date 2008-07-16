@@ -116,4 +116,11 @@ public interface FDCartLineI extends FDProductSelectionI {
 
 	public boolean hasAdvanceOrderFlag();
 
+
+	/**
+	 * Returns the Variant ID if product was recommended
+	 * 
+	 * @return Variant ID
+	 */
+	public String getVariantId();
 }
