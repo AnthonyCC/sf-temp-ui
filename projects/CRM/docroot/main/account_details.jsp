@@ -29,7 +29,6 @@
 <%@ page import="com.freshdirect.smartstore.fdstore.SmartStoreUtil" %>
 <%@ page import="com.freshdirect.fdstore.util.EnumSiteFeature" %>
 <%@ page import='java.util.*' %>
-<%@ page import='java.util.*' %>
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri="crm" prefix="crm" %>
