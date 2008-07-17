@@ -115,7 +115,9 @@ public class LoginControllerTag extends AbstractControllerTag {
             
           FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
           if (user!=null && EnumServiceType.CORPORATE.equals(user.getUserServiceType())) {
-            this.setSuccessPage("/department.jsp?deptId=COS");;
+        	  if(request.getRequestURI().indexOf("index.jsp")!=-1){        	  
+                 this.setSuccessPage("/department.jsp?deptId=COS");;
+        	  }
           }
             
         } catch (FDResourceException fdre) {
