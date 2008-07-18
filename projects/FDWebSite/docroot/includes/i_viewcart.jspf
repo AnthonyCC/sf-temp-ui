@@ -426,7 +426,7 @@ FDIdentity identity = user.getIdentity();
         <% 
 	}
 	%>
-	<tr valign="top" class="<%= DYFUtil.isCustomerEligible(user) ? "SS" : "" %>orderTotal">
+	<tr valign="top" class="SSorderTotal">
 		<td colspan="3" align="right"><b><% if (cart.isEstimatedPrice()) { %>ESTIMATED TOTAL<% } else { %>ORDER TOTAL<%}%></b>:</td>
 		<td colspan="1" align="right"><b><%= CCFormatter.formatCurrency(cart.getTotal()) %></b></td>
 		<td colspan="1"><% if (cart.isEstimatedPrice()) { %>*<% } %></td>
