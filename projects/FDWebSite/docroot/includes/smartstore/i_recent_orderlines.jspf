@@ -11,70 +11,25 @@
 %><%@ page import="java.util.Iterator"
 %><%@ page import="java.util.Locale"
 %><%@ page import="com.freshdirect.fdstore.customer.FDCartLineModel"
-%>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" width="695">
-	<TR VALIGN="TOP">
-		<TD WIDTH="39" ROWSPAN="2" BGCOLOR="#FF9933">
-			<img src="/media_stat/images/template/confirmation/grocery_confirm_tleft_cor.gif" width="6" height="5" border="0">
-		</TD>
-		<TD BGCOLOR="#FF9933" COLSPAN="2">
-			<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="1" HEIGHT="1">
-		</TD>
-		<TD WIDTH="6" ROWSPAN="2" COLSPAN="2">
-			<img src="/media_stat/images/template/confirmation/grocery_confirm_tright_cor.gif" width="6" height="5" border="0">
-		</TD>
-	</TR>
-	<TR VALIGN="TOP">
-		<TD WIDTH="10" ROWSPAN="3">
-			<IMG src="/media_stat/images/layout/clear.gif" WIDTH="10" HEIGHT="1" BORDER="0">
-		</TD>
-		<TD>
-			<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="4" BORDER="0">
-		</TD>
-	</TR>
-	<TR VALIGN="TOP">
-		<TD WIDTH="39" BGCOLOR="#FF9933" VALIGN="TOP" ALIGN="CENTER">
-			<FONT CLASS="space2pix"><BR></FONT>
-			<img src="/media_stat/images/template/confirmation/grocery_confirm_cart.gif" width="23" height="18" border="0" alt="Item confirmed in your shopping cart" HSPACE="8">
-		</TD>
-		<TD VALIGN="MIDDLE">
-			<img src="/media_stat/images/template/confirmation/you_have_just_added.gif"/><br/>
-
-			<table cellspacing="0" cellpadding="0" style="border: 0; width: 500px; padding-left: 18px; padding-top: 3px;">
+%><div style="text-align: left; width: 693px; border: 1px solid #996699; position: relative; background-image: url('/media_stat/images/layout/dyf_purple_span.gif'); background-position: left; background-repeat: repeat-y;">
+	<!-- corners -->
+	<img src="/media_stat/images/layout/dyf_conf_tl.gif" style="width: 36px; height: 32px; position: absolute; top: -1px; left: -1px"/>
+	<img src="/media_stat/images/layout/dyf_conf_tr.gif" style="width: 6px; height: 6px; position: absolute; top: -1px; right: -1px"/>
+	<img src="/media_stat/images/layout/dyf_conf_bl.gif" style="width: 36px; height: 6px; position: absolute; bottom: -1px; left: -1px"/>
+	<img src="/media_stat/images/layout/dyf_conf_br.gif" style="width: 6px; height: 6px; position: absolute; bottom: -1px; right: -1px"/>
+	<img src="/media_stat/images/layout/dyf_conf_hdr.gif" style="width: 235px; height: 10px; padding: 8px 0 7px 44px;"/>
+	<table cellspacing="0" cellpadding="0" style="border: 0; width: 500px; margin: 0px 0px 6px 64px;">
 <%
 		for (Iterator oit = cart.getRecentOrderLines().iterator();oit.hasNext();) {
 			FDCartLineModel orderLine = (FDCartLineModel)oit.next();
 %>
-				<tr>
-					<td><%= (long) orderLine.getQuantity() %></td>
-					<td><%= orderLine.getDescription() %></td>
-					<td><%= currencyFormatter.format(orderLine.getPrice()) %></td>
-				</tr>
+		<tr>
+			<td><%= (long) orderLine.getQuantity() %></td>
+			<td><%= orderLine.getDescription() %></td>
+			<td><%= currencyFormatter.format(orderLine.getPrice()) %></td>
+		</tr>
 <%
 		}
 %>
-			</table>
-
-		</TD>
-		<TD WIDTH="5">
-			<IMG src="/media_stat/images/layout/clear.gif" WIDTH="5" HEIGHT="1" BORDER="0">
-		</TD>
-		<TD WIDTH="1" BGCOLOR="#FF9933">
-			<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="1" HEIGHT="1">
-		</TD>
-	</TR>
-	<TR VALIGN="TOP">
-		<TD WIDTH="39" ROWSPAN="2" BGCOLOR="#FF9933">
-			<img src="/media_stat/images/template/confirmation/grocery_confirm_bleft_cor.gif" width="6" height="5" border="0">
-		</TD>
-		<TD>
-			<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="4">
-		</TD>
-		<TD WIDTH="6" ROWSPAN="2" COLSPAN="2">
-			<img src="/media_stat/images/template/confirmation/grocery_confirm_bright_cor.gif" width="6" height="5" border="0">
-		</TD>
-	</TR>
-	<TR VALIGN="TOP">
-		<TD COLSPAN="2" BGCOLOR="#FF9933"><IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="1" HEIGHT="1" BORDER="0"></TD>
-	</TR>
-</TABLE>
+	</table>
+</div>
