@@ -19,6 +19,7 @@
 %><%@ page import="com.freshdirect.framework.webapp.ActionResult"
 %><%@ page import="com.freshdirect.framework.webapp.ActionError"
 %><%@ page import="java.net.URLEncoder"
+%><%@ page import="com.freshdirect.webapp.util.ConfigurationUtil"
 %><%@ taglib uri='template' prefix='tmpl'
 %><%@ taglib uri='logic' prefix='logic'
 %><%@ taglib uri='freshdirect' prefix='fd'
@@ -363,10 +364,19 @@ if (request.getParameter("nodyf") == null) {
 				%><b><%= fullName %></b><%
 			} %></font></a><%
 
-				if (product.getSizeDescription() != null) {
-				%> (<%= product.getSizeDescription() %>)<%
-			} %><br/>
-<%
+			String confDescription = null;
+
+			if (pi instanceof TransactionalProductImpression) {
+				TransactionalProductImpression tpi = (TransactionalProductImpression)pi;
+				confDescription = ConfigurationUtil.getConfigurationDescription(tpi);
+			}
+
+			if (confDescription == null) confDescription = product.getSizeDescription();
+
+			if (confDescription != null) {
+			%><br/>(<%= confDescription %>)<br/><%
+			}
+
 			// Display price
 %><fd:FDProductInfo id="productInfo" skuCode="<%= pi.getSku().getSkuCode() %>">
 				<b><%= CURRENCY_FORMATTER.format(productInfo.getDefaultPrice()) %>/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></b>
