@@ -117,10 +117,14 @@ public class DYFRecommendationsTag extends AbstractGetterTag implements SessionN
 				frozen.append("=>[");
 				List products = results.getContentNodes();
 				int psize = products.size();
-				for (int k=0; k<psize-1; k++) {
-					frozen.append("\""+ ((ProductModel) products.get(k)).getContentKey().getId() + "\",");
+				if (psize > 0) {
+					for (int k=0; k<psize-1; k++) {
+						frozen.append("\""+ ((ProductModel) products.get(k)).getContentKey().getId() + "\",");
+					}
+					frozen.append("\""+ ((ProductModel) products.get(psize-1)).getContentKey().getId() + "\"]");
+				} else {
+					frozen.append("]");
 				}
-				frozen.append("\""+ ((ProductModel) products.get(psize-1)).getContentKey().getId() + "\"]");
 				
 				LOGGER.debug("Freezing " + frozen);
 				
