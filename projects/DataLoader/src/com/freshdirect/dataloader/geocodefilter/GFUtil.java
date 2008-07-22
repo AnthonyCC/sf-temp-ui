@@ -36,7 +36,7 @@ public class GFUtil {
 	
 	public static void loadProperties() throws IOException{
 			InputStream configStream =
-				ClassLoader.getSystemClassLoader().getResourceAsStream(PROP_FILENAME);
+				new GFUtil().getClass().getClassLoader().getResourceAsStream(PROP_FILENAME);//ClassLoader.getSystemClassLoader().getResourceAsStream();
 
 			if(configStream == null){
 				throw new IOException("Properties file not found on classpath");
