@@ -279,6 +279,10 @@ if (skus.size() != 0) {
             <input type="hidden" name="cartLine" value="<%= templateLine.getRandomId() %>">
             <input type="hidden" name="CCL_COPY_TYPE" value="SINGLE"/>
             <input type="hidden" name="CCListId" value="<%=request.getAttribute(CclUtils.CC_LIST_ID)%>"/>
+
+        <% } %>
+        <% if (request.getParameter("fdsc.source") != null) { %>
+            <input type="hidden" name="fdsc.source" value="<%=request.getParameter("fdsc.source")%>"/>
         <% } %>
     <%
     boolean hasSingleSalesUnit = (1 == defaultProduct.getSalesUnits().length);

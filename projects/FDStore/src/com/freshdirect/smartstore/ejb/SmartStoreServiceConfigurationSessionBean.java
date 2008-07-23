@@ -87,11 +87,12 @@ public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSuppor
 	public Collection getVariants(EnumSiteFeature feature) throws RemoteException, SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		Connection conn = null;
 		try {
 			
 			List result = new LinkedList();
 			
-			Connection conn = getConnection();
+			conn = getConnection();
 			ps = conn.prepareStatement(GET_VARIANTS_QUERY);
 			ps.setString(1, feature.getName());
 			
@@ -118,6 +119,7 @@ public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSuppor
 		} finally {
 			if (rs != null) rs.close();
 			if (ps != null) ps.close();
+			if (conn != null) conn.close();
 		}
 	}
 }

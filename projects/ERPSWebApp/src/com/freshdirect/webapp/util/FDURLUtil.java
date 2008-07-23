@@ -103,6 +103,7 @@ public class FDURLUtil {
 			try {
 				// variant ID may contain SPACE or other non-ASCII characters ...
 				uri.append("&variant=" + URLEncoder.encode(variantId, "UTF-8"));
+				uri.append("&fdsc.source=SS");
 			} catch(UnsupportedEncodingException exc) {
 				//
 			}

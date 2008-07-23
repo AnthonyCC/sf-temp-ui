@@ -236,7 +236,7 @@ if (request.getParameter("variant") != null) {
 request.setAttribute("successPage", successPage);
 //+"&productId="+request.getParameter("productId")
 %>
-<fd:FDShoppingCart id='cart' action='addMultipleToCart' result='result' successPage='<%= "/grocery_cart_confirm.jsp?catId="+request.getParameter("catId") %>'>
+<fd:FDShoppingCart id='cart' action='addMultipleToCart' result='result' successPage='<%= "/grocery_cart_confirm.jsp?catId="+request.getParameter("catId") %>' source='<%= request.getParameter("fdsc.source")%>'>
 <%
 //*** if we got this far..then we need to remove the sucess page attribute from the request.
 request.removeAttribute("successPage");
@@ -453,6 +453,7 @@ if(productCode!=null && prodCatId !=null ) {
 <input type="hidden" name="salesUnit_big" value="<%=firstSalesUnit%>">
 <input type="hidden" name="catId_big" value="<%=prodCatId%>">
 <input type="hidden" name="productId_big" value="<%= productCode %>">
+<% if (request.getParameter("fdsc.source") != null) { %><input type="hidden" name="fdsc.source" value="<%=request.getParameter("fdsc.source")%>"/> <% } %>
 <tr valign="top"><td width="275">
 <table cellpadding="0" cellspacing="0" border="0"><tr>
 <% if (titleBrandLogo!=null) { %>

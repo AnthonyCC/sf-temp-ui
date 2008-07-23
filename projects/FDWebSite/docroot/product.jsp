@@ -75,6 +75,9 @@ if (layoutAttrib!=null) {
 	        if (request.getParameter("variant") != null) {
 	        	redirectURL += "&variant=" + URLEncoder.encode(request.getParameter("variant"), "UTF-8");
 	        }
+		if (request.getParameter("fdsc.source") != null) {
+			redirectURL += "&fdsc.source=" + URLEncoder.encode(request.getParameter("fdsc.source"));
+		}
         } else {
         	redirectURL += "prod";
         }
@@ -142,7 +145,8 @@ if (EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(templateType))
    }
 %>
 
-<fd:FDShoppingCart id='cart' result='actionResult' action='<%= tgAction %>' successPage='<%= sPage %>'>
+<h2><%=request.getParameter("fdsc.source")%> <%=productPage%></h2>
+<fd:FDShoppingCart id='cart' result='actionResult' action='<%= tgAction %>' successPage='<%= sPage %>' source='<%= request.getParameter("fdsc.source")%>' >
 <%  //hand the action results off to the dynamic include
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	String cartMode = CartName.ADD_TO_CART;
@@ -154,6 +158,7 @@ if (EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(templateType))
 	request.setAttribute("cartMode",cartMode);
 	request.setAttribute("templateLine",templateLine);
 %>
+<% if (request.getParameter("fdsc.source") != null) { %><input type="hidden" name="fdsc.source" value="<%=request.getParameter("fdsc.source")%>"/><% } %>
 <%@ include file="/includes/product/cutoff_notice.jspf" %>
 <%@ include file="/includes/product/i_dayofweek_notice.jspf" %>
 <jsp:include page="<%=productPage%>" flush="false"/>

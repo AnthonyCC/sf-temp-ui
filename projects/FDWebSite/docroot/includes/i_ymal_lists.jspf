@@ -14,7 +14,7 @@
 <%@ page import="com.freshdirect.webapp.util.ConfigurationStrategy" %>
 <%@ page import="com.freshdirect.webapp.util.ConfigurationStrategyFactory" %>
 <%@ page import="com.freshdirect.fdstore.util.EnumSiteFeature" %>
-
+<%@ page import="com.freshdirect.webapp.util.RequestUtil" %>
 <%
 /**
  *  A JSP fragment page to display the YMALs based on YMAL lists for
@@ -224,7 +224,10 @@
                                         %>
                                     </fd:ErrorHandler>
                                     <%
-                                    outputP.append("<form name=\"ymal_cart\" method=\"post\">\n");
+                                    outputP.append("<form name=\"ymal_cart\" method=\"post\" action=\"");
+				    outputP.append(request.getServletPath()).append('?');
+				    outputP.append(RequestUtil.getFilteredQueryString(request, new String[] {"variant","fdsc.source","trk"}));
+				    outputP.append("\">\n");
                                     outputP.append("<table cellpadding=\"0\" cellspacing=\"0\" align=\"center\" width=\"100%\">\n");
 
                                     if (activeYmalSet != null) {

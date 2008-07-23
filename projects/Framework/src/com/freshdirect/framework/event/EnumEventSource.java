@@ -41,6 +41,11 @@ public class EnumEventSource extends Enum {
 	 *  The source of the event is a customer created list.
 	 */
 	public static final EnumEventSource CCL = new EnumEventSource("CCL");
+	
+	/**
+	 * The source of the event is SmartStore related.
+	 */
+	public static final EnumEventSource SmartStore = new EnumEventSource("SS");
 
 	public EnumEventSource(String name) {
 		super(name);
