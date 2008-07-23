@@ -131,6 +131,9 @@ public class TransStringUtil {
 	
 	        String operator = result[0];
 	        
+	        if(search == null || search.trim().length() ==0) {
+	        	return null;
+	        }
 	        if (operator.equals(IDateContants.EQUAL)) {
 	            dateToCompare = IDateContants.FILTER_DATEFORMAT.parse(result[1]);
 	
