@@ -83,7 +83,7 @@ if (request.getParameter("nodyf") == null) {
 		 * Input: List<SkuModel> skus
 		 */
 %>
-<form name="<%= tx_pricing_FormName %>" method="post" action="/view_cart.jsp?<%= RequestUtil.getFilteredQueryString(request, new String[] {"trk","fdsc.source"}) %>">
+<form name="<%= tx_pricing_FormName %>" method="post" action="/view_cart.jsp">
 	<input type="hidden" name="fdsc.action" value="addMultipleToCart"/>
 	<input type="hidden" name="fdsc.succpage" value="/view_cart.jsp?confirm=1"/>
 	<input type="hidden" name="fdsc.source"  value="SS"/>
@@ -229,7 +229,7 @@ if (request.getParameter("nodyf") == null) {
 				}				
 %>
 	<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].changeQty = function(delta) {
-		<%= tx_pricing_JSNameSpace %>.changeShopQty(<%=txProdCount%>, delta, <%= product.getQuantityMinimum() %>, <%= user.getQuantityMaximum(product) %>, <%= product.getQuantityIncrement() %>, document.forms['<%= tx_pricing_FormName %>']['quantity_<%= txProdCount %>']);
+		<%= tx_pricing_JSNameSpace %>.changeShopQty(<%=txProdCount%>, delta, <%= product.getQuantityMinimum() %>, <%= user.getQuantityMaximum(product) %>, <%= product.getQuantityIncrement() %>, document.forms['<%= tx_pricing_FormName %>']['quantity_dyf_<%= txProdCount %>']);
 	};
 	<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].setCallbackFunction( <%= tx_pricing_JSNameSpace %>.updateTotal );
 </script>
@@ -248,10 +248,10 @@ if (request.getParameter("nodyf") == null) {
 						<td>
 							<table align="center">
 								<tr><td style="height: 28px">
-									<input type="hidden" name="productId_<%= txProdCount %>" value="<%= product.getContentName() %>"/>
-									<input type="hidden" name="catId_<%= txProdCount %>" value="<%= product.getParentNode().getContentName() %>"/>
-									<input type="hidden" name="skuCode_<%= txProdCount %>" value="<%= tpi.getSku() %>"/>
-									<input type="hidden" name="quantity_<%= txProdCount %>" value="1"/>
+									<input type="hidden" name="productId_dyf_<%= txProdCount %>" value="<%= product.getContentName() %>"/>
+									<input type="hidden" name="catId_dyf_<%= txProdCount %>" value="<%= product.getParentNode().getContentName() %>"/>
+									<input type="hidden" name="skuCode_dyf_<%= txProdCount %>" value="<%= tpi.getSku() %>"/>
+									<input type="hidden" name="quantity_dyf_<%= txProdCount %>" value="1"/>
 <%
 					// render options
 					for (Iterator iit = configuration.getOptions().entrySet().iterator(); iit.hasNext(); ) {
@@ -263,7 +263,7 @@ if (request.getParameter("nodyf") == null) {
 
 
 
-%>									<select name="salesUnit_<%= txProdCount %>" style="width: 60px" class="text10" onChange="<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].setSalesUnit(this.value);">
+%>									<select name="salesUnit_dyf_<%= txProdCount %>" style="width: 60px" class="text10" onChange="<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].setSalesUnit(this.value);">
 										<option value="" selected="selected"></option>
 <%
 					FDSalesUnit     salesUnits[] = tpi.getFDProduct().getSalesUnits();
@@ -295,10 +295,10 @@ if (request.getParameter("nodyf") == null) {
 							<table align="center">
 								<tr>
 									<td style="height: 28px">
-										<input type="hidden" name="productId_<%= txProdCount %>" value="<%= product.getContentName() %>"/>
-										<input type="hidden" name="catId_<%= txProdCount %>" value="<%= product.getParentNode().getContentName() %>"/>
-										<input type="hidden" name="skuCode_<%= txProdCount %>" value="<%= tpi.getSku() %>"/>
-										<input type="hidden" name="salesUnit_<%= txProdCount %>" value="<%= configuration.getSalesUnit() %>"/>
+										<input type="hidden" name="productId_dyf_<%= txProdCount %>" value="<%= product.getContentName() %>"/>
+										<input type="hidden" name="catId_dyf_<%= txProdCount %>" value="<%= product.getParentNode().getContentName() %>"/>
+										<input type="hidden" name="skuCode_dyf_<%= txProdCount %>" value="<%= tpi.getSku() %>"/>
+										<input type="hidden" name="salesUnit_dyf_<%= txProdCount %>" value="<%= configuration.getSalesUnit() %>"/>
 <%
 					for (Iterator it_opts = configuration.getOptions().entrySet().iterator(); it_opts.hasNext();) {
 						Map.Entry entry = (Map.Entry) it_opts.next();
@@ -310,7 +310,7 @@ if (request.getParameter("nodyf") == null) {
 
 %>
 
-										<input type="text" name="quantity_<%= txProdCount %>"  value="" style="width: 36px" size="3" maxlength="4" class="text10" onChange="<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].changeQty<%= txProdCount %>(0);" onBlur="<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].setQuantity(this.value);"/>
+										<input type="text" name="quantity_dyf_<%= txProdCount %>"  value="" style="width: 36px" size="3" maxlength="4" class="text10" onChange="<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].changeQty<%= txProdCount %>(0);" onBlur="<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].setQuantity(this.value);"/>
 									</td>
 									<td style="height: 28px">
 										<img onclick="<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].changeQty(<%= product.getQuantityIncrement() %>);" src="/media_stat/images/template/quickshop/grn_arrow_up.gif" style="width: 10px; height: 9px; border: 0;  margin-bottom: 1px; margin-top: 1px" alt="Increase quantity"><br/>

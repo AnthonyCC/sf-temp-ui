@@ -84,7 +84,7 @@ request.setAttribute("listPos", "SystemMessage");
 %>
 
 <!--  view cart  -->
-<form name="viewcart" method="post">
+<form name="viewcart" method="post" action="/view_cart.jsp">
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="695">
     <TR VALIGN="TOP">
 	    <TD CLASS="text11" WIDTH="395" VALIGN="bottom">
