@@ -24,7 +24,7 @@
 			FDCartLineModel orderLine = (FDCartLineModel)oit.next();
 %>
 		<tr>
-			<td><%= (long) orderLine.getQuantity() %></td>
+			<td><%= orderLine.getDisplayQuantity() %></td>
 			<td><%= orderLine.getDescription() %></td>
 			<td><%= currencyFormatter.format(orderLine.getPrice()) %></td>
 		</tr>
