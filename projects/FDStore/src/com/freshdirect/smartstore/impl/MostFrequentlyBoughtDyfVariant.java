@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -29,8 +31,36 @@ import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
  */
 public class MostFrequentlyBoughtDyfVariant implements RecommendationService {
 
+	private static final Category LOGGER = Category.getInstance(MostFrequentlyBoughtDyfVariant.class);
 	
 	private Variant variant;
+	
+	private static final int MAX_ENTRY_DURATION = 10* 60* 1000;
+	
+	// CACHED USER
+	private static class UserHistory {
+		private long timeRecorded;
+		
+		// List<ContentKey> sorted by frequency
+		private List sortedProductList;
+		
+		public UserHistory(List sortedProductList) {
+			timeRecorded = System.currentTimeMillis();
+			this.sortedProductList = sortedProductList;
+		}
+		
+		public boolean expired() {
+			long diff = System.currentTimeMillis() - timeRecorded;
+			boolean exp = diff > MAX_ENTRY_DURATION;
+			
+			if (exp) LOGGER.debug("SmartStore cache entry expired after " + (diff/1000) + " seconds");
+			return  exp;
+		}
+		
+		public List getSortedProductList() {
+			return sortedProductList;
+		}
+	};
 	
 
 	// cache the most recently accessed order histories
@@ -56,10 +86,10 @@ public class MostFrequentlyBoughtDyfVariant implements RecommendationService {
 		
 		// see if list in cache
 		// List<ContentKey>
-		List sortedProductList = (List)cache.get(input.getCustomerId());
-
-		if (sortedProductList == null) {
-			// if not in cache, calculate it
+		UserHistory userHistory = (UserHistory)cache.get(input.getCustomerId());
+		
+		if (userHistory == null ||  userHistory.expired()) {
+			LOGGER.debug("Loading order history for " + input.getCustomerId());
 
 			// get line items
 			List lineItems;
@@ -85,7 +115,7 @@ public class MostFrequentlyBoughtDyfVariant implements RecommendationService {
 			}
 			
 			
-			sortedProductList = new ArrayList(productFrequencies.size());
+			List sortedProductList = new ArrayList(productFrequencies.size());
 			sortedProductList.addAll(productFrequencies.keySet());
 			
 			// sort by frequency
@@ -101,11 +131,14 @@ public class MostFrequentlyBoughtDyfVariant implements RecommendationService {
 				}
 			);
 				
-			cache.put(input.getCustomerId(), sortedProductList);
+			userHistory = new UserHistory(sortedProductList);
+			cache.put(input.getCustomerId(), userHistory);
 		
 		} 
 		
-		return sortedProductList.subList(0, Math.min(input.getCartContents().size()+max, sortedProductList.size()));
+		return userHistory.getSortedProductList().subList(
+			0, 
+			Math.min(input.getCartContents().size()+max, userHistory.getSortedProductList().size()));
 	}
 
 }
