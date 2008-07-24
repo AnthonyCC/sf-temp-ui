@@ -110,10 +110,7 @@ public class PIPLayoutTag extends AbstractGetterTag {
 				ProductModel productNode = ((ProductImpression) it.next()).getProductModel();
 				
 				// retrieve product image
-				Image prodImage = productNode.getSourceProduct().getAlternateImage();
-				if (prodImage == null) {
-					prodImage = productNode.getSourceProduct().getCategoryImage();
-				}
+				Image prodImage = productNode.getSourceProduct().getCategoryImage();
 
 				if (prodImage != null)
 					maxHeight = Math.max(maxHeight, prodImage.getHeight());

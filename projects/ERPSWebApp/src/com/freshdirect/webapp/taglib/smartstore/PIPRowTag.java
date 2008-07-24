@@ -92,12 +92,8 @@ public class PIPRowTag extends AbstractGetterTag {
 			ProductModel productNode = pi.getProductModel();
 
 			// retrieve product image
-			Image prodImage = productNode.getSourceProduct().getAlternateImage();
-			if (prodImage == null) {
-				prodImage = productNode.getSourceProduct().getCategoryImage();
-			}
-
-
+			Image prodImage = productNode.getSourceProduct().getCategoryImage();
+			
 			// pass image to JSP
 			if (this.productImageVarName != null)
 				pageContext.setAttribute(this.productImageVarName, prodImage);
