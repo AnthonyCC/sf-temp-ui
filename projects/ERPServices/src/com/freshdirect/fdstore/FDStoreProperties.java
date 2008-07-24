@@ -365,8 +365,8 @@ public class FDStoreProperties {
 		defaults.put(PROP_NUTRITION_REFRESH_PERIOD, "10");
 		defaults.put(PROP_PROMOTION_RT_REFRESH_PERIOD, "1200");
 		
-		defaults.put(PROP_GEOCODE_ISNEWFORMAT, "false");
-		
+		defaults.put(PROP_GEOCODE_ISNEWFORMAT, "true");
+				
 		defaults.put(ADVANCE_ORDER_START, "2004-01-01");
 		defaults.put(ADVANCE_ORDER_END, "2004-01-02");
 		
@@ -793,6 +793,7 @@ public class FDStoreProperties {
         return (new Boolean(get(PROP_GEOCODE_ISNEWFORMAT))).booleanValue();
     }
 	
+		
 	public static boolean isDCPDAliasHandlingEnabled() {
 		return Boolean.valueOf(get(DCPD_ALIAS_HANDLING_ENABLED)).booleanValue();
 	}
