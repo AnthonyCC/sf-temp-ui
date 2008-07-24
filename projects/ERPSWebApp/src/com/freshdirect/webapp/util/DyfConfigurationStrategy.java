@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDConfigurableI;
@@ -33,8 +35,12 @@ import com.freshdirect.fdstore.lists.FDListManager;
  */
 public class DyfConfigurationStrategy implements ConfigurationStrategy {
 	
+	private final static int MAX_CONFIGURATION_DURATION = 10 * 60 * 1000;
+	
+	private final static Category LOGGER = Category.getInstance(DyfConfigurationStrategy.class);
+	
 	/**
-	 * Wrapper for a custemer id and a content key.
+	 * Wrapper for a customer id and a content key.
 	 */
 	protected static class CustomerContentPair {
 		private String erpCustomerId;
@@ -68,6 +74,7 @@ public class DyfConfigurationStrategy implements ConfigurationStrategy {
 	protected static class SkuConfigurationPair {
 		private String skuCode;
 		private FDConfigurableI configuration;
+		private long timeRecorded;
 		
 		public static SkuConfigurationPair NULL = new SkuConfigurationPair(null,null);
 		
@@ -79,6 +86,7 @@ public class DyfConfigurationStrategy implements ConfigurationStrategy {
 		public SkuConfigurationPair(String skuCode, FDConfigurableI configuration) {
 			this.skuCode = skuCode;
 			this.configuration = configuration;
+			this.timeRecorded = System.currentTimeMillis();
 		}
 		
 		/**
@@ -95,6 +103,16 @@ public class DyfConfigurationStrategy implements ConfigurationStrategy {
 		 */
 		public FDConfigurableI getConfiguration() {
 			return configuration;
+		}
+		
+		/**
+		 * Is configuration expired?
+		 */
+		public boolean expired() {
+			long diff = System.currentTimeMillis() - timeRecorded;
+			boolean exp = diff > MAX_CONFIGURATION_DURATION;
+			if (exp) LOGGER.debug("Cached configuration for " + skuCode + " expired after " + (diff/1000) + " seconds");
+			return exp;
 		}
 	}
 	
@@ -152,7 +170,7 @@ public class DyfConfigurationStrategy implements ConfigurationStrategy {
 		// see if already stored
 		CustomerContentPair key = new CustomerContentPair(context.getErpCustomerId(),productModel.getContentKey());
 		SkuConfigurationPair storedConfiguration = (SkuConfigurationPair)cache.get(key);
-        if (storedConfiguration != null) {
+        if (storedConfiguration != null && !storedConfiguration.expired()) {
         	if (storedConfiguration.getSkuCode() != null) {
         		return new TransactionalProductImpression(
         			productModel,
@@ -236,6 +254,7 @@ public class DyfConfigurationStrategy implements ConfigurationStrategy {
 							configuration.getSalesUnit(),
 							configuration.getOptions());
 						
+				LOGGER.debug("Storing configuration for " + context.getErpCustomerId() + ", sku = " + selectedSkuCode);
 				cache.put(key, new SkuConfigurationPair(selectedSkuCode,conf));
 				return new TransactionalProductImpression(
 					productModel,selectedSkuCode,conf);
