@@ -899,13 +899,30 @@ public class FDShoppingCartControllerTag extends
 		return false;
 	}
 	
+	/**
+	 * Deduce a suffix pattern for multiple add to carts.
+	 * 
+	 * This method recognizes a pattern <tt>productId</tt>&lt;SUFFIX&gt;<tt>_</tt>&lt;NUMBER&gt;</tt>
+	 * and assumes that &lt;SUFFIX&gt; will be used consistently for related parameters, such
+	 * as <tt>quantity</tt>, <tt>catId</tt>, etc.
+	 * 
+	 * There is already a (hard-coded) pattern of <tt>productId</tt><i>_big</i>, which will not
+	 * match this (since big is not a number). &lt;SUFFIX&gt; being the empty string is OK.
+	 * 
+	 * @return "&lt;SUFFIX&gt;_" (the underscore is part of the return) for matches, "_" otherwise
+	 */
 	private String deduceMultipleSuffix() {
 		for(Enumeration e = request.getParameterNames(); e.hasMoreElements();) {
 			String name = e.nextElement().toString();
 			if (name.startsWith("productId")) {
 				int end = name.lastIndexOf('_');
-				if (end == -1) break;
-				return name.substring("productId".length(), end+1);
+				if (end == -1) continue;
+				try {
+					Integer.parseInt(name.substring(end+1));
+					return name.substring("productId".length(), end+1);
+				} catch (NumberFormatException ex) {
+					continue;
+				}
 			}
 		}
 		return "_";
