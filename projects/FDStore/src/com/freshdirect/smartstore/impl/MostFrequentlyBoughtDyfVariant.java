@@ -57,7 +57,7 @@ public class MostFrequentlyBoughtDyfVariant implements RecommendationService {
 		// see if list in cache
 		// List<ContentKey>
 		List sortedProductList = (List)cache.get(input.getCustomerId());
-		
+
 		if (sortedProductList == null) {
 			// if not in cache, calculate it
 
@@ -103,9 +103,9 @@ public class MostFrequentlyBoughtDyfVariant implements RecommendationService {
 				
 			cache.put(input.getCustomerId(), sortedProductList);
 		
-		}
+		} 
 		
-		return sortedProductList.subList(0, Math.min(max, sortedProductList.size()));
+		return sortedProductList.subList(0, Math.min(input.getCartContents().size()+max, sortedProductList.size()));
 	}
 
 }
