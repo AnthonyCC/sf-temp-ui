@@ -78,13 +78,8 @@ request.setAttribute("listPos", "SystemMessage");
 <br/>
 <%
 	}
-
-
-
 %>
-
-<!--  view cart  -->
-<form name="viewcart" method="post" action="/view_cart.jsp">
+<form name="viewcart" method="post" action="/view_cart.jsp" style="margin:0px ! important">
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="695">
     <TR VALIGN="TOP">
 	    <TD CLASS="text11" WIDTH="395" VALIGN="bottom">
@@ -112,14 +107,17 @@ request.setAttribute("listPos", "SystemMessage");
 
 </form>
 
-<BR><BR>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 <!-- Place of SmartStore Recommendations Tag -->
 <%@ include file="/includes/smartstore/i_dyf.jspf" %>
 <BR>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-
-<form name="viewcart_bottom" method="POST">
+<% if (!"true".equals(request.getAttribute("recommendationsRendered"))) { %>
+<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="693" HEIGHT="1" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+<% } %>
+<form name="viewcart_bottom" method="POST" style="margin:0px">
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="693">
     <TR VALIGN="TOP">
     <TD WIDTH="30"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" WIDTH="28" HEIGHT="28" border="0" alt="CONTINUE SHOPPING"></a></TD>
