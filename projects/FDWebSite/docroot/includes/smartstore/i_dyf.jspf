@@ -150,7 +150,7 @@ if (request.getParameter("nodyf") == null) {
         <%= tx_pricing_JSNameSpace %>.pricings[idx].setQuantity(qty);
     };
 </script>
-<table class="smartstore">
+<table class="smartstore" style="border-collapse: collapse">
 <fd:PIPLayout id="piRow" rowSize="5" impressions="<%= impressions %>" maxRowHeight="rowHeight" singleRowMode="<%= true %>">
 	<caption>YOUR FAVORITES</caption>
 	<tr>
@@ -178,6 +178,7 @@ if (request.getParameter("nodyf") == null) {
 
 
 	int txProdCount = 0; // transactional products counter
+	int colCount = 0;
 %>
 	<!-- === NEW PART === -->
 	<tr>
@@ -190,7 +191,9 @@ if (request.getParameter("nodyf") == null) {
 
 		// cell renderning starts here		
 %>
-		<td style="width: <%= Math.round(100.0/impressions.size()) %>%; text-align: center;" valign="top" >
+		<td style="width: <%= 
+		       Math.round(100.0/impressions.size()) %>%; text-align: center; <%= colCount == 0? "padding-left: 5px;" :""%> <%= 
+		       colCount == piRow.size() - 1 ? "padding-right:5px;" : "" %>" valign="top" >
 			<!-- CELL CONTAINER -->
 			<table align="center">
 				<tr>
@@ -412,7 +415,7 @@ if (request.getParameter("nodyf") == null) {
 		<td colspan="<%= impressions.size() %>" style="text-align: right">
 			<input type="hidden" style="width:60px" name="total" value="" size="6" class="text11bold" onChange="" onFocus="blur()"/>
 			<input type="hidden" name="itemCount" value="<%= txProdCount %>"/>
-			<input type="image" name="addMultipleToCart" src="/media_stat/images/template/confirmation/add_to_cart_purple.gif" border="0" vspace="8" alt="ADD SELECTED TO CART"/>
+			<input type="image" name="addMultipleToCart" style="padding-right: 5px" src="/media_stat/images/template/confirmation/add_to_cart_purple.gif" border="0" vspace="8" alt="ADD SELECTED TO CART"/>
 		</td>
 	</tr>
 </fd:PIPLayout>
