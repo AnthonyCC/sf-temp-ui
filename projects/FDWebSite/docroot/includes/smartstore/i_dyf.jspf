@@ -303,7 +303,7 @@ if (request.getParameter("nodyf") == null) {
 					for (Iterator it_opts = configuration.getOptions().entrySet().iterator(); it_opts.hasNext();) {
 						Map.Entry entry = (Map.Entry) it_opts.next();
 %>
-										<input type="hidden" name="<%= entry.getKey() %>_<%= txProdCount %>" value="<%= entry.getValue() %>"/>
+										<input type="hidden" name="<%= entry.getKey() %>_dyf_<%= txProdCount %>" value="<%= entry.getValue() %>"/>
 <%
 					}
 
