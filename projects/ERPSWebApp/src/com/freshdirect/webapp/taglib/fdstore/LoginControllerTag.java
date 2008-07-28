@@ -114,8 +114,9 @@ public class LoginControllerTag extends AbstractControllerTag {
             }
             
           FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+          
           if (user!=null && EnumServiceType.CORPORATE.equals(user.getUserServiceType())) {
-        	  if(request.getRequestURI().indexOf("index.jsp")!=-1){        	  
+        	  if(request.getRequestURI().indexOf("index.jsp")!=-1 || (getSuccessPage()!=null && getSuccessPage().indexOf("/login/index.jsp")!=-1)){        	  
                  this.setSuccessPage("/department.jsp?deptId=COS");;
         	  }
           }
