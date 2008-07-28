@@ -11,12 +11,57 @@
 %><%@ page import="java.util.Iterator"
 %><%@ page import="java.util.Locale"
 %><%@ page import="com.freshdirect.fdstore.customer.FDCartLineModel"
-%><div style="text-align: left; width: 693px; border: 1px solid #996699; position: relative; background-image: url('/media_stat/images/layout/dyf_purple_span.gif'); background-position: left; background-repeat: repeat-y;">
+%>
+<style>
+.rol-tl {
+	width: 36px;
+	height: 32px;
+	position: absolute;
+	top: -1px;
+	left: -1px;
+}
+.rol-tr {
+	width: 6px;
+	height: 6px;
+	position: absolute;
+	top: -1px;
+	right: -1px;
+}
+.rol-bl {
+	width: 36px;
+	height: 6px;
+	position: absolute;
+	bottom: -1px;
+	left: -1px;
+}
+.rol-br {
+	width: 6px;
+	height: 6px;
+	position: absolute;
+	bottom: -1px;
+	right: -1px;
+}
+</style>
+<!--[if IE 6]>
+<style>
+.rol-tr {
+	right: -2px;
+}
+.rol-br {
+	right: -2px;
+	bottom: -2px;
+}
+.rol-bl {
+	bottom: -2px;
+}
+</style>
+<![endif]-->
+<div style="text-align: left; width: 693px; border: 1px solid #996699; position: relative; background-image: url('/media_stat/images/layout/dyf_purple_span.gif'); background-position: left; background-repeat: repeat-y;">
 	<!-- corners -->
-	<img src="/media_stat/images/layout/dyf_conf_tl.gif" style="width: 36px; height: 32px; position: absolute; top: -1px; left: -1px"/>
-	<img src="/media_stat/images/layout/dyf_conf_tr.gif" style="width: 6px; height: 6px; position: absolute; top: -1px; right: -1px"/>
-	<img src="/media_stat/images/layout/dyf_conf_bl.gif" style="width: 36px; height: 6px; position: absolute; bottom: -1px; left: -1px"/>
-	<img src="/media_stat/images/layout/dyf_conf_br.gif" style="width: 6px; height: 6px; position: absolute; bottom: -1px; right: -1px"/>
+	<img src="/media_stat/images/layout/dyf_conf_tl.gif" class="rol-tl"/>
+	<img src="/media_stat/images/layout/dyf_conf_tr.gif" class="rol-tr"/>
+	<img src="/media_stat/images/layout/dyf_conf_bl.gif" class="rol-bl"/>
+	<img src="/media_stat/images/layout/dyf_conf_br.gif" class="rol-br"/>
 	<img src="/media_stat/images/layout/dyf_conf_hdr.gif" style="width: 235px; height: 10px; padding: 8px 0 7px 44px;"/>
 	<table cellspacing="0" cellpadding="0" style="border: 0; width: 500px; margin: 0px 0px 6px 64px;">
 <%
