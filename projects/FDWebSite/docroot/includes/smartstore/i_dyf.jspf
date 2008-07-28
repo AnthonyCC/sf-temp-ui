@@ -415,7 +415,7 @@ if (request.getParameter("nodyf") == null) {
 		<td colspan="<%= impressions.size() %>" style="text-align: right">
 			<input type="hidden" style="width:60px" name="total" value="" size="6" class="text11bold" onChange="" onFocus="blur()"/>
 			<input type="hidden" name="itemCount" value="<%= txProdCount %>"/>
-			<input type="image" name="addMultipleToCart" style="padding-right: 5px" src="/media_stat/images/template/confirmation/add_to_cart_purple.gif" border="0" vspace="8" alt="ADD SELECTED TO CART"/>
+			<input type="image" name="addMultipleToCart" style="padding: 8px 8px; border: 0" src="/media_stat/images/template/confirmation/add_to_cart_purple.gif" alt="ADD SELECTED TO CART"/>
 		</td>
 	</tr>
 </fd:PIPLayout>
