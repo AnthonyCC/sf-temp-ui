@@ -98,11 +98,7 @@ public class FletoHelper implements YmalHelper {
 	
 	// AKOS
 	public Image getImage() {
-		Image image = getRealProduct().getAlternateImage();
-		if (image == null) {
-            image = getRealProduct().getCategoryImage();
-        }
-        return image;
+        return getRealProduct().getCategoryImage();
 	}
 	
 	// CHECK!!! CatId from the "real" product, NOT THE SAME for Proxies
