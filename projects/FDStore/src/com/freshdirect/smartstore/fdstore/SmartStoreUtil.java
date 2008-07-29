@@ -1,17 +1,22 @@
 package com.freshdirect.smartstore.fdstore;
 
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 
 import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.RecommendationService;
+import com.freshdirect.smartstore.Variant;
 
 /**
  * General utilities for SmartStore.
@@ -86,4 +91,39 @@ public class SmartStoreUtil {
 	}
 
 	
+	private static Map vpMap = null;
+
+	
+	/**
+	 * Returns label-description couple for variant. This function is used by PIP
+	 * 
+	 * @param v {@link Variant variant}
+	 * 
+	 * @return String[label, inner text] couple
+	 * 
+	 * Tags: SmartStore, PIP
+	 */
+	public static synchronized String[] getVariantPresentation(Variant v) {
+		// HACK: initialize map lazily
+		if (vpMap == null) {
+			Map services = SmartStoreServiceConfiguration.getInstance().getServices(v.getSiteFeature());
+			Set variantIds = services.keySet();
+			Map prez = FDStoreProperties.getServicePresentations(v.getSiteFeature().getName());
+			
+			vpMap = new HashMap();
+			
+			final String[] def_val = {FDStoreProperties.PIP_DEFAULT_LABEL, FDStoreProperties.PIP_DEFAULT_INNERTEXT};
+			
+			for (Iterator vit = variantIds.iterator(); vit.hasNext();) {
+				String variantId = (String) vit.next();
+				if (prez.get(variantId) != null) {
+					vpMap.put(variantId, prez.get(variantId));
+				} else {
+					vpMap.put(variantId, def_val);
+				}
+			}
+		}
+
+		return (String[]) vpMap.get(v.getId());
+	}
 }

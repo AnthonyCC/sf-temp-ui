@@ -21,6 +21,7 @@
 %><%@ page import="java.net.URLEncoder"
 %><%@ page import="com.freshdirect.webapp.util.ConfigurationUtil"
 %><%@ page import="com.freshdirect.webapp.util.RequestUtil"
+%><%@ page import="com.freshdirect.smartstore.fdstore.SmartStoreUtil"
 %><%@ taglib uri='template' prefix='tmpl'
 %><%@ taglib uri='logic' prefix='logic'
 %><%@ taglib uri='freshdirect' prefix='fd'
@@ -75,7 +76,8 @@ if (request.getParameter("nodyf") == null) {
 			impressions.add(pi); skus.add(pi.getSku());
 		}
 
-
+		// vprez := {variant label, variant text}
+		String[] vprez = SmartStoreUtil.getVariantPresentation(recommendations.getVariant());
 
 
 		/**
@@ -152,10 +154,10 @@ if (request.getParameter("nodyf") == null) {
 </script>
 <table class="smartstore" style="border-collapse: collapse">
 <fd:PIPLayout id="piRow" rowSize="5" impressions="<%= impressions %>" maxRowHeight="rowHeight" singleRowMode="<%= true %>">
-	<caption>YOUR FAVORITES</caption>
+	<caption><%= vprez[0] %></caption>
 	<tr>
 		<td colspan="<%= piRow.size() %>" style="text-align: center;">
-			<span class="text10">These are some of the items you've purchased most often.</span>
+			<span class="text10"><%= vprez[1] %></span>
 		</td>
 	</tr>
 <%
