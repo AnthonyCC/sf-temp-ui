@@ -9,10 +9,11 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.core.SessionBeanSupport;
-import com.freshdirect.smartstore.CompositeRecommendationServiceConfig;
 import com.freshdirect.smartstore.RecommendationServiceConfig;
 import com.freshdirect.smartstore.RecommendationServiceType;
 import com.freshdirect.smartstore.SimpleCRSC;
@@ -24,6 +25,9 @@ import com.freshdirect.smartstore.Variant;
  * @author istvan
  */
 public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSupport {
+	
+	// logger
+	final private static Category LOGGER = Category.getInstance(SmartStoreServiceConfigurationSessionBean.class);
 
 	// generated serial version id
 	private static final long serialVersionUID = -3423410150966343739L;
@@ -67,6 +71,7 @@ public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSuppor
 
 			return result;
 		} catch (SQLException e) {
+			LOGGER.error("Getting composite configs failed. ",e);
 			throw new FDRuntimeException(e);
 		} finally {
 			try {
@@ -115,6 +120,7 @@ public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSuppor
 
 			return result;
 		} catch (Exception e) {
+			LOGGER.error("Getting variants failed. ",e);
 			throw new RemoteException(e.getMessage());
 		} finally {
 			if (rs != null) rs.close();
