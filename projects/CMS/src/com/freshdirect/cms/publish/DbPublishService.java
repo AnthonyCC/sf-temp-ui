@@ -56,7 +56,9 @@ public class DbPublishService extends DbService implements PublishServiceI {
 	}
 
 	public List getPublishHistory() {
-		return publishDao.getAllPublishesOrdered("timestamp desc");
+		// return publishDao.getAllPublishesOrdered("timestamp desc");
+		// use lightweight fetch instead of hibernate
+		return publishDao.fetchPublishes(null, "timestamp desc");
 	}
 
 	private void storePublish(final Publish publish) {
