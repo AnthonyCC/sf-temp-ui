@@ -110,6 +110,14 @@ public class XMLSerializer {
 		
 	private void serialize(List visitedObjects, Branch node, String elementName, Object obj) {
 
+		// ensure well-formedness :)
+		try {
+			Integer.parseInt(elementName);
+			elementName = "i" + elementName;
+		} catch (NumberFormatException e) {
+			// ok
+		}
+
 		if (obj==null) {
 			if (this.isShowNulls()) {
 				node.addElement(elementName).addAttribute("isNull", "true");

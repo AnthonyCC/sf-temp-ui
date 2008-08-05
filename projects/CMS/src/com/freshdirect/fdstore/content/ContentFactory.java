@@ -253,6 +253,45 @@ public class ContentFactory {
 		return pm;
 	}
 	
+	public static SearchQuery getSearchQuery(String criteria) {
+		return new SearchQuery(criteria) {
+			
+			private String[] tokens;
+			private String normalizedTerm;
+			private String searchTerm;
+			
+			public String getNormalizedTerm() {
+				return normalizedTerm;
+			}
+			
+			public String getSearchTerm() {
+				return searchTerm;
+			}
+
+			public String[] getTokens() {
+				return tokens;
+			}
+
+			protected void breakUp() {
+				normalizedTerm = ContentSearchUtil.normalizeTerm(getOriginalTerm());
+				
+				StringBuffer luceneTerm = new StringBuffer(normalizedTerm);
+				BrandNameExtractor brandNameExtractor = new BrandNameExtractor(); 
+				
+				tokens = ContentSearchUtil.tokenizeTerm(normalizedTerm);
+				
+				
+				for(Iterator i = brandNameExtractor.extract(getOriginalTerm()).iterator(); i.hasNext(); ) {
+					String canonicalBrandName = StringUtil.removeAllWhiteSpace(i.next().toString()).toLowerCase();
+					if (luceneTerm.indexOf(canonicalBrandName) == -1) luceneTerm.append(' ').append(canonicalBrandName);
+					if (tokens.length == 0) tokens = new String[] { canonicalBrandName };
+				}
+				searchTerm = luceneTerm.toString();
+			}
+			
+		};
+	}
+	
 	/**
 	 * Perform a simple search.
 	 * 
@@ -266,9 +305,18 @@ public class ContentFactory {
 	 * @param criteria original query
 	 * @return search results
 	 */
-	public SearchResults simpleSearch(String criteria) {
+	public SearchResults simpleSearch(String criteria, SearchQueryStemmer stemmer) {
 		
 		
+		SearchQuery searchQuery = getSearchQuery(criteria);
+		
+		if ("".equals(searchQuery.getNormalizedTerm())) {
+			return new SearchResults(Collections.EMPTY_LIST,
+					Collections.EMPTY_LIST, Collections.EMPTY_LIST,
+					Collections.EMPTY_LIST,false);
+		}
+		
+ 		/*
 		String term = ContentSearchUtil.normalizeTerm(criteria);
 		if ("".equals(term)) {
 			return new SearchResults(Collections.EMPTY_LIST,
@@ -286,8 +334,11 @@ public class ContentFactory {
 			if (luceneTerm.indexOf(canonicalBrandName) == -1) luceneTerm.append(' ').append(canonicalBrandName);
 			if (tokens.length == 0) tokens = new String[] { canonicalBrandName };
 		}
+		*/
 		
-		Collection hits = CmsManager.getInstance().search(luceneTerm.toString(), 2000);
+		
+		
+		Collection hits = CmsManager.getInstance().search(searchQuery.getSearchTerm(), 2000);
 		
 		
 		Map hitsByType = ContentSearchUtil.mapHitsByType(hits);
@@ -297,16 +348,19 @@ public class ContentFactory {
 				.resolveHits(ContentSearchUtil
 						.filterTopResults((List) hitsByType
 								.get(FDContentTypes.PRODUCT), 500, 400));
-		List relevantProducts = ContentSearchUtil.filterRelevantNodes(allProducts, tokens);
-		List exactProducts = ContentSearchUtil.filterExactNodes(allProducts,term);
+		List relevantProducts = ContentSearchUtil.filterRelevantNodes(allProducts, searchQuery.getTokens(),stemmer);
+		
+		 
+		List exactProducts = ContentSearchUtil.filterExactNodes(allProducts,searchQuery.getSearchTerm(),stemmer);
+		
 
 		List categories = ContentSearchUtil.filterRelevantNodes(
 				ContentSearchUtil.resolveHits((List) hitsByType
-						.get(FDContentTypes.CATEGORY)), tokens);
+						.get(FDContentTypes.CATEGORY)), searchQuery.getTokens(),stemmer);
 		
 		List recipes = ContentSearchUtil.filterRelevantNodes(ContentSearchUtil
 				.resolveHits((List) hitsByType.get(FDContentTypes.RECIPE)),
-				tokens);
+				searchQuery.getTokens(),stemmer);
 		
 		List filteredCategories = ContentSearchUtil.filterCategoriesByVisibility(categories);
 		List filteredExactProducts = ContentSearchUtil.filterProductsByDisplay(exactProducts);
@@ -314,7 +368,7 @@ public class ContentFactory {
 		List filteredFuzzyProducts = 
 			ContentSearchUtil.filterProductsByDisplay(
 				relevantProducts.isEmpty() ? 
-						ContentSearchUtil.restrictToMaximumOccuringNodes(allProducts,tokens) : 
+						ContentSearchUtil.restrictToMaximumOccuringNodes(allProducts,searchQuery.getTokens(),stemmer) : 
 						relevantProducts);
 		
 		List filteredRecipes = ContentSearchUtil.filterRecipesByAvailability(recipes);
@@ -361,7 +415,9 @@ public class ContentFactory {
 	 * @return search results, possibly ammended with a spelling suggestion
 	 */
 	public SearchResults search(String criteria) {
-		SearchResults filteredResults = simpleSearch(criteria);
+		
+		SearchQueryStemmer stemmer = SearchQueryStemmer.Porter;
+		SearchResults filteredResults = simpleSearch(criteria, stemmer);
 		
 		SearchResults.SpellingResultsDifferences diffs = null;
 		String spellingSuggestion = null;
@@ -380,7 +436,7 @@ public class ContentFactory {
 				SpellingHit spellingHit = (SpellingHit)i.next();
 				String suggestion = spellingHit.toString();
 				
-				SearchResults suggestionResults = simpleSearch(suggestion);
+				SearchResults suggestionResults = simpleSearch(suggestion, stemmer);
 				
 				if (!suggestionResults.getRecipes().isEmpty() || !suggestionResults.getFuzzyProducts().isEmpty() || 
 					!suggestionResults.getExactCategories().isEmpty() || !suggestionResults.getExactProducts().isEmpty()) { 

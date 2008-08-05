@@ -3,6 +3,7 @@ package com.freshdirect.framework.util;
 import java.util.List;
 import java.util.ArrayList;
 
+import java.io.ByteArrayOutputStream;
 import java.io.PushbackInputStream;
 import java.io.InputStream;
 import java.io.IOException;
@@ -50,7 +51,7 @@ public class CSVUtils {
 		}
 
 		/** Get line number of exception.
-		 * @return line number where exception occured
+		 * @return line number where exception occurred
 		 */
 		public int getLineNumber() {
 			return lineno;
@@ -81,6 +82,8 @@ public class CSVUtils {
 
 		private int lineno = 1;
 		private int charno = 1;
+		
+		private String charSetName = "utf-8";
 
 		private PushbackInputStream is;
 
@@ -109,11 +112,24 @@ public class CSVUtils {
 			}	
 		}
 
-		/** Constructor.
+		/** 
+		 * Constructor.
+		 * Assumes UTF-8 character encoding.
 		 * @param is CSV stream to parse
+		 * @see #Tokenizer(InputStream, String)
 		 */
 		public Tokenizer(InputStream is) {
+			this(is,"utf-8");
+		}
+		
+		/**
+		 * Character coding constructor.
+		 * @param is CSV stream to parse
+		 * @param charSetName name of character encoding
+		 */
+		public Tokenizer(InputStream is, String charSetName) {
 			this.is = new PushbackInputStream(is);
+			this.charSetName = charSetName;
 		}
 
 		private void throwFormatException(String description) {
@@ -123,7 +139,7 @@ public class CSVUtils {
 		// everything between a pair of double quotes is a single value
 		// quotes are escaped by quotes
 		private void readQuotedValue() throws IOException {
-			StringBuffer value = new StringBuffer();
+			ByteArrayOutputStream value = new ByteArrayOutputStream();
 			int c = read();
 			int startline = lineno;
 			int startchar = charno;
@@ -137,9 +153,9 @@ public class CSVUtils {
 						break;
 					}
 				} else if (c == -1) throw new EOFException("Unterminated quoted string started in line " + startline + " at character " + startchar); 
-				value.append((char)c);
+				value.write(c);
 			}
-			token = value.toString();
+			token = value.toString(charSetName);
 			type = TT_VALUE;
 		}
 
@@ -147,7 +163,7 @@ public class CSVUtils {
 		// but trailing white space must be removed
 		// the value is terminated by a COMMA, EOLN or EOF
 		private void readUnquotedValue() throws IOException {
-			StringBuffer value = new StringBuffer();
+			ByteArrayOutputStream value = new ByteArrayOutputStream();
 			for(;;) {
 				int c = read();
 				if (c == -1) break;
@@ -165,17 +181,21 @@ public class CSVUtils {
 						putback('\n');
 						break;
 					}
-					value.append('\r');
+					value.write('\r');
+					value.write('\n');
 				} else if (c == '\n') {
 					putback(c);
 					break;
-				} else value.append((char)c);
+				} else value.write(c);
 			}
-			for(int i=value.length()-1; i>=0; --i) {
-				if (value.charAt(i) == ' ' || value.charAt(i) == '\t') value.deleteCharAt(i);
+			
+			StringBuffer raw = new StringBuffer(value.toString(charSetName));
+			
+			for(int i=raw.length()-1; i>=0; --i) {
+				if (raw.charAt(i) == ' ' || raw.charAt(i) == '\t') raw.deleteCharAt(i);
 				else break;
 			}
-			token = value.toString();
+			token = raw.toString();
 			type = TT_VALUE;
 		}
 
@@ -405,5 +425,73 @@ public class CSVUtils {
 			}
 		}
 		return result;
+	}
+	
+	public static Iterator rowIterator(final InputStream is, final boolean keepEmptyTrailingColumns, final boolean keepEmptyRows) 
+	throws IOException {
+		return rowIterator(is,keepEmptyTrailingColumns,keepEmptyRows,"utf-8");
+	}
+	
+	public static Iterator rowIterator(
+			final InputStream is, final boolean keepEmptyTrailingColumns, 
+			final boolean keepEmptyRows, final String charSetName) 
+	throws IOException {
+		
+		return new Iterator() {
+			
+			private Tokenizer tokenizer = new Tokenizer(is,charSetName);
+			private List row = null;
+			
+			private void read() throws IOException {
+				row = new ArrayList();
+				DONE: for(;;) {
+					tokenizer.nextToken();
+					switch(tokenizer.getType()) {
+						case TT_EOF: 
+							break DONE;
+						case TT_COMMA: break;
+						case TT_EOLN:
+							if (!keepEmptyRows && row.size() == 0) {
+								break;
+							}
+							if (!keepEmptyTrailingColumns) {
+								for(int i=row.size() - 1; i >= 0; --i) {
+									if ("".equals(row.get(i))) row.remove(i);
+									else break DONE;
+								}
+							}
+							break DONE;
+						case TT_VALUE:
+							row.add(tokenizer.getToken());
+							break;
+					}
+				}
+			}
+
+			public boolean hasNext() {
+				try {
+					if (row == null) read();
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+				return tokenizer.getType() != TT_EOF;
+			}
+
+			public Object next() {
+				try {
+					if (row == null) read();
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+				Object thisRow = row;
+				row = null;
+				return thisRow;
+			}
+
+			public void remove() {
+				throw new UnsupportedOperationException("Remove not supported");
+			}
+			
+		};
 	}
 }

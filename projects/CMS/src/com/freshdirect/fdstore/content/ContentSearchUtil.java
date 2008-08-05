@@ -5,10 +5,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -60,7 +62,7 @@ public class ContentSearchUtil {
 	 * @param term search term
 	 * @return List of {@link ContentNodeModel}
 	 */
-	public static List filterExactNodes(List nodes, String term) {
+	public static List filterExactNodes(List nodes, String term, SearchQueryStemmer stemmer) {
 		List l = new ArrayList();
 		for (Iterator i = nodes.iterator(); i.hasNext();) {
 			ContentNodeModel node = (ContentNodeModel) i.next();
@@ -98,9 +100,64 @@ public class ContentSearchUtil {
 			if (name.indexOf(tokens[i]) == -1) --remainingErrors;
 			else ++total;
 		}
+		
+		
 
 
 		int tokenCount = remainingErrors >= 0 ? total : 0;
+		return tokenCount;
+	}
+	
+	private static Set getBrandNames(ContentNodeModel node) {
+		BrandNameExtractor extractor = new BrandNameExtractor();
+		
+		List brandsInName = extractor.extract(NVL.apply(node.getFullName(),"").toLowerCase());
+		List brandsInKeywords = extractor.extract(NVL.apply(node.getKeywords(),"").toLowerCase());
+		
+		Set s = new HashSet(3*(brandsInKeywords.size() + brandsInName.size())/2 +1);
+	
+		for(Iterator it = brandsInName.iterator(); it.hasNext();) s.add(StringUtil.removeAllWhiteSpace(it.next().toString()));
+		for(Iterator it = brandsInKeywords.iterator(); it.hasNext();) s.add(StringUtil.removeAllWhiteSpace(it.next().toString()));
+		
+		return s;
+	}
+	
+	
+	private static int countTokens(ContentNodeModel node, String[] tokens, int min, SearchQueryStemmer stemmer) {
+		if (min < 0 || min > tokens.length) min = tokens.length;
+		
+	
+		
+		Set s = new HashSet(16);
+	
+		String[] nameTokens = tokenizeTerm(NVL.apply(node.getFullName(),"").toLowerCase());
+		String[] keywordTokens = tokenizeTerm(NVL.apply(node.getKeywords(),"").toLowerCase());
+		
+		Set brandNames = getBrandNames(node);
+		
+		
+		for(int i=0; i < nameTokens.length; ++i) s.add(stemmer.stemToken(nameTokens[i]));
+		for(int i=0; i < keywordTokens.length; ++i) s.add(stemmer.stemToken(keywordTokens[i]));
+		
+		int remainingErrors = tokens.length - min;
+		int total = 0;
+		
+		for(int i = 0; remainingErrors >= 0 && i< tokens.length; ++i) {
+			if (s.contains(stemmer.stemToken(tokens[i]))) {
+				++total;
+			} else {
+				//System.err.println(tokens[i] + " > " + stemmer.stemToken(tokens[i]) + " not in " + s + " brands " + brandNames);
+				if (brandNames.contains(tokens[i])) ++total;
+				else --remainingErrors;
+			}
+		}
+
+		int tokenCount = remainingErrors >= 0 ? total : 0;
+		
+		//StringBuffer st = new StringBuffer();
+		//for(int i =0; i< tokens.length; ++i) st.append('[').append(tokens[i]).append(']');
+		//System.err.println(" ?? " + st + " in " + brandNames + " -> " + tokenCount + " " + remainingErrors + " " + min);
+		
 		return tokenCount;
 	}
 	
@@ -110,7 +167,7 @@ public class ContentSearchUtil {
 	 * @param tokens to match in nodes full name
 	 * @return
 	 */
-	public static List restrictToMaximumOccuringNodes(List nodes, String[] tokens) {
+	public static List restrictToMaximumOccuringNodes(List nodes, String[] tokens, SearchQueryStemmer stemmer) {
 		
 		Map candidates = new TreeMap(
 			new Comparator() {
@@ -127,7 +184,8 @@ public class ContentSearchUtil {
 		int min = 0;
 		for(Iterator i=nodes.iterator(); i.hasNext();) {
 			ContentNodeModel node = (ContentNodeModel)i.next();
-			int c = countTokens(node, tokens, min);
+			//System.out.println(" >>>> " + tokens.length + ':' + min);
+			int c = countTokens(node, tokens, min, stemmer);
 			if (c < min) continue;
 			min = c;
 			candidates.put(new Integer(c),node);
@@ -155,11 +213,11 @@ public class ContentSearchUtil {
 	 * @param tokens
 	 * @return List of {@link ContentNodeModel}
 	 */
-	public static List filterRelevantNodes(List nodes, String[] tokens) {
+	public static List filterRelevantNodes(List nodes, String[] tokens, SearchQueryStemmer stemmer) {
 		List l = new ArrayList(nodes.size());
 		for (Iterator i = nodes.iterator(); i.hasNext();) {
 			ContentNodeModel node = (ContentNodeModel) i.next();
-			if (countTokens(node,tokens,tokens.length) == tokens.length) l.add(node);
+			if (countTokens(node,tokens,tokens.length,stemmer) == tokens.length) l.add(node);
 		}
 		return l;
 	}

@@ -37,6 +37,7 @@ import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeSearchCriteria;
 import com.freshdirect.fdstore.content.RecipeSearchPage;
+import com.freshdirect.fdstore.content.SearchQueryStemmer;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
@@ -246,7 +247,7 @@ public class FindRecipesTag extends AbstractGetterTag {
 
 		List recipes = ContentSearchUtil.filterRelevantNodes(
 				ContentSearchUtil.resolveHits((List) hitsByType
-						.get(FDContentTypes.RECIPE)), tokens);
+						.get(FDContentTypes.RECIPE)), tokens, SearchQueryStemmer.LowerCase);
 		
 		Set keys = new HashSet(recipes.size());
 		for (Iterator i=recipes.iterator(); i.hasNext(); ) {
