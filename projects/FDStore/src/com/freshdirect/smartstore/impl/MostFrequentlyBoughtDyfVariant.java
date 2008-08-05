@@ -35,33 +35,6 @@ public class MostFrequentlyBoughtDyfVariant implements RecommendationService {
 	
 	private Variant variant;
 	
-	private static final int MAX_ENTRY_DURATION = 10* 60* 1000;
-	
-	// CACHED USER
-	private static class UserHistory {
-		private long timeRecorded;
-		
-		// List<ContentKey> sorted by frequency
-		private List sortedProductList;
-		
-		public UserHistory(List sortedProductList) {
-			timeRecorded = System.currentTimeMillis();
-			this.sortedProductList = sortedProductList;
-		}
-		
-		public boolean expired() {
-			long diff = System.currentTimeMillis() - timeRecorded;
-			boolean exp = diff > MAX_ENTRY_DURATION;
-			
-			if (exp) LOGGER.debug("SmartStore cache entry expired after " + (diff/1000) + " seconds");
-			return  exp;
-		}
-		
-		public List getSortedProductList() {
-			return sortedProductList;
-		}
-	};
-	
 
 	// cache the most recently accessed order histories
 	private SessionCache cache = new SessionCache();
@@ -86,10 +59,10 @@ public class MostFrequentlyBoughtDyfVariant implements RecommendationService {
 		
 		// see if list in cache
 		// List<ContentKey>
-		UserHistory userHistory = (UserHistory)cache.get(input.getCustomerId());
+		UserShoppingHistory userHistory = (UserShoppingHistory)cache.get(input.getCustomerId());
 		
 		if (userHistory == null ||  userHistory.expired()) {
-			LOGGER.debug("Loading order history for " + input.getCustomerId());
+			LOGGER.debug("Loading order history for " + input.getCustomerId() + (userHistory != null ? " (EXPIRED)" : ""));
 
 			// get line items
 			List lineItems;
@@ -131,14 +104,14 @@ public class MostFrequentlyBoughtDyfVariant implements RecommendationService {
 				}
 			);
 				
-			userHistory = new UserHistory(sortedProductList);
+			userHistory = new UserShoppingHistory(sortedProductList);
 			cache.put(input.getCustomerId(), userHistory);
 		
 		} 
 		
-		return userHistory.getSortedProductList().subList(
+		return userHistory.getContentKeys().subList(
 			0, 
-			Math.min(input.getCartContents().size()+max, userHistory.getSortedProductList().size()));
+			Math.min(input.getCartContents().size()+max, userHistory.getContentKeys().size()));
 	}
 
 }

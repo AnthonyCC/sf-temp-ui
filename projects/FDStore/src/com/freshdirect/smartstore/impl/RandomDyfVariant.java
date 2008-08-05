@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Category;
+
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.FDResourceException;
@@ -30,6 +32,7 @@ import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
  */
 public class RandomDyfVariant implements RecommendationService {
 	
+	private static final Category LOGGER = Category.getInstance(RandomDyfVariant.class);
 
 	private Variant variant;
 	
@@ -45,11 +48,12 @@ public class RandomDyfVariant implements RecommendationService {
 	 */
 	public List recommend(int max, SessionInput input) {
 		
-	
-		// see if product history in cache
-		List productList = (List)cache.get(input.getCustomerId());
 		
-		if (productList == null) {
+		// see if product history in cache
+		UserShoppingHistory shoppingHistory = (UserShoppingHistory)cache.get(input.getCustomerId());
+		
+		if (shoppingHistory == null || shoppingHistory.expired()) {
+			LOGGER.debug("Loading order history for " + input.getCustomerId() + (shoppingHistory != null ? " (EXPIRED)" : ""));
 			
 			// if not, retrieve history
 			
@@ -68,18 +72,24 @@ public class RandomDyfVariant implements RecommendationService {
 				products.add(SmartStoreUtil.getProductContentKey(selection.getSkuCode()));
 			}
 			
-			productList = new ArrayList(products.size());
+			List productList = new ArrayList(products.size());
 			productList.addAll(products);
 			
-			cache.put(input.getCustomerId(), productList);
+			shoppingHistory = new UserShoppingHistory(productList);
+			cache.put(input.getCustomerId(), shoppingHistory);
 		}
 		
 		// select randomly
-		UniqueRandomSequence U = UniqueRandomSequence.getInstance(max, productList.size());
-		List selection = new ArrayList(Math.max(max, productList.size()));
-		for(int i = 0; i < max; ++i) {
+		
+		int toSelect = Math.min(input.getCartContents().size()+max, shoppingHistory.getContentKeys().size());
+		UniqueRandomSequence U = UniqueRandomSequence.getInstance(
+				toSelect, 
+				shoppingHistory.getContentKeys().size());
+		
+		List selection = new ArrayList(toSelect);
+		for(int i = 0; i < toSelect; ++i) {
 			try {
-				selection.add((ContentKey)productList.get(U.next()));
+				selection.add((ContentKey)shoppingHistory.getContentKeys().get(U.next()));
 			} catch (IndexOutOfBoundsException e) {
 				break;
 			}
