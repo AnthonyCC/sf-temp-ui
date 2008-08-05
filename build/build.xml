@@ -1874,6 +1874,9 @@
 						<path refid="testing.classpath"/>
 						<pathelement path="${thirdparty.home}/lcc.jar"/>
 						<pathelement path="${thirdparty.home}/ognl-2.3.0-opt.jar"/>
+						<pathelement path="${thirdparty.home}/lucene-core-2.2.0.jar"/>
+						<pathelement path="${thirdparty.home}/lucene-queries-2.2.0.jar"/>
+						<pathelement path="${thirdparty.home}/lucene-spellchecker-2.2.0.jar"/>
 						<pathelement path="${work.dir}/Framework.jar"/>
 						<pathelement path="${work.dir}/ERPServicesEJB-WL.jar"/>
 						<pathelement path="${work.dir}/DeliveryEJB-WL.jar"/>
