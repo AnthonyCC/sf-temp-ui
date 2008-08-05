@@ -1839,11 +1839,17 @@
             <pathelement location="${work.dir}/Framework.jar"/>
 			<pathelement location="${work.dir}/CMS.jar"/>
 			<pathelement location="${work.dir}/FDStore.jar"/>
+
+			<pathelement location="${thirdparty.home}/lucene-core-2.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/lucene-queries-2.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/lucene-spellchecker-2.2.0.jar"/>
 		</path>
 
 		<makeProject
 			project="Tools"
-            classpathref="tools.classpath" />
+            classpathref="tools.classpath">
+
+	    	</makeProject>
 	</target>
 
 	<target name="tests_compile">
