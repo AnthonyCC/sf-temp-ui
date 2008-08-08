@@ -37,12 +37,13 @@ public abstract class PrimaryHomeSelection extends BaseComponent {
 		ContextService svc = ContextService.getInstance();
 		for (Iterator it=ctxs.iterator(); it.hasNext(); ) {
 			Context ctx = (Context) it.next();
-			PHSWalker walker = new PHSWalker(svc.getContextualizedContentNode(ctx));
+			ContextualContentNodeI aContext = svc.getContextualizedContentNode(ctx);
+			PHSWalker walker = new PHSWalker(aContext);
 			if (walker.walkAndTest()) {
-				parentKeys.add(walker.getLeafKey());
+				parentKeys.add(aContext.getParentNode().getKey());
 			}
 		}
-		
+
 		ContentNodeI ctxNode = getContextNode();
 		if (ctxNode != null) {
 			parentKeys.add(ctxNode.getKey());
