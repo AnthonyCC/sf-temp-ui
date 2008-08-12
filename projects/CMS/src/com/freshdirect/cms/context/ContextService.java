@@ -95,8 +95,4 @@ public class ContextService {
 		return lastNode;
 	}
 
-	// convenience method
-	public ContextualContentNodeI getContextualizedContentNode(Context ctx) {
-		return getContextualizedContentNode(ctx.getPath());
-	}
 }
