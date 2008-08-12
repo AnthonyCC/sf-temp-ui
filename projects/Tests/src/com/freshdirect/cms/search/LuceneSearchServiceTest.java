@@ -44,7 +44,6 @@ public class LuceneSearchServiceTest extends TestCase {
 		indexes.add(index);
 
 		LuceneSearchService search = new LuceneSearchService();
-		System.out.println("ZIZI: " + tempDir.getAbsolutePath());
 		search.setIndexLocation(tempDir.getAbsolutePath());
 		search.setIndexes(indexes);
 		search.initialize();
@@ -94,7 +93,7 @@ public class LuceneSearchServiceTest extends TestCase {
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		if (tempDir != null) {
-			//recursiveDelete(tempDir);
+			recursiveDelete(tempDir);
 		}
 	}
 
@@ -102,7 +101,6 @@ public class LuceneSearchServiceTest extends TestCase {
 			throws IOException {
 		File tmp = File.createTempFile(prefix, suffix);
 		// String tmpName = tmp.getAbsolutePath();
-		System.out.println("ZOZO: " + tmp.getName());
 		tmp.delete();
 		tmp.mkdir();
 		tmp.deleteOnExit();

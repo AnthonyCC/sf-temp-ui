@@ -23,7 +23,6 @@ import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
-import com.freshdirect.fdstore.content.SearchQueryStemmer;
 import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -68,8 +67,6 @@ public class FDRunSearchTag extends com.freshdirect.framework.webapp.BodyTagSupp
 		}
 
 		SearchResults res = ContentFactory.getInstance().search(searchFor);
-		
-		//SearchResults res = ContentFactory.getInstance().simpleSearch(searchFor,SearchQueryStemmer.LowerCase);
 		
 		System.err.println(">>> "+res.getFuzzyProducts().size());
 

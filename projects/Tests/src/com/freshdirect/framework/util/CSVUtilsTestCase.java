@@ -14,7 +14,7 @@ public class CSVUtilsTestCase extends TestCase {
 	private static final String CSVWindowsSimple = "a,b,c,d\r\nd,c,b,a\r\nx,y,z,";
 	
 	private static final String ESCAPED 
-		 = "\" \"\"a v \",a\t  b,\n,,,,z,,\n,\"hello, baby!\",,\n,ok,\",,\n\nok\\\",i";
+		 = "\" \"\"a v \",a\t \r b,\n,,,,z,,\n,\"hello, baby!\",\r,\n,ok,\",\r,\n\nok\\\",i";
 	
 	private static final String REDUNDANT =  ", , \n   a   ,    b,    \" c, d\"\" \" , \n, k, \n";
 	
@@ -56,7 +56,7 @@ public class CSVUtilsTestCase extends TestCase {
 		}
 		
 		assertTrue(copy.toString().equals(ESCAPED));
-		assertTrue(((List)result.get(0)).get(1).equals("a\t  b"));
+		assertTrue(((List)result.get(0)).get(1).equals("a\t \r b"));
 
 	}
 	

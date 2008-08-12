@@ -12,7 +12,6 @@ public class BrandNameExtractor {
 			.compile("\\w+\\s*&\\s*\\w+");
 	private static Pattern dashPattern = Pattern.compile("\\w+\\s*-\\s*\\w+");
 	private static Pattern dotPattern = Pattern.compile("\\w+\\s*\\.\\s*\\w+");
-	private static Pattern apostrophePattern = Pattern.compile("\\w+\\s*\'\\s*\\w+");
 
 	private List patterns = new ArrayList();
 
@@ -20,7 +19,6 @@ public class BrandNameExtractor {
 		patterns.add(ampercentPattern);
 		patterns.add(dashPattern);
 		patterns.add(dotPattern);
-		patterns.add(apostrophePattern);
 	}
 
 	public void addPattern(Pattern pattern) {
