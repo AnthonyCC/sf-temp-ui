@@ -19,7 +19,7 @@
 	<classpathentry kind="var" path="FD_LIBS/testing/jrunittesthelper.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/testing/hsqldb.jar"/>
 	<classpathentry kind="src" path="/listadmin"/>
-	<classpathentry sourcepath="/MOCKEJB_SRC_HOME/mockejb-0.6-beta2.zip" kind="var" path="FD_LIBS/testing/mockejb.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/testing/mockejb.jar" sourcepath="/MOCKEJB_SRC_HOME/mockejb-0.6-beta2.zip"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/xalan.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/xerces.jar"/>
 	<classpathentry kind="src" path="/cms-slide"/>
@@ -28,6 +28,6 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/jsonrpc-1.0.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/testing/selenium-server.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/testing/selenium-java-client-driver.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/testing/lucene-core-2.2.0.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/lucene-core-2.2.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
