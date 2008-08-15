@@ -568,7 +568,7 @@ public class YmalAutomatedCrossSellTest extends FDCustomerManagerTestSupport {
 					                           EnumATPRule.MATERIAL,
 					                           EnumAvailabilityStatus.AVAILABLE,
 					                           now,
-					                           null, inventoryCache);
+					                           null, inventoryCache,"");
 
 			return productInfo;
 		}

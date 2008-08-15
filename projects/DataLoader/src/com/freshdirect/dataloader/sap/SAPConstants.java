@@ -76,6 +76,7 @@ public interface SAPConstants {
 	public static final String KOSHER_PRODUCTION = "Kosher Production";
 	public static final String PLATTER = "Platter";
 	public static final String DAY_INDICATOR = "Day-specific Indicator";
+	public static final String RATING="Produce Rating";
 
 	//
 	// some constants for properties of materials that aren't well defined in SAP

@@ -23,10 +23,12 @@ import javax.servlet.jsp.JspException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.content.attributes.EnumAttributeName;
+import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.attributes.Attribute;
 import com.freshdirect.fdstore.attributes.MultiAttribute;
 import com.freshdirect.fdstore.content.CategoryModel;
@@ -59,6 +61,8 @@ public class JspMethods {
 
    public final static ProductModel.PriceComparator priceComp = new ProductModel.PriceComparator();
     
+   public final static ProductModel.RatingComparator ratingComp = new ProductModel.RatingComparator();
+   
    
     public static String leadZeroes(double dblItem,int maxLength) {
         long dblToLng = Math.round(dblItem * 100);
@@ -170,6 +174,75 @@ public class JspMethods {
         }
         return prodPrice;
     }
+    
+    public static String getProductRating(ProductModel theProduct)throws JspException{
+    	   //System.out.println("inside getProductRating :"+theProduct);
+    	   
+    	   String rating="";
+    	
+    	   if(!FDStoreProperties.IsProduceRatingEnabled()){
+    		   return rating; 
+    	   }
+    	   
+    	   List skus = theProduct.getSkus(); 
+           SkuModel sku = null;
+           //remove the unavailable sku's
+           for (ListIterator li=skus.listIterator(); li.hasNext(); ) {
+               sku = (SkuModel)li.next();
+               if ( sku.isUnavailable() ) {
+                  li.remove();
+               }
+           }
+
+           FDProductInfo productInfo = null;
+           
+           //ProductModel.PriceComparator priceComp = new ProductModel.PriceComparator();           
+           if (skus.size()==0) return rating;  // skip this item..it has no skus.  Hmmm?
+           if (skus.size()==1) {
+               sku = (SkuModel)skus.get(0);  // we only need one sku
+           }
+           else {
+               sku = (SkuModel) Collections.max(skus, ratingComp);
+           }
+           if (sku!=null && sku.getSkuCode() != null) {
+               //
+               // get the FDProductInfo from the FDCachedFactory
+               //
+               try {
+            	   
+            	   if(sku.getSkuCode().startsWith("FRU") || sku.getSkuCode().startsWith("VEG") || sku.getSkuCode().startsWith("YEL"))
+            	   {
+	                   productInfo = FDCachedFactory.getProductInfo( sku.getSkuCode());
+	                   
+	                   //System.out.println(" Rating productInfo :"+productInfo);    	
+	                   
+	                   rating = productInfo.getRating();
+	                   
+	                   if(rating!=null && rating.trim().length()>0){
+	                	 
+	                	   EnumOrderLineRating enumRating=EnumOrderLineRating.getEnumByStatusCode(rating);
+	                	   
+	                	   //System.out.println(" enumRating :"+enumRating);
+	                	   
+	                	   if(enumRating!=null && enumRating.isEligibleToDisplay()){
+	                		   rating=enumRating.getStatusCodeInDisplayFormat();
+	                		   //System.out.println(" rating in display format  :"+rating);
+	                	   }
+	                   }
+            	   } 
+                   
+               } catch (FDResourceException fdre) {
+                   LOGGER.warn("FDResourceException occured", fdre);
+                   throw new JspException("JspMethods.getPrice method caught an FDResourceException");
+               } catch (FDSkuNotFoundException fdsnfe) {
+                   LOGGER.warn("FDSkuNotFoundException occured", fdsnfe);
+                   throw new JspException("JspMethods.getPrice method caught an FDSkuNotFoundException");
+               }
+           }
+           return rating;
+    }
+    
+    
     
     public static String getAttributeValue(ProductModel theProduct,String domainName,String maName)  {
         MultiAttribute prodSortMAttrib = (MultiAttribute)theProduct.getAttribute(maName);
@@ -553,6 +626,10 @@ public class JspMethods {
 			} catch (FDSkuNotFoundException sknf) {
 				  throw new JspException(sknf);
 			}
+			// get the produce Rating
+			
+			displayObj.setRating(JspMethods.getProductRating(displayProduct));
+						
 			if (useAltImage) {
 				Attribute altImgAttrib = displayProduct.getAttribute("ALTERNATE_IMAGE");
 				if (altImgAttrib !=null) {

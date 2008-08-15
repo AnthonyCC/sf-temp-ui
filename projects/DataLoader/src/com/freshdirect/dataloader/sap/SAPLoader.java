@@ -40,7 +40,7 @@ public class SAPLoader {
 	/** the url of the server that hosts the loader session bean
 	 */
 	//String serverUrl = "t3://ems1.nyc1.freshdirect.com:8000";
-	String serverUrl = "t3://localhost:80";
+	String serverUrl = "t3://localhost:7001";
 
 	//
 	// builder
@@ -72,7 +72,8 @@ public class SAPLoader {
 			//
 			// parse the raw files
 			//
-			loader.load("C:\\FreshDirect\\projects\\FDWebSite\\docroot\\test\\adServing", "20040405_160105", "B");
+			//loader.load("C:\\FreshDirect\\projects\\FDWebSite\\docroot\\test\\adServing", "20040405_160105", "B");
+			loader.load("C:\\Manoj", "ProduceRating", "B");
 			//loader.load("\\\\File1\\Corporate Shares\\R3doc\\exports_by_client\\200\\product_data", "20020208_132554", "cheese");
 			if (!loader.parseSuccessful()) {
 				loader.reportParsingExceptions();

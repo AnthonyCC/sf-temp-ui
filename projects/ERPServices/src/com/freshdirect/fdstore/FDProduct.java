@@ -58,6 +58,8 @@ public class FDProduct extends FDSku implements AttributesI {
 
 	/** nutrition. List<FDNutrition> */
 	private final ArrayList nutrition;
+	
+
 
 	public FDProduct(
 		String skuCode,
@@ -76,6 +78,7 @@ public class FDProduct extends FDSku implements AttributesI {
 		this.pricing = pricing;
 		
 		this.nutrition = nutrition;
+		
 	}
 
 	/**

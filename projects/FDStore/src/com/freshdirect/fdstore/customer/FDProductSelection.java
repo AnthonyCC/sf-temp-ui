@@ -11,6 +11,7 @@ import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.Pricing;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.ErpOrderLineModel;
+import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDConfiguration;
@@ -471,6 +472,11 @@ public class FDProductSelection implements FDProductSelectionI {
 	
 	public void setRequestNotification(boolean requestNotification) {
 		this.orderLine.setRequestNotification(requestNotification);
+	}
+
+	public EnumOrderLineRating getProduceRating() {
+		// TODO Auto-generated method stub
+		return orderLine.getProduceRating();
 	}
 
 

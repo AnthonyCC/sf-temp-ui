@@ -134,6 +134,8 @@ if (currentCategory != null) {
 // Favorite Products
 //
 
+
+
     List favorites = Collections.EMPTY_LIST;
     if (currentFolder instanceof DepartmentModel) {
     	favorites = ((DepartmentModel) currentFolder).getFeaturedProducts();
@@ -157,6 +159,7 @@ if (currentCategory != null) {
     <logic:iterate id='contentNode' collection="<%=favorites%>" type="com.freshdirect.fdstore.content.ProductModel">
 <%
         Image groDeptImage = null;
+        String rating="";
         ProductModel product = contentNode;  //(ProductModel)contentFactory.getProduct(contentRef.getCategoryId(),contentRef.getProductId());
         if (product==null || product.isDiscontinued() || product.isUnavailable())
         	continue;
@@ -176,9 +179,14 @@ if (currentCategory != null) {
         } else {
             sku = (SkuModel) Collections.min(skus, priceComp);
         }
+        
+        rating=JspMethods.getProductRating(product);
+
+        
 %>
         <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
-<% 
+<%
+       
         prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()); //+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
 %>                      
         </fd:FDProductInfo>
@@ -212,6 +220,25 @@ if (currentCategory != null) {
             favoriteProducts.append(thisProdBrandLabel);
             favoriteProducts.append("</font>");
         }
+        
+        if(rating!=null && rating.trim().length()>0)
+        {
+            favoriteProducts.append("<BR><font class=\"center\">");            
+            favoriteProducts.append("<img src=\"");
+            favoriteProducts.append("/media_stat/images/ratings/"+rating+".gif");
+            favoriteProducts.append("\"  name=\"");
+            favoriteProducts.append("rating"+rating);
+            favoriteProducts.append("\" width=\"");
+            favoriteProducts.append("50");
+            favoriteProducts.append("\"  height=\"");
+            favoriteProducts.append("10");
+            favoriteProducts.append("\" ALT=\"");
+            favoriteProducts.append("");
+            favoriteProducts.append("\" border=\"0\"");         
+            favoriteProducts.append(">");
+            favoriteProducts.append("</font>>");            
+        }
+
         
         productName = product.getFullName();
         if (productName != null && productName.substring(thisProdBrandLabel.length()).trim().length() > 0) {

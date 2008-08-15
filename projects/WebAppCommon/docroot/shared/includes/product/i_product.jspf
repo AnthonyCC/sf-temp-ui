@@ -461,13 +461,14 @@ if (skus.size() != 0) {
         %>
         <fd:FDProductInfo id="productInfo" skuCode="<%= defaultSku.getSkuCode() %>">
             <fd:FDProduct id="product" productInfo="<%= productInfo %>">
+                                            
                 <%
                 if (domainValue!=null) {
                     if (productNode.getAttribute("FDDEF_SOURCE")!=null) {
                         TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_SOURCE").getValue();
                         EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
                         String path = popup + "&attrib=FDDEF_SOURCE" + "&tmpl=" + tm.getPopupSize();
-                        %>
+                        %>                                                                        
                         <font class="text11bold"><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= domainValue.getLabel().toUpperCase() %></a></font>
                         <%
                     } else if (productNode.getAttribute("FDDEF_GRADE")!=null) {
@@ -501,6 +502,24 @@ if (skus.size() != 0) {
                     <%
                 }
                 %>
+                
+                    <%                           
+                        if (productInfo.getRating()!=null && productInfo.getRating().trim().length()>0) { 
+                           String rating="";
+                           System.out.println("productinfo rating :"+productInfo.getRating());
+                           EnumOrderLineRating enumRating=EnumOrderLineRating.getEnumByStatusCode(productInfo.getRating());
+                           if(enumRating!=null && enumRating.isEligibleToDisplay()){
+                             rating=enumRating.getStatusCodeInDisplayFormat();
+                		     System.out.println(" rating in display format  :"+rating);
+                	       
+                           
+                           
+                      %>
+                            <font class="center"><%=enumRating.getShortDescription()%> - <img src="/media//images/product/ratings/<%=rating%>.gif"  name="rating" width="50"  height="10" alt="" border="0"><br></font>
+                      <%  
+                           }
+                         } 
+                      %>                      
                 
                 <%@ include file="/shared/includes/product/i_scaled_prices.jspf" %>
                 <input type="hidden" name="skuCode" value="<%= defaultSku.getSkuCode() %>">
@@ -579,6 +598,8 @@ if (skus.size() != 0) {
                 <table width="187" cellpadding="1" cellspacing="1" border="0"> <%-- Nested Table 2 Options list - radio buttions/ multiple SKUs --%>
                 <%
                 if (hasSecondaryDomain) {
+                    System.out.println("It has secondrary domain");
+                
                     %>
                     <tr valign="bottom">
                         <td colspan="2" align="right">
@@ -643,12 +664,35 @@ if (skus.size() != 0) {
                             </fd:ErrorHandler>
                             <tr valign="top">
                             <td width="172" align="right" class="text10">
+                            
+                      <% 
+
+                        System.out.println("labelNolink :"+labelNolink); 
+                        if (productInfo.getRating()!=null && productInfo.getRating().trim().length()>0) { 
+                           String rating="";
+                           System.out.println("productinfo rating :"+productInfo.getRating());
+                           EnumOrderLineRating enumRating=EnumOrderLineRating.getEnumByStatusCode(productInfo.getRating());
+                           if(enumRating!=null && enumRating.isEligibleToDisplay()){
+                             rating=enumRating.getStatusCodeInDisplayFormat();
+                		     System.out.println(" rating in display format  :"+rating);                	                                  
+                           
+                      %>
+                            <font><%=enumRating.getShortDescription()%> - <img src="/media/images/product/ratings/<%=rating%>.gif"  name="rating" width="30"  height="10" alt="" border="0"></font>                            
+                            </td></tr><td width="172" align="right" class="text10">
+                      <%  
+                           }
+                         } 
+                      %>                        
+                            
                             <%
                             if (!hasSecondaryDomain) {
                                 if (productNode.getAttribute("FDDEF_GRADE")!=null) {
                                     TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_GRADE").getValue();
                                     EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
                                     String path = popup + "&attrib=FDDEF_GRADE" + "&tmpl=" + tm.getPopupSize();
+                                    
+                                    System.out.println("priDomainValue.getLabel().toUpperCase() :"+priDomainValue.getLabel().toUpperCase());
+                                    
                                     %>
                                     <b><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= priDomainValue.getLabel().toUpperCase() %></a><%= labelNolink %></b>
                                     <%
@@ -656,6 +700,7 @@ if (skus.size() != 0) {
                                     TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_SOURCE").getValue();
                                     EnumPopupType popupType = EnumPopupType.getPopupType(tm.getPopupSize());
                                     String path = popup + "&attrib=FDDEF_SOURCE" + "&tmpl=" + tm.getPopupSize();
+                                    System.out.println("priDomainValue.getLabel().toUpperCase() :"+priDomainValue.getLabel().toUpperCase());
                                     %>
                                     <b><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= priDomainValue.getLabel().toUpperCase() %></a><%= labelNolink %></b>
                                     <%
@@ -663,10 +708,12 @@ if (skus.size() != 0) {
                                     TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_FRENCHING").getValue();
                                     EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
                                     String path = popup + "&attrib=FDDEF_FRENCHING" + "&tmpl=" + tm.getPopupSize();
+                                    System.out.println("priDomainValue.getLabel().toUpperCase() :"+priDomainValue.getLabel().toUpperCase());
                                     %>
                                     <b><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= priDomainValue.getLabel().toUpperCase() %></a><%= labelNolink %></b>
                                     <%
                                 } else {
+                                    System.out.println("priDomainValue.getLabel().toUpperCase() :"+priDomainValue.getLabel().toUpperCase());
                                     %>
                                     <b><%= priDomainValue.getLabel().toUpperCase() %> <%= labelNolink %></b>
                                     <%
@@ -708,7 +755,7 @@ if (skus.size() != 0) {
                                     %> <font class="productPageSecondaryVarPrice"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font><font class="productPageSecondaryVarPriceUnit">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font><%
                                 }
                                 if (product.getPricing().getScaleDisplay().length==0) {
-                                    %><br><br><%
+                                    %><!-- <br><br> --><%
                                 }
                                 %><%@ include file="/shared/includes/product/i_scaled_prices.jspf" %><%
                                 Date earliestDate = sku.getEarliestAvailability();
@@ -724,9 +771,9 @@ if (skus.size() != 0) {
                                     %><font class="text11rbold">*</font><%
                                 }
                             }
-                            %></td>
-                            <td width="15"><input type="radio" name="skuCode" value="<%= sku.getSkuCode() %>" onClick="pricing.setSKU(this.value);" <% if (defaultSku == sku) out.print("checked"); %>><br></td>
-                            </tr>
+                            %>
+                            <input type="radio" name="skuCode" value="<%= sku.getSkuCode() %>" onClick="pricing.setSKU(this.value);" <% if (defaultSku == sku) out.print("checked"); %>><br></td>
+                            </tr><br><br>
                         </fd:FDProduct>
                     </fd:FDProductInfo>
                 </logic:iterate>

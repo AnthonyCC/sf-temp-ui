@@ -4,7 +4,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
+import com.freshdirect.content.nutrition.EnumOrganicValue;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
+import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDProductInfo;
@@ -68,9 +70,54 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI {
 		}
 
 	}
+	
+	public static class RatingComparator implements Comparator {
+
+		private int flips;
+
+		public int compare(Object obj1, Object obj2) {
+			try {
+				FDProductInfo pi1 = FDCachedFactory.getProductInfo(((SkuModel) obj1).getSkuCode());
+				FDProductInfo pi2 = FDCachedFactory.getProductInfo(((SkuModel) obj2).getSkuCode());
+				
+				EnumOrderLineRating oli1=EnumOrderLineRating.getEnumByStatusCode(pi1.getRating());
+				EnumOrderLineRating oli2=EnumOrderLineRating.getEnumByStatusCode(pi2.getRating());
+				
+				if(oli1==null || oli2==null) return 0;
+				if (oli1.getId()>oli2.getId()) {
+					flips++;
+					return 1;
+				} if (oli1.getId()<oli2.getId()) {
+					flips++;
+					return -1;
+				} else {
+					return 0;
+				}
+			} catch (FDResourceException fdre) {
+				// rethrow as a runtime exception
+				throw new RuntimeException(fdre.getMessage());
+			} catch (FDSkuNotFoundException fdsnfe) {
+				// rethrow as a runtime exception
+				throw new RuntimeException(fdsnfe.getMessage());
+			}
+		}
+
+		public void reset() {
+			flips = 0;
+		}
+
+		public boolean allTheSame() {
+			return (flips == 0);
+		}
+
+	}
+	
 
 	/** Don't use allTheSame/reset, that's not thread-safe */
 	public final static Comparator PRICE_COMPARATOR = new ProductModel.PriceComparator();
+
+	/** Don't use allTheSame/reset, that's not thread-safe */
+	public final static Comparator RATING_COMPARATOR = new ProductModel.RatingComparator();
 
 	
 	// data model accessors

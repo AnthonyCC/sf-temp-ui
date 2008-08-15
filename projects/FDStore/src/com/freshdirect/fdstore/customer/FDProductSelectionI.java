@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.Map;
 
 import com.freshdirect.affiliate.ErpAffiliate;
+import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
@@ -91,6 +92,9 @@ public interface FDProductSelectionI extends FDConfigurableI {
 	
 	public String getCustomerListLineId();
 	public void setCustomerListLineId(String id);
+	
+	//  produce rating changes	
+	public EnumOrderLineRating getProduceRating();
 	
 	public String getRecipeSourceId();
 	public void setRecipeSourceId(String recipeSourceId);

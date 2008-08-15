@@ -42,6 +42,7 @@ public class FDProductInfoTag extends AbstractGetterTag {
 				LOGGER.info(ex);
 			}
 		}
+		System.out.println("Sku :"+skuCode+" Rating :"+productInfo.getRating());
 		return productInfo;
 	}
 	

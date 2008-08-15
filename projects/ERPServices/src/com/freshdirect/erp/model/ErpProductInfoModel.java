@@ -52,6 +52,10 @@ public class ErpProductInfoModel extends ModelSupport {
 
 	/** sap product description */
 	private final String description;
+	
+	/** sap product rating */
+	private final String rating;
+	
 
 	/**
 	 * Constructor with all properties.
@@ -64,6 +68,7 @@ public class ErpProductInfoModel extends ModelSupport {
 	 * @param unavailabilityDate
 	 * @param unavailabilityReason
 	 * @param description
+	 * @param rating	  
 	 */
 	public ErpProductInfoModel(
 		String skuCode,
@@ -75,7 +80,8 @@ public class ErpProductInfoModel extends ModelSupport {
 		String unavailabilityStatus,
 		Date unavailabilityDate,
 		String unavailabilityReason,
-		String description) {
+		String description,
+		String rating) {
 		super();
 		this.skuCode = skuCode;
 		this.version = version;
@@ -87,6 +93,7 @@ public class ErpProductInfoModel extends ModelSupport {
 		this.unavailabilityDate = unavailabilityDate;
 		this.unavailabilityReason = unavailabilityReason;
 		this.description = description;
+		this.rating=rating;
 	}
 
 	/**
@@ -164,6 +171,13 @@ public class ErpProductInfoModel extends ModelSupport {
 	 */
 	public String getDescription() {
 		return description;
+	}
+
+	/** Getter for property rating.
+	 * @return Value of property rating.
+	 */
+	public String getRating() {
+		return rating;
 	}
 
 }

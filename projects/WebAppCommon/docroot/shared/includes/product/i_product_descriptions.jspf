@@ -188,6 +188,12 @@
                  %><br><fd:IncludeMedia name="<%=pathToMedia%>" /><br>
                  <% } %>
 			
+                <% String ratingMediaPath="";
+                 if(FDStoreProperties.IsProduceRatingEnabled()){ %>
+                       
+    	        <% } %>
+                   
+            
  				<%@ include file="/shared/includes/product/organic_claims.jspf" %>
                                 
 				<%@ include file="/includes/product/claims.jspf" %>

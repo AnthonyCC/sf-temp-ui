@@ -559,7 +559,7 @@ public class YmalTest extends FDCustomerManagerTestSupport {
 						                           EnumATPRule.MATERIAL,
 						                           EnumAvailabilityStatus.AVAILABLE,
 						                           now,
-						                           "", inventoryCache);
+						                           "", inventoryCache,"");
 			} else {
 				// fallback: return all other items as available
 				// a 1000 units available starting now
@@ -573,7 +573,7 @@ public class YmalTest extends FDCustomerManagerTestSupport {
 						                           EnumATPRule.MATERIAL,
 						                           EnumAvailabilityStatus.AVAILABLE,
 						                           now,
-						                           "", inventoryCache);
+						                           "", inventoryCache,"");
 			}
 
 			return productInfo;

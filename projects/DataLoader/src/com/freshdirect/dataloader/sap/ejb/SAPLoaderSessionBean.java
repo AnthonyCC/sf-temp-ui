@@ -477,6 +477,7 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
                 String unavailStatus = (String) extraInfo.get("UNAVAILABILITY_STATUS");
                 java.util.Date unavailDate = (java.util.Date) extraInfo.get("UNAVAILABILITY_DATE");
                 String unavailReason = (String) extraInfo.get("UNAVAILABILITY_REASON");
+                String rating = (String) extraInfo.get("RATING");
                 //
                 // now get the real material model that we created previously to we can create the
                 // material proxy and product objects that relate to a material
@@ -652,6 +653,7 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
 					erpProductModel.setUnavailabilityStatus(unavailStatus);
 					erpProductModel.setUnavailabilityDate(unavailDate);
 					erpProductModel.setUnavailabilityReason(unavailReason);
+					erpProductModel.setRating(rating);
                     
                     //
                     // if the default price ends up being zero, this is carried over from an old-style discontinued product

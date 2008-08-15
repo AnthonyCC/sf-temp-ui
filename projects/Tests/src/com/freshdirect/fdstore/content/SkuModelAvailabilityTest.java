@@ -49,7 +49,7 @@ public class SkuModelAvailabilityTest extends TestCase {
 				                           EnumATPRule.MATERIAL,
 				                           EnumAvailabilityStatus.AVAILABLE,
 				                           now,
-				                           "", inventoryCache);
+				                           "", inventoryCache ,"");
 		adapter = new SkuModel.AvailabilityAdapter(productInfo, availability);
 
 		assertFalse(adapter.isDiscontinued());
@@ -90,7 +90,7 @@ public class SkuModelAvailabilityTest extends TestCase {
 				                             EnumATPRule.MATERIAL,
 				                             EnumAvailabilityStatus.AVAILABLE,
 				                             today,
-				                             "", inventoryCache);
+				                             "", inventoryCache,"");
 		adapter = new SkuModel.AvailabilityAdapter(productInfo, availability);
 
 		assertFalse(adapter.isDiscontinued());
@@ -136,7 +136,7 @@ public class SkuModelAvailabilityTest extends TestCase {
 				                             EnumATPRule.MATERIAL,
 				                             EnumAvailabilityStatus.DISCONTINUED,
 				                             today,
-				                             "", inventoryCache);
+				                             "", inventoryCache,"");
 		adapter = new SkuModel.AvailabilityAdapter(productInfo, availability);
 
 		assertTrue(adapter.isDiscontinued());

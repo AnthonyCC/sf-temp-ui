@@ -44,7 +44,9 @@ public class FDProductInfo extends FDSku  {
     /** inventory info for the product but this should only be set in a TEST CASE */
     private final FDInventoryCacheI inventory;
 	
-    public FDProductInfo(String skuCode, int version, double defaultPrice, String defaultPriceUnit, String[] materialNumbers, EnumATPRule atpRule, EnumAvailabilityStatus availStatus, Date availDate, String displayableDefaultPriceUnit, FDInventoryCacheI inventory) {
+    private final String rating;
+    
+    public FDProductInfo(String skuCode, int version, double defaultPrice, String defaultPriceUnit, String[] materialNumbers, EnumATPRule atpRule, EnumAvailabilityStatus availStatus, Date availDate, String displayableDefaultPriceUnit, FDInventoryCacheI inventory, String rating) {
 		super(skuCode, version);
 		this.defaultPrice = defaultPrice;
 		this.defaultPriceUnit = defaultPriceUnit;
@@ -54,6 +56,7 @@ public class FDProductInfo extends FDSku  {
         this.availDate = availDate;
         this.displayableDefaultPriceUnit = displayableDefaultPriceUnit;
         this.inventory = inventory;
+        this.rating=rating;
 	}
 
 	/**
@@ -133,12 +136,17 @@ public class FDProductInfo extends FDSku  {
         return EnumAvailabilityStatus.TEMP_UNAV.equals(this.availStatus);
     }
 
+    public String getRating() {
+    	return this.rating;
+    }
+    
 	public String toString() {
 		StringBuffer buf=new StringBuffer("FDProductInfo[");
 		buf.append(this.getSkuCode()).append(" v").append(this.getVersion());
 		buf.append("\n\t").append(this.materialNumbers);
         buf.append("\n\t").append(this.availStatus.getShortDescription());
         buf.append("\n\t").append(this.availDate);
+        buf.append("\n\t").append(this.rating);
         buf.append("\n]");
 		return buf.toString();
 	}

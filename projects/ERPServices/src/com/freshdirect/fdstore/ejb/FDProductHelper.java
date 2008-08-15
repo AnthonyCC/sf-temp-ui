@@ -156,7 +156,7 @@ class FDProductHelper {
 			erpProductInfo.getATPRule(),
 			status,
 			erpProductInfo.getUnavailabilityDate(),
-			displayablePricingUnit, null
+			displayablePricingUnit, null, erpProductInfo.getRating()
 		);
 	
 	}

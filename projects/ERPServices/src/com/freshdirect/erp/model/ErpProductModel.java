@@ -60,6 +60,9 @@ public class ErpProductModel extends ErpModelSupport implements DurableModelI, E
  
 	/** Array of hidden characteristic value PKs */
 	private VersionedPrimaryKey[] hiddenCharValuePKs = new VersionedPrimaryKey[0];
+	
+	/** product rating */
+	private String rating;
 
 	/**
 	 * Default constructor.
@@ -76,7 +79,7 @@ public class ErpProductModel extends ErpModelSupport implements DurableModelI, E
 	 * @param defaultPriceUnit pricing unit for default price
 	 * @param materialProxies collection of material proxy model objects
 	 */
-	public ErpProductModel(String skuCode, double defaultPrice, String defaultPriceUnit, String unavailabilityStatus, Date unavailabilityDate, String unavailabilityReason, Date pricingDate, ErpMaterialModel material, VersionedPrimaryKey[] suPKs, VersionedPrimaryKey[] cvPKs) {
+	public ErpProductModel(String skuCode, double defaultPrice, String defaultPriceUnit, String unavailabilityStatus, Date unavailabilityDate, String unavailabilityReason, Date pricingDate, ErpMaterialModel material, VersionedPrimaryKey[] suPKs, VersionedPrimaryKey[] cvPKs, String _rating) {
 		super();
 		if (skuCode==null) {
 			throw new IllegalArgumentException("SKU code cannot be null");
@@ -92,6 +95,7 @@ public class ErpProductModel extends ErpModelSupport implements DurableModelI, E
 		this.setProxiedMaterial(material);
 		this.setHiddenSalesUnitPKs( suPKs );
 		this.setHiddenCharacteristicValuePKs( cvPKs );
+		this.setRating(_rating);
 	}
 
 	/**
@@ -147,7 +151,18 @@ public class ErpProductModel extends ErpModelSupport implements DurableModelI, E
 	public String getDefaultPriceUnit() {
 		return this.defaultPriceUnit;
 	}
-
+	/** Setter for property rating.
+    * @param  _rating
+     */
+    public void setRating(String _rating) {
+         rating=_rating;
+    }
+	/** Getter for property rating.
+     * @return Value of property rating.
+     */
+    public String getRating() {
+        return rating;
+    }	
 	/**
 	 * Set pricing unit for default price
 	 *
@@ -283,7 +298,7 @@ public class ErpProductModel extends ErpModelSupport implements DurableModelI, E
 		}
 	}
 
-
+	
 	/**
 	 * Template method to visit the children of this ErpModel.
 	 * It should call accept(visitor) on these (or do nothing).

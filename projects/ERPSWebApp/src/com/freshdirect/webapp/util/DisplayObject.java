@@ -16,6 +16,7 @@ public class DisplayObject {
 		private String rolloverString = null;
 		private String indicators=null;
 		private String salesUnitDescription=null;
+		private String rating=null;
 
 		public void setItemName(String itemName) {
 			this.itemName=itemName;
@@ -70,5 +71,11 @@ public class DisplayObject {
 				}
 				return rtnString.toString();
 			}
+		public String getRating() {
+			return rating;
+		}
+		public void setRating(String rating) {
+			this.rating = rating;
+		}
 
 }

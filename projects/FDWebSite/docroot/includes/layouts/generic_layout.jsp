@@ -20,14 +20,17 @@
 </SCRIPT>
 
 <%
+
 //**************************************************************
 //***          the GENERIC_LAYOUT Pattern                    ***
 //**************************************************************
 
 //********** Start of Stuff to let JSPF's become JSP's **************
 
+
 String catId = request.getParameter("catId"); 
 String deptId = request.getParameter("deptId"); 
+System.out.println(" Department ::XX"+deptId);
 boolean isDepartment = false;
 String trkCode = "";
 
@@ -94,6 +97,12 @@ if (((ContentNodeModel)currentFolder).getFullName().toUpperCase().indexOf("VEGET
     inVeg = true;
 }
 %>
+
+<jsp:include page="/includes/department_peakproduce.jsp" flush="true"/> 
+
+<% if (isDepartment && "fru".equals(deptId) ) {%>
+    <BR><img src="/media_stat/images/layout/ourfreshfruit.gif" name="greatRightNow" border="0">
+<%}%>
 <table WIDTH="<%=maxWidth%>" CELLPADDING="0" CELLSPACING="0" BORDER="0">
 
 <logic:iterate id="displayThing" collection="<%= availableList %>" type="com.freshdirect.fdstore.content.ContentNodeModel">
@@ -174,7 +183,24 @@ if ((displayThing instanceof ProductModel) ||  showSelf) {
     tblCells.append(displayObj.getImageHeight());
     tblCells.append("\" ALT=\"");
     tblCells.append(displayObj.getAltText());
-    tblCells.append("\" border=\"0\"></a><br><a href=\"");
+    tblCells.append("\" border=\"0\"></a>");    
+   if (displayObj.getRating()!=null) { 
+        tblCells.append("<br><font class=\"center\">");        
+        tblCells.append("<img src=\"");
+        tblCells.append("/media_stat/images/ratings/"+displayObj.getRating()+".gif");
+        tblCells.append("\"  name=\"");
+        tblCells.append("rating"+displayObj.getRating());
+        tblCells.append("\" width=\"");
+        tblCells.append("50");
+        tblCells.append("\"  height=\"");
+        tblCells.append("10");
+        tblCells.append("\" ALT=\"");
+        tblCells.append(displayObj.getAltText());
+        tblCells.append("\" border=\"0\"");         
+        tblCells.append(">");
+        tblCells.append("</font>");
+    }
+    tblCells.append("<br><a href=\"");
     tblCells.append(displayObj.getItemURL());
 	tblCells.append("&trk="+trkCode);
     tblCells.append("\"><font class=\"");

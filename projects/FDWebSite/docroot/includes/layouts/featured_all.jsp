@@ -126,6 +126,8 @@ if (sortedColl==null) sortedColl = new ArrayList();
         List skus = product.getSkus(); 
         if (prodParent==null || !(prodParent instanceof CategoryModel)) continue;
 
+    String rating="";
+
     for (ListIterator li=skus.listIterator(); li.hasNext(); ) {
         SkuModel sku = (SkuModel)li.next();
         if ( sku.isUnavailable() ) {
@@ -143,9 +145,16 @@ if (sortedColl==null) sortedColl = new ArrayList();
         else {
             sku = (SkuModel) Collections.min(skus, priceComp);
         }
+        
+        
+        rating=JspMethods.getProductRating(product);
+
+        
+        
 %>
         <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
-<% 
+<%       
+        
         prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
 %>                      
         </fd:FDProductInfo>
@@ -179,6 +188,23 @@ if (sortedColl==null) sortedColl = new ArrayList();
         }
         favoriteProducts.append(product.getFullName().substring(thisProdBrandLabel.length()).trim()); 
         favoriteProducts.append("</A><BR>");
+        if(rating!=null && rating.trim().length()>0)
+        {
+            favoriteProducts.append("<font class=\"center\">");            
+            favoriteProducts.append("<img src=\"");
+            favoriteProducts.append("/media_stat/images/ratings/"+rating+".gif");
+            favoriteProducts.append("\"  name=\"");
+            favoriteProducts.append("rating"+rating);
+            favoriteProducts.append("\" width=\"");
+            favoriteProducts.append("50");
+            favoriteProducts.append("\"  height=\"");
+            favoriteProducts.append("10");
+            favoriteProducts.append("\" ALT=\"");
+            favoriteProducts.append("");
+            favoriteProducts.append("\" border=\"0\"");         
+            favoriteProducts.append(">");
+            favoriteProducts.append("</font><BR>");            
+        }
         favoriteProducts.append("<font class=\"favoritePrice\">");
         favoriteProducts.append(prodPrice);
         favoriteProducts.append("</font>");
@@ -355,6 +381,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
             appendColumnPrices.setLength(0);
             String lstUnitPrice = null; //product.getDisplayableListPrice(webconnect.getPriceList());
 
+
             if (showPrices && !folderAsProduct) {
                 List skus = product.getSkus();
                 for (ListIterator li=skus.listIterator(); li.hasNext(); ) {
@@ -378,6 +405,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
 %>
                     <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
 <% 
+
                     lstUnitPrice = "<font class=\"price\">"+JspMethods.currencyFormatter.format(productInfo.getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase()+"</font>";
 %>                      
                     </fd:FDProductInfo>
@@ -447,6 +475,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
                     //appendColumn.append(lstUnitPrice);
                     //appendColumn.append("</div>");
                     appendColumn.append("</A></div>");
+                    System.out.println("code is executing :"+lstUnitPrice);
                     appendColumnPrices.append(lstUnitPrice);
                 }
             }
@@ -454,6 +483,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
                 unAvailableProds.add(appendColumn.toString());
                 //unAvailablePrices.add(appendColumnPrices);
             } else {
+                System.out.println("code is executing2 :"+appendColumnPrices.toString());
                 productLinks.add(appendColumn.toString());
                 productPrices.add(appendColumnPrices.toString());
             }

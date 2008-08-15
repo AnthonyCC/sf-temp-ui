@@ -12,6 +12,7 @@ import java.util.Map;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.Discount;
+import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDSku;
@@ -49,6 +50,10 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
     private String cartLineId;
     private boolean requestNotification;
     private boolean deliveryPass;
+    
+    // produce rating
+    
+    private EnumOrderLineRating produceRating=null; 
 
     /**
      *  The ID of the category shown when this product was displayed as a YMAL
@@ -214,5 +219,11 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
     public void setVariantId(String variantId) {
     	this.variantId = variantId;
     }
+	public EnumOrderLineRating getProduceRating() {
+		return produceRating;
+	}
+	public void setProduceRating(EnumOrderLineRating produceRating) {
+		this.produceRating = produceRating;
+	}
 }
 
