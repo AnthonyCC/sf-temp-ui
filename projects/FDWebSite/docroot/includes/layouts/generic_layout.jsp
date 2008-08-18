@@ -184,6 +184,9 @@ if ((displayThing instanceof ProductModel) ||  showSelf) {
     tblCells.append("\" ALT=\"");
     tblCells.append(displayObj.getAltText());
     tblCells.append("\" border=\"0\"></a>");    
+  %>
+  <fd:ProduceRatingCheck>
+  <%
    if (displayObj.getRating()!=null) { 
         tblCells.append("<br><font class=\"center\">");        
         tblCells.append("<img src=\"");
@@ -191,15 +194,18 @@ if ((displayThing instanceof ProductModel) ||  showSelf) {
         tblCells.append("\"  name=\"");
         tblCells.append("rating"+displayObj.getRating());
         tblCells.append("\" width=\"");
-        tblCells.append("50");
+        tblCells.append("59");
         tblCells.append("\"  height=\"");
-        tblCells.append("10");
+        tblCells.append("11");
         tblCells.append("\" ALT=\"");
         tblCells.append(displayObj.getAltText());
         tblCells.append("\" border=\"0\"");         
         tblCells.append(">");
         tblCells.append("</font>");
     }
+   %>
+   </fd:ProduceRatingCheck>
+   <%   
     tblCells.append("<br><a href=\"");
     tblCells.append(displayObj.getItemURL());
 	tblCells.append("&trk="+trkCode);

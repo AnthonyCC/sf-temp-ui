@@ -166,9 +166,11 @@ for(int itmIdx=0; itmIdx < availableList.size();itmIdx++) {
     <td valign="top" align="center" WIDTH=<%=adjustedImgWidth%>">
         <a href="<%=displayObj.getItemURL()%>&trk=<%=trkCode%>"><img src="<%= displayObj.getImagePath()%>"  <%=displayObj.getImageDimensions() %> ALT="<%=displayObj.getAltText()%>" hspace="0" border="0"></a>
     <%  if (displayObj.getRating()!=null && displayObj.getRating().trim().length()>0) { %>
+    <fd:ProduceRatingCheck>
             <br><font class="center">           
-            <img src="/media_stat/images/ratings/<%=displayObj.getRating()%>.gif"  name="rating" width="50"  height="10" alt="" border="0">
+            <img src="/media_stat/images/ratings/<%=displayObj.getRating()%>.gif"  name="rating" width="59"  height="11" alt="" border="0">
             </font>
+    </fd:ProduceRatingCheck>        
         <%  } %>
         <br>
         <a href="<%=displayObj.getItemURL()%>&trk=<%=trkCode%>"><font class="<%=itemNameFont%>"><%=displayObj.getItemName()%></font></a>

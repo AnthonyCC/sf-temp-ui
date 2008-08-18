@@ -17,6 +17,8 @@ public class SiteFeatureHelper {
 			return FDStoreProperties.isCclEnabled() || feature.isEnabled(user);
 		} else if (EnumSiteFeature.DYF.equals(feature)) {
 			return FDStoreProperties.isDYFEnabled() || feature.isEnabled(user);
+		}else if (EnumSiteFeature.RATING.equals(feature)) {
+			return FDStoreProperties.IsProduceRatingEnabled() || feature.isEnabled(user);
 		}
 
 		return feature.isEnabled(user);

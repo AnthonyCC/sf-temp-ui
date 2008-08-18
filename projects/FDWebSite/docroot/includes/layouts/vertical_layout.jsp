@@ -129,7 +129,9 @@ if (availableList.size() > 0) {
 <td width="<%= PRODUCT_CELL_WIDTH %>"><a href="<%=displayObj.getItemURL()%>&trk=<%=pageTrkCode%>" <%=displayObj.getRolloverString()%>>
 <img src="<%=displayObj.getImagePath()%>"  name="<%=displayObj.getImageName()%>" width="<%=displayObj.getImageWidth()%>"  height="<%=displayObj.getImageHeight()%>" ALT="<%=displayObj.getAltText()%>" border="0"></a>
 <%  if (displayObj.getRating()!=null && displayObj.getRating().trim().length()>0) { %>
-       <br><font class="center"><img src="/media_stat/images/ratings/<%=displayObj.getRating()%>.gif"  name="rating" width="50"  height="10" alt="" border="0"></font>
+<fd:ProduceRatingCheck>
+       <br><font class="center"><img src="/media_stat/images/ratings/<%=displayObj.getRating()%>.gif"  name="rating" width="59"  height="11" alt="" border="0"></font>
+</fd:ProduceRatingCheck>       
 <%  } %>
 <br>
 <a href="<%=displayObj.getItemURL()%>&trk=<%=pageTrkCode%>"><font class="<%=itemNameFont%>"><%=displayObj.getItemName()%></font></a>

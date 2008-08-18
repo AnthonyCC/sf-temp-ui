@@ -14,9 +14,13 @@ import java.util.List;
 import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpReturnLineModel;
+import com.freshdirect.fdstore.EnumOrderLineRating;
+import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfigurableI;
+import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.ProductRef;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.sap.PosexUtil;
@@ -59,9 +63,25 @@ public class FDCartLineModel extends AbstractCartLine {
 	public List buildErpOrderLines(int baseLineNumber) throws FDResourceException, FDInvalidConfigurationException {
 		this.refreshConfiguration();
 		ErpOrderLineModel ol = (ErpOrderLineModel) this.orderLine.deepCopy();
-
+      
+		try {
+			if(ol.getSku()!=null){
+				System.out.println("ol.getSku().getSkuCode() :"+ol.getSku().getSkuCode());
+				FDProductInfo productInfo = FDCachedFactory.getProductInfo(ol.getSku().getSkuCode());
+				EnumOrderLineRating rating=EnumOrderLineRating.getEnumByStatusCode(productInfo.getRating());
+				System.out.println("Setting the Rating :"+rating);
+				ol.setProduceRating(rating);
+			}			
+		} catch (FDResourceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FDSkuNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		ol.setOrderLineNumber(PosexUtil.getPosex(baseLineNumber));
-
+      
 		List ols = new ArrayList(1);
 		ols.add(ol);
 		return ols;

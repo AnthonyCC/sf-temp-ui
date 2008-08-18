@@ -180,9 +180,13 @@ if (currentCategory != null) {
             sku = (SkuModel) Collections.min(skus, priceComp);
         }
         
+   %>     
+   
+   <fd:ProduceRatingCheck>
+   <%
         rating=JspMethods.getProductRating(product);
-
-        
+   %>
+   </fd:ProduceRatingCheck>     
 %>
         <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
 <%
@@ -229,9 +233,9 @@ if (currentCategory != null) {
             favoriteProducts.append("\"  name=\"");
             favoriteProducts.append("rating"+rating);
             favoriteProducts.append("\" width=\"");
-            favoriteProducts.append("50");
+            favoriteProducts.append("59");
             favoriteProducts.append("\"  height=\"");
-            favoriteProducts.append("10");
+            favoriteProducts.append("11");
             favoriteProducts.append("\" ALT=\"");
             favoriteProducts.append("");
             favoriteProducts.append("\" border=\"0\"");         

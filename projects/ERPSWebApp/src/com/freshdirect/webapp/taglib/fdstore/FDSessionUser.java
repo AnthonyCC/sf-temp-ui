@@ -590,5 +590,10 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public boolean isDYFEnabled() {
 		return user.isDYFEnabled();
 	}
+
+	public boolean isProduceRatingEnabled() {
+		// TODO Auto-generated method stub
+		return user.isProduceRatingEnabled();
+	}
 }
 

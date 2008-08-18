@@ -180,9 +180,9 @@ public class JspMethods {
     	   
     	   String rating="";
     	
-    	   if(!FDStoreProperties.IsProduceRatingEnabled()){
-    		   return rating; 
-    	   }
+//    	   if(!FDStoreProperties.IsProduceRatingEnabled()){
+//    		   return rating; 
+//    	   }
     	   
     	   List skus = theProduct.getSkus(); 
            SkuModel sku = null;
@@ -216,11 +216,11 @@ public class JspMethods {
 	                   
 	                   //System.out.println(" Rating productInfo :"+productInfo);    	
 	                   
-	                   rating = productInfo.getRating();
+	                   String tmpRating = productInfo.getRating();
 	                   
-	                   if(rating!=null && rating.trim().length()>0){
+	                   if(tmpRating!=null && tmpRating.trim().length()>0){
 	                	 
-	                	   EnumOrderLineRating enumRating=EnumOrderLineRating.getEnumByStatusCode(rating);
+	                	   EnumOrderLineRating enumRating=EnumOrderLineRating.getEnumByStatusCode(tmpRating);
 	                	   
 	                	   //System.out.println(" enumRating :"+enumRating);
 	                	   

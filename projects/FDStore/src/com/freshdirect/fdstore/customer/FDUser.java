@@ -1045,6 +1045,12 @@ public class FDUser extends ModelSupport implements FDUserI {
 			return 0;
 	}
 	
+
+	public boolean isProduceRatingEnabled() {	
+		return SiteFeatureHelper.isEnabled(EnumSiteFeature.RATING, this);
+	}
+
+	
 	public boolean isCCLEnabled() {	
 		return SiteFeatureHelper.isEnabled(EnumSiteFeature.CCL, this);
 	}

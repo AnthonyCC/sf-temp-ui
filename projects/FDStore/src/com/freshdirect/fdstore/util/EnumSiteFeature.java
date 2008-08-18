@@ -27,6 +27,7 @@ public class EnumSiteFeature extends Enum implements Serializable {
 	public final static EnumSiteFeature CCL = new EnumSiteFeature("CCL");
 	public final static EnumSiteFeature DYF = new EnumSiteFeature("DYF");
 	public final static EnumSiteFeature YMAL = new EnumSiteFeature("YMAL");
+	public final static EnumSiteFeature RATING = new EnumSiteFeature("RATING");
 
 	protected EnumSiteFeature(String name) {
 		super(name);

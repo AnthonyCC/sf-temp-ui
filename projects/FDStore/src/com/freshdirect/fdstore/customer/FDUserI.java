@@ -243,6 +243,8 @@ public interface FDUserI extends java.io.Serializable {
 
 	public AssignedCustomerParam getAssignedCustomerParam(String promoId);
 	
+	public boolean isProduceRatingEnabled();
+	
 	/* CCL */
 	public boolean isCCLEnabled();
 	

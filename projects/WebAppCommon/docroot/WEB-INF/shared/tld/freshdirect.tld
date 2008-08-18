@@ -3152,4 +3152,11 @@
                 <rtexprvalue>true</rtexprvalue>
             </attribute>
     </tag> 
+    <tag>
+        <name>ProduceRatingCheck</name>
+        <tagclass>com.freshdirect.webapp.taglib.fdstore.ProduceRatingCheckTag</tagclass>
+        <bodycontent>JSP</bodycontent>
+        <info></info>
+    </tag>
+    
 </taglib>

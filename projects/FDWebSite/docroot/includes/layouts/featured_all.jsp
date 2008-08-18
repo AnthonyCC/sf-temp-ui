@@ -146,10 +146,13 @@ if (sortedColl==null) sortedColl = new ArrayList();
             sku = (SkuModel) Collections.min(skus, priceComp);
         }
         
-        
+      
+%>
+   <fd:ProduceRatingCheck>
+   <%
         rating=JspMethods.getProductRating(product);
-
-        
+    %>
+    </fd:ProduceRatingCheck>    
         
 %>
         <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
