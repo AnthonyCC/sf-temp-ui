@@ -605,4 +605,7 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 		return getProduct().getWineClassifications();
 	}
 	
+	public String getProductRating() throws FDResourceException{
+		return getProduct().getProductRating();
+	}
 }

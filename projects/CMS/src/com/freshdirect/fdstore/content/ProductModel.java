@@ -529,5 +529,7 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI {
 	public CategoryModel getPerfectPair();		
 	
 	public List getWineClassifications();
+	//Added for Produce rating.
+	public String getProductRating()throws FDResourceException; 
 	
 }
