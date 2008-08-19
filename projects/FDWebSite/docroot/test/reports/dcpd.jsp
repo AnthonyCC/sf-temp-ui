@@ -301,11 +301,12 @@ if (!renderCSV) {
 			<% if (!prodsOnlyView) { %><th style='text-align: center'>Product / Folder ID</th><% } %>
 	        <th>Full Name</th>
 			<th>SKU</th>
+			<th>Rating</th>
 			<th>Material</th>
 			<th>Eligible</th>
 		</tr>
 <%
-	report.setNodeSeparator("    <tr><td colspan=\"5\" style=\"padding: 0; height: 6px; width: 100%; background-color: #cccc99\"></td></tr>");
+	report.setNodeSeparator("    <tr><td colspan=\"6\" style=\"padding: 0; height: 6px; width: 100%; background-color: #cccc99\"></td></tr>");
 	report.generate(q.getNodes());
 %>
     </table>
