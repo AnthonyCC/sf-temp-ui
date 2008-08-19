@@ -30,7 +30,6 @@
 
 String catId = request.getParameter("catId"); 
 String deptId = request.getParameter("deptId"); 
-System.out.println(" Department ::XX"+deptId);
 boolean isDepartment = false;
 String trkCode = "";
 

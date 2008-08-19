@@ -5,10 +5,13 @@
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
 
+<% if("fru".equals(request.getParameter("deptId")) ||"veg".equals(request.getParameter("deptId")))  {%>
+
 <fd:GetPeakProduce deptId='<%= request.getParameter("deptId") %>' id='peakProduces'> 
 <% if(peakProduces.size()>0) {%>
 <BR><img src="/media_stat/images/layout/greatrightnow.gif" name="greatRightNow" border="0">
 <Br>
+<fd:IncludeMedia name= "/media/editorial/fruit/rating/fru_rate_head.html"/>
 <table CELLPADDING="0" CELLSPACING="0" BORDER="0"><tr valign="top">
 <logic:iterate id="peakProduce" collection="<%= peakProduces %>" type="com.freshdirect.fdstore.content.SkuModel">
 <td>
@@ -55,3 +58,4 @@
 <%} %>
 </fd:GetPeakProduce>
 
+<% }%>

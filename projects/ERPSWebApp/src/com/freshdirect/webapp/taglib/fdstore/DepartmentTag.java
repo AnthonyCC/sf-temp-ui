@@ -31,7 +31,7 @@ public class DepartmentTag extends AbstractGetterTag {
     }
     
 	protected Object getResult() throws FDResourceException {
-		System.out.println("!!!! Department id ="+this.departmentId);
+		//System.out.println("!!!! Department id ="+this.departmentId);
 		return  ContentFactory.getInstance().getContentNodeByName( this.departmentId );
 	}
 

@@ -62,7 +62,16 @@ boolean isIncludeMediaLayout = (layouttype == EnumLayoutType.MEDIA_NO_NAV.getId(
 %><tmpl:insert template='<%= (isIncludeMediaLayout ? "/common/template/no_nav.jsp" : "/common/template/right_nav.jsp") %>'>
     <tmpl:put name='title' direct='true'>FreshDirect - <%= department.getFullName() %></tmpl:put>
     <tmpl:put name='content' direct='true'>
-<oscache:cache key='<%= "deptLayout_"+request.getQueryString() %>' time="14400">
+<% int ttl=14400; 
+
+if("fru".equals(request.getParameter("deptId")) ||"veg".equals(request.getParameter("deptId")))  {
+    ttl=300;
+}
+%>
+
+<oscache:cache key='<%= "deptLayout_"+request.getQueryString() %>' time='<%=ttl%>'>
+
+
 <%
 
 try {

@@ -94,7 +94,7 @@ static class DisplayObjectRepo implements TableLayoutHelper.WidthCalculator {
 
 }
 %>
-
+<jsp:include page="/includes/department_peakproduce.jsp" flush="true"/> 
 <%
 
 //********** Start of Stuff to let JSPF's become JSP's **************
