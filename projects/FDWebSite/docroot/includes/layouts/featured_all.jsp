@@ -363,10 +363,24 @@ if (sortedColl==null) sortedColl = new ArrayList();
                 }
                 else {
                         col1.append("\"");
-                        col1.append(imageDim);
-                        col1.append(">");
+                        //this call is pretty much useless
+						//col1.append(imageDim);
+						
+						//get a copy of the image dimensions to manipulate
+						String imgS = imageDim;
+						//add a comma delim
+						imgS = imgS.replaceFirst("\" ", ",");
+						//remove everything except "W,H"
+						imgS = imgS.replaceAll("[ =\"a-z]", "");
+						//split, 0=width;1=height
+						String imgSarr[] = imgS.split(",");
+						//check if original width is over 90, and if so change to 90
+						//this is the same value that we're using in common_javascript.js [swapImage2sup]
+						if ( Integer.valueOf( imgSarr[0] ).intValue() > 90 ){ imgSarr[0] = "90"; }
+						//output width
+                        col1.append(" width=\""+imgSarr[0]+"\">");
                 }
-                col1.append("<br><img name=\"");
+                col1.append("<br /><img name=\"");
                 col1.append(notAvailImgName);
                 col1.append("\" SRC=\"");
                 if (folderAsProduct || (product!=null && !product.isUnavailable())) {
@@ -452,7 +466,16 @@ if (sortedColl==null) sortedColl = new ArrayList();
                 appendColumn.append("<div style=\"margin-left: 8px; text-indent: -8px;\"><A HREF=\"");
                 appendColumn.append(prodURL);
                 appendColumn.append("\" onMouseover='");
-                appendColumn.append("swapImage(\""+imgName+"\",\""+((Image)product.getCategoryImage()).getPath()+"\"");
+				//We're getting the W,H of the product image and passing it to the swapImage2 javascript function.
+				//H isn't needed, but we'll pass it now in case we use it later.
+					//get a copy of the image dimensions to manipulate
+					String imgS = JspMethods.getImageDimensions(product.getCategoryImage());
+					//add a comma delim
+					imgS = imgS.replaceFirst("\" ", ",");
+					//remove everything except "W,H"
+					imgS = imgS.replaceAll("[ =\"a-z]", "");
+					//change to new swapImage function and append dimensions to func call
+					appendColumn.append("swapImage2(\""+imgName+"\",\""+((Image)product.getCategoryImage()).getPath()+"\","+imgS);
                 //appendColumn.append("images['"+imgName+"'].src=\"");
                 //appendColumn.append(product.getContent("ATR_image_product").getString("url")); notAvailImgName
                 appendColumn.append(")");
