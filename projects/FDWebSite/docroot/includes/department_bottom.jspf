@@ -81,6 +81,15 @@ if ("OUR_PICKS, FRO, GRO, DAI, SPE".indexOf(department.getContentName().toUpperC
                       <A HREF="<%=bioLink%>"><img src="<%=deptMngrImg.getPath()%>" <%=JspMethods.getImageDimensions(deptMngrImg) %> border="0" alt="<%=department.getFullName()%>: MANAGER"></A><BR><IMG src="/media_stat/images/layout/clear.gif"   WIDTH="110" HEIGHT="1" BORDER="0">
                    </TD>
                    <TD WIDTH="220" ROWSPAN="2"> <%--left side title content --%><BR>
+                    <fd:ProduceRatingCheck>
+                    <%                                 
+                        String ratingMediaPath="/media/brands/fd_ratings/prod_rating.html";                                                                
+                        if("fru".equals(request.getParameter("deptId")) ||"veg".equals(request.getParameter("deptId")))  {
+                       %>
+                      <fd:IncludeMedia name="<%=ratingMediaPath%>" /><br> 
+                      <% }%>
+                    </fd:ProduceRatingCheck>       
+
 <%
                                     for(Iterator edItr = assocEditorial.iterator();edItr.hasNext();) {
                                         String edItm = ((Html)edItr.next()).getPath();

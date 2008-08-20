@@ -4,7 +4,7 @@
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
-
+<fd:ProduceRatingCheck>
 <% if("fru".equals(request.getParameter("deptId")) ||"veg".equals(request.getParameter("deptId")))  {%>
 
 <fd:GetPeakProduce deptId='<%= request.getParameter("deptId") %>' id='peakProduces'> 
@@ -19,7 +19,7 @@
   ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNodeByName(request.getParameter("deptId"));
   String prodNameAttribute = JspMethods.getProductNameToUse(peakProduce);
   DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,peakProduce.getProductModel().getParentNode().getContentName(),peakProduce.getProductModel(),prodNameAttribute,true);
-  int adjustedImgWidth = displayObj.getImageWidthAsInt()+6;
+  int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
  %>
  <td valign="top" align="center" WIDTH=<%=adjustedImgWidth%>">
  <a href="<%=displayObj.getItemURL()%>&trk=dept"><img src="<%= displayObj.getImagePath()%>"  <%=displayObj.getImageDimensions() %> ALT="<%=displayObj.getAltText()%>" hspace="0" border="0"></a>
@@ -46,8 +46,7 @@
 
 <%  } %>
 
- 
-
+   
    </td>
 
 
@@ -55,7 +54,12 @@
 
 </logic:iterate>
 </tr></table>
+    <% if("veg".equals(request.getParameter("deptId")))  {%>
+        <br>
+    <% }%>
+
 <%} %>
 </fd:GetPeakProduce>
 
 <% }%>
+</fd:ProduceRatingCheck>
