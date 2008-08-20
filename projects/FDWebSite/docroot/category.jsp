@@ -134,7 +134,7 @@ boolean noCache =  (EnumLayoutType.GROCERY_PRODUCT.getId()==layouttype
                     
 %>
 
-<oscache:cache key='<%= "catLayout_"+request.getQueryString() %>' time="1" refresh="<%= noCache %>">
+<oscache:cache key='<%= "catLayout_"+request.getQueryString() %>' time="300" refresh="<%= noCache %>">
 <% try {
 
 int tablewid = noLeftNav ? 550 : 425;
