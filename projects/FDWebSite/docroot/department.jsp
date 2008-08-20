@@ -63,13 +63,17 @@ boolean isIncludeMediaLayout = (layouttype == EnumLayoutType.MEDIA_NO_NAV.getId(
     <tmpl:put name='title' direct='true'>FreshDirect - <%= department.getFullName() %></tmpl:put>
     <tmpl:put name='content' direct='true'>
 <% int ttl=14400; 
-
+   String keyPrefix="deptLayout_"; 
 if("fru".equals(request.getParameter("deptId")) ||"veg".equals(request.getParameter("deptId")))  {
-    ttl=300;
+    
+    FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
+    if(user.isProduceRatingEnabled()) {
+        keyPrefix=keyPrefix+user.isProduceRatingEnabled()+"_";
+        ttl=300;
+    }
 }
 %>
-
-<oscache:cache key='<%= "deptLayout_"+request.getQueryString() %>' time='<%=ttl%>'>
+<oscache:cache key='<%= keyPrefix+request.getQueryString() %>'  time='<%=ttl%>'>
 
 
 <%

@@ -128,18 +128,18 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 		while(it.hasNext()) {
 			ProductModel prod=(ProductModel)it.next();
 			List skus=prod.getSkus();
-			FDProductInfo prodInfo=null;
+			String rating=null;
 			for(int i=0;i<skus.size();i++) {
 				sku=(SkuModel)skus.get(i);
 				if(sku.isDiscontinued() || sku.isOutOfSeason() || sku.isTempUnavailable() ||sku.isUnavailable()) {
 					continue;
 				}
 				try {
-					prodInfo=sku.getProductInfo();
+					rating=sku.getProductInfo().getRating();
 				} catch (FDSkuNotFoundException e) {
 					throw new FDResourceException(e);
 				}
-				if(isProduce(sku.getSkuCode())&&isPeakProduce(prodInfo.getRating())) {
+				if(isProduce(sku.getSkuCode())&&isPeakProduce(rating)) {
 					peakProduce.add(sku);
 					break;
 				}
