@@ -12,6 +12,29 @@ function swapImage(imgName,imgURL){
     	}
 }
 
+//rollover swap with width check
+function swapImage2(imgName,imgURL, w, h){
+	var noW;
+
+	(w) ? noW = true : noW = false;
+	var w = w || document.images[imgName].width;
+	var h = h || document.images[imgName].height;
+
+	if (imgURL.length) {
+    		while( !swapImage2sup(imgName, w, noW) ){ document.images[imgName].src = 'clear.gif'; }
+			document.images[imgName].src = imgURL;
+    	}
+}
+//swapImage2 support function
+function swapImage2sup(imgName, w, noW){
+	if (w > 90 && noW)	{
+		document.images[imgName].width = '90';
+	}else{
+		document.images[imgName].width = w;
+	}
+	return true;
+}
+
 var isIE = !!(window.attachEvent && !window.opera);
 
 /* currently being used for help section...*/
