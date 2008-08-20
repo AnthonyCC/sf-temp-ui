@@ -509,7 +509,7 @@ if (skus.size() != 0) {
                          if (productInfo.getRating()!=null && productInfo.getRating().trim().length()>0) { 
                            String rating="";
                            System.out.println("productinfo rating :"+productInfo.getRating());
-                          if(FDStoreProperties.IsProduceRatingEnabled()){    	
+                         
                              EnumOrderLineRating enumRating=EnumOrderLineRating.getEnumByStatusCode(productInfo.getRating());
                             if(enumRating!=null && enumRating.isEligibleToDisplay()){
                                  rating=enumRating.getStatusCodeInDisplayFormat();
@@ -522,7 +522,7 @@ if (skus.size() != 0) {
                       <%  
                              }
                            }                          
-                          } 
+                           
                         }
                       %>                      
                      </fd:ProduceRatingCheck>
@@ -679,8 +679,7 @@ if (skus.size() != 0) {
                         if (productInfo.getRating()!=null && productInfo.getRating().trim().length()>0) { 
                             String rating="";
                             System.out.println("productinfo rating :"+productInfo.getRating());
-                           
-                           if(FDStoreProperties.IsProduceRatingEnabled()){    		                      	                                               
+                                                      
                                 EnumOrderLineRating enumRating=EnumOrderLineRating.getEnumByStatusCode(productInfo.getRating());
                                 if(enumRating!=null && enumRating.isEligibleToDisplay()){
                                     rating=enumRating.getStatusCodeInDisplayFormat();
@@ -691,7 +690,7 @@ if (skus.size() != 0) {
                             </td></tr><td width="172" align="right" class="text10">
                       <%  
                                 }
-                            }
+                           
                          } 
                          }
                       %>                        
