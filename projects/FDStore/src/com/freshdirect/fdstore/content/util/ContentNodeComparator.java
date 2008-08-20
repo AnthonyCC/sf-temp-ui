@@ -101,7 +101,8 @@ public class ContentNodeComparator implements Comparator {
 						strategyElement.getSecondayAttrib(),
 						strategyElement.getMultiAttribName(),
 						descending);
-
+			case SortStrategyElement.PRODUCTS_BY_RATING :
+				return compareByProductRating(node1, node2);
 			default :
 				throw new IllegalArgumentException("Unknown sort type " + strategyElement.getSortType());
 		}
@@ -379,6 +380,38 @@ public class ContentNodeComparator implements Comparator {
 
 		}
 	
+	private Integer getProductRating(ContentNodeModel node) {
+		if(!(node instanceof ProductModel))
+			return null;
+		ProductModel pm = (ProductModel) node;
+		try {
+			int rating = Integer.parseInt(pm.getProductRating());
+			return new Integer(rating);
+		}catch(Exception exp){
+			return null;
+		}
+	}
+	
+	private int compareByProductRating(
+			ContentNodeModel node1,
+			ContentNodeModel node2) {
+			Integer attrib1 = getProductRating(node1);
+			Integer attrib2 = getProductRating(node2);
+			
+			if (attrib1 == null && attrib2 == null)
+				return 0;
+
+			if (attrib1 == null)
+				return 1;
+
+			if (attrib2 == null)
+				return  -1;
+
+			if (attrib1.equals(attrib2))
+				return 0;
+
+			return attrib1.compareTo(attrib2);
+		}
 	private Object getWineAttribute(ContentNodeModel node, String attributeName) {
 		if(!(node instanceof ProductModel))
 			return null;

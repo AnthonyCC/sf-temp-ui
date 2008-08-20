@@ -212,6 +212,7 @@ for (Iterator aItr=ratingAttribs.iterator();aItr.hasNext();) {
         minusChar = "";
         plusChar = "";
         colRatingName = ratingAttrib.getName();
+        
         colLabel=ratingAttrib.getLabel();
         colLabel=colLabel.substring(0,1).toUpperCase()+colLabel.substring(1);
 
@@ -219,22 +220,24 @@ for (Iterator aItr=ratingAttribs.iterator();aItr.hasNext();) {
         // if the rating type is not numeric then clear the minus & plus chartacters accordingly
         isNumeric = false;
         isBooleanDomain = false;
-
-        if(domainValues.size() > 0) {
-            String strValue = (String)((DomainValue)domainValues.get(0)).getValue();
-            if ("true".equalsIgnoreCase(strValue) || "false".equalsIgnoreCase(strValue)) {
-                isBooleanDomain = true;
-            } else {
-                try {
-                    Integer integer = new Integer((String)((DomainValue)domainValues.get(0)).getValue());
-                    isNumeric = true;
-                }
-                catch (NumberFormatException nfe) {
-                    isNumeric = false;
+        if(colRatingName.equals("produce_rating")){
+            //Skip
+        } else {
+            if(domainValues.size() > 0) {
+                String strValue = (String)((DomainValue)domainValues.get(0)).getValue();
+                if ("true".equalsIgnoreCase(strValue) || "false".equalsIgnoreCase(strValue)) {
+                    isBooleanDomain = true;
+                } else {
+                    try {
+                        Integer integer = new Integer((String)((DomainValue)domainValues.get(0)).getValue());
+                        isNumeric = true;
+                    }
+                    catch (NumberFormatException nfe) {
+                        isNumeric = false;
+                    }
                 }
             }
         }
-        
         if (isNumeric ) {
             minusChar="-&nbsp;";
             plusChar="&nbsp;+";
@@ -247,7 +250,12 @@ for (Iterator aItr=ratingAttribs.iterator();aItr.hasNext();) {
     //should this column label be linked?.  if currently ordered by it, then No.
         if(orderBy.equalsIgnoreCase(colRatingName)){
             if(isBooleanDomain || isNumeric) reverseOrder=true;
-             sortStrategy.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_ATTRIBUTE,"RATING",orderBy,reverseOrder));
+            if(orderBy.equals("produce_rating"))
+                sortStrategy.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_RATING));
+            else
+                sortStrategy.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_ATTRIBUTE,"RATING",orderBy,reverseOrder));            
+                
+            
 %>
 <%=minusChar%><%=colLabel%><%=plusChar%>
 <%  }else{ %>
