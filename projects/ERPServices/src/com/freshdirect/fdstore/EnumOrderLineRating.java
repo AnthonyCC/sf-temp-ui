@@ -34,9 +34,9 @@ public class EnumOrderLineRating implements java.io.Serializable {
     public final static EnumOrderLineRating VERY_GOOD        = new EnumOrderLineRating(8, "008", "Great");
     public final static EnumOrderLineRating VERY_GOOD_PLUS     = new EnumOrderLineRating(9, "009", "Almost Perfect");
     public final static EnumOrderLineRating PERFECT    = new EnumOrderLineRating(10, "010", "Never Better");
-    public final static EnumOrderLineRating PEAK_PRODUCE_8        = new EnumOrderLineRating(11, "P08", "Peak Produce");
-    public final static EnumOrderLineRating PEAK_PRODUCE_9        = new EnumOrderLineRating(12, "P09", "Peak Produce");    
-    public final static EnumOrderLineRating PEAK_PRODUCE_10        = new EnumOrderLineRating(13, "P10", "Peak Produce");
+    public final static EnumOrderLineRating PEAK_PRODUCE_8        = new EnumOrderLineRating(11, "P08", "Great");
+    public final static EnumOrderLineRating PEAK_PRODUCE_9        = new EnumOrderLineRating(12, "P09", "Almost Perfect");    
+    public final static EnumOrderLineRating PEAK_PRODUCE_10        = new EnumOrderLineRating(13, "P10", "Never Better");
     public final static EnumOrderLineRating NO_RATING        = new EnumOrderLineRating(14, "X", "No rating");
     
     protected final int id;

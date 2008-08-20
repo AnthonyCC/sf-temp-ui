@@ -187,7 +187,7 @@ if (currentCategory != null) {
         rating=JspMethods.getProductRating(product);
    %>
    </fd:ProduceRatingCheck>     
-%>
+
         <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
 <%
        
