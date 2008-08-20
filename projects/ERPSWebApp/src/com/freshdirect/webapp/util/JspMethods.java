@@ -213,17 +213,11 @@ public class JspMethods {
             	   if(sku.getSkuCode().startsWith("FRU") || sku.getSkuCode().startsWith("VEG") || sku.getSkuCode().startsWith("YEL"))
             	   {
 	                   productInfo = FDCachedFactory.getProductInfo( sku.getSkuCode());
-	                   
 	                   //System.out.println(" Rating productInfo :"+productInfo);    	
-	                   
 	                   String tmpRating = productInfo.getRating();
-	                   
 	                   if(tmpRating!=null && tmpRating.trim().length()>0){
-	                	 
 	                	   EnumOrderLineRating enumRating=EnumOrderLineRating.getEnumByStatusCode(tmpRating);
-	                	   
 	                	   //System.out.println(" enumRating :"+enumRating);
-	                	   
 	                	   if(enumRating!=null && enumRating.isEligibleToDisplay()){
 	                		   rating=enumRating.getStatusCodeInDisplayFormat();
 	                		   //System.out.println(" rating in display format  :"+rating);

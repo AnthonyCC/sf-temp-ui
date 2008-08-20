@@ -1490,12 +1490,10 @@ inner:
                    productInfo = FDCachedFactory.getProductInfo( sku.getSkuCode());
    	
                    String tmpRating = productInfo.getRating();
-                   System.out.println("Rating Value in PM "+sku.getSkuCode()+" "+tmpRating);
                    if(tmpRating!=null && tmpRating.trim().length()>0){
                 	   EnumOrderLineRating enumRating=EnumOrderLineRating.getEnumByStatusCode(tmpRating);
                 	   if(enumRating!=null && enumRating.isEligibleToDisplay()){
                 		   rating=enumRating.getStatusCodeInDisplayFormat();
-                		   System.out.println("Rating Value after %%%%%%%%%%%%%%%%%%%%%%%%%%%%% "+sku.getSkuCode()+" "+rating);
                 	   }
                    }
         	   } 

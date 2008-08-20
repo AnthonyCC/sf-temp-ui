@@ -95,6 +95,7 @@ int priceColWidth = 0;
 int remainColWidth = 0;
 boolean reverseOrder = false;
 boolean isBooleanDomain = false;
+boolean isRating = false;
 boolean isNumeric = false;
 String tdwidth="92";
 boolean showRelatedRatingImage = false;
@@ -329,6 +330,16 @@ for(Iterator itmItr = sortedStuff.iterator();itmItr.hasNext();) {
 %>                      
         </fd:FDProductInfo>
 <%
+        String rating = "";
+%>
+        <fd:ProduceRatingCheck>
+<%
+        rating = prod.getProductRating();
+
+%>
+        </fd:ProduceRatingCheck>
+        
+<%
         String bgcolor = "#ffffff";
         if(prodCounter%2 != 0){
                 bgcolor = "#eeeeee";
@@ -368,30 +379,30 @@ for(Iterator itmItr = sortedStuff.iterator();itmItr.hasNext();) {
         MultiAttribute prodSortMAttrib = (MultiAttribute)prod.getAttribute("RATING");
         for (Iterator aItr=ratingAttribs.iterator();aItr.hasNext();) {
             Domain ratingAttrib = ((DomainRef)aItr.next()).getDomain();
-            
-            List prodDomainValues = null;
-            String prodDomainValue = null;
-
-            if (prodSortMAttrib !=null) {
-                prodDomainValues = (List)prodSortMAttrib.getValues();
-            }else prodDomainValues = new ArrayList();
-
-            
-            boolean foundDomain = false;
-           // get the matching domainvalue off the prod for this Domain.
-            for(Iterator dvItr = prodDomainValues.iterator();dvItr.hasNext() && !foundDomain ;) {
-                Object obj = dvItr.next();
-                if (!(obj instanceof DomainValueRef))  continue;
-
-                DomainValue dmv = ((DomainValueRef)obj).getDomainValue(); //dvItr.next();
-                Domain dom = dmv.getDomain();
-                if (ratingAttrib.getPK().equals(dom.getPK())) {
-                    prodDomainValue = dmv.getValue();
-                    foundDomain = true;
-                } 
-            }
-
             String colAttrName = ratingAttrib.getName();
+            String prodDomainValue = null;
+            boolean foundDomain = false;
+            //Added for Produce Rating.
+            if(colAttrName.equals("produce_rating")){
+                //Skip retreiving the value from Domain object.
+            } else {
+                List prodDomainValues = null;
+                if (prodSortMAttrib !=null) {
+                    prodDomainValues = (List)prodSortMAttrib.getValues();
+                }else prodDomainValues = new ArrayList();
+               // get the matching domainvalue off the prod for this Domain.
+                for(Iterator dvItr = prodDomainValues.iterator();dvItr.hasNext() && !foundDomain ;) {
+                    Object obj = dvItr.next();
+                    if (!(obj instanceof DomainValueRef))  continue;
+                    
+                    DomainValue dmv = ((DomainValueRef)obj).getDomainValue(); //dvItr.next();
+                    Domain dom = dmv.getDomain();
+                    if (ratingAttrib.getPK().equals(dom.getPK())) {
+                        prodDomainValue = dmv.getValue();
+                        foundDomain = true;
+                    } 
+                }
+            }
             String cellColor = bgcolor;
             // get the imgae that should be displayed to right of this thing
 
@@ -399,14 +410,17 @@ for(Iterator itmItr = sortedStuff.iterator();itmItr.hasNext();) {
                 cellColor = "#dddddd";
             }
 %><TD WIDTH="<%=remainColWidth%>" ALIGN="CENTER" bgcolor="<%=cellColor%>"><%
-            if (!foundDomain) { //show a hyphen in the cell, since this attribute Value is not on this product%>
+            if (!foundDomain && (rating == null || rating.length() == 0)) { //show a hyphen in the cell, since this attribute Value is not on this product%>
 &nbsp;&#8212;&nbsp</td>
 <%
                 continue; //skip this product.
             }
             isBooleanDomain=false;
             isNumeric = false;
-            if ("true".equalsIgnoreCase(prodDomainValue) || "false".equalsIgnoreCase(prodDomainValue)) {
+            isRating = false;
+            if(colAttrName.equals("produce_rating")){
+                isRating = true;
+            } else if ("true".equalsIgnoreCase(prodDomainValue) || "false".equalsIgnoreCase(prodDomainValue)) {
                 isBooleanDomain = true;
             } else {
                 try {
@@ -417,9 +431,8 @@ for(Iterator itmItr = sortedStuff.iterator();itmItr.hasNext();) {
                     isNumeric = false;
                 }
             }
-
             String atrImgSrc = null;
-            if(!isNumeric && !isBooleanDomain){
+            if(!isNumeric && !isBooleanDomain && !isRating){
                 //!!! assume that a non-numeric value is a string.
 %>
 <%=prodDomainValue%></td>
@@ -431,9 +444,14 @@ for(Iterator itmItr = sortedStuff.iterator();itmItr.hasNext();) {
             } else if(isBooleanDomain) {
                if ("true".equalsIgnoreCase(prodDomainValue)){ 
 %><img src="/media_stat/images/layout/orangedot.gif"></td>
-<%             } else { %>&nbsp;</td>
+<%              }            
+                else { %>&nbsp;</td>
 <%             } 
-          }
+          } else if(isRating) {
+                    atrImgSrc = "/media_stat/images/template/stars_"+cellColor.substring(1,cellColor.length())+"_10_"+rating+".gif";
+%><img src="<%=atrImgSrc%>"></td>
+<%
+          } 
     }// end of for loop on attrb-display list
     if(orderBy.equalsIgnoreCase("Price")){%>
 <TD WIDTH="<%=priceColWidth%>" ALIGN="CENTER" bgcolor="#dddddd">
