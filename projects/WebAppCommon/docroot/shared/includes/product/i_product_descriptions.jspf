@@ -188,16 +188,18 @@
                  %><br><fd:IncludeMedia name="<%=pathToMedia%>" /><br>
                  <% } %>
 			
-                <% String ratingMediaPath="/media/brands/fd_ratings/prod_rating.html";
-                 if(FDStoreProperties.IsProduceRatingEnabled()){
-                 
-                  System.out.println("media path:"+ratingMediaPath);                 
-                 
+            <fd:ProduceRatingCheck>
+                <% 
+                
+                String produceRating=productNode.getProductRating();                
+                if(produceRating!=null && produceRating.trim().length()>0)
+                {                   
+                  String ratingMediaPath="/media/brands/fd_ratings/prod_rating.html";                                                                
                  %>
                    
                       <br><fd:IncludeMedia name="<%=ratingMediaPath%>" /><br> 
-    	        <% } %>
-                   
+              <% } %>
+            </fd:ProduceRatingCheck>       
             
  				<%//@ include file="/shared/includes/product/organic_claims.jspf" %>
                                 
