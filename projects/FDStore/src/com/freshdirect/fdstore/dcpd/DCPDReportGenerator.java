@@ -313,7 +313,18 @@ public class DCPDReportGenerator {
 	            }
 		        out.println("<td style='"+cs+"'>" + skuNode.getFullName() + "</td>");
 		        out.println("<td style='"+cs+"'>" + skuNode.getContentName() + "</td>");
-		        out.println("<td style='"+cs+"'>" + (skuNode.getProductInfo().getRating()!=null ? skuNode.getProductInfo().getRating(): "&nbsp;") + "</td>");
+		        
+		        String rating;
+		        try {
+		            if (skuNode.getProductInfo() != null) {
+		            	rating = skuNode.getProductInfo().getRating();
+		            } else {
+		            	rating = null;
+		            }
+		        } catch (FDSkuNotFoundException e) {
+		        	rating = null;            
+		        }
+		        out.println("<td style='"+cs+"'>" + (rating != null && rating.trim().length() > 0 ? rating: "&nbsp;") + "</td>");
 		        out.println("<td style='"+cs+"'>" + (sku_val!=null ? sku_val : "N/A") + "</td>");
 	            out.println("<td style='"+cs+"'>" + (eligible!=null ? eligible : "N/A") + "</td>");
 	            out.println("</tr>");
