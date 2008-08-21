@@ -220,8 +220,9 @@ for (Iterator aItr=ratingAttribs.iterator();aItr.hasNext();) {
         // if the rating type is not numeric then clear the minus & plus chartacters accordingly
         isNumeric = false;
         isBooleanDomain = false;
+        isRating = false;
         if(colRatingName.equals("produce_rating")){
-            //Skip
+            isRating = true;
         } else {
             if(domainValues.size() > 0) {
                 String strValue = (String)((DomainValue)domainValues.get(0)).getValue();
@@ -249,9 +250,9 @@ for (Iterator aItr=ratingAttribs.iterator();aItr.hasNext();) {
 <%
     //should this column label be linked?.  if currently ordered by it, then No.
         if(orderBy.equalsIgnoreCase(colRatingName)){
-            if(isBooleanDomain || isNumeric) reverseOrder=true;
+            if(isBooleanDomain || isNumeric || isRating) reverseOrder=true;
             if(orderBy.equals("produce_rating"))
-                sortStrategy.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_RATING));
+                sortStrategy.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_RATING, reverseOrder));
             else
                 sortStrategy.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_ATTRIBUTE,"RATING",orderBy,reverseOrder));            
                 

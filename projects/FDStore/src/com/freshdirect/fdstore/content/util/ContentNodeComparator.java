@@ -102,7 +102,7 @@ public class ContentNodeComparator implements Comparator {
 						strategyElement.getMultiAttribName(),
 						descending);
 			case SortStrategyElement.PRODUCTS_BY_RATING :
-				return compareByProductRating(node1, node2);
+				return compareByProductRating(node1, node2, descending);
 			default :
 				throw new IllegalArgumentException("Unknown sort type " + strategyElement.getSortType());
 		}
@@ -394,7 +394,7 @@ public class ContentNodeComparator implements Comparator {
 	
 	private int compareByProductRating(
 			ContentNodeModel node1,
-			ContentNodeModel node2) {
+			ContentNodeModel node2, boolean descending) {
 			Integer attrib1 = getProductRating(node1);
 			Integer attrib2 = getProductRating(node2);
 			
@@ -402,10 +402,10 @@ public class ContentNodeComparator implements Comparator {
 				return 0;
 
 			if (attrib1 == null)
-				return 1;
+				return descending ? -1 : 1;
 
 			if (attrib2 == null)
-				return  -1;
+				return  descending ? 1 : -1;
 
 			if (attrib1.equals(attrib2))
 				return 0;
