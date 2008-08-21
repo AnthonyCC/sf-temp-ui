@@ -28,7 +28,7 @@
 
             <br><font class="center">           
 
-            <img src="/media_stat/images/ratings/<%=displayObj.getRating()%>.gif"  name="rating" width="50"  height="10" alt="" border="0">
+            <img src="/media_stat/images/ratings/<%=displayObj.getRating()%>.gif"  name="rating">
 
             </font>
 
