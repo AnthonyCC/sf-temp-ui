@@ -83,7 +83,13 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI {
 				EnumOrderLineRating oli1=EnumOrderLineRating.getEnumByStatusCode(pi1.getRating());
 				EnumOrderLineRating oli2=EnumOrderLineRating.getEnumByStatusCode(pi2.getRating());
 				
-				if(oli1==null || oli2==null) return 0;
+				
+				if(oli1==null && oli2==null) return 0;
+				
+				if(oli1!=null && oli2==null) return 1;
+				
+				if(oli1==null && oli2!=null) return -1;
+				
 				if (oli1.getId()>oli2.getId()) {
 					flips++;
 					return 1;

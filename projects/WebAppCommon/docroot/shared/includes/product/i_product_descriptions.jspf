@@ -192,8 +192,10 @@
                 <% 
                 
                 String produceRating=productNode.getProductRating();                
+                                                
                 if(produceRating!=null && produceRating.trim().length()>0)
-                {                   
+                {
+                
                   String ratingMediaPath="/media/brands/fd_ratings/prod_rating.html";                                                                
                  %>
                    

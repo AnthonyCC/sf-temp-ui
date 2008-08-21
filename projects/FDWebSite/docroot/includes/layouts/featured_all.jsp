@@ -153,8 +153,8 @@ if (sortedColl==null) sortedColl = new ArrayList();
         rating=JspMethods.getProductRating(product);
     %>
     </fd:ProduceRatingCheck>    
-        
-%>
+
+
         <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
 <%       
         

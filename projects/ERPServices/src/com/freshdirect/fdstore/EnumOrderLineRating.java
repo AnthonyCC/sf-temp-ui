@@ -22,22 +22,23 @@ public class EnumOrderLineRating implements java.io.Serializable {
 	private final static Map STATUSCODE_MAP = new HashMap();
     
     public final static EnumOrderLineRating NEVER_RATED        = new EnumOrderLineRating(0, "000", "Never Rated/Rating Expired");
-    public final static EnumOrderLineRating TERRIBLE     = new EnumOrderLineRating(1, "001", "Terrible");
-    public final static EnumOrderLineRating BELOW_AVG    = new EnumOrderLineRating(2, "002", "Below Average");
-    public final static EnumOrderLineRating BELOW_AVG_PLUS        = new EnumOrderLineRating(3, "003", "Inconsistent");
+    public final static EnumOrderLineRating NO_RATING        = new EnumOrderLineRating(1, "X", "No rating");
+    public final static EnumOrderLineRating TERRIBLE     = new EnumOrderLineRating(2, "001", "Terrible");
+    public final static EnumOrderLineRating BELOW_AVG    = new EnumOrderLineRating(3, "002", "Below Average");
+    public final static EnumOrderLineRating BELOW_AVG_PLUS        = new EnumOrderLineRating(4, "003", "Inconsistent");
     
-    public final static EnumOrderLineRating AVERAGE        = new EnumOrderLineRating(4, "004", "Average ");
-    public final static EnumOrderLineRating AVERAGE_PLUS     = new EnumOrderLineRating(5, "005", "Above Average");
-    public final static EnumOrderLineRating GOOD    = new EnumOrderLineRating(6, "006", "Good");
-    public final static EnumOrderLineRating GOOD_PLUS        = new EnumOrderLineRating(7, "007", "Very Good");
+    public final static EnumOrderLineRating AVERAGE        = new EnumOrderLineRating(5, "004", "Average ");
+    public final static EnumOrderLineRating AVERAGE_PLUS     = new EnumOrderLineRating(6, "005", "Above Average");
+    public final static EnumOrderLineRating GOOD    = new EnumOrderLineRating(7, "006", "Good");
+    public final static EnumOrderLineRating GOOD_PLUS        = new EnumOrderLineRating(8, "007", "Very Good");
 
-    public final static EnumOrderLineRating VERY_GOOD        = new EnumOrderLineRating(8, "008", "Great");
-    public final static EnumOrderLineRating VERY_GOOD_PLUS     = new EnumOrderLineRating(9, "009", "Almost Perfect");
-    public final static EnumOrderLineRating PERFECT    = new EnumOrderLineRating(10, "010", "Never Better");
-    public final static EnumOrderLineRating PEAK_PRODUCE_8        = new EnumOrderLineRating(11, "P08", "Great");
-    public final static EnumOrderLineRating PEAK_PRODUCE_9        = new EnumOrderLineRating(12, "P09", "Almost Perfect");    
-    public final static EnumOrderLineRating PEAK_PRODUCE_10        = new EnumOrderLineRating(13, "P10", "Never Better");
-    public final static EnumOrderLineRating NO_RATING        = new EnumOrderLineRating(14, "X", "No rating");
+    public final static EnumOrderLineRating VERY_GOOD        = new EnumOrderLineRating(9, "008", "Great");
+    public final static EnumOrderLineRating VERY_GOOD_PLUS     = new EnumOrderLineRating(10, "009", "Almost Perfect");
+    public final static EnumOrderLineRating PERFECT    = new EnumOrderLineRating(11, "010", "Never Better");
+    public final static EnumOrderLineRating PEAK_PRODUCE_8        = new EnumOrderLineRating(12, "P08", "Great");
+    public final static EnumOrderLineRating PEAK_PRODUCE_9        = new EnumOrderLineRating(13, "P09", "Almost Perfect");    
+    public final static EnumOrderLineRating PEAK_PRODUCE_10        = new EnumOrderLineRating(14, "P10", "Never Better");
+    
     
     protected final int id;
     private final String statusCode;
