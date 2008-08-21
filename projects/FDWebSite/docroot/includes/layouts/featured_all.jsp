@@ -181,16 +181,6 @@ if (sortedColl==null) sortedColl = new ArrayList();
             favoriteProducts.append("\">");
         }
         favoriteProducts.append("</A><BR>");
-        favoriteProducts.append("<A HREF=\"");
-        favoriteProducts.append(productPageLink_);
-        favoriteProducts.append("\">");
-        if (thisProdBrandLabel.length()>0) {
-            favoriteProducts.append("<FONT CLASS=\"text10bold\">");
-            favoriteProducts.append(thisProdBrandLabel);
-            favoriteProducts.append("</font><BR>");
-        }
-        favoriteProducts.append(product.getFullName().substring(thisProdBrandLabel.length()).trim()); 
-        favoriteProducts.append("</A><BR>");
         if(rating!=null && rating.trim().length()>0)
         {
             favoriteProducts.append("<font class=\"center\">");            
@@ -208,6 +198,17 @@ if (sortedColl==null) sortedColl = new ArrayList();
             favoriteProducts.append(">");
             favoriteProducts.append("</font><BR>");            
         }
+        favoriteProducts.append("<A HREF=\"");
+        favoriteProducts.append(productPageLink_);
+        favoriteProducts.append("\">");
+        if (thisProdBrandLabel.length()>0) {
+            favoriteProducts.append("<FONT CLASS=\"text10bold\">");
+            favoriteProducts.append(thisProdBrandLabel);
+            favoriteProducts.append("</font><BR>");
+        }
+        favoriteProducts.append(product.getFullName().substring(thisProdBrandLabel.length()).trim()); 
+        favoriteProducts.append("</A><BR>");
+
         favoriteProducts.append("<font class=\"favoritePrice\">");
         favoriteProducts.append(prodPrice);
         favoriteProducts.append("</font>");
