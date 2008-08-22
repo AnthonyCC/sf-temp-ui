@@ -12,21 +12,17 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
-
-<SCRIPT LANGUAGE=JavaScript>
-	<!--
-	OAS_AD('CategoryNote');
-	//-->
-</SCRIPT>
-
+<script language="JavaScript">
+<!-- 
+OAS_AD('CategoryNote');
+//-->
+</script>
 <%
-
 //**************************************************************
 //***          the GENERIC_LAYOUT Pattern                    ***
 //**************************************************************
 
 //********** Start of Stuff to let JSPF's become JSP's **************
-
 
 String catId = request.getParameter("catId"); 
 String deptId = request.getParameter("deptId"); 
@@ -50,8 +46,6 @@ Collection sortedColl = (Collection) request.getAttribute("itemGrabberResult");
 if (sortedColl==null) sortedColl = new ArrayList();
 
 //**********************  End of stuff to make JSPF's become JSP's
-
-
 String altText=null;
 String organicFlag = "";
 String prodNameAttribute = JspMethods.getProductNameToUse(currentFolder);
@@ -97,14 +91,11 @@ if (((ContentNodeModel)currentFolder).getFullName().toUpperCase().indexOf("VEGET
     inVeg = true;
 }
 %>
-
 <jsp:include page="/includes/department_peakproduce.jsp" flush="true"/> 
-
 <% if (isDepartment && "fru".equals(deptId) ) {%>
-    <BR><img src="/media_stat/images/layout/ourfreshfruit.gif" name="greatRightNow" border="0">
+    <br><img src="/media_stat/images/layout/ourfreshfruit.gif" name="Our Fresh Fruit" width="535" height="15" border="0">
 <%}%>
 <table WIDTH="<%=maxWidth%>" CELLPADDING="0" CELLSPACING="0" BORDER="0">
-
 <logic:iterate id="displayThing" collection="<%= availableList %>" type="com.freshdirect.fdstore.content.ContentNodeModel">
 <%
 Attribute attribInGenericLayout = null;
