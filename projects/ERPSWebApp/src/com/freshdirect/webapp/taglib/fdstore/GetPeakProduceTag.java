@@ -81,7 +81,7 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 				products.addAll(_products);
 			}
 		}
-		System.out.println("Peak produce :"+products);
+		//System.out.println("Peak produce :"+products);
 		if(products.size()<MIN_PEAK_PRODUCE_COUNT) {
 			return new ArrayList();
 		} 
@@ -93,7 +93,7 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 				index=random.nextInt(products.size());
 				randomProducts.add(products.get(index));
 			}
-			System.out.println("Chose Peak produce :"+randomProducts);
+			//System.out.println("Chose Peak produce :"+randomProducts);
 			return randomProducts;
 		}
 		else {
