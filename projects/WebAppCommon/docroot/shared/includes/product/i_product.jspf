@@ -730,7 +730,9 @@ if (skus.size() != 0) {
                                 }
 
                                 %><%@ include file="/shared/includes/product/i_scaled_prices.jspf" %>
-                                
+                           
+                       <input type="radio" name="skuCode" value="<%= sku.getSkuCode() %>" onClick="pricing.setSKU(this.value);" <% if (defaultSku == sku) out.print("checked"); %>><br></td>
+                            </tr><br>                           
                                 
                                                      <fd:ProduceRatingCheck>
                    
@@ -747,8 +749,7 @@ if (skus.size() != 0) {
                 		            System.out.println(" rating in display format  :"+rating);                	                                  
                            
                       %>
-                                                  <input type="radio" name="skuCode" value="<%= sku.getSkuCode() %>" onClick="pricing.setSKU(this.value);" <% if (defaultSku == sku) out.print("checked"); %>><br></td>
-                            </tr><br>
+                           
                       </td></TR> <tr valign="top">
                             <td width="200" align="right" class="text10">
                             <font class="qualityRating"><%=enumRating.getShortDescription()%> - <img src="/media_stat/images/ratings/<%=rating%>.gif"  name="rating" width="59"  height="11" alt="" border="0"></font>                            
