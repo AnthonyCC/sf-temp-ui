@@ -61,8 +61,7 @@
 		<td colspan="2" align="center"><b>Quantity <br>Ord./Del.<%if(hasReturn){%>/Ret.<%}%></b></td>
         <td></td>
 		<td align="center"><b>Final Weight</b></td>
-		<td align="center"><b>Unit Price</b></td>
-        <td align="center"><b>Rating</b></td>       
+		<td align="center"><b>Unit Price</b></td>    
 		<td align="right"><b>Options Price</b></td>
 		<td align="right"><b>Total Est./Final</b></td>        
 		<td colspan="4"></td>
@@ -74,7 +73,6 @@
 		<td colspan="2" align="center"><b>Quantity<b></td>
         <td></td>
         <td colspan="2" align="center"><b>Unit Price</b></td>
-        <td colspan="2" align="center"><b>Rating</b></td> 
         <td colspan="2" align="right"><b>Total Price</b></td>
         <td colspan="4"></td>
     </tr>

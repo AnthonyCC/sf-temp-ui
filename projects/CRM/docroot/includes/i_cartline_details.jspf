@@ -82,6 +82,16 @@
 	    	  <%= cartLine.getSkuCode() %>
     	  </a>
     	</span>
+		<%          
+		  boolean isRightSkuCode=false;
+			if(cartLine.getSkuCode()!=null && (cartLine.getSkuCode().startsWith("FRU") || cartLine.getSkuCode().startsWith("VEG") || cartLine.getSkuCode().startsWith("YEL") ) )
+			{
+				isRightSkuCode=true;
+			}
+		%>
+		<%  if(cartLine.getProduceRating()!=null && isRightSkuCode && cartLine.getProduceRating().isEligibleToDisplay()){ %>
+			&nbsp;<img src="/media_stat/images/ratings/<%=cartLine.getProduceRating().getStatusCodeInDisplayFormat()%>.gif"  name="rating" width="59"  height="11" alt="" border="0">
+		<% } %> 
     </td>
     <td width="6%" align="center"> 
     <%if(hasInvoice && cartLine.isPricedByLb()){%>
@@ -89,20 +99,6 @@
     <%}%>
     </td>
     <td width="8%" align="center">(<%= cartLine.getUnitPrice() %>)</td>
-    <%          
-      boolean isRightSkuCode=false;
-        if(cartLine.getSkuCode()!=null && (cartLine.getSkuCode().startsWith("FRU") || cartLine.getSkuCode().startsWith("VEG") || cartLine.getSkuCode().startsWith("YEL") ) )
-        {
-            isRightSkuCode=true;
-        }
-    %>
-    <%  if(cartLine.getProduceRating()!=null && isRightSkuCode && cartLine.getProduceRating().isEligibleToDisplay()){ %>
-    <td width="8%" align="center">
-    <font class="center"><img src="/media_stat/images/ratings/<%=cartLine.getProduceRating().getStatusCodeInDisplayFormat()%>.gif"  name="rating" width="50"  height="10" alt="" border="0"></font>
-    </td>
-    <%  }else{ %>
-    <td width="8%" align="center"> &nbsp;&nbsp; </td>
-    <% } %>    
     <td width="6%" align="right"><%if(hasInvoice)%><%=invoiceLine.getCustomizationPrice() > 0 ? CCFormatter.formatCurrency(invoiceLine.getCustomizationPrice()) : ""%></td>
     <td align="right"><%=CCFormatter.formatCurrency(cartLine.getPrice()) %><%if(hasInvoice){%> / <b><%=CCFormatter.formatCurrency(invoiceLine.getPrice())%><%}%></b></td>
     <td width="1%">
