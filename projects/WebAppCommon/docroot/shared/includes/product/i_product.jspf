@@ -518,7 +518,7 @@ if (skus.size() != 0) {
                            
                            
                       %>
-                            <br><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0" hspace="0" vspace="0"><br><font class="qualityRating"><%=enumRating.getShortDescription()%> - <img src="/media_stat/images/ratings/<%=rating%>.gif"  name="rating" width="59"  height="11" alt="" border="0"><br></font>
+                            <br><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0" hspace="0" vspace="0"><br><font class="qualityRating"><%=enumRating.getShortDescription()%> - <img src="/media_stat/images/ratings/product_<%=rating%>.gif"  name="rating" width="59"  height="11" alt="" border="0"><br></font>
                       <%  
                              }
                            }                          
@@ -752,7 +752,7 @@ if (skus.size() != 0) {
                            
                       </td></TR> <tr valign="top">
                             <td width="200" align="right" class="text10">
-                            <font class="qualityRating"><%=enumRating.getShortDescription()%> - <img src="/media_stat/images/ratings/<%=rating%>.gif"  name="rating" width="59"  height="11" alt="" border="0"></font>                            
+                            <font class="qualityRating"><%=enumRating.getShortDescription()%> - <img src="/media_stat/images/ratings/product_<%=rating%>.gif"  name="rating" width="59"  height="11" alt="" border="0"></font>                            
                             </td></tr><td width="200" align="right" class="text10">
                       <%  
                                 }
@@ -783,7 +783,7 @@ if (skus.size() != 0) {
                 		            System.out.println(" rating in display format  :"+rating);                	                                  
                            
                       %>
-                            <font class="qualityRating"><%=enumRating.getShortDescription()%> - <img src="/media_stat/images/ratings/<%=rating%>.gif"  name="rating" width="59"  height="11" alt="" border="0"></font>                            
+                            <font class="qualityRating"><%=enumRating.getShortDescription()%> - <img src="/media_stat/images/ratings/product_<%=rating%>.gif"  name="rating" width="59"  height="11" alt="" border="0"></font>                            
                             </td></tr><td width="200" align="right" class="text10">
                       <%  
                                 }
