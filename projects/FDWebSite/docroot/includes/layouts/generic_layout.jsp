@@ -30,6 +30,7 @@
 
 String catId = request.getParameter("catId"); 
 String deptId = request.getParameter("deptId"); 
+System.out.println(" Department ::XX"+deptId);
 boolean isDepartment = false;
 String trkCode = "";
 
@@ -186,7 +187,7 @@ if ((displayThing instanceof ProductModel) ||  showSelf) {
   %>
   <fd:ProduceRatingCheck>
   <%
-   if (displayObj.getRating()!=null) { 
+   if (displayObj.getRating()!=null && displayObj.getRating().trim().length()>0) { 
         tblCells.append("<br><font class=\"center\">");        
         tblCells.append("<img src=\"");
         tblCells.append("/media_stat/images/ratings/"+displayObj.getRating()+".gif");
