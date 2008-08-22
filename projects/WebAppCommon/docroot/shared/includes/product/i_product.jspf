@@ -516,9 +516,9 @@ if (skus.size() != 0) {
                 		        System.out.println(" rating in display format  :"+rating);
                 	       
                            
-                           
+                           // Single product rating
                       %>
-                            <br><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0" hspace="0" vspace="0"><br><font class="qualityRating"><%=enumRating.getShortDescription()%> - <img src="/media_stat/images/ratings/product_<%=rating%>.gif"  name="rating" width="59"  height="11" alt="" border="0"><br></font>
+                            <table><tr valign="middle"><td class="qualityRating"><%=enumRating.getShortDescription()%> - </td><td style="padding-top:1px;"><img src="/media_stat/images/ratings/product_<%=rating%>.gif" name="rating" height="11" alt="<%=rating%>" border="0"></td></tr></table>
                       <%  
                              }
                            }                          
@@ -645,7 +645,7 @@ if (skus.size() != 0) {
                         </td>
                     </tr>
                 <%
-                }
+                } // hasSecondaryDomain
                 %>
                 <logic:iterate id="sku" collection="<%= group %>" type="SkuModel">
                     <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
@@ -664,7 +664,7 @@ if (skus.size() != 0) {
                                     labelNolink += " <b>(" + optDomainValue.getLabel() +")</b>";
                                     labelLink2 = optDomainValue.getLabel();
                                 }
-                            }
+                            } 
                             String priceLabel = currencyFormatter.format(productInfo.getDefaultPrice());
                             String priceUnit = "/" + productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
                             %>
@@ -675,123 +675,115 @@ if (skus.size() != 0) {
                             </fd:ErrorHandler>
                             <tr valign="top">
                             <td width="200" align="right" class="text10">
-                            
-                     
-
-                            <%
-                            if (!hasSecondaryDomain) {
-                                if (productNode.getAttribute("FDDEF_GRADE")!=null) {
-                                    TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_GRADE").getValue();
-                                    EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
-                                    String path = popup + "&attrib=FDDEF_GRADE" + "&tmpl=" + tm.getPopupSize();
-                                    
-                                    System.out.println("priDomainValue.getLabel().toUpperCase() :"+priDomainValue.getLabel().toUpperCase());
-                                    
-                                    %>
-                                    <b><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= priDomainValue.getLabel().toUpperCase() %></a><%= labelNolink %></b>
-                                    <%
-                                } else if (productNode.getAttribute("FDDEF_SOURCE")!=null) {
-                                    TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_SOURCE").getValue();
-                                    EnumPopupType popupType = EnumPopupType.getPopupType(tm.getPopupSize());
-                                    String path = popup + "&attrib=FDDEF_SOURCE" + "&tmpl=" + tm.getPopupSize();
-                                    System.out.println("priDomainValue.getLabel().toUpperCase() :"+priDomainValue.getLabel().toUpperCase());
-                                    %>
-                                    <b><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= priDomainValue.getLabel().toUpperCase() %></a><%= labelNolink %></b>
-                                    <%
-                                } else if (productNode.getAttribute("FDDEF_FRENCHING")!=null) {
-                                    TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_FRENCHING").getValue();
-                                    EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
-                                    String path = popup + "&attrib=FDDEF_FRENCHING" + "&tmpl=" + tm.getPopupSize();
-                                    System.out.println("priDomainValue.getLabel().toUpperCase() :"+priDomainValue.getLabel().toUpperCase());
-                                    %>
-                                    <b><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= priDomainValue.getLabel().toUpperCase() %></a><%= labelNolink %></b>
-                                    <%
-                                } else {
-                                    System.out.println("priDomainValue.getLabel().toUpperCase() :"+priDomainValue.getLabel().toUpperCase());
-                                    %>
-                                    <b><%= priDomainValue.getLabel().toUpperCase() %> <%= labelNolink %></b>
-                                    <%
-                                }
-
-                                if (hasSingleSalesUnit && !isSoldByLB && (!salesUnitsMatch || !salesUnitDescrsMatch)) {
-                                    String suDescr = product.getSalesUnits()[0].getDescription();
-                                    
-                                    System.out.println("hasSingleSalesUnit :"+hasSingleSalesUnit);
-                                    
-                                    if (!"nm".equalsIgnoreCase(suDescr)) {
-                                        %><%= suDescr %><%
-                                    }
-                                }
-
-                                if (!allSamePrice) {
-                                    %>
-                                    <font class="productPagePrimaryVarPrice"><%= priceLabel %></font><font class="productPagePrimaryVarPriceUnit"><%=priceUnit%></font>
-                                    <%
-                                }
-
-                                %><%@ include file="/shared/includes/product/i_scaled_prices.jspf" %>
-                           
-                       <input type="radio" name="skuCode" value="<%= sku.getSkuCode() %>" onClick="pricing.setSKU(this.value);" <% if (defaultSku == sku) out.print("checked"); %>><br></td>
-                            </tr><br>                           
-                                
-                                                     <fd:ProduceRatingCheck>
+								<%
+////////////////////////////////////////////////////////////////////////////////////////////////////////////								
+								if (!hasSecondaryDomain) {
+									if (productNode.getAttribute("FDDEF_GRADE")!=null) {
+										TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_GRADE").getValue();
+										EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
+										String path = popup + "&attrib=FDDEF_GRADE" + "&tmpl=" + tm.getPopupSize();
+										
+										System.out.println("priDomainValue.getLabel().toUpperCase() :"+priDomainValue.getLabel().toUpperCase());
+										
+										%>
+										<b><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= priDomainValue.getLabel().toUpperCase() %></a><%= labelNolink %></b>
+										<%
+									} else if (productNode.getAttribute("FDDEF_SOURCE")!=null) {
+										TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_SOURCE").getValue();
+										EnumPopupType popupType = EnumPopupType.getPopupType(tm.getPopupSize());
+										String path = popup + "&attrib=FDDEF_SOURCE" + "&tmpl=" + tm.getPopupSize();
+										System.out.println("priDomainValue.getLabel().toUpperCase() :"+priDomainValue.getLabel().toUpperCase());
+										%>
+										<b><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= priDomainValue.getLabel().toUpperCase() %></a><%= labelNolink %></b>
+										<%
+									} else if (productNode.getAttribute("FDDEF_FRENCHING")!=null) {
+										TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_FRENCHING").getValue();
+										EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
+										String path = popup + "&attrib=FDDEF_FRENCHING" + "&tmpl=" + tm.getPopupSize();
+										System.out.println("priDomainValue.getLabel().toUpperCase() :"+priDomainValue.getLabel().toUpperCase());
+										%>
+										<b><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= priDomainValue.getLabel().toUpperCase() %></a><%= labelNolink %></b>
+										<%
+									} else {
+										System.out.println("priDomainValue.getLabel().toUpperCase() :"+priDomainValue.getLabel().toUpperCase());
+										%>
+										<b><%= priDomainValue.getLabel().toUpperCase() %> <%= labelNolink %></b>
+										<%
+									}
+	
+									if (hasSingleSalesUnit && !isSoldByLB && (!salesUnitsMatch || !salesUnitDescrsMatch)) {
+										String suDescr = product.getSalesUnits()[0].getDescription();
+										
+										System.out.println("hasSingleSalesUnit :"+hasSingleSalesUnit);
+										
+										if (!"nm".equalsIgnoreCase(suDescr)) {
+											%><%= suDescr %><%
+										}
+									} 
+	
+									if (!allSamePrice) {
+										%>
+										<font class="productPagePrimaryVarPrice"><%= priceLabel %></font><font class="productPagePrimaryVarPriceUnit"><%=priceUnit%></font>
+										<%
+									}
+	
+									%><%@ include file="/shared/includes/product/i_scaled_prices.jspf" %>
+							   
+						   <input type="radio" name="skuCode" value="<%= sku.getSkuCode() %>" onClick="pricing.setSKU(this.value);" <% if (defaultSku == sku) out.print("checked"); %>><br>
+        
+                   <fd:ProduceRatingCheck>
                    
                     <% String skuCodeRat=productInfo.getSkuCode();                 
-                        if(skuCodeRat.startsWith("FRU") || skuCodeRat.startsWith("VEG") || skuCodeRat.startsWith("YEL"))
-            	        {
-                        if (productInfo.getRating()!=null && productInfo.getRating().trim().length()>0) { 
-                            String rating="";
-                            System.out.println("productinfo rating :"+productInfo.getRating());
-                                                      
-                                EnumOrderLineRating enumRating=EnumOrderLineRating.getEnumByStatusCode(productInfo.getRating());
-                                if(enumRating!=null && enumRating.isEligibleToDisplay()){
-                                    rating=enumRating.getStatusCodeInDisplayFormat();
-                		            System.out.println(" rating in display format  :"+rating);                	                                  
-                           
+                        if(skuCodeRat.startsWith("FRU") || skuCodeRat.startsWith("VEG") || skuCodeRat.startsWith("YEL")) {
+							if (productInfo.getRating()!=null && productInfo.getRating().trim().length()>0) { 
+								String rating="";
+								System.out.println("productinfo rating :"+productInfo.getRating());
+														  
+									EnumOrderLineRating enumRating=EnumOrderLineRating.getEnumByStatusCode(productInfo.getRating());
+									if(enumRating!=null && enumRating.isEligibleToDisplay()){
+										rating=enumRating.getStatusCodeInDisplayFormat();
+										System.out.println(" rating in display format  :"+rating);                	                                  
+							   
                       %>
-                           
-                      </td></TR> <tr valign="top">
-                            <td width="200" align="right" class="text10">
-                            <font class="qualityRating"><%=enumRating.getShortDescription()%> - <img src="/media_stat/images/ratings/product_<%=rating%>.gif"  name="rating" width="59"  height="11" alt="" border="0"></font>                            
-                            </td></tr><td width="200" align="right" class="text10">
+                            	<table><tr valign="middle"><td class="qualityRating"><%=enumRating.getShortDescription()%> - </td><td style="padding-top:1px;"><img src="/media_stat/images/ratings/product_<%=rating%>.gif" name="rating" height="11" alt="<%=rating%>" border="0"></td></tr></table>                            
+ 						</td>
+                        </tr>
+ 
+						</tr><td width="200" align="right" class="text10">
                       <%  
-                                }
+                                	}
                            
-                         } 
+                         	} 
                          }
                       %>                        
                       </fd:ProduceRatingCheck>                                
-
-                                
-                                <%
-                            } else {
-                            
-%>                            
+             
+                                <% 
+	/////////////////////////////////////////////////////////////////////////////////////							
+								} else { // for !hasSecondaryDomain %>                            
                             
                      <fd:ProduceRatingCheck>
                    
                     <% String skuCodeRat=productInfo.getSkuCode();                 
-                        if(skuCodeRat.startsWith("FRU") || skuCodeRat.startsWith("VEG") || skuCodeRat.startsWith("YEL"))
-            	        {
-                        if (productInfo.getRating()!=null && productInfo.getRating().trim().length()>0) { 
-                            String rating="";
-                            System.out.println("productinfo rating :"+productInfo.getRating());
-                                                      
-                                EnumOrderLineRating enumRating=EnumOrderLineRating.getEnumByStatusCode(productInfo.getRating());
-                                if(enumRating!=null && enumRating.isEligibleToDisplay()){
-                                    rating=enumRating.getStatusCodeInDisplayFormat();
-                		            System.out.println(" rating in display format  :"+rating);                	                                  
-                           
-                      %>
-                            <font class="qualityRating"><%=enumRating.getShortDescription()%> - <img src="/media_stat/images/ratings/product_<%=rating%>.gif"  name="rating" width="59"  height="11" alt="" border="0"></font>                            
-                            </td></tr><td width="200" align="right" class="text10">
-                      <%  
-                                }
-                           
-                         } 
+                        if(skuCodeRat.startsWith("FRU") || skuCodeRat.startsWith("VEG") || skuCodeRat.startsWith("YEL")) {
+							if (productInfo.getRating()!=null && productInfo.getRating().trim().length()>0) { 
+								String rating="";
+								System.out.println("productinfo rating :"+productInfo.getRating());
+														  
+									EnumOrderLineRating enumRating=EnumOrderLineRating.getEnumByStatusCode(productInfo.getRating());
+									if(enumRating!=null && enumRating.isEligibleToDisplay()){
+										rating=enumRating.getStatusCodeInDisplayFormat();
+										System.out.println(" rating in display format  :"+rating);                	                                  
+							   
+						  %>
+								<table><tr valign="middle"><td class="qualityRating"><%=enumRating.getShortDescription()%> - </td><td style="padding-top:1px;"><img src="/media_stat/images/ratings/product_<%=rating%>.gif" name="rating" height="11" alt="<%=rating%>" border="0"></td></tr></table>                            
+								</td></tr><td width="200" align="right" class="text10">
+						  <%  
+									}
+                         	} 
                          }
                       %>                        
-                      </fd:ProduceRatingCheck>                                
+                      </fd:ProduceRatingCheck>                          
                             
 <%                            
                                 if (productNode.getAttribute("FDDEF_RIPENESS")!=null && !"".equals(labelLink2)) {
@@ -816,7 +808,7 @@ if (skus.size() != 0) {
                                     %> <font class="productPageSecondaryVarPrice"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font><font class="productPageSecondaryVarPriceUnit">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font><%
                                 }
                                 if (product.getPricing().getScaleDisplay().length==0) {
-                                    %><!-- <br><br> --><%
+                                    %><%
                                 }
                                 %><%@ include file="/shared/includes/product/i_scaled_prices.jspf" %><%
                                 Date earliestDate = sku.getEarliestAvailability();
@@ -832,15 +824,16 @@ if (skus.size() != 0) {
                                     %><font class="text11rbold">*</font><%
                                 } %>
                                     <input type="radio" name="skuCode" value="<%= sku.getSkuCode() %>" onClick="pricing.setSKU(this.value);" <% if (defaultSku == sku) out.print("checked"); %>><br></td>
-                            </tr><br><br>
+                            </tr><br>
                                 
-                           <% }
+                           <% } // for !hasSecondaryDomain
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////						   
                             %>
 
                         </fd:FDProduct>
                     </fd:FDProductInfo>
                 </logic:iterate>
-                </TABLE>
+                </table>
                 <%
             }
         }
