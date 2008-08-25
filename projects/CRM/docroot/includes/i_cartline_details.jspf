@@ -90,7 +90,7 @@
 			}
 		%>
 		<%  if(cartLine.getProduceRating()!=null && isRightSkuCode && cartLine.getProduceRating().isEligibleToDisplay()){ %>
-			&nbsp;<img src="/media_stat/images/ratings/<%=cartLine.getProduceRating().getStatusCodeInDisplayFormat()%>.gif"  name="rating" width="59"  height="11" alt="" border="0">
+			&nbsp;<img src="/media_stat/images/ratings/product_<%=cartLine.getProduceRating().getStatusCodeInDisplayFormat()%>.gif"  name="rating" alt="<%=cartLine.getProduceRating().getStatusCodeInDisplayFormat()%>"  height="11" border="0">
 		<% } %> 
     </td>
     <td width="6%" align="center"> 
