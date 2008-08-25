@@ -69,9 +69,10 @@ if("fru".equals(request.getParameter("deptId")) ||"veg".equals(request.getParame
     FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
     if(user.isProduceRatingEnabled()) {
         keyPrefix=keyPrefix+user.isProduceRatingEnabled()+"_";
-        ttl=300;
+        ttl=180;
     }
 }
+
 %>
 <oscache:cache key='<%= keyPrefix+request.getQueryString() %>'  time='<%=ttl%>'>
 

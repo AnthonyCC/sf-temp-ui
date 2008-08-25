@@ -81,7 +81,9 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 				products.addAll(_products);
 			}
 		}
-		//System.out.println("Peak produce :"+products);
+		
+        products=removeDuplicates(products);
+//      System.out.println("Peak produce :"+products);
 		if(products.size()<MIN_PEAK_PRODUCE_COUNT) {
 			return new ArrayList();
 		} 
@@ -102,6 +104,18 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 		
 
 	}
+	
+	private List removeDuplicates(List products) {
+		
+		Set set = new HashSet();
+		set.addAll(products);
+		if(set.size() < products.size()) {
+			products.clear();
+			products.addAll(set);
+		}
+		return products;
+	}
+
 	
 	private void setPeakProduce(CategoryModel category, List products) throws FDResourceException {
 
@@ -133,6 +147,9 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 				sku=(SkuModel)skus.get(i);
 				if(sku.isDiscontinued() || sku.isOutOfSeason() || sku.isTempUnavailable() ||sku.isUnavailable()) {
 					continue;
+				}
+				if(sku.getSkuCode().equals("FRU0005209")) {
+					System.out.println("Sku :"+sku.getSkuCode()+" is available :"+sku.isAvailableWithin(1));
 				}
 				try {
 					rating=sku.getProductInfo().getRating();
