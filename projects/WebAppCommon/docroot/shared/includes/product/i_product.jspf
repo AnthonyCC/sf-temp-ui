@@ -518,7 +518,7 @@ if (skus.size() != 0) {
                            
                            // Single product rating
                       %>
-                            <table><tr valign="middle"><td class="qualityRating"><%=enumRating.getShortDescription()%> - </td><td style="padding-top:1px;"><img src="/media_stat/images/ratings/product_<%=rating%>.gif" name="rating" height="11" alt="<%=rating%>" border="0"></td></tr></table>
+                            <table align="right" cellpadding="0" cellspacing="0"><tr valign="middle"><td class="qualityRating" style="padding-top:3px;"><%=enumRating.getShortDescription()%> - </td><td style="padding-top:4px;"><img src="/media_stat/images/ratings/product_<%=rating%>.gif" name="rating" height="11" alt="<%=rating%>" border="0"></td></tr></table>
                       <%  
                              }
                            }                          
@@ -607,7 +607,7 @@ if (skus.size() != 0) {
                 
                     %>
                     <tr valign="bottom">
-                        <td colspan="2" align="right">
+                        <td colspan="2" align="right"><br>
                             <%
                             if (productNode.getAttribute("FDDEF_SOURCE")!=null) {
                                 TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_SOURCE").getValue();
@@ -641,7 +641,6 @@ if (skus.size() != 0) {
                                 <%
                             }
                             %>
-                            <br><br>
                         </td>
                     </tr>
                 <%
@@ -673,8 +672,35 @@ if (skus.size() != 0) {
                                     <td colspan="2" align="right"><span class="text11rbold"><%=errorMsg%></span></td>
                                 </tr>
                             </fd:ErrorHandler>
+				    
+				<%-- Need extra row for rating that spans 2 cols --% >
+					<fd:ProduceRatingCheck>
+                   
+				    < % String skuCodeRat=productInfo.getSkuCode();                 
+					if(skuCodeRat.startsWith("FRU") || skuCodeRat.startsWith("VEG") || skuCodeRat.startsWith("YEL")) {
+									if (productInfo.getRating()!=null && productInfo.getRating().trim().length()>0) { 
+										String rating="";
+										System.out.println("productinfo rating :"+productInfo.getRating());
+																  
+											EnumOrderLineRating enumRating=EnumOrderLineRating.getEnumByStatusCode(productInfo.getRating());
+											if(enumRating!=null && enumRating.isEligibleToDisplay()){
+												rating=enumRating.getStatusCodeInDisplayFormat();
+												System.out.println(" rating in display format  :"+rating);                	                                  
+									   
+				      % >
+						<tr><td colspan="2" style="padding-top:5px;" align="right"><table cellpadding="0" cellspacing="0"><tr valign="middle"><td class="qualityRating">< %=enumRating.getShortDescription()% > - </td><td style="padding-top:1px;"><img src="/media_stat/images/ratings/product_< %=rating% >.gif" name="rating" height="11" alt="< %=rating% >" border="0"></td></tr></table></td></tr>					
+					
+				      < %  
+							}
+					   
+						} 
+					 }
+				      % >                        
+				      </fd:ProduceRatingCheck> 
+				< %-- End extra row for rating in scaled prices --%>
+					
                             <tr valign="top">
-                            <td width="200" align="right" class="text10">
+                            <td width="172" align="right" class="text10"><%-- Left side for scaled pricing --%>
 								<%
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////								
 								if (!hasSecondaryDomain) {
@@ -733,7 +759,7 @@ if (skus.size() != 0) {
         
                    <fd:ProduceRatingCheck>
                    
-                    <% String skuCodeRat=productInfo.getSkuCode();                 
+                    <%-- String skuCodeRat=productInfo.getSkuCode();                 
                         if(skuCodeRat.startsWith("FRU") || skuCodeRat.startsWith("VEG") || skuCodeRat.startsWith("YEL")) {
 							if (productInfo.getRating()!=null && productInfo.getRating().trim().length()>0) { 
 								String rating="";
@@ -742,20 +768,21 @@ if (skus.size() != 0) {
 									EnumOrderLineRating enumRating=EnumOrderLineRating.getEnumByStatusCode(productInfo.getRating());
 									if(enumRating!=null && enumRating.isEligibleToDisplay()){
 										rating=enumRating.getStatusCodeInDisplayFormat();
-										System.out.println(" rating in display format  :"+rating);                	                                  
+										System.out.println(" rating in display format  :"+rating);    
+				// Scaled pricing NO secondary domains							
 							   
-                      %>
-                            	<table><tr valign="middle"><td class="qualityRating"><%=enumRating.getShortDescription()%> - </td><td style="padding-top:1px;"><img src="/media_stat/images/ratings/product_<%=rating%>.gif" name="rating" height="11" alt="<%=rating%>" border="0"></td></tr></table>                            
+                      % >
+                            	<table align="right" cellpadding="0" cellspacing="0"><tr valign="middle"><td class="qualityRating">< %=enumRating.getShortDescription()% > - </td><td style="padding-top:1px;"><img src="/media_stat/images/ratings/product_< %=rating% >.gif" name="rating" height="11" alt="< %=rating% >" border="0"></td></tr></table>                            
  						</td>
                         </tr>
  
 						</tr><td width="200" align="right" class="text10">
-                      <%  
+                      < %  
                                 	}
                            
                          	} 
                          }
-                      %>                        
+                      --%>                        
                       </fd:ProduceRatingCheck>                                
              
                                 <% 
@@ -764,7 +791,7 @@ if (skus.size() != 0) {
                             
                      <fd:ProduceRatingCheck>
                    
-                    <% String skuCodeRat=productInfo.getSkuCode();                 
+                    <%-- String skuCodeRat=productInfo.getSkuCode();                 
                         if(skuCodeRat.startsWith("FRU") || skuCodeRat.startsWith("VEG") || skuCodeRat.startsWith("YEL")) {
 							if (productInfo.getRating()!=null && productInfo.getRating().trim().length()>0) { 
 								String rating="";
@@ -775,14 +802,14 @@ if (skus.size() != 0) {
 										rating=enumRating.getStatusCodeInDisplayFormat();
 										System.out.println(" rating in display format  :"+rating);                	                                  
 							   
-						  %>
-								<table><tr valign="middle"><td class="qualityRating"><%=enumRating.getShortDescription()%> - </td><td style="padding-top:1px;"><img src="/media_stat/images/ratings/product_<%=rating%>.gif" name="rating" height="11" alt="<%=rating%>" border="0"></td></tr></table>                            
-								</td></tr><td width="200" align="right" class="text10">
-						  <%  
+						  % >
+								<table><tr valign="middle"><td class="qualityRating">< %=enumRating.getShortDescription()% > - </td><td style="padding-top:1px;"><img src="/media_stat/images/ratings/product_< %=rating% >.gif" name="rating" height="11" alt="< %=rating% >" border="0"></td></tr></table>                            
+								</td></tr>
+						  < %  
 									}
                          	} 
                          }
-                      %>                        
+                      --%>                        
                       </fd:ProduceRatingCheck>                          
                             
 <%                            
@@ -808,7 +835,7 @@ if (skus.size() != 0) {
                                     %> <font class="productPageSecondaryVarPrice"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font><font class="productPageSecondaryVarPriceUnit">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font><%
                                 }
                                 if (product.getPricing().getScaleDisplay().length==0) {
-                                    %><%
+                                    %><br><%
                                 }
                                 %><%@ include file="/shared/includes/product/i_scaled_prices.jspf" %><%
                                 Date earliestDate = sku.getEarliestAvailability();
@@ -822,14 +849,42 @@ if (skus.size() != 0) {
                                 }
                                 if (QuickDateFormat.SHORT_DATE_FORMATTER.format(testDate.getTime()).compareTo(QuickDateFormat.SHORT_DATE_FORMATTER.format(earliestDate)) < 0) {
                                     %><font class="text11rbold">*</font><%
-                                } %>
-                                    <input type="radio" name="skuCode" value="<%= sku.getSkuCode() %>" onClick="pricing.setSKU(this.value);" <% if (defaultSku == sku) out.print("checked"); %>><br></td>
-                            </tr><br>
+                                } %><%-- end of left side for scaled pricing --%>
+                                </td>
+				<td width="15"><%-- radio button for scaled pricing --%><input type="radio" name="skuCode" value="<%= sku.getSkuCode() %>" onClick="pricing.setSKU(this.value);" <% if (defaultSku == sku) out.print("checked"); %>><br></td>
+                            </tr>
                                 
                            <% } // for !hasSecondaryDomain
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////						   
                             %>
 
+			   <%-- Need extra row for rating that spans 2 cols --%>
+					<fd:ProduceRatingCheck>
+                   
+				    <% String skuCodeRat=productInfo.getSkuCode();                 
+					if(skuCodeRat.startsWith("FRU") || skuCodeRat.startsWith("VEG") || skuCodeRat.startsWith("YEL")) {
+									if (productInfo.getRating()!=null && productInfo.getRating().trim().length()>0) { 
+										String rating="";
+										System.out.println("productinfo rating :"+productInfo.getRating());
+																  
+											EnumOrderLineRating enumRating=EnumOrderLineRating.getEnumByStatusCode(productInfo.getRating());
+											if(enumRating!=null && enumRating.isEligibleToDisplay()){
+												rating=enumRating.getStatusCodeInDisplayFormat();
+												System.out.println(" rating in display format  :"+rating);                	                                  
+									   
+				      %>
+						<tr><td colspan="2" style="padding-bottom:5px;" align="right"><table cellpadding="0" cellspacing="0"><tr valign="middle"><td class="qualityRating"><%=enumRating.getShortDescription()%> - </td><td style="padding-top:1px;"><img src="/media_stat/images/ratings/product_<%=rating%>.gif" name="rating" height="11" alt="<%=rating%>" border="0"></td></tr></table></td></tr>					
+					
+				      <%  
+							}
+					   
+						} 
+					 }
+				      %>                        
+				      </fd:ProduceRatingCheck> 
+				<%-- End extra row for rating in scaled prices --%>
+					
+			   
                         </fd:FDProduct>
                     </fd:FDProductInfo>
                 </logic:iterate>
