@@ -514,8 +514,6 @@ if (skus.size() != 0) {
                             if(enumRating!=null && enumRating.isEligibleToDisplay()){
                                  rating=enumRating.getStatusCodeInDisplayFormat();
                 		        System.out.println(" rating in display format  :"+rating);
-                	       
-                           
                            // Single product rating
                       %>
                             <table align="right" cellpadding="0" cellspacing="0"><tr valign="middle"><td class="qualityRating" style="padding-top:3px;"><%=enumRating.getShortDescription()%> - </td><td style="padding-top:4px;"><img src="/media_stat/images/ratings/product_<%=rating%>.gif" name="rating" height="11" alt="<%=rating%>" border="0"></td></tr></table>
@@ -673,7 +671,9 @@ if (skus.size() != 0) {
                                 </tr>
                             </fd:ErrorHandler>
 				    
-				<%-- Need extra row for rating that spans 2 cols --% >
+				<%-- Need extra row for rating that spans 2 cols 
+				// Top placement commented OUT
+				--% >
 					<fd:ProduceRatingCheck>
                    
 				    < % String skuCodeRat=productInfo.getSkuCode();                 
@@ -759,7 +759,7 @@ if (skus.size() != 0) {
         
                    <fd:ProduceRatingCheck>
                    
-                    <%-- String skuCodeRat=productInfo.getSkuCode();                 
+                    <%-- //commented OUT String skuCodeRat=productInfo.getSkuCode();                 
                         if(skuCodeRat.startsWith("FRU") || skuCodeRat.startsWith("VEG") || skuCodeRat.startsWith("YEL")) {
 							if (productInfo.getRating()!=null && productInfo.getRating().trim().length()>0) { 
 								String rating="";
@@ -785,13 +785,11 @@ if (skus.size() != 0) {
                       --%>                        
                       </fd:ProduceRatingCheck>                                
              
-                                <% 
-	/////////////////////////////////////////////////////////////////////////////////////							
-								} else { // for !hasSecondaryDomain %>                            
+			<% 	} else { // for !hasSecondaryDomain %>                            
                             
                      <fd:ProduceRatingCheck>
                    
-                    <%-- String skuCodeRat=productInfo.getSkuCode();                 
+                    <%-- // commented OUT String skuCodeRat=productInfo.getSkuCode();                 
                         if(skuCodeRat.startsWith("FRU") || skuCodeRat.startsWith("VEG") || skuCodeRat.startsWith("YEL")) {
 							if (productInfo.getRating()!=null && productInfo.getRating().trim().length()>0) { 
 								String rating="";
@@ -803,7 +801,7 @@ if (skus.size() != 0) {
 										System.out.println(" rating in display format  :"+rating);                	                                  
 							   
 						  % >
-								<table><tr valign="middle"><td class="qualityRating">< %=enumRating.getShortDescription()% > - </td><td style="padding-top:1px;"><img src="/media_stat/images/ratings/product_< %=rating% >.gif" name="rating" height="11" alt="< %=rating% >" border="0"></td></tr></table>                            
+								<table cellpadding="0"><tr valign="middle"><td class="qualityRating">< %=enumRating.getShortDescription()% > - </td><td style="padding-top:1px;"><img src="/media_stat/images/ratings/product_< %=rating% >.gif" name="rating" height="11" alt="< %=rating% >" border="0"></td></tr></table>                            
 								</td></tr>
 						  < %  
 									}
@@ -858,7 +856,9 @@ if (skus.size() != 0) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////						   
                             %>
 
-			   <%-- Need extra row for rating that spans 2 cols --%>
+			   <%-- Need extra row for rating that spans 2 cols 
+					   // Tiered pricing display - with radio buttons - bottom placement
+			   --%>
 					<fd:ProduceRatingCheck>
                    
 				    <% String skuCodeRat=productInfo.getSkuCode();                 
