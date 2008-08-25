@@ -497,8 +497,7 @@ if (skus.size() != 0) {
                         <%= salesUnitDescr %> -
                     <%  }
                       } %>
-                    <font class="productPageSinglePrice"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font><font class="productPageSinglePriceUnit">/<%=productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
-                    <br></font>
+                    <font class="productPageSinglePrice"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font><font class="productPageSinglePriceUnit">/<%=productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font></font><br>
                     <%
                 }
                 %>
@@ -516,7 +515,7 @@ if (skus.size() != 0) {
                 		        System.out.println(" rating in display format  :"+rating);
                            // Single product rating
                       %>
-                            <table align="right" cellpadding="0" cellspacing="0"><tr valign="middle"><td class="qualityRating" style="padding-top:3px;"><%=enumRating.getShortDescription()%> - </td><td style="padding-top:4px;"><img src="/media_stat/images/ratings/product_<%=rating%>.gif" name="rating" height="11" alt="<%=rating%>" border="0"></td></tr></table>
+                            <table align="right" cellpadding="0" cellspacing="0" border="0"><tr valign="middle"><td class="qualityRating" style="padding-top:3px;"><%=enumRating.getShortDescription()%> - </td><td style="padding-top:4px;"><img src="/media_stat/images/ratings/product_<%=rating%>.gif" name="rating" height="11" alt="<%=rating%>" border="0"></td></tr></table>
                       <%  
                              }
                            }                          
@@ -598,7 +597,7 @@ if (skus.size() != 0) {
                 }
 
                 %>
-                <table width="187" cellpadding="1" cellspacing="1" border="0"> <%-- Nested Table 2 Options list - radio buttions/ multiple SKUs --%>
+                <table width="185" cellpadding="0" cellspacing="2" border="0"> <%-- Nested Table 2 Options list - radio buttions/ multiple SKUs --%>
                 <%
                 if (hasSecondaryDomain) {
                     System.out.println("It has secondrary domain144545");
@@ -670,37 +669,9 @@ if (skus.size() != 0) {
                                     <td colspan="2" align="right"><span class="text11rbold"><%=errorMsg%></span></td>
                                 </tr>
                             </fd:ErrorHandler>
-				    
-				<%-- Need extra row for rating that spans 2 cols 
-				// Top placement commented OUT
-				--% >
-					<fd:ProduceRatingCheck>
-                   
-				    < % String skuCodeRat=productInfo.getSkuCode();                 
-					if(skuCodeRat.startsWith("FRU") || skuCodeRat.startsWith("VEG") || skuCodeRat.startsWith("YEL")) {
-									if (productInfo.getRating()!=null && productInfo.getRating().trim().length()>0) { 
-										String rating="";
-										System.out.println("productinfo rating :"+productInfo.getRating());
-																  
-											EnumOrderLineRating enumRating=EnumOrderLineRating.getEnumByStatusCode(productInfo.getRating());
-											if(enumRating!=null && enumRating.isEligibleToDisplay()){
-												rating=enumRating.getStatusCodeInDisplayFormat();
-												System.out.println(" rating in display format  :"+rating);                	                                  
-									   
-				      % >
-						<tr><td colspan="2" style="padding-top:5px;" align="right"><table cellpadding="0" cellspacing="0"><tr valign="middle"><td class="qualityRating">< %=enumRating.getShortDescription()% > - </td><td style="padding-top:1px;"><img src="/media_stat/images/ratings/product_< %=rating% >.gif" name="rating" height="11" alt="< %=rating% >" border="0"></td></tr></table></td></tr>					
-					
-				      < %  
-							}
-					   
-						} 
-					 }
-				      % >                        
-				      </fd:ProduceRatingCheck> 
-				< %-- End extra row for rating in scaled prices --%>
 					
                             <tr valign="top">
-                            <td width="172" align="right" class="text10"><%-- Left side for scaled pricing --%>
+                            <td width="<%=!hasSecondaryDomain ? "185":"170"%>" align="right" class="text10"><%-- Left side for scaled pricing --%>
 								<%
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////								
 								if (!hasSecondaryDomain) {
@@ -756,61 +727,9 @@ if (skus.size() != 0) {
 									%><%@ include file="/shared/includes/product/i_scaled_prices.jspf" %>
 							   
 						   <input type="radio" name="skuCode" value="<%= sku.getSkuCode() %>" onClick="pricing.setSKU(this.value);" <% if (defaultSku == sku) out.print("checked"); %>><br>
-        
-                   <fd:ProduceRatingCheck>
-                   
-                    <%-- //commented OUT String skuCodeRat=productInfo.getSkuCode();                 
-                        if(skuCodeRat.startsWith("FRU") || skuCodeRat.startsWith("VEG") || skuCodeRat.startsWith("YEL")) {
-							if (productInfo.getRating()!=null && productInfo.getRating().trim().length()>0) { 
-								String rating="";
-								System.out.println("productinfo rating :"+productInfo.getRating());
-														  
-									EnumOrderLineRating enumRating=EnumOrderLineRating.getEnumByStatusCode(productInfo.getRating());
-									if(enumRating!=null && enumRating.isEligibleToDisplay()){
-										rating=enumRating.getStatusCodeInDisplayFormat();
-										System.out.println(" rating in display format  :"+rating);    
-				// Scaled pricing NO secondary domains							
-							   
-                      % >
-                            	<table align="right" cellpadding="0" cellspacing="0"><tr valign="middle"><td class="qualityRating">< %=enumRating.getShortDescription()% > - </td><td style="padding-top:1px;"><img src="/media_stat/images/ratings/product_< %=rating% >.gif" name="rating" height="11" alt="< %=rating% >" border="0"></td></tr></table>                            
- 						</td>
-                        </tr>
- 
-						</tr><td width="200" align="right" class="text10">
-                      < %  
-                                	}
-                           
-                         	} 
-                         }
-                      --%>                        
-                      </fd:ProduceRatingCheck>                                
              
-			<% 	} else { // for !hasSecondaryDomain %>                            
-                            
-                     <fd:ProduceRatingCheck>
-                   
-                    <%-- // commented OUT String skuCodeRat=productInfo.getSkuCode();                 
-                        if(skuCodeRat.startsWith("FRU") || skuCodeRat.startsWith("VEG") || skuCodeRat.startsWith("YEL")) {
-							if (productInfo.getRating()!=null && productInfo.getRating().trim().length()>0) { 
-								String rating="";
-								System.out.println("productinfo rating :"+productInfo.getRating());
-														  
-									EnumOrderLineRating enumRating=EnumOrderLineRating.getEnumByStatusCode(productInfo.getRating());
-									if(enumRating!=null && enumRating.isEligibleToDisplay()){
-										rating=enumRating.getStatusCodeInDisplayFormat();
-										System.out.println(" rating in display format  :"+rating);                	                                  
-							   
-						  % >
-								<table cellpadding="0"><tr valign="middle"><td class="qualityRating">< %=enumRating.getShortDescription()% > - </td><td style="padding-top:1px;"><img src="/media_stat/images/ratings/product_< %=rating% >.gif" name="rating" height="11" alt="< %=rating% >" border="0"></td></tr></table>                            
-								</td></tr>
-						  < %  
-									}
-                         	} 
-                         }
-                      --%>                        
-                      </fd:ProduceRatingCheck>                          
-                            
-<%                            
+			<% 	} else { // for !hasSecondaryDomain 
+                                                        
                                 if (productNode.getAttribute("FDDEF_RIPENESS")!=null && !"".equals(labelLink2)) {
                                     TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_RIPENESS").getValue();
                                     EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
@@ -871,11 +790,17 @@ if (skus.size() != 0) {
 											if(enumRating!=null && enumRating.isEligibleToDisplay()){
 												rating=enumRating.getStatusCodeInDisplayFormat();
 												System.out.println(" rating in display format  :"+rating);                	                                  
-									   
+					// if !hasSecondaryDomains don't break into new row
+						if (hasSecondaryDomain) {								
 				      %>
-						<tr><td colspan="2" style="padding-bottom:5px;" align="right"><table cellpadding="0" cellspacing="0"><tr valign="middle"><td class="qualityRating"><%=enumRating.getShortDescription()%> - </td><td style="padding-top:1px;"><img src="/media_stat/images/ratings/product_<%=rating%>.gif" name="rating" height="11" alt="<%=rating%>" border="0"></td></tr></table></td></tr>					
-					
-				      <%  
+							<tr><td colspan="2" style="padding-bottom:8px;" align="right">
+					<% } %>		
+						<table cellpadding="0" cellspacing="0"><tr valign="middle"><td class="qualityRating"><span class="qualityRating"><%=enumRating.getShortDescription()%> - </span></td><td style="padding-top:1px;"><img src="/media_stat/images/ratings/product_<%=rating%>.gif" name="rating" height="11" alt="<%=rating%>" border="0"></td></tr></table>
+					<% if (hasSecondaryDomain) {%>			
+						</td></tr>					
+				      <%  	} else { %>
+						<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"></td></tr>
+					<% }
 							}
 					   
 						} 
@@ -1118,10 +1043,11 @@ if (skus.size() != 0) {
         %>
     </logic:iterate>
     <%-- start render quantity --%>
-<%  if (!isWineLayout) {  %>  
-    <img src="/media_stat/images/layout/333333.gif" width="187" height="1" border="0" VSPACE="10">
+<%  if (!isWineLayout) {  
+	// top black line after description
+	%>  
+    <br><img src="/media_stat/images/layout/333333.gif" width="185" height="1" border="0" vspace="10">
 <%  } %>    
-    <br>
     <fd:ErrorHandler result='<%=result%>' name='quantity' id='errorMsg'>
         <span class="text11rbold"><%=errorMsg%></span><br>
     </fd:ErrorHandler>
@@ -1387,8 +1313,10 @@ if (skus.size() != 0) {
 		<% if(!CartName.MODIFY_CART.equals(cartMode)) {%>
 				<%@include file="/shared/includes/product/i_wine_rating_review.jspf"%>
 		<%}%>
-<%  } else  {   %>
-    <img src="/media_stat/images/layout/333333.gif" width="187" height="1" border="0" vspace="10"><br>
+<%  } else  {   
+	// bottom black line after add to cart
+	%>
+	<img src="/media_stat/images/layout/333333.gif" width="185" height="1" border="0" vspace="10">
 <%  }  %>
     <%-- START INLCUDES AT BOTTOM OF i_product --%>
     <%@ include file="/shared/includes/product/i_minmax_note.jspf" %>
