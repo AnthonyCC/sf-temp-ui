@@ -34,11 +34,7 @@
 				 %>
 				 <td valign="top" width="<%=adjustedImgWidth%>" align="center" style="padding-left:5px; padding-right:5px;padding-bottom:10px;">
 					<%  if (displayObj.getRating()!=null && displayObj.getRating().trim().length()>0) { %>          
-							<img src="/media_stat/images/ratings/<%=displayObj.getRating()%>.gif" name="rating" width="59" height="11" border="0" vspace="3"><% } %><br><a href="<%=displayObj.getItemURL()%>&trk=dept" class="text11"><%=displayObj.getItemName()%></a>
-					<%  if (displayObj.getPrice()!=null) { %>
-							<br><span class="price"><%=displayObj.getPrice()%></span>
-					<%  } %>
-				   </td>
+						<img src="/media_stat/images/ratings/<%=displayObj.getRating()%>.gif" name="rating" width="59" height="11" border="0" vspace="3"><% } %><br><a href="<%=displayObj.getItemURL()%>&trk=dept" class="text11"><%=displayObj.getItemName()%></a><%  if (displayObj.getPrice()!=null) { %><br><span class="price"><%=displayObj.getPrice()%></span><%  } %></td>
 				</logic:iterate>
 			</tr>
 		</table>
