@@ -134,13 +134,15 @@ boolean noCache =  (EnumLayoutType.GROCERY_PRODUCT.getId()==layouttype
                     
 
 String keyPrefix="catLayout_";
+int ttl=300;
 FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
 if(user.isProduceRatingEnabled()) {
     keyPrefix=keyPrefix+user.isProduceRatingEnabled()+"_";
+    ttl=180;
 }
 
 %>
-<oscache:cache key='<%= keyPrefix+request.getQueryString() %>' time="300" refresh="<%= noCache %>">
+<oscache:cache key='<%= keyPrefix+request.getQueryString() %>' time='<%=ttl%>' refresh="<%= noCache %>">
 <% try {
 
 int tablewid = noLeftNav ? 550 : 425;
