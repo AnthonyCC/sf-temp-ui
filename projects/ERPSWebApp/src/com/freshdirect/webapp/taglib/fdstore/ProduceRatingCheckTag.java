@@ -26,8 +26,6 @@ public class ProduceRatingCheckTag extends com.freshdirect.framework.webapp.TagS
 		FDSessionUser user = (FDSessionUser) session
 				.getAttribute(SessionName.USER);
 		
-		System.out.println("Inside Produce Rating Check Tag");
-				
 		if (user == null ||  !user.isProduceRatingEnabled()) {
 			return SKIP_BODY;
 		}

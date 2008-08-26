@@ -69,7 +69,6 @@ public class FDCartLineModel extends AbstractCartLine {
 				System.out.println("ol.getSku().getSkuCode() :"+ol.getSku().getSkuCode());
 				FDProductInfo productInfo = FDCachedFactory.getProductInfo(ol.getSku().getSkuCode());
 				EnumOrderLineRating rating=EnumOrderLineRating.getEnumByStatusCode(productInfo.getRating());
-				System.out.println("Setting the Rating :"+rating);
 				ol.setProduceRating(rating);
 			}			
 		} catch (FDResourceException e) {

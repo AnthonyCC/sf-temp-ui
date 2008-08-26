@@ -66,7 +66,7 @@ int templateType = productNode.getAttribute("TEMPLATE_TYPE", 1);
 		<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
 		<%@ include file="/shared/includes/product/i_product_image.jspf" %>
 		<%@ include file="/shared/includes/product/i_product_descriptions.jspf" %>
-	</oscache:cache>
+	    </oscache:cache>
 <% } else { 
 	          SkuModel dfltSku =(SkuModel)productNode.getSkus().get(0);
 		  FDProduct fdprod = dfltSku.getProduct();

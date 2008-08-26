@@ -106,7 +106,6 @@ if (availableList.size() > 0) {
                     }
 %>
 <td width="<%=cellWidth %>"><font class="<%=itemNameFont%>"><a href="<%=displayObj.getItemURL()%>&trk=<%=pageTrkCode%>" <%=displayObj.getRolloverString()%>><img src="<%=displayObj.getImagePath()%>"  name="<%=displayObj.getImageName()%>" width="<%=displayObj.getImageWidth()%>"  height="<%=displayObj.getImageHeight()%>" alt="<%=displayObj.getAltText()%>" border="0"></a>
-<% System.out.println("displayObj.getRating()"+displayObj.getRating()); %>
 
 <%  if (displayObj.getRating()!=null && displayObj.getRating().trim().length()>0) { %>
 <fd:ProduceRatingCheck>
