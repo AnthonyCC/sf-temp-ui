@@ -145,11 +145,8 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 			String rating=null;
 			for(int i=0;i<skus.size();i++) {
 				sku=(SkuModel)skus.get(i);
-				if(sku.isDiscontinued() || sku.isOutOfSeason() || sku.isTempUnavailable() ||sku.isUnavailable()) {
+				if(sku.isDiscontinued() || sku.isOutOfSeason() || sku.isTempUnavailable() ||(!sku.isAvailableWithin(2))) {//sku is available tomorrow.
 					continue;
-				}
-				if(sku.getSkuCode().equals("FRU0005209")) {
-					System.out.println("Sku :"+sku.getSkuCode()+" is available :"+sku.isAvailableWithin(1));
 				}
 				try {
 					rating=sku.getProductInfo().getRating();
