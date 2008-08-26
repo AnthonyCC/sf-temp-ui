@@ -19,6 +19,8 @@ boolean isGroceryVirtual=false;
 boolean isWineLayout = false;
 
 ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNodeByName(catId);
+String deptId=((CategoryModel)currentFolder).getDepartment().getContentName();
+
 
 ProductModel prodModel = ContentFactory.getInstance().getProductByName(request.getParameter("prodCatId"), request.getParameter("productId")); 
 
@@ -136,11 +138,13 @@ boolean noCache =  (EnumLayoutType.GROCERY_PRODUCT.getId()==layouttype
 String keyPrefix="catLayout_";
 int ttl=300;
 FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
-if(user.isProduceRatingEnabled()) {
-    keyPrefix=keyPrefix+user.isProduceRatingEnabled()+"_";
-    ttl=180;
-}
+if("fru".equals(deptId)||"veg".equals(deptId)||"orgnat".equals(deptId)||"local".equals(deptId)) {
 
+    if(user.isProduceRatingEnabled()) {
+        keyPrefix=keyPrefix+user.isProduceRatingEnabled()+"_";
+        ttl=180;
+    }
+}
 %>
 <oscache:cache key='<%= keyPrefix+request.getQueryString() %>' time='<%=ttl%>' refresh="<%= noCache %>">
 <% try {
