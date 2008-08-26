@@ -515,7 +515,7 @@ if (skus.size() != 0) {
                 		        System.out.println(" rating in display format  :"+rating);
                            // Single product rating
                       %>
-                            <table align="right" cellpadding="0" cellspacing="0" border="0"><tr valign="middle"><td class="qualityRating" style="padding-top:3px;"><%=enumRating.getShortDescription()%> - </td><td style="padding-top:4px;"><img src="/media_stat/images/ratings/product_<%=rating%>.gif" name="rating" height="11" alt="<%=rating%>" border="0"></td></tr></table>
+                            <table align="right" cellpadding="0" cellspacing="0" border="0"><tr valign="middle"><td class="qualityRating" style="padding-top:3px;"><%=enumRating.getShortDescription()%> - </td><td style="padding-top:4px;"><img src="/media_stat/images/ratings/product_<%=rating%>.gif" name="rating" height="11" alt="<%=enumRating.getShortDescription()%>" border="0"></td></tr></table>
                       <%  
                              }
                            }                          
@@ -795,7 +795,7 @@ if (skus.size() != 0) {
 				      %>
 							<tr><td colspan="2" style="padding-bottom:8px;" align="right">
 					<% } %>		
-						<table cellpadding="0" cellspacing="0"><tr valign="middle"><td class="qualityRating"><span class="qualityRating"><%=enumRating.getShortDescription()%> - </span></td><td style="padding-top:1px;"><img src="/media_stat/images/ratings/product_<%=rating%>.gif" name="rating" height="11" alt="<%=rating%>" border="0"></td></tr></table>
+						<table cellpadding="0" cellspacing="0"><tr valign="middle"><td class="qualityRating"><span class="qualityRating"><%=enumRating.getShortDescription()%> - </span></td><td style="padding-top:1px;"><img src="/media_stat/images/ratings/product_<%=rating%>.gif" name="rating" height="11" alt="<%=enumRating.getShortDescription()%>" border="0"></td></tr></table>
 					<% if (hasSecondaryDomain) {%>			
 						</td></tr>					
 				      <%  	} else { %>
@@ -1046,7 +1046,8 @@ if (skus.size() != 0) {
 <%  if (!isWineLayout) {  
 	// top black line after description
 	%>  
-    <br><img src="/media_stat/images/layout/333333.gif" width="185" height="1" border="0" vspace="10">
+    <br>
+	<img src="/media_stat/images/layout/333333.gif" width="185" height="1" border="0" vspace="10">
 <%  } %>    
     <fd:ErrorHandler result='<%=result%>' name='quantity' id='errorMsg'>
         <span class="text11rbold"><%=errorMsg%></span><br>
