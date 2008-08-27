@@ -2,13 +2,20 @@
 	//
 	// Display scaled pricing for FDProduct product.
 	//
-	String[] scales = product.getPricing().getScaleDisplay();
+	String[] scales = null;
+    
+    if(isWineLayout)
+    {
+      scales=product.getPricing().getWineScaleDisplay();
+    }else{
+     scales=product.getPricing().getScaleDisplay();
+    }
 	if (scales.length>0) {
 		%><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br><font class="specialPriceLabel">Save! </font><font class="specialPrice"><%
 		for (int sci=0; sci<scales.length; sci++) {
 			out.print( scales[sci] );
 			out.println("<br>");
 		}
-		%></font><%
+		%></font><BR><%
 	}
 %>

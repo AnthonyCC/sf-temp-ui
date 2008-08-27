@@ -106,6 +106,23 @@ public class MaterialPrice implements Serializable {
 		}
 		return buf.toString();
 	}
+	
+	
+	public String getWineScaleDisplay() {
+		StringBuffer buf = new StringBuffer();
+		if ( this.getPricingUnit().equals("EA") ) {
+			buf.append(" Just" );
+			buf.append( FORMAT_CURRENCY.format( this.getPrice()));
+			buf.append( " each " );
+			buf.append("<BR>" );			
+			buf.append( " when you buy " );
+			buf.append( FORMAT_QUANTITY.format( this.getScaleLowerBound() ));
+			buf.append( " or more." );
+		}
+		return buf.toString();
+	}
+
+	
 
 	public String toString() {
 		return "MaterialPrice[$"+price+" per "+pricingUnit+" scale: "+scaleLowerBound+" - "+scaleUpperBound+" "+scaleUnit+"]";

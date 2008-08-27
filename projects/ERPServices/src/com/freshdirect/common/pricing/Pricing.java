@@ -163,6 +163,16 @@ public class Pricing implements Serializable {
 		return scales;
 	}
 	
+	
+	public String[] getWineScaleDisplay() {
+		String[] scales = new String[ this.materialPrices.length-1 ];
+		for (int i=0; i<scales.length; i++) {
+			scales[i] = this.materialPrices[i+1].getWineScaleDisplay();
+		}
+		return scales;
+	}
+	
+	
 	public String toString() {
 		StringBuffer buf=new StringBuffer("Pricing[");
 		for (int i=0; i<salesUnits.length; i++) {
