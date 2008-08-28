@@ -89,14 +89,12 @@ if (!isGroceryVirtual && (layouttype==EnumLayoutType.COFFEE_BY_REGION.getId() ||
 
 
 // [APPREQ-77] Page uses include media type layout
-boolean isIncludeMediaLayout = (layouttype == EnumLayoutType.MEDIA_NO_NAV.getId()); // [APPREQ-77]
+boolean isIncludeMediaLayout = (layouttype == EnumLayoutType.MEDIA_INCLUDE.getId()); // [APPREQ-77]
 
                                                                                
 // Assign the correct template
 if (isIncludeMediaLayout) {
-	// [APPREQ-77] this special layout type needs 'naked' layout
-	jspTemplate = "/common/template/no_nav.jsp";
-	noLeftNav = false;
+	jspTemplate = noLeftNav ? "/common/template/no_nav.jsp" : "/common/template/left_dnav.jsp";
 } else if (noLeftNav) {
     jspTemplate = "/common/template/right_dnav.jsp";
 } else {

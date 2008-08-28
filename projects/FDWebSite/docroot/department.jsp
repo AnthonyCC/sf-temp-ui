@@ -57,7 +57,7 @@ if (attrib!=null && attrib.getValue() !=null) {
 
 //[APPREQ-77] Page uses include media type layout
 int layouttype = currentFolder.getAttribute("LAYOUT", -1);
-boolean isIncludeMediaLayout = (layouttype == EnumLayoutType.MEDIA_NO_NAV.getId());
+boolean isIncludeMediaLayout = (layouttype == EnumLayoutType.MEDIA_INCLUDE.getId());
 
 %><tmpl:insert template='<%= (isIncludeMediaLayout ? "/common/template/no_nav.jsp" : "/common/template/right_nav.jsp") %>'>
     <tmpl:put name='title' direct='true'>FreshDirect - <%= department.getFullName() %></tmpl:put>

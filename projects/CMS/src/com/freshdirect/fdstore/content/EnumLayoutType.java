@@ -38,7 +38,7 @@ public class EnumLayoutType implements Serializable {
 	public final static EnumLayoutType FEATURED_MENU = new EnumLayoutType("Featured Menu", 27); //(CATEGORY LAYOUT, Easy Meals)
 	public final static EnumLayoutType TOP_TEN = new EnumLayoutType("Top Ten", 28); //(Top Ten Picks)
 
-	public final static EnumLayoutType MEDIA_NO_NAV = new EnumLayoutType("Media No Nav", 97); //[APPREQ-77]
+	public final static EnumLayoutType MEDIA_INCLUDE = new EnumLayoutType("Media Include", 97); //[APPREQ-77]
 	
 	public final static EnumLayoutType WINE_CATEGORY = new EnumLayoutType("Wine Category", 100); // Wine Layout
 	public final static EnumLayoutType TRANSAC_MULTI_PAIRED_ITEMS	= new EnumLayoutType("Transactional Multi Paired Items", 101); // Wine Layout
@@ -77,7 +77,7 @@ public class EnumLayoutType implements Serializable {
 		t.add(PARTY_PLATTER_CATEGORY);
 		t.add(PICKS_PROMO);
 		t.add(FEATURED_MENU);
-		t.add(MEDIA_NO_NAV);
+		t.add(MEDIA_INCLUDE);
 		t.add(MULTI_ITEM_MEAL_OPTION_HORZ);
 		t.add(MULTI_ITEM_MEAL_OPTION_VERT);
 		t.add(WINE_CATEGORY);
