@@ -203,32 +203,32 @@
               <% } %>
             </fd:ProduceRatingCheck>       
             
- 				<%//@ include file="/shared/includes/product/organic_claims.jspf" %>
+ 				<%@ include file="/shared/includes/product/organic_claims.jspf" %>
                                 
-				<%//@ include file="/includes/product/claims.jspf" %>
+				<%@ include file="/includes/product/claims.jspf" %>
 				
-				<%//@ include file="/includes/product/kosher.jspf" %>
+				<%@ include file="/includes/product/kosher.jspf" %>
 				
 				<%= prodPageRatingStuff %><%= prodPageRatingStuff != null ? "<br>" : ""%>
 
-				<%//@ include file="/includes/product/i_heating_instructions.jspf" %>
+				<%@ include file="/includes/product/i_heating_instructions.jspf" %>
 
-				<%//@ include file="/shared/includes/product/i_cheese_101.jspf" %>
+				<%@ include file="/shared/includes/product/i_cheese_101.jspf" %>
 
-				<%//@ include file="/shared/includes/product/i_doneness_guide.jspf" %>
+				<%@ include file="/shared/includes/product/i_doneness_guide.jspf" %>
 				
 				
-				<%//@ include file="/includes/product/i_related_recipes.jspf" %>
+				<%@ include file="/includes/product/i_related_recipes.jspf" %>
 				
 			<%if(productNode.getAttribute("SEAFOOD_ORIGIN") != null){%>
 				<b>Origin: </b><%=(String)productNode.getAttribute("SEAFOOD_ORIGIN").getValue()%><br>
 			<%}%>
 
-				<%//@  include file="/includes/product/i_how_to_cook.jspf" %>
+				<%@  include file="/includes/product/i_how_to_cook.jspf" %>
                                 
-                <%//@ include file="/shared/includes/product/i_you_might_also_like.jspf" %>
+                <%@ include file="/shared/includes/product/i_you_might_also_like.jspf" %>
                                 
-                <%//@ include file="/shared/includes/product/i_bundled_product_info.jspf" %>
+                <%@ include file="/shared/includes/product/i_bundled_product_info.jspf" %>
 
                         <%
 			if (productNode.getParentNode().hasAttribute("CAT_STORAGE_GUIDE_MEDIA")) {
