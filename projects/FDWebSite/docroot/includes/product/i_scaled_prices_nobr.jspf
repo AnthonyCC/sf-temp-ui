@@ -1,9 +1,23 @@
 <%
 {
+
+
+
+
+
 	//
 	// Display caled pricing for FDProduct product.
 	//
-	String[] scales = product.getPricing().getScaleDisplay();
+    
+    String[] scales=null;
+    
+    if(product.isWine())
+    {
+       scales=product.getPricing().getWineScaleDisplay(false);
+    }else{
+      scales=product.getPricing().getScaleDisplay();
+    }
+    	
 	if (scales.length>0) {
 		%><b><font class="text10bold" color="#FF9933">Save!<%= request.getRequestURI().indexOf("cart_confirm") > -1 ? "<br>" : " "%></font><%
 		for (int sci=0; sci<scales.length; sci++) {

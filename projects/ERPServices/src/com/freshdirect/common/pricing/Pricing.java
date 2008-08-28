@@ -164,10 +164,10 @@ public class Pricing implements Serializable {
 	}
 	
 	
-	public String[] getWineScaleDisplay() {
+	public String[] getWineScaleDisplay(boolean isBreakRequired) {
 		String[] scales = new String[ this.materialPrices.length-1 ];
 		for (int i=0; i<scales.length; i++) {
-			scales[i] = this.materialPrices[i+1].getWineScaleDisplay();
+			scales[i] = this.materialPrices[i+1].getWineScaleDisplay(isBreakRequired);
 		}
 		return scales;
 	}

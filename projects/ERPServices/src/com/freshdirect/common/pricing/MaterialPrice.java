@@ -108,13 +108,15 @@ public class MaterialPrice implements Serializable {
 	}
 	
 	
-	public String getWineScaleDisplay() {
+	public String getWineScaleDisplay(boolean isBreakRequired) {
 		StringBuffer buf = new StringBuffer();
 		if ( this.getPricingUnit().equals("EA") ) {
 			buf.append(" Just " );
 			buf.append( FORMAT_CURRENCY.format( this.getPrice()));
 			buf.append( " each " );
-			buf.append("<BR>" );			
+			if(isBreakRequired){
+			    buf.append("<BR>" );
+			}
 			buf.append( " when you buy " );
 			buf.append( FORMAT_QUANTITY.format( this.getScaleLowerBound() ));
 			buf.append( " or more." );

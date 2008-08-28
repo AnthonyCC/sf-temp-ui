@@ -6,7 +6,7 @@
     
     if(isWineLayout)
     {
-      scales=product.getPricing().getWineScaleDisplay();
+      scales=product.getPricing().getWineScaleDisplay(true);
     }else{
      scales=product.getPricing().getScaleDisplay();
     }
