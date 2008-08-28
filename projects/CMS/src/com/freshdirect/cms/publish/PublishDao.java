@@ -4,6 +4,12 @@
 
 package com.freshdirect.cms.publish;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.hibernate.SessionFactory;
@@ -59,6 +65,57 @@ public class PublishDao extends HibernateDaoSupport {
 	}
 	
 	/**
+	 * Fetch publish objects without getting their children too.
+	 * Basically it is a hack as hibernate force eager load causing a tremendous amount of subselects.
+	 * We only need the publish objects.
+	 * 
+	 * @param qualifiers SQL qualifiers following WHERE keyword
+	 * @param orderBy
+	 * @return (List<Publish>) publishes
+	 */
+	public List fetchPublishes(String qualifiers, String orderBy) {
+		List results = new ArrayList();
+
+		Connection conn = currentSession().connection();
+		
+		StringBuffer cmd = new StringBuffer("SELECT ID, TIMESTAMP, USER_ID, DESCRIPTION, LAST_MODIFIED, STATUS FROM CMS.PUBLISH");
+		if (qualifiers != null) {
+			cmd.append(" WHERE " + qualifiers);
+		}
+		if (orderBy != null) {
+			cmd.append(" ORDER BY " + orderBy);
+		}
+		
+		try {
+			PreparedStatement stmt = conn.prepareStatement(cmd.toString());
+			
+			ResultSet records = stmt.executeQuery();
+			
+			while(records.next()) {
+				Publish p = new Publish();
+				
+				// fill in publish object manually
+				p.setId(records.getString(1));
+				p.setTimestamp(records.getTimestamp(2));
+				p.setUserId(records.getString(3));
+				p.setDescription(records.getString(4));
+				p.setLastModified(records.getDate(5));
+				p.setStatus(EnumPublishStatus.getEnum(records.getString(6)));
+				
+				
+				p.setMessages(Collections.EMPTY_LIST);
+				// add to list
+				results.add(p);
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+		}
+
+		return results;
+	}
+	
+	/**
 	 *  Return all Publish objects, orderred by the specified column.
 	 * 
 	 * @param orderBy the order by clause
@@ -80,8 +137,8 @@ public class PublishDao extends HibernateDaoSupport {
 	public Publish getMostRecentPublish() {
 		try {
 			List		list = query("from Publish "
-				               + " where timestamp = (select max(publish.timestamp) from Publish publish "
-							                       + " where status = '" + EnumPublishStatus.COMPLETE.getName() + "')");
+			               + " where timestamp = (select max(publish.timestamp) from Publish publish "
+	                       + " where status = '" + EnumPublishStatus.COMPLETE.getName() + "')");
 	
 			return list.size() > 0 ? (Publish) list.get(0) : null;
 		} catch (ConstraintViolationException e) {
@@ -103,10 +160,8 @@ public class PublishDao extends HibernateDaoSupport {
 	 *         or null if there is no previous publish.
 	 */
 	public Publish getPreviousPublish(Publish publish) {
-		List		list = query("from Publish "
-	               + " where timestamp < (select publish.timestamp from Publish publish where publish.id = " + publish.getId() + ") "
-				   + " order by timestamp desc");
-
+		List list = fetchPublishes("timestamp < (select p.timestamp from CMS.PUBLISH p where p.id = " + publish.getId() + ") ", "timestamp desc");
+		
 		return list.size() > 0 ? (Publish) list.get(0) : null;
 	}
 	
