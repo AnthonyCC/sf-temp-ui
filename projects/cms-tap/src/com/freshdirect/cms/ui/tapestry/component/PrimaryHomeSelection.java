@@ -21,6 +21,7 @@ import com.freshdirect.cms.context.Context;
 import com.freshdirect.cms.context.ContextService;
 import com.freshdirect.cms.context.ContextWalker;
 import com.freshdirect.cms.context.ContextualContentNodeI;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.ui.tapestry.ContentKeySelectionModel;
 
 /**
@@ -39,7 +40,7 @@ public abstract class PrimaryHomeSelection extends BaseComponent {
 			Context ctx = (Context) it.next();
 			PHSWalker walker = new PHSWalker(svc.getContextualizedContentNode(ctx));
 			if (walker.walkAndTest()) {
-				parentKeys.add(walker.getLeafKey());
+				parentKeys.add(walker.getHomeKey());
 			}
 		}
 		
@@ -86,5 +87,10 @@ class PHSWalker extends ContextWalker {
 	
 	public ContentKey getLeafKey() {
 		return leaf.getKey();
+	}
+	
+	// returns the parent (category) key of leaf node (product)
+	public ContentKey getHomeKey() {
+		return leaf.getParentNode().getKey();
 	}
 }
