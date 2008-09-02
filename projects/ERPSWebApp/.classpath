@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry sourcepath="JRE_SRC" kind="var" path="JRE_LIB"/>
 	<classpathentry kind="src" path="/Delivery"/>
 	<classpathentry kind="src" path="/ERPServices"/>
 	<classpathentry kind="src" path="/Framework"/>
 	<classpathentry kind="src" path="/FDStore"/>
 	<classpathentry kind="src" path="/DataLoader"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-fileupload-1.0.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-fileupload-1.1.1.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/poi.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/jsonrpc-1.0.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/oscache.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
