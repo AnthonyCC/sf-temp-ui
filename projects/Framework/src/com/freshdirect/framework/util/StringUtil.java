@@ -642,4 +642,18 @@ public class StringUtil {
 		
 		return buffer.toString();
 	}
+	
+	/**
+	 * Test for diacritic characters.
+	 * 
+	 * @param s string
+	 * @return if the string has accented characters
+	 */
+	public static boolean hasDiacritic(CharSequence s) {
+		for(int i = 0; i< s.length(); ++i) {
+			char c = s.charAt(i);
+			if (Character.isLowerCase(s.charAt(i)) && (c < 'a' || c > 'z')) return true;
+		}
+		return false;
+	}
 }

@@ -844,7 +844,7 @@ public class FDStoreProperties {
 
 
 
-	public static final String PIP_DEFAULT_LABEL = "YOUR FAVOURITES";
+	public static final String PIP_DEFAULT_LABEL = "YOUR FAVORITES";
 	public static final String PIP_DEFAULT_INNERTEXT = "These are some of the items you've purchased most often.";
 
 

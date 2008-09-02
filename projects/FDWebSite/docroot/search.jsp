@@ -181,10 +181,8 @@ try {
 		}
 
 		List fuzzyProducts = results.getFuzzyProducts();
-		System.err.println("fuzzyProducts: "+fuzzyProducts);
 		if (fuzzyProducts.size()>0) {
 			Map nodeTree = SearchResultUtil.buildNodeTree(fuzzyProducts);
-			System.err.println("nodeTree: "+nodeTree);
 
 %><FONT CLASS="title12"><%= fuzzyProducts.size() %> product<%= fuzzyProducts.size() > 1 ? "s were":" was"%> found</FONT><br>
 <IMG src="/media_stat/images/layout/ff9933.gif" width="520" height="1" border="0" vspace="4"><br>
