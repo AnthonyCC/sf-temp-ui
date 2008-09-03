@@ -19,6 +19,5 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/Resources"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/RulesAdmin"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Tests"/>
-	<classpathentry kind="lib" path="/home/segabor/FDbase/src/trunk/lib/thirdparty/commons-fileupload-1.1.1.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
