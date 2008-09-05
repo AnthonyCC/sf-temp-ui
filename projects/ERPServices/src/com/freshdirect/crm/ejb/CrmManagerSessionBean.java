@@ -304,8 +304,19 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
             cm.setDepartments(caseInfo.getDepartments());
             cm.setActualQuantity(caseInfo.getActualQuantity());
             cm.setProjectedQuantity(caseInfo.getProjectedQuantity());
+                        
+            cm.setCrmCaseMedia(caseInfo.getCrmCaseMedia());
+            cm.setMoreThenOneIssue(caseInfo.isMoreThenOneIssue());            
+			cm.setFirstContactForIssue(caseInfo.isFirstContactForIssue());
+			cm.setFirstContactResolved(caseInfo.isFirstContactResolved());
+			cm.setResonForNotResolve(caseInfo.getResonForNotResolve());
+			cm.setSatisfiedWithResolution(caseInfo.isSatisfiedWithResolution());
+			cm.setCustomerTone(caseInfo.getCustomerTone());
+            
             // audit
             audit.detach();
+            
+            System.out.println("audit.isChanged()"+audit.isChanged());
             
             CrmCaseState stateAfterInfo = null;
             

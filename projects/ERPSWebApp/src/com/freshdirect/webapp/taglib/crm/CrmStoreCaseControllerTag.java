@@ -90,8 +90,28 @@ public class CrmStoreCaseControllerTag extends AbstractControllerTag {
 				String note = NVL.apply(request.getParameter("note"), "").trim();
 
 				CrmCaseActionType actionType = this.getActionTypeByName(request.getParameter("actionTypeName"));
+				
+				String media = NVL.apply(request.getParameter("media"), "").trim();
+				
+				String morethenoneStr = NVL.apply(request.getParameter("morethenone"), "").trim();
+                boolean isMoreThenOne=morethenoneStr.equalsIgnoreCase("Yes")?true:false;
+				
+                String firstContactStr = NVL.apply(request.getParameter("firstContact"), "").trim();
+                boolean isFirstContact=firstContactStr.equalsIgnoreCase("Yes")?true:false;
+                
+                String resolvedStr = NVL.apply(request.getParameter("Resolved"), "").trim();
+                boolean isresolved=resolvedStr.equalsIgnoreCase("Yes")?true:false;
 
-				// validate
+                String notResolved = NVL.apply(request.getParameter("NotResolved"), "").trim();
+                                
+
+                String satisfactoryReasonStr = NVL.apply(request.getParameter("satisfactoryReason"), "").trim();
+                boolean issatisfactoryReason=satisfactoryReasonStr.equalsIgnoreCase("Yes")?true:false;
+
+                String customerTone = NVL.apply(request.getParameter("customerTone"), "").trim();
+                
+                
+                // validate
 				actionResult.addError(subject == null, "subject", "required");
 				if (priority == null && subject != null) {
 					priority = subject.getPriority();
@@ -124,13 +144,22 @@ public class CrmStoreCaseControllerTag extends AbstractControllerTag {
 						caseInfo.setDepartments(departments);
 						caseInfo.setActualQuantity(actualQuantity);
 						caseInfo.setProjectedQuantity(reportedQuantity);
+						
+						caseInfo.setCrmCaseMedia(media);
+						caseInfo.setMoreThenOneIssue(isMoreThenOne);
+						caseInfo.setFirstContactForIssue(isFirstContact);
+						caseInfo.setFirstContactResolved(isresolved);
+						caseInfo.setResonForNotResolve(notResolved);
+						caseInfo.setSatisfiedWithResolution(issatisfactoryReason);
+						caseInfo.setCustomerTone(customerTone);
+						
 						CrmCaseModel newCase = new CrmCaseModel(caseInfo);
 						CrmCaseAction caseAction = new CrmCaseAction();
 						caseAction.setType(CrmCaseActionType.getEnum(CrmCaseActionType.CODE_NOTE));
 						caseAction.setTimestamp(new Date());
 						caseAction.setAgentPK(this.getCurrentAgent().getPK());
 						caseAction.setNote(note);
-						newCase.addAction(caseAction);
+						newCase.addAction(caseAction);																		
 						pk = CrmManager.getInstance().createCase(newCase);
 
 					} else {
@@ -144,6 +173,15 @@ public class CrmStoreCaseControllerTag extends AbstractControllerTag {
 						caseInfo.setDepartments(departments);
 						caseInfo.setActualQuantity(actualQuantity);
 						caseInfo.setProjectedQuantity(reportedQuantity);
+						
+						caseInfo.setCrmCaseMedia(media);
+						caseInfo.setMoreThenOneIssue(isMoreThenOne);
+						caseInfo.setFirstContactForIssue(isFirstContact);
+						caseInfo.setFirstContactResolved(isresolved);
+						caseInfo.setResonForNotResolve(notResolved);
+						caseInfo.setSatisfiedWithResolution(issatisfactoryReason);
+						caseInfo.setCustomerTone(customerTone);
+
 
 						CrmCaseAction caseAction = new CrmCaseAction();
 						if (actionType == null) {

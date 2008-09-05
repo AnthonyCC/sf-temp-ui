@@ -75,6 +75,21 @@ public class CrmCaseInfo extends ModelSupport implements CrmCaseI {
     // holds the number that represents the actual amount (damages/missing etc)
     private int actualQuantity;
     
+    private String crmCaseMedia=null;
+        
+    private boolean moreThenOneIssue; 
+    
+    private boolean firstContactForIssue;
+    
+    private boolean firstContactResolved;
+    
+    private String resonForNotResolve=null;
+    
+    private boolean SatisfiedWithResolution;
+    
+    private String customerTone;
+    
+    
     public CrmCaseInfo() {
         super();
     }
@@ -332,5 +347,76 @@ public class CrmCaseInfo extends ModelSupport implements CrmCaseI {
     public int getActualQuantity() {
     	return this.actualQuantity;
     }
+
+	public String getCrmCaseMedia() {
+		return crmCaseMedia;
+	}
+
+	public void setCrmCaseMedia(String crmCaseMedia) {		
+		 String old = this.getCrmCaseMedia();
+	     this.crmCaseMedia = crmCaseMedia;
+	     this.firePropertyChange("crmCaseMedia", old, crmCaseMedia);		
+	}
+
+	public boolean isFirstContactForIssue() {
+		return firstContactForIssue;
+	}
+
+	public void setFirstContactForIssue(boolean firstContactForIssue) {
+		 
+		 boolean old = this.isFirstContactForIssue();
+		 this.firstContactForIssue = firstContactForIssue;
+	     this.firePropertyChange("firstContactForIssue", new Boolean(old), new Boolean(firstContactForIssue));;										 				
+	}
+
+	public boolean isFirstContactResolved() {
+		return firstContactResolved;
+	}
+
+	public void setFirstContactResolved(boolean firstContactResolved) {
+		 boolean old = this.isFirstContactResolved();
+		 this.firstContactResolved = firstContactResolved;
+	     this.firePropertyChange("firstContactResolved", new Boolean(old), new Boolean(firstContactResolved));;										 								
+	}
+
+	public boolean isMoreThenOneIssue() {
+		return moreThenOneIssue;
+	}
+
+	public void setMoreThenOneIssue(boolean moreThenOneIssue) {		
+		 boolean old = this.isMoreThenOneIssue();
+		 this.moreThenOneIssue = moreThenOneIssue;
+	     this.firePropertyChange("moreThenOneIssue", new Boolean(old), new Boolean(moreThenOneIssue));;										 													
+	}
+
+	public String getResonForNotResolve() {
+		return resonForNotResolve;
+	}
+
+	public void setResonForNotResolve(String resonForNotResolve) {		
+	    String old = this.getResonForNotResolve();
+	    this.resonForNotResolve = resonForNotResolve;
+	    this.firePropertyChange("resonForNotResolve", old, resonForNotResolve);
+	}
+
+	public String getCustomerTone() {
+		return customerTone;
+	}
+
+	public void setCustomerTone(String customerTone) {
+	    String old = this.getCustomerTone();
+	    this.customerTone = customerTone;
+	    this.firePropertyChange("customerTone", old, customerTone);				
+	}
+
+	public boolean isSatisfiedWithResolution() {
+		return SatisfiedWithResolution;
+	}
+
+	public void setSatisfiedWithResolution(boolean satisfiedWithResolution) {
+		 boolean old = this.isSatisfiedWithResolution();
+		 SatisfiedWithResolution = satisfiedWithResolution;
+	     this.firePropertyChange("SatisfiedWithResolution", new Boolean(old), new Boolean(SatisfiedWithResolution));;										 												
+	}
     
 }

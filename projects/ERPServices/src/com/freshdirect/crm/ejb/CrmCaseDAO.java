@@ -58,6 +58,7 @@ public class CrmCaseDAO implements EntityDAOI {
 	private final static String QUERY_CASEINFO =
 		"SELECT /*+ USE_NL (ci) */ rownum y, c.id, c.customer_id, c.assigned_agent_id, c. sale_id,"
 			+ " c.locked_agent_id, c.summary, c.case_origin, c.case_subject,"
+			+ "c.MEDIA,c.MORETHENONE_ISSUE,c.FIRSTCONTACT,c.FisrtContact_Resolved,c.ReasonNotToResolve,c.SatisfiedWithResolution,c.CustomerTone,"
 			+ " c.case_priority as case_priority, c.case_state, a.user_id as assigned, cs.name as subject_name,"
 			+ " ci.first_name, ci.last_name, c.create_date, c.last_action_date, c.projected_quantity,"
 			+ " c.actual_quantity "
@@ -246,7 +247,7 @@ public class CrmCaseDAO implements EntityDAOI {
 		CrmCaseModel c = (CrmCaseModel) model;
 		PreparedStatement ps =
 			conn.prepareStatement(
-				"INSERT INTO CUST.CASE(ID, CASE_ORIGIN, CASE_STATE, CASE_PRIORITY, CASE_SUBJECT, SUMMARY, CUSTOMER_ID, SALE_ID, ASSIGNED_AGENT_ID, LOCKED_AGENT_ID, CREATE_DATE, LAST_ACTION_DATE,PROJECTED_QUANTITY,ACTUAL_QUANTITY) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+				"INSERT INTO CUST.CASE(ID, CASE_ORIGIN, CASE_STATE, CASE_PRIORITY, CASE_SUBJECT, SUMMARY, CUSTOMER_ID, SALE_ID, ASSIGNED_AGENT_ID, LOCKED_AGENT_ID, CREATE_DATE, LAST_ACTION_DATE,PROJECTED_QUANTITY,ACTUAL_QUANTITY,MEDIA,MORETHENONE_ISSUE,FIRSTCONTACT,FisrtContact_Resolved,ReasonNotToResolve,SatisfiedWithResolution,CustomerTone) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		ps.setString(1, pk.getId());
 		ps.setString(2, c.getOrigin().getCode());
 		ps.setString(3, c.getState().getCode());
@@ -264,6 +265,56 @@ public class CrmCaseDAO implements EntityDAOI {
 
 		ps.setInt(13,c.getProjectedQuantity());
 		ps.setInt(14,c.getActualQuantity());
+		
+		if(c.getCrmCaseMedia()!=null)
+		{
+			ps.setString(15, c.getCrmCaseMedia());	
+		}else{
+			ps.setNull(15, Types.VARCHAR);
+		}
+		
+		if(c.isMoreThenOneIssue())
+		{
+			ps.setString(16, "X" );	
+		}else{
+			ps.setNull(16, Types.VARCHAR);
+		}
+
+		if(c.isFirstContactForIssue())
+		{
+			ps.setString(17, "X" );	
+		}else{
+			ps.setNull(17, Types.VARCHAR);
+		}
+
+		if(c.isFirstContactResolved())
+		{
+			ps.setString(18, "X" );	
+		}else{
+			ps.setNull(18, Types.VARCHAR);
+		}
+
+		if(c.getResonForNotResolve()!=null)
+		{
+			ps.setString(19, c.getResonForNotResolve());	
+		}else{
+			ps.setNull(19, Types.VARCHAR);
+		}						
+		
+		if(c.isSatisfiedWithResolution())
+		{
+			ps.setString(20, "X" );	
+		}else{
+			ps.setNull(20, Types.VARCHAR);
+		}
+		
+		if(c.getCustomerTone()!=null)
+		{
+			ps.setString(21, c.getCustomerTone());	
+		}else{
+			ps.setNull(21, Types.VARCHAR);
+		}
+
 		
 		if (ps.executeUpdate() != 1) {
 			throw new SQLException("Row not created");
@@ -331,11 +382,20 @@ public class CrmCaseDAO implements EntityDAOI {
 		
 		ci.setProjectedQuantity(rs.getInt("projected_quantity"));
 		ci.setActualQuantity(rs.getInt("actual_quantity"));
+		
+		ci.setCrmCaseMedia(NVL.apply(rs.getString("MEDIA"), ""));		
+		ci.setResonForNotResolve(NVL.apply(rs.getString("ReasonNotToResolve"), ""));						
+		ci.setFirstContactResolved(NVL.apply(rs.getString("FisrtContact_Resolved"), "").equalsIgnoreCase("X")?true:false);
+		ci.setFirstContactForIssue(NVL.apply(rs.getString("FIRSTCONTACT"), "").equalsIgnoreCase("X")?true:false);
+		ci.setMoreThenOneIssue(NVL.apply(rs.getString("MORETHENONE_ISSUE"), "").equalsIgnoreCase("X")?true:false);
+		ci.setSatisfiedWithResolution(NVL.apply(rs.getString("SatisfiedWithResolution"), "").equalsIgnoreCase("X")?true:false);
+		ci.setCustomerTone(NVL.apply(rs.getString("CustomerTone"), ""));
+		
 		return ci;
 	}
 
 	private final static String UPDATE_CASE =
-		"UPDATE CUST.CASE SET CASE_ORIGIN=?, CASE_STATE=?, CASE_PRIORITY=?, CASE_SUBJECT=?, SUMMARY=?, CUSTOMER_ID=?, SALE_ID=?, ASSIGNED_AGENT_ID=?, LOCKED_AGENT_ID=?, LAST_ACTION_DATE=?,  PROJECTED_QUANTITY=?, ACTUAL_QUANTITY=? WHERE ID=?";
+		"UPDATE CUST.CASE SET CASE_ORIGIN=?, CASE_STATE=?, CASE_PRIORITY=?, CASE_SUBJECT=?, SUMMARY=?, CUSTOMER_ID=?, SALE_ID=?, ASSIGNED_AGENT_ID=?, LOCKED_AGENT_ID=?, LAST_ACTION_DATE=?,  PROJECTED_QUANTITY=?, ACTUAL_QUANTITY=?,MEDIA=?,MORETHENONE_ISSUE=?,FIRSTCONTACT=?,FisrtContact_Resolved=?,ReasonNotToResolve=?,SatisfiedWithResolution=?,CustomerTone=?   WHERE ID=?";
 
 	public void store(Connection conn, ModelI model) throws SQLException {
 		CrmCaseModel c = (CrmCaseModel) model;
@@ -357,7 +417,58 @@ public class CrmCaseDAO implements EntityDAOI {
 		ps.setInt(11,c.getProjectedQuantity());
 		ps.setInt(12,c.getActualQuantity());
 		
-		ps.setString(13, c.getPK().getId());
+		
+		
+		if(c.getCrmCaseMedia()!=null)
+		{
+			ps.setString(13, c.getCrmCaseMedia());	
+		}else{
+			ps.setNull(13, Types.VARCHAR);
+		}
+		
+		if(c.isMoreThenOneIssue())
+		{
+			ps.setString(14, "X" );	
+		}else{
+			ps.setNull(14, Types.VARCHAR);
+		}
+
+		if(c.isFirstContactForIssue())
+		{
+			ps.setString(15, "X" );	
+		}else{
+			ps.setNull(15, Types.VARCHAR);
+		}
+
+		if(c.isFirstContactResolved())
+		{
+			ps.setString(16, "X" );	
+		}else{
+			ps.setNull(16, Types.VARCHAR);
+		}
+
+		if(c.getResonForNotResolve()!=null)
+		{
+			ps.setString(17, c.getResonForNotResolve());	
+		}else{
+			ps.setNull(17, Types.VARCHAR);
+		}
+		
+		if(c.isSatisfiedWithResolution())
+		{
+			ps.setString(18, "X" );	
+		}else{
+			ps.setNull(18, Types.VARCHAR);
+		}
+		
+		if(c.getCustomerTone()!=null)
+		{
+			ps.setString(19, c.getCustomerTone());	
+		}else{
+			ps.setNull(19, Types.VARCHAR);
+		}
+
+		ps.setString(20, c.getPK().getId());
 
 		if (ps.executeUpdate() != 1) {
 			throw new SQLException("Row not updated");

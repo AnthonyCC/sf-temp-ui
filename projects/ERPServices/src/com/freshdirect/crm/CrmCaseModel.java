@@ -192,6 +192,60 @@ public class CrmCaseModel extends ModelSupport implements CrmCaseI {
     	return this.caseInfo.getActualQuantity();
     }
 
+    public String getCrmCaseMedia() {
+		return this.caseInfo.getCrmCaseMedia();
+	}
 
+	public void setCrmCaseMedia(String crmCaseMedia) {
+		this.caseInfo.setCrmCaseMedia(crmCaseMedia);
+	}
+
+	public boolean isFirstContactForIssue() {
+		return caseInfo.isFirstContactForIssue();
+	}
+
+	public void setFirstContactForIssue(boolean firstContactForIssue) {
+		this.caseInfo.setFirstContactForIssue(firstContactForIssue);
+	}
+
+	public boolean isFirstContactResolved() {
+		return this.caseInfo.isFirstContactResolved();
+	}
+
+	public void setFirstContactResolved(boolean firstContactResolved) {
+		this.caseInfo.setFirstContactResolved(firstContactResolved);
+	}
+
+	public boolean isMoreThenOneIssue() {
+		return this.caseInfo.isMoreThenOneIssue();
+	}
+
+	public void setMoreThenOneIssue(boolean moreThenOneIssue) {
+		this.caseInfo.setMoreThenOneIssue(moreThenOneIssue);
+	}
+
+	public String getResonForNotResolve() {
+		return this.caseInfo.getResonForNotResolve();
+	}
+
+	public void setResonForNotResolve(String resonForNotResolve) {
+		this.caseInfo.setResonForNotResolve(resonForNotResolve) ;
+	}
+	
+	public String getCustomerTone() {
+		return this.caseInfo.getCustomerTone();
+	}
+
+	public void setCustomerTone(String customerTone) {
+		this.caseInfo.setCustomerTone(customerTone);
+	}
+
+	public boolean isSatisfiedWithResolution() {
+		return this.caseInfo.isSatisfiedWithResolution();
+	}
+
+	public void setSatisfiedWithResolution(boolean satisfiedWithResolution) {
+		this.caseInfo.setSatisfiedWithResolution(satisfiedWithResolution);
+	}
 	
 }
