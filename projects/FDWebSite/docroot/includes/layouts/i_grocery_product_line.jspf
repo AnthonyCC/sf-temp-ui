@@ -52,9 +52,13 @@
 <%
     String unAvailableFontStart = "";
     String unAvailableFontEnd = "";
+	//add correct unavailable color for links
+	String unAvailableStyle = "";
     if (!skuAvailable) {  
         unAvailableFontStart = "<font color=\"#999999\">";
         unAvailableFontEnd = "</font>";
+		//set style color
+		unAvailableStyle = " style=\"color:#999;\"";
     }
 
     String thisProdBrandLabel = displayProduct.getPrimaryBrandName();
@@ -77,7 +81,8 @@
         + "&productId=" + displayProduct +"&skuCode="+sku.getSkuCode()+"&trk=trans");
 
 %>
-    <%= unAvailableFontStart %><A HREF="javascript:selectProduct('<%= productURL %>', '<%= qtyFldName %>')">
+    <%= unAvailableFontStart %>
+		<A HREF="javascript:selectProduct('<%= productURL %>', '<%= qtyFldName %>')"<%=unAvailableStyle%>>
     <FONT CLASS="text10bold"><%= unAvailableFontStart %><%= thisProdBrandLabel %><%= unAvailableFontEnd %></FONT>
     <FONT CLASS="text10"><%= unAvailableFontStart %><%= displayProduct.getFullName().substring(thisProdBrandLabel.length()).trim()+prodMatrix %><%= unAvailableFontEnd %></FONT>
     </A>
