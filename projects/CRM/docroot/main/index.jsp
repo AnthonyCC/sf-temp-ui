@@ -179,7 +179,7 @@ session.setAttribute(SessionName.USER,null);
                 </td>
             </tr>
             </table>
-			<div id="monitor_content" class="home_search_module_content" style="height: 20em; padding-top: 0px; padding-bottom: 0px;">
+			<div id="monitor_content" class="home_search_module_content" style="height: 20em; padding-top: 0px; padding-bottom: 0px; overflow-y: scroll;">
 			<form name="check_address" method="POST"><span class="space4pix"><br><br></span>
 			<input type="hidden" name="checkAddressSubmit" value="addressCheck">
 				<jsp:include page='/includes/check_address.jsp'/>
@@ -269,7 +269,7 @@ session.setAttribute(SessionName.USER,null);
 <% if (!isGuest) { %>
 		<% String addtlMonitorParam = quickSearch ? "" : "search=advanced"; %>
 		
-		<div id="monitor" class="home_module" style="width: 99%; border-bottom: 2px solid;">
+		<div id="monitor" class="home_module" style="width: 99%; border-bottom: 2px solid; height: auto;">
 			<table width="100%" cellpadding="0" cellspacing="0" border="0" class="module_header" style="height: 2.2em; <%=worklist?"padding: 0px;":""%>">
 			<tr>
 				<td>
@@ -293,7 +293,7 @@ session.setAttribute(SessionName.USER,null);
 				<% } %>
 			</tr>
 			</table>
-			<div id="home_monitor_content" class="content" style="padding-left: 0px; height: 18em;">
+			<div id="home_monitor_content" class="content" style="padding-left: 0px; height: 18em; overflow-y: hidden;">
 				<% if (queue_overview) { %>
 					<%@ include file="/includes/queue_overview.jsp"%>
 				<% } else if (agent_monitor) { %>
