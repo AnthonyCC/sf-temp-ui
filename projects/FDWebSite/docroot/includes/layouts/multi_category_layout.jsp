@@ -103,7 +103,7 @@ for(int itmIdx=0; itmIdx < availableList.size();itmIdx++) {
             }
             if (newCategoryCount > 0) {  // print the seperator bar if one or more categories has been printed  %>
                </tr></table>
-                <table width="<%=maxWidth%>"  align="center" cellpadding="0" cellspacing="0" border="0">
+                <table width="<%=maxWidth%>" align="center" cellpadding="0" cellspacing="0" border="0">
                 <tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" /></td></tr>
                 <tr><td bgcolor="#cccccc"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td></tr>
                 <tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" /></td></tr></table>
