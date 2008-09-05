@@ -109,7 +109,7 @@ if (page_URI.indexOf("order_cases") > -1) {
 
 if (page_URI.indexOf("/main/index") > -1 ) {
 	monitor = true;
-	height = "25";
+	height = "70";
 	caseLink = "/main/worklist.jsp";
 }
 

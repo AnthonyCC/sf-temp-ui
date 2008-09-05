@@ -48,7 +48,7 @@ if (page_URI.indexOf("/main/index") > -1 ) {
 		<td><img src="/media_stat/crm/images/clear.gif" width="12" height="1"></td>
 	</tr>
 </table>
-<div class="content_scroll" style="height: <%= height %>%; padding: 0px;">
+<div style="height: 90%; border: 0px solid red; overflow-y: scroll;">
 	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="home_monitor_content">
 	<% int i = 0; %>
 	<logic:iterate id='ai' collection="<%= csrOverview %>" type="com.freshdirect.crm.CrmAgentInfo">

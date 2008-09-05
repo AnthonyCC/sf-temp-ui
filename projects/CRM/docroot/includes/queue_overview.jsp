@@ -13,6 +13,7 @@
 <%
 List queueOverview = CrmManager.getInstance().getQueueOverview();
 %>
+<div style="height: 90%; border: 0px solid red; overflow-y: scroll;">
 	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="home_monitor_content">
 	<logic:iterate id='qi' indexId='i' collection="<%= queueOverview %>" type="com.freshdirect.crm.CrmQueueInfo">
 		<tr onClick="document.location='/case_mgmt/index.jsp?action=searchCase&queue=<%= qi.getQueue().getCode() %>&state=OPEN&state=REVW&state=APVD'" style="cursor: pointer;" <%= (i.intValue()%2==0 ? "class=\"home_monitor_odd_row\"" : "")%>>
@@ -25,3 +26,4 @@ List queueOverview = CrmManager.getInstance().getQueueOverview();
 		<tr><td colspan="5" class="list_separator" style="padding: 0px;"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td></tr>
 	</logic:iterate>
 	</table>
+</div>
