@@ -38,7 +38,7 @@ FDIdentity identity = user.getIdentity();
 	</tr>
 </table>
 <logic:iterate id="view" collection="<%= cart.getOrderViews() %>" type="com.freshdirect.fdstore.customer.WebOrderViewI">
-	<table width="100%" cellspacing="0" cellpadding="0">
+	<table width="100%" cellspacing="0" cellpadding="0" border="0">
 	<tr><td colspan="10">
 		<%
 		if (!"".equals(view.getDescription())) {
@@ -104,7 +104,7 @@ FDIdentity identity = user.getIdentity();
 					String deptId = ContentFactory.getInstance().getProductByName( cartLine.getCategoryName(), cartLine.getProductName() ).getDepartment().getContentName();
 					%>
 					<tr>
-						<td colspan="3"></td>
+						<td width="40">&nbsp;</td><td width="16">&nbsp;</td><td width="22">&nbsp;</td>
 						<td colspan="7"><br><a href="/department.jsp?deptId=<%= deptId %>&trk=cart"><img src="/media_stat/images/layout/department_headers/<%=lastDeptImgName%>" alt="<%= lastDept.toUpperCase() %>" border="0"></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td>
 					</tr>
 					<%
