@@ -139,8 +139,7 @@
 				<tr>
 					<td colspan="2">
 						<br>
-						<A HREF="#" onClick="javascript:redirectToSignup()"><font class="text11bold">Click here</font></A> to sign up for Unlimited DeliveryPass today!. 
-
+						<A HREF="#" onClick="javascript:redirectToSignup()"><font class="text11bold">Click here</font></A> to sign up for Unlimited DeliveryPass today!
 					</td>
 				</tr>	
 			</form>
@@ -191,7 +190,7 @@
                                           <%} else if (user.getUsableDeliveryPassCount()==0) {%>
 								<form name="signup" method="POST">
 									<input type="hidden" name="action" value="">
-									<br><A HREF="#" onClick="javascript:redirectToSignup()"><font class="text11bold">Click here</font></A> to sign up for Unlimited DeliveryPass today!. 
+									<br><A HREF="#" onClick="javascript:redirectToSignup()"><font class="text11bold">Click here</font></A> to sign up for Unlimited DeliveryPass today!
 								</form>
 							<% }%>
 						<%} else {%>
@@ -216,7 +215,7 @@
                                           <%} else if (user.getUsableDeliveryPassCount()==0){%>
 								<form name="signup" method="POST">
 									<input type="hidden" name="action" value="">
-									<br><A HREF="#" onClick="javascript:redirectToSignup()"><font class="text11bold">Click here</font></A> to sign up for Unlimited DeliveryPass today!. 
+									<br><A HREF="#" onClick="javascript:redirectToSignup()"><font class="text11bold">Click here</font></A> to sign up for Unlimited DeliveryPass today!
 								</form>
 							<% }%>
 
