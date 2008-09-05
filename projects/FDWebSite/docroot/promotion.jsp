@@ -69,7 +69,9 @@
     <td align="right">
             <table cellpadding="0" cellspacing="4" border="0">
             <tr valign="middle">
-            <td align="right"><a href="<%=continueShoppingLink%>"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  width="117" height="13" border="0" alt="CONTINUE SHOPPING"><%= hasDepartment?("<br>in the <b>"+deptName+" Department</b>"):""%></a></td>
+            <td align="right">
+				<a href="<%=continueShoppingLink%>"><img src="/media_stat/images/buttons/continue_shopping_text.gif" width="117" height="13" border="0" alt="CONTINUE SHOPPING" /></a>
+				<a href="<%=continueShoppingLink%>"><%= hasDepartment?("<br />in the <b>"+deptName+" Department</b>"):""%></a></td>
             <td><a href="<%=continueShoppingLink%>"><img src="/media_stat/images/buttons/arrow_green_right.gif" width="28" height="28" border="0" alt="CONTINUE SHOPPING"></a></td>
             </tr>
             </table>
@@ -88,7 +90,10 @@
     <td align="right">
             <table cellpadding="0" cellspacing="4" border="0">
             <tr valign="middle">
-            <td align="right"><a href="<%=continueShoppingLink%>"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  width="117" height="13" border="0" alt="CONTINUE SHOPPING"><%= hasDepartment?("<br>in the <b>"+deptName+" Department</b>"):""%></a></td>
+            <td align="right">
+				<a href="<%=continueShoppingLink%>"><img src="/media_stat/images/buttons/continue_shopping_text.gif" width="117" height="13" border="0" alt="CONTINUE SHOPPING" /></a>
+				<a href="<%=continueShoppingLink%>"><%= hasDepartment?("<br>in the <b>"+deptName+" Department</b>"):""%></a>
+			</td>
             <td><a href="<%=continueShoppingLink%>"><img src="/media_stat/images/buttons/arrow_green_right.gif" width="28" height="28" border="0" alt="CONTINUE SHOPPING"></a></td>
             </tr>
             </table>
