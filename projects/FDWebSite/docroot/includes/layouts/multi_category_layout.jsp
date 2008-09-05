@@ -46,6 +46,9 @@ if (sortedColl==null) sortedColl = new ArrayList();
 //**************************************************************
 
 int imgWidths = 0;
+int minWidth = 80; //min size image will use
+int adjustedImgWidth = 0; //moved this to top
+int elemSpacing = 6; //spacing to add on top of minWidth
 int maxWidth;
 int newCategoryCount = 0;
 boolean newCategory = false;
@@ -100,12 +103,12 @@ for(int itmIdx=0; itmIdx < availableList.size();itmIdx++) {
             }
             if (newCategoryCount > 0) {  // print the seperator bar if one or more categories has been printed  %>
                </tr></table>
-                <table WIDTH="<%=maxWidth%>"  ALIGN="CENTER" CELLPADDING="0" CELLSPACING="0" BORDER="0">
-                <tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td></tr>
-                <tr><td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
-                <tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td></tr></table>
+                <table width="<%=maxWidth%>"  align="center" cellpadding="0" cellspacing="0" border="0">
+                <tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" /></td></tr>
+                <tr><td bgcolor="#cccccc"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td></tr>
+                <tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" /></td></tr></table>
 <%          }  %>
-            <table WIDTH="<%=maxWidth%>"  ALIGN="CENTER" CELLPADDING="0" CELLSPACING="0" BORDER="0">
+            <table width="<%=maxWidth%>"  align="center" cellpadding="0" cellspacing="0" border="0">
 <%
             needToCloseTable = true;
             newCategoryCount++;
@@ -116,11 +119,11 @@ for(int itmIdx=0; itmIdx < availableList.size();itmIdx++) {
                 MediaI catTopMedia = (MediaI)catTop.getValue(0);
                 if (catTopMedia instanceof Image) {
 %>
-                    <tr><td WIDTH="100%" align="center">
-                        <img src="<%=catTopMedia.getPath()%>" <%=JspMethods.getImageDimensions((Image)catTopMedia) %>>
+                    <tr><td width="100%" align="center">
+                        <img src="<%=catTopMedia.getPath()%>" <%=JspMethods.getImageDimensions((Image)catTopMedia) %> />
                     </td></tr>
 <%              } else {    %>
-                     <tr><td WIDTH="100%" align="center">
+                     <tr><td width="100%" align="center">
                         <fd:IncludeMedia name='<%= catTopMedia.getPath()%>' />
                      </td></tr>
 <%              } %>
@@ -129,7 +132,7 @@ for(int itmIdx=0; itmIdx < availableList.size();itmIdx++) {
 
 <%          } %>
              </table>
-            <table CELLPADDING="0" CELLSPACING="0" BORDER="0"><tr valign="top">
+            <table cellpadding="0" cellspacing="0" border="0"><tr valign="top">
 <%
             continue;
         } else {
@@ -151,20 +154,36 @@ for(int itmIdx=0; itmIdx < availableList.size();itmIdx++) {
     if (needToCloseTable==false) {
     	needToCloseTable=true;  // we have not opened a table as yet  
 %>
-                <table CELLPADDING="0" CELLSPACING="0" BORDER="0"><tr valign="top">
+                <table cellpadding="0" cellspacing="0" border="0"><tr valign="top">
 <%    }    
-    //if we are about to xceed the limits of the witdth then  start a new row.
-    if ((displayObj!=null && imgWidths + displayObj.getImageWidthAsInt() > maxWidth)) {
-        imgWidths =0;
-%>  </tr></table>
-    <table CELLPADDING="0" CELLSPACING="0" BORDER="0"><tr valign="top">
-<%
-    }
-    imgWidths+=displayObj.getImageWidthAsInt();
-    int adjustedImgWidth = displayObj.getImageWidthAsInt()+6;
+    //if we are about to xceed the limits of the width then start a new row.
+	//added min size check
+		if (displayObj.getImageWidthAsInt() < minWidth)
+		{
+			if ((displayObj!=null && imgWidths + minWidth > maxWidth)) {
+					imgWidths =0;
+					%>  </tr></table>
+						<table cellpadding="0" cellspacing="0" border="0"><tr valign="top">
+					<%
+						
+					adjustedImgWidth = minWidth + elemSpacing;
+				}
+		}else{
+				if ((displayObj!=null && imgWidths + displayObj.getImageWidthAsInt() > maxWidth)) {
+					imgWidths =0;
+				%>  </tr></table>
+					<table cellpadding="0" cellspacing="0" border="0"><tr valign="top">
+				<%
+					adjustedImgWidth = displayObj.getImageWidthAsInt() + elemSpacing;
+				}
+		}
+		imgWidths+=displayObj.getImageWidthAsInt();
+	//end min size check
+    //colwidth in px. needs to be px, percent makes rows with less than the max items the wrong width
+	int colWidth = (int)( maxWidth / ( maxWidth / (minWidth+elemSpacing) ) );		
 %>
-    <td valign="top" align="center" WIDTH=<%=adjustedImgWidth%>">
-        <a href="<%=displayObj.getItemURL()%>&trk=<%=trkCode%>"><img src="<%= displayObj.getImagePath()%>"  <%=displayObj.getImageDimensions() %> ALT="<%=displayObj.getAltText()%>" hspace="0" border="0"></a>
+	<td valign="top" align="center" width="<%=colWidth%>">
+        <a href="<%=displayObj.getItemURL()%>&trk=<%=trkCode%>"><img src="<%= displayObj.getImagePath()%>"  <%=displayObj.getImageDimensions() %> alt="<%=displayObj.getAltText()%>" hspace="0" border="0" /></a>
     <%  if (displayObj.getRating()!=null && displayObj.getRating().trim().length()>0) { %>
     <fd:ProduceRatingCheck>
             <br><font class="center">           
@@ -177,9 +196,8 @@ for(int itmIdx=0; itmIdx < availableList.size();itmIdx++) {
         
 <%  if (displayObj.getPrice()!=null) { %>
             <br><font class="price"><%=displayObj.getPrice()%></font>
-<%  } %>
-
-   <br><br></td>
+<% } %>
+   <br /><br /></td>
 <%
 }
 if (onlyOneProduct) {
