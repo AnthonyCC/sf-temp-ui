@@ -33,6 +33,7 @@ import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
+import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class FDUserDAO {
@@ -80,6 +81,7 @@ public class FDUserDAO {
 		} else {
 			ps.setNull(7, Types.VARCHAR);
 		}
+		
 		if (ps.executeUpdate() != 1) {
 			throw new SQLException("Row not created");
 		}
@@ -144,7 +146,7 @@ public class FDUserDAO {
 		return user;
 	}
 	
-	private static final String LOAD_FROM_IDENTITY_QUERY = "SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, erpc.active, ci.receive_news,fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls " 
+	private static final String LOAD_FROM_IDENTITY_QUERY = "SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE,fdu.HPLETTER_VISITED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, erpc.active, ci.receive_news,fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls " 
 		+ "FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci "
 		+ "where fdu.FDCUSTOMER_ID=fdc.id and fdc.ERP_CUSTOMER_ID=erpc.ID and erpc.id=? "
 		+ "and erpc.id = ci.customer_id";
@@ -167,7 +169,7 @@ public class FDUserDAO {
 		return user;
 	}
 
-	private static final String LOAD_FROM_COOKIE_QUERY = "SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, erpc.active, ci.receive_news, fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls "
+	private static final String LOAD_FROM_COOKIE_QUERY = "SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE, fdu.HPLETTER_VISITED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, erpc.active, ci.receive_news, fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls "
 		+ "FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci "
 		+ "where fdu.cookie=? and fdu.FDCUSTOMER_ID=fdc.id(+) and fdc.ERP_CUSTOMER_ID=erpc.ID(+) "
 		+ "and erpc.id = ci.customer_id(+)";
@@ -220,6 +222,7 @@ public class FDUserDAO {
 			}
 			user.setActive("1".equals(rs.getString("ACTIVE")));
 			user.setReceiveFDEmails("X".equals(rs.getString("RECEIVE_NEWS")));
+			user.setHomePageLetetrVisited(NVL.apply(rs.getString("HPLETTER_VISITED"), "").equalsIgnoreCase("X")?true:false);
 
 		} else {
 			user = new FDUser();
@@ -231,7 +234,7 @@ public class FDUserDAO {
 	public static void storeUser(Connection conn, FDUser user) throws SQLException {
 		
 		String sql = "UPDATE CUST.FDUSER SET COOKIE = ?, ZIPCODE = ?, FDCUSTOMER_ID = ?, DEPOT_CODE = ?, SERVICE_TYPE = ?, ADDRESS1 = ?, APARTMENT = ?" +
-					", LAST_REF_PROG_ID = ?,REF_PROG_INVT_ID=?,REF_TRK_KEY_DTLS=? " + 
+					", LAST_REF_PROG_ID = ?,REF_PROG_INVT_ID=?,REF_TRK_KEY_DTLS=?,HPLETTER_VISITED=? " + 
 					" WHERE ID = ?";
 		
 		PreparedStatement ps = conn.prepareStatement(sql);
@@ -290,6 +293,13 @@ public class FDUserDAO {
 		else
 			ps.setNull(index++, Types.VARCHAR);
 
+		if(user.isHomePageLetetrVisited())
+		{
+			ps.setString(index++, "X" );	
+		}else{
+			ps.setNull(index++, Types.VARCHAR);
+		}
+		
 		ps.setString(index++, user.getPK().getId());
 		
 		if (ps.executeUpdate() != 1) {

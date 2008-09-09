@@ -259,6 +259,8 @@ public interface FDUserI extends java.io.Serializable {
 	/* SmartStore DYF */
 	public boolean isDYFEnabled();
 	
+	public boolean isHomePageLetetrVisited();
+	
 	
     /*
      * This method was introduced as part of PERF-22 task.
@@ -274,4 +276,7 @@ public interface FDUserI extends java.io.Serializable {
      */
  
     public EnumServiceType getUserServiceType();
+    
+    public void setHomePageLetetrVisited(boolean isHomePageLetetrVisited);
+    
 }

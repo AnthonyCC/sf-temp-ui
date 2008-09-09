@@ -595,5 +595,15 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		// TODO Auto-generated method stub
 		return user.isProduceRatingEnabled();
 	}
+
+	public boolean isHomePageLetetrVisited() {
+		// TODO Auto-generated method stub
+		return user.isHomePageLetetrVisited();
+	}
+
+	public void setHomePageLetetrVisited(boolean isHomePageLetetrVisited) {
+		// TODO Auto-generated method stub
+		user.setHomePageLetetrVisited(isHomePageLetetrVisited);
+	}
 }
 

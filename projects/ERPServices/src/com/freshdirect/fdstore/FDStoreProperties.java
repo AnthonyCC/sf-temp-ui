@@ -220,9 +220,15 @@ public class FDStoreProperties {
 	private final static Properties defaults = new Properties();
 
 	private static final Object CUT_OFF_TIME_TUE = null;
+	
+	private static final String HP_LETTER_MEDIA_PATH1="fdstore.mediapath.newcustomer";
+	
+	private static final String HP_LETTER_MEDIA_PATH2="fdstore.mediapath.oldcustomer";
 
 	// Produce Rating changes
 	private static final String PRODUCE_RATING_ENABLED="fdstore.isProduceRatingEnabled";
+	
+	private static final String HPLETTER_MEDIA_ENABLED="fdstore.isHomePageMediaEnabled";
 
 
 	static {
@@ -383,6 +389,12 @@ public class FDStoreProperties {
 
 		// produce rating enabled
 		defaults.put(PRODUCE_RATING_ENABLED, "true");
+		
+		defaults.put(HP_LETTER_MEDIA_PATH1, "/media/editorial/home/letter/hp_letter_new.html");
+		defaults.put(HP_LETTER_MEDIA_PATH2, "/media/editorial/home/letter/hp_letter_customer.html");
+		defaults.put(HPLETTER_MEDIA_ENABLED, "true");
+		
+		
 		refresh();
 	}
 
@@ -905,4 +917,18 @@ public class FDStoreProperties {
 		return Boolean.valueOf(get(PRODUCE_RATING_ENABLED)).booleanValue();
 	}
 
+//  marketing admin changes
+	public static String getHPLetterMediaPathForNewUser() {
+		return get(HP_LETTER_MEDIA_PATH1);
+	}
+
+	public static String getHPLetterMediaPathForOldUser() {
+		return get(HP_LETTER_MEDIA_PATH2);
+	}
+	
+	public static boolean IsHomePageMediaEnabled() {
+		return Boolean.valueOf(get(HPLETTER_MEDIA_ENABLED)).booleanValue();
+	}
+
+	
 }

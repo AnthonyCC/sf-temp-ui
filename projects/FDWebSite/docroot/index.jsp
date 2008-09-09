@@ -51,6 +51,40 @@
             	<%@ include file="includes/home/i_current_promo.jspf" %>
 			<%}%><%-- END PROMO 1 --%></td>
     <td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+    
+    <!-- put home page letter logic here -->
+    <%
+          if(FDStoreProperties.IsHomePageMediaEnabled() && !user.isHomePageLetetrVisited()){
+          
+          String mediaPath=null;
+          
+          if(validOrderCount<1){
+             
+             mediaPath=FDStoreProperties.getHPLetterMediaPathForNewUser();
+          
+          }else{
+          
+            mediaPath=FDStoreProperties.getHPLetterMediaPathForOldUser();
+          }
+          
+     %>
+        <td colspan="3" rowspan="5" align="center" style="border-left: solid 1px #999966; border-right: solid 1px #999966;">
+        <fd:IncludeMedia name="<%=mediaPath%>" />
+        </td>
+     <%    
+            // update user already visited home page letter
+            user.setHomePageLetetrVisited(true);
+            // not sure we need to do this here because saveing cart too often is not recomended
+          
+              if(user instanceof FDSessionUser){                
+                FDSessionUser sessionUser=(FDSessionUser)user;
+                sessionUser.saveCart(true);          
+              }
+          
+          }else{          
+    %>
+    
+    <!-- else show regular -->
     <td colspan="3" rowspan="5" align="center" style="border-left: solid 1px #999966; border-right: solid 1px #999966;"><%-- MAIN CONTENT--%><%@ include file="includes/home/i_intro_hdr.jspf"%>
 		<% if (user.getLevel() >= FDUserI.RECOGNIZED) { %>
 			<%@ include file="includes/home/i_pending_order.jspf" %>
@@ -64,6 +98,8 @@
 		<img src="/media_stat/images/layout/cccccc.gif" width="490" height="1" vspace="8"><br>
 		<%@ include file="/includes/i_departments.jspf" %>
 	<%-- END MAIN CONTENT--%></td>
+    <%   }  %> 
+    
   </tr>
   <tr height="6"> 
     <td height="6"><img src="/media_stat/images/layout/bottom_left_curve.gif" width="6" height="6" vspace="0"></td>
@@ -111,7 +147,13 @@
     <td><img src="/media_stat/images/layout/clear.gif" width="6" height="1"></td>
   </tr>
   <tr valign="top"> 
-    <td colspan="7"><%--MEDIA INCLUDE--%><fd:IncludeMedia name="/media/editorial/home/home_bottom.html" /><%-- END MEDIA INCLUDE --%></td>
+    <td colspan="7">
+    <%
+      if(FDStoreProperties.IsHomePageMediaEnabled() && !user.isHomePageLetetrVisited()){
+    %>
+    <%--MEDIA INCLUDE--%><fd:IncludeMedia name="/media/editorial/home/home_bottom.html" /><%-- END MEDIA INCLUDE --%>
+      <% } %>
+    </td>
   </tr>
 </table>
 </tmpl:put>
