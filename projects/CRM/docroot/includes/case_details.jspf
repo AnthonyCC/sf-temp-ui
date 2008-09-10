@@ -126,7 +126,7 @@ boolean isAssignmentPriorityAllowed = false;
 							if (  field.type.substring(0,6) == "select" && field.id != 'priority' && field.id != 'assignedAgent' ) //these are fields to ignore
 							{
 								if ( field.selectedIndex <= 0 && $(field).style.display != 'none' && $(field).disabled != true )
-								{
+								{                                
 									err = true;
 								}
 							}
@@ -181,8 +181,13 @@ boolean isAssignmentPriorityAllowed = false;
 					<div class="casedisp_select">
 						<select id="morethenone" <%= isEditAllowed ? "" : "disabled" %> name="morethenone" onchange="verifyCaseDisp();">
 							<option value="-Select One-">-Select One-</option>
-                         <%      
-                               if(cm.isMoreThenOneIssue())
+                            <%
+                              if(cm.getCrmCaseMedia()==null || cm.getCrmCaseMedia().trim().length()==0){
+                            %>
+                            <option value="Yes">Yes</option>
+                            <option value="No" >No</option>	
+                         <%    }  
+                               else if(cm.isMoreThenOneIssue())
                                {
                          %>   
 							<option value="Yes" selected>Yes</option>
@@ -202,9 +207,14 @@ boolean isAssignmentPriorityAllowed = false;
 					<div class="casedisp_select">
 						<select id="firstContact" <%= isEditAllowed ? "" : "disabled" %> name="firstContact" onchange="verifyCaseDisp();">
 							<option value="-Select One-">-Select One-</option>
-                            
-                         <%      
-                               if(cm.isFirstContactForIssue())
+                                                       <%
+                              if(cm.getCrmCaseMedia()==null || cm.getCrmCaseMedia().trim().length()==0){
+                            %>
+                            <option value="Yes">Yes</option>
+                            <option value="No" >No</option>	
+ 
+                         <%    }  
+                               else if(cm.isFirstContactForIssue())
                                {
                          %>   
 							<option value="Yes" selected>Yes</option>
@@ -224,8 +234,14 @@ boolean isAssignmentPriorityAllowed = false;
 					<div class="casedisp_select">
 						<select id="Resolved" <%= isEditAllowed ? "" : "disabled" %> name="Resolved" onchange="CaseDisp_FirstContact(this.id, 'NotResolved'); verifyCaseDisp();">
 							<option value="-Select One-">-Select One-</option>
-                         <%      
-                               if(cm.isFirstContactResolved())
+                                                        <%
+                              if(cm.getCrmCaseMedia()==null || cm.getCrmCaseMedia().trim().length()==0){
+                            %>
+                            <option value="Yes">Yes</option>
+                            <option value="No" >No</option>	                            
+                            
+                         <%    }  
+                               else if(cm.isFirstContactResolved())
                                {
                          %>   
 							<option value="Yes" selected>Yes</option>
@@ -249,8 +265,7 @@ boolean isAssignmentPriorityAllowed = false;
                             List caseReasonList=CrmCaseConstants.getCrmCaseReasonForNotResolve();
                             for(int i=0;i<caseReasonList.size();i++)
                             {                             
-                             String value=(String)caseReasonList.get(i);                            
-                             System.out.println("values are getting set");
+                             String value=(String)caseReasonList.get(i);                                                         
                              String reason=cm.getResonForNotResolve();
                                if(value.equalsIgnoreCase(reason))
                                {
@@ -274,8 +289,14 @@ boolean isAssignmentPriorityAllowed = false;
 					<div class="casedisp_select">
 						<select id="satisfactoryReason" name="satisfactoryReason" <%= isEditAllowed ? "" : "disabled" %> onchange="verifyCaseDisp();">
 							<option value="-Select One-">-Select One-</option>
-                        <%      
-                               if(cm.isSatisfiedWithResolution())
+                                                        <%
+                              if(cm.getCrmCaseMedia()==null || cm.getCrmCaseMedia().trim().length()==0){
+                            %>
+                            <option value="Yes">Yes</option>
+                            <option value="No" >No</option>	                            
+                            
+                        <%     } 
+                               else if(cm.isSatisfiedWithResolution())
                                {
                          %>   
 							<option value="Yes" selected>Yes</option>
@@ -478,7 +499,7 @@ boolean isAssignmentPriorityAllowed = false;
 	<tr>
 		<td></td>
 		<td colspan="3">
-			<input id="CreateCase" disabled="true" type="submit" class="case_save_disabled" value='<%= cm.isAnonymous() ? "Create Case" : (isEditAllowed ? "Update Case" : "Add Note") %>'>
+			<input id="CreateCase" disabled="true" type="submit" class="case_save_disabled" value='<%= cm.isAnonymous() ? "Create Case" : (isEditAllowed ? "Update Case" : "Add Note") %>' onKeyPress="verifyCaseDisp();">
 			<% if (!cm.isAnonymous()) { 
 			int countButton = 0;
 			%>
@@ -513,7 +534,19 @@ boolean isAssignmentPriorityAllowed = false;
 	CaseDisp_FirstContact('Resolved', 'NotResolved');
 	/* this verifies the form and enables the create button */
 	verifyCaseDisp();
+   
+   
+</script>
+<% }else{ %>
+
+<script type="text/javascript">
+/* this causes any hidden fields that should be shown, to show*/
+	CaseDisp_FirstContact('Resolved', 'NotResolved');
+	/* this verifies the form and enables the create button */
+	verifyCaseDisp();
+   
 </script>
 <% } %>
+
 </crm:GetAllowedActions>
 </crm:CrmStoreCaseController>

@@ -47,7 +47,7 @@ public class CrmStoreCaseControllerTag extends AbstractControllerTag {
 
 		try {
 			if ("storeCase".equalsIgnoreCase(this.getActionName())) {
-
+				
 				CrmCaseInfo caseInfo = cm.isAnonymous() ? new CrmCaseInfo() : new CrmCaseInfo(cm);
 
 				// parse
@@ -191,8 +191,7 @@ public class CrmStoreCaseControllerTag extends AbstractControllerTag {
 						}
 						caseAction.setTimestamp(new Date());
 						caseAction.setAgentPK(this.getCurrentAgent().getPK());
-						caseAction.setNote(note);
-
+						caseAction.setNote(note);                        
 						CrmManager.getInstance().updateCase(caseInfo, caseAction, this.getCurrentAgent().getPK());
 						pk = cm.getPK();
 					}
@@ -201,6 +200,7 @@ public class CrmStoreCaseControllerTag extends AbstractControllerTag {
 			}
 
 		} catch (CrmAuthorizationException e) {
+			System.out.println("CrmAuthorizationException :"+e);
 			actionResult.setError(e.getMessage());
 		} catch (FDResourceException e) {
 			LOGGER.warn("FDResourceException occured", e);
