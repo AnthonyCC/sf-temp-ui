@@ -292,17 +292,26 @@ public class DCPDReportGenerator {
 				result = OrderPromotionHelper.isRecipeEligible(recipeSourceId , new HashSet(ctx.getGoodKeys()));
 			}
 			String eligible = result ? "Yes" : "No";
-
+	        String rating;
+	        try {
+	            if (skuNode.getProductInfo() != null) {
+	            	rating = skuNode.getProductInfo().getRating();
+	            } else {
+	            	rating = null;
+	            }
+	        } catch (FDSkuNotFoundException e) {
+	        	rating = null;            
+	        }
 
 			if (ctx.isRenderCSV()) {
 			    if (ctx.isProductsOnlyView()) {
 					printToCSV(new Object[]{
-						(isUna ? "N" : ""), quoted(parentCName), quoted(skuNode.getFullName()), quoted(skuNode.getContentName()), (skuNode.getProductInfo().getRating()!=null ? skuNode.getProductInfo().getRating(): ""), quoted(sku_val!=null ? sku_val : "N/A"), eligible
+						(isUna ? "N" : ""), quoted(parentCName), quoted(skuNode.getFullName()), quoted(skuNode.getContentName()), (rating != null && rating.trim().length() > 0 ? rating: ""), quoted(sku_val!=null ? sku_val : "N/A"), eligible
 					});
 	                /// out.println((isUna ? "N" : "") + ";\"" + parentCName + "\";\"" + skuNode.getFullName() + "\";\"" + skuNode.getContentName() + "\";\"" + (sku_val!=null ? sku_val : "N/A") + "\"");
 			    } else {
 					printToCSV(new Object[]{
-						Integer.toString(level), "P", "", (isUna ? "N" : ""), quoted(parentCName), quoted(skuNode.getFullName()), quoted(skuNode.getContentName()), (skuNode.getProductInfo().getRating()!=null ? skuNode.getProductInfo().getRating(): ""), quoted(sku_val!=null ? sku_val : "N/A"), eligible
+						Integer.toString(level), "P", "", (isUna ? "N" : ""), quoted(parentCName), quoted(skuNode.getFullName()), quoted(skuNode.getContentName()), (rating != null && rating.trim().length() > 0 ? rating: ""), quoted(sku_val!=null ? sku_val : "N/A"), eligible
 					});
 			    	/// out.println(level + ";P;;" + (isUna ? "N" : "") + ";\"" + parentCName + "\";\"" + skuNode.getFullName() + "\";\"" + skuNode.getContentName() + "\";\"" + (sku_val!=null ? sku_val : "N/A") + "\"");
 			    }
@@ -314,16 +323,7 @@ public class DCPDReportGenerator {
 		        out.println("<td style='"+cs+"'>" + skuNode.getFullName() + "</td>");
 		        out.println("<td style='"+cs+"'>" + skuNode.getContentName() + "</td>");
 		        
-		        String rating;
-		        try {
-		            if (skuNode.getProductInfo() != null) {
-		            	rating = skuNode.getProductInfo().getRating();
-		            } else {
-		            	rating = null;
-		            }
-		        } catch (FDSkuNotFoundException e) {
-		        	rating = null;            
-		        }
+
 		        out.println("<td style='"+cs+"'>" + (rating != null && rating.trim().length() > 0 ? rating: "&nbsp;") + "</td>");
 		        out.println("<td style='"+cs+"'>" + (sku_val!=null ? sku_val : "N/A") + "</td>");
 	            out.println("<td style='"+cs+"'>" + (eligible!=null ? eligible : "N/A") + "</td>");
