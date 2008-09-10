@@ -184,7 +184,13 @@
                                 YmalHelper          helper      = yhf.getYmalHelper(p, transactional);
 				*/
 				ConfigurationStrategy confUtil    = ConfigurationStrategyFactory.getConfigurationStrategy(EnumSiteFeature.YMAL);
-				System.out.println("Transactional = " + transactional + ", IsProxy = " + (p instanceof ProxyProduct) + ", class = " + p.getClass());
+				System.out.println("Transactional = " + transactional + ", IsProxy = " + (p instanceof ProxyProduct) + ", class = " + p.getClass());				
+				String base_url = request.getParameter("base_url");
+				
+				if (base_url == null) {
+					base_url = request.getRequestURI() + ( request.getQueryString() == null ? "" : "?" + request.getQueryString() );
+				}
+				
 				FletoHelper     helper      = new FletoHelper(
 				                                        transactional || p instanceof ProxyProduct ? 
 										confUtil.configure(p,new ConfigurationContext()) :
@@ -220,17 +226,14 @@
                                         <%
                                             outputP.append("<div class=\"error\" style=\"font-weight: bold; padding-bottom: 8px;\">");
                                             outputP.append(errorMsg);
-                                            outputP.append("</div>");
+                                            outputP.append("</div>");                                        
                                         %>
                                     </fd:ErrorHandler>
                                     <%
+                                    
                                     outputP.append("<form name=\"ymal_cart\" method=\"post\" action=\"");
-				    outputP.append(request.getServletPath());
-				    /**/
-				    outputP.append('?');
-				    outputP.append(RequestUtil.getFilteredQueryString(request, new String[] {"variant","fdsc.source","trk"}));
-				    /**/
-				    outputP.append("\">\n");
+				    				outputP.append(base_url);
+								    outputP.append("\">\n");								    
                                     outputP.append("<table cellpadding=\"0\" cellspacing=\"0\" align=\"center\" width=\"100%\">\n");
 
                                     if (activeYmalSet != null) {
@@ -241,6 +244,7 @@
                                             outputP.append("<input type=\"hidden\" name=\"originatingProductId\" value=\"" + productNode.getContentKey().getId() + "\">\n");
                                         }
                                     }
+                                    outputP.append("<input type=\"hidden\" name=\"base_url\" value=\"" + base_url + "\">\n");
                                 }
                                 
                                 if ((prodCount % 3) == 0 ) {
@@ -275,7 +279,7 @@
 
                                     outputP3.append("<td width=\""+colWidth+"\" align=\"center\" colspan=\"3\">\n");
                                     if (helper.isSoldBySalesUnits()) {
-                                        outputP3.append("<input type=\"hidden\" name=\"skuCode_" + confProdCount + "\" value=\"" + helper.getSkuCode() + "\">\n");
+                                        outputP3.append("<input type=\"hidden\" name=\"skuCode_" + confProdCount + "\" value=\"" + helper.getSkuCode() + "\">\n");                                        
                                         outputP3.append("<input type=\"hidden\" name=\"catId_" + confProdCount + "\" value=\"" + helper.getCatId() + "\">\n");
                                         outputP3.append("<input type=\"hidden\" name=\"productId_" + confProdCount + "\" value=\"" + helper.getRealProduct() + "\">\n");
                                         outputP3.append("<input type=\"hidden\" name=\"quantity_" + confProdCount + "\" value=\"1\">\n");
@@ -301,7 +305,7 @@
                                         }
                                         outputP3.append("</select>\n");
                                     } else {
-                                        outputP3.append("<table><tr><td>\n");
+                                        outputP3.append("<table><tr><td>\n");                                        
                                         outputP3.append("<input type=\"hidden\" name=\"salesUnit_" + confProdCount + "\" value=\"" + configuration.getSalesUnit() + "\">\n");
                                         outputP3.append("<input type=\"hidden\" name=\"skuCode_" + confProdCount + "\" value=\"" + helper.getSkuCode() + "\">\n");
                                         outputP3.append("<input type=\"hidden\" name=\"catId_" + confProdCount + "\" value=\"" + helper.getCatId() + "\">\n");

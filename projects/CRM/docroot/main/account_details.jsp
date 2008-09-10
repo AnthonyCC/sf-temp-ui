@@ -198,8 +198,20 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
             <!-- SmartStore -->
             <div class="cust_sub_nav" title="SmartStore">
                 <b>DYF</b>
-                <% System.out.println("USER: " + user); %>
-                Variant: <b><%= SmartStoreUtil.getRecommendationService(user, EnumSiteFeature.DYF).getVariant().getId() %> <%= user.getFDCustomer().getProfile().getAttribute("DYF.VariantID") != null ? "<i>(Overridden)</i>" : null %></b>
+<%
+	String personal_variant_id = user.getFDCustomer().getProfile().getAttribute("DYF.VariantID");
+	boolean isValid = SmartStoreUtil.checkVariantId(personal_variant_id, EnumSiteFeature.DYF);
+
+	if (personal_variant_id == null) {
+%>
+                Variant: <b><%= SmartStoreUtil.getRecommendationService(user, EnumSiteFeature.DYF).getVariant().getId() %></b>
+<%		
+	} else {
+%>
+                Variant: <b><%= personal_variant_id %> <%= isValid ? "<i>(Overridden)</i>" : "<i>(Overridden, <span style=\"color: red;\">Invalid!</span>)</i>" %></b>
+<%		
+	}
+%>
                 Eligible: <b><%= DYFUtil.isCustomerEligible(user) ? "Yes" : "No" %></b>
             </div>
         </td></tr>

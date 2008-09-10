@@ -12,7 +12,7 @@
 <%@page import="org.apache.commons.fileupload.disk.DiskFileItemFactory"%>
 
 <%@page import="com.freshdirect.framework.util.CSVUtils"%>
-<%@page import="com.freshdirect.framework.util.DiscreteRandomSampler"%>
+<%@page import="com.freshdirect.framework.util.DiscreteRandomSamplerWithReplacement"%>
 
 
 <%@page import="com.freshdirect.webapp.util.FDEventUtil"%>
@@ -42,7 +42,7 @@ if (ServletFileUpload.isMultipartContent(request)) {
 	int burst = 5;
 	double mu = 0.2;
 	double std = 0.1;
-	DiscreteRandomSampler sampler = new DiscreteRandomSampler();
+	DiscreteRandomSamplerWithReplacement sampler = new DiscreteRandomSamplerWithReplacement();
 
 	try {
 
@@ -87,15 +87,15 @@ if (ServletFileUpload.isMultipartContent(request)) {
 Threads started:
 <ul>
 	<li>Threads: <%= threads %></li>
-	<li>Content ids: <%= sampler.size() %></li>
-	<li>Total mass: <%= sampler.getTotal() %></li>
+	<li>Content ids: <%= sampler.getItemCount() %></li>
+	<li>Total mass: <%= sampler.getTotalFrequency() %></li>
 	<li>Burst size: <%= burst %></li>
 	<li>Timer mean: <%= mu %></li>
 	<li>Standard deviation: <%= std %></li>
 </ul>
 
 <%
-		final DiscreteRandomSampler samplerRef = sampler;
+		final DiscreteRandomSamplerWithReplacement samplerRef = sampler;
 		final int eventsRef = events;
 
 		final double muRef = mu;
@@ -129,7 +129,7 @@ Threads started:
 									Thread.sleep(millisecs);
 								} catch (InterruptedException e) {}
 							}
-							String skuCode = samplerRef.getRandomValue(R).toString();
+							String skuCode = samplerRef.getRandomItem(R).toString();
 							FDEventUtil.logRecommendationImpression(
 								variants[R.nextInt(variants.length)],
 								new ContentKey(FDContentTypes.SKU,skuCode)

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Random;
 
 import com.freshdirect.cms.ContentKey;
-import com.freshdirect.framework.util.DiscreteRandomSampler;
+import com.freshdirect.framework.util.DiscreteRandomSamplerWithReplacement;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
@@ -19,21 +19,17 @@ import com.freshdirect.smartstore.Variant;
  * 
  * Subclasses should set the actual frequencies in the constructor.
  * 
- * @see DiscreteRandomSampler
+ * @see DiscreteRandomSamplerWithReplacement
  * @author istvan
  *
  */
-public abstract class CompositeRecommendationService implements RecommendationService {
-
-	// variant id
-	private Variant variant;
-	
+public abstract class CompositeRecommendationService extends AbstractRecommendationService {
 	// random number generator instance
 	private Random random = new Random();
 	
 	// sampler
-	private DiscreteRandomSampler sampler = 
-		new DiscreteRandomSampler(
+	private DiscreteRandomSamplerWithReplacement sampler = 
+		new DiscreteRandomSamplerWithReplacement(
 			new Comparator() {
 
 				public int compare(Object o1, Object o2) {
@@ -51,7 +47,8 @@ public abstract class CompositeRecommendationService implements RecommendationSe
 	 * @param variant
 	 */
 	protected CompositeRecommendationService(Variant variant) {
-		this.variant = variant;
+		super(variant);
+
 		init();
 	}
 	
@@ -69,15 +66,7 @@ public abstract class CompositeRecommendationService implements RecommendationSe
 	 * @param frequency relative frequency
 	 */
 	protected void setServiceFrequencty(RecommendationService service, int frequency) {
-		sampler.setValue(service, frequency);
-	}
-	
-	/**
-	 * Get variant.
-	 * @return variant
-	 */
-	public Variant getVariant() {
-		return variant;
+		sampler.setItemFrequency(service, frequency);
 	}
 	
 	/**
@@ -94,7 +83,7 @@ public abstract class CompositeRecommendationService implements RecommendationSe
 			append(" {");
 		for(Iterator i = sampler.getValues().iterator(); i.hasNext();) {
 			RecommendationService s = (RecommendationService)i.next();
-			buffer.append(s.getVariant().getId()).append(':').append(sampler.getFrequency(s));
+			buffer.append(s.getVariant().getId()).append(':').append(sampler.getItemFrequency(s));
 			if (i.hasNext()) buffer.append(',');
  		}
 		buffer.append('}');
@@ -113,7 +102,7 @@ public abstract class CompositeRecommendationService implements RecommendationSe
 	 * @see #setServiceFrequencty(RecommendationService, int)
 	 */
 	public List recommend(int max, SessionInput input) {
-		RecommendationService service = (RecommendationService)sampler.getRandomValue(random);
+		RecommendationService service = (RecommendationService)sampler.getRandomItem(random);
 		return service.recommend(max, input);
 	}
 }

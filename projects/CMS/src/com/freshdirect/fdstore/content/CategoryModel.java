@@ -129,7 +129,12 @@ public class CategoryModel extends ContentNodeModelImpl {
 		return (Html)getAttribute("MEDIA_CONTENT",(Html)null);
 	}
 
-    /* [NEW WINE STORE CHANGES] */  
+	/* [APPREQ-160] SmartStore, Category Level Aggregation */
+	public boolean isDYFAggregated() {
+		return getAttribute("SS_LEVEL_AGGREGATION", false);
+	}
+
+	/* [NEW WINE STORE CHANGES] */  
 	
 	
 	

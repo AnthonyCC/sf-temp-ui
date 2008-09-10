@@ -195,6 +195,12 @@
 							<CmsField><attribute>SEASON_TEXT</attribute></CmsField>
 						</fields>
 					</CmsSection>
+					<CmsSection>
+						<title>SMART STORE</title>
+						<fields>
+							<CmsField><attribute>SS_LEVEL_AGGREGATION</attribute></CmsField>
+						</fields>
+					</CmsSection>
 				</sections>
 			</CmsPage>
 			<CmsPage>
@@ -341,6 +347,12 @@
 							<CmsField><attribute>QUANTITY_MAXIMUM</attribute></CmsField>
 							<CmsField><attribute>QUANTITY_INCREMENT</attribute></CmsField>
 							<CmsField><attribute>INCREMENT_MAX_ENFORCE</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>SMART STORE</title>
+						<fields>
+							<CmsField><attribute>SS_EXPERT_WEIGHTING</attribute></CmsField>
 						</fields>
 					</CmsSection>
 				</sections>
@@ -595,14 +607,6 @@
 					<CmsField><attribute>CAT_TITLE</attribute></CmsField>
 				</fields>
 			</CmsSection>
-			<!--CmsSection>
-				<title>EDITORIAL</title>
-				<fields>
-					<CmsField><attribute>EDITORIAL</attribute></CmsField>
-					<CmsField><attribute>EDITORIAL_TITLE</attribute></CmsField>
-					<CmsField><attribute>PROD_PAGE_RATINGS</attribute></CmsField>
-				</fields>
-			</CmsSection-->
 		</sections>
 	</CmsPage>
 	
@@ -645,6 +649,12 @@
 					<CmsField><attribute>RELATED_PRODUCTS</attribute></CmsField>
 					<CmsField><attribute>RELATED_RECIPES</attribute></CmsField>
 					<CmsField><attribute>ymalSets</attribute></CmsField>
+				</fields>
+			</CmsSection>
+			<CmsSection>
+				<title>SMART STORE</title>
+				<fields>
+					<CmsField><attribute>SS_EXPERT_WEIGHTING</attribute></CmsField>
 				</fields>
 			</CmsSection>
 		</sections>

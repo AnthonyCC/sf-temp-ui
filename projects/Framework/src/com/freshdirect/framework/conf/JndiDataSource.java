@@ -64,4 +64,14 @@ public class JndiDataSource implements DataSource {
 		}
 	}
 
+	public boolean isWrapperFor(Class arg0) throws SQLException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public Object unwrap(Class arg0) throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

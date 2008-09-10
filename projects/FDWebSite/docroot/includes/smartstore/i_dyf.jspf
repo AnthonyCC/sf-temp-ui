@@ -152,11 +152,11 @@ if (request.getParameter("nodyf") == null) {
         <%= tx_pricing_JSNameSpace %>.pricings[idx].setQuantity(qty);
     };
 </script>
-<table class="smartstore" style="border-collapse: collapse">
+<table class="smartstore">
 <fd:PIPLayout id="piRow" rowSize="5" impressions="<%= impressions %>" maxRowHeight="rowHeight" singleRowMode="<%= true %>">
 	<caption><%= vprez[0] %></caption>
 	<tr>
-		<td colspan="<%= piRow.size() %>" style="text-align: center;">
+		<td colspan="<%= piRow.size() %>" style="text-align: center;padding-top: 5px; padding-bottom: 5px;">
 			<span class="text10"><%= vprez[1] %></span>
 		</td>
 	</tr>
@@ -317,7 +317,7 @@ if (request.getParameter("nodyf") == null) {
 
 %>
 
-										<input type="text" name="quantity_dyf_<%= txProdCount %>"  value="" style="width: 36px" size="3" maxlength="4" class="text10" onChange="<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].changeQty<%= txProdCount %>(0);" onBlur="<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].setQuantity(this.value);"/>
+										<input type="text" name="quantity_dyf_<%= txProdCount %>"  value="" style="width: 36px" size="3" maxlength="4" class="text10" onChange="<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].changeQty(0);" onBlur="<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].setQuantity(this.value);"/>
 									</td>
 									<td style="height: 28px">
 										<img onclick="<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].changeQty(<%= product.getQuantityIncrement() %>);" src="/media_stat/images/template/quickshop/grn_arrow_up.gif" style="width: 10px; height: 9px; border: 0;  margin-bottom: 1px; margin-top: 1px" alt="Increase quantity"><br/>
@@ -385,13 +385,12 @@ if (request.getParameter("nodyf") == null) {
 			if (confDescription == null) confDescription = product.getSizeDescription();
 
 			if (confDescription != null) {
-			%><br/>(<%= confDescription %>)<br/><%
+			%><br/>(<%= confDescription %>)<%
 			}
 
 			// Display price
 %><fd:FDProductInfo id="productInfo" skuCode="<%= pi.getSku().getSkuCode() %>">
-				<b><%= CURRENCY_FORMATTER.format(productInfo.getDefaultPrice()) %>/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></b>
-				<br/>
+				<br/><b><%= CURRENCY_FORMATTER.format(productInfo.getDefaultPrice()) %>/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></b>				
 </fd:FDProductInfo>
 <%				
 
@@ -399,7 +398,7 @@ if (request.getParameter("nodyf") == null) {
 			// Display "SAVE!" ... label
             String[] ymalScales = pi.getFDProduct().getPricing().getScaleDisplay();
             if (ymalScales.length>0) {
-%>				<span style="color: #FF9933; font-weight: bold;">Save!</span><br/>
+%>				<br/><span style="color: #FF9933; font-weight: bold;">Save!</span><br/>
 <%
                 for (int ymalSci = 0; ymalSci < ymalScales.length; ymalSci++) {
                 	%><b><%= ymalScales[ymalSci] %></b><br/>

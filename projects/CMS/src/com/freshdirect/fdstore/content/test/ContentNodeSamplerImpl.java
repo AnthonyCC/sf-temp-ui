@@ -13,7 +13,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.framework.util.DiscreteRandomSampler;
+import com.freshdirect.framework.util.DiscreteRandomSamplerWithReplacement;
 
 public class ContentNodeSamplerImpl implements ContentNodeSampler {
 
@@ -23,7 +23,7 @@ public class ContentNodeSamplerImpl implements ContentNodeSampler {
 	
 	/** known content keys. keys that are not in this map will not be generated */
 	protected Map knownContentKeys = new HashMap();
-	protected DiscreteRandomSampler sampler = new DiscreteRandomSampler();
+	protected DiscreteRandomSamplerWithReplacement sampler = new DiscreteRandomSamplerWithReplacement();
 
 	public ContentNodeSamplerImpl(ContentType type, Collection contentKeys) {
 		this.type = type;
@@ -46,7 +46,7 @@ public class ContentNodeSamplerImpl implements ContentNodeSampler {
 	public void setFrequency(String id, int frequency) {
 		if (!knownContentKeys.containsKey(id)) 
 			throw new NoSuchElementException("Content node with id " + id + " is not in known content key set");
-		sampler.setValue(id, frequency);
+		sampler.setItemFrequency(id, frequency);
 	}
 
 	public void resetFrequencies() {
@@ -58,7 +58,7 @@ public class ContentNodeSamplerImpl implements ContentNodeSampler {
 	}
 
 	public long getFrequency(String id) {
-		return sampler.getFrequency(id);
+		return sampler.getItemFrequency(id);
 	}
 
 	public void addFrequenciesFromMap(Map frequencies) {
@@ -78,9 +78,9 @@ public class ContentNodeSamplerImpl implements ContentNodeSampler {
 
 	public List getSampleContentKeys(int n, Random R) {
 		List keys = new ArrayList();
-		if (sampler.getTotal() == 0) return keys;
+		if (sampler.getTotalFrequency() == 0) return keys;
 		for(int i=0; i< n; ) {
-			String id = (String)sampler.getRandomValue(R);
+			String id = (String)sampler.getRandomItem(R);
 			if (id == null) continue;
 			ContentKey key = (ContentKey)knownContentKeys.get(id);
 			if (key == null) continue;
@@ -91,7 +91,7 @@ public class ContentNodeSamplerImpl implements ContentNodeSampler {
 	}
 
 	public ContentKey next(Random R) {
-		return (ContentKey)knownContentKeys.get(sampler.getRandomValue(R));
+		return (ContentKey)knownContentKeys.get(sampler.getRandomItem(R));
 	}
 
 }

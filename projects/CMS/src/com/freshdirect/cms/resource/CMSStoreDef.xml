@@ -206,7 +206,7 @@
 			<AttributeDef type="B" name="FEATURED"  label="Featured"/>
 			<AttributeDef type="B" name="SECONDARY_CATEGORY"  label="Secondary Category" />
 			<AttributeDef type="S" name="MATERIAL_CHARACTERISTIC" label="Material Characteristic"/>
-           <!-- Wine Store Changes  --> 
+            <!-- Wine Store Changes  --> 
             <AttributeDef type="S" name="TEMPLATE_PATH" label="Content Template Path"/>
             <!-- Wine Store Changes  --> 
 			<!-- rating groups -->
@@ -225,6 +225,9 @@
 			<AttributeDef type="S" name="RG_USAGE_LABEL" label="Label for Usage" inheritable="true"/>
 			<AttributeDef type="S" name="RG_USAGE_PRICE_LABEL" label="Label for Usage &amp; Price" inheritable="true"/>
 			<AttributeDef type="B" name="SHOW_RATING_RELATED_IMAGE" label="Show Rating Related Image" inheritable="true"/>
+			
+			<!-- SmartStore -->
+			<AttributeDef type="B" name="SS_LEVEL_AGGREGATION" label="Level Aggregation" inheritable="false"/>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="ALTERNATE_CONTENT" label="Alternate Content">
@@ -475,13 +478,26 @@
 			<AttributeDef type="S" name="PROD_PAGE_TEXT_RATINGS" inheritable="true"   label="Prod Page Text Ratings" />
 			<AttributeDef type="S" name="RATING_PROD_NAME"  label="Prod Page Rating Name" inheritable="true"/>
             
-      <!--  USQ changes  -->                  
+            <!--  USQ changes  -->                  
             <AttributeDef type="S" name="WINE_CLASSIFICATION" label="Wine Classification Text" />
             <AttributeDef type="S" name="WINE_IMPORTER" label="Wine Importer" />
             <AttributeDef type="S" name="WINE_ALCH_CONTENT" label="Wine Alchohol Content" />
             <AttributeDef type="S" name="WINE_AGING" label="Wine Aging Notes" />    
             <AttributeDef type="S" name="WINE_CITY" label="Wine City" />
-      <!--  USQ changes  -->            
+            <!--  SmartStore  -->
+			<EnumDef type="I" name="SS_EXPERT_WEIGHTING" label="Expert Weighting" inheritable="true">
+				<EnumValue value="-5" label="-5"/>
+				<EnumValue value="-4" label="-4"/>
+				<EnumValue value="-3" label="-3"/>
+				<EnumValue value="-2" label="-2"/>
+				<EnumValue value="-1" label="-1"/>
+				<EnumValue value="0" label="0"/>
+				<EnumValue value="1" label="1"/>
+				<EnumValue value="2" label="2"/>
+				<EnumValue value="3" label="3"/>
+				<EnumValue value="4" label="4"/>
+				<EnumValue value="5" label="5"/>
+			</EnumDef>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="skus" cardinality="Many" navigable="true">

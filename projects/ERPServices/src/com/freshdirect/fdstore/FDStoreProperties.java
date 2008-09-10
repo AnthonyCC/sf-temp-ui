@@ -138,7 +138,13 @@ public class FDStoreProperties {
 	// SmartStore
 	private final static String DYF_STRATEGY_CACHE_ENTRIES = "fdstore.strategy.cache.entries";
 
+	// DYF Site Feature
+	private final static String DYF_ENABLED = "fdstore.dyf.enabled";
 
+	// use Customers' EIEO instead of SmartStore analyzed data
+	private final static String DYF_VARIANTS_EIEO = "fdstore.dyf.variants.useHistory";
+
+	
 	// Referral Program admin
 	private final static String RFL_PRG_PAGINATION_SIZE="fdstore.referral.paginationSize";
 
@@ -177,8 +183,6 @@ public class FDStoreProperties {
 
 	private final static String CCL_AJAX_DEBUG_FACADE_EXCEPTION = "fdstore.ccl.ajax.debug.facade_exception";
 
-	// SmartStore DYF Site Feature
-	private final static String DYF_ENABLED = "fdstore.dyf.enabled";
 
 //	Added for controlling case creation during the retention program survey processing.
 	private final static String PROP_RETPRG_CREATECASE = "fdstore.retentionProgram.createCase";
@@ -325,7 +329,6 @@ public class FDStoreProperties {
 
 		defaults.put(PROP_MAX_REFERRALS, "500");
 		defaults.put(PROP_NUM_DAYS_MAX_REFERRALS, "1"); // max 500 referrals for 1 day
-		//defaults.put(PROP_FDREFERRALMGR_HOME,	"freshdirect.fdstore.ReferralManager");
 		defaults.put(PROP_FDREFERRALMGR_HOME,	"freshdirect.fdstore.ReferralManager");
 
 
@@ -353,7 +356,6 @@ public class FDStoreProperties {
 		defaults.put(DLV_PASS_PROMOTION_PREFIX, "FDDELIVERS");
 		defaults.put(DLV_PASS_MAX_PURCHASE_LIMIT,"1");
 
-		defaults.put(DYF_STRATEGY_CACHE_ENTRIES, "1000");
 
 		defaults.put(PROP_CRM_ORDER_PRC_LIMIT, "100");
 		defaults.put(RFL_PRG_PAGINATION_SIZE, "10");
@@ -369,6 +371,8 @@ public class FDStoreProperties {
 		defaults.put(CCL_AJAX_DEBUG_FACADE_EXCEPTION, "");
 
 		defaults.put(DYF_ENABLED, "false");
+		defaults.put(DYF_STRATEGY_CACHE_ENTRIES, "1000");
+		defaults.put(DYF_VARIANTS_EIEO, "false");
 
 		defaults.put(DISTRIBUTION_SAMPLES_DIR,"");
 
@@ -790,6 +794,11 @@ public class FDStoreProperties {
 		return Boolean.valueOf(get(DYF_ENABLED)).booleanValue();
 	}
 
+	public static boolean isDYFUseCustomerHistory() {
+		return Boolean.valueOf(get(DYF_VARIANTS_EIEO)).booleanValue();
+	}
+	
+	
 	public static String getSampleDistributionsPath() {
 		return (String)get(DISTRIBUTION_SAMPLES_DIR);
 	}

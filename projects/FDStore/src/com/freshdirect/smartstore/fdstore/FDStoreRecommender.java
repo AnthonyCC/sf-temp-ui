@@ -42,7 +42,7 @@ public class FDStoreRecommender {
 	// Filtering predicate for product models
 	private abstract class FilterTemplate {
 		
-		protected abstract boolean pass(ProductModel model);
+		protected abstract ProductModel evaluate(ProductModel model);
 		
 		private List models;
 		
@@ -54,7 +54,7 @@ public class FDStoreRecommender {
 			List filteredModels = new ArrayList(models.size());
 			for(Iterator i = models.iterator(); i.hasNext(); ) {
 				ProductModel model = (ProductModel)i.next();
-				if (pass(model)) filteredModels.add(model);
+				if (evaluate(model) != null) filteredModels.add(model);
 			}
 			return filteredModels;
 		}
@@ -69,22 +69,32 @@ public class FDStoreRecommender {
 		
 		// check for explicit exclusion
 		models = new FilterTemplate(models) {
-			protected boolean pass(ProductModel model) {
-				return !model.isExcludedRecommendation();
+			protected ProductModel evaluate(ProductModel model) {
+				return model.isExcludedRecommendation() ? null : model;
 			}
 		}.filter();
 		
 		// check for duplicates
 		models = new FilterTemplate(models) {
-			protected boolean pass(ProductModel model) {
-				return !cartItems.contains(model.getContentKey());
+			protected ProductModel evaluate(ProductModel model) {
+				return cartItems.contains(model.getContentKey()) ? null : model;
 			}
 		}.filter();
 		
 		// check availabilities
 		models = new FilterTemplate(models) {
-			protected boolean pass(ProductModel model) {
-				return available(model);
+			protected ProductModel evaluate(ProductModel model) {
+				if (available(model)) return model;
+				
+				for(Iterator i = model.getRecommendedAlternatives().iterator(); i.hasNext();) {
+					ContentNodeModel alternativeModel = (ContentNodeModel)i.next();
+					if (available(alternativeModel)) {
+						if (alternativeModel instanceof ProductModel) return (ProductModel)alternativeModel;
+						else if (alternativeModel instanceof SkuModel) return (ProductModel)alternativeModel.getParentNode();
+						
+					}
+				}
+				return null;
 			}
 		}.filter();
 		

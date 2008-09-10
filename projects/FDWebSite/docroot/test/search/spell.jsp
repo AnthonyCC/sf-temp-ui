@@ -5,7 +5,7 @@
 <%@ page import='org.apache.commons.fileupload.disk.DiskFileItemFactory' %>
 
 <%@ page import='com.freshdirect.framework.util.CSVUtils' %>
-<%@ page import='com.freshdirect.framework.util.DiscreteRandomSampler' %>
+<%@ page import='com.freshdirect.framework.util.DiscreteRandomSamplerWithReplacement' %>
 
 <%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
 <%@ page import='com.freshdirect.fdstore.content.SearchResults' %>
@@ -34,7 +34,7 @@ private interface Sampler {
 };
 
 private class RandomSampler implements Sampler {
-	private DiscreteRandomSampler sampler = new DiscreteRandomSampler();
+	private DiscreteRandomSamplerWithReplacement sampler = new DiscreteRandomSamplerWithReplacement();
 	private Random R = new Random();
 	private long freq = -1;
 
@@ -43,8 +43,8 @@ private class RandomSampler implements Sampler {
 	}
 
 	public String getNextQuery() {
-		Object query = sampler.getRandomValue(R);
-		freq = sampler.getFrequency(query);
+		Object query = sampler.getRandomItem(R);
+		freq = sampler.getItemFrequency(query);
 		return query.toString();
 	}
 

@@ -71,5 +71,55 @@ public class SessionCache extends LinkedHashMap {
 		return super.put(key, value);
 	}
 	
-
+	/**
+	 * An entry that has an associated expiry.
+	 * 
+	 */
+	public static class TimedEntry {
+		
+		private long duration;
+		private long timeRecorded;
+		
+		private Object payLoad;
+		
+		/**
+		 * Constructor.
+		 * 
+		 * Time is recorded at this moment (the clock is ticking :)
+		 * @param payLoad object stored
+		 * @param duration expiry in milliseconds
+		 */
+		public TimedEntry(Object payLoad, long duration) {
+			timeRecorded = System.currentTimeMillis();
+			this.duration = duration;
+			this.payLoad = payLoad;
+		}
+		
+		/**
+		 * Is payload's recency expired?
+		 * @return whether object expired
+		 */
+		public boolean expired() {
+			long diff = System.currentTimeMillis() - timeRecorded;
+			return  diff > duration;
+		}
+		
+		/**
+		 * Get payload.
+		 * @return payload
+		 */
+		public Object getPayload() {
+			return payLoad;
+		}
+		
+		/** Set a new payload.
+		 * 
+		 * @param payload payload object
+		 * @param resetClock whether to reset the clock
+		 */
+		public void setPayload(Object payload, boolean resetClock) {
+			if (resetClock) timeRecorded = System.currentTimeMillis();
+			this.payLoad = payload;
+		}
+	}
 }

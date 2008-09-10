@@ -126,4 +126,30 @@ public class SmartStoreUtil {
 
 		return (String[]) vpMap.get(v.getId());
 	}
+	
+
+
+	/**
+	 * Checks if 'anId' is a valid variant ID
+	 * @param anId variant ID
+	 * @param feat {@link EnumSiteFeature} site feature
+	 * 
+	 * @return result of check
+	 */
+	public static boolean checkVariantId(String anId, EnumSiteFeature feat) {
+		if (anId == null)
+			return false;
+
+		if (feat == null)
+			feat = EnumSiteFeature.DYF;
+		
+		Map services = SmartStoreServiceConfiguration.getInstance().getServices(feat);
+		for (Iterator it=services.keySet().iterator(); it.hasNext();) {
+			if (anId.equals( (String)it.next() )) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
 }

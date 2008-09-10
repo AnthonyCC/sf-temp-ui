@@ -19,7 +19,7 @@
 	<classpathentry kind="var" path="FD_LIBS/testing/jrunittesthelper.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/testing/hsqldb.jar"/>
 	<classpathentry kind="src" path="/listadmin"/>
-	<classpathentry kind="var" path="FD_LIBS/testing/mockejb.jar" sourcepath="/MOCKEJB_SRC_HOME/mockejb-0.6-beta2.zip"/>
+	<classpathentry kind="var" path="FD_LIBS/testing/mockejb.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/xalan.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/xerces.jar"/>
 	<classpathentry kind="src" path="/cms-slide"/>

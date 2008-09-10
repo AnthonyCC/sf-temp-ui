@@ -10,6 +10,8 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -79,6 +81,7 @@ import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.util.FDEventUtil;
 import com.freshdirect.webapp.util.ItemSelectionCheckResult;
 import com.freshdirect.webapp.util.QuickCartCache;
+import com.freshdirect.webapp.util.RequestUtil;
 
 /**
  * 
@@ -489,6 +492,25 @@ public class FDShoppingCartControllerTag extends
 				// remove single line
 				affectedLines = removeOrderLine() ? 1 : 0;
 			}
+			
+			if (result.isSuccess() && successPage == null) {
+				HttpServletResponse response = (HttpServletResponse)pageContext.getResponse();
+				
+				/*
+				 * Construct the success page's URL, removing the delete action's query strings,
+				 * and redirect to that URL.
+				 */
+				String succPage = request.getRequestURI() + 
+								  RequestUtil.getFilteredQueryString(request, new String[] {"remove", "cartLine"});
+				try {
+					response.sendRedirect(response.encodeRedirectURL(succPage));
+					JspWriter writer = pageContext.getOut();
+					writer.close();
+				} catch (IOException e) {
+					return SKIP_BODY;
+				}
+			}
+		
 		} else if ((request.getParameter("removeRecipe") != null)
 				&& "GET".equalsIgnoreCase(request.getMethod())) {
 			affectedLines = this.removeRecipe();
@@ -1344,16 +1366,17 @@ public class FDShoppingCartControllerTag extends
 
 	private String validateQuantity(FDUserI user, ProductModel prodNode,
 			double quantity, double adjustmentQuantity) {
+		DecimalFormat formatter = new DecimalFormat("0.##");
 		if (quantity < prodNode.getQuantityMinimum()) {
 			return "FreshDirect cannot deliver less than "
-					+ prodNode.getQuantityMinimum() + " "
+					+ formatter.format( prodNode.getQuantityMinimum() ) + " "
 					+ prodNode.getFullName();
 		}
 
 		if ((quantity - prodNode.getQuantityMinimum())
 				% prodNode.getQuantityIncrement() != 0) {
 			return "Quantity must be an increment of "
-					+ prodNode.getQuantityIncrement();
+					+ formatter.format( prodNode.getQuantityIncrement() );
 		}
 
 		// For CCL Requests (other than cart events)
@@ -1362,13 +1385,8 @@ public class FDShoppingCartControllerTag extends
 			if (getCartlinesQuantity(prodNode)
 					+ cart.getTotalQuantity(prodNode) + quantity
 					- adjustmentQuantity > user.getQuantityMaximum(prodNode)) {
-				return MessageFormat
-						.format(
-								"Please note: there is a limit of {0,number,0.##} per order of {1}",
-								new Object[] {
-										new Double(user
-												.getQuantityMaximum(prodNode)),
-										prodNode.getFullName() });
+				return "Please note: there is a limit of " + formatter.format( prodNode.getQuantityMaximum() ) + 
+					   " per order of " + prodNode.getFullName();				
 			}
 		}
 
