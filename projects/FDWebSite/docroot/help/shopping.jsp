@@ -196,8 +196,8 @@ You can change, reschedule, or cancel an order at any time before the cancellati
 	<tr valign="top">
 		<td width="15"><img src="/media/images/layout/clear.gif" width="15" height="1" alt="" border="0"></td>
 		<td width="<%=tableWidth%>" class="bodyCopy">
-			<b>Does FreshDirect make substitutions?</b><br>
-			No. Our goal is to fulfill 100% of each customer's order. Occasionally, market conditions beyond our control may cause an item to become unavailable. Of course if this occurs FreshDirect will not charge you for the missing item.<br>
+			<b>Does FreshDirect make substitutions?</b><br />
+			Our goal is to fulfill 100% of each customer's order, but occasionally market conditions beyond our control may cause an item to become unavailable. At times when we have an item that's very similar to the item you ordered, we may make a substitution. Any substitute item will be marked as such. If you're not happy with the replacement, we hope you'll email us so we can make it right: <a href="mailto:subs@freshdirect.com">subs@freshdirect.com</a>.<br />
 	   </td>
 	</tr>
 </table>
