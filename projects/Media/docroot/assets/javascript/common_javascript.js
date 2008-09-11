@@ -37,8 +37,17 @@ function swapImage2sup(imgName, w, noW){
 
 var isIE = !!(window.attachEvent && !window.opera);
 
+var newWin='';
+/* simple pop */
+function pop(URL, h, w) {
+	newWin = window.open(URL,"popWin","height=" + h + ", width=" + w + ", resizable, scrollbars");
+	newWin.focus();
+	if (window.resizeTo) { newWin.resizeTo(w, h); }
+}
+
 /* currently being used for help section...*/
-function pop(URL,h,w) {
+function popold(URL,h,w) {
+
 	if(isIE){
 		if (window.newWin) { window.newWin.close() }
 	}else{
