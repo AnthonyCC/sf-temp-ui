@@ -83,6 +83,7 @@ boolean isAssignmentPriorityAllowed = false;
 		<td rowspan="9" class="casedisp_cell">
 			<script language="JavaScript">
 				<!--
+
 					/* from the prototype lib*/
 					function $() {
 						var elements = new Array();
@@ -119,30 +120,36 @@ boolean isAssignmentPriorityAllowed = false;
 					*/
 					function verifyCaseDisp() {
 						var err = false;
-					   for ( var i=0,n=document.case_details.elements.length; i<n; i++ )
-					   {
+						/* START fix early call by IE */
+							var CaseButton = $('CreateCase');
+							if ( !CaseButton ) { return false; }
+						/* END fix early call by IE */
+						for ( var i=0,n=document.case_details.elements.length; i<n; i++ )
+						{
 							var field = document.case_details.elements[i];
-							//if ( field.type.substring(0,6) == "select"  &&  field.value == '-Select One-' && $(field).style.display != 'none' )
 							if (  field.type.substring(0,6) == "select" && field.id != 'priority' && field.id != 'assignedAgent' ) //these are fields to ignore
 							{
 								if ( field.selectedIndex <= 0 && $(field).style.display != 'none' && $(field).disabled != true )
-								{                                
+								{
 									err = true;
 								}
 							}
-                        $(field).blur();
-    
-					   }
-					   if (err) { 
-							$('CreateCase').className = 'case_save_disabled';
-							$('CreateCase').disabled = true;
+							//$(field).blur();
+						}
+						/* check summary and notes */
+						if ( $("summary").value.length <= 0 || $("note").value.length <= 0 ) {
+							err = true;
+						}
+
+						if ( err ) { 
+							CaseButton.className = 'case_save_disabled';
+							CaseButton.disabled = true;
 						}else{ 
-							$('CreateCase').className = 'case_save'; 
-							$('CreateCase').disabled = false;
+							CaseButton.className = 'case_save'; 
+							CaseButton.disabled = false;
 						}
 						
 					}
-                    
                     
 				-->
 			</script>
@@ -465,14 +472,14 @@ boolean isAssignmentPriorityAllowed = false;
 	<tr valign="top">
 		<td class="case_content_field">Summary</td>
 		<td colspan="3">
-			<textarea <%= isEditAllowed ? "" : "readonly" %> name="summary" id="summary" rows="2" wrap="VIRTUAL" style="width: 600px;"><%= request.getParameter("summary")!= null ? request.getParameter("summary"):cm.getSummary() %></textarea>
+			<textarea <%= isEditAllowed ? "" : "readonly" %> name="summary" id="summary" rows="2" wrap="VIRTUAL" style="width: 600px;" onkeyup="verifyCaseDisp(); return true;"><%= request.getParameter("summary")!= null ? request.getParameter("summary"):cm.getSummary() %></textarea>
 			<fd:ErrorHandler result='<%= result %>' name='summary' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>
 	</tr>
 	<tr valign="top">
 		<td class="case_content_field">Notes</td>
 		<td colspan="3">
-			<textarea name="note" rows="4" wrap="VIRTUAL" style="width: 600px;"><%= request.getParameter("note") %></textarea>
+			<textarea id="note" name="note" rows="4" wrap="VIRTUAL" style="width: 600px;" onkeyup="verifyCaseDisp(); return true;"><%= request.getParameter("note") %></textarea>
 			<fd:ErrorHandler result='<%= result %>' name='note' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>
 	</tr>
@@ -499,7 +506,7 @@ boolean isAssignmentPriorityAllowed = false;
 	<tr>
 		<td></td>
 		<td colspan="3">
-			<input id="CreateCase" disabled="true" type="submit" class="case_save_disabled" value='<%= cm.isAnonymous() ? "Create Case" : (isEditAllowed ? "Update Case" : "Add Note") %>' onKeyPress="verifyCaseDisp();">
+			<input id="CreateCase" disabled="true" type="submit" class="case_save_disabled" value='<%= cm.isAnonymous() ? "Create Case" : (isEditAllowed ? "Update Case" : "Add Note") %>' onKeyUp="verifyCaseDisp();">
 			<% if (!cm.isAnonymous()) { 
 			int countButton = 0;
 			%>
