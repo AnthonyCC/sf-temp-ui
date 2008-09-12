@@ -3158,5 +3158,49 @@
         <bodycontent>JSP</bodycontent>
         <info></info>
     </tag>
-    
+<tag>
+            <name>RequestAWineTag</name>
+            <tagclass>com.freshdirect.webapp.taglib.fdstore.RequestAWineTag</tagclass>
+            <teiclass>com.freshdirect.webapp.taglib.fdstore.RequestAWineTag$TagEI</teiclass>
+            <bodycontent>JSP</bodycontent>
+            <info></info>
+            <attribute>
+                <name>actionName</name>
+                <required>true</required>
+                <rtexprvalue>true</rtexprvalue>
+            </attribute>
+            <attribute>
+                <name>successPage</name>
+                <required>true</required>
+                <rtexprvalue>true</rtexprvalue>
+            </attribute>
+            <attribute>
+                <name>result</name>
+                <required>true</required>
+                <rtexprvalue>false</rtexprvalue>
+            </attribute>
+            <attribute>
+                <name>survey</name>
+                <required>true</required>
+                <rtexprvalue>true</rtexprvalue>
+            </attribute>            
+    </tag>    
+        <tag>
+            <name>GetDomainValues</name>
+            <tagclass>com.freshdirect.webapp.taglib.fdstore.GetDomainValuesTag</tagclass>
+            <teiclass>com.freshdirect.webapp.taglib.fdstore.GetDomainValuesTag$TagEI</teiclass>
+            <bodycontent>JSP</bodycontent>
+            <info></info>
+            <attribute>
+                <name>id</name>
+                <required>true</required>
+                <rtexprvalue>false</rtexprvalue>
+            </attribute>
+            <attribute>
+                <name>domainID</name>
+                <required>true</required>
+                <rtexprvalue>true</rtexprvalue>
+            </attribute>
+    </tag>  
+
 </taglib>

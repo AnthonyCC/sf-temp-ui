@@ -224,7 +224,11 @@ for (Iterator i = leftNavItemsList.iterator(); i.hasNext(); ) {
     }
     
 }
-
+	   
+buf.append("<tr><td><div class='left_nav_divider'><!-- --></div>\n")
+   .append("<div class=\"nav_item\"><b><a href=\"javascript:pop('/request_wine.jsp',400,585);\" class=\"snav_nav_item\">Request A Wine</a></b></div>\n")
+   .append("<div class='left_nav_divider'><!-- --></div></td></tr>\n");
+	    displayedRows++;
 
 if (displayedRows > 0) {
 %>

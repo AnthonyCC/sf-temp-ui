@@ -150,6 +150,8 @@ import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.promotion.ejb.FDPromotionDAO;
+import com.freshdirect.fdstore.request.FDProductRequest;
+import com.freshdirect.fdstore.request.FDProductRequestDAO;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
@@ -4095,4 +4097,35 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			return activityRecord;
 		}
 
+		public void storeProductRequest(List productRequest,FDSurveyResponse survey) throws FDResourceException {
+			Connection conn = null;
+			try {
+				conn = this.getConnection();
+				String id="";
+				for(int i=0;i<productRequest.size();i++) {
+					id = this.getNextId(conn, "CUST");
+					FDProductRequest prodReq=(FDProductRequest)productRequest.get(i);
+					prodReq.setId(id);
+				}
+				if(productRequest.size()>0)
+					FDProductRequestDAO.storeRequest(conn,productRequest);
+				
+                if(survey!=null && !survey.getAnswers().isEmpty())
+                	storeSurvey(survey);
+
+			} 
+			catch (SQLException se) {
+				throw new FDResourceException(se, "Could not store product request");
+			} 
+			finally {
+				try {
+					if (conn != null) {
+						conn.close();
+						conn = null;
+					}
+				} catch (SQLException se) {
+					LOGGER.debug("Cannot close connection in FDCustomerManagerSessionBean.storeProductRequests()", se);
+				}
+			}
+		}
 }

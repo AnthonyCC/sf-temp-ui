@@ -13,6 +13,12 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%
 String successPage = "/request_product.jsp?"+request.getQueryString();
+String department = request.getParameter("department");
+if("wine".equalsIgnoreCase(department)) {
+%>
+<jsp:forward page='<%="/request_wine.jsp?"+request.getQueryString()%>' />
+<%}
+
 String redirectPage = "/login/login_popup.jsp?successPage=" + successPage;
 %>
 <fd:CheckLoginStatus guestAllowed='false' recognizedAllowed='false' redirectPage='<%=redirectPage%>'/>
@@ -20,7 +26,7 @@ String redirectPage = "/login/login_popup.jsp?successPage=" + successPage;
 <%
 response.setHeader("Pragma", "no-cache");
 response.setHeader("Cache-Control", "no-cache");
-String department = request.getParameter("department");
+
 
 %>
 <script language="JavaScript">

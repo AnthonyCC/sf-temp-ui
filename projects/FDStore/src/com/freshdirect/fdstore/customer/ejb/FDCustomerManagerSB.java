@@ -75,6 +75,7 @@ import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
 import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.lists.FDCustomerListExistsException;
 import com.freshdirect.fdstore.lists.FDCustomerShoppingList;
+import com.freshdirect.fdstore.request.FDProductRequest;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.mail.XMLEmailI;
@@ -574,6 +575,8 @@ public interface FDCustomerManagerSB extends EJBObject {
     
     public void logCustomerVariant(String saleId, FDIdentity identity, String feature, String variantId) throws RemoteException, FDResourceException;
 
-    public ErpAddressModel getLastOrderAddress(String lastOrderId) throws FDResourceException, RemoteException, SQLException; 
+    public ErpAddressModel getLastOrderAddress(String lastOrderId) throws FDResourceException, RemoteException, SQLException;
+    
+    public void storeProductRequest(List productRequest,FDSurveyResponse survey) throws RemoteException, FDResourceException;
 }
 

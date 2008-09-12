@@ -1197,7 +1197,42 @@ public class FDSurveyFactory {
 		rcptPageSurvey2.addQuestion(rpsCOS2);
 		
 		FDSurveyFactory.getInstance().addSurvey(rcptPageSurvey2);
+		
+		
+//		****** Product Request SURVEY ******//
+		FDSurvey prodReqFeedback = new FDSurvey("Product Request Feedback");	
+		
+		List radioOptions_prodReqFeedback = new ArrayList();
+		radioOptions_prodReqFeedback.add(new FDSurveyAnswer("1", "Excellent"));
+		radioOptions_prodReqFeedback.add(new FDSurveyAnswer("2",""));
+		radioOptions_prodReqFeedback.add(new FDSurveyAnswer("3", "Good"));
+		radioOptions_prodReqFeedback.add(new FDSurveyAnswer("4", ""));
+		radioOptions_prodReqFeedback.add(new FDSurveyAnswer("5", "Poor"));
+		
+
+		
+		FDSurveyQuestion fbkQ0 = new FDSurveyQuestion("Feedback_Overall", "Overall shopping experience", false, false, false, true);
+		fbkQ0.setAnswers(radioOptions_prodReqFeedback);
+		prodReqFeedback.addQuestion(fbkQ0);
+		
+		FDSurveyQuestion fbkQ1 = new FDSurveyQuestion("Feedback_ProductSelection", "Product Selection", false, false, false, true);
+		fbkQ1.setAnswers(radioOptions_prodReqFeedback);
+		prodReqFeedback.addQuestion(fbkQ1);
+		
+		FDSurveyQuestion fbkQ2 = new FDSurveyQuestion("Feedback_WineQuality", "Quality of wines you've tried", false, false, false, true);
+		fbkQ2.setAnswers(radioOptions_prodReqFeedback);
+		prodReqFeedback.addQuestion(fbkQ2);
+		
+		FDSurveyQuestion fbkQ3 = new FDSurveyQuestion("Feedback_WineValue", "Value for the price", false, false, false, true);
+		fbkQ3.setAnswers(radioOptions_prodReqFeedback);
+		prodReqFeedback.addQuestion(fbkQ3);
+		
+		
+		FDSurveyFactory.getInstance().addSurvey(prodReqFeedback);
 
 
 	}
+	
+	
+	
 }

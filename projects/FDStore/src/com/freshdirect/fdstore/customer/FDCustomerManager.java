@@ -98,6 +98,7 @@ import com.freshdirect.fdstore.mail.TellAFriendRecipe;
 import com.freshdirect.fdstore.referral.EnumReferralStatus;
 import com.freshdirect.fdstore.referral.FDReferralManager;
 import com.freshdirect.fdstore.referral.ReferralProgramInvitaionModel;
+import com.freshdirect.fdstore.request.FDProductRequest;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -2517,5 +2518,20 @@ public class FDCustomerManager {
 				throw new FDResourceException(se, "Error running SQL");
 		}
 	    }	
+	    
+
+		public static void storeProductRequest(List productRequest,FDSurveyResponse survey) throws FDResourceException {
+			lookupManagerHome();
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				sb.storeProductRequest(productRequest,survey);
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to session bean");
+			}
+		}	    
 
 }
