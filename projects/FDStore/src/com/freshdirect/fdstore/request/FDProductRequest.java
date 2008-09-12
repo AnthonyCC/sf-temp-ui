@@ -1,6 +1,8 @@
 package com.freshdirect.fdstore.request;
 
-public class FDProductRequest {
+import java.io.Serializable;
+
+public class FDProductRequest implements Serializable {
 	
 	private String id;
 	private String customerId;
