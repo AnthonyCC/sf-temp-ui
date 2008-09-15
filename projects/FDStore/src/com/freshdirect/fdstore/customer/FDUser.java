@@ -113,7 +113,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	private boolean active = false;
 	private boolean receiveFDemails = true;
 	
-	private boolean isHomePageLetetrVisited=false;
+	private boolean isHomePageLetterVisited=false;
 	
 	//Contains user specific Delivery Pass Details.
 	private FDUserDlvPassInfo dlvPassInfo;
@@ -1118,12 +1118,12 @@ public class FDUser extends ModelSupport implements FDUserI {
 		return dcpdPromoProductCache;
 	}
 
-	public boolean isHomePageLetetrVisited() {
-		return isHomePageLetetrVisited;
+	public boolean isHomePageLetterVisited() {
+		return isHomePageLetterVisited;
 	}
 
-	public void setHomePageLetetrVisited(boolean isHomePageLetetrVisited) {
-		this.isHomePageLetetrVisited = isHomePageLetetrVisited;
+	public void setHomePageLetterVisited(boolean isHomePageLetterVisited) {
+		this.isHomePageLetterVisited = isHomePageLetterVisited;
 	}
 }
 	

@@ -222,7 +222,7 @@ public class FDUserDAO {
 			}
 			user.setActive("1".equals(rs.getString("ACTIVE")));
 			user.setReceiveFDEmails("X".equals(rs.getString("RECEIVE_NEWS")));
-			user.setHomePageLetetrVisited(NVL.apply(rs.getString("HPLETTER_VISITED"), "").equalsIgnoreCase("X")?true:false);
+			user.setHomePageLetterVisited(NVL.apply(rs.getString("HPLETTER_VISITED"), "").equalsIgnoreCase("X")?true:false);
 
 		} else {
 			user = new FDUser();
@@ -293,7 +293,7 @@ public class FDUserDAO {
 		else
 			ps.setNull(index++, Types.VARCHAR);
 
-		if(user.isHomePageLetetrVisited())
+		if(user.isHomePageLetterVisited())
 		{
 			ps.setString(index++, "X" );	
 		}else{

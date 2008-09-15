@@ -259,7 +259,7 @@ public interface FDUserI extends java.io.Serializable {
 	/* SmartStore DYF */
 	public boolean isDYFEnabled();
 	
-	public boolean isHomePageLetetrVisited();
+	public boolean isHomePageLetterVisited();
 	
 	
     /*
@@ -277,6 +277,6 @@ public interface FDUserI extends java.io.Serializable {
  
     public EnumServiceType getUserServiceType();
     
-    public void setHomePageLetetrVisited(boolean isHomePageLetetrVisited);
+    public void setHomePageLetterVisited(boolean isHomePageLetterVisited);
     
 }
