@@ -62,8 +62,8 @@ if (catId != null){
 }
 
 %>
-<TABLE WIDTH="745" BORDER="0" CELLPADDING="0" CELLSPACING="0">
-<TR><TD><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="6"></TD></TR>
+<TABLE width="745" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+<tr><td><IMG src="/media_stat/images/layout/clear.gif" width="1" height="6"></td></tr>
 <%
 	boolean isAtHome = true;
 	if(	globalUri.indexOf("login")> -1 ||
@@ -83,7 +83,7 @@ if (catId != null){
 		isAtHome = false;
 	}
 	%>
-<TR><TD><% if(!thisDept.equals("") && !thisDept.equalsIgnoreCase("about")){%>
+<tr><td><% if(!thisDept.equals("") && !thisDept.equalsIgnoreCase("about") && !thisDept.equalsIgnoreCase("cmty")){%>
 <img src="/media_stat/images/navigation/global_nav/topnav_<%=thisDept%>.gif" width="745" height="44" alt="" border="0" usemap="#globalNav" vspace="0">
 <%}else{
 		if(isAtHome == true){
@@ -92,35 +92,35 @@ if (catId != null){
 <% } else { %>
 		<img src="/media_stat/images/navigation/global_nav/topnav_off.gif" width="745" height="44" alt="" border="0" usemap="#globalNav" vspace="0">	
 <% }
-	} %></TD></TR><TR><TD><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="3"></TD></TR></TABLE>
+	} %></td></tr><tr><td><IMG src="/media_stat/images/layout/clear.gif" width="1" height="3"></td></tr></table>
 <% } catch (Exception ex) {
 		ex.printStackTrace();
 %><oscache:usecached />
 <% } %></oscache:cache>
 
 <MAP NAME="globalNav">
-<AREA SHAPE="RECT" COORDS="0,0,35,44" HREF="/index.jsp" ALT="Home">
-<AREA SHAPE="RECT" COORDS="35,0,75,22" HREF="/department.jsp?deptId=fru&trk=gnav" ALT="Fruit">
-<AREA SHAPE="RECT" COORDS="75,0,144,22" HREF="/department.jsp?deptId=veg&trk=gnav" ALT="Vegetables">
-<AREA SHAPE="RECT" COORDS="144,0,181,22" HREF="/department.jsp?deptId=mea&trk=gnav" ALT="Meat">
-<AREA SHAPE="RECT" COORDS="181,0,237,22" HREF="/department.jsp?deptId=sea&trk=gnav" ALT="Seafood">
-<AREA SHAPE="RECT" COORDS="237,0,272,22" HREF="/department.jsp?deptId=del&trk=gnav" ALT="Deli">
-<AREA SHAPE="RECT" COORDS="272,0,319,22" HREF="/department.jsp?deptId=che&trk=gnav" ALT="Cheese">
-<AREA SHAPE="RECT" COORDS="319,0,357,22" HREF="/department.jsp?deptId=dai&trk=gnav" ALT="Dairy">
-<AREA SHAPE="RECT" COORDS="380,0,475,22" HREF="/department.jsp?deptId=fdi&trk=gnav" ALT="4-Minute Meals">
-<AREA SHAPE="RECT" COORDS="475,0,563,22" HREF="/department.jsp?deptId=rtc&trk=gnav" ALT="Ready to Cook">
-<AREA SHAPE="RECT" COORDS="563,0,628,22" HREF="/department.jsp?deptId=hmr&trk=gnav" ALT="Heat & Eat">
-<AREA SHAPE="RECT" COORDS="628,0,677,22" HREF="/department.jsp?deptId=bak&trk=gnav" ALT="Bakery">
-<AREA SHAPE="RECT" COORDS="677,0,734,22" HREF="/department.jsp?deptId=cat&trk=gnav" ALT="Catering">
-<AREA SHAPE="RECT" COORDS="35,23,91,44" HREF="/department.jsp?deptId=orgnat&trk=gnav" ALT="Organic">
-<AREA SHAPE="RECT" COORDS="91,23,133,44" HREF="/department.jsp?deptId=local&trk=gnav" ALT="Local">
-<AREA SHAPE="RECT" COORDS="133,23,183,44" HREF="/department.jsp?deptId=kos&trk=gnav" ALT="Kosher">
-<AREA SHAPE="RECT" COORDS="183,23,246,44" HREF="/department.jsp?deptId=our_picks&trk=gnav" ALT="Our Picks">
-<AREA SHAPE="RECT" COORDS="246,23,299,44" HREF="/department.jsp?deptId=rec&trk=gnav" ALT="Recipes">
-<AREA SHAPE="RECT" COORDS="389,23,442,44" HREF="/department.jsp?deptId=cof&trk=gnav" ALT="Coffee">
-<AREA SHAPE="RECT" COORDS="442,23,498,44" HREF="/department.jsp?deptId=gro&trk=gnav" ALT="Grocery">
-<AREA SHAPE="RECT" COORDS="498,23,597,44" HREF="/department.jsp?deptId=hba&trk=gnav" ALT="Health & Beauty">
-<AREA SHAPE="RECT" COORDS="597,23,647,44" HREF="/department.jsp?deptId=big&trk=gnav" ALT="Buy Big">
-<AREA SHAPE="RECT" COORDS="647,23,697,44" HREF="/department.jsp?deptId=fro&trk=gnav" ALT="Frozen">
-<AREA SHAPE="RECT" COORDS="697,23,735,44" HREF="/department.jsp?deptId=usq&trk=gnav" ALT="USQ">
+<AREA SHAPE="RECT" COORDS="0,0,35,44" HREF="/index.jsp" alt="Home">
+<AREA SHAPE="RECT" COORDS="35,0,75,22" HREF="/department.jsp?deptId=fru&trk=gnav" alt="Fruit">
+<AREA SHAPE="RECT" COORDS="75,0,144,22" HREF="/department.jsp?deptId=veg&trk=gnav" alt="Vegetables">
+<AREA SHAPE="RECT" COORDS="144,0,181,22" HREF="/department.jsp?deptId=mea&trk=gnav" alt="Meat">
+<AREA SHAPE="RECT" COORDS="181,0,237,22" HREF="/department.jsp?deptId=sea&trk=gnav" alt="Seafood">
+<AREA SHAPE="RECT" COORDS="237,0,272,22" HREF="/department.jsp?deptId=del&trk=gnav" alt="Deli">
+<AREA SHAPE="RECT" COORDS="272,0,319,22" HREF="/department.jsp?deptId=che&trk=gnav" alt="Cheese">
+<AREA SHAPE="RECT" COORDS="319,0,357,22" HREF="/department.jsp?deptId=dai&trk=gnav" alt="Dairy">
+<AREA SHAPE="RECT" COORDS="380,0,475,22" HREF="/department.jsp?deptId=fdi&trk=gnav" alt="4-Minute Meals">
+<AREA SHAPE="RECT" COORDS="475,0,563,22" HREF="/department.jsp?deptId=rtc&trk=gnav" alt="Ready to Cook">
+<AREA SHAPE="RECT" COORDS="563,0,628,22" HREF="/department.jsp?deptId=hmr&trk=gnav" alt="Heat & Eat">
+<AREA SHAPE="RECT" COORDS="628,0,677,22" HREF="/department.jsp?deptId=bak&trk=gnav" alt="Bakery">
+<AREA SHAPE="RECT" COORDS="677,0,734,22" HREF="/department.jsp?deptId=cat&trk=gnav" alt="Catering">
+<AREA SHAPE="RECT" COORDS="35,23,91,44" HREF="/department.jsp?deptId=orgnat&trk=gnav" alt="Organic">
+<AREA SHAPE="RECT" COORDS="91,23,133,44" HREF="/department.jsp?deptId=local&trk=gnav" alt="Local">
+<AREA SHAPE="RECT" COORDS="133,23,183,44" HREF="/department.jsp?deptId=kos&trk=gnav" alt="Kosher">
+<AREA SHAPE="RECT" COORDS="183,23,246,44" HREF="/department.jsp?deptId=our_picks&trk=gnav" alt="Our Picks">
+<AREA SHAPE="RECT" COORDS="246,23,299,44" HREF="/department.jsp?deptId=rec&trk=gnav" alt="Recipes">
+<AREA SHAPE="RECT" COORDS="389,23,442,44" HREF="/department.jsp?deptId=cof&trk=gnav" alt="Coffee">
+<AREA SHAPE="RECT" COORDS="442,23,498,44" HREF="/department.jsp?deptId=gro&trk=gnav" alt="Grocery">
+<AREA SHAPE="RECT" COORDS="498,23,597,44" HREF="/department.jsp?deptId=hba&trk=gnav" alt="Health & Beauty">
+<AREA SHAPE="RECT" COORDS="597,23,647,44" HREF="/department.jsp?deptId=big&trk=gnav" alt="Buy Big">
+<AREA SHAPE="RECT" COORDS="647,23,697,44" HREF="/department.jsp?deptId=fro&trk=gnav" alt="Frozen">
+<AREA SHAPE="RECT" COORDS="697,23,735,44" HREF="/department.jsp?deptId=usq&trk=gnav" alt="USQ">
 </MAP>
