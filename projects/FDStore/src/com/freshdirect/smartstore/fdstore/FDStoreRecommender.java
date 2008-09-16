@@ -34,7 +34,10 @@ public class FDStoreRecommender {
 	private static boolean available(ContentNodeModel model) {
 		
 		if (model instanceof SkuModel) return !((SkuModel)model).getProductModel().isUnavailable();
-		else if (model instanceof ProductModel) return !((ProductModel)model).isUnavailable();
+		else if (model instanceof ProductModel) {
+			ProductModel p = (ProductModel)model;
+			return !(p.isDiscontinued() || p.isUnavailable() || p.isOrphan() || p.getHideUrl() != null);
+		}
 		else return true;
 	}
 	
