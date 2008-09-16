@@ -78,9 +78,9 @@ function linkTo(url){
 	</tr>
 	<tr>
 	    <td colspan="3" class="text12">
-        <img src="/media_stat/images/template/newproduct/wine_req_hdr_request.gif"><br>
-        <img src="/media_stat/images/layout/clear.gif" width="1" height="14">
-        Please describe the wines you'd like to see us carry in as much detail as possible including specific brands as well as regions and varietals if you know them.
+			<img src="/media_stat/images/template/newproduct/wine_req_hdr_request.gif"><br />
+			<img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br />
+			Please describe the wines you'd like to see us carry in as much detail as possible including specific brands as well as regions and varietals if you know them.
 	    </td>
 	</tr>
 	<tr>
@@ -103,7 +103,7 @@ function linkTo(url){
         </td>
         <td colspan="2" class="text12">
         <fd:GetDomainValues domainID='wine_country_usq' id='domainValues'>
-        <SELECT NAME='<%="category"+i%>' style="background-color:#eeeeee;">
+        <SELECT NAME='<%="category"+i%>'>
             <OPTION VALUE="">Choose Country
             <logic:iterate id="domainValue" collection="<%= domainValues %>" type="java.lang.String">
             <OPTION VALUE='<%=domainValue%>'><%=domainValue%>
@@ -112,7 +112,7 @@ function linkTo(url){
         </SELECT>
         <img src="/media_stat/images/layout/clear.gif" width="45" height="1">
         <fd:GetDomainValues domainID='wine_varietal' id='domainValues'>
-        <SELECT NAME='<%="subCategory"+i%>' style="background-color:#eeeeee;">
+        <SELECT NAME='<%="subCategory"+i%>'>
             <OPTION VALUE="">Choose Grape/Varietal
             <logic:iterate id="domainValue" collection="<%= domainValues %>" type="java.lang.String">
             <OPTION VALUE='<%=domainValue%>'><%=domainValue%>
@@ -132,7 +132,7 @@ function linkTo(url){
             &nbsp;
         </td>
         <td colspan="3" class="text12">
-            <input name='<%="product"+i%>' size="58" style="background-color:#eeeeee;">
+            <input name='<%="product"+i%>' size="58">
         </td>
     </tr>
     	<tr>
@@ -177,8 +177,8 @@ function linkTo(url){
 	<tr>
 			    <td colspan="9" class="text12">
         <img src="/media_stat/images/template/newproduct/wine_req_hdr_feedback.gif"><br>
-        <img src="/media_stat/images/layout/clear.gif" width="1" height="14">
-We're working hard to make our wine store as good as it can be. Let us know what you think - of the store, of the selection, of the wines you've tried.
+        <img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br />
+		We're working hard to make our wine store as good as it can be. Let us know what you think - of the store, of the selection, of the wines you've tried.
 <br><br>
 
 
@@ -219,11 +219,11 @@ We're working hard to make our wine store as good as it can be. Let us know what
 	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
 	    <td><img src="/media_stat/images/layout/clear.gif" width="60" height="1"></td>
         <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-        <td colspan="1" align="right"><b>Excellent</b></td>
+        <td colspan="1" align="center"><b>Excellent</b></td>
         <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-        <td colspan="1" align="right"><b>Good</b></td>
+        <td colspan="1" align="center"><b>Good</b></td>
         <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-        <td colspan="1" align="right"><b>Poor</b></td>
+        <td colspan="1" align="center"><b>Poor</b></td>
     </tr>
     <tr>
 		<td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
@@ -269,7 +269,7 @@ We're working hard to make our wine store as good as it can be. Let us know what
             </fd:ErrorHandler>
 					<tr bgcolor='<%=bgColor%>'><td colspan="4" align="right"class="<%=surveyQuestion%>"><b><%=question.getDescription()%></b></td>
 				<logic:iterate id="answer" collection="<%= question.getAnswers() %>" type="com.freshdirect.fdstore.survey.FDSurveyAnswer" indexId="i">
-					<td colspan="1" align="right"><input type="<%=input%>" name="<%=question.getName()%>" value="<%=answer.getName()%>" <%=prevAnswers.contains(answer.getName()) ? "CHECKED" : "" %>></td>
+					<td colspan="1" align="center" style="padding: 4px 0; width: 55px;"><input type="<%=input%>" name="<%=question.getName()%>" value="<%=answer.getName()%>" <%=prevAnswers.contains(answer.getName()) ? "CHECKED" : "" %>></td>
         		</logic:iterate>
                 </tr>
 		</logic:iterate>
@@ -291,12 +291,9 @@ We're working hard to make our wine store as good as it can be. Let us know what
 	</tr>
 
 	<tr>
-    <td><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
-    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="1"></td>
-	<td colspan="3" align="center"><a href="javascript:document.request_product.reset()"><img src="/media_stat/images/template/newproduct/b_clear.gif" width="47" height="17" border="0" alt="Clear"></a>&nbsp;&nbsp;
-    <input type="image" name="send_email" src="/media_stat/images/template/newproduct/b_send.gif" width="45" height="15" vspace="1" border="0" alt="Send Request"onClick="javascript:document.request_product.submit()"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="12"><br>
+		<td colspan="10" align="center">
+			<a href="javascript:document.request_product.reset()"><img src="/media_stat/images/template/newproduct/b_clear.gif" width="47" height="17" border="0" alt="Clear"></a>&nbsp;&nbsp;
+			<input type="image" name="send_email" src="/media_stat/images/template/newproduct/b_send.gif" width="45" height="15" vspace="1" border="0" alt="Send Request"onClick="javascript:document.request_product.submit()"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="12"><br>
     </td>
     </tr>
 
