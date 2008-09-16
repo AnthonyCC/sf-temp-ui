@@ -36,7 +36,7 @@ public class FDStoreRecommender {
 		if (model instanceof SkuModel) return !((SkuModel)model).getProductModel().isUnavailable();
 		else if (model instanceof ProductModel) {
 			ProductModel p = (ProductModel)model;
-			return !(p.isDiscontinued() || p.isUnavailable() || p.isOrphan() || p.getHideUrl() != null);
+			return !(p.isHidden() || p.isDiscontinued() || p.isUnavailable() || p.isOrphan());
 		}
 		else return true;
 	}
