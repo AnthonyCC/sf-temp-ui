@@ -28,7 +28,7 @@
 	<tmpl:put name='content' direct='true'>
 <% 
 boolean showAltHome = false;
-if (FDStoreProperties.IsHomePageMediaEnabled() && !user.isHomePageLetterVisited()) showAltHome = true;
+if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited() || (request.getParameter("show") != null && request.getParameter("show").indexOf("letter") > -1))) showAltHome = true;
 %>	
 <table width="745" border="0" cellspacing="0" cellpadding="0">
   <tr> 
@@ -125,7 +125,6 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && !user.isHomePageLetterVisited(
           	} else { 
           		mediaPath=FDStoreProperties.getHPLetterMediaPathForOldUser();
           	}
-			System.out.println(">>>> mediaPath: " + mediaPath);
 	%>
 	<fd:IncludeMedia name="<%=mediaPath%>" />
 	<%    
