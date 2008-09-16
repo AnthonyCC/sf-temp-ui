@@ -102,7 +102,7 @@ function linkTo(url){
             <b><%="Wine Request #"+i%></b>
         </td>
         <td colspan="2" class="text12">
-        <fd:GetDomainValues domainID='wine_country_usq' id='domainValues'>
+        <fd:GetDomainValues domainID='z_request_country' id='domainValues'>
         <SELECT NAME='<%="category"+i%>'>
             <OPTION VALUE="">Choose Country
             <logic:iterate id="domainValue" collection="<%= domainValues %>" type="java.lang.String">
@@ -111,7 +111,7 @@ function linkTo(url){
         </fd:GetDomainValues>
         </SELECT>
         <img src="/media_stat/images/layout/clear.gif" width="45" height="1">
-        <fd:GetDomainValues domainID='wine_varietal' id='domainValues'>
+        <fd:GetDomainValues domainID='z_request_varietal' id='domainValues'>
         <SELECT NAME='<%="subCategory"+i%>'>
             <OPTION VALUE="">Choose Grape/Varietal
             <logic:iterate id="domainValue" collection="<%= domainValues %>" type="java.lang.String">
