@@ -221,7 +221,7 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && !user.isHomePageLetterVisited(
 	  <tr valign="top"> 
 		<td colspan="7">
 		<% if (FDStoreProperties.isAdServerEnabled()) { %>
-			<fd:IncludeMedia name="/media/editorial/home/home_bottom.html" />
+			<fd:IncludeMedia name="/media/editorial/home/home_bottom_new.html" />
 		<% } else { %>
 			<fd:IncludeMedia name="/media/editorial/home/home_bottom_default.html" />
 		<% } %>
