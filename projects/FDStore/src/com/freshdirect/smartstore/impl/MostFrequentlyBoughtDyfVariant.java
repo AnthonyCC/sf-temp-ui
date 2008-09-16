@@ -19,6 +19,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.lists.FDListManager;
+import com.freshdirect.framework.util.DiscreteRandomSampler;
 import com.freshdirect.framework.util.DiscreteRandomSamplerWithoutReplacement;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
@@ -41,6 +42,79 @@ public class MostFrequentlyBoughtDyfVariant extends DYFService {
 	public MostFrequentlyBoughtDyfVariant(Variant variant) {
 		super(variant);
 	}
+	
+	/**
+	 * Object that draws the requested number of elements from the distribution.
+	 * @author istvan
+	 *
+	 */
+	private static class Draw {
+		private DiscreteRandomSampler sampler;
+		private int totalProducts;
+		private Random R = new Random();
+		
+		private Draw(DiscreteRandomSampler sampler, int totalProducts) {
+			this.sampler = sampler;
+			this.totalProducts = totalProducts;
+		}
+		
+		// for testing only
+		private float totalScore() {
+			float z = 0;
+			for(Iterator i = sampler.items(); i.hasNext(); ) {
+				z += ((ContentAggregate)i.next()).getScore();
+			}
+			return z;
+		}
+		
+		public List draw(int k) {
+			/**
+			 * This should only be commented out for testing.
+			 * 
+			 */
+			//float zin = totalScore();
+			
+			
+			int n = Math.min(k,totalProducts);
+			List drawnProducts = new ArrayList(n);
+			
+			Map reverseMap = new HashMap(3*n/2+1);
+			Map frequencyMap = new HashMap(3*n/2+1);
+			
+			for(int i=0; i<n && sampler.getItemCount() > 0; ++i) {
+				ContentAggregate ca = (ContentAggregate)sampler.getRandomItem(R);
+				float score = ca.getScore();
+				ContentKey product = ca.take(R);
+				drawnProducts.add(product);
+				long newFrequency = Math.round(100*ca.getScore());
+				sampler.setItemFrequency(ca, newFrequency);
+				reverseMap.put(product, ca);
+				frequencyMap.put(product, new Float(score-ca.getScore()));
+				//System.err.println("drawn " + product + " " + (score - ca.getScore()));
+			}
+			
+			for(Iterator i = reverseMap.entrySet().iterator(); i.hasNext();) {
+				Map.Entry e = (Map.Entry)i.next();
+				ContentKey key = (ContentKey)e.getKey();
+				((ContentAggregate)e.getValue()).addContent(key,((Float)frequencyMap.get(key)).floatValue());
+			}
+			
+			for(Iterator i = reverseMap.values().iterator(); i.hasNext();) {
+				ContentAggregate ca = (ContentAggregate)i.next();
+				sampler.setItemFrequency(ca, Math.round(100*ca.getScore()));
+			}
+			
+			/**
+			 * Only comment out for testing.
+			 */
+			//float zout = totalScore(); 
+			//if (zin != zout) {
+			//	System.err.println("Frequency in: " + zin + " and out: " + zout);
+			//}
+			
+			return drawnProducts;
+		}
+	}
 
 	/**
 	 * Recommend the most frequently bought products.
@@ -50,18 +124,16 @@ public class MostFrequentlyBoughtDyfVariant extends DYFService {
 	public List recommend(int max, SessionInput input) {
 		// see if list in cache
 		// List<ContentKey>
-		SessionCache.TimedEntry userHistory = (SessionCache.TimedEntry)cache.get(input.getCustomerId());
+		SessionCache.TimedEntry cachedSampler = (SessionCache.TimedEntry)cache.get(input.getCustomerId());
 		
-		if (userHistory == null ||  userHistory.expired()) {
-			LOGGER.debug("Loading order history for " + input.getCustomerId() + (userHistory != null ? " (EXPIRED)" : ""));
+		if (cachedSampler == null ||  cachedSampler.expired()) {
+			LOGGER.debug("Loading order history for " + input.getCustomerId() + (cachedSampler != null ? " (EXPIRED)" : ""));
 
 			
 			final Map productFrequencies = prefersDB ? getItemsFromAnalysis(input.getCustomerId()) : getItemsFromEIEO(input.getCustomerId());
 			if (productFrequencies == null) {
 				return Collections.EMPTY_LIST;
 			}
-			
-			
 			
 			Map aggregates = new HashMap();
 			for(Iterator i = productFrequencies.entrySet().iterator(); i.hasNext();) {
@@ -81,7 +153,6 @@ public class MostFrequentlyBoughtDyfVariant extends DYFService {
 				aggregate.addContent(key, score.floatValue());
 			}
 
-			Random R = new Random();
 			DiscreteRandomSamplerWithoutReplacement sampler = new DiscreteRandomSamplerWithoutReplacement(
 					new Comparator() {
 
@@ -97,34 +168,17 @@ public class MostFrequentlyBoughtDyfVariant extends DYFService {
 				ContentAggregate ca = (ContentAggregate)i.next();
 				sampler.setItemFrequency(ca, Math.round(100*ca.getScore()));
 			}
-			
-			List sortedProductList = new ArrayList(productFrequencies.size());
-			
-			for(int i = 0; i < Math.min(sampler.getItemCount(),25); ++i) {
-				ContentAggregate ca = (ContentAggregate)sampler.getRandomItem(R);
-				sortedProductList.add(ca.take(R));
-				long newFrequency = Math.round(100*ca.getScore());
-				sampler.setItemFrequency(ca, newFrequency);	
-			}
-			
-			for(Iterator i = aggregates.values().iterator(); i.hasNext();) {
-				ContentAggregate ca = (ContentAggregate)i.next();
-				
-				for(Iterator j = ca.keys(); j.hasNext(); ) {
-					sortedProductList.add(j.next());
-				}
-			}
-			
-			userHistory = new SessionCache.TimedEntry(sortedProductList,10*60*1000);
-			cache.put(input.getCustomerId(), userHistory);
-		
+						
+			cachedSampler = new SessionCache.TimedEntry(new Draw(sampler,productFrequencies.size()),10*60*1000);
+			cache.put(input.getCustomerId(), cachedSampler);
 		} 
 		
-		List productList = (List)userHistory.getPayload();
+		synchronized(cachedSampler) {
+			Draw draw = (Draw)cachedSampler.getPayload();
 		
-		return productList.subList(
-			0, 
-			Math.min(input.getCartContents().size()+max, productList.size()));
+		
+			return draw.draw(input.getCartContents().size() + max);
+		}
 	}
 
 
