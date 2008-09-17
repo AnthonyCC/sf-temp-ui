@@ -2,6 +2,7 @@ package com.freshdirect.smartstore.impl;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -55,6 +56,8 @@ public class RandomDyfVariant extends DYFService {
 			
 			// if not, retrieve history
 			Set products = prefersDB ? getItemsFromAnalysis(input.getCustomerId()) : getItemsFromEIEO(input.getCustomerId());
+			
+			if (products == null) return Collections.EMPTY_LIST;
 			
 			List productList = new ArrayList(products.size());
 			productList.addAll(products);
