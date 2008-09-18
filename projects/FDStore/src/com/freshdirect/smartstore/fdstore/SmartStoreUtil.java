@@ -11,6 +11,7 @@ import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -39,7 +40,7 @@ public class SmartStoreUtil {
 		try {
 			if (key.getType().equals(FDContentTypes.PRODUCT)) return key;
 			else if (key.getType().equals(FDContentTypes.SKU)) {
-				SkuModel skuModel = (SkuModel)ContentNodeModelUtil.constructModel(key, true);
+				SkuModel skuModel = (SkuModel)ContentFactory.getInstance().getContentNodeByKey(key);
 				return skuModel.getParentNode().getContentKey();
 			} else return null;
 		} catch(Exception e) {

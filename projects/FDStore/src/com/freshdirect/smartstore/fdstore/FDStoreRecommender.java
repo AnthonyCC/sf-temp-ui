@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -150,7 +151,7 @@ public class FDStoreRecommender {
 			ContentKey contentKey = (ContentKey)i.next();
 
 			// get product
-			ProductModel prdModel = (ProductModel) ContentNodeModelUtil.constructModel(contentKey, true);
+			ProductModel prdModel = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(contentKey);
 			
 			if (seen.contains(prdModel.getContentKey())) continue;
 			seen.add(prdModel.getContentKey());

@@ -12,6 +12,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -93,7 +94,7 @@ public class DYFRecommendationsTag extends AbstractGetterTag implements SessionN
 				List products = new ArrayList();
 				for (int k=0; k<cIds.length; k++) {
 					ContentKey key = ContentKey.create(FDContentTypes.PRODUCT, cIds[k].substring(1, cIds[k].length()-1));
-					products.add((ProductModel) ContentNodeModelUtil.constructModel(key, true));
+					products.add((ProductModel) ContentFactory.getInstance().getContentNodeByKey(key));
 				}
 				
 				results = new Recommendations(new Variant(variantId, EnumSiteFeature.DYF,null), products);

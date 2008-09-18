@@ -88,6 +88,9 @@ public class ContentNodeModelUtil {
 		TYPE_MODEL_MAP.put("StarterList", StarterList.class);
 	}
 
+	/**
+	 * Should only be invoked by ContentFactory.
+	 */
 	public static ContentNodeModel constructModel(ContentKey key, boolean cache) {
 		try {
 			Class c = (Class) TYPE_MODEL_MAP.get(key.getType().getName());

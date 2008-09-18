@@ -218,7 +218,8 @@ if ("recommend".equals(action)) {
 }
 
 %>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <% if ("recommend".equals(action)) { %>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
@@ -312,7 +313,7 @@ if ("recommend".equals(action)) {
 	Iterator it = cartLineItems.iterator();
 	while (it.hasNext()) {
 		FDCartLineModel clItem = (FDCartLineModel) it.next();
-		SkuModel sku = (SkuModel) ContentNodeModelUtil.constructModel(new ContentKey(FDContentTypes.SKU, clItem.getSkuCode()), true );
+		SkuModel sku = (SkuModel) ContentFactory.getInstance().getContentNode(clItem.getSkuCode());
 		ProductModel prd = sku.getProductModel();
 
 		if (!ProdsInCart.contains(prd)) {

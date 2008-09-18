@@ -73,7 +73,8 @@ if (request.getParameter("nodyf") == null) {
 			ProductModel prd = (ProductModel) it.next();
 			ProductImpression pi = cUtil.configure(prd, confContext);
 
-			impressions.add(pi); skus.add(pi.getSku());
+			impressions.add(pi);
+			skus.add(pi.getSku());
 		}
 
 		// vprez := {variant label, variant text}

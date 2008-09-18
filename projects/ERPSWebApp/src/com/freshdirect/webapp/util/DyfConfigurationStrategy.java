@@ -15,6 +15,7 @@ import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
@@ -143,12 +144,6 @@ public class DyfConfigurationStrategy implements ConfigurationStrategy {
 		return instance;
 	}
 	
-	
-	// make sku model from sku code
-	private static SkuModel makeSkuModel(String skuCode) {
-		return (SkuModel) ContentNodeModelUtil.constructModel(new ContentKey(FDContentTypes.SKU,skuCode),true);
-	}
-	
 	/**
 	 * Configure a recommended product from the user's shopping history.
 	 * 
@@ -210,7 +205,7 @@ public class DyfConfigurationStrategy implements ConfigurationStrategy {
 				FDCustomerProductListLineItem item = (FDCustomerProductListLineItem)i.next();
 				
 				String selectedSkuCode = item.getSkuCode();
-				SkuModel skuModel = makeSkuModel(selectedSkuCode); 
+				SkuModel skuModel = (SkuModel) ContentFactory.getInstance().getContentNode(selectedSkuCode); 
 				
 				// not available, skip
 				if (skuModel.isUnavailable()) continue;
