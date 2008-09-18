@@ -7,13 +7,17 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
+
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -25,6 +29,8 @@ import com.freshdirect.smartstore.Trigger;
 import com.freshdirect.smartstore.Variant;
 
 public class FDStoreRecommender {
+	private final static Logger LOGGER = Logger.getLogger(FDStoreRecommender.class);
+	
 	public static final Recommendations EMPTY_RECOMMENDATION = new Recommendations(Variant.BAD_VARIANT, Collections.EMPTY_LIST);
 
 	
@@ -58,7 +64,8 @@ public class FDStoreRecommender {
 			List filteredModels = new ArrayList(models.size());
 			for(Iterator i = models.iterator(); i.hasNext(); ) {
 				ProductModel model = (ProductModel)i.next();
-				if (evaluate(model) != null) filteredModels.add(model);
+				ProductModel replaced = evaluate(model);
+				if (replaced != null) filteredModels.add(replaced);
 			}
 			return filteredModels;
 		}
@@ -94,7 +101,7 @@ public class FDStoreRecommender {
 					ContentNodeModel alternativeModel = (ContentNodeModel)i.next();
 					if (available(alternativeModel)) {
 						if (alternativeModel instanceof ProductModel) return (ProductModel)alternativeModel;
-						else if (alternativeModel instanceof SkuModel) return (ProductModel)alternativeModel.getParentNode();
+						else if (alternativeModel instanceof SkuModel) return evaluate((ProductModel)alternativeModel.getParentNode());
 						
 					}
 				}
@@ -159,6 +166,8 @@ public class FDStoreRecommender {
 			contentModels.add(prdModel);
 		}
 	
+		LOGGER.debug("Items before filter: " + contentModels);
+		
 		// filter duplicates
 		List renderableModels = filter(contentModels,cartItems);
 		
@@ -168,6 +177,8 @@ public class FDStoreRecommender {
 			renderableModels.remove(renderableModels.size()-1);
 		}
 		
+		LOGGER.debug("Recommended items by " + service.getVariant().getId() + ": " + contentModels);
+
 		return new Recommendations(service.getVariant(),renderableModels);
 		
 	}
