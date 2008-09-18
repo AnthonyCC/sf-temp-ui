@@ -200,27 +200,27 @@ public class CrmCaseModel extends ModelSupport implements CrmCaseI {
 		this.caseInfo.setCrmCaseMedia(crmCaseMedia);
 	}
 
-	public boolean isFirstContactForIssue() {
-		return caseInfo.isFirstContactForIssue();
+	public String getFirstContactForIssue() {
+		return caseInfo.getFirstContactForIssue();
 	}
 
-	public void setFirstContactForIssue(boolean firstContactForIssue) {
+	public void setFirstContactForIssue(String firstContactForIssue) {
 		this.caseInfo.setFirstContactForIssue(firstContactForIssue);
 	}
 
-	public boolean isFirstContactResolved() {
-		return this.caseInfo.isFirstContactResolved();
+	public String getFirstContactResolved() {
+		return this.caseInfo.getFirstContactResolved();
 	}
 
-	public void setFirstContactResolved(boolean firstContactResolved) {
+	public void setFirstContactResolved(String firstContactResolved) {
 		this.caseInfo.setFirstContactResolved(firstContactResolved);
 	}
 
-	public boolean isMoreThenOneIssue() {
-		return this.caseInfo.isMoreThenOneIssue();
+	public String getMoreThenOneIssue() {
+		return this.caseInfo.getMoreThenOneIssue();
 	}
 
-	public void setMoreThenOneIssue(boolean moreThenOneIssue) {
+	public void setMoreThenOneIssue(String moreThenOneIssue) {
 		this.caseInfo.setMoreThenOneIssue(moreThenOneIssue);
 	}
 
@@ -240,11 +240,11 @@ public class CrmCaseModel extends ModelSupport implements CrmCaseI {
 		this.caseInfo.setCustomerTone(customerTone);
 	}
 
-	public boolean isSatisfiedWithResolution() {
-		return this.caseInfo.isSatisfiedWithResolution();
+	public String getSatisfiedWithResolution() {
+		return this.caseInfo.getSatisfiedWithResolution();
 	}
 
-	public void setSatisfiedWithResolution(boolean satisfiedWithResolution) {
+	public void setSatisfiedWithResolution(String satisfiedWithResolution) {
 		this.caseInfo.setSatisfiedWithResolution(satisfiedWithResolution);
 	}
 	

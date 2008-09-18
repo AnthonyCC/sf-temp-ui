@@ -283,6 +283,9 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         try {
             CrmCaseEB caseEB = getCrmCaseHome().findByPrimaryKey(caseInfo.getPK());
             CrmCaseModel cm = (CrmCaseModel) caseEB.getModel();
+            
+            System.out.println("cm.getLockedAgentPK() :"+cm.getLockedAgentPK());
+            System.out.println("agentPk :"+agentPk);
             if (!agentPk.equals(cm.getLockedAgentPK())) {
                 this.getSessionContext().setRollbackOnly();
                 throw new CrmAuthorizationException("Agent cannot update case without having the case locked first");
@@ -306,11 +309,11 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
             cm.setProjectedQuantity(caseInfo.getProjectedQuantity());
                         
             cm.setCrmCaseMedia(caseInfo.getCrmCaseMedia());
-            cm.setMoreThenOneIssue(caseInfo.isMoreThenOneIssue());            
-			cm.setFirstContactForIssue(caseInfo.isFirstContactForIssue());
-			cm.setFirstContactResolved(caseInfo.isFirstContactResolved());
+            cm.setMoreThenOneIssue(caseInfo.getMoreThenOneIssue());            
+			cm.setFirstContactForIssue(caseInfo.getFirstContactForIssue());
+			cm.setFirstContactResolved(caseInfo.getFirstContactResolved());
 			cm.setResonForNotResolve(caseInfo.getResonForNotResolve());
-			cm.setSatisfiedWithResolution(caseInfo.isSatisfiedWithResolution());
+			cm.setSatisfiedWithResolution(caseInfo.getSatisfiedWithResolution());
 			cm.setCustomerTone(caseInfo.getCustomerTone());
             
             // audit

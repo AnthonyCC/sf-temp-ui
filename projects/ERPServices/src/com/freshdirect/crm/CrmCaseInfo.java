@@ -77,15 +77,15 @@ public class CrmCaseInfo extends ModelSupport implements CrmCaseI {
     
     private String crmCaseMedia=null;
         
-    private boolean moreThenOneIssue; 
+    private String moreThenOneIssue; 
     
-    private boolean firstContactForIssue;
+    private String firstContactForIssue;
     
-    private boolean firstContactResolved;
+    private String firstContactResolved;
     
     private String resonForNotResolve=null;
     
-    private boolean SatisfiedWithResolution;
+    private String SatisfiedWithResolution;
     
     private String customerTone;
     
@@ -358,35 +358,35 @@ public class CrmCaseInfo extends ModelSupport implements CrmCaseI {
 	     this.firePropertyChange("crmCaseMedia", old, crmCaseMedia);		
 	}
 
-	public boolean isFirstContactForIssue() {
+	public String getFirstContactForIssue() {
 		return firstContactForIssue;
 	}
 
-	public void setFirstContactForIssue(boolean firstContactForIssue) {
+	public void setFirstContactForIssue(String firstContactForIssue) {
 		 
-		 boolean old = this.isFirstContactForIssue();
+		 String old = this.getFirstContactForIssue();
 		 this.firstContactForIssue = firstContactForIssue;
-	     this.firePropertyChange("firstContactForIssue", new Boolean(old), new Boolean(firstContactForIssue));;										 				
+	     this.firePropertyChange("firstContactForIssue", old, firstContactForIssue);;										 				
 	}
 
-	public boolean isFirstContactResolved() {
+	public String getFirstContactResolved() {
 		return firstContactResolved;
 	}
 
-	public void setFirstContactResolved(boolean firstContactResolved) {
-		 boolean old = this.isFirstContactResolved();
+	public void setFirstContactResolved(String firstContactResolved) {
+		 String old = this.getFirstContactResolved();
 		 this.firstContactResolved = firstContactResolved;
-	     this.firePropertyChange("firstContactResolved", new Boolean(old), new Boolean(firstContactResolved));;										 								
+	     this.firePropertyChange("firstContactResolved", old, firstContactResolved);;										 								
 	}
 
-	public boolean isMoreThenOneIssue() {
+	public String getMoreThenOneIssue() {
 		return moreThenOneIssue;
 	}
 
-	public void setMoreThenOneIssue(boolean moreThenOneIssue) {		
-		 boolean old = this.isMoreThenOneIssue();
+	public void setMoreThenOneIssue(String moreThenOneIssue) {		
+		 String old = this.getMoreThenOneIssue();
 		 this.moreThenOneIssue = moreThenOneIssue;
-	     this.firePropertyChange("moreThenOneIssue", new Boolean(old), new Boolean(moreThenOneIssue));;										 													
+	     this.firePropertyChange("moreThenOneIssue", old, moreThenOneIssue);;										 													
 	}
 
 	public String getResonForNotResolve() {
@@ -409,14 +409,14 @@ public class CrmCaseInfo extends ModelSupport implements CrmCaseI {
 	    this.firePropertyChange("customerTone", old, customerTone);				
 	}
 
-	public boolean isSatisfiedWithResolution() {
+	public String getSatisfiedWithResolution() {
 		return SatisfiedWithResolution;
 	}
 
-	public void setSatisfiedWithResolution(boolean satisfiedWithResolution) {
-		 boolean old = this.isSatisfiedWithResolution();
+	public void setSatisfiedWithResolution(String satisfiedWithResolution) {
+		 String old = this.getSatisfiedWithResolution();
 		 SatisfiedWithResolution = satisfiedWithResolution;
-	     this.firePropertyChange("SatisfiedWithResolution", new Boolean(old), new Boolean(SatisfiedWithResolution));;										 												
+	     this.firePropertyChange("SatisfiedWithResolution", old, SatisfiedWithResolution);;										 												
 	}
     
 }

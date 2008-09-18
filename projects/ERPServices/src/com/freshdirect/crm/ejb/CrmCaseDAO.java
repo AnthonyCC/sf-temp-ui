@@ -58,7 +58,7 @@ public class CrmCaseDAO implements EntityDAOI {
 	private final static String QUERY_CASEINFO =
 		"SELECT /*+ USE_NL (ci) */ rownum y, c.id, c.customer_id, c.assigned_agent_id, c. sale_id,"
 			+ " c.locked_agent_id, c.summary, c.case_origin, c.case_subject,"
-			+ "c.MEDIA,c.MORETHENONE_ISSUE,c.FIRSTCONTACT,c.FisrtContact_Resolved,c.ReasonNotToResolve,c.SatisfiedWithResolution,c.CustomerTone,"
+			+ "c.MEDIA,c.MORETHANONE_ISSUE,c.FIRSTCONTACT,c.FIRSTCONTACT_RESOLVED,c.REASONNOTRESOLVED,c.SatisfiedWithResolution,c.CustomerTone,"
 			+ " c.case_priority as case_priority, c.case_state, a.user_id as assigned, cs.name as subject_name,"
 			+ " ci.first_name, ci.last_name, c.create_date, c.last_action_date, c.projected_quantity,"
 			+ " c.actual_quantity "
@@ -247,7 +247,7 @@ public class CrmCaseDAO implements EntityDAOI {
 		CrmCaseModel c = (CrmCaseModel) model;
 		PreparedStatement ps =
 			conn.prepareStatement(
-				"INSERT INTO CUST.CASE(ID, CASE_ORIGIN, CASE_STATE, CASE_PRIORITY, CASE_SUBJECT, SUMMARY, CUSTOMER_ID, SALE_ID, ASSIGNED_AGENT_ID, LOCKED_AGENT_ID, CREATE_DATE, LAST_ACTION_DATE,PROJECTED_QUANTITY,ACTUAL_QUANTITY,MEDIA,MORETHENONE_ISSUE,FIRSTCONTACT,FisrtContact_Resolved,ReasonNotToResolve,SatisfiedWithResolution,CustomerTone) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+				"INSERT INTO CUST.CASE(ID, CASE_ORIGIN, CASE_STATE, CASE_PRIORITY, CASE_SUBJECT, SUMMARY, CUSTOMER_ID, SALE_ID, ASSIGNED_AGENT_ID, LOCKED_AGENT_ID, CREATE_DATE, LAST_ACTION_DATE,PROJECTED_QUANTITY,ACTUAL_QUANTITY,MEDIA,MORETHANONE_ISSUE,FIRSTCONTACT,FIRSTCONTACT_RESOLVED,REASONNOTRESOLVED,SatisfiedWithResolution,CustomerTone) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		ps.setString(1, pk.getId());
 		ps.setString(2, c.getOrigin().getCode());
 		ps.setString(3, c.getState().getCode());
@@ -266,49 +266,49 @@ public class CrmCaseDAO implements EntityDAOI {
 		ps.setInt(13,c.getProjectedQuantity());
 		ps.setInt(14,c.getActualQuantity());
 		
-		if(c.getCrmCaseMedia()!=null)
+		if(c.getCrmCaseMedia()!=null && c.getCrmCaseMedia().trim().length()>0)
 		{
 			ps.setString(15, c.getCrmCaseMedia());	
 		}else{
 			ps.setNull(15, Types.VARCHAR);
 		}
 		
-		if(c.isMoreThenOneIssue())
+		if(c.getMoreThenOneIssue()!=null && c.getMoreThenOneIssue().trim().length()>0)
 		{
-			ps.setString(16, "X" );	
+			ps.setString(16, c.getMoreThenOneIssue());	
 		}else{
 			ps.setNull(16, Types.VARCHAR);
 		}
 
-		if(c.isFirstContactForIssue())
+		if(c.getFirstContactForIssue()!=null && c.getFirstContactForIssue().trim().length()>0)
 		{
-			ps.setString(17, "X" );	
+			ps.setString(17,c.getFirstContactForIssue() );	
 		}else{
 			ps.setNull(17, Types.VARCHAR);
 		}
 
-		if(c.isFirstContactResolved())
+		if(c.getFirstContactResolved()!=null && c.getFirstContactResolved().trim().length()>0)
 		{
-			ps.setString(18, "X" );	
+			ps.setString(18, c.getFirstContactResolved() );	
 		}else{
 			ps.setNull(18, Types.VARCHAR);
 		}
 
-		if(c.getResonForNotResolve()!=null)
+		if(c.getResonForNotResolve()!=null && c.getResonForNotResolve().trim().length()>0)
 		{
 			ps.setString(19, c.getResonForNotResolve());	
 		}else{
 			ps.setNull(19, Types.VARCHAR);
 		}						
 		
-		if(c.isSatisfiedWithResolution())
+		if(c.getSatisfiedWithResolution()!=null && c.getSatisfiedWithResolution().trim().length()>0)
 		{
-			ps.setString(20, "X" );	
+			ps.setString(20, c.getSatisfiedWithResolution());	
 		}else{
 			ps.setNull(20, Types.VARCHAR);
 		}
 		
-		if(c.getCustomerTone()!=null)
+		if(c.getCustomerTone()!=null && c.getCustomerTone().trim().length()>0)
 		{
 			ps.setString(21, c.getCustomerTone());	
 		}else{
@@ -384,18 +384,18 @@ public class CrmCaseDAO implements EntityDAOI {
 		ci.setActualQuantity(rs.getInt("actual_quantity"));
 		
 		ci.setCrmCaseMedia(NVL.apply(rs.getString("MEDIA"), ""));		
-		ci.setResonForNotResolve(NVL.apply(rs.getString("ReasonNotToResolve"), ""));						
-		ci.setFirstContactResolved(NVL.apply(rs.getString("FisrtContact_Resolved"), "").equalsIgnoreCase("X")?true:false);
-		ci.setFirstContactForIssue(NVL.apply(rs.getString("FIRSTCONTACT"), "").equalsIgnoreCase("X")?true:false);
-		ci.setMoreThenOneIssue(NVL.apply(rs.getString("MORETHENONE_ISSUE"), "").equalsIgnoreCase("X")?true:false);
-		ci.setSatisfiedWithResolution(NVL.apply(rs.getString("SatisfiedWithResolution"), "").equalsIgnoreCase("X")?true:false);
+		ci.setResonForNotResolve(NVL.apply(rs.getString("REASONNOTRESOLVED"), ""));						
+		ci.setFirstContactResolved(NVL.apply(rs.getString("FIRSTCONTACT_RESOLVED"), ""));
+		ci.setFirstContactForIssue(NVL.apply(rs.getString("FIRSTCONTACT"), ""));
+		ci.setMoreThenOneIssue(NVL.apply(rs.getString("MORETHANONE_ISSUE"), ""));
+		ci.setSatisfiedWithResolution(NVL.apply(rs.getString("SatisfiedWithResolution"), ""));
 		ci.setCustomerTone(NVL.apply(rs.getString("CustomerTone"), ""));
 		
 		return ci;
 	}
 
 	private final static String UPDATE_CASE =
-		"UPDATE CUST.CASE SET CASE_ORIGIN=?, CASE_STATE=?, CASE_PRIORITY=?, CASE_SUBJECT=?, SUMMARY=?, CUSTOMER_ID=?, SALE_ID=?, ASSIGNED_AGENT_ID=?, LOCKED_AGENT_ID=?, LAST_ACTION_DATE=?,  PROJECTED_QUANTITY=?, ACTUAL_QUANTITY=?,MEDIA=?,MORETHENONE_ISSUE=?,FIRSTCONTACT=?,FisrtContact_Resolved=?,ReasonNotToResolve=?,SatisfiedWithResolution=?,CustomerTone=?   WHERE ID=?";
+		"UPDATE CUST.CASE SET CASE_ORIGIN=?, CASE_STATE=?, CASE_PRIORITY=?, CASE_SUBJECT=?, SUMMARY=?, CUSTOMER_ID=?, SALE_ID=?, ASSIGNED_AGENT_ID=?, LOCKED_AGENT_ID=?, LAST_ACTION_DATE=?,  PROJECTED_QUANTITY=?, ACTUAL_QUANTITY=?,MEDIA=?,MORETHANONE_ISSUE=?,FIRSTCONTACT=?,FIRSTCONTACT_RESOLVED=?,REASONNOTRESOLVED=?,SatisfiedWithResolution=?,CustomerTone=?   WHERE ID=?";
 
 	public void store(Connection conn, ModelI model) throws SQLException {
 		CrmCaseModel c = (CrmCaseModel) model;
@@ -419,49 +419,49 @@ public class CrmCaseDAO implements EntityDAOI {
 		
 		
 		
-		if(c.getCrmCaseMedia()!=null)
+		if(c.getCrmCaseMedia()!=null && c.getCrmCaseMedia().trim().length()>0)
 		{
 			ps.setString(13, c.getCrmCaseMedia());	
 		}else{
 			ps.setNull(13, Types.VARCHAR);
 		}
 		
-		if(c.isMoreThenOneIssue())
+		if(c.getMoreThenOneIssue()!=null && c.getMoreThenOneIssue().trim().length()>0)
 		{
-			ps.setString(14, "X" );	
+			ps.setString(14, c.getMoreThenOneIssue());	
 		}else{
 			ps.setNull(14, Types.VARCHAR);
 		}
 
-		if(c.isFirstContactForIssue())
+		if(c.getFirstContactForIssue()!=null && c.getFirstContactForIssue().trim().length()>0)
 		{
-			ps.setString(15, "X" );	
+			ps.setString(15, c.getFirstContactForIssue());	
 		}else{
 			ps.setNull(15, Types.VARCHAR);
 		}
 
-		if(c.isFirstContactResolved())
+		if(c.getFirstContactResolved()!=null && c.getFirstContactResolved().trim().length()>0)
 		{
-			ps.setString(16, "X" );	
+			ps.setString(16, c.getFirstContactResolved());	
 		}else{
 			ps.setNull(16, Types.VARCHAR);
 		}
 
-		if(c.getResonForNotResolve()!=null)
+		if(c.getResonForNotResolve()!=null && c.getResonForNotResolve().trim().length()>0)
 		{
 			ps.setString(17, c.getResonForNotResolve());	
 		}else{
 			ps.setNull(17, Types.VARCHAR);
 		}
 		
-		if(c.isSatisfiedWithResolution())
+		if(c.getSatisfiedWithResolution()!=null && c.getSatisfiedWithResolution().trim().length()>0)
 		{
-			ps.setString(18, "X" );	
+			ps.setString(18, c.getSatisfiedWithResolution());	
 		}else{
 			ps.setNull(18, Types.VARCHAR);
 		}
 		
-		if(c.getCustomerTone()!=null)
+		if(c.getCustomerTone()!=null && c.getCustomerTone().trim().length()>0)
 		{
 			ps.setString(19, c.getCustomerTone());	
 		}else{
