@@ -140,7 +140,11 @@ public class FDStoreProperties {
 
 	// DYF Site Feature
 	private final static String DYF_ENABLED = "fdstore.dyf.enabled";
-
+	
+	// DYF FREQBOUGHT PARAMETERS
+	private final static String DYF_FREQBOUGHT_TOPN = "fdstore.dyf.freqbought.topN";
+	private final static String DYF_FREQBOUGHT_TOPPERCENT = "fdstore.dyf.freqbought.topPercent";
+	
 	// use Customers' EIEO instead of SmartStore analyzed data
 	private final static String DYF_VARIANTS_EIEO = "fdstore.dyf.variants.useHistory";
 
@@ -371,6 +375,11 @@ public class FDStoreProperties {
 		defaults.put(CCL_AJAX_DEBUG_FACADE_EXCEPTION, "");
 
 		defaults.put(DYF_ENABLED, "false");
+		
+		defaults.put(DYF_FREQBOUGHT_TOPN, "10");
+		defaults.put(DYF_FREQBOUGHT_TOPPERCENT, "10.0");
+		
+		
 		defaults.put(DYF_STRATEGY_CACHE_ENTRIES, "1000");
 		defaults.put(DYF_VARIANTS_EIEO, "false");
 
@@ -792,6 +801,14 @@ public class FDStoreProperties {
 	// Is SmartStore DYF feature enabled?
 	public static boolean isDYFEnabled() {
 		return Boolean.valueOf(get(DYF_ENABLED)).booleanValue();
+	}
+	
+	public static float getDYFFreqboughtTopPercent() {
+		return Float.parseFloat(get(DYF_FREQBOUGHT_TOPPERCENT));
+	}
+	
+	public static int getDYFFreqboughtTopN() {
+		return Integer.parseInt(get(DYF_FREQBOUGHT_TOPN));
 	}
 
 	public static boolean isDYFUseCustomerHistory() {

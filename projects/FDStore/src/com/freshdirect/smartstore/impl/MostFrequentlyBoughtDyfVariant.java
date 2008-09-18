@@ -17,6 +17,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.lists.FDListManager;
@@ -165,7 +166,12 @@ public class MostFrequentlyBoughtDyfVariant extends DYFService {
 		
 		{
 			List sortedAggregates = (List)cachedSortedAggregates.getPayload();
-			List shortList = draw(sortedAggregates,input.getCartContents(),Math.max(sortedAggregates.size()/10,max));
+			List shortList = 
+				draw(
+					sortedAggregates,input.getCartContents(),
+					Math.max(
+						Math.round(FDStoreProperties.getDYFFreqboughtTopPercent()*sortedAggregates.size()),
+						FDStoreProperties.getDYFFreqboughtTopN()));
 			return shortList.subList(0,Math.min(max, shortList.size()));
 		}
 	
