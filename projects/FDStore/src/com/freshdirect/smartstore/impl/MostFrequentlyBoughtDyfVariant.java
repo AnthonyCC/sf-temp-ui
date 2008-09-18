@@ -2,6 +2,7 @@ package com.freshdirect.smartstore.impl;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -19,8 +20,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.lists.FDListManager;
-import com.freshdirect.framework.util.DiscreteRandomSampler;
-import com.freshdirect.framework.util.DiscreteRandomSamplerWithoutReplacement;
+import com.freshdirect.framework.util.DiscreteRandomSamplerWithReplacement;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
@@ -43,77 +43,61 @@ public class MostFrequentlyBoughtDyfVariant extends DYFService {
 		super(variant);
 	}
 	
+
+	// used in drawing
+	protected Random R = new Random();
+	
 	/**
-	 * Object that draws the requested number of elements from the distribution.
-	 * @author istvan
-	 *
+	 * Draw elements from without replacement from the top elements.
+	 * @param sortedAggregates sorted aggregates
+	 * @param n items to draw
+	 * @return items drawn
 	 */
-	private static class Draw {
-		private DiscreteRandomSampler sampler;
-		private int totalProducts;
-		private Random R = new Random();
+	protected List draw(List sortedAggregates, Collection cartContents, int n) {
+		List result = new ArrayList(n);
 		
-		private Draw(DiscreteRandomSampler sampler, int totalProducts) {
-			this.sampler = sampler;
-			this.totalProducts = totalProducts;
-		}
+		DiscreteRandomSamplerWithReplacement sampler = 
+			new DiscreteRandomSamplerWithReplacement(
+				new Comparator() {
+
+					public int compare(Object o1, Object o2) {
+						ContentAggregate ca1 = (ContentAggregate)o1;
+						ContentAggregate ca2 = (ContentAggregate)o2;
+						return ca1.getLabel().compareTo(ca2.getLabel());
+					}
+				
+				}
+			);
 		
-		// for testing only
-		private float totalScore() {
-			float z = 0;
-			for(Iterator i = sampler.items(); i.hasNext(); ) {
-				z += ((ContentAggregate)i.next()).getScore();
-			}
-			return z;
-		}
-		
-		public List draw(int k) {
-			/**
-			 * This should only be commented out for testing.
-			 * 
-			 */
-			//float zin = totalScore();
-			
-			
-			int n = Math.min(k,totalProducts);
-			List drawnProducts = new ArrayList(n);
-			
-			Map reverseMap = new HashMap(3*n/2+1);
-			Map frequencyMap = new HashMap(3*n/2+1);
-			
-			for(int i=0; i<n && sampler.getItemCount() > 0; ++i) {
-				ContentAggregate ca = (ContentAggregate)sampler.getRandomItem(R);
-				float score = ca.getScore();
-				ContentKey product = ca.take(R);
-				drawnProducts.add(product);
-				long newFrequency = Math.round(100*ca.getScore());
-				sampler.setItemFrequency(ca, newFrequency);
-				reverseMap.put(product, ca);
-				frequencyMap.put(product, new Float(score-ca.getScore()));
-				//System.err.println("drawn " + product + " " + (score - ca.getScore()));
-			}
-			
-			for(Iterator i = reverseMap.entrySet().iterator(); i.hasNext();) {
-				Map.Entry e = (Map.Entry)i.next();
-				ContentKey key = (ContentKey)e.getKey();
-				((ContentAggregate)e.getValue()).addContent(key,((Float)frequencyMap.get(key)).floatValue());
-			}
-			
-			for(Iterator i = reverseMap.values().iterator(); i.hasNext();) {
+		{
+			int c = 0;
+			for(Iterator i= sortedAggregates.iterator(); i.hasNext() && c < n;) {
 				ContentAggregate ca = (ContentAggregate)i.next();
-				sampler.setItemFrequency(ca, Math.round(100*ca.getScore()));
+				for(Iterator j = ca.keys(); j.hasNext(); ) {
+					ContentKey productKey = (ContentKey)j.next();
+					if (cartContents.contains(productKey)) {
+						j.remove();
+					}
+				}
+				if (ca.getScore() > 0) {
+					sampler.setItemFrequency(ca, Math.round(100*ca.getScore()));
+					++c;
+				}
 			}
 			
-			/**
-			 * Only comment out for testing.
-			 */
-			//float zout = totalScore(); 
-			//if (zin != zout) {
-			//	System.err.println("Frequency in: " + zin + " and out: " + zout);
-			//}
-			
-			return drawnProducts;
+			while(sampler.getItemCount() > 0 && result.size() < n) {
+				ContentAggregate ca = (ContentAggregate)sampler.getRandomItem(R);
+				//float score = ca.getScore(); // comment out for testing
+				ContentKey product = ca.take(R);
+				//System.err.println(" ==> " + product + " " + score + " ("  + sortedAggregates.size() + ")");
+				result.add(product);
+				sampler.setItemFrequency(ca, Math.round(100*ca.getScore()));
+				
+						
+			}
 		}
+		
+		return result;
 	}
 
 	/**
@@ -124,10 +108,10 @@ public class MostFrequentlyBoughtDyfVariant extends DYFService {
 	public List recommend(int max, SessionInput input) {
 		// see if list in cache
 		// List<ContentKey>
-		SessionCache.TimedEntry cachedSampler = (SessionCache.TimedEntry)cache.get(input.getCustomerId());
+		SessionCache.TimedEntry cachedSortedAggregates = null; //(SessionCache.TimedEntry)cache.get(input.getCustomerId());
 		
-		if (cachedSampler == null ||  cachedSampler.expired()) {
-			LOGGER.debug("Loading order history for " + input.getCustomerId() + (cachedSampler != null ? " (EXPIRED)" : ""));
+		if (cachedSortedAggregates == null ||  cachedSortedAggregates.expired()) {
+			LOGGER.debug("Loading order history for " + input.getCustomerId() + (cachedSortedAggregates != null ? " (EXPIRED)" : ""));
 
 			
 			final Map productFrequencies = prefersDB ? getItemsFromAnalysis(input.getCustomerId()) : getItemsFromEIEO(input.getCustomerId());
@@ -152,33 +136,39 @@ public class MostFrequentlyBoughtDyfVariant extends DYFService {
 				}
 				aggregate.addContent(key, score.floatValue());
 			}
+			
+			List sortedAggregates = new ArrayList(aggregates.values());
+			Collections.sort(
+				sortedAggregates, 
+				new Comparator() {
 
-			DiscreteRandomSamplerWithoutReplacement sampler = new DiscreteRandomSamplerWithoutReplacement(
-					new Comparator() {
-
-						public int compare(Object o1, Object o2) {
-							ContentAggregate ca1 = (ContentAggregate)o1;
-							ContentAggregate ca2 = (ContentAggregate)o2;
-							return ca1.getLabel().compareTo(ca2.getLabel());
-						}
+					public int compare(Object o1, Object o2) {
+						ContentAggregate ca1 = (ContentAggregate)o1;
+						ContentAggregate ca2 = (ContentAggregate)o2;
+						float diff = ca1.getScore() - ca2.getScore();
+						return diff < 0 ? +1 : diff > 0 ? -1 : 0;
 					}
+				}
 			);
 			
-			for(Iterator i = aggregates.values().iterator(); i.hasNext();) {
-				ContentAggregate ca = (ContentAggregate)i.next();
-				sampler.setItemFrequency(ca, Math.round(100*ca.getScore()));
+			/* Comment out for testing.
+			for(Iterator x = sortedAggregates.iterator(); x.hasNext();) {
+				ContentAggregate ca = (ContentAggregate)x.next();
+				
+				System.err.println(ca.getLabel() + " -> " + ca.getScore());
 			}
-						
-			cachedSampler = new SessionCache.TimedEntry(new Draw(sampler,productFrequencies.size()),10*60*1000);
-			cache.put(input.getCustomerId(), cachedSampler);
+			*/
+			
+			cachedSortedAggregates = new SessionCache.TimedEntry(sortedAggregates,60*10*1000);
+			cache.put(input.getCustomerId(),cachedSortedAggregates);
 		} 
 		
-		synchronized(cachedSampler) {
-			Draw draw = (Draw)cachedSampler.getPayload();
-		
-		
-			return draw.draw(input.getCartContents().size() + max);
+		{
+			List sortedAggregates = (List)cachedSortedAggregates.getPayload();
+			List shortList = draw(sortedAggregates,input.getCartContents(),Math.max(sortedAggregates.size()/10,max));
+			return shortList.subList(0,Math.min(max, shortList.size()));
 		}
+	
 	}
 
 

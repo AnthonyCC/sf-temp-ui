@@ -3,6 +3,7 @@ package com.freshdirect.smartstore.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Random;
@@ -126,18 +127,22 @@ public class ContentAggregate {
 		return new Iterator() {
 			
 			private Iterator i = contentList.iterator();
+			private ContentScorePair cp = null;
 
 			public boolean hasNext() {
 				return i.hasNext();
 			}
 
 			public Object next() {
-				ContentScorePair cp = (ContentScorePair)i.next();
+				cp = (ContentScorePair)i.next();
 				return cp.key;
 			}
 
 			public void remove() {
-				throw new UnsupportedOperationException();
+				if (cp == null) throw new IllegalStateException();
+				totalScore -= cp.score;
+				cp = null;
+				i.remove();
 			}		
 		};
 	}

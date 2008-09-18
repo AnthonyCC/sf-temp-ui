@@ -107,7 +107,7 @@ public class FDStoreRecommender {
 	}
 	
 	// helper to turn a shopping cart into a set of products
-	protected static Collection getShoppingCartContents(FDCartModel cart) {
+	protected static Set getShoppingCartContents(FDCartModel cart) {
 		List orderlines = cart.getOrderLines();
 		Set products = new HashSet();
 		for(Iterator i = orderlines.iterator(); i.hasNext();) {
@@ -132,7 +132,7 @@ public class FDStoreRecommender {
 		
 		SessionInput input = new SessionInput(user.getIdentity().getErpCustomerPK());
 
-		Collection cartItems = getShoppingCartContents(user.getShoppingCart());
+		Set cartItems = getShoppingCartContents(user.getShoppingCart());
 		input.setCartContents(cartItems);
 
 		// select service		

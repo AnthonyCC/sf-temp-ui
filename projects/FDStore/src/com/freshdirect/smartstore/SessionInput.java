@@ -1,6 +1,7 @@
 package com.freshdirect.smartstore;
 
-import java.util.Collection;
+
+import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
 
@@ -12,7 +13,7 @@ import com.freshdirect.cms.ContentKey;
  */
 public class SessionInput {
 	
-	private Collection cartContents = null;
+	private Set cartContents = null;
 	
 	private String customerId;
 	
@@ -28,7 +29,7 @@ public class SessionInput {
 	 * Set the cart contents of the user.
 	 * @param cartContents (List<@link {@link ContentKey}>)
 	 */
-	public void setCartContents(Collection cartContents) {
+	public void setCartContents(Set cartContents) {
 		this.cartContents = cartContents;
 	}
 	
@@ -39,7 +40,7 @@ public class SessionInput {
 	 * 
 	 * @return The current cart contents as Collection<@link {@link ContentKey}> 
 	 */
-	public Collection getCartContents() {
+	public Set getCartContents() {
 		return cartContents;
 	}
 	
