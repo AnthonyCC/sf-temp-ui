@@ -51,7 +51,7 @@ boolean isAssignmentPriorityAllowed = false;
 <input type="hidden" name="salePK" value="<%= cm.getSalePK() != null ? cm.getSalePK().getId() : "" %>">
 	<tr>
 		<td class="case_content_field">Status</td>
-		<td><%= cm.getState()==null ? "Open" : cm.getState().getName() %></td>
+		<td><div id="CaseStatus"><%= cm.getState()==null ? "Open" : cm.getState().getName() %></div></td>
 		<td class="case_content_field">Assigned</td>
 		<td>
 
@@ -119,36 +119,100 @@ boolean isAssignmentPriorityAllowed = false;
 						if a field is disabled, it doesn't count
 					*/
 					function verifyCaseDisp() {
+
+						//default to no error
 						var err = false;
+
+						//get status of current case on screen
+						// known values [STR]: ( New | Open | Closed )
+						var caseStatus = $('CaseStatus').innerHTML;
+
 						/* START fix early call by IE */
 							var CaseButton = $('CreateCase');
 							if ( !CaseButton ) { return false; }
 						/* END fix early call by IE */
+
 						for ( var i=0,n=document.case_details.elements.length; i<n; i++ )
 						{
 							var field = document.case_details.elements[i];
-							if (  field.type.substring(0,6) == "select" && field.id != 'priority' && field.id != 'assignedAgent' ) //these are fields to ignore
-							{
-								if ( field.selectedIndex <= 0 && $(field).style.display != 'none' && $(field).disabled != true )
-								{
-									err = true;
+
+							//check for Media : other
+							if ( field.id == 'media' ) {
+								if ( field.value == 'Other' ) {
+									//hide other form fields
+									$('MediaIsOther').style.display = 'none';
+									if ( caseStatus != 'New' ) {
+										$('MediaIsOtherWarn').className = 'casedisp_Err_vis';
+									}
+								}else{
+									$('MediaIsOther').style.display = 'block';
+									if ( caseStatus != 'New' ) {
+										$('MediaIsOtherWarn').className = 'casedisp_Err_invis';
+									}
 								}
 							}
-							//$(field).blur();
+
+							if ( caseStatus == 'New' ) {
+							//check for NewCase only
+								if (  field.type.substring(0,6) == "select" && (field.id == 'queue' || field.id == 'subject') )
+								{
+									if ( field.selectedIndex <= 0 ) {
+										err = true;
+										$(field.id+'Err').className = 'casedisp_Err_vis';
+										$('requiredError').className = 'casedisp_Err_vis';
+									}else{
+										$(field.id+'Err').className = 'casedisp_Err_invis';
+										$('requiredError').className = 'casedisp_Err_invis';
+									}
+								}
+							}else{
+								if (  field.type.substring(0,6) == "select" && field.id != 'priority' && field.id != 'assignedAgent' ) //these are fields to ignore
+								{
+									if ( field.selectedIndex <= 0 && $(field.id).style.display != 'none' && $(field.id).disabled != 'true' )
+									{
+										err = true;
+										$(field.id+'Err').className = 'casedisp_Err_vis';
+										$('requiredError').className = 'casedisp_Err_vis';
+									}else{
+										$(field.id+'Err').className = 'casedisp_Err_invis';
+										$('requiredError').className = 'casedisp_Err_invis';
+									}
+								}
+							}
 						}
+
+						
 						/* check summary and notes */
-						if ( $("summary").value.length <= 0 || $("note").value.length <= 0 ) {
+						if ( $('summary').value.length <= 0 ) {
 							err = true;
+							$('summaryErr').className = 'casedisp_Err_vis';
+							$('requiredError').className = 'casedisp_Err_vis';
+						}else{
+							$('summaryErr').className = 'casedisp_Err_invis';
+							$('requiredError').className = 'casedisp_Err_invis';
+						}
+
+						/* check summary and notes */
+						if ( $('note').value.length <= 0 ) {
+							err = true;
+							$('noteErr').className = 'casedisp_Err_vis';
+							$('requiredError').className = 'casedisp_Err_vis';
+						}else{
+							$('noteErr').className = 'casedisp_Err_invis';
+							$('requiredError').className = 'casedisp_Err_invis';
 						}
 
 						if ( err ) { 
 							CaseButton.className = 'case_save_disabled';
 							CaseButton.disabled = true;
+							$('requiredError').className = 'casedisp_Err_vis';
 						}else{ 
 							CaseButton.className = 'case_save'; 
 							CaseButton.disabled = false;
+							$('requiredError').className = 'casedisp_Err_invis';
 						}
-						
+							
+						return true;
 					}
                     
 				-->
@@ -156,7 +220,7 @@ boolean isAssignmentPriorityAllowed = false;
 			<div class="casedisp_container">
 				<div class="casedisp_line">
 					<div class="casedisp_text">
-						Media
+						Media<span class="casedisp_Err_invis" id="mediaErr">*</span>
 					</div>
 					<div class="casedisp_select">
 						<select id="media" <%= isEditAllowed ? "" : "disabled" %> name="media" onchange="verifyCaseDisp();">
@@ -181,169 +245,174 @@ boolean isAssignmentPriorityAllowed = false;
 						</select>
 					</div>
 				</div>
-				<div class="casedisp_line">
-					<div class="casedisp_text">
-						More than one issue with order
+				<div id="MediaIsOther">
+					<div class="casedisp_line">
+						<div class="casedisp_text">
+							More than one issue with order<span class="casedisp_Err_invis" id="morethenoneErr">*</span>
+						</div>
+						<div class="casedisp_select">
+							<select id="morethenone" <%= isEditAllowed ? "" : "disabled" %> name="morethenone" onchange="verifyCaseDisp();">
+								<option value="-Select One-">-Select One-</option>
+								<%
+								List caseMoreThanOneList=CrmCaseConstants.getCaseMoreThenOneIssueList();
+								for(int i=0;i<caseMoreThanOneList.size();i++)
+								{
+								 String value=(String)caseMoreThanOneList.get(i);
+								 String media=cm.getMoreThenOneIssue();
+								   if(value.equalsIgnoreCase(media))
+								   {
+							%> <option value="<%=value%>" selected><%=value%></option>
+							<%
+								   }else{
+							 %>
+								<option value="<%=value%>"><%=value%></option>
+							 <%
+								   }
+								}
+							%>				
+							</select>
+						</div>
 					</div>
-					<div class="casedisp_select">
-						<select id="morethenone" <%= isEditAllowed ? "" : "disabled" %> name="morethenone" onchange="verifyCaseDisp();">
-							<option value="-Select One-">-Select One-</option>
-                            <%
-                              if(cm.getCrmCaseMedia()==null || cm.getCrmCaseMedia().trim().length()==0){
-                            %>
-                            <option value="Yes">Yes</option>
-                            <option value="No" >No</option>	
-                         <%    }  
-                               else if(cm.isMoreThenOneIssue())
-                               {
-                         %>   
-							<option value="Yes" selected>Yes</option>
-                            <option value="No" >No</option>	
-                        <%    }else{
-                         %>                        
-							<option value="No" selected>No</option>	
-                            <option value="Yes">Yes</option>                            
-                        <%   }  %>    
-						</select>
+					<div class="casedisp_line">
+						<div class="casedisp_text">
+							First contact for issue<span class="casedisp_Err_invis" id="firstContactErr">*</span>
+						</div>
+						<div class="casedisp_select">
+							<select id="firstContact" <%= isEditAllowed ? "" : "disabled" %> name="firstContact" onchange="verifyCaseDisp();">
+								<option value="-Select One-">-Select One-</option>
+							<%
+								List caseFirstContactList=CrmCaseConstants.getCaseFirstContactForIssueList();
+								for(int i=0;i<caseFirstContactList.size();i++)
+								{
+								 String value=(String)caseFirstContactList.get(i);
+								 String media=cm.getFirstContactForIssue();
+								   if(value.equalsIgnoreCase(media))
+								   {
+							%> <option value="<%=value%>" selected><%=value%></option>
+							<%
+								   }else{
+							 %>
+								<option value="<%=value%>"><%=value%></option>
+							 <%
+								   }
+								}
+							%>							
+							</select>
+						</div>
 					</div>
-				</div>
-				<div class="casedisp_line">
-					<div class="casedisp_text">
-						First contact for issue
-					</div>
-					<div class="casedisp_select">
-						<select id="firstContact" <%= isEditAllowed ? "" : "disabled" %> name="firstContact" onchange="verifyCaseDisp();">
-							<option value="-Select One-">-Select One-</option>
-                                                       <%
-                              if(cm.getCrmCaseMedia()==null || cm.getCrmCaseMedia().trim().length()==0){
-                            %>
-                            <option value="Yes">Yes</option>
-                            <option value="No" >No</option>	
- 
-                         <%    }  
-                               else if(cm.isFirstContactForIssue())
-                               {
-                         %>   
-							<option value="Yes" selected>Yes</option>
-                            <option value="No">No</option>		
-                        <%    }else{
-                         %>                        
-							<option value="No" selected>No</option>	
-                            <option value="Yes">Yes</option>                            
-                        <%   }  %>    
-						</select>
-					</div>
-				</div>
-				<div class="casedisp_line">
-					<div class="casedisp_text">
-						Resolved on first contact
-					</div>
-					<div class="casedisp_select">
-						<select id="Resolved" <%= isEditAllowed ? "" : "disabled" %> name="Resolved" onchange="CaseDisp_FirstContact(this.id, 'NotResolved'); verifyCaseDisp();">
-							<option value="-Select One-">-Select One-</option>
-                                                        <%
-                              if(cm.getCrmCaseMedia()==null || cm.getCrmCaseMedia().trim().length()==0){
-                            %>
-                            <option value="Yes">Yes</option>
-                            <option value="No" >No</option>	                            
-                            
-                         <%    }  
-                               else if(cm.isFirstContactResolved())
-                               {
-                         %>   
-							<option value="Yes" selected>Yes</option>
-                            <option value="No">No</option>	
-                        <%    }else{
-                         %>                        
-							<option value="No" selected>No</option>	
-                            <option value="Yes">Yes</option>                            
-                        <%   }  %>    
-						</select>
-					</div>
-				</div>
-				<div class="casedisp_line">
-					<div class="casedisp_text" id="NotResolved_text">
-						NOT resolved reason 
-					</div>
-					<div class="casedisp_select" id="NotResolved_select">
-						<select id="NotResolved"  <%= isEditAllowed ? "" : "disabled" %> name="NotResolved" style="display: none;" onchange="verifyCaseDisp();">                                                
-							<option value="-Select One-">-Select One-</option>
-                            <%
-                            List caseReasonList=CrmCaseConstants.getCrmCaseReasonForNotResolve();
-                            for(int i=0;i<caseReasonList.size();i++)
-                            {                             
-                             String value=(String)caseReasonList.get(i);                                                         
-                             String reason=cm.getResonForNotResolve();
-                               if(value.equalsIgnoreCase(reason))
-                               {
-                        %> <option value="<%=value%>" selected><%=value%></option>
-                        <%
-                               }else{
-                         %>
-                            <option value="<%=value%>"><%=value%></option>
-                         <%
-                               }
+					<div class="casedisp_line">
+						<div class="casedisp_text">
+							Resolved on first contact<span class="casedisp_Err_invis" id="ResolvedErr">*</span>
+						</div>
+						<div class="casedisp_select">
+							<select id="Resolved" <%= isEditAllowed ? "" : "disabled" %> name="Resolved" onchange="CaseDisp_FirstContact(this.id, 'NotResolved'); verifyCaseDisp();">
+								<option value="-Select One-">-Select One-</option>
+							<%
+								List caseResolvedFirstContactList=CrmCaseConstants.getCaseResolvedOnFirstContactList();
+								for(int i=0;i<caseResolvedFirstContactList.size();i++)
+								{
+								 String value=(String)caseResolvedFirstContactList.get(i);
+								 String media=cm.getFirstContactResolved();
+								   if(value.equalsIgnoreCase(media))
+								   {
+							%> <option value="<%=value%>" selected><%=value%></option>
+							<%
+								   }else{
+							 %>
+								<option value="<%=value%>"><%=value%></option>
+							 <%
+								   }
+								}
+							%>							
 
-                            }
-                         %>							
-						</select>
+							</select>
+						</div>
+					</div>
+					<div class="casedisp_line">
+						<div class="casedisp_text" id="NotResolved_text">
+							NOT resolved reason<span class="casedisp_Err_invis" id="NotResolvedErr">*</span>
+						</div>
+						<div class="casedisp_select" id="NotResolved_select">
+							<select id="NotResolved"  <%= isEditAllowed ? "" : "disabled" %> name="NotResolved" style="display: none;" onchange="verifyCaseDisp();">                                                
+								<option value="-Select One-">-Select One-</option>
+								<%
+								List caseReasonList=CrmCaseConstants.getCrmCaseReasonForNotResolve();
+								for(int i=0;i<caseReasonList.size();i++)
+								{                             
+								 String value=(String)caseReasonList.get(i);                                                         
+								 String reason=cm.getResonForNotResolve();
+								   if(value.equalsIgnoreCase(reason))
+								   {
+							%> <option value="<%=value%>" selected><%=value%></option>
+							<%
+								   }else{
+							 %>
+								<option value="<%=value%>"><%=value%></option>
+							 <%
+								   }
+
+								}
+							 %>							
+							</select>
+						</div>
+					</div>
+					<div class="casedisp_line">
+						<div class="casedisp_text">
+							Resolution satisfactory<span class="casedisp_Err_invis" id="satisfactoryReasonErr">*</span>
+						</div>
+						<div class="casedisp_select">
+							<select id="satisfactoryReason" name="satisfactoryReason" <%= isEditAllowed ? "" : "disabled" %> onchange="verifyCaseDisp();">
+								<option value="-Select One-">-Select One-</option>
+								   <%
+								List caseResolSatisfactoryList=CrmCaseConstants.getCrmResolutionSatisfactoryList();
+								for(int i=0;i<caseResolSatisfactoryList.size();i++)
+								{
+								 String value=(String)caseResolSatisfactoryList.get(i);
+								 String media=cm.getSatisfiedWithResolution();
+								   if(value.equalsIgnoreCase(media))
+								   {
+							%> <option value="<%=value%>" selected><%=value%></option>
+							<%
+								   }else{
+							 %>
+								<option value="<%=value%>"><%=value%></option>
+							 <%
+								   }
+								}
+							%>							
+							</select>
+						</div>
+					</div>
+					<div class="casedisp_line">
+						<div class="casedisp_text">
+							Customer's tone<span class="casedisp_Err_invis" id="customerToneErr">*</span>
+						</div>
+						<div class="casedisp_select">
+							<select name="customerTone" id="customerTone" <%= isEditAllowed ? "" : "disabled" %> onchange="verifyCaseDisp();">
+								<option value="-Select One-">-Select One-</option>
+							<%
+								List caseToneList=CrmCaseConstants.getCrmCaseCustomerTone();
+								for(int i=0;i<caseToneList.size();i++)
+								{
+								 String value=(String)caseToneList.get(i);
+								 String media=cm.getCustomerTone();
+								   if(value.equalsIgnoreCase(media))
+								   {
+							%> <option value="<%=value%>" selected><%=value%></option>
+							<%
+								   }else{
+							 %>
+								<option value="<%=value%>"><%=value%></option>
+							 <%
+								   }
+								}
+							%>							
+							</select>
+				<fd:ErrorHandler result='<%= result %>' name='caseDisp07' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
+						</div>
 					</div>
 				</div>
-				<div class="casedisp_line">
-					<div class="casedisp_text">
-						Resolution satisfactory
-					</div>
-					<div class="casedisp_select">
-						<select id="satisfactoryReason" name="satisfactoryReason" <%= isEditAllowed ? "" : "disabled" %> onchange="verifyCaseDisp();">
-							<option value="-Select One-">-Select One-</option>
-                                                        <%
-                              if(cm.getCrmCaseMedia()==null || cm.getCrmCaseMedia().trim().length()==0){
-                            %>
-                            <option value="Yes">Yes</option>
-                            <option value="No" >No</option>	                            
-                            
-                        <%     } 
-                               else if(cm.isSatisfiedWithResolution())
-                               {
-                         %>   
-							<option value="Yes" selected>Yes</option>
-                            <option value="No">No</option>							
-                        <%    }else{
-                         %>                        
-							<option value="No" selected>No</option>	
-                            <option value="Yes">Yes</option>                            
-                        <%   }  %>    
-						</select>
-					</div>
-				</div>
-				<div class="casedisp_line">
-					<div class="casedisp_text">
-						Customer's tone
-					</div>
-					<div class="casedisp_select">
-						<select name="customerTone" id="customerTone" <%= isEditAllowed ? "" : "disabled" %> onchange="verifyCaseDisp();">
-							<option value="-Select One-">-Select One-</option>
-                        <%
-                            List caseToneList=CrmCaseConstants.getCrmCaseCustomerTone();
-                            for(int i=0;i<caseToneList.size();i++)
-                            {
-                             String value=(String)caseToneList.get(i);
-                             String media=cm.getCustomerTone();
-                               if(value.equalsIgnoreCase(media))
-                               {
-                        %> <option value="<%=value%>" selected><%=value%></option>
-                        <%
-                               }else{
-                         %>
-                            <option value="<%=value%>"><%=value%></option>
-                         <%
-                               }
-                            }
-                        %>							
-						</select>
-			<fd:ErrorHandler result='<%= result %>' name='caseDisp07' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
-					</div>
-				</div>
+				<div id="MediaIsOtherWarn" class="casedisp_Err_invis">Choosing 'Other' will erase any previously saved Case Disposition choices!</div>
 			</div>
 		</td>
 	</tr>
@@ -403,7 +472,7 @@ boolean isAssignmentPriorityAllowed = false;
 		//-->
 		</script>
 	<tr>
-		<td class="case_content_field">Queue</td>
+		<td class="case_content_field">Queue<span class="casedisp_Err_invis" id="queueErr">*</span></td>
 		<td>
 			<% if (isEditAllowed) { %>
 				<select id="queue" name="queue" class="pulldown" onChange="populateSubject(case_details.queue.value,case_details.subject);" onchange="verifyCaseDisp();">
@@ -443,7 +512,7 @@ boolean isAssignmentPriorityAllowed = false;
 		</td>
 	</tr>
 	<tr>
-		<td class="case_content_field">Subject</td>
+		<td class="case_content_field">Subject<span class="casedisp_Err_invis" id="subjectErr">*</span></td>
 		<td>
 			<% if (isEditAllowed) { %>
 				<select id="subject" name="subject" class="pulldown" disabled="true" onchange="verifyCaseDisp();">
@@ -470,14 +539,14 @@ boolean isAssignmentPriorityAllowed = false;
 </tr>
 	<tr><td colspan="4"></td></tr>
 	<tr valign="top">
-		<td class="case_content_field">Summary</td>
+		<td class="case_content_field">Summary<span class="casedisp_Err_invis" id="summaryErr">*</span></td>
 		<td colspan="3">
 			<textarea <%= isEditAllowed ? "" : "readonly" %> name="summary" id="summary" rows="2" wrap="VIRTUAL" style="width: 600px;" onkeyup="verifyCaseDisp(); return true;"><%= request.getParameter("summary")!= null ? request.getParameter("summary"):cm.getSummary() %></textarea>
 			<fd:ErrorHandler result='<%= result %>' name='summary' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>
 	</tr>
 	<tr valign="top">
-		<td class="case_content_field">Notes</td>
+		<td class="case_content_field">Notes<span class="casedisp_Err_invis" id="noteErr">*</span></td>
 		<td colspan="3">
 			<textarea id="note" name="note" rows="4" wrap="VIRTUAL" style="width: 600px;" onkeyup="verifyCaseDisp(); return true;"><%= request.getParameter("note") %></textarea>
 			<fd:ErrorHandler result='<%= result %>' name='note' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
@@ -502,7 +571,7 @@ boolean isAssignmentPriorityAllowed = false;
 			
 		</td>
 	</tr>
-	<tr><td colspan="4"></td></tr>
+	<tr><td>&nbsp;</td><td colspan="3"><span id="requiredError" class="casedisp_Err_invis">* These fields are required</span></td></tr>
 	<tr>
 		<td></td>
 		<td colspan="3">
