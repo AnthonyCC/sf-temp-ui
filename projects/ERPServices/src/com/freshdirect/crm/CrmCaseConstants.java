@@ -8,8 +8,16 @@ import java.util.Map;
 public class CrmCaseConstants {
 	
 	private static List crmCaseMediaList=new ArrayList();
-		
+	
+	private static List caseMoreThenOneIssueList=new ArrayList();
+	
+	private static List caseFirstContactForIssueList=new ArrayList();
+	
+	private static List caseResolvedOnFirstContactList=new ArrayList();
+	
 	private static List crmReasonForNotResolveList=new ArrayList();
+	
+	private static List crmResolutionSatisfactoryList=new ArrayList();
 	
 	private static List crmCustomerToneList=new ArrayList();
 	
@@ -21,12 +29,23 @@ public class CrmCaseConstants {
 		crmCaseMediaList.add("Letter");
 		crmCaseMediaList.add("Other");
 		
+		caseMoreThenOneIssueList.add("Yes");
+		caseMoreThenOneIssueList.add("No");
+		
+		caseFirstContactForIssueList.add("Yes");
+		caseFirstContactForIssueList.add("No");
+		
+		caseResolvedOnFirstContactList.add("Yes");
+		caseResolvedOnFirstContactList.add("No");
 		
 		crmReasonForNotResolveList.add("Delivery team unreachable");
 		crmReasonForNotResolveList.add("Could not redeliver today");
 		crmReasonForNotResolveList.add("Information unavailable");
 		crmReasonForNotResolveList.add("Technology problem");
 		crmReasonForNotResolveList.add("Requires supervisor escalation");
+		
+		crmResolutionSatisfactoryList.add("Yes");
+		crmResolutionSatisfactoryList.add("No");
 		
 		crmCustomerToneList.add("WOW!");
 		crmCustomerToneList.add("Happy");
@@ -53,6 +72,19 @@ public class CrmCaseConstants {
 		return crmCustomerToneList;
 	}
 	
+    public static List getCaseMoreThenOneIssueList(){
+        return 	caseMoreThenOneIssueList;
+    }
+	
+    public static List getCaseFirstContactForIssueList(){
+        return 	caseFirstContactForIssueList;
+    }
 
-
+    public static List getCaseResolvedOnFirstContactList(){
+        return caseResolvedOnFirstContactList;	
+    }
+    
+    public static List getCrmResolutionSatisfactoryList(){
+    	return crmResolutionSatisfactoryList;
+    }   
 }
