@@ -20,7 +20,7 @@ import com.freshdirect.fdstore.content.SkuModel;
  */
 public class ProductImpression {
 	
-	private ProductModel productModel;
+	protected ProductModel productModel;
 	
 	/**
 	 * Constructor.
@@ -76,4 +76,38 @@ public class ProductImpression {
 	}
 	
 
+	
+
+
+	/**
+	 * Perform a full check on impression against ability to display
+	 *
+	 * @return
+	 */
+	public boolean validate() {
+		boolean isValid = true;
+		
+		try {
+			SkuModel sku = getSku();
+			FDProduct p = getFDProduct();
+
+			isValid = !(
+				sku == null ||
+				sku.getSkuCode() == null ||
+				productModel.getFullName() == null ||
+				productModel.getPrimaryBrandName() == null ||
+				productModel.getSizeDescription() == null ||
+				productModel.getDefaultPrice() == null ||
+				p == null ||
+				p.getPricing() == null
+			);
+
+		} catch (Exception exc) {
+			// invalidate product
+			isValid = false;
+		}
+		
+		
+		return isValid;
+	}
 }

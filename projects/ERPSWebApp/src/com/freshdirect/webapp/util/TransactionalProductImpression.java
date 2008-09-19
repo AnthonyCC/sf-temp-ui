@@ -110,4 +110,32 @@ public class TransactionalProductImpression extends ProductImpression {
 	}
 	
 
+
+
+	public boolean validate() {
+		boolean isValid = super.validate();
+		
+		// perform transactional specific validations
+		if (isValid) {
+			try {
+				FDConfigurableI c = getConfiguration();
+				isValid = !(
+					productModel.getParentNode() == null ||
+					c == null
+				);
+
+
+				if (isValid && productModel.isSoldBySalesUnits()) {
+					FDSalesUnit     salesUnits[] = getFDProduct().getSalesUnits();
+                    for (int ii = 0; (isValid && ii < salesUnits.length); ++ii) {
+                        FDSalesUnit salesUnit      = salesUnits[ii];
+                    	isValid = (salesUnit != null && salesUnit.getName() != null && salesUnit.getDescription() != null);
+                    }
+				}
+			} catch (Exception exc) {
+				isValid = false;
+			}
+		}
+		return isValid;
+	}
 }

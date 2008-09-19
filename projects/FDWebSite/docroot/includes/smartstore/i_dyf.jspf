@@ -73,8 +73,11 @@ if (request.getParameter("nodyf") == null) {
 			ProductModel prd = (ProductModel) it.next();
 			ProductImpression pi = cUtil.configure(prd, confContext);
 
-			impressions.add(pi);
-			skus.add(pi.getSku());
+			// post-post filter: ensure impression won't crash the display
+			// if (pi.validate()) {
+				impressions.add(pi);
+				skus.add(pi.getSku());
+			// }
 		}
 
 		// vprez := {variant label, variant text}
@@ -373,7 +376,7 @@ if (request.getParameter("nodyf") == null) {
 			if (shortenedProductName != null) {
 				%><b><%= brandName %></b> <%= shortenedProductName %><%
 			} else {
-				%><b><%= fullName %></b><%
+				%><b><%= "".equals(fullName) ? "(this product)" : fullName %></b><%
 			} %></font></a><%
 
 			String confDescription = null;

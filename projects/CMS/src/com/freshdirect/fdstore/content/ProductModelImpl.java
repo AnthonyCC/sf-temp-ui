@@ -491,7 +491,14 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 * @return the brand that begins with the full name, empty string otherwise
 	 */
 	public String getPrimaryBrandName() {
-		return getPrimaryBrandName(this.getFullName());
+		String fullName = super.getFullName();
+		return fullName != null ? getPrimaryBrandName(fullName) : "";
+	}
+
+
+	public String getFullName() {
+		String fullName = super.getFullName();
+		return fullName != null ? fullName : "";
 	}
 
 	/**

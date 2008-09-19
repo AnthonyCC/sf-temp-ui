@@ -40,7 +40,9 @@ public abstract class PrimaryHomeSelection extends BaseComponent {
 			Context ctx = (Context) it.next();
 			PHSWalker walker = new PHSWalker(svc.getContextualizedContentNode(ctx));
 			if (walker.walkAndTest()) {
-				parentKeys.add(walker.getHomeKey());
+				ContentKey homeKey = walker.getHomeKey();
+				if (homeKey != null)
+					parentKeys.add(homeKey);
 			}
 		}
 		
@@ -91,6 +93,7 @@ class PHSWalker extends ContextWalker {
 	
 	// returns the parent (category) key of leaf node (product)
 	public ContentKey getHomeKey() {
-		return leaf.getParentNode().getKey();
+		ContextualContentNodeI parentNode = leaf.getParentNode();
+		return parentNode != null ? parentNode.getKey(): null;
 	}
 }

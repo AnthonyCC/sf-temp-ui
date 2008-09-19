@@ -70,7 +70,8 @@ public class RandomDyfVariant extends DYFService {
 		
 		List productList = (List)shoppingHistory.getPayload();
 		
-		int toSelect = Math.min(input.getCartContents().size()+max, productList.size());
+		// so we have enough products for sure
+		int toSelect = Math.min(input.getCartContents().size()+2*max, productList.size());
 		UniqueRandomSequence U = UniqueRandomSequence.getInstance(
 				toSelect, 
 				productList.size());

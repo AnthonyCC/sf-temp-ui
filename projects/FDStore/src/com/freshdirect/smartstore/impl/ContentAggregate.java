@@ -32,6 +32,8 @@ public class ContentAggregate {
 		}
 	}
 	
+	private static final String ORPHAN_LABEL = "_";
+
 	// label
 	private String label;
 	
@@ -148,6 +150,7 @@ public class ContentAggregate {
 	}
 	
 	
+	
 	/**
 	 * Get the highest aggregation label for the key.
 	 * @param key
@@ -155,7 +158,9 @@ public class ContentAggregate {
 	 */
 	public static String getAggregateLabel(ContentKey key) {
 		ContentNodeModel model =ContentFactory.getInstance().getContentNodeByKey(key);
-		if (model instanceof SkuModel) {
+		if (model == null) {
+			return ORPHAN_LABEL;
+		} else if (model instanceof SkuModel) {
 			return getAggregateLabel((ProductModel)model.getParentNode());
 		} else if (model instanceof ProductModel) {
 			return getAggregateLabel((ProductModel)model);
@@ -170,6 +175,7 @@ public class ContentAggregate {
 	 * @return label
 	 */
 	public static String getAggregateLabel(ProductModel product) {
+		if (product == null) return ORPHAN_LABEL; // in case argument is a getParent of a sku
 		String label = getAggregateLabel((CategoryModel)product.getParentNode());
 		return label == null ? product.getContentKey().getId() : label;
 	}
@@ -180,8 +186,9 @@ public class ContentAggregate {
 	 * @return label
 	 */
 	public static String getAggregateLabel(CategoryModel model) {
-		String label = null;
-		for(;;) {
+		String label = ORPHAN_LABEL;
+
+		while(model != null) {
 			if (model.isDYFAggregated()) label = model.getContentKey().getId();
 			if (model.getParentNode() instanceof CategoryModel) {
 				model = (CategoryModel) model.getParentNode();

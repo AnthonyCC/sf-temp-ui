@@ -66,6 +66,7 @@ public class FDStoreRecommender {
 				ProductModel model = (ProductModel)i.next();
 				ProductModel replaced = evaluate(model);
 				if (replaced != null) filteredModels.add(replaced);
+//				else LOGGER.debug(model + " sorted out");
 			}
 			return filteredModels;
 		}
@@ -108,12 +109,37 @@ public class FDStoreRecommender {
 				return null;
 			}
 		}.filter();
-		
-		
-			
+
+		// sort out inconsistent product, prevent crash at display level.
+		// this is a rough check.
+//		models = new FilterTemplate(models) {
+//			protected ProductModel evaluate(ProductModel model) {
+//				boolean isValid = true;
+//				
+//				try {
+//					isValid = !(
+//						model.getFullName() == null ||
+//						model.getPrimaryBrandName() == null ||
+//						model.getSizeDescription() == null ||
+//						model.getDefaultPrice() == null
+//					);
+//				} catch (Exception exc) {
+//					// invalidate product
+//					isValid = false;
+//				}
+//				
+//				if (!isValid) {
+//					LOGGER.error("Bad product " + model);
+//				}
+//				
+//				return isValid ? model : null;
+//			}
+//		}.filter();
+
+
 		return models;
 	}
-	
+
 	// helper to turn a shopping cart into a set of products
 	protected static Set getShoppingCartContents(FDCartModel cart) {
 		List orderlines = cart.getOrderLines();
@@ -124,7 +150,7 @@ public class FDStoreRecommender {
 		}
 		return products;
 	}
-	
+
 
 	/**
 	 * @return recommendations. In case of failure it returns
@@ -147,8 +173,7 @@ public class FDStoreRecommender {
 		RecommendationService service = SmartStoreUtil.getRecommendationService(user, trigger.getSiteFeature());
 		
 		
-		// invoke recommendation service
-		List contentKeys = service.recommend(trigger.getMaxRecommendations() * 2, input);
+		List contentKeys = doRecommend(trigger, input, service);
 		
 		// remove duplicates and turn content keys into content nodes
 		Set seen = new HashSet();
@@ -182,11 +207,17 @@ public class FDStoreRecommender {
 		return new Recommendations(service.getVariant(),renderableModels);
 		
 	}
-	
-	
+
+
+	// mock point
+	protected List doRecommend(Trigger trigger, SessionInput input, RecommendationService service) {
+		return service.recommend(trigger.getMaxRecommendations() * 2, input);
+	}
+
+
 	private static FDStoreRecommender instance = null;
-	
-	
+
+
 	public static synchronized FDStoreRecommender getInstance() { 
 		if (instance == null) {
 			instance = new FDStoreRecommender();
