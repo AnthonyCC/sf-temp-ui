@@ -48,6 +48,39 @@ public class MostFrequentlyBoughtDyfVariant extends DYFService {
 	// used in drawing
 	protected Random R = new Random();
 	
+	/** ONLY FOR DEBUGGING */
+	protected int findRank(ContentKey key, List sortedAggregates) {
+		int z = 0;
+		for(Iterator i = sortedAggregates.iterator(); i.hasNext(); ++z) {
+			ContentAggregate ca = (ContentAggregate)i.next();
+			for (Iterator j = ca.keys(); j.hasNext();) {
+				if (key.equals(j.next())) return z;
+			}
+		}
+		return -1;
+	}
+	
+	/**
+	 * Used for putting back the temporarily removed items with their scores into 
+	 * the sorted product list.
+	 *
+	 */
+	private static class TemporarilyRemovedItem {
+		private ContentKey key;
+		private float score;
+		private ContentAggregate aggregate;
+		
+		public TemporarilyRemovedItem(ContentKey key, float score, ContentAggregate aggregate) {
+			this.key = key;
+			this.score = score;
+			this.aggregate = aggregate;
+		}
+		
+		public void putBack() {
+			aggregate.addContent(key, score);
+		}
+	}
+	
 	/**
 	 * Draw elements from without replacement from the top elements.
 	 * @param sortedAggregates sorted aggregates
@@ -86,16 +119,31 @@ public class MostFrequentlyBoughtDyfVariant extends DYFService {
 				}
 			}
 			
+			List removed = new ArrayList(n);
+			
 			while(sampler.getItemCount() > 0 && result.size() < n) {
 				ContentAggregate ca = (ContentAggregate)sampler.getRandomItem(R);
-				//float score = ca.getScore(); // comment out for testing
+				float score = ca.getScore(); // comment out for testing
 				ContentKey product = ca.take(R);
-				//System.err.println(" ==> " + product + " " + score + " ("  + sortedAggregates.size() + ")");
+				removed.add(new TemporarilyRemovedItem(product,score,ca));
 				result.add(product);
 				sampler.setItemFrequency(ca, Math.round(100*ca.getScore()));
-				
-						
 			}
+			
+			for(Iterator i = removed.iterator(); i.hasNext();) {
+				((TemporarilyRemovedItem)i.next()).putBack();
+			}
+			
+			/*  //Comment out for debugging 
+			for(Iterator i = result.iterator(); i.hasNext();) {
+				ContentKey product = (ContentKey)i.next();
+				int rank = findRank(product, sortedAggregates);
+				if (rank >= n) {
+					LOGGER.warn("Rank for product " + product + " is " + rank + "(which is >= " + n + ")");
+				}
+				System.err.println(" --> " + product + " " + rank + " (" + n + ")");
+			}
+			*/
 		}
 		
 		return result;
@@ -152,7 +200,7 @@ public class MostFrequentlyBoughtDyfVariant extends DYFService {
 				}
 			);
 			
-			/* Comment out for testing.
+			/*  //Comment out for testing.
 			for(Iterator x = sortedAggregates.iterator(); x.hasNext();) {
 				ContentAggregate ca = (ContentAggregate)x.next();
 				
@@ -164,17 +212,20 @@ public class MostFrequentlyBoughtDyfVariant extends DYFService {
 			cache.put(input.getCustomerId(),cachedSortedAggregates);
 		} 
 		
-		{
+		synchronized(cachedSortedAggregates) {
 			List sortedAggregates = (List)cachedSortedAggregates.getPayload();
 			List shortList = 
 				draw(
 					sortedAggregates,input.getCartContents(),
 					Math.max(
-						Math.round(FDStoreProperties.getDYFFreqboughtTopPercent()*sortedAggregates.size()),
-						FDStoreProperties.getDYFFreqboughtTopN()));
+						(int)Math.round(
+							((double)(
+								FDStoreProperties.getDYFFreqboughtTopPercent()*
+									sortedAggregates.size()))/100.0),
+								FDStoreProperties.getDYFFreqboughtTopN()));
+			
 			return shortList.subList(0,Math.min(max, shortList.size()));
 		}
-	
 	}
 
 
