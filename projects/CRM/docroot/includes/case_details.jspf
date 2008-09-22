@@ -166,6 +166,17 @@ boolean isAssignmentPriorityAllowed = false;
 								}
 							}
 
+							/* Disable all disp fields on Closed Case*/
+							if ( caseStatus == 'Closed' ) {	
+								$('media').disabled = true;
+								$('morethenone').disabled = true;
+								$('firstContact').disabled = true;
+								$('Resolved').disabled = true;
+								$('NotResolved').disabled = true;
+								$('satisfactoryReason').disabled = true;
+								$('customerTone').disabled = true;
+							}
+
 							if ( caseStatus == 'New' ) {
 							//check for NewCase only
 								if (  field.type.substring(0,6) == "select" && (field.id == 'queue' || field.id == 'subject') )
@@ -195,7 +206,7 @@ boolean isAssignmentPriorityAllowed = false;
 							}
 						}
 
-						
+
 						/* check summary and notes */
 						if ( $('summary').value.length <= 0 ) {
 							err = true;
