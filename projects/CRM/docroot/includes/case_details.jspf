@@ -141,11 +141,25 @@ boolean isAssignmentPriorityAllowed = false;
 								if ( field.value == 'Other' ) {
 									//hide other form fields
 									$('MediaIsOther').style.display = 'none';
+										$('morethenone').disabled = true;
+										$('firstContact').disabled = true;
+										$('Resolved').disabled = true;
+										$('NotResolved').disabled = true;
+										$('satisfactoryReason').disabled = true;
+										$('customerTone').disabled = true;
+
 									if ( caseStatus != 'New' ) {
 										$('MediaIsOtherWarn').className = 'casedisp_Err_vis';
 									}
 								}else{
 									$('MediaIsOther').style.display = 'block';
+										$('morethenone').disabled =  false;
+										$('firstContact').disabled = false;
+										$('Resolved').disabled = false;
+										$('NotResolved').disabled = false;
+										$('satisfactoryReason').disabled = false;
+										$('customerTone').disabled = false;
+
 									if ( caseStatus != 'New' ) {
 										$('MediaIsOtherWarn').className = 'casedisp_Err_invis';
 									}
@@ -168,7 +182,7 @@ boolean isAssignmentPriorityAllowed = false;
 							}else{
 								if (  field.type.substring(0,6) == "select" && field.id != 'priority' && field.id != 'assignedAgent' ) //these are fields to ignore
 								{
-									if ( field.selectedIndex <= 0 && $(field.id).style.display != 'none' && $(field.id).disabled != 'true' )
+									if ( field.selectedIndex <= 0 && $(field.id).style.display != 'none' && $(field.id).disabled != true )
 									{
 										err = true;
 										$(field.id+'Err').className = 'casedisp_Err_vis';
@@ -214,7 +228,6 @@ boolean isAssignmentPriorityAllowed = false;
 							
 						return true;
 					}
-                    
 				-->
 			</script>
 			<div class="casedisp_container">
