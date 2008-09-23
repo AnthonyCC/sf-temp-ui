@@ -3,7 +3,6 @@ package com.freshdirect.smartstore.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Random;
@@ -27,13 +26,17 @@ public class ContentAggregate {
 		
 		private ContentScorePair(ContentKey key, float score) {
 			this.key = key;
-			this.score = score;
-			
+			this.score = score;		
+		}
+		
+		public int hashCode() {
+			return key.hashCode() ^ Float.floatToIntBits(score);
 		}
 	}
 	
-	private static final String ORPHAN_LABEL = "_";
-
+	// cached hash
+	private int hash = 0; 
+	
 	// label
 	private String label;
 	
@@ -72,6 +75,7 @@ public class ContentAggregate {
 		ContentScorePair cp = new ContentScorePair(key,keyScore);
 		contentList.add(cp);
 		totalScore += keyScore;
+		hash += cp.hashCode();
 	}
 	
 	/**
@@ -80,6 +84,19 @@ public class ContentAggregate {
 	 */
 	public String getLabel() {
 		return label;
+	}
+	
+	/**
+	 * Get the individual score of a content.
+	 * @param key
+	 * @return score, or -1 if not part
+	 */
+	public float getScore(ContentKey key) {
+		for(Iterator i = contentList.iterator(); i.hasNext(); ) {
+			ContentScorePair cp = (ContentScorePair)i.next();
+			if (cp.key.equals(key)) return cp.score;
+		}
+		return -1;
 	}
 	
 	/**
@@ -105,6 +122,7 @@ public class ContentAggregate {
 			for(int i = 0; i< n; ++i) {
 				ContentScorePair cp = (ContentScorePair)contentList.remove(contentList.size()-1);
 				totalScore -= cp.score;
+				hash -= cp.hashCode();
 				result.add(cp.key);
 			}
 		}
@@ -121,7 +139,7 @@ public class ContentAggregate {
 		if (contentList.size() == 0) throw new NoSuchElementException("Content Aggregate Empty");
 		ContentScorePair cp = (ContentScorePair)contentList.remove(R.nextInt(contentList.size()));
 		totalScore -= cp.score;
-		
+		hash -= cp.hashCode();
 		return cp.key;	
 	}
 	
@@ -143,8 +161,9 @@ public class ContentAggregate {
 			public void remove() {
 				if (cp == null) throw new IllegalStateException();
 				totalScore -= cp.score;
-				cp = null;
 				i.remove();
+				hash -= cp.hashCode();
+				cp = null;
 			}		
 		};
 	}
@@ -159,7 +178,7 @@ public class ContentAggregate {
 	public static String getAggregateLabel(ContentKey key) {
 		ContentNodeModel model =ContentFactory.getInstance().getContentNodeByKey(key);
 		if (model == null) {
-			return ORPHAN_LABEL;
+			return null;
 		} else if (model instanceof SkuModel) {
 			return getAggregateLabel((ProductModel)model.getParentNode());
 		} else if (model instanceof ProductModel) {
@@ -175,8 +194,10 @@ public class ContentAggregate {
 	 * @return label
 	 */
 	public static String getAggregateLabel(ProductModel product) {
-		if (product == null) return ORPHAN_LABEL; // in case argument is a getParent of a sku
-		String label = getAggregateLabel((CategoryModel)product.getParentNode());
+		if (product == null) return null; // in case argument is a getParent of a sku
+		CategoryModel parent = (CategoryModel)product.getParentNode();
+		if (parent == null) return null; // orphan
+		String label = getAggregateLabel(parent);
 		return label == null ? product.getContentKey().getId() : label;
 	}
 	
@@ -186,7 +207,7 @@ public class ContentAggregate {
 	 * @return label
 	 */
 	public static String getAggregateLabel(CategoryModel model) {
-		String label = ORPHAN_LABEL;
+		String label = null;
 
 		while(model != null) {
 			if (model.isDYFAggregated()) label = model.getContentKey().getId();
@@ -195,5 +216,14 @@ public class ContentAggregate {
 			} else break;
 		}	
 		return label;
+	}
+	
+	/**
+	 * The hash code returned will be the same regardless 
+	 * what order the objects are aggregated.
+	 * @return hash code
+	 */
+	public int hashCode() {
+		return hash;
 	}
 }

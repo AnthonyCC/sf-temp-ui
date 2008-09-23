@@ -49,15 +49,27 @@ public class MostFrequentlyBoughtDyfVariant extends DYFService {
 	protected Random R = new Random();
 	
 	/** ONLY FOR DEBUGGING */
-	protected int findRank(ContentKey key, List sortedAggregates) {
+	protected float[] findRank(ContentKey key, List sortedAggregates) {
+		float[] result = new float[3];
+		result[0] = -1;
+		result[1] = -1;
+		result[2] = -1;
 		int z = 0;
-		for(Iterator i = sortedAggregates.iterator(); i.hasNext(); ++z) {
+		for(Iterator i = sortedAggregates.iterator(); i.hasNext();) {
 			ContentAggregate ca = (ContentAggregate)i.next();
+			if (ca.hashCode() == 0) continue;
 			for (Iterator j = ca.keys(); j.hasNext();) {
-				if (key.equals(j.next())) return z;
+				ContentKey product = (ContentKey)j.next();
+				if (key.equals(product)) {
+					result[0] = z;
+					result[1] = ca.getScore();
+					result[2] = ca.getScore(product);
+					break;
+				}
 			}
+			++z;
 		}
-		return -1;
+		return result;
 	}
 	
 	/**
@@ -90,6 +102,13 @@ public class MostFrequentlyBoughtDyfVariant extends DYFService {
 	protected List draw(List sortedAggregates, Collection cartContents, int n) {
 		List result = new ArrayList(n);
 		
+		// SANITY CHECK FOR CORRECT IMPLEMENTATION, EXPENSIVE
+		// ONLY COMMENT OUT FOR TESTING	
+		int hashCodeIn = 0;
+		//for(Iterator i = sortedAggregates.iterator(); i.hasNext();) {
+		//	hashCodeIn += i.next().hashCode();
+		//}
+		
 		DiscreteRandomSamplerWithReplacement sampler = 
 			new DiscreteRandomSamplerWithReplacement(
 				new Comparator() {
@@ -104,13 +123,18 @@ public class MostFrequentlyBoughtDyfVariant extends DYFService {
 			);
 		
 		{
+			List removed = new ArrayList(n);
 			int c = 0;
 			for(Iterator i= sortedAggregates.iterator(); i.hasNext() && c < n;) {
 				ContentAggregate ca = (ContentAggregate)i.next();
 				for(Iterator j = ca.keys(); j.hasNext(); ) {
 					ContentKey productKey = (ContentKey)j.next();
 					if (cartContents.contains(productKey)) {
+						float score = ca.getScore(productKey);
 						j.remove();
+						//LOGGER.debug("Product " + productKey + " removed with score " + score);
+						removed.add(new TemporarilyRemovedItem(productKey,score,ca));
+						
 					}
 				}
 				if (ca.getScore() > 0) {
@@ -119,13 +143,14 @@ public class MostFrequentlyBoughtDyfVariant extends DYFService {
 				}
 			}
 			
-			List removed = new ArrayList(n);
+			
 			
 			while(sampler.getItemCount() > 0 && result.size() < n) {
 				ContentAggregate ca = (ContentAggregate)sampler.getRandomItem(R);
-				float score = ca.getScore(); // comment out for testing
+				float scoreBefore = ca.getScore(); // comment out for testing
 				ContentKey product = ca.take(R);
-				removed.add(new TemporarilyRemovedItem(product,score,ca));
+				float scoreAfter = ca.getScore();
+				removed.add(new TemporarilyRemovedItem(product,(scoreBefore - scoreAfter),ca));
 				result.add(product);
 				sampler.setItemFrequency(ca, Math.round(100*ca.getScore()));
 			}
@@ -134,16 +159,22 @@ public class MostFrequentlyBoughtDyfVariant extends DYFService {
 				((TemporarilyRemovedItem)i.next()).putBack();
 			}
 			
-			/*  //Comment out for debugging 
-			for(Iterator i = result.iterator(); i.hasNext();) {
-				ContentKey product = (ContentKey)i.next();
-				int rank = findRank(product, sortedAggregates);
-				if (rank >= n) {
-					LOGGER.warn("Rank for product " + product + " is " + rank + "(which is >= " + n + ")");
-				}
-				System.err.println(" --> " + product + " " + rank + " (" + n + ")");
-			}
-			*/
+			//Comment out for debugging 
+			//for(Iterator i = result.iterator(); i.hasNext();) {
+			//	ContentKey product = (ContentKey)i.next();
+			//	float[] ranks = findRank(product, sortedAggregates);
+			//	
+			//	System.err.println(" --> " + product + ranks[1] + ',' + ranks[2] + " (" + (int)ranks[0] + ',' + n + ")");
+			//}
+			
+			// SANITY CHECK FOR CORRECT IMPLEMENTATION, EXPENSIVE
+			// ONLY COMMENT OUT FOR TESTING	
+			int hashCodeOut = 0;
+			//for(Iterator i = sortedAggregates.iterator(); i.hasNext();) {
+			//	hashCodeOut += i.next().hashCode();
+			//}
+			
+			if (hashCodeIn != hashCodeOut) LOGGER.warn("Inconsistency in " + MostFrequentlyBoughtDyfVariant.class);
 		}
 		
 		return result;
@@ -157,7 +188,7 @@ public class MostFrequentlyBoughtDyfVariant extends DYFService {
 	public List recommend(int max, SessionInput input) {
 		// see if list in cache
 		// List<ContentKey>
-		SessionCache.TimedEntry cachedSortedAggregates = null; //(SessionCache.TimedEntry)cache.get(input.getCustomerId());
+		SessionCache.TimedEntry cachedSortedAggregates = (SessionCache.TimedEntry)cache.get(input.getCustomerId());
 		
 		if (cachedSortedAggregates == null ||  cachedSortedAggregates.expired()) {
 			LOGGER.debug("Loading order history for " + input.getCustomerId() + (cachedSortedAggregates != null ? " (EXPIRED)" : ""));
@@ -174,6 +205,7 @@ public class MostFrequentlyBoughtDyfVariant extends DYFService {
 				
 				ContentKey key = (ContentKey)e.getKey();
 				String aggregateLabel = ContentAggregate.getAggregateLabel(key);
+				if (aggregateLabel == null) continue;
 				Number score = (Number)e.getValue();
 				
 				if (score.floatValue() == 0) continue;
@@ -198,15 +230,7 @@ public class MostFrequentlyBoughtDyfVariant extends DYFService {
 						return diff < 0 ? +1 : diff > 0 ? -1 : 0;
 					}
 				}
-			);
-			
-			/*  //Comment out for testing.
-			for(Iterator x = sortedAggregates.iterator(); x.hasNext();) {
-				ContentAggregate ca = (ContentAggregate)x.next();
-				
-				System.err.println(ca.getLabel() + " -> " + ca.getScore());
-			}
-			*/
+			);			
 			
 			cachedSortedAggregates = new SessionCache.TimedEntry(sortedAggregates,60*10*1000);
 			cache.put(input.getCustomerId(),cachedSortedAggregates);
@@ -223,8 +247,7 @@ public class MostFrequentlyBoughtDyfVariant extends DYFService {
 								FDStoreProperties.getDYFFreqboughtTopPercent()*
 									sortedAggregates.size()))/100.0),
 								FDStoreProperties.getDYFFreqboughtTopN()));
-			
-			return shortList.subList(0,Math.min(max, shortList.size()));
+			return shortList;
 		}
 	}
 
