@@ -43,6 +43,7 @@ public class CrmCaseConstants {
 		crmReasonForNotResolveList.add("Information unavailable");
 		crmReasonForNotResolveList.add("Technology problem");
 		crmReasonForNotResolveList.add("Requires supervisor escalation");
+		crmReasonForNotResolveList.add("Other");
 		
 		crmResolutionSatisfactoryList.add("Yes");
 		crmResolutionSatisfactoryList.add("No");

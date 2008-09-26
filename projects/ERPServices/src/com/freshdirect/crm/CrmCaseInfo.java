@@ -127,7 +127,16 @@ public class CrmCaseInfo extends ModelSupport implements CrmCaseI {
             setSummary(info.getSummary());
             setProjectedQuantity(info.getProjectedQuantity());
             setActualQuantity(info.getActualQuantity());
-        }
+            
+            // 
+            setCrmCaseMedia(info.getCrmCaseMedia());
+            setMoreThenOneIssue(info.getMoreThenOneIssue());            
+			setFirstContactForIssue(info.getFirstContactForIssue());
+			setFirstContactResolved(info.getFirstContactResolved());
+			setResonForNotResolve(info.getResonForNotResolve());
+			setSatisfiedWithResolution(info.getSatisfiedWithResolution());
+			setCustomerTone(info.getCustomerTone());
+        }	
     }
     
     public String toString(){
@@ -353,9 +362,9 @@ public class CrmCaseInfo extends ModelSupport implements CrmCaseI {
 	}
 
 	public void setCrmCaseMedia(String crmCaseMedia) {		
-		 String old = this.getCrmCaseMedia();
-	     this.crmCaseMedia = crmCaseMedia;
-	     this.firePropertyChange("crmCaseMedia", old, crmCaseMedia);		
+		// String old = this.getCrmCaseMedia();
+	     this.crmCaseMedia = crmCaseMedia;	     
+	    // this.firePropertyChange("crmCaseMedia", old, crmCaseMedia);		
 	}
 
 	public String getFirstContactForIssue() {
@@ -364,9 +373,9 @@ public class CrmCaseInfo extends ModelSupport implements CrmCaseI {
 
 	public void setFirstContactForIssue(String firstContactForIssue) {
 		 
-		 String old = this.getFirstContactForIssue();
+		// String old = this.getFirstContactForIssue();
 		 this.firstContactForIssue = firstContactForIssue;
-	     this.firePropertyChange("firstContactForIssue", old, firstContactForIssue);;										 				
+	    // this.firePropertyChange("firstContactForIssue", old, firstContactForIssue);;										 				
 	}
 
 	public String getFirstContactResolved() {
@@ -374,9 +383,9 @@ public class CrmCaseInfo extends ModelSupport implements CrmCaseI {
 	}
 
 	public void setFirstContactResolved(String firstContactResolved) {
-		 String old = this.getFirstContactResolved();
+		// String old = this.getFirstContactResolved();
 		 this.firstContactResolved = firstContactResolved;
-	     this.firePropertyChange("firstContactResolved", old, firstContactResolved);;										 								
+	    // this.firePropertyChange("firstContactResolved", old, firstContactResolved);;										 								
 	}
 
 	public String getMoreThenOneIssue() {
@@ -384,9 +393,9 @@ public class CrmCaseInfo extends ModelSupport implements CrmCaseI {
 	}
 
 	public void setMoreThenOneIssue(String moreThenOneIssue) {		
-		 String old = this.getMoreThenOneIssue();
+		// String old = this.getMoreThenOneIssue();
 		 this.moreThenOneIssue = moreThenOneIssue;
-	     this.firePropertyChange("moreThenOneIssue", old, moreThenOneIssue);;										 													
+	    // this.firePropertyChange("moreThenOneIssue", old, moreThenOneIssue);;										 													
 	}
 
 	public String getResonForNotResolve() {
@@ -394,9 +403,9 @@ public class CrmCaseInfo extends ModelSupport implements CrmCaseI {
 	}
 
 	public void setResonForNotResolve(String resonForNotResolve) {		
-	    String old = this.getResonForNotResolve();
+	  //  String old = this.getResonForNotResolve();
 	    this.resonForNotResolve = resonForNotResolve;
-	    this.firePropertyChange("resonForNotResolve", old, resonForNotResolve);
+	   // this.firePropertyChange("resonForNotResolve", old, resonForNotResolve);
 	}
 
 	public String getCustomerTone() {
@@ -404,9 +413,9 @@ public class CrmCaseInfo extends ModelSupport implements CrmCaseI {
 	}
 
 	public void setCustomerTone(String customerTone) {
-	    String old = this.getCustomerTone();
+	 //   String old = this.getCustomerTone();
 	    this.customerTone = customerTone;
-	    this.firePropertyChange("customerTone", old, customerTone);				
+	  //  this.firePropertyChange("customerTone", old, customerTone);				
 	}
 
 	public String getSatisfiedWithResolution() {
@@ -414,9 +423,9 @@ public class CrmCaseInfo extends ModelSupport implements CrmCaseI {
 	}
 
 	public void setSatisfiedWithResolution(String satisfiedWithResolution) {
-		 String old = this.getSatisfiedWithResolution();
+		// String old = this.getSatisfiedWithResolution();
 		 SatisfiedWithResolution = satisfiedWithResolution;
-	     this.firePropertyChange("SatisfiedWithResolution", old, SatisfiedWithResolution);;										 												
+	   //  this.firePropertyChange("SatisfiedWithResolution", old, SatisfiedWithResolution);;										 												
 	}
     
 }

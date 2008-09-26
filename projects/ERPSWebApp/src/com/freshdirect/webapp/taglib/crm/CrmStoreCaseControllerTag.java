@@ -93,19 +93,35 @@ public class CrmStoreCaseControllerTag extends AbstractControllerTag {
 				
 				String media = NVL.apply(request.getParameter("media"), "").trim();
 				
-				String morethenOne = NVL.apply(request.getParameter("morethenone"), "").trim();                
+				//System.out.println("media:"+media);
+				
+				String morethenOne = NVL.apply(request.getParameter("morethenone"), "").trim();
+				
+			//	System.out.println("morethenOne:"+morethenOne);
 				
                 String firstContact = NVL.apply(request.getParameter("firstContact"), "").trim();                
                 
+             //   System.out.println("firstContact:"+firstContact);
+                
                 String resolvedStr = NVL.apply(request.getParameter("Resolved"), "").trim();                
 
+                
                 String notResolved = NVL.apply(request.getParameter("NotResolved"), "").trim();
-                                
+                
+                
 
                 String satisfactoryReasonStr = NVL.apply(request.getParameter("satisfactoryReason"), "").trim();                
 
                 String customerTone = NVL.apply(request.getParameter("customerTone"), "").trim();
                 
+                String isCaseClosed=NVL.apply(request.getParameter("isCaseClosed"), "").trim();
+                
+               // System.out.println("isCaseClosed:"+isCaseClosed);
+                
+                if("Yes".equalsIgnoreCase(resolvedStr))
+                {                	
+                	notResolved="";
+                }
                 if("Other".equalsIgnoreCase(media))
                 {
                 	morethenOne="";
@@ -115,6 +131,8 @@ public class CrmStoreCaseControllerTag extends AbstractControllerTag {
                 	satisfactoryReasonStr="";
                 	customerTone="";
                 }
+                
+                
                 
                 // validate
 				actionResult.addError(subject == null, "subject", "required");
@@ -178,16 +196,16 @@ public class CrmStoreCaseControllerTag extends AbstractControllerTag {
 						caseInfo.setDepartments(departments);
 						caseInfo.setActualQuantity(actualQuantity);
 						caseInfo.setProjectedQuantity(reportedQuantity);
-						
-						caseInfo.setCrmCaseMedia(media);
-						caseInfo.setMoreThenOneIssue(morethenOne);
-						caseInfo.setFirstContactForIssue(firstContact);
-						caseInfo.setFirstContactResolved(resolvedStr);
-						caseInfo.setResonForNotResolve(notResolved);
-						caseInfo.setSatisfiedWithResolution(satisfactoryReasonStr);
-						caseInfo.setCustomerTone(customerTone);
-
-
+						if(!"true".equalsIgnoreCase(isCaseClosed)){
+							caseInfo.setCrmCaseMedia(media);
+							caseInfo.setMoreThenOneIssue(morethenOne);
+							caseInfo.setFirstContactForIssue(firstContact);
+							caseInfo.setFirstContactResolved(resolvedStr);
+							caseInfo.setResonForNotResolve(notResolved);
+							caseInfo.setSatisfiedWithResolution(satisfactoryReasonStr);
+							caseInfo.setCustomerTone(customerTone);
+						}
+                       
 						CrmCaseAction caseAction = new CrmCaseAction();
 						if (actionType == null) {
 							caseAction.setType(CrmCaseActionType.getEnum(CrmCaseActionType.CODE_NOTE));

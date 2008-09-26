@@ -346,6 +346,7 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
             	}
                 CrmCaseOperation op = this.actionAllowed(agent.getRole().getCode(), caseInfo.getSubject().getCode(),
                     stateAfterInfo == null ? cm.getState().getCode() : stateAfterInfo.getCode(), caseAction.getType().getCode());
+                caseEB.updateCaseInfo(caseInfo);
                 caseEB.addCaseAction(caseAction);
                 caseEB.setState(op.getEndState());
             }

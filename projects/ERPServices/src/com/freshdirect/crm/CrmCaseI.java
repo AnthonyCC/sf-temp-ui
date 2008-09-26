@@ -83,4 +83,36 @@ public interface CrmCaseI extends Serializable {
     
     public void setActualQuantity(int qty);
     
+    
+    public String getCrmCaseMedia();
+
+	public void setCrmCaseMedia(String crmCaseMedia);
+
+	public String getFirstContactForIssue();
+
+	public void setFirstContactForIssue(String firstContactForIssue);
+
+	public String getFirstContactResolved();
+
+	public void setFirstContactResolved(String firstContactResolved);
+
+	public String getMoreThenOneIssue();
+
+	public void setMoreThenOneIssue(String moreThenOneIssue);
+
+	public String getResonForNotResolve();
+
+	public void setResonForNotResolve(String resonForNotResolve);
+	
+	public String getCustomerTone();
+
+	public void setCustomerTone(String customerTone);
+
+	public String getSatisfiedWithResolution(); 
+
+	public void setSatisfiedWithResolution(String satisfiedWithResolution);
+		
+	
+    
+    
  }

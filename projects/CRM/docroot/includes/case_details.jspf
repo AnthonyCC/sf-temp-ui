@@ -32,6 +32,9 @@ final static CrmAgentRole[] DISPLAY_ROLES = {
 boolean isEditAllowed = (cm.isAnonymous() || allowedActions.contains( CrmCaseActionType.getEnum(CrmCaseActionType.CODE_EDIT))) 
 											&& (cm.getPK() == null || (!cm.getSubject().isObsolete() && !cm.getSubject().getQueue().isObsolete())) ;										
 boolean isAssignmentPriorityAllowed = false;
+
+
+
 %>
 <crm:GetCurrentAgent id="currentAgent">
 		<% isAssignmentPriorityAllowed = currentAgent.isSupervisor(); %> 
@@ -49,6 +52,9 @@ boolean isAssignmentPriorityAllowed = false;
 <form name="case_details" method="POST">
 <input type="hidden" name="customerPK" value="<%= cm.getCustomerPK() != null ? cm.getCustomerPK().getId() : "" %>">
 <input type="hidden" name="salePK" value="<%= cm.getSalePK() != null ? cm.getSalePK().getId() : "" %>">
+<input type="hidden" name="isCaseClosed" value="<%= "closed".equalsIgnoreCase(cm.getState().getName()) ? "true" : "false" %>">
+
+
 	<tr>
 		<td class="case_content_field">Status</td>
 		<td><div id="CaseStatus"><%= cm.getState()==null ? "Open" : cm.getState().getName() %></div></td>
@@ -130,6 +136,10 @@ boolean isAssignmentPriorityAllowed = false;
 						/* START fix early call by IE */
 							var CaseButton = $('CreateCase');
 							if ( !CaseButton ) { return false; }
+							if ($('close')){
+								var CloseButton = $('close');
+								if ( !CloseButton ) { return false; }
+							}
 						/* END fix early call by IE */
 
 						for ( var i=0,n=document.case_details.elements.length; i<n; i++ )
@@ -230,10 +240,18 @@ boolean isAssignmentPriorityAllowed = false;
 						if ( err ) { 
 							CaseButton.className = 'case_save_disabled';
 							CaseButton.disabled = true;
+							if ($('close')){
+								CloseButton.className = 'case_save_disabled';
+								CloseButton.disabled = true;
+							}
 							$('requiredError').className = 'casedisp_Err_vis';
 						}else{ 
 							CaseButton.className = 'case_save'; 
 							CaseButton.disabled = false;
+							if ($('close')){
+								CloseButton.className = 'case_save';
+								CloseButton.disabled = false;
+							}
 							$('requiredError').className = 'casedisp_Err_invis';
 						}
 							
@@ -241,14 +259,19 @@ boolean isAssignmentPriorityAllowed = false;
 					}
 				-->
 			</script>
+            
+            
+            
+            
 			<div class="casedisp_container">
 				<div class="casedisp_line">
 					<div class="casedisp_text">
 						Media<span class="casedisp_Err_invis" id="mediaErr">*</span>
 					</div>
 					<div class="casedisp_select">
-						<select id="media" <%= isEditAllowed ? "" : "disabled" %> name="media" onchange="verifyCaseDisp();">
-                        <option value="-Select One-">-Select One-</option>
+                    
+						<select id="media"  name="media" onchange="verifyCaseDisp();">
+                        <option value="">-Select One-</option>
                         <%
                             List caseMediaList=CrmCaseConstants.getCrmCaseMedia();
                             for(int i=0;i<caseMediaList.size();i++)
@@ -275,8 +298,8 @@ boolean isAssignmentPriorityAllowed = false;
 							More than one issue with order<span class="casedisp_Err_invis" id="morethenoneErr">*</span>
 						</div>
 						<div class="casedisp_select">
-							<select id="morethenone" <%= isEditAllowed ? "" : "disabled" %> name="morethenone" onchange="verifyCaseDisp();">
-								<option value="-Select One-">-Select One-</option>
+							<select id="morethenone" name="morethenone" onchange="verifyCaseDisp();">
+								<option value="">-Select One-</option>
 								<%
 								List caseMoreThanOneList=CrmCaseConstants.getCaseMoreThenOneIssueList();
 								for(int i=0;i<caseMoreThanOneList.size();i++)
@@ -302,8 +325,8 @@ boolean isAssignmentPriorityAllowed = false;
 							First contact for issue<span class="casedisp_Err_invis" id="firstContactErr">*</span>
 						</div>
 						<div class="casedisp_select">
-							<select id="firstContact" <%= isEditAllowed ? "" : "disabled" %> name="firstContact" onchange="verifyCaseDisp();">
-								<option value="-Select One-">-Select One-</option>
+							<select id="firstContact"  name="firstContact" onchange="verifyCaseDisp();">
+								<option value="">-Select One-</option>
 							<%
 								List caseFirstContactList=CrmCaseConstants.getCaseFirstContactForIssueList();
 								for(int i=0;i<caseFirstContactList.size();i++)
@@ -329,8 +352,8 @@ boolean isAssignmentPriorityAllowed = false;
 							Resolved on first contact<span class="casedisp_Err_invis" id="ResolvedErr">*</span>
 						</div>
 						<div class="casedisp_select">
-							<select id="Resolved" <%= isEditAllowed ? "" : "disabled" %> name="Resolved" onchange="CaseDisp_FirstContact(this.id, 'NotResolved'); verifyCaseDisp();">
-								<option value="-Select One-">-Select One-</option>
+							<select id="Resolved"  name="Resolved" onchange="CaseDisp_FirstContact(this.id, 'NotResolved'); verifyCaseDisp();">
+								<option value="">-Select One-</option>
 							<%
 								List caseResolvedFirstContactList=CrmCaseConstants.getCaseResolvedOnFirstContactList();
 								for(int i=0;i<caseResolvedFirstContactList.size();i++)
@@ -357,8 +380,8 @@ boolean isAssignmentPriorityAllowed = false;
 							NOT resolved reason<span class="casedisp_Err_invis" id="NotResolvedErr">*</span>
 						</div>
 						<div class="casedisp_select" id="NotResolved_select">
-							<select id="NotResolved"  <%= isEditAllowed ? "" : "disabled" %> name="NotResolved" style="display: none;" onchange="verifyCaseDisp();">                                                
-								<option value="-Select One-">-Select One-</option>
+							<select id="NotResolved"   name="NotResolved" style="display: none;" onchange="verifyCaseDisp();">                                                
+								<option value="">-Select One-</option>
 								<%
 								List caseReasonList=CrmCaseConstants.getCrmCaseReasonForNotResolve();
 								for(int i=0;i<caseReasonList.size();i++)
@@ -385,8 +408,8 @@ boolean isAssignmentPriorityAllowed = false;
 							Resolution satisfactory<span class="casedisp_Err_invis" id="satisfactoryReasonErr">*</span>
 						</div>
 						<div class="casedisp_select">
-							<select id="satisfactoryReason" name="satisfactoryReason" <%= isEditAllowed ? "" : "disabled" %> onchange="verifyCaseDisp();">
-								<option value="-Select One-">-Select One-</option>
+							<select id="satisfactoryReason" name="satisfactoryReason" onchange="verifyCaseDisp();">
+								<option value="">-Select One-</option>
 								   <%
 								List caseResolSatisfactoryList=CrmCaseConstants.getCrmResolutionSatisfactoryList();
 								for(int i=0;i<caseResolSatisfactoryList.size();i++)
@@ -412,8 +435,8 @@ boolean isAssignmentPriorityAllowed = false;
 							Customer's tone<span class="casedisp_Err_invis" id="customerToneErr">*</span>
 						</div>
 						<div class="casedisp_select">
-							<select name="customerTone" id="customerTone" <%= isEditAllowed ? "" : "disabled" %> onchange="verifyCaseDisp();">
-								<option value="-Select One-">-Select One-</option>
+							<select name="customerTone" id="customerTone"  onchange="verifyCaseDisp();">
+								<option value="">-Select One-</option>
 							<%
 								List caseToneList=CrmCaseConstants.getCrmCaseCustomerTone();
 								for(int i=0;i<caseToneList.size();i++)
@@ -605,7 +628,7 @@ boolean isAssignmentPriorityAllowed = false;
 			%>
 				<logic:iterate id='actionType' collection='<%= BUTTON_ACTION_TYPES %>' type='com.freshdirect.crm.CrmCaseActionType'>
 					<% if (allowedActions.contains(actionType)) { %>
-						<input type="submit" class="case_action" id="<%= actionType.getCode().toLowerCase() %>" name="actionTypeName" value="<%= actionType.getName() %>">
+						<input type="submit" class="case_action"  class="case_save_disabled" id="<%= actionType.getCode().toLowerCase() %>" name="actionTypeName" value="<%= actionType.getName() %>">
 					<%  
 						countButton++;
 						if (countButton == 3) {
