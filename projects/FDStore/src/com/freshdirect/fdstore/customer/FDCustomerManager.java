@@ -2373,7 +2373,7 @@ public class FDCustomerManager {
 	public static void logCustomerVariant(FDUserI user, String saleId, EnumSiteFeature siteFeature) throws FDResourceException {
 		// VariantSelector f = VariantSelectorFactory.getInstance(siteFeature);
 		// Variant v = f.select(identity.getErpCustomerPK()).getVariant();
-		Variant v = SmartStoreUtil.getRecommendationService(user, siteFeature).getVariant();
+		Variant v = SmartStoreUtil.getRecommendationService(user, siteFeature,null).getVariant();
 		
 		
 		lookupManagerHome();

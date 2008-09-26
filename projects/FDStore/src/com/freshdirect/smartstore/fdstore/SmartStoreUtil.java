@@ -12,7 +12,6 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
@@ -66,15 +65,18 @@ public class SmartStoreUtil {
 	 * 
 	 * @param user
 	 * @param feature
+	 * @param overridde variant id to use (forced)
 	 * @return selected recommendation service
 	 * @throws FDResourceException
 	 */
-	public static RecommendationService getRecommendationService(FDUserI user, EnumSiteFeature feature) throws FDResourceException {
+	public static RecommendationService getRecommendationService(
+		FDUserI user, EnumSiteFeature feature, String override) throws FDResourceException {
 		RecommendationService svc = null;
 		
 		// lookup overridden variant
 		if (EnumSiteFeature.DYF.equals(feature)) {
-			String value = user.getFDCustomer().getProfile().getAttribute("DYF.VariantID");
+			String value = override;
+			if (value == null) value = user.getFDCustomer().getProfile().getAttribute(feature.getName() + ".VariantID");
 			
 			// try to find the appropriate RecommendationService (variant implementation) by entered value
 			if (value != null) {

@@ -13,33 +13,56 @@
 	<JMeterParameters>
 		<Parameter name="hostname">$(server)</Parameter>
 		<Parameter name="port">$(port)</Parameter>
-		<Parameter name="dyf_threads">6</Parameter>
-		<Parameter name="counter">20</Parameter>
+		<Parameter name="dyf_threads">5</Parameter>
+		<Parameter name="erpid_counter">20</Parameter>
+		<Parameter name="dyf_counter">10</Parameter>
 		<Parameter name="dyf_data">$(output.directory)/dyf_custids.csv</Parameter>
 		<Parameter name="dyf_output">$(output.directory)/dyf_results.csv</Parameter>
 	</JMeterParameters>
 
 	<!-- -->
 	<Results dir="$(output.directory)">
+
 		<Aggregate file="dyf_results.csv">
 			<Rows>
-				<Match column="3">.*dyf_recommendations.jsp</Match>
+				<Match column="3">.*view_cart.jsp.*nodyf.*</Match>
 			</Rows>
 			<Calculate>
-				<Formula file="dyf_response_ave.property">ave($0)</Formula>
-				<Formula file="dyf_response_stdhigh.property">ave($0)+std($0)/2</Formula>
-
-				<Formula file="dyf_latency_ave.property">ave($4)</Formula>
-				<Formula file="dyf_latency_stdhigh.property">ave($4)+std($4)/2</Formula>
-
-				<Formula file="dyf_total.property">count($0)</Formula>
-
+				<Formula file="view_cart_no_dyf_response.property">ave($0)</Formula>
 			</Calculate>
 		</Aggregate>
+
+		<Aggregate file="dyf_results.csv">
+			<Rows>
+				<Match column="3">.*view_cart.jsp.*Random.*</Match>
+			</Rows>
+			<Calculate>
+				<Formula file="view_cart_random_response.property">ave($0)</Formula>
+			</Calculate>
+		</Aggregate>
+
+		<Aggregate file="dyf_results.csv">
+			<Rows>
+				<Match column="3">.*view_cart.jsp.*freqbought.*</Match>
+			</Rows>
+			<Calculate>
+				<Formula file="view_cart_freqbought_response.property">ave($0)</Formula>
+			</Calculate>
+		</Aggregate>
+
+		<Aggregate file="dyf_results.csv">
+			<Rows>
+				<Match column="3">.*view_cart.jsp.*</Match>
+			</Rows>
+			<Calculate>
+				<Formula file="dyf_total.property">count($0)</Formula>
+			</Calculate>
+		</Aggregate>
+
 		<Aggregate file="dyf_results.csv">
 			<Rows>
 				<Match column="1" negate="true">200</Match>
-				<Match column="3">.*dyf_recommendations.jsp</Match>
+				<Match column="3">.*view_cart.jsp.*</Match>
 			</Rows>
 			<Calculate>
 				<Formula file="dyf_error.property">count($0)</Formula>

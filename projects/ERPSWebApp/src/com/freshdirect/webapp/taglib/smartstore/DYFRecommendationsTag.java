@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Category;
@@ -102,12 +103,17 @@ public class DYFRecommendationsTag extends AbstractGetterTag implements SessionN
 			}
 		}
 
-
+		
 
 		// get recommendations by recommender
 		if (results == null) {
 			Trigger trigger = new Trigger(EnumSiteFeature.DYF, itemCount);
 			FDStoreRecommender recommender = FDStoreRecommender.getInstance();
+			
+			HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
+			
+			String overriddenVariantID = request.getParameter("DYF.VariantID"); 
+			if (overriddenVariantID != null) session.setAttribute("DYF.VariantID", overriddenVariantID);
 			
 			results = recommender.getRecommendations(trigger, session);
 			

@@ -26,7 +26,7 @@
 <% if (user != null) {
 	// VariantSelector selector = (VariantSelector)VariantSelectorFactory.getInstance(EnumSiteFeature.DYF);
 	// RecommendationService service = selector.select(user.getIdentity().getErpCustomerPK());
-	RecommendationService service = SmartStoreUtil.getRecommendationService(user, EnumSiteFeature.DYF);
+	RecommendationService service = SmartStoreUtil.getRecommendationService(user, EnumSiteFeature.DYF,null);
 %>
 <%= user.getFirstName() %> <%= user.getLastName() %>'s variant ID is <b><%= service.getVariant().getId() %></b><br/>
 <% } else { %>

@@ -204,7 +204,7 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
 
 	if (personal_variant_id == null) {
 %>
-                Variant: <b><%= SmartStoreUtil.getRecommendationService(user, EnumSiteFeature.DYF).getVariant().getId() %></b>
+                Variant: <b><%= SmartStoreUtil.getRecommendationService(user, EnumSiteFeature.DYF,null).getVariant().getId() %></b>
 <%		
 	} else {
 %>

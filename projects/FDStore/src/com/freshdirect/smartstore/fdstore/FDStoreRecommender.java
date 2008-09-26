@@ -167,8 +167,11 @@ public class FDStoreRecommender {
 		Set cartItems = getShoppingCartContents(user.getShoppingCart());
 		input.setCartContents(cartItems);
 
+		String overriddenVariantId = (String)session.getAttribute(trigger.getSiteFeature().getName() + ".VariantID");
+		
 		// select service		
-		RecommendationService service = SmartStoreUtil.getRecommendationService(user, trigger.getSiteFeature());
+		RecommendationService service = 
+			SmartStoreUtil.getRecommendationService(user, trigger.getSiteFeature(),overriddenVariantId);
 		
 		
 		List contentKeys = doRecommend(trigger, input, service);

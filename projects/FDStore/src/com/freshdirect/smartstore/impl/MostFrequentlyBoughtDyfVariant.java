@@ -44,7 +44,6 @@ public class MostFrequentlyBoughtDyfVariant extends DYFService {
 		super(variant);
 	}
 	
-
 	// used in drawing
 	protected Random R = new Random();
 	
@@ -71,7 +70,7 @@ public class MostFrequentlyBoughtDyfVariant extends DYFService {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Used for putting back the temporarily removed items with their scores into 
 	 * the sorted product list.
