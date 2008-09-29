@@ -230,7 +230,9 @@
         <mkdir dir="${projects.dir}" />
         <checkoutLabeled dir="lib/thirdparty"/>
         <checkoutLabeled dir="lib/testing"/>
+	<checkoutLabeled dir="projects/Framework/src"/>
         <checkoutLabeled dir="projects/Tests"/>
+	<checkoutLabeled dir="projects/Tools/src"/>
     </target>
 
 
@@ -725,16 +727,23 @@
 		</trycatch>
 	</target>
 
-    <target name="jmeter_test" description="Run jmeter tests">
-        <mkdir dir="${work.dir}/jmeter-logs"/>
-        <mkdir dir="${work.dir}/jmeter-logs/results"/>
-        <exec failifexecutionfails="true" failonerror="true" dir="${projects.dir}" executable="java">
-		<!--
-            <arg line="run.sh -p login.sh -p buy_groceries.sh -p buy_perishables.sh -p browse_products.sh -p browse_categories.sh -w ${work.dir}/jmeter-logs -d ${work.dir}/jmeter-logs/results -s ${jmeter.hostname}:${jmeter.port} -j ${lib.dir}/testing/jmeter/bin/ApacheJMeter.jar"/>
-	    	-->
-		<arg line="-classpath ${work.dir}/Tools.jar:${work.dir}/Framework.jar -Dserver=${jmeter.hostname} -Dport=${jmeter.port} -Doutput.directory=${work.dir}/jmeter-logs/results -Djmeter.lib=${lib.dir}/testing/jmeter -Djmx.directory=Tests/jmeter  com.freshdirect.tools.jmeter.ScriptRunner SmartStore.xml"/>
-        </exec>
-    </target>
+	<target name="jmeter_test" description="Run jmeter tests">
+		<mkdir dir="${work.dir}/jmeter-logs"/>
+		<mkdir dir="${work.dir}/jmeter-logs/results"/>
+		<java classname="com.freshdirect.tools.jmeter.ScriptRunner" dir="${projects.dir}" fork="true" maxmemory="512m">
+			<classpath> 
+				<pathelement location="${work.dir}/jmeter_tools/jmeter-runner.jar"/>
+				<pathelement location="${lib.dir}/thirdparty/commons-lang-2.3.jar"/>
+			</classpath> 
+			<arg value="Store.xml"/>
+			<arg value="SmartStore.xml"/>
+			<sysproperty key="server" value="${jmeter.hostname}"/>
+			<sysproperty key="port" value="${jmeter.port}"/>
+			<sysproperty key="output.directory" value="${work.dir}/jmeter-logs/results"/>
+			<sysproperty key="jmeter.lib" value="${lib.dir}/testing/jmeter"/>
+			<sysproperty key="jmx.directory" value="Tests/jmeter"/>
+		</java>
+	</target>
 
 	<target name="perf_test" depends="perf_tests_compile,tools" description="Run performance tests">
 		<java classname="com.freshdirect.tools.monitor.WebStatsReport" output="${work.dir}/perf-logs/webstats-before.log">
@@ -2401,5 +2410,26 @@
 
 	</javadoc>
 </target>
+
+	<target name="jmeter_runner" description="JMETER Running Tool">
+		<mkdir dir="${work.dir}/jmeter_tools" />
+		<javac classpath="${lib.dir}/thirdparty/commons-lang-2.3.jar"
+			destdir="${work.dir}/jmeter_tools">
+			<src path="${projects.dir}/Framework/src"/>
+			<src path="${projects.dir}/Tools/src"/>
+			<include name="**/StringUtil.java"/>
+			<include name="**/CSVUtils.java"/>
+			<include name="**/ScriptRunner.java"/>
+		</javac>
+		<jar destfile="${work.dir}/jmeter_tools/jmeter-runner.jar">
+			<manifest>
+				<attribute name="Main-class" value="com.freshdirect.tools.jmeter.ScriptRunner"/>
+			</manifest>
+			<fileset dir="${work.dir}/jmeter_tools">
+			 <include name="**/*.class"/>
+			 </fileset>
+		</jar>
+			
+	</target>
 
 </project>
