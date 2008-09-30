@@ -1266,7 +1266,7 @@ public class ScriptRunner {
 					try {
 						test.evaluate();
 					} catch (Exception e) {
-						System.err.println("In " + test.getName() + ": " + e);
+						System.err.println("In " + test.getName() + ":   " + e);
 						e.printStackTrace();
 					}
 				}
