@@ -292,6 +292,8 @@
         <checkoutLatest dir="lib/thirdparty"/>
         <checkoutLatest dir="lib/testing"/>
         <checkoutLatest dir="projects/Tests"/>
+        <checkoutLatest dir="projects/Tools"/>
+        <checkoutLatest dir="projects/Framework"/>
     </target>
 
 	<target name="checkin">
