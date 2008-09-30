@@ -2516,11 +2516,11 @@ public class FDCustomerManager {
 			}catch (SQLException se) {
 				invalidateManagerHome();
 				throw new FDResourceException(se, "Error running SQL");
-		}
+			}
 	    }	
 	    
 
-		public static void storeProductRequest(List productRequest,FDSurveyResponse survey) throws FDResourceException {
+	    public static void storeProductRequest(List productRequest,FDSurveyResponse survey) throws FDResourceException {
 			lookupManagerHome();
 			try {
 				FDCustomerManagerSB sb = managerHome.create();
@@ -2532,6 +2532,5 @@ public class FDCustomerManager {
 				invalidateManagerHome();
 				throw new FDResourceException(re, "Error talking to session bean");
 			}
-		}	    
-
+		}	  	    
 }

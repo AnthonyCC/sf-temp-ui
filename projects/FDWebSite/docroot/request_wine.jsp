@@ -31,7 +31,7 @@ String redirectPage = "/login/login_popup.jsp?successPage=" + successPage;
 		if (!"thankyou".equalsIgnoreCase(request.getParameter("info"))) hasTaken = true;
 		submitted = true;
 	}
-	FDSurvey Usability = FDSurveyFactory.getInstance().getSurvey("Product Request Feedback");
+	FDSurvey Usability = FDSurveyFactory.getInstance().getSurvey("Wine Request Feedback");
 	
     List questions = Usability.getQuestions();
 	

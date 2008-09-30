@@ -88,7 +88,7 @@ public class CrmStoreCaseControllerTag extends AbstractControllerTag {
 				}
 
 				String note = NVL.apply(request.getParameter("note"), "").trim();
-
+				System.out.println("actionTypeName "+request.getParameter("actionTypeName"));
 				CrmCaseActionType actionType = this.getActionTypeByName(request.getParameter("actionTypeName"));
 				
 				String media = NVL.apply(request.getParameter("media"), "").trim();
@@ -212,6 +212,7 @@ public class CrmStoreCaseControllerTag extends AbstractControllerTag {
 						} else {
 							caseAction.setType(actionType);
 						}
+						System.out.println("actionType after "+actionType);
 						caseAction.setTimestamp(new Date());
 						caseAction.setAgentPK(this.getCurrentAgent().getPK());
 						caseAction.setNote(note);                        

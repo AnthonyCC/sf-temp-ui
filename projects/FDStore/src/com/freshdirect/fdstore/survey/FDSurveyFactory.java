@@ -1199,8 +1199,8 @@ public class FDSurveyFactory {
 		FDSurveyFactory.getInstance().addSurvey(rcptPageSurvey2);
 		
 		
-//		****** Product Request SURVEY ******//
-		FDSurvey prodReqFeedback = new FDSurvey("Product Request Feedback");	
+//		****** Wine Request SURVEY ******//
+		FDSurvey prodReqFeedback = new FDSurvey("Wine Request Feedback");	
 		
 		List radioOptions_prodReqFeedback = new ArrayList();
 		radioOptions_prodReqFeedback.add(new FDSurveyAnswer("1", "Excellent"));
@@ -1229,6 +1229,7 @@ public class FDSurveyFactory {
 		
 		
 		FDSurveyFactory.getInstance().addSurvey(prodReqFeedback);
+		
 
 
 	}

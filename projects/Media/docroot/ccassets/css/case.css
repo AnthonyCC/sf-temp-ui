@@ -478,4 +478,15 @@ padding-bottom: 5px;
 	width: auto;
 }
 
+.casedisp_Err_invis {
+	display: none;
+}
+.casedisp_Err_vis {
+	display: inline;
+	color: #C00;
+	font-size: 12px;
+	font-weight: bold;
+	padding: 3px;
+}
+
 /* end CASE DISPOSITION */

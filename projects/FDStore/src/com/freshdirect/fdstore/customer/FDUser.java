@@ -1125,6 +1125,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public void setHomePageLetterVisited(boolean isHomePageLetterVisited) {
 		this.isHomePageLetterVisited = isHomePageLetterVisited;
 	}
+
 }
 	
 
