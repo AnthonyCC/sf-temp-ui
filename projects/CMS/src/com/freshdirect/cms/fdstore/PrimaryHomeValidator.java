@@ -76,9 +76,21 @@ public class PrimaryHomeValidator implements ContentValidatorI {
 				 * Context := <this node>->Cat(->Cat)*->Dept
 				 */
 				List ctxs = new ArrayList(myService.getAllContextsOf(node.getKey()));
+				
+				// Remove orphaned contexts
+				for (Iterator it=ctxs.iterator(); it.hasNext();) {
+					Context x = (Context) it.next();
+					NodeWalker nw1 = new NodeWalker(myService.getContextualizedContentNode(x)).walkWithMe();
+					if (nw1.getTerminalNode() == null) {
+						it.remove();
+					}
+				}
+
 				Collections.sort(ctxs, new ContextComparator(myService)); // sort keys by rank
 				// new primary home := parent (category) node of the best scored contextualized node (that is a product)
-				ContentKey ph = myService.getContextualizedContentNode((Context)ctxs.get(0)).getParentNode().getKey();
+				ContentKey ph = ctxs.size() == 0 ? null : myService
+						.getContextualizedContentNode((Context) ctxs.get(0))
+						.getParentNode().getKey();
 
 				
 				
@@ -169,10 +181,11 @@ class NodeWalker extends ContextWalker {
 
 
 	// call only after context walked
-	// RANK(node) = size(departments)*(1=node is valid, otherwise 0)
+	// RANK(node) = sizeof(departments)*(1=node is valid, otherwise 0)
 	//               + position of department in which node is
 	public int getRank(List deptKeys) {
-		final int s = deptKeys.size();
-		return (isValid() ? s : 0 ) + (s-1)-deptKeys.indexOf(getTerminalNode().getKey());
+		final int n_depts = deptKeys.size();
+		ContentNodeI t = getTerminalNode(); // := [department] or null (it should not be)
+		return (isValid() ? n_depts : 0 ) + (n_depts-1)-(t == null ? 0 : deptKeys.indexOf(t.getKey()) );
 	}
 }

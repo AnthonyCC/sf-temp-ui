@@ -95,6 +95,7 @@ public class DbContentService extends AbstractContentService implements ContentS
 
 		try {
 			conn = getConnection();
+			conn.setAutoCommit(false); // fixes ugly data-loss condition
 			PreparedStatement ps = conn.prepareStatement(query);
 			for (int i = 0; i < args.length; i++) {
 				ps.setString(i + 1, args[i]);
