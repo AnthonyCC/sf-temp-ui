@@ -95,7 +95,6 @@ public class DbContentService extends AbstractContentService implements ContentS
 
 		try {
 			conn = getConnection();
-			conn.setAutoCommit(false); // fixes ugly data-loss condition
 			PreparedStatement ps = conn.prepareStatement(query);
 			for (int i = 0; i < args.length; i++) {
 				ps.setString(i + 1, args[i]);
@@ -261,6 +260,8 @@ public class DbContentService extends AbstractContentService implements ContentS
 		Connection conn = null;
 		try {
 			conn = getConnection();
+			conn.setAutoCommit(false);
+			
 			PreparedStatement ps = conn.prepareStatement(DELETE_ATTRIBUTE);
 			ps.setString(1, node.getKey().getEncoded());
 			ps.executeQuery();
@@ -316,7 +317,6 @@ public class DbContentService extends AbstractContentService implements ContentS
 			relPs.executeBatch();
 			relPs.close();
 
-			/* TODO: ok...who commits...we commit for now but.... */
 			conn.commit();
 		} catch (Exception sqle1) {
 			throw new CmsRuntimeException(sqle1);
