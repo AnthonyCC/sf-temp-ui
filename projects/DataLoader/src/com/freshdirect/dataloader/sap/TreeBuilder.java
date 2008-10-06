@@ -15,6 +15,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.erp.model.*;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.dataloader.*;
+import com.freshdirect.dataloader.sap.helper.BasePriceInfo;
 
 /**
  *
@@ -302,6 +303,8 @@ public class TreeBuilder {
         // get all of the material prices
         //
         HashMap materialPrices = materialPriceParser.getMaterialPrices();
+        
+        Map materialBasePrices=materialPriceParser.getMaterialBasePrices();
         //
         // get all of the sales units
         //
@@ -336,6 +339,11 @@ public class TreeBuilder {
                 // set the prices for the material, sorted by scale quantity
                 //
                 ArrayList priceList = new ArrayList(prices);
+                if(materialBasePrices.containsKey(material.getSapId())) {
+                	BasePriceInfo bpInfo=(BasePriceInfo)materialBasePrices.get(material.getSapId());
+                	material.setBasePrice(bpInfo.getPrice());
+                	material.setBasePricingUnit(bpInfo.getUnit());
+                }
                 Collections.sort(priceList, matlPriceComparator);
                 material.setPrices(priceList);
             }

@@ -45,8 +45,16 @@ public class FDProductInfo extends FDSku  {
     private final FDInventoryCacheI inventory;
 	
     private final String rating;
+	/** Default price in USD */
+	private final double basePrice;
+	
+	private final String basePriceUnit;
+	
+	private final boolean isDeal;
+	
+	private final int dealPercentage;
     
-    public FDProductInfo(String skuCode, int version, double defaultPrice, String defaultPriceUnit, String[] materialNumbers, EnumATPRule atpRule, EnumAvailabilityStatus availStatus, Date availDate, String displayableDefaultPriceUnit, FDInventoryCacheI inventory, String rating) {
+    public FDProductInfo(String skuCode, int version, double defaultPrice, String defaultPriceUnit, String[] materialNumbers, EnumATPRule atpRule, EnumAvailabilityStatus availStatus, Date availDate, String displayableDefaultPriceUnit, FDInventoryCacheI inventory, String rating,double basePrice,String basePriceUnit,boolean isDeal,int dealPercentage) {
 		super(skuCode, version);
 		this.defaultPrice = defaultPrice;
 		this.defaultPriceUnit = defaultPriceUnit;
@@ -57,6 +65,10 @@ public class FDProductInfo extends FDSku  {
         this.displayableDefaultPriceUnit = displayableDefaultPriceUnit;
         this.inventory = inventory;
         this.rating=rating;
+        this.basePrice=basePrice;
+        this.basePriceUnit=basePriceUnit;
+        this.isDeal=isDeal;
+        this.dealPercentage=dealPercentage;
 	}
 
 	/**
@@ -149,5 +161,21 @@ public class FDProductInfo extends FDSku  {
         buf.append("\n\t").append(this.rating);
         buf.append("\n]");
 		return buf.toString();
+	}
+
+	public double getBasePrice() {
+		return basePrice;
+	}
+
+	public String getBasePriceUnit() {
+		return basePriceUnit;
+	}
+
+	public int getDealPercentage() {
+		return dealPercentage;
+	}
+
+	public boolean isDeal() {
+		return isDeal;
 	}
 }

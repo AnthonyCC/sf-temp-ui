@@ -10,9 +10,11 @@ package com.freshdirect.dataloader.sap;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import com.freshdirect.erp.model.*;
 import com.freshdirect.dataloader.*;
+import com.freshdirect.dataloader.sap.helper.BasePriceInfo;
 
 /** a parser that deals with SAP material price export files
  *
@@ -26,10 +28,14 @@ public class MaterialPriceParser extends SAPParser {
      */    
     HashMap materialPrices = null;
     
+    private Map materialBasePrices=null;
+    private static final String BASE_PRICE="PBBS";
+    
     /** Creates new MaterialPriceParser */
     public MaterialPriceParser() {
         super();
         materialPrices = new HashMap();
+        materialBasePrices=new HashMap();
         /*
          * from ERP Services/Technical Specs/Batch Loads/Material_Price_CSD.doc in VSS repository
          */
@@ -57,6 +63,10 @@ public class MaterialPriceParser extends SAPParser {
         return materialPrices;
     }
     
+    public Map getMaterialBasePrices() {
+    	return materialBasePrices;
+    }
+    
     /** creates model objects from the supplied tokens
      * @param tokens a HashMap of tokens parsed from a line of an export file
      * @throws BadDataException an problems encountered while assembling the tokens into model objects
@@ -82,49 +92,55 @@ public class MaterialPriceParser extends SAPParser {
             //
             // create the material price
             //
-            ErpMaterialPriceModel materialPrice = new ErpMaterialPriceModel();
-            materialPrice.setPrice(getDouble(tokens, PRICE));
-            materialPrice.setPricingUnit(getString(tokens, CONDITION_UNIT));
-            materialPrice.setScaleQuantity(getDouble(tokens, CONDITION_SCALE_QUANTITY));
-            materialPrice.setScaleUnit(getString(tokens, CONDITION_SCALE_UOM));
-            materialPrice.setSapId(getString(tokens, CONDITION_RECORD_NUMBER));
-            //
-            // no zero price materials
-            //
-            if (materialPrice.getPrice() == 0.0) {
-                throw new BadDataException("Material " + materialPrice.getSapId() + " has a zero price for scale unit " + materialPrice.getScaleUnit());
-            }
-            //
-            // a little massage
-            //
-            if ((materialPrice.getScaleUnit() == null) || ("".equals(materialPrice.getScaleUnit())))
-                materialPrice.setScaleUnit("   ");
+        	String priceType=getString(tokens,CONDITION_TYPE);
             //
             // which material does this price belong to?
             //
             String matlNumber = getString(tokens, MATERIAL_NUMBER);
-            //
-            // since there are multiple prices for each material at different quantities
-            // we need to make the material prices we collect a hash of sets
-            //
-            HashSet prices = null;
-            if (!materialPrices.containsKey(matlNumber)) {
-                //
-                // no prices yet for this material
-                // create a new set and add it to the collection
-                //
-                prices = new HashSet();
-                materialPrices.put(matlNumber, prices);
+            if (BASE_PRICE.equals(priceType)) {
+            	materialBasePrices.put(matlNumber, new BasePriceInfo(matlNumber,getDouble(tokens, PRICE),getString(tokens, CONDITION_UNIT)));
             } else {
-                //
-                // find the price set for this material
-                //
-                prices = (HashSet) materialPrices.get(matlNumber);
+            
+	            ErpMaterialPriceModel materialPrice = new ErpMaterialPriceModel();
+	            materialPrice.setPrice(getDouble(tokens, PRICE));
+	            materialPrice.setPricingUnit(getString(tokens, CONDITION_UNIT));
+	            materialPrice.setScaleQuantity(getDouble(tokens, CONDITION_SCALE_QUANTITY));
+	            materialPrice.setScaleUnit(getString(tokens, CONDITION_SCALE_UOM));
+	            materialPrice.setSapId(getString(tokens, CONDITION_RECORD_NUMBER));
+	            //
+	            // no zero price materials
+	            //
+	            if (materialPrice.getPrice() == 0.0) {
+	                throw new BadDataException("Material " + materialPrice.getSapId() + " has a zero price for scale unit " + materialPrice.getScaleUnit());
+	            }
+	            //
+	            // a little massage
+	            //
+	            if ((materialPrice.getScaleUnit() == null) || ("".equals(materialPrice.getScaleUnit())))
+	                materialPrice.setScaleUnit("   ");
+	            //
+	            // since there are multiple prices for each material at different quantities
+	            // we need to make the material prices we collect a hash of sets
+	            //
+	            HashSet prices = null;
+	            if (!materialPrices.containsKey(matlNumber)) {
+	                //
+	                // no prices yet for this material
+	                // create a new set and add it to the collection
+	                //
+	                prices = new HashSet();
+	                materialPrices.put(matlNumber, prices);
+	            } else {
+	                //
+	                // find the price set for this material
+	                //
+	                prices = (HashSet) materialPrices.get(matlNumber);
+	            }
+	            //
+	            // add the new price to the set
+	            //
+	            prices.add(materialPrice);
             }
-            //
-            // add the new price to the set
-            //
-            prices.add(materialPrice);
               
         } catch (Exception e) {
             throw new BadDataException(e, "An exception was thrown while trying to parse a MaterialPrice");

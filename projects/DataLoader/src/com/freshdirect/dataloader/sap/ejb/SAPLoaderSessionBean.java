@@ -654,6 +654,9 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
 					erpProductModel.setUnavailabilityDate(unavailDate);
 					erpProductModel.setUnavailabilityReason(unavailReason);
 					erpProductModel.setRating(rating);
+					erpProductModel.setBasePrice(anonMatlModel.getBasePrice());
+					erpProductModel.setBasePriceUnit(anonMatlModel.getBasePricingUnit());
+
                     
                     //
                     // if the default price ends up being zero, this is carried over from an old-style discontinued product

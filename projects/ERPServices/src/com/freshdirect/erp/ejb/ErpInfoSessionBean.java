@@ -213,7 +213,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 	}
 
 	private final static String QUERY_PRODUCTS_BY_SKU =
-		"select p.version, p.default_price, p.default_unit, m.sap_id, p.unavailability_status, p.unavailability_date, p.unavailability_reason, m.description, m.atp_rule,p.rating"
+		"select p.version, p.default_price, p.default_unit, m.sap_id, p.unavailability_status, p.unavailability_date, p.unavailability_reason, m.description, m.atp_rule,p.rating,p.base_price,p.base_pricing_unit"
 			+ " from erps.product p, erps.materialproxy mpx, erps.material m where p.id=mpx.product_id and mpx.mat_id=m.id and p.sku_code = ?"
 			+ " and p.version = (select max(version) from erps.product where sku_code = ?)";
 
@@ -247,6 +247,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			String descr = rs.getString(8);
 			EnumATPRule atpRule = EnumATPRule.getEnum(rs.getInt(9));
 			String rating=rs.getString(10);
+			double basePrice = rs.getDouble(11);
+			String basePriceUnit = rs.getString(12);
+			
 			matNos.add(rs.getString(4));
 			while (rs.next()) {
 				matNos.add(rs.getString(4));
@@ -263,7 +266,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				unavDate,
 				unavReason,
 				descr,
-				rating);
+				rating,
+				basePrice,
+				basePriceUnit);
 
 		} catch (SQLException sqle) {
 			LOGGER.error("Unable to find product for SKU " + skuCode, sqle);
@@ -284,7 +289,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 	private static final String skuVersionQuery =
 		"select p.default_price, p.default_unit, m.sap_id, p.unavailability_status, p.unavailability_date, "
-			+ "p.unavailability_reason, m.description, m.atp_rule,p.rating from erps.product p, erps.materialproxy mpx, erps.material m "
+			+ "p.unavailability_reason, m.description, m.atp_rule,p.rating,p.base_price,p.base_pricing_unit from erps.product p, erps.materialproxy mpx, erps.material m "
 			+ "where p.id=mpx.product_id and mpx.mat_id=m.id and p.sku_code = ? and p.version = ?";
 
 	public ErpProductInfoModel findProductBySku(String skuCode, int version) throws ObjectNotFoundException {
@@ -313,6 +318,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				String descr = rs.getString(7);
 				EnumATPRule atpRule = EnumATPRule.getEnum(rs.getInt(8));
 				String rating=rs.getString(9);
+				double basePrice = rs.getDouble(10);
+				String basePriceUnit = rs.getString(11);				
 				matNos.add(rs.getString(3));
 				while (rs.next()) {
 					matNos.add(rs.getString(3));
@@ -329,7 +336,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 					unavDate,
 					unavReason,
 					descr,
-					rating);
+					rating,
+					basePrice,
+					basePriceUnit);
 			}
 			throw new ObjectNotFoundException("SKU " + skuCode + ", version " + version + " not found");
 
@@ -376,6 +385,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 					String descr = rs.getString(8);
 					EnumATPRule atpRule = EnumATPRule.getEnum(rs.getInt(9));
 					String rating =rs.getString(10);
+					double basePrice = rs.getDouble(11);
+					String basePriceUnit = rs.getString(12);					
 					matNos.add(rs.getString(4));
 					while (rs.next()) {
 						matNos.add(rs.getString(4));
@@ -393,7 +404,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 							unavDate,
 							unavReason,
 							descr,
-							rating));
+							rating,
+							basePrice,
+							basePriceUnit));
 				}
 				rs.close();
 			}
@@ -536,6 +549,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				String descr = rs.getString(9);
 				EnumATPRule atpRule = EnumATPRule.getEnum(rs.getInt(10));
 				String rating=rs.getString(10);
+				double basePrice = rs.getDouble(11);
+				String basePriceUnit = rs.getString(12);
 				matNos.add(rs.getString(5));
 
 				products.add(
@@ -550,7 +565,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 						unavDate,
 						unavReason,
 						descr,
-						rating));
+						rating,
+						basePrice,
+						basePriceUnit));
 			}
 
 			rs.close();
@@ -571,7 +588,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 	}
 
 	private final static String QUERY_PRODUCTS_BY_DESCRIPTION =
-		"select p.sku_code, p.version, p.default_price, p.default_unit, m.sap_id, p.unavailability_status, p.unavailability_date, p.unavailability_reason, m.description, m.atp_rule, p.rating"
+		"select p.sku_code, p.version, p.default_price, p.default_unit, m.sap_id, p.unavailability_status, p.unavailability_date, p.unavailability_reason, m.description, m.atp_rule, p.rating,p.base_price,p.base_pricing_unit"
 			+ " from erps.product p, erps.materialproxy mpx, erps.material m where p.id=mpx.product_id and mpx.mat_id=m.id"
 			+ " and p.version = (select max(version) from erps.product p2 where p2.sku_code = p.sku_code)"
 			+ " and m.description like ?"
@@ -602,6 +619,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				String descr = rs.getString(9);
 				EnumATPRule atpRule = EnumATPRule.getEnum(rs.getInt(10));
 				String rating=rs.getString(11);
+				double basePrice = rs.getDouble(12);
+				String basePriceUnit = rs.getString(13);
 				matNos.add(rs.getString(5));
 
 				products.add(
@@ -616,7 +635,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 						unavDate,
 						unavReason,
 						descr,
-						rating));
+						rating,
+						basePrice,
+						basePriceUnit));
 			}
 
 			rs.close();
@@ -637,7 +658,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 	}
 
 	private final static String QUERY_PRODUCTS_LIKE_SKU =
-		"select p.sku_code, p.version, p.default_price, p.default_unit, m.sap_id, p.unavailability_status, p.unavailability_date, p.unavailability_reason, m.description, m.atp_rule"
+		"select p.sku_code, p.version, p.default_price, p.default_unit, m.sap_id, p.unavailability_status, p.unavailability_date, p.unavailability_reason, m.description, m.atp_rule,p.rating,p.base_price,p.base_pricing_unit"
 			+ " from erps.product p, erps.materialproxy mpx, erps.material m"
 			+ " where p.id=mpx.product_id and mpx.mat_id=m.id and p.sku_code like ?"
 			+ " and p.version = (select max(version) from erps.product where sku_code = p.sku_code)";
@@ -666,6 +687,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				String descr = rs.getString(9);
 				EnumATPRule atpRule = EnumATPRule.getEnum(rs.getInt(10));
 				String rating=rs.getString(11);
+				double basePrice = rs.getDouble(12);
+				String basePriceUnit = rs.getString(13);
 				matNos.add(rs.getString(5));
 
 				results.add(
@@ -680,7 +703,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 						unavDate,
 						unavReason,
 						descr,
-						rating));
+						rating,
+						basePrice,
+						basePriceUnit));
 			}
 
 			rs.close();
@@ -702,7 +727,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 	}
 
 	private final static String QUERY_PRODUCTS_BY_UPC =
-		"select p.sku_code, p.version, p.default_price, p.default_unit, m.sap_id, p.unavailability_status, p.unavailability_date, p.unavailability_reason, m.description, m.atp_rule"
+		"select p.sku_code, p.version, p.default_price, p.default_unit, m.sap_id, p.unavailability_status, p.unavailability_date, p.unavailability_reason, m.description, m.atp_rule,p.rating,p.base_price,p.base_pricing_unit"
 			+ " from erps.product p, erps.materialproxy mpx, erps.material m"
 			+ " where p.id=mpx.product_id and mpx.mat_id=m.id and m.upc = ?"
 			+ " and p.version = (select max(version) from erps.product where sku_code = p.sku_code)";
@@ -731,6 +756,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				String descr = rs.getString(9);
 				EnumATPRule atpRule = EnumATPRule.getEnum(rs.getInt(10));
 				String rating=rs.getString(11);
+				double basePrice = rs.getDouble(12);
+				String basePriceUnit = rs.getString(13);
 				matNos.add(rs.getString(5));
 
 				results.add(
@@ -745,7 +772,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 						unavDate,
 						unavReason,
 						descr,
-						rating));
+						rating,
+						basePrice,
+						basePriceUnit));
 			}
 
 			rs.close();
@@ -767,7 +796,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 	}
 
 	private final static String QUERY_PRODUCTS_LIKE_UPC =
-		"select p.sku_code, p.version, p.default_price, p.default_unit, m.sap_id, p.unavailability_status, p.unavailability_date, p.unavailability_reason, m.description, m.atp_rule"
+		"select p.sku_code, p.version, p.default_price, p.default_unit, m.sap_id, p.unavailability_status, p.unavailability_date, p.unavailability_reason, m.description, m.atp_rule,p.rating,p.base_price,p.base_pricing_unit"
 			+ " from erps.product p, erps.materialproxy mpx, erps.material m"
 			+ " where p.id=mpx.product_id and mpx.mat_id=m.id and m.upc like ?"
 			+ " and p.version = (select max(version) from erps.product where sku_code = p.sku_code)";
@@ -796,6 +825,8 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				String descr = rs.getString(9);
 				EnumATPRule atpRule = EnumATPRule.getEnum(rs.getInt(10));
 				String rating=rs.getString(11);
+				double basePrice = rs.getDouble(12);
+				String basePriceUnit = rs.getString(13);
 				matNos.add(rs.getString(5));
 
 				results.add(
@@ -810,7 +841,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 						unavDate,
 						unavReason,
 						descr,
-						rating));
+						rating,
+						basePrice,
+						basePriceUnit));
 			}
 
 			rs.close();

@@ -63,6 +63,10 @@ public class ErpProductModel extends ErpModelSupport implements DurableModelI, E
 	
 	/** product rating */
 	private String rating;
+	
+	private double basePrice;
+	
+	private String basePriceUnit;
 
 	/**
 	 * Default constructor.
@@ -79,7 +83,7 @@ public class ErpProductModel extends ErpModelSupport implements DurableModelI, E
 	 * @param defaultPriceUnit pricing unit for default price
 	 * @param materialProxies collection of material proxy model objects
 	 */
-	public ErpProductModel(String skuCode, double defaultPrice, String defaultPriceUnit, String unavailabilityStatus, Date unavailabilityDate, String unavailabilityReason, Date pricingDate, ErpMaterialModel material, VersionedPrimaryKey[] suPKs, VersionedPrimaryKey[] cvPKs, String _rating) {
+	public ErpProductModel(String skuCode, double defaultPrice, String defaultPriceUnit, String unavailabilityStatus, Date unavailabilityDate, String unavailabilityReason, Date pricingDate, ErpMaterialModel material, VersionedPrimaryKey[] suPKs, VersionedPrimaryKey[] cvPKs, String _rating,double basePrice, String basePriceUnit ) {
 		super();
 		if (skuCode==null) {
 			throw new IllegalArgumentException("SKU code cannot be null");
@@ -96,6 +100,8 @@ public class ErpProductModel extends ErpModelSupport implements DurableModelI, E
 		this.setHiddenSalesUnitPKs( suPKs );
 		this.setHiddenCharacteristicValuePKs( cvPKs );
 		this.setRating(_rating);
+		this.setBasePrice(basePrice);
+		this.setBasePriceUnit(basePriceUnit);
 	}
 
 	/**
@@ -339,6 +345,22 @@ public class ErpProductModel extends ErpModelSupport implements DurableModelI, E
 			list.addAll( ((ErpClassModel)i.next()).getCharacteristics() );
 		}
 		return list;
+	}
+
+	public double getBasePrice() {
+		return basePrice;
+	}
+
+	public void setBasePrice(double basePrice) {
+		this.basePrice = basePrice;
+	}
+
+	public String getBasePriceUnit() {
+		return basePriceUnit;
+	}
+
+	public void setBasePriceUnit(String basePriceUnit) {
+		this.basePriceUnit = basePriceUnit;
 	}
 
 }

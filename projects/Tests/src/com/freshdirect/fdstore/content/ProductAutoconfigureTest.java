@@ -234,7 +234,7 @@ public class ProductAutoconfigureTest extends FDCustomerManagerTestSupport {
 					                           EnumATPRule.MATERIAL,
 					                           EnumAvailabilityStatus.AVAILABLE,
 					                           now,
-					                           "", inventoryCache,"");
+					                           "", inventoryCache,"",1.0,"ea",false,1);
 
 			return productInfo;
 		}

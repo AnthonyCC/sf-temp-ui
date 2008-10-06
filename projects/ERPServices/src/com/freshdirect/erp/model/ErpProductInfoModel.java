@@ -56,6 +56,10 @@ public class ErpProductInfoModel extends ModelSupport {
 	/** sap product rating */
 	private final String rating;
 	
+	private double basePrice;
+	
+	private String basePriceUnit;	
+	
 
 	/**
 	 * Constructor with all properties.
@@ -81,7 +85,9 @@ public class ErpProductInfoModel extends ModelSupport {
 		Date unavailabilityDate,
 		String unavailabilityReason,
 		String description,
-		String rating) {
+		String rating,
+		double basePrice,
+		String basePriceUnit) {
 		super();
 		this.skuCode = skuCode;
 		this.version = version;
@@ -94,6 +100,8 @@ public class ErpProductInfoModel extends ModelSupport {
 		this.unavailabilityReason = unavailabilityReason;
 		this.description = description;
 		this.rating=rating;
+		this.basePrice=basePrice;
+		this.basePriceUnit=basePriceUnit;
 	}
 
 	/**
@@ -178,6 +186,14 @@ public class ErpProductInfoModel extends ModelSupport {
 	 */
 	public String getRating() {
 		return rating;
+	}
+
+	public double getBasePrice() {
+		return basePrice;
+	}
+
+	public String getBasePriceUnit() {
+		return basePriceUnit;
 	}
 
 }

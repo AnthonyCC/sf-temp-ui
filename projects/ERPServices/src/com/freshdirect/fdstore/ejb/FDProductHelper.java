@@ -25,6 +25,7 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.pricing.Pricing;
+import com.freshdirect.common.pricing.util.DealsHelper;
 import com.freshdirect.content.attributes.AttributeCollection;
 import com.freshdirect.content.attributes.AttributeComparator;
 import com.freshdirect.content.attributes.AttributesI;
@@ -145,7 +146,14 @@ class FDProductHelper {
 				EnumAvailabilityStatus.AVAILABLE);
 		}
 		
+
+
 		String displayablePricingUnit = attributeCollection.getAttribute(EnumAttributeName.PRICING_UNIT_DESCRIPTION.getName(), "");
+		boolean isDeal=DealsHelper.isDeal(erpProductInfo);
+		int dealsPercentage=-1;
+		if(isDeal) {
+			dealsPercentage=DealsHelper.getVariancePercentage(erpProductInfo.getBasePrice(), erpProductInfo.getDefaultPrice());
+		}
 		
 		return new FDProductInfo(
 			erpProductInfo.getSkuCode(),
@@ -156,7 +164,12 @@ class FDProductHelper {
 			erpProductInfo.getATPRule(),
 			status,
 			erpProductInfo.getUnavailabilityDate(),
-			displayablePricingUnit, null, erpProductInfo.getRating()
+			displayablePricingUnit, null,
+			erpProductInfo.getRating(),
+			erpProductInfo.getBasePrice(),
+			erpProductInfo.getDefaultPriceUnit(),
+			isDeal,
+			dealsPercentage
 		);
 	
 	}

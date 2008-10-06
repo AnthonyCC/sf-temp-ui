@@ -54,6 +54,10 @@ public class ErpMaterialModel extends ErpMaterialInfoModel {
 	private boolean platter;
 
 	private DayOfWeekSet blockedDays;
+	
+	private double basePrice;
+	
+	private String basePricingUnit;
 
 	/**
 	 * Collection of material pricing conditions
@@ -104,7 +108,7 @@ public class ErpMaterialModel extends ErpMaterialInfoModel {
 		DayOfWeekSet blockedDays,
 		List prices,
 		List salesUnits,
-		List classes) {
+		List classes ) {
 		super(sapId, description);
 		this.setBaseUnit(baseUnit);
 		this.setATPRule(atpRule);
@@ -120,7 +124,6 @@ public class ErpMaterialModel extends ErpMaterialInfoModel {
 		this.setKosherProduction(kosherProduction);
 		this.setPlatter(platter);
 		this.setBlockedDays(blockedDays);
-
 	}
 
 	/**
@@ -413,6 +416,22 @@ public class ErpMaterialModel extends ErpMaterialInfoModel {
 
 	public void setBlockedDays(DayOfWeekSet blockedDays) {
 		this.blockedDays = blockedDays;
+	}
+
+	public double getBasePrice() {
+		return basePrice;
+	}
+
+	public void setBasePrice(double basePrice) {
+		this.basePrice = basePrice;
+	}
+
+	public String getBasePricingUnit() {
+		return basePricingUnit;
+	}
+
+	public void setBasePricingUnit(String basePricingUnit) {
+		this.basePricingUnit = basePricingUnit;
 	}
 
 }

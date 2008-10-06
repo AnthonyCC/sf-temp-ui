@@ -10,9 +10,11 @@ package com.freshdirect.fdstore;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -236,7 +238,14 @@ public class FDStoreProperties {
 	// Produce Rating changes
 	private static final String PRODUCE_RATING_ENABLED="fdstore.isProduceRatingEnabled";
 	
+
 	private static final String HPLETTER_MEDIA_ENABLED="fdstore.isHomePageMediaEnabled";
+
+	//Deals changes.
+	private static final String DEALS_SKU_PREFIX="fdstore.deals.skuPrefix";
+	private static final String DEALS_LOWER_LIMIT="fdstore.deals.lowerLimit";;
+	private static final String DEALS_UPPER_LIMIT="fdstore.deals.upperLimit";;
+
 
 
 	static {
@@ -406,7 +415,11 @@ public class FDStoreProperties {
 		defaults.put(HP_LETTER_MEDIA_PATH1, "/media/editorial/home/letter/hp_letter_new.html");
 		defaults.put(HP_LETTER_MEDIA_PATH2, "/media/editorial/home/letter/hp_letter_customer.html");
 		defaults.put(HPLETTER_MEDIA_ENABLED, "true");
-		
+
+		//deals
+		defaults.put(DEALS_SKU_PREFIX,"GRO,FRO,SPE,DAI,HBA,COF");
+		defaults.put(DEALS_LOWER_LIMIT,"10");
+		defaults.put(DEALS_UPPER_LIMIT,"75");		
 		
 		refresh();
 	}
@@ -955,6 +968,18 @@ public class FDStoreProperties {
 	public static boolean IsHomePageMediaEnabled() {
 		return Boolean.valueOf(get(HPLETTER_MEDIA_ENABLED)).booleanValue();
 	}
+
+	//deals
+	public static String getDealsSkuPrefixes(){
+		return get(DEALS_SKU_PREFIX);
+	}
+	
+	public static int getDealsLowerLimit(){
+		return Integer.parseInt(get(DEALS_LOWER_LIMIT));
+	}
+	public static int getDealsUpperLimit(){
+		return Integer.parseInt(get(DEALS_UPPER_LIMIT));
+	}	
 
 	
 }

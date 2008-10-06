@@ -236,7 +236,7 @@ public class RecipeAvailabilityTest extends FDCustomerManagerTestSupport {
 						                           EnumATPRule.MATERIAL,
 						                           EnumAvailabilityStatus.AVAILABLE,
 						                           now,
-						                           "", inventoryCache,"");
+						                           "", inventoryCache,"",1.0,"ea",false,1);
 
 			} else if ("MEA0004562".equals(sku)) {
 				// return this item as available
@@ -252,7 +252,7 @@ public class RecipeAvailabilityTest extends FDCustomerManagerTestSupport {
 						                           EnumATPRule.MATERIAL,
 						                           EnumAvailabilityStatus.AVAILABLE,
 						                           now,
-						                           "", inventoryCache,"");
+						                           "", inventoryCache,"",1.0,"ea",false,1);
 			} else if ("MEA0004563".equals(sku)) {
 				// return this item as available by tomorrow, but not today
 				Date tomorrow  = DateUtil.addDays(now, 1);
@@ -267,7 +267,7 @@ public class RecipeAvailabilityTest extends FDCustomerManagerTestSupport {
 						                           EnumATPRule.MATERIAL,
 						                           EnumAvailabilityStatus.AVAILABLE,
 						                           now,
-						                           "", inventoryCache,"");
+						                           "", inventoryCache,"",1.0,"ea",false,1);
 			} else if ("MEA0004564".equals(sku)) {
 				// return this item as available the day after tomorrow
 				Date afterTomorrow = DateUtil.addDays(now, 2);
@@ -282,7 +282,7 @@ public class RecipeAvailabilityTest extends FDCustomerManagerTestSupport {
 						                           EnumATPRule.MATERIAL,
 						                           EnumAvailabilityStatus.AVAILABLE,
 						                           now,
-						                           "", inventoryCache,"");
+						                           "", inventoryCache,"",1.0,"ea",false,1);
 			} else if ("MEA0004565".equals(sku)) {
 				// return this item as available the day after tomorrow
 				Date inThreeDays   = DateUtil.addDays(now, 3);
@@ -297,7 +297,7 @@ public class RecipeAvailabilityTest extends FDCustomerManagerTestSupport {
 						                           EnumATPRule.MATERIAL,
 						                           EnumAvailabilityStatus.AVAILABLE,
 						                           now,
-						                           "", inventoryCache,"");
+						                           "", inventoryCache,"",1.0,"ea",false,1);
 			} else {
 				// fallback: return any unknown item as unavailable
 				// a 0 units available starting now
@@ -311,7 +311,7 @@ public class RecipeAvailabilityTest extends FDCustomerManagerTestSupport {
 						                           EnumATPRule.MATERIAL,
 						                           EnumAvailabilityStatus.AVAILABLE,
 						                           now,
-						                           "", inventoryCache,"");
+						                           "", inventoryCache,"",1.0,"ea",false,1);
 			}
 
 			return productInfo;
