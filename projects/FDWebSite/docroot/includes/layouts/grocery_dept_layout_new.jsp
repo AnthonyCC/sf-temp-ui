@@ -8,7 +8,7 @@
 <%@ page import='com.freshdirect.content.attributes.*' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
-<%@ page import="com.freshdirect.framework.webapp.*"%>
+<%@ page import="com.freshdirect.framework.webapp.*" %>
 <%@ page import='com.freshdirect.framework.util.*' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -167,175 +167,11 @@ String newProdsFldrId = currentFolder.getContentName().toLowerCase()+"_new";
 				<td width="205" valign="top" class="text13bold"><%= listColumn2.toString() %></td>
 			</tr><%-- end of categories --%>
 
-<%-- Featured Products column --%>
-<%  
-    Attribute attribFeatProds = currentFolder.getAttribute("FEATURED_PRODUCTS");
-    List favorites;
-    // List validFavorites = new ArrayList();
-    List favHTMLPieces = new ArrayList();
-    List favHTMLPieceLinks = new ArrayList();
-    if (attribFeatProds!=null && !((List)attribFeatProds.getValue()).isEmpty() ) {
-        List prodList = new ArrayList();
-        for (Iterator itrFav = ((List)attribFeatProds.getValue()).iterator(); itrFav.hasNext();) {
-            ContentRef cr = (ContentRef) itrFav.next();
-            if (!(cr instanceof ProductRef)) continue;
-            ProductModel pm = (ProductModel)JspMethods.getFeaturedProduct(cr);
-            prodList.add(pm);
-        }
-        
-        List filterNames = (List)currentFolder.getAttribute("FILTER_LIST",Collections.EMPTY_LIST);
-        favorites = prodList;
-    } else {
-        favorites = Collections.EMPTY_LIST;
-    }
-    
-    /// StringBuffer favoriteProducts = new StringBuffer("");
-    /// ContentNodeModel prodParent = null;
-    ContentFactory contentFactory = ContentFactory.getInstance();
-    Comparator priceComp = new ProductModel.PriceComparator();
-    int favoritesToShow = 0;
-    int	MAX_FAVS2SHOW	= 10;
-    int FAVS_PER_LINE	= 5;
+<%-- //Featured Products moved into Include --%>
+	<%@ include file="/includes/layouts/i_featured_products.jsp" %>
+<%-- //END Featured Products --%>
 
-	ProductModel product;
-	for (Iterator it = favorites.iterator(); it.hasNext(); ) {
-		product = (ProductModel) it.next();
-
-		ContentNodeModel prodParent = product.getParentNode(); 
-        List skus = product.getSkus();
-
-        if (product.isDiscontinued() || product.isUnavailable() || prodParent==null || !(prodParent instanceof CategoryModel) || skus.size()==0)
-        	continue;
-
-        // validFavorites.add(product);	
-
-        SkuModel sku = null;
-        String prodPrice = null;
-        /// if (skus.size()==0)
-        ///	  continue;  // skip this item..it has no skus.  Hmmm?
-        if (skus.size() == 1) {
-            sku = (SkuModel)skus.get(0);  // we only need one sku
-        } else {
-            sku = (SkuModel) Collections.min(skus, priceComp);
-        }
-
-        	
-       	%><fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>"><% 
-        prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()); //+"/"+ productInfo.getDisplayableDefaultPriceUnit();
-		%></fd:FDProductInfo><%
-        String productPageLink_ = response.encodeURL("/product.jsp?catId=" + prodParent
-            +"&prodCatId="+prodParent
-            +"&productId="+product+"&trk=feat");
-
-        //productDisplayName = getDisplayName(product,prodNameAttribute);
-        groDeptImage = (Image)product.getCategoryImage();
-
-        StringBuffer favoriteProducts = new StringBuffer("");
-        StringBuffer favoriteProductLinks = new StringBuffer("");
-        // append product image
-        favoriteProducts.append("<A HREF=\"" + productPageLink_ + "\">");
-        if (groDeptImage !=null) {
-            favoriteProducts.append("<img SRC=\"" + groDeptImage.getPath() + "\" ");
-            favoriteProducts.append(JspMethods.getImageDimensions(groDeptImage));
-            favoriteProducts.append(" border=\"0\" alt=\""+ product.getFullName() + "\">");
-        }
-        favoriteProducts.append("</A>");
-
-        // append product label
-        favoriteProductLinks.append("<A HREF=\"" + productPageLink_ + "\">");
-        String thisProdBrandLabel = product.getPrimaryBrandName();
-        if (thisProdBrandLabel.length()>0) {
-            favoriteProductLinks.append("<FONT CLASS=\"text10bold\">" + thisProdBrandLabel + "</font><BR>");
-        }
-        favoriteProductLinks.append(product.getFullName().substring(thisProdBrandLabel.length()).trim()); 
-        favoriteProductLinks.append("</A><BR/>");
-
-        // append product price
-        favoriteProductLinks.append("<font class=\"favoritePrice\">" + prodPrice + "</font><font class=\"space4pix\"><br/>&nbsp;<br/>&nbsp;<br/></font>");
-        
-        favHTMLPieces.add(favoriteProducts);
-        favHTMLPieceLinks.add(favoriteProductLinks);
-        
-        favoritesToShow++;
-        if (favoritesToShow == MAX_FAVS2SHOW) {
-        	break;
-        }
-	}
-
-	if (favoritesToShow > 0) {
-	%>
-	<!-- separator  -->
-	<tr><td colspan="6"><BR>
-	<IMG src="/media_stat/images/layout/cccccc.gif" width="550" height="1" border="0"><BR>
-	<font CLASS="space4pix"><br/><br/></font>
-	</td></tr>
-
-	<tr>
-		<td width="100%" colspan="6">
-		    <img src="/media_stat/images/layout/clear.gif" width="200" height="1"><BR>
-	        <%
-			// display department specific media
-			if (isDepartment) {
-				DepartmentModel department = (DepartmentModel) currentFolder;
-				if (department.getDepartmentMiddleMedia() != null) {
-					for(Iterator deptBotItr = department.getDepartmentMiddleMedia().iterator(); deptBotItr.hasNext();) {
-						Html piece = (Html)deptBotItr.next();
-						if (piece != null) {
-				        	String deptBotItm = piece.getPath();
-				  			%><fd:IncludeMedia name='<%= deptBotItm %>' />
 <%
-				    	}
-					}
-				}
-			}
-	        %>
-	        <FONT CLASS="space4pix"><br/><br/></FONT>
-		    <table cellpadding="0" cellspacing="0" border="0" width="125">
-	        	<tr VALIGN="TOP" ALIGN="CENTER">
-	            	<td>
-	            		<table id="fav-prds-table" width="550" border="0" cellspacing="0" cellpadding="0">
-	            		<tr>
-		            	<%  
-		            	List row = favHTMLPieces;
-		            	
-		            	for (int k=0; k<row.size(); ++k) {
-		            		%><td align="center" valign="<%= row == favHTMLPieces ? "bottom" : "top" %>" width="110">
-		            			<img src="/media_stat/images/layout/clear.gif" width="100" height="1"><br/>
-		            			<%= row.get(k) %>
-		            		</td><%
-		            			// start a new row if it has enough content
-		            			if (k>0 && (k%FAVS_PER_LINE) == FAVS_PER_LINE-1) {
-		            				row = row == favHTMLPieces ? favHTMLPieceLinks : favHTMLPieces;
-		            				if (row == favHTMLPieceLinks) k -= FAVS_PER_LINE;
-		            				%></tr><tr><%
-		            			} else if (k == row.size() -1) {
-		            				for(int j=0; j < FAVS_PER_LINE-(favHTMLPieces.size()%FAVS_PER_LINE); ++j) {
-		            					%><td>&nbsp;</td><%
-		            				}
-		            				if (row == favHTMLPieces) { 
-		            					%></tr><tr><%
-		            					row = favHTMLPieceLinks;
-		            					k -= (favHTMLPieces.size()%FAVS_PER_LINE);
-		            				}
-		            			}
-		            		
-		            	}
-		            	/*
-		            	// put placeholder TD-s if a row is not filled in entirely
-		            	for (int k=0; k<FAVS_PER_LINE-(favHTMLPieces.size()%FAVS_PER_LINE); k++) {
-		            		%><td>&nbsp;</td><%
-		            	}
-		            	*/
-		            	%>
-		            	</tr>
-		            	</table>
-	            	</td>
-	        	</tr>
-	    	</table>
-		</td>
-	</tr><%-- close the featured product column --%><%
-    	}
-
 // display the featured brands, based on each of the featured categories
         List featuredCats = null;
         List featuredBrands = null;
