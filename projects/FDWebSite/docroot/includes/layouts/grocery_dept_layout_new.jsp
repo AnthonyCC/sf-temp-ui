@@ -168,7 +168,7 @@ String newProdsFldrId = currentFolder.getContentName().toLowerCase()+"_new";
 			</tr><%-- end of categories --%>
 
 <%-- //Featured Products moved into Include --%>
-	<%@ include file="/includes/layouts/i_featured_products.jsp" %>
+	<%@ include file="/includes/layouts/i_featured_products.jspf" %>
 <%-- //END Featured Products --%>
 
 <%
