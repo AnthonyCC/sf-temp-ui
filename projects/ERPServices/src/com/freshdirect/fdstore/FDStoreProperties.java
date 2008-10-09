@@ -244,7 +244,10 @@ public class FDStoreProperties {
 	//Deals changes.
 	private static final String DEALS_SKU_PREFIX="fdstore.deals.skuPrefix";
 	private static final String DEALS_LOWER_LIMIT="fdstore.deals.lowerLimit";;
-	private static final String DEALS_UPPER_LIMIT="fdstore.deals.upperLimit";;
+	private static final String DEALS_UPPER_LIMIT="fdstore.deals.upperLimit";
+	private static final String MAX_FEATURED_DEALS_FOR_PAGE="fdstore.deals.maxFeaturedDeals";
+	private static final String MAX_FEATURED_DEALS_PER_LINE="fdstore.deals.maxFeaturedDealsPerLine";
+	private static final String MIN_FEATURED_DEALS_FOR_PAGE ="fdstore.deals.minFeaturedDeals";
 
 
 
@@ -417,9 +420,12 @@ public class FDStoreProperties {
 		defaults.put(HPLETTER_MEDIA_ENABLED, "true");
 
 		//deals
-		defaults.put(DEALS_SKU_PREFIX,"GRO,FRO,SPE,DAI,HBA,COF");
+		defaults.put(DEALS_SKU_PREFIX,"GRO,FRO,SPE,DAI,HBA");
 		defaults.put(DEALS_LOWER_LIMIT,"10");
-		defaults.put(DEALS_UPPER_LIMIT,"75");		
+		defaults.put(DEALS_UPPER_LIMIT,"75");
+		defaults.put(MAX_FEATURED_DEALS_FOR_PAGE,"10");
+		defaults.put(MAX_FEATURED_DEALS_PER_LINE,"5");
+		defaults.put(MIN_FEATURED_DEALS_FOR_PAGE,"3");
 		
 		refresh();
 	}
@@ -898,6 +904,8 @@ public class FDStoreProperties {
 	public static final String PIP_DEFAULT_LABEL = "YOUR FAVORITES";
 	public static final String PIP_DEFAULT_INNERTEXT = "These are some of the items you've purchased most often.";
 
+	
+
 
 	/**
 	 * This function returns the map of title-inner text couples of variants for a site feature.
@@ -980,6 +988,16 @@ public class FDStoreProperties {
 	public static int getDealsUpperLimit(){
 		return Integer.parseInt(get(DEALS_UPPER_LIMIT));
 	}	
+    
+	public static final int getMaxFeaturedDealsForPage() {
+		return Integer.parseInt(get(MAX_FEATURED_DEALS_FOR_PAGE));
+	}
 
-	
+	public static final int getMaxFeaturedDealsPerLine() {
+		return Integer.parseInt(get(MAX_FEATURED_DEALS_PER_LINE));
+	}
+
+	public static int getMinFeaturedDealsForPage() {
+		return Integer.parseInt(get(MIN_FEATURED_DEALS_FOR_PAGE));
+	}
 }

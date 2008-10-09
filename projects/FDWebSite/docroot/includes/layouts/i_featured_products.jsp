@@ -25,12 +25,13 @@
     ContentFactory contentFactory = ContentFactory.getInstance();
     Comparator priceComp = new ProductModel.PriceComparator();
     int favoritesToShow		= 0;
-    int FAVS_PER_LINE		= 5; //number of products to show per line
-	int MAX_FAVSLINES2SHOW	= 2; //number of lines of featured products
-	int MIN_FAVS2SHOW		= 3; //minimum featured products required to show featured section
+    int FAVS_PER_LINE		= DealsHelper.getMaxFeaturedDealsPerLine(); //number of products to show per line
+    int MAX_FAVSLINES2SHOW	= DealsHelper.getMaxFeaturedDealsForPage()/FAVS_PER_LINE; //number of lines of featured products
+    int MIN_FAVS2SHOW		= DealsHelper.getMinFeaturedDealsForPage(); //minimum featured products required to show featured section
     int	MAX_FAVS2SHOW		= FAVS_PER_LINE * MAX_FAVSLINES2SHOW; //to keep each row matching
-
+    
 	ProductModel product;
+
 	for (Iterator it = favorites.iterator(); it.hasNext(); ) {
 		product = (ProductModel) it.next();
 
@@ -44,6 +45,10 @@
 
         SkuModel sku = null;
         String prodPrice = null;
+        String prodBasePrice=null;
+        boolean isDeal=false;
+        int deal=0;
+
         /// if (skus.size()==0)
         ///	  continue;  // skip this item..it has no skus.  Hmmm?
         if (skus.size() == 1) {
@@ -55,11 +60,21 @@
         	
        	%><fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>"><% 
         prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()); //+"/"+ productInfo.getDisplayableDefaultPriceUnit();
+        isDeal=productInfo.isDeal();
+        if(isDeal) {
+            prodBasePrice=JspMethods.currencyFormatter.format(productInfo.getBasePrice()); //+"/"+ productInfo.getBasePriceUnit().toLowerCase();
+            deal=productInfo.getDealPercentage();
+        }  
+        
 		%></fd:FDProductInfo><%
+        
+        if(!isDeal) {
+            continue;
+        }
         String productPageLink_ = response.encodeURL("/product.jsp?catId=" + prodParent
             +"&prodCatId="+prodParent
             +"&productId="+product+"&trk=feat");
-
+        String dealImage=new StringBuffer("/media_stat/images/deals/brst_sm_").append(deal).append(".gif").toString();
         //productDisplayName = getDisplayName(product,prodNameAttribute);
 		if ("picks_love".equalsIgnoreCase(catId)) {
 			//image for PPicks or null
@@ -71,26 +86,33 @@
         StringBuffer favoriteProducts = new StringBuffer("");
         StringBuffer favoriteProductLinks = new StringBuffer("");
         // append product image
-        favoriteProducts.append("<a href=\"" + productPageLink_ + "\">");
+        favoriteProducts.append("<DIV id=prod_container style=\"WIDTH: 100px; HEIGHT: 100px; TEXT-ALIGN: left\"><A id=prod_link_img style=\"DISPLAY: block; CURSOR: hand\" HREF=\"" + productPageLink_ + "\" name=prod_link_img>");
         if (groDeptImage !=null) {
-            favoriteProducts.append("<img SRC=\"" + groDeptImage.getPath() + "\" ");
-            favoriteProducts.append(JspMethods.getImageDimensions(groDeptImage));
-            favoriteProducts.append(" border=\"0\" alt=\""+ product.getFullName() + "\">");
+            favoriteProducts.append("<DIV id=prod_image style=\"PADDING-RIGHT: 10px; PADDING-LEFT: 10px; PADDING-BOTTOM: 0px; LINE-HEIGHT: 0px; PADDING-TOP: 10px; POSITION: absolute; HEIGHT: 0px\">")
+                            .append("<IMG style=\"BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px\" ")
+                            .append(JspMethods.getImageDimensions(groDeptImage))
+                            .append(" alt=\"").append(product.getFullName()).append("\" src=\"").append(groDeptImage.getPath()).append("\" ></DIV>");
+            favoriteProducts.append("<DIV id=sale_star style=\"POSITION: absolute\"><IMG style=\"BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px\"  alt=\"SAVE ").append(deal).append("%\" src=\"").append(dealImage).append("\"> </DIV></A></DIV>");                        
         }
-        favoriteProducts.append("</a>");
+        
 
         // append product label
-        favoriteProductLinks.append("<a href=\"" + productPageLink_ + "\">");
+        favoriteProductLinks.append("<DIV id=prod_container style=\"WIDTH: 100px; HEIGHT: 100px; TEXT-ALIGN: left\"><A id=prod_link_img style=\"DISPLAY: block; CURSOR: hand\" HREF=\"" + productPageLink_ + "\">");
+        favoriteProductLinks.append("<DIV id=prod_container_text style=\"FONT-WEIGHT: normal; FONT-SIZE: 8pt; WIDTH: 100px; TEXT-ALIGN: center\">");
+        favoriteProductLinks.append("<DIV id=prod_text_container><A id=prod_link style=\"COLOR: #360\" href=\"")
+                            .append(productPageLink_).append("\">");
+
         String thisProdBrandLabel = product.getPrimaryBrandName();
         if (thisProdBrandLabel.length()>0) {
-            favoriteProductLinks.append("<font class=\"text10bold\">" + thisProdBrandLabel + "</font><br />");
+            favoriteProductLinks.append("<B>" + thisProdBrandLabel + "</B><BR>");
         }
         favoriteProductLinks.append(product.getFullName().substring(thisProdBrandLabel.length()).trim()); 
-        favoriteProductLinks.append("</a><br />");
+        favoriteProductLinks.append("</A></DIV>");
 
         // append product price
-        favoriteProductLinks.append("<font class=\"favoritePrice\">" + prodPrice + "</font><font class=\"space4pix\"><br />&nbsp;<br />&nbsp;<br /></font>");
-        
+        favoriteProductLinks.append("<DIV id=prod_price_d_container style=\"FONT-WEIGHT: bold; FONT-SIZE: 8pt; COLOR: #c00\">").append(prodPrice).append("</DIV>");
+        favoriteProductLinks.append("<DIV id=prod_price_b_container style=\"FONT-SIZE: 7pt; COLOR: #888\">(was ").append(prodBasePrice).append(")</DIV></DIV>");        
+
         favHTMLPieces.add(favoriteProducts);
         favHTMLPieceLinks.add(favoriteProductLinks);
         
@@ -100,7 +122,7 @@
         }
 	}
 
-	if (favoritesToShow > MIN_FAVS2SHOW) {
+	if (favoritesToShow >= MIN_FAVS2SHOW) {
 	%>
 	<!-- separator  -->
 	<tr>
@@ -127,6 +149,17 @@
 				    	}
 					}
 				}
+                if (department.getDepartmentBottom() != null) {
+					for(Iterator deptBotItr = department.getDepartmentBottom().iterator(); deptBotItr.hasNext();) {
+						Html piece = (Html)deptBotItr.next();
+						if (piece != null) {
+				        	String deptBotItm = piece.getPath();
+                            %><fd:IncludeMedia name='<%= deptBotItm %>' />
+<%
+                        }
+                    }
+                }                    
+
 			}
 	        %>
 	        <font class="space4pix"><br /><br /></font>

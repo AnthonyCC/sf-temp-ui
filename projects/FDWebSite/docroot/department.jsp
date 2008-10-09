@@ -64,13 +64,16 @@ boolean isIncludeMediaLayout = (layouttype == EnumLayoutType.MEDIA_INCLUDE.getId
     <tmpl:put name='content' direct='true'>
 <% int ttl=14400; 
    String keyPrefix="deptLayout_"; 
-if("fru".equals(request.getParameter("deptId")) ||"veg".equals(request.getParameter("deptId")))  {
+String deptId=request.getParameter("deptId");
+if("fru".equals(deptId) ||"veg".equals(deptId))  {
     
     FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
     if(user.isProduceRatingEnabled()) {
         keyPrefix=keyPrefix+user.isProduceRatingEnabled()+"_";
         ttl=180;
     }
+} else if("gro".equals(deptId) ||"hba".equals(deptId)||"dai".equals(deptId) ||"fro".equals(deptId))  {
+    ttl=3600;
 }
 
 %>
