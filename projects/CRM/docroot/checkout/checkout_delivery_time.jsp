@@ -161,6 +161,11 @@ boolean zoneCtActive = DeliveryTimeSlotResult.isZoneCtActive();
 	</tr>
 </table>
 <%}%>
+
+<!-- LOYALTY -->
+	<%@ include file="/shared/includes/delivery/i_loyalty_banner.jspf" %>
+	<!-- LOYALTY -->
+
 <%if(cart.hasAdvanceOrderItem() && advOrdRangeOK){%>
 	<table width="100%">
 		<tr>
@@ -182,9 +187,7 @@ boolean zoneCtActive = DeliveryTimeSlotResult.isZoneCtActive();
 		<tr><td ><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
 	</table>
 <%}%>
-<!-- LOYALTY -->
-	<%@ include file="/shared/includes/delivery/i_loyalty_banner.jspf" %>
-	<!-- LOYALTY -->
+
 
 
 <logic:iterate id="timeslots" collection="<%=timeslotList%>" type="com.freshdirect.fdstore.FDTimeslotList" indexId="idx">

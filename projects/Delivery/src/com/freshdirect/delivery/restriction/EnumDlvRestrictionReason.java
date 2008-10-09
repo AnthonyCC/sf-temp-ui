@@ -28,7 +28,10 @@ public class EnumDlvRestrictionReason extends Enum {
 	public static final EnumDlvRestrictionReason BLOCK_THURSDAY = new EnumDlvRestrictionReason("B_THU", "Block Thursday");
 	public static final EnumDlvRestrictionReason BLOCK_FRIDAY = new EnumDlvRestrictionReason("B_FRI", "Block Friday");
 	public static final EnumDlvRestrictionReason BLOCK_SATURDAY = new EnumDlvRestrictionReason("B_SAT", "Block Saturday");
-
+	
+	// new thanks giving deals
+	public static final EnumDlvRestrictionReason THANKSGIVING_MEALS = new EnumDlvRestrictionReason("TKGML", "Thanksgiving Meals", true);
+	
 	private final String description;
 	private final boolean specialHoliday;
 

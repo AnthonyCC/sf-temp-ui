@@ -103,7 +103,7 @@ boolean advOrdRangeOK = advOrdRange.overlaps(validRange);
 	boolean alcoholRestriction = false;
 	for(Iterator i = cart.getApplicableRestrictions().iterator(); i.hasNext(); ){
 		EnumDlvRestrictionReason reason = (EnumDlvRestrictionReason) i.next();
-		if(EnumDlvRestrictionReason.THANKSGIVING.equals(reason)){
+		if(EnumDlvRestrictionReason.THANKSGIVING.equals(reason) || EnumDlvRestrictionReason.THANKSGIVING_MEALS.equals(reason)){
 			thxgivingRestriction = true;
 			continue;
 		}
@@ -250,6 +250,11 @@ if (errorMsg!=null) {%>
 	</td>
 </tr>
 <%}%>
+<tr>
+<td colspan="2">
+<%@ include file="/shared/includes/delivery/i_loyalty_banner.jspf" %>
+</td>
+</tr>
 <%if(cart.hasAdvanceOrderItem() && advOrdRangeOK){%>
 <tr valign="top">
 	<td colspan="2" class="text12">
@@ -272,11 +277,6 @@ if (errorMsg!=null) {%>
 	</td>
 </tr>
 <%}%>
-<tr>
-<td colspan="2">
-<%@ include file="/shared/includes/delivery/i_loyalty_banner.jspf" %>
-</td>
-</tr>
 <%
 	if(user.getSelectedServiceType() == EnumServiceType.CORPORATE  && (user.isDlvPassActive() || cart.getDeliveryPassCount() > 0)) {
 %>

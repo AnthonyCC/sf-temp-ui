@@ -113,9 +113,14 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		EnumDlvRestrictionReason specialHoliday = getNextHoliday(restrictions, baseRange, FDStoreProperties
 			.getHolidayLookaheadDays());
 
+		LOGGER.debug("specialHoliday :"+specialHoliday);
+		
 		boolean containsSpecialHoliday = user.getShoppingCart().getApplicableRestrictions().contains(specialHoliday);
 		containsAdvanceOrderItem = user.getShoppingCart().hasAdvanceOrderItem();
 
+		LOGGER.debug("containsSpecialHoliday :"+containsSpecialHoliday+" :containsAdvanceOrderItem:"+containsAdvanceOrderItem);
+		
+		
 		List dateRanges = getDateRanges(baseRange, (containsSpecialHoliday && !deliveryInfo), restrictions, specialHoliday, containsAdvanceOrderItem);
 
 		List timeslotList = new ArrayList();
@@ -225,6 +230,9 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		}
 	
 		DateRange advOrdDateRange = FDStoreProperties.getAdvanceOrderRange();
+		
+		LOGGER.debug("advOrdDateRange :"+advOrdDateRange);
+		
 		if (useAdvanceOrderDates && advOrdDateRange.overlaps(new DateRange(period.getStartDate(),DateUtil.addDays(period.getStartDate(),daysInAdvance))) ) {
 			// get the advanced Dlv date range and factor them into the date range
 
@@ -249,11 +257,13 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		    }
 		}
 	
-		
+				
 		// shrink the date range if it is more than 7
 		if (restrictionRange != null &&  (restrictionRange.getEndDate().getTime()- restrictionRange.getStartDate().getTime()) / DateUtil.DAY > ErpServicesProperties.getHorizonDays()) {
 		    restrictionRange = new DateRange(restrictionRange.getStartDate(),DateUtil.addDays(restrictionRange.getStartDate(),ErpServicesProperties.getHorizonDays()));
 		}
+		
+		LOGGER.debug("restrictionRange :"+restrictionRange);
 		
 		List lst = new ArrayList();
 		int dayDiff = 0;

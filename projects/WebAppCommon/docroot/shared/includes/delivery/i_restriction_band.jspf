@@ -11,12 +11,12 @@
 	</tr>
 <%
 /* show advance order band if cart has an item and the advance range has not passed. */
-	if (showAdvanceOrderBand && cart.hasAdvanceOrderItem() && advOrdRangeOK ){%>
-		<tr align="center">
+	//if (showAdvanceOrderBand && cart.hasAdvanceOrderItem() && advOrdRangeOK ){%>
+	<!--	<tr align="center">
 			<td colspan="<%=timeslots.getDays().size()%>" bgcolor="#CC9933" align="center">
 			<img src='/media/editorial/holiday/advance_order/delivbar_adv.gif'></td>
-		</tr>
-<% 	}
+		</tr> -->
+<% //	}
 
 	DlvRestrictionsList restrictionList = FDDeliveryManager.getInstance().getDlvRestrictions();
 	for(Iterator j = cart.getApplicableRestrictions().iterator(); j.hasNext(); ){
@@ -24,7 +24,7 @@
 		if(EnumDlvRestrictionReason.ALCOHOL.equals(reason)){
 			continue;
 		}
-		boolean isHolidayRestriction = ( EnumDlvRestrictionReason.THANKSGIVING.equals(reason) 
+		boolean isHolidayRestriction = ( EnumDlvRestrictionReason.THANKSGIVING.equals(reason) || EnumDlvRestrictionReason.THANKSGIVING_MEALS.equals(reason) 
 			                        || EnumDlvRestrictionReason.VALENTINES.equals(reason) ) ;
 	%>
 		<tr>
@@ -44,6 +44,11 @@
 			<%if(EnumDlvRestrictionReason.THANKSGIVING.equals(reason)){%>
 				<td colspan="<%=span.getSpan()%>" bgcolor="#<%= !span.isValue() ? "996600":"dfe3d0"%>" align="center">
 					<%=!span.isValue() ? "<img src='/media_stat/images/template/checkout/dlv_thanksgiving.gif'":"&nbsp;"%>
+				</td>
+			<%}%>
+            <%if(EnumDlvRestrictionReason.THANKSGIVING_MEALS.equals(reason)){%>
+				<td colspan="<%=span.getSpan()%>" bgcolor="#<%= !span.isValue() ? "996600":"dfe3d0"%>" align="center">
+					<%=!span.isValue() ? "<img src='/media_stat/images/template/checkout/delivbar_adv.gif'":"&nbsp;"%>
 				</td>
 			<%}%>
 			<%if(EnumDlvRestrictionReason.VALENTINES.equals(reason)){%>

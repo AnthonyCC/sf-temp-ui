@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.DateRange;
 
 public class DlvRestrictionsList implements Serializable {
@@ -28,6 +29,24 @@ public class DlvRestrictionsList implements Serializable {
 	}
 
 	public boolean isRestricted(EnumDlvRestrictionCriterion criterion, EnumDlvRestrictionReason reason, DateRange range) {
+		
+		// need to make sure if this is called then if TKG restricetd day start date is less then adv order start date 
+		// then  we should consider adv order start date as TKG start date
+		// stupid requirement
+					
+		if(EnumDlvRestrictionReason.THANKSGIVING.equals(reason))
+		{
+			DateRange advOrdDateRange = FDStoreProperties.getAdvanceOrderRange();
+			reason=EnumDlvRestrictionReason.THANKSGIVING_MEALS;
+			if (range.getStartDate().after(advOrdDateRange.getStartDate()) || range.getStartDate().equals(advOrdDateRange.getStartDate()) ) {
+			    //range = new DateRange(advOrdDateRange.getStartDate(),range.getEndDate());			    
+			    //System.out.println("New Date Range for bar display"+range);
+				return false;				
+			}
+			else
+				return true;
+		}
+				
 		List l = getRestrictions(null, reason, null, range);
 		return l.size() > 0;
 	}
