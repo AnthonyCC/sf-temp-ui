@@ -66,7 +66,9 @@
 						 "Order placed in error",
 						 "Duplicate order",
 						 "Wants to take advantage of web offer ($50 or $25)",
-						 "No reason cited/given"
+                         "DP Auto Renew - Customer Declined",
+                         "DP Auto Renew - No Response/Cancelled",
+ 						 "No reason cited/given"
 						 };
 %>
 		<SELECT name="cancel_reason">
