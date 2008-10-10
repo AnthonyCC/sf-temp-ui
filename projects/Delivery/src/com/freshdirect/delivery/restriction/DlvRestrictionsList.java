@@ -33,7 +33,8 @@ public class DlvRestrictionsList implements Serializable {
 		// need to make sure if this is called then if TKG restricetd day start date is less then adv order start date 
 		// then  we should consider adv order start date as TKG start date
 		// stupid requirement
-					
+		System.out.println("range111 :"+range);
+		
 		if(EnumDlvRestrictionReason.THANKSGIVING.equals(reason))
 		{
 			DateRange advOrdDateRange = FDStoreProperties.getAdvanceOrderRange();

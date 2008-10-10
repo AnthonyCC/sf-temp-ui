@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.common.pricing.MunicipalityInfoWrapper;
@@ -32,6 +34,8 @@ import com.freshdirect.sap.PosexUtil;
  */
 class FDAvailabilityMapper {
 
+	private final static Category LOGGER = Category.getInstance(FDAvailabilityMapper.class);
+	
 	private FDAvailabilityMapper() {
 	}
 
@@ -74,11 +78,16 @@ class FDAvailabilityMapper {
 			}
 
 			Set applicableRestrictions = cartline.getApplicableRestrictions();
+			
+			LOGGER.debug(" applicable restrictions :"+applicableRestrictions);
 
 			if (!applicableRestrictions.isEmpty()) {
 
 				// apply delivery restrictions
 				List r = allRestrictions.getRestrictions(EnumDlvRestrictionCriterion.DELIVERY, applicableRestrictions);
+				
+				LOGGER.debug(" filtered applicable restrictions :"+applicableRestrictions);
+				
 				if (!r.isEmpty()) {
 					inv = new FDRestrictedAvailability(inv, new DlvRestrictionsList(r));
 				}

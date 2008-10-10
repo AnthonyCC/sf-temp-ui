@@ -40,14 +40,20 @@ public class TimeslotPageUtil {
 		Calendar baseEndCal = DateUtil.truncate(DateUtil.toCalendar(startDate));
 
 		int dayDiff = (int) Math.round((endDate.getTime() - startDate.getTime() + (24 * DateUtil.HOUR)) / (double)DateUtil.DAY);
+		
+		System.out.println("total dayDiff :"+dayDiff);
+		
 		boolean[] restDays = new boolean[dayDiff];
 
 		int i = 0;
 		while (baseCal.before(endCal) || baseCal.equals(endCal)) {
+			if(dayDiff==7 && EnumDlvRestrictionReason.THANKSGIVING.equals(reason)){
+			restDays[i]=true;
+			}else{
 			restDays[i] = restrictions.isRestricted(EnumDlvRestrictionCriterion.DELIVERY, reason, new DateRange(
 				baseCal.getTime(),
 				baseEndCal.getTime()));
-
+			}
 			i++;
 			baseCal.add(Calendar.DATE, 1);
 			baseEndCal.add(Calendar.DATE, 1);

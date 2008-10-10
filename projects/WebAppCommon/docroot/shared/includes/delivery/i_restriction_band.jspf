@@ -28,7 +28,11 @@
 			                        || EnumDlvRestrictionReason.VALENTINES.equals(reason) ) ;
 	%>
 		<tr>
-		<%List spans = TimeslotPageUtil.getBand(reason, restrictionList, timeslots.getStartDate(), timeslots.getEndDate());
+		<%
+        //System.out.println("timeslots.getStartDate() :"+timeslots.getStartDate());
+        //System.out.println("timeslots.getEndDate() :"+timeslots.getEndDate());
+        //System.out.println("reason :"+reason);
+        List spans = TimeslotPageUtil.getBand(reason, restrictionList, timeslots.getStartDate(), timeslots.getEndDate());
 		for(int i = 0, size = spans.size(); i < size; i++){
 			TimeslotPageUtil.Span span = (TimeslotPageUtil.Span)spans.get(i);
 			if(( ( isHolidayRestriction && span.getSpan() == 6 && i > 0) 
@@ -43,12 +47,12 @@
 			<%}%>
 			<%if(EnumDlvRestrictionReason.THANKSGIVING.equals(reason)){%>
 				<td colspan="<%=span.getSpan()%>" bgcolor="#<%= !span.isValue() ? "996600":"dfe3d0"%>" align="center">
-					<%=!span.isValue() ? "<img src='/media_stat/images/template/checkout/dlv_thanksgiving.gif'":"&nbsp;"%>
+					<%=!span.isValue() ? "<img src='/media_stat/images/template/checkout/delivbar_adv.gif'":"&nbsp;"%>
 				</td>
 			<%}%>
             <%if(EnumDlvRestrictionReason.THANKSGIVING_MEALS.equals(reason)){%>
 				<td colspan="<%=span.getSpan()%>" bgcolor="#<%= !span.isValue() ? "996600":"dfe3d0"%>" align="center">
-					<%=!span.isValue() ? "<img src='/media_stat/images/template/checkout/delivbar_adv.gif'":"&nbsp;"%>
+					<%=!span.isValue() ? "<img src='/media_stat/images/template/checkout/dlv_thanksgiving.gif'":"&nbsp;"%>
 				</td>
 			<%}%>
 			<%if(EnumDlvRestrictionReason.VALENTINES.equals(reason)){%>
