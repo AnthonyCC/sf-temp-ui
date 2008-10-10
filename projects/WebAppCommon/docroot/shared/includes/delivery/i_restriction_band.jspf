@@ -46,7 +46,7 @@
 				</td>
 			<%}%>
 			<%if(EnumDlvRestrictionReason.THANKSGIVING.equals(reason)){%>
-				<td colspan="<%=span.getSpan()%>" bgcolor="#<%= !span.isValue() ? "996600":"dfe3d0"%>" align="center">
+				<td colspan="<%=span.getSpan()%>" bgcolor="#<%= !span.isValue() ? "CC9933":"CC9933"%>" align="center">
 					<%=!span.isValue() ? "<img src='/media_stat/images/template/checkout/delivbar_adv.gif'":"&nbsp;"%>
 				</td>
 			<%}%>
