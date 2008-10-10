@@ -280,4 +280,22 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 		// nothing required
 	}
 	
+	public Collection findSKUsByDeal(double lowerLimit, double upperLimit,List skuPrefixes)throws FDResourceException {
+		if (this.infoHome==null) {
+			this.lookupInfoHome();	
+		}
+		try {
+			ErpInfoSB infoSB = this.infoHome.create();
+
+			return infoSB.findSKUsByDeal(lowerLimit, upperLimit, skuPrefixes);
+
+		} catch (RemoteException re) {
+			this.infoHome=null;
+			throw new FDResourceException(re);
+		} catch (CreateException ce) {
+			this.infoHome=null;
+			throw new FDResourceException(ce);
+		}
+	}
+
 }

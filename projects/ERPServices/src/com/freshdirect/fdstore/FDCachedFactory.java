@@ -9,6 +9,7 @@
 package com.freshdirect.fdstore;
 
 import java.util.*;
+
 import com.freshdirect.framework.util.*;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -272,6 +273,10 @@ public class FDCachedFactory {
 
 	public static Collection getOutOfStockSkuCodes() throws FDResourceException {
 		return FDFactory.getOutOfStockSkuCodes();
+	}
+	
+	public static Collection findSKUsByDeal(double lowerLimit, double upperLimit,List skuPrefixes) throws FDResourceException {
+		return FDFactory.findSKUsByDeal(lowerLimit, upperLimit, skuPrefixes);
 	}
 	
 }

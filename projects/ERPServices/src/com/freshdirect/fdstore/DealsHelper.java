@@ -2,6 +2,10 @@ package com.freshdirect.fdstore;
 
 public class DealsHelper {
 	
+	public static final String ALL_SKUS="ALL";
+	
+	public static final String SKU_PREFIX_SEPERATOR=",";
+	
 	public static int getMaxFeaturedDealsForPage() {
 		return FDStoreProperties.getMaxFeaturedDealsForPage();
 	}
@@ -13,5 +17,15 @@ public class DealsHelper {
 		return FDStoreProperties.getMaxFeaturedDealsPerLine();
 	}
 
+	public static int getDealsLowerLimit() {
+		return FDStoreProperties.getDealsLowerLimit();
+	}
+	public static int getDealsUpperLimit() {
+		return FDStoreProperties.getDealsUpperLimit();
+	}
+	
+	public static String getDealsSkuPrefixes() {
+		return FDStoreProperties.getDealsSkuPrefixes();
+	}
 
 }

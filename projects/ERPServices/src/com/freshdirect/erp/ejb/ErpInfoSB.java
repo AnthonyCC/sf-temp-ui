@@ -11,6 +11,7 @@ package com.freshdirect.erp.ejb;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import javax.ejb.EJBObject;
@@ -71,6 +72,8 @@ public interface ErpInfoSB extends EJBObject {
 
 	/** @return collection of sku codes */
 	public Collection findOutOfStockSkuCodes() throws RemoteException;
+	
+	public Collection findSKUsByDeal(double lowerLimit, double upperLimit,List skuPrefixes)throws RemoteException;
    
 }
 

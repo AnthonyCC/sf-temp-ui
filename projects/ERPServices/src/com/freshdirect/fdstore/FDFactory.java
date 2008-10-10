@@ -322,6 +322,22 @@ class FDFactory {
 			}
 		}
 	}
+	public static Collection findSKUsByDeal(double lowerLimit, double upperLimit,List skuPrefixes) throws FDResourceException {
+		if (factoryHome==null) {
+			lookupFactoryHome();
+		}
+		try {
+			FDFactorySB sb = factoryHome.create();
+			return sb.findSKUsByDeal(lowerLimit, upperLimit, skuPrefixes);
 
+		} catch (CreateException ce) {
+			factoryHome=null;
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			factoryHome=null;
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+		
+	}
 
 }

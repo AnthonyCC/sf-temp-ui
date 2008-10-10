@@ -10,6 +10,7 @@ package com.freshdirect.fdstore.ejb;
 
 import java.rmi.RemoteException;
 import java.util.Collection;
+import java.util.List;
 
 import javax.ejb.EJBObject;
 
@@ -82,6 +83,8 @@ public interface FDFactorySB extends EJBObject {
 
 	/** @return list of sku codes */
 	public Collection getOutOfStockSkuCodes() throws RemoteException, FDResourceException;
+	
+	public Collection findSKUsByDeal(double lowerLimit, double upperLimit,List skuPrefixes)throws FDResourceException, RemoteException;
 	
 }
 

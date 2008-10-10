@@ -3202,5 +3202,17 @@
                 <rtexprvalue>true</rtexprvalue>
             </attribute>
     </tag>  
+    <tag>
+            <name>GetDealsSKU</name>
+            <tagclass>com.freshdirect.webapp.taglib.fdstore.GetDealsSKUTag</tagclass>
+            <teiclass>com.freshdirect.webapp.taglib.fdstore.GetDealsSKUTag$TagEI</teiclass>
+            <bodycontent>JSP</bodycontent>
+            <info></info>
+            <attribute>
+                <name>id</name>
+                <required>true</required>
+                <rtexprvalue>false</rtexprvalue>
+            </attribute>
+    </tag> 
 
 </taglib>
