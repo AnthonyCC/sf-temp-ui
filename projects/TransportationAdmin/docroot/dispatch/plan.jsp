@@ -79,7 +79,7 @@
 				      <ec:column cell="date" property="planDate" sortable="true" title="Date"/>
 				      <ec:column property="dispatchDay" sortable="true" title="Day"/>
 				      <ec:column alias="trnZonezoneNumber" property="trnZone.zoneNumber" title="Zone"/>
-				      <ec:column alias="trnTimeslotslotName" property="trnTimeslot.slotName" title="Start Time"/>
+				      <ec:column alias="trnTimeslotslotName" sortable="true" property="trnTimeslot" title="Start Time"/>
 				      <ec:column alias="trnEndTimeslotslotName" property="trnEndTimeslot.slotName" title="End Time"/>
 				      <ec:column alias="trnDrivername" property="trnDriver.name" title="Driver"/>
 				      <ec:column alias="trnPrimaryHelpername" property="trnPrimaryHelper.name" title="Helper1"/>
