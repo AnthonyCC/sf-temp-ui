@@ -112,7 +112,7 @@
                     filterable="false" sortable="false" cell="selectcol"
                     property="id.planId" />                           
               <ec:column alias="trnZonezoneNumber" width="5" property="trnZone.zoneNumber" title="Zone"/>
-              <ec:column alias="trnTimeslotslotName" width="12"  property="trnTimeslot.slotName" title="Start Time"/>
+		      <ec:column alias="trnTimeslotslotName" width="12" sortable="true" property="trnTimeslot" title="Start Time"/>
               <ec:column alias="trnTimeEndslotslotName" width="12"  property="trnEndTimeslot.slotName" title="End Time"/>
               <ec:column alias="trnRouterouteNumber" width="10"  property="trnRoute.routeNumber" title="Route"/>
               <ec:column alias="trnSupervisorname" property="trnSupervisor.name" title="Supervisor"/>
