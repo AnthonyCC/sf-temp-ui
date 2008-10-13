@@ -38,6 +38,8 @@ tomorrow = DateUtil.truncate(tomorrow);
 DateRange validRange = new DateRange(tomorrow.getTime(),DateUtil.addDays(tomorrow.getTime(),FDStoreProperties.getHolidayLookaheadDays()));
 boolean advOrdRangeOK = advOrdRange.overlaps(validRange);
 
+ System.out.println("validRange:"+validRange);
+
 %>
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
 <%
@@ -101,12 +103,17 @@ boolean advOrdRangeOK = advOrdRange.overlaps(validRange);
 	boolean valentineRestriction = false;
 	boolean kosherRestriction = false;
 	boolean alcoholRestriction = false;
+    boolean thxgiving_meal_Restriction=false;
 	for(Iterator i = cart.getApplicableRestrictions().iterator(); i.hasNext(); ){
 		EnumDlvRestrictionReason reason = (EnumDlvRestrictionReason) i.next();
-		if(EnumDlvRestrictionReason.THANKSGIVING.equals(reason) || EnumDlvRestrictionReason.THANKSGIVING_MEALS.equals(reason)){
+		if(EnumDlvRestrictionReason.THANKSGIVING.equals(reason)){
 			thxgivingRestriction = true;
 			continue;
 		}
+        if(EnumDlvRestrictionReason.THANKSGIVING_MEALS.equals(reason)){
+           thxgiving_meal_Restriction=true;
+           continue;
+        }
 		if(EnumDlvRestrictionReason.ALCOHOL.equals(reason)){
 			alcoholRestriction = true;
 			continue;
@@ -255,7 +262,7 @@ if (errorMsg!=null) {%>
 <%@ include file="/shared/includes/delivery/i_loyalty_banner.jspf" %>
 </td>
 </tr>
-<%if(cart.hasAdvanceOrderItem() && advOrdRangeOK){%>
+<%if(cart.hasAdvanceOrderItem() && advOrdRangeOK && thxgivingRestriction){%>
 <tr valign="top">
 	<td colspan="2" class="text12">
 	<fd:IncludeMedia name='/media/editorial/holiday/advance_order/delivtext_adv.html'/>
@@ -263,7 +270,7 @@ if (errorMsg!=null) {%>
 </tr>
 <%}%>
 
-<%if(thxgivingRestriction){%>
+<%if(thxgiving_meal_Restriction){%>
 <tr valign="top">
 	<td colspan="2" class="text12">
 	<fd:IncludeMedia name='/media/editorial/holiday/thanksgiving/thanksgiv_chkout_msg.htm'/>
