@@ -53,7 +53,7 @@ public void produceBrandsAndTypes(Set brands, List typesList, Collection sortedC
 
 %>
 <%
-
+System.out.println("grocery_category.jsp:57 ");
 //********** Start of Stuff to let JSPF's become JSP's **************
 
 String catId = request.getParameter("catId"); 
@@ -171,6 +171,10 @@ if (currentCategory != null) {
 
         SkuModel sku = null;
         String prodPrice = null;
+        String prodBasePrice=null;
+        boolean isDeal=false;
+        int deal=0;
+
         if (skus.size()==0)
         	continue;  // skip this item..it has no skus.  Hmmm?
 
@@ -192,6 +196,13 @@ if (currentCategory != null) {
 <%
        
         prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()); //+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
+        isDeal=productInfo.isDeal();
+        System.out.println( sku.getSkuCode()+" "+isDeal);
+        if(isDeal) {
+            prodBasePrice=JspMethods.currencyFormatter.format(productInfo.getBasePrice()); //+"/"+ productInfo.getBasePriceUnit().toLowerCase();
+            deal=productInfo.getDealPercentage();
+        }  
+
 %>                      
         </fd:FDProductInfo>
 <%
@@ -199,13 +210,16 @@ if (currentCategory != null) {
             +"&prodCatId=" + prodParent
             +"&productId=" + product 
             +"&trk=feat");
-
+        String dealImage=new StringBuffer("/media_stat/images/deals/brst_sm_").append(deal).append(".gif").toString();
         groDeptImage = (Image)product.getCategoryImage();
         favoriteProducts.append("<TD align=\"center\" WIDTH=\"105\">");
         favoriteProducts.append("<A HREF=\"");
         favoriteProducts.append(productPageLink_);
         favoriteProducts.append("\">");
         if (groDeptImage !=null) {
+            if(isDeal) {
+                favoriteProducts.append("<DIV id=sale_star style=\"POSITION: absolute\"><IMG style=\"BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px\"  alt=\"SAVE ").append(deal).append("%\" src=\"").append(dealImage).append("\"> </DIV></A>");
+            }    
             favoriteProducts.append("<img SRC=\"");
             favoriteProducts.append(groDeptImage.getPath());
             favoriteProducts.append("\"");
@@ -251,9 +265,20 @@ if (currentCategory != null) {
         }
           
         favoriteProducts.append("</A><BR>");
-        favoriteProducts.append("<font class=\"favoritePrice\">");
-        favoriteProducts.append(prodPrice);
-        favoriteProducts.append("</font>");
+        if(isDeal) {
+        
+            favoriteProducts.append("<font style=\"FONT-WEIGHT: bold; FONT-SIZE: 8pt; COLOR: #c00\">");
+            favoriteProducts.append(prodPrice);
+            favoriteProducts.append("</font><BR>");
+            favoriteProducts.append("<font style=\"FONT-SIZE: 7pt; COLOR: #888\">(was ");
+            favoriteProducts.append(prodBasePrice);
+            favoriteProducts.append(") </font>");
+        } else {
+            favoriteProducts.append("<font class=\"favoritePrice\">");
+            favoriteProducts.append(prodPrice);
+            favoriteProducts.append("</font>");
+
+        }
         favoriteProducts.append("</TD>");
         favoriteProducts.append("<TD WIDTH=\"10\">");
         favoriteProducts.append("<IMG SRC=\"");

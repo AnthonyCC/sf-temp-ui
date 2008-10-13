@@ -24,11 +24,8 @@
 //********** Start of Stuff to let JSPF's become JSP's **************
 FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 
-String catId = request.getParameter("catId");
-String deptId = request.getParameter("deptId");
 boolean isDepartment = false;
 
-ContentNodeModel currentFolder = null;
 CategoryModel currentCategory = null;
 if (deptId != null) {
     currentFolder=ContentFactory.getInstance().getContentNode(deptId);
@@ -38,6 +35,7 @@ if (deptId != null) {
     if (currentFolder != null)
         currentCategory = (CategoryModel) currentFolder;
 }
+
 
 //DO render Editorial (if exists)
 //[APPREQ-92] skip Editorial on Brand and on Virtual All pages
@@ -53,7 +51,8 @@ String display = request.getParameter("disp");
 boolean descending = "true".equals(request.getParameter("sortDescending"))?true:false;
 if (sortBy==null) sortBy = "name";
 
-List sortedColl = (List) request.getAttribute("itemGrabberResult");
+//List sortedColl = (List) request.getAttribute("itemGrabberResult");
+List sortedColl = (List) new ArrayList();
 %>
 
 <%!
@@ -107,7 +106,7 @@ public String buildOtherParams(boolean showThumbnails, int displayPerPageSetting
 public String getPageNumbers(HttpServletRequest requestObj, HttpServletResponse responseObj,int pageNumber, int itemsPerPage, CategoryModel currFolder, int itemsCount,boolean showThumbnails,String brand_Name,String _sortBy,String _nutriName, boolean descending, String display) {
         StringBuffer buf = new StringBuffer();
         String urlParams = buildOtherParams(showThumbnails, itemsPerPage, -1, brand_Name, _sortBy, _nutriName,requestObj, null);
-        String urlStart = "/category.jsp?catId=" + currFolder +"&disp=" + display + "&sortDescending=" + descending + "&trk=trans";
+        String urlStart = "/deals.jsp?catId=" + currFolder +"&disp=" + display + "&sortDescending=" + descending + "&trk=trans";
         String fullURL = null;
         int startFrom = 1;
 
@@ -270,8 +269,15 @@ String syncProdSalesUnit = null;
 
 /** List of all SKUs in the page, for the pricing structures */
 List skus = new ArrayList( itemsToDisplay );
+sortedColl=new ArrayList();
+List _pm=null;
 
 %>
+
+
+<fd:GetDealsSKU  id='dealsSKUs'> 
+    <% sortedColl=(List)dealsSKUs;%>
+</fd:GetDealsSKU>
 <script language="javascript" src="/assets/javascript/grocery_product.js"></script>
 <%
 
@@ -300,7 +306,7 @@ for (Iterator itr = sortedColl.iterator(); itr.hasNext(); ){
         }
 }
 
-ProductModel[] productArray = null; //(ProductModel[])sortedColl.toArray( new ProductModel[0] );
+ProductModel[] productArray = null;//(ProductModel[])sortedColl.toArray( new ProductModel[0] );
 int skuCount =0;
 List allSkuModels = new ArrayList();
 for (Iterator skuItr=sortedColl.iterator(); skuItr.hasNext();) {
@@ -317,9 +323,12 @@ CategoryModel groceryCategory;
 {
         ContentNodeModel node = currentFolder;
         // find the topmost Category
+		//System.out.println("node *************** "+node.getParentNode());
         while (!(node.getParentNode() instanceof DepartmentModel)) {
+				//System.out.println("node *************** inside "+node.getParentNode());
                 node = node.getParentNode();
         }
+		//System.out.println("node *************** after "+node.getParentNode());
         groceryCategory=(CategoryModel)node;
 }
 
@@ -405,8 +414,8 @@ if(productCode!=null && prodCatId !=null ) {
 
         String prodPrice = "";
         String prodBasePrice="";
-        int deal=0;
         boolean isDeal=false;
+        int deal=0;
         String dealsImage="";
     String priceUnit = "";
         String firstSalesUnit = null;
@@ -442,10 +451,9 @@ if(productCode!=null && prodCatId !=null ) {
         prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice());
         isDeal=productInfo.isDeal();
         if(isDeal) {
-            prodBasePrice=JspMethods.currencyFormatter.format(productInfo.getBasePrice());
+            prodBasePrice = JspMethods.currencyFormatter.format(productInfo.getBasePrice());
             deal=productInfo.getDealPercentage();
             dealsImage=new StringBuffer("/media_stat/images/deals/brst_lg_").append(deal).append(".gif").toString();
-            
         }
         
         priceUnit = productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
@@ -498,6 +506,7 @@ if(productCode!=null && prodCatId !=null ) {
         if (!" - nm".equalsIgnoreCase(salesUnitDesc)) {
                         productTitle += salesUnitDesc;
                 }
+		//System.out.println("before first include ************** ");
         if (FDStoreProperties.isAnnotationMode()) {
                 %><%@ include file="/includes/layouts/i_grocery_annotated_title.jspf" %><%
         } else {
@@ -544,9 +553,9 @@ if(productCode!=null && prodCatId !=null ) {
         syncProdSalesUnit = firstSalesUnit;
 %>
 <br>
+
 <FONT style="FONT-WEIGHT: bold; FONT-SIZE: 11pt; COLOR: #c00"><%= prodPrice %></FONT>
 <font style="FONT-WEIGHT: bold;FONT-SIZE: 10pt; COLOR: #000"><%= "(was "+prodBasePrice+")" %>&nbsp;</font><br>
-
 <%@include file="/includes/product/i_price_taxdeposit.jspf"%>
 <span class="text12"><%@include file="/includes/product/i_scaled_prices_nobr.jspf"%></span>
 <br>
@@ -619,7 +628,7 @@ if ((Image)productNode.getZoomImage()!=null) {%>
 </table>
 <br>
 <% if (thisBrandModel !=null) { 
-String  viewBrandURL = response.encodeURL("/category.jsp?catId="+groceryCategory+buildOtherParams(showThumbnails,itemsToDisplay,-1,thisProdBrand,sortBy,nutriName,request,groceryCategory.getContentName())+"&sortDescending=" + descending + "&disp=" + display + "&trk=pkprod");
+String  viewBrandURL = response.encodeURL("/deals.jsp?catId="+groceryCategory+buildOtherParams(showThumbnails,itemsToDisplay,-1,thisProdBrand,sortBy,nutriName,request,groceryCategory.getContentName())+"&sortDescending=" + descending + "&disp=" + display + "&trk=pkprod&test");
 %>
 <table width="425" cellpadding="1" cellspacing="0" border="0" bgcolor="#FF9933" align="center">
         <tr><td><table width="100%" cellpadding="3" bgcolor="#FFFFFF"><tr><td align="center" class="text11bold"><a href="<%=viewBrandURL%>">View All
@@ -677,7 +686,7 @@ if (brandLogo !=null) {
         <SELECT NAME="brand" onChange="javascript:gotoWindow(this.options[this.selectedIndex].value)" CLASS="text10">
 <%
         String categoryTitle = groceryCategory.getFullName();
-        String optionURL = response.encodeURL("/category.jsp?catId=" + groceryCategory + buildOtherParams(showThumbnails,itemsToDisplay,-1,"",sortBy,nutriName,request,groceryCategory.getContentName()) + "&disp=" + display + "&sortDescending=" + descending + "&trk=trans");
+        String optionURL = response.encodeURL("/deals.jsp?catId=" + groceryCategory + buildOtherParams(showThumbnails,itemsToDisplay,-1,"",sortBy,nutriName,request,groceryCategory.getContentName()) + "&disp=" + display + "&sortDescending=" + descending + "&trk=trans");
 %>
             <OPTION NAME="ACK">Find a Brand in  <%= categoryTitle %>
 <%
@@ -688,7 +697,7 @@ if (brandLogo !=null) {
 
         for (Iterator br = groceryCategory.getAllBrands().iterator(); br.hasNext(); ) {
                 BrandModel myBrand = (BrandModel)br.next();
-                optionURL = response.encodeURL("/category.jsp?catId=" + groceryCategory + buildOtherParams(showThumbnails,itemsToDisplay,-1,myBrand.getContentName(),sortBy,nutriName,request,groceryCategory.getContentName())+ "&disp=" + display + "&sortDescending=" + descending + "&trk=trans");
+                optionURL = response.encodeURL("/deals.jsp?catId=" + groceryCategory + buildOtherParams(showThumbnails,itemsToDisplay,-1,myBrand.getContentName(),sortBy,nutriName,request,groceryCategory.getContentName())+ "&disp=" + display + "&sortDescending=" + descending + "&trk=trans");
 %>
             <OPTION  value="<%=optionURL%>"><%=myBrand.getFullName()%></OPTION>
 <%
@@ -769,47 +778,7 @@ if (!bigProdShown && brandPopupLink!=null) {
 %>
 </table>
 
-<table border="0" cellspacing="0" cellpadding="0" width="425">
-<tr valign="top">
-    <td CLASS="text10bold" width="215">Page: <%= pageNumberLinks %></td>
-    <td ALIGN="RIGHT"><b>Sort by:</b>
-        <SELECT NAME="sort" onChange="javascript:gotoWindow(this.options[this.selectedIndex].value!=''?this.options[this.selectedIndex].value:null)" CLASS="text10">
-<%
-        optionURL = response.encodeURL("/category.jsp?catId=" + currentFolder + "&groceryVirtual=All&trk=cpage");
-%>
-        <OPTION NAME="Ack" <%="name".equalsIgnoreCase(sortBy)?"selected":""%> value="<%=optionURL%>">Name</option>
-<%
-        optionURL = response.encodeURL("/category.jsp?catId=" + currentFolder + "&sortBy=price&groceryVirtual=All&trk=cpage");
-%>
-        <OPTION NAME="Ack" <%="price".equalsIgnoreCase(sortBy)?"selected":""%>  value="<%=optionURL%>">Price</option>
-<%
-        optionURL = response.encodeURL("/category.jsp?catId=" + currentFolder + "&sortBy=kosher&groceryVirtual=All&trk=cpage");
-%>
-        <OPTION NAME="Ack" <%="kosher".equalsIgnoreCase(sortBy)?"selected":""%>  value="<%=optionURL%>">Kosher</option>
-<%
-        Attribute attrAllowNutSort = currentFolder.getAttribute("NUTRITION_SORT");
-        boolean allowNutSort = attrAllowNutSort != null?((Boolean)attrAllowNutSort.getValue()).booleanValue():true;
-        if(allowNutSort){
-%>
-        <OPTION value="">Nutrition:</option>
-<%
-            for(Iterator i = ErpNutritionType.getCommonList().iterator(); i.hasNext();){
-                ErpNutritionType.Type nutriType = (ErpNutritionType.Type)i.next();
-                optionURL = response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(false,45,-1,brandValue,"nutrition",nutriType.getName(),request,null)+"&disp="+nutriType.getName()+"&sortDescending="+nutriType.isGood()+"&trk=trans");
-                String optionDisplay = StringUtils.replace( nutriType.getDisplayName(), " quantity", "");
-                if(nutriType.getUom().equals("%"))
-                    optionDisplay = optionDisplay + " % daily value";
-%>
-        <OPTION NAME="Ack" <%=nutriType.getName().equalsIgnoreCase(display)?"selected":""%>  value="<%=optionURL%>">&nbsp;&nbsp;<%= optionDisplay %></option>
-<%
-            }
-        }
-%>
 
-        </SELECT>
-    </td>
-</tr>
-</table>
 <%//========================  end header area ===============================================
 
 //begin displaying the products on the page
@@ -827,7 +796,7 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
  // if we are not displaying the amplified product (bigProduct area) then show the add selected to cart button at the top
 %>
 <table border="0" cellspacing="0" cellpadding="0" width="425"><tr>
-<% if(!bigProdShown && isAnyProdAvailable) { %><td><input type="image" name="addMultipleToCart" src="/media_stat/images/buttons/add_selected_to_cart.gif" width="145" height="20" hspace="4" vspace="4" border="0" alt="ADD SELECTED ITEMS TO CART"></td><% } if(allowNutSort){%><td align="right"><img src="/media_stat/images/template/grocery/sort_by_nutrition.gif"></td><%}%></tr></table>
+<% if(!bigProdShown && isAnyProdAvailable) { %><td><input type="image" name="addMultipleToCart" src="/media_stat/images/buttons/add_selected_to_cart.gif" width="145" height="20" hspace="4" vspace="4" border="0" alt="ADD SELECTED ITEMS TO CART"></td><% } %></tr></table>
 <img src="/media_stat/images/layout/clear.gif" width="1" height="6">
 
 
@@ -844,15 +813,17 @@ if(showThumbnails) {
                 for(int j = i; j < innerLoopEnd;j++) {
                     SkuModel sku = (SkuModel)allSkuModels.get(j);
                     if (sku==null) continue;
+                     String dealImage=new StringBuffer("/media_stat/images/deals/brst_sm_").append(sku.getProductInfo().getDealPercentage()).append(".gif").toString();
+                     
                     ProductModel displayProduct = sku.getProductModel();
                         Image groDeptImage = (Image)displayProduct.getCategoryImage();
                         imgShownIndex++;
-                        String imgLinkUrl = response.encodeURL("/category.jsp?catId="+currentFolder
+                        String imgLinkUrl = response.encodeURL("/deals.jsp?catId="+currentFolder
                                 + otherParams
                                 + "&prodCatId="+displayProduct.getParentNode()
                                 + "&productId="+displayProduct.getContentName())+"&trk=trans";
 %>
-                <td width="85"><A href="<%=imgLinkUrl%>"><img src="<%= groDeptImage.getPath()%>" width="<%= groDeptImage.getWidth()%>" height="<%= groDeptImage.getHeight()%>" border="0" alt="<%=displayProduct.getFullName()%>" onMouseOver="changeImg(document.bullet<%=imgShownIndex %>,'in',0)" onMouseOut="changeImg(document.bullet<%=imgShownIndex %>,'out',0)"></A><IMG SRC="/media_stat/images/layout/dot_clear.gif" width="5" height="1" border="0"></td>
+                <td width="85"><A href="<%=imgLinkUrl%>"><DIV id=sale_star style="POSITION: absolute"><IMG style="BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px"  alt="<%="SAVE "+sku.getProductInfo().getDealPercentage()+"%"%>" src="<%=dealImage%>"> </DIV><img src="<%= groDeptImage.getPath()%>" width="<%= groDeptImage.getWidth()%>" height="<%= groDeptImage.getHeight()%>" border="0" alt="<%=displayProduct.getFullName()%>" onMouseOver="changeImg(document.bullet<%=imgShownIndex %>,'in',0)" onMouseOut="changeImg(document.bullet<%=imgShownIndex %>,'out',0)"></A><IMG SRC="/media_stat/images/layout/dot_clear.gif" width="5" height="1" border="0"></td>
 <%
                 }
 %>
@@ -928,7 +899,7 @@ if(isAnyProdAvailable) {
 <tr>
 <td><FONT CLASS="title11"><%=brandOrFolderName%></FONT> <FONT CLASS="text9">(<%= skuCount %> items)</FONT><br></td>
 <td ALIGN="RIGHT"><%
-String thumbNailURL = response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams( !showThumbnails, itemsToDisplay, pageNumber,brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=thum&set=true");
+String thumbNailURL = response.encodeURL("/deals.jsp?catId=" + currentFolder + buildOtherParams( !showThumbnails, itemsToDisplay, pageNumber,brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=thum&set=true");
 if(showThumbnails) {
 %>
 Thumbnails <B>ON</B> | <A HREF="<%=thumbNailURL%>">OFF</A><%
@@ -948,19 +919,19 @@ Thumbnails <A HREF="<%=thumbNailURL%>">ON</A> | <B>OFF</B><%
 if (itemsToDisplay == 15) {
 %>
 <B>15</B> |
-<A HREF="<%= response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,30,-1, brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">30</A> |
-<A HREF="<%= response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,45,-1, brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">45</A>
+<A HREF="<%= response.encodeURL("/deals.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,30,-1, brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">30</A> |
+<A HREF="<%= response.encodeURL("/deals.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,45,-1, brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">45</A>
 <%
 } else if (itemsToDisplay == 30) {
 %>
-<A HREF="<%= response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,15,-1,brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">15</A> |
+<A HREF="<%= response.encodeURL("/deals.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,15,-1,brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">15</A> |
 <B>30</B> |
-<A HREF="<%= response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,45,-1,brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">45</A>
+<A HREF="<%= response.encodeURL("/deals.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,45,-1,brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">45</A>
 <%
 } else {
 %>
-<A HREF="<%= response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,15,-1,brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">15</A> |
-<A HREF="<%= response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,30,-1,brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">30</A> |
+<A HREF="<%= response.encodeURL("/deals.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,15,-1,brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">15</A> |
+<A HREF="<%= response.encodeURL("/deals.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,30,-1,brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">30</A> |
 <B>45</B><%
 }
 %> per page</td>

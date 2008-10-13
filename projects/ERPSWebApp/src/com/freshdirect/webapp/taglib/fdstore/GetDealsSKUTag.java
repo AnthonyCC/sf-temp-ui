@@ -10,31 +10,31 @@ package com.freshdirect.webapp.taglib.fdstore;
  * @author knadeem
  */
 
-import java.rmi.RemoteException;
+
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.Comparator;
+
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.StringTokenizer;
 
-import javax.servlet.http.HttpSession;
-
-import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.fdstore.DealsHelper;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
+
 
 
 public class GetDealsSKUTag extends AbstractGetterTag {
 	
+	public static final int COMPARE_NAME = 0;
+	private final static Comparator PRODUCT_NAME_COMPARATOR = new ProductSorter(COMPARE_NAME);
+
 	protected Object getResult() throws FDResourceException {
 		return getDealsSKU();
 	}
@@ -53,16 +53,23 @@ public class GetDealsSKUTag extends AbstractGetterTag {
 				try {
 					productInfo=FDCachedFactory.getProductInfo(sku);
 					if(productInfo.isAvailable() && productInfo.isDeal()) {
-						products.add(sku);
+						
+						try {
+							   SkuModel sm=ContentFactory.getInstance().getProduct(sku).getSku(sku);
+							   if(!sm.isUnavailable())
+								   products.add(sm);
+					     } catch(Exception e) {
+					     }
 					}
 				} catch (FDSkuNotFoundException e) {
 					throw new FDResourceException(e);
 				}
 			}
 		}
-		System.out.println("Deals size:"+products.size());
-		System.out.println("Deals :"+products);
 		
+		if(products!=null)
+			Collections.sort((List)products,PRODUCT_NAME_COMPARATOR);
+	
         return products;
 	}
 	/*
@@ -86,6 +93,28 @@ public class GetDealsSKUTag extends AbstractGetterTag {
 		}
 
 	}
+	
+	private static class ProductSorter implements Comparator {
+		private int compareBy;
+
+    	public ProductSorter(int compareBy) {
+    		this.compareBy = compareBy;
+    	}
+
+    	public int compare(Object o1, Object o2) {
+    		SkuModel n1 = (SkuModel) o1;
+    		SkuModel n2 = (SkuModel) o2;
+
+
+			switch (compareBy) {
+				case COMPARE_NAME:
+					int comp = n1.getProductModel().getFullName().compareTo(n2.getProductModel().getFullName());
+					return comp;
+				default:
+					return 0;
+			}
+    	}
+    }
 
 }
 
