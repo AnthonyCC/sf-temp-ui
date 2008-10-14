@@ -1,5 +1,9 @@
 <%-- Featured Products column --%>
 <%  
+
+	currentFolder=ContentFactory.getInstance().getContentNodeByName("gro");
+	isDepartment = true;
+
     Attribute attribFeatProds = currentFolder.getAttribute("FEATURED_PRODUCTS");
     List favorites;
     // List validFavorites = new ArrayList();
@@ -76,42 +80,38 @@
             +"&productId="+product+"&trk=feat");
         String dealImage=new StringBuffer("/media_stat/images/deals/brst_sm_").append(deal).append(".gif").toString();
         //productDisplayName = getDisplayName(product,prodNameAttribute);
-		if ("picks_love".equalsIgnoreCase(catId)) {
-			//image for PPicks or null
-			groDeptImage = null;
-		} else { 
+	
 			groDeptImage = (Image)product.getCategoryImage();
-		}
-
+		
         StringBuffer favoriteProducts = new StringBuffer("");
         StringBuffer favoriteProductLinks = new StringBuffer("");
         // append product image
-        favoriteProducts.append("<DIV id=prod_container style=\"WIDTH: 100px; HEIGHT: 100px; TEXT-ALIGN: left\"><A id=prod_link_img style=\"DISPLAY: block; CURSOR: hand\" HREF=\"" + productPageLink_ + "\" name=prod_link_img>");
+        favoriteProducts.append("<div id=prod_container style=\"width: 100px; height: 100px; text-align: left\"><a id=prod_link_img style=\"display: block; cursor: hand\" href=\"" + productPageLink_ + "\" name=prod_link_img>");
         if (groDeptImage !=null) {
             favoriteProducts.append("<DIV id=prod_image style=\"PADDING-RIGHT: 10px; PADDING-LEFT: 10px; PADDING-BOTTOM: 0px; LINE-HEIGHT: 0px; PADDING-TOP: 10px; POSITION: absolute; HEIGHT: 0px\">")
                             .append("<IMG style=\"BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px\" ")
                             .append(JspMethods.getImageDimensions(groDeptImage))
                             .append(" alt=\"").append(product.getFullName()).append("\" src=\"").append(groDeptImage.getPath()).append("\" ></DIV>");
-            favoriteProducts.append("<DIV id=sale_star style=\"POSITION: absolute\"><IMG style=\"BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px\"  alt=\"SAVE ").append(deal).append("%\" src=\"").append(dealImage).append("\"> </DIV></A></DIV>");                        
+            //favoriteProducts.append("<DIV id=sale_star style=\"POSITION: absolute\"><IMG style=\"BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px\"  alt=\"SAVE ").append(deal).append("%\" src=\"").append(dealImage).append("\"> </DIV></A></DIV>");                        
         }
         
 
         // append product label
-        favoriteProductLinks.append("<DIV id=prod_container style=\"WIDTH: 100px; HEIGHT: 100px; TEXT-ALIGN: left\"><A id=prod_link_img style=\"DISPLAY: block; CURSOR: hand\" HREF=\"" + productPageLink_ + "\">");
-        favoriteProductLinks.append("<DIV id=prod_container_text style=\"FONT-WEIGHT: normal; FONT-SIZE: 8pt; WIDTH: 100px; TEXT-ALIGN: center\">");
-        favoriteProductLinks.append("<DIV id=prod_text_container><A id=prod_link style=\"COLOR: #360\" href=\"")
+        favoriteProductLinks.append("<div id=prod_container style=\"width: 100px; height: 100px; text-align: left\"><a id=prod_link_img style=\"display: block; cursor: hand\" href=\"" + productPageLink_ + "\">");
+        favoriteProductLinks.append("<div id=prod_container_text style=\"font-weight: normal; font-size: 8pt; width: 100px; text-align: center\">");
+        favoriteProductLinks.append("<div id=prod_text_container><A id=prod_link style=\"color: #360\" href=\"")
                             .append(productPageLink_).append("\">");
 
         String thisProdBrandLabel = product.getPrimaryBrandName();
         if (thisProdBrandLabel.length()>0) {
-            favoriteProductLinks.append("<B>" + thisProdBrandLabel + "</B><BR>");
+            favoriteProductLinks.append("<b>" + thisProdBrandLabel + "</b><br />");
         }
         favoriteProductLinks.append(product.getFullName().substring(thisProdBrandLabel.length()).trim()); 
-        favoriteProductLinks.append("</A></DIV>");
+        favoriteProductLinks.append("</a></div>");
 
         // append product price
-        favoriteProductLinks.append("<DIV id=prod_price_d_container style=\"FONT-WEIGHT: bold; FONT-SIZE: 8pt; COLOR: #c00\">").append(prodPrice).append("</DIV>");
-        favoriteProductLinks.append("<DIV id=prod_price_b_container style=\"FONT-SIZE: 7pt; COLOR: #888\">(was ").append(prodBasePrice).append(")</DIV></DIV>");        
+        favoriteProductLinks.append("<div id=prod_price_d_container style=\"font-weight: bold; font-size: 8pt;\">").append(prodPrice).append("</div>");
+        favoriteProductLinks.append("<div id=prod_price_b_container style=\"font-size: 7pt; color: #888\">(was ").append(prodBasePrice).append(")</div></div>");        
 
         favHTMLPieces.add(favoriteProducts);
         favHTMLPieceLinks.add(favoriteProductLinks);
@@ -126,14 +126,14 @@
 	%>
 	<!-- separator  -->
 	<tr>
-		<td colspan="6">
-			<br /><img src="/media_stat/images/layout/cccccc.gif" width="550" height="1" border="0"><br />
+		<td colspan="4">
+			<br /><img src="/media_stat/images/layout/cccccc.gif" width="690" height="1" border="0"><br />
 			<font class="space4pix"><br /><br /></font>
 		</td>
 	</tr>
 
 	<tr>
-		<td width="100%" colspan="6">
+		<td width="100%" colspan="4">
 		    <img src="/media_stat/images/layout/clear.gif" width="200" height="1"><br />
 	        <%
 			// display department specific media
@@ -144,19 +144,19 @@
 						Html piece = (Html)deptBotItr.next();
 						if (piece != null) {
 				        	String deptBotItm = piece.getPath();
-                            %><fd:IncludeMedia name='<%= deptBotItm %>' />
+				  			%><fd:IncludeMedia name='<%= deptBotItm %>' />
 <%
 				    	}
 					}
-				}
-                                   
+				}        
+
 			}
 	        %>
 	        <font class="space4pix"><br /><br /></font>
 		    <table cellpadding="0" cellspacing="0" border="0" width="125">
 	        	<tr valign="top" align="center">
 	            	<td>
-	            		<table id="fav-prds-table" width="550" border="0" cellspacing="0" cellpadding="0">
+	            		<table id="fav-prds-table" width="690" border="0" cellspacing="0" cellpadding="0">
 	            		<tr>
 		            	<%  
 		            	List row = favHTMLPieces;
