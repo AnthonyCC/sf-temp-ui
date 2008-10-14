@@ -1,0 +1,59 @@
+<%
+    String brandWidth = "280";
+    if("kosher".equalsIgnoreCase(sortBy)){
+        brandWidth = "236";
+    }else if("nutrition".equalsIgnoreCase(sortBy)){
+        brandWidth = "160";
+    }
+    
+    boolean displayAttribute = !ErpNutritionType.getType(ErpNutritionType.SERVING_SIZE).getName().equals(display) && 
+                               !ErpNutritionType.getType(ErpNutritionType.TOTAL_CALORIES).getName().equals(display)
+                               && display != null && ErpNutritionType.getType(display) != null;
+    
+%>
+<tr>
+<td width="60" COLSPAN="3"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="60" HEIGHT="1"></td>
+<td width="<%=brandWidth%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=brandWidth%>" HEIGHT="1"></td>
+<% if ("kosher".equalsIgnoreCase(sortBy)) { %>
+	<td width="44"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="44" HEIGHT="1"></td>
+<% } else if("nutrition".equalsIgnoreCase(sortBy)) { %>
+	<td width="65"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="50" HEIGHT="1"></td>
+        <td width="50"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="50" HEIGHT="1"></td>
+        <%if(displayAttribute){%>
+            <td width="50"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="50" HEIGHT="1"></td>
+        <%}%>
+        
+<% } %>
+<TD WIDTH="30" ALIGN="CENTER"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="30" HEIGHT="1"></TD>
+</tr>
+<TR VALIGN="BOTTOM" CLASS="text10grbold">
+	<TD ALIGN="CENTER" COLSPAN="3">Quantity</TD>
+	<TD>Brand/Item</TD>
+	<% if ("kosher".equalsIgnoreCase(sortBy)) { %>
+		<td ALIGN="center">Kosher</td>
+	<% } %>
+        <% if ("nutrition".equalsIgnoreCase(sortBy)) {
+                boolean sortDescending = request.getParameter("sortDescending").equalsIgnoreCase("true")?false:true;
+                optionURL = response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,itemsToDisplay,-1,brandValue,"nutrition",ErpNutritionType.getType(ErpNutritionType.SERVING_SIZE).getName(),request,null)+"&disp="+display+"&sortDescending="+sortDescending+"&trk=trans");%>
+	<td align="center"><a href="<%=optionURL%>">Serv. Size</a></td>
+                <%optionURL = response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,itemsToDisplay,-1,brandValue,"nutrition",ErpNutritionType.getType(ErpNutritionType.TOTAL_CALORIES).getName(),request,null)+"&disp="+display+"&sortDescending="+sortDescending+"&trk=trans");%>
+        <td align="center"><a href="<%=optionURL%>">Calories</a></td>
+            <%if(displayAttribute){
+                  optionURL = response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,itemsToDisplay,-1,brandValue,"nutrition",display,request,null)+"&disp="+display+"&sortDescending="+sortDescending+"&trk=trans");
+                  
+                  String header = StringUtils.replace( ErpNutritionType.getType(display).getDisplayName(), " quantity", "");
+                  if("Total Carbohydrate".equalsIgnoreCase(header)) 
+                      header = "Total Carbs";
+                  
+                  if("%".equals(ErpNutritionType.getType(display).getUom()))
+                      header = header + ", %DV";%>
+        <td align="center"><a href="<%=optionURL%>"><%=header%></a></td>
+            <%}%>
+        <% }else{%>
+	<TD ALIGN="RIGHT"> <Font style="COLOR: #c00">Sale Price&nbsp;</Font></TD>
+        <%}%>
+	<fd:CCLCheck>
+	<TD ALIGN="CENTER">&nbsp;&nbsp;List&nbsp;&nbsp;</TD>
+	</fd:CCLCheck>
+	<TD ALIGN="CENTER">&nbsp;&nbsp;Buy&nbsp;&nbsp;</TD>
+</TR>

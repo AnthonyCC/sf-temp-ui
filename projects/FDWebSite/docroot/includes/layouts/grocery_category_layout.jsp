@@ -218,7 +218,7 @@ if (currentCategory != null) {
         favoriteProducts.append("\">");
         if (groDeptImage !=null) {
             if(isDeal) {
-                favoriteProducts.append("<DIV id=sale_star style=\"POSITION: absolute\"><IMG style=\"BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px\"  alt=\"SAVE ").append(deal).append("%\" src=\"").append(dealImage).append("\"> </DIV></A>");
+                favoriteProducts.append("<DIV id=sale_star style=\"POSITION: absolute\"><IMG style=\"BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px\"  alt=\"SAVE ").append(deal).append("%\" src=\"").append(dealImage).append("\"> </DIV>");
             }    
             favoriteProducts.append("<img SRC=\"");
             favoriteProducts.append(groDeptImage.getPath());

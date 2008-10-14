@@ -544,8 +544,12 @@ if(productCode!=null && prodCatId !=null ) {
         syncProdSalesUnit = firstSalesUnit;
 %>
 <br>
-<FONT style="FONT-WEIGHT: bold; FONT-SIZE: 11pt; COLOR: #c00"><%= prodPrice %></FONT>
-<font style="FONT-WEIGHT: bold;FONT-SIZE: 10pt; COLOR: #000"><%= "(was "+prodBasePrice+")" %>&nbsp;</font><br>
+<% if(isDeal) {%>
+    <FONT CLASS="productPageSinglePrice" style="COLOR: #c00"><%=prodPrice%></FONT>
+    <font style="FONT-SIZE: 10pt; COLOR: #333333"><%= "(was "+prodBasePrice+")" %>&nbsp;</font><br>
+<%} else {%>    
+    <FONT CLASS="productPageSinglePrice"><%=prodPrice%></FONT><FONT CLASS="productPageSinglePriceUnit">/<%=priceUnit%></font><br>
+<% } %>
 
 <%@include file="/includes/product/i_price_taxdeposit.jspf"%>
 <span class="text12"><%@include file="/includes/product/i_scaled_prices_nobr.jspf"%></span>
@@ -609,7 +613,9 @@ if(productCode!=null && prodCatId !=null ) {
 <%}
 if ((Image)productNode.getZoomImage()!=null) {%>
 <A HREF="javascript:pop('<%=response.encodeURL("shared/prodpop.jsp?productId="+request.getParameter("productId")+"&catId="+request.getParameter("prodCatId"))%>',335,375)">
-<DIV id=sale_star style="POSITION: absolute"><IMG style=\"BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px"  alt="<%="SAVE "+deal+"%"%>" src="<%=dealsImage%>"> </DIV>
+<% if(isDeal) {%>
+    <DIV id=sale_star style="POSITION: absolute"><IMG style=\"BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px"  alt="<%="SAVE "+deal+"%"%>" src="<%=dealsImage%>"> </DIV>
+<%}%>
 <img SRC="<%= bigProductImage.getPath() %>" width="<%= bigProductImage.getWidth() %>" height="<%= bigProductImage.getHeight() %>" border="0" alt="<%=productNode.getFullName()%>"></a>
 <% } else { %>
 <img SRC="<%= bigProductImage.getPath() %>" width="<%= bigProductImage.getWidth() %>" height="<%= bigProductImage.getHeight() %>" border="0" alt="<%=productNode.getFullName()%>">
