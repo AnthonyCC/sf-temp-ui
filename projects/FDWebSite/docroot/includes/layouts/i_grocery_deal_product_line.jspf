@@ -25,7 +25,7 @@
         }
     String qtyFldName = "quantity_"+itemShownIndex;
 %>
-<TR <%="nutrition".equalsIgnoreCase(sortBy) && skuAvailable && i % 2 ==0 && "false".equalsIgnoreCase(request.getParameter("showThumbnails"))?"bgcolor='#EEEEEE'":""%>>
+<TR <%=skuAvailable && i % 2 ==0 && "false".equalsIgnoreCase(request.getParameter("showThumbnails"))?"bgcolor='#EEEEEE'":""%>>
 <TD WIDTH="40" ALIGN="CENTER"><NOBR>
 <%  if (!skuAvailable) {  %>
     <font color="#999999">NA</font><INPUT TYPE="hidden"
@@ -104,75 +104,8 @@
 %>
 <%  if (skuAvailable) { %>&nbsp;&nbsp;<span class="text10"><%@include file="/includes/product/i_scaled_prices_nobr.jspf"%></span><% } %>
 </TD>
-<% if ("kosher".equalsIgnoreCase(sortBy)) { %>
-    <td width="44" align="center">
-    <%
 
-   String kosherSymbol= "";
-   String kosherType = "";
-   if (product!=null) {
-	   FDKosherInfo ki = product.getKosherInfo();
-	   if (ki.hasKosherSymbol() && ki.getKosherSymbol().display()) {
-			kosherSymbol = ki.getKosherSymbol().getCode();
-		} else {
-			kosherSymbol= "";
-		}
-		/** get the kosher type **/
-		if (ki.hasKosherType() && ki.getKosherType().display()) {
-			kosherType= ki.getKosherType().getName();
-		} else {
-			kosherType= "";
-		}
-	}
-	
-    if (!"".equalsIgnoreCase(kosherSymbol) && kosherSymbol != null) {
-        if (!"".equalsIgnoreCase(kosherType) && kosherType != null) {
-            kosherType = kosherType.charAt(0) + kosherType.substring(1,kosherType.length()).toLowerCase();
-        }
-    %>
-    <a href="javascript:popup('/shared/popup.jsp?attrib=KOSHER&spec=<%=kosherSymbol.toLowerCase()%>&tmpl=small','small')"><img src="/media/editorial/kosher/symbols/<%=kosherSymbol.toLowerCase()%>_s.gif" width="20" height="20" alt="<%= kosherType %>" border="0"></a>
-    <% } %></td>
-<% } %>
-<% if("nutrition".equalsIgnoreCase(sortBy)) { %>
-        
-        <%if(product != null){
-            
-            String meshColor      = "false".equalsIgnoreCase(request.getParameter("showThumbnails"))?"#E0E3D0":"#EBECE4";
-            String highLightColor = "#EBECE4";
-            if(i%2 == 0){ 
-                highLightColor = meshColor;
-            }
-            NumberFormat nf = NumberFormat.getNumberInstance();
-            String servingSizeDisplay = "no<br>data";
-            String totalCaloriesDisplay = "no<br>data";
-            String displayAttributeDisplay = "no<br>data";
-            for(Iterator x = product.getNutrition().iterator();x.hasNext();){
-                FDNutrition fdNut = (FDNutrition)x.next();
-                String nutName = fdNut.getName();
-                
-                if(nutName.equalsIgnoreCase(ErpNutritionType.getType(ErpNutritionType.SERVING_SIZE).getDisplayName())){
-                    if(fdNut.getValue() == 0)
-                        break;
-                    servingSizeDisplay = nf.format(fdNut.getValue()) + " " + fdNut.getUnitOfMeasure() + "<br>";
-                }else if(nutName.equalsIgnoreCase(ErpNutritionType.getType(ErpNutritionType.SERVING_WEIGHT).getDisplayName())){
-                    servingSizeDisplay = servingSizeDisplay + "(" + nf.format(fdNut.getValue()) + "g)";
-                }else if(nutName.equalsIgnoreCase(ErpNutritionType.getType(ErpNutritionType.TOTAL_CALORIES).getDisplayName())){
-                    totalCaloriesDisplay = nf.format(fdNut.getValue()) + " " + fdNut.getUnitOfMeasure();
-                }else if(nutName.equalsIgnoreCase(ErpNutritionType.getType(display).getDisplayName())){
-                    displayAttributeDisplay = (fdNut.getValue() < 0 ? "<1":nf.format(fdNut.getValue())) + ("%".equals(fdNut.getUnitOfMeasure())?"":" ") + fdNut.getUnitOfMeasure();
-                }
-            }
-            %>
-                    <td align="center" class="text9" height="40"<%=ErpNutritionType.getType(ErpNutritionType.SERVING_SIZE).getName().equals(nutriName)?"bgcolor='" + highLightColor + "'":""%>><%=servingSizeDisplay%></td>
-                    <td align="center" class="text9"<%=ErpNutritionType.getType(ErpNutritionType.TOTAL_CALORIES).getName().equals(nutriName)?"bgcolor='" + highLightColor + "'":""%>><%=totalCaloriesDisplay%></td>
-                    <%if(!ErpNutritionType.getType(ErpNutritionType.SERVING_SIZE).getName().equals(display) && 
-                         !ErpNutritionType.getType(ErpNutritionType.TOTAL_CALORIES).getName().equals(display)){%>
-                    <td align="center" class="text9"<%=display.equals(nutriName)?"bgcolor='" + highLightColor + "'":""%>><%=displayAttributeDisplay%></td>
-                    <%}%>
-        
-<%      }
-  } else{%>
-        
+       
     <%  if (!skuAvailable) {  %>
     <td colspan="2" width="85" align="center"><font color="#999999"><%=(productInfo.isOutOfSeason()?"Out&nbsp;of&nbsp;Season": "Not&nbsp;Available")%></font>
     <%  } else if(productInfo.isDeal()) {    %>
@@ -183,7 +116,7 @@
     } else { %>
     <TD WIDTH="55" ALIGN="RIGHT">&nbsp;<font class="groceryProductLinePrice"><%= JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()) %>&nbsp;</font>
     <%}
-}
+
 %>
 <fd:CCLCheck>
 <TD ALIGN="CENTER">
