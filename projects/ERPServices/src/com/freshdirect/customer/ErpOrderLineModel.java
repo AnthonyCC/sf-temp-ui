@@ -81,6 +81,12 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
      */
     private String variantId;
     
+    /*
+     * Deals 
+     */
+    private double basePrice;
+    private String basePriceUnit;
+    
     public boolean isDeliveryPass() {
 		return deliveryPass;
 	}
@@ -225,5 +231,13 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 	public void setProduceRating(EnumOrderLineRating produceRating) {
 		this.produceRating = produceRating;
 	}
+    public double getBasePrice(){ return basePrice; }
+    public void setBasePrice(double price){ this.basePrice = price; }
+    
+    public String getBasePriceUnit(){ return basePriceUnit; }
+    public void setBasePriceUnit(String unit){ this.basePriceUnit = unit; }
+    
 }
+
+
 

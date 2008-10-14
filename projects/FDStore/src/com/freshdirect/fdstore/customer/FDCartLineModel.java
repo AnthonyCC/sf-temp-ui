@@ -66,10 +66,13 @@ public class FDCartLineModel extends AbstractCartLine {
       
 		try {
 			if(ol.getSku()!=null){
-				System.out.println("ol.getSku().getSkuCode() :"+ol.getSku().getSkuCode());
+
 				FDProductInfo productInfo = FDCachedFactory.getProductInfo(ol.getSku().getSkuCode());
 				EnumOrderLineRating rating=EnumOrderLineRating.getEnumByStatusCode(productInfo.getRating());
 				ol.setProduceRating(rating);
+				ol.setBasePrice(productInfo.getBasePrice());
+				ol.setBasePriceUnit(productInfo.getBasePriceUnit());
+				
 			}			
 		} catch (FDResourceException e) {
 			// TODO Auto-generated catch block

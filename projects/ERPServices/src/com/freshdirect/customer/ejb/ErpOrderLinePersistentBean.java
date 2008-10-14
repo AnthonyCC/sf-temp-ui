@@ -91,7 +91,7 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 	 */
 	public static List findByParent(Connection conn, PrimaryKey parentPK) throws SQLException {
 		java.util.List lst = new java.util.LinkedList();
-		PreparedStatement ps = conn.prepareStatement("SELECT ID, ORDERLINE_NUMBER, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN, DESCRIPTION, CONFIGURATION_DESC, DEPARTMENT_DESC, MATERIAL_NUMBER, PRICE, PERISHABLE, TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, RATING FROM CUST.ORDERLINE WHERE SALESACTION_ID=? ORDER BY ORDERLINE_NUMBER");
+		PreparedStatement ps = conn.prepareStatement("SELECT ID, ORDERLINE_NUMBER, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN, DESCRIPTION, CONFIGURATION_DESC, DEPARTMENT_DESC, MATERIAL_NUMBER, PRICE, PERISHABLE, TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, RATING,BASE_PRICE,BASE_PRICE_UNIT FROM CUST.ORDERLINE WHERE SALESACTION_ID=? ORDER BY ORDERLINE_NUMBER");
 		ps.setString(1, parentPK.getId());
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
@@ -108,8 +108,8 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 		"INSERT INTO CUST.ORDERLINE (ID, SALESACTION_ID, ORDERLINE_NUMBER, SKU_CODE, VERSION,"
 		+ " QUANTITY, SALES_UNIT, CONFIGURATION, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN,"
 		+ " DESCRIPTION, CONFIGURATION_DESC, DEPARTMENT_DESC, MATERIAL_NUMBER, PRICE, PERISHABLE,"
-		+ " TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION,RATING)"
-		+ " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		+ " TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION,RATING,BASE_PRICE,BASE_PRICE_UNIT)"
+		+ " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	public PrimaryKey create(Connection conn) throws SQLException {
 		String id = this.getNextId(conn, "CUST");
@@ -152,6 +152,12 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 		else
 			ps.setNull(25, Types.NULL);
 		
+		ps.setDouble(26, this.model.getBasePrice());
+		if(this.model.getBasePriceUnit()!=null) {
+			ps.setString(27,this.model.getBasePriceUnit());
+		} else {
+			ps.setNull(27, Types.VARCHAR);
+		}
 		
 		try {
 			if (ps.executeUpdate() != 1) {
@@ -170,7 +176,7 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 
 	public void load(Connection conn) throws SQLException {
 				
-		PreparedStatement ps = conn.prepareStatement("SELECT ORDERLINE_NUMBER, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN, DESCRIPTION, CONFIGURATION_DESC, DEPARTMENT_DESC, MATERIAL_NUMBER, PRICE, PERISHABLE, TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, RATING FROM CUST.ORDERLINE WHERE ID=?");
+		PreparedStatement ps = conn.prepareStatement("SELECT ORDERLINE_NUMBER, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN, DESCRIPTION, CONFIGURATION_DESC, DEPARTMENT_DESC, MATERIAL_NUMBER, PRICE, PERISHABLE, TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, RATING,BASE_PRICE,BASE_PRICE_UNIT FROM CUST.ORDERLINE WHERE ID=?");
 		ps.setString(1, this.getPK().getId());
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
@@ -202,7 +208,9 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
         this.model.setCartlineId(rs.getString("CARTLINE_ID"));
         this.model.setRecipeSourceId(rs.getString("RECIPE_SOURCE_ID"));
         this.model.setRequestNotification(NVL.apply(rs.getString("REQUEST_NOTIFICATION"), "").equals("X"));
-        this.model.setProduceRating(EnumOrderLineRating.getEnumByStatusCode(NVL.apply(rs.getString("RATING"), "X")));        
+        this.model.setProduceRating(EnumOrderLineRating.getEnumByStatusCode(NVL.apply(rs.getString("RATING"), "X")));  
+        this.model.setBasePrice(rs.getDouble("BASE_PRICE"));
+        this.model.setBasePriceUnit(rs.getString("BASE_PRICE_UNIT"));
 		
 		// deal with no promotion (PROMOTION_TYPE is NULL)
 		int type = rs.getInt("PROMOTION_TYPE");
