@@ -144,22 +144,12 @@
 						Html piece = (Html)deptBotItr.next();
 						if (piece != null) {
 				        	String deptBotItm = piece.getPath();
-				  			%><fd:IncludeMedia name='<%= deptBotItm %>' />
+                            %><fd:IncludeMedia name='<%= deptBotItm %>' />
 <%
 				    	}
 					}
 				}
-                if (department.getDepartmentBottom() != null) {
-					for(Iterator deptBotItr = department.getDepartmentBottom().iterator(); deptBotItr.hasNext();) {
-						Html piece = (Html)deptBotItr.next();
-						if (piece != null) {
-				        	String deptBotItm = piece.getPath();
-                            %><fd:IncludeMedia name='<%= deptBotItm %>' />
-<%
-                        }
-                    }
-                }                    
-
+                                   
 			}
 	        %>
 	        <font class="space4pix"><br /><br /></font>
@@ -207,5 +197,20 @@
 	    	</table>
 		</td>
 	</tr><%-- close the featured product column --%><%
-    	}
+    
+        if (isDepartment) {
+            DepartmentModel department = (DepartmentModel) currentFolder;
+            if(department.getDepartmentBottom() != null) {
+                for(Iterator deptBotItr = department.getDepartmentBottom().iterator(); deptBotItr.hasNext();) {
+			        Html piece = (Html)deptBotItr.next();
+			        if (piece != null) {
+			            String deptBotItm = piece.getPath();
+    %>                  <fd:IncludeMedia name='<%= deptBotItm %>' />
+<%
+                    }
+                }
+            }
+        } 
+    
+    }    
 %>

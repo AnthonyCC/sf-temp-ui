@@ -850,6 +850,10 @@ if(showThumbnails) {
                 for(int j = i; j < innerLoopEnd;j++) {
                     SkuModel sku = (SkuModel)allSkuModels.get(j);
                     if (sku==null) continue;
+                    String _dealImage="";
+                    if(sku.getProductInfo().isDeal()) {
+                        _dealImage=new StringBuffer("/media_stat/images/deals/brst_sm_").append(sku.getProductInfo().getDealPercentage()).append(".gif").toString();
+                    }
                     ProductModel displayProduct = sku.getProductModel();
                         Image groDeptImage = (Image)displayProduct.getCategoryImage();
                         imgShownIndex++;
@@ -858,7 +862,11 @@ if(showThumbnails) {
                                 + "&prodCatId="+displayProduct.getParentNode()
                                 + "&productId="+displayProduct.getContentName())+"&trk=trans";
 %>
-                <td width="85"><A href="<%=imgLinkUrl%>"><img src="<%= groDeptImage.getPath()%>" width="<%= groDeptImage.getWidth()%>" height="<%= groDeptImage.getHeight()%>" border="0" alt="<%=displayProduct.getFullName()%>" onMouseOver="changeImg(document.bullet<%=imgShownIndex %>,'in',0)" onMouseOut="changeImg(document.bullet<%=imgShownIndex %>,'out',0)"></A><IMG SRC="/media_stat/images/layout/dot_clear.gif" width="5" height="1" border="0"></td>
+                <td width="85"><A href="<%=imgLinkUrl%>">
+                <%if(sku.getProductInfo().isDeal()) { %>
+                    <DIV id=sale_star style="POSITION: absolute"><IMG style="BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px"  alt="<%="SAVE "+sku.getProductInfo().getDealPercentage()+"%"%>" src="<%=_dealImage%>"> </DIV>
+                <%}%>
+                <img src="<%= groDeptImage.getPath()%>" width="<%= groDeptImage.getWidth()%>" height="<%= groDeptImage.getHeight()%>" border="0" alt="<%=displayProduct.getFullName()%>" onMouseOver="changeImg(document.bullet<%=imgShownIndex %>,'in',0)" onMouseOut="changeImg(document.bullet<%=imgShownIndex %>,'out',0)"></A><IMG SRC="/media_stat/images/layout/dot_clear.gif" width="5" height="1" border="0"></td>
 <%
                 }
 %>

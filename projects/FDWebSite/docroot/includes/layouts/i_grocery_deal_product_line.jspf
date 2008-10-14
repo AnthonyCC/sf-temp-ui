@@ -73,7 +73,7 @@
 	}
 	String prodMatrix= (key.length()>0 ? ", " + key.toString() : "");
 
-    String productURL = response.encodeURL("/category.jsp?catId=" + currentFolder
+    String productURL = response.encodeURL("/deals.jsp?catId=" + currentFolder
         + buildOtherParams(showThumbnails, itemsToDisplay, -1, brandValue, sortBy, nutriName, request, null)
                 + "&sortDescending=" + descending
                 + "&disp=" + display
