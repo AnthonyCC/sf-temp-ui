@@ -51,12 +51,17 @@
     boolean thxgivingRestriction = false;
     boolean kosherRestriction = false;
     boolean alcoholRestriction = false;
+    boolean thxgiving_meal_Restriction=false;
     
     for(Iterator i = cart.getApplicableRestrictions().iterator(); i.hasNext(); ){
         EnumDlvRestrictionReason reason = (EnumDlvRestrictionReason) i.next();
         if(EnumDlvRestrictionReason.THANKSGIVING.equals(reason)){
             thxgivingRestriction = true;
             continue;
+        }
+        if(EnumDlvRestrictionReason.THANKSGIVING_MEALS.equals(reason)){
+           thxgiving_meal_Restriction=true;
+           continue;
         }
         if(EnumDlvRestrictionReason.ALCOHOL.equals(reason)){
             alcoholRestriction = true;
@@ -166,7 +171,7 @@ boolean zoneCtActive = DeliveryTimeSlotResult.isZoneCtActive();
 	<%@ include file="/shared/includes/delivery/i_loyalty_banner.jspf" %>
 	<!-- LOYALTY -->
 
-<%if(cart.hasAdvanceOrderItem() && advOrdRangeOK){%>
+<%if(cart.hasAdvanceOrderItem() && advOrdRangeOK && thxgivingRestriction){%>
 	<table width="100%">
 		<tr>
 			<td class="text12" align="center">
@@ -177,7 +182,7 @@ boolean zoneCtActive = DeliveryTimeSlotResult.isZoneCtActive();
 	</table>
 <%}%>
 
-<%if(thxgivingRestriction){%>
+<%if(thxgiving_meal_Restriction){%>
 	<table width="100%">
 		<tr>
 			<td class="text12" align="center">
