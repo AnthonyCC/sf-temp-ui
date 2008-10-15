@@ -53,7 +53,7 @@ public void produceBrandsAndTypes(Set brands, List typesList, Collection sortedC
 
 %>
 <%
-System.out.println("grocery_category.jsp:57 ");
+
 //********** Start of Stuff to let JSPF's become JSP's **************
 
 String catId = request.getParameter("catId"); 
@@ -197,7 +197,7 @@ if (currentCategory != null) {
        
         prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()); //+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
         isDeal=productInfo.isDeal();
-        System.out.println( sku.getSkuCode()+" "+isDeal);
+        
         if(isDeal) {
             prodBasePrice=JspMethods.currencyFormatter.format(productInfo.getBasePrice()); //+"/"+ productInfo.getBasePriceUnit().toLowerCase();
             deal=productInfo.getDealPercentage();
@@ -213,22 +213,36 @@ if (currentCategory != null) {
         String dealImage=new StringBuffer("/media_stat/images/deals/brst_sm_").append(deal).append(".gif").toString();
         groDeptImage = (Image)product.getCategoryImage();
         favoriteProducts.append("<TD align=\"center\" WIDTH=\"105\">");
-        favoriteProducts.append("<A HREF=\"");
+        favoriteProducts.append("<div id=\"prod_container\" style=\"height: 90px; width: 100px; text-align: left;\">");
+        favoriteProducts.append("<div style=\"padding: 10px 10px 0pt; height: 0px; line-height: 0px; position: absolute;\" id=\"prod_image\">");
+        favoriteProducts.append("<a id=\"prod_link_img\" name=\"prod_link_img\" href=\"");
         favoriteProducts.append(productPageLink_);
-        favoriteProducts.append("\">");
+        favoriteProducts.append("\" style=\"display: block;\">");
+        
         if (groDeptImage !=null) {
+        	 favoriteProducts.append("<img alt=\"");
+	         favoriteProducts.append(product.getFullName());
+	         favoriteProducts.append("\" src=\"").append(groDeptImage.getPath()).append("\"").append(JspMethods.getImageDimensions(groDeptImage)).append(" style=\"border: 0px none ;\">");
+             favoriteProducts.append("</a>");
+             favoriteProducts.append("</div>");
             if(isDeal) {
-                favoriteProducts.append("<DIV id=sale_star style=\"POSITION: absolute\"><IMG style=\"BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px\"  alt=\"SAVE ").append(deal).append("%\" src=\"").append(dealImage).append("\"> </DIV>");
-            }    
-            favoriteProducts.append("<img SRC=\"");
-            favoriteProducts.append(groDeptImage.getPath());
-            favoriteProducts.append("\"");
-            favoriteProducts.append(JspMethods.getImageDimensions(groDeptImage));
-            favoriteProducts.append(" border=\"0\" alt=\"");
-            favoriteProducts.append(product.getFullName());
-            favoriteProducts.append("\">");
+                favoriteProducts.append("<div style=\"position: absolute;\" id=\"sale_star\">");
+                favoriteProducts.append("<a id=\"prod_link_img\" name=\"prod_link_img\" href=\"").append(productPageLink_).append("\" style=\"display: block;\">");
+                favoriteProducts.append("<img alt=\"");
+	            favoriteProducts.append("SAVE ").append(deal).append("%\" src=\"").append(dealImage).append("\" style=\"border: 0px none ;\">");
+                favoriteProducts.append("</A>");
+                favoriteProducts.append("</div>");
+                
+            } 
+        favoriteProducts.append("</div>");            
         }
-        favoriteProducts.append("</A><BR>");
+        favoriteProducts.append("<BR>");
+        
+        
+        
+        
+        
+        
         favoriteProducts.append("<A HREF=\"");
         favoriteProducts.append(productPageLink_);
         favoriteProducts.append("\">");
@@ -254,7 +268,7 @@ if (currentCategory != null) {
             favoriteProducts.append("");
             favoriteProducts.append("\" border=\"0\"");         
             favoriteProducts.append(">");
-            favoriteProducts.append("</font>>");            
+            favoriteProducts.append("</font>");            
         }
 
         

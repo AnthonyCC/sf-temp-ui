@@ -423,7 +423,7 @@ public class FDStoreProperties {
 		defaults.put(DEALS_SKU_PREFIX,"GRO,FRO,SPE,DAI,HBA");
 		defaults.put(DEALS_LOWER_LIMIT,"10");
 		defaults.put(DEALS_UPPER_LIMIT,"75");
-		defaults.put(MAX_FEATURED_DEALS_FOR_PAGE,"10");
+		defaults.put(MAX_FEATURED_DEALS_FOR_PAGE,"5");
 		defaults.put(MAX_FEATURED_DEALS_PER_LINE,"5");
 		defaults.put(MIN_FEATURED_DEALS_FOR_PAGE,"3");
 		

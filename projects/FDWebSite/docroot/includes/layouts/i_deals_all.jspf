@@ -791,7 +791,21 @@ if(showThumbnails) {
                                 + "&prodCatId="+displayProduct.getParentNode()
                                 + "&productId="+displayProduct.getContentName())+"&trk=trans";
 %>
-                <td width="85"><A href="<%=imgLinkUrl%>"><DIV id=sale_star style="POSITION: absolute"><IMG style="BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px"  alt="<%="SAVE "+sku.getProductInfo().getDealPercentage()+"%"%>" src="<%=dealImage%>"> </DIV><img src="<%= groDeptImage.getPath()%>" width="<%= groDeptImage.getWidth()%>" height="<%= groDeptImage.getHeight()%>" border="0" alt="<%=displayProduct.getFullName()%>" onMouseOver="changeImg(document.bullet<%=imgShownIndex %>,'in',0)" onMouseOut="changeImg(document.bullet<%=imgShownIndex %>,'out',0)"></A><IMG SRC="/media_stat/images/layout/dot_clear.gif" width="5" height="1" border="0"></td>
+                <td width="85">
+                    <div id="prod_container" style="height: 90px; width: 100px; text-align: left;">
+                        <div style="padding: 10px 10px 0pt; height: 0px; line-height: 0px; position: absolute;" id="prod_image">
+		                    <a id="prod_link_img" name="prod_link_img" href="<%=imgLinkUrl%>" style="display: block;">
+			                    <img src="<%= groDeptImage.getPath()%>" width="<%= groDeptImage.getWidth()%>" height="<%= groDeptImage.getHeight()%>" border="0" alt="<%=displayProduct.getFullName()%>" onMouseOver="changeImg(document.bullet<%=imgShownIndex %>,'in',0)" onMouseOut="changeImg(document.bullet<%=imgShownIndex %>,'out',0)">
+		                    </a>
+	                    </div>
+                        <div style="position: absolute;" id="sale_star">
+			                <a id="prod_link_img" name="prod_link_img" href="<%=imgLinkUrl%>" style="display: block;">
+			                    <img alt="<%="SAVE "+sku.getProductInfo().getDealPercentage()+"%"%>" src="<%=dealImage%>" style="border: 0px none ;" onMouseOver="changeImg(document.bullet<%=imgShownIndex %>,'in',0)" onMouseOut="changeImg(document.bullet<%=imgShownIndex %>,'out',0)">
+			                </a>
+	                    </div>
+                    </div>
+                    <IMG SRC="/media_stat/images/layout/dot_clear.gif" width="5" height="1" border="0">
+                </td>
 <%
                 }
 %>
