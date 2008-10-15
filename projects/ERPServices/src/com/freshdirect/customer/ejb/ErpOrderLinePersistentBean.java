@@ -151,8 +151,11 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 		   ps.setString(25, this.model.getProduceRating().getStatusCode());	
 		else
 			ps.setNull(25, Types.NULL);
-		
-		ps.setDouble(26, this.model.getBasePrice());
+		if(this.model.getBasePrice()!=0) {
+			ps.setDouble(26, this.model.getBasePrice());
+		} else {
+			ps.setNull(26, Types.NULL);
+		}
 		if(this.model.getBasePriceUnit()!=null) {
 			ps.setString(27,this.model.getBasePriceUnit());
 		} else {

@@ -555,7 +555,7 @@ if(productCode!=null && prodCatId !=null ) {
 <br>
 
 <FONT CLASS="productPageSinglePrice" style="COLOR: #c00"><%=prodPrice%></FONT>
-<font style="FONT-WEIGHT: bold;FONT-SIZE: 10pt; COLOR: #333333"><%= "(was "+prodBasePrice+")" %>&nbsp;</font><br>
+<font style="FONT-SIZE: 10pt; COLOR: #333333"><%= "(was "+prodBasePrice+")" %>&nbsp;</font><br>
 <%@include file="/includes/product/i_price_taxdeposit.jspf"%>
 <span class="text12"><%@include file="/includes/product/i_scaled_prices_nobr.jspf"%></span>
 <br>
@@ -679,38 +679,8 @@ if (brandLogo !=null) {
 }
 %>
 <table border="0" cellspacing="0" cellpadding="0" width="550">
-<tr valign="BOTTOM">
-    <td><% if (brandPopupLink!=null) { %><a href="<%=brandPopupLink%>"><% } %><FONT CLASS="title12"><%=brandOrFolderName%></FONT><%if (brandPopupLink!=null) { %></a><% } %> (<%= skuCount %>&nbsp;items)
-    </td>
-    <td ALIGN="RIGHT">
-        <SELECT NAME="brand" onChange="javascript:gotoWindow(this.options[this.selectedIndex].value)" CLASS="text10">
-<%
-        String categoryTitle = groceryCategory.getFullName();
-        String optionURL = response.encodeURL("/deals.jsp?catId=" + groceryCategory + buildOtherParams(showThumbnails,itemsToDisplay,-1,"",sortBy,nutriName,request,groceryCategory.getContentName()) + "&disp=" + display + "&sortDescending=" + descending + "&trk=trans");
-%>
-            <OPTION NAME="ACK">Find a Brand in  <%= categoryTitle %>
-<%
-        if(!"".equals(brandValue)) {
-%>
-            <OPTION NAME="ACK" value="<%=optionURL%>">All Brands<%
-        }
-
-        for (Iterator br = groceryCategory.getAllBrands().iterator(); br.hasNext(); ) {
-                BrandModel myBrand = (BrandModel)br.next();
-                optionURL = response.encodeURL("/deals.jsp?catId=" + groceryCategory + buildOtherParams(showThumbnails,itemsToDisplay,-1,myBrand.getContentName(),sortBy,nutriName,request,groceryCategory.getContentName())+ "&disp=" + display + "&sortDescending=" + descending + "&trk=trans");
-%>
-            <OPTION  value="<%=optionURL%>"><%=myBrand.getFullName()%></OPTION>
-<%
-        }
-%>
-        </SELECT>
-    </td>
-</tr>
 <tr>
     <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
-</tr>
-<tr>
-    <td colspan="2" bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 </tr>
 <%
 
@@ -795,8 +765,6 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
 }
  // if we are not displaying the amplified product (bigProduct area) then show the add selected to cart button at the top
 %>
-<table border="0" cellspacing="0" cellpadding="0" width="550"><tr>
-<% if(!bigProdShown && isAnyProdAvailable) { %><td><input type="image" name="addMultipleToCart" src="/media_stat/images/buttons/add_selected_to_cart.gif" width="145" height="20" hspace="4" vspace="4" border="0" alt="ADD SELECTED ITEMS TO CART"></td><% } %></tr></table>
 <img src="/media_stat/images/layout/clear.gif" width="1" height="6">
 
 

@@ -167,7 +167,7 @@ class FDProductHelper {
 			displayablePricingUnit, null,
 			erpProductInfo.getRating(),
 			erpProductInfo.getBasePrice(),
-			erpProductInfo.getDefaultPriceUnit(),
+			erpProductInfo.getBasePriceUnit(),
 			isDeal,
 			dealsPercentage
 		);

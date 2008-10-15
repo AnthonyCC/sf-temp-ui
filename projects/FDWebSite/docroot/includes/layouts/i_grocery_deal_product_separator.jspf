@@ -29,29 +29,10 @@
 <TR VALIGN="BOTTOM" CLASS="text10grbold">
 	<TD ALIGN="CENTER" COLSPAN="3">Quantity</TD>
 	<TD>Brand/Item</TD>
-	<% if ("kosher".equalsIgnoreCase(sortBy)) { %>
-		<td ALIGN="center">Kosher</td>
-	<% } %>
-        <% if ("nutrition".equalsIgnoreCase(sortBy)) {
-                boolean sortDescending = request.getParameter("sortDescending").equalsIgnoreCase("true")?false:true;
-                optionURL = response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,itemsToDisplay,-1,brandValue,"nutrition",ErpNutritionType.getType(ErpNutritionType.SERVING_SIZE).getName(),request,null)+"&disp="+display+"&sortDescending="+sortDescending+"&trk=trans");%>
-	<td align="center"><a href="<%=optionURL%>">Serv. Size</a></td>
-                <%optionURL = response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,itemsToDisplay,-1,brandValue,"nutrition",ErpNutritionType.getType(ErpNutritionType.TOTAL_CALORIES).getName(),request,null)+"&disp="+display+"&sortDescending="+sortDescending+"&trk=trans");%>
-        <td align="center"><a href="<%=optionURL%>">Calories</a></td>
-            <%if(displayAttribute){
-                  optionURL = response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,itemsToDisplay,-1,brandValue,"nutrition",display,request,null)+"&disp="+display+"&sortDescending="+sortDescending+"&trk=trans");
-                  
-                  String header = StringUtils.replace( ErpNutritionType.getType(display).getDisplayName(), " quantity", "");
-                  if("Total Carbohydrate".equalsIgnoreCase(header)) 
-                      header = "Total Carbs";
-                  
-                  if("%".equals(ErpNutritionType.getType(display).getUom()))
-                      header = header + ", %DV";%>
-        <td align="center"><a href="<%=optionURL%>"><%=header%></a></td>
-            <%}%>
-        <% }else{%>
+	
+      
 	<TD ALIGN="LEFT"> <Font style="COLOR: #c00">Sale Price&nbsp;</Font></TD>
-        <%}%>
+       
 	<fd:CCLCheck>
 	<TD ALIGN="CENTER">&nbsp;&nbsp;List&nbsp;&nbsp;</TD>
 	</fd:CCLCheck>
