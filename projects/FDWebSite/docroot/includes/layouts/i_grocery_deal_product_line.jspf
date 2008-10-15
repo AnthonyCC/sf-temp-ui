@@ -48,7 +48,7 @@
 <TD WIDTH="10" ALIGN="CENTER" VALIGN="MIDDLE">
     <img SRC="/media_stat/images/layout/clear.gif" name="bullet<%= itemShownIndex %>" width="6" height="6" border="0" alt="">
 </TD>
-<TD width="325">
+<TD width="300">
 <%
     String unAvailableFontStart = "";
     String unAvailableFontEnd = "";
