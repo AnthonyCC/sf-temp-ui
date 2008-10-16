@@ -304,6 +304,9 @@ if (!renderCSV) {
 			<th>Rating</th>
 			<th>Material</th>
 			<th>Eligible</th>
+            <th>Price</th>
+            <th>BasePrice</th>
+            <th>Deal</th>
 		</tr>
 <%
 	report.setNodeSeparator("    <tr><td colspan=\"6\" style=\"padding: 0; height: 6px; width: 100%; background-color: #cccc99\"></td></tr>");

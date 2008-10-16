@@ -95,12 +95,12 @@ public class DCPDReportGenerator {
 		    // write header
 	        if (ctx.isProductsOnlyView()) {
 				printToCSV(new Object[]{
-					"Available", quoted("Product / Folder ID"), quoted("Full Name"), "SKU", "Rating", "Material", "Eligible"
+					"Available", quoted("Product / Folder ID"), quoted("Full Name"), "SKU", "Rating", "Material", "Eligible","Price","BasePrice","IsDeal"
 				});
 	            /// out.println("Available;\"Product / Folder ID\";\"Full Name\";SKU;Material;Eligible");
 	        } else {
 				printToCSV(new Object[]{
-					"Depth", "Type", "Flag", "Available", quoted("Product / Folder ID"), quoted("Full Name"), "SKU", "Rating", "Material", "Eligible"
+					"Depth", "Type", "Flag", "Available", quoted("Product / Folder ID"), quoted("Full Name"), "SKU", "Rating", "Material", "Eligible","Price","BasePrice","IsDeal"
 				});
 	        }
 		}
@@ -137,7 +137,7 @@ public class DCPDReportGenerator {
 		if (!ctx.isProductsOnlyView()) {
 			if (ctx.isRenderCSV()) {
 				printToCSV(new Object[]{
-					Integer.toString(level), "D", "", "", quoted(deptNode.getContentName()), quoted(deptNode.getFullName()), "", "", ""
+					Integer.toString(level), "D", "", "", quoted(deptNode.getContentName()), quoted(deptNode.getFullName()), "", "", "","","",""
 				});
 		        /// out.println(level + ";D;;;" + deptNode.getContentName() + ";" + deptNode.getFullName() + ";;"); 
 		    } else {
@@ -148,6 +148,9 @@ public class DCPDReportGenerator {
 				out.println("<td>&nbsp;</td>");
 				out.println("<td>&nbsp;</td>");
 				out.println("<td>&nbsp;</td>");
+			    out.println("<td>&nbsp;</td>");
+			    out.println("<td>&nbsp;</td>");
+			    out.println("<td>&nbsp;</td>");				
 				out.println("</tr>");
 			}
 		}
@@ -171,7 +174,7 @@ public class DCPDReportGenerator {
 	    if (!ctx.isProductsOnlyView()) {
 			if (ctx.isRenderCSV()) {
 				printToCSV(new Object[]{
-					Integer.toString(level), "C", "", "", quoted(catNode.getContentName()), quoted(catNode.getFullName()), "", "", ""
+					Integer.toString(level), "C", "", "", quoted(catNode.getContentName()), quoted(catNode.getFullName()), "", "", "","","",""
 				});
 		        /// out.println(level + ";C;;;\"" + catNode.getContentName() + "\";\"" + catNode.getFullName() + "\";;"); 
 			} else {
@@ -182,6 +185,9 @@ public class DCPDReportGenerator {
 				out.println("<td>&nbsp;</td>");
 				out.println("<td>&nbsp;</td>");
 				out.println("<td>&nbsp;</td>");
+			    out.println("<td>&nbsp;</td>");
+			    out.println("<td>&nbsp;</td>");
+			    out.println("<td>&nbsp;</td>");				
 				out.println("</tr>");
 			}
 	    }
@@ -194,7 +200,7 @@ public class DCPDReportGenerator {
 	        if (!ctx.isProductsOnlyView()) {
 		        if (ctx.isRenderCSV()) {
 					printToCSV(new Object[]{
-						Integer.toString(level), "C", "A", "", quoted(alias.getId()), quoted(ct.getLabel()), "", "", ""
+						Integer.toString(level), "C", "A", "", quoted(alias.getId()), quoted(ct.getLabel()), "", "", "","","","",""
 					});
 		            /// out.println(level + ";C;A;;\"" + alias.getId() + "\";\"" + ct.getLabel() + "\";;"); 
 		        } else {
@@ -205,6 +211,9 @@ public class DCPDReportGenerator {
 			        out.println("<td>&nbsp;</td>");
 			        out.println("<td>&nbsp;</td>");
 			        out.println("<td>&nbsp;</td>");
+				    out.println("<td>&nbsp;</td>");
+				    out.println("<td>&nbsp;</td>");
+				    out.println("<td>&nbsp;</td>");			        
 			        out.println("</tr>");
 		        }
 	        }
@@ -229,7 +238,7 @@ public class DCPDReportGenerator {
 	    	    if (!ctx.isProductsOnlyView()) {
 		            if (ctx.isRenderCSV()) {
 						printToCSV(new Object[]{
-							Integer.toString(level), "C", "V", "", quoted(vcatNode.getContentName()), quoted(vcatNode.getFullName()), "", "", ""
+							Integer.toString(level), "C", "V", "", quoted(vcatNode.getContentName()), quoted(vcatNode.getFullName()), "", "", "","","",""
 						});
 		                /// out.println(level + ";C;V;;\"" + vcatNode.getContentName() + "\";\"" + vcatNode.getFullName() + "\";;");
 		            } else {
@@ -240,6 +249,9 @@ public class DCPDReportGenerator {
 			    	    out.println("<td>&nbsp;</td>");
 			    	    out.println("<td>&nbsp;</td>");
 			    	    out.println("<td>&nbsp;</td>");
+					    out.println("<td>&nbsp;</td>");
+					    out.println("<td>&nbsp;</td>");
+					    out.println("<td>&nbsp;</td>");			    	    
 			    	    out.println("</tr>");
 		            }
 	    	    }
@@ -293,25 +305,35 @@ public class DCPDReportGenerator {
 			}
 			String eligible = result ? "Yes" : "No";
 	        String rating;
+	        String price="N/A";
+	        String basePrice="N/A";
+	        String isDeal="false";
 	        try {
+	        	
 	            if (skuNode.getProductInfo() != null) {
 	            	rating = skuNode.getProductInfo().getRating();
+	            	price="$"+String.valueOf(skuNode.getProductInfo().getDefaultPrice());
+		        	if(skuNode.getProductInfo().getBasePrice()!=0) {
+		        		basePrice="$"+String.valueOf(skuNode.getProductInfo().getBasePrice());
+		        		isDeal=String.valueOf(skuNode.getProductInfo().isDeal());
+		        	}	            	
 	            } else {
 	            	rating = null;
 	            }
 	        } catch (FDSkuNotFoundException e) {
-	        	rating = null;            
+	        	rating = null; 
+	        	
 	        }
 
 			if (ctx.isRenderCSV()) {
 			    if (ctx.isProductsOnlyView()) {
 					printToCSV(new Object[]{
-						(isUna ? "N" : ""), quoted(parentCName), quoted(skuNode.getFullName()), quoted(skuNode.getContentName()), (rating != null && rating.trim().length() > 0 ? rating: ""), quoted(sku_val!=null ? sku_val : "N/A"), eligible
+						(isUna ? "N" : ""), quoted(parentCName), quoted(skuNode.getFullName()), quoted(skuNode.getContentName()), (rating != null && rating.trim().length() > 0 ? rating: ""), quoted(sku_val!=null ? sku_val : "N/A"), eligible,price,basePrice,isDeal
 					});
 	                /// out.println((isUna ? "N" : "") + ";\"" + parentCName + "\";\"" + skuNode.getFullName() + "\";\"" + skuNode.getContentName() + "\";\"" + (sku_val!=null ? sku_val : "N/A") + "\"");
 			    } else {
 					printToCSV(new Object[]{
-						Integer.toString(level), "P", "", (isUna ? "N" : ""), quoted(parentCName), quoted(skuNode.getFullName()), quoted(skuNode.getContentName()), (rating != null && rating.trim().length() > 0 ? rating: ""), quoted(sku_val!=null ? sku_val : "N/A"), eligible
+						Integer.toString(level), "P", "", (isUna ? "N" : ""), quoted(parentCName), quoted(skuNode.getFullName()), quoted(skuNode.getContentName()), (rating != null && rating.trim().length() > 0 ? rating: ""), quoted(sku_val!=null ? sku_val : "N/A"), eligible,price,basePrice,isDeal
 					});
 			    	/// out.println(level + ";P;;" + (isUna ? "N" : "") + ";\"" + parentCName + "\";\"" + skuNode.getFullName() + "\";\"" + skuNode.getContentName() + "\";\"" + (sku_val!=null ? sku_val : "N/A") + "\"");
 			    }
@@ -327,6 +349,9 @@ public class DCPDReportGenerator {
 		        out.println("<td style='"+cs+"'>" + (rating != null && rating.trim().length() > 0 ? rating: "&nbsp;") + "</td>");
 		        out.println("<td style='"+cs+"'>" + (sku_val!=null ? sku_val : "N/A") + "</td>");
 	            out.println("<td style='"+cs+"'>" + (eligible!=null ? eligible : "N/A") + "</td>");
+	            out.println("<td style='"+cs+"'>" + (price!=null ? price : "N/A") + "</td>");
+	            out.println("<td style='"+cs+"'>" + (basePrice!=null ? basePrice : "N/A") + "</td>");
+	            out.println("<td style='"+cs+"'>" + (isDeal!=null ? isDeal : "N/A") + "</td>");
 	            out.println("</tr>");
 	        }
 	    }
@@ -339,7 +364,7 @@ public class DCPDReportGenerator {
 	    if (!ctx.isProductsOnlyView()) {
 		    if (ctx.isRenderCSV()) {
 				printToCSV(new Object[]{
-					Integer.toString(level), "P", "", "M", quoted(parentCName), "", "", "", ""
+					Integer.toString(level), "P", "", "M", quoted(parentCName), "", "", "", "","","",""
 				});
 		        /// out.println(level + ";P;;N;\"" + parentCName + "\";;;");
 		    } else {
@@ -350,6 +375,9 @@ public class DCPDReportGenerator {
 		        out.println("<td style='"+cs+"'>&nbsp;</td>");
 		        out.println("<td style='"+cs+"'>&nbsp;</td>");
 		        out.println("<td style='"+cs+"'>&nbsp;</td>");
+		        out.println("<td style='"+cs+"'>&nbsp;</td>");
+		        out.println("<td style='"+cs+"'>&nbsp;</td>");
+		        out.println("<td style='"+cs+"'>&nbsp;</td>");		        
 		        out.println("</tr>");
 		    }
 	    }
@@ -362,7 +390,7 @@ public class DCPDReportGenerator {
 	    if (!ctx.isProductsOnlyView()) {
 		    if (ctx.isRenderCSV()) {
 				printToCSV(new Object[]{
-					Integer.toString(level), "R", "V", "", quoted(recipeNode.getContentName()), quoted(recipeNode.getFullName()), "", "", ""
+					Integer.toString(level), "R", "V", "", quoted(recipeNode.getContentName()), quoted(recipeNode.getFullName()), "", "", "","","",""
 				});
 		        /// out.println(level + ";R;V;;\"" + recipeNode.getContentName() + "\";\"" + recipeNode.getFullName() + "\";;");
 		    } else {
@@ -373,6 +401,9 @@ public class DCPDReportGenerator {
 			    out.println("<td>&nbsp;</td>");
 			    out.println("<td>&nbsp;</td>");
 			    out.println("<td>&nbsp;</td>");
+		        out.println("<td>&nbsp;</td>");
+			    out.println("<td>&nbsp;</td>");
+		        out.println("<td>&nbsp;</td>");
 			    out.println("</tr>");
 		    }
 	    }
@@ -393,7 +424,7 @@ public class DCPDReportGenerator {
 	    if (!ctx.isProductsOnlyView()) {
 		    if (ctx.isRenderCSV()) {
 				printToCSV(new Object[]{
-					Integer.toString(level), "V", "", "", quoted(vNode.getContentName()), "", "", "", ""
+					Integer.toString(level), "V", "", "", quoted(vNode.getContentName()), "", "", "", "","","",""
 				});
 		        /// out.println(level + ";V;;;\"" + vNode.getContentName() + "\";;;");
 		    } else {
@@ -404,6 +435,9 @@ public class DCPDReportGenerator {
 			    out.println("<td>&nbsp;</td>");
 			    out.println("<td>&nbsp;</td>");
 			    out.println("<td>&nbsp;</td>");
+			    out.println("<td>&nbsp;</td>");
+			    out.println("<td>&nbsp;</td>");
+			    out.println("<td>&nbsp;</td>");			    
 			    out.println("</tr>");
 		    }
 	    }
@@ -424,7 +458,7 @@ public class DCPDReportGenerator {
 	    if (!ctx.isProductsOnlyView()) {
 		    if (ctx.isRenderCSV()) {
 				printToCSV(new Object[]{
-					Integer.toString(level), "S", "", "", quoted(rNode.getContentName()), "", "", "", ""
+					Integer.toString(level), "S", "", "", quoted(rNode.getContentName()), "", "", "", "","","",""
 				});
 		        /// out.println(level + ";S;;;\"" + rNode.getContentName() + "\";;;");
 		    } else {
@@ -435,6 +469,9 @@ public class DCPDReportGenerator {
 			    out.println("<td>&nbsp;</td>");
 			    out.println("<td>&nbsp;</td>");
 			    out.println("<td>&nbsp;</td>");
+			    out.println("<td>&nbsp;</td>");
+			    out.println("<td>&nbsp;</td>");
+			    out.println("<td>&nbsp;</td>");			    
 			    out.println("</tr>");
 		    }
 	    }    
