@@ -612,13 +612,13 @@ if(productCode!=null && prodCatId !=null ) {
         <br>
 <%}
 if ((Image)productNode.getZoomImage()!=null) {%>
-<A HREF="javascript:pop('<%=response.encodeURL("shared/prodpop.jsp?productId="+request.getParameter("productId")+"&catId="+request.getParameter("prodCatId"))%>',335,375)">
-<% if(isDeal) {%>
-    <DIV id=sale_star style="POSITION: absolute"><IMG style=\"BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px"  alt="<%="SAVE "+deal+"%"%>" src="<%=dealsImage%>"> </DIV>
+
+<% if(isDeal &&!productNode.isUnavailable()) {%>
+    <DIV id=sale_star style="POSITION: absolute"><A HREF="javascript:pop('<%=response.encodeURL("shared/prodpop.jsp?productId="+request.getParameter("productId")+"&catId="+request.getParameter("prodCatId"))%>',335,375)"  border="0"><IMG style=\"BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px"  border="0" alt="<%="SAVE "+deal+"%"%>" src="<%=dealsImage%>"></A> </DIV>
 <%}%>
-<img SRC="<%= bigProductImage.getPath() %>" width="<%= bigProductImage.getWidth() %>" height="<%= bigProductImage.getHeight() %>" border="0" alt="<%=productNode.getFullName()%>"></a>
+<A HREF="javascript:pop('<%=response.encodeURL("shared/prodpop.jsp?productId="+request.getParameter("productId")+"&catId="+request.getParameter("prodCatId"))%>',335,375)"><img SRC="<%= bigProductImage.getPath() %>" width="<%= bigProductImage.getWidth() %>" height="<%= bigProductImage.getHeight() %>" border="0" alt="<%=productNode.getFullName()%>"></a>
 <% } else { %>
-<img SRC="<%= bigProductImage.getPath() %>" width="<%= bigProductImage.getWidth() %>" height="<%= bigProductImage.getHeight() %>" border="0" alt="<%=productNode.getFullName()%>">
+<A HREF="javascript:pop('<%=response.encodeURL("shared/prodpop.jsp?productId="+request.getParameter("productId")+"&catId="+request.getParameter("prodCatId"))%>',335,375)"><img SRC="<%= bigProductImage.getPath() %>" width="<%= bigProductImage.getWidth() %>" height="<%= bigProductImage.getHeight() %>" border="0" alt="<%=productNode.getFullName()%>"></A>
 <% } %>
 </td>
 </tr>
@@ -863,13 +863,13 @@ if(showThumbnails) {
                                 + "&productId="+displayProduct.getContentName())+"&trk=trans";
 %>
                 <td width="85">
-                <div id="prod_container" style="height: 90px; width: 100px; text-align: left;">
+                <div id="prod_container" style="height: 90px; width: 90px; text-align: left;">
                 <div style="padding: 10px 10px 0pt; height: 0px; line-height: 0px; position: absolute;" id="prod_image">
 		            <a id="prod_link_img" name="prod_link_img" href="<%=imgLinkUrl%>" style="display: block;">
 			        <img src="<%= groDeptImage.getPath()%>" width="<%= groDeptImage.getWidth()%>" height="<%= groDeptImage.getHeight()%>" border="0" alt="<%=displayProduct.getFullName()%>" onMouseOver="changeImg(document.bullet<%=imgShownIndex %>,'in',0)" onMouseOut="changeImg(document.bullet<%=imgShownIndex %>,'out',0)">
 		            </a>
 	            </div>
-                <%if(sku.getProductInfo().isDeal()) { %>
+                <%if(sku.getProductInfo().isDeal()&&!sku.isUnavailable()) { %>
                     <div style="position: absolute;" id="sale_star">
 			            <a id="prod_link_img" name="prod_link_img" href="<%=imgLinkUrl%>" style="display: block;">
 			            <img alt="<%="SAVE "+sku.getProductInfo().getDealPercentage()+"%"%>" src="<%=_dealImage%>" style="border: 0px none ;" onMouseOver="changeImg(document.bullet<%=imgShownIndex %>,'in',0)" onMouseOut="changeImg(document.bullet<%=imgShownIndex %>,'out',0)">
