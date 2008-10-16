@@ -210,6 +210,28 @@ public class TemplateContext {
 		return price;
 	}
 	
+	public String getBasePrice(ContentNodeI node) {
+		String       price = "";
+		//System.out.println("********** inside getBasePrice "+node);
+		if (node.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
+			ProductModel product    = (ProductModel) node;
+			SkuModel     defaultSku = product.getDefaultSku();
+			//System.out.println("********** inside getBasePrice default sku: "+defaultSku);
+			
+			try {
+				if (defaultSku != null) {
+					FDProductInfo pi    = FDCachedFactory.getProductInfo(defaultSku.getSkuCode());
+					//pi.getAttribute(EnumAttributeName.PRICING_UNIT_DESCRIPTION.getName(), pi.getDefaultPriceUnit().toLowerCase())
+					price =  currencyFormatter.format(pi.getBasePrice());
+					//System.out.println("********** inside getBasePrice baseprice: "+price);
+			 	}
+			} catch (FDResourceException e) {
+			} catch (FDSkuNotFoundException e) {
+			}
+		}
+		
+		return price;
+	}
 	
 	/**
 	 *  Return the pricing with the correct sales unit for the node.
