@@ -5,7 +5,6 @@ Only display claims applicable to all available SKUs
 <%
 Set common = productNode.getCommonNutritionInfo(ErpNutritionInfoType.CLAIM);
 if (!common.isEmpty()) {%>
-	<%=productNode.hasAttribute("PROD_DESCRIPTION_NOTE") ? "" : "<br>"%>
 	<%
 	for (Iterator ic = common.iterator(); ic.hasNext();) {
 		EnumClaimValue claim = (EnumClaimValue) ic.next();

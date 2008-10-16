@@ -149,17 +149,25 @@ if (currentCategory != null) {
     }
 
 
-    StringBuffer favoriteProducts = new StringBuffer();
-    ContentNodeModel prodParent = null;
-    ContentFactory contentFactory = ContentFactory.getInstance();
-    int favoritesShown = 0;
-    Comparator priceComp = new ProductModel.PriceComparator();
-    String productName = null;
+	StringBuffer favoriteProducts = new StringBuffer();
+	StringBuffer favoriteProductsText = new StringBuffer();
+	ContentNodeModel prodParent = null;
+	ContentFactory contentFactory = ContentFactory.getInstance();
+	int favoritesShown = 0;
+	Comparator priceComp = new ProductModel.PriceComparator();
+	String productName = null;
+	Image groDeptImage = null;
+	String rating="";
+	SkuModel sku = null;
+	String prodPrice = null;
+	String prodBasePrice=null;
+	boolean isDeal=false;
+	int deal=0;
 %>
-    <logic:iterate id='contentNode' collection="<%=favorites%>" type="com.freshdirect.fdstore.content.ProductModel">
+    
+<logic:iterate id='contentNode' collection="<%=favorites%>" type="com.freshdirect.fdstore.content.ProductModel">
 <%
-        Image groDeptImage = null;
-        String rating="";
+        
         ProductModel product = contentNode;  //(ProductModel)contentFactory.getProduct(contentRef.getCategoryId(),contentRef.getProductId());
         if (product==null || product.isDiscontinued() || product.isUnavailable())
         	continue;
@@ -168,12 +176,6 @@ if (currentCategory != null) {
         List skus = product.getSkus(); 
         if (prodParent==null || !(prodParent instanceof CategoryModel))
         	continue;
-
-        SkuModel sku = null;
-        String prodPrice = null;
-        String prodBasePrice=null;
-        boolean isDeal=false;
-        int deal=0;
 
         if (skus.size()==0)
         	continue;  // skip this item..it has no skus.  Hmmm?
@@ -212,87 +214,40 @@ if (currentCategory != null) {
             +"&trk=feat");
         String dealImage=new StringBuffer("/media_stat/images/deals/brst_sm_").append(deal).append(".gif").toString();
         groDeptImage = (Image)product.getCategoryImage();
-        favoriteProducts.append("<TD align=\"center\" WIDTH=\"105\">");
-        favoriteProducts.append("<div id=\"prod_container\" style=\"height: 90px; width: 100px; text-align: left;\">");
-        favoriteProducts.append("<div style=\"padding: 10px 10px 0pt; height: 0px; line-height: 0px; position: absolute;\" id=\"prod_image\">");
-        favoriteProducts.append("<a id=\"prod_link_img\" name=\"prod_link_img\" href=\"");
-        favoriteProducts.append(productPageLink_);
-        favoriteProducts.append("\" style=\"display: block;\">");
-        
+        favoriteProducts.append("<td align=\"center\" width=\"105\" valign=\"bottom\">");
+	
+	if(isDeal) {
+		favoriteProducts.append("<div id=\"prod_container\" style=\"height: 90px; width: 100px; text-align: left;\">");
+        }
+		
         if (groDeptImage !=null) {
-        	 favoriteProducts.append("<img alt=\"");
-	         favoriteProducts.append(product.getFullName());
-	         favoriteProducts.append("\" src=\"").append(groDeptImage.getPath()).append("\"").append(JspMethods.getImageDimensions(groDeptImage)).append(" style=\"border: 0px none ;\">");
-             favoriteProducts.append("</a>");
-             favoriteProducts.append("</div>");
-            if(isDeal) {
+		if(isDeal) {
+			favoriteProducts.append("<div style=\"padding: 10px 10px 0pt; height: 0px; line-height: 0px; position: absolute;\" id=\"prod_image\">");
+		}
+		
+		favoriteProducts.append("<a id=\"prod_link_img\" name=\"prod_link_img\" href=\"");
+		favoriteProducts.append(productPageLink_);
+		favoriteProducts.append("\">");
+		favoriteProducts.append("<img alt=\"");
+		favoriteProducts.append(product.getFullName());
+		favoriteProducts.append("\" src=\"").append(groDeptImage.getPath()).append("\"").append(JspMethods.getImageDimensions(groDeptImage)).append(" style=\"border: 0px none ;\">");
+		favoriteProducts.append("</a>");
+		
+		if(isDeal) {
+		favoriteProducts.append("</div>");
                 favoriteProducts.append("<div style=\"position: absolute;\" id=\"sale_star\">");
-                favoriteProducts.append("<a id=\"prod_link_img\" name=\"prod_link_img\" href=\"").append(productPageLink_).append("\" style=\"display: block;\">");
+                favoriteProducts.append("<a id=\"prod_link_img\" name=\"prod_link_img\" href=\"").append(productPageLink_).append("\">");
                 favoriteProducts.append("<img alt=\"");
-	            favoriteProducts.append("SAVE ").append(deal).append("%\" src=\"").append(dealImage).append("\" style=\"border: 0px none ;\">");
-                favoriteProducts.append("</A>");
+		favoriteProducts.append("SAVE ").append(deal).append("%\" src=\"").append(dealImage).append("\" style=\"BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px\">");
+                favoriteProducts.append("</a>");
                 favoriteProducts.append("</div>");
-                
-            } 
-        favoriteProducts.append("</div>");            
+                }
         }
-        favoriteProducts.append("<BR>");
-        
-        
-        
-        
-        
-        
-        favoriteProducts.append("<A HREF=\"");
-        favoriteProducts.append(productPageLink_);
-        favoriteProducts.append("\">");
-        String thisProdBrandLabel = product.getPrimaryBrandName();
-        if (thisProdBrandLabel.length()>0) {
-            favoriteProducts.append("<FONT CLASS=\"text10bold\">");
-            favoriteProducts.append(thisProdBrandLabel);
-            favoriteProducts.append("</font>");
-        }
-        
-        if(rating!=null && rating.trim().length()>0)
-        {
-            favoriteProducts.append("<BR><font class=\"center\">");            
-            favoriteProducts.append("<img src=\"");
-            favoriteProducts.append("/media_stat/images/ratings/"+rating+".gif");
-            favoriteProducts.append("\"  name=\"");
-            favoriteProducts.append("rating"+rating);
-            favoriteProducts.append("\" width=\"");
-            favoriteProducts.append("59");
-            favoriteProducts.append("\"  height=\"");
-            favoriteProducts.append("11");
-            favoriteProducts.append("\" ALT=\"");
-            favoriteProducts.append("");
-            favoriteProducts.append("\" border=\"0\"");         
-            favoriteProducts.append(">");
-            favoriteProducts.append("</font>");            
-        }
-
-        
-        productName = product.getFullName();
-        if (productName != null && productName.substring(thisProdBrandLabel.length()).trim().length() > 0) {
-            favoriteProducts.append("<br>");
-            favoriteProducts.append(productName.substring(thisProdBrandLabel.length()).trim()); 
-        }
-          
-        favoriteProducts.append("</A><BR>");
-        if(isDeal) {
-        
-            favoriteProducts.append("<font style=\"FONT-WEIGHT: bold; FONT-SIZE: 8pt; COLOR: #c00\">");
-            favoriteProducts.append(prodPrice);
-            favoriteProducts.append("</font><BR>");
-            favoriteProducts.append("<font style=\"FONT-SIZE: 7pt; COLOR: #888\">(was ");
-            favoriteProducts.append(prodBasePrice);
-            favoriteProducts.append(") </font>");
-        } else {
-            favoriteProducts.append("<font class=\"favoritePrice\">");
-            favoriteProducts.append(prodPrice);
-            favoriteProducts.append("</font>");
-
-        }
+	
+	if(isDeal) {
+		favoriteProducts.append("</div>");  
+	}
+	
         favoriteProducts.append("</TD>");
         favoriteProducts.append("<TD WIDTH=\"10\">");
         favoriteProducts.append("<IMG SRC=\"");
@@ -302,34 +257,142 @@ if (currentCategory != null) {
         if (favoritesShown ==5)
         	break;
 %>
-    </logic:iterate>
+</logic:iterate>
+	
+<% favoritesShown = 0; %>	
+	
+<logic:iterate id='contentNode' collection="<%=favorites%>" type="com.freshdirect.fdstore.content.ProductModel">
+<%
+        
+        ProductModel product = contentNode;  //(ProductModel)contentFactory.getProduct(contentRef.getCategoryId(),contentRef.getProductId());
+        if (product==null || product.isDiscontinued() || product.isUnavailable())
+        	continue;
+
+        prodParent = product.getParentNode(); 
+        List skus = product.getSkus(); 
+        if (prodParent==null || !(prodParent instanceof CategoryModel))
+        	continue;
+
+        if (skus.size()==0)
+        	continue;  // skip this item..it has no skus.  Hmmm?
+
+        if (skus.size()==1) {
+            sku = (SkuModel)skus.get(0);  // we only need one sku
+        } else {
+            sku = (SkuModel) Collections.min(skus, priceComp);
+        }
+        
+   %>     
+   
+   <fd:ProduceRatingCheck>
+   <%
+        rating=JspMethods.getProductRating(product);
+   %>
+   </fd:ProduceRatingCheck>     
+
+        <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
+<%
+       
+        prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()); //+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
+        isDeal=productInfo.isDeal();
+        System.out.println( sku.getSkuCode()+" "+isDeal);
+        if(isDeal) {
+            prodBasePrice=JspMethods.currencyFormatter.format(productInfo.getBasePrice()); //+"/"+ productInfo.getBasePriceUnit().toLowerCase();
+            deal=productInfo.getDealPercentage();
+        }  
+
+%>                      
+        </fd:FDProductInfo>
+<%
+        String productPageLink_ = response.encodeURL("/product.jsp?catId=" + prodParent
+            +"&prodCatId=" + prodParent
+            +"&productId=" + product 
+            +"&trk=feat");
+        String dealImage=new StringBuffer("/media_stat/images/deals/brst_sm_").append(deal).append(".gif").toString();
+        groDeptImage = (Image)product.getCategoryImage();
+        favoriteProductsText.append("<TD align=\"center\" WIDTH=\"105\">");
+        favoriteProductsText.append("<A HREF=\"");
+        favoriteProductsText.append(productPageLink_);
+        favoriteProductsText.append("\">");
+        String thisProdBrandLabel = product.getPrimaryBrandName();
+        if (thisProdBrandLabel.length()>0) {
+		favoriteProductsText.append("<font CLASS=\"text10bold\">");
+		favoriteProductsText.append(thisProdBrandLabel);
+		favoriteProductsText.append("</font>");
+		favoriteProductsText.append("<br>");
+        }
+        
+        if(rating!=null && rating.trim().length()>0)
+        {
+            favoriteProductsText.append("<BR><div align=\"center\">");            
+            favoriteProductsText.append("<img src=\"");
+            favoriteProductsText.append("/media_stat/images/ratings/"+rating+".gif");
+            favoriteProductsText.append("\"  name=\"");
+            favoriteProductsText.append("rating"+rating);
+            favoriteProductsText.append("\" width=\"");
+            favoriteProductsText.append("59");
+            favoriteProductsText.append("\"  height=\"");
+            favoriteProductsText.append("11");
+            favoriteProductsText.append("\" ALT=\"");
+            favoriteProductsText.append("");
+            favoriteProductsText.append("\" border=\"0\"");         
+            favoriteProductsText.append(">");
+            favoriteProductsText.append("</div>");            
+        }
+
+        
+        productName = product.getFullName();
+        if (productName != null && productName.substring(thisProdBrandLabel.length()).trim().length() > 0) {
+            favoriteProductsText.append(productName.substring(thisProdBrandLabel.length()).trim()); 
+        }
+          
+        favoriteProductsText.append("</A><BR>");
+        if(isDeal) {
+        
+            favoriteProductsText.append("<font style=\"FONT-WEIGHT: bold; FONT-SIZE: 8pt; COLOR: #c00\">");
+            favoriteProductsText.append(prodPrice);
+            favoriteProductsText.append("</font><BR>");
+            favoriteProductsText.append("<font style=\"FONT-SIZE: 7pt; COLOR: #888\">(was ");
+            favoriteProductsText.append(prodBasePrice);
+            favoriteProductsText.append(") </font>");
+        } else {
+            favoriteProductsText.append("<font class=\"favoritePrice\">");
+            favoriteProductsText.append(prodPrice);
+            favoriteProductsText.append("</font>");
+
+        }
+        favoriteProductsText.append("</TD>");
+        favoriteProductsText.append("<TD WIDTH=\"10\">");
+        favoriteProductsText.append("<IMG SRC=\"");
+        favoriteProductsText.append("media/images/layout/clear.gif");
+        favoriteProductsText.append("\" WIDTH=\"8\" HEIGHT=\"1\"></TD>");
+        favoritesShown++;
+        if (favoritesShown ==5)
+        	break;
+%>
+</logic:iterate>	
+	
 <%
 
     if (favoriteProducts.length()>1) {
 %>
-<TABLE CELLPADDING="0" CELLSPACING="0" WIDTH="550" BORDER="0">
-    <TR VALIGN="TOP">
-        <TD CLASS="title14">Popular Items<br>
-            <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8">
-        </TD>
-    </TR>
-</TABLE>
-<TABLE CELLPADDING="0" CELLSPACING="0" WIDTH="550" BORDER="0">
-<TR VALIGN="TOP">
-<%= favoriteProducts.toString() %></tr>
-</TABLE>
+<table cellpadding="0" cellspacing="0" width="550" border="0">
+<tr><td class="title14">Popular Items<br><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td></tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" width="550" border="0">
+	<tr valign="bottom"><%= favoriteProducts.toString() %></tr>
+	<tr valign="top"><%= favoriteProductsText.toString() %></tr>
+</table>
 <%
     }
-
-
-
-
 
     int typeSpan = (currentCategory != null ? currentCategory.getColumnSpan() : 2);
 	int brandSpan = 4 - typeSpan;
 
 %>
 <BR><BR>
+    
 <IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="550" HEIGHT="1"><BR>
 <FONT CLASS="space4pix"><BR></FONT>
 <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="550">
@@ -347,9 +410,6 @@ if (currentCategory != null) {
                 </td>
             </tr>
             <tr VALIGN="TOP"><%
-
-
-
     //
     // "CHOOSE A TYPE" COLUMNS
     //
@@ -589,4 +649,3 @@ if (currentCategory != null) {
     <td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td>
 </tr>
 </TABLE>
-

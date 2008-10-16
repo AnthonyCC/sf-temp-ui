@@ -77,11 +77,12 @@ String newProdsFldrId = currentFolder.getContentName().toLowerCase()+"_new";
         FeaturedHeader =  "/media_stat/images/layout/clear.gif";
     }
 %>
-<img src="/media_stat/images/layout/clear.gif" width="550" height="1">
+<%-- img src="/media_stat/images/layout/clear.gif" width="550" height="1" --%>
 <table cellpadding="0" cellspacing="0" border="0" width="550">
     <tr valign="top">
     	<td width="550"> <%-- this is the category column --%>
         	<table cellpadding="0" cellspacing="0" border="0" width="100%">
+		    <% if (currentFolder.getEditorialTitle() != null && currentFolder.getEditorialTitle().length() > 0) { %>
 				<tr><td colspan="6">
 					<span class="title16"><%= currentFolder.getEditorialTitle() %></span>
 				</td></tr>
@@ -91,6 +92,7 @@ String newProdsFldrId = currentFolder.getContentName().toLowerCase()+"_new";
 				<IMG src="/media_stat/images/layout/cccccc.gif" width="550" height="1" border="0"><BR>
 				<FONT CLASS="space4pix"><BR><br></FONT>
 				</td></tr>
+		<% } %>
 
 	            <tr>
 	                <td colspan="6"><img src="<%= BrowseHeader %>"><br><br></td>

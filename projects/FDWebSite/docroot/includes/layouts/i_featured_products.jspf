@@ -86,13 +86,14 @@
         StringBuffer favoriteProducts = new StringBuffer("");
         StringBuffer favoriteProductLinks = new StringBuffer("");
         // append product image
-        favoriteProducts.append("<DIV id=prod_container style=\"WIDTH: 100px; HEIGHT: 100px; TEXT-ALIGN: left\"><A id=prod_link_img style=\"DISPLAY: block; CURSOR: hand\" HREF=\"" + productPageLink_ + "\" name=prod_link_img>");
+        favoriteProducts.append("<DIV id=prod_container style=\"WIDTH: 100px; HEIGHT: 100px; TEXT-ALIGN: left\">");
         if (groDeptImage !=null) {
             favoriteProducts.append("<DIV id=prod_image style=\"PADDING-RIGHT: 10px; PADDING-LEFT: 10px; PADDING-BOTTOM: 0px; LINE-HEIGHT: 0px; PADDING-TOP: 10px; POSITION: absolute; HEIGHT: 0px\">")
-                            .append("<IMG style=\"BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px\" ")
-                            .append(JspMethods.getImageDimensions(groDeptImage))
-                            .append(" alt=\"").append(product.getFullName()).append("\" src=\"").append(groDeptImage.getPath()).append("\" ></DIV>");
-            favoriteProducts.append("<DIV id=sale_star style=\"POSITION: absolute\"><IMG style=\"BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px\"  alt=\"SAVE ").append(deal).append("%\" src=\"").append(dealImage).append("\"> </DIV></A></DIV>");                        
+                        .append("<A id=prod_link_img style=\"DISPLAY: block; CURSOR: hand\" HREF=\"" + productPageLink_ + "\" name=prod_link_img>")    
+			.append("<IMG style=\"BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px\" ")
+			.append(JspMethods.getImageDimensions(groDeptImage))
+			.append(" alt=\"").append(product.getFullName()).append("\" src=\"").append(groDeptImage.getPath()).append("\" ></a></DIV>");
+            favoriteProducts.append("<DIV id=sale_star style=\"POSITION: absolute\"><A id=prod_link_img style=\"DISPLAY: block; CURSOR: hand\" HREF=\"" + productPageLink_ + "\" name=prod_link_img_burst><IMG style=\"BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px\"  alt=\"SAVE ").append(deal).append("%\" src=\"").append(dealImage).append("\"></A></DIV></DIV>");                        
         }
         
 
@@ -133,8 +134,8 @@
 	</tr>
 
 	<tr>
-		<td width="100%" colspan="6">
-		    <img src="/media_stat/images/layout/clear.gif" width="200" height="1"><br />
+		<td colspan="6" align="center">
+
 	        <%
 			// display department specific media
 			if (isDepartment) {
@@ -153,17 +154,12 @@
 			}
 	        %>
 	        <font class="space4pix"><br /><br /></font>
-		    <table cellpadding="0" cellspacing="0" border="0" width="125">
-	        	<tr valign="top" align="center">
-	            	<td>
-	            		<table id="fav-prds-table" width="550" border="0" cellspacing="0" cellpadding="0">
+			<table id="fav-prds-table" border="0" cellspacing="0" cellpadding="0">
 	            		<tr>
 		            	<%  
 		            	List row = favHTMLPieces;
-		            	
 		            	for (int k=0; k<row.size(); ++k) {
 		            		%><td align="center" valign="<%= row == favHTMLPieces ? "bottom" : "top" %>" width="110">
-		            			<img src="/media_stat/images/layout/clear.gif" width="100" height="1"><br/>
 		            			<%= row.get(k) %>
 		            		</td><%
 		            			// start a new row if it has enough content
@@ -172,16 +168,16 @@
 		            				if (row == favHTMLPieceLinks) k -= FAVS_PER_LINE;
 		            				%></tr><tr><%
 		            			} else if (k == row.size() -1) {
-		            				for(int j=0; j < FAVS_PER_LINE-(favHTMLPieces.size()%FAVS_PER_LINE); ++j) {
+								// this is only needed if we have > 5 items not in multiple of 5s
+								for(int j=0; j < FAVS_PER_LINE-(favHTMLPieces.size()%FAVS_PER_LINE); ++j) {
 		            					%><td>&nbsp;</td><%
-		            				}
+								}
 		            				if (row == favHTMLPieces) { 
 		            					%></tr><tr><%
 		            					row = favHTMLPieceLinks;
 		            					k -= (favHTMLPieces.size()%FAVS_PER_LINE);
 		            				}
 		            			}
-		            		
 		            	}
 		            	/*
 		            	// put placeholder TD-s if a row is not filled in entirely
@@ -191,10 +187,8 @@
 		            	*/
 		            	%>
 		            	</tr>
-		            	</table>
-	            	</td>
-	        	</tr>
-	    	</table><%-- close the featured product column --%><%
+			</table>
+<%-- close the featured product column --%><%
     
         if (isDepartment) {
             DepartmentModel department = (DepartmentModel) currentFolder;

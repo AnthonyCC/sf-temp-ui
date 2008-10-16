@@ -43,7 +43,7 @@ if (!isGroceryProdPage) {
         catBottAttrib = cm_ForBottom.getAttribute("CATEGORY_MIDDLE_MEDIA");
         List catMidMedias =  catBottAttrib==null?new ArrayList():(List)catBottAttrib.getValue();
         
-		if (catMidMedias.size()>0) {  %>
+	if (catMidMedias.size()>0) {  %>
             <BR>
             <img src="/media_stat/images/layout/cccccc.gif" width="<%=bottTblWidth%>" HEIGHT="1" BORDER="0"><BR>
             <FONT CLASS="space4pix"><br><br></FONT>
@@ -75,12 +75,7 @@ if (!isGroceryProdPage) {
 					<% } %>
 					</logic:iterate>
 				<% } else { %>
-					<BR>
-					<img src="/media_stat/images/layout/cccccc.gif" width="<%=bottTblWidth%>" HEIGHT="1" BORDER="0"><BR>
-					<FONT CLASS="space4pix"><br><br></FONT>
-					<table BORDER="0" CELLSPACING="0" CELLPADDING="0" width="<%=bottTblWidth%>">
-						<tr valign="top">
-							<td align="center">
+					
 					<%
 					//CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNodeByName(bottomCatId);
 					
@@ -90,46 +85,59 @@ if (!isGroceryProdPage) {
 					
 					boolean showRatingLegend = false;
 					String deptMngrImgPath;
-	
-					if (dptBottAttrib !=null) {
-						String deptMngrLink = "/shared/popup.jsp?deptId="+dm_ForBottom+"&attrib=DEPT_MGR_BIO&tmpl=large";
-						if ("bak".equalsIgnoreCase(dm_ForBottom.toString())) {
-							deptMngrLink +="&spec=craig_kominiak";
-						}
-						deptMngrImg = (Image)dptBottAttrib.getValue();
-						deptMngrImgPath = deptMngrImg.getPath();
-						
-						if (deptMngrImgPath.toLowerCase().indexOf("clear.gif") > -1) {
-							showRatingLegend = true; 
-						}
-						
-						if (!showRatingLegend) {
+					
+					if (catBottomMedias.size()>0 || dptBottAttrib != null) {
 					%>
-							<a href="javascript:popup('<%=deptMngrLink%>','large')"><img src="<%=deptMngrImg.getPath()%>" border="0" alt="<%=cm_ForBottom.getFullName()%>: MANAGER"></a>
-								<br><img src="/media_stat/images/layout/clear.gif" width="110" HEIGHT="1" BORDER="0">    
-							</td>
-							<td width="10"><img src="/media/images/layout/clear.gif" width="10" height="1" alt="" border="0"></td> 
-							<td>
-					<% } 
-					} // close dptBottAttrib !=null %>
-					 
-              			<logic:iterate id='mediaRef' indexId='indexNo' collection="<%=catBottomMedias%>" type="com.freshdirect.fdstore.content.MediaModel">
-							<% if (((Html)mediaRef).getPath()!=null) { %>
-                               <% if(indexNo.intValue()!=0){ %>
-                                     <img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
-                                     <img src="/media_stat/images/layout/cccccc.gif" width="295" HEIGHT="1" BORDER="0"><BR>
-                                     <img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
-                               <% } %>
-                            <fd:IncludeMedia name='<%= ((Html)mediaRef).getPath() %>' />
-    						<% } %>
-              			</logic:iterate>
-							</td>
-						</tr>
-    				</table>
-    <% } // close if !Wine else 
+					
+						<BR>
+						<img src="/media_stat/images/layout/cccccc.gif" width="<%=bottTblWidth%>" HEIGHT="1" BORDER="0"><BR>
+						<FONT CLASS="space4pix"><br><br></FONT>
+						<table BORDER="0" CELLSPACING="0" CELLPADDING="0" width="<%=bottTblWidth%>">
+							<tr valign="top">
+								<td align="center">
+							<%
+							if (dptBottAttrib !=null) {
+								String deptMngrLink = "/shared/popup.jsp?deptId="+dm_ForBottom+"&attrib=DEPT_MGR_BIO&tmpl=large";
+								if ("bak".equalsIgnoreCase(dm_ForBottom.toString())) {
+									deptMngrLink +="&spec=craig_kominiak";
+								}
+								deptMngrImg = (Image)dptBottAttrib.getValue();
+								deptMngrImgPath = deptMngrImg.getPath();
+								
+								if (deptMngrImgPath.toLowerCase().indexOf("clear.gif") > -1) {
+									showRatingLegend = true; 
+								}
+								
+								if (!showRatingLegend) {
+							%>
+									<a href="javascript:popup('<%=deptMngrLink%>','large')"><img src="<%=deptMngrImg.getPath()%>" border="0" alt="<%=cm_ForBottom.getFullName()%>: MANAGER"></a>
+										<br><img src="/media_stat/images/layout/clear.gif" width="110" HEIGHT="1" BORDER="0">    
+									</td>
+									<td width="10"><img src="/media/images/layout/clear.gif" width="10" height="1" alt="" border="0"></td> 
+									<td>
+							<% } 
+							} // close dptBottAttrib !=null %>
+							 
+							<logic:iterate id='mediaRef' indexId='indexNo' collection="<%=catBottomMedias%>" type="com.freshdirect.fdstore.content.MediaModel">
+								<% if (((Html)mediaRef).getPath()!=null) { %>
+									<% if(indexNo.intValue()!=0){ %>
+										<img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
+										<img src="/media_stat/images/layout/cccccc.gif" width="295" HEIGHT="1" BORDER="0"><BR>
+										<img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"><br>
+									<% } %>
+									<fd:IncludeMedia name='<%= ((Html)mediaRef).getPath() %>' />
+								<% } %>
+							</logic:iterate>
+									</td>
+								</tr>
+						</table>
+    <% } 
+	}// close if !Wine else 
     } // close cm_ForBottom!=null
  } // close catBottomMedias.size()>0 || catBottomMedias.size() == 0 
     %>
+ 
+ 
 <%
     // display the featured brands if there are any
     catBottAttrib = cm_ForBottom.getAttribute("FEATURED_BRANDS");
@@ -166,10 +174,13 @@ if (!isGroceryProdPage) {
 					</tr>
 					<tr valign="top">
 						<td width="<%=bottTblWidth%>"><img src="/media_stat/images/layout/clear.gif" width="10" height="1" alt="" border="0">
-				<% } // close brandsShown == 0 %>
+				<% } // close brandsShown == 0 
+				%>
             <a href="<%=brandLink%>"><img src="<%=bLogo.getPath()%>" width="<%=bLogo.getWidth()%>" height="<%=bLogo.getHeight()%>" alt="<%=brandMod.getFullName()%>" border="0"></a>&nbsp;&nbsp;
     <%      brandsShown++;
-        } // close catBottAttrib==null else %>
+        } // close catBottAttrib==null else 
+%>
      </td></tr></table> 
 <%    } // close catBottAttrib !=null
- } // close !isGroceryProdPage %>
+ } // close !isGroceryProdPage 
+ %>
