@@ -22,6 +22,13 @@ String custFirstName = user.getFirstName();
 int validOrderCount = user.getAdjustedValidOrderCount();
 boolean mainPromo = user.getLevel() < FDUserI.RECOGNIZED && user.isEligibleForSignupPromotion();
 
+
+/*
+if we're on the email.jsp, set the product base urls to PROD
+set true in email.jsp, false in newsletter.jsp
+*/
+boolean emailpage = false;
+
 Map params = new HashMap();
 params.put("baseUrl", "");
 %>

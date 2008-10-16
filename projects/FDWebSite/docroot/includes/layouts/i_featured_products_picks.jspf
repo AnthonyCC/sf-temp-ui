@@ -1,6 +1,13 @@
 <%-- Featured Products column --%>
 <%  
-
+	String baseURL = "";
+	/*
+	if we're on the email.jsp, set the product base urls to PROD
+	set true in email.jsp, false in newsletter.jsp
+	*/
+	if (emailpage) {
+		baseURL = params.get("baseUrl").toString();
+	}
 	currentFolder=ContentFactory.getInstance().getContentNodeByName("gro");
 	isDepartment = true;
 
@@ -86,20 +93,24 @@
         StringBuffer favoriteProducts = new StringBuffer("");
         StringBuffer favoriteProductLinks = new StringBuffer("");
         // append product image
-        favoriteProducts.append("<div id=prod_container style=\"width: 100px; height: 100px; text-align: left\"><a id=prod_link_img style=\"display: block; cursor: hand\" href=\"" + productPageLink_ + "\" name=prod_link_img>");
+        favoriteProducts.append("<div id=prod_container style=\"width: 100px; height: 100px; text-align: left\">");
         if (groDeptImage !=null) {
             favoriteProducts.append("<DIV id=prod_image style=\"PADDING-RIGHT: 10px; PADDING-LEFT: 10px; PADDING-BOTTOM: 0px; LINE-HEIGHT: 0px; PADDING-TOP: 10px; POSITION: absolute; HEIGHT: 0px\">")
-                            .append("<IMG style=\"BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px\" ")
+                            .append("<a id=prod_link_img style=\"display: block; cursor: hand\" href=\"" + baseURL + productPageLink_ + "\" name=prod_link_img><IMG style=\"BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px\" ")
                             .append(JspMethods.getImageDimensions(groDeptImage))
-                            .append(" alt=\"").append(product.getFullName()).append("\" src=\"").append(groDeptImage.getPath()).append("\" ></DIV>");
-            //favoriteProducts.append("<DIV id=sale_star style=\"POSITION: absolute\"><IMG style=\"BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px\"  alt=\"SAVE ").append(deal).append("%\" src=\"").append(dealImage).append("\"> </DIV></A></DIV>");                        
+                            .append(" alt=\"").append(product.getFullName()).append("\" src=\"").append(groDeptImage.getPath()).append("\" ></a></DIV>");
+            /*
+			uncomment here to show starbursts
+
+			favoriteProducts.append("<DIV id=sale_star style=\"POSITION: absolute\"><a id=prod_link_img style=\"display: block; cursor: hand\" href=\"" + productPageLink_ + "\" name=prod_link_img><IMG style=\"BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px\"  alt=\"SAVE ").append(deal).append("%\" src=\"").append(dealImage).append("\"></A></DIV></DIV>");
+			*/
         }
         
 
         // append product label
         favoriteProductLinks.append("<div id=prod_container style=\"width: 100px; height: 100px; text-align: left\"><a id=prod_link_img style=\"display: block; cursor: hand\" href=\"" + productPageLink_ + "\">");
         favoriteProductLinks.append("<div id=prod_container_text style=\"font-weight: normal; font-size: 8pt; width: 100px; text-align: center\">");
-        favoriteProductLinks.append("<div id=prod_text_container><A id=prod_link style=\"color: #360\" href=\"")
+        favoriteProductLinks.append("<div id=prod_text_container><A id=prod_link style=\"color: #360\" href=\"" + baseURL)
                             .append(productPageLink_).append("\">");
 
         String thisProdBrandLabel = product.getPrimaryBrandName();

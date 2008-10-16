@@ -24,6 +24,11 @@
 <%
 Map params = new HashMap();
 params.put("baseUrl", "http://www.freshdirect.com");
+/*
+if we're on the email.jsp, set the product base urls to PROD
+set true in email.jsp, false in newsletter.jsp
+*/
+boolean emailpage = true;
 %>
 <body>
 	<fd:IncludeMedia name="/media/editorial/picks/pres_picks/pres_picks.ftl" parameters="<%=params%>"/>
