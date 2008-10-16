@@ -105,7 +105,7 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 
 	}
 	
-	private List removeDuplicates(List products) {
+	private List removeDuplicates(List products) throws FDResourceException {
 		
 		Set set = new HashSet();
 		set.addAll(products);
@@ -113,7 +113,41 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 			products.clear();
 			products.addAll(set);
 		}
-		return products;
+//		 agb begin
+		//return products;		
+
+		Map m = new HashMap();
+		Iterator it = set.iterator();
+
+		while (it.hasNext()) {
+			boolean isBrand=false;
+			SkuModel sku = (SkuModel) it.next();
+			try {
+				FDProductInfo prodInfo = sku.getProductInfo();
+				com.freshdirect.fdstore.FDProduct prod = sku.getProduct();
+				String materialNumber= prod.getMaterial().getMaterialNumber();
+				//System.out.println("materialNumber= "+ materialNumber);
+				final int MAX_DISPLAY_BRANDS=1;
+				List list = sku.getProductModel().getDisplayableBrands(MAX_DISPLAY_BRANDS);			
+				if(!list.isEmpty()){
+					isBrand=true;
+				}
+				if( m.containsKey(materialNumber)){
+					if(isBrand) {
+						m.put(materialNumber, sku);
+					}
+				}
+				else{
+					m.put(materialNumber, sku);
+				}
+			}
+			catch (FDSkuNotFoundException e) { 
+				throw new FDResourceException(e);
+			}			
+		}
+
+		Collection c = m.values();
+		return new ArrayList(c);  //agb end	
 	}
 
 	
