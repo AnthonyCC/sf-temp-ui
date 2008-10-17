@@ -115,19 +115,19 @@ public String getPageNumbers(HttpServletRequest requestObj, HttpServletResponse 
                         startFrom = ((pageNumber/10) * 10) + 1;
                         fullURL= responseObj.encodeURL(urlStart + urlParams + "&pageNumber=" + startFrom);
 
-                        buf.append("<A HREF=\"");
+                        buf.append("<a href=\"");
                         buf.append(urlStart).append(urlParams);
-                        buf.append("\">previous</A> . ");
+                        buf.append("\">previous</a> . ");
                 }
 
                 for (int i=startFrom; i<pageNumber; i++) {
                         fullURL= responseObj.encodeURL(urlStart+urlParams+"&pageNumber="+i);
-                        buf.append("<A HREF=\"").append(fullURL).append("\">");
-                        buf.append(i).append("</A> . ");
+                        buf.append("<a href=\"").append(fullURL).append("\">");
+                        buf.append(i).append("</a> . ");
                 }
         }
 
-        buf.append("<B>").append(pageNumber).append("</B>");
+        buf.append("<b>").append(pageNumber).append("</b>");
 
         if ( itemsCount >= (pageNumber * itemsPerPage) ) {
                 // figure out how many additional pages to display
@@ -137,7 +137,7 @@ public String getPageNumbers(HttpServletRequest requestObj, HttpServletResponse 
                 }
                 for (int i=(pageNumber + 1); (i <= (itemsCount/itemsPerPage + addToLoop)); i++) {
                         fullURL= responseObj.encodeURL(urlStart + urlParams + "&pageNumber=" + i);
-                        buf.append(" . <A HREF=\"");
+                        buf.append(" . <a href=\"");
                         buf.append(fullURL);
                         buf.append("\">");
                         if (i%10 == 1) {
@@ -146,7 +146,7 @@ public String getPageNumbers(HttpServletRequest requestObj, HttpServletResponse 
                         } else {
                                  buf.append(i);
                         }
-                        buf.append("</A>");
+                        buf.append("</a>");
                 }
         }
         return buf.toString();
@@ -252,7 +252,7 @@ request.removeAttribute("successPage");
 %>
         <tr valign="top">
         <td width="350" valign="middle">
-                <FONT class="text12bold" color="#CC3300"><%=errDesc%></FONT>
+                <FONT class="text12bold" color="#CC3300"><%=errDesc%></font>
         </td></tr>
  <%
         }
@@ -357,7 +357,7 @@ if(productCode!=null && prodCatId !=null ) {
 %>
 <%if (FDStoreProperties.isAdServerEnabled()) {%>
 <tr><td colspan="3">
-        <SCRIPT LANGUAGE=JavaScript>
+        <script language="JavaScript">
         <!--
         OAS_AD('ProductNote');
         //-->
@@ -554,7 +554,7 @@ if(productCode!=null && prodCatId !=null ) {
 %>
 <br>
 
-<FONT CLASS="productPageSinglePrice" style="COLOR: #c00"><%=prodPrice%></FONT>
+<font class="productPageSinglePrice" style="COLOR: #c00"><%=prodPrice%></font>
 <font style="FONT-SIZE: 10pt; COLOR: #333333"><%= "(was "+prodBasePrice+")" %>&nbsp;</font><br>
 <%@include file="/includes/product/i_price_taxdeposit.jspf"%>
 <span class="text12"><%@include file="/includes/product/i_scaled_prices_nobr.jspf"%></span>
@@ -562,10 +562,10 @@ if(productCode!=null && prodCatId !=null ) {
         <table border="0" cellspacing="0" cellpadding="1" width="215">
         <tr valign="MIDDLE">
         <td width="25" CLASS="text11bold">Quantity&nbsp;</td>
-        <td width="30" ALIGN="CENTER"><INPUT TYPE="text" NAME="quantity_big" SIZE="2" MAXLENGTH="2" CLASS="text11" value="<%=Math.round(productNode.getQuantityMinimum()) %>" onChange="chgQty('quantity_big',0,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);"></td>
-        <td width="10"><A HREF="javascript:chgQty('quantity_big',<%= productNode.getQuantityIncrement() %>,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="2" alt="greater quantity"></A><br>
-        <A HREF="javascript:chgQty('quantity_big',-<%= productNode.getQuantityIncrement()%>,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="2" alt="lesser quantity"></A></td>
-        <td width="50" CLASS="text11bold" ALIGN="RIGHT">Price&nbsp;</td>
+        <td width="30" align="CENTER"><INPUT TYPE="text" NAME="quantity_big" SIZE="2" MAXLENGTH="2" CLASS="text11" value="<%=Math.round(productNode.getQuantityMinimum()) %>" onChange="chgQty('quantity_big',0,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);"></td>
+        <td width="10"><a href="javascript:chgQty('quantity_big',<%= productNode.getQuantityIncrement() %>,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="2" alt="greater quantity"></a><br>
+        <a href="javascript:chgQty('quantity_big',-<%= productNode.getQuantityIncrement()%>,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="2" alt="lesser quantity"></a></td>
+        <td width="50" CLASS="text11bold" align="right">Price&nbsp;</td>
         <td width="100"><INPUT class="text11bold" TYPE="text" NAME="PRICE" SIZE="7" onFocus="blur()" value=""></td>
         </tr>
         </table>
@@ -602,7 +602,7 @@ if(productCode!=null && prodCatId !=null ) {
 <%@ include file="/includes/product/kosher.jspf" %>
 
 <% if (hasNutrition || hasIngredients) { %>
-<br><A HREF="javascript:pop('/nutrition_info.jsp?catId=<%= request.getParameter("prodCatId")%>&productId=<%=request.getParameter("productId") %>',335,375)">Nutrition, Ingredients, and Allergens</A>
+<br><a href="javascript:pop('/nutrition_info.jsp?catId=<%= request.getParameter("prodCatId")%>&productId=<%=request.getParameter("productId") %>',335,375)">Nutrition, Ingredients, and Allergens</a>
 <% } else { %><br>Please check product label for nutrition, ingredients, and allergens.<% } %><br>
 </td>
 <td width="10">&nbsp;</td><%-- buffer cell --%>
@@ -611,7 +611,7 @@ if(productCode!=null && prodCatId !=null ) {
         <table>
                 <tr>
                         <td><img src="/media_stat/images/template/offer_icon.gif" alt="Promotion icon"></td>
-                        <td><font class="title12">Free!<br></font><A HREF="promotion.jsp?cat=<%=request.getParameter("catId")%>">See our $<%=prefix%> offer</a></td>
+                        <td><font class="title12">Free!<br></font><a href="promotion.jsp?cat=<%=request.getParameter("catId")%>">See our $<%=prefix%> offer</a></td>
                 </tr>
         </table>
         <br>
@@ -619,47 +619,37 @@ if(productCode!=null && prodCatId !=null ) {
 if ((Image)productNode.getZoomImage()!=null) {%>
 <div id="prod_container" style="height: 90px; width: 100px; text-align: left;">
 	    <div style="padding: 10px 10px 0pt; height: 0px; line-height: 0px; position: absolute;" id="prod_image">
-            <A HREF="javascript:pop('<%=response.encodeURL("shared/prodpop.jsp?productId="+request.getParameter("productId")+"&catId="+request.getParameter("prodCatId"))%>',335,375)">
+            <a href="javascript:pop('<%=response.encodeURL("shared/prodpop.jsp?productId="+request.getParameter("productId")+"&catId="+request.getParameter("prodCatId"))%>',335,375)">
             <img SRC="<%= bigProductImage.getPath() %>" width="<%= bigProductImage.getWidth() %>" height="<%= bigProductImage.getHeight() %>" border="0" alt="<%=productNode.getFullName()%>">
             </a>
         </div>    
-        <DIV id=sale_star style="POSITION: absolute">
-            <A HREF="javascript:pop('<%=response.encodeURL("shared/prodpop.jsp?productId="+request.getParameter("productId")+"&catId="+request.getParameter("prodCatId"))%>',335,375)" border="0">
-            <IMG style=\"BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px"  alt="<%="SAVE "+deal+"%"%>" border="0" src="<%=dealsImage%>"> </A>
-        </DIV>
+        <div id=sale_star style="POSITION: absolute">
+            <a href="javascript:pop('<%=response.encodeURL("shared/prodpop.jsp?productId="+request.getParameter("productId")+"&catId="+request.getParameter("prodCatId"))%>',335,375)" border="0">
+            <img style=\"BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px"  alt="<%="SAVE "+deal+"%"%>" border="0" src="<%=dealsImage%>"> </a>
+        </div>
  </div>       
 
 <% } else { %>
-<A HREF="javascript:pop('<%=response.encodeURL("shared/prodpop.jsp?productId="+request.getParameter("productId")+"&catId="+request.getParameter("prodCatId"))%>',335,375)"><img SRC="<%= bigProductImage.getPath() %>" width="<%= bigProductImage.getWidth() %>" height="<%= bigProductImage.getHeight() %>" border="0" alt="<%=productNode.getFullName()%>">
-</A>
+<a href="javascript:pop('<%=response.encodeURL("shared/prodpop.jsp?productId="+request.getParameter("productId")+"&catId="+request.getParameter("prodCatId"))%>',335,375)"><img SRC="<%= bigProductImage.getPath() %>" width="<%= bigProductImage.getWidth() %>" height="<%= bigProductImage.getHeight() %>" border="0" alt="<%=productNode.getFullName()%>">
+</a>
 <% } %>
 </td>
 </tr>
 </table>
 <br>
-<% if (thisBrandModel !=null) { 
-String  viewBrandURL = response.encodeURL("/deals.jsp?catId="+groceryCategory+buildOtherParams(showThumbnails,itemsToDisplay,-1,thisProdBrand,sortBy,nutriName,request,groceryCategory.getContentName())+"&sortDescending=" + descending + "&disp=" + display + "&trk=pkprod&test");
-%>
-<table width="550" cellpadding="1" cellspacing="0" border="0" bgcolor="#FF9933" align="center">
-        <tr><td><table width="100%" cellpadding="3" bgcolor="#FFFFFF"><tr><td align="center" class="text11bold"><a href="<%=viewBrandURL%>">View All
-<%=thisProdBrandLabel %> Products in <%=groceryCategory.getFullName()%></a></td></tr></table></td></tr>
-</table>
-<% } else { %>
-<img src="/media_stat/images/layout/999999.gif" width="550" height="1" border="0" vspace"5"><br>
-<% } %>
 </fd:FDProductInfo>
 </fd:ProductGroup>
-<br>
+
 <%
 }
 if (!bigProdShown) {
         // build hidden field to hold price..so java script does not cause err.
-%><input type="hidden" name="PRICE">
+%>
+<input type="hidden" name="PRICE">
 <input type="hidden" name="quantity_big" value="">
 <input type="hidden" name="skuCode_big" value="noBigProductDisplay">
 <%
 }
-
 
 //==== grocery top nav ends here  ======
 // if we have a product that was specified from the featured list then we must find the page that it's on
@@ -699,11 +689,11 @@ if (FDStoreProperties.isAdServerEnabled()) {
 %>
 <tr>
     <td colspan="2">
-        <SCRIPT LANGUAGE=JavaScript>
+        <script language="JavaScript">
         <!--
         OAS_AD('CategoryNote');
         //-->
-        </SCRIPT>
+        </script>
     </td>
 </tr>
 <%
@@ -714,24 +704,28 @@ if (FDStoreProperties.isAdServerEnabled()) {
 //
 
 Html editorialMedia = currentFolder.getEditorial();
-if (doRenderEditorialPartial && editorialMedia != null && !editorialMedia.isBlank()) {
-%>
+if (doRenderEditorialPartial && editorialMedia != null && !editorialMedia.isBlank() && !bigProdShown) { %>
+	<tr>
+	    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td>
+	</tr>
+	<tr>
+	    <td colspan="2"><fd:IncludeMedia name='<%= editorialMedia.getPath() %>'/></td>
+	</tr>
+<% } else { %>
+	<tr>
+	    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td>
+	</tr>	
+	<tr>
+		<td><font class="title11"><%=brandOrFolderName%></font> <font class="text9">(<%= skuCount %> items)</font><br></td>
+		<td align="right">Page: <%= pageNumberLinks %></td>
+	</tr>
+<% } %>
 <tr>
-    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td>
-</tr>
-<tr>
-    <td colspan="2"><fd:IncludeMedia name='<%= editorialMedia.getPath() %>'/></td>
-</tr>
-<tr>
-    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td>
+    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td>
 </tr>
 <tr>
     <td colspan="2" bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 </tr>
-<%
-}
-
-%>
 <tr>
     <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
 </tr>
@@ -747,7 +741,7 @@ if (!bigProdShown && brandPopupLink!=null) {
     <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
 </tr>
 <tr valign="top">
-    <td colspan="2" bgcolor="#FF9933"><IMG src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0"></td>
+    <td colspan="2" bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0"></td>
 </tr>
 <tr>
     <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
@@ -804,17 +798,17 @@ if(showThumbnails) {
                 <td width="85">
                     <div id="prod_container" style="height: 90px; width: 90px; text-align: left;">
                         <div style="padding: 10px 10px 0pt; height: 0px; line-height: 0px; position: absolute;" id="prod_image">
-		                    <a id="prod_link_img" name="prod_link_img" href="<%=imgLinkUrl%>" style="display: block;">
+		                    <a href="<%=imgLinkUrl%>" style="display: block;">
 			                    <img src="<%= groDeptImage.getPath()%>" width="<%= groDeptImage.getWidth()%>" height="<%= groDeptImage.getHeight()%>" border="0" alt="<%=displayProduct.getFullName()%>" onMouseOver="changeImg(document.bullet<%=imgShownIndex %>,'in',0)" onMouseOut="changeImg(document.bullet<%=imgShownIndex %>,'out',0)">
 		                    </a>
 	                    </div>
                         <div style="position: absolute;" id="sale_star">
-			                <a id="prod_link_img" name="prod_link_img" href="<%=imgLinkUrl%>" style="display: block;">
+			                <a href="<%=imgLinkUrl%>" style="display: block;">
 			                    <img alt="<%="SAVE "+sku.getProductInfo().getDealPercentage()+"%"%>" src="<%=dealImage%>" style="border: 0px none ;" onMouseOver="changeImg(document.bullet<%=imgShownIndex %>,'in',0)" onMouseOut="changeImg(document.bullet<%=imgShownIndex %>,'out',0)">
 			                </a>
 	                    </div>
                     </div>
-                    <IMG SRC="/media_stat/images/layout/dot_clear.gif" width="5" height="1" border="0">
+                    <img src="/media_stat/images/layout/dot_clear.gif" width="5" height="1" border="0">
                 </td>
 <%
                 }
@@ -889,15 +883,15 @@ if(isAnyProdAvailable) {
 <br/>
 <table border="0" cellspacing="0" cellpadding="0" width="550">
 <tr>
-<td><FONT CLASS="title11"><%=brandOrFolderName%></FONT> <FONT CLASS="text9">(<%= skuCount %> items)</FONT><br></td>
-<td ALIGN="RIGHT"><%
+<td><font class="title11"><%=brandOrFolderName%></font> <font class="text9">(<%= skuCount %> items)</font><br></td>
+<td align="right"><%
 String thumbNailURL = response.encodeURL("/deals.jsp?catId=" + currentFolder + buildOtherParams( !showThumbnails, itemsToDisplay, pageNumber,brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=thum&set=true");
 if(showThumbnails) {
 %>
-Thumbnails <B>ON</B> | <A HREF="<%=thumbNailURL%>">OFF</A><%
+Thumbnails <b>ON</b> | <a href="<%=thumbNailURL%>">OFF</a><%
 } else {
 %>
-Thumbnails <A HREF="<%=thumbNailURL%>">ON</A> | <B>OFF</B><%
+Thumbnails <a href="<%=thumbNailURL%>">ON</a> | <b>OFF</b><%
 }
 %></td>
 </tr>
@@ -906,25 +900,25 @@ Thumbnails <A HREF="<%=thumbNailURL%>">ON</A> | <B>OFF</B><%
 <tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
 </table>
 <table border="0" cellspacing="0" cellpadding="0" width="550">
-<tr valign="top"><td CLASS="text10bold" width="240">Page: <%= pageNumberLinks %><br></td>
-<td ALIGN="RIGHT" width="185">Display <%
+<tr valign="top"><td CLASS="text10bold" width="370">Page: <%= pageNumberLinks %><br></td>
+<td align="right" width="180">Display <%
 if (itemsToDisplay == 15) {
 %>
-<B>15</B> |
-<A HREF="<%= response.encodeURL("/deals.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,30,-1, brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">30</A> |
-<A HREF="<%= response.encodeURL("/deals.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,45,-1, brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">45</A>
+<b>15</b> |
+<a href="<%= response.encodeURL("/deals.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,30,-1, brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">30</a> |
+<a href="<%= response.encodeURL("/deals.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,45,-1, brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">45</a>
 <%
 } else if (itemsToDisplay == 30) {
 %>
-<A HREF="<%= response.encodeURL("/deals.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,15,-1,brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">15</A> |
-<B>30</B> |
-<A HREF="<%= response.encodeURL("/deals.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,45,-1,brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">45</A>
+<a href="<%= response.encodeURL("/deals.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,15,-1,brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">15</a> |
+<b>30</b> |
+<a href="<%= response.encodeURL("/deals.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,45,-1,brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">45</a>
 <%
 } else {
 %>
-<A HREF="<%= response.encodeURL("/deals.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,15,-1,brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">15</A> |
-<A HREF="<%= response.encodeURL("/deals.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,30,-1,brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">30</A> |
-<B>45</B><%
+<a href="<%= response.encodeURL("/deals.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,15,-1,brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">15</a> |
+<a href="<%= response.encodeURL("/deals.jsp?catId=" + currentFolder + buildOtherParams(showThumbnails,30,-1,brandValue,sortBy,nutriName,request,null)+"&disp=" + display + "&sortDescending=" + descending + "&trk=numb&set=true") %>">30</a> |
+<b>45</b><%
 }
 %> per page</td>
 </tr></table>
