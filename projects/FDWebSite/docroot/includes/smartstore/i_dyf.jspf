@@ -91,9 +91,9 @@ if (request.getParameter("nodyf") == null) {
 		 */
 %>
 <br/><br/>
-<form name="<%= tx_pricing_FormName %>" method="post" action="/view_cart.jsp" style="margin:0px">
+<form name="<%= tx_pricing_FormName %>" method="post" action="<%= request.getRequestURI() %>" style="margin:0px">
 	<input type="hidden" name="fdsc.action" value="addMultipleToCart"/>
-	<input type="hidden" name="fdsc.succpage" value="/view_cart.jsp?confirm=1"/>
+	<input type="hidden" name="fdsc.succpage" value="<%= request.getRequestURI() %>?confirm=1"/>
 	<input type="hidden" name="fdsc.source"  value="SS"/>
 
 	<input type="hidden" name="variant" value="<%=recommendations.getVariant().getId()%>">
