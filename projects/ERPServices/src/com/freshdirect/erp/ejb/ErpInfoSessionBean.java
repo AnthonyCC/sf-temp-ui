@@ -1073,7 +1073,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				}
 				statement.append(" )");
 			}
-			System.out.println("Statement is : "+statement.toString());
+			//System.out.println("Statement is : "+statement.toString());
 			conn = this.getConnection();
 	
 			PreparedStatement ps = conn.prepareStatement(statement.toString());

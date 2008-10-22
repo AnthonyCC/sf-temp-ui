@@ -71,9 +71,28 @@
         if(!isDeal) {
             continue;
         }
-        String productPageLink_ = response.encodeURL("/product.jsp?catId=" + prodParent
+        /*String productPageLink_ = response.encodeURL("/product.jsp?catId=" + prodParent
             +"&prodCatId="+prodParent
             +"&productId="+product+"&trk=feat");
+			*/
+
+String dealsCat="";
+Attribute _featCats = currentFolder.getAttribute("FEATURED_CATEGORIES");
+List _featuredCats=null;
+if (_featCats!=null) {
+      _featuredCats = (List)_featCats.getValue();
+	 
+}
+
+ if (_featuredCats != null && _featuredCats.size() > 0) {
+         CategoryRef catRef= (CategoryRef)_featuredCats.get(0);
+        dealsCat= catRef.getCategoryName();
+}
+			String productPageLink_ = response.encodeURL("/deals.jsp?catId=" + dealsCat
+            +"&sortBy=name&showThumbnails=true&DisplayPerPage=30&sortDescending=false&disp=null&prodCatId="+prodParent
+            +"&productId="+product.getContentName()+"&trk=trans");
+
+
         String dealImage=new StringBuffer("/media_stat/images/deals/brst_sm_").append(deal).append(".gif").toString();
         //productDisplayName = getDisplayName(product,prodNameAttribute);
 		if ("picks_love".equalsIgnoreCase(catId)) {
