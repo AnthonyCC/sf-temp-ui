@@ -26,18 +26,18 @@ public class AddressScrubber {
     }
     
     public static String standardizeForUSPS(String streetAddress) throws InvalidAddressException {
-        return standardize(streetAddress, false, false);
+        return standardize(streetAddress, false, false,false);
     }
     
     public static String standardizeForGeocode(String streetAddress) throws InvalidAddressException {
-        return standardize(streetAddress, true, false);
+        return standardize(streetAddress, true, false,isNewGeocodeFormat());
     }
-    
+        
     public static String standardizeForGeocodeNoSubstitution(String streetAddress) throws InvalidAddressException {
-        return standardize(streetAddress, true, true);
+        return standardize(streetAddress, true, true,isNewGeocodeFormat());
     }
 
-    private static String standardize(String address, boolean forGeocode, boolean canReverseDirections) throws InvalidAddressException {
+    private static String standardize(String address, boolean forGeocode, boolean canReverseDirections,boolean isNewFormat) throws InvalidAddressException {
         //
         // clean leading and trailing whitespace
         //
@@ -72,7 +72,7 @@ public class AddressScrubber {
                 } else {
                 	// Fix is done to remove the new building no format which is changed
                 	//(Ex: 23-30 is stored as 2330 instead of 23)
-                    if (forGeocode && !isNewGeocodeFormat()) {
+                    if (forGeocode && !isNewFormat) {
                     	System.out.println("GOT HERE");                    
                         break;
                     }
