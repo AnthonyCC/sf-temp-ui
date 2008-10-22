@@ -24,7 +24,7 @@
 						<td class="screencontent">
 							<table class="forms1">							  	
 							  <tr>
-							    <td>Area Name</td>
+							    <td>CutOff Name</td>
 							    <td> 								  
 							  	 	<form:input maxlength="50" size="30" path="name" />
 							 	</td>

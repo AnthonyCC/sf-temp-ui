@@ -27,6 +27,11 @@
 							    <td>Route Smart Truck File</td>
 							    <td> 								  
 							  	 	<input type="file" size="50" name="file1"/>
+							  	 	<spring:bind path="command.file1">
+								  	 	<c:forEach items="${status.errorMessages}" var="error">
+	                                    &nbsp;<span id="file1"><c:out value="${error}"/></span>
+	                                	</c:forEach> 
+			                    	</spring:bind>
 							 	</td>
 							 	<td>
 							 		&nbsp;
@@ -37,6 +42,11 @@
 							    <td>Route Smart Order File</td>
 							    <td> 								  
 							  	 	<input type="file" size="50" name="file2"/>
+							  	 	<spring:bind path="command.file2">
+								  	 	<c:forEach items="${status.errorMessages}" var="error">
+	                                    &nbsp;<span id="file2"><c:out value="${error}"/></span>
+	                                	</c:forEach> 
+			                    	</spring:bind>
 							 	</td>
 							 	<td>
 							 		&nbsp;
@@ -47,6 +57,11 @@
 							    <td>RoadNet Order/Truck File</td>
 							    <td> 								  
 							  	 	<input type="file" size="50" name="file3"/>
+							  	 	<spring:bind path="command.file3">
+								  	 	<c:forEach items="${status.errorMessages}" var="error">
+	                                    &nbsp;<span id="file3"><c:out value="${error}"/></span>
+	                                	</c:forEach> 
+			                    	</spring:bind>
 							 	</td>
 							 	<td>
 							 		&nbsp;

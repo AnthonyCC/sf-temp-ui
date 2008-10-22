@@ -14,7 +14,8 @@ public class FileUploadValidator extends AbstractValidator {
 	public void validate(Object obj, Errors errors) {
 						
 		//  need to decide about the validation part
-		ValidationUtils.rejectIfEmpty(errors, "serviceTimeScenario", "app.error.112", new Object[]{"Scenario"},"required field");		
+		ValidationUtils.rejectIfEmpty(errors, "serviceTimeScenario", "app.error.112", new Object[]{"Scenario"},"required field");
+		ValidationUtils.rejectIfEmpty(errors, "file", "app.error.112", new Object[]{"File"},"required field");
 		
 	}
 	

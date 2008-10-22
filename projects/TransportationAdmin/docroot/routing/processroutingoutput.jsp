@@ -27,6 +27,11 @@
 							    <td>Routing Ouput</td>
 							    <td> 								  
 							  	 	<input type="file" size="50" name="file"/>
+							  	 	<spring:bind path="command.file">
+								  	 	<c:forEach items="${status.errorMessages}" var="error">
+	                                    &nbsp;<span id="file"><c:out value="${error}"/></span>
+	                                	</c:forEach> 
+			                    	</spring:bind>
 							 	</td>
 							 	<td>
 							 		&nbsp;

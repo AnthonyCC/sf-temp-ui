@@ -15,7 +15,7 @@ public class RoutingOutValidator extends AbstractValidator {
 						
 		//  need to decide about the validation part
 		ValidationUtils.rejectIfEmpty(errors, "cutOff", "app.error.112", new Object[]{"Cut Off"},"required field");		
-		
+		ValidationUtils.rejectIfEmpty(errors, "file", "app.error.112", new Object[]{"File"},"required field");
 	}
 	
 

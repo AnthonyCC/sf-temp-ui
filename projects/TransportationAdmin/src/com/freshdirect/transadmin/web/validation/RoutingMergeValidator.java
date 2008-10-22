@@ -14,7 +14,10 @@ public class RoutingMergeValidator extends AbstractValidator {
 	public void validate(Object obj, Errors errors) {
 						
 		//  need to decide about the validation part
-		ValidationUtils.rejectIfEmpty(errors, "cutOff", "app.error.112", new Object[]{"Cut Off"},"required field");		
+		ValidationUtils.rejectIfEmpty(errors, "cutOff", "app.error.112", new Object[]{"Cut Off"},"required field");	
+		ValidationUtils.rejectIfEmpty(errors, "file1", "app.error.112", new Object[]{"Route Smart Truck"},"required field");
+		ValidationUtils.rejectIfEmpty(errors, "file2", "app.error.112", new Object[]{"Route Smart Order"},"required field");
+		ValidationUtils.rejectIfEmpty(errors, "file3", "app.error.112", new Object[]{"RoadNet Order/Truck File"},"required field");
 		
 	}
 	
