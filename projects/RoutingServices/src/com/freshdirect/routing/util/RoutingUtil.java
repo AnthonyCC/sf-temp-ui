@@ -1,0 +1,73 @@
+package com.freshdirect.routing.util;
+
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
+import com.freshdirect.delivery.AddressScrubber;
+import com.freshdirect.delivery.InvalidAddressException;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.routing.constants.EnumGeocodeConfidenceType;
+
+public class RoutingUtil {
+	
+	
+	public static String standardizeStreetAddress(String s1, String s2) {
+		String streetAddressResult = null;
+		//String oldStreetAddress = address.getStreetAddress1();
+		try {
+			streetAddressResult = AddressScrubber.standardizeForGeocode(s1);
+			//streetAddress = AddressScrubber.standardizeForGeocode(address.getAddress1());
+		} catch (InvalidAddressException iae1) {
+			try {
+				streetAddressResult = AddressScrubber.standardizeForGeocode(s2);
+			} catch (InvalidAddressException iae2) {
+				iae2.printStackTrace();
+			}
+		}
+		return streetAddressResult;
+	}
+	
+	public static boolean isGeocodeAcceptable(String confidence, String quality) {
+		return EnumGeocodeConfidenceType.HIGH.getName().equals(confidence);
+	}
+	
+	public static List getZipCodes(String zipCode) {
+		
+		if(zipCode != null && zipCode.trim().length() != 0) {
+			StringBuffer tmpBufZipCode = new StringBuffer();
+			tmpBufZipCode.append(zipCode);
+			String tmpZipCode = FDStoreProperties.getAlternateZipcodeForGeocode(zipCode);
+	    	if(!StringUtil.isEmpty(tmpZipCode)) {
+	    		tmpBufZipCode.append(",").append(tmpZipCode);
+	    	}
+	    	return Arrays.asList(StringUtil.decodeStrings(tmpBufZipCode.toString()));	    	
+		} 
+		return null;    	
+	}
+	
+	public static String getQueryParam(List lstZipCode) {
+		
+		if(lstZipCode != null) {			
+	    	if(lstZipCode.size() > 1) {
+	    		Iterator iterator = lstZipCode.iterator();
+	    		int intCount = 0;
+	    		StringBuffer strBuf = new StringBuffer();	    		
+	        	while(iterator.hasNext()) {
+	        		intCount++;
+	        		strBuf.append("'").append(iterator.next()).append("'");
+	        		if(intCount != lstZipCode.size()) {
+	        			strBuf.append(",");
+	        		}
+	        	}
+	        	return "in ("+strBuf.toString()+")";
+	    	} else if (lstZipCode.size() == 1){
+	    		return "= '"+lstZipCode.get(0)+"'";
+	    	}
+		} 
+		return null;
+    	
+	}
+
+}

@@ -2,11 +2,10 @@ package com.freshdirect.transadmin.web.validation;
 
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
-import org.springframework.validation.Validator;
 
 import com.freshdirect.transadmin.model.TrnRoute;
 
-public class RouteValidator implements Validator {	
+public class RouteValidator extends AbstractValidator {	
 	
 	public boolean supports(Class clazz) {
 		return TrnRoute.class.isAssignableFrom(clazz);

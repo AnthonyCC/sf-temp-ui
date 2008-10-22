@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jul 30, 2007 6:23:08 PM by Hibernate Tools 3.2.0.b9 -->
+<hibernate-mapping schema="dlv">
+    <class name="com.freshdirect.transadmin.model.DlvLocation" table="DELIVERY_LOCATION">
+        <id name="locationId" type="string">
+            <column name="ID" length="16" />
+            <generator class="sequence">
+    			<param name="sequence">DELIVERY_LOCATION_SEQ</param>
+			</generator>
+        </id>
+        <many-to-one name="serviceTimeType" class="com.freshdirect.transadmin.model.DlvServiceTimeType" fetch="select" lazy="false">
+            <column name="SERVICETIME_TYPE" length="8" />
+        </many-to-one> 
+        <many-to-one name="building" class="com.freshdirect.transadmin.model.DlvBuilding" fetch="select" lazy="false">
+            <column name="BUILDINGID" length="8" />
+        </many-to-one>               
+        <property name="apartment" type="string">
+            <column name="APARTMENT" length="55" />
+        </property> 
+              
+    </class>
+</hibernate-mapping>
+

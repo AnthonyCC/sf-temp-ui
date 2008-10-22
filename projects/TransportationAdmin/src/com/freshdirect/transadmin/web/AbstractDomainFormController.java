@@ -1,6 +1,9 @@
 package com.freshdirect.transadmin.web;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.dao.DataIntegrityViolationException;
 
 import com.freshdirect.transadmin.service.DomainManagerI;
 
@@ -17,8 +20,14 @@ public abstract class AbstractDomainFormController extends AbstractFormControlle
 	}
 	
 	public List saveDomainObject(Object domainObject) {
-		getDomainManagerService().saveEntity(domainObject);
-		return null;
+		List errorList = null;
+		try {
+			getDomainManagerService().saveEntity(domainObject);
+		} catch (DataIntegrityViolationException objExp) {
+			errorList = new ArrayList();
+			errorList.add(this.getMessage("app.actionmessage.119", new Object[]{this.getDomainObjectName()}));
+		}
+		return errorList;
 	}
 	
 	

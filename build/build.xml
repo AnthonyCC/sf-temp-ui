@@ -214,6 +214,7 @@
 		<checkoutLabeled dir="projects/RefAdmin"/>
         	<checkoutLabeled dir="projects/MarketingAdmin"/>
         	<checkoutLabeled dir="projects/TransportationAdmin"/>
+        	<checkoutLabeled dir="projects/RoutingServices"/>
 		<checkoutLabeled dir="applications"/>
 		<!--	<checkoutLabeled dir="release"/> -->
 	</target>
@@ -273,6 +274,7 @@
 		<checkoutLatest dir="projects/RefAdmin"/>
         	<checkoutLatest dir="projects/MarketingAdmin"/>
         	<checkoutLatest dir="projects/TransportationAdmin"/>
+        	<checkoutLatest dir="projects/RoutingServices"/>
 		<checkoutLatest dir="applications"/>
 		<!--	<checkoutLatest dir="release"/> -->
 
@@ -363,6 +365,7 @@
 		<mkdir dir="${work.dir}/RefAdmin"/>
         <mkdir dir="${work.dir}/MrktAdmin"/>
         <mkdir dir="${work.dir}/TransportationAdmin"/>
+        <mkdir dir="${work.dir}/RoutingServices"/>
 	</target>
 
     <target name        = "copy_shared_dirs"
@@ -463,7 +466,7 @@
         </copy>
     </target>
 
-	<target name="build" depends="framework,erpservices,delivery,cms,fdstore,listadmin-lib,ocf,dataloader,erpswebapp,tools,resources,cms-slide" description="Build everything">
+	<target name="build" depends="framework,erpservices,delivery,cms,fdstore,listadmin-lib,ocf,routing,dataloader,erpswebapp,tools,resources,cms-slide" description="Build everything">
 	</target>
 
 	<target name="jsmin" description="Minimizing javascript files">
@@ -1291,6 +1294,29 @@
 			project="Delivery"
 			classpathref="delivery.classpath"/>
 	</target>
+	
+	<target name="routing" description="Build Routing">
+			<path id="routing.classpath">
+				<pathelement location="${work.dir}/Framework.jar"/>							
+				<pathelement location="${work.dir}/ERPServicesEJB-WL.jar"/>
+				<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
+				<pathelement location="${thirdparty.home}/lucene-core-2.2.0.jar"/>
+				<pathelement location="${thirdparty.home}/saaj.jar"/>
+				<pathelement location="${thirdparty.home}/wsdl4j-1.5.1.jar"/>
+				<pathelement location="${thirdparty.home}/axis.jar"/>
+				<pathelement location="${thirdparty.home}/axis-ant.jar"/>
+				<pathelement location="${thirdparty.home}/commons-discovery-0.2.jar"/>
+				<pathelement location="${thirdparty.home}/commons-logging-1.0.4.jar"/>
+				<pathelement location="${thirdparty.home}/jaxrpc.jar"/>
+				<pathelement location="${thirdparty.home}/log4j-1.2.8.jar"/>				
+				<pathelement location="${thirdparty.home}/spring.jar"/>
+				<pathelement location="${thirdparty.home}/JFEP-0.1.0.jar"/>
+			</path>
+	
+			<makeProject
+				project="RoutingServices"
+	            classpathref="routing.classpath"/>
+	</target>
 
 	<target name="cms" description="Build CMS">
 		<path id="cms.classpath">
@@ -1347,6 +1373,7 @@
 			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
 			<pathelement location="${work.dir}/CMS.jar"/>
 			<pathelement location="${work.dir}/FDStoreEJB-WL.jar"/>
+			<pathelement location="${work.dir}/RoutingServices.jar"/>
             		<pathelement location="${thirdparty.home}/poi-3.0-rc4-20070503.jar"/>
             		<pathelement location="${thirdparty.home}/opencsv-1.8.jar"/>
 			<pathelement location="${thirdparty.home}/sapjco.jar"/>
@@ -1767,12 +1794,13 @@
 		<!-- directory for compiled stuff -->
 		<mkdir dir="${work.dir}/TransportationAdmin/WEB-INF/classes" />
 
-		<!-- compile tapestry components -->
+		<!-- compile spring components -->
 		<path id="admin.classpath">
 			<path refid="j2ee.classpath"/>
 			<path refid="common.classpath"/>
 			<path refid="oracle.classpath"/>
 			<pathelement location="${work.dir}/Framework.jar"/>
+			<pathelement location="${work.dir}/RoutingServices.jar"/>
 			<pathelement location="${thirdparty.home}/spring.jar"/>
 			<pathelement location="${thirdparty.home}/jstl.jar"/>
 			<pathelement location="${thirdparty.home}/standard.jar"/>
@@ -1819,7 +1847,13 @@
 
 		<!-- copy dependent jar files -->
   		<copy todir="${work.dir}/TransportationAdmin/WEB-INF/lib">
-			<fileset dir="${thirdparty.home}" includes="extremecomponents-1.0.1.jar" />
+			<fileset dir="${thirdparty.home}" includes="extremecomponents-1.0.1.jar" />			
+			<fileset dir="${thirdparty.home}" includes="jaxrpc.jar" />
+			<fileset dir="${thirdparty.home}" includes="saaj.jar" />
+			<fileset dir="${thirdparty.home}" includes="wsdl4j-1.5.1.jar" />
+			<fileset dir="${work.dir}" includes="RoutingServices.jar" />
+			<fileset dir="${thirdparty.home}" includes="axis.jar" />
+			<fileset dir="${thirdparty.home}" includes="axis-ant.jar" />
 		</copy>
 
 		<!-- create .war file -->
@@ -1945,6 +1979,7 @@
 				<include name="Framework.jar"/>
 				<include name="CMS.jar"/>
 				<include name="Resources.jar"/>
+				<include name="RoutingServices.jar"/>
 			</libraries>
 			<lib>
 				<include name="lcc.jar"/>
@@ -1968,6 +2003,7 @@
 				<include name="Resources.jar"/>
 				<include name="OCF.jar"/>
 				<include name="listadmin.jar"/>
+				<include name="RoutingServices.jar"/>
 			</libraries>
 			<lib>
 				<!-- <include name="oscache-2.4.jar"/> -->
@@ -1991,6 +2027,7 @@
 				<include name="CMS.jar"/>
 				<include name="FDStoreEJB-WL.jar"/>
 				<include name="DataLoaderEJB-WL.jar"/>
+				<include name="RoutingServices.jar"/>
 			</libraries>
 			<lib>
 				<include name="oscache.jar"/>
@@ -2017,6 +2054,7 @@
 				<include name="ERPSWebApp.jar"/>
 				<include name="CMS.jar"/>
 				<include name="DataLoaderEJB-WL.jar"/>
+				<include name="RoutingServices.jar"/>
 			</libraries>
 			<lib>
 				<include name="lcc.jar"/>
@@ -2059,6 +2097,11 @@
 				<include name="lucene-queries-2.2.0.jar"/>
 				<include name="lucene-spellchecker-2.2.0.jar"/>
 				<include name="opencsv-1.8.jar"/>
+				
+				<include name="commons-discovery-0.2.jar"/>
+				<include name="commons-logging-1.0.4.jar"/>
+								
+				<include name="JFEP-0.1.0.jar"/>
 			</lib>
 		</makeFDAdminEar>
 	</target>
@@ -2111,6 +2154,7 @@
 				<include name="FDStoreEJB-WL.jar"/>
 				<include name="CMS.jar"/>
 				<include name="DataLoaderEJB-WL.jar"/>
+				<include name="RoutingServices.jar"/>
 			</libraries>
 			<lib>
 				<!-- <include name="oscache-2.4.jar"/> -->
@@ -2142,6 +2186,7 @@
 				<include name="ERPSWebApp.jar"/>
 				<include name="cms-slide.jar"/>
 				<include name="DataLoaderEJB-WL.jar"/>
+				<include name="RoutingServices.jar"/>
 			</libraries>
 			<lib>
 				<include name="oscache.jar"/>
@@ -2269,6 +2314,7 @@
 			<zipfileset src="${work.dir}/DeliveryEJB-WL.jar" excludes="META-INF/*"/>
 			<zipfileset src="${work.dir}/DataLoaderEJB-WL.jar" excludes="META-INF/*"/>
 			<zipfileset src="${work.dir}/FDStoreEJB-WL.jar" excludes="META-INF/*"/>
+			<zipfileset src="${work.dir}/RoutingServices.jar" excludes="META-INF/*"/>
 		</jar>
 	</target>
 
@@ -2309,7 +2355,8 @@
 			<zipfileset src="${work.dir}/ERPServicesEJB-WL.jar" excludes="META-INF/*"/>
 			<zipfileset src="${work.dir}/DeliveryEJB-WL.jar" excludes="META-INF/*"/>
 			<zipfileset src="${work.dir}/DataLoaderEJB-WL.jar" excludes="META-INF/*"/>
-			<zipfileset src="${work.dir}/FDStoreEJB-WL.jar" excludes="META-INF/*"/>			
+			<zipfileset src="${work.dir}/FDStoreEJB-WL.jar" excludes="META-INF/*"/>	
+			<zipfileset src="${work.dir}/RoutingServices.jar" excludes="META-INF/*"/>
 		</jar>
 	</target>
 

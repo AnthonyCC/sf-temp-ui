@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<!--
+  - Application context definition for Routing Services.
+  -->
+<beans>
+	
+	<!-- ========================= RESOURCE DEFINITIONS ========================= -->
+	
+	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="fddatasource"/>
+	</bean>
+	
+
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+   </bean>
+
+	<bean id="deliveryDAO" class="com.freshdirect.routing.dao.impl.DeliveryDetailsDAO">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>	 
+    <bean id="geographyDAO" class="com.freshdirect.routing.dao.impl.GeographyDAO">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>	
+	
+	<bean id="routingInfoDAO" class="com.freshdirect.routing.dao.impl.RoutingInfoDAO">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>	
+	
+    <bean id="deliveryService" class="com.freshdirect.routing.service.impl.DeliveryService">
+           <property name="deliveryDAOImpl" ref="deliveryDAO"/>    		
+	</bean>
+	
+	<bean id="plantService" class="com.freshdirect.routing.service.impl.PlantService"/>
+        
+    <bean id="utilityService" class="com.freshdirect.routing.service.impl.UtilityService"/> 
+    
+    <bean id="routingEngineService" class="com.freshdirect.routing.service.impl.RoutingEngineService"/>       
+	
+	<bean id="geographyService" class="com.freshdirect.routing.service.impl.GeographyService">
+           <property name="geographyDAOImpl" ref="geographyDAO"/>    		
+	</bean>
+			
+	<bean id="routingInfoService" class="com.freshdirect.routing.service.impl.RoutingInfoService">
+           <property name="routingInfoDAOImpl" ref="routingInfoDAO"/>    		
+	</bean>
+    
+    <bean id="deliveryServiceMng" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager" ref="transactionManager"/>
+		<property name="target" ref="deliveryService"/>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="geogrpahyServiceMng" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager" ref="transactionManager"/>
+		<property name="target" ref="geographyService"/>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="routingInfoServiceMng" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager" ref="transactionManager"/>
+		<property name="target" ref="routingInfoService"/>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+    
+</beans>

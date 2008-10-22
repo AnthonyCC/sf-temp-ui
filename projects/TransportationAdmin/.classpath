@@ -13,5 +13,7 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/extremecomponents-1.0.1.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-collections-3.1.jar"/>
 	<classpathentry kind="src" path="/Framework"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/RoutingServices"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/jsonrpc-1.0.jar"/>
 	<classpathentry kind="output" path="docroot/WEB-INF/classes"/>
 </classpath>

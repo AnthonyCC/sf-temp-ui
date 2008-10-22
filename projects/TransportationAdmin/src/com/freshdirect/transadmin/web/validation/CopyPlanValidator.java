@@ -4,12 +4,11 @@ import java.text.ParseException;
 import java.util.Calendar;
 
 import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
 
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.CopyPlanCommand;
 
-public class CopyPlanValidator implements Validator {
+public class CopyPlanValidator extends AbstractValidator {
 	
 	public boolean supports(Class clazz) {
 		return CopyPlanCommand.class.isAssignableFrom(clazz);

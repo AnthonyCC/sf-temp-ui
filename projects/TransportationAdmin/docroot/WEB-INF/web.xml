@@ -67,6 +67,7 @@
 		<servlet-name>transAdmin</servlet-name>
 		<url-pattern>*.do</url-pattern>
 	</servlet-mapping>
+		
 
 	<session-config>
 		<session-timeout>10</session-timeout>

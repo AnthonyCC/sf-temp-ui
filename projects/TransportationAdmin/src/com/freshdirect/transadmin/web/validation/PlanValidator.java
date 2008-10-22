@@ -1,16 +1,12 @@
 package com.freshdirect.transadmin.web.validation;
 
-import java.text.ParseException;
-import java.util.Calendar;
-
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
-import org.springframework.validation.Validator;
 
 import com.freshdirect.transadmin.model.TrnDispatchPlan;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
-public class PlanValidator implements Validator {
+public class PlanValidator extends AbstractValidator {
 	
 	public boolean supports(Class clazz) {
 		return TrnDispatchPlan.class.isAssignableFrom(clazz);

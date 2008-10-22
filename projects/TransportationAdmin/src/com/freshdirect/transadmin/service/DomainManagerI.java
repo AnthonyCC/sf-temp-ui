@@ -2,10 +2,13 @@ package com.freshdirect.transadmin.service;
 
 import java.util.Collection;
 
+import com.freshdirect.transadmin.model.TrnArea;
+import com.freshdirect.transadmin.model.TrnCutOff;
 import com.freshdirect.transadmin.model.TrnEmployee;
 import com.freshdirect.transadmin.model.TrnRoute;
 import com.freshdirect.transadmin.model.TrnTruck;
 import com.freshdirect.transadmin.model.TrnZone;
+import com.freshdirect.transadmin.model.TrnZoneType;
 
 public interface DomainManagerI extends BaseManagerI {
 	
@@ -13,11 +16,17 @@ public interface DomainManagerI extends BaseManagerI {
 	
 	Collection getZones();
 	
+	Collection getAreas();
+	
+	Collection getMarkedAreas();
+	
 	Collection getRoutes();
 	
 	Collection getRouteForZone(String zoneId);
 	
 	Collection getTrucks();
+	
+	Collection getZoneTypes();
 	
 	String[] getDays();
 	
@@ -37,6 +46,18 @@ public interface DomainManagerI extends BaseManagerI {
 	
 	TrnTruck getTruck(String id);
 	
-	Collection getTimeSlots();
+	TrnZoneType getZoneType(String id);
+	
+	Collection getTimeSlots();	
+	
+	TrnArea getArea(String id);
+	
+	TrnCutOff getCutOff(String id);
+	
+	Collection getCutOffs();
+	
+	Collection getRouteNumberGroup(String date, String area);
+	
+	Collection getDeliveryModels();
 
 }

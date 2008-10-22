@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jul 30, 2007 6:23:08 PM by Hibernate Tools 3.2.0.b9 -->
+<hibernate-mapping schema="dlv">
+    <class name="com.freshdirect.transadmin.model.DlvBuilding" table="DELIVERY_BUILDING">
+        <id name="buildingId" type="string">
+            <column name="ID" length="16" />
+            <generator class="sequence">
+    			<param name="sequence">DELIVERY_BUILDING_SEQ</param>
+			</generator>
+        </id>
+        <many-to-one name="serviceTimeType" class="com.freshdirect.transadmin.model.DlvServiceTimeType" fetch="select" lazy="false">
+            <column name="SERVICETIME_TYPE" length="8" />
+        </many-to-one>        
+        <property name="srubbedStreet" type="string">
+            <column name="SCRUBBED_STREET" length="255" />
+        </property>
+         <property name="city" type="string">
+            <column name="CITY" length="55" />
+        </property>
+        <property name="state" type="string">
+            <column name="STATE" length="2" />
+        </property> 
+        <property name="zip" type="string">
+            <column name="ZIP" length="10" />
+        </property>
+        <property name="country" type="string">
+            <column name="COUNTRY" length="2" />
+        </property> 
+       <property name="longitude" type="big_decimal">
+            <column name="LONGITUDE" precision="14" scale="10" />
+        </property>
+        <property name="latitude" type="big_decimal">
+            <column name="LATITUDE" precision="14" scale="10" />
+        </property>
+        <property name="geocodeConfidence" type="string">
+            <column name="GEO_CONFIDENCE" length="55" />
+        </property> 
+        <property name="geocodeQuality" type="string">
+            <column name="GEO_QUALITY" length="55" />
+        </property> 
+    </class>
+</hibernate-mapping>
+

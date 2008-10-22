@@ -12,6 +12,14 @@ body {
 	height:82px;
 }
 
+.poptitle {
+	font-size: 100%;
+	font-family: Verdana, Arial, Helvetica,sans-serif;
+	background-color:#e7e7d6;	
+	font-weight: bold;
+	height:82px;
+}
+
 .appusertitle {
 	font-size: 7pt;
 	font-family: Verdana, Arial, Helvetica,sans-serif;
@@ -118,6 +126,15 @@ body {
 	text-align: center;
 }
 
+.legend {	
+	font-family: Verdana, Arial, Helvetica,sans-serif; 
+	font-size: 9pt;
+	vertical-align:top;
+	padding-top:2px;
+	text-align: center;
+	font-weight: bold; 
+}
+
 .forms1 {
 	font-family: Verdana, Arial, Helvetica,sans-serif; 
 	font-size: 9pt; 
@@ -191,4 +208,31 @@ body {
 	color: red;
 	font-family: Verdana, Arial, Helvetica,sans-serif; 
 	font-size: 9pt; 
+}
+
+.fileTabHeader {
+	font-family: Verdana, Arial, Helvetica,sans-serif; 
+	font-size: 9pt;	
+	text-align: center;
+	font-weight: bold; 
+	background-color: #308dbb;
+	padding-top: 2px;
+	padding-right: 3px;
+	padding-bottom: 2px;
+	padding-left: 3px;
+}
+
+.fileTabEvenRow {
+	font-family: Verdana, Arial, Helvetica,sans-serif; 
+	font-size: 7pt;	
+	text-align: center;
+	background-color: #dfe4e8;
+	
+}
+
+.fileTabOddRow {
+	font-family: Verdana, Arial, Helvetica,sans-serif; 
+	font-size: 7pt;	
+	text-align: center;
+	background-color: #FFFFFF;
 }

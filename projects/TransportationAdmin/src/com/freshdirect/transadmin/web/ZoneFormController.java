@@ -13,7 +13,9 @@ public class ZoneFormController extends AbstractDomainFormController {
 		
 	protected Map referenceData(HttpServletRequest request) throws ServletException {
 		Map refData = new HashMap();		
-		refData.put("supervisors", getDomainManagerService().getSupervisors());				
+		refData.put("supervisors", getDomainManagerService().getSupervisors());	
+		refData.put("zonetypes", getDomainManagerService().getZoneTypes());	
+		refData.put("areas", getDomainManagerService().getAreas());	
 		return refData;
 	}
 	

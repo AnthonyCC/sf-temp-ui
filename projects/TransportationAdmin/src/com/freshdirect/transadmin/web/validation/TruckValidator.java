@@ -2,11 +2,10 @@ package com.freshdirect.transadmin.web.validation;
 
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
-import org.springframework.validation.Validator;
 
 import com.freshdirect.transadmin.model.TrnTruck;
 
-public class TruckValidator implements Validator {	
+public class TruckValidator extends AbstractValidator {	
 	
 	public boolean supports(Class clazz) {
 		return TrnTruck.class.isAssignableFrom(clazz);

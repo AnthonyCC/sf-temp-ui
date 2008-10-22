@@ -17,6 +17,8 @@ public class DateUtil {
 	private static final DateFormat DATE_YEAR_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
 	private static final DateFormat MONTH_DATE_YEAR_FORMATTER = new SimpleDateFormat("MM/dd/yyyy");
 	
+	private static final DateFormat DATE_PLAIN = new SimpleDateFormat("yyyyMMdd");
+	
 	private static final DateFormat MIN_HOUR_FORMATTER = new SimpleDateFormat("h:mm a");
 	private static final DateFormat DAY_INWEEK_FORMATTER = new SimpleDateFormat("E");
 			
@@ -85,6 +87,8 @@ public class DateUtil {
 		cal.add(Calendar.HOUR, hours);
 		return cal.getTime();
 	}
+	
+	
 
 	public static boolean isSameDay(Date d1, Date d2) {
 		return isSameDay(toCalendar(d1), toCalendar(d2));
@@ -124,6 +128,10 @@ public class DateUtil {
 	
 	public static String format(Date dateValue) throws ParseException{
 		return DATE_YEAR_FORMATTER.format(dateValue);
+	}
+	
+	public static String formatPlain(Date dateValue) throws ParseException{
+		return DATE_PLAIN.format(dateValue);
 	}
 	
 	public static String formatDate(Date dateValue) throws ParseException{

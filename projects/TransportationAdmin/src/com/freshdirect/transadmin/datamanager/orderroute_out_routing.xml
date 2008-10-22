@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<file-format>
+    <converter name="char" class="com.freshdirect.transadmin.datamanager.parser.converters.CoreConverters" method="convertChar" return-type="java.lang.String"/>
+    <converter name="decimal" class="com.freshdirect.transadmin.datamanager.parser.converters.CoreConverters" method="convertDecimal" return-type="java.lang.Double"/>
+    <converter name="date" class="com.freshdirect.transadmin.datamanager.parser.converters.CoreConverters" method="convertDate" return-type="java.util.Date"/>
+    <converter name="time" class="com.freshdirect.transadmin.datamanager.parser.converters.CoreConverters" method="convertDate" return-type="java.util.Date"/>
+    <record name="row">       
+        <record-definition>
+            <bean name="rowBean" class="com.freshdirect.transadmin.datamanager.model.OrderRouteInfoModel"/>
+            <line>
+                <record-element length="15" beanref="rowBean.locationId" type="char"/>
+                <record-element length="15" beanref="rowBean.orderNumber" type="char"/>
+                <record-element length="16" beanref="rowBean.totalSize1" type="char"/>
+                <record-element length="16" beanref="rowBean.totalSize2" type="char"/>
+                <record-element length="6" beanref="rowBean.fixedServiceTime" type="char"/>
+                <record-element length="5" beanref="rowBean.timeWindowStart" type="time">
+	                <conversion-option name="format" value="HH:mm"/>
+                </record-element>
+                <record-element length="5" beanref="rowBean.timeWindowStop" type="time">
+	                <conversion-option name="format" value="HH:mm"/>
+                </record-element>
+                <record-element length="8" beanref="rowBean.deliveryDate" type="date">
+                	<conversion-option name="format" value="MMddyyyy"/>
+                </record-element>                
+                <record-element length="15" beanref="rowBean.deliveryZone" type="char"/>
+				<record-element length="15" beanref="rowBean.routeId" type="char"/>
+				<record-element length="4" beanref="rowBean.stopNumber" type="char"/>
+				<record-element length="6" beanref="rowBean.stopArrivalTime" type="time">  
+					 <conversion-option name="format" value="HHmmss"/>
+                </record-element>
+				<record-element length="6" beanref="rowBean.routeStartTime" type="time">                                                                               
+					 <conversion-option name="format" value="HHmmss"/>
+                </record-element>
+            </line>
+        </record-definition>
+    </record>
+</file-format>

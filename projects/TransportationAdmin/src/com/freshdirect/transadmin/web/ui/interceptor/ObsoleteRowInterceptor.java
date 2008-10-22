@@ -14,6 +14,7 @@ public class ObsoleteRowInterceptor implements RowInterceptor {
     } 
 
     public void modifyRowAttributes(TableModel model, Row row) {
+    	
     	TrnBaseEntityI rowEntity = (TrnBaseEntityI) model.getCurrentRowBean();        
         if (rowEntity != null && rowEntity.isObsoleteEntity()) {
             row.setStyleClass("obsoleteRow");

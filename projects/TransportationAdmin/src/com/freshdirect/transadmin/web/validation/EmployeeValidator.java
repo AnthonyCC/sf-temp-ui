@@ -2,13 +2,12 @@ package com.freshdirect.transadmin.web.validation;
 
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
-import org.springframework.validation.Validator;
 
 import com.freshdirect.transadmin.model.TrnEmployee;
 
 
 
-public class EmployeeValidator implements Validator {	
+public class EmployeeValidator extends AbstractValidator {	
 	
 	public boolean supports(Class clazz) {
 		return TrnEmployee.class.isAssignableFrom(clazz);

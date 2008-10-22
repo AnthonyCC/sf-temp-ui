@@ -45,14 +45,17 @@
 				<td class="navlist" colspan="3" bgcolor="c00cc3d">
 				<table class="navtbl" border="0" width="100%">
 					<tr>
-						<td width="10%" align="center"><a href="index.jsp" >&nbsp;Home&nbsp;</a></td>
-						<td width="10%" align="center"><a href="employee.do" >&nbsp;Employee&nbsp;</a></td>
-						<td width="10%" align="center"><a href="route.do" >&nbsp;Route&nbsp;</a></td>
-						<td width="10%" align="center"><a href="zone.do" >&nbsp;Zone&nbsp;</a></td>
-						<td width="10%" align="center"><a href="truck.do" >&nbsp;Truck&nbsp;</a></td>
-						<td width="10%" align="center"><a href="plan.do" >&nbsp;Planning&nbsp;</a></td>
-						<td width="10%" align="center"><a href="assignment.do" >&nbsp;Assignment&nbsp;</a></td>
-						<td width="10%" align="center"><a href="dispatch.do" >&nbsp;Dispatch&nbsp;</a></td>
+						<td width="9%" align="center"><a href="index.jsp" >&nbsp;Home&nbsp;</a></td>
+						<td width="9%" align="center"><a href="employee.do" >&nbsp;Employee&nbsp;</a></td>
+						<td width="9%" align="center"><a href="route.do" >&nbsp;Route&nbsp;</a></td>
+						<td width="9%" align="center"><a href="area.do" >&nbsp;Area&nbsp;</a></td>
+						<td width="9%" align="center"><a href="zonetype.do" >&nbsp;Zone Type&nbsp;</a></td>
+						<td width="9%" align="center"><a href="zone.do" >&nbsp;Zone&nbsp;</a></td>
+						<td width="9%" align="center"><a href="truck.do" >&nbsp;Truck&nbsp;</a></td>
+						<td width="9%" align="center"><a href="plan.do" >&nbsp;Planning&nbsp;</a></td>
+						<td width="9%" align="center"><a href="assignment.do" >&nbsp;Assignment&nbsp;</a></td>
+						<td width="9%" align="center"><a href="dispatch.do" >&nbsp;Dispatch&nbsp;</a></td>
+						<td width="9%" align="center"><a href="welcomedlvlocation.do" >&nbsp;Routing&nbsp;</a></td>
 					</tr>
 					</table>
 				</td>

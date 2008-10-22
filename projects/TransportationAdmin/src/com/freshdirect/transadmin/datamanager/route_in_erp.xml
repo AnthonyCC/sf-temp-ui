@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<file-format>
+    <converter name="char" class="com.freshdirect.transadmin.datamanager.parser.converters.CoreConverters" method="convertChar" return-type="java.lang.String"/>
+    <converter name="decimal" class="com.freshdirect.transadmin.datamanager.parser.converters.CoreConverters" method="convertDecimal" return-type="java.lang.Double"/>
+    <converter name="date" class="com.freshdirect.transadmin.datamanager.parser.converters.CoreConverters" method="convertDate" return-type="java.lang.String"/>
+    <converter name="time" class="com.freshdirect.transadmin.datamanager.parser.converters.CoreConverters" method="convertDate" return-type="java.lang.String"/>
+    <record name="row">       
+        <record-definition>
+            <bean name="rowBean" class="com.freshdirect.transadmin.datamanager.model.OrderRouteInfoModel"/>
+            <line>
+                <record-element length="4" beanref="rowBean.plant" type="char"/>
+                <record-element length="8" beanref="rowBean.deliveryDate" type="date">
+                	<conversion-option name="format" value="MMddyyyy"/>
+                </record-element>
+                <record-element length="6" beanref="rowBean.routeId" type="char"/>
+                <record-element length="3" beanref="rowBean.deliveryModel" type="char"/>
+                <record-element length="6" beanref="rowBean.routeStartTime" type="time">             
+	                <conversion-option name="format" value="HHmmss"/>
+                </record-element>
+				                                                                               
+            </line>
+        </record-definition>
+    </record>
+</file-format>

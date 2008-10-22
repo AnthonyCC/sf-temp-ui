@@ -4,12 +4,11 @@ import java.text.ParseException;
 
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
-import org.springframework.validation.Validator;
 
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.AssignmentCommand;
 
-public class AssignmentValidator implements Validator {
+public class AssignmentValidator extends AbstractValidator {
 	
 	public boolean supports(Class clazz) {
 		return AssignmentCommand.class.isAssignableFrom(clazz);

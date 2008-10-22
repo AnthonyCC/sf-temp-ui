@@ -1,5 +1,20 @@
-function doDelete(tableId, url) {
-    var table = document.getElementById(tableId);
+function doSelect(tableId, source) {	
+	var table = document.getElementById(tableId);
+	var chkSelect = document.getElementById(source);
+    var checkboxList = table.getElementsByTagName("input");    
+    var paramValues = null;
+    for (i = 0; i < checkboxList.length; i++) {
+    	if (checkboxList[i].type=="checkbox" && checkboxList[i] != chkSelect) {
+    		
+    		checkboxList[i].checked = chkSelect.checked;
+    	}
+    }
+
+}
+
+function getParamList(tableId, url) {
+	
+	var table = document.getElementById(tableId);
     var checkboxList = table.getElementsByTagName("input");    
     var paramValues = null;
     for (i = 0; i < checkboxList.length; i++) {
@@ -12,6 +27,12 @@ function doDelete(tableId, url) {
     		}
     	}
     }
+    return paramValues;
+}
+
+function doDelete(tableId, url) {
+    
+    var paramValues = getParamList(tableId, url);
     if (paramValues != null) {
     	var hasConfirmed = confirm ("Do you want to delete the selected records?")
 		if (hasConfirmed) {
@@ -20,7 +41,43 @@ function doDelete(tableId, url) {
     } else {
     	alert('Please Select a Row!');
     }
-  } 
+}
+  
+function doGeocode(tableId, url) {
+    var paramValues = getParamList(tableId, url);
+    if (paramValues != null) {
+    	var hasConfirmed = confirm ("Do you want to re-geocode the selected records?")
+		if (hasConfirmed) {
+		  	location.href = url+"?id="+ paramValues;
+		} 
+    } else {
+    	alert('Please Select a Row!');
+    }
+}
+  
+function doUpdate(tableId, url) {
+    var paramValues = getParamList(tableId, url);
+    if (paramValues != null) {
+    	var hasConfirmed = confirm ("Do you want to update the selected records?")
+		if (hasConfirmed) {
+		  	location.href = url+"?id="+ paramValues;
+		} 
+    } else {
+    	alert('Please Select a Row!');
+    }
+} 
+
+function doSend(tableId, url) {
+    var paramValues = getParamList(tableId, url);
+    if (paramValues != null) {
+    	var hasConfirmed = confirm ("Do you want to send the selected records?")
+		if (hasConfirmed) {
+		  	location.href = url+"?id="+ paramValues;
+		} 
+    } else {
+    	alert('Please Select a Row!');
+    }
+} 
    
   
   function doLink(compId, url) {

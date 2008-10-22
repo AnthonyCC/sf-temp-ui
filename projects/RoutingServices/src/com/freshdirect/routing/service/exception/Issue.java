@@ -1,0 +1,35 @@
+package com.freshdirect.routing.service.exception;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class Issue implements IIssue {
+	
+	private static Map messages = new HashMap();
+	
+	static {
+		messages.put(UNDEFINED, "Unknown error occured");
+		messages.put(PROCESS_SCENARIO_NOTFOUND, "Unable to load scenario or no default scenario defined");
+		messages.put(PROCESS_ZONEINFO_NOTFOUND,"Unable to load zone information");
+		messages.put(PROCESS_BUILDING_SAVEERROR, "Unable to save building information");
+		messages.put(PROCESS_LOCATION_SAVEERROR,"Unable to save location information");
+		messages.put(PROCESS_SERVICETIME_NOTFOUND,"Unable to load service time information");
+		messages.put(PROCESS_DELIVERYINFO_NOTFOUND,"Unable to load delivery info information");
+		messages.put(PROCESS_DELIVERYTYPE_NOTFOUND,"Unable to load delivery type information");
+		messages.put(PROCESS_ZONETYPE_NOTFOUND,"Unable to load zone type information");
+		
+		messages.put(PROCESS_BUILDING_NOTFOUND,"Unable to load building information");
+		messages.put(PROCESS_LOCATION_NOTFOUND,"Unable to load location information");
+		messages.put(PROCESS_GEOCODE_UNSUCCESSFUL,"Unable to geocode");
+		messages.put(PROCESS_LOCALGECODE_UNSUCCESSFUL,"Unable to geocode with local geocode engine");
+		messages.put(PROCESS_STATES_NOTFOUND,"Unable to load states information");
+		messages.put(PROCESS_ADDRESSSTANDARDIZE_UNSUCCESSFUL,"Unable to standardize address information");
+		messages.put(PROCESS_PURGEORDERS_UNSUCCESSFUL,"Unable to purge orders in routing system");
+		messages.put(PROCESS_BULKRESERVE_UNSUCCESSFUL,"Unable to bulk reserve orders in routing system");
+	}
+	
+	public static String getMessage(String id) {
+		return (String)messages.get(id);
+	}
+
+}

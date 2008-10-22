@@ -12,7 +12,6 @@ public class FDCheckboxCell extends FDBaseCell  {
 
     public String getHtmlDisplay(TableModel model, Column column) {    	
         ColumnBuilder columnBuilder = new ColumnBuilder(column);
-        
         columnBuilder.tdStart();
         
         try {                       

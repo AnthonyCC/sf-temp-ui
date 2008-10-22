@@ -16,6 +16,10 @@ public class TrnZone  implements java.io.Serializable, TrnBaseEntityI {
 	private String obsolete;
 
 	private TrnEmployee trnSupervisor;
+	
+	private TrnZoneType trnZoneType;
+	
+	private TrnArea trnArea;
 
 	public TrnZone() {
 	}
@@ -91,5 +95,55 @@ public class TrnZone  implements java.io.Serializable, TrnBaseEntityI {
 	
 	public boolean isObsoleteEntity() {
 		return (trnSupervisor != null && trnSupervisor.getObsolete() != null);
+	}
+
+	public TrnZoneType getTrnZoneType() {
+		return trnZoneType;
+	}
+
+	public void setTrnZoneType(TrnZoneType trnZoneType) {
+		this.trnZoneType = trnZoneType;
+	}
+	
+	public String getZoneType() {
+		if(getTrnZoneType() == null) {
+			return null;
+		}
+		return getTrnZoneType().getZoneTypeId();
+	}
+
+	public void setZoneType(String trnZoneTypeId) {
+		if("null".equals(trnZoneTypeId)) {
+			setTrnZoneType(null);
+		} else {
+			TrnZoneType trnZoneType = new TrnZoneType();
+			trnZoneType.setZoneTypeId(trnZoneTypeId);
+			setTrnZoneType(trnZoneType);
+		}
+	}
+
+	public TrnArea getTrnArea() {
+		return trnArea;
+	}
+
+	public void setTrnArea(TrnArea trnArea) {
+		this.trnArea = trnArea;
+	}
+	
+	public String getArea() {
+		if(getTrnArea() == null) {
+			return null;
+		}
+		return getTrnArea().getCode();
+	}
+
+	public void setArea(String trnAreaCode) {
+		if("null".equals(trnArea)) {
+			setTrnArea(null);
+		} else {
+			TrnArea trnArea = new TrnArea();
+			trnArea.setCode(trnAreaCode);
+			setTrnArea(trnArea);
+		}
 	}
 }

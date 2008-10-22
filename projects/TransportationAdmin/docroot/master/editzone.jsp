@@ -47,6 +47,32 @@
 							 	</td>
 							 </tr>
 							 
+							 <tr>
+							    <td>Zone Type</td>
+							    <td> 
+								  <form:select path="zoneType">
+							  	  		<form:option value="null" label="--Please Select Zone Type"/>
+										<form:options items="${zonetypes}" itemLabel="name" itemValue="zoneTypeId" />
+							     </form:select>
+							 	</td>
+							 	<td>
+							 		&nbsp;<form:errors path="zoneType" />
+							 	</td>
+							 </tr>
+							 
+							 <tr>
+							    <td>Area</td>
+							    <td> 
+								  <form:select path="area">
+							  	  		<form:option value="null" label="--Please Select Area"/>
+										<form:options items="${areas}" itemLabel="name" itemValue="code" />
+							     </form:select>
+							 	</td>
+							 	<td>
+							 		&nbsp;<form:errors path="area" />
+							 	</td>
+							 </tr>							 						 
+							 
 							<tr><td colspan="3">&nbsp;</td></tr>
 							<tr>
 							    <td colspan="3" align="center">

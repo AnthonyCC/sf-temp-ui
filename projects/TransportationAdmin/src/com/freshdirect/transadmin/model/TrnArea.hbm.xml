@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jul 30, 2007 6:23:08 PM by Hibernate Tools 3.2.0.b9 -->
+<hibernate-mapping schema="transp">
+    <class name="com.freshdirect.transadmin.model.TrnArea" table="TRN_AREA">
+        <id name="code" type="string">
+            <column name="CODE" length="8" />
+            <generator class="assigned" />
+        </id>
+        <property name="name" type="string">
+            <column name="NAME" length="32" />
+        </property>
+        <property name="description" type="string">
+            <column name="DESCRIPTION" length="256" />
+        </property>
+        <property name="active" type="string">
+            <column name="ACTIVE" length="1" />
+        </property>
+        <property name="prefix" type="string">
+            <column name="PREFIX" length="8" />
+        </property> 
+        <property name="deliveryModel" type="string">
+            <column name="DELIVERYMODEL" length="8" />
+        </property>         
+    </class>
+</hibernate-mapping>

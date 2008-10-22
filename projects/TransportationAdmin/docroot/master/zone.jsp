@@ -26,6 +26,8 @@
 				      <ec:column property="zoneNumber" title="Zone Number"/>
 				      <ec:column property="neighborhood" title="Neighborhood"/>
 				      <ec:column alias="trnSupervisorname" property="trnSupervisor.name" title="Supervisor"/>
+				      <ec:column alias="trnZoneType" property="trnZoneType.name" title="Zone Type"/>
+				      <ec:column alias="trnArea" property="trnArea.name" title="Area"/>
 				    </ec:row>
 				  </ec:table>
 			 </form> 	

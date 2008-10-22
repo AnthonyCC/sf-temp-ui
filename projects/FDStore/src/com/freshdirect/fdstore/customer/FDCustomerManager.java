@@ -29,6 +29,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.address.AddressI;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.crm.CrmSystemCaseInfo;
@@ -109,6 +110,8 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.xml.XSLTransformer;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
+import com.freshdirect.routing.ejb.RoutingGatewayHome;
+import com.freshdirect.routing.ejb.RoutingGatewaySB;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
 import com.freshdirect.smartstore.fdstore.VariantSelector;
@@ -127,6 +130,7 @@ public class FDCustomerManager {
 
 	private static FDCustomerManagerHome managerHome = null;
 	private static MailerGatewayHome mailerHome = null;
+	private static RoutingGatewayHome routingGatewayHome = null;
 
 	/**
 	 * Register and log in a new customer.
@@ -929,13 +933,17 @@ public class FDCustomerManager {
 	 * @throws FDResourceException if an error occured using remote resources
 	 */
 	public static boolean addShipToAddress(FDActionInfo info, boolean checkUniqueness, ErpAddressModel address)
-		throws FDResourceException, ErpDuplicateAddressException {
+	throws FDResourceException, ErpDuplicateAddressException {
 		lookupManagerHome();
+
 
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
-			return sb.addShipToAddress(info, checkUniqueness, address);
+			boolean result =   sb.addShipToAddress(info, checkUniqueness, address);
 
+			sendShippingAddress(address);
+
+			return result;
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -954,13 +962,16 @@ public class FDCustomerManager {
 	 * @throws FDResourceException if an error occured using remote resources
 	 */
 	public static boolean updateShipToAddress(FDActionInfo info, boolean checkUniqueness, ErpAddressModel address)
-		throws FDResourceException, ErpDuplicateAddressException {
+	throws FDResourceException, ErpDuplicateAddressException {
 		lookupManagerHome();
 
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
-			return sb.updateShipToAddress(info, checkUniqueness, address);
+			boolean result =  sb.updateShipToAddress(info, checkUniqueness, address);
 
+			sendShippingAddress(address);
+
+			return result;
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -968,6 +979,26 @@ public class FDCustomerManager {
 			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
+	}
+
+	private static void sendShippingAddress(AddressI address) throws FDResourceException {
+
+		if(FDStoreProperties.canSendRoutingAddress()) {
+			lookupRoutingGatewayHome();
+
+			try {
+				RoutingGatewaySB routingSB = routingGatewayHome.create();
+				routingSB.sendShippingAddress(address);
+
+			} catch (CreateException ce) {
+				invalidateRoutingGatewayHome();
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				invalidateRoutingGatewayHome();
+				throw new FDResourceException(re, "Error creating session bean");
+			}
+		}	
+
 	}
 
 	/**
@@ -2532,5 +2563,31 @@ public class FDCustomerManager {
 				invalidateManagerHome();
 				throw new FDResourceException(re, "Error talking to session bean");
 			}
-		}	  	    
+		}
+	    
+	    private static void invalidateRoutingGatewayHome() {
+	    	routingGatewayHome = null;
+	    }
+
+	    private static void lookupRoutingGatewayHome() throws FDResourceException {
+	    	if (routingGatewayHome != null) {
+	    		return;
+	    	}
+	    	Context ctx = null;
+	    	try {
+
+	    		ctx = FDStoreProperties.getInitialContext();
+	    		routingGatewayHome = (RoutingGatewayHome) ctx.lookup("freshdirect.routing.Gateway");
+	    	} catch (NamingException ne) {
+	    		throw new FDResourceException(ne);
+	    	} finally {
+	    		try {
+	    			if (ctx != null) {
+	    				ctx.close();
+	    			}
+	    		} catch (NamingException ne) {
+	    			LOGGER.warn("Cannot close Context while trying to cleanup", ne);
+	    		}
+	    	}
+	    }
 }

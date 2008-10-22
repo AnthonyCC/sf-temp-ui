@@ -15,6 +15,10 @@ public class FDStatusBarBuilder extends ToolbarBuilder {
 	private final static String TOOLBAR_CONFIRM_IMAGE = "confirm-unconfirm";
 	private final static String TOOLBAR_COPY_IMAGE = "copy";
 	
+	private final static String TOOLBAR_GEOCODE_IMAGE = "geocode";	
+	private final static String TOOLBAR_UPDATE_IMAGE = "update";
+	private final static String TOOLBAR_SEND_IMAGE = "send";
+	
 	public FDStatusBarBuilder(TableModel model) {
         super(model);
     }
@@ -23,40 +27,50 @@ public class FDStatusBarBuilder extends ToolbarBuilder {
     	super(html, model);
     }
     
-    public void addItemAsImage() {
-        ImageItem item = new ImageItem();
-        item.setTooltip(getMessages().getMessage(BuilderConstants.TOOLBAR_FILTER_TOOLTIP));
-        item.setImage(BuilderUtils.getImage(getTableModel(), TOOLBAR_ADD_IMAGE));
-        item.setAlt("Add");
-        item.setStyle("border:0");
+    public void addItemAsImage() {               
+    	ImageItem item = itemAsImage(TOOLBAR_ADD_IMAGE, "Add");
         buildAdd(getHtmlBuilder(), getTableModel(), item);
     }
        
-    public void deleteItemAsImage() {
-        ImageItem item = new ImageItem();
-        item.setTooltip(getMessages().getMessage(BuilderConstants.TOOLBAR_FILTER_TOOLTIP));
-        item.setImage(BuilderUtils.getImage(getTableModel(), TOOLBAR_DELETE_IMAGE));
-        item.setAlt("Delete");
-        item.setStyle("border:0");
+    public void deleteItemAsImage() {            
+        
+        ImageItem item = itemAsImage(TOOLBAR_DELETE_IMAGE, "Delete");
         buildDelete(getHtmlBuilder(), getTableModel(), item);
     }
     
-    public void confirmItemAsImage() {
-        ImageItem item = new ImageItem();
-        item.setTooltip(getMessages().getMessage(BuilderConstants.TOOLBAR_FILTER_TOOLTIP));
-        item.setImage(BuilderUtils.getImage(getTableModel(), TOOLBAR_CONFIRM_IMAGE));
-        item.setAlt("Confirm");
-        item.setStyle("border:0");
+    public void confirmItemAsImage() {        
+        ImageItem item = itemAsImage(TOOLBAR_CONFIRM_IMAGE, "Confirm");
         buildConfirm(getHtmlBuilder(), getTableModel(), item);
     }
     
     public void copyItemAsImage() {
-        ImageItem item = new ImageItem();
-        item.setTooltip(getMessages().getMessage(BuilderConstants.TOOLBAR_FILTER_TOOLTIP));
-        item.setImage(BuilderUtils.getImage(getTableModel(), TOOLBAR_COPY_IMAGE));
-        item.setAlt("Copy");
-        item.setStyle("border:0");
+    	ImageItem item = itemAsImage(TOOLBAR_COPY_IMAGE, "Copy");
         buildCopy(getHtmlBuilder(), getTableModel(), item);
+    }
+    
+    public void geocodeItemAsImage() {
+    	ImageItem item = itemAsImage(TOOLBAR_GEOCODE_IMAGE, "Geocode");
+        buildGeocode(getHtmlBuilder(), getTableModel(), item);
+    }
+    
+    public void updateItemAsImage() {
+    	ImageItem item = itemAsImage(TOOLBAR_UPDATE_IMAGE, "Update");
+        buildUpdate(getHtmlBuilder(), getTableModel(), item);
+    }
+    
+    public void sendItemAsImage() {
+    	ImageItem item = itemAsImage(TOOLBAR_SEND_IMAGE, "Send");
+        buildSend(getHtmlBuilder(), getTableModel(), item);
+    }
+    
+    private ImageItem itemAsImage(String image, String altText) {
+    	
+    	ImageItem item = new ImageItem();
+        item.setTooltip(getMessages().getMessage(BuilderConstants.TOOLBAR_FILTER_TOOLTIP));
+        item.setImage(BuilderUtils.getImage(getTableModel(), image));
+        item.setAlt(altText);
+        item.setStyle("border:0");
+        return item;
     }
             
     public void buildAdd(HtmlBuilder html, TableModel model, ToolbarItem item) {
@@ -79,6 +93,20 @@ public class FDStatusBarBuilder extends ToolbarBuilder {
         item.enabled(html, model);
     }
     
+    public void buildGeocode(HtmlBuilder html, TableModel model, ToolbarItem item) {
+        item.setAction(getGeocodeAction("geocode",model));
+        item.enabled(html, model);
+    }
+    
+    public void buildUpdate(HtmlBuilder html, TableModel model, ToolbarItem item) {
+        item.setAction(getUpdateAction("update",model));
+        item.enabled(html, model);
+    }
+    
+    public void buildSend(HtmlBuilder html, TableModel model, ToolbarItem item) {
+        item.setAction(getSendAction("send",model));
+        item.enabled(html, model);
+    }
     
     public String getAddAction(String key, TableModel model) {
         StringBuffer result = new StringBuffer("javascript:");
@@ -93,6 +121,33 @@ public class FDStatusBarBuilder extends ToolbarBuilder {
 
     	String action = model.getTableHandler().getTable().getAction();
         result.append("doDelete('").append(model.getTableHandler().getTable().getTableId())
+        				.append("_table','").append(formatAction(action,key)).append("')");                       
+        return result.toString();
+    }
+    
+    public String getGeocodeAction(String key, TableModel model) {
+    	StringBuffer result = new StringBuffer("javascript:");
+
+    	String action = model.getTableHandler().getTable().getAction();
+        result.append("doGeocode('").append(model.getTableHandler().getTable().getTableId())
+        				.append("_table','").append(formatAction(action,key)).append("')");                       
+        return result.toString();
+    }
+    
+    public String getUpdateAction(String key, TableModel model) {
+    	StringBuffer result = new StringBuffer("javascript:");
+
+    	String action = model.getTableHandler().getTable().getAction();
+        result.append("doUpdate('").append(model.getTableHandler().getTable().getTableId())
+        				.append("_table','").append(formatAction(action,key)).append("')");                       
+        return result.toString();
+    }
+    
+    public String getSendAction(String key, TableModel model) {
+    	StringBuffer result = new StringBuffer("javascript:");
+
+    	String action = model.getTableHandler().getTable().getAction();
+        result.append("doSend('").append(model.getTableHandler().getTable().getTableId())
         				.append("_table','").append(formatAction(action,key)).append("')");                       
         return result.toString();
     }

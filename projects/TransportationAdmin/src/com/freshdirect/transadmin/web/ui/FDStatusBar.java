@@ -42,7 +42,15 @@ public class FDStatusBar extends DefaultStatusBar {
         
         String hasConfirm = (String)model.getContext().getPageAttribute("HAS_CONFIRMBUTTON");
         
+        String hasDelete = (String)model.getContext().getPageAttribute("HAS_DELETEBUTTON");
+        
         String hasCopy = (String)model.getContext().getPageAttribute("HAS_COPYBUTTON");
+        
+        String hasGeocode = (String)model.getContext().getPageAttribute("HAS_GEOCODEBUTTON");
+        
+        String hasUpdate = (String)model.getContext().getPageAttribute("HAS_UPDATEBUTTON");
+        
+        String hasSend = (String)model.getContext().getPageAttribute("HAS_SENDBUTTON");
         
         if(hasAdd == null || TransStringUtil.isEmpty(hasAdd)
         	|| hasAdd.equalsIgnoreCase("TRUE")) {
@@ -65,8 +73,34 @@ public class FDStatusBar extends DefaultStatusBar {
     	     
     	    html.nbsp();
         }
+        
+        if(hasGeocode != null && hasGeocode.equalsIgnoreCase("TRUE")) {
 
-        toolbarBuilder.deleteItemAsImage();
+    	    toolbarBuilder.geocodeItemAsImage();
+    	     
+    	    html.nbsp();
+        }
+        
+        if(hasUpdate != null && hasUpdate.equalsIgnoreCase("TRUE")) {
+
+    	    toolbarBuilder.updateItemAsImage();
+    	     
+    	    html.nbsp();
+        }
+        
+        if(hasSend != null && hasSend.equalsIgnoreCase("TRUE")) {
+
+    	    toolbarBuilder.sendItemAsImage();
+    	     
+    	    html.nbsp();
+        }
+        
+        if(!"FALSE".equalsIgnoreCase(hasDelete)) {
+
+        	toolbarBuilder.deleteItemAsImage();
+        }
+
+        
 
         html.tdEnd();
     }

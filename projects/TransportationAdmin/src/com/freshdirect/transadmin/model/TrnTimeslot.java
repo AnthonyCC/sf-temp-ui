@@ -47,4 +47,5 @@ public class TrnTimeslot  implements java.lang.Comparable, java.io.Serializable,
 	public boolean isObsoleteEntity() {
  		return false;
 	}
+
 }

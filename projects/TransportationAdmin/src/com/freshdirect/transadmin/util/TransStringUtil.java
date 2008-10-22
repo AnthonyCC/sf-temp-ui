@@ -1,6 +1,8 @@
 package com.freshdirect.transadmin.util;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -31,7 +33,9 @@ public class TransStringUtil {
 														"Sunday"};
 	private static Map daysMap = new HashMap();
 	
+	private static String zipCodePattern = "\\d{5}(-\\d{4})?";
 	
+	private static NumberFormat formatter = new DecimalFormat("00");
 	
 	static {
 			for(int intCount=0;intCount<daysList.length;intCount++) {
@@ -60,9 +64,13 @@ public class TransStringUtil {
 	public static boolean isEmpty(String str) {
 		return str == null || str.length() == 0;
 	}
-	
+		
 	public static String getCurrentDate() {		
 		return dateFormat.format(new Date());
+	}
+	
+	public static String getCurrentServerDate() {		
+		return serverDateFormat.format(new Date());
 	}
 	
 	public static String getServerDate(String clientDate) throws ParseException {       
@@ -117,6 +125,10 @@ public class TransStringUtil {
 	
 	public static int getInt(String intVal) throws NumberFormatException {		
 		return Integer.parseInt(intVal);
+	}
+	
+	public static String formatRouteNumber(String input) {
+		return formatter.format(Integer.parseInt(input));
 	}
 	
 	public static String formatDateSearch(String search) throws DateFilterException {  
@@ -181,6 +193,14 @@ public class TransStringUtil {
         }
 	}
 	
+	public static String splitStringForCode(String search) {
+		String[] dataLst = StringUtils.split(search, "-");
+		if(dataLst != null && dataLst.length >0) {
+			return dataLst[0];
+		} else {
+			return "000";
+		}
+	}
 	public static String formatStringSearch(String search) throws StringFilterException {
 		String[] dataLst = StringUtils.split(search, ",");
 		StringBuffer strBuf = new StringBuffer();
@@ -198,6 +218,28 @@ public class TransStringUtil {
 			}
 		}
 		return (hasInfo ? "IN ("+strBuf.toString()+")" : null);
+	}
+	
+	public static boolean isValidZipCode(String zip) {	    
+	    return zip.matches(zipCodePattern);    
+	}
+	
+	public static boolean isValidInteger(String intVal) throws NumberFormatException {	
+		try {
+			Integer.parseInt(intVal);
+		} catch(NumberFormatException exp) {
+			return false;
+		}
+		return true;
+	}
+	
+	public static boolean isValidDecimal(String intVal) throws NumberFormatException {	
+		try {
+			Double.parseDouble(intVal);
+		} catch(NumberFormatException exp) {
+			return false;
+		}
+		return true;
 	}
 	
 	public static class DateFilterException extends Exception {

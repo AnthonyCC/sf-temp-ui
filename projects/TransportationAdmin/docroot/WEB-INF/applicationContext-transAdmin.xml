@@ -25,6 +25,16 @@
 				<value>com/freshdirect/transadmin/model/TrnTruck.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/TrnTruckassignment.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/TrnZone.hbm.xml</value> 
+				<value>com/freshdirect/transadmin/model/DlvServiceTimeType.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/DlvLocation.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/DlvBuilding.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/DlvServiceTime.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/TrnZoneType.hbm.xml</value> 
+				<value>com/freshdirect/transadmin/model/DlvServiceTimeScenario.hbm.xml</value> 
+				<value>com/freshdirect/transadmin/model/TrnArea.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/TrnCutOff.hbm.xml</value>  
+				<value>com/freshdirect/transadmin/model/TrnRouteNumber.hbm.xml</value>  
+				<value>com/freshdirect/transadmin/model/TrnDeliveryModel.hbm.xml</value> 
             </list>
         </property>
         <property name="hibernateProperties">
@@ -43,6 +53,10 @@
 		<property name="sessionFactory" ref="sessionFactory"/>
 	</bean>	
 	
+	<bean id="locationManagerDAO" class="com.freshdirect.transadmin.dao.hibernate.LocationManagerDaoHibernateImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>	
+	
     <!-- who is driving the transactions? No one... Probably should use directly -->
     <bean id="domainManager" class="com.freshdirect.transadmin.service.impl.DomainManagerImpl">
         <property name="domainManagerDao" ref="domainManagerDAO"/>
@@ -50,6 +64,10 @@
     
      <bean id="dispatchManager" class="com.freshdirect.transadmin.service.impl.DispatchManagerImpl">
         <property name="dispatchManagerDao" ref="dispatchManagerDAO"/>
+    </bean>
+    
+    <bean id="locationManager" class="com.freshdirect.transadmin.service.impl.LocationManagerImpl">
+        <property name="locationManagerDao" ref="locationManagerDAO"/>
     </bean>
      
      <bean id="txManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
@@ -74,6 +92,17 @@
     
      <bean id="dispatchManagerBase" abstract="true" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="target" ref="dispatchManager"/>
+        <property name="transactionManager" ref="txManager"/>
+        <property name="transactionAttributes">
+            <props>
+            	<prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>
+                <prop key="*">PROPAGATION_REQUIRED</prop>
+            </props>
+        </property>
+    </bean>
+    
+    <bean id="locationManagerBase" abstract="true" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="target" ref="locationManager"/>
         <property name="transactionManager" ref="txManager"/>
         <property name="transactionAttributes">
             <props>

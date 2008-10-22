@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jul 30, 2007 6:23:08 PM by Hibernate Tools 3.2.0.b9 -->
+<hibernate-mapping schema="transp">
+    <class name="com.freshdirect.transadmin.model.TrnCutOff" table="TRN_CUTOFF">
+        <id name="cutOffId" type="string">
+            <column name="ID" length="16" />
+            <generator class="sequence">
+    			<param name="sequence">CUTOFFSEQ</param>
+			</generator>
+        </id>
+        <property name="name" type="string">
+            <column name="NAME" length="32" />
+        </property>
+        <property name="description" type="string">
+            <column name="DESCRIPTION" length="256" />
+        </property>   
+        <property name="sequenceNo" type="big_decimal">
+            <column name="SEQUENCENO" precision="10" />
+        </property>         
+    </class>
+</hibernate-mapping>

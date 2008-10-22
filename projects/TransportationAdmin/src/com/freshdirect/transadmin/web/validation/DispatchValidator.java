@@ -1,12 +1,11 @@
 package com.freshdirect.transadmin.web.validation;
 
 import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
 
 import com.freshdirect.transadmin.model.TrnDispatch;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
-public class DispatchValidator implements Validator {
+public class DispatchValidator extends AbstractValidator {
 	
 	public boolean supports(Class clazz) {
 		return TrnDispatch.class.isAssignableFrom(clazz);

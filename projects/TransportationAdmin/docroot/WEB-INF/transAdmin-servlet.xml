@@ -7,7 +7,8 @@
 		<property name="basename" value="messages"/>
 	</bean>
 
-
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+        
 	<bean id="viewResolver" class="org.springframework.web.servlet.view.ResourceBundleViewResolver">
 		<property name="basename" value="views"/>
 	</bean>
@@ -47,6 +48,40 @@
  		 	    <prop key="/editdispatch.do">dispatchFormController</prop>
  		 	    <prop key="/confirmdispatch.do">dispatchController</prop>
  		 	    <prop key="/copyplan.do">copyPlanFormController</prop>
+ 		 	    <prop key="/welcomedlvlocation.do">locationController</prop> 		 	    
+ 		 	    <prop key="/dlvlocation.do">locationController</prop>
+ 		 	    <prop key="/deletedlvlocation.do">locationController</prop> 		 	    
+ 		 	    <prop key="/updatedlvlocation.do">locationController</prop>
+ 		 	    <prop key="/senddlvlocation.do">locationController</prop>
+ 		 	    <prop key="/editdlvlocation.do">deliveryLocationFormController</prop> 
+   		 	    <prop key="/dlvservicetime.do">locationController</prop>
+ 		 	    <prop key="/deletedlvservicetime.do">locationController</prop>
+ 		 	    <prop key="/editdlvservicetime.do">dlvServiceTimeFormController</prop>
+ 		 	    <prop key="/dlvservicetimetype.do">locationController</prop>
+ 		 	    <prop key="/deletedlvservicetimetype.do">locationController</prop>
+ 		 	    <prop key="/editdlvservicetimetype.do">dlvServiceTimeTypeFormController</prop>
+ 		 	    <prop key="/routinginput.do">routingInputFormController</prop> 
+ 		 	    <prop key="/routingoutput.do">routingOutputFormController</prop>
+ 		 	    <prop key="/routingmerge.do">routingMergeFormController</prop> 
+ 		 	    <prop key="/download.do">downloadController</prop>	
+ 		 	    <prop key="/zonetype.do">domainController</prop>
+ 		 	    <prop key="/deletezonetype.do">domainController</prop>					                
+				<prop key="/editzonetype.do">zoneTypeFormController</prop>	
+				<prop key="/area.do">domainController</prop>
+				<prop key="/deletearea.do">domainController</prop>					                
+				<prop key="/editarea.do">areaFormController</prop>
+				<prop key="/dlvbuilding.do">locationController</prop>
+ 		 	    <prop key="/deletedlvbuilding.do">locationController</prop>
+ 		 	    <prop key="/geocodedlvbuilding.do">locationController</prop>
+ 		 	    <prop key="/dlvbuildinglocation.do">locationController</prop>
+ 		 	    <prop key="/editdlvbuilding.do">deliveryBuildingFormController</prop> 
+ 		 	    <prop key="/dlvservicetimescenario.do">locationController</prop>
+ 		 	    <prop key="/deletedlvservicetimescenario.do">locationController</prop>					                
+				<prop key="/editdlvservicetimescenario.do">dlvServiceTimeScenarioFormController</prop> 
+				<prop key="/cutoff.do">domainController</prop>
+				<prop key="/deletecutoff.do">domainController</prop>					                
+				<prop key="/editcutoff.do">cutOffFormController</prop>
+				<prop key="/viewfile.do">genericBeanFormController</prop> 					    
 			</props>
 		</property>
 	</bean>
@@ -58,11 +93,24 @@
 	<bean id="domainController" class="com.freshdirect.transadmin.web.DomainController">
 		<property name="methodNameResolver" ref="transAdminControllerResolver"/>
         <property name="domainManagerService" ref="domainManager"/>
+        <property name="locationManagerService" ref="locationManager"/>
 	</bean>
+	
+	<bean id="downloadController" class="com.freshdirect.transadmin.web.DownloadController">
+		<property name="methodNameResolver" ref="transAdminControllerResolver"/>        
+	</bean>
+	
+	
 	
 	<bean id="dispatchController" class="com.freshdirect.transadmin.web.DispatchController">
 		<property name="methodNameResolver" ref="transAdminControllerResolver"/>
         <property name="dispatchManagerService" ref="dispatchManager"/>
+	</bean>
+	
+	<bean id="locationController" class="com.freshdirect.transadmin.web.LocationController">
+		<property name="methodNameResolver" ref="transAdminControllerResolver"/>
+        <property name="locationManagerService" ref="locationManager"/>
+        <property name="domainManagerService" ref="domainManager"/>
 	</bean>
 
 	<!--
@@ -85,6 +133,28 @@
  		 	<prop key="/dispatch.do">dispatchHandler</prop>			      
  		 	<prop key="/deletedispatch.do">dispatchDeleteHandler</prop>
  		 	<prop key="/confirmdispatch.do">dispatchConfirmHandler</prop>
+ 		 	<prop key="/welcomedlvlocation.do">welcomeDlvLocationHandler</prop>
+	 	    <prop key="/dlvlocation.do">dlvLocationHandler</prop>	 	   
+	 	    <prop key="/deletedlvlocation.do">dlvLocationDeleteHandler</prop>	 	    
+	 	    <prop key="/updatedlvlocation.do">dlvLocationUpdateHandler</prop>
+	 	    <prop key="/senddlvlocation.do">dlvLocationSendHandler</prop>
+	 	    <prop key="/dlvservicetime.do">dlvServiceTimeHandler</prop>	 	   
+	 	    <prop key="/deletedlvservicetime.do">dlvServiceTimeDeleteHandler</prop>
+	 	    <prop key="/dlvservicetimetype.do">dlvServiceTimeTypeHandler</prop>	 	   
+	 	    <prop key="/deletedlvservicetimetype.do">dlvServiceTimeTypeDeleteHandler</prop>
+	 	    <prop key="/download.do">downloadHandler</prop>
+	 	    <prop key="/zonetype.do">zoneTypeHandler</prop>					                
+ 		 	<prop key="/deletezonetype.do">zoneTypeDeleteHandler</prop>
+ 		 	<prop key="/area.do">areaHandler</prop>					                
+ 		 	<prop key="/deletearea.do">areaDeleteHandler</prop>
+ 		 	<prop key="/dlvbuilding.do">dlvBuildingHandler</prop>	 	   
+	 	    <prop key="/deletedlvbuilding.do">dlvBuildingDeleteHandler</prop>
+	 	    <prop key="/geocodedlvbuilding.do">dlvBuildingGeocodeHandler</prop>	
+	 	    <prop key="/dlvbuildinglocation.do">dlvBuildingLocationHandler</prop>	 
+	 	    <prop key="/dlvservicetimescenario.do">dlvServiceTimeScenarioHandler</prop>					                
+ 		 	<prop key="/deletedlvservicetimescenario.do">dlvServiceTimeScenarioDeleteHandler</prop>	
+ 		 	<prop key="/cutoff.do">cutOffHandler</prop>					                
+ 		 	<prop key="/deletecutoff.do">cutOffDeleteHandler</prop>   
 		</props>
 		</property>
 	</bean>
@@ -107,6 +177,36 @@
         <property name="validator" ref="zoneValidator"/>
         <property name="successView" value="zoneEdit" />
         <property name="formView" value="zoneEdit" />
+	</bean>
+	
+	<bean id="zoneTypeFormController" class="com.freshdirect.transadmin.web.ZoneTypeFormController">
+		<property name="domainManagerService" ref="domainManager"/>
+		<property name="sessionForm" value="true"/>
+        <property name="commandName" value="zoneTypeForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.model.TrnZoneType"/>
+        <property name="validator" ref="zoneTypeValidator"/>
+        <property name="successView" value="zoneTypeEdit" />
+        <property name="formView" value="zoneTypeEdit" />
+	</bean>
+	
+	<bean id="areaFormController" class="com.freshdirect.transadmin.web.AreaFormController">
+		<property name="domainManagerService" ref="domainManager"/>
+		<property name="sessionForm" value="true"/>
+        <property name="commandName" value="areaForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.model.TrnArea"/>
+        <property name="validator" ref="areaValidator"/>
+        <property name="successView" value="areaEdit" />
+        <property name="formView" value="areaEdit" />
+	</bean>
+	
+	<bean id="cutOffFormController" class="com.freshdirect.transadmin.web.CutOffFormController">
+		<property name="domainManagerService" ref="domainManager"/>
+		<property name="sessionForm" value="true"/>
+        <property name="commandName" value="cutOffForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.model.TrnCutOff"/>
+        <property name="validator" ref="cutOffValidator"/>
+        <property name="successView" value="cutOffEdit" />
+        <property name="formView" value="cutOffEdit" />
 	</bean>
 	
 	<bean id="truckFormController" class="com.freshdirect.transadmin.web.TruckFormController">
@@ -173,13 +273,105 @@
         <property name="formView" value="copyPlan" />
 	</bean>
 	
+	<bean id="deliveryLocationFormController" class="com.freshdirect.transadmin.web.DlvLocationFormController">
+		<property name="locationManagerService" ref="locationManager"/>
+		<property name="sessionForm" value="true"/>
+        <property name="commandName" value="deliveryLocationForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.model.DlvLocation"/>
+        <property name="validator" ref="deliveryLocationValidator"/>
+        <property name="successView" value="deliveryLocationEdit" />
+        <property name="formView" value="deliveryLocationEdit" />
+	</bean>
+	
+	<bean id="dlvServiceTimeFormController" class="com.freshdirect.transadmin.web.DlvServiceTimeFormController">
+		<property name="locationManagerService" ref="locationManager"/>
+		<property name="domainManagerService" ref="domainManager"/>
+		<property name="sessionForm" value="true"/>
+        <property name="commandName" value="dlvServiceTimeForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.model.DlvServiceTime"/>
+        <property name="validator" ref="dlvServiceTimeValidator"/>
+        <property name="successView" value="dlvServiceTimeEdit" />
+        <property name="formView" value="dlvServiceTimeEdit" />
+	</bean>
+	
+	<bean id="dlvServiceTimeTypeFormController" class="com.freshdirect.transadmin.web.DlvServiceTimeTypeFormController">
+		<property name="locationManagerService" ref="locationManager"/>
+		<property name="sessionForm" value="true"/>
+        <property name="commandName" value="dlvServiceTimeTypeForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.model.DlvServiceTimeType"/>
+        <property name="validator" ref="dlvServiceTimeTypeValidator"/>
+        <property name="successView" value="dlvServiceTimeTypeEdit" />
+        <property name="formView" value="dlvServiceTimeTypeEdit" />
+	</bean>
+	<bean id="routingInputFormController" class="com.freshdirect.transadmin.web.RoutingInputFormController">
+		<property name="locationManagerService" ref="locationManager"/>
+		<property name="domainManagerService" ref="domainManager"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.web.model.FileUploadCommand"/>
+        <property name="formView" value="routingInputProcess"/>
+        <property name="successView" value="routingInputProcess"/>
+        <property name="validator" ref="routingInValidator"/>
+    </bean>
+    <bean id="routingOutputFormController" class="com.freshdirect.transadmin.web.RoutingOutputFormController">
+        <property name="domainManagerService" ref="domainManager"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.web.model.RoutingOutCommand"/>
+        <property name="formView" value="routingOutputProcess"/>
+        <property name="successView" value="routingOutputProcess"/>
+        <property name="validator" ref="routingOutValidator"/>
+    </bean>
+    
+    <bean id="routingMergeFormController" class="com.freshdirect.transadmin.web.RoutingMergeFormController">
+	    <property name="domainManagerService" ref="domainManager"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.web.model.RoutingMergeCommand"/>
+        <property name="formView" value="routingMergeProcess"/>
+        <property name="successView" value="routingMergeProcess"/>
+        <property name="validator" ref="routingMergeValidator"/>
+    </bean>
+    
+    <bean id="deliveryBuildingFormController" class="com.freshdirect.transadmin.web.DlvBuildingFormController">
+		<property name="locationManagerService" ref="locationManager"/>
+		<property name="sessionForm" value="true"/>
+        <property name="commandName" value="deliveryBuildingForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.model.DlvBuilding"/>
+        <property name="validator" ref="deliveryBuildingValidator"/>
+        <property name="successView" value="deliveryBuildingEdit" />
+        <property name="formView" value="deliveryBuildingEdit" />
+	</bean>
+    
+    <bean id="dlvServiceTimeScenarioFormController" class="com.freshdirect.transadmin.web.DlvServiceTimeScenarioFormController">
+		<property name="locationManagerService" ref="locationManager"/>
+		<property name="domainManagerService" ref="domainManager"/>
+		<property name="sessionForm" value="true"/>
+        <property name="commandName" value="serviceTimeScenarioForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.model.DlvServiceTimeScenario"/>
+        <property name="validator" ref="dlvServiceTimeScenarioValidator"/>
+        <property name="successView" value="dlvServiceTimeScenarioEdit" />
+        <property name="formView" value="dlvServiceTimeScenarioEdit" />
+	</bean>
+	
+	<bean id="genericBeanFormController" class="com.freshdirect.transadmin.web.GenericBeanController">		
+		<property name="sessionForm" value="true"/>        
+        <property name="commandClass" value="com.freshdirect.transadmin.web.model.GenericBeanCommand"/>       
+        <property name="successView" value="genericFlatFileView" />
+        <property name="formView" value="genericFlatFileView" />
+	</bean>
+	    
 	<bean id="employeeValidator" class="com.freshdirect.transadmin.web.validation.EmployeeValidator"/>
 	<bean id="zoneValidator" class="com.freshdirect.transadmin.web.validation.ZoneValidator"/>
+	<bean id="zoneTypeValidator" class="com.freshdirect.transadmin.web.validation.ZoneTypeValidator"/>
 	<bean id="truckValidator" class="com.freshdirect.transadmin.web.validation.TruckValidator"/>
 	<bean id="routeValidator" class="com.freshdirect.transadmin.web.validation.RouteValidator"/>
 	<bean id="planValidator" class="com.freshdirect.transadmin.web.validation.PlanValidator"/>
 	<bean id="dispatchValidator" class="com.freshdirect.transadmin.web.validation.DispatchValidator"/>
 	<bean id="copyPlanValidator" class="com.freshdirect.transadmin.web.validation.CopyPlanValidator"/>
 	<bean id="assignmentValidator" class="com.freshdirect.transadmin.web.validation.AssignmentValidator"/>
-
+	<bean id="deliveryLocationValidator" class="com.freshdirect.transadmin.web.validation.DlvLocationValidator"/>
+	<bean id="dlvServiceTimeValidator" class="com.freshdirect.transadmin.web.validation.DlvServiceTimeValidator"/>
+	<bean id="dlvServiceTimeTypeValidator" class="com.freshdirect.transadmin.web.validation.DlvServiceTimeTypeValidator"/>
+	<bean id="deliveryBuildingValidator" class="com.freshdirect.transadmin.web.validation.DlvBuildingValidator"/>
+	<bean id="dlvServiceTimeScenarioValidator" class="com.freshdirect.transadmin.web.validation.DlvServiceTimeScenarioValidator"/>
+	<bean id="areaValidator" class="com.freshdirect.transadmin.web.validation.AreaValidator"/>
+	<bean id="routingInValidator" class="com.freshdirect.transadmin.web.validation.FileUploadValidator"/>
+	<bean id="routingOutValidator" class="com.freshdirect.transadmin.web.validation.RoutingOutValidator"/>
+	<bean id="routingMergeValidator" class="com.freshdirect.transadmin.web.validation.RoutingMergeValidator"/>
+	<bean id="cutOffValidator" class="com.freshdirect.transadmin.web.validation.CutOffValidator"/>
 </beans>

@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jul 30, 2007 6:23:08 PM by Hibernate Tools 3.2.0.b9 -->
+<hibernate-mapping schema="dlv">
+    <class name="com.freshdirect.transadmin.model.DlvServiceTimeScenario" table="SERVICETIME_SCENARIO">
+        <id name="code" type="string">
+            <column name="CODE" length="8" />
+            <generator class="assigned" />
+        </id>        
+        <property name="description" type="string">
+            <column name="DESCRIPTION" length="256" />
+        </property> 
+        <property name="isDefault" type="string">
+            <column name="IS_DEFAULT" length="1" />
+        </property>  
+        <property name="serviceTimeFactorFormula" type="string">
+            <column name="SERVICETIME_FACTOR_FORMULA" length="256" />
+        </property> 
+        <property name="serviceTimeFormula" type="string">
+            <column name="SERVICETIME_FORMULA" length="256" />
+        </property> 
+        <property name="orderSizeFormula" type="string">
+            <column name="ORDERSIZE_FORMULA" length="256" />
+        </property> 
+       <property name="defaultCartonCount" type="big_decimal">
+            <column name="DEFAULT_CARTONCOUNT" precision="10" />
+        </property>
+        <property name="defaultCaseCount" type="big_decimal">
+            <column name="DEFAULT_CASECOUNT" precision="10" />
+        </property>
+        <property name="defaultFreezerCount" type="big_decimal">
+            <column name="DEFAULT_FREEZERCOUNT" precision="10" />
+        </property> 
+        <many-to-one name="defaultServiceTimeType" class="com.freshdirect.transadmin.model.DlvServiceTimeType" fetch="select" lazy="false">
+            <column name="DEFAULT_SERVICETIME_TYPE" length="8" />
+        </many-to-one> 
+        <many-to-one name="defaultZoneType" class="com.freshdirect.transadmin.model.TrnZoneType" fetch="select" lazy="false">
+            <column name="DEFAULT_ZONE_TYPE" length="25" />
+        </many-to-one>       
+    </class>
+</hibernate-mapping>

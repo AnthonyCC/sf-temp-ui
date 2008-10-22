@@ -10,11 +10,9 @@ package com.freshdirect.fdstore;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -249,7 +247,8 @@ public class FDStoreProperties {
 	private static final String MAX_FEATURED_DEALS_PER_LINE="fdstore.deals.maxFeaturedDealsPerLine";
 	private static final String MIN_FEATURED_DEALS_FOR_PAGE ="fdstore.deals.minFeaturedDeals";
 
-
+	private static final String PROP_GEOCODE_USELOCATIONDB = "fdstore.geocode.useLocationDB";
+	private static final String PROP_ROUTING_SENDADDRESS = "fdstore.routing.sendAddress";
 
 	static {
 
@@ -426,6 +425,9 @@ public class FDStoreProperties {
 		defaults.put(MAX_FEATURED_DEALS_FOR_PAGE,"5");
 		defaults.put(MAX_FEATURED_DEALS_PER_LINE,"5");
 		defaults.put(MIN_FEATURED_DEALS_FOR_PAGE,"3");
+		
+		defaults.put(PROP_GEOCODE_USELOCATIONDB, "false");
+		defaults.put(PROP_ROUTING_SENDADDRESS, "false");
 		
 		refresh();
 	}
@@ -1000,4 +1002,12 @@ public class FDStoreProperties {
 	public static int getMinFeaturedDealsForPage() {
 		return Integer.parseInt(get(MIN_FEATURED_DEALS_FOR_PAGE));
 	}
+	
+	public static boolean canUseLocationDB() {
+        return (new Boolean(get(PROP_GEOCODE_USELOCATIONDB))).booleanValue();
+    }
+	
+	public static boolean canSendRoutingAddress() {
+        return (new Boolean(get(PROP_ROUTING_SENDADDRESS))).booleanValue();
+    }
 }
