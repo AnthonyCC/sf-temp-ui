@@ -10,7 +10,17 @@ public class AddressInfo implements Serializable {
 	private String scrubbedStreet;
 	private EnumAddressType addressType;
 	private String county;
+	private boolean isGeocodeException;
 	
+	
+	public boolean isGeocodeException() {
+		return isGeocodeException;
+	}
+
+	public void setGeocodeException(boolean isGeocodeException) {
+		this.isGeocodeException = isGeocodeException;
+	}
+
 	public String getZoneId(){
 		return this.zoneId;
 	}

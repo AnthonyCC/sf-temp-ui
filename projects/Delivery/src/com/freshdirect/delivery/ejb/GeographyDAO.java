@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -469,7 +470,17 @@ public class GeographyDAO {
 		//
 		// failed, check exceptions table
 		//
-		String result = checkGeocodeExceptions(address, conn);
+		String result = null;
+		if(FDStoreProperties.canUseLocationDB()) {
+			result =checkLocationDatabase(address, conn);
+			if (GEOCODE_OK.equals(result)) {
+				//LOGGER.debug(address+"\n--------- END GEOCODE BASE2---------------------\n");
+				return result;
+			}
+			
+		}
+		
+		result = checkGeocodeExceptions(address, conn);
 		if (GEOCODE_OK.equals(result)) {
 			//LOGGER.debug(address+"\n--------- END GEOCODE BASE2---------------------\n");
 			return result;
@@ -1191,8 +1202,41 @@ public class GeographyDAO {
 			AddressInfo info = address.getAddressInfo() == null ? new AddressInfo() : address.getAddressInfo();
 			info.setLatitude(rs.getDouble("LATITUDE"));
 			info.setLongitude(rs.getDouble("LONGITUDE"));
+			info.setGeocodeException(true);
 			address.setAddressInfo(info);
 			result = GEOCODE_OK;
+
+		}
+		rs.close();
+		ps.close();
+
+		return result;
+	}
+	
+	private final static String LOCATION_DATABASE = "select db.LONGITUDE LONGITUDE, db.LATITUDE LATITUDE, db.GEO_CONFIDENCE GEO_CONFIDENCE, db.GEO_QUALITY GEO_QUALITY from dlv.DELIVERY_LOCATION dl, dlv.DELIVERY_BUILDING db "+
+													"where dl.BUILDINGID = db.ID and dl.SCRUBBED_STREET = ? and dl.ZIP ";
+
+	private String checkLocationDatabase(AddressModel address, Connection conn) throws SQLException, InvalidAddressException {
+		String streetAddress = AddressScrubber.standardizeForGeocode(address.getAddress1());
+
+		String result = GEOCODE_FAILED;
+		StringBuffer strBuf = new StringBuffer(LOCATION_DATABASE);
+		strBuf.append(getQueryParam(Arrays.asList(getZipCodeFromAddress(address))));
+		PreparedStatement ps = conn.prepareStatement(LOCATION_DATABASE);
+
+		ps.setString(1, streetAddress);
+		//ps.setString(2, address.getZipCode());
+
+		ResultSet rs = ps.executeQuery();
+		if (rs.next()) {
+			String quality = rs.getString("GEO_CONFIDENCE");
+			if(quality != null && "gcHigh".equalsIgnoreCase(quality)) {
+				AddressInfo info = address.getAddressInfo() == null ? new AddressInfo() : address.getAddressInfo();
+				info.setLatitude(rs.getDouble("LATITUDE"));
+				info.setLongitude(rs.getDouble("LONGITUDE"));				
+				address.setAddressInfo(info);
+				result = GEOCODE_OK;
+			}
 
 		}
 		rs.close();
@@ -1440,4 +1484,27 @@ public class GeographyDAO {
     	}
     	return StringUtil.decodeStrings(tmpBufZipCode.toString());
     }
+    
+    public static String getQueryParam(List lstZipCode) {
+		
+		if(lstZipCode != null) {			
+	    	if(lstZipCode.size() > 1) {
+	    		Iterator iterator = lstZipCode.iterator();
+	    		int intCount = 0;
+	    		StringBuffer strBuf = new StringBuffer();	    		
+	        	while(iterator.hasNext()) {
+	        		intCount++;
+	        		strBuf.append("'").append(iterator.next()).append("'");
+	        		if(intCount == lstZipCode.size()) {
+	        			strBuf.append(",");
+	        		}
+	        	}
+	        	return "in ("+strBuf.toString()+")";
+	    	} else if (lstZipCode.size() == 1){
+	    		return "= '"+lstZipCode.get(0)+"'";
+	    	}
+		} 
+		return null;
+    	
+	}
 }

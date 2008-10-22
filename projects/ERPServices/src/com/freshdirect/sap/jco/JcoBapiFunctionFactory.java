@@ -9,6 +9,7 @@
 package com.freshdirect.sap.jco;
 
 import com.freshdirect.customer.EnumSaleType;
+import com.freshdirect.sap.bapi.BapiCartonInfo;
 import com.freshdirect.sap.bapi.BapiCreateCustomer;
 import com.freshdirect.sap.bapi.BapiFactory;
 import com.freshdirect.sap.bapi.BapiMaterialAvailability;
@@ -74,6 +75,9 @@ public class JcoBapiFunctionFactory extends BapiFactory {
 		return new JcoBapiPostReturn();
 	}
 	
+	public BapiCartonInfo getCartonInfoProvider() {
+		return new JcoBapiCartonInfo();
+	}
 	
 	/*public BapiSubscriptionOrderCreate getSubscriptionOrderCreateBuilder() {
 		return new JcoBapiSubscriptionOrderCreate();
