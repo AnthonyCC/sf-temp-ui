@@ -32,7 +32,7 @@
 // @author segabor
 //
 // @input user instance of {@link FDUserI}
-// @input result {@link ActionResult}
+// @input result {@link ActionResult} errors returned by FDShoppingCartController
 //
 Object val = request.getAttribute("skipDYFCheck");
 boolean skipDYFCheck = (val instanceof Boolean && ((Boolean)val).booleanValue() );
@@ -44,8 +44,8 @@ final java.text.NumberFormat CURRENCY_FORMATTER = java.text.NumberFormat.getCurr
 
 
 // transactional pricing logic - 'template' parameters
-String tx_pricing_FormName = "dyfform"; // impression form name
-String tx_pricing_JSNameSpace = "DYF";
+final String tx_pricing_FormName = "dyfform"; // impression form name
+final String tx_pricing_JSNameSpace = "DYF";
 
 
 
@@ -172,10 +172,14 @@ if (request.getParameter("nodyf") == null) {
 			<td colspan="<%= piRow.size() %>" style="text-align: center; font-weight: bold; color: red;">
 <%
 		for (Iterator it=((Collection)result.getErrors()).iterator(); it.hasNext();) {
-			ActionError errs = (ActionError) it.next();
+			ActionError err = (ActionError) it.next();
+			
+			// filter out unwanted error message types
+			if (!"order_minimum".equalsIgnoreCase(err.getType())) {
 %>
-						<%=errs.getDescription()%><br/>
+						<%= err.getDescription() %><br/>
 <%
+			}
 		}
 %>
 			</td>

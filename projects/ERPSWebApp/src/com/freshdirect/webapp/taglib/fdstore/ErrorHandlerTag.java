@@ -9,12 +9,13 @@
 
 package com.freshdirect.webapp.taglib.fdstore;
 
-//import java.io.*;
-import java.util.*;
-import javax.servlet.jsp.*;
-import javax.servlet.http.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.freshdirect.framework.webapp.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
+
+import com.freshdirect.framework.webapp.ActionResult;
 
 /*
  * usage notes:
@@ -31,13 +32,6 @@ public class ErrorHandlerTag extends com.freshdirect.framework.webapp.BodyTagSup
 	private ActionResult result = null;
 	private String id = null;
 	
-	/*/ temp put back top msg
-	public final static String HTML_START = "<span class='text11rbold'>";
-	public final static String HTML_END = "</span>";
-
-	private String topMessageType = null;
-	private String topMessage = null;
-	// temp*/
 	
 	
 		
@@ -72,27 +66,10 @@ public class ErrorHandlerTag extends com.freshdirect.framework.webapp.BodyTagSup
 	public ActionResult getResult() {
 		return this.result;
 	}
-	
-/*/	temp top msg
-	
-	public void setTopMessageType(String topMessageType) {	
-			this.topMessageType = topMessageType;
-	}
 
-	public String getTopMessageType() {
-		return this.topMessageType;
-	}
 
-	public void setTopMessage(String topMessage) {	
-		this.topMessage = topMessage;
-	}
 
-	public String getTopMessage() {
-		return this.topMessage;
-	}
 
-// temp top msg*/
-		 
 	public int doStartTag() throws JspException {
 	
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
@@ -119,11 +96,10 @@ public class ErrorHandlerTag extends com.freshdirect.framework.webapp.BodyTagSup
 				if (currentErrors.size() > 0) {
 					if (this.id!=null) {
 						request.setAttribute(this.id, result.getError(currentErrors.get(0).toString()).getDescription());
-						return EVAL_BODY_BUFFERED;
 					} else {
 						request.setAttribute("errorList", currentErrors);
-						return EVAL_BODY_BUFFERED;
 					}
+					return EVAL_BODY_BUFFERED;
 				}
 
 			} else if (this.name != null && result.getError(this.name) != null) {
@@ -132,15 +108,8 @@ public class ErrorHandlerTag extends com.freshdirect.framework.webapp.BodyTagSup
  
 				if (this.id!=null) {
 					request.setAttribute(this.id, errorDescription);
-					return EVAL_BODY_BUFFERED;
-				/*/ temp top msg type
-				} else if (this.topMessage!=null) {
-					pageContext.setAttribute(this.topMessage, topMessageType);
-					return EVAL_BODY_BUFFERED;
-				// temp top msg type*/
-				} else {
-					return EVAL_BODY_BUFFERED;
 				}
+				return EVAL_BODY_BUFFERED;
 			}
 		}
 		if (result.hasWarning(this.name)) {
@@ -149,15 +118,8 @@ public class ErrorHandlerTag extends com.freshdirect.framework.webapp.BodyTagSup
 
 			if (this.id!=null) {
 				request.setAttribute(this.id, warnDescription);
-				return EVAL_BODY_BUFFERED;
-			/*/ temp top msg type
-			} else if (this.topMessage!=null) {
-				pageContext.setAttribute(this.topMessage, topMessageType);
-				return EVAL_BODY_BUFFERED;
-			// temp top msg type*/
-			} else {
-				return EVAL_BODY_BUFFERED;
 			}
+			return EVAL_BODY_BUFFERED;
 		}
 
 		return SKIP_BODY;
