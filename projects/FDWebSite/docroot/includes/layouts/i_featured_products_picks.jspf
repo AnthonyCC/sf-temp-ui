@@ -145,7 +145,8 @@ if (_featCats!=null) {
         favHTMLPieceLinks.add(favoriteProductLinks);
         
         favoritesToShow++;
-        if (favoritesToShow == MAX_FAVS2SHOW) {
+		//hardcode max favs
+        if (favoritesToShow == 5) {
         	break;
         }
 	}
@@ -191,7 +192,7 @@ if (_featCats!=null) {
 		            	
 		            	for (int k=0; k<row.size(); ++k) {
 		            		%><td align="center" valign="<%= row == favHTMLPieces ? "bottom" : "top" %>" width="110">
-		            			<img src="/media_stat/images/layout/clear.gif" width="100" height="1"><br/>
+		            			
 		            			<%= row.get(k) %>
 		            		</td><%
 		            			// start a new row if it has enough content
@@ -201,7 +202,7 @@ if (_featCats!=null) {
 		            				%></tr><tr><%
 		            			} else if (k == row.size() -1) {
 		            				for(int j=0; j < FAVS_PER_LINE-(favHTMLPieces.size()%FAVS_PER_LINE); ++j) {
-		            					%><td>&nbsp;</td><%
+		            					%><%
 		            				}
 		            				if (row == favHTMLPieces) { 
 		            					%></tr><tr><%
