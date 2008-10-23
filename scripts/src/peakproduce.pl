@@ -1,11 +1,11 @@
 use DBI;
 
 use Getopt::Std;  
-getopts('hUp:', \ my %opts);    # -ptake arg.  Sets opt_* as a side effect.
+getopts('hUf:p:', \ my %opts);    # -ptake arg.  Sets opt_* as a side effect.
 
 if($opts{h} ne ""){
-    print "usage: ", $pgm, " [-U] [-p <password>]\n where -U->update mode (build AND run sql script),\n", "<password> is database password. Other params are read from perl.cfg file\n";
-    exit 0;
+    print "usage: ", $pgm, " -f <infile> [-U] [-p <password>]\n where -U->update mode (build AND run sql script),\n", "<password> is database password. Other params are read from perl.cfg file\n";
+    exit 1;
  }
 
 
@@ -50,23 +50,36 @@ $cfg->read($configfile) or die "Couldn't read Config file: $!";
  
 my $dbname = $cfg->get("$pgm.dbname");
 my $dbuser = $cfg->get("$pgm.dbuser");
-my $infile=$cfg->get("$pgm.infile");
+my $infile=$cfg->get("$pgm.infileloc");
 
-my $sfx = $cmn->get_highest_suffix($infile);
+#my $sfx = $cmn->get_highest_suffix($infile);
 
-$infile = $cmn->make_suffix_file($infile, $sfx);
+#$infile = $cmn->make_suffix_file($infile, $sfx);
 
-my $outfile=$cfg->get("$pgm.outfile");
-$outfile = $cmn->make_suffix_file($outfile, $sfx);
+my $outfile=$cfg->get("$pgm.outfileloc");
+#$outfile = $cmn->make_suffix_file($outfile, $sfx);
 
-my $sqloutfile=$cfg->get("$pgm.sqloutfile");
-$sqloutfile = $cmn->make_suffix_file($sqloutfile, $sfx);
+my $sqloutfile=$cfg->get("$pgm.sqloutfileloc");
+#$sqloutfile = $cmn->make_suffix_file($sqloutfile, $sfx);
 
 
 my $pw   = $dbuser;
 
 if ($opts{p} ne ""){
     $pw = $opts{p};
+}
+
+if ($opts{f} ne ""){
+    my $file = $opts{f};
+    $infile .= $file;
+    $outfile .= $file;
+    $outfile .= ".out";
+    $sqloutfile .= $file;
+    $sqloutfile .= ".sql";
+}
+else{
+    print "usage: ", $pgm, " -f <infile> [-U] [-p <password>]\n where -U->update mode (build AND run sql script),\n", "<password> is database password. Other params are read from perl.cfg file\n";
+    exit 1;
 }
 
 my $updatemode=0;
