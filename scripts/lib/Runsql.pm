@@ -1,7 +1,18 @@
 package Runsql;
 use DBI;
 
-$ENV{'ORACLE_HOME'}="/opt/fdbin/oracle/instantclient_11_1";
+my $os = lc $^O;
+my $linux;
+if($os =~ m/mswin/){
+    $islinux=0;
+}
+else{
+    $islinux=1;
+}
+
+if($islinux){
+    $ENV{'ORACLE_HOME'}="/opt/fdbin/oracle/instantclient_11_1";
+}
 
 use DBD::Oracle ;
 
