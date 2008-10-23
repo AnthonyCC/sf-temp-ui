@@ -183,24 +183,26 @@ if (_featCats!=null) {
 		            		</td><%
 		            			// start a new row if it has enough content
 		            			if (k>0 && (k%FAVS_PER_LINE) == FAVS_PER_LINE-1) { %>
-							</tr>
-						<%
-							if (row == favHTMLPieceLinks) { //close out table, start new 
-						%>
-							</table><table border="0" cellspacing="0" cellpadding="0" align="center">
-						<%
-							} else { 
-						%>
-								<tr>
-							<% 
-							}	
-		            				row = row == favHTMLPieces ? favHTMLPieceLinks : favHTMLPieces;
-							if (row == favHTMLPieceLinks) k -= FAVS_PER_LINE;
-							
-		            			} else if (row == favHTMLPieces) { 
+								</tr>
+							<%
+								if (row == favHTMLPieceLinks) { //close out table, start new 
+							%>
+								</table><table border="0" cellspacing="0" cellpadding="0" align="center">
+							<%
+								} else { 
+							%>
+									<tr>
+								<% 
+								}	
+								row = row == favHTMLPieces ? favHTMLPieceLinks : favHTMLPieces;
+								if (row == favHTMLPieceLinks) k -= FAVS_PER_LINE;
+									
+		            			} else if (k == row.size() -1) {
+							if (row == favHTMLPieces) { 
 		            					%></tr><tr><%
 		            					row = favHTMLPieceLinks;
 		            					k -= (favHTMLPieces.size()%FAVS_PER_LINE);
+							}	
 		            			}
 		            	}
 		            	%>
