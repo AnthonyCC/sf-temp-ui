@@ -117,7 +117,7 @@ if (_featCats!=null) {
         
 
         // append product label
-        favoriteProductLinks.append("<DIV id=prod_container style=\"WIDTH: 100px; HEIGHT: 100px; TEXT-ALIGN: left\"><A id=prod_link_img style=\"DISPLAY: block; CURSOR: hand\" HREF=\"" + productPageLink_ + "\">");
+        favoriteProductLinks.append("<DIV id=prod_container style=\"WIDTH: 100px; TEXT-ALIGN: left\"><A id=prod_link_img style=\"DISPLAY: block; CURSOR: hand\" HREF=\"" + productPageLink_ + "\">");
         favoriteProductLinks.append("<DIV id=prod_container_text style=\"FONT-WEIGHT: normal; FONT-SIZE: 8pt; WIDTH: 100px; TEXT-ALIGN: center\">");
         favoriteProductLinks.append("<DIV id=prod_text_container><A id=prod_link style=\"COLOR: #360\" href=\"")
                             .append(productPageLink_).append("\">");
@@ -153,7 +153,7 @@ if (_featCats!=null) {
 	</tr>
 
 	<tr>
-		<td colspan="6" align="center">
+		<td colspan="6">
 
 	        <%
 			// display department specific media
@@ -173,7 +173,7 @@ if (_featCats!=null) {
 			}
 	        %>
 	        <font class="space4pix"><br /><br /></font>
-			<table id="fav-prds-table" border="0" cellspacing="0" cellpadding="0">
+			<table border="0" cellspacing="0" cellpadding="0" align="center">
 	            		<tr>
 		            	<%  
 		            	List row = favHTMLPieces;
@@ -182,31 +182,31 @@ if (_featCats!=null) {
 		            			<%= row.get(k) %>
 		            		</td><%
 		            			// start a new row if it has enough content
-		            			if (k>0 && (k%FAVS_PER_LINE) == FAVS_PER_LINE-1) {
+		            			if (k>0 && (k%FAVS_PER_LINE) == FAVS_PER_LINE-1) { %>
+							</tr>
+						<%
+							if (row == favHTMLPieceLinks) { //close out table, start new 
+						%>
+							</table><table border="0" cellspacing="0" cellpadding="0" align="center">
+						<%
+							} else { 
+						%>
+								<tr>
+							<% 
+							}	
 		            				row = row == favHTMLPieces ? favHTMLPieceLinks : favHTMLPieces;
-		            				if (row == favHTMLPieceLinks) k -= FAVS_PER_LINE;
-		            				%></tr><tr><%
-		            			} else if (k == row.size() -1) {
-								// this is only needed if we have > 5 items not in multiple of 5s
-								for(int j=0; j < FAVS_PER_LINE-(favHTMLPieces.size()%FAVS_PER_LINE); ++j) {
-		            					%><td>&nbsp;</td><%
-								}
-		            				if (row == favHTMLPieces) { 
+							if (row == favHTMLPieceLinks) k -= FAVS_PER_LINE;
+							
+		            			} else if (row == favHTMLPieces) { 
 		            					%></tr><tr><%
 		            					row = favHTMLPieceLinks;
 		            					k -= (favHTMLPieces.size()%FAVS_PER_LINE);
-		            				}
 		            			}
 		            	}
-		            	/*
-		            	// put placeholder TD-s if a row is not filled in entirely
-		            	for (int k=0; k<FAVS_PER_LINE-(favHTMLPieces.size()%FAVS_PER_LINE); k++) {
-		            		%><td>&nbsp;</td><%
-		            	}
-		            	*/
 		            	%>
 		            	</tr>
 			</table>
+			<br>
 <%-- close the featured product column --%><%
     
         if (isDepartment) {
