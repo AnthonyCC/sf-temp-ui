@@ -36,14 +36,15 @@ public abstract class BaseProcessManager implements  IProcessManager {
         this.successor = successor;
     }
     
-    public void process(ProcessContext request) throws RoutingProcessException {
+    public Object process(ProcessContext request) throws RoutingProcessException {
     	processRequest(request);
     	if(successor != null) {
     		successor.process(request);
     	}
+    	return null;
     }
     
-    public void startProcess(ProcessContext request) throws RoutingProcessException {
+    public Object startProcess(ProcessContext request) throws RoutingProcessException {
     	
     	try {			
 			// load the zone details and fill the cache
@@ -59,9 +60,10 @@ public abstract class BaseProcessManager implements  IProcessManager {
 			throw new RoutingProcessException(null, null, IIssue.PROCESS_SCENARIO_NOTFOUND);
 		}
 		request.setProcessScenario(scenarioModel);
+		return null;
     }
     
-    public void endProcess(ProcessContext request) throws RoutingProcessException {
+    public Object endProcess(ProcessContext request) throws RoutingProcessException {
     	    	
     	IGeographyService service = RoutingServiceLocator.getInstance().getGeographyService();
 		List locLst = new ArrayList(((Map)request.getLocationList()).values());
@@ -87,10 +89,10 @@ public abstract class BaseProcessManager implements  IProcessManager {
 			}	
 		}
 		
-		doBatchRouting(request);
+		return doBatchRouting(request);
     }
     
-    private void doBatchRouting(ProcessContext request) throws  RoutingProcessException {
+    private Set doBatchRouting(ProcessContext request) throws  RoutingProcessException {
     	
     	Map tmpParams = (Map)request.getProcessParam();
     	String userId = (String)tmpParams.get(IRoutingParamConstants.ROUTING_USER);
@@ -123,7 +125,7 @@ public abstract class BaseProcessManager implements  IProcessManager {
     	Map unassignedSaveFailed = saveUnassignedToRoadNet(sessionDescriptionMap, unassignedOrders);
     	System.out.println("################### SAVE UNASSIGNED END ##################");
 	    
-    	saveProcessStatus(request, sessionDescriptionMap, unassignedOrders);
+    	return saveProcessStatus(request, sessionDescriptionMap, unassignedOrders);
     }
        
         
@@ -222,12 +224,13 @@ public abstract class BaseProcessManager implements  IProcessManager {
     	return saveUnassingedFailed;
     }
     
-    private void saveProcessStatus(ProcessContext request, Map sessionDescriptionMap, Map unassignedOrders) throws  RoutingProcessException {   	    	
+    private Set saveProcessStatus(ProcessContext request, Map sessionDescriptionMap, Map unassignedOrders) throws  RoutingProcessException {   	    	
     	
     	Iterator tmpIterator = sessionDescriptionMap.keySet().iterator();
     	IRoutingSchedulerIdentity schedulerId = null;
     	String sessionDescription = null;
     	List tmpUnassignedLst = null;
+    	Set sessionIds = new HashSet();
 		while(tmpIterator.hasNext()) {
 			schedulerId = (IRoutingSchedulerIdentity)tmpIterator.next();
 			sessionDescription = (String)sessionDescriptionMap.get(schedulerId);
@@ -245,7 +248,9 @@ public abstract class BaseProcessManager implements  IProcessManager {
 			processInfoUnassinged.setAdditionalInfo(schedulerId.toString()+" -> "
 													+(tmpUnassignedLst != null ? tmpUnassignedLst.size() : 0)+" Unassigned Orders");			
 			request.addProcessInfo(processInfoUnassinged);
+			sessionIds.add(sessionDescription);
 		}
+		return sessionIds;
     }
     private List groupOrdersForBatchRouting(List lstOrders) {
     	

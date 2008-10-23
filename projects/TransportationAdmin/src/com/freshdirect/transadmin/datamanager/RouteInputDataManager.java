@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.freshdirect.routing.manager.DeliveryManager;
 import com.freshdirect.routing.manager.EstimationManager;
@@ -67,7 +68,8 @@ public class RouteInputDataManager extends RouteDataManager {
 				outputDataList.add(context.getDataModel());
 			}
 			
-			rootProcessMgr.endProcess(context);
+			Set sessionIds = (Set)rootProcessMgr.endProcess(context);
+			result.setAdditionalInfo(sessionIds.toString());
 		} catch (RoutingProcessException routExp) {
 			result.addError(routExp.getIssueMessage());
 		}

@@ -6,8 +6,8 @@ public interface IProcessManager {
 	
 	void setSuccessor(IProcessManager successor);
 
-    void process(ProcessContext request) throws RoutingProcessException;
+    Object process(ProcessContext request) throws RoutingProcessException;
     
-    void startProcess(ProcessContext request) throws RoutingProcessException;
-    void endProcess(ProcessContext request) throws RoutingProcessException;
+    Object startProcess(ProcessContext request) throws RoutingProcessException;
+    Object endProcess(ProcessContext request) throws RoutingProcessException;
 }

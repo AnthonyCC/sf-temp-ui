@@ -90,6 +90,7 @@ public class RoutingInputFormController extends BaseFormController {
 			    bean.setOutputFile3(result.getOutputFile3());
 		    	saveMessage(request, getMessage("app.actionmessage.114",
 						new Object[] { }));
+		    	saveMessage(request, "Routing Sessions ->"+result.getAdditionalInfo());
 			} else {
 				saveErrorMessage(request, errorList);
 			}
