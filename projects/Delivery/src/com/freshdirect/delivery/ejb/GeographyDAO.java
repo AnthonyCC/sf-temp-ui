@@ -465,13 +465,17 @@ public class GeographyDAO {
 	// by guessing where a '-' might be in the building number
 	//
 	public String geocode(AddressModel address, boolean munge, Connection conn) throws SQLException, InvalidAddressException {
-
-		//LOGGER.debug("--------- START GEOCODE BASE---------------------\n"+address);
+		return geocodeAddress(address, munge, FDStoreProperties.canUseLocationDB(), conn);
+	}
+	
+	public String geocodeAddress(AddressModel address, boolean munge, boolean useLocationDB, Connection conn) throws SQLException, InvalidAddressException  {
+		
+//		LOGGER.debug("--------- START GEOCODE BASE---------------------\n"+address);
 		//
 		// failed, check exceptions table
 		//
 		String result = null;
-		if(FDStoreProperties.canUseLocationDB()) {
+		if(useLocationDB) {
 			result =checkLocationDatabase(address, conn);
 			if (GEOCODE_OK.equals(result)) {
 				//LOGGER.debug(address+"\n--------- END GEOCODE BASE2---------------------\n");
@@ -525,14 +529,12 @@ public class GeographyDAO {
 		}
 		//LOGGER.debug(address+"\n--------- END GEOCODE BASE4---------------------\n");
 		return result;
-
-
 	}
 
 	public String geocode(AddressModel address, Connection conn) throws SQLException, InvalidAddressException {
 		return geocode(address, true, conn);
 	}
-
+		
 	//
 	// geocodes an address that is already known to be scrubbed and verified
 	// if successful, it returns GEOCODE_OK and sets the longitude and latitude of the address it was given as a paramter
@@ -789,7 +791,7 @@ public class GeographyDAO {
 
 				//System.out.println("point offset from street is X = " + retval.x + ", Y = " + retval.y);
 
-				LOGGER.debug(address+"\n--------- END REALLY GEOCODE ---------------------");
+				//LOGGER.debug(address+"\n--------- END REALLY GEOCODE ---------------------");
 				return GEOCODE_OK;
 			}
 		}
@@ -1221,7 +1223,7 @@ public class GeographyDAO {
 
 		String result = GEOCODE_FAILED;
 		StringBuffer strBuf = new StringBuffer(LOCATION_DATABASE);
-		strBuf.append(getQueryParam(Arrays.asList(getZipCodeFromAddress(address))));
+		strBuf.append(StringUtil.formQueryString(Arrays.asList(getZipCodeFromAddress(address))));
 		PreparedStatement ps = conn.prepareStatement(LOCATION_DATABASE);
 
 		ps.setString(1, streetAddress);
@@ -1485,26 +1487,5 @@ public class GeographyDAO {
     	return StringUtil.decodeStrings(tmpBufZipCode.toString());
     }
     
-    public static String getQueryParam(List lstZipCode) {
-		
-		if(lstZipCode != null) {			
-	    	if(lstZipCode.size() > 1) {
-	    		Iterator iterator = lstZipCode.iterator();
-	    		int intCount = 0;
-	    		StringBuffer strBuf = new StringBuffer();	    		
-	        	while(iterator.hasNext()) {
-	        		intCount++;
-	        		strBuf.append("'").append(iterator.next()).append("'");
-	        		if(intCount == lstZipCode.size()) {
-	        			strBuf.append(",");
-	        		}
-	        	}
-	        	return "in ("+strBuf.toString()+")";
-	    	} else if (lstZipCode.size() == 1){
-	    		return "= '"+lstZipCode.get(0)+"'";
-	    	}
-		} 
-		return null;
-    	
-	}
+    
 }

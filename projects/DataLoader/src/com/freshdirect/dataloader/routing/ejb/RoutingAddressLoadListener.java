@@ -102,7 +102,8 @@ public class RoutingAddressLoadListener extends MessageDrivenBeanSupport {
 			LOGGER.error("JMSException occured while reading command, throwing RuntimeException", ex);
 			throw new RuntimeException("JMSException occured while reading command: " + ex.getMessage());
 		} catch (RoutingServiceException rx) {
-			LOGGER.error("JMSException occured while executing address load command, holding RuntimeException", rx);			
+			LOGGER.error("JMSException occured while executing address load command, holding RuntimeException", rx);	
+			throw new RuntimeException("JMSException occured while reading command: " + rx.getMessage());
 		}
 		
 	}

@@ -67,7 +67,8 @@ public class DlvServiceTimeScenarioFormController extends AbstractFormController
 		Collection saveDataList = new ArrayList();
 		if("X".equals(modelNew.getIsDefault())) {
 			DlvServiceTimeScenario modelDefault = getLocationManagerService().getDefaultServiceTimeScenario();
-			if(modelDefault != null && !modelDefault.getCode().equals(modelNew.getCode())) {				
+			if(modelDefault != null && !modelDefault.getCode().equals(modelNew.getCode())) {
+				modelDefault.setIsDefault(null);
 				saveDataList.add(modelDefault);
 			} 
 		}

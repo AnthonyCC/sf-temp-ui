@@ -369,6 +369,7 @@ public class GeographyService implements IGeographyService {
 	}
 
 	public String standardizeStreetAddress(ILocationModel address) throws RoutingServiceException {
+		
 		return standardizeStreetAddress(address.getStreetAddress1(), address.getStreetAddress2());
 	}
 	

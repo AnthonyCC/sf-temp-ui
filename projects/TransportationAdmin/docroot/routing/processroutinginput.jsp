@@ -10,7 +10,7 @@
 
 	<tmpl:put name='content' direct='true'>
 		<br/>	
-		<div align="center">
+		<div align="center">			
 			<form method="post" enctype="multipart/form-data">				
 			<table width="100%" cellpadding="0" cellspacing="0" border="0">
 					<tr>

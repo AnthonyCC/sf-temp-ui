@@ -38,7 +38,10 @@ public class AddressScrubber {
     }
 
     private static String standardize(String address, boolean forGeocode, boolean canReverseDirections,boolean isNewFormat) throws InvalidAddressException {
-        //
+    	if (address == null) {
+            throw new InvalidAddressException("Invalid address :" + address);
+        }
+    	//
         // clean leading and trailing whitespace
         //
         String streetAddress = address.trim().toUpperCase();

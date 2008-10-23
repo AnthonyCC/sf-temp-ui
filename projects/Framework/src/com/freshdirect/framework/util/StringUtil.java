@@ -1,5 +1,6 @@
 package com.freshdirect.framework.util;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -655,5 +656,28 @@ public class StringUtil {
 			if (Character.isLowerCase(s.charAt(i)) && (c < 'a' || c > 'z')) return true;
 		}
 		return false;
+	}
+	
+	public static String formQueryString(List lstValues) {
+		
+		if(lstValues != null) {			
+	    	if(lstValues.size() > 1) {
+	    		Iterator iterator = lstValues.iterator();
+	    		int intCount = 0;
+	    		StringBuffer strBuf = new StringBuffer();	    		
+	        	while(iterator.hasNext()) {
+	        		intCount++;
+	        		strBuf.append("'").append(iterator.next()).append("'");
+	        		if(intCount == lstValues.size()) {
+	        			strBuf.append(",");
+	        		}
+	        	}
+	        	return "in ("+strBuf.toString()+")";
+	    	} else if (lstValues.size() == 1){
+	    		return "= '"+lstValues.get(0)+"'";
+	    	}
+		} 
+		return null;
+    	
 	}
 }

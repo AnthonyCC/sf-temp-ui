@@ -26,7 +26,8 @@
 					   <ec:column alias="areacode" property="code" title="Area Code"/>       				    	
 				      <ec:column property="name" title="Area Name"/>
 				      <ec:column property="description" title="Description"/>
-				      <ec:column property="prefix" title="Prefix"/>				      
+				      <ec:column property="prefix" title="Prefix"/>	
+				      <ec:column property="deliveryModel" title="Delivery Model"/>			      
 				    </ec:row>
 				  </ec:table>
 			 </form> 	
