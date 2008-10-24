@@ -115,7 +115,7 @@ my @data;
 my $inrec, $outrec, $sqlrec;
 my @outholder, @sqlholder;
 
-my $cust_id, $promotion_id, $result;  #comp_Code->LATEDEL, #comp_dept->GDW
+my $cust_id, $promotion_id, $ndays, $result;  #comp_Code->LATEDEL, #comp_dept->GDW
 
 my $inscnt=0; 
 my $delcnt=0;
@@ -138,6 +138,8 @@ foreach $inrec(@content) {
     
     $outrec = $cust_id = $warray[0]; 
     $promotion_id = $warray[1];
+    $ndays = $warray[2];
+
     $outrec .= ','; $outrec .= $promotion_id;
  
     $tcust->execute($cust_id)  or die "Couldn't execute statement: " . $tcust->errstr;    
@@ -177,7 +179,7 @@ foreach $inrec(@content) {
 
     push @outholder, $outrec;
     
-    $sqlrec = buildcustprom($cust_id, $promotion_id);
+    $sqlrec = buildcustprom($cust_id, $promotion_id, $ndays);
     push @sqlholder, $sqlrec;
     $inscnt++; 
 }
@@ -237,12 +239,14 @@ sub buildcustprom
   
     my $cust_id   = $_[0];
     my $promotion_id   = $_[1];
+    my $ndays = $_[2];
        
     my $result='INSERT INTO CUST.PROMO_CUSTOMER(CUSTOMER_ID, PROMOTION_ID, USAGE_CNT, EXPIRATION_DATE) ';
     $result .= 'VALUES( "';
     $result .= $cust_id;    $result .= '", "';
     $result .= $promotion_id;    $result .= '", ';
-    $result .= '0, SYSDATE+70';
+    $result .= '0, SYSDATE+';
+    $result .= $ndays;
     $result .= ');';    
     $result =~ tr/\"/\'/;
     
