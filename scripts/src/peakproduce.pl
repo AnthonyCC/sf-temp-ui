@@ -50,6 +50,8 @@ $cfg->read($configfile) or die "Couldn't read Config file: $!";
  
 my $dbname = $cfg->get("$pgm.dbname");
 my $dbuser = $cfg->get("$pgm.dbuser");
+my $appuser = $cfg->get("$pgm.appuser");
+
 my $infile=$cfg->get("$pgm.infileloc");
 
 #my $sfx = $cmn->get_highest_suffix($infile);
@@ -241,13 +243,15 @@ sub buildcustprom
     my $promotion_id   = $_[1];
     my $ndays = $_[2];
        
-    my $result='INSERT INTO CUST.PROMO_CUSTOMER(CUSTOMER_ID, PROMOTION_ID, USAGE_CNT, EXPIRATION_DATE) ';
+    my $result='INSERT INTO CUST.PROMO_CUSTOMER(CUSTOMER_ID, PROMOTION_ID, USAGE_CNT, EXPIRATION_DATE, SOURCE) ';
     $result .= 'VALUES( "';
     $result .= $cust_id;    $result .= '", "';
     $result .= $promotion_id;    $result .= '", ';
     $result .= '0, SYSDATE+';
     $result .= $ndays;
-    $result .= ');';    
+    $result .= ', "';
+    $result .= $appuser;
+    $result .= '");';
     $result =~ tr/\"/\'/;
     
     $result .= "\n\n";
@@ -257,9 +261,12 @@ sub buildcustprom
 
 sub builddeletecustprom
 {
-    
-    my $result = 'DELETE FROM CUST.PROMO_CUSTOMER where EXPIRATION_DATE is not null and SYSDATE >= EXPIRATION_DATE; '; #tbr
-    
+    my $result = 'DELETE FROM CUST.PROMO_CUSTOMER where EXPIRATION_DATE is not null and SYSDATE >= EXPIRATION_DATE '; #tb
+    $result .= ' AND SOURCE = "';
+    $result .= $appuser;
+    $result .= '" ;';
+    $result =~ tr/\"/\'/;
+ 
     $result .= "\n\n";
   
     return $result;    
