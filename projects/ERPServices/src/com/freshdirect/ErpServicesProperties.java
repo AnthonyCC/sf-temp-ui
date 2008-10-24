@@ -134,6 +134,8 @@ public class ErpServicesProperties {
 	private final static String PROP_SUBSCRIPTION_MAIL_FROM = "subscription.mail.from";
 
 	private final static String PROP_SUBSCRIPTION_SEND_EMAIL = "subscription.mail.send";
+	
+	private final static String PROP_FUNCTION_CARTONINFO = "sap.function.cartoninfo";
 
 	static {
 		Properties defaults = new Properties();
@@ -228,6 +230,8 @@ public class ErpServicesProperties {
 		defaults.put(PROP_SUBSCRIPTION_MAIL_CC, "");
 		defaults.put(PROP_SUBSCRIPTION_MAIL_FROM, "applicationdevelopment@freshdirect.com");
 		defaults.put(PROP_SUBSCRIPTION_SEND_EMAIL, "true");
+		
+		defaults.put(PROP_FUNCTION_CARTONINFO, "ZWM_CARTONCOUNT_BYORDERS");
 		
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration: "+config);
@@ -546,5 +550,9 @@ public class ErpServicesProperties {
 	public static boolean isSendSubscriptionEmail(){
 		return Boolean.valueOf(config.getProperty(PROP_SUBSCRIPTION_SEND_EMAIL)).booleanValue(); 
 	}
-
+	
+	public static String getCartonInfoFunctionName() {
+		return config.getProperty(PROP_FUNCTION_CARTONINFO);
+	}
+	
 }

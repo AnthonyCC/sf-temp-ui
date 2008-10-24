@@ -30,8 +30,8 @@ class JcoBapiCartonInfo extends JcoBapiFunction implements BapiCartonInfo {
 	private JCO.Table lstCartonInfo;
 
 	public JcoBapiCartonInfo() {
-		super("ZWM_CARTONCOUNT_BYORDERS");
-		
+		super(ErpServicesProperties.getCartonInfoFunctionName());
+
 	}
 
 	public void setOrderIds(List orderIdList) {
