@@ -76,8 +76,9 @@ public class DealsHelper {
 			return false;
 		if("ALL".equalsIgnoreCase(skuPrefixes))
 			return true;
-		if(skuPrefixes.toUpperCase().indexOf(sku.substring(0, 2).toUpperCase())!=-1)
+		if(skuPrefixes.toUpperCase().indexOf(sku.substring(0, 3).toUpperCase())!=-1) 
 			return true;
+		
 		return false;
 	}
 	
