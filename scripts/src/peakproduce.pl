@@ -247,7 +247,7 @@ sub buildcustprom
     $result .= 'VALUES( "';
     $result .= $cust_id;    $result .= '", "';
     $result .= $promotion_id;    $result .= '", ';
-    $result .= '0, SYSDATE+';
+    $result .= '1, SYSDATE+';
     $result .= $ndays;
     $result .= ', "';
     $result .= $appuser;
