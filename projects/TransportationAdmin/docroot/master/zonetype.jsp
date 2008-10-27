@@ -12,7 +12,7 @@
 			<form id="zoneTypeListForm" action="" method="post">	
 				<ec:table items="zonetypes"   action="${pageContext.request.contextPath}/zonetype.do"
 				    imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="Transportation Zone Types"
-				    width="98%"  view="fd" form="zoneListForm" autoIncludeParameters="false" rowsDisplayed="25"  >
+				    width="98%"  view="fd" form="zoneTypeListForm" autoIncludeParameters="false" rowsDisplayed="25"  >
 				    
 				    <ec:exportPdf fileName="transportationzonetypes.pdf" tooltip="Export PDF" 
 				        			headerTitle="Transportation Zone Type" />
