@@ -48,7 +48,7 @@ public class DlvServiceTimeScenarioValidator extends AbstractValidator {
 			errors.rejectValue("orderSizeFormula", "app.error.126", new Object[]{},"Invalid Order Size Formula");
 		}
 		
-		validateLength("code", model.getCode(), 32, errors);
+		validateLength("code", model.getCode(), 8, errors);
 		validateLength("description", model.getDescription(), 256, errors);
 		
 		validateLength("serviceTimeFactorFormula", model.getServiceTimeFactorFormula(), 256, errors);

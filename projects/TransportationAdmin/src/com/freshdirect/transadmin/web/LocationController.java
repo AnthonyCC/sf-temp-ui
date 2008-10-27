@@ -29,6 +29,7 @@ import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
 import com.freshdirect.routing.util.RoutingUtil;
 import com.freshdirect.transadmin.model.DlvBuilding;
 import com.freshdirect.transadmin.model.DlvLocation;
+import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
 import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.LocationManagerI;
@@ -391,12 +392,16 @@ public class LocationController extends AbstractMultiActionController  {
 		
 		Set scenarioSet=new HashSet();
 		String arrEntityList[] = getParamList(request);
-		Object tmpBean = null;
+		DlvServiceTimeScenario tmpBean = null;
 		if (arrEntityList != null) {			
 			int arrLength = arrEntityList.length;
 			for (int intCount = 0; intCount < arrLength; intCount++) {
 				tmpBean = locationManagerService.getServiceTimeScenario(arrEntityList[intCount]);
-				if(tmpBean != null) {
+				if(tmpBean != null ) {
+					if("X".equalsIgnoreCase(tmpBean.getIsDefault())) {
+						saveMessage(request, getMessage("app.actionmessage.132", null));
+						return dlvServiceTimeScenarioHandler(request, response);
+					}
 					scenarioSet.add(tmpBean);
 				}
 			}

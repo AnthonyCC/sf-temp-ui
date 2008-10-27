@@ -8,6 +8,8 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.dao.DataIntegrityViolationException;
+
 import com.freshdirect.transadmin.model.DlvServiceTimeType;
 import com.freshdirect.transadmin.service.LocationManagerI;
 import com.freshdirect.transadmin.util.TransStringUtil;
@@ -66,8 +68,12 @@ public class DlvServiceTimeTypeFormController extends AbstractFormController {
 			} 
 		}
 		if(errorList.size() == 0) {
-			getLocationManagerService().saveEntity(modelNew);
-			modelNew.setIsNew(null);
+			try {
+				getLocationManagerService().saveEntity(modelNew);
+				modelNew.setIsNew(null);
+			} catch (DataIntegrityViolationException e) {
+				errorList.add(getMessage("app.actionmessage.119", new Object[]{getDomainObjectName()}));
+			}
 		}
 		return errorList;
 	}
