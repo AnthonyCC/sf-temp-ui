@@ -66,8 +66,12 @@ public class LocationManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 		
 		strBuf.append(" where dl.id.serviceTimeType='").append(code).append("'");
 		
-		strBuf.append(" and dl.id.zoneType='").append(zoneType).append("'");	
-		return (DlvServiceTime)((List) getHibernateTemplate().find(strBuf.toString())).get(0);				
+		strBuf.append(" and dl.id.zoneType='").append(zoneType).append("'");
+		List dataList = ((List) getHibernateTemplate().find(strBuf.toString()));
+		if(dataList.size() > 0) {
+			return (DlvServiceTime)dataList.get(0);
+		}
+		return null;				
 	}
 	
 	public Collection getDeliveryLocations(String srubbedAddress, String apt, String zipCode
