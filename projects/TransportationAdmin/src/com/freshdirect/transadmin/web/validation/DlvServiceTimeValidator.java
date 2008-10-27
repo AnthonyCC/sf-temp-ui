@@ -14,10 +14,10 @@ public class DlvServiceTimeValidator extends AbstractValidator {
 	public void validate(Object obj, Errors errors) {
 		
 		DlvServiceTime model = (DlvServiceTime)obj;
-				
+						
 		//  need to decide about the validation part
-		ValidationUtils.rejectIfEmpty(errors, "id.serviceTimeType", "app.error.112", new Object[]{"Service Time Type"},"required field");
-		ValidationUtils.rejectIfEmpty(errors, "id.zoneType", "app.error.112", new Object[]{"Service Type"},"required field");
+		ValidationUtils.rejectIfEmpty(errors, "serviceTimeId.serviceTimeType", "app.error.112", new Object[]{"Service Time Type"},"required field");
+		ValidationUtils.rejectIfEmpty(errors, "serviceTimeId.zoneType", "app.error.112", new Object[]{"Service Type"},"required field");
 		ValidationUtils.rejectIfEmpty(errors, "fixedServiceTime", "app.error.112", new Object[]{"Fixed Service Time"},"required field");
 		ValidationUtils.rejectIfEmpty(errors, "variableServiceTime", "app.error.112", new Object[]{"Variable Service Time"},"required field");
 		

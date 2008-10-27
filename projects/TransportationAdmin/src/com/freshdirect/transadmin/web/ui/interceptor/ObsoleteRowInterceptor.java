@@ -15,16 +15,18 @@ public class ObsoleteRowInterceptor implements RowInterceptor {
 
     public void modifyRowAttributes(TableModel model, Row row) {
     	
-    	TrnBaseEntityI rowEntity = (TrnBaseEntityI) model.getCurrentRowBean();        
-        if (rowEntity != null && rowEntity.isObsoleteEntity()) {
-            row.setStyleClass("obsoleteRow");
-        } else {
-        	if(model.getRowHandler().isRowEven()) {
-        		row.setStyleClass(BuilderConstants.ROW_EVEN_CSS);
-        	} else {
-        		row.setStyleClass(BuilderConstants.ROW_ODD_CSS);
-        	}
-        }
+    	if(model.getCurrentRowBean() instanceof TrnBaseEntityI) {
+	    	TrnBaseEntityI rowEntity = (TrnBaseEntityI) model.getCurrentRowBean();        
+	        if (rowEntity != null && rowEntity.isObsoleteEntity()) {
+	            row.setStyleClass("obsoleteRow");
+	            return;
+	        } 	        
+    	}
+    	if(model.getRowHandler().isRowEven()) {
+    		row.setStyleClass(BuilderConstants.ROW_EVEN_CSS);
+    	} else {
+    		row.setStyleClass(BuilderConstants.ROW_ODD_CSS);
+    	}
     }
 
 }

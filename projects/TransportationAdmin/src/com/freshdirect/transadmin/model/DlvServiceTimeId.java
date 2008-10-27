@@ -29,11 +29,6 @@ public class DlvServiceTimeId implements java.io.Serializable {
 		this.serviceTimeType = serviceTimeType;
 	}
 
-	
-	
-	public String getId() {
-		return serviceTimeType+"$"+zoneType;
-	}
 
 	public boolean equals(Object other) {
 		if ((this == other))

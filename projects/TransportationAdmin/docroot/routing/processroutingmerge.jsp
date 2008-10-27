@@ -118,7 +118,7 @@
 								<td> 
 									<spring:bind path="command.outputFile1">
 										<c:if test="${!empty status.value}">
-	                                		<a href='download.do?filePath=<c:out value="${status.value}"/>' >File 1</a>                                                                
+	                                		<a href='download.do?filePath=<c:out value="${status.value}"/>' >Order Info</a>                                                                
 	                                	</c:if>	
                              		</spring:bind>
                              	</td>
@@ -126,7 +126,7 @@
                              	<td> 
 									<spring:bind path="command.outputFile2">
 										<c:if test="${!empty status.value}">
-	                                		<a href='download.do?filePath=<c:out value="${status.value}"/>' >File 2</a> 
+	                                		<a href='download.do?filePath=<c:out value="${status.value}"/>' >Truck Info</a> 
                                 		</c:if>	                                                               
                              		</spring:bind>
                              	</td>

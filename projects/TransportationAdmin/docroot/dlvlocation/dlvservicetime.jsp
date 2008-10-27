@@ -64,11 +64,13 @@
 						        
 						            if(j != 0) {
 								    	cells[j].onclick = function () {			      		
-								      		var param1 = this.parentNode.getElementsByTagName("td")[columnIndex1];
+								      		/*var param1 = this.parentNode.getElementsByTagName("td")[columnIndex1];
 								      		var param2 = this.parentNode.getElementsByTagName("td")[columnIndex2].getElementsByTagName("a")[0];									      		
 								      		location.href = url+"?"+ paramName1 + "=" + param1.innerHTML+"&"
-								      			+paramName2 + "=" +param2.name;
-								      		
+								      			+paramName2 + "=" +param2.name;*/
+								      		//var cell = this.parentNode.getElementsByTagName("td")[columnIndex];
+								      		var selectBox = this.parentNode.getElementsByTagName("input")[0];	
+								      		location.href = url+"?" + "id=" + selectBox.name;
 								    	};
 							    	}
 						        }
@@ -90,9 +92,9 @@
 				    <ec:row interceptor="obsoletemarker">
 				    	<ec:column title=" " width="5px" 
 					          filterable="false" sortable="false" cell="selectcol"
-					          property="id.id" />				    	
-				      <ec:column property="id.serviceTimeType" title="Service Time Type"/>
-					  <ec:column cell="compositecol" property="id.zoneType" title="Zone Type"/>
+					          property="compositeId" />				    	
+				      <ec:column property="serviceTimeType" title="Service Time Type"/>
+					  <ec:column property="zoneTypeName" title="Zone Type"/>
 				      <ec:column property="fixedServiceTime" title="Fixed Service Time"/>
 				      <ec:column property="variableServiceTime" title="Variable Service Time"/>
 				    </ec:row>

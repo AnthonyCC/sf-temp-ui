@@ -11,7 +11,7 @@
 		<br/>	
 		<div align="center">
 			<form:form commandName = "dlvServiceTimeForm" method="post">
-						
+			<form:hidden path="isNew"/>			
 			<table width="100%" cellpadding="0" cellspacing="0" border="0">
 					<tr>
 						<td class="screentitle">Add/Edit Service Time</td>

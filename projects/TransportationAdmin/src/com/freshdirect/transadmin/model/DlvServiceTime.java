@@ -9,34 +9,34 @@ import java.math.BigDecimal;
  */
 public class DlvServiceTime implements java.io.Serializable, TrnBaseEntityI {
 
-	private DlvServiceTimeId id;
+	private DlvServiceTimeId serviceTimeId;
 	
 	private BigDecimal fixedServiceTime;
 	
 	private BigDecimal variableServiceTime;
+	
+	private String isNew;
 
 	public DlvServiceTime() {
 	}
 
 	public DlvServiceTime(DlvServiceTimeId id) {
-		this.id = id;		
+		this.serviceTimeId = id;		
 	}
 
 	public DlvServiceTime(DlvServiceTimeId id, BigDecimal fixedServiceTime, BigDecimal variableServiceTime) {
-		this.id = id;		
+		this.serviceTimeId = id;		
 		this.fixedServiceTime = fixedServiceTime;
 		this.variableServiceTime = variableServiceTime;
 	}
 
-	public DlvServiceTimeId getId() {
-		return this.id;
+	public DlvServiceTimeId getServiceTimeId() {
+		return this.serviceTimeId;
 	}
 
-	public void setId(DlvServiceTimeId id) {
-		this.id = id;
+	public void setServiceTimeId(DlvServiceTimeId id) {
+		this.serviceTimeId = id;
 	}
-
-	
 	
 	public BigDecimal getFixedServiceTime() {
 		return fixedServiceTime;
@@ -55,31 +55,39 @@ public class DlvServiceTime implements java.io.Serializable, TrnBaseEntityI {
 	}
 
 	public String getServiceTimeType() {
-		if(this.getId() == null) {
+		if(this.getServiceTimeId() == null) {
 			return null;
 		}
-		return this.getId().getServiceTimeType();
+		return this.getServiceTimeId().getServiceTimeType();
 	}
 
 	public void setServiceTimeType(String serviceTimeType) {
-		if(this.getId() == null) {
-			this.setId(new DlvServiceTimeId());
+		if(this.getServiceTimeId() == null) {
+			this.setServiceTimeId(new DlvServiceTimeId());
 		}
-		this.getId().setServiceTimeType(serviceTimeType);
+		this.getServiceTimeId().setServiceTimeType(serviceTimeType);
 	}
 
 	public String getZoneType() {
-		if(this.getId() == null) {
+		if(this.getServiceTimeId() == null) {
 			return null;
 		}
-		return this.getId().getZoneType();
+		return this.getServiceTimeId().getZoneType();
 	}
 
 	public void setZoneType(String serviceType) {
-		if(this.getId() == null) {
-			this.setId(new DlvServiceTimeId());
+		if(this.getServiceTimeId() == null) {
+			this.setServiceTimeId(new DlvServiceTimeId());
 		}
-		this.getId().setZoneType(serviceType);
+		this.getServiceTimeId().setZoneType(serviceType);
+	}
+	
+	public String getIsNew() {
+		return isNew;
+	}
+
+	public void setIsNew(String isNew) {
+		this.isNew = isNew;
 	}
 	
 	public boolean isObsoleteEntity() {

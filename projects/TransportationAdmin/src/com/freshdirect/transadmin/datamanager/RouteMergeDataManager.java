@@ -33,7 +33,7 @@ public class RouteMergeDataManager extends RouteDataManager {
 		RoutingResult result = initResult(outputFileName1, outputFileName2, null);
 
 		List orderDataList = fileManager.parseRouteFile(TransportationAdminProperties.getErpOrderInputFormat()
-				, new ByteArrayInputStream(inputInfo1), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER
+				, new ByteArrayInputStream(inputInfo2), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER
 				, null);
 
 		List truckDataList = fileManager.parseRouteFile(TransportationAdminProperties.getErpRouteInputFormat()
@@ -43,7 +43,7 @@ public class RouteMergeDataManager extends RouteDataManager {
 		updateRouteInfo(orderDataList, truckDataList);
 
 		List fullDataList = fileManager.parseRouteFile(TransportationAdminProperties.getRoutingOrderRouteOutputFormat()
-				, new ByteArrayInputStream(inputInfo1), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER
+				, new ByteArrayInputStream(inputInfo3), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER
 				, null);
 		
 		RouteGenerationResult routeGenResult = generateRouteNumber(fullDataList, cutOff, domainManagerService);		
@@ -119,8 +119,10 @@ public class RouteMergeDataManager extends RouteDataManager {
 		
 		if(dataList != null) {
 			Iterator iterator = dataList.iterator();
-			tmpZone = (TrnZone)iterator.next();
-			result.add(tmpZone.getZoneNumber());
+			while(iterator.hasNext()) {
+				tmpZone = (TrnZone)iterator.next();
+				result.add(tmpZone.getZoneNumber());
+			}			
 		}
 		return result;
 	}
@@ -153,15 +155,17 @@ public class RouteMergeDataManager extends RouteDataManager {
 		String areaCode = null;
 		if(fullDataList != null) {
 			Iterator iterator = fullDataList.iterator();
-			tmpInfo = (OrderRouteInfoModel)iterator.next();
-			areaCode = tmpInfo.getDeliveryArea();
-			if(dataMap.containsKey(areaCode)) {
-				tmpList = (List)dataMap.get(areaCode);
-				tmpList.add(tmpInfo);				
-			} else {
-				tmpList = new ArrayList();
-				tmpList.add(tmpInfo);
-				dataMap.put(areaCode, tmpList);
+			while(iterator.hasNext()) {
+				tmpInfo = (OrderRouteInfoModel)iterator.next();
+				areaCode = tmpInfo.getDeliveryArea();
+				if(dataMap.containsKey(areaCode)) {
+					tmpList = (List)dataMap.get(areaCode);
+					tmpList.add(tmpInfo);				
+				} else {
+					tmpList = new ArrayList();
+					tmpList.add(tmpInfo);
+					dataMap.put(areaCode, tmpList);
+				}
 			}
 		}		
 		return dataMap;

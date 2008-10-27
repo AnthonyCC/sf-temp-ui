@@ -4,7 +4,7 @@
 <!-- Generated May 20, 2008 2:33:07 PM by Hibernate Tools 3.2.0.b9 -->
 <hibernate-mapping schema="dlv">
     <class name="com.freshdirect.transadmin.model.DlvServiceTime" table="SERVICETIME">
-        <composite-id name="id" class="com.freshdirect.transadmin.model.DlvServiceTimeId">
+        <composite-id name="serviceTimeId" class="com.freshdirect.transadmin.model.DlvServiceTimeId">
             <key-property name="serviceTimeType" type="string">
                 <column name="SERVICETIME_TYPE" length="8" />
             </key-property>
