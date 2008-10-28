@@ -2045,6 +2045,7 @@
 				<include name="ERPServicesEJB-WL.jar"/>
 				<include name="DeliveryEJB-WL.jar"/>
 				<include name="FDStoreEJB-WL.jar"/>
+				<include name="DataLoaderEJB-WL.jar"/>
 				<include name="CRM.war"/>
                 <include name="RefAdmin.war"/>
 			</ejbs>
@@ -2052,8 +2053,7 @@
 				<include name="Framework.jar"/>
 				<include name="Resources.jar"/>
 				<include name="ERPSWebApp.jar"/>
-				<include name="CMS.jar"/>
-				<include name="DataLoaderEJB-WL.jar"/>
+				<include name="CMS.jar"/>				
 				<include name="RoutingServices.jar"/>
 			</libraries>
 			<lib>
