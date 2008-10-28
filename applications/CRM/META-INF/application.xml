@@ -15,6 +15,9 @@
     <module>
       <ejb>FDStoreEJB-WL.jar</ejb>
     </module>
+    <module>
+          <ejb>DataLoaderEJB-WL.jar</ejb>
+    </module>
     
     <!-- web apps -->
         
