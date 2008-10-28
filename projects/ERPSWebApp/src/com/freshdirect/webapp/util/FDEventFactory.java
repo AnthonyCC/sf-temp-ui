@@ -134,7 +134,11 @@ public class FDEventFactory {
 		event.setOriginatingProduct(cartline.getOriginatingProductId()); // Param 10
 		event.setYmalSet(cartline.getYmalSetId()); // Param 11
 		event.setCclId(cclId); // Param 12
-		event.setVariantId(cartline.getVariantId());
+
+		// [MNT-382] log variant ID when AddToCart event is logged
+		if (FD_ADD_TO_CART_EVENT.equalsIgnoreCase(event.getEventType())) {
+			event.setVariantId(cartline.getVariantId());
+		}
 	}
 	
 	private static String add(String value){
