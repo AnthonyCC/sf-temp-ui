@@ -35,6 +35,8 @@ public class TransStringUtil {
 	
 	private static String zipCodePattern = "\\d{5}(-\\d{4})?";
 	
+	private static String bigDecimalPattern = "\\d{0,8}\\.\\d{0,2}";
+	
 	private static NumberFormat formatter = new DecimalFormat("00");
 	
 	static {
@@ -222,6 +224,13 @@ public class TransStringUtil {
 	
 	public static boolean isValidZipCode(String zip) {	    
 	    return zip.matches(zipCodePattern);    
+	}
+	
+	public static boolean isValidDecimalFormat(String zip) {
+		if(zip != null && zip.indexOf(".") ==-1) {
+			zip = zip+".00";
+		}
+	    return zip.matches(bigDecimalPattern);    
 	}
 	
 	public static boolean isValidInteger(String intVal) throws NumberFormatException {	

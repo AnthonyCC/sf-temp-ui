@@ -55,6 +55,10 @@ public class DlvServiceTimeScenarioValidator extends AbstractValidator {
 		validateLength("serviceTimeFormula", model.getServiceTimeFormula(), 256, errors);
 		validateLength("serviceTimeFormula", model.getOrderSizeFormula(), 256, errors);
 		
+		validateNumericLength("defaultCartonCount", model.getDefaultCartonCount(), errors);		
+		validateNumericLength("defaultCaseCount", model.getDefaultCaseCount(), errors);
+		validateNumericLength("defaultFreezerCount", model.getDefaultFreezerCount(), errors);
+		
 	}
 	
 	private List getServiceTimeFactorVariables() {
