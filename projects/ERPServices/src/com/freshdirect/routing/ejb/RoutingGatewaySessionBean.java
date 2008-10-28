@@ -30,19 +30,15 @@ public class RoutingGatewaySessionBean extends GatewaySessionBeanSupport {
 	private static Category LOGGER = LoggerFactory.getInstance(RoutingGatewaySessionBean.class);
 	
 	public void sendShippingAddress(AddressI address) {
-		LOGGER.debug("Sending Return Invoice for Invoice# " + address.getAddress1()+" : "+address.getZipCode());
-		if (SapProperties.isBlackhole()) {
-			LOGGER.debug("Message blackholed.");
-			return;
-		}
+		LOGGER.debug("Sending Address For Routing System# " + address.getAddress1()+" : "+address.getZipCode());		
 		this.enqueue(address);
 	}
 
-	private void enqueue(AddressI sapCommand) {
+	private void enqueue(AddressI addressCommand) {
 		try {
 			ObjectMessage addressMsg = this.qsession.createObjectMessage();
 			addressMsg.setStringProperty("MessageType", "ROUTINGADDRESS/process");
-			addressMsg.setObject(sapCommand);
+			addressMsg.setObject(addressCommand);
 
 			this.qsender.send(addressMsg);
 		} catch (JMSException ex) {

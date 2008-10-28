@@ -47,8 +47,7 @@ public class LocationManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 		return this.getHibernateTemplate().findByCriteria(crit);		
 	}
 	
-	public Collection getScenariosForZoneTypes(List zoneTypeLst) throws DataAccessException {
-		System.out.println("zoneTypeLst >"+zoneTypeLst);
+	public Collection getScenariosForZoneTypes(List zoneTypeLst) throws DataAccessException {		
 		DetachedCriteria crit = DetachedCriteria.forClass(DlvServiceTimeScenario.class);
 		crit.add(Expression.in("defaultZoneType.zoneTypeId", zoneTypeLst));
 		return this.getHibernateTemplate().findByCriteria(crit);

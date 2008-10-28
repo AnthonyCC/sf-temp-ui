@@ -31,7 +31,7 @@
                   <td>Street</td>
                   <td> 
                                 
-                    <input maxlength="20" size="20" name="srubbedAddress"
+                    <input maxlength="50" size="20" name="srubbedAddress"
                       id="srubbedAddress" value="" />                    
                	 </td>
                 

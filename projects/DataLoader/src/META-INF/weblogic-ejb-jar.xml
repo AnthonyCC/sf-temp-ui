@@ -132,28 +132,18 @@
 		</reference-descriptor>
 		<jndi-name>freshdirect.dataloader.SaleCron</jndi-name>
 	</weblogic-enterprise-bean>
-	
-	<weblogic-enterprise-bean>
+		
+    
+    <weblogic-enterprise-bean>
         <ejb-name>RoutingAddressLoadListener</ejb-name>
 
         <message-driven-descriptor>
             <pool>
                 <max-beans-in-free-pool>5</max-beans-in-free-pool>
-                <initial-beans-in-free-pool>5</initial-beans-in-free-pool>
+                <initial-beans-in-free-pool>2</initial-beans-in-free-pool>
             </pool>
             <destination-jndi-name>routingQueue</destination-jndi-name>
         </message-driven-descriptor>
-
-        <reference-descriptor>
-            <resource-description>
-                <res-ref-name>jms/QueueFactory</res-ref-name>
-                <jndi-name>queueFactory</jndi-name>
-            </resource-description>
-            <resource-env-description>
-                <res-env-ref-name>jms/ResponseQueue</res-env-ref-name>
-                <jndi-name>./routingQueue</jndi-name>
-            </resource-env-description>
-        </reference-descriptor>
 
         <jndi-name>freshdirect.routing.AddressLoadListener</jndi-name>
     </weblogic-enterprise-bean>

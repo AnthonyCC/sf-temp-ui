@@ -11,20 +11,14 @@ package com.freshdirect.dataloader.routing.ejb;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ejb.EJBException;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.ObjectMessage;
-import javax.jms.Queue;
-import javax.jms.QueueConnectionFactory;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressI;
 import com.freshdirect.framework.core.MessageDrivenBeanSupport;
-import com.freshdirect.framework.util.jms.JMSQueueFactory;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.model.IBuildingModel;
 import com.freshdirect.routing.model.ILocationModel;
@@ -41,36 +35,7 @@ import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
 public class RoutingAddressLoadListener extends MessageDrivenBeanSupport {
 
 	private static Category LOGGER = LoggerFactory.getInstance(RoutingAddressLoadListener.class);
-
-	private JMSQueueFactory routingQueueFactory;
-
-	public void ejbCreate() {
-		InitialContext initCtx = null;
-		try {
-			initCtx = new InitialContext();
-
-			// init jms stuff
-			QueueConnectionFactory factory = (QueueConnectionFactory) initCtx.lookup("java:comp/env/jms/QueueFactory");
-			Queue queue = (Queue) initCtx.lookup("java:comp/env/jms/ResponseQueue");
-
-			// !!! hardcoded queueName
-			this.routingQueueFactory = new JMSQueueFactory(queue, factory, "routingQueue");
-
-		} catch (NamingException ex) {
-			LOGGER.warn("NamingException in ejbCreate", ex);
-			throw new EJBException(ex);
-
-		} finally {
-			if (initCtx != null) {
-				try {
-					initCtx.close();
-				} catch (NamingException ne) {
-				}
-			}
-		}
-
-	}
-
+	
 	public void onMessage(Message msg) {
 		String msgId = "";
 		AddressI address = null;
@@ -78,14 +43,14 @@ public class RoutingAddressLoadListener extends MessageDrivenBeanSupport {
 			msgId = msg.getJMSMessageID();
 
 			if (!(msg instanceof ObjectMessage)) {
-				LOGGER.error("Message is not an ObjectMessage: " + msg);
+				LOGGER.error("Message is not an ObjectMessage: " + msg +"-"+msgId);
 				// discard msg, no point in throwing it back to the queue
 				return;
 			}
 
-			ObjectMessage sapMsg = (ObjectMessage) msg;
+			ObjectMessage addressMsg = (ObjectMessage) msg;
 
-			Object ox = sapMsg.getObject();
+			Object ox = addressMsg.getObject();
 			if ((ox == null) || (!(ox instanceof AddressI))) {
 				LOGGER.error("Message is not an AddressI: " + msg);
 				// discard msg, no point in throwing it back to the queue
