@@ -81,7 +81,8 @@
 				<prop key="/cutoff.do">domainController</prop>
 				<prop key="/deletecutoff.do">domainController</prop>					                
 				<prop key="/editcutoff.do">cutOffFormController</prop>
-				<prop key="/viewfile.do">genericBeanFormController</prop> 					    
+				<prop key="/viewfile.do">genericBeanFormController</prop> 
+				<prop key="/routenumber.do">domainController</prop>					    
 			</props>
 		</property>
 	</bean>
@@ -154,7 +155,8 @@
 	 	    <prop key="/dlvservicetimescenario.do">dlvServiceTimeScenarioHandler</prop>					                
  		 	<prop key="/deletedlvservicetimescenario.do">dlvServiceTimeScenarioDeleteHandler</prop>	
  		 	<prop key="/cutoff.do">cutOffHandler</prop>					                
- 		 	<prop key="/deletecutoff.do">cutOffDeleteHandler</prop>   
+ 		 	<prop key="/deletecutoff.do">cutOffDeleteHandler</prop>
+ 		 	<prop key="/routenumber.do">routeNumberHandler</prop>    
 		</props>
 		</property>
 	</bean>

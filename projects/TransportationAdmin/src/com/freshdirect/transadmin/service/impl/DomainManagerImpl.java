@@ -126,8 +126,8 @@ public class DomainManagerImpl
 		return getDomainManagerDao().getCutOffs();
 	}
 	
-	public Collection getRouteNumberGroup(String date, String area) {
-		return getDomainManagerDao().getRouteNumberGroup(date, area);
+	public Collection getRouteNumberGroup(String date, String cutOff, String area) {
+		return getDomainManagerDao().getRouteNumberGroup(date, cutOff, area);
 	}
 	
 	public Collection getDeliveryModels() {

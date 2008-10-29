@@ -77,7 +77,8 @@ public class RouteDataManager {
 			String areaDeliveryModel = null;
 			String currentRoute = null;
 			
-			while(iterator.hasNext()) {				
+			while(iterator.hasNext()) {		
+				
 				tmpModel = (OrderRouteInfoModel)iterator.next();
 				areaCode = TransStringUtil.splitStringForCode(tmpModel.getRouteId());
 				tmpModel.setDeliveryArea(areaCode);
@@ -91,13 +92,14 @@ public class RouteDataManager {
 					routeNoGenModel = (RouteNoGenerationModel)routeNoGenMapping.get(routeId);
 				} else {
 					//Key pointer to generating route no
-					routeNoGenModel = new RouteNoGenerationModel();
+					routeNoGenModel = fillRouteNumberGroup(routeId, routeNoGenMapping, comparator, domainManagerService);
+					/*routeNoGenModel = new RouteNoGenerationModel();
 					routeNoGenMapping.put(routeId, routeNoGenModel);
 					
 					fillRelatedCutOff(routeNoGenModel, routeId, comparator
 										, new ArrayList(domainManagerService
 														.getRouteNumberGroup(getRouteDate(routeId.getRouteDate())
-																, routeId.getAreaCode())));
+																, null, routeId.getAreaCode())));*/
 				}
 				currentRoute = (String)routeNoGenModel.getRoute(tmpModel.getRouteId().trim());
 				if(currentRoute == null) {
@@ -110,6 +112,42 @@ public class RouteDataManager {
 			}
 		}
 		return getRouteGenerationResult(routeNoGenMapping);
+	}
+	
+	// Collect and fille routeNumber under investigation and related routeNumber for date and cutoff
+	protected RouteNoGenerationModel fillRouteNumberGroup(TrnRouteNumberId routeId, Map routeNoGenMapping, 
+											CutOffComparator comparator, DomainManagerI domainManagerService) {
+		
+		Collection routeNoForDateCutOff = domainManagerService.getRouteNumberGroup(getRouteDate(routeId.getRouteDate())
+																, routeId.getCutOffId(), null);
+		RouteNoGenerationModel routeNoGenModel = null;
+		if(routeNoForDateCutOff != null) {
+			Iterator iterator = routeNoForDateCutOff.iterator();
+			TrnRouteNumber tmpModel = null;
+			
+			while(iterator.hasNext()) {				
+				tmpModel = (TrnRouteNumber)iterator.next();
+				if(!tmpModel.getRouteNumberId().equals(routeId)
+						&& !routeNoGenMapping.containsKey(routeId)) {
+					routeNoGenModel = new RouteNoGenerationModel();
+					routeNoGenMapping.put(tmpModel.getRouteNumberId(), routeNoGenModel);
+					
+					fillRelatedCutOff(routeNoGenModel, tmpModel.getRouteNumberId(), comparator
+										, new ArrayList(domainManagerService
+														.getRouteNumberGroup(getRouteDate(tmpModel.getRouteNumberId().getRouteDate())
+																, null, tmpModel.getRouteNumberId().getAreaCode())));
+				}
+			}
+		}
+		
+		routeNoGenModel = new RouteNoGenerationModel();
+		routeNoGenMapping.put(routeId, routeNoGenModel);
+		
+		fillRelatedCutOff(routeNoGenModel, routeId, comparator
+							, new ArrayList(domainManagerService
+											.getRouteNumberGroup(getRouteDate(routeId.getRouteDate())
+													, null, routeId.getAreaCode())));
+		return routeNoGenModel;
 	}
 	
 	protected RouteGenerationResult getRouteGenerationResult(Map routeNoGenMapping) {
@@ -135,15 +173,17 @@ public class RouteDataManager {
 				routeId = (TrnRouteNumberId)iterator.next();
 				routeNoGenModel = (RouteNoGenerationModel)routeNoGenMapping.get(routeId);
 				successors = routeNoGenModel.getSuccessors();
+				if(routeNoGenModel.getOrders() != null) {
+					routeInfos.addAll(routeNoGenModel.getOrders());
+				}
 				
-				routeInfos.addAll(routeNoGenModel.getOrders());
-								
 				routeNo = new TrnRouteNumber(routeId);
 				routeNoSaveInfos.add(routeNo);
 				routeNo.setCurrentVal(new BigDecimal(routeNoGenModel.getCurrentSequenceNo()));
 				
 				int difference = routeNoGenModel.getCurrentSequenceNo() - routeNoGenModel.getPreviousSequenceNo();
 				if(successors != null) {
+					
 					Iterator predIterator = successors.iterator();
 					while(predIterator.hasNext()) {
 						routeNo = (TrnRouteNumber)predIterator.next();
@@ -174,8 +214,8 @@ public class RouteDataManager {
 			while(iterator.hasNext()) {
 				
 				tmpModel = (TrnRouteNumber)iterator.next();
-				cutOff = (TrnCutOff)referenceData.get(tmpModel.getId().getCutOffId());
-				if(!tmpModel.getId().equals(routeId)) {
+				cutOff = (TrnCutOff)referenceData.get(tmpModel.getRouteNumberId().getCutOffId());
+				if(!tmpModel.getRouteNumberId().equals(routeId)) {
 					if(cutOff != null) {
 						if(cutOff.getSequenceNo().intValue() < cutOffSequence) {
 							model.addPredecessor(tmpModel);

@@ -58,7 +58,7 @@ public interface DomainManagerDaoI extends BaseManagerDaoI {
 	
 	Collection getCutOffs() throws DataAccessException;
 	
-	Collection getRouteNumberGroup(String date, String area) throws DataAccessException;
+	Collection getRouteNumberGroup(String date, String cutOff, String area) throws DataAccessException;
 	
 	Collection getDeliveryModels() throws DataAccessException;
 	

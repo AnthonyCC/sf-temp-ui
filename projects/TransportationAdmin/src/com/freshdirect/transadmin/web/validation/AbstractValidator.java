@@ -21,8 +21,7 @@ public abstract class AbstractValidator implements Validator  {
 		
 		if(value != null 
 				&& !TransStringUtil.isEmpty(value.toString()) 
-				&& !TransStringUtil.isValidDecimalFormat(value.toString())) {
-			System.out.println("value.toString() >"+value.doubleValue());
+				&& !TransStringUtil.isValidDecimalFormat(value.toString())) {			
 			errors.rejectValue(field, "app.error.118", null);			
 		}		
 	}

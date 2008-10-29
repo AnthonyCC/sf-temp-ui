@@ -104,15 +104,6 @@ public class DispatchController extends AbstractMultiActionController {
 		return mav;
 	}
 	
-	private String getCurrentDate(String dispDate) {
-		String retDate = null;
-		try {
-			retDate = TransStringUtil.getServerDate(dispDate);
-		} catch(ParseException parExp) {
-			parExp.printStackTrace();
-		}
-		return retDate;
-	}
 	
 	/**
 	 * Custom handler for welcome

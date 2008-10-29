@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public class TrnRouteNumber implements java.io.Serializable, TrnBaseEntityI {
 
-	private TrnRouteNumberId id;
+	private TrnRouteNumberId routeNumberId;
 	
 	private BigDecimal currentVal;
 	
@@ -12,23 +12,23 @@ public class TrnRouteNumber implements java.io.Serializable, TrnBaseEntityI {
 	}
 
 	public TrnRouteNumber(TrnRouteNumberId id) {
-		this.id = id;		
+		this.routeNumberId = id;		
 	}
 
 	public TrnRouteNumber(TrnRouteNumberId id, BigDecimal currentVal) {
-		this.id = id;		
+		this.routeNumberId = id;		
 		this.currentVal = currentVal;		
-	}
-
-	public TrnRouteNumberId getId() {
-		return this.id;
-	}
-
-	public void setId(TrnRouteNumberId id) {
-		this.id = id;
 	}
 		
 	
+	public TrnRouteNumberId getRouteNumberId() {
+		return routeNumberId;
+	}
+
+	public void setRouteNumberId(TrnRouteNumberId routeNumberId) {
+		this.routeNumberId = routeNumberId;
+	}
+
 	public BigDecimal getCurrentVal() {
 		return currentVal;
 	}
@@ -43,8 +43,5 @@ public class TrnRouteNumber implements java.io.Serializable, TrnBaseEntityI {
 		return false;
 	}
 	
-	public String toString() {
-		return id.toString()+"-"+currentVal.intValue();
-	}
 
 }

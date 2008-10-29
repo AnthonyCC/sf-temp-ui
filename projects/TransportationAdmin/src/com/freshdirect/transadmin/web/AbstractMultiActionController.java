@@ -1,5 +1,6 @@
 package com.freshdirect.transadmin.web;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
+
+import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class AbstractMultiActionController extends MultiActionController implements InitializingBean {
 	
@@ -35,5 +38,16 @@ public class AbstractMultiActionController extends MultiActionController impleme
 		}
 		return null;
 	}
+	
+	protected String getCurrentDate(String dispDate) {
+		String retDate = null;
+		try {
+			retDate = TransStringUtil.getServerDate(dispDate);
+		} catch(ParseException parExp) {
+			parExp.printStackTrace();
+		}
+		return retDate;
+	}
+	
 	
 }

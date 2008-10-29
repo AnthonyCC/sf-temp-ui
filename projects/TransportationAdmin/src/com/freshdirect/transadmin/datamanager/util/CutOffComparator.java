@@ -18,9 +18,9 @@ public class CutOffComparator implements Comparator {
 
 //		parameter are of type Object, so we have to downcast it to Employee objects
 
-		String cutOffId1 = ( (TrnRouteNumber) obj1).getId().getCutOffId();
+		String cutOffId1 = ( (TrnRouteNumber) obj1).getRouteNumberId().getCutOffId();
 
-		String cutOffId2 = ( (TrnRouteNumber) obj2).getId().getCutOffId();
+		String cutOffId2 = ( (TrnRouteNumber) obj2).getRouteNumberId().getCutOffId();
 		
 		TrnCutOff cutOff1 = (TrnCutOff)referenceData.get(cutOffId1);
 		TrnCutOff cutOff2 = (TrnCutOff)referenceData.get(cutOffId2);

@@ -21,6 +21,7 @@ import com.freshdirect.transadmin.model.TrnZone;
 import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.LocationManagerI;
+import com.freshdirect.transadmin.util.TransStringUtil;
 
 /**
  * <code>MultiActionController</code> that handles all non-form URL's.
@@ -318,7 +319,26 @@ public class DomainController extends AbstractMultiActionController {
 		
 		Collection dataList = domainManagerService.getZoneTypes();
 		return new ModelAndView("zoneTypeView","zonetypes",dataList);
-	}	
+	}
+	
+	/**
+	 * Custom handler for welcome
+	 * @param request current HTTP request
+	 * @param response current HTTP response
+	 * @return a ModelAndView to render the response
+	 */
+	public ModelAndView routeNumberHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+		
+		String routeDate = request.getParameter("routeDate");
+		ModelAndView mav = new ModelAndView("routeNumberView");
+		mav.getModel().put("routeDate", routeDate);
+		if(!TransStringUtil.isEmpty(routeDate)) {
+			Collection dataList = domainManagerService.getRouteNumberGroup(getCurrentDate(routeDate), null, null);
+			mav.getModel().put("routenumberlist",dataList);
+		} 
+		
+		return mav;
+	}
 	
 
 	public DomainManagerI getDomainManagerService() {

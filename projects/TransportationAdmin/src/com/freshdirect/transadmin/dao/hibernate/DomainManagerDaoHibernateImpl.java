@@ -119,13 +119,19 @@ public class DomainManagerDaoHibernateImpl
 		return getDataList("TrnCutOff Order By  sequenceNo");
 	}
 	
-	public Collection getRouteNumberGroup(String date, String area) throws DataAccessException {
+	public Collection getRouteNumberGroup(String date, String cutOff, String area) throws DataAccessException {
 		
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("from TrnRouteNumber tr");
 		strBuf.append(" where tr.id.routeDate='").append(date).append("'");
-
-		strBuf.append(" and tr.id.areaCode='").append(area).append("'");
+		
+		if(cutOff != null) {
+			strBuf.append(" and tr.id.cutOffId='").append(cutOff).append("'");
+		}
+		
+		if(area != null) {
+			strBuf.append(" and tr.id.areaCode='").append(area).append("'");
+		}
 
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
 	}

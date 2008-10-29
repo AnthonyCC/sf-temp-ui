@@ -4,7 +4,7 @@
 <!-- Generated May 20, 2008 2:33:07 PM by Hibernate Tools 3.2.0.b9 -->
 <hibernate-mapping schema="transp">
     <class name="com.freshdirect.transadmin.model.TrnRouteNumber" table="TRN_ROUTENUMBER">
-        <composite-id name="id" class="com.freshdirect.transadmin.model.TrnRouteNumberId">
+        <composite-id name="routeNumberId" class="com.freshdirect.transadmin.model.TrnRouteNumberId">
             <key-property name="routeDate" type="date">
                 <column name="ROUTE_DATE" length="7"/>
             </key-property>

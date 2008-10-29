@@ -56,7 +56,7 @@ public interface DomainManagerI extends BaseManagerI {
 	
 	Collection getCutOffs();
 	
-	Collection getRouteNumberGroup(String date, String area);
+	Collection getRouteNumberGroup(String date, String cutOff, String area);
 	
 	Collection getDeliveryModels();
 
