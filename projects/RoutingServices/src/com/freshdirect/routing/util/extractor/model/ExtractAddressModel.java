@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 public class ExtractAddressModel implements Serializable {
 	
+	private String id;
+	private String refId;
+	private String zone;
+	private String area;
 	private String address1;
 	private String address2;
 	private String apartment;
@@ -12,6 +16,8 @@ public class ExtractAddressModel implements Serializable {
 	private String zip;
 	private String country;
 	private String scrubbedAddress;
+	private String refAddressId;
+	private String deliveryType;
 	
 	public String getAddress1() {
 		return address1;
@@ -60,6 +66,42 @@ public class ExtractAddressModel implements Serializable {
 	}
 	public void setZip(String zip) {
 		this.zip = zip;
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	public String getRefAddressId() {
+		return refAddressId;
+	}
+	public void setRefAddressId(String refAddressId) {
+		this.refAddressId = refAddressId;
+	}
+	public String getRefId() {
+		return refId;
+	}
+	public void setRefId(String refId) {
+		this.refId = refId;
+	}
+	public String getZone() {
+		return zone;
+	}
+	public void setZone(String zone) {
+		this.zone = zone;
+	}
+	public String getArea() {
+		return area;
+	}
+	public void setArea(String area) {
+		this.area = area;
+	}
+	public String getDeliveryType() {
+		return deliveryType;
+	}
+	public void setDeliveryType(String deliveryType) {
+		this.deliveryType = deliveryType;
 	}
 	
 	

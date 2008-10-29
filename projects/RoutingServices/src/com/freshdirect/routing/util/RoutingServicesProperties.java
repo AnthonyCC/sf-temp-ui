@@ -61,8 +61,8 @@ public class RoutingServicesProperties {
 	
 	static {
 		
-		defaults.put(PROP_TRANSPORTATIONSUITE_PROVIDER_URL, 	"http://10.200.20.160:81");
-		defaults.put(PROP_ROADNET_PROVIDER_URL, 	"http://10.200.20.160:82");
+		defaults.put(PROP_TRANSPORTATIONSUITE_PROVIDER_URL, 	"http://localhost:81");
+		defaults.put(PROP_ROADNET_PROVIDER_URL, 	"http://localhost:82");
 		//defaults.put(PROP_SERVICETIMEFACTOR_EXPRESSION, 	"(x+y+z)/3");
 		//defaults.put(PROP_SERVICETIME_EXPRESSION, 	"a+(b*x)");
 		//defaults.put(PROP_TOTALSIZE1_EXPRESSION, 	"x+y");
