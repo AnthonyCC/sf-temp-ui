@@ -49,7 +49,7 @@
 							 </tr>
 							 
 							  <tr>
-							    <td>Fixed Service Time</td>
+							    <td>Fixed Service Time(in minutes)</td>
 							    <td> 								  
 							  	 	<form:input maxlength="50" size="30" path="fixedServiceTime" />
 							 	</td>
@@ -59,7 +59,7 @@
 							 </tr>
 							 
 							  <tr>
-							    <td>Variable Service Time</td>
+							    <td>Variable Service Time(in minutes)</td>
 							    <td> 								  
 							  	 	<form:input maxlength="50" size="30" path="variableServiceTime" />
 							 	</td>

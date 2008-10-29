@@ -29,11 +29,7 @@ public class DlvServiceTimeValidator extends AbstractValidator {
 		if(model != null && (model.getServiceTimeType() == null || model.getServiceTimeType() == null) || "null".equals(model.getServiceTimeType())) {
 			errors.rejectValue("serviceTimeType", "app.error.112", new Object[]{"Service Time Type"},"required field");
 		}
-		
-		if(model != null && (model.getServiceTimeType() == null || model.getServiceTimeType() == null) || "null".equals(model.getServiceTimeType())) {
-			errors.rejectValue("zoneType", "app.error.112", new Object[]{"Service Time Type"},"required field");
-		}
-		
+				
 		validateNumericLength("fixedServiceTime", model.getFixedServiceTime(), errors);
 		validateNumericLength("variableServiceTime", model.getVariableServiceTime(), errors);			
 		

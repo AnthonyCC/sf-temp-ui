@@ -95,8 +95,8 @@
 					          property="compositeId" />				    	
 				      <ec:column property="serviceTimeType" title="Service Time Type"/>
 					  <ec:column property="zoneTypeName" title="Zone Type"/>
-				      <ec:column property="fixedServiceTime" title="Fixed Service Time"/>
-				      <ec:column property="variableServiceTime" title="Variable Service Time"/>
+				      <ec:column property="fixedServiceTime" title="Fixed Service Time(in minutes)"/>
+				      <ec:column property="variableServiceTime" title="Variable Service Time(in minutes)"/>
 				    </ec:row>
 				  </ec:table>
 			 </form> 	
