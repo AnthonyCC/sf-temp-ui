@@ -91,21 +91,24 @@ public class RoutingAddressLoadListener extends MessageDrivenBeanSupport {
 		ILocationModel locationModel = proxy.getLocation(baseModel);			
 					
 		if(locationModel == null) {
-			IBuildingModel buildingModel = proxy.getBuildingLocation(baseModel);
-			saveLocationLst.add(baseModel);
+			IBuildingModel buildingModel = proxy.getBuildingLocation(baseModel);			
 			baseModel.setLocationId(proxy.getLocationId());
 			if(buildingModel != null && buildingModel.getBuildingId() != null) {				
 				baseModel.setBuildingId(buildingModel.getBuildingId());									
 				baseModel.setGeographicLocation(buildingModel.getGeographicLocation());		    							
-				
+				saveLocationLst.add(baseModel);
 			} else {
 				
-				buildingModel = proxy.getNewBuilding(baseModel);				
-				baseModel.setZipCode(buildingModel.getZipCode());
-				baseModel.setGeographicLocation(buildingModel.getGeographicLocation());				
-			}
-			
-			baseModel.setBuildingId(buildingModel.getBuildingId());
+				buildingModel = proxy.getNewBuilding(baseModel);
+				
+				if(buildingModel != null) {
+					baseModel.setBuildingId(buildingModel.getBuildingId());
+					baseModel.setZipCode(buildingModel.getZipCode());
+					baseModel.setGeographicLocation(buildingModel.getGeographicLocation());	
+					saveLocationLst.add(baseModel);
+					saveBuildingLst.add(buildingModel);
+				}
+			}						
 		}
 		
 		if(saveBuildingLst != null && saveBuildingLst.size() > 0) {
