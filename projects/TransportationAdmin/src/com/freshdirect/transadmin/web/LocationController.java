@@ -231,10 +231,14 @@ public class LocationController extends AbstractMultiActionController  {
 					dispatchSet.add(tmpBean);
 				}
 			}
-		}			
-		removeEntityList(dispatchSet);
-		saveMessage(request, getMessage("app.actionmessage.103", null));
-
+		}
+		try {
+			locationManagerService.removeEntity(dispatchSet);
+			saveMessage(request, getMessage("app.actionmessage.103", null));
+		} catch (DataIntegrityViolationException e) {
+			saveMessage(request, getMessage("app.actionmessage.127", null));
+		}
+		
 		return dlvBuildingHandler(request, response);
 	}
 	
