@@ -531,7 +531,7 @@ public class GeographyDAO {
 		return result;
 	}
 
-	public String geocode(AddressModel address, Connection conn) throws SQLException, InvalidAddressException {
+	public String geocode(AddressModel address, Connection conn) throws SQLException, InvalidAddressException {		
 		return geocode(address, true, conn);
 	}
 		
@@ -1216,7 +1216,7 @@ public class GeographyDAO {
 	}
 	
 	private final static String LOCATION_DATABASE = "select db.LONGITUDE LONGITUDE, db.LATITUDE LATITUDE, db.GEO_CONFIDENCE GEO_CONFIDENCE, db.GEO_QUALITY GEO_QUALITY from dlv.DELIVERY_LOCATION dl, dlv.DELIVERY_BUILDING db "+
-													"where dl.BUILDINGID = db.ID and dl.SCRUBBED_STREET = ? and dl.ZIP ";
+													"where dl.BUILDINGID = db.ID and db.SCRUBBED_STREET = ? and db.ZIP ";
 
 	private String checkLocationDatabase(AddressModel address, Connection conn) throws SQLException, InvalidAddressException {
 		String streetAddress = AddressScrubber.standardizeForGeocode(address.getAddress1());
@@ -1224,12 +1224,12 @@ public class GeographyDAO {
 		String result = GEOCODE_FAILED;
 		StringBuffer strBuf = new StringBuffer(LOCATION_DATABASE);
 		strBuf.append(StringUtil.formQueryString(Arrays.asList(getZipCodeFromAddress(address))));
-		PreparedStatement ps = conn.prepareStatement(LOCATION_DATABASE);
-
+		PreparedStatement ps = conn.prepareStatement(strBuf.toString());
+				
 		ps.setString(1, streetAddress);
 		//ps.setString(2, address.getZipCode());
-
-		ResultSet rs = ps.executeQuery();
+		
+		ResultSet rs = ps.executeQuery();		
 		if (rs.next()) {
 			String quality = rs.getString("GEO_CONFIDENCE");
 			if(quality != null && "gcHigh".equalsIgnoreCase(quality)) {
@@ -1243,7 +1243,8 @@ public class GeographyDAO {
 		}
 		rs.close();
 		ps.close();
-
+		
+		
 		return result;
 	}
 
