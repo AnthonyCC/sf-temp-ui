@@ -44,14 +44,14 @@ public abstract class BaseProcessManager implements  IProcessManager {
     	return null;
     }
     
-    public Object startProcess(ProcessContext request) throws RoutingProcessException {
-    	
+    public Object startProcess(ProcessContext request) throws RoutingProcessException {    	
     	try {			
 			// load the zone details and fill the cache
 			DeliveryServiceProxy proxy = new DeliveryServiceProxy();
 			Map zoneDetails = proxy.getDeliveryZoneDetails();
 			request.setDeliveryTypeCache(zoneDetails);
-		} catch (RoutingServiceException e) {			
+		} catch (RoutingServiceException e) {	
+			e.printStackTrace();
 			throw new RoutingProcessException(null,e,IIssue.PROCESS_ZONEINFO_NOTFOUND);
 		}
 		
@@ -74,7 +74,8 @@ public abstract class BaseProcessManager implements  IProcessManager {
 				
 				service.insertBuildings(buildingLst);	
 				
-			} catch (RoutingServiceException e) {			
+			} catch (RoutingServiceException e) {
+				e.printStackTrace();
 				throw new RoutingProcessException(null,e,IIssue.PROCESS_BUILDING_SAVEERROR);
 			}	
 		}
@@ -84,7 +85,8 @@ public abstract class BaseProcessManager implements  IProcessManager {
 				
 				service.insertLocations(locLst);	
 				
-			} catch (RoutingServiceException e) {			
+			} catch (RoutingServiceException e) {
+				e.printStackTrace();
 				throw new RoutingProcessException(null,e,IIssue.PROCESS_LOCATION_SAVEERROR);
 			}	
 		}
@@ -133,7 +135,8 @@ public abstract class BaseProcessManager implements  IProcessManager {
     	try {
 	    	RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();
 	    	proxy.saveLocations(lstOrders, RoutingServicesProperties.getDefaultRegion(), RoutingServicesProperties.getDefaultLocationType());
-    	} catch (RoutingServiceException e) {			
+    	} catch (RoutingServiceException e) {	
+    		e.printStackTrace();
 			throw new RoutingProcessException(null,e,IIssue.PROCESS_LOCATION_SAVEERROR);
 		} 
     }
@@ -148,7 +151,8 @@ public abstract class BaseProcessManager implements  IProcessManager {
 				schedulerId = (IRoutingSchedulerIdentity)tmpIterator.next();
 				proxy.purgeOrders(schedulerId);
 			}
-    	} catch (RoutingServiceException e) {			
+    	} catch (RoutingServiceException e) {	
+    		e.printStackTrace();
 			throw new RoutingProcessException(null,e,IIssue.PROCESS_PURGEORDERS_UNSUCCESSFUL);
 		} 
     }
@@ -168,7 +172,8 @@ public abstract class BaseProcessManager implements  IProcessManager {
 														, RoutingServicesProperties.getDefaultLocationType()
 														, RoutingServicesProperties.getDefaultOrderType()));
 			}
-    	} catch (RoutingServiceException e) {			
+    	} catch (RoutingServiceException e) {
+    		e.printStackTrace();
 			throw new RoutingProcessException(null,e,IIssue.PROCESS_BULKRESERVE_UNSUCCESSFUL);
 		} 
     	return unassignedOrders;
