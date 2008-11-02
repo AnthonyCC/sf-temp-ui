@@ -45,47 +45,50 @@ public class RouteInputDataManager extends RouteDataManager {
 		List inputDataList = fileManager.parseRouteFile(TransportationAdminProperties.getErpOrderLocationOutputFormat()
 														, new ByteArrayInputStream(inputInfo)
 														, ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, assembler);
-		
-		IProcessManager rootProcessMgr = getProcessChain();
-		ProcessContext context = new ProcessContext();
-		Iterator iterator = inputDataList.iterator();
-				
-		IOrderModel orderModel = null;
-		List outputDataList = new ArrayList();
-		
-		fillBatchInfo(context, inputDataList);
-		context.setDeliveryTypeCache(new HashMap());
-		context.addProcessParam(paramMap);
-		try {
-			rootProcessMgr.startProcess(context);
+		if(inputDataList != null && inputDataList.size() > 0) {
+			IProcessManager rootProcessMgr = getProcessChain();
+			ProcessContext context = new ProcessContext();
+			Iterator iterator = inputDataList.iterator();
+					
+			IOrderModel orderModel = null;
+			List outputDataList = new ArrayList();
 			
-			while(iterator.hasNext()) {
+			fillBatchInfo(context, inputDataList);
+			context.setDeliveryTypeCache(new HashMap());
+			context.addProcessParam(paramMap);
+			try {
+				rootProcessMgr.startProcess(context);
 				
-				orderModel = (IOrderModel)iterator.next();				
-				context.setDataModel(orderModel);
-				rootProcessMgr.process(context);
-				context.addOrder(context.getDataModel());
-				outputDataList.add(context.getDataModel());
+				while(iterator.hasNext()) {
+					
+					orderModel = (IOrderModel)iterator.next();				
+					context.setDataModel(orderModel);
+					rootProcessMgr.process(context);
+					context.addOrder(context.getDataModel());
+					outputDataList.add(context.getDataModel());
+				}
+				
+				Set sessionIds = (Set)rootProcessMgr.endProcess(context);
+				result.setAdditionalInfo(sessionIds.toString());
+			} catch (RoutingProcessException routExp) {
+				result.addError(routExp.getIssueMessage());
 			}
 			
-			Set sessionIds = (Set)rootProcessMgr.endProcess(context);
-			result.setAdditionalInfo(sessionIds.toString());
-		} catch (RoutingProcessException routExp) {
-			result.addError(routExp.getIssueMessage());
+			fileManager.generateRouteFile(TransportationAdminProperties.getRoutingOrderInputFormat()
+											, result.getOutputFile1(), ROW_IDENTIFIER,ROW_BEAN_IDENTIFIER
+											, outputDataList, assembler);		
+			fileManager.generateRouteFile(TransportationAdminProperties.getRoutingLocationInputFormat()
+											, result.getOutputFile2(), ROW_IDENTIFIER,ROW_BEAN_IDENTIFIER
+											, outputDataList, assembler);
+			
+			fileManager.generateRouteFile(TransportationAdminProperties.getErrorFormat()
+											, result.getOutputFile3(), ROW_IDENTIFIER,ROW_BEAN_IDENTIFIER
+											, (List)context.getProcessInfo(), null);
+			
+			System.out.println(" ################### Process End >"+Calendar.getInstance().getTime());
+		} else {
+			result.addError("Invalid Routing Input File");
 		}
-		
-		fileManager.generateRouteFile(TransportationAdminProperties.getRoutingOrderInputFormat()
-										, result.getOutputFile1(), ROW_IDENTIFIER,ROW_BEAN_IDENTIFIER
-										, outputDataList, assembler);		
-		fileManager.generateRouteFile(TransportationAdminProperties.getRoutingLocationInputFormat()
-										, result.getOutputFile2(), ROW_IDENTIFIER,ROW_BEAN_IDENTIFIER
-										, outputDataList, assembler);
-		
-		fileManager.generateRouteFile(TransportationAdminProperties.getErrorFormat()
-										, result.getOutputFile3(), ROW_IDENTIFIER,ROW_BEAN_IDENTIFIER
-										, (List)context.getProcessInfo(), null);
-		
-		System.out.println(" ################### Process End >"+Calendar.getInstance().getTime());
 		return result;
 	}
 	

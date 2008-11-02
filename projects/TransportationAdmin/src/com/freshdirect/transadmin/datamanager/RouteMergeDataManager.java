@@ -24,14 +24,11 @@ public class RouteMergeDataManager extends RouteDataManager {
 
 		long time = System.currentTimeMillis();
 		
-		List zoneList = getZoneList(domainManagerService);
-		List zoneNumbers = getZoneNumbers(zoneList);
-		
 		String cutOff = (String)paramMap.get(IRoutingParamConstants.ROUTING_CUTOFF);
 		String outputFileName1 = TransportationAdminProperties.getRoutingOutputOrderFilename()+userName+time;
 		String outputFileName2 = TransportationAdminProperties.getRoutingOutputTruckFilename()+userName+time;
 		RoutingResult result = initResult(outputFileName1, outputFileName2, null);
-
+						
 		List orderDataList = fileManager.parseRouteFile(TransportationAdminProperties.getErpOrderInputFormat()
 				, new ByteArrayInputStream(inputInfo2), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER
 				, null);
@@ -39,12 +36,47 @@ public class RouteMergeDataManager extends RouteDataManager {
 		List truckDataList = fileManager.parseRouteFile(TransportationAdminProperties.getErpRouteInputFormat()
 				, new ByteArrayInputStream(inputInfo1), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER
 				, null);
-
-		updateRouteInfo(orderDataList, truckDataList);
-
+		
 		List fullDataList = fileManager.parseRouteFile(TransportationAdminProperties.getRoutingOrderRouteOutputFormat()
 				, new ByteArrayInputStream(inputInfo3), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER
 				, null);
+		
+		StringBuffer strBuf = new StringBuffer();
+		if(orderDataList == null || orderDataList.size() == 0) {
+			strBuf.append("Invalid Route Smart Order File");
+		}
+		
+		if(truckDataList == null || truckDataList.size() == 0) {
+			if(strBuf.length() > 0) {
+				strBuf.append(", ");
+			}
+			strBuf.append("Invalid Route Smart Truck File");
+		}
+		
+		if(fullDataList == null && fullDataList.size() == 0) {
+			if(strBuf.length() > 0) {
+				strBuf.append(", ");
+			}
+			strBuf.append("Invalid RoadNet Order/Truck File");
+		}
+		
+		if(strBuf.length() > 0) {
+			result.addError(strBuf.toString());
+		}
+				
+		if(result.getErrors() == null || result.getErrors().size() == 0) {
+			processRoutingMerge(result, cutOff, orderDataList, truckDataList, fullDataList, domainManagerService);
+		}
+				
+		return result;
+	}
+	
+	private void processRoutingMerge(RoutingResult result, String cutOff, List orderDataList, List truckDataList, 
+													List fullDataList, DomainManagerI domainManagerService) {
+		List zoneList = getZoneList(domainManagerService);
+		List zoneNumbers = getZoneNumbers(zoneList);
+		
+		updateRouteInfo(orderDataList, truckDataList);
 		
 		RouteGenerationResult routeGenResult = generateRouteNumber(fullDataList, cutOff, domainManagerService);		
 		fullDataList = routeGenResult.getRouteInfos();		
@@ -92,7 +124,7 @@ public class RouteMergeDataManager extends RouteDataManager {
 			errorList.add(missingZones+ " are missing");
 			result.setErrors(errorList);
 		}
-		return result;
+		
 	}
 	
 	private List getZoneList(DomainManagerI domainManagerService) {

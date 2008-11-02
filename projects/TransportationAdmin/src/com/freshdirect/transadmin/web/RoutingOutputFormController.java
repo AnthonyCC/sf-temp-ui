@@ -61,30 +61,37 @@ public class RoutingOutputFormController extends BaseFormController {
 		    RoutingResult result = manager.process(bytes, null, null, com.freshdirect.transadmin.security.SecurityManager.getUserName(request)
 		    											, paramMap, getDomainManagerService());
 		    
-		    bean.setOutputFile1(result.getOutputFile1());
-		    bean.setOutputFile2(result.getOutputFile2());
-		    bean.setOutputFile3(result.getOutputFile3());
-		    		    
-		    List errorList = new ArrayList();
-		    ModelAndView mav = new ModelAndView(getSuccessView(), errors.getModel());
-			mav.getModel().put(this.getCommandName(), command);	
-			mav.getModel().putAll(referenceData(request));
-			
-			if("X".equalsIgnoreCase(bean.getForce())) {
-				try {
-					this.getDomainManagerService().saveEntityList(result.getRouteNoSaveInfos());
-				} catch(Exception e) {
-					e.printStackTrace();
-					errorList.add(this.getMessage("app.actionmessage.131", new Object[]{}));
+		    List errorList = result.getErrors();
+		    
+		    if(errorList == null || errorList.isEmpty()) {
+			    bean.setOutputFile1(result.getOutputFile1());
+			    bean.setOutputFile2(result.getOutputFile2());
+			    bean.setOutputFile3(result.getOutputFile3());
+			    		    
+			    errorList = new ArrayList();
+			    
+				
+				if("X".equalsIgnoreCase(bean.getForce())) {
+					try {
+						this.getDomainManagerService().saveEntityList(result.getRouteNoSaveInfos());
+					} catch(Exception e) {
+						e.printStackTrace();
+						errorList.add(this.getMessage("app.actionmessage.131", new Object[]{}));
+					}
 				}
-			}
-			
-			if(errorList == null || errorList.isEmpty()) {
-				saveMessage(request, getMessage("app.actionmessage.114", new Object[] { }));
-			} else {
+				
+				if(errorList == null || errorList.isEmpty()) {
+					saveMessage(request, getMessage("app.actionmessage.114", new Object[] { }));
+				} else {
+					saveErrorMessage(request, errorList);
+				}
+		    }  else {
 				saveErrorMessage(request, errorList);
 			}
 			
+			ModelAndView mav = new ModelAndView(getSuccessView(), errors.getModel());
+			mav.getModel().put(this.getCommandName(), command);	
+			mav.getModel().putAll(referenceData(request));
 			
 			return mav;
 		  }

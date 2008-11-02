@@ -31,18 +31,22 @@ public class RouteOutputDataManager extends RouteDataManager  {
 		List inputDataList = fileManager.parseRouteFile(TransportationAdminProperties.getRoutingOrderRouteOutputFormat()
 												, new ByteArrayInputStream(inputInfo), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER
 												, null);
-		RouteGenerationResult routeGenResult = generateRouteNumber(inputDataList, cutOff, domainManagerService);
-		
-		inputDataList = routeGenResult.getRouteInfos();
-		
-		result.setRouteNoSaveInfos(routeGenResult.getRouteNoSaveInfos());
-				
-		fileManager.generateRouteFile(TransportationAdminProperties.getErpOrderInputFormat()
-										, result.getOutputFile1(), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, inputDataList
-										, null);
-		fileManager.generateRouteFile(TransportationAdminProperties.getErpRouteInputFormat()
-										, result.getOutputFile2(), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, inputDataList
-										, null);
+		if(inputDataList != null && inputDataList.size() > 0) {
+			RouteGenerationResult routeGenResult = generateRouteNumber(inputDataList, cutOff, domainManagerService);
+			
+			inputDataList = routeGenResult.getRouteInfos();
+			
+			result.setRouteNoSaveInfos(routeGenResult.getRouteNoSaveInfos());
+					
+			fileManager.generateRouteFile(TransportationAdminProperties.getErpOrderInputFormat()
+											, result.getOutputFile1(), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, inputDataList
+											, null);
+			fileManager.generateRouteFile(TransportationAdminProperties.getErpRouteInputFormat()
+											, result.getOutputFile2(), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, inputDataList
+											, null);
+		}  else {
+			result.addError("Invalid Routing Output File");
+		}
 		return result;
 	}
 	
