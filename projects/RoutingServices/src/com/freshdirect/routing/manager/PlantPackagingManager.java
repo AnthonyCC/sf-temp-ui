@@ -10,12 +10,13 @@ import com.freshdirect.routing.constants.EnumProcessType;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IPackagingModel;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
+import com.freshdirect.routing.service.exception.RoutingProcessException;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.PlantServiceProxy;
 
 public class PlantPackagingManager extends BaseProcessManager {
 
-	public void processRequest(ProcessContext request) {		
+	public void processRequest(ProcessContext request) throws RoutingProcessException   {		
 		
 		PlantServiceProxy proxy = new PlantServiceProxy();
 		try {

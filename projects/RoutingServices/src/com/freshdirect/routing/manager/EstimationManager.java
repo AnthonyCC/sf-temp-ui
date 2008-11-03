@@ -6,6 +6,7 @@ import com.freshdirect.routing.model.IDeliveryModel;
 import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
+import com.freshdirect.routing.service.exception.RoutingProcessException;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
 import com.freshdirect.routing.util.RoutingServicesProperties;
@@ -13,7 +14,7 @@ import com.freshdirect.routing.util.RoutingServicesProperties;
 
 public class EstimationManager extends BaseProcessManager {
 
-	public void processRequest(ProcessContext request) {
+	public void processRequest(ProcessContext request) throws RoutingProcessException  {
 
 		IServiceTimeScenarioModel scenario = request.getRoutingScenario();
 		DeliveryServiceProxy proxy = new DeliveryServiceProxy();

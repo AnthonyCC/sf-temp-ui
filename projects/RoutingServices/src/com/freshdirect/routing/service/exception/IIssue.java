@@ -3,6 +3,7 @@ package com.freshdirect.routing.service.exception;
 public interface IIssue {
 	
 	public final static String UNDEFINED = "UNDEFINED";
+	public final static String EMPTY = "EMPTY";
 	public final static String PROCESS_SCENARIO_NOTFOUND = "ISSUE001";
 	public final static String PROCESS_ZONEINFO_NOTFOUND = "ISSUE002";
 	public final static String PROCESS_BUILDING_SAVEERROR = "ISSUE003";
@@ -19,4 +20,7 @@ public interface IIssue {
 	public final static String PROCESS_ADDRESSSTANDARDIZE_UNSUCCESSFUL = "ISSUE014";
 	public final static String PROCESS_PURGEORDERS_UNSUCCESSFUL = "ISSUE015";
 	public final static String PROCESS_BULKRESERVE_UNSUCCESSFUL = "ISSUE016";
+	public final static String PROCESS_SENDROUTES_UNSUCCESSFUL = "ISSUE017";
+	public final static String PROCESS_SENDUNASSIGNED_UNSUCCESSFUL = "ISSUE018";
+	public final static String DATEPARSE_ERROR = "ISSUE019";
 }

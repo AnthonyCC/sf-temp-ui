@@ -8,13 +8,14 @@ import com.freshdirect.routing.constants.EnumProcessType;
 import com.freshdirect.routing.model.IBuildingModel;
 import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IOrderModel;
+import com.freshdirect.routing.service.exception.RoutingProcessException;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
 import com.freshdirect.routing.util.RoutingUtil;
 
 public class GeographyManager extends BaseProcessManager {
 
-	public void processRequest(ProcessContext request) {
+	public void processRequest(ProcessContext request) throws RoutingProcessException  {
 		
 		GeographyServiceProxy proxy = new GeographyServiceProxy();		
 		ILocationModel locModel = request.getLocationInfo();

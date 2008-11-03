@@ -9,5 +9,9 @@ public class RoutingServiceException extends RoutingBaseException  {
 	public RoutingServiceException(String msg, Exception e, String id) {
 	      super(msg, e, id);	      
 	      this.issueId = id;
-	   }
+	}
+	
+	public String getIssueMessage() {
+		   return Issue.getMessage(issueId)+(this.getMessage() != null ? " "+this.getMessage() :"");
+	 }
 }

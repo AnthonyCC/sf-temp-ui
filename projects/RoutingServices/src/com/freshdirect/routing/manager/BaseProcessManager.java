@@ -19,6 +19,7 @@ import com.freshdirect.routing.model.RoutingSchedulerIdentity;
 import com.freshdirect.routing.service.IGeographyService;
 import com.freshdirect.routing.service.RoutingServiceLocator;
 import com.freshdirect.routing.service.exception.IIssue;
+import com.freshdirect.routing.service.exception.Issue;
 import com.freshdirect.routing.service.exception.RoutingProcessException;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
@@ -31,7 +32,13 @@ import com.freshdirect.routing.util.RoutingServicesProperties;
 public abstract class BaseProcessManager implements  IProcessManager {
 	
 	protected IProcessManager successor;
-
+	
+	private final String ROUTING_SUCCESS = "Routing Success";
+			
+	private final String SENDROUTES_SUCCESS = "Send Routes to RoadNet Success";
+	
+	private final String SEPARATOR = "; ";
+		
     public void setSuccessor(IProcessManager successor){
         this.successor = successor;
     }
@@ -160,10 +167,10 @@ public abstract class BaseProcessManager implements  IProcessManager {
     private Map schedulerBulkReserveOrders(Set schedulerIdLst, Map orderMappedLst) throws  RoutingProcessException {
     	
     	Map unassignedOrders = new HashMap();
+    	IRoutingSchedulerIdentity schedulerId = null;
     	try {
 	    	RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();
-	    	Iterator tmpIterator = schedulerIdLst.iterator();
-	    	IRoutingSchedulerIdentity schedulerId = null;
+	    	Iterator tmpIterator = schedulerIdLst.iterator();	    	
 			while(tmpIterator.hasNext()) {
 				schedulerId = (IRoutingSchedulerIdentity)tmpIterator.next();
 				unassignedOrders.put(schedulerId, proxy.schedulerBulkReserveOrder(schedulerId
@@ -174,41 +181,45 @@ public abstract class BaseProcessManager implements  IProcessManager {
 			}
     	} catch (RoutingServiceException e) {
     		e.printStackTrace();
-			throw new RoutingProcessException(null,e,IIssue.PROCESS_BULKRESERVE_UNSUCCESSFUL);
+			throw new RoutingProcessException(getErrorMessage("", schedulerId.getArea())
+													,e,IIssue.PROCESS_BULKRESERVE_UNSUCCESSFUL);
 		} 
     	return unassignedOrders;
     }
     
     private Map sendRoutesToRoadNet(Set schedulerIdLst, String userId, String currentTime) throws  RoutingProcessException {    	
     	Map sessionDescriptionMap = new HashMap();
+    	IRoutingSchedulerIdentity schedulerId = null;
     	try {
 	    	RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();
-	    	Iterator tmpIterator = schedulerIdLst.iterator();
-	    	IRoutingSchedulerIdentity schedulerId = null;
+	    	Iterator tmpIterator = schedulerIdLst.iterator();	    	
 	    	String sessionDescription = null;
 			while(tmpIterator.hasNext()) {
 				schedulerId = (IRoutingSchedulerIdentity)tmpIterator.next();
-				sessionDescription = userId+"_"+RoutingDateUtil.formatPlain(schedulerId.getDeliveryDate())+"_"+currentTime;
+				sessionDescription = userId+"_"+RoutingDateUtil.formatPlain(schedulerId.getDeliveryDate())+"_"+currentTime;				
 				System.out.println(schedulerId+"=="+sessionDescription);
 				proxy.sendRoutesToRoadNet(schedulerId, sessionDescription);
 				sessionDescriptionMap.put(schedulerId, sessionDescription);				
 			}
     	} catch (RoutingServiceException e) {	
     		e.printStackTrace();
-			throw new RoutingProcessException(null,e,IIssue.PROCESS_BULKRESERVE_UNSUCCESSFUL);
+    		StringBuffer strBuf = new StringBuffer();
+    		strBuf.append(this.ROUTING_SUCCESS).append(SEPARATOR);
+    		strBuf.append(this.getErrorMessage(Issue.getMessage(IIssue.PROCESS_SENDROUTES_UNSUCCESSFUL), schedulerId.getArea()));
+    		throw new RoutingProcessException(strBuf.toString(),e,IIssue.EMPTY);
 		} catch (ParseException parseExp) {
 			parseExp.printStackTrace();
-			throw new RoutingProcessException(null,parseExp,IIssue.PROCESS_BULKRESERVE_UNSUCCESSFUL);
+			throw new RoutingProcessException(Issue.getMessage(IIssue.DATEPARSE_ERROR),parseExp,IIssue.PROCESS_SENDROUTES_UNSUCCESSFUL);
 		}    	
     	return sessionDescriptionMap;
     }
     
     private Map saveUnassignedToRoadNet(Map sessionDescriptionMap, Map unassignedOrders) throws  RoutingProcessException {    	
     	Map saveUnassingedFailed = new HashMap();
+    	IRoutingSchedulerIdentity schedulerId = null;
     	try {
 	    	RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();
-	    	Iterator tmpIterator = sessionDescriptionMap.keySet().iterator();
-	    	IRoutingSchedulerIdentity schedulerId = null;
+	    	Iterator tmpIterator = sessionDescriptionMap.keySet().iterator();	    	
 	    	String sessionDescription = null;
 	    	List tmpUnassignedLst = null;
 			while(tmpIterator.hasNext()) {
@@ -224,7 +235,11 @@ public abstract class BaseProcessManager implements  IProcessManager {
 			}
     	} catch (RoutingServiceException e) {	
     		e.printStackTrace();
-			throw new RoutingProcessException(null,e,IIssue.PROCESS_BULKRESERVE_UNSUCCESSFUL);
+    		StringBuffer strBuf = new StringBuffer();
+    		strBuf.append(this.ROUTING_SUCCESS).append(SEPARATOR);
+    		strBuf.append(this.SENDROUTES_SUCCESS).append(SEPARATOR);
+    		strBuf.append(this.getErrorMessage(Issue.getMessage(IIssue.PROCESS_SENDUNASSIGNED_UNSUCCESSFUL), schedulerId.getArea()));
+			throw new RoutingProcessException(strBuf.toString(),e,IIssue.PROCESS_BULKRESERVE_UNSUCCESSFUL);
 		}    	
     	return saveUnassingedFailed;
     }
@@ -302,7 +317,7 @@ public abstract class BaseProcessManager implements  IProcessManager {
     	return schedulerId;
     }
 
-    abstract public void processRequest(ProcessContext request);
+    abstract public void processRequest(ProcessContext request) throws RoutingProcessException ;
     
     private IServiceTimeScenarioModel loadServiceTimeScenario(Map processParam) throws RoutingProcessException {
     	
@@ -338,6 +353,10 @@ public abstract class BaseProcessManager implements  IProcessManager {
     	} 
     	    	
     	return model;
+    }
+    
+    private String getErrorMessage(String message, String areaCode) {
+    	return message+" (Area: "+areaCode+")";
     }
     
     private String getCurrentTime() {

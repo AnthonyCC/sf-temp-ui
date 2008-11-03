@@ -9,10 +9,8 @@ public class RoutingBaseException extends Exception {
 	/** the nested exception */	
 	private Exception nestedException = null;
 	
-protected String issueId;
-	
-	
-	   	
+	protected String issueId;
+  	
 	/**
 	 * Default constructor.
 	 */	

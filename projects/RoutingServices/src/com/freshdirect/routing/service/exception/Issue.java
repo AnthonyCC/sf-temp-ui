@@ -9,6 +9,7 @@ public class Issue implements IIssue {
 	
 	static {
 		messages.put(UNDEFINED, "Unknown error occured");
+		messages.put(EMPTY, "");
 		messages.put(PROCESS_SCENARIO_NOTFOUND, "Unable to load scenario or no default scenario defined");
 		messages.put(PROCESS_ZONEINFO_NOTFOUND,"Unable to load zone information");
 		messages.put(PROCESS_BUILDING_SAVEERROR, "Unable to save building information");
@@ -25,7 +26,10 @@ public class Issue implements IIssue {
 		messages.put(PROCESS_STATES_NOTFOUND,"Unable to load states information");
 		messages.put(PROCESS_ADDRESSSTANDARDIZE_UNSUCCESSFUL,"Unable to standardize address information");
 		messages.put(PROCESS_PURGEORDERS_UNSUCCESSFUL,"Unable to purge orders in routing system");
-		messages.put(PROCESS_BULKRESERVE_UNSUCCESSFUL,"Unable to bulk reserve orders in routing system");
+		messages.put(PROCESS_BULKRESERVE_UNSUCCESSFUL,"Routing Failed");
+		messages.put(PROCESS_SENDROUTES_UNSUCCESSFUL,"Send Routes to RoadNet Failed");
+		messages.put(PROCESS_SENDUNASSIGNED_UNSUCCESSFUL,"Send Unassigned to RoadNet Failed");
+		messages.put(DATEPARSE_ERROR,"Date Parse Error");
 	}
 	
 	public static String getMessage(String id) {
