@@ -38,12 +38,18 @@ public class RoutingDataEncoder {
 			result = new Location[lstOrders.size()];
 			Iterator tmpIterator = lstOrders.iterator();
 			IOrderModel orderModel = null;			
+			
 			int intCount = 0;
 			while(tmpIterator.hasNext()) {
 				orderModel = (IOrderModel)tmpIterator.next();
 				if(orderModel != null && orderModel.getDeliveryInfo() != null 
-											&& orderModel.getDeliveryInfo().getDeliveryLocation() != null) {					
-					result[intCount++] = encodeLocation(orderModel.getDeliveryInfo().getDeliveryLocation(), region, locationType);
+											&& orderModel.getDeliveryInfo().getDeliveryLocation() != null) {
+					String areaCode = null;
+					if(orderModel.getDeliveryInfo().getDeliveryZone() != null) {
+						areaCode = orderModel.getDeliveryInfo().getDeliveryZone().getArea();						
+					} 
+					result[intCount++] = encodeLocation(orderModel.getDeliveryInfo().getDeliveryLocation()
+															, region, locationType, areaCode);
 				}
 			}
 		}
@@ -138,14 +144,16 @@ public class RoutingDataEncoder {
 		return order;
 	}
 	
-	public static Location encodeLocation(ILocationModel locModel, String region, String locationType) {
+	public static Location encodeLocation(ILocationModel locModel, String region
+											, String locationType, String areaCode) {
 		
 		Location location = new Location();
 		location.setLocationIdentity(encodeLocationIdentity(region,locationType,locModel.getLocationId()));
 		location.setLatitude((int)(getVal(locModel.getGeographicLocation().getLatitude())*1000000));
 		location.setLongitude((int)(getVal(locModel.getGeographicLocation().getLongitude())*1000000));
 		
-		//location.setZoneID(delModel.getDeliveryZone().getZoneNumber());
+		
+		location.setZoneID(areaCode);		
 		location.setTimeZone(TimeZoneValue.fromString(TimeZoneValue._tmzNone));
 				
 		Address address = new Address();
