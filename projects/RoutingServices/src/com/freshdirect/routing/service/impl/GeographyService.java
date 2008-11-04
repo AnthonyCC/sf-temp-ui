@@ -143,8 +143,8 @@ public class GeographyService implements IGeographyService {
 
 					result.setLatitude(""+(double)(deliveryLocation.getLatitude()/1000000.0));
 					result.setLongitude(""+(double)(deliveryLocation.getLongitude()/1000000.0));
-					result.setConfidence("gcLow");
-					result.setQuality("grManual");
+					result.setConfidence(EnumGeocodeConfidenceType.LOW.getName());
+					result.setQuality(EnumGeocodeQualityType.MANUAL.getName());
 				}
 
 			}
@@ -175,7 +175,8 @@ public class GeographyService implements IGeographyService {
 						if(locModel != null) {					
 							result[intCount++] = RoutingDataEncoder.encodeLocation(locModel
 																	, RoutingServicesProperties.getDefaultRegion()
-																	, RoutingServicesProperties.getDefaultLocationType());
+																	, RoutingServicesProperties.getDefaultLocationType()
+																	, null);
 						}
 					}
 				}
