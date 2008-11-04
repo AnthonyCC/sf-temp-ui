@@ -164,7 +164,7 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 		    	 locationQ.append(GET_LOCATION_QRY);
 		    	 
 		    	 if (hasApartment) {
-		    		 locationQ.append("AND dl.APARTMENT = REPLACE(REPLACE(UPPER(?),'-'),' ') ");
+		    		 locationQ.append("AND UPPER(dl.APARTMENT) = REPLACE(REPLACE(UPPER(?),'-'),' ') ");
 		 		 } else {
 		 			locationQ.append("AND dl.APARTMENT IS NULL ");
 		 		 }
