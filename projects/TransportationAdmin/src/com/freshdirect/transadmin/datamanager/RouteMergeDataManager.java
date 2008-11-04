@@ -18,8 +18,13 @@ import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
 
 public class RouteMergeDataManager extends RouteDataManager {
-
-	public RoutingResult process(byte[] inputInfo1,byte[] inputInfo2, byte[] inputInfo3,
+	
+	private final String INVALID_RSORDERFILE = "Invalid Route Smart Order File";
+	private final String INVALID_RSROUTEFILE = "Invalid Route Smart Truck File";
+	private final String INVALID_RSORDERROUTEFILE = "Invalid Route Smart Order/Truck File";
+	private final String INVALID_ORDERROUTEFILE = "Invalid RoadNet Order/Truck File";
+	
+	public RoutingResult process(byte[] inputInfo1, byte[] inputInfo2, byte[] inputInfo3,
 			String userName, Map paramMap, DomainManagerI domainManagerService) throws IOException  {
 
 		long time = System.currentTimeMillis();
@@ -36,28 +41,29 @@ public class RouteMergeDataManager extends RouteDataManager {
 		List truckDataList = fileManager.parseRouteFile(TransportationAdminProperties.getErpRouteInputFormat()
 				, new ByteArrayInputStream(inputInfo1), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER
 				, null);
-		
+						
 		List fullDataList = fileManager.parseRouteFile(TransportationAdminProperties.getRoutingOrderRouteOutputFormat()
 				, new ByteArrayInputStream(inputInfo3), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER
 				, null);
 		
+				
 		StringBuffer strBuf = new StringBuffer();
 		if(orderDataList == null || orderDataList.size() == 0) {
-			strBuf.append("Invalid Route Smart Order File");
+			strBuf.append(INVALID_RSORDERFILE);
 		}
 		
 		if(truckDataList == null || truckDataList.size() == 0) {
 			if(strBuf.length() > 0) {
 				strBuf.append(", ");
 			}
-			strBuf.append("Invalid Route Smart Truck File");
+			strBuf.append(INVALID_RSROUTEFILE);
 		}
 		
-		if(fullDataList == null && fullDataList.size() == 0) {
+		if(fullDataList == null || fullDataList.size() == 0) {
 			if(strBuf.length() > 0) {
 				strBuf.append(", ");
 			}
-			strBuf.append("Invalid RoadNet Order/Truck File");
+			strBuf.append(INVALID_ORDERROUTEFILE);
 		}
 		
 		if(strBuf.length() > 0) {
@@ -65,19 +71,22 @@ public class RouteMergeDataManager extends RouteDataManager {
 		}
 				
 		if(result.getErrors() == null || result.getErrors().size() == 0) {
-			processRoutingMerge(result, cutOff, orderDataList, truckDataList, fullDataList, domainManagerService);
+			boolean updateResult = updateRouteInfo(orderDataList, truckDataList);
+			if(updateResult) {
+				processRoutingMerge(result, cutOff, orderDataList, fullDataList, domainManagerService);
+			} else {
+				result.addError(INVALID_RSORDERROUTEFILE);
+			}
 		}
 				
 		return result;
 	}
 	
-	private void processRoutingMerge(RoutingResult result, String cutOff, List orderDataList, List truckDataList, 
+	private void processRoutingMerge(RoutingResult result, String cutOff, List orderDataList, 
 													List fullDataList, DomainManagerI domainManagerService) {
 		List zoneList = getZoneList(domainManagerService);
 		List zoneNumbers = getZoneNumbers(zoneList);
-		
-		updateRouteInfo(orderDataList, truckDataList);
-		
+				
 		RouteGenerationResult routeGenResult = generateRouteNumber(fullDataList, cutOff, domainManagerService);		
 		fullDataList = routeGenResult.getRouteInfos();		
 		result.setRouteNoSaveInfos(routeGenResult.getRouteNoSaveInfos());
@@ -203,13 +212,13 @@ public class RouteMergeDataManager extends RouteDataManager {
 		return dataMap;
 	}
 
-	private void updateRouteInfo(List orderDataList, List truckDataList) {
+	private boolean updateRouteInfo(List orderDataList, List truckDataList) {
 		
 		Map routeMap = new HashMap();		
-		OrderRouteInfoModel tmpRouteInfo = null;
-		OrderRouteInfoModel tmpOrderInfo = null;
+				
 		String routeId = null;
 		if(truckDataList != null) {
+			OrderRouteInfoModel tmpRouteInfo = null;
 			Iterator iterator = truckDataList.iterator();
 			tmpRouteInfo = (OrderRouteInfoModel)iterator.next();
 			routeId = tmpRouteInfo.getRouteId();
@@ -219,16 +228,22 @@ public class RouteMergeDataManager extends RouteDataManager {
 		}	
 		
 		if(orderDataList != null) {
+			OrderRouteInfoModel tmpRouteInfo = null;
+			OrderRouteInfoModel tmpOrderInfo = null;
 			Iterator iterator = orderDataList.iterator();
 			tmpOrderInfo = (OrderRouteInfoModel)iterator.next();
-			routeId = tmpRouteInfo.getRouteId();
+			routeId = tmpOrderInfo.getRouteId();
 			if(routeMap.containsKey(routeId)) {
 				tmpRouteInfo = (OrderRouteInfoModel)routeMap.get(routeId);
 				tmpOrderInfo.setPlant(tmpRouteInfo.getPlant());
 				tmpOrderInfo.setDeliveryDate(tmpRouteInfo.getDeliveryDate());
 				tmpOrderInfo.setDeliveryModel(tmpRouteInfo.getDeliveryModel());
 				tmpOrderInfo.setRouteStartTime(tmpRouteInfo.getRouteStartTime());
+			} else {
+				return false;
 			}
-		}	
-	}
+		}
+		return true;
+	}	
+	
 }
