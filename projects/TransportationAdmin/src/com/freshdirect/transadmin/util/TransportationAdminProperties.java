@@ -39,6 +39,8 @@ public class TransportationAdminProperties {
 	private final static String PROP_TRANSPORTATION_FILENAME_ROUTINGOUTTRUCK		= "transportation.filename.routingouttruck";
 	
 	
+	private final static String PROP_TRANSPORTATION_FILENAME_EXTGEOINLOCDB		= "transportation.filename.extgeolocdb";
+		
 	
 	private final static String PROP_TRANSPORTATION_FORMAT_ERROR		= "transportation.format.error";
 	
@@ -55,6 +57,8 @@ public class TransportationAdminProperties {
 	private final static String PROP_TRANSPORTATION_DEFAULT_COUNTRY		= "transportation.default.country";
 	
 	private final static String PROP_TRANSPORTATION_DEFAULT_MAPKEY		= "transportation.default.mapkey";
+	
+	private final static String PROP_TRANSPORTATION_FILE_SEPARATOR		= "transportation.default.fileseparator";
 	
 	
 	
@@ -101,7 +105,9 @@ public class TransportationAdminProperties {
 		
 		defaults.put(PROP_TRANSPORTATION_FORMAT_ERROR,"com/freshdirect/transadmin/datamanager/routingerrormapping.xml");
 		
-				
+		defaults.put(PROP_TRANSPORTATION_FILENAME_EXTGEOINLOCDB,"com/freshdirect/transadmin/datamanager/externalgeocodes_in_locationdb.xml");
+		
+		defaults.put(PROP_TRANSPORTATION_FILE_SEPARATOR,"\r\n");
 		refresh();		
 	}
 
@@ -113,7 +119,13 @@ public class TransportationAdminProperties {
 		refresh(false);
 	}
 	
+    public static String getFileSeparator() {
+    	return get(PROP_TRANSPORTATION_FILE_SEPARATOR);
+    }
     
+    public static String getExtGeoLocationDBInputFormat() {
+    	return get(PROP_TRANSPORTATION_FILENAME_EXTGEOINLOCDB);
+    }
     
     public static String getErpOrderLocationOutputFormat() {
     	return get(PROP_TRANSPORTATION_FORMAT_ORDERLOCATION_SAPOUT);

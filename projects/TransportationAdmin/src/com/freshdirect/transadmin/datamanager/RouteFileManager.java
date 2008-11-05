@@ -19,6 +19,7 @@ import com.freshdirect.transadmin.datamanager.parser.errors.FlatwormCreatorExcep
 import com.freshdirect.transadmin.datamanager.parser.errors.FlatwormInputLineLengthException;
 import com.freshdirect.transadmin.datamanager.parser.errors.FlatwormInvalidRecordException;
 import com.freshdirect.transadmin.datamanager.parser.errors.FlatwormUnsetFieldValueException;
+import com.freshdirect.transadmin.util.TransportationAdminProperties;
 
 
 
@@ -62,7 +63,7 @@ public class RouteFileManager implements IRouteFileManager {
 			
         try {
         	FileCreator creator = new FileCreator(configurationPath, outputFile);
-        	creator.setRecordSeperator("\n");
+        	creator.setRecordSeperator(TransportationAdminProperties.getFileSeparator());
         	creator.open();
         	
         	if(data != null) {
@@ -87,8 +88,7 @@ public class RouteFileManager implements IRouteFileManager {
         	ioExp.printStackTrace();  
         } 
         return false;
-	}
-	
+	}	
 		
 	
 }

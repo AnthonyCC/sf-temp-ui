@@ -42,7 +42,7 @@ public class RouteOutputDataManager extends RouteDataManager  {
 											, result.getOutputFile1(), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, inputDataList
 											, null);
 			fileManager.generateRouteFile(TransportationAdminProperties.getErpRouteInputFormat()
-											, result.getOutputFile2(), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, inputDataList
+											, result.getOutputFile2(), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, filterRoutesFromOrders(inputDataList)
 											, null);
 		}  else {
 			result.addError("Invalid Routing Output File");

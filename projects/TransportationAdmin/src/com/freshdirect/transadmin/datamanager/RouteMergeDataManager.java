@@ -125,7 +125,7 @@ public class RouteMergeDataManager extends RouteDataManager {
 					, result.getOutputFile1(), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, mergeDataList
 					, null);
 			fileManager.generateRouteFile(TransportationAdminProperties.getErpRouteInputFormat()
-					, result.getOutputFile2(), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, mergeDataList
+					, result.getOutputFile2(), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, filterRoutesFromOrders(mergeDataList)
 					, null);
 		} else {
 			result.setOutputFile1(null);

@@ -147,6 +147,7 @@ public class RouteDataManager {
 							, new ArrayList(domainManagerService
 											.getRouteNumberGroup(getRouteDate(routeId.getRouteDate())
 													, null, routeId.getAreaCode())));
+		
 		return routeNoGenModel;
 	}
 	
@@ -272,6 +273,26 @@ public class RouteDataManager {
 			}
 		}
 		return areaMapping;
+	}
+	
+	protected List filterRoutesFromOrders(List orderDataList) {
+		List routeIds = new ArrayList();		
+		List routes = new ArrayList();
+		
+		String routeId = null;
+		if(orderDataList != null) {
+			OrderRouteInfoModel tmpRouteInfo = null;
+			Iterator iterator = orderDataList.iterator();
+			while(iterator.hasNext()) {
+				tmpRouteInfo = (OrderRouteInfoModel)iterator.next();
+				routeId = tmpRouteInfo.getRouteId();
+				if(!routeIds.contains(routeId)) {
+					routes.add(tmpRouteInfo);
+					routeIds.add(routeId);
+				} 
+			}
+		}
+		return routes;
 	}
 	
 	private String getRouteDate(Date routeDate) {
