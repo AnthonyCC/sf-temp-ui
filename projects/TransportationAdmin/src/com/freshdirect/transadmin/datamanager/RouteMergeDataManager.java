@@ -87,7 +87,8 @@ public class RouteMergeDataManager extends RouteDataManager {
 		List zoneList = getZoneList(domainManagerService);
 		List zoneNumbers = getZoneNumbers(zoneList);
 				
-		RouteGenerationResult routeGenResult = generateRouteNumber(fullDataList, cutOff, domainManagerService);		
+		RouteGenerationResult routeGenResult = generateRouteNumber(fullDataList, cutOff, domainManagerService);	
+		
 		fullDataList = routeGenResult.getRouteInfos();		
 		result.setRouteNoSaveInfos(routeGenResult.getRouteNoSaveInfos());
 
@@ -144,10 +145,12 @@ public class RouteMergeDataManager extends RouteDataManager {
 		TrnArea tmpArea = null;
 		if(dataList != null) {
 			Iterator iterator = dataList.iterator();
-			tmpZone = (TrnZone)iterator.next();
-			tmpArea = tmpZone.getTrnArea();
-			if(tmpArea != null && "X".equalsIgnoreCase(tmpArea.getActive())) {
-				result.add(tmpZone);
+			while(iterator.hasNext()) {
+				tmpZone = (TrnZone)iterator.next();
+				tmpArea = tmpZone.getTrnArea();
+				if(tmpArea != null && "X".equalsIgnoreCase(tmpArea.getActive())) {
+					result.add(tmpZone);
+				}
 			}
 		}
 		return result;
@@ -220,10 +223,12 @@ public class RouteMergeDataManager extends RouteDataManager {
 		if(truckDataList != null) {
 			OrderRouteInfoModel tmpRouteInfo = null;
 			Iterator iterator = truckDataList.iterator();
-			tmpRouteInfo = (OrderRouteInfoModel)iterator.next();
-			routeId = tmpRouteInfo.getRouteId();
-			if(!routeMap.containsKey(routeId)) {
-				routeMap.put(routeId, tmpRouteInfo);
+			while(iterator.hasNext()) {
+				tmpRouteInfo = (OrderRouteInfoModel)iterator.next();
+				routeId = tmpRouteInfo.getRouteId();
+				if(!routeMap.containsKey(routeId)) {
+					routeMap.put(routeId, tmpRouteInfo);
+				}
 			}
 		}	
 		
@@ -231,16 +236,18 @@ public class RouteMergeDataManager extends RouteDataManager {
 			OrderRouteInfoModel tmpRouteInfo = null;
 			OrderRouteInfoModel tmpOrderInfo = null;
 			Iterator iterator = orderDataList.iterator();
-			tmpOrderInfo = (OrderRouteInfoModel)iterator.next();
-			routeId = tmpOrderInfo.getRouteId();
-			if(routeMap.containsKey(routeId)) {
-				tmpRouteInfo = (OrderRouteInfoModel)routeMap.get(routeId);
-				tmpOrderInfo.setPlant(tmpRouteInfo.getPlant());
-				tmpOrderInfo.setDeliveryDate(tmpRouteInfo.getDeliveryDate());
-				tmpOrderInfo.setDeliveryModel(tmpRouteInfo.getDeliveryModel());
-				tmpOrderInfo.setRouteStartTime(tmpRouteInfo.getRouteStartTime());
-			} else {
-				return false;
+			while(iterator.hasNext()) {
+				tmpOrderInfo = (OrderRouteInfoModel)iterator.next();
+				routeId = tmpOrderInfo.getRouteId();
+				if(routeMap.containsKey(routeId)) {
+					tmpRouteInfo = (OrderRouteInfoModel)routeMap.get(routeId);
+					tmpOrderInfo.setPlant(tmpRouteInfo.getPlant());
+					tmpOrderInfo.setDeliveryDate(tmpRouteInfo.getDeliveryDate());
+					tmpOrderInfo.setDeliveryModel(tmpRouteInfo.getDeliveryModel());
+					tmpOrderInfo.setRouteStartTime(tmpRouteInfo.getRouteStartTime());
+				} else {
+					return false;
+				}
 			}
 		}
 		return true;
