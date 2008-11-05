@@ -1,0 +1,23 @@
+
+## BASE
+classpath:/com/freshdirect/fdstore/hivemodule.xml
+#classpath:/com/freshdirect/fdstore/hivemodule-test.xml
+
+### RULES ENGINE
+
+classpath:/com/freshdirect/rules/hivemodule.xml
+classpath:/com/freshdirect/fdstore/rules/dlv/hivemodule-prd.xml
+classpath:/com/freshdirect/fdstore/rules/misc/hivemodule-prd.xml
+classpath:/com/freshdirect/fdstore/rules/echeck/hivemodule-prd.xml
+classpath:/com/freshdirect/fdstore/rules/referrer/hivemodule-prd.xml
+classpath:/com/freshdirect/fdstore/rules/promotion/hivemodule-prd.xml
+classpath:/com/freshdirect/ocf/hivemodule.xml
+
+### CMS
+## --- Use DB based store data ---
+#classpath:/com/freshdirect/cms/resource/CMSServiceConfig.xml
+## --- Use XML based store data
+classpath:/com/freshdirect/cms/resource/CMSServiceConfig_prd.xml
+
+# hive
+classpath:/com/freshdirect/cms/resource/hivemodule_erps.xml
