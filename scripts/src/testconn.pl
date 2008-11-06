@@ -1,3 +1,4 @@
+#!c:\perl\bin\perl
 use DBI;
 
 my $os = lc $^O;
