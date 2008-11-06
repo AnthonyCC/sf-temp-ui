@@ -1,56 +1,69 @@
 use DBI;
 
-use PerlConfig;
+use Getopt::Std;  
+getopts('hUp:', \ my %opts);    # -ptake arg.  Sets opt_* as a side effect.
+
+if($opts{h} ne ""){
+    print "usage: ", $pgm, " -f <infile> [-U] [-p <password>]\n where -U->update mode (build AND run sql script),\n", "<password> is database password. Other params are read from perl.cfg file\n";
+    exit 1;
+ }
+
 
 my $os = lc $^O;
-my $linux;
 
-my $configfile = 'perlscripts.linux.cfg';
+my $configfile;
+my $linux;
 if($os =~ m/mswin/){
-    $configfile = 'perlscripts.windows.cfg';
+    $configfile = '..\perlscripts.windows.cfg';
+    $islinux=0;
 }
+else{
+     $configfile = '../perlscripts.linux.cfg';
+    $islinux=1;
+}
+
 print "debug: configfile= ", $configfile, "\n"; 
 
+print "debug: islinux= $islinux\n";
+
+if($islinux){
+    $ENV{'ORACLE_HOME'}="/opt/fdbin/oracle/instantclient_11_1";
+    BEGIN {
+            push @INC,"../lib";
+           }
+    }
+else{
+        BEGIN {
+            push @INC,"..\lib";
+        }
+}
+
+use PerlConfig;
+use Removeattrs;
+ 
 my $pgm = lc $0;        #lc->convert to lowercase
 $pgm =~ s/\..*//;       #remove file extension
 
 my $cfg = new PerlConfig;
 
 $cfg->read($configfile) or die "Couldn't read Config file: $!";
-
-use Getopt::Std;
-
-getopts('hf:d:u:p:', \ my %opts);    # -ptake arg.  Sets opt_* as a side effect.
-
-if($opts{h} ne ""){
-print "usage: ", $pgm, " -f <infile> -d <database> -u <user> -p <password> \n  <infile> is sql script file name.\n";
-exit 0;
-}
  
+my $dbname = $cfg->get("$pgm.dbname");
+my $dbuser = $cfg->get("$pgm.dbuser");
+my $infile=$cfg->get("$pgm.infile");
 
-my $infile = $opts{f};
-my $dbname = $opts{d};   
-my $dbuser = $opts{u};
-my $pw = $opts{p};  
+my $pw   = $dbuser;
 
-if($dbname eq "") {
-    $dbname = $cfg->get("$pgm.dbname");
+if ($opts{p} ne ""){
+    $pw = $opts{p};
 }
-    
-if($dbuser eq "") {
-    $dbuser = $cfg->get("$pgm.dbuser");
-    $pw = $dbuser;
-}
- 
- if ($infile eq "" || $dbname eq "" || $dbuser eq "" || $pw eq "" ){
-    print "missing param(s). usage: ", $pgm, " -f <infile> -d <database> -u <user> -p <password> \n";
-    exit 0;
- }
- 
+
 print "debug: dbname= ", $dbname, "\n";
 print "debug: dbuser= ", $dbuser, "\n";
 print "debug: infile= ", $infile, "\n";
-#print "debug: password=" ,  $pw, "\n";  #avoid displaying password
+print "debug: password=" ,  $pw, "\n"; #avoid displaying password
+
+print "debug: trying DBI->connect('dbi:Oracle:$dbname', $dbuser, $pw)...\n";
 
 my $dbh  = DBI->connect("dbi:Oracle:$dbname", $dbuser, $pw, {AutoCommit => 1})
         or die "Couldn't connect to database: " . DBI->errstr;
@@ -63,24 +76,27 @@ my $cnt=0;
 
 open(FHIN, "<$infile") or die "Cannot open $file: $!";
 
-my @content = <FHIN>;
+do{
+    do{
+        $line = <FHIN>;
+        $sqlrec .= $line;
+    } until eof or $line =~ m/[;]/ ;
+     while($sqlrec =~ m/[\r\n;]$/) {      #remove trailing new line char(s) and semicolon
+          chop($sqlrec);
+       }
+         
+     print "debug: sqlrec= ", $sqlrec, "\n";
+     if ($sqlrec eq "" || $sqlrec =~ m/--/){     #ignore starting with '-'
+           $sqlrec = "";
+     }
+     else{     
+        $dbh->do($sqlrec) or die "Couldn't execute statement: " . $dbh->errstr;
+        $sqlrec = "";
+        $cnt++;   
+     }        
+}until eof ;
 
-foreach $sqlrec(@content) {
-    
-   while($sqlrec =~ m/[\n;]$/) {      #remove trailing new line char(s) and semicolon
-      chop($sqlrec);
-   }
-    
-   if ($sqlrec eq "" || $sqlrec =~ m/^-/){     #ignore starting with '-'
-       next;
-    } 
- 
-    print "debug: sqlrec= ", $sqlrec, "\n";    
-      
-    $dbh->do($sqlrec) or die "Couldn't execute statement: " . $dbh->errstr; 
-    
-    $cnt++; 
-}
+#
 
 close FHIN;
 
