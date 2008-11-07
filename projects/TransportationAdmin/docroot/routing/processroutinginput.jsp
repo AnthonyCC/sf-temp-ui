@@ -9,15 +9,15 @@
     <tmpl:put name='title' direct='true'>Process Routing File</tmpl:put>
 
 	<tmpl:put name='content' direct='true'>
-		<br/>	
+		<br/>			
 		<div align="center">			
 			<form method="post" enctype="multipart/form-data">				
 			<table width="100%" cellpadding="0" cellspacing="0" border="0">
 					<tr>
 						<td class="screentitle">Generate Input to Routing System</td>
-					</tr>
+					</tr>					
 					<tr>
-						<td class="screenmessages"><jsp:include page='/common/messages.jsp'/></td>
+						<td class="screenmessages"><jsp:include page='/common/messages.jsp'/></td>						
 					</tr>
 					
 					<tr>
@@ -60,20 +60,20 @@
 			                    
 			                   </td>
 						 	<td>&nbsp;</td>
-                			</tr>
+                			</tr>                			
 							<tr><td colspan="3">&nbsp;</td></tr>							
 							<tr>
 								<td> 
 									<spring:bind path="command.outputFile1">
 										<c:if test="${!empty status.value}">
-	                                		<a href='download.do?filePath=<c:out value="${status.value}"/>' >Order Info</a>                                                                
+	                                		<a href='<c:out value="${status.value}"/>' >Order Info</a>                                                                
 	                                	</c:if>	
                              		</spring:bind>
                              	</td>                             	
                              	<td> 
 									<spring:bind path="command.outputFile2">
 										<c:if test="${!empty status.value}">
-	                                		<a href='download.do?filePath=<c:out value="${status.value}"/>' >Location Info</a> 
+	                                		<a href='<c:out value="${status.value}"/>' >Location Info</a> 
                                 		</c:if>	                                                               
                              		</spring:bind>
                              	</td>
@@ -81,14 +81,15 @@
                              	<td> 
 									<spring:bind path="command.outputFile3">
 										<c:if test="${!empty status.value}">
-	                                		<a href='download.do?filePath=<c:out value="${status.value}"/>' >Process Result</a> 
+	                                		<a href='<c:out value="${status.value}"/>' >Process Result</a> 
                                 		</c:if>	                                                               
                              		</spring:bind>
                              	</td>
                             </tr>
+                            
 							<tr>
 							    <td colspan="3" align="center">
-								   <input type = "submit" value="&nbsp;Process&nbsp;"  />
+								   <input type = "submit" value="&nbsp;Process&nbsp;" />
 								</td>			
 							</tr>
 							</table>				
@@ -98,6 +99,5 @@
 				</table>			
 			</form>
 		 </div>
-		 
 	</tmpl:put>
 </tmpl:insert>

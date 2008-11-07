@@ -22,7 +22,7 @@ import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.LocationManagerI;
 import com.freshdirect.transadmin.web.model.FileUploadCommand;
 
-public class RoutingInputFormController extends BaseFormController {
+public class RoutingInputFormController extends BaseRoutingFormController {
 	
 	private LocationManagerI locationManagerService;
 	
@@ -68,7 +68,7 @@ public class RoutingInputFormController extends BaseFormController {
 		      Object command, BindException errors) throws ServletException, IOException
 		  {
 		    // cast the bean
-		    logger.info("FileUploadController -- executing onSubmit!");
+		    
 		    FileUploadCommand bean = (FileUploadCommand) command;
 		    //let's see if there's content there
 		    byte[] bytes = bean.getFile();
@@ -85,9 +85,9 @@ public class RoutingInputFormController extends BaseFormController {
 		       
 		    		    
 		    if(errorList == null || errorList.isEmpty()) {
-		    	bean.setOutputFile1(result.getOutputFile1());
-			    bean.setOutputFile2(result.getOutputFile2());
-			    bean.setOutputFile3(result.getOutputFile3());
+		    	bean.setOutputFile1(getOutputFilePath(result.getOutputFile1()));
+			    bean.setOutputFile2(getOutputFilePath(result.getOutputFile2()));
+			    bean.setOutputFile3(getOutputFilePath(result.getOutputFile3()));
 		    	saveMessage(request, getMessage("app.actionmessage.114",
 						new Object[] { }));
 		    	saveMessage(request, "Routing Sessions ->"+result.getAdditionalInfo());

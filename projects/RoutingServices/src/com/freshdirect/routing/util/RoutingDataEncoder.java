@@ -148,14 +148,14 @@ public class RoutingDataEncoder {
 											, String locationType, String areaCode) {
 		
 		Location location = new Location();
-		location.setLocationIdentity(encodeLocationIdentity(region,locationType,locModel.getLocationId()));
+		location.setLocationIdentity(encodeLocationIdentity(region, locationType, locModel.getLocationId()));
 		location.setLatitude((int)(getVal(locModel.getGeographicLocation().getLatitude())*1000000));
 		location.setLongitude((int)(getVal(locModel.getGeographicLocation().getLongitude())*1000000));
 		
-		
+		location.setTimeWindowFactor(RoutingServicesProperties.getDefaultTimeWindowFactor());
 		location.setZoneID(areaCode);		
 		location.setTimeZone(TimeZoneValue.fromString(TimeZoneValue._tmzNone));
-				
+						
 		Address address = new Address();
 		address.setLine1(locModel.getStreetAddress1());
 		address.setLine2(locModel.getApartmentNumber());

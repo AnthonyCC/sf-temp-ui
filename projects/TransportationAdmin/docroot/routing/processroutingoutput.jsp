@@ -79,7 +79,7 @@
 								<td> 
 									<spring:bind path="command.outputFile1">
 										<c:if test="${!empty status.value}">
-	                                		<a href='download.do?filePath=<c:out value="${status.value}"/>' >Order Info</a>                                                                
+	                                		<a href='<c:out value="${status.value}"/>' >Order Info</a>                                                                
 	                                	</c:if>	
                              		</spring:bind>
                              	</td>                             	
@@ -87,7 +87,7 @@
                              	<td> 
 									<spring:bind path="command.outputFile2">
 										<c:if test="${!empty status.value}">
-	                                		<a href='download.do?filePath=<c:out value="${status.value}"/>' >Truck Info</a> 
+	                                		<a href='<c:out value="${status.value}"/>' >Truck Info</a> 
                                 		</c:if>	                                                               
                              		</spring:bind>
                              	</td>
@@ -104,20 +104,6 @@
 					</tr>								
 				</table>			
 			</form>
-		 </div>
-		 <table>
-		 <tr><td>The request method is</td><td><%= request.getMethod() %></td></tr>
-    	 <tr><td>The request URI is</td><td><%= request.getRequestURI() %></td></tr>
-         <tr><td>The request protocol is</td><td><%= request.getProtocol() %></td></tr>
-         <tr><td>The browser is</td><td><%= request.getHeader("user-agent") %></td></tr>
-         <tr><td>Servlet Path</td><td><%= request.getServletPath() %></td></tr>
-		 <%
-	        java.util.Enumeration names = request.getHeaderNames();
-	        while (names.hasMoreElements()) {
-	            String name = (String)names.nextElement(); %>
-	            <tr><td><%=name %></td><td><%=request.getHeader(name) %></td></tr>	            
-	       <% }
-    	%>
-    	</table>
+		 </div>		 
 	</tmpl:put>
 </tmpl:insert>

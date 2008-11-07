@@ -21,7 +21,7 @@ import com.freshdirect.transadmin.datamanager.RoutingResult;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.web.model.RoutingOutCommand;
 
-public class RoutingOutputFormController extends BaseFormController {
+public class RoutingOutputFormController extends BaseRoutingFormController {
 	
 	private DomainManagerI domainManagerService;
 	
@@ -64,9 +64,9 @@ public class RoutingOutputFormController extends BaseFormController {
 		    List errorList = result.getErrors();
 		    
 		    if(errorList == null || errorList.isEmpty()) {
-			    bean.setOutputFile1(result.getOutputFile1());
-			    bean.setOutputFile2(result.getOutputFile2());
-			    bean.setOutputFile3(result.getOutputFile3());
+			    bean.setOutputFile1(getOutputFilePath(result.getOutputFile1()));
+			    bean.setOutputFile2(getOutputFilePath(result.getOutputFile2()));
+			    bean.setOutputFile3(getOutputFilePath(result.getOutputFile3()));
 			    		    
 			    errorList = new ArrayList();
 			    

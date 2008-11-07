@@ -11,7 +11,6 @@ import java.util.Properties;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.ConfigHelper;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -24,24 +23,7 @@ public class RoutingServicesProperties {
 	private final static String PROP_TRANSPORTATIONSUITE_PROVIDER_URL		= "routingservices.transportationsuite.providerURL";
 	
 	private final static String PROP_ROADNET_PROVIDER_URL		= "routingservices.roadnet.providerURL";
-	
-	//private final static String PROP_SERVICETIMEFACTOR_EXPRESSION		= "routingservices.servicetimefactor.expression";
-	//private final static String PROP_SERVICETIME_EXPRESSION		= "routingservices.servicetime.expression";
-	
-	//private final static String PROP_PACKAGING_DEFAULTCARTONCOUNT		= "routingservices.packaging.defaultcartoncount";
-	
-	//private final static String PROP_PACKAGING_DEFAULTCASECOUNT		= "routingservices.packaging.defaultcasecount";
-	
-	//private final static String PROP_PACKAGING_DEFAULTFREEZERCOUNT		= "routingservices.packaging.defaultfreezercount";
-	
-	//private final static String PROP_TOTALSIZE1_EXPRESSION		= "routingservices.totalsize1.expression";
-	
-	//private final static String PROP_TOTALSIZE2_EXPRESSION		= "routingservices.totalsize2.expression";
-	
-	//private final static String PROP_DEFAULT_SERVICETIMETYPE		= "routingservices.default.servicetimetype";
-	
-	//private final static String PROP_DEFAULT_ZONETYPE		= "routingservices.default.zonetype";
-	
+		
 	private final static String PROP_DEFAULT_REGION		= "routingservices.default.region";
 	
 	private final static String PROP_DEFAULT_LOCATIONTYPE		= "routingservices.default.locationtype";
@@ -54,6 +36,8 @@ public class RoutingServicesProperties {
 	
 	private final static String PROP_INCRECEMT_WINDOWENDTIME		= "routingservices.increment.windowendtime";
 	
+	private final static String PROP_TIMEWINDOW_FACTOR		= "routingservices.timewindow.factor";
+	
 	private static long lastRefresh = 0;
 	private final static long REFRESH_PERIOD = 5 * 60 * 1000;
 	
@@ -62,20 +46,14 @@ public class RoutingServicesProperties {
 	static {
 		
 		defaults.put(PROP_TRANSPORTATIONSUITE_PROVIDER_URL, 	"http://localhost:81");
-		defaults.put(PROP_ROADNET_PROVIDER_URL, 	"http://localhost:82");
-		//defaults.put(PROP_SERVICETIMEFACTOR_EXPRESSION, 	"(x+y+z)/3");
-		//defaults.put(PROP_SERVICETIME_EXPRESSION, 	"a+(b*x)");
-		//defaults.put(PROP_TOTALSIZE1_EXPRESSION, 	"x+y");
-		//defaults.put(PROP_TOTALSIZE2_EXPRESSION, 	"z");
-		//defaults.put(PROP_PACKAGING_DEFAULTCARTONCOUNT, 	"3");
-		//defaults.put(PROP_PACKAGING_DEFAULTCASECOUNT, 	"3");
-		//defaults.put(PROP_PACKAGING_DEFAULTFREEZERCOUNT, 	"3");
+		defaults.put(PROP_ROADNET_PROVIDER_URL, 	"http://localhost:82");		
 		defaults.put(PROP_DEFAULT_REGION, 	"FD");
 		defaults.put(PROP_DEFAULT_LOCATIONTYPE, 	"SIT");
 		defaults.put(PROP_DEFAULT_ORDERTYPE, 	"DEF");
 		defaults.put(PROP_DEFAULT_FIXEDSERVICETIME, 	"5");
 		defaults.put(PROP_DEFAULT_VARIABLESERVICETIME, 	"5");
 		defaults.put(PROP_INCRECEMT_WINDOWENDTIME, 	"true");
+		defaults.put(PROP_TIMEWINDOW_FACTOR, 	"5");
 		refresh();		
 	}
 
@@ -138,44 +116,9 @@ public class RoutingServicesProperties {
         return (new Boolean(get(PROP_INCRECEMT_WINDOWENDTIME))).booleanValue();
     }
 	
-	/*public static String getServiceTimeFactorExpression() {
-		return get(PROP_SERVICETIMEFACTOR_EXPRESSION);
+	public static int getDefaultTimeWindowFactor() {
+		return getIntVal(get(PROP_TIMEWINDOW_FACTOR));
 	}
-	
-	public static String getServiceTimeExpression() {
-		return get(PROP_SERVICETIME_EXPRESSION);
-	}
-	
-	public static String getTotalSize1Expression() {
-		return get(PROP_TOTALSIZE1_EXPRESSION);
-	}
-	
-	public static String getTotalSize2Expression() {
-		return get(PROP_TOTALSIZE2_EXPRESSION);
-	}
-	
-	public static String getDefaultServiceTimeType() {
-		return get(PROP_DEFAULT_SERVICETIMETYPE);
-	}
-	
-	public static String getDefaultZoneType() {
-		return get(PROP_DEFAULT_ZONETYPE);
-	}
-		
-	public static int getDefaultCartonCount() {
-		return getIntVal(get(PROP_PACKAGING_DEFAULTCARTONCOUNT));
-	}
-	
-	public static int getDefaultCaseCount() {
-		return getIntVal(get(PROP_PACKAGING_DEFAULTCASECOUNT));
-	}
-	
-	public static int getDefaultFreezerCount() {
-		return getIntVal(get(PROP_PACKAGING_DEFAULTFREEZERCOUNT));
-	}*/
-	
-	
-	
 	
 	private static int getIntVal(String strVal) {
 		int intVal = 0;

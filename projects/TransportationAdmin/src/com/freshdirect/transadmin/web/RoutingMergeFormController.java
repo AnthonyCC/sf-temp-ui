@@ -25,7 +25,7 @@ import com.freshdirect.transadmin.model.TrnZone;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.web.model.RoutingMergeCommand;
 
-public class RoutingMergeFormController extends BaseFormController {
+public class RoutingMergeFormController extends BaseRoutingFormController {
 	
 	private DomainManagerI domainManagerService;
 	
@@ -63,8 +63,8 @@ public class RoutingMergeFormController extends BaseFormController {
 		    List errorList = result.getErrors();
 		    
 		    if(errorList == null || errorList.isEmpty()) {
-			    bean.setOutputFile1(result.getOutputFile1());
-			    bean.setOutputFile2(result.getOutputFile2());
+			    bean.setOutputFile1(getOutputFilePath(result.getOutputFile1()));
+			    bean.setOutputFile2(getOutputFilePath(result.getOutputFile2()));
 			    		    
 			    errorList = new ArrayList();
 			    

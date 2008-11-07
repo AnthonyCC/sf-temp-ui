@@ -60,6 +60,8 @@ public class TransportationAdminProperties {
 	
 	private final static String PROP_TRANSPORTATION_FILE_SEPARATOR		= "transportation.default.fileseparator";
 	
+	private final static String PROP_TRANSPORTATION_DOWNLOAD_PROVIDERURL		= "transportation.download.providerURL";
+	
 	
 	
 	
@@ -108,6 +110,8 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_FILENAME_EXTGEOINLOCDB,"com/freshdirect/transadmin/datamanager/externalgeocodes_in_locationdb.xml");
 		
 		defaults.put(PROP_TRANSPORTATION_FILE_SEPARATOR,"\r\n");
+		
+		defaults.put(PROP_TRANSPORTATION_DOWNLOAD_PROVIDERURL,"http://crm:7001/TrnAdmin/download.do");
 		refresh();		
 	}
 
@@ -119,6 +123,9 @@ public class TransportationAdminProperties {
 		refresh(false);
 	}
 	
+    public static String getDownloadProviderUrl() {
+    	return get(PROP_TRANSPORTATION_DOWNLOAD_PROVIDERURL);
+    }
     public static String getFileSeparator() {
     	return get(PROP_TRANSPORTATION_FILE_SEPARATOR);
     }
