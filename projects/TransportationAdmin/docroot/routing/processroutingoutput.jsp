@@ -105,6 +105,19 @@
 				</table>			
 			</form>
 		 </div>
-		 
+		 <table>
+		 <tr><td>The request method is</td><td><%= request.getMethod() %></td></tr>
+    	 <tr><td>The request URI is</td><td><%= request.getRequestURI() %></td></tr>
+         <tr><td>The request protocol is</td><td><%= request.getProtocol() %></td></tr>
+         <tr><td>The browser is</td><td><%= request.getHeader("user-agent") %></td></tr>
+         <tr><td>Servlet Path</td><td><%= request.getServletPath() %></td></tr>
+		 <%
+	        java.util.Enumeration names = request.getHeaderNames();
+	        while (names.hasMoreElements()) {
+	            String name = (String)names.nextElement(); %>
+	            <tr><td><%=name %></td><td><%=request.getHeader(name) %></td></tr>	            
+	       <% }
+    	%>
+    	</table>
 	</tmpl:put>
 </tmpl:insert>
