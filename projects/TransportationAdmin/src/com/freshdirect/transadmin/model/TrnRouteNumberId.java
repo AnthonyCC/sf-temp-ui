@@ -2,6 +2,8 @@ package com.freshdirect.transadmin.model;
 
 import java.util.Date;
 
+import com.freshdirect.framework.util.DateUtil;
+
 public class TrnRouteNumberId implements java.io.Serializable {
 
 	private Date routeDate;
@@ -36,7 +38,7 @@ public class TrnRouteNumberId implements java.io.Serializable {
 								&& this.getCutOffId().equals(castOther.getCutOffId())))
 				&& ((this.getRouteDate() == castOther.getRouteDate()) 
 						|| (this.getRouteDate() != null	&& castOther.getRouteDate() != null 
-								&& this.getRouteDate().equals(castOther.getRouteDate())));
+								&& DateUtil.truncate(this.getRouteDate()).equals(DateUtil.truncate(castOther.getRouteDate()))));
 	}
 
 	public int hashCode() {

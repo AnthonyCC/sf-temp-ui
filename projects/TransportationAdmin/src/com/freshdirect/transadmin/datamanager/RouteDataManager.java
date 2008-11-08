@@ -88,12 +88,19 @@ public class RouteDataManager {
 					areaPrefix = "0";
 				}
 				routeId = getRouteNumberId(tmpModel.getDeliveryDate(), cutOff, areaCode);
+							
 				if(routeNoGenMapping.containsKey(routeId)) {
 					routeNoGenModel = (RouteNoGenerationModel)routeNoGenMapping.get(routeId);
 				} else {
 					//Key pointer to generating route no
-					routeNoGenModel = fillRouteNumberGroup(routeId, routeNoGenMapping, comparator, domainManagerService);
+					routeNoGenModel = new RouteNoGenerationModel();
+					routeNoGenMapping.put(routeId, routeNoGenModel);
 					
+					fillRelatedCutOff(routeNoGenModel, routeId, comparator
+										, new ArrayList(domainManagerService
+														.getRouteNumberGroup(getRouteDate(routeId.getRouteDate())
+																, null, routeId.getAreaCode())));	
+					fillRouteNumberGroup(routeId, routeNoGenMapping, comparator, domainManagerService);					
 				}
 				currentRoute = (String)routeNoGenModel.getRoute(tmpModel.getRouteId().trim());
 				if(currentRoute == null) {
@@ -103,13 +110,14 @@ public class RouteDataManager {
 				tmpModel.setRouteId(areaPrefix+areaCode+TransStringUtil.formatRouteNumber(currentRoute));
 				tmpModel.setDeliveryModel(areaDeliveryModel);
 				routeNoGenModel.addOrder(tmpModel);
+				
 			}
 		}
 		return getRouteGenerationResult(routeNoGenMapping);
 	}
-	
+		
 	// Collect and fille routeNumber under investigation and related routeNumber for date and cutoff
-	protected RouteNoGenerationModel fillRouteNumberGroup(TrnRouteNumberId routeId, Map routeNoGenMapping, 
+	protected void fillRouteNumberGroup(TrnRouteNumberId routeId, Map routeNoGenMapping, 
 											CutOffComparator comparator, DomainManagerI domainManagerService) {
 		
 		Collection routeNoForDateCutOff = domainManagerService.getRouteNumberGroup(getRouteDate(routeId.getRouteDate())
@@ -121,8 +129,7 @@ public class RouteDataManager {
 			
 			while(iterator.hasNext()) {				
 				tmpModel = (TrnRouteNumber)iterator.next();
-				if(!tmpModel.getRouteNumberId().equals(routeId)
-						&& !routeNoGenMapping.containsKey(routeId)) {
+				if(!routeNoGenMapping.containsKey(routeId)) {
 					routeNoGenModel = new RouteNoGenerationModel();
 					routeNoGenMapping.put(tmpModel.getRouteNumberId(), routeNoGenModel);
 					
@@ -132,26 +139,68 @@ public class RouteDataManager {
 																, null, tmpModel.getRouteNumberId().getAreaCode())));
 				}
 			}
+		}		
+	}
+	
+	protected void fillRelatedCutOff(RouteNoGenerationModel model,	TrnRouteNumberId routeId, CutOffComparator comparator,
+										List routeNoLst) {
+		Map referenceData = comparator.getReferenceData();
+		if (routeNoLst != null && referenceData != null) {
+			Collections.sort(routeNoLst, comparator);
+
+			Iterator iterator = routeNoLst.iterator();
+			TrnRouteNumber tmpModel = null;
+			TrnRouteNumber predecessorModel = null;
+			TrnRouteNumber currentModel = null;
+			TrnCutOff cutOff = null;
+
+			int cutOffSequence = ((TrnCutOff) referenceData.get(routeId
+										.getCutOffId())).getSequenceNo().intValue();
+			List orphanLst = new ArrayList();
+			while (iterator.hasNext()) {
+
+				tmpModel = (TrnRouteNumber) iterator.next();
+				cutOff = (TrnCutOff) referenceData.get(tmpModel
+						.getRouteNumberId().getCutOffId());
+				if (!tmpModel.getRouteNumberId().equals(routeId)) {
+					if (cutOff != null) {
+						if (cutOff.getSequenceNo().intValue() < cutOffSequence) {
+							model.addPredecessor(tmpModel);
+						} else {
+							model.addSuccessor(tmpModel);
+						}
+					} else {
+						orphanLst.add(tmpModel);
+					}
+				} else {
+					currentModel = tmpModel;
+				}
+			}
+			model.addSuccessors(orphanLst);
+			if (model.getPredecessors() != null
+					&& model.getPredecessors().size() > 0) {
+				predecessorModel = (TrnRouteNumber) model.getPredecessors()
+						.get(model.getPredecessors().size() - 1);
+				model.setCurrentSequenceNo(predecessorModel.getCurrentVal()
+						.intValue());
+			}
+			if (currentModel != null) {
+				model.setPreviousSequenceNo(currentModel.getCurrentVal()
+						.intValue());
+			} else {
+				model.setPreviousSequenceNo(model.getCurrentSequenceNo());
+			}
 		}
-		
-		routeNoGenModel = new RouteNoGenerationModel();
-		routeNoGenMapping.put(routeId, routeNoGenModel);
-		
-		fillRelatedCutOff(routeNoGenModel, routeId, comparator
-							, new ArrayList(domainManagerService
-											.getRouteNumberGroup(getRouteDate(routeId.getRouteDate())
-													, null, routeId.getAreaCode())));
-		
-		return routeNoGenModel;
 	}
 	
 	protected RouteGenerationResult getRouteGenerationResult(Map routeNoGenMapping) {
-		
+				
 		RouteGenerationResult result = new RouteGenerationResult();
 		Set routeKeys = routeNoGenMapping.keySet();
 		
 		List routeInfos = new ArrayList();		
 		List routeNoSaveInfos = new ArrayList();
+		
 		result.setRouteInfos(routeInfos);
 		result.setRouteNoSaveInfos(routeNoSaveInfos);
 		
@@ -166,7 +215,9 @@ public class RouteDataManager {
 			while(iterator.hasNext()) {
 				
 				routeId = (TrnRouteNumberId)iterator.next();
+								
 				routeNoGenModel = (RouteNoGenerationModel)routeNoGenMapping.get(routeId);
+				
 				successors = routeNoGenModel.getSuccessors();
 				if(routeNoGenModel.getOrders() != null) {
 					routeInfos.addAll(routeNoGenModel.getOrders());
@@ -192,52 +243,8 @@ public class RouteDataManager {
 		return result;
 	}
 	
-	protected void fillRelatedCutOff(RouteNoGenerationModel model, TrnRouteNumberId routeId
-										, CutOffComparator comparator, List routeNoLst) {		
-		Map referenceData = comparator.getReferenceData();
-		if(routeNoLst != null && referenceData != null) {
-			Collections.sort(routeNoLst, comparator);
-			
-			Iterator iterator = routeNoLst.iterator();
-			TrnRouteNumber tmpModel = null;
-			TrnRouteNumber predecessorModel = null;
-			TrnRouteNumber currentModel = null;
-			TrnCutOff cutOff = null;
-			
-			int cutOffSequence = ((TrnCutOff)referenceData.get(routeId.getCutOffId())).getSequenceNo().intValue();
-			List orphanLst = new ArrayList();
-			while(iterator.hasNext()) {
-				
-				tmpModel = (TrnRouteNumber)iterator.next();
-				cutOff = (TrnCutOff)referenceData.get(tmpModel.getRouteNumberId().getCutOffId());
-				if(!tmpModel.getRouteNumberId().equals(routeId)) {
-					if(cutOff != null) {
-						if(cutOff.getSequenceNo().intValue() < cutOffSequence) {
-							model.addPredecessor(tmpModel);
-						} else {
-							model.addSuccessor(tmpModel);
-						}
-					} else {
-						orphanLst.add(tmpModel);						
-					}
-				} else {
-					currentModel = tmpModel;
-				}
-			}
-			model.addSuccessors(orphanLst);
-			if(model.getPredecessors() != null && model.getPredecessors().size() > 0) {
-				predecessorModel = (TrnRouteNumber)model.getPredecessors().get(model.getPredecessors().size()-1);
-				model.setCurrentSequenceNo(predecessorModel.getCurrentVal().intValue());
-			}
-			if(currentModel != null) {
-				model.setPreviousSequenceNo(currentModel.getCurrentVal().intValue());
-			} else {
-				model.setPreviousSequenceNo(model.getCurrentSequenceNo());
-			}
-		}
-	}
 	
-	protected TrnRouteNumberId getRouteNumberId(Date orderDate, String cutOff, String area) {
+	protected TrnRouteNumberId getRouteNumberId(Date orderDate, String cutOff, String area) {		
 		return new TrnRouteNumberId(orderDate, cutOff, area);
 	}
 	

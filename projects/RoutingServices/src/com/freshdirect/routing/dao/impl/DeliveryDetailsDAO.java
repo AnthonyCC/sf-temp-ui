@@ -40,7 +40,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 	
 	private static final String GET_DELIVERYZONETYPE_QRY="select z.ZONE_TYPE SERVICE_TYPE from transp.trn_zone z where z.zone_number = ? ";
 	
-	private static final String GET_DELIVERYZONEDETAILS_QRY="select z.ZONE_NUMBER ZONE_NUMBER, z.ZONE_TYPE ZONE_TYPE, z.AREA AREA from transp.trn_zone z";
+	private static final String GET_DELIVERYZONEDETAILS_QRY="select z.ZONE_NUMBER ZONE_NUMBER, z.ZONE_TYPE ZONE_TYPE, z.AREA AREA from transp.trn_zone z where z.OBSOLETE <> 'X' or z.OBSOLETE IS NULL";
 			
 	
 	public IDeliveryModel getDeliveryInfo(final String saleId) throws SQLException {
