@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +14,6 @@ import java.util.Set;
 import com.freshdirect.routing.util.IRoutingParamConstants;
 import com.freshdirect.transadmin.datamanager.model.OrderRouteInfoModel;
 import com.freshdirect.transadmin.model.TrnArea;
-import com.freshdirect.transadmin.model.TrnZone;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
 
@@ -84,19 +84,19 @@ public class RouteMergeDataManager extends RouteDataManager {
 	
 	private void processRoutingMerge(RoutingResult result, String cutOff, List orderDataList, 
 													List fullDataList, DomainManagerI domainManagerService) {
-		List zoneList = getZoneList(domainManagerService);
-		List zoneNumbers = getZoneNumbers(zoneList);
-				
+		
+		Map areaMap = getAreas(domainManagerService);
+						
 		RouteGenerationResult routeGenResult = generateRouteNumber(fullDataList, cutOff, domainManagerService);	
 		
 		fullDataList = routeGenResult.getRouteInfos();		
 		result.setRouteNoSaveInfos(routeGenResult.getRouteNoSaveInfos());
 
-		Map areaOrderMap = groupOrderRouteInfo(fullDataList);
-		Set areaCodes = areaOrderMap.keySet();	
-		String missingZones = getMissingZones(zoneList, areaCodes);
-
-		if(missingZones.length() == 0) {
+		OrderAreaGroup orderGroup = groupOrderRouteInfo(fullDataList);
+		Set areaCodes = orderGroup.getOrderGroup().keySet();	
+		
+		List missingAreas = checkMissingAreas(areaMap, orderGroup.getOrderGroup());
+		if(missingAreas.size() == 0) {
 
 			List mergeDataList =  new ArrayList();
 			String strArea = null;
@@ -105,7 +105,7 @@ public class RouteMergeDataManager extends RouteDataManager {
 				Iterator iterator = areaCodes.iterator();
 				while(iterator.hasNext()) {
 					strArea = (String)iterator.next();
-					List dataList = (List)areaOrderMap.get(strArea);
+					List dataList = (List)orderGroup.getOrderGroup().get(strArea);
 					mergeDataList.addAll(dataList);
 				}
 			}
@@ -114,8 +114,8 @@ public class RouteMergeDataManager extends RouteDataManager {
 				Iterator iterator = orderDataList.iterator();
 				OrderRouteInfoModel tmpInfo = null;
 				while(iterator.hasNext()) {
-					tmpInfo = (OrderRouteInfoModel)iterator.next();
-					if(!zoneNumbers.contains(tmpInfo.getDeliveryZone())) {
+					tmpInfo = (OrderRouteInfoModel)iterator.next();					
+					if(!orderGroup.getOrderIds().contains(tmpInfo.getOrderNumber())) {
 						mergeDataList.add(tmpInfo);
 					}					
 				}
@@ -127,72 +127,55 @@ public class RouteMergeDataManager extends RouteDataManager {
 			fileManager.generateRouteFile(TransportationAdminProperties.getErpRouteInputFormat()
 					, result.getOutputFile2(), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, filterRoutesFromOrders(mergeDataList)
 					, null);
-		} else {
-			result.setOutputFile1(null);
-			result.setOutputFile2(null);
-			List errorList = new ArrayList();
-			errorList.add(missingZones+ " are missing");
-			result.setErrors(errorList);
+		} else {			
+			postError(result, "Areas "+ missingAreas.toString()+ " are missing in roadnet file");			
 		}
+	}
 		
+	private List checkMissingAreas(Map markedAreas, Map availableAreas) {
+		
+		List missingAreas = new ArrayList();
+		String strArea = null;
+		
+		if(markedAreas != null && availableAreas != null && markedAreas.keySet() != null) {
+			Iterator iterator = markedAreas.keySet().iterator();
+			while(iterator.hasNext()) {
+				strArea = (String)iterator.next();
+				if(!availableAreas.containsKey(strArea)) {
+					missingAreas.add(strArea);
+				}
+			}
+		}
+		return missingAreas;
 	}
 	
-	private List getZoneList(DomainManagerI domainManagerService) {
+	private Map getAreas(DomainManagerI domainManagerService) {
 		
-		List result = new ArrayList();
-		Collection dataList = domainManagerService.getZones();
-		TrnZone tmpZone = null;
+		Map result = new HashMap();
+		Collection dataList = domainManagerService.getAreas();
 		TrnArea tmpArea = null;
 		if(dataList != null) {
 			Iterator iterator = dataList.iterator();
 			while(iterator.hasNext()) {
-				tmpZone = (TrnZone)iterator.next();
-				tmpArea = tmpZone.getTrnArea();
+				tmpArea = (TrnArea)iterator.next();				
 				if(tmpArea != null && "X".equalsIgnoreCase(tmpArea.getActive())) {
-					result.add(tmpZone);
+					result.put(tmpArea.getCode(), tmpArea);
 				}
 			}
 		}
 		return result;
 	}
 	
-	private List getZoneNumbers(Collection dataList) {
-		
-		List result = new ArrayList();		
-		TrnZone tmpZone = null;
-		
-		if(dataList != null) {
-			Iterator iterator = dataList.iterator();
-			while(iterator.hasNext()) {
-				tmpZone = (TrnZone)iterator.next();
-				result.add(tmpZone.getZoneNumber());
-			}			
-		}
-		return result;
-	}
 	
-	private String getMissingZones(Collection rootList, Collection dataList) {
-		
-		StringBuffer result = new StringBuffer();
-		String strArea = null;
-		TrnZone tmpZone = null;
-		if(rootList != null && dataList != null) {
-			Iterator iterator = rootList.iterator();
-			while(iterator.hasNext()) {
-				tmpZone = (TrnZone)iterator.next();
-				strArea = tmpZone.getArea();
-				if(!dataList.contains(strArea)) {
-					result.append(tmpZone.getZoneNumber());
-					result.append(" ");
-				}
-			}
-		}
-		return result.toString();
-	}
 	
-	private Map groupOrderRouteInfo(List fullDataList) {
+	private OrderAreaGroup groupOrderRouteInfo(List fullDataList) {
 		
-		Map dataMap = new HashMap();		
+		OrderAreaGroup orderGroupResult = new OrderAreaGroup();
+		Map orderGroup = new HashMap();
+		Set orderIds = new HashSet();
+		orderGroupResult.setOrderGroup(orderGroup);
+		orderGroupResult.setOrderIds(orderIds);
+		
 		OrderRouteInfoModel tmpInfo = null;
 		List tmpList = null;
 		
@@ -201,18 +184,19 @@ public class RouteMergeDataManager extends RouteDataManager {
 			Iterator iterator = fullDataList.iterator();
 			while(iterator.hasNext()) {
 				tmpInfo = (OrderRouteInfoModel)iterator.next();
+				orderIds.add(tmpInfo.getOrderNumber());
 				areaCode = tmpInfo.getDeliveryArea();
-				if(dataMap.containsKey(areaCode)) {
-					tmpList = (List)dataMap.get(areaCode);
+				if(orderGroup.containsKey(areaCode)) {
+					tmpList = (List)orderGroup.get(areaCode);
 					tmpList.add(tmpInfo);				
 				} else {
 					tmpList = new ArrayList();
 					tmpList.add(tmpInfo);
-					dataMap.put(areaCode, tmpList);
+					orderGroup.put(areaCode, tmpList);
 				}
 			}
 		}		
-		return dataMap;
+		return orderGroupResult;
 	}
 
 	private boolean updateRouteInfo(List orderDataList, List truckDataList) {
@@ -251,6 +235,38 @@ public class RouteMergeDataManager extends RouteDataManager {
 			}
 		}
 		return true;
-	}	
+	}
+	
+	private void postError(RoutingResult result, String message) {
+		result.setOutputFile1(null);
+		result.setOutputFile2(null);
+		List errorList = new ArrayList();
+		errorList.add(message);
+		result.setErrors(errorList);
+	}
+	
+	private class OrderAreaGroup {
+		
+		private Map orderGroup = null;
+		
+		private Set orderIds = null;
+
+		public Map getOrderGroup() {
+			return orderGroup;
+		}
+
+		public void setOrderGroup(Map orderGroup) {
+			this.orderGroup = orderGroup;
+		}
+
+		public Set getOrderIds() {
+			return orderIds;
+		}
+
+		public void setOrderIds(Set orderIds) {
+			this.orderIds = orderIds;
+		}
+
+	}
 	
 }

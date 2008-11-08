@@ -668,7 +668,7 @@ public class StringUtil {
 	        	while(iterator.hasNext()) {
 	        		intCount++;
 	        		strBuf.append("'").append(iterator.next()).append("'");
-	        		if(intCount == lstValues.size()) {
+	        		if(intCount != lstValues.size()) {
 	        			strBuf.append(",");
 	        		}
 	        	}

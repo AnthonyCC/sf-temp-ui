@@ -93,13 +93,7 @@ public class RouteDataManager {
 				} else {
 					//Key pointer to generating route no
 					routeNoGenModel = fillRouteNumberGroup(routeId, routeNoGenMapping, comparator, domainManagerService);
-					/*routeNoGenModel = new RouteNoGenerationModel();
-					routeNoGenMapping.put(routeId, routeNoGenModel);
 					
-					fillRelatedCutOff(routeNoGenModel, routeId, comparator
-										, new ArrayList(domainManagerService
-														.getRouteNumberGroup(getRouteDate(routeId.getRouteDate())
-																, null, routeId.getAreaCode())));*/
 				}
 				currentRoute = (String)routeNoGenModel.getRoute(tmpModel.getRouteId().trim());
 				if(currentRoute == null) {
