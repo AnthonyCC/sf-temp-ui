@@ -15,6 +15,7 @@ import com.freshdirect.routing.util.IRoutingParamConstants;
 import com.freshdirect.transadmin.datamanager.model.OrderRouteInfoModel;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.service.DomainManagerI;
+import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
 
 public class RouteMergeDataManager extends RouteDataManager {
@@ -86,13 +87,14 @@ public class RouteMergeDataManager extends RouteDataManager {
 													List fullDataList, DomainManagerI domainManagerService) {
 		
 		Map areaMap = getAreas(domainManagerService);
-						
-		RouteGenerationResult routeGenResult = generateRouteNumber(fullDataList, cutOff, domainManagerService);	
+		
+		OrderAreaGroup orderGroup = groupOrderRouteInfo(fullDataList, areaMap);
+		
+		RouteGenerationResult routeGenResult = generateRouteNumber(collectOrdersFromMap(orderGroup.getOrderGroup()), cutOff, domainManagerService);	
 		
 		fullDataList = routeGenResult.getRouteInfos();		
 		result.setRouteNoSaveInfos(routeGenResult.getRouteNoSaveInfos());
-
-		OrderAreaGroup orderGroup = groupOrderRouteInfo(fullDataList);
+		
 		Set areaCodes = orderGroup.getOrderGroup().keySet();	
 		
 		List missingAreas = checkMissingAreas(areaMap, orderGroup.getOrderGroup());
@@ -149,6 +151,21 @@ public class RouteMergeDataManager extends RouteDataManager {
 		return missingAreas;
 	}
 	
+	private List collectOrdersFromMap(Map ordersByArea) {
+		
+		List orders = new ArrayList();
+		List tmpOrders = null;
+		
+		if(ordersByArea != null) {
+			Iterator iterator = ordersByArea.values().iterator();
+			while(iterator.hasNext()) {
+				tmpOrders = (List)iterator.next();
+				orders.addAll(tmpOrders);
+			}
+		}
+		return orders;
+	}
+	
 	private Map getAreas(DomainManagerI domainManagerService) {
 		
 		Map result = new HashMap();
@@ -165,11 +182,9 @@ public class RouteMergeDataManager extends RouteDataManager {
 		}
 		return result;
 	}
-	
-	
-	
-	private OrderAreaGroup groupOrderRouteInfo(List fullDataList) {
 		
+	private OrderAreaGroup groupOrderRouteInfo(List fullDataList, Map areaMap) {
+				
 		OrderAreaGroup orderGroupResult = new OrderAreaGroup();
 		Map orderGroup = new HashMap();
 		Set orderIds = new HashSet();
@@ -183,17 +198,19 @@ public class RouteMergeDataManager extends RouteDataManager {
 		if(fullDataList != null) {
 			Iterator iterator = fullDataList.iterator();
 			while(iterator.hasNext()) {
-				tmpInfo = (OrderRouteInfoModel)iterator.next();
-				orderIds.add(tmpInfo.getOrderNumber());
-				areaCode = tmpInfo.getDeliveryArea();
-				if(orderGroup.containsKey(areaCode)) {
-					tmpList = (List)orderGroup.get(areaCode);
-					tmpList.add(tmpInfo);				
-				} else {
-					tmpList = new ArrayList();
-					tmpList.add(tmpInfo);
-					orderGroup.put(areaCode, tmpList);
-				}
+				tmpInfo = (OrderRouteInfoModel)iterator.next();				
+				areaCode = TransStringUtil.splitStringForCode(tmpInfo.getRouteId());
+				if(areaMap.containsKey(areaCode)) {
+					orderIds.add(tmpInfo.getOrderNumber());
+					if(orderGroup.containsKey(areaCode)) {
+						tmpList = (List)orderGroup.get(areaCode);
+						tmpList.add(tmpInfo);				
+					} else {
+						tmpList = new ArrayList();
+						tmpList.add(tmpInfo);
+						orderGroup.put(areaCode, tmpList);
+					}
+				} 
 			}
 		}		
 		return orderGroupResult;
