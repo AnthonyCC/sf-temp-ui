@@ -170,7 +170,7 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 		 		 }
 		    	 
 		    	 locationQ.append("AND db.ZIP ").append(RoutingUtil.getQueryParam(zipCodes));	
-		    	 //System.out.println("locationQ >"+locationQ+" "+zipCodes);
+		    	 
 		    	 int intCount = 1;
 		         PreparedStatement ps =
 		             connection.prepareStatement(locationQ.toString());
@@ -230,10 +230,10 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 		    		 locationQ.append("'").append(tmpIterator.next()).append("'");
 		    		 intCount++;
 		    		 if(intCount != locIds.size()) {
-		    			 locationQ.append("'").append(tmpIterator.next()).append(","); 
+		    			 locationQ.append(","); 
 		    		 }
 		    	 }
-		    	 locationQ.append(")");
+		    	 locationQ.append(")");		    	 
 		         PreparedStatement ps =
 		             connection.prepareStatement(locationQ.toString());
 		         

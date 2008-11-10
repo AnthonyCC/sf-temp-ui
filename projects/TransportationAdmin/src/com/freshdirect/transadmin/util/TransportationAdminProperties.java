@@ -62,6 +62,7 @@ public class TransportationAdminProperties {
 	
 	private final static String PROP_TRANSPORTATION_DOWNLOAD_PROVIDERURL		= "transportation.download.providerURL";
 	
+	private final static String PROP_TRANSPORTATION_DOWNLOAD_FOLDER		= "transportation.download.folder";	
 	
 	
 	
@@ -112,6 +113,8 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_FILE_SEPARATOR,"\r\n");
 		
 		defaults.put(PROP_TRANSPORTATION_DOWNLOAD_PROVIDERURL,"http://crm:7001/TrnAdmin/download.do");
+		
+		defaults.put(PROP_TRANSPORTATION_DOWNLOAD_FOLDER,"");
 		refresh();		
 	}
 
@@ -123,6 +126,10 @@ public class TransportationAdminProperties {
 		refresh(false);
 	}
 	
+    public static String getDownloadFolder() {
+    	return get(PROP_TRANSPORTATION_DOWNLOAD_FOLDER);    	
+    }
+    
     public static String getDownloadProviderUrl() {
     	return get(PROP_TRANSPORTATION_DOWNLOAD_PROVIDERURL);
     }

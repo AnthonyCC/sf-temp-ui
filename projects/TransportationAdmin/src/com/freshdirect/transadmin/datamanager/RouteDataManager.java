@@ -42,21 +42,30 @@ public class RouteDataManager {
 		RoutingResult result = new RoutingResult();
 		
 	    if(outputFileName1 != null) {
-			File outputFile1 = File.createTempFile(outputFileName1, "."+TransportationAdminProperties.getFilenameSuffix());
+			File outputFile1 = createFile(outputFileName1, "."+TransportationAdminProperties.getFilenameSuffix());
 		    result.setOutputFile1(outputFile1.getAbsolutePath());
 	    }
 	    
 	    if(outputFileName2 != null) {
-		    File outputFile2 = File.createTempFile(outputFileName2, "."+TransportationAdminProperties.getFilenameSuffix());	    	    
+		    File outputFile2 = createFile(outputFileName2, "."+TransportationAdminProperties.getFilenameSuffix());	    	    
 		    result.setOutputFile2(outputFile2.getAbsolutePath());
 	    }
 	    
 	    if(outputFileName3 != null) {
-	    	File outputFile3 = File.createTempFile(outputFileName3, "."+TransportationAdminProperties.getErrorFilenameSuffix());
+	    	File outputFile3 = createFile(outputFileName3, "."+TransportationAdminProperties.getErrorFilenameSuffix());
 	    	result.setOutputFile3(outputFile3.getAbsolutePath());
 	    }
 	    return result;
-	}	
+	}
+	
+	private File createFile(String prefix, String suffix) throws IOException  {		
+		if(TransportationAdminProperties.getDownloadFolder() != null 
+					&& TransportationAdminProperties.getDownloadFolder().trim().length() > 0) {
+			return File.createTempFile(prefix, suffix, new File(TransportationAdminProperties.getDownloadFolder()));
+		} else {
+			return File.createTempFile(prefix, suffix);
+		}
+	}
 	
 //	TrnRouteNumberId
 	protected RouteGenerationResult generateRouteNumber(List routeData, String cutOff, DomainManagerI domainManagerService ) {
@@ -113,6 +122,7 @@ public class RouteDataManager {
 				
 			}
 		}
+		
 		return getRouteGenerationResult(routeNoGenMapping);
 	}
 		
@@ -123,13 +133,14 @@ public class RouteDataManager {
 		Collection routeNoForDateCutOff = domainManagerService.getRouteNumberGroup(getRouteDate(routeId.getRouteDate())
 																, routeId.getCutOffId(), null);
 		RouteNoGenerationModel routeNoGenModel = null;
+		
 		if(routeNoForDateCutOff != null) {
 			Iterator iterator = routeNoForDateCutOff.iterator();
 			TrnRouteNumber tmpModel = null;
 			
 			while(iterator.hasNext()) {				
 				tmpModel = (TrnRouteNumber)iterator.next();
-				if(!routeNoGenMapping.containsKey(routeId)) {
+				if(!routeNoGenMapping.containsKey(tmpModel.getRouteNumberId())) {
 					routeNoGenModel = new RouteNoGenerationModel();
 					routeNoGenMapping.put(tmpModel.getRouteNumberId(), routeNoGenModel);
 					
