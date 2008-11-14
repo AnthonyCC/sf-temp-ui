@@ -962,6 +962,7 @@
 	<macrodef name="makeManifestProject">
 			<attribute name="project" />
 			<attribute name="classpathref" default=""/>
+            <attribute name="manifestclasspath" default=""/>
 			<sequential>
 				<trycatch>
 					<try>
