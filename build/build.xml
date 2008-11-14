@@ -962,7 +962,7 @@
 	<macrodef name="makeManifestProject">
 			<attribute name="project" />
 			<attribute name="classpathref" default=""/>
-            <attribute name="manifestclasspath" default=""/>
+            		<attribute name="manifestclasspath" default=""/>
 			<sequential>
 				<trycatch>
 					<try>
@@ -999,6 +999,7 @@
 						<attribute name="Implementation-Title" value="@{project}"/>
 						<attribute name="Implementation-Version" value="${build.label}"/>
 						<attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
+						<attribute name="Class-Path" value="@{manifestclasspath}"/>
 					</manifest>
 					<fileset dir="${work.dir}/@{project}" />
 					<fileset dir="${projects.dir}/@{project}/src">
@@ -1403,7 +1404,7 @@
 			<makeManifestProject
 				project="RoutingServices"
 	            	classpathref="routing.classpath" 
-	            	manifestclasspath="." />
+	            	manifestclasspath="Framework.jar lucene-core-2.2.0.jar saaj.jar wsdl4j-1.5.1.jar axis.jar axis-ant.jar commons-discovery-0.2.jar commons-logging-1.0.4.jar jaxrpc.jar log4j-1.2.8.jar spring.jar JFEP-0.1.0.jar" />
 	</target>
 
 	<target name="cms" description="Build CMS">
