@@ -887,6 +887,7 @@
 	<macrodef name="makeProject">
 		<attribute name="project" />
 		<attribute name="classpathref" default=""/>
+		<attribute name="manifestclasspath" default=""/>
 		<sequential>
 			<trycatch>
 				<try>
@@ -950,6 +951,12 @@
                     <attribute name="Implementation-Title" value="@{project}"/>
                     <attribute name="Implementation-Version" value="${build.label}"/>
                     <attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
+                    <if>
+		     <equals arg1="@{manifestclasspath}" arg2="" />		     
+		     <else>
+		       <attribute name="Class-Path" value="@{manifestclasspath}"/>
+		     </else>
+		    </if>
                 </manifest>
                 <fileset dir="${work.dir}/@{project}.instrout" />
                 <fileset dir="${projects.dir}/@{project}/src">
@@ -1325,7 +1332,8 @@
 	
 			<makeProject
 				project="RoutingServices"
-	            classpathref="routing.classpath"/>
+	            	classpathref="routing.classpath" 
+	            	manifestclasspath="." />
 	</target>
 
 	<target name="cms" description="Build CMS">
