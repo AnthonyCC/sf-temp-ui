@@ -353,11 +353,12 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 		IGeographicLocation result = null;
 		AddressModel model = new AddressModel();
 		model.setAddress1(srubbedStreet);
+		model.setZipCode(zipCode);
 		//model.setAddress1(srubbedStreet);
 		Connection conn = null;
 		try {
 			conn = this.jdbcTemplate.getDataSource().getConnection();
-			String geoResult = dao.geocodeAddress(model, false, false, conn);
+			String geoResult = dao.geocodeAddress(model, false, false, conn);			
 			if (com.freshdirect.delivery.ejb.GeographyDAO.GEOCODE_OK.equals(geoResult)) {
 				result = new GeographicLocation();
 				result.setLatitude(""+model.getAddressInfo().getLatitude());

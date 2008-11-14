@@ -68,7 +68,8 @@ public class RouteDataManager {
 	}
 	
 //	TrnRouteNumberId
-	protected RouteGenerationResult generateRouteNumber(List routeData, String cutOff, DomainManagerI domainManagerService ) {
+	protected RouteGenerationResult generateRouteNumber(List routeData, String cutOff, DomainManagerI domainManagerService ) 
+														throws RouteNoGenException {
 				
 		Map routeNoGenMapping = new HashMap();
 		
@@ -85,16 +86,21 @@ public class RouteDataManager {
 			String areaPrefix = null;
 			String areaDeliveryModel = null;
 			String currentRoute = null;
+			TrnArea trnArea = null;
 			
 			while(iterator.hasNext()) {		
 				
 				tmpModel = (OrderRouteInfoModel)iterator.next();
 				areaCode = TransStringUtil.splitStringForCode(tmpModel.getRouteId());
 				tmpModel.setDeliveryArea(areaCode);
-				areaPrefix = (String)((TrnArea)areaMapping.get(areaCode)).getPrefix();
-				areaDeliveryModel = (String)((TrnArea)areaMapping.get(areaCode)).getDeliveryModel();
+				trnArea = (TrnArea)areaMapping.get(areaCode);
+				if(trnArea == null) {
+					throw new RouteNoGenException("Area "+areaCode+" is missing");
+				}
+				areaPrefix = trnArea.getPrefix();
+				areaDeliveryModel = trnArea.getDeliveryModel();
 				if(areaPrefix == null) {
-					areaPrefix = "0";
+					throw new RouteNoGenException("Area Prefix for "+areaCode+" is missing");
 				}
 				routeId = getRouteNumberId(tmpModel.getDeliveryDate(), cutOff, areaCode);
 							
@@ -312,6 +318,12 @@ public class RouteDataManager {
 			return TransStringUtil.getServerDate(routeDate);
 		} catch(ParseException exp) {
 			return TransStringUtil.getCurrentDate();
+		}
+	}
+	
+	protected class RouteNoGenException extends Exception {
+		public RouteNoGenException(String message) {
+			super(message);
 		}
 	}
 

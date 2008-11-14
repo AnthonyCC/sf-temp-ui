@@ -11,7 +11,8 @@ import com.freshdirect.transadmin.util.TransportationAdminProperties;
 
 public class RouteOutputDataManager extends RouteDataManager  {
 	
-	public RoutingResult process(byte[] inputInfo1,byte[] inputInfo2, byte[] inputInfo3, String userName, Map paramMap, DomainManagerI domainManagerService) throws IOException {
+	public RoutingResult process(byte[] inputInfo1,byte[] inputInfo2, byte[] inputInfo3, String userName
+									, Map paramMap, DomainManagerI domainManagerService) throws IOException {
 		
 		String outputFileName1 = null;
 		String outputFileName2 = null;
@@ -32,18 +33,22 @@ public class RouteOutputDataManager extends RouteDataManager  {
 												, new ByteArrayInputStream(inputInfo), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER
 												, null);
 		if(inputDataList != null && inputDataList.size() > 0) {
-			RouteGenerationResult routeGenResult = generateRouteNumber(inputDataList, cutOff, domainManagerService);
-			
-			inputDataList = routeGenResult.getRouteInfos();
-			
-			result.setRouteNoSaveInfos(routeGenResult.getRouteNoSaveInfos());
-					
-			fileManager.generateRouteFile(TransportationAdminProperties.getErpOrderInputFormat()
-											, result.getOutputFile1(), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, inputDataList
-											, null);
-			fileManager.generateRouteFile(TransportationAdminProperties.getErpRouteInputFormat()
-											, result.getOutputFile2(), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, filterRoutesFromOrders(inputDataList)
-											, null);
+			try {
+				RouteGenerationResult routeGenResult = generateRouteNumber(inputDataList, cutOff, domainManagerService);
+				
+				inputDataList = routeGenResult.getRouteInfos();
+				
+				result.setRouteNoSaveInfos(routeGenResult.getRouteNoSaveInfos());
+						
+				fileManager.generateRouteFile(TransportationAdminProperties.getErpOrderInputFormat()
+												, result.getOutputFile1(), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, inputDataList
+												, null);
+				fileManager.generateRouteFile(TransportationAdminProperties.getErpRouteInputFormat()
+												, result.getOutputFile2(), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, filterRoutesFromOrders(inputDataList)
+												, null);
+			} catch (RouteNoGenException routeNoGen) {
+				result.addError(routeNoGen.getMessage());
+			}
 		}  else {
 			result.addError("Invalid Routing Output File");
 		}

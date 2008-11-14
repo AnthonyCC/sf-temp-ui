@@ -89,48 +89,51 @@ public class RouteMergeDataManager extends RouteDataManager {
 		Map areaMap = getAreas(domainManagerService);
 		
 		OrderAreaGroup orderGroup = groupOrderRouteInfo(fullDataList, areaMap);
-		
-		RouteGenerationResult routeGenResult = generateRouteNumber(collectOrdersFromMap(orderGroup.getOrderGroup()), cutOff, domainManagerService);	
-		
-		fullDataList = routeGenResult.getRouteInfos();		
-		result.setRouteNoSaveInfos(routeGenResult.getRouteNoSaveInfos());
-		
-		Set areaCodes = orderGroup.getOrderGroup().keySet();	
-		
-		List missingAreas = checkMissingAreas(areaMap, orderGroup.getOrderGroup());
-		if(missingAreas.size() == 0) {
-
-			List mergeDataList =  new ArrayList();
-			String strArea = null;
-
-			if(areaCodes != null) {	
-				Iterator iterator = areaCodes.iterator();
-				while(iterator.hasNext()) {
-					strArea = (String)iterator.next();
-					List dataList = (List)orderGroup.getOrderGroup().get(strArea);
-					mergeDataList.addAll(dataList);
-				}
-			}
+		try {
+			RouteGenerationResult routeGenResult = generateRouteNumber(collectOrdersFromMap(orderGroup.getOrderGroup()), cutOff, domainManagerService);	
 			
-			if(orderDataList != null) {
-				Iterator iterator = orderDataList.iterator();
-				OrderRouteInfoModel tmpInfo = null;
-				while(iterator.hasNext()) {
-					tmpInfo = (OrderRouteInfoModel)iterator.next();					
-					if(!orderGroup.getOrderIds().contains(tmpInfo.getOrderNumber())) {
-						mergeDataList.add(tmpInfo);
-					}					
+			fullDataList = routeGenResult.getRouteInfos();		
+			result.setRouteNoSaveInfos(routeGenResult.getRouteNoSaveInfos());
+			
+			Set areaCodes = orderGroup.getOrderGroup().keySet();	
+			
+			List missingAreas = checkMissingAreas(areaMap, orderGroup.getOrderGroup());
+			if(missingAreas.size() == 0) {
+	
+				List mergeDataList =  new ArrayList();
+				String strArea = null;
+	
+				if(areaCodes != null) {	
+					Iterator iterator = areaCodes.iterator();
+					while(iterator.hasNext()) {
+						strArea = (String)iterator.next();
+						List dataList = (List)orderGroup.getOrderGroup().get(strArea);
+						mergeDataList.addAll(dataList);
+					}
 				}
+				
+				if(orderDataList != null) {
+					Iterator iterator = orderDataList.iterator();
+					OrderRouteInfoModel tmpInfo = null;
+					while(iterator.hasNext()) {
+						tmpInfo = (OrderRouteInfoModel)iterator.next();					
+						if(!orderGroup.getOrderIds().contains(tmpInfo.getOrderNumber())) {
+							mergeDataList.add(tmpInfo);
+						}					
+					}
+				}
+	
+				fileManager.generateRouteFile(TransportationAdminProperties.getErpOrderInputFormat()
+						, result.getOutputFile1(), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, mergeDataList
+						, null);
+				fileManager.generateRouteFile(TransportationAdminProperties.getErpRouteInputFormat()
+						, result.getOutputFile2(), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, filterRoutesFromOrders(mergeDataList)
+						, null);
+			} else {			
+				postError(result, "Areas "+ missingAreas.toString()+ " are missing in roadnet file");			
 			}
-
-			fileManager.generateRouteFile(TransportationAdminProperties.getErpOrderInputFormat()
-					, result.getOutputFile1(), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, mergeDataList
-					, null);
-			fileManager.generateRouteFile(TransportationAdminProperties.getErpRouteInputFormat()
-					, result.getOutputFile2(), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, filterRoutesFromOrders(mergeDataList)
-					, null);
-		} else {			
-			postError(result, "Areas "+ missingAreas.toString()+ " are missing in roadnet file");			
+		}  catch (RouteNoGenException routeNoGen) {
+			result.addError(routeNoGen.getMessage());
 		}
 	}
 		
