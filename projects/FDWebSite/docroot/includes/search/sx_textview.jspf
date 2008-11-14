@@ -133,3 +133,4 @@ ContentNodeModel lastSubCategory = null;
 	}	
 %>
 </fd:ContentTreeTag>
+<div style="width: 1em">&nbsp;</div>
