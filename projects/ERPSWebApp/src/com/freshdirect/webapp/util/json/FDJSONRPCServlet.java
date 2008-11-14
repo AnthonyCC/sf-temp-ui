@@ -1,7 +1,6 @@
 package com.freshdirect.webapp.util.json;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,10 +9,9 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Category;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
-
+import com.freshdirect.webapp.util.AutoCompleteFacade;
 import com.freshdirect.webapp.util.CustomerCreatedListAjaxFacade;
 import com.freshdirect.webapp.util.MediaAjaxFacade;
-
 import com.metaparadigm.jsonrpc.JSONRPCServlet;
 
 
@@ -32,6 +30,7 @@ public class FDJSONRPCServlet extends JSONRPCServlet {
 			FDJSONRPCBridge bridge = new FDJSONRPCBridge();
 			bridge.registerObject("MediaFacade",MediaAjaxFacade.create());
 			bridge.registerObject("CCLFacade",CustomerCreatedListAjaxFacade.create());
+			bridge.registerObject("AutoCompleteFacade", AutoCompleteFacade.create());
 			
 			session.setAttribute("JSONRPCBridge",bridge);
 			session.setAttribute("timeout","true");

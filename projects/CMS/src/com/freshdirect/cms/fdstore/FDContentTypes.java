@@ -47,6 +47,8 @@ public class FDContentTypes {
 	
 	public static final ContentType STARTER_LIST = ContentType.get("StarterList");
 	
+	public static final ContentType SYNONYM = ContentType.get("Synonym");
+	
 	private FDContentTypes() {
 	}
 

@@ -45,7 +45,7 @@ public class GenericSearchDAO {
 	
 	public static List genericSearch(Connection conn, GenericSearchCriteria criteria) throws SQLException {
 		List searchResults = null;
-		if(criteria == null && criteria.isBlank()){
+		if(criteria == null || criteria.isBlank()){
 			return Collections.EMPTY_LIST;
 		} else if(EnumSearchType.COMPANY_SEARCH.equals(criteria.getSearchType())){
 			CriteriaBuilder builder = buildSQLFromCriteria(criteria);

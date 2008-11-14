@@ -1,21 +1,22 @@
-
+<html>
+<%@ page import='java.util.Date' %>
 <%@ page import='java.util.Iterator' %>
 <%@ page import='java.util.List' %>
 <%@ page import='java.util.Map' %>
 <%@ page import='java.util.TreeMap' %>
+<%@ page import="java.io.IOException" %>
+<%@ page import="java.io.File" %>
+<%@ page import="java.io.FileInputStream" %>
 
 <%@ page import='java.util.TreeMap' %>
 
 <%@ page import='java.net.URLEncoder' %>
 
 <%@ page import='com.freshdirect.framework.util.CSVUtils' %>
-
-
-<html>
 <head>
-<title>Search terms report</title>
-<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'>
-<style>
+	<title>Search terms report</title>
+	<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'>
+	<style type="text/css">
 body, td       { font-size: small; font-family: arial; color: #003333 }
 td.even        { background: #ffeeee }
 td.odd         { background: #eeeeff }
@@ -23,9 +24,8 @@ td.even-stat   { background: #eedddd }
 td.odd-stat    { background: #ddddee }
 td.head        { background: #000033; color: #aaaa00 }
 div.high       { background: #ddddff }
-</style>
+	</style>
 </head>
-
 <%!
 
 	private static class Info {
@@ -52,9 +52,7 @@ div.high       { background: #ddddff }
 	private static class InfoRow {
 	        private int id;
 		private String query;
-		private int exactCategories;
-		private int exactProducts;
-		private int fuzzyProducts;
+		private int products;
 		private int recipes;
 		private boolean moreRelevant;
 		private int frequency;
@@ -62,19 +60,15 @@ div.high       { background: #ddddff }
 		private InfoRow(List row) {
 			id = Integer.parseInt(row.get(0).toString());
 			query = row.get(1).toString();
-			exactCategories = Integer.parseInt(row.get(2).toString());
-			exactProducts = Integer.parseInt(row.get(3).toString());
-			fuzzyProducts = Integer.parseInt(row.get(4).toString());
-			recipes = Integer.parseInt(row.get(5).toString());
-			moreRelevant = Boolean.getBoolean(row.get(6).toString());
-			frequency = Integer.parseInt(row.get(7).toString());
+			products = Integer.parseInt(row.get(2).toString());
+			recipes = Integer.parseInt(row.get(3).toString());
+			moreRelevant = Boolean.getBoolean(row.get(4).toString());
+			frequency = Integer.parseInt(row.get(5).toString());
 		}
 
 		public int getId() { return id; }
 		public String getQuery() { return query; }
-		public int getExactCategories() { return exactCategories; }
-		public int getExactProducts() { return exactProducts; }
-		public int getFuzzyProducts() { return fuzzyProducts; }
+		public int getProducts() { return products; }
 		public int getRecipes() { return recipes; }
 		public boolean isMoreRelevant() { return moreRelevant; }
 		public int getFrequency() { return frequency; }
@@ -163,12 +157,10 @@ if (files == null || files.length == 0) {
 	<b>Run started <%=info.started%></b>
 	<table>
 			<tr>
-				<td><b>QUERY</b></td>
-				<td><b>FREQUENCY</b></td>
-				<td><b>EXACT CATEGORIES</b></td>
-				<td><b>EXACT PRODUCTS</b></td>
-				<td><b>FUZZY PRODUCTS</b></td>
-				<td><b>RECIPES</b></td>
+				<th>QUERY</th>
+				<th>FREQUENCY</th>
+				<th>PRODUCTS</th>
+				<th>RECIPES</th>
 			</tr>
 <%
 			while(it.hasNext()) {
@@ -183,9 +175,7 @@ if (files == null || files.length == 0) {
 			<tr>
 				<td <%=oddEven%> align="left" ><a href="/search.jsp?searchParams=<%=URLEncoder.encode(ir.getQuery(),"utf-8")%>"><%=ir.getQuery()%></a></td>
 				<td <%=oddEven%> align="right"><%=ir.getFrequency()%></td>
-				<td <%=oddEven%> align="right"><%=ir.getExactCategories()%></td>
-				<td <%=oddEven%> align="right"><%=ir.getExactProducts()%></td>
-				<td <%=oddEven%> align="right"><%=ir.getFuzzyProducts()%></td>
+				<td <%=oddEven%> align="right"><%=ir.getProducts()%></td>
 				<td <%=oddEven%> align="right"><%=ir.getRecipes()%></td>
 			</tr>
 				
@@ -212,7 +202,3 @@ if (files == null || files.length == 0) {
 
 </body>
 </html>
-
-
-
-

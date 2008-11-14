@@ -74,40 +74,6 @@ public class ContentSearchUtil {
 		return l;
 	}
 	
-	private static void appendBrandNames(StringBuffer buffer) {
-		BrandNameExtractor extractor = new BrandNameExtractor();
-		
-		List brandNames = extractor.extract(buffer);
-		for(Iterator i = brandNames.iterator(); i.hasNext();) {
-			String canonicalBrandName = StringUtil.removeAllWhiteSpace(i.next().toString());
-			if (buffer.indexOf(canonicalBrandName) != -1) buffer.append(' ').append(canonicalBrandName);
-		}
-	}
-	
-	// if min not reached, returns 0
-	// TODO: This is grossly inefficient, IMPROVE!
-	private static int countTokens(ContentNodeModel node, String[] tokens, int min) {
-		if (min < 0 || min > tokens.length) min = tokens.length;
-		
-		StringBuffer name = 
-			new StringBuffer(NVL.apply(node.getFullName(), "").toLowerCase()).
-				append(' ').append(NVL.apply(node.getKeywords(), "").toLowerCase());
-		appendBrandNames(name);
-		int remainingErrors = tokens.length - min;
-		int total = 0;
-		
-		for(int i = 0; remainingErrors >= 0 && i< tokens.length; ++i) {
-			if (name.indexOf(tokens[i]) == -1) --remainingErrors;
-			else ++total;
-		}
-		
-		
-
-
-		int tokenCount = remainingErrors >= 0 ? total : 0;
-		return tokenCount;
-	}
-	
 	private static Set getBrandNames(ContentNodeModel node) {
 		BrandNameExtractor extractor = new BrandNameExtractor();
 		
@@ -123,18 +89,23 @@ public class ContentSearchUtil {
 	}
 	
 	
+	/**
+	 * Count how many tokens can be found in the node's description.
+	 * 
+	 * @param node
+	 * @param tokens search term tokens
+	 * @param min minimum match required
+	 * @param stemmer stemmer to use
+	 * @return number of tokens matched, or 0 if tokens matched were less than min
+	 */
 	private static int countTokens(ContentNodeModel node, String[] tokens, int min, SearchQueryStemmer stemmer) {
 		if (min < 0 || min > tokens.length) min = tokens.length;
 		
-	
-		
+		// add ALL tokens (stemmed) from node to s
 		Set s = new HashSet(16);
 	
-		String[] nameTokens = tokenizeTerm(NVL.apply(node.getFullName(),"").toLowerCase());
-		String[] keywordTokens = tokenizeTerm(NVL.apply(node.getKeywords(),"").toLowerCase());
-		
-		Set brandNames = getBrandNames(node);
-		
+		String[] nameTokens = tokenizeTerm(NVL.apply(node.getFullName(),"").toLowerCase(), " ,'");
+		String[] keywordTokens = tokenizeTerm(NVL.apply(node.getKeywords(),"").toLowerCase(),  " ,");
 		
 		for(int i=0; i < nameTokens.length; ++i) s.add(stemmer.stemToken(nameTokens[i]));
 		for(int i=0; i < keywordTokens.length; ++i) s.add(stemmer.stemToken(keywordTokens[i]));
@@ -146,18 +117,12 @@ public class ContentSearchUtil {
 			if (s.contains(stemmer.stemToken(tokens[i]))) {
 				++total;
 			} else {
-				//System.err.println(tokens[i] + " > " + stemmer.stemToken(tokens[i]) + " not in " + s + " brands " + brandNames);
-				if (brandNames.contains(tokens[i])) ++total;
-				else --remainingErrors;
+				--remainingErrors;
 			}
 		}
 
 		int tokenCount = remainingErrors >= 0 ? total : 0;
-		
-		//StringBuffer st = new StringBuffer();
-		//for(int i =0; i< tokens.length; ++i) st.append('[').append(tokens[i]).append(']');
-		//System.err.println(" ?? " + st + " in " + brandNames + " -> " + tokenCount + " " + remainingErrors + " " + min);
-		
+				
 		return tokenCount;
 	}
 	
@@ -184,7 +149,6 @@ public class ContentSearchUtil {
 		int min = 0;
 		for(Iterator i=nodes.iterator(); i.hasNext();) {
 			ContentNodeModel node = (ContentNodeModel)i.next();
-			//System.out.println(" >>>> " + tokens.length + ':' + min);
 			int c = countTokens(node, tokens, min, stemmer);
 			if (c < min) continue;
 			min = c;
@@ -299,7 +263,19 @@ public class ContentSearchUtil {
 		}
 		return (String[]) tokens.toArray(new String[tokens.size()]);
 	}
+
 	
+	public static String[] tokenizeTerm(String term, String separator) {
+            List tokens = new ArrayList();
+            for (StringTokenizer st = new StringTokenizer(term, separator); st.hasMoreTokens();) {
+                String token = st.nextToken();
+                if (token.length() > 2) {
+                    tokens.add(token);
+                }
+            }
+            return (String[]) tokens.toArray(new String[tokens.size()]);
+        }
+
 	/**
 	 * @return false if product is hidden/not searchable/discontinued
 	 */
@@ -308,6 +284,12 @@ public class ContentSearchUtil {
 		return !product.isHidden() && product.isSearchable() && !product.isDiscontinued();
 	}
 	
+	/**
+	 * This is a destructive operation: the initial list is modified!
+	 * 
+	 * @param products
+	 * @return
+	 */
 	public static List filterProductsByDisplay(List products) {
 		for (Iterator i = products.iterator(); i.hasNext();) {
 			ProductModel prod = (ProductModel) i.next();
@@ -317,7 +299,34 @@ public class ContentSearchUtil {
 		}
 		return products;
 	}
+	
+	/**
+	 * return a list of products, this is not a destructive operation. 
+	 * @param products
+	 * @param departmentKey the content key of the department node.
+	 * @return
+	 */
+	public static List filterProductsByDepartment(List products, String departmentKey) {
+		if (departmentKey==null || products == null) {
+			return products;
+		}
+		List result = new ArrayList(products.size());
+		for (Iterator iter = products.iterator(); iter.hasNext();) {
+			ProductModel prod = (ProductModel) iter.next();
+			if (prod.getDepartment().getContentKey().getId().equals(departmentKey)) {
+				result.add(prod);
+			}
+		}
+		return result;
+	}
+	
 
+	/**
+	 * This is a destructive operation: the initial list is modified!
+	 * 
+	 * @param products
+	 * @return
+	 */
 	public  static List filterCategoriesByVisibility(List categories) {
 		for (ListIterator i = categories.listIterator(); i.hasNext();) {
 			CategoryModel cat = (CategoryModel) i.next();
@@ -328,6 +337,12 @@ public class ContentSearchUtil {
 		return categories;
 	}
 	
+	/**
+	 * This is a destructive operation: the initial list is modified!
+	 * 
+	 * @param products
+	 * @return
+	 */
 	public static List filterRecipesByAvailability(List recipes) {
 		for (ListIterator i = recipes.listIterator(); i.hasNext();) {
 			Recipe recipe = (Recipe) i.next();

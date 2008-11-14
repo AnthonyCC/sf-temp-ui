@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Content>
+	<Category id="gro_choc_fine">
+		<FULL_NAME>Chocolate</FULL_NAME>
+		<subcategories>
+			<Category ref="gro_candy_blkch"/>
+		</subcategories>
+	</Category>
+	<Category id="gro_candy">
+		<FULL_NAME>Candy, Fruit &amp; Nuts</FULL_NAME>
+		<subcategories>
+			<Category ref="gro_choc_fine"/>
+		</subcategories>
+	</Category>
+	<Department id="gro">
+		<FULL_NAME>Grocery</FULL_NAME>
+		<categories>
+			<Category ref="gro_candy"/>
+		</categories>
+	</Department>
+	<Department id="orgnat">
+		<FULL_NAME>Organic &amp; All-Natural</FULL_NAME>
+		<categories>
+			<Category ref="orgnat_dai"/>
+		</categories>
+	</Department>
+	<Product id="dai_organi_2_milk_02">
+		<skus>
+			<Sku ref="DAI0008813"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_organic_valley"/>
+		</brands>
+		<FULL_NAME>Organic Valley 2% Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_milk_2per"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_ashers">
+		<FULL_NAME>Asher's</FULL_NAME>
+	</Brand>
+	<Sku id="DAI0065186"/>
+	<Product id="dai_orgval_whlmilk_01">
+		<skus>
+			<Sku ref="DAI0059088"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_organic_valley"/>
+		</brands>
+		<FULL_NAME>Organic Valley Ultra Pasteurized Whole Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="orgnat_dai_milk_whol"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="dai_organi_1_milk_01">
+		<skus>
+			<Sku ref="DAI0008812"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_organic_valley"/>
+		</brands>
+		<FULL_NAME>Organic Valley 1% Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_milk_1per"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="dai_milk_2per">
+		<FULL_NAME>2%</FULL_NAME>
+	</Category>
+	<Category id="orgnat_dai_milk">
+		<FULL_NAME>Milk &amp; Soymilk</FULL_NAME>
+		<subcategories>
+			<Category ref="orgnat_dai_milk_whol"/>
+		</subcategories>
+	</Category>
+	<Sku id="CAN0062899"/>
+	<Product id="cfncndy_ash_mcrrd">
+		<skus>
+			<Sku ref="CAN0062899"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_ashers"/>
+		</brands>
+		<FULL_NAME>Asher's Milk Chocolate Pecan Caramel Pattie</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_candy_blkch"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="orgnat_dai_milk_whol">
+		<FULL_NAME>Whole</FULL_NAME>
+	</Category>
+	<Sku id="DAI0008812"/>
+	<Category id="dai_milk_milk">
+		<FULL_NAME>Milk</FULL_NAME>
+		<subcategories>
+			<Category ref="dai_milk_1per"/>
+			<Category ref="dai_milk_2per"/>
+		</subcategories>
+	</Category>
+	<Sku id="DAI0008813"/>
+	<Category id="orgnat_dai">
+		<FULL_NAME>Dairy</FULL_NAME>
+		<subcategories>
+			<Category ref="orgnat_dai_milk"/>
+		</subcategories>
+	</Category>
+	<Category id="dai_milk">
+		<FULL_NAME>Milk &amp; Cream</FULL_NAME>
+		<subcategories>
+			<Category ref="dai_milk_milk"/>
+		</subcategories>
+	</Category>
+	<Product id="dai_orgval_laclfmilkhlf">
+		<skus>
+			<Sku ref="DAI0065186"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_organic_valley"/>
+		</brands>
+		<FULL_NAME>Organic Valley Lactose-Free Low-Fat Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_milk_1per"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Store id="FreshDirect">
+		<departments>
+			<Department ref="dai"/>
+			<Department ref="orgnat"/>
+			<Department ref="gro"/>
+		</departments>
+	</Store>
+	<Brand id="bd_organic_valley">
+		<FULL_NAME>Organic Valley</FULL_NAME>
+	</Brand>
+	<Department id="dai">
+		<FULL_NAME>Dairy</FULL_NAME>
+		<categories>
+			<Category ref="dai_milk"/>
+		</categories>
+	</Department>
+	<Category id="gro_candy_blkch">
+		<FULL_NAME>Bulk</FULL_NAME>
+	</Category>
+	<Category id="dai_milk_1per">
+		<FULL_NAME>1%</FULL_NAME>
+	</Category>
+	<Sku id="DAI0059088"/>
+</Content>

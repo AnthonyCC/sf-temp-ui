@@ -1,8 +1,8 @@
 /*
-Copyright (c) 2007, Yahoo! Inc. All rights reserved.
+Copyright (c) 2008, Yahoo! Inc. All rights reserved.
 Code licensed under the BSD License:
 http://developer.yahoo.net/yui/license.txt
-version: 2.2.2
+version: 2.6.0
 */
 /**
  * Provides Attribute configurations.
@@ -154,11 +154,12 @@ YAHOO.util.Attribute.prototype = {
      */
     configure: function(map, init) {
         map = map || {};
+
         this._written = false; // reset writeOnce
         this._initialConfig = this._initialConfig || {};
         
         for (var key in map) {
-            if ( key && YAHOO.lang.hasOwnProperty(map, key) ) {
+            if ( map.hasOwnProperty(key) ) {
                 this[key] = map[key];
                 if (init) {
                     this._initialConfig[key] = map[key];
@@ -211,7 +212,7 @@ YAHOO.util.Attribute.prototype = {
      * @uses YAHOO.util.EventProvider
      */
     YAHOO.util.AttributeProvider = function() {};
-    
+
     YAHOO.util.AttributeProvider.prototype = {
         
         /**
@@ -226,12 +227,13 @@ YAHOO.util.Attribute.prototype = {
          * Returns the current value of the attribute.
          * @method get
          * @param {String} key The attribute whose value will be returned.
+         * @return {Any} The current value of the attribute.
          */
         get: function(key){
-            var configs = this._configs || {};
-            var config = configs[key];
+            this._configs = this._configs || {};
+            var config = this._configs[key];
             
-            if (!config) {
+            if (!config || !this._configs.hasOwnProperty(key)) {
                 return undefined;
             }
             
@@ -247,8 +249,8 @@ YAHOO.util.Attribute.prototype = {
          * @return {Boolean} Whether or not the value was set.
          */
         set: function(key, value, silent){
-            var configs = this._configs || {};
-            var config = configs[key];
+            this._configs = this._configs || {};
+            var config = this._configs[key];
             
             if (!config) {
                 return false;
@@ -263,12 +265,12 @@ YAHOO.util.Attribute.prototype = {
          * @return {Array} An array of attribute names.
          */
         getAttributeKeys: function(){
-            var configs = this._configs;
+            this._configs = this._configs;
             var keys = [];
             var config;
-            for (var key in configs) {
-                config = configs[key];
-                if ( Lang.hasOwnProperty(configs, key) && 
+            for (var key in this._configs) {
+                config = this._configs[key];
+                if ( Lang.hasOwnProperty(this._configs, key) && 
                         !Lang.isUndefined(config) ) {
                     keys[keys.length] = key;
                 }
@@ -299,9 +301,9 @@ YAHOO.util.Attribute.prototype = {
          * @return {Boolean} Whether or not the value was set
          */
         resetValue: function(key, silent){
-            var configs = this._configs || {};
-            if (configs[key]) {
-                this.set(key, configs[key]._initialConfig.value, silent);
+            this._configs = this._configs || {};
+            if (this._configs[key]) {
+                this.set(key, this._configs[key]._initialConfig.value, silent);
                 return true;
             }
             return false;
@@ -313,18 +315,16 @@ YAHOO.util.Attribute.prototype = {
          * @param {String | Array} key The attribute(s) to refresh
          * @param {Boolean} silent Whether or not to suppress change events
          */
-        refresh: function(key, silent){
+        refresh: function(key, silent) {
+            this._configs = this._configs || {};
             var configs = this._configs;
             
             key = ( ( Lang.isString(key) ) ? [key] : key ) || 
                     this.getAttributeKeys();
             
             for (var i = 0, len = key.length; i < len; ++i) { 
-                if ( // only set if there is a value and not null
-                    configs[key[i]] && 
-                    ! Lang.isUndefined(configs[key[i]].value) &&
-                    ! Lang.isNull(configs[key[i]].value) ) {
-                    configs[key[i]].refresh(silent);
+                if (configs.hasOwnProperty(key[i])) {
+                    this._configs[key[i]].refresh(silent);
                 }
             }
         },
@@ -351,8 +351,8 @@ YAHOO.util.Attribute.prototype = {
          * attribute's properties.
          */
         getAttributeConfig: function(key) {
-            var configs = this._configs || {};
-            var config = configs[key] || {};
+            this._configs = this._configs || {};
+            var config = this._configs[key] || {};
             var map = {}; // returning a copy to prevent overrides
             
             for (key in config) {
@@ -372,13 +372,13 @@ YAHOO.util.Attribute.prototype = {
          * @param {Boolean} init Whether or not this should become the intial config.
          */
         setAttributeConfig: function(key, map, init) {
-            var configs = this._configs || {};
+            this._configs = this._configs || {};
             map = map || {};
-            if (!configs[key]) {
+            if (!this._configs[key]) {
                 map.name = key;
-                configs[key] = new YAHOO.util.Attribute(map, this);
+                this._configs[key] = this.createAttribute(map);
             } else {
-                configs[key].configure(map, init);
+                this._configs[key].configure(map, init);
             }
         },
         
@@ -401,10 +401,30 @@ YAHOO.util.Attribute.prototype = {
          * @private
          */
         resetAttributeConfig: function(key){
-            var configs = this._configs || {};
-            configs[key].resetConfig();
+            this._configs = this._configs || {};
+            this._configs[key].resetConfig();
         },
         
+        // wrapper for EventProvider.subscribe
+        // to create events on the fly
+        subscribe: function(type, callback) {
+            this._events = this._events || {};
+
+            if ( !(type in this._events) ) {
+                this._events[type] = this.createEvent(type);
+            }
+
+            YAHOO.util.EventProvider.prototype.subscribe.apply(this, arguments);
+        },
+
+        on: function() {
+            this.subscribe.apply(this, arguments);
+        },
+
+        addListener: function() {
+            this.subscribe.apply(this, arguments);
+        },
+
         /**
          * Fires the attribute's beforeChange event. 
          * @method fireBeforeChangeEvent
@@ -427,6 +447,10 @@ YAHOO.util.Attribute.prototype = {
         fireChangeEvent: function(e) {
             e.type += 'Change';
             return this.fireEvent(e.type, e);
+        },
+
+        createAttribute: function(map) {
+            return new YAHOO.util.Attribute(map, this);
         }
     };
     
@@ -474,17 +498,19 @@ YAHOO.util.Element.prototype = {
     /**
      * Wrapper for HTMLElement method.
      * @method appendChild
-     * @param {Boolean} deep Whether or not to do a deep clone
+     * @param {YAHOO.util.Element || HTMLElement} child The element to append. 
+     * @return {HTMLElement} The appended DOM element. 
      */
     appendChild: function(child) {
         child = child.get ? child.get('element') : child;
-        this.get('element').appendChild(child);
+        return this.get('element').appendChild(child);
     },
     
     /**
      * Wrapper for HTMLElement method.
      * @method getElementsByTagName
      * @param {String} tag The tagName to collect
+     * @return {HTMLCollection} A collection of DOM elements. 
      */
     getElementsByTagName: function(tag) {
         return this.get('element').getElementsByTagName(tag);
@@ -505,23 +531,24 @@ YAHOO.util.Element.prototype = {
      * @param {HTMLElement} element The HTMLElement to insert
      * @param {HTMLElement} before The HTMLElement to insert
      * the element before.
+     * @return {HTMLElement} The inserted DOM element. 
      */
     insertBefore: function(element, before) {
         element = element.get ? element.get('element') : element;
         before = (before && before.get) ? before.get('element') : before;
         
-        this.get('element').insertBefore(element, before);
+        return this.get('element').insertBefore(element, before);
     },
     
     /**
      * Wrapper for HTMLElement method.
      * @method removeChild
      * @param {HTMLElement} child The HTMLElement to remove
+     * @return {HTMLElement} The removed DOM element. 
      */
     removeChild: function(child) {
         child = child.get ? child.get('element') : child;
-        this.get('element').removeChild(child);
-        return true;
+        return this.get('element').removeChild(child);
     },
     
     /**
@@ -529,6 +556,7 @@ YAHOO.util.Element.prototype = {
      * @method replaceChild
      * @param {HTMLElement} newNode The HTMLElement to insert
      * @param {HTMLElement} oldNode The HTMLElement to replace
+     * @return {HTMLElement} The replaced DOM element. 
      */
     replaceChild: function(newNode, oldNode) {
         newNode = newNode.get ? newNode.get('element') : newNode;
@@ -556,13 +584,12 @@ YAHOO.util.Element.prototype = {
      * @param {Object} scope The object to use for the scope of the handler 
      */
     addListener: function(type, fn, obj, scope) {
-        var el = this.get('element');
+        var el = this.get('element') || this.get('id');
         scope = scope || this;
         
-        el = this.get('id') || el;
         var self = this; 
         if (!this._events[type]) { // create on the fly
-            if ( this.DOM_EVENTS[type] ) {
+            if (el && this.DOM_EVENTS[type]) {
                 YAHOO.util.Event.addListener(el, type, function(e) {
                     if (e.srcElement && !e.target) { // supplement IE with target
                         e.target = e.srcElement;
@@ -570,11 +597,10 @@ YAHOO.util.Element.prototype = {
                     self.fireEvent(type, e);
                 }, obj, scope);
             }
-            
             this.createEvent(type, this);
         }
         
-        this.subscribe.apply(this, arguments); // notify via customEvent
+        return YAHOO.util.EventProvider.prototype.subscribe.apply(this, arguments); // notify via customEvent
     },
     
     
@@ -586,8 +612,21 @@ YAHOO.util.Element.prototype = {
      * @param {Any} obj A variable to pass to the handler
      * @param {Object} scope The object to use for the scope of the handler 
      */
-    on: function() { this.addListener.apply(this, arguments); },
+    on: function() {
+        return this.addListener.apply(this, arguments);
+    },
     
+    /**
+     * Alias for addListener
+     * @method subscribe
+     * @param {String} type The name of the event to listen for
+     * @param {Function} fn The function call when the event fires
+     * @param {Any} obj A variable to pass to the handler
+     * @param {Object} scope The object to use for the scope of the handler 
+     */
+    subscribe: function() {
+        return this.addListener.apply(this, arguments);
+    },
     
     /**
      * Remove an event listener
@@ -596,7 +635,7 @@ YAHOO.util.Element.prototype = {
      * @param {Function} fn The function call when the event fires
      */
     removeListener: function(type, fn) {
-        this.unsubscribe.apply(this, arguments);
+        return this.unsubscribe.apply(this, arguments);
     },
     
     /**
@@ -692,6 +731,7 @@ YAHOO.util.Element.prototype = {
      * @method appendTo
      * @param {HTMLElement | Element} parentNode The node to append to
      * @param {HTMLElement | Element} before An optional node to insert before
+     * @return {HTMLElement} The appended DOM element. 
      */
     appendTo: function(parent, before) {
         parent = (parent.get) ?  parent.get('element') : Dom.get(parent);
@@ -727,6 +767,8 @@ YAHOO.util.Element.prototype = {
             type: 'appendTo',
             target: parent
         });
+
+        return element;
     },
     
     get: function(key) {
@@ -737,6 +779,23 @@ YAHOO.util.Element.prototype = {
         }
 
         return AttributeProvider.prototype.get.call(this, key);
+    },
+
+    setAttributes: function(map, silent){
+        var el = this.get('element');
+        for (var key in map) {
+            // need to configure if setting unconfigured HTMLElement attribute 
+            if ( !this._configs[key] && !YAHOO.lang.isUndefined(el[key]) ) {
+                this.setAttributeConfig(key);
+            }
+        }
+
+        // set based on configOrder
+        for (var i = 0, len = this._configOrder.length; i < len; ++i) {
+            if (map[this._configOrder[i]] !== undefined) {
+                this.set(this._configOrder[i], map[this._configOrder[i]], silent);
+            }
+        }
     },
 
     set: function(key, value, silent) {
@@ -766,6 +825,7 @@ YAHOO.util.Element.prototype = {
         } else {
             AttributeProvider.prototype.setAttributeConfig.apply(this, arguments);
         }
+        this._configOrder.push(key);
     },
     
     getAttributeKeys: function() {
@@ -796,6 +856,7 @@ var _initElement = function(el, attr) {
     this._queue = this._queue || [];
     this._events = this._events || {};
     this._configs = this._configs || {};
+    this._configOrder = []; 
     attr = attr || {};
     attr.element = attr.element || el || null;
 
@@ -817,36 +878,36 @@ var _initElement = function(el, attr) {
 
     var isReady = false;  // to determine when to init HTMLElement and content
 
-    if (YAHOO.lang.isString(el) ) { // defer until available/ready
+    if (typeof attr.element === 'string') { // register ID for get() access
         _registerHTMLAttr.call(this, 'id', { value: attr.element });
     }
 
-    if (Dom.get(el)) {
+    if (Dom.get(attr.element)) {
         isReady = true;
         _initHTMLElement.call(this, attr);
         _initContent.call(this, attr);
-    } 
+    }
 
     YAHOO.util.Event.onAvailable(attr.element, function() {
         if (!isReady) { // otherwise already done
             _initHTMLElement.call(this, attr);
         }
 
-        this.fireEvent('available', { type: 'available', target: attr.element });  
+        this.fireEvent('available', { type: 'available', target: Dom.get(attr.element) });  
     }, this, true);
     
     YAHOO.util.Event.onContentReady(attr.element, function() {
         if (!isReady) { // otherwise already done
             _initContent.call(this, attr);
         }
-        this.fireEvent('contentReady', { type: 'contentReady', target: attr.element });  
+        this.fireEvent('contentReady', { type: 'contentReady', target: Dom.get(attr.element) });  
     }, this, true);
 };
 
 var _initHTMLElement = function(attr) {
     /**
      * The HTMLElement the Element instance refers to.
-     * @config element
+     * @attribute element
      * @type HTMLElement
      */
     this.setAttributeConfig('element', {
@@ -876,7 +937,9 @@ var _registerHTMLAttr = function(key, map) {
     map = map || {};
     map.name = key;
     map.method = map.method || function(value) {
-        el[key] = value;
+        if (el) {
+            el[key] = value;
+        }
     };
     map.value = map.value || el[key];
     this._configs[key] = new YAHOO.util.Attribute(map, this);
@@ -908,8 +971,33 @@ var _registerHTMLAttr = function(key, map) {
  * @event contentReady
  */
 
+/**
+ * Fires before the Element is appended to another Element.
+ * <p>See: <a href="#addListener">Element.addListener</a></p>
+ * <p><strong>Event fields:</strong><br>
+ * <code>&lt;String&gt; type</code> beforeAppendTo<br>
+ * <code>&lt;HTMLElement/Element&gt;
+ * target</code> the HTMLElement/Element being appended to 
+ * <p><strong>Usage:</strong><br>
+ * <code>var handler = function(e) {var target = e.target};<br>
+ * myTabs.addListener('beforeAppendTo', handler);</code></p>
+ * @event beforeAppendTo
+ */
+
+/**
+ * Fires after the Element is appended to another Element.
+ * <p>See: <a href="#addListener">Element.addListener</a></p>
+ * <p><strong>Event fields:</strong><br>
+ * <code>&lt;String&gt; type</code> appendTo<br>
+ * <code>&lt;HTMLElement/Element&gt;
+ * target</code> the HTMLElement/Element being appended to 
+ * <p><strong>Usage:</strong><br>
+ * <code>var handler = function(e) {var target = e.target};<br>
+ * myTabs.addListener('appendTo', handler);</code></p>
+ * @event appendTo
+ */
 
 YAHOO.augment(YAHOO.util.Element, AttributeProvider);
 })();
 
-YAHOO.register("element", YAHOO.util.Element, {version: "2.2.2", build: "204"});
+YAHOO.register("element", YAHOO.util.Element, {version: "2.6.0", build: "1321"});

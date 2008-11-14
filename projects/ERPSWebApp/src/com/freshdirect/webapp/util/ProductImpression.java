@@ -54,9 +54,14 @@ public class ProductImpression {
 	 * @return the {@link FDProduct} corresponding to the default sku
 	 */
 	public FDProduct getFDProduct() {
+		SkuModel sku = getSku();
+		
+		if (sku == null)
+			return null;
+		
 		try {
 			FDProductInfo productInfo = 
-				FDCachedFactory.getProductInfo(getSku().getSkuCode());
+				FDCachedFactory.getProductInfo(sku.getSkuCode());
 			return FDCachedFactory.getProduct(productInfo);
 		} catch (FDResourceException e) {
 			throw new FDRuntimeException(e);
@@ -77,6 +82,55 @@ public class ProductImpression {
 	
 
 	
+
+	/**
+	 * Returns configuration description
+	 * @return
+	 */
+	public String getConfigurationDescrpition() {
+		try {
+			return productModel.getSizeDescription();
+		} catch (FDResourceException e) {
+			throw new FDRuntimeException(e);
+		}
+	}
+	
+
+	/**
+	 * Returns scaled price labels
+	 *
+	 * @return
+	 */
+	public String[] getScaledPrices() {
+        FDProduct fdProduct = getFDProduct();
+		return fdProduct != null ? fdProduct.getPricing().getScaleDisplay() : new String[0];
+	}
+
+
+
+	/**
+	 * Returns productInfo instance
+	 * @return
+	 */
+	public FDProductInfo getProductInfo() {
+		if (getSku() == null) {
+			return null;
+		}
+		String skuCode = getSku().getSkuCode();
+		
+		FDProductInfo productInfo = null;
+		if (skuCode != null) {
+			try {
+				productInfo = FDCachedFactory.getProductInfo(skuCode);
+			} catch (FDSkuNotFoundException ex) {
+				// sku not found ...
+			} catch (FDResourceException e) {
+				// resource not found ...
+			}
+		}
+		return productInfo;
+	}
+
 
 
 	/**

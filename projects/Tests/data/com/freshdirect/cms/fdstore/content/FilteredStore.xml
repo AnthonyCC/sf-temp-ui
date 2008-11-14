@@ -1,0 +1,2249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Content>
+	<Product id="gro_parmalat_white_2_02">
+		<skus>
+			<Sku ref="GRO001326"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_parmalat"/>
+		</brands>
+		<FULL_NAME>Parmalat Stay Fresh 2% Reduced Fat Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bever_milk"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="gro_parmalat_white_2_01">
+		<skus>
+			<Sku ref="GRO001325"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_parmalat"/>
+			<Brand ref="bd_lil_milk"/>
+		</brands>
+		<FULL_NAME>Parmalat Lil' Milk Stay Fresh 2% Reduced Fat Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bever_milk"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="SPE0060358"/>
+	<Department id="gro">
+		<FULL_NAME>Grocery</FULL_NAME>
+		<categories>
+			<Category ref="gro_baby"/>
+			<Category ref="gro_bakin"/>
+			<Category ref="gro_bever"/>
+			<Category ref="gro_candy"/>
+			<Category ref="gro_coffe"/>
+			<Category ref="gro_cooki"/>
+			<Category ref="gro_pet"/>
+		</categories>
+	</Department>
+	<Product id="dai_catham_mapyog">
+		<skus>
+			<Sku ref="DAI0060828"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_old_chatham"/>
+		</brands>
+		<FULL_NAME>Old Chatham Hudson Valley Maple Sheep's Milk Yogurt</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_yogur_regu"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_milkbone">
+		<FULL_NAME>Milk-Bone</FULL_NAME>
+	</Brand>
+	<Product id="gro_kellogg_coco_cs">
+		<skus>
+			<Sku ref="GRO0066501"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_kelloggs"/>
+		</brands>
+		<FULL_NAME>Kellogg's Cocoa Krispies Milk &amp; Cereal Bars, Case</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="big_snack_bars"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="dai_total_honyog">
+		<skus>
+			<Sku ref="DAI0062499"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_total"/>
+		</brands>
+		<FULL_NAME>Fage TOTAL Plain Whole Milk Greek Yogurt with Honey</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_yogur_regu"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="hba_phillips_mom_02">
+		<skus>
+			<Sku ref="HBA0063994"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_phillips"/>
+		</brands>
+		<FULL_NAME>Phillips Milk of Magnesia</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="hba_stomach"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="GRO0057927"/>
+	<Product id="hba_phillips_mom_01">
+		<skus>
+			<Sku ref="HBA0063995"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_phillips"/>
+		</brands>
+		<FULL_NAME>Phillips Milk of Magnesia</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="hba_stomach"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="spe_ritter_mchaz">
+		<skus>
+			<Sku ref="SPE0062453"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_ritter_sport"/>
+		</brands>
+		<FULL_NAME>Ritter Sport Milk Chocolate with Whole Hazelnuts</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_fine_pkg"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="GRO0057921"/>
+	<Product id="gro_carnat_evaporat_02">
+		<skus>
+			<Sku ref="GRO001172"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_carnation"/>
+		</brands>
+		<FULL_NAME>Carnation Evaporated Milk with Vitamin D</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bakin_conde"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="GRO0057920"/>
+	<Sku id="GRO001389"/>
+	<Department id="fro">
+		<FULL_NAME>Frozen</FULL_NAME>
+		<categories>
+			<Category ref="fro_deser"/>
+			<Category ref="fro_icecr"/>
+		</categories>
+	</Department>
+	<Product id="dai_lactaid_100_lact_01">
+		<skus>
+			<Sku ref="DAI0008801"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_lactaid"/>
+		</brands>
+		<FULL_NAME>Lactaid 100% Lactose-Free Fat Free Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_milk_lact"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_guittard">
+		<FULL_NAME>E. Guittard</FULL_NAME>
+	</Brand>
+	<Sku id="GRO001391"/>
+	<Sku id="GRO001392"/>
+	<Sku id="GRO001390"/>
+	<Product id="spe_feod_mlkalm_01">
+		<skus>
+			<Sku ref="SPE0059345"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_feodora"/>
+		</brands>
+		<FULL_NAME>Feodora Milk Chocolate Bar with Almond Pieces</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_fine_pkg"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="dai_milk_butt">
+		<FULL_NAME>Buttermilk &amp; Goat Milk</FULL_NAME>
+	</Category>
+	<Sku id="DAI0008803"/>
+	<Sku id="DAI0008802"/>
+	<Sku id="DAI0008801"/>
+	<Brand id="bd_nestle">
+		<FULL_NAME>Nestlé</FULL_NAME>
+	</Brand>
+	<Product id="spe_honees_milk">
+		<skus>
+			<Sku ref="SPE0062074"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_honees"/>
+		</brands>
+		<FULL_NAME>Honees Milk-N-Honees Drops</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_candy_candy"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Department id="orgnat">
+		<FULL_NAME>Organic &amp; All-Natural</FULL_NAME>
+		<categories>
+			<Category ref="orgnat_dai"/>
+		</categories>
+	</Department>
+	<Product id="spe_ritter_alp">
+		<skus>
+			<Sku ref="SPE0061920"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_ritter_sport"/>
+		</brands>
+		<FULL_NAME>Ritter Sport Alpine Milk Chocolate</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_fine_pkg"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="dai_chees_mozz">
+		<FULL_NAME>Ricotta &amp; Fresh</FULL_NAME>
+	</Category>
+	<Product id="dai_orgval_whlmilk_01">
+		<skus>
+			<Sku ref="DAI0059088"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_organic_valley"/>
+		</brands>
+		<FULL_NAME>Organic Valley Ultra Pasteurized Whole Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="orgnat_dai_milk_whol"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="DAI0062500"/>
+	<Sku id="DAI0008812"/>
+	<Sku id="GRO001267"/>
+	<Sku id="DAI0008813"/>
+	<Product id="gro_carnat_lowfat_e_01">
+		<skus>
+			<Sku ref="GRO001174"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_carnation"/>
+		</brands>
+		<FULL_NAME>Carnation Low-Fat Evaporated Milk with Vitamins A &amp; D</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bakin_conde"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="DAI0008819"/>
+	<Brand id="bd_purina">
+		<FULL_NAME>Purina</FULL_NAME>
+	</Brand>
+	<Product id="gro_westsoy_lite_van_01">
+		<skus>
+			<Sku ref="GRO001399"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_westsoy"/>
+			<Brand ref="bd_westbrae"/>
+		</brands>
+		<FULL_NAME>WestSoy Lite Vanilla Non-Dairy Soy Beverage</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bever_soy"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="gro_westsoy_west_soy_01">
+		<skus>
+			<Sku ref="GRO001389"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_westsoy"/>
+			<Brand ref="bd_westbrae"/>
+		</brands>
+		<FULL_NAME>WestSoy Nonfat Vanilla Non-Dairy Soy Beverage</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bever_soy"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="GRO0058428"/>
+	<Category id="dai_yogur_unflav">
+		<FULL_NAME>Unflavored</FULL_NAME>
+	</Category>
+	<Category id="gro_bever_milk">
+		<FULL_NAME>Milk</FULL_NAME>
+	</Category>
+	<Product id="spe_feod_mlkhzl_01">
+		<skus>
+			<Sku ref="SPE0059344"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_feodora"/>
+		</brands>
+		<FULL_NAME>Feodora Milk Chocolate Bar with Hazelnuts</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_fine_pkg"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="orgnat_dai_milk_soy">
+		<FULL_NAME>Soy</FULL_NAME>
+	</Category>
+	<Sku id="DAI0008824"/>
+	<Category id="fro_icecr_sand">
+		<FULL_NAME>Sandwiches &amp; Bars</FULL_NAME>
+	</Category>
+	<Sku id="DAI0008927"/>
+	<Brand id="bd_parmalat">
+		<FULL_NAME>Parmalat</FULL_NAME>
+	</Brand>
+	<Product id="gro_parmalat_slamvan">
+		<skus>
+			<Sku ref="GRO0060095"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_parmalat"/>
+		</brands>
+		<FULL_NAME>Parmalat Looney Tunes Slammers 2% Vanilla Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bever_milk"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="gro_kellogg_ffcinn_cs">
+		<skus>
+			<Sku ref="GRO0066500"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_kelloggs"/>
+		</brands>
+		<FULL_NAME>Kellogg's Frosted Flake Cinnamon Milk and Cereal Bars, Case</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="big_snack_bars"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="SPE0063758"/>
+	<Sku id="SPE0063757"/>
+	<Category id="dai_milk">
+		<FULL_NAME>Milk &amp; Cream</FULL_NAME>
+		<subcategories>
+			<Category ref="dai_milk_milk"/>
+		</subcategories>
+	</Category>
+	<Category id="gro_cooki_cooki_choch">
+		<FULL_NAME>Chocolate Chip</FULL_NAME>
+	</Category>
+	<Product id="gro_westsoy_plus_pla_01">
+		<skus>
+			<Sku ref="GRO001392"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_westsoy"/>
+			<Brand ref="bd_westbrae"/>
+		</brands>
+		<FULL_NAME>WestSoy Plus Plain Non-Dairy Soy Beverage</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bever_soy"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="gro_candy_candy">
+		<FULL_NAME>Packaged</FULL_NAME>
+	</Category>
+	<Brand id="bd_lil_milk">
+		<FULL_NAME>Lil' Milk</FULL_NAME>
+	</Brand>
+	<Category id="gro_cooki_cooki_choco">
+		<FULL_NAME>Chocolate</FULL_NAME>
+	</Category>
+	<Brand id="bd_bahlsen">
+		<FULL_NAME>Bahlsen</FULL_NAME>
+	</Brand>
+	<Sku id="DAI0008933"/>
+	<Sku id="GRO001397"/>
+	<Category id="picks_locarb_dairy">
+		<FULL_NAME>Dairy &amp; Cheese</FULL_NAME>
+		<subcategories>
+			<Category ref="picks_locarb_milk"/>
+		</subcategories>
+	</Category>
+	<Sku id="GRO001398"/>
+	<Sku id="GRO001399"/>
+	<Category id="gro_choc_fine">
+		<FULL_NAME>Chocolate</FULL_NAME>
+		<subcategories>
+			<Category ref="gro_candy_blkch"/>
+			<Category ref="gro_candy_chocpk"/>
+			<Category ref="gro_fine_pkg"/>
+		</subcategories>
+	</Category>
+	<Sku id="GRO001393"/>
+	<Sku id="GRO001394"/>
+	<Sku id="GRO001395"/>
+	<Sku id="GRO001396"/>
+	<Sku id="SPE0061796"/>
+	<Sku id="SPE0061799"/>
+	<Brand id="bd_enfamil">
+		<FULL_NAME>Enfamil</FULL_NAME>
+	</Brand>
+	<Brand id="bd_tollhouse">
+		<FULL_NAME>Tollhouse</FULL_NAME>
+	</Brand>
+	<Category id="gro_baby_formu">
+		<FULL_NAME>Formula</FULL_NAME>
+	</Category>
+	<Product id="dai_polly_o_whole_mi_01">
+		<skus>
+			<Sku ref="DAI0008927"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_pollyo"/>
+		</brands>
+		<FULL_NAME>Polly-O Whole Milk Ricotta Cheese</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_chees_mozz"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="FRO0059185"/>
+	<Brand id="bd_phillips">
+		<FULL_NAME>Phillips</FULL_NAME>
+	</Brand>
+	<Brand id="bd_quik">
+		<FULL_NAME>Quik</FULL_NAME>
+	</Brand>
+	<Product id="gro_westsoy_rice_bev_01">
+		<skus>
+			<Sku ref="GRO001394"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_westsoy"/>
+			<Brand ref="bd_westbrae"/>
+		</brands>
+		<FULL_NAME>WestSoy Plain Rice Beverage</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bever_soy"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="dai_chees">
+		<FULL_NAME>Cheese</FULL_NAME>
+		<subcategories>
+			<Category ref="dai_chees_blue"/>
+			<Category ref="dai_chees_mozz"/>
+			<Category ref="shredded_grated_cheese"/>
+		</subcategories>
+	</Category>
+	<Sku id="GRO0060648"/>
+	<Product id="gro_swiss_milk_cho_02">
+		<skus>
+			<Sku ref="GRO001654"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_swiss_miss"/>
+		</brands>
+		<FULL_NAME>Swiss Miss Milk Chocolate Hot Cocoa Mix with Mini Marshmallows</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_coffe_cocoa"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="gro_swiss_milk_cho_01">
+		<skus>
+			<Sku ref="GRO001653"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_swiss_miss"/>
+		</brands>
+		<FULL_NAME>Swiss Miss Milk Chocolate Hot Cocoa Mix</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_coffe_cocoa"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="spe_clu_milkbar">
+		<skus>
+			<Sku ref="SPE0060292"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_michel_cluizel"/>
+		</brands>
+		<FULL_NAME>Michel Cluizel 33% Milk Chocolate Bar</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_fine_pkg"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="DAI0008917"/>
+	<Sku id="DAI0008916"/>
+	<Brand id="bd_ovaltine">
+		<FULL_NAME>Ovaltine</FULL_NAME>
+	</Brand>
+	<Sku id="DAI0008871"/>
+	<Sku id="DAI0008872"/>
+	<Sku id="DAI0065187"/>
+	<Sku id="DAI0065186"/>
+	<Sku id="GRO0062323"/>
+	<Category id="gro_bakin">
+		<FULL_NAME>Baking Needs</FULL_NAME>
+		<subcategories>
+			<Category ref="gro_bakin_conde"/>
+			<Category ref="gro_bakin_choco"/>
+			<Category ref="gro_bakin_frost"/>
+		</subcategories>
+	</Category>
+	<Category id="dai_milk_whol">
+		<FULL_NAME>Whole</FULL_NAME>
+	</Category>
+	<Product id="dai_lactaid_nonfat_m_01">
+		<skus>
+			<Sku ref="DAI0008802"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_lactaid"/>
+		</brands>
+		<FULL_NAME>Lactaid 70% Lactose-Free Fat Free Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_milk_lact"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="DAI0008874"/>
+	<Brand id="bd_roland">
+		<FULL_NAME>Roland</FULL_NAME>
+	</Brand>
+	<Sku id="DAI0008873"/>
+	<Brand id="bd_duncan_hines">
+		<FULL_NAME>Duncan Hines</FULL_NAME>
+	</Brand>
+	<Brand id="bd_feodora">
+		<FULL_NAME>Feodora</FULL_NAME>
+	</Brand>
+	<Category id="gro_fine_pkg">
+		<FULL_NAME>Premium</FULL_NAME>
+	</Category>
+	<Product id="gro_mrsfields_chcchp">
+		<skus>
+			<Sku ref="GRO0060648"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_mrs_fields"/>
+		</brands>
+		<FULL_NAME>Mrs. Fields Milk Chocolate Chip Cookies</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_cooki_cooki_choch"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="SPE0000422"/>
+	<Product id="fro_dove_bar_vanilla_02">
+		<skus>
+			<Sku ref="FRO0044519"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_dovebar"/>
+		</brands>
+		<FULL_NAME>Dovebar Milk Chocolate with Vanilla Ice Cream Bars</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_icecr_sand"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="dai_hers_twochcmlk_02">
+		<skus>
+			<Sku ref="DAI0060136"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_hersheys"/>
+		</brands>
+		<FULL_NAME>Hershey's 2% Chocolate Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_milk_flav"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_carrs">
+		<FULL_NAME>Carr's</FULL_NAME>
+	</Brand>
+	<Product id="gro_nestle_chocolat_01">
+		<skus>
+			<Sku ref="GRO001656"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_nestle"/>
+			<Brand ref="bd_quik"/>
+		</brands>
+		<FULL_NAME>Nestlé Quik Chocolate Milk Powder</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_coffe_cocoa"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="dai_farm_2milkpaper_01">
+		<skus>
+			<Sku ref="DAI0059189"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_farmland"/>
+			<Brand ref="bd_parmalat"/>
+		</brands>
+		<FULL_NAME>Farmland Antibiotic-Free 2% Reduced Fat Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_milk_2per"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="gro_candy_chocpk">
+		<FULL_NAME>Packaged</FULL_NAME>
+	</Category>
+	<Category id="gro_cooki_cooki">
+		<FULL_NAME>Cookies</FULL_NAME>
+		<subcategories>
+			<Category ref="gro_cooki_cooki_wafer"/>
+			<Category ref="gro_cooki_cooki_choco"/>
+			<Category ref="gro_cooki_cooki_choch"/>
+		</subcategories>
+	</Category>
+	<Store id="FreshDirect">
+		<departments>
+			<Department ref="dai"/>
+			<Department ref="bak"/>
+			<Department ref="orgnat"/>
+			<Department ref="our_picks"/>
+			<Department ref="gro"/>
+			<Department ref="hba"/>
+			<Department ref="big"/>
+			<Department ref="fro"/>
+		</departments>
+	</Store>
+	<Product id="cfncndy_ash_mcbrk">
+		<skus>
+			<Sku ref="CAN0062886"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_ashers"/>
+		</brands>
+		<FULL_NAME>Asher's Milk Chocolate Almond Bark</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_candy_blkch"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="DAI0057993"/>
+	<Sku id="DAI0057992"/>
+	<Category id="gro_candy">
+		<FULL_NAME>Candy, Fruit &amp; Nuts</FULL_NAME>
+		<subcategories>
+			<Category ref="gro_cndy"/>
+			<Category ref="gro_choc_fine"/>
+		</subcategories>
+	</Category>
+	<Product id="gro_alprose_bitchoc">
+		<skus>
+			<Sku ref="SPE0063758"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_alprose"/>
+		</brands>
+		<FULL_NAME>Alprose Napolitains Miniature Bite-Size Assorted Milk Chocolates</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_candy_chocpk"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="SPE0060292"/>
+	<Sku id="DAI0057999"/>
+	<Product id="gro_carnat_good_sta_02">
+		<skus>
+			<Sku ref="GRO001069"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_nestle"/>
+			<Brand ref="bd_good_start"/>
+		</brands>
+		<FULL_NAME>Nestlé Good Start Milk-Based Powdered Infant Formula With Iron</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_baby_formu"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="gro_carnat_good_sta_03">
+		<skus>
+			<Sku ref="GRO001070"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_nestle"/>
+			<Brand ref="bd_good_start"/>
+		</brands>
+		<FULL_NAME>Nestlé Good Start Ready-To-Feed Milk-Based No-Iron Infant Formula with Iron</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_baby_formu"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="spe_carrs_mchocteabis_01">
+		<skus>
+			<Sku ref="SPE0059455"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_carrs"/>
+		</brands>
+		<FULL_NAME>Carr's Milk Chocolate Biscuits for Tea</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_cooki_cooki_choco"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_ashers">
+		<FULL_NAME>Asher's</FULL_NAME>
+	</Brand>
+	<Product id="gro_westsoy_drink_va_01">
+		<skus>
+			<Sku ref="GRO001397"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_westsoy"/>
+			<Brand ref="bd_westbrae"/>
+		</brands>
+		<FULL_NAME>WestSoy Low Fat Vanilla Non-Dairy Soy Drink</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bever_soy"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="gro_bakin_choco">
+		<FULL_NAME>Baking Chocolate</FULL_NAME>
+	</Category>
+	<Product id="dai_organi_1_milk_01">
+		<skus>
+			<Sku ref="DAI0008812"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_organic_valley"/>
+		</brands>
+		<FULL_NAME>Organic Valley 1% Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_milk_1per"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="SPE0066029"/>
+	<Brand id="bd_total">
+		<FULL_NAME>Fage TOTAL</FULL_NAME>
+	</Brand>
+	<Product id="dai_polly_o_regular_01">
+		<skus>
+			<Sku ref="DAI0008916"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_pollyo"/>
+		</brands>
+		<FULL_NAME>Polly-O Whole Milk Mozzarella Cheese</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_chees_blue"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_e_guittard">
+		<FULL_NAME>Guittard</FULL_NAME>
+	</Brand>
+	<Sku id="GRO001204"/>
+	<Brand id="bd_godiva">
+		<FULL_NAME>Godiva</FULL_NAME>
+	</Brand>
+	<Product id="gro_purina_cat_chow_01">
+		<skus>
+			<Sku ref="GRO002268"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_purina"/>
+			<Brand ref="bd_cat_chow"/>
+		</brands>
+		<FULL_NAME>Purina Cat Chow Milk, Fish, &amp; Meat Dry Cat Food</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_pet_catfud"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_richfood">
+		<FULL_NAME>Richfood</FULL_NAME>
+	</Brand>
+	<Product id="dai_orgval_laclfmilkhlf">
+		<skus>
+			<Sku ref="DAI0065186"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_organic_valley"/>
+		</brands>
+		<FULL_NAME>Organic Valley Lactose-Free Low-Fat Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_milk_1per"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="gro_westsoy_cho_shk_01">
+		<skus>
+			<Sku ref="GRO0057886"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_westsoy"/>
+			<Brand ref="bd_westbrae"/>
+		</brands>
+		<FULL_NAME>WestSoy Chocolate Soy Shake</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bever_soy"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="gro_parmalat_slamstraw">
+		<skus>
+			<Sku ref="GRO0060094"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_parmalat"/>
+		</brands>
+		<FULL_NAME>Parmalat Looney Tunes Slammers 2% Strawberry Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bever_milk"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="dai_rich_lacfreskm">
+		<skus>
+			<Sku ref="DAI0059806"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_richfood"/>
+		</brands>
+		<FULL_NAME>Richfood Lactose-Free Skim Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_milk_lact"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_viactiv">
+		<FULL_NAME>Viactiv</FULL_NAME>
+	</Brand>
+	<Product id="cfncndy_ash_mcchry">
+		<skus>
+			<Sku ref="CAN0062890"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_ashers"/>
+		</brands>
+		<FULL_NAME>Asher's Milk Chocolate Cordial Cherries</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_candy_blkch"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="gro_eagle_borden_01">
+		<skus>
+			<Sku ref="GRO001169"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_borden"/>
+			<Brand ref="bd_eagle_brand"/>
+		</brands>
+		<FULL_NAME>Borden Eagle Brand Sweetened Condensed Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bakin_conde"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="gro_baby">
+		<FULL_NAME>Baby</FULL_NAME>
+		<subcategories>
+			<Category ref="gro_baby_formu"/>
+		</subcategories>
+	</Category>
+	<Brand id="bd_cat_chow">
+		<FULL_NAME>Cat Chow</FULL_NAME>
+	</Brand>
+	<Brand id="bd_lu">
+		<FULL_NAME>LU</FULL_NAME>
+	</Brand>
+	<Product id="gro_westsoy_drink_pl_01">
+		<skus>
+			<Sku ref="GRO001396"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_westsoy"/>
+			<Brand ref="bd_westbrae"/>
+		</brands>
+		<FULL_NAME>WestSoy Low Fat Plain Non-Dairy Soy Drink</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bever_soy"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="gro_pet_catfud">
+		<FULL_NAME>Cat Food</FULL_NAME>
+	</Category>
+	<Category id="gro_bever_juice">
+		<FULL_NAME>Juice</FULL_NAME>
+		<subcategories>
+			<Category ref="gro_bever_juice_cocon"/>
+		</subcategories>
+	</Category>
+	<Brand id="bd_westsoy">
+		<FULL_NAME>WestSoy</FULL_NAME>
+	</Brand>
+	<Product id="gro_parmalat_white_sk_01">
+		<skus>
+			<Sku ref="GRO001327"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_parmalat"/>
+		</brands>
+		<FULL_NAME>Parmalat Stay Fresh Skim Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bever_milk"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Department id="our_picks">
+		<FULL_NAME>Our Picks</FULL_NAME>
+		<categories>
+			<Category ref="picks_lowcarb"/>
+		</categories>
+	</Department>
+	<Product id="dai_farm_wmilkpaper_01">
+		<skus>
+			<Sku ref="DAI0059192"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_farmland"/>
+			<Brand ref="bd_parmalat"/>
+		</brands>
+		<FULL_NAME>Farmland Whole Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_milk_whol"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="dai_farm_1milkpaper_01">
+		<skus>
+			<Sku ref="DAI0059190"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_farmland"/>
+			<Brand ref="bd_parmalat"/>
+		</brands>
+		<FULL_NAME>Farmland Antibiotic-Free 1% Lowfat Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_milk_1per"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="DAI0009046"/>
+	<Category id="picks_lowcarb">
+		<FULL_NAME>Good Carb Diet Options</FULL_NAME>
+		<subcategories>
+			<Category ref="picks_locarb_dairy"/>
+		</subcategories>
+	</Category>
+	<Product id="gro_tollho_nestle_03">
+		<skus>
+			<Sku ref="GRO001143"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_nestle"/>
+			<Brand ref="bd_tollhouse"/>
+		</brands>
+		<FULL_NAME>Nestlé Tollhouse Milk Chocolate Morsels</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bakin_choco"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="orgnat_dai_milk_whol">
+		<FULL_NAME>Whole</FULL_NAME>
+	</Category>
+	<Product id="spe_bahlsen_fcmchc">
+		<skus>
+			<Sku ref="SPE0061916"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_bahlsen"/>
+		</brands>
+		<FULL_NAME>Bahlsen First Class, Milk Chocolate Cookies</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_cooki_cooki_choco"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="GRO0057919"/>
+	<Brand id="bd_good_start">
+		<FULL_NAME>Good Start</FULL_NAME>
+	</Brand>
+	<Product id="gro_parmalat_chocolat_01">
+		<skus>
+			<Sku ref="GRO001323"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_parmalat"/>
+			<Brand ref="bd_lil_milk"/>
+		</brands>
+		<FULL_NAME>Parmalat Lil' Milk Stay Fresh 2% Reduced Fat Chocolate Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bever_milk"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="dai_lactaid_oneper">
+		<skus>
+			<Sku ref="DAI0059972"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_lactaid"/>
+		</brands>
+		<FULL_NAME>Lactaid 1% Lowfat Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_milk_lact"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="HBA0063994"/>
+	<Sku id="HBA0063995"/>
+	<Category id="dai_milk_1and1hlfper">
+		<FULL_NAME>1.5%</FULL_NAME>
+	</Category>
+	<Product id="gro_parmalat_straw_01">
+		<skus>
+			<Sku ref="GRO0057919"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_parmalat"/>
+			<Brand ref="bd_lil_milk"/>
+		</brands>
+		<FULL_NAME>Parmalat Lil' Milk Stay Fresh 1% Lowfat Strawberry Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bever_milk"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="DAI0008799"/>
+	<Sku id="SPE0059455"/>
+	<Brand id="bd_organic_valley">
+		<FULL_NAME>Organic Valley</FULL_NAME>
+	</Brand>
+	<Brand id="bd_pepperidge_farm">
+		<FULL_NAME>Pepperidge Farm</FULL_NAME>
+	</Brand>
+	<Sku id="DAI0008796"/>
+	<Sku id="DAI0008797"/>
+	<Product id="dai_farm_skimplus_02">
+		<skus>
+			<Sku ref="DAI0057999"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_farmland_special_requ"/>
+			<Brand ref="bd_parmalat"/>
+		</brands>
+		<FULL_NAME>Farmland Special Request Antibiotic-Free Skim Plus Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_milk_skim"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_carnation">
+		<FULL_NAME>Carnation</FULL_NAME>
+	</Brand>
+	<Product id="spe_tasthai_cocmlk">
+		<skus>
+			<Sku ref="SPE0062055"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_a_taste_of_thai"/>
+		</brands>
+		<FULL_NAME>A Taste Of Thai Coconut Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bever_juice_cocon"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="dai_farm_skimplus_01">
+		<skus>
+			<Sku ref="DAI0057992"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_farmland_special_requ"/>
+			<Brand ref="bd_parmalat"/>
+		</brands>
+		<FULL_NAME>Farmland Special Request Skim Plus Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_milk_skim"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="shredded_grated_cheese">
+		<FULL_NAME>Shredded &amp; Grated</FULL_NAME>
+	</Category>
+	<Category id="picks_locarb_milk">
+		<FULL_NAME>Milk</FULL_NAME>
+	</Category>
+	<Category id="fro_deser_cake">
+		<FULL_NAME>Cake</FULL_NAME>
+	</Category>
+	<Product id="gro_parmalat_org_01">
+		<skus>
+			<Sku ref="GRO0057927"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_parmalat"/>
+		</brands>
+		<FULL_NAME>Parmalat Stay Fresh Organic Whole Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bever_milk"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="PAS0064454"/>
+	<Product id="dai_farm_special_1_01">
+		<skus>
+			<Sku ref="DAI0057993"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_farmland_special_requ"/>
+			<Brand ref="bd_parmalat"/>
+		</brands>
+		<FULL_NAME>Farmland Special Request Antibiotic-Free 1% Plus Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_milk_1per"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="cfncndy_ash_mcgrah">
+		<skus>
+			<Sku ref="CAN0062893"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_ashers"/>
+		</brands>
+		<FULL_NAME>Asher's Milk Chocolate Covered Nabisco Graham Crackers</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_candy_blkch"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="DAI0059806"/>
+	<Product id="dai_farm_special_1_02">
+		<skus>
+			<Sku ref="DAI0057800"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_farmland_special_requ"/>
+			<Brand ref="bd_parmalat"/>
+		</brands>
+		<FULL_NAME>Farmland Special Request Antibiotic-Free 1% Plus Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_milk_1per"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="SPE0061902"/>
+	<Sku id="DAI0059804"/>
+	<Product id="gro_milkbone_medium_r_01">
+		<skus>
+			<Sku ref="GRO002278"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_milkbone"/>
+		</brands>
+		<FULL_NAME>Milk-Bone Medium Dog Snacks</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_pet_dogtreats"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="DAI0063216"/>
+	<Sku id="FRO0044519"/>
+	<Sku id="DAI0063214"/>
+	<Sku id="DAI0057800"/>
+	<Sku id="DAI0063212"/>
+	<Product id="dai_polly_o_shredded_01">
+		<skus>
+			<Sku ref="DAI0008933"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_pollyo"/>
+		</brands>
+		<FULL_NAME>Polly-O Whole Milk Shredded Mozzarella Cheese</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="shredded_grated_cheese"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="cfncndy_ash_mcprtz">
+		<skus>
+			<Sku ref="CAN0062897"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_ashers"/>
+		</brands>
+		<FULL_NAME>Asher's Milk Chocolate Covered Pretzels</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_candy_blkch"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="DAI0060828"/>
+	<Product id="dai_organi_2_milk_02">
+		<skus>
+			<Sku ref="DAI0008813"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_organic_valley"/>
+		</brands>
+		<FULL_NAME>Organic Valley 2% Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_milk_2per"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="spe_roland_orgcocomilk">
+		<skus>
+			<Sku ref="SPE0066029"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_roland"/>
+		</brands>
+		<FULL_NAME>Roland Organic Coconut Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bever_juice_cocon"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="DAI0063218"/>
+	<Product id="dai_farm_0milkpaper_01">
+		<skus>
+			<Sku ref="DAI0059191"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_farmland"/>
+			<Brand ref="bd_parmalat"/>
+		</brands>
+		<FULL_NAME>Farmland Antibiotic-Free Fat Free Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_milk_skim"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_mrs_fields">
+		<FULL_NAME>Mrs. Fields</FULL_NAME>
+	</Brand>
+	<Product id="gro_ovaltine_chocolat_01">
+		<skus>
+			<Sku ref="GRO001657"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_ovaltine"/>
+		</brands>
+		<FULL_NAME>Ovaltine Chocolate Malt Milk Powder</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_coffe_cocoa"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="DAI0060827"/>
+	<Product id="cfncndy_ash_mcrrd">
+		<skus>
+			<Sku ref="CAN0062899"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_ashers"/>
+		</brands>
+		<FULL_NAME>Asher's Milk Chocolate Pecan Caramel Pattie</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_candy_blkch"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="SPE0061919"/>
+	<Sku id="SPE0061917"/>
+	<Sku id="SPE0061916"/>
+	<Product id="dai_nsqare_skim_hg">
+		<skus>
+			<Sku ref="DAI0063218"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_new_square"/>
+		</brands>
+		<FULL_NAME>New Square Skim Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_milk_skim"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="orgnat_dai">
+		<FULL_NAME>Dairy</FULL_NAME>
+		<subcategories>
+			<Category ref="orgnat_dai_milk"/>
+		</subcategories>
+	</Category>
+	<Brand id="bd_eagle_brand">
+		<FULL_NAME>Eagle Brand</FULL_NAME>
+	</Brand>
+	<Category id="fro_icecr_ice">
+		<FULL_NAME>Ice Cream</FULL_NAME>
+		<subcategories>
+			<Category ref="fro_icecr_ice_choco"/>
+		</subcategories>
+	</Category>
+	<Category id="dai_milk_flav">
+		<FULL_NAME>Chocolate &amp; Coffee</FULL_NAME>
+	</Category>
+	<Product id="spe_lu_ecmlkchc">
+		<skus>
+			<Sku ref="SPE0061902"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_lu"/>
+		</brands>
+		<FULL_NAME>LU Le Petit Ecolier Milk Chocolate Cookies</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_cooki_cooki_choco"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="spe_ritter_mccrnflk">
+		<skus>
+			<Sku ref="SPE0061917"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_ritter_sport"/>
+		</brands>
+		<FULL_NAME>Ritter Sport Milk Chocolate with Corn Flakes</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_fine_pkg"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="GRO0066501"/>
+	<Product id="gro_enfamil_powder_m_02">
+		<skus>
+			<Sku ref="GRO001066"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_enfamil"/>
+		</brands>
+		<FULL_NAME>Enfamil Powder Milk Based Infant Formula With Iron</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_baby_formu"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="ckibni">
+		<FULL_NAME>Cookies &amp; Brownies</FULL_NAME>
+		<subcategories>
+			<Category ref="bak_cookies_fd"/>
+		</subcategories>
+	</Category>
+	<Sku id="GRO0066500"/>
+	<Sku id="FRO0044534"/>
+	<Category id="gro_pet_dogtreats">
+		<FULL_NAME>Dog Treats</FULL_NAME>
+	</Category>
+	<Product id="dai_orgval_laclfmilkqt">
+		<skus>
+			<Sku ref="DAI0065187"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_organic_valley"/>
+		</brands>
+		<FULL_NAME>Organic Valley Lactose-Free Low-Fat Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_milk_1per"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="fro_godiva_chocolat_01">
+		<skus>
+			<Sku ref="FRO0044429"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_godiva"/>
+		</brands>
+		<FULL_NAME>Godiva Classic Milk Chocolate Ice Cream</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_icecr_ice_choco"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_dovebar">
+		<FULL_NAME>Dovebar</FULL_NAME>
+	</Brand>
+	<Category id="dai_milk_skim">
+		<FULL_NAME>Skim &amp; Nonfat</FULL_NAME>
+	</Category>
+	<Category id="dai_yogur">
+		<FULL_NAME>Yogurt</FULL_NAME>
+		<subcategories>
+			<Category ref="dai_yogur_unflav"/>
+			<Category ref="dai_yogur_goat"/>
+			<Category ref="dai_yogur_regu"/>
+		</subcategories>
+	</Category>
+	<Category id="gro_cndy">
+		<FULL_NAME>Candy</FULL_NAME>
+		<subcategories>
+			<Category ref="gro_candy_candy"/>
+		</subcategories>
+	</Category>
+	<Sku id="GRO001143"/>
+	<Brand id="bd_swiss_miss">
+		<FULL_NAME>Swiss Miss</FULL_NAME>
+	</Brand>
+	<Product id="spe_ritter_msalm">
+		<skus>
+			<Sku ref="SPE0061919"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_ritter_sport"/>
+		</brands>
+		<FULL_NAME>Ritter Sport Milk Chocolate with Almonds</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_fine_pkg"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_new_square">
+		<FULL_NAME>New Square</FULL_NAME>
+	</Brand>
+	<Product id="dai_lactaid_01">
+		<skus>
+			<Sku ref="DAI0008803"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_lactaid"/>
+		</brands>
+		<FULL_NAME>Lactaid 70% Lactose-Free Lowfat Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_milk_lact"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Department id="hba">
+		<FULL_NAME>Health &amp; Beauty</FULL_NAME>
+		<categories>
+			<Category ref="hba_stomach"/>
+			<Category ref="hba_vita"/>
+		</categories>
+	</Department>
+	<Category id="dai_yogur_regu">
+		<FULL_NAME>Regular</FULL_NAME>
+	</Category>
+	<Product id="gro_pfarm_saus">
+		<skus>
+			<Sku ref="GRO0062323"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_pepperidge_farm"/>
+		</brands>
+		<FULL_NAME>Pepperidge Farm Milk Chocolate Chunk Macadamia Sausalito Cookies</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_cooki_cooki_choch"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="spe_ritter_mcrum">
+		<skus>
+			<Sku ref="SPE0061921"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_ritter_sport"/>
+		</brands>
+		<FULL_NAME>Ritter Sport Milk Chocolate with Rum Rasins &amp; Hazelnut</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_fine_pkg"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Department id="dai">
+		<FULL_NAME>Dairy</FULL_NAME>
+		<categories>
+			<Category ref="dai_chees"/>
+			<Category ref="dai_milk"/>
+			<Category ref="dai_yogur"/>
+		</categories>
+	</Department>
+	<Product id="dai_farm_whl_milk_04">
+		<skus>
+			<Sku ref="DAI0008824"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_farmland"/>
+			<Brand ref="bd_parmalat"/>
+		</brands>
+		<FULL_NAME>Farmland Whole Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_milk_whol"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="gro_westsoy_westbrae_01">
+		<skus>
+			<Sku ref="GRO001390"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_westbrae"/>
+		</brands>
+		<FULL_NAME>Westbrae Vanilla Rice Beverage</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bever_soy"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_old_chatham">
+		<FULL_NAME>Old Chatham</FULL_NAME>
+	</Brand>
+	<Product id="gro_carnat_fat_free_01">
+		<skus>
+			<Sku ref="GRO001173"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_carnation"/>
+		</brands>
+		<FULL_NAME>Carnation Fat Free Evaporated Milk with Vitamins A &amp; D</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bakin_conde"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="dai_nsqare_mlk_hg">
+		<skus>
+			<Sku ref="DAI0063216"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_new_square"/>
+		</brands>
+		<FULL_NAME>New Square Whole Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_milk_whol"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_pollyo">
+		<FULL_NAME>Polly-O</FULL_NAME>
+	</Brand>
+	<Sku id="GRO001172"/>
+	<Sku id="GRO001070"/>
+	<Sku id="GRO0060094"/>
+	<Sku id="GRO0060095"/>
+	<Brand id="bd_alprose">
+		<FULL_NAME>Alprose</FULL_NAME>
+	</Brand>
+	<Sku id="GRO001069"/>
+	<Product id="dai_farm_fat_milk_01">
+		<skus>
+			<Sku ref="DAI0008819"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_farmland"/>
+			<Brand ref="bd_parmalat"/>
+		</brands>
+		<FULL_NAME>Farmland Antibiotic-Free Fat Free Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_milk_skim"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="gro_bakin_conde">
+		<FULL_NAME>Canned Milk</FULL_NAME>
+	</Category>
+	<Sku id="GRO001066"/>
+	<Product id="dai_vita_soy_plain_so_01">
+		<skus>
+			<Sku ref="DAI0008873"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_vitasoy"/>
+		</brands>
+		<FULL_NAME>Vitasoy Plain Soymilk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="orgnat_dai_milk_soy"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="GRO001169"/>
+	<Brand id="bd_farmland_special_requ">
+		<FULL_NAME>Farmland Special Request</FULL_NAME>
+	</Brand>
+	<Category id="fro_icecr">
+		<FULL_NAME>Ice Cream</FULL_NAME>
+		<subcategories>
+			<Category ref="fro_icecr_ice"/>
+			<Category ref="fro_icecr_sand"/>
+		</subcategories>
+	</Category>
+	<Sku id="SPE0059344"/>
+	<Sku id="SPE0062055"/>
+	<Sku id="DAI0059972"/>
+	<Sku id="SPE0062056"/>
+	<Sku id="SPE0059345"/>
+	<Brand id="bd_vivani">
+		<FULL_NAME>Vivani</FULL_NAME>
+	</Brand>
+	<Product id="dai_nestle_chocolat_01">
+		<skus>
+			<Sku ref="DAI0008799"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_nestle"/>
+			<Brand ref="bd_nesquick"/>
+		</brands>
+		<FULL_NAME>Nestlé Nesquick Chocolate Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_milk_flav"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="gro_cooki">
+		<FULL_NAME>Cookies, Cakes &amp; Pastries</FULL_NAME>
+		<subcategories>
+			<Category ref="gro_cooki_cooki"/>
+		</subcategories>
+	</Category>
+	<Brand id="bd_freshdirect">
+		<FULL_NAME>FreshDirect</FULL_NAME>
+	</Brand>
+	<Product id="spe_bahlsen_afrika_m_01">
+		<skus>
+			<Sku ref="SPE0000422"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_bahlsen"/>
+		</brands>
+		<FULL_NAME>Bahlsen Afrika Milk Chocolate</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_cooki_cooki_wafer"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="dai_milk_1per">
+		<FULL_NAME>1%</FULL_NAME>
+	</Category>
+	<Product id="dai_polly_o_mozzarel_01">
+		<skus>
+			<Sku ref="DAI0008917"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_pollyo"/>
+		</brands>
+		<FULL_NAME>Polly-O Whole Milk Mozzarella Cheese</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_chees_blue"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="DAI0060136"/>
+	<Sku id="DAI0060137"/>
+	<Brand id="bd_a_taste_of_thai">
+		<FULL_NAME>A Taste Of Thai</FULL_NAME>
+	</Brand>
+	<Brand id="bd_vitasoy">
+		<FULL_NAME>Vitasoy</FULL_NAME>
+	</Brand>
+	<Brand id="bd_goya">
+		<FULL_NAME>Goya</FULL_NAME>
+	</Brand>
+	<Product id="gro_parmalat_banan_01">
+		<skus>
+			<Sku ref="GRO0057920"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_parmalat"/>
+			<Brand ref="bd_lil_milk"/>
+		</brands>
+		<FULL_NAME>Parmalat Lil' Milk Stay Fresh 1% Lowfat Banana Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bever_milk"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="spe_ritter_mcpra">
+		<skus>
+			<Sku ref="SPE0061923"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_ritter_sport"/>
+		</brands>
+		<FULL_NAME>Ritter Sport Milk Chocolate with Praline Filling</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_fine_pkg"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="gro_parmalat_white_1_01">
+		<skus>
+			<Sku ref="GRO001324"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_parmalat"/>
+		</brands>
+		<FULL_NAME>Parmalat Stay Fresh 1% Lowfat Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bever_milk"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="DAI0062499"/>
+	<Sku id="HBA0063911"/>
+	<Category id="orgnat_dai_milk">
+		<FULL_NAME>Milk &amp; Soymilk</FULL_NAME>
+		<subcategories>
+			<Category ref="orgnat_dai_milk_soy"/>
+			<Category ref="orgnat_dai_milk_whol"/>
+		</subcategories>
+	</Category>
+	<Brand id="bd_michel_cluizel">
+		<FULL_NAME>Michel Cluizel</FULL_NAME>
+	</Brand>
+	<Sku id="DAI0062498"/>
+	<Department id="big">
+		<FULL_NAME>Buy Big</FULL_NAME>
+		<categories>
+			<Category ref="big_snacks"/>
+		</categories>
+	</Department>
+	<Brand id="bd_borden">
+		<FULL_NAME>Borden</FULL_NAME>
+	</Brand>
+	<Product id="dai_nsqare_rfmlk_hg">
+		<skus>
+			<Sku ref="DAI0063214"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_new_square"/>
+		</brands>
+		<FULL_NAME>New Square 1.5% Reduced Fat Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_milk_1and1hlfper"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="SPE0062074"/>
+	<Sku id="DAI0059189"/>
+	<Sku id="FRO0044429"/>
+	<Product id="dai_orgval_chochlf">
+		<skus>
+			<Sku ref="DAI0060861"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_organic_valley"/>
+		</brands>
+		<FULL_NAME>Organic Valley Reduced Fat Chocolate Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_milk_flav"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="DAI0059191"/>
+	<Sku id="DAI0059190"/>
+	<Sku id="DAI0059192"/>
+	<Product id="dai_vita_soy_chocolat_01">
+		<skus>
+			<Sku ref="DAI0008874"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_vitasoy"/>
+		</brands>
+		<FULL_NAME>Vitasoy Chocolate Soymilk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="orgnat_dai_milk_soy"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="dai_vita_soy_chocolat_02">
+		<skus>
+			<Sku ref="DAI0008872"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_vitasoy"/>
+		</brands>
+		<FULL_NAME>Vitasoy Chocolate Soymilk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="orgnat_dai_milk_soy"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="gro_westsoy_van_shak_01">
+		<skus>
+			<Sku ref="GRO0057882"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_westsoy"/>
+			<Brand ref="bd_westbrae"/>
+		</brands>
+		<FULL_NAME>WestSoy Vanilla Soy Shake</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bever_soy"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="big_snacks">
+		<FULL_NAME>Cases of Grocery Items</FULL_NAME>
+		<subcategories>
+			<Category ref="big_snack_bars"/>
+		</subcategories>
+	</Category>
+	<Category id="hba_vita_cal">
+		<FULL_NAME>Calcium</FULL_NAME>
+	</Category>
+	<Product id="spe_vivani_mlkchcpr">
+		<skus>
+			<Sku ref="SPE0061799"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_vivani"/>
+		</brands>
+		<FULL_NAME>Vivani Organic Milk Chocolate Bar with Praline Filling</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_fine_pkg"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="GRO001174"/>
+	<Sku id="GRO001173"/>
+	<Sku id="SPE0062453"/>
+	<Brand id="bd_haagendazs">
+		<FULL_NAME>Häagen-Dazs</FULL_NAME>
+	</Brand>
+	<Product id="gro_westsoy_plus_van_01">
+		<skus>
+			<Sku ref="GRO001393"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_westsoy"/>
+			<Brand ref="bd_westbrae"/>
+		</brands>
+		<FULL_NAME>WestSoy Plus Vanilla Non-Dairy Soy Beverage</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bever_soy"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_farmland">
+		<FULL_NAME>Farmland</FULL_NAME>
+	</Brand>
+	<Product id="fro_david_mousse_01">
+		<skus>
+			<Sku ref="FRO0059185"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_david_glass"/>
+		</brands>
+		<FULL_NAME>David Glass Ultimate Milk Chocolate Mousse Cake, Frozen</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_deser_cake"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="spe_ritter_mcras">
+		<skus>
+			<Sku ref="SPE0061926"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_ritter_sport"/>
+		</brands>
+		<FULL_NAME>Ritter Sport Milk Chocolate with Rasins &amp; Hazelnuts</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_fine_pkg"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="fro_deser">
+		<FULL_NAME>Desserts &amp; Toppings</FULL_NAME>
+		<subcategories>
+			<Category ref="fro_deser_cake"/>
+		</subcategories>
+	</Category>
+	<Category id="hba_stomach">
+		<FULL_NAME>Stomach Remedies</FULL_NAME>
+	</Category>
+	<Category id="gro_bever">
+		<FULL_NAME>Beverages &amp; Water</FULL_NAME>
+		<subcategories>
+			<Category ref="gro_bever_juice"/>
+			<Category ref="gro_bever_milk"/>
+			<Category ref="gro_bever_soy"/>
+		</subcategories>
+	</Category>
+	<Category id="dai_milk_milk">
+		<FULL_NAME>Milk</FULL_NAME>
+		<subcategories>
+			<Category ref="dai_milk_1per"/>
+			<Category ref="dai_milk_1and1hlfper"/>
+			<Category ref="dai_milk_2per"/>
+			<Category ref="dai_milk_flav"/>
+			<Category ref="dai_milk_lact"/>
+			<Category ref="dai_milk_skim"/>
+			<Category ref="dai_milk_whol"/>
+			<Category ref="dai_milk_butt"/>
+		</subcategories>
+	</Category>
+	<Category id="big_snack_bars">
+		<FULL_NAME>Bars by the Case</FULL_NAME>
+	</Category>
+	<Sku id="GRO0057886"/>
+	<Product id="spe_vivani_mlkchc">
+		<skus>
+			<Sku ref="SPE0061796"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_vivani"/>
+		</brands>
+		<FULL_NAME>Vivani Organic Milk Chocolate Bar</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_fine_pkg"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="gro_bever_juice_cocon">
+		<FULL_NAME>Coconut</FULL_NAME>
+	</Category>
+	<Product id="hba_viactiv_mlk_chc">
+		<skus>
+			<Sku ref="HBA0063911"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_viactiv"/>
+		</brands>
+		<FULL_NAME>Viactiv Milk Chocolate Calcium Chews for Women</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="hba_vita_cal"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="dai_hers_ffchoc">
+		<skus>
+			<Sku ref="DAI0060137"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_hersheys"/>
+		</brands>
+		<FULL_NAME>Hershey's 1% Chocolate Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_milk_flav"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_westbrae">
+		<FULL_NAME>Westbrae</FULL_NAME>
+	</Brand>
+	<Sku id="GRO0057882"/>
+	<Category id="dai_chees_blue">
+		<FULL_NAME>Blocks</FULL_NAME>
+	</Category>
+	<Brand id="bd_hersheys">
+		<FULL_NAME>Hershey's</FULL_NAME>
+	</Brand>
+	<Category id="hba_vita">
+		<FULL_NAME>Vitamins &amp; Supplements</FULL_NAME>
+		<subcategories>
+			<Category ref="hba_vita_cal"/>
+		</subcategories>
+	</Category>
+	<Sku id="GRO002278"/>
+	<Product id="spe_tasthai_ltcocmlk">
+		<skus>
+			<Sku ref="SPE0062056"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_a_taste_of_thai"/>
+		</brands>
+		<FULL_NAME>A Taste Of Thai Lite Coconut Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bever_juice_cocon"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="gro_alprose_mlkchoc">
+		<skus>
+			<Sku ref="SPE0063757"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_alprose"/>
+		</brands>
+		<FULL_NAME>Alprose Swiss Milk Chocolate Bar</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_candy_chocpk"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="gro_coffe_cocoa">
+		<FULL_NAME>Cocoa</FULL_NAME>
+	</Category>
+	<Category id="dai_milk_lact">
+		<FULL_NAME>Lactose Free</FULL_NAME>
+	</Category>
+	<Category id="gro_coffe">
+		<FULL_NAME>Coffee, Tea &amp; Cocoa</FULL_NAME>
+		<subcategories>
+			<Category ref="gro_coffe_cocoa"/>
+		</subcategories>
+	</Category>
+	<Product id="gro_carn_milk_01">
+		<skus>
+			<Sku ref="GRO0058428"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_carnation"/>
+		</brands>
+		<FULL_NAME>Carnation Sweetened Condensed Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bakin_conde"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="GRO002268"/>
+	<Category id="bak_cookies_fd">
+		<FULL_NAME>FreshDirect Cookies</FULL_NAME>
+	</Category>
+	<Product id="gro_goya_coconut_01">
+		<skus>
+			<Sku ref="GRO001267"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_goya"/>
+		</brands>
+		<FULL_NAME>Goya Coconut Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bever_juice_cocon"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_david_glass">
+		<FULL_NAME>David Glass</FULL_NAME>
+	</Brand>
+	<Category id="gro_candy_blkch">
+		<FULL_NAME>Bulk</FULL_NAME>
+	</Category>
+	<Category id="gro_bakin_frost">
+		<FULL_NAME>Frosting</FULL_NAME>
+	</Category>
+	<Product id="gro_duncan_homestyl_02">
+		<skus>
+			<Sku ref="GRO001204"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_duncan_hines"/>
+		</brands>
+		<FULL_NAME>Duncan Hines Creamy Home-style Milk Chocolate Frosting</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bakin_frost"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="dai_vita_soy_original_01">
+		<skus>
+			<Sku ref="DAI0008871"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_vitasoy"/>
+		</brands>
+		<FULL_NAME>Vitasoy Original Soymilk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="orgnat_dai_milk_soy"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="dai_rich_lacfremlk">
+		<skus>
+			<Sku ref="DAI0059804"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_richfood"/>
+		</brands>
+		<FULL_NAME>Richfood Lactose-Free Whole Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_milk_lact"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="DAI0059088"/>
+	<Product id="dai_total_whyog_01">
+		<skus>
+			<Sku ref="DAI0062498"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_total"/>
+		</brands>
+		<FULL_NAME>Fage TOTAL Plain Whole Milk Greek Yogurt</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_yogur_unflav"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="dai_total_whyog_02">
+		<skus>
+			<Sku ref="DAI0062500"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_total"/>
+		</brands>
+		<FULL_NAME>Fage TOTAL Plain Whole Milk Greek Yogurt</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_yogur_unflav"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="fro_haagen_vanilla_11">
+		<skus>
+			<Sku ref="FRO0044534"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_haagendazs"/>
+		</brands>
+		<FULL_NAME>Häagen-Dazs Vanilla &amp; Milk Chocolate Ice Cream Bars</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_icecr_sand"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="GRO001324"/>
+	<Category id="gro_pet">
+		<FULL_NAME>Pet Care</FULL_NAME>
+		<subcategories>
+			<Category ref="gro_pet_catfud"/>
+			<Category ref="gro_pet_dogtreats"/>
+		</subcategories>
+	</Category>
+	<Sku id="GRO001325"/>
+	<Sku id="GRO001326"/>
+	<Sku id="GRO001327"/>
+	<Sku id="GRO001328"/>
+	<Sku id="GRO001329"/>
+	<Product id="ckibni_pecmilk">
+		<skus>
+			<Sku ref="PAS0064454"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_freshdirect"/>
+		</brands>
+		<FULL_NAME>FreshDirect Pecan &amp; Milk Chocolate Cookies</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="bak_cookies_fd"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="gro_cooki_cooki_wafer">
+		<FULL_NAME>Wafer</FULL_NAME>
+	</Category>
+	<Product id="cfncndy_ash_mcvmar">
+		<skus>
+			<Sku ref="CAN0062895"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_ashers"/>
+		</brands>
+		<FULL_NAME>Asher's Milk Chocolate Covered Vanilla Marshmallows</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_candy_blkch"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="DAI0060861"/>
+	<Sku id="GRO001323"/>
+	<Product id="gro_parmalat_white_wh_02">
+		<skus>
+			<Sku ref="GRO001329"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_parmalat"/>
+		</brands>
+		<FULL_NAME>Parmalat Stay Fresh Whole Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bever_milk"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="gro_parmalat_white_wh_01">
+		<skus>
+			<Sku ref="GRO001328"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_parmalat"/>
+			<Brand ref="bd_lil_milk"/>
+		</brands>
+		<FULL_NAME>Parmalat Lil' Milk Stay Fresh Whole Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bever_milk"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="GRO001657"/>
+	<Sku id="GRO001656"/>
+	<Sku id="GRO001654"/>
+	<Sku id="GRO001653"/>
+	<Brand id="bd_lactaid">
+		<FULL_NAME>Lactaid</FULL_NAME>
+	</Brand>
+	<Category id="gro_bever_soy">
+		<FULL_NAME>Soy &amp; Rice Drinks</FULL_NAME>
+	</Category>
+	<Product id="dai_total_greek_sh_01">
+		<skus>
+			<Sku ref="DAI0009046"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_total"/>
+		</brands>
+		<FULL_NAME>Fage TOTAL Greek Sheep Milk Yogurt</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_yogur_goat"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_kelloggs">
+		<FULL_NAME>Kellogg's</FULL_NAME>
+	</Brand>
+	<Product id="spe_guit_mlkchps">
+		<skus>
+			<Sku ref="SPE0060358"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_e_guittard"/>
+			<Brand ref="bd_guittard"/>
+		</brands>
+		<FULL_NAME>Guittard Real Milk Chocolate Chips</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bakin_choco"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="dai_yogur_goat">
+		<FULL_NAME>Sheep's Milk</FULL_NAME>
+	</Category>
+	<Brand id="bd_nesquick">
+		<FULL_NAME>Nesquick</FULL_NAME>
+	</Brand>
+	<Product id="dai_farm_buttermilk_01">
+		<skus>
+			<Sku ref="DAI0008796"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_farmland"/>
+			<Brand ref="bd_parmalat"/>
+		</brands>
+		<FULL_NAME>Farmland Cultured Lowfat Buttermilk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_milk_butt"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="gro_parmalat_vanil_01">
+		<skus>
+			<Sku ref="GRO0057921"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_parmalat"/>
+			<Brand ref="bd_lil_milk"/>
+		</brands>
+		<FULL_NAME>Parmalat Lil' Milk Stay Fresh 1% Lowfat Vanilla Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bever_milk"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="CAN0062890"/>
+	<Sku id="SPE0061923"/>
+	<Sku id="CAN0062893"/>
+	<Sku id="SPE0061920"/>
+	<Sku id="SPE0061921"/>
+	<Brand id="bd_ritter_sport">
+		<FULL_NAME>Ritter Sport</FULL_NAME>
+	</Brand>
+	<Sku id="SPE0061926"/>
+	<Sku id="CAN0062897"/>
+	<Category id="dai_milk_2per">
+		<FULL_NAME>2%</FULL_NAME>
+	</Category>
+	<Sku id="CAN0062895"/>
+	<Sku id="CAN0062899"/>
+	<Product id="dai_nsqare_chcmlk">
+		<skus>
+			<Sku ref="DAI0063212"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_new_square"/>
+		</brands>
+		<FULL_NAME>New Square Chocolate Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_milk_flav"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="gro_westsoy_lite_pla_01">
+		<skus>
+			<Sku ref="GRO001398"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_westsoy"/>
+			<Brand ref="bd_westbrae"/>
+		</brands>
+		<FULL_NAME>WestSoy Lite Plain Non-Dairy Soy Beverage</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bever_soy"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="gro_westsoy_unsweete_01">
+		<skus>
+			<Sku ref="GRO001395"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_westsoy"/>
+			<Brand ref="bd_westbrae"/>
+		</brands>
+		<FULL_NAME>WestSoy Organic Unsweetened Non-Dairy Soymilk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bever_soy"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="dai_catham_shepyog">
+		<skus>
+			<Sku ref="DAI0060827"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_old_chatham"/>
+		</brands>
+		<FULL_NAME>Old Chatham Hudson Valley Unflavored Sheep's Milk Yogurt</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="dai_yogur_regu"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="dai_organi_nonfat_m_02">
+		<skus>
+			<Sku ref="DAI0008797"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_organic_valley"/>
+		</brands>
+		<FULL_NAME>Organic Valley Nonfat Milk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="picks_locarb_milk"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="CAN0062886"/>
+	<Product id="gro_westsoy_nonfat_p_01">
+		<skus>
+			<Sku ref="GRO001391"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_westsoy"/>
+			<Brand ref="bd_westbrae"/>
+		</brands>
+		<FULL_NAME>WestSoy Nonfat Plain Non-Dairy Soy Beverage</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_bever_soy"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_honees">
+		<FULL_NAME>Honees</FULL_NAME>
+	</Brand>
+	<Category id="fro_icecr_ice_choco">
+		<FULL_NAME>Chocolate</FULL_NAME>
+	</Category>
+	<Department id="bak">
+		<FULL_NAME>Bakery</FULL_NAME>
+		<categories>
+			<Category ref="ckibni"/>
+		</categories>
+	</Department>
+</Content>

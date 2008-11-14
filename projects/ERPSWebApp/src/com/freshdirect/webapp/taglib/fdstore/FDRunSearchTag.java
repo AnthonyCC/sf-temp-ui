@@ -21,6 +21,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentSearch;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.SearchQueryStemmer;
@@ -67,23 +68,13 @@ public class FDRunSearchTag extends com.freshdirect.framework.webapp.BodyTagSupp
 			}
 		}
 
-		SearchResults res = ContentFactory.getInstance().search(searchFor);
+		SearchResults res = ContentSearch.getInstance().searchOld(searchFor);
 		
-		//SearchResults res = ContentFactory.getInstance().simpleSearch(searchFor,SearchQueryStemmer.LowerCase);
-		
-		System.err.println(">>> "+res.getFuzzyProducts().size());
-
-		System.out.println("FDRunSearchTag.doStartTag() "+res.getExactCategories());
-		
-		System.out.println("FDRunSearchTag.doStartTag() "+res.getExactCategories());
-
-		System.err.println("<<< "+res.getFuzzyProducts().size());
+		//System.err.println("<<< "+res.getProducts().size());
 		
 		// set search results in PageContext
 		pageContext.setAttribute(searchResults, res);
 
 		return EVAL_BODY_BUFFERED;
 	}
-
-
 }

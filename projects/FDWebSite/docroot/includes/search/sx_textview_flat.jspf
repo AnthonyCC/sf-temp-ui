@@ -1,0 +1,97 @@
+<%@   page import="java.util.List"
+%><%@ page import="java.util.Date"
+%><%@ page import="java.util.ArrayList"
+%><%@ page import="java.util.Locale"
+%><%@ page import="java.util.Iterator"
+%><%@ page import="com.freshdirect.webapp.util.ProductImpression"
+%><%@ page import="com.freshdirect.webapp.util.FDURLUtil"
+%><%@ page import="com.freshdirect.fdstore.content.ContentNodeModel"
+%><%@ page import="com.freshdirect.fdstore.content.ProductModel"
+%><%@ page import="com.freshdirect.fdstore.content.DepartmentModel"
+%><%@ page import="com.freshdirect.fdstore.customer.FDUserI"
+%><%@ page import="java.text.SimpleDateFormat"
+%><%@ taglib uri="freshdirect" prefix="fd"
+%><%@ taglib uri="logic" prefix="logic"%><%--
+
+Smart Search Text View (Flat)
+=============================
+
+@author segabor
+
+@input productList	Instance of {@link Collection<ProductModel>}
+@input trk			Instance of {@link String}
+@input nav			Instance of {@link SearchNavigator}
+
+--%><%
+final java.text.NumberFormat CURRENCY_FORMATTER = java.text.NumberFormat.getCurrencyInstance(Locale.US);
+final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yy");
+
+// turn products into product impressions
+List impressions = new ArrayList();
+for (Iterator it=productList.iterator(); it.hasNext();) {
+	impressions.add( new ProductImpression((ProductModel) it.next()) );
+}
+int k = 0;
+
+%><table style="width: 100%: margin: 0; padding: 1em 0 0 0; border-collapse: collapse;">
+<logic:iterate id="pi" collection="<%= impressions %>" type="com.freshdirect.webapp.util.ProductImpression">
+	<tr style="height: 2.6em; <%= (k%2)==1 ? "background-color: #eee" : "" %>">
+<%
+		ProductModel productNode = pi.getProductModel();
+		boolean isYourFave = results.getUserProductScores().get(productNode.getContentKey()) != null;
+
+		ContentNodeModel parent = productNode.getParentNode();
+		
+		String actionURI = FDURLUtil.getProductURI(pi.getProductModel(), trk, (isYourFave ? "fave" : nav.getSortByName()), k);
+%>
+		<td style="width: 100%; padding-left: 1em">
+			<div>
+			<%
+				String aka = pi.getProductModel().getAka() != null && !pi.getProductModel().getAka().equals("") ? "(" + pi.getProductModel().getAka() + ")" : "";
+				String unit = pi.getConfigurationDescrpition() != null && pi.getConfigurationDescrpition() != "" ? "(" + pi.getConfigurationDescrpition() + ")" : ""; 
+				if (productNode.isDisplayable()) {
+			%>
+						<a href="<%= actionURI %>"><%@ include file="/includes/product/i_prd_name.jspf" %></a>&nbsp;<%=aka %>&nbsp;<%=unit %>
+			<%
+				} else {
+			%>
+						<a style="color: #999999" href="<%= actionURI %>"><%@ include file="/includes/product/i_prd_name.jspf" %>&nbsp;<%= aka %>&nbsp;<%=unit %></a>
+			<%
+				}			
+
+%>		</div>
+<%
+		// Various labels
+		//   YOUR FAVORITE
+		if (isYourFave) {
+			%><div style="margin-left:20px;"><span style="color: #996699; font-weight: bold;">YOUR FAVORITE!</span></div><%
+		}
+%>
+		</td>
+		<td style="text-align: right; padding-left: 1em; padding-right: 1em; white-space: nowrap;vertical-align:top"><%
+			if (pi.getProductInfo() != null) {
+				%><div style="color: <%= pi.getProductModel().isDisplayable() ? "black" : "#999999" %>">
+					<span class="bold"><%=CURRENCY_FORMATTER.format(pi.getProductInfo().getDefaultPrice()) %>/<%= pi.getProductInfo().getDisplayableDefaultPriceUnit().toLowerCase() %></span>
+				  </div>
+				<%
+				// Scaled prices
+				//
+				String scaledPrices[] = pi.getScaledPrices();
+				if (scaledPrices != null && scaledPrices.length > 0) {
+					for (int ymalSci = 0; ymalSci < scaledPrices.length; ymalSci++) { 
+				%>
+					<div><span style="color: #FF9933; font-weight: bold;">Save!</span>&nbsp;<span class="bold"><%= scaledPrices[ymalSci] %></span></div>
+				<%
+					}
+				}
+				%>
+<%
+			} else {
+				%>&nbsp;<%
+			}			
+%>		</td>
+	</tr><%
+++k;
+%></logic:iterate>
+</table>
+

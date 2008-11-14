@@ -26,6 +26,7 @@
 				<DestinationDef contentType="RecipeSearchPage" />
 				<DestinationDef contentType="YmalSet" />
 				<DestinationDef contentType="StarterList" />
+				<DestinationDef contentType="Synonym"/>
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
@@ -1355,5 +1356,11 @@
 		</RelationshipDefs>
 	</ContentTypeDef>
 	
+	<ContentTypeDef name="Synonym"  generateId="true">
+		<AttributeDefs>
+			<AttributeDef name="word" type="S" required="true"/>
+			<AttributeDef name="synonymValue" label="Synonym To" type="S" required="true"/>
+		</AttributeDefs>
+	</ContentTypeDef>
 	
 </CMSDef>

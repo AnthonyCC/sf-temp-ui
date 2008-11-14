@@ -12,6 +12,7 @@
 <%@ page import='com.freshdirect.framework.util.CSVUtils' %>
 
 <%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
+<%@ page import='com.freshdirect.fdstore.content.ContentSearch' %>
 <%@ page import='com.freshdirect.fdstore.content.SearchResults' %>
 
 <html>
@@ -54,7 +55,7 @@ if (queries != null) {
 					FileOutputStream os = new FileOutputStream("work" + File.separatorChar + "search" + File.separatorChar + 
 							"SearchResultTest_" + Q.size() + '_' + System.currentTimeMillis() + ".csv");
 					int ind = 0;
-					ContentFactory F = ContentFactory.getInstance();
+					ContentSearch searcher = ContentSearch.getInstance();
 					for(Iterator i = Q.iterator(); i.hasNext(); ) {
 						boolean odd = true;
 						for(Iterator j= ((List)i.next()).iterator(); j.hasNext(); odd = !odd) {
@@ -64,12 +65,8 @@ if (queries != null) {
 								os.write(',');
 								os.write(CSVUtils.escape(col).getBytes("utf-8"));
 								os.write(',');
-								SearchResults SR = F.search(col);
-								os.write(("" + SR.getExactCategories().size()).getBytes());
-								os.write(',');
-								os.write(("" + SR.getExactProducts().size()).getBytes());
-								os.write(',');
-								os.write(("" + SR.getFuzzyProducts().size()).getBytes());
+								SearchResults SR = searcher.search(col);
+								os.write(("" + SR.getProducts().size()).getBytes());
 								os.write(',');
 								os.write(("" + SR.getRecipes().size()).getBytes());
 								os.write(',');

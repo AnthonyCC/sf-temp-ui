@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Content>
+	<SynTest id="foo1">
+		<FULL_NAME>egy</FULL_NAME>
+		<keywords>something</keywords>
+	</SynTest>
+	<SynTest id="foo2">
+		<FULL_NAME>spaghetti</FULL_NAME>
+		<keywords>something</keywords>
+	</SynTest>
+	<SynTest id="foo3">
+		<FULL_NAME>Tasty Orange juice</FULL_NAME>
+		<keywords>fruit</keywords>
+	</SynTest>
+</Content>

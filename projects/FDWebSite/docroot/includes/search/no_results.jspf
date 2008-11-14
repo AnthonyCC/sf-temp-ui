@@ -1,20 +1,27 @@
+<%--
 
+Partial that display various answers depending the result
 
-<%@ page import="com.freshdirect.cms.search.SpellingHit" %>
-<%@ page import="com.freshdirect.framework.util.StringUtil" %>
+@input criteria @{ling java.lang.String} Search criteria
+@input results @{link com.freshdirect.fdstore.content.SearchResults} The results object
 
-<%@ taglib uri='freshdirect' prefix='fd' %>
+--%><%@ page import="com.freshdirect.cms.search.SpellingHit"
+%><%@ page import="com.freshdirect.framework.util.StringUtil"
+%><%@ taglib uri='freshdirect' prefix='fd' %>
 
-<div class="text15" style="line-height: 1em">
-<font class="title16">No matches were found for <i>"<%=criteria%>"</i></font>
+<div class="text15" style="line-height: 1em;">
+<font class="title16">No matches were found for <i>"<%= criteria %>"</i></font>
 </div>
+<%
+// RESULTS == 0
 
-<% if (results.getSpellingSuggestion() != null) { 
+if (results.getSpellingSuggestion() != null) { 
 	String suggestion = results.getSpellingSuggestion();
 
+// DID YOU MEAN
 %>
 <div class="text15" style="line-height: 4em">
-Did you mean <a href="/search.jsp?searchParams=<%=StringUtil.escapeUri(suggestion)%>&trk=dym"><b><%=suggestion%></b></a>?
+Did you mean <a href="?searchParams=<%= StringUtil.escapeUri(suggestion)%>&trk=dym"><b><%=suggestion%></b></a>?
 </div>
 <% } %>
 
@@ -22,49 +29,6 @@ Did you mean <a href="/search.jsp?searchParams=<%=StringUtil.escapeUri(suggestio
 Please check the spelling of the words you entered or try a more general term.
 <br/><br/>
 Unfortunately, we may not sell what you're looking for. If it's something you think we should carry, 
-<a href="javascript:pop('/request_product.jsp',400,585);">click here</a> to let us know about it.
+<a href="javascript:pop('/request_product.jsp?trk=srch',400,585);">click here</a> to let us know about it.
+
 </div>
-
-<%--
-<table width="520" border="1" cellspacing="0" cellpadding="0">
-	<tr><td class="text13" width="520"><font class="title16">No marches were found for <i>"<%=criteria%>"</i></font><br></td></tr>
-	<% if (results.getSpellingSuggestion() != null) { %>
-	<tr><td class="text13" width="520">Did you mean <%=results.getSpellingSuggestion()%>?</td></tr>
-	<% } %>
-	<tr><td class="text13" width="520">
-	<br>No matches were found for "<%= request.getParameter("searchParams") %>" on FreshDirect.<br>
-	<ul>
-		<li>Check the spelling of the words you entered.<br><br>
-		<li>Try looking for <b>Any of the Words</b> for a wider search.<br><br>
-		<li>Unfortunately, we may not sell what you're looking for. If it's something you think we should carry, <a href="javascript:pop('/request_product.jsp',400,585);">click here</a> to let us know about it.<br><br>
-		<fd:SuggestSpelling searchFor="<%= criteria %>" spellingResults="spellingResults">
-		<%
-		if (!spellingResults.isEmpty()) {
-		%>
-		<li>Try searching for
-		<ul>
-		<%
-			for(Iterator i = spellingResults.iterator(); i.hasNext();) {
-				SpellingHit suggestion = (SpellingHit)i.next();
-				%>
-				<li><a href="/search.jsp?searchParams=<%=StringUtil.escapeUri(suggestion.toString())%>"><%=suggestion%></a> 
-					(<%=suggestion%>, terms: <%=suggestion.getQueryTermCount()%>, dist: <%=suggestion.getDistance()%>)
-				<%
-				if (suggestion instanceof SpellingHit.ContentKeyMatch) {
-				%>
-				[<%=((SpellingHit.ContentKeyMatch)suggestion).getContentKey()%>]
-				<%
-				}
-			}
-		%>
-		</ul>
-		<%
-		}
-		%>
-
-		</fd:SuggestSpelling>
-
-	</ul></td>
-	</tr>
-</table>
---%>

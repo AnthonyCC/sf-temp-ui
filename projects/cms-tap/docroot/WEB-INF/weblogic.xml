@@ -7,6 +7,16 @@
 		<role-name>cms_editor</role-name>
 		<externally-defined/>
 	</security-role-assignment>
+
+	<security-role-assignment>
+		<role-name>cms_viewer</role-name>
+		<externally-defined/>
+	</security-role-assignment>
+
+	<security-role-assignment>
+		<role-name>cms_admin</role-name>
+		<externally-defined/>
+	</security-role-assignment>
 	
 </weblogic-web-app>
 

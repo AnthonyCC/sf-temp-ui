@@ -90,7 +90,6 @@ public class CmsManager implements ContentServiceI {
 		return searchService.suggestSpelling(term, maxHits);
 	}
 	
-
 	public ContentNodeI createPrototypeContentNode(ContentKey cKey) {
 		return pipeline.createPrototypeContentNode(cKey);
 	}
@@ -124,7 +123,11 @@ public class CmsManager implements ContentServiceI {
 	}
 
 	public CmsResponseI handle(CmsRequestI request) {
-		return pipeline.handle(request);
+		if (request.getUser().isAllowedToWrite()) {
+			return pipeline.handle(request);
+		} else {
+			throw new SecurityException("Modification is not allowed to:"+request.getUser().getName());
+		}
 	}
 
 	public String getName() {

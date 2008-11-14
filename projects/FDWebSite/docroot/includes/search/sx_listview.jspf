@@ -1,0 +1,120 @@
+<%--
+
+Smart Search List View
+======================
+
+@author gmark
+
+@input productList	Instance of {@link Collection<ProductModel>}
+@input trk			Tracking code (String)
+
+--%><%@ page import='com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.framework.webapp.*'%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
+<%@ page import='com.freshdirect.content.attributes.*'%>
+<%@ page import="com.freshdirect.fdstore.*" %>
+<%@ page import="com.freshdirect.fdstore.content.*" %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
+<%@ page import="com.freshdirect.webapp.util.FDURLUtil" %>
+
+<%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+
+<%@ page import="java.util.*" %>
+<%@ page import="java.text.DecimalFormat" %>
+<%@ page import="com.freshdirect.framework.util.NVL" %>
+
+<%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri='oscache' prefix='oscache' %>
+
+<%@ page import="com.freshdirect.fdstore.util.URLGenerator" %><fd:CheckLoginStatus />
+<%
+
+final java.text.NumberFormat CURRENCY_FORMATTER = java.text.NumberFormat.getCurrencyInstance(Locale.US);
+final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yy");
+
+%>
+<table style="width:100%"><%
+int row_cnt = 0;
+
+int rank = nav.getPageOffset()+1;
+%><logic:iterate id="productNode" collection="<%= productList %>" type="com.freshdirect.fdstore.content.ProductModel">
+<%
+	ProductImpression PI = new ProductImpression(productNode);
+	Image prodImage = PI.getProductModel().getSourceProduct().getCategoryImage();
+	
+	boolean isYourFave = results.getUserProductScores().get(productNode.getContentKey()) != null;
+	
+	String actionURL = FDURLUtil.getProductURI(PI.getProductModel(), trk, (isYourFave ? "fave" : nav.getSortByName()), rank);
+%>
+<tr>
+	<td style="width: <%=prodImage.getWidth() %>px;text-align: center"><fd:ProductImage product="<%= productNode %>" action="<%= actionURL %>"/></td>
+	<td style="vertical-align: middle; text-align:left">
+		<div class="text13" style="padding-left:10px; text-indent: -10px;">
+			<%
+			if (PI.getProductModel().isDisplayable()) {
+			%>
+			<a href="<%= actionURL %>"><%@ include file="/includes/product/i_prd_name.jspf" %></a>
+			<%
+			} else {
+			%>
+			<a style="color: #999999" href="<%= actionURL %>"><%@ include file="/includes/product/i_prd_name.jspf" %></a>
+			<%
+			} 
+			%>
+			<span style="color: <%=PI.getProductModel().isDisplayable() ? "black" : "#999999" %>">
+			<% if (PI.getConfigurationDescrpition() != null && !PI.getConfigurationDescrpition().equals("")) {%>
+				- <%=PI.getConfigurationDescrpition() %>
+			<% } %>
+			</span>
+		</div>		
+		<%
+		// Various labels
+		//	 AKA name
+		if (PI.getProductModel().getAka() != null && PI.getProductModel().getAka() != "" ) {
+		%>
+			<div class="text13">"<%=PI.getProductModel().getAka() %>"</div>
+		<%
+		}		
+		//   YOUR FAVORITE
+		if (isYourFave) {
+			%><div style="margin-top:5px;" class=""><span style="color: #996699;font-weight: bold;">YOUR FAVORITE!</span></div><%
+		}
+		%>
+
+	</td>
+	<td style="text-align: right">
+		<div class="text13bold">
+		<%
+			if (PI.getProductInfo() != null) {%>
+				<%=CURRENCY_FORMATTER.format(PI.getProductInfo().getDefaultPrice()) %>/<%= PI.getProductInfo().getDisplayableDefaultPriceUnit().toLowerCase()%> 
+		<%
+			}
+		%>
+		</div>
+		<%
+		// Scaled prices
+		//
+		String scaledPrices[] = PI.getScaledPrices();
+		if (scaledPrices != null && scaledPrices.length > 0) {
+			for (int ymalSci = 0; ymalSci < scaledPrices.length; ymalSci++) { 
+		%>
+			<div style="white-space: nowrap" class="text13"><span style="color: #FF9933; font-weight: bold;">Save!</span>&nbsp;<span class="bold"><%= scaledPrices[ymalSci] %></span></div>
+		<%
+			}
+		}
+		%>		
+	</td>
+</tr>
+
+<%
+// don't display the bar below the last product
+if (row_cnt < productList.size()-1) {
+	%><tr><td colspan="3"><div style="border-top: 1px solid #b7b793;margin-top: 5px;margin-bottom:5px;">&nbsp;</div></td></tr><%
+}
+row_cnt++;
+rank++;
+%></logic:iterate>
+
+</table>

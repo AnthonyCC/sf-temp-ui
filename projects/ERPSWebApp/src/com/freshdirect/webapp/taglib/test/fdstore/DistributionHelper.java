@@ -47,6 +47,25 @@ public class DistributionHelper {
 		return dir.endsWith("/") ? (dir + fileName) : (dir + '/' + fileName);
 	}
 	
+	
+	public static List getSearhTerms() throws IOException {
+		
+		String distroDir = ConfigHelper.getPropertiesFromClassLoader(
+				"tests.properties",defaults).getProperty(SessionName.TEST_DISTRIBUTION_DIRECTORY);
+
+		InputStream is = null;
+		try {
+			is = ResourceUtil.openResource(getPath(distroDir,"terms.csv"));
+			
+			return CSVUtils.parse(is,false,false);
+		} catch (IOException e) {
+			LOGGER.warn("Could not read/open terms.csv in " + distroDir,e);
+			throw e;
+		} finally {
+			is.close();
+		}
+	}
+	
 	public static List getDistributions() throws IOException {
 		List files = new ArrayList();
 	

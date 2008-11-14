@@ -1,0 +1,105 @@
+<%@	  page import="java.util.*"
+%><%@ page import="com.freshdirect.fdstore.content.Recipe"
+%><%@ page import="com.freshdirect.framework.util.StringUtil"
+%><%--
+
+Recipes widget
+--------------
+
+@input recipes (List) list of found recipes
+
+--%><%
+
+Boolean saVal = (Boolean)request.getAttribute("recipes.show_all");
+final boolean showAllRecipes = saVal != null && saVal.booleanValue() /*"rec".equalsIgnoreCase(request.getParameter("deptId"))*/;
+
+if (recipes != null && recipes.size()>0) {
+%>
+	<a name="recipes"></a>
+	<div>
+		<div class="text13bold" style="margin-top: 10px;">		
+<%
+	if (!showAllRecipes) {
+%>			<span style="color:#ff9f41;">RECIPES</span>
+			<%= recipes.size() %> recipe<%= recipes.size() > 1 ? "s were":" was" %> found
+<%
+		if (recipes.size() > 5) {
+%>			(<span class="bold">Show <a href="#" onclick="toggleRecipes(); return false;" id="recipe_label">All</a></span>)
+<%
+		}
+	}
+%>		</div>
+<%
+
+	Iterator ri = recipes.iterator();
+	StringBuffer allRecipeLines = new StringBuffer();
+	StringBuffer fiveRecipes = new StringBuffer();
+	
+	int c = 0;
+	while(ri.hasNext() && !(!showAllRecipes && c >= 5) ) {
+		 ++c;
+
+		Recipe recipe = (Recipe)ri.next();
+		StringBuffer line = new StringBuffer();
+%>		<div style="padding-left: 15px;text-indent:-5px">
+			<span class="bold"><a href="/recipe.jsp?recipeId=<%= recipe.getContentName() %>&amp;trk=<%= trk %>"><%= recipe.getName() %></a></span><%
+		if (recipe.getSource() != null) {
+			%> from <a href="#" onclick="popup('/recipe_source.jsp?recipeId=<%= recipe.getContentName() %>&amp;trk=<%= trk %>', 'large_long'); return false;"><%= recipe.getSource().getName() %></a>
+<%
+		}
+%>		</div>
+<%
+	}
+
+%>		<div id="all_link" style="display: none">
+<%
+		
+		while(ri.hasNext()) {
+			Recipe recipe = (Recipe)ri.next();
+			StringBuffer line = new StringBuffer();
+	
+%>		<div style="padding-left: 15px;text-indent:-5px">
+			<span class="bold"><a href="/recipe.jsp?recipeId=<%= recipe.getContentName() %>&amp;trk=<%= trk %>"><%= recipe.getName() %></a></span><%
+			if (recipe.getSource() != null) {
+				%> from <a href="#" onclick="popup('/recipe_source.jsp?recipeId=<%= recipe.getContentName() %>&amp;trk=<%= trk %>', 'large_long'); return false;"><%= recipe.getSource().getName() %></a>
+<%
+			}
+%>		</div>
+<%
+			++c;
+		}
+%>		</div>
+<%
+
+	if (!showAllRecipes) {
+%>		<script type="text/javascript">
+var allShown = false;
+
+function showAllRecipes() {
+	allShown = false;
+	toggleRecipes();
+}
+
+function toggleRecipes() {
+	var contents = document.getElementById('all_link');
+	var label = document.getElementById('recipe_label');
+
+	if (allShown) {
+		contents.style.display = "none";
+		label.innerHTML = "All";
+	} else {
+		contents.style.display = "";
+		label.innerHTML = "First 5";
+	}
+
+	allShown = !allShown;
+}
+			</script>
+<%
+	}
+%>
+	</div>
+	<div style="width: 100%; height: 4px; border-top:4px solid #ff9933;margin-top: 25px"></div>
+<%
+}
+%>

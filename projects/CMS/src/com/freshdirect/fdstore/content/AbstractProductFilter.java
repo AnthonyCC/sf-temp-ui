@@ -22,7 +22,7 @@ import com.freshdirect.fdstore.FDResourceException;
 public abstract class AbstractProductFilter implements ProductFilterI {
 	public abstract boolean applyTest(ProductModel prod) throws FDResourceException;
 	
-	public Collection apply(Collection productNodes) throws FDResourceException {
+	public List apply(Collection productNodes) throws FDResourceException {
 		List rtnProds = new ArrayList();
 		 for (Iterator pi=productNodes.iterator(); pi.hasNext(); ) {
 			ProductModel prodModel = (ProductModel) pi.next();

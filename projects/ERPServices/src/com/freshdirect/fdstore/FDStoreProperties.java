@@ -247,8 +247,14 @@ public class FDStoreProperties {
 	private static final String MAX_FEATURED_DEALS_PER_LINE="fdstore.deals.maxFeaturedDealsPerLine";
 	private static final String MIN_FEATURED_DEALS_FOR_PAGE ="fdstore.deals.minFeaturedDeals";
 
+	private static final String TEMP_DIR = "tmpdir";
+	
 	private static final String PROP_GEOCODE_USELOCATIONDB = "fdstore.geocode.useLocationDB";
 	private static final String PROP_ROUTING_SENDADDRESS = "fdstore.routing.sendAddress";
+
+	// Smart Search
+	private static final String SMART_SEARCH_ENABLED = "fdstore.newSearch.enabled";
+
 
 	static {
 
@@ -426,8 +432,12 @@ public class FDStoreProperties {
 		defaults.put(MAX_FEATURED_DEALS_PER_LINE,"5");
 		defaults.put(MIN_FEATURED_DEALS_FOR_PAGE,"3");
 		
+		defaults.put(TEMP_DIR, "/tmp");
+		
 		defaults.put(PROP_GEOCODE_USELOCATIONDB, "false");
 		defaults.put(PROP_ROUTING_SENDADDRESS, "false");
+
+		defaults.put(SMART_SEARCH_ENABLED, "false");
 		
 		refresh();
 	}
@@ -979,6 +989,10 @@ public class FDStoreProperties {
 		return Boolean.valueOf(get(HPLETTER_MEDIA_ENABLED)).booleanValue();
 	}
 
+	public static String getTemporaryDirectory() {
+	    return get(TEMP_DIR);
+	}
+
 	//deals
 	public static String getDealsSkuPrefixes(){
 		return get(DEALS_SKU_PREFIX);
@@ -1010,4 +1024,11 @@ public class FDStoreProperties {
 	public static boolean canSendRoutingAddress() {
         return (new Boolean(get(PROP_ROUTING_SENDADDRESS))).booleanValue();
     }
+
+	/**
+	 * Is Smart Search feature enabled?
+	 */
+	public static boolean isSmartSearchEnabled() {
+		return (new Boolean(get(SMART_SEARCH_ENABLED))).booleanValue();
+	}
 }

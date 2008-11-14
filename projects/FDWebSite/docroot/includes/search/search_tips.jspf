@@ -1,4 +1,4 @@
-<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="520" class="text13">
+<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="520" class="text13" style="margin-top: 15px;">
 <tr><td colspan="2" class="text13">
 <FONT class="title16">Search Tips</font><BR>
 <BR>
@@ -34,27 +34,3 @@ Be as specific as you can.<br>
 </TR>
 </TABLE>
 <BR>
-
-<%-- 
-<font class="text11bold">Kosher and Organic</font><br>
-<BR>
-
-<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="520">
-<TR VALIGN="TOP">
-	<TD WIDTH="10" ALIGN="RIGHT"><LI></TD>
-	<TD WIDTH="510">
-		If you want to find only organic products check the box marked <b>organic</b>. 
-		<br><br>
-	</TD>
-</TR>
-<TR VALIGN="TOP">
-	<TD WIDTH="10" ALIGN="RIGHT"><LI></TD>
-	<TD WIDTH="510">
-		If you want to find only kosher products check the box marked<b> kosher</b>.
-	<br><br></TD>
-</TR>
-</TABLE>
- --%>
- 
- 
- 

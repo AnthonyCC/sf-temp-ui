@@ -649,11 +649,10 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	public String getUserId() {
 		try {
+			// load user id 'user@host.com' lazily
 			if (this.identity != null && (userId == null || "".equals(userId))) {
 				ErpCustomerModel model = FDCustomerFactory.getErpCustomer(this.identity);
 				userId = (model != null) ? model.getUserId() : "";
-			} else {
-				return null;
 			}
 		} catch (FDResourceException e) {
 			userId =  ""; // empty string

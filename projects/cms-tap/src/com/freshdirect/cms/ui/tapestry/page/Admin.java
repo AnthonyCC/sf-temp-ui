@@ -19,6 +19,7 @@ import com.freshdirect.cms.application.CmsRequestI;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.node.ContentNodeUtil;
 import com.freshdirect.cms.search.ContentSearchServiceI;
+import com.freshdirect.cms.search.SynonymDictionary;
 import com.freshdirect.cms.validation.ContentValidationDelegate;
 import com.freshdirect.cms.validation.ContentValidatorI;
 import com.freshdirect.framework.conf.FDRegistry;
@@ -38,12 +39,16 @@ public class Admin extends BasePage {
 
 	private void rebuildIndex(ContentSearchServiceI searchService) {
 		Set keys = new HashSet();
+		CmsManager instance = CmsManager.getInstance();
 		for (Iterator i = searchService.getIndexedTypes().iterator(); i.hasNext();) {
 			ContentType type = (ContentType) i.next();
-			keys.addAll(CmsManager.getInstance().getContentKeysByType(type));
+			keys.addAll(instance.getContentKeysByType(type));
 		}
+		
+		Map nodes = instance.getContentNodes(keys);
 
-		Map nodes = CmsManager.getInstance().getContentNodes(keys);
+		searchService.setDictionary(SynonymDictionary.createFromCms());
+		
 		searchService.index(nodes.values());
 	}
 

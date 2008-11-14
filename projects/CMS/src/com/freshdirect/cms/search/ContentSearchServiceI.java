@@ -47,5 +47,14 @@ public interface ContentSearchServiceI {
 	 * @return Set of {@link com.freshdirect.cms.ContentType}
 	 */
 	public Set getIndexedTypes();
+	
+	
+	/**
+	 * set the current synonym dictionary, used by the indexing process.
+	 * 
+	 * @param dictionary
+	 */
+	public void setDictionary(SynonymDictionary dictionary);
+	
 
 }

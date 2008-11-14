@@ -44,6 +44,9 @@ import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
 import com.freshdirect.mail.ejb.MailerGatewaySessionBean;
+import com.freshdirect.smartstore.ejb.DyfModelHome;
+import com.freshdirect.smartstore.ejb.DyfModelSB;
+import com.freshdirect.smartstore.ejb.DyfModelSessionBean;
 import com.mockrunner.mock.ejb.MockUserTransaction;
 
 /**
@@ -101,6 +104,9 @@ public abstract class FDCustomerManagerTestSupport extends DbTestCaseSupport {
 
 		SessionBeanDescriptor fdEventLoggerDesc = new SessionBeanDescriptor("freshdirect.event.EventLogger", EventLoggerHome.class, EventLoggerSB.class, EventLoggerSessionBean.class);
 		container.deploy(fdEventLoggerDesc);
+
+                SessionBeanDescriptor dyfModelDesc = new SessionBeanDescriptor("freshdirect.smartstore.DyfModelHome", DyfModelHome.class, DyfModelSB.class, DyfModelSessionBean.class);
+                container.deploy(dyfModelDesc);
 
 		
 		mockTransaction = new MockUserTransaction(); 

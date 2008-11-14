@@ -1,0 +1,24 @@
+<%--
+
+Renders product / brand name
+
+@input productNode @{link com.freshdirect.fdstore.content.ProductModel} renderable product
+
+--%><%
+String __fullName = productNode.getFullName();
+String __brandName = productNode.getPrimaryBrandName();
+String __shortenedProductName = null;
+
+if (__brandName != null
+	&& __brandName.length() > 0
+	&& (__fullName.length() >= __brandName.length())
+	&& __fullName.substring(0, __brandName.length()).equalsIgnoreCase(__brandName)) {
+
+	__shortenedProductName = __fullName.substring(__brandName.length()).trim();
+}
+%><span><%
+if (__shortenedProductName != null) {
+	%><span style="font-weight:bold"><%= __brandName %></span> <%= __shortenedProductName %><%
+} else {
+	%><span><%= "".equals(__fullName) ? "(this product)" : __fullName %></span><%
+} %></span>

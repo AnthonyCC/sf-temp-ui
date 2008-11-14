@@ -1,4 +1,4 @@
-
+<%@ page import='com.freshdirect.fdstore.util.RecipesUtil' %>
 <table border="0" cellspacing="0" cellpadding="0" align="center" width="125">
 <tr><td width="1"><%-- spacer 1x1 --%></td>
 <td width="120"><%-- spacer 120x1 --%></td>
@@ -37,7 +37,7 @@
       		if(recipeSubcategory.getContentName().equals(request.getParameter("subCatId"))){
       	    	List filterByKeys = recipeSubcategory.getFilterBy();
       	    	filterByKeys = filterByKeys == null ? Collections.EMPTY_LIST : new ArrayList(filterByKeys);
-      	      	Map groupByMap = com.freshdirect.webapp.util.RecipesUtil.findRecipes(recipeSubcategory, com.freshdirect.webapp.util.RecipesUtil.getFilter(filterByKeys, request), filterByKeys, request);
+      	      	Map groupByMap = RecipesUtil.findRecipes(recipeSubcategory, RecipesUtil.getFilter(filterByKeys, request), filterByKeys, request);
       			%>
       			<logic:iterate id="filter" collection="<%= filterByKeys %>" type="com.freshdirect.fdstore.content.DomainValue">
       			<div style="margin-left:8px; text-indent: -8px; font-weight: normal">

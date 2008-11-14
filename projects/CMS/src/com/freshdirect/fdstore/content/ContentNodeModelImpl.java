@@ -62,6 +62,10 @@ public abstract class ContentNodeModelImpl extends CmsContentNodeAdapter impleme
 		return (String)this.getAttribute("HIDE_URL").getValue();
 	}
 
+	public boolean isDisplayable() {
+		return true;
+	}
+	
 	public String getPath() {
 		if (!this.getContentType().equals(ContentNodeI.TYPE_DEPARTMENT)
 			&& !this.getContentType().equals(ContentNodeI.TYPE_CATEGORY)

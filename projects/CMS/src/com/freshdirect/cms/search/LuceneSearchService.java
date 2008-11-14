@@ -10,14 +10,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.apache.lucene.analysis.LowerCaseFilter;
 import org.apache.lucene.analysis.PorterStemFilter;
@@ -25,21 +30,28 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.HitCollector;
 import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
-import org.apache.webdav.lib.methods.RebindMethod;
+import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.BooleanClause.Occur;
 
+import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.CmsRuntimeException;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -60,7 +72,9 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public class LuceneSearchService implements ContentSearchServiceI {
 	
 
-	private final static Set stopWords = new HashSet(Arrays.asList(new String[] {"and","or","of","from","with"}));
+	final static Set                stopWords             = new HashSet(Arrays.asList(new String[] { "I", "a", "about", "an", "and", "are", "as", "at",
+            "be", "by", "for", "from", "how", "in", "is", "it", "of", "on", "or", "that", "the", "this", "to", "was", "what", "when", "where", "who", "will",
+            "with"                                               }));
 	
 	private final Category LOGGER = LoggerFactory.getInstance(LuceneSearchService.class);
 	
@@ -89,12 +103,18 @@ public class LuceneSearchService implements ContentSearchServiceI {
 	/** Map of ContentType -> List of AttributeIndex */
 	private Map contentIndexes = new HashMap();
 	
+	private SynonymDictionary dictionary;
 	
 	private String indexLocation = null;
 
 	private IndexReader reader;
 	
 	private LuceneSpellingSuggestionService spellService;
+
+	private SortedSet prefixSet;
+
+	
+	private final static int MAX_AUTOCOMPLETE_HITS = 20;
 
 	/**
 	 * @return path to index directory
@@ -110,6 +130,22 @@ public class LuceneSearchService implements ContentSearchServiceI {
 		this.indexLocation = indexLocation;
 	}
 
+	/**
+	 * 
+	 * @param dictionary the synonym dictionary to use
+	 */
+	public void setDictionary(SynonymDictionary dictionary) {
+		this.dictionary = dictionary;
+	}
+	
+	/**
+	 * 
+	 * @return the synonym dictionary
+	 */
+	public SynonymDictionary getDictionary() {
+		return dictionary;
+	}
+	
 	/**
 	 * Set content indexing rules.
 	 * 
@@ -198,7 +234,41 @@ public class LuceneSearchService implements ContentSearchServiceI {
 		}
 	}
 
-	private void indexNode(ContentNodeI node, IndexWriter writer) throws IOException {
+    /*private Set collectNotUniqueFullnames(Collection contentNodes) {
+        Set unique = new HashSet();
+        Set all = new HashSet();
+        for (Iterator i = contentNodes.iterator(); i.hasNext();) {
+            ContentNodeI node = (ContentNodeI) i.next();
+            AttributeI attribute = node.getAttribute("FULL_NAME");
+            if (attribute!=null) {
+                Object atrValue = attribute.getValue();
+                if (atrValue!=null) {
+                    for (StringTokenizer tokenizer = new StringTokenizer(atrValue.toString().trim().toLowerCase(), " \t&,"); tokenizer.hasMoreTokens();) {
+                        String token = tokenizer.nextToken().toLowerCase();
+                        if (unique.contains(token)) {
+                            unique.remove(token);
+                            all.add(token);
+                        } else {
+                            if (!all.contains(token)) {
+                                unique.add(token);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        System.out.println("unique words:");
+        for (Iterator i = unique.iterator(); i.hasNext();) {
+            System.out.print(" "+i.next());
+        }
+        System.out.println("******************************************** non unique words:");
+        for (Iterator i = all.iterator(); i.hasNext();) {
+            System.out.print(" "+i.next());
+        }
+        return all;
+    }*/
+
+    private void indexNode(ContentNodeI node, IndexWriter writer) throws IOException {
 
 		Document doc = createDocument(node);
 		if (doc == null)
@@ -276,6 +346,17 @@ public class LuceneSearchService implements ContentSearchServiceI {
 				// contain this info...
 				//
 				String value = atrValue.toString();
+				if (ad.getAttributeName().equalsIgnoreCase("keywords") && this.dictionary!=null) {
+					AttributeI attribute = node.getAttribute("FULL_NAME");
+					if (attribute != null) {
+						Object fullNameObj = attribute.getValue();
+						if (fullNameObj instanceof String) {
+							String fullName = (String) fullNameObj;
+							value += this.dictionary
+									.getAdditionalKeywords(fullName);
+						}
+					}
+				}
 				// CHANGED doc.add(Field.Text(ad.getAttributeName(), value));
 				doc.add(new Field(ad.getAttributeName(), value, Field.Store.YES, Field.Index.TOKENIZED));
 				// CHANGED doc.add(Field.Text(ad.getAttributeName() + STEMMED_SUFFIX, value));
@@ -461,5 +542,193 @@ public class LuceneSearchService implements ContentSearchServiceI {
 				spellService.getSpellingHits(query, maxHits, quarterPlusOne));
 	}
 	
-	  
+	
+	/**
+	 * Get a list of completions.
+	 * @param term term words + prefix
+	 * @author istvan
+	 */
+    public List getAutocompletionsOld(String term) {
+        try {
+        	
+        	final BooleanQuery query = new BooleanQuery(); // contains all terms and prefix
+        	query.add(new TermQuery(new Term(FIELD_CONTENT_TYPE,FDContentTypes.PRODUCT.getName().toLowerCase())),Occur.MUST);
+        	
+        	StringBuffer completionPrefix = new StringBuffer(term.length()); // prepend terms with this
+        	final Set usedTerms = new HashSet(); // do not repeat words in completions
+        	
+        	
+        	// separate terms that must match exactly
+        	int i = 0;
+        	for(int j = term.indexOf(' '); j != -1; j = term.indexOf(' ',i=j)) {		
+        		if (i+2 < j) {
+        			String mustTerm = term.substring(i,j).toLowerCase();
+        			if (usedTerms.contains(mustTerm)) continue;
+        			completionPrefix.append(mustTerm).append(' ');
+        			query.add(new TermQuery(new Term("FULL_NAME",mustTerm)), Occur.MUST);
+        			usedTerms.add(mustTerm);
+        		}
+        		
+        		if (j != -1) { // could be multiple spaces
+        			for(;j<term.length();++j) {
+        				if (term.charAt(j) != ' ') break; 
+        			}
+        		
+        			if (j == term.length()) {
+        				i = term.length() - 1;
+        				break;
+        			}
+        		}
+        	}
+        	
+        	// this is the prefix, ' ' means ALL words that co-occur with terms
+        	final String prefix = term.substring(i).toLowerCase();
+        	if (!prefix.equals(" ")) query.add(new PrefixQuery(new Term("FULL_NAME",prefix)),Occur.MUST);	
+
+        	final IndexReader reader = getReader();
+            IndexSearcher searcher = new IndexSearcher(reader);
+            
+            
+            // tokens and frequencies Map<String,Integer>
+            final Map tokens = new TreeMap(new Comparator() {
+            	
+				public int compare(Object t1, Object t2) {
+					return t1.toString().compareToIgnoreCase(t2.toString());
+				}
+            	
+            });
+            
+            searcher.search(query, new HitCollector() {
+            	
+            	// next word boundary (or end)
+            	private int nextWord(String s, int from) {
+            		int i = s.indexOf(' ',from);
+            		for(;i>=0 && i<s.length();++i) {
+            			if (s.charAt(i) != ' ') break;
+            		}
+            		return i == -1 || i == s.length() ? s.length() : i;
+            	}
+            	
+            	private int next(int i, String s, StringBuffer buff) {
+            		buff.setLength(0);
+            		
+            		// if prefix is SPACE, get all words
+            		if (prefix.equals(" ")) {
+            			for(;i<s.length();++i) {
+            				
+            				char c = s.charAt(i);
+            						
+            				if (c == ' ' || c == '.' || c == ',' || c == '/') break;
+                			buff.append(Character.toLowerCase(c));
+            			}
+            			return nextWord(s,i);
+            		}
+            		
+            		// if not, match prefix
+            		for(int j=0; j< prefix.length(); ++j,++i) {
+        				if (i == s.length()) {
+        					buff.setLength(0);
+        			        return s.length();		
+        				}
+        				char c1 = Character.toLowerCase(s.charAt(i));
+        				char c2 = Character.toLowerCase(prefix.charAt(j));
+        				if (c1 != c2) {
+        					buff.setLength(0);
+        					return nextWord(s,i);
+        				}
+        				
+        				buff.append(c1);
+        			}
+            		
+            		for(;i<s.length();++i) {
+            			char c = s.charAt(i);
+            			if (c == ' ' || c == '.' || c == ',' || c == '/') break;
+            			buff.append(Character.toLowerCase(c));
+            		}
+            		
+            		return nextWord(s,i);
+            	}
+            	
+            	private boolean startsWithPrefixLowerCase(String name) {
+            		if (name.length() < prefix.length()) return false;
+            		for(int i=0; i< Math.min(prefix.length(),name.length());++i) {
+            			if (Character.toLowerCase(name.charAt(i)) != Character.toLowerCase(prefix.charAt(i))) return false;
+            		}
+            		return true;
+            	}
+            	
+            	private void addToken(String token) {
+            		if (!usedTerms.contains(token) && (prefix.equals(" ") || startsWithPrefixLowerCase(token))) {
+            			Integer f = (Integer)tokens.get(token);
+            			if (f == null) f = new Integer(1);
+            			else f = new Integer(f.intValue()+1);
+            			tokens.put(token, f);
+            		}
+            	}
+            	
+            	// collect docs
+				public void collect(int i, float score) {
+					
+					Document doc;
+					try {
+						doc = reader.document(i);
+					} catch (CorruptIndexException e) {
+						return;
+					} catch (IOException e) {
+						return;					}
+					String fullname = doc.get("FULL_NAME");
+					StringBuffer buffer = new StringBuffer(fullname.length());
+					
+					int j = 0;
+					do {	
+						j = next(j,fullname,buffer);
+						if (buffer.length() > 1) addToken(buffer.toString());
+					} while (j < fullname.length());
+					
+				}
+            	
+            });
+        
+            ArrayList h = new ArrayList(tokens.size());
+            
+            for(Iterator t=tokens.entrySet().iterator(); t.hasNext();) {
+            	Map.Entry entry = (Map.Entry)t.next();
+            	if (((Integer)entry.getValue()).intValue() < 2) continue;
+            	h.add(entry.getKey());
+            }
+            
+            Collections.sort(h, new Comparator() {
+
+				public int compare(Object t1, Object t2) {
+					int f1 = ((Integer)tokens.get(t1)).intValue();
+					int f2 = ((Integer)tokens.get(t2)).intValue();
+					return f2-f1;
+				}
+            });
+            
+            if (completionPrefix.length() > 0) {
+            	for(int j=0; j< Math.min(MAX_AUTOCOMPLETE_HITS, h.size());++j) {
+            		h.set(j, completionPrefix.toString() + ' ' + h.get(j));
+            	}
+            }
+            
+            return h.size() <= MAX_AUTOCOMPLETE_HITS ? h : h.subList(0, MAX_AUTOCOMPLETE_HITS);
+         } catch (IOException e) {
+            throw new CmsRuntimeException(e);
+        }
+    }
+
+    
+    
+    
+    public Hits collectWords() throws IOException {
+        final BooleanQuery query = new BooleanQuery(); // contains all terms and
+                                                       // prefix
+        query.add(new TermQuery(new Term(FIELD_CONTENT_TYPE, FDContentTypes.PRODUCT.getName().toLowerCase())), Occur.MUST);
+        IndexSearcher s = new IndexSearcher(getReader());
+        Hits hits = s.search(query);
+        LOGGER.info("product found:" + hits.length());
+        return hits;
+    }
+    
 }

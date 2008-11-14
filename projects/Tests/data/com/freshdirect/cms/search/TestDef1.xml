@@ -9,4 +9,11 @@
 		</AttributeDefs>
 	</ContentTypeDef>
 
+	<ContentTypeDef name="SynTest">
+		<AttributeDefs>
+			<AttributeDef type="S" name="FULL_NAME" />
+			<AttributeDef type="S" name="keywords" />
+		</AttributeDefs>
+	</ContentTypeDef>
+
 </CMSDef>

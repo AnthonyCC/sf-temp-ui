@@ -605,5 +605,13 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		// TODO Auto-generated method stub
 		user.setHomePageLetterVisited(isHomePageLetterVisited);
 	}
+	
+	
+	public static FDUserI getFDSessionUser(HttpSession session) {
+	    if (session==null) {
+	        return null;
+	    }
+            return (FDUserI) session.getAttribute(SessionName.USER);
+	}
 }
 

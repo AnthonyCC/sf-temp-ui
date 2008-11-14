@@ -1,0 +1,97 @@
+<%@	  page import="java.util.Iterator"
+%><%@ page import="java.util.List"
+%><%@ page import="com.freshdirect.fdstore.content.ContentNodeTree"
+%><%@ page import="com.freshdirect.fdstore.content.DomainValue"
+%><%@ page import="com.freshdirect.fdstore.FDStoreProperties"
+%><%@ taglib uri='freshdirect' prefix='fd'
+%><%@ taglib uri='logic' prefix='logic'
+%><%-- 
+
+Category Navigator Panel - Search Page
+This file is included by /search.jsp
+
+@param categoryTree	CategoryNodeTree
+@param nav			SearchNavigator instance
+@param results		List of found results
+
+--%><%
+final int N_PRDS	= results.getProducts().size(); // number of all products
+List clss			= results.getRecipeClassifications(); // got from SmartSearchTag
+
+%><div id="categoryPanel" style="border: 1px solid #737644;width:155px;margin-left: 15px;margin-top: 15px">
+	<div id="catSum" class="text15" style="background-color: #999967; color: white; padding: 5px;width:145px;text-align: center">
+		<div style="width:145px;text-align: left;margin-left:auto;margin-right: auto; padding-bottom: 5px;">
+<%
+	Iterator depIter = categoryTree.getRoots().iterator();
+	int topLevelCount = 0;
+	while (depIter.hasNext()) {
+		topLevelCount += ( (TreeElement)depIter.next() ).getChildren().size();
+	}
+	if (results.getFilteredRecipes() != null && results.getFilteredRecipes().size() > 0) {
+		topLevelCount++;
+	}
+	
+%>			<%= topLevelCount %> categories have matches for
+			<div style="font-weight: bold"><%= criteria %></div>
+		</div>
+	</div>
+<%
+
+	// 'show all products' action
+	if (N_PRDS > 0 && (nav.getDepartment() != null || nav.getCategory() != null)) {
+%>
+ 	<div class="text11bold" style="margin: 0px; padding: 1em 5px 0 5px; background-color: #E0E3D0;width: 145px ! important"><a href="<%= nav.getUnfilteredPageAction() %>">Show all products</a> <span style="color:grey">(<%= N_PRDS %>)</span></div>
+<%
+	}
+%>
+ <fd:ContentTreeTag tree="categoryTree" contentNodeName="te" expandToDepth="1" depthName="depth" nextDepthName="nextDepth" selectedName="selected" childCountName="childCount">
+<% int d=depth.intValue(); if (d==0) {
+		// department node
+%>		<div class="text12bold" style="margin: 0px; padding: 1em 5px 2px 5px; background-color: #E0E3D0;width: 145px ! important">
+			<a href="<%= nav.getDepartmentAction(te.getContentKey().getId()) %>"><%= te.getFullName().toUpperCase() %></a>
+		</div>
+<%
+	} else {
+%>		<div style="font-weight: <%= selected.booleanValue() ? "bold": "normal"%>; margin: 0px;background-color: #E0E3D0;padding-left:20px;text-indent:-10px;width: 135px ! important">
+			<a style="margin-left: <%= d-1 %>em;" href="<%= nav.getCategoryAction(te.getContentKey().getId()) %>"><%= te.getFullName() %></a>&nbsp;<span style="color:grey">(<%= childCount %>)</span>
+		</div>
+<% 
+	} 
+
+	%>
+</fd:ContentTreeTag>
+<%-- RECIPES PART --%><%
+	if (results.getFilteredRecipes() != null && results.getFilteredRecipes().size() > 0) {
+%>		<div class="text12bold" style="margin: 0px; padding: 1em 5px 0 5px; background-color: #E0E3D0;width: 145px ! important">
+			<a href="<%= nav.getRecipesAction() %>">RECIPES</a>
+		</div>
+<%
+		if (clss != null && clss.size() > 0) {
+			String f = nav.getRecipeFilter();
+			Map cmap = results.getRecipeCounts(); // recipe count per classification
+			for(Iterator it=clss.iterator(); it.hasNext();) {
+				DomainValue v = (DomainValue) it.next();
+				String key = v.getContentKey().getId();
+				%>
+			<div style="font-weight: <%= (f != null && f.equalsIgnoreCase(key)) ? "bold" : "normal"  %>; margin: 0px;background-color: #E0E3D0;padding-left:20px;text-indent:-10px;width: 135px ! important">
+				<a href="<%= nav.getJumpToFilteredRecipesAction(key) %>"><%= v.getLabel() %></a>&nbsp;<span style="color:grey">(<%= ((Integer)cmap.get(v)).intValue() %>)</span>
+			</div>
+<%
+				
+			}
+		}
+	}
+%>
+	<div class="text12bold" style="background-color: #E0E3D0;">&nbsp;</div> 
+</div>
+
+<%
+	if (FDStoreProperties.isAdServerEnabled()) { %>
+<div style="width:155px; margin-top: 15px">
+<script type="text/javascript">
+	OAS_AD('LittleRandy');
+</script>
+</div>
+<%
+	}
+%>

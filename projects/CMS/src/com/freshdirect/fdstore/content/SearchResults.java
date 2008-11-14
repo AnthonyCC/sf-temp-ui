@@ -80,9 +80,7 @@ public class SearchResults implements Serializable {
 		
 	};
 	
-	private final List exactCategories;
-	private final List exactProducts;
-	private final List fuzzyProducts;
+	private List products;
 	private final List recipes;
 	
 	private final boolean productsRelevant;
@@ -93,6 +91,39 @@ public class SearchResults implements Serializable {
 
 	private SpellingResultsDifferences spellingResultsDifferences = null;
 
+	
+	// -- backward compatibility -- //
+	/** @deprecated */
+	private final List exactCategories;
+	/** @deprecated */
+	private final List exactProducts;
+	/** @deprecated */
+	private final List fuzzyProducts;
+
+
+	public SearchResults(
+			List products,
+			List recipes,
+			boolean productsRelevant) {
+		this.products = products;
+		this.recipes = recipes;
+		this.productsRelevant = productsRelevant;
+
+		// deprecated //
+		exactCategories = null;
+		exactProducts = null;
+		fuzzyProducts = null;
+	}
+
+	/**
+	 * @deprecated
+	 * 
+	 * @param exactCategories
+	 * @param exactProducts
+	 * @param fuzzyProducts
+	 * @param recipes
+	 * @param productsRelevant
+	 */
 	public SearchResults(
 			List exactCategories,
 			List exactProducts,
@@ -105,7 +136,7 @@ public class SearchResults implements Serializable {
 		this.recipes = recipes;
 		this.productsRelevant = productsRelevant;
 	}
-	
+
 	/**
 	 * 
 	 * @param spellingSuggestion
@@ -124,24 +155,24 @@ public class SearchResults implements Serializable {
 		this.spellingResultsDifferences = diffs;
 	}
 	
-	public List getExactCategories() {
-		return this.exactCategories;
+	public List getProducts() {
+		return this.products;
 	}
 	
-	public List getExactProducts() {
-		return this.exactProducts;
-	}
-
-	public List getFuzzyProducts() {
-		return this.fuzzyProducts;
-	}
+	void setProducts(List products) {
+            this.products = products;
+        }
 	
 	public List getRecipes() {
 		return recipes;
 	}
-	
+
 	public int numberOfResults() {
-		return exactCategories.size() + exactProducts.size() + fuzzyProducts.size() + recipes.size();
+		// maintain backward compatibility
+		if (exactCategories != null && exactProducts != null && fuzzyProducts != null)
+			return exactCategories.size() + exactProducts.size() + fuzzyProducts.size() + recipes.size();
+
+		return products.size() + recipes.size();
 	}
 	
 	public String getSpellingSuggestion() {
@@ -159,5 +190,24 @@ public class SearchResults implements Serializable {
 	public SpellingResultsDifferences getSpellingResultsDifferences() {
 		return spellingResultsDifferences;
 	}
+
+
+	// -- old code, to be removed later -- //
+	
+	/** @deprecated */
+	public List getExactCategories() {
+		return exactCategories;
+	}
+
+	/** @deprecated */
+	public List getExactProducts() {
+		return exactProducts;
+	}
+
+	/** @deprecated */
+	public List getFuzzyProducts() {
+		return fuzzyProducts;
+	}
+	
 	
 }

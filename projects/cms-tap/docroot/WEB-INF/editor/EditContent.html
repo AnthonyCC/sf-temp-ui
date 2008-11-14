@@ -60,8 +60,10 @@
 									</span>
 								</td>
 								<td align="center" width="20%">
-									<input jwcid="save" class="button submit"/>
-									<input jwcid="cancel" class="button cancel"/>
+									<span jwcid="@If" condition="ognl:visit.user.isAllowedToWrite()">
+										<input jwcid="save" class="button submit"/>
+										<input jwcid="cancel" class="button cancel"/>
+									</span>
 								</td>
 								<td align="right" width="40%">
 									<span jwcid="@Conditional" condition="ognl:previewLink != null">
@@ -81,7 +83,7 @@
 					<div jwcid="@ContentEditor" node="ognl:selectedNode" contextNode="ognl:contextNode"/>
 				</span>
 
-				<div class="buttonBar">
+				<div class="buttonBar" jwcid="@If" condition="ognl:visit.user.isAllowedToWrite()">
 					<input jwcid="save2" class="button submit"/>
 					<input jwcid="cancel2" class="button cancel"/>
 				</div>

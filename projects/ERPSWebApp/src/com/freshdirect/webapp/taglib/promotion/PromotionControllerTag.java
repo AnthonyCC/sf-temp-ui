@@ -130,7 +130,7 @@ public class PromotionControllerTag extends AbstractControllerTag {
 	}
 	
 	private String calculatePromoDifferences(FDPromotionModel oldPromotion, FDPromotionModel newPromotion){
-		StringBuffer body = new StringBuffer();
+		final StringBuffer body = new StringBuffer();
 		String br = "<br>";
 		String row = "<tr>";
 		String column = "<td>";
@@ -405,7 +405,7 @@ public class PromotionControllerTag extends AbstractControllerTag {
 				append(column+newZipRestrictions+eColumn).
 				append(eRow);
 		}
-		return (body!=null || body.length()>0)?body.toString():"";
+		return body.toString();
 	}
 
 	protected boolean performGetAction(HttpServletRequest request, ActionResult actionResult) throws JspException {

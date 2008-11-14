@@ -13,4 +13,7 @@ import java.security.Principal;
  */
 public interface UserI extends Principal {
 
+	
+	public boolean isAllowedToWrite();
+	
 }

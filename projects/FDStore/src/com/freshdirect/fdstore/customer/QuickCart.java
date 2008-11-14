@@ -93,6 +93,7 @@ public class QuickCart implements FDProductCollectionI {
 		return (FDProductSelectionI) this.getProducts(deptId).get(index);
 	}
 
+	// List<FDProductSelectionI>
 	public void setProducts(List lines) {
 		this.orderLines.clear();
 		for (Iterator i = lines.iterator(); i.hasNext();) {
@@ -129,10 +130,12 @@ public class QuickCart implements FDProductCollectionI {
 		this.orderLines.clear();
 	}
 
+	// List<FDProductSelectionI>
 	public List getProducts() {
 		return Collections.unmodifiableList(this.orderLines);
 	}
 
+	// List<FDProductSelectionI>
 	public List getProducts(String deptId) {
 		List deptProducts = new ArrayList();
 		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {

@@ -53,6 +53,9 @@ public class ContentNodeSerializer {
 				LOGGER.warn("No definition for " + node + " " + name);
 				continue;
 			}
+			if (!filter(typeDef, name)) {
+			    continue;
+			}
 			if (attrDef instanceof RelationshipDefI) {
 
 				// FIXME remove workaround for broken content
@@ -74,7 +77,11 @@ public class ContentNodeSerializer {
 		}
 	}
 
-	private void visitScalar(Element parent, AttributeDefI attrDef, Object value) {
+    protected boolean filter(ContentTypeDefI typeDef, String name) {
+        return true;
+    }
+
+    private void visitScalar(Element parent, AttributeDefI attrDef, Object value) {
 		AttributeI attrib = (AttributeI) value;
 		if (attrib.getValue() != null) {
 			parent.addElement(attrDef.getName()).addText(ContentTypeUtil.attributeToString(attrib));
@@ -89,13 +96,22 @@ public class ContentNodeSerializer {
 			if (val instanceof List) {
 				for (Iterator i = ((List) val).iterator(); i.hasNext();) {
 					ContentKey key = (ContentKey) i.next();
-					visitContentKey(e, key);
+					if (filterRelationTo(key)) {
+					    visitContentKey(e, key);
+					}
 				}
 			} else {
-				visitContentKey(e, (ContentKey) val);
+			    ContentKey key = (ContentKey) val;
+                            if (filterRelationTo(key)) {
+				visitContentKey(e, key);
+                            }
 			}
 		}
 
+	}
+	
+	protected boolean filterRelationTo(ContentKey key) {
+	    return true;
 	}
 
 	private void visitContentKey(Element parent, ContentKey key) {

@@ -7,7 +7,7 @@
 -- Host page will need various Imports...(see recipe_cat.jsp)
 */
 String subCatIdParam = recipeSubCat!=null ? "&subCatId="+recipeSubCat.getContentName() :"";
-String filterParam= com.freshdirect.webapp.util.RecipesUtil.getFilterParam(request);
+String filterParam= com.freshdirect.fdstore.util.RecipesUtil.getFilterParam(request);
 %>
 <%--
 	The findRecipes code from here moved to com.freshdirect.webapp.util.RecipesUtil (CMS)
@@ -107,10 +107,10 @@ for (;qryStringTokn.hasMoreTokens();) {
 	filterByKeys = filterByKeys == null ? Collections.EMPTY_LIST : new ArrayList(filterByKeys);
 	
 	// find the specified filter DomainValue among subcat filterBy
-	DomainValue filter = com.freshdirect.webapp.util.RecipesUtil.getFilter(filterByKeys, request);
+	DomainValue filter = com.freshdirect.fdstore.util.RecipesUtil.getFilter(filterByKeys, request);
 
 	// filter and group
-	Map groupByMap = com.freshdirect.webapp.util.RecipesUtil.findRecipes(recipeSubCat, filter, filterByKeys, request);
+	Map groupByMap = com.freshdirect.fdstore.util.RecipesUtil.findRecipes(recipeSubCat, filter, filterByKeys, request);
 
 	// add fake group since there is none
 	List groupBy = new ArrayList(recipeSubCat.getGroupBy());

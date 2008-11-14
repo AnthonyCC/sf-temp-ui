@@ -12,6 +12,9 @@
 <%@ page import="java.util.*" %>
 <%@ page import="java.text.DecimalFormat" %>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
+<%@ page import="com.freshdirect.fdstore.util.EnumSiteFeature" %>
+<%@ page import="com.freshdirect.fdstore.util.SiteFeatureHelper" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -20,6 +23,15 @@
 <fd:CheckLoginStatus />
 
 <%
+// Smart Search - Limited Rollout
+FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+if (SiteFeatureHelper.isEnabled(EnumSiteFeature.NEW_SEARCH, user)) {
+	RequestDispatcher dispatcher = request.getRequestDispatcher("/search2.jsp"); // jump to new search page
+	dispatcher.forward(request, response);
+}
+
+
+
 String searchParams = request.getParameter("searchParams");
 // Uncomment these two lines below if trk=dym needs to be propagated to search links
 //String trk = request.getParameter("trk");
@@ -59,7 +71,7 @@ try {
 			<b><%=results.numberOfResults() == 1 ? "One match was " : ("" + results.numberOfResults() + " matches were ")%> found for <i>"<%=criteria%>"</i></b>
 		</div>
 		<div class="text15">
-		Did you mean <a href="/search.jsp?searchParams=<%=StringUtil.escapeUri(sug)%>&trk=dym"><b><%=sug%></b></a>?<br/><br/>
+		Did you mean <a href="?searchParams=<%=StringUtil.escapeUri(sug)%>&trk=dym"><b><%=sug%></b></a>?<br/><br/>
 		</div>
 		<%
 		}

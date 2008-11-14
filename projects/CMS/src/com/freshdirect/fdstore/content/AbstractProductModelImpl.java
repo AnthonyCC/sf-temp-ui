@@ -153,6 +153,14 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 			}
 	}
 	
+	public boolean isDisplayable() {	
+		return !(isHidden() || isDiscontinued() || isUnavailable() || isOrphan() || isInvisible());
+	}
+	
+        public boolean isDisplayableBasedOnCms() {        
+            return !(isHidden() ||  isOrphan() || isInvisible());
+        }
+	
 	public String getDefaultPriceOnly() {
 		try {
 			SkuModel skuModel = getDefaultSku();

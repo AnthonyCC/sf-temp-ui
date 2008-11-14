@@ -3,8 +3,11 @@
 package com.freshdirect.fdstore.content;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class StoreModel extends ContentNodeModelImpl {
 
@@ -27,6 +30,13 @@ public class StoreModel extends ContentNodeModelImpl {
 	public List getDepartments() {
 		ContentNodeModelUtil.refreshModels(this, "departments", departments, true);
 		return new ArrayList(departments);
+	}
+	
+	public Set getSortedDepartments(Comparator comp) {
+            ContentNodeModelUtil.refreshModels(this, "departments", departments, true);
+	    Set result = new TreeSet(comp);
+	    result.addAll(departments);
+	    return result;
 	}
 	
 	public List getBrands() {

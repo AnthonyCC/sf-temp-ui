@@ -1,0 +1,135 @@
+<%--
+
+Smart Search Text View (Tree)
+=============================
+
+@author gmark
+
+@input trk (String) Tracking code
+
+--%><%@ page import='com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.framework.webapp.*'%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
+<%@ page import='com.freshdirect.content.attributes.*'%>
+<%@ page import="com.freshdirect.fdstore.*" %>
+<%@ page import="com.freshdirect.fdstore.content.*" %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
+<%@ page import="com.freshdirect.webapp.util.FDURLUtil" %>
+<%@ page import="java.util.*" %>
+<%@ page import="java.text.DecimalFormat" %>
+<%@ page import="com.freshdirect.framework.util.NVL" %>
+<%@ page import="com.freshdirect.fdstore.util.URLGenerator" %>
+<%@ page import="com.freshdirect.fdstore.content.ContentNodeTree.TreeElement" %>
+
+<%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+
+<%@ taglib uri='template' prefix='tmpl' %>
+<%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri='oscache' prefix='oscache' %>
+<fd:CheckLoginStatus />
+<%
+
+final java.text.NumberFormat CURRENCY_FORMATTER = java.text.NumberFormat.getCurrencyInstance(Locale.US);
+final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yy");
+String fullPath = "";
+int catCount = 0;
+
+int rank=0;
+
+ContentNodeModel lastSubCategory = null;
+%>
+<fd:ContentTreeTag tree="filteredCategoryTree" contentNodeName="contentNode" expandToDepth="99" depthName="depth" nextDepthName="nextDepth" selectedName="selected" childCountName="childCount" includeProducts="true">
+<%
+	int d=depth.intValue();	
+	if (d==0) {
+		catCount = 0;
+		// department node
+%>		<div class="text13bold" style="color:#ff9f41;margin-top: 10px">  <%= contentNode.getFullName().toUpperCase() %> </div><%
+	} else if (contentNode instanceof ProductModel) {
+		ProductModel productNode = (ProductModel) contentNode;
+		String curPath = "";
+		ProductImpression pi = new ProductImpression(productNode);
+
+		boolean isYourFave = results.getUserProductScores().get(productNode.getContentKey()) != null;
+
+		// get parent categories
+		ContentNodeModel parent = productNode.getParentNode();
+		List catList = new ArrayList();
+		while (parent instanceof CategoryModel) {
+			catList.add(parent);
+			parent = parent.getParentNode();
+		}
+		
+		if (lastSubCategory == null || !lastSubCategory.equals(catList.get(0)) ) {
+			// render category header
+%>			<div class="text13bold" style="margin-top: <%= catCount > 0 ? "1" : "" %>0px"><%
+
+			for (int k=catList.size()-1; k>=0; --k) {
+				CategoryModel c = (CategoryModel) catList.get(k);
+				if (k>0) {
+					%><a href="<%= FDURLUtil.getCategoryURI(c.getContentKey().getId(), trk) %>"><%= c.getFullName() %></a> &raquo; <%
+				} else {
+					%><a href="<%= FDURLUtil.getCategoryURI(c.getContentKey().getId(), trk) %>"><%= c.getFullName() %></a>
+<%
+				}
+			}
+%>
+			</div>
+<%
+			catCount++;
+			
+			lastSubCategory = (CategoryModel) catList.get(0);
+		}
+		
+		// render product
+%>		<div style="margin-left: 10px;">
+			<%
+				String aka = pi.getProductModel().getAka() != null && !pi.getProductModel().getAka().equals("") ? "(" + pi.getProductModel().getAka() + ")" : "";
+				String actionURI = FDURLUtil.getProductURI(pi.getProductModel(), trk, (isYourFave ? "fave" : nav.getSortByName()), rank);
+				if (pi.getProductModel().isDisplayable()) {
+			%>
+						<a href="<%= actionURI %>"><%@ include file="/includes/product/i_prd_name.jspf" %></a><span>&nbsp;<%=aka %></span>
+			<%
+				} else {
+			%>
+						<a style="color: #999999" href="<%= actionURI %>"><%@ include file="/includes/product/i_prd_name.jspf" %>&nbsp;<%=aka %></a>
+			<%
+				}
+			%>
+			<span style="color: <%=pi.getProductModel().isDisplayable() ? "black" : "#999999" %>">&nbsp;
+			<% if (pi.getConfigurationDescrpition() != null && pi.getConfigurationDescrpition() != "") {%>
+				<%= pi.getConfigurationDescrpition() %>
+			<% }
+			if (pi.getProductInfo() != null) {%>
+				- <%= CURRENCY_FORMATTER.format(pi.getProductInfo().getDefaultPrice()) %>/<%= pi.getProductInfo().getDisplayableDefaultPriceUnit().toLowerCase()%> 
+		<%
+			}			
+		%>
+			</span>
+		<%
+		// Scaled prices
+		//
+		String scaledPrices[] = pi.getScaledPrices();
+		if (scaledPrices != null && scaledPrices.length > 0) {
+			for (int ymalSci = 0; ymalSci < scaledPrices.length; ymalSci++) { 
+		%>
+			<span style="color: #FF9933; font-weight: bold;">Save!</span>&nbsp;<span class="bold"><%= scaledPrices[ymalSci] %></span>
+		<%
+			}
+		}
+		%>
+		</div>
+		<%
+		// Various labels
+		//   YOUR FAVORITE
+		if (isYourFave) {
+			%><div style="margin-left:20px;margin-bottom:10px"><span style="color: #996699; font-weight: bold;">YOUR FAVORITE!</span></div><%
+		}
+		%>
+		<%		
+		
+	}	
+%>
+</fd:ContentTreeTag>

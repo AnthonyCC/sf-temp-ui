@@ -104,6 +104,12 @@ __SQL
 			value
 		end
 
+		if $options[:remove_prev_attr]
+			$stdout.puts <<__SQL
+DELETE FROM cms.attribute WHERE CONTENTNODE_ID='#{product.escaped}' AND DEF_NAME='#{attribute.escaped}';
+__SQL
+		end
+
 		$stdout.puts <<__SQL
 INSERT INTO CMS.ATTRIBUTE(ID,CONTENTNODE_ID,DEF_NAME,VALUE,ORDINAL,DEF_CONTENTTYPE)
 VALUES(CMS.SYSTEM_SEQ.NEXTVAL, '#{product.escaped}','#{attribute.escaped}','#{v.escaped}', 0, '#{product.match(/^(\w+):/)[1].escaped}');
@@ -138,6 +144,22 @@ __BANNER
 
 	opts.on("-s", "--skip-header", "Skip first line") do
 		$options[:skip_header] = true
+	end
+
+	opts.on("-p", "--prepend [SQL]", String, "Remove previous attribute before inserting new") do |stmt|
+		$options[:prepend] = stmt
+	end
+
+	opts.on("-g", "--remove-all [NAME]", String, "Remove previous all occurence of attribute before inserting new") do |attr_name|
+		if $options[:rattrs]
+			$options[:rattrs] << attr_name
+		else
+			$options[:rattrs] = [attr_name]
+		end
+	end
+
+	opts.on("-r", "--remove-attribute", "Remove previous attribute before inserting new") do
+		$options[:remove_prev_attr] = true
 	end
 
 	opts.on("-d", "--debug", "Enable debug messages") do
@@ -198,6 +220,18 @@ __SQL
 end
 
 
+# if prepend given
+if $options[:prepend]
+	$stdout << "-- prepended statement"
+	$stdout << $options[:prepend] 
+end
+
+if $options[:rattrs].is_a?(Array)
+	$stderr.puts $options[:rattrs].inspect
+	$options[:rattrs].each do |attr_name|
+		$stdout << "DELETE FROM CMS.ATTRIBUTE\nWHERE DEF_NAME='#{attr_name.strip.escaped}';\n"
+	end
+end
 
 reader.each do |row|
 	$line_counter = $line_counter + 1

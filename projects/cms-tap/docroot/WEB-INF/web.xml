@@ -83,7 +83,9 @@
 			<http-method>POST</http-method>
 		</web-resource-collection>
 		<auth-constraint>
+			<role-name>cms_admin</role-name>
 			<role-name>cms_editor</role-name>
+			<role-name>cms_viewer</role-name>
 		</auth-constraint>
 		<user-data-constraint>
 			<transport-guarantee>NONE</transport-guarantee>
@@ -102,6 +104,16 @@
 	<security-role>
 		<description>CMS Editors</description>
 		<role-name>cms_editor</role-name>
+	</security-role>
+
+	<security-role>
+		<description>CMS Viewers</description>
+		<role-name>cms_viewer</role-name>
+	</security-role>
+
+	<security-role>
+		<description>CMS Administrator</description>
+		<role-name>cms_admin</role-name>
 	</security-role>
 
 </web-app>

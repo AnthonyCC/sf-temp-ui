@@ -86,6 +86,7 @@
 		<pathelement location="${testing.home}/selenium-java-client-driver.jar"/>
 		<pathelement location="${testing.home}/emma.jar"/>
 		<pathelement location="${testing.home}/emma_ant.jar"/>
+		<pathelement location="${testing.home}/jsp-api-2.0.jar"/>
 	</path>
 
 	<!--  EMMA  -->

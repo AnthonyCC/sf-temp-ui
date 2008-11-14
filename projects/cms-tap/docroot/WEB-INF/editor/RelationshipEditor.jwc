@@ -49,6 +49,7 @@
 	<component id="sort" type="ImageSubmit">
 		<binding name="image" expression="assets.sort"/>
 		<binding name="listener" expression="listeners.sort"/>
+		<binding name="disabled" expression="!page.visit.user.isAllowedToWrite()"/>
 	</component>
 	
 	<component id="copy" type="ImageSubmit">
@@ -56,6 +57,7 @@
 		<binding name="image" expression="assets.copy"/>
 		<binding name="listener" expression="listeners.copy"/>
 		<binding name="onclick">"w = window.open('" + getTargetPopupUrl(false) + "', 'SelectTargetPopup', 'width=400,height=500,status=0,resizable=1,scrollbars=1'); w.focus(); return false;"</binding>
+		<binding name="disabled" expression="!page.visit.user.isAllowedToWrite()"/>
 	</component>
 
 	<component id="move" type="ImageSubmit">
@@ -63,11 +65,13 @@
 		<binding name="image" expression="assets.move"/>
 		<binding name="listener" expression="listeners.move"/>
 		<binding name="onclick">"w = window.open('" + getTargetPopupUrl(true) + "', 'SelectTargetPopup', 'width=400,height=500,status=0,resizable=1,scrollbars=1'); w.focus(); return false;"</binding>
+		<binding name="disabled" expression="!page.visit.user.isAllowedToWrite()"/>
 	</component>
 
 	<component id="delete" type="ImageSubmit">
 		<binding name="image" expression="assets.delete"/>
 		<binding name="listener" expression="listeners.delete"/>
+		<binding name="disabled" expression="!page.visit.user.isAllowedToWrite()"/>
 	</component>
 			
 	<component id="shiftUp" type="ImageSubmit">
@@ -91,11 +95,13 @@
 	<component id="clear" type="ImageSubmit">
 		<binding name="image" expression="assets.delete"/>
 		<binding name="listener" expression="listeners.clear"/>
+		<binding name="disabled" expression="!page.visit.user.isAllowedToWrite()"/>
 	</component>
 	
 	<component id="relationshipPopupLink" type="PopupPageLink">
 		<static-binding name="page">RelationshipPopup</static-binding>
 		<binding name="parameters" expression='{page.pageName, relationship.contentNode.key, relationship.name}'/>
+		<binding name="disabled" expression="!page.visit.user.isAllowedToWrite()"/>
 	</component>
 	<component id="relationshipPopupLink2" copy-of="relationshipPopupLink"/>
 
@@ -108,6 +114,7 @@
 	<component id="createContentPopupLink" type="PopupPageLink">
 		<static-binding name="page">CreateContentPopup</static-binding>
 		<binding name="parameters" expression='{page.pageName, relationship.contentNode.key, relationship.name, currType.name}'/>
+		<binding name="disabled" expression="!page.visit.user.isAllowedToWrite()"/>
 	</component>
 	
 	<bean name="evenOdd" class="org.apache.tapestry.bean.EvenOdd" lifecycle="render"/>

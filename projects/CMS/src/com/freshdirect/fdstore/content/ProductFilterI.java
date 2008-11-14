@@ -1,9 +1,10 @@
 package com.freshdirect.fdstore.content;
 
 import java.util.Collection;
+import java.util.List;
 
 import com.freshdirect.fdstore.FDResourceException;
 
 public interface ProductFilterI {
-	public Collection apply(Collection nodes) throws FDResourceException;
+	public List apply(Collection nodes) throws FDResourceException;
 }

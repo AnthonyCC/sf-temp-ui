@@ -71,6 +71,58 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI {
 
 	}
 	
+	public static class ProductModelPriceComparator implements Comparator {
+
+	    final boolean inverse;
+	    private ProductModelPriceComparator(boolean inverse) {
+	        this.inverse = inverse;
+	    }
+	    
+            public int compare(Object o1, Object o2) {
+                double price1 = 0;
+                double price2 = 0;
+                ProductModel model1 = (ProductModel) o1;
+                SkuModel sku1 = model1.getDefaultSku();
+                if (sku1 != null) {
+                    try {
+                        price1 = sku1.getProductInfo().getDefaultPrice();
+                    } catch (FDResourceException e) {
+                        e.printStackTrace();
+                    } catch (FDSkuNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+    
+                ProductModel model2 = (ProductModel) o2;
+                SkuModel sku2 = model2.getDefaultSku();
+                if (sku2 != null) {
+                    try {
+                        price2 = sku2.getProductInfo().getDefaultPrice();
+                    } catch (FDResourceException e) {
+                        e.printStackTrace();
+                    } catch (FDSkuNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+                
+                if (!model1.isDisplayable() && model2.isDisplayable()) {
+                	return 1;
+                }
+                
+                if (model1.isDisplayable() && !model2.isDisplayable()) {
+                	return -1;
+                }
+                
+                int result = Double.compare(price1, price2);
+                if (inverse) {
+                    result = -result;
+                }
+                return result;
+            }
+        }
+
+	
+	
 	public static class RatingComparator implements Comparator {
 
 		private int flips;
@@ -122,6 +174,10 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI {
 	/** Don't use allTheSame/reset, that's not thread-safe */
 	public final static Comparator PRICE_COMPARATOR = new ProductModel.PriceComparator();
 
+        public final static Comparator PRODUCT_MODEL_PRICE_COMPARATOR = new ProductModel.ProductModelPriceComparator(false);
+        public final static Comparator PRODUCT_MODEL_PRICE_COMPARATOR_INVERSE = new ProductModel.ProductModelPriceComparator(true);
+	
+	
 	/** Don't use allTheSame/reset, that's not thread-safe */
 	public final static Comparator RATING_COMPARATOR = new ProductModel.RatingComparator();
 
@@ -175,6 +231,10 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI {
 	public String getWineRegion();
 	
 	public String getSeafoodOrigin();
+	
+        public boolean isDisplayable();
+
+        public boolean isDisplayableBasedOnCms();
 	
 	public boolean isShowSalesUnitImage();
 	

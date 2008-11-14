@@ -85,4 +85,26 @@ public class Context {
 		return this.parentContext.getLabelPath(p);
 	}
 
+	public String toString() {
+		StringBuffer buf = new StringBuffer();
+		
+		buf.append("Ctx(");
+		if (isRoot()) {
+			buf.append("ROOT:");
+			appendContentKey(buf, getContentKey());
+		} else {
+			appendContentKey(buf, getContentKey());
+			buf.append("->");
+			appendContentKey(buf, getParentContext().getContentKey());
+		}
+		buf.append(")");
+
+		return buf.toString();
+	}
+
+	void appendContentKey(StringBuffer buf, ContentKey key) {
+		buf.append(key.getType());
+		buf.append(":");
+		buf.append(key.getId());
+	}
 }

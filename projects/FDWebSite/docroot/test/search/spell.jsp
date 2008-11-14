@@ -8,6 +8,7 @@
 <%@ page import='com.freshdirect.framework.util.DiscreteRandomSamplerWithReplacement' %>
 
 <%@ page import='com.freshdirect.fdstore.content.ContentFactory' %>
+<%@ page import='com.freshdirect.fdstore.content.ContentSearch' %>
 <%@ page import='com.freshdirect.fdstore.content.SearchResults' %>
 
 <%@ page import='java.util.List' %>
@@ -15,6 +16,7 @@
 <%@ page import='java.util.ArrayList' %>
 <%@ page import='java.util.Random' %>
 
+<%@ page import='java.io.File' %>
 <%@ page import='java.io.FileOutputStream' %>
 
 <html>
@@ -157,7 +159,7 @@ for(Iterator i = items.iterator(); i.hasNext(); ) {
 							StringBuffer row = new StringBuffer();
 							String query = threadSampler.getNextQuery();
 							long freq = threadSampler.getFrequency();
-							SearchResults results = ContentFactory.getInstance().search(query);
+							SearchResults results = ContentSearch.getInstance().search(query);
 
 							String suggestion = results.getSpellingSuggestion();
 							if (suggestion == null) suggestion = "-";
@@ -165,9 +167,7 @@ for(Iterator i = items.iterator(); i.hasNext(); ) {
 							row.
 								append(CSVUtils.escape(query)).append(',').
 								append(freq).append(',').
-								append(results.getExactCategories().size()).append(',').
-								append(results.getExactProducts().size()).append(',').
-								append(results.getFuzzyProducts().size()).append(',').
+								append(results.getProducts().size()).append(',').
 								append(results.getRecipes().size()).append(',').
 								append(results.isProductsRelevant()).append(',').
 								append(results.isSuggestionMoreRelevant()).append(',');

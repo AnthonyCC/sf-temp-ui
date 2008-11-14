@@ -23,8 +23,23 @@ import com.freshdirect.smartstore.Variant;
  *
  */
 public class FDURLUtil {
-	public static final String PRODUCT_PAGE_BASE = "/product.jsp";
+	public static final String URL_PARAM_SEP = "&amp;";
 	
+	public static final String PRODUCT_PAGE_BASE = "/product.jsp";
+	public static final String CATEGORY_PAGE_BASE = "/category.jsp";
+	public static final String DEPARTMENT_PAGE_BASE = "/department.jsp";
+
+	
+	public static String safeURLEncode(String str) {
+		try {
+			return URLEncoder.encode(str, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// NOTE: this should never happen!
+			return "";
+		}
+	}
+
+
 	public static String getProductURI(ProductModel productNode, String trackingCode) {
 		return FDURLUtil.getProductURI(productNode, trackingCode, null);
 	}
@@ -92,27 +107,57 @@ public class FDURLUtil {
 		
 		// tracking code 
 		if (trackingCode != null) {
-			uri.append("&trk=" + trackingCode);
+			uri.append(URL_PARAM_SEP + "trk=" + trackingCode);
 		}
 		
 		// append product ID
-		uri.append("&productId=" + getRealProduct(productNode).getContentName());
+		uri.append(URL_PARAM_SEP + "productId=" + getRealProduct(productNode).getContentName());
 		
 		// append variant ID (optional)
 		if (variantId != null) {
-			try {
-				// variant ID may contain SPACE or other non-ASCII characters ...
-				uri.append("&variant=" + URLEncoder.encode(variantId, "UTF-8"));
-				uri.append("&fdsc.source=SS");
-			} catch(UnsupportedEncodingException exc) {
-				//
-			}
+			// variant ID may contain SPACE or other non-ASCII characters ...
+			uri.append(URL_PARAM_SEP + "variant=" + safeURLEncode(variantId));
+			uri.append(URL_PARAM_SEP + "fdsc.source=SS");
 		}
 
 		return uri.toString();
 	}
 
 
+	/**
+	 * Generates URL for products in search page
+	 * 
+	 * @param productNode
+	 * @param trackingCode	trk
+	 * @param trackingCode2	trkd
+	 * @param rank			rank
+	 * @return
+	 */
+	public static String getProductURI(ProductModel productNode, String trackingCode, String trackingCodeEx, int rank) {
+		
+		StringBuffer uri = new StringBuffer();
+		
+		// product page with category ID
+		uri.append(PRODUCT_PAGE_BASE + "?catId=" + getRealParent(productNode).getContentName());
+		
+		// tracking code 
+		if (trackingCode != null) {
+			trackingCode = "srch"; // default value
+		}
+		uri.append(URL_PARAM_SEP + "trk=" + trackingCode);
+		
+		// append product ID
+		uri.append(URL_PARAM_SEP + "productId=" + getRealProduct(productNode).getContentName());
+		
+		// tracking code 
+		if (trackingCodeEx != null) {
+			uri.append(URL_PARAM_SEP + "trkd=" + trackingCodeEx);
+		}
+
+		uri.append(URL_PARAM_SEP + "rank=" + rank);
+
+		return uri.toString();
+	}
 
 	// get uri of configured product
 	//   see in i_configured_product.jspf
@@ -127,20 +172,20 @@ public class FDURLUtil {
 
 		// tracking code 
 		if (trackingCode != null) {
-			uri.append("&trk=" + trackingCode);
+			uri.append(URL_PARAM_SEP + "trk=" + trackingCode);
 		}
 		
 		// append product ID
-		uri.append("&productId=" + actProd.getContentName());
+		uri.append(URL_PARAM_SEP + "productId=" + actProd.getContentName());
 		
-		uri.append("&skuCode="+productNode.getSkuCode());
+		uri.append(URL_PARAM_SEP + "skuCode="+productNode.getSkuCode());
 
 		// append configuration
-		uri.append("&quantity=").append(config.getQuantity()).append("&salesUnit=").append(config.getSalesUnit());
+		uri.append(URL_PARAM_SEP + "quantity=").append(config.getQuantity()).append(URL_PARAM_SEP + "salesUnit=").append(config.getSalesUnit());
     	for(Iterator optItr = cfgOptions.keySet().iterator(); optItr.hasNext();) {
     		String optionName = (String)optItr.next();
     		String optionValue = (String)cfgOptions.get(optionName);
-    		uri.append("&").append(optionName).append("=").append(optionValue);
+    		uri.append(URL_PARAM_SEP).append(optionName).append("=").append(optionValue);
     	}
 		return uri.toString();
 	}
@@ -160,4 +205,49 @@ public class FDURLUtil {
         return image;
 	}
 
+	
+	/**
+	 * Returns URI to category page
+     * 
+	 * @param catId category ID
+	 * @param trackingCode Tracking Code
+	 * @return link to category page
+	 */
+	public static String getCategoryURI(String catId, String trackingCode) {
+		StringBuffer uri = new StringBuffer();
+		
+		// product page with category ID
+		uri.append(CATEGORY_PAGE_BASE + "?catId=" + catId);
+
+		// tracking code 
+		if (trackingCode != null) {
+			uri.append(URL_PARAM_SEP + "trk=" + trackingCode);
+		}
+
+		return uri.toString();
+	}
+
+
+
+
+	/**
+	 * Returns URI to department page
+     * 
+	 * @param deptId department ID
+	 * @param trackingCode Tracking Code
+	 * @return link to category page
+	 */
+	public static String getDepartmentURI(String deptId, String trackingCode) {
+		StringBuffer uri = new StringBuffer();
+		
+		// product page with category ID
+		uri.append(DEPARTMENT_PAGE_BASE + "?deptId=" + deptId);
+
+		// tracking code 
+		if (trackingCode != null) {
+			uri.append(URL_PARAM_SEP + "trk=" + trackingCode);
+		}
+
+		return uri.toString();
+	}
 }

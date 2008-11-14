@@ -768,7 +768,7 @@ public class FDShoppingCartControllerTag extends
 				String errorMsg = "ccl_actual_selection"
 						.equalsIgnoreCase(request.getParameter("source")) ? SystemMessageList.MSG_CCL_QUANTITY_REQUIRED
 						: SystemMessageList.MSG_QUANTITY_REQUIRED;
-				result.addError(new ActionError("quantity", errorMsg));
+				result.addError(new ActionError("quantity", errorMsg));				
 			}
 		}
 

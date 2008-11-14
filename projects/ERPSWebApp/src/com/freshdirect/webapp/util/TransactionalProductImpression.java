@@ -15,7 +15,6 @@ import com.freshdirect.fdstore.content.SkuModel;
  *
  */
 public class TransactionalProductImpression extends ProductImpression {
-
 	private FDConfigurableI configuration;
 	private SkuModel selectedSku;
 	
@@ -110,6 +109,13 @@ public class TransactionalProductImpression extends ProductImpression {
 	}
 	
 
+	
+	public String getConfigurationDescrpition() {
+		String desc = ConfigurationUtil.getConfigurationDescription(this);
+		return desc != null ? desc : super.getConfigurationDescrpition();
+	}
+
+	
 
 
 	public boolean validate() {

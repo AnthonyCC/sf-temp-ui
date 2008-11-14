@@ -1,0 +1,89 @@
+<%@ page import="java.util.*"
+%><%@ page import="com.freshdirect.fdstore.content.Recipe"
+%><%@ page import="com.freshdirect.framework.util.StringUtil"
+%><%--
+
+Recipes widget
+--------------
+
+@input recipes (List) list of found recipes
+
+--%><%
+//		List recipes = results.getRecipes();
+if (recipes != null && recipes.size()>0) {
+%>
+	<a name="recipes"></a>
+	<div style="padding: 10px 5px">
+		<div class="title12" style="padding-bottom: 8px;">
+				<%= recipes.size() %> recipe<%= recipes.size() > 1 ? "s were":" was" %> found
+<%
+	if (recipes.size() > 5) {
+%>
+				(<span class="bold">Show <a href="#" onclick="toggleRecipes(); return false;" id="recipe_label">All</a></span>)
+<%
+	}
+%>
+		</div>
+<%
+	Iterator ri = recipes.iterator();
+	StringBuffer allRecipeLines = new StringBuffer();
+	StringBuffer fiveRecipes = new StringBuffer();
+	for(int c= 0; ri.hasNext(); ++c) {
+		Recipe recipe = (Recipe)ri.next();
+		StringBuffer line = new StringBuffer();
+
+		if (c == 5) {
+%>
+				<div id="all_link"> </div>
+<%
+		}
+
+		line.append("<span class=\"bold\"><a href=\"/recipe.jsp?recipeId=").
+			append(recipe.getContentName()).append("&trk=").append(trk).append("\">").
+			append(recipe.getName()).append("</a></span>");
+		if (recipe.getSource() != null) { 
+			line.append(" from <a href=\"javascript:popup(\'/recipe_source.jsp?recipeId=").
+				append(recipe.getContentName()).append("&trk=").append(trk).append("\',\'large_long\')\">").
+				append(recipe.getSource().getName()).append("</a>");
+		}
+		line.append("<br/>");
+			
+		if (c >= 5)
+			allRecipeLines.append(line);
+		else {
+%>
+					<%= line %>
+<%
+		}
+	}
+
+%>
+			<script type="text/javascript">
+			var hiddenRecipeLines = '<%= StringUtil.escapeJavaScript(allRecipeLines.toString()) %>';
+			var allShown = false;
+
+			function showAllRecipes() {
+				allShown = false;
+				toggleRecipes();
+			}
+			
+			function toggleRecipes() {
+				var contents = document.getElementById('all_link');
+				var label = document.getElementById('recipe_label');
+
+				if (allShown) {
+					contents.innerHTML = "";
+					label.innerHTML = "All";
+				} else {
+					contents.innerHTML = hiddenRecipeLines ;
+					label.innerHTML = "First 5";
+				}
+
+				allShown = !allShown;
+			}
+			</script>
+	</div>
+	<div style="width: 100%; border-top:4px solid #ff9933"></div>
+<%
+}
+%>

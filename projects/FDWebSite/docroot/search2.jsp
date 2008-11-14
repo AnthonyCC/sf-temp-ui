@@ -1,544 +1,315 @@
-<%@ page import="com.freshdirect.cms.*" %>
-<%@ page import="com.freshdirect.cms.application.*" %>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
 
-<%@ page import="com.freshdirect.fdstore.*" %>
-<%@ page import="com.freshdirect.fdstore.content.*" %>
-<%@ page import="com.freshdirect.fdstore.customer.*" %>
-<%@ page import="com.freshdirect.fdstore.lists.*" %>
-<%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
-<%@ page import="com.freshdirect.webapp.util.RequestUtil" %>
+<%@   page import='com.freshdirect.webapp.util.*'
+%><%@ page import="com.freshdirect.fdstore.content.DomainValue"
+%><%@ page import='com.freshdirect.framework.webapp.*'
+%><%@ page import='com.freshdirect.webapp.taglib.fdstore.*'
+%><%@ page import='com.freshdirect.content.attributes.*'
+%><%@ page import="com.freshdirect.fdstore.util.URLGenerator"
+%><%@ page import="com.freshdirect.fdstore.util.SearchNavigator"
+%><%@ page import="com.freshdirect.fdstore.*"
+%><%@ page import="com.freshdirect.cms.*"
+%><%@ page import="com.freshdirect.cms.fdstore.FDContentTypes"
+%><%@ page import="com.freshdirect.fdstore.content.*"
+%><%@ page import='com.freshdirect.fdstore.attributes.*'
+%><%@ page import='com.freshdirect.webapp.util.SearchResultUtil'
+%><%@ page import='com.freshdirect.webapp.taglib.fdstore.SessionName'
+%><%@ page import="java.util.*"
+%><%@ page import="java.net.URLEncoder"
+%><%@ page import="java.text.DecimalFormat"
+%><%@ page import="com.freshdirect.framework.util.NVL"
+%><%@ taglib uri='template' prefix='tmpl'
+%><%@ taglib uri='freshdirect' prefix='fd'
+%><%@ taglib uri='oscache' prefix='oscache'
+%><%-- @ taglib uri="http://java.sun.com/jstl/core" prefix="c"
+--%><%
+final String SEPARATOR = "&nbsp;<span style=\"color: grey\">&bull;</span>&nbsp;";
+final String trk = "srch"; // tracking code
 
-<%@ page import="java.util.*" %>
-<%@ page import="java.text.DecimalFormat" %>
-<%@ page import="com.freshdirect.framework.util.NVL" %>
-<%@ page import='java.net.URLEncoder' %>
-<%@ page import='org.apache.commons.lang.StringUtils' %>
+String criteria = request.getParameter("searchParams");
 
-<%@ taglib uri='template' prefix='tmpl' %>
-<%@ taglib uri='logic' prefix='logic' %>
-<%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri='oscache' prefix='oscache' %>
-<fd:CheckLoginStatus />
+request.setAttribute("sitePage", "www.freshdirect.com/search.jsp");
+request.setAttribute("listPos", "SystemMessage,LittleRandy,CategoryNote");
 
-<tmpl:insert template='/common/template/search_nav2.jsp'>
-<tmpl:put name='title' direct='true'>FreshDirect - Search</tmpl:put>
-
-<%! 
-private final static java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
-
-/**
- * @return Map of String (productId) -> Integer (score)
- */
-private Map getProductHistory(HttpSession session) throws FDResourceException {
-	FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
-	if (user.getIdentity()==null) {
-		return	Collections.EMPTY_MAP;
-	}
-	Map prodHist = (Map) session.getAttribute("search.ProductHistory");
-	if (prodHist == null) {
-		List l = FDListManager.getEveryItemEverOrdered(user.getIdentity());
-		if (l==null || l.isEmpty()) {
-			prodHist = Collections.EMPTY_MAP;
-		} else {
-			prodHist = new HashMap();
-			for (Iterator i = l.iterator(); i.hasNext(); ) {
-				FDProductSelection sel = (FDProductSelection) i.next();
-				String productId = sel.getProductRef().getProductName();
-				Integer score = (Integer) prodHist.get(productId);
-				if (score==null) {
-					score = new Integer(0);
-				}
-				prodHist.put(productId, new Integer(score.intValue() + sel.getStatistics().getFrequency()));
-			}
-		}
-		session.setAttribute("search.ProductHistory", prodHist);
-	}
-	return prodHist;
-}
-
-private class ScoreComparator implements Comparator {
-	private final Map scores;
-
-	public ScoreComparator(Map scores) {
-		this.scores = scores;
-	}
-
-	private int getScore(Object o) {
-		ProductModel pm = (ProductModel) o;
-		String productId = pm.getProductRef().getProductName();
-		Integer score = (Integer) scores.get(productId);
-		return score==null ? 0 : score.intValue();
-	}
-
-	public int compare(Object o1, Object o2) {
-		return getScore(o2) - getScore(o1);
-	}
-
-}
-
-public List search(HttpSession session, String query) throws FDResourceException {
-
-	SearchResults res = ContentFactory.getInstance().search(query);
-	List products = new ArrayList(2000);
-	//products.addAll(res.getExactProducts());
-	products.addAll(res.getFuzzyProducts());
-	
-	Map scores = FDCustomerManager.getProductPopularity();
-	Collections.sort(products, new ScoreComparator(scores));
-	
-	scores = getProductHistory(session);
-	if (!scores.isEmpty()) {
-		Collections.sort(products, new ScoreComparator(scores));
-	}
-	
-	return products;
-}
-
-private List collectTop(Map counts, int threshold) {
-	List topEntries = new ArrayList(counts.entrySet());
-	
-	Collections.sort(topEntries, new Comparator() {
-		public int compare(Object o1, Object o2) {
-			Map.Entry e1 = (Map.Entry)o1;
-			Map.Entry e2 = (Map.Entry)o2;
-			return ((Comparable)e2.getValue()).compareTo( (Comparable)e1.getValue() );
-			//return ((Integer)e2.getValue()).intValue() - ((Integer)e1.getValue()).intValue();
-		}
-	});
-	
-	int max = Math.min(topEntries.size(), threshold);
-	List l = new ArrayList(max);
-	for (int i=0; i<max; i++) {
-		Map.Entry e = (Map.Entry) topEntries.get(i);
-		l.add(e.getKey());
-	}
-	return l;
-}
-
-/**
- * @return SortedMap of String (brand fullName) -> String (brand Id)
- */
-private SortedMap collectBrands(List products) {
-
-	/** Map of BrandModel -> Integer (count) */
-	Map counts = new HashMap();
-	for (Iterator i = products.iterator(); i.hasNext(); ) {
-		ProductModel prod = (ProductModel) i.next();
-		List brands = prod.getBrands();
-		if (brands.isEmpty()) {
-			continue;
-		}
-		BrandModel brand = (BrandModel)brands.get(0);
-		Integer count = (Integer)counts.get(brand);
-		count = count==null ? new Integer(1) : new Integer(count.intValue() + 1);
-		counts.put(brand, count);
-		
-		/*
-		for (Iterator j = brands.iterator(); j.hasNext(); ) {
-			BrandModel brand = (BrandModel)j.next();
-			Integer count = (Integer)counts.get(brand);
-			count = count==null ? new Integer(1) : new Integer(count.intValue() + 1);
-			counts.put(brand, count);
-		}
-		*/
-	}
-	
-	List brands = collectTop(counts, 7);
-	
-	SortedMap m = new TreeMap();
-	for (Iterator i = brands.iterator(); i.hasNext(); ) {
-		BrandModel brand = (BrandModel)i.next();
-		m.put(brand.getFullName(), brand.getContentName());
-	}
-	return m;
-
-	/*
-	SortedMap m = new TreeMap();
-	for (Iterator i = products.iterator(); i.hasNext(); ) {
-		ProductModel prod = (ProductModel) i.next();
-		List brands = prod.getBrands();
-		for (Iterator j = brands.iterator(); j.hasNext(); ) {
-			BrandModel brand = (BrandModel)j.next();
-			m.put(brand.getFullName(), brand.getContentName());
+SearchNavigator nav = new SearchNavigator(request);
+if (SearchNavigator.VIEW_DEFAULT == nav.getView() && request.getParameter("refinement") == null) {
+	// view is not set yet (== default)
+	//   let's get the latest used one from the session
+	if (session.getAttribute(SessionName.SMART_SEARCH_VIEW) != null) {
+		boolean wasDefaultSort = nav.isDefaultSort();
+		nav.setView(SearchNavigator.convertToView(( String)session.getAttribute(SessionName.SMART_SEARCH_VIEW) ));
+		if (wasDefaultSort && nav.isTextView()) {
+			// reset default sort which was adjusted by changing to text view
+			nav.setSortBy(SearchNavigator.SORT_DEFAULT_TEXT);
 		}
 	}
-	return m;
-	*/
-}
-
-private List filterByAvailability(List products) {
-	List l = new ArrayList(products.size());
-	for (Iterator i = products.iterator(); i.hasNext(); ) {
-		ProductModel product = (ProductModel) i.next();
-		//if (!product.isUnavailable()) {
-		//if (!product.isHidden() && product.isSearchable() && !product.isDiscontinued()) {
-		if (!product.isHidden() && product.isSearchable() && !product.isUnavailable()) {
-			l.add(product);
-		}
-	}
-	return l;
-}
-
-private List filterByBrand(List products, String brandId) {
-	BrandModel brand = (BrandModel)ContentFactory.getInstance().getContentNodeByName(brandId);
-	
-	List l = new ArrayList(products.size());
-	for (Iterator i=products.iterator(); i.hasNext(); ) {
-		ProductModel prod = (ProductModel) i.next();
-		List brands = prod.getBrands();
-		if (brands.contains(brand)) {
-			l.add(prod);
-		}
-	}
-	return l;
-}
-
-private void collectParentPathIds(List parentIds, ContentNodeModel node) {
-	if (node==null || node instanceof StoreModel) {
-		return;
-	}
-	ContentNodeModel parent = node.getParentNode();
-	parentIds.add(0, parent);
-	collectParentPathIds(parentIds, parent);
-}
-
-private List filterByPath(List products, String pathIds) {
-	List l = new ArrayList(products.size());
-	for (Iterator i = products.iterator(); i.hasNext(); ) {
-		ProductModel prod = (ProductModel) i.next();
-		List parentPathIds = new ArrayList();
-		collectParentPathIds(parentPathIds, prod);
-		String ppath = StringUtils.join(parentPathIds.iterator(), "/");
-		if (ppath.startsWith(pathIds)) {
-			l.add(prod);
-		}
-	}
-	return l;
-}
-
-
-	private static void displayTreeProduct(JspWriter out, ProductModel product) throws FDResourceException, IOException {
-		boolean unav = product.isUnavailable();
-		String productName = product.getFullName();
-		String brandName = product.getPrimaryBrandName();
-		if (brandName != null
-			&& brandName.length() > 0
-			&& (productName.length() >= brandName.length())
-			&& productName.substring(0, brandName.length()).equalsIgnoreCase(brandName)) {
-			String shortenedProductName = productName.substring(brandName.length()).trim();
-			productName = "<b>" + brandName + "</b> " + shortenedProductName;
-		}
-
-		if (unav) {
-			out.print("<tr class='unavailable'>");
-		} else {
-			out.print("<tr class='searchHit'>");
-		}
-
-		Image img = product.getThumbnailImage();
-		//Image img  = product.getCategoryImage();
-		out.print("<td class='thumbnail'>");
-		if (img!=null) {
-			out.print("<img src='");
-			out.print(img.getPath());
-			out.print("' width='");
-			out.print(img.getWidth());
-			out.print("' height='");
-			out.print(img.getHeight());
-			out.print("'>");
-		}
-		out.print("</td>");
-		
-		out.print("<td>");
-		out.print("<a href='/product.jsp?productId=");
-		out.print(product);
-		out.print("&catId=");
-		out.print(product.getParentNode());
-		out.print("&trk=srch'>");
-		out.print(productName);
-		out.print("</a>");
-
-		if (product.getAka() != null && !"".equals(product.getAka())) {
-			out.print("<span class='aka'>");
-			out.print(" (" + product.getAka() + ") ");
-			out.print("</span>");
-		}
-
-
-		String productPrice = null;
-		Comparator priceComp = new ProductModel.PriceComparator();
-		List skus = product.getSkus();
-		for (ListIterator li = skus.listIterator(); li.hasNext();) {
-			SkuModel sku = (SkuModel) li.next();
-			if (sku.isUnavailable()) {
-				li.remove();
-			}
-		}
-		int skuSize = skus.size();
-
-		SkuModel sku = null;
-
-		// skip this item..it has no skus.  Hmmm?
-		if (skuSize == 1) {
-			sku = (SkuModel) skus.get(0); // we only need one sku
-		} else if (skus.size() > 1) {
-			sku = (SkuModel) Collections.min(skus, priceComp);
-		}
-
-		FDProductInfo pi;
-
-		if (sku != null) {
-			try {
-				pi = FDCachedFactory.getProductInfo(sku.getSkuCode());
-				productPrice = currencyFormatter.format(pi.getDefaultPrice())
-					+ "/"
-					+ pi.getDisplayableDefaultPriceUnit().toLowerCase();
-			} catch (FDSkuNotFoundException ex) {
-				// safe to ignore
-			}
-		}
-
-		String sizeDesc = product.getSizeDescription();
-		if (sizeDesc != null) {
-			out.print("<span class='sizeDescription'>");
-			out.print("(" + sizeDesc + ") ");
-			out.print("</span>");
-		}
-		out.print("</td>");
-
-		out.print("<td class='price'>");
-		if (unav) {
-			out.print("N/A");
-		} else {
-			out.print(productPrice);
-		}
-		out.print("</td>");
-		
-		out.print("</tr>");
-	}
-	
-	public void displayNodeTree(HttpServletRequest request, JspWriter out, Map map) throws FDResourceException, IOException {
-		String baseQueryString = RequestUtil.getFilteredQueryString(request, new String[] { "path", "x", "y" });
-		Collection root = (Collection) map.get(null);
-		displayNodeTree(baseQueryString, request.getParameter("path"), out, map, new Stack(), root);
-	}
-	
-	private void displayNodeTree(String baseQueryString, String filterPath, JspWriter out, Map map, Stack path, Collection ls) throws FDResourceException, IOException {
-		for (Iterator i = ls.iterator(); i.hasNext();) {
-			ContentNodeModel node = (ContentNodeModel) i.next();
-			
-			if (node instanceof ProductModel) {
-				continue;
-			}
-			
-			path.push(node.getContentName());
-			
-			out.print("<div class='" + node.getContentKey().getType() + "' style='");
-			out.print("margin-left: " + (((path.size() - 1) * 8) + 4) + "px;");
-			out.print("text-indent: -4px'>");
-			
-			String currPath = StringUtils.join(path.iterator(), "/");
-
-			boolean samePath = filterPath!=null && filterPath.startsWith(currPath);
-			
-			if (!samePath) out.print("<a href='?" + baseQueryString + "&amp;path=" + URLEncoder.encode( currPath )+ "'>");
-			out.print(node.getFullName());
-			if (!samePath) out.print("</a>");
-			
-			out.print("</div>\n");
-			
-			boolean inPath = filterPath != null && currPath.startsWith(filterPath);
-			if (inPath || path.size() < 3) {
-				Collection children = (Collection) map.get(node);
-				if (children != null) {
-					displayNodeTree(baseQueryString, filterPath, out, map, path, children);
-				}
-			}
-			
-			path.pop();
-		}
-	}
-%>
-
-<%
-String query = NVL.apply(request.getParameter("q"), "").trim();
-List results = search(session, query);
-
-String filterBrand = request.getParameter("brand");
-String filterPath = request.getParameter("path");
-
-if (!results.isEmpty()) {
-	results = filterByAvailability(results);
-}
-if (!results.isEmpty() && filterBrand != null) {
-	results = filterByBrand(results, filterBrand);
-}
-if (!results.isEmpty() && filterPath != null) {
-	results = filterByPath(results, filterPath);
-}
-%>
-
-<tmpl:put name='leftnav' direct='true'>
-<style>
-#tree {
-	margin-bottom: 1em;
-}
-
-#tree a {
-	text-decoration: none;
-}
-
-#tree a:hover {
-	text-decoration: underline;
-}
-
-#tree a.clear {
-	color: #CC6666;
-	float: right;
-}
-
-#tree .header {
-	font-weight: bold;
-	margin-top: 1em;
-	margin-bottom: 1em;
-	border-bottom: 1px solid #999;
-}
-
-#tree .Department {
-	font-weight: bold;
-	text-transform: uppercase;
-	margin-top: 1em;
-}
-</style>
-
-<%
-if ( "".equals(query) || results==null || results.isEmpty() ) {
 } else {
-	%>
-	<!--
-	<div class="text11pkbold" style="border-bottom: 2px solid #ccc">
-	Narrow your search
-	</div>
-	-->
-	<div id="tree">
-		<%
-		SortedMap brands = collectBrands(results);
-		if (!brands.isEmpty()) {
-			String baseQueryString = RequestUtil.getFilteredQueryString(request, new String[] { "brand", "x", "y" });
-			%>
-			<div class="header">
-				<%
-				if (filterBrand!=null) {
-					%><a title="Show All" class="clear" href="?<%= baseQueryString %>">X</a><%
-				}
-				%>
-				Narrow by Brand
-			</div>
-			<%
-			for (Iterator i = brands.entrySet().iterator(); i.hasNext(); ) {
-				Map.Entry e = (Map.Entry) i.next();
-				%>
-				<div class="Brand" style="margin-left: 8px">
-					<%
-					if (filterBrand == null) {
-						%>
-						<a href="?<%= baseQueryString %>&amp;brand=<%= e.getValue() %>"><%= e.getKey() %></a>
-						<%
-					} else {
-						%><%= e.getKey() %><% 
-					}
-					%>
-				</div>
-				<%
-			}
-		}
-		%>
-		
-		<div class="header">
-			<%
-			if (filterPath != null) {
-				String baseQueryString = RequestUtil.getFilteredQueryString(request, new String[] { "path", "x", "y" });
-				%><a title="Show All" class="clear" href="?<%= baseQueryString %>">X</a><%
-			}
-			%>
-			Narrow by Department
-		</div>
-		
-		<%
-		Map nodeTree = com.freshdirect.webapp.util.SearchResultUtil.buildNodeTree(results);
-		displayNodeTree(request, out, nodeTree);
-		%>
-	</div>
-	<%
+	// record custom view type
+	if (SearchNavigator.VIEW_DEFAULT == nav.getView()) {
+		session.removeAttribute(SessionName.SMART_SEARCH_VIEW);
+	} else {
+		session.setAttribute(SessionName.SMART_SEARCH_VIEW, SearchNavigator.convertToViewName(nav.getView()));	
+	}
 }
+
+request.setAttribute("sx.navigator", nav);
+request.setAttribute("recipes.show_all", new Boolean(nav.isRecipesDeptSelected()));
 %>
+
+
+<fd:SmartSearch searchResults="results" productList="productList" categorySet="categorySet" brandSet="brandSet" categoryTree="categoryTree" filteredCategoryTreeName="filteredCategoryTree">
+<tmpl:insert template='/common/template/search2_nav.jsp'>
+<%
+//special case
+
+boolean jumpToRecipes = (results!=null) && ((results.getProducts().size() == 0 && results.getRecipes().size() > 0) || nav.isRecipesDeptSelected());
+if (jumpToRecipes && !nav.isRecipesDeptSelected()) {
+	nav.setDepartment(SearchNavigator.RECIPES_DEPT);
+	nav.setSortBy(SearchNavigator.SORT_DEFAULT_RECIPE);
+
+	request.setAttribute("recipes.show_all", Boolean.TRUE);
+}
+
+// show category panel if found products (recipes don't count)
+if (results != null && results.numberOfResults() > 0) {
+
+%>
+<tmpl:put name="categoryPanel" direct="true">
+<%-- CATEGORY TREE NAVIGATOR --%>
+<%
+	if ( categoryTree != null ) {
+%><%@ include file="/includes/search/treenav.jspf" %><%
+	}
+%>
+</tmpl:put>
+<%
+} else {
+	if (FDStoreProperties.isAdServerEnabled()) { %>
+<tmpl:put name="categoryPanel" direct="true">
+<div style="width:155px; margin-top: 1em">
+<script type="text/javascript">
+	OAS_AD('LittleRandy');
+</script>
 </div>
 </tmpl:put>
+<%
+	}
+}
 
+
+
+%>
+<tmpl:put name='title' direct='true'>FreshDirect - Search<%= criteria != null && criteria.length() > 0 ?  (" - " + criteria) : ""%></tmpl:put>
 <tmpl:put name='content' direct='true'>
-<style>
-#searchResults {
-	text-align: left;
-	font-size: 8pt;
-	width: 520px;
-}
 
-#searchResults td {
-	vertical-align: top;
-	padding: 4px;
-	border-bottom: 1px solid #ccc;
-}
+<%
 
-div:hover.searchHit {
-	background-color: #fafafa;
-}
-
-.thumbnail {
-	width: 36px;
-	height: 36px;
-}
-
-
-.unavailable * {
-	color: #999 !important;
-}
-
-.unavailable img {
-	FILTER: Gray() Alpha(Opacity=50);
-	-moz-opacity: 0.5;
-}
-
-.sizeDescription {
-	display: block;
-	color: #666;
-	margin-left: 1em;
-}
-
-.aka {
-	color: #666;
-}
-
-.price {
-	text-align: right;
+if (FDStoreProperties.isAdServerEnabled()) { %>
+<div style="width: 529px; border: 0; margin-top: 15px; padding: 0;">
+<style type="text/css">
+#OAS_CategoryNote {
+text-align: center;
 }
 </style>
+<script type="text/javascript">
+	OAS_AD('CategoryNote');
+</script>
+</div>
 <%
-if ( "".equals(query) || results==null || results.isEmpty() ) {
-	%>
-	<%@ include file="/includes/search/search_tips.jspf"%>
-	<%
-} else {
-	%>
-	<table id="searchResults" cellspacing="0" cellpadding="0">
-		<logic:iterate id="product" collection="<%= results %>" type="com.freshdirect.fdstore.content.ProductModel" length="30">
-			<% displayTreeProduct(out, product); %>
-		</logic:iterate>
-	</table>
-	<%
-}
+	}
+
+
+if ( results == null) {
+	// No results, show search tips
+	%><%@ include file="/includes/search/search_tips.jspf"%><%
+} else { 
+	if (results.numberOfResults() == 0) {
+		%><%@ include file="/includes/search/no_results.jspf"%><%
+	} else {
+		int resultSize = results.getProductsSize();
+		String displayCriteria = criteria;
+
+
+		if (!jumpToRecipes) {
+			//
+			// SHOW RESULTS
+			//
+		    %>
+<div class="text10" style="text-align:right; font-weight: bold">
+	View:
+</div>
+<%		
+			if (nav.getCategory() != null) {
+				ContentNodeModel node = categoryTree.getTreeElement(nav.getCategory()).getModel();
+				displayCriteria = "<a href=\"" + FDURLUtil.getCategoryURI(node.getContentKey().getId(), trk) + "\">" + node.getFullName() + "</a>";				
+			} else if (nav.getDepartment() != null) {
+				ContentNodeModel node = categoryTree.getTreeElement(nav.getDepartment()).getModel();
+				displayCriteria = "<a href=\"" + FDURLUtil.getDepartmentURI(node.getContentKey().getId(), trk) + "\">" + node.getFullName() + "</a>";
+			}
+%><div style="font-size:18px;font-weight:normal">
+
+<%-- view selectors --%>
+<span style="float:right"><%
+	if (nav.isListView()) {
+%><img src="/media_stat/images/template/search/search_view_list_on.gif" style="border: none" alt="List View"> <a href="<%= nav.getSwitchViewAction(SearchNavigator.VIEW_GRID) %>"><img src="/media_stat/images/template/search/search_view_grid_off.gif" style="border: none" alt="Grid View"></a> <a href="<%= nav.getSwitchViewAction(SearchNavigator.VIEW_TEXT) %>"><img src="/media_stat/images/template/search/search_view_text_off.gif" style="border: none" alt="Text View"></a>
+<%
+	} else if (nav.isGridView()) {
+%><a href="<%= nav.getSwitchViewAction(SearchNavigator.VIEW_LIST) %>"><img src="/media_stat/images/template/search/search_view_list_off.gif" style="border: none" alt="List View"></a> <img src="/media_stat/images/template/search/search_view_grid_on.gif" alt="Grid View" style="border: none"> <a href="<%= nav.getSwitchViewAction(SearchNavigator.VIEW_TEXT) %>"><img src="/media_stat/images/template/search/search_view_text_off.gif" style="border: none" alt="Text View"></a>
+<%
+	} else if (nav.isTextView()) {
+%><a href="<%= nav.getSwitchViewAction(SearchNavigator.VIEW_LIST) %>"><img src="/media_stat/images/template/search/search_view_list_off.gif" style="border: none" alt="List View"></a> <a href="<%= nav.getSwitchViewAction(SearchNavigator.VIEW_GRID) %>"><img src="/media_stat/images/template/search/search_view_grid_off.gif" style="border: none" alt="Grid View"></a> <img src="/media_stat/images/template/search/search_view_text_on.gif" style="border: none" alt="Text View">
+<%
+	}
+%>
+</span>
+
+<%= resultSize %> product<%= resultSize > 1 ? "s":""%> found <%= displayCriteria.equals(criteria) ? "for" : "in" %> <span style="font-weight:bold"><%= displayCriteria %></span>
+</div>
+<%
+	if (results.isSuggestionMoreRelevant()) {
+				String sug = results.getSpellingSuggestion();
+		%>		
+		<div class="text15" style="margin-top:15px; margin-bottom: 15px">
+		Did you mean <a href="?searchParams=<%=StringUtil.escapeUri(sug)%>&trk=dym"><b><%=sug%></b></a>?
+		</div>
+<%
+	}
+%>
+<table cellpadding="0" cellspacing="0" style="width: 529px; border: 0; background-color: #E0E3D0; padding:2px;margin-top: 10px;line-height: 25px;">
+<tr>
+<td style="width: 100%">
+<span class="text11bold">Sort:</span>
+<%
+	if (nav.isTextView()) {
+		%><a href="<%= nav.getChangeSortAction(SearchNavigator.SORT_DEFAULT) %>" class="<%= nav.isDefaultSort() ? "text11bold" : "text11" %>">Default</a><%= SEPARATOR
+		%><a href="<%= nav.getChangeSortAction(SearchNavigator.SORT_BY_RELEVANCY) %>" class="<%= nav.isSortByRelevancy() ? "text11bold" : "text11" %>">Relevancy</a><%= SEPARATOR %><%
+	} else {
+		%><a href="<%= nav.getChangeSortAction(SearchNavigator.SORT_BY_RELEVANCY) %>" class="<%= nav.isDefaultSort() ? "text11bold" : "text11" %>">Relevancy</a><%= SEPARATOR %><%
+	}
+	%><a href="<%= nav.getChangeSortAction(SearchNavigator.SORT_BY_NAME) %>" class="<%= nav.isSortByName() ? "text11bold" : "text11" %>">Name</a><%= SEPARATOR
+	%><a href="<%= nav.getChangeSortAction(SearchNavigator.SORT_BY_PRICE) %>" class="<%= nav.isSortByPrice() ? "text11bold" : "text11" %>">Price</a><%= SEPARATOR
+	%><a href="<%= nav.getChangeSortAction(SearchNavigator.SORT_BY_POPULARITY) %>" class="<%= nav.isSortByPopularity() ? "text11bold" : "text11" %>">Most Popular</a><%
+%>
+</td>
+<td class="text11bold">Filter:&nbsp;</td>
+<td>
+	<form name="form_brand_filter" id="form_brand_filter" method="GET" style="margin: 0;">
+		<input type="hidden" name="searchParams" value="<%= criteria %>">
+<% nav.appendToBrandForm(out); %>
+		<select name="brandValue" style="width: 160px" onchange="document.getElementById('form_brand_filter').submit()">
+			<option value=""><%= nav.getBrand() == null ? "CHOOSE BRAND" : "SHOW ALL PRODUCTS"%></option>
+<% 		if (brandSet != null) {
+			for (Iterator iter = brandSet.iterator(); iter.hasNext();) {
+				BrandModel cm = (BrandModel) iter.next();  
+%>			<option value="<%= cm.getContentKey().getId() %>" <%
+				if (cm.getContentKey().getId().equals(nav.getBrand())) {%>
+					selected="true"
+			<%	}
+		%>><%= cm.getFullName() %></option>
+<%			} // for (brandSet...)
+		} // if brandSet
+%>
+	   </select>
+	</form>
+</td>
+</tr>
+</table>
+
+<%-- result list--%>
+<div style="margin-top: 5px"><%
+		if (nav.isListView()) {
+			%><%@ include file="/includes/search/sx_listview.jspf" %><%
+		} else if (nav.isGridView()) {
+			%><%@ include file="/includes/search/sx_gridview.jspf" %><%
+		} else if (nav.isTextView()) {
+			if (nav.isTextViewDefault() ) {
+				%><%@ include file="/includes/search/sx_textview.jspf" %><%
+			} else {
+				%><%@ include file="/includes/search/sx_textview_flat.jspf" %><%
+			}
+		}
+
+		/* unfiltered case*/
+		if (nav.getCategory() == null && nav.getDepartment() == null) {
+			List recipes = results.getFilteredRecipes();
+
+%>	<div style="width: 100%; border-top:4px solid #ff9933"></div>
+<%@ include file="/includes/search/recipes.jspf" %><%
+		} else {
+%>	<div style="width: 100%; border-top:4px solid #ff9933"></div>
+<%
+		}
 %>
 </div>
+<%
 
+			// Don't show pager for text view!
+			if (!nav.isTextView()) {
+%>
+<%-- Pager Bar --%>
+<div style="font-weight: bold; margin-top: 1em">
+	<div style="float:right; font-weight: bold;"><%
+				if (nav.isGridView()) { %>
+Display <% if (results.getPageSize()==20) { %>20<% } else { %><a href="<%= nav.getPageSizeAction(20) %>">20</a><% } %> |
+<% if (results.getPageSize()==40) { %>40<% } else { %><a href="<%= nav.getPageSizeAction(40) %>">40</a><% } %> |
+<% if (results.isAll()) { %>ALL<% } else { %><a href="<%= nav.getPageSizeAction(0) %>">ALL</a><% } %> per page
+<% } else if (nav.isListView()) { %>
+Display <% if (results.getPageSize()==15) { %>15<% } else { %><a href="<%= nav.getPageSizeAction(15) %>">15</a><% } %> |
+<% if (results.getPageSize()==30) { %>30<% } else { %><a href="<%= nav.getPageSizeAction(30) %>">30</a><% } %> |
+<% if (results.isAll()) { %>ALL<% } else { %><a href="<%= nav.getPageSizeAction(0) %>">ALL</a><% } %> per page
+<% } %>
+	</div>
+Page: 
+<%
+				int currentPage = results.getCurrentPage();
+				int off = 0;
+				for (int i=0;i<results.getPageCount();i++) {
+			    	if (currentPage==i) {
+			    		%><%= i+1 %><%
+			    	} else {
+						%><a href="<%= nav.getJumpToPageAction(off) %>"><%= i+1 %></a><%
+					}
+
+					if (i<results.getPageCount()-1) {
+			    	 %><%= SEPARATOR %><%
+					}
+	            	off += results.getPageSize();
+	        	}
+%>
+</div>
+<%
+	    	} // view != 'text'
+		} // (resultSize>0)
+
+
+
+
+		if (jumpToRecipes /*nav.isRecipesDeptSelected()*/) {
+			List recipes = results.getFilteredRecipes();
+			String selectedRecipeClassification = nav.getRecipeFilter();
+			DomainValue selDv = null;
+			
+			if (selectedRecipeClassification != null) {
+				selDv = (DomainValue) ContentFactory.getInstance().getContentNodeByKey(ContentKey.create(FDContentTypes.DOMAINVALUE, selectedRecipeClassification));
+			}
+			
+%><div class="text10" style="text-align:right;margin-top:15px;font-weight: bold">&nbsp;</div>
+	<div style="font-size:18px;font-weight:normal"><%= recipes.size() %> recipe<%= recipes.size() > 1 ? "s":""%> found <% if (selDv != null) { %>in <span style="font-weight:bold"><%= selDv.getLabel() %><% } %></span></div>
+
+	<div class="text13" style="background-color: #E0E3D0;padding:2px;margin-top: 10px;line-height: 25px;">
+		<div style="float:left"><span class="text11bold">Sort:</span>
+		<a href="<%= nav.getChangeSortAction(SearchNavigator.SORT_BY_NAME) %>" class="<%= nav.isSortByName() ? "text11bold" : "text11" %>">Name</a>
+	</div>
+	<div style="clear: both;"></div>
+</div>
+<%@ include file="/includes/search/recipes_textview.jspf" %><%
+		}
+	}
+}
+%>
 
 </tmpl:put>
 </tmpl:insert>
+
+</fd:SmartSearch>

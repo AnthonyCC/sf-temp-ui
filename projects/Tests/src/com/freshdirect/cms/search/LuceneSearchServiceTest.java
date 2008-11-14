@@ -26,15 +26,7 @@ public class LuceneSearchServiceTest extends TestCase {
 	public void testIndexing() throws IOException {
 
 		// load content
-		List ts = new ArrayList();
-		ts.add(new XmlTypeService(
-				"classpath:/com/freshdirect/cms/search/TestDef1.xml"));
-
-		CompositeTypeService typeService = new CompositeTypeService(ts);
-
-		this.content = new XmlContentService(typeService,
-				new FlexContentHandler(),
-				"classpath:/com/freshdirect/cms/search/TestContent1.xml");
+		initContent("classpath:/com/freshdirect/cms/search/TestContent1.xml");
 
 		// initialize the search service
 		List indexes = new ArrayList();
@@ -43,17 +35,11 @@ public class LuceneSearchServiceTest extends TestCase {
 		index.setAttributeName("name");
 		indexes.add(index);
 
-		LuceneSearchService search = new LuceneSearchService();
-		System.out.println("ZIZI: " + tempDir.getAbsolutePath());
-		search.setIndexLocation(tempDir.getAbsolutePath());
-		search.setIndexes(indexes);
-		search.initialize();
+		LuceneSearchService search = createSearchService(indexes, tempDir);
 
 		assertEquals(1, search.getIndexedTypes().size());
 
-		// index some nodes
-		Map contentNodes = content.getContentNodes(content.getContentKeys());
-		search.index(contentNodes.values());
+		indexContent(search);
 
 		// search
 		assertResults(search, 0, "bar");
@@ -78,6 +64,79 @@ public class LuceneSearchServiceTest extends TestCase {
 		assertResults(search, 0, "one");
 		assertResults(search, 1, "two");
 		assertResults(search, 1, "mutatis");
+		
+		
+		
+
+		
+		
+	}
+
+
+	private void initContent(String string) {
+		List ts = new ArrayList();
+		ts.add(new XmlTypeService(
+				"classpath:/com/freshdirect/cms/search/TestDef1.xml"));
+
+		CompositeTypeService typeService = new CompositeTypeService(ts);
+
+		this.content = new XmlContentService(typeService,
+				new FlexContentHandler(),
+				string);
+	}
+
+
+	public static LuceneSearchService createSearchService(List indexes, File tempDir) {
+		LuceneSearchService search = new LuceneSearchService();
+		search.setIndexLocation(tempDir.getAbsolutePath());
+		search.setIndexes(indexes);
+		search.initialize();
+		return search;
+	}
+	
+	
+	public void testSynonyms() throws IOException {
+		initContent("classpath:/com/freshdirect/cms/search/TestContent2.xml");
+
+		// initialize the search service
+		List indexes = new ArrayList();
+		AttributeIndex index = new AttributeIndex();
+		index.setContentType("SynTest");
+		index.setAttributeName("FULL_NAME");
+		indexes.add(index);
+		index = new AttributeIndex();
+		index.setContentType("SynTest");
+		index.setAttributeName("keywords");
+		indexes.add(index);
+
+		LuceneSearchService search = createSearchService(indexes, tempDir);
+		
+		SynonymDictionary dictionary = new SynonymDictionary ();
+		dictionary.parseSynonymes("classpath:/com/freshdirect/cms/search/synonymlist.txt");
+		search.setDictionary(dictionary);
+
+		indexContent(search);
+
+		
+		assertResults(search, 1, "spaghetti");
+		assertResults(search, 0, "macaroni");
+		assertResults(search, 2, "something");
+		assertResults(search, 1, "orange juice");
+
+		// now, some synonyms:
+		assertResults(search, 1, "pasta");
+		assertResults(search, 1, "oj");
+		assertResults(search, 1, "one");
+		
+		
+		
+		
+	}
+
+
+	private void indexContent(LuceneSearchService search) {
+		Map contentNodes = content.getContentNodes(content.getContentKeys());
+		search.index(contentNodes.values());
 	}
 
 	private void assertResults(ContentSearchServiceI search, int resultCount,
@@ -98,11 +157,11 @@ public class LuceneSearchServiceTest extends TestCase {
 		}
 	}
 
-	private static File createTempDir(String prefix, String suffix)
+	public static File createTempDir(String prefix, String suffix)
 			throws IOException {
 		File tmp = File.createTempFile(prefix, suffix);
 		// String tmpName = tmp.getAbsolutePath();
-		System.out.println("ZOZO: " + tmp.getName());
+		//System.out.println("ZOZO: " + tmp.getName());
 		tmp.delete();
 		tmp.mkdir();
 		tmp.deleteOnExit();

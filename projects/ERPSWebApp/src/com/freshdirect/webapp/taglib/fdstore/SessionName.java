@@ -32,5 +32,6 @@ public interface SessionName {
 	public static final String EDIT_PROMO_CUSTOMER_INFO_LIST = "fd.editPromoCustomerInfoList";
 	
 	public static final String TEST_DISTRIBUTION_DIRECTORY = "tests.distributions.path";
-}
 
+	public static final String SMART_SEARCH_VIEW = "fd.smartSearchView";
+}

@@ -38,6 +38,7 @@ import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeSearchCriteria;
 import com.freshdirect.fdstore.content.RecipeSearchPage;
 import com.freshdirect.fdstore.content.SearchQueryStemmer;
+import com.freshdirect.fdstore.util.RecipesUtil;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
@@ -211,7 +212,7 @@ public class FindRecipesTag extends AbstractGetterTag {
 			}
 		});
 		
-		List classifications = collectClassifications(allDomains, new HashSet(searchPage.getFilterByDomains()), recipes);
+		List classifications = RecipesUtil.collectClassifications(allDomains, new HashSet(searchPage.getFilterByDomains()), recipes);
 		pageContext.setAttribute("classifications", classifications);
 		
 		// filter the result set by the filter if supplied
@@ -258,44 +259,6 @@ public class FindRecipesTag extends AbstractGetterTag {
 		return keys;
 	}
 
-	/**
-	 * Collect all distinct recipe classifications, sorted by Domain and label.
-	 * 
-	 * @param excludeDomains List of Domain
-	 * @param includeDomains List of Domain
-	 * @param recipes List of Recipe
-	 * @return sorted List of DomainValue
-	 */
-	private List collectClassifications(Set excludeDomains, Set includeDomains, List recipes) {
-		Set clDomainValues = new HashSet();
-		for (Iterator it = recipes.iterator(); it.hasNext();) {
-			Recipe recipe = (Recipe) it.next();
-			List cls = recipe.getClassifications();
-
-			for (Iterator itt = cls.iterator(); itt.hasNext();) {
-				DomainValue dv = (DomainValue) itt.next();
-				Domain d = dv.getDomain();
-				if (includeDomains.contains(d) && !excludeDomains.contains(d)) {
-					clDomainValues.add(dv);
-				}
-			}
-		}
-		List classifications = new ArrayList(clDomainValues);
-		Collections.sort(classifications, new Comparator() {
-
-			// sort by parent domain name and domain value label
-			public int compare(Object o1, Object o2) {
-				DomainValue dv1 = (DomainValue) o1;
-				DomainValue dv2 = (DomainValue) o2;
-				String d1 = dv1.getDomain().getName();
-				String d2 = dv2.getDomain().getName();
-				int c = d1.compareTo(d2);
-				return c == 0 ? dv1.getLabel().compareTo(dv2.getLabel()) : c;
-			}
-
-		});
-		return classifications;
-	}
 
 	public static class TagEI extends AbstractGetterTag.TagEI {
 

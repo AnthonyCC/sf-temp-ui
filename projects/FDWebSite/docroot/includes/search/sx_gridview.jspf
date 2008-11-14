@@ -1,0 +1,134 @@
+<%@   page import="java.util.List"
+%><%@ page import="java.util.Map"
+%><%@ page import="java.util.Date"
+%><%@ page import="java.util.ArrayList"
+%><%@ page import="java.util.Locale"
+%><%@ page import="java.util.Iterator"
+%><%@ page import="java.text.SimpleDateFormat"
+%><%@ page import="com.freshdirect.webapp.util.ProductImpression"
+%><%@ page import="com.freshdirect.webapp.util.FDURLUtil"
+%><%@ page import="com.freshdirect.fdstore.content.ProductModel"
+%><%@ page import="com.freshdirect.fdstore.customer.FDUserI"
+%><%@ page import="com.freshdirect.fdstore.customer.FDIdentity"
+%><%@ page import="com.freshdirect.fdstore.lists.FDListManager"
+%><%@ page import="com.freshdirect.fdstore.lists.FDCustomerProductListLineItem"
+%><%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"
+%><%@ taglib uri="freshdirect" prefix="fd"
+%><%--
+
+Smart Search Grid View
+======================
+
+@author segabor
+
+@input productList	Instance of {@link Collection<ProductModel>}
+@input trk			Tracking code (String)
+@input results		Search results
+--%><%
+final java.text.NumberFormat CURRENCY_FORMATTER = java.text.NumberFormat.getCurrencyInstance(Locale.US);
+final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yy");
+
+FDUserI u = (FDUserI) request.getSession().getAttribute(SessionName.USER);
+
+// turn products into product impressions
+
+List impressions = new ArrayList();
+for (Iterator it=productList.iterator(); it.hasNext();) {
+	impressions.add( new ProductImpression((ProductModel) it.next()) );
+}
+
+final int GRID_ROW_SIZE=4; // maximum number of items per row (number of columns)
+
+boolean singleRow = (impressions.size() <= GRID_ROW_SIZE); // product list fits into just one row
+
+int row_cnt = 0;
+int n_cols = (int) Math.ceil((float)impressions.size()/GRID_ROW_SIZE); // number of columns
+
+
+int rank = nav.getPageOffset()+1;
+%>
+<table style="width:100%">
+<fd:PIPLayout id="piRow" rowSize="<%= GRID_ROW_SIZE %>" impressions="<%= impressions %>" maxRowHeight="rowHeight" singleRowMode="<%= false %>">
+	<tr>
+<%
+int colCount = 0;
+%>
+	<fd:PIPRow id="pi" impressionRow="<%= piRow %>" isBlankCell="isBlankCell" productImage="prodImage" shouldRenderBlankCells="<%= false %>"><%
+	// product to render
+	ProductModel productNode = pi.getProductModel();
+	
+	boolean isYourFave = results.getUserProductScores().get(productNode.getContentKey()) != null;
+
+	// URI that points to product page
+	String prdURI = FDURLUtil.getProductURI(productNode, (String)trk, (isYourFave ? "fave" : nav.getSortByName()), rank);
+
+	long w = singleRow ? Math.round(100.0/piRow.size()) : Math.round(100.0/GRID_ROW_SIZE) /* = 100/4 */;
+%>
+		<td style="width: <%= w %>%; text-align: center; <%= colCount == 0 ? "padding-left: 5px;" :""%> <%= 
+		       colCount == piRow.size() - 1 ? "padding-right:5px;" : "" %>" valign="top" >
+			<%-- Product Image --%>
+			<table align="center">
+				<tr>
+					<td style="padding: 0; height: <%= rowHeight.intValue() %>px; vertical-align: bottom; text-align: center">
+						<div style="position: relative; top: 0px; left: 0px">
+						<%
+						// Various labels
+						//   YOUR FAVORITE						
+						if (isYourFave) {
+							%><a href="<%= prdURI %>"><img src="/media_stat/images/template/search/brst_sm_fave.png" style="width:35px;height: 35px;position:absolute;top:0px;left:0px; border:none"></a><%
+						}						
+						%><fd:ProductImage product="<%= productNode %>" action="<%= prdURI %>"/>
+						</div>
+					</td>
+				</tr>
+			</table>
+			<%
+			if (pi.getProductModel().isDisplayable()) {
+			%>
+			<a href="<%= prdURI %>"><%@ include file="/includes/product/i_prd_name.jspf" %></a>
+			<%} else { %>
+			<a style="color: #999999" href="<%= prdURI %>"><%@ include file="/includes/product/i_prd_name.jspf" %></a>
+			<%
+			}
+			%>
+<%
+	// Configuration description
+	//
+	if (pi.getConfigurationDescrpition() != null) {
+		%><div style="color: <%=pi.getProductModel().isDisplayable() ? "black" : "#999999" %>">(<%= pi.getConfigurationDescrpition() %>)</div>
+<%
+	}
+
+	// Default price
+	//
+	if (pi.getProductInfo() != null) {%>
+		<div style="color: <%=pi.getProductModel().isDisplayable() ? "black" : "#999999" %>"><%=CURRENCY_FORMATTER.format(pi.getProductInfo().getDefaultPrice()) %>/<%= pi.getProductInfo().getDisplayableDefaultPriceUnit().toLowerCase() %></div>
+<%
+	}
+
+	// Scaled prices
+	//
+	String scaledPrices[] = pi.getScaledPrices();
+	if (scaledPrices != null && scaledPrices.length > 0) {
+		%><div style="font-weight: bold;"><span style="color: #FF9933;">Save!</span>
+<%
+		for (int ymalSci = 0; ymalSci < scaledPrices.length; ymalSci++) {
+			%><%= scaledPrices[ymalSci] %><br>
+<%
+		}
+		%></div><%
+	}
+	
+	rank++;
+%>
+		</td>
+	</fd:PIPRow>
+	</tr><%
+// don't display the bar below the last product
+if (row_cnt < n_cols-1) {
+	%><tr><td colspan="4"><hr size="1" style="color:#E0E3D0"></td></tr><%
+}
+row_cnt++;
+%>
+</fd:PIPLayout>
+</table>

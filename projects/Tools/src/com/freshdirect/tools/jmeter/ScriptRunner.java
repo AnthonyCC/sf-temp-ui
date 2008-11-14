@@ -854,6 +854,24 @@ public class ScriptRunner {
 			}
 		}
 		
+		private static class SearchTermsRetrieval extends DataRetrieval {
+			public SearchTermsRetrieval(String server, int port, String file, String type) {
+				super(server,port,file,type);
+			}
+			
+			public String getUrl() {
+				if (url == null) {
+					url = new StringBuffer(128);
+					url.
+						append("http://").
+						append(server);
+					if (port != -1) url.append(':').append(port);
+					url.append("/test/search/search_terms.jsp");
+				}
+				return url.toString();
+			}
+		}
+		
 		private String jmxDirectory;
 		
 		private String jmeterJar;
@@ -1079,10 +1097,12 @@ public class ScriptRunner {
 				dataSection = "CMS";
 			} else if (qName.equals("CustomerData")) {
 				dataSection = "Customer";
+			} else if (qName.equals("StaticData")) {
+				dataSection = "Static";
 			} else if (qName.equals("Retrieve")) {
 				
-				if (!"CMS".equals(dataSection) && !"Customer".equals(dataSection)) {
-					throw new RuntimeException("Retrieve only expected in CMSData and CustomerData sections");
+				if (!"CMS".equals(dataSection) && !"Customer".equals(dataSection) && !"Static".equals(dataSection)) {
+					throw new RuntimeException("Retrieve only expected in CMSData, CustomerData and Static sections");
 				}
 				
 				checkAttribute(qName,"dir",attributes);
@@ -1131,6 +1151,12 @@ public class ScriptRunner {
 						currentRetrieval = new JMeterTest.DyfCustomerDataRetrieval(server,port,outputDirectory + fileSep + file, type);
 					} else {
 						throw new RuntimeException("Unknown customer retrieval type: " + type);
+					}
+				} else if ("Static".equals(dataSection)) {
+					if ("searchterms".equals(type)) {
+						currentRetrieval = new JMeterTest.SearchTermsRetrieval(server,port,outputDirectory + fileSep + file,type);
+					} else {
+						throw new RuntimeException("Unknown static retrieval type: " + type);
 					}
 				}
 				

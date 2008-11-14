@@ -1,0 +1,11 @@
+
+vinaigrette:salad dressing
+hummus,hummous: hummus, hummous
+
+spaghetti,linguini: pasta
+
+egy:one
+kettő,két:two
+mutalt:mutatis
+
+orange juice:oj

@@ -1,7 +1,13 @@
 package com.freshdirect.fdstore.content;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Category;
 
@@ -170,6 +176,10 @@ public abstract class CmsContentNodeAdapter implements Serializable, Cloneable, 
 		return parentNode;
 	}
 
+	public Collection getParentKeys() {
+            return CmsManager.getInstance().getParentKeys(key);
+	}
+	
 	/**
 	 * Recursively find the first parent node of specified type.
 	 *

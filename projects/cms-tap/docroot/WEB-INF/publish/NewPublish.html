@@ -21,15 +21,17 @@
     			<span jwcid="@InsertText" value="ognl:errorMsg"/><br>
     		</span>
 			
+			<span jwcid="@If" condition="ognl:visit.user.isAllowedToWrite()">
 			<form jwcid="@Form" listener="ognl:listeners.submit">
 		 		<tr valign="top">
 		  			<td>Comments</td>
 		  			<td width="200"><textarea jwcid="@TextArea" rows="5" cols="20" value="ognl:publish.description"/></td>
 		 		</tr>
 		 		<tr align="right">
-		  			<td colspan="2"><input type="submit" value="Publish Now" class="button"/></td>
+		  			<td colspan="2"><input type="submit" value="Publish Now"  class="button"/></td>
 		 		</tr>
 			</form>
+			</span>
 		</table>
 		
 		<span jwcid="@HistoryTable" changes="ognl:changes"/>

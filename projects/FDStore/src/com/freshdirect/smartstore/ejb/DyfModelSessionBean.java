@@ -36,6 +36,9 @@ public class DyfModelSessionBean extends SessionBeanSupport {
 	
 	private static final String SQL_GETPRODUCTS = 
 		"SELECT PRODUCT_ID FROM CUST.SS_PERSONALIZED_PRODUCT_SCORES WHERE CUSTOMER_ID = ? ";
+	
+	private static final String SQL_GLOBALPRDS_SCORES = 
+		"SELECT PRODUCT_ID, SCORE FROM CUST.SS_GLOBAL_PRODUCT_SCORES";
 
 
 	/**
@@ -116,5 +119,36 @@ public class DyfModelSessionBean extends SessionBeanSupport {
 		}
 
         return result;
+	}
+	
+	public Map getGlobalProductScores() throws RemoteException {
+		Connection conn = null;
+		// Map<ContentKey,Float>
+		Map result = new HashMap();
+		try {
+			conn = getConnection();
+			
+			PreparedStatement ps = conn.prepareStatement(SQL_GLOBALPRDS_SCORES);		
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				// put Product Key -> Score couples into results set
+				result.put(new ContentKey(FDContentTypes.PRODUCT, rs.getString(1)), new Float(rs.getFloat(2)) );
+			}
+
+			// free resources
+			rs.close();
+			ps.close();
+			return result;
+		} catch (SQLException e) {
+			LOGGER.error("DyfModelSessionBean.getGlobalProductScores failed", e);
+            throw new EJBException(e);
+        } finally {
+            try {
+                if (conn != null)
+                	conn.close();
+            } catch (SQLException sqle) {
+                throw new EJBException(sqle);
+            }
+		}
 	}
 }
