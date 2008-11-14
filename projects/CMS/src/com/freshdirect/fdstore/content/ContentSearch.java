@@ -43,6 +43,7 @@ public class ContentSearch {
         return new SearchQuery(criteria) {
 
             private String[] tokens;
+            private String[] rawTokens;
             private String   normalizedTerm;
             private String   searchTerm;
 
@@ -57,6 +58,10 @@ public class ContentSearch {
             public String[] getTokens() {
                 return tokens;
             }
+            
+            public String[] getTokensWithBrand() {
+                return rawTokens;
+            }
 
             protected void breakUp() {
                 normalizedTerm = ContentSearchUtil.normalizeTerm(getOriginalTerm());
@@ -65,7 +70,7 @@ public class ContentSearch {
                 BrandNameExtractor brandNameExtractor = new BrandNameExtractor();
 
                 tokens = ContentSearchUtil.tokenizeTerm(normalizedTerm);
-
+                rawTokens = tokens;
                 for (Iterator i = brandNameExtractor.extract(getOriginalTerm()).iterator(); i.hasNext();) {
                     String canonicalBrandName = StringUtil.removeAllWhiteSpace(i.next().toString()).toLowerCase();
                     if (luceneTerm.indexOf(canonicalBrandName) == -1) {
@@ -73,6 +78,10 @@ public class ContentSearch {
                     }
                     if (tokens.length == 0) {
                         tokens = new String[] { canonicalBrandName };
+                        List rt = ContentSearchUtil.tokenizeTerm(normalizedTerm, " ");
+                        rt.add(canonicalBrandName);
+                        rawTokens = (String[]) rt.toArray(new String[rt.size()]);
+                        //rawTokens = tokens;
                     }
                 }
                 searchTerm = luceneTerm.toString();
@@ -109,13 +118,13 @@ public class ContentSearch {
         Map hitsByType = ContentSearchUtil.mapHitsByType(hits);
 
         List allProducts = ContentSearchUtil.resolveHits((List) hitsByType.get(FDContentTypes.PRODUCT));
-        List relevantProducts = ContentSearchUtil.filterRelevantNodes(allProducts, searchQuery.getTokens(), stemmer);
+        List relevantProducts = ContentSearchUtil.filterRelevantNodes(allProducts, searchQuery.getTokensWithBrand(), stemmer);
 
         List recipes = ContentSearchUtil.filterRelevantNodes(ContentSearchUtil.resolveHits((List) hitsByType.get(FDContentTypes.RECIPE)), searchQuery
                 .getTokens(), stemmer);
 
         List filteredProducts = ContentSearchUtil.filterProductsByDisplay(relevantProducts.isEmpty() ? ContentSearchUtil.restrictToMaximumOccuringNodes(
-                allProducts, searchQuery.getTokens(), stemmer) : relevantProducts);
+                allProducts, searchQuery.getTokensWithBrand(), stemmer) : relevantProducts);
 
         List filteredRecipes = ContentSearchUtil.filterRecipesByAvailability(recipes);
 

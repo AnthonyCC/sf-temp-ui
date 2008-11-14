@@ -14,6 +14,8 @@ public abstract class SearchQuery {
 	
 	public abstract String[] getTokens();
 	
+	public abstract String[] getTokensWithBrand();
+	
 	public abstract String getNormalizedTerm();
 	
 	public abstract String getSearchTerm();

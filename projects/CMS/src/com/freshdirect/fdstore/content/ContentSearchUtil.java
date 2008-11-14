@@ -99,27 +99,34 @@ public class ContentSearchUtil {
 	 * @return number of tokens matched, or 0 if tokens matched were less than min
 	 */
 	private static int countTokens(ContentNodeModel node, String[] tokens, int min, SearchQueryStemmer stemmer) {
-		if (min < 0 || min > tokens.length) min = tokens.length;
+		if (min < 0 || min > tokens.length) {
+		    min = tokens.length;
+		}
 		
 		// add ALL tokens (stemmed) from node to s
 		Set s = new HashSet(16);
 	
-		String[] nameTokens = tokenizeTerm(NVL.apply(node.getFullName(),"").toLowerCase(), " ,'");
-		String[] keywordTokens = tokenizeTerm(NVL.apply(node.getKeywords(),"").toLowerCase(),  " ,");
+		List nameTokens = tokenizeTerm(NVL.apply(node.getFullName(),"").toLowerCase(), " ,'");
+		List keywordTokens = tokenizeTerm(NVL.apply(node.getKeywords(),"").toLowerCase(),  " ,");
 		
-		for(int i=0; i < nameTokens.length; ++i) s.add(stemmer.stemToken(nameTokens[i]));
-		for(int i=0; i < keywordTokens.length; ++i) s.add(stemmer.stemToken(keywordTokens[i]));
+		for(int i=0; i < nameTokens.size(); ++i) {
+		    s.add(stemmer.stemToken((String) nameTokens.get(i)));
+		}
+		for(int i=0; i < keywordTokens.size(); ++i) { 
+		    s.add(stemmer.stemToken((String) keywordTokens.get(i)));
+                    //s.add(keywordTokens.get(i));
+		}
 		
 		int remainingErrors = tokens.length - min;
 		int total = 0;
 		
-		for(int i = 0; remainingErrors >= 0 && i< tokens.length; ++i) {
-			if (s.contains(stemmer.stemToken(tokens[i]))) {
-				++total;
-			} else {
-				--remainingErrors;
-			}
-		}
+		for (int i = 0; remainingErrors >= 0 && i < tokens.length; ++i) {
+                    if (s.contains(stemmer.stemToken(tokens[i]))) {
+                        ++total;
+                    } else {
+                        --remainingErrors;
+                    }
+                }
 
 		int tokenCount = remainingErrors >= 0 ? total : 0;
 				
@@ -265,15 +272,20 @@ public class ContentSearchUtil {
 	}
 
 	
-	public static String[] tokenizeTerm(String term, String separator) {
+	public static List tokenizeTerm(String term, String separator) {
             List tokens = new ArrayList();
             for (StringTokenizer st = new StringTokenizer(term, separator); st.hasMoreTokens();) {
                 String token = st.nextToken();
-                if (token.length() > 2) {
+                if (token.length() > 1) {
                     tokens.add(token);
+                } else {
+                    if (token.length()==1 && Character.isLetter(token.charAt(0))) {
+                        tokens.add(token);
+                    }
                 }
+                
             }
-            return (String[]) tokens.toArray(new String[tokens.size()]);
+            return tokens;
         }
 
 	/**
