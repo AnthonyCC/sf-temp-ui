@@ -952,10 +952,12 @@
                     <attribute name="Implementation-Version" value="${build.label}"/>
                     <attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
                     <if>
-		     <equals arg1="@{manifestclasspath}" arg2="" />		     
-		     <else>
-		       <attribute name="Class-Path" value="@{manifestclasspath}"/>
-		     </else>
+		     <equals arg1="@{manifestclasspath}" arg2="" />
+			     <then>
+			     </then>
+			     <else>
+			       <attribute name="Class-Path" value="@{manifestclasspath}"/>
+			     </else>
 		    </if>
                 </manifest>
                 <fileset dir="${work.dir}/@{project}.instrout" />
