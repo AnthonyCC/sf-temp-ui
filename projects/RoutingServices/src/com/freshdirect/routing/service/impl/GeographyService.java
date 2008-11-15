@@ -67,7 +67,7 @@ public class GeographyService implements IGeographyService {
 	}
 
 	public IGeocodeResult getGeocode(String street, String zipCode, String country) throws RoutingServiceException  {
-		
+
 		IGeocodeResult geocodeResult = new GeocodeResult();
 		IGeographicLocation result = new GeographicLocation();
 		geocodeResult.setGeographicLocation(result);
@@ -78,10 +78,11 @@ public class GeographyService implements IGeographyService {
 			address.setLine1(street);
 			address.setPostalCode(zipCode);
 			address.setCountry(country);
-			
+
 			GeocodeOptions options = new GeocodeOptions();
 			options.setReturnCandidates(true);
-			
+			options.setReturnMatchingArc(false);
+
 			GeocodeData geographicData = port.geocodeEx(address, options);
 			if(geographicData != null && !RoutingUtil.isGeocodeAcceptable(geographicData.getConfidence().getValue()
 												, geographicData.getQuality().getValue())) {
@@ -91,7 +92,7 @@ public class GeographyService implements IGeographyService {
 					GeocodeData altGeographicData = port.geocode(address);
 					if(altGeographicData != null && !RoutingUtil.isGeocodeAcceptable(altGeographicData.getConfidence().getValue()
 							, altGeographicData.getQuality().getValue())) {
-						geographicData = altGeographicData;	
+						geographicData = altGeographicData;
 						geocodeResult.setAlternateZipcode(alternateZipCode);
 					}
 				}
@@ -111,7 +112,7 @@ public class GeographyService implements IGeographyService {
 		}
 		return geocodeResult;
 	}
-	
+
 	private String hasMatchingZipCode(GeocodeData geographicData, String baseZipCode) {
 		String result = null;
 		List zipCodes = RoutingUtil.getZipCodes(baseZipCode);
@@ -120,7 +121,7 @@ public class GeographyService implements IGeographyService {
 			for(int intCount=0; intCount<candidates.length;intCount++) {
 				if(zipCodes.contains(candidates[intCount].getPostalCode())) {
 					result = candidates[intCount].getPostalCode();
-				}				
+				}
 			}
 		}
 		return result;
@@ -158,7 +159,7 @@ public class GeographyService implements IGeographyService {
 		}
 		return result;
 	}
-	
+
 	public void sendLocationByIds(List locationIds) throws RoutingServiceException  {
 
 		try {
@@ -168,11 +169,11 @@ public class GeographyService implements IGeographyService {
 				if(lstOrders != null) {
 					result = new Location[lstOrders.size()];
 					Iterator tmpIterator = lstOrders.iterator();
-					ILocationModel locModel = null;			
+					ILocationModel locModel = null;
 					int intCount = 0;
 					while(tmpIterator.hasNext()) {
 						locModel = (ILocationModel)tmpIterator.next();
-						if(locModel != null) {					
+						if(locModel != null) {
 							result[intCount++] = RoutingDataEncoder.encodeLocation(locModel
 																	, RoutingServicesProperties.getDefaultRegion()
 																	, RoutingServicesProperties.getDefaultLocationType()
@@ -186,7 +187,7 @@ public class GeographyService implements IGeographyService {
 					throw new RoutingServiceException(null, IIssue.PROCESS_LOCATION_SAVEERROR);
 				}
 			}
-			
+
 		} catch (ServiceException exp) {
 			exp.printStackTrace();
 			throw new RoutingServiceException(exp, IIssue.PROCESS_LOCATION_SAVEERROR);
@@ -220,17 +221,17 @@ public class GeographyService implements IGeographyService {
 		}
 		return lstResult;
 	}
-	
+
 	public IBuildingModel getNewBuilding(ILocationModel baseModel) throws RoutingServiceException {
-		
+
 		IBuildingModel buildingModel = null;
 		IGeocodeResult geocodeResult = getGeocode(baseModel);
-		IGeographicLocation geoLocation = geocodeResult.getGeographicLocation();					
-		
+		IGeographicLocation geoLocation = geocodeResult.getGeographicLocation();
+
 		if(!RoutingUtil.isGeocodeAcceptable(geoLocation.getConfidence(), geoLocation.getQuality())) {
 			IGeographicLocation storeFrontLocationModel = getLocalGeocode
 								(baseModel.getStreetAddress1(), null, baseModel.getZipCode());
-			if(storeFrontLocationModel == null) {							
+			if(storeFrontLocationModel == null) {
 				geoLocation.setConfidence(EnumGeocodeConfidenceType.LOW.getName());
 				geoLocation.setQuality(EnumGeocodeQualityType.STOREFRONTUNSUCCESSFULGEOCODE.getName());
 			} else {
@@ -239,27 +240,27 @@ public class GeographyService implements IGeographyService {
 				geoLocation.setConfidence(storeFrontLocationModel.getConfidence());
 				geoLocation.setQuality(storeFrontLocationModel.getQuality());
 			}
-		} 
-		
+		}
+
 		buildingModel = new BuildingModel();
-		
+
 		if(geocodeResult.getAlternateZipcode() != null){
 			buildingModel.setZipCode(geocodeResult.getAlternateZipcode());
 		} else {
 			buildingModel.setZipCode(baseModel.getZipCode());
 		}
-				
+
 		buildingModel.setBuildingId(getBuildingId());
 		buildingModel.setSrubbedStreet(baseModel.getStreetAddress1());
 		buildingModel.setCity(baseModel.getCity());
-		buildingModel.setState(baseModel.getState());		
+		buildingModel.setState(baseModel.getState());
 		buildingModel.setCountry(baseModel.getCountry());
 		buildingModel.setGeographicLocation(geoLocation);
 		//buildingModel.setServiceTimeType(baseModel.getServiceTimeType());
-					
+
 		return buildingModel;
 	}
-	
+
 	private List getGeographyList(GeocodeData[] inputDataList) {
 
 		List result = new ArrayList();
@@ -370,10 +371,10 @@ public class GeographyService implements IGeographyService {
 	}
 
 	public String standardizeStreetAddress(ILocationModel address) throws RoutingServiceException {
-		
+
 		return standardizeStreetAddress(address.getStreetAddress1(), address.getStreetAddress2());
 	}
-	
+
 	public String standardizeStreetAddress(String address1, String address2) throws RoutingServiceException {
 		String streetAddressResult = null;
 		//String oldStreetAddress = address.getStreetAddress1();
