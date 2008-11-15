@@ -79,7 +79,7 @@ public class GeographyService implements IGeographyService {
 			address.setPostalCode(zipCode);
 			address.setCountry(country);
 
-			GeocodeOptions options = new GeocodeOptions();
+			/*GeocodeOptions options = new GeocodeOptions();
 			options.setReturnCandidates(true);
 			options.setReturnMatchingArc(false);
 
@@ -100,7 +100,31 @@ public class GeographyService implements IGeographyService {
 			result.setLatitude(""+(double)(geographicData.getCoordinate().getLatitude()/1000000.0));
 			result.setLongitude(""+(double)(geographicData.getCoordinate().getLongitude()/1000000.0));
 			result.setConfidence(geographicData.getConfidence().getValue());
-			result.setQuality(geographicData.getQuality().getValue());
+			result.setQuality(geographicData.getQuality().getValue());*/
+
+			List zipCodes = RoutingUtil.getZipCodes(zipCode);
+			if(zipCodes != null) {
+				Iterator iterator = zipCodes.iterator();
+				String tmpZipCode = null;
+
+				while(iterator.hasNext()) {
+					tmpZipCode = (String)iterator.next();
+					address.setPostalCode(tmpZipCode);
+					GeocodeData geographicData = port.geocode(address);
+
+					if(geographicData != null) {
+						result.setLatitude(""+(double)(geographicData.getCoordinate().getLatitude()/1000000.0));
+						result.setLongitude(""+(double)(geographicData.getCoordinate().getLongitude()/1000000.0));
+						result.setConfidence(geographicData.getConfidence().getValue());
+						result.setQuality(geographicData.getQuality().getValue());
+						if(RoutingUtil.isGeocodeAcceptable(geographicData.getConfidence().getValue()
+							, geographicData.getQuality().getValue())) {
+							geocodeResult.setAlternateZipcode(tmpZipCode);
+							break;
+						}
+					}
+				}
+			}
 
 		} catch (ServiceException exp) {
 			throw new RoutingServiceException(exp, IIssue.PROCESS_GEOCODE_UNSUCCESSFUL);
