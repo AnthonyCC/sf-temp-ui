@@ -15,7 +15,6 @@ import com.freshdirect.routing.constants.EnumGeocodeConfidenceType;
 import com.freshdirect.routing.constants.EnumGeocodeQualityType;
 import com.freshdirect.routing.dao.IGeographyDAO;
 import com.freshdirect.routing.model.BuildingModel;
-import com.freshdirect.routing.model.GeocodeResult;
 import com.freshdirect.routing.model.GeographicLocation;
 import com.freshdirect.routing.model.IBuildingModel;
 import com.freshdirect.routing.model.IGeocodeResult;
@@ -23,7 +22,6 @@ import com.freshdirect.routing.model.IGeographicLocation;
 import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.proxy.stub.roadnet.GeocodeData;
 import com.freshdirect.routing.proxy.stub.roadnet.GeocodeOptions;
-import com.freshdirect.routing.proxy.stub.roadnet.MapArc;
 import com.freshdirect.routing.proxy.stub.roadnet.RouteNetPortType;
 import com.freshdirect.routing.proxy.stub.transportation.Location;
 import com.freshdirect.routing.proxy.stub.transportation.TransportationWebService_PortType;
@@ -31,6 +29,8 @@ import com.freshdirect.routing.service.IGeographyService;
 import com.freshdirect.routing.service.RoutingServiceLocator;
 import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
+import com.freshdirect.routing.service.util.BaseGeocodeEngine;
+import com.freshdirect.routing.service.util.IGeocodeEngine;
 import com.freshdirect.routing.util.RoutingDataEncoder;
 import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.routing.util.RoutingUtil;
@@ -39,7 +39,8 @@ public class GeographyService implements IGeographyService {
 
 	private IGeographyDAO geographyDAOImpl;
 
-
+	private IGeocodeEngine baseGeocodeEngine = new BaseGeocodeEngine();
+	
 	public ILocationModel getLocation(ILocationModel model) throws RoutingServiceException  {
 		try {
 			ILocationModel locModel = geographyDAOImpl.getLocation(model.getStreetAddress1()
@@ -62,94 +63,23 @@ public class GeographyService implements IGeographyService {
 	}
 
 	public IGeocodeResult getGeocode(ILocationModel model) throws RoutingServiceException {
-		return getGeocode(model.getStreetAddress1(), model.getZipCode(), model.getCountry());
+		return getGeocode(null, model.getStreetAddress1(), model.getZipCode(), model.getCountry());
 
 	}
 
 	public IGeocodeResult getGeocode(String street, String zipCode, String country) throws RoutingServiceException  {
-
-		IGeocodeResult geocodeResult = new GeocodeResult();
-		IGeographicLocation result = new GeographicLocation();
-		geocodeResult.setGeographicLocation(result);
-		try {
-
-			RouteNetPortType port = RoutingServiceLocator.getInstance().getRouteNetService();
-			com.freshdirect.routing.proxy.stub.roadnet.Address address = new com.freshdirect.routing.proxy.stub.roadnet.Address();
-			address.setLine1(street);
-			address.setPostalCode(zipCode);
-			address.setCountry(country);
-
-			/*GeocodeOptions options = new GeocodeOptions();
-			options.setReturnCandidates(true);
-			options.setReturnMatchingArc(false);
-
-			GeocodeData geographicData = port.geocodeEx(address, options);
-			if(geographicData != null && !RoutingUtil.isGeocodeAcceptable(geographicData.getConfidence().getValue()
-												, geographicData.getQuality().getValue())) {
-				String alternateZipCode = hasMatchingZipCode(geographicData, zipCode);
-				if(alternateZipCode != null) {
-					address.setPostalCode(alternateZipCode);
-					GeocodeData altGeographicData = port.geocode(address);
-					if(altGeographicData != null && !RoutingUtil.isGeocodeAcceptable(altGeographicData.getConfidence().getValue()
-							, altGeographicData.getQuality().getValue())) {
-						geographicData = altGeographicData;
-						geocodeResult.setAlternateZipcode(alternateZipCode);
-					}
-				}
-			}
-			result.setLatitude(""+(double)(geographicData.getCoordinate().getLatitude()/1000000.0));
-			result.setLongitude(""+(double)(geographicData.getCoordinate().getLongitude()/1000000.0));
-			result.setConfidence(geographicData.getConfidence().getValue());
-			result.setQuality(geographicData.getQuality().getValue());*/
-
-			List zipCodes = RoutingUtil.getZipCodes(zipCode);
-			if(zipCodes != null) {
-				Iterator iterator = zipCodes.iterator();
-				String tmpZipCode = null;
-
-				while(iterator.hasNext()) {
-					tmpZipCode = (String)iterator.next();
-					address.setPostalCode(tmpZipCode);
-					GeocodeData geographicData = port.geocode(address);
-
-					if(geographicData != null) {
-						result.setLatitude(""+(double)(geographicData.getCoordinate().getLatitude()/1000000.0));
-						result.setLongitude(""+(double)(geographicData.getCoordinate().getLongitude()/1000000.0));
-						result.setConfidence(geographicData.getConfidence().getValue());
-						result.setQuality(geographicData.getQuality().getValue());
-						if(RoutingUtil.isGeocodeAcceptable(geographicData.getConfidence().getValue()
-							, geographicData.getQuality().getValue())) {
-							geocodeResult.setAlternateZipcode(tmpZipCode);
-							break;
-						}
-					}
-				}
-			}
-
-		} catch (ServiceException exp) {
-			throw new RoutingServiceException(exp, IIssue.PROCESS_GEOCODE_UNSUCCESSFUL);
-		} catch (MalformedURLException exp) {
-			throw new RoutingServiceException(exp, IIssue.PROCESS_GEOCODE_UNSUCCESSFUL);
-		} catch (RemoteException exp) {
-			exp.printStackTrace();
-			throw new RoutingServiceException(exp, IIssue.PROCESS_GEOCODE_UNSUCCESSFUL);
-		}
-		return geocodeResult;
+		
+		return getGeocode( null, street, zipCode, country);
 	}
-
-	private String hasMatchingZipCode(GeocodeData geographicData, String baseZipCode) {
-		String result = null;
-		List zipCodes = RoutingUtil.getZipCodes(baseZipCode);
-		MapArc[] candidates = geographicData.getCandidates();
-		if(zipCodes != null && candidates != null) {
-			for(int intCount=0; intCount<candidates.length;intCount++) {
-				if(zipCodes.contains(candidates[intCount].getPostalCode())) {
-					result = candidates[intCount].getPostalCode();
-				}
-			}
+	
+	private IGeocodeResult getGeocode(IGeocodeEngine geocodeEngine, String street, String zipCode, String country) throws RoutingServiceException  {
+		if(geocodeEngine != null) {
+			return geocodeEngine.getGeocode( street, zipCode, country);
+		} else {
+			return baseGeocodeEngine.getGeocode( street, zipCode, country);
 		}
-		return result;
 	}
+		
 
 	public IGeographicLocation getRoutingLocation(String locationId) throws RoutingServiceException  {
 
@@ -183,7 +113,7 @@ public class GeographyService implements IGeographyService {
 		}
 		return result;
 	}
-
+	
 	public void sendLocationByIds(List locationIds) throws RoutingServiceException  {
 
 		try {
@@ -193,11 +123,11 @@ public class GeographyService implements IGeographyService {
 				if(lstOrders != null) {
 					result = new Location[lstOrders.size()];
 					Iterator tmpIterator = lstOrders.iterator();
-					ILocationModel locModel = null;
+					ILocationModel locModel = null;			
 					int intCount = 0;
 					while(tmpIterator.hasNext()) {
 						locModel = (ILocationModel)tmpIterator.next();
-						if(locModel != null) {
+						if(locModel != null) {					
 							result[intCount++] = RoutingDataEncoder.encodeLocation(locModel
 																	, RoutingServicesProperties.getDefaultRegion()
 																	, RoutingServicesProperties.getDefaultLocationType()
@@ -211,7 +141,7 @@ public class GeographyService implements IGeographyService {
 					throw new RoutingServiceException(null, IIssue.PROCESS_LOCATION_SAVEERROR);
 				}
 			}
-
+			
 		} catch (ServiceException exp) {
 			exp.printStackTrace();
 			throw new RoutingServiceException(exp, IIssue.PROCESS_LOCATION_SAVEERROR);
@@ -245,17 +175,25 @@ public class GeographyService implements IGeographyService {
 		}
 		return lstResult;
 	}
-
+	
 	public IBuildingModel getNewBuilding(ILocationModel baseModel) throws RoutingServiceException {
-
+		
+		return getNewBuilding(null, baseModel);
+	}
+	
+	public IBuildingModel getNewBuilding(IGeocodeEngine geocodeEngine, ILocationModel baseModel) throws RoutingServiceException {
+		
 		IBuildingModel buildingModel = null;
-		IGeocodeResult geocodeResult = getGeocode(baseModel);
-		IGeographicLocation geoLocation = geocodeResult.getGeographicLocation();
-
+		IGeocodeResult geocodeResult = getGeocode(geocodeEngine
+													, baseModel.getStreetAddress1()
+														, baseModel.getZipCode()
+															, baseModel.getCountry());
+		IGeographicLocation geoLocation = geocodeResult.getGeographicLocation();					
+		
 		if(!RoutingUtil.isGeocodeAcceptable(geoLocation.getConfidence(), geoLocation.getQuality())) {
 			IGeographicLocation storeFrontLocationModel = getLocalGeocode
 								(baseModel.getStreetAddress1(), null, baseModel.getZipCode());
-			if(storeFrontLocationModel == null) {
+			if(storeFrontLocationModel == null) {							
 				geoLocation.setConfidence(EnumGeocodeConfidenceType.LOW.getName());
 				geoLocation.setQuality(EnumGeocodeQualityType.STOREFRONTUNSUCCESSFULGEOCODE.getName());
 			} else {
@@ -264,27 +202,27 @@ public class GeographyService implements IGeographyService {
 				geoLocation.setConfidence(storeFrontLocationModel.getConfidence());
 				geoLocation.setQuality(storeFrontLocationModel.getQuality());
 			}
-		}
-
+		} 
+		
 		buildingModel = new BuildingModel();
-
+		
 		if(geocodeResult.getAlternateZipcode() != null){
 			buildingModel.setZipCode(geocodeResult.getAlternateZipcode());
 		} else {
 			buildingModel.setZipCode(baseModel.getZipCode());
 		}
-
+				
 		buildingModel.setBuildingId(getBuildingId());
 		buildingModel.setSrubbedStreet(baseModel.getStreetAddress1());
 		buildingModel.setCity(baseModel.getCity());
-		buildingModel.setState(baseModel.getState());
+		buildingModel.setState(baseModel.getState());		
 		buildingModel.setCountry(baseModel.getCountry());
 		buildingModel.setGeographicLocation(geoLocation);
 		//buildingModel.setServiceTimeType(baseModel.getServiceTimeType());
-
+					
 		return buildingModel;
 	}
-
+	
 	private List getGeographyList(GeocodeData[] inputDataList) {
 
 		List result = new ArrayList();
@@ -395,10 +333,10 @@ public class GeographyService implements IGeographyService {
 	}
 
 	public String standardizeStreetAddress(ILocationModel address) throws RoutingServiceException {
-
+		
 		return standardizeStreetAddress(address.getStreetAddress1(), address.getStreetAddress2());
 	}
-
+	
 	public String standardizeStreetAddress(String address1, String address2) throws RoutingServiceException {
 		String streetAddressResult = null;
 		//String oldStreetAddress = address.getStreetAddress1();

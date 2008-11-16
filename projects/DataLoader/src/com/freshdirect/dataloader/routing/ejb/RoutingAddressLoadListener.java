@@ -8,7 +8,9 @@
  */
 package com.freshdirect.dataloader.routing.ejb;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.jms.JMSException;
@@ -18,13 +20,25 @@ import javax.jms.ObjectMessage;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressI;
+import com.freshdirect.dataloader.routing.ejb.stub.RouteNetPortType_Stub;
+import com.freshdirect.dataloader.routing.ejb.stub.RouteNetWebService_Impl;
 import com.freshdirect.framework.core.MessageDrivenBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.routing.model.GeocodeResult;
+import com.freshdirect.routing.model.GeographicLocation;
 import com.freshdirect.routing.model.IBuildingModel;
+import com.freshdirect.routing.model.IGeocodeResult;
+import com.freshdirect.routing.model.IGeographicLocation;
 import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.LocationModel;
+import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
+import com.freshdirect.routing.service.util.BaseGeocodeEngine;
+import com.freshdirect.routing.util.RoutingServicesProperties;
+import com.freshdirect.routing.util.RoutingUtil;
+import com.upslogisticstech.www.UPSLT.RouteNetWebService.Address;
+import com.upslogisticstech.www.UPSLT.RouteNetWebService.GeocodeData;
 
 /**
  *
@@ -97,10 +111,9 @@ public class RoutingAddressLoadListener extends MessageDrivenBeanSupport {
 				baseModel.setBuildingId(buildingModel.getBuildingId());									
 				baseModel.setGeographicLocation(buildingModel.getGeographicLocation());		    							
 				saveLocationLst.add(baseModel);
-			} else {
-				
-				buildingModel = proxy.getNewBuilding(baseModel);
-				
+			} else {				
+				buildingModel = proxy.getNewBuilding(new CustomGeocodeEngine(), baseModel);
+				//buildingModel = proxy.getNewBuilding(null, baseModel);
 				if(buildingModel != null) {
 					baseModel.setBuildingId(buildingModel.getBuildingId());
 					baseModel.setZipCode(buildingModel.getZipCode());
@@ -119,4 +132,51 @@ public class RoutingAddressLoadListener extends MessageDrivenBeanSupport {
 		}
 	}
 	
+	class CustomGeocodeEngine extends BaseGeocodeEngine {
+		
+		public IGeocodeResult getGeocode(String street, String zipCode, String country) throws RoutingServiceException  {
+			
+			IGeocodeResult geocodeResult = new GeocodeResult();
+			IGeographicLocation result = new GeographicLocation();
+			geocodeResult.setGeographicLocation(result);
+			try {
+
+				RouteNetPortType_Stub port = (RouteNetPortType_Stub)(new RouteNetWebService_Impl().getRouteNetPortType());
+				port._setProperty(javax.xml.rpc.Stub.ENDPOINT_ADDRESS_PROPERTY, RoutingServicesProperties.getRoadNetProviderURL());
+				Address address = new Address();
+				address.setLine1(street);
+				address.setPostalCode(zipCode);
+				address.setCountry(country);
+				
+				List zipCodes = RoutingUtil.getZipCodes(zipCode);
+				if(zipCodes != null) {
+					Iterator iterator = zipCodes.iterator();
+					String tmpZipCode = null;
+					
+					while(iterator.hasNext()) {
+						tmpZipCode = (String)iterator.next();
+						address.setPostalCode(tmpZipCode);
+						GeocodeData geographicData = port.Geocode(address);
+						
+						if(geographicData != null) {
+							result.setLatitude(""+(double)(geographicData.getCoordinate().getLatitude()/1000000.0));
+							result.setLongitude(""+(double)(geographicData.getCoordinate().getLongitude()/1000000.0));
+							result.setConfidence(geographicData.getConfidence().getValue());
+							result.setQuality(geographicData.getQuality().getValue());
+							if(RoutingUtil.isGeocodeAcceptable(geographicData.getConfidence().getValue()
+								, geographicData.getQuality().getValue())) {
+								geocodeResult.setAlternateZipcode(tmpZipCode);
+								break;
+							}
+						}
+					}
+				}
+
+			} catch (IOException exp) {
+				throw new RoutingServiceException(exp, IIssue.PROCESS_GEOCODE_UNSUCCESSFUL);
+			} 
+			return geocodeResult;
+		}
+	}
+			
 }

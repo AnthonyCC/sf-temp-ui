@@ -7,6 +7,7 @@ import com.freshdirect.routing.model.IGeocodeResult;
 import com.freshdirect.routing.model.IGeographicLocation;
 import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
+import com.freshdirect.routing.service.util.IGeocodeEngine;
 
 public interface IGeographyService {
 	
@@ -43,5 +44,7 @@ public interface IGeographyService {
 	void sendLocationByIds(List locationIds) throws RoutingServiceException; 
 	
 	IBuildingModel getNewBuilding(ILocationModel baseModel)  throws RoutingServiceException; 
+	
+	IBuildingModel getNewBuilding(IGeocodeEngine geocodeEngine, ILocationModel baseModel) throws RoutingServiceException;
 
 }

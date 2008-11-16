@@ -959,84 +959,7 @@
 		</sequential>
 	</macrodef>
 	
-	<macrodef name="makeManifestProject">
-			<attribute name="project" />
-			<attribute name="classpathref" default=""/>
-            		<attribute name="manifestclasspath" default=""/>
-			<sequential>
-				<trycatch>
-					<try>
-						<record name="${work.dir}/logs/log.txt" action="start" append="yes" loglevel="info"/>
-						<tstamp>
-							<format property="compileStart" pattern="MM/dd/yyyy HH:mm" />
-						</tstamp>
-						<echo message="Started Compiling @{project} at:${compileStart}"/>
-						<javac
-					srcdir="${projects.dir}/@{project}/src/"
-					destdir="${work.dir}/@{project}"
-					deprecation="${javac.deprecation}"
-					optimize="${javac.optimize}"
-					debug="${javac.debug}"
-					source="${javac.source}">
-							<classpath>
-								<path refid="j2ee.classpath"/>
-								<path refid="common.classpath"/>
-								<path refid="oracle.classpath"/>
-								<path refid="@{classpathref}"/>
-							</classpath>
-						</javac>
-						<record name="${work.dir}/logs/log.txt" action="stop"/>
-					</try>
-					<catch>
-						<record name="${work.dir}/logs/log.txt" action="stop"/>
-						<!-- send email...compilation failed -->
-						<emailCompilationError projectName="@{project}"/>
-						<fail/>
-					</catch>
-				</trycatch>
-				<jar destfile="${work.dir}/@{project}.jar">
-					<manifest>
-						<attribute name="Implementation-Title" value="@{project}"/>
-						<attribute name="Implementation-Version" value="${build.label}"/>
-						<attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
-						<attribute name="Class-Path" value="@{manifestclasspath}"/>
-					</manifest>
-					<fileset dir="${work.dir}/@{project}" />
-					<fileset dir="${projects.dir}/@{project}/src">
-						<exclude name="**/*.java"/>
-					</fileset>
-				</jar>
-				<path id="@{project}.instrsrc">
-					<pathelement location="${work.dir}/@{project}"/>
-				</path>
-				<mkdir dir="${work.dir}/@{project}.instrout"/>
-		        <!-- instrument emma -->
-		        <emma enabled="${emma.enabled}">
-		            <instr instrpathref="@{project}.instrsrc"
-		                destdir="${work.dir}/@{project}.instrout"
-		                metadatafile="${work.dir}/logs/metadata-@{project}.emma"
-		                merge="true">
-		            </instr>
-		        </emma>
-				<!-- copy non-instrumened resources to instrout --> 
-				<copy todir="${work.dir}/@{project}.instrout" overwrite="false">
-					<fileset dir="${work.dir}/@{project}"/>
-				</copy>
-		        <jar destfile="${work.dir}/@{project}-emma.jar">
-	                <manifest>
-	                    <attribute name="Implementation-Title" value="@{project}"/>
-	                    <attribute name="Implementation-Version" value="${build.label}"/>
-	                    <attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
-	                    <attribute name="Class-Path" value="@{manifestclasspath}"/>
-	                </manifest>
-	                <fileset dir="${work.dir}/@{project}.instrout" />
-	                <fileset dir="${projects.dir}/@{project}/src">
-	                    <exclude name="**/*.java"/>
-	                </fileset>
-	            </jar>
-			</sequential>
-	</macrodef>
-
+	
 	<macrodef name="makeEjbProject">
 		<attribute name="project" />
 		<attribute name="classpathref" />
@@ -1264,6 +1187,7 @@
 					<include name="jaxrpc.jar"/>								
 					<include name="spring.jar"/>
 					<include name="JFEP-0.1.0.jar"/>
+					<include name="roadnetservices.jar"/>
 					<lib/>
 				</zipfileset>
 				<extra/>
@@ -1401,10 +1325,9 @@
 				<pathelement location="${thirdparty.home}/JFEP-0.1.0.jar"/>
 			</path>
 	
-			<makeManifestProject
+			<makeProject
 				project="RoutingServices"
-	            	classpathref="routing.classpath" 
-	            	manifestclasspath="Framework.jar lucene-core-2.2.0.jar saaj.jar wsdl4j-1.5.1.jar axis.jar axis-ant.jar commons-discovery-0.2.jar jaxrpc.jar spring.jar JFEP-0.1.0.jar" />
+	            	classpathref="routing.classpath"/>
 	</target>
 
 	<target name="cms" description="Build CMS">
@@ -1467,6 +1390,7 @@
             		<pathelement location="${thirdparty.home}/opencsv-1.8.jar"/>
 			<pathelement location="${thirdparty.home}/sapjco.jar"/>
 			<pathelement location="${thirdparty.home}/microba-0.4.4.2.jar"/>
+			<pathelement location="${thirdparty.home}/roadnetservices.jar"/>
 		</path>
 
 		<makeEjbProject
