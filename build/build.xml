@@ -1391,6 +1391,7 @@
 			<pathelement location="${thirdparty.home}/sapjco.jar"/>
 			<pathelement location="${thirdparty.home}/microba-0.4.4.2.jar"/>
 			<pathelement location="${thirdparty.home}/roadnetservices.jar"/>
+			<pathelement location="${weblogic.home}/server/lib/webservices.jar"/>
 		</path>
 
 		<makeEjbProject

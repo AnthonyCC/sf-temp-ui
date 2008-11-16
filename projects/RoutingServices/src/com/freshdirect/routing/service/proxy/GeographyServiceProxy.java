@@ -9,6 +9,7 @@ import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.service.IGeographyService;
 import com.freshdirect.routing.service.RoutingServiceLocator;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
+import com.freshdirect.routing.service.util.IGeocodeEngine;
 
 public class GeographyServiceProxy  extends BaseServiceProxy {
 	
@@ -50,6 +51,8 @@ public class GeographyServiceProxy  extends BaseServiceProxy {
 		return getService().getBuildingLocation(model);
 	}
 	
+	
+	
 	public IBuildingModel getBuildingLocation(String street, String zipCode) throws RoutingServiceException {
 		return getService().getBuildingLocation(street, zipCode);
 	}
@@ -82,6 +85,10 @@ public class GeographyServiceProxy  extends BaseServiceProxy {
 		return getService().getNewBuilding(baseModel);
 	}
 	
+	public IBuildingModel getNewBuilding(IGeocodeEngine geocodeEngine, ILocationModel baseModel) throws RoutingServiceException {
+		return getService().getNewBuilding(geocodeEngine, baseModel);
+	}
+		
 	public IGeographyService getService() {
 		return RoutingServiceLocator.getInstance().getGeographyService();
 	}
