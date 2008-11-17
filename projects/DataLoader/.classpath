@@ -10,5 +10,7 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/microba-0.4.4.2.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/RoutingServices"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/roadnetservices.jar"/>
+	<classpathentry kind="var" path="WL_HOME/lib/webserviceclient.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
