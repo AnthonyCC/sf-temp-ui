@@ -49,11 +49,15 @@
 <% 
 List products = new ArrayList();
 List recipes =  searchResults.getRecipes();
-if (searchResults != null && (recipes.size() >0 || searchResults.getProducts().size() > 0) ) { 
+if (searchResults != null && (recipes.size() >0 || searchResults.getExactProducts().size() > 0 || searchResults.getFuzzyProducts().size() > 0) ) { 
         String offSet = "" + (pageCount * 75);
-
+        
         // remove items that do not have a default sku
-        for (Iterator pi = searchResults.getProducts().iterator();pi.hasNext();) {
+        for (Iterator pi = searchResults.getExactProducts().iterator();pi.hasNext();) {
+            ProductModel pm = (ProductModel)pi.next();
+            if (pm.getDefaultSku()!=null) products.add(pm);
+        }
+        for (Iterator pi = searchResults.getFuzzyProducts().iterator();pi.hasNext();) {
             ProductModel pm = (ProductModel)pi.next();
             if (pm.getDefaultSku()!=null)   products.add(pm);
         }
