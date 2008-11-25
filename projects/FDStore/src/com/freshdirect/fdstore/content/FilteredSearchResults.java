@@ -12,10 +12,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.content.ContentNodeTree.TreeElement;
@@ -35,10 +37,27 @@ public class FilteredSearchResults extends SearchResults implements Serializable
 
         final boolean inverse;
         final boolean hideUnavailable;
+        final Set displayable;
 
-        PopularityComparator (boolean inverse, boolean hideUnavailable) {
+        PopularityComparator (boolean inverse, List products) {
+            this(inverse, false, products);
+        }
+        PopularityComparator (boolean inverse, boolean hideUnavailable, List products) {
             this.inverse = inverse;
             this.hideUnavailable = hideUnavailable;
+            this.displayable = new HashSet();
+            if (products!=null) {
+                for (int i=0;i<products.size();i++) {
+                    ContentNodeModel c = (ContentNodeModel) products.get(i);
+                    if (c.isDisplayable()) {
+                        displayable.add(c.getContentKey());
+                    }
+                }
+            }
+        }
+        
+        boolean isDisplayable(ContentKey key) {
+            return displayable.contains(key);
         }
         
         public int compare(Object o1, Object o2) {
@@ -46,11 +65,14 @@ public class FilteredSearchResults extends SearchResults implements Serializable
             ContentNodeModel c2 = (ContentNodeModel) o2;
 
             if (hideUnavailable) {
-                if (!c1.isDisplayable() && c2.isDisplayable()) {
+                boolean h1 = isDisplayable(c1.getContentKey());
+                boolean h2 = isDisplayable(c2.getContentKey());
+                
+                if (!h1 && h2) {
                     return 1;
                 }
     
-                if (c1.isDisplayable() && !c2.isDisplayable()) {
+                if (h1 && !h2) {
                     return -1;
                 }
             }
@@ -81,8 +103,8 @@ public class FilteredSearchResults extends SearchResults implements Serializable
         final CategoryScoreOracle oracle;
         CategoryNodeTree cnt;
 
-        RelevancyComparator(boolean inverse, String searchTerm,CategoryScoreOracle oracle, CategoryNodeTree cnt) {
-            super(inverse, true);
+        RelevancyComparator(boolean inverse, String searchTerm,CategoryScoreOracle oracle, CategoryNodeTree cnt, List products) {
+            super(inverse, true, products);
             this.terms = StringUtils.split(searchTerm);
             this.searchTerm = searchTerm.toLowerCase();
             this.oracle = oracle;
@@ -114,11 +136,13 @@ public class FilteredSearchResults extends SearchResults implements Serializable
             ContentNodeModel c1 = (ContentNodeModel) o1;
             ContentNodeModel c2 = (ContentNodeModel) o2;
             
-            if (!c1.isDisplayable() && c2.isDisplayable()) {
+            boolean h1 = isDisplayable(c1.getContentKey());
+            boolean h2 = isDisplayable(c2.getContentKey());
+            if (!h1 && h2) {
                 return 1;
             }
 
-            if (c1.isDisplayable() && !c2.isDisplayable()) {
+            if (h1 && !h2) {
                 return -1;
             }
             
@@ -163,8 +187,8 @@ public class FilteredSearchResults extends SearchResults implements Serializable
 
         final Map userProductScores;
 
-        UserRelevancyComparator(boolean inverse, String searchTerm,Map userProductScores,CategoryScoreOracle oracle, CategoryNodeTree cnt) {
-            super(inverse, searchTerm, oracle, cnt);
+        UserRelevancyComparator(boolean inverse, String searchTerm,Map userProductScores,CategoryScoreOracle oracle, CategoryNodeTree cnt, List products) {
+            super(inverse, searchTerm, oracle, cnt, products);
             this.userProductScores = userProductScores;
         }
         
@@ -344,10 +368,10 @@ public class FilteredSearchResults extends SearchResults implements Serializable
     public final static int        BY_RELEVANCY      = 2;
     public final static int        BY_POPULARITY     = 3;
 
-    private final static Comparator POPULARITY                      = new PopularityComparator(false, false);
-    private final static Comparator POPULARITY_INVERSE              = new PopularityComparator(true, false);
-    private final static Comparator POPULARITY_HIDE_UNAVAIL         = new PopularityComparator(false, true);
-    private final static Comparator POPULARITY_HIDE_UNAVAIL_INVERSE = new PopularityComparator(true, true);
+    /*private final static Comparator POPULARITY                      = new PopularityComparator(false, false);
+    private final static Comparator POPULARITY_INVERSE              = new PopularityComparator(true, false);*/
+/*    private final static Comparator POPULARITY_HIDE_UNAVAIL         = new PopularityComparator(false, true);
+    private final static Comparator POPULARITY_HIDE_UNAVAIL_INVERSE = new PopularityComparator(true, true);*/
 
     /**
 	 * 
@@ -392,44 +416,8 @@ public class FilteredSearchResults extends SearchResults implements Serializable
 
     public void sortProductsBy(Integer code, boolean inverse) {
         List products = getProducts();
-        /*if (new Integer(BY_RELEVANCY).equals(code) || code==null) {
-            currentComparator = POPULARITY_HIDE_UNAVAIL;
-            Collections.sort(products, currentComparator);
-            List finalList = new ArrayList(products.size());
-            int POP_CUTOFF = 30;
-            finalList.addAll(products.subList(0, Math.min(products.size(), POP_CUTOFF)));
-            Collections.sort(finalList, getComparator(BY_RELEVANCY, false));
-            if (products.size()>POP_CUTOFF) {
-                finalList.addAll(products.subList(POP_CUTOFF, products.size()));
-            }
-            if (inverse) {
-                // black magic ... the end of the list contains the grayed out products, 
-                // if we simply reverse the list, they are go to the front ...
-                List r = new ArrayList(products.size());
-                int hiddens = products.size()-1;
-                for (int i=hiddens;i>=0;i--) {
-                    ProductModel p = (ProductModel) products.get(i);
-                    if (p.isDisplayable()) {
-                        r.add(p);
-                    } else {
-                        hiddens = i;
-                    }
-                }
-                for (int i= products.size() -1;i>=hiddens;i--) {
-                    ProductModel p = (ProductModel) products.get(i);
-                    if (!p.isDisplayable()) {
-                        r.add(p);
-                    }
-                }
-                setProducts(r);
-                ///Collections.reverse(finalList);
-            } else {
-                setProducts(finalList);
-            }
-        } else {*/
-            currentComparator = getComparator(code, inverse);
-            Collections.sort(products, currentComparator);
-        //}
+        currentComparator = getComparator(code, inverse, products);
+        Collections.sort(products, currentComparator);
     }
 
     public void setScoreOracle(CategoryScoreOracle scoreOracle) {
@@ -451,16 +439,16 @@ public class FilteredSearchResults extends SearchResults implements Serializable
         return currentComparator;
     }
     
-    private Comparator getComparator(Integer code, boolean inverse) {
+    private Comparator getComparator(Integer code, boolean inverse, List products) {
         if (code != null) {
             int sort = code.intValue();
-            return getComparator(sort, inverse);
+            return getComparator(sort, inverse, products);
         } else {
-            return getComparator(BY_RELEVANCY, inverse);
+            return getComparator(BY_RELEVANCY, inverse, products);
         }
     }
 
-    public Comparator getComparator(int sort, boolean inverse) {
+    private Comparator getComparator(int sort, boolean inverse, List products) {
         Comparator c = null;
         switch (sort) {
             case BY_NAME:
@@ -473,14 +461,14 @@ public class FilteredSearchResults extends SearchResults implements Serializable
                 c = inverse ? ProductModel.PRODUCT_MODEL_PRICE_COMPARATOR_INVERSE : ProductModel.PRODUCT_MODEL_PRICE_COMPARATOR;
                 break;
             case BY_POPULARITY:
-                c =  inverse ? POPULARITY_INVERSE : POPULARITY;
+                c =  new PopularityComparator(inverse, products);
                 break;
             case BY_RELEVANCY:
 //                return (customerId != null) ? new RelevancyComparator(customerId) : POPULARITY;
             default:
                 CategoryScoreOracle sc = scoreOracle != null ? scoreOracle : new DefaultCategoryScoreOracle();
-                c = (customerId != null) ? new UserRelevancyComparator(inverse, searchTerm, getUserProductScores(), sc, nodeTree) : new RelevancyComparator(inverse, searchTerm,
-                        sc, nodeTree);
+                c = (customerId != null) ? new UserRelevancyComparator(inverse, searchTerm, getUserProductScores(), sc, nodeTree, products) : new RelevancyComparator(inverse, searchTerm,
+                        sc, nodeTree, products);
         }
         return c;
     }
@@ -613,6 +601,10 @@ public class FilteredSearchResults extends SearchResults implements Serializable
 
     public List getRecipeClassifications() {
         RecipeSearchPage searchPage = RecipeSearchPage.getDefault();
+        if (searchPage==null) {
+            LOG.warn("RecipeSearchPage.getDefault() is null!");
+            return Collections.EMPTY_LIST;
+        }
         return RecipesUtil.collectClassifications(java.util.Collections.EMPTY_SET, new HashSet(searchPage.getFilterByDomains()), getRecipes());
     }
 }
