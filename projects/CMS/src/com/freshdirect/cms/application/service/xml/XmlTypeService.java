@@ -3,6 +3,7 @@ package com.freshdirect.cms.application.service.xml;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -74,7 +75,7 @@ public class XmlTypeService implements ContentTypeServiceI {
 	}
 
 	public Set getContentTypeDefinitions() {
-		return Collections.unmodifiableSet(defsByType.entrySet());
+		return new HashSet(defsByType.values());
 	}
 
 	public ContentTypeDefI getContentTypeDefinition(ContentType type) {

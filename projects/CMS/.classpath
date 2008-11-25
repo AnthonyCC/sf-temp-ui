@@ -5,7 +5,6 @@
 	<classpathentry exported="true" kind="src" path="/Framework"/>
 	<classpathentry exported="true" kind="src" path="/ERPServices"/>
 	<classpathentry exported="true" kind="src" path="/Delivery"/>
-	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/javassist-3.0.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/jgroups-2.2.7.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/slide/jakarta-slide-webdavlib-2.1.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/jug-lgpl-2.0.0.jar"/>
@@ -14,5 +13,6 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/lucene-core-2.2.0.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/lucene-spellchecker-2.2.0.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/lucene-queries-2.2.0.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/javassist-3.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

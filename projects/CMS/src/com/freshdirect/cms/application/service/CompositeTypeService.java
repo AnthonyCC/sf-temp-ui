@@ -2,6 +2,7 @@ package com.freshdirect.cms.application.service;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -82,7 +83,7 @@ public class CompositeTypeService implements ContentTypeServiceI {
 	}
 
 	public Set getContentTypeDefinitions() {
-		return contentTypeDefMap.entrySet();
+		return new HashSet(contentTypeDefMap.values());
 	}
 
 	public ContentTypeDefI getContentTypeDefinition(ContentType type) {

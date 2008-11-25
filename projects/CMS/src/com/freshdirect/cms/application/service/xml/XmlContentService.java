@@ -35,11 +35,17 @@ public class XmlContentService extends SimpleContentService implements ContentSe
 
 	private final Category LOGGER = LoggerFactory.getInstance(XmlContentService.class);	
 	
+	
+	protected XmlContentService(ContentTypeServiceI typeService) {
+	    super(typeService);
+	}
+	
 	/**
 	 * @see #XmlContentService(ContentTypeServiceI, CmsNodeHandler, String, ResourceInfoServiceI)
 	 */
 	public XmlContentService(ContentTypeServiceI typeService, CmsNodeHandler nodeHandler, String resourceFiles) {
-		this(typeService, nodeHandler, resourceFiles, null);
+	    super(typeService);
+	    init(nodeHandler, resourceFiles, null);
 	}
 
 	/**
@@ -56,18 +62,21 @@ public class XmlContentService extends SimpleContentService implements ContentSe
 		ResourceInfoServiceI resourceInfoService) {
 
 		super(typeService);
-		nodeHandler.setContentService(this);
-		nodeHandler.setResourceInfoService(resourceInfoService);
-		StringTokenizer tok = new StringTokenizer(resourceFiles, ",");
-		//Map allNodes = new HashMap();
-		while (tok.hasMoreTokens()) {
-			String location = tok.nextToken();
-			Map nodes = loadNodes(nodeHandler, location);
-			//allNodes.putAll(nodes);
-			putNodes(nodes);
-		}
-		//putNodes(allNodes);
+		init(nodeHandler, resourceFiles, resourceInfoService);
 	}
+
+        protected void init(CmsNodeHandler nodeHandler, String resourceFiles, ResourceInfoServiceI resourceInfoService) {
+            nodeHandler.setContentService(this);
+            nodeHandler.setResourceInfoService(resourceInfoService);
+            StringTokenizer tok = new StringTokenizer(resourceFiles, ",");
+            // Map allNodes = new HashMap();
+            while (tok.hasMoreTokens()) {
+                String location = tok.nextToken();
+                Map nodes = loadNodes(nodeHandler, location);
+                // allNodes.putAll(nodes);
+                putNodes(nodes);
+            }
+        }
 
 	private Map loadNodes(CmsNodeHandler nodeHandler, String location) {
 		InputStream storeDataStream = null;
