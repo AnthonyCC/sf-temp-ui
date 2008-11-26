@@ -742,7 +742,8 @@
 				<pathelement location="${lib.dir}/thirdparty/commons-lang-2.3.jar"/>
 			</classpath> 
 			<arg value="Store.xml"/>
-			<arg value="SmartStore.xml"/>
+			<arg value="SmartStore.xml"/> 
+			<arg value="Search.xml"/>
 			<sysproperty key="server" value="${jmeter.hostname}"/>
 			<sysproperty key="port" value="${jmeter.port}"/>
 			<sysproperty key="output.directory" value="${work.dir}/jmeter-logs/results"/>
