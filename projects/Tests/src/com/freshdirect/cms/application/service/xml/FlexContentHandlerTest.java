@@ -14,7 +14,7 @@ import com.freshdirect.cms.application.ContentServiceI;
 
 public class FlexContentHandlerTest extends TestCase {
 
-	private ContentServiceI service;
+	protected ContentServiceI service;
 
 	protected void setUp() throws Exception {
 		service = new XmlContentService(

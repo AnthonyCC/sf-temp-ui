@@ -41,12 +41,17 @@ public class ContextWalkerTest extends TestCase {
 
 		CompositeTypeService typeService = new CompositeTypeService(typeServices);
 
-		this.content = new XmlContentService(typeService,
-				new FlexContentHandler(),
-				"classpath:/com/freshdirect/cms/fdstore/content/WalkerStore.xml");
+		this.content = createService(typeService);
 		
 		this.svc = new ContextService(this.content);
 	}
+
+
+    protected XmlContentService createService(CompositeTypeService typeService) {
+        return new XmlContentService(typeService,
+				new FlexContentHandler(),
+				"classpath:/com/freshdirect/cms/fdstore/content/WalkerStore.xml");
+    }
 
 
 	protected boolean assertContexts(List ctxs, String[] keys) {

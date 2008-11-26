@@ -8,7 +8,6 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,6 +24,7 @@ import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.ContentTypeDefI;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.application.ContentTypeServiceI;
 import com.freshdirect.cms.application.service.CompositeTypeService;
 import com.freshdirect.cms.application.service.xml.ContentNodeSerializer;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
@@ -43,15 +43,12 @@ public class ContentFilterTool {
     private static final Logger LOG = Logger.getLogger(ContentFilterTool.class);
     
     private static ContentServiceI service;
-
-    static ContentServiceI createContentService() throws IOException {
+    private static ContentTypeServiceI typeService;
+    
+    public static ContentServiceI createContentService() throws IOException {
         if (service == null) {
             LOG.info("content service init.");
-            List list = new ArrayList();
-            list.add(new XmlTypeService("classpath:/com/freshdirect/cms/resource/CMSStoreDef.xml"));
-            // list.add(new
-            // XmlTypeService("classpath:/com/freshdirect/cms/fdstore/ErpDef.xml"));
-            CompositeTypeService typeService = new CompositeTypeService(list);
+            ContentTypeServiceI typeService = createTypeService();
 
             LOG.info("type service inited.");
             
@@ -68,6 +65,17 @@ public class ContentFilterTool {
 
         }
         return service;
+    }
+
+    public static ContentTypeServiceI createTypeService() {
+        if (typeService==null) {
+            List list = new ArrayList();
+            list.add(new XmlTypeService("classpath:/com/freshdirect/cms/resource/CMSStoreDef.xml"));
+            // list.add(new
+            // XmlTypeService("classpath:/com/freshdirect/cms/fdstore/ErpDef.xml"));
+            typeService = new CompositeTypeService(list);
+        }
+        return typeService;
     }
 
     private static File getCurrentDirectory() {
