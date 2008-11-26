@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<JMeterTests dir="$(jmx.directory)" jar="$(jmeter.lib)/bin/ApacheJMeter.jar">
+
+	<!-- Hit view carts -->
+	<JMeterScript file="search.jmx" enabled="true">
+		<!-- Obtain data -->
+		<StaticData>
+			<Retrieve dir="$(output.directory)" server="$(server)" port="$(port)" file="search_terms.csv" type="searchterms"/>
+		</StaticData>
+	</JMeterScript>
+
+	<!-- View cart test parameters -->
+	<JMeterParameters>
+		<Parameter name="hostname">$(server)</Parameter>
+		<Parameter name="port">$(port)</Parameter>
+		<Parameter name="test_user">fob@fob.com</Parameter>
+		<Parameter name="user_pass">fobfob</Parameter>
+
+		<Parameter name="search_threads">5</Parameter>
+		<Parameter name="search_counter">1000</Parameter>
+		<Parameter name="search_data">$(output.directory)/search_terms.csv</Parameter>
+		<Parameter name="search_output">$(output.directory)/search_results.csv</Parameter>
+	</JMeterParameters>
+
+	<!-- -->
+	<Results dir="$(output.directory)">
+
+		<Aggregate file="search_results.csv">
+			<Rows>
+				<Match column="3">.*search.jsp.*</Match>
+			</Rows>
+			<Calculate>
+				<Formula file="search_response_average.property">ave($0)</Formula>
+				<Formula file="search_response_stdhigh.property">ave($0)+std($0)/2</Formula>
+
+				<Formula file="search_response_latency_ave.property">ave($4)</Formula>
+				<Formula file="search_response_latency_stdhigh.property">ave($4)+std($4)/2</Formula>
+
+			</Calculate>
+		</Aggregate>
+		<Aggregate file="search_results.csv">
+			<Rows>
+				<Match column="3">.*search2.jsp.*</Match>
+			</Rows>
+			<Calculate>
+				<Formula file="search2_response_average.property">ave($0)</Formula>
+				<Formula file="search2_response_stdhigh.property">ave($0)+std($0)/2</Formula>
+
+				<Formula file="search2_response_latency_ave.property">ave($4)</Formula>
+				<Formula file="search2_response_latency_stdhigh.property">ave($4)+std($4)/2</Formula>
+			</Calculate>
+		</Aggregate>
+
+	</Results>
+</JMeterTests>
