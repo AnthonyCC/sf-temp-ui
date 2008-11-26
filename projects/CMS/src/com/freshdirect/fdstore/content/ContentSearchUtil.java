@@ -305,7 +305,7 @@ public class ContentSearchUtil {
 	public static List filterProductsByDisplay(List products) {
 		for (Iterator i = products.iterator(); i.hasNext();) {
 			ProductModel prod = (ProductModel) i.next();
-			if (!isDisplayable(prod)) {
+			if (!isDisplayable(prod) || prod.getPrimaryHome()==null) {
 				i.remove();
 			}
 		}

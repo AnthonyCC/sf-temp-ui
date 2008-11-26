@@ -1140,12 +1140,14 @@ inner:
 	}
 
 	public CategoryModel getPrimaryHome() {
-		ContentKey key = (ContentKey) getCmsAttribute("PRIMARY_HOME").getValue();
-		
-		return key == null
-  	         ? null
-             : (CategoryModel) ContentFactory.getInstance().getContentNode(key.getId());
-	}
+            AttributeI attribute = getCmsAttribute("PRIMARY_HOME");
+            if (attribute==null) {
+                return null;
+            }
+            ContentKey key = (ContentKey) attribute.getValue();
+    
+            return key == null ? null : (CategoryModel) ContentFactory.getInstance().getContentNode(key.getId());
+        }
 
 	public SkuModel getPreferredSku() {
 		AttributeI att = getCmsAttribute("PREFERRED_SKU");
