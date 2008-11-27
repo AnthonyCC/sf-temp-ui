@@ -54,7 +54,8 @@
   
 	<service-point id="CmsManager" interface="com.freshdirect.cms.application.ContentServiceI">
 		<invoke-factory>
-			<construct class="com.freshdirect.cms.application.service.xml.XmlContentService"  service-id-property="name">
+ 			<!-- <construct class="com.freshdirect.cms.application.service.xml.XmlContentService"  service-id-property="name">--> 
+			<construct class="com.freshdirect.cms.classgenerator.ClassGeneratorContentService" service-id-property="name">
 				<service>CompositeDef</service>
 				<object>instance:com.freshdirect.cms.application.service.xml.FlexContentHandler</object>
 				<string>${cms.resource.basePath}/Store.xml.gz,${cms.resource.basePath}/Media.xml.gz,classpath:/com/freshdirect/cms/resource/FDForms.xml</string>

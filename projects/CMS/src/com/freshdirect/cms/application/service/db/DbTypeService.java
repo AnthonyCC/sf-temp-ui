@@ -238,7 +238,8 @@ public class DbTypeService implements ContentTypeServiceI {
 	 * @see com.freshdirect.cms.application.ContentTypeServiceI#getContentTypeDefinitions()
 	 */
 	public Set getContentTypeDefinitions() {
-		return Collections.unmodifiableSet(defsByType.entrySet());
+	    return new HashSet(defsByType.values());
+		//return Collections.unmodifiableSet(defsByType.entrySet());
 	}
 
 	public ContentTypeDefI getContentTypeDefinition(ContentType type) {

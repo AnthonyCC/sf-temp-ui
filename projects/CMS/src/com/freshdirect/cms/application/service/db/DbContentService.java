@@ -35,6 +35,7 @@ import com.freshdirect.cms.application.CmsResponseI;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
 import com.freshdirect.cms.application.service.AbstractContentService;
+import com.freshdirect.cms.classgenerator.ContentNodeGenerator;
 import com.freshdirect.cms.meta.ContentTypeUtil;
 import com.freshdirect.cms.node.ContentNode;
 import com.freshdirect.cms.util.DaoUtil;
@@ -60,6 +61,8 @@ public class DbContentService extends AbstractContentService implements ContentS
 	private ContentTypeServiceI typeService;
 
 	private DataSource dataSource;
+	
+	private ContentNodeGenerator generator;
 
 	public DbContentService() {
 		super();
@@ -67,6 +70,7 @@ public class DbContentService extends AbstractContentService implements ContentS
 
 	public void setContentTypeService(ContentTypeServiceI typeService) {
 		this.typeService = typeService;
+		this.generator = new ContentNodeGenerator(typeService);
 	}
 
 	public ContentTypeServiceI getTypeService() {
@@ -355,16 +359,21 @@ public class DbContentService extends AbstractContentService implements ContentS
 		if (!typeService.getContentTypes().contains(key.getType())) {
 			return null;
 		}
-		return new ContentNode(this, key);
+		return createContentNode(key);
 	}
 
 	private void processNodesResultSet(ResultSet rs, Map nodeMap) throws SQLException {
 		while (rs.next()) {
 			ContentKey key = ContentKey.decode(rs.getString("id"));
-			ContentNodeI node = new ContentNode(this, key);
+			ContentNodeI node = createContentNode(key);
 			nodeMap.put(key, node);
 		}
 	}
+
+    protected ContentNodeI createContentNode(ContentKey key) {
+        return this.generator.createNode(key);
+        //return new ContentNode(this, key);
+    }
 
 	private void processAttributesResultSet(ResultSet rs, Map nodeMap) throws SQLException {
 		ContentKey currKey = null;
