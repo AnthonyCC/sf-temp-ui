@@ -1,6 +1,7 @@
 package com.freshdirect.cms.classgenerator;
 
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -9,6 +10,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import javassist.CannotCompileException;
+import javassist.ClassClassPath;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtConstructor;
@@ -36,6 +38,7 @@ public class ContentNodeGenerator {
 
     private final static boolean DEBUG = false;
     private final static boolean UNSAFE = true;
+    private final static boolean SWITCH = true;
     
     private static final Logger LOG             = Logger.getLogger(ContentNodeGenerator.class);
 
@@ -78,7 +81,11 @@ public class ContentNodeGenerator {
             prefix = prefix + '.';
         }
         this.packageName = "com.freshdirect.cms.classgenerator.gen." + prefix;
-        this.pool = ClassPool.getDefault();
+        //this.pool = ClassPool.getDefault();
+        ClassPool parent = ClassPool.getDefault();
+        this.pool = new ClassPool(parent);
+        this.pool.insertClassPath(new ClassClassPath(ContentNodeGenerator.class));
+
         try {
             fieldTypes.put(EnumAttributeType.STRING, pool.get("java.lang.String"));
             fieldTypes.put(EnumAttributeType.BOOLEAN, pool.get("java.lang.Boolean"));
@@ -312,7 +319,11 @@ public class ContentNodeGenerator {
             class1.addConstructor(ct);
             
             class1.addMethod(CtNewMethod.make(initAttributes.toString(), class1));
-            class1.addMethod(CtNewMethod.make(getAttribute.toString(), class1));
+            if (SWITCH) {
+                class1.addMethod(CtNewMethod.make(getAttribute.toString(), class1));
+            } else {
+                class1.addMethod(CtNewMethod.make(createBinarySearchMethod(def, attributeMap), class1));
+            }
             class1.addMethod(CtNewMethod.make(getAttributeMap.toString(), class1));
             class1.addMethod(CtNewMethod.make(getChildKeys.toString(), class1));
             class1.addMethod(CtNewMethod.make(copy.toString(), class1));
@@ -321,6 +332,92 @@ public class ContentNodeGenerator {
         return class1.toClass();
     }
 
+    private String createBinarySearchMethod(ContentTypeDefI def, Map attributeMap) {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("public final com.freshdirect.cms.AttributeI getAttribute(String name) { \n" +
+        " if (name==null) { return null; } \n");
+        buffer.append(" int hc = name.hashCode(); \n");
+        AttributeRec[] recs = new AttributeRec[attributeMap.size()];
+        int i =0;
+        for (Iterator iter = attributeMap.keySet().iterator(); iter.hasNext();) {
+            String key = (String) iter.next();
+            AttributeRec a = new AttributeRec(key, (AttributeDefI) attributeMap.get(key));
+            recs[i]= a;
+            i++;
+        }
+        Arrays.sort(recs, null);
+        
+        createBinarySearchMethodBody(recs, buffer, 0, recs.length-1);
+        
+        buffer.append(" return null; \n}");
+        
+        return buffer.toString();
+    }
+    
+    private void createBinarySearchMethodBody(AttributeRec[] recs, StringBuffer buffer, int start, int end) {
+        if (start > end) {
+            return;
+        }
+        int median = (start+end) / 2;
+        int medValue = recs[median].getHash();
+        if (start!=end) {
+            if (start <= median - 1) {
+                buffer.append(" if (hc > ").append(medValue).append(") { \n");
+                createBinarySearchMethodBody(recs, buffer, start, median - 1 );
+                
+                buffer.append("\n } else ");
+            }
+            if (median + 1 <= end) {
+                buffer.append("if (hc < ").append(medValue).append(") {\n");
+                createBinarySearchMethodBody(recs, buffer, median + 1, end);
+                buffer.append("\n } else ");
+            }
+            buffer.append("if (hc == ").append(medValue).append(") {\n");
+        } else {
+            buffer.append("  if (hc == ").append(medValue).append(") { \n");
+        }
+        if (UNSAFE) {
+            buffer.append("    return ").append(getAttributeFieldName(recs[median].getDef())).append(";\n   }");
+        } else {
+            buffer.append("    if (\"").append(recs[median].getName()).append("\".equals(name)) { \n")
+                  .append("     return ").append(getAttributeFieldName(recs[median].getDef())).append(";\n    }\n   }");
+        }
+    }
+    
+    static class AttributeRec implements Comparable { 
+        int hash;
+        String name;
+        AttributeDefI def;
+        
+        public AttributeRec(String name, AttributeDefI def) {
+            super();
+            this.name = name;
+            this.hash = name.hashCode();
+            this.def = def;
+        }
+        
+        public int getHash() {
+            return hash;
+        }
+        
+        public String getName() {
+            return name;
+        }
+        
+        public AttributeDefI getDef() {
+            return def;
+        }
+        
+        public String toString() {
+            return name + ':'+ hash;
+        }
+        public int compareTo(Object o) {
+            AttributeRec x =(AttributeRec)o;
+            return hash == x.hash ? 0 : hash > x.hash ? -1 : 1;
+        }
+    }
+    
+    
     
     private CtField createField(ContentType contentType, CtClass class1, AttributeDefI attributeDef) throws CannotCompileException, NotFoundException {
         CtClass type = getType(attributeDef);
