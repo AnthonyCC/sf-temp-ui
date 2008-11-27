@@ -62,6 +62,7 @@ public class Warmup {
 		//Get instance loads up the Nutrition
 		FDNutritionCache.getInstance();
 		
+		ContentSearch.getInstance().getAutocompletions("qwertyuqwerty");
 		
 		
 		new Thread() {

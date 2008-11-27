@@ -26,6 +26,8 @@ public class ContentSearch {
     private static ContentSearch instance = new ContentSearch();
 
     AutocompleteService autocompletion;
+    Thread autocompleteUpdater;
+    
     
     public static ContentSearch getInstance() {
         return instance;
@@ -408,7 +410,8 @@ public class ContentSearch {
             ContentNodeModel nodeModel = contentFactory.getContentNodeByKey(key);
             if (nodeModel instanceof ProductModel) {
                 ProductModel pm = (ProductModel) nodeModel;
-                if (pm.isDisplayableBasedOnCms()) {
+                //if (pm.isDisplayableBasedOnCms()) {
+                if (pm.isDisplayable()) {
                     words.add(pm.getFullName());
                 }
             }
@@ -429,7 +432,27 @@ public class ContentSearch {
     public List getAutocompletions(String prefix) {
         synchronized(this) {
             if (this.autocompletion == null) {
-                this.autocompletion = createAutocompleteService();
+                if (autocompleteUpdater==null) {
+                    autocompleteUpdater = new Thread(new Runnable() {
+                        public void run() {
+                            //while(true) {
+                                long time = System.currentTimeMillis();
+                                LOGGER.info("autocomplete re-calculation started");
+                                ContentSearch.this.autocompletion = createAutocompleteService();
+                                time = System.currentTimeMillis() - time; 
+                                LOGGER.info("autocomplete re-calculation finished, elapsed time : "+time+" ms");
+                                /*try {
+                                    Thread.sleep(24*60*60*1000);
+                                } catch (InterruptedException e) {
+                                    LOGGER.info("interrupted:"+e.getMessage(), e);
+                                }*/
+                            //}
+                        }
+                    },"autocompleteUpdater");
+                    autocompleteUpdater.setDaemon(true);
+                    autocompleteUpdater.start();
+                }
+                return Collections.EMPTY_LIST;
             }
         }
         return this.autocompletion.getAutocompletions(prefix);

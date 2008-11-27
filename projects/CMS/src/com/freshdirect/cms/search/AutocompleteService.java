@@ -106,12 +106,12 @@ public class AutocompleteService {
         for (Iterator iter = counters.values().iterator(); iter.hasNext();) {
             HitCounter hc = (HitCounter) iter.next();
             // skip words which occures only one
-            if (hc.number > 1) {
+            //if (hc.number > 1) {
                 // skip autocomplete suggest
                 if (!(hc.followCount == 1 && hc.wordCount < 3)) {
                     set.add(hc);
                 }
-            }
+            //}
         }
         return set;
     }
