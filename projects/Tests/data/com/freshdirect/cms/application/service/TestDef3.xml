@@ -15,4 +15,13 @@
 		</AttributeDefs>
 	</ContentTypeDef>
 
+	<ContentTypeDef name="VooDoo">
+		<AttributeDefs>
+			<AttributeDef type="S" name="voo" />
+			<AttributeDef type="S" name="doo" />
+			<AttributeDef type="S" name="loo" />
+		</AttributeDefs>
+	</ContentTypeDef>
+
+
 </CMSDef>

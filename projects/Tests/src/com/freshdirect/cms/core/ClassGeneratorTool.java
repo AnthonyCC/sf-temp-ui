@@ -35,12 +35,23 @@ public class ClassGeneratorTool {
      */
     public static void main(String[] args) throws IOException {
         LOG.info("init...");
-        // baseTest();
+        /*Random rnd = new Random();
+        XmlContentService s3 = new ClassGeneratorContentService("t3_" + Math.abs(rnd.nextInt(10000)),
+                new XmlTypeService("classpath:/com/freshdirect/cms/application/service/TestDef3.xml"), new FlexContentHandler(),
+                "classpath:/com/freshdirect/cms/application/service/TestContent3.xml");
+*/
+        
+        //baseTest();
 
+        benchmark();
+        
+        //System.in.read();
+    }
+
+    private static void benchmark() {
         Random rnd = new Random();
         XmlContentService s3 = new ClassGeneratorContentService("t3_" + Math.abs(rnd.nextInt(10000)),
-
-        new XmlTypeService("classpath:/com/freshdirect/cms/application/service/TestDef3.xml"), new FlexContentHandler(),
+                new XmlTypeService("classpath:/com/freshdirect/cms/application/service/TestDef3.xml"), new FlexContentHandler(),
                 "classpath:/com/freshdirect/cms/application/service/TestContent3.xml");
 
         XmlContentService s1 = new XmlContentService(new XmlTypeService("classpath:/com/freshdirect/cms/application/service/TestDef3.xml"),
@@ -68,8 +79,6 @@ public class ClassGeneratorTool {
         }
         System.out.println("AVER:"+ (a/M)+"\t"+service.getClass().getName());
         System.out.println("AVER:"+ (b/M)+"\t"+service2.getClass().getName());
-        
-        //System.in.read();
     }
 
     private static void baseTest() {
@@ -120,6 +129,24 @@ public class ClassGeneratorTool {
              * LOG.info("node width:" + node.getAttribute("width").getValue());
              */
         }
+        {
+            ContentNodeI node = c.createNode(new ContentKey(FDContentTypes.DEPARTMENT, "depart"));
+            LOG.info("node created:" + node);
+            LOG.info("definition: " + node.getDefinition());
+            LOG.info("key: " + node.getKey());
+            LOG.info("getAttribute:" + node.getAttribute("categories"));
+            node.getAttribute("categories").setValue(new ArrayList());
+            LOG.info("getAttribute after set value:" + node.getAttribute("categories"));
+            
+            LOG.info("child keys:" + node.getChildKeys());
+            
+            for (Iterator iter = node.getDefinition().getAttributeNames().iterator();iter.hasNext();) {
+                String name = (String) iter.next();
+                LOG.info("attrib["+name+"] = "+node.getAttribute(name));
+            }
+            
+        }
+        
         LOG.info("end.");
     }
 
