@@ -456,3 +456,9 @@ a.usq_left_nav_menu_on:hover {color: #FBF1D3; cursor: pointer; text-decoration: 
 .usq_region { color:#333; font-size:10px; font-family:Verdana, Arial, Helvetica, sans-serif; font-weight:bold;}
 .usq_rating_label { color:#990000; font-size:10px; font-family:Verdana, Arial, Helvetica, sans-serif; font-weight:bold;}
 .usq_rating { color:#333; font-size:10px; font-family:Verdana, Arial, Helvetica, sans-serif; font-weight:bold;}
+
+.save-label{color:#FF9933;font-weight:bold;}
+.save-price{color:rgb(204,0,0);font-weight:bold;}
+.normal-price{color:black;font-weight:bold;}
+.save-base-price{color:rgb(136,136,136);font-weight:normal;}
+.fav-label{color:#996699;font-weight:bold;}

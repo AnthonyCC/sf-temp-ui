@@ -52,7 +52,28 @@ ContentNodeModel lastSubCategory = null;
 		String curPath = "";
 		ProductImpression pi = new ProductImpression(productNode);
 
+		boolean isDeal = false;
+		Double defaultPrice = null;
+		String priceUnit = null;
+		int deal = -1;
+		double basePrice = Double.NaN;
+		if (pi.getProductInfo() != null) {
+			defaultPrice = new Double(pi.getProductInfo().getDefaultPrice());
+			priceUnit = pi.getProductInfo().getDisplayableDefaultPriceUnit().toLowerCase();
+			isDeal = pi.getProductInfo().isDeal();
+//			isDeal = (defaultPrice.doubleValue() - 0.99) == Math.floor(defaultPrice.doubleValue()); // test line - REMOVE !!!
+			deal = -1;
+			basePrice = Double.NaN;
+			if (isDeal) {
+				deal = pi.getProductInfo().getDealPercentage();
+				basePrice = pi.getProductInfo().getBasePrice();
+//				deal = 5; // test line - REMOVE !!!
+//				basePrice = defaultPrice.doubleValue() * 1.05; // test line - REMOVE !!!
+			}
+		}
+
 		boolean isYourFave = results.getUserProductScores().get(productNode.getContentKey()) != null;
+//		isYourFave = defaultPrice != null ? defaultPrice.intValue() == 2 : isYourFave; // test line - REMOVE !!!
 
 		// get parent categories
 		ContentNodeModel parent = productNode.getParentNode();
@@ -90,20 +111,29 @@ ContentNodeModel lastSubCategory = null;
 				String actionURI = FDURLUtil.getProductURI(pi.getProductModel(), trk, (isYourFave ? "fave" : nav.getSortByName()), rank);
 				if (pi.getProductModel().isDisplayable()) {
 			%>
-						<a href="<%= actionURI %>"><%@ include file="/includes/product/i_prd_name.jspf" %></a><span>&nbsp;<%=aka %></span>
+						<a href="<%= actionURI %>"><%@ include file="/includes/product/i_prd_name.jspf" %></a>
+						<%=aka %>
 			<%
 				} else {
 			%>
-						<a style="color: #999999" href="<%= actionURI %>"><%@ include file="/includes/product/i_prd_name.jspf" %>&nbsp;<%=aka %></a>
+						<a style="color: #999999" href="<%= actionURI %>"><%@ include file="/includes/product/i_prd_name.jspf" %></a>
+						<%=aka %>
 			<%
 				}
 			%>
-			<span style="color: <%=pi.getProductModel().isDisplayable() ? "black" : "#999999" %>">&nbsp;
+			<span style="color: <%=pi.getProductModel().isDisplayable() ? "black" : "#999999" %>">
 			<% if (pi.getConfigurationDescrpition() != null && pi.getConfigurationDescrpition() != "") {%>
-				<%= pi.getConfigurationDescrpition() %>
+				(<%= pi.getConfigurationDescrpition() %>)
 			<% }
-			if (pi.getProductInfo() != null) {%>
-				- <%= CURRENCY_FORMATTER.format(pi.getProductInfo().getDefaultPrice()) %>/<%= pi.getProductInfo().getDisplayableDefaultPriceUnit().toLowerCase()%> 
+			if (defaultPrice != null) {%>
+				-
+				<% if (isDeal) { %>
+				<span class="save-price"><%= CURRENCY_FORMATTER.format(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
+				<span class="save-label">SAVE <%= deal %>%</span>
+				<span class="save-base-price">was <%= CURRENCY_FORMATTER.format(basePrice) %></span> 
+				<% } else { %>
+				<span class="normal-price"><%= CURRENCY_FORMATTER.format(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
+				<% } %> 
 		<%
 			}			
 		%>
@@ -115,7 +145,7 @@ ContentNodeModel lastSubCategory = null;
 		if (scaledPrices != null && scaledPrices.length > 0) {
 			for (int ymalSci = 0; ymalSci < scaledPrices.length; ymalSci++) { 
 		%>
-			<span style="color: #FF9933; font-weight: bold;">Save!</span>&nbsp;<span class="bold"><%= scaledPrices[ymalSci] %></span>
+			<span class="save-label">SAVE!</span>&nbsp;<span class="normal-price"><%= scaledPrices[ymalSci] %></span>
 		<%
 			}
 		}
@@ -125,7 +155,7 @@ ContentNodeModel lastSubCategory = null;
 		// Various labels
 		//   YOUR FAVORITE
 		if (isYourFave) {
-			%><div style="margin-left:20px;margin-bottom:10px"><span style="color: #996699; font-weight: bold;">YOUR FAVORITE!</span></div><%
+			%><div style="margin-left:20px;margin-bottom:10px"><span class="fav-label">YOUR FAVORITE!</span></div><%
 		}
 		%>
 		<%		
