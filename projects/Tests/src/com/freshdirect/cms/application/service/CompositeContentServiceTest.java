@@ -48,6 +48,7 @@ public class CompositeContentServiceTest extends TestCase {
 
     private final static ContentType FOO_TYPE = ContentType.get("Foo");
     private final static ContentType BAR_TYPE = ContentType.get("Bar");
+    private final static ContentType VOODOO_TYPE = ContentType.get("VooDoo");
 
     private final static ContentKey  FOO_KEY  = new ContentKey(FOO_TYPE, "fooNode");
     private final static ContentKey  BAR_KEY  = new ContentKey(BAR_TYPE, "barNode");
@@ -61,9 +62,10 @@ public class CompositeContentServiceTest extends TestCase {
 
     public void testContentTypeService() {
         Set types = service.getTypeService().getContentTypes();
-        assertEquals(2, types.size());
+        assertEquals(3, types.size());
         assertTrue(types.contains(FOO_TYPE));
         assertTrue(types.contains(BAR_TYPE));
+        assertTrue(types.contains(VOODOO_TYPE));
 
         ContentTypeDefI fooDef = service.getTypeService().getContentTypeDefinition(FOO_TYPE);
         assertEquals(2, fooDef.getAttributeNames().size());
