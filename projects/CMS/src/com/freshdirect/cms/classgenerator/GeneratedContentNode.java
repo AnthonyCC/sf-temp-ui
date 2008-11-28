@@ -75,6 +75,10 @@ public abstract class GeneratedContentNode implements ContentNodeI {
     public int hashCode() {
         return this.key.hashCode();
     }
-    
+
+    public void setAttributeOrdinalHash(Map map) {
+        
+    }
+
 
 }

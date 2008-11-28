@@ -1,10 +1,12 @@
 package com.freshdirect.cms.classgenerator;
 
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -38,7 +40,12 @@ public class ContentNodeGenerator {
 
     private final static boolean DEBUG = false;
     private final static boolean UNSAFE = true;
-    private final static boolean SWITCH = true;
+    
+    private final static int SWITCH = 0;
+    private final static int BINARY_SEARCH = 1;
+    private final static int HASHMAP_SEARCH = 2;
+    
+    public static int GETATTRIBUTE_MODE = SWITCH; 
     
     private static final Logger LOG             = Logger.getLogger(ContentNodeGenerator.class);
 
@@ -65,6 +72,72 @@ public class ContentNodeGenerator {
 
     public ContentNodeGenerator(ContentTypeServiceI service) {
         this(service,"");
+    }
+    
+    interface ClassInitializer { 
+        void initClass (GeneratedContentNode instance, ContentType type);
+    }
+
+    class AttributeMapClassInitializer implements ClassInitializer { 
+        Map attributeMap;
+        public AttributeMapClassInitializer(Map attributeMap) {
+            this.attributeMap = attributeMap;
+        }
+        public void initClass(GeneratedContentNode node, ContentType arg1) {
+            node.setAttributeDefs(attributeMap);
+        }
+    }
+
+    class OrdinalHashClassInitializer implements ClassInitializer { 
+        Map ordinalHash;
+        public OrdinalHashClassInitializer(Map ordinalHash) {
+            this.ordinalHash = ordinalHash;
+        }
+        public void initClass(GeneratedContentNode node, ContentType arg1) {
+            node.setAttributeOrdinalHash(ordinalHash);
+        }
+    }
+    
+    class ClassInfo { 
+        Class clazz;
+        List classInitializers = new ArrayList();
+        Map attributeMap;
+        String implementationName;
+        
+        public String getImplementationName() {
+            return implementationName;
+        }
+        
+        public void setImplementationName(String implementationName) {
+            this.implementationName = implementationName;
+        }
+        
+        public void setGeneratedClass(Class clazz) {
+            this.clazz = clazz;
+        }
+
+        public Class getGeneratedClazz() {
+            return clazz;
+        }
+        public Map getAttributeMap() {
+            return attributeMap;
+        }
+        
+        public AttributeDefI getAttributeDef(String name) {
+            return (AttributeDefI) attributeMap.get(name);
+        }
+        
+        public void setAttributeMap(Map attributeMap) {
+            this.attributeMap = attributeMap;
+        }
+        
+        public void add(ClassInitializer cls) {
+            this.classInitializers.add(cls);
+        }
+        
+        public List getClassInitializers() {
+            return classInitializers;
+        }
     }
 
     /**
@@ -115,12 +188,18 @@ public class ContentNodeGenerator {
         for (Iterator iter = contentTypeDefinitions.iterator(); iter.hasNext();) {
             ContentTypeDefI object = (ContentTypeDefI) iter.next();
             try {
-                Map attributeMap = createAttributeMap(object);
-                contentTypeMap.put(object.getType(), createContentType(object, attributeMap));
+                
+                ClassInfo info = createContentType(object);
+                
+                
+                contentTypeMap.put(object.getType(), info.getGeneratedClazz());
 
                 GeneratedContentNode node = createNodeImpl(object.getType());
-                node.setAttributeDefs(attributeMap);
                 node.setContentNodeGenerator(this);
+                for (Iterator citer = info.getClassInitializers().iterator();citer.hasNext();) {
+                    ClassInitializer ci = (ClassInitializer) citer.next();
+                    ci.initClass(node, object.getType());
+                }
 
             } catch (CannotCompileException e) {
                 throw new ClassGeneratorException("Cannot compile " + object.getType() + ": " + e.getMessage(), e);
@@ -175,9 +254,15 @@ public class ContentNodeGenerator {
         class1.setSuperclass(parent);
     }
 
-    private Class createContentType(ContentTypeDefI def, Map attributeMap) throws CannotCompileException, NotFoundException {
+    private ClassInfo createContentType(ContentTypeDefI def) throws CannotCompileException, NotFoundException {
+        ClassInfo ci = new ClassInfo();
+        Map attributeMap = createAttributeMap(def);
+        ci.setAttributeMap(attributeMap);
+        
         LOG.info("creating class for " + def.getType());
         String implementationClassName = getImplementationClassName(def.getType());
+        ci.setImplementationName(implementationClassName);
+        
         CtClass class1 = pool.get(implementationClassName);
         {
             // static Map<String,AttributeDef> attributeDefs;
@@ -224,7 +309,6 @@ public class ContentNodeGenerator {
                     + "}", class1);
             class1.addMethod(method);
         }
-
         
         boolean debug = isDebugContentType( def.getType());
         
@@ -256,10 +340,6 @@ public class ContentNodeGenerator {
             StringBuffer copy = new StringBuffer();
             copy.append("public com.freshdirect.cms.ContentNodeI copy() {\n ")
                 .append(implementationClassName).append(" result = new ").append(implementationClassName).append("();\n result.initAttributes();\n result.setKey(this.getKey()); \n");
-                
-            
-            
-            
             
             for (Iterator iter = attributeMap.keySet().iterator(); iter.hasNext();) {
                 String name = (String) iter.next();
@@ -296,7 +376,6 @@ public class ContentNodeGenerator {
                 }
                 
                 copy.append(" result.").append(attributeFieldName).append(" = this.").append(attributeFieldName).append(";\n");
-                
             }
 
             initAttributes.append(" }\n");
@@ -319,17 +398,61 @@ public class ContentNodeGenerator {
             class1.addConstructor(ct);
             
             class1.addMethod(CtNewMethod.make(initAttributes.toString(), class1));
-            if (SWITCH) {
-                class1.addMethod(CtNewMethod.make(getAttribute.toString(), class1));
-            } else {
-                class1.addMethod(CtNewMethod.make(createBinarySearchMethod(def, attributeMap), class1));
+            switch (GETATTRIBUTE_MODE) {
+                case SWITCH : 
+                    class1.addMethod(CtNewMethod.make(getAttribute.toString(), class1));
+                    break;
+                case BINARY_SEARCH : 
+                    class1.addMethod(CtNewMethod.make(createBinarySearchMethod(def, attributeMap), class1));
+                    break;
+                case HASHMAP_SEARCH : 
+                    createHashMapMethod(def, class1,ci);
+                    break;
             }
             class1.addMethod(CtNewMethod.make(getAttributeMap.toString(), class1));
             class1.addMethod(CtNewMethod.make(getChildKeys.toString(), class1));
             class1.addMethod(CtNewMethod.make(copy.toString(), class1));
         }
+        ci.add(new AttributeMapClassInitializer(attributeMap));
+        ci.setGeneratedClass(class1.toClass());
+        return ci;
+    }
 
-        return class1.toClass();
+    private void createHashMapMethod(ContentTypeDefI def, CtClass class1, ClassInfo ci) throws CannotCompileException, NotFoundException {
+
+        if (ci.attributeMap.isEmpty()) {
+            class1.addMethod(CtNewMethod.make("public final com.freshdirect.cms.AttributeI getAttribute(String name) { \n return null;\n}", class1));
+            return;
+        }
+        
+        CtField f = new CtField(pool.get("java.util.Map"), "__ordinalhash", class1);
+        f.setModifiers(f.getModifiers() | Modifier.STATIC);
+        class1.addField(f);
+        
+        CtMethod method = CtNewMethod.make("public void setAttributeOrdinalHash(java.util.Map defs) { \n" 
+                + " " + ci.getImplementationName() + ".__ordinalhash = defs; "
+                + "}", class1);
+        class1.addMethod(method);
+        
+        Map ordinalhash = new HashMap();
+        
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("public final com.freshdirect.cms.AttributeI getAttribute(String name) { \n" +
+        " java.lang.Integer hash = (Integer) __ordinalhash.get(name);\n" +
+        " if (hash==null) { return null; }\n" +
+        " int ihash = hash.intValue(); \n" +
+        " switch (ihash) { \n");
+        int i = 0;
+        for (Iterator iter=ci.attributeMap.keySet().iterator();iter.hasNext();) {
+            String key = (String) iter.next();
+            ordinalhash.put(key, new Integer(i));
+            buffer.append("   case ").append(i).append(" : { \n      return ").append(getAttributeFieldName(ci.getAttributeDef(key))).append(";\n }\n");
+            i++;
+        }
+        buffer.append(" }\n return null; }");
+        
+        ci.add(new OrdinalHashClassInitializer(ordinalhash));
+        class1.addMethod(CtNewMethod.make(buffer.toString(), class1));
     }
 
     private String createBinarySearchMethod(ContentTypeDefI def, Map attributeMap) {
@@ -358,6 +481,14 @@ public class ContentNodeGenerator {
         if (start > end) {
             return;
         }
+        if (end-start <=3) {
+            for (int i=start;i<=end;i++) {
+                buffer.append(" if (hc == ").append(recs[i].getHash()).append(") {\n");
+                buffer.append("    return ").append(getAttributeFieldName(recs[i].getDef())).append(";\n   }\n");                
+            }
+            return;
+        }
+        
         int median = (start+end) / 2;
         int medValue = recs[median].getHash();
         if (start!=end) {

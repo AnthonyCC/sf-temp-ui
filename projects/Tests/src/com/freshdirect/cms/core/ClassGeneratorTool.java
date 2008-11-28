@@ -24,6 +24,7 @@ import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.classgenerator.ClassGeneratorContentService;
 import com.freshdirect.cms.classgenerator.ContentNodeGenerator;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.node.ContentNode;
 
 public class ClassGeneratorTool {
     private static final Logger LOG = Logger.getLogger(ClassGeneratorTool.class);
@@ -43,12 +44,21 @@ public class ClassGeneratorTool {
         
         //baseTest();
 
-        benchmark();
+        ContentNodeGenerator.GETATTRIBUTE_MODE = 0;
+        double rate0 = benchmark();
+        ContentNodeGenerator.GETATTRIBUTE_MODE = 1;
+        double rate1 = benchmark();
+        ContentNodeGenerator.GETATTRIBUTE_MODE = 2;
+        double rate2 = benchmark();
+        
+        System.out.println("MODE SWITCH : "+rate0);
+        System.out.println("MODE BINARY : "+rate1);
+        System.out.println("MODE HASHMAP: "+rate2);
         
         //System.in.read();
     }
 
-    private static void benchmark() {
+    private static double benchmark() {
         Random rnd = new Random();
         XmlContentService s3 = new ClassGeneratorContentService("t3_" + Math.abs(rnd.nextInt(10000)),
                 new XmlTypeService("classpath:/com/freshdirect/cms/application/service/TestDef3.xml"), new FlexContentHandler(),
@@ -64,10 +74,10 @@ public class ClassGeneratorTool {
 
         XmlContentService service = new XmlContentService(typeService, new FlexContentHandler(),
                 "classpath:/com/freshdirect/cms/fdstore/content/FilteredStore2.xml");
-        XmlContentService service2 = new ClassGeneratorContentService(typeService, new FlexContentHandler(),
+        XmlContentService service2 = new ClassGeneratorContentService("t1_" + Math.abs(rnd.nextInt(10000)), typeService, new FlexContentHandler(),
                 "classpath:/com/freshdirect/cms/fdstore/content/FilteredStore2.xml");
 
-        int M = 20;
+        int M = 10;
         
         benchmark(s1, 100000*M, new ContentKey(ContentType.get("Foo"), "fooNode"));
         benchmark(s3, 100000*M, new ContentKey(ContentType.get("Foo"), "fooNode"));
@@ -77,8 +87,10 @@ public class ClassGeneratorTool {
             a+= benchmark(service, 100000, new ContentKey(FDContentTypes.PRODUCT, "dai_organi_2_milk_02"));
             b+= benchmark(service2, 100000, new ContentKey(FDContentTypes.PRODUCT, "dai_organi_2_milk_02"));
         }
-        System.out.println("AVER:"+ (a/M)+"\t"+service.getClass().getName());
-        System.out.println("AVER:"+ (b/M)+"\t"+service2.getClass().getName());
+        System.out.println("AVER:"+ (a/M)+"\t"+service.getClass().getName() + " -> 100");
+        double rate = ((double)b/(double)a)*100;
+        System.out.println("AVER:"+ (b/M)+"\t"+service2.getClass().getName() + " -> "+rate);
+        return rate;
     }
 
     private static void baseTest() {
@@ -142,7 +154,14 @@ public class ClassGeneratorTool {
             
             for (Iterator iter = node.getDefinition().getAttributeNames().iterator();iter.hasNext();) {
                 String name = (String) iter.next();
-                LOG.info("attrib["+name+"] = "+node.getAttribute(name));
+                AttributeI attribute = node.getAttribute(name);
+                LOG.info("attrib["+name+"] = "+attribute);
+                if (attribute==null) {
+                    throw new RuntimeException("attribute not found ! : "+name+ " IN "+node.getDefinition().getName());
+                }
+                if (!attribute.getName().equals(name)) {
+                    throw new RuntimeException("attribute NAME not match! : " + name + "<> " + attribute.getName() + " IN " + node.getDefinition().getName());
+                }
             }
             
         }
