@@ -1,0 +1,164 @@
+
+<style>
+	* {font-family:Arial, Helvetica, sans-serif;
+		font-size:9pt;}
+		
+	/* table list */
+	.table_list {border-collapse:collapse;
+		border:solid #cccccc 1px;
+		width:100%;}
+	
+	.table_list td {padding:5px;
+		border:solid #efefef 1px;}
+	
+	.table_list th {background:#75b2d1;
+		padding:5px;
+		color:#ffffff;}
+	
+	.table_list tr.odd {background:#e1eff5;}
+	
+	.time_picker_div {padding:5px;
+		border:solid #999999 1px;
+		background:#ffffff;}
+		
+</style>
+
+			<table class="forms1">	
+						  <tr>
+						    <td><align="left"><b>Building Hours of Operation</b></td>
+						 </tr>
+<script language="javascript" src="js/mootools.v1.11.js"></script>
+<script language="javascript" src="js/nogray_time_picker_min.js"></script>
+<script language="javascript">
+	window.addEvent("domready", function (){
+		var tpMon1 = new TimePicker('timeMon1_picker', 'hoursOpenMon', 'timeMon1_toggler', {imagesPath:"images"});
+		var tpTue1 = new TimePicker('timeTue1_picker', 'hoursOpenTue', 'timeTue1_toggler', {imagesPath:"images"});
+		var tpWed1 = new TimePicker('timeWed1_picker', 'hoursOpenWed', 'timeWed1_toggler', {imagesPath:"images"});
+		var tpThu1 = new TimePicker('timeThu1_picker', 'hoursOpenThu', 'timeThu1_toggler', {imagesPath:"images"});
+		var tpFri1 = new TimePicker('timeFri1_picker', 'hoursOpenFri', 'timeFri1_toggler', {imagesPath:"images"});
+		var tpSat1 = new TimePicker('timeSat1_picker', 'hoursOpenSat', 'timeSat1_toggler', {imagesPath:"images"});
+		var tpSun1 = new TimePicker('timeSun1_picker', 'hoursOpenSun', 'timeSun1_toggler', {imagesPath:"images"});
+	    var tpMon2 = new TimePicker('timeMon2_picker', 'hoursCloseMon', 'timeMon2_toggler', {imagesPath:"images"});
+		var tpTue2 = new TimePicker('timeTue2_picker', 'hoursCloseTue', 'timeTue2_toggler', {imagesPath:"images"});
+		var tpWed2 = new TimePicker('timeWed2_picker', 'hoursCloseWed', 'timeWed2_toggler', {imagesPath:"images"});
+		var tpThu2 = new TimePicker('timeThu2_picker', 'hoursCloseThu', 'timeThu2_toggler', {imagesPath:"images"});
+		var tpFri2 = new TimePicker('timeFri2_picker', 'hoursCloseFri', 'timeFri2_toggler', {imagesPath:"images"});
+		var tpSat2 = new TimePicker('timeSat2_picker', 'hoursCloseSat', 'timeSat2_toggler', {imagesPath:"images"});
+		var tpSun2 = new TimePicker('timeSun2_picker', 'hoursCloseSun', 'timeSun2_toggler', {imagesPath:"images"});
+	});
+</script>
+						 						  
+						 <tr>
+		                  <td><form:checkbox path="includeMon" value="true" onClick="toggle(this.checked, 'hoursOpenMon', 'hoursCloseMon');"/></td>
+						    <td align="left">Monday</td><td>				    
+						    <td align="left"> <a id="timeMon1_toggler">Open&nbsp;Time</a></td><td>				    
+							  <form:input maxlength="50" size="30" path="hoursOpenMon" />
+							  <div id="timeMon1_picker" class="time_picker_div"></div>
+						 	</td>
+						    <td align="left"> <a id="timeMon2_toggler">Close&nbsp;Time</a></td><td>				    
+							  <form:input maxlength="50" size="30" path="hoursCloseMon" />
+							  <div id="timeMon2_picker" class="time_picker_div"></div>
+						 	</td>
+						    <td align="left">Comment</td><td>				    
+								<form:input maxlength="50" size="30" path="commentMon" />
+						 	</td>
+						 </tr>							 
+						 <tr>
+		                  <td><form:checkbox path="includeTue" value="true" onClick="toggle(this.checked, 'hoursOpenTue', 'hoursCloseTue');"/></td>
+						    <td align="left">Tuesday</td><td>				    
+						    <td align="left"> <a id="timeTue1_toggler">Open&nbsp;Time</a></td><td>				    
+							  <form:input maxlength="50" size="30" path="hoursOpenTue" />
+							  <div id="timeTue1_picker" class="time_picker_div"></div>
+						 	</td>
+						    <td align="left"> <a id="timeTue2_toggler">Close&nbsp;Time</a></td><td>				    
+							  <form:input maxlength="50" size="30" path="hoursCloseTue" />
+							  <div id="timeTue2_picker" class="time_picker_div"></div>
+						 	</td>
+						    <td align="left">Comment</td><td>				    
+								<form:input maxlength="50" size="30" path="commentTue" />
+						 	</td>
+					 </tr>							 
+						 <tr>
+
+		                  <td><form:checkbox path="includeWed" value="true" onClick="toggle(this.checked, 'hoursOpenWed', 'hoursCloseWed');"/></td>
+						    <td align="left">Wednesday</td><td>				    
+						    <td align="left"> <a id="timeWed1_toggler">Open&nbsp;Time</a></td><td>				    
+							  <form:input maxlength="50" size="30" path="hoursOpenWed" />
+							  <div id="timeWed1_picker" class="time_picker_div"></div>
+						 	</td>
+						    <td align="left"> <a id="timeWed2_toggler">Close&nbsp;Time</a></td><td>				    
+							  <form:input maxlength="50" size="30" path="hoursCloseWed" />
+							  <div id="timeWed2_picker" class="time_picker_div"></div>
+						 	</td>
+						    <td align="left">Comment</td><td>				    
+								<form:input maxlength="50" size="30" path="commentWed" />
+						 	</td>
+					 </tr>							 
+						 <tr>
+
+		                  <td><form:checkbox path="includeThu" value="true" onClick="toggle(this.checked, 'hoursOpenThu', 'hoursCloseThu');"/></td>
+						    <td align="left">Thursday</td><td>				    
+						    <td align="left"> <a id="timeThu1_toggler">Open&nbsp;Time</a></td><td>				    
+							  <form:input maxlength="50" size="30" path="hoursOpenThu" />
+							  <div id="timeThu1_picker" class="time_picker_div"></div>
+						 	</td>
+						    <td align="left"> <a id="timeThu2_toggler">Close&nbsp;Time</a></td><td>				    
+							  <form:input maxlength="50" size="30" path="hoursCloseThu" />
+							  <div id="timeThu2_picker" class="time_picker_div"></div>
+						 	</td>
+						    <td align="left">Comment</td><td>				    
+								<form:input maxlength="50" size="30" path="commentThu" />
+						 	</td>
+					 </tr>							 
+						 <tr>
+
+		                  <td><form:checkbox path="includeFri" value="true" onClick="toggle(this.checked, 'hoursOpenFri', 'hoursCloseFri');"/></td>
+						    <td align="left">Friday</td><td>				    
+						    <td align="left"> <a id="timeFri1_toggler">Open&nbsp;Time</a></td><td>				    
+							  <form:input maxlength="50" size="30" path="hoursOpenFri" />
+							  <div id="timeFri1_picker" class="time_picker_div"></div>
+						 	</td>
+						    <td align="left"> <a id="timeFri2_toggler">Close&nbsp;Time</a></td><td>				    
+							  <form:input maxlength="50" size="30" path="hoursCloseFri" />
+							  <div id="timeFri2_picker" class="time_picker_div"></div>
+						 	</td>
+						    <td align="left">Comment</td><td>				    
+								<form:input maxlength="50" size="30" path="commentFri" />
+						 	</td>
+					 </tr>							 
+						 <tr>
+						 	
+		                  <td><form:checkbox path="includeSat" value="true" onClick="toggle(this.checked, 'hoursOpenSat', 'hoursCloseSat');"/></td>
+						    <td align="left">Saturday</td><td>				    
+						    <td align="left"> <a id="timeSat1_toggler">Open&nbsp;Time</a></td><td>				    
+							  <form:input maxlength="50" size="30" path="hoursOpenSat" />
+							  <div id="timeSat1_picker" class="time_picker_div"></div>
+						 	</td>
+						    <td align="left"> <a id="timeSat2_toggler">Close&nbsp;Time</a></td><td>				    
+							  <form:input maxlength="50" size="30" path="hoursCloseSat" />
+							  <div id="timeSat2_picker" class="time_picker_div"></div>
+						 	</td>
+						    <td align="left">Comment</td><td>				    
+								<form:input maxlength="50" size="30" path="commentSat" />
+						 	</td>
+					 </tr>							 
+						 <tr>
+						 	
+		                  <td><form:checkbox path="includeSun" value="true" onClick="toggle(this.checked, 'hoursOpenSun', 'hoursCloseSun');"/></td>
+						    <td align="left">Sunday</td><td>				    
+						    <td align="left"> <a id="timeSun1_toggler">Open&nbsp;Time</a></td><td>				    
+							  <form:input maxlength="50" size="30" path="hoursOpenSun" />
+							  <div id="timeSun1_picker" class="time_picker_div"></div>
+						 	</td>
+						    <td align="left"> <a id="timeSun2_toggler">Close&nbsp;Time</a></td><td>				    
+							  <form:input maxlength="50" size="30" path="hoursCloseSun" />
+							  <div id="timeSun2_picker" class="time_picker_div"></div>
+						 	</td>
+						    <td align="left">Comment</td><td>				    
+								<form:input maxlength="50" size="30" path="commentSun" />
+						 	</td>
+				 </tr>							 
+
+
+						 </tr>							 
+					     </table>

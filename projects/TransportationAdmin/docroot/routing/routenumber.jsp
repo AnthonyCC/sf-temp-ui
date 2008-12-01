@@ -5,9 +5,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 
 <%  pageContext.setAttribute("HAS_ADDBUTTON", "false"); 
-  	pageContext.setAttribute("HAS_DELETEBUTTON", "false"); %>
-  	
-<tmpl:insert template='/common/site.jsp'>
+    pageContext.setAttribute("HAS_DELETEBUTTON", "false"); %>
+    
+<tmpl:insert template='/common/sitelayout.jsp'>
 
     <tmpl:put name='title' direct='true'>Route Numbers</tmpl:put>
 
@@ -74,7 +74,7 @@
                 
             <ec:row>                                   
               <ec:column property="routeNumberId.routeDate" title="Route Date"/>
-		      <ec:column property="routeNumberId.cutOffId" title="Cut Off"/>
+          <ec:column property="routeNumberId.cutOffId" title="Cut Off"/>
               <ec:column property="routeNumberId.areaCode" title="Area"/>
               <ec:column property="currentVal" title="Current Value"/>
             </ec:row>

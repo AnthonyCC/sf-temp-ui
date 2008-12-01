@@ -15,6 +15,9 @@ import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
 import com.freshdirect.transadmin.model.DlvServiceTimeType;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
+import com.freshdirect.transadmin.model.DlvBuildingDtl;
+
+
 public class LocationManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl  implements LocationManagerDaoI  {
 	
 	public Collection getServiceTimeTypes() throws DataAccessException {
@@ -137,5 +140,26 @@ public class LocationManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 	public String[] getServiceTypes() throws DataAccessException {
 		return new String[]{"HOME","CORPORATE","DEPOT","PICKUP"};
 	}	
+    
+    public DlvBuildingDtl getDlvBuildingDtl(String id) throws DataAccessException {
+		//return (DlvBuildingDtl)getEntityById("DlvBuildingDtl","dlvBuildingDtlId",id);
+		return (DlvBuildingDtl)getEntityById("DlvBuildingDtl","building.buildingId",id);
+	}
+	public Collection getDeliveryBuildingDetails(String srubbedAddress, String zipCode) throws DataAccessException {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from DlvBuildingDtl dl");
+		boolean hasCondition = false;
+		
+		hasCondition = appendLocationQuery(strBuf, "building.srubbedStreet", srubbedAddress, hasCondition);
+				
+						
+		hasCondition = appendLocationQuery(strBuf, "building.zip", zipCode, hasCondition);
+		
+		
+		//strBuf.append(" order by dl.building.srubbedStreet desc");
+		System.out.println("getHibernateTemplate().find(strBuf.toString()) >"+getHibernateTemplate().find(strBuf.toString()));
+		return (Collection) getHibernateTemplate().find(strBuf.toString());
+	}
+
 	
 }

@@ -1,0 +1,45 @@
+<script type="text/javascript">
+
+function togglediff(checked, field1, field2) {
+    if(checked){
+      document.getElementById(field1).readOnly=document.getElementById(field2).readOnly=false;
+	}
+	else {
+      document.getElementById(field1).readOnly=document.getElementById(field2).readOnly=true;
+	}
+}
+ </script>
+
+
+				<table>
+				  <tr>
+				    <td><align="left><b>Difficult to Deliver building</b></td>
+ 				  </tr>
+ 				  <tr>
+				    <td><align="left">Building is Difficult to Deliver</td>
+					    <td><form:radiobutton path="difficultToDeliver" value="true" onClick="togglediff(true, 'difficultReason', 'extraTimeNeeded')"/>Yes
+					    	&nbsp;&nbsp;&nbsp;&nbsp;
+					        <form:radiobutton path="difficultToDeliver" value="false" onClick="togglediff(false, 'difficultReason', 'extraTimeNeeded')"/>No </td>
+					    <td>&nbsp;</td>
+				  </tr>				 							  							 
+ 				  
+ 				  
+				  <tr>
+				    <td><align="left">Reason for Difficulty</td>
+				    <td> 								  
+				  	 	<form:input disabled="false" maxlength="100" size="100" path="difficultReason" readOnly="true"/>
+				 	</td><td>&nbsp;<form:errors path="difficultReason" />
+				 	</td>
+				  </tr>		
+				  
+				  <tr>
+				    <td><align="left">Extra Time Needed in mins (1-60) </td>
+				    <td> 								  
+				  	 	<form:input disabled="false" maxlength="50" size="30" path="extraTimeNeeded" readOnly="true" />
+				 	</td><td>&nbsp;<form:errors path="extraTimeNeeded" />
+				 	</td>
+				  </tr>				 							  							 
+				  
+				  
+				  		 							  							 
+				</table>							

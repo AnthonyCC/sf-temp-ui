@@ -1,0 +1,192 @@
+<script type="text/javascript">
+function housef(checked) {
+    if(checked){
+      document.getElementById("doorman1").checked=false;
+      document.getElementById("walkup1").checked=false;
+      document.getElementById("elevator1").checked=false;
+      document.getElementById("svcEnt1").checked=false;
+      document.getElementById('handTruckAllowed1').disabled=true;
+      document.getElementById('aptDlvAllowed1').disabled=true;
+	  document.getElementById('handTruckAllowed2').disabled=true;
+      document.getElementById('aptDlvAllowed2').disabled=true;
+      document.getElementById('walkUpFloors').readOnly=true;
+ 	}
+	else {
+      document.getElementById("doorman1").enabled=true;
+      document.getElementById("walkup1").enabled=true;
+      document.getElementById("elevator1").enabled=true;
+      document.getElementById("svcEnt1").enabled=true;
+      document.getElementById('handTruckAllowed1').enabled=true;
+      document.getElementById('aptDlvAllowed1').enabled=true;
+	  document.getElementById('handTruckAllowed2').enabled=true;
+      document.getElementById('aptDlvAllowed2').enabled=true;
+  	}
+}
+
+
+
+function doormanf(checked) {
+    if(checked){
+     //alert("doorman Checked");
+      document.getElementById('house1').checked=false;
+      document.getElementById('handTruckAllowed1').disabled=false;
+      document.getElementById('aptDlvAllowed1').disabled=false;
+      document.getElementById('handTruckAllowed2').disabled=false;
+      document.getElementById('aptDlvAllowed2').disabled=false;
+	}
+	else {
+	  //  alert("doorman Unchecked");
+	  document.getElementById('house1').enabled=true;
+	  document.getElementById('handTruckAllowed1').disabled=true;
+      document.getElementById('aptDlvAllowed1').disabled=true;
+	  document.getElementById('handTruckAllowed2').disabled=true;
+      document.getElementById('aptDlvAllowed2').disabled=true;
+  	}
+}
+
+function walkupf(checked) {
+    if(checked){
+      //alert("walkup checked");
+      document.getElementById('house1').checked=false;
+      document.getElementById('elevator1').checked=false;
+      document.getElementById('walkUpFloors').readOnly=false;
+ 
+	}
+	else {
+      document.getElementById('house1').enabled=true;
+      document.getElementById('elevator1').enabled=true;
+      document.getElementById('walkUpFloors').readOnly=true;
+ 	}
+}
+
+function elevatorf(checked) {
+    if(checked){
+      //alert("elev checked");
+      document.getElementById('house1').checked=false;
+      document.getElementById('walkup1').checked=false;
+      document.getElementById('walkUpFloors').readOnly=true;
+ 	}
+	else {
+      document.getElementById('house1').enabled=true;
+      document.getElementById('walkup1').enabled=true;
+ 	}
+}
+
+function svcEntf(checked) {
+    if(checked){
+        document.getElementById('house1').checked=false;   
+		document.getElementById('svcValidate1').disabled=false;
+		document.getElementById('svcScrubbedStreet').readOnly=false;
+		document.getElementById('svcAddrLine2').readOnly=false;
+		document.getElementById('svcCity').readOnly=false;
+		document.getElementById('svcState').readOnly=false;
+		document.getElementById('svcZip').readOnly=false;
+		if(dlvBuildingDtlId.value == ""){  //new
+		    //alert("New!");
+			document.getElementById('svcScrubbedStreet').value=document.getElementById('building.srubbedStreet').value;
+			document.getElementById('svcCity').value=document.getElementById('building.city').value;
+			document.getElementById('svcState').value=document.getElementById('building.state').value;
+			document.getElementById('svcZip').value=document.getElementById('building.zip').value;
+		}
+		document.getElementById('svcIncludeMon1').disabled=false;
+		document.getElementById('svcIncludeTue1').disabled=false;
+		document.getElementById('svcIncludeWed1').disabled=false;
+		document.getElementById('svcIncludeThu1').disabled=false;
+		document.getElementById('svcIncludeFri1').disabled=false;
+		document.getElementById('svcIncludeSat1').disabled=false;
+		document.getElementById('svcIncludeSun1').disabled=false;
+
+		document.getElementById('svcHoursOpenMon').readOnly=false;
+		document.getElementById('svcHoursOpenTue').readOnly=false;
+		document.getElementById('svcHoursOpenWed').readOnly=false;
+		document.getElementById('svcHoursOpenThu').readOnly=false;
+		document.getElementById('svcHoursOpenFri').readOnly=false;
+		document.getElementById('svcHoursOpenSat').readOnly=false;
+		document.getElementById('svcHoursOpenSun').readOnly=false;
+
+		document.getElementById('svcHoursCloseMon').readOnly=false;
+		document.getElementById('svcHoursCloseTue').readOnly=false;
+		document.getElementById('svcHoursCloseWed').readOnly=false;
+		document.getElementById('svcHoursCloseThu').readOnly=false;
+		document.getElementById('svcHoursCloseFri').readOnly=false;
+		document.getElementById('svcHoursCloseSat').readOnly=false;
+		document.getElementById('svcHoursCloseSun').readOnly=false;
+
+		document.getElementById('svcCommentMon').readOnly=false;
+		document.getElementById('svcCommentTue').readOnly=false;
+		document.getElementById('svcCommentWed').readOnly=false;
+		document.getElementById('svcCommentThu').readOnly=false;
+		document.getElementById('svcCommentFri').readOnly=false;
+		document.getElementById('svcCommentSat').readOnly=false;
+		document.getElementById('svcCommentSun').readOnly=false;
+		document.getElementById('svcCommentTue').readOnly=false;
+	}
+	else {
+	    document.getElementById('house1').readOnly=false;	
+		document.getElementById('svcValidate1').disabled=true;
+		document.getElementById('svcScrubbedStreet').readOnly=true;
+		document.getElementById('svcAddrLine2').readOnly=true;
+		document.getElementById('svcCity').readOnly=true;
+		document.getElementById('svcState').readOnly=true;
+		document.getElementById('svcZip').readOnly=true;
+		
+		document.getElementById('svcIncludeMon1').disabled=true;
+		document.getElementById('svcIncludeTue1').disabled=true;
+		document.getElementById('svcIncludeWed1').disabled=true;
+		document.getElementById('svcIncludeThu1').disabled=true;
+		document.getElementById('svcIncludeFri1').disabled=true;
+		document.getElementById('svcIncludeSat1').disabled=true;
+		document.getElementById('svcIncludeSun1').disabled=true;
+
+		document.getElementById('svcHoursOpenMon').readOnly=true;
+		document.getElementById('svcHoursOpenTue').readOnly=true;
+		document.getElementById('svcHoursOpenWed').readOnly=true;
+		document.getElementById('svcHoursOpenThu').readOnly=true;
+		document.getElementById('svcHoursOpenFri').readOnly=true;
+		document.getElementById('svcHoursOpenSat').readOnly=true;
+		document.getElementById('svcHoursOpenSun').readOnly=true;
+
+		document.getElementById('svcHoursCloseMon').readOnly=true;
+		document.getElementById('svcHoursCloseTue').readOnly=true;
+		document.getElementById('svcHoursCloseWed').readOnly=true;
+		document.getElementById('svcHoursCloseThu').readOnly=true;
+		document.getElementById('svcHoursCloseFri').readOnly=true;
+		document.getElementById('svcHoursCloseSat').readOnly=true;
+		document.getElementById('svcHoursCloseSun').readOnly=true;
+
+		document.getElementById('svcCommentMon').readOnly=true;
+		document.getElementById('svcCommentTue').readOnly=true;
+		document.getElementById('svcCommentWed').readOnly=true;
+		document.getElementById('svcCommentThu').readOnly=true;
+		document.getElementById('svcCommentFri').readOnly=true;
+		document.getElementById('svcCommentSat').readOnly=true;
+		document.getElementById('svcCommentSun').readOnly=true;
+		document.getElementById('svcCommentTue').readOnly=true;		
+		
+		
+		
+	}
+}
+
+  </script>
+   
+ <table>
+ 
+ <tr>
+		 <align="left"><b>Type of Building</b>
+ </tr>
+ <tr>
+		  <td><td>Doorman</td></td><td><td>
+		  <form:checkbox path="doorman" value="true" onClick="doormanf(checked)"/></td></td>
+    	  <td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Walkup</td></td>
+          <td><td><form:checkbox path="walkup" value="true" onClick="walkupf(checked)"/></td></td>
+  		  <td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Elevator</td></td>
+          <td><td><form:checkbox path="elevator" value="true" onClick="elevatorf(checked)"/></td></td>
+   		  <td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Service Entrance</td></td>
+          <td><td><form:checkbox path="svcEnt" value="true" onClick="svcEntf(checked)"/></td></td>
+ 		  <td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;House</td></td>
+          <td><td><form:checkbox path="house" value="true" onClick="housef(checked)"/></td></td>
+          
+          
+  </tr>							 
+  </table>

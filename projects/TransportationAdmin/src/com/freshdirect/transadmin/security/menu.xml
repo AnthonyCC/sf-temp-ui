@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<menus roles="TrnAdmin,TrnGuest,TrnDispatch,TrnPlanning">
+	
+	<menu id="MNM001" title="OPERATIONS" orientation="LEFT" link="">
+		 <access-uris></access-uris>
+	     <access-roles></access-roles>
+	     
+	     <menu id="OPR001" title="Planning" orientation="LEFT" link="plan.do">
+	     	<access-uris>plan.do,deleteplan.do,editplan.do,copyplan.do</access-uris>
+	     	<access-roles>TrnAdmin,TrnDispatch,TrnPlanning</access-roles>
+	     </menu>
+	     <menu id="OPR006" title="Assignment" orientation="LEFT" link="assignment.do">
+		<access-uris>assignment.do</access-uris>
+		<access-roles>TrnAdmin,TrnDispatch,TrnPlanning</access-roles>
+	     </menu>
+	     <menu id="OPR002" title="Dispatch" orientation="LEFT" link="dispatch.do">
+	     	<access-uris>dispatch.do,deletedispatch.do,editdispatch.do,confirmdispatch.do</access-uris>
+	     	<access-roles>TrnAdmin,TrnDispatch,TrnPlanning</access-roles>
+	     </menu>	     
+	     
+	     <menu id="OPR003" title="Route" orientation="RIGHT" link="route.do">
+	     	<access-uris>route.do,editroute.do,deleteroute.do</access-uris>
+	     	<access-roles>TrnAdmin</access-roles>
+	     </menu>
+	     
+	     <menu id="OPR004" title="Employee" orientation="RIGHT" link="employee.do">
+	     	<access-uris>employee.do,editemployee.do,deleteemployee.do</access-uris>
+	     	<access-roles>TrnAdmin</access-roles>
+	     </menu>
+	     
+	     <menu id="OPR005" title="Truck" orientation="RIGHT" link="truck.do">
+	     	<access-uris>truck.do,edittruck.do,deletetruck.do</access-uris>
+	     	<access-roles>TrnAdmin</access-roles>
+     	</menu>
+</menu>
+
+	<menu id="MNM002" title="ROUTING" orientation="LEFT" link="">
+		 <access-uris></access-uris>
+	     <access-roles></access-roles>
+	     
+	     <menu id="RUT001" title="Routing In" orientation="RIGHT" link="routinginput.do">
+	     	<access-uris>routinginput.do</access-uris>
+	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
+	     </menu>
+	     
+	     <menu id="RUT002" title="Routing out" orientation="RIGHT" link="routingoutput.do">
+	     	<access-uris>routingoutput.do</access-uris>
+	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
+	     </menu>
+	     
+	     <menu id="RUT003" title="Routing Merge" orientation="RIGHT" link="routingmerge.do">
+	     	<access-uris>routingmerge.do</access-uris>
+	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
+	     </menu>
+	     
+	     <menu id="RUT004" title="Service Time Type" orientation="LEFT" link="dlvservicetimetype.do">
+	     	<access-uris>dlvservicetimetype.do,deletedlvservicetimetype.do,editdlvservicetimetype.do</access-uris>
+	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
+	     </menu>
+	     
+	     <menu id="RUT005" title="Service Time" orientation="LEFT" link="dlvservicetime.do">
+	     	<access-uris>dlvservicetime.do,deletedlvservicetime.do,editdlvservicetime.do</access-uris>
+	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
+	     </menu>
+	     
+	     <menu id="RUT006" title="Service Time Scenario" orientation="LEFT" link="dlvservicetimescenario.do">
+	     	<access-uris>dlvservicetimescenario.do,deletedlvservicetimescenario.do,editdlvservicetimescenario.do</access-uris>
+	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
+	     </menu>
+	     
+	     <menu id="RUT007" title="Cut Off" orientation="LEFT" link="cutoff.do">
+	     	<access-uris>cutoff.do,deletecutoff.do,editcutoff.do</access-uris>
+     	 	<access-roles>TrnAdmin,TrnPlanning</access-roles>
+     	 </menu>
+</menu>
+
+	<menu id="MNM003" title="GEOGRAPHY" orientation="LEFT" link="">
+		 <access-uris></access-uris>
+	     <access-roles></access-roles>
+	     
+	     <menu id="GEO001" title="Area" orientation="RIGHT" link="area.do">
+	     	<access-uris>area.do,deletearea.do,editarea.do</access-uris>
+	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
+	     </menu>
+	     
+	     <menu id="GEO002" title="Zone Type" orientation="RIGHT" link="zonetype.do">
+	     	<access-uris>zonetype.do,deletezonetype.do,editzonetype.do</access-uris>
+	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
+	     </menu>
+	        
+	     
+	     <menu id="GEO003" title="Zone" orientation="RIGHT" link="zone.do">
+	     	<access-uris>zone.do,editzone.do,deletezone.do</access-uris>
+	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
+	     </menu>
+	     
+	     <menu id="GEO004" title="Building" orientation="LEFT" link="dlvbuilding.do">
+	     	<access-uris>dlvbuilding.do,deletedlvbuilding.do,geocodedlvbuilding.do,dlvbuildinglocation.do,editdlvbuilding.do</access-uris>
+	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
+	     </menu>
+	     
+	     <menu id="GEO005" title="Location" orientation="LEFT" link="dlvlocation.do">
+	     	<access-uris>dlvlocation.do,deletedlvlocation.do,updatedlvlocation.do,senddlvlocation.do,editdlvlocation.do</access-uris>
+	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
+         </menu>
+ 
+  	     <menu id="GEO006" title="Building Info" orientation="LEFT" link="dlvbuildingdtl.do">
+	     	<access-uris>dlvbuildingdtl.do,deletedlvbuildingdtl.do,editdlvbuildingdtl.do</access-uris>
+	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
+	     </menu>
+         
+         
+</menu>
+</menus>

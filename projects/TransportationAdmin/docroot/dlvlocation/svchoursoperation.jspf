@@ -1,0 +1,168 @@
+
+<style>
+	* {font-family:Arial, Helvetica, sans-serif;
+		font-size:9pt;}
+		
+	/* table list */
+	.table_list {border-collapse:collapse;
+		border:solid #cccccc 1px;
+		width:100%;}
+	
+	.table_list td {padding:5px;
+		border:solid #efefef 1px;}
+	
+	.table_list th {background:#75b2d1;
+		padding:5px;
+		color:#ffffff;}
+	
+	.table_list tr.odd {background:#e1eff5;}
+	
+	.time_picker_div {padding:5px;
+		border:solid #999999 1px;
+		background:#ffffff;}
+		
+</style>
+
+			<table class="forms1">	
+						  <tr>
+						    <td><align="left"><b>Building Hours of Operation</b></td>
+						 </tr>
+<script language="javascript" src="js/mootools.v1.11.js"></script>
+<script language="javascript" src="js/nogray_time_picker_min.js"></script>
+<script language="javascript">
+	window.addEvent("domready", function (){
+		var tpSvcMon1 = new TimePicker('timeSvcMon1_picker', 'svcHoursOpenMon', 'timeSvcMon1_toggler', {imagesPath:"images"});
+		var tpSvcTue1 = new TimePicker('timeSvcTue1_picker', 'svcHoursOpenTue', 'timeSvcTue2_toggler', {imagesPath:"images"});
+		var tpSvcWed1 = new TimePicker('timeSvcWed1_picker', 'svcHoursOpenWed', 'timeSvcWed2_toggler', {imagesPath:"images"});
+		var tpSvcThu1 = new TimePicker('timeSvcThu1_picker', 'svcHoursOpenThu', 'timeSvcThu2_toggler', {imagesPath:"images"});
+		var tpSvcThu1 = new TimePicker('timeSvcThu1_picker', 'svcHoursOpenThu', 'timeSvcThu2_toggler', {imagesPath:"images"});
+		var tpSvcFri1 = new TimePicker('timeSvcFri1_picker', 'svcHoursOpenFri', 'timeSvcFri2_toggler', {imagesPath:"images"});
+		var tpSvcSat1 = new TimePicker('timeSvcSat1_picker', 'svcHoursOpenSat', 'timeSvcSat2_toggler', {imagesPath:"images"});
+		var tpSvcSun1 = new TimePicker('timeSvcSun1_picker', 'svcHoursOpenSun', 'timeSvcSun2_toggler', {imagesPath:"images"});
+
+		var tpSvcMon2 = new TimePicker('timeSvcMon2_picker', 'svcHoursCloseMon', 'timeSvcMon2_toggler', {imagesPath:"images"});
+		var tpSvcTue2 = new TimePicker('timeSvcTue2_picker', 'svcHoursCloseTue', 'timeSvcTue2_toggler', {imagesPath:"images"});
+		var tpSvcWed2 = new TimePicker('timeSvcWed2_picker', 'svcHoursCloseWed', 'timeSvcWed2_toggler', {imagesPath:"images"});
+		var tpSvcThu2 = new TimePicker('timeSvcThu2_picker', 'svcHoursCloseThu', 'timeSvcThu2_toggler', {imagesPath:"images"});
+		var tpSvcThu2 = new TimePicker('timeSvcThu2_picker', 'svcHoursCloseThu', 'timeSvcThu2_toggler', {imagesPath:"images"});
+		var tpSvcFri2 = new TimePicker('timeSvcFri2_picker', 'svcHoursCloseFri', 'timeSvcFri2_toggler', {imagesPath:"images"});
+		var tpSvcSat2 = new TimePicker('timeSvcSat2_picker', 'svcHoursCloseSat', 'timeSvcSat2_toggler', {imagesPath:"images"});
+		var tpSvcSun2 = new TimePicker('timeSvcSun2_picker', 'svcHoursCloseSun', 'timeSvcSun2_toggler', {imagesPath:"images"});
+
+	});
+</script>
+						 						  
+						 <tr>
+		                  <td><form:checkbox path="svcIncludeMon" value="true" disabled="true" onClick="toggle(this.checked, 'svcHoursOpenMon', 'svcHoursCloseMon');"/></td>
+						    <td align="left">Monday</td><td>				    
+						    <td align="left"> <a id="timeSvcMon1_toggler">Open&nbsp;Time</a></td><td>				    
+							  <form:input maxlength="50" size="30" readOnly="true" path="svcHoursOpenMon" />
+							  <div id="timeSvcMon1_picker" class="time_picker_div"></div>
+						 	</td>
+						    <td align="left"> <a id="timeSvcMon2_toggler">Close&nbsp;Time</a></td><td>				    
+							  <form:input maxlength="50" size="30" readOnly="true" path="svcHoursCloseMon" />
+							  <div id="timeSvcMon2_picker" class="time_picker_div"></div>
+						 	</td>
+						    <td align="left">Comment</td><td>				    
+								<form:input maxlength="50" size="30" readOnly="true" path="svcCommentMon" />
+						 	</td>
+						 </tr>							 
+						 <tr>
+		                  <td><form:checkbox path="svcIncludeTue" value="true" disabled="true" onClick="toggle(this.checked, 'svcHoursOpenTue', 'svcHoursCloseTue');"/></td>
+						    <td align="left">Tuesday</td><td>				    
+						    <td align="left"> <a id="timeSvcTue1_toggler">Open&nbsp;Time</a></td><td>				    
+							  <form:input maxlength="50" size="30" readOnly="true" path="svcHoursOpenTue" />
+							  <div id="timeSvcTue1_picker" class="time_picker_div"></div>
+						 	</td>
+						    <td align="left"> <a id="timeSvcTue2_toggler">Close&nbsp;Time</a></td><td>				    
+							  <form:input maxlength="50" size="30" readOnly="true" path="svcHoursCloseTue" />
+							  <div id="timeSvcTue2_picker" class="time_picker_div"></div>
+						 	</td>
+						    <td align="left">Comment</td><td>				    
+								<form:input maxlength="50" size="30" readOnly="true" path="svcCommentTue" />
+						 	</td>
+						 </tr>			
+						 
+						 
+						 <tr>
+		                  <td><form:checkbox path="svcIncludeWed" value="true" disabled="true" onClick="toggle(this.checked, 'svcHoursOpenWed', 'svcHoursCloseWed');"/></td>
+						    <td align="left">Wednesday</td><td>				    
+						    <td align="left"> <a id="timeSvcWed1_toggler">Open&nbsp;Time</a></td><td>				    
+							  <form:input maxlength="50" size="30" readOnly="true" path="svcHoursOpenWed" />
+							  <div id="timeSvcWed1_picker" class="time_picker_div"></div>
+						 	</td>
+						    <td align="left"> <a id="timeSvcWed2_toggler">Close&nbsp;Time</a></td><td>				    
+							  <form:input maxlength="50" size="30" readOnly="true" path="svcHoursCloseWed" />
+							  <div id="timeSvcWed2_picker" class="time_picker_div"></div>
+						 	</td>
+						    <td align="left">Comment</td><td>				    
+								<form:input maxlength="50" size="30" readOnly="true" path="svcCommentWed" />
+						 	</td>
+						 </tr>			
+						 				 
+						 <tr>
+		                  <td><form:checkbox path="svcIncludeThu" value="true" disabled="true" onClick="toggle(this.checked, 'svcHoursOpenThu', 'svcHoursCloseThu');"/></td>
+						    <td align="left">Thursday</td><td>				    
+						    <td align="left"> <a id="timeSvcThu1_toggler">Open&nbsp;Time</a></td><td>				    
+							  <form:input maxlength="50" size="30" readOnly="true" path="svcHoursOpenThu" />
+							  <div id="timeSvcThu1_picker" class="time_picker_div"></div>
+						 	</td>
+						    <td align="left"> <a id="timeSvcThu2_toggler">Close&nbsp;Time</a></td><td>				    
+							  <form:input maxlength="50" size="30" readOnly="true" path="svcHoursCloseThu" />
+							  <div id="timeSvcThu2_picker" class="time_picker_div"></div>
+						 	</td>
+						    <td align="left">Comment</td><td>				    
+								<form:input maxlength="50" size="30" readOnly="true" path="svcCommentThu" />
+						 	</td>
+						 </tr>							 
+						 <tr>
+		                  <td><form:checkbox path="svcIncludeFri" value="true" disabled="true" onClick="toggle(this.checked, 'svcHoursOpenFri', 'svcHoursCloseFri');"/></td>
+						    <td align="left">Friday</td><td>				    
+						    <td align="left"> <a id="timeSvcFri1_toggler">Open&nbsp;Time</a></td><td>				    
+							  <form:input maxlength="50" size="30" readOnly="true" path="svcHoursOpenFri" />
+							  <div id="timeSvcFri1_picker" class="time_picker_div"></div>
+						 	</td>
+						    <td align="left"> <a id="timeSvcFri2_toggler">Close&nbsp;Time</a></td><td>				    
+							  <form:input maxlength="50" size="30" readOnly="true" path="svcHoursCloseFri" />
+							  <div id="timeSvcFri2_picker" class="time_picker_div"></div>
+						 	</td>
+						    <td align="left">Comment</td><td>				    
+								<form:input maxlength="50" size="30" readOnly="true" path="svcCommentFri" />
+						 	</td>
+						 </tr>							 
+						 <tr>
+		                  <td><form:checkbox path="svcIncludeSat" value="true" disabled="true" onClick="toggle(this.checked, 'svcHoursOpenSat', 'svcHoursCloseSat');"/></td>
+						    <td align="left">Saturday</td><td>				    
+						    <td align="left"> <a id="timeSvcSat1_toggler">Open&nbsp;Time</a></td><td>				    
+							  <form:input maxlength="50" size="30" readOnly="true" path="svcHoursOpenSat" />
+							  <div id="timeSvcSat1_picker" class="time_picker_div"></div>
+						 	</td>
+						    <td align="left"> <a id="timeSvcSat2_toggler">Close&nbsp;Time</a></td><td>				    
+							  <form:input maxlength="50" size="30" readOnly="true" path="svcHoursCloseSat" />
+							  <div id="timeSvcSat2_picker" class="time_picker_div"></div>
+						 	</td>
+						    <td align="left">Comment</td><td>				    
+								<form:input maxlength="50" size="30" readOnly="true" path="svcCommentSat" />
+						 	</td>
+						 </tr>							 
+						 						 
+						 <tr>
+		                  <td><form:checkbox path="svcIncludeSun" value="true" disabled="true" onClick="toggle(this.checked, 'svcHoursOpenSun', 'svcHoursCloseSun');"/></td>
+						    <td align="left">Sunday</td><td>				    
+						    <td align="left"> <a id="timeSvcSun1_toggler">Open&nbsp;Time</a></td><td>				    
+							  <form:input maxlength="50" size="30" readOnly="true" path="svcHoursOpenSun" />
+							  <div id="timeSvcSun1_picker" class="time_picker_div"></div>
+						 	</td>
+						    <td align="left"> <a id="timeSvcSun2_toggler">Close&nbsp;Time</a></td><td>				    
+							  <form:input maxlength="50" size="30" readOnly="true" path="svcHoursCloseSun" />
+							  <div id="timeSvcSun2_picker" class="time_picker_div"></div>
+						 	</td>
+						    <td align="left">Comment</td><td>				    
+								<form:input maxlength="50" size="30" readOnly="true" path="svcCommentSun" />
+						 	</td>
+						 </tr>							 
+						 
+						 
+						 
+						 				 
+					     </table>

@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
-<% request.getSession().invalidate(); %>
+<%@ taglib uri='template' prefix='tmpl' %>
+
 <html>
 <head>
 <title>/ FreshDirect Transportation Admin : Logout /</title>
@@ -45,31 +46,15 @@ function createXMLObject() {
 </script>
 </head>
 <body marginwidth="0" marginheight="0" border="0" onLoad="logOutApp()">
-	<table class="appframe" width="100%" cellpadding="0" cellspacing="0" border="0">
-			<tr class="apptitle" >
-				<td width="40%">
-					<img src="images/urban-highway2.jpg" width="129" height="82" border="0" alt="Urban" />
-				</td>
-				<td width="60%">Transportation Department</td>
-			</tr>
-			<tr>
-				<td class="navlist" colspan="3" bgcolor="c00cc3d">
-				<table class="navtbl" border="0" width="100%">
-					<tr>
-						<td width="10%" align="center"><a href="index.jsp" >&nbsp;Home&nbsp;</a></td>
-						<td width="90%" align="center">&nbsp;</td>
-					</tr>
-					</table>
-				</td>
-			</tr>
-			
-	</table>	
-    <p />
-		You have successfully logged out of Transporation Admin Application. 
-				
-	<br clear="all"/>
-	<div class="separator"></div>
-	<div class="footer"><jsp:include page='/common/copyright.jsp'/></div>
+	<% 
+	try {
+        session.invalidate();
+    } catch (IllegalStateException ex) {                
+        ex.printStackTrace();
+    }
+    response.sendRedirect("login.jsp");  
+            
+ %>
 </body>
 </html>
 

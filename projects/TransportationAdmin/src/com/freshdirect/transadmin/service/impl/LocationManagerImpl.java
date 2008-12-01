@@ -16,6 +16,9 @@ import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
 import com.freshdirect.transadmin.model.DlvServiceTimeType;
 import com.freshdirect.transadmin.service.LocationManagerI;
 
+import com.freshdirect.transadmin.model.DlvBuildingDtl;
+
+
 public class LocationManagerImpl extends BaseManagerImpl  implements LocationManagerI  {
 	
 	private LocationManagerDaoI locationManagerDao = null;
@@ -99,4 +102,13 @@ public class LocationManagerImpl extends BaseManagerImpl  implements LocationMan
 	public Collection getDeliveryLocations(String buildingId) {
 		return getLocationManagerDao().getDeliveryLocations(buildingId);
 	}
+
+  	public DlvBuildingDtl getDlvBuildingDtl(String id) {			//agb
+		return getLocationManagerDao().getDlvBuildingDtl(id);
+	}
+  
+    public Collection getDeliveryBuildingDetails(String srubbedAddress, String zipCode)  {
+		return getLocationManagerDao().getDeliveryBuildingDetails(srubbedAddress, zipCode);
+	}
+    
 }

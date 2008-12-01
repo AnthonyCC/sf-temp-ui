@@ -59,7 +59,7 @@
 	  -->
 	<servlet>
 		<servlet-name>transAdmin</servlet-name>
-		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<servlet-class>com.freshdirect.transadmin.web.FDDispatcherServlet</servlet-class>
 		<load-on-startup>2</load-on-startup>
 	</servlet>
 
@@ -67,7 +67,15 @@
 		<servlet-name>transAdmin</servlet-name>
 		<url-pattern>*.do</url-pattern>
 	</servlet-mapping>
-		
+	
+	<servlet>
+     <servlet-name>com.freshdirect.transadmin.util.json.TransJSONRPCServlet</servlet-name>
+     <servlet-class>com.freshdirect.transadmin.util.json.TransJSONRPCServlet</servlet-class>
+   </servlet>
+   <servlet-mapping>
+     <servlet-name>com.freshdirect.transadmin.util.json.TransJSONRPCServlet</servlet-name>
+     <url-pattern>/api/json-rpc.jsp</url-pattern>
+   </servlet-mapping>	
 
 	<session-config>
 		<session-timeout>10</session-timeout>
@@ -117,6 +125,15 @@
 	</taglib>
 	
 	<security-constraint>
+		<web-resource-collection>
+		<web-resource-name>Unrestricted</web-resource-name>
+		<description>All users can view</description>
+		<url-pattern>/images/login_bg.jpg</url-pattern>
+		<http-method>GET</http-method>
+		</web-resource-collection>
+	</security-constraint>
+
+	<security-constraint>
     <display-name></display-name>
     <web-resource-collection>
       <web-resource-name>TrnAdmin</web-resource-name>
@@ -130,6 +147,7 @@
       <role-name>TrnAdmin</role-name>
       <role-name>TrnGuest</role-name>
       <role-name>TrnDispatch</role-name>
+      <role-name>TrnPlanning</role-name>
     </auth-constraint>
     <user-data-constraint>
       <description>SSL not required</description>
@@ -138,8 +156,12 @@
   </security-constraint>
 
 	<login-config>
-		<auth-method>BASIC</auth-method>
-		<realm-name>FreshDirect</realm-name>		
+		<auth-method>FORM</auth-method>
+		<realm-name>FreshDirect</realm-name>
+		<form-login-config>
+			<form-login-page>/login.jsp</form-login-page>
+			<form-error-page>/login.jsp</form-error-page>
+		</form-login-config>
 	</login-config>
 
   <security-role>

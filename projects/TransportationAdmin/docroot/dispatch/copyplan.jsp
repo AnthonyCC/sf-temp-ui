@@ -5,7 +5,7 @@
 
 <% boolean hasErrors = session.getAttribute("apperrors") != null; %>
 
-<tmpl:insert template='/common/site.jsp'>
+<tmpl:insert template='/common/sitelayout.jsp'>
 
     <tmpl:put name='title' direct='true'>Copy Planning Data</tmpl:put>
 

@@ -15,6 +15,11 @@
 		<role-name>TrnDispatch</role-name>
 		<externally-defined/>
 	</security-role-assignment>
+	
+	<security-role-assignment>
+			<role-name>TrnPlanning</role-name>
+			<externally-defined/>
+	</security-role-assignment>
 	<jsp-descriptor>
 		<jsp-param>
 			<param-name>keepgenerated</param-name>

@@ -71,10 +71,13 @@
 				<prop key="/deletearea.do">domainController</prop>					                
 				<prop key="/editarea.do">areaFormController</prop>
 				<prop key="/dlvbuilding.do">locationController</prop>
- 		 	    <prop key="/deletedlvbuilding.do">locationController</prop>
+ 				<prop key="/dlvbuildingdtl.do">locationController</prop>
+		 	    <prop key="/deletedlvbuilding.do">locationController</prop>
  		 	    <prop key="/geocodedlvbuilding.do">locationController</prop>
  		 	    <prop key="/dlvbuildinglocation.do">locationController</prop>
  		 	    <prop key="/editdlvbuilding.do">deliveryBuildingFormController</prop> 
+ 		 	    <prop key="/editdlvbuildingdtl.do">deliveryBuildingDtlFormController</prop> 
+ 		 	    <prop key="/deletedlvbuildingdtl.do">locationController</prop> 
  		 	    <prop key="/dlvservicetimescenario.do">locationController</prop>
  		 	    <prop key="/deletedlvservicetimescenario.do">locationController</prop>					                
 				<prop key="/editdlvservicetimescenario.do">dlvServiceTimeScenarioFormController</prop> 
@@ -82,7 +85,8 @@
 				<prop key="/deletecutoff.do">domainController</prop>					                
 				<prop key="/editcutoff.do">cutOffFormController</prop>
 				<prop key="/viewfile.do">genericBeanFormController</prop> 
-				<prop key="/routenumber.do">domainController</prop>					    
+				<prop key="/routenumber.do">domainController</prop>
+				<prop key="/accessdenied.do">domainController</prop>
 			</props>
 		</property>
 	</bean>
@@ -149,14 +153,17 @@
  		 	<prop key="/area.do">areaHandler</prop>					                
  		 	<prop key="/deletearea.do">areaDeleteHandler</prop>
  		 	<prop key="/dlvbuilding.do">dlvBuildingHandler</prop>	 	   
+  		 	<prop key="/dlvbuildingdtl.do">dlvBuildingDetailHandler</prop> 	   
 	 	    <prop key="/deletedlvbuilding.do">dlvBuildingDeleteHandler</prop>
+	 	    <prop key="/deletedlvbuildingdtl.do">dlvBuildingDtlDeleteHandler</prop>
 	 	    <prop key="/geocodedlvbuilding.do">dlvBuildingGeocodeHandler</prop>	
 	 	    <prop key="/dlvbuildinglocation.do">dlvBuildingLocationHandler</prop>	 
 	 	    <prop key="/dlvservicetimescenario.do">dlvServiceTimeScenarioHandler</prop>					                
  		 	<prop key="/deletedlvservicetimescenario.do">dlvServiceTimeScenarioDeleteHandler</prop>	
  		 	<prop key="/cutoff.do">cutOffHandler</prop>					                
  		 	<prop key="/deletecutoff.do">cutOffDeleteHandler</prop>
- 		 	<prop key="/routenumber.do">routeNumberHandler</prop>    
+ 		 	<prop key="/routenumber.do">routeNumberHandler</prop> 
+ 		 	<prop key="/accessdenied.do">accessDeniedHandler</prop>
 		</props>
 		</property>
 	</bean>
@@ -284,6 +291,17 @@
         <property name="successView" value="deliveryLocationEdit" />
         <property name="formView" value="deliveryLocationEdit" />
 	</bean>
+    
+    <bean id="deliveryBuildingDtlFormController" class="com.freshdirect.transadmin.web.DlvBuildingDtlFormController">
+		<property name="locationManagerService" ref="locationManager"/>
+		<property name="sessionForm" value="true"/>
+        <property name="commandName" value="deliveryBuildingDtlForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.model.DlvBuildingDtl"/>
+        <property name="validator" ref="deliveryBuildingDtlValidator"/>
+        <property name="successView" value="deliveryBuildingDtlEdit" />
+        <property name="formView" value="deliveryBuildingDtlEdit" />
+	</bean>
+    
 	
 	<bean id="dlvServiceTimeFormController" class="com.freshdirect.transadmin.web.DlvServiceTimeFormController">
 		<property name="locationManagerService" ref="locationManager"/>
@@ -370,7 +388,8 @@
 	<bean id="dlvServiceTimeValidator" class="com.freshdirect.transadmin.web.validation.DlvServiceTimeValidator"/>
 	<bean id="dlvServiceTimeTypeValidator" class="com.freshdirect.transadmin.web.validation.DlvServiceTimeTypeValidator"/>
 	<bean id="deliveryBuildingValidator" class="com.freshdirect.transadmin.web.validation.DlvBuildingValidator"/>
-	<bean id="dlvServiceTimeScenarioValidator" class="com.freshdirect.transadmin.web.validation.DlvServiceTimeScenarioValidator"/>
+	<bean id="deliveryBuildingDtlValidator" class="com.freshdirect.transadmin.web.validation.DlvBuildingDtlValidator"/>
+    <bean id="dlvServiceTimeScenarioValidator" class="com.freshdirect.transadmin.web.validation.DlvServiceTimeScenarioValidator"/>
 	<bean id="areaValidator" class="com.freshdirect.transadmin.web.validation.AreaValidator"/>
 	<bean id="routingInValidator" class="com.freshdirect.transadmin.web.validation.FileUploadValidator"/>
 	<bean id="routingOutValidator" class="com.freshdirect.transadmin.web.validation.RoutingOutValidator"/>

@@ -1,0 +1,41 @@
+				<table>
+				<tr>
+					    <td><align="left"><b>Service Entrance Details</b></td>
+			    </tr>
+				<tr>	
+				    <td><align="left">Street</td>
+				    <td> 								  
+				  	 	<form:input maxlength="50" size="30" path="svcScrubbedStreet" readOnly="true"/>
+				 	</td>
+				 	<td>
+				 		&nbsp;<form:errors path="svcScrubbedStreet" />
+				 	</td>
+
+				    <td><align="left">Validate</td>
+				    <td> 								  
+				  	 	<form:checkbox path="svcValidate" value="true" disabled="true"/>
+				 	</td>
+			 	</tr>
+				<tr>	
+				    <td><align="left">Address Line 2</td>
+				    <td> 								  
+				  	 	<form:input maxlength="50" size="30" path="svcAddrLine2" readOnly="true" />
+				 	</td>
+			 	</tr>
+				 <tr>
+				    <td><align="left">City</td>
+				    <td> 								  
+				  	 	<form:input maxlength="50" size="30" path="svcCity" readOnly="true"/>
+				 	</td>
+				 </tr>
+				 <tr>
+				    <td><align="left">State</td>
+				    <td> 								  
+				  	 	<form:input maxlength="50" size="30" path="svcState" readOnly="true"/>
+				 	</td>
+				    <td><align="left">Zip</td>
+				    <td> 								  
+				  	 	<form:input maxlength="50" size="30" path="svcZip" readOnly="true"/>
+				 	</td>
+				 </tr>
+			 	</table>

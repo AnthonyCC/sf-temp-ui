@@ -5,7 +5,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%  pageContext.setAttribute("HAS_ADDBUTTON", "false"); 
   pageContext.setAttribute("HAS_CONFIRMBUTTON", "true"); %>
-<tmpl:insert template='/common/site.jsp'>
+<tmpl:insert template='/common/sitelayout.jsp'>
 
     <tmpl:put name='title' direct='true'>Dispatch Sheet</tmpl:put>
 
@@ -112,7 +112,7 @@
                     filterable="false" sortable="false" cell="selectcol"
                     property="id.planId" />                           
               <ec:column alias="trnZonezoneNumber" width="5" property="trnZone.zoneNumber" title="Zone"/>
-		      <ec:column alias="trnTimeslotslotName" width="12" sortable="true" property="trnTimeslot" title="Start Time"/>
+          <ec:column alias="trnTimeslotslotName" width="12" sortable="true" property="trnTimeslot" title="Start Time"/>
               <ec:column alias="trnTimeEndslotslotName" width="12"  property="trnEndTimeslot.slotName" title="End Time"/>
               <ec:column alias="trnRouterouteNumber" width="10"  property="trnRoute.routeNumber" title="Route"/>
               <ec:column alias="trnSupervisorname" property="trnSupervisor.name" title="Supervisor"/>

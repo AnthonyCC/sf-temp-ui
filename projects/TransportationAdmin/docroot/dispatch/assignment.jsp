@@ -4,7 +4,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 
-<tmpl:insert template='/common/site.jsp'>
+<tmpl:insert template='/common/sitelayout.jsp'>
 
     <tmpl:put name='title' direct='true'>Dispatch Assignment</tmpl:put>
 
@@ -82,11 +82,11 @@
                   &nbsp;
                   <spring:bind path="assignmentForm.planDate">
                   <span id="planDate.errors">      
-	                    <c:forEach items="${status.errorMessages}" var="error">
-					        <c:out value="${error}"/>&nbsp;
-				        </c:forEach>
-				     </span>
-				   </spring:bind>   
+                      <c:forEach items="${status.errorMessages}" var="error">
+                  <c:out value="${error}"/>&nbsp;
+                </c:forEach>
+             </span>
+           </spring:bind>   
                 </td>
                
                   <td>Select Zone</td>
@@ -100,9 +100,9 @@
                               <option selected value="<c:out value="${zoneFilterRow.zoneId}"/>"><c:out value="${zoneFilterRow.zoneNumber}"/></option>
                             </c:when>
                             <c:otherwise> 
-                            	<option value="<c:out value="${zoneFilterRow.zoneId}"/>"><c:out value="${zoneFilterRow.zoneNumber}"/></option>
-                          	</c:otherwise> 
-                        	</c:choose>      
+                              <option value="<c:out value="${zoneFilterRow.zoneId}"/>"><c:out value="${zoneFilterRow.zoneNumber}"/></option>
+                            </c:otherwise> 
+                          </c:choose>      
                         </c:forEach>   
                   </select>
                    </spring:bind>
@@ -111,11 +111,11 @@
                   &nbsp;
                    <spring:bind path="assignmentForm.zoneId">
                   <span id="planDate.errors">      
-	                    <c:forEach items="${status.errorMessages}" var="error">
-					        <c:out value="${error}"/>&nbsp;
-				        </c:forEach>
-				     </span>
-				   </spring:bind>
+                      <c:forEach items="${status.errorMessages}" var="error">
+                  <c:out value="${error}"/>&nbsp;
+                </c:forEach>
+             </span>
+           </spring:bind>
                 </td>
               
               

@@ -8,6 +8,7 @@ import com.freshdirect.transadmin.model.DlvLocation;
 import com.freshdirect.transadmin.model.DlvServiceTime;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
 import com.freshdirect.transadmin.model.DlvServiceTimeType;
+import com.freshdirect.transadmin.model.DlvBuildingDtl;
 
 public interface LocationManagerI  extends BaseManagerI {
 	
@@ -44,4 +45,9 @@ public interface LocationManagerI  extends BaseManagerI {
 	Collection getScenariosForZoneTypes(List zoneTypeLst);
 	
 	Collection getDeliveryLocations(String buildingId);
+    
+   	DlvBuildingDtl getDlvBuildingDtl(String id);		//agb
+   	Collection getDeliveryBuildingDetails(String srubbedAddress, String zipCode);
+
+
 }

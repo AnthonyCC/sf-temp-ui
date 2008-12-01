@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.dao.DataAccessException;
 
 import com.freshdirect.transadmin.model.DlvBuilding;
+import com.freshdirect.transadmin.model.DlvBuildingDtl;
 import com.freshdirect.transadmin.model.DlvLocation;
 import com.freshdirect.transadmin.model.DlvServiceTime;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
@@ -42,4 +43,10 @@ public interface LocationManagerDaoI extends BaseManagerDaoI {
 	Collection getScenariosForZoneTypes(List zoneTypeLst) throws DataAccessException; 
 	
 	Collection getDeliveryLocations(String buildingId) throws DataAccessException;
+    
+   	DlvBuildingDtl getDlvBuildingDtl(String id) throws DataAccessException;		//agb
+    
+   	Collection getDeliveryBuildingDetails(String srubbedAddress, String zipCode) throws DataAccessException;
+
+
 }

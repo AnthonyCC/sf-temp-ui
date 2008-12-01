@@ -2,9 +2,11 @@
 
 body {
  	background-color: #fff;
- 	color: #000; 	
+ 	color: #000;
+	font-family: 'Verdana', 'Trebuchet MS', 'Arial', 'Helvetica', 'sans-serif';
+	font-size: 11px;
  }
-
+  
 .apptitle {
 	font-size: 150%;
 	font-family: Verdana, Arial, Helvetica,sans-serif;
@@ -30,10 +32,15 @@ body {
 	vertical-align:top;
 }
 
+.navlist {
+	background-color: #c00cc3d;
+}
+
 .navlist a {
 	font-size: 90%;
 	font-family: Verdana, Arial, Helvetica,sans-serif;
-	text-decoration: none;
+	text-decoration: none;	
+	background-color: #c00cc3d;
 }
 
 .footer {
@@ -235,4 +242,518 @@ body {
 	font-size: 7pt;	
 	text-align: center;
 	background-color: #FFFFFF;
+}
+
+/*example page setup*/
+div.topTabs {
+	/*height: 5%;*/
+	width: 100%;
+}
+div.botTabs {
+	/*height: 5%;*/
+	clear: left;
+}
+div.child {
+	height: 90%;
+	width: 100%;
+	overflow: auto;
+}
+
+
+/*this is the subtab bar (also depends on subtabs content to fill height)*/
+.subs {
+	float: left;
+	height: auto;
+	width: 100%;
+	padding-top: 10px;
+	text-align: center;
+}
+/*sub tabs left*/
+.subs_left {
+	float: left;
+	padding-left: 20px;
+}
+/*sub tabs right*/
+.subs_right {
+	float: right;
+	padding-right: 20px;
+}
+
+
+/*top tab styles*/
+div.t_tab {
+	width: auto;
+	text-align: center;
+	float: left;
+}
+/* cross-browser min width solution */
+div.t_tab div.minwidth {
+	width: 125px;
+}
+
+/*truck logo*/
+.Tlogo  {
+	position: absolute;
+	left: 0px;
+}
+.Tlogo img {
+	padding-left: 5px;
+}
+/*user info User / Level*/
+.userinfo {
+	float: right;
+	text-align: right;
+	font-size: 12px;
+	background-color: #fff;
+	padding-right: 15px;
+	color: #999;
+	padding: 5px;
+	margin: 0px;
+}
+.userinfo .loginout {
+	padding-bottom: 11px;
+}
+.userinfo input {
+	color: #999;
+	border: 1px solid #999;
+	background-color: #fff;
+	font-size: 10px;
+	font-weight: bold;
+}
+.userinfo .nameTitle, .userinfo .levelTitle {
+	font-style: italic;
+	font-weight: bold;
+}
+
+/*top tab spacers, height is logo height 75px*/
+div.Tspacer {
+	width: 30%;
+	height: 75px;
+	float: left;
+}
+/*top tab spacers, height is logo height 75px*/
+div.t_tab_hspacer {
+	height: 40px;
+}
+/*top tab angles l/r height comes from: A tag height + padding (20+(8*2)=36*/
+.tab, .tableft, .tabright, .sub_tableft, .sub_tabright {
+	border-style: solid;
+	width: 0px;
+	height: 0px;
+	line-height: 0px;
+	float: left;
+}
+.tableft {
+	border-width: 36px 10px 0px 0px;
+}
+.tabright {
+	border-width: 0px 10px 36px 0px ;
+}
+/*sub tab angles l/r height comes from: A tag height + padding (18+(4*2)=26*/
+.sub_tableft {
+	border-width: 26px 10px 0px 0px;
+}
+.sub_tabright {
+	border-width: 0px 10px 26px 0px ;
+}
+
+
+/*subtab styles*/
+div.subtab {
+	text-align: center;
+	float: left;
+	width: auto;
+}
+/* cross-browser min width solution */
+div.subtab div.minwidth {
+	width: 110px;
+}
+
+/*prep tabs*/
+div.t_tab a, div.subtab a {
+	display: block;
+	cursor: hand;
+	text-decoration: none;
+	font-family: 'Tw Cen MT Condensed Extra Bold', 'Arial Narrow', 'Tw Cen MT', 'Trebuchet MS', 'Helvetica', 'sans-serif';
+	height: auto;
+	width: auto;
+}
+div.t_tab a {
+	font-size: 16px;
+	line-height: 20px;
+	text-transform: uppercase;
+	padding: 8px;
+}
+div.subtab a {
+	font-size: 14px;
+	padding: 4px;
+}
+
+
+/*table prep*/
+.MNM001 table, .MNM002 table, .MNM003 table {
+	width: 100%;
+}
+/*div prep*/
+
+div.MNM001, div.MNM002, div.MNM003 {
+	border: 0px;
+	margin: 0px;
+}
+
+/*MNM001 styles*/
+/*these two are the l/r tab angles*/
+.tabL_MNM001 {
+	border-color: #fff #000; 
+}
+.tabR_MNM001 {
+	border-color: #000 #fff; 
+}
+/*
+	these two are the l/r subtab angles
+	don't use transparent here, IE6 doesn't support it
+ */
+.sub_tabL_MNM001 {
+	border-color: #000 #666;
+}
+.sub_tabR_MNM001 {
+	border-color: #666 #000; 
+}
+/*this is the color of the tab*/
+div.MNM001 {
+	background-color: #000;
+}
+/*NOT selected*/
+div.t_tab a.MNM001 {
+	color: #666;
+}
+/*sub tab color*/
+div.MNM001 div.subtab a {
+	color: #999;
+}
+/*selected*/
+div.MNM001 div.MNM001 a  {
+	color: #fff;
+}
+/*selected, and hover*/
+div.MNM001 .subtab a:hover  {
+	color: #fff;
+}
+/*subtab selected*/
+div.MNM001 div.activeT a  {
+	color: #000;
+}
+/*subtab selected IE hover fix*/
+div.MNM001 div.activeT a:hover {
+	color: #000;
+}
+/*subtabs, not active*/
+div.MNM001 .subtab { 
+	background-color: #666;
+}
+.botTabs .MNM001 {
+	/*padding-top: 8px;*/
+}
+.MNM001 b {
+	color: #00f;
+}
+.MNM001 table {
+	border: 1px solid #f00;
+	background-color: #ccc;
+}
+/*
+	these two are the l/r subtab angles of an active subtab
+	these need to be after other colors
+ */
+.MNM001 .activeL {
+	border-color: #000 #fff;
+}
+.MNM001 .activeR {
+	border-color: #fff #000; 
+}
+
+/*routing styles*/
+/*these two are the l/r tab angles*/
+.tabL_MNM002 {
+	border-color: #fff #009; 
+}
+.tabR_MNM002 {
+	border-color: #009 #fff; 
+}
+/*
+	these two are the l/r subtab angles
+	don't use transparent here, IE6 doesn't support it
+ */
+.sub_tabL_MNM002 {
+	border-color: #009 #06c;
+}
+.sub_tabR_MNM002 {
+	border-color: #06c #009; 
+}
+/*this is the color of the tab*/
+div.MNM002 {
+	background-color: #009;
+}
+/*NOT selected*/
+div.t_tab a.MNM002 {
+	color: #06c;
+}
+/*sub tab color*/
+div.MNM002 div.subtab a {
+	color: #39f;
+}
+/*selected*/
+div.MNM002 div.MNM002 a  {
+	color: #fff;
+}
+/*selected, and hover*/
+div.MNM002 .subtab a:hover  {
+	color: #fff;
+}
+/*subtab selected*/
+div.MNM002 div.activeT a  {
+	color: #009;
+}
+/*subtab selected IE hover fix*/
+div.MNM002 div.activeT a:hover {
+	color: #009;
+}
+/*subtabs, not active*/
+div.MNM002 .subtab { 
+	background-color: #06c;
+}
+.botTabs .MNM002 {
+	/*padding-top: 8px;*/
+}
+.MNM002 b {
+	color: #00f;
+}
+.MNM002 table {
+	border: 1px solid #f00;
+	background-color: #ccf;
+}
+/*
+	these two are the l/r subtab angles of an active subtab
+	these need to be after other colors
+ */
+.MNM002 .activeL {
+	border-color: #009 #fff;
+}
+.MNM002 .activeR {
+	border-color: #fff #009; 
+}
+
+/*MNM003 styles*/
+/*these two are the l/r tab angles*/
+.tabL_MNM003 {
+	border-color: #fff #060; 
+}
+.tabR_MNM003 {
+	border-color: #060 #fff; 
+}
+/*
+	these two are the l/r subtab angles
+	don't use transparent here, IE6 doesn't support it
+ */
+.sub_tabL_MNM003 {
+	border-color: #060 #390; 
+}
+.sub_tabR_MNM003 {
+	border-color: #390 #060; 
+}
+/*this is the color of the tab*/
+div.MNM003 {
+	background-color: #060;
+}
+/*NOT selected*/
+div.t_tab a.MNM003 {
+	color: #390;
+}
+/*sub tab color*/
+div.MNM003 div.subtab a {
+	color: #3c3;
+}
+/*selected*/
+div.MNM003 div.MNM003 a  {
+	color: #fff;
+}
+/*selected, and hover*/
+div.MNM003 .subtab a:hover  {
+	color: #fff;
+}
+/*subtab selected*/
+div.MNM003 div.activeT a  {
+	color: #060;
+}
+/*subtab selected IE hover fix*/
+div.MNM003 div.activeT a:hover {
+	color: #390;
+}
+/*subtabs, not active*/
+div.MNM003 .subtab { 
+	background-color: #390;
+}
+.botTabs .MNM003 {
+	/*padding-top: 8px;*/
+}
+.MNM003 b {
+	color: #00f;
+}
+.MNM003 table {
+	border: 1px solid #f00;
+	background-color: #cfc;
+}
+/*
+	these two are the l/r subtab angles of an active subtab
+	these need to be after other colors
+ */
+.MNM003 .activeL {
+	border-color: #060 #fff;
+}
+.MNM003 .activeR {
+	border-color: #fff #060; 
+}
+div.t_tab a:hover {
+	color: #fff;
+}
+
+/*this is the active subtab bgcolor*/
+.activeT a {
+	background-color: #fff;
+}
+
+/* new content styles */
+
+/*debug*/
+div.cont_topleft {
+	/*border: 1px solid red;*/
+	width: 40%;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+.contentroot div span { vertical-align: bottom; }
+.cont_row { clear: both; }
+
+/*top left functions bar */
+.cont_topleft {
+	float: left;
+	padding-left: 20px;
+}
+/*top right functions bar */
+.cont_topright {
+	float: right;
+	padding-right: 20px;
+	width: 98%;
+	margin-top: -45px;
+}
+
+/* title */
+div.scrTitle {
+	font-size: 20px;
+	padding-right: 20px;
+	padding-top: 0px;
+}
+
+/*generic item spacing*/
+.cont_Litem, .cont_Ritem {
+	padding-right: 12px;
+}
+
+/*generic item in top left bar*/
+.cont_Litem {
+	float: left;
+	padding-top: 12px;
+}
+/*generic item in top right bar*/
+.cont_Ritem {
+	float: right;
+}
+
+.cont_Litem img {
+	border: 0px;
+}
+/*date input box by ID*/
+#daterange {
+	width: 125px;
+	padding: 0px;
+	height: 12px;
+	font-size: 11px;
+	position: relative;
+	top: -3px;
+}
+/*zone input box by ID*/
+#zone {
+	width: 75px;
+	padding: 0px;
+	height: 16px;
+	font-size: 11px;
+	line-height: 16px;
+	position: relative;
+	top: -3px;
+}
+/*error messaging*/
+.err_messages {
+	font-weight: bold;
+	color: #c00;
+	font-size: 10px;
+	padding: 5px 5px 10px 5px;
+	width: 40%;
+	float: right;
+	margin-top: -40px;
+}
+/* 2nd row bar with yellow background */
+.cont_topleft_2ndrow div {
+	background-color: #ffc;
+	color: #666;
+	padding: 15px 5px 10px 10px;
+}
+/* controls spacing after each item in 2nd row */
+.cont_topleft_2ndrow div span {
+	padding-right: 15px;
+}
+.i_AddNew a {
+	color: #060;
+	font-weight: bold;
+}
+.i_Delete a {
+	color: #900;
+	font-weight: bold;
+}
+.i_Copy a {
+	color: #03c;
+	font-weight: bold;
+}
+.i_Dispatch a {
+	color: #f90;
+	font-weight: bold;
+}
+.i_Refresh a {
+	color: #f9c;
+	font-weight: bold;
+}
+/* default color */
+.i_Confirm {
+	color: #666;
+	font-weight: bold;
+}
+/*confirm link*/
+.i_Confirm a.confirm {
+	color: #369;
+	font-weight: bold;
+}
+/*unconfirm link*/
+.i_Confirm a.unconfirm {
+	color: #999;
+	font-weight: bold;
+}
+.accessdenied {
+	height: 100%;
+	width: 100%;
+	margin: 0px;
+	position: absolute;
+	top: -2px;
+	left: -2px;
+	border: 1px solid black;
+	background: url(./../images/AccessDenied_b.jpg) no-repeat;
+	cursor: pointer;
 }
