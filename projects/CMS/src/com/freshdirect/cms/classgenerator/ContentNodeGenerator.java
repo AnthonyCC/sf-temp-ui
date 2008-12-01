@@ -4,6 +4,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -44,6 +45,8 @@ public class ContentNodeGenerator {
     private final static int SWITCH = 0;
     private final static int BINARY_SEARCH = 1;
     private final static int HASHMAP_SEARCH = 2;
+    private final static int PREFIX_SEARCH = 3;
+    private final static boolean PREFIX_DEBUG = true;
     
     public static int GETATTRIBUTE_MODE = SWITCH; 
     
@@ -140,6 +143,51 @@ public class ContentNodeGenerator {
         }
     }
 
+    static class AttributeRec { 
+        int hash;
+        String name;
+        AttributeDefI def;
+        
+        public AttributeRec(String name, AttributeDefI def) {
+            super();
+            this.name = name;
+            this.hash = name.hashCode();
+            this.def = def;
+        }
+        
+        public int getHash() {
+            return hash;
+        }
+        
+        public String getName() {
+            return name;
+        }
+        
+        public AttributeDefI getDef() {
+            return def;
+        }
+        
+        public String toString() {
+            return name + ':'+ hash;
+        }
+    }
+    
+    class AttributeRecHashComparator implements Comparator {
+        public int compare(Object o1, Object o2) {
+            AttributeRec a1 = (AttributeRec) o1;
+            AttributeRec a2 = (AttributeRec) o2;
+            return a1.hash == a2.hash ? 0 : a1.hash > a2.hash ? -1 : 1;
+        }
+    }
+    
+    class AttributeRecNameComparator implements Comparator {
+        public int compare(Object o1, Object o2) {
+            AttributeRec a1 = (AttributeRec) o1;
+            AttributeRec a2 = (AttributeRec) o2;
+            return a2.name.compareTo(a1.name);
+        }
+    }
+
     /**
      * 
      * @param service
@@ -188,10 +236,8 @@ public class ContentNodeGenerator {
         for (Iterator iter = contentTypeDefinitions.iterator(); iter.hasNext();) {
             ContentTypeDefI object = (ContentTypeDefI) iter.next();
             try {
-                
                 ClassInfo info = createContentType(object);
-                
-                
+
                 contentTypeMap.put(object.getType(), info.getGeneratedClazz());
 
                 GeneratedContentNode node = createNodeImpl(object.getType());
@@ -408,6 +454,10 @@ public class ContentNodeGenerator {
                 case HASHMAP_SEARCH : 
                     createHashMapMethod(def, class1,ci);
                     break;
+                case PREFIX_SEARCH : 
+                    createPrefixSearchMethod(def, class1, ci);
+                    break;
+                
             }
             class1.addMethod(CtNewMethod.make(getAttributeMap.toString(), class1));
             class1.addMethod(CtNewMethod.make(getChildKeys.toString(), class1));
@@ -416,6 +466,82 @@ public class ContentNodeGenerator {
         ci.add(new AttributeMapClassInitializer(attributeMap));
         ci.setGeneratedClass(class1.toClass());
         return ci;
+    }
+
+    private void createPrefixSearchMethod(ContentTypeDefI def, CtClass class1, ClassInfo ci) throws CannotCompileException {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("public final com.freshdirect.cms.AttributeI getAttribute(String name) { \n" +
+        " if (name==null) { return null; } \n int len = name.length();\n");
+
+        AttributeRec[] recs = createSortedAttributes(ci.getAttributeMap(), new AttributeRecNameComparator());
+        if (recs!=null && recs.length>0) {
+            createPrefixSubSearch(buffer, recs, 0, 0, recs.length, PREFIX_DEBUG ? "  " : "" );
+        }
+        buffer.append("\n return null;\n}");
+        
+        class1.addMethod(CtNewMethod.make(buffer.toString(), class1));
+    }
+
+    private void createPrefixSubSearch(StringBuffer buffer, AttributeRec[] recs, int charPos, int start, int end, String padding) {
+        if (start+1==end) {
+            buffer.append(padding).append("return ").append(getAttributeFieldName(recs[start].getDef())).append(";\n");
+            return;
+        }
+        if (allSame(recs, charPos, start, end)) {
+            createPrefixSubSearch(buffer, recs, charPos+1, start, end, padding);
+            return;
+        }
+        buffer.append(padding).append("if (len>=").append(charPos).append(") {\n");
+        buffer.append(padding).append("  char ch").append(charPos).append(" = name.charAt(").append(charPos).append(");\n");
+        char lastCharacter = '\0';
+        int prevEnd = -1;
+        lastCharacter = '\0';
+        
+        for (int i=start;i<end;i++) {
+            if (recs[i].name.length()>charPos) {
+                char currentCharacter = recs[i].name.length()>charPos ? recs[i].name.charAt(charPos) : '\0';
+                if (currentCharacter!=lastCharacter) {
+                    // start a new block
+                    if (-1!=prevEnd) {
+                        // there were a previous block, we have to call recursively
+                        if (recs[i].name.length()>charPos+1) {
+                            createPrefixSubSearch(buffer, recs, charPos+1, prevEnd, i, PREFIX_DEBUG ? padding + "    " : "");
+                            buffer.append(padding).append("  }\n");
+                        } else {
+                            buffer.append(padding).append(" return ").append(getAttributeFieldName(recs[i].getDef())).append(";\n");
+                        }
+                    }
+                    prevEnd = i;
+                    buffer.append(padding).append("  if (ch").append(charPos).append(" == '").append((char)currentCharacter).append("') { \n");
+                    lastCharacter = currentCharacter;
+                }
+            } else {
+                createPrefixSubSearch(buffer, recs, charPos+1, prevEnd, i, PREFIX_DEBUG ? padding + "    " : "");
+                //buffer.append(padding).append("return ").append(getAttributeFieldName(recs[i].getDef())).append(";\n");
+                //buffer.append(padding).append("/// return ... ??? \n");
+                prevEnd = i;
+            }
+        }
+        if (prevEnd!=-1) {
+            
+            createPrefixSubSearch(buffer, recs, charPos+1, prevEnd, end, PREFIX_DEBUG ? padding + "    " : "");
+            buffer.append(padding).append("  }\n");
+        }
+        buffer.append(padding).append(" }\n");
+        buffer.append(padding).append("return null;\n");
+    }
+
+    private boolean allSame(AttributeRec[] recs, int charPos, int start, int end) {
+        if (recs[start].name.length()<=charPos) {
+            return false;
+        }
+        char ch = recs[start].name.charAt(charPos);
+        for (int i=start; i<end;i++) {
+            if (recs[i].name.length()<=charPos || recs[i].name.charAt(charPos)!=ch) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void createHashMapMethod(ContentTypeDefI def, CtClass class1, ClassInfo ci) throws CannotCompileException, NotFoundException {
@@ -438,9 +564,9 @@ public class ContentNodeGenerator {
         
         StringBuffer buffer = new StringBuffer();
         buffer.append("public final com.freshdirect.cms.AttributeI getAttribute(String name) { \n" +
-        " java.lang.Integer hash = (Integer) __ordinalhash.get(name);\n" +
-        " if (hash==null) { return null; }\n" +
-        " int ihash = hash.intValue(); \n" +
+        //" java.lang.Integer hash = (Integer) __ordinalhash.get(name);\n" +
+        //" if (hash==null) { return null; }\n" +
+        " int ihash = 0; \n" +
         " switch (ihash) { \n");
         int i = 0;
         for (Iterator iter=ci.attributeMap.keySet().iterator();iter.hasNext();) {
@@ -460,6 +586,16 @@ public class ContentNodeGenerator {
         buffer.append("public final com.freshdirect.cms.AttributeI getAttribute(String name) { \n" +
         " if (name==null) { return null; } \n");
         buffer.append(" int hc = name.hashCode(); \n");
+        AttributeRec[] recs = createSortedAttributes(attributeMap, new AttributeRecHashComparator());
+        
+        createBinarySearchMethodBody(recs, buffer, 0, recs.length-1);
+        
+        buffer.append(" return null; \n}");
+        
+        return buffer.toString();
+    }
+
+    private AttributeRec[] createSortedAttributes(Map attributeMap, Comparator comparator) {
         AttributeRec[] recs = new AttributeRec[attributeMap.size()];
         int i =0;
         for (Iterator iter = attributeMap.keySet().iterator(); iter.hasNext();) {
@@ -468,13 +604,8 @@ public class ContentNodeGenerator {
             recs[i]= a;
             i++;
         }
-        Arrays.sort(recs, null);
-        
-        createBinarySearchMethodBody(recs, buffer, 0, recs.length-1);
-        
-        buffer.append(" return null; \n}");
-        
-        return buffer.toString();
+        Arrays.sort(recs, comparator);
+        return recs;
     }
     
     private void createBinarySearchMethodBody(AttributeRec[] recs, StringBuffer buffer, int start, int end) {
@@ -514,40 +645,6 @@ public class ContentNodeGenerator {
                   .append("     return ").append(getAttributeFieldName(recs[median].getDef())).append(";\n    }\n   }");
         }
     }
-    
-    static class AttributeRec implements Comparable { 
-        int hash;
-        String name;
-        AttributeDefI def;
-        
-        public AttributeRec(String name, AttributeDefI def) {
-            super();
-            this.name = name;
-            this.hash = name.hashCode();
-            this.def = def;
-        }
-        
-        public int getHash() {
-            return hash;
-        }
-        
-        public String getName() {
-            return name;
-        }
-        
-        public AttributeDefI getDef() {
-            return def;
-        }
-        
-        public String toString() {
-            return name + ':'+ hash;
-        }
-        public int compareTo(Object o) {
-            AttributeRec x =(AttributeRec)o;
-            return hash == x.hash ? 0 : hash > x.hash ? -1 : 1;
-        }
-    }
-    
     
     
     private CtField createField(ContentType contentType, CtClass class1, AttributeDefI attributeDef) throws CannotCompileException, NotFoundException {
