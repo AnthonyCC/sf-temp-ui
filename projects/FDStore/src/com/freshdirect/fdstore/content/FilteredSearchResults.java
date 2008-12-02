@@ -107,6 +107,10 @@ public class FilteredSearchResults extends SearchResults implements Serializable
             super(inverse, true, products);
             this.terms = StringUtils.split(searchTerm);
             this.searchTerm = searchTerm.toLowerCase();
+            Map predefinedScores = ContentSearch.getInstance().getSearchRelevancyScores(this.searchTerm);
+            if (predefinedScores!=null) {
+                termScores.putAll(predefinedScores);
+            }
             this.oracle = oracle;
             this.cnt = cnt;
         }

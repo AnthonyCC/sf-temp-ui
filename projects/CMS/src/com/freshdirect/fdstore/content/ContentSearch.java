@@ -16,6 +16,7 @@ import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.search.AutocompleteService;
 import com.freshdirect.cms.search.BrandNameExtractor;
 import com.freshdirect.cms.search.LuceneSpellingSuggestionService;
+import com.freshdirect.cms.search.SearchRelevancyList;
 import com.freshdirect.cms.search.SpellingHit;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -28,6 +29,8 @@ public class ContentSearch {
     AutocompleteService autocompletion;
     Thread autocompleteUpdater;
     
+    
+    Map searchRelevancyMap;
     
     public static ContentSearch getInstance() {
         return instance;
@@ -456,6 +459,29 @@ public class ContentSearch {
             }
         }
         return this.autocompletion.getAutocompletions(prefix);
+    }
+    
+    /**
+     * Return a Map<ContentKey,Integer> which contains the predefined scores for the given search term. The map can be null.
+     * 
+     * @param searchTerm
+     * @return Map<ContentKey,Integer>
+     */
+    public Map getSearchRelevancyScores(String searchTerm) {
+        synchronized(this) {
+            if (this.searchRelevancyMap == null) {
+                this.searchRelevancyMap = SearchRelevancyList.createFromCms();
+            }
+        }
+        SearchRelevancyList srl = (SearchRelevancyList) searchRelevancyMap.get(searchTerm.trim().toLowerCase());
+        return srl!=null ? Collections.unmodifiableMap(srl.getCategoryScoreMap()) : null;
+    }
+    
+    
+    public void refreshRelevencyScores() {
+        synchronized(this) {
+            this.searchRelevancyMap = SearchRelevancyList.createFromCms();
+        }
     }
     
 }

@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
 import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
@@ -25,6 +24,7 @@ import com.freshdirect.cms.fdstore.ConfiguredProductLabelProvider;
 import com.freshdirect.cms.fdstore.DomainValueLabelProvider;
 import com.freshdirect.cms.fdstore.ErpMaterialLabelProvider;
 import com.freshdirect.cms.fdstore.MediaLabelProvider;
+import com.freshdirect.cms.fdstore.SearchRelevancyLabelProvider;
 import com.freshdirect.cms.fdstore.SkuLabelProvider;
 import com.freshdirect.cms.labels.AttributeLabelProvider;
 import com.freshdirect.cms.labels.CompositeLabelProvider;
@@ -44,6 +44,7 @@ public class ContentNodeUtil {
 		new SkuLabelProvider(),
 		new ConfiguredProductLabelProvider(),
 		new ErpMaterialLabelProvider(),
+		new SearchRelevancyLabelProvider(),
 		new AttributeLabelProvider("FULL_NAME"),
 		new AttributeLabelProvider("NAV_NAME"),
 		new AttributeLabelProvider("GLANCE_NAME"),
@@ -260,5 +261,62 @@ public class ContentNodeUtil {
 			attr.setValue(key);
 		}
 	}
+	
+    /**
+     * Return a string attribute
+     * 
+     * @param node
+     * @param name
+     * @return
+     */
+    public static String getStringAttribute(ContentNodeI node, String name) {
+        AttributeI attribute = node.getAttribute(name);
+        if (attribute != null) {
+            Object value = attribute.getValue();
+            if (value instanceof String) {
+                return (String) value;
+            }
+        }
+        return null;
+    }
 
+
+    /**
+     * Return an integer attribute
+     * 
+     * @param node
+     * @param name
+     * @return
+     */
+    public static Integer getIntegerAttribute(ContentNodeI node, String name) {
+        AttributeI attribute = node.getAttribute(name);
+        if (attribute != null) {
+            Object value = attribute.getValue();
+            if (value instanceof Integer) {
+                return (Integer) value;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Return a ContentKey attribute
+     * 
+     * @param node
+     * @param name
+     * @return
+     */
+    public static ContentKey getContentKeyAttribute(ContentNodeI node, String name) {
+        AttributeI attribute = node.getAttribute(name);
+        if (attribute != null) {
+            Object value = attribute.getValue();
+            if (value instanceof ContentKey) {
+                return (ContentKey) value;
+            }
+        }
+        return null;
+    }
+    
+    
+    
 }

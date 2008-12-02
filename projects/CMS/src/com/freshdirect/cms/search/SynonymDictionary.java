@@ -20,9 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
-import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
-import com.freshdirect.cms.application.CmsUser;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.node.ContentNodeUtil;
 import com.freshdirect.framework.conf.ResourceUtil;
@@ -150,24 +148,13 @@ public class SynonymDictionary {
 		for (Iterator contentNodeIterator = synonymNodes.values().iterator(); contentNodeIterator
 				.hasNext();) {
 			ContentNodeI node = (ContentNodeI) contentNodeIterator.next();
-			String from = getAttribute(node, "word");
-			String synonymTo = getAttribute(node, "synonymValue");
+			String from = ContentNodeUtil.getStringAttribute(node, "word");
+			String synonymTo = ContentNodeUtil.getStringAttribute(node, "synonymValue");
 			if (from != null && synonymTo != null) {
 				dict.addSynonym(from, synonymTo);
 			}
 		}
 		return dict;
-	}
-	
-	private static String getAttribute(ContentNodeI node, String name) {
-		AttributeI attribute = node.getAttribute(name);
-		if (attribute!=null) {
-			Object value = attribute.getValue();
-			if (value instanceof String) {
-				return (String) value;
-			}
-		}
-		return null;
 	}
 	
 }

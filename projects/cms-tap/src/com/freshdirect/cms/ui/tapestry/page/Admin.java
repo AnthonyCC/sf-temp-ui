@@ -22,6 +22,7 @@ import com.freshdirect.cms.search.ContentSearchServiceI;
 import com.freshdirect.cms.search.SynonymDictionary;
 import com.freshdirect.cms.validation.ContentValidationDelegate;
 import com.freshdirect.cms.validation.ContentValidatorI;
+import com.freshdirect.fdstore.content.ContentSearch;
 import com.freshdirect.framework.conf.FDRegistry;
 
 /**
@@ -50,6 +51,7 @@ public class Admin extends BasePage {
 		searchService.setDictionary(SynonymDictionary.createFromCms());
 		
 		searchService.index(nodes.values());
+		ContentSearch.getInstance().refreshRelevencyScores();
 	}
 
 	public void validateEditors(IRequestCycle cycle) {

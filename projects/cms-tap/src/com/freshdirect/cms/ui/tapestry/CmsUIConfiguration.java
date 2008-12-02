@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.search.SearchRelevancyList;
 import com.freshdirect.cms.search.SynonymDictionary;
 
 /**
@@ -28,6 +29,7 @@ public class CmsUIConfiguration {
 		DEFAULT_ROOTS.add(ContentKey.decode("FDFolder:ymals"));
 		DEFAULT_ROOTS.add(ContentKey.decode("FDFolder:starterLists"));
 		DEFAULT_ROOTS.add(ContentKey.decode(SynonymDictionary.SYNONYM_LIST_KEY));
+		DEFAULT_ROOTS.add(ContentKey.decode(SearchRelevancyList.SEARCH_RELEVANCY_KEY));
 	}
 
 	private CmsUIConfiguration() {

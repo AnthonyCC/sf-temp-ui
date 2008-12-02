@@ -27,6 +27,7 @@
 				<DestinationDef contentType="YmalSet" />
 				<DestinationDef contentType="StarterList" />
 				<DestinationDef contentType="Synonym"/>
+				<DestinationDef contentType="SearchRelevancyList"/>
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
@@ -1361,6 +1362,29 @@
 			<AttributeDef name="word" type="S" required="true"/>
 			<AttributeDef name="synonymValue" label="Synonym To" type="S" required="true"/>
 		</AttributeDefs>
+	</ContentTypeDef>
+	
+	
+	<ContentTypeDef name="SearchRelevancyList" generateId="true">
+		<AttributeDefs>
+			<AttributeDef name="Keywords" type="S" required="true"/>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="categoryHints" cardinality="Many"  navigable="true" label="Categories">
+				<DestinationDef contentType="SearchRelevancyHint" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+	
+	<ContentTypeDef name="SearchRelevancyHint" generateId="true">
+		<AttributeDefs>
+			<AttributeDef name="score" type="I"/>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="category" cardinality="One" required="true" >
+				<DestinationDef contentType="Category" />
+			</RelationshipDef>
+		</RelationshipDefs>	
 	</ContentTypeDef>
 	
 </CMSDef>
