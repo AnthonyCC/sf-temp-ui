@@ -28,6 +28,7 @@ import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
 import com.freshdirect.routing.util.RoutingUtil;
 import com.freshdirect.transadmin.model.DlvBuilding;
+import com.freshdirect.transadmin.model.DlvBuildingDtl;
 import com.freshdirect.transadmin.model.DlvLocation;
 import com.freshdirect.transadmin.model.DlvServiceTime;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
@@ -520,5 +521,78 @@ public class LocationController extends AbstractMultiActionController  {
 
 	public void setDomainManagerService(DomainManagerI domainManagerService) {
 		this.domainManagerService = domainManagerService;
+	}
+    
+    	/**
+	 * Custom handler for welcome
+	 * @param request current HTTP request
+	 * @param response current HTTP response
+	 * @return a ModelAndView to render the response
+	 */
+	public ModelAndView dlvBuildingDetailHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {	
+		String srubbedAddress = scrubStreet(request.getParameter("srubbedAddress"));
+		String zipCode = request.getParameter("zipCode");		
+		ModelAndView mav = new ModelAndView("deliveryBuildingDtlView");
+		
+		
+		if(!TransStringUtil.isEmpty(srubbedAddress) || !TransStringUtil.isEmpty(zipCode)) {
+			Collection dataList = locationManagerService.getDeliveryBuildingDetails(srubbedAddress, zipCode);
+			
+/*
+ * 			Iterator iterator = zoneLst.iterator();
+			TrnZoneType type = null;
+			while(iterator.hasNext()) {
+				type = (TrnZoneType)iterator.next();
+				zoneTypeMap.put(type.getId(), type.getName());
+			}
+
+ */			
+			
+			Iterator iterator = dataList.iterator();
+			DlvBuildingDtl type = null;
+			while(iterator.hasNext()) {
+				type = (DlvBuildingDtl)iterator.next();
+				type.setDoorman( type.getDoorman().equals("1")  ? "Yes" : "No");
+				type.setWalkup( type.getWalkup().equals("1")  ? "Yes" : "No");
+				type.setElevator( type.getElevator().equals("1")  ? "Yes" : "No");
+				type.setSvcEnt( type.getSvcEnt().equals("1")  ? "Yes" : "No");
+				type.setHouse( type.getHouse().equals("1")  ? "Yes" : "No");
+				type.setDifficultToDeliver( type.getDifficultToDeliver().equals("1")  ? "Yes" : "No");
+			}
+		
+			mav.getModel().put("dlvbuildingdtl",dataList);			
+		}
+		return mav;
+	}
+	
+	/**
+	 * Custom handler for welcome
+	 * @param request current HTTP request
+	 * @param response current HTTP response
+	 * @return a ModelAndView to render the response
+	 */
+	public ModelAndView dlvBuildingDtlDeleteHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+		
+		Set dispatchSet=new HashSet();
+		String arrEntityList[] = getParamList(request);
+		Object tmpBean = null;
+		if (arrEntityList != null) {			
+			int arrLength = arrEntityList.length;
+			
+			for (int intCount = 0; intCount < arrLength; intCount++) {
+				tmpBean = locationManagerService.getDlvBuildingDtl(arrEntityList[intCount]);
+				if(tmpBean != null) {
+					dispatchSet.add(tmpBean);
+				}
+			}
+		}
+		try {
+			locationManagerService.removeEntity(dispatchSet);
+			saveMessage(request, getMessage("app.actionmessage.103", null));
+		} catch (DataIntegrityViolationException e) {
+			saveMessage(request, getMessage("app.actionmessage.127", null));
+		}
+		
+		return dlvBuildingDetailHandler(request, response);
 	}
 }
