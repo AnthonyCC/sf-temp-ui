@@ -93,8 +93,10 @@ for (Iterator it = variant.getAllIngredients().iterator(); it.hasNext(); ) {
 
 
 FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
-String multiSuccessPage = "/grocery_cart_confirm.jsp?catId="+catIdParam+"&recipeId="+recipeId;
-String successPage      = "/grocery_cart_confirm.jsp?catId="+catIdParam+"&recipeId="+recipeId;  //"/cart_confirm.jsp?catId="+catIdParam+"&recipeId="+recipeId;
+// String multiSuccessPage = "/grocery_cart_confirm.jsp?catId="+catIdParam+"&recipeId="+recipeId;
+// String successPage      = "/grocery_cart_confirm.jsp?catId="+catIdParam+"&recipeId="+recipeId;  //"/cart_confirm.jsp?catId="+catIdParam+"&recipeId="+recipeId;
+String multiSuccessPage	= FDURLUtil.getRecipeCartConfirmPageURI(request, catIdParam);
+String successPage		= FDURLUtil.getRecipeCartConfirmPageURI(request, catIdParam);
 
 //--------OAS Page Variables-----------------------
 request.setAttribute("sitePage", recipe.getPath());

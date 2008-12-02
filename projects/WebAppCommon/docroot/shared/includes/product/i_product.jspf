@@ -6,7 +6,8 @@ This include expects the following:
     - String cartMode (constant within com.freshdirect.webapp.taglib.fdstore.CartName)
 
 --%>
-<%@ page import='java.net.*'%>
+<%@ page import="java.util.List" %>
+<%@ page import='java.net.*' %>
 <%@ page import='java.text.SimpleDateFormat' %>
 <%@ page import='com.freshdirect.ErpServicesProperties' %>
 <%@ page import='com.freshdirect.content.attributes.*' %>
@@ -245,33 +246,24 @@ if (skus.size() != 0) {
         formAction
 	    .append("catId=").append(productNode.getParentNode())
 	    .append("&productId=").append(productNode);
-	    if(request.getParameter("trk") != null) {
-			formAction.append("&trk=").append(request.getParameter("trk"));
-			// SmartStore variant tracking .. track variant in case if ADD TO CART button pressed
-			if(request.getParameter("variant") != null) {
-				formAction.append("&variant=").append(request.getParameter("variant"));
-			}
-		}
-	    // SmartStore variant tracking .. track variant in case if ADD TO CART button pressed
-	    if(request.getParameter("variant") != null) {
-		    formAction.append("&variant=").append(request.getParameter("variant"));
-		}
 
-	           
+        // append parameters such SmartStore DYF and Smart Search tracking codes ...
+        FDURLUtil.appendCommonParameters(formAction, request.getParameterMap());
+
+  
         String oid = request.getParameter("orderId=");
-	if (oid != null) formAction.append("&orderId=").append(oid);
+		if (oid != null) formAction.append("&orderId=").append(oid);
 
-	String item = request.getParameter("item");
-	if (item != null) formAction.append("&item=").append(item);
+		String item = request.getParameter("item");
+		if (item != null) formAction.append("&item=").append(item);
 
     } else if (CartName.MODIFY_LIST.equals(cartMode)) {
-	formAction.append(CclUtils.CC_LIST_ID).append('=').append(request.getAttribute(CclUtils.CC_LIST_ID));
+		formAction.append(CclUtils.CC_LIST_ID).append('=').append(request.getAttribute(CclUtils.CC_LIST_ID));
     } else {
-	formAction.append(request.getQueryString());
+		formAction.append(request.getQueryString());
     }
 
     %>
-    <%@page import="java.util.List"%>
 	<table width="100%" cellpadding="0" cellspacing="0" border="0"> <%-- Outermost table 1 --%>
 	<form id='product_form' method='post' name="productForm" action="<%= formAction %>">
 	<tr><td <%= !isWineLayout ? "align=\"right\"":""%>>

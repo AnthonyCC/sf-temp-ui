@@ -1,5 +1,31 @@
- <%
-/*
+<%@ page import="java.util.List"
+%><%@ page import="java.util.ArrayList"
+%><%@ page import="java.util.Iterator"
+%><%@ page import="com.freshdirect.webapp.util.FDURLUtil"
+%><%@ page import="com.freshdirect.fdstore.attributes.Attribute"
+%><%@ page import="com.freshdirect.fdstore.customer.FDProductSelectionI"
+%><%@ page import="com.freshdirect.fdstore.customer.FDProductSelection"
+%><%@ page import="com.freshdirect.fdstore.customer.OrderLineUtil"
+%><%@ page import="com.freshdirect.fdstore.customer.FDInvalidConfigurationException"
+%><%@ page import="com.freshdirect.fdstore.customer.FDCartLineI"
+%><%@ page import="com.freshdirect.fdstore.content.RecipeSection"
+%><%@ page import="com.freshdirect.fdstore.content.ConfiguredProduct"
+%><%@ page import="com.freshdirect.fdstore.content.ContentFactory"
+%><%@ page import="com.freshdirect.fdstore.content.ProductModel"
+%><%@ page import="com.freshdirect.fdstore.content.MediaI"
+%><%@ page import="com.freshdirect.fdstore.content.Image"
+%><%@ page import="com.freshdirect.fdstore.content.RecipeSource"
+%><%@ page import="com.freshdirect.fdstore.content.RecipeAuthor"
+%><%@ page import="com.freshdirect.fdstore.FDProductInfo"
+%><%@ page import="com.freshdirect.fdstore.FDSkuNotFoundException"
+%><%@ page import="com.freshdirect.fdstore.FDResourceException"
+%><%@ page import="com.freshdirect.fdstore.FDCachedFactory"
+%><%@ page import="com.freshdirect.fdstore.FDConfigurableI"
+%><%@ page import="com.freshdirect.fdstore.FDSku"
+%><%@ page import="com.freshdirect.fdstore.FDProduct"
+%><%@ page import="com.freshdirect.framework.webapp.ActionError"
+%><%@ page import="com.freshdirect.webapp.util.JspMethods"
+%><%--
 -- This includes paints the recipe body and bottom (no side navs)
 -- Expects the host page to define the following variables:
     RecipeVariant   variant;
@@ -9,12 +35,9 @@
                                        unavailable items
     String          catIdParam;
     String          multiSuccessPage;
-    Stirng          successPage;
+    String          successPage;
 -- Host page will need various Imports...(see recipe.jsp)
-*/
-%>
-
-<%!
+--%><%!
 	public static FDProductSelectionI convertToSelection(ConfiguredProduct confProd, RecipeSection section) throws FDSkuNotFoundException, FDResourceException {
 		FDProductInfo prodInfo = FDCachedFactory.getProductInfo(confProd.getSkuCode());
 		ProductModel prod = ContentFactory.getInstance().getProduct(confProd.getSkuCode());
@@ -45,8 +68,7 @@
     java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
     java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 
-%>
-<%
+%><%
     MediaI recipeDesc = recipe.getDescription();
     Image  recipeLogo = recipe.getLogo();
     Attribute attrib  = recipe.getAttribute("photo");
@@ -57,11 +79,10 @@
     MediaI recipePrepdMedia = attrib==null ? null : (MediaI) attrib.getValue();
     attrib  = recipe.getAttribute("copyrightMedia");
     MediaI recipeCpyrghtMedia = attrib==null ? null : (MediaI) attrib.getValue();
+
     String subCatIdParam = "";
-    if ( request.getParameter("subCatId")!=null) {
-    	    if ( !"".equals(request.getParameter("subCatId").trim())) {
-    	        subCatIdParam = "&subCatId="+request.getParameter("subCatId").trim();
-    	    }
+    if ( request.getParameter("subCatId")!=null && !"".equals(request.getParameter("subCatId").trim()) ) {
+   		subCatIdParam = "&subCatId="+request.getParameter("subCatId").trim();
     }
 
     String actionString = request.getParameter("actionString");
@@ -84,11 +105,11 @@
     StringBuffer authorNames = new StringBuffer("");
     List authors = recipe.getAuthors();
     for (int i = 0; i<authors.size();i++) {
-	if (i==0) authorNames.append("by ");
-	if (i > 0) authorNames.append(", ");
-	if (i == authors.size()-1 && authors.size() > 1) authorNames.append(" and ");
-	authorNames.append( ((RecipeAuthor)authors.get(i)).getName());
-   }
+		if (i==0) authorNames.append("by ");
+		if (i > 0) authorNames.append(", ");
+		if (i == authors.size()-1 && authors.size() > 1) authorNames.append(" and ");
+		authorNames.append( ((RecipeAuthor)authors.get(i)).getName());
+	}
 %>
 <table width="550" cellpadding="0" cellspacing="0" border="0">
 	<tr valign="top">
@@ -135,10 +156,10 @@
 
 <a name="ingredients"></a>
 <br><br>
-<script language="JavaScript" src="/assets/javascript/quickshop.js"></script>
-<script language="JavaScript">var numberOfOrderLines=<%= quickCartSize %>;</script> 
+<script type="text/javascript" src="/assets/javascript/quickshop.js"></script>
+<script type="text/javascript">var numberOfOrderLines=<%= quickCartSize %>;</script> 
 
-<style>
+<style type="text/css">
 .ingredientsHeader {
  font-size: 8pt;
  font-weight: bold;
@@ -292,7 +313,7 @@ Set skus = variant.getDistinctSkus();
 %>
 <%@ include file="/shared/includes/product/i_pricing_script.jspf" %>
 
-<fd:FDShoppingCart id='cart' action='<%=actionString%>' source='Recipe' result='result' multiSuccessPage='<%=multiSuccessPage%>' successPage='<%=successPage%>'>
+<fd:FDShoppingCart id='cart' action='<%= actionString %>' source='Recipe' result='result' multiSuccessPage='<%=multiSuccessPage%>' successPage='<%=successPage%>'>
 <%
 
 List flagList = new ArrayList();
@@ -331,13 +352,15 @@ if (!result.getErrors().isEmpty()) {
 }
 %>
 
-<table width="500" cellpadding="0" cellspacing="0" border="0">
-<form action="<%= request.getRequestURI()%>?catId=<%=catIdParam%>&recipeId=<%=recipe.getContentName()+subCatIdParam%>&variantId=<%= variant.getContentName() %>" method="post" name="qs_cart" id="recipe_form">
+<table width="500" cellpadding="0" cellspacing="0" border="0"><%
+	boolean isCRM = request.getRequestURI().startsWith("/order/");
+	String formAction = FDURLUtil.getRecipePageURI(request, recipe, variant, catIdParam, isCRM);
+%>
+<form action="<%= formAction %>" method="post" name="qs_cart" id="recipe_form">
 <input type="hidden" name="actionString" value="addMultipleToCart">
 <%
     if (request.getAttribute("source") != null) {
-%>
-<input type="hidden" name="source" value="<%= request.getAttribute("source")%>"> 
+		%><input type="hidden" name="source" value="<%= request.getAttribute("source")%>"> 
 <%
     } 
 %>
@@ -416,7 +439,7 @@ int prodIdx = 0;
             <%
             if (!configuredProduct.isUnavailable()) {
             %>
-                <script language="JavaScript">
+                <script type="text/javascript">
                     var pricing<%=prodIdx%> = new Pricing();
                     pricing<%=prodIdx%>.setSKU("<%= orderLine.getSkuCode() %>");
                     pricing<%=prodIdx%>.setQuantity(<%= orderLine.getQuantity() %>);
@@ -479,7 +502,7 @@ int prodIdx = 0;
 			
                 <td><input type="text" style="width: 60px" name="estPrice_<%=prodIdx%>" value="" size="6" class="<%=boxStyle%>" onChange="" onFocus="blur()"></td>
                 
-                <script language="JavaScript">
+                <script type="text/javascript">
                     function updatePriceField<%=prodIdx%>() {
                         document.qs_cart.estPrice_<%=prodIdx%>.value = pricing<%=prodIdx%>.getPrice();
                         updateTotal();
@@ -566,7 +589,7 @@ int prodIdx = 0;
 </fd:CCLCheck>
 <%-- --%>
 		</table>
-		<script language="JavaScript">
+		<script type="text/javascript">
 			updateTotal();
 		</script>
 		<input type="hidden" name="itemCount" value="<%= quickCartSize %>">

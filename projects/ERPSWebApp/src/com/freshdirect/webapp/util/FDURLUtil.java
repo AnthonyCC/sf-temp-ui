@@ -5,6 +5,8 @@ import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ConfiguredProductGroup;
@@ -12,6 +14,8 @@ import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProxyProduct;
+import com.freshdirect.fdstore.content.Recipe;
+import com.freshdirect.fdstore.content.RecipeVariant;
 import com.freshdirect.smartstore.Variant;
 
 
@@ -25,11 +29,14 @@ import com.freshdirect.smartstore.Variant;
 public class FDURLUtil {
 	public static final String URL_PARAM_SEP = "&amp;";
 	
-	public static final String PRODUCT_PAGE_BASE = "/product.jsp";
-	public static final String CATEGORY_PAGE_BASE = "/category.jsp";
-	public static final String DEPARTMENT_PAGE_BASE = "/department.jsp";
+	public static final String PRODUCT_PAGE_BASE		= "/product.jsp";
+	public static final String CATEGORY_PAGE_BASE		= "/category.jsp";
+	public static final String DEPARTMENT_PAGE_BASE		= "/department.jsp";
+	public static final String CART_CONFIRM_PAGE_BASE	= "/cart_confirm.jsp";
 
-	
+	public static final String RECIPE_PAGE_BASE			= "/recipe.jsp";
+	public static final String RECIPE_PAGE_BASE_CRM		= "/order/recipe.jsp";
+
 	public static String safeURLEncode(String str) {
 		try {
 			return URLEncoder.encode(str, "UTF-8");
@@ -149,7 +156,7 @@ public class FDURLUtil {
 		// append product ID
 		uri.append(URL_PARAM_SEP + "productId=" + getRealProduct(productNode).getContentName());
 		
-		// tracking code 
+		// tracking code "<%= request.getRequestURI()%>?catId=<%=catIdParam%>&recipeId=<%=recipe.getContentName()+subCatIdParam%>&variantId=<%= variant.getContentName() %>"
 		if (trackingCodeEx != null) {
 			uri.append(URL_PARAM_SEP + "trkd=" + trackingCodeEx);
 		}
@@ -228,8 +235,116 @@ public class FDURLUtil {
 	}
 
 
+	
+	public static void appendCommonParameters(StringBuffer buf, Map params ) {
+		// tracking code 
+		if (params.get("trk") != null) {
+			buf.append("&trk=" + ((String[])params.get("trk"))[0]);
+			
+			// additional DYF parameter
+	        if (params.get("variant") != null) {
+	        	buf.append("&variant=" + safeURLEncode(((String[])params.get("variant"))[0]) );
+	        }
 
+	        // Smart Search parameters
+	        if (params.get("trkd") != null) {
+	        	buf.append("&trkd=" + ((String[])params.get("trkd"))[0]);
+	        	buf.append("&rank=" + ((String[])params.get("rank"))[0]);
+			}
+	    }
+	}
 
+	/**
+	 * Build URL from request. Used in product.jsp to redirect to grocery page
+     *
+	 * @param request
+	 * @return
+	 */
+	public static String getCategoryURI(HttpServletRequest request, ProductModel productNode) {
+		StringBuffer uri = new StringBuffer();
+		
+		// "/category.jsp?catId="+request.getParameter("catId")+"&prodCatId="+request.getParameter("catId")+"&productId="+productNode+"&trk="
+		
+		String catId = request.getParameter("catId");
+		
+		// product page with category ID
+		uri.append(CATEGORY_PAGE_BASE + "?catId=" + catId);
+		uri.append("&prodCatId=" + catId);
+		uri.append("&productId=" + productNode.getContentName());
+
+		appendCommonParameters(uri, request.getParameterMap());
+
+		return uri.toString();
+	}
+	
+	// called from grocery_product.jsp
+	public static String getCartConfirmPageURI(HttpServletRequest request) {
+		StringBuffer uri = new StringBuffer();
+		
+		// "/grocery_cart_confirm.jsp?catId="+request.getParameter("catId")+"&trk="+ptrk;
+		
+		uri.append(CART_CONFIRM_PAGE_BASE + "?catId=" + request.getParameter("catId"));
+
+		appendCommonParameters(uri, request.getParameterMap());
+
+		return uri.toString();
+	}
+	
+
+	// called from product.jsp
+	public static String getCartConfirmPageURI(HttpServletRequest request, ProductModel productNode) {
+		StringBuffer uri = new StringBuffer();
+		
+		// "/cart_confirm.jsp?catId="+productNode.getParentNode().getContentName()+"&productId="+productNode.getContentName()+"&trk="+ptrk;		
+		
+		uri.append(CART_CONFIRM_PAGE_BASE + "?catId=" + productNode.getParentNode().getContentName());
+		uri.append("&productId=" + productNode.getContentName());
+
+		appendCommonParameters(uri, request.getParameterMap());
+
+		return uri.toString();
+	}
+	
+
+	// called from recipe.jsp
+	public static String getRecipeCartConfirmPageURI(HttpServletRequest request, String catId) {
+		StringBuffer uri = new StringBuffer();
+		
+		// "/grocery_cart_confirm.jsp?catId="+catIdParam+"&recipeId="+recipeId;
+		String recipeId	= request.getParameter("recipeId");
+		/// String catId	= request.getParameter("catId");
+
+		uri.append(CART_CONFIRM_PAGE_BASE + "?catId=" + catId);
+		uri.append("&recipeId=" + recipeId);
+
+		appendCommonParameters(uri, request.getParameterMap());
+
+		return uri.toString();
+	}
+
+	// called from recipe.jsp > i_recipe_body.jspf
+	public static String getRecipePageURI(HttpServletRequest request, Recipe recipe, RecipeVariant variant, String catId, boolean crm) {
+		StringBuffer uri = new StringBuffer();
+		
+		// "<%= request.getRequestURI()%>?catId=<%=catIdParam%>&recipeId=<%=recipe.getContentName()+subCatIdParam%>&variantId=<%= variant.getContentName() %>"
+
+		/// String catId = request.getParameter("catId");
+
+		uri.append( (crm ? RECIPE_PAGE_BASE_CRM : RECIPE_PAGE_BASE ) + "?catId=" + catId + "&recipeId=" + recipe.getContentName());
+
+		String subCatId = request.getParameter("subCatId");
+		if (subCatId !=null && !"".equals(subCatId.trim()) ) {
+			uri.append("&subCatId=" + subCatId.trim());
+		}
+
+		uri.append("&variantId=" + variant.getContentName());
+
+		appendCommonParameters(uri, request.getParameterMap());
+
+		return uri.toString();
+	}
+	
+	
 	/**
 	 * Returns URI to department page
      * 

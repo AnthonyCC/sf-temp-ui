@@ -125,4 +125,12 @@ public class EnumLayoutType implements Serializable {
 
     private int id;
     private String name;
+
+
+    /**
+     * @return Returns true if layout is a kind of grocery
+     */
+    public boolean isGroceryLayout() {
+    	return (GROCERY_DEPARTMENT.equals(this) || GROCERY_CATEGORY.equals(this) || GROCERY_PRODUCT.equals(this));
+    }
 }

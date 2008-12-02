@@ -134,6 +134,10 @@ public class CategoryModel extends ContentNodeModelImpl {
 		return getAttribute("SS_LEVEL_AGGREGATION", false);
 	}
 
+	public boolean isHavingBeer() {
+		return getAttribute("CONTAINS_BEER", false);
+	}
+
 	/* [NEW WINE STORE CHANGES] */  
 	
 	
