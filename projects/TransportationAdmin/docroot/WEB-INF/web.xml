@@ -178,4 +178,8 @@
     <description>TrnAdmin Dispatch users</description>
     <role-name>TrnDispatch</role-name>
   </security-role>
+  <security-role>
+      <description>TrnAdmin Planning users</description>
+      <role-name>TrnPlanning</role-name>
+  </security-role>
 </web-app>
