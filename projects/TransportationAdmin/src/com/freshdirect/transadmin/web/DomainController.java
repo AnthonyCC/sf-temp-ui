@@ -47,7 +47,18 @@ public class DomainController extends AbstractMultiActionController {
 		
 		return new ModelAndView("welcomeView");
 	}
-	
+
+	/**
+	 * Custom handler for welcome
+	 * @param request current HTTP request
+	 * @param response current HTTP response
+	 * @return a ModelAndView to render the response
+	 */
+	public ModelAndView accessDeniedHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+
+		return new ModelAndView("accessDeniedView");
+	}
+
 	/**
 	 * Custom handler for welcome
 	 * @param request current HTTP request
