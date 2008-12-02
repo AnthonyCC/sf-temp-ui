@@ -42,9 +42,9 @@
 				</div>
 				<div class="userinfo">
 					<% if(userId != null) { %>
-					<div class="loginout"><a href="logout.jsp"><input type="button" value="LOG OUT"></a></div>
+					<div class="loginout"><input type="button" value="LOG OUT" onclick="location.href='logout.jsp'"></div>
 					<% } else { %>
-					<div class="loginout"><a href="."><input type="button" value="LOG IN"></a></div>
+					<div class="loginout"><input type="button" value="LOG IN" onclick="location.href='.'"></div>
 					<% } %>
 					<div><span class="nameTitle">User:</span> <span style=""><%= userId != null ? userId : ""%></span></div>
 					<div><span class="levelTitle">Level:</span> <span style=""><%=userRole != null ? userRole : ""%></span></div>

@@ -52,8 +52,7 @@ function createXMLObject() {
     } catch (IllegalStateException ex) {                
         ex.printStackTrace();
     }
-    response.sendRedirect("login.jsp");  
-            
+    response.sendRedirect(".");      
  %>
 </body>
 </html>
