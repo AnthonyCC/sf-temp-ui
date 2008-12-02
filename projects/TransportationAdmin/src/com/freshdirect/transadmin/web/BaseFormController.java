@@ -14,7 +14,9 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
+import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.transadmin.util.TransStringUtil;
+import com.freshdirect.transadmin.web.editor.TimeOfDayPropertyEditor;
 
 public class BaseFormController extends SimpleFormController {
 
@@ -22,6 +24,8 @@ public class BaseFormController extends SimpleFormController {
 			ServletRequestDataBinder dataBinder) throws Exception {				
 		CustomDateEditor editor = new CustomDateEditor(TransStringUtil.dateFormat, true);
 		dataBinder.registerCustomEditor(Date.class, editor);		
+		dataBinder.registerCustomEditor(TimeOfDay.class, new TimeOfDayPropertyEditor());
+           
 	}
 
 	public void saveMessage(HttpServletRequest request, Object msg) {
