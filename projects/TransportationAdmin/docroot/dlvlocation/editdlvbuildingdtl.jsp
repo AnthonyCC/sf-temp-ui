@@ -218,13 +218,16 @@ sdfsdfsdfsdf
 					 
 			<%@ include file='building.jspf'%> 
 			<BR><BR>								 
+
+			<%@ include file='hoursoperation.jspf'%> 
+			<BR><BR>
+						
+			<%@ include file='difficultdeliver.jspf'%> 
+			<BR><BR>
 							
 			<%@ include file='buildingtype.jspf'%> 
 			<BR><BR>
 			
-			<%@ include file='hoursoperation.jspf'%> 
-			<BR><BR>
-						
 			<%@ include file='svcentdetails.jspf'%> 
 			<BR><BR>				
 				       
@@ -233,9 +236,6 @@ sdfsdfsdfsdf
 
 			<%@ include file='misc.jspf'%> 
 			<BR><BR>										
-														
-			<%@ include file='difficultdeliver.jspf'%> 
-			<BR><BR>
 				
             <tr><td colspan="3">&nbsp;</td></tr>
 				<tr>

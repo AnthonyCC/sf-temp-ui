@@ -81,8 +81,7 @@ function svcEntf(checked) {
 		document.getElementById('svcCity').readOnly=false;
 		document.getElementById('svcState').readOnly=false;
 		document.getElementById('svcZip').readOnly=false;
-		if(dlvBuildingDtlId.value == ""){  //new
-		    //alert("New!");
+		if(svcScrubbedStreet.value == ""){  
 			document.getElementById('svcScrubbedStreet').value=document.getElementById('building.srubbedStreet').value;
 			document.getElementById('svcCity').value=document.getElementById('building.city').value;
 			document.getElementById('svcState').value=document.getElementById('building.state').value;
