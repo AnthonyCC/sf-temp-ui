@@ -1,14 +1,11 @@
 package com.freshdirect.smartstore.impl;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
-import javax.ejb.CreateException;
 
 import org.apache.log4j.Category;
 
@@ -21,7 +18,7 @@ import com.freshdirect.framework.util.UniqueRandomSequence;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
-import com.freshdirect.smartstore.ejb.DyfModelSB;
+import com.freshdirect.smartstore.fdstore.ProductStatisticsProvider;
 import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
 
 
@@ -125,19 +122,7 @@ public class RandomDyfVariant extends DYFService {
 	 * @return Set of content keys
 	 */
 	private Set getItemsFromAnalysis(String customerId) {
-		try {
-			DyfModelSB source = getModelHome().create();
-			
-			List products = source.getProducts(customerId);
-			
-			return new HashSet(products);
-		} catch (RemoteException e) {
-			LOGGER.error(getVariant().getId() + ": remote exception!", e);
-		} catch (CreateException e) {
-			LOGGER.error(getVariant().getId() + ": create exception!", e);
-		}
-		
-		return null;
+	    return ProductStatisticsProvider.getInstance().getProducts(customerId);
 	}
 
 }

@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ejb.CreateException;
 import javax.naming.NamingException;
@@ -17,6 +18,7 @@ import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.ejb.DyfModelHome;
 import com.freshdirect.smartstore.ejb.DyfModelSB;
+import com.freshdirect.smartstore.impl.SessionCache;
 
 /**
  * Product statistics provider.
@@ -28,6 +30,22 @@ public class ProductStatisticsProvider {
 	private static final Category LOGGER = LoggerFactory.getInstance(ProductStatisticsProvider.class);
 	
 	private static ProductStatisticsProvider instance;
+	
+        /**
+         * Service locator.
+         */
+        protected ServiceLocator serviceLocator;
+        
+        /**
+         * Global product frequency map, Map<@link {@link ContentKey},Float>.
+         */
+        protected Map globalProductScores = new HashMap();
+
+        /**
+         * The user score cache.
+         */
+        SessionCache userScoreCache = new SessionCache(1000, 0.75f);
+	
 	
 	/**
 	 * Get provider instance.
@@ -57,10 +75,10 @@ public class ProductStatisticsProvider {
 	 * @throws CreateException
 	 */
 	private ProductStatisticsProvider() throws NamingException, RemoteException, CreateException {
-		serviceLocator = new ServiceLocator(FDStoreProperties.getInitialContext());
-		DyfModelSB source = getModelHome().create();
-		globalProductScores = source.getGlobalProductScores();
-	}
+            serviceLocator = new ServiceLocator(FDStoreProperties.getInitialContext());
+            DyfModelSB source = getModelHome().create();
+            globalProductScores = source.getGlobalProductScores();
+        }
 	
 	/**
 	 * Get user specific product scores.
@@ -69,39 +87,19 @@ public class ProductStatisticsProvider {
 	 * @return Map<{@link ContentKey},{@link Float}> productId->Score, never null
 	 */
 	public Map getUserProductScores(String erpCustomerId) {
-		try {
-			DyfModelSB source = getModelHome().create();
-			
-			Map productFrequencies = source.getProductFrequencies(erpCustomerId);
-
-			return productFrequencies;
-		} catch (RemoteException e) {
-			LOGGER.error("remote exception", e);
-		} catch (CreateException e) {
-			LOGGER.error("create exception", e);
-		}
-		return Collections.EMPTY_MAP;
-	}
-	
-	protected DyfModelHome getModelHome() {
-		try {
-			return (DyfModelHome) serviceLocator.getRemoteHome(
-				"freshdirect.smartstore.DyfModelHome", DyfModelHome.class);
-		} catch (NamingException e) {
-			throw new FDRuntimeException(e);
-		}
-	}
-	
-	/**
-	 * Service locator.
-	 */
-	protected ServiceLocator serviceLocator;
-	
-	/**
-	 * Global product frequency map, Map<@link {@link ContentKey},Float>.
-	 */
-	protected Map globalProductScores = new HashMap();
-	
+            try {
+                Map productFrequencies = (Map) userScoreCache.get(erpCustomerId);
+                if (productFrequencies == null) {
+                    productFrequencies = getModel().getProductFrequencies(erpCustomerId);
+                    userScoreCache.put(erpCustomerId, productFrequencies);
+                }
+                return productFrequencies;
+            } catch (RemoteException e) {
+                LOGGER.error("remote exception", e);
+                return Collections.EMPTY_MAP;
+            }
+        }
+ 	
 	/**
 	 * Get global product score.
 	 * 
@@ -112,4 +110,31 @@ public class ProductStatisticsProvider {
 		Float score = (Float)globalProductScores.get(key);
 		return score == null ? -1 : score.floatValue();
 	}
+    	
+    	public Set getProducts(String customerID) {
+            try {
+                return getModel().getProducts(customerID);
+            } catch (RemoteException e) {
+                throw new FDRuntimeException(e);
+            }
+        }
+
+        protected DyfModelHome getModelHome() {
+            try {
+                return (DyfModelHome) serviceLocator.getRemoteHome("freshdirect.smartstore.DyfModelHome", DyfModelHome.class);
+            } catch (NamingException e) {
+                throw new FDRuntimeException(e);
+            }
+        }
+        
+        protected DyfModelSB getModel() {
+            try {
+                return getModelHome().create();
+            } catch (RemoteException e) {
+                throw new FDRuntimeException(e);
+            } catch (CreateException e) {
+                throw new FDRuntimeException(e);
+            }
+        }
+
 }

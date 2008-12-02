@@ -5,11 +5,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ejb.EJBException;
 
@@ -89,9 +88,9 @@ public class DyfModelSessionBean extends SessionBeanSupport {
 	 * @return List of product ContentKeys
 	 * @throws RemoteException
 	 */
-	public List getProducts(String customerID) throws RemoteException {
+	public Set getProducts(String customerID) throws RemoteException {
 		Connection conn = null;
-		List result = new ArrayList();
+		Set result = new HashSet();
 		try {
 			conn = getConnection();
 			

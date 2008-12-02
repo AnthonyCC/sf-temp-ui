@@ -26,6 +26,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.ejb.DyfModelSB;
+import com.freshdirect.smartstore.fdstore.ProductStatisticsProvider;
 import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
 
 /**
@@ -288,18 +289,6 @@ public class MostFrequentlyBoughtDyfVariant extends DYFService {
 	 * @return
 	 */
 	private Map getItemsFromAnalysis(String customerId) {
-		try {
-			DyfModelSB source = getModelHome().create();
-			
-			Map productFrequencies = source.getProductFrequencies(customerId);
-
-			return productFrequencies;
-		} catch (RemoteException e) {
-			LOGGER.error(getVariant().getId() + ": remote exception!", e);
-		} catch (CreateException e) {
-			LOGGER.error(getVariant().getId() + ": create exception!", e);
-		}
-		
-		return null;
+	    return ProductStatisticsProvider.getInstance().getUserProductScores(customerId);
 	}
 }
