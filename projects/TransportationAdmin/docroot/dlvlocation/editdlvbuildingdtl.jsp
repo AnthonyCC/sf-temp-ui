@@ -3,19 +3,22 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<% System.out.println("yyyyyyyyyyyyyDDDDDDDDTBRDDDDDDDDDDDDDDDDDDDDDDDDDDD");%>
-
-
-
-
-<!--  dfsdsdfskdmfnsdlfmsdfmsdl;fmsd.sdfmsdfsdfsdfsdf
-sdfsdfsdfsdf
-
-<body onload="my_init(); init_columns();display_columns()">
-
- -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <title>/ FreshDirect Transportation Admin : Building Detail /</title>
+	<link rel="stylesheet" href="css/transportation.css" type="text/css" />		
+	<link rel="stylesheet" href="css/extremecomponents.css" type="text/css" />
+	<link rel="stylesheet" href="css/jscalendar-1.0/calendar-system.css" type="text/css" />
+	<script src="js/RowHandlers.js" language="javascript" type="text/javascript"></script>
+	<script src="js/action.js" language="javascript" type="text/javascript"></script>
+		
+    <script type="text/javascript" language="javascript" src="js/jscalendar-1.0/calendar.js"></script>
+    <script type="text/javascript" language="javascript" src="js/jscalendar-1.0/lang/calendar-en.js"></script>
+    <script type="text/javascript" language="javascript" src="js/jscalendar-1.0/calendar-setup.js"></script>
+</head>
  
- <body onLoad="javascript:my_init();">
+ <body  marginwidth="0" marginheight="0" border="0" onLoad="javascript:my_init();">
  
  <script type="text/javascript">
 
@@ -183,16 +186,7 @@ $('svcZip').value="";
 
 </script>
 
-<tmpl:insert template='/common/sitelayout.jsp'>
 
-<!--  dfsdsdfskdmfnsdlfmsdfmsdl;fmsd.sdfmsdfsdfsdfsdf
-sdfsdfsdfsdf
-
- -->
- 
-    <tmpl:put name='title' direct='true'>Edit Delivery Building Detail</tmpl:put>
-
-	<tmpl:put name='content' direct='true'>
 		<br/>	
 			<form:form commandName = "deliveryBuildingDtlForm" method="post">
 			<form:hidden path="dlvBuildingDtlId"/>
@@ -250,7 +244,6 @@ sdfsdfsdfsdf
 			
 			</form:form>
 		 </div>
-		 
-	</tmpl:put>
-</tmpl:insert>
+		
 </body>
+</html>
