@@ -15,7 +15,7 @@
 	     </menu>
 	     <menu id="OPR002" title="Dispatch" orientation="LEFT" link="dispatch.do">
 	     	<access-uris>dispatch.do,deletedispatch.do,editdispatch.do,confirmdispatch.do</access-uris>
-	     	<access-roles>TrnAdmin,TrnDispatch,TrnPlanning</access-roles>
+	     	<access-roles>TrnAdmin,TrnGuest,TrnDispatch,TrnPlanning</access-roles>
 	     </menu>	     
 	     
 	     <menu id="OPR003" title="Route" orientation="RIGHT" link="route.do">
