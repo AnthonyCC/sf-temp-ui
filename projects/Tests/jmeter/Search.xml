@@ -3,53 +3,91 @@
 
 	<!-- Hit view carts -->
 	<JMeterScript file="search.jmx" enabled="true">
-		<!-- Obtain data -->
+		<!-- Obtain customer id's -->
+		<CustomerData>
+			<Retrieve dir="$(output.directory)" server="$(server)" port="$(port)" file="search_custids.csv" type="dyfcustid"/>
+		</CustomerData>
+
+		<!-- Obtain search terms -->
 		<StaticData>
 			<Retrieve dir="$(output.directory)" server="$(server)" port="$(port)" file="search_terms.csv" type="searchterms"/>
 		</StaticData>
+
+
+
+		<!-- View cart test parameters -->
+		<JMeterParameters>
+			<Parameter name="hostname">$(server)</Parameter>
+			<Parameter name="port">$(port)</Parameter>
+
+			<Parameter name="login_counter">10</Parameter>
+			<Parameter name="search_threads">5</Parameter>
+			<Parameter name="search_counter">100</Parameter>
+			<Parameter name="custids">$(output.directory)/search_custids.csv</Parameter>
+			<Parameter name="search_data">$(output.directory)/search_terms.csv</Parameter>
+			<Parameter name="search_output">$(output.directory)/search_results.csv</Parameter>
+		</JMeterParameters>
+
+		<!-- -->
+		<Results dir="$(output.directory)">
+
+			<Aggregate file="search_results.csv">
+				<Rows>
+					<Match column="3">.*search.jsp.*</Match>
+					<Match column="3">.*_NOLOGIN.*</Match>		
+				</Rows>
+				<Calculate>
+					<Formula file="search_response_average.property">ave($0)</Formula>
+					<Formula file="search_response_stdhigh.property">ave($0)+std($0)/2</Formula>
+
+					<Formula file="search_response_latency_ave.property">ave($4)</Formula>
+					<Formula file="search_response_latency_stdhigh.property">ave($4)+std($4)/2</Formula>
+
+				</Calculate>
+			</Aggregate>
+			<Aggregate file="search_results.csv">
+				<Rows>
+					<Match column="3">.*search2.jsp.*</Match>
+					<Match column="3">.*_NOLOGIN.*</Match>		
+				</Rows>
+				<Calculate>
+					<Formula file="search2_response_average.property">ave($0)</Formula>
+					<Formula file="search2_response_stdhigh.property">ave($0)+std($0)/2</Formula>
+
+					<Formula file="search2_response_latency_ave.property">ave($4)</Formula>
+					<Formula file="search2_response_latency_stdhigh.property">ave($4)+std($4)/2</Formula>
+				</Calculate>
+			</Aggregate>
+
+			<Aggregate file="search_results.csv">
+				<Rows>
+					<Match column="3">.*search.jsp.*</Match>
+					<Match column="3">.*_LOGIN.*</Match>		
+				
+				</Rows>
+				<Calculate>
+					<Formula file="search_response_login_average.property">ave($0)</Formula>
+					<Formula file="search_response_login_stdhigh.property">ave($0)+std($0)/2</Formula>
+
+					<Formula file="search_response_login_latency_ave.property">ave($4)</Formula>
+					<Formula file="search_response_login_latency_stdhigh.property">ave($4)+std($4)/2</Formula>
+
+				</Calculate>
+			</Aggregate>
+			<Aggregate file="search_results.csv">
+				<Rows>
+					<Match column="3">.*search2.jsp.*</Match>
+					<Match column="3">.*_LOGIN.*</Match>		
+				</Rows>
+				<Calculate>
+					<Formula file="search2_response_login_average.property">ave($0)</Formula>
+					<Formula file="search2_response_login_stdhigh.property">ave($0)+std($0)/2</Formula>
+
+					<Formula file="search2_response_login_latency_ave.property">ave($4)</Formula>
+					<Formula file="search2_response_login_latency_stdhigh.property">ave($4)+std($4)/2</Formula>
+				</Calculate>
+			</Aggregate>
+
+		</Results>
 	</JMeterScript>
-
-	<!-- View cart test parameters -->
-	<JMeterParameters>
-		<Parameter name="hostname">$(server)</Parameter>
-		<Parameter name="port">$(port)</Parameter>
-		<Parameter name="test_user">fob@fob.com</Parameter>
-		<Parameter name="user_pass">fobfob</Parameter>
-
-		<Parameter name="search_threads">5</Parameter>
-		<Parameter name="search_counter">1000</Parameter>
-		<Parameter name="search_data">$(output.directory)/search_terms.csv</Parameter>
-		<Parameter name="search_output">$(output.directory)/search_results.csv</Parameter>
-	</JMeterParameters>
-
-	<!-- -->
-	<Results dir="$(output.directory)">
-
-		<Aggregate file="search_results.csv">
-			<Rows>
-				<Match column="3">.*search.jsp.*</Match>
-			</Rows>
-			<Calculate>
-				<Formula file="search_response_average.property">ave($0)</Formula>
-				<Formula file="search_response_stdhigh.property">ave($0)+std($0)/2</Formula>
-
-				<Formula file="search_response_latency_ave.property">ave($4)</Formula>
-				<Formula file="search_response_latency_stdhigh.property">ave($4)+std($4)/2</Formula>
-
-			</Calculate>
-		</Aggregate>
-		<Aggregate file="search_results.csv">
-			<Rows>
-				<Match column="3">.*search2.jsp.*</Match>
-			</Rows>
-			<Calculate>
-				<Formula file="search2_response_average.property">ave($0)</Formula>
-				<Formula file="search2_response_stdhigh.property">ave($0)+std($0)/2</Formula>
-
-				<Formula file="search2_response_latency_ave.property">ave($4)</Formula>
-				<Formula file="search2_response_latency_stdhigh.property">ave($4)+std($4)/2</Formula>
-			</Calculate>
-		</Aggregate>
-
-	</Results>
 </JMeterTests>
