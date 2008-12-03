@@ -196,13 +196,12 @@ if ( results == null) {
 	}
 %>
 </td>
-<td class="text11bold">Filter:&nbsp;</td>
 <td>
 	<form name="form_brand_filter" id="form_brand_filter" method="GET" style="margin: 0;">
 		<input type="hidden" name="searchParams" value="<%= criteria %>">
 <% nav.appendToBrandForm(out); %>
-		<select name="brandValue" style="width: 160px" onchange="document.getElementById('form_brand_filter').submit()">
-			<option value=""><%= nav.getBrand() == null ? "CHOOSE BRAND" : "SHOW ALL PRODUCTS"%></option>
+		<select name="brandValue" class="text9" style="width: 140px;" onchange="document.getElementById('form_brand_filter').submit()">
+			<option value=""><%= nav.getBrand() == null ? "Filter by brand" : "SHOW ALL PRODUCTS"%></option>
 <% 		if (brandSet != null) {
 			for (Iterator iter = brandSet.iterator(); iter.hasNext();) {
 				BrandModel cm = (BrandModel) iter.next();  
