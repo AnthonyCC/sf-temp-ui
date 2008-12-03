@@ -21,8 +21,8 @@
 			<Parameter name="port">$(port)</Parameter>
 
 			<Parameter name="login_counter">10</Parameter>
-			<Parameter name="search_threads">5</Parameter>
-			<Parameter name="search_counter">100</Parameter>
+			<Parameter name="search_threads">3</Parameter>
+			<Parameter name="search_counter">50</Parameter>
 			<Parameter name="custids">$(output.directory)/search_custids.csv</Parameter>
 			<Parameter name="search_data">$(output.directory)/search_terms.csv</Parameter>
 			<Parameter name="search_output">$(output.directory)/search_results.csv</Parameter>
