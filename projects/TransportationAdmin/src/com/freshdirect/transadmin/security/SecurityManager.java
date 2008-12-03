@@ -1,13 +1,22 @@
 package com.freshdirect.transadmin.security;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
 public class SecurityManager {
-			
+	
+	private static List UNSECURED_URL = new ArrayList();
+	
+	static {
+		UNSECURED_URL.add("accessdenied.do");
+		UNSECURED_URL.add("download.do");
+	}
+	
 	public static String getUserRole(ServletRequest request, Set roles) {		
 		if(roles != null) {
 			Iterator _itr = roles.iterator();
@@ -49,7 +58,7 @@ public class SecurityManager {
 	}
 	
 	public static boolean hasAccessToPage(ServletRequest request, String uri) {
-		if("accessdenied.do".equalsIgnoreCase(uri)) {
+		if(UNSECURED_URL.contains(uri)) {
 			return true;
 		}
 		return MenuManager.getInstance().hasAccess(request, uri);
