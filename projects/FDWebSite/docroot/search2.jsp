@@ -178,18 +178,22 @@ if ( results == null) {
 %>
 <table cellpadding="0" cellspacing="0" style="width: 529px; border: 0; background-color: #E0E3D0; padding:2px;margin-top: 10px;line-height: 25px;">
 <tr>
-<td style="width: 100%">
-<span class="text11bold">Sort:</span>
+<td style="width: 100%"><%--
+
+  ************
+  * Sort Bar *
+  ************
+  
+--%><span class="text11bold">Sort:</span>
 <%
-	if (nav.isTextView()) {
-		%><a href="<%= nav.getChangeSortAction(SearchNavigator.SORT_DEFAULT) %>" class="<%= nav.isDefaultSort() ? "text11bold" : "text11" %>">Default</a><%= SEPARATOR
-		%><a href="<%= nav.getChangeSortAction(SearchNavigator.SORT_BY_RELEVANCY) %>" class="<%= nav.isSortByRelevancy() ? "text11bold" : "text11" %>">Relevancy</a><%= SEPARATOR %><%
-	} else {
-		%><a href="<%= nav.getChangeSortAction(SearchNavigator.SORT_BY_RELEVANCY) %>" class="<%= nav.isDefaultSort() ? "text11bold" : "text11" %>">Relevancy</a><%= SEPARATOR %><%
+	SearchNavigator.SortDisplay[] sbar = nav.getSortBar();
+
+	for (int i=0; i<sbar.length; i++) {
+		%><a href="<%= nav.getChangeSortAction(sbar[i].sortType) %>" class="<%= sbar[i].isSelected ? "text11bold" : "text11" %>"><%= sbar[i].text %></a><%
+		if (i < sbar.length-1) {
+			%><%= SEPARATOR %><%
+		}
 	}
-	%><a href="<%= nav.getChangeSortAction(SearchNavigator.SORT_BY_NAME) %>" class="<%= nav.isSortByName() ? "text11bold" : "text11" %>">Name</a><%= SEPARATOR
-	%><a href="<%= nav.getChangeSortAction(SearchNavigator.SORT_BY_PRICE) %>" class="<%= nav.isSortByPrice() ? "text11bold" : "text11" %>">Price</a><%= SEPARATOR
-	%><a href="<%= nav.getChangeSortAction(SearchNavigator.SORT_BY_POPULARITY) %>" class="<%= nav.isSortByPopularity() ? "text11bold" : "text11" %>">Most Popular</a><%
 %>
 </td>
 <td class="text11bold">Filter:&nbsp;</td>

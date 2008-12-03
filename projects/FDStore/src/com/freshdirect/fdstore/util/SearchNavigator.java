@@ -55,6 +55,7 @@ public class SearchNavigator {
 	public static final int SORT_BY_RELEVANCY	= 2;
 	public static final int SORT_BY_POPULARITY	= 3;
 	public static final int SORT_DEFAULT		= 4; // 'default' sort on text view
+	public static final int SORT_BY_SALE		= 5;
 
 	public static final int SORT_DEFAULT_TEXT = SORT_DEFAULT; // default sort on text view
 	public static final int SORT_DEFAULT_NOT_TEXT = SORT_BY_RELEVANCY; // default sort on list and grid views
@@ -64,6 +65,21 @@ public class SearchNavigator {
 	boolean	isOrderAscending;
 
 	String	searchAction = "/search.jsp";
+
+	
+	public class SortDisplay {
+		public final int		sortType; 	// == SORT_BY_<sort type>
+		public final boolean	isSelected;
+		public final boolean	ascending;	// Display ascending
+		public final String		text;		// display name
+		public SortDisplay(int sortType, boolean isSelected, boolean ascending, String text, String ascText, String descText) {
+			this.sortType = sortType;
+			this.isSelected = isSelected;
+			this.ascending = ascending;
+			this.text = isSelected ? (ascending ? ascText : descText) : text;
+		}
+	}
+
 
 	public SearchNavigator(HttpServletRequest request) {
 		Map p = new HashMap(request.getParameterMap().size());
@@ -226,6 +242,27 @@ public class SearchNavigator {
 	}
 
 
+	public SortDisplay[] getSortBar() {
+		SortDisplay[] sortDisplayBar;
+		
+		if (this.isTextView()) {
+			sortDisplayBar = new SortDisplay[5];
+
+			sortDisplayBar[0] = new SortDisplay(SearchNavigator.SORT_DEFAULT, isDefaultSort(), isSortOrderingAscending(), "Default", "Default", "Default");
+			sortDisplayBar[1] = new SortDisplay(SearchNavigator.SORT_BY_RELEVANCY, isSortByRelevancy(), isSortOrderingAscending(), "Relevance", "Most Relevant", "Least Relevant");
+			sortDisplayBar[2] = new SortDisplay(SearchNavigator.SORT_BY_NAME, isSortByName(), isSortOrderingAscending(), "Name", "Name (A-Z)", "Name (Z-A)");
+			sortDisplayBar[3] = new SortDisplay(SearchNavigator.SORT_BY_PRICE, isSortByPrice(), isSortOrderingAscending(), "Price", "Price (low)", "Price (high)");
+			sortDisplayBar[4] = new SortDisplay(SearchNavigator.SORT_BY_POPULARITY, isSortByPopularity(), isSortOrderingAscending(), "Popularity", "Most Popular", "Least Popular");
+		} else {
+			sortDisplayBar = new SortDisplay[4];
+
+			sortDisplayBar[0] = new SortDisplay(SearchNavigator.SORT_BY_RELEVANCY, isDefaultSort(), isSortOrderingAscending(), "Relevance", "Most Relevant", "Least Relevant");
+			sortDisplayBar[1] = new SortDisplay(SearchNavigator.SORT_BY_NAME, isSortByName(), isSortOrderingAscending(), "Name", "Name (A-Z)", "Name (Z-A)");
+			sortDisplayBar[2] = new SortDisplay(SearchNavigator.SORT_BY_PRICE, isSortByPrice(), isSortOrderingAscending(), "Price", "Price (low)", "Price (high)");
+			sortDisplayBar[3] = new SortDisplay(SearchNavigator.SORT_BY_POPULARITY, isSortByPopularity(), isSortOrderingAscending(), "Popularity", "Most Popular", "Least Popular");
+		}
+		return sortDisplayBar;
+	}
 
 
 	public boolean isFullPageMode() {
@@ -455,6 +492,7 @@ public class SearchNavigator {
 			case SORT_BY_POPULARITY:
 			case SORT_BY_PRICE:
 			case SORT_BY_RELEVANCY:
+			case SORT_BY_SALE:
 				sortBy = sortType;
 			}
 		} else if (view == VIEW_GRID || view == VIEW_LIST) {
@@ -466,6 +504,7 @@ public class SearchNavigator {
 			case SORT_BY_NAME:
 			case SORT_BY_POPULARITY:
 			case SORT_BY_PRICE:
+			case SORT_BY_SALE:
 				sortBy = sortType;
 			}
 		} else if (RECIPES_DEPT.equalsIgnoreCase(recipeFilter)) {
@@ -493,32 +532,23 @@ public class SearchNavigator {
 		return sortBy == SORT_BY_POPULARITY;
 	}
 
+	public boolean isSortBySale() {
+		return sortBy == SORT_BY_SALE;
+	}
+
 	public boolean isDefaultSort() {
 		return (view == VIEW_TEXT && sortBy == SORT_DEFAULT_TEXT) ||
 		( (view == VIEW_GRID || view == VIEW_LIST) && sortBy == SORT_DEFAULT_NOT_TEXT) ||
 		( RECIPES_DEPT.equalsIgnoreCase(deptFilter) && sortBy == SORT_DEFAULT_RECIPE);
 	}
 
+
+
+	
 	public boolean isTextViewDefault() {
 		return view == VIEW_TEXT && sortBy == SORT_DEFAULT_TEXT;
 	}
 	
-
-	public String getSortName() {
-		switch(sortBy) {
-		case SORT_BY_NAME:
-			return "Name";
-		case SORT_BY_POPULARITY:
-			return "Most Popular";
-		case SORT_BY_PRICE:
-			return "Price";
-		case SORT_BY_RELEVANCY:
-			return "Relevancy";
-		default:
-			return "Default";
-		}
-	}
-
 
 	public boolean isSortOrderingAscending() {
 		return isOrderAscending;
@@ -790,6 +820,8 @@ public class SearchNavigator {
 			return SORT_BY_RELEVANCY;
 		} else if ("name".equalsIgnoreCase(sortName)) {
 			return SORT_BY_NAME;
+		} else if ("sale".equalsIgnoreCase(sortName)) {
+			return SORT_BY_SALE;
 		}
 
 		return SORT_DEFAULT_NOT_TEXT;
@@ -809,6 +841,8 @@ public class SearchNavigator {
 			return "relv";
 		case SORT_BY_NAME:
 			return "name";
+		case SORT_BY_SALE:
+			return "sale";
 		}
 	}
 }
