@@ -483,5 +483,11 @@ public class ContentSearch {
             this.searchRelevancyMap = SearchRelevancyList.createFromCms();
         }
     }
+
+    public void invalidateRelevancyScores() {
+        synchronized(this) {
+            this.searchRelevancyMap = null;
+        }
+    }
     
 }
