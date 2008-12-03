@@ -166,7 +166,13 @@ public class CompositeContentNode implements ContentNodeI {
 	}
 
 	public ContentNodeI copy() {
-		return (ContentNodeI) SerializationUtils.clone(this);
+	    Map newNodes = new HashMap();
+	    for (Iterator keyIter = nodes.keySet().iterator();keyIter.hasNext();) {
+	        Object key = keyIter.next();
+	        ContentNodeI node = (ContentNodeI) nodes.get(key);
+	        newNodes.put(key, node.copy());
+	    }
+	    return new CompositeContentNode(contentService,key, newNodes);
 	}
 
 	public boolean equals(Object obj) {
