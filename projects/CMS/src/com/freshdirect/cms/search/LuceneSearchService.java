@@ -483,7 +483,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
 				Document doc = hits.doc(i);
 				
 				ContentKey key = ContentKey.decode(doc.get(FIELD_CONTENT_KEY));
-				h.add(new SearchHit(key, hits.score(i)));
+				h.add(new SearchHit(key, hits.score(i), doc.get("KEYWORDS")));
 			}
 			return h;
 

@@ -17,6 +17,7 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.context.ContextService;
 import com.freshdirect.cms.search.ContentSearchServiceI;
+import com.freshdirect.cms.search.SearchHit;
 import com.freshdirect.framework.conf.FDRegistry;
 
 /**
@@ -82,6 +83,14 @@ public class CmsManager implements ContentServiceI {
 		ContextService.setInstance(new ContextService(this));
 	}
 
+        /**
+         * Perform a search for content objects.
+         * 
+         * @param query search term (never null)
+         * @param maxHits maximum number of search results
+         * 
+         * @return List of {@link SearchHit}
+         */
 	public Collection search(String term, int maxHits) {
 		return searchService.search(term, maxHits);
 	}

@@ -63,16 +63,17 @@ public class ContentSearchUtil {
 	 * @return List of {@link ContentNodeModel}
 	 */
 	public static List filterExactNodes(List nodes, String term, SearchQueryStemmer stemmer) {
-		List l = new ArrayList();
-		for (Iterator i = nodes.iterator(); i.hasNext();) {
-			ContentNodeModel node = (ContentNodeModel) i.next();
-			String name = NVL.apply(node.getFullName(), "").toLowerCase();
-			if (term.equals(name)) {
-				l.add(node);
-			}
-		}
-		return l;
-	}
+            List l = new ArrayList();
+            for (Iterator i = nodes.iterator(); i.hasNext();) {
+                SearchHit hit = (SearchHit) i.next();
+                ContentNodeModel node = hit.getNode();
+                String name = NVL.apply(node.getFullName(), "").toLowerCase();
+                if (term.equals(name)) {
+                    l.add(hit);
+                }
+            }
+            return l;
+        }
 	
 	private static Set getBrandNames(ContentNodeModel node) {
 		BrandNameExtractor extractor = new BrandNameExtractor();
@@ -96,9 +97,11 @@ public class ContentSearchUtil {
 	 * @param tokens search term tokens
 	 * @param min minimum match required
 	 * @param stemmer stemmer to use
+	 * @param fullName TODO
+	 * @param keywords TODO
 	 * @return number of tokens matched, or 0 if tokens matched were less than min
 	 */
-	private static int countTokens(ContentNodeModel node, String[] tokens, int min, SearchQueryStemmer stemmer) {
+	private static int countTokens(String[] tokens, int min, SearchQueryStemmer stemmer, String fullName, String keywords) {
 		if (min < 0 || min > tokens.length) {
 		    min = tokens.length;
 		}
@@ -106,8 +109,8 @@ public class ContentSearchUtil {
 		// add ALL tokens (stemmed) from node to s
 		Set s = new HashSet(16);
 	
-		List nameTokens = tokenizeTerm(NVL.apply(node.getFullName(),"").toLowerCase(), " ,'");
-		List keywordTokens = tokenizeTerm(NVL.apply(node.getKeywords(),"").toLowerCase(),  " ,");
+		List nameTokens = tokenizeTerm(NVL.apply(fullName,"").toLowerCase(), " ,'");
+		List keywordTokens = tokenizeTerm(NVL.apply(keywords,"").toLowerCase(),  " ,");
 		
 		for(int i=0; i < nameTokens.size(); ++i) {
 		    s.add(stemmer.stemToken((String) nameTokens.get(i)));
@@ -129,15 +132,16 @@ public class ContentSearchUtil {
                 }
 
 		int tokenCount = remainingErrors >= 0 ? total : 0;
+                System.out.println("full:"+fullName+" -> "+keywords+ " count : "+tokenCount);
 				
 		return tokenCount;
 	}
 	
 	/**
 	 * Only return nodes which have the maximum number of matches from tokens.
-	 * @param nodes
+	 * @param nodes List of {@link SearchHit}
 	 * @param tokens to match in nodes full name
-	 * @return
+	 * @return List of {@link SearchHit}
 	 */
 	public static List restrictToMaximumOccuringNodes(List nodes, String[] tokens, SearchQueryStemmer stemmer) {
 		
@@ -155,12 +159,14 @@ public class ContentSearchUtil {
 		
 		int min = 0;
 		for(Iterator i=nodes.iterator(); i.hasNext();) {
-			ContentNodeModel node = (ContentNodeModel)i.next();
-			int c = countTokens(node, tokens, min, stemmer);
-			if (c < min) continue;
+		        SearchHit hit = (SearchHit) i.next();
+			ContentNodeModel node = hit.getNode();
+			int c = countTokens(tokens, min, stemmer, node.getFullName(), hit.getKeywords());
+			if (c < min) {
+			    continue;
+			}
 			min = c;
-			candidates.put(new Integer(c),node);
-			
+			candidates.put(new Integer(c),hit);
 		}
 		
 		List l = new ArrayList(candidates.size());
@@ -168,9 +174,10 @@ public class ContentSearchUtil {
 		for(Iterator i=candidates.entrySet().iterator(); i.hasNext();) {
 			Map.Entry entry = (Map.Entry)i.next();
 			
-			if (benchMark == null) benchMark = (Integer)entry.getKey();
-			else if (((Integer)entry.getKey()).intValue() < benchMark.intValue()) {
-				break;
+			if (benchMark == null) {
+			    benchMark = (Integer)entry.getKey();
+			} else if (((Integer)entry.getKey()).intValue() < benchMark.intValue()) {
+			    break;
 			}
 			
 			l.add(entry.getValue());
@@ -180,15 +187,18 @@ public class ContentSearchUtil {
 	}
 
 	/**
-	 * @param nodes List of {@link ContentNodeModel}
+	 * @param nodes List of {@link SearchHit}
 	 * @param tokens
-	 * @return List of {@link ContentNodeModel}
+	 * @return List of {@link SearchHit}
 	 */
 	public static List filterRelevantNodes(List nodes, String[] tokens, SearchQueryStemmer stemmer) {
 		List l = new ArrayList(nodes.size());
 		for (Iterator i = nodes.iterator(); i.hasNext();) {
-			ContentNodeModel node = (ContentNodeModel) i.next();
-			if (countTokens(node,tokens,tokens.length,stemmer) == tokens.length) l.add(node);
+		        SearchHit hit = (SearchHit) i.next();
+			ContentNodeModel node = hit.getNode();
+			if (countTokens(tokens,tokens.length,stemmer, node.getFullName(), hit.getKeywords()) == tokens.length) {
+			    l.add(hit);
+			}
 		}
 		return l;
 	}
@@ -197,7 +207,7 @@ public class ContentSearchUtil {
 	 * Resolves search hits into content objects, discarding orphans.
 	 * 
 	 * @param searchHits List of {@link SearchHit}
-	 * @return List of {@link ContentNodeModel}
+	 * @return List of {@link SearchHit}
 	 */
 	public static List resolveHits(Collection searchHits) {
 		if (searchHits == null || searchHits.isEmpty()) {
@@ -212,7 +222,8 @@ public class ContentSearchUtil {
 				//LOGGER.debug("ContentFactory.resolveHits() discarding orphan: " + hit.getContentKey());
 				continue;
 			}
-			l.add(node);
+			hit.setNode(node);
+			l.add(hit);
 		}
 		return l;
 	}
@@ -299,12 +310,12 @@ public class ContentSearchUtil {
 	/**
 	 * This is a destructive operation: the initial list is modified!
 	 * 
-	 * @param products
+	 * @param products List of {@link SearchHit}
 	 * @return
 	 */
 	public static List filterProductsByDisplay(List products) {
 		for (Iterator i = products.iterator(); i.hasNext();) {
-			ProductModel prod = (ProductModel) i.next();
+			ProductModel prod = (ProductModel) ((SearchHit)i.next()).getNode();
 			if (!isDisplayable(prod) || prod.getPrimaryHome()==null) {
 				i.remove();
 			}
@@ -336,12 +347,12 @@ public class ContentSearchUtil {
 	/**
 	 * This is a destructive operation: the initial list is modified!
 	 * 
-	 * @param products
-	 * @return
+	 * @param products List of {@link SearchHit}
+	 * @return List of {@link SearchHit}
 	 */
 	public  static List filterCategoriesByVisibility(List categories) {
 		for (ListIterator i = categories.listIterator(); i.hasNext();) {
-			CategoryModel cat = (CategoryModel) i.next();
+			CategoryModel cat = (CategoryModel) ((SearchHit)i.next()).getNode();
 			if (cat.isHidden() || !cat.isSearchable()) {
 				i.remove();
 			}
@@ -352,12 +363,12 @@ public class ContentSearchUtil {
 	/**
 	 * This is a destructive operation: the initial list is modified!
 	 * 
-	 * @param products
+	 * @param recipes List of {@link SearchHit}
 	 * @return
 	 */
 	public static List filterRecipesByAvailability(List recipes) {
 		for (ListIterator i = recipes.listIterator(); i.hasNext();) {
-			Recipe recipe = (Recipe) i.next();
+			Recipe recipe = (Recipe) ((SearchHit) i.next()).getNode();
 			if (!recipe.isAvailable() || !recipe.isActive()) {
 				i.remove();
 			}
@@ -436,4 +447,19 @@ public class ContentSearchUtil {
 		
 		return new SearchResults.SpellingResultsDifferences(S1MinusS2,S2MinusS1,S1AndS2);
 	}
+	
+	public static List collectFromSearchHits(Collection searchHits) {
+	    if (searchHits==null) {
+	        return null;
+	    }
+	    if (searchHits.isEmpty()) {
+	        return Collections.EMPTY_LIST;
+	    }
+	    List result = new ArrayList(searchHits.size());
+	    for (Iterator iter=searchHits.iterator();iter.hasNext();) {
+	        result.add(((SearchHit)iter.next()).getNode());
+	    }
+	    return result;
+	}
+	
 }

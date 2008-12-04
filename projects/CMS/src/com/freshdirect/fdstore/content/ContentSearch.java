@@ -133,7 +133,10 @@ public class ContentSearch {
 
         List filteredRecipes = ContentSearchUtil.filterRecipesByAvailability(recipes);
 
-        return new SearchResults(filteredProducts, filteredRecipes, !relevantProducts.isEmpty());
+        return new SearchResults(
+                ContentSearchUtil.collectFromSearchHits(filteredProducts), 
+                ContentSearchUtil.collectFromSearchHits(filteredRecipes), 
+                !relevantProducts.isEmpty());
     }
 
 
@@ -213,10 +216,10 @@ public class ContentSearch {
 		List filteredRecipes = ContentSearchUtil.filterRecipesByAvailability(recipes);
 		
 		return new SearchResults(
-				filteredCategories,
-				filteredExactProducts,
-				filteredFuzzyProducts,
-				filteredRecipes,
+		        ContentSearchUtil.collectFromSearchHits(filteredCategories),
+		        ContentSearchUtil.collectFromSearchHits(filteredExactProducts),
+		        ContentSearchUtil.collectFromSearchHits(filteredFuzzyProducts),
+		        ContentSearchUtil.collectFromSearchHits(filteredRecipes),
 				!relevantProducts.isEmpty());
 	}
 

@@ -17,7 +17,6 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.CmsManager;
