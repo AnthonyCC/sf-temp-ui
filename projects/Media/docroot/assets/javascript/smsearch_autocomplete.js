@@ -55,4 +55,9 @@ YAHOO.util.Event.onDOMReady(function() {
     YAHOO.util.Dom.setY(termsList, YAHOO.util.Dom.getY(searchInput) + searchInput.offsetHeight);
     
     termsList.style.zIndex = "2";    
+    
+    // one-click submit solution
+    oAC.itemSelectEvent.subscribe(function(sType, aArgs) {
+    	document.forms['adv_search'].submit();
+    });
 });
