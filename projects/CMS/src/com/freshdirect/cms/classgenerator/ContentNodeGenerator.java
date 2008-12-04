@@ -420,8 +420,9 @@ public class ContentNodeGenerator {
                         }
                     }
                 }
+                String fieldName = getFieldName(attributeDef);
                 
-                copy.append(" result.").append(attributeFieldName).append(" = this.").append(attributeFieldName).append(";\n");
+                copy.append(" result.").append(fieldName).append(" = this.").append(fieldName).append(";\n");
             }
 
             initAttributes.append(" }\n");
@@ -437,6 +438,7 @@ public class ContentNodeGenerator {
             getAttributeMap.append(" return result; \n}");
             getChildKeys.append(" return result; \n}");
             
+            copy.append(" result.initAttributes();\n");
             copy.append(" return result; \n}");
             
             CtConstructor ct = new CtConstructor(new CtClass[0], class1);
