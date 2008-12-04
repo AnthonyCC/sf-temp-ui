@@ -77,14 +77,14 @@ public class FilteredSearchResults extends SearchResults implements Serializable
                 }
             }
 
-            int sc = compareGlobalScore(c1, c2);
+            int sc = compareProductsByGlobalScore(c1, c2);
             if (inverse) {
                 sc = -sc;
             }
             return sc;
         }
 
-        int compareGlobalScore(ContentNodeModel c1, ContentNodeModel c2) {
+        int compareProductsByGlobalScore(ContentNodeModel c1, ContentNodeModel c2) {
             float globalScore1 = ProductStatisticsProvider.getInstance().getGlobalProductScore(c1.getContentKey());
             float globalScore2 = ProductStatisticsProvider.getInstance().getGlobalProductScore(c2.getContentKey());
             // -1 means that no score found, so it should modify our ranking
@@ -102,15 +102,13 @@ public class FilteredSearchResults extends SearchResults implements Serializable
         final String searchTerm;
         final CategoryScoreOracle oracle;
         CategoryNodeTree cnt;
-
+        final Map predefinedScores;
+        
         RelevancyComparator(boolean inverse, String searchTerm,CategoryScoreOracle oracle, CategoryNodeTree cnt, List products) {
             super(inverse, true, products);
             this.terms = StringUtils.split(searchTerm);
             this.searchTerm = searchTerm.toLowerCase();
-            Map predefinedScores = ContentSearch.getInstance().getSearchRelevancyScores(this.searchTerm);
-            if (predefinedScores!=null) {
-                termScores.putAll(predefinedScores);
-            }
+            predefinedScores = ContentSearch.getInstance().getSearchRelevancyScores(this.searchTerm);
             this.oracle = oracle;
             this.cnt = cnt;
         }
@@ -131,6 +129,37 @@ public class FilteredSearchResults extends SearchResults implements Serializable
             return baseScore;
         }
 
+        /**
+         * compare two product model, based on their pre-defined parent category score 
+         * @param c1
+         * @param c2
+         * @return
+         */
+        int compareByPredefinedScores(ContentNodeModel c1, ContentNodeModel c2) {
+            if (predefinedScores!=null) {
+                Integer s1 = (Integer) predefinedScores.get(c1.getParentNode().getContentKey());
+                Integer s2 = (Integer) predefinedScores.get(c2.getParentNode().getContentKey());
+                if (s1 != null) {
+                    int i1 = s1.intValue();
+                    if (s2 != null) {
+                        int i2 = s2.intValue();
+                        if (i1 != i2) {
+                            return i2 - i1;
+                        }
+                        // mix the two category with the same score ...
+                        return compareInsideCategoryGroup(c1, c2);
+                    } else {
+                        return -1;
+                    }
+                } else {
+                    if (s2 != null) {
+                        return 1;
+                    }
+                }
+            }
+            return 0;
+        }
+        
         /**
          * Compares its two arguments for order.  Returns a negative integer,
          * zero, or a positive integer as the first argument is less than, equal
@@ -158,7 +187,7 @@ public class FilteredSearchResults extends SearchResults implements Serializable
             }
         }
         
-        protected int compareCategoryByName(ContentNodeModel c1, ContentNodeModel c2) {
+        protected int compareCategory(ContentNodeModel c1, ContentNodeModel c2) {
             TreeElement element1 = this.cnt.getTreeElement(c1);
             TreeElement element2 = this.cnt.getTreeElement(c2);
             if (element1!=null && element2!=null) {
@@ -169,20 +198,36 @@ public class FilteredSearchResults extends SearchResults implements Serializable
             return c1.getFullName().compareTo(c2.getFullName());
         }
 
-        protected int compareContentNodes(ContentNodeModel c1, ContentNodeModel c2) {
+        /**
+         * Compare two product model.
+         * 
+         * @param c1
+         * @param c2
+         * @return
+         */
+        protected final int compareContentNodes(ContentNodeModel c1, ContentNodeModel c2) {
+            // first compare by the predefined CMS scores ... 
+            int x = compareByPredefinedScores(c1, c2);
+            if (x != 0) {
+                return x;
+            }
+            // after by the magical algorithm 
+            int termScore1 = getTermScore(c1.getParentNode(), 1);
+            int termScore2 = getTermScore(c2.getParentNode(), 1);
 
-            int termScore1 = getTermScore(c1.getParentNode(),1);
-            int termScore2 = getTermScore(c2.getParentNode(),1);
-            
             if (termScore1 != termScore2) {
                 return (termScore2 - termScore1);
             }
-            int x = compareCategoryByName(c1.getParentNode(), c2.getParentNode());
-            if (x!=0) {
+            x = compareCategory(c1.getParentNode(), c2.getParentNode());
+            if (x != 0) {
                 return x;
             } else {
-                return compareGlobalScore(c1,c2);
+                return compareProductsByGlobalScore(c1, c2);
             }
+        }
+
+        protected int compareInsideCategoryGroup(ContentNodeModel c1, ContentNodeModel c2) {
+            return compareProductsByGlobalScore(c1,c2);
         }
         
     }
@@ -196,24 +241,15 @@ public class FilteredSearchResults extends SearchResults implements Serializable
             this.userProductScores = userProductScores;
         }
         
-        protected int compareContentNodes(ContentNodeModel c1, ContentNodeModel c2) {
-            int termScore1 = getTermScore(c1.getParentNode(),1);
-            int termScore2 = getTermScore(c2.getParentNode(),1);
-            if (termScore1 != termScore2) {
-                return (termScore2 - termScore1);
-            }
-            int x = compareCategoryByName(c1.getParentNode(), c2.getParentNode());
+
+        protected int compareInsideCategoryGroup(ContentNodeModel c1, ContentNodeModel c2) {
+            int x = userScore(c1, c2);
             if (x != 0) {
                 return x;
-            } else {
-                x = userScore(c1, c2);
-                if (x != 0) {
-                    return x;
-                }
-                return compareGlobalScore(c1, c2);
             }
+            return compareProductsByGlobalScore(c1, c2);
         }
-
+        
         private int userScore(ContentNodeModel c1, ContentNodeModel c2) {
             Float score1 = (Float) userProductScores.get(c1.getContentKey());
             Float score2 = (Float) userProductScores.get(c2.getContentKey());
