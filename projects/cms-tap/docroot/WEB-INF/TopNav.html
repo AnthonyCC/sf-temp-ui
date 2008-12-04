@@ -6,7 +6,7 @@
 			<td>
 				<b><span style="color: #f93">Fresh</span><span style="color: #693">Direct</span></b> - Content Management System
 				<span style="color: #999">(<span jwcid="@Insert" value="ognl:page.visit.user.name"/>
-				/ <span jwcid="@Insert" value="ognl:visit.user.isAllowedToWrite() ? 'Editor' : 'Viewer'"/>)</span>
+				/ <span jwcid="@Insert" value="ognl:visit.user.isAdmin() ? 'Admin' : visit.user.isAllowedToWrite() ? 'Editor' : 'Viewer'"/>)</span>
 			</td>
 			<td align="right">
 				<span jwcid="isNotFirefox">
