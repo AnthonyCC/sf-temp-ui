@@ -14,6 +14,7 @@
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 <%@ page import="com.freshdirect.framework.util.MathUtil" %>
 <%@ page import="com.freshdirect.fdstore.deliverypass.DeliveryPassUtil" %>
+<%@ page import="com.freshdirect.ErpServicesProperties"%>
 
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri="logic" prefix="logic" %>
@@ -118,7 +119,7 @@ ContentFactory contentfactory = ContentFactory.getInstance();
 
 <%String [] checkedErrors = {"technical_difficulty", "general_error_msg", "invalid_complaint", "payment_method_type", "no_more_refunds"};%>
 <fd:ErrorHandler result="<%=result%>" field="<%=checkedErrors%>" id='errorMsg'>
-	<div class="error_detail"><%= errorMsg %></div>
+  <div class="error_detail"><%= errorMsg %></div>
 </fd:ErrorHandler>
 
 <div class="content_scroll" style="height: 72%; padding-top: 0px;">
@@ -181,15 +182,15 @@ ContentFactory contentfactory = ContentFactory.getInstance();
             }
         }
 
-	String deptDesc=lastdept;
-	if (lastdept.startsWith("Recipe:")) {  // get the dept of the primary home of this item
-		ProductModel prodModl = contentfactory.getProduct(orderLine.getSku().getSkuCode());
-		if (prodModl!=null){
-			if (prodModl.getPrimaryHome()!=null) {
-				deptDesc=prodModl.getPrimaryHome().getDepartment().getFullName();
-			}
-		}
-	}
+  String deptDesc=lastdept;
+  if (lastdept.startsWith("Recipe:")) {  // get the dept of the primary home of this item
+    ProductModel prodModl = contentfactory.getProduct(orderLine.getSku().getSkuCode());
+    if (prodModl!=null){
+      if (prodModl.getPrimaryHome()!=null) {
+        deptDesc=prodModl.getPrimaryHome().getDepartment().getFullName();
+      }
+    }
+  }
 %>
 <%      // check if this line contains an error
         boolean isErrorLine = ( !result.isSuccess() && (result.hasError("ol_error_qty_"+i) || result.hasError("ol_error_"+i)) ) ? true : false;
@@ -456,35 +457,35 @@ ContentFactory contentfactory = ContentFactory.getInstance();
         <td>&nbsp;</td>
         <td>Shipping&nbsp;</td>
         <td align="right">
-	    <%
-		     if(order.isDlvPassApplied()) {
-	     %>
-			<%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
-		     <% } else { %>						
-		        <%= (order.isDeliveryChargeWaived()) ? "WAIVED" : CCFormatter.formatCurrency(order.getDeliverySurcharge()) %>
-	     <% } %>       
+      <%
+         if(order.isDlvPassApplied()) {
+       %>
+      <%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
+         <% } else { %>           
+            <%= (order.isDeliveryChargeWaived()) ? "WAIVED" : CCFormatter.formatCurrency(order.getDeliverySurcharge()) %>
+       <% } %>       
         </td>
         <td>&nbsp;</td>
         <td>Shipping&nbsp;</td>
         <td align="right">
-	    <%
-		     if(order.isDlvPassApplied()) {
-	     %>
-			<%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
-		     <% } else { %>						
-		        <%= (order.isDeliveryChargeWaived()) ? "WAIVED" : CCFormatter.formatCurrency(order.getDeliverySurcharge()) %>
-	     <% } %>       
+      <%
+         if(order.isDlvPassApplied()) {
+       %>
+      <%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
+         <% } else { %>           
+            <%= (order.isDeliveryChargeWaived()) ? "WAIVED" : CCFormatter.formatCurrency(order.getDeliverySurcharge()) %>
+       <% } %>       
         </td>
         <td>&nbsp;</td>
         <td>Shipping</td>
         <td align="right">
-	    <%
-		     if(order.isDlvPassApplied()) {
-	     %>
-			<%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
-		     <% } else { %>						
-		        <%= (order.isDeliveryChargeWaived()) ? "WAIVED" : CCFormatter.formatCurrency(order.getDeliverySurcharge()) %>
-	     <% } %>       
+      <%
+         if(order.isDlvPassApplied()) {
+       %>
+      <%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
+         <% } else { %>           
+            <%= (order.isDeliveryChargeWaived()) ? "WAIVED" : CCFormatter.formatCurrency(order.getDeliverySurcharge()) %>
+       <% } %>       
         </td>
     </tr>
 <%  if (order.getPhoneCharge() > 0) { %>
@@ -526,7 +527,7 @@ ContentFactory contentfactory = ContentFactory.getInstance();
     </tr>
     <tr>
         <td></td>
-        <td COLSPAN="4"><b>Note:</b> If total credit amount is over $14, supervisor approval will be required.<br>Store credit and cashbacks will not be processed until supervisor has reviewed and approved credit.</td>
+        <td COLSPAN="4"><b>Note:</b> If total credit amount is over $<%= ErpServicesProperties.getCreditAutoApproveAmount()%>, supervisor approval will be required.<br>Store credit and cashbacks will not be processed until supervisor has reviewed and approved credit.</td>
         <td BGCOLOR=<%= bgcolor %> COLSPAN="8">
             <textarea cols="30" rows="5" name="description" wrap="virtual"><%= request.getParameter("description") %></TEXTAREA><BR><fd:ErrorHandler result='<%=result%>' name='credit_description' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
         </td>

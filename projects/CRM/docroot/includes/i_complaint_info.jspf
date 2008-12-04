@@ -1,6 +1,7 @@
 <%@ page import="com.freshdirect.webapp.taglib.callcenter.ComplaintUtil" %>
 <%@ page import="com.freshdirect.customer.ErpInvoiceLineI" %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@ page import="com.freshdirect.ErpServicesProperties"%>
 
 <% 
 String thisPageURI = request.getRequestURI();
@@ -296,7 +297,7 @@ boolean inPopupWindow = "true".equalsIgnoreCase(request.getParameter("inPopup"))
 %>
     <tr>
         <td width="4%"><BR></td>
-        <td width="47%" colspan="4"><b>Note:</b> If total credit amount is over $14 or the order is still en-route, supervisor approval will be required. Store credit and cashbacks will not be processed until supervisor has reviewed and approved credit.</td>
+        <td width="47%" colspan="4"><b>Note:</b> If total credit amount is over $<%= ErpServicesProperties.getCreditAutoApproveAmount()%> or the order is still en-route, supervisor approval will be required. Store credit and cashbacks will not be processed until supervisor has reviewed and approved credit.</td>
         <td bgcolor="<%= bgcolor %>" width="4%"><BR></td>
         <td bgcolor="<%= bgcolor %>" width="50%" colspan="9"><%= thisComplaint.getDescription() %><BR><span class="space4pix"><br></span></td>
     </tr>
