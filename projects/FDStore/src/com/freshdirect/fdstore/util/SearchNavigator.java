@@ -246,22 +246,24 @@ public class SearchNavigator {
 		SortDisplay[] sortDisplayBar;
 		
 		if (this.isTextView()) {
-			sortDisplayBar = new SortDisplay[6];
+			// sortDisplayBar = new SortDisplay[6];
+			sortDisplayBar = new SortDisplay[5];
 
 			sortDisplayBar[0] = new SortDisplay(SearchNavigator.SORT_DEFAULT, isDefaultSort(), isSortOrderingAscending(), "Default", "Default", "Default");
 			sortDisplayBar[1] = new SortDisplay(SearchNavigator.SORT_BY_RELEVANCY, isSortByRelevancy(), isSortOrderingAscending(), "Relevance", "Most Relevant", "Least Relevant");
 			sortDisplayBar[2] = new SortDisplay(SearchNavigator.SORT_BY_NAME, isSortByName(), isSortOrderingAscending(), "Name", "Name (A-Z)", "Name (Z-A)");
 			sortDisplayBar[3] = new SortDisplay(SearchNavigator.SORT_BY_PRICE, isSortByPrice(), isSortOrderingAscending(), "Price", "Price (low)", "Price (high)");
 			sortDisplayBar[4] = new SortDisplay(SearchNavigator.SORT_BY_POPULARITY, isSortByPopularity(), isSortOrderingAscending(), "Popularity", "Most Popular", "Least Popular");
-			sortDisplayBar[5] = new SortDisplay(SearchNavigator.SORT_BY_SALE, isSortBySale(), isSortOrderingAscending(), "Sale", "Sale (yes)", "Sale (no)");
+			// sortDisplayBar[5] = new SortDisplay(SearchNavigator.SORT_BY_SALE, isSortBySale(), isSortOrderingAscending(), "Sale", "Sale (yes)", "Sale (no)");
 		} else {
-			sortDisplayBar = new SortDisplay[5];
+			// sortDisplayBar = new SortDisplay[5];
+			sortDisplayBar = new SortDisplay[4];
 
 			sortDisplayBar[0] = new SortDisplay(SearchNavigator.SORT_BY_RELEVANCY, isDefaultSort(), isSortOrderingAscending(), "Relevance", "Most Relevant", "Least Relevant");
 			sortDisplayBar[1] = new SortDisplay(SearchNavigator.SORT_BY_NAME, isSortByName(), isSortOrderingAscending(), "Name", "Name (A-Z)", "Name (Z-A)");
 			sortDisplayBar[2] = new SortDisplay(SearchNavigator.SORT_BY_PRICE, isSortByPrice(), isSortOrderingAscending(), "Price", "Price (low)", "Price (high)");
 			sortDisplayBar[3] = new SortDisplay(SearchNavigator.SORT_BY_POPULARITY, isSortByPopularity(), isSortOrderingAscending(), "Popularity", "Most Popular", "Least Popular");
-			sortDisplayBar[4] = new SortDisplay(SearchNavigator.SORT_BY_SALE, isSortBySale(), isSortOrderingAscending(), "Sale", "Sale (yes)", "Sale (no)");
+			// sortDisplayBar[4] = new SortDisplay(SearchNavigator.SORT_BY_SALE, isSortBySale(), isSortOrderingAscending(), "Sale", "Sale (yes)", "Sale (no)");
 		}
 		return sortDisplayBar;
 	}

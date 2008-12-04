@@ -22,13 +22,13 @@
 %><%@ taglib uri='template' prefix='tmpl'
 %><%@ taglib uri='freshdirect' prefix='fd'
 %><%@ taglib uri='oscache' prefix='oscache'
-%><%-- @ taglib uri="http://java.sun.com/jstl/core" prefix="c"
---%><%
+%><%
 final String SEPARATOR = "&nbsp;<span style=\"color: grey\">&bull;</span>&nbsp;";
 final String trk = "srch"; // tracking code
 
 String criteria = request.getParameter("searchParams");
 
+// OAS AD settings
 request.setAttribute("sitePage", "www.freshdirect.com/search.jsp");
 request.setAttribute("listPos", "SystemMessage,LittleRandy,CategoryNote");
 
@@ -54,7 +54,7 @@ if (SearchNavigator.VIEW_DEFAULT == nav.getView() && request.getParameter("refin
 }
 
 request.setAttribute("sx.navigator", nav);
-request.setAttribute("recipes.show_all", new Boolean(nav.isRecipesDeptSelected()));
+request.setAttribute("recipes.show_all", new Boolean(nav.isRecipesDeptSelected())); // -> recipes.jspf
 %>
 
 
@@ -68,7 +68,7 @@ if (jumpToRecipes && !nav.isRecipesDeptSelected()) {
 	nav.setDepartment(SearchNavigator.RECIPES_DEPT);
 	nav.setSortBy(SearchNavigator.SORT_DEFAULT_RECIPE);
 
-	request.setAttribute("recipes.show_all", Boolean.TRUE);
+	request.setAttribute("recipes.show_all", Boolean.TRUE); // -> recipes.jspf
 }
 
 // show category panel if found products (recipes don't count)
@@ -250,36 +250,54 @@ if ( results == null) {
 			// Don't show pager for text view!
 			if (!nav.isTextView()) {
 %>
-<%-- Pager Bar --%>
-<div style="font-weight: bold; margin-top: 1em">
-	<div style="float:right; font-weight: bold;"><%
-				if (nav.isGridView()) { %>
-Display <% if (results.getPageSize()==20) { %>20<% } else { %><a href="<%= nav.getPageSizeAction(20) %>">20</a><% } %> |
-<% if (results.getPageSize()==40) { %>40<% } else { %><a href="<%= nav.getPageSizeAction(40) %>">40</a><% } %> |
-<% if (results.isAll()) { %>ALL<% } else { %><a href="<%= nav.getPageSizeAction(0) %>">ALL</a><% } %> per page
-<% } else if (nav.isListView()) { %>
-Display <% if (results.getPageSize()==15) { %>15<% } else { %><a href="<%= nav.getPageSizeAction(15) %>">15</a><% } %> |
-<% if (results.getPageSize()==30) { %>30<% } else { %><a href="<%= nav.getPageSizeAction(30) %>">30</a><% } %> |
-<% if (results.isAll()) { %>ALL<% } else { %><a href="<%= nav.getPageSizeAction(0) %>">ALL</a><% } %> per page
-<% } %>
-	</div>
+<%--
+
+  *************
+  * Pager Bar *
+  *************
+
+--%><%
+// set defaults:
+// LIST: 15, 30
+// GRID: 20, 40
+int itemsPerPage1 = nav.isGridView() ? 20 : 15;
+int itemsPerPage2 = nav.isGridView() ? 40 : 30;
+%>
+<div class="title16" style="x-font-size: 18px; x-font-weight: bold; margin-top: 1em;  text-align: center;">
 Page: 
 <%
-				int currentPage = results.getCurrentPage();
-				int off = 0;
-				for (int i=0;i<results.getPageCount();i++) {
-			    	if (currentPage==i) {
-			    		%><%= i+1 %><%
-			    	} else {
-						%><a href="<%= nav.getJumpToPageAction(off) %>"><%= i+1 %></a><%
+				// generate page numbers
+				if (results.getPageCount() == 1) {
+					// pages == 1
+					%>1<%
+				} else {
+					// pages > 1
+					int currentPage = results.getCurrentPage();
+					int off = 0;
+					for (int i=0;i<results.getPageCount();i++) {
+				    	if (currentPage==i) {
+				    		%><%= i+1 %><%
+				    	} else {
+							%><a href="<%= nav.getJumpToPageAction(off) %>"><%= i+1 %></a><%
+						}
+	
+						if (i<results.getPageCount()-1) {
+				    	 %><%= SEPARATOR %><%
+						}
+		            	off += results.getPageSize();
+		        	}
+					
+					// display NEXT if pages are more than 3
+					if (results.getPageCount() > 3 && results.getCurrentPage() < results.getPageCount()-1) {
+						int new_offset = results.getPageSize()*(results.getCurrentPage()+1);
+						%><a href="<%= nav.getJumpToPageAction( new_offset ) %>" style="margin-left: 2em">NEXT</a><%
 					}
-
-					if (i<results.getPageCount()-1) {
-			    	 %><%= SEPARATOR %><%
-					}
-	            	off += results.getPageSize();
-	        	}
+				}
 %>
+</div><div style="text-align: center; margin-top: 1em;">
+Display <% if (results.getPageSize()==itemsPerPage1) { %><%= itemsPerPage1 %><% } else { %><a href="<%= nav.getPageSizeAction(itemsPerPage1) %>"><%= itemsPerPage1 %></a><% } %> |
+<% if (results.getPageSize()==itemsPerPage2) { %><%= itemsPerPage2 %><% } else { %><a href="<%= nav.getPageSizeAction(itemsPerPage2) %>"><%= itemsPerPage2 %></a><% } %> |
+<% if (results.isAll()) { %>ALL<% } else { %><a href="<%= nav.getPageSizeAction(0) %>">ALL</a><% } %> per page
 </div>
 <%
 	    	} // view != 'text'
@@ -288,7 +306,7 @@ Page:
 
 
 
-		if (jumpToRecipes /*nav.isRecipesDeptSelected()*/) {
+		if (jumpToRecipes) {
 			List recipes = results.getFilteredRecipes();
 			String selectedRecipeClassification = nav.getRecipeFilter();
 			DomainValue selDv = null;
