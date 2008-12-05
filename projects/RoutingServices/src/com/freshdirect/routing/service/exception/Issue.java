@@ -30,6 +30,8 @@ public class Issue implements IIssue {
 		messages.put(PROCESS_SENDROUTES_UNSUCCESSFUL,"Send Routes to RoadNet Failed");
 		messages.put(PROCESS_SENDUNASSIGNED_UNSUCCESSFUL,"Send Unassigned to RoadNet Failed");
 		messages.put(DATEPARSE_ERROR,"Date Parse Error");
+		messages.put(PROCESS_BALANCEROUTES_UNSUCCESSFUL,"Balance Routes Failed");
+		messages.put(PROCESS_RETRIEVESESSION_UNSUCCESSFUL,"Retrieve Session Failed");
 	}
 	
 	public static String getMessage(String id) {

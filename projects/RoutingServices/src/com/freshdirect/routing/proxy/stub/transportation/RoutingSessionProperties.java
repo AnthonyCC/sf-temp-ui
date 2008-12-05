@@ -14,6 +14,8 @@ public class RoutingSessionProperties  implements java.io.Serializable {
 
     private java.util.Date sessionDate;
 
+    private boolean combineOrders;
+
     private boolean applyRoadRestrictions;
 
     private boolean hoursOfServiceAware;
@@ -25,11 +27,13 @@ public class RoutingSessionProperties  implements java.io.Serializable {
            java.lang.String description,
            java.lang.String scenario,
            java.util.Date sessionDate,
+           boolean combineOrders,
            boolean applyRoadRestrictions,
            boolean hoursOfServiceAware) {
            this.description = description;
            this.scenario = scenario;
            this.sessionDate = sessionDate;
+           this.combineOrders = combineOrders;
            this.applyRoadRestrictions = applyRoadRestrictions;
            this.hoursOfServiceAware = hoursOfServiceAware;
     }
@@ -96,6 +100,26 @@ public class RoutingSessionProperties  implements java.io.Serializable {
 
 
     /**
+     * Gets the combineOrders value for this RoutingSessionProperties.
+     * 
+     * @return combineOrders
+     */
+    public boolean isCombineOrders() {
+        return combineOrders;
+    }
+
+
+    /**
+     * Sets the combineOrders value for this RoutingSessionProperties.
+     * 
+     * @param combineOrders
+     */
+    public void setCombineOrders(boolean combineOrders) {
+        this.combineOrders = combineOrders;
+    }
+
+
+    /**
      * Gets the applyRoadRestrictions value for this RoutingSessionProperties.
      * 
      * @return applyRoadRestrictions
@@ -155,6 +179,7 @@ public class RoutingSessionProperties  implements java.io.Serializable {
             ((this.sessionDate==null && other.getSessionDate()==null) || 
              (this.sessionDate!=null &&
               this.sessionDate.equals(other.getSessionDate()))) &&
+            this.combineOrders == other.isCombineOrders() &&
             this.applyRoadRestrictions == other.isApplyRoadRestrictions() &&
             this.hoursOfServiceAware == other.isHoursOfServiceAware();
         __equalsCalc = null;
@@ -177,6 +202,7 @@ public class RoutingSessionProperties  implements java.io.Serializable {
         if (getSessionDate() != null) {
             _hashCode += getSessionDate().hashCode();
         }
+        _hashCode += (isCombineOrders() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         _hashCode += (isApplyRoadRestrictions() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         _hashCode += (isHoursOfServiceAware() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         __hashCodeCalc = false;
@@ -207,6 +233,12 @@ public class RoutingSessionProperties  implements java.io.Serializable {
         elemField.setFieldName("sessionDate");
         elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "sessionDate"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "date"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("combineOrders");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "combineOrders"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();

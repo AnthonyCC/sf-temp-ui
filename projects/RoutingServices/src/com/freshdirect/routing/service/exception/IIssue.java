@@ -23,4 +23,6 @@ public interface IIssue {
 	public final static String PROCESS_SENDROUTES_UNSUCCESSFUL = "ISSUE017";
 	public final static String PROCESS_SENDUNASSIGNED_UNSUCCESSFUL = "ISSUE018";
 	public final static String DATEPARSE_ERROR = "ISSUE019";
+	public final static String PROCESS_BALANCEROUTES_UNSUCCESSFUL = "ISSUE020";
+	public final static String PROCESS_RETRIEVESESSION_UNSUCCESSFUL = "ISSUE021";
 }

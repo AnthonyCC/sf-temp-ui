@@ -12,9 +12,9 @@ import org.mbertoli.jfep.Parser;
 import com.freshdirect.routing.model.IPackagingModel;
 
 public class ServiceTimeUtil {
-	
+
 	public static double evaluateExpression(String expression, Map parameters) {
-		
+
 		Parser parser = new Parser(expression);
 		ExpressionNode root = parser.getTree();
 		for (Iterator i = parameters.keySet().iterator(); i.hasNext();) {
@@ -24,19 +24,18 @@ public class ServiceTimeUtil {
             else
                 root.setVariable((String)name, ((Double)parameters.get(name)).doubleValue());
         }
-		//System.out.println("parameters :"+parameters+"  "+expression);
 		return root.getValue();
 	}
-	
+
 	public static Map getServiceTimeFactorParams(IPackagingModel model) {
 		Map tmpMap = new HashMap();
 		tmpMap.put("x",new Double(model.getNoOfCartons()));
 		tmpMap.put("y",new Double(model.getNoOfCases()));
 		tmpMap.put("z",new Double(model.getNoOfFreezers()));
-		
+
 		return tmpMap;
 	}
-	
+
 	public static Map getServiceTimeParams(double intFixedServiceTime, double intVariableServiceTime, double valX) {
 		Map tmpMap = new HashMap();
 		tmpMap.put("a",new Double(intFixedServiceTime));
@@ -44,7 +43,7 @@ public class ServiceTimeUtil {
 		tmpMap.put("m",new Double(valX));
 		return tmpMap;
 	}
-	
+
 	public static boolean isValidExpression(String expression, List variableList) {
 		try {
 			Parser parser = new Parser(expression);
@@ -53,17 +52,13 @@ public class ServiceTimeUtil {
 	            Object name = i.next();
 	            if (!variableList.contains(name)) {
 	            	return false;
-	            }	            	            
-	        }			
+	            }
+	        }
 		} catch (Exception e) {
 			return false;
 		}
-		
+
 		return true;
-	}
-	
-	public static void main(String args[]) {
-		System.out.println("MATH >>"+isValidExpression("x+y+z", Arrays.asList(new String[]{"x","y","z"})));
 	}
 
 }

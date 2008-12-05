@@ -95,30 +95,30 @@ public class AddressDataExtractor {
 		}*/
 		//processLowQualityBuildings(getConnection());
 	}
-	
+
 	//compare local quality address with delivery info for last 3 years
 	private static void compareLowQualityBuildings(Connection connection, String source) throws Exception {
 
 		try {
-						
+
 			AddressModel address = null;
 			ExtractAddressModel deliveryInfoAddress = null;
-			
+
 			List deliveryInfoAddressLst = deSerializeData(source);
 			List dataList = loadLowQualityBuildings(connection);
-			
+
 			System.out.println("deliveryInfoAddress LIST:" + deliveryInfoAddressLst.size());
 			Iterator tmpIterator = 	deliveryInfoAddressLst.iterator();
-			List scrubbedList = new ArrayList();			
+			List scrubbedList = new ArrayList();
 			while(tmpIterator.hasNext()) {
 				deliveryInfoAddress = (ExtractAddressModel)tmpIterator.next();
 				scrubbedList.add(deliveryInfoAddress.getScrubbedAddress()+"_"+deliveryInfoAddress.getZip());
 			}
-			
+
 			System.out.println("scrubbedList LIST:" + scrubbedList.size());
 			System.out.println("ADDRESS LIST:" + dataList.size());
 			tmpIterator = 	dataList.iterator();
-			
+
 			List hasOrderList = new ArrayList();
 			List hasNoOrderList = new ArrayList();
 			String srubbedAddress = null;
@@ -130,27 +130,27 @@ public class AddressDataExtractor {
 				} else {
 					hasNoOrderList.add(address);
 				}
-			}			
-			
+			}
+
 			System.out.println("HAS ORDER LIST:" + hasOrderList.size());
 			System.out.println("HAS NO ORDER LIST:" + hasNoOrderList.size());
-			
-			
+
+
 			printAddress(hasOrderList);
-			
-		} finally {			
+
+		} finally {
 			connection.close();
 		}
 	}
-	
+
 	private static void printAddress(List dataList) {
-		
+
 		Iterator tmpIterator = 	dataList.iterator();
-		
+
 		AddressModel address = null;
 		int intCount=0;
 		StringBuffer strBuf = new StringBuffer();
-		while(tmpIterator.hasNext()) {			
+		while(tmpIterator.hasNext()) {
 			address = (AddressModel)tmpIterator.next();
 			strBuf.append("'"+address.getId()+"'");
 			if(intCount != dataList.size()-1) {
@@ -160,14 +160,14 @@ public class AddressDataExtractor {
 		System.out.println(strBuf.toString());
 	}
 
-	
+
 	private static List loadLowQualityBuildings(Connection connection) throws Exception {
-		
+
 		Statement st = null;
 		ResultSet rs = null;
 		List dataList = new ArrayList();
 		try {
-			
+
 			st = connection.createStatement();
 			System.out
 					.println("----------------------START QUERY--------------------------");
@@ -175,18 +175,18 @@ public class AddressDataExtractor {
 			System.out
 					.println("----------------------END QUERY--------------------------");
 			AddressModel address = null;
-			
+
 
 			while (rs.next()) {
 				address = new AddressModel();
 				address.setAddress1(rs.getString("SCRUBBED_STREET"));
 				address.setZipCode(rs.getString("ZIP"));
-				address.setCountry(rs.getString("COUNTRY"));				
+				address.setCountry(rs.getString("COUNTRY"));
 				address.setId(rs.getString("ID"));
-				
+
 				dataList.add(address);
 			}
-			
+
 		} finally {
 			if (rs != null)
 				rs.close();
@@ -195,29 +195,29 @@ public class AddressDataExtractor {
 		}
 		return dataList;
 	}
-	
+
 	private static void processLowQualityBuildings(Connection connection) throws Exception {
 
 		try {
-						
+
 			AddressModel address = null;
 			List dataList = loadLowQualityBuildings(connection);
-			
+
 			System.out.println("ADDRESS LIST:" + dataList.size());
 			Iterator tmpIterator = 	dataList.iterator();
-			
+
 			ArrayList saveBuildingList = new ArrayList();
 			ArrayList saveConfidenceQualityList = new ArrayList();
 			IGeographicLocation geoLocation = null;
 			BuildingModel model = null;
-			
+
 			while(tmpIterator.hasNext()) {
 				address = (AddressModel)tmpIterator.next();
 				model = new BuildingModel();
 				model.setBuildingId(address.getId());
 				geoLocation = new GeographicLocation();
 				model.setGeographicLocation(geoLocation);
-				
+
 				IGeographicLocation storeFrontLocationModel = getLocalGeocode(connection, address);
 				if (storeFrontLocationModel == null) {
 					geoLocation.setConfidence(EnumGeocodeConfidenceType.LOW.getName());
@@ -233,12 +233,12 @@ public class AddressDataExtractor {
 			}
 			updateBuildingsConfidenceQuality(saveConfidenceQualityList,getDataSource(true,"fddatasource"));
 			updateBuildings(saveBuildingList,getDataSource(true,"fddatasource"));
-			
-		} finally {			
+
+		} finally {
 			connection.close();
 		}
 	}
-	
+
 	private static final String UPDATE_BUILDINGCONFQUAL_INFORMATION = "UPDATE DLV.DELIVERY_BUILDING SET  "
 		+ "GEO_CONFIDENCE = ?, GEO_QUALITY = ? WHERE ID = ?";
 
@@ -247,22 +247,22 @@ public class AddressDataExtractor {
 		Connection connection = null;
 		try {
 			BatchSqlUpdate batchUpdater = new BatchSqlUpdate(dataSource,
-					UPDATE_BUILDINGCONFQUAL_INFORMATION);			
+					UPDATE_BUILDINGCONFQUAL_INFORMATION);
 			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
-			
+
 			batchUpdater.compile();
-	
+
 			Iterator iterator = dataList.iterator();
 			connection = dataSource.getConnection();
-			
+
 			IGeographicLocation location = null;
 			BuildingModel model = null;
-			
+
 			while (iterator.hasNext()) {
 				model = (BuildingModel)iterator.next();
-				location = model.getGeographicLocation();	
+				location = model.getGeographicLocation();
 				batchUpdater.update(new Object[] { location.getConfidence(), location.getQuality(),
 						model.getBuildingId() });
 			}
@@ -272,7 +272,7 @@ public class AddressDataExtractor {
 				connection.close();
 		}
 	}
-	
+
 	private static final String UPDATE_BUILDING_INFORMATION = "UPDATE DLV.DELIVERY_BUILDING SET LATITUDE = ? , LONGITUDE = ? "
 		+ " , GEO_CONFIDENCE = ?, GEO_QUALITY = ? WHERE ID = ?";
 
@@ -287,18 +287,18 @@ public class AddressDataExtractor {
 			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
-			
+
 			batchUpdater.compile();
-	
+
 			Iterator iterator = dataList.iterator();
 			connection = dataSource.getConnection();
-			
+
 			IGeographicLocation location = null;
 			BuildingModel model = null;
-			
+
 			while (iterator.hasNext()) {
 				model = (BuildingModel)iterator.next();
-				location = model.getGeographicLocation();			
+				location = model.getGeographicLocation();
 				batchUpdater.update(new Object[] { location.getLatitude(),
 						location.getLongitude(), location.getConfidence(), location.getQuality(),
 						model.getBuildingId() });
@@ -309,13 +309,13 @@ public class AddressDataExtractor {
 				connection.close();
 		}
 	}
-	
+
 	public static IGeographicLocation getLocalGeocode(Connection connection, AddressModel model) throws SQLException  {
-		
+
 		com.freshdirect.delivery.ejb.GeographyDAO dao = new com.freshdirect.delivery.ejb.GeographyDAO();
 		IGeographicLocation result = null;
-		
-		
+
+
 		try {
 			String geoResult = dao.geocode(model, false, connection);
 			if (com.freshdirect.delivery.ejb.GeographyDAO.GEOCODE_OK.equals(geoResult)) {
@@ -323,8 +323,8 @@ public class AddressDataExtractor {
 				result.setLatitude(""+model.getAddressInfo().getLatitude());
 				result.setLongitude(""+model.getAddressInfo().getLongitude());
 				result.setConfidence(EnumGeocodeConfidenceType.LOW.getName());
-				if(model.getAddressInfo().isGeocodeException()) {					
-					result.setQuality(EnumGeocodeQualityType.STOREFRONTEXCEPTION.getName());					
+				if(model.getAddressInfo().isGeocodeException()) {
+					result.setQuality(EnumGeocodeQualityType.STOREFRONTEXCEPTION.getName());
 				} else {
 					result.setQuality(EnumGeocodeQualityType.STOREFRONTGEOCODE.getName());
 				}
@@ -334,9 +334,9 @@ public class AddressDataExtractor {
 		}
 		return result;
 	}
-	
+
 	private static void simpleTest() throws Exception {
-		
+
 		Address address = new Address();
 		address.setLine1("225 E 63RD ST");
 		address.setPostalCode("10065");
@@ -355,7 +355,7 @@ public class AddressDataExtractor {
 		}
 		System.out.println("GEOCODE :"+geographicData.getQualityDescription()+" "+geographicData.getConfidence().getValue());
 	}
-		
+
 	private static void loadAddressFromFile() throws Exception {
 
 		List inputDataList = new RouteFileManager().parseRouteFile(
@@ -439,12 +439,12 @@ public class AddressDataExtractor {
 				conn.close();
 		}
 	}
-	
+
 	private static void processBuildingForCityState(String source, Connection conn)
 			throws Exception {
 		try {
 			List inputDataList = deSerializeData(source);
-			List updateDataList = new ArrayList(); 
+			List updateDataList = new ArrayList();
 			AddressModel tmpInputModel = null;
 			AddressModel tmpCityStateModel = null;
 			Iterator iterator = inputDataList.iterator();
@@ -461,7 +461,7 @@ public class AddressDataExtractor {
 				conn.close();
 		}
 	}
-	
+
 	private static final String UPDATE_BUILDINGCITYSTATE_INFORMATION = "UPDATE DLV.DELIVERY_BUILDING SET CITY = ?, STATE = ?" +
 			" WHERE ID = ?";
 
@@ -475,19 +475,19 @@ public static void updateBuildingCityState(List dataList, DataSource dataSource)
 		batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 		batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 		batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
-		
+
 		batchUpdater.compile();
-	
+
 		Iterator iterator = dataList.iterator();
-		
+
 		AddressModel model = null;
 		conn = dataSource.getConnection();
 		while (iterator.hasNext()) {
-	
+
 			model = (AddressModel) iterator.next();
-	
+
 			batchUpdater.update(new Object[] { model.getCity(),
-					 model.getState(), 
+					 model.getState(),
 					 	model.getId() });
 		}
 		batchUpdater.flush();
@@ -496,7 +496,7 @@ public static void updateBuildingCityState(List dataList, DataSource dataSource)
 			conn.close();
 	}
 }
-	
+
 	private static AddressModel getCityState(Connection connection,
 			String address, String zipCode) throws Exception {
 
@@ -507,27 +507,27 @@ public static void updateBuildingCityState(List dataList, DataSource dataSource)
 		try {
 
 			st = connection.prepareStatement("select distinct city ct,state st from cust.address@DBSTOSBY.NYC.FRESHDIRECT.COM a where a.SCRUBBED_ADDRESS = ? and zip = ?");
-			
+
 			st.setString(1, address);
 			st.setString(2, zipCode);
 			rs = st.executeQuery();
-			
-			
+
+
 
 			while (rs.next()) {
 				city = rs.getString("ct");
-				
+
 				state = rs.getString("st");
 
 			}
-			
-			
-			
+
+
+
 		} finally {
 			if (rs != null)
 				rs.close();
 			if (st != null)
-				st.close();			
+				st.close();
 		}
 		if(city == null || city.trim().length() == 0) {
 			city = "New York";
@@ -535,7 +535,7 @@ public static void updateBuildingCityState(List dataList, DataSource dataSource)
 		if(state == null || state.trim().length() == 0) {
 			state = "NY";
 		}
-		
+
 		AddressModel tmpAdd = new AddressModel();
 		tmpAdd.setCity(city);
 		tmpAdd.setState(state);
@@ -621,7 +621,7 @@ public static void updateBuildingCityState(List dataList, DataSource dataSource)
 
 			tmpTrueList.add(tmpInputModel);
 		}
-				
+
 		Address[] addressLst = getAddressArray(tmpTrueList);
 		RouteNetWebService_Service service = new RouteNetWebService_ServiceLocator();
 		RouteNetPortType port = service.getRouteNetWebService(new URL(
@@ -696,7 +696,7 @@ public static void updateBuildingCityState(List dataList, DataSource dataSource)
 
 			if (hasApartment) {
 				locationQ
-						.append("AND dl.APARTMENT = REPLACE(REPLACE(UPPER(?),'-'),' ') ");
+						.append("AND UPPER(dl.APARTMENT) = REPLACE(REPLACE(UPPER(?),'-'),' ') ");
 			} else {
 				locationQ.append("AND dl.APARTMENT IS NULL ");
 			}
@@ -906,8 +906,8 @@ public static void updateBuildingCityState(List dataList, DataSource dataSource)
 			connection.close();
 		}
 	}
-	
-		
+
+
 	private static void loadStandByDeliveryInfo(Connection connection,
 			String destinationFile) throws Exception {
 
@@ -932,18 +932,18 @@ public static void updateBuildingCityState(List dataList, DataSource dataSource)
 
 			while (rs.next()) {
 				address = new ExtractAddressModel();
-				address.setAddress1(rs.getString("ADDRESS1"));				
+				address.setAddress1(rs.getString("ADDRESS1"));
 				address.setZip(rs.getString("ZIP"));
-				
+
 				try {
 					scrubbedStreet = standardizeStreetAddress(address.getAddress1(), address.getAddress1());
 					address.setScrubbedAddress(scrubbedStreet);
 					scrubbedAddress = scrubbedStreet + address.getZip();
-					
+
 					if (!dataList.contains(scrubbedAddress)) {
 						addressList.add(address);
 						dataList.add(scrubbedAddress);
-					} 
+					}
 				} catch (RoutingServiceException ex) {
 					System.out.println(address);
 				}
@@ -959,7 +959,7 @@ public static void updateBuildingCityState(List dataList, DataSource dataSource)
 			connection.close();
 		}
 	}
-	
+
 	private static void loadBuildingAddress(Connection connection,
 			String destinationFile) throws Exception {
 
@@ -978,10 +978,10 @@ public static void updateBuildingCityState(List dataList, DataSource dataSource)
 			System.out
 					.println("----------------------END QUERY--------------------------");
 			AddressModel address = null;
-			
+
 			while (rs.next()) {
 				address = new AddressModel();
-				address.setAddress1(rs.getString("SCRUBBED_STREET"));				
+				address.setAddress1(rs.getString("SCRUBBED_STREET"));
 				address.setZipCode(rs.getString("ZIP"));
 				address.setId(rs.getString("ID"));
 
@@ -1000,7 +1000,7 @@ public static void updateBuildingCityState(List dataList, DataSource dataSource)
 			connection.close();
 		}
 	}
-	
+
 	private static void loadStandByAddress(Connection connection,
 			String destinationFile) throws Exception {
 

@@ -19,6 +19,7 @@ public class RoutingSession  extends com.freshdirect.routing.proxy.stub.transpor
            java.lang.String description,
            java.lang.String scenario,
            java.util.Date sessionDate,
+           boolean combineOrders,
            boolean applyRoadRestrictions,
            boolean hoursOfServiceAware,
            com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity sessionIdentity,
@@ -27,6 +28,7 @@ public class RoutingSession  extends com.freshdirect.routing.proxy.stub.transpor
             description,
             scenario,
             sessionDate,
+            combineOrders,
             applyRoadRestrictions,
             hoursOfServiceAware);
         this.sessionIdentity = sessionIdentity;

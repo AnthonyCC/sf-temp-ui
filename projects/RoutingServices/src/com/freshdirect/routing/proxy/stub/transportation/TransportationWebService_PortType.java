@@ -180,6 +180,16 @@ public interface TransportationWebService_PortType extends java.rmi.Remote {
     public com.freshdirect.routing.proxy.stub.transportation.Location[] saveLocations(com.freshdirect.routing.proxy.stub.transportation.Location[] locations) throws java.rmi.RemoteException;
 
     /**
+     * Service definition of function ns1__SaveLocationsEx
+     */
+    public com.freshdirect.routing.proxy.stub.transportation.Location[] saveLocationsEx(com.freshdirect.routing.proxy.stub.transportation.Location[] locations, com.freshdirect.routing.proxy.stub.transportation.SaveLocationsExOptions options) throws java.rmi.RemoteException;
+
+    /**
+     * Service definition of function ns1__DeleteLocations
+     */
+    public com.freshdirect.routing.proxy.stub.transportation.Location[] deleteLocations(com.freshdirect.routing.proxy.stub.transportation.Location[] locations) throws java.rmi.RemoteException;
+
+    /**
      * Service definition of function ns1__RetrieveLocationByIdentity
      */
     public com.freshdirect.routing.proxy.stub.transportation.Location retrieveLocationByIdentity(com.freshdirect.routing.proxy.stub.transportation.LocationIdentity identity) throws java.rmi.RemoteException;
@@ -265,9 +275,29 @@ public interface TransportationWebService_PortType extends java.rmi.Remote {
     public com.freshdirect.routing.proxy.stub.transportation.SurveyResult[] retrieveStopSurveyResults(com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity) throws java.rmi.RemoteException;
 
     /**
+     * Service definition of function ns1__SaveRouteSurveyResults
+     */
+    public void saveRouteSurveyResults(com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity, com.freshdirect.routing.proxy.stub.transportation.SurveyPerformedAt performedAt, com.freshdirect.routing.proxy.stub.transportation.SurveyResult[] surveyResults) throws java.rmi.RemoteException;
+
+    /**
+     * Service definition of function ns1__SaveStopSurveyResults
+     */
+    public void saveStopSurveyResults(com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity, com.freshdirect.routing.proxy.stub.transportation.SurveyResult[] surveyResults) throws java.rmi.RemoteException;
+
+    /**
      * Service definition of function ns1__RetrieveSurveys
      */
     public com.freshdirect.routing.proxy.stub.transportation.Survey[] retrieveSurveys(com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity) throws java.rmi.RemoteException;
+
+    /**
+     * Service definition of function ns1__RetrieveRouteSurveyQuestions
+     */
+    public void retrieveRouteSurveyQuestions(com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity, com.freshdirect.routing.proxy.stub.transportation.SurveyPerformedAt performedAt, javax.xml.rpc.holders.StringHolder surveyCode, com.freshdirect.routing.proxy.stub.transportation.holders.QuestionDefinitionArrayHolder defs) throws java.rmi.RemoteException;
+
+    /**
+     * Service definition of function ns1__RetrieveStopSurveyQuestions
+     */
+    public void retrieveStopSurveyQuestions(com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity, javax.xml.rpc.holders.StringHolder surveyCode, com.freshdirect.routing.proxy.stub.transportation.holders.QuestionDefinitionArrayHolder defs) throws java.rmi.RemoteException;
 
     /**
      * Service definition of function ns1__RetrievePositionHistoryByCriteria
@@ -430,6 +460,11 @@ public interface TransportationWebService_PortType extends java.rmi.Remote {
     public com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder[] saveRoutingImportOrders(java.lang.String regionId, com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder[] orders, com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions) throws java.rmi.RemoteException;
 
     /**
+     * Service definition of function ns1__SaveRoutingImportOrdersEx
+     */
+    public com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder[] saveRoutingImportOrdersEx(java.lang.String regionId, com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder[] orders, com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions, com.freshdirect.routing.proxy.stub.transportation.SaveRoutingImportOrdersExOptions importOptions) throws java.rmi.RemoteException;
+
+    /**
      * Service definition of function ns1__RetrieveRoutingImportOrderByIdentity
      */
     public com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder retrieveRoutingImportOrderByIdentity(com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderIdentity identity, com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions) throws java.rmi.RemoteException;
@@ -550,6 +585,11 @@ public interface TransportationWebService_PortType extends java.rmi.Remote {
     public void schedulerPurge(com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity, boolean reloadXML) throws java.rmi.RemoteException;
 
     /**
+     * Service definition of function ns1__SchedulerRemoveFromServer
+     */
+    public void schedulerRemoveFromServer(com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity) throws java.rmi.RemoteException;
+
+    /**
      * Service definition of function ns1__SchedulerIsExcludingCutoffRoutes
      */
     public com.freshdirect.routing.proxy.stub.transportation.IsExcludingCutoffRoutesResult schedulerIsExcludingCutoffRoutes(com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity) throws java.rmi.RemoteException;
@@ -563,6 +603,16 @@ public interface TransportationWebService_PortType extends java.rmi.Remote {
      * Service definition of function ns1__SchedulerOptimizeOrders
      */
     public void schedulerOptimizeOrders(com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity) throws java.rmi.RemoteException;
+
+    /**
+     * Service definition of function ns1__SchedulerOptimizeOrdersEx
+     */
+    public void schedulerOptimizeOrdersEx(com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity, com.freshdirect.routing.proxy.stub.transportation.SchedulerOptimizeOrdersExOptions options) throws java.rmi.RemoteException;
+
+    /**
+     * Service definition of function ns1__SchedulerBalanceRoutes
+     */
+    public void schedulerBalanceRoutes(com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity, com.freshdirect.routing.proxy.stub.transportation.SchedulerBalanceRoutesOptions options) throws java.rmi.RemoteException;
 
     /**
      * Service definition of function ns1__SchedulerExtendOrderReservation

@@ -48,6 +48,21 @@ public class RoutingEngineService implements IRoutingEngineService {
 			port.schedulerPurge(RoutingDataEncoder.encodeSchedulerIdentity(schedulerId), false);
 		} catch (ServiceException exp) {
 			exp.printStackTrace();
+			throw new RoutingServiceException(exp, IIssue.PROCESS_PURGEORDERS_UNSUCCESSFUL);
+		} catch (MalformedURLException exp) {
+			throw new RoutingServiceException(exp, IIssue.PROCESS_PURGEORDERS_UNSUCCESSFUL);
+		} catch (RemoteException exp) {
+			throw new RoutingServiceException(exp, IIssue.PROCESS_PURGEORDERS_UNSUCCESSFUL);
+		}
+	}
+	
+	public void schedulerRemoveFromServer(IRoutingSchedulerIdentity schedulerId) throws RoutingServiceException {
+		
+		try {
+			TransportationWebService_PortType port = RoutingServiceLocator.getInstance().getTransportationSuiteService();
+			port.schedulerRemoveFromServer(RoutingDataEncoder.encodeSchedulerIdentity(schedulerId));
+		} catch (ServiceException exp) {
+			exp.printStackTrace();
 			throw new RoutingServiceException(exp, IIssue.PROCESS_LOCATION_NOTFOUND);
 		} catch (MalformedURLException exp) {
 			throw new RoutingServiceException(exp, IIssue.PROCESS_LOCATION_NOTFOUND);
@@ -62,7 +77,7 @@ public class RoutingEngineService implements IRoutingEngineService {
 		List unassignedList = new ArrayList();
 		try {
 			TransportationWebService_PortType port = RoutingServiceLocator.getInstance().getTransportationSuiteService();
-			System.out.println("################### BULK RESERVE ORDER ################## "+schedulerId);
+			
 			DeliveryAreaOrder[] dlvOrderList = RoutingDataEncoder.encodeOrderList(orderList, schedulerId
 																		, region
 																		, locationType
@@ -78,15 +93,32 @@ public class RoutingEngineService implements IRoutingEngineService {
 			
 		} catch (ServiceException exp) {
 			exp.printStackTrace();
-			throw new RoutingServiceException(exp, IIssue.PROCESS_LOCATION_NOTFOUND);
+			throw new RoutingServiceException(exp, IIssue.PROCESS_BULKRESERVE_UNSUCCESSFUL);
 		} catch (MalformedURLException exp) {
 			exp.printStackTrace();
-			throw new RoutingServiceException(exp, IIssue.PROCESS_LOCATION_NOTFOUND);
+			throw new RoutingServiceException(exp, IIssue.PROCESS_BULKRESERVE_UNSUCCESSFUL);
 		} catch (RemoteException exp) {
 			exp.printStackTrace();
-			throw new RoutingServiceException(exp, IIssue.PROCESS_LOCATION_NOTFOUND);
+			throw new RoutingServiceException(exp, IIssue.PROCESS_BULKRESERVE_UNSUCCESSFUL);
 		}
 		return unassignedList;
+	}
+	
+	public void schedulerBalanceRoutes(IRoutingSchedulerIdentity schedulerId,
+											String balanceBy, double balanceFactor) throws RoutingServiceException {
+		
+		try {
+			TransportationWebService_PortType port = RoutingServiceLocator.getInstance().getTransportationSuiteService();
+			port.schedulerBalanceRoutes(RoutingDataEncoder.encodeSchedulerIdentity(schedulerId), 
+					RoutingDataEncoder.encodeBalanceRoutesOptions(balanceBy, balanceFactor));
+		} catch (ServiceException exp) {
+			exp.printStackTrace();
+			throw new RoutingServiceException(exp, IIssue.PROCESS_BALANCEROUTES_UNSUCCESSFUL);
+		} catch (MalformedURLException exp) {
+			throw new RoutingServiceException(exp, IIssue.PROCESS_BALANCEROUTES_UNSUCCESSFUL);
+		} catch (RemoteException exp) {
+			throw new RoutingServiceException(exp, IIssue.PROCESS_BALANCEROUTES_UNSUCCESSFUL);
+		}
 	}
 	
 	public void sendRoutesToRoadNet(IRoutingSchedulerIdentity schedulerId, String sessionDescription) throws RoutingServiceException {
@@ -96,11 +128,11 @@ public class RoutingEngineService implements IRoutingEngineService {
 			
 		} catch (ServiceException exp) {
 			exp.printStackTrace();
-			throw new RoutingServiceException(exp, IIssue.PROCESS_LOCATION_NOTFOUND);
+			throw new RoutingServiceException(exp, IIssue.PROCESS_SENDROUTES_UNSUCCESSFUL);
 		} catch (MalformedURLException exp) {
-			throw new RoutingServiceException(exp, IIssue.PROCESS_LOCATION_NOTFOUND);
+			throw new RoutingServiceException(exp, IIssue.PROCESS_SENDROUTES_UNSUCCESSFUL);
 		} catch (RemoteException exp) {
-			throw new RoutingServiceException(exp, IIssue.PROCESS_LOCATION_NOTFOUND);
+			throw new RoutingServiceException(exp, IIssue.PROCESS_SENDROUTES_UNSUCCESSFUL);
 		}
 	}
 	
@@ -116,11 +148,11 @@ public class RoutingEngineService implements IRoutingEngineService {
 			}
 		} catch (ServiceException exp) {
 			exp.printStackTrace();
-			throw new RoutingServiceException(exp, IIssue.PROCESS_LOCATION_NOTFOUND);
+			throw new RoutingServiceException(exp, IIssue.PROCESS_SENDUNASSIGNED_UNSUCCESSFUL);
 		} catch (MalformedURLException exp) {
-			throw new RoutingServiceException(exp, IIssue.PROCESS_LOCATION_NOTFOUND);
+			throw new RoutingServiceException(exp, IIssue.PROCESS_SENDUNASSIGNED_UNSUCCESSFUL);
 		} catch (RemoteException exp) {
-			throw new RoutingServiceException(exp, IIssue.PROCESS_LOCATION_NOTFOUND);
+			throw new RoutingServiceException(exp, IIssue.PROCESS_SENDUNASSIGNED_UNSUCCESSFUL);
 		}
 		return unassignedList;
 	}
@@ -137,11 +169,11 @@ public class RoutingEngineService implements IRoutingEngineService {
 			
 		} catch (ServiceException exp) {
 			exp.printStackTrace();
-			throw new RoutingServiceException(exp, IIssue.PROCESS_LOCATION_NOTFOUND);
+			throw new RoutingServiceException(exp, IIssue.PROCESS_RETRIEVESESSION_UNSUCCESSFUL);
 		} catch (MalformedURLException exp) {
-			throw new RoutingServiceException(exp, IIssue.PROCESS_LOCATION_NOTFOUND);
+			throw new RoutingServiceException(exp, IIssue.PROCESS_RETRIEVESESSION_UNSUCCESSFUL);
 		} catch (RemoteException exp) {
-			throw new RoutingServiceException(exp, IIssue.PROCESS_LOCATION_NOTFOUND);
+			throw new RoutingServiceException(exp, IIssue.PROCESS_RETRIEVESESSION_UNSUCCESSFUL);
 		}
 		
 		return sessionId;

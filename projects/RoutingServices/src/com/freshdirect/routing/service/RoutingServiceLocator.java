@@ -35,7 +35,11 @@ public class RoutingServiceLocator {
 	      }
 	      return instance;
 	   }
-
+	
+	public Object getService(String beanId) {
+		return factory.getBean(beanId);
+	}
+	
 	public IGeographyService getGeographyService() {
 		return (IGeographyService)factory.getBean("geographyService");
 	}

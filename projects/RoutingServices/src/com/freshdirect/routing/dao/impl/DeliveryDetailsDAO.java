@@ -11,7 +11,9 @@ import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowCallbackHandler;
 
 import com.freshdirect.routing.dao.IDeliveryDetailsDAO;
+import com.freshdirect.routing.model.AreaModel;
 import com.freshdirect.routing.model.DeliveryModel;
+import com.freshdirect.routing.model.IAreaModel;
 import com.freshdirect.routing.model.IDeliveryModel;
 import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IServiceTimeModel;
@@ -40,7 +42,9 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 	
 	private static final String GET_DELIVERYZONETYPE_QRY="select z.ZONE_TYPE SERVICE_TYPE from transp.trn_zone z where z.zone_number = ? ";
 	
-	private static final String GET_DELIVERYZONEDETAILS_QRY="select z.ZONE_NUMBER ZONE_NUMBER, z.ZONE_TYPE ZONE_TYPE, z.AREA AREA from transp.trn_zone z where z.OBSOLETE <> 'X' or z.OBSOLETE IS NULL";
+	private static final String GET_DELIVERYZONEDETAILS_QRY="select z.ZONE_NUMBER ZONE_NUMBER, z.ZONE_TYPE ZONE_TYPE, a.CODE AREACODE," +
+			"a.BALANCE_BY BALANCE_BY, a.LOADBALANCE_FACTOR LOADBALANCE_FACTOR, a.NEEDS_LOADBALANCE NEEDS_LOADBALANCE  from transp.trn_zone z, transp.trn_area a  " +
+			" where z.area = a.code and z.OBSOLETE <> 'X' or z.OBSOLETE IS NULL";
 			
 	
 	public IDeliveryModel getDeliveryInfo(final String saleId) throws SQLException {
@@ -129,8 +133,17 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 				    		String zoneCode = rs.getString("ZONE_NUMBER");
 				    		IZoneModel tmpModel = new ZoneModel();
 				    		tmpModel.setZoneNumber(zoneCode);
-				    		tmpModel.setArea(rs.getString("AREA"));
+				    		
+				    		
 				    		tmpModel.setZoneType(rs.getString("ZONE_TYPE"));
+				    		
+				    		IAreaModel tmpAreaModel = new AreaModel();
+				    		tmpAreaModel.setAreaCode(rs.getString("AREACODE"));
+				    		tmpAreaModel.setBalanceBy(rs.getString("BALANCE_BY"));
+				    		tmpAreaModel.setLoadBalanceFactor(rs.getDouble("LOADBALANCE_FACTOR"));
+				    		tmpAreaModel.setNeedsLoadBalance("X".equalsIgnoreCase(rs.getString("NEEDS_LOADBALANCE")) ? true : false);
+				    		
+				    		tmpModel.setArea(tmpAreaModel);
 				    		zoneDetailsMap.put(zoneCode, tmpModel);
 				    	 } while(rs.next());		        		    	
 				      }

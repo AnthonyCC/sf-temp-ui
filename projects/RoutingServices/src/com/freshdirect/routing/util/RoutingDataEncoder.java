@@ -22,8 +22,11 @@ import com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingSessionCriteria;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity;
+import com.freshdirect.routing.proxy.stub.transportation.SchedulerBalanceRoutesOptions;
+import com.freshdirect.routing.proxy.stub.transportation.SchedulerBalancingFactor;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerBulkReserveOrdersOptions;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity;
+import com.freshdirect.routing.proxy.stub.transportation.SchedulerRouteBalancingOptions;
 import com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions;
 import com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptionsType;
 import com.freshdirect.routing.proxy.stub.transportation.TimeZoneValue;
@@ -46,7 +49,7 @@ public class RoutingDataEncoder {
 											&& orderModel.getDeliveryInfo().getDeliveryLocation() != null) {
 					String areaCode = null;
 					if(orderModel.getDeliveryInfo().getDeliveryZone() != null) {
-						areaCode = orderModel.getDeliveryInfo().getDeliveryZone().getArea();						
+						areaCode = orderModel.getDeliveryInfo().getDeliveryZone().getArea().getAreaCode();						
 					} 
 					result[intCount++] = encodeLocation(orderModel.getDeliveryInfo().getDeliveryLocation()
 															, region, locationType, areaCode);
@@ -120,7 +123,7 @@ public class RoutingDataEncoder {
 													, String orderType) {
 		
 		DeliveryAreaOrder order = new DeliveryAreaOrder();
-		order.setIdentity(new DeliveryAreaOrderIdentity(schedulerId.getRegionId(),schedulerId.getArea()
+		order.setIdentity(new DeliveryAreaOrderIdentity(schedulerId.getRegionId(),schedulerId.getArea().getAreaCode()
 															,schedulerId.getDeliveryDate(), orderModel.getOrderNumber()));
 		order.setOrderType(orderType);
 		//Calendar tmpReservedTime = Calendar.getInstance();
@@ -180,7 +183,7 @@ public class RoutingDataEncoder {
 		//param1 regionId;
 		//param2 area;
 		//param3 deliveryDate;
-		return new SchedulerIdentity(schedulerId.getRegionId(), schedulerId.getArea(), schedulerId.getDeliveryDate());
+		return new SchedulerIdentity(schedulerId.getRegionId(), schedulerId.getArea().getAreaCode(), schedulerId.getDeliveryDate());
 	}
 	
 	public static SchedulerBulkReserveOrdersOptions encodeSchedulerBulkReserveOrdersOptions() {
@@ -222,6 +225,12 @@ public class RoutingDataEncoder {
 		
 		return new TimeZoneOptions(true, TimeZoneOptionsType.fromValue(TimeZoneOptionsType._tzoLocalTimeZone)
 										, TimeZoneValue.fromValue(TimeZoneValue._tmzNone));
+	}
+	
+	public static SchedulerBalanceRoutesOptions encodeBalanceRoutesOptions(String balanceBy, double balanceFactor) {
+		
+		return new SchedulerBalanceRoutesOptions(new SchedulerRouteBalancingOptions(
+				SchedulerBalancingFactor.fromValue(balanceBy), balanceFactor, null));
 	}
 	
 	

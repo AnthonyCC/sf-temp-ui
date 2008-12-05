@@ -88,16 +88,17 @@ public class GeographyManager extends BaseProcessManager {
 	private ILocationModel fetchLocation(ProcessContext request
 			, GeographyServiceProxy proxy
 			, ILocationModel locModel) throws RoutingServiceException {
-
+		
 		Object tmpLocationList = request.getLocationList();
 		if(tmpLocationList != null) {
 			Object tmpLocation = ((Map)tmpLocationList).get(locModel.getStreetAddress1()
 					+"$"+locModel.getApartmentNumber()
 					+"$"+locModel.getZipCode());
-			if(tmpLocation != null) {
+			if(tmpLocation != null) {		
 				return (ILocationModel)tmpLocation;
 			}
 		}
+		
 		return proxy.getLocation(locModel);
 	}
 	

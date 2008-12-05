@@ -3,9 +3,9 @@ package com.freshdirect.routing.model;
 
  public interface IZoneModel {
 	
-	 String getArea();
+	 IAreaModel getArea();
 
-	 void setArea(String area);
+	 void setArea(IAreaModel area);
 
 	 String getNeighborhood();
 

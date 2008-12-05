@@ -1,6 +1,7 @@
 package com.freshdirect.routing.model;
 
 
+
 public class ServiceTimeScenario extends BaseModel implements IServiceTimeScenarioModel {
 	
 	private String code;
@@ -15,6 +16,12 @@ public class ServiceTimeScenario extends BaseModel implements IServiceTimeScenar
 	
 	private String defaultServiceTimeType;
 	private String defaultZoneType;
+	
+	private double loadBalanceFactor;
+	
+	private String balanceBy;
+	
+	private boolean needsLoadBalance;
 	
 	public String getCode() {
 		return code;
@@ -81,5 +88,23 @@ public class ServiceTimeScenario extends BaseModel implements IServiceTimeScenar
 	}
 	public void setServiceTimeFormula(String serviceTimeFormula) {
 		this.serviceTimeFormula = serviceTimeFormula;
+	}
+	public String getBalanceBy() {
+		return balanceBy;
+	}
+	public void setBalanceBy(String balanceBy) {
+		this.balanceBy = balanceBy;
+	}
+	public double getLoadBalanceFactor() {
+		return loadBalanceFactor;
+	}
+	public void setLoadBalanceFactor(double loadBalanceFactor) {
+		this.loadBalanceFactor = loadBalanceFactor;
+	}
+	public boolean getNeedsLoadBalance() {
+		return needsLoadBalance;
+	}
+	public void setNeedsLoadBalance(boolean needsLoadBalance) {
+		this.needsLoadBalance = needsLoadBalance;
 	}
 }

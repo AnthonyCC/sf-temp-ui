@@ -12,13 +12,13 @@ public class ZoneModel extends BaseModel implements IZoneModel {
 
 	private String zoneType;
 	
-	private String area;
+	private IAreaModel area;
 
-	public String getArea() {
+	public IAreaModel getArea() {
 		return area;
 	}
 
-	public void setArea(String area) {
+	public void setArea(IAreaModel area) {
 		this.area = area;
 	}
 

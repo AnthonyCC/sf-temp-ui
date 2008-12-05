@@ -2,9 +2,9 @@ package com.freshdirect.routing.model;
 
 public interface IRoutingSchedulerIdentity {
 	
-	java.lang.String getArea();
+	IAreaModel getArea();
 
-	void setArea(java.lang.String area);
+	void setArea(IAreaModel area);
 
 	java.util.Date getDeliveryDate();
 

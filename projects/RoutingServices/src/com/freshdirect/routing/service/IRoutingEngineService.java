@@ -21,4 +21,8 @@ public interface IRoutingEngineService {
 	
 	String retrieveRoutingSession(IRoutingSchedulerIdentity schedulerId, String sessionDescription) throws RoutingServiceException;
 	
+	void schedulerBalanceRoutes(IRoutingSchedulerIdentity schedulerId, String balanceBy, double balanceFactor)  throws RoutingServiceException;
+	
+	void schedulerRemoveFromServer(IRoutingSchedulerIdentity schedulerId)  throws RoutingServiceException;
+	
 }

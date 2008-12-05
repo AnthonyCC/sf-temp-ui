@@ -22,6 +22,8 @@ public class ProductsPurchased  implements java.io.Serializable {
 
     private boolean netScheduler;
 
+    private boolean RPD;
+
     public ProductsPurchased() {
     }
 
@@ -32,7 +34,8 @@ public class ProductsPurchased  implements java.io.Serializable {
            boolean mobileCast,
            boolean RIC,
            boolean netMap,
-           boolean netScheduler) {
+           boolean netScheduler,
+           boolean RPD) {
            this.roadnet5000 = roadnet5000;
            this.territoryPlanner = territoryPlanner;
            this.fleetLoader = fleetLoader;
@@ -40,6 +43,7 @@ public class ProductsPurchased  implements java.io.Serializable {
            this.RIC = RIC;
            this.netMap = netMap;
            this.netScheduler = netScheduler;
+           this.RPD = RPD;
     }
 
 
@@ -182,6 +186,26 @@ public class ProductsPurchased  implements java.io.Serializable {
         this.netScheduler = netScheduler;
     }
 
+
+    /**
+     * Gets the RPD value for this ProductsPurchased.
+     * 
+     * @return RPD
+     */
+    public boolean isRPD() {
+        return RPD;
+    }
+
+
+    /**
+     * Sets the RPD value for this ProductsPurchased.
+     * 
+     * @param RPD
+     */
+    public void setRPD(boolean RPD) {
+        this.RPD = RPD;
+    }
+
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof ProductsPurchased)) return false;
@@ -200,7 +224,8 @@ public class ProductsPurchased  implements java.io.Serializable {
             this.mobileCast == other.isMobileCast() &&
             this.RIC == other.isRIC() &&
             this.netMap == other.isNetMap() &&
-            this.netScheduler == other.isNetScheduler();
+            this.netScheduler == other.isNetScheduler() &&
+            this.RPD == other.isRPD();
         __equalsCalc = null;
         return _equals;
     }
@@ -219,6 +244,7 @@ public class ProductsPurchased  implements java.io.Serializable {
         _hashCode += (isRIC() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         _hashCode += (isNetMap() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         _hashCode += (isNetScheduler() ? Boolean.TRUE : Boolean.FALSE).hashCode();
+        _hashCode += (isRPD() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         __hashCodeCalc = false;
         return _hashCode;
     }
@@ -268,6 +294,12 @@ public class ProductsPurchased  implements java.io.Serializable {
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("netScheduler");
         elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "NetScheduler"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("RPD");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "RPD"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);

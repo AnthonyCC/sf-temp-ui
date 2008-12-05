@@ -24,4 +24,11 @@ public interface IServiceTimeScenarioModel {
 	void setServiceTimeFactorFormula(String serviceTimeFactorFormula);
 	String getServiceTimeFormula();
 	void setServiceTimeFormula(String serviceTimeFormula);
+	
+	String getBalanceBy();
+	void setBalanceBy(String balanceBy);
+	double getLoadBalanceFactor();
+	void setLoadBalanceFactor(double loadBalanceFactor);
+	boolean getNeedsLoadBalance();
+	void setNeedsLoadBalance(boolean needsLoadBalance);
 }

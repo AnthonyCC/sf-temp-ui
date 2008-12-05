@@ -16,6 +16,8 @@ public class SurveyResult  implements java.io.Serializable {
 
     private java.lang.String answer;
 
+    private com.freshdirect.routing.proxy.stub.transportation.SurveyAnswer surveyAnswer;
+
     private boolean answered;
 
     public SurveyResult() {
@@ -26,11 +28,13 @@ public class SurveyResult  implements java.io.Serializable {
            java.lang.String questionDescriptor,
            java.lang.String questionText,
            java.lang.String answer,
+           com.freshdirect.routing.proxy.stub.transportation.SurveyAnswer surveyAnswer,
            boolean answered) {
            this.surveyCode = surveyCode;
            this.questionDescriptor = questionDescriptor;
            this.questionText = questionText;
            this.answer = answer;
+           this.surveyAnswer = surveyAnswer;
            this.answered = answered;
     }
 
@@ -116,6 +120,26 @@ public class SurveyResult  implements java.io.Serializable {
 
 
     /**
+     * Gets the surveyAnswer value for this SurveyResult.
+     * 
+     * @return surveyAnswer
+     */
+    public com.freshdirect.routing.proxy.stub.transportation.SurveyAnswer getSurveyAnswer() {
+        return surveyAnswer;
+    }
+
+
+    /**
+     * Sets the surveyAnswer value for this SurveyResult.
+     * 
+     * @param surveyAnswer
+     */
+    public void setSurveyAnswer(com.freshdirect.routing.proxy.stub.transportation.SurveyAnswer surveyAnswer) {
+        this.surveyAnswer = surveyAnswer;
+    }
+
+
+    /**
      * Gets the answered value for this SurveyResult.
      * 
      * @return answered
@@ -158,6 +182,9 @@ public class SurveyResult  implements java.io.Serializable {
             ((this.answer==null && other.getAnswer()==null) || 
              (this.answer!=null &&
               this.answer.equals(other.getAnswer()))) &&
+            ((this.surveyAnswer==null && other.getSurveyAnswer()==null) || 
+             (this.surveyAnswer!=null &&
+              this.surveyAnswer.equals(other.getSurveyAnswer()))) &&
             this.answered == other.isAnswered();
         __equalsCalc = null;
         return _equals;
@@ -181,6 +208,9 @@ public class SurveyResult  implements java.io.Serializable {
         }
         if (getAnswer() != null) {
             _hashCode += getAnswer().hashCode();
+        }
+        if (getSurveyAnswer() != null) {
+            _hashCode += getSurveyAnswer().hashCode();
         }
         _hashCode += (isAnswered() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         __hashCodeCalc = false;
@@ -220,6 +250,13 @@ public class SurveyResult  implements java.io.Serializable {
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setMinOccurs(0);
         elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("surveyAnswer");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "surveyAnswer"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "SurveyAnswer"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(true);
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("answered");

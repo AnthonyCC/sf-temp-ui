@@ -36,6 +36,14 @@ public class RoutingEngineServiceProxy extends BaseServiceProxy {
 		return getService().retrieveRoutingSession(schedulerId, sessionDescription);
 	}
 	
+	public void schedulerBalanceRoutes(IRoutingSchedulerIdentity schedulerId, String balanceBy, double balanceFactor)  throws RoutingServiceException {
+		getService().schedulerBalanceRoutes(schedulerId, balanceBy, balanceFactor);
+	}
+	
+	public void schedulerRemoveFromServer(IRoutingSchedulerIdentity schedulerId)  throws RoutingServiceException {
+		getService().schedulerRemoveFromServer(schedulerId);
+	}
+	
 	public IRoutingEngineService getService() {
 		return RoutingServiceLocator.getInstance().getRoutingEngineService();
 	}

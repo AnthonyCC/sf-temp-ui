@@ -4,15 +4,15 @@ public class RoutingSchedulerIdentity extends BaseModel implements IRoutingSched
 	
 	private java.lang.String regionId;
 
-    private java.lang.String area;
+    private IAreaModel area;
 
     private java.util.Date deliveryDate;
 
-	public java.lang.String getArea() {
+	public IAreaModel getArea() {
 		return area;
 	}
 
-	public void setArea(java.lang.String area) {
+	public void setArea(IAreaModel area) {
 		this.area = area;
 	}
 

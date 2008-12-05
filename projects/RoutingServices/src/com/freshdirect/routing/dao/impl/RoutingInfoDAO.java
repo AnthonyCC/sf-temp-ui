@@ -34,6 +34,10 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 				    		tmpModel.setOrderSizeFormula(rs.getString("ORDERSIZE_FORMULA"));				    		
 				    		tmpModel.setServiceTimeFactorFormula(rs.getString("SERVICETIME_FACTOR_FORMULA"));				    		
 				    		tmpModel.setServiceTimeFormula(rs.getString("SERVICETIME_FORMULA"));
+				    		
+				    		tmpModel.setBalanceBy(rs.getString("BALANCE_BY"));
+				    		tmpModel.setLoadBalanceFactor(rs.getDouble("LOADBALANCE_FACTOR"));
+				    		tmpModel.setNeedsLoadBalance("X".equalsIgnoreCase(rs.getString("NEEDS_LOADBALANCE")) ? true : false);
 				    		scenarios.add(tmpModel);
 				    	 } while(rs.next());		        		    	
 				      }

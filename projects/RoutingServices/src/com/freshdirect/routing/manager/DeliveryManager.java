@@ -20,6 +20,7 @@ public class DeliveryManager extends BaseProcessManager {
 		
 		String zoneCode = orderModel.getDeliveryInfo().getDeliveryZone().getZoneNumber();
 		
+		
 		IZoneModel zoneModel = (IZoneModel)((Map)request.getDeliveryTypeCache()).get(zoneCode);
 				
 		if(zoneModel == null) {

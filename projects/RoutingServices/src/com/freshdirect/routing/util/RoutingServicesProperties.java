@@ -38,6 +38,10 @@ public class RoutingServicesProperties {
 	
 	private final static String PROP_TIMEWINDOW_FACTOR		= "routingservices.timewindow.factor";
 	
+	private final static String PROP_REMOVESCHEDULER_ENABLED		= "routingservices.removescheduler.enabled";
+	
+	private final static String PROP_LOADBALANCE_ENABLED		= "routingservices.loadbalance.enabled";
+	
 	private static long lastRefresh = 0;
 	private final static long REFRESH_PERIOD = 5 * 60 * 1000;
 	
@@ -54,6 +58,8 @@ public class RoutingServicesProperties {
 		defaults.put(PROP_DEFAULT_VARIABLESERVICETIME, 	"5");
 		defaults.put(PROP_INCRECEMT_WINDOWENDTIME, 	"true");
 		defaults.put(PROP_TIMEWINDOW_FACTOR, 	"5");
+		defaults.put(PROP_REMOVESCHEDULER_ENABLED, 	"true");
+		defaults.put(PROP_LOADBALANCE_ENABLED, 	"true");
 		refresh();		
 	}
 
@@ -115,6 +121,15 @@ public class RoutingServicesProperties {
 	public static boolean isIncrementWindowEndTime() {
         return (new Boolean(get(PROP_INCRECEMT_WINDOWENDTIME))).booleanValue();
     }
+	
+	public static boolean isRemoveSchedulerEnabled() {
+        return (new Boolean(get(PROP_REMOVESCHEDULER_ENABLED))).booleanValue();
+    }
+	
+	public static boolean isLoadBalanceEnabled() {
+        return (new Boolean(get(PROP_LOADBALANCE_ENABLED))).booleanValue();
+    }
+	
 	
 	public static int getDefaultTimeWindowFactor() {
 		return getIntVal(get(PROP_TIMEWINDOW_FACTOR));
