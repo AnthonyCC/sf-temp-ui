@@ -52,6 +52,6 @@ public class RoutingSchedulerIdentity extends BaseModel implements IRoutingSched
 	}
 	
 	public String toString() {
-		return regionId+"-"+area+"-"+deliveryDate;
+		return regionId+"-"+area.getAreaCode()+"-"+deliveryDate;
 	}
 }
