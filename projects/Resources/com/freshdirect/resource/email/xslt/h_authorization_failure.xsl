@@ -27,28 +27,65 @@
 				<tr><td width="100%" bgcolor="#CCCCCC"><img src="/images/clear.gif" width="1" height="1" border="0" alt="" /></td>
 				</tr>
 	</table><br/>
-	<table cellpadding="0" cellspacing="0" width="90%">
+	<table cellpadding="5" cellspacing="0" width="90%">
 				<tr>
-					<td>
-						<p><b>Dear <xsl:value-of select="customer/firstName"/></b>,</p>
-
-							<p>We are unable to process your order <b>(#<xsl:value-of select="orderNumber"/>)</b>
-							, scheduled for delivery between
-							<b><xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="deliveryStartTime"/></xsl:call-template>
-							and <xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="deliveryEndTime"/></xsl:call-template></b>
-							on <b><xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="deliveryStartTime"/></xsl:call-template></b>
-							using the payment method you have chosen. Credit card authorization can fail for a number of reasons -- often the cause is an incorrect expiration date.
-							So that we can process your order as soon as possible, please call customer service at <xsl:value-of select="customer/customerServiceContact"/>.</p>
-
-							<p>To be sure that your order is delivered, please make any changes before <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="cutoffTime"/></xsl:call-template> on <b><xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="cutoffTime"/></xsl:call-template></b>.
-							If you would like to speak with a Customer Service Representative please call us toll-free at 1-866 283-7374. We're here Sunday-Friday 8am-1am and Saturdays from 8am-9pm.</p>
+					<td colspan="2">
+						<p><b>Dear <xsl:value-of select="customer/firstName"/></b>,</p><br />
+					</td>
+				</tr>
+				<tr>
+					<td valign="top">
+						<p>We are unable to process your order <b>(#<xsl:value-of select="orderNumber"/>)</b>
+						, scheduled for delivery between
+						<b><xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="deliveryStartTime"/></xsl:call-template>
+						and <xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="deliveryEndTime"/></xsl:call-template></b>
+						on <b><xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="deliveryStartTime"/></xsl:call-template></b>
+						using the payment method you have chosen. Credit card authorization can fail for a number of reasons -- often the cause is an incorrect expiration date.
+						So that we can process your order as soon as possible, please call customer service at <xsl:choose><xsl:when test="customer/chefsTable = 'true'">1-866-511-1240</xsl:when><xsl:otherwise>1-212-796-8002</xsl:otherwise></xsl:choose>.</p>
+						<p>To be sure that your order is delivered, please make any changes before <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="cutoffTime"/></xsl:call-template> on <b><xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="cutoffTime"/></xsl:call-template></b>.
+						If you need further assistance, we're here:</p>
+					</td>
+					<td width="200px" valign="top" style="border: 1px solid #666; background-color: #eee; padding: 5px;">
+						<table width="" align="center" cellspacing="0" width="200px">
+							<tr align="center">
+								<td><strong>Customer Service Hours</strong></td>
+							</tr>
+							<tr align="center">
+								<td><div style="border-top: 1px solid #666; padding: 1px;"><br /></div></td>
+							</tr>
+							<tr align="center">
+								<td style="border: 1px solid #666; padding: 0px; background-color: #ccc;"><strong>Monday-Thursday</strong></td>
+							</tr>
+							<tr align="center" style="background-color: #eee;">
+								<td>6:30 AM to 12 AM</td>
+							</tr>
+							<tr align="center">
+								<td style="border: 1px solid #666; padding: 0px; background-color: #ccc;"><strong>Friday</strong></td>
+							</tr>
+							<tr align="center">
+								<td>6:30 AM to 11 PM</td>
+							</tr>
+							<tr align="center">
+								<td style="border: 1px solid #666; padding: 0px; background-color: #ccc;"><strong>Saturday</strong></td>
+							</tr>
+							<tr align="center" style="background-color: #eee;">
+								<td>7:30 AM to 8 PM</td>
+							</tr>
+							<tr align="center">
+								<td style="border: 1px solid #666; padding: 0px; background-color: #ccc;"><strong>Sunday</strong></td>
+							</tr>
+							<tr align="center" style="background-color: #eee;">
+								<td>7:30 AM to 12 AM</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+							<p>Sincerely,
 							<br/>
-								<p>Sincerely,
-								<br/>
-								FreshDirect Customer Service<br/>
-								www.freshdirect.com</p>
-
-
+							FreshDirect Customer Service<br/>
+							www.freshdirect.com</p>
 				<p><xsl:call-template name="h_footer_v1"/></p>
 				</td></tr>
 			</table>
