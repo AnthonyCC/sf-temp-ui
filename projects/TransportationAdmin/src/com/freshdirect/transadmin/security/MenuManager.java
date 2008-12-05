@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -60,10 +61,11 @@ public class MenuManager {
 						} else {
 							rootMenu.setMenuLink("accessdenied.do");
 						}
-						return new MenuGroup(menuList.keySet(), (Collection)subMenus.values(), rootMenu, ((Menu)subMenus.get(currentMenuId)));
+						return new MenuGroup(new TreeSet(menuList.keySet()), (Collection)subMenus.values()
+												, rootMenu, ((Menu)subMenus.get(currentMenuId)));
 					}
 				}
-				return new MenuGroup(menuList.keySet(), (Collection)new ArrayList(), null, null);
+				return new MenuGroup(new TreeSet(menuList.keySet()), (Collection)new ArrayList(), null, null);
 			}			
 		}
 				

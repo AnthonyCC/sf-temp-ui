@@ -68,19 +68,6 @@
 		<url-pattern>*.do</url-pattern>
 	</servlet-mapping>
 	
-	<servlet>
-     <servlet-name>com.freshdirect.transadmin.util.json.TransJSONRPCServlet</servlet-name>
-     <servlet-class>com.freshdirect.transadmin.util.json.TransJSONRPCServlet</servlet-class>
-   </servlet>
-   <servlet-mapping>
-     <servlet-name>com.freshdirect.transadmin.util.json.TransJSONRPCServlet</servlet-name>
-     <url-pattern>/api/json-rpc.jsp</url-pattern>
-   </servlet-mapping>	
-
-	<session-config>
-		<session-timeout>10</session-timeout>
-	</session-config>
-
 	<welcome-file-list>
 		<welcome-file>/index.jsp</welcome-file>
 		<welcome-file>/index.html</welcome-file>
