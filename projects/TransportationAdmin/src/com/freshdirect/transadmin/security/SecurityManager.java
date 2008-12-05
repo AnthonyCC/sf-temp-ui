@@ -15,6 +15,8 @@ public class SecurityManager {
 	static {
 		UNSECURED_URL.add("accessdenied.do");
 		UNSECURED_URL.add("download.do");
+		UNSECURED_URL.add("routenumber.do");
+		UNSECURED_URL.add("viewfile.do");
 	}
 	
 	public static String getUserRole(ServletRequest request, Set roles) {		
@@ -29,7 +31,7 @@ public class SecurityManager {
 			}
 		}
 		
-		return null;
+		return  null;
     }
 	
 	public static String getUserRole(ServletRequest request) {

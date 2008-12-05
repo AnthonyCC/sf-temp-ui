@@ -59,7 +59,11 @@ public class AreaFormController extends AbstractFormController {
 	
 	public List saveDomainObject(Object domainObject) {
 		List errorList = new ArrayList();
-		TrnArea modelNew = (TrnArea)domainObject;		
+		TrnArea modelNew = (TrnArea)domainObject;
+		if(!"X".equalsIgnoreCase(modelNew.getNeedsLoadBalance())) {
+			modelNew.setBalanceBy(null);
+			modelNew.setLoadBalanceFactor(null);
+		}
 		if("true".equals(modelNew.getIsNew())) {
 			TrnArea refDomain = getDomainManagerService().getArea(modelNew.getCode());
 			if(refDomain != null) {
