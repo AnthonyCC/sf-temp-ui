@@ -1,0 +1,112 @@
+<%--
+  Search Pager Bar
+  ================
+
+  Included in /search2.jsp
+
+  @author segabor
+
+  @param	results		Instance of FilteredSearchResult
+  @param	nav			SearchNavigator object
+  @param	SEPARATOR	Separator HTML fragment (Dot)
+
+--%><%
+// set defaults:
+// LIST: 15, 30
+// GRID: 20, 40
+final int itemsPerPage1 = nav.isGridView() ? 20 : 15;
+final int itemsPerPage2 = nav.isGridView() ? 40 : 30;
+
+final int pg		= results.getCurrentPage();
+final int pages		= results.getPageCount();
+final int psize		= results.getPageSize();
+
+%>
+<div class="title16" style="x-font-size: 18px; x-font-weight: bold; margin-top: 1em;  text-align: center;">
+Page: 
+<%
+// generate page numbers
+if (pages == 1) {
+	// pages == 1
+	%>1<%
+
+
+} else {
+	if (pages < 15) {
+		// [A] NORMAL PAGER (pages > 1)
+
+		int currentPage = results.getCurrentPage();
+		int off = 0;
+		for (int i=0;i<pages;i++) {
+	    	if (currentPage==i) {
+	    		%><%= i+1 %><%
+	    	} else {
+				%><a href="<%= nav.getJumpToPageAction(off) %>"><%= i+1 %></a><%
+			}
+
+			if (i<results.getPageCount()-1) {
+	    	 %><%= SEPARATOR %><%
+			}
+           	off += psize;
+       	}
+
+	
+	
+	} else {
+		// [B] EXTENDED PAGER (pages >= 15)
+		final int R = 3;
+		
+		if (pg < R+2) {
+			// (1) Case 1,2,3,....,N
+			int off = 0;
+			for (int k=0; k<(2*R+1); ++k) {
+				if (k!=pg) {
+					%><a href="<%= nav.getJumpToPageAction(off) %>"><%= k+1 %></a><%= SEPARATOR %><%
+				} else {
+					%><%= k+1 %><%= SEPARATOR %><%
+				}
+				off += psize;
+			}
+			%>...<%= SEPARATOR %><a href="<%= nav.getJumpToPageAction(psize*(pages-1)) %>"><%= pages %></a><%
+		} else if (pg >= pages-(R+2)) {
+			// (2) Case 1,...,N-2,N-1,N
+			%><a href="<%= nav.getJumpToPageAction(0) %>">1</a><%= SEPARATOR %>...<%
+			int off = psize*(pages-(R+2)-1);
+			for (int k=pages-(R+2)-1; k<pages; ++k) {
+				if (k!=pg) {
+					%><%= SEPARATOR %><a href="<%= nav.getJumpToPageAction(off) %>"><%= k+1 %></a><%
+				} else {
+					%><%= SEPARATOR %><%= k+1 %><%
+				}
+				off += psize;
+			}
+		} else {
+			// (3) Case 1,...,K-1,K,K+1,...,N							
+			%><a href="<%= nav.getJumpToPageAction(0) %>">1</a><%= SEPARATOR %>...<%= SEPARATOR %><%
+
+			int off = psize*(pg-R);
+			for (int k=pg-R; k<=pg+R; ++k) {
+				if (k!=pg) {
+					%><a href="<%= nav.getJumpToPageAction(off) %>"><%= k+1 %></a><%= SEPARATOR %><%
+				} else {
+					%><%= k+1 %><%= SEPARATOR %><%
+				}
+				off += psize;
+			}
+
+			%>...<%= SEPARATOR %><a href="<%= nav.getJumpToPageAction(psize*(pages-1)) %>"><%= pages %></a><%
+		}
+	}
+		
+	// display NEXT if pages are more than 3
+	if (pages > 3 && pg < pages-1) {
+		int new_offset = psize*(pg+1);
+		%><a href="<%= nav.getJumpToPageAction( new_offset ) %>" style="margin-left: 2em">NEXT</a><%
+	}
+}
+%>
+</div><div style="text-align: center; margin-top: 1em;">
+Display <% if (psize==itemsPerPage1) { %><%= itemsPerPage1 %><% } else { %><a href="<%= nav.getPageSizeAction(itemsPerPage1) %>"><%= itemsPerPage1 %></a><% } %> |
+<% if (psize==itemsPerPage2) { %><%= itemsPerPage2 %><% } else { %><a href="<%= nav.getPageSizeAction(itemsPerPage2) %>"><%= itemsPerPage2 %></a><% } %> |
+<% if (results.isAll()) { %>ALL<% } else { %><a href="<%= nav.getPageSizeAction(0) %>">ALL</a><% } %> per page
+</div>

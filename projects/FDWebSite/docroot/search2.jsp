@@ -250,55 +250,7 @@ if ( results == null) {
 			// Don't show pager for text view!
 			if (!nav.isTextView()) {
 %>
-<%--
-
-  *************
-  * Pager Bar *
-  *************
-
---%><%
-// set defaults:
-// LIST: 15, 30
-// GRID: 20, 40
-int itemsPerPage1 = nav.isGridView() ? 20 : 15;
-int itemsPerPage2 = nav.isGridView() ? 40 : 30;
-%>
-<div class="title16" style="x-font-size: 18px; x-font-weight: bold; margin-top: 1em;  text-align: center;">
-Page: 
-<%
-				// generate page numbers
-				if (results.getPageCount() == 1) {
-					// pages == 1
-					%>1<%
-				} else {
-					// pages > 1
-					int currentPage = results.getCurrentPage();
-					int off = 0;
-					for (int i=0;i<results.getPageCount();i++) {
-				    	if (currentPage==i) {
-				    		%><%= i+1 %><%
-				    	} else {
-							%><a href="<%= nav.getJumpToPageAction(off) %>"><%= i+1 %></a><%
-						}
-	
-						if (i<results.getPageCount()-1) {
-				    	 %><%= SEPARATOR %><%
-						}
-		            	off += results.getPageSize();
-		        	}
-					
-					// display NEXT if pages are more than 3
-					if (results.getPageCount() > 3 && results.getCurrentPage() < results.getPageCount()-1) {
-						int new_offset = results.getPageSize()*(results.getCurrentPage()+1);
-						%><a href="<%= nav.getJumpToPageAction( new_offset ) %>" style="margin-left: 2em">NEXT</a><%
-					}
-				}
-%>
-</div><div style="text-align: center; margin-top: 1em;">
-Display <% if (results.getPageSize()==itemsPerPage1) { %><%= itemsPerPage1 %><% } else { %><a href="<%= nav.getPageSizeAction(itemsPerPage1) %>"><%= itemsPerPage1 %></a><% } %> |
-<% if (results.getPageSize()==itemsPerPage2) { %><%= itemsPerPage2 %><% } else { %><a href="<%= nav.getPageSizeAction(itemsPerPage2) %>"><%= itemsPerPage2 %></a><% } %> |
-<% if (results.isAll()) { %>ALL<% } else { %><a href="<%= nav.getPageSizeAction(0) %>">ALL</a><% } %> per page
-</div>
+<%@ include file="/includes/search/pager.jspf" %>
 <%
 	    	} // view != 'text'
 		} // (resultSize>0)
