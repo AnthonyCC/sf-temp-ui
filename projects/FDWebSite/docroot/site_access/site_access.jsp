@@ -62,14 +62,7 @@ request.setAttribute("listPos", "CategoryNote");
 	</head>
 	
 	<body bgcolor="white" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20" onLoad="window.document.site_access_home.<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>.focus();">
-		<script language="JavaScript">
-			var axel = Math.random()+"";
-			var a = axel * 10000000000000;
-			document.write('<IFRAME SRC=http://fls.doubleclick.net/activityi;src=1495506;type=sitea997;cat=sitea363;ord=1;num='+ a + '? WIDTH=1 HEIGHT=1 FRAMEBORDER=0></IFRAME>');
-		</script>
-		<noscript>
-			<IFRAME SRC="http://fls.doubleclick.net/activityi;src=1495506;type=sitea997;cat=sitea363;ord=1;num=1?" WIDTH=1 HEIGHT=1 FRAMEBORDER=0></IFRAME>
-		</noscript>
+		
 	<jsp:include page="/shared/template/includes/server_info.jsp" flush="false"/>
     <jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
 		<fd:SiteAccessController action='checkByZipCode' successPage='<%= successPage %>' moreInfoPage='<%= moreInfoPage %>' failureHomePage='<%= failurePage %>' result='result'>
