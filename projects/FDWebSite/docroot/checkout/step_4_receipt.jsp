@@ -36,27 +36,6 @@ String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBE
     
 %>
 
-<%@include file="/includes/tacoda/tac_receipt.jspf"%>
-
-<script language="JavaScript">
-<!-- //TACODA
-
-isSecureProtocol = false;
-if(document.location.href.substring(0,5) == 'https'){
-  isSecureProtocol = true;
-}
-
-if (isSecureProtocol) {
-  document.write('<img width="0" height="0" src="'+secure1+'">');
-    document.write('<img width="0" height="0" src="'+secure2+'">');
-} else {
-  document.write('<img width="0" height="0" src="'+notSecure1+'">');
-   document.write('<img width="0" height="0" src="'+notSecure2+'">');
-}
-
-//-->
-</script>
-
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="630">
 <TR VALIGN="BOTTOM">      
     <TD colspan="2" WIDTH="630" ALIGN="RIGHT">
@@ -82,40 +61,6 @@ if (isSecureProtocol) {
 </tr>
 </TABLE>
 <%@include file="/checkout/includes/i_checkout_receipt.jspf"%>
-<% if(cart != null) { %>
-<iframe src="https://fls.doubleclick.net/activityi;src=1495506;type=sales288;cat=recei992;qty=1;cost=<%= cart.getTotal() %>;ord=<%=orderNumber%>?" width=1 height=1 frameborder=0></iframe>
-<% } %>
-
-<!-- Google Code for purchase Conversion Page -->
-<script language="JavaScript" type="text/javascript">
-<!--
-  var google_conversion_id = 1068815947;
-  var google_conversion_language = "en_US";
-  var google_conversion_format = "1";
-  var google_conversion_color = "FFFFFF";
-  if (1) {
-    var google_conversion_value = 1;
-  }
-  var google_conversion_label = "purchase";
-//-->
-</script>
-<script language="JavaScript" src="https://www.googleadservices.com/pagead/conversion.js">
-</script>
-<noscript>
-  <img height=1 width=1 border=0 src="https://www.googleadservices.com/pagead/conversion/1068815947/imp.gif?value=1&label=purchase&script=0">
-</noscript> 
-
-<SCRIPT language="JavaScript" type="text/javascript">
-<!-- Yahoo! Inc.
-  window.ysm_customData = new Object();
-  window.ysm_customData.conversion = "transId=,currency=,amount=";
-  var ysm_accountid  = "1KR4Q5TGJO4AECHT8BN4JFB173O";
-  document.write("<SCR" + "IPT language='JavaScript' type='text/javascript' " 
-    + "SRC=//" + "srv1.wa.marketingsolutions.yahoo.com" + "/script/ScriptServlet" + "?aid=" + ysm_accountid 
-      + "></SCR" + "IPT>");
-// -->
-
-</SCRIPT>
 
 </fd:GetOrder>
 </tmpl:put>

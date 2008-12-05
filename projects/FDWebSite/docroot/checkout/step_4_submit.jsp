@@ -18,23 +18,6 @@ java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Checkout - Review & Submit Order</tmpl:put>
 <tmpl:put name='content' direct='true'>
-<%@include file="/includes/tacoda/tac_receipt.jspf"%>
-
-<script language="JavaScript">
-<!-- //TACODA
-
-isSecureProtocol = false;
-if(document.location.href.substring(0,5) == 'https'){
-	isSecureProtocol = true;
-}
-
-if (isSecureProtocol) {
-	document.write('<img src="'+secure3+'" width="0" height="0" border="0">');
-} else {
-	document.write('<img src="'+notSecure3+'" width="0" height="0" border="0">');
-}
-//-->
-</script>
 
 <fd:FDShoppingCart id='cart' result="result">
 
