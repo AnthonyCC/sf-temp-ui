@@ -17,6 +17,12 @@ public class DlvServiceTimeScenario implements java.io.Serializable, TrnBaseEnti
 	private DlvServiceTimeType defaultServiceTimeType;
 	private TrnZoneType defaultZoneType;
 	
+	private BigDecimal loadBalanceFactor;
+	
+	private String balanceBy;
+	
+	private String needsLoadBalance;
+	
 	private String isNew;
 
 	public String getIsNew() {
@@ -158,6 +164,30 @@ public class DlvServiceTimeScenario implements java.io.Serializable, TrnBaseEnti
 
 	public boolean isObsoleteEntity() {
 		return false;
+	}
+
+	public String getBalanceBy() {
+		return balanceBy;
+	}
+
+	public void setBalanceBy(String balanceBy) {
+		this.balanceBy = balanceBy;
+	}
+
+	public BigDecimal getLoadBalanceFactor() {
+		return loadBalanceFactor;
+	}
+
+	public void setLoadBalanceFactor(BigDecimal loadBalanceFactor) {
+		this.loadBalanceFactor = loadBalanceFactor;
+	}
+
+	public String getNeedsLoadBalance() {
+		return needsLoadBalance;
+	}
+
+	public void setNeedsLoadBalance(String needsLoadBalance) {
+		this.needsLoadBalance = needsLoadBalance;
 	}
 
 }

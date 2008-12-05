@@ -15,7 +15,7 @@ import com.freshdirect.transadmin.util.TransStringUtil;
 public class AreaFormController extends AbstractFormController {
 	
 	private DomainManagerI domainManagerService;
-	
+			
 	public DomainManagerI getDomainManagerService() {
 		return domainManagerService;
 	}
@@ -27,6 +27,7 @@ public class AreaFormController extends AbstractFormController {
 	protected Map referenceData(HttpServletRequest request) throws ServletException {
 		Map refData = new HashMap();
 		refData.put("deliverymodels", getDomainManagerService().getDeliveryModels());
+		refData.put("balancebys", getDomainManagerService().getBalanceBys());
 		return refData;
 	}
 	

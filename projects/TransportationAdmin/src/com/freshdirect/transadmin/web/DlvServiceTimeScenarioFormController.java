@@ -24,6 +24,7 @@ public class DlvServiceTimeScenarioFormController extends AbstractFormController
 		Map refData = new HashMap();		
 		refData.put("servicetimetypes", getLocationManagerService().getServiceTimeTypes());				
 		refData.put("zonetypes", getDomainManagerService().getZoneTypes());
+		refData.put("balancebys", getDomainManagerService().getBalanceBys());
 		return refData;
 	}
 	

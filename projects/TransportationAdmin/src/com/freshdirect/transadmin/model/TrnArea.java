@@ -1,5 +1,7 @@
 package com.freshdirect.transadmin.model;
 
+import java.math.BigDecimal;
+
 public class TrnArea  implements java.io.Serializable, TrnBaseEntityI {
 	
 	private String code;
@@ -12,6 +14,12 @@ public class TrnArea  implements java.io.Serializable, TrnBaseEntityI {
 	private String isNew;
 	
 	private String deliveryModel;
+	
+	private BigDecimal loadBalanceFactor;
+	
+	private String balanceBy;
+	
+	private String needsLoadBalance;
 
 	public String getIsNew() {
 		return isNew;
@@ -71,6 +79,30 @@ public class TrnArea  implements java.io.Serializable, TrnBaseEntityI {
 
 	public void setDeliveryModel(String deliveryModel) {
 		this.deliveryModel = deliveryModel;
+	}
+
+	public String getBalanceBy() {
+		return balanceBy;
+	}
+
+	public void setBalanceBy(String balanceBy) {
+		this.balanceBy = balanceBy;
+	}
+
+	public BigDecimal getLoadBalanceFactor() {
+		return loadBalanceFactor;
+	}
+
+	public void setLoadBalanceFactor(BigDecimal loadBalanceFactor) {
+		this.loadBalanceFactor = loadBalanceFactor;
+	}
+
+	public String getNeedsLoadBalance() {
+		return needsLoadBalance;
+	}
+
+	public void setNeedsLoadBalance(String needsLoadBalance) {
+		this.needsLoadBalance = needsLoadBalance;
 	}
 
 }

@@ -1,11 +1,16 @@
 package com.freshdirect.transadmin.web.validation;
 
+import java.math.BigDecimal;
+
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
 import com.freshdirect.transadmin.model.TrnArea;
+import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class AreaValidator extends AbstractValidator {	
+	
+	private String bigDecimalPattern = "\\d{0,1}\\.\\d{0,10}";
 	
 	public boolean supports(Class clazz) {
 		return TrnArea.class.isAssignableFrom(clazz);
@@ -27,6 +32,27 @@ public class AreaValidator extends AbstractValidator {
 		validateLength("name", model.getName(), 32, errors);
 		validateLength("description", model.getDescription(), 256, errors);		
 		validateLength("prefix", model.getPrefix(), 8, errors);
+		
+		if("X".equalsIgnoreCase(model.getNeedsLoadBalance())) {
+			if(model != null && (model.getBalanceBy() == null || model.getBalanceBy() == null) || "null".equals(model.getBalanceBy())) {
+				errors.rejectValue("balanceBy", "app.error.112", new Object[]{"Balance By"},"required field");
+			}
+			ValidationUtils.rejectIfEmpty(errors, "loadBalanceFactor", "app.error.112", new Object[]{"Balance By Factor"},"required field");
+			if(!errors.hasFieldErrors("loadBalanceFactor")) {
+				validateNumericLength("loadBalanceFactor", model.getLoadBalanceFactor(), errors);
+			}
+		}	
+		
+		
+	}
 	
+	protected void validateNumericLength(String field, BigDecimal value, Errors errors) {
+		
+		if((value != null 
+				&& !TransStringUtil.isEmpty(value.toString()) 
+				&& !TransStringUtil.isValidDecimalFormat(value.toString(), bigDecimalPattern))
+				|| (value != null && value.doubleValue() > 1.0)) {			
+			errors.rejectValue(field, "app.error.118", null);			
+		}		
 	}
 }

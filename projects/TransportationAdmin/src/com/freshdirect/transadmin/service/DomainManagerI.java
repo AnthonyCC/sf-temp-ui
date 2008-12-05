@@ -59,5 +59,7 @@ public interface DomainManagerI extends BaseManagerI {
 	Collection getRouteNumberGroup(String date, String cutOff, String area);
 	
 	Collection getDeliveryModels();
+	
+	Collection getBalanceBys();
 
 }

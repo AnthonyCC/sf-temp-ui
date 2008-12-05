@@ -27,7 +27,10 @@
               <ec:column property="name" title="Area Name"/>
               <ec:column property="description" title="Description"/>
               <ec:column property="prefix" title="Prefix"/> 
-              <ec:column property="deliveryModel" title="Delivery Model"/>            
+              <ec:column property="deliveryModel" title="Delivery Model"/> 
+              <ec:column property="needsLoadBalance" title="Load Balance"/> 
+              <ec:column property="loadBalanceFactor" title="Balance Factor"/>
+              <ec:column property="balanceBy" title="Balance By"/>                        
             </ec:row>
           </ec:table>
        </form>  

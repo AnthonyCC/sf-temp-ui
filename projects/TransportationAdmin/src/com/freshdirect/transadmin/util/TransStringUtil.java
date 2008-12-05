@@ -87,6 +87,17 @@ public class TransStringUtil {
         return dateFormat.format(dateVal);
 	}
 	
+	public static boolean compareDate(Date dateVal1, Date dateVal2) {
+		try {
+			String strDate1 = dateFormat.format(dateVal1);
+			String strDate2 = dateFormat.format(dateVal2);
+			
+		} catch (Exception e) {
+			// Do Nothing
+		}
+        return false;
+	}
+	
 	public static String getServerDate(Date dateVal) throws ParseException {		
         return serverDateFormat.format(dateVal);
 	}
@@ -231,6 +242,13 @@ public class TransStringUtil {
 			zip = zip+".00";
 		}
 	    return zip.matches(bigDecimalPattern);    
+	}
+	
+	public static boolean isValidDecimalFormat(String zip, String format) {
+		if(zip != null && zip.indexOf(".") ==-1) {
+			zip = zip+".00";
+		}
+	    return zip.matches(format);    
 	}
 	
 	public static boolean isValidInteger(String intVal) throws NumberFormatException {	

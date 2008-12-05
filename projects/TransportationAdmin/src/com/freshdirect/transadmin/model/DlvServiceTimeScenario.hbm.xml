@@ -32,6 +32,15 @@
         <property name="defaultFreezerCount" type="big_decimal">
             <column name="DEFAULT_FREEZERCOUNT" precision="10" />
         </property> 
+        <property name="loadBalanceFactor" type="big_decimal">
+            <column name="LOADBALANCE_FACTOR" precision="10" />
+        </property>
+        <property name="balanceBy" type="string">
+            <column name="BALANCE_BY" length="16" />
+        </property>
+        <property name="needsLoadBalance" type="string">
+            <column name="NEEDS_LOADBALANCE" length="1" />
+        </property>   
         <many-to-one name="defaultServiceTimeType" class="com.freshdirect.transadmin.model.DlvServiceTimeType" fetch="select" lazy="false">
             <column name="DEFAULT_SERVICETIME_TYPE" length="8" />
         </many-to-one> 

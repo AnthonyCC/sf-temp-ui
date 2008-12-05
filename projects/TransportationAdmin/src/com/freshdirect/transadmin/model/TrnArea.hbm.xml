@@ -22,6 +22,15 @@
         </property> 
         <property name="deliveryModel" type="string">
             <column name="DELIVERYMODEL" length="8" />
-        </property>         
+        </property> 
+        <property name="loadBalanceFactor" type="big_decimal">
+            <column name="LOADBALANCE_FACTOR" precision="10" />
+        </property>
+        <property name="balanceBy" type="string">
+            <column name="BALANCE_BY" length="16" />
+        </property>
+        <property name="needsLoadBalance" type="string">
+            <column name="NEEDS_LOADBALANCE" length="1" />
+        </property>        
     </class>
 </hibernate-mapping>

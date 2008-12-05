@@ -2,6 +2,8 @@ package com.freshdirect.transadmin.service.impl;
 
 import java.util.Collection;
 
+
+import com.freshdirect.routing.constants.EnumBalanceBy;
 import com.freshdirect.transadmin.dao.BaseManagerDaoI;
 import com.freshdirect.transadmin.dao.DomainManagerDaoI;
 import com.freshdirect.transadmin.model.TrnArea;
@@ -31,7 +33,7 @@ public class DomainManagerImpl
 	}
 
 	public Collection getEmployees() {
-		
+				
 		return getDomainManagerDao().getEmployees();
 	}
 	
@@ -133,5 +135,10 @@ public class DomainManagerImpl
 	public Collection getDeliveryModels() {
 		return getDomainManagerDao().getDeliveryModels();
 	}
+	
+	public Collection getBalanceBys() {
+		return EnumBalanceBy.getEnumList();
+	}
+		
 	
 }

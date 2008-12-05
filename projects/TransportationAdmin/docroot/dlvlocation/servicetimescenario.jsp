@@ -23,18 +23,22 @@
               <ec:column title=" " width="5px" 
                     filterable="false" sortable="false" cell="selectcol"
                     property="code" />  
-           <ec:column alias="scenariocode" property="code" title="Code"/>    
-           <ec:column property="description" title="Description"/>
+          <ec:column width="5px" alias="scenariocode" property="code" title="Code"/>    
+          <ec:column property="description" title="Description"/>
           <ec:column width="5px" property="isDefault" title="Is Default"/>
           <ec:column property="serviceTimeFactorFormula" title="Service Time Factor Formula"/>
           <ec:column property="serviceTimeFormula" title="Service Time Formula"/>
-          <ec:column property="defaultCartonCount" title="Carton Count"/>
-          <ec:column property="defaultCaseCount" title="Case Count"/>
-          <ec:column property="defaultFreezerCount" title="Freezer Count"/>
+          <ec:column property="defaultCartonCount" width="5px" title="Carton Count"/>
+          <ec:column property="defaultCaseCount" width="5px" title="Case Count"/>
+          <ec:column property="defaultFreezerCount" width="5px" title="Freezer Count"/>
           <ec:column property="orderSizeFormula" title="Order Size Formula"/>
           
-          <ec:column alias="defaultServiceTimeType" property="defaultServiceTimeType.code" title="Service Time Type"/>
-          <ec:column alias="defaultZoneType" property="defaultZoneType.name" title="Zone Type"/>                  
+          <ec:column alias="defaultServiceTimeType" width="5px" property="defaultServiceTimeType.code" title="Service Time Type"/>
+          <ec:column alias="defaultZoneType" property="defaultZoneType.name" title="Zone Type"/>  
+          
+          <ec:column property="needsLoadBalance" width="5px" title="Load Balance"/> 
+          <ec:column property="loadBalanceFactor" title="Balance Factor"/>
+          <ec:column property="balanceBy" title="Balance By"/>                         
              
             </ec:row>
           </ec:table>

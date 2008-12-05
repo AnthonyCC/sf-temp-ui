@@ -1,5 +1,6 @@
 package com.freshdirect.transadmin.web.validation;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -8,8 +9,11 @@ import org.springframework.validation.ValidationUtils;
 
 import com.freshdirect.routing.manager.UtilityManager;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
+import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class DlvServiceTimeScenarioValidator extends AbstractValidator {	
+	
+	private String bigDecimalPattern = "\\d{0,1}\\.\\d{0,10}";
 	
 	public boolean supports(Class clazz) {
 		return DlvServiceTimeScenario.class.isAssignableFrom(clazz);
@@ -59,8 +63,27 @@ public class DlvServiceTimeScenarioValidator extends AbstractValidator {
 		validateNumericLength("defaultCaseCount", model.getDefaultCaseCount(), errors);
 		validateNumericLength("defaultFreezerCount", model.getDefaultFreezerCount(), errors);
 		
+		if("X".equalsIgnoreCase(model.getNeedsLoadBalance())) {
+			if(model != null && (model.getBalanceBy() == null || model.getBalanceBy() == null) || "null".equals(model.getBalanceBy())) {
+				errors.rejectValue("balanceBy", "app.error.112", new Object[]{"Balance By"},"required field");
+			}
+			ValidationUtils.rejectIfEmpty(errors, "loadBalanceFactor", "app.error.112", new Object[]{"Balance By Factor"},"required field");
+			if(!errors.hasFieldErrors("loadBalanceFactor")) {
+				validateNumericLengthEx("loadBalanceFactor", model.getLoadBalanceFactor(), errors);
+			}
+		}	
 	}
 	
+	protected void validateNumericLengthEx(String field, BigDecimal value, Errors errors) {
+		
+		if((value != null 
+				&& !TransStringUtil.isEmpty(value.toString()) 
+				&& !TransStringUtil.isValidDecimalFormat(value.toString(), bigDecimalPattern))
+				|| (value != null && value.doubleValue() > 1.0)) {			
+			errors.rejectValue(field, "app.error.118", null);			
+		}		
+	}
+
 	private List getServiceTimeFactorVariables() {
 		return Arrays.asList(new String[]{"x","y","z"});
 	}
