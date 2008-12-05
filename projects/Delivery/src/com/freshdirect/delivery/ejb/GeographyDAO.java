@@ -1215,8 +1215,8 @@ public class GeographyDAO {
 		return result;
 	}
 	
-	private final static String LOCATION_DATABASE = "select db.LONGITUDE LONGITUDE, db.LATITUDE LATITUDE, db.GEO_CONFIDENCE GEO_CONFIDENCE, db.GEO_QUALITY GEO_QUALITY from dlv.DELIVERY_LOCATION dl, dlv.DELIVERY_BUILDING db "+
-													"where dl.BUILDINGID = db.ID and db.SCRUBBED_STREET = ? and db.ZIP ";
+	private final static String LOCATION_DATABASE = "select db.LONGITUDE LONGITUDE, db.LATITUDE LATITUDE, db.GEO_CONFIDENCE GEO_CONFIDENCE, db.GEO_QUALITY GEO_QUALITY from dlv.DELIVERY_BUILDING db "+
+													"where db.SCRUBBED_STREET = ? and db.ZIP ";
 
 	private String checkLocationDatabase(AddressModel address, Connection conn) throws SQLException, InvalidAddressException {
 		String streetAddress = AddressScrubber.standardizeForGeocode(address.getAddress1());
@@ -1224,6 +1224,7 @@ public class GeographyDAO {
 		String result = GEOCODE_FAILED;
 		StringBuffer strBuf = new StringBuffer(LOCATION_DATABASE);
 		strBuf.append(StringUtil.formQueryString(Arrays.asList(getZipCodeFromAddress(address))));
+		
 		PreparedStatement ps = conn.prepareStatement(strBuf.toString());
 				
 		ps.setString(1, streetAddress);
