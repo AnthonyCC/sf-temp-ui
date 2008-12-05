@@ -23,7 +23,7 @@
 %><%@ taglib uri='freshdirect' prefix='fd'
 %><%@ taglib uri='oscache' prefix='oscache'
 %><%
-final String SEPARATOR = "&nbsp;<span style=\"color: grey\">&bull;</span>&nbsp;";
+final String SEPARATOR = "&nbsp;<span class=\"text12\" style=\"color: #CCCCCC\">&bull;</span>&nbsp;";
 final String trk = "srch"; // tracking code
 
 String criteria = request.getParameter("searchParams");
