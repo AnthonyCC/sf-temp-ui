@@ -60,6 +60,7 @@ String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBE
   <td colspan="2"><IMG src="/media_stat/images/layout/669933.gif" HEIGHT="4" WIDTH="630"></td>
 </tr>
 </TABLE>
+
 <%@include file="/checkout/includes/i_checkout_receipt.jspf"%>
 
 </fd:GetOrder>

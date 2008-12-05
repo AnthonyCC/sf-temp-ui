@@ -149,6 +149,7 @@ BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2"><% } %></td>
 		</td>
 	</tr>
 </table>
+
 <BR>
 	<IMG src="/media_stat/images/layout/clear.gif" width="1" height="8" BORDER="0"><BR>
 	<IMG src="/media_stat/images/layout/ff9933.gif" width="693" height="1" BORDER="0"><BR>
