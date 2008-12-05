@@ -138,6 +138,7 @@ ContentNodeModel lastSubCategory = null;
 			}			
 		%>
 			</span>
+		</div>
 		<%
 		// Scaled prices
 		//
@@ -145,13 +146,12 @@ ContentNodeModel lastSubCategory = null;
 		if (scaledPrices != null && scaledPrices.length > 0) {
 			for (int ymalSci = 0; ymalSci < scaledPrices.length; ymalSci++) { 
 		%>
-			<span class="save-label">SAVE!</span>&nbsp;<span class="normal-price"><%= scaledPrices[ymalSci] %></span>
+			<div style="margin-left:20px;margin-bottom:10px">
+				<span class="save-label">SAVE!</span>&nbsp;<span class="normal-price"><%= scaledPrices[ymalSci] %></span>
+			</div>
 		<%
 			}
 		}
-		%>
-		</div>
-		<%
 		// Various labels
 		//   YOUR FAVORITE
 		if (isYourFave) {

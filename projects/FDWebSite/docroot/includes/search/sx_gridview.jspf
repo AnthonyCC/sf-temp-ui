@@ -135,7 +135,7 @@ int colCount = 0;
 		</div>
 		<div style="white-space: nowrap;" class="normal-price">
 				<span class="save-base-price">
-					(was <%=CURRENCY_FORMATTER.format(basePrice) %>/<%= priceUnit %>)
+					(was <%=CURRENCY_FORMATTER.format(basePrice) %>)
 				</span>
 		<%				
 			} else {

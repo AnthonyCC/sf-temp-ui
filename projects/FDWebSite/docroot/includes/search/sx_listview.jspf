@@ -123,7 +123,7 @@ int rank = nav.getPageOffset()+1;
 		</div>
 		<div style="white-space: nowrap" class="text13 normal-price">
 					<span class="save-base-price">
-						(was <%=CURRENCY_FORMATTER.format(basePrice) %>/<%= priceUnit %>)
+						(was <%=CURRENCY_FORMATTER.format(basePrice) %>)
 					</span>
 		<%				
 				} else {
@@ -142,6 +142,9 @@ int rank = nav.getPageOffset()+1;
 			for (int ymalSci = 0; ymalSci < scaledPrices.length; ymalSci++) { 
 		%>
 		<div style="white-space: nowrap" class="text13 normal-price">
+				<% if (isDeal) { %>
+				<br>
+				<% } %>
 				<span class="save-label">SAVE!</span>&nbsp;<%= scaledPrices[ymalSci] %>
 		</div>
 		<%

@@ -83,6 +83,18 @@ int k = 0;
 
 %>		</div>
 <%
+		if (defaultPrice != null) {
+			// Scaled prices
+			//
+			String scaledPrices[] = pi.getScaledPrices();
+			if (scaledPrices != null && scaledPrices.length > 0) {
+				for (int ymalSci = 0; ymalSci < scaledPrices.length; ymalSci++) { 
+			%>
+				<div style="margin-left:20px;"><span class="save-label">SAVE!</span>&nbsp;<span class="normal-price"><%= scaledPrices[ymalSci] %></span></div>
+			<%
+				}
+			}
+		}
 		// Various labels
 		//   YOUR FAVORITE
 		if (isYourFave) {
@@ -93,11 +105,11 @@ int k = 0;
 		<td style="text-align: right; padding-left: 1em; padding-right: 1em; white-space: nowrap;vertical-align: center;"><%
 			if (defaultPrice != null) {
 				if (isDeal) {
-				%><div class="save-price">
-					<%=CURRENCY_FORMATTER.format(defaultPrice.doubleValue()) %>/<%= priceUnit %>
+				%><div>
+					<span class="save-label">SAVE <%= deal %>%</span>
+					<span class="save-price"><%=CURRENCY_FORMATTER.format(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
 				  </div>
 				  <div>
-					<span class="save-label">SAVE <%= deal %>%</span>
 					<span class="save-base-price">was <%= CURRENCY_FORMATTER.format(basePrice) %></span>
 				  </div> 
 				<%
@@ -106,16 +118,6 @@ int k = 0;
 					<span class="normal-price"><%=CURRENCY_FORMATTER.format(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
 				  </div>
 				<%
-				}
-				// Scaled prices
-				//
-				String scaledPrices[] = pi.getScaledPrices();
-				if (scaledPrices != null && scaledPrices.length > 0) {
-					for (int ymalSci = 0; ymalSci < scaledPrices.length; ymalSci++) { 
-				%>
-					<div><span class="save-label">SAVE!</span>&nbsp;<span class="normal-price"><%= scaledPrices[ymalSci] %></span></div>
-				<%
-					}
 				}
 				%>
 <%
