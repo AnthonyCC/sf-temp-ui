@@ -38,7 +38,7 @@
           
           <ec:column property="needsLoadBalance" width="5px" title="Load Balance"/> 
           <ec:column property="loadBalanceFactor" title="Balance Factor"/>
-          <ec:column property="balanceBy" title="Balance By"/>                         
+          <ec:column format="com.freshdirect.routing.constants.EnumBalanceBy" cell="enumcol" property="balanceBy" title="Balance By"/>                         
              
             </ec:row>
           </ec:table>
