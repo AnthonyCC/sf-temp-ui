@@ -285,7 +285,7 @@ for (i=0; i<document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed.len
 		</table>
 		</div>
 		
-	<table width="60%" cellpadding="0" cellspacing="0" border="0">
+	<table width="90%" cellpadding="0" cellspacing="0" border="0">
  			
 		<div align="left">
 			<tr><BR><BR>										
