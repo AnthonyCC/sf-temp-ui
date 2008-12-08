@@ -4,7 +4,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <tmpl:insert template='/common/sitelayout.jsp'>
 
-    <tmpl:put name='title' direct='true'>Edit Delivery Location</tmpl:put>
+    <tmpl:put name='title' direct='true'>Edit Delivery Building Details</tmpl:put>
 
   <tmpl:put name='content' direct='true'>
     <br/> 
@@ -45,6 +45,27 @@ function toggle3(checked, field1, field2,field3) {
       document.getElementById(field1).disabled=document.getElementById(field2).disabled=document.getElementById(field3).disabled=true;
 	}
 }
+
+function toggle3svc(checked, svcHoursOpen, svcHoursClose,svcComment,hoursField, hoursOpenField,hoursCloseField) {
+    if(checked){
+      document.getElementById(svcHoursOpen).disabled=document.getElementById(svcHoursClose).disabled=document.getElementById(svcComment).disabled=false;
+	}
+	else {
+      document.getElementById(svcHoursOpen).disabled=document.getElementById(svcHoursClose).disabled=document.getElementById(svcComment).disabled=true;
+	}
+	if(checked){
+		if(document.getElementById(hoursField).checked == true){
+		    if(document.getElementById(svcHoursOpen).value == "12:00 AM"){
+			    document.getElementById(svcHoursOpen).value = document.getElementById(hoursOpenField).value;
+			}		
+		    if(document.getElementById(svcHoursClose).value == "12:00 AM"){
+				document.getElementById(svcHoursClose).value = document.getElementById(hoursCloseField).value;
+			}		
+		}
+	}
+	
+}
+
 
 function $() {
     var elements = new Array();
@@ -277,7 +298,7 @@ for (i=0; i<document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed.len
 	<table width="60%" cellpadding="0" cellspacing="0" border="0">
  
 				<tr>
-					<td align="center" class="screentitle"><b>Edit Delivery Building Detail<b></td>
+					<td align="center" class="screentitle"><b>Edit Delivery Building Details<b></td>
 				</tr>
 				<tr>
 					<td class="screenmessages"><jsp:include page='/common/messages.jsp'/></td>

@@ -53,7 +53,8 @@
 </script>
 						 						  
 						 <tr>
-		                  <td><form:checkbox id="svcIncludeMon" path="svcIncludeMon" value="1" disabled="true" onClick="toggle3(this.checked, 'svcHoursOpenMon', 'svcHoursCloseMon', 'svcCommentMon');"/></td>
+		                  <td><form:checkbox id="svcIncludeMon" path="svcIncludeMon" value="1" disabled="true" 
+		                  		onClick="toggle3svc(this.checked, 'svcHoursOpenMon', 'svcHoursCloseMon', 'svcCommentMon', 'includeMon', 'hoursOpenMon', 'hoursCloseMon');"/></td>
 						    <td align="left">Monday</td><td>				    
 						    <td align="left"> <a id="timeSvcMon1_toggler">Open&nbsp;Time</a></td><td>				    
 							  <form:input maxlength="50" size="8" disabled="true" path="svcHoursOpenMon" />
@@ -68,7 +69,8 @@
 						 	</td>
 						 </tr>							 
 						 <tr>
-		                  <td><form:checkbox id="svcIncludeTue" path="svcIncludeTue" value="1" disabled="true" onClick="toggle3(this.checked, 'svcHoursOpenTue', 'svcHoursCloseTue', 'svcCommentTue');"/></td>
+		                  <td><form:checkbox id="svcIncludeTue" path="svcIncludeTue" value="1" disabled="true" 
+		                  		onClick="toggle3svc(this.checked, 'svcHoursOpenTue', 'svcHoursCloseTue', 'svcCommentTue', 'includeTue','hoursOpenTue', 'hoursCloseTue');"/></td>
 						    <td align="left">Tuesday</td><td>				    
 						    <td align="left"> <a id="timeSvcTue1_toggler">Open&nbsp;Time</a></td><td>				    
 							  <form:input maxlength="50" size="8" disabled="true" path="svcHoursOpenTue" />
@@ -85,7 +87,8 @@
 						 
 						 
 						 <tr>
-		                  <td><form:checkbox id="svcIncludeWed" path="svcIncludeWed" value="1" disabled="true" onClick="toggle3(this.checked, 'svcHoursOpenWed', 'svcHoursCloseWed', 'svcCommentWed');"/></td>
+		                  <td><form:checkbox id="svcIncludeWed" path="svcIncludeWed" value="1" disabled="true" 
+		                  		onClick="toggle3svc(this.checked, 'svcHoursOpenWed', 'svcHoursCloseWed', 'svcCommentWed', 'includeWed', 'hoursOpenWed', 'hoursCloseWed');"/></td>
 						    <td align="left">Wednesday</td><td>				    
 						    <td align="left"> <a id="timeSvcWed1_toggler">Open&nbsp;Time</a></td><td>				    
 							  <form:input maxlength="50" size="8" disabled="true" path="svcHoursOpenWed" />
@@ -101,7 +104,8 @@
 						 </tr>			
 						 				 
 						 <tr>
-		                  <td><form:checkbox id="svcIncludeThu" path="svcIncludeThu" value="1" disabled="true" onClick="toggle3(this.checked, 'svcHoursOpenThu', 'svcHoursCloseThu', 'svcCommentThu');"/></td>
+		                  <td><form:checkbox id="svcIncludeThu" path="svcIncludeThu" value="1" disabled="true" 
+		                  		onClick="toggle3svc(this.checked, 'svcHoursOpenThu', 'svcHoursCloseThu', 'svcCommentThu', 'includeThu', 'hoursOpenThu', 'hoursCloseThu');"/></td>
 						    <td align="left">Thursday</td><td>				    
 						    <td align="left"> <a id="timeSvcThu1_toggler">Open&nbsp;Time</a></td><td>				    
 							  <form:input maxlength="50" size="8" disabled="true" path="svcHoursOpenThu" />
@@ -116,7 +120,8 @@
 						 	</td>
 						 </tr>							 
 						 <tr>
-		                  <td><form:checkbox id="svcIncludeFri" path="svcIncludeFri" value="1" disabled="true" onClick="toggle3(this.checked, 'svcHoursOpenFri', 'svcHoursCloseFri', 'svcCommentFri');"/></td>
+		                  <td><form:checkbox id="svcIncludeFri" path="svcIncludeFri" value="1" disabled="true" 
+		                  		onClick="toggle3svc(this.checked, 'svcHoursOpenFri', 'svcHoursCloseFri', 'svcCommentFri', 'includeFri', 'hoursOpenFri', 'hoursCloseFri');"/></td>
 						    <td align="left">Friday</td><td>				    
 						    <td align="left"> <a id="timeSvcFri1_toggler">Open&nbsp;Time</a></td><td>				    
 							  <form:input maxlength="50" size="8" disabled="true" path="svcHoursOpenFri" />
@@ -131,7 +136,8 @@
 						 	</td>
 						 </tr>							 
 						 <tr>
-		                  <td><form:checkbox id="svcIncludeSat" path="svcIncludeSat" value="1" disabled="true" onClick="toggle3(this.checked, 'svcHoursOpenSat', 'svcHoursCloseSat', 'svcCommentSat');"/></td>
+		                  <td><form:checkbox id="svcIncludeSat" path="svcIncludeSat" value="1" disabled="true" 
+		                  		onClick="toggle3svc(this.checked, 'svcHoursOpenSat', 'svcHoursCloseSat', 'svcCommentSat', 'includeSat', 'hoursOpenSat', 'hoursCloseSat');"/></td>
 						    <td align="left">Saturday</td><td>				    
 						    <td align="left"> <a id="timeSvcSat1_toggler">Open&nbsp;Time</a></td><td>				    
 							  <form:input maxlength="50" size="8" disabled="true" path="svcHoursOpenSat" />
@@ -147,7 +153,8 @@
 						 </tr>							 
 						 						 
 						 <tr>
-		                  <td><form:checkbox id="svcIncludeSun" path="svcIncludeSun" value="1" disabled="true" onClick="toggle3(this.checked, 'svcHoursOpenSun', 'svcHoursCloseSun', 'svcCommentSun');"/></td>
+		                  <td><form:checkbox id="svcIncludeSun" path="svcIncludeSun" value="1" disabled="true" 
+		                  		onClick="toggle3svc(this.checked, 'svcHoursOpenSun', 'svcHoursCloseSun', 'svcCommentSun', 'includeSun', 'hoursOpenSun', 'hoursCloseSun');"/></td>
 						    <td align="left">Sunday</td><td>				    
 						    <td align="left"> <a id="timeSvcSun1_toggler">Open&nbsp;Time</a></td><td>				    
 							  <form:input maxlength="50" size="8" disabled="true" path="svcHoursOpenSun" />
