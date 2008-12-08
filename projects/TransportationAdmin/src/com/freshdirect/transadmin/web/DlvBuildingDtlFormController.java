@@ -220,6 +220,7 @@ protected void onBind(HttpServletRequest request, Object command) {
 		Collection c = new ArrayList();
 		c.add("Residential");
 		c.add("Commercial");
+		c.add("Mixed-Use");
 		refData.put("addrTypes", c);
 	
 		return refData;

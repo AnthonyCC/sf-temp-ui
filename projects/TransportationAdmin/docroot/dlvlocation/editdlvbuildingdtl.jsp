@@ -2,6 +2,12 @@
 <%@ taglib uri="/tld/extremecomponents" prefix="ec" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<tmpl:insert template='/common/sitelayout.jsp'>
+
+    <tmpl:put name='title' direct='true'>Edit Delivery Location</tmpl:put>
+
+  <tmpl:put name='content' direct='true'>
+    <br/> 
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
@@ -266,3 +272,5 @@ $('svcZip').value="";
 		
 </body>
 </html>
+  </tmpl:put>
+</tmpl:insert>
