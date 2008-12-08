@@ -31,6 +31,15 @@ function toggle(checked, field1, field2) {
 	}
 }
 
+function toggle3(checked, field1, field2,field3) {
+    if(checked){
+      document.getElementById(field1).disabled=document.getElementById(field2).disabled=document.getElementById(field3).disabled=false;
+	}
+	else {
+      document.getElementById(field1).disabled=document.getElementById(field2).disabled=document.getElementById(field3).disabled=true;
+	}
+}
+
 function $() {
     var elements = new Array();
     for (var i = 0; i < arguments.length; i++) {
@@ -44,35 +53,43 @@ function $() {
     return elements;
 }
 
-function my_init(){
-//alert("dlvBuildingDtlId="+dlvBuildingDtlId.value);
-//alert("difficultToDeliver1="+difficultToDeliver1.value);
-//alert("difficultToDeliver2="+difficultToDeliver2.value);
-
-	if(dlvBuildingDtlId.value == ""){  //new
-	   //alert("New!");
-	   $('addrType').value="Residential";
-	   $('difficultToDeliver1').checked=false;
-	   $('difficultToDeliver2').checked=true;
-	 }
-	 else{							//old
-	   //alert("Old!");
-	   //alert("difficultToDeliver1.value="+difficultToDeliver1.value);
-	   //alert("difficultToDeliver2.value="+difficultToDeliver2.value);
-	   //alert("difficultToDeliver1.checked="+difficultToDeliver1.checked);
-	   //alert("difficultToDeliver2.checked="+difficultToDeliver2.checked);
-	   if(difficultToDeliver1.checked == true){
+function do_refresh()
+{
+	   //alert("difficultToDeliver[0].checked="+document.getElementById("deliveryBuildingDtlForm").difficultToDeliver[0].checked);
+	   if(document.getElementById("deliveryBuildingDtlForm").difficultToDeliver[0].checked==true){
 	        //alert("if->");
-			$('difficultReason').readOnly=false;
+	        $('difficultToDeliver').checked = true;
+	        $('difficultReason').readOnly=false;
  			$('extraTimeNeeded').readOnly=false; 
 	   }
 	   else {
    	        //alert("else->");
+   	        $('difficultToDeliver').checked = false;
 			$('difficultReason').readOnly=true;
  			$('extraTimeNeeded').readOnly=true; 
 	   }
-	 }  
+	   //alert("doorman.checked="+document.getElementById("deliveryBuildingDtlForm").doorman.checked);
+	   doormanf(document.getElementById("deliveryBuildingDtlForm").doorman.checked);
+	   walkupf(document.getElementById("deliveryBuildingDtlForm").walkup.checked);
+	   elevatorf(document.getElementById("deliveryBuildingDtlForm").elevator.checked);
+	   svcEntf(document.getElementById("deliveryBuildingDtlForm").svcEnt.checked);
+	   housef(document.getElementById("deliveryBuildingDtlForm").house.checked);
+	   
+}
 
+function my_init(){
+//alert("isNew="+$('isNew').value);
+//alert("difficultToDeliver[0].checked="+document.getElementById("deliveryBuildingDtlForm").difficultToDeliver[0].checked);
+
+	if($('isNew').value == "true"){  //new
+	   //alert("New!");	   	   	
+  	  	document.getElementById("deliveryBuildingDtlForm").difficultToDeliver[1].checked=true;
+ 		$('difficultReason').readOnly=true;
+ 		$('extraTimeNeeded').readOnly=true; 
+  	  	return;
+	 }
+	 //alert("Old!");
+	 do_refresh();
 }
 
 function clearAll(){
@@ -82,19 +99,19 @@ $('addrType').value="Residential";
 
 $('companyName').value="";
 
-$('doorman1').checked=false;
-$('walkup1').checked=false;
-$('elevator1').checked=false;
-$('svcEnt1').checked=false;
-$('house1').checked=false;
+$('doorman').checked=false;
+$('walkup').checked=false;
+$('elevator').checked=false;
+$('svcEnt').checked=false;
+$('house').checked=false;
 
-$('includeMon1').checked=false;
-$('includeTue1').checked=false;
-$('includeWed1').checked=false;
-$('includeThu1').checked=false;
-$('includeFri1').checked=false;
-$('includeSat1').checked=false;
-$('includeSun1').checked=false;
+$('includeMon').checked=false;
+$('includeTue').checked=false;
+$('includeWed').checked=false;
+$('includeThu').checked=false;
+$('includeFri').checked=false;
+$('includeSat').checked=false;
+$('includeSun').checked=false;
 
 $('commentMon').value="";
 $('commentTue').value="";
@@ -106,21 +123,21 @@ $('commentSun').value="";
 $('commentTue').value="";
 
 
-$('svcIncludeMon1').checked=false;
-$('svcIncludeTue1').checked=false;
-$('svcIncludeWed1').checked=false;
-$('svcIncludeThu1').checked=false;
-$('svcIncludeFri1').checked=false;
-$('svcIncludeSat1').checked=false;
-$('svcIncludeSun1').checked=false;
+$('svcIncludeMon').checked=false;
+$('svcIncludeTue').checked=false;
+$('svcIncludeWed').checked=false;
+$('svcIncludeThu').checked=false;
+$('svcIncludeFri').checked=false;
+$('svcIncludeSat').checked=false;
+$('svcIncludeSun').checked=false;
 
-$('svcIncludeMon1').disabled=true;
-$('svcIncludeTue1').disabled=true;
-$('svcIncludeWed1').disabled=true;
-$('svcIncludeThu1').disabled=true;
-$('svcIncludeFri1').disabled=true;
-$('svcIncludeSat1').disabled=true;
-$('svcIncludeSun1').disabled=true;
+$('svcIncludeMon').disabled=true;
+$('svcIncludeTue').disabled=true;
+$('svcIncludeWed').disabled=true;
+$('svcIncludeThu').disabled=true;
+$('svcIncludeFri').disabled=true;
+$('svcIncludeSat').disabled=true;
+$('svcIncludeSun').disabled=true;
 
 
 $('svcHoursOpenMon').disabled=true;
@@ -159,7 +176,7 @@ $('svcCommentSun').disabled=true;
 //alert('svcCommentTue');
 
 $('svcScrubbedStreet').readOnly=true;
-$('svcValidate1').disabled=true;
+$('svcValidate').disabled=true;
 $('svcAddrLine2').readOnly=true;
 $('svcCity').readOnly=true;
 $('svcState').readOnly=true;
@@ -167,14 +184,13 @@ $('svcZip').readOnly=true;
 //alert('svcZip');
 
 $('svcScrubbedStreet').value="";
-//$('svcValidate1').checked=false;
+//$('svcValidate').checked=false;
 $('svcAddrLine2').value="";
 $('svcCity').value="";
 $('svcState').value="";
 $('svcZip').value="";
 
- $('difficultToDeliver1').value=false;
- $('difficultToDeliver2').value=true;
+ $('difficultToDeliver').value=false;
  $('difficultReason').value="";
  $('extraTimeNeeded').value="";
  $('difficultReason').readOnly=true;
@@ -189,7 +205,8 @@ $('svcZip').value="";
 
 		<br/>	
 			<form:form commandName = "deliveryBuildingDtlForm" method="post">
-			<form:hidden path="dlvBuildingDtlId"/>
+     		<form:hidden path="isNew"/>     
+ 			<form:hidden path="dlvBuildingDtlId"/>
 			<form:hidden path="dlvBuildingId"/>
 		<div align="center">
 

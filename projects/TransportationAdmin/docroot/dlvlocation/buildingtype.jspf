@@ -1,60 +1,59 @@
 <script type="text/javascript">
 function housef(checked) {
     if(checked){
-      document.getElementById("doorman1").checked=false;
-      document.getElementById("walkup1").checked=false;
-      document.getElementById("elevator1").checked=false;
-      document.getElementById("svcEnt1").checked=false;
-      document.getElementById('handTruckAllowed1').disabled=true;
-      document.getElementById('aptDlvAllowed1').disabled=true;
-	  document.getElementById('handTruckAllowed2').disabled=true;
-      document.getElementById('aptDlvAllowed2').disabled=true;
+      document.getElementById("doorman").checked=false;
+      document.getElementById("walkup").checked=false;
+      document.getElementById("elevator").checked=false;
+      document.getElementById("svcEnt").checked=false;
       document.getElementById('walkUpFloors').readOnly=true;
+      for (i=0; i<document.getElementById("deliveryBuildingDtlForm").handTruckAllowed.length; i++){
+		document.getElementById("deliveryBuildingDtlForm").handTruckAllowed[i].disabled=true;
+	  }
+      for (i=0; i<document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed.length; i++){
+		document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed[i].disabled=true;
+	  }
  	}
 	else {
-      document.getElementById("doorman1").enabled=true;
-      document.getElementById("walkup1").enabled=true;
-      document.getElementById("elevator1").enabled=true;
-      document.getElementById("svcEnt1").enabled=true;
-      document.getElementById('handTruckAllowed1').enabled=true;
-      document.getElementById('aptDlvAllowed1').enabled=true;
-	  document.getElementById('handTruckAllowed2').enabled=true;
-      document.getElementById('aptDlvAllowed2').enabled=true;
-  	}
+      document.getElementById("doorman").disabled=false;
+      document.getElementById("walkup").disabled=false;
+      document.getElementById("elevator").disabled=false;
+      document.getElementById("svcEnt").disabled=false;
+   	}
 }
-
-
 
 function doormanf(checked) {
     if(checked){
      //alert("doorman Checked");
-      document.getElementById('house1').checked=false;
-      document.getElementById('handTruckAllowed1').disabled=false;
-      document.getElementById('aptDlvAllowed1').disabled=false;
-      document.getElementById('handTruckAllowed2').disabled=false;
-      document.getElementById('aptDlvAllowed2').disabled=false;
-	}
+      document.getElementById('house').checked=false; 
+      for (i=0; i<document.getElementById("deliveryBuildingDtlForm").handTruckAllowed.length; i++){
+		document.getElementById("deliveryBuildingDtlForm").handTruckAllowed[i].disabled=false;
+	  }
+      for (i=0; i<document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed.length; i++){
+		document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed[i].disabled=false;
+	  }
+  	}
 	else {
-	  //  alert("doorman Unchecked");
-	  document.getElementById('house1').enabled=true;
-	  document.getElementById('handTruckAllowed1').disabled=true;
-      document.getElementById('aptDlvAllowed1').disabled=true;
-	  document.getElementById('handTruckAllowed2').disabled=true;
-      document.getElementById('aptDlvAllowed2').disabled=true;
+	  document.getElementById('house').disabled=false;
+      for (i=0; i<document.getElementById("deliveryBuildingDtlForm").handTruckAllowed.length; i++){
+		document.getElementById("deliveryBuildingDtlForm").handTruckAllowed[i].disabled=true;
+	  }
+      for (i=0; i<document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed.length; i++){
+		document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed[i].disabled=true;
+	  }
   	}
 }
 
 function walkupf(checked) {
     if(checked){
       //alert("walkup checked");
-      document.getElementById('house1').checked=false;
-      document.getElementById('elevator1').checked=false;
+      document.getElementById('house').checked=false;
+      document.getElementById('elevator').checked=false;
       document.getElementById('walkUpFloors').readOnly=false;
  
 	}
 	else {
-      document.getElementById('house1').enabled=true;
-      document.getElementById('elevator1').enabled=true;
+      document.getElementById('house').disabled=false;
+      document.getElementById('elevator').disabled=false;
       document.getElementById('walkUpFloors').readOnly=true;
  	}
 }
@@ -62,40 +61,40 @@ function walkupf(checked) {
 function elevatorf(checked) {
     if(checked){
       //alert("elev checked");
-      document.getElementById('house1').checked=false;
-      document.getElementById('walkup1').checked=false;
+      document.getElementById('house').checked=false;
+      document.getElementById('walkup').checked=false;
       document.getElementById('walkUpFloors').readOnly=true;
  	}
 	else {
-      document.getElementById('house1').enabled=true;
-      document.getElementById('walkup1').enabled=true;
+      document.getElementById('house').disabled=false;
+      document.getElementById('walkup').disabled=false;
  	}
 }
 
 function svcEntf(checked) {
     if(checked){
-        document.getElementById('house1').checked=false;   
-		document.getElementById('svcValidate1').disabled=false;
+        document.getElementById('house').checked=false;   
+		document.getElementById('svcValidate').disabled=false;
 		document.getElementById('svcScrubbedStreet').readOnly=false;
 		document.getElementById('svcAddrLine2').readOnly=false;
 		document.getElementById('svcCity').readOnly=false;
 		document.getElementById('svcState').readOnly=false;
 		document.getElementById('svcZip').readOnly=false;
-		if(svcScrubbedStreet.value == ""){  
+		if($('svcScrubbedStreet').value == ""){  
 			document.getElementById('svcScrubbedStreet').value=document.getElementById('building.srubbedStreet').value;
 			document.getElementById('svcCity').value=document.getElementById('building.city').value;
 			document.getElementById('svcState').value=document.getElementById('building.state').value;
 			document.getElementById('svcZip').value=document.getElementById('building.zip').value;
 		}
-		document.getElementById('svcIncludeMon1').disabled=false;
-		document.getElementById('svcIncludeTue1').disabled=false;
-		document.getElementById('svcIncludeWed1').disabled=false;
-		document.getElementById('svcIncludeThu1').disabled=false;
-		document.getElementById('svcIncludeFri1').disabled=false;
-		document.getElementById('svcIncludeSat1').disabled=false;
-		document.getElementById('svcIncludeSun1').disabled=false;
+		document.getElementById('svcIncludeMon').disabled=false;
+		document.getElementById('svcIncludeTue').disabled=false;
+		document.getElementById('svcIncludeWed').disabled=false;
+		document.getElementById('svcIncludeThu').disabled=false;
+		document.getElementById('svcIncludeFri').disabled=false;
+		document.getElementById('svcIncludeSat').disabled=false;
+		document.getElementById('svcIncludeSun').disabled=false;
 
-		document.getElementById('svcHoursOpenMon').readOnly=false;
+		/*document.getElementById('svcHoursOpenMon').readOnly=false;
 		document.getElementById('svcHoursOpenTue').readOnly=false;
 		document.getElementById('svcHoursOpenWed').readOnly=false;
 		document.getElementById('svcHoursOpenThu').readOnly=false;
@@ -118,24 +117,24 @@ function svcEntf(checked) {
 		document.getElementById('svcCommentFri').readOnly=false;
 		document.getElementById('svcCommentSat').readOnly=false;
 		document.getElementById('svcCommentSun').readOnly=false;
-		document.getElementById('svcCommentTue').readOnly=false;
+		document.getElementById('svcCommentTue').readOnly=false;*/
 	}
 	else {
-	    document.getElementById('house1').readOnly=false;	
-		document.getElementById('svcValidate1').disabled=true;
+	    document.getElementById('house').readOnly=false;	
+		document.getElementById('svcValidate').disabled=true;
 		document.getElementById('svcScrubbedStreet').readOnly=true;
 		document.getElementById('svcAddrLine2').readOnly=true;
 		document.getElementById('svcCity').readOnly=true;
 		document.getElementById('svcState').readOnly=true;
 		document.getElementById('svcZip').readOnly=true;
 		
-		document.getElementById('svcIncludeMon1').disabled=true;
-		document.getElementById('svcIncludeTue1').disabled=true;
-		document.getElementById('svcIncludeWed1').disabled=true;
-		document.getElementById('svcIncludeThu1').disabled=true;
-		document.getElementById('svcIncludeFri1').disabled=true;
-		document.getElementById('svcIncludeSat1').disabled=true;
-		document.getElementById('svcIncludeSun1').disabled=true;
+		document.getElementById('svcIncludeMon').disabled=true;
+		document.getElementById('svcIncludeTue').disabled=true;
+		document.getElementById('svcIncludeWed').disabled=true;
+		document.getElementById('svcIncludeThu').disabled=true;
+		document.getElementById('svcIncludeFri').disabled=true;
+		document.getElementById('svcIncludeSat').disabled=true;
+		document.getElementById('svcIncludeSun').disabled=true;
 
 		document.getElementById('svcHoursOpenMon').readOnly=true;
 		document.getElementById('svcHoursOpenTue').readOnly=true;
@@ -176,15 +175,15 @@ function svcEntf(checked) {
  </tr>
  <tr>
 		  <td><td>Doorman</td></td><td><td>
-		  <form:checkbox path="doorman" value="true" onClick="doormanf(checked)"/></td></td>
+		  <form:checkbox id="doorman" path="doorman"value="1" onClick="doormanf(checked)"/></td></td>
     	  <td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Walkup</td></td>
-          <td><td><form:checkbox path="walkup" value="true" onClick="walkupf(checked)"/></td></td>
+          <td><td><form:checkbox id="walkup" path="walkup" value="1" onClick="walkupf(checked)"/></td></td>
   		  <td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Elevator</td></td>
-          <td><td><form:checkbox path="elevator" value="true" onClick="elevatorf(checked)"/></td></td>
+          <td><td><form:checkbox id="elevator" path="elevator" value="1" onClick="elevatorf(checked)"/></td></td>
    		  <td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Service Entrance</td></td>
-          <td><td><form:checkbox path="svcEnt" value="true" onClick="svcEntf(checked)"/></td></td>
+          <td><td><form:checkbox id="svcEnt" path="svcEnt" value="1" onClick="svcEntf(checked)"/></td></td>
  		  <td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;House</td></td>
-          <td><td><form:checkbox path="house" value="true" onClick="housef(checked)"/></td></td>
+          <td><td><form:checkbox id="house" path="house" value="1" onClick="housef(checked)"/></td></td>
           
           
   </tr>							 

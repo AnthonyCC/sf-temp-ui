@@ -97,6 +97,16 @@ public class DlvBuildingDtl implements java.io.Serializable, TrnBaseEntityI  {
 	private String difficultReason;
 	private String difficultToDeliver;
 	private Integer extraTimeNeeded;
+
+	private String isNew;
+	
+	public String getIsNew() {
+		return isNew;
+	}
+
+	public void setIsNew(String isNew) {
+		this.isNew = isNew;
+	}
 	
 	public String getDifficultToDeliver() {
 		return difficultToDeliver;

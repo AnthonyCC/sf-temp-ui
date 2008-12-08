@@ -53,112 +53,112 @@
 </script>
 						 						  
 						 <tr>
-		                  <td><form:checkbox path="svcIncludeMon" value="true" disabled="true" onClick="toggle(this.checked, 'svcHoursOpenMon', 'svcHoursCloseMon');"/></td>
+		                  <td><form:checkbox id="svcIncludeMon" path="svcIncludeMon" value="1" disabled="true" onClick="toggle3(this.checked, 'svcHoursOpenMon', 'svcHoursCloseMon', 'svcCommentMon');"/></td>
 						    <td align="left">Monday</td><td>				    
 						    <td align="left"> <a id="timeSvcMon1_toggler">Open&nbsp;Time</a></td><td>				    
-							  <form:input maxlength="50" size="30" readOnly="true" path="svcHoursOpenMon" />
+							  <form:input maxlength="50" size="30" disabled="true" path="svcHoursOpenMon" />
 							  <div id="timeSvcMon1_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left"> <a id="timeSvcMon2_toggler">Close&nbsp;Time</a></td><td>				    
-							  <form:input maxlength="50" size="30" readOnly="true" path="svcHoursCloseMon" />
+							  <form:input maxlength="50" size="30" disabled="true" path="svcHoursCloseMon" />
 							  <div id="timeSvcMon2_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left">Comment</td><td>				    
-								<form:input maxlength="50" size="30" readOnly="true" path="svcCommentMon" />
+								<form:input maxlength="50" size="30" disabled="true" path="svcCommentMon" />
 						 	</td>
 						 </tr>							 
 						 <tr>
-		                  <td><form:checkbox path="svcIncludeTue" value="true" disabled="true" onClick="toggle(this.checked, 'svcHoursOpenTue', 'svcHoursCloseTue');"/></td>
+		                  <td><form:checkbox id="svcIncludeTue" path="svcIncludeTue" value="1" disabled="true" onClick="toggle3(this.checked, 'svcHoursOpenTue', 'svcHoursCloseTue', 'svcCommentTue');"/></td>
 						    <td align="left">Tuesday</td><td>				    
 						    <td align="left"> <a id="timeSvcTue1_toggler">Open&nbsp;Time</a></td><td>				    
-							  <form:input maxlength="50" size="30" readOnly="true" path="svcHoursOpenTue" />
+							  <form:input maxlength="50" size="30" disabled="true" path="svcHoursOpenTue" />
 							  <div id="timeSvcTue1_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left"> <a id="timeSvcTue2_toggler">Close&nbsp;Time</a></td><td>				    
-							  <form:input maxlength="50" size="30" readOnly="true" path="svcHoursCloseTue" />
+							  <form:input maxlength="50" size="30" disabled="true" path="svcHoursCloseTue" />
 							  <div id="timeSvcTue2_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left">Comment</td><td>				    
-								<form:input maxlength="50" size="30" readOnly="true" path="svcCommentTue" />
+								<form:input maxlength="50" size="30" disabled="true" path="svcCommentTue" />
 						 	</td>
 						 </tr>			
 						 
 						 
 						 <tr>
-		                  <td><form:checkbox path="svcIncludeWed" value="true" disabled="true" onClick="toggle(this.checked, 'svcHoursOpenWed', 'svcHoursCloseWed');"/></td>
+		                  <td><form:checkbox id="svcIncludeWed" path="svcIncludeWed" value="1" disabled="true" onClick="toggle3(this.checked, 'svcHoursOpenWed', 'svcHoursCloseWed', 'svcCommentWed');"/></td>
 						    <td align="left">Wednesday</td><td>				    
 						    <td align="left"> <a id="timeSvcWed1_toggler">Open&nbsp;Time</a></td><td>				    
-							  <form:input maxlength="50" size="30" readOnly="true" path="svcHoursOpenWed" />
+							  <form:input maxlength="50" size="30" disabled="true" path="svcHoursOpenWed" />
 							  <div id="timeSvcWed1_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left"> <a id="timeSvcWed2_toggler">Close&nbsp;Time</a></td><td>				    
-							  <form:input maxlength="50" size="30" readOnly="true" path="svcHoursCloseWed" />
+							  <form:input maxlength="50" size="30" disabled="true" path="svcHoursCloseWed" />
 							  <div id="timeSvcWed2_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left">Comment</td><td>				    
-								<form:input maxlength="50" size="30" readOnly="true" path="svcCommentWed" />
+								<form:input maxlength="50" size="30" disabled="true" path="svcCommentWed" />
 						 	</td>
 						 </tr>			
 						 				 
 						 <tr>
-		                  <td><form:checkbox path="svcIncludeThu" value="true" disabled="true" onClick="toggle(this.checked, 'svcHoursOpenThu', 'svcHoursCloseThu');"/></td>
+		                  <td><form:checkbox id="svcIncludeThu" path="svcIncludeThu" value="1" disabled="true" onClick="toggle3(this.checked, 'svcHoursOpenThu', 'svcHoursCloseThu', 'svcCommentThu');"/></td>
 						    <td align="left">Thursday</td><td>				    
 						    <td align="left"> <a id="timeSvcThu1_toggler">Open&nbsp;Time</a></td><td>				    
-							  <form:input maxlength="50" size="30" readOnly="true" path="svcHoursOpenThu" />
+							  <form:input maxlength="50" size="30" disabled="true" path="svcHoursOpenThu" />
 							  <div id="timeSvcThu1_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left"> <a id="timeSvcThu2_toggler">Close&nbsp;Time</a></td><td>				    
-							  <form:input maxlength="50" size="30" readOnly="true" path="svcHoursCloseThu" />
+							  <form:input maxlength="50" size="30" disabled="true" path="svcHoursCloseThu" />
 							  <div id="timeSvcThu2_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left">Comment</td><td>				    
-								<form:input maxlength="50" size="30" readOnly="true" path="svcCommentThu" />
+								<form:input maxlength="50" size="30" disabled="true" path="svcCommentThu" />
 						 	</td>
 						 </tr>							 
 						 <tr>
-		                  <td><form:checkbox path="svcIncludeFri" value="true" disabled="true" onClick="toggle(this.checked, 'svcHoursOpenFri', 'svcHoursCloseFri');"/></td>
+		                  <td><form:checkbox id="svcIncludeFri" path="svcIncludeFri" value="1" disabled="true" onClick="toggle3(this.checked, 'svcHoursOpenFri', 'svcHoursCloseFri', 'svcCommentFri');"/></td>
 						    <td align="left">Friday</td><td>				    
 						    <td align="left"> <a id="timeSvcFri1_toggler">Open&nbsp;Time</a></td><td>				    
-							  <form:input maxlength="50" size="30" readOnly="true" path="svcHoursOpenFri" />
+							  <form:input maxlength="50" size="30" disabled="true" path="svcHoursOpenFri" />
 							  <div id="timeSvcFri1_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left"> <a id="timeSvcFri2_toggler">Close&nbsp;Time</a></td><td>				    
-							  <form:input maxlength="50" size="30" readOnly="true" path="svcHoursCloseFri" />
+							  <form:input maxlength="50" size="30" disabled="true" path="svcHoursCloseFri" />
 							  <div id="timeSvcFri2_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left">Comment</td><td>				    
-								<form:input maxlength="50" size="30" readOnly="true" path="svcCommentFri" />
+								<form:input maxlength="50" size="30" disabled="true" path="svcCommentFri" />
 						 	</td>
 						 </tr>							 
 						 <tr>
-		                  <td><form:checkbox path="svcIncludeSat" value="true" disabled="true" onClick="toggle(this.checked, 'svcHoursOpenSat', 'svcHoursCloseSat');"/></td>
+		                  <td><form:checkbox id="svcIncludeSat" path="svcIncludeSat" value="1" disabled="true" onClick="toggle3(this.checked, 'svcHoursOpenSat', 'svcHoursCloseSat', 'svcCommentSat');"/></td>
 						    <td align="left">Saturday</td><td>				    
 						    <td align="left"> <a id="timeSvcSat1_toggler">Open&nbsp;Time</a></td><td>				    
-							  <form:input maxlength="50" size="30" readOnly="true" path="svcHoursOpenSat" />
+							  <form:input maxlength="50" size="30" disabled="true" path="svcHoursOpenSat" />
 							  <div id="timeSvcSat1_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left"> <a id="timeSvcSat2_toggler">Close&nbsp;Time</a></td><td>				    
-							  <form:input maxlength="50" size="30" readOnly="true" path="svcHoursCloseSat" />
+							  <form:input maxlength="50" size="30" disabled="true" path="svcHoursCloseSat" />
 							  <div id="timeSvcSat2_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left">Comment</td><td>				    
-								<form:input maxlength="50" size="30" readOnly="true" path="svcCommentSat" />
+								<form:input maxlength="50" size="30" disabled="true" path="svcCommentSat" />
 						 	</td>
 						 </tr>							 
 						 						 
 						 <tr>
-		                  <td><form:checkbox path="svcIncludeSun" value="true" disabled="true" onClick="toggle(this.checked, 'svcHoursOpenSun', 'svcHoursCloseSun');"/></td>
+		                  <td><form:checkbox id="svcIncludeSun" path="svcIncludeSun" value="1" disabled="true" onClick="toggle3(this.checked, 'svcHoursOpenSun', 'svcHoursCloseSun', 'svcCommentSun');"/></td>
 						    <td align="left">Sunday</td><td>				    
 						    <td align="left"> <a id="timeSvcSun1_toggler">Open&nbsp;Time</a></td><td>				    
-							  <form:input maxlength="50" size="30" readOnly="true" path="svcHoursOpenSun" />
+							  <form:input maxlength="50" size="30" disabled="true" path="svcHoursOpenSun" />
 							  <div id="timeSvcSun1_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left"> <a id="timeSvcSun2_toggler">Close&nbsp;Time</a></td><td>				    
-							  <form:input maxlength="50" size="30" readOnly="true" path="svcHoursCloseSun" />
+							  <form:input maxlength="50" size="30" disabled="true" path="svcHoursCloseSun" />
 							  <div id="timeSvcSun2_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left">Comment</td><td>				    
-								<form:input maxlength="50" size="30" readOnly="true" path="svcCommentSun" />
+								<form:input maxlength="50" size="30" disabled="true" path="svcCommentSun" />
 						 	</td>
 						 </tr>							 
 						 

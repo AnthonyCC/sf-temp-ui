@@ -49,113 +49,113 @@
 </script>
 						 						  
 						 <tr>
-		                  <td><form:checkbox path="includeMon" value="true" onClick="toggle(this.checked, 'hoursOpenMon', 'hoursCloseMon');"/></td>
+		                  <td><form:checkbox id="includeMon" path="includeMon" value="1" onClick="toggle3(this.checked, 'hoursOpenMon', 'hoursCloseMon', 'commentMon');"/></td>
 						    <td align="left">Monday</td><td>				    
 						    <td align="left"> <a id="timeMon1_toggler">Open&nbsp;Time</a></td><td>				    
-							  <form:input maxlength="50" size="30" path="hoursOpenMon" />
+							  <form:input maxlength="50" size="30" disabled="true" path="hoursOpenMon" />
 							  <div id="timeMon1_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left"> <a id="timeMon2_toggler">Close&nbsp;Time</a></td><td>				    
-							  <form:input maxlength="50" size="30" path="hoursCloseMon" />
+							  <form:input maxlength="50" size="30" disabled="true" path="hoursCloseMon" />
 							  <div id="timeMon2_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left">Comment</td><td>				    
-								<form:input maxlength="50" size="30" path="commentMon" />
+								<form:input maxlength="50" size="30" disabled="true" path="commentMon" />
 						 	</td>
 						 </tr>							 
 						 <tr>
-		                  <td><form:checkbox path="includeTue" value="true" onClick="toggle(this.checked, 'hoursOpenTue', 'hoursCloseTue');"/></td>
+		                  <td><form:checkbox id="includeTue" path="includeTue" value="1" onClick="toggle3(this.checked, 'hoursOpenTue', 'hoursCloseTue', 'commentTue');"/></td>
 						    <td align="left">Tuesday</td><td>				    
 						    <td align="left"> <a id="timeTue1_toggler">Open&nbsp;Time</a></td><td>				    
-							  <form:input maxlength="50" size="30" path="hoursOpenTue" />
+							  <form:input maxlength="50" size="30" disabled="true" path="hoursOpenTue" />
 							  <div id="timeTue1_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left"> <a id="timeTue2_toggler">Close&nbsp;Time</a></td><td>				    
-							  <form:input maxlength="50" size="30" path="hoursCloseTue" />
+							  <form:input maxlength="50" size="30" disabled="true" path="hoursCloseTue" />
 							  <div id="timeTue2_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left">Comment</td><td>				    
-								<form:input maxlength="50" size="30" path="commentTue" />
+								<form:input maxlength="50" size="30" disabled="true" path="commentTue" />
 						 	</td>
 					 </tr>							 
 						 <tr>
 
-		                  <td><form:checkbox path="includeWed" value="true" onClick="toggle(this.checked, 'hoursOpenWed', 'hoursCloseWed');"/></td>
+		                  <td><form:checkbox id="includeWed" path="includeWed" value="1" onClick="toggle3(this.checked, 'hoursOpenWed', 'hoursCloseWed', 'commentWed');"/></td>
 						    <td align="left">Wednesday</td><td>				    
 						    <td align="left"> <a id="timeWed1_toggler">Open&nbsp;Time</a></td><td>				    
-							  <form:input maxlength="50" size="30" path="hoursOpenWed" />
+							  <form:input maxlength="50" size="30" disabled="true" path="hoursOpenWed" />
 							  <div id="timeWed1_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left"> <a id="timeWed2_toggler">Close&nbsp;Time</a></td><td>				    
-							  <form:input maxlength="50" size="30" path="hoursCloseWed" />
+							  <form:input maxlength="50" size="30" disabled="true" path="hoursCloseWed" />
 							  <div id="timeWed2_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left">Comment</td><td>				    
-								<form:input maxlength="50" size="30" path="commentWed" />
+								<form:input maxlength="50" size="30" disabled="true" path="commentWed" />
 						 	</td>
 					 </tr>							 
 						 <tr>
 
-		                  <td><form:checkbox path="includeThu" value="true" onClick="toggle(this.checked, 'hoursOpenThu', 'hoursCloseThu');"/></td>
+		                  <td><form:checkbox id="includeThu" path="includeThu" value="1" onClick="toggle3(this.checked, 'hoursOpenThu', 'hoursCloseThu', 'commentThu');"/></td>
 						    <td align="left">Thursday</td><td>				    
 						    <td align="left"> <a id="timeThu1_toggler">Open&nbsp;Time</a></td><td>				    
-							  <form:input maxlength="50" size="30" path="hoursOpenThu" />
+							  <form:input maxlength="50" size="30" disabled="true" path="hoursOpenThu" />
 							  <div id="timeThu1_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left"> <a id="timeThu2_toggler">Close&nbsp;Time</a></td><td>				    
-							  <form:input maxlength="50" size="30" path="hoursCloseThu" />
+							  <form:input maxlength="50" size="30" disabled="true" path="hoursCloseThu" />
 							  <div id="timeThu2_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left">Comment</td><td>				    
-								<form:input maxlength="50" size="30" path="commentThu" />
+								<form:input maxlength="50" size="30" disabled="true" path="commentThu" />
 						 	</td>
 					 </tr>							 
 						 <tr>
 
-		                  <td><form:checkbox path="includeFri" value="true" onClick="toggle(this.checked, 'hoursOpenFri', 'hoursCloseFri');"/></td>
+		                  <td><form:checkbox id="includeFri" path="includeFri" value="1" onClick="toggle3(this.checked, 'hoursOpenFri', 'hoursCloseFri', 'commentFri');"/></td>
 						    <td align="left">Friday</td><td>				    
 						    <td align="left"> <a id="timeFri1_toggler">Open&nbsp;Time</a></td><td>				    
-							  <form:input maxlength="50" size="30" path="hoursOpenFri" />
+							  <form:input maxlength="50" size="30" disabled="true" path="hoursOpenFri" />
 							  <div id="timeFri1_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left"> <a id="timeFri2_toggler">Close&nbsp;Time</a></td><td>				    
-							  <form:input maxlength="50" size="30" path="hoursCloseFri" />
+							  <form:input maxlength="50" size="30" disabled="true" path="hoursCloseFri" />
 							  <div id="timeFri2_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left">Comment</td><td>				    
-								<form:input maxlength="50" size="30" path="commentFri" />
+								<form:input maxlength="50" size="30" disabled="true" path="commentFri" />
 						 	</td>
 					 </tr>							 
 						 <tr>
 						 	
-		                  <td><form:checkbox path="includeSat" value="true" onClick="toggle(this.checked, 'hoursOpenSat', 'hoursCloseSat');"/></td>
+		                  <td><form:checkbox id="includeSat" path="includeSat" value="1" onClick="toggle3(this.checked, 'hoursOpenSat', 'hoursCloseSat', 'commentSat');"/></td>
 						    <td align="left">Saturday</td><td>				    
 						    <td align="left"> <a id="timeSat1_toggler">Open&nbsp;Time</a></td><td>				    
-							  <form:input maxlength="50" size="30" path="hoursOpenSat" />
+							  <form:input maxlength="50" size="30" disabled="true" path="hoursOpenSat" />
 							  <div id="timeSat1_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left"> <a id="timeSat2_toggler">Close&nbsp;Time</a></td><td>				    
-							  <form:input maxlength="50" size="30" path="hoursCloseSat" />
+							  <form:input maxlength="50" size="30" disabled="true" path="hoursCloseSat" />
 							  <div id="timeSat2_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left">Comment</td><td>				    
-								<form:input maxlength="50" size="30" path="commentSat" />
+								<form:input maxlength="50" size="30" disabled="true" path="commentSat" />
 						 	</td>
 					 </tr>							 
 						 <tr>
 						 	
-		                  <td><form:checkbox path="includeSun" value="true" onClick="toggle(this.checked, 'hoursOpenSun', 'hoursCloseSun');"/></td>
+		                  <td><form:checkbox id="includeSun" path="includeSun" value="1" onClick="toggle3(this.checked, 'hoursOpenSun', 'hoursCloseSun', 'commentSun');"/></td>
 						    <td align="left">Sunday</td><td>				    
 						    <td align="left"> <a id="timeSun1_toggler">Open&nbsp;Time</a></td><td>				    
-							  <form:input maxlength="50" size="30" path="hoursOpenSun" />
+							  <form:input maxlength="50" size="30" disabled="true" path="hoursOpenSun" />
 							  <div id="timeSun1_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left"> <a id="timeSun2_toggler">Close&nbsp;Time</a></td><td>				    
-							  <form:input maxlength="50" size="30" path="hoursCloseSun" />
+							  <form:input maxlength="50" size="30" disabled="true" path="hoursCloseSun" />
 							  <div id="timeSun2_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left">Comment</td><td>				    
-								<form:input maxlength="50" size="30" path="commentSun" />
+								<form:input maxlength="50" size="30" disabled="true" path="commentSun" />
 						 	</td>
 				 </tr>							 
 

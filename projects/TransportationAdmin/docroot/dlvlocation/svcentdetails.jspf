@@ -13,7 +13,7 @@
 
 				    <td><align="left">Validate</td>
 				    <td> 								  
-				  	 	<form:checkbox path="svcValidate" value="true" disabled="true"/>
+				  	 	<form:checkbox id="svcValidate" path="svcValidate" value="1" disabled="true"/>
 				 	</td>
 			 	</tr>
 				<tr>	

@@ -1,7 +1,7 @@
 					<table>	
 						  <tr>
 						    <align="left"><b>Address</b>
-  							  	<form:input disabled="true" path="dlvBuildingId" />							    
+  							  	<form:input disabled="true" path="building.buildingId" />							    
 						 </tr>
 					 	<tr>
 						    <td>Address Type</td>

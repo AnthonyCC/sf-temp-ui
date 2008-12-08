@@ -4,17 +4,17 @@
  				  </tr>
  				  <tr>
 				    <td><align="left">Hand Trucks Allowed via Main Entrance</td>
-					    <td><form:radiobutton path="handTruckAllowed" value="true" disabled="true"/>Yes
+					    <td><form:radiobutton id="handTruckAllowed" path="handTruckAllowed" value="1" disabled="true"/>Yes
 					    	&nbsp;&nbsp;&nbsp;&nbsp;
-					        <form:radiobutton path="handTruckAllowed" value="false" disabled="true"/>No </td>
+					        <form:radiobutton id="handTruckAllowed" path="handTruckAllowed" value="0" disabled="true"/>No </td>
 					    <td>&nbsp;</td>
 				  </tr>				 							  							 
  				  
  				  <tr>
 				    <td><align="left">Deliveries are allowed to Apartment</td>
-					    <td><form:radiobutton path="aptDlvAllowed" value="true" disabled="true"/>Yes
+					    <td><form:radiobutton id="aptDlvAllowed" path="aptDlvAllowed" value="1" disabled="true"/>Yes
 					    	&nbsp;&nbsp;&nbsp;&nbsp;
-					        <form:radiobutton path="aptDlvAllowed" value="false" disabled="true"/>No </td>
+					        <form:radiobutton id="aptDlvAllowed" path="aptDlvAllowed" value="0" disabled="true"/>No </td>
 					    <td>&nbsp;</td>
 				  </tr>
 				  <BR><BR>				 							  							 
