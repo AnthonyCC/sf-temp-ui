@@ -26,7 +26,7 @@
 				  <tr>
 				    <td><align="left">Number of Floors (1-20) </td>
 				    <td> 								  
-				  	 	<form:input disabled="false" maxlength="50" size="30" path="walkUpFloors" readOnly="true" />
+				  	 	<form:input disabled="false" maxlength="50" size="30" path="walkUpFloors" disabled="true" />
 				 	</td><td>&nbsp;<form:errors path="walkUpFloors" />
 				 	</td>
 				  </tr>				 							  							 

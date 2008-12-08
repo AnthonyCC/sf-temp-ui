@@ -59,14 +59,14 @@ function do_refresh()
 	   if(document.getElementById("deliveryBuildingDtlForm").difficultToDeliver[0].checked==true){
 	        //alert("if->");
 	        $('difficultToDeliver').checked = true;
-	        $('difficultReason').readOnly=false;
- 			$('extraTimeNeeded').readOnly=false; 
+	        $('difficultReason').disabled=false;
+ 			$('extraTimeNeeded').disabled=false; 
 	   }
 	   else {
    	        //alert("else->");
    	        $('difficultToDeliver').checked = false;
-			$('difficultReason').readOnly=true;
- 			$('extraTimeNeeded').readOnly=true; 
+			$('difficultReason').disabled=true;
+ 			$('extraTimeNeeded').disabled=true; 
 	   }
 	   //alert("doorman.checked="+document.getElementById("deliveryBuildingDtlForm").doorman.checked);
 	   doormanf(document.getElementById("deliveryBuildingDtlForm").doorman.checked);
@@ -86,8 +86,8 @@ function my_init(){
 	if($('isNew').value == "true"){  //new
 	   //alert("New!");	   	   	
   	  	document.getElementById("deliveryBuildingDtlForm").difficultToDeliver[1].checked=true;
- 		$('difficultReason').readOnly=true;
- 		$('extraTimeNeeded').readOnly=true; 
+ 		$('difficultReason').disabled=true;
+ 		$('extraTimeNeeded').disabled=true; 
   	  	return;
 	 }
 	 //alert("Old!");
@@ -177,12 +177,12 @@ $('svcCommentSun').disabled=true;
 
 //alert('svcCommentTue');
 
-$('svcScrubbedStreet').readOnly=true;
+$('svcScrubbedStreet').disabled=true;
 $('svcValidate').disabled=true;
-$('svcAddrLine2').readOnly=true;
-$('svcCity').readOnly=true;
-$('svcState').readOnly=true;
-$('svcZip').readOnly=true;
+$('svcAddrLine2').disabled=true;
+$('svcCity').disabled=true;
+$('svcState').disabled=true;
+$('svcZip').disabled=true;
 //alert('svcZip');
 
 $('svcScrubbedStreet').value="";
@@ -195,8 +195,8 @@ $('svcZip').value="";
  $('difficultToDeliver').value=false;
  $('difficultReason').value="";
  $('extraTimeNeeded').value="";
- $('difficultReason').readOnly=true;
- $('extraTimeNeeded').readOnly=true; 
+ $('difficultReason').disabled=true;
+ $('extraTimeNeeded').disabled=true; 
  
 
 

@@ -5,7 +5,7 @@
 				<tr>	
 				    <td><align="left">Street</td>
 				    <td> 								  
-				  	 	<form:input maxlength="50" size="30" path="svcScrubbedStreet" readOnly="true"/>
+				  	 	<form:input maxlength="50" size="30" path="svcScrubbedStreet" disabled="true"/>
 				 	</td>
 				 	<td>
 				 		&nbsp;<form:errors path="svcScrubbedStreet" />
@@ -19,23 +19,23 @@
 				<tr>	
 				    <td><align="left">Address Line 2</td>
 				    <td> 								  
-				  	 	<form:input maxlength="50" size="30" path="svcAddrLine2" readOnly="true" />
+				  	 	<form:input maxlength="50" size="30" path="svcAddrLine2" disabled="true" />
 				 	</td>
 			 	</tr>
 				 <tr>
 				    <td><align="left">City</td>
 				    <td> 								  
-				  	 	<form:input maxlength="50" size="30" path="svcCity" readOnly="true"/>
+				  	 	<form:input maxlength="50" size="30" path="svcCity" disabled="true"/>
 				 	</td>
 				 </tr>
 				 <tr>
 				    <td><align="left">State</td>
 				    <td> 								  
-				  	 	<form:input maxlength="50" size="30" path="svcState" readOnly="true"/>
+				  	 	<form:input maxlength="50" size="30" path="svcState" disabled="true"/>
 				 	</td>
 				    <td><align="left">Zip</td>
 				    <td> 								  
-				  	 	<form:input maxlength="50" size="30" path="svcZip" readOnly="true"/>
+				  	 	<form:input maxlength="50" size="30" path="svcZip" disabled="true"/>
 				 	</td>
 				 </tr>
 			 	</table>
