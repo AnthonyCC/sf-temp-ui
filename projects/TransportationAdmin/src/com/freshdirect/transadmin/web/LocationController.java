@@ -552,12 +552,12 @@ public class LocationController extends AbstractMultiActionController  {
 			DlvBuildingDtl type = null;
 			while(iterator.hasNext()) {
 				type = (DlvBuildingDtl)iterator.next();
-				type.setDoorman( type.getDoorman().equals("1")  ? "Yes" : "No");
-				type.setWalkup( type.getWalkup().equals("1")  ? "Yes" : "No");
-				type.setElevator( type.getElevator().equals("1")  ? "Yes" : "No");
-				type.setSvcEnt( type.getSvcEnt().equals("1")  ? "Yes" : "No");
-				type.setHouse( type.getHouse().equals("1")  ? "Yes" : "No");
-				type.setDifficultToDeliver( type.getDifficultToDeliver().equals("1")  ? "Yes" : "No");
+				type.setDoorman( type.getDoorman() != null && type.getDoorman().equals("1")  ? "Yes" : "No");
+				type.setWalkup( type.getWalkup() != null && type.getWalkup().equals("1")  ? "Yes" : "No");
+				type.setElevator( type.getElevator() != null && type.getElevator().equals("1")  ? "Yes" : "No");
+				type.setSvcEnt( type.getSvcEnt() != null && type.getSvcEnt().equals("1")  ? "Yes" : "No");
+				type.setHouse( type.getHouse() != null && type.getHouse().equals("1")  ? "Yes" : "No");
+				type.setDifficultToDeliver( type.getDifficultToDeliver() != null && type.getDifficultToDeliver().equals("1")  ? "Yes" : "No");
 			}
 		
 			mav.getModel().put("dlvbuildingdtl",dataList);			
