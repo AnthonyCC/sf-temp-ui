@@ -222,7 +222,7 @@ public class FilteredSearchResults extends SearchResults implements Serializable
             if (x != 0) {
                 return x;
             } else {
-                return compareProductsByGlobalScore(c1, c2);
+                return compareInsideCategoryGroup(c1, c2);
             }
         }
 
