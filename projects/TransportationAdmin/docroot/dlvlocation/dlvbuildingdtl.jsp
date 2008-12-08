@@ -4,8 +4,8 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 
-<%  pageContext.setAttribute("HAS_GEOCODEBUTTON", "true");  
-  
+<%  pageContext.setAttribute("HAS_GEOCODEBUTTON", "false");  
+	pageContext.setAttribute("HAS_ADDBUTTON", "false");
 %>
 
 <tmpl:insert template='/common/sitelayout.jsp'>
