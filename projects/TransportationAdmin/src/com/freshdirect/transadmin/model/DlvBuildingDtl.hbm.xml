@@ -69,47 +69,47 @@
       
           
        <property name="commentMon" type="string">
-            <column name="COMMENT_MON" length="30" />
+            <column name="COMMENT_MON" length="40" />
         </property> 
        <property name="commentTue" type="string">
-            <column name="COMMENT_TUE" length="30" />
+            <column name="COMMENT_TUE" length="40" />
         </property>        
        <property name="commentWed" type="string">
-            <column name="COMMENT_WED" length="30" />
+            <column name="COMMENT_WED" length="40" />
         </property>        
        <property name="commentThu" type="string">
-            <column name="COMMENT_THU" length="30" />
+            <column name="COMMENT_THU" length="40" />
         </property>        
        <property name="commentFri" type="string">
-            <column name="COMMENT_FRI" length="30" />
+            <column name="COMMENT_FRI" length="40" />
         </property>        
        <property name="commentSat" type="string">
-            <column name="COMMENT_SAT" length="30" />
+            <column name="COMMENT_SAT" length="40" />
         </property>        
        <property name="commentSun" type="string">
-            <column name="COMMENT_SUN" length="30" />
+            <column name="COMMENT_SUN" length="40" />
         </property> 
         
        <property name="svcCommentMon" type="string">
-            <column name="SVC_COMMENT_MON" length="30" />
+            <column name="SVC_COMMENT_MON" length="40" />
         </property> 
        <property name="svcCommentTue" type="string">
-            <column name="SVC_COMMENT_TUE" length="30" />
+            <column name="SVC_COMMENT_TUE" length="40" />
         </property>        
        <property name="svcCommentWed" type="string">
-            <column name="SVC_COMMENT_WED" length="30" />
+            <column name="SVC_COMMENT_WED" length="40" />
         </property>        
        <property name="svcCommentThu" type="string">
-            <column name="SVC_COMMENT_THU" length="30" />
+            <column name="SVC_COMMENT_THU" length="40" />
         </property>        
        <property name="svcCommentFri" type="string">
-            <column name="SVC_COMMENT_FRI" length="30" />
+            <column name="SVC_COMMENT_FRI" length="40" />
         </property>        
        <property name="svcCommentSat" type="string">
-            <column name="SVC_COMMENT_SAT" length="30" />
+            <column name="SVC_COMMENT_SAT" length="40" />
         </property>        
        <property name="svcCommentSun" type="string">
-            <column name="SVC_COMMENT_SUN" length="30" />
+            <column name="SVC_COMMENT_SUN" length="40" />
         </property> 
 
      	<component name="hoursOpenMon" class="com.freshdirect.framework.util.TimeOfDay"> 

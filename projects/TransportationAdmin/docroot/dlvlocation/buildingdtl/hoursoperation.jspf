@@ -60,7 +60,7 @@
 							  <div id="timeMon2_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left">Comment</td><td>				    
-								<form:input maxlength="50" size="30" disabled="true" path="commentMon" />
+								<form:input maxlength="50" size="40" disabled="true" path="commentMon" />
 						 	</td>
 						 </tr>							 
 						 <tr>
@@ -75,7 +75,7 @@
 							  <div id="timeTue2_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left">Comment</td><td>				    
-								<form:input maxlength="50" size="30" disabled="true" path="commentTue" />
+								<form:input maxlength="50" size="40" disabled="true" path="commentTue" />
 						 	</td>
 					 </tr>							 
 						 <tr>
@@ -91,7 +91,7 @@
 							  <div id="timeWed2_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left">Comment</td><td>				    
-								<form:input maxlength="50" size="30" disabled="true" path="commentWed" />
+								<form:input maxlength="50" size="40" disabled="true" path="commentWed" />
 						 	</td>
 					 </tr>							 
 						 <tr>
@@ -107,7 +107,7 @@
 							  <div id="timeThu2_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left">Comment</td><td>				    
-								<form:input maxlength="50" size="30" disabled="true" path="commentThu" />
+								<form:input maxlength="50" size="40" disabled="true" path="commentThu" />
 						 	</td>
 					 </tr>							 
 						 <tr>
@@ -123,7 +123,7 @@
 							  <div id="timeFri2_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left">Comment</td><td>				    
-								<form:input maxlength="50" size="30" disabled="true" path="commentFri" />
+								<form:input maxlength="50" size="40" disabled="true" path="commentFri" />
 						 	</td>
 					 </tr>							 
 						 <tr>
@@ -139,7 +139,7 @@
 							  <div id="timeSat2_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left">Comment</td><td>				    
-								<form:input maxlength="50" size="30" disabled="true" path="commentSat" />
+								<form:input maxlength="50" size="40" disabled="true" path="commentSat" />
 						 	</td>
 					 </tr>							 
 						 <tr>
@@ -155,7 +155,7 @@
 							  <div id="timeSun2_picker" class="time_picker_div"></div>
 						 	</td>
 						    <td align="left">Comment</td><td>				    
-								<form:input maxlength="50" size="30" disabled="true" path="commentSun" />
+								<form:input maxlength="50" size="40" disabled="true" path="commentSun" />
 						 	</td>
 				 </tr>							 
 
