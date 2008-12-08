@@ -71,6 +71,166 @@ function elevatorf(checked) {
  	}
 }
 
+function hoursoperationf()
+{
+	if(document.getElementById('includeMon').checked==true){
+		document.getElementById('hoursOpenMon').disabled=false;
+		document.getElementById('hoursCloseMon').disabled=false;
+		document.getElementById('commentMon').disabled=false;
+	}
+	else{
+		document.getElementById('hoursOpenMon').disabled=true;
+		document.getElementById('hoursCloseMon').disabled=true;
+		document.getElementById('commentMon').disabled=true;
+	}
+	
+	if(document.getElementById('includeTue').checked==true){
+		document.getElementById('hoursOpenTue').disabled=false;
+		document.getElementById('hoursCloseTue').disabled=false;
+		document.getElementById('commentTue').disabled=false;
+	}
+	else{
+		document.getElementById('hoursOpenTue').disabled=true;
+		document.getElementById('hoursCloseTue').disabled=true;
+		document.getElementById('commentTue').disabled=true;
+	}
+	
+	if(document.getElementById('includeWed').checked==true){
+		document.getElementById('hoursOpenWed').disabled=false;
+		document.getElementById('hoursCloseWed').disabled=false;
+		document.getElementById('commentWed').disabled=false;
+	}
+	else{
+		document.getElementById('hoursOpenWed').disabled=true;
+		document.getElementById('hoursCloseWed').disabled=true;
+		document.getElementById('commentWed').disabled=true;
+	}
+	
+	if(document.getElementById('includeThu').checked==true){
+		document.getElementById('hoursOpenThu').disabled=false;
+		document.getElementById('hoursCloseThu').disabled=false;
+		document.getElementById('commentThu').disabled=false;
+	}
+	else{
+		document.getElementById('hoursOpenThu').disabled=true;
+		document.getElementById('hoursCloseThu').disabled=true;
+		document.getElementById('commentThu').disabled=true;
+	}
+	
+	if(document.getElementById('includeFri').checked==true){
+		document.getElementById('hoursOpenFri').disabled=false;
+		document.getElementById('hoursCloseFri').disabled=false;
+		document.getElementById('commentFri').disabled=false;
+	}
+	else{
+		document.getElementById('hoursOpenFri').disabled=true;
+		document.getElementById('hoursCloseFri').disabled=true;
+		document.getElementById('commentFri').disabled=true;
+	}
+	
+	if(document.getElementById('includeSat').checked==true){
+		document.getElementById('hoursOpenSat').disabled=false;
+		document.getElementById('hoursCloseSat').disabled=false;
+		document.getElementById('commentSat').disabled=false;
+	}
+	else{
+		document.getElementById('hoursOpenSat').disabled=true;
+		document.getElementById('hoursCloseSat').disabled=true;
+		document.getElementById('commentSat').disabled=true;
+	}
+	
+	if(document.getElementById('includeSun').checked==true){
+		document.getElementById('hoursOpenSun').disabled=false;
+		document.getElementById('hoursCloseSun').disabled=false;
+		document.getElementById('commentSun').disabled=false;
+	}
+	else{
+		document.getElementById('hoursOpenSun').disabled=true;
+		document.getElementById('hoursCloseSun').disabled=true;
+		document.getElementById('commentSun').disabled=true;
+	}
+}
+
+function svchoursoperationf()
+{
+	if(document.getElementById('svcIncludeMon').checked==true){
+		document.getElementById('svcHoursOpenMon').disabled=false;
+		document.getElementById('svcHoursCloseMon').disabled=false;
+		document.getElementById('svcCommentMon').disabled=false;
+	}
+	else{
+		document.getElementById('svcHoursOpenMon').disabled=true;
+		document.getElementById('svcHoursCloseMon').disabled=true;
+		document.getElementById('svcCommentMon').disabled=true;
+	}
+	
+	if(document.getElementById('svcIncludeTue').checked==true){
+		document.getElementById('svcHoursOpenTue').disabled=false;
+		document.getElementById('svcHoursCloseTue').disabled=false;
+		document.getElementById('svcCommentTue').disabled=false;
+	}
+	else{
+		document.getElementById('svcHoursOpenTue').disabled=true;
+		document.getElementById('svcHoursCloseTue').disabled=true;
+		document.getElementById('svcCommentTue').disabled=true;
+	}
+	
+	if(document.getElementById('svcIncludeWed').checked==true){
+		document.getElementById('svcHoursOpenWed').disabled=false;
+		document.getElementById('svcHoursCloseWed').disabled=false;
+		document.getElementById('svcCommentWed').disabled=false;
+	}
+	else{
+		document.getElementById('svcHoursOpenWed').disabled=true;
+		document.getElementById('svcHoursCloseWed').disabled=true;
+		document.getElementById('svcCommentWed').disabled=true;
+	}
+	
+	if(document.getElementById('svcIncludeThu').checked==true){
+		document.getElementById('svcHoursOpenThu').disabled=false;
+		document.getElementById('svcHoursCloseThu').disabled=false;
+		document.getElementById('svcCommentThu').disabled=false;
+	}
+	else{
+		document.getElementById('svcHoursOpenThu').disabled=true;
+		document.getElementById('svcHoursCloseThu').disabled=true;
+		document.getElementById('svcCommentThu').disabled=true;
+	}
+	
+	if(document.getElementById('svcIncludeFri').checked==true){
+		document.getElementById('svcHoursOpenFri').disabled=false;
+		document.getElementById('svcHoursCloseFri').disabled=false;
+		document.getElementById('svcCommentFri').disabled=false;
+	}
+	else{
+		document.getElementById('svcHoursOpenFri').disabled=true;
+		document.getElementById('svcHoursCloseFri').disabled=true;
+		document.getElementById('svcCommentFri').disabled=true;
+	}
+	
+	if(document.getElementById('svcIncludeSat').checked==true){
+		document.getElementById('svcHoursOpenSat').disabled=false;
+		document.getElementById('svcHoursCloseSat').disabled=false;
+		document.getElementById('svcCommentSat').disabled=false;
+	}
+	else{
+		document.getElementById('svcHoursOpenSat').disabled=true;
+		document.getElementById('svcHoursCloseSat').disabled=true;
+		document.getElementById('svcCommentSat').disabled=true;
+	}
+	
+	if(document.getElementById('svcIncludeSun').checked==true){
+		document.getElementById('svcHoursOpenSun').disabled=false;
+		document.getElementById('svcHoursCloseSun').disabled=false;
+		document.getElementById('svcCommentSun').disabled=false;
+	}
+	else{
+		document.getElementById('svcHoursOpenSun').disabled=true;
+		document.getElementById('svcHoursCloseSun').disabled=true;
+		document.getElementById('svcCommentSun').disabled=true;
+	}
+}
+
 function svcEntf(checked) {
     if(checked){
         document.getElementById('house').checked=false;   
@@ -93,31 +253,7 @@ function svcEntf(checked) {
 		document.getElementById('svcIncludeFri').disabled=false;
 		document.getElementById('svcIncludeSat').disabled=false;
 		document.getElementById('svcIncludeSun').disabled=false;
-
-		/*document.getElementById('svcHoursOpenMon').readOnly=false;
-		document.getElementById('svcHoursOpenTue').readOnly=false;
-		document.getElementById('svcHoursOpenWed').readOnly=false;
-		document.getElementById('svcHoursOpenThu').readOnly=false;
-		document.getElementById('svcHoursOpenFri').readOnly=false;
-		document.getElementById('svcHoursOpenSat').readOnly=false;
-		document.getElementById('svcHoursOpenSun').readOnly=false;
-
-		document.getElementById('svcHoursCloseMon').readOnly=false;
-		document.getElementById('svcHoursCloseTue').readOnly=false;
-		document.getElementById('svcHoursCloseWed').readOnly=false;
-		document.getElementById('svcHoursCloseThu').readOnly=false;
-		document.getElementById('svcHoursCloseFri').readOnly=false;
-		document.getElementById('svcHoursCloseSat').readOnly=false;
-		document.getElementById('svcHoursCloseSun').readOnly=false;
-
-		document.getElementById('svcCommentMon').readOnly=false;
-		document.getElementById('svcCommentTue').readOnly=false;
-		document.getElementById('svcCommentWed').readOnly=false;
-		document.getElementById('svcCommentThu').readOnly=false;
-		document.getElementById('svcCommentFri').readOnly=false;
-		document.getElementById('svcCommentSat').readOnly=false;
-		document.getElementById('svcCommentSun').readOnly=false;
-		document.getElementById('svcCommentTue').readOnly=false;*/
+		svchoursoperationf();
 	}
 	else {
 	    document.getElementById('house').readOnly=false;	
@@ -136,30 +272,30 @@ function svcEntf(checked) {
 		document.getElementById('svcIncludeSat').disabled=true;
 		document.getElementById('svcIncludeSun').disabled=true;
 
-		document.getElementById('svcHoursOpenMon').readOnly=true;
-		document.getElementById('svcHoursOpenTue').readOnly=true;
-		document.getElementById('svcHoursOpenWed').readOnly=true;
-		document.getElementById('svcHoursOpenThu').readOnly=true;
-		document.getElementById('svcHoursOpenFri').readOnly=true;
-		document.getElementById('svcHoursOpenSat').readOnly=true;
-		document.getElementById('svcHoursOpenSun').readOnly=true;
+		document.getElementById('svcHoursOpenMon').disabled=true;
+		document.getElementById('svcHoursOpenTue').disabled=true;
+		document.getElementById('svcHoursOpenWed').disabled=true;
+		document.getElementById('svcHoursOpenThu').disabled=true;
+		document.getElementById('svcHoursOpenFri').disabled=true;
+		document.getElementById('svcHoursOpenSat').disabled=true;
+		document.getElementById('svcHoursOpenSun').disabled=true;
 
-		document.getElementById('svcHoursCloseMon').readOnly=true;
-		document.getElementById('svcHoursCloseTue').readOnly=true;
-		document.getElementById('svcHoursCloseWed').readOnly=true;
-		document.getElementById('svcHoursCloseThu').readOnly=true;
-		document.getElementById('svcHoursCloseFri').readOnly=true;
-		document.getElementById('svcHoursCloseSat').readOnly=true;
-		document.getElementById('svcHoursCloseSun').readOnly=true;
+		document.getElementById('svcHoursCloseMon').disabled=true;
+		document.getElementById('svcHoursCloseTue').disabled=true;
+		document.getElementById('svcHoursCloseWed').disabled=true;
+		document.getElementById('svcHoursCloseThu').disabled=true;
+		document.getElementById('svcHoursCloseFri').disabled=true;
+		document.getElementById('svcHoursCloseSat').disabled=true;
+		document.getElementById('svcHoursCloseSun').disabled=true;
 
-		document.getElementById('svcCommentMon').readOnly=true;
-		document.getElementById('svcCommentTue').readOnly=true;
-		document.getElementById('svcCommentWed').readOnly=true;
-		document.getElementById('svcCommentThu').readOnly=true;
-		document.getElementById('svcCommentFri').readOnly=true;
-		document.getElementById('svcCommentSat').readOnly=true;
-		document.getElementById('svcCommentSun').readOnly=true;
-		document.getElementById('svcCommentTue').readOnly=true;		
+		document.getElementById('svcCommentMon').disabled=true;
+		document.getElementById('svcCommentTue').disabled=true;
+		document.getElementById('svcCommentWed').disabled=true;
+		document.getElementById('svcCommentThu').disabled=true;
+		document.getElementById('svcCommentFri').disabled=true;
+		document.getElementById('svcCommentSat').disabled=true;
+		document.getElementById('svcCommentSun').disabled=true;
+		document.getElementById('svcCommentTue').disabled=true;		
 		
 		
 		

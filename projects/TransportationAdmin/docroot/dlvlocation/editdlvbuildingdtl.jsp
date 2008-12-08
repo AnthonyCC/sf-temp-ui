@@ -74,6 +74,8 @@ function do_refresh()
 	   elevatorf(document.getElementById("deliveryBuildingDtlForm").elevator.checked);
 	   svcEntf(document.getElementById("deliveryBuildingDtlForm").svcEnt.checked);
 	   housef(document.getElementById("deliveryBuildingDtlForm").house.checked);
+	   hoursoperationf();
+	   svchoursoperationf();
 	   
 }
 
