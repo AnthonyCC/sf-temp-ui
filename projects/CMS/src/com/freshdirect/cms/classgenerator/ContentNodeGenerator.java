@@ -422,7 +422,7 @@ public class ContentNodeGenerator {
                 }
                 String fieldName = getFieldName(attributeDef);
                 
-                copy.append(" result.").append(fieldName).append(" = this.").append(fieldName).append(";\n");
+                copy.append(" result.").append(fieldName).append(" = ").append(createCopyStatement(fieldName, field, attributeDef)).append(";\n");
             }
 
             initAttributes.append(" }\n");
@@ -438,7 +438,7 @@ public class ContentNodeGenerator {
             getAttributeMap.append(" return result; \n}");
             getChildKeys.append(" return result; \n}");
             
-            copy.append(" result.initAttributes();\n");
+            copy.append(" result.setDelete(this.isDelete());\n");
             copy.append(" return result; \n}");
             
             CtConstructor ct = new CtConstructor(new CtClass[0], class1);
@@ -468,6 +468,17 @@ public class ContentNodeGenerator {
         ci.add(new AttributeMapClassInitializer(attributeMap));
         ci.setGeneratedClass(class1.toClass());
         return ci;
+    }
+
+    private String createCopyStatement(String fieldName, CtField field, AttributeDefI attributeDef) {
+        try {
+            if (field.getType().getName().equals("java.util.List")) {
+                return "(this."+fieldName +" != null ? new java.util.ArrayList(this."+fieldName+") : null)";
+            }
+            return "this."+fieldName;
+        } catch (NotFoundException e) {
+            throw new ClassGeneratorException("NotFoundException " + e.getMessage(), e);
+        }
     }
 
     private void createPrefixSearchMethod(ContentTypeDefI def, CtClass class1, ClassInfo ci) throws CannotCompileException {
@@ -566,9 +577,9 @@ public class ContentNodeGenerator {
         
         StringBuffer buffer = new StringBuffer();
         buffer.append("public final com.freshdirect.cms.AttributeI getAttribute(String name) { \n" +
-        //" java.lang.Integer hash = (Integer) __ordinalhash.get(name);\n" +
-        //" if (hash==null) { return null; }\n" +
-        " int ihash = 0; \n" +
+        " java.lang.Integer hash = (Integer) __ordinalhash.get(name);\n" +
+        " if (hash==null) { return null; }\n" +
+        " int ihash = hash.intValue(); \n" +
         " switch (ihash) { \n");
         int i = 0;
         for (Iterator iter=ci.attributeMap.keySet().iterator();iter.hasNext();) {
