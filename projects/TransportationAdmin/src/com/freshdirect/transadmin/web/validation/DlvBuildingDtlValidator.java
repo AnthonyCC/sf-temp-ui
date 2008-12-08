@@ -21,15 +21,15 @@ public class DlvBuildingDtlValidator extends AbstractValidator {
 		  //validateIntegerMinMax("extraTimeNeeded", model.getExtraTimeNeeded(), 1, 60, errors);
 		//if (model.getWalkUpFloors() != null  && (model.getWalkup() == "1")
 		   //validateIntegerMinMax("walkUpFloors", model.getWalkUpFloors(), 1, 20, errors);
-		
-		if ( model.getDifficultToDeliver() == "1") {
+
+		if("1".equals(model.getDifficultToDeliver())) {
 			  if (model.getExtraTimeNeeded() == null) {
 				  model.setExtraTimeNeeded(new Integer(0));
 			  }
 			  validateIntegerMinMax("extraTimeNeeded", model.getExtraTimeNeeded(), 1, 60, errors);
 		}
 		
-		if ( model.getWalkup() == "1") {
+		if ("1".equals(model.getWalkup())) {
 			  if (model.getWalkUpFloors() == null) {
 				  model.setWalkUpFloors(new Integer(0));
 			  }
