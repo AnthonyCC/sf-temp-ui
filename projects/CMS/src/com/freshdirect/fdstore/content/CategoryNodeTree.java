@@ -81,11 +81,18 @@ public class CategoryNodeTree extends ContentNodeTree {
     }
     
     
-    public static CategoryNodeTree createTree(List products) {
+    public static CategoryNodeTree createTree(List products, boolean multipleHome) {
         CategoryNodeTree tree = new CategoryNodeTree(PrioritizedI.PRIORITY_COMPARATOR, ContentNodeModel.FULL_NAME_WITH_ID_COMPARATOR);
-        for (Iterator it = products.iterator(); it.hasNext();) {
-            ProductModel prod = (ProductModel) it.next();
-            tree.addProductModel(prod);
+        if (multipleHome) {
+            for (Iterator it = products.iterator(); it.hasNext();) {
+                ProductModel prod = (ProductModel) it.next();
+                tree.addProductModel(prod);
+            }
+        } else {
+            for (Iterator it = products.iterator(); it.hasNext();) {
+                ProductModel prod = (ProductModel) it.next();
+                tree.addNode(prod);
+            }
         }
         return tree;
     }

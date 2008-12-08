@@ -147,7 +147,7 @@ public class SnapshotGenerator {
 
                         FilteredSearchResults fres = new FilteredSearchResults(term, res, customerId);
                         //fres.setScoreOracle(new FilteredSearchResults.HierarchicalGrouppingScoreOracle(CategoryNodeTree.createTree(fres.getProducts())));
-                        CategoryNodeTree nodeTree = CategoryNodeTree.createTree(fres.getProducts());
+                        CategoryNodeTree nodeTree = CategoryNodeTree.createTree(fres.getProducts(), true);
                         fres.setNodeTree(nodeTree);
                         fres.setScoreOracle(new FilteredSearchResults.HierarchicalScoreOracle(nodeTree));
                         fres.sortProductsBy(new Integer(FilteredSearchResults.BY_RELEVANCY), false);

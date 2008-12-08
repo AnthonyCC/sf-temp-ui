@@ -178,7 +178,7 @@ public class SmartSearchTag extends BodyTagSupport {
         boolean reverseOrder = "desc".equalsIgnoreCase(request.getParameter("order"));
 
         FilteredSearchResults fres = new FilteredSearchResults(searchTerm, res, userId);
-        CategoryNodeTree contentTree = putTree(categoryTreeName, fres.getProducts());
+        CategoryNodeTree contentTree = putTree(categoryTreeName, fres.getProducts(), true);
         fres.setNodeTree(contentTree);
         fres.setScoreOracle(new FilteredSearchResults.HierarchicalScoreOracle(contentTree));
         fres.sortProductsBy(sortBy, reverseOrder);
@@ -269,7 +269,7 @@ public class SmartSearchTag extends BodyTagSupport {
         }
 
         if (filteredCategoryTreeName != null) {
-            putTree(filteredCategoryTreeName, filtered);
+            putTree(filteredCategoryTreeName, filtered, false);
         }
         
         if (selectedCategoriesName != null) {
@@ -301,9 +301,11 @@ public class SmartSearchTag extends BodyTagSupport {
      *            (String) Attribute name
      * @param products
      *            (List<ProductModel>) List of products
+     * @param multipleHome
+     *            (boolean) add products to their multiple home or not.
      */
-    protected CategoryNodeTree putTree(String attrName, List products) {
-        CategoryNodeTree tree = CategoryNodeTree.createTree(products);
+    protected CategoryNodeTree putTree(String attrName, List products, boolean multipleHome) {
+        CategoryNodeTree tree = CategoryNodeTree.createTree(products, multipleHome);
         putTree(attrName, tree);
         return tree;
     }
