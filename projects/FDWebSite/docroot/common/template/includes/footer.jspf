@@ -44,5 +44,5 @@ if(turi.indexOf("help") > -1){
 	<AREA SHAPE="RECT" COORDS="313,0,398,21" HREF="/category.jsp?catId=about_test&amp;trk=bnav" alt="Testimonials">
 	<AREA SHAPE="RECT" COORDS="399,0,491,21" HREF="javascript:popup('/help/freshness.jsp','small')" alt="Our Guarantee">
 	<AREA SHAPE="RECT" COORDS="492,0,550,21" HREF="<%=FDStoreProperties.getCareerLink()%>" alt="Careers">
-	<AREA SHAPE="RECT" COORDS="636,0,745,21" HREF="/newproducts.jsp&amp;trk=bnav" alt="New Products">
+	<AREA SHAPE="RECT" COORDS="636,0,745,21" HREF="/newproducts.jsp?trk=bnav" alt="New Products">
 </MAP>
