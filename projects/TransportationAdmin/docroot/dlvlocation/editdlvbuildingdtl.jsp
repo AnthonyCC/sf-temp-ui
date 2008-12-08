@@ -130,13 +130,13 @@ $('hoursOpenThu').disabled=true;
 $('hoursOpenFri').disabled=true;
 $('hoursOpenSat').disabled=true;
 $('hoursOpenSun').disabled=true;
-$('hoursOpenMon').value="12:00 AM";
-$('hoursOpenTue').value="12:00 AM";
-$('hoursOpenWed').value="12:00 AM";
-$('hoursOpenThu').value="12:00 AM";
-$('hoursOpenFri').value="12:00 AM";
-$('hoursOpenSat').value="12:00 AM";
-$('hoursOpenSun').value="12:00 AM";
+$('hoursOpenMon').value="00:00 AM";
+$('hoursOpenTue').value="00:00 AM";
+$('hoursOpenWed').value="00:00 AM";
+$('hoursOpenThu').value="00:00 AM";
+$('hoursOpenFri').value="00:00 AM";
+$('hoursOpenSat').value="00:00 AM";
+$('hoursOpenSun').value="00:00 AM";
 
 $('hoursCloseMon').disabled=true;
 $('hoursCloseTue').disabled=true;
@@ -145,13 +145,13 @@ $('hoursCloseThu').disabled=true;
 $('hoursCloseFri').disabled=true;
 $('hoursCloseSat').disabled=true;
 $('hoursCloseSun').disabled=true;
-$('hoursCloseMon').value="12:00 AM";
-$('hoursCloseTue').value="12:00 AM";
-$('hoursCloseWed').value="12:00 AM";
-$('hoursCloseThu').value="12:00 AM";
-$('hoursCloseFri').value="12:00 AM";
-$('hoursCloseSat').value="12:00 AM";
-$('hoursCloseSun').value="12:00 AM";
+$('hoursCloseMon').value="00:00 AM";
+$('hoursCloseTue').value="00:00 AM";
+$('hoursCloseWed').value="00:00 AM";
+$('hoursCloseThu').value="00:00 AM";
+$('hoursCloseFri').value="00:00 AM";
+$('hoursCloseSat').value="00:00 AM";
+$('hoursCloseSun').value="00:00 AM";
 
 $('commentMon').value="";
 $('commentTue').value="";
@@ -185,13 +185,13 @@ $('svcHoursOpenThu').disabled=true;
 $('svcHoursOpenFri').disabled=true;
 $('svcHoursOpenSat').disabled=true;
 $('svcHoursOpenSun').disabled=true;
-$('svcHoursOpenMon').value="12:00 AM";
-$('svcHoursOpenTue').value="12:00 AM";
-$('svcHoursOpenWed').value="12:00 AM";
-$('svcHoursOpenThu').value="12:00 AM";
-$('svcHoursOpenFri').value="12:00 AM";
-$('svcHoursOpenSat').value="12:00 AM";
-$('svcHoursOpenSun').value="12:00 AM";
+$('svcHoursOpenMon').value="00:00 AM";
+$('svcHoursOpenTue').value="00:00 AM";
+$('svcHoursOpenWed').value="00:00 AM";
+$('svcHoursOpenThu').value="00:00 AM";
+$('svcHoursOpenFri').value="00:00 AM";
+$('svcHoursOpenSat').value="00:00 AM";
+$('svcHoursOpenSun').value="00:00 AM";
 
 $('svcHoursCloseMon').disabled=true;
 $('svcHoursCloseTue').disabled=true;
@@ -200,13 +200,13 @@ $('svcHoursCloseThu').disabled=true;
 $('svcHoursCloseFri').disabled=true;
 $('svcHoursCloseSat').disabled=true;
 $('svcHoursCloseSun').disabled=true;
-$('svcHoursCloseMon').value="12:00 AM";
-$('svcHoursCloseTue').value="12:00 AM";
-$('svcHoursCloseWed').value="12:00 AM";
-$('svcHoursCloseThu').value="12:00 AM";
-$('svcHoursCloseFri').value="12:00 AM";
-$('svcHoursCloseSat').value="12:00 AM";
-$('svcHoursCloseSun').value="12:00 AM";
+$('svcHoursCloseMon').value="00:00 AM";
+$('svcHoursCloseTue').value="00:00 AM";
+$('svcHoursCloseWed').value="00:00 AM";
+$('svcHoursCloseThu').value="00:00 AM";
+$('svcHoursCloseFri').value="00:00 AM";
+$('svcHoursCloseSat').value="00:00 AM";
+$('svcHoursCloseSun').value="00:00 AM";
 
 $('svcCommentMon').disabled=true;
 $('svcCommentTue').disabled=true;
@@ -290,25 +290,25 @@ for (i=0; i<document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed.len
 		<div align="left">
 			<tr><BR><BR>										
 					 
-			<%@ include file='building.jspf'%> 
+			<%@ include file='./buildingdtl/building.jspf'%> 
 			<BR><BR>								 
 
-			<%@ include file='hoursoperation.jspf'%> 
+			<%@ include file='./buildingdtl/hoursoperation.jspf'%> 
 			<BR><BR>
 						
-			<%@ include file='difficultdeliver.jspf'%> 
+			<%@ include file='./buildingdtl/difficultdeliver.jspf'%> 
 			<BR><BR>
 							
-			<%@ include file='buildingtype.jspf'%> 
+			<%@ include file='./buildingdtl/buildingtype.jspf'%> 
 			<BR><BR>
 			
-			<%@ include file='svcentdetails.jspf'%> 
+			<%@ include file='./buildingdtl/svcentdetails.jspf'%> 
 			<BR><BR>				
 				       
-			<%@ include file='svchoursoperation.jspf'%> 
+			<%@ include file='./buildingdtl/svchoursoperation.jspf'%> 
 			<BR><BR>										
 
-			<%@ include file='misc.jspf'%> 
+			<%@ include file='./buildingdtl/misc.jspf'%> 
 			<BR><BR>										
 				
             <tr><td colspan="3">&nbsp;</td></tr>
