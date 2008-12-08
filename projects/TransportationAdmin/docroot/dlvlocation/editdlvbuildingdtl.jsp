@@ -102,7 +102,9 @@ function my_init(){
 
 function clearAll(){
 //alert("Clear");
-
+if($('isNew').value != "true"){ //clear only applicable for a new entry.
+	return;
+}
 $('addrType').value="Residential";
 
 $('companyName').value="";
@@ -121,6 +123,36 @@ $('includeFri').checked=false;
 $('includeSat').checked=false;
 $('includeSun').checked=false;
 
+$('hoursOpenMon').disabled=true;
+$('hoursOpenTue').disabled=true;
+$('hoursOpenWed').disabled=true;
+$('hoursOpenThu').disabled=true;
+$('hoursOpenFri').disabled=true;
+$('hoursOpenSat').disabled=true;
+$('hoursOpenSun').disabled=true;
+$('hoursOpenMon').value="12:00 AM";
+$('hoursOpenTue').value="12:00 AM";
+$('hoursOpenWed').value="12:00 AM";
+$('hoursOpenThu').value="12:00 AM";
+$('hoursOpenFri').value="12:00 AM";
+$('hoursOpenSat').value="12:00 AM";
+$('hoursOpenSun').value="12:00 AM";
+
+$('hoursCloseMon').disabled=true;
+$('hoursCloseTue').disabled=true;
+$('hoursCloseWed').disabled=true;
+$('hoursCloseThu').disabled=true;
+$('hoursCloseFri').disabled=true;
+$('hoursCloseSat').disabled=true;
+$('hoursCloseSun').disabled=true;
+$('hoursCloseMon').value="12:00 AM";
+$('hoursCloseTue').value="12:00 AM";
+$('hoursCloseWed').value="12:00 AM";
+$('hoursCloseThu').value="12:00 AM";
+$('hoursCloseFri').value="12:00 AM";
+$('hoursCloseSat').value="12:00 AM";
+$('hoursCloseSun').value="12:00 AM";
+
 $('commentMon').value="";
 $('commentTue').value="";
 $('commentWed').value="";
@@ -131,6 +163,13 @@ $('commentSun').value="";
 $('commentTue').value="";
 
 
+$('svcIncludeMon').disabled=true;
+$('svcIncludeTue').disabled=true;
+$('svcIncludeWed').disabled=true;
+$('svcIncludeThu').disabled=true;
+$('svcIncludeFri').disabled=true;
+$('svcIncludeSat').disabled=true;
+$('svcIncludeSun').disabled=true;
 $('svcIncludeMon').checked=false;
 $('svcIncludeTue').checked=false;
 $('svcIncludeWed').checked=false;
@@ -139,15 +178,6 @@ $('svcIncludeFri').checked=false;
 $('svcIncludeSat').checked=false;
 $('svcIncludeSun').checked=false;
 
-$('svcIncludeMon').disabled=true;
-$('svcIncludeTue').disabled=true;
-$('svcIncludeWed').disabled=true;
-$('svcIncludeThu').disabled=true;
-$('svcIncludeFri').disabled=true;
-$('svcIncludeSat').disabled=true;
-$('svcIncludeSun').disabled=true;
-
-
 $('svcHoursOpenMon').disabled=true;
 $('svcHoursOpenTue').disabled=true;
 $('svcHoursOpenWed').disabled=true;
@@ -155,6 +185,13 @@ $('svcHoursOpenThu').disabled=true;
 $('svcHoursOpenFri').disabled=true;
 $('svcHoursOpenSat').disabled=true;
 $('svcHoursOpenSun').disabled=true;
+$('svcHoursOpenMon').value="12:00 AM";
+$('svcHoursOpenTue').value="12:00 AM";
+$('svcHoursOpenWed').value="12:00 AM";
+$('svcHoursOpenThu').value="12:00 AM";
+$('svcHoursOpenFri').value="12:00 AM";
+$('svcHoursOpenSat').value="12:00 AM";
+$('svcHoursOpenSun').value="12:00 AM";
 
 $('svcHoursCloseMon').disabled=true;
 $('svcHoursCloseTue').disabled=true;
@@ -163,14 +200,13 @@ $('svcHoursCloseThu').disabled=true;
 $('svcHoursCloseFri').disabled=true;
 $('svcHoursCloseSat').disabled=true;
 $('svcHoursCloseSun').disabled=true;
-
-$('svcCommentMon').value="";
-$('svcCommentTue').value="";
-$('svcCommentWed').value="";
-$('svcCommentThu').value="";
-$('svcCommentFri').value="";
-$('svcCommentSat').value="";
-$('svcCommentSun').value="";
+$('svcHoursCloseMon').value="12:00 AM";
+$('svcHoursCloseTue').value="12:00 AM";
+$('svcHoursCloseWed').value="12:00 AM";
+$('svcHoursCloseThu').value="12:00 AM";
+$('svcHoursCloseFri').value="12:00 AM";
+$('svcHoursCloseSat').value="12:00 AM";
+$('svcHoursCloseSun').value="12:00 AM";
 
 $('svcCommentMon').disabled=true;
 $('svcCommentTue').disabled=true;
@@ -179,7 +215,13 @@ $('svcCommentThu').disabled=true;
 $('svcCommentFri').disabled=true;
 $('svcCommentSat').disabled=true;
 $('svcCommentSun').disabled=true;
-
+$('svcCommentMon').value="";
+$('svcCommentTue').value="";
+$('svcCommentWed').value="";
+$('svcCommentThu').value="";
+$('svcCommentFri').value="";
+$('svcCommentSat').value="";
+$('svcCommentSun').value="";
 
 //alert('svcCommentTue');
 
@@ -192,13 +234,26 @@ $('svcZip').disabled=true;
 //alert('svcZip');
 
 $('svcScrubbedStreet').value="";
-//$('svcValidate').checked=false;
+$('svcValidate').checked=false;
 $('svcAddrLine2').value="";
 $('svcCity').value="";
 $('svcState').value="";
 $('svcZip').value="";
 
- $('difficultToDeliver').value=false;
+
+document.getElementById("deliveryBuildingDtlForm").difficultToDeliver[0].checked=false;
+document.getElementById("deliveryBuildingDtlForm").difficultToDeliver[1].checked=true;
+ 
+for (i=0; i<document.getElementById("deliveryBuildingDtlForm").handTruckAllowed.length; i++){
+	document.getElementById("deliveryBuildingDtlForm").handTruckAllowed[i].disabled=true;
+	document.getElementById("deliveryBuildingDtlForm").handTruckAllowed[i].checked=false;
+	
+}
+for (i=0; i<document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed.length; i++){
+	document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed[i].disabled=true;
+	document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed[i].checked=false;
+}
+ 
  $('difficultReason').value="";
  $('extraTimeNeeded').value="";
  $('difficultReason').disabled=true;
