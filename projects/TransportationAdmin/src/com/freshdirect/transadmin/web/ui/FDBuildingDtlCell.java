@@ -24,14 +24,14 @@ public class FDBuildingDtlCell extends FDBaseCell  {
             String id = ""+PropertyUtils.getProperty(objBean, "buildingId");
             
             StringBuffer strBuf = new StringBuffer();
-            strBuf.append("javascript:pop('editdlvbuildingdtl.do?id=");
+            strBuf.append("editdlvbuildingdtl.do?id=");
             //strBuf.append("javascript:pop('http://maps.google.com/?saddr=");
             strBuf.append(id);            
-            strBuf.append("&width=");
+            /*strBuf.append("&width=");
             strBuf.append(width);
             strBuf.append("&height=");
             strBuf.append(height);  
-            strBuf.append("', ").append(height+buffer).append(",").append(width+buffer).append(")");
+            strBuf.append("', ").append(height+buffer).append(",").append(width+buffer).append(")");*/
             
             columnBuilder.getHtmlBuilder().a(strBuf.toString()).close().img("images/building.gif").aEnd();            
             //columnBuilder.getHtmlBuilder().xclose();
