@@ -46,7 +46,7 @@
 						If you need further assistance, we're here:</p>
 					</td>
 					<td width="200px" valign="top" style="border: 1px solid #666; background-color: #eee; padding: 5px;">
-						<table width="" align="center" cellspacing="0" width="200px">
+						<table align="center" cellspacing="0" width="200px">
 							<tr align="center">
 								<td><strong>Customer Service Hours</strong></td>
 							</tr>
