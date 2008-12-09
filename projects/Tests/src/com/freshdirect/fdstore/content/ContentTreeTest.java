@@ -115,7 +115,7 @@ public class ContentTreeTest extends TestCase {
         
         
         SmartSearchTag st = new SmartSearchTag();
-        CategoryNodeTree categoryTree = CategoryNodeTree.createTree(fsr.getProducts());
+        CategoryNodeTree categoryTree = CategoryNodeTree.createTree(fsr.getProducts(), true);
         
         assertEquals("root size", 8, categoryTree.getRoots().size());
         assertEquals("root node names", "Dairy,Bakery,Organic & All-Natural,Our Picks,Grocery,Health & Beauty,Buy Big,Frozen", getFullNames(categoryTree.getRoots(), 8));
