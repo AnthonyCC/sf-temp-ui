@@ -46,27 +46,6 @@ function toggle3(checked, field1, field2,field3) {
 	}
 }
 
-function toggle3svc(checked, svcHoursOpen, svcHoursClose,svcComment,hoursField, hoursOpenField,hoursCloseField) {
-    if(checked){
-      document.getElementById(svcHoursOpen).disabled=document.getElementById(svcHoursClose).disabled=document.getElementById(svcComment).disabled=false;
-	}
-	else {
-      document.getElementById(svcHoursOpen).disabled=document.getElementById(svcHoursClose).disabled=document.getElementById(svcComment).disabled=true;
-	}
-	if(checked){
-		if(document.getElementById(hoursField).checked == true){
-		    if(document.getElementById(svcHoursOpen).value == "12:00 AM"){
-			    document.getElementById(svcHoursOpen).value = document.getElementById(hoursOpenField).value;
-			}		
-		    if(document.getElementById(svcHoursClose).value == "12:00 AM"){
-				document.getElementById(svcHoursClose).value = document.getElementById(hoursCloseField).value;
-			}		
-		}
-	}
-	
-}
-
-
 function $() {
     var elements = new Array();
     for (var i = 0; i < arguments.length; i++) {

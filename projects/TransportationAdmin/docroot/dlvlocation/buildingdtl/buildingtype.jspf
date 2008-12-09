@@ -5,6 +5,7 @@ function housef(checked) {
       document.getElementById("walkup").checked=false;
       document.getElementById("elevator").checked=false;
       document.getElementById("svcEnt").checked=false;
+      svcEntf(false);
       document.getElementById('walkUpFloors').disabled=true;
       for (i=0; i<document.getElementById("deliveryBuildingDtlForm").handTruckAllowed.length; i++){
 		document.getElementById("deliveryBuildingDtlForm").handTruckAllowed[i].disabled=true;
@@ -36,9 +37,11 @@ function doormanf(checked) {
 	  document.getElementById('house').disabled=false;
       for (i=0; i<document.getElementById("deliveryBuildingDtlForm").handTruckAllowed.length; i++){
 		document.getElementById("deliveryBuildingDtlForm").handTruckAllowed[i].disabled=true;
+		document.getElementById("deliveryBuildingDtlForm").handTruckAllowed[i].checked=false
 	  }
       for (i=0; i<document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed.length; i++){
 		document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed[i].disabled=true;
+		document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed[i].checked=false;
 	  }
   	}
 }
@@ -235,7 +238,7 @@ function svchoursoperationf()
 function copyhoursoperationsf(){
 	//alert("@@new="+$('isNew').value);
 
-	if($('isNew').value == "true"){
+	if(document.getElementById('svcIncludeMon').checked == false){
 		if(document.getElementById('includeMon').checked==true){
 			document.getElementById('svcIncludeMon').checked = true;	
 			document.getElementById('svcHoursOpenMon').disabled = false;	
@@ -244,6 +247,9 @@ function copyhoursoperationsf(){
 			document.getElementById('svcHoursCloseMon').value =	document.getElementById('hoursCloseMon').value;
 			document.getElementById('svcCommentMon').disabled = false;	
 		}
+	}
+		
+	if(document.getElementById('svcIncludeTue').checked == false){
 		if(document.getElementById('includeTue').checked==true){
 			document.getElementById('svcIncludeTue').checked = true;	
 			document.getElementById('svcHoursOpenTue').disabled = false;	
@@ -252,6 +258,9 @@ function copyhoursoperationsf(){
 			document.getElementById('svcHoursCloseTue').value =	document.getElementById('hoursCloseTue').value;
 			document.getElementById('svcCommentTue').disabled = false;	
 		}
+	}
+	
+	if(document.getElementById('svcIncludeWed').checked == false){
 		if(document.getElementById('includeWed').checked==true){
 			document.getElementById('svcIncludeWed').checked = true;	
 			document.getElementById('svcHoursOpenWed').disabled = false;	
@@ -260,6 +269,9 @@ function copyhoursoperationsf(){
 			document.getElementById('svcHoursCloseWed').value =	document.getElementById('hoursCloseWed').value;
 			document.getElementById('svcCommentWed').disabled = false;	
 		}
+	}
+	
+	if(document.getElementById('svcIncludeThu').checked == false){
 		if(document.getElementById('includeThu').checked==true){
 			document.getElementById('svcIncludeThu').checked = true;	
 			document.getElementById('svcHoursOpenThu').disabled = false;	
@@ -268,6 +280,9 @@ function copyhoursoperationsf(){
 			document.getElementById('svcHoursCloseThu').value =	document.getElementById('hoursCloseThu').value;
 			document.getElementById('svcCommentThu').disabled = false;	
 		}
+	}
+	
+	if(document.getElementById('svcIncludeFri').checked == false){
 		if(document.getElementById('includeFri').checked==true){
 			document.getElementById('svcIncludeFri').checked = true;	
 			document.getElementById('svcHoursOpenFri').disabled = false;	
@@ -276,6 +291,9 @@ function copyhoursoperationsf(){
 			document.getElementById('svcHoursCloseFri').value =	document.getElementById('hoursCloseFri').value;
 			document.getElementById('svcCommentFri').disabled = false;	
 		}
+	}
+	
+	if(document.getElementById('svcIncludeSat').checked == false){
 		if(document.getElementById('includeSat').checked==true){
 			document.getElementById('svcIncludeSat').checked = true;	
 			document.getElementById('svcHoursOpenSat').disabled = false;	
@@ -284,6 +302,9 @@ function copyhoursoperationsf(){
 			document.getElementById('svcHoursCloseSat').value =	document.getElementById('hoursCloseSat').value;
 			document.getElementById('svcCommentSat').disabled = false;	
 		}
+	}
+	
+	if(document.getElementById('svcIncludeSun').checked == false){
 		if(document.getElementById('includeSun').checked==true){
 			document.getElementById('svcIncludeSun').checked = true;	
 			document.getElementById('svcHoursOpenSun').disabled = false;	
@@ -292,7 +313,7 @@ function copyhoursoperationsf(){
 			document.getElementById('svcHoursCloseSun').value =	document.getElementById('hoursCloseSun').value;
 			document.getElementById('svcCommentSun').disabled = false;	
 		}
-	}  //end isNew
+	}
 }
 
 function svcEntf(checked) {
@@ -337,6 +358,14 @@ function svcEntf(checked) {
 		document.getElementById('svcIncludeSat').disabled=true;
 		document.getElementById('svcIncludeSun').disabled=true;
 
+		document.getElementById('svcIncludeMon').checked=false;
+		document.getElementById('svcIncludeTue').checked=false;
+		document.getElementById('svcIncludeWed').checked=false;
+		document.getElementById('svcIncludeThu').checked=false;
+		document.getElementById('svcIncludeFri').checked=false;
+		document.getElementById('svcIncludeSat').checked=false;
+		document.getElementById('svcIncludeSun').checked=false;
+
 		document.getElementById('svcHoursOpenMon').disabled=true;
 		document.getElementById('svcHoursOpenTue').disabled=true;
 		document.getElementById('svcHoursOpenWed').disabled=true;
@@ -361,9 +390,6 @@ function svcEntf(checked) {
 		document.getElementById('svcCommentSat').disabled=true;
 		document.getElementById('svcCommentSun').disabled=true;
 		document.getElementById('svcCommentTue').disabled=true;		
-		
-		
-		
 	}
 }
 

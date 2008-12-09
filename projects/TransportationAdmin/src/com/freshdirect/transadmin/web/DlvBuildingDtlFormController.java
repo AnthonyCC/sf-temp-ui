@@ -39,6 +39,157 @@ public class DlvBuildingDtlFormController extends AbstractFormController {
 		}				
 	}*/
 	
+	private void setEntFields(HttpServletRequest request, DlvBuildingDtl model)
+	{
+		String openHours= "00:00 AM";
+		String closeHours= "00:00 AM";
+		String comment = "";
+
+		if("1".equals(request.getParameter("includeMon"))){
+			openHours= request.getParameter("hoursOpenMon");
+			closeHours = request.getParameter("hoursCloseMon");
+			comment=request.getParameter("commentMon");
+		}
+		model.setHoursOpenMon(new TimeOfDay(openHours));
+		model.setHoursCloseMon(new TimeOfDay(closeHours));
+		model.setCommentMon(comment);
+		
+		if("1".equals(request.getParameter("includeTue"))){
+			openHours= request.getParameter("hoursOpenTue");
+			closeHours = request.getParameter("hoursCloseTue");
+			comment=request.getParameter("commentTue");
+		}
+		model.setHoursOpenTue(new TimeOfDay(openHours));
+		model.setHoursCloseTue(new TimeOfDay(closeHours));
+		model.setCommentTue(comment);
+		
+		if("1".equals(request.getParameter("includeWed"))){
+			openHours= request.getParameter("hoursOpenWed");
+			closeHours = request.getParameter("hoursCloseWed");
+			comment=request.getParameter("commentWed");
+		}
+		model.setHoursOpenWed(new TimeOfDay(openHours));
+		model.setHoursCloseWed(new TimeOfDay(closeHours));
+		model.setCommentWed(comment);
+		
+		if("1".equals(request.getParameter("includeThu"))){
+			openHours= request.getParameter("hoursOpenThu");
+			closeHours = request.getParameter("hoursCloseThu");
+			comment=request.getParameter("commentThu");
+		}
+		model.setHoursOpenThu(new TimeOfDay(openHours));
+		model.setHoursCloseThu(new TimeOfDay(closeHours));
+		model.setCommentThu(comment);
+		
+		if("1".equals(request.getParameter("includeFri"))){
+			openHours= request.getParameter("hoursOpenFri");
+			closeHours = request.getParameter("hoursCloseFri");
+			comment=request.getParameter("commentFri");
+		}
+		model.setHoursOpenFri(new TimeOfDay(openHours));
+		model.setHoursCloseFri(new TimeOfDay(closeHours));
+		model.setCommentFri(comment);
+		
+		if("1".equals(request.getParameter("includeSat"))){
+			openHours= request.getParameter("hoursOpenSat");
+			closeHours = request.getParameter("hoursCloseSat");
+			comment=request.getParameter("commentSat");
+		}
+		model.setHoursOpenSat(new TimeOfDay(openHours));
+		model.setHoursCloseSat(new TimeOfDay(closeHours));
+		model.setCommentSat(comment);
+		
+		if("1".equals(request.getParameter("includeSun"))){
+			openHours= request.getParameter("hoursOpenSun");
+			closeHours = request.getParameter("hoursCloseSun");
+			comment=request.getParameter("commentSun");
+		}
+		model.setHoursOpenSun(new TimeOfDay(openHours));
+		model.setHoursCloseSun(new TimeOfDay(closeHours));
+		model.setCommentSun(comment);
+		
+	}
+	
+	
+	private void setSvcEntFields(HttpServletRequest request, DlvBuildingDtl model)
+	{
+		model.setSvcIncludeMon(request.getParameter("svcIncludeMon"));
+		model.setSvcIncludeTue(request.getParameter("svcIncludeTue"));
+		model.setSvcIncludeWed(request.getParameter("svcIncludeWed"));
+		model.setSvcIncludeThu(request.getParameter("svcIncludeThu"));
+		model.setSvcIncludeFri(request.getParameter("svcIncludeFri"));
+		model.setSvcIncludeSat(request.getParameter("svcIncludeSat"));
+		model.setSvcIncludeSun(request.getParameter("svcIncludeSun"));
+		
+		String openHours= "00:00 AM";
+		String closeHours= "00:00 AM";
+		String comment = "";
+
+		if("1".equals(request.getParameter("svcIncludeMon"))){
+			openHours= request.getParameter("svcHoursOpenMon");
+			closeHours = request.getParameter("svcHoursCloseMon");
+			comment=request.getParameter("svcCommentMon");
+		}
+		model.setSvcHoursOpenMon(new TimeOfDay(openHours));
+		model.setSvcHoursCloseMon(new TimeOfDay(closeHours));
+		model.setSvcCommentMon(comment);
+		
+		if("1".equals(request.getParameter("svcIncludeTue"))){
+			openHours= request.getParameter("svcHoursOpenTue");
+			closeHours = request.getParameter("svcHoursCloseTue");
+			comment=request.getParameter("svcCommentTue");
+		}
+		model.setSvcHoursOpenTue(new TimeOfDay(openHours));
+		model.setSvcHoursCloseTue(new TimeOfDay(closeHours));
+		model.setSvcCommentTue(comment);
+		
+		if("1".equals(request.getParameter("svcIncludeWed"))){
+			openHours= request.getParameter("svcHoursOpenWed");
+			closeHours = request.getParameter("svcHoursCloseWed");
+			comment=request.getParameter("svcCommentWed");
+		}
+		model.setSvcHoursOpenWed(new TimeOfDay(openHours));
+		model.setSvcHoursCloseWed(new TimeOfDay(closeHours));
+		model.setSvcCommentWed(comment);
+		
+		if("1".equals(request.getParameter("svcIncludeThu"))){
+			openHours= request.getParameter("svcHoursOpenThu");
+			closeHours = request.getParameter("svcHoursCloseThu");
+			comment=request.getParameter("svcCommentThu");
+		}
+		model.setSvcHoursOpenThu(new TimeOfDay(openHours));
+		model.setSvcHoursCloseThu(new TimeOfDay(closeHours));
+		model.setSvcCommentThu(comment);
+		
+		if("1".equals(request.getParameter("svcIncludeFri"))){
+			openHours= request.getParameter("svcHoursOpenFri");
+			closeHours = request.getParameter("svcHoursCloseFri");
+			comment=request.getParameter("svcCommentFri");
+		}
+		model.setSvcHoursOpenFri(new TimeOfDay(openHours));
+		model.setSvcHoursCloseFri(new TimeOfDay(closeHours));
+		model.setSvcCommentFri(comment);
+		
+		if("1".equals(request.getParameter("svcIncludeSat"))){
+			openHours= request.getParameter("svcHoursOpenSat");
+			closeHours = request.getParameter("svcHoursCloseSat");
+			comment=request.getParameter("svcCommentSat");
+		}
+		model.setSvcHoursOpenSat(new TimeOfDay(openHours));
+		model.setSvcHoursCloseSat(new TimeOfDay(closeHours));
+		model.setSvcCommentSat(comment);
+		
+		if("1".equals(request.getParameter("svcIncludeSun"))){
+			openHours= request.getParameter("svcHoursOpenSun");
+			closeHours = request.getParameter("svcHoursCloseSun");
+			comment=request.getParameter("svcCommentSun");
+		}
+		model.setSvcHoursOpenSun(new TimeOfDay(openHours));
+		model.setSvcHoursCloseSun(new TimeOfDay(closeHours));
+		model.setSvcCommentSun(comment);
+		
+	}
+	
 	
 	protected void initBinder(HttpServletRequest request,
 			ServletRequestDataBinder dataBinder) throws Exception {
@@ -53,153 +204,42 @@ protected void onBind(HttpServletRequest request, Object command) {
 	System.out.println("@@@@@@@entering on Bind");
 	DlvBuildingDtl model = (DlvBuildingDtl) command;
 	
-	model.setIncludeMon(request.getParameter("includeMon"));
-	model.setIncludeTue(request.getParameter("includeTue"));
-	model.setIncludeWed(request.getParameter("includeWed"));
-	model.setIncludeThu(request.getParameter("includeThu"));
-	model.setIncludeFri(request.getParameter("includeFri"));
-	model.setIncludeSat(request.getParameter("includeSat"));
-	model.setIncludeSun(request.getParameter("includeSun"));
-	
-	model.setSvcIncludeMon(request.getParameter("svcIncludeMon"));
-	model.setSvcIncludeTue(request.getParameter("svcIncludeTue"));
-	model.setSvcIncludeWed(request.getParameter("svcIncludeWed"));
-	model.setSvcIncludeThu(request.getParameter("svcIncludeThu"));
-	model.setSvcIncludeFri(request.getParameter("svcIncludeFri"));
-	model.setSvcIncludeSat(request.getParameter("svcIncludeSat"));
-	model.setSvcIncludeSun(request.getParameter("svcIncludeSun"));
+	model.setSvcEnt(request.getParameter("svcEnt"));
+	if(!"1".equals(model.getSvcEnt())){
+	    model.setSvcScrubbedStreet("");
+		model.setSvcAddrLine2("");
+		model.setSvcCity("");
+		model.setSvcState("");
+		model.setSvcZip("");
+	}
 	
 	model.setDoorman(request.getParameter("doorman"));
+	if(!"1".equals(model.getDoorman())){
+		model.setHandTruckAllowed("");
+		model.setAptDlvAllowed("");
+	}
+	
+	
 	model.setWalkup(request.getParameter("walkup"));
+	if(!"1".equals(model.getWalkup())){
+		model.setWalkUpFloors(new Integer(0));
+	}
+	
 	model.setElevator(request.getParameter("elevator"));
 	model.setSvcEnt(request.getParameter("svcEnt"));
 	model.setHouse(request.getParameter("house"));
 	
 	model.setDifficultToDeliver(request.getParameter("difficultToDeliver"));
-	model.setHandTruckAllowed(request.getParameter("handTruckAllowed"));
-	model.setAptDlvAllowed(request.getParameter("aptDlvAllowed"));
+	if(!"1".equals(model.getDifficultToDeliver())){
+		model.setDifficultReason("");
+		model.setExtraTimeNeeded(new Integer(0));
+	}
+	
 	
 	System.out.println("@@@Serialize@@@@@@@difficultToDeliver= "+ model.getDifficultToDeliver());
 	
-	String hours = request.getParameter("hoursOpenMon"); hours = (hours == null || hours.length() == 0) ? "00:00 AM" : hours;
-	
-	model.setHoursOpenMon(new TimeOfDay(hours));
-	
-	hours = request.getParameter("hoursOpenTue"); hours = (hours == null || hours.length() == 0) ? "00:00 AM" : hours;
-	model.setHoursOpenTue(new TimeOfDay(hours));
-	
-	hours = request.getParameter("hoursOpenWed"); hours = (hours == null || hours.length() == 0) ? "00:00 AM" : hours;
-	model.setHoursOpenWed(new TimeOfDay(hours));
-	
-	hours = request.getParameter("hoursOpenThu"); hours = (hours == null || hours.length() == 0) ? "00:00 AM" : hours;
-	model.setHoursOpenThu(new TimeOfDay(hours));
-	
-	hours = request.getParameter("hoursOpenFri"); hours = (hours == null || hours.length() == 0) ? "00:00 AM" : hours;
-	model.setHoursOpenFri(new TimeOfDay(hours));
-	
-	hours = request.getParameter("hoursOpenSat"); hours = (hours == null || hours.length() == 0) ? "00:00 AM" : hours;
-	model.setHoursOpenSat(new TimeOfDay(hours));
-	
-	hours = request.getParameter("hoursOpenSun"); hours = (hours == null || hours.length() == 0) ? "00:00 AM" : hours;
-	model.setHoursOpenSun(new TimeOfDay(hours));
-
-	hours = request.getParameter("hoursCloseMon"); hours = (hours == null || hours.length() == 0) ? "00:00 AM" : hours;
-	model.setHoursCloseMon(new TimeOfDay(hours));
-	
-	hours = request.getParameter("hoursCloseTue"); hours = (hours == null || hours.length() == 0) ? "00:00 AM" : hours;
-	model.setHoursCloseTue(new TimeOfDay(hours));
-	
-	hours = request.getParameter("hoursCloseWed"); hours = (hours == null || hours.length() == 0) ? "00:00 AM" : hours;
-	model.setHoursCloseWed(new TimeOfDay(hours));
-	
-	hours = request.getParameter("hoursCloseThu"); hours = (hours == null || hours.length() == 0) ? "00:00 AM" : hours;
-	model.setHoursCloseThu(new TimeOfDay(hours));
-	
-	hours = request.getParameter("hoursCloseFri"); hours = (hours == null || hours.length() == 0) ? "00:00 AM" : hours;
-	model.setHoursCloseFri(new TimeOfDay(hours));
-	
-	hours = request.getParameter("hoursCloseSat"); hours = (hours == null || hours.length() == 0) ? "00:00 AM" : hours;
-	model.setHoursCloseSat(new TimeOfDay(hours));
-	
-	hours = request.getParameter("hoursCloseSun"); hours = (hours == null || hours.length() == 0) ? "00:00 AM" : hours;
-	model.setHoursCloseSun(new TimeOfDay(hours));
-	
-	String svcHours = request.getParameter("svcHoursOpenMon");	svcHours = (svcHours == null || svcHours.length() == 0) ? "00:00 AM" : svcHours;
-	model.setSvcHoursOpenMon(new TimeOfDay(svcHours)); 
-
-	svcHours = request.getParameter("svcHoursOpenTue"); svcHours = (svcHours == null || svcHours.length() == 0) ? "00:00 AM" : svcHours;
-	model.setSvcHoursOpenTue(new TimeOfDay(svcHours)); 
-	
-	svcHours = request.getParameter("svcHoursOpenWed"); svcHours = (svcHours == null || svcHours.length() == 0) ? "00:00 AM" : svcHours;
-	model.setSvcHoursOpenWed(new TimeOfDay(svcHours)); 
-
-	svcHours = request.getParameter("svcHoursOpenThu"); svcHours = (svcHours == null || svcHours.length() == 0) ? "00:00 AM" : svcHours;
-	model.setSvcHoursOpenThu(new TimeOfDay(svcHours)); 
-
-	svcHours = request.getParameter("svcHoursOpenFri"); svcHours = (svcHours == null || svcHours.length() == 0) ? "00:00 AM" : svcHours;
-	model.setSvcHoursOpenFri(new TimeOfDay(svcHours));
-	
-	svcHours = request.getParameter("svcHoursOpenSat"); svcHours = (svcHours == null || svcHours.length() == 0) ? "00:00 AM" : svcHours;
-	model.setSvcHoursOpenSat(new TimeOfDay(svcHours));
-	
-	svcHours = request.getParameter("svcHoursOpenSun"); svcHours = (svcHours == null || svcHours.length() == 0) ? "00:00 AM" : svcHours;
-	model.setSvcHoursOpenSun(new TimeOfDay(svcHours));
-	
-	svcHours = request.getParameter("svcHoursCloseMon"); svcHours = (svcHours == null || svcHours.length() == 0) ? "00:00 AM" : svcHours;
-	model.setSvcHoursCloseMon(new TimeOfDay(svcHours));
-	
-	svcHours = request.getParameter("svcHoursCloseTue"); svcHours = (svcHours == null || svcHours.length() == 0) ? "00:00 AM" : svcHours;
-	model.setSvcHoursCloseTue(new TimeOfDay(svcHours));
-	
-	svcHours = request.getParameter("svcHoursCloseWed"); svcHours = (svcHours == null || svcHours.length() == 0) ? "00:00 AM" : svcHours;
-	model.setSvcHoursCloseWed(new TimeOfDay(svcHours));
-	
-	svcHours = request.getParameter("svcHoursCloseThu"); svcHours = (svcHours == null || svcHours.length() == 0) ? "00:00 AM" : svcHours;
-	model.setSvcHoursCloseThu(new TimeOfDay(svcHours));
-	
-	svcHours = request.getParameter("svcHoursCloseFri"); svcHours = (svcHours == null || svcHours.length() == 0) ? "00:00 AM" : svcHours;
-	model.setSvcHoursCloseFri(new TimeOfDay(svcHours));
-	
-	svcHours = request.getParameter("svcHoursCloseSat"); svcHours = (svcHours == null || svcHours.length() == 0) ? "00:00 AM" : svcHours;
-	model.setSvcHoursCloseSat(new TimeOfDay(svcHours));
-	
-	svcHours = request.getParameter("svcHoursCloseSun"); svcHours = (svcHours == null || svcHours.length() == 0) ? "00:00 AM" : svcHours;
-	model.setSvcHoursCloseSun(new TimeOfDay(svcHours));
-	
-	/*System.out.println("###########hoursOpenMon= "+ model.getHoursOpenMon()); 
-	System.out.println("###########hoursOpenTue= "+ model.getHoursOpenTue()); 
-	System.out.println("###########hoursOpenWed= "+ model.getHoursOpenWed()); 
-	System.out.println("###########hoursOpenThu= "+ model.getHoursOpenThu()); 
-	System.out.println("###########hoursOpenFri= "+ model.getHoursOpenFri()); 
-	System.out.println("###########hoursOpenSat= "+ model.getHoursOpenSat()); 
-	System.out.println("###########hoursOpenSun= "+ model.getHoursOpenSun()); 
-
-	System.out.println("###########hoursCloseMon= "+ model.getHoursCloseMon()); 
-	System.out.println("###########hoursCloseTue= "+ model.getHoursCloseTue()); 
-	System.out.println("###########hoursCloseWed= "+ model.getHoursCloseWed()); 
-	System.out.println("###########hoursCloseThu= "+ model.getHoursCloseThu()); 
-	System.out.println("###########hoursCloseFri= "+ model.getHoursCloseFri()); 
-	System.out.println("###########hoursCloseSat= "+ model.getHoursCloseSat()); 
-	System.out.println("###########hoursCloseSun= "+ model.getHoursCloseSun()); 
-	
-	
-	
-	System.out.println("###########svcSvcHoursOpenMon= "+ model.getSvcHoursOpenMon()); 
-	System.out.println("###########svcSvcHoursOpenTue= "+ model.getSvcHoursOpenTue()); 
-	System.out.println("###########svcSvcHoursOpenWed= "+ model.getSvcHoursOpenWed()); 
-	System.out.println("###########svcSvcHoursOpenThu= "+ model.getSvcHoursOpenThu()); 
-	System.out.println("###########svcSvcHoursOpenFri= "+ model.getSvcHoursOpenFri()); 
-	System.out.println("###########svcSvcHoursOpenSat= "+ model.getSvcHoursOpenSat()); 
-	System.out.println("###########svcSvcHoursOpenSun= "+ model.getSvcHoursOpenSun()); 
-	
-	System.out.println("###########svcSvcHoursCloseMon= "+ model.getSvcHoursCloseMon()); 
-	System.out.println("###########svcSvcHoursCloseTue= "+ model.getSvcHoursCloseTue()); 
-	System.out.println("###########svcSvcHoursCloseWed= "+ model.getSvcHoursCloseWed()); 
-	System.out.println("###########svcSvcHoursCloseThu= "+ model.getSvcHoursCloseThu()); 
-	System.out.println("###########svcSvcHoursCloseFri= "+ model.getSvcHoursCloseFri()); 
-	System.out.println("###########svcSvcHoursCloseSat= "+ model.getSvcHoursCloseSat()); 
-	System.out.println("###########svcHoursCloseSun= "+ model.getSvcHoursCloseSun()); 
-	System.out.println("#############Exiting onBind()");*/
+	setEntFields(request, model);
+	setSvcEntFields(request, model);
 	
 	System.out.println("$$$$$$$$$$$$$$$$$hoursOpenMon= "+ model.getHoursOpenMon()); 
 
