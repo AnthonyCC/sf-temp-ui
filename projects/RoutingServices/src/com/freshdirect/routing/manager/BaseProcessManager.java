@@ -34,13 +34,13 @@ public abstract class BaseProcessManager implements  IProcessManager {
 	protected IProcessManager successor;
 
 	private final String ROUTING_SUCCESS = "Routing Success";
-	
+
 	private final String LOADBALANCE_SUCCESS = "Load Balance Success";
 
 	private final String SENDROUTES_SUCCESS = "Send Routes to RoadNet Success";
 
 	private final String SEPARATOR = "; ";
-	
+
 	private boolean hadLoadBalance = false;
 
     public void setSuccessor(IProcessManager successor){
@@ -128,6 +128,10 @@ public abstract class BaseProcessManager implements  IProcessManager {
     	Map unassignedOrders = schedulerBulkReserveOrders(schedulerIds, orderMappedLst);
     	System.out.println("################### BULK RESERVE END ##################");
     	
+    	if(RoutingServicesProperties.isRemoveSchedulerEnabled()) {
+    		schedulerRemoveFromServer(schedulerIds);
+		}
+    	
     	hadLoadBalance = false;
     	if(RoutingServicesProperties.isLoadBalanceEnabled()) {
 	    	System.out.println("################### BALANCE ROUTES START ##################");
@@ -184,13 +188,7 @@ public abstract class BaseProcessManager implements  IProcessManager {
 			while(tmpIterator.hasNext()) {
 				schedulerId = (IRoutingSchedulerIdentity)tmpIterator.next();
 				unassignedOrders.put(schedulerId, proxy.schedulerBulkReserveOrder(schedulerId
-														, (List)orderMappedLst.get(schedulerId)
-														, RoutingServicesProperties.getDefaultRegion()
-														, RoutingServicesProperties.getDefaultLocationType()
-														, RoutingServicesProperties.getDefaultOrderType()));
-				if(RoutingServicesProperties.isRemoveSchedulerEnabled()) {
-					proxy.schedulerRemoveFromServer(schedulerId);
-				}
+				
 			}
     	} catch (RoutingServiceException e) {
     		e.printStackTrace();
@@ -198,6 +196,23 @@ public abstract class BaseProcessManager implements  IProcessManager {
 													,e,IIssue.PROCESS_BULKRESERVE_UNSUCCESSFUL);
 		}
     	return unassignedOrders;
+    }
+    
+    private void schedulerRemoveFromServer(Set schedulerIdLst) throws  RoutingProcessException {
+    	
+    	IRoutingSchedulerIdentity schedulerId = null;
+    	try {
+	    	RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();
+	    	Iterator tmpIterator = schedulerIdLst.iterator();
+			while(tmpIterator.hasNext()) {
+				schedulerId = (IRoutingSchedulerIdentity)tmpIterator.next();				
+				proxy.schedulerRemoveFromServer(schedulerId);
+			}
+    	} catch (RoutingServiceException e) {
+    		e.printStackTrace();
+			throw new RoutingProcessException(getErrorMessage("", schedulerId.getArea().getAreaCode())
+													,e,IIssue.PROCESS_REMOVEFROMSERVER_UNSUCCESSFUL);
+		}
     }
 
     private void schedulerBalanceRoutes(Set schedulerIdLst, IServiceTimeScenarioModel scenario) throws  RoutingProcessException {

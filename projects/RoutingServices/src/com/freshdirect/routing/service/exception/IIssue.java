@@ -25,4 +25,5 @@ public interface IIssue {
 	public final static String DATEPARSE_ERROR = "ISSUE019";
 	public final static String PROCESS_BALANCEROUTES_UNSUCCESSFUL = "ISSUE020";
 	public final static String PROCESS_RETRIEVESESSION_UNSUCCESSFUL = "ISSUE021";
+	public final static String PROCESS_REMOVEFROMSERVER_UNSUCCESSFUL = "ISSUE022";
 }
