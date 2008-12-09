@@ -188,7 +188,10 @@ public abstract class BaseProcessManager implements  IProcessManager {
 			while(tmpIterator.hasNext()) {
 				schedulerId = (IRoutingSchedulerIdentity)tmpIterator.next();
 				unassignedOrders.put(schedulerId, proxy.schedulerBulkReserveOrder(schedulerId
-				
+														, (List)orderMappedLst.get(schedulerId)
+														, RoutingServicesProperties.getDefaultRegion()
+														, RoutingServicesProperties.getDefaultLocationType()
+														, RoutingServicesProperties.getDefaultOrderType()));				
 			}
     	} catch (RoutingServiceException e) {
     		e.printStackTrace();
