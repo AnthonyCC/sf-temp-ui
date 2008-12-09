@@ -7,21 +7,21 @@
 <tmpl:insert template='/common/sitelayout.jsp'>
 
     <tmpl:put name='title' direct='true'>Add/Edit Delivery Service Time Type</tmpl:put>
-	<script>
-		function loadBalanceEvent() {
-			
-			var loadBalanceFld = document.getElementById('needsLoadBalance1');
-			if(loadBalanceFld.checked) {				
-				document.getElementById('balanceBy').disabled = false;
-				document.getElementById('loadBalanceFactor').disabled = false;
-			} else {
-				document.getElementById('balanceBy').disabled = true;
-				document.getElementById('loadBalanceFactor').disabled = true;
-				document.getElementById('balanceBy').value = 'null';
-				document.getElementById('loadBalanceFactor').value = '';
-			}
-		}
-	</script>
+  <script>
+    function loadBalanceEvent() {
+      
+      var loadBalanceFld = document.getElementById('needsLoadBalance1');
+      if(loadBalanceFld.checked) {        
+        document.getElementById('balanceBy').disabled = false;
+        document.getElementById('loadBalanceFactor').disabled = false;
+      } else {
+        document.getElementById('balanceBy').disabled = true;
+        document.getElementById('loadBalanceFactor').disabled = true;
+        //document.getElementById('balanceBy').value = 'null';
+        //document.getElementById('loadBalanceFactor').value = '';
+      }
+    }
+  </script>
   <tmpl:put name='content' direct='true'>
     <br/> 
     <div align="center">
