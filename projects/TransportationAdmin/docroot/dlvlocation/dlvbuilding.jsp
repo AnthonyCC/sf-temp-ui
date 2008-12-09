@@ -104,7 +104,7 @@
                   };
               
                   if(checkCol == -1 || checkCol != j ) {
-              if(!(needKeyPress && (j > (cells.length-3)))) {             
+              if(!(needKeyPress && (j > (cells.length-4)))) {             
                   cells[j].onclick = function () {              
                       var cell = this.parentNode.getElementsByTagName("td")[columnIndex];
                       var selectBox = this.parentNode.getElementsByTagName("input")[0];
