@@ -8,7 +8,7 @@
             <column name="DELIVERY_BUILDING_ID" length="16" />
             <generator class="assigned" />
         </id>
-        <many-to-one name="building" class="com.freshdirect.transadmin.model.DlvBuilding" update="false" insert="false" fetch="select">
+        <many-to-one name="building" class="com.freshdirect.transadmin.model.DlvBuilding" lazy="false" update="false" insert="false" fetch="select">
             <column name="DELIVERY_BUILDING_ID" length="16" not-null="true" />
         </many-to-one>               
         <property name="addrType" type="string">

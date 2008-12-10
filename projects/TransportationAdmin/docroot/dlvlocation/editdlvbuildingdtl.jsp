@@ -82,6 +82,11 @@ function do_refresh()
 	   housef(document.getElementById("deliveryBuildingDtlForm").house.checked);
 	   hoursoperationf();
 	   svchoursoperationf();
+	   if($('walkUpFloors').value == '0')
+	      $('walkUpFloors').value="";
+	   if($('extraTimeNeeded').value == '0')
+	      $('extraTimeNeeded').value="";
+	      
 	   
 }
 
