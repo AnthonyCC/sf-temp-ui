@@ -432,7 +432,6 @@ public class FilteredSearchResults extends SearchResults implements Serializable
 
     
     Map                            userProductScores = null;
-    final String                   searchTerm;
 
     Comparator                     currentComparator;
 
