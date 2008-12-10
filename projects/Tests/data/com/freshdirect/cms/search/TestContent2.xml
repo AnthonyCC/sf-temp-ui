@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Content>
 	<SynTest id="foo1">
-		<FULL_NAME>egy</FULL_NAME>
+		<FULL_NAME>egy,something</FULL_NAME>
 		<keywords>something</keywords>
 	</SynTest>
 	<SynTest id="foo2">
