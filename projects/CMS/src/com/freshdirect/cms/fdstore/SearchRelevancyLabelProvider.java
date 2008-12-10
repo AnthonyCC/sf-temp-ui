@@ -19,9 +19,9 @@ public class SearchRelevancyLabelProvider implements ILabelProvider {
             return "Category "+(key !=null ? key.getId() : "<not specified>")+" score : "+node.getAttribute("score").getValue();
         }
         if (FDContentTypes.SYNONYM.equals(type)) {
-            String from = ContentNodeUtil.getStringAttribute(node, "word");
-            String synonymTo = ContentNodeUtil.getStringAttribute(node, "synonymValue");
-            return "Synonym " + synonymTo + " -> " + from; 
+            String word = ContentNodeUtil.getStringAttribute(node, "word");
+            String synonymValue = ContentNodeUtil.getStringAttribute(node, "synonymValue");
+            return "Add keyword '" + synonymValue + "' where full name contains '" + word+"'"; 
         }
         return null;
     }

@@ -111,9 +111,6 @@ public class LuceneSearchService implements ContentSearchServiceI {
 	
 	private LuceneSpellingSuggestionService spellService;
 
-	private SortedSet prefixSet;
-
-	
 	private final static int MAX_AUTOCOMPLETE_HITS = 20;
 
 	/**
@@ -285,96 +282,107 @@ public class LuceneSearchService implements ContentSearchServiceI {
 	 * @return a Lucene document that can be added to an index and searched
 	 * 		or null if this node should not be indexed
 	 */
-	private Document createDocument(ContentNodeI node) {
-		
-		BrandNameExtractor brandNameExtractor = new BrandNameExtractor();
+    private Document createDocument(ContentNodeI node) {
 
-		List indexes = (List) contentIndexes.get(node.getKey().getType());
-		if (indexes == null) {
-			return null;
-		}
+        BrandNameExtractor brandNameExtractor = new BrandNameExtractor();
 
-		Document doc = new Document();
+        List indexes = (List) contentIndexes.get(node.getKey().getType());
+        if (indexes == null) {
+            return null;
+        }
 
-		//CHANGED doc.add(Field.Keyword(FIELD_CONTENT_KEY, node.getKey().getEncoded()));
-		doc.add(new Field(FIELD_CONTENT_KEY, node.getKey().getEncoded(),Field.Store.YES,Field.Index.UN_TOKENIZED));
+        Document doc = new Document();
 
-		//CHANGED doc.add(Field.UnStored(FIELD_CONTENT_TYPE, node.getKey().getType().getName()));
-		doc.add(new Field(FIELD_CONTENT_TYPE,node.getKey().getType().getName(),Field.Store.NO,Field.Index.TOKENIZED));
-		//CHANGED doc.add(Field.UnStored(FIELD_CONTENT_ID, node.getKey().getId()));
-		doc.add(new Field(FIELD_CONTENT_ID, node.getKey().getId(),Field.Store.NO,Field.Index.TOKENIZED));
+        // CHANGED doc.add(Field.Keyword(FIELD_CONTENT_KEY,
+        // node.getKey().getEncoded()));
+        doc.add(new Field(FIELD_CONTENT_KEY, node.getKey().getEncoded(), Field.Store.YES, Field.Index.UN_TOKENIZED));
 
-		for (Iterator i = indexes.iterator(); i.hasNext();) {
-			AttributeIndex ad = (AttributeIndex) i.next();
+        // CHANGED doc.add(Field.UnStored(FIELD_CONTENT_TYPE,
+        // node.getKey().getType().getName()));
+        doc.add(new Field(FIELD_CONTENT_TYPE, node.getKey().getType().getName(), Field.Store.NO, Field.Index.TOKENIZED));
+        // CHANGED doc.add(Field.UnStored(FIELD_CONTENT_ID,
+        // node.getKey().getId()));
+        doc.add(new Field(FIELD_CONTENT_ID, node.getKey().getId(), Field.Store.NO, Field.Index.TOKENIZED));
 
-			Object atrValue = node.getAttribute(ad.getAttributeName()).getValue();
-			
-			if (atrValue != null) {
-				
-				// create an UN_TOKENIZED index field for full name
-				// if it has 2-3 terms
-				if (ad.getAttributeName().equals("FULL_NAME")) {
-					
-					List tokens = new ArrayList();
-					for(StringTokenizer tokenizer = new StringTokenizer(atrValue.toString().trim().toLowerCase()," \t&,")
-						;tokenizer.hasMoreTokens(); tokens.add(tokenizer.nextToken()));
-					
-					if (tokens.size() > 1) {
-						for(int p = 0; p< tokens.size() - 1; ++p) {
-							if (stopWords.contains(tokens.get(p))) continue; 
-							StringBuffer comp = new StringBuffer((String)tokens.get(p)).append(' ').append(tokens.get(tokens.size()-1));
-							//System.out.println("COMPOUND WORD: " + comp);
-							doc.add(new Field(FULL_NAME_INDEX,comp.toString(),Field.Store.NO,Field.Index.UN_TOKENIZED));
-						}
-						
-						if (tokens.size() > 2 && tokens.size() < 4) {
-							StringBuffer buff = new StringBuffer();
-							for(int p=0; p< tokens.size(); ++p) {
-								if (buff.length() > 0) buff.append(' ');
-								buff.append(tokens.get(p));
-							}
-							//System.out.println("TRI COMPOUND WORD: "+ buff.toString());
-							doc.add(new Field(FULL_NAME_INDEX,buff.toString(),Field.Store.NO,Field.Index.UN_TOKENIZED));
-						}
-					}
-				}
-				
-				//
-				// TODO: handle attributes whose value doesn't
-				// have a convenient, indexable toString() value
-				// the AttributeIndex should eventually
-				// contain this info...
-				//
-				String value = atrValue.toString();
-				if (ad.getAttributeName().equalsIgnoreCase("keywords") && this.dictionary!=null) {
-					AttributeI attribute = node.getAttribute("FULL_NAME");
-					if (attribute != null) {
-						Object fullNameObj = attribute.getValue();
-						if (fullNameObj instanceof String) {
-							String fullName = (String) fullNameObj;
-							value += this.dictionary
-									.getAdditionalKeywords(fullName);
-						}
-					}
-				}
-				// CHANGED doc.add(Field.Text(ad.getAttributeName(), value));
-				doc.add(new Field(ad.getAttributeName(), value, Field.Store.YES, Field.Index.TOKENIZED));
-				// CHANGED doc.add(Field.Text(ad.getAttributeName() + STEMMED_SUFFIX, value));
-				doc.add(new Field(ad.getAttributeName() + STEMMED_SUFFIX, value, Field.Store.YES, Field.Index.TOKENIZED));
-				
-				// extract potential brand names and add them to the search
-				List brandNames = brandNameExtractor.extract(value);
-				for(Iterator bni = brandNames.iterator(); bni.hasNext(); ) {
-					String canonicalBrandName = StringUtil.removeAllWhiteSpace(bni.next().toString());
-					doc.add(new Field(ad.getAttributeName(), canonicalBrandName, Field.Store.YES, Field.Index.UN_TOKENIZED));
-				}
-			}
+        for (Iterator i = indexes.iterator(); i.hasNext();) {
+            AttributeIndex ad = (AttributeIndex) i.next();
 
-		}
-		
+            Object atrValue = node.getAttribute(ad.getAttributeName()).getValue();
 
-		return doc;
-	}
+            //
+            // TODO: handle attributes whose value doesn't
+            // have a convenient, indexable toString() value
+            // the AttributeIndex should eventually
+            // contain this info...
+            //
+            String value = atrValue != null ? atrValue.toString() : null;
+
+            if (ad.getAttributeName().equalsIgnoreCase("keywords") && this.dictionary != null) {
+                AttributeI attribute = node.getAttribute("FULL_NAME");
+                if (attribute != null) {
+                    Object fullNameObj = attribute.getValue();
+                    if (fullNameObj instanceof String) {
+                        String fullName = (String) fullNameObj;
+                        String newValue = this.dictionary.getAdditionalKeywords(fullName, value);
+                        if (newValue.length()>0) {
+                            value = newValue;
+                        }
+                    }
+                }
+            }
+
+            if (value != null) {
+
+                // create an UN_TOKENIZED index field for full name
+                // if it has 2-3 terms
+                if (ad.getAttributeName().equals("FULL_NAME")) {
+
+                    List tokens = new ArrayList();
+                    for (StringTokenizer tokenizer = new StringTokenizer(value.trim().toLowerCase(), " \t&,"); tokenizer.hasMoreTokens(); tokens.add(tokenizer
+                            .nextToken()))
+                        ;
+
+                    if (tokens.size() > 1) {
+                        for (int p = 0; p < tokens.size() - 1; ++p) {
+                            if (stopWords.contains(tokens.get(p))) {
+                                continue;
+                            }
+                            StringBuffer comp = new StringBuffer((String) tokens.get(p)).append(' ').append(tokens.get(tokens.size() - 1));
+                            // System.out.println("COMPOUND WORD: " + comp);
+                            doc.add(new Field(FULL_NAME_INDEX, comp.toString(), Field.Store.NO, Field.Index.UN_TOKENIZED));
+                        }
+
+                        if (tokens.size() > 2 && tokens.size() < 4) {
+                            StringBuffer buff = new StringBuffer();
+                            for (int p = 0; p < tokens.size(); ++p) {
+                                if (buff.length() > 0)
+                                    buff.append(' ');
+                                buff.append(tokens.get(p));
+                            }
+                            // System.out.println("TRI COMPOUND WORD: "+
+                            // buff.toString());
+                            doc.add(new Field(FULL_NAME_INDEX, buff.toString(), Field.Store.NO, Field.Index.UN_TOKENIZED));
+                        }
+                    }
+                }
+
+                // CHANGED doc.add(Field.Text(ad.getAttributeName(), value));
+                doc.add(new Field(ad.getAttributeName(), value, Field.Store.YES, Field.Index.TOKENIZED));
+                // CHANGED doc.add(Field.Text(ad.getAttributeName() +
+                // STEMMED_SUFFIX, value));
+                doc.add(new Field(ad.getAttributeName() + STEMMED_SUFFIX, value, Field.Store.YES, Field.Index.TOKENIZED));
+
+                // extract potential brand names and add them to the search
+                List brandNames = brandNameExtractor.extract(value);
+                for (Iterator bni = brandNames.iterator(); bni.hasNext();) {
+                    String canonicalBrandName = StringUtil.removeAllWhiteSpace(bni.next().toString());
+                    doc.add(new Field(ad.getAttributeName(), canonicalBrandName, Field.Store.YES, Field.Index.UN_TOKENIZED));
+                }
+            }
+        }
+
+        return doc;
+    }
 
 	public void initialize() {
 		try {

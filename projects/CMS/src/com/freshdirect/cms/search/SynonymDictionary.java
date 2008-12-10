@@ -52,16 +52,25 @@ public class SynonymDictionary {
 		return query;
 	}
 	
-	public String getAdditionalKeywords(String fullName) {
+	public String getAdditionalKeywords(String fullName, String baseKeywords) {
 		synchronized(wordMap) {
 			String lowerCased = fullName.toLowerCase();
 			StringBuffer additionalKeywords = new StringBuffer();
+			boolean first = true;
+			if (baseKeywords!=null && baseKeywords.trim().length()>0) {
+			    additionalKeywords.append(baseKeywords);
+			    first = false;
+			}
 			for (Iterator keySetIterator =wordMap.keySet().iterator();keySetIterator .hasNext();) {
 				String key = (String) keySetIterator.next();
 				if (lowerCased.indexOf(key)!=-1) {
 					String[] values = (String[]) wordMap.get(key);
 					for (int i=0;i<values.length;i++) {
-						additionalKeywords.append(',').append(values[i]);
+					    if (!first) {
+					        additionalKeywords.append(',');
+					    }
+					    additionalKeywords.append(values[i]);
+					    first = false;
 					}
 				}
 			}
