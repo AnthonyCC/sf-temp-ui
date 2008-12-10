@@ -16,6 +16,7 @@ import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.search.AutocompleteService;
 import com.freshdirect.cms.search.BrandNameExtractor;
 import com.freshdirect.cms.search.LuceneSpellingSuggestionService;
+import com.freshdirect.cms.search.SearchHit;
 import com.freshdirect.cms.search.SearchRelevancyList;
 import com.freshdirect.cms.search.SpellingHit;
 import com.freshdirect.framework.util.StringUtil;
@@ -115,7 +116,7 @@ public class ContentSearch {
         SearchQuery searchQuery = getSearchQuery(criteria);
 
         if ("".equals(searchQuery.getNormalizedTerm())) {
-            return new SearchResults(Collections.EMPTY_LIST, Collections.EMPTY_LIST, false);
+            return new SearchResults(Collections.EMPTY_LIST, Collections.EMPTY_LIST, false, "");
         }
 
         Collection hits = CmsManager.getInstance().search(searchQuery.getSearchTerm(), 2000);
@@ -123,6 +124,9 @@ public class ContentSearch {
         Map hitsByType = ContentSearchUtil.mapHitsByType(hits);
 
         List allProducts = ContentSearchUtil.resolveHits((List) hitsByType.get(FDContentTypes.PRODUCT));
+        
+        filterOutNonRelevantProducts(searchQuery, allProducts);
+        
         List relevantProducts = ContentSearchUtil.filterRelevantNodes(allProducts, searchQuery.getTokensWithBrand(), stemmer);
 
         List recipes = ContentSearchUtil.filterRelevantNodes(ContentSearchUtil.resolveHits((List) hitsByType.get(FDContentTypes.RECIPE)), searchQuery
@@ -136,7 +140,30 @@ public class ContentSearch {
         return new SearchResults(
                 ContentSearchUtil.collectFromSearchHits(filteredProducts), 
                 ContentSearchUtil.collectFromSearchHits(filteredRecipes), 
-                !relevantProducts.isEmpty());
+                !relevantProducts.isEmpty(), searchQuery.getSearchTerm());
+    }
+
+    /**
+     * Filter out non relevant products, based on the search relevancy scores from the CMS. This method modifies the product list!
+     * 
+     * @param searchQuery
+     * @param products
+     */
+    private void filterOutNonRelevantProducts(SearchQuery searchQuery, List products) {
+        Map relevancyScores = getSearchRelevancyScores(searchQuery.getSearchTerm());
+        if (relevancyScores!=null) { 
+            // filter out negative categories
+            for (Iterator i = products.iterator(); i.hasNext();) {
+                SearchHit hit = (SearchHit) i.next();
+                ContentNodeModel node = hit.getNode();
+                Integer score = (Integer) relevancyScores.get(node.getParentNode().getContentKey());
+                if (score!=null) {
+                    if (score.intValue()<=0) {
+                        i.remove();
+                    }
+                }
+            }
+        }
     }
 
 

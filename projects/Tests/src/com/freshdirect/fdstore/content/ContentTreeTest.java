@@ -79,7 +79,7 @@ public class ContentTreeTest extends TestCase {
         assertEquals("product list size", 129, products.size());
         assertEquals("categories list size", 6, categories.size());
         
-        SearchResults sr = new SearchResults(products, new ArrayList(), true);
+        SearchResults sr = new SearchResults(products, new ArrayList(), true, "milk");
         FilteredSearchResults fsr = new FilteredSearchResults("milk", sr, null);
         // sort products by name
         fsr.sortProductsBy(new Integer(FilteredSearchResults.BY_NAME), false);

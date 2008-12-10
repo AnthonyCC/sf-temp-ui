@@ -31,23 +31,23 @@ import com.freshdirect.smartstore.fdstore.ProductStatisticsProvider;
 public class FilteredSearchResults extends SearchResults implements Serializable {
 
     final static Logger LOG = Logger.getLogger(FilteredSearchResults.class);
-    
-    
+
     static class PopularityComparator implements Comparator {
 
         final boolean inverse;
         final boolean hideUnavailable;
-        final Set displayable;
+        final Set     displayable;
 
-        PopularityComparator (boolean inverse, List products) {
+        PopularityComparator(boolean inverse, List products) {
             this(inverse, false, products);
         }
-        PopularityComparator (boolean inverse, boolean hideUnavailable, List products) {
+
+        PopularityComparator(boolean inverse, boolean hideUnavailable, List products) {
             this.inverse = inverse;
             this.hideUnavailable = hideUnavailable;
             this.displayable = new HashSet();
-            if (products!=null) {
-                for (int i=0;i<products.size();i++) {
+            if (products != null) {
+                for (int i = 0; i < products.size(); i++) {
                     ContentNodeModel c = (ContentNodeModel) products.get(i);
                     if (c.isDisplayable()) {
                         displayable.add(c.getContentKey());
@@ -55,11 +55,11 @@ public class FilteredSearchResults extends SearchResults implements Serializable
                 }
             }
         }
-        
+
         boolean isDisplayable(ContentKey key) {
             return displayable.contains(key);
         }
-        
+
         public int compare(Object o1, Object o2) {
             ContentNodeModel c1 = (ContentNodeModel) o1;
             ContentNodeModel c2 = (ContentNodeModel) o2;
@@ -67,11 +67,11 @@ public class FilteredSearchResults extends SearchResults implements Serializable
             if (hideUnavailable) {
                 boolean h1 = isDisplayable(c1.getContentKey());
                 boolean h2 = isDisplayable(c2.getContentKey());
-                
+
                 if (!h1 && h2) {
                     return 1;
                 }
-    
+
                 if (h1 && !h2) {
                     return -1;
                 }
@@ -89,22 +89,22 @@ public class FilteredSearchResults extends SearchResults implements Serializable
             float globalScore2 = ProductStatisticsProvider.getInstance().getGlobalProductScore(c2.getContentKey());
             // -1 means that no score found, so it should modify our ranking
             int result = Float.compare(globalScore2, globalScore1);
-            if (result==0) {
+            if (result == 0) {
                 result = c1.getFullName().compareTo(c2.getFullName());
             }
             return result;
         }
     }
 
-    static class RelevancyComparator extends PopularityComparator  {
-        final Map termScores = new HashMap();
-        final String[] terms; 
-        final String searchTerm;
+    static class RelevancyComparator extends PopularityComparator {
+        final Map                 termScores = new HashMap();
+        final String[]            terms;
+        final String              searchTerm;
         final CategoryScoreOracle oracle;
-        CategoryNodeTree cnt;
-        final Map predefinedScores;
-        
-        RelevancyComparator(boolean inverse, String searchTerm,CategoryScoreOracle oracle, CategoryNodeTree cnt, List products) {
+        CategoryNodeTree          cnt;
+        final Map                 predefinedScores;
+
+        RelevancyComparator(boolean inverse, String searchTerm, CategoryScoreOracle oracle, CategoryNodeTree cnt, List products) {
             super(inverse, true, products);
             this.terms = StringUtils.split(searchTerm);
             this.searchTerm = searchTerm.toLowerCase();
@@ -112,16 +112,16 @@ public class FilteredSearchResults extends SearchResults implements Serializable
             this.oracle = oracle;
             this.cnt = cnt;
         }
- 
+
         int getTermScore(ContentNodeModel model, int level) {
-            if (model==null) {
+            if (model == null) {
                 return 0;
             }
             Integer score = (Integer) termScores.get(model.getContentKey());
             int baseScore = 0;
             if (score == null) {
                 baseScore = oracle.getScoreOf(model, searchTerm, terms);
-                LOG.debug("term score of '"+model.getFullName() +"' -> "+baseScore);
+                LOG.debug("term score of '" + model.getFullName() + "' -> " + baseScore);
                 termScores.put(model.getContentKey(), new Integer(baseScore));
             } else {
                 baseScore = score.intValue();
@@ -130,13 +130,15 @@ public class FilteredSearchResults extends SearchResults implements Serializable
         }
 
         /**
-         * compare two product model, based on their pre-defined parent category score 
+         * compare two product model, based on their pre-defined parent category
+         * score
+         * 
          * @param c1
          * @param c2
          * @return
          */
         int compareByPredefinedScores(ContentNodeModel c1, ContentNodeModel c2) {
-            if (predefinedScores!=null) {
+            if (predefinedScores != null) {
                 Integer s1 = (Integer) predefinedScores.get(c1.getParentNode().getContentKey());
                 Integer s2 = (Integer) predefinedScores.get(c2.getParentNode().getContentKey());
                 if (s1 != null) {
@@ -159,16 +161,17 @@ public class FilteredSearchResults extends SearchResults implements Serializable
             }
             return 0;
         }
-        
+
         /**
-         * Compares its two arguments for order.  Returns a negative integer,
+         * Compares its two arguments for order. Returns a negative integer,
          * zero, or a positive integer as the first argument is less than, equal
-         * to, or greater than the second.<p>
+         * to, or greater than the second.
+         * <p>
          */
         public int compare(Object o1, Object o2) {
             ContentNodeModel c1 = (ContentNodeModel) o1;
             ContentNodeModel c2 = (ContentNodeModel) o2;
-            
+
             boolean h1 = isDisplayable(c1.getContentKey());
             boolean h2 = isDisplayable(c2.getContentKey());
             if (!h1 && h2) {
@@ -178,20 +181,20 @@ public class FilteredSearchResults extends SearchResults implements Serializable
             if (h1 && !h2) {
                 return -1;
             }
-            
-            int sc= compareContentNodes(c1, c2);
+
+            int sc = compareContentNodes(c1, c2);
             if (inverse) {
                 return -sc;
             } else {
                 return sc;
             }
         }
-        
+
         protected int compareCategory(ContentNodeModel c1, ContentNodeModel c2) {
             TreeElement element1 = this.cnt.getTreeElement(c1);
             TreeElement element2 = this.cnt.getTreeElement(c2);
-            if (element1!=null && element2!=null) {
-                if (element1.getChildCount()!=element2.getChildCount()) {
+            if (element1 != null && element2 != null) {
+                if (element1.getChildCount() != element2.getChildCount()) {
                     return element2.getChildCount() - element1.getChildCount();
                 }
             }
@@ -206,12 +209,12 @@ public class FilteredSearchResults extends SearchResults implements Serializable
          * @return
          */
         protected final int compareContentNodes(ContentNodeModel c1, ContentNodeModel c2) {
-            // first compare by the predefined CMS scores ... 
+            // first compare by the predefined CMS scores ...
             int x = compareByPredefinedScores(c1, c2);
             if (x != 0) {
                 return x;
             }
-            // after by the magical algorithm 
+            // after by the magical algorithm
             int termScore1 = getTermScore(c1.getParentNode(), 1);
             int termScore2 = getTermScore(c2.getParentNode(), 1);
 
@@ -227,20 +230,19 @@ public class FilteredSearchResults extends SearchResults implements Serializable
         }
 
         protected int compareInsideCategoryGroup(ContentNodeModel c1, ContentNodeModel c2) {
-            return compareProductsByGlobalScore(c1,c2);
+            return compareProductsByGlobalScore(c1, c2);
         }
-        
+
     }
 
-    static class UserRelevancyComparator extends RelevancyComparator  {
+    static class UserRelevancyComparator extends RelevancyComparator {
 
         final Map userProductScores;
 
-        UserRelevancyComparator(boolean inverse, String searchTerm,Map userProductScores,CategoryScoreOracle oracle, CategoryNodeTree cnt, List products) {
+        UserRelevancyComparator(boolean inverse, String searchTerm, Map userProductScores, CategoryScoreOracle oracle, CategoryNodeTree cnt, List products) {
             super(inverse, searchTerm, oracle, cnt, products);
             this.userProductScores = userProductScores;
         }
-        
 
         protected int compareInsideCategoryGroup(ContentNodeModel c1, ContentNodeModel c2) {
             int x = userScore(c1, c2);
@@ -249,13 +251,13 @@ public class FilteredSearchResults extends SearchResults implements Serializable
             }
             return compareProductsByGlobalScore(c1, c2);
         }
-        
+
         private int userScore(ContentNodeModel c1, ContentNodeModel c2) {
             Float score1 = (Float) userProductScores.get(c1.getContentKey());
             Float score2 = (Float) userProductScores.get(c2.getContentKey());
             if (score1 != null) {
                 if (score2 != null) {
-                    return Float.compare(score2.floatValue(),score1.floatValue());
+                    return Float.compare(score2.floatValue(), score1.floatValue());
                 } else {
                     return -1;
                 }
@@ -267,19 +269,18 @@ public class FilteredSearchResults extends SearchResults implements Serializable
             return 0;
         }
     }
-         
+
     static class InverseComparator implements Comparator {
         Comparator inner;
-        
+
         public InverseComparator(Comparator inner) {
             this.inner = inner;
         }
-        
+
         public int compare(Object o1, Object o2) {
             return inner.compare(o2, o1);
         }
     }
-
 
     static class RecipeNameComparator implements Comparator {
         boolean reverse = false;
@@ -299,23 +300,24 @@ public class FilteredSearchResults extends SearchResults implements Serializable
     public interface CategoryScoreOracle {
         public int getScoreOf(ContentNodeModel model, String fullSearchTerm, String[] searchTerms);
     }
-    
+
     /**
-     * This score oracle gives 10 points for every mention of the search terms in every parent categories, cumulative.
+     * This score oracle gives 10 points for every mention of the search terms
+     * in every parent categories, cumulative.
      * 
      * @author zsombor
-     *
+     * 
      */
     static class DefaultCategoryScoreOracle implements CategoryScoreOracle {
 
         public int getScoreOf(ContentNodeModel model, String fullSearchTerm, String[] terms) {
             String name = model.getFullName();
             int baseScore = 0;
-            if (name!=null) {
+            if (name != null) {
                 name = name.toLowerCase();
-                for (int i=0;i<terms.length;i++) {
+                for (int i = 0; i < terms.length; i++) {
                     int position = name.indexOf(terms[i]);
-                    if (position!=-1 && (position==0 || !Character.isLetterOrDigit(name.charAt(position-1)))) {
+                    if (position != -1 && (position == 0 || !Character.isLetterOrDigit(name.charAt(position - 1)))) {
                         baseScore += 10;
                     }
                 }
@@ -326,18 +328,18 @@ public class FilteredSearchResults extends SearchResults implements Serializable
             return baseScore;
         }
     }
-    
 
     /**
-     * This score oracle gives 100-(10*depth) points for every mention of the search terms in every parent categories, cumulative.
+     * This score oracle gives 100-(10*depth) points for every mention of the
+     * search terms in every parent categories, cumulative.
      * 
      * @author zsombor
-     *
+     * 
      */
     public static class HierarchicalScoreOracle implements FilteredSearchResults.CategoryScoreOracle {
-        final static int[] DEPTH_SCORES = { 10000, 1000, 100, 10, 1 }; 
+        final static int[]     DEPTH_SCORES = { 10000, 1000, 100, 10, 1 };
         final CategoryNodeTree tree;
-        
+
         public HierarchicalScoreOracle(CategoryNodeTree tree) {
             this.tree = tree;
             this.tree.initDepthFields();
@@ -345,14 +347,14 @@ public class FilteredSearchResults extends SearchResults implements Serializable
 
         public int getScoreOf(ContentNodeModel model, String fullSearchTerm, String[] terms) {
             TreeElement element = tree.getTreeElement(model);
-            if (element!=null) {
+            if (element != null) {
                 String name = model.getFullName();
                 int baseScore = 0;
                 int depthScore = element.getDepth() < DEPTH_SCORES.length ? DEPTH_SCORES[element.getDepth()] : 0;
                 if (model instanceof ProductModel) {
                     depthScore = DEPTH_SCORES[0];
                 }
-                if (name!=null) {
+                if (name != null) {
                     name = name.toLowerCase();
                     if (name.equals(fullSearchTerm)) {
                         // full search term match -> maximum boost :)
@@ -360,39 +362,40 @@ public class FilteredSearchResults extends SearchResults implements Serializable
                     }
                     int nameLength = name.length();
                     int position = name.indexOf(fullSearchTerm);
-                    if (position!=-1 && (position==0 || !Character.isLetterOrDigit(name.charAt(position-1)))) {
+                    if (position != -1 && (position == 0 || !Character.isLetterOrDigit(name.charAt(position - 1)))) {
                         baseScore += (depthScore * fullSearchTerm.length() / nameLength);
                     } else {
-                        for (int i=0;i<terms.length;i++) {
+                        for (int i = 0; i < terms.length; i++) {
                             position = name.indexOf(terms[i]);
-                            if (position!=-1 && (position==0 || !Character.isLetterOrDigit(name.charAt(position-1)))) {
+                            if (position != -1 && (position == 0 || !Character.isLetterOrDigit(name.charAt(position - 1)))) {
                                 baseScore += (depthScore * terms[i].length() / nameLength) / 2;
                             }
                         }
                     }
-                    
+
                     if (model instanceof CategoryModel) {
                         String keywords = model.getKeywords();
-                        if (keywords!=null && keywords.length()>0) {
+                        if (keywords != null && keywords.length() > 0) {
                             String[] keywordArray = StringUtils.split(keywords.toLowerCase(), ',');
-                            for (int i=0;i<keywordArray.length;i++) {
+                            for (int i = 0; i < keywordArray.length; i++) {
                                 if (keywordArray[i].trim().equals(fullSearchTerm)) {
                                     baseScore += DEPTH_SCORES[0];
                                 }
                             }
-                            //boolean x = (keywords.indexOf(fullSearchTerm)!=-1);
-                        
+                            // boolean x =
+                            // (keywords.indexOf(fullSearchTerm)!=-1);
+
                         }
                     }
-                    
+
                 }
                 ContentNodeModel parentNode = model.getParentNode();
                 if (parentNode != null) {
                     int parentScore = getScoreOf(parentNode, fullSearchTerm, terms);
                     baseScore += parentScore;
-                    /*if (parentScore>0) {
-                        return parentScore;
-                    }*/
+                    /*
+                     * if (parentScore>0) { return parentScore; }
+                     */
                 }
                 return baseScore;
             }
@@ -448,10 +451,9 @@ public class FilteredSearchResults extends SearchResults implements Serializable
      *            the customer id
      */
     public FilteredSearchResults(String searchTerm, SearchResults original, String customerId) {
-        super(original.getProducts(), original.getRecipes(), original.isProductsRelevant());
+        super(original.getProducts(), original.getRecipes(), original.isProductsRelevant(), searchTerm);
         setSpellingSuggestion(original.getSpellingSuggestion(), original.isSuggestionMoreRelevant());
         this.customerId = customerId;
-        this.searchTerm = searchTerm;
     }
 
     public void sortProductsBy(Integer code, boolean inverse) {
@@ -463,22 +465,21 @@ public class FilteredSearchResults extends SearchResults implements Serializable
     public void setScoreOracle(CategoryScoreOracle scoreOracle) {
         this.scoreOracle = scoreOracle;
     }
-    
+
     public void setNodeTree(CategoryNodeTree nodeTree) {
         this.nodeTree = nodeTree;
     }
-    
-    public void setRecipeFilter(String rcpFilter, boolean reversed) {
-    	this.recipeFilter = rcpFilter;
-    	this.reversed = reversed;
-    	this._filteredRecipes = null; // clear filtered recipes cache
-    }
 
+    public void setRecipeFilter(String rcpFilter, boolean reversed) {
+        this.recipeFilter = rcpFilter;
+        this.reversed = reversed;
+        this._filteredRecipes = null; // clear filtered recipes cache
+    }
 
     public Comparator getCurrentComparator() {
         return currentComparator;
     }
-    
+
     private Comparator getComparator(Integer code, boolean inverse, List products) {
         if (code != null) {
             int sort = code.intValue();
@@ -492,7 +493,7 @@ public class FilteredSearchResults extends SearchResults implements Serializable
         Comparator c = null;
         switch (sort) {
             case BY_NAME:
-                c =  ContentNodeModel.FULL_NAME_WITH_ID_COMPARATOR;
+                c = ContentNodeModel.FULL_NAME_WITH_ID_COMPARATOR;
                 if (inverse) {
                     c = new InverseComparator(c);
                 }
@@ -526,12 +527,12 @@ public class FilteredSearchResults extends SearchResults implements Serializable
     }
 
     public Map getUserProductScores() {
-        if (userProductScores==null) {
+        if (userProductScores == null) {
             userProductScores = ProductStatisticsProvider.getInstance().getUserProductScores(customerId);
         }
         return userProductScores;
     }
-    
+
     // number of items per page
     public int getPageSize() {
         return pageSize > 0 ? pageSize : this.postFilteredProducts.size();
@@ -539,9 +540,9 @@ public class FilteredSearchResults extends SearchResults implements Serializable
 
     // Must list all result
     public boolean isAll() {
-    	return pageSize == 0;
+        return pageSize == 0;
     }
-    
+
     // count of pages
     public int getPageCount() {
         int size = postFilteredProducts.size();
@@ -558,6 +559,7 @@ public class FilteredSearchResults extends SearchResults implements Serializable
 
     /**
      * recalculate the filtered product list.
+     * 
      * @param filter
      */
     public void setFilter(ProductFilterI filter) {
@@ -571,7 +573,7 @@ public class FilteredSearchResults extends SearchResults implements Serializable
             this.postFilteredProducts = getProducts();
         }
     }
-    
+
     public void setFilteredProducts(List postFilteredProducts) {
         this.postFilteredProducts = postFilteredProducts;
     }
@@ -583,7 +585,7 @@ public class FilteredSearchResults extends SearchResults implements Serializable
     public List getFilteredProductsListPage() {
         return postFilteredProducts.subList(getStart(), Math.min(getStart() + getPageSize(), postFilteredProducts.size()));
     }
-    
+
     public List getFilteredRecipes() {
         if (_filteredRecipes == null) {
             if (recipeFilter != null) {
@@ -602,13 +604,11 @@ public class FilteredSearchResults extends SearchResults implements Serializable
                         }
                     }
                 }
-
                 Collections.sort(_filteredRecipes, new RecipeNameComparator(reversed));
             } else {
                 _filteredRecipes = getRecipes();
                 Collections.sort(_filteredRecipes, new RecipeNameComparator(reversed));
             }
-
         }
 
         return _filteredRecipes;
@@ -631,17 +631,14 @@ public class FilteredSearchResults extends SearchResults implements Serializable
                     ++k;
                 }
             }
-
             stat.put(dv, new Integer(k));
         }
-
         return stat;
     }
 
-
     public List getRecipeClassifications() {
         RecipeSearchPage searchPage = RecipeSearchPage.getDefault();
-        if (searchPage==null) {
+        if (searchPage == null) {
             LOG.warn("RecipeSearchPage.getDefault() is null!");
             return Collections.EMPTY_LIST;
         }

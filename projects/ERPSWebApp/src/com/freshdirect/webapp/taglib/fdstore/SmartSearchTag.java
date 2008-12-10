@@ -177,7 +177,7 @@ public class SmartSearchTag extends BodyTagSupport {
         }
         boolean reverseOrder = "desc".equalsIgnoreCase(request.getParameter("order"));
 
-        FilteredSearchResults fres = new FilteredSearchResults(searchTerm, res, userId);
+        FilteredSearchResults fres = new FilteredSearchResults(res.getSearchTerm(), res, userId);
         CategoryNodeTree contentTree = putTree(categoryTreeName, fres.getProducts(), true);
         fres.setNodeTree(contentTree);
         fres.setScoreOracle(new FilteredSearchResults.HierarchicalScoreOracle(contentTree));

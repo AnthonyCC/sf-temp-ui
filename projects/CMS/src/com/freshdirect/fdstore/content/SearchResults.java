@@ -88,6 +88,7 @@ public class SearchResults implements Serializable {
 	private String spellingSuggestion = null;
 	private boolean suggestionMoreRelevant = false;
 	
+	protected String searchTerm;
 
 	private SpellingResultsDifferences spellingResultsDifferences = null;
 
@@ -104,10 +105,11 @@ public class SearchResults implements Serializable {
 	public SearchResults(
 			List products,
 			List recipes,
-			boolean productsRelevant) {
+			boolean productsRelevant, String searchTerm) {
 		this.products = products;
 		this.recipes = recipes;
 		this.productsRelevant = productsRelevant;
+		this.searchTerm = searchTerm;
 
 		// deprecated //
 		exactCategories = null;
@@ -135,6 +137,7 @@ public class SearchResults implements Serializable {
 		this.fuzzyProducts = fuzzyProducts;
 		this.recipes = recipes;
 		this.productsRelevant = productsRelevant;
+		this.searchTerm = null;
 	}
 
 	/**
@@ -191,6 +194,13 @@ public class SearchResults implements Serializable {
 		return spellingResultsDifferences;
 	}
 
+	public String getSearchTerm() {
+            return searchTerm;
+        }
+	
+	public void setSearchTerm(String searchTerm) {
+            this.searchTerm = searchTerm;
+        }
 
 	// -- old code, to be removed later -- //
 	
