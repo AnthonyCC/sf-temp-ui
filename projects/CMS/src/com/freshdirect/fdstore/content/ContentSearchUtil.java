@@ -132,7 +132,6 @@ public class ContentSearchUtil {
                 }
 
 		int tokenCount = remainingErrors >= 0 ? total : 0;
-                System.out.println("full:"+fullName+" -> "+keywords+ " count : "+tokenCount);
 				
 		return tokenCount;
 	}
