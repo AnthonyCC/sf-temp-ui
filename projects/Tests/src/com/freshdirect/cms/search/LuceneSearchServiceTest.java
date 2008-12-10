@@ -118,9 +118,9 @@ public class LuceneSearchServiceTest extends TestCase {
 		indexContent(search);
 
 		
-		assertResults(search, 1, "spaghetti");
+		assertResults(search, 3, "spaghetti"); // Zsombor, it needs to find all 3!
 		assertResults(search, 0, "macaroni");
-		assertResults(search, 2, "something");
+		assertResults(search, 3, "something");
 		assertResults(search, 1, "orange juice");
 
 		// now, some synonyms:
@@ -142,6 +142,7 @@ public class LuceneSearchServiceTest extends TestCase {
 	private void assertResults(ContentSearchServiceI search, int resultCount,
 			String query) {
 		List results = search.search(query, 1000);
+		System.out.println(results.size());
 		assertEquals(resultCount, results.size());
 	}
 

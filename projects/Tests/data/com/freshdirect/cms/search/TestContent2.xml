@@ -12,4 +12,7 @@
 		<FULL_NAME>Tasty Orange juice</FULL_NAME>
 		<keywords>fruit</keywords>
 	</SynTest>
+	<SynTest id="foo4">
+		<FULL_NAME>Hello World, something</FULL_NAME>
+	</SynTest>
 </Content>

@@ -8,4 +8,5 @@ egy:one
 kettő,két:two
 mutalt:mutatis
 
+something:spaghetti
 orange juice:oj
