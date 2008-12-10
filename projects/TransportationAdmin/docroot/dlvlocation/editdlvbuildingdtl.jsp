@@ -269,8 +269,8 @@ for (i=0; i<document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed.len
 		<br/>	
 			<form:form commandName = "deliveryBuildingDtlForm" method="post">
      		<form:hidden path="isNew"/>     
- 			<form:hidden path="dlvBuildingDtlId"/>
-			<form:hidden path="dlvBuildingId"/>
+ 			
+			<form:hidden path="dlvBuildingDtlId"/>
 		<div align="center">
 
  

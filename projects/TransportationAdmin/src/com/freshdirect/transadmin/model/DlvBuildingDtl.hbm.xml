@@ -5,13 +5,11 @@
 <hibernate-mapping schema="dlv">
     <class name="com.freshdirect.transadmin.model.DlvBuildingDtl" table="DELIVERY_BUILDING_DTL">
         <id name="dlvBuildingDtlId" type="string">
-            <column name="ID" length="16" />
-            <generator class="sequence">
-    			<param name="sequence">DELIVERY_BUILDING_DTL_SEQ</param>
-			</generator>
+            <column name="DELIVERY_BUILDING_ID" length="16" />
+            <generator class="assigned" />
         </id>
-          <many-to-one name="building" class="com.freshdirect.transadmin.model.DlvBuilding" fetch="select" lazy="false">
-            <column name="DELIVERY_BUILDING_ID" length="8" />
+        <many-to-one name="building" class="com.freshdirect.transadmin.model.DlvBuilding" update="false" insert="false" fetch="select">
+            <column name="DELIVERY_BUILDING_ID" length="16" not-null="true" />
         </many-to-one>               
         <property name="addrType" type="string">
             <column name="ADDR_TYPE" length="16" />

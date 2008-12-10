@@ -168,12 +168,6 @@ public class DlvBuildingDtl implements java.io.Serializable, TrnBaseEntityI  {
 		this.difficultReason = difficultReason;
 	}		
 		
-	public String getDlvBuildingDtlId() {
-		return dlvBuildingDtlId;
-	}
-	public void setDlvBuildingDtlId(String dlvBuildingDtlId) {
-		this.dlvBuildingDtlId = dlvBuildingDtlId;
-	}
 	public String getDlvBuildingId() {
 		if(getBuilding() == null) {
 			return null;
@@ -199,6 +193,7 @@ public class DlvBuildingDtl implements java.io.Serializable, TrnBaseEntityI  {
 	}
 	public void setBuilding(DlvBuilding building) {
 		this.building = building;
+		this.setDlvBuildingDtlId(building.getBuildingId());
 	}
 	public String getAddrType() {
 		return addrType;
@@ -736,6 +731,14 @@ public class DlvBuildingDtl implements java.io.Serializable, TrnBaseEntityI  {
 
 	public void setSvcIncludeWed(String svcIncludeWed) {
 		this.svcIncludeWed = svcIncludeWed;
+	}
+
+	public String getDlvBuildingDtlId() {
+		return dlvBuildingDtlId;
+	}
+
+	public void setDlvBuildingDtlId(String dlvBuildingDtlId) {
+		this.dlvBuildingDtlId = dlvBuildingDtlId;
 	}
 
 

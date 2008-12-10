@@ -18,7 +18,6 @@ import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
 import com.freshdirect.routing.util.RoutingUtil;
 import com.freshdirect.transadmin.model.DlvBuilding;
 import com.freshdirect.transadmin.model.DlvBuildingDtl;
-import com.freshdirect.transadmin.model.DlvServiceTime;
 import com.freshdirect.transadmin.service.LocationManagerI;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.editor.TimeOfDayPropertyEditor;
@@ -234,15 +233,10 @@ protected void onBind(HttpServletRequest request, Object command) {
 		model.setDifficultReason("");
 		model.setExtraTimeNeeded(new Integer(0));
 	}
-	
-	
-	System.out.println("@@@Serialize@@@@@@@difficultToDeliver= "+ model.getDifficultToDeliver());
-	
+
 	setEntFields(request, model);
 	setSvcEntFields(request, model);
 	
-	System.out.println("$$$$$$$$$$$$$$$$$hoursOpenMon= "+ model.getHoursOpenMon()); 
-
 	System.out.println("$$$$$$$$$$$$Exiting onBind()");
 }
 	
@@ -321,8 +315,6 @@ protected void onBind(HttpServletRequest request, Object command) {
 
 		result.setIsNew("false");
 		
-		System.out.println("!!!!!!!!!!! deserialzed!difficultToDeliver= "+ result.getDifficultToDeliver());
-		
 		System.out.println("#########exiting getBackingObject");
 		
 		return result;		
@@ -336,7 +328,7 @@ protected void onBind(HttpServletRequest request, Object command) {
 	
 	public boolean isNew(Object command) {
 		DlvBuildingDtl modelIn = (DlvBuildingDtl)command;
-		return (modelIn.getDlvBuildingDtlId() == null);
+		return (modelIn.getBuilding() == null);
 	}
 	
 	public String getDomainObjectName() {
@@ -365,8 +357,6 @@ protected void onBind(HttpServletRequest request, Object command) {
 		System.out.println("entering to save");	
 		List errorList = new ArrayList();
 		DlvBuildingDtl modelIn = (DlvBuildingDtl)domainObject;
-		System.out.println("################svcValidate= "+modelIn.getSvcValidate());
-		System.out.println("################difficultToDeliver= "+modelIn.getDifficultToDeliver());
 		if("true".equalsIgnoreCase(modelIn.getSvcValidate())){
 			modelIn.setSvcScrubbedStreet(RoutingUtil.standardizeStreetAddress(modelIn.getSvcScrubbedStreet(),
 					modelIn.getSvcAddrLine2()));
@@ -381,7 +371,6 @@ protected void onBind(HttpServletRequest request, Object command) {
 		try {
 			getLocationManagerService().saveEntity(domainObject);
 			modelIn.setIsNew("false");
-			System.out.println("@@@@@\n@@@@\n@@@@@doorman="+modelIn.getDoorman());
 		} catch(Exception e) {
 			e.printStackTrace();
 			errorList.add(this.getMessage("app.actionmessage.119", new Object[]{getDomainObjectName()}));
