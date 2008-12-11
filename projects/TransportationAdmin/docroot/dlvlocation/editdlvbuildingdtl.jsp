@@ -2,31 +2,13 @@
 <%@ taglib uri="/tld/extremecomponents" prefix="ec" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+
 <tmpl:insert template='/common/sitelayout.jsp'>
 
-    <tmpl:put name='title' direct='true'>Edit Delivery Building Details</tmpl:put>
+    <tmpl:put name='title' direct='true'>/ FreshDirect Transportation Admin : Geography : Building Info : Edit Delivery Building Details</tmpl:put>
 
   <tmpl:put name='content' direct='true'>
-    <br/> 
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
-<head>
-    <title>/ FreshDirect Transportation Admin : Building Detail /</title>
-	<link rel="stylesheet" href="css/transportation.css" type="text/css" />		
-	<link rel="stylesheet" href="css/extremecomponents.css" type="text/css" />
-	<link rel="stylesheet" href="css/jscalendar-1.0/calendar-system.css" type="text/css" />
-	<script src="js/RowHandlers.js" language="javascript" type="text/javascript"></script>
-	<script src="js/action.js" language="javascript" type="text/javascript"></script>
-		
-    <script type="text/javascript" language="javascript" src="js/jscalendar-1.0/calendar.js"></script>
-    <script type="text/javascript" language="javascript" src="js/jscalendar-1.0/lang/calendar-en.js"></script>
-    <script type="text/javascript" language="javascript" src="js/jscalendar-1.0/calendar-setup.js"></script>
-</head>
- 
- <body  marginwidth="0" marginheight="0" border="0" onLoad="javascript:my_init();">
- 
- <script type="text/javascript">
+	<script type="text/javascript">
 
 function toggle(checked, field1, field2) {
     if(checked){
@@ -252,12 +234,53 @@ for (i=0; i<document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed.len
  $('extraTimeNeeded').value="";
  $('difficultReason').disabled=true;
  $('extraTimeNeeded').disabled=true; 
- 
-
 
 }
 
+
+	function init_clock(){
+
+		
+		var tpMon1 = new TimePicker('timeMon1_picker', 'hoursOpenMon', 'timeMon1_toggler', {imagesPath:"images"});
+		var tpTue1 = new TimePicker('timeTue1_picker', 'hoursOpenTue', 'timeTue1_toggler', {imagesPath:"images"});
+		var tpWed1 = new TimePicker('timeWed1_picker', 'hoursOpenWed', 'timeWed1_toggler', {imagesPath:"images"});
+		var tpThu1 = new TimePicker('timeThu1_picker', 'hoursOpenThu', 'timeThu1_toggler', {imagesPath:"images"});
+		var tpFri1 = new TimePicker('timeFri1_picker', 'hoursOpenFri', 'timeFri1_toggler', {imagesPath:"images"});
+		var tpSat1 = new TimePicker('timeSat1_picker', 'hoursOpenSat', 'timeSat1_toggler', {imagesPath:"images"});
+		var tpSun1 = new TimePicker('timeSun1_picker', 'hoursOpenSun', 'timeSun1_toggler', {imagesPath:"images"});
+	    var tpMon2 = new TimePicker('timeMon2_picker', 'hoursCloseMon', 'timeMon2_toggler', {imagesPath:"images"});
+		var tpTue2 = new TimePicker('timeTue2_picker', 'hoursCloseTue', 'timeTue2_toggler', {imagesPath:"images"});
+		var tpWed2 = new TimePicker('timeWed2_picker', 'hoursCloseWed', 'timeWed2_toggler', {imagesPath:"images"});
+		var tpThu2 = new TimePicker('timeThu2_picker', 'hoursCloseThu', 'timeThu2_toggler', {imagesPath:"images"});
+		var tpFri2 = new TimePicker('timeFri2_picker', 'hoursCloseFri', 'timeFri2_toggler', {imagesPath:"images"});
+		var tpSat2 = new TimePicker('timeSat2_picker', 'hoursCloseSat', 'timeSat2_toggler', {imagesPath:"images"});
+		var tpSun2 = new TimePicker('timeSun2_picker', 'hoursCloseSun', 'timeSun2_toggler', {imagesPath:"images"});
+		var tpSvcMon1 = new TimePicker('timeSvcMon1_picker', 'svcHoursOpenMon', 'timeSvcMon1_toggler', {imagesPath:"images"});
+		var tpSvcTue1 = new TimePicker('timeSvcTue1_picker', 'svcHoursOpenTue', 'timeSvcTue2_toggler', {imagesPath:"images"});
+		var tpSvcWed1 = new TimePicker('timeSvcWed1_picker', 'svcHoursOpenWed', 'timeSvcWed2_toggler', {imagesPath:"images"});
+		var tpSvcThu1 = new TimePicker('timeSvcThu1_picker', 'svcHoursOpenThu', 'timeSvcThu2_toggler', {imagesPath:"images"});
+		var tpSvcThu1 = new TimePicker('timeSvcThu1_picker', 'svcHoursOpenThu', 'timeSvcThu2_toggler', {imagesPath:"images"});
+		var tpSvcFri1 = new TimePicker('timeSvcFri1_picker', 'svcHoursOpenFri', 'timeSvcFri2_toggler', {imagesPath:"images"});
+		var tpSvcSat1 = new TimePicker('timeSvcSat1_picker', 'svcHoursOpenSat', 'timeSvcSat2_toggler', {imagesPath:"images"});
+		var tpSvcSun1 = new TimePicker('timeSvcSun1_picker', 'svcHoursOpenSun', 'timeSvcSun2_toggler', {imagesPath:"images"});
+
+		var tpSvcMon2 = new TimePicker('timeSvcMon2_picker', 'svcHoursCloseMon', 'timeSvcMon2_toggler', {imagesPath:"images"});
+		var tpSvcTue2 = new TimePicker('timeSvcTue2_picker', 'svcHoursCloseTue', 'timeSvcTue2_toggler', {imagesPath:"images"});
+		var tpSvcWed2 = new TimePicker('timeSvcWed2_picker', 'svcHoursCloseWed', 'timeSvcWed2_toggler', {imagesPath:"images"});
+		var tpSvcThu2 = new TimePicker('timeSvcThu2_picker', 'svcHoursCloseThu', 'timeSvcThu2_toggler', {imagesPath:"images"});
+		var tpSvcThu2 = new TimePicker('timeSvcThu2_picker', 'svcHoursCloseThu', 'timeSvcThu2_toggler', {imagesPath:"images"});
+		var tpSvcFri2 = new TimePicker('timeSvcFri2_picker', 'svcHoursCloseFri', 'timeSvcFri2_toggler', {imagesPath:"images"});
+		var tpSvcSat2 = new TimePicker('timeSvcSat2_picker', 'svcHoursCloseSat', 'timeSvcSat2_toggler', {imagesPath:"images"});
+		var tpSvcSun2 = new TimePicker('timeSvcSun2_picker', 'svcHoursCloseSun', 'timeSvcSun2_toggler', {imagesPath:"images"});
+
+	}
+
 </script>
+ 
+ 
+    <br/> 
+
+ 
 
 
 		<br/>	
@@ -265,24 +288,17 @@ for (i=0; i<document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed.len
      		<form:hidden path="isNew"/>     
  			
 			<form:hidden path="dlvBuildingDtlId"/>
-		<div align="center">
+		<div  class="buildingdtl_content" align="center">
 
- 
-	<table width="60%" cellpadding="0" cellspacing="0" border="0">
- 
-				<tr>
-					<td align="center" class="screentitle"><b>Edit Delivery Building Details<b></td>
-				</tr>
-				<tr>
-					<td class="screenmessages"><jsp:include page='/common/messages.jsp'/></td>
-				</tr>
-		</table>
-		</div>
-		
-	<table width="90%" cellpadding="0" cellspacing="0" border="0">
+	<table id="buildingdtl" cellpadding="0" cellspacing="10" border="0">
  			
-		<div align="left">
-			<tr><BR><BR>										
+				<tr>
+					<td colspan="2" align="center" class="screentitle"><b>Edit Delivery Building Details<b></td>
+				</tr>
+				<tr>
+					<td colspan="2" class="screenmessages"><jsp:include page='/common/messages.jsp'/></td>
+				</tr>
+			<tr><td colspan="2"><BR><BR>										
 					 
 			<%@ include file='./buildingdtl/building.jspf'%> 
 			<BR><BR>								 
@@ -303,23 +319,24 @@ for (i=0; i<document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed.len
 			<BR><BR>										
 
 			<%@ include file='./buildingdtl/misc.jspf'%> 
-			<BR><BR>										
+			<BR><BR>		
+			</td></tr>
 				
-            <tr><td colspan="3">&nbsp;</td></tr>
 				<tr>
-				    <td colspan="3" align="left">
+				    <td  align="right">
 					   <input type = "submit" value="&nbsp;Save&nbsp;"  />
 					</td>			
-			    <td colspan="3" align="center">
+			    <td align="left">
 					   <input type = "button" value="&nbsp;Clear&nbsp;" onClick="javascript:clearAll();" />
 					</td>			
 				</tr>
 			</table>
 			
 			</form:form>
-		 </div>
 		
-</body>
-</html>
+		 </div>
+		 <script type="text/javascript">
+		     my_init();
+		 </script>
   </tmpl:put>
 </tmpl:insert>

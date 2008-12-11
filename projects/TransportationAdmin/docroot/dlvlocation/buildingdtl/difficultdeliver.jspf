@@ -10,11 +10,8 @@ function togglediff(checked, field1, field2) {
 }
  </script>
 
-
-				<table>
-				  <tr>
-				    <td><align="left><b>Difficult to Deliver building</b></td>
- 				  </tr>
+<b>Difficult to Deliver building</b>
+				<table class=" t_Hours">
  				  <tr>
 				    <td><align="left">Building is Difficult to Deliver</td>
 					    <td><form:radiobutton id="difficultToDeliver" path="difficultToDeliver" value="1" onClick="togglediff(true, 'difficultReason', 'extraTimeNeeded')"  />Yes

@@ -862,3 +862,15 @@ div.eXor .eXtremeTable table {
 }
 div.eXor_Active #ec_table { width: 260%; }
 div.eXor_AdHoc #ec_table { width: 283%; }
+.buildingdtl_content {
+	width: 98%;
+	margin: 0px 10px;
+	text-align: left;
+}
+
+
+
+.t_Hours {
+	margin-left: 40px;
+}
+.buildingID { display: none; }

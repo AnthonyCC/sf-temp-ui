@@ -401,12 +401,10 @@ function svcEntf(checked) {
 }
 
   </script>
-   
- <table>
- 
- <tr>
-		 <align="left"><b>Type of Building</b>
- </tr>
+
+ <b>Type of Building</b>
+
+ <table class=" t_Hours">
  <tr>
 		  <td><td>Doorman</td></td><td><td>
 		  <form:checkbox id="doorman" path="doorman"value="1" onClick="doormanf(checked)"/></td></td>

@@ -1,8 +1,6 @@
-					<table>	
-						  <tr>
-						    <align="left"><b>Address</b>
-  							  	<form:input disabled="true" path="building.buildingId" />							    
-						 </tr>
+					<b>Address</b>
+  							  	<span class="buildingID"><form:input disabled="true" path="building.buildingId"/></span>
+					<table class=" t_Hours">
 					 	<tr>
 						    <td>Address Type</td>
 						    <td> 

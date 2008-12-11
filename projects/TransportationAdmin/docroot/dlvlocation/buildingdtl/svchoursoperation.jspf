@@ -44,13 +44,8 @@ function togglesvc(checked, svcHoursOpen, svcHoursClose,svcComment,hoursField, h
 	
 }
 </script>
-
-			<table class="forms1">	
-						  <tr>
-						    <td><align="left"><b>Service Entrance Hours of Operation</b></td>
-						 </tr>
-<script language="javascript" src="js/mootools.v1.11.js"></script>
-<script language="javascript" src="js/nogray_time_picker_min.js"></script>
+<b>Service Entrance Hours of Operation</b>
+			<table class="forms1 t_Hours">	
 <script language="javascript">
 	window.addEvent("domready", function (){
 		var tpSvcMon1 = new TimePicker('timeSvcMon1_picker', 'svcHoursOpenMon', 'timeSvcMon1_toggler', {imagesPath:"images"});

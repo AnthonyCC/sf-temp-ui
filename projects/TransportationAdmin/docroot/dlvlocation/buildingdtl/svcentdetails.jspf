@@ -1,7 +1,5 @@
-				<table>
-				<tr>
-					    <td><align="left"><b>Service Entrance Details</b></td>
-			    </tr>
+				<b>Service Entrance Details</b>
+				<table class=" t_Hours">
 				<tr>	
 				    <td><align="left">*Location/Address</td>
 				    <td> 								  

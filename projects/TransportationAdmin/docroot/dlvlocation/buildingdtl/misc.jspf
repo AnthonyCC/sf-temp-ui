@@ -1,7 +1,5 @@
-				<table>
-				  <tr>
-				    <td><align="left><b>Doorman Details</b></td>
- 				  </tr>
+				<b>Doorman Details</b>
+				<table class="t_Hours">
  				  <tr>
 				    <td><align="left">Hand Trucks Allowed via Main Entrance</td>
 					    <td><form:radiobutton id="handTruckAllowed" path="handTruckAllowed" value="1" disabled="true"/>Yes
@@ -16,13 +14,13 @@
 					    	&nbsp;&nbsp;&nbsp;&nbsp;
 					        <form:radiobutton id="aptDlvAllowed" path="aptDlvAllowed" value="0" disabled="true"/>No </td>
 					    <td>&nbsp;</td>
-				  </tr>
-				  <BR><BR>				 							  							 
+				  </tr>							  							 
+				</table>				 							  							 
  
- 			  	  <tr>
-				    <td><align="left><b>Walk up Details</b></td>
- 				  </tr>
- 				  
+ 			  	
+				  <br><br><b>Walk up Details</b>
+
+ 				  <table class="t_Hours">
 				  <tr>
 				    <td><align="left">Number of Floors (1-20) </td>
 				    <td> 								  
@@ -30,9 +28,7 @@
 				 	</td><td>&nbsp;<form:errors path="walkUpFloors" />
 				 	</td>
 				  </tr>				 							  							 
-				  
-				  
-				  		 							  							 
+							  							 
 				</table>		
 				
 			
