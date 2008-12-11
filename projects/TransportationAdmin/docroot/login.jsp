@@ -10,71 +10,71 @@
     document.login.j_username.focus();
   }
 </script>
+
 <style>
-  body { background-color: #fff;  }
-  .lgcontent {
-    vertical-align: middle;
-    margin-top: 175px;
-  }
-  .logincont { 
-    background: url(./images/login_bg.jpg) no-repeat;
-    height: 502px;
-    width: 662px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .lgform {
-    vertical-align: middle;
-    margin-top: 25%;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .lgtitle {
-    font-size: 22px;
-    font-weight: bold;
-  }
+.login_container {
+	position: absolute;
+	top: 25%;
+	left: 25%;
+	background: url(./images/login_bg.jpg) no-repeat;
+	height: 502px;
+	width: 662px;
+}
+.login_content { 
+	position: relative;
+	top: 37%;
+	left: 30%;
+}
+.login_form {
+	border: 0px;
+}
+.login_form_title {
+	font-size: 22px;
+	font-weight: bold;
+}
+.login_fresh { color: #f93; }
+.login_direct { color: #693; }
 </style>
+ 
 </head>
 
 <body>
-<div class="lgcontent">
-
-  <div class="logincont">
-
-    <form name="login" method="POST" action="j_security_check">
-
-      <table class="lgform">
-        <tr><td colspan="2" class="lgtitle">
-          <span style="color: #f93;">Fresh</span>
-          <span style="color: #693;">Direct</span> - Transportation<br/><br/></td>
-        </tr>
-        <tr>
-          <td class="label">
-            <label for="username">Username</label>
-          </td>
-          <td>
-            <input id="username" type="text" name="j_username"/>
-          </td>
-        </tr>
-        <tr>
-          <td class="label">
-            <label for="password">Password</label>
-          </td>
-          <td>
-            <input id="password" type="password" name="j_password"/>
-          </td>
-        </tr>
-        <tr>
-          <td><br /><br /></td>
-          <td>
-            <input type="submit" value="Login" class="button" />
-          </td>
-        </tr>
-      </table>
-
-    </form>
-  </div>
-
+<div class="login_container">
+	<div class="login_content">
+		<form name="login" method="POST" action="j_security_check">
+			<table class="login_form">
+				<tr>
+					<td colspan="2" class="login_form_title">
+						<span class="login_fresh">Fresh</span>
+						<span class="login_direct">Direct</span> - Transportation<br/><br/>
+					</td>
+				</tr>
+				<tr>
+					<td class="label">
+						<label for="username">Username</label>
+					</td>
+					<td>
+						<input id="username" type="text" name="j_username"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="label">
+						<label for="password">Password</label>
+					</td>
+					<td>
+						<input id="password" type="password" name="j_password"/>
+					</td>
+				</tr>
+				<tr>
+					<td><br /><br /></td>
+					<td>
+						<input type="submit" value="Login" class="button" />
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
 </div>
+
 </body>
 </html>
