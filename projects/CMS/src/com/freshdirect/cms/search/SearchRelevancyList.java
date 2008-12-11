@@ -71,21 +71,23 @@ public class SearchRelevancyList {
                 String[] kw = StringUtils.split(keywords, ",");
                 if (kw.length>0) {
                     List hints = (List) node.getAttribute(HINTS).getValue();
-                    Map scores = new HashMap();
-                    for (int i=0;i<hints.size();i++) {
-                        ContentKey key = (ContentKey) hints.get(i);
-                        ContentNodeI hint = instance.getContentNode(key);
-                        
-                        Integer score = ContentNodeUtil.getIntegerAttribute(hint, SCORE);
-                        ContentKey categoryKey = ContentNodeUtil.getContentKeyAttribute(hint, CATEGORY);
-                        if (score!=null && categoryKey!=null) {
-                            scores.put(categoryKey, score);
+                    if (hints!=null) {
+                        Map scores = new HashMap();
+                        for (int i=0;i<hints.size();i++) {
+                            ContentKey key = (ContentKey) hints.get(i);
+                            ContentNodeI hint = instance.getContentNode(key);
+                            
+                            Integer score = ContentNodeUtil.getIntegerAttribute(hint, SCORE);
+                            ContentKey categoryKey = ContentNodeUtil.getContentKeyAttribute(hint, CATEGORY);
+                            if (score!=null && categoryKey!=null) {
+                                scores.put(categoryKey, score);
+                            }
                         }
-                    }
-                    if (!scores.isEmpty()) {
-                        SearchRelevancyList srl = new SearchRelevancyList(kw, scores);
-                        for (int i=0;i<kw.length;i++) {
-                            result.put(kw[i].trim(), srl);
+                        if (!scores.isEmpty()) {
+                            SearchRelevancyList srl = new SearchRelevancyList(kw, scores);
+                            for (int i=0;i<kw.length;i++) {
+                                result.put(kw[i].trim(), srl);
+                            }
                         }
                     }
                 }
