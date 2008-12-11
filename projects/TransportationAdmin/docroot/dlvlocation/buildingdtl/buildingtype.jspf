@@ -47,6 +47,9 @@ function doormanf(checked) {
 }
 
 function walkupf(checked) {
+  if(document.getElementById('walkUpFloors').value == "0")
+	document.getElementById('walkUpFloors').value = "";   
+
     if(checked){
       //alert("walkup checked");
       document.getElementById('house').checked=false;

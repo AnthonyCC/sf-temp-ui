@@ -26,7 +26,7 @@ public abstract class AbstractValidator implements Validator  {
 		}		
 	}
     
-	protected void validateIntegerMinMax(String field, Integer value, int min, int max, Errors errors) {
+	protected void validateIntegerMinMax(String field, String displayField, Integer value, int min, int max, Errors errors) {
 		
 		if(value != null 
 				&& !TransStringUtil.isEmpty(value.toString()) 
@@ -35,10 +35,9 @@ public abstract class AbstractValidator implements Validator  {
 			errors.rejectValue(field, "app.error.118", null);			
 		}	
 		
-		if ( !(value.intValue() >=  min) || !(value.intValue() <= max ) )
+		if ( value != null && !"".equals(value.toString()) && !(value.intValue() >=  min) || !(value.intValue() <= max ) )
 		{
-			System.out.println("@@@@@@@ Here!!!!!!!");
-			errors.rejectValue(field, "app.error.119", new Object[] {field,""+min,""+max},null);			
+			errors.rejectValue(field, "app.error.119", new Object[] {displayField,""+min,""+max},null);			
 
 		}
 			

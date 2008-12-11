@@ -62,6 +62,9 @@ function $() {
 function do_refresh()
 {
 	   //alert("difficultToDeliver[0].checked="+document.getElementById("deliveryBuildingDtlForm").difficultToDeliver[0].checked);
+  	   if(document.getElementById('extraTimeNeeded').value == "0")
+		  document.getElementById('extraTimeNeeded').value = "";   
+		
 	   if(document.getElementById("deliveryBuildingDtlForm").difficultToDeliver[0].checked==true){
 	        //alert("if->");
 	        $('difficultToDeliver').checked = true;
@@ -82,25 +85,13 @@ function do_refresh()
 	   housef(document.getElementById("deliveryBuildingDtlForm").house.checked);
 	   hoursoperationf();
 	   svchoursoperationf();
-	   if($('walkUpFloors').value == '0')
-	      $('walkUpFloors').value="";
-	   if($('extraTimeNeeded').value == '0')
-	      $('extraTimeNeeded').value="";
-	      
-	   
 }
 
 function my_init(){
-//alert("isNew="+$('isNew').value);
-//alert("difficultToDeliver[0].checked="+document.getElementById("deliveryBuildingDtlForm").difficultToDeliver[0].checked);
-
-	if($('isNew').value == "true"){  //new
+	//if($('isNew').value == "true"){  //new
 	   //alert("New!");	   	   	
-  	  	document.getElementById("deliveryBuildingDtlForm").difficultToDeliver[1].checked=true;
- 		$('difficultReason').disabled=true;
- 		$('extraTimeNeeded').disabled=true; 
-  	  	return;
-	 }
+  	  	//return;
+	 //}
 	 //alert("Old!");
 	 do_refresh();
 }

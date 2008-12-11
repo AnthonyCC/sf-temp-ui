@@ -23,17 +23,16 @@ public class DlvBuildingDtlValidator extends AbstractValidator {
 		   //validateIntegerMinMax("walkUpFloors", model.getWalkUpFloors(), 1, 20, errors);
 
 		if("1".equals(model.getDifficultToDeliver())) {
-			  if (model.getExtraTimeNeeded() == null) {
-				  model.setExtraTimeNeeded(new Integer(0));
-			  }
-			  validateIntegerMinMax("extraTimeNeeded", model.getExtraTimeNeeded(), 1, 60, errors);
+			  ValidationUtils.rejectIfEmpty(errors, "extraTimeNeeded", "app.error.112", new Object[]{"Extra Time Needed"},"required field");
+			  if(model.getExtraTimeNeeded() != null && !"".equals(model.getExtraTimeNeeded()))
+				  validateIntegerMinMax("extraTimeNeeded", "extra Time Needed", model.getExtraTimeNeeded(), 1, 60, errors);
+			  ValidationUtils.rejectIfEmpty(errors, "difficultReason", "app.error.112", new Object[]{"Reason For Difficulty"},"required field");
 		}
 		
 		if ("1".equals(model.getWalkup())) {
-			  if (model.getWalkUpFloors() == null) {
-				  model.setWalkUpFloors(new Integer(0));
-			  }
-			   validateIntegerMinMax("walkUpFloors", model.getWalkUpFloors(), 1, 20, errors);
+			     ValidationUtils.rejectIfEmpty(errors, "walkUpFloors", "app.error.112", new Object[]{"Walk Up Floors"},"required field");
+				  if(model.getWalkUpFloors() != null  && !"".equals(model.getWalkUpFloors()))
+					  validateIntegerMinMax("walkUpFloors", "Walk Up Floors", model.getWalkUpFloors(), 1, 20, errors);
 		}
 	}
 }
