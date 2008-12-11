@@ -49,6 +49,12 @@ public class DlvBuildingDtlFormController extends AbstractFormController {
 			closeHours = request.getParameter("hoursCloseMon");
 			comment=request.getParameter("commentMon");
 		}
+		else{
+			openHours= "00:00 AM";
+			closeHours= "00:00 AM";
+			comment = "";
+			
+		}
 		model.setHoursOpenMon(new TimeOfDay(openHours));
 		model.setHoursCloseMon(new TimeOfDay(closeHours));
 		model.setCommentMon(comment);
@@ -57,6 +63,12 @@ public class DlvBuildingDtlFormController extends AbstractFormController {
 			openHours= request.getParameter("hoursOpenTue");
 			closeHours = request.getParameter("hoursCloseTue");
 			comment=request.getParameter("commentTue");
+		}
+		else{
+			openHours= "00:00 AM";
+			closeHours= "00:00 AM";
+			comment = "";
+			
 		}
 		model.setHoursOpenTue(new TimeOfDay(openHours));
 		model.setHoursCloseTue(new TimeOfDay(closeHours));
@@ -67,6 +79,12 @@ public class DlvBuildingDtlFormController extends AbstractFormController {
 			closeHours = request.getParameter("hoursCloseWed");
 			comment=request.getParameter("commentWed");
 		}
+		else{
+			openHours= "00:00 AM";
+			closeHours= "00:00 AM";
+			comment = "";
+			
+		}
 		model.setHoursOpenWed(new TimeOfDay(openHours));
 		model.setHoursCloseWed(new TimeOfDay(closeHours));
 		model.setCommentWed(comment);
@@ -75,6 +93,12 @@ public class DlvBuildingDtlFormController extends AbstractFormController {
 			openHours= request.getParameter("hoursOpenThu");
 			closeHours = request.getParameter("hoursCloseThu");
 			comment=request.getParameter("commentThu");
+		}
+		else{
+			openHours= "00:00 AM";
+			closeHours= "00:00 AM";
+			comment = "";
+			
 		}
 		model.setHoursOpenThu(new TimeOfDay(openHours));
 		model.setHoursCloseThu(new TimeOfDay(closeHours));
@@ -85,6 +109,12 @@ public class DlvBuildingDtlFormController extends AbstractFormController {
 			closeHours = request.getParameter("hoursCloseFri");
 			comment=request.getParameter("commentFri");
 		}
+		else{
+			openHours= "00:00 AM";
+			closeHours= "00:00 AM";
+			comment = "";
+			
+		}
 		model.setHoursOpenFri(new TimeOfDay(openHours));
 		model.setHoursCloseFri(new TimeOfDay(closeHours));
 		model.setCommentFri(comment);
@@ -94,6 +124,12 @@ public class DlvBuildingDtlFormController extends AbstractFormController {
 			closeHours = request.getParameter("hoursCloseSat");
 			comment=request.getParameter("commentSat");
 		}
+		else{
+			openHours= "00:00 AM";
+			closeHours= "00:00 AM";
+			comment = "";
+			
+		}
 		model.setHoursOpenSat(new TimeOfDay(openHours));
 		model.setHoursCloseSat(new TimeOfDay(closeHours));
 		model.setCommentSat(comment);
@@ -102,6 +138,12 @@ public class DlvBuildingDtlFormController extends AbstractFormController {
 			openHours= request.getParameter("hoursOpenSun");
 			closeHours = request.getParameter("hoursCloseSun");
 			comment=request.getParameter("commentSun");
+		}
+		else{
+			openHours= "00:00 AM";
+			closeHours= "00:00 AM";
+			comment = "";
+			
 		}
 		model.setHoursOpenSun(new TimeOfDay(openHours));
 		model.setHoursCloseSun(new TimeOfDay(closeHours));
@@ -129,6 +171,11 @@ public class DlvBuildingDtlFormController extends AbstractFormController {
 			closeHours = request.getParameter("svcHoursCloseMon");
 			comment=request.getParameter("svcCommentMon");
 		}
+		else{
+			openHours= "00:00 AM";
+			closeHours= "00:00 AM";
+			comment = "";
+		}
 		model.setSvcHoursOpenMon(new TimeOfDay(openHours));
 		model.setSvcHoursCloseMon(new TimeOfDay(closeHours));
 		model.setSvcCommentMon(comment);
@@ -137,6 +184,11 @@ public class DlvBuildingDtlFormController extends AbstractFormController {
 			openHours= request.getParameter("svcHoursOpenTue");
 			closeHours = request.getParameter("svcHoursCloseTue");
 			comment=request.getParameter("svcCommentTue");
+		}
+		else{
+			openHours= "00:00 AM";
+			closeHours= "00:00 AM";
+			comment = "";
 		}
 		model.setSvcHoursOpenTue(new TimeOfDay(openHours));
 		model.setSvcHoursCloseTue(new TimeOfDay(closeHours));
@@ -147,6 +199,11 @@ public class DlvBuildingDtlFormController extends AbstractFormController {
 			closeHours = request.getParameter("svcHoursCloseWed");
 			comment=request.getParameter("svcCommentWed");
 		}
+		else{
+			openHours= "00:00 AM";
+			closeHours= "00:00 AM";
+			comment = "";
+		}
 		model.setSvcHoursOpenWed(new TimeOfDay(openHours));
 		model.setSvcHoursCloseWed(new TimeOfDay(closeHours));
 		model.setSvcCommentWed(comment);
@@ -155,6 +212,11 @@ public class DlvBuildingDtlFormController extends AbstractFormController {
 			openHours= request.getParameter("svcHoursOpenThu");
 			closeHours = request.getParameter("svcHoursCloseThu");
 			comment=request.getParameter("svcCommentThu");
+		}
+		else{
+			openHours= "00:00 AM";
+			closeHours= "00:00 AM";
+			comment = "";
 		}
 		model.setSvcHoursOpenThu(new TimeOfDay(openHours));
 		model.setSvcHoursCloseThu(new TimeOfDay(closeHours));
@@ -165,6 +227,11 @@ public class DlvBuildingDtlFormController extends AbstractFormController {
 			closeHours = request.getParameter("svcHoursCloseFri");
 			comment=request.getParameter("svcCommentFri");
 		}
+		else{
+			openHours= "00:00 AM";
+			closeHours= "00:00 AM";
+			comment = "";
+		}
 		model.setSvcHoursOpenFri(new TimeOfDay(openHours));
 		model.setSvcHoursCloseFri(new TimeOfDay(closeHours));
 		model.setSvcCommentFri(comment);
@@ -174,6 +241,11 @@ public class DlvBuildingDtlFormController extends AbstractFormController {
 			closeHours = request.getParameter("svcHoursCloseSat");
 			comment=request.getParameter("svcCommentSat");
 		}
+		else{
+			openHours= "00:00 AM";
+			closeHours= "00:00 AM";
+			comment = "";
+		}
 		model.setSvcHoursOpenSat(new TimeOfDay(openHours));
 		model.setSvcHoursCloseSat(new TimeOfDay(closeHours));
 		model.setSvcCommentSat(comment);
@@ -182,6 +254,11 @@ public class DlvBuildingDtlFormController extends AbstractFormController {
 			openHours= request.getParameter("svcHoursOpenSun");
 			closeHours = request.getParameter("svcHoursCloseSun");
 			comment=request.getParameter("svcCommentSun");
+		}
+		else{
+			openHours= "00:00 AM";
+			closeHours= "00:00 AM";
+			comment = "";
 		}
 		model.setSvcHoursOpenSun(new TimeOfDay(openHours));
 		model.setSvcHoursCloseSun(new TimeOfDay(closeHours));

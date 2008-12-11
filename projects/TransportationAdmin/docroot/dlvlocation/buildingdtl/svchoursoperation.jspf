@@ -33,10 +33,10 @@ function togglesvc(checked, svcHoursOpen, svcHoursClose,svcComment,hoursField, h
 	}
 	if(checked){
 		if(document.getElementById(hoursField).checked == true){
-		    if(document.getElementById(svcHoursOpen).value == "12:00 AM"){
+		    if(document.getElementById(svcHoursOpen).value == "12:00 AM" || document.getElementById(svcHoursOpen).value == "00:00 AM"){
 			    document.getElementById(svcHoursOpen).value = document.getElementById(hoursOpenField).value;
 			}		
-		    if(document.getElementById(svcHoursClose).value == "12:00 AM"){
+		    if(document.getElementById(svcHoursClose).value == "12:00 AM" || document.getElementById(svcHoursOpen).value == "00:00 AM"){
 				document.getElementById(svcHoursClose).value = document.getElementById(hoursCloseField).value;
 			}		
 		}
