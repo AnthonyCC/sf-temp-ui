@@ -268,6 +268,14 @@ div.child {
 	padding-top: 10px;
 	text-align: center;
 }
+/*sub-subtabs*/
+.subsub {
+	float: left;
+	height: auto;
+	width: 100%;
+	padding-top: 10px;
+	text-align: center;
+}
 /*sub tabs left*/
 .subs_left {
 	float: left;
@@ -302,7 +310,7 @@ div.t_tab div.minwidth {
 /*user info User / Level*/
 .userinfo {
 	float: right;
-	text-align: right;
+	text-align: left;
 	font-size: 12px;
 	background-color: #fff;
 	padding-right: 15px;
@@ -312,6 +320,10 @@ div.t_tab div.minwidth {
 }
 .userinfo .loginout {
 	padding-bottom: 11px;
+	text-align: right;
+}
+.userinfo input:hover {
+	cursor: hand;
 }
 .userinfo input {
 	color: #999;
@@ -321,8 +333,13 @@ div.t_tab div.minwidth {
 	font-weight: bold;
 }
 .userinfo .nameTitle, .userinfo .levelTitle {
+	display: block;
 	font-style: italic;
 	font-weight: bold;
+	width: 50px;
+	float: left;
+	text-align: right;
+	padding-right: 5px;
 }
 
 /*top tab spacers, height is logo height 75px*/
@@ -401,238 +418,329 @@ div.MNM001, div.MNM002, div.MNM003 {
 	margin: 0px;
 }
 
-/*MNM001 styles*/
-/*these two are the l/r tab angles*/
-.tabL_MNM001 {
-	border-color: #fff #000; 
-}
-.tabR_MNM001 {
-	border-color: #000 #fff; 
-}
-/*
-	these two are the l/r subtab angles
-	don't use transparent here, IE6 doesn't support it
- */
-.sub_tabL_MNM001 {
-	border-color: #000 #666;
-}
-.sub_tabR_MNM001 {
-	border-color: #666 #000; 
-}
-/*this is the color of the tab*/
-div.MNM001 {
-	background-color: #000;
-}
-/*NOT selected*/
-div.t_tab a.MNM001 {
-	color: #666;
-}
-/*sub tab color*/
-div.MNM001 div.subtab a {
-	color: #999;
-}
-/*selected*/
-div.MNM001 div.MNM001 a  {
-	color: #fff;
-}
-/*selected, and hover*/
-div.MNM001 .subtab a:hover  {
-	color: #fff;
-}
-/*subtab selected*/
-div.MNM001 div.activeT a  {
-	color: #000;
-}
-/*subtab selected IE hover fix*/
-div.MNM001 div.activeT a:hover {
-	color: #000;
-}
-/*subtabs, not active*/
-div.MNM001 .subtab { 
-	background-color: #666;
-}
-.botTabs .MNM001 {
-	/*padding-top: 8px;*/
-}
-.MNM001 b {
-	color: #00f;
-}
-.MNM001 table {
-	border: 1px solid #f00;
-	background-color: #ccc;
-}
-/*
-	these two are the l/r subtab angles of an active subtab
-	these need to be after other colors
- */
-.MNM001 .activeL {
-	border-color: #000 #fff;
-}
-.MNM001 .activeR {
-	border-color: #fff #000; 
-}
+/*operations styles*/
+	/*these two are the l/r tab angles*/
+	.tabL_MNM001 {
+		border-color: #fff #000; 
+	}
+	.tabR_MNM001 {
+		border-color: #000 #fff; 
+	}
+	/*
+		these two are the l/r subtab angles
+		don't use transparent here, IE6 doesn't support it
+	 */
+	.sub_tabL_MNM001 {
+		border-color: #000 #666;
+	}
+	.sub_tabR_MNM001 {
+		border-color: #666 #000; 
+	}
+	.subsub .sub_tabL_MNM001 {
+		border-color: #999 #666;
+	}
+	.subsub .sub_tabR_MNM001 {
+		border-color: #666 #999; 
+	}
+	/*this is the color of the tab*/
+	div.MNM001 {
+		background-color: #000;
+	}
+	/*NOT selected*/
+	div.t_tab a.MNM001 {
+		color: #666;
+	}
+	/*sub tab color*/
+	div.MNM001 div.subtab a {
+		color: #999;
+	}
+	/*selected*/
+	div.MNM001 div.MNM001 a  {
+		color: #fff;
+	}
+	/*selected, and hover*/
+	div.MNM001 .subtab a:hover  {
+		color: #fff;
+	}
+	/*subtab selected*/
+	div.MNM001 div.activeT a  {
+		color: #000;
+	}
+	/*sub-subtab selected*/
+	div.MNM001 div.MNM001_subs a  {
+		color: #666;
+	}
+	/*subtab selected IE hover fix*/
+	div.MNM001 div.activeT a:hover {
+		color: #000;
+	}
+	/*sub-subtab selected*/
+	div.or_999 div.activeT a {
+		color: #000;
+	}
+	/*sub-subtab selected IE hover fix*/
+	div.or_999 div.activeT a:hover {
+		color: #666;
+	}
+	/*subtabs, not active*/
+	div.MNM001 .subtab { 
+		background-color: #666;
+	}
+	/*
+		these two are the l/r subtab angles of an active subtab
+		these need to be after other colors
+	 */
+	.MNM001 div.MNM001_subs_L {
+		border-color: #000 #999;
+	}
+	.MNM001 .activeL {
+		border-color: #000 #fff;
+	}
+	.MNM001 div.MNM001_subs_R {
+		border-color: #999 #000;
+	}
+	.MNM001 .activeR {
+		border-color: #fff #000; 
+	}
+	/*
+		these two are the l/r subtab angles of an active sub-subtab
+		these need to be after other colors
+	 */
+	.or_999 .activeL {
+		border-color: #999 #fff;
+	}
+	.or_999 .activeR {
+		border-color: #fff #999;
+	}
 
 /*routing styles*/
-/*these two are the l/r tab angles*/
-.tabL_MNM002 {
-	border-color: #fff #009; 
-}
-.tabR_MNM002 {
-	border-color: #009 #fff; 
-}
-/*
-	these two are the l/r subtab angles
-	don't use transparent here, IE6 doesn't support it
- */
-.sub_tabL_MNM002 {
-	border-color: #009 #06c;
-}
-.sub_tabR_MNM002 {
-	border-color: #06c #009; 
-}
-/*this is the color of the tab*/
-div.MNM002 {
-	background-color: #009;
-}
-/*NOT selected*/
-div.t_tab a.MNM002 {
-	color: #06c;
-}
-/*sub tab color*/
-div.MNM002 div.subtab a {
-	color: #39f;
-}
-/*selected*/
-div.MNM002 div.MNM002 a  {
-	color: #fff;
-}
-/*selected, and hover*/
-div.MNM002 .subtab a:hover  {
-	color: #fff;
-}
-/*subtab selected*/
-div.MNM002 div.activeT a  {
-	color: #009;
-}
-/*subtab selected IE hover fix*/
-div.MNM002 div.activeT a:hover {
-	color: #009;
-}
-/*subtabs, not active*/
-div.MNM002 .subtab { 
-	background-color: #06c;
-}
-.botTabs .MNM002 {
-	/*padding-top: 8px;*/
-}
-.MNM002 b {
-	color: #00f;
-}
-.MNM002 table {
-	border: 1px solid #f00;
-	background-color: #ccf;
-}
-/*
-	these two are the l/r subtab angles of an active subtab
-	these need to be after other colors
- */
-.MNM002 .activeL {
-	border-color: #009 #fff;
-}
-.MNM002 .activeR {
-	border-color: #fff #009; 
-}
+	/*these two are the l/r tab angles*/
+	.tabL_MNM002 {
+		border-color: #fff #009; 
+	}
+	.tabR_MNM002 {
+		border-color: #009 #fff; 
+	}
+	/*
+		these two are the l/r subtab angles
+		don't use transparent here, IE6 doesn't support it
+	 */
+	.sub_tabL_MNM002 {
+		border-color: #009 #06c;
+	}
+	.sub_tabR_MNM002 {
+		border-color: #06c #009; 
+	}
+	.subsub .sub_tabL_MNM002 {
+		border-color: #39f #06c;
+	}
+	.subsub .sub_tabR_MNM002 {
+		border-color: #06c #39f; 
+	}
+	/*this is the color of the tab*/
+	div.MNM002 {
+		background-color: #009;
+	}
+	/*NOT selected*/
+	div.t_tab a.MNM002 {
+		color: #06c;
+	}
+	/*sub tab color*/
+	div.MNM002 div.subtab a {
+		color: #39f;
+	}
+	/*selected*/
+	div.MNM002 div.MNM002 a  {
+		color: #fff;
+	}
+	/*selected, and hover*/
+	div.MNM002 .subtab a:hover  {
+		color: #fff;
+	}
+	/*subtab selected*/
+	div.MNM002 div.activeT a  {
+		color: #009;
+	}
+	/*sub-subtab selected*/
+	div.MNM001 div.MNM002_subs a  {
+		color: #fff;
+	}
+	/*subtab selected IE hover fix*/
+	div.MNM002 div.activeT a:hover {
+		color: #06c;
+	}
+	/*sub-subtab selected*/
+	div.or_39f div.activeT a  {
+		color: #009;
+	}
+	/*sub-subtab selected IE hover fix*/
+	div.or_39f div.activeT a:hover {
+		color: #39f;
+	}
+	/*subtabs, not active*/
+	div.MNM002 .subtab { 
+		background-color: #06c;
+	}
+	/*
+		these two are the l/r subtab angles of an active subtab
+		these need to be after other colors
+	 */
+	.MNM002 div.MNM002_subs_L {
+		border-color: #009 #39f;
+	}
+	.MNM002 .activeL {
+		border-color: #009 #fff;
+	}
+	.MNM002 div.MNM002_subs_R {
+		border-color: #39f #009;
+	}
+	.MNM002 .activeR {
+		border-color: #fff #009; 
+	}
+	/*
+		these two are the l/r subtab angles of an active sub-subtab
+		these need to be after other colors
+	 */
+	.or_39f .activeL {
+		border-color: #39f #fff;
+	}
+	.or_39f .activeR {
+		border-color: #fff #39f;
+	}
 
-/*MNM003 styles*/
-/*these two are the l/r tab angles*/
-.tabL_MNM003 {
-	border-color: #fff #060; 
-}
-.tabR_MNM003 {
-	border-color: #060 #fff; 
-}
-/*
-	these two are the l/r subtab angles
-	don't use transparent here, IE6 doesn't support it
- */
-.sub_tabL_MNM003 {
-	border-color: #060 #390; 
-}
-.sub_tabR_MNM003 {
-	border-color: #390 #060; 
-}
-/*this is the color of the tab*/
-div.MNM003 {
-	background-color: #060;
-}
-/*NOT selected*/
-div.t_tab a.MNM003 {
-	color: #390;
-}
-/*sub tab color*/
-div.MNM003 div.subtab a {
-	color: #3c3;
-}
-/*selected*/
-div.MNM003 div.MNM003 a  {
-	color: #fff;
-}
-/*selected, and hover*/
-div.MNM003 .subtab a:hover  {
-	color: #fff;
-}
-/*subtab selected*/
-div.MNM003 div.activeT a  {
-	color: #060;
-}
-/*subtab selected IE hover fix*/
-div.MNM003 div.activeT a:hover {
-	color: #390;
-}
-/*subtabs, not active*/
-div.MNM003 .subtab { 
-	background-color: #390;
-}
-.botTabs .MNM003 {
-	/*padding-top: 8px;*/
-}
-.MNM003 b {
-	color: #00f;
-}
-.MNM003 table {
-	border: 1px solid #f00;
-	background-color: #cfc;
-}
-/*
-	these two are the l/r subtab angles of an active subtab
-	these need to be after other colors
- */
-.MNM003 .activeL {
-	border-color: #060 #fff;
-}
-.MNM003 .activeR {
-	border-color: #fff #060; 
-}
-div.t_tab a:hover {
-	color: #fff;
-}
+/*geography styles*/
+	/*these two are the l/r tab angles*/
+	.tabL_MNM003 {
+		border-color: #fff #060; 
+	}
+	.tabR_MNM003 {
+		border-color: #060 #fff; 
+	}
+	/*
+		these two are the l/r subtab angles
+		don't use transparent here, IE6 doesn't support it
+	 */
+	.sub_tabL_MNM003 {
+		border-color: #060 #390; 
+	}
+	.sub_tabR_MNM003 {
+		border-color: #390 #060; 
+	}
+	.subsub .sub_tabL_MNM003 {
+		border-color: #3c3 #390;
+	}
+	.subsub .sub_tabR_MNM003 {
+		border-color: #390 #3c3; 
+	}
+	/*this is the color of the tab*/
+	div.MNM003 {
+		background-color: #060;
+	}
+	/*NOT selected*/
+	div.t_tab a.MNM003 {
+		color: #390;
+	}
+	/*sub tab color*/
+	div.MNM003 div.subtab a {
+		color: #3c3;
+	}
+	/*selected*/
+	div.MNM003 div.MNM003 a  {
+		color: #fff;
+	}
+	/*selected, and hover*/
+	div.MNM003 .subtab a:hover  {
+		color: #fff;
+	}
+	/*subtab selected*/
+	div.MNM003 div.activeT a  {
+		color: #060;
+	}
+	/*sub-subtab selected*/
+	div.MNM003 div.MNM003_subs a  {
+		color: #fff;
+	}
+	/*subtab selected IE hover fix*/
+	div.MNM003 div.activeT a:hover {
+		color: #390;
+	}
+	/*sub-subtab selected*/
+	div.or_3c3 div.activeT a  {
+		color: #060;
+	}
+	/*sub-subtab selected IE hover fix*/
+	div.or_3c3 div.activeT a:hover {
+		color: #3c3;
+	}
+	/*subtabs, not active*/
+	div.MNM003 .subtab { 
+		background-color: #390;
+	}
+	/*
+		these two are the l/r subtab angles of an active subtab
+		these need to be after other colors
+	 */
+	.MNM003 div.MNM003_subs_L {
+		border-color: #060 #3c3;
+	}
+	.MNM003 .activeL {
+		border-color: #060 #fff;
+	}
+	.MNM003 div.MNM003_subs_R {
+		border-color: #3c3 #060;
+	}
+	.MNM003 .activeR {
+		border-color: #fff #060; 
+	}
+	/*
+		these two are the l/r subtab angles of an active sub-subtab
+		these need to be after other colors
+	 */
+	.or_3c3 .activeL {
+		border-color: #3c3 #fff;
+	}
+	.or_3c3 .activeR {
+		border-color: #3c3 #999;
+	}
+
+	div.t_tab a:hover {
+		color: #fff;
+	}
 
 /*this is the active subtab bgcolor*/
-.activeT a {
+.activeL, div.activeT a, .activeR {
 	background-color: #fff;
 }
 
+
+/* these are the active subtab bgcolors IF the subtab has sub-subtabs */
+div.MNM001_subs a {
+	background-color: #999;
+	color: #fff;
+}
+div.MNM002_subs a {
+	background-color: #39f;
+	color: #009;
+}
+div.MNM003_subs a {
+	background-color: #3c3;
+	color: #060;
+}
+/* over-rides for sub-subtab backgrounds */
+div.or_fff { background-color: #fff; }
+div.or_39f { background-color: #39f; }
+div.or_999 { background-color: #999; }
+
 /* new content styles */
 
-/*debug*/
-div.cont_topleft {
-	/*border: 1px solid red;*/
-	width: 40%;
-	padding-top: 10px;
-	padding-bottom: 10px;
-}
+
 .contentroot div span { vertical-align: bottom; }
 .cont_row { clear: both; }
+
+.cont_row_bottomline { 
+	clear: both;
+	margin-bottom: 10px;
+}
 
 /*top left functions bar */
 .cont_topleft {
@@ -642,17 +750,10 @@ div.cont_topleft {
 /*top right functions bar */
 .cont_topright {
 	float: right;
-	padding-right: 20px;
-	width: 98%;
-	margin-top: -45px;
+	width: 50%;
+	/*margin-top: -45px;*/
 }
 
-/* title */
-div.scrTitle {
-	font-size: 20px;
-	padding-right: 20px;
-	padding-top: 0px;
-}
 
 /*generic item spacing*/
 .cont_Litem, .cont_Ritem {
@@ -672,22 +773,11 @@ div.scrTitle {
 .cont_Litem img {
 	border: 0px;
 }
-/*date input box by ID*/
-#daterange {
-	width: 125px;
-	padding: 0px;
+/*date input box*/
+.cont_Litem input.text {
 	height: 12px;
-	font-size: 11px;
-	position: relative;
-	top: -3px;
-}
-/*zone input box by ID*/
-#zone {
-	width: 75px;
 	padding: 0px;
-	height: 16px;
 	font-size: 11px;
-	line-height: 16px;
 	position: relative;
 	top: -3px;
 }
@@ -699,7 +789,7 @@ div.scrTitle {
 	padding: 5px 5px 10px 5px;
 	width: 40%;
 	float: right;
-	margin-top: -40px;
+/*	margin-top: -40px;*/
 }
 /* 2nd row bar with yellow background */
 .cont_topleft_2ndrow div {
@@ -757,3 +847,18 @@ div.scrTitle {
 	background: url(./../images/AccessDenied_b.jpg) no-repeat;
 	cursor: pointer;
 }
+
+/* title override */
+.scrTitle, .eXtremeTable span.title {
+	font-size: 20px;
+	padding-right: 20px;
+	color: #444;
+	padding-top: 0px;
+}
+/*fixes for extermeTable styles on route page*/
+div.eXor .eXtremeTable table {
+	float: right;
+	clear: right;
+}
+div.eXor_Active #ec_table { width: 260%; }
+div.eXor_AdHoc #ec_table { width: 283%; }
