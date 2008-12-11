@@ -223,7 +223,6 @@ $('svcCommentSun').value="";
 
 $('svcScrubbedStreet').disabled=true;
 $('svcValidate').disabled=true;
-$('svcAddrLine2').disabled=true;
 $('svcCity').disabled=true;
 $('svcState').disabled=true;
 $('svcZip').disabled=true;
@@ -231,7 +230,6 @@ $('svcZip').disabled=true;
 
 $('svcScrubbedStreet').value="";
 $('svcValidate').checked=false;
-$('svcAddrLine2').value="";
 $('svcCity').value="";
 $('svcState').value="";
 $('svcZip').value="";

@@ -3,7 +3,7 @@
 					    <td><align="left"><b>Service Entrance Details</b></td>
 			    </tr>
 				<tr>	
-				    <td><align="left">Street</td>
+				    <td><align="left">*Location/Address</td>
 				    <td> 								  
 				  	 	<form:input maxlength="50" size="30" path="svcScrubbedStreet" disabled="true"/>
 				 	</td>
@@ -16,24 +16,18 @@
 				  	 	<form:checkbox id="svcValidate" path="svcValidate" value="1" disabled="true"/>
 				 	</td>
 			 	</tr>
-				<tr>	
-				    <td><align="left">Address Line 2</td>
-				    <td> 								  
-				  	 	<form:input maxlength="50" size="30" path="svcAddrLine2" disabled="true" />
-				 	</td>
-			 	</tr>
-				 <tr>
-				    <td><align="left">City</td>
+  			    <tr>
+				    <td><align="left">*City</td>
 				    <td> 								  
 				  	 	<form:input maxlength="50" size="30" path="svcCity" disabled="true"/>
 				 	</td>
 				 </tr>
 				 <tr>
-				    <td><align="left">State</td>
+				    <td><align="left">*State</td>
 				    <td> 								  
 				  	 	<form:input maxlength="50" size="30" path="svcState" disabled="true"/>
 				 	</td>
-				    <td><align="left">Zip</td>
+				    <td><align="left">*Zip Code</td>
 				    <td> 								  
 				  	 	<form:input maxlength="50" size="30" path="svcZip" disabled="true"/>
 				 	</td>

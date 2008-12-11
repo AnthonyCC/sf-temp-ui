@@ -330,7 +330,6 @@ function svcEntf(checked) {
         document.getElementById('house').checked=false;   
 		document.getElementById('svcValidate').disabled=false;
 		document.getElementById('svcScrubbedStreet').disabled=false;
-		document.getElementById('svcAddrLine2').disabled=false;
 		document.getElementById('svcCity').disabled=false;
 		document.getElementById('svcState').disabled=false;
 		document.getElementById('svcZip').disabled=false;
@@ -354,7 +353,6 @@ function svcEntf(checked) {
 	    document.getElementById('house').disabled=false;	
 		document.getElementById('svcValidate').disabled=true;
 		document.getElementById('svcScrubbedStreet').disabled=true;
-		document.getElementById('svcAddrLine2').disabled=true;
 		document.getElementById('svcCity').disabled=true;
 		document.getElementById('svcState').disabled=true;
 		document.getElementById('svcZip').disabled=true;

@@ -34,5 +34,12 @@ public class DlvBuildingDtlValidator extends AbstractValidator {
 				  if(model.getWalkUpFloors() != null  && !"".equals(model.getWalkUpFloors()))
 					  validateIntegerMinMax("walkUpFloors", "Walk Up Floors", model.getWalkUpFloors(), 1, 20, errors);
 		}
+		
+		if ("1".equals(model.getSvcEnt())) {
+		     ValidationUtils.rejectIfEmpty(errors, "svcScrubbedStreet", "app.error.112", new Object[]{"Location/Address"},"required field");
+		     ValidationUtils.rejectIfEmpty(errors, "svcCity", "app.error.112", new Object[]{"City"},"required field");
+		     ValidationUtils.rejectIfEmpty(errors, "svcState", "app.error.112", new Object[]{"State"},"required field");
+		     ValidationUtils.rejectIfEmpty(errors, "svcZip", "app.error.112", new Object[]{"Zip Code"},"required field");
+		}
 	}
 }

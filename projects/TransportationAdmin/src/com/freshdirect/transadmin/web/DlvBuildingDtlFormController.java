@@ -283,7 +283,6 @@ protected void onBind(HttpServletRequest request, Object command) {
 	model.setSvcEnt(request.getParameter("svcEnt"));
 	if(!"1".equals(model.getSvcEnt())){
 	    model.setSvcScrubbedStreet("");
-		model.setSvcAddrLine2("");
 		model.setSvcCity("");
 		model.setSvcState("");
 		model.setSvcZip("");
@@ -435,9 +434,7 @@ protected void onBind(HttpServletRequest request, Object command) {
 		List errorList = new ArrayList();
 		DlvBuildingDtl modelIn = (DlvBuildingDtl)domainObject;
 		if("true".equalsIgnoreCase(modelIn.getSvcValidate())){
-			modelIn.setSvcScrubbedStreet(RoutingUtil.standardizeStreetAddress(modelIn.getSvcScrubbedStreet(),
-					modelIn.getSvcAddrLine2()));
-			modelIn.setSvcAddrLine2("");
+			modelIn.setSvcScrubbedStreet(RoutingUtil.standardizeStreetAddress(modelIn.getSvcScrubbedStreet(), null));
 		}
 		
 		if(TransStringUtil.isEmpty(modelIn.getDifficultReason()) ) {

@@ -79,7 +79,6 @@ public class DlvBuildingDtl implements java.io.Serializable, TrnBaseEntityI  {
 	
 	private String svcValidate;
 	private String svcScrubbedStreet;
-	private String svcAddrLine2;
 	private String svcCity;
 	private String svcState;
 	private String svcZip;
@@ -247,15 +246,6 @@ public class DlvBuildingDtl implements java.io.Serializable, TrnBaseEntityI  {
 	public void setSvcValidate(String svcValidate) {
 		this.svcValidate = svcValidate;
 	}
-
-	public String getSvcAddrLine2() {
-		return svcAddrLine2;
-	}
-
-	public void setSvcAddrLine2(String svcAddrLine2) {
-		this.svcAddrLine2 = svcAddrLine2;
-	}
-
 	
 	public String getCommentMon() {
 		return commentMon;

@@ -48,7 +48,7 @@
 						 	</td><td>
 						 		&nbsp;<form:errors path="building.state" />
 						 	</td>
-							<td>Zipcode</td>
+							<td>Zip Code</td>
 						    <td> 								  
 						  	 	<form:input disabled="true" maxlength="50" size="30" path="building.zip"/>
 						 	</td>
