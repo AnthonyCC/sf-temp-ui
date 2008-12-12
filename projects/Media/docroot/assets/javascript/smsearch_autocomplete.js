@@ -11,10 +11,61 @@ var SafariBehaviorAutoComplete = function(searchField, listContainer, dataSource
     this.maxResultsDisplayed = 8;
 
     this.allowBrowserAutocomplete = false;	
-    	    
+           
     this.typeAheadEvent.subscribe(function(type, args) {		    
 	    originalQuery = unescape(args[1]);			    
     });
+    
+    this._updateValue = function(elListItem) {
+        if(!this.suppressInputUpdate) {    
+            var elTextbox = this._elTextbox;
+            var sDelimChar = (this.delimChar) ? (this.delimChar[0] || this.delimChar) : null;
+            var sResultMatch = elListItem._sResultMatch;
+        
+            // Calculate the new value
+            var sNewValue = "";
+            if(sDelimChar) {
+                // Preserve selections from past queries
+                sNewValue = this._sPastSelections;
+                // Add new selection plus delimiter
+                sNewValue += sResultMatch + sDelimChar;
+                if(sDelimChar != " ") {
+                    sNewValue += " ";
+                }
+            }
+            else { 
+                sNewValue = sResultMatch;
+            }
+            
+            /**
+             * [APPREQ-285]
+             */
+            var skipChange = false;
+            var old_str_len = elTextbox.value.length;
+            if (old_str_len > 2) {
+            	var firstWhitespacePos = sNewValue.indexOf(' ', old_str_len);
+            	if (firstWhitespacePos == old_str_len) {
+            		skipChange = true;
+            	}
+            }
+
+            // Update input field
+            if (!skipChange) {
+            	elTextbox.value = sNewValue;
+            }
+
+            // Scroll to bottom of textarea if necessary
+            if(elTextbox.type == "textarea") {
+                elTextbox.scrollTop = elTextbox.scrollHeight;
+            }
+        
+            // Move cursor to end
+            var end = elTextbox.value.length;
+            this._selectText(elTextbox,end,end);
+        
+            this._elCurListItem = elListItem;
+        }
+    };
     
     this.itemMouseOverEvent.subscribe(function(type, args) {
 	    var autoComplete = args[0];
