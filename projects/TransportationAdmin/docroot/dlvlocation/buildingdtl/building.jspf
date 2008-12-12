@@ -1,6 +1,28 @@
 					<b>Address</b>
   							  	<span class="buildingID"><form:input disabled="true" path="building.buildingId"/></span>
 					<table class=" t_Hours">
+						  <tr>
+						  	<td>Street Address</td>
+						  	<td> 								  
+						  	 	<form:input disabled="true" maxlength="50" size="30" path="building.srubbedStreet" />
+						 	</td>
+						 </tr><tr>
+						    <td>City</td>
+						    <td> 								  
+						  	 	<form:input disabled="true" maxlength="50" size="30" path="building.city" />
+						 </tr>
+						 <tr>
+						    <td>State</td>
+						    <td> 
+							  <form:select disabled="true" path="building.state">
+						  	  		<form:option value="null" label="--Choose"/>
+									<form:options items="${states}" />
+						     </form:select>
+							<td>Zip Code</td>
+						    <td> 								  
+						  	 	<form:input disabled="true" maxlength="50" size="30" path="building.zip"/>
+						 	</td>
+						 </tr>
 					 	<tr>
 						    <td>Address Type</td>
 						    <td> 
@@ -17,41 +39,6 @@
 						 	</td>
 						 	<td>
 						 		&nbsp;<form:errors path="companyName" />
-						 	</td>
-						 </tr>
-								  	
-						  <tr>
-						  	<td>Street Address</td>
-						  	<td> 								  
-						  	 	<form:input disabled="true" maxlength="50" size="30" path="building.srubbedStreet" />
-						 	</td>
-						 	<td>
-						 		&nbsp;<form:errors path="building.srubbedStreet" />
-						 	</td>
-						 </tr><tr>
-						    <td>City</td>
-						    <td> 								  
-						  	 	<form:input disabled="true" maxlength="50" size="30" path="building.city" />
-						 	</td><td>&nbsp;<form:errors path="building.city" />
-						 	</td>
-						 </tr>
-						 							  							 
-						 <tr>
-						    <td>State</td>
-						    <td> 
-							  <form:select disabled="true" path="building.state">
-						  	  		<form:option value="null" label="--Choose"/>
-									<form:options items="${states}" />
-						     </form:select>
-						 	</td><td>
-						 		&nbsp;<form:errors path="building.state" />
-						 	</td>
-							<td>Zip Code</td>
-						    <td> 								  
-						  	 	<form:input disabled="true" maxlength="50" size="30" path="building.zip"/>
-						 	</td>
-						 	<td>
-						 		&nbsp;<form:errors path="building.zip" />
 						 	</td>
 						 </tr>
 						 </table>
