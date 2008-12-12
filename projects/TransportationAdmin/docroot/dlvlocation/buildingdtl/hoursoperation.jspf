@@ -25,7 +25,7 @@
 <b>Building Hours of Operation</b>
 			<table class="forms1 t_Hours">	
 <script language="javascript" src="js/mootools.v1.11.js"></script>
-<script language="javascript" src="js/nogray_time_picker_min.js"></script>
+<script language="javascript" src="js/nogray_time_picker.js"></script>
 <script language="javascript">
 	window.addEvent("domready", function (){
 		var tpMon1 = new TimePicker('timeMon1_picker', 'hoursOpenMon', 'timeMon1_toggler', {imagesPath:"images"});

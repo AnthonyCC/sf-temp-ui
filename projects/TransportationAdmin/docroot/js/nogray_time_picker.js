@@ -470,7 +470,8 @@ var TimePicker = new Class({
 	updateField: function(){
 		if (!$defined(this.field)) return;
 		var val = "";
-		if (this.options.format24)
+		//agb- if (this.options.format24)
+		if (this.options.format24 || this.time.hour==12)   //agb+
 			var h_val = this.time.hour;
 		else
 			var h_val = (this.time.hour%12);
