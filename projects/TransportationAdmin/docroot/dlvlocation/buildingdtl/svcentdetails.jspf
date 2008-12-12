@@ -1,33 +1,32 @@
 				<b>Service Entrance Details</b>
-				<table class=" t_Hours">
+				<table class="t_Hours">
 				<tr>	
-				    <td><align="left">Location/Address</td>
+				    <td>Location/Address</td>
 				    <td> 								  
 				  	 	<form:input maxlength="50" size="30" path="svcScrubbedStreet" disabled="true"/>
 				 	</td>
-				 	<td>
-				 		&nbsp;<form:errors path="svcScrubbedStreet" />
-				 	</td>
-
-				    <td><align="left">Validate</td>
-				    <td> 								  
-				  	 	<form:checkbox id="svcValidate" path="svcValidate" value="1" disabled="true"/>
-				 	</td>
+					<td><div class="wspacer"><!--  --></div></td>
+				    <td colspan="2">Validate as Street Address</td>
+					<td><form:checkbox id="svcValidate" path="svcValidate" value="1" disabled="true"/></td>
+					<td rowspan="3"><div class="wspacer"><!--  --></div></td>
+					<td rowspan="3"><div class="bld_err_messages"><form:errors path="svcScrubbedStreet" /></div></td>
 			 	</tr>
   			    <tr>
-				    <td><align="left">City</td>
+				    <td>City</td>
 				    <td> 								  
 				  	 	<form:input maxlength="50" size="30" path="svcCity" disabled="true"/>
 				 	</td>
+					<td colspan="4"><div class="wspacer"><!--  --></div></td>
 				 </tr>
 				 <tr>
-				    <td><align="left">State</td>
+				    <td>State</td>
 				    <td> 								  
 				  	 	<form:input maxlength="50" size="30" path="svcState" disabled="true"/>
 				 	</td>
-				    <td><align="left">Zip Code</td>
-				    <td> 								  
-				  	 	<form:input maxlength="50" size="30" path="svcZip" disabled="true"/>
-				 	</td>
+					<td><div class="wspacer"><!--  --></div></td>
+				    <td>Zip Code 
+					
+					<td><form:input maxlength="5" size="5" path="svcZip" disabled="true"/></td>
+					<td><div><!--  --></div></td>
 				 </tr>
 			 	</table>

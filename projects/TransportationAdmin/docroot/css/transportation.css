@@ -860,17 +860,39 @@ div.eXor .eXtremeTable table {
 	float: right;
 	clear: right;
 }
-div.eXor_Active #ec_table { width: 260%; }
-div.eXor_AdHoc #ec_table { width: 283%; }
-.buildingdtl_content {
-	width: 98%;
-	margin: 0px 10px;
+div.eXor_Active, div.eXor_AdHoc { margin-left: 10px; width: 98%; }
+
+
+/* left-align over-rides */
+.eXtremeTable td {
 	text-align: left;
 }
 
 
+/* Building Details */
 
+/* content holder */
+.buildingdtl_content {
+	margin: 0px 10px;
+	padding: 0 0 0 15%;
+	text-align: left;
+}
+
+/* indented tables */
 .t_Hours {
 	margin-left: 40px;
 }
+
+/* width spacing div */
+.wspacer { width: 10px; }
+
+/* debug */
 .buildingID { display: none; }
+
+
+/* building info error messaging */
+.bld_err_messages {
+	font-weight: bold;
+	color: #c00;
+	font-size: 10px;
+}

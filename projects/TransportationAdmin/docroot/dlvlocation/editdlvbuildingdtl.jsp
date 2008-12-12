@@ -278,12 +278,7 @@ for (i=0; i<document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed.len
 </script>
  
  
-    <br/> 
-
- 
-
-
-		<br/>	
+		<br />	
 			<form:form commandName = "deliveryBuildingDtlForm" method="post">
      		<form:hidden path="isNew"/>     
  			
@@ -298,7 +293,7 @@ for (i=0; i<document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed.len
 				<tr>
 					<td colspan="2" class="screenmessages"><jsp:include page='/common/messages.jsp'/></td>
 				</tr>
-			<tr><td colspan="2"><BR><BR>										
+			<tr><td colspan="2">									
 					 
 			<%@ include file='./buildingdtl/building.jspf'%> 
 			<BR><BR>								 
