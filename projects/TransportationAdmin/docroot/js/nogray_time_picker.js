@@ -204,8 +204,14 @@ var TimePicker = new Class({
 				}
 				
 				val = val.replace(/(\s+)/g, " ").split(" ");
-				
-				val[0] = (val[0].toInt() % 12);
+				//alert('@'+val[0]+' '+val[1]);
+				if(val.length > 1 && val[0]=='12'){  //agb
+				   //alert('#'+val[0]+' '+val[1]);
+				   val[0] = val[0].toInt();				 
+				}
+				else {
+	 			  val[0] = (val[0].toInt() % 12);
+	 			}
 				if (isNaN(val[0])) val[0] = null;
 				
 				if ($defined(val[1])){
