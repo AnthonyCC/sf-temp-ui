@@ -12,6 +12,7 @@ import java.util.Set;
 
 import com.freshdirect.routing.constants.EnumProcessInfoType;
 import com.freshdirect.routing.constants.EnumProcessType;
+import com.freshdirect.routing.constants.EnumRoutingFlowType;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
@@ -124,13 +125,27 @@ public abstract class BaseProcessManager implements  IProcessManager {
     	purgeOrders(schedulerIds);
 
     	hadLoadBalance = false;
+    	String currentTime = getCurrentTime();
+    	boolean sendRoutes = false;
+    	if(EnumRoutingFlowType.LINEARFLOW.equals(EnumRoutingFlowType.getEnum(RoutingServicesProperties.getRoutingFlowType()))) {
+    		sendRoutes = true;
+    	}
     	System.out.println("################### BULK RESERVE START ##################");
-    	Map unassignedOrders = schedulerBulkReserveOrders(schedulerIds, orderMappedLst, (IServiceTimeScenarioModel)request.getProcessScenario());
-    	System.out.println("################### BULK RESERVE END ##################");
+    	BulkReserveResult result = schedulerBulkReserveOrders(schedulerIds, orderMappedLst
+    															, (IServiceTimeScenarioModel)request.getProcessScenario()
+    															, userId, currentTime, sendRoutes);
     	
-    	System.out.println("################### SEND ROUTES TO ROADNET START ##################");
-    	Map sessionDescriptionMap = sendRoutesToRoadNet(schedulerIds, userId, getCurrentTime());
-    	System.out.println("################### SEND ROUTES TO ROADNET END ##################");
+    	Map unassignedOrders = result.getUnassignedOrders();
+    	System.out.println("################### BULK RESERVE END ##################"+sendRoutes+"->"+RoutingServicesProperties.getRoutingFlowType()+"->"+EnumRoutingFlowType.getEnum(RoutingServicesProperties.getRoutingFlowType()));
+    	
+    	Map sessionDescriptionMap = null;
+    	if(sendRoutes) {
+    		sessionDescriptionMap = result.getSessionDescriptionMap();
+    	} else {
+    		System.out.println("################### SEND ROUTES TO ROADNET START ##################");
+        	sessionDescriptionMap = sendRoutesToRoadNet(schedulerIds, userId, currentTime);
+        	System.out.println("################### SEND ROUTES TO ROADNET END ##################");
+    	}    	    	
 
     	System.out.println("################### SAVE UNASSIGNED START ##################");
     	Map unassignedSaveFailed = saveUnassignedToRoadNet(sessionDescriptionMap, unassignedOrders);
@@ -166,9 +181,13 @@ public abstract class BaseProcessManager implements  IProcessManager {
 		}
     }
 
-    private Map schedulerBulkReserveOrders(Set schedulerIdLst, Map orderMappedLst, IServiceTimeScenarioModel scenario) throws  RoutingProcessException {
-
+    private BulkReserveResult schedulerBulkReserveOrders(Set schedulerIdLst, Map orderMappedLst
+    										, IServiceTimeScenarioModel scenario,
+    										String userId, String currentTime, boolean sendRoutes) throws  RoutingProcessException {
+    	
+    	BulkReserveResult result = new BulkReserveResult();
     	Map unassignedOrders = new HashMap();
+    	Map sessionDescriptionMap = new HashMap();
     	IRoutingSchedulerIdentity schedulerId = null;
     	try {
 	    	RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();
@@ -180,7 +199,13 @@ public abstract class BaseProcessManager implements  IProcessManager {
 														, RoutingServicesProperties.getDefaultRegion()
 														, RoutingServicesProperties.getDefaultLocationType()				
 														, RoutingServicesProperties.getDefaultOrderType()));
+				
 				schedulerBalanceRoutes(proxy, schedulerId, scenario);
+				
+				if(sendRoutes) {
+					sessionDescriptionMap.put(schedulerId, sendRouteToRoadNet(proxy, schedulerId, userId, currentTime));
+				}
+				
 				schedulerRemoveFromServer(proxy, schedulerId);
 			}
     	} catch (RoutingServiceException e) {
@@ -188,7 +213,9 @@ public abstract class BaseProcessManager implements  IProcessManager {
 			throw new RoutingProcessException(getErrorMessage("", schedulerId.getArea().getAreaCode())
 													,e,IIssue.PROCESS_BULKRESERVE_UNSUCCESSFUL);
 		}
-    	return unassignedOrders;
+    	result.setUnassignedOrders(unassignedOrders);
+    	result.setSessionDescriptionMap(sessionDescriptionMap);
+    	return result;
     }
     
     private void schedulerRemoveFromServer(RoutingEngineServiceProxy proxy, IRoutingSchedulerIdentity schedulerId) throws  RoutingProcessException {
@@ -231,20 +258,13 @@ public abstract class BaseProcessManager implements  IProcessManager {
     		throw new RoutingProcessException(strBuf.toString(),e,IIssue.EMPTY);
 		}
     }
-
-    private Map sendRoutesToRoadNet(Set schedulerIdLst, String userId, String currentTime) throws  RoutingProcessException {
-    	Map sessionDescriptionMap = new HashMap();
-    	IRoutingSchedulerIdentity schedulerId = null;
+    
+    private String sendRouteToRoadNet(RoutingEngineServiceProxy proxy, IRoutingSchedulerIdentity schedulerId, 
+    									String userId, String currentTime) throws  RoutingProcessException {
+    	String sessionDescription = null;    	
     	try {
-	    	RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();
-	    	Iterator tmpIterator = schedulerIdLst.iterator();
-	    	String sessionDescription = null;
-			while(tmpIterator.hasNext()) {
-				schedulerId = (IRoutingSchedulerIdentity)tmpIterator.next();
-				sessionDescription = userId+"_"+RoutingDateUtil.formatPlain(schedulerId.getDeliveryDate())+"_"+currentTime;
-				proxy.sendRoutesToRoadNet(schedulerId, sessionDescription);
-				sessionDescriptionMap.put(schedulerId, sessionDescription);
-			}
+    		sessionDescription = userId+"_"+RoutingDateUtil.formatPlain(schedulerId.getDeliveryDate())+"_"+currentTime;
+			proxy.sendRoutesToRoadNet(schedulerId, sessionDescription);
     	} catch (RoutingServiceException e) {
     		e.printStackTrace();
     		StringBuffer strBuf = new StringBuffer();
@@ -257,6 +277,20 @@ public abstract class BaseProcessManager implements  IProcessManager {
 		} catch (ParseException parseExp) {
 			parseExp.printStackTrace();
 			throw new RoutingProcessException(Issue.getMessage(IIssue.DATEPARSE_ERROR),parseExp,IIssue.PROCESS_SENDROUTES_UNSUCCESSFUL);
+		}
+    	return sessionDescription;
+    }
+    
+    private Map sendRoutesToRoadNet(Set schedulerIdLst, String userId, String currentTime) throws  RoutingProcessException {
+    	Map sessionDescriptionMap = new HashMap();
+    	IRoutingSchedulerIdentity schedulerId = null;
+    	RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();
+    	Iterator tmpIterator = schedulerIdLst.iterator();    	
+		while(tmpIterator.hasNext()) {
+			schedulerId = (IRoutingSchedulerIdentity)tmpIterator.next();
+			//sessionDescription = userId+"_"+RoutingDateUtil.formatPlain(schedulerId.getDeliveryDate())+"_"+currentTime;
+			//proxy.sendRoutesToRoadNet(schedulerId, sessionDescription);
+			sessionDescriptionMap.put(schedulerId, sendRouteToRoadNet(proxy, schedulerId, userId, currentTime));
 		}
     	return sessionDescriptionMap;
     }
@@ -361,7 +395,7 @@ public abstract class BaseProcessManager implements  IProcessManager {
     	if(schedulerId == null) {
     		schedulerId = new RoutingSchedulerIdentity();
     	}
-    	schedulerId.setRegionId("FD");
+    	schedulerId.setRegionId(RoutingServicesProperties.getDefaultRegion());
     	schedulerId.setArea(orderModel.getDeliveryInfo().getDeliveryZone().getArea());
     	schedulerId.setDeliveryDate(orderModel.getDeliveryInfo().getDeliveryDate());
     	return schedulerId;
@@ -415,5 +449,24 @@ public abstract class BaseProcessManager implements  IProcessManager {
     	} catch (Exception e) {
     		return "000000";
     	}
+    }
+    
+    class BulkReserveResult {
+    	
+    	private Map unassignedOrders;
+    	private Map sessionDescriptionMap;
+    	
+		public Map getSessionDescriptionMap() {
+			return sessionDescriptionMap;
+		}
+		public void setSessionDescriptionMap(Map sessionDescriptionMap) {
+			this.sessionDescriptionMap = sessionDescriptionMap;
+		}
+		public Map getUnassignedOrders() {
+			return unassignedOrders;
+		}
+		public void setUnassignedOrders(Map unassignedOrders) {
+			this.unassignedOrders = unassignedOrders;
+		}
     }
 }

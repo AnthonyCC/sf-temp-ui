@@ -87,8 +87,7 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 			while(iterator.hasNext()){
 
 				model = (ILocationModel)iterator.next();
-
-
+				
 				batchUpdater.update(
 				new Object[]{ model.getLocationId(),
 						model.getApartmentNumber(),model.getServiceTimeType(), model.getBuildingId()}
@@ -164,7 +163,7 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 		    	 locationQ.append(GET_LOCATION_QRY);
 
 		    	 if (hasApartment) {
-		    		 locationQ.append("AND UPPER(dl.APARTMENT) = REPLACE(REPLACE(UPPER(?),'-'),' ') ");
+		    		 locationQ.append("AND UPPER(dl.APARTMENT) = UPPER(?) ");
 		 		 } else {
 		 			locationQ.append("AND dl.APARTMENT IS NULL ");
 		 		 }

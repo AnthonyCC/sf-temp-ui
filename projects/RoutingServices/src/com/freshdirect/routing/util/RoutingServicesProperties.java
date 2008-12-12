@@ -42,6 +42,8 @@ public class RoutingServicesProperties {
 	
 	private final static String PROP_LOADBALANCE_ENABLED		= "routingservices.loadbalance.enabled";
 	
+	private final static String PROP_ROUTING_FLOWTYPE		= "routingservices.routing.flowtype";
+	
 	private static long lastRefresh = 0;
 	private final static long REFRESH_PERIOD = 5 * 60 * 1000;
 	
@@ -60,6 +62,7 @@ public class RoutingServicesProperties {
 		defaults.put(PROP_TIMEWINDOW_FACTOR, 	"5");
 		defaults.put(PROP_REMOVESCHEDULER_ENABLED, 	"true");
 		defaults.put(PROP_LOADBALANCE_ENABLED, 	"true");
+		defaults.put(PROP_ROUTING_FLOWTYPE, "LINEAR");
 		refresh();		
 	}
 
@@ -89,7 +92,11 @@ public class RoutingServicesProperties {
 	public static void set(String key, String value) {
 		config.setProperty(key, value);
 	}
-
+	
+	public static String getRoutingFlowType() {
+		return get(PROP_ROUTING_FLOWTYPE);
+	}
+	
 	public static String getTransportationSuiteProviderURL() {
 		return get(PROP_TRANSPORTATIONSUITE_PROVIDER_URL);
 	}
