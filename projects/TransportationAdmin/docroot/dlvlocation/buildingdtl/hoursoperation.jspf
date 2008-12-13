@@ -28,21 +28,64 @@
 <script language="javascript" src="js/nogray_time_picker.js"></script>
 <script language="javascript">
 	window.addEvent("domready", function (){
-		var tpMon1 = new TimePicker('timeMon1_picker', 'hoursOpenMon', 'timeMon1_toggler', {imagesPath:"images"});
-		var tpTue1 = new TimePicker('timeTue1_picker', 'hoursOpenTue', 'timeTue1_toggler', {imagesPath:"images"});
-		var tpWed1 = new TimePicker('timeWed1_picker', 'hoursOpenWed', 'timeWed1_toggler', {imagesPath:"images"});
-		var tpThu1 = new TimePicker('timeThu1_picker', 'hoursOpenThu', 'timeThu1_toggler', {imagesPath:"images"});
-		var tpFri1 = new TimePicker('timeFri1_picker', 'hoursOpenFri', 'timeFri1_toggler', {imagesPath:"images"});
-		var tpSat1 = new TimePicker('timeSat1_picker', 'hoursOpenSat', 'timeSat1_toggler', {imagesPath:"images"});
-		var tpSun1 = new TimePicker('timeSun1_picker', 'hoursOpenSun', 'timeSun1_toggler', {imagesPath:"images"});
-	    var tpMon2 = new TimePicker('timeMon2_picker', 'hoursCloseMon', 'timeMon2_toggler', {imagesPath:"images"});
-		var tpTue2 = new TimePicker('timeTue2_picker', 'hoursCloseTue', 'timeTue2_toggler', {imagesPath:"images"});
-		var tpWed2 = new TimePicker('timeWed2_picker', 'hoursCloseWed', 'timeWed2_toggler', {imagesPath:"images"});
-		var tpThu2 = new TimePicker('timeThu2_picker', 'hoursCloseThu', 'timeThu2_toggler', {imagesPath:"images"});
-		var tpFri2 = new TimePicker('timeFri2_picker', 'hoursCloseFri', 'timeFri2_toggler', {imagesPath:"images"});
-		var tpSat2 = new TimePicker('timeSat2_picker', 'hoursCloseSat', 'timeSat2_toggler', {imagesPath:"images"});
-		var tpSun2 = new TimePicker('timeSun2_picker', 'hoursCloseSun', 'timeSun2_toggler', {imagesPath:"images"});
-	});
+        var dateObjMon1 = new Date("July 21, 1983 "+document.getElementById('hoursOpenMon').value);
+        var dateObjTue1 = new Date("July 21, 1983 "+document.getElementById('hoursOpenTue').value);
+        var dateObjWed1 = new Date("July 21, 1983 "+document.getElementById('hoursOpenWed').value);
+        var dateObjThu1 = new Date("July 21, 1983 "+document.getElementById('hoursOpenThu').value);
+        var dateObjFri1 = new Date("July 21, 1983 "+document.getElementById('hoursOpenFri').value);
+        var dateObjSat1 = new Date("July 21, 1983 "+document.getElementById('hoursOpenSat').value);
+        var dateObjSun1 = new Date("July 21, 1983 "+document.getElementById('hoursOpenSun').value);
+       
+        var dateObjMon2 = new Date("July 21, 1983 "+document.getElementById('hoursCloseMon').value);
+        var dateObjTue2 = new Date("July 21, 1983 "+document.getElementById('hoursCloseTue').value);
+        var dateObjWed2 = new Date("July 21, 1983 "+document.getElementById('hoursCloseWed').value);
+        var dateObjThu2 = new Date("July 21, 1983 "+document.getElementById('hoursCloseThu').value);
+        var dateObjFri2 = new Date("July 21, 1983 "+document.getElementById('hoursCloseFri').value);
+        var dateObjSat2 = new Date("July 21, 1983 "+document.getElementById('hoursCloseSat').value);
+        var dateObjSun2 = new Date("July 21, 1983 "+document.getElementById('hoursCloseSun').value);
+        
+        var tpMon1 = new TimePicker('timeMon1_picker', 'hoursOpenMon', 'timeMon1_toggler', {imagesPath:"images",
+         							startTime: {hour:dateObjMon1.getHours(), minute: dateObjMon1.getMinutes()}});
+  		
+  		var tpTue1 = new TimePicker('timeTue1_picker', 'hoursOpenTue', 'timeTue1_toggler', {imagesPath:"images",
+  		 							startTime: {hour:dateObjTue1.getHours(), minute: dateObjTue1.getMinutes()}});
+                                       
+ 		var tpWed1 = new TimePicker('timeWed1_picker', 'hoursOpenWed', 'timeWed1_toggler', {imagesPath:"images",
+                                     startTime: {hour:dateObjWed1.getHours(), minute: dateObjWed1.getMinutes()}});
+                                     
+ 		var tpThu1 = new TimePicker('timeThu1_picker', 'hoursOpenThu', 'timeThu1_toggler', {imagesPath:"images",
+                                     startTime: {hour:dateObjThu1.getHours(), minute: dateObjThu1.getMinutes()}});
+                                     
+ 		var tpFri1 = new TimePicker('timeFri1_picker', 'hoursOpenFri', 'timeFri1_toggler', {imagesPath:"images",
+                                     startTime: {hour:dateObjFri1.getHours(), minute: dateObjFri1.getMinutes()}});
+                                     
+ 		var tpSat1 = new TimePicker('timeSat1_picker', 'hoursOpenSat', 'timeSat1_toggler', {imagesPath:"images",
+                                     startTime: {hour:dateObjSat1.getHours(), minute: dateObjSat1.getMinutes()}});
+                                     
+ 		var tpSun1 = new TimePicker('timeSun1_picker', 'hoursOpenSun', 'timeSun1_toggler', {imagesPath:"images",
+                                     startTime: {hour:dateObjSun1.getHours(), minute: dateObjSun1.getMinutes()}});
+                                     
+ 	    var tpMon2 = new TimePicker('timeMon2_picker', 'hoursCloseMon', 'timeMon2_toggler', {imagesPath:"images",
+                                     startTime: {hour:dateObjMon2.getHours(), minute: dateObjMon2.getMinutes()}});
+                                     
+ 		var tpTue2 = new TimePicker('timeTue2_picker', 'hoursCloseTue', 'timeTue2_toggler', {imagesPath:"images",
+                                     startTime: {hour:dateObjTue2.getHours(), minute: dateObjTue2.getMinutes()}});
+                                     
+ 		var tpWed2 = new TimePicker('timeWed2_picker', 'hoursCloseWed', 'timeWed2_toggler', {imagesPath:"images",
+                                     startTime: {hour:dateObjWed2.getHours(), minute: dateObjWed2.getMinutes()}});
+                                     
+ 		var tpThu2 = new TimePicker('timeThu2_picker', 'hoursCloseThu', 'timeThu2_toggler', {imagesPath:"images",
+                                     startTime: {hour:dateObjThu2.getHours(), minute: dateObjThu2.getMinutes()}});
+                                     
+ 		var tpFri2 = new TimePicker('timeFri2_picker', 'hoursCloseFri', 'timeFri2_toggler', {imagesPath:"images",
+                                     startTime: {hour:dateObjFri2.getHours(), minute: dateObjFri2.getMinutes()}});
+                                     
+ 		var tpSat2 = new TimePicker('timeSat2_picker', 'hoursCloseSat', 'timeSat2_toggler', {imagesPath:"images",
+                                     startTime: {hour:dateObjSat2.getHours(), minute: dateObjSat2.getMinutes()}});
+                                     
+ 		var tpSun2 = new TimePicker('timeSun2_picker', 'hoursCloseSun', 'timeSun2_toggler', {imagesPath:"images",
+                                     startTime: {hour:dateObjSun2.getHours(), minute: dateObjSun2.getMinutes()}});
+ 	});
 </script>
 						 						  
 						 <tr>
