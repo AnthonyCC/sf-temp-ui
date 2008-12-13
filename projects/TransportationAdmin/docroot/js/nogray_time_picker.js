@@ -476,11 +476,19 @@ var TimePicker = new Class({
 	updateField: function(){
 		if (!$defined(this.field)) return;
 		var val = "";
-		//agb- if (this.options.format24)
-		if (this.options.format24 || this.time.hour==12)   //agb+
+		if (this.options.format24)
 			var h_val = this.time.hour;
 		else
-			var h_val = (this.time.hour%12);
+		    //var h_val = (this.time.hour%12);  //agb-
+			var h_val = (this.time.hour == 12  ?  12 : this.time.hour%12);   //agb+
+		
+		
+		var keepam=true;  //agb+ block
+		if(!this.options.format24) //agb+ 
+		  if(this.time.hour == 12)
+		     keepam=false;
+		     
+			
 			
 		if (h_val < 10) val += "0";
 		val += h_val+":";
@@ -489,7 +497,9 @@ var TimePicker = new Class({
 		val += this.time.minute;
 		
 		if (!this.options.format24){
-			if (this.time.hour < 12) val += " "+this.options.lang.am;
+			if (this.time.hour < 12 ) val += " "+this.options.lang.am;
+			else if (keepam)
+			  val += " "+this.options.lang.am;
 			else val += " "+this.options.lang.pm;
 		}
 		this.field.value = val;
