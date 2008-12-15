@@ -1,0 +1,21 @@
+-- 20 rows Inserted
+insert into cust.ss_variant_assignment values('C1', current_date, 'freqbought');
+insert into cust.ss_variant_assignment values('C2', current_date, 'freqbought');
+insert into cust.ss_variant_assignment values('C3', current_date, 'freqbought');
+insert into cust.ss_variant_assignment values('C4', current_date, 'freqbought');
+insert into cust.ss_variant_assignment values('C5', current_date, 'freqbought');
+insert into cust.ss_variant_assignment values('C6', current_date, 'freqbought');
+insert into cust.ss_variant_assignment values('C7', current_date, 'freqbought');
+insert into cust.ss_variant_assignment values('C8', current_date, 'freqbought');
+insert into cust.ss_variant_assignment values('C9', current_date, 'freqbought');
+insert into cust.ss_variant_assignment values('C10', current_date, 'freqbought');
+insert into cust.ss_variant_assignment values('C11', current_date, 'freqbought');
+insert into cust.ss_variant_assignment values('C12', current_date, 'freqbought');
+insert into cust.ss_variant_assignment values('C13', current_date, 'freqbought');
+insert into cust.ss_variant_assignment values('C14', current_date, 'freqbought');
+insert into cust.ss_variant_assignment values('C15', current_date, 'freqbought');
+insert into cust.ss_variant_assignment values('C16', current_date, 'freqbought');
+insert into cust.ss_variant_assignment values('C17', current_date, 'freqbought');
+insert into cust.ss_variant_assignment values('C18', current_date, 'freqbought');
+insert into cust.ss_variant_assignment values('C19', current_date, 'nil');
+insert into cust.ss_variant_assignment values('C20', current_date, 'freqbought');
