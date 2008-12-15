@@ -128,29 +128,20 @@ public class ContentNodeTree {
     /**
      * Add node to the tree structure. 
      * @param model
-     * @return 
      */
-    public TreeElement addNode(ContentNodeModel model) {
+    public void addNode(ContentNodeModel model) {
         ContentNodeModel current = model;
         TreeElement prev = null;
-        //System.out.println("addNode "+model);
-        TreeElement firstCreated = null;
         while (current != null) {
             TreeElement element = getTreeElement(current);
             if (element != null) {
-                if (firstCreated==null) {
-                    firstCreated = element;
-                }
                 incrementParents(element);
                 if (prev != null) {
                     element.addChild(prev);
                 }
-                return firstCreated;
+                return;
             }
             element = createElement(current);
-            if (firstCreated==null) {
-                firstCreated = element;
-            }
             element.incrementChildCount();
             if (prev != null) {
                 element.addChild(prev);
@@ -159,20 +150,15 @@ public class ContentNodeTree {
             prev = element;
         }
         roots.add(prev);
-        return firstCreated;
     }
-
-    public void addChildNode(ContentNodeModel model, String childId) {
-        TreeElement parent = getTreeElement(model);
+    
+    
+    public void addChildNode(String parentNodeId, String childId) {
+        TreeElement parent = getTreeElement(parentNodeId);
         TreeElement child = getTreeElement(childId);
-        if (child!=null) {
-            if (parent==null) {
-                parent = addNode(model);
-                parent.addChild(child);
-            } else {
-                parent.addChild(child);
-                incrementParents(parent);
-            }
+        if (parent!=null && child!=null) {
+            parent.addChild(child);
+            incrementParents(parent);
         }
     }
     
