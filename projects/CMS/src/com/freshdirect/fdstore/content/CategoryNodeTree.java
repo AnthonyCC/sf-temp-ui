@@ -67,12 +67,11 @@ public class CategoryNodeTree extends ContentNodeTree {
                 ContentKey parentKey = (ContentKey) iter.next();
                 if (!primaryHome.getContentKey().equals(parentKey)) {
                     ProductModel nodeByKey = ContentFactory.getInstance().getProduct(parentKey.getId(), model.getContentKey().getId());
-                    if (nodeByKey.isDisplayable()) {
+                    if (nodeByKey.isDisplayableBasedOnCms() && nodeByKey.isSearchable()) {
                         //System.out.println("Product "+nodeByKey.getFullName() +" in "+nodeByKey.getParentNode().getFullName()+" is visible");
-                        addChildNode(parentKey.getId(), model.getContentKey().getId());
+                        addChildNode(nodeByKey.getParentNode(), model.getContentKey().getId());
                     } else {
                         //System.out.println("NOT DISPLAYABLE: Product "+nodeByKey.getFullName() +" in "+nodeByKey.getParentNode().getFullName());
-
                     }
                     
                 }
