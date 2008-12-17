@@ -238,19 +238,21 @@ public class FDURLUtil {
 	
 	public static void appendCommonParameters(StringBuffer buf, Map params ) {
 		// tracking code 
-		if (params.get("trk") != null) {
-			buf.append("&trk=" + ((String[])params.get("trk"))[0]);
+	    if (params.get("trk") != null) {
+	        buf.append("&trk=" + ((String[])params.get("trk"))[0]);
 			
-			// additional DYF parameter
+	        // additional DYF parameter
 	        if (params.get("variant") != null) {
-	        	buf.append("&variant=" + safeURLEncode(((String[])params.get("variant"))[0]) );
+	            buf.append("&variant=" + safeURLEncode(((String[])params.get("variant"))[0]) );
 	        }
 
 	        // Smart Search parameters
 	        if (params.get("trkd") != null) {
-	        	buf.append("&trkd=" + ((String[])params.get("trkd"))[0]);
-	        	buf.append("&rank=" + ((String[])params.get("rank"))[0]);
-			}
+	            buf.append("&trkd=" + ((String[])params.get("trkd"))[0]);
+	            if (params.get("rank")!=null) {
+	                buf.append("&rank=" + ((String[])params.get("rank"))[0]);
+	            }
+	        }
 	    }
 	}
 
