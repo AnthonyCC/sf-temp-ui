@@ -30,9 +30,9 @@ import com.freshdirect.cms.query.ContentKeysPredicate;
 import com.freshdirect.cms.query.RelationshipContainsAllPredicate;
 import com.freshdirect.cms.query.RelationshipContainsAnyPredicate;
 import com.freshdirect.cms.query.RelationshipLookupTransformer;
+import com.freshdirect.cms.search.SearchHit;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentSearchUtil;
-import com.freshdirect.fdstore.content.Domain;
 import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeSearchCriteria;
@@ -200,9 +200,6 @@ public class FindRecipesTag extends AbstractGetterTag {
 				recipes.add(recipe);
 			}
 		}
-		System.out.println("FindRecipesTag.getResult() andKeys = " + andKeys);
-		System.out.println("FindRecipesTag.getResult() result = " + result);
-		System.out.println("FindRecipesTag.getResult() recipes = " + recipes);
 		
 		Collections.sort(recipes, new Comparator() {
 			public int compare(Object o1, Object o2) {
@@ -239,6 +236,11 @@ public class FindRecipesTag extends AbstractGetterTag {
 		return recs;
 	}
 
+	/**
+	 * 
+	 * @param keyword
+	 * @return Set<ContentKey>
+	 */
 	private Set searchRecipes(String keyword) {
 		Collection hits = CmsManager.getInstance().search(keyword, 2000);
 
@@ -246,13 +248,14 @@ public class FindRecipesTag extends AbstractGetterTag {
 
 		String[] tokens = ContentSearchUtil.tokenizeTerm(keyword);
 
+		// TODO : refactor, this way, we load ContentNodes twice, here, and in the upper method.
 		List recipes = ContentSearchUtil.filterRelevantNodes(
 				ContentSearchUtil.resolveHits((List) hitsByType
 						.get(FDContentTypes.RECIPE)), tokens, SearchQueryStemmer.LowerCase);
 		
 		Set keys = new HashSet(recipes.size());
 		for (Iterator i=recipes.iterator(); i.hasNext(); ) {
-			Recipe r = (Recipe) i.next();
+			SearchHit r = (SearchHit) i.next();
 			keys.add(r.getContentKey());
 		}
 		
