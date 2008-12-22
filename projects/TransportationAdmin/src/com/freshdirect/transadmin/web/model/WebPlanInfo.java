@@ -417,17 +417,17 @@ public class WebPlanInfo extends BaseCommand {
             WebEmployeeInfo webEmpInfo=employeeManagerService.getEmployee(resource.getId().getResourceId());
             ResourceInfoI resourceInfo = getResourceInfo(webEmpInfo, resource);
             if(resourceReqs.containsKey(role)){
-                  
-                  if(EnumResourceType.DRIVER.equals(role)) {
+                  ResourceReq req = (ResourceReq) resourceReqs.get(role);
+                  if(EnumResourceType.DRIVER.equals(role) && driverCount < req.getMax().intValue()) {
                       this.getDrivers().remove(driverCount);
                       this.getDrivers().add(driverCount, resourceInfo);
                       driverCount++;
 
-                  } else if (EnumResourceType.HELPER.equals(role)) {
+                  } else if (EnumResourceType.HELPER.equals(role) && helperCount < req.getMax().intValue()) {
                 	  this.getHelpers().remove(helperCount);
                 	  this.getHelpers().add(helperCount, resourceInfo);
                       helperCount++;
-                  } else if (EnumResourceType.RUNNER.equals(role)) {
+                  } else if (EnumResourceType.RUNNER.equals(role) && runnerCount < req.getMax().intValue()) {
                 	  this.getRunners().remove(runnerCount);
                 	  this.getRunners().add(runnerCount, resourceInfo);
                       runnerCount++;
