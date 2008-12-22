@@ -3,6 +3,13 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
+
+<%   
+  pageContext.setAttribute("HAS_DELETEBUTTON", "false");
+  pageContext.setAttribute("HAS_ADDBUTTON", "false"); 
+%>
+
+
 <tmpl:insert template='/common/sitelayout.jsp'>
 
     <tmpl:put name='title' direct='true'>Add/Edit Zone</tmpl:put>
@@ -11,7 +18,7 @@
     <br/> 
     <div align="center">
       <form:form commandName = "zoneForm" method="post">
-      <form:hidden path="zoneId"/>
+      <form:hidden path="zoneCode"/>
       
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
           <tr>
@@ -25,38 +32,26 @@
             <td class="screencontent">
               <table class="forms1">          
                 <tr>
-                  <td>Zone Number</td>
+                  <td>Name</td>
                   <td>                  
-                    <form:input maxlength="50" size="30" path="zoneNumber" />
+                    <form:input maxlength="50" size="30" path="name" readOnly="true" />
                 </td>
                 <td>
-                  &nbsp;<form:errors path="zoneNumber" />
+                  &nbsp;<form:errors path="name" />
                 </td>
                </tr>
                              
-               <tr>
-                  <td>Supervisor</td>
-                  <td> 
-                  <form:select path="supervisor">
-                        <form:option value="null" label="--Please Select Supervisor"/>
-                    <form:options items="${supervisors}" itemLabel="name" itemValue="employeeId" />
-                   </form:select>
-                </td>
-                <td>
-                  &nbsp;<form:errors path="supervisor" />
-                </td>
-               </tr>
                
                <tr>
                   <td>Zone Type</td>
                   <td> 
-                  <form:select path="zoneType">
+                  <form:select path="trnZoneType">
                         <form:option value="null" label="--Please Select Zone Type"/>
                     <form:options items="${zonetypes}" itemLabel="name" itemValue="zoneTypeId" />
                    </form:select>
                 </td>
                 <td>
-                  &nbsp;<form:errors path="zoneType" />
+                  &nbsp;<form:errors path="trnZoneType" />
                 </td>
                </tr>
                
@@ -70,8 +65,31 @@
                 </td>
                 <td>
                   &nbsp;<form:errors path="area" />
+                </td>                                
+               </tr>  
+
+               <tr>
+                  <td>Region</td>
+                  <td> 
+                  <form:select path="region">
+                        <form:option value="null" label="--Please Select Region"/>
+                    <form:options items="${regions}" itemLabel="name" itemValue="code" />
+                   </form:select>
                 </td>
-               </tr>                           
+                <td>
+                  &nbsp;<form:errors path="region" />
+                </td>
+               </tr>
+
+               <tr>
+                  <td>Unattended Delivery</td>
+                  <td>
+                  <form:checkbox path="unattended" value="X"/>
+                  </td>
+                <td>
+                  &nbsp;<form:errors path="unattended" />
+                </td>
+               </tr>
                
               <tr><td colspan="3">&nbsp;</td></tr>
               <tr>

@@ -6,7 +6,8 @@ import org.extremecomponents.table.interceptor.RowInterceptor;
 import org.extremecomponents.table.view.html.BuilderConstants;
 
 import com.freshdirect.transadmin.constants.EnumDispatchStatusType;
-import com.freshdirect.transadmin.model.TrnDispatch;
+import com.freshdirect.transadmin.model.Dispatch;
+import com.freshdirect.transadmin.web.model.DispatchCommand;
 
 public class DispatchObsoleteRowInterceptor implements RowInterceptor {
 	
@@ -14,11 +15,12 @@ public class DispatchObsoleteRowInterceptor implements RowInterceptor {
     } 
 
     public void modifyRowAttributes(TableModel model, Row row) {
-    	TrnDispatch rowEntity = (TrnDispatch) model.getCurrentRowBean();        
+    	System.out.println("Class name %%%%%%%%%%%%%%%%%%% "+model.getCurrentRowBean().getClass().getName());
+    	DispatchCommand rowEntity = (DispatchCommand) model.getCurrentRowBean();        
         if (rowEntity != null && rowEntity.isObsoleteEntity()) {
             row.setStyleClass("obsoleteRow");
         } else {
-        	if(EnumDispatchStatusType.CONFIRMED.getName().equals(rowEntity.getStatus())) {
+        	if(rowEntity.isConfirmed()) {
         		row.setStyleClass("confirmedRow");
         	}
         	else if(model.getRowHandler().isRowEven()) {

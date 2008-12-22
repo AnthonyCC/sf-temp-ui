@@ -310,7 +310,8 @@ public class DlvManagerDAO {
 		ps.setInt(1, EnumReservationStatus.CANCELED.getCode());
 		ps.setInt(2, EnumReservationStatus.EXPIRED.getCode());
 		ps.setInt(3, EnumReservationStatus.CANCELED.getCode());
-		ps.setInt(4, EnumReservationStatus.EXPIRED.getCode());
+		ps.setInt(4, EnumReservationStatus.EXPIRED.getCode());				
+		
 		ps.setString(5, timeslotId);
 		ResultSet rs = ps.executeQuery();
 
@@ -406,7 +407,7 @@ public class DlvManagerDAO {
 
 	private static final String ZONE_CODE =
 		"select rd.id, rd.region_id, rd.start_date, rd.delivery_charges, z.id zone_id, z.zone_code, zd.unattended "
-			+ "from dlv.region r, dlv.region_data rd, dlv.zone z, dlv.zone_desc zd "
+			+ "from dlv.region r, dlv.region_data rd, dlv.zone z, transp.zone  zd "
 			+ "where zd.zone_code = z.zone_code and rd.id = z.region_data_id and rd.region_id = r.id and r.service_type = ? "
 			+ "and rd.start_date = (select max(start_date) from dlv.region_data where start_date <= ? and region_id=r.id) "
 			+ "and mdsys.sdo_relate(z.geoloc, mdsys.sdo_geometry(2001, 8265, mdsys.sdo_point_type(?, ?,NULL), NULL, NULL), 'mask=ANYINTERACT querytype=WINDOW') ='TRUE' "
@@ -420,7 +421,8 @@ public class DlvManagerDAO {
 		}
 
 		DlvZoneInfoModel response;
-
+		
+		
 		PreparedStatement ps = conn.prepareStatement(ZONE_CODE);
 		ps.setString(1, address.getServiceType().getName());
 		ps.setDate(2, new java.sql.Date(date.getTime()));

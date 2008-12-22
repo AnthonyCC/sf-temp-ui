@@ -44,7 +44,12 @@
                    <td colspan="4" align="center">
                      <input type = "button" value="&nbsp;Go&nbsp;" 
                       onclick="javascript:doCompositeLink('daterange','zone','plan.do')" />
-                </td>     
+                </td>    
+
+                <td colspan="4" align="center">
+                     <input type = "button" value="&nbsp;Go&nbsp;" 
+                      onclick="javascript:doCompositeLink('daterange','zone','autoDispatch.do')" />
+                </td>    
                       
               </tr>
               </table>        
@@ -77,13 +82,29 @@
                     filterable="false" sortable="false" cell="selectcol"
                     property="planId" />              
               <ec:column cell="date" property="planDate" sortable="true" title="Date"/>
-              <ec:column property="dispatchDay" sortable="true" title="Day"/>
-              <ec:column alias="trnZonezoneNumber" property="trnZone.zoneNumber" title="Zone"/>
+              <ec:column property="planDay" sortable="true" title="Day"/>
+              <ec:column alias="zoneCode" property="zoneName" title="Zone"/>
+              <ec:column alias="region" property="regionCode" title="Region"/>
+              <ec:column property="supervisorName"   title="Supervisor" />
+              <ec:column cell="date" format="hh:mm aaa" alias="startTime" property="startTime" title="Start Time"/>
+              <ec:column cell="date" format="hh:mm aaa" alias="firstDeliveryTime" property="reportTime" title="First Dlv"/>
+
+              <ec:column property="drivers"  cell="com.freshdirect.transadmin.web.ui.FDPlanResourceCell" title="Driver" alias="001"/>
+              <ec:column property="helpers"  cell="com.freshdirect.transadmin.web.ui.FDPlanResourceCell" title="Helper" alias="002"/>
+              <ec:column property="runners"  cell="com.freshdirect.transadmin.web.ui.FDPlanResourceCell" title="Runner" alias="003"/>
+              <ec:column property="sequence"  title="Rank"/>
+            <%--<ec:column property="zonetypeResources" headerCell="com.freshdirect.transadmin.web.ui.FDCompositeResourceHeaderCell" cell="resource" title="Driver" alias="001"/>
+            <ec:column property="zonetypeResources" headerCell="com.freshdirect.transadmin.web.ui.FDCompositeResourceHeaderCell" cell="resource" title="Helper" alias="002"/>
+            <ec:column property="zonetypeResources" headerCell="com.freshdirect.transadmin.web.ui.FDCompositeResourceHeaderCell" cell="resource" title="Runner" alias="003"/>--%>                      
+
+              <%--<ec:column alias="supervisor" property="region.code" title="Supervisor"/>
+              
               <ec:column alias="trnTimeslotslotName" sortable="true" property="trnTimeslot" title="Start Time"/>
               <ec:column alias="trnEndTimeslotslotName" property="trnEndTimeslot.slotName" title="End Time"/>
               <ec:column alias="trnDrivername" property="trnDriver.name" title="Driver"/>
               <ec:column alias="trnPrimaryHelpername" property="trnPrimaryHelper.name" title="Helper1"/>
-              <ec:column alias="trnSecondaryHelpername" property="trnSecondaryHelper.name" title="Helper2"/>
+              <ec:column alias="trnSecondaryHelpername" property="trnSecondaryHelper.name" title="Helper2"/>--%>
+              
             </ec:row>
           </ec:table>
        </form>  

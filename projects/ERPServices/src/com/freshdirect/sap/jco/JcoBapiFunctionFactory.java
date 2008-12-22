@@ -14,11 +14,13 @@ import com.freshdirect.sap.bapi.BapiCreateCustomer;
 import com.freshdirect.sap.bapi.BapiFactory;
 import com.freshdirect.sap.bapi.BapiMaterialAvailability;
 import com.freshdirect.sap.bapi.BapiPostReturnI;
+import com.freshdirect.sap.bapi.BapiRouteMasterInfo;
 import com.freshdirect.sap.bapi.BapiSalesOrderCancel;
 import com.freshdirect.sap.bapi.BapiSalesOrderChange;
 import com.freshdirect.sap.bapi.BapiSalesOrderCreate;
 import com.freshdirect.sap.bapi.BapiSalesOrderSimulate;
 import com.freshdirect.sap.bapi.BapiSendSettlement;
+import com.freshdirect.sap.bapi.BapiTruckMasterInfo;
 
 
 /**
@@ -51,6 +53,10 @@ public class JcoBapiFunctionFactory extends BapiFactory {
 		return new JcoBapiMaterialAvailability();
 	}
 	
+	public BapiTruckMasterInfo getBapiTruckMasterInfoBuilder() {
+		return new JcoBapiTruckMasterInfo();
+	}
+	
 	public BapiSalesOrderSimulate getSalesOrderSimulateBuilder() {
 		return new JcoBapiSalesOrderSimulate(false);
 	}
@@ -77,6 +83,11 @@ public class JcoBapiFunctionFactory extends BapiFactory {
 	
 	public BapiCartonInfo getCartonInfoProvider() {
 		return new JcoBapiCartonInfo();
+	}
+
+	public BapiRouteMasterInfo getBapiRouteMasterInfoBuilder() {
+		// TODO Auto-generated method stub
+		return new JcoBapiRouteMasterInfo();
 	}
 	
 	/*public BapiSubscriptionOrderCreate getSubscriptionOrderCreateBuilder() {

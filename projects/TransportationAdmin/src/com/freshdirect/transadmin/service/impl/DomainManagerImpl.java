@@ -1,19 +1,30 @@
 package com.freshdirect.transadmin.service.impl;
 
 import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
+import com.freshdirect.customer.ErpRouteMasterInfo;
 
+import com.freshdirect.customer.ErpTruckMasterInfo;
 import com.freshdirect.routing.constants.EnumBalanceBy;
 import com.freshdirect.transadmin.dao.BaseManagerDaoI;
 import com.freshdirect.transadmin.dao.DomainManagerDaoI;
+import com.freshdirect.transadmin.model.DispositionType;
+import com.freshdirect.transadmin.model.FDRouteMasterInfo;
+import com.freshdirect.transadmin.model.Region;
+import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
-import com.freshdirect.transadmin.model.TrnEmployee;
-import com.freshdirect.transadmin.model.TrnRoute;
 import com.freshdirect.transadmin.model.TrnTruck;
-import com.freshdirect.transadmin.model.TrnZone;
 import com.freshdirect.transadmin.model.TrnZoneType;
+import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.DomainManagerI;
+import com.freshdirect.transadmin.util.EnumCachedDataType;
+import com.freshdirect.transadmin.util.ModelUtil;
+import com.freshdirect.transadmin.util.TransAdminCacheManager;
 
 public class DomainManagerImpl  
 		extends BaseManagerImpl  implements DomainManagerI {
@@ -37,6 +48,7 @@ public class DomainManagerImpl
 		return getDomainManagerDao().getEmployees();
 	}
 	
+	
 	public Collection getZones() {
 		
 		return getDomainManagerDao().getZones();
@@ -51,9 +63,9 @@ public class DomainManagerImpl
 		return getDomainManagerDao().getMarkedAreas();
 	}
 	
-	public Collection getRoutes() {
+	public Collection getAdHocRoutes() {
 		
-		return getDomainManagerDao().getRoutes();
+		return getDomainManagerDao().getAdHocRoutes();
 	}
 	
 	public Collection getRouteForZone(String zoneId) {
@@ -61,14 +73,13 @@ public class DomainManagerImpl
 	}
 	
 	public Collection getTrucks() {
+		// get the data from CacheManager
+		// if data does not exist then get the data from sap and add it in cache
 		
-		return getDomainManagerDao().getTrucks();
+		return TransAdminCacheManager.getInstance().getAllTruckMasterInfo(); 
 	}
 	
-	public Collection getEmployeeJobType() {
-		
-		return getDomainManagerDao().getEmployeeJobType();
-	}
+
 	
 	public Collection getTimeSlots() {
 		return getDomainManagerDao().getTimeSlots();
@@ -91,16 +102,14 @@ public class DomainManagerImpl
 	}
 		
 	
-	public TrnEmployee getEmployee(String id)  {
-		return getDomainManagerDao().getEmployee(id);	
-	}
 	
-	public TrnZone getZone(String id)  {
+	
+	public Zone getZone(String id)  {
 		return getDomainManagerDao().getZone(id);	
 	}
 	
-	public TrnRoute getRoute(String id)  {
-		return getDomainManagerDao().getRoute(id);	
+	public TrnAdHocRoute getAdHocRoute(String id)  {
+		return getDomainManagerDao().getAdHocRoute(id);	
 	}
 	
 	public TrnTruck getTruck(String id)  {
@@ -135,10 +144,87 @@ public class DomainManagerImpl
 	public Collection getDeliveryModels() {
 		return getDomainManagerDao().getDeliveryModels();
 	}
+
+	public Collection getRoutes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 	public Collection getBalanceBys() {
 		return EnumBalanceBy.getEnumList();
 	}
 		
 	
+	
+	public Collection getZonetypeResources(String zoneTypeId) {
+		return getDomainManagerDao().getZonetypeResources(zoneTypeId);
+	}
+
+	public Collection getRegions() {
+		// TODO Auto-generated method stub
+		return getDomainManagerDao().getRegions();
+	}
+
+	public Collection getDispositionTypes() {
+		// TODO Auto-generated method stub
+		return getDomainManagerDao().getDispositionTypes();
+	}
+	
+	public DispositionType getDispositionType(String code) {
+		return getDomainManagerDao().getDispositionType(code);
+	}
+	
+	public Region getRegion(String code) {
+		// TODO Auto-generated method stub
+		return getDomainManagerDao().getRegion(code);
+	}
+
+	public void refreshCachedData(EnumCachedDataType dataType) {
+		// TODO Auto-generated method stub
+		TransAdminCacheManager.getInstance().refreshCacheData(dataType); 
+		
+	}
+
+	public Collection getRoutes(String requestedDate) {
+		// TODO Auto-generated method stub
+		return TransAdminCacheManager.getInstance().getAllRouteMasterInfo(requestedDate); 
+	}
+
+	public Collection getEmployeeJobType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void saveZoneType(TrnZoneType zoneType) {
+		getDomainManagerDao().saveZoneType(zoneType);
+		
+	}
+	public FDRouteMasterInfo getRouteMasterInfo(String routeNo, Date requestedDate){
+		ErpRouteMasterInfo routeInfo = TransAdminCacheManager.getInstance().getRouteMasterInfo(routeNo, requestedDate);
+		if (routeInfo != null){
+			return new FDRouteMasterInfo(routeInfo);
+		}else {
+			return null;
+		}
+		
+	}
+
+	public Collection getAllRoutes(String requestedDate) {
+		
+		Collection validRoutes= getRoutes(requestedDate);
+		Collection adHocRoutes = getAdHocRoutes();
+		return ModelUtil.mergeRoutes(validRoutes, adHocRoutes);
+	}
+	
+	public Collection getTruckNumbers() {
+		Set truckNumbers = new HashSet();
+		Collection routes = getTrucks();
+		Iterator iter = routes.iterator();
+		while(iter.hasNext()){
+			ErpTruckMasterInfo truckInfo = (ErpTruckMasterInfo) iter.next();
+			truckNumbers.add(truckInfo.getTruckNumber());
+		}
+		return truckNumbers;
+	} 
 }

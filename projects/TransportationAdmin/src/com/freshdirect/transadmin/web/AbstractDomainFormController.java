@@ -20,6 +20,9 @@ public abstract class AbstractDomainFormController extends AbstractFormControlle
 	}
 	
 	public List saveDomainObject(Object domainObject) {
+		
+		System.out.println("trying to save the domain object"+domainObject);
+		
 		List errorList = null;
 		try {
 			getDomainManagerService().saveEntity(domainObject);

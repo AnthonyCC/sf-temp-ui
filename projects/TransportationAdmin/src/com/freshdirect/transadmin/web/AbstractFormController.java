@@ -26,7 +26,7 @@ public abstract class AbstractFormController extends BaseFormController {
 	protected ModelAndView onSubmit(HttpServletRequest request,
 			HttpServletResponse response, Object command, BindException errors)
 			throws Exception {
-				
+		System.out.println("On submit here ^^^^^^^^^^^^");
 		String messageKey = isNew(command) ? "app.actionmessage.101"
 				: "app.actionmessage.102";
 

@@ -20,4 +20,10 @@ public abstract class BaseManagerImpl implements BaseManagerI {
 	public void saveEntityList(Collection entity) {
 		getBaseManageDao().saveEntityList(entity);
 	}
+	
+	public void saveEntityEx(Object entity) {
+		getBaseManageDao().saveEntityEx(entity);
+		
+	}
+	
 }

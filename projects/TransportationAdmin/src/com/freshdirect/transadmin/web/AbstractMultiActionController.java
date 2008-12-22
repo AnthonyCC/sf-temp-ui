@@ -39,7 +39,7 @@ public class AbstractMultiActionController extends MultiActionController impleme
 		return null;
 	}
 	
-	protected String getCurrentDate(String dispDate) {
+	protected String getServerDate(String dispDate) {
 		String retDate = null;
 		try {
 			retDate = TransStringUtil.getServerDate(dispDate);

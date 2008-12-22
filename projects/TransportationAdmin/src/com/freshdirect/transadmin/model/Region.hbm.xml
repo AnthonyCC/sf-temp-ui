@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Nov 18, 2008 3:11:24 PM by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping schema="transp">
+    <class name="com.freshdirect.transadmin.model.Region" table="REGION">
+        <id name="code" type="string">
+            <column name="CODE" length="16" />
+            <generator class="assigned" />
+        </id>
+        <property name="name" type="string">
+            <column name="NAME" length="20" not-null="true" />
+        </property>
+        <property name="description" type="string">
+            <column name="DESCRIPTION" length="60" />
+        </property>
+        <property name="obsolete" type="string">
+            <column name="OBSOLETE" length="1" />
+        </property>        
+        <set name="plans" inverse="true">
+            <key>
+                <column name="REGION" length="16" not-null="true" />
+            </key>
+            <one-to-many class="com.freshdirect.transadmin.model.Plan" />
+        </set>
+        <set name="zones" inverse="true">
+            <key>
+                <column name="REGION" length="16" not-null="true" />
+            </key>
+            <one-to-many class="com.freshdirect.transadmin.model.Zone" />
+        </set>
+    </class>
+</hibernate-mapping>

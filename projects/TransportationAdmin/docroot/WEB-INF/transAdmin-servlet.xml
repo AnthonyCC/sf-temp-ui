@@ -27,16 +27,22 @@
 		<property name="mappings">
 			<props>   				
  		 	    <prop key="/welcome.do">domainController</prop>
- 		 	    <prop key="/employee.do">domainController</prop>					                
- 		 	    <prop key="/route.do">domainController</prop>					                
+ 		 	    <prop key="/autoDispatch.do">dispatchController</prop>
+ 		 	    <prop key="/employee.do">domainController</prop>					            
+ 		 	    <prop key="/xEmployee.do">domainController</prop>					            
+	 	     	<prop key="/route.do">domainController</prop>					                    
+ 		 	    <prop key="/adHocRoute.do">domainController</prop>					                
  		 	    <prop key="/zone.do">domainController</prop>					                
+ 		 	    <prop key="/region.do">domainController</prop>					                
  		 	    <prop key="/truck.do">domainController</prop>		                
  		 	    <prop key="/editemployee.do">employeeFormController</prop>
  		 	    <prop key="/deleteemployee.do">domainController</prop>
- 		 	    <prop key="/editroute.do">routeFormController</prop>
- 		 	    <prop key="/deleteroute.do">domainController</prop>
+ 		 	    <prop key="/editAdHocRoute.do">routeFormController</prop>
+ 		 	    <prop key="/deleteAdHocRoute.do">domainController</prop>
  		 	    <prop key="/editzone.do">zoneFormController</prop>
+ 		 	    <prop key="/editregion.do">regionFormController</prop>
  		 	    <prop key="/deletezone.do">domainController</prop>
+ 		 	    <prop key="/deleteregion.do">domainController</prop>
  		 	    <prop key="/edittruck.do">truckFormController</prop>
  		 	    <prop key="/deletetruck.do">domainController</prop>
  		 	    <prop key="/plan.do">dispatchController</prop>
@@ -44,7 +50,7 @@
  		 	    <prop key="/editplan.do">planningFormController</prop> 		 	    
  		 	    <prop key="/assignment.do">assignmentFormController</prop>
  		 	    <prop key="/dispatch.do">dispatchController</prop>
- 		 	    <prop key="/dispatchsummary.do">dispatchController</prop>
+ 		 	    <prop key="/refreshRoute.do">dispatchController</prop>
  		 	    <prop key="/deletedispatch.do">dispatchController</prop>
  		 	    <prop key="/editdispatch.do">dispatchFormController</prop>
  		 	    <prop key="/confirmdispatch.do">dispatchController</prop>
@@ -99,6 +105,7 @@
 	<bean id="domainController" class="com.freshdirect.transadmin.web.DomainController">
 		<property name="methodNameResolver" ref="transAdminControllerResolver"/>
         <property name="domainManagerService" ref="domainManager"/>
+        <property name="employeeManagerService" ref="employeeManager"/>
         <property name="locationManagerService" ref="locationManager"/>
 	</bean>
 	
@@ -111,6 +118,8 @@
 	<bean id="dispatchController" class="com.freshdirect.transadmin.web.DispatchController">
 		<property name="methodNameResolver" ref="transAdminControllerResolver"/>
         <property name="dispatchManagerService" ref="dispatchManager"/>
+        <property name="employeeManagerService" ref="employeeManager"/>
+        <property name="domainManagerService" ref="domainManager"/>
 	</bean>
 	
 	<bean id="locationController" class="com.freshdirect.transadmin.web.LocationController">
@@ -126,18 +135,23 @@
 		<property name="mappings">
 		<props>			
 			<prop key="/welcome.do">welcomeHandler</prop>
-			<prop key="/employee.do">employeeHandler</prop>					                
- 		 	<prop key="/route.do">routeHandler</prop>					                
- 		 	<prop key="/zone.do">zoneHandler</prop>					                
+			<prop key="/employee.do">employeeHandler</prop>	
+			<prop key="/xEmployee.do">xEmployeeHandler</prop>								                
+			<prop key="/route.do">routeHandler</prop>		
+			<prop key="/autoDispatch.do">autoDispatchHandler</prop>					
+ 		 	<prop key="/adHocRoute.do">adHocRouteHandler</prop>					                
+ 		 	<prop key="/zone.do">zoneHandler</prop>		
+			<prop key="/region.do">regionHandler</prop>		 		 				                
  		 	<prop key="/truck.do">truckHandler</prop>
  		 	<prop key="/deleteemployee.do">employeeDeleteHandler</prop>
- 		 	<prop key="/deleteroute.do">routeDeleteHandler</prop>	
+ 		 	<prop key="/deleteAdHocRoute.do">routeAdHocDeleteHandler</prop>	
  		 	<prop key="/deletezone.do">zoneDeleteHandler</prop>	
+ 		 	<prop key="/deleteregion.do">regionDeleteHandler</prop>	
  		 	<prop key="/deletetruck.do">truckDeleteHandler</prop>
  		 	<prop key="/plan.do">planHandler</prop>			      
  		 	<prop key="/deleteplan.do">planDeleteHandler</prop>
- 		 	<prop key="/dispatch.do">dispatchHandler</prop>			      
- 		 	<prop key="/dispatchsummary.do">dispatchSummaryHandler</prop>			      
+ 		 	<prop key="/dispatch.do">dispatchHandler</prop>
+ 		 	<prop key="/refreshRoute.do">routeRefreshHandler</prop>				      
  		 	<prop key="/deletedispatch.do">dispatchDeleteHandler</prop>
  		 	<prop key="/confirmdispatch.do">dispatchConfirmHandler</prop>
  		 	<prop key="/welcomedlvlocation.do">welcomeDlvLocationHandler</prop>
@@ -171,10 +185,10 @@
 	</bean>
        	
 	<bean id="employeeFormController" class="com.freshdirect.transadmin.web.EmployeeFormController">
-		<property name="domainManagerService" ref="domainManager"/>
+		<property name="employeeManagerService" ref="employeeManagerService"/>
 		<property name="sessionForm" value="true"/>
         <property name="commandName" value="employeeForm"/>
-        <property name="commandClass" value="com.freshdirect.transadmin.model.TrnEmployee"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.web.model.WebEmployeeInfo"/>
         <property name="validator" ref="employeeValidator"/>
         <property name="successView" value="employeeEdit" />
         <property name="formView" value="employeeEdit" />
@@ -184,17 +198,29 @@
 		<property name="domainManagerService" ref="domainManager"/>
 		<property name="sessionForm" value="true"/>
         <property name="commandName" value="zoneForm"/>
-        <property name="commandClass" value="com.freshdirect.transadmin.model.TrnZone"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.model.Zone"/>
         <property name="validator" ref="zoneValidator"/>
         <property name="successView" value="zoneEdit" />
         <property name="formView" value="zoneEdit" />
 	</bean>
 	
-	<bean id="zoneTypeFormController" class="com.freshdirect.transadmin.web.ZoneTypeFormController">
+	<bean id="regionFormController" class="com.freshdirect.transadmin.web.RegionFormController">
 		<property name="domainManagerService" ref="domainManager"/>
 		<property name="sessionForm" value="true"/>
+        <property name="commandName" value="regionForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.model.Region"/>
+        <property name="validator" ref="regionValidator"/>
+        <property name="successView" value="regionEdit" />
+        <property name="formView" value="regionEdit" />
+	</bean>
+	
+	
+	<bean id="zoneTypeFormController" class="com.freshdirect.transadmin.web.ZoneTypeFormController">
+		<property name="domainManagerService" ref="domainManager"/>
+		<property name="employeeManagerService" ref="employeeManager"/>
+		<property name="sessionForm" value="true"/>
         <property name="commandName" value="zoneTypeForm"/>
-        <property name="commandClass" value="com.freshdirect.transadmin.model.TrnZoneType"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.web.model.ZoneTypeCommand"/>
         <property name="validator" ref="zoneTypeValidator"/>
         <property name="successView" value="zoneTypeEdit" />
         <property name="formView" value="zoneTypeEdit" />
@@ -234,7 +260,7 @@
 		<property name="domainManagerService" ref="domainManager"/>
 		<property name="sessionForm" value="true"/>
         <property name="commandName" value="routeForm"/>
-        <property name="commandClass" value="com.freshdirect.transadmin.model.TrnRoute"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.model.TrnAdHocRoute"/>
         <property name="validator" ref="routeValidator"/>
         <property name="successView" value="routeEdit" />
         <property name="formView" value="routeEdit" />
@@ -243,10 +269,11 @@
 	<bean id="planningFormController" class="com.freshdirect.transadmin.web.PlanningFormController">
 		<property name="domainManagerService" ref="domainManager"/>
 		<property name="dispatchManagerService" ref="dispatchManager"/>
+        <property name="employeeManagerService" ref="employeeManager"/>
 		<property name="sessionForm" value="true"/>
         <property name="commandName" value="planForm"/>
-        <property name="commandClass" value="com.freshdirect.transadmin.model.TrnDispatchPlan"/>
-        <property name="validator" ref="planValidator"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.web.model.WebPlanInfo"/>
+        <property name="validator" ref="planValidator"/> 
         <property name="successView" value="planEdit" />
         <property name="formView" value="planEdit" />
 	</bean>
@@ -254,9 +281,10 @@
 	<bean id="dispatchFormController" class="com.freshdirect.transadmin.web.DispatchFormController">
 		<property name="domainManagerService" ref="domainManager"/>
 		<property name="dispatchManagerService" ref="dispatchManager"/>
+		 <property name="employeeManagerService" ref="employeeManager"/>
 		<property name="sessionForm" value="true"/>
         <property name="commandName" value="dispatchForm"/>
-        <property name="commandClass" value="com.freshdirect.transadmin.model.TrnDispatch"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.web.model.DispatchCommand"/>
         <property name="validator" ref="dispatchValidator"/>
         <property name="successView" value="dispatchEdit" />
         <property name="formView" value="dispatchEdit" />
@@ -276,7 +304,7 @@
 	<bean id="copyPlanFormController" class="com.freshdirect.transadmin.web.CopyPlanFormController">		
 		<property name="domainManagerService" ref="domainManager"/>
 		<property name="dispatchManagerService" ref="dispatchManager"/>
-		<property name="sessionForm" value="true"/>
+        <property name="sessionForm" value="true"/>
         <property name="commandName" value="copyPlanForm"/>
         <property name="commandClass" value="com.freshdirect.transadmin.web.model.CopyPlanCommand"/>
         <property name="validator" ref="copyPlanValidator"/>
@@ -379,9 +407,10 @@
 	    
 	<bean id="employeeValidator" class="com.freshdirect.transadmin.web.validation.EmployeeValidator"/>
 	<bean id="zoneValidator" class="com.freshdirect.transadmin.web.validation.ZoneValidator"/>
+	<bean id="regionValidator" class="com.freshdirect.transadmin.web.validation.RegionValidator"/>	
 	<bean id="zoneTypeValidator" class="com.freshdirect.transadmin.web.validation.ZoneTypeValidator"/>
 	<bean id="truckValidator" class="com.freshdirect.transadmin.web.validation.TruckValidator"/>
-	<bean id="routeValidator" class="com.freshdirect.transadmin.web.validation.RouteValidator"/>
+	<bean id="routeValidator" class="com.freshdirect.transadmin.web.validation.RouteAdHocValidator"/>
 	<bean id="planValidator" class="com.freshdirect.transadmin.web.validation.PlanValidator"/>
 	<bean id="dispatchValidator" class="com.freshdirect.transadmin.web.validation.DispatchValidator"/>
 	<bean id="copyPlanValidator" class="com.freshdirect.transadmin.web.validation.CopyPlanValidator"/>

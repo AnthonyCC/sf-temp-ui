@@ -1,5 +1,6 @@
 package com.freshdirect.transadmin.web;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -23,7 +24,9 @@ public class BaseFormController extends SimpleFormController {
 	protected void initBinder(HttpServletRequest request,
 			ServletRequestDataBinder dataBinder) throws Exception {				
 		CustomDateEditor editor = new CustomDateEditor(TransStringUtil.dateFormat, true);
-		dataBinder.registerCustomEditor(Date.class, editor);		
+		dataBinder.registerCustomEditor(Date.class, editor);	
+		dataBinder.registerCustomEditor(TimeOfDay.class, new TimeOfDayPropertyEditor());
+            
 		dataBinder.registerCustomEditor(TimeOfDay.class, new TimeOfDayPropertyEditor());
            
 	}
@@ -72,5 +75,14 @@ public class BaseFormController extends SimpleFormController {
 		return showForm(request, response, errors);
 	}
 
+	protected String getServerDate(String dispDate) {
+		String retDate = null;
+		try {
+			retDate = TransStringUtil.getServerDate(dispDate);
+		} catch(ParseException parExp) {
+			parExp.printStackTrace();
+		}
+		return retDate;
+	}
 	
 }

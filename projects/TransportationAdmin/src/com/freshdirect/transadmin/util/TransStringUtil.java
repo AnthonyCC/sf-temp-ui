@@ -21,7 +21,9 @@ public class TransStringUtil {
 			
 	public static DateFormat dayFormat = new SimpleDateFormat("EEEE");
 	
-	public static DateFormat timeFormat = new SimpleDateFormat("hh:mm aaa");
+	public static DateFormat timeFormat = new SimpleDateFormat("kk:mm:ss");
+	
+	public static DateFormat serverTimeFormat = new SimpleDateFormat("hh:mm aaa");
 	
 	private static Calendar clientCalendar = Calendar.getInstance();
 	
@@ -64,7 +66,9 @@ public class TransStringUtil {
         return str.substring(pos + separator.length());
 	}
 	public static boolean isEmpty(String str) {
-		return str == null || str.length() == 0;
+		
+		return str == null || str.length() == 0||"null".equalsIgnoreCase(str);
+		
 	}
 		
 	public static String getCurrentDate() {		
@@ -79,12 +83,28 @@ public class TransStringUtil {
         return serverDateFormat.format((Date)dateFormat.parse(clientDate));
 	}
 	
+	public static String getServerTime(Date clientDate) throws ParseException {       
+        return serverTimeFormat.format(clientDate);
+	}
+	
+	public static Date getServerTime(String clientDate) throws ParseException {       
+        return (Date)serverTimeFormat.parse(clientDate);
+	}
+	
 	public static Date getDate(String dateString) throws ParseException {		
         return (Date)dateFormat.parse(dateString);
 	}
 	
 	public static String getDate(Date dateVal) throws ParseException {		
         return dateFormat.format(dateVal);
+	}
+	
+	public static String getTime(Date dateVal) throws ParseException {		
+        return (String)timeFormat.format(dateVal);
+	}
+	
+	public static Date getTime(String dateString) throws ParseException {		
+        return (Date)timeFormat.parse(dateString);
 	}
 	
 	public static boolean compareDate(Date dateVal1, Date dateVal2) {

@@ -15,4 +15,6 @@ public interface BaseManagerDaoI {
 	Collection getDataList(String dataTable) throws DataAccessException;
 	
 	Object getEntityById(String table, String keyCol, String id) throws DataAccessException;
+	
+	void saveEntityEx(Object entity) throws DataAccessException;
 }

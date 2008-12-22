@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Nov 18, 2008 3:11:24 PM by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping schema="transp">
+    <class name="com.freshdirect.transadmin.model.PlanResource" table="PLAN_RESOURCE">
+        <composite-id name="id" class="com.freshdirect.transadmin.model.ResourceId">
+            <key-property name="contextId" type="string">
+                <column name="PLAN_ID" length="10" />
+            </key-property>
+            <key-property name="resourceId" type="string">
+                <column name="RESOURCE_ID" length="10" />
+            </key-property>
+        </composite-id>
+        <many-to-one name="employeeRoleType" class="com.freshdirect.transadmin.model.EmployeeRoleType" lazy="false">
+            <column name="ROLE" length="16" not-null="true" />
+        </many-to-one>
+        
+    </class>
+</hibernate-mapping>

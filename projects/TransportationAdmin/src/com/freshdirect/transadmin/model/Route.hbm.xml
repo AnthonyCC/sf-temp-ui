@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Nov 18, 2008 3:11:24 PM by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping schema="transp">
+    <class name="com.freshdirect.transadmin.model.Route" table="ROUTE">
+        <id name="routeId" type="string">
+            <column name="ROUTE_ID" length="16" />
+            <generator class="assigned" />
+        </id>
+        <property name="routeNo" type="string">
+            <column name="ROUTE_NO" length="16" not-null="true" />
+        </property>
+        <property name="description" type="string">
+            <column name="DESCRIPTION" length="60" not-null="true" />
+        </property>
+        <property name="routeTime" type="string">
+            <column name="ROUTE_TIME" length="2" />
+        </property>
+    </class>
+</hibernate-mapping>

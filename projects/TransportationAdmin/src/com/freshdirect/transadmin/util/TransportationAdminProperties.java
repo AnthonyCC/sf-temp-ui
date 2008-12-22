@@ -65,6 +65,14 @@ public class TransportationAdminProperties {
 	private final static String PROP_TRANSPORTATION_DOWNLOAD_FOLDER		= "transportation.download.folder";	
 	
 	
+	/* Bullpen*/
+	private final static String PROP_TRANSPORTATION_BULLPEN_DRIVER_REQ="transportation.bullpen.driver.req";
+	private final static String PROP_TRANSPORTATION_BULLPEN_DRIVER_MAX="transportation.bullpen.driver.max";
+	private final static String PROP_TRANSPORTATION_BULLPEN_HELPER_REQ="transportation.bullpen.helper.req";
+	private final static String PROP_TRANSPORTATION_BULLPEN_HELPER_MAX="transportation.bullpen.helper.max";
+	private final static String PROP_TRANSPORTATION_BULLPEN_RUNNER_REQ="transportation.bullpen.runner.req";
+	private final static String PROP_TRANSPORTATION_BULLPEN_RUNNER_MAX="transportation.bullpen.runner.max";
+	
 	
 	private static long lastRefresh = 0;
 	private final static long REFRESH_PERIOD = 5 * 60 * 1000;
@@ -115,6 +123,14 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_DOWNLOAD_PROVIDERURL,"http://crm:7001/TrnAdmin/download.do");
 		
 		defaults.put(PROP_TRANSPORTATION_DOWNLOAD_FOLDER,"");
+		
+		defaults.put(PROP_TRANSPORTATION_BULLPEN_DRIVER_REQ, "0");
+		defaults.put(PROP_TRANSPORTATION_BULLPEN_DRIVER_MAX, "5");
+		defaults.put(PROP_TRANSPORTATION_BULLPEN_HELPER_REQ, "0");
+		defaults.put(PROP_TRANSPORTATION_BULLPEN_HELPER_MAX, "5");
+		defaults.put(PROP_TRANSPORTATION_BULLPEN_RUNNER_REQ, "0");
+		defaults.put(PROP_TRANSPORTATION_BULLPEN_RUNNER_MAX, "5");
+		
 		refresh();		
 	}
 
@@ -244,4 +260,22 @@ public class TransportationAdminProperties {
 		return intVal;
 	}
 
+	public static int getDriverReqForBullpen() {
+		return getIntVal(get(PROP_TRANSPORTATION_BULLPEN_DRIVER_REQ));
+	}
+	public static int getDriverMaxForBullpen() {
+		return getIntVal(get(PROP_TRANSPORTATION_BULLPEN_DRIVER_MAX));
+	}
+	public static int getHelperReqForBullpen() {
+		return getIntVal(get(PROP_TRANSPORTATION_BULLPEN_HELPER_REQ));
+	}
+	public static int getHelperMaxForBullpen() {
+		return getIntVal(get(PROP_TRANSPORTATION_BULLPEN_HELPER_MAX));
+	}
+	public static int getRunnerReqForBullpen() {
+		return getIntVal(get(PROP_TRANSPORTATION_BULLPEN_RUNNER_REQ));
+	}
+	public static int getRunnerMaxForBullpen() {
+		return getIntVal(get(PROP_TRANSPORTATION_BULLPEN_RUNNER_MAX));
+	}
 }

@@ -17,12 +17,17 @@ public class BaseManagerDaoHibernateImpl extends HibernateDaoSupport implements 
 
 	public void saveEntity(Object entity) throws DataAccessException {
 		getHibernateTemplate().merge(entity);
+		getHibernateTemplate().flush();
+	}
+	public void saveEntityEx(Object entity)throws DataAccessException {
+		getHibernateTemplate().save(entity);
+	
 	}
 
 	public void saveEntityList(Collection entity) throws DataAccessException {
 		getHibernateTemplate().saveOrUpdateAll(entity);
 	}
-
+	
 	public Collection getDataList(String dataTable) throws DataAccessException {
 
 		return (Collection) getHibernateTemplate().find("from " + dataTable);

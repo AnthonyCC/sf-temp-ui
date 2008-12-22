@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Nov 18, 2008 3:11:24 PM by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping schema="transp">
+    <class name="com.freshdirect.transadmin.model.ZonetypeResource" table="ZONETYPE_RESOURCE">
+        <composite-id name="id" class="com.freshdirect.transadmin.model.ZonetypeResourceId">
+            <key-property name="zonetypeId" type="string">
+                <column name="ZONETYPE_ID" length="16" />
+            </key-property>
+            <key-property name="role" type="string">
+                <column name="ROLE" length="16" />
+            </key-property>
+        </composite-id>
+        <many-to-one name="zoneType" class="com.freshdirect.transadmin.model.TrnZoneType" update="false" insert="false">
+            <column name="ZONETYPE_ID" length="16" not-null="true" />
+        </many-to-one>
+        <property name="maximumNo" type="java.lang.Integer">
+            <column name="MAXIMUM_NO" precision="9" scale="0" />
+        </property>
+        <property name="requiredNo" type="java.lang.Integer">
+            <column name="REQUIRED_NO" precision="9" scale="0" />
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,9 +1,10 @@
 package com.freshdirect.transadmin.service;
 
 import java.util.Collection;
+import java.util.Date;
 
-import com.freshdirect.transadmin.model.TrnDispatch;
-import com.freshdirect.transadmin.model.TrnDispatchPlan;
+import com.freshdirect.transadmin.model.Plan;
+import com.freshdirect.transadmin.model.Dispatch;
 
 public interface DispatchManagerI extends BaseManagerI {
 	
@@ -11,19 +12,33 @@ public interface DispatchManagerI extends BaseManagerI {
 	
 	Collection getPlanList(String date);
 	
-	Collection getDispatchList(String date, String zone);
-	
-	TrnDispatch getDispatch(String planId, String date);
+	Dispatch getDispatch(String dispatchId);
 	
 	Collection getPlan(String dateRange, String zoneLst);
 	
 	Collection getPlan();
 	
-	TrnDispatchPlan getPlan(String id);
+	Plan getPlan(String id);
 	
 	Collection getDrivers();
 	
 	Collection getHelpers();
 	
 	void copyPlan(Collection addPlanList, Collection removePlanList);
+	
+	void autoDisptch(String date);
+	//Based on new Dispatch Model
+	Collection getDispatchList (String date, String zone, String region);
+	
+	boolean refreshRoute(Date requestedDate);
+	
+	void saveDispatch(Dispatch dispatch);
+	
+	Collection getAssignedTrucks(String date);
+	
+	Collection getDispatchTrucks(String date);
+	
+	Collection getAvailableTrucks(String date);
+		
+	
 }

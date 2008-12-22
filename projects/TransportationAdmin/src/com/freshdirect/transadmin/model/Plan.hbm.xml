@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Nov 18, 2008 3:11:24 PM by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping schema="transp">
+    <class name="com.freshdirect.transadmin.model.Plan" table="PLAN">
+        <id name="planId" type="string">
+            <column name="PLAN_ID" length="10" />
+           <generator class="sequence">
+    			<param name="sequence">PLANSEQ</param>
+			</generator>
+        </id>
+        <many-to-one name="zone" class="com.freshdirect.transadmin.model.Zone" fetch="select" lazy="false">
+            <column name="ZONE" length="5" />
+        </many-to-one>
+        <many-to-one name="region" class="com.freshdirect.transadmin.model.Region" fetch="select" lazy="false">
+            <column name="REGION" length="16" not-null="true" />
+        </many-to-one>
+        <property name="planDate" type="date">
+            <column name="PLAN_DATE" length="7" not-null="true" />
+        </property>
+        <property name="firstDeliveryTime" type="timestamp">
+            <column name="FIRST_DLV_TIME" length="7" not-null="true" />
+        </property>
+        <property name="startTime" type="timestamp">
+            <column name="START_TIME" length="7" not-null="true" />
+        </property>
+        <property name="sequence" type="int">
+            <column name="SEQUENCE" precision="5" scale="0" not-null="true" />
+        </property>
+        <property name="isBullpen" type="string">
+            <column name="IS_BULLPEN" length="1" />
+        </property>
+        <set name="planResources" inverse="true" lazy="false" cascade="all,delete-orphan">
+            <key>
+                <column name="PLAN_ID" length="10" not-null="true" />
+            </key>
+            <one-to-many class="com.freshdirect.transadmin.model.PlanResource" />
+        </set>
+    </class>
+</hibernate-mapping>

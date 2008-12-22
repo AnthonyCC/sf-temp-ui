@@ -4,8 +4,8 @@ import java.util.Collection;
 
 import org.springframework.dao.DataAccessException;
 
-import com.freshdirect.transadmin.model.TrnDispatch;
-import com.freshdirect.transadmin.model.TrnDispatchPlan;
+import com.freshdirect.transadmin.model.Dispatch;
+import com.freshdirect.transadmin.model.Plan;
 
 public interface DispatchManagerDaoI extends BaseManagerDaoI {
 
@@ -13,17 +13,22 @@ public interface DispatchManagerDaoI extends BaseManagerDaoI {
 	
 	Collection getPlanList(String date) throws DataAccessException;
 
-	Collection getDispatchList(String date, String zone) throws DataAccessException;
-
-	TrnDispatch getDispatch(String planId, String date) throws DataAccessException;
+	Dispatch getDispatch(String dispatchId) throws DataAccessException;
 
 	Collection getPlan() throws DataAccessException;
 	
 	Collection getPlan(String dateRange, String zoneLst) throws DataAccessException;
 
-	TrnDispatchPlan getPlan(String id) throws DataAccessException;
+	Plan getPlan(String id) throws DataAccessException;
 
 	Collection getDrivers() throws DataAccessException;
 
 	Collection getHelpers() throws DataAccessException;
+	
+	//Added for new dispatch model.
+	Collection getDispatchList(String date, String zone, String region) throws DataAccessException;
+	
+	void saveDispatch(Dispatch dispatch) throws DataAccessException;
+	
+	Collection getAssignedTrucks(String date) throws DataAccessException;
 }

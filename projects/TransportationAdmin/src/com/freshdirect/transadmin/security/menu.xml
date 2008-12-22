@@ -9,26 +9,22 @@
 	     	<access-uris>plan.do,deleteplan.do,editplan.do,copyplan.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnDispatch,TrnPlanning</access-roles>
 	     </menu>
-	     <menu id="OPR002" title="Assignment" orientation="LEFT" link="assignment.do">
-		<access-uris>assignment.do</access-uris>
-		<access-roles>TrnAdmin,TrnDispatch,TrnPlanning</access-roles>
-	     </menu>
-	     <menu id="OPR003" title="Dispatch" orientation="LEFT" link="dispatch.do">
-	     	<access-uris>dispatch.do,deletedispatch.do,editdispatch.do,confirmdispatch.do</access-uris>
-	     	<access-roles>TrnAdmin,TrnGuest,TrnDispatch,TrnPlanning</access-roles>
+	     <menu id="OPR002" title="Dispatch" orientation="LEFT" link="dispatch.do">
+	     	<access-uris>dispatch.do,deletedispatch.do,editdispatch.do,confirmdispatch.do,refreshRoute.do,autoDispatch.do</access-uris>
+	     	<access-roles>TrnAdmin,TrnDispatch,TrnPlanning</access-roles>
 	     </menu>	     
 	     
-	     <menu id="OPR004" title="Route" orientation="RIGHT" link="route.do">
+	     <menu id="OPR003" title="Route" orientation="RIGHT" link="route.do">
 	     	<access-uris>route.do,editroute.do,deleteroute.do</access-uris>
 	     	<access-roles>TrnAdmin</access-roles>
 	     </menu>
 	     
-	     <menu id="OPR005" title="Employee" orientation="RIGHT" link="employee.do">
+	     <menu id="OPR004" title="Employee" orientation="RIGHT" link="employee.do">
 	     	<access-uris>employee.do,editemployee.do,deleteemployee.do</access-uris>
 	     	<access-roles>TrnAdmin</access-roles>
 	     </menu>
 	     
-	     <menu id="OPR006" title="Truck" orientation="RIGHT" link="truck.do">
+	     <menu id="OPR005" title="Truck" orientation="RIGHT" link="truck.do">
 	     	<access-uris>truck.do,edittruck.do,deletetruck.do</access-uris>
 	     	<access-roles>TrnAdmin</access-roles>
      	</menu>
@@ -106,6 +102,11 @@
  
   	     <menu id="GEO006" title="Building Info" orientation="LEFT" link="dlvbuildingdtl.do">
 	     	<access-uris>dlvbuildingdtl.do,deletedlvbuildingdtl.do,editdlvbuildingdtl.do</access-uris>
+	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
+	     </menu>
+
+  	     <menu id="GEO007" title="Zone Region" orientation="RIGHT" link="region.do">
+	     	<access-uris>region.do,deletedregion.do,editregion.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
 	     </menu>
          

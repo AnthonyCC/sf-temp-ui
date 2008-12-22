@@ -22,7 +22,7 @@ import com.freshdirect.transadmin.model.TrnEmployee;
 import com.freshdirect.transadmin.model.TrnRoute;
 import com.freshdirect.transadmin.model.TrnTimeslot;
 import com.freshdirect.transadmin.model.TrnTruck;
-import com.freshdirect.transadmin.model.TrnZone;
+import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.util.TransStringUtil;
@@ -63,7 +63,7 @@ public class AssignmentFormController extends BaseFormController {
 		refData.put("supervisors", getDomainManagerService().getSupervisors());
 		refData.put("trucks", getDomainManagerService().getTrucks());
 		if(zoneIdForRoute == null || zoneIdForRoute.trim().length() == 0) {
-			refData.put("routes", getDomainManagerService().getRoutes());
+			//refData.put("routes", getDomainManagerService().getRoutes());
 		} else {
 			refData.put("routes", getDomainManagerService().getRouteForZone(zoneIdForRoute));
 		}
@@ -128,7 +128,7 @@ public class AssignmentFormController extends BaseFormController {
 					tmpId = new TrnDispatchId(TransStringUtil.getDate(dispatchDate), tmpCommand.getPlanId());
 					tmpDispatch = new TrnDispatch(tmpId);
 					tmpDispatch.setTrnSupervisor(new TrnEmployee(tmpCommand.getSupervisorId()));
-					tmpDispatch.setTrnZone(new TrnZone(tmpCommand.getZoneId()));
+					tmpDispatch.setTrnZone(new Zone(tmpCommand.getZoneId()));
 					tmpDispatch.setTrnTimeslot(new TrnTimeslot(tmpCommand.getSlotId()));
 					tmpDispatch.setTrnEndTimeslot(new TrnTimeslot(tmpCommand.getEndSlotId()));
 					tmpDispatch.setTrnDriver(new TrnEmployee(tmpCommand.getDriverId()));

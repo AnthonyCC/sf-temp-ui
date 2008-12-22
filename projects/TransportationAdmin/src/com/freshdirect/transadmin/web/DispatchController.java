@@ -1,8 +1,17 @@
 package com.freshdirect.transadmin.web;
 
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -12,16 +21,34 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.ModelAndView;
 
-import com.freshdirect.transadmin.constants.EnumDispatchStatusType;
-import com.freshdirect.transadmin.model.TrnDispatch;
+import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.transadmin.model.Dispatch;
+import com.freshdirect.transadmin.model.DispatchResource;
+import com.freshdirect.transadmin.model.Plan;
+import com.freshdirect.transadmin.model.Zone;
+import com.freshdirect.transadmin.model.ZonetypeResource;
+import com.freshdirect.transadmin.security.SecurityManager;
 import com.freshdirect.transadmin.service.DispatchManagerI;
+import com.freshdirect.transadmin.service.DomainManagerI;
+import com.freshdirect.transadmin.service.EmployeeManagerI;
+import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
+import com.freshdirect.transadmin.web.model.DispatchCommand;
+import com.freshdirect.transadmin.web.model.ResourceReq;
+import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
+import com.freshdirect.transadmin.web.model.WebPlanInfo;
 
 public class DispatchController extends AbstractMultiActionController {
 	
 	private DispatchManagerI dispatchManagerService;
+	private EmployeeManagerI employeeManagerService;
+	private DomainManagerI domainManagerService;
+	
+	private static final DateFormat DATE_FORMAT=new SimpleDateFormat("MM/dd/yyyy");
+	private static final String DRIVER = "001";
+	private static final String HELPER = "002";
+	private static final String RUNNER = "003";
 		
-
 	public DispatchManagerI getDispatchManagerService() {
 		return dispatchManagerService;
 	}
@@ -29,6 +56,21 @@ public class DispatchController extends AbstractMultiActionController {
 	public void setDispatchManagerService(DispatchManagerI dispatchManagerService) {
 		this.dispatchManagerService = dispatchManagerService;
 	}
+	public EmployeeManagerI getEmployeeManagerService() {
+		return employeeManagerService;
+	}
+
+	public void setEmployeeManagerService(EmployeeManagerI employeeManagerService) {
+		this.employeeManagerService = employeeManagerService;
+	}
+	public DomainManagerI getDomainManagerService() {
+		return domainManagerService;
+	}
+
+	public void setDomainManagerService(DomainManagerI domainManagerService) {
+		this.domainManagerService = domainManagerService;
+	}
+	
 	
 	/**
 	 * Custom handler for welcome
@@ -41,14 +83,14 @@ public class DispatchController extends AbstractMultiActionController {
 		String daterange = request.getParameter("daterange");
 		String zoneLst = request.getParameter("zone");
 		ModelAndView mav = new ModelAndView("planView");
-		
 		if(!TransStringUtil.isEmpty(daterange) || !TransStringUtil.isEmpty(zoneLst)) {
 			
 			try {
 				String dateQryStr = TransStringUtil.formatDateSearch(daterange);
-				String zoneQryStr = TransStringUtil.formatStringSearch(zoneLst);
+				String zoneQryStr = StringUtil.formQueryString(Arrays.asList(StringUtil.decodeStrings(zoneLst)));
+					//TransStringUtil.formatStringSearch(zoneLst);
 				if(dateQryStr != null || zoneQryStr != null) {
-					Collection dataList = dispatchManagerService.getPlan(dateQryStr, zoneQryStr);
+					Collection dataList = getPlanInfo(dateQryStr,zoneQryStr);//dispatchManagerService.getPlan(dateQryStr, zoneQryStr);
 					mav.getModel().put("planlist",dataList);
 				}
 			} catch (Exception e) {
@@ -59,6 +101,28 @@ public class DispatchController extends AbstractMultiActionController {
 		
 		return mav;		
 	}
+
+	private Collection getPlanInfo(String dateQryStr, String zoneQryStr) {
+		
+		Collection plans=dispatchManagerService.getPlan(dateQryStr, zoneQryStr);
+		Collection planInfos=new ArrayList();
+		Iterator it=plans.iterator();
+		while(it.hasNext()) {
+			
+			Plan plan=(Plan)it.next();
+			Zone zone=null;
+			if(plan.getZone()!=null) {
+				zone=domainManagerService.getZone(plan.getZone().getZoneCode());
+			}
+			WebPlanInfo planInfo=DispatchPlanUtil.getWebPlanInfo(plan, zone, employeeManagerService);
+			planInfos.add(planInfo);
+		}
+		
+		
+		return planInfos;
+	}
+	
+
 	
 	/**
 	 * Custom handler for welcome
@@ -89,21 +153,41 @@ public class DispatchController extends AbstractMultiActionController {
 	 * @return a ModelAndView to render the response
 	 */
 	public ModelAndView dispatchHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {		
-		
+	
 		String dispDate = request.getParameter("dispDate");
+		String zone = request.getParameter("zone");
+		String region = request.getParameter("region");
 		ModelAndView mav = new ModelAndView("dispatchView");
 		if(!TransStringUtil.isEmpty(dispDate)) {
-			Collection dataList = dispatchManagerService.getDispatchList(getCurrentDate(dispDate), null);
-			mav.getModel().put("dispatchlist",dataList);
+			mav.getModel().put("dispatchInfos", getDispatchInfos(getServerDate(dispDate), zone, region));
 			mav.getModel().put("dispDate", dispDate);
-			
 		} else {
+			//By default get the today's dispatches.
+			mav.getModel().put("dispatchInfos",getDispatchInfos(TransStringUtil.getCurrentServerDate(), zone, region));
 			mav.getModel().put("dispDate", TransStringUtil.getCurrentDate());
 		}
-		
+		mav.getModel().put("zones", domainManagerService.getZones());
+		mav.getModel().put("regions", domainManagerService.getRegions());		
 		return mav;
 	}
 	
+	private Collection getDispatchInfos(String dispDate, String zoneStr, String region){
+		Collection dispatchInfos = new ArrayList();
+		try {
+		Collection dispatchList = dispatchManagerService.getDispatchList(dispDate, zoneStr, region);
+		Iterator iter = dispatchList.iterator();
+			while(iter.hasNext()){
+				Dispatch dispatch = (Dispatch) iter.next();
+				Zone zone=domainManagerService.getZone(dispatch.getZone().getZoneCode());
+				dispatchInfos.add(DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService));
+			}
+		}catch(Exception ex){
+			ex.printStackTrace();
+			throw new RuntimeException("Exception ocuurred while processing the dispatch list for requested date "+dispDate);
+		}
+		
+		return dispatchInfos;
+	}
 	
 	/**
 	 * Custom handler for welcome
@@ -121,8 +205,7 @@ public class DispatchController extends AbstractMultiActionController {
 			int arrLength = arrEntityList.length;
 			for (int intCount = 0; intCount < arrLength; intCount++) {
 				splitter = new StringTokenizer(arrEntityList[intCount], "$");
-				dispatchSet.add(dispatchManagerService.getDispatch(splitter.nextToken()
-							, TransStringUtil.getServerDate(splitter.nextToken())));
+				dispatchSet.add(dispatchManagerService.getDispatch(splitter.nextToken()));
 			}
 		}		
 		dispatchManagerService.removeEntity(dispatchSet);
@@ -143,19 +226,18 @@ public class DispatchController extends AbstractMultiActionController {
 		Set dispatchSet=new HashSet();
 		String arrEntityList[] = getParamList(request);
 		StringTokenizer splitter = null;
-		TrnDispatch tmpDispatch = null;
+		Dispatch tmpDispatch = null;
 		if (arrEntityList != null) {			
 			int arrLength = arrEntityList.length;
 			for (int intCount = 0; intCount < arrLength; intCount++) {
 				splitter = new StringTokenizer(arrEntityList[intCount], "$");
-				tmpDispatch = dispatchManagerService.getDispatch(splitter.nextToken()
-						, TransStringUtil.getServerDate(splitter.nextToken()));
+				tmpDispatch = dispatchManagerService.getDispatch(splitter.nextToken());
 				if(tmpDispatch != null) {
-					if(TransStringUtil.isEmpty(tmpDispatch.getStatus()) || 
-							EnumDispatchStatusType.NOTCONFIRMED.getName().equals(tmpDispatch.getStatus())) {
-						tmpDispatch.setStatus(EnumDispatchStatusType.CONFIRMED.getName());
+					Boolean confirm = tmpDispatch.getConfirmed();
+					if( confirm == null || ! confirm.booleanValue() ) {
+						tmpDispatch.setConfirmed(Boolean.TRUE);
 					} else {
-						tmpDispatch.setStatus(EnumDispatchStatusType.NOTCONFIRMED.getName());
+						tmpDispatch.setConfirmed(Boolean.FALSE);
 					}
 					dispatchSet.add(tmpDispatch);
 				}
@@ -165,6 +247,62 @@ public class DispatchController extends AbstractMultiActionController {
 		saveMessage(request, getMessage("app.actionmessage.104", null));
 
 		return dispatchHandler(request, response);
+	}
+	
+	public ModelAndView routeRefreshHandler(HttpServletRequest request, HttpServletResponse response) 
+	throws ServletException, ParseException {
+		String dispDate = request.getParameter("dispDate");
+		boolean changed = false;
+		if(!TransStringUtil.isEmpty(dispDate)) {
+			changed = dispatchManagerService.refreshRoute(TransStringUtil.getDate(dispDate));
+		} else {
+			//By default get the today's dispatches.
+			changed = dispatchManagerService.refreshRoute(new Date());
+		}
+		if(changed){
+			saveMessage(request, getMessage("app.actionmessage.134", null));
+		}
+		return dispatchHandler(request, response);
+	}
+	public ModelAndView autoDispatchHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException, ParseException {
+		
+				// if there is a dispatch record for the same date then check what user role
+				// if not admin send an error message
+				// if admin delete the existing record and run the autodispatch crap
+		
+				
+				String dispatchDate = request.getParameter("daterange");					
+				try {			
+					if(!TransStringUtil.isEmpty(dispatchDate)) {
+						dispatchDate=TransStringUtil.getServerDate(dispatchDate);	
+					}else
+					{
+						dispatchDate=TransStringUtil.getServerDate(new Date());
+					}
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					
+					saveMessage(request, getMessage("app.error.115", new String[]{"Invalid Date"}));
+					return planHandler(request,response);
+			    }			
+					
+				    Collection planList=dispatchManagerService.getPlanList(dispatchDate);
+				
+				    if(planList==null || planList.size()==0){
+				    	saveMessage(request, getMessage("app.actionmessage.134", null));
+				    	return planHandler(request,response);
+				    }
+				    		   
+					Collection dispList=dispatchManagerService.getDispatchList(dispatchDate,null,null);								
+					if(dispList!=null || dispList.size()>0){
+						if(!SecurityManager.isUserAdmin(request)){
+							  saveMessage(request, getMessage("app.actionmessage.133", null));
+							  return planHandler(request,response);							  
+						}								 													
+					}
+				    dispatchManagerService.autoDisptch(dispatchDate);								       
+				   return planHandler(request,response);		
 	}
 	
 	

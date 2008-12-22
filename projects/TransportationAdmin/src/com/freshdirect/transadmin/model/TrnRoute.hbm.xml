@@ -5,7 +5,7 @@
 <hibernate-mapping schema="transp">
     <class name="com.freshdirect.transadmin.model.TrnRoute" table="TRN_ROUTE">
         <id name="routeId" type="string">
-            <column name="ROUTE_ID" length="16" />
+            <column name="ROUTE_ID" length="18" />
             <generator class="assigned" />
         </id>
         <many-to-one name="trnSupervisor" class="com.freshdirect.transadmin.model.TrnEmployee" fetch="select" lazy="false">

@@ -13,7 +13,7 @@ public class TrnDispatch implements java.io.Serializable, TrnBaseEntityI {
 	private TrnDispatchId id;
 	
 	private TrnEmployee trnSupervisor;
-	private TrnZone trnZone;
+	private Zone trnZone;
 	private TrnTimeslot trnTimeslot;
 	private TrnTimeslot trnEndTimeslot;
 	private TrnEmployee trnDriver;
@@ -129,11 +129,11 @@ public class TrnDispatch implements java.io.Serializable, TrnBaseEntityI {
 		this.trnTruck = trnTruck;
 	}
 
-	public TrnZone getTrnZone() {
+	public Zone getTrnZone() {
 		return trnZone;
 	}
 
-	public void setTrnZone(TrnZone trnZone) {
+	public void setTrnZone(Zone trnZone) {
 		this.trnZone = trnZone;
 	}
 	
@@ -141,15 +141,15 @@ public class TrnDispatch implements java.io.Serializable, TrnBaseEntityI {
 		if(getTrnZone() == null) {
 			return null;
 		}
-		return getTrnZone().getZoneId();
+		return getTrnZone().getZoneCode();
 	}
 
 	public void setZone(String trnzoneId) {
 		if("null".equals(trnzoneId)) {
 			setTrnZone(null);
 		} else {
-			TrnZone trnZone = new TrnZone();
-			trnZone.setZoneId(trnzoneId);
+			Zone trnZone = new Zone();
+			trnZone.setZoneCode(trnzoneId);
 			setTrnZone(trnZone);
 		}
 	}

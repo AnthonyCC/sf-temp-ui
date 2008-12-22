@@ -17,6 +17,12 @@
     <script type="text/javascript" language="javascript" src="js/jscalendar-1.0/calendar.js"></script>
     <script type="text/javascript" language="javascript" src="js/jscalendar-1.0/lang/calendar-en.js"></script>
     <script type="text/javascript" language="javascript" src="js/jscalendar-1.0/calendar-setup.js"></script>
+    
+    <script type="text/javascript" language="javascript" src="js/mootools.v1.11.js"></script>
+    <script type="text/javascript" language="javascript" src="js/nogray_time_picker.js"></script>
+    <script type="text/javascript" language="javascript" src="js/nogray_time_picker_min.js"></script>
+    
+
 </head>
  <body marginwidth="0" marginheight="0" border="0">
   <table class="appframe" width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -47,10 +53,11 @@
           <tr>
             <td width="9%" align="center"><a href="index.jsp" >&nbsp;Home&nbsp;</a></td>
             <td width="9%" align="center"><a href="employee.do" >&nbsp;Employee&nbsp;</a></td>
-            <td width="9%" align="center"><a href="route.do" >&nbsp;Route&nbsp;</a></td>
+            <td width="9%" align="center"><a href="adHocRoute.do" >&nbsp;Route&nbsp;</a></td>
             <td width="9%" align="center"><a href="area.do" >&nbsp;Area&nbsp;</a></td>
             <td width="9%" align="center"><a href="zonetype.do" >&nbsp;Zone Type&nbsp;</a></td>
             <td width="9%" align="center"><a href="zone.do" >&nbsp;Zone&nbsp;</a></td>
+            <td width="9%" align="center"><a href="region.do" >&nbsp;Region&nbsp;</a></td>
             <td width="9%" align="center"><a href="truck.do" >&nbsp;Truck&nbsp;</a></td>
             <td width="9%" align="center"><a href="plan.do" >&nbsp;Planning&nbsp;</a></td>
             <td width="9%" align="center"><a href="assignment.do" >&nbsp;Assignment&nbsp;</a></td>

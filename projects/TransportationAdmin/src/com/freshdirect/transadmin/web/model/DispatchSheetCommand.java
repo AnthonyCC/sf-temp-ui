@@ -25,7 +25,7 @@ public class DispatchSheetCommand extends BaseCommand {
 	public DispatchSheetCommand(TrnDispatchPlan plan) {
 		this.setPlanId(plan.getPlanId());
 		this.setSupervisorId(plan.getTrnSupervisor() != null ? plan.getTrnSupervisor().getEmployeeId() : null);
-		this.setZoneId(plan.getTrnZone() != null ? plan.getTrnZone().getZoneId() : null);
+		this.setZoneCode(plan.getTrnZone() != null ? plan.getTrnZone().getZoneCode() : null);
 		this.setSlotId(plan.getTrnTimeslot() != null ? plan.getTrnTimeslot().getSlotId() : null);
 		this.setEndSlotId(plan.getTrnEndTimeslot() != null ? plan.getTrnEndTimeslot().getSlotId() : null);
 		this.setDriverId(plan.getTrnDriver() != null ? plan.getTrnDriver().getEmployeeId() : null);
@@ -96,7 +96,7 @@ public class DispatchSheetCommand extends BaseCommand {
 	public String getZoneId() {
 		return zoneId;
 	}
-	public void setZoneId(String zoneId) {
+	public void setZoneCode(String zoneId) {
 		this.zoneId = zoneId;
 	}
 	

@@ -2,12 +2,16 @@ package com.freshdirect.transadmin.dao.hibernate;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Set;
 
 import org.springframework.dao.DataAccessException;
 
 import com.freshdirect.transadmin.dao.DispatchManagerDaoI;
-import com.freshdirect.transadmin.model.TrnDispatch;
-import com.freshdirect.transadmin.model.TrnDispatchPlan;
+import com.freshdirect.transadmin.model.Dispatch;
+import com.freshdirect.transadmin.model.DispatchResource;
+import com.freshdirect.transadmin.model.Plan;
+import com.freshdirect.transadmin.model.TrnZoneType;
+import com.freshdirect.transadmin.model.ZonetypeResource;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class DispatchManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl implements DispatchManagerDaoI {
@@ -35,13 +39,13 @@ public class DispatchManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 		return getDataList("TrnDispatchPlan Order By  PLAN_DATE");
 	}
 	
-	public Collection getPlan(String dateRange, String zoneLst) throws DataAccessException {
+	public Collection getPlan(String planDate, String zoneLst) throws DataAccessException {
 		
 		StringBuffer strBuf = new StringBuffer();
-		strBuf.append("TrnDispatchPlan p ");
+		strBuf.append("Plan p ");
 		boolean hasDate = false;
-		if(dateRange != null) {
-			strBuf.append("where p.planDate ").append(dateRange);
+		if(planDate != null) {
+			strBuf.append(" where p.planDate ").append(planDate);
 			hasDate = true;
 		}
 		
@@ -51,14 +55,15 @@ public class DispatchManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 			} else {
 				strBuf.append(" and ");
 			}
-			strBuf.append("p.trnZone.zoneNumber ").append(zoneLst);
+			strBuf.append("p.zone.zoneCode ").append(zoneLst);
 		}
 		
 		strBuf.append(" ORDER BY  PLAN_DATE");
 		return getDataList(strBuf.toString());
 	}
 
-	public Collection getPlan(String day, String zone, String date) throws DataAccessException {
+	
+	/*public Collection getPlan(String day, String zone, String date) throws DataAccessException {
 
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("from TrnDispatchPlan tp");
@@ -72,43 +77,84 @@ public class DispatchManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 			.append("select id.planId from TrnDispatch where id.dispatchDate='").append(date).append("')");
 
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
+	}*/
+	
+	public Collection getPlan(String day, String zone, String date) throws DataAccessException {
+
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from Plan p");
+		strBuf.append(" where p.planDate='").append(date).append("'");
+
+		if (!TransStringUtil.isEmpty(zone) && !zone.equals("0") && !zone.equals("null")) {
+			strBuf.append(" and p.zone.zoneCode='").append(zone).append("'");
+		}
+
+		strBuf.append(" and p.planId").append(" not in(")
+			.append("select id.planId from Dispatch where id.dispatchDate='").append(date).append("')");
+
+		return (Collection) getHibernateTemplate().find(strBuf.toString());
 	}
 	
 	public Collection getPlanList(String date) throws DataAccessException {
 
 		StringBuffer strBuf = new StringBuffer();
-		strBuf.append("from TrnDispatchPlan tp");
-		strBuf.append(" where tp.planDate='").append(date).append("'");
+		strBuf.append("from Plan p");
+		strBuf.append(" where p.planDate='").append(date).append("'");
 
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
 	}
 
-	public Collection getDispatchList(String date, String zone) throws DataAccessException {
-		StringBuffer strBuf = new StringBuffer();
-		strBuf.append("from TrnDispatch tp");
-		strBuf.append(" where tp.id.dispatchDate='").append(date).append("'");
+	public Dispatch getDispatch(String dispatchId) throws DataAccessException {
+		return (Dispatch)getEntityById("Dispatch","dispatchId",dispatchId);
+	
+	}
 
-		if (zone != null && !zone.equals("0") && !zone.equals("null")) {
-			strBuf.append(" and tp.trnZone.zoneId='").append(zone).append("'");
+	public Plan getPlan(String id) throws DataAccessException  {
+		return (Plan)getEntityById("Plan","id.planId",id);
+	}
+
+	
+	public Collection getDispatchList(String date, String zone, String region) throws DataAccessException {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from Dispatch dp");
+		strBuf.append(" where dp.dispatchDate='").append(date).append("'");
+
+		if (zone != null && zone.length() > 0 && !zone.equals("0") && !zone.equals("null")) {
+			strBuf.append(" and dp.zone.zoneCode='").append(zone).append("'");
 		}
-
+		if (region != null && region.length() > 0 && !region.equals("0") && !region.equals("null")) {
+			strBuf.append(" and dp.zone.region.code='").append(region).append("'");
+		}
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
 	}
-
-	public TrnDispatch getDispatch(String planId, String date) throws DataAccessException {
-
-		StringBuffer strBuf = new StringBuffer();
-		strBuf.append("from TrnDispatch tp");
-		strBuf.append(" where tp.id.dispatchDate='").append(date).append("'");
-		strBuf.append(" and tp.id.planId=").append(planId);
-
-		Collection collection = getHibernateTemplate().find(strBuf.toString());
-		if(collection==null || collection.size()==0) return null;
-		Iterator iterator = collection.iterator();
-		return (TrnDispatch)iterator.next();
+	
+	public void saveDispatch(Dispatch dispatch) throws DataAccessException {
+		
+		if(dispatch.getDispatchId()==null ||"".equals(dispatch.getDispatchId())) {
+			Set resources=dispatch.getDispatchResources();
+			dispatch.setDispatchResources(null);
+			getHibernateTemplate().saveOrUpdate(dispatch);
+			if(resources!=null && resources.size()>0) {
+				Iterator it=resources.iterator();
+				while(it.hasNext()) {
+					DispatchResource dr=(DispatchResource)it.next();
+					dr.getId().setContextId(dispatch.getDispatchId());
+				}
+			}
+			dispatch.setDispatchResources(resources);
+			saveEntityList(dispatch.getDispatchResources());
+			
+		}
+		else {
+			saveEntity(dispatch);
+		}
 	}
+	public Collection getAssignedTrucks(String date) throws DataAccessException {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("Select dp.truck from Dispatch dp");
+		strBuf.append(" where dp.dispatchDate='").append(date).append("'");
+		strBuf.append(" and dp.truck is not null");
+		return (Collection) getHibernateTemplate().find(strBuf.toString());
 
-	public TrnDispatchPlan getPlan(String id) throws DataAccessException  {
-		return (TrnDispatchPlan)getEntityById("TrnDispatchPlan","id.planId",id);
 	}
 }

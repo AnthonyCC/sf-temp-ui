@@ -18,7 +18,7 @@ public class RouteValidator extends AbstractValidator {
 		ValidationUtils.rejectIfEmpty(errors, "routeNumber", "app.error.112", new Object[]{"Route Number"},"required field");
 		ValidationUtils.rejectIfEmpty(errors, "routeAmPm", "app.error.112", new Object[]{"Route Timing"},"required field");
 						
-		if(model != null && (model.getTrnZone() == null || model.getTrnZone().getZoneId() == null)) {
+		if(model != null && (model.getTrnZone() == null || model.getTrnZone().getZoneCode() == null)) {
 			errors.rejectValue("supervisor", "app.error.112", new Object[]{"Zone"},"required field");
 		}
 		

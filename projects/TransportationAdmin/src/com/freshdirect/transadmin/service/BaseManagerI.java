@@ -9,4 +9,6 @@ public interface BaseManagerI {
 	void removeEntity(Collection employees);
 	
 	void saveEntityList(Collection entity);
+	
+	void saveEntityEx(Object entity);
 }

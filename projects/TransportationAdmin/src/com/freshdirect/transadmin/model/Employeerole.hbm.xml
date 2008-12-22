@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Nov 18, 2008 3:11:24 PM by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping schema="transp">
+    <class name="com.freshdirect.transadmin.model.EmployeeRole" table="EMPLOYEEROLE">
+        <composite-id name="id" class="com.freshdirect.transadmin.model.EmployeeroleId">
+            <key-property name="kronosId" type="string">
+                <column name="KRONOS_ID" length="10" />
+            </key-property>
+            <key-property name="role" type="string">
+                <column name="ROLE" length="16" />
+            </key-property>
+        </composite-id>
+        <many-to-one name="employeeRoleType" class="com.freshdirect.transadmin.model.EmployeeRoleType" update="false" insert="false" fetch="select" lazy="false" >
+            <column name="ROLE" length="16" not-null="true" />
+        </many-to-one>
+    </class>
+</hibernate-mapping>

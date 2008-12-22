@@ -2,6 +2,10 @@
 <%@ taglib uri="/tld/extremecomponents" prefix="ec" %>
 <%@ page import='com.freshdirect.transadmin.web.ui.*' %>
 
+<%    
+  pageContext.setAttribute("HAS_ADDBUTTON", "false");
+  pageContext.setAttribute("HAS_DELETEBUTTON", "false");
+%>
 <tmpl:insert template='/common/sitelayout.jsp'>
 
     <tmpl:put name='title' direct='true'>Transportation Zones</tmpl:put>
@@ -12,22 +16,19 @@
       <form id="zoneListForm" action="" method="post">  
         <ec:table items="zones"   action="${pageContext.request.contextPath}/zone.do"
             imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="Transportation Zones"
-            width="98%"  view="fd" form="zoneListForm" autoIncludeParameters="false" rowsDisplayed="25"  >
-            
+            width="98%"  view="fd" form="zoneListForm" autoIncludeParameters="false" rowsDisplayed="25" >           
             <ec:exportPdf fileName="transportationzones.pdf" tooltip="Export PDF" 
                       headerTitle="Transportation Zones" />
               <ec:exportXls fileName="transportationzones.xls" tooltip="Export PDF" />
-              <ec:exportCsv fileName="transportationzones.csv" tooltip="Export CSV" delimiter="|"/>
-                
+              <ec:exportCsv fileName="transportationzones.csv" tooltip="Export CSV" delimiter="|"/>               
             <ec:row interceptor="obsoletemarker">
               <ec:column title=" " width="5px" 
                     filterable="false" sortable="false" cell="selectcol"
-                    property="zoneId" />              
-              <ec:column property="zoneNumber" title="Zone Number"/>
-              <ec:column property="neighborhood" title="Neighborhood"/>
-              <ec:column alias="trnSupervisorname" property="trnSupervisor.name" title="Supervisor"/>
+                    property="zoneCode" />              
+              <ec:column property="name" title="Zone Name"/>
               <ec:column alias="trnZoneType" property="trnZoneType.name" title="Zone Type"/>
-              <ec:column alias="trnArea" property="trnArea.name" title="Area"/>
+              <ec:column alias="area" property="area.name" title="Area"/>
+              <ec:column alias="region" property="region.name" title="Region"/>
             </ec:row>
           </ec:table>
        </form>  

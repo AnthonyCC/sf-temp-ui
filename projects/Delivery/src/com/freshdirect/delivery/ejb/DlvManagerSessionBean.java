@@ -166,7 +166,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 	}
 
 	private static String depotZoneInfoQuery = "SELECT z.ID ZONE_ID, rd.DELIVERY_CHARGES, rd.START_DATE, zd.UNATTENDED "
-		+ "FROM DLV.REGION_DATA rd, DLV.ZONE z, DLV.ZONE_DESC zd WHERE z.ZONE_CODE = zd.ZONE_CODE and rd.REGION_ID = ? "
+		+ "FROM DLV.REGION_DATA rd, DLV.ZONE z, transp.zone zd WHERE z.ZONE_CODE = zd.ZONE_CODE and rd.REGION_ID = ? "
 		+ "AND rd.START_DATE = (SELECT MAX(START_DATE) FROM DLV.REGION_DATA WHERE START_DATE <= ? AND REGION_ID = ?) "
 		+ "AND z.REGION_DATA_ID = rd.ID and z.ZONE_CODE = ?";
 
@@ -588,7 +588,11 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	private final static String FIND_ZONES_BY_ZONEID_QUERY = "select id, name, region_data_id, zone_code, plan_id, CT_ACTIVE, CT_RELEASE_TIME, unattended from dlv.zone natural join dlv.zone_desc where id = ?";
+	private final static String FIND_ZONES_BY_ZONEID_QUERY =
+		"select dz.id id, dz.name name, dz.region_data_id region_data_id , dz.zone_code zone_code , dz.plan_id plan_id, dz.CT_ACTIVE CT_ACTIVE, dz.CT_RELEASE_TIME CT_RELEASE_TIME from dlv.zone dz, transp.zone tz "+
+		" where dz.zone_code = tz.zone_code(+)  "+
+		" and id = ? ";
+			
 	public DlvZoneModel findZoneById(String zoneId) throws FinderException {
 		DlvZoneModel zoneModel = null;
 		Connection con = null;
@@ -654,7 +658,13 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 
 	}
 
-	private static final String FIND_ZONES_BY_REGIONID_QUERY = "select id, name, region_data_id, zone_code, plan_id, CT_ACTIVE, CT_RELEASE_TIME, unattended from dlv.zone natural join dlv.zone_desc where region_data_id = ?";
+	private static final String FIND_ZONES_BY_REGIONID_QUERY = 
+	"select dz.id id, dz.name name, dz.region_data_id region_data_id, dz.zone_code zone_code, dz.plan_id plan_id, dz.CT_ACTIVE CT_ACTIVE, dz.CT_RELEASE_TIME CT_RELEASE_TIME, tz.unattended unattended "+ 
+	" from dlv.zone dz, transp.zone tz"+ 
+	" where dz.ZONE_CODE=tz.ZONE_CODE(+) "+ 
+	" and dz.region_data_id =?";
+	
+	
 	public List getAllZonesByRegion(String regionId) {
 		ArrayList ret = new ArrayList();
 		DlvZoneModel zoneModel = null;
@@ -1154,10 +1164,15 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
-
-	private static String zoneQuery = "select NAME, ZONE_CODE, UNATTENDED from dlv.zone natural join dlv.zone_desc where region_data_id = "
-		+ "(select id from dlv.region_data where start_date = (SELECT MAX(START_DATE) "
-		+ "FROM DLV.REGION_DATA WHERE START_DATE <= sysdate and region_id = ?) and region_id = ?)";
+	
+	private static String zoneQuery =		
+		"select dz.NAME name, dz.ZONE_CODE ZONE_CODE, tz.UNATTENDED UNATTENDED "+
+		"from dlv.zone dz, transp.zone tz "+ 
+		"where dz.zone_code=tz.zone_code(+) "+
+		" and region_data_id = "+ 
+		"(select id from dlv.region_data where start_date = (SELECT MAX(START_DATE) "+
+		" FROM DLV.REGION_DATA WHERE START_DATE <= sysdate and region_id = ?) and region_id = ?)";	
+	
 
 	public Collection getZonesForRegionId(String regionId) throws DlvResourceException {
 		Connection conn = null;

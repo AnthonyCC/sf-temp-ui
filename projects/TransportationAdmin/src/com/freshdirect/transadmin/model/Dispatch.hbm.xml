@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Dec 5, 2008 2:34:34 PM by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping schema="transp">
+    <class name="com.freshdirect.transadmin.model.Dispatch" table="DISPATCH">
+       <id name="dispatchId" type="string">
+            <column name="DISPATCH_ID" length="16" />
+             <generator class="sequence">
+    			<param name="sequence">DISPATCHSEQ</param>
+			</generator>
+        </id>        
+        <many-to-one name="zone" class="com.freshdirect.transadmin.model.Zone" fetch="select" lazy="false">
+            <column name="ZONE" length="5" />
+        </many-to-one>
+        <many-to-one name="dispositionType" class="com.freshdirect.transadmin.model.DispositionType"  lazy="false">
+            <column name="DISPOSITION" length="16" />
+        </many-to-one>
+        <property name="dispatchDate" type="date">
+            <column name="DISPATCH_DATE" length="7" not-null="true" />
+        </property>
+        <property name="supervisorId" type="string">
+            <column name="SUPERVISOR_ID" length="10" />
+        </property>
+        <property name="route" type="string">
+            <column name="ROUTE" length="6" />
+        </property>
+        <property name="truck" type="string">
+            <column name="TRUCK" length="6" />
+        </property>
+        <property name="startTime" type="timestamp">
+            <column name="START_TIME" length="7" not-null="true" />
+        </property>
+        <property name="firstDlvTime" type="timestamp">
+            <column name="FIRST_DLV_TIME" length="7" />
+        </property>
+        <property name="confirmed" type="yes_no">
+            <column name="CONFIRMED" length="1" />
+        </property>
+        <property name="bullPen" type="yes_no">
+            <column name="ISBULLPEN" length="1" />
+        </property>
+        <property name="planId" type="string">
+            <column name="PLAN_ID" length="10" />
+        </property>
+        <property name="comments" type="string">
+            <column name="COMMENTS" length="1024" />
+        </property>
+        <many-to-one name="region" class="com.freshdirect.transadmin.model.Region" fetch="select" lazy="false">
+            <column name="REGION" length="16" not-null="true" />
+        </many-to-one>      
+        <set name="dispatchResources" inverse="true" lazy="false" cascade="all,delete-orphan">
+            <key>
+                <column name="DISPATCH_ID" length="16" not-null="true" />
+            </key>
+            <one-to-many class="com.freshdirect.transadmin.model.DispatchResource" />
+        </set>
+    </class>
+</hibernate-mapping>

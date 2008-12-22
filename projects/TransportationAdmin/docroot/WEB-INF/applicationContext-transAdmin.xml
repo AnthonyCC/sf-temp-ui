@@ -14,38 +14,77 @@
     <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
         <property name="dataSource" ref="transJDBCDataSource"/>
         <property name="mappingResources">
-            <list>
-                <value>com/freshdirect/transadmin/model/TrnDispatch.hbm.xml</value>
-				<value>com/freshdirect/transadmin/model/TrnDispatchPlan.hbm.xml</value>
-				<value>com/freshdirect/transadmin/model/TrnEmployee.hbm.xml</value>
-				<value>com/freshdirect/transadmin/model/TrnEmployeeassignment.hbm.xml</value>
-				<value>com/freshdirect/transadmin/model/TrnEmployeeJobType.hbm.xml</value>
-				<value>com/freshdirect/transadmin/model/TrnRoute.hbm.xml</value>				
-				<value>com/freshdirect/transadmin/model/TrnTimeslot.hbm.xml</value>
-				<value>com/freshdirect/transadmin/model/TrnTruck.hbm.xml</value>
-				<value>com/freshdirect/transadmin/model/TrnTruckassignment.hbm.xml</value>
-				<value>com/freshdirect/transadmin/model/TrnZone.hbm.xml</value> 
-				<value>com/freshdirect/transadmin/model/DlvServiceTimeType.hbm.xml</value>
+            <list>	
+
+                <value>com/freshdirect/transadmin/model/DlvServiceTimeType.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/DlvLocation.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/DlvBuildingDtl.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/DlvBuilding.hbm.xml</value>
-				<value>com/freshdirect/transadmin/model/DlvServiceTime.hbm.xml</value>
-				<value>com/freshdirect/transadmin/model/TrnZoneType.hbm.xml</value> 
+				<value>com/freshdirect/transadmin/model/DlvServiceTime.hbm.xml</value>				
 				<value>com/freshdirect/transadmin/model/DlvServiceTimeScenario.hbm.xml</value> 
 				<value>com/freshdirect/transadmin/model/TrnArea.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/TrnCutOff.hbm.xml</value>  
 				<value>com/freshdirect/transadmin/model/TrnRouteNumber.hbm.xml</value>  
-				<value>com/freshdirect/transadmin/model/TrnDeliveryModel.hbm.xml</value> 
+				<value>com/freshdirect/transadmin/model/TrnDeliveryModel.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/Dispatch.hbm.xml</value>  				
+				<value>com/freshdirect/transadmin/model/DispatchResource.hbm.xml</value>  				
+				<value>com/freshdirect/transadmin/model/Employeerole.hbm.xml</value>  				
+				<value>com/freshdirect/transadmin/model/EmployeeRoleType.hbm.xml</value>  				
+				<value>com/freshdirect/transadmin/model/Plan.hbm.xml</value>  				
+				<value>com/freshdirect/transadmin/model/PlanResource.hbm.xml</value>  				
+				<value>com/freshdirect/transadmin/model/Region.hbm.xml</value>  				
+			    <value>com/freshdirect/transadmin/model/TrnAdHocRoute.hbm.xml</value>  				
+				<value>com/freshdirect/transadmin/model/TrnZoneType.hbm.xml</value>  				
+				<value>com/freshdirect/transadmin/model/Zone.hbm.xml</value>  								
+				<value>com/freshdirect/transadmin/model/ZonetypeResource.hbm.xml</value>  				
+				<value>com/freshdirect/transadmin/model/DispositionType.hbm.xml</value>
+				
             </list>
         </property>
         <property name="hibernateProperties">
             <props>
-                <prop key="hibernate.show_sql">false</prop>
+                <prop key="hibernate.show_sql">true</prop>
                 <prop key="hibernate.dialect">org.hibernate.dialect.Oracle9Dialect</prop>                
             </props>
         </property>
     </bean>
     
+    <!-- employee changes starts -->
+    
+    <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="fdtrndatasource"/>
+	</bean>
+	
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+   </bean>
+    
+    
+    <bean id="employeeManagerDAO" class="com.freshdirect.transadmin.dao.oracle.EmployeeManagerDaoOracleImpl">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>	 
+	
+	
+	<bean id="employeeManagerService" class="com.freshdirect.transadmin.service.impl.EmployeeManagerImpl">
+        <property name="employeeManagerDAO" ref="employeeManagerDAO"/>
+          <property name="domainManagerDao" ref="domainManagerDAO"/>
+    </bean>
+	
+	
+	<bean id="employeeManager" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager" ref="transactionManager"/>
+		<property name="target" ref="employeeManagerService"/>
+		<property name="transactionAttributes">
+			<props>
+			    <prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>
+			</props>
+		</property>
+	</bean>
+	
+	
+	    <!-- employee changes ends -->
+	    
+	          
     <bean id="domainManagerDAO" class="com.freshdirect.transadmin.dao.hibernate.DomainManagerDaoHibernateImpl">
 		<property name="sessionFactory" ref="sessionFactory"/>
 	</bean>	
@@ -65,11 +104,15 @@
     
      <bean id="dispatchManager" class="com.freshdirect.transadmin.service.impl.DispatchManagerImpl">
         <property name="dispatchManagerDao" ref="dispatchManagerDAO"/>
+         <property name="domainManagerService" ref="domainManager"/>
+        
     </bean>
     
     <bean id="locationManager" class="com.freshdirect.transadmin.service.impl.LocationManagerImpl">
         <property name="locationManagerDao" ref="locationManagerDAO"/>
     </bean>
+    
+    
      
      <bean id="txManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory"/>

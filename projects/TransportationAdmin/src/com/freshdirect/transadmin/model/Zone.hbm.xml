@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Nov 18, 2008 3:11:24 PM by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping schema="transp">
+    <class name="com.freshdirect.transadmin.model.Zone" table="ZONE">
+        <id name="zoneCode" type="string">
+            <column name="ZONE_CODE" length="5" />
+            <generator class="assigned" />
+        </id>
+        <property name="name" type="string">
+            <column name="NAME" length="30" not-null="true" />
+        </property>
+        <property name="unattended" type="string">
+            <column name="UNATTENDED" length="1" />
+        </property>
+        <many-to-one name="trnZoneType" class="com.freshdirect.transadmin.model.TrnZoneType" fetch="select"
+               lazy="false" >
+            <column name="ZONE_TYPE" length="16" />
+        </many-to-one>
+        <many-to-one name="area" 
+        	class="com.freshdirect.transadmin.model.TrnArea" fetch="select"
+        		lazy="false" >
+         <column name="AREA" length="8" />
+        </many-to-one>        
+        <many-to-one name="region" class="com.freshdirect.transadmin.model.Region" fetch="select"
+         lazy="false" >
+            <column name="REGION" length="16" not-null="true" />
+        </many-to-one>
+        <property name="obsolete" type="string">
+            <column name="OBSOLETE" length="1" />
+        </property>        
+    </class>
+</hibernate-mapping>

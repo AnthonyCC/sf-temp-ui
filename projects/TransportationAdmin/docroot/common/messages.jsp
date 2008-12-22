@@ -1,6 +1,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<% System.out.println("Iam here &&&&&&&&&&& "); %>
 <c:if test="${not empty messages}">
 		<br/>
+        <% System.out.println("Message not empty"); %>
        <c:forEach var="msg" items="${messages}">            
             <c:out value="${msg}" escapeXml="false"/><br />
        </c:forEach>        

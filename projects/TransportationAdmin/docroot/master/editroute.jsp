@@ -33,20 +33,18 @@
                   &nbsp;<form:errors path="routeNumber" />
                 </td>
                </tr>
-               
-               <tr>
-                  <td>Zone Number</td>
-                  <td> 
-                  <form:select path="zone">
-                        <form:option value="null" label="--Please Select Zone"/>
-                    <form:options items="${zones}" itemLabel="zoneNumber" itemValue="zoneId" />
-                   </form:select>
+                            
+                <tr>
+                  <td>Description</td>
+                  <td>                  
+                    <form:input maxlength="50" size="30" path="description" />
                 </td>
                 <td>
-                  &nbsp;<form:errors path="zone" />
+                  &nbsp;<form:errors path="description" />
                 </td>
                </tr>
-               
+
+
                <tr>
                   <td>Route Timing</td>
                   <td> 
@@ -59,20 +57,7 @@
                   &nbsp;<form:errors path="routeAmPm" />
                 </td>
                </tr>
-               
-               <tr>
-                  <td>Supervisor</td>
-                  <td> 
-                  <form:select path="supervisor">
-                        <form:option value="null" label="--Please Select Supervisor"/>
-                    <form:options items="${supervisors}" itemLabel="name" itemValue="employeeId" />
-                   </form:select>
-                </td>
-                <td>
-                  &nbsp;<form:errors path="supervisor" />
-                </td>
-               </tr>
-               
+                                           
               <tr><td colspan="3">&nbsp;</td></tr>
               <tr>
                   <td colspan="3" align="center">

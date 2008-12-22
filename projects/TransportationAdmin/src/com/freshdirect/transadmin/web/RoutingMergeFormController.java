@@ -21,7 +21,7 @@ import com.freshdirect.routing.util.IRoutingParamConstants;
 import com.freshdirect.transadmin.datamanager.RouteMergeDataManager;
 import com.freshdirect.transadmin.datamanager.RoutingResult;
 import com.freshdirect.transadmin.model.TrnArea;
-import com.freshdirect.transadmin.model.TrnZone;
+import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.web.model.RoutingMergeCommand;
 
@@ -98,18 +98,18 @@ public class RoutingMergeFormController extends BaseRoutingFormController {
 		
 		StringBuffer strBuf = new StringBuffer();
 		Collection dataList = domainManagerService.getZones();
-		TrnZone tmpZone = null;
+		Zone tmpZone = null;
 		TrnArea tmpArea = null;
 		if(dataList != null) {
 			Iterator iterator = dataList.iterator();	
 			while(iterator.hasNext()) {
-				tmpZone = (TrnZone)iterator.next();
-				tmpArea = tmpZone.getTrnArea();
+				tmpZone = (Zone)iterator.next();
+				tmpArea = tmpZone.getArea();
 				if(tmpArea != null && "X".equalsIgnoreCase(tmpArea.getActive())) {
 					if(strBuf.length() != 0) {
 						strBuf.append(", ");
 					}
-					strBuf.append(tmpZone.getZoneNumber());
+					strBuf.append(tmpZone.getZoneCode());
 				}
 			}			
 		}
