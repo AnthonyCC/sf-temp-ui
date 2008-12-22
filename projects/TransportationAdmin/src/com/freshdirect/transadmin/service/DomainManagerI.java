@@ -90,4 +90,7 @@ public interface DomainManagerI extends BaseManagerI {
 	Collection getAllRoutes(String requestedDate);
 	
 	Collection getTruckNumbers();
+	
+	Collection getBalanceBys();
+	
 }

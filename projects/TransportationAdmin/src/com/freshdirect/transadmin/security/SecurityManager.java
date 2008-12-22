@@ -50,6 +50,11 @@ public class SecurityManager {
 		return null;
     }
 	
+    public static boolean isUserAdmin(ServletRequest request) {
+
+		return "TrnAdmin".equalsIgnoreCase(getUserRole(request));
+	}
+    
 	private static boolean isUserInRole(String role, ServletRequest request) {
 		return ((HttpServletRequest)request).isUserInRole(role);
 	}

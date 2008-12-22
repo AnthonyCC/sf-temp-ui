@@ -43,12 +43,7 @@ public class DomainManagerImpl
 		return getDomainManagerDao();
 	}
 
-	public Collection getEmployees() {
-				
-		return getDomainManagerDao().getEmployees();
-	}
-	
-	
+
 	public Collection getZones() {
 		
 		return getDomainManagerDao().getZones();

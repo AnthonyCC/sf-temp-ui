@@ -86,24 +86,8 @@ public class DomainController extends AbstractMultiActionController {
         } else {
         	dataList = employeeManagerService.getEmployees();        	 
         }
-	public ModelAndView accessDeniedHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-
-		return new ModelAndView("accessDeniedView");
+        return new ModelAndView("employeeView","employees",dataList);
 	}
-
-	/**
-	 * Custom handler for welcome
-	 * @param request current HTTP request
-	 * @param response current HTTP response
-	 * @return a ModelAndView to render the response
-	 */
-	public ModelAndView employeeHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {		
-		
-		Collection dataList = domainManagerService.getEmployees();
-		return new ModelAndView("employeeView","employees",dataList);
-	}
-	
-	
 	
 	/**
 	 * Custom handler for welcome
