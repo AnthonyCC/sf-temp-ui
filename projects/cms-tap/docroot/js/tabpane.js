@@ -313,6 +313,9 @@ function setupAllTabs() {
 			el.parentNode.tabPane.addTabPage( el );			
 		}
 	}
+    
+    document.getElementById('displaydiv1').style.visibility='visible';
+    document.getElementById('displaydiv2').style.visibility='visible';
 }
 
 function disposeAllTabs() {

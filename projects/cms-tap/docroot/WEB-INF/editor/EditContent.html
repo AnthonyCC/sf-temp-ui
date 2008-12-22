@@ -60,10 +60,13 @@
 									</span>
 								</td>
 								<td align="center" width="20%">
+                                <div id="displaydiv1" class="buttonBar" style="visibility: hidden">                 
 									<span jwcid="@If" condition="ognl:visit.user.isAllowedToWrite()">
-										<input jwcid="save" class="button submit"/>
-										<input jwcid="cancel" class="button cancel"/>
+				                      
+        					            <input jwcid="save" class="button submit" />
+		        			            <input jwcid="cancel" class="button cancel"/>				                      
 									</span>
+                                    </div>
 								</td>
 								<td align="right" width="40%">
 									<span jwcid="@Conditional" condition="ognl:previewLink != null">
@@ -78,16 +81,16 @@
 						</table>
 					</div>
 				</span>
-				
+				werwewerew
 				<span jwcid="editorBlock@Block">
 					<div jwcid="@ContentEditor" node="ognl:selectedNode" contextNode="ognl:contextNode"/>
 				</span>
-
-				<div class="buttonBar" jwcid="@If" condition="ognl:visit.user.isAllowedToWrite()">
-					<input jwcid="save2" class="button submit"/>
-					<input jwcid="cancel2" class="button cancel"/>
+               <div id="displaydiv2" class="buttonBar" style="visibility: hidden">                 
+				    <div class="buttonBar" jwcid="@If" condition="ognl:visit.user.isAllowedToWrite()">
+					   <input jwcid="save2" class="button submit"/>
+					    <input jwcid="cancel2" class="button cancel"/>
+				    </div>
 				</div>
-				
 			</form>
 			<script jwcid="dirtyWarning"/>
 
