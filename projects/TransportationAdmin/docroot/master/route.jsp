@@ -30,7 +30,7 @@
 
   <tmpl:put name='content' direct='true'>
 
-			<% try { %>
+			
 	<div class="MNM001 subsub or_999">
 
 		<div class="subs_left">	
@@ -49,9 +49,7 @@
 			<div class="sub_tabright sub_tabR_MNM001 <% if(!"R".equalsIgnoreCase(request.getParameter("routetype"))) { %>activeR<% } %>">&nbsp;</div>
 		</div>
 	</div>
-				<% } catch(Exception e) {
-					e.printStackTrace();
-				} %>
+				
 
 
 	<div class="contentroot">

@@ -5,9 +5,11 @@
 
 <tmpl:insert template='/common/sitelayout.jsp'>
 
+
     <tmpl:put name='title' direct='true'>Add/Edit Route</tmpl:put>
 
   <tmpl:put name='content' direct='true'>
+  
     <br/> 
     <div align="center">
       <form:form commandName = "routeForm" method="post">

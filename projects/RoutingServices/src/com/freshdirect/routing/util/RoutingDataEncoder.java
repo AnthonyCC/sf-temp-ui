@@ -192,7 +192,7 @@ public class RoutingDataEncoder {
 		//param2 sequenced;
 		//param3 singleRoute;
 		//param4 movable;
-		return new SchedulerBulkReserveOrdersOptions(true, false, false, false);
+		return new SchedulerBulkReserveOrdersOptions(true, false, false, true);
 	}
 	
 	public static RoutingSessionCriteria encodeRoutingSessionCriteria(IRoutingSchedulerIdentity schedulerId, String sessionDescription) {
