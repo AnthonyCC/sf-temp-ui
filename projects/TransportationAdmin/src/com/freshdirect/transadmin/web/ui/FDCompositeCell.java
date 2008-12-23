@@ -17,8 +17,7 @@ public class FDCompositeCell extends FDBaseCell  {
         columnBuilder.tdStart();
         String key = column.getPropertyValueAsString();
         String value = null; 
-        Map referenceMap = (Map)model.getContext().getRequestAttribute("referencemapping");
-        System.out.println("referencemapping "+referenceMap);        
+        Map referenceMap = (Map)model.getContext().getRequestAttribute("referencemapping");               
         if(referenceMap != null) {
         	value = (String)referenceMap.get(key);        	
         }
