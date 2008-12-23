@@ -12,9 +12,6 @@
                 <column name="ROLE" length="16" />
             </key-property>
         </composite-id>
-        <many-to-one name="zoneType" class="com.freshdirect.transadmin.model.TrnZoneType" update="false" insert="false">
-            <column name="ZONETYPE_ID" length="16" not-null="true" />
-        </many-to-one>
         <property name="maximumNo" type="java.lang.Integer">
             <column name="MAXIMUM_NO" precision="9" scale="0" />
         </property>

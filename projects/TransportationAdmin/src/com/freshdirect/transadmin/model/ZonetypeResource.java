@@ -12,8 +12,7 @@ public class ZonetypeResource implements java.io.Serializable {
 	private Integer maximumNo;
 	private Integer requiredNo;
 	
-	private TrnZoneType zoneType;
-
+	
 	public ZonetypeResource() {
 	}
 
@@ -22,9 +21,8 @@ public class ZonetypeResource implements java.io.Serializable {
 		
 	}
 
-	public ZonetypeResource(ZonetypeResourceId id, TrnZoneType zoneType, Integer maximumNo,Integer requiredNo) {
+	public ZonetypeResource(ZonetypeResourceId id, Integer maximumNo,Integer requiredNo) {
 		this.id = id;
-		this.zoneType=zoneType;		
 		this.maximumNo = maximumNo;
 		this.requiredNo = requiredNo;
 	}
@@ -54,18 +52,5 @@ public class ZonetypeResource implements java.io.Serializable {
 		this.requiredNo = requiredNo;
 	}
 
-	/**
-	 * @return the zoneType
-	 */
-	public TrnZoneType getZoneType() {
-		return zoneType;
-	}
-
-	/**
-	 * @param zoneType the zoneType to set
-	 */
-	public void setZoneType(TrnZoneType zoneType) {
-		this.zoneType = zoneType;
-	}
-
+	
 }

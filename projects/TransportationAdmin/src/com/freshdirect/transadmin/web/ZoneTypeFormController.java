@@ -149,7 +149,7 @@ public class ZoneTypeFormController extends AbstractFormController {
     	ztr.setId(new ZonetypeResourceId(zoneTypeId,code));
     	ztr.setMaximumNo(max);
     	ztr.setRequiredNo(req);
-    	ztr.setZoneType(zoneType);
+    	//ztr.setZoneType(zoneType);
     	return ztr;
     }
 	
