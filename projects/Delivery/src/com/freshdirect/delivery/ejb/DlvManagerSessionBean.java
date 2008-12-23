@@ -589,7 +589,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 	}
 
 	private final static String FIND_ZONES_BY_ZONEID_QUERY =
-		"select dz.id id, dz.name name, dz.region_data_id region_data_id , dz.zone_code zone_code , dz.plan_id plan_id, dz.CT_ACTIVE CT_ACTIVE, dz.CT_RELEASE_TIME CT_RELEASE_TIME from dlv.zone dz, transp.zone tz "+
+		"select dz.id id, dz.name name, dz.region_data_id region_data_id , dz.zone_code zone_code , dz.plan_id plan_id, dz.CT_ACTIVE CT_ACTIVE, dz.CT_RELEASE_TIME CT_RELEASE_TIME, unattended from dlv.zone dz, transp.zone tz "+
 		" where dz.zone_code = tz.zone_code(+)  "+
 		" and id = ? ";
 			
