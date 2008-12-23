@@ -111,7 +111,7 @@ public class DomainController extends AbstractMultiActionController {
 	public ModelAndView adHocRouteHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 
 		Collection dataList = domainManagerService.getAdHocRoutes();
-		return new ModelAndView("adHocRouteView","routes",dataList);
+		return new ModelAndView("routeView","routes",dataList);
 	}
 
 	/**
@@ -440,10 +440,10 @@ public class DomainController extends AbstractMultiActionController {
 	
 	public ModelAndView compositeRouteHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException  {
 		String routeType = request.getParameter("routetype");
-		if("A".equalsIgnoreCase(routeType)) {
-			return adHocRouteHandler(request, response);
-		} else {
+		if("R".equalsIgnoreCase(routeType)) {
 			return routeHandler(request, response);
+		} else {
+			return adHocRouteHandler(request, response);
 		}
 	}
 	

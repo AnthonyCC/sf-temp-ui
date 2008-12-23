@@ -29,9 +29,7 @@
  		 	    <prop key="/welcome.do">domainController</prop>
  		 	    <prop key="/autoDispatch.do">dispatchController</prop>
  		 	    <prop key="/employee.do">domainController</prop>					            
- 		 	    <prop key="/xEmployee.do">domainController</prop>					            
-	 	     	<prop key="/route.do">domainController</prop>					                    
- 		 	    <prop key="/adHocRoute.do">domainController</prop>					                
+ 		 	    <prop key="/route.do">domainController</prop>					                    
  		 	    <prop key="/zone.do">domainController</prop>					                
  		 	    <prop key="/region.do">domainController</prop>					                
  		 	    <prop key="/truck.do">domainController</prop>		                
@@ -135,12 +133,10 @@
 		<property name="mappings">
 		<props>			
 			<prop key="/welcome.do">welcomeHandler</prop>
-			<prop key="/employee.do">employeeHandler</prop>	
-			<prop key="/xEmployee.do">xEmployeeHandler</prop>								                
-			<prop key="/route.do">routeHandler</prop>		
+			<prop key="/employee.do">employeeHandler</prop>				       
+			<prop key="/route.do">compositeRouteHandler</prop>		
 			<prop key="/autoDispatch.do">autoDispatchHandler</prop>					
- 		 	<prop key="/adHocRoute.do">adHocRouteHandler</prop>					                
- 		 	<prop key="/zone.do">zoneHandler</prop>		
+ 		  	<prop key="/zone.do">zoneHandler</prop>		
 			<prop key="/region.do">regionHandler</prop>		 		 				                
  		 	<prop key="/truck.do">truckHandler</prop>
  		 	<prop key="/deleteemployee.do">employeeDeleteHandler</prop>

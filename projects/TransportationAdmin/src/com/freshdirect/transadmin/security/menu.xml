@@ -14,8 +14,8 @@
 	     	<access-roles>TrnAdmin,TrnDispatch,TrnPlanning</access-roles>
 	     </menu>	     
 	     
-	     <menu id="OPR003" title="Route" orientation="RIGHT" link="route.do">
-	     	<access-uris>route.do,editroute.do,deleteroute.do</access-uris>
+	     <menu id="OPR003" title="Route" orientation="RIGHT" link="route.do?routetype=R">
+	     	<access-uris>route.do,editAdHocRoute.do,deleteAdHocRoute.do</access-uris>
 	     	<access-roles>TrnAdmin</access-roles>
 	     </menu>
 	     
