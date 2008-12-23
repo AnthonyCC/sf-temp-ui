@@ -15,7 +15,12 @@ public class FDToolTipCell extends FDBaseCell  {
     public String getHtmlDisplay(TableModel model, Column column) {
     	CustomColumnBuilder columnBuilder = new CustomColumnBuilder(column);
     	if(column.getValue() instanceof IToolTip) {
-    		columnBuilder.tdStart(getCellValue(model, column));
+    		IToolTip toolTipVO = ((IToolTip)column.getValue());
+    		if(toolTipVO.getToolTip() != null) {
+    			columnBuilder.tdStart(toolTipVO.getToolTip().toString());
+    		} else {
+    			columnBuilder.tdStart("");
+    		}
     	} else {
     		columnBuilder.tdStart();
     	}
@@ -26,7 +31,13 @@ public class FDToolTipCell extends FDBaseCell  {
     }
     
     protected String getCellValue(TableModel model, Column column) {
-        return column.getValueAsString();
+    	if(column.getValue() instanceof IToolTip) {
+    		IToolTip toolTipVO = ((IToolTip)column.getValue());
+    		if(toolTipVO.getValue() != null) {
+    			return toolTipVO.getValue().toString();
+    		}
+    	} 
+    	 return column.getValueAsString();       
     }
     
     class CustomColumnBuilder extends ColumnBuilder {
