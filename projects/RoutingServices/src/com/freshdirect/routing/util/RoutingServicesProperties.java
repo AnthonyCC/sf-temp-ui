@@ -44,6 +44,17 @@ public class RoutingServicesProperties {
 	
 	private final static String PROP_ROUTING_FLOWTYPE		= "routingservices.routing.flowtype";
 	
+	private final static String PROP_ROUTINGPARAM_CONFIRM		= "routingservices.routingparam.confirm";
+	private final static String PROP_ROUTINGPARAM_SEQUENCED		= "routingservices.routingparam.sequenced";
+	private final static String PROP_ROUTINGPARAM_SINGLEROUTE		= "routingservices.routingparam.singleroute";
+	private final static String PROP_ROUTINGPARAM_MOVABLE		= "routingservices.routingparam.movable";
+	
+	private final static String PROP_ROUTINGPARAM_RETRIEVEACTIVITIES		= "routingservices.routingparam.retrieveactivities";
+	private final static String PROP_ROUTINGPARAM_RETRIEVEEQUIPMENT		= "routingservices.routingparam.retrieveequipment";
+	private final static String PROP_ROUTINGPARAM_RETRIEVEACTIVE		= "routingservices.routingparam.retrieveactive";
+	private final static String PROP_ROUTINGPARAM_RETRIEVEBUILT		= "routingservices.routingparam.retrievebuilt";
+	private final static String PROP_ROUTINGPARAM_RETRIEVEPUBLISHED		= "routingservices.routingparam.retrievepublished";
+	
 	private static long lastRefresh = 0;
 	private final static long REFRESH_PERIOD = 5 * 60 * 1000;
 	
@@ -63,6 +74,17 @@ public class RoutingServicesProperties {
 		defaults.put(PROP_REMOVESCHEDULER_ENABLED, 	"true");
 		defaults.put(PROP_LOADBALANCE_ENABLED, 	"true");
 		defaults.put(PROP_ROUTING_FLOWTYPE, "LINEAR");
+		
+		defaults.put(PROP_ROUTINGPARAM_CONFIRM, "true");
+		defaults.put(PROP_ROUTINGPARAM_SEQUENCED, "false");
+		defaults.put(PROP_ROUTINGPARAM_SINGLEROUTE, "false");
+		defaults.put(PROP_ROUTINGPARAM_MOVABLE, "true");
+		
+		defaults.put(PROP_ROUTINGPARAM_RETRIEVEACTIVITIES, "true");
+		defaults.put(PROP_ROUTINGPARAM_RETRIEVEEQUIPMENT, "true");
+		defaults.put(PROP_ROUTINGPARAM_RETRIEVEACTIVE, "true");
+		defaults.put(PROP_ROUTINGPARAM_RETRIEVEBUILT, "true");
+		defaults.put(PROP_ROUTINGPARAM_RETRIEVEPUBLISHED, "true");
 		refresh();		
 	}
 
@@ -141,6 +163,43 @@ public class RoutingServicesProperties {
 	public static int getDefaultTimeWindowFactor() {
 		return getIntVal(get(PROP_TIMEWINDOW_FACTOR));
 	}
+	
+	public static boolean getRoutingParamConfirm() {
+        return (new Boolean(get(PROP_ROUTINGPARAM_CONFIRM))).booleanValue();
+    }
+	
+	public static boolean getRoutingParamSequenced() {
+        return (new Boolean(get(PROP_ROUTINGPARAM_SEQUENCED))).booleanValue();
+    }
+	
+	public static boolean getRoutingParamSingleRoute() {
+        return (new Boolean(get(PROP_ROUTINGPARAM_SINGLEROUTE))).booleanValue();
+    }
+	
+	public static boolean getRoutingParamMovable() {
+        return (new Boolean(get(PROP_ROUTINGPARAM_MOVABLE))).booleanValue();
+    }
+	
+	public static boolean getRoutingParamRetrieveActivities() {
+        return (new Boolean(get(PROP_ROUTINGPARAM_RETRIEVEACTIVITIES))).booleanValue();
+    }
+	
+	public static boolean getRoutingParamRetrieveEquipment() {
+        return (new Boolean(get(PROP_ROUTINGPARAM_RETRIEVEEQUIPMENT))).booleanValue();
+    }
+	
+	public static boolean getRoutingParamRetrieveActive() {
+        return (new Boolean(get(PROP_ROUTINGPARAM_RETRIEVEACTIVE))).booleanValue();
+    }
+	
+	public static boolean getRoutingParamRetrieveBuilt() {
+        return (new Boolean(get(PROP_ROUTINGPARAM_RETRIEVEBUILT))).booleanValue();
+    }
+	
+	public static boolean getRoutingParamRetrievePublished() {
+        return (new Boolean(get(PROP_ROUTINGPARAM_RETRIEVEPUBLISHED))).booleanValue();
+    }
+		
 	
 	private static int getIntVal(String strVal) {
 		int intVal = 0;

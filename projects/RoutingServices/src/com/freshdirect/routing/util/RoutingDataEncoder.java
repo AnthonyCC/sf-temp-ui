@@ -192,7 +192,10 @@ public class RoutingDataEncoder {
 		//param2 sequenced;
 		//param3 singleRoute;
 		//param4 movable;
-		return new SchedulerBulkReserveOrdersOptions(true, false, false, true);
+		return new SchedulerBulkReserveOrdersOptions(RoutingServicesProperties.getRoutingParamConfirm()
+														, RoutingServicesProperties.getRoutingParamSequenced()
+														, RoutingServicesProperties.getRoutingParamSingleRoute()
+														, RoutingServicesProperties.getRoutingParamMovable());
 	}
 	
 	public static RoutingSessionCriteria encodeRoutingSessionCriteria(IRoutingSchedulerIdentity schedulerId, String sessionDescription) {
@@ -211,8 +214,13 @@ public class RoutingDataEncoder {
 		//param4 retrieveActive;
 		//param5 retrieveBuilt;
 		//param6 retrievePublished;
-		return new RoutingRouteInfoRetrieveOptions(RoutingDetailLevel.fromValue(RoutingDetailLevel._rdlSession), true, true, true, true, true,
-				encodeTimeZoneOptions());
+		return new RoutingRouteInfoRetrieveOptions(RoutingDetailLevel.fromValue(RoutingDetailLevel._rdlSession)
+													, RoutingServicesProperties.getRoutingParamRetrieveActivities()
+													, RoutingServicesProperties.getRoutingParamRetrieveEquipment()
+													, RoutingServicesProperties.getRoutingParamRetrieveActive()
+													, RoutingServicesProperties.getRoutingParamRetrieveBuilt()
+													, RoutingServicesProperties.getRoutingParamRetrievePublished()
+													, encodeTimeZoneOptions());
 	}
 	
 	public static RoutingSessionIdentity encodeRoutingSessionIdentity(String regionId, String sessionId) {
