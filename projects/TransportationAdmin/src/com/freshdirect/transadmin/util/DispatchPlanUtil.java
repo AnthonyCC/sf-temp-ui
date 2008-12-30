@@ -98,6 +98,7 @@ public class DispatchPlanUtil {
 
 		if(dispatch.getDispositionType() != null){
 			command.setStatus(dispatch.getDispositionType().getCode());
+			command.setStatusName(dispatch.getDispositionType().getName());
 		}
 		//command.setStatus(dispatch.getDispositionType().getCode());
 		WebEmployeeInfo supInfo = employeeManagerService.getEmployee(dispatch.getSupervisorId());

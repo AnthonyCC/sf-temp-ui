@@ -184,7 +184,7 @@
               <ec:column property="drivers"  cell="com.freshdirect.transadmin.web.ui.FDPlanResourceCell" title="Driver" alias="001"/>
               <ec:column property="helpers"  cell="com.freshdirect.transadmin.web.ui.FDPlanResourceCell" title="Helper" alias="002"/>
               <ec:column property="runners"  cell="com.freshdirect.transadmin.web.ui.FDPlanResourceCell" title="Runner" alias="003"/>
-              <ec:column alias="trnStatus" property="status"  title="Status"/>
+              <ec:column alias="trnStatus" property="status"  title="statusName"/>
             </ec:row>
           </ec:table>
     </div>

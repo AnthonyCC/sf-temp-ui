@@ -27,7 +27,14 @@ public class DispatchCommand extends WebPlanInfo implements TrnBaseEntityI  {
 	private String truck;
 	private boolean confirmed;
 	private String comments;
+	private String statusName;
 		
+	public String getStatusName() {
+		return statusName;
+	}
+	public void setStatusName(String statusName) {
+		this.statusName = statusName;
+	}
 	public String getDispatchId() {
 		return dispatchId;
 	}
