@@ -12,7 +12,12 @@
 	     <menu id="OPR002" title="Dispatch" orientation="LEFT" link="dispatch.do">
 	     	<access-uris>dispatch.do,deletedispatch.do,editdispatch.do,confirmdispatch.do,refreshRoute.do,autoDispatch.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnDispatch,TrnPlanning</access-roles>
-	     </menu>	     
+	     </menu>
+	     
+	     <menu id="OPR006" title="Dispatch Summary" orientation="LEFT" link="dispatchSummary.do">
+	     	     	<access-uris>dispatchSummary.do</access-uris>
+	     	     	<access-roles>TrnAdmin,TrnDispatch,TrnPlanning</access-roles>
+	     </menu>
 	     
 	     <menu id="OPR003" title="Route" orientation="RIGHT" link="route.do?routetype=R">
 	     	<access-uris>route.do,editroute.do,deleteroute.do</access-uris>
