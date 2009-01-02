@@ -15,7 +15,7 @@
 	     </menu>	     
 	     
 	     <menu id="OPR003" title="Route" orientation="RIGHT" link="route.do?routetype=R">
-	     	<access-uris>route.do,editAdHocRoute.do,deleteAdHocRoute.do</access-uris>
+	     	<access-uris>route.do,editroute.do,deleteroute.do</access-uris>
 	     	<access-roles>TrnAdmin</access-roles>
 	     </menu>
 	     
@@ -106,7 +106,7 @@
 	     </menu>
 
   	     <menu id="GEO007" title="Zone Region" orientation="RIGHT" link="region.do">
-	     	<access-uris>region.do,deletedregion.do,editregion.do</access-uris>
+	     	<access-uris>region.do,deleteregion.do,editregion.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
 	     </menu>
          
