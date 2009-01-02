@@ -47,7 +47,7 @@
                 </td>    
 
                 <td colspan="4" align="center">
-                     <input type = "button" value="&nbsp;Go&nbsp;" 
+                     <input type = "button" value="&nbsp;Dispatch&nbsp;" 
                       onclick="javascript:doCompositeLink('daterange','zone','autoDispatch.do')" />
                 </td>    
                       

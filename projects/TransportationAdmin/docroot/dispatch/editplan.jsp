@@ -118,7 +118,7 @@
                     <c:if test="${planForm.isBullpen eq 'Y' }">
                     <c:set var="_isBullpen" value="true"/>
                     </c:if>
-                  <form:select path="zoneCode" disabled="${_isBullpen}">
+                  <form:select path="zoneCode" disabled="${_isBullpen}" onChange="submitData()">
                         <form:option value="null" label="--Please Select Zone"/>
                     <form:options items="${zones}" itemLabel="name" itemValue="zoneCode" />
                    </form:select>
@@ -290,6 +290,9 @@
                     document.getElementById("zoneCode").disabled=false;
                     document.getElementById("regionCode").disabled=true;
                 }
+                document.getElementById("ignoreErrors").value = "true";
+              document.getElementById("planForm").submit();
+
             }
         </script>
       </form:form>

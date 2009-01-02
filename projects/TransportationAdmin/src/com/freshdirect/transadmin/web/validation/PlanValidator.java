@@ -105,7 +105,7 @@ public class PlanValidator extends AbstractValidator {
 			if(max==0) {
 				errors.rejectValue(fieldName, "app.error.120",new Object[]{fieldName},"Please unselect your choices");
 			} else {
-				validateIntegerMinMax(fieldName,new Integer(resources.size()),req,max,errors);
+				validateIntegerMinMax(fieldName,new Integer(getSelectedResources(resources)),req,max,errors);
 				boolean hasSelections=false;
 				for(int i=0;i<resources.size();i++) {
 					EmployeeInfo resource=(EmployeeInfo)resources.get(i);
@@ -126,7 +126,16 @@ public class PlanValidator extends AbstractValidator {
 		}
 		
 	}
-	
+	private int getSelectedResources(List resources) {
+		int selectedResources=0;
+		for(int i=0;i<resources.size();i++) {
+			EmployeeInfo resource=(EmployeeInfo)resources.get(i);
+			if(!TransStringUtil.isEmpty(resource.getEmployeeId())) {
+				selectedResources++;
+			}
+		}
+		return selectedResources;
+	}
 	private void checkDate(String field, String startTime, String endTime, Errors errors) {
 		
 		try {
