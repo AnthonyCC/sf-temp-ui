@@ -14,9 +14,7 @@ public class Region implements java.io.Serializable, TrnBaseEntityI {
 	private String name;
 	private String description;
 	private String obsolete;
-	private Set plans = new HashSet(0);
-	private Set zones = new HashSet(0);
-
+	
 	public Region() {
 	}
 
@@ -25,13 +23,11 @@ public class Region implements java.io.Serializable, TrnBaseEntityI {
 		this.name = name;
 	}
 
-	public Region(String code, String name, String description, Set plans,
-			Set zones) {
+	public Region(String code, String name, String description) {
 		this.code = code;
 		this.name = name;
 		this.description = description;
-		this.plans = plans;
-		this.zones = zones;
+		
 	}
 
 	public String getObsolete() {
@@ -66,21 +62,7 @@ public class Region implements java.io.Serializable, TrnBaseEntityI {
 		this.description = description;
 	}
 
-	public Set getPlans() {
-		return this.plans;
-	}
-
-	public void setPlans(Set plans) {
-		this.plans = plans;
-	}
-
-	public Set getZones() {
-		return this.zones;
-	}
-
-	public void setZones(Set zones) {
-		this.zones = zones;
-	}
+	
 
 	public String toString()
 	{

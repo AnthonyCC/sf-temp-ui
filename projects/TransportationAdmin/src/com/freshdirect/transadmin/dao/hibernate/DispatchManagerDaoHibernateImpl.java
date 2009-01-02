@@ -10,6 +10,7 @@ import com.freshdirect.transadmin.dao.DispatchManagerDaoI;
 import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.DispatchResource;
 import com.freshdirect.transadmin.model.Plan;
+import com.freshdirect.transadmin.model.PlanResource;
 import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.model.ZonetypeResource;
 import com.freshdirect.transadmin.util.TransStringUtil;
@@ -156,5 +157,32 @@ public class DispatchManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 		strBuf.append(" and dp.truck is not null");
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
 
+	}
+
+	public void savePlan(Plan plan) throws DataAccessException {
+		
+		if(plan.getPlanId()==null ||"".equals(plan.getPlanId())) {
+			Set resources=plan.getPlanResources();
+			System.out.println("Resources to save :"+resources.size());
+			plan.setPlanResources(null);
+			getHibernateTemplate().save(plan);
+			if(resources!=null && resources.size()>0) {
+				Iterator it=resources.iterator();
+				while(it.hasNext()) {
+					PlanResource dr=(PlanResource)it.next();
+					System.out.println("Resource ID:"+dr.getId().getResourceId());
+					dr.getId().setContextId(plan.getPlanId());
+					System.out.println("Plan ID:"+dr.getId().getContextId());
+				}
+			}
+			plan.setPlanResources(resources);
+			saveEntityList(plan.getPlanResources());
+			
+		}
+		else {
+			saveEntity(plan);
+		}
+
+		
 	}
 }

@@ -39,6 +39,7 @@ public interface DispatchManagerI extends BaseManagerI {
 	Collection getDispatchTrucks(String date);
 	
 	Collection getAvailableTrucks(String date);
-		
+	
+	void savePlan(Plan plan);
 	
 }

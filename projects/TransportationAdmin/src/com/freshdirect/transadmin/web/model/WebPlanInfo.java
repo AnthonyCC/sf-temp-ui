@@ -372,6 +372,9 @@ public class WebPlanInfo extends BaseCommand {
 		/*if(TransStringUtil.isEmpty(this.planId)||TransStringUtil.isEmpty(resourceInfo.getEmployeeId()))
 			return null;
 		else {*/
+		if(TransStringUtil.isEmpty(resourceInfo.getEmployeeId())) {
+			return null;
+		}
 			ResourceI resource= new PlanResource();
 			EmployeeRoleType empRole=new EmployeeRoleType();
 			empRole.setCode(role.getName());
@@ -487,7 +490,12 @@ public class WebPlanInfo extends BaseCommand {
 	
 	public ResourceInfoI getResourceInfo(WebEmployeeInfo webEmpInfo, ResourceI resource){
 		if(webEmpInfo!=null && webEmpInfo.getEmpInfo()!=null ) {
-			return webEmpInfo.getEmpInfo();
+			EmployeeInfo empInfo= new EmployeeInfo();
+			empInfo.setEmployeeId(webEmpInfo.getEmpInfo().getEmployeeId());
+			empInfo.setFirstName(webEmpInfo.getEmpInfo().getFirstName());
+			empInfo.setLastName(webEmpInfo.getEmpInfo().getLastName());
+			return empInfo;
+			
 		}else {
 			return new EmployeeInfo();
 		}

@@ -236,4 +236,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 		DispatchManagerImpl impl=new DispatchManagerImpl();
 		impl.autoDisptch("11/26/2008");
 	}
+	public void savePlan(Plan	plan) {
+		getDispatchManagerDao().savePlan(plan);
+	}
 }

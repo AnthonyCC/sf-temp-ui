@@ -14,11 +14,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpSessionRequiredException;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.PlanResource;
@@ -29,6 +31,7 @@ import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
+import com.freshdirect.transadmin.web.model.DispatchCommand;
 import com.freshdirect.transadmin.web.model.WebPlanInfo;
 import com.freshdirect.transadmin.util.EnumResourceType;
 
@@ -100,34 +103,30 @@ public class PlanningFormController extends AbstractFormController {
 	
 	public boolean isNew(Object command) {
 		WebPlanInfo modelIn = (WebPlanInfo)command;
-		return (modelIn.getPlanId() == null);
+		return (TransStringUtil.isEmpty(modelIn.getPlanId()));
 	}
 	
 	public String getDomainObjectName() {
 		return "Plan";
 	}
 	
-	public List saveDomainObject(Object domainObject) {
-		WebPlanInfo tmpCommand = (WebPlanInfo)domainObject;
-		List errorList = new ArrayList();
-		try {
-			String strSourceDate = TransStringUtil.getServerDate(tmpCommand.getPlanDate());
-			if(canIgnoreError(tmpCommand)) {
-				savePlan(tmpCommand);
-			} else {
-				Collection sourceData = dispatchManagerService.getPlanList(strSourceDate);
-				if(sourceData.isEmpty()) {
-					errorList.add(getMessage("app.actionmessage.106", new Object[]{strSourceDate}));
-					tmpCommand.setErrorDate(tmpCommand.getPlanDate());					
-				} else {
-					savePlan(tmpCommand);
-				}
-			}			
-			
-		} catch(ParseException parseExp) {
-			errorList.add("Error Processing Request");
-		}
+	public List saveDomainObject(Object command) {
 		
+		List errorList = null;
+		try {
+			
+			boolean isNew = isNew(command);
+			Plan domainObject=getPlan((WebPlanInfo)command);
+			if(!isNew) {
+				getDomainManagerService().saveEntity(domainObject);
+			} else {
+				getDispatchManagerService().savePlan(domainObject);
+			}
+		} catch (Exception objExp) {
+			objExp.printStackTrace();
+			errorList = new ArrayList();
+			errorList.add(this.getMessage("sys.error.1001", new Object[]{this.getDomainObjectName()}));
+		}
 		return errorList;
 	}
 	
@@ -144,9 +143,10 @@ public class PlanningFormController extends AbstractFormController {
 		super.saveErrorMessage(request, msg);
 	}
 	
+	/*
 	private boolean canIgnoreError(WebPlanInfo tmpCommand) {
-		//return "true".equalsIgnoreCase(tmpCommand.getIgnoreErrors()) && tmpCommand.getPlanDate().equals(tmpCommand.getErrorDate());
-		return true;
+		return "true".equalsIgnoreCase(tmpCommand.getIgnoreErrors()) && tmpCommand.getPlanDate().equals(tmpCommand.getErrorDate());
+		
 	}
 	
 	private void savePlan(WebPlanInfo tmpCommand) throws ParseException {
@@ -175,8 +175,25 @@ public class PlanningFormController extends AbstractFormController {
 		tmpCommand.setIgnoreErrors(null);
 		tmpCommand.setErrorDate(null);
 	}
-	
-		
+	private List savePlan(WebPlanInfo command) {	
+		List errorList = null;
+		try {
+			
+			boolean isNew = isNew(command);
+			Plan domainObject=DispatchPlanUtil.getPlan(command);
+			if(!isNew) {
+				getDomainManagerService().saveEntity(domainObject);
+			} else {
+				getDispatchManagerService().savePlan(domainObject);
+			}
+		} catch (Exception objExp) {
+			objExp.printStackTrace();
+			errorList = new ArrayList();
+			errorList.add(this.getMessage("sys.error.1001", new Object[]{this.getDomainObjectName()}));
+		}
+		return errorList;
+	}
+	*/	
 	public DomainManagerI getDomainManagerService() {
 		return domainManagerService;
 	}
@@ -184,22 +201,7 @@ public class PlanningFormController extends AbstractFormController {
 	public void setDomainManagerService(DomainManagerI domainManagerService) {
 		this.domainManagerService = domainManagerService;
 	}	
-	/*protected void onBindOnNewForm(HttpServletRequest request, Object command) {
-		
-		WebPlanInfo model = (WebPlanInfo) command;
-		String drivers[]=request.getParameterValues("drivers");
-		String helpers[]=request.getParameterValues("helpers");
-		String runners[]=request.getParameterValues("runners");
-		List driverList=getResourceInfoList(drivers);
-		List helperList=getResourceInfoList(helpers);
-		List runnerList=getResourceInfoList(runners);
-		if(driverList!=null)
-			model.setDrivers(driverList);
-		if(helperList!=null)
-			model.setHelpers(helperList);
-		if(runnerList!=null)
-			model.setRunners(runnerList);
-	}*/
+	
 	protected void onBind(HttpServletRequest request, Object command) {
 	
 		
@@ -222,42 +224,18 @@ public class PlanningFormController extends AbstractFormController {
 	
 
 	
-	private void setResourceReq(WebPlanInfo model) {
-		
-		/*model.setDriverMax(9);
-		model.setDriverReq(9);
-		model.setHelperMax(9);
-		model.setHelperReq(9);
-		model.setRunnerMax(9);
-		model.setRunnerReq(9);*/
-		
-	}
-
-	
-	/*private List getResourceInfoList(String[] resources) {
-		
-		if(resources==null)
-			return null;
-		if(resources.length==1 && TransStringUtil.isEmpty(resources[0]))
-			return null;
-		List selectedResources=null;
-		for(int i=0;i<resources.length;i++){
-			if(selectedResources==null) 
-				selectedResources=new ArrayList(resources.length);
-			ResourceInfo resourceInfo=new ResourceInfo();
-			resourceInfo.setEmployeeId(resources[i]);
-			selectedResources.add(resourceInfo);
-		}
-		return selectedResources;
-	}*/
-
 	
 	
-	public void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
+	
+	/*public void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
 		super.initBinder(request,binder);
-    }
+    }*/
 	
-	protected ModelAndView processFormSubmission(
+	private Plan getPlan(WebPlanInfo command) throws Exception {
+		return DispatchPlanUtil.getPlan(command);
+	}
+	
+	/*protected ModelAndView processFormSubmission(
 			HttpServletRequest request, HttpServletResponse response, Object command, BindException errors)
 			throws Exception {
 
@@ -277,9 +255,9 @@ public class PlanningFormController extends AbstractFormController {
 			logger.debug("No errors -> processing submit");
 			return onSubmit(request, response, command, errors);
 		}
-	}
+	}*/
 
-	protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response)
+	/*protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response)
 	throws Exception {
 
 		// Form submission or new form to show?
@@ -304,7 +282,7 @@ public class PlanningFormController extends AbstractFormController {
 			// New form to show: render form view.
 			return showNewForm(request, response);
 		}
-	}
+	}*/
 	
 	
 	

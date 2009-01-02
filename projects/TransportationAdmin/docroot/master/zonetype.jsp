@@ -23,12 +23,12 @@
 				    	<ec:column title=" " width="5px" 
 					          filterable="false" sortable="false" cell="selectcol"
 					          property="zoneTypeId" />				    	
-				      <ec:column property="name" title="Zone Type Name"/>
+				      <ec:column property="nameEx" title="Zone Type Name" cell="tooltip" />
 				      <ec:column property="description" title="Description"/>	
                                             
-                      <ec:column property="zonetypeResources" headerCell="com.freshdirect.transadmin.web.ui.FDCompositeResourceHeaderCell" cell="resource" title="Driver" alias="001"/>
-                      <ec:column property="zonetypeResources" headerCell="com.freshdirect.transadmin.web.ui.FDCompositeResourceHeaderCell" cell="resource" title="Helper" alias="002"/>
-                      <ec:column property="zonetypeResources" headerCell="com.freshdirect.transadmin.web.ui.FDCompositeResourceHeaderCell" cell="resource" title="Runner" alias="003"/>                      
+                      <ec:column filterable="false" property="zonetypeResources" headerCell="com.freshdirect.transadmin.web.ui.FDCompositeResourceHeaderCell" cell="resource" title="Driver" alias="001"/>
+                      <ec:column filterable="false" property="zonetypeResources" headerCell="com.freshdirect.transadmin.web.ui.FDCompositeResourceHeaderCell" cell="resource" title="Helper" alias="002"/>
+                      <ec:column filterable="false" property="zonetypeResources" headerCell="com.freshdirect.transadmin.web.ui.FDCompositeResourceHeaderCell" cell="resource" title="Runner" alias="003"/>                      
                       
                                          
 				    </ec:row>

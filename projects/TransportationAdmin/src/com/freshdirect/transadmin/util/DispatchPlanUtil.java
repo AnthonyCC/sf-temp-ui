@@ -1,6 +1,7 @@
 package com.freshdirect.transadmin.util;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -205,6 +206,11 @@ public class DispatchPlanUtil {
 	public static List getSortedResources(Collection resources) {
 		
 		List _resources=(List)resources;
+		/*List sortedResources=new ArrayList(_resources.size());
+		for(int i=0;i<_resources.size();i++) {
+			sortedResources.add(_resources.get(i));
+		}*/
+		
 		Collections.sort(_resources, EMPLOYEE_COMPARATOR);
 		return _resources;
 		

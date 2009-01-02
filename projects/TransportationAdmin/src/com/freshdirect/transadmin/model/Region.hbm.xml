@@ -17,17 +17,5 @@
         <property name="obsolete" type="string">
             <column name="OBSOLETE" length="1" />
         </property>        
-        <set name="plans" inverse="true">
-            <key>
-                <column name="REGION" length="16" not-null="true" />
-            </key>
-            <one-to-many class="com.freshdirect.transadmin.model.Plan" />
-        </set>
-        <set name="zones" inverse="true">
-            <key>
-                <column name="REGION" length="16" not-null="true" />
-            </key>
-            <one-to-many class="com.freshdirect.transadmin.model.Zone" />
-        </set>
     </class>
 </hibernate-mapping>

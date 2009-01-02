@@ -121,6 +121,47 @@ public class ZoneTypeCommand extends BaseCommand {
 	public void setRunnerCode(String runnerCode) {
 		this.runnerCode = runnerCode;
 	}
+	
+	public Tooltip getNameEx() {
+		return new Tooltip(this.getName(), "Test tool tip");
+	}
+	
+	class Tooltip implements IToolTip {
+		
+		Object value = null;
+		String toolTip = null;
+		
+		Tooltip(Object value, String tooltip) {
+			this.value = value;
+			this.toolTip = tooltip;
+		}
+
+		
+
+		public Object getValue() {
+			return value;
+		}
+
+		public void setValue(String value) {
+			this.value = value;
+		}
+
+
+
+		public String getToolTip() {
+			return toolTip;
+		}
+
+
+
+		public void setToolTip(String toolTip) {
+			this.toolTip = toolTip;
+		}
+		
+		public String toString() {
+			return getValue().toString();
+		}
+	}
 		
 }
 
