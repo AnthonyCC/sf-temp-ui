@@ -7,6 +7,7 @@ import java.util.Set;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
+import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
 import com.freshdirect.transadmin.web.model.DispatchResourceInfo;
@@ -40,8 +41,6 @@ public class DispatchValidator extends AbstractValidator {
 	validateResources(model.getHelperReq(),model.getHelperMax(),"helpers",model.getHelpers(),errors);
 	validateResources(model.getRunnerReq(),model.getRunnerMax(),"runners",model.getRunners(),errors);
 	checkForDuplicateResourceAllocation(model,errors);
-	System.out.println(errors.hasErrors());
-	System.out.println(errors.getErrorCount());
 	
 	/*boolean hasTimeSlots = true;
 	if(model != null && (model. .getTrnTimeslot() == null || model.getTrnTimeslot().getSlotId() == null)) {
@@ -104,7 +103,7 @@ private void validateResources(int req, int max,String fieldName,List resources,
 		if(max==0) {
 			errors.rejectValue(fieldName, "app.error.120",new Object[]{fieldName},"Please unselect your choices");
 		} else {
-			validateIntegerMinMax(fieldName,new Integer(resources.size()),req,max,errors);
+			validateIntegerMinMax(fieldName,new Integer(getSelectedResources(resources)),req,max,errors);
 			boolean hasSelections=false;
 			for(int i=0;i<resources.size();i++) {
 				DispatchResourceInfo resource=(DispatchResourceInfo)resources.get(i);
@@ -124,6 +123,17 @@ private void validateResources(int req, int max,String fieldName,List resources,
 	
 	}
 	
+}
+
+private int getSelectedResources(List resources) {
+	int selectedResources=0;
+	for(int i=0;i<resources.size();i++) {
+		DispatchResourceInfo resource=(DispatchResourceInfo)resources.get(i);
+		if(!TransStringUtil.isEmpty(resource.getEmployeeId())) {
+			selectedResources++;
+		}
+	}
+	return selectedResources;
 }
 
 private void checkDate(String field, String startTime, String endTime, Errors errors) {

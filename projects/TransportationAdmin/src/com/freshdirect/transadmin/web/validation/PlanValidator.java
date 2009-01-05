@@ -42,8 +42,6 @@ public class PlanValidator extends AbstractValidator {
 		validateResources(model.getHelperReq(),model.getHelperMax(),"helpers",model.getHelpers(),errors);
 		validateResources(model.getRunnerReq(),model.getRunnerMax(),"runners",model.getRunners(),errors);
 		checkForDuplicateResourceAllocation(model,errors);
-		System.out.println(errors.hasErrors());
-		System.out.println(errors.getErrorCount());
 		
 		/*boolean hasTimeSlots = true;
 		if(model != null && (model. .getTrnTimeslot() == null || model.getTrnTimeslot().getSlotId() == null)) {

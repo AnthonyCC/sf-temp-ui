@@ -15,7 +15,6 @@ public class DispatchObsoleteRowInterceptor implements RowInterceptor {
     } 
 
     public void modifyRowAttributes(TableModel model, Row row) {
-    	System.out.println("Class name %%%%%%%%%%%%%%%%%%% "+model.getCurrentRowBean().getClass().getName());
     	DispatchCommand rowEntity = (DispatchCommand) model.getCurrentRowBean();        
         if (rowEntity != null && rowEntity.isObsoleteEntity()) {
             row.setStyleClass("obsoleteRow");

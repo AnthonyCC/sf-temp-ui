@@ -48,7 +48,9 @@
  		 	    <prop key="/editplan.do">planningFormController</prop> 		 	    
  		 	    <prop key="/assignment.do">assignmentFormController</prop>
  		 	    <prop key="/dispatch.do">dispatchController</prop>
+ 		 	    <prop key="/dispatchSummary.do">dispatchController</prop>
  		 	    <prop key="/refreshRoute.do">dispatchController</prop>
+ 		 	    <prop key="/refreshRouteSummary.do">dispatchController</prop>
  		 	    <prop key="/deletedispatch.do">dispatchController</prop>
  		 	    <prop key="/editdispatch.do">dispatchFormController</prop>
  		 	    <prop key="/confirmdispatch.do">dispatchController</prop>
@@ -147,7 +149,9 @@
  		 	<prop key="/plan.do">planHandler</prop>			      
  		 	<prop key="/deleteplan.do">planDeleteHandler</prop>
  		 	<prop key="/dispatch.do">dispatchHandler</prop>
- 		 	<prop key="/refreshRoute.do">routeRefreshHandler</prop>				      
+ 		 	<prop key="/dispatchSummary.do">dispatchSummaryHandler</prop> 		 	
+ 		 	<prop key="/refreshRoute.do">routeRefreshHandler</prop>
+ 		 	<prop key="/refreshRouteSummary.do">routeRefreshHandler</prop>						      
  		 	<prop key="/deletedispatch.do">dispatchDeleteHandler</prop>
  		 	<prop key="/confirmdispatch.do">dispatchConfirmHandler</prop>
  		 	<prop key="/welcomedlvlocation.do">welcomeDlvLocationHandler</prop>

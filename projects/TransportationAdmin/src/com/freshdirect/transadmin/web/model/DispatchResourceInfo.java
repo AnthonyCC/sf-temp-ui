@@ -79,7 +79,7 @@ public class DispatchResourceInfo extends BaseCommand implements ResourceInfoI {
 	
 
 	public String getNextelNo() {
-		return nextelNo;
+		return this.nextelNo != null ? this.nextelNo : "";
 	}
 
 	public void setNextelNo(String nextelNo) {

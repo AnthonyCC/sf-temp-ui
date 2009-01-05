@@ -3,7 +3,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ page import= 'com.freshdirect.transadmin.util.TransStringUtil' %>
-<%  pageContext.setAttribute("HAS_ADDBUTTON", "false"); 
+<%  pageContext.setAttribute("HAS_ADDBUTTON", "true"); 
   pageContext.setAttribute("HAS_CONFIRMBUTTON", "true"); 
    String dateRangeVal = request.getParameter("dispDate") != null ? request.getParameter("dispDate") : "";
    if(dateRangeVal == null || dateRangeVal.length() == 0) dateRangeVal = TransStringUtil.getCurrentDate();
@@ -18,27 +18,24 @@
     <br/> 
     <div class="contentroot">               
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
-          <tr>
-            <td class="screentitle">Dispatch Sheet</td>
-          </tr>
           <c:if test="${not empty messages}">
           <tr>
             <td class="screenmessages"><jsp:include page='/common/messages.jsp'/></td>
           </tr>
           </c:if>         
           <tr>
-            <td align="center">
+            <td>
 
-              <table border = "0" width="50%">
+              <table border = "0">
                 <tr>
-                  <td width="25%"> 
-                                
-                    <input maxlength="10" size="10" name="dispDate"
-                      id="dispDate" value="<c:out value="${dispDate}"/>" />
-                    
-                    &nbsp;<a href="#" id="trigger_dispatchDate" style="font-size: 9px;">
-                        <img src="images/calendar.gif"  style="border:0"  alt=">>" />
-                        </a>
+                <td> 
+                    <span style="font-size: 18px;font-weight: bold;">Dispatch</span>
+                </td>                
+                  <td> 
+                    <span><input maxlength="10" size="10" name="dispDate" id="dispDate" value='<c:out value="${dispDate}"/>' /></span>
+                     <span><a href="#" id="trigger_dispatchDate" style="font-size: 9px;">
+                        <img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date">
+                    </a></span>
                      <script language="javascript">                 
                       Calendar.setup(
                       {
@@ -51,9 +48,9 @@
                        }
                       );
                       
-                      function doDelete(tableId, url) {                       
-                        sendRequest(tableId, url, "Do you want to delete the selected records?");                       
-                    }
+                   function doDelete(tableId, url) {    
+                     sendRequest(tableId, url, "Do you want to delete the selected records?");                       
+                   }
                     
                     function doConfirm(tableId, url) {
                         sendRequest(tableId, url, "Do you want to confirm/deconfirm the selected records?");                      
@@ -66,13 +63,11 @@
                         }
                     }
                     
-                    function newDispatch() {
-                         location.href= "<c:out value="${pageContext.request.contextPath}"/>/editdispatch.do?dispDate=<%= dateRangeVal %>";
-                    }
-                    function sendRequest(tableId, url, message) {
-                      
+
+                    function sendRequest(tableId, url, message, action) {
                       var table = document.getElementById(tableId);
                         var checkboxList = table.getElementsByTagName("input");
+                        var confirmedList = table.getElementsByTagName("input");
                         var dateField = document.getElementById("dispDate").value;    
                         var paramValues = null;
                         for (i = 0; i < checkboxList.length; i++) {
@@ -100,24 +95,24 @@
                 <td>
                   &nbsp;<form:errors path="dispDate" />
                 </td>
-                <td width="10%"> 
+                <td> 
                   <select id="zone" name="zone">
                       <option value="">Select Zone</option> 
                       <c:forEach var="zone" items="${zones}">                             
                           <c:choose>
                             <c:when test="${param.zone == zone.zoneCode}" > 
-                              <option selected value="<c:out value="${zone.zoneCode}"/>"><c:out value="${zone.zoneCode}"/></option>
+                              <option selected value="<c:out value="${zone.zoneCode}"/>"><c:out value="${zone.displayName}"/></option>
                             </c:when>
                             <c:otherwise> 
-                              <option value="<c:out value="${zone.zoneCode}"/>"><c:out value="${zone.zoneCode}"/></option>
+                              <option value="<c:out value="${zone.zoneCode}"/>"><c:out value="${zone.displayName}"/></option>
                             </c:otherwise> 
                           </c:choose>      
                         </c:forEach>   
                    </select>
                 
                 </td>
-                <td align="center">OR</td>
-                <td width="25%"> 
+                <td align="center"><span style="font-size: 9px;">OR</span></td>
+                <td> 
                     <select id="region" width="50" name="region">
                       <option value="">Select Region</option> 
                       <c:forEach var="region" items="${regions}">                             
@@ -136,9 +131,6 @@
                    <td>
                      <input type = "button" value="&nbsp;View&nbsp;" onclick="javascript:doCompositeLink('dispDate','zone','region','dispatch.do')" />
                   </td>  
-                  <td>
-                     <input type = "button" value="&nbsp;New Dispatch&nbsp;" onclick="javascript:newDispatch()" />
-                  </td> 
                   <td>
                      <input type = "button" value="&nbsp;Refresh Route&nbsp;" onclick="javascript:refreshRoute()" />
                   </td> 
@@ -181,10 +173,10 @@
               <ec:column  alias="trnTimeEndslotslotName" property="firstDeliveryTime" title="First Dlv."/>
               <ec:column alias="trnRouterouteNumber" property="route"  width="10" title="Route"/>
               <ec:column alias="trnTrucktruckNumber" property="truck" width="10"  title="Truck"/>
-              <ec:column property="drivers"  cell="com.freshdirect.transadmin.web.ui.FDPlanResourceCell" title="Driver" alias="001"/>
-              <ec:column property="helpers"  cell="com.freshdirect.transadmin.web.ui.FDPlanResourceCell" title="Helper" alias="002"/>
-              <ec:column property="runners"  cell="com.freshdirect.transadmin.web.ui.FDPlanResourceCell" title="Runner" alias="003"/>
-              <ec:column alias="trnStatus" property="status"  title="statusName"/>
+              <ec:column property="drivers"  cell="com.freshdirect.transadmin.web.ui.FDDispatchResourceCell" title="Driver"  filterable="false" alias="001"/>
+              <ec:column property="helpers"  cell="com.freshdirect.transadmin.web.ui.FDDispatchResourceCell" title="Helper"  filterable="false" alias="002"/>
+              <ec:column property="runners"  cell="com.freshdirect.transadmin.web.ui.FDDispatchResourceCell" title="Runner"  filterable="false" alias="003"/>
+              <ec:column alias="trnStatus" property="statusName"  title="Status"/>
             </ec:row>
           </ec:table>
     </div>

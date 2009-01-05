@@ -22,7 +22,9 @@ public class FDRouteMasterInfo implements Serializable {
 			+ " routeTime: "
 			+ getRouteTime()
 			+ " numberOfStops: "
-			+ getNumberOfStops().toString();
+			+ getNumberOfStops()
+			+ " firstDeliveryTime: "
+			+ getFirstDlvTime().toString();
 	}
 
 	private ErpRouteMasterInfo routeInfo;

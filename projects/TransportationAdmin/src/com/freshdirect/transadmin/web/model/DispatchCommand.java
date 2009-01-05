@@ -28,6 +28,7 @@ public class DispatchCommand extends WebPlanInfo implements TrnBaseEntityI  {
 	private boolean confirmed;
 	private String comments;
 	private String statusName;
+	private String noOfStops;
 		
 	public String getStatusName() {
 		return statusName;
@@ -122,5 +123,11 @@ public class DispatchCommand extends WebPlanInfo implements TrnBaseEntityI  {
 			resource.setNextTelNo(resourceInfo.getNextelNo());
 			return resource;
 		}
+	}
+	public String getNoOfStops() {
+		return noOfStops;
+	}
+	public void setNoOfStops(String noOfStops) {
+		this.noOfStops = noOfStops;
 	}
 }

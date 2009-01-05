@@ -41,6 +41,7 @@ public class TransStringUtil {
 	
 	private static NumberFormat formatter = new DecimalFormat("00");
 	
+	private static DateFormat fullMonthFormat = new SimpleDateFormat("dd MMMMM yyyy");
 	static {
 			for(int intCount=0;intCount<daysList.length;intCount++) {
 				daysMap.put(daysList[intCount], new Integer(intCount));
@@ -97,6 +98,10 @@ public class TransStringUtil {
 	
 	public static String getDate(Date dateVal) throws ParseException {		
         return dateFormat.format(dateVal);
+	}
+	
+	public static String getFullMonthDate(Date dateVal) throws ParseException {		
+        return fullMonthFormat.format(dateVal);
 	}
 	
 	public static String getTime(Date dateVal) throws ParseException {		

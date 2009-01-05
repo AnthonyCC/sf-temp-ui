@@ -24,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.DispatchResource;
+import com.freshdirect.transadmin.model.FDRouteMasterInfo;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.model.ZonetypeResource;
@@ -159,11 +160,11 @@ public class DispatchController extends AbstractMultiActionController {
 		String region = request.getParameter("region");
 		ModelAndView mav = new ModelAndView("dispatchView");
 		if(!TransStringUtil.isEmpty(dispDate)) {
-			mav.getModel().put("dispatchInfos", getDispatchInfos(getServerDate(dispDate), zone, region));
+			mav.getModel().put("dispatchInfos", getDispatchInfos(getServerDate(dispDate), zone, region, false));
 			mav.getModel().put("dispDate", dispDate);
 		} else {
 			//By default get the today's dispatches.
-			mav.getModel().put("dispatchInfos",getDispatchInfos(TransStringUtil.getCurrentServerDate(), zone, region));
+			mav.getModel().put("dispatchInfos",getDispatchInfos(TransStringUtil.getCurrentServerDate(), zone, region, false));
 			mav.getModel().put("dispDate", TransStringUtil.getCurrentDate());
 		}
 		mav.getModel().put("zones", domainManagerService.getZones());
@@ -171,7 +172,16 @@ public class DispatchController extends AbstractMultiActionController {
 		return mav;
 	}
 	
-	private Collection getDispatchInfos(String dispDate, String zoneStr, String region){
+	public ModelAndView dispatchSummaryHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {		
+		
+		ModelAndView mav = new ModelAndView("dispatchSummaryView");
+		//By default get the today's dispatches.
+		mav.getModel().put("dispatchInfos",getDispatchInfos(TransStringUtil.getCurrentServerDate(), null, null, true));
+		mav.getModel().put("dispDate", TransStringUtil.getCurrentDate());
+		return mav;
+	}
+	
+	private Collection getDispatchInfos(String dispDate, String zoneStr, String region, boolean isSummary){
 		Collection dispatchInfos = new ArrayList();
 		try {
 		Collection dispatchList = dispatchManagerService.getDispatchList(dispDate, zoneStr, region);
@@ -179,7 +189,15 @@ public class DispatchController extends AbstractMultiActionController {
 			while(iter.hasNext()){
 				Dispatch dispatch = (Dispatch) iter.next();
 				Zone zone=domainManagerService.getZone(dispatch.getZone().getZoneCode());
-				dispatchInfos.add(DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService));
+				DispatchCommand command = DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService);
+				if(isSummary){
+					FDRouteMasterInfo routeInfo = domainManagerService.getRouteMasterInfo(command.getRoute(), new Date());
+					if(routeInfo != null){
+						command.setNoOfStops(routeInfo.getNumberOfStops());	
+					}
+					
+				}
+				dispatchInfos.add(command);
 			}
 		}catch(Exception ex){
 			ex.printStackTrace();
@@ -205,12 +223,18 @@ public class DispatchController extends AbstractMultiActionController {
 			int arrLength = arrEntityList.length;
 			for (int intCount = 0; intCount < arrLength; intCount++) {
 				splitter = new StringTokenizer(arrEntityList[intCount], "$");
-				dispatchSet.add(dispatchManagerService.getDispatch(splitter.nextToken()));
+				Dispatch dispatch =dispatchManagerService.getDispatch(splitter.nextToken());
+				if(dispatch.getConfirmed() == Boolean.FALSE){
+					dispatchSet.add(dispatch);
+				}
+			}
+			if(dispatchSet.size() == arrLength) {
+				dispatchManagerService.removeEntity(dispatchSet);
+				saveMessage(request, getMessage("app.actionmessage.103", null));
+			} else {
+				saveMessage(request, getMessage("app.actionmessage.136", null));
 			}
 		}		
-		dispatchManagerService.removeEntity(dispatchSet);
-		saveMessage(request, getMessage("app.actionmessage.103", null));
-
 		return dispatchHandler(request, response);
 	}
 	
@@ -252,6 +276,7 @@ public class DispatchController extends AbstractMultiActionController {
 	public ModelAndView routeRefreshHandler(HttpServletRequest request, HttpServletResponse response) 
 	throws ServletException, ParseException {
 		String dispDate = request.getParameter("dispDate");
+		String isSummary = request.getParameter("summary");
 		boolean changed = false;
 		if(!TransStringUtil.isEmpty(dispDate)) {
 			changed = dispatchManagerService.refreshRoute(TransStringUtil.getDate(dispDate));
@@ -262,8 +287,15 @@ public class DispatchController extends AbstractMultiActionController {
 		if(changed){
 			saveMessage(request, getMessage("app.actionmessage.134", null));
 		}
-		return dispatchHandler(request, response);
+		if(TransStringUtil.isEmpty(isSummary)){
+			return dispatchHandler(request, response);
+		}else{
+			System.out.println("Inside Summary");
+			return dispatchSummaryHandler(request, response);
+		}
+		
 	}
+	
 	public ModelAndView autoDispatchHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException, ParseException {
 		
 				// if there is a dispatch record for the same date then check what user role

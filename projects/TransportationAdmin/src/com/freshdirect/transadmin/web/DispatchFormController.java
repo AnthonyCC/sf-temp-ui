@@ -86,9 +86,11 @@ public class DispatchFormController extends AbstractFormController {
 		} else {
 			refData.put("routes", domainManagerService.getAllRoutes(TransStringUtil.getCurrentServerDate()));
 		}
-		Collection trucks = getDispatchManagerService().getAvailableTrucks(getServerDate(dispDate));
-		refData.put("trucks", trucks);
-		
+		if (StringUtils.hasText(dispDate)) {
+			refData.put("trucks",  getDispatchManagerService().getAvailableTrucks(getServerDate(dispDate)));
+		} else {
+			refData.put("trucks",  getDispatchManagerService().getAvailableTrucks(TransStringUtil.getCurrentServerDate()));
+		}
 		refData.put("supervisors", DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.SUPERVISOR.getName())));
 		refData.put("drivers", DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.DRIVER.getName())));
 		refData.put("helpers", DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.HELPER.getName())));
@@ -198,37 +200,6 @@ public class DispatchFormController extends AbstractFormController {
 		return mav;
 	}
 	*/
-	private void save(HttpServletRequest request, Object command) {
-		String messageKey = isNew(command) ? "app.actionmessage.101"
-				: "app.actionmessage.102";
-		preProcessDomainObject(command);
-		List errorList = saveDomainObject(command);
-		if(errorList == null || errorList.isEmpty()) {
-			saveMessage(request, getMessage(messageKey,
-					new Object[] { getDomainObjectName() }));
-		} else {
-			saveErrorMessage(request, errorList);
-		}
-	}
-
-	private void setTruckNumber(HttpServletRequest request, Date requestedDate,
-			String routeNo, DispatchCommand dispatchCommand) {
-		FDRouteMasterInfo routeInfo = getDomainManagerService().getRouteMasterInfo(routeNo, requestedDate);
-		if(routeInfo != null) {
-			String truckNum = routeInfo.getTruckNumber();
-		
-			if(StringUtils.hasText(truckNum)){
-				dispatchCommand.setTruck(truckNum);
-				dispatchCommand.setRoute(routeNo);
-			}else {
-				saveMessage(request, getMessage("app.actionmessage.133",
-						new Object[] {routeNo}));
-				dispatchCommand.setRoute(routeNo);
-				dispatchCommand.setTruck("");
-			}
-		}
-	}
-	
 	protected void onBind(HttpServletRequest request, Object command) {
 		DispatchCommand model = (DispatchCommand) command;
 		Zone zone=null;

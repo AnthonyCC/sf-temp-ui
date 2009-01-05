@@ -57,6 +57,9 @@
             }
             return elements;
         }
+        function getResourcesInfo() {
+            dispatchForm.submit();
+        }
       </script>
       <style>
         .time_picker_div {padding:5px;
@@ -97,9 +100,9 @@
                     <spring:bind path="dispatchForm.zoneCode">   
                         <c:choose>                    
                         <c:when test='${status.value == ""}'> 
-                            <form:select path="zoneCode">
+                            <form:select path="zoneCode" onChange="javascript:getResourcesInfo();">
                                 <form:option value="" label="Select Zone"/>
-                                <form:options items="${zones}" itemLabel="zoneCode" itemValue="zoneCode" />
+                                <form:options items="${zones}" itemLabel="displayName" itemValue="zoneCode" />
                             </form:select>
                         </c:when>
                          <c:otherwise> 
@@ -271,7 +274,7 @@
                     <c:forEach items="${dispatchForm.drivers}" var="driver" varStatus="gridRow">                        
                         <spring:bind path="dispatchForm.drivers[${gridRow.index}].nextelNo">
                         <td>
-                            <input type="text" size="8" id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" 
+                            <img src="./images/icons/nextel.gif" width="16" height="16" border="0" alt="Nextel Number" title="Nextel Number">&nbsp;<input type="text" size="8" id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" 
                                 value="<c:out value="${status.value}"/>" />
                         </td>        
                         </spring:bind>
@@ -319,7 +322,7 @@
                     <c:forEach items="${dispatchForm.helpers}" var="driver" varStatus="gridRow">                        
                         <spring:bind path="dispatchForm.helpers[${gridRow.index}].nextelNo">
                         <td>
-                            <input type="text" size="8" id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" 
+                            <img src="./images/icons/nextel.gif" width="16" height="16" border="0" alt="Nextel Number" title="Nextel Number">&nbsp;<input type="text" size="8" id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" 
                                 value="<c:out value="${status.value}"/>" />
                         </td>        
                         </spring:bind>
@@ -368,7 +371,7 @@
                     <c:forEach items="${dispatchForm.runners}" var="driver" varStatus="gridRow">                        
                         <spring:bind path="dispatchForm.runners[${gridRow.index}].nextelNo">
                         <td>
-                            <input type="text" size="8" id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" 
+                            <img src="./images/icons/nextel.gif" width="16" height="16" border="0" alt="Nextel Number" title="Nextel Number">&nbsp;<input type="text" size="8" id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" 
                                 value="<c:out value="${status.value}"/>" />
                         </td>        
                         </spring:bind>

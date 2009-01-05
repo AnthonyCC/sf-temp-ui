@@ -99,7 +99,9 @@ public class Zone implements java.io.Serializable {
 		this.area = area;
 	}
 
-	
+	public String getDisplayName() {
+		return this.zoneCode+" - "+this.name;
+	}
 	
 
 }
