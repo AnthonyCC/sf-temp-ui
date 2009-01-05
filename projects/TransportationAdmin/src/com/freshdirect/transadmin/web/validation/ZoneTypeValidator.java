@@ -5,6 +5,7 @@ import org.springframework.validation.ValidationUtils;
 
 import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.util.TransStringUtil;
+import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.web.model.ZoneTypeCommand;
 
 public class ZoneTypeValidator extends AbstractValidator {	
@@ -21,35 +22,37 @@ public class ZoneTypeValidator extends AbstractValidator {
 		
 		validateLength("name", model.getName(), 32, errors);
 		validateLength("description", model.getDescription(), 256, errors);
-		
+		if(model.getDriverReq()==null && model.getDriverMax()==null) {
+			ValidationUtils.rejectIfEmpty(errors, "driverReq", "app.error.112", new Object[]{"driverReq"},"required field");
+		}
 		if(model.getDriverMax()!=null) {
-			validateIntegerMinMax("driverMax",model.getDriverMax(),1,10,errors);
+			validateIntegerMinMax("driverMax",model.getDriverMax(),TransportationAdminProperties.getDriverReqForZonetype(),TransportationAdminProperties.getDriverMaxForZonetype(),errors);
 		}
 		if(model.getHelperMax()!=null) {
-			validateIntegerMinMax("helperMax",model.getHelperMax(),1,10,errors);
+			validateIntegerMinMax("helperMax",model.getHelperMax(),TransportationAdminProperties.getHelperReqForZonetype(),TransportationAdminProperties.getHelperMaxForZonetype(),errors);
 		}
 		if(model.getRunnerMax()!=null) {
-			validateIntegerMinMax("runnerMax",model.getRunnerMax(),1,10,errors);
+			validateIntegerMinMax("runnerMax",model.getRunnerMax(),TransportationAdminProperties.getRunnerReqForZonetype(),TransportationAdminProperties.getRunnerMaxForZonetype(),errors);
 		}
 		
 		if(model.getDriverReq()!=null) {
-			validateIntegerMinMax("driverReq",model.getDriverReq(),0,10,errors);
+			validateIntegerMinMax("driverReq",model.getDriverReq(),TransportationAdminProperties.getDriverReqForZonetype(),TransportationAdminProperties.getDriverMaxForZonetype(),errors);
 		}
 		if(model.getHelperReq()!=null) {
-			validateIntegerMinMax("helperReq",model.getHelperReq(),0,10,errors);
+			validateIntegerMinMax("helperReq",model.getHelperReq(),TransportationAdminProperties.getHelperReqForZonetype(),TransportationAdminProperties.getHelperMaxForZonetype(),errors);
 		}
 		if(model.getRunnerReq()!=null) {
-			validateIntegerMinMax("runnerReq",model.getRunnerReq(),0,10,errors);
+			validateIntegerMinMax("runnerReq",model.getRunnerReq(),TransportationAdminProperties.getRunnerReqForZonetype(),TransportationAdminProperties.getRunnerMaxForZonetype(),errors);
 		}
 		
 		if(model.getDriverReq()!=null && model.getDriverMax()==null) {
-			ValidationUtils.rejectIfEmpty(errors, "driverMax", "app.error.121", new Object[]{"Driver Max."},"required field");
+			ValidationUtils.rejectIfEmpty(errors, "driverMax", "app.error.121", new Object[]{"Driver Req."},"required field");
 		}
 		if(model.getHelperReq()!=null && model.getHelperMax()==null) {
-			ValidationUtils.rejectIfEmpty(errors, "helperMax", "app.error.121", new Object[]{"Helper Max."},"required field");
+			ValidationUtils.rejectIfEmpty(errors, "helperMax", "app.error.121", new Object[]{"Helper Req."},"required field");
 		}
 		if(model.getRunnerReq()!=null && model.getRunnerMax()==null) {
-			ValidationUtils.rejectIfEmpty(errors, "runnerMax", "app.error.121", new Object[]{"Runner Max."},"required field");
+			ValidationUtils.rejectIfEmpty(errors, "runnerMax", "app.error.121", new Object[]{"Runner Req."},"required field");
 		}
 		
 		if(model.getDriverMax()!=null && model.getDriverReq()==null) {

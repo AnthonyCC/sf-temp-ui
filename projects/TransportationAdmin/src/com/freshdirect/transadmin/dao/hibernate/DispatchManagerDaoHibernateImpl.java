@@ -163,16 +163,13 @@ public class DispatchManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 		
 		if(plan.getPlanId()==null ||"".equals(plan.getPlanId())) {
 			Set resources=plan.getPlanResources();
-			System.out.println("Resources to save :"+resources.size());
 			plan.setPlanResources(null);
 			getHibernateTemplate().save(plan);
 			if(resources!=null && resources.size()>0) {
 				Iterator it=resources.iterator();
 				while(it.hasNext()) {
 					PlanResource dr=(PlanResource)it.next();
-					System.out.println("Resource ID:"+dr.getId().getResourceId());
 					dr.getId().setContextId(plan.getPlanId());
-					System.out.println("Plan ID:"+dr.getId().getContextId());
 				}
 			}
 			plan.setPlanResources(resources);

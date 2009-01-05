@@ -86,7 +86,11 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 			
 	public void copyPlan(Collection addPlanList, Collection removePlanList) {
 		this.removeEntity(removePlanList);
-		this.saveEntityList(addPlanList);
+		//this.saveEntityList(addPlanList);
+		Iterator it=addPlanList.iterator();
+		while(it.hasNext()) {
+			getDispatchManagerDao().savePlan((Plan)it.next());
+		}
 	}
 
 	public void autoDisptch(String date) {

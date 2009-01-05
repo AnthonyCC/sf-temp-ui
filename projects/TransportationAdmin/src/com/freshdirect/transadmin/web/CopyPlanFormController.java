@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +18,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.transadmin.model.Plan;
+import com.freshdirect.transadmin.model.PlanResource;
+import com.freshdirect.transadmin.model.ResourceId;
 import com.freshdirect.transadmin.model.TrnDispatchPlan;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
@@ -212,7 +217,38 @@ public class CopyPlanFormController extends AbstractFormController {
 		} 
 				
 		Iterator iterator = sourceData.iterator();
-		TrnDispatchPlan tmpPlan = null;
+		Plan tmpPlan=null;
+		Plan tmpNewPlan=null;
+		while(iterator.hasNext()) {
+			tmpPlan = (Plan)iterator.next();
+			tmpNewPlan = new Plan();
+			
+			tmpNewPlan.setFirstDeliveryTime(tmpPlan.getFirstDeliveryTime());
+			tmpNewPlan.setIsBullpen(tmpNewPlan.getIsBullpen());
+			tmpNewPlan.setRegion(tmpPlan.getRegion());
+			tmpNewPlan.setSequence(tmpPlan.getSequence());
+			tmpNewPlan.setStartTime(tmpPlan.getStartTime());
+			tmpNewPlan.setZone(tmpPlan.getZone());
+			if(includeEmpDetails) {
+				Set planResources=tmpPlan.getPlanResources();
+				Set tmpNewPlanResources=new HashSet();
+				if(planResources!=null) {
+					Iterator planResIt=planResources.iterator();
+					while(planResIt.hasNext()) {
+						PlanResource planRes=(PlanResource)planResIt.next();
+						PlanResource tmpNewPlanRes=new PlanResource();
+						tmpNewPlanRes.setId(new ResourceId("",planRes.getId().getResourceId()));
+						tmpNewPlanRes.setEmployeeRoleType(planRes.getEmployeeRoleType());
+						tmpNewPlanResources.add(tmpNewPlanRes);
+					}
+					tmpNewPlan.setPlanResources(tmpNewPlanResources);
+				}
+			}
+			
+			tmpNewPlan.setPlanDate(destinationDate);
+			addList.add(tmpNewPlan);
+		}
+		/*TrnDispatchPlan tmpPlan = null;
 		TrnDispatchPlan tmpNewPlan = null;
 		while(iterator.hasNext()) {
 			tmpPlan = (TrnDispatchPlan)iterator.next();
@@ -230,7 +266,7 @@ public class CopyPlanFormController extends AbstractFormController {
 			
 			tmpNewPlan.setPlanDate(destinationDate);
 			addList.add(tmpNewPlan);
-		}
+		}*/
 		return returnList;
 	}
 	

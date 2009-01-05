@@ -73,6 +73,13 @@ public class TransportationAdminProperties {
 	private final static String PROP_TRANSPORTATION_BULLPEN_RUNNER_REQ="transportation.bullpen.runner.req";
 	private final static String PROP_TRANSPORTATION_BULLPEN_RUNNER_MAX="transportation.bullpen.runner.max";
 	
+	/* Zonetype*/
+	private final static String PROP_TRANSPORTATION_ZONETYPE_DRIVER_REQ="transportation.zonetype.driver.req";
+	private final static String PROP_TRANSPORTATION_ZONETYPE_DRIVER_MAX="transportation.zonetype.driver.max";
+	private final static String PROP_TRANSPORTATION_ZONETYPE_HELPER_REQ="transportation.zonetype.helper.req";
+	private final static String PROP_TRANSPORTATION_ZONETYPE_HELPER_MAX="transportation.zonetype.helper.max";
+	private final static String PROP_TRANSPORTATION_ZONETYPE_RUNNER_REQ="transportation.zonetype.runner.req";
+	private final static String PROP_TRANSPORTATION_ZONETYPE_RUNNER_MAX="transportation.zonetype.runner.max";
 	
 	private static long lastRefresh = 0;
 	private final static long REFRESH_PERIOD = 5 * 60 * 1000;
@@ -130,6 +137,13 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_BULLPEN_HELPER_MAX, "5");
 		defaults.put(PROP_TRANSPORTATION_BULLPEN_RUNNER_REQ, "0");
 		defaults.put(PROP_TRANSPORTATION_BULLPEN_RUNNER_MAX, "5");
+		
+		defaults.put(PROP_TRANSPORTATION_ZONETYPE_DRIVER_REQ, "1");
+		defaults.put(PROP_TRANSPORTATION_ZONETYPE_DRIVER_MAX, "10");
+		defaults.put(PROP_TRANSPORTATION_ZONETYPE_HELPER_REQ, "0");
+		defaults.put(PROP_TRANSPORTATION_ZONETYPE_HELPER_MAX, "10");
+		defaults.put(PROP_TRANSPORTATION_ZONETYPE_RUNNER_REQ, "0");
+		defaults.put(PROP_TRANSPORTATION_ZONETYPE_RUNNER_MAX, "10");		
 		
 		refresh();		
 	}
@@ -278,4 +292,24 @@ public class TransportationAdminProperties {
 	public static int getRunnerMaxForBullpen() {
 		return getIntVal(get(PROP_TRANSPORTATION_BULLPEN_RUNNER_MAX));
 	}
+	public static int getDriverReqForZonetype() {
+		return getIntVal(get(PROP_TRANSPORTATION_ZONETYPE_DRIVER_REQ));
+	}
+	public static int getDriverMaxForZonetype() {
+		return getIntVal(get(PROP_TRANSPORTATION_ZONETYPE_DRIVER_MAX));
+	}
+	public static int getHelperReqForZonetype() {
+		return getIntVal(get(PROP_TRANSPORTATION_ZONETYPE_HELPER_REQ));
+	}
+	public static int getHelperMaxForZonetype() {
+		return getIntVal(get(PROP_TRANSPORTATION_ZONETYPE_HELPER_MAX));
+	}
+	public static int getRunnerReqForZonetype() {
+		return getIntVal(get(PROP_TRANSPORTATION_ZONETYPE_RUNNER_REQ));
+	}
+	public static int getRunnerMaxForZonetype() {
+		return getIntVal(get(PROP_TRANSPORTATION_ZONETYPE_RUNNER_MAX));
+	}
+	
+	
 }

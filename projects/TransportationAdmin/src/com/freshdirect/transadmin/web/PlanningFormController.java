@@ -97,7 +97,6 @@ public class PlanningFormController extends AbstractFormController {
 
 	
 	public Object getDefaultBackingObject() {
-		System.out.println("Calling get default backing object");
 		return new WebPlanInfo();
 	}
 	
