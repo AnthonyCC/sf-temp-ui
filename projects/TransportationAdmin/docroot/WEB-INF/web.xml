@@ -111,7 +111,7 @@
 	   <taglib-location>/WEB-INF/tld/extremecomponents.tld</taglib-location>
 	</taglib>
 	
-	<security-constraint>
+	<!--<security-constraint>
 		<web-resource-collection>
 		<web-resource-name>Unrestricted</web-resource-name>
 		<description>All users can view</description>
@@ -164,7 +164,7 @@
   <security-role>
     <description>TrnAdmin Dispatch users</description>
     <role-name>TrnDispatch</role-name>
-  </security-role>
+  </security-role>-->
   <security-role>
       <description>TrnAdmin Planning users</description>
       <role-name>TrnPlanning</role-name>

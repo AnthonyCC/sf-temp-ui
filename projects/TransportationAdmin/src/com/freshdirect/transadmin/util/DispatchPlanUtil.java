@@ -57,8 +57,10 @@ public class DispatchPlanUtil {
 		WebPlanInfo planInfo=new WebPlanInfo();
 		planInfo.setPlanId(plan.getPlanId());
 		planInfo.setPlanDate(plan.getPlanDate());
-		planInfo.setZoneCode(plan.getZone().getZoneCode());
-		planInfo.setZoneName(plan.getZone().getName());
+		if(plan.getZone()!=null) {
+			planInfo.setZoneCode(plan.getZone().getZoneCode());
+			planInfo.setZoneName(plan.getZone().getName());
+		}
 		planInfo.setRegionCode(plan.getRegion().getCode());
 		planInfo.setRegionName(plan.getRegion().getName());
 		try{
@@ -242,7 +244,26 @@ public class DispatchPlanUtil {
 	public  static Map getResourceRequirements(Zone zone) {
 		
 		Map resourceReqs=new HashMap();
-		if(zone.getTrnZoneType()!=null && zone.getTrnZoneType().getZonetypeResources()!=null) {
+		if(zone==null) {
+			ResourceReq resourceReq=new ResourceReq();
+			resourceReq.setRole(EnumResourceType.DRIVER);
+			resourceReq.setMax(new Integer(TransportationAdminProperties.getDriverMaxForBullpen()));
+			resourceReq.setReq(new Integer(TransportationAdminProperties.getDriverReqForBullpen()));
+			resourceReqs.put(EnumResourceType.DRIVER,resourceReq);
+			
+			resourceReq=new ResourceReq();
+			resourceReq.setRole(EnumResourceType.HELPER);
+			resourceReq.setMax(new Integer(TransportationAdminProperties.getHelperMaxForBullpen()));
+			resourceReq.setReq(new Integer(TransportationAdminProperties.getHelperReqForBullpen()));
+			resourceReqs.put(EnumResourceType.HELPER,resourceReq);
+			
+			resourceReq=new ResourceReq();
+			resourceReq.setRole(EnumResourceType.RUNNER);
+			resourceReq.setMax(new Integer(TransportationAdminProperties.getRunnerMaxForBullpen()));
+			resourceReq.setReq(new Integer(TransportationAdminProperties.getRunnerReqForBullpen()));
+			resourceReqs.put(EnumResourceType.RUNNER,resourceReq);
+			
+		}else if(zone.getTrnZoneType()!=null && zone.getTrnZoneType().getZonetypeResources()!=null) {
 			
 			Iterator _it=zone.getTrnZoneType().getZonetypeResources().iterator();
 			while(_it.hasNext()) {

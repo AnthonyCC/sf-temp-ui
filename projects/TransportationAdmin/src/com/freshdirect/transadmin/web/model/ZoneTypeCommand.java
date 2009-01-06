@@ -123,7 +123,7 @@ public class ZoneTypeCommand extends BaseCommand {
 	}
 	
 	public Tooltip getNameEx() {
-		return new Tooltip(this.getName(), "Test tool tip");
+		return new Tooltip(this.getName(), this.getName());
 	}
 	
 	class Tooltip implements IToolTip {

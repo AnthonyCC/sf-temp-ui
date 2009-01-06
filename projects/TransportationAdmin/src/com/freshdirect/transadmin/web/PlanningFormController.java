@@ -117,7 +117,11 @@ public class PlanningFormController extends AbstractFormController {
 			boolean isNew = isNew(command);
 			Plan domainObject=getPlan((WebPlanInfo)command);
 			if(!isNew) {
-				getDomainManagerService().saveEntity(domainObject);
+				if(DispatchPlanUtil.isBullpen(domainObject.getIsBullpen())) {
+					getDomainManagerService().saveEntity(domainObject);
+				} else {
+					getDomainManagerService().saveEntity(domainObject);
+				}
 			} else {
 				getDispatchManagerService().savePlan(domainObject);
 			}

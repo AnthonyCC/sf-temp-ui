@@ -20,6 +20,7 @@ import com.freshdirect.transadmin.model.ResourceInfoI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.util.EnumResourceType;
 import com.freshdirect.transadmin.util.TransStringUtil;
+import com.freshdirect.transadmin.web.model.ZoneTypeCommand.Tooltip;
 
 public class WebPlanInfo extends BaseCommand {
 	
@@ -37,6 +38,7 @@ public class WebPlanInfo extends BaseCommand {
 	private String ignoreErrors;
 	private Date errorDate;
 	private String  supervisorCode;
+	private String supervisorId;
 	private String supervisorName;
 	private ResourceList drivers= new ResourceList();/*LazyList.decorate(
 		      new ResourceList(),
@@ -54,6 +56,48 @@ public class WebPlanInfo extends BaseCommand {
 	private int helperReq;
 	private int runnerMax;
 	private int runnerReq;
+	
+	public Tooltip getSupervisorEx() {
+		String value=new StringBuffer(100).append(supervisorName).append("\n").append("ID : ").append(supervisorId).toString();
+		return new Tooltip(this.getSupervisorName(), value);
+	}
+	
+	class Tooltip implements IToolTip {
+		
+		Object value = null;
+		String toolTip = null;
+		
+		Tooltip(Object value, String tooltip) {
+			this.value = value;
+			this.toolTip = tooltip;
+		}
+
+		
+
+		public Object getValue() {
+			return value;
+		}
+
+		public void setValue(String value) {
+			this.value = value;
+		}
+
+
+
+		public String getToolTip() {
+			return toolTip;
+		}
+
+
+
+		public void setToolTip(String toolTip) {
+			this.toolTip = toolTip;
+		}
+		
+		public String toString() {
+			return getValue().toString();
+		}
+	}
 	
     public static class MyList {
     	
@@ -440,6 +484,7 @@ public class WebPlanInfo extends BaseCommand {
             	  if(resource!=null)
             		this.setSupervisorCode(resourceInfo.getEmployeeId());
             	  	this.setSupervisorName(resourceInfo.getName());
+            	  	this.setSupervisorId(resourceInfo.getEmployeeId());
               }
         }
 	}
@@ -499,6 +544,14 @@ public class WebPlanInfo extends BaseCommand {
 		}else {
 			return new EmployeeInfo();
 		}
+	}
+
+	public String getSupervisorId() {
+		return supervisorId;
+	}
+
+	public void setSupervisorId(String supervisorId) {
+		this.supervisorId = supervisorId;
 	}
 	
 }

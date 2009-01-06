@@ -85,9 +85,9 @@
               <ec:column property="planDay" sortable="true" title="Day"/>
               <ec:column alias="zoneCode" property="zoneName" title="Zone"/>
               <ec:column alias="region" property="regionCode" title="Region"/>
-              <ec:column property="supervisorName"   title="Supervisor" />
+              <ec:column property="supervisorEx"   title="Supervisor" cell="tooltip"  />
               <ec:column cell="date" format="hh:mm aaa" alias="startTime" property="startTime" title="Start Time"/>
-              <ec:column cell="date" format="hh:mm aaa" alias="firstDeliveryTime" property="reportTime" title="First Dlv"/>
+              <ec:column cell="date" format="hh:mm aaa" alias="firstDeliveryTime" property="firstDeliveryTime" title="First Dlv"/>
 
               <ec:column property="drivers"  cell="com.freshdirect.transadmin.web.ui.FDPlanResourceCell" title="Driver" alias="001"/>
               <ec:column property="helpers"  cell="com.freshdirect.transadmin.web.ui.FDPlanResourceCell" title="Helper" alias="002"/>
