@@ -29,7 +29,7 @@ public class DomainManagerDaoHibernateImpl
 	
 	public Collection getZones() throws DataAccessException {
 
-		return getDataList("Zone where OBSOLETE IS NULL Order By ZONE_CODE");
+		return getDataList("Zone Order By ZONE_CODE");
 	}
 	
 	public Collection getAreas() throws DataAccessException {
@@ -240,6 +240,11 @@ public class DomainManagerDaoHibernateImpl
 		}
 		
 		
+	}
+
+	public Collection getActiveZones() throws DataAccessException {
+		// TODO Auto-generated method stub
+		return getDataList("Zone where OBSOLETE IS NULL Order By ZONE_CODE");
 	}
 
 }

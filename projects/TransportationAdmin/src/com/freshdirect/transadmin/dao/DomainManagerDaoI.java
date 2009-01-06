@@ -86,6 +86,8 @@ public interface DomainManagerDaoI extends BaseManagerDaoI {
 	DispositionType getDispositionType(String dispCode) throws DataAccessException;
 	
 	void saveZoneType(TrnZoneType zoneType) throws DataAccessException;
+
+	Collection getActiveZones() throws DataAccessException;
 	
 	
 	

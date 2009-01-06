@@ -92,5 +92,7 @@ public interface DomainManagerI extends BaseManagerI {
 	Collection getTruckNumbers();
 	
 	Collection getBalanceBys();
+
+	Collection getActiveZones();
 	
 }

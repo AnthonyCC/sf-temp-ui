@@ -30,23 +30,26 @@
 
   <tmpl:put name='content' direct='true'>
 
-			
+
 	<div class="MNM001 subsub or_999">
 
 		<div class="subs_left">	
+		
 			<div class="sub_tableft sub_tabL_MNM001 <% if("R".equalsIgnoreCase(request.getParameter("routetype"))) { %>activeL<% } %>">&nbsp;</div>
 			<div class="subtab <% if("R".equalsIgnoreCase(request.getParameter("routetype"))) { %>activeT<% } %>">
 				<div class="minwidth"><!-- --></div>
 				<a href="route.do?routetype=R" class="<% if("R".equalsIgnoreCase(request.getParameter("routetype"))) { %>MNM001<% } %>">Active Routes</a>
 			</div>
-			<div class="sub_tabright sub_tabR_MNM001 <% if("R".equalsIgnoreCase(request.getParameter("routetype"))) { %>activeR<% } %>">&nbsp;</div>		
-		
-			<div class="sub_tableft sub_tabL_MNM001 <% if(!"R".equalsIgnoreCase(request.getParameter("routetype"))) { %>activeL<% } %>">&nbsp;</div>
+			<div class="sub_tabright sub_tabR_MNM001 <% if("R".equalsIgnoreCase(request.getParameter("routetype"))) { %>activeR<% } %>">&nbsp;</div>
+            
+            <div class="sub_tableft sub_tabL_MNM001 <% if(!"R".equalsIgnoreCase(request.getParameter("routetype"))) { %>activeL<% } %>">&nbsp;</div>
 			<div class="subtab <% if(!"R".equalsIgnoreCase(request.getParameter("routetype"))) { %>activeT<% } %>">
 				<div class="minwidth"><!-- --></div>
 				<a href="route.do" class="<% if(!"R".equalsIgnoreCase(request.getParameter("routetype"))) { %>MNM001<% } %>">Ad Hoc Routes</a>
 			</div>
-			<div class="sub_tabright sub_tabR_MNM001 <% if(!"R".equalsIgnoreCase(request.getParameter("routetype"))) { %>activeR<% } %>">&nbsp;</div>
+			<div class="sub_tabright sub_tabR_MNM001 <% if(!"R".equalsIgnoreCase(request.getParameter("routetype"))) { %>activeR<% } %>">&nbsp;</div>		
+
+            
 		</div>
 	</div>
 				
@@ -64,7 +67,9 @@
 							<span><input maxlength="10" size="10" name="routeDate" id="routeDate" value="<c:out value="${routeDate}"/>" /></span>
 							<span><a href="#" id="trigger_routeDate" style="font-size: 9px;"><img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date"></a></span>
 							<span><input type="image" src="./images/icons/view.gif" alt="View"   onclick="javascript:doLink('routeDate','route.do')" /></span>
-						<% } %>
+						<% }else{ %>
+                        <input type="hidden" id="routeDate" name="routeDate" value="">			
+                        <% } %>
 				</div>
 			</div>
 		</div>
@@ -76,7 +81,7 @@
 					<div class="eXor"><div class="eXor<% if(!"R".equalsIgnoreCase(request.getParameter("routetype"))) { %>_AdHoc<% }else{ %>_Active<% } %>">
 						<% if(!"R".equalsIgnoreCase(request.getParameter("routetype"))) { %>
 							<form id="routeListForm" action="" method="post"> 
-								<ec:table items="routes" action="${pageContext.request.contextPath}/route.do"
+								<ec:table items="routes" action="${pageContext.request.contextPath}/AdHocRoute.do"
 								imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title=""
 								  view="fd" form="routeListForm" autoIncludeParameters="false" rowsDisplayed="25"  >
 								
@@ -113,9 +118,9 @@
 										for (i = 0; i < checkboxList.length; i++) {
 											if (checkboxList[i].type=="checkbox" && checkboxList[i].checked) {
 												if (paramValues != null) {
-													paramValues = paramValues+","+checkboxList[i].name+"$"+dateField;
+													paramValues = paramValues+","+checkboxList[i].name;
 												} else {
-													paramValues = checkboxList[i].name+"$"+dateField;
+													paramValues = checkboxList[i].name;
 												}
 											}
 										}

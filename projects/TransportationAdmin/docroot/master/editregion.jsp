@@ -29,7 +29,7 @@
                   <tr>
                     <td>Code</td>
                   <td>                                                                  
-                    <form:input maxlength="50" size="30" path="code" readonly="${hasPK}" />                                    
+                    <form:input maxlength="16" size="30" path="code" readonly="${hasPK}" />                                    
                 </td>
                 <td>
                   &nbsp;<form:errors path="code" />

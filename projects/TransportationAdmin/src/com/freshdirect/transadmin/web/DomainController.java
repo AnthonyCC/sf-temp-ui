@@ -122,7 +122,15 @@ public class DomainController extends AbstractMultiActionController {
 	 */
 	public ModelAndView zoneHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 
-		Collection dataList = domainManagerService.getZones();
+        System.out.println("inside zoneHandler");
+        String zoneType = request.getParameter("zoneType");
+        Collection dataList = null;
+        System.out.println("./................."+zoneType);
+        if("Active".equalsIgnoreCase(zoneType)) {
+        	dataList = domainManagerService.getZones();
+        } else {
+        	dataList = domainManagerService.getActiveZones();    	 
+        }								
 		return new ModelAndView("zoneView","zones",dataList);
 	}
 
@@ -217,6 +225,7 @@ public class DomainController extends AbstractMultiActionController {
 		if (arrEntityList != null) {
 			int arrLength = arrEntityList.length;
 			for (int intCount = 0; intCount < arrLength; intCount++) {
+				System.out.println(" arrEntityList[intCount] :"+arrEntityList[intCount]);
 				tmpEntity = domainManagerService.getAdHocRoute(arrEntityList[intCount]);
 				tmpEntity.setObsolete(IS_OBSOLETE);
 				routeSet.add(tmpEntity);
@@ -267,6 +276,17 @@ public class DomainController extends AbstractMultiActionController {
 			int arrLength = arrEntityList.length;
 			for (int intCount = 0; intCount < arrLength; intCount++) {
 				tmpEntity = domainManagerService.getRegion(arrEntityList[intCount]);
+				
+				// check if zone exist in db then dont delete				
+				Set zones=tmpEntity.getZones();
+				
+				System.out.println("zones7836827362873628731267863 :"+zones);
+				
+				if(zones!=null && zones.size()>0)
+				{
+					saveMessage(request, getMessage("app.actionmessage.137", null));
+					return regionHandler(request, response);
+				}
 				tmpEntity.setObsolete(IS_OBSOLETE);
 				zoneSet.add(tmpEntity);
 			}

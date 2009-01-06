@@ -221,5 +221,10 @@ public class DomainManagerImpl
 			truckNumbers.add(truckInfo.getTruckNumber());
 		}
 		return truckNumbers;
+	}
+
+	public Collection getActiveZones() {
+		// TODO Auto-generated method stub
+		return getDomainManagerDao().getActiveZones();
 	} 
 }

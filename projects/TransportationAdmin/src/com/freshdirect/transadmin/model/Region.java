@@ -14,7 +14,8 @@ public class Region implements java.io.Serializable, TrnBaseEntityI {
 	private String name;
 	private String description;
 	private String obsolete;
-	
+	private Set zones;
+		
 	public Region() {
 	}
 
@@ -75,6 +76,14 @@ public class Region implements java.io.Serializable, TrnBaseEntityI {
 
 	public boolean isObsoleteEntity() {
 		return false;
+	}
+
+	public Set getZones() {
+		return zones;
+	}
+
+	public void setZones(Set zones) {
+		this.zones = zones;
 	}
 	
 }

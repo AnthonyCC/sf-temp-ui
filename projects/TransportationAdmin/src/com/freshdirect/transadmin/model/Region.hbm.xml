@@ -16,6 +16,12 @@
         </property>
         <property name="obsolete" type="string">
             <column name="OBSOLETE" length="1" />
-        </property>        
+        </property>                
+         <set name="zones" inverse="true" lazy="false">
+            <key>
+                <column name="REGION" length="16" />
+            </key>
+            <one-to-many class="com.freshdirect.transadmin.model.Zone" />
+        </set>        
     </class>
 </hibernate-mapping>
