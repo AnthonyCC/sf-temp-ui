@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -117,11 +118,7 @@ public class PlanningFormController extends AbstractFormController {
 			boolean isNew = isNew(command);
 			Plan domainObject=getPlan((WebPlanInfo)command);
 			if(!isNew) {
-				if(DispatchPlanUtil.isBullpen(domainObject.getIsBullpen())) {
-					getDomainManagerService().saveEntity(domainObject);
-				} else {
-					getDomainManagerService().saveEntity(domainObject);
-				}
+				getDomainManagerService().saveEntity(domainObject);
 			} else {
 				getDispatchManagerService().savePlan(domainObject);
 			}

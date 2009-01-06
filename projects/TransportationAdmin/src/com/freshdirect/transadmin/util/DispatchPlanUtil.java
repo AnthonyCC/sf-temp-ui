@@ -144,9 +144,11 @@ public class DispatchPlanUtil {
 		plan.setPlanId(planInfo.getPlanId());
 		plan.setPlanDate(planInfo.getPlanDate());
 		
-		Zone zone=new Zone();
-		zone.setZoneCode(planInfo.getZoneCode());
-		plan.setZone(zone);
+		if(!DispatchPlanUtil.isBullpen(planInfo.getIsBullpen())) {
+			Zone zone=new Zone();
+			zone.setZoneCode(planInfo.getZoneCode());
+			plan.setZone(zone);
+		}
 		
 		Region region=new Region();
 		region.setCode(planInfo.getRegionCode());
