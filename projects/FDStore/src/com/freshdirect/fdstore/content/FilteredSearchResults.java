@@ -19,7 +19,6 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.pricing.Pricing;
-import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
@@ -104,17 +103,19 @@ public class FilteredSearchResults extends SearchResults implements Serializable
         final Map                 termScores = new HashMap();
         final String[]            terms;
         final String              searchTerm;
+        final String              originalSearchTerm;
         final CategoryScoreOracle oracle;
         CategoryNodeTree          cnt;
         final Map                 predefinedScores;
 
-        RelevancyComparator(boolean inverse, String searchTerm, CategoryScoreOracle oracle, CategoryNodeTree cnt, List products) {
+        RelevancyComparator(boolean inverse, String searchTerm, CategoryScoreOracle oracle, CategoryNodeTree cnt, List products, String originalSearchTerm) {
             super(inverse, true, products);
             this.terms = StringUtils.split(searchTerm);
             this.searchTerm = searchTerm.toLowerCase();
             predefinedScores = ContentSearch.getInstance().getSearchRelevancyScores(this.searchTerm);
             this.oracle = oracle;
             this.cnt = cnt;
+            this.originalSearchTerm = originalSearchTerm;
         }
 
         int getTermScore(ContentNodeModel model, int level) {
@@ -176,14 +177,26 @@ public class FilteredSearchResults extends SearchResults implements Serializable
             ContentNodeModel c1 = (ContentNodeModel) o1;
             ContentNodeModel c2 = (ContentNodeModel) o2;
 
-            boolean h1 = isDisplayable(c1.getContentKey());
-            boolean h2 = isDisplayable(c2.getContentKey());
-            if (!h1 && h2) {
-                return 1;
+            {
+                boolean h1 = isDisplayable(c1.getContentKey());
+                boolean h2 = isDisplayable(c2.getContentKey());
+                if (!h1 && h2) {
+                    return 1;
+                }
+    
+                if (h1 && !h2) {
+                    return -1;
+                }
             }
-
-            if (h1 && !h2) {
-                return -1;
+            {
+                boolean n1 = originalSearchTerm.equals(c1.getFullName().toLowerCase());
+                boolean n2 = originalSearchTerm.equals(c2.getFullName().toLowerCase());
+                if (!n1 && n2) {
+                    return 1;
+                }
+                if (n1 && !n2) {
+                    return -1;
+                }
             }
 
             int sc = compareContentNodes(c1, c2);
@@ -236,15 +249,14 @@ public class FilteredSearchResults extends SearchResults implements Serializable
         protected int compareInsideCategoryGroup(ContentNodeModel c1, ContentNodeModel c2) {
             return compareProductsByGlobalScore(c1, c2);
         }
-
     }
 
     static class UserRelevancyComparator extends RelevancyComparator {
 
         final Map userProductScores;
 
-        UserRelevancyComparator(boolean inverse, String searchTerm, Map userProductScores, CategoryScoreOracle oracle, CategoryNodeTree cnt, List products) {
-            super(inverse, searchTerm, oracle, cnt, products);
+        UserRelevancyComparator(boolean inverse, String searchTerm, Map userProductScores, CategoryScoreOracle oracle, CategoryNodeTree cnt, List products, String originalSearchTerm) {
+            super(inverse, searchTerm, oracle, cnt, products, originalSearchTerm);
             this.userProductScores = userProductScores;
         }
 
@@ -388,10 +400,8 @@ public class FilteredSearchResults extends SearchResults implements Serializable
                             }
                             // boolean x =
                             // (keywords.indexOf(fullSearchTerm)!=-1);
-
                         }
                     }
-
                 }
                 ContentNodeModel parentNode = model.getParentNode();
                 if (parentNode != null) {
@@ -416,115 +426,109 @@ public class FilteredSearchResults extends SearchResults implements Serializable
      * @author segabor
      */
     public static class SaleComparator extends PopularityComparator {
-		SaleComparator(boolean inverse, boolean hideUnavailable, List products) {
-			super(inverse, hideUnavailable, products);
-		}
+        SaleComparator(boolean inverse, boolean hideUnavailable, List products) {
+            super(inverse, hideUnavailable, products);
+        }
 
-		public SaleComparator(boolean inverse, List products) {
-			super(inverse, products);
-		}
+        public SaleComparator(boolean inverse, List products) {
+            super(inverse, products);
+        }
 
-
-		public int compare(Object o1, Object o2) {
+        public int compare(Object o1, Object o2) {
             ProductModel c1 = (ProductModel) o1;
             ProductModel c2 = (ProductModel) o2;
-			
+
             try {
-            	// Stage 0 -- sort out null cases
-            	//
-            	if (c1.getDefaultSku() == null) {
-            		if (c2.getDefaultSku() == null) {
-            			return 0;
-            		} else {
-            			// sku1 == null, sku2 != null -> 1
-            			return inverse ? -1 : 1;
-            		}
-            	} else if (c2.getDefaultSku() == null) {
-        			// sku1 != null, sku2 == null -> -1
-            		return inverse ? 1 : -1;
-            	}
+                // Stage 0 -- sort out null cases
+                //
+                if (c1.getDefaultSku() == null) {
+                    if (c2.getDefaultSku() == null) {
+                        return 0;
+                    } else {
+                        // sku1 == null, sku2 != null -> 1
+                        return inverse ? -1 : 1;
+                    }
+                } else if (c2.getDefaultSku() == null) {
+                    // sku1 != null, sku2 == null -> -1
+                    return inverse ? 1 : -1;
+                }
 
+                FDProductInfo i1 = c1.getDefaultSku().getProductInfo();
+                FDProductInfo i2 = c2.getDefaultSku().getProductInfo();
 
+                // Stage 1 -- Compare deal percentages
+                //
+                if (i1.isDeal()) {
+                    if (i2.isDeal()) {
+                        int p1 = i1.getDealPercentage();
+                        int p2 = i2.getDealPercentage();
 
-            	FDProductInfo i1 = c1.getDefaultSku().getProductInfo();
-	            FDProductInfo i2 = c2.getDefaultSku().getProductInfo();
-	            
-	            // Stage 1 -- Compare deal percentages
-	            //
-	            if (i1.isDeal()) {
-	            	if (i2.isDeal()) {
-	            		int p1 = i1.getDealPercentage();
-	            		int p2 = i2.getDealPercentage();
-	            		
-	            		// greater percentage is better
-	            		int sc = p1 > p2 ? -1 : (p1 < p2 ? 1 : 0);
+                        // greater percentage is better
+                        int sc = p1 > p2 ? -1 : (p1 < p2 ? 1 : 0);
 
-	            		// same prices -> sort by popularity
-	        			if (sc == 0)
-	        				return super.compare(o1, o2);
-	            		return inverse ? -sc : sc;
-	            	} else {
-		            	return inverse ? 1 : -1;
-	            	}
-	            } else if (i2.isDeal()) {
-	            	return inverse ? -1 : 1;
-	            }
+                        // same prices -> sort by popularity
+                        if (sc == 0)
+                            return super.compare(o1, o2);
+                        return inverse ? -sc : sc;
+                    } else {
+                        return inverse ? 1 : -1;
+                    }
+                } else if (i2.isDeal()) {
+                    return inverse ? -1 : 1;
+                }
 
+                // Stage 2 -- tiered pricing
+                //
+                Pricing prc1 = c1.getDefaultSku().getProduct().getPricing();
+                Pricing prc2 = c2.getDefaultSku().getProduct().getPricing();
+                double defp1 = i1.getBasePrice();
+                double defp2 = i2.getBasePrice();
 
-	            // Stage 2 -- tiered pricing
-	            //
-	            Pricing prc1 = c1.getDefaultSku().getProduct().getPricing();
-	            Pricing prc2 = c2.getDefaultSku().getProduct().getPricing();
-        		double defp1 = i1.getBasePrice();
-        		double defp2 = i2.getBasePrice();
-	            
-	            if (prc1.hasScales()) {
-	            	if (prc2.hasScales()) {
-	            		// find best scaled price (if any)
-	            		double mp1 = prc1.getMinPrice();
-	            		double mp2 = prc2.getMinPrice();
-	            		
-	            		if (mp1 != Double.NaN && mp2 != Double.NaN) {
-	            			int sc = Double.compare(mp1, mp2);
-	            			
-	            			// same prices -> sort by popularity
-	            			if (sc == 0)
-	            				return super.compare(o1, o2);
-	            			return inverse ? -sc : sc;
-	            		} else {
-	            			int sc = (mp1 == Double.NaN ? 1 : -1);
-	            			return inverse ? -sc : sc;
-	            		}
-	            	} else {
-		            	return inverse ? 1 : -1;
-	            	}
-	            } else if (prc2.hasScales()) {
-	            	return inverse ? -1 : 1;
-	            }
+                if (prc1.hasScales()) {
+                    if (prc2.hasScales()) {
+                        // find best scaled price (if any)
+                        double mp1 = prc1.getMinPrice();
+                        double mp2 = prc2.getMinPrice();
 
+                        if (mp1 != Double.NaN && mp2 != Double.NaN) {
+                            int sc = Double.compare(mp1, mp2);
 
-	            // Stage 3 -- base prices
-	            //
-	            if (i1.getBasePrice() != i2.getBasePrice()) {
+                            // same prices -> sort by popularity
+                            if (sc == 0)
+                                return super.compare(o1, o2);
+                            return inverse ? -sc : sc;
+                        } else {
+                            int sc = (mp1 == Double.NaN ? 1 : -1);
+                            return inverse ? -sc : sc;
+                        }
+                    } else {
+                        return inverse ? 1 : -1;
+                    }
+                } else if (prc2.hasScales()) {
+                    return inverse ? -1 : 1;
+                }
 
-            		// cheaper price is better
-	            	int sc = Double.compare(defp1, defp2);
-        			if (sc == 0)
-        				return super.compare(o1, o2);
-            		return inverse ? -sc : sc;
-	            }
+                // Stage 3 -- base prices
+                //
+                if (i1.getBasePrice() != i2.getBasePrice()) {
 
+                    // cheaper price is better
+                    int sc = Double.compare(defp1, defp2);
+                    if (sc == 0)
+                        return super.compare(o1, o2);
+                    return inverse ? -sc : sc;
+                }
 
-	            // Stage 4 -- equal prices --> compare by popularity
-	            //
-	            return super.compare(o1, o2);
-            } catch(FDSkuNotFoundException noSkuExc) {
-            	return 0;
-            } catch(FDResourceException se) {
-            	return 0;
+                // Stage 4 -- equal prices --> compare by popularity
+                //
+                return super.compare(o1, o2);
+            } catch (FDSkuNotFoundException noSkuExc) {
+                return 0;
+            } catch (FDResourceException se) {
+                return 0;
             }
-		}
-    	
+        }
+
     }
     
     
@@ -566,18 +570,25 @@ public class FilteredSearchResults extends SearchResults implements Serializable
     String                         recipeFilter;
     List                           _filteredRecipes;
     boolean                        reversed = false; // reversed sort of recipes
+    protected String originalSearchTerm;
     
     /**
-     * 
+     *
+     * @param searchTerm the modified search term (blueberries -> blueberry)
      * @param original
-     * @param departmentId
      * @param customerId
      *            the customer id
+     * @param originalSearchTerm the original search term (blueberries)
      */
-    public FilteredSearchResults(String searchTerm, SearchResults original, String customerId) {
+    public FilteredSearchResults(String searchTerm, SearchResults original, String customerId, String originalSearchTerm) {
         super(original.getProducts(), original.getRecipes(), original.isProductsRelevant(), searchTerm);
         setSpellingSuggestion(original.getSpellingSuggestion(), original.isSuggestionMoreRelevant());
         this.customerId = customerId;
+        this.originalSearchTerm = originalSearchTerm;
+    }
+
+    public FilteredSearchResults(String searchTerm, SearchResults original, String customerId) {
+        this(searchTerm, original, customerId, searchTerm);
     }
 
     public void sortProductsBy(Integer code, boolean inverse) {
@@ -635,8 +646,8 @@ public class FilteredSearchResults extends SearchResults implements Serializable
 //                return (customerId != null) ? new RelevancyComparator(customerId) : POPULARITY;
             default:
                 CategoryScoreOracle sc = scoreOracle != null ? scoreOracle : new DefaultCategoryScoreOracle();
-                c = (customerId != null) ? new UserRelevancyComparator(inverse, searchTerm, getUserProductScores(), sc, nodeTree, products) : new RelevancyComparator(inverse, searchTerm,
-                        sc, nodeTree, products);
+                c = (customerId != null) ? new UserRelevancyComparator(inverse, searchTerm, getUserProductScores(), sc, nodeTree, products, originalSearchTerm) : new RelevancyComparator(inverse, searchTerm,
+                        sc, nodeTree, products, originalSearchTerm);
         }
         return c;
     }
