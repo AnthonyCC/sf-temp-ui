@@ -30,7 +30,6 @@
 
   <tmpl:put name='content' direct='true'>
 
-
 	<div class="MNM001 subsub or_999">
 
 		<div class="subs_left">	
@@ -49,7 +48,6 @@
 			</div>
 			<div class="sub_tabright sub_tabR_MNM001 <% if(!"R".equalsIgnoreCase(request.getParameter("routetype"))) { %>activeR<% } %>">&nbsp;</div>		
 
-            
 		</div>
 	</div>
 				
@@ -65,8 +63,9 @@
 					</span>
 						<% if("R".equalsIgnoreCase(request.getParameter("routetype"))){ %>
 							<span><input maxlength="10" size="10" name="routeDate" id="routeDate" value="<c:out value="${routeDate}"/>" /></span>
-							<span><a href="#" id="trigger_routeDate" style="font-size: 9px;"><img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date"></a></span>
-							<span><input type="image" src="./images/icons/view.gif" alt="View"   onclick="javascript:doLink('routeDate','route.do')" /></span>
+							<span><input id="trigger_routeDate" type="image" alt="Calendar" src="./images/icons/calendar.gif" onmousedown="this.src='./images/icons/calendar_ON.gif'" onmouseout="this.src='./images/icons/calendar.gif';" /></span>
+							<span><input id="view_button" type="image" alt="View" src="./images/icons/view.gif" onclick="javascript:doLink('routeDate','route.do?routetype=R')" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>
+							
 						<% }else{ %>
                         <input type="hidden" id="routeDate" name="routeDate" value="">			
                         <% } %>
@@ -75,7 +74,6 @@
 		</div>
 
 		<div class="cont_topright">
-			<div class="cont_row"><br></div>
 			<div class="cont_row">
 				<div class="cont_Ritem">
 					<div class="eXor"><div class="eXor<% if(!"R".equalsIgnoreCase(request.getParameter("routetype"))) { %>_AdHoc<% }else{ %>_Active<% } %>">

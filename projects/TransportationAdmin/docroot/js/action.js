@@ -82,5 +82,9 @@ function doSend(tableId, url) {
   
   function doLink(compId, url) {
     var param = document.getElementById(compId).value;
-    location.href = url+"?"+compId+"="+ param;
+	if (url.indexOf("?") == -1) {
+		location.href = url+"?"+compId+"="+ param;
+	}else{
+		location.href = url+"&"+compId+"="+ param;
+	}
   }      
