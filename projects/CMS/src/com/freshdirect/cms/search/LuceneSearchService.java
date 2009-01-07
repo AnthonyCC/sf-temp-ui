@@ -496,7 +496,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
 			return h;
 
 		} catch (ParseException e) {
-			throw new CmsRuntimeException("Invalid search query " + query, e);
+			throw new CmsRuntimeException("Invalid search query: '" + query+"'", e);
 		} catch (IOException e) {
 			throw new CmsRuntimeException(e);
 		}

@@ -33,6 +33,8 @@ public class AutocompleteService {
 
     SortedSet                prefixSet;
 
+    SortedSet               wordSet;
+    
     public AutocompleteService() {
 
     }
@@ -93,11 +95,6 @@ public class AutocompleteService {
                 if (!unaccented.equals(fullname)) {
                     createCounters(counters, unaccented);
                 }
-                /*for (int i=0;i<unaccented.length();i++) {
-                    if ((int)unaccented.charAt(i)>=128) {
-                        System.out.println("fullname:"+ fullname + " special char :"+fullname.charAt(i) + " x:"+(int)fullname.charAt(i));
-                    }
-                }*/
                 
             }
         }
@@ -113,8 +110,60 @@ public class AutocompleteService {
                 }
             //}
         }
+        wordSet = new TreeSet();
+        for (Iterator iter = set.iterator(); iter.hasNext(); ){
+            HitCounter hc = (HitCounter) iter.next();
+            if (hc.wordCount==1) {
+                wordSet.add(hc.prefix);
+            }
+        }
+        if (LOGGER.isDebugEnabled()) {
+            for (Iterator iter = set.iterator(); iter.hasNext(); ){
+                HitCounter hc = (HitCounter) iter.next();
+                if (hc.wordCount==1) {
+                    if (hc.prefix.endsWith("s")) {
+                        String wordWithoutS = hc.prefix.substring(0, hc.prefix.length()-1);
+                        LOGGER.debug("word : "+hc.prefix + " -> "+wordWithoutS + " valid:"+wordSet.contains(wordWithoutS));
+                    }
+                }
+            }
+        }
         return set;
     }
+
+    /**
+     * Check that the given, lower case word is in the word list, anywhere.
+     * @param word
+     * @return
+     */
+    public boolean isValidWord(String word) {
+        return wordSet.contains(word);
+    }
+    
+    public String removePlural(String word) {
+        if (word.length()>2 && word.endsWith("s")) {
+            if (word.endsWith("ies")) {
+                // handle strawberries -> strawberry
+                String singular = word.substring(0, word.length()-3)+'y';
+                if (isValidWord(singular)) {
+                    return singular;
+                }
+            }
+            if (word.endsWith("es")) {
+                String singular = word.substring(0, word.length()-2);
+                if (isValidWord(singular)) {
+                    return singular;
+                }
+            }
+            String wordWithoutS = word.substring(0, word.length()-1);
+            if (isValidWord(wordWithoutS)) {
+                return wordWithoutS;
+            }
+        }
+        return word;
+    }
+    
+    
 
     private void createCounters(HashMap counters, String fullname) {
         List strings = filterWords(StringUtils.split(fullname));
@@ -144,6 +193,7 @@ public class AutocompleteService {
         }
         return hc;
     }
+
 
     static class HitCounter implements Comparable {
         String     prefix;

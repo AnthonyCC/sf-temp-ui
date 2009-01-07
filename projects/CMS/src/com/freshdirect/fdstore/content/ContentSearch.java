@@ -45,7 +45,7 @@ public class ContentSearch {
     /** Maximum number of the top spelling results that should be analyzed */
     public static int MAX_SUGGESTIONS = 5;
 
-    public static SearchQuery getSearchQuery(String criteria) {
+    private SearchQuery getSearchQuery(String criteria) {
         return new SearchQuery(criteria) {
 
             private String[] tokens;
@@ -72,10 +72,22 @@ public class ContentSearch {
             protected void breakUp() {
                 normalizedTerm = ContentSearchUtil.normalizeTerm(getOriginalTerm());
 
-                StringBuffer luceneTerm = new StringBuffer(normalizedTerm);
                 BrandNameExtractor brandNameExtractor = new BrandNameExtractor();
 
                 tokens = ContentSearchUtil.tokenizeTerm(normalizedTerm);
+                AutocompleteService autocompleter = initAutocompleter();
+                StringBuffer luceneTerm;
+                
+                // we need to check tokens length, because search like 'v8' cause empty token array.
+                if (autocompleter!=null && tokens.length > 0) {
+                    luceneTerm = new StringBuffer();
+                    for (int i=0;i<tokens.length;i++) {
+                        tokens[i] = autocompleter.removePlural(tokens[i]);
+                        luceneTerm.append(tokens[i]).append(' ');
+                    }
+                } else {
+                    luceneTerm = new StringBuffer(normalizedTerm);
+                }
                 rawTokens = tokens;
                 for (Iterator i = brandNameExtractor.extract(getOriginalTerm()).iterator(); i.hasNext();) {
                     String canonicalBrandName = StringUtil.removeAllWhiteSpace(i.next().toString()).toLowerCase();
@@ -95,6 +107,8 @@ public class ContentSearch {
 
         };
     }
+    
+
 
     /**
      * Perform a simple search.
@@ -463,6 +477,15 @@ public class ContentSearch {
     }
     
     public List getAutocompletions(String prefix) {
+        initAutocompleter();
+        if (this.autocompletion!=null) {
+            return this.autocompletion.getAutocompletions(prefix);
+        } else {
+            return Collections.EMPTY_LIST;
+        }
+    }
+
+    private AutocompleteService initAutocompleter() {
         synchronized(this) {
             if (this.autocompletion == null) {
                 if (autocompleteUpdater==null) {
@@ -485,10 +508,11 @@ public class ContentSearch {
                     autocompleteUpdater.setDaemon(true);
                     autocompleteUpdater.start();
                 }
-                return Collections.EMPTY_LIST;
+                return null;
+            } else {
+                return autocompletion;
             }
         }
-        return this.autocompletion.getAutocompletions(prefix);
     }
     
     /**
