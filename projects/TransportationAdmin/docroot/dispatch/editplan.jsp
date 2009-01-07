@@ -35,14 +35,27 @@
 		background:#ffffff;}
 		
 </style>
-<script language="javascript" src="js/mootools.v1.11.js"></script>
-<script language="javascript" src="js/nogray_time_picker_min.js"></script>
-<script language="javascript">
-	window.addEvent("domready", function (){
-		var tpMon1 = new TimePicker('startTime_picker', 'startTime', 'startTime_toggler', {imagesPath:"images"});
-		var tpTue1 = new TimePicker('firstDeliveryTime_picker', 'firstDeliveryTime', 'firstDeliveryTime_toggler', {imagesPath:"images"});
-	});
-</script>
+<style>
+        .time_picker_div {padding:5px;
+            border:solid #999999 1px;
+            background:#ffffff;}
+      </style>
+    <script language="javascript" src="js/mootools.v1.11.js"></script>
+    <script language="javascript" src="js/nogray_time_picker.js"></script>      
+    <script language="javascript">
+        window.addEvent("domready", function (){
+            var dateObjStartTime = new Date("July 21, 1983 "+document.getElementById('startTime').value);
+            var dateObjFirstDlvTime = new Date("July 21, 1983 "+document.getElementById('firstDeliveryTime').value);
+            
+            var tpStartTime = new TimePicker('timeStart_picker', 'startTime', 'timeStart_toggler', {imagesPath:"images",
+                                        startTime: {hour:dateObjStartTime.getHours(), minute: dateObjStartTime.getMinutes()}});
+            
+            var tpFirstDlvTime = new TimePicker('timeFirstDlv_picker', 'firstDeliveryTime', 'timeFirstDlv_toggler', {imagesPath:"images",
+                                        startTime: {hour:dateObjFirstDlvTime.getHours(), minute: dateObjFirstDlvTime.getMinutes()}});
+                                           
+        });
+
+    </script>     
 
 <tmpl:insert template='/common/sitelayout.jsp'>
 
@@ -53,20 +66,9 @@
     <div align="center">
       <form:form commandName = "planForm" method="post">
       <form:hidden path="planId"/>
-      
       <form:hidden path="ignoreErrors"/>
       <form:hidden path="errorDate"/>
-      
-      <form:hidden path="driverMax"/>
-      <form:hidden path="driverReq"/>
-
-      <form:hidden path="helperMax"/>
-      <form:hidden path="helperReq"/>
-
-      <form:hidden path="runnerMax"/>
-      <form:hidden path="runnerReq"/>
-
-      
+     <form:hidden path="zoneModified"/>
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
           <tr>
             <td class="screentitle">Add/Edit Plan</td>
@@ -118,7 +120,7 @@
                     <c:if test="${planForm.isBullpen eq 'Y' }">
                     <c:set var="_isBullpen" value="true"/>
                     </c:if>
-                  <form:select path="zoneCode" disabled="${_isBullpen}" onChange="submitData()">
+                  <form:select path="zoneCode" disabled="${_isBullpen}" onChange="zoneChanged()">
                         <form:option value="null" label="--Please Select Zone"/>
                     <form:options items="${zones}" itemLabel="name" itemValue="zoneCode" />
                    </form:select>
@@ -155,33 +157,22 @@
                 </td>
                </tr>
             <tr>
-                  <td>Start Time</td>
+                  <td><a id="timeStart_toggler">Start&nbsp;Time</a></td>
                   <!-- <td> <a id="startTime_toggler">&nbsp;</a></td> -->
                   <td>         
                    <form:input maxlength="50" size="24" path="startTime" />  
-                  <%--
-                   <spring:bind path="planForm.startTime"> 
-                        <input type=text name="<c:out value="${status.expression}"/>" size="10" value="<fmt:formatDate value="${dispatchForm.startTime}" type="time" pattern="hh:mm a" />" />    
-                        <div id="startTime_picker" class="time_picker_div"></div>
-                    </spring:bind>                
-                    --%>
+                   <div id="timeStart_picker" class="time_picker_div"></div>
                  </td>
                 <td>
                   &nbsp;<form:errors path="startTime" />
                 </td>                 
                 </tr>   
                 <tr>
-                  <td>First Dlv. Time</td>
+                  <td><a id="timeFirstDlv_toggler">First Dlv.&nbsp;Time</a></td>
                   <!-- <td> <a id="firstDeliveryTime_toggler">&nbsp;</a></td> -->
                   <td>     
                   <form:input maxlength="50" size="24" path="firstDeliveryTime" />
-                                 
-<%--                  
-                   <spring:bind path="planForm.firstDeliveryTime"> 
-                        <input type="text" name="<c:out value="${status.expression}"/>" size="10" value="<fmt:formatDate value="${planForm.firstDeliveryTime}" type="time" pattern="hh:mm a" />" />    
-                        <div id="firstDeliveryTime_picker" class="time_picker_div"></div>
-                    </spring:bind>                
---%>
+                  <div id="timeFirstDlv_picker" class="time_picker_div"></div>               
                  </td>
                 <td>
                   &nbsp;<form:errors path="firstDeliveryTime" />
@@ -274,13 +265,18 @@
 
                            
         </table>
-        <script language="javascript">                  
+        <script language="javascript">   
+            function zoneChanged() {
+                document.getElementById("zoneModified").value = "true";
+                submitData();
+            } 
+                
             function submitData() {
+            
               document.getElementById("ignoreErrors").value = "true";
               document.getElementById("planForm").submit();
             }
-        </script>
-        <script language="javascript">                  
+              
             function bullpen() {
                 
                 if(document.getElementById("isBullpen1").checked) {
@@ -290,6 +286,7 @@
                     document.getElementById("zoneCode").disabled=false;
                     document.getElementById("regionCode").disabled=true;
                 }
+                 document.getElementById("zoneModified").value = "true";
                 document.getElementById("ignoreErrors").value = "true";
               document.getElementById("planForm").submit();
 

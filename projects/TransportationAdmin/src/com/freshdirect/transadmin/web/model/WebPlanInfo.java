@@ -36,6 +36,7 @@ public class WebPlanInfo extends BaseCommand {
 	private int sequence;
 	private String isBullpen;
 	private String ignoreErrors;
+	private String zoneModified;
 	private Date errorDate;
 	private String  supervisorCode;
 	private String supervisorId;
@@ -50,12 +51,7 @@ public class WebPlanInfo extends BaseCommand {
 		      new ResourceList(),
 		      FactoryUtils.instantiateFactory(EmployeeInfo.class));*/
 	
-	private int driverMax;
-	private int driverReq;
-	private int helperMax;
-	private int helperReq;
-	private int runnerMax;
-	private int runnerReq;
+	
 	
 	public Tooltip getSupervisorEx() {
 		String value=new StringBuffer(100).append(supervisorName).append("\n").append("ID : ").append(supervisorId).toString();
@@ -95,7 +91,9 @@ public class WebPlanInfo extends BaseCommand {
 		}
 		
 		public String toString() {
-			return getValue().toString();
+			if(value!=null)
+				return getValue().toString();
+			return "";
 		}
 	}
 	
@@ -114,52 +112,58 @@ public class WebPlanInfo extends BaseCommand {
     }
 	
 	public int getDriverMax() {
-		return driverMax;
+		
+		if(drivers!=null && drivers.getResourceReq()!=null )
+			return drivers.getResourceReq().getMax().intValue();
+		return 0;
 	}
 	
-	public void setDriverMax(int driverMax) {
-		this.driverMax = driverMax;
-	}
+	
 	
 	public int getDriverReq() {
-		return driverReq;
+		if(drivers!=null && drivers.getResourceReq()!=null )
+			return drivers.getResourceReq().getReq().intValue();
+		return 0;
+
 	}
 	
-	public void setDriverReq(int driverReq) {
-		this.driverReq = driverReq;
-	}
+	
 	
 	public int getHelperMax() {
-		return helperMax;
+		
+		if(helpers!=null && helpers.getResourceReq()!=null )
+			return helpers.getResourceReq().getMax().intValue();
+		return 0;
 	}
 	
-	public void setHelperMax(int helperMax) {
-		this.helperMax = helperMax;
-	}
+	
 	
 	public int getHelperReq() {
-		return helperReq;
+		if(helpers!=null && helpers.getResourceReq()!=null )
+			return helpers.getResourceReq().getReq().intValue();
+		return 0;
+
 	}
 	
-	public void setHelperReq(int helperReq) {
-		this.helperReq = helperReq;
-	}
+	
 	
 	public int getRunnerMax() {
-		return runnerMax;
+		
+		if(runners!=null && runners.getResourceReq()!=null )
+			return runners.getResourceReq().getMax().intValue();
+		return 0;
 	}
 	
-	public void setRunnerMax(int runnerMax) {
-		this.runnerMax = runnerMax;
-	}
+	
 	
 	public int getRunnerReq() {
-		return runnerReq;
+		if(runners!=null && runners.getResourceReq()!=null )
+			return runners.getResourceReq().getReq().intValue();
+		return 0;
+
 	}
 	
-	public void setRunnerReq(int runnerReq) {
-		this.runnerReq = runnerReq;
-	}
+	
 	/**
 	 * @return the errorDate
 	 */
@@ -373,8 +377,9 @@ public class WebPlanInfo extends BaseCommand {
 		return helpers;
 	}
 	
-	public ResourceList getDummyResources(ResourceReq resourceReq, int size) {
+	public ResourceList getDummyResources(ResourceReq resourceReq) {
 		
+		int size=resourceReq.getMax().intValue();
 		ResourceList resourceList=new ResourceList(size);
 		resourceList.setResourceReq(resourceReq);
 		for(int i=0;i<size;i++) {
@@ -434,17 +439,20 @@ public class WebPlanInfo extends BaseCommand {
 			Object key=it.next();
 			ResourceReq resourceReq=(ResourceReq)resourceReqs.get(key);
 			if(EnumResourceType.DRIVER.equals(key)) {
-				this.setDriverMax(resourceReq.getMax().intValue());
-				this.setDriverReq(resourceReq.getReq().intValue());
-				this.setDrivers(getDummyResources(resourceReq,this.getDriverMax()));
+				//this.setDriverMax(resourceReq.getMax().intValue());
+				//this.setDriverReq(resourceReq.getReq().intValue());
+				//this.setDrivers(getDummyResources(resourceReq,this.getDriverMax()));
+				this.setDrivers(getDummyResources(resourceReq));
 			}else if(EnumResourceType.HELPER.equals(key)) {
-				this.setHelperMax(resourceReq.getMax().intValue());
-				this.setHelperReq(resourceReq.getReq().intValue());
-				this.setHelpers(getDummyResources(resourceReq,this.getHelperMax()));
+				//this.setHelperMax(resourceReq.getMax().intValue());
+				//this.setHelperReq(resourceReq.getReq().intValue());
+				//this.setHelpers(getDummyResources(resourceReq,this.getHelperMax()));
+				this.setHelpers(getDummyResources(resourceReq));
 			}else if(EnumResourceType.RUNNER.equals(key)) {
-				this.setRunnerMax(resourceReq.getMax().intValue());
-				this.setRunnerReq(resourceReq.getReq().intValue());
-				this.setRunners(getDummyResources(resourceReq,this.getRunnerMax()));
+				//this.setRunnerMax(resourceReq.getMax().intValue());
+				//this.setRunnerReq(resourceReq.getReq().intValue());
+				//this.setRunners(getDummyResources(resourceReq,this.getRunnerMax()));
+				this.setRunners(getDummyResources(resourceReq));
 			}
 		}
 	}
@@ -512,9 +520,8 @@ public class WebPlanInfo extends BaseCommand {
 			if(!TransStringUtil.isEmpty(resourceInfo.getEmployeeId())) {
 				WebEmployeeInfo webEmplInfo=employeeManagerService.getEmployee(resourceInfo.getEmployeeId());
 				if(webEmplInfo!=null && webEmplInfo.getEmpInfo()!=null) {
-					//whatever you found is correct. i dont understand why do you remove and then add from webemplinfo.
 					resources.remove(i);
-					resources.add(i, getResourceInfo(webEmplInfo, getResource(resourceInfo,role)));
+					resources.add(i, getResourceInfo(webEmplInfo, null));
 				}
 			}
 		}
@@ -553,6 +560,18 @@ public class WebPlanInfo extends BaseCommand {
 
 	public void setSupervisorId(String supervisorId) {
 		this.supervisorId = supervisorId;
+	}
+
+
+
+	public String getZoneModified() {
+		return zoneModified;
+	}
+
+
+
+	public void setZoneModified(String zoneModified) {
+		this.zoneModified = zoneModified;
 	}
 	
 }

@@ -26,7 +26,7 @@ public class FDPlanResourceCell extends FDBaseCell  {
         columnBuilder.tdStart();
         ResourceList resources=(ResourceList)column.getPropertyValue();
         ResourceReq resourceReq=resources.getResourceReq();
-        System.out.println("Resource :"+resources);
+        
         if(resources!=null) {
         	html.table(0).close();
         	Integer req=new Integer(0);

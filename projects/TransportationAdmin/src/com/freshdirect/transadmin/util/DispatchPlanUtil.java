@@ -232,6 +232,7 @@ public class DispatchPlanUtil {
 			planInfo.setRegionName(zone.getRegion().getName());
 		} 
 		setResourceInfo(planInfo,isZoneModified,employeeManagerService);
+		//planInfo.setZoneModified("false");
 		return planInfo;
 	}
 
@@ -335,8 +336,8 @@ public class DispatchPlanUtil {
 	
 	private static void setDriverRequirements(WebPlanInfo planInfo, int req, int max) {
 
-		planInfo.setDriverMax(max);
-		planInfo.setDriverReq(req);
+		//planInfo.setDriverMax(max);
+		//planInfo.setDriverReq(req);
 		planInfo.getDrivers().setResourceReq(getResourceReq(req,max,EnumResourceType.DRIVER));
 		/*if(req==0&&max==0) {
 			planInfo.getDrivers().clear();
@@ -347,8 +348,8 @@ public class DispatchPlanUtil {
 
 	private static void setHelperRequirements(WebPlanInfo planInfo, int req, int max) {
 
-		planInfo.setHelperMax(max);
-		planInfo.setHelperReq(req);
+		//planInfo.setHelperMax(max);
+		//planInfo.setHelperReq(req);
 		planInfo.getHelpers().setResourceReq(getResourceReq(req,max,EnumResourceType.HELPER));
 		/*if(req==0&&max==0) {
 			planInfo.getHelpers().clear();
@@ -359,8 +360,8 @@ public class DispatchPlanUtil {
 	
 	private static void setRunnerRequirements(WebPlanInfo planInfo, int req, int max) {
 
-		planInfo.setRunnerMax(max);
-		planInfo.setRunnerReq(req);
+		//planInfo.setRunnerMax(max);
+		//planInfo.setRunnerReq(req);
 		planInfo.getRunners().setResourceReq(getResourceReq(req,max,EnumResourceType.RUNNER));
 		/*if(req==0&&max==0) {
 			planInfo.getRunners().clear();

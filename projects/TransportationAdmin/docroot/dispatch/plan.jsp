@@ -22,7 +22,6 @@
 
 	<c:if test="${not empty messages}">
 		<div class="err_messages">
-			<jsp:include page='/common/messages.jsp'/>
 		</div>
 	</c:if> 
   
@@ -37,7 +36,7 @@
 						<span><input maxlength="40" size="40" name="daterange" id="daterange" value="<%= dateRangeVal %>" /></span>
 
 							<span><input maxlength="40" size="40" name="zone" id="zone" value="<%= zoneVal %>" /></span>
-						<span><input id="view_button" type="image" alt="View" src="./images/icons/view.gif" onclick="javascript:doCompositeLink('daterange','zone','region','dispatch.do')" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>
+						<span><input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink('daterange','zone','plan.do')" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>
 						<span><input id="view_button" type="image" alt="Dispatch" src="./images/icons/dispatch.gif" onclick="javascript:doCompositeLink('daterange','zone','region','autoDispatch.do')" onmousedown="this.src='./images/icons/dispatch_ON.gif'" /> <a href="#"  onclick="javascript:doCompositeLink('daterange','zone','region','autoDispatch.do')" class="dispatch_link">Dispatch</a></span>
 				</div>
 			</div>

@@ -110,9 +110,27 @@ public class PlanningFormController extends AbstractFormController {
 		return "Plan";
 	}
 	
+	/*protected ModelAndView onSubmit(HttpServletRequest request,
+			HttpServletResponse response, Object command, BindException errors)
+			throws Exception {
+		
+		if("true".equalsIgnoreCase(((WebPlanInfo)command).getZoneModified())) {
+			((WebPlanInfo)command).setZoneModified("false");
+			preProcessDomainObject(command);
+			ModelAndView mav = new ModelAndView(getSuccessView(), errors.getModel());
+			mav.getModel().put(this.getCommandName(), command);
+			mav.getModel().putAll(referenceData(request));
+			
+			return mav;
+		} else {
+			return super.onSubmit(request, response, command, errors);
+		}
+	
+	}*/
 	public List saveDomainObject(Object command) {
 		
 		List errorList = null;
+		
 		try {
 			
 			boolean isNew = isNew(command);
@@ -219,9 +237,22 @@ public class PlanningFormController extends AbstractFormController {
 		
 	}
 	
-	
+	protected boolean isFormChangeRequest(HttpServletRequest request, Object command) {
+		
+		WebPlanInfo _command=(WebPlanInfo)command;
+		if("true".equalsIgnoreCase(_command.getZoneModified())) {
+			return true;
+		}
+		else 
+			return isFormChangeRequest(request);
+	}
 
-	
+	protected void onFormChange(HttpServletRequest request, HttpServletResponse response, Object command)
+	throws Exception {
+		
+		WebPlanInfo _command=(WebPlanInfo)command;
+		_command.setZoneModified("false");
+	}
 
 	
 	
