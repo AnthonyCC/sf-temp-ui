@@ -187,5 +187,16 @@ public class Pricing implements Serializable {
 		buf.append("\n]");
 		return buf.toString();
 	}
-	
+
+	public double getMinPrice() {
+		if (materialPrices.length == 0)
+			return Double.NaN;
+
+		double p = materialPrices[0].getPrice();
+		for (int i=1; i<materialPrices.length; ++i) {
+			p = Math.min(p, materialPrices[i].getPrice());
+		}
+
+		return p;
+	}
 }

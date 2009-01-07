@@ -107,6 +107,14 @@ public class MaterialPrice implements Serializable {
 		return buf.toString();
 	}
 	
+	public double getScaledPrice() {
+		if ("EA".equalsIgnoreCase(getPricingUnit())) {
+			return getPrice()*getScaleLowerBound();
+		} else {
+			return getPrice();
+		}
+	}
+	
 	
 	public String getWineScaleDisplay(boolean isBreakRequired) {
 		StringBuffer buf = new StringBuffer();

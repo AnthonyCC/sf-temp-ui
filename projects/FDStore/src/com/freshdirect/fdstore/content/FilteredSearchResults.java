@@ -18,8 +18,12 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.common.pricing.Pricing;
+import com.freshdirect.fdstore.FDProduct;
+import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.ContentNodeTree.TreeElement;
 import com.freshdirect.fdstore.util.RecipesUtil;
 import com.freshdirect.smartstore.fdstore.ProductStatisticsProvider;
@@ -403,6 +407,126 @@ public class FilteredSearchResults extends SearchResults implements Serializable
         }
     }
 
+
+    /**
+     * Sale Sort Comparator
+     *   based on Popularity comparator
+     * [APPREQ-234]
+     * 
+     * @author segabor
+     */
+    public static class SaleComparator extends PopularityComparator {
+		SaleComparator(boolean inverse, boolean hideUnavailable, List products) {
+			super(inverse, hideUnavailable, products);
+		}
+
+		public SaleComparator(boolean inverse, List products) {
+			super(inverse, products);
+		}
+
+
+		public int compare(Object o1, Object o2) {
+            ProductModel c1 = (ProductModel) o1;
+            ProductModel c2 = (ProductModel) o2;
+			
+            try {
+            	// Stage 0 -- sort out null cases
+            	//
+            	if (c1.getDefaultSku() == null) {
+            		if (c2.getDefaultSku() == null) {
+            			return 0;
+            		} else {
+            			// sku1 == null, sku2 != null -> 1
+            			return inverse ? -1 : 1;
+            		}
+            	} else if (c2.getDefaultSku() == null) {
+        			// sku1 != null, sku2 == null -> -1
+            		return inverse ? 1 : -1;
+            	}
+
+
+
+            	FDProductInfo i1 = c1.getDefaultSku().getProductInfo();
+	            FDProductInfo i2 = c2.getDefaultSku().getProductInfo();
+	            
+	            // Stage 1 -- Compare deal percentages
+	            //
+	            if (i1.isDeal()) {
+	            	if (i2.isDeal()) {
+	            		int p1 = i1.getDealPercentage();
+	            		int p2 = i2.getDealPercentage();
+	            		
+	            		// greater percentage is better
+	            		int sc = p1 > p2 ? -1 : (p1 < p2 ? 1 : 0);
+
+	            		// same prices -> sort by popularity
+	        			if (sc == 0)
+	        				return super.compare(o1, o2);
+	            		return inverse ? -sc : sc;
+	            	} else {
+		            	return inverse ? 1 : -1;
+	            	}
+	            } else if (i2.isDeal()) {
+	            	return inverse ? -1 : 1;
+	            }
+
+
+	            // Stage 2 -- tiered pricing
+	            //
+	            Pricing prc1 = c1.getDefaultSku().getProduct().getPricing();
+	            Pricing prc2 = c2.getDefaultSku().getProduct().getPricing();
+        		double defp1 = i1.getBasePrice();
+        		double defp2 = i2.getBasePrice();
+	            
+	            if (prc1.hasScales()) {
+	            	if (prc2.hasScales()) {
+	            		// find best scaled price (if any)
+	            		double mp1 = prc1.getMinPrice();
+	            		double mp2 = prc2.getMinPrice();
+	            		
+	            		if (mp1 != Double.NaN && mp2 != Double.NaN) {
+	            			int sc = Double.compare(mp1, mp2);
+	            			
+	            			// same prices -> sort by popularity
+	            			if (sc == 0)
+	            				return super.compare(o1, o2);
+	            			return inverse ? -sc : sc;
+	            		} else {
+	            			int sc = (mp1 == Double.NaN ? 1 : -1);
+	            			return inverse ? -sc : sc;
+	            		}
+	            	} else {
+		            	return inverse ? 1 : -1;
+	            	}
+	            } else if (prc2.hasScales()) {
+	            	return inverse ? -1 : 1;
+	            }
+
+
+	            // Stage 3 -- base prices
+	            //
+	            if (i1.getBasePrice() != i2.getBasePrice()) {
+
+            		// cheaper price is better
+	            	int sc = Double.compare(defp1, defp2);
+        			if (sc == 0)
+        				return super.compare(o1, o2);
+            		return inverse ? -sc : sc;
+	            }
+
+
+	            // Stage 4 -- equal prices --> compare by popularity
+	            //
+	            return super.compare(o1, o2);
+            } catch(FDSkuNotFoundException noSkuExc) {
+            	return 0;
+            } catch(FDResourceException se) {
+            	return 0;
+            }
+		}
+    	
+    }
+    
     
     public final static int        NATURAL_SORT      = -1;                        // don't
                                                                                    // sort
@@ -410,6 +534,7 @@ public class FilteredSearchResults extends SearchResults implements Serializable
     public final static int        BY_PRICE          = 1;
     public final static int        BY_RELEVANCY      = 2;
     public final static int        BY_POPULARITY     = 3;
+	public static final int        BY_SALE           = 5;
 
     /*private final static Comparator POPULARITY                      = new PopularityComparator(false, false);
     private final static Comparator POPULARITY_INVERSE              = new PopularityComparator(true, false);*/
@@ -501,8 +626,11 @@ public class FilteredSearchResults extends SearchResults implements Serializable
                 c = inverse ? ProductModel.PRODUCT_MODEL_PRICE_COMPARATOR_INVERSE : ProductModel.PRODUCT_MODEL_PRICE_COMPARATOR;
                 break;
             case BY_POPULARITY:
-                c =  new PopularityComparator(inverse, products);
+                c = new PopularityComparator(inverse, products);
                 break;
+            case BY_SALE:
+            	c = new SaleComparator(inverse, products);
+            	break;
             case BY_RELEVANCY:
 //                return (customerId != null) ? new RelevancyComparator(customerId) : POPULARITY;
             default:
