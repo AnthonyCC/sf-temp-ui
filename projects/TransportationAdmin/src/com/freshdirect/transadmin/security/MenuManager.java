@@ -83,7 +83,10 @@ public class MenuManager {
 	public boolean hasAccess(ServletRequest request, String uri) {
 		if(menuAccess != null) {
 			String userRole = SecurityManager.getUserRole(request, menuAccess.getMenuRoleMapping().keySet());
-			return ((List)menuAccess.getLinkRoleMapping().get(userRole)).contains(uri);
+			Object tmpMapping = menuAccess.getLinkRoleMapping().get(userRole);
+			if(tmpMapping != null) {
+				return ((List)tmpMapping).contains(uri);
+			}
 		}
 		return true;
 	}
