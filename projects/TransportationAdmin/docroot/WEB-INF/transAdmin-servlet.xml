@@ -94,6 +94,12 @@
 				<prop key="/viewfile.do">genericBeanFormController</prop> 
 				<prop key="/routenumber.do">domainController</prop>
 				<prop key="/accessdenied.do">domainController</prop>
+
+				<prop key="/georestriction.do">restrictionController</prop>
+				<prop key="/deletegeorestriction.do">restrictionController</prop>					                
+				<prop key="/editgeorestriction.do">geoRestrictionFormController</prop>
+
+
 			</props>
 		</property>
 	</bean>
@@ -113,6 +119,10 @@
 		<property name="methodNameResolver" ref="transAdminControllerResolver"/>        
 	</bean>
 	
+	<bean id="restrictionController" class="com.freshdirect.transadmin.web.RestrictionController">
+		<property name="methodNameResolver" ref="transAdminControllerResolver"/>
+        <property name="restrictionManagerService" ref="restrictionManager"/>
+ 	</bean>
 	
 	
 	<bean id="dispatchController" class="com.freshdirect.transadmin.web.DispatchController">
@@ -180,6 +190,11 @@
  		 	<prop key="/deletecutoff.do">cutOffDeleteHandler</prop>
  		 	<prop key="/routenumber.do">routeNumberHandler</prop> 
  		 	<prop key="/accessdenied.do">accessDeniedHandler</prop>
+
+		 	<prop key="/georestriction.do">geoRestrictionHandler</prop>					                
+ 		 	<prop key="/deletegeorestriction.do">geoRestrictionDeleteHandler</prop>
+
+
 		</props>
 		</property>
 	</bean>
@@ -404,6 +419,18 @@
         <property name="successView" value="genericFlatFileView" />
         <property name="formView" value="genericFlatFileView" />
 	</bean>
+	
+	<bean id="geoRestrictionFormController" class="com.freshdirect.transadmin.web.GeoRestrictionFormController">
+		<property name="restrictionManagerService" ref="restrictionManager"/>
+		<property name="sessionForm" value="true"/>
+        <property name="commandName" value="geoRestrictionForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.model.GeoRestriction"/>
+        <property name="validator" ref="geoRestrictionValidator"/>
+        <property name="successView" value="geoRestrictionEdit" />
+        <property name="formView" value="geoRestrictionEdit" />
+	</bean>
+	
+	
 	    
 	<bean id="employeeValidator" class="com.freshdirect.transadmin.web.validation.EmployeeValidator"/>
 	<bean id="zoneValidator" class="com.freshdirect.transadmin.web.validation.ZoneValidator"/>
@@ -426,4 +453,8 @@
 	<bean id="routingOutValidator" class="com.freshdirect.transadmin.web.validation.RoutingOutValidator"/>
 	<bean id="routingMergeValidator" class="com.freshdirect.transadmin.web.validation.RoutingMergeValidator"/>
 	<bean id="cutOffValidator" class="com.freshdirect.transadmin.web.validation.CutOffValidator"/>
+	
+	<bean id="geoRestrictionValidator" class="com.freshdirect.transadmin.web.validation.GeoRestrictionValidator"/>
+	
+	
 </beans>

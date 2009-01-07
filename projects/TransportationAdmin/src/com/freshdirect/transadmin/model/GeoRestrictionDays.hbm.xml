@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jan 7, 2009 10:45:25 AM by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping schema="dlv">
+    <class name="com.freshdirect.transadmin.model.GeoRestrictionDays" table="GEO_RESTRICTION_DAYS">
+        <composite-id name="restrictionDaysId" class="com.freshdirect.transadmin.model.GeoRestrictionDaysId">
+            <key-property name="restrictionId" type="string">
+                <column name="RESTRICTION_ID" length="16" />
+            </key-property>
+            <key-property name="dayOfWeek" type="big_decimal">
+                <column name="DAY_OF_WEEK" precision="22" scale="0" />
+            </key-property>
+            <key-property name="seqno" type="big_decimal">
+                <column name="SEQNO" precision="22" scale="0" />
+            </key-property>
+        </composite-id>
+        <property name="condition" type="string">
+            <column name="CONDITION" length="2" />
+        </property>
+        <property name="startTime" type="date">
+            <column name="START_TIME" length="7" />
+        </property>
+        <property name="endTime" type="date">
+            <column name="END_TIME" length="7" />
+        </property>        
+    </class>
+</hibernate-mapping>

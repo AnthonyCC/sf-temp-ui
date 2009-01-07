@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jan 7, 2009 10:45:25 AM by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping schema="dlv">
+    <class name="com.freshdirect.transadmin.model.GeoRestriction" table="GEO_RESTRICTION">
+        <id name="id" type="string">
+            <column name="ID" length="16" />
+            <generator class="assigned" />
+        </id>
+        <property name="name" type="string">
+            <column name="NAME" length="256" />
+        </property>
+        <property name="boundaryCode" type="string">
+            <column name="BOUNDARY_CODE" length="16" />
+        </property>
+        <property name="startDate" type="date">
+            <column name="START_DATE" length="7" />
+        </property>
+        <property name="endDate" type="date">
+            <column name="END_DATE" length="7" />
+        </property>
+        <property name="message" type="string">
+            <column name="MESSAGE" />
+        </property>
+        <property name="inactive" type="string">
+            <column name="INACTIVE" length="1" />
+        </property>
+        <property name="comments" type="string">
+            <column name="COMMENTS" />
+        </property>
+        <set name="geoRestrictionDays" inverse="true" lazy="false">
+            <key>
+                <column name="RESTRICTION_ID" length="16" />
+            </key>
+            <one-to-many class="com.freshdirect.transadmin.model.GeoRestrictionDays" />
+        </set>        
+    </class>
+</hibernate-mapping>

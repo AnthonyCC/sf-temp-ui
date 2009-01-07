@@ -38,6 +38,10 @@
 				<value>com/freshdirect/transadmin/model/Zone.hbm.xml</value>  								
 				<value>com/freshdirect/transadmin/model/ZonetypeResource.hbm.xml</value>  				
 				<value>com/freshdirect/transadmin/model/DispositionType.hbm.xml</value>
+
+				<value>com/freshdirect/transadmin/model/GeoRestriction.hbm.xml</value>  				
+				<value>com/freshdirect/transadmin/model/GeoRestrictionDays.hbm.xml</value>
+
 				
             </list>
         </property>
@@ -88,6 +92,11 @@
     <bean id="domainManagerDAO" class="com.freshdirect.transadmin.dao.hibernate.DomainManagerDaoHibernateImpl">
 		<property name="sessionFactory" ref="sessionFactory"/>
 	</bean>	
+
+   <bean id="restrictionManagerDAO" class="com.freshdirect.transadmin.dao.hibernate.RestrictionManagerDaoHibernateImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>	
+
 	
 	<bean id="dispatchManagerDAO" class="com.freshdirect.transadmin.dao.hibernate.DispatchManagerDaoHibernateImpl">
 		<property name="sessionFactory" ref="sessionFactory"/>
@@ -101,6 +110,11 @@
     <bean id="domainManager" class="com.freshdirect.transadmin.service.impl.DomainManagerImpl">
         <property name="domainManagerDao" ref="domainManagerDAO"/>
     </bean>
+
+   <bean id="restrictionManager" class="com.freshdirect.transadmin.service.impl.RestrictionManagerImpl">
+        <property name="restrictionManagerDao" ref="restrictionManagerDAO"/>
+    </bean>
+
     
      <bean id="dispatchManager" class="com.freshdirect.transadmin.service.impl.DispatchManagerImpl">
         <property name="dispatchManagerDao" ref="dispatchManagerDAO"/>
@@ -134,6 +148,19 @@
         </property>
     </bean>
     
+    <bean id="restrictionManagerBase" abstract="true" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="target" ref="restrictionManager"/>
+        <property name="transactionManager" ref="txManager"/>
+        <property name="transactionAttributes">
+            <props>
+            	<prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>
+                <prop key="*">PROPAGATION_REQUIRED</prop>
+            </props>
+        </property>
+    </bean>
+ 
+ 
+ 
      <bean id="dispatchManagerBase" abstract="true" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="target" ref="dispatchManager"/>
         <property name="transactionManager" ref="txManager"/>
