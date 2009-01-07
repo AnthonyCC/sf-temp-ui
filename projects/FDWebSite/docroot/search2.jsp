@@ -271,8 +271,10 @@ if ( results == null) {
 	<div style="font-size:18px;font-weight:normal"><%= recipes.size() %> recipe<%= recipes.size() > 1 ? "s":""%> found <% if (selDv != null) { %>in <span style="font-weight:bold"><%= selDv.getLabel() %><% } %></span></div>
 
 	<div class="text13" style="background-color: #E0E3D0;padding:2px;margin-top: 10px;line-height: 25px;">
-		<div style="float:left"><span class="text11bold">Sort:</span>
-		<a href="<%= nav.getChangeSortAction(SearchNavigator.SORT_BY_NAME) %>" class="<%= nav.isSortByName() ? "text11bold" : "text11" %>">Name</a>
+		<div style="float:left"><span class="text11bold">Sort:</span><%
+		boolean descName = nav.isSortByName() && !nav.isSortOrderingAscending();
+%>
+		<a href="<%= nav.getChangeSortAction(SearchNavigator.SORT_BY_NAME) %>" class="<%= nav.isSortByName() ? "text11bold" : "text11" %>"><%= descName ? "Name (Z-A)" : "Name (A-Z)" %></a>
 	</div>
 	<div style="clear: both;"></div>
 </div>
