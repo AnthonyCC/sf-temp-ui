@@ -112,9 +112,9 @@
               <ec:column alias="trnTrucktruckNumber" property="truck" width="10"  title="Truck"/>
               <ec:column alias="trnNoOfStops" property="noOfStops" width="10"  title="Stops"/>
               <ec:column alias="trnStatus" property="statusName"  title="Status"/>              
-              <ec:column property="drivers"  cell="="dispatchResCell" title="Driver"  filterable="false" alias="001"/>
-              <ec:column property="helpers"  cell="="dispatchResCell" title="Helper"  filterable="false" alias="002"/>
-              <ec:column property="runners"  cell="="dispatchResCell" title="Runner"  filterable="false" alias="003"/>
+              <ec:column property="drivers"  cell="dispatchResCell" title="Driver"  filterable="false" alias="001"/>
+              <ec:column property="helpers"  cell="dispatchResCell" title="Helper"  filterable="false" alias="002"/>
+              <ec:column property="runners"  cell="dispatchResCell" title="Runner"  filterable="false" alias="003"/>
               <ec:column alias="trnComments" property="comments"  title="Comments"/>              
             </ec:row>
           </ec:table>
