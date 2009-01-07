@@ -40,6 +40,9 @@
         </property>
         <property name="needsLoadBalance" type="string">
             <column name="NEEDS_LOADBALANCE" length="1" />
+        </property>
+        <property name="lateDeliveryFactor" type="big_decimal">
+            <column name="LATEDELIVERY_FACTOR" precision="10" />
         </property>   
         <many-to-one name="defaultServiceTimeType" class="com.freshdirect.transadmin.model.DlvServiceTimeType" fetch="select" lazy="false">
             <column name="DEFAULT_SERVICETIME_TYPE" length="8" />

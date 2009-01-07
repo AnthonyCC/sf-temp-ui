@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.routing.constants.EnumProcessInfoType;
 import com.freshdirect.routing.constants.EnumProcessType;
 import com.freshdirect.routing.constants.EnumRoutingFlowType;
@@ -57,14 +58,27 @@ public abstract class BaseProcessManager implements  IProcessManager {
     }
 
     public Object startProcess(ProcessContext request) throws RoutingProcessException {
+    	DeliveryServiceProxy proxy = new DeliveryServiceProxy();
     	try {
-			// load the zone details and fill the cache
-			DeliveryServiceProxy proxy = new DeliveryServiceProxy();
+			// load the zone details and fill the cache			
 			Map zoneDetails = proxy.getDeliveryZoneDetails();
 			request.setDeliveryTypeCache(zoneDetails);
 		} catch (RoutingServiceException e) {
 			e.printStackTrace();
 			throw new RoutingProcessException(null,e,IIssue.PROCESS_ZONEINFO_NOTFOUND);
+		}
+		
+		try {
+			if(!StringUtil.isEmpty(RoutingServicesProperties.getRoutingLateDeliveryQuery())) {
+				System.out.println("################## START LATE DELIVERY #########################");
+				List lateDeliveryOrders = proxy.getLateDeliveryOrders(RoutingServicesProperties.getRoutingLateDeliveryQuery());
+				request.setLateDeliveryOrderList(lateDeliveryOrders);
+				System.out.println("################## END LATE DELIVERY #########################"+lateDeliveryOrders.size());
+			} else {
+				System.out.println("################## START LATE DELIVERY EMPTY QUERY#########################");
+			}
+		} catch (RoutingServiceException e) {
+			e.printStackTrace();
 		}
 
 		IServiceTimeScenarioModel scenarioModel = loadServiceTimeScenario((Map)request.getProcessParam());

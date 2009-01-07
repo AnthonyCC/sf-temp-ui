@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -150,5 +152,20 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 				  }
 			);
 		return zoneDetailsMap;
+	}
+	
+	public List getLateDeliveryOrders(String query) throws SQLException {
+		final List lateDeliveryOrders = new ArrayList();
+		
+		jdbcTemplate.query(query, 
+				  new RowCallbackHandler() { 
+				      public void processRow(ResultSet rs) throws SQLException {				    	
+				    	do {        		    		
+				    		lateDeliveryOrders.add(rs.getString("ERPID"));
+				    	 } while(rs.next());		        		    	
+				      }
+				  }
+			);
+		return lateDeliveryOrders;
 	}
 }

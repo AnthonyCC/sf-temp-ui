@@ -33,6 +33,7 @@ public class Issue implements IIssue {
 		messages.put(PROCESS_BALANCEROUTES_UNSUCCESSFUL,"Balance Routes Failed");
 		messages.put(PROCESS_RETRIEVESESSION_UNSUCCESSFUL,"Retrieve Session Failed");
 		messages.put(PROCESS_REMOVEFROMSERVER_UNSUCCESSFUL,"Retrieve Session Failed");
+		messages.put(PROCESS_LOADLATEDELIVERYORDERS_UNSUCCESSFUL,"Retrieve Late Delivery Orders Failed");
 	}
 	
 	public static String getMessage(String id) {

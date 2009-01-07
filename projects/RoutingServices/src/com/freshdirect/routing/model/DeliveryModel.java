@@ -14,7 +14,7 @@ public class DeliveryModel extends BaseModel implements IDeliveryModel {
 	private IPackagingModel packagingInfo;
 	private double serviceTime;
 	private ILocationModel deliveryLocation;
-	
+		
 	public String getServiceType() {
 		return serviceType;
 	}
@@ -76,4 +76,5 @@ public class DeliveryModel extends BaseModel implements IDeliveryModel {
 	public String toString() {
 		return deliveryDate+"|"+deliveryZone+"|"+deliveryStartTime+"|"+deliveryEndTime;
 	}
+	
 }

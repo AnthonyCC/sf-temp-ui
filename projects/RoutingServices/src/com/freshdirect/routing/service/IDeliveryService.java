@@ -1,5 +1,7 @@
 package com.freshdirect.routing.service;
 
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.routing.model.IDeliveryModel;
@@ -20,5 +22,7 @@ public interface IDeliveryService {
 			, String serviceTimeExpression, int intFixedServiceTime, int intVariableServiceTime) throws RoutingServiceException;
 	
 	Map getDeliveryZoneDetails()  throws RoutingServiceException;
+	
+	List getLateDeliveryOrders(String query) throws RoutingServiceException;
 	
 }

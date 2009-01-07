@@ -31,4 +31,7 @@ public interface IServiceTimeScenarioModel {
 	void setLoadBalanceFactor(double loadBalanceFactor);
 	boolean getNeedsLoadBalance();
 	void setNeedsLoadBalance(boolean needsLoadBalance);
+	
+	 double getLateDeliveryFactor();
+	 void setLateDeliveryFactor(double lateDeliveryTimeWindowFactor);
 }

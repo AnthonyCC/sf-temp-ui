@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.freshdirect.framework.util.DateUtil;
+
 public class RoutingDateUtil {
 	
 	private static final DateFormat MIN_HOUR_SEC_FORMATTER = new SimpleDateFormat("HH:mm:ss");
@@ -40,4 +42,15 @@ public class RoutingDateUtil {
 		BASE_CALENDAR.add(Calendar.SECOND, seconds);
 		return BASE_CALENDAR.getTime();
 	}
+	
+	public static Date reduceTimeByPercent(Date dateStart, Date dateEnd, double percentage) {
+		int minutesBetween = DateUtil.getDiffInMinutes(dateStart, dateEnd);
+		int percentageMinutes = (int)(minutesBetween*percentage);
+		
+		BASE_CALENDAR.setTime(dateStart);
+		BASE_CALENDAR.add(Calendar.MINUTE, percentageMinutes);
+		return BASE_CALENDAR.getTime();
+	}
+	
+	
 }

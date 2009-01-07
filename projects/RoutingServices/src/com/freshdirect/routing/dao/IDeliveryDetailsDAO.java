@@ -1,6 +1,7 @@
 package com.freshdirect.routing.dao;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.routing.model.IDeliveryModel;
@@ -17,5 +18,6 @@ public interface IDeliveryDetailsDAO {
 	String getDeliveryZoneType(String zoneCode) throws SQLException;
 	
 	Map getDeliveryZoneDetails() throws SQLException;
-		  
+	
+	List getLateDeliveryOrders(String query) throws SQLException;
 }

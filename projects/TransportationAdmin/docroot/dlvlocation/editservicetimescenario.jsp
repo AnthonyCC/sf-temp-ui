@@ -188,6 +188,16 @@
                 </td>
                </tr>
                
+               <tr>
+                  <td>Late Delivery Factor</td>
+                  <td>                  
+                    <form:input maxlength="50" size="30" path="lateDeliveryFactor" />
+                </td>
+                <td>
+                  &nbsp;<form:errors path="lateDeliveryFactor" />
+                </td>
+               </tr>
+               
               <tr><td colspan="3">&nbsp;</td></tr>
               <tr>
                   <td colspan="3" align="center">

@@ -55,6 +55,8 @@ public class RoutingServicesProperties {
 	private final static String PROP_ROUTINGPARAM_RETRIEVEBUILT		= "routingservices.routingparam.retrievebuilt";
 	private final static String PROP_ROUTINGPARAM_RETRIEVEPUBLISHED		= "routingservices.routingparam.retrievepublished";
 	
+	private final static String PROP_LATEDELIVERY_QUERY		= "routingservices.latedelivery.query";
+	
 	private static long lastRefresh = 0;
 	private final static long REFRESH_PERIOD = 5 * 60 * 1000;
 	
@@ -199,7 +201,10 @@ public class RoutingServicesProperties {
 	public static boolean getRoutingParamRetrievePublished() {
         return (new Boolean(get(PROP_ROUTINGPARAM_RETRIEVEPUBLISHED))).booleanValue();
     }
-		
+	
+	public static String getRoutingLateDeliveryQuery() {
+        return get(PROP_LATEDELIVERY_QUERY);
+    }		
 	
 	private static int getIntVal(String strVal) {
 		int intVal = 0;

@@ -1,6 +1,7 @@
 package com.freshdirect.routing.service.impl;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.routing.dao.IDeliveryDetailsDAO;
@@ -89,6 +90,15 @@ public class DeliveryService implements IDeliveryService {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			throw new RoutingServiceException(e, IIssue.PROCESS_ZONEINFO_NOTFOUND);
+		}
+	}
+	
+	public List getLateDeliveryOrders(String query) throws RoutingServiceException {
+		try {
+			return deliveryDAOImpl.getLateDeliveryOrders(query);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RoutingServiceException(e, IIssue.PROCESS_LOADLATEDELIVERYORDERS_UNSUCCESSFUL);
 		}
 	}
 		

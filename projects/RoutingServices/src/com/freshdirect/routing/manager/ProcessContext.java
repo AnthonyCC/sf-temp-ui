@@ -32,6 +32,8 @@ public class ProcessContext implements Serializable {
 	private Object processScenario;
 	
 	private Object orderList;
+	
+	private Object lateDeliveryOrderList;
 
 	
 	public Object getLocationList() {
@@ -157,6 +159,14 @@ public class ProcessContext implements Serializable {
 			orderList = new ArrayList();
 		}
 		((List)orderList).add(dataObject);
+	}
+
+	public Object getLateDeliveryOrderList() {
+		return lateDeliveryOrderList;
+	}
+
+	public void setLateDeliveryOrderList(Object lateDeliveryOrderList) {
+		this.lateDeliveryOrderList = lateDeliveryOrderList;
 	}
 
 }

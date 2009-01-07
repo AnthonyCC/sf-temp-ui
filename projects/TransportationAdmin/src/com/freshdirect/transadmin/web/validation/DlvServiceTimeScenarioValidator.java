@@ -71,7 +71,11 @@ public class DlvServiceTimeScenarioValidator extends AbstractValidator {
 			if(!errors.hasFieldErrors("loadBalanceFactor")) {
 				validateNumericLengthEx("loadBalanceFactor", model.getLoadBalanceFactor(), errors);
 			}
-		}	
+		}
+				
+		if(model.getLateDeliveryFactor() != null) {
+			validateNumericLengthEx("lateDeliveryTimeWindowFactor", model.getLateDeliveryFactor(), errors);
+		}
 	}
 	
 	protected void validateNumericLengthEx(String field, BigDecimal value, Errors errors) {

@@ -37,9 +37,9 @@
           <ec:column alias="defaultZoneType" property="defaultZoneType.name" title="Zone Type"/>  
           
           <ec:column property="needsLoadBalance" width="5px" title="Load Balance"/> 
-          <ec:column property="loadBalanceFactor" title="Balance Factor"/>
+          <ec:column property="loadBalanceFactor" width="5px" title="Balance Factor"/>
           <ec:column format="com.freshdirect.routing.constants.EnumBalanceBy" cell="enumcol" property="balanceBy" title="Balance By"/>                         
-             
+          <ec:column property="lateDeliveryFactor" width="10px" title="Late Delivery Factor"/> 
             </ec:row>
           </ec:table>
        </form>  

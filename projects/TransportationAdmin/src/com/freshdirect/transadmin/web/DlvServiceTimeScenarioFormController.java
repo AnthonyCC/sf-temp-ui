@@ -1,5 +1,6 @@
 package com.freshdirect.transadmin.web;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -84,6 +85,9 @@ public class DlvServiceTimeScenarioFormController extends AbstractFormController
 				modelNew.setCode(null);
 				errorList.add(this.getMessage("app.actionmessage.119", new Object[]{getDomainObjectName()}));
 			}
+		}
+		if(modelNew.getLateDeliveryFactor() == null) {
+			modelNew.setLateDeliveryFactor(new BigDecimal(1));
 		}
 		if(errorList.size() == 0) {
 			saveDataList.add(domainObject);

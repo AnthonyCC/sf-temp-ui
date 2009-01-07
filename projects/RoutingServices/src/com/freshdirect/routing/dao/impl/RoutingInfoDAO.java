@@ -37,6 +37,7 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 				    		
 				    		tmpModel.setBalanceBy(rs.getString("BALANCE_BY"));
 				    		tmpModel.setLoadBalanceFactor(rs.getDouble("LOADBALANCE_FACTOR"));
+				    		tmpModel.setLateDeliveryFactor(rs.getDouble("LATEDELIVERY_FACTOR"));
 				    		tmpModel.setNeedsLoadBalance("X".equalsIgnoreCase(rs.getString("NEEDS_LOADBALANCE")) ? true : false);
 				    		scenarios.add(tmpModel);
 				    	 } while(rs.next());		        		    	

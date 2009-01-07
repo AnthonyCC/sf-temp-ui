@@ -19,6 +19,8 @@ public class ServiceTimeScenario extends BaseModel implements IServiceTimeScenar
 	
 	private double loadBalanceFactor;
 	
+	private double lateDeliveryFactor;
+	
 	private String balanceBy;
 	
 	private boolean needsLoadBalance;
@@ -107,4 +109,11 @@ public class ServiceTimeScenario extends BaseModel implements IServiceTimeScenar
 	public void setNeedsLoadBalance(boolean needsLoadBalance) {
 		this.needsLoadBalance = needsLoadBalance;
 	}
+	public double getLateDeliveryFactor() {
+		return lateDeliveryFactor;
+	}
+	public void setLateDeliveryFactor(double lateDeliveryFactor) {
+		this.lateDeliveryFactor = lateDeliveryFactor;
+	}
+	
 }

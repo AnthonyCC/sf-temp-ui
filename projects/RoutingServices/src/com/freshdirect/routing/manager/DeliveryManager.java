@@ -1,5 +1,6 @@
 package com.freshdirect.routing.manager;
 
+import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.routing.constants.EnumProcessInfoType;
@@ -48,6 +49,16 @@ public class DeliveryManager extends BaseProcessManager {
 			//Fix for time increase window end time by a second
 			orderModel.getDeliveryInfo().setDeliveryEndTime(RoutingDateUtil
 										.addSeconds(orderModel.getDeliveryInfo().getDeliveryEndTime(), 1));
+		}
+		
+		if( request.getLateDeliveryOrderList() != null 
+				&& ((List)request.getLateDeliveryOrderList()).contains(orderModel.getOrderNumber()) 
+					&& orderModel.getDeliveryInfo().getDeliveryStartTime() != null
+				&& orderModel.getDeliveryInfo().getDeliveryEndTime() != null) {
+			//Late Delivery Delivery Window End Time Reduction
+			orderModel.getDeliveryInfo().setDeliveryEndTime(RoutingDateUtil
+										.reduceTimeByPercent(orderModel.getDeliveryInfo().getDeliveryStartTime(), 
+												orderModel.getDeliveryInfo().getDeliveryEndTime(), scenario.getLateDeliveryFactor()));
 		}
 
 	}

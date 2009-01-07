@@ -1,5 +1,6 @@
 package com.freshdirect.routing.service.proxy;
 
+import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.routing.model.IDeliveryModel;
@@ -39,5 +40,9 @@ public class DeliveryServiceProxy extends BaseServiceProxy {
 	
 	public Map getDeliveryZoneDetails()  throws RoutingServiceException {
 		return getService().getDeliveryZoneDetails();
+	}
+	
+	public List getLateDeliveryOrders(String query) throws RoutingServiceException {
+		return getService().getLateDeliveryOrders(query);
 	}
 }

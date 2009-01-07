@@ -19,6 +19,8 @@ public class DlvServiceTimeScenario implements java.io.Serializable, TrnBaseEnti
 	
 	private BigDecimal loadBalanceFactor;
 	
+	private BigDecimal lateDeliveryFactor;
+	
 	private String balanceBy;
 	
 	private String needsLoadBalance;
@@ -189,5 +191,15 @@ public class DlvServiceTimeScenario implements java.io.Serializable, TrnBaseEnti
 	public void setNeedsLoadBalance(String needsLoadBalance) {
 		this.needsLoadBalance = needsLoadBalance;
 	}
+
+	public BigDecimal getLateDeliveryFactor() {
+		return lateDeliveryFactor;
+	}
+
+	public void setLateDeliveryFactor(BigDecimal lateDeliveryFactor) {
+		this.lateDeliveryFactor = lateDeliveryFactor;
+	}
+
+	
 
 }
