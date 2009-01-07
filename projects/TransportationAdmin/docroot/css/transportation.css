@@ -245,6 +245,12 @@ body {
 	background-color: #FFFFFF;
 }
 
+/* borderless */
+
+.noborder {
+      border-width: 0px;
+}
+
 /*example page setup*/
 div.topTabs {
 	/*height: 5%;*/

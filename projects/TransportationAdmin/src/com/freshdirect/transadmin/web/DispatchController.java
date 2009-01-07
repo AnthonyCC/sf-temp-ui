@@ -218,13 +218,13 @@ public class DispatchController extends AbstractMultiActionController {
 		
 		Set dispatchSet=new HashSet();
 		String arrEntityList[] = getParamList(request);
-		StringTokenizer splitter = null;
+		//StringTokenizer splitter = null;
 		if (arrEntityList != null) {			
 			int arrLength = arrEntityList.length;
 			for (int intCount = 0; intCount < arrLength; intCount++) {
-				splitter = new StringTokenizer(arrEntityList[intCount], "$");
-				Dispatch dispatch =dispatchManagerService.getDispatch(splitter.nextToken());
-				if(dispatch.getConfirmed() == Boolean.FALSE){
+				//splitter = new StringTokenizer(arrEntityList[intCount], "$");
+				Dispatch dispatch =dispatchManagerService.getDispatch(arrEntityList[intCount]);
+				if(dispatch.getConfirmed()== null || dispatch.getConfirmed() == Boolean.FALSE){
 					dispatchSet.add(dispatch);
 				}
 			}

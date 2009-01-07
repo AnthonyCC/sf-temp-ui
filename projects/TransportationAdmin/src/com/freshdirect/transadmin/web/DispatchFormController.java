@@ -1,44 +1,21 @@
 package com.freshdirect.transadmin.web;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.propertyeditors.ClassEditor;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.servlet.ModelAndView;
 
-import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.transadmin.model.Dispatch;
-import com.freshdirect.transadmin.model.DispatchResource;
-import com.freshdirect.transadmin.model.DispatchResourceId;
-import com.freshdirect.transadmin.model.EmployeeRoleType;
-import com.freshdirect.transadmin.model.FDRouteMasterInfo;
-import com.freshdirect.transadmin.model.PlanResource;
-import com.freshdirect.transadmin.model.PlanResourceId;
-import com.freshdirect.transadmin.model.Region;
-import com.freshdirect.transadmin.model.TrnDispatch;
-import com.freshdirect.transadmin.model.TrnDispatchId;
-import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.model.Zone;
-import com.freshdirect.transadmin.model.ZonetypeResource;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
@@ -46,10 +23,6 @@ import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.EnumResourceType;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
-import com.freshdirect.transadmin.web.model.ResourceReq;
-import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
-import com.freshdirect.transadmin.web.model.WebPlanInfo;
-import com.freshdirect.transadmin.web.model.ZoneTypeCommand;
 
 public class DispatchFormController extends AbstractFormController {
 	
@@ -200,6 +173,7 @@ public class DispatchFormController extends AbstractFormController {
 		return mav;
 	}
 	*/
+	
 	protected void onBind(HttpServletRequest request, Object command) {
 		DispatchCommand model = (DispatchCommand) command;
 		Zone zone=null;
@@ -209,6 +183,7 @@ public class DispatchFormController extends AbstractFormController {
 		DispatchPlanUtil.reconstructWebPlanInfo(model,zone,employeeManagerService);
 		
 	}
+	
 	public DomainManagerI getDomainManagerService() {
 		return domainManagerService;
 	}

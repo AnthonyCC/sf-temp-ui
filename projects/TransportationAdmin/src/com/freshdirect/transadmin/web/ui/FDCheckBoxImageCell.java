@@ -12,18 +12,14 @@ public class FDCheckBoxImageCell extends FDBaseCell  {
 
     public String getHtmlDisplay(TableModel model, Column column) {    	
         ColumnBuilder columnBuilder = new ColumnBuilder(column);
-        
         columnBuilder.tdStart();
-                              
         try {        	
-        	Boolean cellValue = (Boolean)column.getPropertyValue();
-        	if(cellValue != null && cellValue.booleanValue())
+        	String cellValue = (String)column.getPropertyValue();
+        	if(cellValue != null && new Boolean(cellValue).booleanValue())
         		columnBuilder.getHtmlBuilder().img("images/icons/confirmed.gif");            
             //columnBuilder.getHtmlBuilder().xclose();
         } catch (Exception e) {e.printStackTrace();}
-        
         columnBuilder.tdEnd();
-        
         return columnBuilder.toString();
     }
 

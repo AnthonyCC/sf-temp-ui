@@ -512,8 +512,9 @@ public class WebPlanInfo extends BaseCommand {
 			if(!TransStringUtil.isEmpty(resourceInfo.getEmployeeId())) {
 				WebEmployeeInfo webEmplInfo=employeeManagerService.getEmployee(resourceInfo.getEmployeeId());
 				if(webEmplInfo!=null && webEmplInfo.getEmpInfo()!=null) {
+					//whatever you found is correct. i dont understand why do you remove and then add from webemplinfo.
 					resources.remove(i);
-					resources.add(i, getResourceInfo(webEmplInfo, null));
+					resources.add(i, getResourceInfo(webEmplInfo, getResource(resourceInfo,role)));
 				}
 			}
 		}

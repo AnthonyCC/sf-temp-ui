@@ -122,7 +122,7 @@
                   <td>Region</td>
                   <td>       
                     <form:hidden path="regionCode"/>                 
-                    <form:input maxlength="50" size="10" path="regionName" readOnly="true" />                  
+                    <form:input maxlength="50" size="10" path="regionName" readOnly="true" cssClass="noborder"/>                  
                  </td>
                 </tr>       
                <tr>
@@ -319,7 +319,7 @@
                         </td>                
                     </tr>                
                     <tr>
-                    <c:forEach items="${dispatchForm.helpers}" var="driver" varStatus="gridRow">                        
+                    <c:forEach items="${dispatchForm.helpers}" var="helper" varStatus="gridRow">                        
                         <spring:bind path="dispatchForm.helpers[${gridRow.index}].nextelNo">
                         <td>
                             <img src="./images/icons/nextel.gif" width="16" height="16" border="0" alt="Nextel Number" title="Nextel Number">&nbsp;<input type="text" size="8" id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" 
@@ -368,7 +368,7 @@
                         </td>                
                     </tr>                
                     <tr>
-                    <c:forEach items="${dispatchForm.runners}" var="driver" varStatus="gridRow">                        
+                    <c:forEach items="${dispatchForm.runners}" var="runner" varStatus="gridRow">                        
                         <spring:bind path="dispatchForm.runners[${gridRow.index}].nextelNo">
                         <td>
                             <img src="./images/icons/nextel.gif" width="16" height="16" border="0" alt="Nextel Number" title="Nextel Number">&nbsp;<input type="text" size="8" id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" 

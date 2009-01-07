@@ -69,6 +69,11 @@ public class DispatchCommand extends WebPlanInfo implements TrnBaseEntityI  {
 	public boolean isConfirmed() {
 		return confirmed;
 	}
+	
+	public String getConfirmedValue() {
+		return String.valueOf(confirmed);
+	}
+	
 	public void setConfirmed(boolean confirmed) {
 		this.confirmed = confirmed;
 	}
