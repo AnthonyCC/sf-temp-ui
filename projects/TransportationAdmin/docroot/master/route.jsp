@@ -7,7 +7,7 @@
 <tmpl:put name='hasSubs' direct='true'>subs</tmpl:put>
 
 <% 
-	String pageTitle = "Transportation Employees";
+	String pageTitle = "";
 	if("R".equalsIgnoreCase(request.getParameter("routetype"))) 
 		{ 
 			pageTitle = "Active Routes"; 

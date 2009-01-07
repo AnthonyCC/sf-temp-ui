@@ -34,25 +34,11 @@
 					<span class="scrTitle">
 						<%=pageTitle%>
 					</span>
-						<span><input maxlength="10" size="10" name="daterange" id="daterange" value="<%= dateRangeVal %>" /></span>
-						<span><input id="trigger_daterange" type="image" alt="Calendar" src="./images/icons/calendar.gif" onmousedown="this.src='./images/icons/calendar_ON.gif'" onmouseout="this.src='./images/icons/calendar.gif';" onclick="javascript:doCompositeLink('daterange','zone','plan.do');" /></span>
+						<span><input maxlength="40" size="40" name="daterange" id="daterange" value="<%= dateRangeVal %>" /></span>
 
-							<span>  
-						<select id="zone" name="zone">
-						  <option value="">Select Zone</option> 
-						  <c:forEach var="zone" items="${zones}">                             
-							  <c:choose>
-								<c:when test="${param.zone == zone.zoneCode}" > 
-								  <option selected value="<c:out value="${zone.zoneCode}"/>"><c:out value="${zone.displayName}"/></option>
-								</c:when>
-								<c:otherwise> 
-								  <option value="<c:out value="${zone.zoneCode}"/>"><c:out value="${zone.displayName}"/></option>
-								</c:otherwise>
-							  </c:choose>
-							</c:forEach>
-						</select></span>
+							<span><input maxlength="40" size="40" name="zone" id="zone" value="<%= zoneVal %>" /></span>
 						<span><input id="view_button" type="image" alt="View" src="./images/icons/view.gif" onclick="javascript:doCompositeLink('daterange','zone','region','dispatch.do')" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>
-						<span><input id="view_button" type="image" alt="View" src="./images/icons/dispatch.gif" onclick="javascript:doCompositeLink('daterange','zone','region','autoDispatch.do')" onmousedown="this.src='./images/icons/dispatch_ON.gif'" /></span>
+						<span><input id="view_button" type="image" alt="Dispatch" src="./images/icons/dispatch.gif" onclick="javascript:doCompositeLink('daterange','zone','region','autoDispatch.do')" onmousedown="this.src='./images/icons/dispatch_ON.gif'" /> <a href="#"  onclick="javascript:doCompositeLink('daterange','zone','region','autoDispatch.do')" class="dispatch_link">Dispatch</a></span>
 				</div>
 			</div>
 		</div> 
@@ -115,16 +101,6 @@
           location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2;
         } 
       addRowHandlers('ec_table', 'rowMouseOver', 'editplan.do','id',0, 0);
-		 Calendar.setup(
-					{
-						showsTime : false,
-						electric : false,
-						inputField : "daterange",
-						ifFormat : "%m/%d/%Y",
-						singleClick: true,
-						button : "trigger_daterange" 
-					}
-				);	
     </script>   
   </tmpl:put>
 </tmpl:insert>

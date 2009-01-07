@@ -707,7 +707,7 @@ div.MNM001, div.MNM002, div.MNM003 {
 		border-color: #3c3 #fff;
 	}
 	.or_3c3 .activeR {
-		border-color: #3c3 #999;
+		border-color: #fff #3c3;
 	}
 
 	div.t_tab a:hover {
@@ -735,7 +735,7 @@ div.MNM003_subs a {
 }
 /* over-rides for sub-subtab backgrounds */
 div.or_fff { background-color: #fff; }
-div.or_39f { background-color: #39f; }
+div.or_3c3 { background-color: #3c3; }
 div.or_999 { background-color: #999; }
 
 /* new content styles */
@@ -955,4 +955,8 @@ div.eXor_Active, div.eXor_AdHoc { margin-left: 10px; width: 98%; }
 /* borderless */
 .noborder {
 	border-width: 0px;
+}
+
+.dispatch_link {
+	color: #f90;
 }

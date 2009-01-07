@@ -6,7 +6,10 @@
 
 <tmpl:insert template='/common/sitelayout.jsp'>
 
-    <tmpl:put name='title' direct='true'>Add/Edit Route</tmpl:put>
+<% 
+	String pageTitle = "Add/Edit Region";
+%>
+    <tmpl:put name='title' direct='true'> Geography : Zone Region : <%=pageTitle%></tmpl:put>
 
   <tmpl:put name='content' direct='true'>
     <br/> 
@@ -14,7 +17,7 @@
       <form:form commandName = "regionForm" method="post">            
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
           <tr>
-            <td class="screentitle">Add/Edit Region</td>
+            <td class="screentitle"><%=pageTitle%></td>
           </tr>
           <tr>
             <td class="screenmessages"><jsp:include page='/common/messages.jsp'/></td>
