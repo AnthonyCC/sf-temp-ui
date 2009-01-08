@@ -167,50 +167,6 @@ public class PlanningFormController extends AbstractFormController {
 		
 	}
 	
-	private void savePlan(WebPlanInfo tmpCommand) throws ParseException {
-		//tmpCommand.setDispatchDay(TransStringUtil.getDayofWeek(tmpCommand.getPlanDate()));
-		Plan plan=DispatchPlanUtil.getPlan(tmpCommand);
-		//getDomainManagerService().saveEntityEx(plan);			
-		
-		if(TransStringUtil.isEmpty(plan.getPlanId())) {
-			Set resources=plan.getPlanResources();
-			plan.setPlanResources(null);
-			getDomainManagerService().saveEntityEx(plan);
-			if(resources!=null && resources.size()>0) {
-				Iterator it=resources.iterator();
-				while(it.hasNext()) {
-					PlanResource pr=(PlanResource)it.next();
-					pr.getId().setContextId(plan.getPlanId());
-				}
-			}
-			plan.setPlanResources(resources);
-			getDomainManagerService().saveEntityList(plan.getPlanResources());
-			
-		}
-		else {
-			getDomainManagerService().saveEntity(plan);
-		}
-		tmpCommand.setIgnoreErrors(null);
-		tmpCommand.setErrorDate(null);
-	}
-	private List savePlan(WebPlanInfo command) {	
-		List errorList = null;
-		try {
-			
-			boolean isNew = isNew(command);
-			Plan domainObject=DispatchPlanUtil.getPlan(command);
-			if(!isNew) {
-				getDomainManagerService().saveEntity(domainObject);
-			} else {
-				getDispatchManagerService().savePlan(domainObject);
-			}
-		} catch (Exception objExp) {
-			objExp.printStackTrace();
-			errorList = new ArrayList();
-			errorList.add(this.getMessage("sys.error.1001", new Object[]{this.getDomainObjectName()}));
-		}
-		return errorList;
-	}
 	*/	
 	public DomainManagerI getDomainManagerService() {
 		return domainManagerService;
@@ -255,65 +211,10 @@ public class PlanningFormController extends AbstractFormController {
 	}
 
 	
-	
-	
-	
-	/*public void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
-		super.initBinder(request,binder);
-    }*/
-	
 	private Plan getPlan(WebPlanInfo command) throws Exception {
 		return DispatchPlanUtil.getPlan(command);
 	}
 	
-	/*protected ModelAndView processFormSubmission(
-			HttpServletRequest request, HttpServletResponse response, Object command, BindException errors)
-			throws Exception {
-
-		if (errors.hasErrors()) {
-			System.out.println(errors);
-			if (logger.isDebugEnabled()) {
-				logger.debug("Data binding errors: " + errors.getErrorCount());
-			}
-			return showForm(request, response, errors);
-		}
-		else if (isFormChangeRequest(request, command)) {
-			logger.debug("Detected form change request -> routing request to onFormChange");
-			onFormChange(request, response, command, errors);
-			return showForm(request, response, errors);
-		}
-		else {
-			logger.debug("No errors -> processing submit");
-			return onSubmit(request, response, command, errors);
-		}
-	}*/
-
-	/*protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response)
-	throws Exception {
-
-		// Form submission or new form to show?
-		if (isFormSubmission(request)) {
-			// Fetch form object from HTTP session, bind, validate, process submission.
-			try {
-				Object command = getCommand(request);
-				ServletRequestDataBinder binder = bindAndValidate(request, command);
-				BindException errors = new BindException(binder.getBindingResult());
-				return processFormSubmission(request, response, command, errors);
-			}
-			catch (HttpSessionRequiredException ex) {
-				// Cannot submit a session form if no form object is in the session.
-				if (logger.isDebugEnabled()) {
-					logger.debug("Invalid submit detected: " + ex.getMessage());
-				}
-				return handleInvalidSubmit(request, response);
-			}
-		}
-		
-		else {
-			// New form to show: render form view.
-			return showNewForm(request, response);
-		}
-	}*/
 	
 	
 	

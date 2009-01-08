@@ -60,6 +60,8 @@ public class DispatchPlanUtil {
 		if(plan.getZone()!=null) {
 			planInfo.setZoneCode(plan.getZone().getZoneCode());
 			planInfo.setZoneName(plan.getZone().getName());
+			if(plan.getZone().getTrnZoneType()!=null)
+				planInfo.setZoneType(plan.getZone().getTrnZoneType().getName());
 		}
 		planInfo.setRegionCode(plan.getRegion().getCode());
 		planInfo.setRegionName(plan.getRegion().getName());
@@ -154,10 +156,7 @@ public class DispatchPlanUtil {
 		region.setCode(planInfo.getRegionCode());
 		plan.setRegion(region);
 		try{
-			//plan.setFirstDeliveryTime(new Date());
-			//plan.setStartTime(new Date());
-			//plan.setFirstDeliveryTime(planInfo.getFirstDeliveryTime());
-			//plan.setStartTime(planInfo.getStartTime());			
+						
 			plan.setFirstDeliveryTime(TransStringUtil.getServerTime(planInfo.getFirstDeliveryTime()));
 			plan.setStartTime(TransStringUtil.getServerTime(planInfo.getStartTime()));
 		}catch(ParseException exp){
@@ -210,11 +209,6 @@ public class DispatchPlanUtil {
 	public static List getSortedResources(Collection resources) {
 		
 		List _resources=(List)resources;
-		/*List sortedResources=new ArrayList(_resources.size());
-		for(int i=0;i<_resources.size();i++) {
-			sortedResources.add(_resources.get(i));
-		}*/
-		
 		Collections.sort(_resources, EMPLOYEE_COMPARATOR);
 		return _resources;
 		
@@ -232,7 +226,6 @@ public class DispatchPlanUtil {
 			planInfo.setRegionName(zone.getRegion().getName());
 		} 
 		setResourceInfo(planInfo,isZoneModified,employeeManagerService);
-		//planInfo.setZoneModified("false");
 		return planInfo;
 	}
 
@@ -330,44 +323,19 @@ public class DispatchPlanUtil {
 	}
 	
 	private static boolean hasResources(Zone zone) {
-		
 		return (zone!=null && zone.getTrnZoneType()!=null && zone.getTrnZoneType().getZonetypeResources()!=null)?true:false;
 	}
 	
 	private static void setDriverRequirements(WebPlanInfo planInfo, int req, int max) {
-
-		//planInfo.setDriverMax(max);
-		//planInfo.setDriverReq(req);
 		planInfo.getDrivers().setResourceReq(getResourceReq(req,max,EnumResourceType.DRIVER));
-		/*if(req==0&&max==0) {
-			planInfo.getDrivers().clear();
-		} else {
-			planInfo.getDrivers().setResourceReq(getResourceReq(req,max,EnumResourceType.DRIVER.getName()));
-		}*/
 	}
 
 	private static void setHelperRequirements(WebPlanInfo planInfo, int req, int max) {
-
-		//planInfo.setHelperMax(max);
-		//planInfo.setHelperReq(req);
 		planInfo.getHelpers().setResourceReq(getResourceReq(req,max,EnumResourceType.HELPER));
-		/*if(req==0&&max==0) {
-			planInfo.getHelpers().clear();
-		} else {
-			planInfo.getHelpers().setResourceReq(getResourceReq(req,max,EnumResourceType.HELPER.getName()));
-		}*/
 	}
 	
 	private static void setRunnerRequirements(WebPlanInfo planInfo, int req, int max) {
-
-		//planInfo.setRunnerMax(max);
-		//planInfo.setRunnerReq(req);
 		planInfo.getRunners().setResourceReq(getResourceReq(req,max,EnumResourceType.RUNNER));
-		/*if(req==0&&max==0) {
-			planInfo.getRunners().clear();
-		} else {
-			planInfo.getRunners().setResourceReq(getResourceReq(req,max,EnumResourceType.RUNNER.getName()));
-		}*/
 	}
 	
 	private static ResourceReq getResourceReq(int req, int max, EnumResourceType role) {

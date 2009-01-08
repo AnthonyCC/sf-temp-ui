@@ -1,5 +1,6 @@
 package com.freshdirect.transadmin.web.validation;
 
+import java.text.ParseException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Set;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
+import com.freshdirect.framework.util.DateComparator;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
@@ -26,8 +28,9 @@ public class PlanValidator extends AbstractValidator {
 		WebPlanInfo model = (WebPlanInfo)obj;
 		//  need to decide about the validation part
 		ValidationUtils.rejectIfEmpty(errors, "planDate", "app.error.112", new Object[]{"Plan Date"},"required field");
-		//ValidationUtils.rejectIfEmpty(errors, "startTime", "app.error.112", new Object[]{"Plan Date"},"required field");
-		//ValidationUtils.rejectIfEmpty(errors, "planDate", "app.error.112", new Object[]{"Plan Date"},"required field");
+		ValidationUtils.rejectIfEmpty(errors, "startTime", "app.error.112", new Object[]{"Start Time"},"required field");
+		ValidationUtils.rejectIfEmpty(errors, "firstDeliveryTime", "app.error.112", new Object[]{"First Delivery Time"},"required field");
+		checkDate("startTime",model.getStartTime(),model.getFirstDeliveryTime(),errors);
 		
 		if(model != null && TransStringUtil.isEmpty(model.getZoneCode())&& !DispatchPlanUtil.isBullpen(model.getIsBullpen())) {
 			errors.rejectValue("zoneCode", "app.error.112", new Object[]{"Zone"},"required field");
@@ -138,13 +141,22 @@ public class PlanValidator extends AbstractValidator {
 	private void checkDate(String field, String startTime, String endTime, Errors errors) {
 		
 		try {
-			if(TransStringUtil.compareTime(startTime, endTime)) {
-				errors.rejectValue(field, "app.error.116", new Object[]{},"Invalid Time");
+			if(DateComparator.compare(DateComparator.PRECISION_MINUTE, TransStringUtil.getServerTime(startTime), TransStringUtil.getServerTime(endTime))>=0) {
+				errors.rejectValue(field, "app.error.123","Invalid Time");
 			}
-		} catch(NumberFormatException exp) {
-			errors.rejectValue(field, "typeMismatch.time", new Object[]{},"Invalid Time");			
+		} catch (ParseException e) {
+			errors.rejectValue(field, "typeMismatch.time", new Object[]{},"Invalid Time");	
 		}
 		
+	}
+protected void validateIntegerMinMax(String field, Integer value, int min, int max, Errors errors) {
+		
+		if(value != null 
+				&& !TransStringUtil.isEmpty(value.toString()) 
+				&& !TransStringUtil.isValidInteger(value.toString()))
+		{			
+			errors.rejectValue(field, "app.error.118", null);			
+		}	
 	}
 
 }

@@ -20,7 +20,6 @@ import com.freshdirect.transadmin.model.ResourceInfoI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.util.EnumResourceType;
 import com.freshdirect.transadmin.util.TransStringUtil;
-import com.freshdirect.transadmin.web.model.ZoneTypeCommand.Tooltip;
 
 public class WebPlanInfo extends BaseCommand {
 	
@@ -41,6 +40,7 @@ public class WebPlanInfo extends BaseCommand {
 	private String  supervisorCode;
 	private String supervisorId;
 	private String supervisorName;
+	private String zoneType;
 	private ResourceList drivers= new ResourceList();/*LazyList.decorate(
 		      new ResourceList(),
 		      FactoryUtils.instantiateFactory(EmployeeInfo.class));*/
@@ -58,6 +58,14 @@ public class WebPlanInfo extends BaseCommand {
 		return new Tooltip(this.getSupervisorName(), value);
 	}
 	
+	public Tooltip getZoneNameEx() {
+		if(!TransStringUtil.isEmpty(zoneName)) {
+			String value=new StringBuffer(100).append(zoneName).append("\n").append(zoneType).toString();
+			return new Tooltip(this.getZoneName(), value);
+		}
+		return new Tooltip("<B>Bullpen</B>","");
+
+	}
 	class Tooltip implements IToolTip {
 		
 		Object value = null;
@@ -418,19 +426,17 @@ public class WebPlanInfo extends BaseCommand {
 	
 	protected ResourceI getResource(ResourceInfoI resourceInfo, EnumResourceType role) {
 		
-		/*if(TransStringUtil.isEmpty(this.planId)||TransStringUtil.isEmpty(resourceInfo.getEmployeeId()))
-			return null;
-		else {*/
+		
 		if(TransStringUtil.isEmpty(resourceInfo.getEmployeeId())) {
 			return null;
 		}
-			ResourceI resource= new PlanResource();
-			EmployeeRoleType empRole=new EmployeeRoleType();
-			empRole.setCode(role.getName());
-			resource.setId(new ResourceId(this.planId,resourceInfo.getEmployeeId()));
-			resource.setEmployeeRoleType(empRole);
-			return resource;
-		//}
+		ResourceI resource= new PlanResource();
+		EmployeeRoleType empRole=new EmployeeRoleType();
+		empRole.setCode(role.getName());
+		resource.setId(new ResourceId(this.planId,resourceInfo.getEmployeeId()));
+		resource.setEmployeeRoleType(empRole);
+		return resource;
+		
 	}
 	
 	public void setResourceRequirements(Map resourceReqs) {
@@ -439,19 +445,10 @@ public class WebPlanInfo extends BaseCommand {
 			Object key=it.next();
 			ResourceReq resourceReq=(ResourceReq)resourceReqs.get(key);
 			if(EnumResourceType.DRIVER.equals(key)) {
-				//this.setDriverMax(resourceReq.getMax().intValue());
-				//this.setDriverReq(resourceReq.getReq().intValue());
-				//this.setDrivers(getDummyResources(resourceReq,this.getDriverMax()));
 				this.setDrivers(getDummyResources(resourceReq));
 			}else if(EnumResourceType.HELPER.equals(key)) {
-				//this.setHelperMax(resourceReq.getMax().intValue());
-				//this.setHelperReq(resourceReq.getReq().intValue());
-				//this.setHelpers(getDummyResources(resourceReq,this.getHelperMax()));
 				this.setHelpers(getDummyResources(resourceReq));
 			}else if(EnumResourceType.RUNNER.equals(key)) {
-				//this.setRunnerMax(resourceReq.getMax().intValue());
-				//this.setRunnerReq(resourceReq.getReq().intValue());
-				//this.setRunners(getDummyResources(resourceReq,this.getRunnerMax()));
 				this.setRunners(getDummyResources(resourceReq));
 			}
 		}
@@ -572,6 +569,14 @@ public class WebPlanInfo extends BaseCommand {
 
 	public void setZoneModified(String zoneModified) {
 		this.zoneModified = zoneModified;
+	}
+
+	public String getZoneType() {
+		return zoneType;
+	}
+
+	public void setZoneType(String zoneType) {
+		this.zoneType = zoneType;
 	}
 	
 }
