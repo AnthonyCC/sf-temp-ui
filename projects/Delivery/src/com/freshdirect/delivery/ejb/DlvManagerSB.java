@@ -36,6 +36,7 @@ import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.model.DlvZoneModel;
+import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.fdstore.StateCounty;
 
 public interface DlvManagerSB extends EJBObject {
@@ -83,6 +84,8 @@ public interface DlvManagerSB extends EJBObject {
     public EnumRestrictedAddressReason checkAddressForRestrictions(AddressModel address) throws RemoteException;
     
     public List getDlvRestrictions() throws DlvResourceException, RemoteException;
+    
+    public GeographyRestriction getGeographicDlvRestrictions(AddressModel address)throws DlvResourceException, RemoteException;
     
 	public List getSiteAnnouncements() throws DlvResourceException, RemoteException;
 	

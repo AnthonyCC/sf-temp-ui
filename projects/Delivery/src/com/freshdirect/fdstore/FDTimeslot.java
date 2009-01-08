@@ -81,6 +81,10 @@ public class FDTimeslot implements Serializable {
 	public String getDisplayString() {
 		return getDisplayString(false);
 	}
+	
+	public int getDayOfWeek() {
+		return DateUtil.getDayOfWeek(dlvTimeslot.getBaseDate());
+	}
 
 	public static String format(Date startDate, Date endDate) {
 		return format(true, DateUtil.toCalendar(startDate), DateUtil.toCalendar(endDate));

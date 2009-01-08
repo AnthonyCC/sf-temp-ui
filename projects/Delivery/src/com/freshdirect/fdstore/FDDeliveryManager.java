@@ -46,6 +46,7 @@ import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.model.DlvZoneModel;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
+import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.TimedLruCache;
 
@@ -137,7 +138,22 @@ public class FDDeliveryManager {
 		this.refreshRestrictionsCache();
 		return this.dlvRestrictions;
 	}
-		
+	
+	public GeographyRestriction getGeographicDlvRestrictions(AddressModel address) throws FDResourceException {		
+		try {
+			DlvManagerSB sb = getDlvManagerHome().create();
+
+			return sb.getGeographicDlvRestrictions(address);			
+
+		} catch (CreateException e) {
+			throw new FDResourceException(e, "Cannot create SessionBean");
+		} catch (DlvResourceException e) {
+			throw new FDResourceException(e);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Cannot talk to the SessionBean");
+		}		
+	}
+
 	public List getSiteAnnouncement() throws FDResourceException {
 		this.refreshSiteAnnouncementsCache();
 		return this.announcementList;

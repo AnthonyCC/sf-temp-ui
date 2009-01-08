@@ -56,6 +56,7 @@ import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.model.DlvZoneDescriptor;
 import com.freshdirect.delivery.model.DlvZoneModel;
+import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.ejb.DlvRestrictionDAO;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -1269,6 +1270,26 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		try {
 			conn = getConnection();
 			return DlvRestrictionDAO.getDlvRestrictions(conn);
+
+		} catch (SQLException e) {
+			this.getSessionContext().setRollbackOnly();
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("DlvManagerSB getDlvRestriction: Exception while cleaning: " + se);
+			}
+		}
+	}
+	
+	public GeographyRestriction getGeographicDlvRestrictions(AddressModel address) throws DlvResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return DlvRestrictionDAO.getGeographicDlvRestrictions(conn, address);
 
 		} catch (SQLException e) {
 			this.getSessionContext().setRollbackOnly();
