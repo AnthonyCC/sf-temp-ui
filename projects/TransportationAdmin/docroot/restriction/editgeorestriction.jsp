@@ -6,54 +6,75 @@
 
 <tmpl:insert template='/common/sitelayout.jsp'>
 
-<!-- 
-
-									<td colspan="2"><input type="button" value="Add Profile/Update Operator" class="submit" onclick="javascript:addProfile();"></td>
-	
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-      <title></title>
-<script type="text/javascript">
-    function testadd() {
-            document.getElementById('containter').innerHTML = document.getElementById('containter').innerHTML + "<div>test row</div>";
-    }
-</script>
-</head>
-<body>
-      <div id="containter">
-            <div>test row</div>
-      </div>
-      <div onclick="testadd();">plus</div>
- </body>
-</html>
-
- -->
-
-
 <script language="Javascript">
 
   var rollingIndex = 0;
+  var isEdit=false;
+  var currentRow;
+  
+    function addOrUpdateProfile(){
+        if(isEdit){
+            
+        }else{
+            addProfile();        
+        }
+        
+    }    
+    
+    
+    
+        function editProfile() {
+                            
+                  
+	                  var profileTableFld = document.getElementById('profileListTB');
+						//var profileTableRow = document.getElementById(currentRow);
+						
+						
+						var allTrElements = profileTableFld.getElementById(currentRow);
+                        
+                     allTrElements.getElementsByTagName("td")[0].innerHTML=document.getElementById('dayOfWeek').value;   
+                     allTrElements.getElementsByTagName("td")[1].innerHTML=document.getElementById('condition').value;   
+                     allTrElements.getElementsByTagName("td")[2].innerHTML=document.getElementById('startTime').value;   
+                     allTrElements.getElementsByTagName("td")[3].innerHTML=document.getElementById('endTime').value;   
+                                         
+                      document.getElementById(currentRow+'.dayOfWeek').value=document.getElementById('dayOfWeek').value;
+                      document.getElementById(currentRow+'.condition').value=document.getElementById('condition').value;
+                      document.getElementById(currentRow+'.startTime').value=document.getElementById('startTime').value;
+                      document.getElementById(currentRow+'.endTime').value=document.getElementById('endTime').value;
+                                             
+                      document.getElementById('dayOfWeek').value='';
+                      document.getElementById('condition').value='';
+                      document.getElementById('startTime').value='';
+                      document.getElementById('endTime').value='';                         
+                      
+                    
+                   isEdit=false;                      
+                       
+		  }
+
+  
 
     function addProfile() {
-                         alert("inside add profile");
+                         //alert("inside add profile");
                       	var dayOfWeek = document.getElementById('dayOfWeek');
-							var startTime = document.getElementById('startTime');
-							var endTime = document.getElementById('endTime');
-                        var condition = document.getElementById('condition');                            					
+	                     var condition = document.getElementById('condition');                            					
+  						   var startTime = document.getElementById('startTime');
+						   var endTime = document.getElementById('endTime');
                             
 							//if(dayOfWeek != null && 
 									//	dayOfWeek.value.length > 0 &&
 									//		startTime != null	&& 
 									//			startTime.value.length > 0) {																														
-								addProfleRow(dayOfWeek.value,startTime.value,endTime.value,condition.value);	
+								addProfleRow(dayOfWeek.value,condition.value,startTime.value,endTime.value);	
 							//}				
-							//reArrangeCondition();		
 					  }
+                      
+                      
+                      
+                      
 					 					  
-					  function addProfleRow(dayOfWeek, startTime, endTime, condition) {
-                        alert("inside add profile row"+dayOfWeek);
+					  function addProfleRow(dayOfWeek, condition, startTime, endTime) {
+                        //alert("inside add profile row"+dayOfWeek);
 					  		if( document.createElement && document.childNodes ) {
 								var profileTableFld = document.getElementById('profileListTB').tBodies[0];																
 								if(profileTableFld != null) {									
@@ -64,29 +85,40 @@
 									    var td1 = document.createElement('td');
 									    td1.appendChild(document.createTextNode(dayOfWeek));
 									    var td2 = document.createElement('td');
-									    td2.appendChild (document.createTextNode(startTime));
-									    var td3 = document.createElement('td');
-									    td3.appendChild (document.createTextNode(endTime));
+                                        td2.appendChild(document.createTextNode(condition));    
+ 									    var td3 = document.createElement('td');
+									    td3.appendChild (document.createTextNode(startTime));
 									    var td4 = document.createElement('td');
-                                    td4.appendChild(document.createTextNode(condition));    
+									    td4.appendChild (document.createTextNode(endTime));
                                    var td5 = document.createElement('td');
 									    var tdDelete = document.createElement('a');
 									    tdDelete.innerHTML = 'Delete';
 									    tdDelete.href = "javascript:deleteProfile('"+tmpID+"')";
-									    td5.appendChild (tdDelete);
+                                    var tdEdit = document.createElement('a');     
+                                   tdEdit.innerHTML = 'Edit';
+									    tdEdit.href = "javascript:editProfile('"+tmpID+"')";     
+                                        
+                                   var tdSpacer = document.createElement('span');
+									    tdSpacer.innerHTML = ' / ';     
+                                        
+									   td5.appendChild (tdDelete);
+                                   td5.appendChild (tdSpacer);
+                                   td5.appendChild (tdEdit);                                        
 									    row.appendChild(td1);
 									    row.appendChild(td2);
 									    row.appendChild(td3);
 									    row.appendChild(td4);
                                     row.appendChild(td5);
 									    profileTableFld.appendChild(row);
-									    createHiddenInput(rollingIndex, dayOfWeek, startTime, endTime, condition);
+									    createHiddenInput(rollingIndex,dayOfWeek,condition, startTime, endTime);
+                                   var size = document.getElementById('restrictionListSize'); 
+                                   size.value=""+rollingIndex;                                     
 								}								
 							}
 					 }
                      
                   
-					function createHiddenInput(indexVal, dayOfWeek, startTime, endTime, condition) {
+					function createHiddenInput(indexVal, dayOfWeek, condition, startTime, endTime ) {
 						
 						var tmpId = 'attributeList['+indexVal+']'+'.';
 						var newElementValue1 = document.createElement("input");
@@ -95,29 +127,33 @@
 						newElementValue1.setAttribute("id", tmpId+'dayOfWeek');
 						newElementValue1.setAttribute("value", dayOfWeek);
 						
-						var newElementValue2 = document.createElement("input");
+                  		var newElementValue2 = document.createElement("input");
 						newElementValue2.setAttribute("type", "hidden");
-						newElementValue2.setAttribute("name", tmpId+'startTime');
-						newElementValue2.setAttribute("id", tmpId+'startTime');
-						newElementValue2.setAttribute("value", startTime);
-						
-                     var newElementValue3 = document.createElement("input");
-						newElementValue3.setAttribute("type", "hidden");
-						newElementValue3.setAttribute("name", tmpId+'endTime');
-						newElementValue3.setAttribute("id", tmpId+'endTime');
-						newElementValue3.setAttribute("value", endTime);
+						newElementValue2.setAttribute("name", tmpId+'condition');
+						newElementValue2.setAttribute("id", tmpId+'condition');
+						newElementValue2.setAttribute("value", condition);
 
-                     var newElementValue4 = document.createElement("input");
+						var newElementValue3 = document.createElement("input");
+						newElementValue3.setAttribute("type", "hidden");
+						newElementValue3.setAttribute("name", tmpId+'startTime');
+						newElementValue3.setAttribute("id", tmpId+'startTime');
+						newElementValue3.setAttribute("value", startTime);
+						
+                     	var newElementValue4 = document.createElement("input");
 						newElementValue4.setAttribute("type", "hidden");
-						newElementValue4.setAttribute("name", tmpId+'condition');
-						newElementValue4.setAttribute("id", tmpId+'condition');
-						newElementValue4.setAttribute("value", condition);
-						//document.getElementById('profileContainer').appendChild(newElementName);
+						newElementValue4.setAttribute("name", tmpId+'endTime');
+						newElementValue4.setAttribute("id", tmpId+'endTime');
+						newElementValue4.setAttribute("value", endTime);
+
+   						//document.getElementById('profileContainer').appendChild(newElementName);
 						//document.getElementById('profileContainer').appendChild(newElementValue);	
 						document.forms['geoRestrictionForm'].appendChild(newElementValue1);
 						document.forms['geoRestrictionForm'].appendChild(newElementValue2);						
                      document.forms['geoRestrictionForm'].appendChild(newElementValue3);						
                      document.forms['geoRestrictionForm'].appendChild(newElementValue4);						
+                     
+                     alert("created");
+                     
 												
 					}
 
@@ -131,9 +167,9 @@
 														
 							var rowIndex = profileTableRow.rowIndex;
 							var hiddenElement1 = document.getElementById(profileTableRow.id+'.dayOfWeek');
-						    var hiddenElement2 = document.getElementById(profileTableRow.id+'.startTime');						    
-                         var hiddenElement3 = document.getElementById(profileTableRow.id+'.endTime');						    
-                         var hiddenElement4 = document.getElementById(profileTableRow.id+'.condition');						    
+                            var hiddenElement2 = document.getElementById(profileTableRow.id+'.condition');						    
+						    var hiddenElement3 = document.getElementById(profileTableRow.id+'.startTime');						    
+                            var hiddenElement4 = document.getElementById(profileTableRow.id+'.endTime');						    
 						    var parentElementNode = hiddenElement1.parentNode;
 						   						   				    									    				
 						    parentElementNode.removeChild(hiddenElement1);
@@ -141,10 +177,21 @@
                             parentElementNode.removeChild(hiddenElement3);							
                             parentElementNode.removeChild(hiddenElement4);							
 							profileTableFld.deleteRow(rowIndex);							
-							//reArrangeCondition();						
 						}
 					}
-
+                    
+                    
+                  function copyProfile(theCell) {                                    											                     
+                  
+                       
+                         currentRow=theCell;
+                         document.getElementById('dayOfWeek').value=document.getElementById(theCell+'.dayOfWeek').value;
+                         document.getElementById('condition').value=document.getElementById(theCell+'.condition').value;
+                         document.getElementById('startTime').value=document.getElementById(theCell+'.startTime').value;
+                         document.getElementById('endTime').value=document.getElementById(theCell+'.endTime').value;
+                         
+                         isEdit=true;                        
+					}  
 
              
 
@@ -158,6 +205,8 @@
       <form:form commandName = "geoRestrictionForm" method="post">
       
       <input type="hidden" id="profileOperator" name="profileOperator" class="input" value="" %>/> 
+      <input type="hidden" id="restrictionListSize" name="restrictionListSize" class="input" value="0" %>/> 
+      <input type="hidden" id="restrictionId" name="restrictionId" class="input" value="<c:out value="${geoRestrictionForm.id}"/>"/>" %>/> 
       
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
           <tr>
@@ -235,49 +284,66 @@
                
            <br><br>    
                
-           <table width="50%" cellpadding="0" cellspacing="0" border="0">    
-               <tr>
-                  <td><B>Restriction Details</B></td>
-                 </tr>                 
-                 <tr>
-                        <td><c:forEach var="gDay" items="${geoRestrictionForm.geoRestrictionDays}"></td>
-                        <td><input type="text" name="startTime1" value="<c:out value="${gDay.startTime}"/>"></td>
-                        <td><c:out value="${gDay.endTime}"/></td>
-                        <td><c:out value="${gDay.condition}"/></td>
-                        <td><c:out value="${gDay.restrictionDaysId.dayOfWeek}"/></td>                               
-                        </c:forEach>
-                  </tr>
-                
-               </table>        
                
                <table width="50%" cellpadding="0" cellspacing="0" border="0">    
                <tr>
+                  <td><B>Restriction Details</B></td>
+                 </tr>    
+               <tr>
                    <td><input type="text" id="dayOfWeek" name="dayOfWeek" value=""></td>                               
+                   <td><input type="text" id="condition" name="condition" value=""></td>                                      
                    <td><input type="text" id="startTime" name="startTime" value=""></td>
                    <td><input type="text" id="endTime" name="endTime" value=""></td>
-                   <td><input type="text" id="condition" name="condition" value=""></td>                                      
                  </tr>                 
                  <tr>
-                 <td colspan="3"><input type="button" value="Add Rest Operator" class="submit" onclick="javascript:addProfile();"></td>
+                 <td colspan="3"><input type="button" value="Add Rest Operator" class="submit" onclick="javascript:(isEdit)?editProfile():addProfile();"></td>
                   </tr>
                 
                </table>        
-
-
 
                     <table id="profileListTB" border="1" cellpadding="2" cellspacing="0" >
 					<thead>
 					<tr> 
                    <th>dayOfWeek</th>                               
+                   <th>condition</th>                                      
                    <th>startTime</th>
                    <th>endTime</th>
-                   <th>condition</th>                                      
                    <th>&nbsp;</th>                                      
 					</tr>
 					</thead>	
-					<tbody>						
+					<tbody>		
+                     <% int intRowIndex = 0;
+                  	 StringBuffer strProfileHidBuf = new StringBuffer();
+                   %>
+                    <c:forEach var="gDay" items="${geoRestrictionForm.geoRestrictionDays}">
+                    <%                      
+                          intRowIndex++;
+                          
+
+                       %>
+                            <input type="hidden" name="attributeList[<%=intRowIndex%>].dayOfWeek" id="attributeList[<%=intRowIndex%>].dayOfWeek" value="<c:out value="${gDay.restrictionDaysId.dayOfWeek}"/>" />
+                            <input type="hidden" name="attributeList[<%=intRowIndex%>].condition" id="attributeList[<%=intRowIndex%>].condition" value="<c:out value="${gDay.condition}"/>" />
+                            <input type="hidden" name="attributeList[<%=intRowIndex%>].startTime" id="attributeList[<%=intRowIndex%>].startTime" value="<c:out value="${gDay.startTime}"/>" />
+                            <input type="hidden" name="attributeList[<%=intRowIndex%>].endTime" id="attributeList[<%=intRowIndex%>].endTime" value="<c:out value="${gDay.endTime}"/>" />
+                            
+                            <tr id='attributeList[<%=intRowIndex%>]'> 
+				        	  <td><c:out value="${gDay.restrictionDaysId.dayOfWeek}"/></td>                               
+                              <td><c:out value="${gDay.condition}"/></td>
+                              <td><input type="text" name="startTime1" value="<c:out value="${gDay.startTime}"/>"></td>
+                              <td><c:out value="${gDay.endTime}"/></td>
+							  <td><a href="javascript:deleteProfile('attributeList[<%=intRowIndex %>]')">Delete</a>&nbsp;&nbsp;/&nbsp;&nbsp;<a href="javascript:copyProfile('attributeList[<%=intRowIndex %>]')">edit</a></td> 
+							</tr> 
+
+                    
+                    </c:forEach>
+                    	<script>rollingIndex=<%=intRowIndex%>;</script>		
 				     </tbody> 				
 				</table>								
+ 				<tr>
+				    <td  align="center">
+					   <input type = "submit" value="&nbsp;Save&nbsp;"  />
+					</td>			
+				</tr>
                
               
             </td>
