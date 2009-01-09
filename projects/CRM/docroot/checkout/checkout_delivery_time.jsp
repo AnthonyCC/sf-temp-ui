@@ -125,6 +125,7 @@
 List timeslotList = DeliveryTimeSlotResult.getTimeslots();
 Map zones = DeliveryTimeSlotResult.getZones();
 boolean zoneCtActive = DeliveryTimeSlotResult.isZoneCtActive();
+List messages = DeliveryTimeSlotResult.getMessages();
 %>
 
 <%
@@ -209,6 +210,8 @@ boolean zoneCtActive = DeliveryTimeSlotResult.isZoneCtActive();
 <%@ include file="/shared/includes/delivery/i_delivery_slots.jspf"%>
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ END TIME SLOT SELECTION SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
 </logic:iterate>
+<!-- Bryan Restriction Message Added -->
+				<%@ include file="/shared/includes/delivery/i_restriction_message.jspf"%>
 <table cellpadding="0" cellspacing="0" width="675">
 	<tr>
 		<td align="left">

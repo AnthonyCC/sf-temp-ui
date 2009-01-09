@@ -69,4 +69,7 @@
 </logic:iterate>
     	
     <%}%>
+    
+<!-- Bryan Restriction Message Added -->
+				<%@ include file="/shared/includes/delivery/i_restriction_message.jspf"%>
 </fd:DeliveryTimeSlot>

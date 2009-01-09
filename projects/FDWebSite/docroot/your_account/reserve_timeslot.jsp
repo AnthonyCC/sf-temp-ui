@@ -288,6 +288,8 @@ if(user.isHomeUser()){
 				}%>
 				<%@ include file="/shared/includes/delivery/i_delivery_slots.jspf"%>
 			</logic:iterate>
+	<!-- Bryan Restriction Message Added -->
+	<%@ include file="/shared/includes/delivery/i_restriction_message.jspf"%>
 			<table width="693" border="0" cellspacing="0" cellpadding="0">
 			<tr>
 				<td align="left">

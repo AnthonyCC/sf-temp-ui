@@ -319,6 +319,10 @@ if (errorMsg!=null) {%>
 </logic:iterate>
 <%}%>
 <tr><td colspan="2">
+	<!-- Bryan Restriction Message Added -->
+	<%@ include file="/shared/includes/delivery/i_restriction_message.jspf"%>
+</td></tr>
+<tr><td colspan="2">
 <table cellpadding="0" cellspacing="0" width="675">
 	<tr>
 		<td align="left">

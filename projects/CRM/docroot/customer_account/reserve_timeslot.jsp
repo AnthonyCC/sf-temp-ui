@@ -237,7 +237,8 @@
 							</td>
 						</tr>
 					</table>
-
+					<!-- Bryan Restriction Message Added -->
+					<%@ include file="/shared/includes/delivery/i_restriction_message.jspf"%>
 					<table width="90%" cellpadding="0" cellspacing="0" border="0"
 						align="center">
 						<tr>

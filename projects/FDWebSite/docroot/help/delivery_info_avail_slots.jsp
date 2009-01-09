@@ -81,6 +81,8 @@ SimpleDateFormat deliveryDayFormat = new SimpleDateFormat("EEE MM/d");
 	<logic:iterate id="timeslots" collection="<%=timeslotList%>" type="com.freshdirect.fdstore.FDTimeslotList" indexId="idx">
 		<%@ include file="/shared/includes/delivery/i_delivery_slots.jspf"%>
 	</logic:iterate>
+	<!-- Bryan Restriction Message Added -->
+	<%@ include file="/shared/includes/delivery/i_restriction_message.jspf"%>
 <table width="693" cellpadding="0" cellspacing="0" border="0"><tr><td colspan="7""><img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br>* <b>You will select a delivery time slot at Checkout.</b> Delivery time slots are not guaranteed until completion of Checkout.<br><img src="/media_stat/images/layout/clear.gif" width="1" height="8">
 
 <%

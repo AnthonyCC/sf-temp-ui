@@ -172,7 +172,10 @@ if(user.isHomeUser())
 	<logic:iterate id="timeslots" collection="<%=timeslotList%>" type="com.freshdirect.fdstore.FDTimeslotList" indexId="idx">
 		<%@ include file="/shared/includes/delivery/i_delivery_slots.jspf"%>
 	</logic:iterate>
-	<br>
+	
+	
+	<!-- Bryan Restriction Message Added -->
+	<%@ include file="/shared/includes/delivery/i_restriction_message.jspf"%>
 	<table cellpadding="0" cellspacing="0" width="693"/>
 		<tr>
 			<td align="left">
