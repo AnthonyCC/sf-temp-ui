@@ -1,7 +1,7 @@
 use DBI;
 
 use Getopt::Std;  
-getopts('hUp:', \ my %opts);    # -ptake arg.  Sets opt_* as a side effect.
+getopts('f:hUp:', \ my %opts);    # -ptake arg.  Sets opt_* as a side effect.
 
 if($opts{h} ne ""){
     print "usage: ", $pgm, " -f <infile> [-U] [-p <password>]\n where -U->update mode (build AND run sql script),\n", "<password> is database password. Other params are read from perl.cfg file\n";
@@ -51,6 +51,12 @@ $cfg->read($configfile) or die "Couldn't read Config file: $!";
 my $dbname = $cfg->get("$pgm.dbname");
 my $dbuser = $cfg->get("$pgm.dbuser");
 my $infile=$cfg->get("$pgm.infile");
+
+print "debug: dollaroptsf= $opts{f}\n";
+
+if ($opts{f} ne ""){
+    $infile = $opts{f};
+}
 
 my $pw   = $dbuser;
 
