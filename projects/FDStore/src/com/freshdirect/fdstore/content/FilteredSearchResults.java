@@ -192,10 +192,10 @@ public class FilteredSearchResults extends SearchResults implements Serializable
                 boolean n1 = originalSearchTerm.equals(c1.getFullName().toLowerCase());
                 boolean n2 = originalSearchTerm.equals(c2.getFullName().toLowerCase());
                 if (!n1 && n2) {
-                    return 1;
+                    return inverse ? 1 : -1;
                 }
                 if (n1 && !n2) {
-                    return -1;
+                    return inverse ? -1 : 1;
                 }
             }
 
@@ -439,18 +439,22 @@ public class FilteredSearchResults extends SearchResults implements Serializable
             ProductModel c2 = (ProductModel) o2;
 
             try {
-                // Stage 0 -- sort out null cases
+                // Stage 0 -- sort out non-display cases
                 //
-                if (c1.getDefaultSku() == null) {
-                    if (c2.getDefaultSku() == null) {
-                        return 0;
-                    } else {
-                        // sku1 == null, sku2 != null -> 1
-                        return inverse ? -1 : 1;
+                {
+                    boolean h1 = isDisplayable(c1.getContentKey()) && c1.getDefaultSku()!=null;
+                    boolean h2 = isDisplayable(c2.getContentKey()) && c2.getDefaultSku()!=null;
+                    if (!h1 && h2) {
+                        return 1;
                     }
-                } else if (c2.getDefaultSku() == null) {
-                    // sku1 != null, sku2 == null -> -1
-                    return inverse ? 1 : -1;
+        
+                    if (h1 && !h2) {
+                        return -1;
+                    }
+                    if (!h1 && !h2) {
+                    	// unavailable products sorted by popularity ...
+                    	return super.compare(o1, o2);
+                    }
                 }
 
                 FDProductInfo i1 = c1.getDefaultSku().getProductInfo();
@@ -481,8 +485,8 @@ public class FilteredSearchResults extends SearchResults implements Serializable
                 //
                 Pricing prc1 = c1.getDefaultSku().getProduct().getPricing();
                 Pricing prc2 = c2.getDefaultSku().getProduct().getPricing();
-                double defp1 = i1.getBasePrice();
-                double defp2 = i2.getBasePrice();
+                double defp1 = i1.getDefaultPrice();
+                double defp2 = i2.getDefaultPrice();
 
                 if (prc1.hasScales()) {
                     if (prc2.hasScales()) {
@@ -491,7 +495,12 @@ public class FilteredSearchResults extends SearchResults implements Serializable
                         double mp2 = prc2.getMinPrice();
 
                         if (mp1 != Double.NaN && mp2 != Double.NaN) {
-                            int sc = Double.compare(mp1, mp2);
+                        	// if product_1 : base_price:100 min_price : 90
+                        	// if product_2 : base_price:50 min_price : 40
+                        	//  then highest saving for product_1 : (1 - 90/100) = 0.1
+                        	//  then highest saving for product_2 : (1 - 40/50) = 0.2
+                        	
+                            int sc = Double.compare(mp1/defp1, mp2/defp2);
 
                             // same prices -> sort by popularity
                             if (sc == 0)
@@ -510,7 +519,7 @@ public class FilteredSearchResults extends SearchResults implements Serializable
 
                 // Stage 3 -- base prices
                 //
-                if (i1.getBasePrice() != i2.getBasePrice()) {
+                if (defp1 != defp2) {
 
                     // cheaper price is better
                     int sc = Double.compare(defp1, defp2);
