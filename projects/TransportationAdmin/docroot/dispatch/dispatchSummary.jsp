@@ -9,7 +9,7 @@
    String dateRangeVal = request.getParameter("dispDate") != null ? request.getParameter("dispDate") : "";
    if(dateRangeVal == null || dateRangeVal.length() == 0) dateRangeVal = TransStringUtil.getCurrentDate();
   %>
-  <input type=hidden name="dispDate" value="" />
+
   <link rel="stylesheet" href="css/transportation.css" type="text/css" />		
 <tmpl:insert template='/common/sitelayout.jsp'>
 
@@ -28,6 +28,7 @@
             <td>
 
               <table border = "0">
+              <input type="hidden" id="dispDate" name="dispDate" value="" />
                 <tr>
                 <td> 
                     <span style="font-size: 18px;font-weight: bold;">Today: <%= TransStringUtil.getFullMonthDate(new Date()) %></span>
@@ -52,16 +53,16 @@
                           if (checkboxList[i].type=="checkbox" && checkboxList[i].checked) {
                             
                             if (paramValues != null) {
-                              paramValues = paramValues+","+checkboxList[i].name+"$"+dateField;
+                              paramValues = paramValues+","+checkboxList[i].name//+"$"+dateField;
                             } else {
-                              paramValues = checkboxList[i].name+"$"+dateField;
+                              paramValues = checkboxList[i].name//+"$"+dateField;
                             }
                           }
                         }
                         if (paramValues != null) {
                           var hasConfirmed = confirm (message);
                         if (hasConfirmed) {
-                            location.href = url+"?id="+ paramValues;
+                            location.href = url+"?id="+ paramValues+"&dispDate="+dateField;;
                         } 
                         } else {
                           alert('Please Select a Row!');
@@ -94,7 +95,7 @@
       <ec:table items="dispatchInfos"   action="${pageContext.request.contextPath}/dispatchSummary.do"
             imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="&nbsp;"
             width="98%"  rowsDisplayed="25" view="fd" >
-            
+           
             <ec:exportPdf fileName="dispatchschedule.pdf" tooltip="Export PDF" 
                       headerTitle="Dispatch Schedule" />
               <ec:exportXls fileName="dispatchschedule.xls" tooltip="Export PDF" />

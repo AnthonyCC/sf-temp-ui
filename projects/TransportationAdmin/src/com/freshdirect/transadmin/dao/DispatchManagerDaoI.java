@@ -31,6 +31,8 @@ public interface DispatchManagerDaoI extends BaseManagerDaoI {
 	void saveDispatch(Dispatch dispatch) throws DataAccessException;
 	
 	Collection getAssignedTrucks(String date) throws DataAccessException;
+	
+	Collection getAssignedRoutes(String date) throws DataAccessException;
 
 	void savePlan(Plan plan) throws DataAccessException;
 }

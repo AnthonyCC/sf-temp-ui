@@ -62,6 +62,7 @@
             <td width="9%" align="center"><a href="plan.do" >&nbsp;Planning&nbsp;</a></td>
             <td width="9%" align="center"><a href="assignment.do" >&nbsp;Assignment&nbsp;</a></td>
             <td width="9%" align="center"><a href="dispatch.do" >&nbsp;Dispatch&nbsp;</a></td>
+            <td width="9%" align="center"><a href="dispatchSummary.do" >&nbsp;Dispatch Summary&nbsp;</a></td>
             <% if (SecurityManager.isUserAdmin(request)) {%>
               <td width="9%" align="center"><a href="welcomedlvlocation.do" >&nbsp;Routing&nbsp;</a></td>
             <% } %>

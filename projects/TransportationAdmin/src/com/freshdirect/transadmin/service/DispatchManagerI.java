@@ -3,6 +3,7 @@ package com.freshdirect.transadmin.service;
 import java.util.Collection;
 import java.util.Date;
 
+import com.freshdirect.transadmin.exception.TransAdminApplicationException;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.Dispatch;
 
@@ -32,9 +33,11 @@ public interface DispatchManagerI extends BaseManagerI {
 	
 	boolean refreshRoute(Date requestedDate);
 	
-	void saveDispatch(Dispatch dispatch);
+	void saveDispatch(Dispatch dispatch) throws TransAdminApplicationException;
 	
 	Collection getAssignedTrucks(String date);
+	
+	Collection getAssignedRoutes(String date);
 	
 	Collection getDispatchTrucks(String date);
 	

@@ -131,7 +131,7 @@ public class DispatchManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 	
 	public void saveDispatch(Dispatch dispatch) throws DataAccessException {
 		
-		if(dispatch.getDispatchId()==null ||"".equals(dispatch.getDispatchId())) {
+		if(TransStringUtil.isEmpty(dispatch.getDispatchId())) {
 			Set resources=dispatch.getDispatchResources();
 			dispatch.setDispatchResources(null);
 			getHibernateTemplate().saveOrUpdate(dispatch);
@@ -155,6 +155,15 @@ public class DispatchManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 		strBuf.append("Select dp.truck from Dispatch dp");
 		strBuf.append(" where dp.dispatchDate='").append(date).append("'");
 		strBuf.append(" and dp.truck is not null");
+		return (Collection) getHibernateTemplate().find(strBuf.toString());
+
+	}
+	
+	public Collection getAssignedRoutes(String date) throws DataAccessException {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("Select dp.route from Dispatch dp");
+		strBuf.append(" where dp.dispatchDate='").append(date).append("'");
+		strBuf.append(" and dp.route is not null");
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
 
 	}

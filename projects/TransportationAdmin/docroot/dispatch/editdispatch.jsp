@@ -8,32 +8,11 @@
  String id = request.getParameter("id") != null ? request.getParameter("id") : "";
  String dispDate = request.getParameter("dispDate") != null ? request.getParameter("dispDate") : "";
  %>
-<tmpl:insert template='/common/sitelayout.jsp'>
-
-    <tmpl:put name='title' direct='true'>Add/Edit Dispatch</tmpl:put>
-
-  <tmpl:put name='content' direct='true'>
-    <br/> 
-    <div align="center">
-      <form:form commandName = "dispatchForm" method="post">
-      <form:hidden path="dispatchId"/>
-      <form:hidden path="dispatchDate" />
-      <input type=hidden name="routeNo" value="" />
-      <input type=hidden name="zoneId" value="" />
-      <input type=hidden name="dispDate" value="<%=dispDate %>" />
-      
-       <script language="javascript">         
+        <script language="javascript">         
         function getTruckNumber(routeNo) {
             var adHoc = eval("dispatchForm.route"+routeNo+".value");
             if(adHoc=="false" && routeNo.length > 0) {
                 dispatchForm.routeNo.value = routeNo;
-                dispatchForm.submit();         
-            }
-        }
-        function getResourceInfo(zoneId) {
-            alert(zoneId);
-            if(zoneId.length > 0) {
-                dispatchForm.zoneId.value = zoneId;
                 dispatchForm.submit();         
             }
         }
@@ -61,14 +40,9 @@
             dispatchForm.submit();
         }
       </script>
-      <style>
-        .time_picker_div {padding:5px;
-            border:solid #999999 1px;
-            background:#ffffff;}
-      </style>
-    <script language="javascript" src="js/mootools.v1.11.js"></script>
-    <script language="javascript" src="js/nogray_time_picker.js"></script>      
-    <script language="javascript">
+       <script language="javascript" src="js/mootools.v1.11.js"></script>
+       <script language="javascript" src="js/nogray_time_picker.js"></script>      
+       <script language="javascript">
         window.addEvent("domready", function (){
             var dateObjStartTime = new Date("July 21, 1983 "+document.getElementById('startTime').value);
             var dateObjFirstDlvTime = new Date("July 21, 1983 "+document.getElementById('firstDeliveryTime').value);
@@ -81,7 +55,27 @@
                                            
         });
 
-    </script>      
+    </script>        
+      <style>
+        .time_picker_div {padding:5px;
+            border:solid #999999 1px;
+            background:#ffffff;}
+      </style>      
+<tmpl:insert template='/common/sitelayout.jsp'>
+
+    <tmpl:put name='title' direct='true'>Add/Edit Dispatch</tmpl:put>
+
+  <tmpl:put name='content' direct='true'>
+    <br/> 
+    <div align="center">
+      <form:form commandName = "dispatchForm" method="post">
+      <form:hidden path="dispatchId"/>
+      <form:hidden path="dispatchDate" />
+      <input type=hidden name="routeNo" value="" />
+      <input type=hidden name="zoneId" value="" />
+      <input type=hidden name="dispDate" value="<%=dispDate %>" />
+
+    
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
           <tr>
             <td class="screentitle">Add/Edit Dispatch</td>

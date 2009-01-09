@@ -14,6 +14,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.ServletRequestDataBinder;
 
+import com.freshdirect.transadmin.exception.TransAdminApplicationException;
 import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.DispatchManagerI;
@@ -124,17 +125,11 @@ public class DispatchFormController extends AbstractFormController {
 			
 			boolean isNew = isNew(command);
 			Dispatch domainObject=getDispatch(command);
-			if(!isNew) {
-				getDomainManagerService().saveEntity(domainObject);
-			} else {
-				getDispatchManagerService().saveDispatch(domainObject);
-			}
-		} catch (DataIntegrityViolationException objExp) {
-			objExp.printStackTrace();
+			getDispatchManagerService().saveDispatch(domainObject);
+		} catch (TransAdminApplicationException objExp) {
 			errorList = new ArrayList();
-			errorList.add(this.getMessage("app.actionmessage.135", new Object[]{command.getRoute()}));
+			errorList.add(objExp.getMessage());
 		} catch (Exception objExp) {
-			objExp.printStackTrace();
 			errorList = new ArrayList();
 			errorList.add(this.getMessage("sys.error.1001", new Object[]{this.getDomainObjectName()}));
 		}

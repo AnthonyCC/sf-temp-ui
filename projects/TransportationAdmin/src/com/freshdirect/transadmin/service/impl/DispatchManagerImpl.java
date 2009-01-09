@@ -1,5 +1,6 @@
 package com.freshdirect.transadmin.service.impl;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import org.springframework.dao.DataAccessException;
 import com.freshdirect.customer.ErpRouteMasterInfo;
 import com.freshdirect.transadmin.dao.BaseManagerDaoI;
 import com.freshdirect.transadmin.dao.DispatchManagerDaoI;
+import com.freshdirect.transadmin.exception.TransAdminApplicationException;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.FDRouteMasterInfo;
@@ -198,12 +200,26 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 		return false;
 	}
 	
-	public void saveDispatch(Dispatch dispatch) {
+	public void saveDispatch(Dispatch dispatch) throws TransAdminApplicationException{
+		/* Check if a route is already is assigned to a dispatch before you save the dispatch */
+		try{
+			Collection assignedRoutes = getAssignedRoutes(TransStringUtil.getServerDate(dispatch.getDispatchDate()));
+			if(assignedRoutes.contains(dispatch.getRoute())){
+				throw new TransAdminApplicationException("135", new String[]{dispatch.getRoute()});
+			}
+		}catch(ParseException exp){
+			//Ignore it
+		}
+		
 		getDispatchManagerDao().saveDispatch(dispatch);
 	}
 	
 	public Collection getAssignedTrucks(String date) {
 		return getDispatchManagerDao().getAssignedTrucks(date);
+	}
+	
+	public Collection getAssignedRoutes(String date) {
+		return getDispatchManagerDao().getAssignedRoutes(date);
 	}
 	
 	public Collection getDispatchTrucks(String date) {
