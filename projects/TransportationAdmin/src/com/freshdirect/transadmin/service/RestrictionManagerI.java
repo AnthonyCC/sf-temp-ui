@@ -2,6 +2,8 @@ package com.freshdirect.transadmin.service;
 
 import java.util.Collection;
 
+import org.springframework.dao.DataAccessException;
+
 import com.freshdirect.transadmin.model.GeoRestriction;
 
 public interface RestrictionManagerI extends BaseManagerI {
@@ -10,5 +12,5 @@ public interface RestrictionManagerI extends BaseManagerI {
 
 	Collection getGeoRestrictions();
 
-
+	Collection getGeoRestrictionBoundaries();
 }

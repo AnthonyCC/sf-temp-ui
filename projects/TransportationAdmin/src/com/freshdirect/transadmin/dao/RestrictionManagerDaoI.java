@@ -11,6 +11,7 @@ public interface RestrictionManagerDaoI extends BaseManagerDaoI {
 	Collection getGeoRestrictions() throws DataAccessException;
 	
   	GeoRestriction getGeoRestriction(String id) throws DataAccessException;		//agb
-  	 	
+
+  	Collection getGeoRestrictionBoundaries()  throws DataAccessException;
 
 }

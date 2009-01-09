@@ -21,10 +21,48 @@
         
     }    
     
+    function modifyRestrictionLink(num,actionType){
+         var oldval=document.getElementById('restrictionLinkStr').value; 
+         console.log("oldval :"+oldval);         
+         console.log("num :"+num);         
+         console.log("actionType :"+actionType);         
+         var newval;
+         if(actionType=='append'){            
+             if(num<10){
+               num='0'+num;
+             }
+             newval=oldval+'$'+num;
+             document.getElementById('restrictionLinkStr').value=newval;             
+         }else{             
+             if(num<10){
+               num='0'+num;
+             }
+             newval=oldval.replace('$'+num,'');
+             document.getElementById('restrictionLinkStr').value=newval;
+         }
+    
+    }
+    
+    
+    
+        function validateUserFields(){
+           if(document.getElementById('dayOfWeek').value==''
+                 || document.getElementById('condition').value=='' 
+                   || document.getElementById('startTime').value=='' 
+                      || document.getElementById('endTime').value==''){
+                      
+                   alert("field dayOfWeek, condition , startTime, endTime cannot be empty");   
+                   return false;
+            } 
+           
+            return true;
+        }
     
     
         function editProfile() {
                             
+                     if(!validateUserFields()){ return false; }
+                    
                   
 	                  var profileTableFld = document.getElementById('profileListTB');
 						//var profileTableRow = document.getElementById(currentRow);
@@ -56,6 +94,9 @@
 
     function addProfile() {
                          //alert("inside add profile");
+                      
+                        if(!validateUserFields()){ return false; }                      
+                         
                       	var dayOfWeek = document.getElementById('dayOfWeek');
 	                     var condition = document.getElementById('condition');                            					
   						   var startTime = document.getElementById('startTime');
@@ -112,7 +153,8 @@
 									    profileTableFld.appendChild(row);
 									    createHiddenInput(rollingIndex,dayOfWeek,condition, startTime, endTime);
                                    var size = document.getElementById('restrictionListSize'); 
-                                   size.value=""+rollingIndex;                                     
+                                   size.value=""+rollingIndex;  
+                                   modifyRestrictionLink(rollingIndex,'append');                                   
 								}								
 							}
 					 }
@@ -176,7 +218,13 @@
 						   	parentElementNode.removeChild(hiddenElement2);							
                             parentElementNode.removeChild(hiddenElement3);							
                             parentElementNode.removeChild(hiddenElement4);							
-							profileTableFld.deleteRow(rowIndex);							
+							profileTableFld.deleteRow(rowIndex);
+                        modifyRestrictionLink(rowIndex,'delete');                                   							
+                        rollingIndex=rollingIndex-1; 
+                         var size = document.getElementById('restrictionListSize'); 
+                         size.value=""+rollingIndex;  
+                        
+                        
 						}
 					}
                     
@@ -207,6 +255,7 @@
       <input type="hidden" id="profileOperator" name="profileOperator" class="input" value="" %>/> 
       <input type="hidden" id="restrictionListSize" name="restrictionListSize" class="input" value="0" %>/> 
       <input type="hidden" id="restrictionId" name="restrictionId" class="input" value="<c:out value="${geoRestrictionForm.id}"/>"/>" %>/> 
+      <input type="hidden" id="restrictionLinkStr" name="restrictionLinkStr" class="input" value=""/>" %>/> 
       
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
           <tr>
@@ -234,7 +283,20 @@
                <tr>
                   <td>Restriction Boundary</td>
                   <td>                  
-                    <form:input maxlength="50" size="30" path="boundaryCode" />
+                  <spring:bind path="geoRestrictionForm.boundaryCode">                                    
+                     <SELECT name="boundaryCode">
+                        <c:forEach var="contentTypeVar" items="${restrictionBoundries}">       
+                             <c:if test="${geoRestrictionForm.boundaryCode == contentTypeVar.code}">
+                                <OPTION selected="<c:out value="${contentTypeVar.code}"/>" value="<c:out value="${contentTypeVar.code}"/>"><c:out value="${contentTypeVar.name}"/></OPTION>
+                             </c:if>
+                             <c:if test="${geoRestrictionForm.boundaryCode != contentTypeVar.code}">
+                                 <OPTION value="<c:out value="${contentTypeVar.code}"/>"><c:out value="${contentTypeVar.name}"/></OPTION>                    
+                             </c:if>                
+                         </c:forEach>
+                     </SELECT>
+                </spring:bind>       
+                    
+                    
                 </td>
                 <td>
                   &nbsp;<form:errors path="boundaryCode" />
@@ -253,8 +315,9 @@
                                            
                <tr>
                   <td>Start Date</td>
-                  <td>                  
-                    <form:input maxlength="50" size="30" path="startDate" />
+                  <td>                                    
+                  			<span><input maxlength="10" size="10" name="startDate" id="startDate" value="<c:out value="${geoRestrictionForm.startDate}"/>" /></span>
+							<span><input id="trigger_startDate" type="image" alt="Calendar" src="./images/icons/calendar.gif" onmousedown="this.src='./images/icons/calendar_ON.gif'" onmouseout="this.src='./images/icons/calendar.gif';" /></span>							                                      
                 </td>
                 <td>
                   &nbsp;<form:errors path="startDate" />
@@ -264,7 +327,8 @@
                <tr>
                   <td>End Date</td>
                   <td>                  
-                    <form:input maxlength="50" size="30" path="endDate" />
+                 			<span><input maxlength="10" size="10" name="endDate" id="endDate" value="<c:out value="${geoRestrictionForm.endDate}"/>" /></span>
+							<span><input id="trigger_endDate" type="image" alt="Calendar" src="./images/icons/calendar.gif" onmousedown="this.src='./images/icons/calendar_ON.gif'" onmouseout="this.src='./images/icons/calendar.gif';" /></span>							                                      
                 </td>
                 <td>
                   &nbsp;<form:errors path="endDate" />
@@ -283,7 +347,30 @@
            </table>    
                
            <br><br>    
-               
+               <script language="javascript">
+							 Calendar.setup(
+										{
+											showsTime : false,
+											electric : false,
+											inputField : "startDate",
+											ifFormat : "%m/%d/%Y",
+											singleClick: true,
+											button : "trigger_startDate" 
+										}
+									);
+                                    
+                           Calendar.setup(
+										{
+											showsTime : false,
+											electric : false,
+											inputField : "endDate",
+											ifFormat : "%m/%d/%Y",
+											singleClick: true,
+											button : "trigger_endDate" 
+										}
+									);
+
+							</script>		
                
                <table width="50%" cellpadding="0" cellspacing="0" border="0">    
                <tr>
@@ -333,10 +420,18 @@
                               <td><c:out value="${gDay.endTime}"/></td>
 							  <td><a href="javascript:deleteProfile('attributeList[<%=intRowIndex %>]')">Delete</a>&nbsp;&nbsp;/&nbsp;&nbsp;<a href="javascript:copyProfile('attributeList[<%=intRowIndex %>]')">edit</a></td> 
 							</tr> 
-
-                    
+                            <script>
+                            if(<%=intRowIndex%><10)
+                               document.getElementById('restrictionLinkStr').value=document.getElementById('restrictionLinkStr').value+'$'+'0'+<%=intRowIndex %>;    
+                            else
+                               document.getElementById('restrictionLinkStr').value=document.getElementById('restrictionLinkStr').value+'$'+<%=intRowIndex %>;    
+                         </script>
+                             
                     </c:forEach>
-                    	<script>rollingIndex=<%=intRowIndex%>;</script>		
+                    	<script>
+                          rollingIndex=<%=intRowIndex%>;
+                           document.getElementById('restrictionListSize').value=rollingIndex; 
+                        </script>		
 				     </tbody> 				
 				</table>								
  				<tr>

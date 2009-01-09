@@ -32,6 +32,13 @@ public class RestrictionManagerDaoHibernateImpl extends BaseManagerDaoHibernateI
 			saveEntity(geoRestriction);
 		}
 	}
+
+	public Collection getGeoRestrictionBoundaries() throws DataAccessException {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from GeoRestrictionBoundary");
+		
+		return (Collection) getHibernateTemplate().find(strBuf.toString());
+	}
 		
 
 }

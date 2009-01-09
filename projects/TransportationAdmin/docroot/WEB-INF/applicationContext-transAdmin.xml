@@ -41,6 +41,7 @@
 
 				<value>com/freshdirect/transadmin/model/GeoRestriction.hbm.xml</value>  				
 				<value>com/freshdirect/transadmin/model/GeoRestrictionDays.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/GeoRestrictionBoundary.hbm.xml</value>
 
 				
             </list>

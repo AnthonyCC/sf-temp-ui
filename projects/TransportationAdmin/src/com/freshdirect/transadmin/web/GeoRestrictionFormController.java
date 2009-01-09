@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -39,7 +40,7 @@ public class GeoRestrictionFormController extends AbstractFormController {
 		//refData.put("supervisors", getDomainManagerService().getSupervisors());
 		//refData.put("zones", getDomainManagerService().getZones());
 		refData.put("restrictionDays", (Set)request.getAttribute("restrictionDaysList"));
-		
+		refData.put("restrictionBoundries", getRestrictionManagerService().getGeoRestrictionBoundaries());
 		return refData;
 	}
 	
@@ -80,22 +81,59 @@ public class GeoRestrictionFormController extends AbstractFormController {
 		 
 	}
 	
+	public String[] parseRestElelemntLink(String restLink){
+		if(restLink==null || restLink.trim().length()==0) return null;
+		
+		StringTokenizer tokens=new StringTokenizer(restLink.substring(1),"$");
+		String tmp[]=new String[tokens.countTokens()];
+		int i=0;
+		while(tokens.hasMoreElements())
+		{
+			tmp[i++]=(String)tokens.nextElement();
+		}
+		
+		System.out.println("tmp[] ::: "+tmp);
+		
+		return tmp;
+		
+	}
+	
+	
 protected void onBind(HttpServletRequest request, Object command) {
 		
 		System.out.println("On Bind");
 		GeoRestriction model = (GeoRestriction) command;
 		String restDtlSizeStr=request.getParameter("restrictionListSize");
 		String restrictionId=request.getParameter("restrictionId");
+		String restrictionLinkStr=request.getParameter("restrictionLinkStr");
+		String restIndexStr[]=parseRestElelemntLink(restrictionLinkStr);
+        System.out.println("restDtlSizeStr :"+restDtlSizeStr);
+
+		
 		Set restrictionDaysList=new HashSet();
-		if(restDtlSizeStr!=null && restDtlSizeStr.trim().length()>0)
+		if(restIndexStr!=null && restIndexStr.length>0)
 		{
 			int restDtlSize=Integer.parseInt(restDtlSizeStr);
 			// create restricon detail list from the request
-			for(int i=0;i<restDtlSize;i++){
-				 String dayOfWeek=request.getParameter("attributeList["+(i+1)+"].dayOfWeek");
-				 String condition=request.getParameter("attributeList["+(i+1)+"].condition");
-				 String startTime=request.getParameter("attributeList["+(i+1)+"].startTime");
-				 String endTime=request.getParameter("attributeList["+(i+1)+"].endTime");
+			for(int i=0;i<restIndexStr.length;i++){
+				int indexSize=Integer.parseInt(restIndexStr[i]);
+				 String dayOfWeek=request.getParameter("attributeList["+(indexSize)+"].dayOfWeek");
+				 String condition=request.getParameter("attributeList["+(indexSize)+"].condition");
+				 String startTime=request.getParameter("attributeList["+(indexSize)+"].startTime");
+				 String endTime=request.getParameter("attributeList["+(indexSize)+"].endTime");
+				 
+				 if(null == dayOfWeek || "".equals(dayOfWeek)) {  //tbr
+				   break;
+				 }
+				 if(null == condition || "".equals(condition)) {  //tbr
+					   break;
+					 }
+				 if(null == startTime || "".equals(startTime)) {  //tbr
+					   break;
+					 }
+				 if(null == endTime  || "".equals(endTime)) {  //tbr
+					   break;
+					 }
 				 
 				 System.out.println("dayOfWeek :"+dayOfWeek);
 				 System.out.println("condition :"+condition);
@@ -122,7 +160,7 @@ protected void onBind(HttpServletRequest request, Object command) {
 		System.out.println("\n@@@@@@@\n@@@@@@\n@@@@@");
 		System.out.println(model);
 		System.out.println("\n@@@@@@@\n@@@@@@\n@@@@@");
-		request.setAttribute("restrictionDaysList",restrictionDaysList );
+		//request.setAttribute("restrictionDaysList",restrictionDaysList );
 		System.out.println("size of the model detail:"+restrictionDaysList.size());
 		
 	}

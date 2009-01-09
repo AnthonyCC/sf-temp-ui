@@ -6,7 +6,9 @@
     <class name="com.freshdirect.transadmin.model.GeoRestriction" table="GEO_RESTRICTION">
         <id name="id" type="string">
             <column name="ID" length="16" />
-            <generator class="assigned" />
+             <generator class="sequence">
+    			<param name="sequence">GEO_RESTRICTION_SEQ</param>
+			</generator>
         </id>
         <property name="name" type="string">
             <column name="NAME" length="256" />
