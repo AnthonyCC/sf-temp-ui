@@ -79,7 +79,7 @@
 					<div class="eXor"><div class="eXor<% if(!"R".equalsIgnoreCase(request.getParameter("routetype"))) { %>_AdHoc<% }else{ %>_Active<% } %>">
 						<% if(!"R".equalsIgnoreCase(request.getParameter("routetype"))) { %>
 							<form id="routeListForm" action="" method="post"> 
-								<ec:table items="routes" action="${pageContext.request.contextPath}/AdHocRoute.do"
+								<ec:table items="routes" action="${pageContext.request.contextPath}/route.do"
 								imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title=""
 								  view="fd" form="routeListForm" autoIncludeParameters="false" rowsDisplayed="25"  >
 								
@@ -113,7 +113,7 @@
 										var checkboxList = table.getElementsByTagName("input");
 										var dateField = document.getElementById("routeDate").value;
 										var paramValues = null;
-										for (i = 0; i < checkboxList.length; i++) {
+										/*for (i = 0; i < checkboxList.length; i++) {
 											if (checkboxList[i].type=="checkbox" && checkboxList[i].checked) {
 												if (paramValues != null) {
 													paramValues = paramValues+","+checkboxList[i].name;
@@ -121,7 +121,17 @@
 													paramValues = checkboxList[i].name;
 												}
 											}
+										}*/
+										for (i = 0; i < checkboxList.length; i++) {
+										if (checkboxList[i].type=="checkbox" && checkboxList[i].checked) {
+										   if (paramValues != null) {
+												 paramValues = paramValues+","+checkboxList[i].name+"&"+dateField;
+											   } else {
+												 paramValues = checkboxList[i].name+"&"+dateField;
+											   }
+											}
 										}
+
 										if (paramValues != null) {
 											var hasConfirmed = confirm (message);
 											if (hasConfirmed) {
@@ -133,11 +143,11 @@
 									}
 								</script>
 							 <script>
-							  addRowHandlers('ec_table', 'rowMouseOver', 'editAdHocRoute.do','id',0, 0);
+							  addRowHandlers('ec_table', 'rowMouseOver', 'editroute.do','id',0, 0);
 							</script>  
 						<% }else{ %>
 							<form id="routeListForm" action="" method="post"> 
-								<ec:table items="routes"   action="${pageContext.request.contextPath}/route.do?routetype=R"
+								<ec:table items="routes"   action="${pageContext.request.contextPath}/route.do?routetype=R&routeDate=${routeDate}"
 									imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title=""
 									 view="fd" form="routeListForm" autoIncludeParameters="false" rowsDisplayed="25"  >
 									

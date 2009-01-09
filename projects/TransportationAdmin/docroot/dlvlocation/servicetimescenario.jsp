@@ -3,13 +3,16 @@
 <%@ page import='com.freshdirect.transadmin.web.ui.*' %>
 
 <tmpl:insert template='/common/sitelayout.jsp'>
+<% 
+	String pageTitle = "Service Time Scenario";
+%>
 
-    <tmpl:put name='title' direct='true'>Transportation Service Time Scenario's</tmpl:put>
-
+    <tmpl:put name='title' direct='true'>Routing : <%=pageTitle%></tmpl:put>
+  
   <tmpl:put name='content' direct='true'>
-    <br/> 
-    <div align="center">
-      <form id="dlvServiceTimeScenarioForm" action="" method="post">  
+    <div class="contentroot">
+		<div class="cont_topleft">
+			<div class="cont_row">
         <ec:table items="dlvservicetimescenariolist"   action="${pageContext.request.contextPath}/dlvservicetimescenario.do"
             imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="Transportation Service Time Scenarios"
             width="98%"  view="fd" form="dlvServiceTimeScenarioForm" autoIncludeParameters="false" rowsDisplayed="25"  >
@@ -44,6 +47,9 @@
           </ec:table>
        </form>  
      </div>
+			</div> 
+		</div> 
+	</div>
      <script>
       addRowHandlers('ec_table', 'rowMouseOver', 'editdlvservicetimescenario.do','id',0, 0);
     </script>   

@@ -957,6 +957,15 @@ div.eXor_Active, div.eXor_AdHoc { margin-left: 10px; width: 98%; }
 	border-width: 0px;
 }
 
+/* specific planning page styles */
+#page_Planning #daterange, #page_Planning #zone {
+	width: 200px;
+}
+
 .dispatch_link {
 	color: #f90;
+}
+
+.refresh_link {
+	color: #09c;
 }

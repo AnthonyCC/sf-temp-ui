@@ -57,12 +57,16 @@
 		<div class="cont_topright">
 			<div class="cont_row">
 				<div class="cont_Ritem">
-					<form id="employeeListForm" action="" method="post">  
-						<ec:table items="employees"   action="${pageContext.request.contextPath}/employee.do"
+					<form id="employeeListForm" action="" method="post">
+					
+					<% 
+						if("T".equalsIgnoreCase(request.getParameter("empstatus"))) { 
+					%>
+
+						<ec:table items="employees"   action="${pageContext.request.contextPath}/employee.do?empstatus=T"
 						imagePath="${pageContext.request.contextPath}/images/table/*.gif" title=""		
 						width="98%"  view="fd" form="employeeListForm" autoIncludeParameters="false" rowsDisplayed="25"  >
-
-							<ec:exportPdf fileName="transportationemployee.pdf" tooltip="Export PDF" 
+<ec:exportPdf fileName="transportationemployee.pdf" tooltip="Export PDF" 
 									  headerTitle="" />
 							  <ec:exportXls fileName="transportationemployee.xls" tooltip="Export PDF" />
 							  <ec:exportCsv fileName="transportationemployee.csv" tooltip="Export CSV" delimiter="|"/>
@@ -82,6 +86,37 @@
 								<ec:column property="employeeRoleType" title="roles"/>
 							</ec:row>
 						</ec:table>
+                     <%
+						 }
+					     else
+						 { 
+					  %>
+                    
+					 	<ec:table items="employees"   action="${pageContext.request.contextPath}/employee.do"
+						imagePath="${pageContext.request.contextPath}/images/table/*.gif" title=""		
+						width="98%"  view="fd" form="employeeListForm" autoIncludeParameters="false" rowsDisplayed="25"  >
+<ec:exportPdf fileName="transportationemployee.pdf" tooltip="Export PDF" 
+									  headerTitle="" />
+							  <ec:exportXls fileName="transportationemployee.xls" tooltip="Export PDF" />
+							  <ec:exportCsv fileName="transportationemployee.csv" tooltip="Export CSV" delimiter="|"/>
+								
+							<ec:row interceptor="obsoletemarker">            
+								<% if(!"T".equalsIgnoreCase(request.getParameter("empstatus"))) { %>
+								<ec:column title=" " width="5px" 
+										filterable="false" sortable="false" cell="selectcol"
+										property="employeeId" />  
+								<% } %>		
+								<ec:column property="firstName" title="First Name"/>
+								<ec:column property="lastName" title="Last Name"/>
+								<ec:column alias="kronosId" property="employeeId" title="KronosID"/>                                  
+								<ec:column property="hireDate" title="Hire Date"/>
+								<ec:column property="jobType" title="JobType"/>              
+								<ec:column property="supervisorFirstName" title="supervisor"/>
+								<ec:column property="employeeRoleType" title="roles"/>
+							</ec:row>
+						</ec:table>
+                      <% } %>
+							
 					</form>
 				</div>
 			</div>

@@ -35,8 +35,8 @@
  		 	    <prop key="/truck.do">domainController</prop>		                
  		 	    <prop key="/editemployee.do">employeeFormController</prop>
  		 	    <prop key="/deleteemployee.do">domainController</prop>
- 		 	    <prop key="/editAdHocRoute.do">routeFormController</prop>
- 		 	    <prop key="/deleteAdHocRoute.do">domainController</prop>
+ 		 	    <prop key="/editroute.do">routeFormController</prop>
+ 		 	    <prop key="/deleteroute.do">domainController</prop>
  		 	    <prop key="/editzone.do">zoneFormController</prop>
  		 	    <prop key="/editregion.do">regionFormController</prop>
  		 	    <prop key="/deletezone.do">domainController</prop>
@@ -152,7 +152,7 @@
 			<prop key="/region.do">regionHandler</prop>		 		 				                
  		 	<prop key="/truck.do">truckHandler</prop>
  		 	<prop key="/deleteemployee.do">employeeDeleteHandler</prop>
- 		 	<prop key="/deleteAdHocRoute.do">routeAdHocDeleteHandler</prop>	
+ 		 	<prop key="/deleteroute.do">routeAdHocDeleteHandler</prop>	
  		 	<prop key="/deletezone.do">zoneDeleteHandler</prop>	
  		 	<prop key="/deleteregion.do">regionDeleteHandler</prop>	
  		 	<prop key="/deletetruck.do">truckDeleteHandler</prop>

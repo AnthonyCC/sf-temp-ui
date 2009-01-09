@@ -26,24 +26,23 @@
 
   <tmpl:put name='content' direct='true'>
   
-	<div class="MNM001 subsub or_999">
+	<div class="MNM003 subsub or_3c3">
 		<div class="subs_left">	
-			<div class="sub_tableft sub_tabL_MNM001 <% if(!"Active".equalsIgnoreCase(request.getParameter("zoneType"))) { %>activeL<% } %>">&nbsp;</div>
+			<div class="sub_tableft sub_tabL_MNM003 <% if(!"Active".equalsIgnoreCase(request.getParameter("zoneType"))) { %>activeL<% } %>">&nbsp;</div>
 			<div class="subtab <% if(!"Active".equalsIgnoreCase(request.getParameter("zoneType"))) { %>activeT<% } %>">
 				<div class="minwidth"><!-- --></div>
-				<a href="zone.do" class="<% if(!"Active".equalsIgnoreCase(request.getParameter("zoneType"))) { %>MNM001<% } %>">All</a>
+				<a href="zone.do" class="<% if(!"Active".equalsIgnoreCase(request.getParameter("zoneType"))) { %>MNM003<% } %>">All</a>
 			</div>
-			<div class="sub_tabright sub_tabR_MNM001 <% if(!"Active".equalsIgnoreCase(request.getParameter("zoneType"))) { %>activeR<% } %>">&nbsp;</div>		
+			<div class="sub_tabright sub_tabR_MNM003 <% if(!"Active".equalsIgnoreCase(request.getParameter("zoneType"))) { %>activeR<% } %>">&nbsp;</div>		
 		
-			<div class="sub_tableft sub_tabL_MNM001 <% if("Active".equalsIgnoreCase(request.getParameter("zoneType"))) { %>activeL<% } %>">&nbsp;</div>
+			<div class="sub_tableft sub_tabL_MNM003 <% if("Active".equalsIgnoreCase(request.getParameter("zoneType"))) { %>activeL<% } %>">&nbsp;</div>
 			<div class="subtab <% if("Active".equalsIgnoreCase(request.getParameter("zoneType"))) { %>activeT<% } %>">
 				<div class="minwidth"><!-- --></div>
-				<a href="zone.do?zoneType=Active" class="<% if("Active".equalsIgnoreCase(request.getParameter("zoneType"))) { %>MNM001<% } %>">Active</a>
+				<a href="zone.do?zoneType=Active" class="<% if("Active".equalsIgnoreCase(request.getParameter("zoneType"))) { %>MNM003<% } %>">Active</a>
 			</div>
-			<div class="sub_tabright sub_tabR_MNM001 <% if("Active".equalsIgnoreCase(request.getParameter("zoneType"))) { %>activeR<% } %>">&nbsp;</div>
+			<div class="sub_tabright sub_tabR_MNM003 <% if("Active".equalsIgnoreCase(request.getParameter("zoneType"))) { %>activeR<% } %>">&nbsp;</div>
 		</div>
 	</div>
-	<div class="cont_row_bottomline"><!--  --></div>
 
 	<div align="center">
 	   <form id="zoneListForm" action="" method="post">  
