@@ -288,6 +288,12 @@ public class SubmitOrderAction extends WebActionSupport {
 			}
 
 			user.setRedeemedPromotion(null);
+			
+			//Siva: Modified to track user last order zipcode
+			if(cart != null && cart.getDeliveryAddress() != null) {
+				user.setZipCode(cart.getDeliveryAddress().getZipCode());
+			}
+			
 			user.invalidateCache();
 	        // make sure we're not using stale order history data.
 			user.invalidateOrderHistoryCache();

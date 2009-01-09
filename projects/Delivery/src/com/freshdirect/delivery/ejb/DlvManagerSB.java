@@ -85,7 +85,7 @@ public interface DlvManagerSB extends EJBObject {
     
     public List getDlvRestrictions() throws DlvResourceException, RemoteException;
     
-    public GeographyRestriction getGeographicDlvRestrictions(AddressModel address)throws DlvResourceException, RemoteException;
+    public List getGeographicDlvRestrictions(AddressModel address)throws DlvResourceException, RemoteException;
     
 	public List getSiteAnnouncements() throws DlvResourceException, RemoteException;
 	

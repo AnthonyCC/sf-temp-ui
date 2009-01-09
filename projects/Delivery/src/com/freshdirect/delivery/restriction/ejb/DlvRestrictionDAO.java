@@ -94,13 +94,14 @@ public class DlvRestrictionDAO {
 	private static final String GEOGRAPHY_RESTRICTION = "select ID, gr.NAME NAME, INACTIVE, COMMENTS, MESSAGE,START_DATE, END_DATE,  DAY_OF_WEEK, CONDITION, START_TIME, END_TIME  from dlv.GEO_RESTRICTION gr, dlv.GEO_RESTRICTION_BOUNDARY gb , dlv.GEO_RESTRICTION_DAYS gd where gr.BOUNDARY_CODE = gb.code and gr.ID = gd.RESTRICTION_ID and (gr.INACTIVE is null or gr.INACTIVE <> 'X') and mdsys.sdo_relate(gb.geoloc, mdsys.sdo_geometry(2001, 8265, mdsys.sdo_point_type(?,?,NULL), NULL, NULL), 'mask=ANYINTERACT querytype=WINDOW') ='TRUE'";
 //	select * from dlv.GEO_RESTRICTION_BOUNDARY gr where mdsys.sdo_relate(gr.geoloc, mdsys.sdo_geometry(2001, 8265, mdsys.sdo_point_type(-73.952006,40.59712,NULL), NULL, NULL), 'mask=ANYINTERACT querytype=WINDOW') ='TRUE'
 	//1910 AVE V  	11229  	40.59712  	-73.952006
-	public static GeographyRestriction getGeographicDlvRestrictions(Connection conn, AddressModel address) throws SQLException {
+	public static List getGeographicDlvRestrictions(Connection conn, AddressModel address) throws SQLException {
 
 		PreparedStatement ps = conn.prepareStatement(GEOGRAPHY_RESTRICTION);				
 		ps.setDouble(1, address.getLongitude());
 		ps.setDouble(2, address.getLatitude());
 		
 		ResultSet rs = ps.executeQuery();
+		List restrictions = new ArrayList();
 		GeographyRestriction restriction = null;
 		GeographyRestrictedDay restrictedDay = null;
 		EnumLogicalOperator condition = null;
@@ -108,7 +109,7 @@ public class DlvRestrictionDAO {
 		Date startDate = null;
 		Date endDate = null;
 		while (rs.next()) {			
-			if(restriction == null) {
+			if(restriction == null || !rs.getString("ID").equalsIgnoreCase(restriction.getId())) {
 				restriction = new GeographyRestriction();
 				restriction.setId(rs.getString("ID"));
 				restriction.setName(rs.getString("NAME"));
@@ -116,6 +117,7 @@ public class DlvRestrictionDAO {
 				restriction.setComments(rs.getString("COMMENTS"));
 				restriction.setMessage(rs.getString("MESSAGE"));
 				restriction.setRange(new Date(rs.getTimestamp("START_DATE").getTime()), new Date(rs.getTimestamp("END_DATE").getTime()));
+				restrictions.add(restriction);
 			}
 			
 			restrictedDay = new GeographyRestrictedDay();
@@ -139,7 +141,7 @@ public class DlvRestrictionDAO {
 		rs.close();
 		ps.close();
 
-		return restriction;
+		return restrictions;
 	}
 
 }

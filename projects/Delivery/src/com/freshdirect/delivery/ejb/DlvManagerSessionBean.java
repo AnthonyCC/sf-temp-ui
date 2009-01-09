@@ -1285,7 +1285,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	public GeographyRestriction getGeographicDlvRestrictions(AddressModel address) throws DlvResourceException {
+	public List getGeographicDlvRestrictions(AddressModel address) throws DlvResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();

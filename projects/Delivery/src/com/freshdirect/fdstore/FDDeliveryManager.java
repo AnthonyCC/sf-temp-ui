@@ -139,7 +139,7 @@ public class FDDeliveryManager {
 		return this.dlvRestrictions;
 	}
 	
-	public GeographyRestriction getGeographicDlvRestrictions(AddressModel address) throws FDResourceException {		
+	public List getGeographicDlvRestrictions(AddressModel address) throws FDResourceException {		
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
 
