@@ -110,6 +110,7 @@
 	Map zones = DeliveryTimeSlotResult.getZones();
 	boolean zoneCtActive = DeliveryTimeSlotResult.isZoneCtActive();
 	FDReservation rsv = user.getReservation();
+	List messages = DeliveryTimeSlotResult.getMessages();
 	%>
 					<table width="90%" cellpadding="0" cellspacing="0" border="0"
 						align="center">
@@ -238,7 +239,9 @@
 						</tr>
 					</table>
 					<!-- Bryan Restriction Message Added -->
-					<%@ include file="/shared/includes/delivery/i_restriction_message.jspf"%>
+					<% if(messages != null && messages.size() >= 1) { %>
+						<%@ include file="/shared/includes/delivery/i_restriction_message.jspf"%>
+					<% } %>
 					<table width="90%" cellpadding="0" cellspacing="0" border="0"
 						align="center">
 						<tr>

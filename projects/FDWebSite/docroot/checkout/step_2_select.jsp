@@ -133,6 +133,7 @@ boolean advOrdRangeOK = advOrdRange.overlaps(validRange);
 	List timeslotList = DeliveryTimeSlotResult.getTimeslots();
 	Map zones = DeliveryTimeSlotResult.getZones();
 	boolean zoneCtActive = DeliveryTimeSlotResult.isZoneCtActive();
+	List messages = DeliveryTimeSlotResult.getMessages();
 	
 	DlvRestrictionsList restrictions = FDDeliveryManager.getInstance().getDlvRestrictions();
 	boolean isKosherSlotAvailable = false;
@@ -320,7 +321,9 @@ if (errorMsg!=null) {%>
 <%}%>
 <tr><td colspan="2">
 	<!-- Bryan Restriction Message Added -->
-	<%@ include file="/shared/includes/delivery/i_restriction_message.jspf"%>
+	<% if(messages != null && messages.size() >= 1) { %>
+		<%@ include file="/shared/includes/delivery/i_restriction_message.jspf"%>
+	<% } %>
 </td></tr>
 <tr><td colspan="2">
 <table cellpadding="0" cellspacing="0" width="675">

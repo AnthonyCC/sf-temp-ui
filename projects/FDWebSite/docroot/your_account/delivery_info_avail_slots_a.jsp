@@ -62,6 +62,7 @@ request.setAttribute("listPos", "CategoryNote,TimeslotBottom");
 	List timeslotList = DeliveryTimeSlotResult.getTimeslots();
 	Map zones = DeliveryTimeSlotResult.getZones();
 	boolean zoneCtActive = DeliveryTimeSlotResult.isZoneCtActive();
+	List messages = DeliveryTimeSlotResult.getMessages();
 	%>
 	<%@ include file="/shared/includes/delivery/i_loyalty_banner.jspf" %>
 	
@@ -69,7 +70,9 @@ request.setAttribute("listPos", "CategoryNote,TimeslotBottom");
 		<%@ include file="/shared/includes/delivery/i_delivery_slots.jspf"%>
 	</logic:iterate>
 	<!-- Bryan Restriction Message Added -->
-	<%@ include file="/shared/includes/delivery/i_restriction_message.jspf"%>
+	<% if(messages != null && messages.size() >= 1) { %>
+		<%@ include file="/shared/includes/delivery/i_restriction_message.jspf"%>
+	<% } %>
 	<table cellpadding="0" cellspacing="0" width="675">
 		<tr>
 			<td align="left">

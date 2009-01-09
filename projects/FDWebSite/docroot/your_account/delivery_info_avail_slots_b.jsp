@@ -158,6 +158,7 @@ if(user.isHomeUser())
 	List timeslotList = DeliveryTimeSlotResult.getTimeslots();
 	Map zones = DeliveryTimeSlotResult.getZones();
 	boolean zoneCtActive = DeliveryTimeSlotResult.isZoneCtActive();
+	List messages = DeliveryTimeSlotResult.getMessages();
 	%>
 	
 <tr><td><img src="/media_stat/images/layout/clear.gif" width="15" height="15"></td>
@@ -175,7 +176,9 @@ if(user.isHomeUser())
 	
 	
 	<!-- Bryan Restriction Message Added -->
-	<%@ include file="/shared/includes/delivery/i_restriction_message.jspf"%>
+	<% if(messages != null && messages.size() >= 1) { %>
+		<%@ include file="/shared/includes/delivery/i_restriction_message.jspf"%>
+	<% } %>	
 	<table cellpadding="0" cellspacing="0" width="693"/>
 		<tr>
 			<td align="left">

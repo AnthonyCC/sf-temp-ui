@@ -39,6 +39,7 @@
 	List timeslotList = DeliveryTimeSlotResult.getTimeslots();
 	Map zones = DeliveryTimeSlotResult.getZones();
 	boolean zoneCtActive = DeliveryTimeSlotResult.isZoneCtActive();
+	List messages = DeliveryTimeSlotResult.getMessages();
 	%>
 
 <%  if (timeslotList.size() > 0) {%>
@@ -70,6 +71,8 @@
     	
     <%}%>
     
-<!-- Bryan Restriction Message Added -->
-				<%@ include file="/shared/includes/delivery/i_restriction_message.jspf"%>
+	<!-- Bryan Restriction Message Added -->
+	<% if(messages != null && messages.size() >= 1) { %>
+	<%@ include file="/shared/includes/delivery/i_restriction_message.jspf"%>
+	<% } %>
 </fd:DeliveryTimeSlot>

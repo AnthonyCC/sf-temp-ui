@@ -211,7 +211,9 @@ List messages = DeliveryTimeSlotResult.getMessages();
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ END TIME SLOT SELECTION SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
 </logic:iterate>
 <!-- Bryan Restriction Message Added -->
-				<%@ include file="/shared/includes/delivery/i_restriction_message.jspf"%>
+<% if(messages != null && messages.size() >= 1) { %>
+	<%@ include file="/shared/includes/delivery/i_restriction_message.jspf"%>
+<% } %>
 <table cellpadding="0" cellspacing="0" width="675">
 	<tr>
 		<td align="left">

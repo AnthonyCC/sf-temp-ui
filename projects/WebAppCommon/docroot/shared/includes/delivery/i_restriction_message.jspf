@@ -4,7 +4,7 @@
 			<td align="left">
 				<br />
 				<b><font class="text12" color="#CC0000">PLEASE NOTE: </font></b>
-				This is the new delivery error message This is the new delivery error message This is the new delivery error message This is the new delivery error message This is the new delivery error message This is the new delivery error message.<br /><br />
+				<%= messages.get(0) %><br /><br />
 				<IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="100%" HEIGHT="1" BORDER="0"><br /><br />
 			</td>
 		</tr>
