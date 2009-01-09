@@ -15,8 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.validation.BindException;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.transadmin.model.GeoRestriction;
 import com.freshdirect.transadmin.model.GeoRestrictionDays;
 import com.freshdirect.transadmin.model.GeoRestrictionDaysId;
@@ -26,6 +28,7 @@ import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.RestrictionManagerI;
 import com.freshdirect.transadmin.util.TransStringUtil;
+import com.freshdirect.transadmin.web.editor.TimeOfDayPropertyEditor;
 
 public class GeoRestrictionFormController extends AbstractFormController {
 	private RestrictionManagerI restrictionManagerService;
@@ -68,6 +71,14 @@ public class GeoRestrictionFormController extends AbstractFormController {
 		return domainObj;
 	}
 	
+	protected void initBinder(HttpServletRequest request,
+			ServletRequestDataBinder dataBinder) throws Exception {
+		
+		super.initBinder(request, dataBinder);
+		System.out.println("inside initBinder ");				
+		dataBinder.registerCustomEditor(TimeOfDay.class, new TimeOfDayPropertyEditor());
+		 
+	}
 	
 protected void onBind(HttpServletRequest request, Object command) {
 		
@@ -94,15 +105,23 @@ protected void onBind(HttpServletRequest request, Object command) {
 				 GeoRestrictionDaysId id=new GeoRestrictionDaysId(restrictionId,new BigDecimal(dayOfWeek),new BigDecimal(i));
 				 GeoRestrictionDays day;
 				try {
-					day = new GeoRestrictionDays(id,condition,TransStringUtil.getServerTime(startTime),TransStringUtil.getServerTime(endTime));
+					
+					day = new GeoRestrictionDays(id,condition,new TimeOfDay(startTime),
+							                       			  new TimeOfDay(endTime));
 					restrictionDaysList.add(day);
-				} catch (ParseException e) {
+				//} catch (ParseException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}				 
+				//	e.printStackTrace();
+				}
+				finally{
+					
+				}
 			}
 		}		
 		model.setGeoRestrictionDays(restrictionDaysList);
+		System.out.println("\n@@@@@@@\n@@@@@@\n@@@@@");
+		System.out.println(model);
+		System.out.println("\n@@@@@@@\n@@@@@@\n@@@@@");
 		request.setAttribute("restrictionDaysList",restrictionDaysList );
 		System.out.println("size of the model detail:"+restrictionDaysList.size());
 		

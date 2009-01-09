@@ -18,11 +18,14 @@
         <property name="condition" type="string">
             <column name="CONDITION" length="2" />
         </property>
-        <property name="startTime" type="date">
-            <column name="START_TIME" length="7" />
-        </property>
-        <property name="endTime" type="date">
-            <column name="END_TIME" length="7" />
-        </property>        
+         
+     	<component name="startTime" class="com.freshdirect.framework.util.TimeOfDay"> 
+        	<property name="normalDate" column="START_TIME" type="timestamp" not-null="true"/>
+        </component>  
+ 
+    	<component name="endTime" class="com.freshdirect.framework.util.TimeOfDay"> 
+        	<property name="normalDate" column="END_TIME" type="timestamp" not-null="true"/>
+        </component>  
+                 
     </class>
 </hibernate-mapping>
