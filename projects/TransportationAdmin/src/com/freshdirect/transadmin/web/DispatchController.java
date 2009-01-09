@@ -329,7 +329,7 @@ public class DispatchController extends AbstractMultiActionController {
 					Collection dispList=dispatchManagerService.getDispatchList(dispatchDate,null,null);								
 					if(dispList!=null || dispList.size()>0){
 						if(!SecurityManager.isUserAdmin(request)){
-							  saveMessage(request, getMessage("app.actionmessage.133", null));
+							  saveMessage(request, getMessage("app.actionmessage.140", null));
 							  return planHandler(request,response);							  
 						}								 													
 					}
