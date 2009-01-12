@@ -3,7 +3,6 @@ package com.freshdirect.transadmin.service;
 import java.util.Collection;
 
 import com.freshdirect.transadmin.model.EmployeeRoleType;
-import com.freshdirect.transadmin.model.TrnEmployee;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 
 public interface EmployeeManagerI extends BaseManagerI {
@@ -25,4 +24,6 @@ public interface EmployeeManagerI extends BaseManagerI {
 	Collection getKronosTerminatedEmployees();
 	
 	Collection getEmployeesByRole(String roleTypeId);
+	
+	Collection getSupervisors();
 }

@@ -9,5 +9,7 @@ public interface EmployeeManagerDaoI {
 	Collection getEmployees() throws DataAccessException;
 
 	Collection getTerminatedEmployees() throws DataAccessException;
+	
+	Collection getSupervisors() throws DataAccessException;
 
 }

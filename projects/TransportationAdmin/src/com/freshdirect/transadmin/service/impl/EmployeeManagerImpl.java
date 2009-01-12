@@ -61,6 +61,10 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 	public Collection getKronosEmployees(){
 		return employeeManagerDAO.getEmployees();	
 	}
+	
+	public Collection getSupervisors() {
+		return employeeManagerDAO.getSupervisors();	
+	}
 
 
 	public DomainManagerDaoI getDomainManagerDao() {
