@@ -240,7 +240,9 @@ public class ModelUtil {
 			d.setRegion(p.getRegion());
 			if(ite1.hasNext()){
 				ErpRouteMasterInfo r=(ErpRouteMasterInfo)ite1.next();
-				d.setRoute(r.getRouteNumber());								
+				d.setRoute(r.getRouteNumber());
+				d.setTruck(r.getTruckNumber());
+				System.out.println("r.getRouteNumber() :"+r.getRouteNumber());
 				if(r.getFirstDlvTime()!=null && r.getFirstDlvTime().trim().length()>0){					
 					try {
 						d.setFirstDlvTime(DATE_FORMAT.parse("01/01/1970 "+r.getFirstDlvTime()));
@@ -250,10 +252,10 @@ public class ModelUtil {
 					}
 				}				
 			}			
-			if(trkIterator.hasNext()){
-				ErpTruckMasterInfo trkMaster=(ErpTruckMasterInfo)trkIterator.next();
-				d.setTruck(trkMaster.getTruckNumber());
-			}				  				
+//			if(trkIterator.hasNext()){
+//				ErpTruckMasterInfo trkMaster=(ErpTruckMasterInfo)trkIterator.next();
+//				d.setTruck(trkMaster.getTruckNumber());
+//			}				  				
 				dispatchList.add(d);										
 		}		
 	}

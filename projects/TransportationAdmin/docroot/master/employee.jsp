@@ -84,6 +84,7 @@
 								<ec:column property="jobType" title="JobType"/>              
 								<ec:column property="supervisorFirstName" title="supervisor"/>
 								<ec:column property="employeeRoleType" title="roles"/>
+                                <ec:column property="terminationDate" title="Terminated"/>
 							</ec:row>
 						</ec:table>
                      <%
@@ -113,6 +114,7 @@
 								<ec:column property="jobType" title="JobType"/>              
 								<ec:column property="supervisorFirstName" title="supervisor"/>
 								<ec:column property="employeeRoleType" title="roles"/>
+                           
 							</ec:row>
 						</ec:table>
                       <% } %>

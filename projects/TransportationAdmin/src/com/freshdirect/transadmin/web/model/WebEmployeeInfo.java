@@ -1,5 +1,6 @@
 package com.freshdirect.transadmin.web.model;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -8,6 +9,7 @@ import java.util.List;
 
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.EmployeeRole;
+import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class WebEmployeeInfo {
 	
@@ -166,4 +168,17 @@ private String employeeId;
 	public String getSupervisorShortName() {
 		return empInfo.getSupervisorShortName();
 	}
+	
+	public String getTerminationDate()
+	{ 
+		if(empInfo.getTerminationDate()==null) return "";				
+		 try {
+			return TransStringUtil.getDate(empInfo.getTerminationDate());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "";
+	}
+	
 }

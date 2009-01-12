@@ -53,7 +53,7 @@ public class EmployeeManagerDaoOracleImpl implements EmployeeManagerDaoI {
 	private static final String GET_ALL_TERMINATED_EMPLOYEE_QRY=
 		"SELECT a.PERSONNUM KRONOS_ID, a.FIRSTNM FIRST_NAME, a.MIDDLEINITIALNM MIDDLE_INITIAL, a.LASTNM LAST_NAME, a.SHORTNM SHORT_NAME, "+ 
 		"a.HOMELABORLEVELNM7 JOB_TYPE, a.COMPANYHIREDTM HIRE_DATE, a.EMPLOYMENTSTATUS STATUS, b.PERSONNUM SUP_KRONOS_ID, b.FIRSTNM SUP_FIRST_NAME, "+ 
-		"b.MIDDLEINITIALNM SUP_MIDDLE_INITIAL, b.LASTNM SUP_LAST_NAME, b.SHORTNM SUP_SHORT_NAME "+ 
+		"b.MIDDLEINITIALNM SUP_MIDDLE_INITIAL, b.LASTNM SUP_LAST_NAME, b.SHORTNM SUP_SHORT_NAME, a.EMPLOYMENTSTATUSDT TERMINATION_DATE "+ 
 		" FROM transp.KRONOS_EMPLOYEE a, transp.KRONOS_EMPLOYEE b "+ 
 		"WHERE a.SUPERVISORNUM = b.PERSONNUM "+ 
 		"AND a.HOMELABORLEVELNM5 in ('10001','10002', '10003', '10004', '10005', '10006', '10007', '10008', '10009', '10101', '10102', '10103', '10104', '10105', '10012')"+
@@ -93,7 +93,7 @@ public class EmployeeManagerDaoOracleImpl implements EmployeeManagerDaoI {
        		    		
        		    		EmployeeInfo model=new EmployeeInfo(
        		    		employeeId,firstName,lastName,middleInitial,shortName,jobType,hireDate,
-       		    		status,supervisorId,supervisorFirstName,supervisorMiddleInitial,supervisorLastName,supervisorShortName
+       		    		status,supervisorId,supervisorFirstName,supervisorMiddleInitial,supervisorLastName,supervisorShortName,null
        		    		);
        		    		
        		    		list.add(model);
@@ -140,7 +140,7 @@ public class EmployeeManagerDaoOracleImpl implements EmployeeManagerDaoI {
        		    		
        		    		EmployeeInfo model=new EmployeeInfo(
        		    		employeeId,firstName,lastName,middleInitial,shortName,jobType,hireDate,
-       		    		status,supervisorId,supervisorFirstName,supervisorMiddleInitial,supervisorLastName,supervisorShortName
+       		    		status,supervisorId,supervisorFirstName,supervisorMiddleInitial,supervisorLastName,supervisorShortName,null
        		    		);
        		    		
        		    		list.add(model);
@@ -185,10 +185,10 @@ public class EmployeeManagerDaoOracleImpl implements EmployeeManagerDaoI {
        		    		String supervisorMiddleInitial=rs.getString("SUP_MIDDLE_INITIAL");
        		    		String supervisorLastName=rs.getString("SUP_LAST_NAME");
        		    		String supervisorShortName=rs.getString("SUP_SHORT_NAME");
-       		    		
+       		    		Date terminationDate=rs.getDate("TERMINATION_DATE");         		    		
        		    		EmployeeInfo model=new EmployeeInfo(
        		    		employeeId,firstName,lastName,middleInitial,shortName,jobType,hireDate,
-       		    		status,supervisorId,supervisorFirstName,supervisorMiddleInitial,supervisorLastName,supervisorShortName
+       		    		status,supervisorId,supervisorFirstName,supervisorMiddleInitial,supervisorLastName,supervisorShortName,terminationDate
        		    		);
        		    		
        		    		list.add(model);

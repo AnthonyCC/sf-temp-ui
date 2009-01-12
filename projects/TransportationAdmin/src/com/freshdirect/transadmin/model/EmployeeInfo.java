@@ -32,9 +32,11 @@ public class EmployeeInfo implements java.io.Serializable, TrnBaseEntityI, Resou
 	
 	private String supervisorShortName;
 	
+	private Date terminationDate;
+	
 	public EmployeeInfo() {
 	}
-	public EmployeeInfo(String employeeId, String firstName, String lastName, String middleInitial, String shortName, String jobType, Date hireDate, String status, String supervisorId, String supervisorFirstName, String supervisorMiddleInitial, String supervisorLastName, String supervisorShortName) {
+	public EmployeeInfo(String employeeId, String firstName, String lastName, String middleInitial, String shortName, String jobType, Date hireDate, String status, String supervisorId, String supervisorFirstName, String supervisorMiddleInitial, String supervisorLastName, String supervisorShortName,Date terminationDate) {
 		super();
 		this.employeeId = employeeId;
 		this.firstName = firstName;
@@ -49,6 +51,7 @@ public class EmployeeInfo implements java.io.Serializable, TrnBaseEntityI, Resou
 		this.supervisorMiddleInitial = supervisorMiddleInitial;
 		this.supervisorLastName = supervisorLastName;
 		this.supervisorShortName = supervisorShortName;
+		this.terminationDate=terminationDate;
 	}
 		
 	public boolean isObsoleteEntity() {
@@ -170,6 +173,12 @@ public class EmployeeInfo implements java.io.Serializable, TrnBaseEntityI, Resou
 	public void setNextelNo(String nextelNo) {
 		// TODO Auto-generated method stub
 		
+	}
+	public Date getTerminationDate() {
+		return terminationDate;
+	}
+	public void setTerminationDate(Date terminationDate) {
+		this.terminationDate = terminationDate;
 	}
 	
 	
