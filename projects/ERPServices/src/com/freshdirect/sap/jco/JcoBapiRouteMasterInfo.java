@@ -3,10 +3,10 @@ package com.freshdirect.sap.jco;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.sap.bapi.BapiException;
 import com.freshdirect.sap.bapi.BapiRouteMasterInfo;
 import com.sap.mw.jco.JCO;
@@ -23,7 +23,7 @@ public class JcoBapiRouteMasterInfo extends JcoBapiFunction implements BapiRoute
     private static final DateFormat DATE_FORMAT=new SimpleDateFormat("dd-MMM-yyyy");
 	
 	public JcoBapiRouteMasterInfo() {
-		super("ZBAPI_ROUTE_INFO");
+		super(ErpServicesProperties.getRouteInfoFunctionName());//("ZBAPI_ROUTE_INFO");
 	}
 
 

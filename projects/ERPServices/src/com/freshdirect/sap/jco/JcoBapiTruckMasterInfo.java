@@ -4,8 +4,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.sap.bapi.BapiException;
-import com.freshdirect.sap.bapi.BapiMaterialAvailability;
 import com.freshdirect.sap.bapi.BapiTruckMasterInfo;
 import com.sap.mw.jco.JCO;
 
@@ -21,7 +21,7 @@ public class JcoBapiTruckMasterInfo extends JcoBapiFunction implements BapiTruck
 	
 	
 	public JcoBapiTruckMasterInfo() {
-		super("ZBAPI_TRUCK_INFO");
+		super(ErpServicesProperties.getTruckInfoFunctionName());//("ZBAPI_TRUCK_INFO");
 	}
 
 

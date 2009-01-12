@@ -136,6 +136,10 @@ public class ErpServicesProperties {
 	private final static String PROP_SUBSCRIPTION_SEND_EMAIL = "subscription.mail.send";
 	
 	private final static String PROP_FUNCTION_CARTONINFO = "sap.function.cartoninfo";
+	
+	private final static String PROP_FUNCTION_ROUTEINFO = "sap.function.routeinfo";
+	
+	private final static String PROP_FUNCTION_TRUCKINFO = "sap.function.truckinfo";
 
 	static {
 		Properties defaults = new Properties();
@@ -232,6 +236,9 @@ public class ErpServicesProperties {
 		defaults.put(PROP_SUBSCRIPTION_SEND_EMAIL, "true");
 		
 		defaults.put(PROP_FUNCTION_CARTONINFO, "ZWM_CARTONCOUNT_BYORDERS");
+		
+		defaults.put(PROP_FUNCTION_ROUTEINFO, "ZBAPI_ROUTE_INFO");
+		defaults.put(PROP_FUNCTION_TRUCKINFO, "ZBAPI_TRUCK_INFO");
 		
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration: "+config);
@@ -553,6 +560,14 @@ public class ErpServicesProperties {
 	
 	public static String getCartonInfoFunctionName() {
 		return config.getProperty(PROP_FUNCTION_CARTONINFO);
+	}
+	
+	public static String getRouteInfoFunctionName() {
+		return config.getProperty(PROP_FUNCTION_ROUTEINFO);
+	}
+	
+	public static String getTruckInfoFunctionName() {
+		return config.getProperty(PROP_FUNCTION_TRUCKINFO);
 	}
 	
 }
