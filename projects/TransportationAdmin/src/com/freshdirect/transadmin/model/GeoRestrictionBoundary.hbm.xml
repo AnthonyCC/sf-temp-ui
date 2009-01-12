@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jan 7, 2009 10:45:25 AM by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping schema="dlv">
+    <class name="com.freshdirect.transadmin.model.GeoRestrictionBoundary" table="GEO_RESTRICTION_BOUNDARY">
+        <id name="code" type="string">
+            <column name="CODE" length="16" />
+               <generator class="assigned" />
+        </id>
+        <property name="name" type="string">
+            <column name="NAME" length="256" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>
