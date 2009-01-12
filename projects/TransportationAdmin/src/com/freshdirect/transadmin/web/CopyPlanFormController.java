@@ -229,6 +229,7 @@ public class CopyPlanFormController extends AbstractFormController {
 			tmpNewPlan.setSequence(tmpPlan.getSequence());
 			tmpNewPlan.setStartTime(tmpPlan.getStartTime());
 			tmpNewPlan.setZone(tmpPlan.getZone());
+			tmpNewPlan.setSupervisorId(tmpPlan.getSupervisorId());
 			if(includeEmpDetails) {
 				Set planResources=tmpPlan.getPlanResources();
 				Set tmpNewPlanResources=new HashSet();
