@@ -10,15 +10,39 @@ import org.extremecomponents.util.HtmlBuilder;
 
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.ResourceInfoI;
+import com.freshdirect.transadmin.util.TransStringUtil;
+import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.web.model.ResourceList;
 import com.freshdirect.transadmin.web.model.ResourceReq;
 
 public class FDPlanResourceCell extends FDBaseCell  {
 	
 	public String getExportDisplay(TableModel model, Column column) {
-        return null;
+		
+		Object obj=column.getPropertyValue();
+		if(obj instanceof ResourceList) {
+			ResourceList resList=(ResourceList)obj;
+			StringBuffer response=new StringBuffer(200);
+			if(resList.getResourceReq()!=null) {
+				
+				for(int i=0;i<resList.size();i++) {
+					String name=((EmployeeInfo)resList.get(i)).getName();
+					response.append(name);
+					if(i<(resList.size()-1)) {
+						TransportationAdminProperties t;
+						response.append(TransportationAdminProperties.getCellDataSeperator());
+					}
+				}
+				if(TransportationAdminProperties.getCellDataSeperator().equals(response.toString())) {
+					return "";
+				}
+			}
+			return response.toString();
+		}
+		return "";
     }
 
+	
     public String getHtmlDisplay(TableModel model, Column column) {   
     	
         ColumnBuilder columnBuilder = new ColumnBuilder(column);

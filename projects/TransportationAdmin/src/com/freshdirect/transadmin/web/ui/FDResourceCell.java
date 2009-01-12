@@ -8,12 +8,29 @@ import org.extremecomponents.table.core.TableModel;
 import org.extremecomponents.table.view.html.ColumnBuilder;
 import org.extremecomponents.util.HtmlBuilder;
 
+import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.ZonetypeResource;
+import com.freshdirect.transadmin.util.TransportationAdminProperties;
+import com.freshdirect.transadmin.web.model.ResourceList;
 
 public class FDResourceCell extends FDBaseCell  {
 	
 	public String getExportDisplay(TableModel model, Column column) {
-        return null;
+		 Set resources = (Set)column.getPropertyValue();
+	        if(resources != null) {
+	        	Iterator iterator = resources.iterator();
+	        	ZonetypeResource resource = null;
+	        	StringBuffer response= new StringBuffer(10);
+	        	while(iterator.hasNext()) {
+	        		resource = (ZonetypeResource)iterator.next();
+	        		if(resource.getId().getRole().equals(column.getAlias())) {
+	        			response.append(resource.getMaximumNo()).append("/").append(resource.getRequiredNo()).toString();
+	        		}
+	        	}
+	        	
+	        	return response.toString();
+	        }             
+		return "";       
     }
 
     public String getHtmlDisplay(TableModel model, Column column) {    	
