@@ -148,7 +148,7 @@
                   <td>Supervisor</td>
                   <td> 
                   <form:select path="supervisorCode">
-                        <form:option value="null" label="--Please Select Supervisor/>
+                        <form:option value="null" label="--Please Select Supervisor"/>
                     <form:options items="${supervisors}" itemLabel="name" itemValue="employeeId" />
                    </form:select>
                 </td>
@@ -286,7 +286,7 @@
                     document.getElementById("zoneCode").disabled=false;
                     document.getElementById("regionCode").disabled=true;
                 }
-                 document.getElementById("zoneModified").value = "true";
+                document.getElementById("zoneModified").value = "true";
                 document.getElementById("ignoreErrors").value = "true";
               document.getElementById("planForm").submit();
 
