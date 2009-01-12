@@ -192,10 +192,10 @@ public class FilteredSearchResults extends SearchResults implements Serializable
                 boolean n1 = originalSearchTerm.equals(c1.getFullName().toLowerCase());
                 boolean n2 = originalSearchTerm.equals(c2.getFullName().toLowerCase());
                 if (!n1 && n2) {
-                    return inverse ? 1 : -1;
+                    return inverse ? -1 : 1;
                 }
                 if (n1 && !n2) {
-                    return inverse ? -1 : 1;
+                    return inverse ? 1 : -1;
                 }
             }
 
