@@ -16,6 +16,9 @@
         <many-to-one name="region" class="com.freshdirect.transadmin.model.Region" fetch="select" lazy="false">
             <column name="REGION" length="16" not-null="true" />
         </many-to-one>
+        <property name="supervisorId" type="string">
+            <column name="SUPERVISOR_ID" length="10" />
+        </property>
         <property name="planDate" type="date">
             <column name="PLAN_DATE" length="7" not-null="true" />
         </property>

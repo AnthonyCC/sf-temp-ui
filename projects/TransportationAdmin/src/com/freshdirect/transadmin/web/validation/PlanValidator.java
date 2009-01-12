@@ -40,7 +40,7 @@ public class PlanValidator extends AbstractValidator {
 		}
 		ValidationUtils.rejectIfEmpty(errors, "sequence", "app.error.112", new Object[]{"Sequence"},"required field");
 		validateIntegerMinMax("sequence",new Integer(model.getSequence()),1,99,errors);
-		ValidationUtils.rejectIfEmpty(errors, "supervisorCode", "app.error.112", new Object[]{"Supervisor"},"required field");
+		//ValidationUtils.rejectIfEmpty(errors, "supervisorCode", "app.error.112", new Object[]{"Supervisor"},"required field");
 		
 		validateResources(model.getDrivers().getResourceReq().getReq().intValue(),model.getDrivers().getResourceReq().getMax().intValue(),"drivers",model.getDrivers(),errors);
 		validateResources(model.getHelpers().getResourceReq().getReq().intValue(),model.getHelpers().getResourceReq().getMax().intValue(),"helpers",model.getHelpers(),errors);

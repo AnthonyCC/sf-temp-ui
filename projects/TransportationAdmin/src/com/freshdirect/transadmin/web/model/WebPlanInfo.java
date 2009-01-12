@@ -38,7 +38,7 @@ public class WebPlanInfo extends BaseCommand {
 	private String zoneModified;
 	private Date errorDate;
 	private String  supervisorCode;
-	private String supervisorId;
+
 	private String supervisorName;
 	private String zoneType;
 	private ResourceList drivers= new ResourceList();/*LazyList.decorate(
@@ -54,7 +54,7 @@ public class WebPlanInfo extends BaseCommand {
 	
 	
 	public Tooltip getSupervisorEx() {
-		String value=new StringBuffer(100).append(supervisorName).append("\n").append("ID : ").append(supervisorId).toString();
+		String value=new StringBuffer(100).append(supervisorName).append("\n").append("ID : ").append(supervisorCode).toString();
 		return new Tooltip(this.getSupervisorName(), value);
 	}
 	
@@ -401,10 +401,10 @@ public class WebPlanInfo extends BaseCommand {
 		Set planResources=new HashSet();
 		ResourceInfoI supervisorInfo = constructResourceInfo();
 		supervisorInfo.setEmployeeId(this.supervisorCode);
-		ResourceI supervisor=getResource(supervisorInfo ,EnumResourceType.SUPERVISOR);
+		/*ResourceI supervisor=getResource(supervisorInfo ,EnumResourceType.SUPERVISOR);
 		if(supervisor!=null) {
 			planResources.add(supervisor);
-		}
+		}*/
 		planResources.addAll(getResources(this.getDrivers(),EnumResourceType.DRIVER));
 		planResources.addAll(getResources(this.getHelpers(),EnumResourceType.HELPER));
 		planResources.addAll(getResources(this.getRunners(),EnumResourceType.RUNNER));
@@ -485,12 +485,12 @@ public class WebPlanInfo extends BaseCommand {
                       runnerCount++;
                   }
                   
-              } else if(EnumResourceType.SUPERVISOR.equals(role)) {
+              }/* else if(EnumResourceType.SUPERVISOR.equals(role)) {
             	  if(resource!=null)
             		this.setSupervisorCode(resourceInfo.getEmployeeId());
             	  	this.setSupervisorName(resourceInfo.getName());
             	  	this.setSupervisorId(resourceInfo.getEmployeeId());
-              }
+              }*/
         }
 	}
 	
@@ -551,13 +551,7 @@ public class WebPlanInfo extends BaseCommand {
 		}
 	}
 
-	public String getSupervisorId() {
-		return supervisorId;
-	}
-
-	public void setSupervisorId(String supervisorId) {
-		this.supervisorId = supervisorId;
-	}
+	
 
 
 

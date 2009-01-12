@@ -22,8 +22,17 @@ public class Plan implements java.io.Serializable, TrnBaseEntityI  {
 	private Set planResources = new HashSet(0);
 	private String ignoreErrors;
 	private Date errorDate;
+	private String supervisorId;
 
 	
+	public String getSupervisorId() {
+		return supervisorId;
+	}
+
+	public void setSupervisorId(String supervisorId) {
+		this.supervisorId = supervisorId;
+	}
+
 	public Plan() {
 	}
 	

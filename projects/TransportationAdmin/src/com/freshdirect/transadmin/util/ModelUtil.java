@@ -231,6 +231,7 @@ public class ModelUtil {
 			d.setPlanId(p.getPlanId());
 			d.setDispatchDate(p.getPlanDate());
 			d.setStartTime(p.getStartTime());
+			d.setSupervisorId(p.getSupervisorId());
 			d.setDispatchResources(convertPlnToDispatchResource(p.getPlanResources(),d));						
 			d.setFirstDlvTime(p.getFirstDeliveryTime());
 			System.out.println("setting the zone :"+p.getZone());			

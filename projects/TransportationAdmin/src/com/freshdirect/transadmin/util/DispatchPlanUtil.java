@@ -73,6 +73,11 @@ public class DispatchPlanUtil {
 		}
 		planInfo.setIsBullpen(plan.getIsBullpen());
 		planInfo.setSequence(plan.getSequence());
+		planInfo.setSupervisorCode(plan.getSupervisorId());
+		WebEmployeeInfo webEmp=employeeManagerService.getEmployee(plan.getSupervisorId());
+		if(webEmp!=null && webEmp.getEmpInfo()!=null) {
+			planInfo.setSupervisorName(webEmp.getEmpInfo().getName());
+		}
 		try {
 			String val=DateUtil.formatDay(plan.getPlanDate());
 			planInfo.setPlanDay(val);
@@ -164,6 +169,7 @@ public class DispatchPlanUtil {
 		}
 		plan.setSequence(planInfo.getSequence());
 		plan.setIsBullpen(planInfo.getIsBullpen());
+		plan.setSupervisorId(planInfo.getSupervisorCode());
 		plan.setPlanResources(planInfo.getResources());
 		return plan;
 		

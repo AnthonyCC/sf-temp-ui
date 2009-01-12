@@ -84,6 +84,8 @@ public class TransportationAdminProperties {
 	private static long lastRefresh = 0;
 	private final static long REFRESH_PERIOD = 5 * 60 * 1000;
 	
+	private final static String PROP_TRANSPORTATION_CELLDATA_SEPERATOR		= "transportation.celldata.seperator";
+	
 	static {
 				
 		
@@ -143,7 +145,9 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_ZONETYPE_HELPER_REQ, "0");
 		defaults.put(PROP_TRANSPORTATION_ZONETYPE_HELPER_MAX, "10");
 		defaults.put(PROP_TRANSPORTATION_ZONETYPE_RUNNER_REQ, "0");
-		defaults.put(PROP_TRANSPORTATION_ZONETYPE_RUNNER_MAX, "10");		
+		defaults.put(PROP_TRANSPORTATION_ZONETYPE_RUNNER_MAX, "10");
+		defaults.put(PROP_TRANSPORTATION_CELLDATA_SEPERATOR, "||");
+		
 		
 		refresh();		
 	}
@@ -311,5 +315,8 @@ public class TransportationAdminProperties {
 		return getIntVal(get(PROP_TRANSPORTATION_ZONETYPE_RUNNER_MAX));
 	}
 	
+	public static String getCellDataSeperator() {
+		return get(PROP_TRANSPORTATION_CELLDATA_SEPERATOR);
+	}
 	
 }
