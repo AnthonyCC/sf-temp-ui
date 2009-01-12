@@ -4,14 +4,37 @@
 
 <tmpl:insert template='/common/sitelayout.jsp'>
 
-    <tmpl:put name='title' direct='true'>Transportation Zone Types</tmpl:put>
+<% 
+	String pageTitle = "Zone Type";
+%>
+    <tmpl:put name='title' direct='true'> Geography : <%=pageTitle%></tmpl:put>
 
 	<tmpl:put name='content' direct='true'>
-		<br/>	
-		<div align="center">
+
+	
+	<c:if test="${not empty messages}">
+		<div class="err_messages">
+			<jsp:include page='/common/messages.jsp'/>
+		</div>
+	</c:if> 
+  <div class="contentroot">
+
+		<div class="cont_topleft">
+			<div class="cont_row">
+				<div class="cont_Litem">
+					<span class="scrTitle">
+						<%=pageTitle%>
+					</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="cont_topright">
+			<div class="cont_row">
+				<div class="cont_Ritem">
 			<form id="zoneTypeListForm" action="" method="post">	
 				<ec:table items="zonetypes"   action="${pageContext.request.contextPath}/zonetype.do"
-				    imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="Transportation Zone Types"
+				    imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title=""
 				    width="98%"  view="fd" form="zoneTypeListForm" autoIncludeParameters="false" rowsDisplayed="25"  >
 				    
 				    <ec:exportPdf fileName="transportationzonetypes.pdf" tooltip="Export PDF" 
@@ -33,8 +56,11 @@
                                          
 				    </ec:row>
 				  </ec:table>
-			 </form> 	
-		 </div>
+			 </form> 
+				</div>
+			</div>
+		</div>
+	</div>
 		 <script>
 			addRowHandlers('ec_table', 'rowMouseOver', 'editzonetype.do','id',0, 0);
 		</script> 	

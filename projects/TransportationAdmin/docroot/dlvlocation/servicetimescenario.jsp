@@ -10,11 +10,25 @@
     <tmpl:put name='title' direct='true'>Routing : <%=pageTitle%></tmpl:put>
   
   <tmpl:put name='content' direct='true'>
-    <div class="contentroot">
+
+<div class="contentroot">
+
 		<div class="cont_topleft">
 			<div class="cont_row">
+				<div class="cont_Litem">
+					<span class="scrTitle">
+						<%=pageTitle%>
+					</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="cont_topright">
+			<div class="cont_row">
+				<div class="cont_Ritem">
+				<form id="dlvServiceTimeScenarioForm" action="" method="post">
         <ec:table items="dlvservicetimescenariolist"   action="${pageContext.request.contextPath}/dlvservicetimescenario.do"
-            imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="Transportation Service Time Scenarios"
+            imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title=""
             width="98%"  view="fd" form="dlvServiceTimeScenarioForm" autoIncludeParameters="false" rowsDisplayed="25"  >
             
             <ec:exportPdf fileName="transportationservicetimescenarios.pdf" tooltip="Export PDF" 
@@ -45,11 +59,11 @@
           <ec:column property="lateDeliveryFactor" width="10px" title="Late Delivery Factor"/> 
             </ec:row>
           </ec:table>
-       </form>  
-     </div>
-			</div> 
-		</div> 
-	</div>
+       </form>
+				</div>
+			</div>
+		</div>
+	</div> 
      <script>
       addRowHandlers('ec_table', 'rowMouseOver', 'editdlvservicetimescenario.do','id',0, 0);
     </script>   

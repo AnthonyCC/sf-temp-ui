@@ -6,7 +6,7 @@
 
 <tmpl:insert template='/common/sitelayout.jsp'>
 
-    <tmpl:put name='title' direct='true'>Add/Edit Area</tmpl:put>
+    <tmpl:put name='title' direct='true'> Geography : Area : Add/Edit Area</tmpl:put>
   <script>
     function loadBalanceEvent() {
       

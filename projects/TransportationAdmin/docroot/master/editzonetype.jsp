@@ -5,7 +5,7 @@
 
 <tmpl:insert template='/common/sitelayout.jsp'>
 
-    <tmpl:put name='title' direct='true'>Add/Edit Zone Type</tmpl:put>
+    <tmpl:put name='title' direct='true'> Geography : Zone Type : Add/Edit Zone Type</tmpl:put>
 
 	<tmpl:put name='content' direct='true'>
 		<br/>	

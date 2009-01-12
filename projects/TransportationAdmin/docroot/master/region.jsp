@@ -11,7 +11,13 @@
 
   <tmpl:put name='content' direct='true'>
 
+	<c:if test="${not empty messages}">
+		<div class="err_messages">
+			<jsp:include page='/common/messages.jsp'/>
+		</div>
+	</c:if> 
 
+  <div class="contentroot">
 		<div class="cont_topleft">
 			<div class="cont_row">
 				<div class="cont_Litem">

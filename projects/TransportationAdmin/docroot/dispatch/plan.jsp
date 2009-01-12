@@ -22,18 +22,17 @@
 
 	<c:if test="${not empty messages}">
 		<div class="err_messages">
+			<jsp:include page='/common/messages.jsp'/>
 		</div>
 	</c:if> 
-  
+ 
   <div class="contentroot">
 
 		<div class="cont_topleft">
 			<div class="cont_row">
-				<div class="cont_Litem">
-					<span class="scrTitle">
-						<%=pageTitle%>
-					</span>
-						<span><input maxlength="40" size="40" name="daterange" id="daterange" value="<%= dateRangeVal %>" /></span>
+				<div class="cont_Litem" id="page_<%=pageTitle%>">
+					<span class="scrTitle"><%=pageTitle%></span>
+						<span><input maxlength="40" name="daterange" id="daterange" value="<%= dateRangeVal %>" /></span>
 
 							<span><input maxlength="40" size="40" name="zone" id="zone" value="<%= zoneVal %>" /></span>
 						<span><input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink('daterange','zone','plan.do')" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>

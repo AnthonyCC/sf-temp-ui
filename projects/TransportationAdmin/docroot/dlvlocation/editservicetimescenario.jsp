@@ -6,7 +6,9 @@
 
 <tmpl:insert template='/common/sitelayout.jsp'>
 
-    <tmpl:put name='title' direct='true'>Add/Edit Delivery Service Time Type</tmpl:put>
+<% String pageTitle = "Add/Edit Delivery Service Time Scenario"; %>
+
+    <tmpl:put name='title' direct='true'>Routing : ... : <%=pageTitle%></tmpl:put>
   <script>
     function loadBalanceEvent() {
       
@@ -29,7 +31,7 @@
       <form:hidden path="isNew"/>   
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
           <tr>
-            <td class="screentitle">Add/Edit Delivery Service Time Scenario</td>
+            <td class="screentitle"><%=pageTitle%></td>
           </tr>
           <tr>
             <td class="screenmessages"><jsp:include page='/common/messages.jsp'/></td>

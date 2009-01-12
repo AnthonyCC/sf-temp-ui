@@ -6,7 +6,7 @@
 
 <tmpl:insert template='/common/sitelayout.jsp'>
 
-    <tmpl:put name='title' direct='true'>Process Routing File</tmpl:put>
+    <tmpl:put name='title' direct='true'> Routing : Routing Out </tmpl:put>
 
   <tmpl:put name='content' direct='true'>
     <br/> 

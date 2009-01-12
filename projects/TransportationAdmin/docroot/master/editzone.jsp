@@ -9,14 +9,39 @@
   pageContext.setAttribute("HAS_ADDBUTTON", "false"); 
 %>
 
-
+<% 
+	String pageTitle = "Add/Edit Zone";
+%>
 <tmpl:insert template='/common/sitelayout.jsp'>
 
-    <tmpl:put name='title' direct='true'>Add/Edit Zone</tmpl:put>
-
+<tmpl:put name='title' direct='true'>Operations : Zones : Active : <%=pageTitle%></tmpl:put>
   <tmpl:put name='content' direct='true'>
-    <br/> 
-    <div align="center">
+
+<div class="MNM003 subsub or_3c3">
+		<div class="subs_left">	
+			<div class="sub_tableft sub_tabL_MNM003 activeL">&nbsp;</div>
+			<div class="subtab activeT">
+				<div class="minwidth"><!-- --></div>
+				<a href="zone.do?zoneType=Active" class="MNM003">Active</a>
+			</div>
+			<div class="sub_tabright sub_tabR_MNM003 activeR">&nbsp;</div>
+
+			<div class="sub_tableft sub_tabL_MNM003">&nbsp;</div>
+			<div class="subtab">
+				<div class="minwidth"><!-- --></div>
+				<a href="zone.do" class="">All</a>
+			</div>
+			<div class="sub_tabright sub_tabR_MNM003">&nbsp;</div>		
+		
+		</div>
+	</div>
+
+    
+	<div class="contentroot">		
+		<div class="cont_row">
+
+		<br/>	
+		<div align="center">
       <form:form commandName = "zoneForm" method="post">
       <form:hidden path="zoneCode"/>
       
@@ -104,6 +129,8 @@
         </table>
       
       </form:form>
+     </div>
+     </div>
      </div>
      
   </tmpl:put>
