@@ -46,7 +46,8 @@
     
     
         function validateUserFields(){
-           if(document.getElementById('dayOfWeek').value==''
+           if(
+              document.getElementById('DayOfWeekList').selectedIndex==0
                  || document.getElementById('condition').value=='' 
                    || document.getElementById('startTime').value=='' 
                       || document.getElementById('endTime').value==''){
@@ -67,20 +68,19 @@
 	                  var profileTableFld = document.getElementById('profileListTB');
 						//var profileTableRow = document.getElementById(currentRow);
 						
-						
 						var allTrElements = profileTableFld.getElementById(currentRow);
-                        
-                     allTrElements.getElementsByTagName("td")[0].innerHTML=document.getElementById('dayOfWeek').value;   
+                     console.log("currentRow :"+currentRow);   
+                     allTrElements.getElementsByTagName("td")[0].innerHTML=document.getElementById('DayOfWeekList')[document.getElementById('DayOfWeekList').selectedIndex].value;   
                      allTrElements.getElementsByTagName("td")[1].innerHTML=document.getElementById('condition').value;   
                      allTrElements.getElementsByTagName("td")[2].innerHTML=document.getElementById('startTime').value;   
                      allTrElements.getElementsByTagName("td")[3].innerHTML=document.getElementById('endTime').value;   
                                          
-                      document.getElementById(currentRow+'.dayOfWeek').value=document.getElementById('dayOfWeek').value;
+                      document.getElementById(currentRow+'.dayOfWeek').value=document.getElementById('DayOfWeekList')[document.getElementById('DayOfWeekList').selectedIndex].value;
                       document.getElementById(currentRow+'.condition').value=document.getElementById('condition').value;
                       document.getElementById(currentRow+'.startTime').value=document.getElementById('startTime').value;
                       document.getElementById(currentRow+'.endTime').value=document.getElementById('endTime').value;
-                                             
-                      document.getElementById('dayOfWeek').value='';
+                                                                   
+                      document.getElementById('DayOfWeekList').selectedIndex=0;                                                                                         
                       document.getElementById('condition').value='';
                       document.getElementById('startTime').value='';
                       document.getElementById('endTime').value='';                         
@@ -97,7 +97,7 @@
                       
                         if(!validateUserFields()){ return false; }                      
                          
-                      	var dayOfWeek = document.getElementById('dayOfWeek');
+                      	var dayOfWeek = document.getElementById('DayOfWeekList')[document.getElementById('DayOfWeekList').selectedIndex];
 	                     var condition = document.getElementById('condition');                            					
   						   var startTime = document.getElementById('startTime');
 						   var endTime = document.getElementById('endTime');
@@ -105,8 +105,14 @@
 							//if(dayOfWeek != null && 
 									//	dayOfWeek.value.length > 0 &&
 									//		startTime != null	&& 
-									//			startTime.value.length > 0) {																														
+									//			startTime.value.length > 0) {		
+                        console.log("addProfile");                                    
 								addProfleRow(dayOfWeek.value,condition.value,startTime.value,endTime.value);	
+                                
+                      document.getElementById('DayOfWeekList').selectedIndex=0;                                                                                         
+                      document.getElementById('condition').value='';
+                      document.getElementById('startTime').value='';
+                      document.getElementById('endTime').value='';          
 							//}				
 					  }
                       
@@ -124,7 +130,7 @@
 										var tmpID = 'attributeList['+rollingIndex+']';
 										row.id = tmpID;
 									    var td1 = document.createElement('td');
-									    td1.appendChild(document.createTextNode(dayOfWeek));
+									    td1.appendChild(document.createTextNode(dayOfWeek.value));
 									    var td2 = document.createElement('td');
                                         td2.appendChild(document.createTextNode(condition));    
  									    var td3 = document.createElement('td');
@@ -137,7 +143,7 @@
 									    tdDelete.href = "javascript:deleteProfile('"+tmpID+"')";
                                     var tdEdit = document.createElement('a');     
                                    tdEdit.innerHTML = 'Edit';
-									    tdEdit.href = "javascript:editProfile('"+tmpID+"')";     
+									    tdEdit.href = "javascript:copyProfile('"+tmpID+"')";     
                                         
                                    var tdSpacer = document.createElement('span');
 									    tdSpacer.innerHTML = ' / ';     
@@ -233,7 +239,8 @@
                   
                        
                          currentRow=theCell;
-                         document.getElementById('dayOfWeek').value=document.getElementById(theCell+'.dayOfWeek').value;
+                         alert("document.getElementById(theCell+'.dayOfWeek').value :"+document.getElementById(theCell+'.dayOfWeek').value);
+                         document.getElementById('DayOfWeekList').selectedIndex=document.getElementById(theCell+'.dayOfWeek').value;
                          document.getElementById('condition').value=document.getElementById(theCell+'.condition').value;
                          document.getElementById('startTime').value=document.getElementById(theCell+'.startTime').value;
                          document.getElementById('endTime').value=document.getElementById(theCell+'.endTime').value;
@@ -304,9 +311,9 @@
                </tr>
                
                <tr>
-                  <td>Comments</td>
+               <td>Comments</td>
                   <td>                  
-                    <form:input maxlength="50" size="30" path="comments" />
+                    <form:textarea path="comments" rows="5" cols="45" />
                 </td>
                 <td>
                   &nbsp;<form:errors path="comments" />
@@ -341,9 +348,9 @@
                <tr>
                   <td>Message</td>
                   <td>                  
-                    <form:input maxlength="50" size="30" path="message" />
+                    <form:textarea path="message" rows="5" cols="45" />
                 </td>
-                <td>
+                 <td>
                   &nbsp;<form:errors path="message" />
                 </td>
                </tr>
@@ -380,7 +387,16 @@
                   <td><B>Restriction Details</B></td>
                  </tr>    
                <tr>
-                   <td><input type="text" id="dayOfWeek" name="dayOfWeek" value=""></td>                               
+                   <td>                   
+                   <select name="DayOfWeekList" id="DayOfWeekList">                   
+                   <option value="0">Select Day</option> 
+                   <option value="1">Monday</option> 
+                   <option value="2">tuey</option> 
+                   <option value="3">wed</option> 
+                   <option value="4">thur</option>                    
+                   </select> 
+                   
+                   </td>                               
                    <td><input type="text" id="condition" name="condition" value=""></td>                                      
                    <td><input type="text" id="startTime" name="startTime" value=""></td>
                    <td><input type="text" id="endTime" name="endTime" value=""></td>

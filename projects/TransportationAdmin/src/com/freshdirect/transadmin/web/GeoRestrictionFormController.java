@@ -28,6 +28,7 @@ import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.RestrictionManagerI;
+import com.freshdirect.transadmin.util.EnumDayOfWeek;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.editor.TimeOfDayPropertyEditor;
 
@@ -41,6 +42,7 @@ public class GeoRestrictionFormController extends AbstractFormController {
 		//refData.put("zones", getDomainManagerService().getZones());
 		refData.put("restrictionDays", (Set)request.getAttribute("restrictionDaysList"));
 		refData.put("restrictionBoundries", getRestrictionManagerService().getGeoRestrictionBoundaries());
+		refData.put("DayOfWeeks", (List)EnumDayOfWeek.getEnumList());
 		return refData;
 	}
 	

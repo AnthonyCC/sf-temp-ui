@@ -69,4 +69,9 @@ public class GeoRestrictionDays implements java.io.Serializable {
 		this.startTime = startTime;
 	}
 
+//	public String getDayOfWeekInText(){
+//		if(this.restrictionDaysId==null) return "";			
+//		
+//	}
+	
 }
