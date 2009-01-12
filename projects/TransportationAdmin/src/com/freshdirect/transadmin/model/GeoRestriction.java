@@ -3,6 +3,8 @@ package com.freshdirect.transadmin.model;
 // Generated Jan 7, 2009 10:45:25 AM by Hibernate Tools 3.2.2.GA
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -149,4 +151,15 @@ public class GeoRestriction implements java.io.Serializable {
 		this.geoRestrictionDays = geoRestrictionDays;
 	}
 
+    public String getStartDateInString(){
+    	if(this.startDate==null) return "";
+    	return dateFormat.format(this.startDate);
+    }
+	
+    public String getEndDateInString(){
+    	if(this.endDate==null) return "";
+    	return dateFormat.format(this.endDate);
+    }
+    
+    public static DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 }

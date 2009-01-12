@@ -2,10 +2,12 @@
 package com.freshdirect.transadmin.web.validation;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.transadmin.model.DlvBuildingDtl;
 import com.freshdirect.transadmin.model.GeoRestriction;
 import com.freshdirect.transadmin.util.TransStringUtil;
@@ -37,6 +39,32 @@ public class GeoRestrictionValidator extends AbstractValidator {
 		if(model.getMessage() == null || "".equals(model.getMessage() )) {
 			ValidationUtils.rejectIfEmpty(errors, "message", "app.error.112", new Object[]{"Message"},"required field");
 		}
+		
+		if(model.getStartDate() == null) {
+			ValidationUtils.rejectIfEmpty(errors, "startDate", "app.error.112", new Object[]{"startDate"},"required field");
+		}
+		
+		if(model.getEndDate() == null) {
+			ValidationUtils.rejectIfEmpty(errors, "endDate", "app.error.112", new Object[]{"endDate"},"required field");
+		}
+		
+		try {
+		
+			System.out.println("errors.getErrorCount()="+errors.getErrorCount());
+			if(errors.getErrorCount()==0)			
+			{								
+				if(model.getStartDate().before(new Date())){
+					errors.rejectValue("startDate", "app.error.125", null,"");
+				}
+				
+				if(model.getEndDate().before(model.getStartDate())){
+					errors.rejectValue("endDate", "app.error.124", null,"");
+				}
+			}
+		} catch(NumberFormatException exp) {
+			errors.rejectValue("startDate", "typeMismatch.date", new Object[]{},"Invalid Date");			
+		}
+       
 		
 		System.out.println("###########\n#########\n#########\n");
 		

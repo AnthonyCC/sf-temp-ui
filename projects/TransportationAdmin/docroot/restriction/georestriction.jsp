@@ -43,7 +43,7 @@
                   };
               
                   if(checkCol == -1 || checkCol != j ) {
-              if(!(needKeyPress && (j > (cells.length-4)))) {             
+              if(!(needKeyPress && (j > (cells.length-1)))) {             
                   cells[j].onclick = function () {              
                       var cell = this.parentNode.getElementsByTagName("td")[columnIndex];
                       var selectBox = this.parentNode.getElementsByTagName("input")[0];

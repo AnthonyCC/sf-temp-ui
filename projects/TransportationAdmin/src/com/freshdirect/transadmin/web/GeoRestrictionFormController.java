@@ -109,6 +109,8 @@ protected void onBind(HttpServletRequest request, Object command) {
 		String restIndexStr[]=parseRestElelemntLink(restrictionLinkStr);
         System.out.println("restDtlSizeStr :"+restDtlSizeStr);
 
+        System.out.println("model.getStartDate():"+model.getStartDate());
+        System.out.println("model.getEndDate():"+model.getEndDate());
 		
 		Set restrictionDaysList=new HashSet();
 		if(restIndexStr!=null && restIndexStr.length>0)
@@ -237,7 +239,24 @@ protected void onBind(HttpServletRequest request, Object command) {
 		System.out.println("entering to save");	
 		List errorList = new ArrayList();
 		GeoRestriction modelIn = (GeoRestriction)domainObject;
+
+		/* tbr System.out.println("$$$$$$$$$$$\n$$$$$$$$$$$\n$$$$$$$$$$$\n$$$$$$$$$\n");
+		System.out.println("Before:\n"+modelIn.getEndDate());
+		System.out.println("$$$$$$$$$$$\n$$$$$$$$$$$\n$$$$$$$$$$$\n$$$$$$$$$\n");
+
+		Date date = modelIn.getEndDate();
+		
+		long t = date.getTime();
+		
+		t += (23*60*60+59*60+59)*1000;
+		
+		modelIn.setEndDate(new Date(t));
+		
+		System.out.println("After:\n"+modelIn.getEndDate());
+		
+		
 		System.out.println(modelIn);  
+		System.out.println("$$$$$$$$$$$\n$$$$$$$$$$$\n$$$$$$$$$$$\n$$$$$$$$$\n");*/
 				
 		try 
 		{

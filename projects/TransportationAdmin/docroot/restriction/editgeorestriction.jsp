@@ -316,8 +316,11 @@
                <tr>
                   <td>Start Date</td>
                   <td>                                    
-                  			<span><input maxlength="10" size="10" name="startDate" id="startDate" value="<c:out value="${geoRestrictionForm.startDate}"/>" /></span>
-							<span><input id="trigger_startDate" type="image" alt="Calendar" src="./images/icons/calendar.gif" onmousedown="this.src='./images/icons/calendar_ON.gif'" onmouseout="this.src='./images/icons/calendar.gif';" /></span>							                                      
+                  			<span><input maxlength="10" size="10" name="startDate" id="startDate" 
+                            value="<c:out value="${geoRestrictionForm.startDateInString}"/>" /></span>
+							<span><input id="trigger_startDate" type="image" alt="Calendar" 
+                            src="./images/icons/calendar.gif" onmousedown="this.src='./images/icons/calendar_ON.gif'" 
+                            onmouseout="this.src='./images/icons/calendar.gif';" /></span>							                                      
                 </td>
                 <td>
                   &nbsp;<form:errors path="startDate" />
@@ -327,7 +330,7 @@
                <tr>
                   <td>End Date</td>
                   <td>                  
-                 			<span><input maxlength="10" size="10" name="endDate" id="endDate" value="<c:out value="${geoRestrictionForm.endDate}"/>" /></span>
+                 			<span><input maxlength="10" size="10" name="endDate" id="endDate" value="<c:out value="${geoRestrictionForm.endDateInString}"/>" /></span>
 							<span><input id="trigger_endDate" type="image" alt="Calendar" src="./images/icons/calendar.gif" onmousedown="this.src='./images/icons/calendar_ON.gif'" onmouseout="this.src='./images/icons/calendar.gif';" /></span>							                                      
                 </td>
                 <td>
