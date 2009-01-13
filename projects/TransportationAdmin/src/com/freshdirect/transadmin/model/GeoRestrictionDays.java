@@ -5,6 +5,7 @@ package com.freshdirect.transadmin.model;
 import java.util.Date;
 
 import com.freshdirect.framework.util.TimeOfDay;
+import com.freshdirect.transadmin.util.EnumDayOfWeek;
 import com.freshdirect.transadmin.web.editor.TimeOfDayPropertyEditor;
 
 
@@ -69,9 +70,16 @@ public class GeoRestrictionDays implements java.io.Serializable {
 		this.startTime = startTime;
 	}
 
-//	public String getDayOfWeekInText(){
-//		if(this.restrictionDaysId==null) return "";			
-//		
-//	}
+	public String getDayOfWeekInText(){
+		if(this.restrictionDaysId==null) return "";			
+		System.out.println("restrictionDaysId.getDayOfWeek() :"+restrictionDaysId.getDayOfWeek().intValue()+":");
+		EnumDayOfWeek dow=EnumDayOfWeek.getEnum(Integer.toString(restrictionDaysId.getDayOfWeek().intValue()));
+		
+		System.out.println("dow :"+dow);
+		if(dow!=null)
+			return dow.getDesc(); 
+		else
+			return "";
+	}
 	
 }

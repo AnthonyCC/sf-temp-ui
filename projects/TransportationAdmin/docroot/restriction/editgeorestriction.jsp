@@ -70,7 +70,7 @@
 						
 						var allTrElements = profileTableFld.getElementById(currentRow);
                      console.log("currentRow :"+currentRow);   
-                     allTrElements.getElementsByTagName("td")[0].innerHTML=document.getElementById('DayOfWeekList')[document.getElementById('DayOfWeekList').selectedIndex].value;   
+                     allTrElements.getElementsByTagName("td")[0].innerHTML=document.getElementById('DayOfWeekList')[document.getElementById('DayOfWeekList').selectedIndex].text;   
                      allTrElements.getElementsByTagName("td")[1].innerHTML=document.getElementById('condition').value;   
                      allTrElements.getElementsByTagName("td")[2].innerHTML=document.getElementById('startTime').value;   
                      allTrElements.getElementsByTagName("td")[3].innerHTML=document.getElementById('endTime').value;   
@@ -106,8 +106,8 @@
 									//	dayOfWeek.value.length > 0 &&
 									//		startTime != null	&& 
 									//			startTime.value.length > 0) {		
-                        console.log("addProfile");                                    
-								addProfleRow(dayOfWeek.value,condition.value,startTime.value,endTime.value);	
+                        alert("addProfile"+dayOfWeek.value);                                    
+								addProfleRow(dayOfWeek,condition.value,startTime.value,endTime.value);	
                                 
                       document.getElementById('DayOfWeekList').selectedIndex=0;                                                                                         
                       document.getElementById('condition').value='';
@@ -130,7 +130,7 @@
 										var tmpID = 'attributeList['+rollingIndex+']';
 										row.id = tmpID;
 									    var td1 = document.createElement('td');
-									    td1.appendChild(document.createTextNode(dayOfWeek.value));
+									    td1.appendChild(document.createTextNode(dayOfWeek.text));
 									    var td2 = document.createElement('td');
                                         td2.appendChild(document.createTextNode(condition));    
  									    var td3 = document.createElement('td');
@@ -173,7 +173,7 @@
 						newElementValue1.setAttribute("type", "hidden");
                      newElementValue1.setAttribute("name", tmpId+'dayOfWeek');
 						newElementValue1.setAttribute("id", tmpId+'dayOfWeek');
-						newElementValue1.setAttribute("value", dayOfWeek);
+						newElementValue1.setAttribute("value", dayOfWeek.value);
 						
                   		var newElementValue2 = document.createElement("input");
 						newElementValue2.setAttribute("type", "hidden");
@@ -277,13 +277,18 @@
           <tr>
             <td class="screencontent">
               <table class="forms1">          
-                <tr>
-                  <td>Name</td>
+    				<tr>
+  
+                   <td>Name</td>
                   <td>                  
                     <form:input maxlength="50" size="30" path="name" />
                 </td>
                 <td>
                   &nbsp;<form:errors path="name" />
+                </td>
+               <td>Id</td> 
+                  <td>                  
+                    <form:input disabled="true" maxlength="50" size="30" path="id" />
                 </td>
                </tr>
                
@@ -390,10 +395,14 @@
                    <td>                   
                    <select name="DayOfWeekList" id="DayOfWeekList">                   
                    <option value="0">Select Day</option> 
-                   <option value="1">Monday</option> 
-                   <option value="2">tuey</option> 
-                   <option value="3">wed</option> 
-                   <option value="4">thur</option>                    
+                   <option value="1">Mon</option> 
+                   <option value="2">Tue</option> 
+                   <option value="3">Wed</option> 
+                   <option value="4">Thu</option>                    
+                   <option value="5">Fri</option>                    
+                   <option value="6">Sat</option>                    
+                   <option value="7">Sun</option>                    
+                   <option value="8">All</option>                    
                    </select> 
                    
                    </td>                               
@@ -433,7 +442,7 @@
                             <input type="hidden" name="attributeList[<%=intRowIndex%>].endTime" id="attributeList[<%=intRowIndex%>].endTime" value="<c:out value="${gDay.endTime}"/>" />
                             
                             <tr id='attributeList[<%=intRowIndex%>]'> 
-				        	  <td><c:out value="${gDay.restrictionDaysId.dayOfWeek}"/></td>                               
+				        	  <td><c:out value="${gDay.dayOfWeekInText}"/></td>                               
                               <td><c:out value="${gDay.condition}"/></td>
                               <td><input type="text" name="startTime1" value="<c:out value="${gDay.startTime}"/>"></td>
                               <td><c:out value="${gDay.endTime}"/></td>
