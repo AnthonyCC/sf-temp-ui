@@ -22,9 +22,6 @@ public class PlanValidator extends AbstractValidator {
 	}
 
 	public void validate(Object obj, Errors errors) {
-		System.out.println(errors.hasErrors());
-		System.out.println(errors.getErrorCount());
-		System.out.println(errors.getAllErrors());
 		WebPlanInfo model = (WebPlanInfo)obj;
 		//  need to decide about the validation part
 		ValidationUtils.rejectIfEmpty(errors, "planDate", "app.error.112", new Object[]{"Plan Date"},"required field");
@@ -39,40 +36,11 @@ public class PlanValidator extends AbstractValidator {
 			errors.rejectValue("regionCode", "app.error.112", new Object[]{"Region"},"required field");
 		}
 		ValidationUtils.rejectIfEmpty(errors, "sequence", "app.error.112", new Object[]{"Sequence"},"required field");
-		validateIntegerMinMax("sequence",new Integer(model.getSequence()),1,99,errors);
-		//ValidationUtils.rejectIfEmpty(errors, "supervisorCode", "app.error.112", new Object[]{"Supervisor"},"required field");
-		
+		validateIntegerMinMax("sequence",new Integer(model.getSequence()),0,99,errors);
 		validateResources(model.getDrivers().getResourceReq().getReq().intValue(),model.getDrivers().getResourceReq().getMax().intValue(),"drivers",model.getDrivers(),errors);
 		validateResources(model.getHelpers().getResourceReq().getReq().intValue(),model.getHelpers().getResourceReq().getMax().intValue(),"helpers",model.getHelpers(),errors);
 		validateResources(model.getRunners().getResourceReq().getReq().intValue(),model.getRunners().getResourceReq().getMax().intValue(),"runners",model.getRunners(),errors);
 		checkForDuplicateResourceAllocation(model,errors);
-		
-		/*boolean hasTimeSlots = true;
-		if(model != null && (model. .getTrnTimeslot() == null || model.getTrnTimeslot().getSlotId() == null)) {
-			errors.rejectValue("timeslot", "app.error.112", new Object[]{"Start Time Slot"},"required field");
-			hasTimeSlots = false;
-		}
-		
-		if(model != null && (model.getTrnEndTimeslot() == null || model.getTrnEndTimeslot().getSlotId() == null)) {
-			errors.rejectValue("endTimeslot", "app.error.112", new Object[]{"End Time Slot"},"required field");
-			hasTimeSlots = false;
-		}
-				
-		if(hasTimeSlots) {
-			//checkDate("timeslot", model.getTrnTimeslot().getSlotId(), model.getTrnEndTimeslot().getSlotId(), errors);
-		}*/
-		/*if(model != null && (model.getTrnDriver() == null || model.getTrnDriver().getEmployeeId() == null)) {
-			errors.rejectValue("driver", "app.error.112", new Object[]{"Driver"},"required field");
-		}
-		
-		if(model != null && (model.getTrnPrimaryHelper() == null || model.getTrnPrimaryHelper().getEmployeeId() == null)) {
-			errors.rejectValue("primaryHelper", "app.error.112", new Object[]{"Helper1"},"required field");
-		}
-		
-		if(model != null && (model.getTrnSecondaryHelper() == null || model.getTrnSecondaryHelper().getEmployeeId() == null)) {
-			errors.rejectValue("secondaryHelper", "app.error.112", new Object[]{"Helper2"},"required field");
-		}*/
-		
 	}	
 	
 	private void checkForDuplicateResourceAllocation(WebPlanInfo model, Errors errors) {
@@ -107,7 +75,8 @@ public class PlanValidator extends AbstractValidator {
 			if(max==0) {
 				errors.rejectValue(fieldName, "app.error.120",new Object[]{fieldName},"Please unselect your choices");
 			} else {
-				validateIntegerMinMax(fieldName,new Integer(getSelectedResources(resources)),req,max,errors);
+				//validateIntegerMinMax(fieldName,new Integer(getSelectedResources(resources)),req,max,errors);
+				validateInteger(fieldName,new Integer(getSelectedResources(resources)),errors);
 				boolean hasSelections=false;
 				for(int i=0;i<resources.size();i++) {
 					EmployeeInfo resource=(EmployeeInfo)resources.get(i);
@@ -149,7 +118,7 @@ public class PlanValidator extends AbstractValidator {
 		}
 		
 	}
-protected void validateIntegerMinMax(String field, Integer value, int min, int max, Errors errors) {
+	protected void validateInteger(String field, Integer value, Errors errors) {
 		
 		if(value != null 
 				&& !TransStringUtil.isEmpty(value.toString()) 
