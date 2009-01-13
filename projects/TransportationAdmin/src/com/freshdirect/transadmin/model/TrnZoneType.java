@@ -68,11 +68,11 @@ public class TrnZoneType implements java.io.Serializable, TrnBaseEntityI {
 		// TODO Auto-generated method stub
 		return false;
 	}
-	public Tooltip getNameEx() {
-		return new Tooltip(this.getName(), "Test tool tip");
+	public IToolTip getNameEx() {
+		return new Tooltip(this.getName(), this.getName());
 	}
 	
-	class Tooltip implements IToolTip {
+	class Tooltip implements IToolTip, Comparable {
 		
 		Object value = null;
 		String toolTip = null;
@@ -106,6 +106,17 @@ public class TrnZoneType implements java.io.Serializable, TrnBaseEntityI {
 		
 		public String toString() {
 			return getValue().toString();
+		}
+
+
+
+		public int compareTo(Object o) {
+			if(o instanceof Tooltip) {
+				String _val=((Tooltip)o).getValue().toString();
+				return ((String)value).compareTo(_val);
+			}
+			return 0;
+			
 		}
 	}
 

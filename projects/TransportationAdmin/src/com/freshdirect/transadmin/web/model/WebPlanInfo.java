@@ -66,7 +66,7 @@ public class WebPlanInfo extends BaseCommand {
 		return new Tooltip("<B>Bullpen</B>","");
 
 	}
-	class Tooltip implements IToolTip {
+	class Tooltip implements IToolTip,Comparable {
 		
 		Object value = null;
 		String toolTip = null;
@@ -102,6 +102,15 @@ public class WebPlanInfo extends BaseCommand {
 			if(value!=null)
 				return getValue().toString();
 			return "";
+		}
+		
+		public int compareTo(Object o) {
+			if(o instanceof Tooltip) {
+				String _val=((Tooltip)o).getValue().toString();
+				return ((String)value).compareTo(_val);
+			}
+			return 0;
+			
 		}
 	}
 	

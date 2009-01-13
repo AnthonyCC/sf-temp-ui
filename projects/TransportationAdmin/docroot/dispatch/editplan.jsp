@@ -122,7 +122,7 @@
                     </c:if>
                   <form:select path="zoneCode" disabled="${_isBullpen}" onChange="zoneChanged()">
                         <form:option value="null" label="--Please Select Zone"/>
-                    <form:options items="${zones}" itemLabel="name" itemValue="zoneCode" />
+                    <form:options items="${zones}" itemLabel="displayName" itemValue="zoneCode" />
                    </form:select>
                 </td>
                 <td>
