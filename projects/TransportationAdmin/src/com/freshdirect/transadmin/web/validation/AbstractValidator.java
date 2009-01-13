@@ -38,8 +38,10 @@ public abstract class AbstractValidator implements Validator  {
 		
 		if ( !(value.intValue() >=  min) || !(value.intValue() <= max ) )
 		{
-			errors.rejectValue(field, "app.error.119", new Object[] {field,""+min,""+max},null);			
-
+			if(min!=max)
+				errors.rejectValue(field, "app.error.119", new Object[] {field,""+min,""+max},null);			
+			else 
+				errors.rejectValue(field, "app.error.126", new Object[] {""+min,field,},null);
 		}
 			
 		
@@ -58,8 +60,9 @@ public abstract class AbstractValidator implements Validator  {
 		
 		if ( value != null && !"".equals(value.toString()) && !(value.intValue() >=  min) || !(value.intValue() <= max ) )
 		{
-			errors.rejectValue(field, "app.error.119", new Object[] {displayField,""+min,""+max},null);			
-
+			
+				errors.rejectValue(field, "app.error.119", new Object[] {displayField,""+min,""+max},null);
+			
 		}
 			
 		

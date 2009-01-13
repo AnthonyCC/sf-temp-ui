@@ -75,8 +75,6 @@ public class PlanValidator extends AbstractValidator {
 			if(max==0) {
 				errors.rejectValue(fieldName, "app.error.120",new Object[]{fieldName},"Please unselect your choices");
 			} else {
-				//validateIntegerMinMax(fieldName,new Integer(getSelectedResources(resources)),req,max,errors);
-				validateInteger(fieldName,new Integer(getSelectedResources(resources)),errors);
 				boolean hasSelections=false;
 				for(int i=0;i<resources.size();i++) {
 					EmployeeInfo resource=(EmployeeInfo)resources.get(i);
@@ -88,6 +86,8 @@ public class PlanValidator extends AbstractValidator {
 				}
 				if(!hasSelections&& req>0) {
 					errors.rejectValue(fieldName, "app.error.112", new Object[]{fieldName},"required field");
+				} else {
+					validateIntegerMinMax(fieldName,new Integer(getSelectedResources(resources)),req,max,errors);
 				}
 			}
 		} else if(req>0) {
@@ -118,14 +118,4 @@ public class PlanValidator extends AbstractValidator {
 		}
 		
 	}
-	protected void validateInteger(String field, Integer value, Errors errors) {
-		
-		if(value != null 
-				&& !TransStringUtil.isEmpty(value.toString()) 
-				&& !TransStringUtil.isValidInteger(value.toString()))
-		{			
-			errors.rejectValue(field, "app.error.118", null);			
-		}	
-	}
-
 }
