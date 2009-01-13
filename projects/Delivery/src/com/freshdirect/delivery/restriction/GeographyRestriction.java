@@ -85,7 +85,7 @@ public class GeographyRestriction extends ModelSupport   {
 	}
 	
 	public boolean contains(Date date) {
-		return !range.contains(date);
+		return range.containsEx(date);
 	}
 	
 	public String getDisplayDate() {
@@ -102,7 +102,7 @@ public class GeographyRestriction extends ModelSupport   {
 			, FDTimeslot timeslot
 			, List messages) {
 		boolean isRestricted = false;
-		if(geographicRestrictions != null) {
+		if(geographicRestrictions != null && timeslot != null && messages != null) {
 			Iterator _iterator = geographicRestrictions.iterator();
 			while(_iterator.hasNext()) {
 				GeographyRestriction geoRestriction = (GeographyRestriction)_iterator.next();
@@ -130,13 +130,11 @@ public class GeographyRestriction extends ModelSupport   {
 						try {							
 						
 							if(geographicRestrictions.contains(timeslot.getBaseDate())) {
-								System.out.println("Check Passed >"+DateUtil.format(timeslot.getBaseDate()));
+								//System.out.println("Check Passed >"+DateUtil.format(timeslot.getBaseDate()));
 								isRestricted = restrictedDay.isMatching(timeslot.getDlvTimeslot().getStartTime());
 								if(isRestricted) {
 									messages.add(geographicRestrictions.getMessage());
 								}
-							} else {								
-								System.out.println("Check Failed >"+DateUtil.format(timeslot.getBaseDate()));
 							}
 						} catch(Exception e) {
 							e.printStackTrace();

@@ -29,6 +29,10 @@ public class Range implements Serializable {
 	public boolean contains(Comparable c) {
 		return !lessThan(c, start) && lessThan(c, end);
 	}
+	
+	public boolean containsEx(Comparable c) {
+		return !lessThan(c, start) && !moreThan(c, end);
+	}
 
 	/**
 	 * r1.contains(r2) implies r1.overlaps(r2).
