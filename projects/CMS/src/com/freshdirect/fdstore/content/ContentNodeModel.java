@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
+import com.freshdirect.cms.AttributeI;
+
 public interface ContentNodeModel extends ContentNodeI {
 
 	public final static Comparator FULL_NAME_COMPARATOR = new Comparator() {
@@ -46,6 +48,8 @@ public interface ContentNodeModel extends ContentNodeI {
         }
     };
 	
+        public AttributeI getNotInheritedAttribute(String name);
+    
 	public String getAltText();
 
 	public String getBlurb();

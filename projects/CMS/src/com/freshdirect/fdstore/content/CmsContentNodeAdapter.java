@@ -232,6 +232,15 @@ public abstract class CmsContentNodeAdapter implements Serializable, Cloneable, 
 		return key.hashCode();
 	}
 
+    public AttributeI getNotInheritedAttribute(String name) {
+        ContentNodeI node = this.getCMSNode();
+        if (node == null) {
+            return null;
+        }
+        return node.getAttribute(name);
+    }
+
+	
 	/**
 	 * Very conveniently returns contentName.
 	 */

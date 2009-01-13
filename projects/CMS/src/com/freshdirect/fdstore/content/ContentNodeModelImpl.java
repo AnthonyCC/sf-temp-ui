@@ -2,11 +2,25 @@ package com.freshdirect.fdstore.content;
 
 import java.util.List;
 
+import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 
 public abstract class ContentNodeModelImpl extends CmsContentNodeAdapter implements ContentNodeModel {
 
+    public interface ContentNodeModelAttributeFinder {
+        /**
+         * should return true if the finder found the needed information, and no more traversal needed.
+         *  
+         * @param model
+         * @param attribute
+         * @return
+         */
+        public boolean check(ContentNodeModel model, AttributeI attribute);
+        
+    }
+
+    
 	public ContentNodeModelImpl(ContentKey key) {
 		super(key);
 	}
@@ -50,8 +64,17 @@ public abstract class ContentNodeModelImpl extends CmsContentNodeAdapter impleme
 		return (List) this.getAttribute("ASSOC_EDITORIAL").getValue();
 	}
 	
+	private static ContentNodeModelAttributeFinder FIND_TRUE_VALUE = new ContentNodeModelAttributeFinder() {
+	    public boolean check(ContentNodeModel model, AttributeI attr) {
+	        return attr!=null && Boolean.TRUE.equals(attr.getValue());
+	    }
+	};
+	
 	public boolean isSearchable() {
-		return !this.getAttribute("NOT_SEARCHABLE", false);
+            //return !this.getAttribute("NOT_SEARCHABLE", false);
+	    
+	    AttributeI attributeI = find("NOT_SEARCHABLE", FIND_TRUE_VALUE);
+	    return attributeI==null;
 	}
 
 	public boolean isHidden() {
@@ -99,4 +122,16 @@ public abstract class ContentNodeModelImpl extends CmsContentNodeAdapter impleme
 		return start == null;
 	}
 
+	public AttributeI find(String name, ContentNodeModelAttributeFinder finder) {
+            ContentNodeModel current = this;
+            while(current!=null) {
+                AttributeI attribute = current.getNotInheritedAttribute(name);
+                if (finder.check(current, attribute)) {
+                    return attribute;
+                }
+                current = current.getParentNode();
+            }
+            return null;
+	}
+	
 }
