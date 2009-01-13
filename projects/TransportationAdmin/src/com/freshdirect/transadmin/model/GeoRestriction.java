@@ -23,7 +23,7 @@ public class GeoRestriction implements java.io.Serializable {
 	private Date startDate;
 	private Date endDate;
 	private String message;
-	private String inactive;
+	private String active;
 	private String comments;
 
 	private Set geoRestrictionDays = new HashSet(0);
@@ -39,7 +39,7 @@ public class GeoRestriction implements java.io.Serializable {
 		result.append(" endDate="+endDate);
 		result.append("\n");
 		result.append(" message="+message);
-		result.append(" inactive="+inactive);
+		result.append(" active="+active);
 		result.append(" comments="+comments);
 		
 		result.append(" \nDays: ");
@@ -75,7 +75,7 @@ public class GeoRestriction implements java.io.Serializable {
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.message = message;
-		this.inactive = inactive;
+		this.active = inactive;
 		this.comments = comments;
 	}
 
@@ -127,12 +127,12 @@ public class GeoRestriction implements java.io.Serializable {
 		this.message = message;
 	}
 
-	public String getInactive() {
-		return this.inactive;
+	public String getActive() {
+		return this.active;
 	}
 
-	public void setInactive(String inactive) {
-		this.inactive = inactive;
+	public void setActive(String inactive) {
+		this.active = inactive;
 	}
 
 	public String getComments() {

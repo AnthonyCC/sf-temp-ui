@@ -25,8 +25,8 @@
         <property name="message" type="string">
             <column name="MESSAGE" />
         </property>
-        <property name="inactive" type="string">
-            <column name="INACTIVE" length="1" />
+        <property name="active" type="string">
+            <column name="ACTIVE" length="1" />
         </property>
         <property name="comments" type="string">
             <column name="COMMENTS" />

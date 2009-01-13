@@ -79,7 +79,7 @@
 	private Date startDate;
 	private Date endDate;
 	private String message;
-	private String inactive;
+	private String active;
 	private String comments;
    
     -->          
@@ -94,7 +94,7 @@
               <ec:column property="startDate" title="Start Date" width="5px"/>             
               <ec:column property="endDate" title="End Date" width="10px" />
               <ec:column property="message" title="Message" width="10px"/>
-              <ec:column property="inactive" title="Inactive"/>
+              <ec:column property="active" title="Active"/>
               <ec:column property="comments" title="Comments"/>
             
             </ec:row>
