@@ -3,16 +3,19 @@ package com.freshdirect.delivery.restriction;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.util.DateRange;
+import com.freshdirect.framework.util.DateUtil;
 
 public class GeographyRestriction extends ModelSupport   {
 	
 	private String name;  
-	private String isActive;	  
+	private String active;	  
 	private String comments;
 	private String message;
 	private Map restrictedDays;
@@ -25,11 +28,12 @@ public class GeographyRestriction extends ModelSupport   {
 	public void setComments(String comments) {
 		this.comments = comments;
 	}
-	public String getIsActive() {
-		return isActive;
+	
+	public String getActive() {
+		return active;
 	}
-	public void setIsActive(String isActive) {
-		this.isActive = isActive;
+	public void setActive(String active) {
+		this.active = active;
 	}
 	public String getName() {
 		return name;
@@ -56,10 +60,18 @@ public class GeographyRestriction extends ModelSupport   {
 	}
 	
 	public List getRestrictedDay(int dayOfWeek ) {
+		List _restrictedDays = new ArrayList();
+		Integer primaryKey = new Integer(dayOfWeek);
+		Integer allKey = new Integer(0);
 		if(restrictedDays != null) {
-			return (List)restrictedDays.get(new Integer(dayOfWeek));
+			if(restrictedDays.get(primaryKey) != null) {
+				_restrictedDays.addAll((List)restrictedDays.get(primaryKey));
+			}
+			if(restrictedDays.get(allKey) != null) {
+				_restrictedDays.addAll((List)restrictedDays.get(allKey));
+			}
 		}
-		return null;
+		return _restrictedDays;
 	}
 	public DateRange getRange() {
 		return range;
@@ -84,6 +96,56 @@ public class GeographyRestriction extends ModelSupport   {
 	}
 	public void setMessage(String message) {
 		this.message = message;
+	}
+	
+	public static boolean isTimeSlotGeoRestricted(List geographicRestrictions
+			, FDTimeslot timeslot
+			, List messages) {
+		boolean isRestricted = false;
+		if(geographicRestrictions != null) {
+			Iterator _iterator = geographicRestrictions.iterator();
+			while(_iterator.hasNext()) {
+				GeographyRestriction geoRestriction = (GeographyRestriction)_iterator.next();
+				if(isTimeSlotGeoRestricted(geoRestriction, timeslot, messages)) {
+					isRestricted = true;
+					break;
+				}
+			}
+		}
+		return isRestricted;
+	}
+	
+	public static boolean isTimeSlotGeoRestricted(GeographyRestriction geographicRestrictions
+												, FDTimeslot timeslot
+												, List messages) {
+		
+		boolean isRestricted = false;
+		if(geographicRestrictions != null) {
+			List restrictedDays = geographicRestrictions.getRestrictedDay(timeslot.getDayOfWeek());
+			if(restrictedDays != null) {
+				Iterator _iterator = restrictedDays.iterator();
+				while(_iterator.hasNext()) {
+					GeographyRestrictedDay restrictedDay = (GeographyRestrictedDay)_iterator.next();
+					if(restrictedDay != null) {
+						try {							
+						
+							if(geographicRestrictions.contains(timeslot.getBaseDate())) {
+								System.out.println("Check Passed >"+DateUtil.format(timeslot.getBaseDate()));
+								isRestricted = restrictedDay.isMatching(timeslot.getDlvTimeslot().getStartTime());
+								if(isRestricted) {
+									messages.add(geographicRestrictions.getMessage());
+								}
+							} else {								
+								System.out.println("Check Failed >"+DateUtil.format(timeslot.getBaseDate()));
+							}
+						} catch(Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		}
+		return isRestricted;
 	}
 
 	

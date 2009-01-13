@@ -58,8 +58,11 @@ import com.freshdirect.delivery.model.DlvZoneDescriptor;
 import com.freshdirect.delivery.model.DlvZoneModel;
 import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.ejb.DlvRestrictionDAO;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.fdstore.FDTimeslotList;
 import com.freshdirect.fdstore.StateCounty;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SessionBeanSupport;
@@ -521,6 +524,22 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			Date endDate = DateUtil.addDays(startDate, 1);
 
 			List lst = this.getTimeslotForDateRangeAndZone(startDate, endDate, address);
+			try {
+				if(lst != null) {
+					List geographicRestrictions = this.getGeographicDlvRestrictions( address);
+					List messages = new ArrayList();
+					for(Iterator i = lst.iterator(); i.hasNext();){
+						FDTimeslot ts = (FDTimeslot)i.next();
+						if (GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions, ts, messages)) {
+							// filter off empty timeslots (unless they must be retained)
+							i.remove();
+						}
+					}
+				}
+			} catch (DlvResourceException dlvResException) {
+				LOGGER.info("Failed to load Geography Restriction");
+			}
+			
 			DlvTimeslotModel foundTimeslot = null;
 			for (Iterator i = lst.iterator(); i.hasNext();) {
 				DlvTimeslotModel t = (DlvTimeslotModel) i.next();

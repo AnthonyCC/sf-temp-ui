@@ -33,7 +33,6 @@ import com.freshdirect.delivery.model.DlvZoneModel;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
-import com.freshdirect.delivery.restriction.GeographyRestrictedDay;
 import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.OneTimeRestriction;
 import com.freshdirect.delivery.restriction.OneTimeReverseRestriction;
@@ -169,7 +168,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 					FDTimeslot timeslot = (FDTimeslot) k.next();
 					DlvTimeslotModel ts = timeslot.getDlvTimeslot();
 					if ((ts.getCapacity() <= 0 ||  
-							isTimeSlotGeoRestricted(geographicRestrictions, timeslot, messages)) 
+							GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions, timeslot, messages)) 
 								&& !retainTimeslotIds.contains(ts.getId())) {
 						// filter off empty timeslots (unless they must be retained)
 						k.remove();
@@ -194,55 +193,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		return new Result(timeslotList, zonesMap, ctActive, messages);
 	}
 	
-	private boolean isTimeSlotGeoRestricted(List geographicRestrictions
-			, FDTimeslot timeslot
-			, List messages) {
-		boolean isRestricted = false;
-		if(geographicRestrictions != null) {
-			Iterator _iterator = geographicRestrictions.iterator();
-			while(_iterator.hasNext()) {
-				GeographyRestriction geoRestriction = (GeographyRestriction)_iterator.next();
-				if(isTimeSlotGeoRestricted(geoRestriction, timeslot, messages)) {
-					isRestricted = true;
-					break;
-				}
-			}
-		}
-		return isRestricted;
-	}
-	private boolean isTimeSlotGeoRestricted(GeographyRestriction geographicRestrictions
-												, FDTimeslot timeslot
-												, List messages) {
 		
-		boolean isRestricted = false;
-		if(geographicRestrictions != null) {
-			List restrictedDays = geographicRestrictions.getRestrictedDay(timeslot.getDayOfWeek());
-			if(restrictedDays != null) {
-				Iterator _iterator = restrictedDays.iterator();
-				while(_iterator.hasNext()) {
-					GeographyRestrictedDay restrictedDay = (GeographyRestrictedDay)_iterator.next();
-					if(restrictedDay != null) {
-						try {							
-						
-							if(geographicRestrictions.contains(timeslot.getBaseDate())) {
-								System.out.println("Check Passed >"+DateUtil.format(timeslot.getBaseDate()));
-								isRestricted = restrictedDay.isMatching(timeslot.getDlvTimeslot().getStartTime());
-								if(isRestricted) {
-									messages.add(geographicRestrictions.getMessage());
-								}
-							} else {								
-								System.out.println("Check Failed >"+DateUtil.format(timeslot.getBaseDate()));
-							}
-						} catch(Exception e) {
-							e.printStackTrace();
-						}
-					}
-				}
-			}
-		}
-		return isRestricted;
-	}
-	
 	private List getTimeslots(ErpAddressModel address, Date startDate, Date endDate) throws FDResourceException {
 
 		if (address instanceof ErpDepotAddressModel) {
