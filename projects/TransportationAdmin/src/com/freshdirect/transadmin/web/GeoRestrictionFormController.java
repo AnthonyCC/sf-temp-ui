@@ -1,11 +1,10 @@
 package com.freshdirect.transadmin.web;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -13,23 +12,15 @@ import java.util.StringTokenizer;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.transadmin.model.GeoRestriction;
 import com.freshdirect.transadmin.model.GeoRestrictionDays;
 import com.freshdirect.transadmin.model.GeoRestrictionDaysId;
-import com.freshdirect.transadmin.model.Region;
-import com.freshdirect.transadmin.model.TrnArea;
-import com.freshdirect.transadmin.model.TrnZoneType;
-import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.RestrictionManagerI;
 import com.freshdirect.transadmin.util.EnumDayOfWeek;
-import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.editor.TimeOfDayPropertyEditor;
 
 public class GeoRestrictionFormController extends AbstractFormController {
@@ -143,8 +134,9 @@ protected void onBind(HttpServletRequest request, Object command) {
 				 System.out.println("condition :"+condition);
 				 System.out.println("startTime :"+startTime);
 				 System.out.println("endTime :"+endTime);
-				 
-				 GeoRestrictionDaysId id=new GeoRestrictionDaysId(restrictionId,new BigDecimal(dayOfWeek),new BigDecimal(i));
+				 BigDecimal objDayOfWeek = new BigDecimal(dayOfWeek);
+								 
+				 GeoRestrictionDaysId id=new GeoRestrictionDaysId(restrictionId,objDayOfWeek,new BigDecimal(i));
 				 GeoRestrictionDays day;
 				try {
 					
@@ -186,6 +178,7 @@ protected void onBind(HttpServletRequest request, Object command) {
 		}
 
 		//result.setIsNew("false");
+			
 		
 		System.out.println("#########exiting getBackingObject");
 		

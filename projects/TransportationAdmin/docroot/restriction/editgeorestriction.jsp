@@ -285,6 +285,13 @@
                 <td>
                   &nbsp;<form:errors path="name" />
                 </td>
+ 
+ 		  <td><td>Active</td></td><td><td>
+		  <form:checkbox id="active" path="active"value="1" /></td></td>
+  
+ 
+ 
+ 
                <td>Id</td> 
                   <td>                  
                     <form:input disabled="true" maxlength="50" size="30" path="id" />
@@ -444,7 +451,7 @@
                               <td><c:out value="${gDay.condition}"/></td>
                               <td><input type="text" name="startTime1" value="<c:out value="${gDay.startTime}"/>"></td>
                               <td><c:out value="${gDay.endTime}"/></td>
-							  <td><a href="javascript:deleteProfile('attributeList[<%=intRowIndex %>]')">Delete</a>&nbsp;&nbsp;/&nbsp;&nbsp;<a href="javascript:copyProfile('attributeList[<%=intRowIndex %>]')">edit</a></td> 
+							  <td><a href="javascript:deleteProfile('attributeList[<%=intRowIndex %>]')">Delete</a>&nbsp;&nbsp;/&nbsp;&nbsp;<a href="javascript:copyProfile('attributeList[<%=intRowIndex %>]')">Edit</a></td> 
 							</tr> 
                             <script>
                             if(<%=intRowIndex%><10)

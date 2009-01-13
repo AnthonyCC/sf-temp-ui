@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.servlet.ServletException;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.transadmin.model.DlvBuildingDtl;
 import com.freshdirect.transadmin.model.GeoRestriction;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
@@ -56,6 +58,14 @@ public class RestrictionController extends AbstractMultiActionController {
 	public ModelAndView geoRestrictionHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 
 		Collection dataList = restrictionManagerService.getGeoRestrictions();
+
+		Iterator iterator = dataList.iterator();
+		GeoRestriction type = null;
+		while(iterator.hasNext()) {
+			type = (GeoRestriction)iterator.next();
+			type.setActive( type.getActive() != null && type.getActive().equals("1")  ? "Yes" : "No");
+		}
+		
 		return new ModelAndView("geoRestrictionView","geoRestrictions",dataList);
 	}
 
