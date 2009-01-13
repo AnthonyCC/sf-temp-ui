@@ -47,8 +47,7 @@
     
         function validateUserFields(){
            if(
-              document.getElementById('DayOfWeekList').selectedIndex==0
-                 || document.getElementById('condition').value=='' 
+                   document.getElementById('condition').value=='' 
                    || document.getElementById('startTime').value=='' 
                       || document.getElementById('endTime').value==''){
                       
@@ -106,7 +105,7 @@
 									//	dayOfWeek.value.length > 0 &&
 									//		startTime != null	&& 
 									//			startTime.value.length > 0) {		
-                        alert("addProfile"+dayOfWeek.value);                                    
+                        //alert("addProfile"+dayOfWeek.value);                                    
 								addProfleRow(dayOfWeek,condition.value,startTime.value,endTime.value);	
                                 
                       document.getElementById('DayOfWeekList').selectedIndex=0;                                                                                         
@@ -200,7 +199,7 @@
                      document.forms['geoRestrictionForm'].appendChild(newElementValue3);						
                      document.forms['geoRestrictionForm'].appendChild(newElementValue4);						
                      
-                     alert("created");
+                     //alert("created");
                      
 												
 					}
@@ -239,7 +238,7 @@
                   
                        
                          currentRow=theCell;
-                         alert("document.getElementById(theCell+'.dayOfWeek').value :"+document.getElementById(theCell+'.dayOfWeek').value);
+                         //alert("document.getElementById(theCell+'.dayOfWeek').value :"+document.getElementById(theCell+'.dayOfWeek').value);
                          document.getElementById('DayOfWeekList').selectedIndex=document.getElementById(theCell+'.dayOfWeek').value;
                          document.getElementById('condition').value=document.getElementById(theCell+'.condition').value;
                          document.getElementById('startTime').value=document.getElementById(theCell+'.startTime').value;
@@ -394,7 +393,7 @@
                <tr>
                    <td>                   
                    <select name="DayOfWeekList" id="DayOfWeekList">                   
-                   <option value="0">Select Day</option> 
+                   <option value="0">All</option> 
                    <option value="1">Mon</option> 
                    <option value="2">Tue</option> 
                    <option value="3">Wed</option> 
@@ -402,7 +401,6 @@
                    <option value="5">Fri</option>                    
                    <option value="6">Sat</option>                    
                    <option value="7">Sun</option>                    
-                   <option value="8">All</option>                    
                    </select> 
                    
                    </td>                               
