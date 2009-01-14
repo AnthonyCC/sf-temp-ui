@@ -73,9 +73,12 @@ private String employeeId;
 		StringBuffer buf=new StringBuffer();
 		
 		Iterator iterator=empRole.iterator();
-		while(iterator.hasNext()){
+		while(iterator.hasNext()){			
 			EmployeeRole role=(EmployeeRole)iterator.next();
-			buf.append(role.getEmployeeRoleType().getName()).append("/");
+			if(buf.length()>0)
+				buf.append("/").append(role.getEmployeeRoleType().getName());
+			else
+				buf.append(role.getEmployeeRoleType().getName());
 		}
 		
 		return buf.toString();
@@ -169,16 +172,17 @@ private String employeeId;
 		return empInfo.getSupervisorShortName();
 	}
 	
-	public String getTerminationDate()
+	public Date getTerminationDate()
 	{ 
-		if(empInfo.getTerminationDate()==null) return "";				
-		 try {
-			return TransStringUtil.getDate(empInfo.getTerminationDate());
-		} catch (ParseException e) {
+		if(empInfo.getTerminationDate()==null) return null;				
+		// try {
+			//return TransStringUtil.getDate(empInfo.getTerminationDate());
+			 return empInfo.getTerminationDate();
+		//} catch (ParseException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return "";
+		//	e.printStackTrace();
+		//}
+		//return null;
 	}
 	
 }
