@@ -348,8 +348,7 @@ return true;
                   &nbsp;<form:errors path="name" />
                 </td>
  
- <!-- 
- 		  <td><td>Active</td></td><td><td>
+  		  <td><td>Active</td></td><td><td>
 		  <form:checkbox id="active" path="active"value="X" /></td></td>
  
    
@@ -361,7 +360,6 @@ return true;
                     <form:input disabled="true" maxlength="50" size="30" path="restrictionId" />
                 </td>
                 
-  -->
                 
                </tr>
                
