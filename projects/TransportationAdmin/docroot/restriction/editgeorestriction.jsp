@@ -5,7 +5,53 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 
 <tmpl:insert template='/common/sitelayout.jsp'>
+<script language="Javascript">
+function IsValidTime(timeStr) {
+// Checks if time is in HH:MM:SS AM/PM format.
+// The seconds and AM/PM are optional.
 
+//alert("inside isvalidtime timeStr="+timeStr);
+
+var timePat = /^(\d{1,2}):(\d{2})(:(\d{2}))?(\s?(AM|am|PM|pm))?$/;
+
+var matchArray = timeStr.match(timePat);
+if (matchArray == null) {
+//alert("Enter Time as 'hh:mm am/pm'.");
+return false;
+}
+hour = matchArray[1];
+minute = matchArray[2];
+second = matchArray[4];
+ampm = matchArray[6];
+
+if (second=="") { second = null; }
+if (ampm=="") { ampm = null }
+
+if (hour < 0  || hour > 23) {
+//alert("Hour must be between 1 and 12. (or 0 and 23 for military time)");
+return false;
+}
+if (hour <= 12 && ampm == null) {
+if (confirm("Please indicate which time format you are using.  OK = Standard Time, CANCEL = Military Time")) {
+//alert("You must specify AM or PM.");
+return false;
+   }
+}
+if  (hour > 12 && ampm != null) {
+//alert("You can't specify AM or PM for military time.");
+return false;
+}
+if (minute<0 || minute > 59) {
+//alert ("Minute must be between 0 and 59.");
+return false;
+}
+if (second != null && (second < 0 || second > 59)) {
+//alert ("Second must be between 0 and 59.");
+return false;
+}
+return true;
+}
+</script>
 <script language="Javascript">
 
   var rollingIndex = 0;
@@ -46,15 +92,29 @@
     
     
         function validateUserFields(){
-           if(
-                   document.getElementById('condition').value=='' 
+        
+          
+        
+           if(document.getElementById('condition').value=='' 
                    || document.getElementById('startTime').value=='' 
                       || document.getElementById('endTime').value==''){
-                      
+                                                                                        
                    alert("field dayOfWeek, condition , startTime, endTime cannot be empty");   
                    return false;
             } 
-           
+            
+             //alert("startTime="+document.getElementById('startTime').value);
+             if( !IsValidTime(document.getElementById('startTime').value)) {
+               alert("Enter Start Time as 'hh:mm am/pm'.");
+               return false;
+             }
+             
+             //alert("endTime="+document.getElementById('endTime').value);
+             if( !IsValidTime(document.getElementById('endTime').value)) {
+               alert("Enter End Time as 'hh:mm am/pm'.");
+               return false;
+             }
+            
             return true;
         }
     
@@ -288,9 +348,11 @@
                   &nbsp;<form:errors path="name" />
                 </td>
  
+ <!-- 
  		  <td><td>Active</td></td><td><td>
 		  <form:checkbox id="active" path="active"value="X" /></td></td>
-  
+ 
+   
  
  
  
@@ -298,6 +360,9 @@
                   <td>                  
                     <form:input disabled="true" maxlength="50" size="30" path="restrictionId" />
                 </td>
+                
+  -->
+                
                </tr>
                
                <tr>
@@ -328,10 +393,11 @@
                   <td>                  
                     <form:textarea path="comments" rows="5" cols="45" />
                 </td>
-                <td>
-                  &nbsp;<form:errors path="comments" />
-                </td>
-               </tr>
+                
+                 
+                
+                
+                 </tr>
                                            
                <tr>
                   <td>Start Date</td>
@@ -430,11 +496,11 @@
 			        </select>
                    
                    </td>                                      
-                   <td><input type="text" id="startTime" name="startTime" value=""></td>
+                   <td><input type="text" id="startTime" name="startTime" value=""></td> 
                    <td><input type="text" id="endTime" name="endTime" value=""></td>
-                 </tr>                 
+                </tr>                 
                  <tr>
-                 <td colspan="3"><input type="button" value="Add Rest Operator" class="submit" onclick="javascript:(isEdit)?editProfile():addProfile();"></td>
+                 <td colspan="3"><input type="button" value="Add/Update Rest Operator" class="submit" onclick="javascript:(isEdit)?editProfile():addProfile();"></td>
                   </tr>
                 
                </table>        
