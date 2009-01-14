@@ -13,4 +13,6 @@ public interface RestrictionManagerI extends BaseManagerI {
 	Collection getGeoRestrictions();
 
 	Collection getGeoRestrictionBoundaries();
+	
+	public void saveGeoRestriction(GeoRestriction geoRestriction);
 }

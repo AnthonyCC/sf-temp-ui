@@ -46,6 +46,11 @@ public class RestrictionManagerImpl extends BaseManagerImpl implements Restricti
 		return getRestrictionManagerDao().getGeoRestrictionBoundaries();
 	}
 
+	public void saveGeoRestriction(GeoRestriction geoRestriction) {
+		// TODO Auto-generated method stub
+		getRestrictionManagerDao().saveGeoRestriction(geoRestriction);
+	}
+
 
 	
 	

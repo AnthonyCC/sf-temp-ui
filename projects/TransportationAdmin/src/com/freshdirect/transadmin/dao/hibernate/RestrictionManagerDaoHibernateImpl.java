@@ -27,6 +27,7 @@ public class RestrictionManagerDaoHibernateImpl extends BaseManagerDaoHibernateI
 	public void saveGeoRestriction(GeoRestriction geoRestriction) throws DataAccessException {
 		
 		if(geoRestriction.getRestrictionId()==null ||"".equals(geoRestriction.getRestrictionId())) {
+			saveEntityEx(geoRestriction);
 		}
 		else {
 			saveEntity(geoRestriction);

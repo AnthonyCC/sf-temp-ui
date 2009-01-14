@@ -263,10 +263,8 @@ protected void onBind(HttpServletRequest request, Object command) {
 			//System.out.println("getRestrictionManagerService().removeEntity :"+);
 			
 			Set tmpRestDays=modelIn.getGeoRestrictionDays();
-			modelIn.setGeoRestrictionDays(null);
-			
-			
-			getRestrictionManagerService().saveEntityEx(modelIn);
+			modelIn.setGeoRestrictionDays(null);						
+			getRestrictionManagerService().saveGeoRestriction(modelIn);
 			
 			System.out.println("after saving the parent "+modelIn.getRestrictionId());
 			
@@ -281,8 +279,8 @@ protected void onBind(HttpServletRequest request, Object command) {
 			}
 			
 			modelIn.setGeoRestrictionDays(tmpRestDays);
+			//getRestrictionManagerService().saveGeoRestriction(modelIn);
 			getRestrictionManagerService().saveEntityList(modelIn.getGeoRestrictionDays());
-			//getRestrictionManagerService().saveEntity(modelIn);
 			
 		} catch(Exception e) {
 			e.printStackTrace();
