@@ -67,8 +67,26 @@
     
     <bean id="employeeManagerDAO" class="com.freshdirect.transadmin.dao.oracle.EmployeeManagerDaoOracleImpl">
 		<property name="dataSource" ref="dataSource"/>
-	</bean>	 
+	</bean>	
 	
+	<bean id="zoneManagerDAO" class="com.freshdirect.transadmin.dao.oracle.ZoneManagerDaoOracleImpl">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>	
+	
+	<bean id="zoneManagerService" class="com.freshdirect.transadmin.service.impl.ZoneManagerImpl">
+        <property name="zoneManagerDAO" ref="zoneManagerDAO"/>        
+    </bean>
+	
+	
+	<bean id="zoneManager" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager" ref="transactionManager"/>
+		<property name="target" ref="zoneManagerService"/>
+		<property name="transactionAttributes">
+			<props>
+			    <prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>
+			</props>
+		</property>
+	</bean>
 	
 	<bean id="employeeManagerService" class="com.freshdirect.transadmin.service.impl.EmployeeManagerImpl">
         <property name="employeeManagerDAO" ref="employeeManagerDAO"/>

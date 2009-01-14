@@ -113,6 +113,7 @@
         <property name="domainManagerService" ref="domainManager"/>
         <property name="employeeManagerService" ref="employeeManager"/>
         <property name="locationManagerService" ref="locationManager"/>
+        <property name="zoneManagerService" ref="zoneManager"/>
 	</bean>
 	
 	<bean id="downloadController" class="com.freshdirect.transadmin.web.DownloadController">

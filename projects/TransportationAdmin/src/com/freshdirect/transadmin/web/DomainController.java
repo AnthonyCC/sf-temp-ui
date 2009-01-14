@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.servlet.ServletException;
@@ -26,6 +27,7 @@ import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.service.LocationManagerI;
+import com.freshdirect.transadmin.service.ZoneManagerI;
 import com.freshdirect.transadmin.util.EnumCachedDataType;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
@@ -43,6 +45,8 @@ public class DomainController extends AbstractMultiActionController {
 	private LocationManagerI locationManagerService;
 	
 	private EmployeeManagerI employeeManagerService;
+	
+	private ZoneManagerI zoneManagerService;
 
 	private static final String IS_OBSOLETE = "X";
 	
@@ -125,9 +129,21 @@ public class DomainController extends AbstractMultiActionController {
         System.out.println("inside zoneHandler");
         String zoneType = request.getParameter("zoneType");
         Collection dataList = null;
+        Collection activeZoneCodes = null;
         System.out.println("./................."+zoneType);
         if("Active".equalsIgnoreCase(zoneType)) {
         	dataList = domainManagerService.getZones();
+        	activeZoneCodes = zoneManagerService.getActiveZoneCodes();
+        	if(dataList != null && activeZoneCodes != null) {
+        		Iterator _iterator = dataList.iterator();
+        		Zone _tmpZone = null;
+        		while(_iterator.hasNext()) {
+        			_tmpZone = (Zone)_iterator.next();
+        			if(!activeZoneCodes.contains(_tmpZone.getZoneCode())) {
+        				_iterator.remove();
+        			}
+        		}
+        	}
         } else {
         	dataList = domainManagerService.getActiveZones();    	 
         }								
@@ -530,6 +546,14 @@ public class DomainController extends AbstractMultiActionController {
 
 	public void setEmployeeManagerService(EmployeeManagerI employeeManagerService) {
 		this.employeeManagerService = employeeManagerService;
+	}
+
+	public ZoneManagerI getZoneManagerService() {
+		return zoneManagerService;
+	}
+
+	public void setZoneManagerService(ZoneManagerI zoneManagerService) {
+		this.zoneManagerService = zoneManagerService;
 	}
 
 }
