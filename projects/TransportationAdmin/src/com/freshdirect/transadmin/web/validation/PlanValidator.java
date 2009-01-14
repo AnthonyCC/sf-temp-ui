@@ -35,6 +35,7 @@ public class PlanValidator extends AbstractValidator {
 		if(DispatchPlanUtil.isBullpen(model.getIsBullpen()) && TransStringUtil.isEmpty(model.getRegionCode())) {
 			errors.rejectValue("regionCode", "app.error.112", new Object[]{"Region"},"required field");
 		}
+		ValidationUtils.rejectIfEmpty(errors, "supervisorCode", "app.error.112", new Object[]{"Supervisor"},"required field");
 		ValidationUtils.rejectIfEmpty(errors, "sequence", "app.error.112", new Object[]{"Sequence"},"required field");
 		validateIntegerMinMax("sequence",new Integer(model.getSequence()),0,99,errors);
 		validateResources(model.getDrivers().getResourceReq().getReq().intValue(),model.getDrivers().getResourceReq().getMax().intValue(),"drivers",model.getDrivers(),errors);
