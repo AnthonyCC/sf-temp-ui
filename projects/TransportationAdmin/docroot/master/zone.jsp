@@ -91,9 +91,6 @@
 							  <ec:exportXls fileName="transportationzones.xls" tooltip="Export PDF" />
 							  <ec:exportCsv fileName="transportationzones.csv" tooltip="Export CSV" delimiter="|"/>               
 							<ec:row interceptor="obsoletemarker">
-							  <ec:column title=" " width="5px" 
-									filterable="false" sortable="false" cell="selectcol"
-									property="zoneCode" />  
 							  <ec:column alias="trnZoneCode" property="zoneCode" title="Code"/>
 							  <ec:column property="name" title="Zone Name"/>
 							  <ec:column alias="trnZoneType" property="trnZoneType.name" title="Zone Type"/>
