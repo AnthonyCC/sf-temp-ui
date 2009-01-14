@@ -4,6 +4,7 @@ package com.freshdirect.transadmin.model;
 
 import java.util.Date;
 
+import com.freshdirect.framework.util.EnumLogicalOperator;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.transadmin.util.EnumDayOfWeek;
 import com.freshdirect.transadmin.web.editor.TimeOfDayPropertyEditor;
@@ -15,10 +16,11 @@ import com.freshdirect.transadmin.web.editor.TimeOfDayPropertyEditor;
 public class GeoRestrictionDays implements java.io.Serializable {
 
 	private GeoRestrictionDaysId restrictionDaysId;
-	private String condition;
+	private EnumLogicalOperator condition;
 	
 	private TimeOfDay startTime;
 	private TimeOfDay endTime;
+	
 
 	public GeoRestrictionDays() {
 	}
@@ -27,24 +29,13 @@ public class GeoRestrictionDays implements java.io.Serializable {
 		this.restrictionDaysId = id;
 	}
 
-	public GeoRestrictionDays(GeoRestrictionDaysId id, String condition,
+	public GeoRestrictionDays(GeoRestrictionDaysId id, EnumLogicalOperator condition,
 			TimeOfDay startTime, TimeOfDay endTime) {
 		this.restrictionDaysId = id;
 		this.condition = condition;
 		this.startTime = startTime;
 		this.endTime = endTime;
 	}
-
-	
-
-	public String getCondition() {
-		return this.condition;
-	}
-
-	public void setCondition(String condition) {
-		this.condition = condition;
-	}
-
 
 	public GeoRestrictionDaysId getRestrictionDaysId() {
 		return restrictionDaysId;
@@ -81,5 +72,15 @@ public class GeoRestrictionDays implements java.io.Serializable {
 		else
 			return "";
 	}
+
+	public EnumLogicalOperator getCondition() {
+		return condition;
+	}
+
+	public void setCondition(EnumLogicalOperator condition) {
+		this.condition = condition;
+	}
+
+	
 	
 }

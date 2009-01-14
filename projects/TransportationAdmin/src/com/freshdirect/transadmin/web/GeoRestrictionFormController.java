@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.bind.ServletRequestDataBinder;
 
+import com.freshdirect.framework.util.EnumLogicalOperator;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.transadmin.model.GeoRestriction;
 import com.freshdirect.transadmin.model.GeoRestrictionDays;
@@ -34,6 +35,7 @@ public class GeoRestrictionFormController extends AbstractFormController {
 		refData.put("restrictionDays", (Set)request.getAttribute("restrictionDaysList"));
 		refData.put("restrictionBoundries", getRestrictionManagerService().getGeoRestrictionBoundaries());
 		refData.put("DayOfWeeks", (List)EnumDayOfWeek.getEnumList());
+		refData.put("conditions", (List)EnumLogicalOperator.getEnumList());
 		return refData;
 	}
 	
@@ -71,6 +73,7 @@ public class GeoRestrictionFormController extends AbstractFormController {
 		super.initBinder(request, dataBinder);
 		System.out.println("inside initBinder ");				
 		dataBinder.registerCustomEditor(TimeOfDay.class, new TimeOfDayPropertyEditor());
+		dataBinder.registerCustomEditor(EnumLogicalOperator.class, new TimeOfDayPropertyEditor());
 		 
 	}
 	
@@ -140,7 +143,7 @@ protected void onBind(HttpServletRequest request, Object command) {
 				 GeoRestrictionDays day;
 				try {
 					
-					day = new GeoRestrictionDays(id,condition,new TimeOfDay(startTime),
+					day = new GeoRestrictionDays(id,EnumLogicalOperator.getEnum(condition),new TimeOfDay(startTime),
 							                       			  new TimeOfDay(endTime));
 					restrictionDaysList.add(day);
 				//} catch (ParseException e) {
@@ -259,7 +262,28 @@ protected void onBind(HttpServletRequest request, Object command) {
 			
 			//System.out.println("getRestrictionManagerService().removeEntity :"+);
 			
-			getRestrictionManagerService().saveEntity(domainObject);			
+			Set tmpRestDays=modelIn.getGeoRestrictionDays();
+			modelIn.setGeoRestrictionDays(null);
+			
+			
+			getRestrictionManagerService().saveEntityEx(modelIn);
+			
+			System.out.println("after saving the parent "+modelIn.getRestrictionId());
+			
+			//modelIn.setGeoRestrictionDays(tmpRestDays);
+//			
+			if(tmpRestDays!=null){
+				Iterator iterator=tmpRestDays.iterator();
+				while(iterator.hasNext()){
+					GeoRestrictionDays days=(GeoRestrictionDays)iterator.next();
+					days.getRestrictionDaysId().setRestrictionId(modelIn.getRestrictionId());
+				}
+			}
+			
+			modelIn.setGeoRestrictionDays(tmpRestDays);
+			getRestrictionManagerService().saveEntityList(modelIn.getGeoRestrictionDays());
+			//getRestrictionManagerService().saveEntity(modelIn);
+			
 		} catch(Exception e) {
 			e.printStackTrace();
 			errorList.add(this.getMessage("app.actionmessage.119", new Object[]{getDomainObjectName()}));

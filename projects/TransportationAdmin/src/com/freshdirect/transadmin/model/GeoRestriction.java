@@ -17,7 +17,7 @@ import com.freshdirect.routing.model.IGeographicLocation;
  */
 public class GeoRestriction implements java.io.Serializable {
 
-	private String id;
+	private String restrictionId;
 	private String name;
 	private String boundaryCode;
 	private Date startDate;
@@ -31,7 +31,7 @@ public class GeoRestriction implements java.io.Serializable {
 	public String toString() {
 		StringBuffer result = new StringBuffer();
 		result.append("GeoRestriction: ");
-		result.append("id="+id);
+		result.append("id="+restrictionId);
 		result.append(" name= "+ name);
 		result.append(" boundarycode="+boundaryCode);
 		result.append("\n");
@@ -63,13 +63,13 @@ public class GeoRestriction implements java.io.Serializable {
 	}
 
 	public GeoRestriction(String id) {
-		this.id = id;
+		this.restrictionId = id;
 	}
 
 	public GeoRestriction(String id, String name, String boundaryCode,
 			Date startDate, Date endDate, String message, String inactive,
 			String comments) {
-		this.id = id;
+		this.restrictionId = id;
 		this.name = name;
 		this.boundaryCode = boundaryCode;
 		this.startDate = startDate;
@@ -79,13 +79,9 @@ public class GeoRestriction implements java.io.Serializable {
 		this.comments = comments;
 	}
 
-	public String getId() {
-		return this.id;
-	}
+	
 
-	public void setId(String id) {
-		this.id = id;
-	}
+	
 
 	public String getName() {
 		return this.name;
@@ -162,4 +158,20 @@ public class GeoRestriction implements java.io.Serializable {
     }
     
     public static DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+
+	public static DateFormat getDateFormat() {
+		return dateFormat;
+	}
+
+	public static void setDateFormat(DateFormat dateFormat) {
+		GeoRestriction.dateFormat = dateFormat;
+	}
+
+	public String getRestrictionId() {
+		return restrictionId;
+	}
+
+	public void setRestrictionId(String restrictionId) {
+		this.restrictionId = restrictionId;
+	}
 }

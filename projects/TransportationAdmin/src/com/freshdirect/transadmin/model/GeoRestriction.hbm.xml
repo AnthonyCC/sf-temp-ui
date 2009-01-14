@@ -4,12 +4,12 @@
 <!-- Generated Jan 7, 2009 10:45:25 AM by Hibernate Tools 3.2.2.GA -->
 <hibernate-mapping schema="dlv">
     <class name="com.freshdirect.transadmin.model.GeoRestriction" table="GEO_RESTRICTION">
-        <id name="id" type="string">
-            <column name="ID" length="16" />
+        <id name="restrictionId" type="string">
+            <column name="RESTRICTION_ID" length="16" />
              <generator class="sequence">
     			<param name="sequence">GEO_RESTRICTION_SEQ</param>
 			</generator>
-        </id>
+        </id>        
         <property name="name" type="string">
             <column name="NAME" length="256" />
         </property>
@@ -33,9 +33,9 @@
         </property>
         <set name="geoRestrictionDays" inverse="true" lazy="false" cascade="all,delete-orphan">
             <key>
-                <column name="RESTRICTION_ID" length="16" />
+                <column name="RESTRICTION_ID" length="16" not-null="true" />
             </key>
             <one-to-many class="com.freshdirect.transadmin.model.GeoRestrictionDays" />
-        </set>        
+        </set>  
     </class>
 </hibernate-mapping>

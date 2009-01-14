@@ -20,13 +20,13 @@ public class RestrictionManagerDaoHibernateImpl extends BaseManagerDaoHibernateI
 	}
 	
 	public GeoRestriction getGeoRestriction(String id) throws DataAccessException {
-		return (GeoRestriction)getEntityById("GeoRestriction","id",id);
+		return (GeoRestriction)getEntityById("GeoRestriction","restrictionId",id);
 	}
 			
 	
 	public void saveGeoRestriction(GeoRestriction geoRestriction) throws DataAccessException {
 		
-		if(geoRestriction.getId()==null ||"".equals(geoRestriction.getId())) {
+		if(geoRestriction.getRestrictionId()==null ||"".equals(geoRestriction.getRestrictionId())) {
 		}
 		else {
 			saveEntity(geoRestriction);

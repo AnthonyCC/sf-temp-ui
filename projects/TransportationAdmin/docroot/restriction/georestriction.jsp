@@ -88,7 +88,7 @@
             <ec:row >
               <ec:column title=" " width="5px" 
                     sortable="false" cell="selectcol" filtercell="selectcol"
-                    property="id" />              
+                    property="restrictionId" />              
               <ec:column property="name" title="Name" width="35px"/>
               <ec:column property="boundaryCode" title="Boundary Code" width="25px"/>
               <ec:column property="startDate" title="Start Date" width="5px"/>             

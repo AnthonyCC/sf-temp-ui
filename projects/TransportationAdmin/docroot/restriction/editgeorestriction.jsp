@@ -23,9 +23,9 @@
     
     function modifyRestrictionLink(num,actionType){
          var oldval=document.getElementById('restrictionLinkStr').value; 
-         console.log("oldval :"+oldval);         
-         console.log("num :"+num);         
-         console.log("actionType :"+actionType);         
+         //console.log("oldval :"+oldval);         
+         //console.log("num :"+num);         
+         //console.log("actionType :"+actionType);         
          var newval;
          if(actionType=='append'){            
              if(num<10){
@@ -68,19 +68,19 @@
 						//var profileTableRow = document.getElementById(currentRow);
 						
 						var allTrElements = profileTableFld.getElementById(currentRow);
-                     console.log("currentRow :"+currentRow);   
+                     //console.log("currentRow :"+currentRow);   
                      allTrElements.getElementsByTagName("td")[0].innerHTML=document.getElementById('DayOfWeekList')[document.getElementById('DayOfWeekList').selectedIndex].text;   
-                     allTrElements.getElementsByTagName("td")[1].innerHTML=document.getElementById('condition').value;   
+                     allTrElements.getElementsByTagName("td")[1].innerHTML=document.getElementById('condition')[document.getElementById('condition').selectedIndex].text;   													                       
                      allTrElements.getElementsByTagName("td")[2].innerHTML=document.getElementById('startTime').value;   
                      allTrElements.getElementsByTagName("td")[3].innerHTML=document.getElementById('endTime').value;   
                                          
                       document.getElementById(currentRow+'.dayOfWeek').value=document.getElementById('DayOfWeekList')[document.getElementById('DayOfWeekList').selectedIndex].value;
-                      document.getElementById(currentRow+'.condition').value=document.getElementById('condition').value;
+                      document.getElementById(currentRow+'.condition').value=document.getElementById('condition')[document.getElementById('condition').selectedIndex].value;
                       document.getElementById(currentRow+'.startTime').value=document.getElementById('startTime').value;
                       document.getElementById(currentRow+'.endTime').value=document.getElementById('endTime').value;
                                                                    
-                      document.getElementById('DayOfWeekList').selectedIndex=0;                                                                                         
-                      document.getElementById('condition').value='';
+                      document.getElementById('DayOfWeekList').selectedIndex=0;
+                      document.getElementById('condition').selectedIndex=0;                                                                                         
                       document.getElementById('startTime').value='';
                       document.getElementById('endTime').value='';                         
                       
@@ -97,7 +97,8 @@
                         if(!validateUserFields()){ return false; }                      
                          
                       	var dayOfWeek = document.getElementById('DayOfWeekList')[document.getElementById('DayOfWeekList').selectedIndex];
-	                     var condition = document.getElementById('condition');                            					
+	                  	var condition = document.getElementById('condition')[document.getElementById('condition').selectedIndex];
+	                     //var condition = document.getElementById('condition');                            					
   						   var startTime = document.getElementById('startTime');
 						   var endTime = document.getElementById('endTime');
                             
@@ -105,11 +106,12 @@
 									//	dayOfWeek.value.length > 0 &&
 									//		startTime != null	&& 
 									//			startTime.value.length > 0) {		
-                        //alert("addProfile"+dayOfWeek.value);                                    
-								addProfleRow(dayOfWeek,condition.value,startTime.value,endTime.value);	
+									
+                       //alert("addProfile"+condition.text);                                    
+								addProfleRow(dayOfWeek,condition,startTime.value,endTime.value);	
                                 
                       document.getElementById('DayOfWeekList').selectedIndex=0;                                                                                         
-                      document.getElementById('condition').value='';
+                      document.getElementById('condition').selectedIndex=0;
                       document.getElementById('startTime').value='';
                       document.getElementById('endTime').value='';          
 							//}				
@@ -131,7 +133,7 @@
 									    var td1 = document.createElement('td');
 									    td1.appendChild(document.createTextNode(dayOfWeek.text));
 									    var td2 = document.createElement('td');
-                                        td2.appendChild(document.createTextNode(condition));    
+                                        td2.appendChild(document.createTextNode(condition.text));    
  									    var td3 = document.createElement('td');
 									    td3.appendChild (document.createTextNode(startTime));
 									    var td4 = document.createElement('td');
@@ -178,7 +180,7 @@
 						newElementValue2.setAttribute("type", "hidden");
 						newElementValue2.setAttribute("name", tmpId+'condition');
 						newElementValue2.setAttribute("id", tmpId+'condition');
-						newElementValue2.setAttribute("value", condition);
+						newElementValue2.setAttribute("value", condition.value);
 
 						var newElementValue3 = document.createElement("input");
 						newElementValue3.setAttribute("type", "hidden");
@@ -260,7 +262,7 @@
       
       <input type="hidden" id="profileOperator" name="profileOperator" class="input" value="" %>/> 
       <input type="hidden" id="restrictionListSize" name="restrictionListSize" class="input" value="0" %>/> 
-      <input type="hidden" id="restrictionId" name="restrictionId" class="input" value="<c:out value="${geoRestrictionForm.id}"/>"/>" %>/> 
+      <input type="hidden" id="restrictionId" name="restrictionId" class="input" value="<c:out value="${geoRestrictionForm.restrictionId}"/>"/>" %>/> 
       <input type="hidden" id="restrictionLinkStr" name="restrictionLinkStr" class="input" value=""/>" %>/> 
       
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -287,14 +289,14 @@
                 </td>
  
  		  <td><td>Active</td></td><td><td>
-		  <form:checkbox id="active" path="active"value="1" /></td></td>
+		  <form:checkbox id="active" path="active"value="X" /></td></td>
   
  
  
  
                <td>Id</td> 
                   <td>                  
-                    <form:input disabled="true" maxlength="50" size="30" path="id" />
+                    <form:input disabled="true" maxlength="50" size="30" path="restrictionId" />
                 </td>
                </tr>
                
@@ -397,21 +399,37 @@
                <tr>
                   <td><B>Restriction Details</B></td>
                  </tr>    
+ 
                <tr>
+                   <th>Day Of Week</th>                               
+                   <th>Condition</th>                                      
+                   <th>Start Time</th>
+                   <th>End Time</th>
+                </tr>    
+   
+  
+                <tr>
                    <td>                   
-                   <select name="DayOfWeekList" id="DayOfWeekList">                   
-                   <option value="0">All</option> 
-                   <option value="1">Mon</option> 
-                   <option value="2">Tue</option> 
-                   <option value="3">Wed</option> 
-                   <option value="4">Thu</option>                    
-                   <option value="5">Fri</option>                    
-                   <option value="6">Sat</option>                    
-                   <option value="7">Sun</option>                    
-                   </select> 
+                                  
+ 
+               
                    
+                    <select name="DayOfWeekList" id="DayOfWeekList">   
+                    <option value="0">All</option>
+                   <c:forEach var="dayOfWeek" items="${DayOfWeeks}">       
+		              <OPTION value="<c:out value="${dayOfWeek.name}"/>"><c:out value="${dayOfWeek.desc}"/></OPTION>
+			        </c:forEach>                                      
+			        </select>
                    </td>                               
-                   <td><input type="text" id="condition" name="condition" value=""></td>                                      
+                   <td>
+                  
+                    <select name="condition" id="condition">                     
+                   <c:forEach var="condition" items="${conditions}">       
+		              <OPTION value="<c:out value="${condition.name}"/>"><c:out value="${condition.description}"/></OPTION>
+			        </c:forEach>                                      
+			        </select>
+                   
+                   </td>                                      
                    <td><input type="text" id="startTime" name="startTime" value=""></td>
                    <td><input type="text" id="endTime" name="endTime" value=""></td>
                  </tr>                 
@@ -424,10 +442,10 @@
                     <table id="profileListTB" border="1" cellpadding="2" cellspacing="0" >
 					<thead>
 					<tr> 
-                   <th>dayOfWeek</th>                               
-                   <th>condition</th>                                      
-                   <th>startTime</th>
-                   <th>endTime</th>
+                   <th>Day Of Week</th>                               
+                   <th>Condition</th>                                      
+                   <th>Start Time</th>
+                   <th>End Time</th>
                    <th>&nbsp;</th>                                      
 					</tr>
 					</thead>	
@@ -448,8 +466,13 @@
                             
                             <tr id='attributeList[<%=intRowIndex%>]'> 
 				        	  <td><c:out value="${gDay.dayOfWeekInText}"/></td>                               
-                              <td><c:out value="${gDay.condition}"/></td>
+                              <td><c:out value="${gDay.condition.description}"/></td>
+                              
+                              <!-- 
                               <td><input type="text" name="startTime1" value="<c:out value="${gDay.startTime}"/>"></td>
+                             --> 
+                              
+                               <td><c:out value="${gDay.startTime}"/></td>
                               <td><c:out value="${gDay.endTime}"/></td>
 							  <td><a href="javascript:deleteProfile('attributeList[<%=intRowIndex %>]')">Delete</a>&nbsp;&nbsp;/&nbsp;&nbsp;<a href="javascript:copyProfile('attributeList[<%=intRowIndex %>]')">Edit</a></td> 
 							</tr> 
