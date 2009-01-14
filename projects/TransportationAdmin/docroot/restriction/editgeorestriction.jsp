@@ -320,12 +320,13 @@ return true;
     <div align="center">
       <form:form commandName = "geoRestrictionForm" method="post">
       
-      <input type="hidden" id="profileOperator" name="profileOperator" class="input" value="" %>/> 
-      <input type="hidden" id="restrictionListSize" name="restrictionListSize" class="input" value="0" %>/> 
-      <input type="hidden" id="restrictionId" name="restrictionId" class="input" value="<c:out value="${geoRestrictionForm.restrictionId}"/>"/>" %>/> 
-      <input type="hidden" id="restrictionLinkStr" name="restrictionLinkStr" class="input" value=""/>" %>/> 
-      
+      <input type="hidden" id="profileOperator" name="profileOperator" class="input" value="" /> 
+      <input type="hidden" id="restrictionListSize" name="restrictionListSize" class="input" value="0" /> 
+      <input type="hidden" id="restrictionId" name="restrictionId" class="input" value="<c:out value="${geoRestrictionForm.restrictionId}"/>"/> 
+      <input type="hidden" id="restrictionLinkStr" name="restrictionLinkStr" class="input" value="" /> 
+       
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
+          </br>
           <tr>
             <td class="screentitle">
               Add/Modify Geo Restriction             
