@@ -48,7 +48,7 @@ public class GeoRestrictionValidator extends AbstractValidator {
 			ValidationUtils.rejectIfEmpty(errors, "endDate", "app.error.112", new Object[]{"endDate"},"required field");
 		}
 		
-		/*tbr try {
+		try {
 		
 			System.out.println("errors.getErrorCount()="+errors.getErrorCount());
 			if(errors.getErrorCount()==0)			
@@ -63,7 +63,7 @@ public class GeoRestrictionValidator extends AbstractValidator {
 			}
 		} catch(NumberFormatException exp) {
 			errors.rejectValue("startDate", "typeMismatch.date", new Object[]{},"Invalid Date");			
-		}*/
+		}
        
 		
 		System.out.println("###########\n#########\n#########\n");
