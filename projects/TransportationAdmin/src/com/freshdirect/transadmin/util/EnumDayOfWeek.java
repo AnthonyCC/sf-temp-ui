@@ -8,13 +8,13 @@ import org.apache.commons.lang.enums.Enum;
 
 public class EnumDayOfWeek  extends Enum {
 
-	  public static final EnumDayOfWeek ENUM_DAYOFWEEK_MON=new EnumDayOfWeek("1","Mon"); 
-	  public static final EnumDayOfWeek ENUM_DAYOFWEEK_TUE=new EnumDayOfWeek("2","Tue"); 
-	  public static final EnumDayOfWeek ENUM_DAYOFWEEK_WED=new EnumDayOfWeek("3","Wed"); 
-	  public static final EnumDayOfWeek ENUM_DAYOFWEEK_THUR=new EnumDayOfWeek("4","Thu"); 
-	  public static final EnumDayOfWeek ENUM_DAYOFWEEK_FRI=new EnumDayOfWeek("5","Fri");
-	  public static final EnumDayOfWeek ENUM_DAYOFWEEK_SAT=new EnumDayOfWeek("6","Sat");
-	  public static final EnumDayOfWeek ENUM_DAYOFWEEK_SUN=new EnumDayOfWeek("7","Sun");
+	  public static final EnumDayOfWeek ENUM_DAYOFWEEK_MON=new EnumDayOfWeek("1","Sun"); 
+	  public static final EnumDayOfWeek ENUM_DAYOFWEEK_TUE=new EnumDayOfWeek("2","Mon"); 
+	  public static final EnumDayOfWeek ENUM_DAYOFWEEK_WED=new EnumDayOfWeek("3","Tue"); 
+	  public static final EnumDayOfWeek ENUM_DAYOFWEEK_THUR=new EnumDayOfWeek("4","Wed"); 
+	  public static final EnumDayOfWeek ENUM_DAYOFWEEK_FRI=new EnumDayOfWeek("5","Thu");
+	  public static final EnumDayOfWeek ENUM_DAYOFWEEK_SAT=new EnumDayOfWeek("6","Fri");
+	  public static final EnumDayOfWeek ENUM_DAYOFWEEK_SUN=new EnumDayOfWeek("7","Sat");
 	  public static final EnumDayOfWeek ENUM_DAYOFWEEK_ALL=new EnumDayOfWeek("0","All");
 	  
 	  private final String desc;

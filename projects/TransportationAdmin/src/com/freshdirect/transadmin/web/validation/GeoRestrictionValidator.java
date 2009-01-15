@@ -53,9 +53,9 @@ public class GeoRestrictionValidator extends AbstractValidator {
 			System.out.println("errors.getErrorCount()="+errors.getErrorCount());
 			if(errors.getErrorCount()==0)			
 			{								
-				if(model.getStartDate().before(new Date())){
-					errors.rejectValue("startDate", "app.error.125", null,"");
-				}
+				//if(model.getStartDate().before(new Date())){
+					//errors.rejectValue("startDate", "app.error.125", null,"");
+				//}
 				
 				if(model.getEndDate().before(model.getStartDate())){
 					errors.rejectValue("endDate", "app.error.124", null,"");
