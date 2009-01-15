@@ -312,7 +312,6 @@ return true;
              
 
 </script>
-
     <tmpl:put name='title' direct='true'>Add/Modify Geo Restriction</tmpl:put>
 
   <tmpl:put name='content' direct='true'>
@@ -356,9 +355,9 @@ return true;
  
  
  
-               <td>Id</td> 
+               <td><!-- Id --></td> 
                   <td>                  
-                    <form:input disabled="true" maxlength="50" size="30" path="restrictionId" />
+                    <% // <form:input disabled="true" maxlength="50" size="30" path="restrictionId" /> %>
                 </td>
                 
                 
@@ -390,7 +389,7 @@ return true;
                <tr>
                <td>Comments</td>
                   <td>                  
-                    <form:textarea path="comments" rows="5" cols="45" />
+                    <form:textarea path="comments" rows="5" cols="30" cssClass="large" />
                 </td>
                  
                  </tr>
@@ -422,8 +421,9 @@ return true;
                
                <tr>
                   <td>Message</td>
-                  <td>                  
-                    <form:textarea path="message" rows="5" cols="45" />
+                  <td><font size="25">                  
+                    <form:textarea path="message" rows="5" cols="30" cssClass="large"  />
+                    </font>
                 </td>
                  <td>
                   &nbsp;<form:errors path="message" />
@@ -463,26 +463,27 @@ return true;
 							
 								
                
-               <table width="50%" cellpadding="0" cellspacing="0" border="0">    
-               <tr>
-                  <td><B>Restriction Details</B></td>
-                 </tr>
-               </tr>      
-               <tr>
-                    <th>Day Of Week</th>                               
-                   <th>Condition</th>                                      
-                   <th>Start Time</th>
-                   <th>End Time</th>
-                </tr>    
-   
-  
+               <table cellspacing="0" cellpadding="0" border="0">
+              <tbody><tr>
+                    <td colspan="5"><b>Restriction Details</b> <br/><br/> </td>
+               </tr>            
+              <tr>
+                    <th width="125"> Day Of Week</th>
+                    <th width="220">Condition</th>
+                    <th width="95">Start Time</th>
+                    <th width="95">End Time</th>
+                   <th rowspan="2" style="vertical-align: bottom;">
+                        <input class="submit" type="button" value="Add/Update Restriction" onclick="javascript:(isEdit)?editProfile():addProfile();"/>                                            
+                   </th>
+                   
+               </tr>
                 <tr>
                    <td>                   
                                   
  
                
                    
-                    <select name="DayOfWeekList" id="DayOfWeekList">   
+                    <select id="DayOfWeekList" style="width: 100%;" name="DayOfWeekList">  
                     <option value="0">All</option>
                    <c:forEach var="dayOfWeek" items="${DayOfWeeks}">       
 		              <OPTION value="<c:out value="${dayOfWeek.name}"/>"><c:out value="${dayOfWeek.desc}"/></OPTION>
@@ -491,32 +492,29 @@ return true;
                    </td>                               
                    <td>
                   
-                    <select name="condition" id="condition">                     
+                    <select name="condition" id="condition" style="width: 100%;">                     
                    <c:forEach var="condition" items="${conditions}">       
 		              <OPTION value="<c:out value="${condition.name}"/>"><c:out value="${condition.description}"/></OPTION>
 			        </c:forEach>                                      
 			        </select>
                    
                    </td>                                      
-                   <td><input type="text" id="startTime" name="startTime" value=""></td> 
-                   <td><input type="text" id="endTime" name="endTime" value=""></td>
-                </tr>                 
-                 <tr>
-                 <td colspan="3"><input type="button" value="Add/Update Rest Operator" class="submit" onclick="javascript:(isEdit)?editProfile():addProfile();"></td>
-                  </tr>
+                   <td><input type="text" id="startTime" name="startTime" value=""style="width: 95px;"></td> 
+                   <td><input type="text" id="endTime" name="endTime" value="" style="width: 88px;" ></td>
+                </tr>  
                 
-               </table>        
+               </table>  <br /><br />   
 
                     <table id="profileListTB" border="1" cellpadding="2" cellspacing="0" >
 					<thead>
-					<tr> 
-                   <th>Day Of Week</th>                               
-                   <th>Condition</th>                                      
-                   <th>Start Time</th>
-                   <th>End Time</th>
-                   <th>&nbsp;</th>                                      
-					</tr>
-					</thead>	
+                    <tr>
+                    <th>Day Of Week</th>
+                    <th width="220">Condition</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th style="border: none"> </th>
+                    </tr>
+                    </thead>
 					<tbody>		
                      <% int intRowIndex = 0;
                   	 StringBuffer strProfileHidBuf = new StringBuffer();
