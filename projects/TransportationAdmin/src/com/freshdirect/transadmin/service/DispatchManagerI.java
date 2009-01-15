@@ -45,4 +45,6 @@ public interface DispatchManagerI extends BaseManagerI {
 	
 	void savePlan(Plan plan);
 	
+	Collection getUnusedDispatchRoutes(String dispatchDate);
+	
 }

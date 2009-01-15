@@ -47,7 +47,7 @@
 								filterable="false" sortable="false" cell="selectcol"
 								property="code" />
 						  <ec:column property="name" title="Name"/>
-						  <ec:column property="description" title="description"/>
+						  <ec:column property="description" title="Description"/>
 						</ec:row>
 					  </ec:table>
 					</form> 

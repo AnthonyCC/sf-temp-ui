@@ -495,18 +495,20 @@ public class DomainController extends AbstractMultiActionController {
 		boolean hasError=false;
 		String routeDate = request.getParameter("routeDate");
 		ModelAndView mav = new ModelAndView("routeView");
-		mav.getModel().put("routeDate", routeDate);								
+							
 		try {		
 			if(!TransStringUtil.isEmpty(routeDate)) {				
 				//DateFormat format= new SimpleDateFormat("MM/dd/yyyy");			
 					Date rouDate=DATE_FORMAT.parse(routeDate);
 					Collection dataList = domainManagerService.getRoutes(TransStringUtil.getServerDate(routeDate));
-					mav.getModel().put("routes",dataList);															
+					mav.getModel().put("routes",dataList);	
+					mav.getModel().put("routeDate", routeDate);
 			} else{				
 				//routeDate=DATE_FORMAT.format(new Date());				
 				System.out.println("requested date :"+routeDate);				
 				Collection dataList = domainManagerService.getRoutes(TransStringUtil.getServerDate(new Date()));
-				mav.getModel().put("routes",dataList);			
+				mav.getModel().put("routes",dataList);
+				mav.getModel().put("routeDate",TransStringUtil.getDate(new Date()));
 			}
 		
 		} catch (ParseException e) {

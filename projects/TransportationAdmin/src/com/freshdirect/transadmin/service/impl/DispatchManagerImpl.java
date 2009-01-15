@@ -1,6 +1,8 @@
 package com.freshdirect.transadmin.service.impl;
 
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -258,5 +260,31 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	}
 	public void savePlan(Plan	plan) {
 		getDispatchManagerDao().savePlan(plan);
+	}
+
+	private static final DateFormat DATE_FORMAT=new SimpleDateFormat("yyyy-MM-dd"); 
+	public Collection getUnusedDispatchRoutes(String dispatchDate) {
+		// TODO Auto-generated method stub
+		if(dispatchDate==null)
+		{
+			// throw some exception
+			dispatchDate=DATE_FORMAT.format(new Date());			
+		}
+		//  get dispatch for the day
+		Collection routeList=this.dispatchManagerDao.getAssignedRoutes(dispatchDate);
+		Collection sapRouteList=this.domainManagerService.getRoutes(dispatchDate);
+		//  this contains the Route model extract the String
+		Set unusedRouteNumList=new HashSet();
+		if(sapRouteList!=null && !sapRouteList.isEmpty())
+		{
+			Iterator iterator=sapRouteList.iterator();
+			while(iterator.hasNext()){
+				ErpRouteMasterInfo route=(ErpRouteMasterInfo)iterator.next();
+				if(!sapRouteList.contains(route.getRouteNumber())){
+					unusedRouteNumList.add(route.getRouteNumber());
+				}
+			}
+		}						
+		return unusedRouteNumList;
 	}
 }
