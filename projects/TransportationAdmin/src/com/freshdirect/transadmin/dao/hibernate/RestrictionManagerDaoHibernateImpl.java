@@ -40,6 +40,12 @@ public class RestrictionManagerDaoHibernateImpl extends BaseManagerDaoHibernateI
 		
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
 	}
-		
-
+		    
+	public Collection getGeoRestrictionDays(String restrictionId)  throws DataAccessException {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from GeoRestrictionDays gd");
+		//strBuf.append(" where gd.restrictionId='").append(restrictionId).append("'");		
+		strBuf.append(" where gd.restrictionDaysId.restrictionId='").append(restrictionId).append("'");		
+		return (Collection) getHibernateTemplate().find(strBuf.toString());
+	}
 }

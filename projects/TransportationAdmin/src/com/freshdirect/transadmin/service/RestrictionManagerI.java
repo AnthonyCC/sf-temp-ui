@@ -15,4 +15,6 @@ public interface RestrictionManagerI extends BaseManagerI {
 	Collection getGeoRestrictionBoundaries();
 	
 	public void saveGeoRestriction(GeoRestriction geoRestriction);
+	
+	public Collection getGeoRestrictionDays(String restrictionId); 
 }

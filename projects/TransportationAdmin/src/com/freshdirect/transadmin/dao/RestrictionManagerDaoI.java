@@ -16,4 +16,6 @@ public interface RestrictionManagerDaoI extends BaseManagerDaoI {
 
   	public void saveGeoRestriction(GeoRestriction geoRestriction) throws DataAccessException;
   	
+  	public Collection getGeoRestrictionDays(String restrictionId)  throws DataAccessException ;
+  	
 }

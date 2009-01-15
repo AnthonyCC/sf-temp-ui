@@ -51,6 +51,11 @@ public class RestrictionManagerImpl extends BaseManagerImpl implements Restricti
 		getRestrictionManagerDao().saveGeoRestriction(geoRestriction);
 	}
 
+	public Collection getGeoRestrictionDays(String restrictionId) {
+		// TODO Auto-generated method stub
+		return getRestrictionManagerDao().getGeoRestrictionDays(restrictionId);
+	}
+
 
 	
 	
