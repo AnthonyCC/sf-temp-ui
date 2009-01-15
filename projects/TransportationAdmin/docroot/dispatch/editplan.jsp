@@ -7,10 +7,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/fmt" prefix="fmt" %>
 
 <% boolean hasErrors = session.getAttribute("apperrors") != null; 
-   WebPlanInfo _plan=null;
-   if(request.getAttribute("planForm")!=null)
-        _plan=(WebPlanInfo)request.getAttribute("planForm");
-
+ 
 %>
 <style>
 	* {font-family:Arial, Helvetica, sans-serif;
@@ -273,6 +270,8 @@
                 
             function submitData() {
             
+              
+              
               document.getElementById("ignoreErrors").value = "true";
               document.getElementById("planForm").submit();
             }

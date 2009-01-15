@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpSessionRequiredException;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -132,13 +133,14 @@ public class PlanningFormController extends AbstractFormController {
 		List errorList = null;
 		
 		try {
-			
+			WebPlanInfo _command=(WebPlanInfo)command;
 			boolean isNew = isNew(command);
-			Plan domainObject=getPlan((WebPlanInfo)command);
+			Plan domainObject=getPlan(_command);
 			if(!isNew) {
 				getDomainManagerService().saveEntity(domainObject);
 			} else {
 				getDispatchManagerService().savePlan(domainObject);
+				_command.setPlanId(domainObject.getPlanId());
 			}
 		} catch (Exception objExp) {
 			objExp.printStackTrace();
@@ -215,8 +217,19 @@ public class PlanningFormController extends AbstractFormController {
 		return DispatchPlanUtil.getPlan(command);
 	}
 	
-	
-	
+	protected Object formBackingObject(HttpServletRequest request)	throws Exception {
+		String id = request.getParameter("id");
+		if(TransStringUtil.isEmpty(id)) {
+			id=request.getParameter("planId");
+		}
+		
+		if (StringUtils.hasText(id)) {
+			Object  tmp = getBackingObject(id);
+			return tmp;
+		} else {
+			return getDefaultBackingObject();
+		}
+	}
 	
 }
 
