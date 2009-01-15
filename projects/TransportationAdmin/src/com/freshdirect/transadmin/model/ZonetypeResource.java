@@ -51,6 +51,15 @@ public class ZonetypeResource implements java.io.Serializable {
 	public void setRequiredNo(Integer requiredNo) {
 		this.requiredNo = requiredNo;
 	}
+	
+	public String toString(){
+	    StringBuffer buf=new StringBuffer();
+	    if(this.maximumNo!=null) buf.append(this.maximumNo).append(" ");
+		if(this.requiredNo!=null) buf.append(this.requiredNo);
+		
+		//System.out.println("ZoneType Resource :"+buf);
+		return buf.toString();
+	}
 
 	
 }
