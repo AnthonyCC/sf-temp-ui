@@ -94,7 +94,7 @@
 	     </menu>
 	        
 	     
-	     <menu id="GEO003" title="Zone" orientation="RIGHT" link="zone.do">
+	     <menu id="GEO003" title="Zone" orientation="RIGHT" link="zone.do?zoneType=Active">
 	     	<access-uris>zone.do,editzone.do,deletezone.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
 	     </menu>

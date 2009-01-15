@@ -4,14 +4,59 @@
 
 <tmpl:insert template='/common/sitelayout.jsp'>
 
-    <tmpl:put name='title' direct='true'>Service Time</tmpl:put>
+
+<% 
+	String pageTitle = "Service Time";
+%>
+
+    <tmpl:put name='title' direct='true'> Routing : <%=pageTitle%></tmpl:put>
 
   <tmpl:put name='content' direct='true'>
-    <br/> 
-    <div align="center">
-      <script language="javascript">                 
-                      
-                      
+    
+<div class="contentroot">
+
+		<div class="cont_topleft">
+			<div class="cont_row">
+				<div class="cont_Litem">
+					<span class="scrTitle">
+						<%=pageTitle%>
+					</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="cont_topright">
+			<div class="cont_row">
+				<div class="cont_Ritem">
+					<form id="dlvServiceTimeForm" action="" method="post">  
+					<ec:table items="dlvservicetimelist"   action="${pageContext.request.contextPath}/dlvservicetime.do"
+						imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title=""
+						width="98%"  view="fd" form="dlvServiceTimeForm" autoIncludeParameters="false" rowsDisplayed="25"  >
+						
+						<ec:exportPdf fileName="transportationdlvservicetimes.pdf" tooltip="Export PDF" 
+								  headerTitle="Service Time" />
+						  <ec:exportXls fileName="transportationdlvservicetimes.xls" tooltip="Export PDF" />
+						  <ec:exportCsv fileName="transportationdlvservicetimes.csv" tooltip="Export CSV" delimiter="|"/>
+							
+						<ec:row interceptor="obsoletemarker">
+						  <ec:column title=" " width="5px" 
+								filterable="false" sortable="false" cell="selectcol"
+								property="compositeId" />             
+						  <ec:column property="serviceTimeType" title="Service Time Type"/>
+						<ec:column property="zoneTypeName" title="Zone Type"/>
+						  <ec:column property="fixedServiceTime" title="Fixed Service Time(in minutes)"/>
+						  <ec:column property="variableServiceTime" title="Variable Service Time(in minutes)"/>
+						</ec:row>
+					  </ec:table>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+     <script>
+      addServiceTimeRowHandlers('ec_table', 'rowMouseOver', 'editdlvservicetime.do','servicetimetype',1, 'zonetype',2);
+
+	  
                     function doDelete(tableId, url) {                       
                         sendRequest(tableId, url, "Do you want to delete the selected records?");                       
                     }
@@ -77,32 +122,6 @@
                 }
             }
           }
-              
-                  </script>
-      <form id="dlvServiceTimeForm" action="" method="post">  
-        <ec:table items="dlvservicetimelist"   action="${pageContext.request.contextPath}/dlvservicetime.do"
-            imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="Service Time"
-            width="98%"  view="fd" form="dlvServiceTimeForm" autoIncludeParameters="false" rowsDisplayed="25"  >
-            
-            <ec:exportPdf fileName="transportationdlvservicetimes.pdf" tooltip="Export PDF" 
-                      headerTitle="Service Time" />
-              <ec:exportXls fileName="transportationdlvservicetimes.xls" tooltip="Export PDF" />
-              <ec:exportCsv fileName="transportationdlvservicetimes.csv" tooltip="Export CSV" delimiter="|"/>
-                
-            <ec:row interceptor="obsoletemarker">
-              <ec:column title=" " width="5px" 
-                    filterable="false" sortable="false" cell="selectcol"
-                    property="compositeId" />             
-              <ec:column property="serviceTimeType" title="Service Time Type"/>
-            <ec:column property="zoneTypeName" title="Zone Type"/>
-              <ec:column property="fixedServiceTime" title="Fixed Service Time(in minutes)"/>
-              <ec:column property="variableServiceTime" title="Variable Service Time(in minutes)"/>
-            </ec:row>
-          </ec:table>
-       </form>  
-     </div>
-     <script>
-      addServiceTimeRowHandlers('ec_table', 'rowMouseOver', 'editdlvservicetime.do','servicetimetype',1, 'zonetype',2);
     </script>   
   </tmpl:put>
 </tmpl:insert>

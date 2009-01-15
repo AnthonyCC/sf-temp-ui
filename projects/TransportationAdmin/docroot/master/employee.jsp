@@ -18,7 +18,7 @@
 %>
 <tmpl:insert template='/common/sitelayout.jsp'>
 
-    <tmpl:put name='title' direct='true'>Operations : Employee : <%=pageTitle%></tmpl:put>
+    <tmpl:put name='title' direct='true'> Operations : Employee : <%=pageTitle%></tmpl:put>
 
 <tmpl:put name='hasSubs' direct='true'>subs</tmpl:put>
 

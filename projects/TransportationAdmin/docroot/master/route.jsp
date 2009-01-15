@@ -30,6 +30,11 @@
 
   <tmpl:put name='content' direct='true'>
 
+	<c:if test="${not empty messages}">
+		<div class="err_messages">
+			<jsp:include page='/common/messages.jsp'/>
+		</div>
+	</c:if> 
 	<div class="MNM001 subsub or_999">
 
 		<div class="subs_left">	

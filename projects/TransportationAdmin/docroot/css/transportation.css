@@ -956,7 +956,7 @@ div.eXor_Active, div.eXor_AdHoc { margin-left: 10px; width: 98%; }
 	#ec_table td, #ec_table td.tableHeader, #ec_table td.tableHeaderSort {
 		width: auto;
 	}
-/* Service Time Scenario overrides */
+/* Service Time Scenario over-rides */
 
 /* borderless */
 .noborder {
@@ -975,3 +975,34 @@ div.eXor_Active, div.eXor_AdHoc { margin-left: 10px; width: 98%; }
 .refresh_link {
 	color: #09c;
 }
+
+/* zone type max/req over-rides*/
+table#ec_table.tableRegion .tableBody td table tr td {
+	width: 30px;
+	text-align: center;
+}
+/* zone type max/req over-rides*/
+
+/* dispatch table over-rides */
+	.tableBody table {
+		width: 100%;
+	}
+/* dispatch table over-rides */
+
+/* dispatch add/edit tweaks */
+	.dipatch_AddEdit_center_fleft {
+		float: left;
+	}
+	.dipatch_AddEdit_center_fright {
+		float: right;
+		width: 125px;
+	}
+	.dipatch_AddEdit_row {
+		height: 20px;
+	}
+/* dispatch add/edit tweaks */
+
+/* float simple classes */
+	.fleft { float: left; }
+	.fright { float: right; }
+/* float simple classes */
