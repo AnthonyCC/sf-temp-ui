@@ -894,6 +894,12 @@ span.select_or { line-height: 25px; vertical-align: bottom; display: inline-bloc
 	text-align: left;
 }
 
+.georestriction_content {
+	margin: 0px 10px;
+	padding: 0 0 0 15%;
+	text-align: left;
+}
+
 /* indented tables */
 .t_Hours {
 	margin-left: 40px;

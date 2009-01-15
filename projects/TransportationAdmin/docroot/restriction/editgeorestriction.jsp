@@ -392,10 +392,7 @@ return true;
                   <td>                  
                     <form:textarea path="comments" rows="5" cols="45" />
                 </td>
-                
                  
-                
-                
                  </tr>
                                            
                <tr>
@@ -432,7 +429,11 @@ return true;
                   &nbsp;<form:errors path="message" />
                 </td>
                </tr>
-           </table>    
+           </table>  
+           
+           </div>
+           	<div  class="georestriction_content" align="center">
+             
                
            <br><br>    
                <script language="javascript">
@@ -458,15 +459,17 @@ return true;
 										}
 									);
 
-							</script>		
+							</script>	
+							
+								
                
                <table width="50%" cellpadding="0" cellspacing="0" border="0">    
                <tr>
                   <td><B>Restriction Details</B></td>
-                 </tr>    
- 
+                 </tr>
+               </tr>      
                <tr>
-                   <th>Day Of Week</th>                               
+                    <th>Day Of Week</th>                               
                    <th>Condition</th>                                      
                    <th>Start Time</th>
                    <th>End Time</th>
@@ -554,7 +557,8 @@ return true;
                            document.getElementById('restrictionListSize').value=rollingIndex; 
                         </script>		
 				     </tbody> 				
-				</table>								
+				</table>
+				</br>								
  				<tr>
 				    <td  align="center">
 					   <input type = "submit" value="&nbsp;Save&nbsp;"  />
