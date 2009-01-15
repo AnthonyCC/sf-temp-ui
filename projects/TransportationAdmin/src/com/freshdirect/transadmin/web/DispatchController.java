@@ -7,11 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -23,11 +20,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.transadmin.model.Dispatch;
-import com.freshdirect.transadmin.model.DispatchResource;
 import com.freshdirect.transadmin.model.FDRouteMasterInfo;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.Zone;
-import com.freshdirect.transadmin.model.ZonetypeResource;
 import com.freshdirect.transadmin.security.SecurityManager;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
@@ -35,8 +30,6 @@ import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
-import com.freshdirect.transadmin.web.model.ResourceReq;
-import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 import com.freshdirect.transadmin.web.model.WebPlanInfo;
 
 public class DispatchController extends AbstractMultiActionController {
@@ -335,6 +328,20 @@ public class DispatchController extends AbstractMultiActionController {
 					}
 				    dispatchManagerService.autoDisptch(dispatchDate);								       
 				   return planHandler(request,response);		
+	}
+	
+	public ModelAndView unassignedRouteHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException  {
+		
+		ModelAndView mav = new ModelAndView("unassignedRouteView");
+		String routeDate = request.getParameter("routeDate");
+		try {
+			mav.getModel().put("routes", dispatchManagerService.getUnusedDispatchRoutes(TransStringUtil.getServerDate(routeDate)));
+		}  catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			mav.getModel().put("routes",dispatchManagerService.getUnusedDispatchRoutes(TransStringUtil.getCurrentServerDate()));
+		}
+		return mav;
 	}
 	
 	

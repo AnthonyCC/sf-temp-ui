@@ -133,7 +133,10 @@
                   </td>  
                   <td>
                      <input type = "button" value="&nbsp;Refresh Route&nbsp;" onclick="javascript:refreshRoute()" />
-                  </td> 
+                  </td>
+                  <td>
+                     <input type = "button" value="&nbsp;Unassigned Routes&nbsp;" onclick="javascript:doUnassignedRoutes('dispDate')" />
+                  </td>  
               </tr>
               </table>        
               
@@ -147,6 +150,11 @@
           var param3 = document.getElementById(compId3).value;
           location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2+"&"+compId3+"="+param3;
         } 
+        
+        function doUnassignedRoutes(compId1) {
+        	 var param1 = document.getElementById(compId1).value;
+        	javascript:pop('unassignedroute.do?routeDate='+param1, 400,600);
+        }
 
       </script>      
       </div>

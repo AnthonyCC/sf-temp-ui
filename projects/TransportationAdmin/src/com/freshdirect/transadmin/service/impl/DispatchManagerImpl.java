@@ -261,15 +261,10 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	public void savePlan(Plan	plan) {
 		getDispatchManagerDao().savePlan(plan);
 	}
-
-	private static final DateFormat DATE_FORMAT=new SimpleDateFormat("yyyy-MM-dd"); 
+	 
+	
 	public Collection getUnusedDispatchRoutes(String dispatchDate) {
-		// TODO Auto-generated method stub
-		if(dispatchDate==null)
-		{
-			// throw some exception
-			dispatchDate=DATE_FORMAT.format(new Date());			
-		}
+		
 		//  get dispatch for the day
 		Collection routeList=this.dispatchManagerDao.getAssignedRoutes(dispatchDate);
 		Collection sapRouteList=this.domainManagerService.getRoutes(dispatchDate);
@@ -281,7 +276,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 			while(iterator.hasNext()){
 				ErpRouteMasterInfo route=(ErpRouteMasterInfo)iterator.next();
 				if(!sapRouteList.contains(route.getRouteNumber())){
-					unusedRouteNumList.add(route.getRouteNumber());
+					unusedRouteNumList.add(route);
 				}
 			}
 		}						

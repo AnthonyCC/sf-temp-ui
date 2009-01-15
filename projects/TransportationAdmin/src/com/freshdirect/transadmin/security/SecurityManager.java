@@ -17,6 +17,7 @@ public class SecurityManager {
 		UNSECURED_URL.add("download.do");
 		UNSECURED_URL.add("routenumber.do");
 		UNSECURED_URL.add("viewfile.do");
+		UNSECURED_URL.add("unassignedroute.do");
 	}
 	
 	public static String getUserRole(ServletRequest request, Set roles) {		

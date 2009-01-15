@@ -29,7 +29,8 @@
  		 	    <prop key="/welcome.do">domainController</prop>
  		 	    <prop key="/autoDispatch.do">dispatchController</prop>
  		 	    <prop key="/employee.do">domainController</prop>					            
- 		 	    <prop key="/route.do">domainController</prop>					                    
+ 		 	    <prop key="/route.do">domainController</prop>	
+ 		 	    <prop key="/unassignedroute.do">dispatchController</prop>				                    
  		 	    <prop key="/zone.do">domainController</prop>					                
  		 	    <prop key="/region.do">domainController</prop>					                
  		 	    <prop key="/truck.do">domainController</prop>		                
@@ -147,7 +148,8 @@
 		<props>			
 			<prop key="/welcome.do">welcomeHandler</prop>
 			<prop key="/employee.do">employeeHandler</prop>				       
-			<prop key="/route.do">compositeRouteHandler</prop>		
+			<prop key="/route.do">compositeRouteHandler</prop>
+			<prop key="/unassignedroute.do">unassignedRouteHandler</prop>			
 			<prop key="/autoDispatch.do">autoDispatchHandler</prop>					
  		  	<prop key="/zone.do">zoneHandler</prop>		
 			<prop key="/region.do">regionHandler</prop>		 		 				                
