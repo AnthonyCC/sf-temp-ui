@@ -93,16 +93,21 @@ return true;
     
         function validateUserFields(){
         
-          
+           
         
-           if(document.getElementById('condition').value=='' 
-                   || document.getElementById('startTime').value=='' 
-                      || document.getElementById('endTime').value==''){
-                                                                                        
-                   alert("field dayOfWeek, condition , startTime, endTime cannot be empty");   
+           if(document.getElementById('startTime').value==''){ 
+                   alert("field startTime cannot be empty");   
+                   return false;
+            } 
+            if(document.getElementById('condition').value=='<>' 
+                      && document.getElementById('endTime').value==''){
+                   alert("field endTime cannot be empty for 'BETWEEN' condition");   
                    return false;
             } 
             
+            if (document.getElementById('endTime').value=='')
+               document.getElementById('endTime').value='00:00 AM';
+  
              //alert("startTime="+document.getElementById('startTime').value);
              if( !IsValidTime(document.getElementById('startTime').value)) {
                alert("Enter Start Time as 'hh:mm am/pm'.");
@@ -354,12 +359,12 @@ return true;
    
  
  
- 
-               <td><!-- Id --></td> 
+ <!-- 
+               <td>Id</td> 
                   <td>                  
-                    <% // <form:input disabled="true" maxlength="50" size="30" path="restrictionId" /> %>
+                    <form:input disabled="true" maxlength="50" size="30" path="restrictionId" /> 
                 </td>
-                
+ -->               
                 
                </tr>
                
