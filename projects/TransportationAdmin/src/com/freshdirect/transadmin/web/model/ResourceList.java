@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.freshdirect.transadmin.model.ResourceInfoI;
 
-public class ResourceList extends java.util.ArrayList {
+public class ResourceList extends java.util.ArrayList implements Comparable {
 	
 	private ResourceReq resourceReq;
 		
@@ -47,27 +47,24 @@ public class ResourceList extends java.util.ArrayList {
 	public String toString(){
 		
 	   	StringBuffer buf=new StringBuffer();
-		
-		buf.append(this.resourceReq.getReq()).append("/").append(this.resourceReq.getMax());
+		if(resourceReq!=null)
+			buf.append(this.resourceReq.getReq()).append("/").append(this.resourceReq.getMax());
 	   	
 		Iterator it=this.iterator();
-		
-    	boolean renderReq=true;
     	ResourceInfoI resourceInfo=null;
-    	
-    	
- 
     	while(it.hasNext()) {
     		resourceInfo=(ResourceInfoI)it.next();    		    		    		
     		if(resourceInfo.getLastName()!=null || resourceInfo.getFirstName()!=null) {
     			buf.append(resourceInfo.getLastName()+" "+resourceInfo.getFirstName());    			    		
     		}
-    		
     	}	    	
-    	//System.out.println(" buf.toString() :"+buf.toString());
-    	
     	return buf.toString();
 		
+	}
+
+	public int compareTo(Object o) {
+		ResourceList other=(ResourceList)o;
+		return this.toString().compareTo(other.toString());
 	} 
 	
 	
