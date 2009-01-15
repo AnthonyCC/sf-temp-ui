@@ -22,9 +22,9 @@ public class ZoneTypeValidator extends AbstractValidator {
 		
 		validateLength("name", model.getName(), 32, errors);
 		validateLength("description", model.getDescription(), 256, errors);
-		if(model.getDriverReq()==null && model.getDriverMax()==null) {
+		/*if(model.getDriverReq()==null && model.getDriverMax()==null) {
 			ValidationUtils.rejectIfEmpty(errors, "driverReq", "app.error.112", new Object[]{"driverReq"},"required field");
-		}
+		}*/
 		if(model.getDriverMax()!=null) {
 			validateIntegerMinMax("driverMax",model.getDriverMax(),TransportationAdminProperties.getDriverReqForZonetype(),TransportationAdminProperties.getDriverMaxForZonetype(),errors);
 		}

@@ -41,11 +41,12 @@ public class DispatchPlanUtil {
 				EmployeeInfo p1=(EmployeeInfo)o1;
 				EmployeeInfo p2=(EmployeeInfo)o2;
 				
-				int value=p1.getHireDate().compareTo(p2.getHireDate());
+				/*int value=p1.getHireDate().compareTo(p2.getHireDate());
 				if(value==0) {
 					return p1.getLastName().compareTo(p2.getLastName());
 				}
-				return value;
+				return value;*/
+				return p1.getLastName().compareTo(p2.getLastName());
 			}
 			return 0;
 		}
