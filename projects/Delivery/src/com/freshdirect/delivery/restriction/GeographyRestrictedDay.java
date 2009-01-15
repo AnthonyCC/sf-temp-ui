@@ -56,7 +56,8 @@ public class GeographyRestrictedDay implements Serializable {
                 return timeSlotStartTime.after(startTime) || timeSlotStartTime.equals(startTime);
             }
             else if (condition.equals(EnumLogicalOperator.BETWEEN))  {
-            	return timeSlotStartTime.after(startTime) && timeSlotStartTime.before(endTime);
+            	return (timeSlotStartTime.after(startTime) && timeSlotStartTime.before(endTime))
+            			|| timeSlotStartTime.equals(startTime);
             }
             else if (condition.equals(EnumLogicalOperator.NOT_EQUAL)) {
              
