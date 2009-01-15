@@ -61,7 +61,7 @@
       </script>  
      </div> 
     <div align="center">
-      <form id="deliveryBuildingForm" action="" method="post">  
+      <form id="geoRestrictionForm" action="" method="post">  
         <ec:table items="geoRestrictions"   action="${pageContext.request.contextPath}/georestriction.do"
             imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="&nbsp;"
             width="98%"  view="fd" form="geoRestrictionForm" autoIncludeParameters="true" rowsDisplayed="25"  >
@@ -70,21 +70,7 @@
                       headerTitle="Geo Restrictions" />
               <ec:exportXls fileName="georestrictions.xls" tooltip="Export PDF" />
               <ec:exportCsv fileName="georestrictions.csv" tooltip="Export CSV" delimiter="|"/>
-             
-             
-   <!-- 
-   	private String id;
-	private String name;
-	private String boundaryCode;
-	private Date startDate;
-	private Date endDate;
-	private String message;
-	private String active;
-	private String comments;
-   
-    -->          
-             
-                
+                 
             <ec:row >
               <ec:column title=" " width="5px" 
                     sortable="false" cell="selectcol" filtercell="selectcol"
