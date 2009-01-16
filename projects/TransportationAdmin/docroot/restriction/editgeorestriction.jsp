@@ -390,15 +390,7 @@ return true;
                   &nbsp;<form:errors path="boundaryCode" />
                 </td>
                </tr>
-               
-               <tr>
-               <td>Comments</td>
-                  <td>                  
-                    <form:textarea path="comments" rows="5" cols="30" cssClass="large" />
-                </td>
-                 
-                 </tr>
-                                           
+                                                                    
                <tr>
                   <td>Start Date</td>
                   <td>                                    
@@ -427,13 +419,23 @@ return true;
                <tr>
                   <td>Message</td>
                   <td><font size="25">                  
-                    <form:textarea path="message" rows="5" cols="30" cssClass="large"  />
+                    <form:textarea path="message" rows="8" cols="50" cssClass="large"  />
                     </font>
                 </td>
                  <td>
                   &nbsp;<form:errors path="message" />
                 </td>
                </tr>
+               
+               <tr>
+               <td>Comments</td>
+                  <td>                  
+                    <form:textarea path="comments" rows="8" cols="50" cssClass="large" />
+                  </td>
+                 <td>
+                  &nbsp;<form:errors path="comments" />
+                </td>
+                 </tr>
            </table>  
            
            </div>
