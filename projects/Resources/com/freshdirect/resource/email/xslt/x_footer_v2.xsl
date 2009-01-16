@@ -16,7 +16,7 @@ Frequently Asked Questions
 http://www.freshdirect.com/help/faq_home.jsp
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-(c) 2002 - 2007 FRESHDIRECT. All Rights Reserved.
+(c) 2002 - 2009 FRESHDIRECT. All Rights Reserved.
 
 	</xsl:template>
 </xsl:stylesheet>
