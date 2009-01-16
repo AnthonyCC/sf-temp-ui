@@ -29,4 +29,12 @@ public class RouteInfo implements Serializable {
 		this.zoneNumber = zoneNumber;
 	}
 
+	public String getZonePrefix() {
+		if(routeNumber != null){
+			return routeNumber.substring(1,4);	
+		}
+		return "";
+		
+	}
+
 }

@@ -217,18 +217,12 @@ public class PlanningFormController extends AbstractFormController {
 		return DispatchPlanUtil.getPlan(command);
 	}
 	
-	protected Object formBackingObject(HttpServletRequest request)	throws Exception {
+	protected String getIdFromRequest(HttpServletRequest request){
 		String id = request.getParameter("id");
 		if(TransStringUtil.isEmpty(id)) {
 			id=request.getParameter("planId");
 		}
-		
-		if (StringUtils.hasText(id)) {
-			Object  tmp = getBackingObject(id);
-			return tmp;
-		} else {
-			return getDefaultBackingObject();
-		}
+		return id;
 	}
 	
 }

@@ -25,6 +25,16 @@ public class DispatchResourceInfo extends BaseCommand implements ResourceInfoI {
 		return lastName+SEPERATOR+firstName;
 	}
 
+	public String getNameWithFirstInitial() {
+		if((lastName==null ||"".equals(lastName))&&(firstName==null || "".equals(firstName)))
+			return "";
+		if(lastName==null || "".equals(lastName))
+			return firstName;
+		if(firstName==null || "".equals(firstName))
+			return lastName;
+		return lastName+", "+firstName.substring(0,1);
+	}
+	
 	public String toString() {
 		
 		return employeeId;

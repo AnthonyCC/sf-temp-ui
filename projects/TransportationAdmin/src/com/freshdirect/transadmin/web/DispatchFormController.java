@@ -34,11 +34,6 @@ public class DispatchFormController extends AbstractFormController {
 	
 	private EmployeeManagerI employeeManagerService;
 	
-	private static final String SUPERVISOR="006";
-	private static final String DRIVER="001";
-	private static final String HELPER="002";
-	private static final String RUNNER="003";
-	
 	public DispatchManagerI getDispatchManagerService() {
 		return dispatchManagerService;
 	}
@@ -56,8 +51,11 @@ public class DispatchFormController extends AbstractFormController {
 		Map refData = new HashMap();		
 		refData.put("statuses", domainManagerService.getDispositionTypes());
 		String dispDate = request.getParameter("dispDate");
+		String zoneCode = request.getParameter("zoneCode");
+		System.out.println("Zone code "+zoneCode);
 		if (StringUtils.hasText(dispDate)) {
 			refData.put("routes", domainManagerService.getAllRoutes(getServerDate(dispDate)));
+			
 		} else {
 			refData.put("routes", domainManagerService.getAllRoutes(TransStringUtil.getCurrentServerDate()));
 		}
@@ -72,11 +70,15 @@ public class DispatchFormController extends AbstractFormController {
 		refData.put("runners", DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.RUNNER.getName())));
 
 		refData.put("zones", domainManagerService.getZones());
+		refData.put("regions", domainManagerService.getRegions());
 		return refData;
 	}
 	
 	private DispatchCommand getCommand(Dispatch dispatch) throws Exception{
-		Zone zone=domainManagerService.getZone(dispatch.getZone().getZoneCode());
+		Zone zone=null;
+		if(dispatch.getZone() != null) {
+			zone=domainManagerService.getZone(dispatch.getZone().getZoneCode());
+		}
 		return DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService);
 	}
 	
@@ -104,6 +106,7 @@ public class DispatchFormController extends AbstractFormController {
 			return command;
 		}
 		catch(Exception ex){
+			ex.printStackTrace();
 			throw new RuntimeException("An Error Ocuurred when trying construct command object "+ex.getMessage());
 		}
 		
@@ -127,6 +130,7 @@ public class DispatchFormController extends AbstractFormController {
 			boolean isNew = isNew(command);
 			Dispatch domainObject=getDispatch(command);
 			getDispatchManagerService().saveDispatch(domainObject);
+			command.setDispatchId(domainObject.getDispatchId());
 		} catch (TransAdminApplicationException objExp) {
 			errorList = new ArrayList();
 			errorList.add(objExp.getMessage());
@@ -141,44 +145,33 @@ public class DispatchFormController extends AbstractFormController {
 		DispatchCommand command = (DispatchCommand) domainObject;
 		return saveDispatch(command);
 	}
-	/*
-	protected ModelAndView onSubmit(HttpServletRequest request,
-			HttpServletResponse response, Object command, BindException errors)
-			throws Exception {
-		String dispDate = request.getParameter("dispDate");
-		Date requestedDate = TransStringUtil.getDate(dispDate);
-		String routeNo = request.getParameter("routeNo");
-		String zoneId = request.getParameter("zoneId");
-		DispatchCommand dispatchCommand = (DispatchCommand) command;
-		if(!TransStringUtil.isEmpty(zoneId)){
-			
-			Zone zone=domainManagerService.getZone(zoneId);
-			DispatchPlanUtil.reconstructWebPlanInfo(dispatchCommand,zone,employeeManagerService);
-		}
-		else if(StringUtils.hasText(dispDate) && StringUtils.hasText(routeNo)){
-			setTruckNumber(request, requestedDate, routeNo, dispatchCommand);
 
-		} else {
-				
-			save(request, command);
-		}
-		ModelAndView mav = new ModelAndView(getSuccessView(), errors.getModel());
-		mav.getModel().put(this.getCommandName(), command);
-		mav.getModel().putAll(referenceData(request));
-
-		return mav;
-	}
-	*/
 	
 	protected void onBind(HttpServletRequest request, Object command) {
 		DispatchCommand model = (DispatchCommand) command;
+		if(!TransStringUtil.isEmpty(model.getIsBullpen()) && model.getIsBullpen().equals("true") && !TransStringUtil.isEmpty(model.getZoneCode())){
+			model.setZoneCode("");
+			model.setZoneName("");
+			model.setZoneType("");
+		}
 		Zone zone=null;
+		
 		if(!TransStringUtil.isEmpty(model.getZoneCode())) {
 			zone=domainManagerService.getZone(model.getZoneCode());
 		}
+	
 		DispatchPlanUtil.reconstructWebPlanInfo(model,zone,employeeManagerService);
 		
 	}
+	
+	protected String getIdFromRequest(HttpServletRequest request){
+		String id = request.getParameter("id");
+		if(TransStringUtil.isEmpty(id)) {
+			id=request.getParameter("dispatchId");
+		}
+		return id;
+	}
+
 	
 	public DomainManagerI getDomainManagerService() {
 		return domainManagerService;

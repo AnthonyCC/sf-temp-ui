@@ -13,7 +13,7 @@ public abstract class AbstractFormController extends BaseFormController {
 
 	protected Object formBackingObject(HttpServletRequest request)
 			throws Exception {
-		String id = request.getParameter("id");
+		String id = getIdFromRequest(request);
 
 		if (StringUtils.hasText(id)) {
 			Object  tmp = getBackingObject(id);
@@ -57,5 +57,8 @@ public abstract class AbstractFormController extends BaseFormController {
 	protected void preProcessDomainObject(Object domainObject) {
 		// Default Impl
 	}
-		
+	
+	protected String getIdFromRequest(HttpServletRequest request){
+		return request.getParameter("id");
+	}
 }

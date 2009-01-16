@@ -16,7 +16,7 @@ import com.freshdirect.transadmin.web.model.DispatchResourceInfo;
 import com.freshdirect.transadmin.web.model.ResourceList;
 import com.freshdirect.transadmin.web.model.ResourceReq;
 
-public class FDDispatchResourceCell extends FDBaseCell  {
+public class FDDispatchSummaryResourceCell extends FDBaseCell  {
 	
 	public String getExportDisplay(TableModel model, Column column) {
 		
@@ -67,9 +67,9 @@ public class FDDispatchResourceCell extends FDBaseCell  {
     				html.trEnd(0);
         			renderReq=false;
         		}
-        		if(resourceInfo.getName().length() > 0) {
+        		if(resourceInfo.getNameWithFirstInitial().length() > 0) {
         			html.tr(0).close();
-        			html.td(0).close().append(resourceInfo.getName()+" ["+resourceInfo.getNextelNo()+"]").tdEnd();
+        			html.td(0).close().append(resourceInfo.getNameWithFirstInitial()+" ["+resourceInfo.getNextelNo()+"]").tdEnd();
         			html.trEnd(0);
         		}
         	}

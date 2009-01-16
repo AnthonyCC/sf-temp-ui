@@ -181,7 +181,10 @@ public class DispatchController extends AbstractMultiActionController {
 		Iterator iter = dispatchList.iterator();
 			while(iter.hasNext()){
 				Dispatch dispatch = (Dispatch) iter.next();
-				Zone zone=domainManagerService.getZone(dispatch.getZone().getZoneCode());
+				Zone zone=null;
+				if(dispatch.getZone() != null) {
+					zone=domainManagerService.getZone(dispatch.getZone().getZoneCode());
+				}
 				DispatchCommand command = DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService);
 				if(isSummary){
 					FDRouteMasterInfo routeInfo = domainManagerService.getRouteMasterInfo(command.getRoute(), new Date());
@@ -244,11 +247,16 @@ public class DispatchController extends AbstractMultiActionController {
 		String arrEntityList[] = getParamList(request);
 		StringTokenizer splitter = null;
 		Dispatch tmpDispatch = null;
+		int routeBlankCount = 0;
 		if (arrEntityList != null) {			
 			int arrLength = arrEntityList.length;
 			for (int intCount = 0; intCount < arrLength; intCount++) {
-				splitter = new StringTokenizer(arrEntityList[intCount], "$");
-				tmpDispatch = dispatchManagerService.getDispatch(splitter.nextToken());
+				//splitter = new StringTokenizer(arrEntityList[intCount], "$");
+				tmpDispatch =dispatchManagerService.getDispatch(arrEntityList[intCount]);
+				if(TransStringUtil.isEmpty(tmpDispatch.getRoute())){
+					routeBlankCount++;
+					break;
+				}
 				if(tmpDispatch != null) {
 					Boolean confirm = tmpDispatch.getConfirmed();
 					if( confirm == null || ! confirm.booleanValue() ) {
@@ -259,9 +267,13 @@ public class DispatchController extends AbstractMultiActionController {
 					dispatchSet.add(tmpDispatch);
 				}
 			}
+			if(routeBlankCount > 0){
+				saveMessage(request, getMessage("app.actionmessage.138", null));
+			}else {
+				dispatchManagerService.saveEntityList(dispatchSet);
+				saveMessage(request, getMessage("app.actionmessage.104", null));
+			}
 		}		
-		dispatchManagerService.saveEntityList(dispatchSet);
-		saveMessage(request, getMessage("app.actionmessage.104", null));
 
 		return dispatchHandler(request, response);
 	}

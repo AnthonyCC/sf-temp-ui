@@ -1,5 +1,6 @@
 package com.freshdirect.transadmin.web.validation;
 
+import java.text.ParseException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -7,7 +8,9 @@ import java.util.Set;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
+import com.freshdirect.framework.util.DateComparator;
 import com.freshdirect.transadmin.model.EmployeeInfo;
+import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
 import com.freshdirect.transadmin.web.model.DispatchResourceInfo;
@@ -20,55 +23,28 @@ public class DispatchValidator extends AbstractValidator {
 	}
 	
 	public void validate(Object obj, Errors errors) {
-	DispatchCommand model = (DispatchCommand)obj;
-	//  need to decide about the validation part
-	//ValidationUtils.rejectIfEmpty(errors, "planDate", "app.error.112", new Object[]{"Plan Date"},"required field");
-	//ValidationUtils.rejectIfEmpty(errors, "startTime", "app.error.112", new Object[]{"Plan Date"},"required field");
-	//ValidationUtils.rejectIfEmpty(errors, "planDate", "app.error.112", new Object[]{"Plan Date"},"required field");
+		DispatchCommand model = (DispatchCommand)obj;
+		//  need to decide about the validation part
+		ValidationUtils.rejectIfEmpty(errors, "startTime", "app.error.112", new Object[]{"Start Time"},"required field");
+		ValidationUtils.rejectIfEmpty(errors, "firstDeliveryTime", "app.error.112", new Object[]{"First Delivery Time"},"required field");
+		checkDate("startTime",model.getStartTime(),model.getFirstDeliveryTime(),errors);
 	
-	if(model != null && TransStringUtil.isEmpty(model.getZoneCode())) {
-		errors.rejectValue("zoneCode", "app.error.112", new Object[]{"Zone"},"required field");
-	}
-	/*
-	if(DispatchPlanUtil.isBullpen(model.getIsBullpen()) && TransStringUtil.isEmpty(model.getRegionCode())) {
-		errors.rejectValue("regionCode", "app.error.112", new Object[]{"Region"},"required field");
-	}*/
-	ValidationUtils.rejectIfEmpty(errors, "route", "app.error.112", new Object[]{"Route Number"},"required field");
-	//validateIntegerMinMax("sequence",new Integer(model.getSequence()),1,99,errors);
-	//ValidationUtils.rejectIfEmpty(errors, "truck", "app.error.112", new Object[]{"Truck Number"},"required field");
-	ValidationUtils.rejectIfEmpty(errors, "supervisorCode", "app.error.112", new Object[]{"Supervisor"},"required field");
-	validateResources(model.getDriverReq(),model.getDriverMax(),"drivers",model.getDrivers(),errors);
-	validateResources(model.getHelperReq(),model.getHelperMax(),"helpers",model.getHelpers(),errors);
-	validateResources(model.getRunnerReq(),model.getRunnerMax(),"runners",model.getRunners(),errors);
-	checkForDuplicateResourceAllocation(model,errors);
-	
-	/*boolean hasTimeSlots = true;
-	if(model != null && (model. .getTrnTimeslot() == null || model.getTrnTimeslot().getSlotId() == null)) {
-		errors.rejectValue("timeslot", "app.error.112", new Object[]{"Start Time Slot"},"required field");
-		hasTimeSlots = false;
-	}
-	
-	if(model != null && (model.getTrnEndTimeslot() == null || model.getTrnEndTimeslot().getSlotId() == null)) {
-		errors.rejectValue("endTimeslot", "app.error.112", new Object[]{"End Time Slot"},"required field");
-		hasTimeSlots = false;
-	}
-			
-	if(hasTimeSlots) {
-		//checkDate("timeslot", model.getTrnTimeslot().getSlotId(), model.getTrnEndTimeslot().getSlotId(), errors);
-	}*/
-	/*if(model != null && (model.getTrnDriver() == null || model.getTrnDriver().getEmployeeId() == null)) {
-		errors.rejectValue("driver", "app.error.112", new Object[]{"Driver"},"required field");
-	}
-	
-	if(model != null && (model.getTrnPrimaryHelper() == null || model.getTrnPrimaryHelper().getEmployeeId() == null)) {
-		errors.rejectValue("primaryHelper", "app.error.112", new Object[]{"Helper1"},"required field");
-	}
-	
-	if(model != null && (model.getTrnSecondaryHelper() == null || model.getTrnSecondaryHelper().getEmployeeId() == null)) {
-		errors.rejectValue("secondaryHelper", "app.error.112", new Object[]{"Helper2"},"required field");
-	}*/
-	
-}	
+		if(model != null && TransStringUtil.isEmpty(model.getZoneCode())&& !DispatchPlanUtil.isBullpen(model.getIsBullpen())) {
+			errors.rejectValue("zoneCode", "app.error.112", new Object[]{"Zone"},"required field");
+		}
+		/*
+		if(DispatchPlanUtil.isBullpen(model.getIsBullpen()) && TransStringUtil.isEmpty(model.getRegionCode())) {
+			errors.rejectValue("regionCode", "app.error.112", new Object[]{"Region"},"required field");
+		}*/
+		ValidationUtils.rejectIfEmpty(errors, "route", "app.error.112", new Object[]{"Route Number"},"required field");
+		//validateIntegerMinMax("sequence",new Integer(model.getSequence()),1,99,errors);
+		//ValidationUtils.rejectIfEmpty(errors, "truck", "app.error.112", new Object[]{"Truck Number"},"required field");
+		ValidationUtils.rejectIfEmpty(errors, "supervisorCode", "app.error.112", new Object[]{"Supervisor"},"required field");
+		validateResources(model.getDriverReq(),model.getDriverMax(),"drivers",model.getDrivers(),errors);
+		validateResources(model.getHelperReq(),model.getHelperMax(),"helpers",model.getHelpers(),errors);
+		validateResources(model.getRunnerReq(),model.getRunnerMax(),"runners",model.getRunners(),errors);
+		checkForDuplicateResourceAllocation(model,errors);
+	}	
 
 private void checkForDuplicateResourceAllocation(WebPlanInfo model, Errors errors) {
 	
@@ -103,7 +79,6 @@ private void validateResources(int req, int max,String fieldName,List resources,
 		if(max==0) {
 			errors.rejectValue(fieldName, "app.error.120",new Object[]{fieldName},"Please unselect your choices");
 		} else {
-			validateIntegerMinMax(fieldName,new Integer(getSelectedResources(resources)),req,max,errors);
 			boolean hasSelections=false;
 			for(int i=0;i<resources.size();i++) {
 				DispatchResourceInfo resource=(DispatchResourceInfo)resources.get(i);
@@ -113,8 +88,10 @@ private void validateResources(int req, int max,String fieldName,List resources,
 					hasSelections=true;
 				}
 			}
-			if(!hasSelections) {
+			if(!hasSelections&& req>0) {
 				errors.rejectValue(fieldName, "app.error.112", new Object[]{fieldName},"required field");
+			} else {
+				validateIntegerMinMax(fieldName,new Integer(getSelectedResources(resources)),req,max,errors);
 			}
 		}
 	} else if(req>0) {
@@ -139,11 +116,11 @@ private int getSelectedResources(List resources) {
 private void checkDate(String field, String startTime, String endTime, Errors errors) {
 	
 	try {
-		if(TransStringUtil.compareTime(startTime, endTime)) {
-			errors.rejectValue(field, "app.error.116", new Object[]{},"Invalid Time");
+		if(DateComparator.compare(DateComparator.PRECISION_MINUTE, TransStringUtil.getServerTime(startTime), TransStringUtil.getServerTime(endTime))>=0) {
+			errors.rejectValue(field, "app.error.123","Invalid Time");
 		}
-	} catch(NumberFormatException exp) {
-		errors.rejectValue(field, "typeMismatch.time", new Object[]{},"Invalid Time");			
+	} catch (ParseException e) {
+		errors.rejectValue(field, "typeMismatch.time", new Object[]{},"Invalid Time");	
 	}
 	
 }

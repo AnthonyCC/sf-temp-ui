@@ -100,13 +100,21 @@ public class DispatchPlanUtil {
 			throw new IllegalArgumentException("Unparseable date "+ex.getMessage());
 		}
 		String zoneCode = "";
+		String zoneName = "";
+		String zoneType= "";
 		if(dispatch.getZone() != null) {
 			zoneCode = dispatch.getZone().getZoneCode();
+			zoneName = dispatch.getZone().getName();
+			if(dispatch.getZone().getTrnZoneType()!=null)
+				zoneType = dispatch.getZone().getTrnZoneType().getName();
+			
 		}
 		command.setZoneCode(zoneCode);
+		command.setZoneName(zoneName);
+		command.setZoneType(zoneType);
 		command.setRegionCode(dispatch.getRegion().getCode());
 		command.setRegionName(dispatch.getRegion().getName());
-
+		command.setIsBullpen(String.valueOf(dispatch.getBullPen().booleanValue()));
 		if(dispatch.getDispositionType() != null){
 			command.setStatus(dispatch.getDispositionType().getCode());
 			command.setStatusName(dispatch.getDispositionType().getName());
@@ -187,10 +195,12 @@ public class DispatchPlanUtil {
     	}catch(ParseException exp){
 			throw new RuntimeException("Unparseable date "+exp.getMessage());
 		}
-		Zone zone=new Zone();
-		zone.setZoneCode(command.getZoneCode());
-		dispatch.setZone(zone);
-		
+		if(!DispatchPlanUtil.isBullpen(command.getIsBullpen())) {
+			Zone zone=new Zone();
+			zone.setZoneCode(command.getZoneCode());
+			dispatch.setZone(zone);
+		}
+		System.out.println("Region code $$$$$$$$$$$ "+command.getRegionCode());
 		Region region=new Region();
 		region.setCode(command.getRegionCode());
 		dispatch.setRegion(region);
@@ -199,6 +209,7 @@ public class DispatchPlanUtil {
 		dispatch.setSupervisorId(command.getSupervisorCode());
 		dispatch.setRoute(command.getRoute());
 		dispatch.setTruck(command.getTruck());
+		dispatch.setBullPen(new Boolean(command.getIsBullpen()));
 		try{
 			dispatch.setStartTime(TransStringUtil.getServerTime(command.getStartTime()));
 			dispatch.setFirstDlvTime(TransStringUtil.getServerTime(command.getFirstDeliveryTime()));
@@ -238,7 +249,7 @@ public class DispatchPlanUtil {
 
 	public static boolean isBullpen(String bullpen) {
 		
-		if("Y".equalsIgnoreCase(bullpen)) {
+		if("Y".equalsIgnoreCase(bullpen) || "true".equalsIgnoreCase(bullpen)) {
 			return true;
 		} 
 		return false;

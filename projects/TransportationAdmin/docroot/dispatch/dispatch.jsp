@@ -173,17 +173,17 @@
               <ec:column title=" "width="5px" 
                     filterable="false" sortable="false" cell="selectcol"
                     property="dispatchId" />                           
-              <ec:column alias="trnZonezoneNumber" width="12" property="zoneCode" title="Zone" />
+              <ec:column  cell="tooltip" alias="zoneCode" property="zoneNameEx" title="Zone"/>
               <ec:column alias="trnConfirm" width="5" cell="confirmcol" property="confirmedValue" title="C"  />
               <ec:column alias="trnZoneRegion" property="regionName" title="Region" />
-              <ec:column alias="trnSupervisorname" property="supervisorName" title="Supervisor" />
+              <ec:column property="supervisorEx"   title="Supervisor" cell="tooltip"  />
               <ec:column  alias="trnTimeslotslotName"  property="startTime" title="Start Time"/>
               <ec:column  alias="trnTimeEndslotslotName" property="firstDeliveryTime" title="First Dlv."/>
               <ec:column alias="trnRouterouteNumber" property="route"  width="10" title="Route"/>
               <ec:column alias="trnTrucktruckNumber" property="truck" width="10"  title="Truck"/>
-              <ec:column property="drivers"  cell="dispatchResCell" title="Driver"  filterable="false" alias="001"/>
-              <ec:column property="helpers"  cell="dispatchResCell" title="Helper"  filterable="false" alias="002"/>
-              <ec:column property="runners"  cell="dispatchResCell" title="Runner"  filterable="false" alias="003"/>
+              <ec:column property="drivers"  cell="dispatchResCell" title="Driver"  filterable="true" alias="drivers"/>
+              <ec:column property="helpers"  cell="dispatchResCell" title="Helper"  filterable="true" alias="helpers"/>
+              <ec:column property="runners"  cell="dispatchResCell" title="Runner"  filterable="true" alias="runners"/>
               <ec:column alias="trnStatus" property="statusName"  title="Status"/>
             </ec:row>
           </ec:table>

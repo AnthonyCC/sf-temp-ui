@@ -205,8 +205,15 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	public void saveDispatch(Dispatch dispatch) throws TransAdminApplicationException{
 		/* Check if a route is already is assigned to a dispatch before you save the dispatch */
 		try{
+			boolean routeChanged = false;
 			Collection assignedRoutes = getAssignedRoutes(TransStringUtil.getServerDate(dispatch.getDispatchDate()));
-			if(assignedRoutes.contains(dispatch.getRoute())){
+			if(!TransStringUtil.isEmpty(dispatch.getDispatchId())){
+				Dispatch currDispatch = getDispatchManagerDao().getDispatch(dispatch.getDispatchId());
+				if(!dispatch.getRoute().equals(currDispatch.getRoute()))
+					routeChanged = true;
+			}
+
+			if(routeChanged && assignedRoutes.contains(dispatch.getRoute())){
 				throw new TransAdminApplicationException("135", new String[]{dispatch.getRoute()});
 			}
 		}catch(ParseException exp){
