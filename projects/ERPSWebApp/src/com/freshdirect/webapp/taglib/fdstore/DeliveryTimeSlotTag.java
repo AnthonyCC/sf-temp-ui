@@ -111,6 +111,18 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 
 		return new DateRange(begCal.getTime(), endCal.getTime());
 	}
+	
+	private DateRange getStandardRange() {
+		Calendar begCal = Calendar.getInstance();
+		begCal.add(Calendar.DATE, 1);
+		begCal = DateUtil.truncate(begCal);
+
+		Calendar endCal = Calendar.getInstance();
+		endCal.add(Calendar.DATE, 7);
+		endCal = DateUtil.truncate(endCal);
+
+		return new DateRange(begCal.getTime(), endCal.getTime());
+	}
 
 	protected Object getResult() throws FDResourceException {
 
@@ -118,6 +130,8 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 
 		DateRange baseRange = getBaseRange();
+		DateRange geoRestrictionRange = getStandardRange();
+		
 		DlvRestrictionsList restrictions = FDDeliveryManager.getInstance().getDlvRestrictions();
 
 		EnumDlvRestrictionReason specialHoliday = getNextHoliday(restrictions, baseRange, FDStoreProperties
@@ -168,7 +182,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 					FDTimeslot timeslot = (FDTimeslot) k.next();
 					DlvTimeslotModel ts = timeslot.getDlvTimeslot();
 					if ((ts.getCapacity() <= 0 ||  
-							GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions, timeslot, messages, baseRange)) 
+							GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions, timeslot, messages, geoRestrictionRange)) 
 								&& !retainTimeslotIds.contains(ts.getId())) {
 						// filter off empty timeslots (unless they must be retained)
 						k.remove();
