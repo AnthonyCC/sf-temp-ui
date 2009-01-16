@@ -998,7 +998,9 @@ table#ec_table.tableRegion .tableBody td table tr td {
 		width: 125px;
 	}
 	.dipatch_AddEdit_row {
-		height: 20px;
+		height: 25px;
+		line-height: 25px;
+		width: 210px;
 	}
 /* dispatch add/edit tweaks */
 
