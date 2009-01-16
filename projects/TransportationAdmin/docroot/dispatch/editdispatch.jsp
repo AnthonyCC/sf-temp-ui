@@ -141,6 +141,9 @@
 								 </c:choose>
 							 </spring:bind>&nbsp;
 						</td>
+                         <td>
+                          &nbsp;<form:errors path="zoneCode" />
+                        </td>                        
 					</tr>
 					<tr>
 						<td>Confirmed</td>
@@ -172,6 +175,9 @@
 								</c:otherwise> 
 							</c:choose>
 						</td>
+                        <td>
+                          &nbsp;<form:errors path="regionCode" />
+                        </td>  
 					</tr>       
 					<tr>
 						<td>Supervisor</td>
@@ -232,30 +238,48 @@
 							<form:errors path="firstDeliveryTime" />&nbsp;
 						</td>                 
 					</tr> 
-					<tr>
-						<td>Route Number</td>
-						<td>          
-							<spring:bind path="dispatchForm.confirmed"> 
-								<c:choose>                    
-								<c:when test='${status.value == "false"}'> 
-									<form:select path="route">
-										<form:option value="" label="Select Route"/>
-									<form:options items="${routes}" itemLabel="routeNumber" itemValue="routeNumber" />
-								   </form:select>
-								   <c:forEach items="${routes}" var="route" varStatus="gridRow">
-										<input type="hidden" id = "route<c:out value="${route.routeNumber}"/>" name="route<c:out value="${route.routeNumber}"/>" value="<c:out value="${route.adHoc}"/>" />
-								   </c:forEach>
-								</c:when>
-								 <c:otherwise> 
-									   <form:input maxlength="50" size="8" path="route" readOnly="true" />
-								</c:otherwise> 
-								 </c:choose>
-							 </spring:bind> 
-						</td>
-						<td>
-							<form:errors path="route" />&nbsp;
-						</td>                  
-					</tr> 
+                <tr>
+                  <td>Route Number</td>
+                  <td>          
+                    <spring:bind path="dispatchForm.confirmed"> 
+                        <c:choose>                    
+                        <c:when test='${status.value == "false"}'> 
+                            <form:select path="route">
+                                <form:option value="" label="Select Route"/>
+                                 <c:choose>                    
+                                  <c:when test='${dispatchForm.zoneCode != ""}'>                                 
+                                    <c:forEach items="${routes}" var="route" varStatus="gridRow">
+                                        <c:if test="${route.zonePrefix == dispatchForm.zoneCode}">
+                                            <form:option label="${route.routeNumber}" value="${route.routeNumber}" />
+                                        </c:if>
+                                    </c:forEach>
+                                   </c:when>
+                                   <c:otherwise> 
+                                    <c:forEach items="${routes}" var="route" varStatus="gridRow">
+                                        <c:if test='${route.adHoc == "true"}' >
+                                            <form:option label="${route.routeNumber}" value="${route.routeNumber}" />
+                                        </c:if>
+                                    </c:forEach>                                   
+                                   </c:otherwise>
+                                  </c:choose>                                
+                             </form:select>
+                           <c:forEach items="${routes}" var="route" varStatus="gridRow">
+                            <c:if test="${route.zonePrefix == dispatchForm.zoneCode}">
+                                <input type="hidden" id = "route<c:out value="${route.routeNumber}"/>" name="route<c:out value="${route.routeNumber}"/>" value="<c:out value="${route.adHoc}"/>" />
+                            </c:if>    
+                           </c:forEach>
+                        </c:when>
+                         <c:otherwise> 
+                               <form:input maxlength="50" size="8" path="route" readOnly="true" cssClass="noborder"/>
+                        </c:otherwise> 
+                         </c:choose>
+                     </spring:bind> 
+
+                 </td>
+                <td>
+                  &nbsp;<form:errors path="route" />
+                </td>                  
+                </tr>  
 					<spring:bind path="dispatchForm.isBullpen">   
 						<c:choose>                    
 							<c:when test='${status.value == "true"}'>                 
