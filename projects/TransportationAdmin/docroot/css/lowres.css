@@ -4,8 +4,8 @@ html, body {
 	font-size: 10px;
 }
 div.Tlogo img {
-	height: 55%;
-	width: 55%;
+	height: 40px;
+	width: 107px;
 }
 div.Tspacer {
 	width: 20%;
@@ -17,6 +17,12 @@ div.t_tab_hspacer {
 div.t_tab, div.t_tab a {
 	font-size: 1.4em;
 	line-height: 1em;
+}
+.subs_left {
+	width: 90%;
+	}
+.subs_right {
+	padding-top: 1px;
 }
 .userinfo {
 	padding: 2px;
