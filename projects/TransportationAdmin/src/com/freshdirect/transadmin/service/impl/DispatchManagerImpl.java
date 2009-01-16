@@ -211,6 +211,8 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 				Dispatch currDispatch = getDispatchManagerDao().getDispatch(dispatch.getDispatchId());
 				if(!dispatch.getRoute().equals(currDispatch.getRoute()))
 					routeChanged = true;
+			}else{
+				routeChanged = true;
 			}
 
 			if(routeChanged && assignedRoutes.contains(dispatch.getRoute())){
