@@ -168,7 +168,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 					FDTimeslot timeslot = (FDTimeslot) k.next();
 					DlvTimeslotModel ts = timeslot.getDlvTimeslot();
 					if ((ts.getCapacity() <= 0 ||  
-							GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions, timeslot, messages)) 
+							GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions, timeslot, messages, baseRange)) 
 								&& !retainTimeslotIds.contains(ts.getId())) {
 						// filter off empty timeslots (unless they must be retained)
 						k.remove();

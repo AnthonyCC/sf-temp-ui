@@ -524,20 +524,22 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			Date endDate = DateUtil.addDays(startDate, 1);
 
 			List lst = this.getTimeslotForDateRangeAndZone(startDate, endDate, address);
+			List messages = new ArrayList();
+			
 			try {
 				if(lst != null) {
 					List geographicRestrictions = this.getGeographicDlvRestrictions( address);
-					List messages = new ArrayList();
+					
 					for(Iterator i = lst.iterator(); i.hasNext();){
 						FDTimeslot ts = (FDTimeslot)i.next();
-						if (GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions, ts, messages)) {
+						if (GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions, ts, messages, null)) {
 							// filter off empty timeslots (unless they must be retained)
 							i.remove();
 						}
 					}
 				}
 			} catch (DlvResourceException dlvResException) {
-				LOGGER.info("Failed to load Geography Restriction");
+				LOGGER.info("Failed to load Geography Restriction "+messages);
 			}
 			
 			DlvTimeslotModel foundTimeslot = null;

@@ -100,13 +100,13 @@ public class GeographyRestriction extends ModelSupport   {
 	
 	public static boolean isTimeSlotGeoRestricted(List geographicRestrictions
 			, FDTimeslot timeslot
-			, List messages) {
+			, List messages, DateRange baseRange) {
 		boolean isRestricted = false;
 		if(geographicRestrictions != null && timeslot != null && messages != null) {
 			Iterator _iterator = geographicRestrictions.iterator();
 			while(_iterator.hasNext()) {
 				GeographyRestriction geoRestriction = (GeographyRestriction)_iterator.next();
-				if(isTimeSlotGeoRestricted(geoRestriction, timeslot, messages)) {
+				if(isTimeSlotGeoRestricted(geoRestriction, timeslot, messages, baseRange)) {
 					isRestricted = true;
 					break;
 				}
@@ -117,7 +117,7 @@ public class GeographyRestriction extends ModelSupport   {
 	
 	public static boolean isTimeSlotGeoRestricted(GeographyRestriction geographicRestrictions
 												, FDTimeslot timeslot
-												, List messages) {
+												, List messages, DateRange baseRange) {
 		
 		boolean isRestricted = false;
 		if(geographicRestrictions != null) {
@@ -132,11 +132,12 @@ public class GeographyRestriction extends ModelSupport   {
 							if(geographicRestrictions.contains(timeslot.getBaseDate())) {
 								//System.out.println("Check Passed >"+DateUtil.format(timeslot.getBaseDate()));
 								isRestricted = restrictedDay.isMatching(timeslot.getDlvTimeslot().getStartTime());
-								if(isRestricted) {
+								if(isRestricted && isWithinBaseRange(baseRange, timeslot.getBaseDate())) {
 									messages.add(geographicRestrictions.getMessage());
 								}
 							}
 						} catch(Exception e) {
+							//Timeslot filtering failed should display ignore filtering
 							e.printStackTrace();
 						}
 					}
@@ -144,6 +145,17 @@ public class GeographyRestriction extends ModelSupport   {
 			}
 		}
 		return isRestricted;
+	}
+	
+	public static boolean isWithinBaseRange(DateRange range, Date date) {
+		
+		boolean result = true;
+		if(range != null && date != null && range.getStartDate() != null && range.getEndDate() != null) {
+			
+			return (date.after(range.getStartDate()) && date.before(range.getEndDate()))
+						|| date.equals(range.getStartDate()) || date.equals(range.getEndDate());
+		}
+		return result;
 	}
 
 	
