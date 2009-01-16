@@ -17,7 +17,10 @@
 	
 </head>
  <body marginwidth="0" marginheight="0" border="0">
- 
+  <%     
+		pageContext.setAttribute("HAS_ADDBUTTON", "false");
+		pageContext.setAttribute("HAS_DELETEBUTTON", "false");
+  %>
 <form id="routeListForm" action="" method="post"> 
 	<ec:table items="routes"   action="${pageContext.request.contextPath}/unassignedroute.do"
 		imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title=""
