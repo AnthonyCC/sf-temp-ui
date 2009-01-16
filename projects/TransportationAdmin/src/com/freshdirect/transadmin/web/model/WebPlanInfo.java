@@ -63,7 +63,7 @@ public class WebPlanInfo extends BaseCommand {
 			String value=new StringBuffer(100).append(zoneName).append("\n").append(zoneType).toString();
 			return new Tooltip(this.getZoneCode(), value);
 		}
-		return new Tooltip("<B>Bullpen</B>","");
+		return new Tooltip("Bullpen","");
 
 	}
 	class Tooltip implements IToolTip,Comparable {

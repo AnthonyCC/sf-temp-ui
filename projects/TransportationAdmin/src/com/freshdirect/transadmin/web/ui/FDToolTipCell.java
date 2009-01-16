@@ -9,7 +9,7 @@ import com.freshdirect.transadmin.web.model.IToolTip;
 public class FDToolTipCell extends FDBaseCell  {
 	
 	public String getExportDisplay(TableModel model, Column column) {
-        return getCellValue(model, column);
+        return getExportCellValue(model, column);
     }
 
     public String getHtmlDisplay(TableModel model, Column column) {
@@ -34,12 +34,24 @@ public class FDToolTipCell extends FDBaseCell  {
     	if(column.getValue() instanceof IToolTip) {
     		IToolTip toolTipVO = ((IToolTip)column.getValue());
     		if(toolTipVO.getValue() != null) {
-    			return toolTipVO.getValue().toString();
+    			if("Bullpen".equalsIgnoreCase(toolTipVO.getValue().toString()))
+    				return "<b>"+toolTipVO.getValue().toString()+"</b>";
+    			else 
+    				return toolTipVO.getValue().toString();
     		}
     	} 
     	 return column.getValueAsString();       
     }
     
+    protected String getExportCellValue(TableModel model, Column column) {
+    	if(column.getValue() instanceof IToolTip) {
+    		IToolTip toolTipVO = ((IToolTip)column.getValue());
+    		if(toolTipVO.getValue() != null) {
+    			return toolTipVO.getValue().toString();
+    		}
+    	} 
+    	 return column.getValueAsString();       
+    }
     class CustomColumnBuilder extends ColumnBuilder {
 
 		public CustomColumnBuilder(Column arg0) {

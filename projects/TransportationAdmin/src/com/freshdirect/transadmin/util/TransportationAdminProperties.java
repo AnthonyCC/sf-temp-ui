@@ -146,7 +146,7 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_ZONETYPE_HELPER_MAX, "10");
 		defaults.put(PROP_TRANSPORTATION_ZONETYPE_RUNNER_REQ, "0");
 		defaults.put(PROP_TRANSPORTATION_ZONETYPE_RUNNER_MAX, "10");
-		defaults.put(PROP_TRANSPORTATION_CELLDATA_SEPERATOR, "||");
+		defaults.put(PROP_TRANSPORTATION_CELLDATA_SEPERATOR, "\n\r");
 		
 		
 		refresh();		
