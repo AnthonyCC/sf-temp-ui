@@ -67,431 +67,406 @@
       </style>      
 <tmpl:insert template='/common/sitelayout.jsp'>
 
-    <tmpl:put name='title' direct='true'>Add/Edit Dispatch</tmpl:put>
+    <tmpl:put name='title' direct='true'> Operations : Dispatch : Add/Edit Dispatch</tmpl:put>
 
   <tmpl:put name='content' direct='true'>
     <br/> 
     <div align="center">
       <form:form commandName = "dispatchForm" method="post">
-      <form:hidden path="dispatchId"/>
+      <form:hidden path="dispatchId" />
       <input type=hidden name="routeNo" value="" />
       <input type=hidden name="zoneId" value="" />
       <input type=hidden name="dispDate" value="<%=dispDate %>" />
 
     
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
-          <tr>
-            <td class="screentitle">Add/Edit Dispatch</td>
-          </tr>
-          <tr>
-            <td class="screenmessages"><jsp:include page='/common/messages.jsp'/></td>
-          </tr>
+		<tr>
+			<td class="screentitle">Add/Edit Dispatch</td>
+		</tr>
+		<tr>
+			<td class="screenmessages"><jsp:include page='/common/messages.jsp'/></td>
+		</tr>
           
-          <tr>
-            <td class="screencontent">
-              <table class="forms1" border="0">                                  
-               <tr>
-                  <td>Date</td>
-                  <td>
-                        <span><form:input maxlength="50" size="24" path="dispatchDate" /></span>
-                     <span><a href="#" id="trigger_dispatchDate" style="font-size: 9px;">
-                        <img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date">
-                    </a></span>
+		<tr>
+			<td class="screencontent">
+				<table class="forms1" border="0">
+					<tr>
+						<td>Date</td>
+						<td>
+							<span><form:input maxlength="50" size="24" path="dispatchDate" /></span>
+							<span><a href="#" id="trigger_dispatchDate" style="font-size: 9px;">
+								<img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date"></a>
+							</span>
 
-                     <script language="javascript">                 
-                      Calendar.setup(
-                      {
-                        showsTime : false,
-                        electric : false,
-                        inputField : "dispatchDate",
-                        ifFormat : "%m/%d/%Y",
-                        singleClick: true,                                            
-                        button : "trigger_dispatchDate",
-                        onUpdate : updateDate                        
-                     }
-                      );
-                      function updateDate(cal) {
-                          var selIndex = cal.date.getDay();
-                          if(selIndex == 0) selIndex = 7;
-                         // document.getElementById('dispatchDay').selectedIndex =  selIndex;
-                        };
-                    </script>
-                </td>   
-                <td>
-                  &nbsp;<form:errors path="dispatchDate" />
-                </td>
-               </tr>                
-               <tr>
-                  <td>Zone</td>
-                  <td>         
-                  
-                    <spring:bind path="dispatchForm.zoneCode">   
-                        <c:choose>                    
-                        <c:when test='${status.value == ""}'> 
-                          <spring:bind path="dispatchForm.isBullpen">   
-                            <form:select path="zoneCode" onChange="javascript:getResourcesInfo();" disabled="${status.value}">
-                                <form:option value="" label="Select Zone"/>
-                                <form:options items="${zones}" itemLabel="displayName" itemValue="zoneCode" />
-                            </form:select>
-                           </spring:bind>
-                        </c:when>
-                         <c:otherwise> 
-                               <form:input maxlength="50" size="10" path="zoneCode" readOnly="true" cssClass="noborder"/>
-                        </c:otherwise> 
-                         </c:choose>
-                     </spring:bind>  
-                 </td>
-                </tr>
-                <tr>
-                  <td>Confirmed</td>
-                  <td> 
-                  <form:checkbox path="confirmed" />
-                </td>
-              </tr>
-              <tr>
-                  <td>BullPen</td>
-                  <td> 
-                  <form:checkbox path="isBullpen" value="true" onclick="bullpen(this)"/>
-                </td>
-              </tr>              
-               <tr>
-                  <td>Region</td>
-                  <td>       
-                      <c:choose>                    
-                        <c:when test='${dispatchForm.isBullpen == "true"}'> 
-                            <form:select path="regionCode">
-                                <form:option value="" label="Select Region"/>
-                                <form:options items="${regions}" itemLabel="name" itemValue="code" />
-                            </form:select>
-                        </c:when>
-                         <c:otherwise> 
-                            <form:select path="regionCode" disabled="true">
-                                <form:option value="" label="Select Region"/>
-                                <form:options items="${regions}" itemLabel="name" itemValue="code" />
-                            </form:select>
-                        </c:otherwise> 
-                         </c:choose>
-                 </td>
-                </tr>       
-               <tr>
-                  <td>Supervisor</td>
-                  <td>      
-                    <spring:bind path="dispatchForm.confirmed"> 
-                        <c:choose>                    
-                        <c:when test='${status.value == "false"}'> 
-                          <form:select path="supervisorCode" disabled='<c:out value="${status.value}" />'>
-                                <form:option value="" label="Select Supervisor"/>
-                            <form:options items="${supervisors}" itemLabel="name" itemValue="employeeId" />
-                           </form:select>
-                        </c:when>
-                         <c:otherwise> 
-                               <form:input maxlength="50" size="30" path="supervisorName" readOnly="true" cssClass="noborder"/>
-                        </c:otherwise> 
-                         </c:choose>
-                     </spring:bind>  
-                 </td>                   
-                 </td>
-                <td>
-                  &nbsp;<form:errors path="supervisorCode" />
-                </td>
-                </tr> 
+							 <script language="javascript">                 
+							  Calendar.setup(
+							  {
+								showsTime : false,
+								electric : false,
+								inputField : "dispatchDate",
+								ifFormat : "%m/%d/%Y",
+								singleClick: true,                                            
+								button : "trigger_dispatchDate",
+								onUpdate : updateDate                        
+							 }
+							  );
+							  function updateDate(cal) {
+								  var selIndex = cal.date.getDay();
+								  if(selIndex == 0) selIndex = 7;
+								 // document.getElementById('dispatchDay').selectedIndex =  selIndex;
+								};
+							</script>
+						</td>   
+						<td>
+							<form:errors path="dispatchDate" />&nbsp;
+						</td>
+					</tr>                                   
+					<tr>
+						<td>Zone</td>
+						<td colspan="2">         
+					  
+							<spring:bind path="dispatchForm.zoneCode">   
+								<c:choose>                    
+								<c:when test='${status.value == ""}'> 
+								  <spring:bind path="dispatchForm.isBullpen">   
+									<form:select path="zoneCode" onChange="javascript:getResourcesInfo();" disabled="${status.value}">
+										<form:option value="" label="Select Zone"/>
+										<form:options items="${zones}" itemLabel="displayName" itemValue="zoneCode" />
+									</form:select>
+								   </spring:bind>
+								</c:when>
+								 <c:otherwise> 
+									   <form:input maxlength="50" size="10" path="zoneCode" readOnly="true" cssClass="noborder"/>
+								</c:otherwise> 
+								 </c:choose>
+							 </spring:bind>&nbsp;
+						</td>
+					</tr>
+					<tr>
+						<td>Confirmed</td>
+						<td colspan="2"> 
+							<form:checkbox path="confirmed" />
+						</td>
+					</tr>
+					<tr>
+						<td>BullPen</td>
+						<td colspan="2"> 
+							<form:checkbox path="isBullpen" value="true" onclick="bullpen(this)"/>
+						</td>
+					</tr>              
+					<tr>
+						<td>Region</td>
+						<td colspan="2">       
+							<c:choose>                    
+								<c:when test='${dispatchForm.isBullpen == "true"}'> 
+									<form:select path="regionCode">
+										<form:option value="" label="Select Region"/>
+										<form:options items="${regions}" itemLabel="name" itemValue="code" />
+									</form:select>
+								</c:when>
+								<c:otherwise> 
+									<form:select path="regionCode" disabled="true">
+										<form:option value="" label="Select Region"/>
+										<form:options items="${regions}" itemLabel="name" itemValue="code" />
+									</form:select>
+								</c:otherwise> 
+							</c:choose>
+						</td>
+					</tr>       
+					<tr>
+						<td>Supervisor</td>
+						<td>      
+							<spring:bind path="dispatchForm.confirmed"> 
+								<c:choose>                    
+									<c:when test='${status.value == "false"}'> 
+										<form:select path="supervisorCode" disabled='<c:out value="${status.value}" />'>
+											<form:option value="" label="Select Supervisor"/>
+											<form:options items="${supervisors}" itemLabel="name" itemValue="employeeId" />
+										</form:select>
+									</c:when>
+									<c:otherwise> 
+										<form:input maxlength="50" size="30" path="supervisorName" readOnly="true" />
+									</c:otherwise> 
+								</c:choose>
+							</spring:bind>  
+						</td>   
+						<td>
+							<form:errors path="supervisorCode" />&nbsp;
+						</td>
+					</tr> 
+					<tr>
+						<td><a id="timeStart_toggler">Start&nbsp;Time</a></td>
+						<td>  
+							<spring:bind path="dispatchForm.confirmed"> 
+								<c:choose>                    
+								<c:when test='${status.value == "false"}'> 
+									<form:input maxlength="50" size="8" path="startTime" />
+									<div id="timeStart_picker" class="time_picker_div"></div>
+								</c:when>
+								 <c:otherwise> 
+								 <form:input maxlength="50" size="8" path="startTime" readOnly="true"/>
+								</c:otherwise> 
+								 </c:choose>
+							 </spring:bind>
+						</td>
+						<td>
+							<form:errors path="startTime" />&nbsp;
+						</td>                 
+					</tr>   
+					<tr>
+						<td><a id="timeFirstDlv_toggler">First Dlv.&nbsp;Time</a></td>
+						<td>  
+							 <spring:bind path="dispatchForm.confirmed"> 
+								<c:choose>                    
+								<c:when test='${status.value == "false"}'> 
+									<form:input maxlength="50" size="8" path="firstDeliveryTime" />
+									<div id="timeFirstDlv_picker" class="time_picker_div"></div>
+								</c:when>
+								 <c:otherwise> 
+								 <form:input maxlength="50" size="8" path="firstDeliveryTime" readOnly="true"/>
+								</c:otherwise> 
+								 </c:choose>
+							 </spring:bind> 
+						</td>
+						<td>
+							<form:errors path="firstDeliveryTime" />&nbsp;
+						</td>                 
+					</tr> 
+					<tr>
+						<td>Route Number</td>
+						<td>          
+							<spring:bind path="dispatchForm.confirmed"> 
+								<c:choose>                    
+								<c:when test='${status.value == "false"}'> 
+									<form:select path="route">
+										<form:option value="" label="Select Route"/>
+									<form:options items="${routes}" itemLabel="routeNumber" itemValue="routeNumber" />
+								   </form:select>
+								   <c:forEach items="${routes}" var="route" varStatus="gridRow">
+										<input type="hidden" id = "route<c:out value="${route.routeNumber}"/>" name="route<c:out value="${route.routeNumber}"/>" value="<c:out value="${route.adHoc}"/>" />
+								   </c:forEach>
+								</c:when>
+								 <c:otherwise> 
+									   <form:input maxlength="50" size="8" path="route" readOnly="true" />
+								</c:otherwise> 
+								 </c:choose>
+							 </spring:bind> 
+						</td>
+						<td>
+							<form:errors path="route" />&nbsp;
+						</td>                  
+					</tr> 
+					<spring:bind path="dispatchForm.isBullpen">   
+						<c:choose>                    
+							<c:when test='${status.value == "true"}'>                 
+					<tr>
+						<td>Truck Number</td>
+						<td>  
+							<form:input maxlength="50" size="8" path="truck" readOnly="true" />&nbsp;&nbsp;
+								<c:choose>                    
+									<c:when test='${dispatchForm.confirmed == "false"}'> 
+										<SELECT id="truckNum" name="truckNum" onChange="setTruckNumber(this.value);">
+											<OPTION value="">Select Trucks</OPTION>          
+												<c:forEach var="truck" items="${trucks}">
+													<option value="<c:out value="${truck}"/>"><c:out value="${truck}"/></option>                         
+												</c:forEach>
+									</c:when>
+								</c:choose>
+						
+						</td>
+						<td>
+							<form:errors path="truck" />&nbsp;
+						</td>                  
+					</tr>
+							</c:when>
+						 </c:choose>  
+					</spring:bind> 
+					<tr>
+						<td>Drivers</td>
+						<td> 
+							<div class="fleft">
+								<c:forEach items="${dispatchForm.drivers}" var="driver" varStatus="gridRow">
+									<div class="dipatch_AddEdit_row">
+									<spring:bind path="dispatchForm.drivers[${gridRow.index}].employeeId">
+									 <c:choose>                    
+									   <c:when test='${dispatchForm.confirmed == "false"}'> 
+										<SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" >
+											<OPTION value="">Select Drivers</OPTION>          
+											<c:forEach var="driverEmp" items="${drivers}">
+												<option <c:if test='${status.value == driverEmp.employeeId}'> SELECTED </c:if> 
+											value="<c:out value="${driverEmp.employeeId}"/>"><c:out value="${driverEmp.name}"/></option>                         
+											</c:forEach>
+										</SELECT>
+									   </c:when>
+									   <c:otherwise> 
+										<SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" disabled="true">
+											<OPTION value="">Select Drivers</OPTION>          
+											<c:forEach var="driverEmp" items="${drivers}">
+												<option <c:if test='${status.value == driverEmp.employeeId}'> SELECTED </c:if> 
+											value="<c:out value="${driverEmp.employeeId}"/>"><c:out value="${driverEmp.name}"/></option>                         
+											</c:forEach>
+										</SELECT>
+									   </c:otherwise> 
+									 </c:choose>    
+									</spring:bind>
+								</div>
+								 </c:forEach>
+							</div>
 
-                <tr>
-                  <td><a id="timeStart_toggler">Start&nbsp;Time</a></td>
-                  <td>  
-                    <spring:bind path="dispatchForm.confirmed"> 
-                        <c:choose>                    
-                        <c:when test='${status.value == "false"}'> 
-                            <form:input maxlength="50" size="8" path="startTime" />
-                            <div id="timeStart_picker" class="time_picker_div"></div>
-                        </c:when>
-                         <c:otherwise> 
-                         <form:input maxlength="50" size="8" path="startTime" readOnly="true" cssClass="noborder"/>
-                        </c:otherwise> 
-                         </c:choose>
-                     </spring:bind> 
-                     
-                      
-
-                 </td>
-                <td>
-                  &nbsp;<form:errors path="startTime" />
-                </td>                 
-                </tr>   
-                <tr>
-                  <td><a id="timeFirstDlv_toggler">First Dlv.&nbsp;Time</a></td>
-                  <td>  
-                     <spring:bind path="dispatchForm.confirmed"> 
-                        <c:choose>                    
-                        <c:when test='${status.value == "false"}'> 
-                            <form:input maxlength="50" size="8" path="firstDeliveryTime" />
-                            <div id="timeFirstDlv_picker" class="time_picker_div"></div>
-                        </c:when>
-                         <c:otherwise> 
-                         <form:input maxlength="50" size="8" path="firstDeliveryTime" readOnly="true" cssClass="noborder"/>
-                        </c:otherwise> 
-                         </c:choose>
-                     </spring:bind> 
-                 </td>
-                <td>
-                  &nbsp;<form:errors path="firstDeliveryTime" />
-                </td>                 
-                </tr> 
-                <tr>
-                  <td>Route Number</td>
-                  <td>          
-                    <spring:bind path="dispatchForm.confirmed"> 
-                        <c:choose>                    
-                        <c:when test='${status.value == "false"}'> 
-                            <form:select path="route">
-                                <form:option value="" label="Select Route"/>
-                                 <c:choose>                    
-                                  <c:when test='${dispatchForm.zoneCode != ""}'>                                 
-                                    <c:forEach items="${routes}" var="route" varStatus="gridRow">
-                                        <c:if test="${route.zonePrefix == dispatchForm.zoneCode}">
-                                            <form:option label="${route.routeNumber}" value="${route.routeNumber}" />
-                                        </c:if>
-                                    </c:forEach>
-                                   </c:when>
-                                   <c:otherwise> 
-                                    <c:forEach items="${routes}" var="route" varStatus="gridRow">
-                                        <c:if test='${route.adHoc == "true"}' >
-                                            <form:option label="${route.routeNumber}" value="${route.routeNumber}" />
-                                        </c:if>
-                                    </c:forEach>                                   
-                                   </c:otherwise>
-                                  </c:choose>                                
-                             </form:select>
-                           <c:forEach items="${routes}" var="route" varStatus="gridRow">
-                            <c:if test="${route.zonePrefix == dispatchForm.zoneCode}">
-                                <input type="hidden" id = "route<c:out value="${route.routeNumber}"/>" name="route<c:out value="${route.routeNumber}"/>" value="<c:out value="${route.adHoc}"/>" />
-                            </c:if>    
-                           </c:forEach>
-                        </c:when>
-                         <c:otherwise> 
-                               <form:input maxlength="50" size="8" path="route" readOnly="true" cssClass="noborder"/>
-                        </c:otherwise> 
-                         </c:choose>
-                     </spring:bind> 
-
-                 </td>
-                <td>
-                  &nbsp;<form:errors path="route" />
-                </td>                  
-                </tr> 
-                <spring:bind path="dispatchForm.isBullpen">   
-                 <c:choose>                    
-                    <c:when test='${status.value == "true"}'>                 
-                <tr>
-                  <td>Truck Number</td>
-                  <td>  
-                    <form:input maxlength="50" size="8" path="truck" readOnly="true" />&nbsp;&nbsp;
-                     <c:choose>                    
-                        <c:when test='${dispatchForm.confirmed == "false"}'> 
-                            <SELECT id="truckNum" name="truckNum" onChange="setTruckNumber(this.value);">
-                                <OPTION value="">Select Trucks</OPTION>          
-                                <c:forEach var="truck" items="${trucks}">
-                                    <option value="<c:out value="${truck}"/>"><c:out value="${truck}"/></option>                         
-                                </c:forEach>
-                        </c:when>
-                      </c:choose>
-                    
-                 </td>
-                <td>
-                  &nbsp;<form:errors path="truck" />
-                </td>                  
-                </tr> 
-               <tr>
-                        </c:when>
-                     </c:choose>  
-               </spring:bind>
-                  <td>Drivers</td>
-                    <td align="left"> 	
-                    <table cellpadding="0" cellspacing="0" border="0">
-                    <tr> 
-                    <c:forEach items="${dispatchForm.drivers}" var="driver" varStatus="gridRow">
-                        <spring:bind path="dispatchForm.drivers[${gridRow.index}].employeeId">
-                     <td align="left">   
-                         <c:choose>                    
-                           <c:when test='${dispatchForm.confirmed == "false"}'> 
-                            <SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" >
-                                <OPTION value="">Select Drivers</OPTION>          
-                                <c:forEach var="driverEmp" items="${drivers}">
-                                    <option <c:if test='${status.value == driverEmp.employeeId}'> SELECTED </c:if> 
-                                value="<c:out value="${driverEmp.employeeId}"/>"><c:out value="${driverEmp.name}"/></option>                         
-                                </c:forEach>
-                            </SELECT>
-                           </c:when>
-                           <c:otherwise> 
-                            <SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" disabled="true">
-                                <OPTION value="">Select Drivers</OPTION>          
-                                <c:forEach var="driverEmp" items="${drivers}">
-                                    <option <c:if test='${status.value == driverEmp.employeeId}'> SELECTED </c:if> 
-                                value="<c:out value="${driverEmp.employeeId}"/>"><c:out value="${driverEmp.name}"/></option>                         
-                                </c:forEach>
-                            </SELECT>    
-                           </c:otherwise> 
-                         </c:choose>
-                      </td>      
-                        </spring:bind>
-                     </c:forEach> 
+							<div class="fright">
+								<c:forEach items="${dispatchForm.drivers}" var="driver" varStatus="gridRow">    
+										<div class="dipatch_AddEdit_row">
+									<spring:bind path="dispatchForm.drivers[${gridRow.index}].nextelNo">
+									&nbsp;<img src="./images/icons/nextel.gif" width="16" height="16" border="0" alt="Nextel Number" title="Nextel Number" class="nextel_icon" />&nbsp;<input type="text" size="8" id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" 
+											value="<c:out value="${status.value}"/>" />
+										
+									</spring:bind>
+									</div>
+								</c:forEach>
+							</div>&nbsp;
+						</td>  
+						<td>
+							<form:errors path="drivers" />&nbsp;
+						</td>
+					</tr>
+					<tr>
+						<td>Helpers</td>
+						<td> 
+							<div class="fleft">
+							<c:forEach items="${dispatchForm.helpers}" var="helper" varStatus="gridRow">
+							<div class="dipatch_AddEdit_row">
+								<spring:bind path="dispatchForm.helpers[${gridRow.index}].employeeId">
+								 <c:choose>                    
+								   <c:when test='${dispatchForm.confirmed == "false"}'> 
+									<SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" >
+										<OPTION value="">Select Helpers</OPTION>          
+										<c:forEach var="helperEmp" items="${helpers}">
+											<option <c:if test='${status.value == helperEmp.employeeId}'> SELECTED </c:if> 
+										value="<c:out value="${helperEmp.employeeId}"/>"><c:out value="${helperEmp.name}"/></option>                         
+										</c:forEach>
+										</SELECT>
+									   </c:when>
+									   <c:otherwise> 
+										<SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" disabled="true">
+											<OPTION value="">Select Helpers</OPTION>          
+											<c:forEach var="helperEmp" items="${helpers}">
+												<option <c:if test='${status.value == helperEmp.employeeId}'> SELECTED </c:if> 
+											value="<c:out value="${helperEmp.employeeId}"/>"><c:out value="${helperEmp.name}"/></option>                         
+											</c:forEach>
+										 </SELECT>
+									   </c:otherwise> 
+									 </c:choose>
+									</spring:bind>
+								</div>
+								</c:forEach>
+							</div>
+							
+							<div class="fright">
+								<c:forEach items="${dispatchForm.helpers}" var="helper" varStatus="gridRow">
+								<div class="dipatch_AddEdit_row">
+									<spring:bind path="dispatchForm.helpers[${gridRow.index}].nextelNo">
+								   
+										&nbsp;<img src="./images/icons/nextel.gif" width="16" height="16" border="0" alt="Nextel Number" title="Nextel Number" />&nbsp;<input type="text" size="8" id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" 
+											value="<c:out value="${status.value}"/>" />
+											
+									</spring:bind>
+								</div>
+								</c:forEach>
+							</div>&nbsp;
+						</td>
                         <td>
-                          &nbsp;<form:errors path="drivers" />
-                        </td>
-                </tr>
-                <tr>
-                    <c:forEach items="${dispatchForm.drivers}" var="driver" varStatus="gridRow">                        
-                        <spring:bind path="dispatchForm.drivers[${gridRow.index}].nextelNo">
-                        <td>
-                            <img src="./images/icons/nextel.gif" width="16" height="16" border="0" alt="Nextel Number" title="Nextel Number">&nbsp;<input type="text" size="8" id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" 
-                                value="<c:out value="${status.value}"/>" />
-                        </td>        
-                        </spring:bind>
-                    </c:forEach> 
-                 </tr>
-                 </table>
-                </td>
-                </tr>
-               <tr>
-                  <td>Helpers</td>
-                    <td> 	
-                    <table cellpadding="0" cellspacing="0">
-                    <tr>
-                    <c:forEach items="${dispatchForm.helpers}" var="helper" varStatus="gridRow">
-                        <spring:bind path="dispatchForm.helpers[${gridRow.index}].employeeId">
-                        <td>
-                         <c:choose>                    
-                           <c:when test='${dispatchForm.confirmed == "false"}'> 
-                            <SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" >
-                                <OPTION value="">Select Helpers</OPTION>          
-                                <c:forEach var="helperEmp" items="${helpers}">
-                                    <option <c:if test='${status.value == helperEmp.employeeId}'> SELECTED </c:if> 
-                                value="<c:out value="${helperEmp.employeeId}"/>"><c:out value="${helperEmp.name}"/></option>                         
-                                </c:forEach>
-                            </SELECT>
-                           </c:when>
-                           <c:otherwise> 
-                            <SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" disabled="true">
-                                <OPTION value="">Select Helpers</OPTION>          
-                                <c:forEach var="helperEmp" items="${helpers}">
-                                    <option <c:if test='${status.value == helperEmp.employeeId}'> SELECTED </c:if> 
-                                value="<c:out value="${helperEmp.employeeId}"/>"><c:out value="${helperEmp.name}"/></option>                         
-                                </c:forEach>
-                             </SELECT>   
-                           </c:otherwise> 
-                         </c:choose>
-                        </td>
-                        </spring:bind>
-                    </c:forEach>
-                        <td>
-                          &nbsp;<form:errors path="helpers" />
-                        </td>                
-                    </tr>                
-                    <tr>
-                    <c:forEach items="${dispatchForm.helpers}" var="helper" varStatus="gridRow">                        
-                        <spring:bind path="dispatchForm.helpers[${gridRow.index}].nextelNo">
-                        <td>
-                            <img src="./images/icons/nextel.gif" width="16" height="16" border="0" alt="Nextel Number" title="Nextel Number">&nbsp;<input type="text" size="8" id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" 
-                                value="<c:out value="${status.value}"/>" />
-                        </td>        
-                        </spring:bind>
-                      </c:forEach>  
-                    </tr>
-                </table>
-                </td>
-                </tr>                
-                <tr>
-                  <td>Runners</td>
-                    <td> 	
-                    <table cellpadding="0" cellspacing="0">
-                    <tr>
-                    <c:forEach items="${dispatchForm.runners}" var="runner" varStatus="gridRow">
-                        <spring:bind path="dispatchForm.runners[${gridRow.index}].employeeId">
-                        <td>
-                         <c:choose>                    
-                           <c:when test='${dispatchForm.confirmed == "false"}'> 
-                            <SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" >
-                                <OPTION value="">Select Runners</OPTION>          
-                                <c:forEach var="runnerEmp" items="${runners}">
-                                    <option <c:if test='${status.value == runnerEmp.employeeId}'> SELECTED </c:if> 
-                                value="<c:out value="${runnerEmp.employeeId}"/>"><c:out value="${runnerEmp.name}"/></option>                         
-                                </c:forEach>
-                            </SELECT>
-                           </c:when>
-                           <c:otherwise> 
-                            <SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" disabled="true">
-                                <OPTION value="">Select Runners</OPTION>          
-                                <c:forEach var="runnerEmp" items="${runners}">
-                                    <option <c:if test='${status.value == runnerEmp.employeeId}'> SELECTED </c:if> 
-                                value="<c:out value="${runnerEmp.employeeId}"/>"><c:out value="${runnerEmp.name}"/></option>                         
-                                </c:forEach>
-                             </SELECT>   
-                           </c:otherwise> 
-                         </c:choose>
-                            </SELECT>
-                         </td>   
-                        </spring:bind>
-                    </c:forEach>
-                        <td>
-                          &nbsp;<form:errors path="runners" />
-                        </td>                
-                    </tr>                
-                    <tr>
-                    <c:forEach items="${dispatchForm.runners}" var="runner" varStatus="gridRow">                        
-                        <spring:bind path="dispatchForm.runners[${gridRow.index}].nextelNo">
-                        <td>
-                            <img src="./images/icons/nextel.gif" width="16" height="16" border="0" alt="Nextel Number" title="Nextel Number">&nbsp;<input type="text" size="8" id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" 
-                                value="<c:out value="${status.value}"/>" />
-                        </td>        
-                        </spring:bind>
-                    </c:forEach> 
-                    </tr>
-                    </table>
-                    </td>
-                </tr>
-                <tr>
-                  <td>Status</td>
-                  <td>                  
-                    <spring:bind path="dispatchForm.confirmed"> 
-                        <c:choose>                    
-                        <c:when test='${status.value == "true"}'> 
-                            <form:select path="status">
-                                <form:option value="null" label="Select Status"/>
-                                <form:options items="${statuses}" itemLabel="name" itemValue="code" />
-                           </form:select>
-                        </c:when>
-                         <c:otherwise> 
-                            <form:select path="status" disabled="true">
-                                <form:option value="null" label="Select Status"/>
-                                <form:options items="${statuses}" itemLabel="name" itemValue="code" />
-                           </form:select>
-                        </c:otherwise> 
-                         </c:choose>
-                     </spring:bind>                   
-                 </td>
-                </tr> 
-                <tr>
-                  <td>Comments</td>
-                  <td>                  
-                    <form:textarea path="comments" rows="5" cols="45" />
-                </td>
-                <td>
-                  &nbsp;<form:errors path="comments" />
-                </td>
-               </tr>                
-              <tr><td colspan="3">&nbsp;</td></tr>
-              <tr>
-                  <td colspan="3" align="center">
-                   <input type = "submit" value="&nbsp;Save&nbsp;"  />
-                   <input type = "button" value="&nbsp;Reset&nbsp;" onclick="javascript:resetDetails();" />
-                </td> 
-              </tr>
-              </table>        
-
-            </td>
-          </tr>               
-        </table>
-      
+							<form:errors path="helpers" />&nbsp;
+						</td>   
+                    </tr>             
+					<tr>
+						<td>Runners</td>
+						<td> 
+							<div class="fleft">
+							<c:forEach items="${dispatchForm.runners}" var="runner" varStatus="gridRow">
+								<div class="dipatch_AddEdit_row">
+									<spring:bind path="dispatchForm.runners[${gridRow.index}].employeeId">
+									 <c:choose>                    
+									   <c:when test='${dispatchForm.confirmed == "false"}'> 
+										<SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" >
+											<OPTION value="">Select Runners</OPTION>          
+											<c:forEach var="runnerEmp" items="${runners}">
+												<option <c:if test='${status.value == runnerEmp.employeeId}'> SELECTED </c:if> 
+											value="<c:out value="${runnerEmp.employeeId}"/>"><c:out value="${runnerEmp.name}"/></option>                         
+											</c:forEach>
+											</SELECT>
+										   </c:when>
+										   <c:otherwise> 
+											<SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" disabled="true">
+												<OPTION value="">Select Runners</OPTION>          
+												<c:forEach var="runnerEmp" items="${runners}">
+													<option <c:if test='${status.value == runnerEmp.employeeId}'> SELECTED </c:if> 
+												value="<c:out value="${runnerEmp.employeeId}"/>"><c:out value="${runnerEmp.name}"/></option>                         
+												</c:forEach>
+											 </SELECT><br />
+										   </c:otherwise> 
+										 </c:choose>
+										</spring:bind>
+								</div>
+								</c:forEach>
+							</div>
+							<div class="fright">
+								<c:forEach items="${dispatchForm.runners}" var="runner" varStatus="gridRow">
+								<div class="dipatch_AddEdit_row">
+									<spring:bind path="dispatchForm.runners[${gridRow.index}].nextelNo">
+										&nbsp;<img src="./images/icons/nextel.gif" width="16" height="16" border="0" alt="Nextel Number" title="Nextel Number">&nbsp;<input type="text" size="8" id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" 
+											value="<c:out value="${status.value}"/>" />
+									</spring:bind>
+								</div>
+							</c:forEach>
+							</div>&nbsp;
+						</td>   
+						<td>
+							<form:errors path="runners" />&nbsp;
+						</td>                
+					</tr>
+					<tr>
+						<td>Status</td>
+						<td colspan="2">                  
+							<spring:bind path="dispatchForm.confirmed"> 
+								<c:choose>                    
+								<c:when test='${status.value == "true"}'> 
+									<form:select path="status">
+										<form:option value="null" label="Select Status"/>
+										<form:options items="${statuses}" itemLabel="name" itemValue="code" />
+								   </form:select>
+								</c:when>
+								 <c:otherwise> 
+									<form:select path="status" disabled="true">
+										<form:option value="null" label="Select Status"/>
+										<form:options items="${statuses}" itemLabel="name" itemValue="code" />
+								   </form:select>
+								</c:otherwise> 
+								 </c:choose>
+							 </spring:bind>                   
+						</td>
+					</tr> 
+					<tr>
+						<td>Comments</td>
+						<td>                  
+							<form:textarea path="comments" rows="5" cols="45" cssClass="large" />
+						</td>
+						<td>
+							<form:errors path="comments" />&nbsp;
+						</td>
+					</tr>                
+					<tr>
+						<td colspan="3">&nbsp;</td>
+					</tr>
+					<tr>
+						<td colspan="3" align="center">
+							<input type = "submit" value="&nbsp;Save&nbsp;"  />
+							<input type = "button" value="&nbsp;Reset&nbsp;" onclick="javascript:resetDetails();" />
+						</td> 
+					</tr>
+				</table>        
+			</td>
+		</tr>               
+	</table>
       </form:form>
      </div>
      

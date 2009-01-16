@@ -1,0 +1,33 @@
+/* 800x600 over-rides */
+
+html, body {
+	font-size: 10px;
+}
+div.Tlogo img {
+	height: 55%;
+	width: 55%;
+}
+div.Tspacer {
+	width: 20%;
+	height: 15px;
+}
+div.t_tab_hspacer {
+	height: 50%;
+}
+div.t_tab, div.t_tab a {
+	font-size: 1.4em;
+	line-height: 1em;
+}
+.userinfo {
+	padding: 2px;
+	font-size:10px;
+}
+.userinfo .loginout {
+	padding-bottom: 0;
+}
+div.cont_topright {
+	margin-top:25px;
+}
+.scrTitle {
+	font-size: 175%;
+}
