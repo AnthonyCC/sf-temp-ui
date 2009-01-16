@@ -44,6 +44,9 @@ public class DispatchValidator extends AbstractValidator {
 		validateResources(model.getHelperReq(),model.getHelperMax(),"helpers",model.getHelpers(),errors);
 		validateResources(model.getRunnerReq(),model.getRunnerMax(),"runners",model.getRunners(),errors);
 		checkForDuplicateResourceAllocation(model,errors);
+		if(errors.getErrorCount() > 0 && model.isConfirmed()){
+			model.setConfirmed(false);
+		}
 	}	
 
 private void checkForDuplicateResourceAllocation(WebPlanInfo model, Errors errors) {

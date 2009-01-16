@@ -9,12 +9,8 @@
  String dispDate = request.getParameter("dispDate") != null ? request.getParameter("dispDate") : "";
  %>
         <script language="javascript">         
-        function getTruckNumber(routeNo) {
-            var adHoc = eval("dispatchForm.route"+routeNo+".value");
-            if(adHoc=="false" && routeNo.length > 0) {
-                dispatchForm.routeNo.value = routeNo;
-                dispatchForm.submit();         
-            }
+        function setTruckNumber(truckNo) {
+            dispatchForm.truck.value = truckNo;
         }
        function resetDetails() {
              document.location.href='<c:out value="${pageContext.request.contextPath}" />/editdispatch.do?id=<%= id %>&dispDate=<%= dispDate %>';
@@ -78,7 +74,6 @@
     <div align="center">
       <form:form commandName = "dispatchForm" method="post">
       <form:hidden path="dispatchId"/>
-      <form:hidden path="dispatchDate" />
       <input type=hidden name="routeNo" value="" />
       <input type=hidden name="zoneId" value="" />
       <input type=hidden name="dispDate" value="<%=dispDate %>" />
@@ -95,6 +90,37 @@
           <tr>
             <td class="screencontent">
               <table class="forms1" border="0">                                  
+               <tr>
+                  <td>Date</td>
+                  <td>
+                        <span><form:input maxlength="50" size="24" path="dispatchDate" /></span>
+                     <span><a href="#" id="trigger_dispatchDate" style="font-size: 9px;">
+                        <img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date">
+                    </a></span>
+
+                     <script language="javascript">                 
+                      Calendar.setup(
+                      {
+                        showsTime : false,
+                        electric : false,
+                        inputField : "dispatchDate",
+                        ifFormat : "%m/%d/%Y",
+                        singleClick: true,                                            
+                        button : "trigger_dispatchDate",
+                        onUpdate : updateDate                        
+                     }
+                      );
+                      function updateDate(cal) {
+                          var selIndex = cal.date.getDay();
+                          if(selIndex == 0) selIndex = 7;
+                         // document.getElementById('dispatchDay').selectedIndex =  selIndex;
+                        };
+                    </script>
+                </td>   
+                <td>
+                  &nbsp;<form:errors path="dispatchDate" />
+                </td>
+               </tr>                
                <tr>
                   <td>Zone</td>
                   <td>         
@@ -159,7 +185,7 @@
                            </form:select>
                         </c:when>
                          <c:otherwise> 
-                               <form:input maxlength="50" size="30" path="supervisorName" readOnly="true" />
+                               <form:input maxlength="50" size="30" path="supervisorName" readOnly="true" cssClass="noborder"/>
                         </c:otherwise> 
                          </c:choose>
                      </spring:bind>  
@@ -180,7 +206,7 @@
                             <div id="timeStart_picker" class="time_picker_div"></div>
                         </c:when>
                          <c:otherwise> 
-                         <form:input maxlength="50" size="8" path="startTime" readOnly="true"/>
+                         <form:input maxlength="50" size="8" path="startTime" readOnly="true" cssClass="noborder"/>
                         </c:otherwise> 
                          </c:choose>
                      </spring:bind> 
@@ -202,7 +228,7 @@
                             <div id="timeFirstDlv_picker" class="time_picker_div"></div>
                         </c:when>
                          <c:otherwise> 
-                         <form:input maxlength="50" size="8" path="firstDeliveryTime" readOnly="true"/>
+                         <form:input maxlength="50" size="8" path="firstDeliveryTime" readOnly="true" cssClass="noborder"/>
                         </c:otherwise> 
                          </c:choose>
                      </spring:bind> 
@@ -243,7 +269,7 @@
                            </c:forEach>
                         </c:when>
                          <c:otherwise> 
-                               <form:input maxlength="50" size="8" path="route" readOnly="true" />
+                               <form:input maxlength="50" size="8" path="route" readOnly="true" cssClass="noborder"/>
                         </c:otherwise> 
                          </c:choose>
                      </spring:bind> 
@@ -259,14 +285,17 @@
                 <tr>
                   <td>Truck Number</td>
                   <td>  
+                    <form:input maxlength="50" size="8" path="truck" readOnly="true" />&nbsp;&nbsp;
                      <c:choose>                    
-                        <c:when test='${status.value == "true"}'> 
-                          <form:select path="truck" >
-                                <form:option value="" label="Select Truck"/>
-                            <form:options items="${trucks}" />
-                           </form:select>
+                        <c:when test='${dispatchForm.confirmed == "false"}'> 
+                            <SELECT id="truckNum" name="truckNum" onChange="setTruckNumber(this.value);">
+                                <OPTION value="">Select Trucks</OPTION>          
+                                <c:forEach var="truck" items="${trucks}">
+                                    <option value="<c:out value="${truck}"/>"><c:out value="${truck}"/></option>                         
+                                </c:forEach>
                         </c:when>
-                     </c:choose>  
+                      </c:choose>
+                    
                  </td>
                 <td>
                   &nbsp;<form:errors path="truck" />
