@@ -284,7 +284,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 			Iterator iterator=sapRouteList.iterator();
 			while(iterator.hasNext()){
 				ErpRouteMasterInfo route=(ErpRouteMasterInfo)iterator.next();
-				if(!sapRouteList.contains(route.getRouteNumber())){
+				if(!routeList.contains(route.getRouteNumber())){
 					unusedRouteNumList.add(route);
 				}
 			}

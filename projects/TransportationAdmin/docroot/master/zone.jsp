@@ -71,9 +71,7 @@
 							  <ec:exportXls fileName="transportationzones.xls" tooltip="Export PDF" />
 							  <ec:exportCsv fileName="transportationzones.csv" tooltip="Export CSV" delimiter="|"/>               
 							<ec:row interceptor="obsoletemarker">
-							  <ec:column title=" " width="5px" 
-									filterable="false" sortable="false" cell="selectcol"
-									property="zoneCode" />  
+							    
 							  <ec:column alias="trnZoneCode" property="zoneCode" title="Code"/>
 							  <ec:column property="name" title="Zone Name"/>
 							  <ec:column alias="trnZoneType" property="trnZoneType.name" title="Zone Type"/>
@@ -107,7 +105,42 @@
 	</div>
 	<% if("Active".equalsIgnoreCase(request.getParameter("zoneType"))) { %>
 		<script>
-			addRowHandlers('ec_table', 'rowMouseOver', 'editzone.do','id',0, 0);
+			function addZoneHandlers(tableId, rowClassName, url, paramName, columnIndex, checkCol, needKeyPress) {
+	
+				var previousClass = null;
+			    var table = document.getElementById(tableId);
+			    
+			    if(table != null) {
+				    var rows = table.tBodies[0].getElementsByTagName("tr");	 	       
+				    for (i = 0; i < rows.length; i++) {	    	
+				        var cells = rows[i].getElementsByTagName("td");
+				        
+				        for (j = 1; j < cells.length; j++) {
+				        	
+				            cells[j].onmouseover = function () {
+				            	previousClass = this.parentNode.className;
+				            	this.parentNode.className = this.parentNode.className + " " + rowClassName ;
+				            };
+				        
+				            cells[j].onmouseout = function () {
+				              	this.parentNode.className = previousClass;
+				            };
+				        
+				            if(checkCol == -1 || checkCol != j ) {
+								if(!(needKeyPress && (j == (cells.length-1)))) {	            
+							    	cells[j].onclick = function () {			    		
+							      		var cell = this.parentNode.getElementsByTagName("td")[columnIndex];							      		
+							      		location.href = url+"?"+ paramName + "=" + cell.innerHTML;			      		
+							    	};
+							    }
+					    	}
+					    	
+					    		    	
+				        }
+				    }
+				}
+			}
+			addZoneHandlers('ec_table', 'rowMouseOver', 'editzone.do','id',0, 0);
 		</script>
 	<% } %>
   </tmpl:put>

@@ -4,6 +4,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
 import com.freshdirect.transadmin.model.TrnRoute;
+import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class RouteValidator extends AbstractValidator {	
 	
@@ -16,7 +17,10 @@ public class RouteValidator extends AbstractValidator {
 		TrnRoute model = (TrnRoute)obj;
 		//  need to decide about the validation part
 		ValidationUtils.rejectIfEmpty(errors, "routeNumber", "app.error.112", new Object[]{"Route Number"},"required field");
-		ValidationUtils.rejectIfEmpty(errors, "routeAmPm", "app.error.112", new Object[]{"Route Timing"},"required field");
+		//ValidationUtils.rejectIfEmpty(errors, "routeAmPm", "app.error.112", new Object[]{"Route Timing"},"required field");
+		if(model != null && TransStringUtil.isEmpty(model.getRouteAmPm())) {
+			errors.rejectValue("routeAmPm", "app.error.112", new Object[]{"Route Timing"},"required field");
+		}
 						
 		if(model != null && (model.getTrnZone() == null || model.getTrnZone().getZoneCode() == null)) {
 			errors.rejectValue("supervisor", "app.error.112", new Object[]{"Zone"},"required field");

@@ -75,8 +75,8 @@
 								  <td>Route Timing</td>
 								  <td> 
 								  <form:select path="routeAmPm">
-										<form:option value="null" label="--Please Select Zone"/>
-									<form:options items="${timings}"  />
+										<form:option value="null" label="--Please Select Route Timing"/>
+										<form:options items="${timings}"  />
 								   </form:select>
 								</td>
 								<td>

@@ -4,7 +4,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
-import com.freshdirect.transadmin.model.TrnRoute;
+import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class RouteAdHocValidator extends AbstractValidator {	
 	
@@ -19,7 +19,10 @@ public class RouteAdHocValidator extends AbstractValidator {
 		ValidationUtils.rejectIfEmpty(errors, "routeNumber", "app.error.112", new Object[]{"Route Number"},"required field");
 		ValidationUtils.rejectIfEmpty(errors, "routeAmPm", "app.error.112", new Object[]{"Route Timing"},"required field");
 		ValidationUtils.rejectIfEmpty(errors, "description", "app.error.112", new Object[]{"description"},"required field");
-			
+		
+		if(model != null && TransStringUtil.isEmpty(model.getRouteAmPm())) {
+			errors.rejectValue("routeAmPm", "app.error.112", new Object[]{"Route Timing"},"required field");
+		}
 		
 		
 	}
