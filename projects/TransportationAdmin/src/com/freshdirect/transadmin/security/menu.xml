@@ -6,11 +6,11 @@
 	     <access-roles></access-roles>
 	     
 	     <menu id="OPR001" title="Planning" orientation="LEFT" link="plan.do">
-	     	<access-uris>plan.do,deleteplan.do,editplan.do,copyplan.do</access-uris>
+	     	<access-uris>plan.do,deleteplan.do,editplan.do,copyplan.do,autoDispatch.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnDispatch,TrnPlanning</access-roles>
 	     </menu>
 	     <menu id="OPR002" title="Dispatch" orientation="LEFT" link="dispatch.do">
-	     	<access-uris>dispatch.do,deletedispatch.do,editdispatch.do,confirmdispatch.do,refreshRoute.do,autoDispatch.do</access-uris>
+	     	<access-uris>dispatch.do,deletedispatch.do,editdispatch.do,confirmdispatch.do,refreshRoute.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnDispatch,TrnPlanning</access-roles>
 	     </menu>
 	     

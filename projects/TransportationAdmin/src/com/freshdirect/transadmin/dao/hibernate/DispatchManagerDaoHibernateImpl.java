@@ -11,8 +11,6 @@ import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.DispatchResource;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.PlanResource;
-import com.freshdirect.transadmin.model.TrnZoneType;
-import com.freshdirect.transadmin.model.ZonetypeResource;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class DispatchManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl implements DispatchManagerDaoI {
@@ -59,7 +57,7 @@ public class DispatchManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 			strBuf.append("p.zone.zoneCode ").append(zoneLst);
 		}
 		
-		strBuf.append(" ORDER BY  PLAN_DATE");
+		strBuf.append(" order by p.planDate, p.zone.zoneCode, p.startTime, p.sequence");
 		return getDataList(strBuf.toString());
 	}
 
@@ -100,7 +98,7 @@ public class DispatchManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("from Plan p");
-		strBuf.append(" where p.planDate='").append(date).append("'");
+		strBuf.append(" where p.planDate='").append(date).append("' order by p.planDate, p.zone.zoneCode, p.startTime, p.sequence");
 
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
 	}
