@@ -122,7 +122,7 @@ public class DispatchManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 			strBuf.append(" and dp.zone.zoneCode='").append(zone).append("'");
 		}
 		if (region != null && region.length() > 0 && !region.equals("0") && !region.equals("null")) {
-			strBuf.append(" and dp.zone.region.code='").append(region).append("'");
+			strBuf.append(" and dp.region='").append(region).append("'");
 		}
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
 	}
