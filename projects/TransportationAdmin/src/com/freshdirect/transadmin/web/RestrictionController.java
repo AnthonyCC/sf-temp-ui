@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.DlvBuildingDtl;
 import com.freshdirect.transadmin.model.GeoRestriction;
 import com.freshdirect.transadmin.model.Region;
@@ -82,22 +83,26 @@ public class RestrictionController extends AbstractMultiActionController {
 		String arrEntityList[] = getParamList(request);
 		GeoRestriction tmpEntity = null;
 		if (arrEntityList != null) {
-			int arrLength = arrEntityList.length;
-			for (int intCount = 0; intCount < arrLength; intCount++) {
-				tmpEntity = restrictionManagerService.getGeoRestriction(arrEntityList[intCount]);
-				areaSet.add(tmpEntity);
+			try {
+				int arrLength = arrEntityList.length;
+				for (int intCount = 0; intCount < arrLength; intCount++) {
+					tmpEntity = restrictionManagerService.getGeoRestriction(arrEntityList[intCount]);
+					if(tmpEntity.getActive() == null || !tmpEntity.getActive().equals("X")){
+						areaSet.add(tmpEntity);
+					}
+				}
+				if(areaSet.size() == arrLength) {
+					restrictionManagerService.removeEntity(areaSet);
+					saveMessage(request, getMessage("app.actionmessage.103", null));
+				} else {
+					saveMessage(request, getMessage("app.actionmessage.141", null));
+				}
+			} catch (DataIntegrityViolationException e) {
+				saveMessage(request, getMessage("app.actionmessage.141", null));
 			}
-		}
-		try {
-			restrictionManagerService.removeEntity(areaSet);
-			saveMessage(request, getMessage("app.actionmessage.103", null));
-		} catch (DataIntegrityViolationException e) {
-			saveMessage(request, getMessage("app.actionmessage.127", null));
 		}
 		return geoRestrictionHandler(request, response);
 	}
-
-
 
 	public RestrictionManagerI getRestrictionManagerService() {
 		return restrictionManagerService;
