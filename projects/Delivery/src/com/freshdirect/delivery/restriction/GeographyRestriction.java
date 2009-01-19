@@ -135,6 +135,9 @@ public class GeographyRestriction extends ModelSupport   {
 								if(isRestricted && isWithinBaseRange(baseRange, timeslot.getBaseDate())) {
 									messages.add(geographicRestrictions.getMessage());
 								}
+								if(isRestricted) {
+									break;
+								}
 							}
 						} catch(Exception e) {
 							//Timeslot filtering failed should display ignore filtering
