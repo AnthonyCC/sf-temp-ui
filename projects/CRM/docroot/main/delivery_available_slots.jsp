@@ -124,6 +124,7 @@ boolean isCheckAddress = "1address".equalsIgnoreCase(request.getParameter("show"
 	List timeslotList = DeliveryTimeSlotResult.getTimeslots();
 	Map zones = DeliveryTimeSlotResult.getZones();
 	boolean zoneCtActive = DeliveryTimeSlotResult.isZoneCtActive();
+	List messages = DeliveryTimeSlotResult.getMessages();
 	%>
 <div class="sub_nav">
 <span class="sub_nav_title">Available Delivery Time Slots</span> | <a href="/main/delivery_check_slots.jsp">Check available Slots for a new address</a>
@@ -216,6 +217,10 @@ if(user.isHomeUser())
 	<logic:iterate id="timeslots" collection="<%=timeslotList%>" type="com.freshdirect.fdstore.FDTimeslotList" indexId="idx">
 		<%@ include file="/shared/includes/delivery/i_delivery_slots.jspf"%>
 	</logic:iterate>
+	<!-- Bryan Restriction Message Added -->
+	<% if(messages != null && messages.size() >= 1) { %>
+		<%@ include file="/shared/includes/delivery/i_restriction_message.jspf"%>
+	<% } %>	
 	<table cellpadding="0" cellspacing="0" width="675" style="font-size: 11px">
 		<tr>
 			<td align="left">
