@@ -977,14 +977,17 @@ div.eXor_Active, div.eXor_AdHoc { margin-left: 10px; width: 98%; }
 }
 
 /* zone type max/req over-rides*/
-table#ec_table.tableRegion .tableBody td table tr td {
+#ec_table td.tableBody td {
 	width: 30px;
+	text-align: center;
+	}
+#ec_table td.tableHeader table td, #ec_table.tableRegion .tableBody td table td {
 	text-align: center;
 }
 /* zone type max/req over-rides*/
 
 /* dispatch table over-rides */
-	.tableBody table {
+	#ec_table td table, td.tableHeader table {
 		width: 100%;
 	}
 /* dispatch table over-rides */
