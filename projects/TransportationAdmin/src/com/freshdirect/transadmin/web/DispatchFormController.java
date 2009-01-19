@@ -10,10 +10,13 @@ import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.transadmin.exception.TransAdminApplicationException;
 import com.freshdirect.transadmin.model.Dispatch;
@@ -134,6 +137,7 @@ public class DispatchFormController extends AbstractFormController {
 		} catch (TransAdminApplicationException objExp) {
 			errorList = new ArrayList();
 			errorList.add(objExp.getMessage());
+			
 		} catch (Exception objExp) {
 			errorList = new ArrayList();
 			errorList.add(this.getMessage("sys.error.1001", new Object[]{this.getDomainObjectName()}));
@@ -147,7 +151,7 @@ public class DispatchFormController extends AbstractFormController {
 	}
 
 	
-	protected void onBind(HttpServletRequest request, Object command) {
+	protected void onBind(HttpServletRequest request, Object command,BindException errors) {
 		DispatchCommand model = (DispatchCommand) command;
 		if(!TransStringUtil.isEmpty(model.getIsBullpen()) && model.getIsBullpen().equals("true") && !TransStringUtil.isEmpty(model.getZoneCode())){
 			model.setZoneCode("");
@@ -160,9 +164,31 @@ public class DispatchFormController extends AbstractFormController {
 			zone=domainManagerService.getZone(model.getZoneCode());
 		}
 	
-		DispatchPlanUtil.reconstructWebPlanInfo(model,zone,employeeManagerService);
+		model=(DispatchCommand)DispatchPlanUtil.reconstructWebPlanInfo(model,zone,employeeManagerService);
+		
+		try{
+			boolean routeChanged = false;
+			Collection assignedRoutes = getDispatchManagerService().getAssignedRoutes(TransStringUtil.getServerDate(model.getDispatchDate()));
+			if(!TransStringUtil.isEmpty(model.getDispatchId())){
+				Dispatch currDispatch = getDispatchManagerService().getDispatch(model.getDispatchId());
+				if(!model.getRoute().equals(currDispatch.getRoute()))
+					routeChanged = true;
+			}else{
+				routeChanged = true;
+			}
+
+			if(routeChanged && assignedRoutes.contains(model.getRoute())){
+				//throw new TransAdminApplicationException("135", new String[]{model.getRoute()});
+				
+				errors.rejectValue("route","app.error.135", new String[]{model.getRoute()},null);
+			}
+		}catch(ParseException exp){
+			//Ignore it
+		}
 		
 	}
+	
+	
 	
 	protected String getIdFromRequest(HttpServletRequest request){
 		String id = request.getParameter("id");
@@ -188,5 +214,31 @@ public class DispatchFormController extends AbstractFormController {
 	public void setEmployeeManagerService(EmployeeManagerI employeeManagerService) {
 		this.employeeManagerService = employeeManagerService;
 	}
+	
+	/*protected ModelAndView processFormSubmission(
+			HttpServletRequest request, HttpServletResponse response, Object command, BindException errors)
+			throws Exception {
+
+		DispatchCommand model = (DispatchCommand) command;
+		try{
+			boolean routeChanged = false;
+			Collection assignedRoutes = getDispatchManagerService().getAssignedRoutes(TransStringUtil.getServerDate(model.getDispatchDate()));
+			if(!TransStringUtil.isEmpty(model.getDispatchId())){
+				Dispatch currDispatch = getDispatchManagerService().getDispatch(model.getDispatchId());
+				if(!model.getRoute().equals(currDispatch.getRoute()))
+					routeChanged = true;
+			}else{
+				routeChanged = true;
+			}
+
+			if(routeChanged && assignedRoutes.contains(model.getRoute())){
+				//throw new TransAdminApplicationException("135", new String[]{model.getRoute()});
+				errors
+			}
+		}catch(ParseException exp){
+			//Ignore it
+		}
+		return super.processFormSubmission(request, response, command, errors);
+	}*/
 
 }

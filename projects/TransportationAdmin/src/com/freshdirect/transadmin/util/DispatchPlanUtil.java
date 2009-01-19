@@ -114,7 +114,10 @@ public class DispatchPlanUtil {
 		command.setZoneType(zoneType);
 		command.setRegionCode(dispatch.getRegion().getCode());
 		command.setRegionName(dispatch.getRegion().getName());
-		command.setIsBullpen(String.valueOf(dispatch.getBullPen().booleanValue()));
+		if(dispatch.getBullPen()!=null)
+			command.setIsBullpen(String.valueOf(dispatch.getBullPen().booleanValue()));
+		else 
+			command.setIsBullpen("");
 		if(dispatch.getDispositionType() != null){
 			command.setStatus(dispatch.getDispositionType().getCode());
 			command.setStatusName(dispatch.getDispositionType().getName());

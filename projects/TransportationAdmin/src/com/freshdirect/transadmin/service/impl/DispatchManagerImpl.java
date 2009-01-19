@@ -201,9 +201,9 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 		}
 		return false;
 	}
-	
+
 	public void saveDispatch(Dispatch dispatch) throws TransAdminApplicationException{
-		/* Check if a route is already is assigned to a dispatch before you save the dispatch */
+		// Check if a route is already is assigned to a dispatch before you save the dispatch
 		try{
 			boolean routeChanged = false;
 			Collection assignedRoutes = getAssignedRoutes(TransStringUtil.getServerDate(dispatch.getDispatchDate()));
@@ -224,6 +224,13 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 		
 		getDispatchManagerDao().saveDispatch(dispatch);
 	}
+
+	/*public void saveDispatch(Dispatch dispatch) throws TransAdminApplicationException{
+		// Check if a route is already is assigned to a dispatch before you save the dispatch
+		
+		
+		getDispatchManagerDao().saveDispatch(dispatch);
+	}*/
 	
 	public Collection getAssignedTrucks(String date) {
 		return getDispatchManagerDao().getAssignedTrucks(date);
