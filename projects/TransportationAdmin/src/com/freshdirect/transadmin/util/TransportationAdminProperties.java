@@ -81,6 +81,11 @@ public class TransportationAdminProperties {
 	private final static String PROP_TRANSPORTATION_ZONETYPE_RUNNER_REQ="transportation.zonetype.runner.req";
 	private final static String PROP_TRANSPORTATION_ZONETYPE_RUNNER_MAX="transportation.zonetype.runner.max";
 	
+	// remember it is in minutes
+	private static final String PROP_TRANSPORTATION_TRK_CACHE_EXPIRY_TIME="transportation.truck.cache.expiry.time";
+	private static final String PROP_TRANSPORTATION_ROUTE_CACHE_EXPIRY_TIME="transportation.route.cache.expiry.time";
+	private static final String PROP_TRANSPORTATION_EMPLOYEE_CACHE_EXPIRY_TIME="transportation.employee.cache.expiry.time";
+	
 	private static long lastRefresh = 0;
 	private final static long REFRESH_PERIOD = 5 * 60 * 1000;
 	
@@ -148,6 +153,9 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_ZONETYPE_RUNNER_MAX, "10");
 		defaults.put(PROP_TRANSPORTATION_CELLDATA_SEPERATOR, "\n\r");
 		
+		defaults.put(PROP_TRANSPORTATION_TRK_CACHE_EXPIRY_TIME, "60");
+		defaults.put(PROP_TRANSPORTATION_ROUTE_CACHE_EXPIRY_TIME, "60");
+		defaults.put(PROP_TRANSPORTATION_EMPLOYEE_CACHE_EXPIRY_TIME, "60");
 		
 		refresh();		
 	}
@@ -315,6 +323,18 @@ public class TransportationAdminProperties {
 		return getIntVal(get(PROP_TRANSPORTATION_ZONETYPE_RUNNER_MAX));
 	}
 	
+	public static int getRouteCacheExpiryTime() {
+		return getIntVal(get(PROP_TRANSPORTATION_ROUTE_CACHE_EXPIRY_TIME));
+	}
+	
+	public static int getTruckCacheExpiryTime() {
+		return getIntVal(get(PROP_TRANSPORTATION_TRK_CACHE_EXPIRY_TIME));
+	}
+
+	public static int getEmployeeCacheExpiryTime() {
+		return getIntVal(get(PROP_TRANSPORTATION_EMPLOYEE_CACHE_EXPIRY_TIME));
+	}
+
 	public static String getCellDataSeperator() {
 		return get(PROP_TRANSPORTATION_CELLDATA_SEPERATOR);
 	}

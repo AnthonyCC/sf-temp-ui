@@ -27,7 +27,7 @@ public class TransAdminCacheManager {
 	
 	private static Category LOGGER = LoggerFactory.getInstance(TransAdminCacheManager.class);
 	// make the time constant in property
-	private ExpiringReference truckDataHolder = new ExpiringReference(60 * 60 * 1000) {
+	private ExpiringReference truckDataHolder = new ExpiringReference(TransportationAdminProperties.getTruckCacheExpiryTime()*  60 * 1000) {
 		protected Object load() {
 			try {
 				return loadAllTruckData();
@@ -40,7 +40,7 @@ public class TransAdminCacheManager {
 	
 	
 	// make the time constant in property
-	private TrnAdmExpiringReference routeDataHolder = new TrnAdmExpiringReference(60 * 60 * 1000) {
+	private TrnAdmExpiringReference routeDataHolder = new TrnAdmExpiringReference(TransportationAdminProperties.getRouteCacheExpiryTime() * 60 * 1000) {
 		
 		
 		
@@ -58,7 +58,7 @@ public class TransAdminCacheManager {
 	
 	
 //	 make the time constant in property
-	private ExpiringReference employeeDataHolder = new ExpiringReference(60 * 60 * 1000) {
+	private ExpiringReference employeeDataHolder = new ExpiringReference(TransportationAdminProperties.getEmployeeCacheExpiryTime() * 60 * 1000) {
 						
 		protected Object load() {
 			try {
@@ -72,7 +72,7 @@ public class TransAdminCacheManager {
 	
 	
 //	 make the time constant in property
-	private ExpiringReference terminatedEmployeeDataHolder = new ExpiringReference(60 * 60 * 1000) {
+	private ExpiringReference terminatedEmployeeDataHolder = new ExpiringReference(TransportationAdminProperties.getEmployeeCacheExpiryTime() * 60 * 1000) {
 						
 		protected Object load() {
 			try {
