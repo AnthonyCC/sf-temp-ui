@@ -525,9 +525,12 @@ public class WebPlanInfo extends BaseCommand {
 			ResourceInfoI resourceInfo=(ResourceInfoI)resources.get(i);
 			if(!TransStringUtil.isEmpty(resourceInfo.getEmployeeId())) {
 				WebEmployeeInfo webEmplInfo=employeeManagerService.getEmployee(resourceInfo.getEmployeeId());
+				String nexttel=resourceInfo.getNextelNo();
 				if(webEmplInfo!=null && webEmplInfo.getEmpInfo()!=null) {
 					resources.remove(i);
-					resources.add(i, getResourceInfo(webEmplInfo, null));
+					ResourceInfoI resourceInfoI=getResourceInfo(webEmplInfo, null);
+					resourceInfoI.setNextelNo(nexttel);
+					resources.add(i,resourceInfoI );
 				}
 			}
 		}
