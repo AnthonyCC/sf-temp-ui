@@ -37,7 +37,7 @@ import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 
 public class ModelUtil {
 	
-	private static final DateFormat DATE_FORMAT=new SimpleDateFormat("MM/dd/yyyy h:m:s");
+	private static final DateFormat DATE_FORMAT=new SimpleDateFormat("MM/dd/yyyy H:m:s");
 	
 	public static List getDeliveryLocations(List lstDlvLocation) {
 		
