@@ -131,8 +131,8 @@ return true;
                   
 	                  var profileTableFld = document.getElementById('profileListTB');
 						//var profileTableRow = document.getElementById(currentRow);
-						
-						var allTrElements = profileTableFld.getElementById(currentRow);
+						//alert("currentRow :"+currentRow);
+						var allTrElements = document.getElementById(currentRow);
                      //console.log("currentRow :"+currentRow);   
                      allTrElements.getElementsByTagName("td")[0].innerHTML=document.getElementById('DayOfWeekList')[document.getElementById('DayOfWeekList').selectedIndex].text;   
                      allTrElements.getElementsByTagName("td")[1].innerHTML=document.getElementById('condition')[document.getElementById('condition').selectedIndex].text;   													                       
