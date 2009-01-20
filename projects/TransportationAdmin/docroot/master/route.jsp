@@ -164,7 +164,8 @@
 									  <ec:column property="zoneNumber" title="Zone Number"/>
 									  <ec:column property="routeTime" title="AM/PM"/>
 									  <ec:column property="numberOfStops" title="Stops"/>
-                                      <ec:column property="firstDlvTime" title="FirstDlvTime"/>                                      
+                                      <ec:column property="firstDlvTime" title="FirstDlvTime"/>
+                                      <ec:column property="truckNumber" title="Truck Number"/>                                       
 									</ec:row>
 								  </ec:table>
 							</form>  

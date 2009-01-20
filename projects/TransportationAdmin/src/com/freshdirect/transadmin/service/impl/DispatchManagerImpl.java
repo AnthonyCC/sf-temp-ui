@@ -120,7 +120,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 		Collection routeList=getDomainManagerService().getRoutes(date);
 		Collection truckList=getDomainManagerService().getTrucks();
 		
-		Collection dispatchList=ModelUtil.constructDispatchModel(planList,routeList,truckList);
+		Collection dispatchList=ModelUtil.constructDispatchModel(planList,routeList);
 		
 		Map childMap=new HashMap();
 		Iterator iterator=dispatchList.iterator();

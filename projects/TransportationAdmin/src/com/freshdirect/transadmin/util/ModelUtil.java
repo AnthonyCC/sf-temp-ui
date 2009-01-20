@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -16,20 +17,17 @@ import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.customer.ErpRouteMasterInfo;
-import com.freshdirect.customer.ErpTruckMasterInfo;
 import com.freshdirect.routing.model.IGeographicLocation;
 import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.LocationModel;
 import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.DispatchResource;
-import com.freshdirect.transadmin.model.DispatchResourceId;
 import com.freshdirect.transadmin.model.DlvBuilding;
 import com.freshdirect.transadmin.model.DlvLocation;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.PlanResource;
-import com.freshdirect.transadmin.model.PlanResourceId;
 import com.freshdirect.transadmin.model.ResourceId;
 import com.freshdirect.transadmin.model.Route;
 import com.freshdirect.transadmin.model.RouteInfo;
@@ -135,7 +133,7 @@ public class ModelUtil {
 	}
 	
 	
-	public static List constructDispatchModel(Collection planList,Collection routeList,Collection truckList){
+	public static List constructDispatchModel(Collection planList,Collection routeList){
 		// lot of crap stuff to do
 		// form the hashMap with zone as key and list contaiining plan(sort the plan based on sequence number)
 		// form the hashMap with zone as key and list containing route(sort by route number)
@@ -200,30 +198,32 @@ public class ModelUtil {
 		
 		// for the dispatch object from the above lists
 		List dispatchList=new ArrayList();
-		int start_index=0;
-		int end_index=0;
+		//int start_index=0;
+		//int end_index=0;
 		Set finalSet=planMap.keySet();
 	    Iterator finalIterator=finalSet.iterator(); 
 		while(finalIterator.hasNext()){
 			String zoneCode=(String)finalIterator.next();
-			start_index=end_index;
-			end_index=end_index+((List)planMap.get(zoneCode)).size();
+			//start_index=end_index;
+			//end_index=end_index+((List)planMap.get(zoneCode)).size();
 			List routeLst=(List)routeMap.get(zoneCode);
 			if(routeLst==null) routeLst=Collections.EMPTY_LIST;
-			constructDispatchModelList(dispatchList,(List)planMap.get(zoneCode),routeLst,((List)truckList).subList(start_index,end_index));			
+			constructDispatchModelList(dispatchList,(List)planMap.get(zoneCode),routeLst);			
 			
 		}
 		
-		start_index=end_index;
-		end_index=end_index+noZonePlanList.size();
-		constructDispatchModelList(dispatchList,noZonePlanList,Collections.EMPTY_LIST,((List)truckList).subList(start_index,end_index));	    
+		//start_index=end_index;
+		//end_index=end_index+noZonePlanList.size();
+		constructDispatchModelList(dispatchList,noZonePlanList,Collections.EMPTY_LIST);	    
 		return dispatchList;
 	}
 	
-	private static void  constructDispatchModelList(List dispatchList,List planList,List routeList,List truckList){
+	private static void  constructDispatchModelList(List dispatchList,List planList,List routeList){
 				
 		Iterator ite1=routeList.iterator();
-		Iterator trkIterator=truckList.iterator();
+		ErpRouteMasterInfo r = null;
+		Date firstDlvTime = null;
+		
 		for(int i=0;i<planList.size();i++)
 		{
 			Plan p=(Plan)planList.get(i);
@@ -239,25 +239,27 @@ public class ModelUtil {
 			System.out.println("p.getRegion() :"+p.getRegion());
 			d.setBullPen("Y".equalsIgnoreCase(p.getIsBullpen())?Boolean.TRUE:Boolean.FALSE);
 			d.setRegion(p.getRegion());
-			if(ite1.hasNext()){
-				ErpRouteMasterInfo r=(ErpRouteMasterInfo)ite1.next();
+			
+			if(r == null && ite1.hasNext()){
+				r = (ErpRouteMasterInfo)ite1.next();
+				try {
+					if(r.getFirstDlvTime()!=null && r.getFirstDlvTime().trim().length()>0){	
+						firstDlvTime = DATE_FORMAT.parse("01/01/1970 "+r.getFirstDlvTime());
+					}
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+			if(r != null && firstDlvTime != null && firstDlvTime.equals(p.getFirstDeliveryTime())) {
 				d.setRoute(r.getRouteNumber());
 				d.setTruck(r.getTruckNumber());
-				System.out.println("r.getRouteNumber() :"+r.getRouteNumber());
-				if(r.getFirstDlvTime()!=null && r.getFirstDlvTime().trim().length()>0){					
-					try {
-						d.setFirstDlvTime(DATE_FORMAT.parse("01/01/1970 "+r.getFirstDlvTime()));
-					} catch (ParseException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}				
+				d.setFirstDlvTime(firstDlvTime);	
+				r = null;
+				firstDlvTime = null;
 			}			
-//			if(trkIterator.hasNext()){
-//				ErpTruckMasterInfo trkMaster=(ErpTruckMasterInfo)trkIterator.next();
-//				d.setTruck(trkMaster.getTruckNumber());
-//			}				  				
-				dispatchList.add(d);										
+			dispatchList.add(d);										
 		}		
 	}
 	
