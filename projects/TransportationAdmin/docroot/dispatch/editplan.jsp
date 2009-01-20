@@ -37,22 +37,7 @@
             border:solid #999999 1px;
             background:#ffffff;}
       </style>
-    <script language="javascript" src="js/mootools.v1.11.js"></script>
-    <script language="javascript" src="js/nogray_time_picker.js"></script>      
-    <script language="javascript">
-        window.addEvent("domready", function (){
-            var dateObjStartTime = new Date("July 21, 1983 "+document.getElementById('startTime').value);
-            var dateObjFirstDlvTime = new Date("July 21, 1983 "+document.getElementById('firstDeliveryTime').value);
-            
-            var tpStartTime = new TimePicker('timeStart_picker', 'startTime', 'timeStart_toggler', {imagesPath:"images",
-                                        startTime: {hour:dateObjStartTime.getHours(), minute: dateObjStartTime.getMinutes()}});
-            
-            var tpFirstDlvTime = new TimePicker('timeFirstDlv_picker', 'firstDeliveryTime', 'timeFirstDlv_toggler', {imagesPath:"images",
-                                        startTime: {hour:dateObjFirstDlvTime.getHours(), minute: dateObjFirstDlvTime.getMinutes()}});
-                                           
-        });
-
-    </script>     
+    
 
 <tmpl:insert template='/common/sitelayout.jsp'>
 
@@ -157,8 +142,8 @@
                   <td><a id="timeStart_toggler">Start&nbsp;Time</a></td>
                   <!-- <td> <a id="startTime_toggler">&nbsp;</a></td> -->
                   <td>         
-                   <form:input maxlength="50" size="24" path="startTime" />  
-                   <div id="timeStart_picker" class="time_picker_div"></div>
+                   <form:input maxlength="50" size="24" path="startTime" onblur="this.value=time(this.value);" />  
+                   <!-- <div id="timeStart_picker" class="time_picker_div"></div> -->
                  </td>
                 <td>
                   &nbsp;<form:errors path="startTime" />
@@ -168,8 +153,8 @@
                   <td><a id="timeFirstDlv_toggler">First Dlv.&nbsp;Time</a></td>
                   <!-- <td> <a id="firstDeliveryTime_toggler">&nbsp;</a></td> -->
                   <td>     
-                  <form:input maxlength="50" size="24" path="firstDeliveryTime" />
-                  <div id="timeFirstDlv_picker" class="time_picker_div"></div>               
+                  <form:input maxlength="50" size="24" path="firstDeliveryTime" onblur="this.value=time(this.value);" />
+                  <!-- <div id="timeFirstDlv_picker" class="time_picker_div"></div>  -->              
                  </td>
                 <td>
                   &nbsp;<form:errors path="firstDeliveryTime" />

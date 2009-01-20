@@ -44,22 +44,6 @@
                 }                
         }
       </script>
-       <script language="javascript" src="js/mootools.v1.11.js"></script>
-       <script language="javascript" src="js/nogray_time_picker.js"></script>      
-       <script language="javascript">
-        window.addEvent("domready", function (){
-            var dateObjStartTime = new Date("July 21, 1983 "+document.getElementById('startTime').value);
-            var dateObjFirstDlvTime = new Date("July 21, 1983 "+document.getElementById('firstDeliveryTime').value);
-            
-            var tpStartTime = new TimePicker('timeStart_picker', 'startTime', 'timeStart_toggler', {imagesPath:"images",
-                                        startTime: {hour:dateObjStartTime.getHours(), minute: dateObjStartTime.getMinutes()}});
-            
-            var tpFirstDlvTime = new TimePicker('timeFirstDlv_picker', 'firstDeliveryTime', 'timeFirstDlv_toggler', {imagesPath:"images",
-                                        startTime: {hour:dateObjFirstDlvTime.getHours(), minute: dateObjFirstDlvTime.getMinutes()}});
-                                           
-        });
-
-    </script>        
       <style>
         .time_picker_div {padding:5px;
             border:solid #999999 1px;
@@ -206,8 +190,8 @@
 							<spring:bind path="dispatchForm.confirmed"> 
 								<c:choose>                    
 								<c:when test='${status.value == "false"}'> 
-									<form:input maxlength="50" size="8" path="startTime" />
-									<div id="timeStart_picker" class="time_picker_div"></div>
+									<form:input maxlength="50" size="8" path="startTime" onblur="this.value=time(this.value);" />
+									<!-- <div id="timeStart_picker" class="time_picker_div"></div> -->
 								</c:when>
 								 <c:otherwise> 
 								 <form:input maxlength="50" size="8" path="startTime" readOnly="true"/>
@@ -225,8 +209,8 @@
 							 <spring:bind path="dispatchForm.confirmed"> 
 								<c:choose>                    
 								<c:when test='${status.value == "false"}'> 
-									<form:input maxlength="50" size="8" path="firstDeliveryTime" />
-									<div id="timeFirstDlv_picker" class="time_picker_div"></div>
+									<form:input maxlength="50" size="8" path="firstDeliveryTime" onblur="this.value=time(this.value);" />
+									<!-- <div id="timeFirstDlv_picker" class="time_picker_div"></div> -->
 								</c:when>
 								 <c:otherwise> 
 								 <form:input maxlength="50" size="8" path="firstDeliveryTime" readOnly="true"/>

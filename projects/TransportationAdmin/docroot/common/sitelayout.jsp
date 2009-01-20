@@ -18,8 +18,7 @@
     <script type="text/javascript" language="javascript" src="js/jscalendar-1.0/calendar.js"></script>
     <script type="text/javascript" language="javascript" src="js/jscalendar-1.0/lang/calendar-en.js"></script>
     <script type="text/javascript" language="javascript" src="js/jscalendar-1.0/calendar-setup.js"></script>
-	<script language="javascript" src="js/mootools.v1.11.js"></script>
-	<script language="javascript" src="js/nogray_time_picker_min.js"></script>
+	<script language="javascript" src="js/time.js"></script>
 	<script type="text/javascript">
 		/* allow lower resolutions to display */
 		if (screen.height < 768 && screen.width <= 1024) {
