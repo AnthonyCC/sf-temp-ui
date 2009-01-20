@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<JMeterTests dir="$(jmx.directory)" jar="$(jmeter.lib)/bin/ApacheJMeter.jar">
+
+	<JMeterScript file="checkout.jmx" enabled="true">
+		<!-- Obtain customer id's -->
+		<CustomerData>
+			<Retrieve dir="$(output.directory)" server="$(server)" port="$(port)" file="checkout_custids.csv" type="dyfcustid"/>
+		</CustomerData>
+
+		<JMeterParameters>
+			<Parameter name="hostname">$(server)</Parameter>
+			<Parameter name="port">$(port)</Parameter>
+			<Parameter name="login_counter">10</Parameter>
+			<Parameter name="checkout_threads">3</Parameter>
+			<Parameter name="checkout_counter">10</Parameter>
+			<Parameter name="custids">$(output.directory)/checkout_custids.csv</Parameter>
+			<Parameter name="checkout_output">$(output.directory)/checkout_results.csv</Parameter>
+		</JMeterParameters>
+
+		<!-- -->
+		<Results dir="$(output.directory)">
+
+			<Aggregate file="checkout_results.csv">
+			<Rows><Match column="3">.*step1_choose.jsp.*</Match></Rows>
+			<Calculate>
+				<Formula file="checkout_step1_ave.property">ave($0)</Formula>
+				<Formula file="checkout_step1_stdhigh.property">ave($0)+std($0)/2</Formula>
+				<Formula file="checkout_step1_latency_ave.property">ave($4)</Formula>
+				<Formula file="checkout_step1_latency_stdhigh.property">ave($4)+std($4)/2</Formula>
+			</Calculate>
+			</Aggregate>
+
+			<Aggregate file="checkout_results.csv">
+			<Rows><Match column="3">.*step2_select.jsp.*</Match></Rows>
+			<Calculate>
+				<Formula file="checkout_step2sel_ave.property">ave($0)</Formula>
+				<Formula file="checkout_step2sel_stdhigh.property">ave($0)+std($0)/2</Formula>
+				<Formula file="checkout_step2sel_latency_ave.property">ave($4)</Formula>
+				<Formula file="checkout_step2sel_latency_stdhigh.property">ave($4)+std($4)/2</Formula>
+			</Calculate>
+			</Aggregate>
+
+			<Aggregate file="checkout_results.csv">
+			<Rows><Match column="3">.*step2_check.jsp.*</Match></Rows>
+			<Calculate>
+				<Formula file="checkout_step2check_ave.property">ave($0)</Formula>
+				<Formula file="checkout_step2check_stdhigh.property">ave($0)+std($0)/2</Formula>
+				<Formula file="checkout_step2check_latency_ave.property">ave($4)</Formula>
+				<Formula file="checkout_step2check_latency_stdhigh.property">ave($4)+std($4)/2</Formula>
+			</Calculate>
+			</Aggregate>
+
+			<Aggregate file="checkout_results.csv">
+			<Rows><Match column="3">.*step3_choose.jsp.*</Match></Rows>
+			<Calculate>
+				<Formula file="checkout_step3_ave.property">ave($0)</Formula>
+				<Formula file="checkout_step3_stdhigh.property">ave($0)+std($0)/2</Formula>
+				<Formula file="checkout_step3_latency_ave.property">ave($4)</Formula>
+				<Formula file="checkout_step3_latency_stdhigh.property">ave($4)+std($4)/2</Formula>
+			</Calculate>
+			</Aggregate>
+
+			<Aggregate file="checkout_results.csv">
+			<Rows><Match column="3">.*step4_submit.jsp.*</Match></Rows>
+			<Calculate>
+				<Formula file="checkout_step4_ave.property">ave($0)</Formula>
+				<Formula file="checkout_step4_stdhigh.property">ave($0)+std($0)/2</Formula>
+				<Formula file="checkout_step4_latency_ave.property">ave($4)</Formula>
+				<Formula file="checkout_step4_latency_stdhigh.property">ave($4)+std($4)/2</Formula>
+			</Calculate>
+			</Aggregate>
+
+		</Results>
+	</JMeterScript>
+</JMeterTests>
