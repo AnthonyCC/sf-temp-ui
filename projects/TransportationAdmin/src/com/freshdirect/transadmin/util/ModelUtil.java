@@ -240,19 +240,11 @@ public class ModelUtil {
 			d.setBullPen("Y".equalsIgnoreCase(p.getIsBullpen())?Boolean.TRUE:Boolean.FALSE);
 			d.setRegion(p.getRegion());
 			
-			if(r == null && ite1.hasNext()){
-				r = (ErpRouteMasterInfo)ite1.next();
-				try {
-					if(r.getFirstDlvTime()!=null && r.getFirstDlvTime().trim().length()>0){	
-						firstDlvTime = DATE_FORMAT.parse("01/01/1970 "+r.getFirstDlvTime());
-					}
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+			List routeMatch = matchRoute(p, routeList);
 			
-			if(r != null && firstDlvTime != null && firstDlvTime.equals(p.getFirstDeliveryTime())) {
+			if(routeMatch != null) {
+				r = (ErpRouteMasterInfo)routeMatch.get(0);
+				firstDlvTime = (Date)routeMatch.get(1);
 				d.setRoute(r.getRouteNumber());
 				d.setTruck(r.getTruckNumber());
 				d.setFirstDlvTime(firstDlvTime);	
@@ -261,6 +253,33 @@ public class ModelUtil {
 			}			
 			dispatchList.add(d);										
 		}		
+	}
+	
+	private static List matchRoute(Plan p, List routeList) {
+		List result = null;
+		if(routeList != null && p != null) {
+			Iterator _iterator = routeList.iterator();
+			ErpRouteMasterInfo _tmpInfo = null;
+			while(_iterator.hasNext()) {
+				_tmpInfo = (ErpRouteMasterInfo)_iterator.next();
+				try {
+					if(_tmpInfo.getFirstDlvTime() != null && _tmpInfo.getFirstDlvTime().trim().length() > 0){	
+						Date firstDlvTime = DATE_FORMAT.parse("01/01/1970 "+_tmpInfo.getFirstDlvTime());
+						if(firstDlvTime != null && firstDlvTime.equals(p.getFirstDeliveryTime())) {
+							result = new ArrayList();
+							result.add(_tmpInfo);
+							result.add(firstDlvTime);
+							_iterator.remove();
+							break;
+						}
+					}
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		return result;
 	}
 	
 	public static Set convertPlnToDispatchResource(Set planResourceList,Dispatch dispatch){
