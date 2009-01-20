@@ -2,12 +2,11 @@ package com.freshdirect.transadmin.service.impl;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.TreeSet;
 
 import com.freshdirect.customer.ErpRouteMasterInfo;
-
 import com.freshdirect.customer.ErpTruckMasterInfo;
 import com.freshdirect.routing.constants.EnumBalanceBy;
 import com.freshdirect.transadmin.dao.BaseManagerDaoI;
@@ -213,7 +212,7 @@ public class DomainManagerImpl
 	}
 	
 	public Collection getTruckNumbers() {
-		Set truckNumbers = new HashSet();
+		Set truckNumbers = new TreeSet();
 		Collection routes = getTrucks();
 		Iterator iter = routes.iterator();
 		while(iter.hasNext()){
