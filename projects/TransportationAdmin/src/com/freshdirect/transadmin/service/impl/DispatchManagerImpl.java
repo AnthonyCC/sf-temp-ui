@@ -256,7 +256,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 		Collection dispatchTrucks = getDispatchTrucks(date);
 		Collection allTrucks = getDomainManagerService().getTruckNumbers();
 		assignedTrucks.addAll(dispatchTrucks);
-		allTrucks.removeAll(assignedTrucks);
+		//allTrucks.removeAll(assignedTrucks);
 		return allTrucks;
 	}
 	

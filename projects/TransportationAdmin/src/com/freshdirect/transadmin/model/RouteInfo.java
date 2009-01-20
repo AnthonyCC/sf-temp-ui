@@ -30,7 +30,7 @@ public class RouteInfo implements Serializable {
 	}
 
 	public String getZonePrefix() {
-		if(routeNumber != null){
+		if(routeNumber != null && routeNumber.length() > 3){
 			return routeNumber.substring(1,4);	
 		}
 		return "";
