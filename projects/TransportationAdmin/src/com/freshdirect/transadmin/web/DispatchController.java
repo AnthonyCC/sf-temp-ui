@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -30,6 +31,7 @@ import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
+import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 import com.freshdirect.transadmin.web.model.WebPlanInfo;
 
 public class DispatchController extends AbstractMultiActionController {
@@ -99,6 +101,8 @@ public class DispatchController extends AbstractMultiActionController {
 	private Collection getPlanInfo(String dateQryStr, String zoneQryStr) {
 		
 		Collection plans=dispatchManagerService.getPlan(dateQryStr, zoneQryStr);
+		List termintedEmployees = getTermintedEmployeeIds();
+		
 		Collection planInfos=new ArrayList();
 		Iterator it=plans.iterator();
 		while(it.hasNext()) {
@@ -109,6 +113,7 @@ public class DispatchController extends AbstractMultiActionController {
 				zone=domainManagerService.getZone(plan.getZone().getZoneCode());
 			}
 			WebPlanInfo planInfo=DispatchPlanUtil.getWebPlanInfo(plan, zone, employeeManagerService);
+			planInfo.setTermintedEmployees(termintedEmployees);
 			planInfos.add(planInfo);
 		}
 		
@@ -176,6 +181,7 @@ public class DispatchController extends AbstractMultiActionController {
 	
 	private Collection getDispatchInfos(String dispDate, String zoneStr, String region, boolean isSummary){
 		Collection dispatchInfos = new ArrayList();
+		List termintedEmployees = getTermintedEmployeeIds();
 		try {
 		Collection dispatchList = dispatchManagerService.getDispatchList(dispDate, zoneStr, region);
 		Iterator iter = dispatchList.iterator();
@@ -186,6 +192,7 @@ public class DispatchController extends AbstractMultiActionController {
 					zone=domainManagerService.getZone(dispatch.getZone().getZoneCode());
 				}
 				DispatchCommand command = DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService);
+				command.setTermintedEmployees(termintedEmployees);
 				if(isSummary){
 					FDRouteMasterInfo routeInfo = domainManagerService.getRouteMasterInfo(command.getRoute(), new Date());
 					if(routeInfo != null){
@@ -356,5 +363,19 @@ public class DispatchController extends AbstractMultiActionController {
 		return mav;
 	}
 	
+	private List getTermintedEmployeeIds() {
+		Collection termintedList = employeeManagerService.getTerminatedEmployees();
+		List result = new ArrayList();
+		if(termintedList != null) {
+			Iterator iterator = termintedList.iterator();
+			WebEmployeeInfo info = null;
+			while(iterator.hasNext()) {
+				//System.out.println(iterator.next());
+				info = (WebEmployeeInfo)iterator.next();
+				result.add(info.getEmployeeId());
+			}
+		}
+		return result;
+	}
 	
 }

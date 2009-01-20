@@ -33,10 +33,7 @@
 	     	<access-uris>truck.do,edittruck.do,deletetruck.do</access-uris>
 	     	<access-roles>TrnAdmin</access-roles>
      	</menu>
-   	     <menu id="OPR007" title="Geo Restriction" orientation="RIGHT" link="georestriction.do">
-	     	<access-uris>georestriction.do,deletegeorestriction.do,editgeorestriction.do</access-uris>
-	     	<access-roles>TrnAdmin</access-roles>
-	     </menu>
+   	     
  </menu>
 
 	<menu id="MNM002" title="ROUTING" orientation="LEFT" link="">
@@ -118,7 +115,10 @@
 	     	<access-uris>region.do,deleteregion.do,editregion.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
 	     </menu>
-         
+         <menu id="GEO008" title="Geo Restriction" orientation="RIGHT" link="georestriction.do">
+	     	<access-uris>georestriction.do,deletegeorestriction.do,editgeorestriction.do</access-uris>
+	     	<access-roles>TrnAdmin</access-roles>
+	     </menu>
          
 </menu>
 </menus>

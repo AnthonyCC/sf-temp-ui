@@ -17,11 +17,13 @@ import com.freshdirect.transadmin.model.PlanResource;
 import com.freshdirect.transadmin.model.ResourceI;
 import com.freshdirect.transadmin.model.ResourceId;
 import com.freshdirect.transadmin.model.ResourceInfoI;
+import com.freshdirect.transadmin.model.TrnBaseEntityI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
+import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.EnumResourceType;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
-public class WebPlanInfo extends BaseCommand {
+public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	
 	private String planId;
 	private String planDay;
@@ -51,8 +53,16 @@ public class WebPlanInfo extends BaseCommand {
 		      new ResourceList(),
 		      FactoryUtils.instantiateFactory(EmployeeInfo.class));*/
 	
+	private List termintedEmployees = null;
 	
-	
+	public List getTermintedEmployees() {
+		return termintedEmployees;
+	}
+
+	public void setTermintedEmployees(List termintedEmployees) {
+		this.termintedEmployees = termintedEmployees;
+	}
+
 	public Tooltip getSupervisorEx() {
 		String value=new StringBuffer(100).append(supervisorName).append("\n").append("ID : ").append(supervisorCode).toString();
 		return new Tooltip(this.getSupervisorName(), value);
@@ -583,6 +593,27 @@ public class WebPlanInfo extends BaseCommand {
 
 	public void setZoneType(String zoneType) {
 		this.zoneType = zoneType;
+	}
+	
+	public boolean  isObsoleteEntity(){
+		return hasTerminatedResources(this.getDrivers(), termintedEmployees) 
+					|| hasTerminatedResources(this.getRunners(), termintedEmployees) 
+						|| hasTerminatedResources(this.getHelpers(), termintedEmployees);
+	}
+	
+	public boolean hasTerminatedResources(List resources, List termintedEmployees) {
+		boolean result = false;
+		if(resources != null && termintedEmployees != null) {
+			for(int i=0;i<resources.size();i++) {
+				ResourceInfoI resourceInfo=(ResourceInfoI)resources.get(i);
+				if(termintedEmployees.contains(resourceInfo.getEmployeeId()) ) {
+					result = true;
+					break;
+				}
+				
+			}
+		}
+		return result;
 	}
 	
 }
