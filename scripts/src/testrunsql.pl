@@ -91,13 +91,33 @@ do{
           chop($sqlrec);
        }
          
-     print "debug: sqlrec= ", $sqlrec, "\n";
+     #print "debug: sqlrec= ", $sqlrec, "\n";
      if ($sqlrec eq "" || $sqlrec =~ m/--/){     #ignore starting with '-'
            $sqlrec = "";
      }
      else{     
-        $dbh->do($sqlrec) or die "Couldn't execute statement: " . $dbh->errstr;
-        $sqlrec = "";
+       #$res = $dbh->do($sqlrec) or die "Couldn't execute statement: " . $dbh->errstr;
+   
+
+        $res = $dbh->selectall_arrayref( $sqlrec );
+
+
+        foreach( @$res ) {
+    # We could do this, but it only works for 4 elements
+            #print "$_->[0], $_->[1], $_->[2] $_->[3]\n";
+            
+             foreach $i (0..$#$_) {
+               print "$_->[$i] "
+               }
+            print "\n";
+          
+            
+            
+            
+            
+        }
+        
+         $sqlrec = "";
         $cnt++;   
      }        
 }until eof ;
