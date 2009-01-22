@@ -16,8 +16,7 @@
             </key-property>
         </composite-id>                
         <property name="condition" column="CONDITION" type="com.freshdirect.transadmin.datamanager.util.EnumLogicalOperatorUserType" />
-        
-         
+                
      	<component name="startTime" class="com.freshdirect.framework.util.TimeOfDay"> 
         	<property name="normalDate" column="START_TIME" type="timestamp" not-null="true"/>
         </component>  

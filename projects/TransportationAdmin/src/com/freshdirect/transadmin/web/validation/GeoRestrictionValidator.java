@@ -24,10 +24,6 @@ public class GeoRestrictionValidator extends AbstractValidator {
 		
 		GeoRestriction model = (GeoRestriction)obj;
 		
-		System.out.println("###########\n#########\n#########\n");
-		
-		System.out.println(model);
-
 		if( model.getName() == null || "".equals(model.getName() )) {
 			  ValidationUtils.rejectIfEmpty(errors, "name", "app.error.112", new Object[]{"Name"},"required field");
 		}
@@ -48,15 +44,19 @@ public class GeoRestrictionValidator extends AbstractValidator {
 			ValidationUtils.rejectIfEmpty(errors, "endDate", "app.error.112", new Object[]{"endDate"},"required field");
 		}
 		
+		if(model != null && TransStringUtil.isEmpty(model.getBoundaryCode())) {
+			errors.rejectValue("boundaryCode", "app.error.112", new Object[]{"Restriction Boundary"},"required field");
+		}
+		
+		validateLength("message", model.getMessage(), 1024, errors);
+		validateLength("comments", model.getComments(), 255, errors);
+		validateLength("comments", model.getComments(), 256, errors);
+		
 		try {
 		
 			System.out.println("errors.getErrorCount()="+errors.getErrorCount());
-			if(errors.getErrorCount()==0)			
-			{								
-				//if(model.getStartDate().before(new Date())){
-					//errors.rejectValue("startDate", "app.error.125", null,"");
-				//}
-				
+			if(errors.getErrorCount()==0) {								
+								
 				if(model.getEndDate().before(model.getStartDate())){
 					errors.rejectValue("endDate", "app.error.124", null,"");
 				}
@@ -64,10 +64,7 @@ public class GeoRestrictionValidator extends AbstractValidator {
 		} catch(NumberFormatException exp) {
 			errors.rejectValue("startDate", "typeMismatch.date", new Object[]{},"Invalid Date");			
 		}
-       
-		
-		System.out.println("###########\n#########\n#########\n");
-		
+	
 
 		
 	}

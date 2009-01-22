@@ -87,7 +87,7 @@ public class RestrictionController extends AbstractMultiActionController {
 				int arrLength = arrEntityList.length;
 				for (int intCount = 0; intCount < arrLength; intCount++) {
 					tmpEntity = restrictionManagerService.getGeoRestriction(arrEntityList[intCount]);
-					if(tmpEntity.getActive() == null || !tmpEntity.getActive().equals("X")){
+					if(tmpEntity.getActive() == null || !tmpEntity.getActive().equals("X")) {
 						areaSet.add(tmpEntity);
 					}
 				}

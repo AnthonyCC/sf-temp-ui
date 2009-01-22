@@ -237,7 +237,7 @@ return true;
 						var tmpId = 'attributeList['+indexVal+']'+'.';
 						var newElementValue1 = document.createElement("input");
 						newElementValue1.setAttribute("type", "hidden");
-                     newElementValue1.setAttribute("name", tmpId+'dayOfWeek');
+                    	newElementValue1.setAttribute("name", tmpId+'dayOfWeek');
 						newElementValue1.setAttribute("id", tmpId+'dayOfWeek');
 						newElementValue1.setAttribute("value", dayOfWeek.value);
 						
@@ -373,6 +373,7 @@ return true;
                   <td>                  
                   <spring:bind path="geoRestrictionForm.boundaryCode">                                    
                      <SELECT name="boundaryCode">
+                     	<option value="null">--Please Select Restriction Boundary</option>
                         <c:forEach var="contentTypeVar" items="${restrictionBoundries}">       
                              <c:if test="${geoRestrictionForm.boundaryCode == contentTypeVar.code}">
                                 <OPTION selected="<c:out value="${contentTypeVar.code}"/>" value="<c:out value="${contentTypeVar.code}"/>"><c:out value="${contentTypeVar.name}"/></OPTION>
@@ -506,8 +507,8 @@ return true;
 			        </select>
                    
                    </td>                                      
-                   <td><input type="text" id="startTime" name="startTime" value=""style="width: 95px;"></td> 
-                   <td><input type="text" id="endTime" name="endTime" value="" style="width: 88px;" ></td>
+                   <td><input type="text" id="startTime" name="startTime" value=""style="width: 95px;" onblur="this.value=time(this.value);"></td> 
+                   <td><input type="text" id="endTime" name="endTime" value="" style="width: 88px;" onblur="this.value=time(this.value);"></td>
                 </tr>  
                 
                </table>  <br /><br />   
