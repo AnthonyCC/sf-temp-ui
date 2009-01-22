@@ -25,7 +25,7 @@
 			<jsp:include page='/common/messages.jsp'/>
 		</div>
 	</c:if> 
- 
+
   <div class="contentroot">
 
 		<div class="cont_topleft">
@@ -36,7 +36,7 @@
 
 							<span><input maxlength="40" size="40" name="zone" id="zone" value="<%= zoneVal %>" /></span>
 						<span><input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink('daterange','zone','plan.do')" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>
-						<span><input id="view_button" type="image" alt="Dispatch" src="./images/icons/dispatch.gif" onclick="javascript:doCompositeLink('daterange','zone','autoDispatch.do')" onmousedown="this.src='./images/icons/dispatch_ON.gif'" /> <a href="#"  onclick="javascript:doCompositeLink('daterange','zone','autoDispatch.do')" class="dispatch_link">Dispatch</a></span>
+						<span><input id="view_button" type="image" alt="Dispatch" src="./images/icons/dispatch.gif" onclick="javascript:doAutoDispatch('daterange','zone','autoDispatch.do')" onmousedown="this.src='./images/icons/dispatch_ON.gif'" /> <a href="#"  onclick="javascript:doAutoDispatch('daterange','zone','autoDispatch.do')" class="dispatch_link">Dispatch</a></span>
 				</div>
 			</div>
 		</div> 
@@ -66,7 +66,7 @@
               <ec:column alias="region" property="regionCode" title="Region"/>
               <ec:column property="supervisorEx"   title="Supervisor" cell="tooltip"  />
               <ec:column cell="date" format="hh:mm aaa" alias="startTime" property="startTime" title="Start Time"/>
-              <ec:column cell="date" format="hh:mm aaa" alias="firstDeliveryTime" property="firstDeliveryTime" title="First Dlv"/>
+              <ec:column cell="date" format="hh:mm aaa" alias="firstDeliveryTime" property="firstDeliveryTime" title="First Dlv Time"/>
               <ec:column  filterable="true" property="drivers"  cell="com.freshdirect.transadmin.web.ui.FDPlanResourceCell" title="Driver" alias="drivers"/>
               <ec:column  filterable="true" property="helpers"  cell="com.freshdirect.transadmin.web.ui.FDPlanResourceCell" title="Helper" alias="helpers"/>
               <ec:column  filterable="true" property="runners"  cell="com.freshdirect.transadmin.web.ui.FDPlanResourceCell" title="Runner" alias="runners"/>
@@ -80,6 +80,12 @@
 				</div>
      </div>   
      <script>
+     	 function doAutoDispatch(compId1,compId2, url) {
+     	 	var hasConfirmed = confirm ("You are about to perform auto-dispatch.  IF DISPATCHES ALREADY EXIST FOR THE DAY, ALL CHANGES WILL BE LOST.  Do you want to continue?")
+			if (hasConfirmed) {
+			  	doCompositeLink(compId1,compId2, url);
+			} 
+     	 }
          function doCompositeLink(compId1,compId2, url) {
           var param1 = document.getElementById(compId1).value;
           var param2 = document.getElementById(compId2).value;

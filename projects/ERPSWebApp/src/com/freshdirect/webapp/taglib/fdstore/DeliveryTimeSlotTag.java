@@ -210,7 +210,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		
 	private List getTimeslots(ErpAddressModel address, Date startDate, Date endDate) throws FDResourceException {
 
-		if (address instanceof ErpDepotAddressModel) {
+		/*if (address instanceof ErpDepotAddressModel) {
 			ErpDepotAddressModel depotAddress = (ErpDepotAddressModel) address;
 			return FDDeliveryManager.getInstance().getTimeslotsForDepot(
 				startDate,
@@ -219,7 +219,8 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 				depotAddress.getZoneCode());
 		} else {
 			return FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(startDate, endDate, this.address);
-		}
+		}*/
+		return FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(startDate, endDate, this.address);
 	}
 
 	protected static List getDateRanges (DateRange period, boolean lookahead, DlvRestrictionsList restrictions, EnumDlvRestrictionReason specialRestriction) {
