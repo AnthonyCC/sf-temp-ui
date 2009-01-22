@@ -1,4 +1,4 @@
-package Runsql;
+package Execsql;
 use DBI;
 
 my $os = lc $^O;
@@ -82,5 +82,5 @@ sub run{
     $dbh->disconnect;
 }
 
-warn "Runsql is successfully loaded!\n";
+warn "Execsql is successfully loaded!\n";
 1;
