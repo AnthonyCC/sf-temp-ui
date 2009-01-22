@@ -38,7 +38,7 @@ else{
 
 use PerlConfig;
 use Common;
-use Runsql;
+use Execsql;
  
 my $pgm = lc $0;        #lc->convert to lowercase
 $pgm =~ s/\..*//;       #remove file extension
@@ -199,7 +199,7 @@ $tactivitylog->finish;
 print "\n";
 
 if($updatemode){
-    my $runsql = new Runsql;
+    my $runsql = new Execsql;
     print "debug: calling runsql.pm -f $sqloutfile -d $dbname -u $dbuser -p ******", "\n";
     $runsql->run($sqloutfile, $dbname, $dbuser, $pw);
 }
