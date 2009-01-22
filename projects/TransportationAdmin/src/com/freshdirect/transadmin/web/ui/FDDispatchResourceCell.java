@@ -11,6 +11,7 @@ import org.extremecomponents.util.HtmlBuilder;
 import com.freshdirect.transadmin.model.DispatchResource;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.ResourceInfoI;
+import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.web.model.DispatchResourceInfo;
 import com.freshdirect.transadmin.web.model.ResourceList;
@@ -29,8 +30,11 @@ public class FDDispatchResourceCell extends FDBaseCell  {
 				for(int i=0;i<resList.size();i++) {
 					String name=((DispatchResourceInfo)resList.get(i)).getName();
 					response.append(name);
-					if(i<(resList.size()-1)) {
-						TransportationAdminProperties t;
+					if(!TransStringUtil.isEmpty(((DispatchResourceInfo)resList.get(i)).getNextelNo())) {
+						response.append(" [").append(((DispatchResourceInfo)resList.get(i)).getNextelNo()).append(" ]");
+					}
+					
+					if(i<(resList.size()-1) && !TransStringUtil.isEmpty(name)) {
 						response.append(TransportationAdminProperties.getCellDataSeperator());
 					}
 				}
@@ -38,9 +42,12 @@ public class FDDispatchResourceCell extends FDBaseCell  {
 					return "";
 				}
 			}
+			if(response.toString().endsWith(TransportationAdminProperties.getCellDataSeperator()))
+				return response.toString().substring(0, response.toString().lastIndexOf(TransportationAdminProperties.getCellDataSeperator()));
 			return response.toString();
 		}
-		return "";    }
+		return "";    
+	}
 
     public String getHtmlDisplay(TableModel model, Column column) {   
     	

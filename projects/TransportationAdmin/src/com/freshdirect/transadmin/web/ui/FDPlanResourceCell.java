@@ -28,8 +28,7 @@ public class FDPlanResourceCell extends FDBaseCell  {
 				for(int i=0;i<resList.size();i++) {
 					String name=((EmployeeInfo)resList.get(i)).getName();
 					response.append(name);
-					if(i<(resList.size()-1)) {
-						TransportationAdminProperties t;
+					if(i<(resList.size()-1)&& !TransStringUtil.isEmpty(name)) {
 						response.append(TransportationAdminProperties.getCellDataSeperator());
 					}
 				}
@@ -37,6 +36,9 @@ public class FDPlanResourceCell extends FDBaseCell  {
 					return "";
 				}
 			}
+			if(response.toString().endsWith(TransportationAdminProperties.getCellDataSeperator()))
+				return response.toString().substring(0, response.toString().lastIndexOf(TransportationAdminProperties.getCellDataSeperator()));
+
 			return response.toString();
 		}
 		return "";
