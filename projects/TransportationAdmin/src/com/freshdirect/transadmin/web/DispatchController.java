@@ -333,19 +333,19 @@ public class DispatchController extends AbstractMultiActionController {
 					
 				    Collection planList=dispatchManagerService.getPlanList(dispatchDate);
 				
-				    if(planList==null || planList.size()==0){
-				    	saveMessage(request, getMessage("app.actionmessage.134", null));
+				    if(planList == null || planList.size() == 0){
+				    	saveMessage(request, getMessage("app.actionmessage.142", null));
 				    	return planHandler(request,response);
 				    }
 				    		   
-					Collection dispList=dispatchManagerService.getDispatchList(dispatchDate,null,null);								
-					if(dispList!=null || dispList.size()>0){
-						if(!SecurityManager.isUserAdmin(request)){
-							  saveMessage(request, getMessage("app.actionmessage.140", null));
-							  return planHandler(request,response);							  
-						}								 													
-					}
-				    dispatchManagerService.autoDisptch(dispatchDate);								       
+					Collection dispList = dispatchManagerService.getDispatchList(dispatchDate,null,null);
+					System.out.println("dispList >>"+dispList);
+					if(!SecurityManager.isUserAdmin(request)){
+						  saveMessage(request, getMessage("app.actionmessage.140", null));
+						  return planHandler(request,response);							  
+					}	
+				   dispatchManagerService.autoDisptch(dispatchDate);
+				   saveMessage(request, getMessage("app.actionmessage.143", null));
 				   return planHandler(request,response);		
 	}
 	
