@@ -221,5 +221,25 @@ public class FletoHelper implements YmalHelper {
 		
 		return productPrice;
 	}
+	
+
+	public String getRating()
+	{
+	SkuModel sku = getSku();
+		
+		if (sku == null)
+			return null;
+		
+		try {
+			FDProductInfo productInfo = 
+				FDCachedFactory.getProductInfo(sku.getSkuCode());
+			return productInfo.getRating();
+		} catch (FDResourceException e) {
+			throw new FDRuntimeException(e);
+		} catch (FDSkuNotFoundException e) {
+			throw new FDRuntimeException(e);
+		}	
+	}
+	
 
 }

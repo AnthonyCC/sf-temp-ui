@@ -263,9 +263,37 @@
                                     outputP.append("<tr>");
                                 }
 
-                                outputP.append("<td colspan=\"3\" valign=\"bottom\" align=\"center\" width=\""+colWidth+"\"><a href=\""+helper.getLink()+"\"><img src=\""+helper.getImage().getPath()+"\" border=\"0\"></a><br></td>\n");
+                                outputP.append("<td colspan=\"3\" valign=\"bottom\" align=\"center\" width=\""+colWidth+"\"><a href=\""+helper.getLink()+"\"><img src=\""+helper.getImage().getPath()+"\" border=\"0\"></a>");
+                                
+                                
+                          %>
+                                <fd:ProduceRatingCheck>
+                          <%      
+                                
+                               
+                                                                
+                                outputP.append("<br><font class=\"center\">");        
+                                outputP.append("<img src=\"");
+                                outputP.append("/media_stat/images/ratings/"+helper.getRating()+".gif");
+                                outputP.append("\"  name=\"");
+                                outputP.append("rating");
+                                outputP.append("\" width=\"");
+                                outputP.append("59");
+                                outputP.append("\"  height=\"");
+                                outputP.append("11");
+                                outputP.append("\" ALT=\"");
+                                outputP.append("");
+                                outputP.append("\" border=\"0\"");         
+                                outputP.append(">");
+                                outputP.append("</font>");
+                                        
+                                    
+                            %>        
+                                </fd:ProduceRatingCheck> 
 
-                                //outputP2.append("</td>\n");
+                            <%    
+                            outputP.append("<br></td>\n");
+                            //outputP2.append("</td>\n");
 
                                 if (helper.isTransactional()) {
                                     String quant = quantityFormatter.format(configuration.getQuantity());
