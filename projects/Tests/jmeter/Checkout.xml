@@ -21,7 +21,7 @@
 		<Results dir="$(output.directory)">
 
 			<Aggregate file="checkout_results.csv">
-			<Rows><Match column="3">.*step1_choose.jsp.*</Match></Rows>
+			<Rows><Match column="3">.*step_1_choose.jsp.*</Match></Rows>
 			<Calculate>
 				<Formula file="checkout_step1_ave.property">ave($0)</Formula>
 				<Formula file="checkout_step1_stdhigh.property">ave($0)+std($0)/2</Formula>
@@ -31,7 +31,7 @@
 			</Aggregate>
 
 			<Aggregate file="checkout_results.csv">
-			<Rows><Match column="3">.*step2_select.jsp.*</Match></Rows>
+			<Rows><Match column="3">.*step_2_select.jsp.*</Match></Rows>
 			<Calculate>
 				<Formula file="checkout_step2sel_ave.property">ave($0)</Formula>
 				<Formula file="checkout_step2sel_stdhigh.property">ave($0)+std($0)/2</Formula>
@@ -41,7 +41,7 @@
 			</Aggregate>
 
 			<Aggregate file="checkout_results.csv">
-			<Rows><Match column="3">.*step2_check.jsp.*</Match></Rows>
+			<Rows><Match column="3">.*step_2_check.jsp.*</Match></Rows>
 			<Calculate>
 				<Formula file="checkout_step2check_ave.property">ave($0)</Formula>
 				<Formula file="checkout_step2check_stdhigh.property">ave($0)+std($0)/2</Formula>
@@ -51,7 +51,7 @@
 			</Aggregate>
 
 			<Aggregate file="checkout_results.csv">
-			<Rows><Match column="3">.*step3_choose.jsp.*</Match></Rows>
+			<Rows><Match column="3">.*step_3_choose.jsp.*</Match></Rows>
 			<Calculate>
 				<Formula file="checkout_step3_ave.property">ave($0)</Formula>
 				<Formula file="checkout_step3_stdhigh.property">ave($0)+std($0)/2</Formula>
@@ -61,7 +61,7 @@
 			</Aggregate>
 
 			<Aggregate file="checkout_results.csv">
-			<Rows><Match column="3">.*step4_submit.jsp.*</Match></Rows>
+			<Rows><Match column="3">.*step_4_submit.jsp.*</Match></Rows>
 			<Calculate>
 				<Formula file="checkout_step4_ave.property">ave($0)</Formula>
 				<Formula file="checkout_step4_stdhigh.property">ave($0)+std($0)/2</Formula>
