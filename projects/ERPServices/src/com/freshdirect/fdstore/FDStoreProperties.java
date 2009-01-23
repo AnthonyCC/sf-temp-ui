@@ -147,6 +147,8 @@ public class FDStoreProperties {
 	
 	// use Customers' EIEO instead of SmartStore analyzed data
 	private final static String DYF_VARIANTS_EIEO = "fdstore.dyf.variants.useHistory";
+	
+	private final static String SMARTSTORE_NEWPRODUCTS_DAYS = "fdstore.smartstore.newProducts.days";
 
 	
 	// Referral Program admin
@@ -400,6 +402,8 @@ public class FDStoreProperties {
 		defaults.put(DYF_STRATEGY_CACHE_ENTRIES, "1000");
 		defaults.put(DYF_VARIANTS_EIEO, "false");
 
+		defaults.put(SMARTSTORE_NEWPRODUCTS_DAYS, "30");
+		
 		defaults.put(DISTRIBUTION_SAMPLES_DIR,"");
 
 		defaults.put(PROP_INVENOTRY_REFRESH_PERIOD, "10");
@@ -911,67 +915,6 @@ public class FDStoreProperties {
 		return get(DLV_PASS_AUTORENEWAL_DEFAULT);
 	}
 
-
-
-	public static final String PIP_DEFAULT_LABEL = "YOUR FAVORITES";
-	public static final String PIP_DEFAULT_INNERTEXT = "These are some of the items you've purchased most often.";
-
-	
-
-
-	/**
-	 * This function returns the map of title-inner text couples of variants for a site feature.
-	 * It scans properties having 'pip.<site feature>.<key|label|text>N' key starting from N=1 and
-	 * stops where no such property found with that key.
-	 *
-	 * @author segabor
-	 *
-	 * @param siteFeatureName name of (see {@link EnumSiteFeature site feature})
-	 * @return title, text couples indexed by variant IDs ({(String)variant ID -> [(String)title, (String) inner text]}, ...)
-	 *
-	 * Property format:
-	 * pip.<site feature name>.keyN = variantID
-	 * pip.<site feature name>.labelN = variant label
-	 * pip.<site feature name>.textN = inner text
-	 *
-	 * Sample properties:
-	 *
-	 * pip.dyf.key1=freqbought
-	 * pip.dyf.label1=YOUR FAVORITES
-	 * pip.dyf.text1=These are some of the items you've purchased most often.
-	 * pip.dyf.key2=Random DYF
-	 * pip.dyf.label2=RANDOM PICKS
-	 * pip.dyf.text2=These are randomly picked from your purchase history.
-	 *
-	 * Tags: SmartStore, PIP
-	 *
-	 * TODO: it is actually a hack. It will be altered later with a database version.
-	 */
-	public static Map getServicePresentations(String siteFeatureName) {
-		// TODO: read defaults from properties as well.
-
-		int k = 1; // key iterator
-		String prefix = "pip."+siteFeatureName.toLowerCase()+".";
-
-		Map pmap = new HashMap();
-
-		String svcName;
-		while ((svcName=get(prefix+"key"+k))!=null) {
-			String label = get(prefix+"label"+k);
-			String text = get(prefix+"text"+k);
-
-			String[] val = new String[2];
-			val[0] = label != null ? label : PIP_DEFAULT_LABEL;
-			val[1] = text != null ? text : PIP_DEFAULT_INNERTEXT;
-
-			pmap.put(svcName, val);
-
-			++k;
-		}
-
-		return pmap;
-	}
-
 	public static boolean IsProduceRatingEnabled() {
 		return Boolean.valueOf(get(PRODUCE_RATING_ENABLED)).booleanValue();
 	}
@@ -1030,5 +973,9 @@ public class FDStoreProperties {
 	 */
 	public static boolean isSmartSearchEnabled() {
 		return (new Boolean(get(SMART_SEARCH_ENABLED))).booleanValue();
+	}
+
+	public static int getSmartstoreNewproductsDays() {
+		return Integer.parseInt(get(SMARTSTORE_NEWPRODUCTS_DAYS));
 	}
 }

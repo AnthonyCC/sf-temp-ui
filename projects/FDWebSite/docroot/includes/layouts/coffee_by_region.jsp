@@ -11,9 +11,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri='oscache' prefix='oscache' %>
 <%
-
 //********** Start of Stuff to let JSPF's become JSP's **************
 
 String catId = request.getParameter("catId"); 
@@ -22,10 +20,10 @@ boolean isDepartment = false;
 
 ContentNodeModel currentFolder = null;
 if(deptId!=null) {
-	currentFolder=ContentFactory.getInstance().getContentNodeByName(deptId);
+	currentFolder=ContentFactory.getInstance().getContentNode(deptId);
 	isDepartment = true;
 } else {
-	currentFolder=ContentFactory.getInstance().getContentNodeByName(catId);
+	currentFolder=ContentFactory.getInstance().getContentNode(catId);
 }
 
 

@@ -18,7 +18,7 @@ String catId = request.getParameter("catId");
 boolean isGroceryVirtual=false;
 boolean isWineLayout = false;
 String deptId = null;
-ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNodeByName(catId);
+ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(catId);
 if(currentFolder instanceof CategoryModel) {
      deptId=((CategoryModel)currentFolder).getDepartment().getContentName();
 }
@@ -144,9 +144,6 @@ if(deptId != null && ("fru".equals(deptId)||"veg".equals(deptId)||"orgnat".equal
         ttl=180;
     }
 }
-%>
-<oscache:cache key='<%= keyPrefix+request.getQueryString() %>' time='<%=ttl%>' refresh="<%= noCache %>">
-<% try {
 
 int tablewid = noLeftNav ? 550 : 425;
 
@@ -340,14 +337,6 @@ if(EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(templateType)))
              && EnumLayoutType.VALENTINES_CATEGORY.getId()!=layouttype) { %>
 		<%@ include file="/includes/i_bottom_template.jspf" %>
 <% 	} %>
-
-<% } catch (Exception ex) {
-		ex.printStackTrace();
-%>
-	<oscache:usecached />
-<% } %>
-</oscache:cache>
-
 </tmpl:put>
 <%//@ include file="/includes/i_promotion_counter.jspf" %>
 </tmpl:insert>

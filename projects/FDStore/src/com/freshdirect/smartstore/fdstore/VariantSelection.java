@@ -2,6 +2,7 @@ package com.freshdirect.smartstore.fdstore;
 
 import java.rmi.RemoteException;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -56,6 +57,23 @@ public class VariantSelection {
 
 
 	/**
+	 * Returns the map of variant selection for a given date
+	 * @return
+	 */
+	public Map getVariantMap(EnumSiteFeature feature, Date date) {
+		try {
+			VariantSelectionSB bean = this.getVariantSelectionHome().create();
+			
+			return bean.getVariantMap(feature, date);
+		} catch (RemoteException e) {
+			LOGGER.warn("Variant selection",e);
+		} catch (CreateException e) {
+			LOGGER.warn("Variant selection",e);
+		}
+		return Collections.EMPTY_MAP;
+	}
+
+	/**
 	 * Returns the map of variant selection
 	 * @return
 	 */
@@ -82,11 +100,25 @@ public class VariantSelection {
 			
 			return bean.getCohorts();
 		} catch (RemoteException e) {
-			LOGGER.warn("Variant selection",e);
+			LOGGER.warn("Variant selection", e);
 		} catch (CreateException e) {
-			LOGGER.warn("Variant selection",e);
+			LOGGER.warn("Variant selection", e);
 		}
 		return Collections.EMPTY_MAP;
+	}
+	
+
+	public List getCohortNames() {
+		try {
+			VariantSelectionSB bean = this.getVariantSelectionHome().create();
+			
+			return bean.getCohortNames();
+		} catch (RemoteException e) {
+			LOGGER.warn("Variant selection", e);
+		} catch (CreateException e) {
+			LOGGER.warn("Variant selection", e);
+		}
+		return Collections.EMPTY_LIST;
 	}
 	
 
@@ -95,6 +127,23 @@ public class VariantSelection {
 			VariantSelectionSB bean = this.getVariantSelectionHome().create();
 			
 			return bean.getVariants(feature);
+		} catch (RemoteException e) {
+			LOGGER.warn("Variant selection",e);
+		} catch (CreateException e) {
+			LOGGER.warn("Variant selection",e);
+		}
+		return Collections.EMPTY_LIST;
+	}
+
+	/**
+	 * Returns a list of start dates in cohort-variant assignment (history dates)
+	 * @return
+	 */
+	public List getStartDates() {
+		try {
+			VariantSelectionSB bean = this.getVariantSelectionHome().create();
+			
+			return bean.getStartDates();
 		} catch (RemoteException e) {
 			LOGGER.warn("Variant selection",e);
 		} catch (CreateException e) {

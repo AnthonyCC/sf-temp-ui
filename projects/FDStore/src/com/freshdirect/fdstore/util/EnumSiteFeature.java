@@ -28,6 +28,8 @@ public class EnumSiteFeature extends Enum implements Serializable {
 	public final static EnumSiteFeature DYF = new EnumSiteFeature("DYF");
 	public final static EnumSiteFeature YMAL = new EnumSiteFeature("YMAL");
 	public final static EnumSiteFeature RATING = new EnumSiteFeature("RATING");
+    public final static EnumSiteFeature FEATURED_ITEMS = new EnumSiteFeature("FEATURED_ITEMS");
+    public final static EnumSiteFeature FAVORITES = new EnumSiteFeature("FAVORITES");
 
 	protected EnumSiteFeature(String name) {
 		super(name);

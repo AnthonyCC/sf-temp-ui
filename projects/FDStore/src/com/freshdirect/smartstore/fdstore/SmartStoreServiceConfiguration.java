@@ -25,10 +25,16 @@ import com.freshdirect.smartstore.RecommendationServiceType;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationHome;
 import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationSB;
+import com.freshdirect.smartstore.impl.AllProductInCategoryRecommendationService;
+import com.freshdirect.smartstore.impl.CandidateProductRecommendationService;
 import com.freshdirect.smartstore.impl.CompositeRecommendationService;
+import com.freshdirect.smartstore.impl.FavoritesRecommendationService;
+import com.freshdirect.smartstore.impl.FeaturedItemsRecommendationService;
+import com.freshdirect.smartstore.impl.ManualOverrideRecommendationService;
 import com.freshdirect.smartstore.impl.MostFrequentlyBoughtDyfVariant;
 import com.freshdirect.smartstore.impl.NullRecommendationService;
 import com.freshdirect.smartstore.impl.RandomDyfVariant;
+import com.freshdirect.smartstore.impl.YourFavoritesInCategoryRecommendationService;
 
 /**
  * Configures SmartStore services.
@@ -114,7 +120,21 @@ public class SmartStoreServiceConfiguration {
 			return new RandomDyfVariant(variant);
 		} else if (RecommendationServiceType.NIL.equals(serviceType)) {
 			return new NullRecommendationService(variant);
-		}  throw new FDRuntimeException("Unrecognized variant " + variant);
+		} else if (RecommendationServiceType.FEATURED_ITEMS.equals(serviceType)) {
+		    return new FeaturedItemsRecommendationService(variant);
+		} else if (RecommendationServiceType.ALL_PRODUCT_IN_CATEGORY.equals(serviceType)) {
+		    return new AllProductInCategoryRecommendationService(variant);
+		} else if (RecommendationServiceType.FAVORITES.equals(serviceType)) {
+		    return new FavoritesRecommendationService(variant);
+		} else if (RecommendationServiceType.CANDIDATE_LIST.equals(serviceType)) {
+		    return new CandidateProductRecommendationService(variant);
+		} else if (RecommendationServiceType.YOUR_FAVORITES_IN_FEATURED_ITEMS.equals(serviceType)) {
+		    return new YourFavoritesInCategoryRecommendationService(variant);
+		} else if (RecommendationServiceType.MANUAL_OVERRIDE.equals(serviceType)) {
+		    return new ManualOverrideRecommendationService(variant);
+		} else {
+			throw new FDRuntimeException("Unrecognized variant " + variant);
+		}
 	}
 	
 	// Map<EumSiteFeature,List<RecommendationService> >
@@ -161,6 +181,10 @@ public class SmartStoreServiceConfiguration {
 			}
 		}
 		return services;
+	}
+	
+	public synchronized void refresh() {
+	    siteFeatureServices.clear();	    
 	}
 
 }

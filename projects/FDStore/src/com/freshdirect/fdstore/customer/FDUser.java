@@ -61,6 +61,7 @@ import com.freshdirect.fdstore.util.SiteFeatureHelper;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.fdstore.promotion.AudienceStrategy;
+import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
 	
 /**
  *
@@ -181,6 +182,10 @@ public class FDUser extends ModelSupport implements FDUserI {
     
     public AddressModel getAddress() {
         return this.address;
+    }
+    
+    public String getPrimaryKey() {
+    	return super.getId();
     }
     
     public FDIdentity getIdentity() {
@@ -1125,8 +1130,16 @@ public class FDUser extends ModelSupport implements FDUserI {
 		this.isHomePageLetterVisited = isHomePageLetterVisited;
 	}
 
+	/**
+	 * Returns user's cohort ID
+	 *
+	 * @param user
+	 * @return
+	 */
+	public String getCohortName() {
+		return VariantSelectorFactory.getCohortName(getPrimaryKey());
+	}
 }
-	
 
 
 

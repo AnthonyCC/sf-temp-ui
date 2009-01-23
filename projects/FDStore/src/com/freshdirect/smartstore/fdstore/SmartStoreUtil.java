@@ -87,15 +87,12 @@ public class SmartStoreUtil {
 
 		// default case - use the basic facility
 		if (svc == null) {
-			svc = VariantSelectorFactory.getInstance(feature).select(user.getIdentity().getErpCustomerPK());
+		    String customerPK =	user != null ? user.getPrimaryKey() : null;
+		    svc = VariantSelectorFactory.getInstance(feature).select(customerPK);
 		}
 		
 		return svc;
 	}
-
-	
-	private static Map vpMap = null;
-
 	
 	/**
 	 * Returns label-description couple for variant. This function is used by PIP
@@ -107,27 +104,7 @@ public class SmartStoreUtil {
 	 * Tags: SmartStore, PIP
 	 */
 	public static synchronized String[] getVariantPresentation(Variant v) {
-		// HACK: initialize map lazily
-		if (vpMap == null) {
-			Map services = SmartStoreServiceConfiguration.getInstance().getServices(v.getSiteFeature());
-			Set variantIds = services.keySet();
-			Map prez = FDStoreProperties.getServicePresentations(v.getSiteFeature().getName());
-			
-			vpMap = new HashMap();
-			
-			final String[] def_val = {FDStoreProperties.PIP_DEFAULT_LABEL, FDStoreProperties.PIP_DEFAULT_INNERTEXT};
-			
-			for (Iterator vit = variantIds.iterator(); vit.hasNext();) {
-				String variantId = (String) vit.next();
-				if (prez.get(variantId) != null) {
-					vpMap.put(variantId, prez.get(variantId));
-				} else {
-					vpMap.put(variantId, def_val);
-				}
-			}
-		}
-
-		return (String[]) vpMap.get(v.getId());
+	   return new String[] { v.getServiceConfig().getPresentationTitle(), v.getServiceConfig().getPresentationDescription() };
 	}
 	
 

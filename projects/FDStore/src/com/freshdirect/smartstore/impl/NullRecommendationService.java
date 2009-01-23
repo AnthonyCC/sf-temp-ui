@@ -3,6 +3,7 @@ package com.freshdirect.smartstore.impl;
 import java.util.Collections;
 import java.util.List;
 
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
@@ -25,8 +26,17 @@ public class NullRecommendationService implements RecommendationService {
 		this.variant = variant;
 	}
 
-	public List recommend(int max, SessionInput input) {
+	public List recommendNodes(SessionInput input) {
 		return Collections.EMPTY_LIST;
 	}
 
+	public String toString() {
+            return "Service(feature:"+variant.getSiteFeature().getName() +
+            ",variant:" + variant.getId()+
+            ",class:"+StringUtil.getSimpleName(this.getClass())+")";
+	}
+	
+	public String getDescription() {
+		return "";
+	}
 }

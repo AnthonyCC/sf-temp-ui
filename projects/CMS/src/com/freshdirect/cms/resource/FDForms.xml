@@ -199,6 +199,8 @@
 						<title>SMART STORE</title>
 						<fields>
 							<CmsField><attribute>SS_LEVEL_AGGREGATION</attribute></CmsField>
+							<CmsField><attribute>CANDIDATE_LIST</attribute></CmsField>
+							<CmsField><attribute>MANUAL_SELECTION_SLOTS</attribute></CmsField>
 						</fields>
 					</CmsSection>
 				</sections>

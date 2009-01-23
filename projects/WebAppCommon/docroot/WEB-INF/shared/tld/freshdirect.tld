@@ -3145,7 +3145,7 @@
 		<attribute>
 			<name>itemCount</name>
 			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
+			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
 			<name>skipCheck</name>
@@ -3158,6 +3158,30 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+
+	<tag>
+		<name>FeaturedItemsRecommendations</name>
+		<tagclass>com.freshdirect.webapp.taglib.smartstore.FeaturedItemsTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.smartstore.RecommendationsTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>itemCount</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>currentNode</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+
 
 	<tag>
 		<name>ClickThru</name>
@@ -3266,6 +3290,43 @@
 		</attribute>
 		<attribute>
 			<name>prefix</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>hideDeals</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>hideYourFave</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>hideNew</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>hideBurst</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>ProductRating</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.ProductRatingTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.fdstore.ProductRatingTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>product</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>action</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>

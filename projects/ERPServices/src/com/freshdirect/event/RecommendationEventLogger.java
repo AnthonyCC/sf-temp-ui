@@ -2,7 +2,6 @@ package com.freshdirect.event;
 
 import java.rmi.RemoteException;
 import java.util.Collection;
-import java.util.Iterator;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -43,6 +42,14 @@ public class RecommendationEventLogger {
 			}
 		}
 		return instance;
+	}
+	
+	/**
+	 * This is used just for testing.
+	 * @param logger
+	 */
+	synchronized public static void setInstance(RecommendationEventLogger logger) {
+	    instance = logger;
 	}
 	
 	/**
@@ -88,7 +95,11 @@ public class RecommendationEventLogger {
 		}
 	}
 	
-	private RecommendationEventLogger () throws NamingException {
+	protected RecommendationEventLogger () throws NamingException {
+	    init();
+	}
+	
+	protected void init() throws NamingException {
 		serviceLocator = new ServiceLocator(ErpServicesProperties.getInitialContext());
 	}
 

@@ -119,6 +119,42 @@ public class JspMethods {
         }
         return displayAttribute;
     }
+    
+    public static String getTaxonomy(ProductModel product) {
+    	return getTaxonomy(product, false);
+    }
+
+   	public static String getTaxonomy(ProductModel product, boolean showId) {
+		ContentNodeModel parent = product.getParentNode();
+		List catList = new ArrayList();
+		while (parent instanceof CategoryModel) {
+			catList.add(parent);
+			parent = parent.getParentNode();
+		}
+		
+		String taxonomy = "";
+		
+		taxonomy += showId ? "<span title=\"" + ((DepartmentModel) parent).getContentName() + "\">" : "";
+		taxonomy += ((DepartmentModel) parent).getFullName().toUpperCase();
+		taxonomy += showId ? "</span>" : "";
+		taxonomy += " &raquo; ";
+
+		for (int k=catList.size()-1; k>=0; --k) {
+			CategoryModel c = (CategoryModel) catList.get(k);
+			if (k>0) {
+				taxonomy += showId ? "<span title=\"" + c.getContentName() + "\">" : "";
+				taxonomy += c.getFullName();
+				taxonomy += showId ? "</span>" : "";
+				taxonomy += " &raquo; ";
+			} else {
+				taxonomy += showId ? "<span title=\"" + c.getContentName() + "\">" : "";
+				taxonomy += c.getFullName();
+				taxonomy += showId ? "</span>" : "";
+			}
+		}
+		
+		return taxonomy;
+    }
 
     public static String getDisplayName(ContentNodeModel content_node,ProductModel prodNode) {
          if (content_node==null || prodNode ==null || !(ContentNodeI.TYPE_CATEGORY.equals(content_node.getContentType())) ) return "";

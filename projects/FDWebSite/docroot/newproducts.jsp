@@ -9,7 +9,6 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri='oscache' prefix='oscache' %>
 
 <% FDUserI user = (FDUserI) session.getAttribute( SessionName.USER );  
 
@@ -50,7 +49,6 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote");
 Integer daysInt = (Integer)DAYS.get( request.getParameter("days") );
 int days = daysInt==null ? DEFAULT_DAYS : daysInt.intValue();
 %>
-<oscache:cache time="3600" key='<%= "newprod/" + days %>'>
 <%
 try {
 	boolean noNewProduct = false;
@@ -170,9 +168,7 @@ if (products.size()!=0){
 <% } catch (Exception ex) {
 		ex.printStackTrace();
 %>
-<oscache:usecached />
 <% } %>
-</oscache:cache>
 </table>
 </tmpl:put>
 

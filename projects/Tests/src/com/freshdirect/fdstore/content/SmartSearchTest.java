@@ -1,23 +1,22 @@
 package com.freshdirect.fdstore.content;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.naming.Context;
 import javax.servlet.jsp.JspException;
 
-import org.apache.log4j.Logger;
-import org.mockejb.interceptor.Aspect;
-import org.mockejb.interceptor.InvocationContext;
-import org.mockejb.interceptor.Pointcut;
+import junit.framework.TestCase;
 
+import org.apache.log4j.Logger;
+import org.mockejb.interceptor.AspectSystem;
+
+import com.freshdirect.TestUtils;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.application.CmsManager;
@@ -30,81 +29,17 @@ import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.search.AttributeIndex;
 import com.freshdirect.cms.search.LuceneSearchService;
 import com.freshdirect.cms.search.LuceneSearchServiceTest;
-import com.freshdirect.erp.EnumATPRule;
-import com.freshdirect.erp.model.ErpInventoryEntryModel;
-import com.freshdirect.erp.model.ErpInventoryModel;
-import com.freshdirect.fdstore.EnumAvailabilityStatus;
-import com.freshdirect.fdstore.FDProductInfo;
-import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.aspects.FDFactoryProductInfoAspect;
+import com.freshdirect.fdstore.aspects.ProductStatisticProviderAspect;
+import com.freshdirect.fdstore.aspects.ProductStatisticUserProviderAspect;
 import com.freshdirect.fdstore.content.ContentNodeTree.TreeElement;
-import com.freshdirect.fdstore.customer.DebugMethodPatternPointCut;
-import com.freshdirect.fdstore.customer.FDCustomerManagerTestSupport;
 import com.freshdirect.fdstore.util.SearchNavigator;
-import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.webapp.taglib.fdstore.SmartSearchTag;
 import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockPageContext;
 
-public class SmartSearchTest extends FDCustomerManagerTestSupport {
+public class SmartSearchTest extends TestCase {
 
-    public class ProductStatisticProviderAspect implements Aspect {
-
-        public Pointcut getPointcut() {
-            return new DebugMethodPatternPointCut("DyfModelSessionBean\\.getGlobalProductScores\\(\\)");
-        }
-
-        public void intercept(InvocationContext ctx) throws Exception {
-            ctx.setReturnObject(getGlobalProductScores());
-        }
-
-        /**
-         * 
-         * @return Map<ContentKey,Float>
-         */
-        private Map getGlobalProductScores() {
-            try {
-                Map map = new HashMap();
-                map.put(ContentKey.create(FDContentTypes.PRODUCT, "cfncndy_ash_mcrrd"), new Float(100));
-                map.put(ContentKey.create(FDContentTypes.PRODUCT, "dai_orgval_whlmilk_01"), new Float(90));
-                map.put(ContentKey.create(FDContentTypes.PRODUCT, "dai_organi_2_milk_02"), new Float(80));
-                return map;
-            } catch (InvalidContentKeyException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-    }
-//getUserProductScores(String erpCustomerId)
-    
-    public class ProductStatisticUserProviderAspect implements Aspect {
-
-        public Pointcut getPointcut() {
-            return new DebugMethodPatternPointCut("DyfModelSessionBean\\.getProductFrequencies\\(java.lang.String\\)");
-        }
-
-        public void intercept(InvocationContext ctx) throws Exception {
-            String param = (String) ctx.getParamVals()[0];
-            ctx.setReturnObject(getUserProductScores(param));
-        }
-
-        /**
-         * 
-         * @return Map<ContentKey,Float>
-         */
-        private Map getUserProductScores(String userId) {
-            try {
-                Map map = new HashMap();
-                map.put(ContentKey.create(FDContentTypes.PRODUCT, "dai_orgval_whlmilk_01"), new Float(3));
-                map.put(ContentKey.create(FDContentTypes.PRODUCT, "dai_organi_1_milk_01"), new Float(2));
-                return map;
-            } catch (InvalidContentKeyException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-    }
-    
     private final static Logger LOGGER = Logger.getLogger(SmartSearchTest.class);
 
     public SmartSearchTest(String name) {
@@ -121,7 +56,16 @@ public class SmartSearchTest extends FDCustomerManagerTestSupport {
     SmartSearchTag         sst;
 
     public void setUp() throws Exception {
-        super.setUp();
+        Context context = TestUtils.createContext();
+
+        TestUtils.createMockContainer(context);
+
+        TestUtils.createTransaction(context);
+
+        AspectSystem aspectSystem = TestUtils.createAspectSystem();
+
+        //aspectSystem.add(new ErpCustomerFinderAspect(null));
+        
 
         LOGGER.info("CMS init");
         List list = new ArrayList();
@@ -144,24 +88,45 @@ public class SmartSearchTest extends FDCustomerManagerTestSupport {
 
         CmsManager.setInstance(new CmsManager(service, searchService));
 
+        
         aspectSystem.add(new FDFactoryProductInfoAspect().addAvailableSku("DAI0008813", 2.0).addAvailableSku("DAI0008812", 3.0).addAvailableSku("CAN0062899",
                 4.0).addAvailableSku("DAI0059088", 5.0));
 
-        aspectSystem.add(new ProductStatisticProviderAspect());
-        aspectSystem.add(new ProductStatisticUserProviderAspect());
+        aspectSystem.add(new ProductStatisticProviderAspect() {
+            public Map getGlobalProductScores() {
+                try {
+                    Map map = new HashMap();
+                    map.put(ContentKey.create(FDContentTypes.PRODUCT, "cfncndy_ash_mcrrd"), new Float(100));
+                    map.put(ContentKey.create(FDContentTypes.PRODUCT, "dai_orgval_whlmilk_01"), new Float(90));
+                    map.put(ContentKey.create(FDContentTypes.PRODUCT, "dai_organi_2_milk_02"), new Float(80));
+                    return map;
+                } catch (InvalidContentKeyException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+        });
+        aspectSystem.add(new ProductStatisticUserProviderAspect() {
+            public Map getUserProductScores(String userId) {
+                try {
+                    Map map = new HashMap();
+                    map.put(ContentKey.create(FDContentTypes.PRODUCT, "dai_orgval_whlmilk_01"), new Float(3));
+                    map.put(ContentKey.create(FDContentTypes.PRODUCT, "dai_organi_1_milk_01"), new Float(2));
+                    return map;
+                } catch (InvalidContentKeyException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
 
         initTag();
     }
 
     void initTag() {
-        ctx = new MockPageContext();
-        request = new MockHttpServletRequest();
-        ctx.setServletRequest(request);
-        sst = new SmartSearchTag() {
-            protected String getUserId() {
-                return "my-test-user-id";
-            }
-        };
+        ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "my-test-user-id", "fdId"));
+        request = (MockHttpServletRequest) ctx.getRequest();
+        
+        sst = new SmartSearchTag();
         sst.setPageContext(ctx);
 
         sst.setCategoryTree("categoryTree");
@@ -171,95 +136,6 @@ public class SmartSearchTest extends FDCustomerManagerTestSupport {
         sst.setCategorySet("categorySet");
         sst.setProductList("productList");
         sst.setSelectedCategories("selectedCategories");
-    }
-
-    public static class FDFactoryProductInfoAspect implements Aspect {
-
-        Set avialableSkus     = new HashSet();
-        Set tomorrowAvailable = new HashSet();
-        Map prices            = new HashMap();
-
-        public FDFactoryProductInfoAspect addAvailableSku(String sku) {
-            avialableSkus.add(sku);
-            return this;
-        }
-
-        public FDFactoryProductInfoAspect addAvailableSku(String sku, double price) {
-            avialableSkus.add(sku);
-            prices.put(sku, new Double(price));
-            return this;
-        }
-
-        public FDFactoryProductInfoAspect addTomorrowAvailablSku(String sku) {
-            tomorrowAvailable.add(sku);
-            return this;
-        }
-
-        public FDFactoryProductInfoAspect addTomorrowAvailablSku(String sku, double price) {
-            tomorrowAvailable.add(sku);
-            prices.put(sku, new Double(price));
-            return this;
-        }
-
-        public Pointcut getPointcut() {
-            return new DebugMethodPatternPointCut("FDFactorySessionBean\\.getProductInfo\\(java.lang.String\\)");
-        }
-
-        public void intercept(InvocationContext ctx) throws Exception {
-            String sku = (String) ctx.getParamVals()[0];
-            ctx.setReturnObject(getProductInfo(sku));
-        }
-
-        /**
-         * Get current product information object for sku.
-         * 
-         * @param sku
-         *            SKU code
-         * 
-         * @return FDProductInfo object
-         * 
-         * @throws FDSkuNotFoundException
-         *             if the SKU was not found in ERP services
-         * @throws FDResourceException
-         *             if an error occured using remote resources
-         */
-        public FDProductInfo getProductInfo(String sku) throws RemoteException, FDSkuNotFoundException, FDResourceException {
-            Date now = new Date();
-            String[] materials = { "000000000123" };
-            List erpEntries = new ArrayList();
-            TestFDInventoryCache inventoryCache = new TestFDInventoryCache();
-            FDProductInfo productInfo;
-
-            Double defPrice = (Double) prices.get(sku);
-            double price = (defPrice != null) ? defPrice.doubleValue() : 1.0;
-
-            if (avialableSkus.contains(sku)) {
-                // return this item as available
-                // this SKU is not included in the ConfiguredProduct "ok"
-                // a 10000 units available starting now
-                erpEntries.add(new ErpInventoryEntryModel(now, 10000));
-                inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, erpEntries));
-                productInfo = new FDProductInfo(sku, 1, price, "ea", materials, EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now, "",
-                        inventoryCache, "", 0.0, "", false, -1);
-            } else if (tomorrowAvailable.contains(sku)) {
-                // return this item as available by tomorrow, but not today
-                Date tomorrow = DateUtil.addDays(now, 1);
-                // a 10000 units available starting tomorrow
-                erpEntries.add(new ErpInventoryEntryModel(tomorrow, 10000));
-                inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, erpEntries));
-                productInfo = new FDProductInfo(sku, 1, price, "ea", materials, EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now, "",
-                        inventoryCache, "", 0.0, "", false, -1);
-            } else {
-                // fallback: return any unknown item as unavailable
-                // a 0 units available starting now
-                erpEntries.add(new ErpInventoryEntryModel(now, 0));
-                inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, erpEntries));
-                productInfo = new FDProductInfo(sku, 1, 1.0, "ea", materials, EnumATPRule.MATERIAL, EnumAvailabilityStatus.DISCONTINUED, now, "",
-                        inventoryCache, "", 0.0, "", false, -1);
-            }
-
-            return productInfo;
-        }
     }
 
     public void testBasicSearch() {
@@ -445,7 +321,7 @@ public class SmartSearchTest extends FDCustomerManagerTestSupport {
             initTag();
 
             request.setupAddParameter("searchParams", "milk");
-            request.setupAddParameter("sort",  SearchNavigator.convertToSortName(FilteredSearchResults.BY_NAME));
+            request.setupAddParameter("sort", SearchNavigator.convertToSortName(FilteredSearchResults.BY_NAME));
             request.setupAddParameter("catId", "gro_candy_blkch");
 
             sst.doStartTag();
@@ -464,7 +340,7 @@ public class SmartSearchTest extends FDCustomerManagerTestSupport {
         try {
 
             request.setupAddParameter("searchParams", "milk");
-            request.setupAddParameter("sort",  SearchNavigator.convertToSortName(FilteredSearchResults.BY_NAME));
+            request.setupAddParameter("sort", SearchNavigator.convertToSortName(FilteredSearchResults.BY_NAME));
             request.setupAddParameter("brandValue", "bd_organic_valley");
             request.setupAddParameter("catId", "orgnat_dai_milk");
             request.setupAddParameter("start", "0");
@@ -530,7 +406,7 @@ public class SmartSearchTest extends FDCustomerManagerTestSupport {
         try {
 
             request.setupAddParameter("searchParams", "milk");
-            request.setupAddParameter("sort",  SearchNavigator.convertToSortName(FilteredSearchResults.BY_POPULARITY));
+            request.setupAddParameter("sort", SearchNavigator.convertToSortName(FilteredSearchResults.BY_POPULARITY));
             request.setupAddParameter("start", "0");
             sst.doStartTag();
 
@@ -564,7 +440,7 @@ public class SmartSearchTest extends FDCustomerManagerTestSupport {
         try {
 
             request.setupAddParameter("searchParams", "milk");
-            request.setupAddParameter("sort",  SearchNavigator.convertToSortName(FilteredSearchResults.BY_RELEVANCY));
+            request.setupAddParameter("sort", SearchNavigator.convertToSortName(FilteredSearchResults.BY_RELEVANCY));
             request.setupAddParameter("start", "0");
             sst.doStartTag();
 
@@ -586,7 +462,8 @@ public class SmartSearchTest extends FDCustomerManagerTestSupport {
 
             assertContentNodeModel("filtered product: pop score   0, user score 2:", "Organic Valley 1% Milk", fres.getFilteredProducts().get(0));
             assertContentNodeModel("filtered product: pop score  90", "Organic Valley 2% Milk", fres.getFilteredProducts().get(1));
-            assertContentNodeModel("filtered product: pop score  80, user score 3:", "Organic Valley Ultra Pasteurized Whole Milk", fres.getFilteredProducts().get(2));
+            assertContentNodeModel("filtered product: pop score  80, user score 3:", "Organic Valley Ultra Pasteurized Whole Milk", fres.getFilteredProducts()
+                    .get(2));
             assertContentNodeModel("filtered product: pop score 100", "Asher's Milk Chocolate Pecan Caramel Pattie", fres.getFilteredProducts().get(3));
 
             LOGGER.info("testSearchWithRelevancySort: OK.");
@@ -603,7 +480,7 @@ public class SmartSearchTest extends FDCustomerManagerTestSupport {
         try {
 
             request.setupAddParameter("searchParams", "chocolate milk dairy organic");
-            request.setupAddParameter("sort",  SearchNavigator.convertToSortName(FilteredSearchResults.BY_RELEVANCY));
+            request.setupAddParameter("sort", SearchNavigator.convertToSortName(FilteredSearchResults.BY_RELEVANCY));
             request.setupAddParameter("start", "0");
             sst.doStartTag();
 
@@ -625,7 +502,8 @@ public class SmartSearchTest extends FDCustomerManagerTestSupport {
 
             assertContentNodeModel("filtered product: pop score   0, user score 2:", "Organic Valley 1% Milk", fres.getFilteredProducts().get(0));
             assertContentNodeModel("filtered product: pop score  90", "Organic Valley 2% Milk", fres.getFilteredProducts().get(1));
-            assertContentNodeModel("filtered product: pop score  80, user score 3:", "Organic Valley Ultra Pasteurized Whole Milk", fres.getFilteredProducts().get(2));
+            assertContentNodeModel("filtered product: pop score  80, user score 3:", "Organic Valley Ultra Pasteurized Whole Milk", fres.getFilteredProducts()
+                    .get(2));
             assertContentNodeModel("filtered product: pop score 100", "Asher's Milk Chocolate Pecan Caramel Pattie", fres.getFilteredProducts().get(3));
 
             LOGGER.info("testSearchWithRelevancySort: OK.");
@@ -635,9 +513,7 @@ public class SmartSearchTest extends FDCustomerManagerTestSupport {
             fail("Error :" + e.getMessage());
         }
     }
-    
-    
-    
+
     private void assertContentNodeModelKey(String desc, String id, Object object) {
         assertEquals(desc, id, ((ContentNodeModel) object).getContentKey().getId());
     }

@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import org.apache.log4j.Category;
@@ -14,12 +15,12 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.lists.FDListManager;
-import com.freshdirect.framework.util.UniqueRandomSequence;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.ProductStatisticsProvider;
 import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
+import com.freshdirect.smartstore.sampling.RankedContent;
 
 
 /**
@@ -43,7 +44,8 @@ public class RandomDyfVariant extends DYFService {
 	 * Randomly selects keys.
 	 *
 	 */
-	public List recommend(int max, SessionInput input) {
+	public List recommend(SessionInput input) {
+	    int max = 10;
 		// see if product history in cache
 		
 		SessionCache.TimedEntry shoppingHistory = (SessionCache.TimedEntry)cache.get(input.getCustomerId());
@@ -59,7 +61,7 @@ public class RandomDyfVariant extends DYFService {
 			List productList = new ArrayList(products.size());
 			productList.addAll(products);
 			
-			shoppingHistory = new SessionCache.TimedEntry(productList, 10*60*1000);
+			shoppingHistory = new SessionCache.TimedEntry(productList, 10 * 60 * 1000);
 			cache.put(input.getCustomerId(), shoppingHistory);
 		}
 		
@@ -68,20 +70,13 @@ public class RandomDyfVariant extends DYFService {
 		List productList = (List)shoppingHistory.getPayload();
 		
 		// so we have enough products for sure
-		int toSelect = Math.min(input.getCartContents().size()+2*max, productList.size());
-		UniqueRandomSequence U = UniqueRandomSequence.getInstance(
-				toSelect, 
-				productList.size());
-		
-		List selection = new ArrayList(toSelect);
-		for(int i = 0; i < toSelect; ++i) {
-			try {
-				selection.add((ContentKey)productList.get(U.next()));
-			} catch (IndexOutOfBoundsException e) {
-				break;
-			}
+		int toSelect = Math.min(Math.min(input.getCartContents().size() + 2 * max, productList.size()), 20);
+		List rankedContents = new ArrayList(productList.size());
+		for (int i = 0; i < productList.size(); i++) {
+		    ContentKey key = (ContentKey) productList.get(i);
+		    rankedContents.add(new RankedContent.Single(key, -i));
 		}
-		return selection;
+		return getSampler(input).sample(rankedContents, includeCartItems ? Collections.EMPTY_SET : input.getCartContents(), toSelect);
 	}
 
 
@@ -124,5 +119,11 @@ public class RandomDyfVariant extends DYFService {
 	private Set getItemsFromAnalysis(String customerId) {
 	    return ProductStatisticsProvider.getInstance().getProducts(customerId);
 	}
+	
+       protected void configureSampler(Random R) {
+           this.variant.getServiceConfig().set(SAMPLING_STRATEGY, "uniform");
+           super.configureSampler(R);
+       }
+
 
 }

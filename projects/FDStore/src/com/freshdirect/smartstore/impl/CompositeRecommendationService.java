@@ -1,11 +1,12 @@
 package com.freshdirect.smartstore.impl;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import com.freshdirect.cms.ContentKey;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.framework.util.DiscreteRandomSamplerWithReplacement;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
@@ -84,6 +85,7 @@ public abstract class CompositeRecommendationService extends AbstractRecommendat
 		for(Iterator i = sampler.getValues().iterator(); i.hasNext();) {
 			RecommendationService s = (RecommendationService)i.next();
 			buffer.append(s.getVariant().getId()).append(':').append(sampler.getItemFrequency(s));
+			buffer.append('(').append(s.toString()).append(") ");
 			if (i.hasNext()) buffer.append(',');
  		}
 		buffer.append('}');
@@ -95,14 +97,21 @@ public abstract class CompositeRecommendationService extends AbstractRecommendat
 	 * 
 	 * The method will select one of the services with the established 
 	 * probability to derive the actual recommendations.
-	 * 
-	 * @param max maximum recommendations to return
 	 * @param input session information
-	 * @return a List<{@link ContentKey}> of recommendations
+	 * 
+	 * @return a List<{@link ContentNodeModel}> of recommendations
 	 * @see #setServiceFrequencty(RecommendationService, int)
 	 */
-	public List recommend(int max, SessionInput input) {
+	public List recommendNodes(SessionInput input) {
 		RecommendationService service = (RecommendationService)sampler.getRandomItem(random);
-		return service.recommend(max, input);
+		return service.recommendNodes(input);
+	}
+	
+	/**
+	 * 
+	 * @return Collection<RecommendationService>
+	 */
+	public Collection getRecommendationServices() {
+	    return sampler.getValues();
 	}
 }

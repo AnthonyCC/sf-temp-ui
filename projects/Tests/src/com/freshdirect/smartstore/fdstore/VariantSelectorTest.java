@@ -1,20 +1,19 @@
 package com.freshdirect.smartstore.fdstore;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import junit.framework.TestCase;
+
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.RecommendationService;
-import com.freshdirect.smartstore.RecommendationServiceConfig;
-import com.freshdirect.smartstore.RecommendationServiceType;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
-
-import junit.framework.TestCase;
 
 public class VariantSelectorTest extends TestCase {
 	
@@ -31,8 +30,12 @@ public class VariantSelectorTest extends TestCase {
 			return variant;
 		}
 
-		public List recommend(int max, SessionInput input) {
+		public List recommendNodes(SessionInput input) {
 			return null;
+		}
+
+		public String getDescription() {
+			return "";
 		}
 		
 	};
@@ -42,35 +45,10 @@ public class VariantSelectorTest extends TestCase {
 	private RecommendationService v2 = new MockService("v2");
 	private RecommendationService v3 = new MockService("v3");
 	
-	private VariantSelector selector = new VariantSelector() {
-		
-		protected void init() {
-			
-			// v1 -> 3/10
-			// v2 -> 2/10
-			// v3 -> 5/10
-			
-			addCohort("C", v1, 5);
-			addCohort("A", v1, 10);
-			addCohort("C", v1, 5);
-			addCohort("E", v2, 10);
-			addCohort("F", v3, 10);
-			addCohort("G", v3, 10);
-			addCohort("B", v1, 10);
-			addCohort("H", v3, 10);
-			addCohort("D", v2, 10);
-			addCohort("J", v3, 10);
-			addCohort("I", v3, 10);
-			
-		}
-		
-		protected int randomize(String id) {
-			return id.hashCode();
-		}
-	};
+	private VariantSelector selector;
 	
 	public void setUp () {
-		
+	    
 		Random R = new Random();
 		userIds = new ArrayList();
 		for(int i=0; i< 10000; ++i) {
@@ -78,11 +56,46 @@ public class VariantSelectorTest extends TestCase {
 			userIds.add(id);
 		}
 		
-		selector.init();
+                Map cohorts = new HashMap();
+                
+                final Integer TEN = new Integer(10);
+                cohorts.put("A", TEN);
+                cohorts.put("C", TEN);
+                cohorts.put("E", TEN);
+                cohorts.put("F", TEN);
+                cohorts.put("G", TEN);
+                cohorts.put("B", TEN);
+                cohorts.put("H", TEN);
+                cohorts.put("D", TEN);
+                cohorts.put("J", TEN);
+                cohorts.put("I", TEN);
+                CohortSelector.setCohorts(cohorts);
+                
+                CohortSelector.setCohortNames(Arrays.asList(new String[] {"C", "A", "E", "F", "G", "B", "H", "D", "J", "I" } ));
+
+		
+		selector = new VariantSelector();
+
+                selector.addCohort("C", v1);
+                selector.addCohort("A", v1);
+                selector.addCohort("C", v1);
+                selector.addCohort("E", v2);
+                selector.addCohort("F", v3);
+                selector.addCohort("G", v3);
+                selector.addCohort("B", v1);
+                selector.addCohort("H", v3);
+                selector.addCohort("D", v2);
+                selector.addCohort("J", v3);
+                selector.addCohort("I", v3);
+	
 	}
 	
-	private static boolean withinTenPercent(int v1, int v2) {
-		return Math.abs(v1 - v2) * 10 <  v2;
+	private static void withinTenPercent(int v1, int v2) {
+	    if (Math.abs(v1 - v2) * 10 <  v2) {
+	        return ;
+	    } else {
+	        fail("not within ten percent, actual:"+v1+" expected:"+v2);
+	    }
 	}
 	
 	public void testSelectionFrequencies() {
@@ -98,9 +111,9 @@ public class VariantSelectorTest extends TestCase {
 		}
 		
 		
-		assertTrue(withinTenPercent(((Integer)counts.get(v1.getVariant())).intValue(), (userIds.size()*3)/10));
-		assertTrue(withinTenPercent(((Integer)counts.get(v2.getVariant())).intValue(), (userIds.size()*2)/10));
-		assertTrue(withinTenPercent(((Integer)counts.get(v3.getVariant())).intValue(), (userIds.size()*5)/10));
+		withinTenPercent(((Integer)counts.get(v1.getVariant())).intValue(), (userIds.size()*3)/10);
+		withinTenPercent(((Integer)counts.get(v2.getVariant())).intValue(), (userIds.size()*2)/10);
+		withinTenPercent(((Integer)counts.get(v3.getVariant())).intValue(), (userIds.size()*5)/10);
 		
 	}
 

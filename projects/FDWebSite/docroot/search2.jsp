@@ -22,7 +22,7 @@
 %><%@ taglib uri='template' prefix='tmpl'
 %><%@ taglib uri='freshdirect' prefix='fd'
 %><%@ taglib uri='oscache' prefix='oscache'
-%><%
+%><fd:CheckLoginStatus /><%
 final String SEPARATOR = "&nbsp;<span class=\"text12\" style=\"color: #CCCCCC\">&bull;</span>&nbsp;";
 final String trk = "srch"; // tracking code
 

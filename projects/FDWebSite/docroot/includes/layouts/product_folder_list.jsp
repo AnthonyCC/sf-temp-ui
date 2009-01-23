@@ -24,10 +24,10 @@ boolean isDepartment = false;
 
 ContentNodeModel currentFolder = null;
 if(deptId!=null) {
-	currentFolder=ContentFactory.getInstance().getContentNodeByName(deptId);
+	currentFolder=ContentFactory.getInstance().getContentNode(deptId);
 	isDepartment = true;
 } else {
-	currentFolder=ContentFactory.getInstance().getContentNodeByName(catId);
+	currentFolder=ContentFactory.getInstance().getContentNode(catId);
 }
 
 

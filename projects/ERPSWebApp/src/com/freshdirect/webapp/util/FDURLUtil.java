@@ -132,6 +132,51 @@ public class FDURLUtil {
 
 
 	/**
+	 * Generate product page URL
+	 * (called from Featured Items pages)
+	 * 
+	 * @param productNode {@link ProductModel} product instance
+	 * @param variantId {@link String} variant identifier
+	 * @param trackingCode {@link String} Tracking code (dyf, cpage, ...)
+	 * @param trackingCodeEx {@link String} Tracking code (fave, ...)
+	 * @return URI that points to the page of product
+	 */
+	public static String getProductURI(ProductModel productNode, String variantId, String trackingCode, String trackingCodeEx, int rank) {
+		
+		StringBuffer uri = new StringBuffer();
+		
+		// product page with category ID
+		uri.append(PRODUCT_PAGE_BASE + "?catId=" + getRealParent(productNode).getContentName());
+
+		// append product ID
+		uri.append(URL_PARAM_SEP + "productId=" + getRealProduct(productNode).getContentName());
+		
+		// append variant ID (optional)
+		if (variantId != null) {
+			// variant ID may contain SPACE or other non-ASCII characters ...
+			uri.append(URL_PARAM_SEP + "variant=" + safeURLEncode(variantId));
+			// uri.append(URL_PARAM_SEP + "fdsc.source=SS");
+		}
+
+		// tracking code 
+		if (trackingCode != null) {
+			uri.append(URL_PARAM_SEP + "trk=" + trackingCode);
+			
+			
+			// tracking code 
+			if (trackingCodeEx != null) {
+				uri.append(URL_PARAM_SEP + "trkd=" + trackingCodeEx);
+			}
+
+			uri.append(URL_PARAM_SEP + "rank=" + rank);
+		}
+
+
+		return uri.toString();
+	}
+
+
+	/**
 	 * Generates URL for products in search page
 	 * 
 	 * @param productNode

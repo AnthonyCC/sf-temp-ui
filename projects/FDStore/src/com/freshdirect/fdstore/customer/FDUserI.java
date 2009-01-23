@@ -61,6 +61,8 @@ public interface FDUserI extends java.io.Serializable {
 	public AddressModel getAddress();
 
 	public FDIdentity getIdentity();
+	
+	public String getPrimaryKey();
 
 	public void setIdentity(FDIdentity identity);
 
@@ -264,7 +266,7 @@ public interface FDUserI extends java.io.Serializable {
 	
     /*
      * This method was introduced as part of PERF-22 task.
-     * Seperate invalidation of Order History Cache from other caches.
+     * Separate invalidation of Order History Cache from other caches.
      */
     public void invalidateOrderHistoryCache();
     
@@ -279,4 +281,5 @@ public interface FDUserI extends java.io.Serializable {
     
     public void setHomePageLetterVisited(boolean isHomePageLetterVisited);
     
+    public String getCohortName();
 }

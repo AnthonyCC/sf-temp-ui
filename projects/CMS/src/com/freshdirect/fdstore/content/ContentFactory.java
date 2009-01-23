@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -28,16 +29,13 @@ import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.fdstore.FDContentTypes;
-import com.freshdirect.cms.search.BrandNameExtractor;
-import com.freshdirect.cms.search.LuceneSpellingSuggestionService;
-import com.freshdirect.cms.search.SpellingHit;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.attributes.Attribute;
+import com.freshdirect.framework.util.BalkingExpiringReference;
 import com.freshdirect.framework.util.LruCache;
-import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -252,18 +250,52 @@ public class ContentFactory {
 	}
 	
 
-	public List getNewProducts(int days, String department) throws FDResourceException {
-		Collection skus = FDCachedFactory.getNewSkuCodes(days);
-		List prods = this.filterWholeProducts(skus);
-		this.filterProdsByDept(prods, department);
-		return prods;
+	private static final long DAY_IN_MILLIS = 1000 * 60 * 60 * 24;
+
+	private static final Map newProducts = Collections.synchronizedMap(new HashMap());
+	
+	public Collection getNewProducts(final int days, final String department) throws FDResourceException {
+		final Integer iDays = new Integer(days);
+		if (!newProducts.containsKey(iDays)) {
+			newProducts.put(iDays, new BalkingExpiringReference(DAY_IN_MILLIS) {
+				protected Object load() {
+					try {
+						Collection skus = FDCachedFactory.getNewSkuCodes(days);
+						final ContentFactory cf = ContentFactory.getInstance();
+						List prods = skus != null ? cf.filterWholeProducts(skus) : Collections.EMPTY_LIST;
+						cf.filterProdsByDept(prods, department);
+						return new HashSet(prods);
+					} catch (FDResourceException e) {
+						LOGGER.info("failed to retrieve new sku codes for " + days + " days");
+						return null;
+					}
+				}
+			});
+		}
+    	return (Collection) ((BalkingExpiringReference) newProducts.get(iDays)).get();
 	}
 
-	public List getReintroducedProducts(int days, String department) throws FDResourceException {
-		Collection skus = FDCachedFactory.getReintroducedSkuCodes(days);
-		List prods = this.filterWholeProducts(skus);
-		this.filterProdsByDept(prods, department);
-		return prods;
+	private static final Map reintroducedProducts = Collections.synchronizedMap(new HashMap());
+	
+	public Collection getReintroducedProducts(final int days, final String department) throws FDResourceException {
+		final Integer iDays = new Integer(days);
+		if (!reintroducedProducts.containsKey(iDays)) {
+			reintroducedProducts.put(iDays, new BalkingExpiringReference(DAY_IN_MILLIS) {
+				protected Object load() {
+					try {
+				    	Collection skus = FDCachedFactory.getReintroducedSkuCodes(days);
+						final ContentFactory cf = ContentFactory.getInstance();
+						List prods = skus != null ? cf.filterWholeProducts(skus) : Collections.EMPTY_LIST;
+						cf.filterProdsByDept(prods, department);
+						return prods;
+					} catch (FDResourceException e) {
+						LOGGER.info("failed to retrieve new sku codes for " + days + " days");
+						return null;
+					}
+				}
+			});
+		}
+    	return (Collection) ((BalkingExpiringReference) reintroducedProducts.get(iDays)).get();
 	}
 
 	/**

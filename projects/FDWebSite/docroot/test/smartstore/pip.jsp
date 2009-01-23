@@ -47,7 +47,7 @@ String tx_pricing_JSNameSpace = "DYF";
 
 %><fd:DYFRecommendations id="recommendations" skipCheck="<%= skipDYFCheck %>"><%
 	ConfigurationContext confContext = new ConfigurationContext();
-	confContext.setErpCustomerId(user.getIdentity().getErpCustomerPK());
+	confContext.setFDUser(user);
 
 	if (recommendations != null && recommendations.getContentNodes().size() > 0) {
 		ConfigurationStrategy cUtil = ConfigurationStrategyFactory.getConfigurationStrategy(recommendations.getVariant().getSiteFeature());

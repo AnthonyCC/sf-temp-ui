@@ -52,6 +52,7 @@ public class FDContentTypes {
         public static final ContentType SEARCH_RELEVANCY_LIST = ContentType.get("SearchRelevancyList");
         public static final ContentType SEARCH_RELEVANCY_HINT = ContentType.get("SearchRelevancyHint");
 	
+   	public static final ContentType FAVORITE_LIST = ContentType.get("FavoriteList");
 	
 	private FDContentTypes() {
 	}

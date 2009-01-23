@@ -598,4 +598,9 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI {
 	//Added for Produce rating.
 	public String getProductRating()throws FDResourceException; 
 	
+	public boolean isNew();
+	
+	public int getDealPercentage();
+
+	public int getDealPercentage(String skuCode);
 }

@@ -24,17 +24,24 @@
 %><%@ page import='com.freshdirect.framework.util.DateUtil'
 %><%@ page import='com.freshdirect.framework.util.QueryStringBuilder'
 %><%@ page import='com.freshdirect.deliverypass.EnumDPAutoRenewalType'
-%><%!private final static String CCL_NONELIGIBLE = "0";
+%><%@ page import='com.freshdirect.smartstore.fdstore.SmartStoreUtil'
+%><%!
+
+	private final static String CCL_NONELIGIBLE = "0";
 	private final static String CCL_INEXPERIENCED = "1";
 	private final static String CCL_EXPERIENCED = "2";
-
+	
 	private String cclExperienceLevel(FDUserI user) {
 		if (!user.isCCLEnabled())
 			return CCL_NONELIGIBLE;
 		if (user.isCCLInExperienced())
 			return CCL_INEXPERIENCED;
 		return CCL_EXPERIENCED;
-	}%><%if (FDStoreProperties.isAdServerEnabled()) {
+	}
+
+%><%
+
+	if (FDStoreProperties.isAdServerEnabled()) {
 
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 
@@ -308,6 +315,9 @@
 					}
 				}
 			}
+
+			// record cohort ID
+			queryString.addParam("cohort", user.getCohortName());
 		} else { //! user == null
 			if (request.getAttribute("RefProgId") != null) {
 				queryString.addParam("ref_prog_id", NVL.apply(

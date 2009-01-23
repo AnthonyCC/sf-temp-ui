@@ -41,6 +41,8 @@ public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSuppor
 		"SELECT cc.part_config_id, cc.frequency, sc.type " +
 		"FROM cust.ss_composite_configs cc, cust.ss_service_configs sc WHERE " +
 		"cc.config_id = ? AND cc.part_config_id = sc.id";
+	
+	private static final String GET_VARIANT_CONFIG = "SELECT * FROM cust.SS_SERVICE_PARAMS WHERE ID = ?";
 	   
 	/**
 	 * Get the configuration of a composite config.
@@ -74,11 +76,62 @@ public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSuppor
 			LOGGER.error("Getting composite configs failed. ",e);
 			throw new FDRuntimeException(e);
 		} finally {
-			try {
-				rs.close();
-				ps.close();
-			} catch (Throwable t) {}
+		    close(rs);
+		    close(ps);
 		}
+	}
+	
+        protected void close(ResultSet rs) {
+            if (rs!=null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    
+                }
+            }
+        }
+
+        protected void close(PreparedStatement rs) {
+            if (rs!=null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    
+                }
+            }
+        }
+        
+        protected void close(Connection rs) {
+            if (rs!=null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    
+                }
+            }
+        }
+
+        
+	private RecommendationServiceConfig createConfig(Connection conn, String configId, RecommendationServiceType type) throws RemoteException {
+            PreparedStatement ps = null;
+            ResultSet rs = null;
+            RecommendationServiceConfig result = new RecommendationServiceConfig(configId, type);
+
+            try {
+                ps = conn.prepareStatement(GET_VARIANT_CONFIG);
+                ps.setString(1, configId);
+                rs = ps.executeQuery();
+                while (rs.next()) {
+                    result.set(rs.getString("KEY"), rs.getString("VALUE"));
+                }
+                return result;
+            } catch (SQLException e) {
+                LOGGER.error("Getting variants failed. ",e);
+                    throw new RemoteException(e.getMessage(),e);
+            } finally {
+                close(rs);
+                close(ps);
+            }
 	}
 	
 	
@@ -113,7 +166,7 @@ public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSuppor
 						feature,
 						RecommendationServiceType.COMPOSITE == type ?
 							getCompositeConfig(conn, configId) :
-							new RecommendationServiceConfig(configId,type)
+							createConfig(conn, configId,type)
 					)
 				);								
 			}

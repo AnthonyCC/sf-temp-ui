@@ -36,7 +36,6 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
-import com.freshdirect.fdstore.customer.FDOrderHistory;
 import com.freshdirect.fdstore.customer.FDPromotionEligibility;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -52,7 +51,8 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  * @author $Author$
  */
 public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
-     
+	private static final long serialVersionUID = 587469031501334715L;
+
 	private static Category LOGGER = LoggerFactory.getInstance( FDUser.class );
     
     private final FDUser user;
@@ -178,6 +178,10 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		return this.user.getAddress();	
 	}
     
+	public String getPrimaryKey() {
+		return this.user.getPrimaryKey();
+	}
+	
     public FDIdentity getIdentity() {
         return this.user.getIdentity();
     }
@@ -498,34 +502,28 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		user.updateDlvPassInfo();
 	}
 	public void setLastRefProgramId(String progId) {
-		// TODO Auto-generated method stub
 		this.user.setLastRefProgramId(progId);
 	}
 
 	public String getLastRefProgId() {
-		// TODO Auto-generated method stub
 		return this.user.getLastRefProgId();
 	}
 
 	public void setLastRefTrkDtls(String trkDtls) {
-		// TODO Auto-generated method stub
 		this.user.setLastRefTrkDtls(trkDtls);
 	}
 
 	public String getLastRefTrkDtls() {
-		// TODO Auto-generated method stub
 		return this.user.getLastRefTrkDtls();
 	}
 
-	public void setLastRefProgInvtId (String progInvtId)
-    {
+	public void setLastRefProgInvtId (String progInvtId) {
     	this.user.setLastRefProgInvtId(progInvtId);
     }
 	
-	 public String getLastRefProgInvtId()
-	 {
+	public String getLastRefProgInvtId() {
 		 return this.user.getLastRefProgInvtId();
-	 }
+	}
 
 	public String getLastName() throws FDResourceException {
 		return this.user.getLastName();
@@ -574,10 +572,10 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public ErpPromotionHistory getPromotionHistory() throws FDResourceException {
 		return this.user.getPromotionHistory();
 	}
-	
-    /*
+
+    /**
      * This method was introduced as part of PERF-22 task.
-     * Seperate invalidation of Order History Cache from other caches.
+     * Separate invalidation of Order History Cache from other caches.
      */
     public void invalidateOrderHistoryCache() {
     	this.user.invalidateOrderHistoryCache();
@@ -592,17 +590,14 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	}
 
 	public boolean isProduceRatingEnabled() {
-		// TODO Auto-generated method stub
 		return user.isProduceRatingEnabled();
 	}
 
 	public boolean isHomePageLetterVisited() {
-		// TODO Auto-generated method stub
 		return user.isHomePageLetterVisited();
 	}
 
 	public void setHomePageLetterVisited(boolean isHomePageLetterVisited) {
-		// TODO Auto-generated method stub
 		user.setHomePageLetterVisited(isHomePageLetterVisited);
 	}
 	
@@ -612,6 +607,11 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	        return null;
 	    }
             return (FDUserI) session.getAttribute(SessionName.USER);
+	}
+	
+	
+	public String getCohortName() {
+		return this.user.getCohortName();
 	}
 }
 

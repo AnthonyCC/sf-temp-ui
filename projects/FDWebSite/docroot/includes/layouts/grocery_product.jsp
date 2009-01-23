@@ -16,11 +16,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri='oscache' prefix='oscache' %>
-
-
 <%
-
 //********** Start of Stuff to let JSPF's become JSP's **************
 FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 
@@ -231,7 +227,7 @@ try {
 String successPage = FDURLUtil.getCartConfirmPageURI(request);
 request.setAttribute("successPage", successPage);
 %>
-<fd:FDShoppingCart id='cart' action='addMultipleToCart' result='result' successPage='<%= "/grocery_cart_confirm.jsp?catId="+request.getParameter("catId") %>' source='<%= request.getParameter("fdsc.source")%>'>
+<fd:FDShoppingCart id='cart' action='addMultipleToCart' result='result' successPage='<%= "/grocery_cart_confirm.jsp?catId="+catId %>' source='<%= request.getParameter("fdsc.source")%>'>
 <%
 //*** if we got this far..then we need to remove the sucess page attribute from the request.
 request.removeAttribute("successPage");
@@ -601,7 +597,7 @@ if(productCode!=null && prodCatId !=null ) {
         <table>
                 <tr>
                         <td><img src="/media_stat/images/template/offer_icon.gif" alt="Promotion icon"></td>
-                        <td><font class="title12">Free!<br></font><A HREF="promotion.jsp?cat=<%=request.getParameter("catId")%>">See our $<%=prefix%> offer</a></td>
+                        <td><font class="title12">Free!<br></font><A HREF="promotion.jsp?cat=<%=catId%>">See our $<%=prefix%> offer</a></td>
                 </tr>
         </table>
         <br>

@@ -1,5 +1,7 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -33,9 +35,14 @@ public class GetNewProductsTag extends AbstractGetterTag {
 	};
 
 	protected Object getResult() throws Exception {
-		List prods = ContentFactory.getInstance().getNewProducts(this.days, this.department);
-		Collections.sort(prods, prods.size() > 10 ? ProductModel.DEPTFULL_COMPARATOR : GLANCE_COMPARATOR);
-		return prods;
+		Collection prods = ContentFactory.getInstance().getNewProducts(this.days, this.department);
+		if (prods != null) {
+			List ret = new ArrayList(prods);
+			Collections.sort(ret, prods.size() > 10 ? ProductModel.DEPTFULL_COMPARATOR : GLANCE_COMPARATOR);
+			return ret;
+		} else {
+			return Collections.EMPTY_LIST;
+		}
 	}
 
 	public static class TagEI extends AbstractGetterTag.TagEI {

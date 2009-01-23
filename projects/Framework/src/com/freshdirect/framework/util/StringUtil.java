@@ -680,4 +680,20 @@ public class StringUtil {
 		return null;
     	
 	}
+	
+    /**
+     * this function emulates the class.getSimpleName() found in java 1.5 or
+     * more TODO : after migration to 1.5 remove!
+     * 
+     * @param cls
+     */
+    public static String getSimpleName(Class cls) {
+        String name = cls.getName();
+        int lastDot = name.lastIndexOf('.');
+        if (lastDot != -1) {
+            name = name.substring(lastDot + 1);
+        }
+        return name;
+    }
+	
 }

@@ -22,6 +22,9 @@
 %><%@ page import="com.freshdirect.webapp.util.ConfigurationUtil"
 %><%@ page import="com.freshdirect.webapp.util.RequestUtil"
 %><%@ page import="com.freshdirect.smartstore.fdstore.SmartStoreUtil"
+%><%@ page import="com.freshdirect.smartstore.Variant"
+%><%@ page import="com.freshdirect.cms.ContentKey"
+%><%@ page import="org.apache.commons.lang.StringEscapeUtils"
 %><%@ taglib uri='template' prefix='tmpl'
 %><%@ taglib uri='logic' prefix='logic'
 %><%@ taglib uri='freshdirect' prefix='fd'
@@ -47,15 +50,62 @@ final java.text.NumberFormat CURRENCY_FORMATTER = java.text.NumberFormat.getCurr
 final String tx_pricing_FormName = "dyfform"; // impression form name
 final String tx_pricing_JSNameSpace = "DYF";
 
+String formUri = request.getRequestURI();
 
+if (request.getAttribute("is_ajax") != null) {
+	formUri = request.getParameter("formUri");
+} else {
+%>
+<br/><br/>
+<script>
+function dyf_ajax_failureCallback() {
+	alert("Failed to retrieve new recommendations.");
+	document.getElementById('dyf_ajax_rotateLinkContainer').innerHTML = '<a href="#" onclick="dyf_ajax_execute();return false;">Click here to see another 5 items.</a>';
+}
+
+function dyf_ajax_successCallback(resp) {
+	document.getElementById('placeHolder').innerHTML = resp.responseText;
+	dyf_ajax_runScripts(document.getElementById('placeHolder'));
+}
+ 
+function dyf_ajax_runScripts(e) {
+	if (e.nodeType != 1) return;
+ 
+	if (e.tagName.toLowerCase() == 'script') {
+		eval(e.text);
+	}
+	else {
+		var n = e.firstChild;
+		while ( n ) {
+			if ( n.nodeType == 1 ) dyf_ajax_runScripts( n );
+			n = n.nextSibling;
+		}
+	}
+}
+
+function dyf_ajax_execute() {
+	document.getElementById('dyf_ajax_rotateLinkContainer').innerHTML = '<span style="color: gray;font-style: italic;">Refreshing...</span>';
+	var callback = 
+		{ 
+			success: dyf_ajax_successCallback, 
+			failure: dyf_ajax_failureCallback 
+		}; 
+	var request = YAHOO.util.Connect.asyncRequest('GET', "/ajax/dyf.jsp?formUri=<%= URLEncoder.encode(formUri) %>", callback); 	
+}
+</script>
+<div id="placeHolder">
+<%
+} // end of if is_ajax
 
 if (request.getParameter("nodyf") == null) {
-%><fd:DYFRecommendations id="recommendations" skipCheck="<%= skipDYFCheck %>" errorOccurred="<%= !result.isSuccess() %>"><%
+%>
+<fd:DYFRecommendations id="recommendations" skipCheck="<%= skipDYFCheck %>" errorOccurred="<%= !result.isSuccess() %>"><%
 	// List of recommendations
 	ConfigurationContext confContext = new ConfigurationContext();
-	confContext.setErpCustomerId(user.getIdentity().getErpCustomerPK());
+	confContext.setFDUser(user);
+	boolean hasAnyItemAddable = false;
 	if (recommendations != null && recommendations.getContentNodes().size() > 0) {
-                request.setAttribute("recommendationsRendered","true");
+        request.setAttribute("recommendationsRendered","true");
 		ConfigurationStrategy cUtil = ConfigurationStrategyFactory.getConfigurationStrategy(recommendations.getVariant().getSiteFeature());
 
 		List products = recommendations.getContentNodes();
@@ -72,6 +122,8 @@ if (request.getParameter("nodyf") == null) {
 		for (Iterator it = products.iterator(); it.hasNext();) {
 			ProductModel prd = (ProductModel) it.next();
 			ProductImpression pi = cUtil.configure(prd, confContext);
+			if (pi.isTransactional())
+				hasAnyItemAddable = true;
 
 			// post-post filter: ensure impression won't crash the display
 			// if (pi.validate()) {
@@ -90,13 +142,14 @@ if (request.getParameter("nodyf") == null) {
 		 * Input: List<SkuModel> skus
 		 */
 %>
-<br/><br/>
-<form name="<%= tx_pricing_FormName %>" method="post" action="<%= request.getRequestURI() %>" style="margin:0px">
+<form name="<%= tx_pricing_FormName %>" method="post" action="<%= formUri %>" style="margin:0px">
 	<input type="hidden" name="fdsc.action" value="addMultipleToCart"/>
-	<input type="hidden" name="fdsc.succpage" value="<%= request.getRequestURI() %>?confirm=1"/>
+	<input type="hidden" name="fdsc.succpage" value="<%= formUri %>?confirm=1"/>
 	<input type="hidden" name="fdsc.source"  value="SS"/>
 
 	<input type="hidden" name="variant" value="<%=recommendations.getVariant().getId()%>">
+	<input type="hidden" name="siteFeature" value="<%=recommendations.getVariant().getSiteFeature().getName()%>">
+	<input type="hidden" name="rec_product_ids" value="<%=StringEscapeUtils.escapeHtml(recommendations.serializeContentNodes())%>">
 	<input type="hidden" name="trk" value="dyf">
 
 <!-- PRICING -->
@@ -156,12 +209,16 @@ if (request.getParameter("nodyf") == null) {
         <%= tx_pricing_JSNameSpace %>.pricings[idx].setQuantity(qty);
     };
 </script>
-<table class="smartstore">
+<div class="smartstore" id="recPanel">
 <fd:PIPLayout id="piRow" rowSize="5" impressions="<%= impressions %>" maxRowHeight="rowHeight" singleRowMode="<%= true %>">
-	<caption><%= vprez[0] %></caption>
+	<div class="caption1" id="recPanelCaption">
+		<%= vprez[0] %>
+	</div>
+	<div class="body1" id="recPanelBody">
+	<table>
 	<tr>
 		<td colspan="<%= piRow.size() %>" style="text-align: center;padding-top: 5px; padding-bottom: 5px;">
-			<span class="text10"><%= vprez[1] %></span>
+			<span class="text11bold"><%= vprez[1] %></span>
 		</td>
 	</tr>
 <%
@@ -202,14 +259,14 @@ if (request.getParameter("nodyf") == null) {
 		// cell renderning starts here		
 %>
 		<td style="width: <%= 
-		       Math.round(100.0/impressions.size()) %>%; text-align: center; <%= colCount == 0? "padding-left: 5px;" :""%> <%= 
+		       Math.round(100.0/impressions.size()) %>%; text-align: center; <%= colCount == 0? "padding-left: 2px; padding-right: 2px;" :""%> <%= 
 		       colCount == piRow.size() - 1 ? "padding-right:5px;" : "" %>" valign="top" >
 			<!-- CELL CONTAINER -->
 			<table align="center">
 				<tr>
 					<!-- Product Image -->
 					<td style="padding: 0; height: <%= rowHeight.intValue() %>px; vertical-align: bottom; text-align: center">
-						<a href="<%= FDURLUtil.getProductURI(product, recommendations.getVariant()) %>"><img src="<%= prodImage.getPath() %>" style="border: 0"/></a>
+						<fd:ProductImage product="<%= product %>" action="<%= FDURLUtil.getProductURI(product, recommendations.getVariant()) %>" hideYourFave="true" />
 					</td>
 				</tr>
 <%
@@ -359,29 +416,12 @@ if (request.getParameter("nodyf") == null) {
 			//
 			// PRODUCT NAME, ETC
 			//
-
-			//
-			// Display '<bold>product</bold>' OR '<bold>brand</bold>product'
-			//
-			String fullName = product.getFullName();
-		    String brandName = product.getPrimaryBrandName();
-		    String shortenedProductName = null;
-
-		    if (brandName != null
-				&& brandName.length() > 0
-				&& (fullName.length() >= brandName.length())
-				&& fullName.substring(0, brandName.length()).equalsIgnoreCase(brandName)) {
-		
-		        shortenedProductName = fullName.substring(brandName.length()).trim();
-		    }
+		    ProductModel productNode = product; // i_prd_name.jspf requires
 %>
-				<!-- product name, etc -->
-				<a href="<%= FDURLUtil.getProductURI(product, recommendations.getVariant()) %>"><font class="text11"><%
-			if (shortenedProductName != null) {
-				%><b><%= brandName %></b> <%= shortenedProductName %><%
-			} else {
-				%><b><%= "".equals(fullName) ? "(this product)" : fullName %></b><%
-			} %></font></a><%
+			<!-- product name, etc -->
+			<fd:ProductRating product="<%= product %>"/>
+			<a href="<%= FDURLUtil.getProductURI(product, recommendations.getVariant()) %>"><%@ include file="/includes/product/i_prd_name.jspf" %></a>
+<%
 
 			String confDescription = null;
 
@@ -420,15 +460,41 @@ if (request.getParameter("nodyf") == null) {
 
 
 
-	<tr>
-		<td colspan="<%= impressions.size() %>" style="text-align: right">
-			<input type="hidden" style="width:60px" name="total" value="" size="6" class="text11bold" onChange="" onFocus="blur()"/>
-			<input type="hidden" name="itemCount" value="<%= txProdCount %>"/>
-			<input type="image" name="addMultipleToCart" style="padding: 8px 8px; border: 0" src="/media_stat/images/template/confirmation/add_to_cart_purple.gif" alt="ADD SELECTED TO CART"/>
+	</table>
+	<% if (hasAnyItemAddable) { %>
+	<table style="width: 100%;">
+		<tr>
+		<td style="text-align: left;">
+			<span class="text11bold" id="dyf_ajax_rotateLinkContainer"><a href="#" onclick="dyf_ajax_execute();return false;">Click here to see another 5 items.</a></span>
 		</td>
-	</tr>
+		<td style="text-align: right;">
+		<input type="hidden" style="width:60px" name="total" value="" size="6" class="text11bold" onChange="" onFocus="blur()"/>
+		<input type="hidden" name="itemCount" value="<%= txProdCount %>"/>
+		<input type="image" name="addMultipleToCart" style="padding: 8px 8px; border: 0" src="/media_stat/images/template/confirmation/add_to_cart_purple.gif" alt="ADD SELECTED TO CART"/>
+		</td>
+		</tr>
+	</table>			
+	<% } %>
+	</div>
 </fd:PIPLayout>
-</table>
+</div>
+<script type="text/javascript">
+	if (document.getElementById('recPanel')) {
+		var corn_settings = {
+	        tl: { radius: 6 },
+	        tr: { radius: 6 },
+	        bl: { radius: 6 },
+	        br: { radius: 6 },
+	        topColour: '#996699',
+	        antiAlias: true,
+	        autoPad: false
+	    };
+		
+	    var corn = new curvyCorners(corn_settings, document.getElementById('recPanel'));
+	    corn.applyCornersToAll();
+	}
+
+</script>
 <script type="text/javascript">
 	<%= tx_pricing_JSNameSpace %>.updateTotal();
 </script>
@@ -437,4 +503,10 @@ if (request.getParameter("nodyf") == null) {
 	} // recommendations.getContentNodes().size() > 0
 %></fd:DYFRecommendations><%
 } // !nodyf
+
+if (request.getAttribute("is_ajax") == null) {
+%>
+</div><!-- end of placeHolder -->
+<%
+}
 %>

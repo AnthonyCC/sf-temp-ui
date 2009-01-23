@@ -5,11 +5,11 @@ package com.freshdirect.framework.util;
  */
 public abstract class ExpiringReference {
 
-	private final long refreshPeriod;
+	protected final long refreshPeriod;
 
-	private long lastRefresh = 0;
+	protected long lastRefresh = 0;
 
-	private Object referent;
+	protected Object referent;
 
 	/**
 	 * @param refreshPeriod in milliseconds

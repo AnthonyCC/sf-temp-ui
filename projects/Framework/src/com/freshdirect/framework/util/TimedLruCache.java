@@ -18,6 +18,11 @@ package com.freshdirect.framework.util;
 public class TimedLruCache extends LruCache {
 	protected final long expire;
 
+	/**
+	 * 
+	 * @param capacity the maximum size of the cache
+	 * @param expire the time to expire a living entry in milliseconds
+	 */
 	public TimedLruCache(int capacity, long expire) {
 		super(capacity);
 		this.expire = expire;

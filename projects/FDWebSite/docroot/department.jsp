@@ -9,21 +9,13 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
-<%!
-
-/**
-  * @param deptId request param
-  * @return whether to include bottom nav
-  */
-boolean isIncludeDeptBottom(String deptId) {
-	return !"dai".equals(deptId) && !"gro".equals(deptId) && !"hba".equals(deptId) && !"fro".equals(deptId);
-}
-
+<%
+String deptId=request.getParameter("deptId");
+final boolean isIncludeDeptBottom = !"dai".equals(deptId) && !"gro".equals(deptId) && !"hba".equals(deptId) && !"fro".equals(deptId);
 %>
 
-
 <fd:CheckLoginStatus guestAllowed="true" />
-<fd:Department id='department' departmentId='<%= request.getParameter("deptId") %>'/>
+<fd:Department id='department' departmentId='<%= deptId %>'/>
 
 <%
 //transfer to the recipe_department page if this is a recipe department
@@ -35,9 +27,7 @@ if (department instanceof RecipeDepartment) {  %>
 request.setAttribute("sitePage", department.getPath());
 request.setAttribute("listPos", "LittleRandy,SystemMessage,CategoryNote,SideCartBottom,WineTopRight,WineBotLeft,WineBotMiddle,WineBotRight");
 
-%>
 
-<%
 ContentNodeModel currentFolder = department;
 
 if (!ContentFactory.getInstance().getPreviewMode()) {
@@ -64,7 +54,6 @@ boolean isIncludeMediaLayout = (layouttype == EnumLayoutType.MEDIA_INCLUDE.getId
     <tmpl:put name='content' direct='true'>
 <% int ttl=14400; 
    String keyPrefix="deptLayout_"; 
-String deptId=request.getParameter("deptId");
 if("fru".equals(deptId) ||"veg".equals(deptId))  {
     
     FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
@@ -76,13 +65,7 @@ if("fru".equals(deptId) ||"veg".equals(deptId))  {
     ttl=3600;
 }
 
-%>
-<oscache:cache key='<%= keyPrefix+request.getQueryString() %>'  time='<%=ttl%>'>
 
-
-<%
-
-try {
     if (isIncludeMediaLayout) {
         %><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10">
         <%@ include file="/common/template/includes/catLayoutManager.jspf" %><br><%
@@ -128,9 +111,9 @@ try {
 
 	    // temporary: if grocery, wine or bakery department..then we dont want to use the stantard logic
 	    if ( "OUR_PICKS, FRO, GRO, DAI, SPE".indexOf(department.getContentName().toUpperCase())==-1 &&
-	    		!"bak".equals(request.getParameter("deptId")) &&
-                !"win".equals(request.getParameter("deptId")) &&
-	    		!"usq".equals(request.getParameter("deptId")) &&
+	    		!"bak".equals(deptId) &&
+                !"win".equals(deptId) &&
+	    		!"usq".equals(deptId) &&
 	    		introCopy!=null &&
 	    		introCopy.trim().length()>0) {
 	        %><table width="550" CELLPADDING="0" CELLSPACING="0" BORDER="0">
@@ -175,7 +158,7 @@ try {
         } // rateNRankLinks.length()>0
 
 
-	    if (false) { //( "our_picks".equals(request.getParameter("deptId")) && introCopy!=null  && introCopy.trim().length()>0) {
+	    if (false) { //( "our_picks".equals(deptId) && introCopy!=null  && introCopy.trim().length()>0) {
 %><table width="550" CELLPADDING="0" CELLSPACING="0" BORDER="0">
     <tr valign="top">
         <td class="text11" width="550">
@@ -187,11 +170,11 @@ try {
 <%
         } // false
 
-	    if ("win".equals(request.getParameter("deptId"))) { // bc wine page
+	    if ("win".equals(deptId)) { // bc wine page
 	        %><%@ include file="/departments/wine/bc_home.jspf"%><%
-	    } else if ("usq".equals(request.getParameter("deptId"))) { //usq wine page
+	    } else if ("usq".equals(deptId)) { //usq wine page
 	        %><%@ include file="/departments/wine/usq_home.jspf"%><%
-	    } else if ("bak".equals(request.getParameter("deptId"))) { // bak needs top buffer 
+	    } else if ("bak".equals(deptId)) { // bak needs top buffer 
 	        String trkCode= "dpage"; 
 	        %>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="12">
@@ -202,10 +185,10 @@ try {
 	        %><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10">
 		    <%@ include file="/common/template/includes/catLayoutManager.jspf" %><br><%
 	
-			if (isIncludeDeptBottom(request.getParameter("deptId"))) {
+			if (isIncludeDeptBottom) {
 				// Display this piece of code if layout is not 'grocery_dept_layout_new'
 				List middleMediaList = department instanceof DepartmentModel ? ((DepartmentModel)department).getDepartmentMiddleMedia() : null;
-				if (middleMediaList != null && !middleMediaList.isEmpty() && !"our_picks".equals(request.getParameter("deptId"))  ) {
+				if (middleMediaList != null && !middleMediaList.isEmpty() && !"our_picks".equals(deptId)  ) {
 					for (Iterator middleMedia = middleMediaList.iterator(); middleMedia.hasNext();) {
 						Html middleMediaPath = (Html)middleMedia.next();
 						%><div style="width: 550px;" align="left"><fd:IncludeMedia name="<%=middleMediaPath.getPath()%>" /></div><%
@@ -214,25 +197,19 @@ try {
 			}
 	
 	
-		    if ("big".equals(request.getParameter("deptId")) || "local".equals(request.getParameter("deptId"))) { 
+		    if ("big".equals(deptId) || "local".equals(deptId)) { 
 				//featured item footer
 				%><%@ include file="/includes/department_bottom_featured.jspf"%><%
-			} else if("fdi".equals(request.getParameter("deptId"))) {
+			} else if("fdi".equals(deptId)) {
 				%><%@ include file="/includes/department_fea_edit_bottom.jspf"%><%
 			} else { 
-				if (isIncludeDeptBottom(request.getParameter("deptId"))) {
+				if (isIncludeDeptBottom) {
 					%><%@ include file="/includes/department_bottom.jspf"%><%
 				}
 			}
 	    }
     } // !isIncludeMediaLayout
-} catch (Exception ex) {
-	ex.printStackTrace();
-    %><oscache:usecached /><%
-}
 %>
-</oscache:cache>
-
-    </tmpl:put>
+	</tmpl:put>
 
 </tmpl:insert>

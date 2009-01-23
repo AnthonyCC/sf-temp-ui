@@ -91,17 +91,7 @@ int colCount = 0;
 			<table align="center">
 				<tr>
 					<td style="padding: 0; height: <%= rowHeight.intValue() %>px; vertical-align: bottom; text-align: center">
-						<div style="position: relative; top: 0px; left: 0px">
-						<%
-						// Various labels
-						//   YOUR FAVORITE						
-						if (isYourFave) {
-							%><a href="<%= prdURI %>"><img src="/media_stat/images/template/search/brst_sm_fave.png" style="width:35px;height: 35px;position:absolute;top:0px;left:0px; border:none"></a><%
-						} else if (isDeal) {
-							%><a href="<%= prdURI %>"><img alt="SAVE <%= deal %>%" src="/media_stat/images/deals/brst_sm_<%= deal %>.gif" style="width:35px;height: 35px;position:absolute;top:0px;left:0px; border:none"></a><%							
-						}
-						%><fd:ProductImage product="<%= productNode %>" action="<%= prdURI %>"/>
-						</div>
+						<fd:ProductImage product="<%= productNode %>" action="<%= prdURI %>" />
 					</td>
 				</tr>
 			</table>

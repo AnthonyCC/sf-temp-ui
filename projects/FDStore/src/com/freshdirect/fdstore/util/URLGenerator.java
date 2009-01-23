@@ -10,6 +10,8 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 /**
  * General purpose URL generator that maintains request parameters
  * and passes to URL. It also allows them to modify.
@@ -210,7 +212,7 @@ public class URLGenerator {
      * 
      * @return
      */
-    protected String build() {
+    public String build() {
         StringBuffer buffer = new StringBuffer(100);
         buffer.append(requestUri);
         boolean first = true;
@@ -281,6 +283,22 @@ public class URLGenerator {
     }
     
     /**
+     * Hides a given parameter in form fields
+     * 
+     * @return Piece of HTML code that contains the parameter
+     */
+    public String buildHiddenField(String key) {
+        try {
+            StringBuffer buffer = new StringBuffer(100);
+            String value = get(key);
+            appendHiddenField(buffer, key, value);
+            return buffer.toString();
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("No UTF-8 character set presents:" + e.getMessage(), e);
+        }
+    }
+
+    /**
      * Hides parameters in form fields
      * 
      * @return Piece of HTML code that contains parameters
@@ -311,7 +329,7 @@ public class URLGenerator {
 
     private void appendHiddenField(StringBuffer buffer, String key, String value) throws UnsupportedEncodingException {
         if (value!=null) {
-            buffer.append("<input type=\"hidden\" name=\"").append(key).append("\" value=\"").append(URLEncoder.encode(value, "UTF-8")).append("\"/>\n");
+            buffer.append("<input type=\"hidden\" name=\"").append(key).append("\" value=\"").append(StringEscapeUtils.escapeHtml(value)).append("\"/>\n");
         }
     }
 

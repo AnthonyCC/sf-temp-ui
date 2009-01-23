@@ -4,6 +4,10 @@ package com.freshdirect.smartstore;
 import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.customer.FDUserI;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * Represents session information.
@@ -17,13 +21,30 @@ public class SessionInput {
 	
 	private String customerId;
 	
+	private ContentNodeModel currentNode;
+	
+	private boolean noShuffle;
+	
 	/**
-	 * Constructor.
-	 * @param customerId the costumer to recommend for (as ERP id)
-	 */
-	public SessionInput(String customerId) {
-		this.customerId = customerId;
-	}
+         * Constructor.
+         * @param customerId the costumer to recommend for (as ERP id)
+         */
+        public SessionInput(String customerId) {
+                this.customerId = customerId;
+        }
+        
+        /**
+         * Constructor.
+         * @param user the costumer to recommend for.
+         */
+        public SessionInput(FDUserI user) {
+            if (user!=null && user.getIdentity() != null) {
+                this.customerId = user.getIdentity().getErpCustomerPK();
+            }
+        }
+        
+	
+	
 	
 	/**
 	 * Set the cart contents of the user.
@@ -41,7 +62,7 @@ public class SessionInput {
 	 * @return The current cart contents as Collection<@link {@link ContentKey}> 
 	 */
 	public Set getCartContents() {
-		return cartContents;
+		return cartContents != null ? cartContents : Collections.emptySet();
 	}
 	
 	/**
@@ -52,8 +73,20 @@ public class SessionInput {
 		return customerId;
 	}
 	
+
+	public ContentNodeModel getCurrentNode() {
+            return currentNode;
+        }
 	
-	
-	
-	
+	public void setCurrentNode(ContentNodeModel currentNode) {
+            this.currentNode = currentNode;
+        }
+
+	public boolean isNoShuffle() {
+		return noShuffle;
+	}
+
+	public void setNoShuffle(boolean noShuffle) {
+		this.noShuffle = noShuffle;
+	}
 }

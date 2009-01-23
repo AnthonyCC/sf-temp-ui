@@ -15,7 +15,7 @@ import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.search.AttributeIndex;
 import com.freshdirect.cms.search.LuceneSearchService;
 import com.freshdirect.cms.search.LuceneSearchServiceTest;
-import com.freshdirect.fdstore.content.SmartSearchTest.FDFactoryProductInfoAspect;
+import com.freshdirect.fdstore.aspects.FDFactoryProductInfoAspect;
 import com.freshdirect.fdstore.customer.FDCustomerManagerTestSupport;
 
 /**

@@ -55,6 +55,7 @@ public class ContentNodeModelUtil {
 		CONTENT_TO_TYPE_MAP.put("RecipeSearchCriteria", ContentNodeI.TYPE_RECIPE_SEARCH_CRITERIA);
 		CONTENT_TO_TYPE_MAP.put("YmalSet", ContentNodeI.TYPE_YMAL_SET);
 		CONTENT_TO_TYPE_MAP.put("StarterList", ContentNodeI.TYPE_STARTER_LIST);
+		CONTENT_TO_TYPE_MAP.put("FavoriteList", ContentNodeI.TYPE_FAVORITE_LIST);
 	}
 
 	public static LinkedHashMap TYPE_MODEL_MAP = new LinkedHashMap();
@@ -86,6 +87,7 @@ public class ContentNodeModelUtil {
 		TYPE_MODEL_MAP.put("RecipeSearchCriteria", RecipeSearchCriteria.class);
 		TYPE_MODEL_MAP.put("YmalSet", YmalSet.class);
 		TYPE_MODEL_MAP.put("StarterList", StarterList.class);
+		TYPE_MODEL_MAP.put("FavoriteList", FavoriteList.class);
 	}
 
 	/**

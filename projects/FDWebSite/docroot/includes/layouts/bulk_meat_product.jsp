@@ -13,9 +13,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri='oscache' prefix='oscache' %>
 <%
-
 //********** Start of Stuff to let JSPF's become JSP's **************
 
 FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
@@ -26,10 +24,10 @@ boolean isDepartment = false;
 
 ContentNodeModel currentFolder = null;
 if(deptId!=null) {
-    currentFolder=ContentFactory.getInstance().getContentNodeByName(deptId);
+    currentFolder=ContentFactory.getInstance().getContentNode(deptId);
     isDepartment = true;
 } else {
-    currentFolder=ContentFactory.getInstance().getContentNodeByName(catId);
+    currentFolder=ContentFactory.getInstance().getContentNode(catId);
 }
 
 
@@ -41,8 +39,8 @@ String trkCode = (String)request.getAttribute("trk");
 Collection sortedColl = (Collection) request.getAttribute("itemGrabberResult");
 if (sortedColl==null) sortedColl = new ArrayList();
 
-String multiSuccessPage = "/cart_confirm.jsp?catId="+request.getParameter("catId");
-String singleSuccessPage = "/cart_confirm.jsp?catId="+request.getParameter("catId");
+String multiSuccessPage = "/cart_confirm.jsp?catId="+catId;
+String singleSuccessPage = "/cart_confirm.jsp?catId="+catId;
 request.setAttribute("successPage",singleSuccessPage);
 
 %>
@@ -51,11 +49,13 @@ request.setAttribute("successPage",singleSuccessPage);
 <%
 request.removeAttribute("successPage");
 
-Attribute blkAttrib=currentFolder.getAttribute("HIDE_URL");
+Attribute blkAttrib;
+
 int unAvailableCount=0;
 Image catPhoto = null;
-if (blkAttrib!=null) {
-    String redirectURL = response.encodeRedirectURL((String)blkAttrib.getValue());
+String hideURL = currentFolder.getHideUrl();
+if (hideURL!=null) {
+    String redirectURL = response.encodeRedirectURL(hideURL);
     response.sendRedirect(redirectURL);
     return;
 }
@@ -223,7 +223,7 @@ if (brandLogo !=null) {
         <tr>
             <td width=5></td>
             <td><img src="/media_stat/images/template/offer_icon.gif" alt="Promotion icon"></td>
-            <td><font class="title12">Free!<br></font><A HREF="promotion.jsp?cat=<%=request.getParameter("catId")%>">See our $<%=prefix%> offer</a></td>
+            <td><font class="title12">Free!<br></font><A HREF="promotion.jsp?cat=<%=catId%>">See our $<%=prefix%> offer</a></td>
             <td width=90></td>
         </tr>
     </table>
@@ -271,7 +271,7 @@ Learn more about <a href="javascript:popup('/departments/meat/info_buying_bulk_m
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="10" HEIGHT="7">
 </TD>
 </TR>
-<input type="hidden" value="<%=request.getParameter("catId")%>" name="catId">
+<input type="hidden" value="<%=catId%>" name="catId">
 <input type="hidden" value="<%=request.getParameter("productId")%>" name="productId">
 <input type="hidden" value="<%=request.getParameter("salesUnit")%>" name="salesUnit">
 <%--<input type="hidden" value="<%=request.getParameter("quantity")%>" name="quantity"> --%>
@@ -360,7 +360,7 @@ String prodDescPath = null;
             if (domainValue!=null) {
                 if (bulkProduct.getAttribute("FDDEF_GRADE")!=null) { 
                    gradePath = ((MediaI)bulkProduct.getAttribute("FDDEF_GRADE").getValue()).getPath();
-                   String popup = "/shared/popup.jsp?catId="+request.getParameter("catId") + "&prodId="+bulkProduct.getContentName(); 
+                   String popup = "/shared/popup.jsp?catId="+catId + "&prodId="+bulkProduct.getContentName(); 
                    matrixValue = "<A HREF=\"javascript:popup('"+popup+"&attrib=FDDEF_GRADE&tmpl=large','large')\">"+domainValue.getLabel().toUpperCase()+"</A>";
                 } else {
                    matrixValue = domainValue.getLabel().toUpperCase();
@@ -486,7 +486,7 @@ String add_button ="/media/images/buttons/add_to_cart.gif";
 <input type="image" name="addToCart" src="<%= add_button%>"  ALT="ADD ITEMS TO YOUR CART" height="20" width="93" HSPACE="2" VSPACE="0" BORDER="0"><br>
 <%@ include file="/shared/includes/product/i_pricing_script.jspf" %>
 
-<script language="javascript">
+<script type="text/javascript">
 var pricing = new Pricing();
 var currentSelection = new Array();
 

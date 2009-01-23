@@ -286,9 +286,9 @@ table.ymal {
     padding       : 10px;
     border        : 0px;
     width         : 400px;
-    border-right  : 2px dashed #996699;
-    border-left   : 2px dashed #996699;
-    border-bottom : 2px dashed #996699;
+    border-right  : 2px solid #996699;
+    border-left   : 2px solid #996699;
+    border-bottom : 2px solid #996699;
     margin-top    : 10px;
 }
 
@@ -309,23 +309,24 @@ table.ymal caption {
 }
 
 /** SMART STORE **/
-table.smartstore {
-    padding       : 10px;
-    border        : 0;
+div.smartstore {
+    padding       : 0px;
     width         : 693px;
-    border-right  : 2px dashed #996699;
-    border-left   : 2px dashed #996699;
-    border-bottom : 2px dashed #996699;
+    border        : 2px solid #996699;
     /* margin-top    : 10px; */
 }
 
-table.smartstore caption {
+div.smartstore .caption1 {
     color       : white;
     background  : #996699;
-    font-size   : 12px;
-    font-weight : bold;
-    padding     : 4px;
-    width		: 693px;
+	font-size: 14px;
+	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+    padding-bottom: 3px !important;
+}
+
+div.smartstore .body1 {
+    padding: 10px;
 }
 
 .SSorderTotal {

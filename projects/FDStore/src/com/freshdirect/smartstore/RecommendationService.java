@@ -2,7 +2,7 @@ package com.freshdirect.smartstore;
 
 import java.util.List;
 
-import com.freshdirect.cms.ContentKey;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 
 
 /**
@@ -19,13 +19,13 @@ public interface RecommendationService {
 	public Variant getVariant();
 	
 	/**
-	 * Recommend a list of {@link ContentKey}s.
-	 * 
-	 * 
+	 * Recommend a list of {@link ContentNodeModel}s.
 	 * @param input session information.
-	 * @param max the maximum number of recommendations to be produced
-	 * @return a List<{@link ContentKey}> of recommendations, expected to be sorted by relevance
+	 * 
+	 * 
+	 * @return a List<{@link ContentNodeModel}> of recommendations, expected to be sorted by relevance
 	 */
-	public List recommend(int max, SessionInput input);
-
+	public List recommendNodes(SessionInput input);
+	
+	public String getDescription();
 }

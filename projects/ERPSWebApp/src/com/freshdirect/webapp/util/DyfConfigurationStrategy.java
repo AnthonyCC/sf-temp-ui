@@ -163,7 +163,7 @@ public class DyfConfigurationStrategy implements ConfigurationStrategy {
 	public ProductImpression configure(ProductModel productModel, ConfigurationContext context) {
 		
 		// see if already stored
-		CustomerContentPair key = new CustomerContentPair(context.getErpCustomerId(),productModel.getContentKey());
+		CustomerContentPair key = new CustomerContentPair(context.getFDUser().getIdentity().getErpCustomerPK(),productModel.getContentKey());
 		SkuConfigurationPair storedConfiguration = (SkuConfigurationPair)cache.get(key);
         if (storedConfiguration != null && !storedConfiguration.expired()) {
         	if (storedConfiguration.getSkuCode() != null) {
@@ -178,7 +178,7 @@ public class DyfConfigurationStrategy implements ConfigurationStrategy {
 		
 		try {
 			// Get order details
-			FDCustomerProductList details = FDListManager.getOrderDetails(context.getErpCustomerId(), productModel.getSkuCodes());
+			FDCustomerProductList details = FDListManager.getOrderDetails(context.getFDUser().getIdentity().getErpCustomerPK(), productModel.getSkuCodes());
 			
 			// if no answer, return unconfigured impression
 			if (details.getLineItems().size() == 0) {
@@ -249,7 +249,7 @@ public class DyfConfigurationStrategy implements ConfigurationStrategy {
 							configuration.getSalesUnit(),
 							configuration.getOptions());
 						
-				LOGGER.debug("Storing configuration for " + context.getErpCustomerId() + ", sku = " + selectedSkuCode);
+				LOGGER.debug("Storing configuration for " + context.getFDUser().getIdentity().getErpCustomerPK() + ", sku = " + selectedSkuCode);
 				cache.put(key, new SkuConfigurationPair(selectedSkuCode,conf));
 				return new TransactionalProductImpression(
 					productModel,selectedSkuCode,conf);

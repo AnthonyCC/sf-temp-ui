@@ -1,5 +1,7 @@
 package com.freshdirect.webapp.util;
 
+import com.freshdirect.fdstore.customer.FDUserI;
+
 
 /**
  * Supplies context to the {@link ConfigurationStrategy configuration utility}
@@ -10,14 +12,14 @@ package com.freshdirect.webapp.util;
 public class ConfigurationContext {
 	
 	
-	private String erpCustomerId = null;
+	private FDUserI fdUser = null;
 	
-	public String getErpCustomerId() {
-		return erpCustomerId;
+	public FDUserI getFDUser() {
+		return fdUser;
 	}
 	
-	public void setErpCustomerId(String erpCustomerId) {
-		this.erpCustomerId = erpCustomerId;
+	public void setFDUser(FDUserI fdUser) {
+		this.fdUser = fdUser;
 	}
 	
 	

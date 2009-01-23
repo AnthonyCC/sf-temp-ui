@@ -211,7 +211,7 @@ function calculateCVPrices(selectedSkuCode, qty, salesUnit, configuration) {
 ///// various helper methods...
 
 function hasScales(selectedSkuCode) {
-	var scaleUnit = materialPricesArray[selectedSkuCode][0].scaleUnit;
+	var scaleUnit = document.materialPricesArray[selectedSkuCode][0].scaleUnit;
 	if (scaleUnit == "") {
 		return false;
 	} else {
@@ -220,7 +220,7 @@ function hasScales(selectedSkuCode) {
 }
 
 function getScaleUnit(selectedSkuCode) {
-	return materialPricesArray[selectedSkuCode][0].scaleUnit;
+	return document.materialPricesArray[selectedSkuCode][0].scaleUnit;
 
 }
 
@@ -233,9 +233,9 @@ function isWithinBounds(scaledQuantity, obj_material_price) {
 }
 
 function findSalesUnitRatio(selectedSkuCode, salesUnit) {
-	for (var i=0; i<salesUnitRatiosArray[selectedSkuCode].length; i++) {
-		if (salesUnit == salesUnitRatiosArray[selectedSkuCode][i].alternateUnit) {
-			return salesUnitRatiosArray[selectedSkuCode][i];
+	for (var i=0; i<document.salesUnitRatiosArray[selectedSkuCode].length; i++) {
+		if (salesUnit == document.salesUnitRatiosArray[selectedSkuCode][i].alternateUnit) {
+			return document.salesUnitRatiosArray[selectedSkuCode][i];
 		}
 	}
 
@@ -249,30 +249,30 @@ function findSalesUnitRatio(selectedSkuCode, salesUnit) {
 }
 
 function findMaterialPriceByQuantity(selectedSkuCode, scaledQuantity) {
-	for (var i=0; i<materialPricesArray[selectedSkuCode].length; i++) {
-		if ( isWithinBounds(scaledQuantity, materialPricesArray[selectedSkuCode][i]) == true ) {
-			return materialPricesArray[selectedSkuCode][i];
+	for (var i=0; i<document.materialPricesArray[selectedSkuCode].length; i++) {
+		if ( isWithinBounds(scaledQuantity, document.materialPricesArray[selectedSkuCode][i]) == true ) {
+			return document.materialPricesArray[selectedSkuCode][i];
 		}
 	}
 	return null;
 }
 
 function findMaterialPrice(selectedSkuCode, pricingUnit) {
-	for (var i=0; i<materialPricesArray[selectedSkuCode].length; i++) {
-		if (pricingUnit == materialPricesArray[selectedSkuCode][i].pricingUnit) {
-			return materialPricesArray[selectedSkuCode][i];
+	for (var i=0; i<document.materialPricesArray[selectedSkuCode].length; i++) {
+		if (pricingUnit == document.materialPricesArray[selectedSkuCode][i].pricingUnit) {
+			return document.materialPricesArray[selectedSkuCode][i];
 		}
 	}
 	return null;
 }
 
 function findCharacteristicValuePrice(selectedSkuCode, chName, chValue) {
-	if (cvPricesArray[selectedSkuCode]==null) {
+	if (document.cvPricesArray[selectedSkuCode]==null) {
 		return null;
 	}
-	for (var i=0; i<cvPricesArray[selectedSkuCode].length; i++) {
-		if ( chName==cvPricesArray[selectedSkuCode][i].charName && chValue==cvPricesArray[selectedSkuCode][i].charValue ) {
-			return cvPricesArray[selectedSkuCode][i];
+	for (var i=0; i<document.cvPricesArray[selectedSkuCode].length; i++) {
+		if ( chName==document.cvPricesArray[selectedSkuCode][i].charName && chValue==document.cvPricesArray[selectedSkuCode][i].charValue ) {
+			return document.cvPricesArray[selectedSkuCode][i];
 		}
 	}
 

@@ -17,7 +17,7 @@ import com.freshdirect.smartstore.ejb.DyfModelHome;
  * @author segabor
  *
  */
-public abstract class DYFService extends AbstractRecommendationService {
+public abstract class DYFService extends BaseContentKeyRecommendationService {
 	private static final Category LOGGER = LoggerFactory.getInstance(AbstractRecommendationService.class);
 
 	// cache the most recently accessed order histories

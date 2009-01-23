@@ -35,6 +35,7 @@ public interface ContentNodeI {
 	String TYPE_RECIPE_SEARCH_CRITERIA = "RSPC";
 	String TYPE_YMAL_SET = "YS";
 	String TYPE_STARTER_LIST = "SL";
+	String TYPE_FAVORITE_LIST = "FL";
 
 	//
 	//

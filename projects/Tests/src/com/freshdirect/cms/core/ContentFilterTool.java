@@ -44,6 +44,7 @@ public class ContentFilterTool {
     
     private static ContentServiceI service;
     private static ContentTypeServiceI typeService;
+    private static boolean includeFeaturedProducts = true;
     
     public static ContentServiceI createContentService() throws IOException {
         if (service == null) {
@@ -112,6 +113,12 @@ public class ContentFilterTool {
                     if ("subcategories".equals(name)) {
                         return true;
                     }
+                    if (includeFeaturedProducts && "FEATURED_PRODUCTS".equals(name)) {
+                        return true;
+                    }
+                    if (includeFeaturedProducts && "products".equals(name)) {
+                        return true;
+                    }
                     return false;
                 }
                 if (FDContentTypes.DEPARTMENT.equals(type)) {
@@ -178,6 +185,10 @@ public class ContentFilterTool {
 
     private static void addContentKeys(Set otherKeys, ContentNodeModel nodeModel) {
         if (nodeModel!=null) {
+            if (otherKeys.contains(nodeModel.getContentKey())) {
+                // ALREADY in the list
+                return;
+            }
             otherKeys.add(nodeModel.getContentKey());
         } else {
             return;
@@ -197,9 +208,18 @@ public class ContentFilterTool {
                     addContentKeys(otherKeys, (ContentNodeModel) skus.get(i));
                 }
             }
+            if (includeFeaturedProducts) {
+                addContentKeys(otherKeys, pm.getPrimaryHome());
+            }
         }
         if (nodeModel instanceof CategoryModel) {
             addContentKeys(otherKeys, nodeModel.getParentNode());
+            if (includeFeaturedProducts) {
+                List featuredProducts = ((CategoryModel)nodeModel).getFeaturedProducts();
+                for (int i=0;i<featuredProducts.size();i++) {
+                    addContentKeys(otherKeys, (ContentNodeModel) featuredProducts.get(i));
+                }
+            }
         }
         if (nodeModel instanceof DepartmentModel) {
             addContentKeys(otherKeys, nodeModel.getParentNode());
@@ -221,7 +241,7 @@ public class ContentFilterTool {
 
         Set filteredContentKeys = new HashSet();
         
-        addContentKeys(filteredContentKeys, FDContentTypes.PRODUCT, "dai_organi_2_milk_02, dai_organi_1_milk_01, dai_orgval_whlmilk_01, cfncndy_ash_mcrrd, dai_orgval_laclfmilkhlf,"
+/*        addContentKeys(filteredContentKeys, FDContentTypes.PRODUCT, "dai_organi_2_milk_02, dai_organi_1_milk_01, dai_orgval_whlmilk_01, cfncndy_ash_mcrrd, dai_orgval_laclfmilkhlf,"
                         + "dai_orgval_laclfmilkqt, dai_farm_whl_milk_04, dai_nsqare_skim_hg, gro_carn_milk_01, dai_nestle_chocolat_01, dai_organi_nonfat_m_02, dai_nsqare_mlk_hg,"
                         + "gro_goya_coconut_01, dai_farm_wmilkpaper_01, spe_roland_orgcocomilk, dai_nsqare_chcmlk, hba_phillips_mom_01, spe_tasthai_cocmlk, dai_lactaid_oneper, "
                         + "dai_farm_1milkpaper_01, hba_phillips_mom_02, gro_parmalat_white_wh_01, dai_hers_ffchoc, dai_hers_twochcmlk_02, gro_parmalat_white_2_01, gro_parmalat_banan_01, "
@@ -247,8 +267,11 @@ public class ContentFilterTool {
 
         filteredContentKeys.clear();
         addContentKeys(filteredContentKeys, FDContentTypes.PRODUCT, "dai_organi_2_milk_02, dai_organi_1_milk_01, dai_orgval_whlmilk_01, cfncndy_ash_mcrrd, dai_orgval_laclfmilkhlf");
-        writeNodes(new File(getCurrentDirectory().getParent(), "Tests/data/com/freshdirect/cms/fdstore/content/FilteredStore2.xml"), filteredContentKeys);
-        
+        writeNodes(new File(getCurrentDirectory().getParent(), "Tests/data/com/freshdirect/cms/fdstore/content/FilteredStore2.xml"), filteredContentKeys);*/
+
+        addContentKeys(filteredContentKeys, FDContentTypes.CATEGORY, "spe_cooki_krcake");
+        addContentKeys(filteredContentKeys, FDContentTypes.PRODUCT, "spe_bruces_chcrug,spe_bruces_rain");
+        writeNodes(new File(getCurrentDirectory().getParent(), "Tests/data/com/freshdirect/cms/fdstore/content/FeaturedProducts.xml"), filteredContentKeys);        
         
     }
 

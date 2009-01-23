@@ -18,7 +18,7 @@ if (__brandName != null
 }
 %><span><%
 if (__shortenedProductName != null) {
-	%><span style="font-weight:bold"><%= __brandName %></span> <%= __shortenedProductName %><%
+	%><span style="font-weight:bold"><%= __brandName %></span><br><%= __shortenedProductName %><%
 } else {
-	%><span><%= "".equals(__fullName) ? "(this product)" : __fullName %></span><%
+	%><%= "".equals(__fullName) ? "(this product)" : __fullName %><%
 } %></span>

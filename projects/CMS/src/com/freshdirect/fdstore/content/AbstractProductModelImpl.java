@@ -1,13 +1,16 @@
 package com.freshdirect.fdstore.content;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.attributes.Attribute;
 
 public abstract class AbstractProductModelImpl extends ContentNodeModelImpl implements ProductModel {
@@ -153,7 +156,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 			}
 	}
 	
-	public boolean isDisplayable() {	
+	public boolean isDisplayable() {
 		return !(isHidden() || isDiscontinued() || isUnavailable() || isOrphan() || isInvisible());
 	}
 	
@@ -191,6 +194,43 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 		} catch (FDSkuNotFoundException e) {
 			throw new RuntimeException(e);
 		}
-}
+	}
 	
+	public boolean isNew() {
+		try {
+			Collection newProds = ContentFactory.getInstance().getNewProducts(
+					FDStoreProperties.getSmartstoreNewproductsDays(), null);
+			return newProds != null && newProds.contains(this);
+		} catch (FDResourceException e) {
+			return false;
+		}
+	}
+
+	public int getDealPercentage() {
+		return getDealPercentage(null);
+	}
+	
+	public int getDealPercentage(String skuCode) {
+		if (skuCode == null) {
+			skuCode = getDefaultSku() != null ? getDefaultSku().getSkuCode() : null;
+		} else {
+			if (getSkuCodes().indexOf(skuCode) < 0) {
+				// invalid sku code using default
+				skuCode = getDefaultSku().getSkuCode();
+			}
+		}
+		FDProductInfo productInfo = null;
+		int deal = 0;
+		if (skuCode != null) {
+			try {
+				productInfo = FDCachedFactory.getProductInfo(skuCode);
+				if (productInfo.isDeal()) {
+					deal = productInfo.getDealPercentage();
+				}
+			} catch (FDSkuNotFoundException ex) {
+			} catch (FDResourceException e) {
+			}
+		}
+		return deal;
+	}
 }

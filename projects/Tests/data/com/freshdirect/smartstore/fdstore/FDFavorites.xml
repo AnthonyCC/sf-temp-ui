@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Content>
+	<FavoriteList id="fd_favorites">
+		<full_name>Favorites for FDF feature</full_name>
+		<items>
+			<Product ref="spe_madmoose_chc"/>
+			<Product ref="spe_moore_lemon"/>
+			<Product ref="cake_choclayer"/>
+			<Product ref="spe_walkers_shortbre_02"/>
+			<Product ref="fro_up_mudck"/>
+		</items>
+	</FavoriteList>
+</Content>

@@ -230,6 +230,8 @@
 			
 			<!-- SmartStore -->
 			<AttributeDef type="B" name="SS_LEVEL_AGGREGATION" label="Level Aggregation" inheritable="false"/>
+			
+			<AttributeDef type="I" name="MANUAL_SELECTION_SLOTS" label="Manual Selection Slots" inheritable="false"/>"
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="ALTERNATE_CONTENT" label="Alternate Content">
@@ -247,6 +249,11 @@
 			<RelationshipDef name="subcategories" navigable="true" cardinality="Many">
 				<DestinationDef contentType="Category" />
 			</RelationshipDef>
+			<RelationshipDef name="CANDIDATE_LIST" navigable="true" cardinality="Many">
+				<DestinationDef contentType="Category" />
+				<DestinationDef contentType="Product" />
+			</RelationshipDef>
+
 			<RelationshipDef name="VIRTUAL_GROUP" cardinality="Many"  label="Virtual Group" >
 				<DestinationDef contentType="Category" />
 			</RelationshipDef>
@@ -1385,6 +1392,23 @@
 				<DestinationDef contentType="Category" />
 			</RelationshipDef>
 		</RelationshipDefs>	
+	</ContentTypeDef>
+
+	<!--
+		
+		FavoriteList
+		
+	-->
+	<ContentTypeDef name="FavoriteList">
+		<AttributeDefs>
+			<AttributeDef type="S" name="full_name" />
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="items" navigable="false" cardinality="Many">
+				<DestinationDef contentType="Product" />
+				<DestinationDef contentType="ConfiguredProduct" />
+			</RelationshipDef>
+		</RelationshipDefs>
 	</ContentTypeDef>
 	
 </CMSDef>

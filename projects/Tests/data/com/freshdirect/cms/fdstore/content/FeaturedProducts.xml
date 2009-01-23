@@ -1,0 +1,3284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Content>
+	<Brand id="bd_purell">
+		<FULL_NAME>Purell</FULL_NAME>
+	</Brand>
+	<Product id="spe_kavli_fvgncrsp">
+		<skus>
+			<Sku ref="SPE0061786"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_kavli"/>
+		</brands>
+		<FULL_NAME>Kavli Five Grain Crispbread</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_cooki_crack_flat"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="SPE0060510"/>
+	<Sku id="SPE0000480"/>
+	<Department id="gro">
+		<FULL_NAME>Grocery</FULL_NAME>
+		<categories>
+			<Category ref="gro_baby"/>
+			<Category ref="gro_baker"/>
+			<Category ref="gro_cooki"/>
+		</categories>
+	</Department>
+	<Sku id="PAS0068076"/>
+	<Product id="fro_charles_maca">
+		<skus>
+			<Sku ref="FRO0061043"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_charles_laurel"/>
+		</brands>
+		<FULL_NAME>Charles &amp; Laurel White Chocolate Macadamia Gold Bar, Frozen</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="cookie_frozen"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="hba_1ups_aloe_rf">
+		<skus>
+			<Sku ref="HBA0063975"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_pampers"/>
+		</brands>
+		<FULL_NAME>Pampers Baby Fresh Scented Wipes - Refill</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_baby_wipes"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="gro_mrsfields_whtchc">
+		<skus>
+			<Sku ref="GRO0060650"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_mrs_fields"/>
+		</brands>
+		<FULL_NAME>Mrs. Fields White Chocolate Macadamia Chunk Cookies</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_cooki_cooki_choch"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_sharons">
+		<FULL_NAME>Sharon's</FULL_NAME>
+	</Brand>
+	<Sku id="HBA0064062"/>
+	<Sku id="FRO0044363"/>
+	<Sku id="HBA0064060"/>
+	<Brand id="bd_sunmaid">
+		<FULL_NAME>Sun-Maid</FULL_NAME>
+	</Brand>
+	<Product id="hba_head_clas_2in1_01">
+		<skus>
+			<Sku ref="HBA0063596"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_head_shoulders"/>
+		</brands>
+		<FULL_NAME>Head &amp; Shoulders Classic Clean 2in1 Shampoo Plus Conditioner</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="hba_hair_shmcnd"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_just_bagels">
+		<FULL_NAME>Just Bagels</FULL_NAME>
+	</Brand>
+	<Brand id="bd_edys">
+		<FULL_NAME>Edy's</FULL_NAME>
+	</Brand>
+	<Department id="fro">
+		<FULL_NAME>Frozen</FULL_NAME>
+		<categories>
+			<Category ref="fro_bread"/>
+			<Category ref="fro_deser"/>
+			<Category ref="fro_icecr"/>
+		</categories>
+	</Department>
+	<Brand id="bd_umanoff_parsons">
+		<FULL_NAME>Umanoff &amp; Parsons</FULL_NAME>
+	</Brand>
+	<Brand id="bd_herbal_essences">
+		<FULL_NAME>Herbal Essences</FULL_NAME>
+	</Brand>
+	<Sku id="FRO0072879"/>
+	<Product id="gro_stroe_hnywhite">
+		<skus>
+			<Sku ref="GRO0060485"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_dutch_country_stroehm"/>
+			<Brand ref="bd_stroehmann"/>
+		</brands>
+		<FULL_NAME>Dutch Country Stroehmann Honey White Bread</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_baker_white"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="dghcrst_chcchp">
+		<skus>
+			<Sku ref="PAS0040322"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_freshdirect"/>
+		</brands>
+		<FULL_NAME>FreshDirect Frozen, Ready-to-Bake Chocolate Chip Cookies</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="bak_cookies_fd"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="gro_7gen_diaperlg">
+		<skus>
+			<Sku ref="GRO0065252"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_seventh_generation"/>
+		</brands>
+		<FULL_NAME>Seventh Generation Chlorine-Free Diapers Size 4, 22-37lb</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_baby_diapr"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="PAS0059136"/>
+	<Product id="fro_justb_plain">
+		<skus>
+			<Sku ref="FRO0060588"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_just_bagels"/>
+		</brands>
+		<FULL_NAME>Just Bagels Plain, Frozen</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="bak_bagels"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="cake_juniors">
+		<products>
+			<Product ref="fro_junior_plnck"/>
+		</products>
+		<FULL_NAME>Junior's</FULL_NAME>
+	</Category>
+	<Sku id="FRO0044373"/>
+	<Product id="fro_david_limchees_01">
+		<skus>
+			<Sku ref="FRO0059184"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_david_glass"/>
+		</brands>
+		<FULL_NAME>David Glass Ultimate Key Lime Mousse Cheesecake, Frozen</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_deser_cake"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="FRO0062365"/>
+	<Sku id="FRO0062367"/>
+	<Product id="fro_junior_plnck">
+		<skus>
+			<Sku ref="FRO0068235"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_juniors"/>
+		</brands>
+		<FULL_NAME>Junior's Plain Cheesecake (Frozen)</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="cake_juniors"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="fro_bread_bage">
+		<products>
+			<Product ref="fro_food_f_7_sprout_01"/>
+			<Product ref="fro_justb_plain"/>
+		</products>
+		<FULL_NAME>Bagels &amp; English Muffins</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="fro_alvara_sprouted_04"/>
+			<Product ref="dghcrst_oatmeal"/>
+			<Product ref="fro_food_f_7_sprout_01"/>
+			<Product ref="fro_food4life_carbbread"/>
+			<Product ref="garlic_bread"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Category id="fro_bread_brea">
+		<products>
+			<Product ref="fro_alvara_sprouted_04"/>
+			<Product ref="fro_bruce_chal"/>
+			<Product ref="fro_frsam_spnwrp"/>
+			<Product ref="fro_food4life_carbbread"/>
+			<Product ref="bak_pull_multislice"/>
+			<Product ref="garlic_bread"/>
+			<Product ref="dghcrst_crst"/>
+			<Product ref="fro_sarabeth_butbisc"/>
+		</products>
+		<FULL_NAME>Bread</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="fro_alvara_sprouted_04"/>
+			<Product ref="dghcrst_oatmeal"/>
+			<Product ref="fro_food_f_7_sprout_01"/>
+			<Product ref="fro_food4life_carbbread"/>
+			<Product ref="garlic_bread"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Category id="gro_baker_cake">
+		<products>
+			<Product ref="spe_bruces_chcbbka"/>
+			<Product ref="spe_bruces_chcrug"/>
+			<Product ref="spe_bruces_philfluf"/>
+			<Product ref="spe_bruces_whtsvn"/>
+			<Product ref="fro_charles_maca"/>
+			<Product ref="fro_david_limchees_01"/>
+			<Product ref="fro_david_nychees_01"/>
+			<Product ref="cake_crt"/>
+			<Product ref="cake_choclayer"/>
+			<Product ref="fro_junior_plnck"/>
+			<Product ref="spe_lillyplum_choconut"/>
+			<Product ref="spe_lillyplum_straw"/>
+			<Product ref="fro_up_mudck"/>
+		</products>
+		<FULL_NAME>Cakes</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="fro_veniero_biscotti"/>
+			<Product ref="fro_sarabeth_curscn"/>
+			<Product ref="cake_choclayer"/>
+			<Product ref="gro_keblr_chips_dlx_01"/>
+			<Product ref="spe_bruces_chcbbka"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Brand id="bd_olivella">
+		<FULL_NAME>Olivella</FULL_NAME>
+	</Brand>
+	<Category id="bgtt">
+		<products>
+			<Product ref="garlic_bread"/>
+		</products>
+		<FULL_NAME>Baguettes</FULL_NAME>
+	</Category>
+	<Sku id="HBA0071840"/>
+	<Sku id="HBA0071056"/>
+	<Brand id="bd_neutrogena">
+		<FULL_NAME>Neutrogena</FULL_NAME>
+	</Brand>
+	<Brand id="bd_ronnybrook">
+		<FULL_NAME>Ronnybrook</FULL_NAME>
+	</Brand>
+	<Brand id="bd_garnier">
+		<FULL_NAME>Garnier </FULL_NAME>
+	</Brand>
+	<Product id="fro_food4life_carbbread">
+		<skus>
+			<Sku ref="FRO0065320"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_food_for_life"/>
+		</brands>
+		<FULL_NAME>Food For Life Organic Low Carb Original Bread, Frozen</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_bread_organic"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="FRO0044352"/>
+	<Product id="cake_choclayer">
+		<skus>
+			<Sku ref="PAS0040024"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_freshdirect"/>
+		</brands>
+		<FULL_NAME>FreshDirect Dark Double Chocolate Layer Cake</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="bak_cake_fd"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="hba_pmprs_wps_refll">
+		<skus>
+			<Sku ref="HBA0071840"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_pampers"/>
+		</brands>
+		<FULL_NAME>Pampers Wipes for Sensitive Skin - Refill</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_baby_wipes"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="FRO0059826"/>
+	<Sku id="FRO0059956"/>
+	<Product id="spe_bruces_whtsvn">
+		<skus>
+			<Sku ref="FRO0060512"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_bruces"/>
+		</brands>
+		<FULL_NAME>Bruce's Seven Layer White Cake, Frozen</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_baker_cake"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="SPE0057931"/>
+	<Brand id="bd_arnold">
+		<FULL_NAME>Arnold</FULL_NAME>
+	</Brand>
+	<Category id="fro_icecr_sand">
+		<products>
+			<Product ref="fro_haagen_chocolat_07"/>
+			<Product ref="fro_sharons_chocolat_01"/>
+			<Product ref="fro_silhou_assorted_01"/>
+			<Product ref="fro_weight_frozen_c_01"/>
+		</products>
+		<FULL_NAME>Sandwiches &amp; Bars</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="fro_silhou_assorted_01"/>
+			<Product ref="fro_ben_je_cherry_g_01"/>
+			<Product ref="fro_haagen_chocolat_07"/>
+			<Product ref="fro_starbcks_iclflatt"/>
+			<Product ref="fro_edys_lt_frnch_01"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Product id="fro_weight_frozen_c_01">
+		<skus>
+			<Sku ref="FRO0044550"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_weight_watchers"/>
+		</brands>
+		<FULL_NAME>Weight Watchers Smart Ones Frozen Chocolate Chip Cookie Dough Sundae</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_icecr_sand"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_creme_cremaillere">
+		<FULL_NAME>Crème Crémaillère</FULL_NAME>
+	</Brand>
+	<Sku id="SPE0057934"/>
+	<Brand id="bd_wonder">
+		<FULL_NAME>Wonder</FULL_NAME>
+	</Brand>
+	<Sku id="HBA0066868"/>
+	<Category id="fro_bread">
+		<FULL_NAME>Bread &amp; Dough</FULL_NAME>
+		<subcategories>
+			<Category ref="fro_bread_bage"/>
+			<Category ref="fro_bread_organic"/>
+			<Category ref="fro_pita_wraps"/>
+			<Category ref="fro_bread_brea"/>
+			<Category ref="fro_bread_doug"/>
+		</subcategories>
+		<FEATURED_PRODUCTS>
+			<Product ref="fro_food_f_7_sprout_01"/>
+			<Product ref="dghcrst_crst"/>
+			<Product ref="fro_justb_plain"/>
+			<Product ref="fro_knoor_naan_pl"/>
+			<Product ref="fro_sarabeth_butbisc"/>
+			<Product ref="fro_bruce_chal"/>
+			<Product ref="fro_fantis_phyllo"/>
+			<Product ref="bak_pull_multislice"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Brand id="bd_aveeno">
+		<FULL_NAME>Aveeno</FULL_NAME>
+	</Brand>
+	<Category id="spe_cooki_cooki_chccp">
+		<products>
+			<Product ref="spe_bruces_chcchp"/>
+			<Product ref="gro_mrsfields_whtchc"/>
+		</products>
+		<FULL_NAME>Chocolate Chip</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="spe_madmoose_chc"/>
+			<Product ref="spe_moore_lemon"/>
+			<Product ref="cake_choclayer"/>
+			<Product ref="spe_walkers_shortbre_02"/>
+			<Product ref="fro_up_mudck"/>
+			<Product ref="fro_up_threberylg"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Product id="cake_crt">
+		<skus>
+			<Sku ref="PAS0040010"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_freshdirect"/>
+		</brands>
+		<FULL_NAME>FreshDirect Classic Carrot Cake with Cream Cheese Icing</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="bak_cake_fd"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_father_sams">
+		<FULL_NAME>Father Sam's</FULL_NAME>
+	</Brand>
+	<Product id="spe_bruces_chcchp">
+		<skus>
+			<Sku ref="FRO0060519"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_bruces"/>
+		</brands>
+		<FULL_NAME>Bruce's Chunky Chocolate Chip Cookies, Frozen</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_cooki_cooki_choch"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="HBA0071083"/>
+	<Category id="gro_cooki_crack_snack">
+		<products>
+			<Product ref="gro_cheez_it_caddy_01"/>
+			<Product ref="gro_cheez_wht_ched_01"/>
+			<Product ref="gro_pfarm_gfshpks"/>
+		</products>
+		<FULL_NAME>Snack</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="gro_cheez_it_caddy_01"/>
+			<Product ref="gro_pfarm_gfshpks"/>
+			<Product ref="spe_vbc_orgmultism"/>
+			<Product ref="spe_kavli_fvgncrsp"/>
+			<Product ref="gro_sunmaid_cnnrai"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Category id="gro_baker_rolls">
+		<products>
+			<Product ref="fro_sarabeth_butbisc"/>
+		</products>
+		<FULL_NAME>Rolls &amp; Buns</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="gro_stroe_hnywhite"/>
+			<Product ref="gro_thomas_plain_sl_01"/>
+			<Product ref="gro_wonder_white_br_01"/>
+			<Product ref="gro_cheez_wht_ched_01"/>
+			<Product ref="fro_frsam_spnwrp"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Sku id="HBA0071087"/>
+	<Category id="gro_baker">
+		<FULL_NAME>Bread &amp; Crackers</FULL_NAME>
+		<subcategories>
+			<Category ref="gro_baker_bread"/>
+			<Category ref="gro_cooki_crack"/>
+		</subcategories>
+		<FEATURED_PRODUCTS>
+			<Product ref="gro_arnold_hthmg"/>
+			<Product ref="gro_kashi_crckrs_sevgrn"/>
+			<Product ref="spe_carrs_table_wa_02"/>
+			<Product ref="gro_thomas_sahara_w_02"/>
+			<Product ref="gro_stroe_whlwht"/>
+			<Product ref="gro_arnold_twlvgrn"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Category id="gro_cooki_cooki_choch">
+		<products>
+			<Product ref="spe_bruces_chcchp"/>
+			<Product ref="gro_amos_choc_chip_01"/>
+			<Product ref="gro_keblr_chips_dlx_01"/>
+			<Product ref="gro_mrsfields_whtchc"/>
+			<Product ref="gro_chips_nabisco_04"/>
+		</products>
+		<FULL_NAME>Chocolate Chip</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="cake_crt"/>
+			<Product ref="spe_madmoose_chc"/>
+			<Product ref="gro_amos_choc_chip_01"/>
+			<Product ref="fro_charles_maca"/>
+			<Product ref="spe_bruces_whtsvn"/>
+			<Product ref="spe_lillyplum_straw"/>
+			<Product ref="ckibni_chocchip"/>
+			<Product ref="spe_walker_choc_01"/>
+			<Product ref="spe_bruces_philfluf"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Product id="fro_edys_ns_trp_chc_01">
+		<skus>
+			<Sku ref="FRO0058171"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_edys"/>
+		</brands>
+		<FULL_NAME>Edy's Slow-Churned No-Sugar Triple Chocolate Ice Cream</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_ice_cream_no_sugadd"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="gro_cooki_cooki_choco">
+		<products>
+			<Product ref="spe_bruces_chcrug"/>
+			<Product ref="spe_lu_ecduet"/>
+		</products>
+		<FULL_NAME>Chocolate</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="cake_crt"/>
+			<Product ref="spe_madmoose_chc"/>
+			<Product ref="gro_amos_choc_chip_01"/>
+			<Product ref="fro_charles_maca"/>
+			<Product ref="spe_bruces_whtsvn"/>
+			<Product ref="spe_lillyplum_straw"/>
+			<Product ref="ckibni_chocchip"/>
+			<Product ref="spe_walker_choc_01"/>
+			<Product ref="spe_bruces_philfluf"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Category id="spe_cooki">
+		<FULL_NAME>Cookies, Cakes &amp; Pastries</FULL_NAME>
+		<subcategories>
+			<Category ref="spe_cooki_krcake"/>
+			<Category ref="spe_cooki_cooki"/>
+			<Category ref="spe_cooki_pie"/>
+		</subcategories>
+		<FEATURED_PRODUCTS>
+			<Product ref="spe_lu_ecduet"/>
+			<Product ref="pietrt_mxbrry"/>
+			<Product ref="cake_crt"/>
+			<Product ref="spe_bruces_chcrug"/>
+			<Product ref="fro_david_limchees_01"/>
+			<Product ref="spe_bruces_rain"/>
+			<Product ref="spe_lillyplum_choconut"/>
+			<Product ref="spe_bruces_chcchp"/>
+			<Product ref="spe_walker_assor_01"/>
+			<Product ref="fro_up_apcrbpitn"/>
+			<Product ref="gro_mrsfields_whtchc"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Product id="spe_carrs_table_wa_02">
+		<skus>
+			<Sku ref="SPE0000480"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_carrs"/>
+		</brands>
+		<FULL_NAME>Carr's Table Water Crackers</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_cooki_crack_plain"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="spe_moore_lemon">
+		<skus>
+			<Sku ref="SPE0060510"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_something_moore"/>
+		</brands>
+		<FULL_NAME>Something Moore Lady Liberty Lemon Cookies</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_cooki_cooki_fruit"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="GRO0064244"/>
+	<Sku id="PAS0040324"/>
+	<Category id="fro_icecr_ice_fruit">
+		<products>
+			<Product ref="fro_ben_je_cherry_g_02"/>
+			<Product ref="fro_creme_fraise"/>
+		</products>
+		<FULL_NAME>Fruit Flavors</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="fro_starbcks_iclflatt"/>
+			<Product ref="fro_edys_nsvar_bar_01"/>
+			<Product ref="fro_ben_je_cherry_g_02"/>
+			<Product ref="fro_creme_fraise"/>
+			<Product ref="fro_sharons_chocolat_01"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Category id="bak_pie_fd">
+		<products>
+			<Product ref="pietrt_mxbrry"/>
+			<Product ref="pietrt_apple_crumb_fro"/>
+			<Product ref="pietrt_apple_fro"/>
+			<Product ref="dghcrst_crst"/>
+		</products>
+		<FULL_NAME>FreshDirect</FULL_NAME>
+	</Category>
+	<Sku id="PAS0040322"/>
+	<Sku id="HBA0071094"/>
+	<Sku id="SPE0000468"/>
+	<Brand id="bd_enfamil">
+		<FULL_NAME>Enfamil</FULL_NAME>
+	</Brand>
+	<Brand id="bd_method">
+		<FULL_NAME>Method</FULL_NAME>
+	</Brand>
+	<Sku id="SPE0064890"/>
+	<Category id="gro_baby_formu">
+		<products>
+			<Product ref="gro_enfamil_powder_m_02"/>
+		</products>
+		<FULL_NAME>Formula</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="gro_enfamil_powder_m_02"/>
+			<Product ref="gro_gerber_second_f_10"/>
+			<Product ref="hba_1ups_aloe_rf"/>
+			<Product ref="gro_earths_apples_b_01"/>
+			<Product ref="gro_earths_oat_cereal"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Sku id="FRO0059186"/>
+	<Category id="hba_body_lotion">
+		<products>
+			<Product ref="hba_dove_lotcoolmst"/>
+			<Product ref="hba_lubri_frgfre"/>
+			<Product ref="hba_neutro_hnduns"/>
+		</products>
+		<FULL_NAME>Moisturizers &amp; Lotions</FULL_NAME>
+	</Category>
+	<Product id="fro_edys_nsvar_bar_01">
+		<skus>
+			<Sku ref="FRO0058199"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_edys"/>
+		</brands>
+		<FULL_NAME>Edy's Whole Fruit No Sugar Added Variety Pack Bars, Strawberry/Tangerine/Raspberry</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_ice_cream_no_sugadd"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="GRO0064242"/>
+	<Brand id="bd_chips_ahoy">
+		<FULL_NAME>Chips Ahoy!</FULL_NAME>
+	</Brand>
+	<Sku id="GRO0064243"/>
+	<Sku id="FRO0059184"/>
+	<Brand id="bd_fantis">
+		<FULL_NAME>Fantis</FULL_NAME>
+	</Brand>
+	<Brand id="bd_dutch_country_stroehm">
+		<FULL_NAME>Dutch Country Stroehmann</FULL_NAME>
+	</Brand>
+	<Product id="fro_sharons_lemon_so_01">
+		<skus>
+			<Sku ref="FRO0044561"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_sharons"/>
+		</brands>
+		<FULL_NAME>Sharon's Fat-Free Lemon Sorbet</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_icecr_sorb"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="SPE0061786"/>
+	<Product id="fro_knoor_naan_pl">
+		<skus>
+			<Sku ref="FRO0072879"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_kohinoor"/>
+		</brands>
+		<FULL_NAME>Kohinoor Plain Naan, Frozen</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_pita_wraps"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="HBA0067027"/>
+	<Product id="dghcrst_crst">
+		<skus>
+			<Sku ref="PAS0040037"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_freshdirect"/>
+		</brands>
+		<FULL_NAME>FreshDirect Pie &amp; Quiche Shell</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="bak_pie_fd"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="HBA0067024"/>
+	<Category id="gro_cooki_crack_chees">
+		<products>
+			<Product ref="gro_cheez_it_caddy_01"/>
+			<Product ref="gro_cheez_wht_ched_01"/>
+			<Product ref="gro_pfarm_gfshpks"/>
+		</products>
+		<FULL_NAME>Cheese</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="gro_cheez_it_caddy_01"/>
+			<Product ref="gro_pfarm_gfshpks"/>
+			<Product ref="spe_vbc_orgmultism"/>
+			<Product ref="spe_kavli_fvgncrsp"/>
+			<Product ref="gro_sunmaid_cnnrai"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Product id="fro_veniero_cookie">
+		<skus>
+			<Sku ref="FRO0066636"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_venieros"/>
+		</brands>
+		<FULL_NAME>Veniero's Cookie Tray</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="cookie_frozen"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="gro_pfarm_gfshpks">
+		<skus>
+			<Sku ref="GRO0062328"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_pepperidge_farm"/>
+		</brands>
+		<FULL_NAME>Pepperidge Farm Cheddar Cheese Goldfish Multi-Pack</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_cooki_crack_snack"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="spe_walkers_shortbre_02">
+		<skus>
+			<Sku ref="SPE0000468"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_walkers"/>
+		</brands>
+		<FULL_NAME>Walkers Shortbread Rounds</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_cooki_cooki_butte"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="FRO0044293"/>
+	<Category id="gro_cooki_cooki_bisco">
+		<products>
+			<Product ref="fro_veniero_biscotti"/>
+		</products>
+		<FULL_NAME>Biscotti</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="cake_crt"/>
+			<Product ref="spe_madmoose_chc"/>
+			<Product ref="gro_amos_choc_chip_01"/>
+			<Product ref="fro_charles_maca"/>
+			<Product ref="spe_bruces_whtsvn"/>
+			<Product ref="spe_lillyplum_straw"/>
+			<Product ref="ckibni_chocchip"/>
+			<Product ref="spe_walker_choc_01"/>
+			<Product ref="spe_bruces_philfluf"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Product id="hba_lubri_frgfre">
+		<skus>
+			<Sku ref="HBA0064060"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_lubriderm"/>
+		</brands>
+		<FULL_NAME>Lubriderm Fragrance Free Lotion</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="hba_body_lotion"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="hba_hair_cnd">
+		<products>
+			<Product ref="hba_pmitchll_condi"/>
+			<Product ref="hba_sebast_lamcondi"/>
+			<Product ref="hba_tres_mstcondt"/>
+			<Product ref="hba_garnier_cdtnrnrm"/>
+		</products>
+		<FULL_NAME>Conditioner</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="hba_hrbes_nrm_sham"/>
+			<Product ref="hba_matrix_bioccsham"/>
+			<Product ref="hba_pmitchll_condi"/>
+			<Product ref="hba_tres_ex_mou"/>
+			<Product ref="hba_sebast_lamcondi"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Sku id="FRO0060588"/>
+	<Brand id="bd_kavli">
+		<FULL_NAME>Kavli</FULL_NAME>
+	</Brand>
+	<Sku id="HBA0063843"/>
+	<Brand id="bd_thomas">
+		<FULL_NAME>Thomas'</FULL_NAME>
+	</Brand>
+	<Sku id="GRO0062328"/>
+	<Category id="gro_baker_fruit">
+		<products>
+			<Product ref="gro_sunmaid_cnnrai"/>
+		</products>
+		<FULL_NAME>Raisin &amp; Cinnamon</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="gro_stroe_hnywhite"/>
+			<Product ref="gro_thomas_plain_sl_01"/>
+			<Product ref="gro_wonder_white_br_01"/>
+			<Product ref="gro_cheez_wht_ched_01"/>
+			<Product ref="fro_frsam_spnwrp"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Product id="gro_earths_apples_b_01">
+		<skus>
+			<Sku ref="GRO001026"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_earths_best"/>
+		</brands>
+		<FULL_NAME>Earth's Best Organic Apples Baby Food</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_baby_food_2nd"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="PAS0040040"/>
+	<Sku id="GRO0060650"/>
+	<Product id="ckibni_bk_off">
+		<skus>
+			<Sku ref="PAS0063530"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_freshdirect"/>
+		</brands>
+		<FULL_NAME>FreshDirect Bake-Off Brownies, Frozen</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="ckibni_fdbar"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_mad_moose_organics">
+		<FULL_NAME>Mad Moose Organics</FULL_NAME>
+	</Brand>
+	<Sku id="PAS0040037"/>
+	<Brand id="bd_weight_watchers">
+		<FULL_NAME>Weight Watchers</FULL_NAME>
+	</Brand>
+	<Sku id="HBA0071103"/>
+	<Product id="fro_ben_je_chocolat_04">
+		<skus>
+			<Sku ref="FRO0044373"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_ben_jerrys"/>
+		</brands>
+		<FULL_NAME>Ben &amp; Jerry's Chocolate Fudge Brownie Ice Cream</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_icecr_ice_choco"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="spe_bruces_rain">
+		<skus>
+			<Sku ref="FRO0060522"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_bruces"/>
+		</brands>
+		<FULL_NAME>Bruce's Rainbow Cookies, Frozen</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="cookie_frozen"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="gro_arnold_twlvgrn">
+		<skus>
+			<Sku ref="GRO0064243"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_arnold"/>
+		</brands>
+		<FULL_NAME>Arnold 12 Grain Bread</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_baker_multi"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="fro_frsam_spnwrp">
+		<skus>
+			<Sku ref="FRO0059956"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_father_sams"/>
+		</brands>
+		<FULL_NAME>Father Sam's Spinach Wraps, Frozen</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_pita_wraps"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="gro_baby_wipes">
+		<products>
+			<Product ref="hba_1ups_aloe_rf"/>
+			<Product ref="hba_pmprs_wps_refll"/>
+		</products>
+		<FULL_NAME>Wipes</FULL_NAME>
+	</Category>
+	<Category id="gro_baby_care">
+		<FULL_NAME>Baby Care</FULL_NAME>
+		<subcategories>
+			<Category ref="gro_baby_care_soap"/>
+		</subcategories>
+	</Category>
+	<Category id="gro_cooki_cooki_butte">
+		<products>
+			<Product ref="spe_moore_lemon"/>
+			<Product ref="spe_walker_assor_01"/>
+			<Product ref="spe_walker_choc_01"/>
+			<Product ref="spe_walkers_shortbre_02"/>
+			<Product ref="gro_eb_veryvnllacks"/>
+		</products>
+		<FULL_NAME>Vanilla &amp; Shortbread</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="cake_crt"/>
+			<Product ref="spe_madmoose_chc"/>
+			<Product ref="gro_amos_choc_chip_01"/>
+			<Product ref="fro_charles_maca"/>
+			<Product ref="spe_bruces_whtsvn"/>
+			<Product ref="spe_lillyplum_straw"/>
+			<Product ref="ckibni_chocchip"/>
+			<Product ref="spe_walker_choc_01"/>
+			<Product ref="spe_bruces_philfluf"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Product id="fro_alvara_sprouted_04">
+		<skus>
+			<Sku ref="FRO0044184"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_alvarado_st_bakery"/>
+		</brands>
+		<FULL_NAME>Alvarado St. Bakery Sprouted Wheat Bread</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_bread_brea"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="HBA0063962"/>
+	<Sku id="FRO0059648"/>
+	<Sku id="PAS0040024"/>
+	<Sku id="FRO0059646"/>
+	<Product id="hba_sebast_lamcondi">
+		<skus>
+			<Sku ref="HBA0066868"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_sebastian"/>
+		</brands>
+		<FULL_NAME>Sebastian Laminates Conditioner</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="hba_hair_cnd"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="cake">
+		<FULL_NAME>Cakes &amp; Cupcakes</FULL_NAME>
+		<subcategories>
+			<Category ref="bak_cake_fd"/>
+			<Category ref="cake_juniors"/>
+			<Category ref="bak_cake_lillyplum"/>
+		</subcategories>
+	</Category>
+	<Category id="fro_pita_wraps">
+		<products>
+			<Product ref="fro_frsam_spnwrp"/>
+			<Product ref="fro_knoor_naan_pl"/>
+		</products>
+		<FULL_NAME>Pita, Wraps &amp; Naan</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="fro_alvara_sprouted_04"/>
+			<Product ref="dghcrst_oatmeal"/>
+			<Product ref="fro_food_f_7_sprout_01"/>
+			<Product ref="fro_food4life_carbbread"/>
+			<Product ref="garlic_bread"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Product id="spe_madmoose_chc">
+		<skus>
+			<Sku ref="SPE0063144"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_mad_moose_organics"/>
+		</brands>
+		<FULL_NAME>Mad Moose Organics Chocolate Cookies with Chocolate-Fudge Filling</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_cooki_cooki_cream"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_carrs">
+		<FULL_NAME>Carr's</FULL_NAME>
+	</Brand>
+	<Sku id="HBA0070514"/>
+	<Sku id="PAS0040010"/>
+	<Sku id="GRO0060485"/>
+	<Sku id="FRO0061043"/>
+	<Brand id="bd_biolage">
+		<FULL_NAME>Biolage</FULL_NAME>
+	</Brand>
+	<Category id="spe_cooki_krcake">
+		<products>
+			<Product ref="spe_bruces_chcbbka"/>
+			<Product ref="spe_bruces_philfluf"/>
+			<Product ref="spe_bruces_whtsvn"/>
+			<Product ref="fro_charles_maca"/>
+			<Product ref="fro_david_limchees_01"/>
+			<Product ref="fro_david_nychees_01"/>
+			<Product ref="cake_crt"/>
+			<Product ref="cake_choclayer"/>
+			<Product ref="spe_lillyplum_choconut"/>
+			<Product ref="spe_lillyplum_straw"/>
+			<Product ref="fro_up_mudck"/>
+		</products>
+		<FULL_NAME>Cakes &amp; Pastries</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="spe_lu_ecduet"/>
+			<Product ref="pietrt_mxbrry"/>
+			<Product ref="cake_crt"/>
+			<Product ref="spe_bruces_chcrug"/>
+			<Product ref="fro_david_limchees_01"/>
+			<Product ref="spe_bruces_rain"/>
+			<Product ref="spe_lillyplum_choconut"/>
+			<Product ref="spe_bruces_chcchp"/>
+			<Product ref="spe_walker_assor_01"/>
+			<Product ref="fro_up_apcrbpitn"/>
+			<Product ref="gro_mrsfields_whtchc"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Category id="gro_cooki_cooki">
+		<FULL_NAME>Cookies</FULL_NAME>
+		<subcategories>
+			<Category ref="gro_cooki_cooki_graham"/>
+			<Category ref="gro_cooki_cooki_bisco"/>
+			<Category ref="gro_cooki_cooki_butte"/>
+			<Category ref="gro_cooki_cooki_choco"/>
+			<Category ref="gro_cooki_cooki_choch"/>
+			<Category ref="gro_cooki_cooki_fruit"/>
+			<Category ref="gro_cooki_cooki_oat"/>
+			<Category ref="gro_cooki_cooki_cream"/>
+		</subcategories>
+		<FEATURED_PRODUCTS>
+			<Product ref="cake_crt"/>
+			<Product ref="spe_madmoose_chc"/>
+			<Product ref="gro_amos_choc_chip_01"/>
+			<Product ref="fro_charles_maca"/>
+			<Product ref="spe_bruces_whtsvn"/>
+			<Product ref="spe_lillyplum_straw"/>
+			<Product ref="ckibni_chocchip"/>
+			<Product ref="spe_walker_choc_01"/>
+			<Product ref="spe_bruces_philfluf"/>
+		</FEATURED_PRODUCTS>
+		<CANDIDATE_LIST>
+		<!--  candidate test ! -->
+			<Category ref="gro_cooki_cooki_bisco"/>
+		</CANDIDATE_LIST>
+		<MANUAL_SELECTION_SLOTS>2</MANUAL_SELECTION_SLOTS>
+	</Category>
+	<Store id="FreshDirect">
+		<departments>
+			<Department ref="bak"/>
+			<Department ref="gro"/>
+			<Department ref="hba"/>
+			<Department ref="fro"/>
+			<Department ref="spe"/>
+		</departments>
+	</Store>
+	<Category id="gro_pita_wraps">
+		<products>
+			<Product ref="fro_frsam_spnwrp"/>
+			<Product ref="gro_thomas_sahara_w_02"/>
+		</products>
+		<FULL_NAME>Pita &amp; Wraps</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="gro_stroe_hnywhite"/>
+			<Product ref="gro_thomas_plain_sl_01"/>
+			<Product ref="gro_wonder_white_br_01"/>
+			<Product ref="gro_cheez_wht_ched_01"/>
+			<Product ref="fro_frsam_spnwrp"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Brand id="bd_olay">
+		<FULL_NAME>Olay</FULL_NAME>
+	</Brand>
+	<Sku id="GRO0069921"/>
+	<Product id="fro_haagen_chocolat_07">
+		<skus>
+			<Sku ref="FRO0044529"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_haagendazs"/>
+		</brands>
+		<FULL_NAME>Häagen-Dazs Chocolate &amp; Dark Chocolate Ice Cream Bars</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_icecr_sand"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="hba_olivella_liqsoap">
+		<skus>
+			<Sku ref="HBA0067024"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_olivella"/>
+		</brands>
+		<FULL_NAME>Olivella Olive Oil Liquid Soap Face &amp; Body</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="hba_bath_liquid"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_head_shoulders">
+		<FULL_NAME>Head &amp; Shoulders</FULL_NAME>
+	</Brand>
+	<Sku id="PAS0040005"/>
+	<Sku id="HBA0071825"/>
+	<Product id="fro_up_apcrbpitn">
+		<skus>
+			<Sku ref="FRO0059648"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_umanoff_parsons"/>
+		</brands>
+		<FULL_NAME>Umanoff &amp; Parsons Apple Crumb Pie, Frozen</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_deser_pie"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_walkers">
+		<FULL_NAME>Walkers</FULL_NAME>
+	</Brand>
+	<Sku id="HBA0063980"/>
+	<Category id="gro_baker_engli">
+		<products>
+			<Product ref="gro_thomas_plain_sl_01"/>
+		</products>
+		<FULL_NAME>English Muffins</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="gro_stroe_hnywhite"/>
+			<Product ref="gro_thomas_plain_sl_01"/>
+			<Product ref="gro_wonder_white_br_01"/>
+			<Product ref="gro_cheez_wht_ched_01"/>
+			<Product ref="fro_frsam_spnwrp"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Category id="hba_bath_bar_fine">
+		<products>
+			<Product ref="hba_olivella_liqsoap"/>
+			<Product ref="hba_sthfrnce_liqsp_2"/>
+			<Product ref="hba_sthfrnce_lavnsp"/>
+		</products>
+		<FULL_NAME>Fine &amp; Milled Soaps</FULL_NAME>
+	</Category>
+	<Category id="fro_icecr_ital">
+		<products>
+			<Product ref="fro_marinos_rainbow_01"/>
+		</products>
+		<FULL_NAME>Italian Ices</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="fro_silhou_assorted_01"/>
+			<Product ref="fro_ben_je_cherry_g_01"/>
+			<Product ref="fro_haagen_chocolat_07"/>
+			<Product ref="fro_starbcks_iclflatt"/>
+			<Product ref="fro_edys_lt_frnch_01"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Product id="fro_ben_je_cherry_g_01">
+		<skus>
+			<Sku ref="FRO0044352"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_ben_jerrys"/>
+		</brands>
+		<FULL_NAME>Ben &amp; Jerry's Cherry Garcia Low-Fat Frozen Yogurt</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_icecr_froz"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_vermont_bread_company">
+		<FULL_NAME>Vermont Bread Company</FULL_NAME>
+	</Brand>
+	<Sku id="GRO001103"/>
+	<Brand id="bd_keebler">
+		<FULL_NAME>Keebler</FULL_NAME>
+	</Brand>
+	<Product id="fro_ben_je_cherry_g_02">
+		<skus>
+			<Sku ref="FRO0044363"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_ben_jerrys"/>
+		</brands>
+		<FULL_NAME>Ben &amp; Jerry's Cherry Garcia Ice Cream</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_icecr_ice_fruit"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="bak_cake_lillyplum">
+		<products>
+			<Product ref="spe_lillyplum_choconut"/>
+			<Product ref="spe_lillyplum_straw"/>
+		</products>
+		<FULL_NAME>Lillyplum Cupcakes</FULL_NAME>
+	</Category>
+	<Sku id="HBA0063975"/>
+	<Product id="fro_david_nychees_01">
+		<skus>
+			<Sku ref="FRO0059186"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_david_glass"/>
+		</brands>
+		<FULL_NAME>David Glass Ultimate New York Cheesecake, Frozen</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_deser_cake"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_starbucks">
+		<FULL_NAME>Starbucks</FULL_NAME>
+	</Brand>
+	<Brand id="bd_alvarado_st_bakery">
+		<FULL_NAME>Alvarado St. Bakery</FULL_NAME>
+	</Brand>
+	<Category id="gro_baker_wheat">
+		<products>
+			<Product ref="gro_stroe_whlwht"/>
+		</products>
+		<FULL_NAME>Whole Wheat</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="gro_stroe_hnywhite"/>
+			<Product ref="gro_thomas_plain_sl_01"/>
+			<Product ref="gro_wonder_white_br_01"/>
+			<Product ref="gro_cheez_wht_ched_01"/>
+			<Product ref="fro_frsam_spnwrp"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Brand id="bd_cool_whip">
+		<FULL_NAME>Cool Whip</FULL_NAME>
+	</Brand>
+	<Category id="gro_baby">
+		<FULL_NAME>Baby</FULL_NAME>
+		<subcategories>
+			<Category ref="gro_baby_food"/>
+			<Category ref="gro_baby_diape"/>
+			<Category ref="gro_baby_care"/>
+		</subcategories>
+		<FEATURED_PRODUCTS>
+			<Product ref="gro_earths_appleblu_01"/>
+			<Product ref="hab_pampers_crsrs_4"/>
+			<Product ref="hba_svngen_dprs_3"/>
+			<Product ref="hba_avee_bby"/>
+			<Product ref="hba_pmprs_wps_refll"/>
+			<Product ref="gro_7gen_diaperlg"/>
+		</FEATURED_PRODUCTS>
+		<MANUAL_SELECTION_SLOTS>1</MANUAL_SELECTION_SLOTS>
+	</Category>
+	<Brand id="bd_lu">
+		<FULL_NAME>LU</FULL_NAME>
+	</Brand>
+	<Brand id="bd_sebastian">
+		<FULL_NAME>Sebastian</FULL_NAME>
+	</Brand>
+	<Product id="gro_kashi_chocookies">
+		<skus>
+			<Sku ref="GRO0070751"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_kashi"/>
+		</brands>
+		<FULL_NAME>Kashi TLC Oatmeal Dark Chocolate Cookies </FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_cooki_cooki_oat"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="hba_garnier_cdtnrnrm">
+		<skus>
+			<Sku ref="HBA0071825"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_garnier"/>
+		</brands>
+		<FULL_NAME>Garnier Fructis Conditioner for Normal Hair</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="hba_hair_cnd"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="fro_up_mudck">
+		<skus>
+			<Sku ref="FRO0059646"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_umanoff_parsons"/>
+		</brands>
+		<FULL_NAME>Umanoff &amp; Parsons Chocolate Mud Cake, Frozen</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_deser_cake"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="fro_deser_pie">
+		<products>
+			<Product ref="pietrt_apple_crumb_fro"/>
+			<Product ref="pietrt_apple_fro"/>
+			<Product ref="fro_up_apcrbpitn"/>
+			<Product ref="fro_up_threberylg"/>
+		</products>
+		<FULL_NAME>Pies &amp; Tarts</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="fro_david_nychees_01"/>
+			<Product ref="fro_kraft_cool_whi_03"/>
+			<Product ref="fro_veniero_cookie"/>
+			<Product ref="pietrt_apple_fro"/>
+			<Product ref="pietrt_apple_crumb_fro"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Sku id="SPE0063144"/>
+	<Sku id="PAS0063395"/>
+	<Product id="fro_bruce_chal">
+		<skus>
+			<Sku ref="FRO0060758"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_bruces"/>
+		</brands>
+		<FULL_NAME>Bruce's Plain Challah, Frozen</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_bread_brea"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="gro_cooki_crack">
+		<FULL_NAME>Crackers</FULL_NAME>
+		<subcategories>
+			<Category ref="gro_cooki_crack_chees"/>
+			<Category ref="gro_cooki_crack_flat"/>
+			<Category ref="gro_cooki_crack_graha"/>
+			<Category ref="gro_cooki_crack_plain"/>
+			<Category ref="gro_cooki_crack_snack"/>
+			<Category ref="gro_cooki_crack_wheat"/>
+		</subcategories>
+		<FEATURED_PRODUCTS>
+			<Product ref="gro_cheez_it_caddy_01"/>
+			<Product ref="gro_pfarm_gfshpks"/>
+			<Product ref="spe_vbc_orgmultism"/>
+			<Product ref="spe_kavli_fvgncrsp"/>
+			<Product ref="gro_sunmaid_cnnrai"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Brand id="bd_seventh_generation">
+		<FULL_NAME>Seventh Generation</FULL_NAME>
+	</Brand>
+	<Product id="spe_lillyplum_choconut">
+		<skus>
+			<Sku ref="SPE0061192"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_lillyplum"/>
+		</brands>
+		<FULL_NAME>Lillyplum Cream-Filled ChocoNutter Cupcakes</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="bak_cake_lillyplum"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="hba_hair_shmcnd">
+		<products>
+			<Product ref="hba_head_clas_2in1_01"/>
+		</products>
+		<FULL_NAME>Shampoo Plus Conditioner</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="hba_hrbes_nrm_sham"/>
+			<Product ref="hba_matrix_bioccsham"/>
+			<Product ref="hba_pmitchll_condi"/>
+			<Product ref="hba_tres_ex_mou"/>
+			<Product ref="hba_sebast_lamcondi"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Category id="gro_cooki_cooki_oat">
+		<products>
+			<Product ref="gro_kashi_chocookies"/>
+			<Product ref="gro_kashi_oatcookies"/>
+		</products>
+		<FULL_NAME>Oatmeal</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="cake_crt"/>
+			<Product ref="spe_madmoose_chc"/>
+			<Product ref="gro_amos_choc_chip_01"/>
+			<Product ref="fro_charles_maca"/>
+			<Product ref="spe_bruces_whtsvn"/>
+			<Product ref="spe_lillyplum_straw"/>
+			<Product ref="ckibni_chocchip"/>
+			<Product ref="spe_walker_choc_01"/>
+			<Product ref="spe_bruces_philfluf"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Category id="hba_body_cleansers">
+		<products>
+			<Product ref="hba_avee_bby"/>
+			<Product ref="hba_eb_shamp_bdywsh"/>
+			<Product ref="hba_olay_bw_shea"/>
+			<Product ref="hba_olivella_liqsoap"/>
+		</products>
+		<FULL_NAME>Body Cleansers</FULL_NAME>
+	</Category>
+	<Sku id="HBA0071023"/>
+	<Sku id="HBA0071125"/>
+	<Sku id="FRO0044211"/>
+	<Product id="hba_matrix_bioccsham">
+		<skus>
+			<Sku ref="HBA0066880"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_biolage"/>
+		</brands>
+		<FULL_NAME>Biolage by Matrix Color Care Shampoo</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="hba_hair_sham"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="HBA0071127"/>
+	<Sku id="FRO0068661"/>
+	<Product id="fro_welchs_light_fr_01">
+		<skus>
+			<Sku ref="FRO0044512"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_welchs"/>
+		</brands>
+		<FULL_NAME>Welch's Light Fruit Juice Bars Variety Pack</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_icecr_pops"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="spe_cooki_cooki_cream">
+		<products>
+			<Product ref="spe_madmoose_chc"/>
+		</products>
+		<FULL_NAME>Wafer &amp; Sandwich</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="spe_madmoose_chc"/>
+			<Product ref="spe_moore_lemon"/>
+			<Product ref="cake_choclayer"/>
+			<Product ref="spe_walkers_shortbre_02"/>
+			<Product ref="fro_up_mudck"/>
+			<Product ref="fro_up_threberylg"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Category id="bak_bagelcrsnt">
+		<FULL_NAME>Bagels &amp; Croissants</FULL_NAME>
+		<subcategories>
+			<Category ref="bak_bagels"/>
+		</subcategories>
+	</Category>
+	<Brand id="bd_pepperidge_farm">
+		<FULL_NAME>Pepperidge Farm</FULL_NAME>
+	</Brand>
+	<Product id="hba_hrbes_clrtrtdsh">
+		<skus>
+			<Sku ref="HBA0071056"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_herbal_essences"/>
+		</brands>
+		<FULL_NAME>Herbal Essences Color Me Happy Shampoo for Color Treated Hair</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="hba_hair_sham"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="hba_pmitchll_condi">
+		<skus>
+			<Sku ref="HBA0067027"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_paul_mitchell"/>
+		</brands>
+		<FULL_NAME>Paul Mitchell The Conditioner</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="hba_hair_cnd"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="fro_deser_cake">
+		<products>
+			<Product ref="spe_bruces_chcbbka"/>
+			<Product ref="spe_bruces_philfluf"/>
+			<Product ref="fro_david_limchees_01"/>
+			<Product ref="fro_david_nychees_01"/>
+			<Product ref="fro_junior_plnck"/>
+			<Product ref="fro_up_mudck"/>
+		</products>
+		<FULL_NAME>Cake</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="fro_david_nychees_01"/>
+			<Product ref="fro_kraft_cool_whi_03"/>
+			<Product ref="fro_veniero_cookie"/>
+			<Product ref="pietrt_apple_fro"/>
+			<Product ref="pietrt_apple_crumb_fro"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Brand id="bd_ben_jerrys">
+		<FULL_NAME>Ben &amp; Jerry's</FULL_NAME>
+	</Brand>
+	<Product id="spe_lu_ecduet">
+		<skus>
+			<Sku ref="SPE0061905"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_lu"/>
+		</brands>
+		<FULL_NAME>LU Le Petit Ecolier Duets Dark Chocolate Cookies</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_cooki_cooki_choco"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="FRO0044512"/>
+	<Product id="gro_arnold_hthmg">
+		<skus>
+			<Sku ref="GRO0064242"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_arnold"/>
+		</brands>
+		<FULL_NAME>Arnold Healthy Multi-Grain Bread</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_baker_multi"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="SPE0061905"/>
+	<Product id="hba_tres_mstcondt">
+		<skus>
+			<Sku ref="HBA0071083"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_tresemme"/>
+		</brands>
+		<FULL_NAME>TRESemmé Moisture Rich Conditioner</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="hba_hair_cnd"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="gro_cooki_crack_wheat">
+		<products>
+			<Product ref="gro_kashi_crckrs_sevgrn"/>
+		</products>
+		<FULL_NAME>Wheat</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="gro_cheez_it_caddy_01"/>
+			<Product ref="gro_pfarm_gfshpks"/>
+			<Product ref="spe_vbc_orgmultism"/>
+			<Product ref="spe_kavli_fvgncrsp"/>
+			<Product ref="gro_sunmaid_cnnrai"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Sku id="HBA0063596"/>
+	<Product id="fro_starbcks_iclflatt">
+		<skus>
+			<Sku ref="FRO0063458"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_starbucks"/>
+		</brands>
+		<FULL_NAME>Starbucks Low-Fat Latte Ice Cream</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_icecr_low"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="fro_sharons_chocolat_01">
+		<skus>
+			<Sku ref="FRO0044569"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_sharons"/>
+		</brands>
+		<FULL_NAME>Sharon's Low-Fat Chocolate Sorbet Bars</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_icecr_sorb"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="GRO0069271"/>
+	<Product id="hba_eb_shamp_bdywsh">
+		<skus>
+			<Sku ref="HBA0071103"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_earths_best"/>
+		</brands>
+		<FULL_NAME>Earth's Best Lavender Shampoo &amp; Body Wash</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="hba_hair_sham"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="spe_cooki_krcook">
+		<products>
+			<Product ref="spe_bruces_chcrug"/>
+			<Product ref="spe_bruces_chcchp"/>
+			<Product ref="spe_bruces_rain"/>
+		</products>
+		<FULL_NAME>Kosher</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="spe_madmoose_chc"/>
+			<Product ref="spe_moore_lemon"/>
+			<Product ref="cake_choclayer"/>
+			<Product ref="spe_walkers_shortbre_02"/>
+			<Product ref="fro_up_mudck"/>
+			<Product ref="fro_up_threberylg"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Product id="pietrt_apple_crumb_fro">
+		<skus>
+			<Sku ref="PAS0063395"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_freshdirect"/>
+		</brands>
+		<FULL_NAME>FreshDirect Apple Crumb Pie, Frozen</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="bak_pie_fd"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="FRO0060332"/>
+	<Sku id="GRO001023"/>
+	<Brand id="bd_mrs_fields">
+		<FULL_NAME>Mrs. Fields</FULL_NAME>
+	</Brand>
+	<Brand id="bd_popsicle">
+		<FULL_NAME>Popsicle</FULL_NAME>
+	</Brand>
+	<Product id="fro_sarabeth_curscn">
+		<skus>
+			<Sku ref="FRO0062365"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_sarabeths_bakery"/>
+		</brands>
+		<FULL_NAME>Sarabeth's Bakery Currant Scones</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_baker_muffi"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="GRO001026"/>
+	<Brand id="bd_welchs">
+		<FULL_NAME>Welch's</FULL_NAME>
+	</Brand>
+	<Product id="gro_stroe_whlwht">
+		<skus>
+			<Sku ref="GRO0060490"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_dutch_country_stroehm"/>
+			<Brand ref="bd_stroehmann"/>
+		</brands>
+		<FULL_NAME>Dutch Country Stroehmann 100% Whole Wheat Bread</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_baker_wheat"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="fro_popsicle_sftrop">
+		<skus>
+			<Sku ref="FRO0063465"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_popsicle"/>
+		</brands>
+		<FULL_NAME>Popsicle Sugar-Free Tropical Flavors Ice Pops</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_icecr_pops"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="GRO0070302"/>
+	<Product id="spe_bruces_chcrug">
+		<skus>
+			<Sku ref="FRO0060521"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_bruces"/>
+		</brands>
+		<FULL_NAME>Bruce's Chocolate Rugelach, Frozen</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_cooki_cooki_choco"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="FRO0060519"/>
+	<Category id="fro_icecr_ice">
+		<FULL_NAME>Ice Cream</FULL_NAME>
+		<subcategories>
+			<Category ref="fro_icecr_ice_choco"/>
+			<Category ref="fro_icecr_ice_fruit"/>
+			<Category ref="fro_icecr_ice_vanil"/>
+		</subcategories>
+		<FEATURED_PRODUCTS>
+			<Product ref="fro_starbcks_iclflatt"/>
+			<Product ref="fro_edys_nsvar_bar_01"/>
+			<Product ref="fro_ben_je_cherry_g_02"/>
+			<Product ref="fro_creme_fraise"/>
+			<Product ref="fro_sharons_chocolat_01"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Category id="gro_baker_muffi">
+		<products>
+			<Product ref="fro_sarabeth_curscn"/>
+		</products>
+		<FULL_NAME>Muffins</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="fro_veniero_biscotti"/>
+			<Product ref="fro_sarabeth_curscn"/>
+			<Product ref="cake_choclayer"/>
+			<Product ref="gro_keblr_chips_dlx_01"/>
+			<Product ref="spe_bruces_chcbbka"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Product id="bak_pull_multislice">
+		<skus>
+			<Sku ref="BAK0065716"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_freshdirect"/>
+		</brands>
+		<FULL_NAME>FreshDirect Frozen Sliced Multigrain Pullman Loaf</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="pullman"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="gro_baby_cereal">
+		<products>
+			<Product ref="gro_earths_oat_cereal"/>
+		</products>
+		<FULL_NAME>Infant Cereal</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="gro_enfamil_powder_m_02"/>
+			<Product ref="gro_gerber_second_f_10"/>
+			<Product ref="hba_1ups_aloe_rf"/>
+			<Product ref="gro_earths_apples_b_01"/>
+			<Product ref="gro_earths_oat_cereal"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Sku id="FRO0060522"/>
+	<Product id="spe_lillyplum_straw">
+		<skus>
+			<Sku ref="SPE0061194"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_lillyplum"/>
+		</brands>
+		<FULL_NAME>Lillyplum Cream-Filled Strawberry Blonde Cupcakes</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="bak_cake_lillyplum"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="FRO0060521"/>
+	<Brand id="bd_honey_maid">
+		<FULL_NAME>Honey Maid</FULL_NAME>
+	</Brand>
+	<Product id="gro_enfamil_powder_m_02">
+		<skus>
+			<Sku ref="GRO001066"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_enfamil"/>
+		</brands>
+		<FULL_NAME>Enfamil Powder Milk Based Infant Formula With Iron</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_baby_formu"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="ckibni">
+		<FULL_NAME>Cookies &amp; Brownies</FULL_NAME>
+		<subcategories>
+			<Category ref="bak_cookies_fd"/>
+			<Category ref="ckibni_fdbar"/>
+		</subcategories>
+	</Category>
+	<Product id="pietrt_apple_fro">
+		<skus>
+			<Sku ref="PAS0062422"/>
+			<Sku ref="PAS0062425"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_freshdirect"/>
+		</brands>
+		<FULL_NAME>FreshDirect New England Apple Pie, Frozen</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="bak_pie_fd"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="GRO0065252"/>
+	<Category id="fro_ice_cream_no_sugadd">
+		<products>
+			<Product ref="fro_benjer_sf_nyspr"/>
+			<Product ref="fro_edys_ns_mntchoc_01"/>
+			<Product ref="fro_edys_ns_trp_chc_01"/>
+			<Product ref="fro_edys_ns_van_01"/>
+			<Product ref="fro_popsicle_sfocg"/>
+			<Product ref="fro_popsicle_sftrop"/>
+			<Product ref="fro_welchs_light_fr_01"/>
+			<Product ref="fro_edys_nsvar_bar_01"/>
+		</products>
+		<FULL_NAME>No Sugar Added &amp; Low-Carb</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="fro_popsicle_sftrop"/>
+			<Product ref="fro_edys_ns_mntchoc_01"/>
+			<Product ref="fro_edys_ns_trp_chc_01"/>
+			<Product ref="fro_welchs_light_fr_01"/>
+			<Product ref="fro_benjer_sf_nyspr"/>
+			<Product ref="fro_popsicle_sfocg"/>
+			<Product ref="fro_edys_ns_van_01"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Sku id="HBA0072207"/>
+	<Product id="gro_chips_nabisco_04">
+		<skus>
+			<Sku ref="GRO001792"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_nabisco"/>
+			<Brand ref="bd_chips_ahoy"/>
+		</brands>
+		<FULL_NAME>Nabisco Chips Ahoy! Chocolate Chip Cookies</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_cooki_cooki_choch"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="fro_icecr_ice_vanil">
+		<products>
+			<Product ref="fro_edys_lt_frnch_01"/>
+			<Product ref="fro_edys_ns_van_01"/>
+			<Product ref="fro_rbrook_hvvanilla"/>
+		</products>
+		<FULL_NAME>Vanilla</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="fro_starbcks_iclflatt"/>
+			<Product ref="fro_edys_nsvar_bar_01"/>
+			<Product ref="fro_ben_je_cherry_g_02"/>
+			<Product ref="fro_creme_fraise"/>
+			<Product ref="fro_sharons_chocolat_01"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Sku id="FRO0063525"/>
+	<Category id="gro_cooki_crack_graha">
+		<products>
+			<Product ref="gro_honey_graham_01"/>
+			<Product ref="ckibni_graham"/>
+		</products>
+		<FULL_NAME>Graham</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="gro_cheez_it_caddy_01"/>
+			<Product ref="gro_pfarm_gfshpks"/>
+			<Product ref="spe_vbc_orgmultism"/>
+			<Product ref="spe_kavli_fvgncrsp"/>
+			<Product ref="gro_sunmaid_cnnrai"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Sku id="FRO0060516"/>
+	<Sku id="FRO0060512"/>
+	<Sku id="FRO0060514"/>
+	<Category id="fro_deser_whip">
+		<products>
+			<Product ref="fro_kraft_cool_whi_03"/>
+		</products>
+		<FULL_NAME>Whipped Cream</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="fro_david_nychees_01"/>
+			<Product ref="fro_kraft_cool_whi_03"/>
+			<Product ref="fro_veniero_cookie"/>
+			<Product ref="pietrt_apple_fro"/>
+			<Product ref="pietrt_apple_crumb_fro"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Sku id="BAK0060592"/>
+	<Product id="fro_kraft_cool_whi_03">
+		<skus>
+			<Sku ref="FRO0044293"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_kraft"/>
+			<Brand ref="bd_cool_whip"/>
+		</brands>
+		<FULL_NAME>Kraft Cool Whip Lite</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_deser_whip"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="fro_icecr_froz">
+		<products>
+			<Product ref="fro_ben_je_cherry_g_01"/>
+		</products>
+		<FULL_NAME>Frozen Yogurt</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="fro_silhou_assorted_01"/>
+			<Product ref="fro_ben_je_cherry_g_01"/>
+			<Product ref="fro_haagen_chocolat_07"/>
+			<Product ref="fro_starbcks_iclflatt"/>
+			<Product ref="fro_edys_lt_frnch_01"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Brand id="bd_kashi">
+		<FULL_NAME>Kashi</FULL_NAME>
+	</Brand>
+	<Product id="fro_fantis_phyllo">
+		<skus>
+			<Sku ref="FRO0070665"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_fantis"/>
+		</brands>
+		<FULL_NAME>Fantis Phyllo Dough </FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_bread_doug"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="HBA0063583"/>
+	<Brand id="bd_marinos">
+		<FULL_NAME>Marinos</FULL_NAME>
+	</Brand>
+	<Department id="hba">
+		<FULL_NAME>Health &amp; Beauty</FULL_NAME>
+		<categories>
+			<Category ref="hba_body_carre"/>
+			<Category ref="hba_hair"/>
+			<Category ref="hba_bath"/>
+		</categories>
+	</Department>
+	<Product id="dghcrst_oatmeal">
+		<skus>
+			<Sku ref="PAS0040324"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_freshdirect"/>
+		</brands>
+		<FULL_NAME>FreshDirect Frozen, Ready-to-Bake Oatmeal Raisin Cookies</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="bak_cookies_fd"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="FRO0044529"/>
+	<Product id="fro_marinos_rainbow_01">
+		<skus>
+			<Sku ref="FRO0044471"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_marinos"/>
+		</brands>
+		<FULL_NAME>Marinos Rainbow Italian Ice Cups</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_icecr_ital"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="gro_honey_graham_01">
+		<skus>
+			<Sku ref="GRO0058672"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_nabisco"/>
+			<Brand ref="bd_honey_maid"/>
+		</brands>
+		<FULL_NAME>Nabisco Honey Maid Graham Crackers</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_cooki_crack_graha"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="gro_cooki_crack_flat">
+		<products>
+			<Product ref="spe_kavli_fvgncrsp"/>
+		</products>
+		<FULL_NAME>Pita Crisps &amp; Flatbreads</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="gro_cheez_it_caddy_01"/>
+			<Product ref="gro_pfarm_gfshpks"/>
+			<Product ref="spe_vbc_orgmultism"/>
+			<Product ref="spe_kavli_fvgncrsp"/>
+			<Product ref="gro_sunmaid_cnnrai"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Brand id="bd_lubriderm">
+		<FULL_NAME>Lubriderm</FULL_NAME>
+	</Brand>
+	<Brand id="bd_sarabeths_bakery">
+		<FULL_NAME>Sarabeth's Bakery</FULL_NAME>
+	</Brand>
+	<Brand id="bd_stroehmann">
+		<FULL_NAME>Stroehmann</FULL_NAME>
+	</Brand>
+	<Sku id="HBA0072637"/>
+	<Brand id="bd_gerber">
+		<FULL_NAME>Gerber</FULL_NAME>
+	</Brand>
+	<Product id="pietrt_mxbrry">
+		<skus>
+			<Sku ref="PAS0040005"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_freshdirect"/>
+		</brands>
+		<FULL_NAME>FreshDirect Seasonal Mixed Berry Tart</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="bak_pie_fd"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="ckibni_fdbar">
+		<products>
+			<Product ref="ckibni_bk_off"/>
+		</products>
+		<FULL_NAME>FreshDirect Brownies &amp; Bars</FULL_NAME>
+	</Category>
+	<Category id="spe_cooki_cooki">
+		<FULL_NAME>Cookies</FULL_NAME>
+		<subcategories>
+			<Category ref="spe_cooki_cooki_butte"/>
+			<Category ref="spe_cooki_cooki_choco"/>
+			<Category ref="spe_cooki_cooki_chccp"/>
+			<Category ref="spe_cooki_krcook"/>
+			<Category ref="spe_cooki_cooki_cream"/>
+		</subcategories>
+		<FEATURED_PRODUCTS>
+			<Product ref="spe_madmoose_chc"/>
+			<Product ref="spe_moore_lemon"/>
+			<Product ref="cake_choclayer"/>
+			<Product ref="spe_walkers_shortbre_02"/>
+			<Product ref="fro_up_mudck"/>
+			<Product ref="fro_up_threberylg"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Brand id="bd_charles_laurel">
+		<FULL_NAME>Charles &amp; Laurel</FULL_NAME>
+	</Brand>
+	<Brand id="bd_nabisco">
+		<FULL_NAME>Nabisco</FULL_NAME>
+	</Brand>
+	<Product id="hba_svngen_dprs_3">
+		<skus>
+			<Sku ref="HBA0072207"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_seventh_generation"/>
+		</brands>
+		<FULL_NAME>Seventh Generation Chlorine-Free Diapers Size 3, 16-28lb</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_baby_diapr"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="FRO0044550"/>
+	<Sku id="GRO001066"/>
+	<Category id="cookie_frozen">
+		<products>
+			<Product ref="spe_bruces_chcrug"/>
+			<Product ref="spe_bruces_rain"/>
+			<Product ref="fro_charles_maca"/>
+			<Product ref="fro_veniero_biscotti"/>
+			<Product ref="fro_veniero_cookie"/>
+			<Product ref="ckibni_bk_off"/>
+		</products>
+		<FULL_NAME>Cookies &amp; Brownies</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="fro_david_nychees_01"/>
+			<Product ref="fro_kraft_cool_whi_03"/>
+			<Product ref="fro_veniero_cookie"/>
+			<Product ref="pietrt_apple_fro"/>
+			<Product ref="pietrt_apple_crumb_fro"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Sku id="GRO001792"/>
+	<Product id="fro_popsicle_sfocg">
+		<skus>
+			<Sku ref="FRO0063464"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_popsicle"/>
+		</brands>
+		<FULL_NAME>Popsicle Sugar-Free Orange, Cherry &amp; Grape Ice Pops</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_icecr_pops"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="GRO0069629"/>
+	<Sku id="GRO0069624"/>
+	<Category id="fro_icecr">
+		<FULL_NAME>Ice Cream</FULL_NAME>
+		<subcategories>
+			<Category ref="fro_ice_cream_no_sugadd"/>
+			<Category ref="fro_icecr_froz"/>
+			<Category ref="fro_icecr_ice"/>
+			<Category ref="fro_icecr_ital"/>
+			<Category ref="fro_icecr_pops"/>
+			<Category ref="fro_icecr_sand"/>
+			<Category ref="fro_icecr_sorb"/>
+			<Category ref="fro_icecr_low"/>
+		</subcategories>
+		<FEATURED_PRODUCTS>
+			<Product ref="fro_sharons_lemon_so_01"/>
+			<Product ref="fro_rbrook_hvvanilla"/>
+			<Product ref="fro_silhou_assorted_01"/>
+			<Product ref="fro_marinos_rainbow_01"/>
+			<Product ref="fro_ben_je_chocolat_04"/>
+			<Product ref="fro_weight_frozen_c_01"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Sku id="GRO0060490"/>
+	<Category id="hba_bath_bar">
+		<products>
+			<Product ref="hba_toms_gly_uns"/>
+		</products>
+		<FULL_NAME>Bar Soap</FULL_NAME>
+	</Category>
+	<Product id="hba_dove_lotcoolmst">
+		<skus>
+			<Sku ref="HBA0071087"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_dove"/>
+		</brands>
+		<FULL_NAME>Dove Cool Moisture Lotion for Normal Skin</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="hba_body_lotion"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="fro_icecr_sorb">
+		<products>
+			<Product ref="fro_sharons_lemon_so_01"/>
+			<Product ref="fro_sharons_chocolat_01"/>
+		</products>
+		<FULL_NAME>Sorbet &amp; Sherbet</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="fro_silhou_assorted_01"/>
+			<Product ref="fro_ben_je_cherry_g_01"/>
+			<Product ref="fro_haagen_chocolat_07"/>
+			<Product ref="fro_starbcks_iclflatt"/>
+			<Product ref="fro_edys_lt_frnch_01"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Category id="gro_cooki_cooki_graham">
+		<products>
+			<Product ref="gro_honey_graham_01"/>
+			<Product ref="ckibni_graham"/>
+		</products>
+		<FULL_NAME>Graham</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="cake_crt"/>
+			<Product ref="spe_madmoose_chc"/>
+			<Product ref="gro_amos_choc_chip_01"/>
+			<Product ref="fro_charles_maca"/>
+			<Product ref="spe_bruces_whtsvn"/>
+			<Product ref="spe_lillyplum_straw"/>
+			<Product ref="ckibni_chocchip"/>
+			<Product ref="spe_walker_choc_01"/>
+			<Product ref="spe_bruces_philfluf"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Sku id="FRO0044547"/>
+	<Product id="hba_avee_bby">
+		<skus>
+			<Sku ref="HBA0063962"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_aveeno"/>
+		</brands>
+		<FULL_NAME>Aveeno Baby Wash &amp; Shampoo</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="hba_body_cleansers"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="GRO0058975"/>
+	<Product id="gro_purell_santzraloe">
+		<skus>
+			<Sku ref="GRO0069624"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_purell"/>
+		</brands>
+		<FULL_NAME>Purell Hand Sanitizer w/ Aloe </FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="hba_bath_liquid"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="FRO0058199"/>
+	<Sku id="PAS0062425"/>
+	<Category id="gro_baby_food_todd">
+		<products>
+			<Product ref="gro_eb_veryvnllacks"/>
+		</products>
+		<FULL_NAME>Toddler Food</FULL_NAME>
+	</Category>
+	<Category id="gro_cooki">
+		<FULL_NAME>Cookies, Cakes &amp; Pastries</FULL_NAME>
+		<subcategories>
+			<Category ref="gro_baker_cake"/>
+			<Category ref="gro_cooki_cooki"/>
+			<Category ref="gro_baker_muffi"/>
+		</subcategories>
+		<FEATURED_PRODUCTS>
+			<Product ref="gro_kashi_chocookies"/>
+			<Product ref="gro_chips_nabisco_04"/>
+			<Product ref="gro_eb_veryvnllacks"/>
+			<Product ref="ckibni_graham"/>
+			<Product ref="gro_kashi_oatcookies"/>
+			<Product ref="gro_honey_graham_01"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Sku id="GRO001055"/>
+	<Brand id="bd_freshdirect">
+		<FULL_NAME>FreshDirect</FULL_NAME>
+	</Brand>
+	<Category id="bak_bagels">
+		<products>
+			<Product ref="fro_justb_plain"/>
+		</products>
+		<FULL_NAME>Bagels</FULL_NAME>
+	</Category>
+	<Sku id="PAS0062422"/>
+	<Sku id="FRO0068235"/>
+	<Sku id="FRO0060758"/>
+	<Category id="hba_hair_mous">
+		<products>
+			<Product ref="hba_tres_ex_mou"/>
+		</products>
+		<FULL_NAME>Gel, Mousse &amp; Hairspray</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="hba_hrbes_nrm_sham"/>
+			<Product ref="hba_matrix_bioccsham"/>
+			<Product ref="hba_pmitchll_condi"/>
+			<Product ref="hba_tres_ex_mou"/>
+			<Product ref="hba_sebast_lamcondi"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Category id="gro_cooki_cooki_fruit">
+		<products>
+			<Product ref="spe_bruces_rain"/>
+			<Product ref="spe_moore_lemon"/>
+		</products>
+		<FULL_NAME>Fruit</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="cake_crt"/>
+			<Product ref="spe_madmoose_chc"/>
+			<Product ref="gro_amos_choc_chip_01"/>
+			<Product ref="fro_charles_maca"/>
+			<Product ref="spe_bruces_whtsvn"/>
+			<Product ref="spe_lillyplum_straw"/>
+			<Product ref="ckibni_chocchip"/>
+			<Product ref="spe_walker_choc_01"/>
+			<Product ref="spe_bruces_philfluf"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Product id="gro_thomas_sahara_w_02">
+		<skus>
+			<Sku ref="GRO001087"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_thomas"/>
+		</brands>
+		<FULL_NAME>Thomas' Sahara Whole Wheat Pita Pocket Bread</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_pita_wraps"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="gro_baby_care_soap">
+		<products>
+			<Product ref="hba_avee_bby"/>
+			<Product ref="hba_eb_shamp_bdywsh"/>
+		</products>
+		<FULL_NAME>Bath Care</FULL_NAME>
+	</Category>
+	<Product id="hba_sthfrnce_liqsp_2">
+		<skus>
+			<Sku ref="HBA0071127"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_south_of_france"/>
+		</brands>
+		<FULL_NAME>South of France Liquid Soap, Green Tea</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="hba_bath_liquid"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="spe_bruces_chcbbka">
+		<skus>
+			<Sku ref="FRO0060516"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_bruces"/>
+		</brands>
+		<FULL_NAME>Bruce's Chocolate Butter Babka, Frozen</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_baker_cake"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="hab_pampers_crsrs_4">
+		<skus>
+			<Sku ref="HBA0072637"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_pampers"/>
+		</brands>
+		<FULL_NAME>Pampers Cruisers Diapers Size 4, 22-37lb</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_baby_diapr"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_lillyplum">
+		<FULL_NAME>Lillyplum</FULL_NAME>
+	</Brand>
+	<Product id="hba_sthfrnce_lavnsp">
+		<skus>
+			<Sku ref="HBA0071125"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_south_of_france"/>
+		</brands>
+		<FULL_NAME>South of France Milled Bar Soap, Lavender </FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="hba_bath_bar_fine"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="gro_wonder_white_br_01">
+		<skus>
+			<Sku ref="GRO001103"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_wonder"/>
+		</brands>
+		<FULL_NAME>Wonder White Bread</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_baker_white"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="fro_edys_ns_mntchoc_01">
+		<skus>
+			<Sku ref="FRO0058172"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_edys"/>
+		</brands>
+		<FULL_NAME>Edy's Slow-Churned No-Sugar Mint Chocolate Chips! Ice Cream</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_ice_cream_no_sugadd"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="hba_tres_ex_mou">
+		<skus>
+			<Sku ref="HBA0063843"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_tresemme"/>
+		</brands>
+		<FULL_NAME>TRESemmé Extra Hold Mousse</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="hba_hair_mous"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="spe_walker_assor_01">
+		<skus>
+			<Sku ref="SPE0057931"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_walkers"/>
+		</brands>
+		<FULL_NAME>Walkers Assorted Shortbread</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_cooki_cooki_butte"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="FRO0044569"/>
+	<Sku id="GRO0058995"/>
+	<Product id="hba_neutro_hnduns">
+		<skus>
+			<Sku ref="HBA0064062"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_neutrogena"/>
+		</brands>
+		<FULL_NAME>Neutrogena Hand Cream, Unscented</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="hba_body_lotion"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="GRO0058990"/>
+	<Category id="gro_cooki_crack_plain">
+		<products>
+			<Product ref="spe_carrs_table_wa_02"/>
+		</products>
+		<FULL_NAME>Plain &amp; Saltine</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="gro_cheez_it_caddy_01"/>
+			<Product ref="gro_pfarm_gfshpks"/>
+			<Product ref="spe_vbc_orgmultism"/>
+			<Product ref="spe_kavli_fvgncrsp"/>
+			<Product ref="gro_sunmaid_cnnrai"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Brand id="bd_dove">
+		<FULL_NAME>Dove</FULL_NAME>
+	</Brand>
+	<Product id="gro_cheez_wht_ched_01">
+		<skus>
+			<Sku ref="GRO0058998"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_cheezit"/>
+			<Brand ref="bd_sunshine"/>
+		</brands>
+		<FULL_NAME>Cheez-It White Cheddar Crackers</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_cooki_crack_chees"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="FRO0044561"/>
+	<Category id="gro_baby_food">
+		<FULL_NAME>Baby Food</FULL_NAME>
+		<subcategories>
+			<Category ref="gro_baby_formu"/>
+			<Category ref="gro_baby_cereal"/>
+			<Category ref="gro_baby_food_2nd"/>
+			<Category ref="gro_baby_food_todd"/>
+		</subcategories>
+	</Category>
+	<Brand id="bd_pampers">
+		<FULL_NAME>Pampers</FULL_NAME>
+	</Brand>
+	<Sku id="GRO0058998"/>
+	<Category id="hba_body_sun">
+		<products>
+			<Product ref="hba_json_snblk_26spf"/>
+		</products>
+		<FULL_NAME>Sun Care</FULL_NAME>
+	</Category>
+	<Category id="spe_cooki_cooki_butte">
+		<products>
+			<Product ref="spe_moore_lemon"/>
+			<Product ref="spe_walker_assor_01"/>
+			<Product ref="spe_walker_choc_01"/>
+			<Product ref="spe_walkers_shortbre_02"/>
+		</products>
+		<FULL_NAME>Butter &amp; Shortbread</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="spe_madmoose_chc"/>
+			<Product ref="spe_moore_lemon"/>
+			<Product ref="cake_choclayer"/>
+			<Product ref="spe_walkers_shortbre_02"/>
+			<Product ref="fro_up_mudck"/>
+			<Product ref="fro_up_threberylg"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Product id="gro_eb_veryvnllacks">
+		<skus>
+			<Sku ref="GRO0069629"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_earths_best"/>
+		</brands>
+		<FULL_NAME>Earth's Best Organic Letter of the Day Cookies - Very Vanilla</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_baby_food_todd"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_haagendazs">
+		<FULL_NAME>Häagen-Dazs</FULL_NAME>
+	</Brand>
+	<Product id="spe_bruces_philfluf">
+		<skus>
+			<Sku ref="FRO0060514"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_bruces"/>
+		</brands>
+		<FULL_NAME>Bruce's Philly Fluff Loaf, Frozen</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_baker_cake"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="fro_bread_doug">
+		<products>
+			<Product ref="fro_fantis_phyllo"/>
+			<Product ref="dghcrst_oatmeal"/>
+			<Product ref="dghcrst_chcchp"/>
+			<Product ref="dghcrst_crst"/>
+		</products>
+		<FULL_NAME>Dough</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="fro_alvara_sprouted_04"/>
+			<Product ref="dghcrst_oatmeal"/>
+			<Product ref="fro_food_f_7_sprout_01"/>
+			<Product ref="fro_food4life_carbbread"/>
+			<Product ref="garlic_bread"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Sku id="GRO0057899"/>
+	<Category id="fro_bread_organic">
+		<products>
+			<Product ref="fro_alvara_sprouted_04"/>
+			<Product ref="fro_food4life_carbbread"/>
+		</products>
+		<FULL_NAME>Organic</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="fro_alvara_sprouted_04"/>
+			<Product ref="dghcrst_oatmeal"/>
+			<Product ref="fro_food_f_7_sprout_01"/>
+			<Product ref="fro_food4life_carbbread"/>
+			<Product ref="garlic_bread"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Category id="bak_cake_fd">
+		<products>
+			<Product ref="cake_crt"/>
+			<Product ref="cake_choclayer"/>
+		</products>
+		<FULL_NAME>FreshDirect Cakes</FULL_NAME>
+	</Category>
+	<Category id="spe_cooki_cooki_choco">
+		<products>
+			<Product ref="spe_bruces_chcrug"/>
+			<Product ref="spe_lu_ecduet"/>
+		</products>
+		<FULL_NAME>Chocolate</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="spe_madmoose_chc"/>
+			<Product ref="spe_moore_lemon"/>
+			<Product ref="cake_choclayer"/>
+			<Product ref="spe_walkers_shortbre_02"/>
+			<Product ref="fro_up_mudck"/>
+			<Product ref="fro_up_threberylg"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Product id="gro_kashi_crckrs_sevgrn">
+		<skus>
+			<Sku ref="GRO0070302"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_kashi"/>
+		</brands>
+		<FULL_NAME>Kashi TLC Original 7 Grain Crackers </FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_cooki_crack_wheat"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="GRO0058672"/>
+	<Sku id="SPE0061192"/>
+	<Product id="hba_toms_gly_uns">
+		<skus>
+			<Sku ref="HBA0063980"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_toms_of_maine"/>
+		</brands>
+		<FULL_NAME>Tom's of Maine Body Bar, Unscented Glycerin</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="hba_bath_bar"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="fro_deser">
+		<FULL_NAME>Desserts &amp; Toppings</FULL_NAME>
+		<subcategories>
+			<Category ref="cookie_frozen"/>
+			<Category ref="low_fat_deserts"/>
+			<Category ref="fro_deser_cake"/>
+			<Category ref="fro_deser_pie"/>
+			<Category ref="fro_deser_whip"/>
+		</subcategories>
+		<FEATURED_PRODUCTS>
+			<Product ref="ckibni_bk_off"/>
+			<Product ref="fro_junior_plnck"/>
+			<Product ref="pietrt_apple_crumb_fro"/>
+			<Product ref="fro_weight_frozen_c_01"/>
+			<Product ref="dghcrst_chcchp"/>
+			<Product ref="dghcrst_oatmeal"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Sku id="FRO0063465"/>
+	<Sku id="FRO0063464"/>
+	<Category id="hba_body_carre">
+		<FULL_NAME>Skin &amp; Body Care</FULL_NAME>
+		<subcategories>
+			<Category ref="hba_body_cleansers"/>
+			<Category ref="hba_body_lotion"/>
+			<Category ref="hba_body_sun"/>
+		</subcategories>
+		<FEATURED_PRODUCTS>
+			<Product ref="hba_json_snblk_26spf"/>
+			<Product ref="hba_olay_bw_shea"/>
+			<Product ref="hba_eb_shamp_bdywsh"/>
+			<Product ref="hba_olivella_liqsoap"/>
+			<Product ref="hba_dove_lotcoolmst"/>
+			<Product ref="hba_lubri_frgfre"/>
+			<Product ref="hba_neutro_hnduns"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Product id="gro_method_foam_euclmnt">
+		<skus>
+			<Sku ref="GRO0069921"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_method"/>
+		</brands>
+		<FULL_NAME>Method Foam Hand Wash, Eucalyptus and Mint</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="hba_bath_liquid"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="SPE0061194"/>
+	<Sku id="FRO0044184"/>
+	<Brand id="bd_juniors">
+		<FULL_NAME>Junior's</FULL_NAME>
+	</Brand>
+	<Product id="spe_walker_choc_01">
+		<skus>
+			<Sku ref="SPE0057934"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_walkers"/>
+		</brands>
+		<FULL_NAME>Walkers Chocolate Chip Shortbread</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_cooki_cooki_butte"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="pullman">
+		<products>
+			<Product ref="bak_pull_multislice"/>
+		</products>
+		<FULL_NAME>Whole &amp; Sliced Pullmans</FULL_NAME>
+	</Category>
+	<Category id="gro_baby_food_2nd">
+		<products>
+			<Product ref="gro_earths_appleblu_01"/>
+			<Product ref="gro_earths_apples_b_01"/>
+			<Product ref="gro_gerber_second_f_10"/>
+		</products>
+		<FULL_NAME>2nd Stage Food</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="gro_enfamil_powder_m_02"/>
+			<Product ref="gro_gerber_second_f_10"/>
+			<Product ref="hba_1ups_aloe_rf"/>
+			<Product ref="gro_earths_apples_b_01"/>
+			<Product ref="gro_earths_oat_cereal"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Product id="gro_gerber_second_f_10">
+		<skus>
+			<Sku ref="GRO001055"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_gerber"/>
+		</brands>
+		<FULL_NAME>Gerber Second Foods Plums with Apple Baby Food</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_baby_food_2nd"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="fro_rbrook_hvvanilla">
+		<skus>
+			<Sku ref="FRO0068661"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_ronnybrook"/>
+		</brands>
+		<FULL_NAME>Ronnybrook Hudson Valley Vanilla Ice Cream</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_icecr_ice_vanil"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="FRO0063458"/>
+	<Product id="fro_silhou_assorted_01">
+		<skus>
+			<Sku ref="FRO0044547"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_skinny_cow"/>
+		</brands>
+		<FULL_NAME>Skinny Cow Chocolate &amp; Vanilla Ice Cream Sandwiches</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_icecr_sand"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_something_moore">
+		<FULL_NAME>Something Moore</FULL_NAME>
+	</Brand>
+	<Sku id="FRO0044471"/>
+	<Sku id="GRO001087"/>
+	<Sku id="FRO0058169"/>
+	<Sku id="BAK0065716"/>
+	<Product id="garlic_bread">
+		<skus>
+			<Sku ref="BAK0060592"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_freshdirect"/>
+		</brands>
+		<FULL_NAME>FreshDirect Garlic Bread</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="bgtt"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="FRO0058165"/>
+	<Category id="hba_hair">
+		<FULL_NAME>Hair Care</FULL_NAME>
+		<subcategories>
+			<Category ref="hba_hair_cnd"/>
+			<Category ref="hba_hair_mous"/>
+			<Category ref="hba_hair_sham"/>
+			<Category ref="hba_hair_shmcnd"/>
+		</subcategories>
+		<FEATURED_PRODUCTS>
+			<Product ref="hba_garnier_cdtnrnrm"/>
+			<Product ref="hba_hrbes_clrtrtdsh"/>
+			<Product ref="hba_neutro_3mstshmp"/>
+			<Product ref="hba_head_clas_2in1_01"/>
+			<Product ref="hba_tres_mstcondt"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Product id="fro_food_f_7_sprout_01">
+		<skus>
+			<Sku ref="FRO0044211"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_food_for_life"/>
+		</brands>
+		<FULL_NAME>Food For Life 7 Sprouted Grains English Muffins, Frozen</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_bread_bage"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="gro_kashi_oatcookies">
+		<skus>
+			<Sku ref="GRO0070749"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_kashi"/>
+		</brands>
+		<FULL_NAME>Kashi TLC Oatmeal Raisin Flax Cookies</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_cooki_cooki_oat"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="FRO0058171"/>
+	<Sku id="FRO0070665"/>
+	<Category id="pietrt">
+		<FULL_NAME>Pies &amp; Tarts</FULL_NAME>
+		<subcategories>
+			<Category ref="bak_pie_fd"/>
+		</subcategories>
+	</Category>
+	<Brand id="bd_kraft">
+		<FULL_NAME>Kraft</FULL_NAME>
+	</Brand>
+	<Sku id="FRO0058172"/>
+	<Category id="bak_cookies_fd">
+		<products>
+			<Product ref="ckibni_graham"/>
+			<Product ref="ckibni_chocchip"/>
+			<Product ref="dghcrst_oatmeal"/>
+			<Product ref="dghcrst_chcchp"/>
+		</products>
+		<FULL_NAME>FreshDirect Cookies</FULL_NAME>
+	</Category>
+	<Category id="gro_baby_diapr">
+		<products>
+			<Product ref="hab_pampers_crsrs_4"/>
+			<Product ref="hba_svngen_dprs_3"/>
+			<Product ref="gro_7gen_diaperlg"/>
+		</products>
+		<FULL_NAME>Diapers</FULL_NAME>
+	</Category>
+	<Product id="gro_mthd_hndwsh_cuc">
+		<skus>
+			<Sku ref="GRO0069271"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_method"/>
+		</brands>
+		<FULL_NAME>Method Hand Wash - Cucumber</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="hba_bath_liquid"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="hba_neutro_3mstshmp">
+		<skus>
+			<Sku ref="HBA0071023"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_neutrogena"/>
+		</brands>
+		<FULL_NAME>Neutrogena Triple Moisture Shampoo</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="hba_hair_sham"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="gro_earths_appleblu_01">
+		<skus>
+			<Sku ref="GRO001023"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_earths_best"/>
+		</brands>
+		<FULL_NAME>Earth's Best Organic Apples &amp; Blueberries Baby Food</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_baby_food_2nd"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="spe_vbc_orgmultism">
+		<skus>
+			<Sku ref="SPE0064890"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_vermont_bread_company"/>
+		</brands>
+		<FULL_NAME>Vermont Bread Company Organic Multigrain Bread</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_baker_multi"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_kohinoor">
+		<FULL_NAME>Kohinoor</FULL_NAME>
+	</Brand>
+	<Category id="fro_icecr_pops">
+		<products>
+			<Product ref="fro_edys_nsvar_bar_01"/>
+			<Product ref="fro_popsicle_sfocg"/>
+			<Product ref="fro_popsicle_sftrop"/>
+			<Product ref="fro_sharons_chocolat_01"/>
+			<Product ref="fro_welchs_light_fr_01"/>
+		</products>
+		<FULL_NAME>Popsicles &amp; Juice Bars</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="fro_silhou_assorted_01"/>
+			<Product ref="fro_ben_je_cherry_g_01"/>
+			<Product ref="fro_haagen_chocolat_07"/>
+			<Product ref="fro_starbcks_iclflatt"/>
+			<Product ref="fro_edys_lt_frnch_01"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Sku id="GRO001079"/>
+	<Brand id="bd_south_of_france">
+		<FULL_NAME>South of France</FULL_NAME>
+	</Brand>
+	<Brand id="bd_david_glass">
+		<FULL_NAME>David Glass</FULL_NAME>
+	</Brand>
+	<Brand id="bd_bruces">
+		<FULL_NAME>Bruce's</FULL_NAME>
+	</Brand>
+	<Brand id="bd_food_for_life">
+		<FULL_NAME>Food For Life</FULL_NAME>
+	</Brand>
+	<Category id="hba_hair_sham">
+		<products>
+			<Product ref="hba_matrix_bioccsham"/>
+			<Product ref="hba_eb_shamp_bdywsh"/>
+			<Product ref="hba_hrbes_nrm_sham"/>
+			<Product ref="hba_hrbes_clrtrtdsh"/>
+			<Product ref="hba_neutro_3mstshmp"/>
+		</products>
+		<FULL_NAME>Shampoo</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="hba_hrbes_nrm_sham"/>
+			<Product ref="hba_matrix_bioccsham"/>
+			<Product ref="hba_pmitchll_condi"/>
+			<Product ref="hba_tres_ex_mou"/>
+			<Product ref="hba_sebast_lamcondi"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Category id="gro_baby_diape">
+		<FULL_NAME>Changing Table</FULL_NAME>
+		<subcategories>
+			<Category ref="gro_baby_diapr"/>
+			<Category ref="gro_baby_wipes"/>
+		</subcategories>
+	</Category>
+	<Brand id="bd_skinny_cow">
+		<FULL_NAME>Skinny Cow</FULL_NAME>
+	</Brand>
+	<Sku id="FRO0065320"/>
+	<Product id="fro_creme_fraise">
+		<skus>
+			<Sku ref="FRO0060332"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_creme_cremaillere"/>
+		</brands>
+		<FULL_NAME>Crème Crémaillère Fraises des Bois</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_icecr_ice_fruit"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="gro_cheez_it_caddy_01">
+		<skus>
+			<Sku ref="GRO0058990"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_cheezit"/>
+			<Brand ref="bd_sunshine"/>
+		</brands>
+		<FULL_NAME>Cheez-It Crackers</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_cooki_crack_chees"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="gro_baker_bread">
+		<FULL_NAME>Bread</FULL_NAME>
+		<subcategories>
+			<Category ref="gro_baker_engli"/>
+			<Category ref="gro_pita_wraps"/>
+			<Category ref="gro_baker_fruit"/>
+			<Category ref="gro_baker_rolls"/>
+			<Category ref="gro_baker_multi"/>
+			<Category ref="gro_baker_white"/>
+			<Category ref="gro_baker_wheat"/>
+		</subcategories>
+		<FEATURED_PRODUCTS>
+			<Product ref="gro_stroe_hnywhite"/>
+			<Product ref="gro_thomas_plain_sl_01"/>
+			<Product ref="gro_wonder_white_br_01"/>
+			<Product ref="gro_cheez_wht_ched_01"/>
+			<Product ref="fro_frsam_spnwrp"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Product id="fro_up_threberylg">
+		<skus>
+			<Sku ref="FRO0059826"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_umanoff_parsons"/>
+		</brands>
+		<FULL_NAME>Umanoff &amp; Parsons Three Berry Pie, Frozen</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_deser_pie"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_toms_of_maine">
+		<FULL_NAME>Tom's of Maine</FULL_NAME>
+	</Brand>
+	<Product id="fro_edys_lt_frnch_01">
+		<skus>
+			<Sku ref="FRO0058165"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_edys"/>
+		</brands>
+		<FULL_NAME>Edy's Slow-Churned Light French Silk Ice Cream</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_icecr_ice_choco"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="FRO0066636"/>
+	<Sku id="FRO0066635"/>
+	<Category id="gro_baker_white">
+		<products>
+			<Product ref="fro_bruce_chal"/>
+			<Product ref="gro_stroe_hnywhite"/>
+			<Product ref="gro_wonder_white_br_01"/>
+		</products>
+		<FULL_NAME>White</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="gro_stroe_hnywhite"/>
+			<Product ref="gro_thomas_plain_sl_01"/>
+			<Product ref="gro_wonder_white_br_01"/>
+			<Product ref="gro_cheez_wht_ched_01"/>
+			<Product ref="fro_frsam_spnwrp"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Sku id="GRO0070749"/>
+	<Brand id="bd_sunshine">
+		<FULL_NAME>Sunshine</FULL_NAME>
+	</Brand>
+	<Product id="gro_amos_choc_chip_01">
+		<skus>
+			<Sku ref="GRO0058995"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_famous_amos"/>
+		</brands>
+		<FULL_NAME>Famous Amos Chocolate Chip Cookies</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_cooki_cooki_choch"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_jason_natural_cosmeti">
+		<FULL_NAME>Jason Natural Cosmetics</FULL_NAME>
+	</Brand>
+	<Sku id="HBA0066880"/>
+	<Product id="gro_earths_oat_cereal">
+		<skus>
+			<Sku ref="GRO0057899"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_earths_best"/>
+		</brands>
+		<FULL_NAME>Earth's Best Organic Whole Grain Oatmeal Cereal</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_baby_cereal"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="fro_edys_ns_van_01">
+		<skus>
+			<Sku ref="FRO0058169"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_edys"/>
+		</brands>
+		<FULL_NAME>Edy's Slow-Churned No-Sugar Vanilla Ice Cream</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_ice_cream_no_sugadd"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_venieros">
+		<FULL_NAME>Veniero's</FULL_NAME>
+	</Brand>
+	<Brand id="bd_famous_amos">
+		<FULL_NAME>Famous Amos</FULL_NAME>
+	</Brand>
+	<Product id="hba_olay_bw_shea">
+		<skus>
+			<Sku ref="HBA0071094"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_olay"/>
+		</brands>
+		<FULL_NAME>Olay Body Wash with Shea Butter for Extra-Dry Skin</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="hba_bath_liquid"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="gro_cooki_cooki_cream">
+		<products>
+			<Product ref="spe_madmoose_chc"/>
+		</products>
+		<FULL_NAME>Sandwich</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="cake_crt"/>
+			<Product ref="spe_madmoose_chc"/>
+			<Product ref="gro_amos_choc_chip_01"/>
+			<Product ref="fro_charles_maca"/>
+			<Product ref="spe_bruces_whtsvn"/>
+			<Product ref="spe_lillyplum_straw"/>
+			<Product ref="ckibni_chocchip"/>
+			<Product ref="spe_walker_choc_01"/>
+			<Product ref="spe_bruces_philfluf"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Product id="ckibni_chocchip">
+		<skus>
+			<Sku ref="PAS0040040"/>
+			<Sku ref="PAS0059136"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_freshdirect"/>
+		</brands>
+		<FULL_NAME>FreshDirect Chocolate Chip Cookies</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="bak_cookies_fd"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="gro_sunmaid_cnnrai">
+		<skus>
+			<Sku ref="GRO0064244"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_sunmaid"/>
+		</brands>
+		<FULL_NAME>Sun-Maid Cinnamon Swirl Raisin Bread</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_baker_fruit"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="fro_sarabeth_butbisc">
+		<skus>
+			<Sku ref="FRO0062367"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_sarabeths_bakery"/>
+		</brands>
+		<FULL_NAME>Sarabeth's Bakery Buttermilk Biscuits, Frozen</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_baker_rolls"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="spe_cooki_pie">
+		<products>
+			<Product ref="pietrt_mxbrry"/>
+			<Product ref="fro_up_apcrbpitn"/>
+			<Product ref="fro_up_threberylg"/>
+		</products>
+		<FULL_NAME>Pies</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="spe_lu_ecduet"/>
+			<Product ref="pietrt_mxbrry"/>
+			<Product ref="cake_crt"/>
+			<Product ref="spe_bruces_chcrug"/>
+			<Product ref="fro_david_limchees_01"/>
+			<Product ref="spe_bruces_rain"/>
+			<Product ref="spe_lillyplum_choconut"/>
+			<Product ref="spe_bruces_chcchp"/>
+			<Product ref="spe_walker_assor_01"/>
+			<Product ref="fro_up_apcrbpitn"/>
+			<Product ref="gro_mrsfields_whtchc"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Brand id="bd_paul_mitchell">
+		<FULL_NAME>Paul Mitchell</FULL_NAME>
+	</Brand>
+	<Category id="hba_bath">
+		<FULL_NAME>Soap</FULL_NAME>
+		<subcategories>
+			<Category ref="hba_bath_bar"/>
+			<Category ref="hba_bath_liquid"/>
+			<Category ref="hba_bath_bar_fine"/>
+		</subcategories>
+		<FEATURED_PRODUCTS>
+			<Product ref="hba_sthfrnce_liqsp_2"/>
+			<Product ref="gro_mthd_hndwsh_cuc"/>
+			<Product ref="hba_toms_gly_uns"/>
+			<Product ref="gro_method_foam_euclmnt"/>
+			<Product ref="gro_purell_santzraloe"/>
+			<Product ref="hba_sthfrnce_lavnsp"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Department id="spe">
+		<FULL_NAME>Specialty</FULL_NAME>
+		<categories>
+			<Category ref="spe_cooki"/>
+		</categories>
+	</Department>
+	<Category id="fro_icecr_low">
+		<products>
+			<Product ref="fro_sharons_chocolat_01"/>
+			<Product ref="fro_silhou_assorted_01"/>
+			<Product ref="fro_starbcks_iclflatt"/>
+		</products>
+		<FULL_NAME>Low-Fat &amp; Fat-Free</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="fro_silhou_assorted_01"/>
+			<Product ref="fro_ben_je_cherry_g_01"/>
+			<Product ref="fro_haagen_chocolat_07"/>
+			<Product ref="fro_starbcks_iclflatt"/>
+			<Product ref="fro_edys_lt_frnch_01"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Product id="gro_keblr_chips_dlx_01">
+		<skus>
+			<Sku ref="GRO0058975"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_keebler"/>
+		</brands>
+		<FULL_NAME>Keebler Chocolate Lovers Chips Deluxe Cookies</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_cooki_cooki_choch"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_earths_best">
+		<FULL_NAME>Earth's Best</FULL_NAME>
+	</Brand>
+	<Category id="hba_bath_liquid">
+		<products>
+			<Product ref="hba_avee_bby"/>
+			<Product ref="hba_eb_shamp_bdywsh"/>
+			<Product ref="gro_method_foam_euclmnt"/>
+			<Product ref="gro_mthd_hndwsh_cuc"/>
+			<Product ref="hba_olay_bw_shea"/>
+			<Product ref="hba_olivella_liqsoap"/>
+			<Product ref="gro_purell_santzraloe"/>
+			<Product ref="hba_sthfrnce_liqsp_2"/>
+		</products>
+		<FULL_NAME>Liquid Soap</FULL_NAME>
+	</Category>
+	<Product id="hba_hrbes_nrm_sham">
+		<skus>
+			<Sku ref="HBA0063583"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_herbal_essences"/>
+		</brands>
+		<FULL_NAME>Herbal Essences Normal Shampoo</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="hba_hair_sham"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Brand id="bd_cheezit">
+		<FULL_NAME>Cheez-It</FULL_NAME>
+	</Brand>
+	<Sku id="GRO0070751"/>
+	<Category id="gro_baker_multi">
+		<products>
+			<Product ref="gro_arnold_twlvgrn"/>
+			<Product ref="gro_arnold_hthmg"/>
+			<Product ref="fro_food4life_carbbread"/>
+			<Product ref="bak_pull_multislice"/>
+			<Product ref="spe_vbc_orgmultism"/>
+		</products>
+		<FULL_NAME>Wheat &amp; Multi-Grain</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="gro_stroe_hnywhite"/>
+			<Product ref="gro_thomas_plain_sl_01"/>
+			<Product ref="gro_wonder_white_br_01"/>
+			<Product ref="gro_cheez_wht_ched_01"/>
+			<Product ref="fro_frsam_spnwrp"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Brand id="bd_tresemme">
+		<FULL_NAME>TRESemmé</FULL_NAME>
+	</Brand>
+	<Category id="low_fat_deserts">
+		<products>
+			<Product ref="fro_weight_frozen_c_01"/>
+		</products>
+		<FULL_NAME>Diet Friendly</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="fro_david_nychees_01"/>
+			<Product ref="fro_kraft_cool_whi_03"/>
+			<Product ref="fro_veniero_cookie"/>
+			<Product ref="pietrt_apple_fro"/>
+			<Product ref="pietrt_apple_crumb_fro"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Product id="ckibni_graham">
+		<skus>
+			<Sku ref="PAS0068076"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_freshdirect"/>
+		</brands>
+		<FULL_NAME>FreshDirect Bakery-Fresh Graham Crackers </FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="bak_cookies_fd"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="hba_json_snblk_26spf">
+		<skus>
+			<Sku ref="HBA0070514"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_jason_natural_cosmeti"/>
+		</brands>
+		<FULL_NAME>Jason Natural Cosmetics Sunbrellas Sunblock SPF 26</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="hba_body_sun"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Sku id="PAS0063530"/>
+	<Product id="gro_thomas_plain_sl_01">
+		<skus>
+			<Sku ref="GRO001079"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_thomas"/>
+		</brands>
+		<FULL_NAME>Thomas' Plain Fork Split English Muffins</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="gro_baker_engli"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="fro_benjer_sf_nyspr">
+		<skus>
+			<Sku ref="FRO0063525"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_ben_jerrys"/>
+		</brands>
+		<FULL_NAME>Ben &amp; Jerry's Sugar-Free New York Fudge Super Chunk</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="fro_ice_cream_no_sugadd"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="fro_veniero_biscotti">
+		<skus>
+			<Sku ref="FRO0066635"/>
+		</skus>
+		<brands>
+			<Brand ref="bd_venieros"/>
+		</brands>
+		<FULL_NAME>Veniero's Biscotti Tray</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="cookie_frozen"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Category id="fro_icecr_ice_choco">
+		<products>
+			<Product ref="fro_ben_je_chocolat_04"/>
+			<Product ref="fro_edys_lt_frnch_01"/>
+			<Product ref="fro_edys_ns_trp_chc_01"/>
+		</products>
+		<FULL_NAME>Chocolate</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="fro_starbcks_iclflatt"/>
+			<Product ref="fro_edys_nsvar_bar_01"/>
+			<Product ref="fro_ben_je_cherry_g_02"/>
+			<Product ref="fro_creme_fraise"/>
+			<Product ref="fro_sharons_chocolat_01"/>
+		</FEATURED_PRODUCTS>
+	</Category>
+	<Department id="bak">
+		<FULL_NAME>Bakery</FULL_NAME>
+		<categories>
+			<Category ref="bak_bagelcrsnt"/>
+			<Category ref="pullman"/>
+			<Category ref="bgtt"/>
+			<Category ref="cake"/>
+			<Category ref="ckibni"/>
+			<Category ref="pietrt"/>
+		</categories>
+	</Department>
+</Content>

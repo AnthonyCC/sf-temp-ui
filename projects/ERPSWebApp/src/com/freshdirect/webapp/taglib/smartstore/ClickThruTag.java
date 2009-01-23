@@ -69,8 +69,9 @@ public class ClickThruTag extends BodyTagSupport {
 		}
 
 		// No DYF mark, bye!
-		if (!"dyf".equalsIgnoreCase(req.getParameter("trk"))) {
-			LOGGER.debug("Click-Thru: SKIPPED - no DYF tracking code");
+		String trk_code = req.getParameter("trk");
+		if (!"dyf".equalsIgnoreCase(trk_code) && !"feat".equalsIgnoreCase(trk_code)) {
+			LOGGER.debug("Click-Thru: SKIPPED - no DYF or FEAT tracking code");
 			return SKIP_BODY;
 		}
 

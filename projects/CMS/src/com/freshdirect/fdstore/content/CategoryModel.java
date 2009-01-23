@@ -29,6 +29,11 @@ public class CategoryModel extends ContentNodeModelImpl {
 
 	private List featuredProductModels = new ArrayList();
 	
+	/**
+	 * List of ProductModels and CategoryModels.
+	 */
+	private List candidateList = new ArrayList();
+	
 	// New Wine Store 
 
 	private List wineSortCriteriaList = new ArrayList();
@@ -107,6 +112,7 @@ public class CategoryModel extends ContentNodeModelImpl {
 		return getAttribute("FEATURED", false);
 	}
 	
+	
 	public Html getSeparatorMedia() {
 		return (Html)getAttribute("SEPARATOR_MEDIA",(Html)null);
 	}
@@ -116,6 +122,15 @@ public class CategoryModel extends ContentNodeModelImpl {
 
 		return new ArrayList(subcategoriesModels);
 	}
+	
+        public List getCandidateList() {
+            ContentNodeModelUtil.refreshModels(this, "CANDIDATE_LIST", candidateList, false);
+            return new ArrayList(candidateList);
+        }
+        
+        public int getManualSelectionSlots() {
+            return getAttribute("MANUAL_SELECTION_SLOTS", 0);
+        }
 
 	/* This does not traverse the alias list */
 	public List getPrivateProducts() {

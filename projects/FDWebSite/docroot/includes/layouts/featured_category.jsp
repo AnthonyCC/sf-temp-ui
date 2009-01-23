@@ -49,7 +49,7 @@ static Predicate separatorFilter = new Predicate() {
 static class DisplayObjectRepo implements TableLayoutHelper.WidthCalculator {
 
 	// Map<ContentNodeModel,DisplayObject>
-	private Map displayObjects = new HashMap();
+	private Map displayObjects = new java.util.HashMap();
 
 	// stuff needed for calculating a display object
 	private HttpServletResponse response;
@@ -96,7 +96,6 @@ static class DisplayObjectRepo implements TableLayoutHelper.WidthCalculator {
 %>
 <jsp:include page="/includes/department_peakproduce.jsp" flush="true"/> 
 <%
-
 //********** Start of Stuff to let JSPF's become JSP's **************
 
 String catId = request.getParameter("catId"); 
@@ -107,10 +106,10 @@ String pageTrkCode = "";
 
 ContentNodeModel currentFolder = null;
 if(deptId!=null) {
-	currentFolder=ContentFactory.getInstance().getContentNodeByName(deptId);
+	currentFolder=ContentFactory.getInstance().getContentNode(deptId);
 	pageTrkCode = "dpage";
 } else {
-	currentFolder=ContentFactory.getInstance().getContentNodeByName(catId);
+	currentFolder=ContentFactory.getInstance().getContentNode(catId);
 	pageTrkCode = "cpage";
 }
 
@@ -211,5 +210,4 @@ for(Iterator layoutI = Arrays.asList(new Object[] {featuredTableLayout, nonFeatu
 <%
 	}
 } // layouts
-
 %>

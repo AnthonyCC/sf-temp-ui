@@ -93,6 +93,11 @@ public class Variant implements Serializable, Comparable {
 		if (!(o instanceof Variant)) return false;
 		else return ((Variant)o).getId().equals(getId());
 	}
+
 	
+    public String toString() {
+        return "Variant(" + id + ',' + siteFeature + ',' + serviceConfig + ',' + 
+            (serviceConfig != null ? serviceConfig.getType().getName() : "null") + ')';
+    }
 	
 }

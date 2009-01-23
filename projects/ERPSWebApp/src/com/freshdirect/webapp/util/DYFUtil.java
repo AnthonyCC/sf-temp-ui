@@ -1,9 +1,16 @@
 package com.freshdirect.webapp.util;
 
+import java.util.Map;
+
+import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.RecommendationService;
+import com.freshdirect.smartstore.fdstore.ProductStatisticsProvider;
 import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
 
 public class DYFUtil {
@@ -42,5 +49,17 @@ public class DYFUtil {
 		if (variantId != null) return variantId;
 		RecommendationService service = SmartStoreUtil.getRecommendationService(user, EnumSiteFeature.DYF,null);
 		return service.getVariant().getId();
+	}
+	
+	public static boolean isFavorite(ProductModel product, FDUserI user) {
+		if (user == null || user.getIdentity() == null
+				|| user.getIdentity().getErpCustomerPK() == null) {
+			return false;
+		}
+
+		String customerId = user.getIdentity().getErpCustomerPK();
+		final ProductStatisticsProvider psp = ProductStatisticsProvider.getInstance();
+		final Map userProductScores = psp.getUserProductScores(customerId);
+		return userProductScores.get(product.getContentKey()) != null;
 	}
 }

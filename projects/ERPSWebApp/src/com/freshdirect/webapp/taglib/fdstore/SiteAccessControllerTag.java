@@ -116,12 +116,9 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					}
 				} else if ("checkByZipCode".equalsIgnoreCase(action)) {
 					DlvServiceSelectionResult serviceResult = checkByZipCode(request, result);
-					System.out.println("serviceResult :"+serviceResult);
 					if (result.isSuccess()) {
 						newSession();
-						System.out.println("this.serviceType :"+this.serviceType);
 						EnumDeliveryStatus dlvStatus = serviceResult.getServiceStatus(this.serviceType);
-						System.out.println("dlvStatus :"+dlvStatus);
 						if (EnumDeliveryStatus.DELIVER.equals(dlvStatus)) {
 							this.createUser(this.serviceType, serviceResult.getAvailableServices());
 						} else { 
