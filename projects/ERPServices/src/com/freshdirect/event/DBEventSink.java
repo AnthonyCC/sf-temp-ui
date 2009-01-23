@@ -24,14 +24,14 @@ public class DBEventSink implements EventSinkI {
 	private final DataSource dataSource;
 
 	private static final String EVENT_INSERT = "INSERT INTO CUST.LOG_CART_EVENTS"
-		// base FDEvent parameters (10)
+		// base FDEvent parameters (11)
 		+ "(ID, CUSTOMER_ID, COOKIE, URL, QUERY_STRING, EVENT_TYPE, TIMESTAMP, APPLICATION, "
-		+ "SERVER, TRACKING_CODE, SOURCE, "
+		+ "SERVER, TRACKING_CODE, TRKD, SOURCE, "
 		// FDCartLineEvent parameters (12)
 		+ "PRODUCT_ID, SKU_CODE, CATEGORY_ID, DEPARTMENT_ID, "
 		+ "CARTLINE_ID, QUANTITY, SALES_UNIT, CONFIGURATION, "
 		+ "YMAL_CATEGORY, YMAL_PRODUCT, YMAL_SET_ID, CCL_ID, VARIANT_ID) "
-		+ "VALUES(CUST.LOG_CART_EVENTS_SEQ.NEXTVAL, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		+ "VALUES(CUST.LOG_CART_EVENTS_SEQ.NEXTVAL, ?,?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	public DBEventSink(DataSource dataSource) {
 		this.dataSource = dataSource;
@@ -56,6 +56,7 @@ public class DBEventSink implements EventSinkI {
 			ps.setString(idx++, event.getApplication());
 			ps.setString(idx++, event.getServer());
 			ps.setString(idx++, event.getTrackingCode());
+			ps.setString(idx++, event.getTrackingCodeEx());
 			ps.setString(idx++, event.getSource() == null ? null : event.getSource().getName());
 
 			// Set specific attributes

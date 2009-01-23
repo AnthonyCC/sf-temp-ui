@@ -110,7 +110,10 @@ public class FDEventFactory {
 		event.setCookie(user.getCookie());
 		event.setEventType(eventType);
 		event.setTimestamp(new Date());
-		event.setTrackingCode(user.getLastTrackingCode());
+		if (FD_ADD_TO_CART_EVENT.equalsIgnoreCase(event.getEventType())) {
+			event.setTrackingCode(request.getParameter("trk"));
+			event.setTrackingCodeEx(request.getParameter("trkd"));
+		}
 		event.setUrl(request.getRequestURI());
 		event.setQueryString(request.getQueryString());
 		

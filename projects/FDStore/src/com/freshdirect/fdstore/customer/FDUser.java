@@ -665,14 +665,6 @@ public class FDUser extends ModelSupport implements FDUserI {
 		return userId;
 	}
 	
-	public String getLastTrackingCode() {
-		return this.lastTrackingCode;
-	}
-	
-	public void setLastTrackingCode (String lastTrackingCode) {
-		this.lastTrackingCode = lastTrackingCode;
-	}
-
 	public String getLastRefTrackingCode() {
 		return this.lastRefTrackingCode;
 	}

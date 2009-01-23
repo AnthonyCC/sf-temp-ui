@@ -392,14 +392,6 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         return (user != null) ? user.getUserId() : "";
 	}
 	
-	public String getLastTrackingCode() {
-		return this.user.getLastTrackingCode();
-	}
-	
-	public void setLastTrackingCode(String lastTrackingCode) {
-		this.user.setLastTrackingCode(lastTrackingCode);
-	}
-	
 	public String getLastRefTrackingCode() {
 		return this.user.getLastRefTrackingCode();
 	}

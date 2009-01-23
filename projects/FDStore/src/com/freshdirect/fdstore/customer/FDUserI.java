@@ -165,11 +165,6 @@ public interface FDUserI extends java.io.Serializable {
 	
 	public String getUserId ();
 	
-	public String getLastTrackingCode ();
-	
-	public void setLastTrackingCode(String lastTrackingCode);
-	
-	
 	public void setLastRefTrackingCode (String lastRefTrackingCode);
 	
 	public String getLastRefTrackingCode();

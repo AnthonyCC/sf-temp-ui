@@ -150,7 +150,7 @@ if (request.getParameter("nodyf") == null) {
 	<input type="hidden" name="variant" value="<%=recommendations.getVariant().getId()%>">
 	<input type="hidden" name="siteFeature" value="<%=recommendations.getVariant().getSiteFeature().getName()%>">
 	<input type="hidden" name="rec_product_ids" value="<%=StringEscapeUtils.escapeHtml(recommendations.serializeContentNodes())%>">
-	<input type="hidden" name="trk" value="dyf">
+	<input type="hidden" name="trk" value="<%= recommendations.getVariant().getSiteFeature().getName().toLowerCase() %>">
 
 <!-- PRICING -->
 <%@ include file="/shared/includes/product/i_pricing_script.jspf" %>

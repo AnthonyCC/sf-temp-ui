@@ -80,14 +80,6 @@ public class WebTrackingCodeFilter extends AbstractFilter {
 		}
 		
 		
-		// look if there is a trk parameter
-		String trk = (String)req.getParameter("trk");
-		if (trk != null && trk.length() > 0) {
-			// if so, cache it in user
-			user.setLastTrackingCode(trk.trim());
-		}
-
-		
 		if (!"".equals(refProgId) && !refProgId.equals(user.getLastRefProgId())) {
 			user.setLastRefProgramId(refProgId);			
 			createReferralHistory(req,refProgId,refTrkDtls,user);

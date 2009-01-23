@@ -15,7 +15,8 @@ public class FDWebEvent implements FDEvent {
 	private Date timestamp;
 	private String application;
 	private String server;
-	private String trackingCode;
+	private String trackingCode;   // trk
+	private String trackingCodeEx; // trkd
 	private EnumEventSource source;
 	protected String [] eventValues = new String [15];
 	
@@ -99,6 +100,14 @@ public class FDWebEvent implements FDEvent {
 		this.trackingCode = trackingCode;
 	}
 	
+	public String getTrackingCodeEx() {
+		return this.trackingCodeEx;
+	}
+	
+	public void setTrackingCodeEx(String trackingCodeEx) {
+		this.trackingCodeEx = trackingCodeEx;
+	}
+	
 	public String[] getEventValues() {
 		return eventValues;
 	}
@@ -106,7 +115,7 @@ public class FDWebEvent implements FDEvent {
 	public String toString() {
 		
 		StringBuffer bf = new StringBuffer();
-		bf.append("[FDEvent: CusomerId=").append(this.customerId);
+		bf.append("[FDEvent: CustomerId=").append(this.customerId);
 		bf.append(";cookie=").append(this.cookie);
 		bf.append(";url=").append(this.url);
 		bf.append(";queryString=").append(this.queryString);
@@ -115,6 +124,7 @@ public class FDWebEvent implements FDEvent {
 		bf.append(";application=").append(this.application);
 		bf.append(";server=").append(this.server);
 		bf.append(";trackingCode=").append(this.trackingCode);
+		bf.append(";trackingCodeEx=").append(this.trackingCodeEx);
 		bf.append(";source=").append(this.source);
 		bf.append("\n");
 		
