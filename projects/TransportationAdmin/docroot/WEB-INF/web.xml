@@ -116,6 +116,7 @@
 		<web-resource-name>Unrestricted</web-resource-name>
 		<description>All users can view</description>
 		<url-pattern>/images/login_bg.jpg</url-pattern>
+		<url-pattern>download.do</url-pattern>
 		<http-method>GET</http-method>
 		</web-resource-collection>
 	</security-constraint>

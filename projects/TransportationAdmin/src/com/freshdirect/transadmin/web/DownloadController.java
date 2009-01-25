@@ -21,18 +21,20 @@ public class DownloadController extends AbstractMultiActionController  {
 	 */
 	public ModelAndView downloadHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {	
 		String strFilePath = request.getParameter("filePath");
-		File outputFile = new File(strFilePath);
-		response.setBufferSize((int)outputFile.length());
-		response.setHeader("Content-Disposition", "attachment; filename=\""+outputFile.getName()+"\"");
-		response.setContentType("application/x-download");
-		response.setHeader("Pragma", "public");
-		response.setHeader("Cache-Control", "max-age=0");
-		response.setContentLength((int)outputFile.length());
-		try {
-			FileCopyUtils.copy(new FileInputStream(outputFile), response.getOutputStream());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block				
-			e.printStackTrace();
+		if(strFilePath != null) {
+			File outputFile = new File(strFilePath);
+			response.setBufferSize((int)outputFile.length());
+			response.setHeader("Content-Disposition", "attachment; filename=\""+outputFile.getName()+"\"");
+			response.setContentType("application/x-download");
+			response.setHeader("Pragma", "public");
+			response.setHeader("Cache-Control", "max-age=0");
+			response.setContentLength((int)outputFile.length());
+			try {
+				FileCopyUtils.copy(new FileInputStream(outputFile), response.getOutputStream());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block				
+				e.printStackTrace();
+			}
 		}
 		return null;
 	}
