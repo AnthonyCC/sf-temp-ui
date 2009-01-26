@@ -43,13 +43,13 @@ public class DomainController extends AbstractMultiActionController {
 	private DomainManagerI domainManagerService;
 
 	private LocationManagerI locationManagerService;
-	
+
 	private EmployeeManagerI employeeManagerService;
-	
+
 	private ZoneManagerI zoneManagerService;
 
 	private static final String IS_OBSOLETE = "X";
-	
+
 	private static final DateFormat DATE_FORMAT=new SimpleDateFormat("MM/dd/yyyy");
 
 	/**
@@ -72,7 +72,7 @@ public class DomainController extends AbstractMultiActionController {
 	public ModelAndView accessDeniedHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 
 		return new ModelAndView("accessDeniedView");
-	}	
+	}
 
 	/**
 	 * Custom handler for welcome
@@ -81,18 +81,18 @@ public class DomainController extends AbstractMultiActionController {
 	 * @return a ModelAndView to render the response
 	 */
 	public ModelAndView employeeHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-        System.out.println("inside employeeHandler");
+//        System.out.println("inside employeeHandler");
         String empStatus = request.getParameter("empstatus");
         Collection dataList = null;
-        System.out.println("./................."+empStatus);
+       // System.out.println("./................."+empStatus);
         if("T".equalsIgnoreCase(empStatus)) {
         	dataList = employeeManagerService.getTerminatedEmployees();
         } else {
-        	dataList = employeeManagerService.getEmployees();        	 
+        	dataList = employeeManagerService.getEmployees();
         }
         return new ModelAndView("employeeView","employees",dataList);
 	}
-	
+
 	/**
 	 * Custom handler for welcome
 	 * @param request current HTTP request
@@ -100,8 +100,8 @@ public class DomainController extends AbstractMultiActionController {
 	 * @return a ModelAndView to render the response
 	 */
 	public ModelAndView xEmployeeHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-        System.out.println("inside terminated EmployeeHandler");
-		Collection dataList = employeeManagerService.getTerminatedEmployees(); 
+     //   System.out.println("inside terminated EmployeeHandler");
+		Collection dataList = employeeManagerService.getTerminatedEmployees();
 		return new ModelAndView("terminatedEmployeeView","employees",dataList);
 	}
 
@@ -126,11 +126,11 @@ public class DomainController extends AbstractMultiActionController {
 	 */
 	public ModelAndView zoneHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 
-        System.out.println("inside zoneHandler");
+       // System.out.println("inside zoneHandler");
         String zoneType = request.getParameter("zoneType");
         Collection dataList = null;
         Collection activeZoneCodes = null;
-        System.out.println("./................."+zoneType);
+       // System.out.println("./................."+zoneType);
         if("Active".equalsIgnoreCase(zoneType)) {
         	dataList = domainManagerService.getZones();
         	activeZoneCodes = zoneManagerService.getActiveZoneCodes();
@@ -145,8 +145,8 @@ public class DomainController extends AbstractMultiActionController {
         		}
         	}
         } else {
-        	dataList = domainManagerService.getActiveZones();    	 
-        }								
+        	dataList = domainManagerService.getActiveZones();
+        }
 		return new ModelAndView("zoneView","zones",dataList);
 	}
 
@@ -241,7 +241,7 @@ public class DomainController extends AbstractMultiActionController {
 		if (arrEntityList != null) {
 			int arrLength = arrEntityList.length;
 			for (int intCount = 0; intCount < arrLength; intCount++) {
-				System.out.println(" arrEntityList[intCount] :"+arrEntityList[intCount]);
+				//System.out.println(" arrEntityList[intCount] :"+arrEntityList[intCount]);
 				tmpEntity = domainManagerService.getAdHocRoute(arrEntityList[intCount]);
 				tmpEntity.setObsolete(IS_OBSOLETE);
 				routeSet.add(tmpEntity);
@@ -292,12 +292,12 @@ public class DomainController extends AbstractMultiActionController {
 			int arrLength = arrEntityList.length;
 			for (int intCount = 0; intCount < arrLength; intCount++) {
 				tmpEntity = domainManagerService.getRegion(arrEntityList[intCount]);
-				
-				// check if zone exist in db then dont delete				
+
+				// check if zone exist in db then dont delete
 				Set zones=tmpEntity.getZones();
-				
-				System.out.println("zones7836827362873628731267863 :"+zones);
-				
+
+				//System.out.println("zones7836827362873628731267863 :"+zones);
+
 				if(zones!=null && zones.size()>0)
 				{
 					saveMessage(request, getMessage("app.actionmessage.137", null));
@@ -440,14 +440,14 @@ public class DomainController extends AbstractMultiActionController {
 		/*Iterator it=dataList.iterator();
 		while(it.hasNext()) {
 			TrnZoneType zoneType=(TrnZoneType)it.next();
-			System.out.println("zoneType is "+zoneType.getName());
+			//System.out.println("zoneType is "+zoneType.getName());
 			Set ztr=zoneType.getZonetypeResources();
 			if(ztr!=null) {
 				Iterator _it=ztr.iterator();
 				while(_it.hasNext()) {
 					ZonetypeResource _ztr=(ZonetypeResource)_it.next();
 					//System.out.println(_ztr.getEmployeeRoleType().getDescription());
-					System.out.println("_ztr.getMaximumNo() :"+_ztr.getMaximumNo()+"_ztr.getRequiredNo() :"+_ztr.getRequiredNo());
+					//System.out.println("_ztr.getMaximumNo() :"+_ztr.getMaximumNo()+"_ztr.getRequiredNo() :"+_ztr.getRequiredNo());
 
 				}
 			}
@@ -473,7 +473,7 @@ public class DomainController extends AbstractMultiActionController {
 
 		return mav;
 	}
-	
+
 	public ModelAndView compositeRouteHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException  {
 		String routeType = request.getParameter("routetype");
 		if("R".equalsIgnoreCase(routeType)) {
@@ -482,35 +482,35 @@ public class DomainController extends AbstractMultiActionController {
 			return adHocRouteHandler(request, response);
 		}
 	}
-	
+
 	/**
 	 * Custom handler for welcome
 	 * @param request current HTTP request
 	 * @param response current HTTP response
 	 * @return a ModelAndView to render the response
-	 * @throws ParseException 
+	 * @throws ParseException
 	 */
 	public ModelAndView routeHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-		
+
 		boolean hasError=false;
 		String routeDate = request.getParameter("routeDate");
 		ModelAndView mav = new ModelAndView("routeView");
-							
-		try {		
-			if(!TransStringUtil.isEmpty(routeDate)) {				
-				//DateFormat format= new SimpleDateFormat("MM/dd/yyyy");			
+
+		try {
+			if(!TransStringUtil.isEmpty(routeDate)) {
+				//DateFormat format= new SimpleDateFormat("MM/dd/yyyy");
 					Date rouDate=DATE_FORMAT.parse(routeDate);
 					Collection dataList = domainManagerService.getRoutes(TransStringUtil.getServerDate(routeDate));
-					mav.getModel().put("routes",dataList);	
+					mav.getModel().put("routes",dataList);
 					mav.getModel().put("routeDate", routeDate);
-			} else{				
-				//routeDate=DATE_FORMAT.format(new Date());				
-				System.out.println("requested date :"+routeDate);				
+			} else{
+				//routeDate=DATE_FORMAT.format(new Date());
+				//System.out.println("requested date :"+routeDate);
 				Collection dataList = domainManagerService.getRoutes(TransStringUtil.getServerDate(new Date()));
 				mav.getModel().put("routes",dataList);
 				mav.getModel().put("routeDate",TransStringUtil.getDate(new Date()));
 			}
-		
+
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -518,11 +518,11 @@ public class DomainController extends AbstractMultiActionController {
 			saveMessage(request, getMessage("app.error.115", new String[]{"Invalid Date"}));
 			return mav;
 		}
-		
+
 		return mav;
 	}
-	
-	
+
+
 
 
 	public DomainManagerI getDomainManagerService() {

@@ -28,19 +28,19 @@ import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 import com.freshdirect.transadmin.web.model.WebPlanInfo;
 
 public class DispatchPlanUtil {
-	
+
 	private static EmployeeComparator EMPLOYEE_COMPARATOR=new EmployeeComparator();
-	
+
 	private static class EmployeeComparator implements Comparator{
 
-	
+
 		public int compare(Object o1, Object o2) {
-			
+
 			if(o1 instanceof EmployeeInfo && o2 instanceof EmployeeInfo)
 			{
 				EmployeeInfo p1=(EmployeeInfo)o1;
 				EmployeeInfo p2=(EmployeeInfo)o2;
-				
+
 				/*int value=p1.getHireDate().compareTo(p2.getHireDate());
 				if(value==0) {
 					return p1.getLastName().compareTo(p2.getLastName());
@@ -50,11 +50,11 @@ public class DispatchPlanUtil {
 			}
 			return 0;
 		}
-				
+
 	}
-	
+
 	public static WebPlanInfo getWebPlanInfo(Plan plan, Zone zone,EmployeeManagerI employeeManagerService) {
-		
+
 		WebPlanInfo planInfo=new WebPlanInfo();
 		planInfo.setPlanId(plan.getPlanId());
 		planInfo.setPlanDate(plan.getPlanDate());
@@ -83,14 +83,14 @@ public class DispatchPlanUtil {
 			String val=DateUtil.formatDay(plan.getPlanDate());
 			planInfo.setPlanDay(val);
 		} catch (ParseException e) {}
-		
+
 		Map resourceReqs=getResourceRequirements(zone);
 		Set resources=plan.getPlanResources();
 		planInfo.setResourceRequirements(resourceReqs);
 		planInfo.setResources(employeeManagerService,resources,resourceReqs);
 		return planInfo;
 	}
-	
+
 	public static DispatchCommand getDispatchCommand(Dispatch dispatch, Zone zone,EmployeeManagerI employeeManagerService) {
 		DispatchCommand command = new DispatchCommand();
 		command.setDispatchId(dispatch.getDispatchId());
@@ -107,7 +107,7 @@ public class DispatchPlanUtil {
 			zoneName = dispatch.getZone().getName();
 			if(dispatch.getZone().getTrnZoneType()!=null)
 				zoneType = dispatch.getZone().getTrnZoneType().getName();
-			
+
 		}
 		command.setZoneCode(zoneCode);
 		command.setZoneName(zoneName);
@@ -116,7 +116,7 @@ public class DispatchPlanUtil {
 		command.setRegionName(dispatch.getRegion().getName());
 		if(dispatch.getBullPen()!=null)
 			command.setIsBullpen(String.valueOf(dispatch.getBullPen().booleanValue()));
-		else 
+		else
 			command.setIsBullpen("");
 		if(dispatch.getDispositionType() != null){
 			command.setStatus(dispatch.getDispositionType().getCode());
@@ -124,11 +124,11 @@ public class DispatchPlanUtil {
 		}
 		//command.setStatus(dispatch.getDispositionType().getCode());
 		WebEmployeeInfo supInfo = employeeManagerService.getEmployee(dispatch.getSupervisorId());
-		
+
     	if(supInfo!=null && supInfo.getEmpInfo()!=null) {
 	    	command.setSupervisorCode(supInfo.getEmpInfo().getEmployeeId());
 	    	command.setSupervisorName(supInfo.getEmpInfo().getName());
-    		
+
     	}
 		command.setRoute(dispatch.getRoute());
 		if(dispatch.getTruck() != null){
@@ -136,7 +136,7 @@ public class DispatchPlanUtil {
 		} else {
 			command.setTruck("");
 		}
-		
+
 		try{
 			command.setStartTime(TransStringUtil.getServerTime(dispatch.getStartTime()));
 			command.setFirstDeliveryTime(TransStringUtil.getServerTime(dispatch.getFirstDlvTime()));
@@ -147,33 +147,33 @@ public class DispatchPlanUtil {
 			command.setConfirmed(dispatch.getConfirmed().booleanValue());
 		command.setPlanId(dispatch.getPlanId());
 		command.setComments(dispatch.getComments());
-		
+
 		Map resourceReqs=getResourceRequirements(zone);
 		Set resources=dispatch.getDispatchResources();
 		command.setResourceRequirements(resourceReqs);
 		command.setResources(employeeManagerService,resources,resourceReqs);
 		return command;
 	}
-	
-	
+
+
 	public static Plan getPlan(WebPlanInfo planInfo) {
-		
+
 		Plan plan=new Plan();
-		
+
 		plan.setPlanId(planInfo.getPlanId());
 		plan.setPlanDate(planInfo.getPlanDate());
-		
+
 		if(!DispatchPlanUtil.isBullpen(planInfo.getIsBullpen())) {
 			Zone zone=new Zone();
 			zone.setZoneCode(planInfo.getZoneCode());
 			plan.setZone(zone);
 		}
-		
+
 		Region region=new Region();
 		region.setCode(planInfo.getRegionCode());
 		plan.setRegion(region);
 		try{
-						
+
 			plan.setFirstDeliveryTime(TransStringUtil.getServerTime(planInfo.getFirstDeliveryTime()));
 			plan.setStartTime(TransStringUtil.getServerTime(planInfo.getStartTime()));
 		}catch(ParseException exp){
@@ -184,11 +184,11 @@ public class DispatchPlanUtil {
 		plan.setSupervisorId(planInfo.getSupervisorCode());
 		plan.setPlanResources(planInfo.getResources());
 		return plan;
-		
+
 	}
-	
+
 	public static Dispatch getDispatch(DispatchCommand command, DomainManagerI domainManagerService) {
-		
+
 		Dispatch dispatch = new Dispatch();
     	if(!"".equals(command.getDispatchId()))
     		dispatch.setDispatchId(command.getDispatchId());
@@ -203,11 +203,11 @@ public class DispatchPlanUtil {
 			zone.setZoneCode(command.getZoneCode());
 			dispatch.setZone(zone);
 		}
-		System.out.println("Region code $$$$$$$$$$$ "+command.getRegionCode());
+//		System.out.println("Region code $$$$$$$$$$$ "+command.getRegionCode());
 		Region region=new Region();
 		region.setCode(command.getRegionCode());
 		dispatch.setRegion(region);
-		
+
 		dispatch.setDispositionType(domainManagerService.getDispositionType(command.getStatus()));
 		dispatch.setSupervisorId(command.getSupervisorCode());
 		dispatch.setRoute(command.getRoute());
@@ -220,46 +220,46 @@ public class DispatchPlanUtil {
 			throw new RuntimeException("Unparseable date "+exp.getMessage());
 		}
 		dispatch.setConfirmed(new Boolean(command.isConfirmed()));
-		
+
 		dispatch.setPlanId(command.getPlanId());
 		dispatch.setComments(command.getComments());
 		dispatch.setDispatchResources(command.getResources());
 		return dispatch;
-		
+
 	}
 	public static List getSortedResources(Collection resources) {
-		
+
 		List _resources=(List)resources;
 		Collections.sort(_resources, EMPLOYEE_COMPARATOR);
 		return _resources;
-		
+
 	}
-	
+
 	public static WebPlanInfo reconstructWebPlanInfo(WebPlanInfo planInfo,Zone zone,EmployeeManagerI employeeManagerService) {
-		
+
 		setResourceReq(planInfo,zone);
 		boolean isZoneModified=false;
-		
+
 		isZoneModified=isZoneModified(zone,planInfo);
 		if(zone!=null && isZoneModified) {
 			planInfo.setZoneName(zone.getName());
 			planInfo.setRegionCode(zone.getRegion().getCode());
 			planInfo.setRegionName(zone.getRegion().getName());
-		} 
+		}
 		setResourceInfo(planInfo,isZoneModified,employeeManagerService);
 		return planInfo;
 	}
 
 	public static boolean isBullpen(String bullpen) {
-		
+
 		if("Y".equalsIgnoreCase(bullpen) || "true".equalsIgnoreCase(bullpen)) {
 			return true;
-		} 
+		}
 		return false;
 	}
 
 	public  static Map getResourceRequirements(Zone zone) {
-		
+
 		Map resourceReqs=new HashMap();
 		if(zone==null) {
 			ResourceReq resourceReq=new ResourceReq();
@@ -267,51 +267,51 @@ public class DispatchPlanUtil {
 			resourceReq.setMax(new Integer(TransportationAdminProperties.getDriverMaxForBullpen()));
 			resourceReq.setReq(new Integer(TransportationAdminProperties.getDriverReqForBullpen()));
 			resourceReqs.put(EnumResourceType.DRIVER,resourceReq);
-			
+
 			resourceReq=new ResourceReq();
 			resourceReq.setRole(EnumResourceType.HELPER);
 			resourceReq.setMax(new Integer(TransportationAdminProperties.getHelperMaxForBullpen()));
 			resourceReq.setReq(new Integer(TransportationAdminProperties.getHelperReqForBullpen()));
 			resourceReqs.put(EnumResourceType.HELPER,resourceReq);
-			
+
 			resourceReq=new ResourceReq();
 			resourceReq.setRole(EnumResourceType.RUNNER);
 			resourceReq.setMax(new Integer(TransportationAdminProperties.getRunnerMaxForBullpen()));
 			resourceReq.setReq(new Integer(TransportationAdminProperties.getRunnerReqForBullpen()));
 			resourceReqs.put(EnumResourceType.RUNNER,resourceReq);
-			
+
 		}else if(zone.getTrnZoneType()!=null && zone.getTrnZoneType().getZonetypeResources()!=null) {
-			
+
 			Iterator _it=zone.getTrnZoneType().getZonetypeResources().iterator();
 			while(_it.hasNext()) {
-				
+
 				ZonetypeResource ztr=(ZonetypeResource)_it.next();
 				ResourceReq resourceReq=new ResourceReq();
 				resourceReq.setRole(EnumResourceType.getEnum(ztr.getId().getRole()));
 				resourceReq.setMax( ztr.getMaximumNo());
 				resourceReq.setReq(ztr.getRequiredNo());
 				resourceReqs.put(resourceReq.getRole(), resourceReq);
-				
+
 			}
 		}
 		return resourceReqs;
 	}
 
 	private static void setResourceReq(WebPlanInfo model, Zone zone) {
-		
+
 		if(isBullpen(model.getIsBullpen())) {
 			setDriverRequirements(model,TransportationAdminProperties.getDriverReqForBullpen(),TransportationAdminProperties.getDriverMaxForBullpen());
 			setHelperRequirements(model,TransportationAdminProperties.getHelperReqForBullpen(),TransportationAdminProperties.getHelperMaxForBullpen());
 			setRunnerRequirements(model,TransportationAdminProperties.getRunnerReqForBullpen(),TransportationAdminProperties.getRunnerMaxForBullpen());
-			
+
 		} else if(hasResources(zone)) {
-			
+
 			Iterator _it=zone.getTrnZoneType().getZonetypeResources().iterator();
 			boolean hasDrivers=false;
 			boolean hasHelpers=false;
 			boolean hasRunners=false;
 			while(_it.hasNext()) {
-				
+
 				ZonetypeResource ztr=(ZonetypeResource)_it.next();
 				int max=ztr.getMaximumNo().intValue();
 				int req=ztr.getRequiredNo().intValue();
@@ -342,11 +342,11 @@ public class DispatchPlanUtil {
 			setRunnerRequirements(model,0,0);
 		}
 	}
-	
+
 	private static boolean hasResources(Zone zone) {
 		return (zone!=null && zone.getTrnZoneType()!=null && zone.getTrnZoneType().getZonetypeResources()!=null)?true:false;
 	}
-	
+
 	private static void setDriverRequirements(WebPlanInfo planInfo, int req, int max) {
 		planInfo.getDrivers().setResourceReq(getResourceReq(req,max,EnumResourceType.DRIVER));
 	}
@@ -354,13 +354,13 @@ public class DispatchPlanUtil {
 	private static void setHelperRequirements(WebPlanInfo planInfo, int req, int max) {
 		planInfo.getHelpers().setResourceReq(getResourceReq(req,max,EnumResourceType.HELPER));
 	}
-	
+
 	private static void setRunnerRequirements(WebPlanInfo planInfo, int req, int max) {
 		planInfo.getRunners().setResourceReq(getResourceReq(req,max,EnumResourceType.RUNNER));
 	}
-	
+
 	private static ResourceReq getResourceReq(int req, int max, EnumResourceType role) {
-		
+
 		ResourceReq resourceReq=new ResourceReq();
 		resourceReq.setMax(new Integer(max));
 		resourceReq.setReq(new Integer(req));
@@ -369,17 +369,17 @@ public class DispatchPlanUtil {
 	}
 
 	private static boolean isZoneModified(Zone zone, WebPlanInfo model) {
-		
+
 		if(isBullpen(model.getIsBullpen())) {
 			return false;
 		} else if(TransStringUtil.isEmpty(model.getZoneName())) {
-		    return true;		
+		    return true;
 		} else if(model.getZoneName().equals(zone.getName())) {
 			return false;
 	    }
 		return true;
 	}
-	
+
 
 	private static WebPlanInfo setResourceInfo(WebPlanInfo model, boolean isZoneModified,EmployeeManagerI employeeManagerService) {
 
@@ -387,7 +387,7 @@ public class DispatchPlanUtil {
 		model.setResourceInfo(model.getHelpers(),isZoneModified,EnumResourceType.HELPER,employeeManagerService);
 		model.setResourceInfo(model.getRunners(),isZoneModified,EnumResourceType.RUNNER,employeeManagerService);
 		return model;
-		
+
 	}
 
 }

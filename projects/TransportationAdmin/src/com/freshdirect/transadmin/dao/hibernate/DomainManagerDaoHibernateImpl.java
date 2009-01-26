@@ -26,12 +26,12 @@ import com.freshdirect.transadmin.util.TransStringUtil;
 public class DomainManagerDaoHibernateImpl
 		extends BaseManagerDaoHibernateImpl  implements DomainManagerDaoI {
 
-	
+
 	public Collection getZones() throws DataAccessException {
 
 		return getDataList("Zone Order By ZONE_CODE");
 	}
-	
+
 	public Collection getAreas() throws DataAccessException {
 
 		return getDataList("TrnArea Order By CODE");
@@ -41,7 +41,7 @@ public class DomainManagerDaoHibernateImpl
 
 		return getDataList("TrnAdHocRoute where OBSOLETE IS NULL Order By ROUTE_ID");
 	}
-	
+
 	public Collection getRouteForZone(String zoneId) throws DataAccessException {
 		return getDataList("TrnRoute tr WHERE tr.obsolete IS NULL AND ZONE_ID='"+zoneId+"'  Order By ROUTE_NUMBER");
 	}
@@ -50,12 +50,12 @@ public class DomainManagerDaoHibernateImpl
 
 		return getDataList("TrnTruck where OBSOLETE IS NULL Order By TRUCK_NUMBER");
 	}
-	
+
 	public Collection getZoneTypes() throws DataAccessException {
 
 		return getDataList("TrnZoneType Order By ID");
 	}
-	
+
 	public Collection getMarkedAreas() throws DataAccessException {
 
 		return getDataList("TrnArea where ACTIVE = 'X' Order By CODE");
@@ -90,8 +90,8 @@ public class DomainManagerDaoHibernateImpl
 	public Zone getZone(String code) throws DataAccessException  {
 		return (Zone)getEntityById("Zone","zoneCode",code);
 	}
-	
-	
+
+
 	public TrnAdHocRoute getAdHocRoute(String id) throws DataAccessException  {
 		return (TrnAdHocRoute)getEntityById("TrnAdHocRoute","routeId",id);
 	}
@@ -99,40 +99,40 @@ public class DomainManagerDaoHibernateImpl
 	public TrnTruck getTruck(String id) throws DataAccessException  {
 		return (TrnTruck)getEntityById("TrnTruck","truckId",id);
 	}
-	
+
 	public TrnZoneType getZoneType(String id) throws DataAccessException  {
 		return (TrnZoneType)getEntityById("TrnZoneType","zoneTypeId",id);
 	}
-	
+
 	public TrnArea getArea(String id) throws DataAccessException  {
 		return (TrnArea)getEntityById("TrnArea","code",id);
 	}
-	
-	public TrnCutOff getCutOff(String id) throws DataAccessException {		
+
+	public TrnCutOff getCutOff(String id) throws DataAccessException {
 		return (TrnCutOff)getEntityById("TrnCutOff","cutOffId",id);
 	}
-	
+
 	public Collection getCutOffs() throws DataAccessException {
 		return getDataList("TrnCutOff Order By  sequenceNo");
 	}
-	
+
 	public Collection getRouteNumberGroup(String date, String cutOff, String area) throws DataAccessException {
-		
+
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("from TrnRouteNumber tr");
 		strBuf.append(" where tr.id.routeDate='").append(date).append("'");
-		
+
 		if(cutOff != null) {
 			strBuf.append(" and tr.id.cutOffId='").append(cutOff).append("'");
 		}
-		
+
 		if(area != null) {
 			strBuf.append(" and tr.id.areaCode='").append(area).append("'");
 		}
 
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
 	}
-	
+
 	public Collection getDeliveryModels() throws DataAccessException {
 		return getDataList("TrnDeliveryModel");
 	}
@@ -142,7 +142,7 @@ public class DomainManagerDaoHibernateImpl
 	}
 
 	public Collection getZonetypeResources(String zoneTypeId) throws DataAccessException {
-		System.out.println("Inside get zone type resources $$$$$$$$$$$$$");
+//		System.out.println("Inside get zone type resources $$$$$$$$$$$$$");
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("from ZonetypeResource ztr");
 		strBuf.append(" where ztr.id.zonetypeId='").append(zoneTypeId).append("'");
@@ -157,36 +157,36 @@ public class DomainManagerDaoHibernateImpl
 	public Collection getDispositionTypes() throws DataAccessException {
 		return getDataList("DispositionType Order By code");
 	}
-	
+
 	public Region getRegion(String code) throws DataAccessException {
 		// TODO Auto-generated method stub
 		return (Region)getEntityById("Region","code",code);
 	}
-			
+
 	// employee
-		
+
 
 	public Collection getEmployeeJobType() throws DataAccessException {
 
 		return getDataList("TrnEmployeeJobType");
 	}
 
-	
-	// not used  
+
+	// not used
 	public TrnEmployee getEmployee(String id) throws DataAccessException  {
 		//return (TrnEmployee)getEntityById("TrnEmployee","employeeId",id);
 		return null;
 	}
-	
-	
+
+
 	public Collection getEmployeeRole(String empId) throws DataAccessException {
 		// TODO Auto-generated method stub
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("from EmployeeRole te where  te.id.kronosId ='").append(empId).append("'");
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
 	}
-	
-	
+
+
 	public Collection getEmployeeRoles() throws DataAccessException {
 		// TODO Auto-generated method stub
 		return getDataList("EmployeeRole ORDER BY ROLE");
@@ -195,13 +195,13 @@ public class DomainManagerDaoHibernateImpl
 
 	public EmployeeRoleType getEmployeeRoleType(String roleTypeId) throws DataAccessException {
 		// TODO Auto-generated method stub
-		
+
 		return (EmployeeRoleType) getEntityById("EmployeeRoleType","code",roleTypeId);
 	}
 
 	public DispositionType getDispositionType(String dispCode) throws DataAccessException {
 		// TODO Auto-generated method stub
-		
+
 		return (DispositionType) getEntityById("DispositionType","code",dispCode);
 	}
 	// not used
@@ -209,9 +209,9 @@ public class DomainManagerDaoHibernateImpl
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	public Collection getEmployeesByRoleType(String roleTypeId) throws DataAccessException {
-		
+
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("from EmployeeRole er");
 		strBuf.append(" where er.id.role='").append(roleTypeId).append("'");
@@ -219,7 +219,7 @@ public class DomainManagerDaoHibernateImpl
 	}
 
 	public void saveZoneType(TrnZoneType zoneType) throws DataAccessException {
-		
+
 		if(zoneType.getZoneTypeId()==null ||"".equals(zoneType.getZoneTypeId())) {
 			Set resources=zoneType.getZonetypeResources();
 			zoneType.setZonetypeResources(null);
@@ -233,13 +233,13 @@ public class DomainManagerDaoHibernateImpl
 			}
 			zoneType.setZonetypeResources(resources);
 			saveEntityList(zoneType.getZonetypeResources());
-			
+
 		}
 		else {
 			saveEntity(zoneType);
 		}
-		
-		
+
+
 	}
 
 	public Collection getActiveZones() throws DataAccessException {

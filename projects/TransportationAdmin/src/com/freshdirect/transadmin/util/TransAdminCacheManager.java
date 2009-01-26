@@ -18,13 +18,13 @@ import com.freshdirect.sap.ejb.SapException;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 
-public class TransAdminCacheManager {		 	
-		 			
+public class TransAdminCacheManager {
+
 	private List internalProgIdList=new ArrayList();
 	private static TransAdminCacheManager instance = null;
-	
-	private EmployeeManagerI manager=null; 
-	
+
+	private EmployeeManagerI manager=null;
+
 	private static Category LOGGER = LoggerFactory.getInstance(TransAdminCacheManager.class);
 	// make the time constant in property
 	private ExpiringReference truckDataHolder = new ExpiringReference(TransportationAdminProperties.getTruckCacheExpiryTime()*  60 * 1000) {
@@ -32,122 +32,122 @@ public class TransAdminCacheManager {
 			try {
 				return loadAllTruckData();
 			} catch (SapException e) {
-				LOGGER.error("Could not load load Referral program due to: ", e);				
+				LOGGER.error("Could not load load Referral program due to: ", e);
 			}
 			return Collections.EMPTY_LIST;
 		}
 	};
-	
-	
+
+
 	// make the time constant in property
 	private TrnAdmExpiringReference routeDataHolder = new TrnAdmExpiringReference(TransportationAdminProperties.getRouteCacheExpiryTime() * 60 * 1000) {
-		
-		
-		
+
+
+
 		protected Object load(Object requestParam) {
 			try {
-				
+
 				return loadAllRouteData(requestParam);
 			} catch (SapException e) {
-				LOGGER.error("Could not load load Referral program due to: ", e);				
+				LOGGER.error("Could not load load Referral program due to: ", e);
 			}
 			return Collections.EMPTY_LIST;
 		}
-							
+
 	};
-	
-	
+
+
 //	 make the time constant in property
 	private ExpiringReference employeeDataHolder = new ExpiringReference(TransportationAdminProperties.getEmployeeCacheExpiryTime() * 60 * 1000) {
-						
+
 		protected Object load() {
 			try {
 				return loadAllEmployeeData();
 			} catch (SapException e) {
-				LOGGER.error("Could not load load Referral program due to: ", e);				
+				LOGGER.error("Could not load load Referral program due to: ", e);
 			}
 			return Collections.EMPTY_LIST;
 		}
 	};
-	
-	
+
+
 //	 make the time constant in property
 	private ExpiringReference terminatedEmployeeDataHolder = new ExpiringReference(TransportationAdminProperties.getEmployeeCacheExpiryTime() * 60 * 1000) {
-						
+
 		protected Object load() {
 			try {
 				return loadAllTerminatedEmployeeData();
 			} catch (SapException e) {
-				LOGGER.error("Could not load load Referral program due to: ", e);				
+				LOGGER.error("Could not load load Referral program due to: ", e);
 			}
 			return Collections.EMPTY_LIST;
 		}
 	};
 
-		
-	private TransAdminCacheManager(){		
+
+	private TransAdminCacheManager(){
 	}
-		
-	
+
+
 	public static synchronized TransAdminCacheManager getInstance(){
 		if(instance==null){
 			instance=new TransAdminCacheManager();
 		}
-		return instance;		
+		return instance;
 	}
-	
-	
+
+
 	public void refreshCacheData(EnumCachedDataType dataType){
-		
-		System.out.println("refreshing crap truck data");
-		
-		if(EnumCachedDataType.TRUCK_DATA.equals(dataType)){			
+
+//		System.out.println("refreshing crap truck data");
+
+		if(EnumCachedDataType.TRUCK_DATA.equals(dataType)){
 			truckDataHolder.forceRefresh();
 		}
-		
+
 	}
-	
+
 	public List loadAllTerminatedEmployeeData() throws SapException{
-		
+
 		return (List)manager.getKronosTerminatedEmployees();
-	}		
-	
+	}
+
 	public List loadAllEmployeeData() throws SapException{
-		
-		return (List)manager.getKronosEmployees();	
-	}		
-	
-	
-	public List loadAllTruckData() throws SapException{		
+
+		return (List)manager.getKronosEmployees();
+	}
+
+
+	public List loadAllTruckData() throws SapException{
 		SapTruckMasterInfo truckInfos = new SapTruckMasterInfo();
 
 			truckInfos.execute();
 
-		return truckInfos.getTruckMasterInfos();	
-	}		
-	
+		return truckInfos.getTruckMasterInfos();
+	}
+
 	public List loadAllRouteData(Object requestParam) throws SapException{
-		
-		System.out.println(" Cache : loadAllRouteData"+requestParam);
+
+		//System.out.println(" Cache : loadAllRouteData"+requestParam);
 		SapRouteMasterInfo routeInfos = new SapRouteMasterInfo((String)requestParam);
 
 		routeInfos.execute();
 
-		System.out.println(" Cache : loadAllRouteData values:"+routeInfos.getRouteMasterInfos());
-		
-		return routeInfos.getRouteMasterInfos();	
-		
-	}		
-	
-	
+		//System.out.println(" Cache : loadAllRouteData values:"+routeInfos.getRouteMasterInfos());
+
+		return routeInfos.getRouteMasterInfos();
+
+	}
+
+
 	public List getAllTruckMasterInfo()
-	{	
+	{
 		return (List) this.truckDataHolder.get();
 	}
-	
-			
+
+
 	public ErpTruckMasterInfo getTruckMasterInfo(String truckNumber)
-	{	
+	{
 		List trkList = (List) this.truckDataHolder.get();
 		if(trkList==null) return null;
 		for(int i=0;i<trkList.size();i++){
@@ -160,27 +160,27 @@ public class TransAdminCacheManager {
 
 
 	public Collection getAllRouteMasterInfo(String requestedDate) {
-		// TODO Auto-generated method stub		
+		// TODO Auto-generated method stub
 		return (List) this.routeDataHolder.get(requestedDate);
 	}
-	
-	
+
+
 	public Collection getAllEmployeeInfo(EmployeeManagerI mgr) {
-		// TODO Auto-generated method stub	
+		// TODO Auto-generated method stub
 		this.manager=mgr;
 		return  (List)this.employeeDataHolder.get();
 	}
-	
-	
+
+
 	public Collection getAllTerminatedEmployeeInfo(EmployeeManagerI mgr) {
-		// TODO Auto-generated method stub	
+		// TODO Auto-generated method stub
 		this.manager=mgr;
 		return  (List)this.terminatedEmployeeDataHolder.get();
 	}
-	
-	
+
+
 	public EmployeeInfo getEmployeeInfo(String empId,EmployeeManagerI mgr)
-	{	
+	{
 		this.manager=mgr;
 		List empList = (List) this.employeeDataHolder.get();
 		if(empList==null) return null;
@@ -191,9 +191,9 @@ public class TransAdminCacheManager {
 		}
 		return null;
 	}
-	
+
 	public ErpRouteMasterInfo getRouteMasterInfo(String routeNumber,Date requestedDate)
-	{	
+	{
 		if(requestedDate==null)
 		{
 			requestedDate=new Date();
@@ -210,5 +210,5 @@ public class TransAdminCacheManager {
 			throw new RuntimeException("Exception Occurred while getting Route details for route number "+routeNumber);
 		}
 		return null;
-	}	
+	}
 }

@@ -12,45 +12,45 @@ import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class WebEmployeeInfo {
-	
-	
+
+
 private String employeeId;
-	
+
 //	private String firstName;
-//	
+//
 //	private String lastName;
-//	
+//
 //	private String middleInitial;
-//	
+//
 //	private String shortName;
-//	
+//
 //	private String jobType;
-//	
+//
 //	private Date hireDate;
-//	
+//
 //	private String status;
-//	
+//
 //	private String supervisorId;
-//	
+//
 //	private String supervisorFirstName;
-//	
+//
 //	private String supervisorMiddleInitial;
-//	
+//
 //	private String supervisorLastName;
-//	
+//
 //	private String supervisorShortName;
-//	
-	
+//
+
 	// private EmployeeroleId id;
 	//private EmployeeRoleType employeeRoleType;
-	
+
 	private EmployeeInfo empInfo;
 	private Collection  empRole;
-	
+
 	public WebEmployeeInfo(EmployeeInfo eInfo,Collection eRole){
 		this.empInfo=eInfo;
 		this.empRole=eRole;
-		
+
 	}
 
 	public EmployeeInfo getEmpInfo() {
@@ -65,31 +65,31 @@ private String employeeId;
 		return empInfo.getEmployeeId();
 	}
 
-	public String getEmployeeRoleType() {		
+	public String getEmployeeRoleType() {
 		if(empRole==null) return null;
-		
-		System.out.println("getEmployeeRoleType:"+empRole);
-		
+
+//		System.out.println("getEmployeeRoleType:"+empRole);
+
 		StringBuffer buf=new StringBuffer();
-		
+
 		Iterator iterator=empRole.iterator();
-		while(iterator.hasNext()){			
+		while(iterator.hasNext()){
 			EmployeeRole role=(EmployeeRole)iterator.next();
 			if(buf.length()>0)
 				buf.append("/").append(role.getEmployeeRoleType().getName());
 			else
 				buf.append(role.getEmployeeRoleType().getName());
 		}
-		
+
 		return buf.toString();
 	}
-	
-	
-	public Collection getEmployeeRoleTypes() {		
+
+
+	public Collection getEmployeeRoleTypes() {
 		if(empRole==null) return null;
-		
-		System.out.println("getEmployeeRoleTypesssss:"+empRole);
-		
+
+	//	System.out.println("getEmployeeRoleTypesssss:"+empRole);
+
 		//StringBuffer buf=new StringBuffer();
 		List empList=new ArrayList();
 		Iterator iterator=empRole.iterator();
@@ -97,11 +97,11 @@ private String employeeId;
 			EmployeeRole role=(EmployeeRole)iterator.next();
 			empList.add(role.getEmployeeRoleType());
 		}
-		
+
 		return empList;
 	}
 
-	public void setEmployeeRoleType(Collection employeeRoles) {	
+	public void setEmployeeRoleType(Collection employeeRoles) {
 		      this.empRole=employeeRoles;
 	}
 
@@ -171,10 +171,10 @@ private String employeeId;
 	public String getSupervisorShortName() {
 		return empInfo.getSupervisorShortName();
 	}
-	
+
 	public Date getTerminationDate()
-	{ 
-		if(empInfo.getTerminationDate()==null) return null;				
+	{
+		if(empInfo.getTerminationDate()==null) return null;
 		// try {
 			//return TransStringUtil.getDate(empInfo.getTerminationDate());
 			 return empInfo.getTerminationDate();
@@ -184,5 +184,5 @@ private String employeeId;
 		//}
 		//return null;
 	}
-	
+
 }

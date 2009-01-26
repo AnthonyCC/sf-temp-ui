@@ -26,10 +26,10 @@ import com.freshdirect.transadmin.web.editor.TimeOfDayPropertyEditor;
 
 public class GeoRestrictionFormController extends AbstractFormController {
 	private RestrictionManagerI restrictionManagerService;
-	
+
 
 	protected Map referenceData(HttpServletRequest request) throws ServletException {
-		Map refData = new HashMap();		
+		Map refData = new HashMap();
 		//refData.put("supervisors", getDomainManagerService().getSupervisors());
 		//refData.put("zones", getDomainManagerService().getZones());
 		refData.put("restrictionDays", (Set)request.getAttribute("restrictionDaysList"));
@@ -38,7 +38,7 @@ public class GeoRestrictionFormController extends AbstractFormController {
 		refData.put("conditions", (List)EnumLogicalOperator.getEnumList());
 		return refData;
 	}
-	
+
 	public RestrictionManagerI getRestrictionManagerService() {
 		return restrictionManagerService;
 	}
@@ -51,9 +51,9 @@ public class GeoRestrictionFormController extends AbstractFormController {
 	public String getDomainObjectName() {
 		return "Geo Restriction";
 	}
-	
+
 	protected void preProcessDomainObject(Object domainObject) {
-		System.out.println("$$$$$$entering preProcess");	
+//		System.out.println("$$$$$$entering preProcess");
 
 		GeoRestriction modelIn = (GeoRestriction)domainObject;
 		//if(TransStringUtil.isEmpty(modelIn.getBuilding().getBuildingId()) ) {
@@ -66,20 +66,20 @@ public class GeoRestrictionFormController extends AbstractFormController {
 		//domainObj.setIsNew("true");
 		return domainObj;
 	}
-	
+
 	protected void initBinder(HttpServletRequest request,
 			ServletRequestDataBinder dataBinder) throws Exception {
-		
+
 		super.initBinder(request, dataBinder);
-		System.out.println("inside initBinder ");				
+	//	System.out.println("inside initBinder ");
 		dataBinder.registerCustomEditor(TimeOfDay.class, new TimeOfDayPropertyEditor());
 		dataBinder.registerCustomEditor(EnumLogicalOperator.class, new TimeOfDayPropertyEditor());
-		 
+
 	}
-	
+
 	public String[] parseRestElelemntLink(String restLink){
 		if(restLink==null || restLink.trim().length()==0) return null;
-		
+
 		StringTokenizer tokens=new StringTokenizer(restLink.substring(1),"$");
 		String tmp[]=new String[tokens.countTokens()];
 		int i=0;
@@ -87,27 +87,27 @@ public class GeoRestrictionFormController extends AbstractFormController {
 		{
 			tmp[i++]=(String)tokens.nextElement();
 		}
-		
-		System.out.println("tmp[] ::: "+tmp);
-		
+
+	//	System.out.println("tmp[] ::: "+tmp);
+
 		return tmp;
-		
+
 	}
-	
-	
+
+
 protected void onBind(HttpServletRequest request, Object command) {
-		
-		System.out.println("On Bind");
+
+	//	System.out.println("On Bind");
 		GeoRestriction model = (GeoRestriction) command;
 		String restDtlSizeStr=request.getParameter("restrictionListSize");
 		String restrictionId=request.getParameter("restrictionId");
 		String restrictionLinkStr=request.getParameter("restrictionLinkStr");
 		String restIndexStr[]=parseRestElelemntLink(restrictionLinkStr);
-        System.out.println("restDtlSizeStr :"+restDtlSizeStr);
+      //  System.out.println("restDtlSizeStr :"+restDtlSizeStr);
 
-        System.out.println("model.getStartDate():"+model.getStartDate());
-        System.out.println("model.getEndDate():"+model.getEndDate());
-		
+     //   System.out.println("model.getStartDate():"+model.getStartDate());
+     //   System.out.println("model.getEndDate():"+model.getEndDate());
+
 		Set restrictionDaysList=new HashSet();
 		if(restIndexStr!=null && restIndexStr.length>0)
 		{
@@ -119,7 +119,7 @@ protected void onBind(HttpServletRequest request, Object command) {
 				 String condition=request.getParameter("attributeList["+(indexSize)+"].condition");
 				 String startTime=request.getParameter("attributeList["+(indexSize)+"].startTime");
 				 String endTime=request.getParameter("attributeList["+(indexSize)+"].endTime");
-				 
+
 				 if(null == dayOfWeek || "".equals(dayOfWeek)) {  //tbr
 				   break;
 				 }
@@ -132,17 +132,17 @@ protected void onBind(HttpServletRequest request, Object command) {
 				 if(null == endTime  || "".equals(endTime)) {  //tbr
 					   break;
 					 }
-				 
-				 System.out.println("dayOfWeek :"+dayOfWeek);
-				 System.out.println("condition :"+condition);
-				 System.out.println("startTime :"+startTime);
-				 System.out.println("endTime :"+endTime);
+
+				// System.out.println("dayOfWeek :"+dayOfWeek);
+				// System.out.println("condition :"+condition);
+				// System.out.println("startTime :"+startTime);
+				// System.out.println("endTime :"+endTime);
 				 BigDecimal objDayOfWeek = new BigDecimal(dayOfWeek);
-								 
+
 				 GeoRestrictionDaysId id=new GeoRestrictionDaysId(restrictionId,objDayOfWeek,new BigDecimal(i));
 				 GeoRestrictionDays day;
 				try {
-					
+
 					day = new GeoRestrictionDays(id,EnumLogicalOperator.getEnum(condition),new TimeOfDay(startTime),
 							                       			  new TimeOfDay(endTime));
 					restrictionDaysList.add(day);
@@ -151,23 +151,23 @@ protected void onBind(HttpServletRequest request, Object command) {
 				//	e.printStackTrace();
 				}
 				finally{
-					
+
 				}
 			}
-		}		
+		}
 		model.setGeoRestrictionDays(restrictionDaysList);
-		System.out.println("\n@@@@@@@\n@@@@@@\n@@@@@");
-		System.out.println(model);
-		System.out.println("\n@@@@@@@\n@@@@@@\n@@@@@");
+		//System.out.println("\n@@@@@@@\n@@@@@@\n@@@@@");
+		//System.out.println(model);
+		//System.out.println("\n@@@@@@@\n@@@@@@\n@@@@@");
 		//request.setAttribute("restrictionDaysList",restrictionDaysList );
 		System.out.println("size of the model detail:"+restrictionDaysList.size());
-		
+
 	}
-	
-	
-	
+
+
+
 	public Object getBackingObject(String id) {
-		System.out.println("#########entering getBackingObject");
+		//System.out.println("#########entering getBackingObject");
 
 		//return getLocationManagerService().getDlvBuildingDtl(id);
 		GeoRestriction result = getRestrictionManagerService().getGeoRestriction(id);
@@ -181,41 +181,41 @@ protected void onBind(HttpServletRequest request, Object command) {
 		}
 
 		//result.setIsNew("false");
-			
-		
-		System.out.println("#########exiting getBackingObject");
-		
-		return result;		
+
+
+	//	System.out.println("#########exiting getBackingObject");
+
+		return result;
 	}
-	
-	
+
+
 	public boolean isNew(Object command) {
 		GeoRestriction modelIn = (GeoRestriction)command;
 		return (modelIn.getName() == null);  //tbr
 	}
-	
-	
+
+
 //	public ModelAndView onSubmit(HttpServletRequest request,
 //			HttpServletResponse response, Object command, BindException errors)
 //			throws Exception {
-//		
+//
 //		System.out.println();
-//		
+//
 //		String messageKey = isNew(command) ? "app.actionmessage.101"
 //				: "app.actionmessage.102";
 //
 //		preProcessDomainObject(command);
-//		
+//
 //		GeoRestriction modelIn = (GeoRestriction)command;
-//		
+//
 //		getRestrictionManagerService().removeEntity(modelIn.getGeoRestrictionDays());
 //		List tmpList=new ArrayList();
 //		tmpList.add(modelIn);
 //		getRestrictionManagerService().removeEntity(tmpList);
-//		
+//
 //		System.out.println("removing both parent and child");
-//		
-//		Set restDaysList=(Set)request.getAttribute("restrictionDaysList"); 
+//
+//		Set restDaysList=(Set)request.getAttribute("restrictionDaysList");
 //		modelIn.setGeoRestrictionDays(restDaysList);
 //		List errorList = saveDomainObject(command);
 //
@@ -230,11 +230,11 @@ protected void onBind(HttpServletRequest request, Object command) {
 //		}
 //		return mav;
 //	}
-	
-	
+
+
 	public List saveDomainObject(Object domainObject) {
-		
-		System.out.println("entering to save");	
+
+		System.out.println("entering to save");
 		List errorList = new ArrayList();
 		GeoRestriction modelIn = (GeoRestriction)domainObject;
 
@@ -243,46 +243,46 @@ protected void onBind(HttpServletRequest request, Object command) {
 		System.out.println("$$$$$$$$$$$\n$$$$$$$$$$$\n$$$$$$$$$$$\n$$$$$$$$$\n");
 
 		Date date = modelIn.getEndDate();
-		
+
 		long t = date.getTime();
-		
+
 		t += (23*60*60+59*60+59)*1000;
-		
+
 		modelIn.setEndDate(new Date(t));
-		
+
 		System.out.println("After:\n"+modelIn.getEndDate());
-		
-		
-		System.out.println(modelIn);  
+
+
+		System.out.println(modelIn);
 		System.out.println("$$$$$$$$$$$\n$$$$$$$$$$$\n$$$$$$$$$$$\n$$$$$$$$$\n");*/
-				
-		try 
+
+		try
 		{
 			//getRestrictionManagerService().removeEntity(modelIn.getGeoRestrictionDays());
-			
+
 			//System.out.println("getRestrictionManagerService().removeEntity :"+);
-			
+
 			if(modelIn.getRestrictionId()!=null)
-			{				
+			{
 				getRestrictionManagerService().removeEntity(getRestrictionManagerService().getGeoRestrictionDays(modelIn.getRestrictionId()));
 			}
-				
-			
-			
+
+
+
 			Set tmpRestDays=modelIn.getGeoRestrictionDays();
-			modelIn.setGeoRestrictionDays(null);						
+			modelIn.setGeoRestrictionDays(null);
 			getRestrictionManagerService().saveGeoRestriction(modelIn);
-			
-			System.out.println("after saving the parent "+modelIn.getRestrictionId());
-			
-			
-			System.out.println("after saving the parent getGeoRestrictionDays :"+modelIn.getGeoRestrictionDays());
-			
+
+		//	System.out.println("after saving the parent "+modelIn.getRestrictionId());
+
+
+		//	System.out.println("after saving the parent getGeoRestrictionDays :"+modelIn.getGeoRestrictionDays());
+
 			modelIn.setGeoRestrictionDays(tmpRestDays);
-			
-			
-			
-//			
+
+
+
+//
 			if(tmpRestDays!=null){
 				Iterator iterator=tmpRestDays.iterator();
 				while(iterator.hasNext()){
@@ -290,22 +290,22 @@ protected void onBind(HttpServletRequest request, Object command) {
 					days.getRestrictionDaysId().setRestrictionId(modelIn.getRestrictionId());
 				}
 			}
-									
+
 			modelIn.setGeoRestrictionDays(tmpRestDays);
 			//getRestrictionManagerService().saveGeoRestriction(modelIn);
 			getRestrictionManagerService().saveEntityList(modelIn.getGeoRestrictionDays());
-			
-			
-			
-			
+
+
+
+
 		} catch(Exception e) {
 			e.printStackTrace();
 			errorList.add(this.getMessage("app.actionmessage.119", new Object[]{getDomainObjectName()}));
 		}
 		return errorList;
 	}
-	
-	
-	
+
+
+
 
 }

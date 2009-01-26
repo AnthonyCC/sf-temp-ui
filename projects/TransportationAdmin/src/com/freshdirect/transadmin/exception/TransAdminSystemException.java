@@ -11,21 +11,21 @@ public class TransAdminSystemException extends RuntimeException {
 	public static final String messageFileName="messages";
 	public static final String ERROR_PREFIX="sys.error.";
     private Throwable causedException;
-    private String errorCode=null;    
-    
+    private String errorCode=null;
+
 	public TransAdminSystemException(String errorCode,Throwable e){
 		this(e);
-		this.errorCode=errorCode;		
+		this.errorCode=errorCode;
 	}
-	     
-    
+
+
 	public TransAdminSystemException(Throwable e){
 		this.causedException=e;
 	}
-	
+
 
 	public String getMessage(){
-		StringBuffer msgBuffer=new StringBuffer();		
+		StringBuffer msgBuffer=new StringBuffer();
 		if(errorCode!=null)
 		{
 			ResourceBundle bundle=ResourceBundle.getBundle(messageFileName);
@@ -33,21 +33,21 @@ public class TransAdminSystemException extends RuntimeException {
 	        msgBuffer.append(message);
 	        msgBuffer.append("\n");
 		}
-		return msgBuffer.toString(); 		
-		
+		return msgBuffer.toString();
+
 	}
-	
-	
+
+
 	public String getCausedException(){
 		StringWriter writer=null;
 		PrintWriter pw=null;
 
 		if(this.causedException!=null){
-			try {	
-			writer=new StringWriter();	
+			try {
+			writer=new StringWriter();
 			pw=new PrintWriter(writer);
 			this.causedException.printStackTrace(pw);
-			System.out.println("asdasd:"+writer.toString());
+//			System.out.println("asdasd:"+writer.toString());
 			return writer.toString();
 			} finally {
 				 try {
@@ -58,5 +58,5 @@ public class TransAdminSystemException extends RuntimeException {
 		}
 		return "";
 	}
-	
+
 }

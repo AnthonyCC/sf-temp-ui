@@ -35,16 +35,16 @@ import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 import com.freshdirect.transadmin.web.model.WebPlanInfo;
 
 public class DispatchController extends AbstractMultiActionController {
-	
+
 	private DispatchManagerI dispatchManagerService;
 	private EmployeeManagerI employeeManagerService;
 	private DomainManagerI domainManagerService;
-	
+
 	private static final DateFormat DATE_FORMAT=new SimpleDateFormat("MM/dd/yyyy");
 	private static final String DRIVER = "001";
 	private static final String HELPER = "002";
 	private static final String RUNNER = "003";
-		
+
 	public DispatchManagerI getDispatchManagerService() {
 		return dispatchManagerService;
 	}
@@ -66,21 +66,21 @@ public class DispatchController extends AbstractMultiActionController {
 	public void setDomainManagerService(DomainManagerI domainManagerService) {
 		this.domainManagerService = domainManagerService;
 	}
-	
-	
+
+
 	/**
 	 * Custom handler for welcome
 	 * @param request current HTTP request
 	 * @param response current HTTP response
 	 * @return a ModelAndView to render the response
 	 */
-	public ModelAndView planHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {		
-		
+	public ModelAndView planHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+
 		String daterange = request.getParameter("daterange");
 		String zoneLst = request.getParameter("zone");
 		ModelAndView mav = new ModelAndView("planView");
 		if(!TransStringUtil.isEmpty(daterange) || !TransStringUtil.isEmpty(zoneLst)) {
-			
+
 			try {
 				String dateQryStr = TransStringUtil.formatDateSearch(daterange);
 				String zoneQryStr = StringUtil.formQueryString(Arrays.asList(StringUtil.decodeStrings(zoneLst)));
@@ -94,19 +94,19 @@ public class DispatchController extends AbstractMultiActionController {
 				saveMessage(request, getMessage("app.actionmessage.123", null));
 			}
 		}
-		
-		return mav;		
+
+		return mav;
 	}
 
 	private Collection getPlanInfo(String dateQryStr, String zoneQryStr) {
-		
+
 		Collection plans=dispatchManagerService.getPlan(dateQryStr, zoneQryStr);
 		List termintedEmployees = getTermintedEmployeeIds();
-		
+
 		Collection planInfos=new ArrayList();
 		Iterator it=plans.iterator();
 		while(it.hasNext()) {
-			
+
 			Plan plan=(Plan)it.next();
 			Zone zone=null;
 			if(plan.getZone()!=null) {
@@ -116,13 +116,13 @@ public class DispatchController extends AbstractMultiActionController {
 			planInfo.setTermintedEmployees(termintedEmployees);
 			planInfos.add(planInfo);
 		}
-		
-		
+
+
 		return planInfos;
 	}
-	
 
-	
+
+
 	/**
 	 * Custom handler for welcome
 	 * @param request current HTTP request
@@ -130,29 +130,29 @@ public class DispatchController extends AbstractMultiActionController {
 	 * @return a ModelAndView to render the response
 	 */
 	public ModelAndView planDeleteHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-		
+
 		Set employeeSet=new HashSet();
 		String arrEntityList[] = getParamList(request);
-		if (arrEntityList != null) {			
+		if (arrEntityList != null) {
 			int arrLength = arrEntityList.length;
 			for (int intCount = 0; intCount < arrLength; intCount++) {
 				employeeSet.add(dispatchManagerService.getPlan(arrEntityList[intCount]));
 			}
-		}		
+		}
 		dispatchManagerService.removeEntity(employeeSet);
 		saveMessage(request, getMessage("app.actionmessage.103", null));
 
 		return planHandler(request, response);
 	}
-	
+
 	/**
 	 * Custom handler for welcome
 	 * @param request current HTTP request
 	 * @param response current HTTP response
 	 * @return a ModelAndView to render the response
 	 */
-	public ModelAndView dispatchHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {		
-	
+	public ModelAndView dispatchHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+
 		String dispDate = request.getParameter("dispDate");
 		String zone = request.getParameter("zone");
 		String region = request.getParameter("region");
@@ -166,19 +166,19 @@ public class DispatchController extends AbstractMultiActionController {
 			mav.getModel().put("dispDate", TransStringUtil.getCurrentDate());
 		}
 		mav.getModel().put("zones", domainManagerService.getZones());
-		mav.getModel().put("regions", domainManagerService.getRegions());		
+		mav.getModel().put("regions", domainManagerService.getRegions());
 		return mav;
 	}
-	
-	public ModelAndView dispatchSummaryHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {		
-		
+
+	public ModelAndView dispatchSummaryHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+
 		ModelAndView mav = new ModelAndView("dispatchSummaryView");
 		//By default get the today's dispatches.
 		mav.getModel().put("dispatchInfos",getDispatchInfos(TransStringUtil.getCurrentServerDate(), null, null, true));
 		mav.getModel().put("dispDate", TransStringUtil.getCurrentDate());
 		return mav;
 	}
-	
+
 	private Collection getDispatchInfos(String dispDate, String zoneStr, String region, boolean isSummary){
 		Collection dispatchInfos = new ArrayList();
 		List termintedEmployees = getTermintedEmployeeIds();
@@ -196,9 +196,9 @@ public class DispatchController extends AbstractMultiActionController {
 				if(isSummary){
 					FDRouteMasterInfo routeInfo = domainManagerService.getRouteMasterInfo(command.getRoute(), new Date());
 					if(routeInfo != null){
-						command.setNoOfStops(routeInfo.getNumberOfStops());	
+						command.setNoOfStops(routeInfo.getNumberOfStops());
 					}
-					
+
 				}
 				dispatchInfos.add(command);
 			}
@@ -206,23 +206,23 @@ public class DispatchController extends AbstractMultiActionController {
 			ex.printStackTrace();
 			throw new RuntimeException("Exception ocuurred while processing the dispatch list for requested date "+dispDate);
 		}
-		
+
 		return dispatchInfos;
 	}
-	
+
 	/**
 	 * Custom handler for welcome
 	 * @param request current HTTP request
 	 * @param response current HTTP response
 	 * @return a ModelAndView to render the response
 	 */
-	public ModelAndView dispatchDeleteHandler(HttpServletRequest request, HttpServletResponse response) 
+	public ModelAndView dispatchDeleteHandler(HttpServletRequest request, HttpServletResponse response)
 								throws ServletException, ParseException {
-		
+
 		Set dispatchSet=new HashSet();
 		String arrEntityList[] = getParamList(request);
 		//StringTokenizer splitter = null;
-		if (arrEntityList != null) {			
+		if (arrEntityList != null) {
 			int arrLength = arrEntityList.length;
 			for (int intCount = 0; intCount < arrLength; intCount++) {
 				//splitter = new StringTokenizer(arrEntityList[intCount], "$");
@@ -237,25 +237,25 @@ public class DispatchController extends AbstractMultiActionController {
 			} else {
 				saveMessage(request, getMessage("app.actionmessage.136", null));
 			}
-		}		
+		}
 		return dispatchHandler(request, response);
 	}
-	
+
 	/**
 	 * Custom handler for welcome
 	 * @param request current HTTP request
 	 * @param response current HTTP response
 	 * @return a ModelAndView to render the response
 	 */
-	public ModelAndView dispatchConfirmHandler(HttpServletRequest request, HttpServletResponse response) 
+	public ModelAndView dispatchConfirmHandler(HttpServletRequest request, HttpServletResponse response)
 								throws ServletException, ParseException {
-		
+
 		Set dispatchSet=new HashSet();
 		String arrEntityList[] = getParamList(request);
 		StringTokenizer splitter = null;
 		Dispatch tmpDispatch = null;
 		int routeBlankCount = 0;
-		if (arrEntityList != null) {			
+		if (arrEntityList != null) {
 			int arrLength = arrEntityList.length;
 			for (int intCount = 0; intCount < arrLength; intCount++) {
 				//splitter = new StringTokenizer(arrEntityList[intCount], "$");
@@ -280,12 +280,12 @@ public class DispatchController extends AbstractMultiActionController {
 				dispatchManagerService.saveEntityList(dispatchSet);
 				saveMessage(request, getMessage("app.actionmessage.104", null));
 			}
-		}		
+		}
 
 		return dispatchHandler(request, response);
 	}
-	
-	public ModelAndView routeRefreshHandler(HttpServletRequest request, HttpServletResponse response) 
+
+	public ModelAndView routeRefreshHandler(HttpServletRequest request, HttpServletResponse response)
 	throws ServletException, ParseException {
 		String dispDate = request.getParameter("dispDate");
 		String isSummary = request.getParameter("summary");
@@ -302,23 +302,23 @@ public class DispatchController extends AbstractMultiActionController {
 		if(TransStringUtil.isEmpty(isSummary)){
 			return dispatchHandler(request, response);
 		}else{
-			System.out.println("Inside Summary");
+//			System.out.println("Inside Summary");
 			return dispatchSummaryHandler(request, response);
 		}
-		
+
 	}
-	
+
 	public ModelAndView autoDispatchHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException, ParseException {
-		
+
 				// if there is a dispatch record for the same date then check what user role
 				// if not admin send an error message
 				// if admin delete the existing record and run the autodispatch crap
-		
-				
-				String dispatchDate = request.getParameter("daterange");					
-				try {			
+
+
+				String dispatchDate = request.getParameter("daterange");
+				try {
 					if(!TransStringUtil.isEmpty(dispatchDate)) {
-						dispatchDate=TransStringUtil.getServerDate(dispatchDate);	
+						dispatchDate=TransStringUtil.getServerDate(dispatchDate);
 					}else
 					{
 						dispatchDate=TransStringUtil.getServerDate(new Date());
@@ -326,31 +326,31 @@ public class DispatchController extends AbstractMultiActionController {
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					
+
 					saveMessage(request, getMessage("app.error.115", new String[]{"Invalid Date"}));
 					return planHandler(request,response);
-			    }			
-					
+			    }
+
 				    Collection planList=dispatchManagerService.getPlanList(dispatchDate);
-				
+
 				    if(planList == null || planList.size() == 0){
 				    	saveMessage(request, getMessage("app.actionmessage.142", null));
 				    	return planHandler(request,response);
 				    }
-				    		   
+
 					Collection dispList = dispatchManagerService.getDispatchList(dispatchDate,null,null);
-					System.out.println("dispList >>"+dispList);
+					//System.out.println("dispList >>"+dispList);
 					if(!SecurityManager.isUserAdmin(request)){
 						  saveMessage(request, getMessage("app.actionmessage.140", null));
-						  return planHandler(request,response);							  
-					}	
+						  return planHandler(request,response);
+					}
 				   dispatchManagerService.autoDisptch(dispatchDate);
 				   saveMessage(request, getMessage("app.actionmessage.143", null));
-				   return planHandler(request,response);		
+				   return planHandler(request,response);
 	}
-	
+
 	public ModelAndView unassignedRouteHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException  {
-		
+
 		ModelAndView mav = new ModelAndView("unassignedRouteView");
 		String routeDate = request.getParameter("routeDate");
 		try {
@@ -362,7 +362,7 @@ public class DispatchController extends AbstractMultiActionController {
 		}
 		return mav;
 	}
-	
+
 	private List getTermintedEmployeeIds() {
 		Collection termintedList = employeeManagerService.getTerminatedEmployees();
 		List result = new ArrayList();
@@ -377,5 +377,5 @@ public class DispatchController extends AbstractMultiActionController {
 		}
 		return result;
 	}
-	
+
 }

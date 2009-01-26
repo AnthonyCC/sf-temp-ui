@@ -38,11 +38,11 @@ import com.freshdirect.transadmin.web.model.WebPlanInfo;
 import com.freshdirect.transadmin.util.EnumResourceType;
 
 public class PlanningFormController extends AbstractFormController {
-	
+
 	private DomainManagerI domainManagerService;
-	
+
 	private DispatchManagerI dispatchManagerService;
-	
+
 	private EmployeeManagerI employeeManagerService;
 	public DispatchManagerI getDispatchManagerService() {
 		return dispatchManagerService;
@@ -51,18 +51,18 @@ public class PlanningFormController extends AbstractFormController {
 	public void setDispatchManagerService(DispatchManagerI dispatchManagerService) {
 		this.dispatchManagerService = dispatchManagerService;
 	}
-	
+
 	public EmployeeManagerI getEmployeeManagerService() {
 		return employeeManagerService;
 	}
 
 	public void setEmployeeManagerService(EmployeeManagerI employeeManagerService) {
 		this.employeeManagerService = employeeManagerService;
-	}	
-	
+	}
+
 	protected Map referenceData(HttpServletRequest request) throws ServletException {
-		
-		Map refData = new HashMap();		
+
+		Map refData = new HashMap();
 		refData.put("days", domainManagerService.getDays());
 		refData.put("zones", domainManagerService.getZones());
 		refData.put("regions", domainManagerService.getRegions());
@@ -72,66 +72,66 @@ public class PlanningFormController extends AbstractFormController {
 		refData.put("runners", DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.RUNNER.getName())));
 		return refData;
 	}
-	
+
 
 	public void printEmployeeInfo(List data) {
-		
+
 		Iterator it=data.iterator();
 		while(it.hasNext()) {
 			EmployeeInfo empInfo=(EmployeeInfo)it.next();
-			System.out.println(empInfo.getLastName()+" "+empInfo.getFirstName());
+//			System.out.println(empInfo.getLastName()+" "+empInfo.getFirstName());
 		}
-		
+
 	}
 	public Object getBackingObject(String id) {
 		WebPlanInfo planInfo=getCommand(getDispatchManagerService().getPlan(id));
 		return planInfo;
 	}
-	
+
 	private WebPlanInfo getCommand(Plan plan) {
-		
+
 		Zone zone=null;
 		if(plan.getZone()!=null) {
 			zone=domainManagerService.getZone(plan.getZone().getZoneCode());
 		}
 		return DispatchPlanUtil.getWebPlanInfo(plan,zone,employeeManagerService);
-	}	
+	}
 
-	
+
 	public Object getDefaultBackingObject() {
 		return new WebPlanInfo();
 	}
-	
+
 	public boolean isNew(Object command) {
 		WebPlanInfo modelIn = (WebPlanInfo)command;
 		return (TransStringUtil.isEmpty(modelIn.getPlanId()));
 	}
-	
+
 	public String getDomainObjectName() {
 		return "Plan";
 	}
-	
+
 	/*protected ModelAndView onSubmit(HttpServletRequest request,
 			HttpServletResponse response, Object command, BindException errors)
 			throws Exception {
-		
+
 		if("true".equalsIgnoreCase(((WebPlanInfo)command).getZoneModified())) {
 			((WebPlanInfo)command).setZoneModified("false");
 			preProcessDomainObject(command);
 			ModelAndView mav = new ModelAndView(getSuccessView(), errors.getModel());
 			mav.getModel().put(this.getCommandName(), command);
 			mav.getModel().putAll(referenceData(request));
-			
+
 			return mav;
 		} else {
 			return super.onSubmit(request, response, command, errors);
 		}
-	
+
 	}*/
 	public List saveDomainObject(Object command) {
-		
+
 		List errorList = null;
-		
+
 		try {
 			WebPlanInfo _command=(WebPlanInfo)command;
 			boolean isNew = isNew(command);
@@ -149,11 +149,11 @@ public class PlanningFormController extends AbstractFormController {
 		}
 		return errorList;
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 
 	public void saveErrorMessage(HttpServletRequest request, Object msg) {
 		List messages = (List)msg;
@@ -162,61 +162,61 @@ public class PlanningFormController extends AbstractFormController {
 		}
 		super.saveErrorMessage(request, msg);
 	}
-	
+
 	/*
 	private boolean canIgnoreError(WebPlanInfo tmpCommand) {
 		return "true".equalsIgnoreCase(tmpCommand.getIgnoreErrors()) && tmpCommand.getPlanDate().equals(tmpCommand.getErrorDate());
-		
+
 	}
-	
-	*/	
+
+	*/
 	public DomainManagerI getDomainManagerService() {
 		return domainManagerService;
 	}
 
 	public void setDomainManagerService(DomainManagerI domainManagerService) {
 		this.domainManagerService = domainManagerService;
-	}	
-	
+	}
+
 	protected void onBind(HttpServletRequest request, Object command) {
-	
-		
+
+
 		WebPlanInfo model = (WebPlanInfo) command;
 		Zone zone=null;
 		if(!TransStringUtil.isEmpty(model.getIsBullpen()) &&"Y".equalsIgnoreCase(model.getIsBullpen())) {
 			model.setZoneCode("");
 			model.setZoneName("");
-		} else 
-			
+		} else
+
 		if(!TransStringUtil.isEmpty(model.getZoneCode())) {
 			zone=domainManagerService.getZone(model.getZoneCode());
 		}
 		model= DispatchPlanUtil.reconstructWebPlanInfo(model,zone,employeeManagerService);
-		
+
 	}
-	
+
 	protected boolean isFormChangeRequest(HttpServletRequest request, Object command) {
-		
+
 		WebPlanInfo _command=(WebPlanInfo)command;
 		if("true".equalsIgnoreCase(_command.getZoneModified())) {
 			return true;
 		}
-		else 
+		else
 			return isFormChangeRequest(request);
 	}
 
 	protected void onFormChange(HttpServletRequest request, HttpServletResponse response, Object command)
 	throws Exception {
-		
+
 		WebPlanInfo _command=(WebPlanInfo)command;
 		_command.setZoneModified("false");
 	}
 
-	
+
 	private Plan getPlan(WebPlanInfo command) throws Exception {
 		return DispatchPlanUtil.getPlan(command);
 	}
-	
+
 	protected String getIdFromRequest(HttpServletRequest request){
 		String id = request.getParameter("id");
 		if(TransStringUtil.isEmpty(id)) {
@@ -224,6 +224,6 @@ public class PlanningFormController extends AbstractFormController {
 		}
 		return id;
 	}
-	
+
 }
 

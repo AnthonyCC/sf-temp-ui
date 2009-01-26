@@ -30,13 +30,13 @@ import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
 
 public class DispatchFormController extends AbstractFormController {
-	
+
 	private DomainManagerI domainManagerService;
-	
+
 	private DispatchManagerI dispatchManagerService;
-	
+
 	private EmployeeManagerI employeeManagerService;
-	
+
 	public DispatchManagerI getDispatchManagerService() {
 		return dispatchManagerService;
 	}
@@ -44,21 +44,21 @@ public class DispatchFormController extends AbstractFormController {
 	public void setDispatchManagerService(DispatchManagerI dispatchManagerService) {
 		this.dispatchManagerService = dispatchManagerService;
 	}
-	
+
 	protected void initBinder(HttpServletRequest request,
 			ServletRequestDataBinder binder) throws Exception {
 		super.initBinder(request,binder);
 	}
 
 	protected Map referenceData(HttpServletRequest request) throws ServletException {
-		Map refData = new HashMap();		
+		Map refData = new HashMap();
 		refData.put("statuses", domainManagerService.getDispositionTypes());
 		String dispDate = request.getParameter("dispDate");
 		String zoneCode = request.getParameter("zoneCode");
-		System.out.println("Zone code "+zoneCode);
+//		System.out.println("Zone code "+zoneCode);
 		if (StringUtils.hasText(dispDate)) {
 			refData.put("routes", domainManagerService.getAllRoutes(getServerDate(dispDate)));
-			
+
 		} else {
 			refData.put("routes", domainManagerService.getAllRoutes(TransStringUtil.getCurrentServerDate()));
 		}
@@ -76,7 +76,7 @@ public class DispatchFormController extends AbstractFormController {
 		refData.put("regions", domainManagerService.getRegions());
 		return refData;
 	}
-	
+
 	private DispatchCommand getCommand(Dispatch dispatch) throws Exception{
 		Zone zone=null;
 		if(dispatch.getZone() != null) {
@@ -84,13 +84,13 @@ public class DispatchFormController extends AbstractFormController {
 		}
 		return DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService);
 	}
-	
 
-	
+
+
 	private Dispatch getDispatch(DispatchCommand command) throws Exception {
 		return DispatchPlanUtil.getDispatch(command, domainManagerService);
 	}
-	
+
 	public Object getDefaultBackingObject() {
 		DispatchCommand command = new  DispatchCommand();
 		command.setZoneCode("");
@@ -102,7 +102,7 @@ public class DispatchFormController extends AbstractFormController {
 		}catch(ParseException exp){}
 		return command;
 	}
-	
+
 	public Object getBackingObject(String id) {
 		try{
 			DispatchCommand command = getCommand(getDispatchManagerService().getDispatch(id));
@@ -112,24 +112,24 @@ public class DispatchFormController extends AbstractFormController {
 			ex.printStackTrace();
 			throw new RuntimeException("An Error Ocuurred when trying construct command object "+ex.getMessage());
 		}
-		
+
 	}
-	
+
 	public boolean isNew(Object command) {
 		DispatchCommand modelIn = (DispatchCommand)command;
 		return (TransStringUtil.isEmpty(modelIn.getDispatchId()));
 	}
 
-	
+
 	public String getDomainObjectName() {
 		return "DispatchCommand";
 	}
-	
-	
-	private List saveDispatch(DispatchCommand command) {	
+
+
+	private List saveDispatch(DispatchCommand command) {
 		List errorList = null;
 		try {
-			
+
 			boolean isNew = isNew(command);
 			Dispatch domainObject=getDispatch(command);
 			getDispatchManagerService().saveDispatch(domainObject);
@@ -137,20 +137,20 @@ public class DispatchFormController extends AbstractFormController {
 		} catch (TransAdminApplicationException objExp) {
 			errorList = new ArrayList();
 			errorList.add(objExp.getMessage());
-			
+
 		} catch (Exception objExp) {
 			errorList = new ArrayList();
 			errorList.add(this.getMessage("sys.error.1001", new Object[]{this.getDomainObjectName()}));
 		}
 		return errorList;
 	}
-	
+
 	public List saveDomainObject(Object domainObject) {
 		DispatchCommand command = (DispatchCommand) domainObject;
 		return saveDispatch(command);
 	}
 
-	
+
 	protected void onBind(HttpServletRequest request, Object command,BindException errors) {
 		DispatchCommand model = (DispatchCommand) command;
 		if(!TransStringUtil.isEmpty(model.getIsBullpen()) && model.getIsBullpen().equals("true") && !TransStringUtil.isEmpty(model.getZoneCode())){
@@ -159,13 +159,13 @@ public class DispatchFormController extends AbstractFormController {
 			model.setZoneType("");
 		}
 		Zone zone=null;
-		
+
 		if(!TransStringUtil.isEmpty(model.getZoneCode())) {
 			zone=domainManagerService.getZone(model.getZoneCode());
 		}
-	
+
 		model=(DispatchCommand)DispatchPlanUtil.reconstructWebPlanInfo(model,zone,employeeManagerService);
-		
+
 		try{
 			boolean routeChanged = false;
 			Collection assignedRoutes = getDispatchManagerService().getAssignedRoutes(TransStringUtil.getServerDate(model.getDispatchDate()));
@@ -179,17 +179,17 @@ public class DispatchFormController extends AbstractFormController {
 
 			if(routeChanged && assignedRoutes.contains(model.getRoute())){
 				//throw new TransAdminApplicationException("135", new String[]{model.getRoute()});
-				
+
 				errors.rejectValue("route","app.error.135", new String[]{model.getRoute()},null);
 			}
 		}catch(ParseException exp){
 			//Ignore it
 		}
-		
+
 	}
-	
-	
-	
+
+
+
 	protected String getIdFromRequest(HttpServletRequest request){
 		String id = request.getParameter("id");
 		if(TransStringUtil.isEmpty(id)) {
@@ -198,15 +198,15 @@ public class DispatchFormController extends AbstractFormController {
 		return id;
 	}
 
-	
+
 	public DomainManagerI getDomainManagerService() {
 		return domainManagerService;
 	}
 
 	public void setDomainManagerService(DomainManagerI domainManagerService) {
 		this.domainManagerService = domainManagerService;
-	}	
-	
+	}
+
 	public EmployeeManagerI getEmployeeManagerService() {
 		return employeeManagerService;
 	}
@@ -214,7 +214,7 @@ public class DispatchFormController extends AbstractFormController {
 	public void setEmployeeManagerService(EmployeeManagerI employeeManagerService) {
 		this.employeeManagerService = employeeManagerService;
 	}
-	
+
 	/*protected ModelAndView processFormSubmission(
 			HttpServletRequest request, HttpServletResponse response, Object command, BindException errors)
 			throws Exception {

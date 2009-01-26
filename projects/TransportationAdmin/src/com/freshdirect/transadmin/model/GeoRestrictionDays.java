@@ -17,10 +17,10 @@ public class GeoRestrictionDays implements java.io.Serializable {
 
 	private GeoRestrictionDaysId restrictionDaysId;
 	private EnumLogicalOperator condition;
-	
+
 	private TimeOfDay startTime;
 	private TimeOfDay endTime;
-	
+
 
 	public GeoRestrictionDays() {
 	}
@@ -62,13 +62,13 @@ public class GeoRestrictionDays implements java.io.Serializable {
 	}
 
 	public String getDayOfWeekInText(){
-		if(this.restrictionDaysId==null) return "";			
-		System.out.println("restrictionDaysId.getDayOfWeek() :"+restrictionDaysId.getDayOfWeek().intValue()+":");
+		if(this.restrictionDaysId==null) return "";
+//		System.out.println("restrictionDaysId.getDayOfWeek() :"+restrictionDaysId.getDayOfWeek().intValue()+":");
 		EnumDayOfWeek dow=EnumDayOfWeek.getEnum(Integer.toString(restrictionDaysId.getDayOfWeek().intValue()));
-		
-		System.out.println("dow :"+dow);
+
+		//System.out.println("dow :"+dow);
 		if(dow!=null)
-			return dow.getDesc(); 
+			return dow.getDesc();
 		else
 			return "";
 	}
@@ -81,6 +81,6 @@ public class GeoRestrictionDays implements java.io.Serializable {
 		this.condition = condition;
 	}
 
-	
-	
+
+
 }

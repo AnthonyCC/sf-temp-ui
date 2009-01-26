@@ -19,36 +19,36 @@ import com.freshdirect.transadmin.util.TransAdminCacheManager;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 
 public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeManagerI {
-	
+
 	private EmployeeManagerDaoI employeeManagerDAO = null;
 	private DomainManagerDaoI domainManagerDao = null;
-	
-	
+
+
 	public EmployeeManagerDaoI getEmployeeManagerDAO() {
 		return employeeManagerDAO;
 	}
-	
-	
+
+
 	protected BaseManagerDaoI getBaseManageDao() {
 		// TODO Auto-generated method stub
 		return getDomainManagerDao();
 	}
-	
+
 	public Collection getEmployees() {
 		// TODO Auto-generated method stub
 		// first get the kornos data
 		// then get the role for the kornos data
 		//then construct the viewer model
-		// return the viewer model 
+		// return the viewer model
 		Collection kronoEmployees=TransAdminCacheManager.getInstance().getAllEmployeeInfo(this);
-		
+
 		Collection employeeRolesList=domainManagerDao.getEmployeeRoles();
-		
-		System.out.println("kronoEmployees"+kronoEmployees);
-		System.out.println("employeeRolesList"+employeeRolesList);
-		
+
+//		System.out.println("kronoEmployees"+kronoEmployees);
+		//System.out.println("employeeRolesList"+employeeRolesList);
+
 		Collection finalList=ModelUtil.getTrnAdminEmployeeList((List)kronoEmployees,(List)employeeRolesList);
-		
+
 		 return finalList;
 	}
 
@@ -56,14 +56,14 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 	public void setEmployeeManagerDAO(EmployeeManagerDaoI employeeManagerDao) {
 		this.employeeManagerDAO = employeeManagerDao;
 	}
-	
-	
+
+
 	public Collection getKronosEmployees(){
-		return employeeManagerDAO.getEmployees();	
+		return employeeManagerDAO.getEmployees();
 	}
-	
+
 	public Collection getSupervisors() {
-		return employeeManagerDAO.getSupervisors();	
+		return employeeManagerDAO.getSupervisors();
 	}
 
 
@@ -82,25 +82,25 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 		// get the empInfo from the cache
 		// get the role from the db
 		// wrap it and return the data simple
-		
+
 		EmployeeInfo info=TransAdminCacheManager.getInstance().getEmployeeInfo(id,this);
 		Collection empRoles=this.domainManagerDao.getEmployeeRole(id);
 		WebEmployeeInfo webInfo=new WebEmployeeInfo(info,empRoles);
 		//this.domainManagerDao.
-		
+
 		return webInfo;
 	}
-	
+
 	public EmployeeRoleType getEmployeeRoleType(String roleTypeId) {
 		// TODO Auto-generated method stub
 		return getDomainManagerDao().getEmployeeRoleType(roleTypeId);
 	}
-	
+
 	public Collection getEmployeeJobType() {
-		
+
 		return getDomainManagerDao().getEmployeeJobType();
 	}
-	
+
 	public Collection getEmployeeRoleTypes() {
 		return getDomainManagerDao().getEmployeeRoleTypes();
 	}
@@ -113,7 +113,7 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 		Collection oldRoleList=getDomainManagerDao().getEmployeeRole(employeeInfo.getEmployeeId());
 		removeEntity(oldRoleList);
 		saveEntityList(roleList);
-		
+
 	}
 
 
@@ -123,19 +123,19 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 		// first get the kornos data
 		// then get the role for the kornos data
 		//then construct the viewer model
-		// return the viewer model 
+		// return the viewer model
 		Collection kronoEmployees=TransAdminCacheManager.getInstance().getAllTerminatedEmployeeInfo(this);
-		
+
 		Collection employeeRolesList=domainManagerDao.getEmployeeRoles();
-		
-		System.out.println("kronoTerminatedEmployees"+kronoEmployees);
-		System.out.println("employeeTerminatedRolesList"+employeeRolesList);
-		
+
+		//System.out.println("kronoTerminatedEmployees"+kronoEmployees);
+		//System.out.println("employeeTerminatedRolesList"+employeeRolesList);
+
 		Collection finalList=ModelUtil.getTrnAdminEmployeeList((List)kronoEmployees,(List)employeeRolesList);
-		
+
 		 return finalList;
 	}
-	
+
 
 	public Collection getKronosTerminatedEmployees() {
 		// TODO Auto-generated method stub
@@ -144,7 +144,7 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 
 
 	public Collection getEmployeesByRole(String roleTypeId) {
-		
+
 		Collection employeeIDsByRole=domainManagerDao.getEmployeesByRoleType(roleTypeId);
 		Collection employees=new ArrayList(employeeIDsByRole.size());
 		Iterator it=employeeIDsByRole.iterator();
@@ -158,8 +158,8 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 		return employees;
 	}
 
-	
-	
-}	
-	
+
+
+}
+
 
