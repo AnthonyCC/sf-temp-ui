@@ -4,21 +4,29 @@
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@page import="java.util.Arrays"%>
 <%@page import="java.util.Collections"%>
+<%@page import="java.util.Comparator"%>
 <%@page import="java.util.Iterator"%>
 <%@page import="java.util.HashSet"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.Set"%>
+<%@page import="java.util.SortedSet"%>
+<%@page import="java.util.TreeSet"%>
 <%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
 <%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
 <%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.customer.FDCustomerManager"%>
+<%@page import="com.freshdirect.fdstore.customer.FDIdentity"%>
+<%@page import="com.freshdirect.fdstore.customer.FDUser"%>
 <%@page import="com.freshdirect.fdstore.util.EnumSiteFeature"%>
 <%@page import="com.freshdirect.fdstore.util.URLGenerator"%>
 <%@page import="com.freshdirect.mail.EmailUtil"%>
 <%@page import="com.freshdirect.smartstore.RecommendationService"%>
 <%@page import="com.freshdirect.smartstore.SessionInput"%>
+<%@page import="com.freshdirect.smartstore.fdstore.CohortSelector"%>
 <%@page import="com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration"%>
+<%@page import="com.freshdirect.smartstore.fdstore.VariantSelection"%>
 <%@page import="com.freshdirect.test.TestSupport"%>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@page import="org.apache.commons.lang.StringEscapeUtils"%>
@@ -42,10 +50,45 @@ if (EnumSiteFeature.getEnum(siteFeature) == null) {
 }
 
 Map variants = SmartStoreServiceConfiguration.getInstance().getServices(EnumSiteFeature.getEnum(siteFeature));
-Set varIds = variants.keySet();
+VariantSelection helper = VariantSelection.getInstance();
+final Map assignment = helper.getVariantMap(EnumSiteFeature.getEnum(siteFeature));
+
+SortedSet varIds = new TreeSet(new Comparator() {
+	public int compare(Object o1, Object o2) {
+		if (o1 == null) {
+			if (o2 == null) {
+				return 0;
+			} else {
+				return -1;
+			}
+		} else {
+			if (o2 == null) {
+				return -1;
+			} else {
+				String s1 = o1.toString();
+				String s2 = o2.toString();
+				if (assignment.containsValue(s1)) {
+					if (assignment.containsValue(s2)) {
+						return s1.compareTo(s2);
+					} else {
+						return -1;						
+					}
+				} else {
+					if (assignment.containsValue(s2)) {
+						return 1;	
+					} else {
+						return s1.compareTo(s2);
+					}
+				}
+			}
+		}
+	}
+});
+varIds.addAll(variants.keySet());
 
 /* variant A */
 String defaultVariantA = null;
+
 
 it = varIds.iterator();
 if (it.hasNext()) {
@@ -56,7 +99,7 @@ if (it.hasNext()) {
 
 String variantA = urlG.get("variantA");
 
-if (!varIds.contains(variantA)) {
+if (variantA == null || !varIds.contains(variantA)) {
 	variantA = defaultVariantA;
 }
 if (variantA != null && variantA.equals(defaultVariantA)) {
@@ -110,6 +153,21 @@ if (defaultCustomerEmail.equals(customerEmail)) {
 String customerId = null;
 TestSupport ts = TestSupport.getInstance();
 customerId = ts.getErpIDForUserID(customerEmail);
+
+
+/* cohort */
+String defaultCohortId = "&lt;unknown&gt;";
+String cohortId = defaultCohortId;
+if (customerId != null) {
+	FDUser user = FDCustomerManager.getFDUser(new FDIdentity(customerId));
+	cohortId = CohortSelector.getInstance().getCohortName(user.getPrimaryKey());
+}
+
+String defaultUserVariant = "&lt;unknown&gt;";
+String userVariant = defaultUserVariant;
+if (assignment.containsKey(cohortId)) {
+	userVariant = (String) assignment.get(cohortId);
+}
 
 /* category Id */
 String defaultCategoryId = "";
@@ -176,6 +234,8 @@ System.err.println("variant A: " + variantA);
 System.err.println("variant B: " + variantB);
 System.err.println("customer Email: " + customerEmail);
 System.err.println("customer Id: " + customerId);
+System.err.println("cohort Id: " + cohortId);
+System.err.println("user variant: " + userVariant);
 System.err.println("category Id: " + categoryId);
 System.err.println("category name: " + categoryName);
 System.err.println("view: " + view);
@@ -226,6 +286,8 @@ if (!origURL.equals(newURL)) {
 .test-page .prod-items .negative{color:#990000;}
 .test-page .prod-items .unknown{color:#FF9900;}
 .not-found{color:red;}
+.disabled{color:gray;font-style:italic;}
+.selected{font-weight:bold;color:blue;}
 
 	</style>
 </head>
@@ -287,6 +349,12 @@ if (!origURL.equals(newURL)) {
     				<% if (customerId != null) { %>
     				<p class="result">
     					Customer ID: <%= customerId %>
+    				</p>
+    				<p class="result">
+    					Cohort ID: <%= cohortId %>
+    				</p>
+    				<p class="result">
+    					User Variant: <%= userVariant %>
     				</p>
     				<% } else { %>
     				<p class="not-found result">
@@ -370,21 +438,53 @@ if (!origURL.equals(newURL)) {
 					<div class="title14">Variant A</div>
 					<select name="variantA" onchange="this.form.submit();">
 					<%
+						String optGroup = "";
 						it = varIds.iterator();
 						if (it.hasNext()) {
 							String varId = (String) it.next();
+							optGroup = assignment.containsValue(varId) ? "In Use" : "Not in Use";
 					%>
-						<option value="<%= varId %>"<%= varId.equals(variantA) ? " selected=\"selected\"" : ""%>><%= varId %></option>
+					<optgroup label="<%= optGroup %>">
+						<option <%= varId.equals(userVariant) ? "class=\"selected\" " : (assignment.containsValue(varId) ? "" : "class=\"disabled\" ") 
+								%>value="<%= varId %>"<%= varId.equals(variantA) ? " selected=\"selected\"" : ""%>><%= varId %></option>
 					<%
+							if (!it.hasNext()) {
+					%>
+					</optgroup>
+					<%
+							}
 						}
 						while (it.hasNext()) {
 							String varId = (String) it.next();
+							String newGroup = assignment.containsValue(varId) ? "In Use" : "Not in Use";
+							if (!newGroup.equals(optGroup)) {
+								optGroup = newGroup;
 					%>
-						<option value="<%= varId %>"<%= varId.equals(variantA) ? " selected=\"selected\"" : ""%>><%= varId %></option>
+					</optgroup>
+					<optgroup label="<%= optGroup %>">
 					<%
+							}
+					%>
+						<option <%= varId.equals(userVariant) ? "class=\"selected\" " : (assignment.containsValue(varId) ? "" : "class=\"disabled\" ") 
+								%>value="<%= varId %>"<%= varId.equals(variantA) ? " selected=\"selected\"" : ""%>><%= varId %></option>
+					<%
+							if (!it.hasNext()) {
+					%>
+					</optgroup>
+					<%
+							}
 						}
 					%>
 					</select>
+					<p class="not-found">
+					<% if (variantA != null && variantA.equals(userVariant)) { %>
+						<b>This is the user's variant.</b>
+					<% } else if (!assignment.containsValue(variantA)) { %>
+						<i>This variant is not assigned to a cohort.</i>
+					<% } else { %>
+						&nbsp;
+					<% } %>
+					</p>
 				<% } else { %>
 					<span class="title24">A</span>
 				<% }  %>
@@ -428,12 +528,26 @@ if (!origURL.equals(newURL)) {
 					<div class="title14">Variant B</div>
 					<select name="variantB" onchange="this.form.submit();">
 					<%
+						String optGroup = "";
 						it = varIds.iterator();
-						if (it.hasNext()) {
+						A: if (it.hasNext()) {
 							String varId = (String) it.next();
-							if (!varId.equals(variantA)) {
+							while (varId.equals(variantA)) {
+								if (it.hasNext()) {
+									varId = (String) it.next();
+								} else {
+									break A;
+								}
+							}
+							optGroup = assignment.containsValue(varId) ? "In Use" : "Not in Use";
 					%>
-						<option value="<%= varId %>"<%= varId.equals(variantB) ? " selected=\"selected\"" : ""%>><%= varId %></option>
+					<optgroup label="<%= optGroup %>">
+						<option  <%= varId.equals(userVariant) ? "class=\"selected\" " : (assignment.containsValue(varId) ? "" : "class=\"disabled\" ") 
+								%>value="<%= varId %>"<%= varId.equals(variantB) ? " selected=\"selected\"" : ""%>><%= varId %></option>
+					<%
+							if (!it.hasNext()) {
+					%>
+					</optgroup>
 					<%
 							}
 						}
@@ -441,12 +555,35 @@ if (!origURL.equals(newURL)) {
 							String varId = (String) it.next();
 							if (varId.equals(variantA))
 								continue;
+							String newGroup = assignment.containsValue(varId) ? "In Use" : "Not in Use";
+							if (!newGroup.equals(optGroup)) {
+								optGroup = newGroup;
 					%>
-						<option value="<%= varId %>"<%= varId.equals(variantB) ? " selected=\"selected\"" : ""%>><%= varId %></option>
+					</optgroup>
+					<optgroup label="<%= optGroup %>">
 					<%
+							}
+					%>
+						<option  <%= varId.equals(userVariant) ? "class=\"selected\" " : (assignment.containsValue(varId) ? "" : "class=\"disabled\" ") 
+								%>value="<%= varId %>"<%= varId.equals(variantB) ? " selected=\"selected\"" : ""%>><%= varId %></option>
+					<%
+							if (!it.hasNext()) {
+					%>
+					</optgroup>
+					<%
+							}
 						}
 					%>
 					</select>
+					<p class="not-found">
+					<% if (variantB != null && variantB.equals(userVariant)) { %>
+						<b>This is the user's variant.</b>
+					<% } else if (!assignment.containsValue(variantB)) { %>
+						<i>This variant is not assigned to a cohort.</i>
+					<% } else { %>
+						&nbsp;
+					<% } %>
+					</p>
 				<% } else { %>
 					<span class="title24">B</span>
 				<% }  %>

@@ -227,24 +227,24 @@ p.fi{margin:20px 0px;}
     						}
     				%>
     				<p class="result">
-    					<span title="The list of Candidate Categories used to select Candidate Products">Candidate list:</span>
+    					<span title="The list of Candidate Products or Categories used to select Candidate Products">Candidate list:</span>
     				</p>
     				<%
     						if (category.getCandidateList() != null && category.getCandidateList().size() > 0) {
     				%>
     				<p class="result n_weight"
-    						title="The list of Candidate Categories used to select Candidate Products">
+    						title="The list of Candidate Products or Categories used to select Candidate Products">
     				<%
     							List candidateList = category.getCandidateList();
     							for (int i = 0; i < candidateList.size(); i++) {
-    								CategoryModel cat = (CategoryModel) candidateList.get(i);
+    								ContentNodeModel node = (ContentNodeModel) candidateList.get(i);
     								if (i != 0) {
     				%>
     					<br>
     				<%
     								}
     				%>
-    					&bull; <%= cat.getFullName() %> (<%= cat.getContentKey().getId() %>)
+    					&bull; <%= node.getFullName() %> (<%= node.getContentKey().getId() %>)
     				<%
     							}
     				%>
