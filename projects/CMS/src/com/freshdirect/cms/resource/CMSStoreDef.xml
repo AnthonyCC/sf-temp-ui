@@ -28,6 +28,7 @@
 				<DestinationDef contentType="StarterList" />
 				<DestinationDef contentType="Synonym"/>
 				<DestinationDef contentType="SearchRelevancyList"/>
+				<DestinationDef contentType="FavoriteList"/>
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
