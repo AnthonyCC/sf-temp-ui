@@ -1,16 +1,12 @@
 package com.freshdirect.smartstore.fdstore;
 
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
-
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.customer.FDUserI;

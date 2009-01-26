@@ -27,11 +27,6 @@ public class RecommendationServiceType extends Enum implements Serializable {
 	public final static RecommendationServiceType NIL =
 		new RecommendationServiceType("nil");
 	
-	/** _ANY_: composite configuration; services made up of services. */
-	public final static RecommendationServiceType COMPOSITE =
-		new RecommendationServiceType("composite");
-	
-	
 	public final static RecommendationServiceType FEATURED_ITEMS = 
 		new RecommendationServiceType("featured_items");
 

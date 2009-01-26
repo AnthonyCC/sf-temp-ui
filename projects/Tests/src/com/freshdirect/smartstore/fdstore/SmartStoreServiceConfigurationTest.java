@@ -21,9 +21,7 @@ import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.RecommendationServiceConfig;
 import com.freshdirect.smartstore.RecommendationServiceType;
-import com.freshdirect.smartstore.SimpleCRSC;
 import com.freshdirect.smartstore.Variant;
-import com.freshdirect.smartstore.impl.CompositeRecommendationService;
 
 public class SmartStoreServiceConfigurationTest extends TestCase {
 
@@ -48,16 +46,9 @@ public class SmartStoreServiceConfigurationTest extends TestCase {
                     List all = RecommendationServiceType.all();
                     for (int i = 0; i < all.size(); i++) {
                         RecommendationServiceType type = (RecommendationServiceType) all.get(i);
-                        if (type != RecommendationServiceType.COMPOSITE) {
-                            result.add(new Variant("test_" + type.getName(), EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("test"
-                                    + type.getName() + "_config", type)));
-                        }
+                        result.add(new Variant("test_" + type.getName(), EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("test"
+                                + type.getName() + "_config", type)));
                     }
-
-                    SimpleCRSC crsc = new SimpleCRSC("comp_config");
-                    crsc.addPart(new RecommendationServiceConfig("comp1", RecommendationServiceType.ALL_PRODUCT_IN_CATEGORY), 1);
-                    crsc.addPart(new RecommendationServiceConfig("comp2", RecommendationServiceType.FEATURED_ITEMS), 1);
-                    result.add(new Variant("composite", EnumSiteFeature.FEATURED_ITEMS, crsc));
 
                     return result;
                 }
@@ -96,31 +87,6 @@ public class SmartStoreServiceConfigurationTest extends TestCase {
                 assertEquals("s variant[" + key + "] type", name, s.getVariant().getServiceConfig().getType().getName());
             }
         }
-
-        Object object = services.get("composite");
-        assertNotNull("composite service not null", object);
-        assertTrue("composite service", object instanceof CompositeRecommendationService);
-        CompositeRecommendationService c = (CompositeRecommendationService) object;
-        Collection services2 = c.getRecommendationServices();
-        assertNotNull("services ", services2);
-        assertEquals("services contains 2", 2, services2.size());
-
-        RecommendationService allProd = null;
-        RecommendationService featuredProd = null;
-        for (Iterator iter = services2.iterator(); iter.hasNext();) {
-            RecommendationService rservice1 = (RecommendationService) iter.next();
-            if ("comp1".equals(rservice1.getVariant().getServiceConfig().getName())) {
-                allProd = rservice1;
-            }
-            if ("comp2".equals(rservice1.getVariant().getServiceConfig().getName())) {
-                featuredProd = rservice1;
-            }
-        }
-        assertNotNull("allProd found", allProd);
-        assertEquals("allProd class correct", "com.freshdirect.smartstore.impl.AllProductInCategoryRecommendationService", allProd.getClass().getName());
-        assertNotNull("featuredProd found", featuredProd);
-        assertEquals("featuredProd class correct", "com.freshdirect.smartstore.impl.FeaturedItemsRecommendationService", featuredProd.getClass().getName());
-
     }
 
     public void testDyf() {

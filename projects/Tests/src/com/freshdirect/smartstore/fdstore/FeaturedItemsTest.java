@@ -521,7 +521,7 @@ public class FeaturedItemsTest extends TestCase {
         assertNotNull("service["+service.getClass()+"] has site feature", service.getVariant().getSiteFeature());
         assertEquals("service["+service.getClass()+"] site feature is FeaturedItems", EnumSiteFeature.FEATURED_ITEMS, service.getVariant().getSiteFeature());
         assertNotNull("service["+service.getClass()+"] has config", service.getVariant().getServiceConfig());
-        assertNotNull("service["+service.getClass()+"] has config name", service.getVariant().getServiceConfig().getName());
+        assertNotNull("service["+service.getClass()+"] has variant id", service.getVariant().getServiceConfig().getVariantId());
         assertNotNull("service["+service.getClass()+"] has config type", service.getVariant().getServiceConfig().getType());
         assertEquals("service["+service.getClass()+"] config type", type, service.getVariant().getServiceConfig().getType());
         

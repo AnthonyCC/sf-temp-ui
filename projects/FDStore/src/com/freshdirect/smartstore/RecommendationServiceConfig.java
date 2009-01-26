@@ -20,8 +20,8 @@ public class RecommendationServiceConfig implements Serializable {
     public static final String PIP_DEFAULT_INNERTEXT = "These are some of the items you've purchased most often.";
     
     
-	/** Name of service config. */
-	protected String name;
+	/** Id of the variant. */
+	protected String variantId;
 	
 	/** Service type. */
 	protected RecommendationServiceType type;
@@ -32,8 +32,8 @@ public class RecommendationServiceConfig implements Serializable {
 	 * Constructor.
 	 * @param name
 	 */
-	public RecommendationServiceConfig(String name, RecommendationServiceType type) {
-		this.name = name;
+	public RecommendationServiceConfig(String variantId, RecommendationServiceType type) {
+		this.variantId = variantId;
 		this.type = type;
 	}
 
@@ -43,10 +43,10 @@ public class RecommendationServiceConfig implements Serializable {
 	/**
 	 * Get the hash code.
 	 * @see #equals(Object)
-	 * @return {@link #getName()}.{@link String#hashCode()}
+	 * @return {@link #getVariantId()}.{@link String#hashCode()}
 	 */
 	public int hashCode() {
-		return getName().hashCode();
+		return getVariantId().hashCode();
 	}
 	
 	/**
@@ -57,15 +57,15 @@ public class RecommendationServiceConfig implements Serializable {
 	 */
 	public boolean equals(Object o) {
 		if (!(o instanceof RecommendationServiceConfig)) return false;
-		return ((RecommendationServiceConfig)o).getName().equals(getName());
+		return ((RecommendationServiceConfig)o).getVariantId().equals(getVariantId());
 	}
 	
 	/**
 	 * Get config name.
 	 * @return name
 	 */
-	public String getName() {
-		return name;
+	public String getVariantId() {
+		return variantId;
 	}
 	
 	/**
@@ -78,10 +78,10 @@ public class RecommendationServiceConfig implements Serializable {
 	
 	/**
 	 * As string.
-	 * @return {@link #getName()}
+	 * @return {@link #getVariantId()}
 	 */
 	public String toString() {
-		return getName();
+		return getVariantId();
 	}
 	
 

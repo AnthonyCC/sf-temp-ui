@@ -11,12 +11,10 @@ import java.util.List;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.smartstore.RecommendationServiceConfig;
 import com.freshdirect.smartstore.RecommendationServiceType;
-import com.freshdirect.smartstore.SimpleCRSC;
 import com.freshdirect.smartstore.Variant;
 
 /**
@@ -32,94 +30,48 @@ public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSuppor
 	// generated serial version id
 	private static final long serialVersionUID = -3423410150966343739L;
 
-	private static final String GET_VARIANTS_QUERY = 
-		"SELECT v.id, v.config_id, sc.type " +
-		"FROM cust.ss_variants v, cust.ss_service_configs sc " +
-		"WHERE v.feature = ? AND sc.id = v.config_id";
+	private static final String GET_VARIANTS_QUERY = "SELECT v.id, v.type FROM cust.ss_variants v WHERE v.feature = ?";
 	
-	private static final String GET_COMPOSITES_QUERY = 
-		"SELECT cc.part_config_id, cc.frequency, sc.type " +
-		"FROM cust.ss_composite_configs cc, cust.ss_service_configs sc WHERE " +
-		"cc.config_id = ? AND cc.part_config_id = sc.id";
-	
-	private static final String GET_VARIANT_CONFIG = "SELECT * FROM cust.SS_SERVICE_PARAMS WHERE ID = ?";
-	   
-	/**
-	 * Get the configuration of a composite config.
-	 * @param conn db connection
-	 * @param configId
-	 * @return composite config
-	 */
-	private RecommendationServiceConfig getCompositeConfig(final Connection conn, final String configId)  {
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		
-		SimpleCRSC result = new SimpleCRSC(configId);
-		
-		try {
-			ps = conn.prepareStatement(GET_COMPOSITES_QUERY);
-			ps.setString(1, configId);
+	private static final String GET_VARIANT_CONFIG = "SELECT * FROM cust.SS_VARIANT_PARAMS WHERE ID = ?";
 
-			rs = ps.executeQuery();
-								
-			while(rs.next()) { 
-				RecommendationServiceType type = RecommendationServiceType.getEnum(rs.getString(3));
-				result.addPart(
-					RecommendationServiceType.COMPOSITE == type ?
-						getCompositeConfig(conn, rs.getString(1)) :
-						new RecommendationServiceConfig(rs.getString(1),type),
-					rs.getInt(2));
-			}
-
-			return result;
-		} catch (SQLException e) {
-			LOGGER.error("Getting composite configs failed. ",e);
-			throw new FDRuntimeException(e);
-		} finally {
-		    close(rs);
-		    close(ps);
-		}
-	}
-	
-        protected void close(ResultSet rs) {
-            if (rs!=null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    
-                }
+    protected void close(ResultSet rs) {
+        if (rs!=null) {
+            try {
+                rs.close();
+            } catch (SQLException e) {
+                
             }
         }
+    }
 
-        protected void close(PreparedStatement rs) {
-            if (rs!=null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    
-                }
+    protected void close(PreparedStatement rs) {
+        if (rs!=null) {
+            try {
+                rs.close();
+            } catch (SQLException e) {
+                
             }
         }
+    }
+    
+    protected void close(Connection rs) {
+        if (rs!=null) {
+            try {
+                rs.close();
+            } catch (SQLException e) {
+                
+            }
+        }
+    }
         
-        protected void close(Connection rs) {
-            if (rs!=null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    
-                }
-            }
-        }
-
-        
-	private RecommendationServiceConfig createConfig(Connection conn, String configId, RecommendationServiceType type) throws RemoteException {
+	private RecommendationServiceConfig createConfig(Connection conn, String variantId, RecommendationServiceType type) throws RemoteException {
             PreparedStatement ps = null;
             ResultSet rs = null;
-            RecommendationServiceConfig result = new RecommendationServiceConfig(configId, type);
+            RecommendationServiceConfig result = new RecommendationServiceConfig(variantId, type);
 
             try {
                 ps = conn.prepareStatement(GET_VARIANT_CONFIG);
-                ps.setString(1, configId);
+                ps.setString(1, variantId);
                 rs = ps.executeQuery();
                 while (rs.next()) {
                     result.set(rs.getString("KEY"), rs.getString("VALUE"));
@@ -157,17 +109,10 @@ public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSuppor
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				String variantId = rs.getString(1);
-				String configId = rs.getString(2);
-				RecommendationServiceType type = RecommendationServiceType.getEnum(rs.getString(3));
+				RecommendationServiceType type = RecommendationServiceType.getEnum(rs.getString(2));
 			
 				result.add(
-					new Variant(
-						variantId,
-						feature,
-						RecommendationServiceType.COMPOSITE == type ?
-							getCompositeConfig(conn, configId) :
-							createConfig(conn, configId,type)
-					)
+					new Variant(variantId, feature,	createConfig(conn, variantId, type))
 				);								
 			}
 

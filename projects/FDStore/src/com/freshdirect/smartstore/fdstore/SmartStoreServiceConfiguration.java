@@ -18,16 +18,13 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.smartstore.CompositeRecommendationServiceConfig;
 import com.freshdirect.smartstore.RecommendationService;
-import com.freshdirect.smartstore.RecommendationServiceConfig;
 import com.freshdirect.smartstore.RecommendationServiceType;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationHome;
 import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationSB;
 import com.freshdirect.smartstore.impl.AllProductInCategoryRecommendationService;
 import com.freshdirect.smartstore.impl.CandidateProductRecommendationService;
-import com.freshdirect.smartstore.impl.CompositeRecommendationService;
 import com.freshdirect.smartstore.impl.FavoritesRecommendationService;
 import com.freshdirect.smartstore.impl.FeaturedItemsRecommendationService;
 import com.freshdirect.smartstore.impl.ManualOverrideRecommendationService;
@@ -95,26 +92,7 @@ public class SmartStoreServiceConfiguration {
 		final RecommendationServiceType serviceType = variant.getServiceConfig().getType();
 		
 		// If composite 
-		if (RecommendationServiceType.COMPOSITE == serviceType ) {
-			
-			final CompositeRecommendationServiceConfig compositeConfig =
-				(CompositeRecommendationServiceConfig)variant.getServiceConfig();
-			
-			// return a new composite service
-			return new CompositeRecommendationService(variant) {
-				
-				protected void init() {
-					for(Iterator i = compositeConfig.getPartConfigs().iterator(); i.hasNext();) {
-						RecommendationServiceConfig partConfig = (RecommendationServiceConfig)i.next();
-						// recursively configure the "part" service
-						RecommendationService partService = configure(
-								new Variant(variant.getId(),variant.getSiteFeature(),partConfig)
-						);
-						setServiceFrequencty(partService, compositeConfig.getFrequency(partConfig));
-					}
-				}
-			};
-		} else if (RecommendationServiceType.FREQUENTLY_BOUGHT_DYF.equals(serviceType)) {
+		if (RecommendationServiceType.FREQUENTLY_BOUGHT_DYF.equals(serviceType)) {
 			return new MostFrequentlyBoughtDyfVariant(variant);
 		} else if (RecommendationServiceType.RANDOM_DYF.equals(serviceType)) {
 			return new RandomDyfVariant(variant);
