@@ -17,6 +17,7 @@ import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.lists.CclUtils;
+import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.event.FDRecommendationEvent;
 import com.freshdirect.framework.event.FDWebEvent;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -140,10 +141,15 @@ public class FDEventFactory {
 
 		// [MNT-382] log variant ID when AddToCart event is logged
 		if (FD_ADD_TO_CART_EVENT.equalsIgnoreCase(event.getEventType())) {
-			event.setVariantId(cartline.getVariantId());
+			String variantId = cartline.getVariantId();
+			event.setVariantId(variantId);
+			if (variantId != null) {
+				// [APPREQ-352] ATC events that come with variant must have 'SS' source
+				event.setSource(EnumEventSource.SmartStore);
+			}
 		}
 	}
-	
+
 	private static String add(String value){
 		if(value != null && value.length() > 55){
 			return value.substring(0, 55);
