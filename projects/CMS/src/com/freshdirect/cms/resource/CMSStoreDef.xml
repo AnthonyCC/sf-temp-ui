@@ -250,7 +250,7 @@
 			<RelationshipDef name="subcategories" navigable="true" cardinality="Many">
 				<DestinationDef contentType="Category" />
 			</RelationshipDef>
-			<RelationshipDef name="CANDIDATE_LIST" navigable="true" cardinality="Many">
+			<RelationshipDef name="CANDIDATE_LIST" navigable="false" cardinality="Many">
 				<DestinationDef contentType="Category" />
 				<DestinationDef contentType="Product" />
 			</RelationshipDef>

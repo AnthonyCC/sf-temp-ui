@@ -2,6 +2,7 @@ package com.freshdirect.webapp.taglib.smartstore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -18,10 +19,14 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.smartstore.RecommendationService;
+import com.freshdirect.smartstore.RecommendationServiceConfig;
 import com.freshdirect.smartstore.Trigger;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.Recommendations;
+import com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration;
+import com.freshdirect.smartstore.fdstore.VariantSelector;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.DYFUtil;
@@ -58,10 +63,10 @@ public class DYFRecommendationsTag extends RecommendationsTag implements Session
 
     		// results = new Recommendations(new Variant(variantId, EnumSiteFeature.getEnum(siteFeatureName), null), null);
             // results.deserializeContentNodes(request.getParameter("rec_product_ids"));
-    		results = new Recommendations(
-    				new Variant(variantId, EnumSiteFeature.getEnum(siteFeatureName), null),
-    				request.getParameter("rec_product_ids")
-    		);
+    		final EnumSiteFeature sf = EnumSiteFeature.getEnum(siteFeatureName);
+			Map svcMap = SmartStoreServiceConfiguration.getInstance().getServices(sf);
+			RecommendationService svc = (RecommendationService) svcMap.get(variantId);
+    		results = new Recommendations(svc.getVariant(),	request.getParameter("rec_product_ids"));
         }
 
         // get recommendations by recommender

@@ -60,7 +60,7 @@ if (request.getAttribute("is_ajax") != null) {
 <script>
 function dyf_ajax_failureCallback() {
 	alert("Failed to retrieve new recommendations.");
-	document.getElementById('dyf_ajax_rotateLinkContainer').innerHTML = '<a href="#" onclick="dyf_ajax_execute();return false;">Click here to see another 5 items.</a>';
+	document.getElementById('dyf_ajax_rotateLinkContainer').innerHTML = '<a href="#" onclick="dyf_ajax_execute();return false;">Click here to refresh</a>';
 }
 
 function dyf_ajax_successCallback(resp) {
@@ -465,7 +465,7 @@ if (request.getParameter("nodyf") == null) {
 	<table style="width: 100%;">
 		<tr>
 		<td style="text-align: left;">
-			<span class="text11bold" id="dyf_ajax_rotateLinkContainer"><a href="#" onclick="dyf_ajax_execute();return false;">Click here to see another 5 items.</a></span>
+			<span class="text11bold" id="dyf_ajax_rotateLinkContainer"><a href="#" onclick="dyf_ajax_execute();return false;">Click here to refresh</a></span>
 		</td>
 		<td style="text-align: right;">
 		<input type="hidden" style="width:60px" name="total" value="" size="6" class="text11bold" onChange="" onFocus="blur()"/>

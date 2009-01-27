@@ -24,6 +24,7 @@
 <%@page import="com.freshdirect.smartstore.Variant"%>
 <%@page import="com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration"%>
 <%@page import="com.freshdirect.smartstore.fdstore.VariantSelection"%>
+<%@page import="com.freshdirect.smartstore.fdstore.VariantSelectorFactory"%>
 <%@page import="com.freshdirect.smartstore.impl.AbstractRecommendationService"%>
 <%@page import="com.freshdirect.test.TestSupport"%>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
@@ -79,6 +80,7 @@ info{color:red}
 <%
 	if (request.getParameter("refresh")!=null) {
     	SmartStoreServiceConfiguration.getInstance().refresh();
+    	VariantSelectorFactory.refresh();
 %>
    	<span class="text11bold info" colspan="2" title="Configuration reloaded">Configuration reloaded</span>
 <% 

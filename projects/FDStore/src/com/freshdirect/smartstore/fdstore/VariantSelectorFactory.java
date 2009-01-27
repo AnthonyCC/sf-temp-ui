@@ -68,4 +68,7 @@ public class VariantSelectorFactory {
         selectors.put(siteFeature, selector);
     }
     
+    public synchronized static void refresh() {
+    	selectors.clear();
+    }
 }
