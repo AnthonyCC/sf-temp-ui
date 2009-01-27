@@ -461,20 +461,23 @@ if (request.getParameter("nodyf") == null) {
 
 
 	</table>
-	<% if (hasAnyItemAddable) { %>
 	<table style="width: 100%;">
 		<tr>
+		<% if (products.size() >= 5) { %>
 		<td style="text-align: left;">
 			<span class="text11bold" id="dyf_ajax_rotateLinkContainer"><a href="#" onclick="dyf_ajax_execute();return false;">Click here to refresh</a></span>
 		</td>
+		<% } %>
+		<td></td>
+		<% if (hasAnyItemAddable) { %>
 		<td style="text-align: right;">
 		<input type="hidden" style="width:60px" name="total" value="" size="6" class="text11bold" onChange="" onFocus="blur()"/>
 		<input type="hidden" name="itemCount" value="<%= txProdCount %>"/>
 		<input type="image" name="addMultipleToCart" style="padding: 8px 8px; border: 0" src="/media_stat/images/template/confirmation/add_to_cart_purple.gif" alt="ADD SELECTED TO CART"/>
 		</td>
+		<% } %>
 		</tr>
 	</table>			
-	<% } %>
 	</div>
 </fd:PIPLayout>
 </div>
