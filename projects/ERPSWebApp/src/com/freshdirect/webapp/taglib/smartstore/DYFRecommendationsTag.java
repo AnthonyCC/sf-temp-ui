@@ -63,10 +63,12 @@ public class DYFRecommendationsTag extends RecommendationsTag implements Session
 
     		// results = new Recommendations(new Variant(variantId, EnumSiteFeature.getEnum(siteFeatureName), null), null);
             // results.deserializeContentNodes(request.getParameter("rec_product_ids"));
-    		final EnumSiteFeature sf = EnumSiteFeature.getEnum(siteFeatureName);
-			Map svcMap = SmartStoreServiceConfiguration.getInstance().getServices(sf);
-			RecommendationService svc = (RecommendationService) svcMap.get(variantId);
-    		results = new Recommendations(svc.getVariant(),	request.getParameter("rec_product_ids"));
+    		if (variantId != null && siteFeatureName != null) {
+    			final EnumSiteFeature sf = EnumSiteFeature.getEnum(siteFeatureName);
+    			Map svcMap = SmartStoreServiceConfiguration.getInstance().getServices(sf);
+    			RecommendationService svc = (RecommendationService) svcMap.get(variantId);
+    			results = new Recommendations(svc.getVariant(),	request.getParameter("rec_product_ids"));
+    		}
         }
 
         // get recommendations by recommender
