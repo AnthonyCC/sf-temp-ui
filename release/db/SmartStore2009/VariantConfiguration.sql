@@ -203,7 +203,7 @@ VALUES('C20', CURRENT_DATE, 'favorites-3');
 INSERT INTO ss_variants(ID, feature, type)
 VALUES('featured-cms','FEATURED_ITEMS', 'featured_items');
 INSERT INTO ss_variants(ID, feature, type)
-VALUES('featured-popular','FEATURED_ITEMS', 'all_prod_in_cat');
+VALUES('featured-popular','FEATURED_ITEMS', 'manual_override');
 
 
 -- cohort->variant assignment
