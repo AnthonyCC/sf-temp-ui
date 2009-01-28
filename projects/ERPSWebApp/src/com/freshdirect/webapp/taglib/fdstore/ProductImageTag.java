@@ -80,6 +80,7 @@ public class ProductImageTag extends BodyTagSupport {
 			boolean isNew = !hideBurst && !hideNew && product.isNew();
 			boolean isYourFave = !hideBurst && !hideYourFave && DYFUtil.isFavorite(product,
 					(FDUserI) pageContext.getSession().getAttribute(SessionName.USER));
+			deal = 0; isNew = false; isYourFave = false; // REMOVE IT AFTER TESTING !!!!
 			
 			if (deal > 0 || isNew || isYourFave) {
 				buf.append("<div style=\"padding: 0px; border: 0px; "
