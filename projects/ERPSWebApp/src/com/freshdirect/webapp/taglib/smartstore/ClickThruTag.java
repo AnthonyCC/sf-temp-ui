@@ -68,16 +68,20 @@ public class ClickThruTag extends BodyTagSupport {
 			return SKIP_BODY;
 		}
 
-		// No DYF mark, bye!
-		String trk_code = req.getParameter("trk");
-		if (!"dyf".equalsIgnoreCase(trk_code) && !"feat".equalsIgnoreCase(trk_code)) {
-			LOGGER.debug("Click-Thru: SKIPPED - no DYF or FEAT tracking code");
+		// No site feature, bye!
+		// List of tracking codes: http://home.freshdirect.com/confluence/display/web/Tracking+Codes
+		// Instead of struggling with trk codes require only the variant.
+		/*** String trk_code = req.getParameter("trk");
+		if (	   !"dyf".equalsIgnoreCase(trk_code)
+				&& !"favorites".equalsIgnoreCase(trk_code)
+				&& !"feat".equalsIgnoreCase(trk_code)) {
+			LOGGER.debug("Click-Thru: SKIPPED - missing site feature");
 			return SKIP_BODY;
-		}
+		} ***/
 
 		String variantId = req.getParameter("variant");
 		if (variantId == null || variantId.length() == 0) {
-			LOGGER.debug("No variant id");
+			LOGGER.debug("Click-Thru: SKIPPED - missing variant id");
 			return SKIP_BODY;
 		}
 		
