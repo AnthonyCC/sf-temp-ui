@@ -156,7 +156,8 @@ if (currentCategory != null) {
 			fiDeal			= productInfo.getDealPercentage();
 		}
 %></fd:FDProductInfo><%
-		String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", "fave", ord);
+		boolean isFave = DYFUtil.isFavorite(productNode, (FDUserI) session.getAttribute(SessionName.USER));
+		String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", (isFave ? "fave" : null), ord);
 %><%-- display a product --%>
 		<td align="center" width="105" valign="bottom">
 			<fd:ProductImage product="<%= productNode %>" action="<%= actionURI %>" />
@@ -184,7 +185,8 @@ if (currentCategory != null) {
 			fiDeal			= productInfo.getDealPercentage();
 		}
 %></fd:FDProductInfo><%
-		String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", "fave", ord);
+		boolean isFave = DYFUtil.isFavorite(productNode, (FDUserI) session.getAttribute(SessionName.USER));
+		String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", (isFave ? "fave" : null), ord);
 %><%-- display a product --%>
 		<td align="center" WIDTH="105">
 			<fd:ProductRating product="<%= productNode %>"/>

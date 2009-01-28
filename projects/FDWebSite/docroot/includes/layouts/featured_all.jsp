@@ -122,7 +122,8 @@ if (sortedColl==null) sortedColl = new ArrayList();
 %></fd:ProduceRatingCheck><fd:FDProductInfo id="productInfo" skuCode="<%= productNode.getDefaultSku().getSkuCode() %>"><%
 			fiProdPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
 %></fd:FDProductInfo><%
-			String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", "fave", ord);
+			boolean isFave = DYFUtil.isFavorite(productNode, (FDUserI) session.getAttribute(SessionName.USER));
+			String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", (isFave ? "fave" : null), ord);
 %><%-- display a product --%>
 		<td width="<%= tdwidth %>">
 			<div><fd:ProductImage product="<%= productNode %>" action="<%= actionURI %>"/></div>

@@ -31,7 +31,6 @@ if(deptId!=null) {
 	currentFolder=ContentFactory.getInstance().getContentNode(catId);
 }
 
-
 boolean onlyOneProduct = false;
 ProductModel theOnlyProduct = null;
 //Siva-Changed Tracking Code Retrieval
@@ -114,7 +113,8 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
 %><fd:FDProductInfo id="productInfo" skuCode="<%= productNode.getDefaultSku().getSkuCode() %>"><%
 		fiProdPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
 %></fd:FDProductInfo><%
-		String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", "fave", ord);
+		boolean isFave = DYFUtil.isFavorite(productNode, (FDUserI) session.getAttribute(SessionName.USER));
+		String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", (isFave ? "fave" : null), ord);
 %><%-- display a product --%>
 		<td width="<%= tdwidth %>">
 			<p style="border: 0px; padding: 0px; margin: 0px;"><fd:ProductImage product="<%= productNode %>" action="<%= actionURI %>"/></p>
