@@ -147,9 +147,24 @@ VALUES('favorites-3','FAVORITES', 'favorites');
 INSERT INTO SS_VARIANT_PARAMS(ID,KEY,VALUE)
 VALUES('favorites-1','favorite_list_id','favorites1');
 INSERT INTO SS_VARIANT_PARAMS(ID,KEY,VALUE)
+VALUES('favorites-1','prez_title','FRESHDIRECT FAVORITES');
+INSERT INTO SS_VARIANT_PARAMS(ID,KEY,VALUE)
+VALUES('favorites-1','prez_desc','These are just a few of our most-loved products.');
+
+INSERT INTO SS_VARIANT_PARAMS(ID,KEY,VALUE)
 VALUES('favorites-2','favorite_list_id','favorites2');
 INSERT INTO SS_VARIANT_PARAMS(ID,KEY,VALUE)
+VALUES('favorites-2','prez_title','FRESHDIRECT FAVORITES');
+INSERT INTO SS_VARIANT_PARAMS(ID,KEY,VALUE)
+VALUES('favorites-2','prez_desc','These are just a few of our most-loved products.');
+
+INSERT INTO SS_VARIANT_PARAMS(ID,KEY,VALUE)
 VALUES('favorites-3','favorite_list_id','favorites3');
+INSERT INTO SS_VARIANT_PARAMS(ID,KEY,VALUE)
+VALUES('favorites-3','prez_title','FRESHDIRECT FAVORITES');
+INSERT INTO SS_VARIANT_PARAMS(ID,KEY,VALUE)
+VALUES('favorites-3','prez_desc','These are just a few of our most-loved products.');
+
 
 -- cohort->variant assignment
 INSERT INTO ss_variant_assignment(COHORT_ID, "DATE", variant_id)
