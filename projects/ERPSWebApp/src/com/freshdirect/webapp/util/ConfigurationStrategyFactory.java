@@ -30,7 +30,7 @@ public class ConfigurationStrategyFactory {
 	private static void instantiate() {
 		utils.put(EnumSiteFeature.DYF, DyfConfigurationStrategy.getInstance());
 		utils.put(EnumSiteFeature.YMAL, new YmalConfigurationStrategy());
-		utils.put(EnumSiteFeature.FAVORITES, new YmalConfigurationStrategy());
+		utils.put(EnumSiteFeature.FAVORITES, new FavoritesConfigurationStrategy());
 	}
 	
 	/**

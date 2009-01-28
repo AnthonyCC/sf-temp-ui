@@ -5,10 +5,13 @@ package com.freshdirect.smartstore.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.FavoriteList;
@@ -26,6 +29,12 @@ import com.freshdirect.smartstore.sampling.RankedContent;
 public class FavoritesRecommendationService extends AbstractRecommendationService {
 	
 	public static final String FAVORITES_NODE_NAME = "fd_favorites";
+	
+	public static ThreadLocal CFG_PRODS = new ThreadLocal() {
+		protected Object initialValue() {
+			return new HashMap();
+		}
+	}; 
 
     /**
      * @param variant
@@ -58,9 +67,18 @@ public class FavoritesRecommendationService extends AbstractRecommendationServic
     	        keys.add(new RankedContent.Single(((ContentNodeModel)favoriteNodes.get(i)).getContentKey(), (favoriteNodes.size() - i) * 5.0));
     	    }
     	    List sample = getSampler(input).sample(keys, input.getCartContents(), keys.size());
-    	    favoriteNodes = new ArrayList(sample.size());
+    	    favoriteNodes = new ArrayList(sample.size());    	    
+    	    Map cfgProds = (Map) CFG_PRODS.get();
+    	    cfgProds.clear();
     	    for (int i=0;i<sample.size();i++) {
-    	        favoriteNodes.add(cf.getContentNodeByKey((ContentKey) sample.get(i)));
+    	        final ContentNodeModel cn = cf.getContentNodeByKey((ContentKey) sample.get(i));
+    	        if (cn instanceof ConfiguredProduct) {
+    	        	final ConfiguredProduct cfgProd = (ConfiguredProduct) cn;
+					favoriteNodes.add(cfgProd.getProduct());
+					cfgProds.put(cfgProd.getProduct().getContentKey().getId(), cfgProd);
+    	        } else {
+    	        	favoriteNodes.add(cn);
+    	        }
     	    }    	
     	}
 
