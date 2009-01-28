@@ -145,21 +145,21 @@ VALUES('favorites-3','FAVORITES', 'favorites');
 
 --   configs
 INSERT INTO SS_VARIANT_PARAMS(ID,KEY,VALUE)
-VALUES('favorites-1','favorite_list_id','favorites1');
+VALUES('favorites-1','favorite_list_id','fd_favorites_1');
 INSERT INTO SS_VARIANT_PARAMS(ID,KEY,VALUE)
 VALUES('favorites-1','prez_title','FRESHDIRECT FAVORITES');
 INSERT INTO SS_VARIANT_PARAMS(ID,KEY,VALUE)
 VALUES('favorites-1','prez_desc','These are just a few of our most-loved products.');
 
 INSERT INTO SS_VARIANT_PARAMS(ID,KEY,VALUE)
-VALUES('favorites-2','favorite_list_id','favorites2');
+VALUES('favorites-2','favorite_list_id','fd_favorites_2');
 INSERT INTO SS_VARIANT_PARAMS(ID,KEY,VALUE)
 VALUES('favorites-2','prez_title','FRESHDIRECT FAVORITES');
 INSERT INTO SS_VARIANT_PARAMS(ID,KEY,VALUE)
 VALUES('favorites-2','prez_desc','These are just a few of our most-loved products.');
 
 INSERT INTO SS_VARIANT_PARAMS(ID,KEY,VALUE)
-VALUES('favorites-3','favorite_list_id','favorites3');
+VALUES('favorites-3','favorite_list_id','fd_favorites_3');
 INSERT INTO SS_VARIANT_PARAMS(ID,KEY,VALUE)
 VALUES('favorites-3','prez_title','FRESHDIRECT FAVORITES');
 INSERT INTO SS_VARIANT_PARAMS(ID,KEY,VALUE)
