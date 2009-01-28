@@ -97,19 +97,18 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
 	  	tdwidth=96; 
 		showRelatedRatingImage = true; 
     } 
-%>
-<TABLE CELLSPACING="0" CELLPADDING="1" BORDER="0" WIDTH="<%= tablewidth %>">
+%><fd:FeaturedItemsRecommendations id="recommendations"  currentNode="<%= currentFolder %>" itemCount="4"><%
+	if (recommendations != null && recommendations.getContentNodes().size() > 0) {
+		request.setAttribute("recommendationsRendered","true");
+		int ord = 1;
+%><TABLE CELLSPACING="0" CELLPADDING="1" BORDER="0" WIDTH="<%= tablewidth %>">
 	<TR VALIGN="TOP"><TD CLASS="text12bold" WIDTH="<%=tablewidth%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10"><BR>Our Favorites<BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="3"></TD>
 	</TR>
 </TABLE>
 <font class="space4pix"><BR></font>
 <TABLE CELLSPACING="0" CELLPADDING="1" BORDER="0" WIDTH="<%= tablewidth %>">
 	<TR VALIGN="TOP" ALIGN="CENTER">
-<fd:FeaturedItemsRecommendations id="recommendations"  currentNode="<%= currentFolder %>" itemCount="4"><%
-	if (recommendations != null && recommendations.getContentNodes().size() > 0) {
-		request.setAttribute("recommendationsRendered","true");
-		int ord = 1;
-%><logic:iterate id='contentNode' collection="<%= recommendations.getContentNodes() %>" type="com.freshdirect.fdstore.content.ProductModel"><%
+<logic:iterate id='contentNode' collection="<%= recommendations.getContentNodes() %>" type="com.freshdirect.fdstore.content.ProductModel"><%
 		ProductModel productNode = contentNode;
 		String fiProdPrice = null;
 %><fd:FDProductInfo id="productInfo" skuCode="<%= productNode.getDefaultSku().getSkuCode() %>"><%
@@ -130,14 +129,15 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
 		</td>
 		<td width="10"><img src="/media_stat/images/layout/clear.gif" width="8" height="1"></td><%
 		++ord;
-%></logic:iterate><%
-	}
-%></fd:FeaturedItemsRecommendations>
+%></logic:iterate>
 	</tr>
 </table>
 <font class="space4pix"><BR></font>
 <%
-// idealy the following td cells should be created afer we know the location of the full_name column, but..%>
+	}
+%></fd:FeaturedItemsRecommendations><%
+// idealy the following td cells should be created afer we know the location of the full_name column, but..
+%>
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=tablewidth%>">
 	<TR VALIGN="TOP">
 		<TD WIDTH="400"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="400" HEIGHT="5"></TD></TR>
