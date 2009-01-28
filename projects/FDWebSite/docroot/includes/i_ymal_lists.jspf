@@ -268,25 +268,28 @@
                                 
                           %>
                                 <fd:ProduceRatingCheck>
-                          <%      
-                                
-                               
-                                                                
-                                outputP.append("<br><font class=\"center\">");        
-                                outputP.append("<img src=\"");
-                                outputP.append("/media_stat/images/ratings/"+helper.getRating()+".gif");
-                                outputP.append("\"  name=\"");
-                                outputP.append("rating");
-                                outputP.append("\" width=\"");
-                                outputP.append("59");
-                                outputP.append("\"  height=\"");
-                                outputP.append("11");
-                                outputP.append("\" ALT=\"");
-                                outputP.append("");
-                                outputP.append("\" border=\"0\"");         
-                                outputP.append(">");
-                                outputP.append("</font>");
-                                        
+                          <%                                    
+                                ProductModel model=helper.getRealProduct();                                
+                                if(model!=null)
+                                {
+                                    String rating=JspMethods.getProductRating(model);                                                                                                        
+                                    if(rating!=null && rating.trim().length()>0){                                      
+                                        outputP.append("<br><font class=\"center\">");        
+                                        outputP.append("<img src=\"");
+                                        outputP.append("/media_stat/images/ratings/"+rating+".gif");
+                                        outputP.append("\"  name=\"");
+                                        outputP.append("rating");
+                                        outputP.append("\" width=\"");
+                                        outputP.append("59");
+                                        outputP.append("\"  height=\"");
+                                        outputP.append("11");
+                                        outputP.append("\" ALT=\"");
+                                        outputP.append("");
+                                        outputP.append("\" border=\"0\"");         
+                                        outputP.append(">");
+                                        outputP.append("</font>");
+                                    }
+                                }                                      
                                     
                             %>        
                                 </fd:ProduceRatingCheck> 
