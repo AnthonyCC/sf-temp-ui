@@ -73,23 +73,33 @@ public class DYFRecommendationsTag extends RecommendationsTag implements Session
 
         // get recommendations by recommender
         if (results == null) {
-        	Trigger trigger;
-        	EnumSiteFeature sf = DYFUtil.isCustomerEligible(user) ?
-        			EnumSiteFeature.DYF :
-        			EnumSiteFeature.FAVORITES;
-        	trigger = new Trigger(sf, itemCount);
-            FDStoreRecommender recommender = FDStoreRecommender.getInstance();
-
-            HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-
-            String overriddenVariantID = request.getParameter("SmartStore.VariantID");
-            if (overriddenVariantID != null)
-                session.setAttribute("SmartStore.VariantID", overriddenVariantID);
-
-            results = recommender.getRecommendations(trigger, session);
+        	if (DYFUtil.isCustomerEligible(user)) {
+        		results = extractRecommendations(session, EnumSiteFeature.DYF);
+        		if (results.getContentNodes().size() == 0) {
+        			results = extractRecommendations(session, EnumSiteFeature.FAVORITES);
+        		}
+        	} else {
+        		results = extractRecommendations(session, EnumSiteFeature.FAVORITES);
+        	}
         }
         return results;
     }
+
+	private Recommendations extractRecommendations(HttpSession session,
+			EnumSiteFeature sf) throws FDResourceException {
+		Recommendations results;
+		Trigger trigger = new Trigger(sf, itemCount);
+		FDStoreRecommender recommender = FDStoreRecommender.getInstance();
+
+		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+
+		String overriddenVariantID = request.getParameter("SmartStore.VariantID");
+		if (overriddenVariantID != null)
+		    session.setAttribute("SmartStore.VariantID", overriddenVariantID);
+
+		results = recommender.getRecommendations(trigger, session);
+		return results;
+	}
 
     public static class TagEI extends AbstractGetterTag.TagEI {
         protected String getResultType() {
