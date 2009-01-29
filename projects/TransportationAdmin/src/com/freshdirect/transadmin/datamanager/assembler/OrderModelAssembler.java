@@ -18,6 +18,7 @@ public class OrderModelAssembler implements IDataAssembler {
 		OrderInfoModel tmpInputModel = (OrderInfoModel)objInput;
 		IOrderModel infoModel = new OrderModel();
 		infoModel.setOrderNumber(tmpInputModel.getOrderNumber());
+		infoModel.setCustomerNumber(tmpInputModel.getCustomerNumber());
 		
 		IDeliveryModel deliveryModel = new DeliveryModel();
 		deliveryModel.setDeliveryDate(tmpInputModel.getDeliveryDate());
@@ -51,6 +52,7 @@ public class OrderModelAssembler implements IDataAssembler {
 		infoModel.setLocationId(tmpOutputModel.getDeliveryInfo()
 					.getDeliveryLocation().getLocationId());
 		infoModel.setOrderNumber(tmpOutputModel.getOrderNumber());
+		infoModel.setCustomerNumber(tmpOutputModel.getCustomerNumber());
 		infoModel.setPackageSize1(""+tmpOutputModel.getDeliveryInfo().getPackagingInfo().getTotalSize1());
 		infoModel.setPackageSize2(""+tmpOutputModel.getDeliveryInfo().getPackagingInfo().getTotalSize2());
 		infoModel.setServiceTime(""+(long)tmpOutputModel.getDeliveryInfo().getServiceTime());

@@ -52,7 +52,7 @@ public class DeliveryManager extends BaseProcessManager {
 		}
 		
 		if( request.getLateDeliveryOrderList() != null 
-				&& ((List)request.getLateDeliveryOrderList()).contains(orderModel.getOrderNumber()) 
+				&& ((List)request.getLateDeliveryOrderList()).contains(orderModel.getCustomerNumber()) 
 					&& orderModel.getDeliveryInfo().getDeliveryStartTime() != null
 				&& orderModel.getDeliveryInfo().getDeliveryEndTime() != null) {
 			//Late Delivery Delivery Window End Time Reduction
