@@ -148,6 +148,7 @@ if (currentCategory != null) {
 			<tr valign="bottom">
 <logic:iterate id='contentNode' collection="<%= products %>" type="com.freshdirect.fdstore.content.ProductModel"><%
 		ProductModel productNode = contentNode;
+		ProductLabelling pl = new ProductLabelling((FDUserI) session.getAttribute(SessionName.USER), productNode);
 		boolean fiIsDeal=false;	// is deal?
 		int 	fiDeal=0;  		// deal percentage
 %><fd:FDProductInfo id="productInfo" skuCode="<%= productNode.getDefaultSku().getSkuCode() %>"><%
@@ -156,8 +157,7 @@ if (currentCategory != null) {
 			fiDeal			= productInfo.getDealPercentage();
 		}
 %></fd:FDProductInfo><%
-		boolean isFave = DYFUtil.isFavorite(productNode, (FDUserI) session.getAttribute(SessionName.USER));
-		String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", (isFave ? "fave" : null), ord);
+		String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord);
 %><%-- display a product --%>
 		<td align="center" width="105" valign="bottom">
 			<fd:ProductImage product="<%= productNode %>" action="<%= actionURI %>" />
@@ -172,6 +172,7 @@ if (currentCategory != null) {
 		ord=1;
 %><logic:iterate id='contentNode' collection="<%= products %>" type="com.freshdirect.fdstore.content.ProductModel"><%
 		ProductModel productNode = contentNode;
+		ProductLabelling pl = new ProductLabelling((FDUserI) session.getAttribute(SessionName.USER), productNode);
 		String fiProdPrice = null;
 		String fiProdBasePrice=null;
 		boolean fiIsDeal=false;	// is deal?
@@ -185,8 +186,7 @@ if (currentCategory != null) {
 			fiDeal			= productInfo.getDealPercentage();
 		}
 %></fd:FDProductInfo><%
-		boolean isFave = DYFUtil.isFavorite(productNode, (FDUserI) session.getAttribute(SessionName.USER));
-		String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", (isFave ? "fave" : null), ord);
+String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord);
 %><%-- display a product --%>
 		<td align="center" WIDTH="105">
 			<fd:ProductRating product="<%= productNode %>"/>

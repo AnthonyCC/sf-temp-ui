@@ -11,7 +11,7 @@ import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.webapp.BodyTagSupport;
-import com.freshdirect.webapp.util.DYFUtil;
+import com.freshdirect.webapp.util.ProductLabelling;
 
 /**
  * Product Image Tag
@@ -76,13 +76,10 @@ public class ProductImageTag extends BodyTagSupport {
 			
 			StringBuffer buf = new StringBuffer();
 
-			int deal = !hideBurst && !hideDeals ? product.getDealPercentage() : 0;
-			boolean isNew = !hideBurst && !hideNew && product.isNew();
-			boolean isYourFave = !hideBurst && !hideYourFave && DYFUtil.isFavorite(product,
-					(FDUserI) pageContext.getSession().getAttribute(SessionName.USER));
-			isNew = false; isYourFave = false; // REMOVE IT AFTER TESTING !!!!
+			ProductLabelling pl = new ProductLabelling((FDUserI) pageContext.getSession().getAttribute(SessionName.USER), product,
+					hideBurst, hideDeals, hideYourFave, hideNew);
 			
-			if (deal > 0 || isNew || isYourFave) {
+			if (pl.isDisplayAny()) {
 				buf.append("<div style=\"padding: 0px; border: 0px; "
 						+ "width: " + prodImg.getWidth() + "px; "
 						+ "height: " + prodImg.getHeight() + "px; "
@@ -95,11 +92,12 @@ public class ProductImageTag extends BodyTagSupport {
 					buf.append("\">");
 				}
 	
-				if (deal > 0) {
+				if (pl.isDisplayDeal()) {
+					int deal = product.getDealPercentage();
 					buf.append("<img alt=\"SAVE " + deal + "\" src=\"/media_stat/images/deals/brst_sm_" + deal + ".gif\" style=\"border: 0px;\">");
-				} else if (isYourFave) {
+				} else if (pl.isDisplayFave()) {
 					buf.append("<img alt=\"NEW\" src=\"/media_stat/images/template/search/brst_sm_fave.png\" style=\"border: 0px;\">");
-				} else if (isNew) {
+				} else if (pl.isDisplayNew()) {
 					buf.append("<img alt=\"NEW\" src=\"/media_stat/images/template/search/brst_sm_new.png\" style=\"border: 0px;\">");
 				}
 				
@@ -156,7 +154,7 @@ public class ProductImageTag extends BodyTagSupport {
 				buf.append("</a>");
 			}
 			
-			if (deal > 0 || isNew || isYourFave) {
+			if (pl.isDisplayAny()) {
 				buf.append("</div>");
 			}
 
