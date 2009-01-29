@@ -9,7 +9,7 @@ public class FavoriteList extends ContentNodeModelImpl {
 	private static final long serialVersionUID = 1205090955009726825L;
 
 	private final List items = new ArrayList();
-	
+
 	public FavoriteList(ContentKey key) {
 		super(key);
 	}
@@ -17,11 +17,22 @@ public class FavoriteList extends ContentNodeModelImpl {
 	public String getFullName() {
 		return getAttribute("full_name", getContentName());
 	}
-		
-	public List getItems() {
-		ContentNodeModelUtil.refreshModels(this, "items", items, false);
+
+	public List getFavoriteItems() {
+		ContentNodeModelUtil.refreshModels(this, "favoriteItems", items, false);
 
 		return new ArrayList(items);
 	}
-	
+
+	/**
+	 * The items relationship has been renamed to favoriteItems due to
+	 * unresolvable DB query inconsistencies (see CMS.ALL_NODES materialized
+	 * view)
+	 * 
+	 * @deprecated
+	 * @return
+	 */
+	public List getItems() {
+		return getFavoriteItems();
+	}
 }

@@ -1405,7 +1405,7 @@
 			<AttributeDef type="S" name="full_name" />
 		</AttributeDefs>
 		<RelationshipDefs>
-			<RelationshipDef name="items" navigable="false" cardinality="Many">
+			<RelationshipDef name="favoriteItems" navigable="false" cardinality="Many">
 				<DestinationDef contentType="Product" />
 				<DestinationDef contentType="ConfiguredProduct" />
 			</RelationshipDef>
