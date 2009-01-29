@@ -15,6 +15,7 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.ProductStatisticsProvider;
+import com.freshdirect.smartstore.sampling.RankedContent;
 
 /**
  * @author zsombor
@@ -44,7 +45,7 @@ public class AllProductInCategoryRecommendationService extends AbstractRecommend
                     
                 result = new ArrayList(ordered.size());
                 for (Iterator iter = ordered.iterator(); iter.hasNext();) {
-                    result.add(((ProductScore) iter.next()).product); 
+                    result.add(((RankedContent.Single) iter.next()).getModel()); 
                 }
             }
         }
@@ -73,29 +74,8 @@ public class AllProductInCategoryRecommendationService extends AbstractRecommend
     }
 
     protected void collectProduct(ProductStatisticsProvider statisticsProvider, TreeSet ordered, ProductModel product) {
-        ordered.add(new ProductScore(statisticsProvider.getGlobalProductScore(product.getContentKey()),product));
+        ordered.add(new RankedContent.Single(statisticsProvider.getGlobalProductScore(product.getContentKey()),product));
     }
 
-    static class ProductScore implements Comparable {
-        float score;
-        ProductModel product;
-        
-        public ProductScore(float score, ProductModel product) {
-            this.score = score;
-            this.product = product;
-        }
-
-        public int compareTo(Object o) {
-            int result = -Float.compare(score, ((ProductScore)o).score);
-            if (result==0) {
-                return product.getFullName().compareTo(((ProductScore)o).product.getFullName());
-            }
-            return result;
-        }
-        
-        public String toString() {
-            return "productscore["+product.getContentKey().getId()+'/'+product.getFullName()+':'+score+']';
-        }
-    }
     
 }

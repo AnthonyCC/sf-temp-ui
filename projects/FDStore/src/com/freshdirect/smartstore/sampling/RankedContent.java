@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Random;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ProductModel;
 
 /**
  * Wrapper class for ranked content.
@@ -18,38 +20,47 @@ import com.freshdirect.cms.ContentKey;
  * @author istvan
  *
  */
-public interface RankedContent {
+public abstract class RankedContent {
 	
+    
 	/**
 	 * @return score associated with content(s)
 	 */
-	public double getScore();
+	public abstract double getScore();
 	
 	/**
 	 * @return number of content keys associated with this instance
 	 */
-	public int getCount();
+	public abstract int getCount();
 	
 	/**
 	 * @return id used in referring to this instance
 	 */
 	public abstract String getId();
 	
+	
 	/**
 	 * One particular content key.
 	 * @author istvan
 	 *
 	 */
-	public static class Single implements RankedContent {
+	public static class Single extends RankedContent implements Comparable {
 		
 		private ContentKey id;
 		
 		private double score;
 		
-		public Single(ContentKey id, double score) {
-			this.id = id;
-			this.score = score;
-			
+		private ContentNodeModel model;
+
+	        public Single(ContentKey id, double score) {
+                    this.id = id;
+                    this.score = score;
+	        }
+	        
+		public Single(double score, ContentNodeModel model) {
+		    this.id = model.getContentKey();
+		    this.score = score;
+		    this.model = model;
 		}
 		
 		public double getScore() {
@@ -69,6 +80,20 @@ public interface RankedContent {
 		public String toString() {
 			return id.toString() + ' ' + score;
 		}
+		
+		public ContentNodeModel getModel() {
+                    return model;
+                }
+		
+	        public int compareTo(Object o) {
+	            int result = -Double.compare(score, ((Single)o).score);
+	            if (result==0) {
+	                return model.getFullName().compareTo(((Single)o).model.getFullName());
+	            }
+	            return result;
+	        }
+
+		
 	};
 	
 	/**
@@ -80,7 +105,7 @@ public interface RankedContent {
 	 * @author istvan
 	 *
 	 */
-	public static class Aggregate implements RankedContent {
+	public static class Aggregate extends RankedContent {
 		
 		private static Random R = new Random();
 		

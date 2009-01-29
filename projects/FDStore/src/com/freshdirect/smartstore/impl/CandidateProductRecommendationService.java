@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import com.freshdirect.fdstore.content.CategoryModel;
@@ -16,6 +17,7 @@ import com.freshdirect.fdstore.content.ProductModelImpl;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.ProductStatisticsProvider;
+import com.freshdirect.smartstore.sampling.RankedContent;
 
 public class CandidateProductRecommendationService extends AllProductInCategoryRecommendationService {
 
@@ -31,13 +33,38 @@ public class CandidateProductRecommendationService extends AllProductInCategoryR
                 CategoryModel category = (CategoryModel) model;
 
                 result = new ArrayList(100);
-                collectNodes(category, result);
+                result = collectNodes(category, result);
+                result = sampleContentNodeModels(input, result);
             }
         }
         return result;
     }
 
+    /**
+     * 
+     * @param category
+     * @param result List<ContentNodeModel> 
+     * @return List<ContentNodeModel>
+     */
     protected List collectNodes(CategoryModel category, List result) {
+        SortedSet resultSet = collectNodes(category);
+        Set manualSlots = result.isEmpty() ? Collections.EMPTY_SET : new HashSet(result);
+        for (Iterator iter = resultSet.iterator(); iter.hasNext();) {
+            ContentNodeModel model = ((RankedContent.Single) iter.next()).getModel();
+            if (!manualSlots.contains(model)) {
+                result.add(model);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Collect child products, ordered by global popularity.
+     * 
+     * @param category
+     * @return SortedSet<RankedContent.Single>
+     */
+    protected SortedSet collectNodes(CategoryModel category) {
         ProductStatisticsProvider statisticsProvider = ProductStatisticsProvider.getInstance();
         TreeSet resultSet = new TreeSet();
         List candidateList = category.getCandidateList();
@@ -54,13 +81,6 @@ public class CandidateProductRecommendationService extends AllProductInCategoryR
                 }
             }
         }
-        Set manualSlots = result.isEmpty() ? Collections.EMPTY_SET : new HashSet(result);
-        for (Iterator iter = resultSet.iterator(); iter.hasNext();) {
-            ProductModel product = ((ProductScore) iter.next()).product;
-            if (!manualSlots.contains(product)) {
-                result.add(product);
-            }
-        }
-        return result;
+        return resultSet;
     }
 }

@@ -37,13 +37,24 @@ public class ManualOverrideRecommendationService extends CandidateProductRecomme
                 List result = new ArrayList(100);
                 fillManualSlots(input, category, slots, result);
                 
-                collectNodes(category, result);
+                //result = sampleContentNodeModels(input, collectNodes(category, result));
+                List randomChildProducts = sampleRankedContents(input, collectNodes(category), result);
+                
+                result.addAll(randomChildProducts);
                 return result;
             }
         }
         return Collections.EMPTY_LIST;
     }
 
+    /**
+     * Collects product models into the result parameter.
+     * 
+     * @param input
+     * @param category
+     * @param slots
+     * @param result
+     */
     protected void fillManualSlots(SessionInput input, CategoryModel category, int slots, List result) {
         List fprods = category.getFeaturedProducts();
         Random rnd = new Random();

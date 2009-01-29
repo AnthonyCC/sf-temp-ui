@@ -1,6 +1,7 @@
 package com.freshdirect.smartstore.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -297,6 +298,78 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 	protected ImpressionSampler getSampler(SessionInput input) {
 	    return input.isNoShuffle() ? DETERMINISTIC_SAMPLER : sampler;
 	}
+	
+	/**
+	 * randomize the list of content nodes 
+	 * 
+	 * @param input
+	 * @param nodes List<ContentNodeModel>
+	 * @return List<ContentNodeModel>
+	 */
+	protected List sampleContentNodeModels(SessionInput input, List nodes) {
+            if (!(nodes.isEmpty() || input.isNoShuffle())) {
+                int size =nodes.size();
+                List rankedContents = new ArrayList(size);
+                Map idMap = new HashMap();
+                for (int i=0;i<size;i++) {
+                    ContentNodeModel node = (ContentNodeModel) nodes.get(i);
+                    idMap.put(node.getContentKey(), node);
+                    rankedContents.add(new RankedContent.Single(size - i, node));
+                }
+                List sample = getSampler(input).sample(rankedContents, input.getCartContents(), rankedContents.size());
+                List result = new ArrayList(sample.size());
+                for (int i=0;i<sample.size();i++) {
+                    ContentKey object = (ContentKey) sample.get(i);
+                    ContentNodeModel model = (ContentNodeModel) idMap.get(object);
+                    if (model!=null) {
+                        result.add(model);
+                    }
+                }
+                return result;
+            }
+            return nodes;
+	}
+
+	/**
+         * randomize the list of RankedContent.Single 
+         * 
+         * @param input
+         * @param nodes List<RankedContent.Single>
+         * @return List<ContentNodeModel>
+         */
+        protected List sampleRankedContents(SessionInput input, Collection nodes, Collection exclude) {
+            if (!(nodes.isEmpty() || input.isNoShuffle())) {
+                int size =nodes.size();
+                List rankedContents = new ArrayList(size);
+                Map idMap = new HashMap();
+                for (Iterator iter = nodes.iterator(); iter.hasNext();) {
+                    RankedContent.Single node = (RankedContent.Single) iter.next();
+                    idMap.put(node.getContentKey(), node.getModel());
+                    rankedContents.add(node);
+                }
+                List sample = getSampler(input).sample(rankedContents, input.getCartContents(), rankedContents.size());
+                List result = new ArrayList(sample.size());
+                for (int i=0;i<sample.size();i++) {
+                    ContentKey object = (ContentKey) sample.get(i);
+                    ContentNodeModel model = (ContentNodeModel) idMap.get(object);
+                    if (model!=null && !exclude.contains(model)) {
+                        
+                        result.add(model);
+                    }
+                }
+                return result;
+            } else {
+                List result = new ArrayList(nodes.size());
+                for (Iterator iter = nodes.iterator(); iter.hasNext();) {
+                    RankedContent.Single node = (RankedContent.Single) iter.next();
+                    if (!exclude.contains(node.getModel())) {
+                        result.add(node.getModel());
+                    }
+                }
+                return result;
+            }
+        }
+
 	
 	public String toString() {
 		return "Service(feature:"+variant.getSiteFeature().getName() +

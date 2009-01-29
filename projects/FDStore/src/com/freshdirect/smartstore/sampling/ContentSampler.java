@@ -163,6 +163,7 @@ public class ContentSampler {
 			}
 			
 			items.add(itemToUse.getContentKey());
+			//items.add(itemToUse);
 			--total;
 		}
 		return items;

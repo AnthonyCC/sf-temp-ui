@@ -208,6 +208,7 @@ public class FeaturedItemsTest extends TestCase {
 
         SessionInput si = new SessionInput("12345");
         si.setCurrentNode(category);
+        si.setNoShuffle(true);
 
         List nodes = getFeaturedItemsService().recommendNodes(si);
         assertNotNull("recommend nodes", nodes);
@@ -451,6 +452,7 @@ public class FeaturedItemsTest extends TestCase {
             
             SessionInput si = new SessionInput(user);
             si.setCurrentNode(contentNode);
+            si.setNoShuffle(true);
             Recommendations recomm = recommender.getRecommendations(trigger, user, si, null, new HashSet());
 
             {

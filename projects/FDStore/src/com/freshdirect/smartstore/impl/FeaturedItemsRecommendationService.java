@@ -49,6 +49,7 @@ public class FeaturedItemsRecommendationService extends AbstractRecommendationSe
                     featuredNodes = (List) value;
                 }
             }
+            featuredNodes = sampleContentNodeModels(input, featuredNodes);
         }
 
         return featuredNodes;
