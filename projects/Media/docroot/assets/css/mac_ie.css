@@ -309,24 +309,28 @@ table.ymal caption {
 }
 
 /** SMART STORE **/
-div.smartstore {
-    padding       : 0px;
-    width         : 693px;
-    border        : 2px solid #996699;
-    /* margin-top    : 10px; */
+table.smartstore {
+    padding: 0px;
+    margin: 0px;
 }
 
-div.smartstore .caption1 {
-    color       : white;
-    background  : #996699;
+table.smartstore tbody {
+	margin: 0px;
+	padding: 0px;
+}
+
+table.smartstore .caption1 {
+    color: white;
+    background: #996699;
 	font-size: 14px;
 	font-family: Trebuchet MS, Arial, Helvetica, sans-serif;
 	font-weight: bold;
-    padding-bottom: 3px !important;
+    height: 24px;
+    vertical-align: middle;
 }
 
-div.smartstore .body1 {
-    padding: 10px;
+table.smartstore .body1 {
+    padding: 10px 6px 4px;
 }
 
 .SSorderTotal {

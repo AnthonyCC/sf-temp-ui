@@ -142,6 +142,7 @@ if (request.getParameter("nodyf") == null) {
 		 * Input: List<SkuModel> skus
 		 */
 %>
+<a name="cartRec"></a>
 <form name="<%= tx_pricing_FormName %>" method="post" action="<%= formUri %>" style="margin:0px">
 	<input type="hidden" name="fdsc.action" value="addMultipleToCart"/>
 	<input type="hidden" name="fdsc.succpage" value="<%= formUri %>?confirm=1"/>
@@ -209,11 +210,19 @@ if (request.getParameter("nodyf") == null) {
         <%= tx_pricing_JSNameSpace %>.pricings[idx].setQuantity(qty);
     };
 </script>
-<div class="smartstore" id="recPanel">
-<fd:PIPLayout id="piRow" rowSize="5" impressions="<%= impressions %>" maxRowHeight="rowHeight" singleRowMode="<%= true %>">
-	<div class="caption1" id="recPanelCaption">
+<table class="smartstore" cellspacing="0" cellpadding="0" width="693" align="center">
+<tr>
+	<td width="6" colspan="2"><img width="6" height="24" src="/media_stat/images/layout/prpl_tp_lft.gif"></td>
+	<td class="caption1" width="681" align="center">
 		<%= vprez[0] %>
-	</div>
+	</td>
+	<td width="6" colspan="2"><img width="6" height="24" src="/media_stat/images/layout/prpl_tp_rht.gif"></td>
+</tr>
+<tr>
+<td width="2" bgcolor="#996699"></td>
+<td width="4"></td>
+<td>
+<fd:PIPLayout id="piRow" rowSize="5" impressions="<%= impressions %>" maxRowHeight="rowHeight" singleRowMode="<%= true %>">
 	<div class="body1" id="recPanelBody">
 	<table style="width: 100%;">
 	<tr>
@@ -473,31 +482,28 @@ if (request.getParameter("nodyf") == null) {
 		<td style="text-align: right;">
 		<input type="hidden" style="width:60px" name="total" value="" size="6" class="text11bold" onChange="" onFocus="blur()"/>
 		<input type="hidden" name="itemCount" value="<%= txProdCount %>"/>
-		<input type="image" name="addMultipleToCart" style="padding: 8px 8px; border: 0" src="/media_stat/images/template/confirmation/add_to_cart_purple.gif" alt="ADD SELECTED TO CART"/>
+		<input type="image" name="addMultipleToCart" style="padding: 8px 0px; border: 0" src="/media_stat/images/template/confirmation/add_to_cart_purple.gif" alt="ADD SELECTED TO CART"/>
 		</td>
 		<% } %>
 		</tr>
 	</table>			
 	</div>
 </fd:PIPLayout>
-</div>
-<script type="text/javascript">
-	if (document.getElementById('recPanel')) {
-		var corn_settings = {
-	        tl: { radius: 6 },
-	        tr: { radius: 6 },
-	        bl: { radius: 6 },
-	        br: { radius: 6 },
-	        topColour: '#996699',
-	        antiAlias: true,
-	        autoPad: false
-	    };
-		
-	    var corn = new curvyCorners(corn_settings, document.getElementById('recPanel'));
-	    corn.applyCornersToAll();
-	}
-
-</script>
+</td>
+<td width="4"></td>
+<td width="2" bgcolor="#996699"></td>
+</tr>
+<tr>
+	<td width="6" colspan="2" rowspan="2"><img width="6" height="6" src="/media_stat/images/layout/prpl_bm_lft.gif"></td>
+	<td width="681">
+		<div style="height: 4px; font-size: 0px;"></div>
+	</td>
+	<td width="6" colspan="2" rowspan="2"><img width="6" height="6" src="/media_stat/images/layout/prpl_bm_rht.gif"></td>
+</tr>
+<tr>
+<td bgcolor="#996699"><div style="height: 2px; font-size: 0px;"></div></td>
+</tr>
+</table><!-- smartstore -->
 <script type="text/javascript">
 	<%= tx_pricing_JSNameSpace %>.updateTotal();
 </script>
