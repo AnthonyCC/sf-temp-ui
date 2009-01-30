@@ -220,6 +220,19 @@ VALUES('featured-cms','FEATURED_ITEMS', 'featured_items');
 INSERT INTO ss_variants(ID, feature, type)
 VALUES('featured-popular','FEATURED_ITEMS', 'manual_override');
 
+INSERT INTO SS_VARIANT_PARAMS(ID,KEY,VALUE)
+VALUES('featured-cms','sampling_strat','deterministic');
+
+INSERT INTO SS_VARIANT_PARAMS(ID,KEY,VALUE)
+VALUES('featured-popular','prez_title','NEW! Top Sellers');
+INSERT INTO SS_VARIANT_PARAMS(ID,KEY,VALUE)
+VALUES('featured-popular','sampling_strat','power');
+INSERT INTO SS_VARIANT_PARAMS(ID,KEY,VALUE)
+VALUES('featured-popular','exponent','0.5');
+INSERT INTO SS_VARIANT_PARAMS(ID,KEY,VALUE)
+VALUES('featured-popular','top_n','10');
+INSERT INTO SS_VARIANT_PARAMS(ID,KEY,VALUE)
+VALUES('featured-popular','top_perc','10');
 
 -- cohort->variant assignment
 INSERT INTO ss_variant_assignment(COHORT_ID, "DATE", variant_id)
