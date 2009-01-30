@@ -37,6 +37,9 @@
     	<p>
 		<span class="bull">&bull;</span> <a href="fi_debugger.jsp"><span>Featured Items Debugger</span></a>
 		</p>
+    	<p>
+		<span class="bull">&bull;</span> <a href="cohorts.jsp"><span>Cohorts Tool</span></a>
+		</p>
     </div>
 </body>
 </html>

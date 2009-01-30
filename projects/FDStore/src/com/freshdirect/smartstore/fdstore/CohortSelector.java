@@ -171,8 +171,45 @@ public class CohortSelector {
         CohortAssignment cohortAssignment = getCohortAssignment(erpUserId);
         if (cohortAssignment != null) {
             return cohortAssignment.getCohort();
+       
         }
         return null;
+    }
+    
+    protected static byte[][] RANDOM_DIGIT_MAP = new byte[10][10];
+    
+    static {
+    	Object generator = new Object() {
+    		private long state = 439094301L;
+    		private int bits = 8;
+    		
+    		public int hashCode() {
+    			state = (state * 0x5DEECE66DL + 0xBL) & ((1L << 48) - 1);
+        		return (int)(state >>> (48-bits));	
+    		}
+    	};
+    	
+    	for(int i = 0; i< RANDOM_DIGIT_MAP.length; ++i) {
+    		for(int j=0; j<RANDOM_DIGIT_MAP[i].length; ++j) {
+    			RANDOM_DIGIT_MAP[i][j] = (byte)j;
+    		}
+    		for(int j=2; j<RANDOM_DIGIT_MAP[i].length; ++j) {
+    			int o = Math.abs(generator.hashCode()) % j;
+    			
+    			byte tmp = RANDOM_DIGIT_MAP[i][o];
+    			RANDOM_DIGIT_MAP[i][o] = RANDOM_DIGIT_MAP[i][j];
+    			RANDOM_DIGIT_MAP[i][j] = tmp;
+    		}	
+    	}
+    	
+    	for(int i=0; i< RANDOM_DIGIT_MAP.length; ++i) {
+    		for(int j=0; j< RANDOM_DIGIT_MAP[i].length; ++j) {
+    			System.out.print(' ');
+    			System.out.print((int)RANDOM_DIGIT_MAP[i][j]);
+    		}
+    		System.out.println();
+    	}
+    	
     }
 
     /**
@@ -187,17 +224,28 @@ public class CohortSelector {
      * m-1) for small m</li>
      * </ul>
      * 
-     * This implementation uses {@link Math#abs Math.abs}(
-     * {@link String#hashCode()}). Ensure to return a natural number!
-     * 
      * @param erpUserId
      *            user id
      * @return randomized user id
      */
     protected int randomize(String erpUserId) {
-        return Math.abs(erpUserId.hashCode());
+    	int z = 0;
+    	int r = 0;
+    	if (erpUserId.length() > 0) {
+    		r = Math.abs(erpUserId.charAt(erpUserId.length()-1)) % RANDOM_DIGIT_MAP.length; 
+    	}
+    	
+    	for(int i=0; i < erpUserId.length(); ++i) {
+    		int c = erpUserId.charAt(i);
+    		int x = (byte)c;
+    		if (c >= '0' && c <= '9') {
+    			x = RANDOM_DIGIT_MAP[r][c - '0'] + '0';
+    		} 
+    		z = 31*z + x;
+    	}
+    	return Math.abs(z);
     }
-
+	
     /**
      * Important, this method is overridden in test cases, do not remove!
      * 
@@ -279,5 +327,6 @@ public class CohortSelector {
     public synchronized static void setCohortNames(List cohortNames) {
         CohortSelector.cohortNames = cohortNames;
     }
+    
 
 }
