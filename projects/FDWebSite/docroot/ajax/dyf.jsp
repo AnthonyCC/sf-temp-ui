@@ -3,6 +3,11 @@
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <%@page import="com.freshdirect.framework.webapp.ActionResult"%>
 <%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
+<%
+	response.setHeader("Cache-Control", "no-cache");
+	response.setHeader("Pragma", "no-cache");
+	response.setDateHeader ("Expires", 0);
+%>
 <fd:CheckLoginStatus />
 <%
 	request.setAttribute("is_ajax", "true");

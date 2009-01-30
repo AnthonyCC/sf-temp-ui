@@ -215,7 +215,7 @@ if (request.getParameter("nodyf") == null) {
 		<%= vprez[0] %>
 	</div>
 	<div class="body1" id="recPanelBody">
-	<table>
+	<table style="width: 100%;">
 	<tr>
 		<td colspan="<%= piRow.size() %>" style="text-align: center;padding-top: 5px; padding-bottom: 5px;">
 			<span class="text11bold"><%= vprez[1] %></span>
