@@ -34,6 +34,10 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.MunicipalityInfo;
+import com.freshdirect.customer.EnumAccountActivityType;
+import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.delivery.DlvAddressGeocodeResponse;
 import com.freshdirect.delivery.DlvAddressVerificationResponse;
 import com.freshdirect.delivery.DlvResourceException;
@@ -58,13 +62,12 @@ import com.freshdirect.delivery.model.DlvZoneDescriptor;
 import com.freshdirect.delivery.model.DlvZoneModel;
 import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.ejb.DlvRestrictionDAO;
-import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
-import com.freshdirect.fdstore.FDTimeslotList;
 import com.freshdirect.fdstore.StateCounty;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -72,6 +75,8 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public class DlvManagerSessionBean extends SessionBeanSupport {
 
 	private static final Category LOGGER = LoggerFactory.getInstance(DlvManagerSessionBean.class);
+	
+	private final static ServiceLocator LOCATOR = new ServiceLocator();
 
 	/** Creates new DlvManagerSessionBean */
 	public DlvManagerSessionBean() {
@@ -552,6 +557,8 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			}
 
 			if (foundTimeslot == null) {
+				logActivity(EnumTransactionSource.SYSTEM, EnumAccountActivityType.MAKE_PRE_RESERVATION,"SYSTEM", customerId,
+								"Failed to make recurring reservation for customer - no timeslot found");
 				LOGGER.info("Failed to make recurring reservation for customer " + customerId + " - no timeslot found");
 				return false;
 			}
@@ -560,6 +567,8 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			for (Iterator i = reservations.iterator(); i.hasNext(); ) {
 				DlvReservationModel rsv = (DlvReservationModel) i.next();
 				if (!EnumReservationType.STANDARD_RESERVATION.equals(rsv.getReservationType())) {
+					logActivity(EnumTransactionSource.SYSTEM, EnumAccountActivityType.MAKE_PRE_RESERVATION,"SYSTEM", customerId,
+									"Failed to make recurring reservation for customer - already reserved");
 					LOGGER.info("Failed to make recurring reservation for customer " + customerId + " - already reserved");
 					return false;
 				}
@@ -579,14 +588,21 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 				EnumReservationType.RECURRING_RESERVATION,
 				address.getPK().getId(), false);
 			
+			logActivity(EnumTransactionSource.SYSTEM, EnumAccountActivityType.MAKE_PRE_RESERVATION,"SYSTEM", customerId,
+								"Made recurring reservation");
+			
 			LOGGER.info("Made recurring reservation for " + customerId);
 
 			return true;
 			
 		} catch (InvalidAddressException e) {
+			logActivity(EnumTransactionSource.SYSTEM, EnumAccountActivityType.MAKE_PRE_RESERVATION,"SYSTEM", customerId,
+							"Could not Reserve a Weekly recurring timeslot for customer id - Invalid address");
 			LOGGER.warn("Could not Reserve a Weekly recurring timeslot for customer id: "+customerId+" because of Invalid address", e);
 			return false;
 		} catch (ReservationException e) {
+			logActivity(EnumTransactionSource.SYSTEM, EnumAccountActivityType.MAKE_PRE_RESERVATION,"SYSTEM", customerId,
+							"Could not Reserve a Weekly recurring timeslot for customer id - Reservation Exception");
 			LOGGER.warn("Could not Reserve a Weekly recurring timeslot for customer id: "+customerId+" Reservation Exception", e);
 			return false;
 		}
@@ -1575,6 +1591,23 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 				LOGGER.warn("DlvManagerSB getCutoffInfo: Exception while cleaning: ", e);
 			}
 		}
+	}
+	
+	private void logActivity(EnumTransactionSource source, EnumAccountActivityType type, 
+								String initiator, String customerId, String note) {
+		ErpActivityRecord rec = new ErpActivityRecord();
+		rec.setActivityType(type);
+
+		rec.setSource(source);
+		rec.setInitiator(initiator);
+		rec.setCustomerId(customerId);
+
+		StringBuffer sb = new StringBuffer();
+		if (note != null) {
+			sb.append(note);
+		}
+		rec.setNote(sb.toString());
+		new ErpLogActivityCommand(LOCATOR, rec).execute();
 	}
 	
 	
