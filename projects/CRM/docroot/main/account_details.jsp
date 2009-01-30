@@ -26,8 +26,6 @@
 <%@ page import="com.freshdirect.webapp.util.CCFormatter" %>
 <%@ page import="com.freshdirect.framework.core.PrimaryKey"  %>
 <%@ page import="com.freshdirect.fdstore.referral.FDReferralManager" %>
-<%@ page import="com.freshdirect.smartstore.fdstore.SmartStoreUtil" %>
-<%@ page import="com.freshdirect.fdstore.util.EnumSiteFeature" %>
 <%@ page import='java.util.*' %>
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -42,6 +40,7 @@ String tmpl = "/template/" + (forPrint ? "print" : "top_nav") + ".jsp";
 String actionName = request.getParameter("actionName");
 String successPage = "resubmitCustomer".equals(actionName) ? "/main/resubmit_success.jsp" : null;
 boolean saveCart = request.getParameter("saveCart") == null ? false : true ;
+
 %>
 <script type="text/javascript">
 function blinkIt() {
@@ -197,22 +196,7 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
             <% 	} %>
             <!-- SmartStore -->
             <div class="cust_sub_nav" title="SmartStore">
-                <b>DYF</b>
-<%
-	String personal_variant_id = user.getFDCustomer().getProfile().getAttribute("DYF.VariantID");
-	boolean isValid = SmartStoreUtil.checkVariantId(personal_variant_id, EnumSiteFeature.DYF);
-
-	if (personal_variant_id == null) {
-%>
-                Variant: <b><%= SmartStoreUtil.getRecommendationService(user, EnumSiteFeature.DYF,null).getVariant().getId() %></b>
-<%		
-	} else {
-%>
-                Variant: <b><%= personal_variant_id %> <%= isValid ? "<i>(Overridden)</i>" : "<i>(Overridden, <span style=\"color: red;\">Invalid!</span>)</i>" %></b>
-<%		
-	}
-%>
-                Eligible: <b><%= DYFUtil.isCustomerEligible(user) ? "Yes" : "No" %></b>
+				<a style="font-weight: bold;" href="/main/smartstore_info.jsp">Smart Store</a>
             </div>
         </td></tr>
 		</table>

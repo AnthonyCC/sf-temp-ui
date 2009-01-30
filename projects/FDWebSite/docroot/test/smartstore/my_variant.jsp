@@ -22,15 +22,9 @@
 	<meta name="author" content="Sebestyén Gábor">
 	<!-- Date: 2008-06-09 -->
 </head>
+<fd:CheckLoginStatus/>
+<% request.setAttribute("ss_custInfo", Boolean.TRUE); %>
 <body>
-<% if (user != null) {
-	// VariantSelector selector = (VariantSelector)VariantSelectorFactory.getInstance(EnumSiteFeature.DYF);
-	// RecommendationService service = selector.select(user.getIdentity().getErpCustomerPK());
-	RecommendationService service = SmartStoreUtil.getRecommendationService(user, EnumSiteFeature.DYF,null);
-%>
-<%= user.getFirstName() %> <%= user.getLastName() %>'s variant ID is <b><%= service.getVariant().getId() %></b><br/>
-<% } else { %>
-<h2>Please log in first...</h2>
-<% } %>
+<%@ include file="/shared/includes/ss_cust_info.jspf" %>
 </body>
 </html>

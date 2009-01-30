@@ -70,15 +70,10 @@ public class SmartStoreUtil {
 		RecommendationService svc = null;
 		
 		// lookup overridden variant
-		if (EnumSiteFeature.DYF.equals(feature)) {
-			String value = override;
-			if (value == null) value = user.getFDCustomer().getProfile().getAttribute(feature.getName() + ".VariantID");
-			
-			// try to find the appropriate RecommendationService (variant implementation) by entered value
-			if (value != null) {
-				Map svcMap = SmartStoreServiceConfiguration.getInstance().getServices(feature);
-				svc = (RecommendationService)svcMap.get(value);	
-			}
+		OverriddenVariantsHelper helper = new OverriddenVariantsHelper(user);
+		String v = helper.getOverriddenVariant(feature);
+		if (v != null) {
+			svc = (RecommendationService)SmartStoreServiceConfiguration.getInstance().getServices(feature).get(v);	
 		}
 
 		// default case - use the basic facility

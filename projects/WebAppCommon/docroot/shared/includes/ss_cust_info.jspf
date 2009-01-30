@@ -1,0 +1,186 @@
+<%@ page import="com.freshdirect.fdstore.customer.FDUserI"
+%><%@ page import="com.freshdirect.smartstore.fdstore.SmartStoreUtil"
+%><%@ page import="com.freshdirect.smartstore.fdstore.OverriddenVariantsHelper"
+%><%@ page import="com.freshdirect.smartstore.fdstore.OverriddenVariantsHelper.VariantInfo" 
+%><%@ page import="com.freshdirect.smartstore.fdstore.VariantSelectorFactory"
+%><%@ page import="com.freshdirect.fdstore.util.EnumSiteFeature"
+%><%@ page import="com.freshdirect.webapp.util.DYFUtil"
+%><%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"
+%><%@ page import="java.util.List"
+%><%@ page import="java.util.Iterator"
+%><%
+
+FDUserI ss_user = (FDUserI) session.getAttribute(SessionName.USER);
+
+
+OverriddenVariantsHelper ovHelper = new OverriddenVariantsHelper(ss_user);
+
+List ovariants = ovHelper.getOverriddenVariants();
+OverriddenVariantsHelper.VariantInfoList vInfoList = ovHelper.consolidateVariantsList(ovariants);
+
+
+boolean ss_custInfo = (request.getAttribute("ss_custInfo") != null);
+
+%>
+<style type="text/css">
+/* Greyscale
+Table Design by Scott Boyle, Two Plus Four
+www.twoplusfour.co.uk
+----------------------------------------------- */
+
+table.ss {border-collapse: collapse;
+border: 2px solid #000;
+font: normal 80%/140% arial, helvetica, sans-serif;
+color: #555;
+background: #fff;}
+
+td.ss, th.ss {border: 1px dotted #bbb;
+padding: .5em;}
+
+caption.ss {padding: 0 0 .5em 0;
+text-align: left;
+font-size: 1.4em;
+font-weight: bold;
+text-transform: uppercase;
+color: #333;
+background: transparent;}
+
+/* =links
+----------------------------------------------- */
+
+table.ss a {padding: 1px;
+text-decoration: none;
+font-weight: bold;
+background: transparent;}
+
+table.ss a:link {border-bottom: 1px dashed #ddd;
+color: #000;}
+
+table.ss a:visited {border-bottom: 1px dashed #ccc;
+text-decoration: line-through;
+color: #808080;}
+
+table.ss a:hover {border-bottom: 1px dashed #bbb;
+color: #666;}
+
+/* =head =foot
+----------------------------------------------- */
+
+th.ss, th.ss {border: 2px solid #000;
+text-align: left;
+font-size: 1.2em;
+font-weight: bold;
+color: #333;
+background: transparent;}
+
+tfoot.ss td.ss {border: 2px solid #000;}
+
+/* =body
+----------------------------------------------- */
+
+th.ss, td.ss {vertical-align: top;
+text-align: left;}
+
+th.ss {white-space: nowrap;}
+
+.odd {background: #fcfcfc;}
+
+tr.ss:hover {background: #fafafa;}
+</style>
+
+
+<table style="width: 100%; margin: 20px 20px">
+	<tr>
+		<td style="width: 33%">
+			<h2>Customer</h2>
+			<table class="ss">
+				<tr class="ss">
+					<td class="ss" style="font-weight: bold;">User ID:</td>
+					<td class="ss"><%= ss_user.getUserId() %></td>
+				</tr>
+				<tr class="ss">
+					<td class="ss" style="font-weight: bold;">Cohort:</td>
+					<td class="ss" style="font-weight: bold;"><%= ss_user.getCohortName() %></td>
+				</tr>
+				<% if (ss_custInfo) { %>
+				<tr class="ss">
+					<td class="ss" style="font-weight: bold;">ERP ID:</td>
+					<td class="ss"><%= ss_user.getIdentity().getErpCustomerPK() %></td>
+				</tr>
+				<tr class="ss">
+					<td class="ss" style="font-weight: bold;">FD Customer ID:</td>
+					<td class="ss"><%= ss_user.getIdentity().getFDCustomerPK() %></td>
+				</tr>
+				<% } %>
+			</table>
+		</td>
+
+		<td style="width: 33%">
+				<h2>Variants</h2>
+				<table class="ss">
+					<tr class="ss">
+						<th class="ss">Feature</th>
+						<th class="ss">Variant</th>
+						<th class="ss">Options</th>
+					</tr>
+				<%
+					for (Iterator it=OverriddenVariantsHelper.SS_FEATURES.iterator(); it.hasNext();) {
+						EnumSiteFeature feature = (EnumSiteFeature) it.next();
+						
+						OverriddenVariantsHelper.VariantInfo vi = vInfoList.get(feature);
+				%>	<tr class="ss">
+						<td class="ss" style="font-weight: bold;"><%= feature.getName() %></td>
+						<td class="ss"><%= vi != null ? vi.variant : VariantSelectorFactory.getInstance(feature).getService(ss_user.getCohortName()).getVariant().getId() %>
+						<td class="ss"><span><%= vi != null ? "overridden" : "&nbsp;" %><span><% if (EnumSiteFeature.DYF.equals(feature) && DYFUtil.isCustomerEligible(ss_user) ) { %><span style="padding-left: 4px;">eligible</span><% } %></td>
+					</tr>
+				<%
+					}
+				%>
+				</table>
+
+		</td>
+
+
+		<td style="width: 33%">
+			<%
+				if (vInfoList.hasEntries()) {
+			%>
+			<h2>Overridden Variants</h2>
+			<table class="ss">
+				<tr class="ss">
+					<th class="ss">Variant</th>
+					<th class="ss">Feature</th>
+					<th class="ss">Status</th>
+				</tr>
+			<%
+					for (Iterator it=vInfoList.iterator(); it.hasNext();) {
+						OverriddenVariantsHelper.VariantInfo vi = (OverriddenVariantsHelper.VariantInfo) it.next();
+			
+			%>
+				<tr class="ss">
+					<td class="ss"style="font-weight: bold"><%= vi.variant %></td>
+					<td class="ss"><%= vi.feature != null ? vi.feature.getName() : "-" %></td>
+					<td class="ss">
+						<%
+						if (!vi.exists) {
+							%><span style="color: red">invalid</span><%
+						} else if (vi.duplicate) {
+							%><span style="color: red">duplicate</span><%
+						} else {
+							%>OK<%
+						}
+						%>
+					</td>
+				</tr>
+			<%
+					}
+			%>
+			</table>
+			<%
+				} else {
+					%>No overridden variants.<%
+				}
+			%>
+		</td>
+	</tr>
+</table>

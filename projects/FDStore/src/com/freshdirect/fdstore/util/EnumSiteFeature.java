@@ -25,15 +25,27 @@ public class EnumSiteFeature extends Enum implements Serializable {
 
 	public final static EnumSiteFeature NEW_SEARCH = new EnumSiteFeature("newSearch");
 	public final static EnumSiteFeature CCL = new EnumSiteFeature("CCL");
-	public final static EnumSiteFeature DYF = new EnumSiteFeature("DYF");
+	public final static EnumSiteFeature DYF = new EnumSiteFeature("DYF", true);
 	public final static EnumSiteFeature YMAL = new EnumSiteFeature("YMAL");
 	public final static EnumSiteFeature RATING = new EnumSiteFeature("RATING");
-    public final static EnumSiteFeature FEATURED_ITEMS = new EnumSiteFeature("FEATURED_ITEMS");
-    public final static EnumSiteFeature FAVORITES = new EnumSiteFeature("FAVORITES");
+    public final static EnumSiteFeature FEATURED_ITEMS = new EnumSiteFeature("FEATURED_ITEMS", true);
+    public final static EnumSiteFeature FAVORITES = new EnumSiteFeature("FAVORITES", true);
 
+    /**
+     * Is Smart Store feature?
+     */
+    boolean isSmartStore;
+    
 	protected EnumSiteFeature(String name) {
 		super(name);
+		this.isSmartStore = false;
 	}
+
+	protected EnumSiteFeature(String name, boolean isSmartStore) {
+		super(name);
+		this.isSmartStore = isSmartStore;
+	}
+
 
 	public static EnumSiteFeature getEnum(String name) {
 		return (EnumSiteFeature) getEnum(EnumSiteFeature.class, name);
@@ -71,5 +83,9 @@ public class EnumSiteFeature extends Enum implements Serializable {
 	
 	public String getAttributeKey() {
 		return PROFILE_PREFIX + getName();
+	}
+
+	public boolean isSmartStore() {
+		return isSmartStore;
 	}
 }
