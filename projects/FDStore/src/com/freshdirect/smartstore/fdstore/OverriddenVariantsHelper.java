@@ -1,6 +1,7 @@
 package com.freshdirect.smartstore.fdstore;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -29,18 +30,24 @@ public class OverriddenVariantsHelper {
 	 * @return
 	 * @throws FDResourceException
 	 */
-	public List getOverriddenVariants() throws FDResourceException {
+	public List getOverriddenVariants() {
 		ArrayList list = new ArrayList();
 		
-		String value = user.getFDCustomer().getProfile().getAttribute(PROFILE_KEY);
-		if (value != null) {
-			StringTokenizer st = new StringTokenizer(value, ",");
-			while (st.hasMoreTokens()) {
-				String ov = st.nextToken().trim();
-				if (!"".equalsIgnoreCase(ov))
-					list.add(ov.trim());
+		// prevent 'no identity' crash
+		if (user == null || user.getIdentity() == null)
+			return Collections.EMPTY_LIST;
+
+		try {
+			String value = user.getFDCustomer().getProfile().getAttribute(PROFILE_KEY);
+			if (value != null) {
+				StringTokenizer st = new StringTokenizer(value, ",");
+				while (st.hasMoreTokens()) {
+					String ov = st.nextToken().trim();
+					if (!"".equalsIgnoreCase(ov))
+						list.add(ov.trim());
+				}
 			}
-		}
+		} catch (Exception exc) {}
 
 		return list;
 	}
@@ -55,6 +62,10 @@ public class OverriddenVariantsHelper {
 	 * @throws FDResourceException
 	 */
 	public void storeOverriddenVariants(List variantsList) throws FDResourceException {
+		// prevent 'no identity' crash
+		if (user == null || user.getIdentity() == null)
+			return;
+
 		ProfileModel profile = user.getFDCustomer().getProfile();
 		
 		if (variantsList == null || variantsList.size() == 0) {
