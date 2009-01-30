@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.naming.Context;
+import javax.naming.NamingException;
 import javax.servlet.jsp.JspException;
 
 import junit.framework.TestCase;
@@ -39,7 +40,6 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
-import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.RecommendationServiceConfig;
 import com.freshdirect.smartstore.RecommendationServiceType;
@@ -65,7 +65,7 @@ public class FeaturedItemsTest extends TestCase {
 
     private XmlContentService service;
 
-    RecommendationEventLoggerMockup eventLogger;
+    
 
     FeaturedItemsRecommendationService firs = null;
     AllProductInCategoryRecommendationService apicrs = null;
@@ -74,13 +74,9 @@ public class FeaturedItemsTest extends TestCase {
 
     private YourFavoritesInCategoryRecommendationService yfrs;
 
-    public FeaturedItemsTest(String name) {
+    
+    public FeaturedItemsTest(String name) throws NamingException {
         super(name);
-    }
-
-    public void setUp() throws Exception {
-        super.setUp();
-
         List list = new ArrayList();
         list.add(new XmlTypeService("classpath:/com/freshdirect/cms/resource/CMSStoreDef.xml"));
 
@@ -148,8 +144,30 @@ public class FeaturedItemsTest extends TestCase {
         });
 
         
-        eventLogger = new RecommendationEventLoggerMockup();
+        RecommendationEventLoggerMockup eventLogger = new RecommendationEventLoggerMockup();
         RecommendationEventLogger.setInstance(eventLogger);
+    }
+
+    
+    RecommendationEventLoggerMockup getMockup() {
+        RecommendationEventLogger instance = RecommendationEventLogger.getInstance();
+        RecommendationEventLoggerMockup result = null;
+        if (!(instance instanceof RecommendationEventLoggerMockup)) {
+            try {
+                result = new RecommendationEventLoggerMockup();
+                RecommendationEventLogger.setInstance(result);
+            } catch (NamingException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            result = (RecommendationEventLoggerMockup) instance;
+        }
+        return result;
+    }
+    
+    public void setUp() throws Exception {
+        super.setUp();
+
     }
 
 
@@ -161,6 +179,12 @@ public class FeaturedItemsTest extends TestCase {
         return firs;
     }
 
+    RecommendationService getDeterministicFeaturedItemsService() {
+        return  new FeaturedItemsRecommendationService(new Variant("fi", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("fi_config",
+                    RecommendationServiceType.FEATURED_ITEMS).set(AbstractRecommendationService.SAMPLING_STRATEGY, "deterministic")));
+    }
+    
+    
 
     RecommendationService getAllProductInCategoryService() {
         if (apicrs == null) {
@@ -197,6 +221,12 @@ public class FeaturedItemsTest extends TestCase {
         return yfrs;
     }
     
+    RecommendationService getDeterministicYourFavoritesService() {
+        return new YourFavoritesInCategoryRecommendationService(new Variant("yf_fi", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("yf_fi",
+                RecommendationServiceType.YOUR_FAVORITES_IN_FEATURED_ITEMS).set(AbstractRecommendationService.SAMPLING_STRATEGY, "deterministic")));
+    }
+    
+    
     RecommendationService getNullService() { 
         return new NullRecommendationService(new Variant("nil", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("nil", RecommendationServiceType.NIL)));
     }
@@ -226,7 +256,7 @@ public class FeaturedItemsTest extends TestCase {
         assertEquals("nul recommended nodes size", 0, nodes.size());
     }
 
-    public void testServiceTag() {
+    public void testFeaturedItemsService() {
         MockPageContext ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
 
         VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getFeaturedItemsService()));
@@ -234,6 +264,7 @@ public class FeaturedItemsTest extends TestCase {
         FeaturedItemsTag fit = createTag(ctx, "spe_cooki_cooki");
 
         try {
+            RecommendationEventLoggerMockup eventLogger = getMockup();
             eventLogger.getCollectedEvents().clear();
             
             fit.doStartTag();
@@ -258,13 +289,53 @@ public class FeaturedItemsTest extends TestCase {
             e.printStackTrace();
             fail("jsp exception" + e.getMessage());
         }
-        
+
+    
+        VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getDeterministicFeaturedItemsService()));
+
+        fit = createTag(ctx, "spe_cooki_cooki");
+        fit.setNoShuffle(false);
+
+        try {
+            RecommendationEventLoggerMockup eventLogger = getMockup();
+            eventLogger.getCollectedEvents().clear();
+            
+            fit.doStartTag();
+
+            Recommendations recomm = (Recommendations) ctx.getAttribute("recommendations");
+            assertNotNull("recommendations", recomm);
+            assertEquals("3 recommendation", 3, recomm.getContentNodes().size());
+            
+            List nodes = recomm.getContentNodes();
+            assertNode("0-spe_madmoose_chc", nodes , 0, "spe_madmoose_chc");
+            assertNode("1-spe_moore_lemon", nodes, 1, "spe_moore_lemon");
+            assertNode("2-spe_walkers_shortbre_02", nodes, 2, "spe_walkers_shortbre_02");
+
+            FDEventUtil.flushImpressions();
+            
+            assertEquals("event log size", 3, eventLogger.getCollectedEvents().size());
+
+            assertRecommendationEventsAggregate("0", "Product:spe_madmoose_chc", (RecommendationEventsAggregate) eventLogger.getCollectedEvents().get(0));
+            assertRecommendationEventsAggregate("1", "Product:spe_moore_lemon", (RecommendationEventsAggregate) eventLogger.getCollectedEvents().get(1));
+            assertRecommendationEventsAggregate("2", "Product:spe_walkers_shortbre_02", (RecommendationEventsAggregate) eventLogger.getCollectedEvents().get(2));
+        } catch (JspException e) {
+            e.printStackTrace();
+            fail("jsp exception" + e.getMessage());
+        }
+    
+    
+    }
+
+    public void testAllProductInCategoryService() {
+        MockPageContext ctx;
+        FeaturedItemsTag fit;
         VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getAllProductInCategoryService()));
         ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
         
         fit = createTag(ctx, "gro_cooki_cooki");
         
         try {
+            RecommendationEventLoggerMockup eventLogger = getMockup();
             eventLogger.getCollectedEvents().clear();
             
             fit.doStartTag();
@@ -287,13 +358,18 @@ public class FeaturedItemsTest extends TestCase {
             e.printStackTrace();
             fail("jsp exception" + e.getMessage());
         }
-        
+    }
+
+    public void testCandidateListService() {
+        MockPageContext ctx;
+        FeaturedItemsTag fit;
         VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getCandidateListService()));
         ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
         
         fit = createTag(ctx, "gro_cooki_cooki");
         
         try {
+            RecommendationEventLoggerMockup eventLogger = getMockup();
             eventLogger.getCollectedEvents().clear();
             
             fit.doStartTag();
@@ -312,13 +388,18 @@ public class FeaturedItemsTest extends TestCase {
             e.printStackTrace();
             fail("jsp exception" + e.getMessage());
         }
+    }
 
+    public void testManualOverrideService() {
+        MockPageContext ctx;
+        FeaturedItemsTag fit;
         VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getManualOverrideService()));
         ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
         
         fit = createTag(ctx, "gro_cooki_cooki");
         
         try {
+            RecommendationEventLoggerMockup eventLogger = getMockup();
             eventLogger.getCollectedEvents().clear();
             
             fit.doStartTag();
@@ -339,9 +420,6 @@ public class FeaturedItemsTest extends TestCase {
             e.printStackTrace();
             fail("jsp exception" + e.getMessage());
         }
-        
-
-        
     }
 
     
@@ -351,6 +429,7 @@ public class FeaturedItemsTest extends TestCase {
         
         FeaturedItemsTag fit = createTag(ctx, "gro_baby");
         
+        RecommendationEventLoggerMockup eventLogger = getMockup();
         try {
             eventLogger.getCollectedEvents().clear();
             
@@ -411,6 +490,41 @@ public class FeaturedItemsTest extends TestCase {
         ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "user-with-favorite-prods2", "789"));
         
         fit = createTag(ctx, "gro_baby");
+        
+        try {
+            eventLogger.getCollectedEvents().clear();
+            
+            fit.doStartTag();
+            FDEventUtil.flushImpressions();
+
+            Recommendations recomm = (Recommendations) ctx.getAttribute("recommendations");
+            assertNotNull("yf_p : recommendations", recomm);
+            assertEquals("yf_p : 5 recommendation", 5, recomm.getContentNodes().size());
+            List nodes = recomm.getContentNodes();
+            // from the FEATURED_ITEMS set
+            // gro_earths_oat_cereal, gro_enfamil_powder_m_02, hba_1ups_aloe_rf, hab_pampers_crsrs_4, hba_svngen_dprs_3
+            assertNode("with user prefs - manual slot/featured : yf_p : 0 gro_7gen_diaperlg", nodes, 0, "gro_7gen_diaperlg");
+            assertNode("with user prefs : yf_p : 1 gro_earths_oat_cereal", nodes, 1, "gro_earths_oat_cereal");
+            assertNode("with user prefs : yf_p : 2 gro_enfamil_powder_m_02", nodes, 2, "gro_enfamil_powder_m_02");
+            assertNode("with user prefs : yf_p : 3 hba_1ups_aloe_rf", nodes, 3, "hba_1ups_aloe_rf");
+            assertNode("with user prefs : yf_p : 4 hab_pampers_crsrs_4", nodes, 4, "hab_pampers_crsrs_4");
+
+            
+            assertEquals("yf_p : event log size", 5, eventLogger.getCollectedEvents().size());
+
+        } catch (JspException e) {
+            e.printStackTrace();
+            fail("jsp exception" + e.getMessage());
+        }
+
+        
+        // Test the deterministic sampling strategy
+        VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getDeterministicYourFavoritesService()));
+        
+        ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "user-with-favorite-prods2", "789"));
+        
+        fit = createTag(ctx, "gro_baby");
+        fit.setNoShuffle(false);
         
         try {
             eventLogger.getCollectedEvents().clear();
