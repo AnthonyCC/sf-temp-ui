@@ -53,6 +53,8 @@ public class SmartStoreUtil {
 	}
 
 
+	public static final String SKIP_OVERRIDDEN_VARIANT = "__skip_overridden_variant__";
+	
 	/**
 	 * Get the recommendation service for the user.
 	 * 
@@ -68,13 +70,27 @@ public class SmartStoreUtil {
 	public static RecommendationService getRecommendationService(
 		FDUserI user, EnumSiteFeature feature, String override) throws FDResourceException {
 		RecommendationService svc = null;
+
 		
-		// lookup overridden variant
-		OverriddenVariantsHelper helper = new OverriddenVariantsHelper(user);
-		String v = helper.getOverriddenVariant(feature);
-		if (v != null) {
-			svc = (RecommendationService)SmartStoreServiceConfiguration.getInstance().getServices(feature).get(v);	
+		if (!SKIP_OVERRIDDEN_VARIANT.equalsIgnoreCase(override)) {
+			String value = null;
+
+			// a., manual override
+			if (override != null) {
+				value = override;
+			}
+			// b., get overridden variant from customer's profile
+			if (value == null) {
+				// lookup overridden variant
+				OverriddenVariantsHelper helper = new OverriddenVariantsHelper(user);
+				value = helper.getOverriddenVariant(feature);
+			}
+
+			if (value != null) {
+				svc = (RecommendationService)SmartStoreServiceConfiguration.getInstance().getServices(feature).get(value);	
+			}
 		}
+
 
 		// default case - use the basic facility
 		if (svc == null) {

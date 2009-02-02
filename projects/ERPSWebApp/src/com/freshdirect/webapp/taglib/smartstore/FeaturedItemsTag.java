@@ -14,6 +14,7 @@ import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Trigger;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.Recommendations;
+import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 /**
@@ -49,8 +50,9 @@ public class FeaturedItemsTag extends RecommendationsTag {
         SessionInput si = new SessionInput(user);
         si.setCurrentNode(nodeModel);
         si.setNoShuffle(noShuffle);
-        Recommendations results = recommender.getRecommendations(trigger, user, si, null);
         
+        Recommendations results = recommender.getRecommendations(trigger, user, si, (String) pageContext.getAttribute("fi_override_variant"));
+
         return results;
     }
     

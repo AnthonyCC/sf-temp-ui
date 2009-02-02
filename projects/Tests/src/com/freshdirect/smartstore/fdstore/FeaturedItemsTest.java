@@ -258,7 +258,8 @@ public class FeaturedItemsTest extends TestCase {
 
     public void testFeaturedItemsService() {
         MockPageContext ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
-
+        ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
+        
         VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getFeaturedItemsService()));
 
         FeaturedItemsTag fit = createTag(ctx, "spe_cooki_cooki");
@@ -331,7 +332,8 @@ public class FeaturedItemsTest extends TestCase {
         FeaturedItemsTag fit;
         VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getAllProductInCategoryService()));
         ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
-        
+        ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
+
         fit = createTag(ctx, "gro_cooki_cooki");
         
         try {
@@ -365,6 +367,7 @@ public class FeaturedItemsTest extends TestCase {
         FeaturedItemsTag fit;
         VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getCandidateListService()));
         ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
+        ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
         
         fit = createTag(ctx, "gro_cooki_cooki");
         
@@ -395,6 +398,7 @@ public class FeaturedItemsTest extends TestCase {
         FeaturedItemsTag fit;
         VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getManualOverrideService()));
         ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
+        ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
         
         fit = createTag(ctx, "gro_cooki_cooki");
         
@@ -426,6 +430,7 @@ public class FeaturedItemsTest extends TestCase {
     public void testYourFavoritesInFi() {
         VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getYourFavoritesService()));
         MockPageContext ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
+        ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
         
         FeaturedItemsTag fit = createTag(ctx, "gro_baby");
         
@@ -458,6 +463,7 @@ public class FeaturedItemsTest extends TestCase {
 
         
         ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "user-with-favorite-prods", "789"));
+        ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
         
         fit = createTag(ctx, "gro_baby");
         
@@ -488,6 +494,7 @@ public class FeaturedItemsTest extends TestCase {
         }
 
         ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "user-with-favorite-prods2", "789"));
+        ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
         
         fit = createTag(ctx, "gro_baby");
         
@@ -522,6 +529,7 @@ public class FeaturedItemsTest extends TestCase {
         VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getDeterministicYourFavoritesService()));
         
         ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "user-with-favorite-prods2", "789"));
+        ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
         
         fit = createTag(ctx, "gro_baby");
         fit.setNoShuffle(false);
@@ -567,7 +575,7 @@ public class FeaturedItemsTest extends TestCase {
             SessionInput si = new SessionInput(user);
             si.setCurrentNode(contentNode);
             si.setNoShuffle(true);
-            Recommendations recomm = recommender.getRecommendations(trigger, user, si, null, new HashSet());
+            Recommendations recomm = recommender.getRecommendations(trigger, user, si, SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT, new HashSet());
 
             {
                 assertNotNull("default-recommendations", recomm);
@@ -583,7 +591,7 @@ public class FeaturedItemsTest extends TestCase {
             Set cartItems = new HashSet();
             cartItems.add(ContentKey.create(FDContentTypes.PRODUCT, "spe_moore_lemon"));
             
-            recomm = recommender.getRecommendations(trigger, user, si, null, cartItems);
+            recomm = recommender.getRecommendations(trigger, user, si, SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT, cartItems);
             {
                 assertNotNull("exlusion-recommendations", recomm);
                 assertEquals("exlusion-2 recommendation", 2, recomm.getContentNodes().size());
@@ -600,7 +608,7 @@ public class FeaturedItemsTest extends TestCase {
                 VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(noRemovalService));
             }
 
-            recomm = recommender.getRecommendations(trigger, user, si, null, cartItems);
+            recomm = recommender.getRecommendations(trigger, user, si, SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT, cartItems);
             {
                 assertNotNull("include-cart-items-recommendations", recomm);
                 assertEquals("include-cart-items-3 recommendation", 3, recomm.getContentNodes().size());
