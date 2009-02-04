@@ -232,7 +232,7 @@ VALUES('featured-popular','exponent','0.5');
 INSERT INTO SS_VARIANT_PARAMS(ID,KEY,VALUE)
 VALUES('featured-popular','top_n','10');
 INSERT INTO SS_VARIANT_PARAMS(ID,KEY,VALUE)
-VALUES('featured-popular','top_perc','10');
+VALUES('featured-popular','top_perc','2');
 
 -- cohort->variant assignment
 INSERT INTO ss_variant_assignment(COHORT_ID, "DATE", variant_id)
