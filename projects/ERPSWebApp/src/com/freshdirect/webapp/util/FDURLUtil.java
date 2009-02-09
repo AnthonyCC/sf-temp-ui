@@ -33,6 +33,7 @@ public class FDURLUtil {
 	public static final String CATEGORY_PAGE_BASE		= "/category.jsp";
 	public static final String DEPARTMENT_PAGE_BASE		= "/department.jsp";
 	public static final String CART_CONFIRM_PAGE_BASE	= "/cart_confirm.jsp";
+	public static final String GR_CART_CONFIRM_PAGE_BASE	= "/grocery_cart_confirm.jsp";
 
 	public static final String RECIPE_PAGE_BASE			= "/recipe.jsp";
 	public static final String RECIPE_PAGE_BASE_CRM		= "/order/recipe.jsp";
@@ -330,7 +331,7 @@ public class FDURLUtil {
 		
 		// "/grocery_cart_confirm.jsp?catId="+request.getParameter("catId")+"&trk="+ptrk;
 		
-		uri.append(CART_CONFIRM_PAGE_BASE + "?catId=" + request.getParameter("catId"));
+		uri.append(GR_CART_CONFIRM_PAGE_BASE + "?catId=" + request.getParameter("catId"));
 
 		appendCommonParameters(uri, request.getParameterMap());
 
@@ -361,7 +362,7 @@ public class FDURLUtil {
 		String recipeId	= request.getParameter("recipeId");
 		/// String catId	= request.getParameter("catId");
 
-		uri.append(CART_CONFIRM_PAGE_BASE + "?catId=" + catId);
+		uri.append(GR_CART_CONFIRM_PAGE_BASE + "?catId=" + catId);
 		uri.append("&recipeId=" + recipeId);
 
 		appendCommonParameters(uri, request.getParameterMap());
