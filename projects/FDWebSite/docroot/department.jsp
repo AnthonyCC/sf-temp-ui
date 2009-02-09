@@ -64,8 +64,10 @@ if("fru".equals(deptId) ||"veg".equals(deptId))  {
 } else if("gro".equals(deptId) ||"hba".equals(deptId)||"dai".equals(deptId) ||"fro".equals(deptId))  {
     ttl=3600;
 }
-
-
+%>
+<oscache:cache key='<%= keyPrefix+request.getQueryString() %>'  time='<%=ttl%>'>
+<%
+try {
     if (isIncludeMediaLayout) {
         %><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10">
         <%@ include file="/common/template/includes/catLayoutManager.jspf" %><br><%
@@ -209,7 +211,12 @@ if("fru".equals(deptId) ||"veg".equals(deptId))  {
 			}
 	    }
     } // !isIncludeMediaLayout
+} catch (Exception ex) {
+	ex.printStackTrace();
+    %><oscache:usecached /><%
+}
 %>
+</oscache:cache>
 	</tmpl:put>
 
 </tmpl:insert>
