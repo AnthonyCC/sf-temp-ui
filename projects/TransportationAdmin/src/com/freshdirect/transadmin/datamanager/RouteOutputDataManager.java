@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.routing.util.IRoutingParamConstants;
+import com.freshdirect.transadmin.datamanager.report.ReportGenerationException;
+import com.freshdirect.transadmin.datamanager.report.model.CutOffReportData;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
 
@@ -20,8 +22,9 @@ public class RouteOutputDataManager extends RouteDataManager  {
 		long time = System.currentTimeMillis();
 		outputFileName1 = TransportationAdminProperties.getRoutingOutputOrderFilename()+userName+time;
 		outputFileName2 = TransportationAdminProperties.getRoutingOutputTruckFilename()+userName+time;
+		outputFileName3 = TransportationAdminProperties.getRoutingCutOffRptFilename()+userName+time;
 		return processRoutingOutput(inputInfo1
-										, initResult(outputFileName1, outputFileName2,outputFileName3)
+										, initResult(outputFileName1, outputFileName2,outputFileName3, this.getCutOffReportExtension())
 											, paramMap, domainManagerService);
 		
 	}
@@ -46,8 +49,13 @@ public class RouteOutputDataManager extends RouteDataManager  {
 				fileManager.generateRouteFile(TransportationAdminProperties.getErpRouteInputFormat()
 												, result.getOutputFile2(), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, filterRoutesFromOrders(inputDataList)
 												, null);
+				
+				CutOffReportData reportData = this.getCutOffReportData(inputDataList, cutOff, domainManagerService);
+				this.getCutOffReportEngine().generateCutOffReport(result.getOutputFile3(), reportData);
 			} catch (RouteNoGenException routeNoGen) {
 				result.addError(routeNoGen.getMessage());
+			} catch (ReportGenerationException reportGen) {
+				result.addError(reportGen.getMessage());
 			}
 		}  else {
 			result.addError("Invalid Routing Output File");

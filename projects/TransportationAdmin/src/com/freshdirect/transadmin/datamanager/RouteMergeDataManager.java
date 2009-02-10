@@ -13,6 +13,8 @@ import java.util.Set;
 
 import com.freshdirect.routing.util.IRoutingParamConstants;
 import com.freshdirect.transadmin.datamanager.model.OrderRouteInfoModel;
+import com.freshdirect.transadmin.datamanager.report.ReportGenerationException;
+import com.freshdirect.transadmin.datamanager.report.model.CutOffReportData;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.util.TransStringUtil;
@@ -33,7 +35,8 @@ public class RouteMergeDataManager extends RouteDataManager {
 		String cutOff = (String)paramMap.get(IRoutingParamConstants.ROUTING_CUTOFF);
 		String outputFileName1 = TransportationAdminProperties.getRoutingOutputOrderFilename()+userName+time;
 		String outputFileName2 = TransportationAdminProperties.getRoutingOutputTruckFilename()+userName+time;
-		RoutingResult result = initResult(outputFileName1, outputFileName2, null);
+		String outputFileName3 = TransportationAdminProperties.getRoutingCutOffRptFilename()+userName+time;
+		RoutingResult result = initResult(outputFileName1, outputFileName2, outputFileName3, this.getCutOffReportExtension());
 						
 		List orderDataList = fileManager.parseRouteFile(TransportationAdminProperties.getErpOrderInputFormat()
 				, new ByteArrayInputStream(inputInfo2), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER
@@ -87,7 +90,7 @@ public class RouteMergeDataManager extends RouteDataManager {
 													List fullDataList, DomainManagerI domainManagerService) {
 		
 		Map areaMap = getAreas(domainManagerService);
-		
+		List cutOffReportOrders = new ArrayList();
 		OrderAreaGroup orderGroup = groupOrderRouteInfo(fullDataList, areaMap);
 		try {
 			RouteGenerationResult routeGenResult = generateRouteNumber(collectOrdersFromMap(orderGroup.getOrderGroup()), cutOff, domainManagerService);	
@@ -109,6 +112,7 @@ public class RouteMergeDataManager extends RouteDataManager {
 						strArea = (String)iterator.next();
 						List dataList = (List)orderGroup.getOrderGroup().get(strArea);
 						mergeDataList.addAll(dataList);
+						cutOffReportOrders.addAll(dataList);
 					}
 				}
 				
@@ -118,7 +122,7 @@ public class RouteMergeDataManager extends RouteDataManager {
 					while(iterator.hasNext()) {
 						tmpInfo = (OrderRouteInfoModel)iterator.next();					
 						if(!orderGroup.getOrderIds().contains(tmpInfo.getOrderNumber())) {
-							mergeDataList.add(tmpInfo);
+							mergeDataList.add(tmpInfo);							
 						}					
 					}
 				}
@@ -129,11 +133,16 @@ public class RouteMergeDataManager extends RouteDataManager {
 				fileManager.generateRouteFile(TransportationAdminProperties.getErpRouteInputFormat()
 						, result.getOutputFile2(), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, filterRoutesFromOrders(mergeDataList)
 						, null);
+				
+				CutOffReportData reportData = this.getCutOffReportData(cutOffReportOrders, cutOff, domainManagerService);
+				this.getCutOffReportEngine().generateCutOffReport(result.getOutputFile3(), reportData);
 			} else {			
 				postError(result, "Areas "+ missingAreas.toString()+ " are missing in roadnet file");			
 			}
 		}  catch (RouteNoGenException routeNoGen) {
 			result.addError(routeNoGen.getMessage());
+		}  catch (ReportGenerationException reportGen) {
+			result.addError(reportGen.getMessage());
 		}
 	}
 		

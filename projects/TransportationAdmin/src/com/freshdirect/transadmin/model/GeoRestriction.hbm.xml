@@ -31,7 +31,7 @@
         <property name="comments" type="string">
             <column name="COMMENTS" />
         </property>
-        <set name="geoRestrictionDays" inverse="true" lazy="false" cascade="all,delete-orphan">
+        <set name="geoRestrictionDays" inverse="true" lazy="false">
             <key>
                 <column name="RESTRICTION_ID" length="16" not-null="true" />
             </key>

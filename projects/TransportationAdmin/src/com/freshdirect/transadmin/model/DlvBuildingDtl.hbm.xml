@@ -201,6 +201,9 @@
         <property name="svcScrubbedStreet" type="string">
             <column name="SVC_SCRUBBED_STREET" length="255" />
         </property>
+        <property name="svcCrossStreet" type="string">
+            <column name="SVC_CROSS_STREET" length="255" />
+        </property>
         <property name="svcCity" type="string">
             <column name="SVC_CITY" length="55" />
         </property>

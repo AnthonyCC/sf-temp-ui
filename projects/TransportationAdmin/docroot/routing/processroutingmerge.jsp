@@ -122,7 +122,7 @@
                                     </c:if> 
                                 </spring:bind>
                               </td>
-                              <td>&nbsp;</td>
+                              
                               <td> 
                   <spring:bind path="command.outputFile2">
                     <c:if test="${!empty status.value}">
@@ -130,6 +130,13 @@
                                     </c:if>                                                                
                                 </spring:bind>
                               </td>
+                   <td> 
+                  <spring:bind path="command.outputFile3">
+                    <c:if test="${!empty status.value}">
+                                      <a href='<c:out value="${status.value}"/>' >CutOff Report</a> 
+                                    </c:if>                                                                
+                                </spring:bind>
+                              </td>           
                             </tr>
                                                         
               <tr>

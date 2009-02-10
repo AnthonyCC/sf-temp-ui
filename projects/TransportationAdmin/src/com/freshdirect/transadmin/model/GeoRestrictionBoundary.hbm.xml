@@ -10,6 +10,6 @@
         </id>
         <property name="name" type="string">
             <column name="NAME" length="256" not-null="true" />
-        </property>
+        </property>        
     </class>
 </hibernate-mapping>

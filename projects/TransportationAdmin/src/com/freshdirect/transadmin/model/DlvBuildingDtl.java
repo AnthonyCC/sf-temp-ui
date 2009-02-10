@@ -1,7 +1,4 @@
 package com.freshdirect.transadmin.model;
-import java.math.BigDecimal;
-import java.util.Date;
-
 import com.freshdirect.framework.util.TimeOfDay;
 
 public class DlvBuildingDtl implements java.io.Serializable, TrnBaseEntityI  {
@@ -79,6 +76,7 @@ public class DlvBuildingDtl implements java.io.Serializable, TrnBaseEntityI  {
 	
 	private String svcValidate;
 	private String svcScrubbedStreet;
+	private String svcCrossStreet;
 	private String svcCity;
 	private String svcState;
 	private String svcZip;
@@ -729,6 +727,14 @@ public class DlvBuildingDtl implements java.io.Serializable, TrnBaseEntityI  {
 
 	public void setDlvBuildingDtlId(String dlvBuildingDtlId) {
 		this.dlvBuildingDtlId = dlvBuildingDtlId;
+	}
+
+	public String getSvcCrossStreet() {
+		return svcCrossStreet;
+	}
+
+	public void setSvcCrossStreet(String svcCrossStreet) {
+		this.svcCrossStreet = svcCrossStreet;
 	}
 
 

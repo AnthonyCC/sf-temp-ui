@@ -1,12 +1,18 @@
 package com.freshdirect.transadmin.datamanager;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import com.freshdirect.transadmin.datamanager.assembler.IDataAssembler;
 import com.freshdirect.transadmin.datamanager.parser.ConfigurationReader;
@@ -89,6 +95,34 @@ public class RouteFileManager implements IRouteFileManager {
         } 
         return false;
 	}	
+	
+	public boolean generateReportFile(String outputFile, String data) {
+		
+        try {
+        	BufferedWriter out = new BufferedWriter(new FileWriter(outputFile));
+            out.write(data);
+            out.close();
+
+            return true;
+        } catch (IOException ioExp) {
+        	ioExp.printStackTrace();  
+        } 
+        return false;
+	}
+	
+	public boolean generateReportFile(String outputFile,  HSSFWorkbook wb) {
+		
+        try {
+        	FileOutputStream out = new FileOutputStream(new File(outputFile));
+        	wb.write(out);
+            out.close();
+
+            return true;
+        } catch (IOException ioExp) {
+        	ioExp.printStackTrace();  
+        } 
+        return false;
+	}
 		
 	
 }

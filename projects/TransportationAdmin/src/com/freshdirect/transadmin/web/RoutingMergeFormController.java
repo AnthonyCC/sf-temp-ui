@@ -65,6 +65,7 @@ public class RoutingMergeFormController extends BaseRoutingFormController {
 		    if(errorList == null || errorList.isEmpty()) {
 			    bean.setOutputFile1(getOutputFilePath(result.getOutputFile1()));
 			    bean.setOutputFile2(getOutputFilePath(result.getOutputFile2()));
+			    bean.setOutputFile3(getOutputFilePath(result.getOutputFile3()));
 			    		    
 			    errorList = new ArrayList();
 			    

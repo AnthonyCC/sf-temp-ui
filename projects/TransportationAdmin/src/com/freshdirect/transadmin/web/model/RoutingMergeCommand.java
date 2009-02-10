@@ -12,6 +12,8 @@ public class RoutingMergeCommand extends BaseCommand  {
 	
 	private String outputFile2;
 	
+	private String outputFile3;
+	
 	private String referenceData;
 	
 	private String cutOff;
@@ -80,6 +82,14 @@ public class RoutingMergeCommand extends BaseCommand  {
 
 	public void setCutOff(String cutOff) {
 		this.cutOff = cutOff;
+	}
+
+	public String getOutputFile3() {
+		return outputFile3;
+	}
+
+	public void setOutputFile3(String outputFile3) {
+		this.outputFile3 = outputFile3;
 	}
 
 	

@@ -13,9 +13,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import com.freshdirect.transadmin.datamanager.model.OrderRouteInfoModel;
 import com.freshdirect.transadmin.datamanager.model.RouteNoGenerationModel;
+import com.freshdirect.transadmin.datamanager.report.ICutOffReport;
+import com.freshdirect.transadmin.datamanager.report.XlsCutOffReport;
+import com.freshdirect.transadmin.datamanager.report.model.CutOffReportData;
+import com.freshdirect.transadmin.datamanager.report.model.CutOffReportKey;
 import com.freshdirect.transadmin.datamanager.util.CutOffComparator;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
@@ -32,6 +37,8 @@ public class RouteDataManager {
 	protected static final String ROW_IDENTIFIER = "row";
 	
 	protected static final String ROW_BEAN_IDENTIFIER = "rowBean";
+	
+	
 	       
 	public RoutingResult process(byte[] inputInfo1,byte[] inputInfo2, byte[] inputInfo3, String userName, Map paramMap, DomainManagerI domainManagerService) throws IOException {		
 		return null;
@@ -53,6 +60,27 @@ public class RouteDataManager {
 	    
 	    if(outputFileName3 != null) {
 	    	File outputFile3 = createFile(outputFileName3, "."+TransportationAdminProperties.getErrorFilenameSuffix());
+	    	result.setOutputFile3(outputFile3.getAbsolutePath());
+	    }
+	    return result;
+	}
+	
+	protected RoutingResult initResult(String outputFileName1, String outputFileName2, String outputFileName3, String errorExtension) throws IOException  {
+		
+		RoutingResult result = new RoutingResult();
+		
+	    if(outputFileName1 != null) {
+			File outputFile1 = createFile(outputFileName1, "."+TransportationAdminProperties.getFilenameSuffix());
+		    result.setOutputFile1(outputFile1.getAbsolutePath());
+	    }
+	    
+	    if(outputFileName2 != null) {
+		    File outputFile2 = createFile(outputFileName2, "."+TransportationAdminProperties.getFilenameSuffix());	    	    
+		    result.setOutputFile2(outputFile2.getAbsolutePath());
+	    }
+	    
+	    if(outputFileName3 != null) {
+	    	File outputFile3 = createFile(outputFileName3, "."+errorExtension);
 	    	result.setOutputFile3(outputFile3.getAbsolutePath());
 	    }
 	    return result;
@@ -313,6 +341,7 @@ public class RouteDataManager {
 		return routes;
 	}
 	
+	
 	private String getRouteDate(Date routeDate) {
 		try {
 			return TransStringUtil.getServerDate(routeDate);
@@ -321,10 +350,53 @@ public class RouteDataManager {
 		}
 	}
 	
+	protected CutOffReportData getCutOffReportData(List orderLst, String cutOff, DomainManagerI domainManagerService ) {
+		
+		CutOffReportData result = new CutOffReportData();
+		result.setCutOff(getCutOffTime(cutOff, domainManagerService));
+		result.setReportData(new TreeMap());
+		
+		if(orderLst != null) {
+			Iterator _iterator = orderLst.iterator();
+			OrderRouteInfoModel _model = null;
+			while(_iterator.hasNext()) {
+				_model = (OrderRouteInfoModel)_iterator.next();
+				if(_model.getDeliveryDate() != null &&
+						_model.getTimeWindowStart() != null &&  
+						_model.getTimeWindowStop() != null &&
+						_model.getRouteId() != null) {
+					result.putReportData(new CutOffReportKey(_model.getDeliveryDate(),
+																_model.getTimeWindowStart(),
+																_model.getTimeWindowStop(),
+																_model.getRouteId()), _model);
+				}
+			}
+		}
+		return result;
+	}
+	
+	protected ICutOffReport getCutOffReportEngine() {
+		return new XlsCutOffReport();
+	}
+	
+	protected String getCutOffReportExtension() {
+		return "xls";
+	}
+	
+	private String getCutOffTime(String cutOff, DomainManagerI domainManagerService) {
+		TrnCutOff tmpModel = domainManagerService.getCutOff(cutOff);
+		if(tmpModel != null) {
+			return tmpModel.getName();
+		}
+		return "Cut Off Error";
+	}
+	
 	protected class RouteNoGenException extends Exception {
 		public RouteNoGenException(String message) {
 			super(message);
 		}
 	}
+	
+			
 
 }

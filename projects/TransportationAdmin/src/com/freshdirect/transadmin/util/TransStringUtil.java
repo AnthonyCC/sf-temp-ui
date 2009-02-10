@@ -25,6 +25,8 @@ public class TransStringUtil {
 	
 	public static DateFormat serverTimeFormat = new SimpleDateFormat("hh:mm aaa");
 	
+	public static DateFormat hourInDayFormat = new SimpleDateFormat("H:mm");
+	
 	private static Calendar clientCalendar = Calendar.getInstance();
 	
 	private static String[] daysList = new String[] {"Monday","Tuesday",
@@ -112,6 +114,17 @@ public class TransStringUtil {
         return (Date)timeFormat.parse(dateString);
 	}
 	
+	public static String formatTimeRange(Date dateVal1, Date dateVal2) {
+		try {
+			String strTime1 = hourInDayFormat.format(dateVal1);
+			String strTime2 = hourInDayFormat.format(addSeconds(dateVal2,1));
+			return strTime1+" - "+strTime2;
+		} catch (Exception e) {
+			// Do Nothing
+		}
+        return "Error";
+	}
+	
 	public static boolean compareDate(Date dateVal1, Date dateVal2) {
 		try {
 			String strDate1 = dateFormat.format(dateVal1);
@@ -158,6 +171,13 @@ public class TransStringUtil {
 	public static Date addDays(Date srcDate, int days) {
 		clientCalendar.setTime(srcDate);
 		clientCalendar.add(Calendar.DATE, days);
+		return clientCalendar.getTime();
+	}
+	
+	public static Date addSeconds(Date date, int seconds) {		
+		
+		clientCalendar.setTime(date);
+		clientCalendar.add(Calendar.SECOND, seconds);
 		return clientCalendar.getTime();
 	}
 	

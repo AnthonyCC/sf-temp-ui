@@ -535,11 +535,13 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 				if(lst != null) {
 					List geographicRestrictions = this.getGeographicDlvRestrictions( address);
 					
-					for(Iterator i = lst.iterator(); i.hasNext();){
-						FDTimeslot ts = new FDTimeslot((DlvTimeslotModel)i.next());
-						if (GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions, ts, messages, null)) {
-							// filter off empty timeslots (unless they must be retained)
-							i.remove();
+					if(geographicRestrictions != null && geographicRestrictions.size() > 0) {
+						for(Iterator i = lst.iterator(); i.hasNext();) {						
+							FDTimeslot ts = new FDTimeslot((DlvTimeslotModel)i.next());
+							if (GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions, ts, messages, null)) {
+								// filter off empty timeslots (unless they must be retained)
+								i.remove();
+							}
 						}
 					}
 				}
