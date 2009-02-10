@@ -31,14 +31,12 @@ public class XlsCutOffReport implements ICutOffReport  {
 	
 	public static final short DEFAULT_FONT_HEIGHT = 8;
 	public static final int WIDTH_MULT = 240; // width per char
+	public static final int DEFAULT_WIDTH = 12; // width per char
     public static final int MIN_CHARS = 8; // minimum char width
     private short rownum;	
     private short cellnum;
     
-    static {
-    	System.setProperty("java.awt.headless", "true");
-    }
-    
+        
 	public void generateCutOffReport(String file, CutOffReportData reportData)
 										throws ReportGenerationException {
 
@@ -56,7 +54,7 @@ public class XlsCutOffReport implements ICutOffReport  {
 				Date orderDate = (Date) _orderDateItr.next();
 				
 				HSSFSheet sheet = wb.createSheet(getFormattedDate(orderDate));
-					
+				sheet.setDefaultColumnWidth((short)DEFAULT_WIDTH);	
 				sheet.setPrintGridlines(true);
 
 			    
@@ -78,7 +76,7 @@ public class XlsCutOffReport implements ICutOffReport  {
 		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
 		        hssfCell.setCellValue(new HSSFRichTextString(CUTOFFREPORT_TITLE));
 		        int valWidth = (CUTOFFREPORT_TITLE).length() * WIDTH_MULT;
-		        sheet.setColumnWidth(hssfCell.getCellNum(), (short) valWidth);
+		        
 				sheet.addMergedRegion(new Region(0,(short)0,0,(short)8));
 				row = sheet.createRow(rownum++);//blank Row
 				
@@ -89,7 +87,7 @@ public class XlsCutOffReport implements ICutOffReport  {
 		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
 		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
 		        hssfCell.setCellValue(new HSSFRichTextString(CUTOFFREPORT_DATETITLE));
-		        
+		        		        
 		        hssfCell = row.createCell(cellnum++);		        
 		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
 		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
@@ -105,6 +103,7 @@ public class XlsCutOffReport implements ICutOffReport  {
 		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
 		        hssfCell.setCellValue(new HSSFRichTextString(reportData.getCutOff()));
 		        
+		        
 		        row = sheet.createRow(rownum++);//blank Row
 		        
 		        Iterator _colsItr = timeSlots.iterator();
@@ -115,25 +114,24 @@ public class XlsCutOffReport implements ICutOffReport  {
 		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
 		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
 		        hssfCell.setCellValue(new HSSFRichTextString(CUTOFFREPORT_ROUTETITLE));
-		        sheet.autoSizeColumn((short)(cellnum-1));
-		        
+		        		        
 		        while (_colsItr.hasNext()) {
 
 					TimeWindow timeWindow = (TimeWindow) _colsItr.next();
-					 hssfCell = row.createCell(cellnum++);		        
-				     hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldRightAlignStyle"));
-				     hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
-				     hssfCell.setCellValue(new HSSFRichTextString(TransStringUtil.formatTimeRange(timeWindow
-												.getTimeWindowStart(), timeWindow
-													.getTimeWindowStop())));	
-				     sheet.autoSizeColumn((short)(cellnum-1));
+					String strWindow = TransStringUtil.formatTimeRange(timeWindow
+															.getTimeWindowStart(), timeWindow
+															.getTimeWindowStop());
+					hssfCell = row.createCell(cellnum++);		        
+				    hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldRightAlignStyle"));
+				    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+				    hssfCell.setCellValue(new HSSFRichTextString(strWindow));	
+				    //sheet.autoSizeColumn((short)(cellnum-1));				
 				}
 		        
 		        hssfCell = row.createCell(cellnum++);		        
 		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldRightAlignStyle"));
 		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
 		        hssfCell.setCellValue(new HSSFRichTextString(CUTOFFREPORT_STOPSTITLE));
-		        sheet.autoSizeColumn((short)(cellnum-1));
 		        
 				Iterator _routeItr = routIds.iterator();
 				
