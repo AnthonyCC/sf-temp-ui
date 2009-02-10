@@ -35,6 +35,10 @@ public class XlsCutOffReport implements ICutOffReport  {
     private short rownum;	
     private short cellnum;
     
+    static {
+    	System.setProperty("java.awt.headless", "true");
+    }
+    
 	public void generateCutOffReport(String file, CutOffReportData reportData)
 										throws ReportGenerationException {
 
