@@ -55,10 +55,18 @@ public class TimeWindow implements  Serializable, Comparable {
 		return true;
 	}
 	public int compareTo(Object objCompare) {
-				    
+		final int BEFORE = -1;
+	    final int EQUAL = 0;
+	    final int AFTER = 1;
+	    
 	    if(objCompare instanceof TimeWindow) {
-	    	TimeWindow tmpKey = (TimeWindow)objCompare;
-	    	return this.getTimeWindowStart().compareTo(tmpKey.getTimeWindowStart());		    	
+	    	TimeWindow tmpKey = (TimeWindow)objCompare;	    	
+	    	int compareStartTime = this.getTimeWindowStart().compareTo(tmpKey.getTimeWindowStart());
+	    	if(compareStartTime !=  EQUAL) {
+	    		return compareStartTime; 
+	    	} else {
+	    		return this.getTimeWindowStop().compareTo(tmpKey.getTimeWindowStop());
+	    	}
 	    }
 
 		return 0;
