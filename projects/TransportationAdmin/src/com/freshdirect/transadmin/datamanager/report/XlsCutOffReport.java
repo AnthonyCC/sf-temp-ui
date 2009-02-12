@@ -75,7 +75,7 @@ public class XlsCutOffReport implements ICutOffReport  {
 		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("titleStyle"));
 		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
 		        hssfCell.setCellValue(new HSSFRichTextString(CUTOFFREPORT_TITLE));
-		        int valWidth = (CUTOFFREPORT_TITLE).length() * WIDTH_MULT;
+		        //int valWidth = (CUTOFFREPORT_TITLE).length() * WIDTH_MULT;
 		        
 				sheet.addMergedRegion(new Region(0,(short)0,0,(short)8));
 				row = sheet.createRow(rownum++);//blank Row

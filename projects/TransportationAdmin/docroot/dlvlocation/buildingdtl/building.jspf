@@ -6,7 +6,14 @@
 						  	<td> 								  
 						  	 	<form:input disabled="true" maxlength="50" size="30" path="building.srubbedStreet" />
 						 	</td>
-						 </tr><tr>
+						 </tr>
+						 <tr>
+						    <td>Cross Street</td>
+						    <td> 								  
+						  	 	<form:input maxlength="50" size="30" path="crossStreet"/>
+						 	</td>
+						</tr>
+						 <tr>
 						    <td>City</td>
 						    <td> 								  
 						  	 	<form:input disabled="true" maxlength="50" size="30" path="building.city" />

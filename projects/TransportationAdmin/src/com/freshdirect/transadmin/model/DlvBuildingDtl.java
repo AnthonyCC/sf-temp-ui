@@ -97,6 +97,8 @@ public class DlvBuildingDtl implements java.io.Serializable, TrnBaseEntityI  {
 
 	private String isNew;
 	
+	private String crossStreet;
+	
 	public String getIsNew() {
 		return isNew;
 	}
@@ -735,6 +737,14 @@ public class DlvBuildingDtl implements java.io.Serializable, TrnBaseEntityI  {
 
 	public void setSvcCrossStreet(String svcCrossStreet) {
 		this.svcCrossStreet = svcCrossStreet;
+	}
+
+	public String getCrossStreet() {
+		return crossStreet;
+	}
+
+	public void setCrossStreet(String crossStreet) {
+		this.crossStreet = crossStreet;
 	}
 
 

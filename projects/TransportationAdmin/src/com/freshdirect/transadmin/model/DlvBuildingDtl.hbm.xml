@@ -254,7 +254,9 @@
             <column name="WALK_UP_FLOORS" />
         </property> 
          
-        
+         <property name="crossStreet" type="string">
+            <column name="CROSS_STREET" length="255" />
+        </property>
               
     </class>
 </hibernate-mapping>
