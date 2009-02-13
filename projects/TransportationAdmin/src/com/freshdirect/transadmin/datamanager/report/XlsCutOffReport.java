@@ -48,7 +48,7 @@ public class XlsCutOffReport implements ICutOffReport  {
 			Set timeSlots = (Set) cutOffKeys.get(0);
 			Set routIds = (Set) cutOffKeys.get(1);
 			Set orderDates = (Set) cutOffKeys.get(2);
-
+			//System.out.println("timeSlots >>"+timeSlots);
 			Iterator _orderDateItr = orderDates.iterator();
 			while (_orderDateItr.hasNext()) {
 				Date orderDate = (Date) _orderDateItr.next();
@@ -118,9 +118,8 @@ public class XlsCutOffReport implements ICutOffReport  {
 		        while (_colsItr.hasNext()) {
 
 					TimeWindow timeWindow = (TimeWindow) _colsItr.next();
-					String strWindow = TransStringUtil.formatTimeRange(timeWindow
-															.getTimeWindowStart(), timeWindow
-															.getTimeWindowStop());
+					String strWindow = TransStringUtil.formatTime(timeWindow
+															.getTimeWindowStart());
 					hssfCell = row.createCell(cellnum++);		        
 				    hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldRightAlignStyle"));
 				    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);

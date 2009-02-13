@@ -125,6 +125,16 @@ public class TransStringUtil {
         return "Error";
 	}
 	
+	public static String formatTime(Date dateVal) {
+		try {
+			String strTime1 = hourInDayFormat.format(dateVal);
+			return strTime1;
+		} catch (Exception e) {
+			// Do Nothing
+		}
+        return "Error";
+	}
+	
 	public static boolean compareDate(Date dateVal1, Date dateVal2) {
 		try {
 			String strDate1 = dateFormat.format(dateVal1);
