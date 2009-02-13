@@ -82,7 +82,8 @@ public abstract class ContentNodeModelImpl extends CmsContentNodeAdapter impleme
 	}
 	
 	public String getHideUrl() {
-		return (String)this.getAttribute("HIDE_URL").getValue();
+		//return (String)this.getAttribute("HIDE_URL").getValue();
+        return this.getAttribute("HIDE_URL", null);
 	}
 
 	public boolean isDisplayable() {
