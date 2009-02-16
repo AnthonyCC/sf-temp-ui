@@ -1049,6 +1049,17 @@
 		</CANDIDATE_LIST>
 		<MANUAL_SELECTION_SLOTS>2</MANUAL_SELECTION_SLOTS>
 	</Category>
+	
+	<Category id="speci_xxx_yyy">
+		<FULL_NAME>Special category with one manual slot</FULL_NAME>
+		<FEATURED_PRODUCTS>
+			<Product ref="spe_madmoose_chc"/>
+			<Product ref="fro_veniero_biscotti"/>
+		</FEATURED_PRODUCTS>
+		<MANUAL_SELECTION_SLOTS>1</MANUAL_SELECTION_SLOTS>
+	</Category>
+	
+	
 	<Store id="FreshDirect">
 		<departments>
 			<Department ref="bak"/>

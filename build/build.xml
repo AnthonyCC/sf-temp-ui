@@ -70,6 +70,7 @@
 		<pathelement location="${thirdparty.home}/freemarker-2.3.8.jar"/>
 		<pathelement location="${thirdparty.home}/jsonrpc-1.0.jar"/>
 		<pathelement location="${thirdparty.home}/bsh-2.0b4.jar"/>
+		<pathelement location="${thirdparty.home}/jxl.jar"/>
 	</path>
 
 	<path id="testing.classpath">
@@ -2053,6 +2054,7 @@
 				<include name="lucene-core-2.2.0.jar"/>
 				<include name="lucene-queries-2.2.0.jar"/>
 				<include name="lucene-spellchecker-2.2.0.jar"/>
+				<include name="jxl.jar"/>
 			</lib>
 		</makeEar>
 	</target>

@@ -2,11 +2,15 @@ package com.freshdirect.smartstore.fdstore;
 
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ejb.CreateException;
 import javax.naming.NamingException;
@@ -21,16 +25,19 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.RecommendationServiceType;
 import com.freshdirect.smartstore.Variant;
+import com.freshdirect.smartstore.dsl.CompileException;
 import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationHome;
 import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationSB;
 import com.freshdirect.smartstore.impl.AllProductInCategoryRecommendationService;
 import com.freshdirect.smartstore.impl.CandidateProductRecommendationService;
 import com.freshdirect.smartstore.impl.FavoritesRecommendationService;
 import com.freshdirect.smartstore.impl.FeaturedItemsRecommendationService;
+import com.freshdirect.smartstore.impl.GlobalCompiler;
 import com.freshdirect.smartstore.impl.ManualOverrideRecommendationService;
 import com.freshdirect.smartstore.impl.MostFrequentlyBoughtDyfVariant;
 import com.freshdirect.smartstore.impl.NullRecommendationService;
 import com.freshdirect.smartstore.impl.RandomDyfVariant;
+import com.freshdirect.smartstore.impl.ScriptedRecommendationService;
 import com.freshdirect.smartstore.impl.YourFavoritesInCategoryRecommendationService;
 
 /**
@@ -39,6 +46,7 @@ import com.freshdirect.smartstore.impl.YourFavoritesInCategoryRecommendationServ
  *
  */
 public class SmartStoreServiceConfiguration {
+    
 	
 	// logger instance
 	private static Category LOGGER = LoggerFactory.getInstance(SmartStoreServiceConfiguration.class);
@@ -110,13 +118,19 @@ public class SmartStoreServiceConfiguration {
 		    return new YourFavoritesInCategoryRecommendationService(variant);
 		} else if (RecommendationServiceType.MANUAL_OVERRIDE.equals(serviceType)) {
 		    return new ManualOverrideRecommendationService(variant);
+		} else if (RecommendationServiceType.SCRIPTED.equals(serviceType)) {
+		    try {
+		        return new ScriptedRecommendationService(variant);
+                    } catch (CompileException e) {
+                        throw new FDRuntimeException(e, "Compile error " + e.getMessage());
+                    }
 		} else {
 			throw new FDRuntimeException("Unrecognized variant " + variant);
 		}
 	}
 	
-	// Map<EumSiteFeature,List<RecommendationService> >
-	private Map siteFeatureServices = new HashMap();
+	// Map<EumSiteFeature,Map<String,RecommendationService> >
+	private Map siteFeatureServices = null;
 	
 	/**
 	 * Get the available services corresponding to the requested feature.
@@ -126,43 +140,67 @@ public class SmartStoreServiceConfiguration {
 	 * @return Map of service (or the {@link Collections#EMPTY_MAP empty map}
 	 */
 	public synchronized Map getServices(EnumSiteFeature feature) {
-		Map services = (Map)siteFeatureServices.get(feature);
+            if (siteFeatureServices == null) {
+                siteFeatureServices = loadVariants();
+            }
+            Map services = (Map)siteFeatureServices.get(feature);
 	
-		if (services == null) {
-			try {
-				SmartStoreServiceConfigurationSB sb;
-		
-				sb = getServiceConfigurationHome().create();
-				Collection variants = sb.getVariants(feature);
-				
-				services = new HashMap(variants.size());
-				
-				for(Iterator i = variants.iterator(); i.hasNext();) {
-					Variant variant = (Variant)i.next();
-					try {
-						services.put(variant.getId(),configure(variant));
-					} catch(Exception e) {
-						e.printStackTrace();
-						continue;
-					}
-				}
-				siteFeatureServices.put(feature, services);
-			} catch (RemoteException e) {
-				LOGGER.warn("SmartStore Service Configuration",e);
-				return Collections.EMPTY_MAP;
-			} catch (CreateException e) {
-				LOGGER.warn("SmartStore Service Configuration",e);
-				return Collections.EMPTY_MAP;
-			} catch (SQLException e) {
-				LOGGER.warn("SmartStore Service Configuration",e);
-				return Collections.EMPTY_MAP;
-			}
-		}
-		return services;
+            return services;
 	}
+
+    private Map loadVariants() {
+        Map services = new HashMap();
+        try {
+            SmartStoreServiceConfigurationSB sb;
+
+            sb = getServiceConfigurationHome().create();
+            Collection variants = sb.getVariants(null);
+
+            LOGGER.info("loading variants:" +variants);
+            
+            GlobalCompiler.getInstance().loadFactorNames();
+
+            List scriptedRecommenders = new ArrayList();
+            Set factors = new HashSet();
+
+            for (Iterator i = variants.iterator(); i.hasNext();) {
+                Variant variant = (Variant) i.next();
+                try {
+                    RecommendationService rs = configure(variant);
+                    if (rs instanceof ScriptedRecommendationService) {
+                        scriptedRecommenders.add(rs);
+                        ((ScriptedRecommendationService) rs).collectFactors(factors);
+                    }
+                    Map siteFeatureSpecMap = (Map) services.get(variant.getSiteFeature());
+                    if (siteFeatureSpecMap==null) {
+                        siteFeatureSpecMap = new HashMap();
+                        services.put(variant.getSiteFeature(), siteFeatureSpecMap);
+                    }
+                    
+                    siteFeatureSpecMap.put(variant.getId(), rs);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    continue;
+                }
+            }
+            LOGGER.info("needed factors :" +factors);
+            ScoreProvider.getInstance().acquireFactors(factors);
+            LOGGER.info("configured services :"+services);
+        } catch (RemoteException e) {
+            LOGGER.warn("SmartStore Service Configuration", e);
+            return Collections.EMPTY_MAP;
+        } catch (CreateException e) {
+            LOGGER.warn("SmartStore Service Configuration", e);
+            return Collections.EMPTY_MAP;
+        } catch (SQLException e) {
+            LOGGER.warn("SmartStore Service Configuration", e);
+            return Collections.EMPTY_MAP;
+        }
+        return services;
+    }
 	
 	public synchronized void refresh() {
-	    siteFeatureServices.clear();	    
+	    siteFeatureServices = null;	    
 	}
 
 }

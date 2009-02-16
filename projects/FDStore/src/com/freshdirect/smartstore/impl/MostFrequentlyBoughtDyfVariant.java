@@ -18,6 +18,7 @@ import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.ProductStatisticsProvider;
 import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
+import com.freshdirect.smartstore.sampling.RankedContent;
 
 /**
  * A SmartStore variant that offers the most frequently bought items.
@@ -59,7 +60,7 @@ public class MostFrequentlyBoughtDyfVariant extends DYFService {
 			cache.put(input.getCustomerId(),cachedSortedAggregates);
 		} 
 		
-		return getSampler(input).sample((List)cachedSortedAggregates.getPayload(), includeCartItems ? Collections.EMPTY_SET : input.getCartContents(), 20);
+		return RankedContent.getKeys(getSampler(input).sample((List)cachedSortedAggregates.getPayload(), includeCartItems ? Collections.EMPTY_SET : input.getCartContents(), 20));
 	}
 
 

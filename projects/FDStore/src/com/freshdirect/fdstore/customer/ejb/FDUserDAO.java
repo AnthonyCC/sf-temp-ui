@@ -146,10 +146,12 @@ public class FDUserDAO {
 		return user;
 	}
 	
-	private static final String LOAD_FROM_IDENTITY_QUERY = "SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE,fdu.HPLETTER_VISITED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, erpc.active, ci.receive_news,fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls " 
-		+ "FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci "
-		+ "where fdu.FDCUSTOMER_ID=fdc.id and fdc.ERP_CUSTOMER_ID=erpc.ID and erpc.id=? "
-		+ "and erpc.id = ci.customer_id";
+	private static final String LOAD_FROM_IDENTITY_QUERY =
+		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE,fdu.HPLETTER_VISITED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
+		"erpc.active, ci.receive_news,fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls, fdu.COHORT_ID " +
+		"FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci " +
+		"WHERE fdu.FDCUSTOMER_ID=fdc.id and fdc.ERP_CUSTOMER_ID=erpc.ID and erpc.id=? " +
+		"AND erpc.id = ci.customer_id";
 
 	public static FDUser recognizeWithIdentity(Connection conn, FDIdentity identity) throws SQLException {
 		LOGGER.debug("attempting to load FDUser from identity");
@@ -169,10 +171,12 @@ public class FDUserDAO {
 		return user;
 	}
 
-	private static final String LOAD_FROM_COOKIE_QUERY = "SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE, fdu.HPLETTER_VISITED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, erpc.active, ci.receive_news, fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls "
-		+ "FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci "
-		+ "where fdu.cookie=? and fdu.FDCUSTOMER_ID=fdc.id(+) and fdc.ERP_CUSTOMER_ID=erpc.ID(+) "
-		+ "and erpc.id = ci.customer_id(+)";
+	private static final String LOAD_FROM_COOKIE_QUERY =
+		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE, fdu.HPLETTER_VISITED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
+		"erpc.active, ci.receive_news, fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls, fdu.COHORT_ID " +
+		"FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci " +
+		"WHERE fdu.cookie=? and fdu.FDCUSTOMER_ID=fdc.id(+) and fdc.ERP_CUSTOMER_ID=erpc.ID(+) " +
+		"AND erpc.id = ci.customer_id(+)";
 
 	public static FDUser reconnizeWithCookie(Connection conn, String cookie) throws SQLException {
 		LOGGER.debug("attempting to load FDUser from cookie");
@@ -224,6 +228,8 @@ public class FDUserDAO {
 			user.setReceiveFDEmails("X".equals(rs.getString("RECEIVE_NEWS")));
 			user.setHomePageLetterVisited(NVL.apply(rs.getString("HPLETTER_VISITED"), "").equalsIgnoreCase("X")?true:false);
 
+			// Smart Store - Cohort ID
+			user.setCohortName(rs.getString("COHORT_ID"));
 		} else {
 			user = new FDUser();
 		}
@@ -231,13 +237,16 @@ public class FDUserDAO {
 		return user;
 	}
 	
+
+	private static final String STORE_USER_SQL =
+		"UPDATE CUST.FDUSER " +
+		"SET COOKIE=?, ZIPCODE=?, FDCUSTOMER_ID=?, DEPOT_CODE=?, SERVICE_TYPE=?, ADDRESS1=?, APARTMENT=?, " +
+		"LAST_REF_PROG_ID=?, REF_PROG_INVT_ID=?, REF_TRK_KEY_DTLS=?, HPLETTER_VISITED=?, COHORT_ID=? " + 
+		"WHERE ID=?";
+
+
 	public static void storeUser(Connection conn, FDUser user) throws SQLException {
-		
-		String sql = "UPDATE CUST.FDUSER SET COOKIE = ?, ZIPCODE = ?, FDCUSTOMER_ID = ?, DEPOT_CODE = ?, SERVICE_TYPE = ?, ADDRESS1 = ?, APARTMENT = ?" +
-					", LAST_REF_PROG_ID = ?,REF_PROG_INVT_ID=?,REF_TRK_KEY_DTLS=?,HPLETTER_VISITED=? " + 
-					" WHERE ID = ?";
-		
-		PreparedStatement ps = conn.prepareStatement(sql);
+		PreparedStatement ps = conn.prepareStatement(STORE_USER_SQL);
 		int index = 1;
 		ps.setString(index++, user.getCookie());
 		if (user.getZipCode() != null) {
@@ -299,7 +308,15 @@ public class FDUserDAO {
 		}else{
 			ps.setNull(index++, Types.VARCHAR);
 		}
+
+		// Smart Store - Cohort ID
+		if (user.getCohortName() != null)
+			ps.setString(index++, user.getCohortName());
+		else
+			ps.setNull(index++, Types.VARCHAR);
 		
+		
+		// where id = ...
 		ps.setString(index++, user.getPK().getId());
 		
 		if (ps.executeUpdate() != 1) {
@@ -325,4 +342,27 @@ public class FDUserDAO {
 		FDCartLineDAO.storeCartLines(conn, user.getPK(), erpOrderLine);
 	}
 	
+	
+	/**
+	 * [APPREQ-369] Store Cohort ID for the given user
+	 * 
+	 * @param conn
+	 * @param user
+	 * @throws SQLException
+	 */
+	public static void storeCohortName(Connection conn, FDUser user) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement("UPDATE CUST.FDUSER SET COHORT_ID=? WHERE ID=?");
+
+		if (user.getCohortName() != null)
+			ps.setString(1, user.getCohortName());
+		else
+			ps.setNull(1, Types.VARCHAR);
+
+		ps.setString(2, user.getPK().getId());
+
+		if (ps.executeUpdate() != 1) {
+			throw new SQLException("Row not updated");
+		}
+		ps.close();
+	}
 }

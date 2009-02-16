@@ -39,20 +39,31 @@ public class FeaturedItemsRecommendationService extends AbstractRecommendationSe
         if (input.getCurrentNode()!=null) {
             ContentNodeModel model = input.getCurrentNode();
 
-            if(model instanceof DepartmentModel) {
-                featuredNodes = ((DepartmentModel) model).getFeaturedProducts();
-            } else if (model instanceof CategoryModel) {
-                featuredNodes = ((CategoryModel) model).getFeaturedProducts();
-            } else {
-                Object value = model.getAttribute("FEATURED_PRODUCTS", null);
-                if (value instanceof List) {
-                    featuredNodes = (List) value;
-                }
-            }
+            featuredNodes = getFeaturedItems(model);
             featuredNodes = sampleContentNodeModels(input, featuredNodes);
         }
 
         return featuredNodes;
+    }
+
+    /**
+     * Return a list of featured items.
+     * 
+     * @param model
+     * @return
+     */
+    public static List getFeaturedItems(ContentNodeModel model) {
+        if(model instanceof DepartmentModel) {
+            return ((DepartmentModel) model).getFeaturedProducts();
+        } else if (model instanceof CategoryModel) {
+            return ((CategoryModel) model).getFeaturedProducts();
+        } else {
+            Object value = model.getAttribute("FEATURED_PRODUCTS", null);
+            if (value instanceof List) {
+                return (List) value;
+            }
+        }
+        return null;
     }
 
 }

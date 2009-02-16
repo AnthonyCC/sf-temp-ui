@@ -603,4 +603,6 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI {
 	public int getDealPercentage();
 
 	public int getDealPercentage(String skuCode);
+	
+	public int getExpertWeight();
 }

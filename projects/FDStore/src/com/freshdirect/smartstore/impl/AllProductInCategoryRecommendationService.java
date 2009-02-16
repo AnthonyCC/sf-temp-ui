@@ -52,7 +52,7 @@ public class AllProductInCategoryRecommendationService extends AbstractRecommend
         return result;
     }
 
-    protected void collectCategories(ProductStatisticsProvider statisticsProvider, TreeSet ordered, CategoryModel category) {
+    protected static void collectCategories(ProductStatisticsProvider statisticsProvider, TreeSet ordered, CategoryModel category) {
         List products = category.getProducts();
 
         collectProducts(statisticsProvider,ordered, products  );
@@ -63,7 +63,7 @@ public class AllProductInCategoryRecommendationService extends AbstractRecommend
         }
     }
 
-    protected void collectProducts(ProductStatisticsProvider statisticsProvider, TreeSet ordered,List products) {
+    protected static void collectProducts(ProductStatisticsProvider statisticsProvider, TreeSet ordered,List products) {
         if ((products==null) || (products.size()==0)) {
             return;
         }
@@ -73,7 +73,7 @@ public class AllProductInCategoryRecommendationService extends AbstractRecommend
         }
     }
 
-    protected void collectProduct(ProductStatisticsProvider statisticsProvider, TreeSet ordered, ProductModel product) {
+    protected static void collectProduct(ProductStatisticsProvider statisticsProvider, TreeSet ordered, ProductModel product) {
         ordered.add(new RankedContent.Single(statisticsProvider.getGlobalProductScore(product.getContentKey()),product));
     }
 

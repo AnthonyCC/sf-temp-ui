@@ -31,7 +31,7 @@ public class YourFavoritesInCategoryRecommendationService extends ManualOverride
             if (customerId!=null) {
                 Map userProductScores = ProductStatisticsProvider.getInstance().getUserProductScores(customerId);
                 if (userProductScores!=null && !userProductScores.isEmpty()) {
-                    ProductModelImpl pm = findMyMostFavoriteProduct(category, userProductScores, 0);
+                    ProductModelImpl pm = findMyMostFavoriteProduct(input, category, userProductScores, 0);
                     if (pm!=null) {
                         result.add(pm);
                     }
@@ -42,13 +42,13 @@ public class YourFavoritesInCategoryRecommendationService extends ManualOverride
         }
     }
 
-    ProductModelImpl findMyMostFavoriteProduct(CategoryModel category, Map userProductScores, float maxScore) {
+    ProductModelImpl findMyMostFavoriteProduct(SessionInput input, CategoryModel category, Map userProductScores, float maxScore) {
         ProductModelImpl maxProd = null;
 
         List subcategories = category.getSubcategories();
         for (int i = 0; i < subcategories.size(); i++) {
             CategoryModel cm = (CategoryModel) subcategories.get(i);
-            ProductModelImpl pi = findMyMostFavoriteProduct(cm, userProductScores, maxScore);
+            ProductModelImpl pi = findMyMostFavoriteProduct(input, cm, userProductScores, maxScore);
             if (pi!=null) {
                 Float score = (Float) userProductScores.get(pi.getContentKey());
                 maxScore = score.floatValue();
@@ -62,8 +62,10 @@ public class YourFavoritesInCategoryRecommendationService extends ManualOverride
             Float score = (Float) userProductScores.get(p.getContentKey());
             if (score != null && score.floatValue() > maxScore) {
                 if (p.isDisplayable()) {
-                    maxScore = score.floatValue();
-                    maxProd = p;
+                    if (includeCartItems || !input.getCartContents().contains(p.getContentKey())) {
+                        maxScore = score.floatValue();
+                        maxProd = p;
+                    }
                 }
             }
         }

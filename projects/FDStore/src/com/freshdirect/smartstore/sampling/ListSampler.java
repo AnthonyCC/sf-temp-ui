@@ -1,6 +1,9 @@
 package com.freshdirect.smartstore.sampling;
 
+import java.util.Map;
 import java.util.Random;
+
+import com.freshdirect.smartstore.impl.IConfigurable;
 
 /**
  * Select list elements randomly.
@@ -12,7 +15,7 @@ import java.util.Random;
  * @author istvan
  *
  */
-public abstract class ListSampler {
+public abstract class ListSampler implements IConfigurable {
 	
 	// random stream to use
 	private Random R;
@@ -106,6 +109,21 @@ public abstract class ListSampler {
 	}
 	
 	/**
+	 * Default implementation. Subclasses may override it to add their configuration keys.
+	 */
+	public Map appendConfiguration(Map configMap) {
+		return configMap;
+	}
+	
+	/**
+	 * Returns sampler name. This name is used as
+	 * the value of 'sampling_strat' config key
+	 * 
+	 * @author segabor
+	 */
+	public abstract String getName();
+	
+	/**
 	 * Implementation of the Uniform Distribution.
 	 * 
 	 * This is exactly the same as if the sampling was totally
@@ -128,8 +146,10 @@ public abstract class ListSampler {
 			return 1;
 		}
 		
+		public String getName() { return "uniform"; }
+		
 		public String toString() {
-		    return "uniform";
+		    return getName();
 		}
 		
 	};
@@ -161,9 +181,11 @@ public abstract class ListSampler {
 			return n-i;
 		}
 		
-                public String toString() {
-                    return "linear";
-                }
+		public String getName() { return "linear"; }
+		
+		public String toString() {
+		    return getName();
+		}
 	}
 	
 	/**
@@ -200,9 +222,11 @@ public abstract class ListSampler {
 			return (n-i)*(n-i);
 		}
 		
-                public String toString() {
-                    return "quadratic";
-                }
+		public String getName() { return "quadratic"; }
+		
+		public String toString() {
+		    return getName();
+		}
 	}
 	
 	/**
@@ -238,9 +262,11 @@ public abstract class ListSampler {
 			return a*a*a;
 		}
 		
-                public String toString() {
-                    return "cubic";
-                }
+		public String getName() { return "cubic"; }
+		
+		public String toString() {
+		    return getName();
+		}
 
 	}
 	
@@ -285,8 +311,10 @@ public abstract class ListSampler {
 			return (int)(scale*(harmonicSum(i+1))/norm(n));
 		}
 		
+		public String getName() { return "harmonic"; }
+		
 		public String toString() {
-		    return "harmonic("+scale+')';
+		    return getName() + "("+scale+')';
 		}
 	}
 	
@@ -321,9 +349,11 @@ public abstract class ListSampler {
 			return (int)(scale*(Math.sqrt(i+1)/norm(n)));
 		}
 
-                public String toString() {
-                    return "SquareRootCDF("+scale+')';
-                }
+		public String getName() { return "sqrt"; }
+		
+        public String toString() {
+            return getName() + "("+scale+')';
+        }
 		
 	}
 	
@@ -334,6 +364,8 @@ public abstract class ListSampler {
 	 *
 	 */
 	public static class PowerCDF extends ListSampler {
+		public static final String CKEY_EXPONENT = "exponent";
+
 		private static int N = 30;
 		private double p;
 		private double scale;
@@ -387,10 +419,17 @@ public abstract class ListSampler {
 			return (int)(scale*power(i+1)/norm(n));
 		}
 		
-                public String toString() {
-                    return "PowerCDF("+scale+','+p+')';
-                }
-				
+		public String getName() { return "power"; }
+		
+        public String toString() {
+            return getName() + "("+scale+','+p+')';
+        }
+
+        public Map appendConfiguration(Map configMap) {
+        	super.appendConfiguration(configMap);
+        	configMap.put(CKEY_EXPONENT, new Double(p));
+        	return configMap;
+        }
 	}
 	
 	/**
@@ -416,8 +455,10 @@ public abstract class ListSampler {
 			return 0;
 		}
 		
+		public String getName() { return "deterministic"; }
+
 		public String toString() {
-		return "deterministic";
+		    return getName();
 		}
 	};
 }

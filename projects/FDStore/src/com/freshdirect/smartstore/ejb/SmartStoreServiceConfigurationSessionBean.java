@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.core.SessionBeanSupport;
@@ -25,12 +26,15 @@ import com.freshdirect.smartstore.Variant;
 public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSupport {
 	
 	// logger
-	final private static Category LOGGER = Category.getInstance(SmartStoreServiceConfigurationSessionBean.class);
+	final private static Logger LOGGER = Logger.getLogger(SmartStoreServiceConfigurationSessionBean.class);
 
 	// generated serial version id
 	private static final long serialVersionUID = -3423410150966343739L;
 
-	private static final String GET_VARIANTS_QUERY = "SELECT v.id, v.type FROM cust.ss_variants v WHERE v.feature = ?";
+	private static final String GET_VARIANTS_QUERY = "SELECT v.id, v.type, v.feature FROM cust.ss_variants v WHERE v.feature = ?";
+
+        private static final String GET_ALL_VARIANTS_QUERY = "SELECT v.id, v.type, v.feature FROM cust.ss_variants v";
+	
 	
 	private static final String GET_VARIANT_CONFIG = "SELECT * FROM cust.SS_VARIANT_PARAMS WHERE ID = ?";
 
@@ -103,18 +107,19 @@ public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSuppor
 			List result = new LinkedList();
 			
 			conn = getConnection();
-			ps = conn.prepareStatement(GET_VARIANTS_QUERY);
-			ps.setString(1, feature.getName());
+			ps = conn.prepareStatement(feature != null ? GET_VARIANTS_QUERY : GET_ALL_VARIANTS_QUERY);
+			if (feature!=null) {
+			    ps.setString(1, feature.getName());
+			}
 			
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				String variantId = rs.getString(1);
-				RecommendationServiceType type = RecommendationServiceType.getEnum(rs.getString(2));
-			
-				result.add(
-					new Variant(variantId, feature,	createConfig(conn, variantId, type))
-				);								
-			}
+                            String variantId = rs.getString(1);
+                            RecommendationServiceType type = RecommendationServiceType.getEnum(rs.getString(2));
+                            feature = EnumSiteFeature.getEnum(rs.getString("feature"));
+            
+                            result.add(new Variant(variantId, feature, createConfig(conn, variantId, type)));
+                        }
 
 			return result;
 		} catch (Exception e) {

@@ -5,8 +5,10 @@ import java.util.Iterator;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.util.FDEventUtil;
 
 public abstract class RecommendationsTag extends AbstractGetterTag {
@@ -43,6 +45,13 @@ public abstract class RecommendationsTag extends AbstractGetterTag {
      * @author segabor
      */
     protected void logImpressions(Recommendations r) {
+    	if (r.getContentNodes().size() > 0) {
+    		FDUserI user = (FDUserI) pageContext.getSession().getAttribute("fd.user");
+    		if (user != null && user instanceof FDSessionUser) {
+    			FDSessionUser sessionUser = (FDSessionUser) user;
+    			sessionUser.logImpression(r.getVariant().getId(), r.getContentNodes().size());
+    		}
+    	}
         Iterator it = r.getContentNodes().iterator();
         while (it.hasNext()) {
             ProductModel p = (ProductModel) it.next();

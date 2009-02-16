@@ -3,6 +3,8 @@
  */
 package com.freshdirect.webapp.taglib.smartstore;
 
+import java.util.Set;
+
 import javax.servlet.http.HttpSession;
 
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
@@ -14,7 +16,6 @@ import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Trigger;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.Recommendations;
-import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 /**
@@ -29,6 +30,7 @@ public class FeaturedItemsTag extends RecommendationsTag {
     private static final long serialVersionUID = 1L;
     ContentNodeModel nodeModel;
     private boolean noShuffle = false;
+    private Set shoppingCart = null;
     
     public void setCurrentNode(ContentNodeModel cnm) {
         this.nodeModel = cnm;
@@ -51,13 +53,21 @@ public class FeaturedItemsTag extends RecommendationsTag {
         si.setCurrentNode(nodeModel);
         si.setNoShuffle(noShuffle);
         
-        Recommendations results = recommender.getRecommendations(trigger, user, si, (String) pageContext.getAttribute("fi_override_variant"));
+        Recommendations results = recommender.getRecommendations(trigger, user, si, (String) pageContext.getAttribute("fi_override_variant"), shoppingCart != null ? shoppingCart : FDStoreRecommender.getShoppingCartContents(user));
 
         return results;
     }
     
     public void setNoShuffle(boolean flag) {
         this.noShuffle = flag;
+    }
+    
+    /**
+     * 
+     * @param shoppingCart Set<ContentKey> of product keys
+     */
+    public void setShoppingCart(Set shoppingCart) {
+        this.shoppingCart = shoppingCart;
     }
 
 }

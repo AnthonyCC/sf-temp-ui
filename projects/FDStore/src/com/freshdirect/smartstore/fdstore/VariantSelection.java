@@ -112,7 +112,8 @@ public class VariantSelection {
 		try {
 			VariantSelectionSB bean = this.getVariantSelectionHome().create();
 			
-			return bean.getCohortNames();
+			List names = bean.getCohortNames();
+    		return names;
 		} catch (RemoteException e) {
 			LOGGER.warn("Variant selection", e);
 		} catch (CreateException e) {
@@ -120,7 +121,6 @@ public class VariantSelection {
 		}
 		return Collections.EMPTY_LIST;
 	}
-	
 
 	public List getVariants(EnumSiteFeature feature) {
 		try {

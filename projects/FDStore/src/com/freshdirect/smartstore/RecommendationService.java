@@ -1,6 +1,7 @@
 package com.freshdirect.smartstore;
 
 import java.util.List;
+import java.util.Map;
 
 import com.freshdirect.fdstore.content.ContentNodeModel;
 
@@ -28,4 +29,9 @@ public interface RecommendationService {
 	public List recommendNodes(SessionInput input);
 	
 	public String getDescription();
+	
+	/**
+	 * Returns the active configuration of the service
+	 */
+	public Map getConfiguration();
 }

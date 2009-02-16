@@ -377,4 +377,8 @@ public class ConfiguredProduct extends ProxyProduct {
 		return null;
 	}
 
+	public int getExpertWeight() {
+		return getProduct().getExpertWeight();
+	}
+
 }

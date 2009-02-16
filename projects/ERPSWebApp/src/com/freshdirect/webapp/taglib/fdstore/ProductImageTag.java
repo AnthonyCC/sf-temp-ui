@@ -77,7 +77,7 @@ public class ProductImageTag extends BodyTagSupport {
 			StringBuffer buf = new StringBuffer();
 
 			ProductLabelling pl = new ProductLabelling((FDUserI) pageContext.getSession().getAttribute(SessionName.USER), product,
-					hideBurst, hideDeals, hideYourFave, hideNew);
+					hideBurst, hideNew, hideDeals, hideYourFave);
 			
 			if (pl.isDisplayAny()) {
 				buf.append("<div style=\"padding: 0px; border: 0px; "

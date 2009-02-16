@@ -2,6 +2,7 @@ package com.freshdirect.smartstore.fdstore;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -36,9 +37,14 @@ public class FDStoreRecommender {
     abstract static class FilterTemplate {
         protected abstract ProductModel evaluate(ProductModel model);
 
-        protected FilterTemplate() {
-        }
+        protected FilterTemplate() {}
 
+
+        /**
+         *  Filters a list of products
+         *  
+         *  @param models List<ProductModel>
+         */
         public List filter(List models) {
             List filteredModels = new ArrayList(models.size());
             for (Iterator i = models.iterator(); i.hasNext();) {
@@ -47,7 +53,6 @@ public class FDStoreRecommender {
                 if (replaced != null) {
                     filteredModels.add(replaced);
                 }
-                // else LOGGER.debug(model + " sorted out");
             }
             return filteredModels;
         }
@@ -119,6 +124,37 @@ public class FDStoreRecommender {
         }
     }
 
+    /**
+     * This filter removes item duplicates producing a list of unique items
+     * 
+     * @author segabor
+     *
+     */
+    final static class UnicityFilter extends FilterTemplate {
+    	public List filter(List models) {
+    		List ret = new ArrayList();
+    		
+    		HashSet keys = new HashSet();
+    		for (Iterator it=models.iterator(); it.hasNext();) {
+    			ProductModel prd = (ProductModel) it.next();
+    			String prdId = prd.getContentName();
+    			if (!keys.contains(prdId)) {
+    				ret.add(prd);
+    				keys.add(prdId);
+    			}
+    		}
+
+    		return ret;
+    	}
+
+    	// not used
+		protected ProductModel evaluate(ProductModel model) {
+			return null;
+		}
+    }
+
+
+    final static FilterTemplate UNIQUE_ITEMS = new UnicityFilter();
     final static FilterTemplate EXCLUDED_ITEMS = new FilterExcludedItems();
     final static FilterTemplate AVAILABLE_ITEMS = new FilterAvailability();
 
@@ -128,19 +164,23 @@ public class FDStoreRecommender {
      * 
      */
     private List filter(List models, final Collection cartItems, boolean includeCartItems) {
+    	models = UNIQUE_ITEMS.filter(models);
 
         models = EXCLUDED_ITEMS.filter(models);
 
         if (!includeCartItems) {
-            models = new FilterCartItems(cartItems).filter(models);
+        	models = new FilterCartItems(cartItems).filter(models);
         }
 
         models = AVAILABLE_ITEMS.filter(models);
 
         return models;
-    }
+	}
 
         
+    public static Set getShoppingCartContents(FDUserI user) {
+        return getShoppingCartContents(user.getShoppingCart());
+    }
 	
 	// helper to turn a shopping cart into a set of products
 	protected static Set getShoppingCartContents(FDCartModel cart) {
@@ -169,26 +209,28 @@ public class FDStoreRecommender {
 		SessionInput input = new SessionInput(user);
 		return getRecommendations(trigger, user, input, overriddenVariantId);
 	}
-        /**
-         * @return recommendations. In case of failure it returns
-         *   a special EMPTY_RECOMMENDATION object having empty collection.
-         * @throws FDResourceException 
-         */
-        public  Recommendations getRecommendations(Trigger trigger, FDUserI user, SessionInput input, String overriddenVariantId) throws FDResourceException {
+
+
+	/**
+	 * @return recommendations. In case of failure it returns
+	 *   a special EMPTY_RECOMMENDATION object having empty collection.
+	 * @throws FDResourceException 
+	 */
+	public  Recommendations getRecommendations(Trigger trigger, FDUserI user, SessionInput input, String overriddenVariantId) throws FDResourceException {
 		Set cartItems = getShoppingCartContents(user.getShoppingCart());
 		return getRecommendations(trigger, user, input, overriddenVariantId, cartItems);
-        }
+	}
         
-        /**
-         * 
-         * @param trigger
-         * @param user the user
-         * @param input
-         * @param overriddenVariantId
-         * @param cartItems Set<ContentKey> of product keys
-         * @return
-         * @throws FDResourceException
-         */
+	/**
+	 * 
+	 * @param trigger
+	 * @param user the user
+	 * @param input
+	 * @param overriddenVariantId
+	 * @param cartItems Set<ContentKey> of product keys
+	 * @return
+	 * @throws FDResourceException
+	 */
 	public  Recommendations getRecommendations(Trigger trigger, FDUserI user, SessionInput input, String overriddenVariantId, Set cartItems) throws FDResourceException {
 		input.setCartContents(cartItems);
 
@@ -202,17 +244,17 @@ public class FDStoreRecommender {
 		LOGGER.debug("Items before filter: " + contentModels);
 		
 
-		boolean includeCartItems = Boolean.valueOf(service.getVariant().getServiceConfig().get(AbstractRecommendationService.INCLUDE_CART_ITEMS)).booleanValue();
-		// filter unnecesarry models
+		boolean includeCartItems = Boolean.valueOf(service.getVariant().getServiceConfig().get(AbstractRecommendationService.CKEY_INCLUDE_CART_ITEMS)).booleanValue();
+		// filter unnecessary models
 		List renderableModels = filter(contentModels,cartItems, includeCartItems);
-		
-		
+
+
 		// shave off the extra ones
 		while(renderableModels.size() > trigger.getMaxRecommendations()) { 
 			renderableModels.remove(renderableModels.size()-1);
 		}
 		
-		LOGGER.debug("Recommended items by " + service.getVariant().getId() + ": " + contentModels);
+		LOGGER.debug("Recommended items by " + service.getVariant().getId() + ": " + renderableModels);
 
 		return new Recommendations(service.getVariant(),renderableModels);
 		
@@ -225,6 +267,8 @@ public class FDStoreRecommender {
 	}
 
 
+
+	
 	private static FDStoreRecommender instance = null;
 
 

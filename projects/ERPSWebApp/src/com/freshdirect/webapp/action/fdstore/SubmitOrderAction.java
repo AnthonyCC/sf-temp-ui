@@ -267,7 +267,7 @@ public class SubmitOrderAction extends WebActionSupport {
 			
 			// SmartStore
 			//  record customer and variant for the particular order
-			FDCustomerManager.logCustomerVariant(user, orderNumber, EnumSiteFeature.DYF);
+			FDCustomerManager.logCustomerVariants(user, orderNumber);
 			
 			
 			//if customer utilized a prereserved slot then remove it from the user.

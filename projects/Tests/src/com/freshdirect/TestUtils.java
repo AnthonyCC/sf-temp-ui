@@ -21,6 +21,7 @@ import com.freshdirect.event.ejb.EventLoggerHome;
 import com.freshdirect.event.ejb.EventLoggerSB;
 import com.freshdirect.event.ejb.EventLoggerSessionBean;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -42,10 +43,14 @@ import com.freshdirect.mail.ejb.MailerGatewaySessionBean;
 import com.freshdirect.smartstore.ejb.DyfModelHome;
 import com.freshdirect.smartstore.ejb.DyfModelSB;
 import com.freshdirect.smartstore.ejb.DyfModelSessionBean;
+import com.freshdirect.smartstore.ejb.ScoreFactorHome;
+import com.freshdirect.smartstore.ejb.ScoreFactorSB;
+import com.freshdirect.smartstore.ejb.ScoreFactorSessionBean;
 import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationHome;
 import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationSB;
 import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationSessionBean;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.taglib.smartstore.FeaturedItemsTag;
 import com.mockrunner.mock.ejb.MockUserTransaction;
 import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockHttpSession;
@@ -103,6 +108,11 @@ public class TestUtils {
         SessionBeanDescriptor ssServiceDesc = new SessionBeanDescriptor("freshdirect.smartstore.SmartStoreServiceConfiguration", SmartStoreServiceConfigurationHome.class, SmartStoreServiceConfigurationSB.class,
                 SmartStoreServiceConfigurationSessionBean.class);
         container.deploy(ssServiceDesc);
+
+        
+        SessionBeanDescriptor scoreFactServiceDesc = new SessionBeanDescriptor("freshdirect.smartstore.ScoreFactorHome", ScoreFactorHome.class, ScoreFactorSB.class,
+                ScoreFactorSessionBean.class);
+        container.deploy(scoreFactServiceDesc);
         
         return container;
     }
@@ -137,6 +147,14 @@ public class TestUtils {
         return aspectSystem;
     }
 
-    
+    public static FeaturedItemsTag createFeaturedItemsTag(MockPageContext ctx, String contentKey) {
+        FeaturedItemsTag fit = new FeaturedItemsTag();
+        fit.setPageContext(ctx);
+        fit.setId("recommendations");
+        fit.setItemCount(5);
+        fit.setNoShuffle(true);
+        fit.setCurrentNode(ContentFactory.getInstance().getContentNode(contentKey));
+        return fit;
+    }
 
 }

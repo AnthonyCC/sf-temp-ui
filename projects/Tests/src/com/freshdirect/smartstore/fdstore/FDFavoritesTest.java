@@ -90,7 +90,7 @@ public class FDFavoritesTest extends TestCase {
         if (favrs == null) {
         	favrs = new FavoritesRecommendationService(new Variant("favorites", EnumSiteFeature.FAVORITES,
 					new RecommendationServiceConfig("favorites_config", RecommendationServiceType.FAVORITES)
-        	    .set(AbstractRecommendationService.SAMPLING_STRATEGY, "deterministic")));
+        	    .set(AbstractRecommendationService.CKEY_SAMPLING_STRATEGY, "deterministic")));
         }
         return favrs;
     }

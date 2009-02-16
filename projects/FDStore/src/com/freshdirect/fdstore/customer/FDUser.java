@@ -12,12 +12,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.Map;
+import java.util.Set;
 
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
@@ -29,12 +28,10 @@ import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.deliverypass.DeliveryPassModel;
-import com.freshdirect.deliverypass.DeliveryPassType;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassProfileType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
-import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDDepotManager;
 import com.freshdirect.fdstore.FDReservation;
@@ -45,8 +42,8 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.adapter.PromotionContextAdapter;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.lists.CclUtils;
-import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
 import com.freshdirect.fdstore.lists.FDListManager;
+import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
 import com.freshdirect.fdstore.promotion.FDPromotionVisitor;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
@@ -60,7 +57,6 @@ import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.util.SiteFeatureHelper;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
-import com.freshdirect.fdstore.promotion.AudienceStrategy;
 import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
 	
 /**
@@ -102,7 +98,6 @@ public class FDUser extends ModelSupport implements FDUserI {
 	private transient String regRefTrackingCode;
 	private transient List cclListInfos;
 	
-	private String lastTrackingCode;
 	private String lastRefTrackingCode;
 	
 	private String lastRefProgId=null;
@@ -129,7 +124,11 @@ public class FDUser extends ModelSupport implements FDUserI {
 	private transient DCPDPromoProductCache dcpdPromoProductCache;
 	//New Promotion History cache. PERF-22.
 	private transient ErpPromotionHistory cachedPromoHistory;
-	
+
+	// Cohort ID
+	private String cohortName;
+
+
 	public FDUserDlvPassInfo getDlvPassInfo() {
 		return dlvPassInfo;
 	}
@@ -1129,11 +1128,15 @@ public class FDUser extends ModelSupport implements FDUserI {
 	 * @return
 	 */
 	public String getCohortName() {
-		return VariantSelectorFactory.getCohortName(getPrimaryKey());
+		return this.cohortName;
+	}
+
+	public void setCohortName(String cohortName) {
+		this.cohortName = cohortName;
+	}
+
+	public void createCohortName() throws FDResourceException {
+		this.cohortName = VariantSelectorFactory.getCohortName(getPrimaryKey());
+		FDCustomerManager.storeCohortName(this);
 	}
 }
-
-
-
-	
-

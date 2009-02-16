@@ -41,12 +41,21 @@ public class CandidateProductRecommendationService extends AllProductInCategoryR
     }
 
     /**
+     * Collect a list of nodes based on popularity. It check candidate list if specified.  
+     * @param category
+     * @return List<ContentNodeModel>
+     */
+    public static List collectCandidateProductsNodes(CategoryModel category) {
+        return collectNodes(category, new ArrayList(100));
+    }
+    
+    /**
      * 
      * @param category
      * @param result List<ContentNodeModel> 
      * @return List<ContentNodeModel>
      */
-    protected List collectNodes(CategoryModel category, List result) {
+    protected static List collectNodes(CategoryModel category, List result) {
         SortedSet resultSet = collectNodes(category);
         Set manualSlots = result.isEmpty() ? Collections.EMPTY_SET : new HashSet(result);
         for (Iterator iter = resultSet.iterator(); iter.hasNext();) {
@@ -64,7 +73,7 @@ public class CandidateProductRecommendationService extends AllProductInCategoryR
      * @param category
      * @return SortedSet<RankedContent.Single>
      */
-    protected SortedSet collectNodes(CategoryModel category) {
+    static SortedSet collectNodes(CategoryModel category) {
         ProductStatisticsProvider statisticsProvider = ProductStatisticsProvider.getInstance();
         TreeSet resultSet = new TreeSet();
         List candidateList = category.getCandidateList();

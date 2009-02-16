@@ -7,12 +7,10 @@
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Arrays"%>
-<%@page import="java.util.Collections"%>
 <%@page import="java.util.Date"%>
 <%@page import="java.util.Iterator"%>
 <%@page import="java.util.Locale"%>
 <%@page import="java.util.HashMap"%>
-<%@page import="java.util.HashSet"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.Set"%>
@@ -52,6 +50,9 @@ Map cohorts = helper.getCohorts();
 
 /* view */
 List dates = helper.getStartDates();
+if (dates.size() > 0)
+	dates.remove(0);
+
 String defaultDate = "(null)";
 String date = urlG.get("date");
 CHECK: {
@@ -88,8 +89,31 @@ if (!origURL.equals(newURL)) {
 	response.sendRedirect(StringEscapeUtils.unescapeHtml(newURL));	
 }
 
+List cohortNames = CohortSelector.getCohortNames();
+SmartStoreUtil.sortCohortNames(cohortNames);
+
+Map assignments = new HashMap();
+it = siteFeatures.iterator();
+while (it.hasNext()) {
+	String sf = (String) it.next();
+	assignments.put(sf, helper.getVariantMap(EnumSiteFeature.getEnum(sf), dateVal));
+}
+
+String colors[] = {
+		"#8A2BE2", "#A52A2A", "#DEB887", "#5F9EA0", "#7FFF00", 
+		"#D2691E", "#FF7F50", "#6495ED", "#DC143C", "#008B8B", 
+		"#8B008B", "#556B2F", "#FF8C00", "#8B0000", "#E9967A", 
+		"#483D8B", "#2F4F4F", "#00CED1", "#FF1493", "#00BFFF", 
+		"#1E90FF", "#B22222", "#228B22", "#FF00FF", "#FFD700", 
+		"#DAA520", "#008000", "#ADFF2F", "#FF69B4", "#CD5C5C"
+};
+
+List varColors = new ArrayList();
+
 %>
-<html>
+
+<%@page import="com.freshdirect.smartstore.fdstore.CohortSelector"%>
+<%@page import="com.freshdirect.smartstore.fdstore.SmartStoreUtil"%><html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>COHORTS SUMMARY PAGE</title>
@@ -112,14 +136,14 @@ p.head{padding:10px 0px 20px;}
 	<form>
 	<p class="head">
 	<select name="date" onchange="this.form.submit();">
-	<option value="<%= defaultDate %>"<%= date.equals(defaultDate) ? " selected=\"selected\"" : ""%>>Current rules</option>
+	<option value="<%= defaultDate %>"<%= date.equals(defaultDate) ? " selected=\"selected\"" : "" %>>Current rules</option>
 	<%
 		it = dates.iterator();
 		while (it.hasNext()) {
 			Date d2 = (Date) it.next();
 	%>
 	<option value="<%= paramFormat.format(d2) %>"
-		<%= date.equals(paramFormat.format(d2)) ? " selected=\"selected\"" : ""%>>Before <%= displayFormat.format(d2) %></option>
+		<%= date.equals(paramFormat.format(d2)) ? " selected=\"selected\"" : "" %>>Before <%= displayFormat.format(d2) %></option>
 	<%
 		}
 	%>
@@ -140,7 +164,10 @@ p.head{padding:10px 0px 20px;}
     	</tr>
     	<tr>
     	<%
-   			Iterator it2 = curVars.keySet().iterator();
+    		Map variants = SmartStoreUtil.getVariantsSortedInWeight(EnumSiteFeature.getEnum(sf), dateVal);
+    		
+   			Iterator it2 = variants.keySet().iterator();
+   			Map assignment = (Map) assignments.get(sf);
    			while (it2.hasNext()) {
    				String varId = (String) it2.next();
     	%>
@@ -151,19 +178,15 @@ p.head{padding:10px 0px 20px;}
     	</tr>
     	<tr>
     	<%
-   			it2 = curVars.keySet().iterator();
-	    	Map assignment = helper.getVariantMap(EnumSiteFeature.getEnum(sf), dateVal);
+   			it2 = variants.keySet().iterator();
    			while (it2.hasNext()) {
    				String varId = (String) it2.next();
-   				Iterator it3 = cohorts.keySet().iterator();
-   				int weight = 0;
+   				Iterator it3 = cohortNames.iterator();
    				String cohortsStr = "";
-   				String color = "#999";
    				while (it3.hasNext()) {
    					String cohort = (String) it3.next();
    					if (varId.equals(assignment.get(cohort))) {
    						int curWeight = ((Integer) cohorts.get(cohort)).intValue();
-   						weight += curWeight;
    						if (cohortsStr.length() == 0) {
    							cohortsStr += cohort + " (" + curWeight + "%)";
    						} else {
@@ -171,12 +194,14 @@ p.head{padding:10px 0px 20px;}
    						}
    					}
    				}
+   				String color = "#ccc";
+   				int weight = ((Integer) variants.get(varId)).intValue();
    				if (weight > 0) {
    					cohortsStr = "Cohort percentage, in details: " + cohortsStr;
    					int green = 0x99 - 0x99 * weight / 100;
    					color = "rgb(" + green + "," + 0x99 + "," + green + ")";
    				} else {
-   					cohortsStr = "Cohort percentage";
+   					cohortsStr = "Cohort percentage";;
    				}
     	%>
     	<td class="text13" style="background-color: <%= color %>;"><span title="<%= cohortsStr %>"><%= Integer.toString(weight) %>%</span></td>
@@ -190,5 +215,54 @@ p.head{padding:10px 0px 20px;}
    	%>
     <p>Hover over the percentages to view actual cohorts in effect.</p>
     <p>Hover over the other items in the table to view meanings.</p>
+    <p>&nbsp;</p>
+    <table class="t1">
+    	<tr>
+    	<td class="text13" title="Cohort"></td>
+    	<%
+    		it = siteFeatures.iterator();
+    		while (it.hasNext()) {
+    			String sf = (String) it.next();
+    	%>
+    	<td class="text13bold" title="Site Feature"><%= sf %></td>
+    	<%
+    		}
+    	%>
+    	</tr>
+    	<%
+    		List sortedCohorts = CohortSelector.getCohortNames();
+    		SmartStoreUtil.sortCohortNames(sortedCohorts);
+    		it = sortedCohorts.iterator();
+    		while (it.hasNext()) {
+    			String cohort = (String) it.next();
+    	%>
+    	<tr>
+    	<td class="text13bold" title="Cohort"><%= cohort %></td>
+    	<%
+    			Iterator it2 = siteFeatures.iterator();
+    			while (it2.hasNext()) {
+	    			String sf = (String) it2.next();
+	    			Map assignment = (Map) assignments.get(sf);
+	    			String variant = (String) assignment.get(cohort);
+	    			int colIndex = -1;
+	    			if (variant != null) {
+	    				colIndex = varColors.indexOf(variant) % colors.length;
+	    				if (colIndex == -1) {
+	    					colIndex = varColors.size() % colors.length;
+	    					varColors.add(variant);
+	    				}
+	    			}
+    	%>
+    	<td class="text13"<%= colIndex < 0 ? " title=\"&lt;Undefined&gt;\"" : 
+    				" title=\"Variant\" style=\"background-color: " + colors[colIndex] + ";\"" %>><%= variant %></td>
+    	<%
+	    		}
+    	%>
+    	</tr>
+    	<%
+    		}
+    	%>
+    </table>
+    <p>Hover over the items in the table to view their meanings.</p>
 </body>
 </html>

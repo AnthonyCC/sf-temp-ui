@@ -4,6 +4,7 @@
 package com.freshdirect.fdstore.util;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -25,16 +26,17 @@ public class EnumSiteFeature extends Enum implements Serializable {
 
 	public final static EnumSiteFeature NEW_SEARCH = new EnumSiteFeature("newSearch");
 	public final static EnumSiteFeature CCL = new EnumSiteFeature("CCL");
-	public final static EnumSiteFeature DYF = new EnumSiteFeature("DYF", true);
+	public final static EnumSiteFeature DYF = new EnumSiteFeature("DYF", true, "Your Favorites");
 	public final static EnumSiteFeature YMAL = new EnumSiteFeature("YMAL");
 	public final static EnumSiteFeature RATING = new EnumSiteFeature("RATING");
-    public final static EnumSiteFeature FEATURED_ITEMS = new EnumSiteFeature("FEATURED_ITEMS", true);
-    public final static EnumSiteFeature FAVORITES = new EnumSiteFeature("FAVORITES", true);
+    public final static EnumSiteFeature FEATURED_ITEMS = new EnumSiteFeature("FEATURED_ITEMS", true, "Featured Items");
+    public final static EnumSiteFeature FAVORITES = new EnumSiteFeature("FAVORITES", true, "FreshDirect Favorites");
 
     /**
      * Is Smart Store feature?
      */
     boolean isSmartStore;
+    String title;
     
 	protected EnumSiteFeature(String name) {
 		super(name);
@@ -46,6 +48,11 @@ public class EnumSiteFeature extends Enum implements Serializable {
 		this.isSmartStore = isSmartStore;
 	}
 
+	protected EnumSiteFeature(String name, boolean isSmartStore, String title) {
+		super(name);
+		this.isSmartStore = isSmartStore;
+		this.title = title;
+	}
 
 	public static EnumSiteFeature getEnum(String name) {
 		return (EnumSiteFeature) getEnum(EnumSiteFeature.class, name);
@@ -87,5 +94,22 @@ public class EnumSiteFeature extends Enum implements Serializable {
 
 	public boolean isSmartStore() {
 		return isSmartStore;
+	}
+	
+	public String getTitle() {
+		return title;
+	}
+	
+	public static List getSmartStoreEnumList() {
+		List list = new ArrayList();
+		
+		Iterator it = getEnumList().iterator();
+		while (it.hasNext()) {
+			EnumSiteFeature sf = (EnumSiteFeature) it.next();
+			if (sf.isSmartStore)
+				list.add(sf);
+		}
+		
+		return list;
 	}
 }

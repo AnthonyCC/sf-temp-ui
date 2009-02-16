@@ -272,6 +272,9 @@ public interface FDCustomerManagerSB extends EJBObject {
      */
     public void storeUser(FDUser user) throws FDResourceException, RemoteException;
     
+    // [APPREQ-369] store Cohort ID that belongs to user
+    public void storeCohortName(FDUser user) throws FDResourceException, RemoteException;
+    
     public List getOrdersByTruck(String truckNumber, Date dlvDate) throws FDResourceException, RemoteException; 
 
 	public FDOrderI getOrder(FDIdentity identity, String saleId) throws FDResourceException, RemoteException;

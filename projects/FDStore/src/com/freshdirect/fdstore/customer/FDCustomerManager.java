@@ -112,6 +112,7 @@ import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
 import com.freshdirect.routing.ejb.RoutingGatewayHome;
 import com.freshdirect.routing.ejb.RoutingGatewaySB;
+import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
 import com.freshdirect.smartstore.fdstore.VariantSelector;
@@ -1038,6 +1039,27 @@ public class FDCustomerManager {
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
 			sb.storeUser(user);
+
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+
+	/**
+	 * [APPREQ-369] Store Cohort ID for the user
+	 * @param user
+	 * @throws FDResourceException
+	 */
+	public static void storeCohortName(FDUser user) throws FDResourceException {
+		lookupManagerHome();
+
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			sb.storeCohortName(user);
 
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -2398,19 +2420,25 @@ public class FDCustomerManager {
 	 * 
 	 * @param identity Customer identity
 	 * @param saleId Order ID
-	 * @param siteFeature Site feature
 	 * @throws FDResourceException 
 	 */
-	public static void logCustomerVariant(FDUserI user, String saleId, EnumSiteFeature siteFeature) throws FDResourceException {
-		// VariantSelector f = VariantSelectorFactory.getInstance(siteFeature);
-		// Variant v = f.select(identity.getErpCustomerPK()).getVariant();
-		Variant v = SmartStoreUtil.getRecommendationService(user, siteFeature,null).getVariant();
-		
-		
+	public static void logCustomerVariants(FDUserI user, String saleId) throws FDResourceException {
 		lookupManagerHome();
+				
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
-			sb.logCustomerVariant(saleId, user.getIdentity(), siteFeature.getName(), v.getId());
+
+
+
+			for (Iterator it = EnumSiteFeature.getEnumList().iterator(); it.hasNext();) {
+				EnumSiteFeature feature = (EnumSiteFeature) it.next();
+				if (feature.isSmartStore()) {
+					RecommendationService recommendationService = SmartStoreUtil.getRecommendationService(user, feature, null);
+					if (recommendationService != null) {
+						sb.logCustomerVariant(saleId, user.getIdentity(), feature.getName(), recommendationService.getVariant().getId());
+					}
+				}
+			}
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -2420,7 +2448,6 @@ public class FDCustomerManager {
 		}
 	}
 
-	
 	public static FDOrderI getLastNonCOSOrderUsingCC(String customerID, EnumSaleType saleType, EnumSaleStatus saleStatus) throws FDResourceException,ErpSaleNotFoundException {
 		lookupManagerHome();
 		FDCustomerManagerSB sb=null;

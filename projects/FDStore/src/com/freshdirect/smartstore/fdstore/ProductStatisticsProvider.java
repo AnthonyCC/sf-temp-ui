@@ -111,6 +111,12 @@ public class ProductStatisticsProvider {
 		return score == null ? -1 : score.floatValue();
 	}
     	
+	/**
+	 * Products which the user has ever bought.
+	 * 
+	 * @param customerID
+	 * @return Set<ContentKey>
+	 */
     	public Set getProducts(String customerID) {
             try {
                 return getModel().getProducts(customerID);

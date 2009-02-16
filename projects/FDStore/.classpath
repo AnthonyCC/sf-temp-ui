@@ -7,5 +7,6 @@
 	<classpathentry exported="true" kind="src" path="/CMS"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/jsonrpc-1.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/jxl.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

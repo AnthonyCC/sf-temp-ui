@@ -44,6 +44,9 @@ public class RecommendationServiceType extends Enum implements Serializable {
         
     public final static RecommendationServiceType FAVORITES = 
         new RecommendationServiceType("favorites");
+
+        public final static RecommendationServiceType SCRIPTED = 
+            new RecommendationServiceType("scripted");
     
 	/**
 	 * Constructor.

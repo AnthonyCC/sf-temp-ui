@@ -2617,6 +2617,26 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
+	public void storeCohortName(FDUser user) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDUserDAO.storeCohortName(conn, user);
+
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle, "Unable to store Cohort ID for user");
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException sqle2) {
+					LOGGER.debug("Cannot close connection in FDCustomerManagerSessionBean.storeCohortName()", sqle2);
+				}
+			}
+		}
+	}
+
+
 	public void setSignupPromotionEligibility(FDActionInfo info, boolean eligible) throws FDResourceException {
 		try {
 			FDCustomerEB fdCustomerEB = this.getFdCustomerHome().findByErpCustomerId(info.getIdentity().getErpCustomerPK());

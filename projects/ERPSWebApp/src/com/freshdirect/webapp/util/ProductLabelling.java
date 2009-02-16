@@ -48,14 +48,13 @@ public class ProductLabelling {
 		displayDeal = false;
 		displayFave = false;
 		displayNew = false;
-		
-		
+
+
 		int deal = !hideBursts && !hideDeals ? product.getDealPercentage() : 0;
 		boolean isNew = !hideBursts && !hideNew && product.isNew();
 		boolean isYourFave = !hideBursts && !hideYourFave && DYFUtil.isFavorite(product, customer);
 
-		isNew = false; isYourFave = false; // REMOVE IT AFTER TESTING !!!!
-
+		// determine what to display
 		if (deal > 0) {
 			displayDeal = true;
 		} else if (isYourFave) {

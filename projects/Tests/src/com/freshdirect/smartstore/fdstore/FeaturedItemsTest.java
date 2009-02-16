@@ -3,38 +3,19 @@
  */
 package com.freshdirect.smartstore.fdstore;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.servlet.jsp.JspException;
-
-import junit.framework.TestCase;
-
-import org.apache.commons.lang.StringUtils;
-import org.mockejb.MockContainer;
-import org.mockejb.interceptor.AspectSystem;
 
 import com.freshdirect.TestUtils;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
-import com.freshdirect.cms.application.CmsManager;
-import com.freshdirect.cms.application.service.CompositeTypeService;
-import com.freshdirect.cms.application.service.xml.FlexContentHandler;
-import com.freshdirect.cms.application.service.xml.XmlContentService;
-import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.fdstore.FDContentTypes;
-import com.freshdirect.event.RecommendationEventLogger;
 import com.freshdirect.event.RecommendationEventsAggregate;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.aspects.FDFactoryProductInfoAspect;
-import com.freshdirect.fdstore.aspects.ProductStatisticProviderAspect;
-import com.freshdirect.fdstore.aspects.ProductStatisticUserProviderAspect;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -61,11 +42,7 @@ import com.mockrunner.mock.web.MockPageContext;
  * @author zsombor
  * 
  */
-public class FeaturedItemsTest extends TestCase {
-
-    private XmlContentService service;
-
-    
+public class FeaturedItemsTest extends RecommendationServiceTestBase {
 
     FeaturedItemsRecommendationService firs = null;
     AllProductInCategoryRecommendationService apicrs = null;
@@ -77,100 +54,9 @@ public class FeaturedItemsTest extends TestCase {
     
     public FeaturedItemsTest(String name) throws NamingException {
         super(name);
-        List list = new ArrayList();
-        list.add(new XmlTypeService("classpath:/com/freshdirect/cms/resource/CMSStoreDef.xml"));
-
-        CompositeTypeService typeService = new CompositeTypeService(list);
-
-        service = new XmlContentService(typeService, new FlexContentHandler(), "classpath:/com/freshdirect/cms/fdstore/content/FeaturedProducts.xml");
-
-        CmsManager.setInstance(new CmsManager(service, null));
-
-        Context context = TestUtils.createContext();
-        
-        TestUtils.createTransaction(context);
-        
-        MockContainer mockContainer = TestUtils.createMockContainer(context);
-
-        AspectSystem aspectSystem = TestUtils.createAspectSystem();
-
-        aspectSystem.add(new FDFactoryProductInfoAspect().addAvailableSku("SPE0063144", 2.0).addAvailableSku("SPE0060510", 3.0).addAvailableSku("SPE0000468",
-                4.0).addAvailableSku("GRO001792", 5.0).addAvailableSku("FRO0066635", 64.0)
-                // YourFavorites in FI
-                .addAvailableSku("HBA0063975", 100).addAvailableSku("HBA0072207", 110).addAvailableSku("GRO0065252").addAvailableSku("GRO0057899")
-                .addAvailableSku("GRO001066").addAvailableSku("HBA0063975").addAvailableSku("HBA0072637").addAvailableSku("GRO001055")
-             //   .addAvailableSku("FRO0060512", 32) // for spe_bruces_whtsvn:'Bruce's Seven Layer White Cake, Frozen'
-                
-        );
-        
-        aspectSystem.add(new ProductStatisticProviderAspect() {
-            public Map getGlobalProductScores() {
-                try {
-                    Map map = new HashMap();
-                    map.put(ContentKey.create(FDContentTypes.PRODUCT, "cfncndy_ash_mcrrd"), new Float(100));
-                    map.put(ContentKey.create(FDContentTypes.PRODUCT, "dai_orgval_whlmilk_01"), new Float(90));
-                    map.put(ContentKey.create(FDContentTypes.PRODUCT, "dai_organi_2_milk_02"), new Float(80));
-                    
-                    
-                    String[] keys = StringUtils.split("gro_earths_oat_cereal, gro_enfamil_powder_m_02,hba_1ups_aloe_rf,hab_pampers_crsrs_4,hba_svngen_dprs_3",',');
-                    for (int i=0;i<keys.length;i++) {
-                        map.put(ContentKey.create(FDContentTypes.PRODUCT, keys[i].trim()), new Float(200-i));
-                    }
-                    
-                    return map;
-                } catch (InvalidContentKeyException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-        });
-        aspectSystem.add(new ProductStatisticUserProviderAspect() {
-            public Map getUserProductScores(String userId) {
-                try {
-                    Map map = new HashMap();
-                    if ("user-with-favorite-prods".equals(userId)) {
-                        map.put(ContentKey.create(FDContentTypes.PRODUCT, "gro_enfamil_powder_m_02"), new Float(10));
-                    }
-                    // gro_7gen_diaperlg
-                    if ("user-with-favorite-prods2".equals(userId)) {
-                        map.put(ContentKey.create(FDContentTypes.PRODUCT, "gro_enfamil_powder_m_02"), new Float(10));
-                        map.put(ContentKey.create(FDContentTypes.PRODUCT, "gro_7gen_diaperlg"), new Float(20));
-                    }
-                    return map;
-                } catch (InvalidContentKeyException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-
-        
-        RecommendationEventLoggerMockup eventLogger = new RecommendationEventLoggerMockup();
-        RecommendationEventLogger.setInstance(eventLogger);
-    }
-
+    } 
     
-    RecommendationEventLoggerMockup getMockup() {
-        RecommendationEventLogger instance = RecommendationEventLogger.getInstance();
-        RecommendationEventLoggerMockup result = null;
-        if (!(instance instanceof RecommendationEventLoggerMockup)) {
-            try {
-                result = new RecommendationEventLoggerMockup();
-                RecommendationEventLogger.setInstance(result);
-            } catch (NamingException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            result = (RecommendationEventLoggerMockup) instance;
-        }
-        return result;
-    }
     
-    public void setUp() throws Exception {
-        super.setUp();
-
-    }
-
-
     RecommendationService getFeaturedItemsService() {
         if (firs == null) {
             firs = new FeaturedItemsRecommendationService(new Variant("fi", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("fi_config",
@@ -181,7 +67,7 @@ public class FeaturedItemsTest extends TestCase {
 
     RecommendationService getDeterministicFeaturedItemsService() {
         return  new FeaturedItemsRecommendationService(new Variant("fi", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("fi_config",
-                    RecommendationServiceType.FEATURED_ITEMS).set(AbstractRecommendationService.SAMPLING_STRATEGY, "deterministic")));
+                    RecommendationServiceType.FEATURED_ITEMS).set(AbstractRecommendationService.CKEY_SAMPLING_STRATEGY, "deterministic")));
     }
     
     
@@ -223,9 +109,9 @@ public class FeaturedItemsTest extends TestCase {
     
     RecommendationService getDeterministicYourFavoritesService() {
         return new YourFavoritesInCategoryRecommendationService(new Variant("yf_fi", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("yf_fi",
-                RecommendationServiceType.YOUR_FAVORITES_IN_FEATURED_ITEMS).set(AbstractRecommendationService.SAMPLING_STRATEGY, "deterministic")));
+                RecommendationServiceType.YOUR_FAVORITES_IN_FEATURED_ITEMS).set(AbstractRecommendationService.CKEY_SAMPLING_STRATEGY, "deterministic")));
     }
-    
+
     
     RecommendationService getNullService() { 
         return new NullRecommendationService(new Variant("nil", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("nil", RecommendationServiceType.NIL)));
@@ -262,7 +148,7 @@ public class FeaturedItemsTest extends TestCase {
         
         VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getFeaturedItemsService()));
 
-        FeaturedItemsTag fit = createTag(ctx, "spe_cooki_cooki");
+        FeaturedItemsTag fit = TestUtils.createFeaturedItemsTag(ctx, "spe_cooki_cooki");
 
         try {
             RecommendationEventLoggerMockup eventLogger = getMockup();
@@ -294,7 +180,7 @@ public class FeaturedItemsTest extends TestCase {
     
         VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getDeterministicFeaturedItemsService()));
 
-        fit = createTag(ctx, "spe_cooki_cooki");
+        fit = TestUtils.createFeaturedItemsTag(ctx, "spe_cooki_cooki");
         fit.setNoShuffle(false);
 
         try {
@@ -323,8 +209,6 @@ public class FeaturedItemsTest extends TestCase {
             e.printStackTrace();
             fail("jsp exception" + e.getMessage());
         }
-    
-    
     }
 
     public void testAllProductInCategoryService() {
@@ -334,7 +218,7 @@ public class FeaturedItemsTest extends TestCase {
         ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
         ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
 
-        fit = createTag(ctx, "gro_cooki_cooki");
+        fit = TestUtils.createFeaturedItemsTag(ctx, "gro_cooki_cooki");
         
         try {
             RecommendationEventLoggerMockup eventLogger = getMockup();
@@ -346,11 +230,11 @@ public class FeaturedItemsTest extends TestCase {
             assertNotNull("all_p : recommendations", recomm);
             assertEquals("all_p : 5 recommendation", 5, recomm.getContentNodes().size());
             List nodes = recomm.getContentNodes();
-            assertNode("all_p : 0-spe_madmoose_chc", nodes , 0, "spe_madmoose_chc");
-            assertNode("all_p : 1-gro_chips_nabisco_04", nodes, 1, "gro_chips_nabisco_04");
-            assertNode("all_p : 2-spe_moore_lemon", nodes, 2, "spe_moore_lemon");
-            assertNode("all_p : 3-fro_veniero_biscotti", nodes, 3, "fro_veniero_biscotti");
-            assertNode("all_p : 4-spe_walkers_shortbre_02", nodes, 4, "spe_walkers_shortbre_02");
+            assertNode("all_p : 0-spe_walkers_shortbre_02", nodes, 0, "spe_walkers_shortbre_02");
+            assertNode("all_p : 1-spe_madmoose_chc", nodes , 1, "spe_madmoose_chc");
+            assertNode("all_p : 2-gro_chips_nabisco_04", nodes, 2, "gro_chips_nabisco_04");
+            assertNode("all_p : 3-spe_moore_lemon", nodes, 3, "spe_moore_lemon");
+            assertNode("all_p : 4-fro_veniero_biscotti", nodes, 4, "fro_veniero_biscotti");
 
             FDEventUtil.flushImpressions();
             
@@ -369,7 +253,7 @@ public class FeaturedItemsTest extends TestCase {
         ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
         ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
         
-        fit = createTag(ctx, "gro_cooki_cooki");
+        fit = TestUtils.createFeaturedItemsTag(ctx, "gro_cooki_cooki");
         
         try {
             RecommendationEventLoggerMockup eventLogger = getMockup();
@@ -400,7 +284,7 @@ public class FeaturedItemsTest extends TestCase {
         ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
         ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
         
-        fit = createTag(ctx, "gro_cooki_cooki");
+        fit = TestUtils.createFeaturedItemsTag(ctx, "gro_cooki_cooki");
         
         try {
             RecommendationEventLoggerMockup eventLogger = getMockup();
@@ -424,6 +308,60 @@ public class FeaturedItemsTest extends TestCase {
             e.printStackTrace();
             fail("jsp exception" + e.getMessage());
         }
+
+        fit = TestUtils.createFeaturedItemsTag(ctx, "speci_xxx_yyy");
+        
+        try {
+            RecommendationEventLoggerMockup eventLogger = getMockup();
+            eventLogger.getCollectedEvents().clear();
+            
+            fit.doStartTag();
+
+            Recommendations recomm = (Recommendations) ctx.getAttribute("recommendations");
+            assertNotNull("speci 1 : recommendations", recomm);
+            assertEquals("speci 1 : 1 recommendation", 1, recomm.getContentNodes().size());
+            List nodes = recomm.getContentNodes();
+            // from the FEATURED_ITEMS set:
+            assertNode("man_p : 0-spe_madmoose_chc", nodes, 0, "spe_madmoose_chc");
+            //assertNode("man_p : 1-fro_veniero_biscotti", nodes, 1, "fro_veniero_biscotti");
+
+            FDEventUtil.flushImpressions();
+            
+            assertEquals("man_p : event log size", 1, eventLogger.getCollectedEvents().size());
+
+        } catch (JspException e) {
+            e.printStackTrace();
+            fail("jsp exception" + e.getMessage());
+        }
+        
+        Set cart = new HashSet();
+        cart.add(new ContentKey(FDContentTypes.PRODUCT, "spe_madmoose_chc"));
+        fit.setShoppingCart(cart);
+
+        try {
+            RecommendationEventLoggerMockup eventLogger = getMockup();
+            eventLogger.getCollectedEvents().clear();
+            
+            fit.doStartTag();
+
+            Recommendations recomm = (Recommendations) ctx.getAttribute("recommendations");
+            assertNotNull("speci 2 : recommendations", recomm);
+            assertEquals("speci 2 : 1 recommendation", 1, recomm.getContentNodes().size());
+            List nodes = recomm.getContentNodes();
+            // from the FEATURED_ITEMS set:
+            assertNode("speci 2 : 0-fro_veniero_biscotti", nodes, 0, "fro_veniero_biscotti");
+            //assertNode("man_p : 1-fro_veniero_biscotti", nodes, 1, "fro_veniero_biscotti");
+
+            FDEventUtil.flushImpressions();
+            
+            assertEquals("speci 2 : event log size", 1, eventLogger.getCollectedEvents().size());
+
+        } catch (JspException e) {
+            e.printStackTrace();
+            fail("jsp exception" + e.getMessage());
+        }
+        
+    
     }
 
     
@@ -432,7 +370,7 @@ public class FeaturedItemsTest extends TestCase {
         MockPageContext ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
         ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
         
-        FeaturedItemsTag fit = createTag(ctx, "gro_baby");
+        FeaturedItemsTag fit = TestUtils.createFeaturedItemsTag(ctx, "gro_baby");
         
         RecommendationEventLoggerMockup eventLogger = getMockup();
         try {
@@ -465,7 +403,7 @@ public class FeaturedItemsTest extends TestCase {
         ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "user-with-favorite-prods", "789"));
         ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
         
-        fit = createTag(ctx, "gro_baby");
+        fit = TestUtils.createFeaturedItemsTag(ctx, "gro_baby");
         
         try {
             eventLogger.getCollectedEvents().clear();
@@ -496,7 +434,7 @@ public class FeaturedItemsTest extends TestCase {
         ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "user-with-favorite-prods2", "789"));
         ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
         
-        fit = createTag(ctx, "gro_baby");
+        fit = TestUtils.createFeaturedItemsTag(ctx, "gro_baby");
         
         try {
             eventLogger.getCollectedEvents().clear();
@@ -531,7 +469,7 @@ public class FeaturedItemsTest extends TestCase {
         ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "user-with-favorite-prods2", "789"));
         ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
         
-        fit = createTag(ctx, "gro_baby");
+        fit = TestUtils.createFeaturedItemsTag(ctx, "gro_baby");
         fit.setNoShuffle(false);
         
         try {
@@ -559,9 +497,10 @@ public class FeaturedItemsTest extends TestCase {
             e.printStackTrace();
             fail("jsp exception" + e.getMessage());
         }
-        
-        
     }
+    
+
+    
     public void testCartItemRemoval() {
         FDUser user = TestUtils.createUser("123", "456", "789");
         VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getFeaturedItemsService()));
@@ -604,7 +543,7 @@ public class FeaturedItemsTest extends TestCase {
             {
                 // test for 'INCLUDE_CART_ITEMS'
                 FeaturedItemsRecommendationService noRemovalService = new FeaturedItemsRecommendationService(new Variant("fi", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("fi_config",
-                        RecommendationServiceType.FEATURED_ITEMS).set(AbstractRecommendationService.INCLUDE_CART_ITEMS, "true")));
+                        RecommendationServiceType.FEATURED_ITEMS).set(AbstractRecommendationService.CKEY_INCLUDE_CART_ITEMS, "true")));
                 VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(noRemovalService));
             }
 
@@ -655,23 +594,4 @@ public class FeaturedItemsTest extends TestCase {
         
     }
 
-    private FeaturedItemsTag createTag(MockPageContext ctx, String contentKey) {
-        FeaturedItemsTag fit = new FeaturedItemsTag();
-        fit.setPageContext(ctx);
-        fit.setId("recommendations");
-        fit.setItemCount(5);
-        fit.setNoShuffle(true);
-        fit.setCurrentNode(ContentFactory.getInstance().getContentNode(contentKey));
-        return fit;
-    }
-
-    private void assertRecommendationEventsAggregate(String label, String contentKey, RecommendationEventsAggregate event) {
-        assertEquals(label + " content key", contentKey, event.getContentId());
-        assertEquals(label + " variant id", "fi", event.getVariantId());
-    }
-
-    private void assertNode(String string, List nodes, int i, String key) {
-        assertNotNull("not-null:" + string + '[' + i + ']', nodes.get(i));
-        assertEquals("content-key:" + string + '[' + i + ']', key, ((ContentNodeModel) nodes.get(i)).getContentKey().getId());
-    }
 }

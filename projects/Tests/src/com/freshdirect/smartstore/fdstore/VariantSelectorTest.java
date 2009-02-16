@@ -2,6 +2,7 @@ package com.freshdirect.smartstore.fdstore;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -36,6 +37,10 @@ public class VariantSelectorTest extends TestCase {
 
 		public String getDescription() {
 			return "";
+		}
+
+		public Map getConfiguration() {
+			return Collections.EMPTY_MAP;
 		}
 		
 	};
@@ -78,7 +83,7 @@ public class VariantSelectorTest extends TestCase {
 
                 selector.addCohort("C", v1);
                 selector.addCohort("A", v1);
-                selector.addCohort("C", v1);
+                selector.addCohort("C", v1); // DUMMY
                 selector.addCohort("E", v2);
                 selector.addCohort("F", v3);
                 selector.addCohort("G", v3);
@@ -91,6 +96,7 @@ public class VariantSelectorTest extends TestCase {
 	}
 	
 	private static void withinTenPercent(int v1, int v2) {
+		System.out.println("actual " + v1 + " expected " + v2);
 	    if (Math.abs(v1 - v2) * 10 <  v2) {
 	        return ;
 	    } else {

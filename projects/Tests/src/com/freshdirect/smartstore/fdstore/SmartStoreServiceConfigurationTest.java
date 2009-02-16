@@ -2,6 +2,7 @@ package com.freshdirect.smartstore.fdstore;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -16,6 +17,9 @@ import org.mockejb.MockContainer;
 import org.mockejb.interceptor.AspectSystem;
 
 import com.freshdirect.TestUtils;
+import com.freshdirect.fdstore.aspects.ScoreFactorGlobalFactorsAspect;
+import com.freshdirect.fdstore.aspects.ScoreFactorGlobalNameAspect;
+import com.freshdirect.fdstore.aspects.ScoreFactorPersonalNameAspect;
 import com.freshdirect.fdstore.aspects.SmartStoreServiceConfigurationBeanAspect;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.RecommendationService;
@@ -41,8 +45,8 @@ public class SmartStoreServiceConfigurationTest extends TestCase {
 
         aspectSystem.add(new SmartStoreServiceConfigurationBeanAspect() {
             public Collection getVariants(EnumSiteFeature feature) {
-                if (feature == EnumSiteFeature.FEATURED_ITEMS) {
-                    Set result = new HashSet();
+                Set result = new HashSet();
+                if (feature == EnumSiteFeature.FEATURED_ITEMS || feature == null) {
                     List all = RecommendationServiceType.all();
                     for (int i = 0; i < all.size(); i++) {
                         RecommendationServiceType type = (RecommendationServiceType) all.get(i);
@@ -50,18 +54,24 @@ public class SmartStoreServiceConfigurationTest extends TestCase {
                                 + type.getName() + "_config", type)));
                     }
 
-                    return result;
                 }
-                if (feature == EnumSiteFeature.DYF) {
-                    Set result = new HashSet();
+                if (feature == EnumSiteFeature.DYF || feature == null) {
                     for (int i = 0; i < STRATS.length; i++) {
                         result.add(new Variant("dyf_test_" + i, EnumSiteFeature.DYF, new RecommendationServiceConfig("dyf_conf_" + i,
                                 RecommendationServiceType.FREQUENTLY_BOUGHT_DYF).set("sampling_strat", STRATS[i]).set("top_n", String.valueOf(TOP_N[i]))));
                     }
-                    return result;
                 }
-                return Collections.EMPTY_SET;
+                return result;
             }
+        });
+        
+        aspectSystem.add(new ScoreFactorGlobalNameAspect(Collections.EMPTY_SET));
+        aspectSystem.add(new ScoreFactorPersonalNameAspect(Collections.EMPTY_SET));
+        aspectSystem.add(new ScoreFactorGlobalFactorsAspect() {
+            public Map getGlobalFactors(List names) {
+                return new HashMap();
+            }
+            
         });
 
     }

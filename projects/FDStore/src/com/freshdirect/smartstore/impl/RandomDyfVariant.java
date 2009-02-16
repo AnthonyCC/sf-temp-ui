@@ -70,13 +70,14 @@ public class RandomDyfVariant extends DYFService {
 		List productList = (List)shoppingHistory.getPayload();
 		
 		// so we have enough products for sure
-		int toSelect = Math.min(Math.min(input.getCartContents().size() + 2 * max, productList.size()), 20);
-		List rankedContents = new ArrayList(productList.size());
-		for (int i = 0; i < productList.size(); i++) {
+		int size = productList.size();
+                int toSelect = Math.min(Math.min(input.getCartContents().size() + 2 * max, size), 20);
+		List rankedContents = new ArrayList(size);
+		for (int i = 0; i < size; i++) {
 		    ContentKey key = (ContentKey) productList.get(i);
-		    rankedContents.add(new RankedContent.Single(key, -i));
+		    rankedContents.add(new RankedContent.Single(key, size-i));
 		}
-		return getSampler(input).sample(rankedContents, includeCartItems ? Collections.EMPTY_SET : input.getCartContents(), toSelect);
+		return RankedContent.getKeys(getSampler(input).sample(rankedContents, includeCartItems ? Collections.EMPTY_SET : input.getCartContents(), toSelect));
 	}
 
 
@@ -121,7 +122,7 @@ public class RandomDyfVariant extends DYFService {
 	}
 	
        protected void configureSampler(Random R) {
-           this.variant.getServiceConfig().set(SAMPLING_STRATEGY, "uniform");
+           this.variant.getServiceConfig().set(CKEY_SAMPLING_STRATEGY, "uniform");
            super.configureSampler(R);
        }
 

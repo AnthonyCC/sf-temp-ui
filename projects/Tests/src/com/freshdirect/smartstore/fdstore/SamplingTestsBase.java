@@ -125,7 +125,7 @@ public class SamplingTestsBase extends TestCase {
 		};
 
 		public List recommend() {
-			return getSampler(input).sample(getCandidates(aggregateAtCategoryLevel), new HashSet(), Integer.MAX_VALUE);
+			return RankedContent.getKeys(getSampler(input).sample(getCandidates(aggregateAtCategoryLevel), new HashSet(), Integer.MAX_VALUE));
 		}
 	}
 	

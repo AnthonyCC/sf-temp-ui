@@ -7,32 +7,30 @@ public class DealsHelper {
 	
 	
 	public static boolean isDeal(ErpProductInfoModel product ) {
-		
-		return isDeal(product.getSkuCode(),product.getBasePrice(),product.getDefaultPrice(),product.getBasePriceUnit(),product.getDefaultPriceUnit());
+		return isDeal(product.getSkuCode(), product.getBasePrice(), product.getDefaultPrice(), product.getBasePriceUnit(), product.getDefaultPriceUnit());
 	}
 	
+
 	public static boolean isDeal(String sku, double basePrice, double sellingPrice, String baseUnit, String sellingUnit) {
-		
-		if( !isValidInput(sku,4)||!isValidInput(baseUnit)||!isValidInput(sellingUnit)||
-		    !isValidInput(basePrice)||!isValidInput(sellingPrice)||
-		    !baseUnit.equals(sellingUnit) || sellingPrice>=basePrice  
-		  )
+		if (
+			!isValidInput(sku,4) || !isValidInput(baseUnit) || !isValidInput(sellingUnit) ||
+			!isValidInput(basePrice) || !isValidInput(sellingPrice) ||
+			!baseUnit.equals(sellingUnit) || sellingPrice>=basePrice  
+		) {
 			return false;
-		int percentage=0;
-		if(isEligibleSku(sku)) {
-			percentage=getVariancePercentage(basePrice,sellingPrice);
-			if((FDStoreProperties.getDealsLowerLimit()<=percentage)&& (FDStoreProperties.getDealsUpperLimit()>=percentage))
-				return true;	
 		}
-		return false;
+
+
+		int p = getVariancePercentage(basePrice,sellingPrice);
+		return ( (FDStoreProperties.getDealsLowerLimit()<=p) && (FDStoreProperties.getDealsUpperLimit()>=p) );
 	}
 	
 	
 	/**
 	 * Returns a -ve integer if either the basePrice or sellingPrice is zero or 
 	 * if the sellingPrice is greater than or equal to basePrice.
-	 * The formula used is (basePrice – sellingPrice) ÷basePrice x 100
-	 * The percentage is rounded down to the nearest integer divisble by 5 or 2.
+	 * The formula used is (basePrice - sellingPrice) / basePrice x 100
+	 * The percentage is rounded down to the nearest integer divisible by 5 or 2.
 	 * Ex: 27.XX becomes 26, 25.XX becomes 25 etc.
 	 * 
 	 * @param basePrice
@@ -51,36 +49,17 @@ public class DealsHelper {
 	}
 	
 	private static boolean isValidInput(String input,int length) {
-		
-		if(isValidInput(input)&&input.length()>=length) 
-			return true;
-		return false;
+		return isValidInput(input) && input.length()>=length;
 	}
+
 	private static boolean isValidInput(String input) {
-		
-		if(input==null ||"".equals(input.trim()))
-			return false;
-		return true;
+		return !(input==null ||"".equals(input.trim()));
 	}
 	
 	private static boolean isValidInput(double input) {
-		
-		if(input<=0.0)
-			return false;
-		return true;
+		return input > 0.0;
 	}
-	private static boolean isEligibleSku(String sku) {
-		
-		String skuPrefixes=FDStoreProperties.getDealsSkuPrefixes();
-		if ("".equals(skuPrefixes.trim()))
-			return false;
-		if("ALL".equalsIgnoreCase(skuPrefixes))
-			return true;
-		if(skuPrefixes.toUpperCase().indexOf(sku.substring(0, 3).toUpperCase())!=-1) 
-			return true;
-		
-		return false;
-	}
+
 	
 	
 	
@@ -119,5 +98,3 @@ public class DealsHelper {
 	}
 
 }
-
-

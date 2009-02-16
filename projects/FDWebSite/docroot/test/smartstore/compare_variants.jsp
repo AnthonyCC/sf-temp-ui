@@ -4,14 +4,11 @@
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@page import="java.util.Arrays"%>
 <%@page import="java.util.Collections"%>
-<%@page import="java.util.Comparator"%>
 <%@page import="java.util.Iterator"%>
-<%@page import="java.util.HashSet"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.Map"%>
+<%@page import="java.util.WeakHashMap"%>
 <%@page import="java.util.Set"%>
-<%@page import="java.util.SortedSet"%>
-<%@page import="java.util.TreeSet"%>
 <%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
 <%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
@@ -26,65 +23,81 @@
 <%@page import="com.freshdirect.smartstore.SessionInput"%>
 <%@page import="com.freshdirect.smartstore.fdstore.CohortSelector"%>
 <%@page import="com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration"%>
+<%@page import="com.freshdirect.smartstore.fdstore.SmartStoreUtil"%>
 <%@page import="com.freshdirect.smartstore.fdstore.VariantSelection"%>
 <%@page import="com.freshdirect.test.TestSupport"%>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@page import="org.apache.commons.lang.StringEscapeUtils"%>
-<%@page import="org.apache.commons.lang.math.NumberUtils"%>
+<%@page import="com.freshdirect.smartstore.Variant"%>
+<%@page import="com.freshdirect.smartstore.RecommendationServiceConfig"%>
+<%@page import="com.freshdirect.smartstore.RecommendationServiceType"%>
+<%@page import="com.freshdirect.smartstore.dsl.CompileException"%>
+<%@page import="com.freshdirect.smartstore.impl.ScriptedRecommendationService"%>
 <%@ taglib uri="freshdirect" prefix="fd"%>
+<%!
+	Map customRecommenders = new WeakHashMap();
+%>
 <%
 Iterator it;
 URLGenerator urlG = new URLGenerator(request);
 String origURL = urlG.build();
 
 /* site feature */
-String defaultSiteFeature = "DYF";
-String[] siteFeatures = { "DYF", "FEATURED_ITEMS", "FAVORITES" };
+EnumSiteFeature defaultSiteFeature = EnumSiteFeature.DYF;
+List siteFeatures = EnumSiteFeature.getSmartStoreEnumList();
 
-String siteFeature = urlG.get("siteFeature");
+EnumSiteFeature siteFeature = EnumSiteFeature.getEnum(urlG.get("siteFeature"));
 
-if (EnumSiteFeature.getEnum(siteFeature) == null) {
+if (siteFeature == null) {
 	siteFeature = defaultSiteFeature;
 } else if (defaultSiteFeature.equals(siteFeature)) {
 	urlG.remove("siteFeature");
 }
 
-Map variants = SmartStoreServiceConfiguration.getInstance().getServices(EnumSiteFeature.getEnum(siteFeature));
+Map variants = SmartStoreServiceConfiguration.getInstance().getServices(siteFeature);
 VariantSelection helper = VariantSelection.getInstance();
-final Map assignment = helper.getVariantMap(EnumSiteFeature.getEnum(siteFeature));
+final Map assignment = helper.getVariantMap(siteFeature);
 
-SortedSet varIds = new TreeSet(new Comparator() {
-	public int compare(Object o1, Object o2) {
-		if (o1 == null) {
-			if (o2 == null) {
-				return 0;
-			} else {
-				return -1;
-			}
-		} else {
-			if (o2 == null) {
-				return -1;
-			} else {
-				String s1 = o1.toString();
-				String s2 = o2.toString();
-				if (assignment.containsValue(s1)) {
-					if (assignment.containsValue(s2)) {
-						return s1.compareTo(s2);
-					} else {
-						return -1;						
-					}
-				} else {
-					if (assignment.containsValue(s2)) {
-						return 1;	
-					} else {
-						return s1.compareTo(s2);
-					}
-				}
-			}
-		}
+List varIds = SmartStoreUtil.getVariantNamesSortedInUse(siteFeature);
+
+/* generator function */
+String generatorFunction = urlG.get("generatorFunction");
+if (generatorFunction!=null) {
+    generatorFunction = generatorFunction.trim();
+}
+
+/* scoring function */
+String scoringFunction = urlG.get("scoringFunction");
+if (scoringFunction!=null) {
+    scoringFunction = scoringFunction.trim();
+}
+
+if (!(scoringFunction!=null && scoringFunction.length()>0)) {
+    urlG.remove("scoringFunction");
+    scoringFunction = null;
+}
+
+ScriptedRecommendationService scriptedRecServ = null;  
+String compileErrorMessage = null;
+if (generatorFunction != null && generatorFunction.length() > 0) {
+    scriptedRecServ = (ScriptedRecommendationService) customRecommenders.get(generatorFunction + "@@@" + scoringFunction);
+	if (scriptedRecServ == null) {
+	    try {
+	    	scriptedRecServ = new ScriptedRecommendationService(new Variant("scripted-test", siteFeature, new RecommendationServiceConfig("scripted-test", RecommendationServiceType.SCRIPTED)), generatorFunction, scoringFunction);
+	    	customRecommenders.put(generatorFunction + "@@@" + scoringFunction, scriptedRecServ);
+	    } catch (CompileException ce) {
+	        ce.printStackTrace();
+	        compileErrorMessage = ce.getMessage();
+	    }
 	}
-});
-varIds.addAll(variants.keySet());
+} else {
+    urlG.remove("generatorFunction");
+    urlG.remove("scoringFunction");
+    scoringFunction = null;
+    generatorFunction = null;
+}
+
+
 
 /* variant A */
 String defaultVariantA = null;
@@ -127,7 +140,7 @@ if (defaultVariantB != null && defaultVariantB.equals(variantA))
 if (variantB != null && !varIds.contains(variantB)) {
 	variantB = null;
 }
-if (variantB == null || (variantB != null && variantB.equals(variantA))) {
+if (variantB == null || (variantB != null && variantB.equals(variantA) && scriptedRecServ == null)) {
 	variantB = defaultVariantB;
 }
 if (variantB != null && variantB.equals(defaultVariantB)) {
@@ -196,6 +209,9 @@ if (category != null) {
 	categoryName = category.getFullName();
 }
 
+
+
+
 /* session input */
 SessionInput si = new SessionInput(customerId);
 si.setCartContents(Collections.EMPTY_SET);
@@ -203,7 +219,7 @@ si.setCurrentNode(category);
 si.setNoShuffle(true);
 
 /* view */
-String[] views = { "default", "details", "simple view" };
+String[] views = { "default", "detailed", "simple" };
 String defaultView = views[0];
 String view = urlG.get("view");
 if (view == null || view.length() == 0) {
@@ -227,99 +243,109 @@ if (defaultView.equals(view)) {
 String newURL = urlG.build();
 
 // debug
-System.err.println("orig URI: " + origURL);
-System.err.println("generated URI: " + newURL);
-System.err.println("site feature: " + siteFeature);
-System.err.println("variant A: " + variantA);
-System.err.println("variant B: " + variantB);
-System.err.println("customer Email: " + customerEmail);
-System.err.println("customer Id: " + customerId);
-System.err.println("cohort Id: " + cohortId);
-System.err.println("user variant: " + userVariant);
-System.err.println("category Id: " + categoryId);
-System.err.println("category name: " + categoryName);
-System.err.println("view: " + view);
+if (false) {
+	System.err.println("orig URI: " + origURL);
+	System.err.println("generated URI: " + newURL);
+	System.err.println("site feature: " + siteFeature.getName());
+	System.err.println("variant A: " + variantA);
+	System.err.println("variant B: " + variantB);
+	System.err.println("customer Email: " + customerEmail);
+	System.err.println("customer Id: " + customerId);
+	System.err.println("cohort Id: " + cohortId);
+	System.err.println("user variant: " + userVariant);
+	System.err.println("category Id: " + categoryId);
+	System.err.println("category name: " + categoryName);
+	System.err.println("view: " + view);
+}
 
 if (!origURL.equals(newURL)) {
 	response.sendRedirect(StringEscapeUtils.unescapeHtml(newURL));	
+}
+
+RecommendationService aRecService = (variantA != null) ? (RecommendationService) variants.get(variantA) : null;
+
+RecommendationService bRecService = (variantB != null) ? (RecommendationService) variants.get(variantB) : null;
+
+if (scriptedRecServ!=null) {
+    aRecService = scriptedRecServ;
+    variantA = "User Provided Functions";
 }
 
 %>
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>VARIANT COMPARISON PAGE - <%= siteFeature %><%=
+	<title>VARIANT COMPARISON PAGE - <%= siteFeature.getName() %><%=
 		variantA != null ? " - " + variantA : ""
 	%><%=
 		variantB != null ? " - " + variantB : ""
 	%></title>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<style type="text/css">
-
-.test-page{margin:20px 60px;color:#333333;background-color:#fff;}
-.test-page input{font-weight:normal;}
-.test-page p{margin:0px;padding:0px;}
-.test-page .bull{color:#cccccc;}
-.test-page a{color:#336600;}.test-page a:VISITED{color:#336600;}
-.test-page table{border-collapse:collapse;border-spacing:0px;width:100%;}
-.test-page .rec-chooser{margin:0px 0px 6px;text-align:right;}
-.test-page .rec-options{border:1px solid black;font-weight:bold;}
-.test-page .rec-options .view-label{text-transform:capitalize;}
-.test-page .rec-options table td{vertical-align: bottom; padding: 5px 10px 10px;}
-.test-page .rec-options table td p.label{padding-bottom:4px;}
-.test-page .rec-options table td p.result{padding-top:4px;}
-.test-page .rec-options table div{padding-right:20px;}
-.test-page .var-comparator{margin-top:60px;}
-.test-page .var-comparator td{width:50%;text-align:center;vertical-align:top;}
-.test-page .var-comparator .left{padding-right:20px;}
-.test-page .var-comparator .right{padding-left:20px;}
-.test-page .var-comparator .var-cmp-head{margin-bottom:20px;}
-.test-page .var-comparator .var-cmp-head .title14 {margin-bottom:5px;}
-.test-page .prod-items td{border:1px solid black;width:auto;padding:5px;}
-.test-page .prod-items td.pic{width:100px;}
-.test-page .prod-items td.info{text-align:left;vertical-align:top;}
-.test-page .prod-items .taxonomy{font-style:italic;}
-.test-page .prod-items td.info div{position:relative;height:80px;}
-.test-page .prod-items .position{font-weight:bold;position:absolute !important;height:auto !important;bottom:0px;right:0px;}
-.test-page .prod-items .score{font-weight:bold;position:absolute !important;height:auto !important;bottom:0px;left:0px;}
-.test-page .prod-items .positive{color:#006600;}
-.test-page .prod-items .negative{color:#990000;}
-.test-page .prod-items .unknown{color:#FF9900;}
+body{margin:20px 60px;color:#333333;background-color:#fff;}
+input{font-weight:normal;}
+p{margin:0px;padding:0px;}
+.bull{color:#cccccc;}
+a{color:#336600;}a:VISITED{color:#336600;}
+table{border-collapse:collapse;border-spacing:0px;width:100%;}
+.rec-chooser{margin:0px 0px 6px;text-align:right;}
+.rec-options{border:1px solid black;font-weight:bold;}
+.rec-options .view-label{text-transform:capitalize;}
+.rec-options table td{vertical-align: bottom; padding: 5px 10px 10px;}
+.rec-options table td p.label{padding-bottom:4px;}
+.rec-options table td p.result{padding-top:4px;}
+.rec-options table div{padding-right:20px;}
+.var-comparator{margin-top:60px;}
+.var-comparator td{width:50%;text-align:center;vertical-align:top;}
+.var-comparator .left{padding-right:20px;}
+.var-comparator .right{padding-left:20px;}
+.var-comparator .var-cmp-head{margin-bottom:20px;}
+.var-comparator .var-cmp-head .title14 {margin-bottom:5px;}
+.prod-items td{border:1px solid black;width:auto;padding:5px;}
+.prod-items td.rank{border:0px none !important;vertical-align:middle;color:gray;}
+.prod-items td.pic{width:100px;}
+.prod-items td.info{text-align:left;vertical-align:top;}
+.prod-items .taxonomy{font-style:italic;}
+.prod-items td.info div{position:relative;height:80px;}
+.prod-items .position{font-weight:bold;position:absolute !important;height:auto !important;bottom:0px;right:0px;}
+.prod-items .score{font-weight:bold;position:absolute !important;height:auto !important;bottom:0px;left:0px;}
+.prod-items .positive{color:#006600;}
+.prod-items .negative{color:#990000;}
+.prod-items .unknown{color:#FF9900;}
 .not-found{color:red;}
 .disabled{color:gray;font-style:italic;}
 .selected{font-weight:bold;color:blue;}
-
 	</style>
 </head>
-<body class="test-page">
+<body>
 	<form method="get" action="<%= request.getRequestURI() %>">
 	<%= urlG.buildHiddenField("siteFeature") %>
 	<%= urlG.buildHiddenField("view") %>
 	<% if (!"simple view".equals(view)) { %>
     <div class="rec-chooser title14">
     	<span style="text-transform: uppercase;">Recommendation type:</span>&nbsp;<%
-    		it = Arrays.asList(siteFeatures).iterator();
+    		it = siteFeatures.iterator();
     		if (it.hasNext()) {
-    			String sf = (String) it.next();
+    			EnumSiteFeature sf = (EnumSiteFeature) it.next();
     			if (!sf.equals(siteFeature)) {
     	%>
-		<a href="<%= urlG.set("siteFeature", sf).build() %>"><%
+		<a href="<%= urlG.set("siteFeature", sf.getName()).build() %>"><%
     			}
-    	%><span><%= sf %></span><%
+    	%><span><%= sf.getTitle() %></span><%
 				if (!sf.equals(siteFeature)) {
     	%></a><%
     			}
     		}
     		while (it.hasNext()) {
-    			String sf = (String) it.next();
+    			EnumSiteFeature sf = (EnumSiteFeature) it.next();
     	%>
     	<span class="bull">&bull;</span>
     	<%
     			if (!sf.equals(siteFeature)) {
     	%>
-    	<a href="<%= urlG.set("siteFeature", sf).build() %>"><%
+    	<a href="<%= urlG.set("siteFeature", sf.getName()).build() %>"><%
     			}
-    	%><span><%= sf %></span><%
+    	%><span><%= sf.getTitle() %></span><%
 				if (!sf.equals(siteFeature)) {
     	%></a><%
     			}
@@ -328,7 +354,7 @@ if (!origURL.equals(newURL)) {
     		if (defaultSiteFeature.equals(siteFeature)) {
     			urlG.remove("siteFeature");
     		} else {
-    			urlG.set("siteFeature", siteFeature);
+    			urlG.set("siteFeature", siteFeature.getName());
     		}
     	%>
     </div>
@@ -337,51 +363,77 @@ if (!origURL.equals(newURL)) {
     		<tr>
     			<td class="text12">
     				<div style="float: left;">
-    				<p class="label">
-    					Customer email
-    				</p>
-    				<p>
-    					<input type="text" name="customerEmail" value="<%= customerEmail %>"
-    							onfocus="this.select();"
-    							onkeypress="if ((event.which || event.keyCode) == 13) this.form.submit();"
-    							title="Press &lt;Enter&gt; to activate the entered customer">
-    				</p>
-    				<% if (customerId != null) { %>
-    				<p class="result">
-    					Customer ID: <%= customerId %>
-    				</p>
-    				<p class="result">
-    					Cohort ID: <%= cohortId %>
-    				</p>
-    				<p class="result">
-    					User Variant: <%= userVariant %>
-    				</p>
-    				<% } else { %>
-    				<p class="not-found result">
-    					&lt;not found&gt;
-    				</p>
-    				<% } %>
+	    				<p class="label">
+	    					Customer email
+	    				</p>
+	    				<p>
+	    					<input type="text" name="customerEmail" value="<%= customerEmail %>"
+	    							onfocus="this.select();"
+	    							onkeypress="if ((event.which || event.keyCode) == 13) this.form.submit();"
+	    							title="Press &lt;Enter&gt; to activate the entered customer">
+	    				</p>
+	    				<% if (customerId != null) { %>
+	    				<p class="result">
+	    					Customer ID: <%= customerId %>
+	    				</p>
+	    				<p class="result">
+	    					Cohort ID: <%= cohortId %>
+	    				</p>
+	    				<p class="result">
+	    					User Variant: <%= userVariant %>
+	    				</p>
+	    				<% } else { %>
+	    				<p class="not-found result">
+	    					&lt;not found&gt;
+	    				</p>
+	    				<% } %>
     				</div>
     				<div style="float: left;">
-    				<p class="label">
-    					Category id
-    				</p>
-    				<p>
-    					<input type="text" name="categoryId" value="<%= categoryId %>"
-    							onfocus="this.select();"
-    							onkeypress="if ((event.which || event.keyCode) == 13) this.form.submit();"
-    							title="Press &lt;Enter&gt; to activate the entered category">
-    				</p>
-    				<% if (categoryName != null) { %>
-    				<p class="result">
-    					Category name: <%= categoryName %>
-    				</p>
-    				<% } else { %>
-    				<p class="not-found result">
-    					&lt;not found&gt;
-    				</p>
-    				<% } %>
+	    				<p class="label">
+	    					Category id
+	    				</p>
+	    				<p>
+	    					<input type="text" name="categoryId" value="<%= categoryId %>"
+	    							onfocus="this.select();"
+	    							onkeypress="if ((event.which || event.keyCode) == 13) this.form.submit();"
+	    							title="Press &lt;Enter&gt; to activate the entered category">
+	    				</p>
+	    				<% if (categoryName != null) { %>
+	    				<p class="result">
+	    					Category name: <%= categoryName %>
+	    				</p>
+	    				<% } else { %>
+	    				<p class="not-found result">
+	    					&lt;not found&gt;
+	    				</p>
+	    				<% } %>
     				</div>
+    				<div style="float: left;">
+	    				<p class="label">
+	    					Generator function:
+	    				</p>
+						<p>
+	    					<input type="text" name="generatorFunction" value="<%= StringEscapeUtils.escapeHtml(generatorFunction) %>"
+	    							onfocus="this.select();"
+									onkeypress="if ((event.which || event.keyCode) == 13) this.form.submit();"
+	    							title="generator function">
+
+						</p>
+	    				<p class="label result">
+	    					Scoring function:
+	    				</p>
+						<p>
+	    					<input type="text" name="scoringFunction" value="<%= StringEscapeUtils.escapeHtml(scoringFunction) %>"
+	    							onfocus="this.select();"
+									onkeypress="if ((event.which || event.keyCode) == 13) this.form.submit();"
+	    							title="scoring function">
+						</p>
+<%							if (compileErrorMessage!=null) { %>					
+	    				<p class="not-found result">
+	    					&lt;<%= compileErrorMessage %>&gt;
+	    				</p>
+<%						    } %>
+					</div>
     				<div style="clear: both;"></div>
     			</td>
     			<td style="text-align: right;" class="title14">
@@ -392,10 +444,9 @@ if (!origURL.equals(newURL)) {
     				<span class="bull">&bull;</span>
     				<%
     						}
-    						if (views[i].equals(view) || views[i].equals("details")) {
+    						if (views[i].equals(view)) {
     				%>
-    						<span class="view-label"
-    								<%= views[i].equals("details") ? " title=\"This feature is currently unimplemented\"" : "" %>><%= views[i] %></span>
+    						<span class="view-label"><%= views[i] %></span>
     				<%
     						} else {
     				%>
@@ -410,21 +461,19 @@ if (!origURL.equals(newURL)) {
     </div>
     <% } // end if "simple view".equals...
     List recsA = null;
-	if (variantA != null) {
-		RecommendationService rs = (RecommendationService) variants.get(variantA);
-		System.err.println("variant A recommender: " + rs.getClass().getName());
+	if (aRecService != null) {
+		System.err.println("variant A recommender: " + aRecService.getClass().getName());
 		try {
-			recsA = rs.recommendNodes(si);
+			recsA = aRecService.recommendNodes(si);
 		} catch (RuntimeException e) {
 			e.printStackTrace(System.err);
 		}
 	}
 	List recsB = null;
-	if (variantB != null) {
-		RecommendationService rs = (RecommendationService) variants.get(variantB);
-		System.err.println("variant B recommender: " + rs.getClass().getName());
+	if (bRecService != null) {
+		System.err.println("variant B recommender: " + bRecService.getClass().getName());
 		try {
-			recsB = rs.recommendNodes(si);
+			recsB = bRecService.recommendNodes(si);
 		} catch (RuntimeException e) {
 			e.printStackTrace(System.err);
 		}	
@@ -436,6 +485,9 @@ if (!origURL.equals(newURL)) {
 				<div class="var-cmp-head">
 				<% if (!"simple view".equals(view)) { %>
 					<div class="title14">Variant A</div>
+					<% if (scriptedRecServ!=null) {  %>
+						<%= scriptedRecServ.getDescription() %>
+					<% } else { // if (scriptedRecServ!=null)  %>
 					<select name="variantA" onchange="this.form.submit();">
 					<%
 						String optGroup = "";
@@ -476,6 +528,7 @@ if (!origURL.equals(newURL)) {
 						}
 					%>
 					</select>
+
 					<p class="not-found">
 					<% if (variantA != null && variantA.equals(userVariant)) { %>
 						<b>This is the user's variant.</b>
@@ -485,42 +538,12 @@ if (!origURL.equals(newURL)) {
 						&nbsp;
 					<% } %>
 					</p>
+					<%  } // if (scriptedRecServ)  %>
 				<% } else { %>
 					<span class="title24">A</span>
 				<% }  %>
 				</div>
-				<%
-					if (recsA != null) {
-				%> 
-				<table class="prod-items">
-				<%
-						it = recsA.iterator();
-						while (it.hasNext()) {
-							ContentNodeModel cnm = (ContentNodeModel) it.next();
-							ProductModel pm = (ProductModel) cnm;
-							boolean found = recsB != null && recsB.indexOf(cnm) >= 0;
-							String notFound = "";
-							if (!found) {
-								notFound = " style=\"background-color: #DFD;\"";								
-							}
-				%>
-					<tr<%= notFound %>>
-						<td class="pic">
-							<fd:ProductImage product="<%= pm %>" />
-						</td>
-						<td class="info"><div>
-								<span class="title16" title="<%= cnm.getContentName() %>"><%= cnm.getFullName() %></span><br>
-								<span class="taxonomy text13"><%= JspMethods.getTaxonomy(pm, true) %></span>
-								<!-- <div class="score text12">Score: &lt;currently no data available&gt;</div> -->
-						</div></td>
-					</tr> 
-				<%
-						} // end while
-				%>
-				</table>
-				<%
-					} // end if recs != null (display table)
-				%>
+
 			</td>
 			<td class="right">
 				<div class="var-cmp-head">
@@ -588,9 +611,56 @@ if (!origURL.equals(newURL)) {
 					<span class="title24">B</span>
 				<% }  %>
 				</div>
+			</td> 
+		</tr>
+		<tr>
+			<td class="left">
+				<%
+					if (recsA != null) {
+				%> 
+				<table class="prod-items">
+				<%
+						it = recsA.iterator();
+						int rank = 1;
+						while (it.hasNext()) {
+							ContentNodeModel cnm = (ContentNodeModel) it.next();
+							ProductModel pm = (ProductModel) cnm;
+							boolean found = recsB != null && recsB.indexOf(cnm) >= 0;
+							String notFound = "";
+							if ("simple view".equals(view)) {
+								notFound = "";
+							} else if (!found) {
+								notFound = " style=\"background-color: #DFD;\"";								
+							}
+				%>
+					<tr>
+						<% if ("detailed".equals(view)) { %>
+						<td class="rank title24">
+							<%= rank %>
+						</td>
+						<% } %>
+						<td class="pic"<%= notFound %>>
+							<fd:ProductImage product="<%= pm %>" />
+						</td>
+						<td class="info"<%= notFound %>><div>
+								<span class="title16" title="<%= cnm.getContentName() %>"><%= cnm.getFullName() %></span><br>
+								<span class="taxonomy text13"><%= JspMethods.getTaxonomy(pm, true) %></span>
+								<!-- <div class="score text12">Score: &lt;currently no data available&gt;</div> -->
+						</div></td>
+					</tr> 
+				<%
+							rank++;
+						} // end while
+				%>
+				</table>
+				<%
+					} // end if recs != null (display table)
+				%>
+		</td>
+		<td class="right">
 				<%
 					if (recsB != null) {
-				%> 
+				%>
 				<table class="prod-items">
 				<%
 						it = recsB.iterator();
@@ -602,7 +672,9 @@ if (!origURL.equals(newURL)) {
 							String changeString = "N/A";
 							String changeColor = "unknown";
 							String notFound = "";
-							if (change != null) {
+							if ("simple view".equals(view)) {
+								notFound = "";
+							} else if (change != null) {
 								int ch = change.intValue();
 								if (ch > 0) {
 									changeString = "+" + ch;
@@ -626,7 +698,9 @@ if (!origURL.equals(newURL)) {
 								<span class="title16" title="<%= cnm.getContentName() %>"><%= cnm.getFullName() %></span><br>
 								<span class="taxonomy text13"><%= JspMethods.getTaxonomy(pm, true) %></span>
 								<!-- <div class="score text12">Score: &lt;currently no data available&gt;</div> -->
+								<% if (!"simple view".equals(view)) { %>
 								<div class="position text12 <%= changeColor %>"><%= changeString %></div>
+								<% } %>
 						</div></td>
 					</tr> 
 				<%

@@ -149,6 +149,13 @@ public class FDStoreProperties {
 	private final static String DYF_VARIANTS_EIEO = "fdstore.dyf.variants.useHistory";
 	
 	private final static String SMARTSTORE_NEWPRODUCTS_DAYS = "fdstore.smartstore.newProducts.days";
+	
+	
+	// maximum number of entries (users) in smartstore personalized scores cache, default 150
+	private final static String SMARTSTORE_PERSONAL_SCORES_CACHE_ENTRIES = "fdstore.smartstore.personalScores.cache.entries";
+	
+	// timeout of a cache entry in seconds, default 60*60
+	private final static String SMARTSTORE_PERSONAL_SCORES_CAHCE_TIMEOUT = "fdstore.smartstore.personalScores.cache.timeout";
 
 	
 	// Referral Program admin
@@ -403,6 +410,9 @@ public class FDStoreProperties {
 		defaults.put(DYF_VARIANTS_EIEO, "false");
 
 		defaults.put(SMARTSTORE_NEWPRODUCTS_DAYS, "30");
+		
+		defaults.put(SMARTSTORE_PERSONAL_SCORES_CACHE_ENTRIES, "120");
+		defaults.put(SMARTSTORE_PERSONAL_SCORES_CAHCE_TIMEOUT, "3600");
 		
 		defaults.put(DISTRIBUTION_SAMPLES_DIR,"");
 
@@ -977,5 +987,13 @@ public class FDStoreProperties {
 
 	public static int getSmartstoreNewproductsDays() {
 		return Integer.parseInt(get(SMARTSTORE_NEWPRODUCTS_DAYS));
+	}
+	
+	public static int getSmartstorePersonalizedScoresCacheEntries() {
+		return Integer.parseInt(get(SMARTSTORE_PERSONAL_SCORES_CACHE_ENTRIES));
+	}
+	
+	public static int getSmartstorePersonalizedScoresCacheTimeout() {
+		return Integer.parseInt(get(SMARTSTORE_PERSONAL_SCORES_CAHCE_TIMEOUT));
 	}
 }

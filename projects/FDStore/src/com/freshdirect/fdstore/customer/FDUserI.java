@@ -277,4 +277,6 @@ public interface FDUserI extends java.io.Serializable {
     public void setHomePageLetterVisited(boolean isHomePageLetterVisited);
     
     public String getCohortName();
+
+    public void setCohortName(String cohortName);
 }

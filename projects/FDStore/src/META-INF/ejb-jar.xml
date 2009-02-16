@@ -237,6 +237,33 @@
 			</resource-ref>
 		</session>
 
+		<session>
+			<ejb-name>ScoreFactorHome</ejb-name>
+			<home>com.freshdirect.smartstore.ejb.ScoreFactorHome</home>
+			<remote>com.freshdirect.smartstore.ejb.ScoreFactorSB</remote>
+			<ejb-class>com.freshdirect.smartstore.ejb.ScoreFactorSessionBean</ejb-class>
+			<session-type>Stateless</session-type>
+			<transaction-type>Container</transaction-type>
+			<resource-ref>
+				<res-ref-name>jdbc/dbpool</res-ref-name>
+				<res-type>javax.sql.DataSource</res-type>
+				<res-auth>Container</res-auth>
+			</resource-ref>
+		</session>
+
+		<session>
+			<ejb-name>SessionImpressionLog</ejb-name>
+			<home>com.freshdirect.smartstore.ejb.SessionImpressionLogHome</home>
+			<remote>com.freshdirect.smartstore.ejb.SessionImpressionLogSB</remote>
+			<ejb-class>com.freshdirect.smartstore.ejb.SessionImpressionLogSessionBean</ejb-class>
+			<session-type>Stateless</session-type>
+			<transaction-type>Container</transaction-type>
+			<resource-ref>
+				<res-ref-name>jdbc/dbpool</res-ref-name>
+				<res-type>javax.sql.DataSource</res-type>
+				<res-auth>Container</res-auth>
+			</resource-ref>
+		</session>
                 
                 
                 <message-driven>

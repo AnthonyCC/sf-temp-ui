@@ -28,6 +28,8 @@ import com.freshdirect.smartstore.sampling.RankedContent;
  */
 public class FavoritesRecommendationService extends AbstractRecommendationService {
 	
+	public static final String CKEY_FAVORITE_LIST_ID = "favorite_list_id";
+
 	public static final String FAVORITES_NODE_NAME = "fd_favorites";
 	
 	public static ThreadLocal CFG_PRODS = new ThreadLocal() {
@@ -54,35 +56,49 @@ public class FavoritesRecommendationService extends AbstractRecommendationServic
         List favoriteNodes = Collections.EMPTY_LIST;
         
     	ContentFactory cf = ContentFactory.getInstance();
-    	String listId = this.getVariant().getServiceConfig().get("favorite_list_id");
-    	if (listId == null) {
-    		listId = FAVORITES_NODE_NAME;
-    	}
+    	String listId = getListId();
     	FavoriteList fl = (FavoriteList) cf.getContentNodeByKey(new ContentKey(FDContentTypes.FAVORITE_LIST, listId));
     	if (fl != null) {
-    	    favoriteNodes = fl.getItems();
+    	    favoriteNodes = fl.getFavoriteItems();
     	    
     	    List keys = new ArrayList(favoriteNodes.size());
     	    for (int i=0;i<favoriteNodes.size();i++){ 
-    	        keys.add(new RankedContent.Single(((ContentNodeModel)favoriteNodes.get(i)).getContentKey(), (favoriteNodes.size() - i) * 5.0));
+    	        ContentNodeModel contentNodeModel = (ContentNodeModel)favoriteNodes.get(i);
+                keys.add(new RankedContent.Single((favoriteNodes.size() - i) * 5.0, contentNodeModel));
     	    }
-    	    List sample = getSampler(input).sample(keys, input.getCartContents(), keys.size());
+    	    List sample = RankedContent.getContentNodeModel(getSampler(input).sample(keys, input.getCartContents(), keys.size()));
     	    favoriteNodes = new ArrayList(sample.size());    	    
     	    Map cfgProds = (Map) CFG_PRODS.get();
     	    cfgProds.clear();
     	    for (int i=0;i<sample.size();i++) {
-    	        final ContentNodeModel cn = cf.getContentNodeByKey((ContentKey) sample.get(i));
+    	        final ContentNodeModel cn = (ContentNodeModel) sample.get(i);
     	        if (cn instanceof ConfiguredProduct) {
-    	        	final ConfiguredProduct cfgProd = (ConfiguredProduct) cn;
-					favoriteNodes.add(cfgProd.getProduct());
-					cfgProds.put(cfgProd.getProduct().getContentKey().getId(), cfgProd);
-    	        } else {
-    	        	favoriteNodes.add(cn);
-    	        }
+                    final ConfiguredProduct cfgProd = (ConfiguredProduct) cn;
+                    favoriteNodes.add(cfgProd.getProduct());
+                    cfgProds.put(cfgProd.getProduct().getContentKey().getId(), cfgProd);
+                } else {
+                    favoriteNodes.add(cn);
+                }
     	    }    	
     	}
 
         return favoriteNodes;
     }
+
+
+	protected String getListId() {
+		String listId = this.getVariant().getServiceConfig().get(CKEY_FAVORITE_LIST_ID);
+    	if (listId == null) {
+    		listId = FAVORITES_NODE_NAME;
+    	}
+		return listId;
+	}
+
+	protected Map appendConfiguration(Map configMap) {
+		// append FD List Id
+		configMap.put(CKEY_FAVORITE_LIST_ID, getListId());
+		
+		return super.appendConfiguration(configMap);
+	}
 
 }

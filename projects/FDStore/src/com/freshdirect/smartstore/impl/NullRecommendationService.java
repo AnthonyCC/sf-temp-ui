@@ -2,6 +2,7 @@ package com.freshdirect.smartstore.impl;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.smartstore.RecommendationService;
@@ -38,5 +39,9 @@ public class NullRecommendationService implements RecommendationService {
 	
 	public String getDescription() {
 		return "";
+	}
+
+	public Map getConfiguration() {
+		return Collections.EMPTY_MAP;
 	}
 }

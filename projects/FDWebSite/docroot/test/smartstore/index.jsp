@@ -26,19 +26,28 @@
     	<span style="text-transform: uppercase;">Page Index:</span>
     	</p>
     	<p>
-		<span class="bull">&bull;</span> <a href="compare_variants.jsp"><span>Variants Comparison</span></a>
-		</p>
-    	<p>
 		<span class="bull">&bull;</span> <a href="view_cohorts.jsp"><span>Cohorts Summary</span></a>
 		</p>
     	<p>
-		<span class="bull">&bull;</span> <a href="view_config.jsp"><span>Variant Configurations</span></a>
+		<span class="bull">&bull;</span> <a href="cohorts.jsp"><span>Cohorts Tool</span></a>
 		</p>
     	<p>
 		<span class="bull">&bull;</span> <a href="fi_debugger.jsp"><span>Featured Items Debugger</span></a>
 		</p>
     	<p>
-		<span class="bull">&bull;</span> <a href="cohorts.jsp"><span>Cohorts Tool</span></a>
+		<span class="bull">&bull;</span> <a href="request_simulator.jsp"><span>Request Simulator</span></a>
+		</p>
+    	<p>
+		<span class="bull">&bull;</span> <a href="view_config.jsp"><span>Variant Configurations</span></a> <a href="view_config.jsp?refresh=1">(reload)</a>
+		</p>
+    	<p>
+		<span class="bull">&bull;</span> <a href="compare_variants.jsp"><span>Variants Comparison</span></a>
+		</p>
+    	<p>
+		<span class="bull">&bull;</span> <a href="my_variant.jsp"><span>Variant Lookup</span></a>
+		</p>
+    	<p>
+		<span class="bull">&bull;</span> <a href="factors.jsp"><span>Factors</span></a>
 		</p>
     </div>
 </body>

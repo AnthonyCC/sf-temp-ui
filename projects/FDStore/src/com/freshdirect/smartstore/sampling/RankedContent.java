@@ -1,6 +1,7 @@
 package com.freshdirect.smartstore.sampling;
 
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -8,7 +9,6 @@ import java.util.Random;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ProductModel;
 
 /**
  * Wrapper class for ranked content.
@@ -112,7 +112,7 @@ public abstract class RankedContent {
 		private double totalScore = 0;
 		
 		// List<Single> 
-		private List items = new LinkedList(); 
+		private LinkedList items = new LinkedList(); 
 		private String id;
 		
 		public Aggregate(String id) {
@@ -134,6 +134,10 @@ public abstract class RankedContent {
 			//Single r = items.remove(0);
 			totalScore -= r.getScore();
 			return r;
+		}
+		
+		public Single takeFirst() {
+		    return (Single) items.removeFirst();
 		}
 		
 		/**
@@ -182,5 +186,26 @@ public abstract class RankedContent {
 			}
 			return buffer.append("] ").append(getScore()).toString();
 		}
-	};	
+	};
+	
+	
+	public static List getKeys(List rankedContents) {
+	    List result = new ArrayList(rankedContents.size());
+	    for (Iterator iter=rankedContents.iterator();iter.hasNext();) {
+	        RankedContent.Single rs = (RankedContent.Single)iter.next();
+	        result.add(rs.getContentKey());
+	    }
+	    return result;
+	}
+
+        public static List getContentNodeModel(List rankedContents) {
+            List result = new ArrayList(rankedContents.size());
+            for (Iterator iter=rankedContents.iterator();iter.hasNext();) {
+                RankedContent.Single rs = (RankedContent.Single)iter.next();
+                result.add(rs.getModel());
+            }
+            return result;
+        }
+	
+	
 }

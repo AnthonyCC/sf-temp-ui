@@ -96,7 +96,7 @@ tr.ss:hover {background: #fafafa;}
 			<table class="ss">
 				<tr class="ss">
 					<td class="ss" style="font-weight: bold;">User ID:</td>
-					<td class="ss"><%= ss_user.getUserId() %></td>
+					<td class="ss"><%= ss_user.getUserId() != null ? ss_user.getUserId() : "&lt;anonymous user&gt;" %></td>
 				</tr>
 				<tr class="ss">
 					<td class="ss" style="font-weight: bold;">Cohort:</td>
@@ -104,12 +104,16 @@ tr.ss:hover {background: #fafafa;}
 				</tr>
 				<% if (ss_custInfo) { %>
 				<tr class="ss">
+					<td class="ss" style="font-weight: bold;">FD User ID:</td>
+					<td class="ss"><%= ss_user.getPrimaryKey() %></td>
+				</tr>
+				<tr class="ss">
 					<td class="ss" style="font-weight: bold;">ERP ID:</td>
-					<td class="ss"><%= ss_user.getIdentity().getErpCustomerPK() %></td>
+					<td class="ss"><%= ss_user.getIdentity() != null ? ss_user.getIdentity().getErpCustomerPK() : "&lt;anonymous user&gt;" %></td>
 				</tr>
 				<tr class="ss">
 					<td class="ss" style="font-weight: bold;">FD Customer ID:</td>
-					<td class="ss"><%= ss_user.getIdentity().getFDCustomerPK() %></td>
+					<td class="ss"><%= ss_user.getIdentity() != null ? ss_user.getIdentity().getFDCustomerPK() : "&lt;anonymous user&gt;" %></td>
 				</tr>
 				<% } %>
 			</table>
@@ -130,8 +134,8 @@ tr.ss:hover {background: #fafafa;}
 						OverriddenVariantsHelper.VariantInfo vi = vInfoList.get(feature);
 				%>	<tr class="ss">
 						<td class="ss" style="font-weight: bold;"><%= feature.getName() %></td>
-						<td class="ss"><%= vi != null ? vi.variant : VariantSelectorFactory.getInstance(feature).getService(ss_user.getCohortName()).getVariant().getId() %>
-						<td class="ss"><span><%= vi != null ? "overridden" : "&nbsp;" %><span><% if (EnumSiteFeature.DYF.equals(feature) && DYFUtil.isCustomerEligible(ss_user) ) { %><span style="padding-left: 4px;">eligible</span><% } %></td>
+						<td class="ss"><%= vi != null ? vi.variant : VariantSelectorFactory.getInstance(feature).getService(ss_user.getCohortName()).getVariant().getId() %></td>
+						<td class="ss"><span><%= vi != null ? "overridden" : "&nbsp;" %></span><% if (EnumSiteFeature.DYF.equals(feature) && DYFUtil.isCustomerEligible(ss_user) ) { %><span style="padding-left: 4px;">eligible</span><% } %></td>
 					</tr>
 				<%
 					}

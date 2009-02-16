@@ -38,7 +38,7 @@ public class ManualOverrideRecommendationService extends CandidateProductRecomme
                 fillManualSlots(input, category, slots, result);
                 
                 //result = sampleContentNodeModels(input, collectNodes(category, result));
-                List randomChildProducts = sampleRankedContents(input, collectNodes(category), result);
+                List randomChildProducts = sampleRankedContents(input, new ArrayList(collectNodes(category)), result);
                 
                 result.addAll(randomChildProducts);
                 return result;
@@ -58,12 +58,16 @@ public class ManualOverrideRecommendationService extends CandidateProductRecomme
     protected void fillManualSlots(SessionInput input, CategoryModel category, int slots, List result) {
         List fprods = category.getFeaturedProducts();
         Random rnd = new Random();
+        
         while (result.size()<slots && fprods.size()>0) {
             int pos = input.isNoShuffle() ? 0 : rnd.nextInt(fprods.size());
             Object product = fprods.remove(pos);
             
             if (((ProductModelImpl)product).isDisplayable()) {
-                result.add(product);
+                ProductModelImpl pi = (ProductModelImpl)product;
+                if (includeCartItems || !input.getCartContents().contains(pi.getContentKey())) {
+                    result.add(product);
+                }
             }
         }
     }

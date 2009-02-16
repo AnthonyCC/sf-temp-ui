@@ -11,6 +11,7 @@ import java.util.Random;
 import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.smartstore.impl.IConfigurable;
 
 /**
  * Sampler for lists of ranked content.
@@ -26,7 +27,7 @@ public class ContentSampler {
 	 * @author istvan
 	 *
 	 */
-	public interface ConsiderationLimit {
+	public interface ConsiderationLimit extends IConfigurable {
 	
 		/**
 		 * 
@@ -118,7 +119,7 @@ public class ContentSampler {
 	 * 
 	 * @param k
 	 * @param sampler
-	 * @return List<{@link ContentKey}>
+	 * @return List<{@link ContentNode}>
 	 */
 	private List drawWithoutReplacement(int k, ListSampler sampler) {
 		if (k > totalItems()) k = totalItems();
@@ -162,8 +163,8 @@ public class ContentSampler {
 				sampler.changeWeight(ind,0);
 			}
 			
-			items.add(itemToUse.getContentKey());
-			//items.add(itemToUse);
+			//items.add(itemToUse.getContentKey());
+			items.add(itemToUse);
 			--total;
 		}
 		return items;
@@ -258,6 +259,10 @@ public class ContentSampler {
 				weights[i] = w;
 				recalculate = true;
 			}
+		}
+
+		public String getName() {
+			return "explicit";
 		}
 	};
 	

@@ -1421,6 +1421,11 @@ inner:
 		Attribute a = getAttribute("WINE_REVIEW1");
 		return a == null ? null : (Html) a.getValue();			
 	}
+	
+	public int getExpertWeight() {
+		Attribute a = getAttribute("SS_EXPERT_WEIGHTING");
+		return a == null ? 0 : ((Number)a.getValue()).intValue();
+	}
 
 	public Html getWineReview2() {
 		// TODO Auto-generated method stub
