@@ -418,10 +418,14 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
             // from the FEATURED_ITEMS set
             // gro_earths_oat_cereal, gro_enfamil_powder_m_02, hba_1ups_aloe_rf, hab_pampers_crsrs_4, hba_svngen_dprs_3
             assertNode("with user prefs - manual slot/featured : yf_p : 0 gro_enfamil_powder_m_02", nodes, 0, "gro_enfamil_powder_m_02");
-            assertNode("with user prefs : yf_p : 1 gro_earths_oat_cereal", nodes, 1, "gro_earths_oat_cereal");
-            assertNode("with user prefs : yf_p : 2 hba_1ups_aloe_rf", nodes, 2, "hba_1ups_aloe_rf");
-            assertNode("with user prefs : yf_p : 3 hab_pampers_crsrs_4", nodes, 3, "hab_pampers_crsrs_4");
+            assertNode("with user prefs : yf_p : 1 hab_pampers_crsrs_4", nodes, 1, "hab_pampers_crsrs_4");
+            assertNode("with user prefs : yf_p : 2 gro_earths_oat_cereal", nodes, 2, "gro_earths_oat_cereal");
+            assertNode("with user prefs : yf_p : 3 hba_1ups_aloe_rf", nodes, 3, "hba_1ups_aloe_rf");
             assertNode("with user prefs : yf_p : 4 hba_svngen_dprs_3", nodes, 4, "hba_svngen_dprs_3");
+//            assertNode("with user prefs : yf_p : 1 gro_earths_oat_cereal", nodes, 1, "gro_earths_oat_cereal");
+//            assertNode("with user prefs : yf_p : 2 hba_1ups_aloe_rf", nodes, 2, "hba_1ups_aloe_rf");
+//            assertNode("with user prefs : yf_p : 3 hab_pampers_crsrs_4", nodes, 3, "hab_pampers_crsrs_4");
+//            assertNode("with user prefs : yf_p : 4 hba_svngen_dprs_3", nodes, 4, "hba_svngen_dprs_3");
 
             
             assertEquals("yf_p : event log size", 5, eventLogger.getCollectedEvents().size());
@@ -449,10 +453,14 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
             // from the FEATURED_ITEMS set
             // gro_earths_oat_cereal, gro_enfamil_powder_m_02, hba_1ups_aloe_rf, hab_pampers_crsrs_4, hba_svngen_dprs_3
             assertNode("with user prefs - manual slot/featured : yf_p : 0 gro_7gen_diaperlg", nodes, 0, "gro_7gen_diaperlg");
-            assertNode("with user prefs : yf_p : 1 gro_earths_oat_cereal", nodes, 1, "gro_earths_oat_cereal");
-            assertNode("with user prefs : yf_p : 2 gro_enfamil_powder_m_02", nodes, 2, "gro_enfamil_powder_m_02");
-            assertNode("with user prefs : yf_p : 3 hba_1ups_aloe_rf", nodes, 3, "hba_1ups_aloe_rf");
-            assertNode("with user prefs : yf_p : 4 hab_pampers_crsrs_4", nodes, 4, "hab_pampers_crsrs_4");
+//            assertNode("with user prefs : yf_p : 1 gro_earths_oat_cereal", nodes, 1, "gro_earths_oat_cereal");
+//            assertNode("with user prefs : yf_p : 2 gro_enfamil_powder_m_02", nodes, 2, "gro_enfamil_powder_m_02");
+//            assertNode("with user prefs : yf_p : 3 hba_1ups_aloe_rf", nodes, 3, "hba_1ups_aloe_rf");
+//            assertNode("with user prefs : yf_p : 4 hab_pampers_crsrs_4", nodes, 4, "hab_pampers_crsrs_4");
+            assertNode("with user prefs : yf_p : 1 hab_pampers_crsrs_4", nodes, 1, "hab_pampers_crsrs_4");
+            assertNode("with user prefs : yf_p : 2 gro_earths_oat_cereal", nodes, 2, "gro_earths_oat_cereal");
+            assertNode("with user prefs : yf_p : 3 gro_enfamil_powder_m_02", nodes, 3, "gro_enfamil_powder_m_02");
+            assertNode("with user prefs : yf_p : 4 hba_1ups_aloe_rf", nodes, 4, "hba_1ups_aloe_rf");
 
             
             assertEquals("yf_p : event log size", 5, eventLogger.getCollectedEvents().size());
@@ -470,7 +478,7 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
         ctx.setAttribute("fi_override_variant", SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT);
         
         fit = TestUtils.createFeaturedItemsTag(ctx, "gro_baby");
-        fit.setNoShuffle(false);
+        fit.setNoShuffle(true);
         
         try {
             eventLogger.getCollectedEvents().clear();
@@ -485,10 +493,10 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
             // from the FEATURED_ITEMS set
             // gro_earths_oat_cereal, gro_enfamil_powder_m_02, hba_1ups_aloe_rf, hab_pampers_crsrs_4, hba_svngen_dprs_3
             assertNode("with user prefs - manual slot/featured : yf_p : 0 gro_7gen_diaperlg", nodes, 0, "gro_7gen_diaperlg");
-            assertNode("with user prefs : yf_p : 1 gro_earths_oat_cereal", nodes, 1, "gro_earths_oat_cereal");
-            assertNode("with user prefs : yf_p : 2 gro_enfamil_powder_m_02", nodes, 2, "gro_enfamil_powder_m_02");
-            assertNode("with user prefs : yf_p : 3 hba_1ups_aloe_rf", nodes, 3, "hba_1ups_aloe_rf");
-            assertNode("with user prefs : yf_p : 4 hab_pampers_crsrs_4", nodes, 4, "hab_pampers_crsrs_4");
+            assertNode("with user prefs : yf_p : 1 hab_pampers_crsrs_4", nodes, 1, "hab_pampers_crsrs_4");
+            assertNode("with user prefs : yf_p : 2 gro_earths_oat_cereal", nodes, 2, "gro_earths_oat_cereal");
+            assertNode("with user prefs : yf_p : 3 gro_enfamil_powder_m_02", nodes, 3, "gro_enfamil_powder_m_02");
+            assertNode("with user prefs : yf_p : 4 hba_1ups_aloe_rf", nodes, 4, "hba_1ups_aloe_rf");
 
             
             assertEquals("yf_p : event log size", 5, eventLogger.getCollectedEvents().size());
