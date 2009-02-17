@@ -202,13 +202,13 @@ public class CohortSelector {
     		}	
     	}
     	
-    	for(int i=0; i< RANDOM_DIGIT_MAP.length; ++i) {
+    	/*for(int i=0; i< RANDOM_DIGIT_MAP.length; ++i) {
     		for(int j=0; j< RANDOM_DIGIT_MAP[i].length; ++j) {
     			System.out.print(' ');
     			System.out.print((int)RANDOM_DIGIT_MAP[i][j]);
     		}
     		System.out.println();
-    	}
+    	}*/
     	
     }
 
