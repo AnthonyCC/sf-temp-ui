@@ -172,9 +172,9 @@ var ALL_FACTORS = "<ol><%
 	for(Iterator i = sortedFactorNames.iterator(); i.hasNext(); ) {
 		String factor = i.next().toString();
 		if (ScoreProvider.getInstance().isGlobal(factor)) {
-			%><li><i><span style=\"color: red\" onclick=\"append('$<%=factor%>')\"><%=factor%></span></i></tt></li><%
+			%><li><i><span style=\"color: red\" onclick=\"append('${<%=factor%>}')\"><%=factor%></span></i></tt></li><%
 		} else {
-			%><li><span style=\"color: blue\" onclick=\"append('$<%=factor%>')\"><%=factor%></span></li><%
+			%><li><span style=\"color: blue\" onclick=\"append('${<%=factor%>}')\"><%=factor%></span></li><%
 		}
 	}
 %></ol>";

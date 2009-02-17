@@ -302,6 +302,23 @@ public class FactorUtil {
 		};
 	}
 	
+	public static FactorRangeConverter getDiscretizedReorderRateConverter(int base) {
+		return new LogCDFDiscretizingConverter(base) {
+			
+			public double[] map(String userId, ScoreRangeProvider provider) throws Exception {
+				return discretizeRange(provider.getRange(userId, GLOBAL_POPULARITY_COLUMN));
+			}
+			
+			public boolean isPersonalized() {
+				return false;
+			}
+			
+			public Set requiresGlobalDatabaseColumns() {
+				return Collections.singleton(GLOBAL_POPULARITY_COLUMN);
+			}
+		};
+	}	
+
 	/**
 	 * Frequencies divided by the max frequency a 0 - 1 rate.
 	 * 

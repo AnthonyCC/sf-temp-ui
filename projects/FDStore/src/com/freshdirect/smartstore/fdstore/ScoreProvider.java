@@ -254,7 +254,7 @@ public class ScoreProvider implements DataAccess {
 		}
 
 		public boolean isOnline(String name) {
-			return cmsLookups.containsKey(name);
+			return storeLookups.containsKey(name);
 		}
 	}
 	
@@ -293,7 +293,7 @@ public class ScoreProvider implements DataAccess {
 	 */
 	public Set getAvailableFactors() {
 		Set result = new HashSet();
-		result.addAll(cmsLookups.keySet());
+		result.addAll(storeLookups.keySet());
 		result.addAll(rangeConverters.keySet());
 		return result;
 	}
@@ -335,6 +335,9 @@ public class ScoreProvider implements DataAccess {
 	}
 	
 	private double getPersonalizedScore(String userId, ContentKey key, int idx) {
+		if (userId == null) {
+			return 0;
+		}
 		Map userScores = storePersonalizedScores(userId);
 		double[] scores = (double[])userScores.get(key);
 		return scores == null ? 0 : scores[idx];
@@ -376,8 +379,8 @@ public class ScoreProvider implements DataAccess {
 				result[i] = getPersonalizedScore(userId,contentNode.getContentKey(),((Number)personalizedIndexes.get(var)).intValue());
 			} else if (globalIndexes.containsKey(var)) {
 				result[i] = getGlobalScore(contentNode.getContentKey(),((Number)globalIndexes.get(var)).intValue());
-			} else if (cmsLookups.containsKey(var)) {
-				result[i] = ((StoreLookup)cmsLookups.get(var)).getVariable(contentNode);
+			} else if (storeLookups.containsKey(var)) {
+				result[i] = ((StoreLookup)storeLookups.get(var)).getVariable(contentNode);
 			} else {
 				LOGGER.debug("Unknown variable " + var);
 				result[i] = 0;
@@ -393,13 +396,13 @@ public class ScoreProvider implements DataAccess {
 	 * @return whether factor is global
 	 */
 	public boolean isGlobal(String factor) {
-		return globalIndexes.containsKey(factor) || cmsLookups.containsKey(factor);
+		return globalIndexes.containsKey(factor) || storeLookups.containsKey(factor);
 	}
 	
 	/**
 	 * Test if factor is personalized.
 	 * @param factor factor name.
-	 * @return wheter factor is personalized
+	 * @return whether factor is personalized
 	 */
 	public boolean isPersonalized(String factor) {
 		return personalizedIndexes.containsKey(factor);
@@ -413,32 +416,32 @@ public class ScoreProvider implements DataAccess {
 	 * @return List<{@link ContentNodeModel>}
 	 */
 	public List getDatasource(SessionInput input, String name) {
-            if ("FeaturedItems".equals(name)) {
-                if (input.getCurrentNode() != null) {
-                    return FeaturedItemsRecommendationService.getFeaturedItems(input.getCurrentNode());
-                }
-            } else if ("CandidateLists".equals(name)) {
-                if (input.getCurrentNode() instanceof CategoryModel) {
-                    return CandidateProductRecommendationService.collectCandidateProductsNodes((CategoryModel)input.getCurrentNode());
-                }
-	    } else if ("PurchaseHistory".equals(name)) {
-		if (input.getCustomerId() != null) {
-		    try {
-		        Map scores = storePersonalizedScores(input.getCustomerId());
-			List result = new ArrayList(scores.size());
-			for(Iterator i = scores.keySet().iterator(); i.hasNext();) {
-			    ContentKey key = (ContentKey)i.next();
-			    try {
-				result.add(ContentFactory.getInstance().getContentNodeByKey(key));
-			    } catch (Exception e) {
-			        LOGGER.debug("Problem with " + key,e);
-			    }
+		if ("FeaturedItems".equals(name)) {
+			if (input.getCurrentNode() != null) {
+				return FeaturedItemsRecommendationService.getFeaturedItems(input.getCurrentNode());
 			}
-			return result;
-		    } catch (Exception e) {
-			LOGGER.debug("Could not load history for " + input.getCustomerId());
-		    }
-		}
+		} else if ("CandidateLists".equals(name)) {
+			if (input.getCurrentNode() instanceof CategoryModel) {
+				return CandidateProductRecommendationService.collectCandidateProductsNodes((CategoryModel)input.getCurrentNode());
+			}
+		} else if ("PurchaseHistory".equals(name)) {
+			if (input.getCustomerId() != null) {
+				try {
+					Map scores = storePersonalizedScores(input.getCustomerId());
+					List result = new ArrayList(scores.size());
+					for(Iterator i = scores.keySet().iterator(); i.hasNext();) {
+						ContentKey key = (ContentKey)i.next();
+						try {
+							result.add(ContentFactory.getInstance().getContentNodeByKey(key));
+						} catch (Exception e) {
+							LOGGER.debug("Problem with " + key,e);
+						}
+					}
+					return result;
+				} catch (Exception e) {
+					LOGGER.debug("Could not load history for " + input.getCustomerId());
+				}
+			}
 	    }
 	    return Collections.EMPTY_LIST;
 	}
@@ -509,7 +512,7 @@ public class ScoreProvider implements DataAccess {
 					globalDBFactors.add(name);
 				}
 				result.add(name);
-			} else if (cmsLookups.containsKey(name)) {
+			} else if (storeLookups.containsKey(name)) {
 				result.add(name);
 			} else {
 				LOGGER.warn("Neither database nor CMS source");
@@ -615,7 +618,7 @@ public class ScoreProvider implements DataAccess {
 		
 		
 		if (userIds != null) { // personalized scores
-			final String[] factors = new String[personalizedIndexes.size() + globalIndexes.size() + cmsLookups.size()];
+			final String[] factors = new String[personalizedIndexes.size() + globalIndexes.size() + storeLookups.size()];
 			
 			int j = 0;
 			for(Iterator i = personalizedIndexes.keySet().iterator(); i.hasNext();++j) {
@@ -629,7 +632,7 @@ public class ScoreProvider implements DataAccess {
 				
 			}
 			
-			for(Iterator i = cmsLookups.keySet().iterator(); i.hasNext();++j) {
+			for(Iterator i = storeLookups.keySet().iterator(); i.hasNext();++j) {
 				String factor = i.next().toString();
 				factors[j] = factor;
 			}
@@ -672,7 +675,7 @@ public class ScoreProvider implements DataAccess {
 				}
 			};
 		} else {
-			final String[] factors = new String[globalIndexes.size() + cmsLookups.size()];
+			final String[] factors = new String[globalIndexes.size() + storeLookups.size()];
 			
 			int j = 0;
 			
@@ -682,7 +685,7 @@ public class ScoreProvider implements DataAccess {
 				
 			}
 			
-			for(Iterator i = cmsLookups.keySet().iterator(); i.hasNext();++j) {
+			for(Iterator i = storeLookups.keySet().iterator(); i.hasNext();++j) {
 				String factor = i.next().toString();
 				factors[j] = factor;
 			}
@@ -728,8 +731,8 @@ public class ScoreProvider implements DataAccess {
 	// Map<Factor:String,FactorRangeConverter>
 	private Map rangeConverters = new HashMap();
 	
-	// Map<Factor:String,CMSLookup>
-	private Map cmsLookups = new HashMap();
+	// Map<Factor:String,StoreLookup>
+	private Map storeLookups = new HashMap();
 	
 	protected ScoreProvider() {	
 		LOGGER.info("Personalized cache entries: " + FDStoreProperties.getSmartstorePersonalizedScoresCacheEntries());
@@ -742,43 +745,46 @@ public class ScoreProvider implements DataAccess {
 	
 	public void reloadFactorHandlers() {
 		
-		// CMS lookups
-		cmsLookups.put(
+		globalScores.clear();
+		personalizedScores.clear();
+		
+		// Store lookups
+		storeLookups.put(
 			"DealsPercentage", 
 			FactorUtil.getDealsPercentageLookup()
 		);
 		
-		cmsLookups.put(
+		storeLookups.put(
 			"DealsPercentage_Discretized",
 			FactorUtil.getDealsPercentageDiscretized()
 		);
 		
-		cmsLookups.put(
+		storeLookups.put(
 			"ExpertWeight",
 			FactorUtil.getExpertWeightLookup()
 		);
 		
-		cmsLookups.put(
+		storeLookups.put(
 			"ExpertWeight_Normalized",
 			FactorUtil.getNormalizedExpertWeightLookup()
 		);
 		
-		cmsLookups.put(
+		storeLookups.put(
 			"ProduceRating",
 			FactorUtil.getProduceRatingLookup()
 		);
 		
-		cmsLookups.put(
+		storeLookups.put(
 			"ProduceRating_Normalized",
 			FactorUtil.getNormalizedProduceRatingLookup()
 		);
 		
-		cmsLookups.put(
+		storeLookups.put(
 			"ProduceRating_Discretized1",
 			FactorUtil.getDescretizedProduceRatingLookup1()
 		);
 		
-		cmsLookups.put(
+		storeLookups.put(
 			"ProduceRating_Discretized2",
 			FactorUtil.getDescretizedProduceRatingLookup2()
 		);
@@ -890,6 +896,11 @@ public class ScoreProvider implements DataAccess {
 			FactorUtil.getDepartmentNormalizedReorderRateConverter(66)
 		);
 		
+		rangeConverters.put(
+			"ReorderRate_Discretized",
+			FactorUtil.getDiscretizedReorderRateConverter(2)
+		);
+		
 		// SEASONALITY
 		rangeConverters.put(
 			"Seasonality",
@@ -899,6 +910,17 @@ public class ScoreProvider implements DataAccess {
 		rangeConverters.put(
 			"Seasonality_Discretized",
 			FactorUtil.getDiscretizedSeasonality()
+		);
+		
+		// ORIGINAL SCORES
+		rangeConverters.put(
+			"OriginalScores_Personalized",
+			FactorRangeConverter.getRawPersonalizedScores("Score")
+		);
+		
+		rangeConverters.put(
+			"OriginalScores_Global",
+			FactorRangeConverter.getRawGlobalScores("Score")
 		);
 		
 		
