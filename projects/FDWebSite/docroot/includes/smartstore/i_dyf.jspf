@@ -56,7 +56,8 @@ if (request.getAttribute("is_ajax") != null) {
 	formUri = request.getParameter("formUri");
 } else {
 %>
-<br/><br/>
+
+<%@page import="com.freshdirect.webapp.util.ProductLabelling"%><br/><br/>
 <script>
 function dyf_ajax_failureCallback() {
 	alert("Failed to retrieve new recommendations.");
@@ -255,15 +256,17 @@ if (request.getParameter("nodyf") == null) {
 
 	int txProdCount = 0; // transactional products counter
 	int colCount = 0;
+	int rank=1;
 %>
-	<!-- === NEW PART === -->
 	<tr>
 	<fd:PIPRow id="pi" impressionRow="<%= piRow %>" isBlankCell="isBlankCell" productImage="prodImage" shouldRenderBlankCells="<%= false %>">
 <%
 		// product cell
 		//
 		ProductModel product = pi.getProductModel();
-	
+		ProductLabelling pl = new ProductLabelling(user, product);
+		pl.setHideYourFave(true);
+		String actionURI = FDURLUtil.getProductURI(product, recommendations.getVariant().getId(), "dyf", pl.getTrackingCode(), rank);
 
 		// cell renderning starts here		
 %>
@@ -275,7 +278,7 @@ if (request.getParameter("nodyf") == null) {
 				<tr>
 					<!-- Product Image -->
 					<td style="padding: 0; height: <%= rowHeight.intValue() %>px; vertical-align: bottom; text-align: center">
-						<fd:ProductImage product="<%= product %>" action="<%= FDURLUtil.getProductURI(product, recommendations.getVariant()) %>" hideYourFave="true" />
+						<fd:ProductImage product="<%= product %>" action="<%= actionURI %>" hideYourFave="true" />
 					</td>
 				</tr>
 <%
@@ -333,6 +336,8 @@ if (request.getParameter("nodyf") == null) {
 									<input type="hidden" name="catId_dyf_<%= txProdCount %>" value="<%= product.getParentNode().getContentName() %>"/>
 									<input type="hidden" name="skuCode_dyf_<%= txProdCount %>" value="<%= tpi.getSku() %>"/>
 									<input type="hidden" name="quantity_dyf_<%= txProdCount %>" value="1"/>
+									<input type="hidden" name="rank_dyf_<%= txProdCount %>" value="<%= rank %>"/>
+									<% if (pl.getTrackingCode() != null) { %><input type="hidden" name="trkd_dyf_<%= txProdCount %>" value="<%= pl.getTrackingCode() %>"/><% } %>
 <%
 					// render options
 					for (Iterator iit = configuration.getOptions().entrySet().iterator(); iit.hasNext(); ) {
@@ -380,6 +385,8 @@ if (request.getParameter("nodyf") == null) {
 										<input type="hidden" name="catId_dyf_<%= txProdCount %>" value="<%= product.getParentNode().getContentName() %>"/>
 										<input type="hidden" name="skuCode_dyf_<%= txProdCount %>" value="<%= tpi.getSku() %>"/>
 										<input type="hidden" name="salesUnit_dyf_<%= txProdCount %>" value="<%= configuration.getSalesUnit() %>"/>
+										<input type="hidden" name="rank_dyf_<%= txProdCount %>" value="<%= rank %>"/>
+										<% if (pl.getTrackingCode() != null) { %><input type="hidden" name="trkd_dyf_<%= txProdCount %>" value="<%= pl.getTrackingCode() %>"/><% } %>
 <%
 					for (Iterator it_opts = configuration.getOptions().entrySet().iterator(); it_opts.hasNext();) {
 						Map.Entry entry = (Map.Entry) it_opts.next();
@@ -429,7 +436,7 @@ if (request.getParameter("nodyf") == null) {
 %>
 			<!-- product name, etc -->
 			<fd:ProductRating product="<%= product %>"/>
-			<a href="<%= FDURLUtil.getProductURI(product, recommendations.getVariant()) %>"><%@ include file="/includes/product/i_prd_name.jspf" %></a>
+			<a href="<%= actionURI %>"><%@ include file="/includes/product/i_prd_name.jspf" %></a>
 <%
 
 			String confDescription = null;
@@ -464,6 +471,7 @@ if (request.getParameter("nodyf") == null) {
             }
 %>
 		</td>
+<% ++rank; %>
 	</fd:PIPRow>
 	</tr>
 

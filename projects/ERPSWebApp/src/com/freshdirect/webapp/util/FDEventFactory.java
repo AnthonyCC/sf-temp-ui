@@ -113,7 +113,17 @@ public class FDEventFactory {
 		event.setTimestamp(new Date());
 		if (FD_ADD_TO_CART_EVENT.equalsIgnoreCase(event.getEventType())) {
 			event.setTrackingCode(request.getParameter("trk"));
-			event.setTrackingCodeEx(request.getParameter("trkd"));
+
+			if (request.getAttribute("atc_suffix") != null) {
+				// special case: ATC is generated during adding multiple items to cart
+				String suffix = (String) request.getAttribute("atc_suffix");
+
+				String trkd = request.getParameter("trkd" + suffix);
+				if (trkd != null)
+					event.setTrackingCodeEx(trkd);
+			} else {
+				event.setTrackingCodeEx(request.getParameter("trkd"));
+			}
 		}
 		event.setUrl(request.getRequestURI());
 		event.setQueryString(request.getQueryString());

@@ -1247,6 +1247,11 @@ public class FDShoppingCartControllerTag extends
 			theCartLine.setYmalSetId(ymalSetId);
 			theCartLine.setOriginatingProductId(originatingProductId);
 			theCartLine.setOrderLineId(originalOrderLineId);
+			
+			// record 'deals' status
+			if (suffix != null) {
+				request.setAttribute("atc_suffix", suffix);
+			}
 		}
 
 		return theCartLine;
