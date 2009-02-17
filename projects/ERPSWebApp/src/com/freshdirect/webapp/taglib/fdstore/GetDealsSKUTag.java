@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import com.freshdirect.fdstore.DealsHelper;
 import com.freshdirect.fdstore.FDCachedFactory;
@@ -43,7 +43,8 @@ public class GetDealsSKUTag extends AbstractGetterTag {
 		
 		Collection products=null;
 		String upperLimit=DealsHelper.getDealsUpperLimit()+".99";
-		Collection _products=FDCachedFactory.findSKUsByDeal((double)DealsHelper.getDealsLowerLimit(), Double.parseDouble(upperLimit), new ArrayList());
+		
+		Collection _products=FDCachedFactory.findSKUsByDeal((double)DealsHelper.getDealsLowerLimit(), Double.parseDouble(upperLimit), getSKUPrefixes());
 		if(_products!=null && _products.size()!=0) {
 			products=new ArrayList(_products.size());
 			FDProductInfo productInfo=null;
@@ -72,20 +73,21 @@ public class GetDealsSKUTag extends AbstractGetterTag {
 	
         return products;
 	}
-	/*
+
+
 	private List getSKUPrefixes() {
-		
-		  List skuPrefixes=new ArrayList(5);
-		  String _skuPrefixes=DealsHelper.getDealsSkuPrefixes();
-		  if(_skuPrefixes!=null && !"".equals(_skuPrefixes) && !DealsHelper.ALL_SKUS.equals(_skuPrefixes)) {
-			  StringTokenizer st=new StringTokenizer(_skuPrefixes,DealsHelper.SKU_PREFIX_SEPERATOR);
-			  while(st.hasMoreElements()) {
-				  skuPrefixes.add(st.nextToken()+"%");
-			  }
-		  }
+		List skuPrefixes=new ArrayList(5);
+		String _skuPrefixes=DealsHelper.getDealsSkuPrefixes();
+		if (_skuPrefixes!=null && !"".equals(_skuPrefixes) && !DealsHelper.ALL_SKUS.equals(_skuPrefixes)) {
+			StringTokenizer st=new StringTokenizer(_skuPrefixes,DealsHelper.SKU_PREFIX_SEPARATOR);
+			while(st.hasMoreElements()) {
+				skuPrefixes.add(st.nextToken()+"%");
+			}
+		}
 
 		return skuPrefixes;
-	}*/
+	}
+
 	public static class TagEI extends AbstractGetterTag.TagEI {
 
 		protected String getResultType() {

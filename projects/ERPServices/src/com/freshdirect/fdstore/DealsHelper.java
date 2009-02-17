@@ -4,7 +4,7 @@ public class DealsHelper {
 	
 	public static final String ALL_SKUS="ALL";
 	
-	public static final String SKU_PREFIX_SEPERATOR=",";
+	public static final String SKU_PREFIX_SEPARATOR=",";
 	
 	public static int getMaxFeaturedDealsForPage() {
 		return FDStoreProperties.getMaxFeaturedDealsForPage();
