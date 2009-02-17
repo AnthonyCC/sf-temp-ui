@@ -26,18 +26,19 @@ public class YourFavoritesInCategoryRecommendationService extends ManualOverride
     }
 
     protected void fillManualSlots(SessionInput input, CategoryModel category, int slots, List result) {
-        if (slots>0) {
-            String customerId = input.getCustomerId();
-            if (customerId!=null) {
-                Map userProductScores = ProductStatisticsProvider.getInstance().getUserProductScores(customerId);
-                if (userProductScores!=null && !userProductScores.isEmpty()) {
-                    ProductModelImpl pm = findMyMostFavoriteProduct(input, category, userProductScores, 0);
-                    if (pm!=null) {
-                        result.add(pm);
-                    }
+        String customerId = input.getCustomerId();
+        if (customerId!=null) {
+            Map userProductScores = ProductStatisticsProvider.getInstance().getUserProductScores(customerId);
+            if (userProductScores!=null && !userProductScores.isEmpty()) {
+                ProductModelImpl pm = findMyMostFavoriteProduct(input, category, userProductScores, 0);
+                if (pm!=null) {
+                    slots++;
+                    result.add(pm);
                 }
             }
-            
+        }
+        
+        if (slots>0) {
             super.fillManualSlots(input, category, slots, result);
         }
     }
