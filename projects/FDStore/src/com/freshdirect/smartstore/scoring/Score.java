@@ -44,9 +44,9 @@ public class Score implements Comparable {
         for (int i = 0; i < values.length; i++) {
             if (!(values[i] == sc.values[i])) {
                 if (values[i] > sc.values[i]) {
-                    return 1;
-                } else {
                     return -1;
+                } else {
+                    return 1;
                 }
             }
         }
