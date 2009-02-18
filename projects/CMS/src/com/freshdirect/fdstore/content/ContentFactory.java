@@ -256,38 +256,14 @@ public class ContentFactory {
 
 	private final static int DAYS_MAX = 128;
 	public Collection getNewProducts(final int days, final String deptId) throws FDResourceException {
-		final Integer cacheKey = new Integer(days + (deptId != null ? DAYS_MAX*deptId.hashCode() : 0) );
+		final ContentFactory cf = ContentFactory.getInstance();
+		final Integer cacheKey = new Integer(days);
 		if (!newProductsCache.containsKey(cacheKey)) {
 			newProductsCache.put(cacheKey, new BalkingExpiringReference(DAY_IN_MILLIS) {
 				protected Object load() {
 					try {
 						Collection skus = FDCachedFactory.getNewSkuCodes(days);
-						final ContentFactory cf = ContentFactory.getInstance();
 						List prods = skus != null ? cf.filterWholeProducts(skus) : Collections.EMPTY_LIST;
-						cf.filterProdsByDept(prods, deptId);
-						return new HashSet(prods);
-					} catch (FDResourceException e) {
-						LOGGER.info("failed to retrieve new sku codes for " + days + " days");
-						return null;
-					}
-				}
-			});
-		}
-    	return (Collection) ((BalkingExpiringReference) newProductsCache.get(cacheKey)).get();
-	}
-
-	private static final Map reintroducedProductsCache = Collections.synchronizedMap(new HashMap());
-	
-	public Collection getReintroducedProducts(final int days, final String deptId) throws FDResourceException {
-		final Integer cacheKey = new Integer(days + (deptId != null ? DAYS_MAX*deptId.hashCode() : 0) );
-		if (!reintroducedProductsCache.containsKey(cacheKey)) {
-			reintroducedProductsCache.put(cacheKey, new BalkingExpiringReference(DAY_IN_MILLIS) {
-				protected Object load() {
-					try {
-				    	Collection skus = FDCachedFactory.getReintroducedSkuCodes(days);
-						final ContentFactory cf = ContentFactory.getInstance();
-						List prods = skus != null ? cf.filterWholeProducts(skus) : Collections.EMPTY_LIST;
-						cf.filterProdsByDept(prods, deptId);
 						return prods;
 					} catch (FDResourceException e) {
 						LOGGER.info("failed to retrieve new sku codes for " + days + " days");
@@ -296,7 +272,45 @@ public class ContentFactory {
 				}
 			});
 		}
-    	return (Collection) ((BalkingExpiringReference) reintroducedProductsCache.get(cacheKey)).get();
+		Collection cached = (Collection) ((BalkingExpiringReference) newProductsCache.get(cacheKey)).get();
+		if (cached != null) {
+			List list = new ArrayList(cached);
+			LOGGER.info("returning " + list.size() + " new products for (" + days + "," + deptId + "), unfiltered");
+			cf.filterProdsByDept(list, deptId);
+			LOGGER.info("returning " + list.size() + " new products for (" + days + "," + deptId + ")");
+			return new HashSet(list);
+		} else
+			return null;
+	}
+
+	private static final Map reintroducedProductsCache = Collections.synchronizedMap(new HashMap());
+	
+	public Collection getReintroducedProducts(final int days, final String deptId) throws FDResourceException {
+		final Integer cacheKey = new Integer(days);
+		final ContentFactory cf = ContentFactory.getInstance();
+		if (!reintroducedProductsCache.containsKey(cacheKey)) {
+			reintroducedProductsCache.put(cacheKey, new BalkingExpiringReference(DAY_IN_MILLIS) {
+				protected Object load() {
+					try {
+				    	Collection skus = FDCachedFactory.getReintroducedSkuCodes(days);
+						List prods = skus != null ? cf.filterWholeProducts(skus) : Collections.EMPTY_LIST;
+						return prods;
+					} catch (FDResourceException e) {
+						LOGGER.info("failed to retrieve new sku codes for " + days + " days");
+						return null;
+					}
+				}
+			});
+		}
+		Collection cached = (Collection) ((BalkingExpiringReference) reintroducedProductsCache.get(cacheKey)).get();
+		if (cached != null) {
+			List list = new ArrayList(cached);
+			LOGGER.info("returning " + list.size() + " reintroduced products for (" + days + "," + deptId + "), unfiltered");
+			cf.filterProdsByDept(list, deptId);
+			LOGGER.info("returning " + list.size() + " reintroduced products for (" + days + "," + deptId + ")");
+			return list;
+		} else
+			return null;
 	}
 
 	/**
