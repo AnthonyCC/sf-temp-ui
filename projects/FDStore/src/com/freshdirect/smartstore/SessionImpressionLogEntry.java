@@ -26,7 +26,6 @@ public class SessionImpressionLogEntry implements Serializable {
 		super();
 		productImpressions = 0;
 		featureImpressions = 0;
-		startTime = new Date();
 	}
 	
 	/**
@@ -95,17 +94,11 @@ public class SessionImpressionLogEntry implements Serializable {
 		return startTime;
 	}
 
-	public void setStartTime(Date startTime) {
-		this.startTime = startTime;
-	}
 
 	public Date getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(Date endTime) {
-		this.endTime = endTime;
-	}
 
 	public String getVariantId() {
 		return variantId;
@@ -129,4 +122,10 @@ public class SessionImpressionLogEntry implements Serializable {
 			this.featureImpressions++;
 		}
 	}
+
+    public void setStartEndTime(Date startDate, Date endDate) {
+        this.startTime = startDate;
+        this.endTime = endDate;
+        
+    }
 }

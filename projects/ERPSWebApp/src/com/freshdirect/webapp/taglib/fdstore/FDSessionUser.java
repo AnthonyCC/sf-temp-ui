@@ -8,10 +8,9 @@
  */
 package com.freshdirect.webapp.taglib.fdstore;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +69,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	private int failedAuthorizations = 0;
 	private boolean healthWarningAcknowledged = false;
 	
+	private Date startDate;
+	private long lastRequestDate;
 	private Map impressions = new HashMap();
 
 	private String sessionId = null;
@@ -92,18 +93,20 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         LOGGER.debug("FDUser bound to session");
         this.saveCart();
         this.impressions.clear();
+        this.startDate = new Date();
+        this.lastRequestDate = startDate.getTime();
         sessionId = event.getSession().getId();
         
         // store cohort ID
         if (user.getCohortName() == null) {
-	        try {
-				user.createCohortName();
-				LOGGER.debug("Generated new cohort ID " + user.getCohortName() + " to user");
-			} catch (FDResourceException e) {
-				LOGGER.error("Failed to generate cohort ID for user");
-			}
+            try {
+                user.createCohortName();
+                LOGGER.debug("Generated new cohort ID " + user.getCohortName() + " to user");
+            } catch (FDResourceException e) {
+                LOGGER.error("Failed to generate cohort ID for user");
+            }
         } else {
-			LOGGER.debug("Assigned cohort ID " + user.getCohortName() + " to user");
+            LOGGER.debug("Assigned cohort ID " + user.getCohortName() + " to user");
         }
     }
 
@@ -114,29 +117,41 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         sessionId = null;
     }
     
+    /**
+     * update the last request date.
+     */
+    public void touch() {
+        lastRequestDate = System.currentTimeMillis();
+    }
+    
     private void saveImpressions() {
-    	if (!impressions.isEmpty()) {
-    		ArrayList logEntries = new ArrayList();
-    		logEntries.addAll(impressions.values());
-    		SessionImpressionLog.getInstance().saveLogEntries(logEntries);
-    	}
-	}
-
-    public void logImpression(String variant, int productCount) {
-    	if (sessionId == null)
-    		throw new IllegalStateException("current FD user not bound to session");
-    	
-    	SessionImpressionLogEntry entry = (SessionImpressionLogEntry) impressions.get(variant);
-    	if (entry == null) {
-    		entry = new SessionImpressionLogEntry(user.getPrimaryKey(), sessionId, variant);
-    		impressions.put(variant, entry);
-    	}
-    	
-   		entry.incrementImpressions(productCount);
+        if (!impressions.isEmpty()) {
+            ArrayList logEntries = new ArrayList();
+            logEntries.addAll(impressions.values());
+            Date endDate = new Date(lastRequestDate);
+            for (int i = 0; i < logEntries.size(); i++) {
+                ((SessionImpressionLogEntry) logEntries.get(i)).setStartEndTime(startDate, endDate);
+            }
+            SessionImpressionLog.getInstance().saveLogEntries(logEntries);
+        }
     }
 
-	public void saveCart() {
-    	this.saveCart(false);
+    public void logImpression(String variant, int productCount) {
+        if (sessionId == null) {
+            throw new IllegalStateException("current FD user not bound to session");
+        }
+        
+        SessionImpressionLogEntry entry = (SessionImpressionLogEntry) impressions.get(variant);
+        if (entry == null) {
+            entry = new SessionImpressionLogEntry(user.getPrimaryKey(), sessionId, variant);
+            impressions.put(variant, entry);
+        }
+
+        entry.incrementImpressions(productCount);
+    }
+
+    public void saveCart() {
+        this.saveCart(false);
     }
     
     public void saveCart(boolean forceSave) {

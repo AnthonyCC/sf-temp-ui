@@ -64,54 +64,58 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
     public int doStartTag() throws JspException {
         HttpSession session = pageContext.getSession();
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-		FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
+        FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
 
-		if (RobotRecognizer.isHostileRobot((HttpServletRequest)pageContext.getRequest())) {
+        if (RobotRecognizer.isHostileRobot((HttpServletRequest) pageContext.getRequest())) {
             doRedirect(true);
             return SKIP_BODY;
+        }
+
+        if (user != null) {
+            user.touch();
         }
         
         if (user == null) {
             // try to figure out user identity based on persistent cookie
             try {
                 LOGGER.debug("attempting to load user from cookie");
-                user = CookieMonster.loadCookie( (HttpServletRequest)pageContext.getRequest() );
+                user = CookieMonster.loadCookie((HttpServletRequest) pageContext.getRequest());
 
             } catch (FDResourceException ex) {
                 LOGGER.warn(ex);
             }
             if (user != null) {
                 LOGGER.debug("user was found!  placing in session");
-                session.setAttribute( SessionName.USER, user);
+                session.setAttribute(SessionName.USER, user);
             }
-            
-//          // new COS changes redirct corporate user to corporate page
-            if(user!=null)
-              LOGGER.debug("entering the corporate check"+user.getUserServiceType());
-            
-            LOGGER.debug("request.getRequestURI() :"+request.getRequestURI());
-                                        
-            if (user!=null && EnumServiceType.CORPORATE.equals(user.getUserServiceType())) {
-            	// only index page request will be redirected to corporate page
-            	if(request.getRequestURI().indexOf("index.jsp")!=-1){
-            			this.redirectPage = "/department.jsp?deptId=COS";
-            			doRedirect(true);
-            			return SKIP_BODY;
-            	}
+
+            // // new COS changes redirct corporate user to corporate page
+            if (user != null)
+                LOGGER.debug("entering the corporate check" + user.getUserServiceType());
+
+            LOGGER.debug("request.getRequestURI() :" + request.getRequestURI());
+
+            if (user != null && EnumServiceType.CORPORATE.equals(user.getUserServiceType())) {
+                // only index page request will be redirected to corporate page
+                if (request.getRequestURI().indexOf("index.jsp") != -1) {
+                    this.redirectPage = "/department.jsp?deptId=COS";
+                    doRedirect(true);
+                    return SKIP_BODY;
+                }
             }
-            
+
         }
-      
-        if ((user==null) ||
-        (user.getLevel()==FDSessionUser.GUEST && !guestAllowed) ||
-        (user.getLevel()==FDSessionUser.RECOGNIZED && !recognizedAllowed) ||
-        (user.isNotServiceable() && !user.isDepotUser() && !guestAllowed)) {
+
+        if ((user == null) || (user.getLevel() == FDSessionUser.GUEST && !guestAllowed) || (user.getLevel() == FDSessionUser.RECOGNIZED && !recognizedAllowed)
+                || (user.isNotServiceable() && !user.isDepotUser() && !guestAllowed)) {
             //
-            // redirect, unless this is a request from a friendly robot we want to let in
+            // redirect, unless this is a request from a friendly robot we want
+            // to let in
             //
-            if (guestAllowed && RobotRecognizer.isFriendlyRobot((HttpServletRequest)pageContext.getRequest())) {
+            if (guestAllowed && RobotRecognizer.isFriendlyRobot((HttpServletRequest) pageContext.getRequest())) {
                 //
-                // make sure the robot has a user in it's session so that pages won't blow up for it
+                // make sure the robot has a user in it's session so that pages
+                // won't blow up for it
                 //
                 if (user == null) {
                     FDUser robotUser = new FDUser(new PrimaryKey("robot"));
@@ -124,29 +128,26 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
                     session.setAttribute(USER, user);
                 }
             } else {
-                doRedirect(user==null);
+                doRedirect(user == null);
                 return SKIP_BODY;
             }
         }
-        if (this.id!=null) {
-            pageContext.setAttribute( this.id, user );
+        if (this.id != null) {
+            pageContext.setAttribute(this.id, user);
         }
-        
+
         /*
          * 
-         *  if this is a new session and the user types http://www.bestcellarsnewyork.com/
-         * redirect to http://www.bestcellarsnewyork.com/department.jsp?deptId=win
-         * 
-         * 
+         * if this is a new session and the user types
+         * http://www.bestcellarsnewyork.com/ redirect to
+         * http://www.bestcellarsnewyork.com/department.jsp?deptId=win
          */
-         
-         if (request.getServerName().toLowerCase().indexOf("bestcellarsnewyork") > -1 && session.isNew()) {
-			this.redirectPage = "/department.jsp?deptId=win";
-			doRedirect(true);
-         }
-         
 
-        
+        if (request.getServerName().toLowerCase().indexOf("bestcellarsnewyork") > -1 && session.isNew()) {
+            this.redirectPage = "/department.jsp?deptId=win";
+            doRedirect(true);
+        }
+
         return EVAL_BODY_INCLUDE;
     }
     
