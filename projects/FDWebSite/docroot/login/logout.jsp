@@ -6,6 +6,12 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
 <%
+
+FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+if (user!=null) {
+    user.touch();
+}
+
 // clear session
 java.util.Enumeration e = session.getAttributeNames();
 while (e.hasMoreElements()) {
