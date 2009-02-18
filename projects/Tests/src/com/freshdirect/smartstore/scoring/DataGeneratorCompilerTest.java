@@ -24,7 +24,7 @@ public class DataGeneratorCompilerTest extends TestCase {
 
     DataAccess            input;
 
-    SessionInput s = new SessionInput("ses1");
+    SessionInput          s = new SessionInput("ses1");
 
     protected void setUp() throws Exception {
         comp = new DataGeneratorCompiler();
@@ -82,28 +82,28 @@ public class DataGeneratorCompilerTest extends TestCase {
                 }
                 return mp;
             }
-            
+
             public double[] getVariables(String userId, ContentNodeModel contentNode, String[] variables) {
                 Map varMap = getVariables(contentNode);
                 double[] result = new double[variables.length];
-                
-                for (int i=0;i<variables.length;i++) {
+
+                for (int i = 0; i < variables.length; i++) {
                     String var = variables[i];
                     Number number = (Number) varMap.get(var);
-                    if (number!=null){ 
+                    if (number != null) {
                         result[i] = number.doubleValue();
                     }
                 }
-                
+
                 return result;
             }
 
         };
-        
+
     }
 
     public void testSimpleCompilers() throws CompileException {
-        
+
         {
             DataGenerator dataGenerator = comp.createDataGenerator("test1", "set + set2");
             assertNotNull("dataGenerator", dataGenerator);
@@ -194,6 +194,33 @@ public class DataGeneratorCompilerTest extends TestCase {
             assertEquals("result collection size", 1, collection.size());
             Collection strings = convertToStringList(collection);
             assertTrue("contains a2", strings.contains("a2"));
+        }
+    }
+
+    public void testAtLeastMost() throws CompileException {
+        {
+            DataGenerator dataGenerator = comp.createDataGenerator("atest6", "content:atLeast(afact,2)");
+            assertNotNull("dataGenerator", dataGenerator);
+            Collection collection = dataGenerator.generate(s, input);
+            assertNotNull("result collection", collection);
+            assertEquals("result collection size", 2, collection.size());
+            Collection strings = convertToStringList(collection);
+            assertTrue("contains a2", strings.contains("a2"));
+            assertTrue("contains a3", strings.contains("a3"));
+            assertEquals("afact factor", 1, dataGenerator.getFactors().size());
+            assertTrue("afact factor", dataGenerator.getFactors().contains("afact"));
+        }
+        {
+            DataGenerator dataGenerator = comp.createDataGenerator("atest7", "content:atMost(afact,2)");
+            assertNotNull("dataGenerator", dataGenerator);
+            Collection collection = dataGenerator.generate(s, input);
+            assertNotNull("result collection", collection);
+            assertEquals("result collection size", 2, collection.size());
+            Collection strings = convertToStringList(collection);
+            assertTrue("contains a2", strings.contains("a2"));
+            assertTrue("contains a1", strings.contains("a1"));
+            assertEquals("afact factor", 1, dataGenerator.getFactors().size());
+            assertTrue("afact factor", dataGenerator.getFactors().contains("afact"));
         }
     }
 
