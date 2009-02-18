@@ -80,7 +80,7 @@ public class ProductImageTag extends BodyTagSupport {
 					hideBurst, hideNew, hideDeals, hideYourFave);
 			
 			if (pl.isDisplayAny()) {
-				buf.append("<div style=\"padding: 0px; border: 0px; "
+				buf.append("<div style=\"padding: 0px; border: 0px; margin: 0px auto; "
 						+ "width: " + prodImg.getWidth() + "px; "
 						+ "height: " + prodImg.getHeight() + "px; "
 						+ "position: relative;\">");
@@ -96,9 +96,11 @@ public class ProductImageTag extends BodyTagSupport {
 					int deal = product.getDealPercentage();
 					buf.append("<img alt=\"SAVE " + deal + "\" src=\"/media_stat/images/deals/brst_sm_" + deal + ".gif\" style=\"border: 0px;\">");
 				} else if (pl.isDisplayFave()) {
-					buf.append("<img alt=\"NEW\" src=\"/media_stat/images/template/search/brst_sm_fave.png\" style=\"border: 0px;\">");
+					// we need width and height for png behavior
+					buf.append("<img alt=\"NEW\" src=\"/media_stat/images/template/search/brst_sm_fave.png\" width=\"35\" height=\"35\" style=\"border: 0px;\">");
 				} else if (pl.isDisplayNew()) {
-					buf.append("<img alt=\"NEW\" src=\"/media_stat/images/template/search/brst_sm_new.png\" style=\"border: 0px;\">");
+					// we need width and height for png behavior
+					buf.append("<img alt=\"NEW\" src=\"/media_stat/images/template/search/brst_sm_new.png\" width=\"35\" height=\"35\" style=\"border: 0px;\">");
 				}
 				
 				if (action != null) {

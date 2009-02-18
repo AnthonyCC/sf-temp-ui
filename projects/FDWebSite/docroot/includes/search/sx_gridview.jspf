@@ -91,7 +91,7 @@ int colCount = 0;
 			<table align="center">
 				<tr>
 					<td style="padding: 0; height: <%= rowHeight.intValue() %>px; vertical-align: bottom; text-align: center">
-						<fd:ProductImage product="<%= productNode %>" action="<%= prdURI %>" />
+						<fd:ProductImage product="<%= productNode %>" action="<%= prdURI %>" hideNew="true" />
 					</td>
 				</tr>
 			</table>

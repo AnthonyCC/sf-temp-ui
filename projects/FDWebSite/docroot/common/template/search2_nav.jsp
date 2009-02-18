@@ -14,12 +14,6 @@
 	<link rel="stylesheet" href="/assets/yui/container/assets/container.css" type="text/css">
 	<link rel="stylesheet" href="/assets/css/ccl.css" type="text/css">
 
-	<style type="text/css">
-		img {
-   			behavior: url("/assets/css/pngbehavior.htc");
-	  	}	
-	</style>
-
     <script type="text/javascript" src="/assets/javascript/common_javascript.js"></script>
 <%
 final String trk = "srch"; // tracking code

@@ -72,7 +72,7 @@ int rank = nav.getPageOffset()+1;
 %>
 <tr>
 	<td style="width: <%=prodImage.getWidth() %>px;text-align: center">
-			<fd:ProductImage product="<%= productNode %>" action="<%= actionURL %>" hideDeals="true" hideYourFave="true" />
+			<fd:ProductImage product="<%= productNode %>" action="<%= actionURL %>" hideDeals="true" hideYourFave="true" hideNew="true" />
 	</td>
 	<td style="vertical-align: middle; text-align:left">
 		<div class="text13" style="padding-left:10px; text-indent: -10px;">

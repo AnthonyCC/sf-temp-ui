@@ -57,7 +57,7 @@ function fixImage() {
 	}
 
 	// test for png
-	if (/\.png$/i.test(realSrc)) {
+	if (/\/media_stat\/images\/.*\.png$/i.test(realSrc)) {
 		// set blank image
 		element.src = blankSrc;
 		// set filter

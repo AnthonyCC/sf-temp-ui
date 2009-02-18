@@ -321,7 +321,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 	<form method="get" action="<%= request.getRequestURI() %>">
 	<%= urlG.buildHiddenField("siteFeature") %>
 	<%= urlG.buildHiddenField("view") %>
-	<% if (!"simple view".equals(view)) { %>
+	<% if (!"simple".equals(view)) { %>
     <div class="rec-chooser title14">
     	<span style="text-transform: uppercase;">Recommendation type:</span>&nbsp;<%
     		it = siteFeatures.iterator();
@@ -358,7 +358,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
     		}
     	%>
     </div>
-    <div class="rec-options" class="rec-chooser title14"<%= "simple view".equals(view) ? " style=\"display: none;\"" : "" %>>
+    <div class="rec-options" class="rec-chooser title14"<%= "simple".equals(view) ? " style=\"display: none;\"" : "" %>>
     	<table>
     		<tr>
     			<td class="text12">
@@ -459,7 +459,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
     		</tr>
     	</table>
     </div>
-    <% } // end if "simple view".equals...
+    <% } // end if "simple".equals...
     List recsA = null;
 	if (aRecService != null) {
 		System.err.println("variant A recommender: " + aRecService.getClass().getName());
@@ -483,7 +483,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 		<tr>
 			<td class="left">
 				<div class="var-cmp-head">
-				<% if (!"simple view".equals(view)) { %>
+				<% if (!"simple".equals(view)) { %>
 					<div class="title14">Variant A</div>
 					<% if (scriptedRecServ!=null) {  %>
 						<%= scriptedRecServ.getDescription() %>
@@ -547,7 +547,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 			</td>
 			<td class="right">
 				<div class="var-cmp-head">
-				<% if (!"simple view".equals(view)) { %>
+				<% if (!"simple".equals(view)) { %>
 					<div class="title14">Variant B</div>
 					<select name="variantB" onchange="this.form.submit();">
 					<%
@@ -627,7 +627,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 							ProductModel pm = (ProductModel) cnm;
 							boolean found = recsB != null && recsB.indexOf(cnm) >= 0;
 							String notFound = "";
-							if ("simple view".equals(view)) {
+							if ("simple".equals(view)) {
 								notFound = "";
 							} else if (!found) {
 								notFound = " style=\"background-color: #DFD;\"";								
@@ -640,7 +640,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 						</td>
 						<% } %>
 						<td class="pic"<%= notFound %>>
-							<fd:ProductImage product="<%= pm %>" />
+							<fd:ProductImage product="<%= pm %>" hideBurst="true" />
 						</td>
 						<td class="info"<%= notFound %>><div>
 								<span class="title16" title="<%= cnm.getContentName() %>"><%= cnm.getFullName() %></span><br>
@@ -672,7 +672,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 							String changeString = "N/A";
 							String changeColor = "unknown";
 							String notFound = "";
-							if ("simple view".equals(view)) {
+							if ("simple".equals(view)) {
 								notFound = "";
 							} else if (change != null) {
 								int ch = change.intValue();
@@ -692,13 +692,13 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 				%>
 					<tr<%= notFound %>>
 						<td class="pic">
-							<fd:ProductImage product="<%= pm %>" />
+							<fd:ProductImage product="<%= pm %>" hideBurst="true" />
 						</td>
 						<td class="info"><div>
 								<span class="title16" title="<%= cnm.getContentName() %>"><%= cnm.getFullName() %></span><br>
 								<span class="taxonomy text13"><%= JspMethods.getTaxonomy(pm, true) %></span>
 								<!-- <div class="score text12">Score: &lt;currently no data available&gt;</div> -->
-								<% if (!"simple view".equals(view)) { %>
+								<% if (!"simple".equals(view)) { %>
 								<div class="position text12 <%= changeColor %>"><%= changeString %></div>
 								<% } %>
 						</div></td>
