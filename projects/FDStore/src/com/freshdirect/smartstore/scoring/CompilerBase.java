@@ -75,14 +75,14 @@ public abstract class CompilerBase {
             public String toJavaCode(String name, List parameters) throws CompileException {
                 Expression p0 = (Expression) parameters.get(0);
                 Expression p1 = (Expression) parameters.get(1);
-                return "(" + p0.toJavaCode() + " <= " + p1.toJavaCode() + " ? 1 : 0)";
+                return "(" + p0.toJavaCode() + " >= " + p1.toJavaCode() + " ? 1 : 0)";
             }
         });
         parser.getContext().addFunctionDef("atMost", new Context.FunctionDef(2, 2, Expression.RET_INT) {
             public String toJavaCode(String name, List parameters) throws CompileException {
                 Expression p0 = (Expression) parameters.get(0);
                 Expression p1 = (Expression) parameters.get(1);
-                return "(" + p0.toJavaCode() + " >= " + p1.toJavaCode() + " ? 1 : 0)";
+                return "(" + p0.toJavaCode() + " <= " + p1.toJavaCode() + " ? 1 : 0)";
             }
         });
     }

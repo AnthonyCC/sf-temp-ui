@@ -414,7 +414,6 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 	    				</p>
 						<p>
 	    					<input type="text" name="generatorFunction" value="<%= StringEscapeUtils.escapeHtml(generatorFunction) %>"
-	    							onfocus="this.select();"
 									onkeypress="if ((event.which || event.keyCode) == 13) this.form.submit();"
 	    							title="generator function">
 
@@ -424,7 +423,6 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 	    				</p>
 						<p>
 	    					<input type="text" name="scoringFunction" value="<%= StringEscapeUtils.escapeHtml(scoringFunction) %>"
-	    							onfocus="this.select();"
 									onkeypress="if ((event.which || event.keyCode) == 13) this.form.submit();"
 	    							title="scoring function">
 						</p>

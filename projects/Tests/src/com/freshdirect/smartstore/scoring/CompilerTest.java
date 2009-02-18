@@ -122,8 +122,8 @@ public class CompilerTest extends TestCase {
                 assertEquals("fa*fb not in range ", 0, scores.get(1), 0.0001);
             }
 
-            assertEquals("fa less than 0.5", (fa <= 0.5 ? 1.0 : 0.0), scores.get(2), 0.00001);
-            assertEquals("fb greater than fa", (fa <= fb ? 1.0 : 0.0), scores.get(3), 0.00001);
+            assertEquals("fa less than 0.5", (fa >= 0.5 ? 1.0 : 0.0), scores.get(2), 0.00001);
+            assertEquals("fb greater than fa", (fa >= fb ? 1.0 : 0.0), scores.get(3), 0.00001);
         }
     }
 

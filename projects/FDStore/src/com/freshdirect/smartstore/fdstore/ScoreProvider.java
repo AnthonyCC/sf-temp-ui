@@ -432,7 +432,10 @@ public class ScoreProvider implements DataAccess {
 					for(Iterator i = scores.keySet().iterator(); i.hasNext();) {
 						ContentKey key = (ContentKey)i.next();
 						try {
-							result.add(ContentFactory.getInstance().getContentNodeByKey(key));
+						    ContentNodeModel nodeModel = ContentFactory.getInstance().getContentNodeByKey(key);
+						    if (nodeModel!=null) {
+						        result.add(nodeModel);
+						    }
 						} catch (Exception e) {
 							LOGGER.debug("Problem with " + key,e);
 						}
