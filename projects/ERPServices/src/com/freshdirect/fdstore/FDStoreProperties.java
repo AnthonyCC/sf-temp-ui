@@ -11,9 +11,7 @@ package com.freshdirect.fdstore;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.naming.Context;
@@ -151,10 +149,10 @@ public class FDStoreProperties {
 	private final static String SMARTSTORE_NEWPRODUCTS_DAYS = "fdstore.smartstore.newProducts.days";
 	
 	
-	// maximum number of entries (users) in smartstore personalized scores cache, default 150
+	// maximum number of entries (users) in smartstore personalized scores cache, default 500
 	private final static String SMARTSTORE_PERSONAL_SCORES_CACHE_ENTRIES = "fdstore.smartstore.personalScores.cache.entries";
 	
-	// timeout of a cache entry in seconds, default 60*60
+	// timeout of a cache entry in seconds, default 30*60
 	private final static String SMARTSTORE_PERSONAL_SCORES_CAHCE_TIMEOUT = "fdstore.smartstore.personalScores.cache.timeout";
 
 	
@@ -236,8 +234,6 @@ public class FDStoreProperties {
 
 	private final static Properties defaults = new Properties();
 
-	private static final Object CUT_OFF_TIME_TUE = null;
-	
 	private static final String HP_LETTER_MEDIA_PATH1="fdstore.mediapath.newcustomer";
 	
 	private static final String HP_LETTER_MEDIA_PATH2="fdstore.mediapath.oldcustomer";
@@ -411,8 +407,8 @@ public class FDStoreProperties {
 
 		defaults.put(SMARTSTORE_NEWPRODUCTS_DAYS, "30");
 		
-		defaults.put(SMARTSTORE_PERSONAL_SCORES_CACHE_ENTRIES, "120");
-		defaults.put(SMARTSTORE_PERSONAL_SCORES_CAHCE_TIMEOUT, "3600");
+		defaults.put(SMARTSTORE_PERSONAL_SCORES_CACHE_ENTRIES, "500");
+		defaults.put(SMARTSTORE_PERSONAL_SCORES_CAHCE_TIMEOUT, "" + (30*60));
 		
 		defaults.put(DISTRIBUTION_SAMPLES_DIR,"");
 
