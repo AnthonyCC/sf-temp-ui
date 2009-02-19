@@ -164,7 +164,9 @@ public class FDStoreRecommender {
      * 
      */
     private List filter(List models, final Collection cartItems, boolean includeCartItems) {
-    	models = UNIQUE_ITEMS.filter(models);
+        models = AVAILABLE_ITEMS.filter(models);
+
+        models = UNIQUE_ITEMS.filter(models);
 
         models = EXCLUDED_ITEMS.filter(models);
 
@@ -172,7 +174,6 @@ public class FDStoreRecommender {
         	models = new FilterCartItems(cartItems).filter(models);
         }
 
-        models = AVAILABLE_ITEMS.filter(models);
 
         return models;
 	}
