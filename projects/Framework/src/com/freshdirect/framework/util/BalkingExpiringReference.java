@@ -1,16 +1,34 @@
 package com.freshdirect.framework.util;
 
+import org.apache.log4j.Category;
+
+import com.freshdirect.framework.util.log.LoggerFactory;
+
+import edu.emory.mathcs.backport.java.util.concurrent.Executor;
+
 /**
  * @author csongor
  */
 public abstract class BalkingExpiringReference extends ExpiringReference {
-	private Thread loader = null;
+	final static Category LOGGER = LoggerFactory.getInstance(BalkingExpiringReference.class);
+
+	private Runnable loader = null;
 	
-	private class AsyncLoader extends Thread {
+	private Executor executor = new Executor() {
+		public void execute(Runnable r) {
+			Thread t = new Thread(r);
+			t.setDaemon(true);
+			t.start();
+		}
+	};
+	
+	private class AsyncLoader implements Runnable {
 		public void run() {
+			LOGGER.debug("task is scheduled for execution.");
 			Object _new = load();
 			
 			loaded(_new);
+			LOGGER.debug("task is finished.");
 		}	
 	}
 
@@ -20,6 +38,15 @@ public abstract class BalkingExpiringReference extends ExpiringReference {
 	 */
 	public BalkingExpiringReference(long refreshPeriod) {
 		super(refreshPeriod);
+	}
+
+	/**
+	 * @param refreshPeriod
+	 *            in milliseconds
+	 */
+	public BalkingExpiringReference(long refreshPeriod, Executor executor) {
+		super(refreshPeriod);
+		this.executor = executor;
 	}
 
 	protected boolean isExpired() {
@@ -39,9 +66,8 @@ public abstract class BalkingExpiringReference extends ExpiringReference {
 
 	public synchronized void reload() {
 		if (loader == null && (referent == null || isExpired())) {
-			loader = new AsyncLoader();
-			loader.setDaemon(true);
-			loader.start();
+			AsyncLoader asyncLoader = new AsyncLoader();
+			executor.execute(asyncLoader);
 		}
 	}
 	

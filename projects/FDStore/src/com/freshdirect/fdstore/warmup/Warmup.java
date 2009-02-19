@@ -121,6 +121,20 @@ public class Warmup {
 			t.start();
 		}
 
+		// initiating the asynchronous load of new and reintroduced products cache
+		contentFactory.getNewProducts(60, null);
+		contentFactory.getNewProducts(30, null);
+		contentFactory.getNewProducts(21, null);
+		contentFactory.getNewProducts(15, null);
+		contentFactory.getNewProducts(14, null);
+		contentFactory.getNewProducts(7, null);
+
+		contentFactory.getReintroducedProducts(60, null);
+		contentFactory.getReintroducedProducts(30, null);
+		contentFactory.getReintroducedProducts(21, null);
+		contentFactory.getReintroducedProducts(15, null);
+		contentFactory.getReintroducedProducts(14, null);
+		contentFactory.getReintroducedProducts(7, null);
 	}
 
 }

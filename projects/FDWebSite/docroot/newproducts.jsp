@@ -50,7 +50,6 @@ Integer daysInt = (Integer)DAYS.get( request.getParameter("days") );
 int days = daysInt==null ? DEFAULT_DAYS : daysInt.intValue();
 %>
 <%
-try {
 	boolean noNewProduct = false;
 	boolean noBackStock = false;
 %>
@@ -69,7 +68,7 @@ try {
 <tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td></tr>
 
 <tr><td>
-	 <SCRIPT LANGUAGE=JavaScript>
+	 <SCRIPT LANGUAGE="JavaScript">
 		<!--
 		OAS_AD('CategoryNote');
 		//-->
@@ -161,13 +160,8 @@ if (products.size()!=0){
 
 <% if (noNewProduct && noBackStock) {%>
 <tr><td>
-<br><b>No products within last <%=days%> days.</b></td>
+<br><b>No products within last <%=days%> days.</b>
 </td></tr>
-<% } %>
-
-<% } catch (Exception ex) {
-		ex.printStackTrace();
-%>
 <% } %>
 </table>
 </tmpl:put>

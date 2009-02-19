@@ -38,6 +38,11 @@ import com.freshdirect.framework.util.BalkingExpiringReference;
 import com.freshdirect.framework.util.LruCache;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
+import edu.emory.mathcs.backport.java.util.concurrent.Executor;
+import edu.emory.mathcs.backport.java.util.concurrent.LinkedBlockingQueue;
+import edu.emory.mathcs.backport.java.util.concurrent.ThreadPoolExecutor;
+import edu.emory.mathcs.backport.java.util.concurrent.TimeUnit;
+
 /**
  *
  *
@@ -253,13 +258,17 @@ public class ContentFactory {
 	private static final long DAY_IN_MILLIS = 1000 * 60 * 60 * 24;
 
 	private static final Map newProductsCache = Collections.synchronizedMap(new HashMap());
+	
+	// for linked blocking queue core pool size is the max number of threads
+	private static Executor threadPool = new ThreadPoolExecutor(1, 1, 60,
+			TimeUnit.SECONDS, new LinkedBlockingQueue(), new ThreadPoolExecutor.DiscardPolicy());
 
 	private final static int DAYS_MAX = 128;
 	public Collection getNewProducts(final int days, final String deptId) throws FDResourceException {
 		final ContentFactory cf = ContentFactory.getInstance();
 		final Integer cacheKey = new Integer(days);
 		if (!newProductsCache.containsKey(cacheKey)) {
-			newProductsCache.put(cacheKey, new BalkingExpiringReference(DAY_IN_MILLIS) {
+			newProductsCache.put(cacheKey, new BalkingExpiringReference(DAY_IN_MILLIS, threadPool) {
 				protected Object load() {
 					try {
 						Collection skus = FDCachedFactory.getNewSkuCodes(days);
@@ -289,7 +298,7 @@ public class ContentFactory {
 		final Integer cacheKey = new Integer(days);
 		final ContentFactory cf = ContentFactory.getInstance();
 		if (!reintroducedProductsCache.containsKey(cacheKey)) {
-			reintroducedProductsCache.put(cacheKey, new BalkingExpiringReference(DAY_IN_MILLIS) {
+			reintroducedProductsCache.put(cacheKey, new BalkingExpiringReference(DAY_IN_MILLIS, threadPool) {
 				protected Object load() {
 					try {
 				    	Collection skus = FDCachedFactory.getReintroducedSkuCodes(days);
