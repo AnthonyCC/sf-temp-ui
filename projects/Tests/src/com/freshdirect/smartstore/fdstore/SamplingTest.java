@@ -26,13 +26,15 @@ public class SamplingTest extends SamplingTestsBase {
 	private static Map indexMap = new HashMap();
 	
 	static {
-		indexMap.put(BANAN, new Integer(0));
-		indexMap.put(CITROM, new Integer(1));
-		indexMap.put(EPER, new Integer(2));
-		indexMap.put(CSERESZNYE, new Integer(3));
-		indexMap.put(MEGGY, new Integer(4));
-		indexMap.put(ZOLDALMA, new Integer(5));
-		indexMap.put(EGRES, new Integer(6));
+		indexMap.put(CITROMIZUBANAN, new Integer(0));
+		indexMap.put(BANAN, new Integer(1));
+		indexMap.put(CITROM, new Integer(2));
+		indexMap.put(EPER, new Integer(3));
+		indexMap.put(CSERESZNYE, new Integer(4));
+		indexMap.put(MEGGY, new Integer(5));
+		indexMap.put(ZOLDALMA, new Integer(6));
+		indexMap.put(EGRES, new Integer(7));
+		
 	}
 	
 	public void testDeterministic() {
@@ -40,7 +42,7 @@ public class SamplingTest extends SamplingTestsBase {
 		
 		List keys = service.recommend();
 		
-		assertTrue(keys.size() == 7);
+		assertTrue(keys.size() == 8);
 		assertEquals(getLabel(keys.get(0)),getLabel(EGRES));
 		assertEquals(getLabel(keys.get(1)),getLabel(ZOLDALMA));
 		assertEquals(getLabel(keys.get(2)),getLabel(MEGGY));
@@ -48,6 +50,7 @@ public class SamplingTest extends SamplingTestsBase {
 		assertEquals(getLabel(keys.get(4)),getLabel(EPER));
 		assertEquals(getLabel(keys.get(5)),getLabel(CITROM));
 		assertEquals(getLabel(keys.get(6)),getLabel(BANAN));
+		assertEquals(getLabel(keys.get(7)), getLabel(CITROMIZUBANAN));
 	}
 	
 	private String format(String s, int l) {
@@ -93,7 +96,7 @@ public class SamplingTest extends SamplingTestsBase {
 		}
 		
 		for(int i=0; i< expected.length; ++i) {
-			System.out.print(format(stuff[i],12));
+			System.out.print(format(stuff[i],17));
 			System.out.print(": ");
 			for(int j=0; j< expected[i].length; ++j) {
 				System.out.print(" C: ");
@@ -110,7 +113,8 @@ public class SamplingTest extends SamplingTestsBase {
 		for(int j=0; j< expected[0].length; ++j) {
 			averageError[j] = 0;
 			for(int i=0; i< expected.length; ++i) {
-				double error = ((double)Math.abs(X[i][j] - expected[i][j]))/(double)expected[i][j];
+				double error = 
+					((double)Math.abs(X[i][j] - expected[i][j]))/(expected[i][j] == 0 ? 1.0 : (double)expected[i][j]);
 				if (error > maxError) maxError = error;
 				averageError[j] += error;
 			}
@@ -139,11 +143,11 @@ public class SamplingTest extends SamplingTestsBase {
 	}
 	
 	public void testUniform() {
-		int [][] E = new int [7][7];
+		int [][] E = new int [8][8];
 		
-		for(int i=0; i< 7; ++i) {
-			for(int j=0; j< 7; ++j) {
-				E[i][j] = N/7;
+		for(int i=0; i< 8; ++i) {
+			for(int j=0; j< 8; ++j) {
+				E[i][j] = N/8;
 			}
 		}
 		
@@ -151,15 +155,15 @@ public class SamplingTest extends SamplingTestsBase {
 	}
 	
 	public void testLinear() {
-		int [][] E = new int [7][1];
+		int [][] E = new int [8][1];
 		
 		int t = 0;
-		for(int i=0; i<7; ++i) {
+		for(int i=0; i<8; ++i) {
 			E[i][0] = i+1;
 			t += E[i][0];
 		}
 		
-		for(int i=0; i< 7; ++i) {
+		for(int i=0; i< 8; ++i) {
 			E[i][0] = (E[i][0]*N)/t;
 		}
 		
@@ -167,15 +171,15 @@ public class SamplingTest extends SamplingTestsBase {
 	}
 	
 	public void testQuadratic() {
-		int [][] E = new int [7][1];
+		int [][] E = new int [8][1];
 		
 		int t = 0;
-		for(int i=0; i<7; ++i) {
+		for(int i=0; i<8; ++i) {
 			E[i][0] = (i+1)*(i+1);
 			t += E[i][0];
 		}
 		
-		for(int i=0; i< 7; ++i) {
+		for(int i=0; i< 8; ++i) {
 			E[i][0] = (E[i][0]*N)/t;
 		}
 		
@@ -183,15 +187,15 @@ public class SamplingTest extends SamplingTestsBase {
 	}
 	
 	public void testCubic() {
-		int [][] E = new int [7][1];
+		int [][] E = new int [8][1];
 		
 		int t = 0;
-		for(int i=0; i<7; ++i) {
+		for(int i=0; i<8; ++i) {
 			E[i][0] = (i+1)*(i+1)*(i+1);
 			t += E[i][0];
 		}
 		
-		for(int i=0; i< 7; ++i) {
+		for(int i=0; i< 8; ++i) {
 			E[i][0] = (E[i][0]*N)/t;
 		}
 		
@@ -200,74 +204,74 @@ public class SamplingTest extends SamplingTestsBase {
 	
 	
 	public void testPower() {
-		int [][] E = new int [7][1];
-		int [] T = new int[7];
+		int [][] E = new int [8][1];
+		int [] T = new int[8];
 		
 		int t = 0;
-		for(int i=0; i< 7; ++i) {
+		for(int i=0; i< 8; ++i) {
 			T[i] = (int)(10000.0*(Math.pow(i+1.0,exponent))/(Math.pow(7, exponent) - Math.pow(6,exponent)));
 			E[i][0] = i == 0 ? T[i] : T[i] - T[i-1];
 			t += E[i][0];
 		}
 		
 		
-		for(int i=0; i< 7; ++i) {
+		for(int i=0; i< 8; ++i) {
 			E[i][0] = ((E[i][0]*N)/t);
 		}
 		
-		for(int i=0; i<= 3; ++i) {
+		for(int i=0; i<= 4; ++i) {
 			int tmp = E[i][0];
-			E[i][0] = E[6-i][0];
-			E[6-i][0] = tmp;
+			E[i][0] = E[7-i][0];
+			E[7-i][0] = tmp;
 		}
 		
 		assertWithinPercent("power", E);
 	}
 	
 	public void testSQRT() {
-		int [][] E = new int [7][1];
-		int [] T = new int[7];
+		int [][] E = new int [8][1];
+		int [] T = new int[8];
 		
 		int t = 0;
-		for(int i=0; i< 7; ++i) {
-			T[i] = (int)((100.0*(Math.sqrt(i+1.0)))/(Math.sqrt(7) - Math.sqrt(6)));
+		for(int i=0; i< 8; ++i) {
+			T[i] = (int)((100.0*(Math.sqrt(i+1.0)))/(Math.sqrt(8) - Math.sqrt(7)));
 			E[i][0] = i == 0 ? T[i] : T[i] - T[i-1];
 			t += E[i][0];
 		}
 		
-		for(int i=0; i< 7; ++i) {
+		for(int i=0; i< 8; ++i) {
 			E[i][0] = ((E[i][0]*N)/t);
 		}
 		
-		for(int i=0; i<= 3; ++i) {
+		for(int i=0; i<= 4; ++i) {
 			int tmp = E[i][0];
-			E[i][0] = E[6-i][0];
-			E[6-i][0] = tmp;
+			E[i][0] = E[7-i][0];
+			E[7-i][0] = tmp;
 		}
 		
 		assertWithinPercent("sqrt", E);
 	}
 	
 	public void testHarmonic() {
-		int [][] E = new int [7][1];
-		int [] T = new int[7];
+		int [][] E = new int [8][1];
+		int [] T = new int[8];
 		
 		int t = 0;
-		for(int i=0; i< 7; ++i) {
-			T[i] = (int)(10000.0*(Math.log(i+1) + 1.57721)/(Math.log(7) - Math.log(6)));
+		for(int i=0; i< 8; ++i) {
+			T[i] = (int)(10000.0*(Math.log(i+1) + 1.57721)/(Math.log(8) - Math.log(7)));
 			E[i][0] = i == 0 ? T[i] : T[i] - T[i-1];
 			t += E[i][0];
 		}
 		
 		
-		for(int i=0; i< 7; ++i) {
+		for(int i=0; i< 8; ++i) {
 			E[i][0] = (int)(((long)E[i][0]*(long)N)/(long)t);
 		}
 		
-		for(int i=0; i<= 3; ++i) {
+		for(int i=0; i<= 4; ++i) {
 			int tmp = E[i][0];
-			E[i][0] = E[6-i][0];
-			E[6-i][0] = tmp;
+			E[i][0] = E[7-i][0];
+			E[7-i][0] = tmp;
 		}
 		
 		assertWithinPercent("harmonic", E);
@@ -284,7 +288,7 @@ public class SamplingTest extends SamplingTestsBase {
 			this.key = key;
 			this.parent = parent;
 			this.l = parent == null ? -1 : parent.level() + 1;
-			this.p = p;
+			this.p = p < 0 ? 0 : p;
 		}
 		
 		public ContentKeyPath() {
@@ -320,7 +324,7 @@ public class SamplingTest extends SamplingTestsBase {
 		}
 		
 		public List getChildren() {
-			ArrayList children = new ArrayList(7 - level());
+			ArrayList children = new ArrayList(8 - level());
 			double t = 0;
 			for(Iterator i = scoreMap.entrySet().iterator(); i.hasNext();) {
 				Map.Entry e = (Map.Entry)i.next();
@@ -341,8 +345,8 @@ public class SamplingTest extends SamplingTestsBase {
 	
 	public void testComplicated() {
 		
-		int [][] E = new int[7][7];
-		double [][] P = new double [7][7];
+		int [][] E = new int[8][8];
+		double [][] P = new double [8][8];
 		
 		List S = new LinkedList(new ContentKeyPath().getChildren());
 		
@@ -354,12 +358,18 @@ public class SamplingTest extends SamplingTestsBase {
 			}
 		}
 			
-		for(int i=0; i< 7; ++i) {
+		for(int i=1; i< 8; ++i) {
 			for(int j=0; j< 7; ++j) {
 				E[i][j] = (int)(P[i][j]*N);
 			}
 		}
 		
+		for(int i=0; i< 8; ++i) {
+			E[0][i] = E[i][7] = 0;
+		}
+		E[0][7] = N;
+		
 		assertWithinPercent("complicated", E);
 	}
+	
 }

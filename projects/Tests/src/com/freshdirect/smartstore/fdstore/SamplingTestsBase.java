@@ -35,6 +35,8 @@ public class SamplingTestsBase extends TestCase {
 	protected static ContentKey ZOLD_GYUMOLCS = new ContentKey(FDContentTypes.CATEGORY,"ZOLD_GYUMOLCS");
 	
 	protected static ContentKey GYUMOLCS = new ContentKey(FDContentTypes.CATEGORY,"GYUMOLCS");
+	
+	protected static ContentKey CITROMIZUBANAN = new ContentKey(FDContentTypes.PRODUCT,"CITROM IZU BANAN");
 
 	protected static Map categoryMap = new HashMap();
 	
@@ -66,6 +68,8 @@ public class SamplingTestsBase extends TestCase {
 		
 		scoreMap.put(ZOLDALMA, new Double(180));
 		scoreMap.put(EGRES, new Double(190));
+		
+		scoreMap.put(CITROMIZUBANAN, new Double(-20));
 	}
 
 	protected static double exponent = 0.67;		

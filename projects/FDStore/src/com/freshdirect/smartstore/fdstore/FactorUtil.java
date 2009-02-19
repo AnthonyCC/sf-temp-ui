@@ -302,7 +302,7 @@ public class FactorUtil {
 		};
 	}
 	
-	public static FactorRangeConverter getDiscretizedReorderRateConverter(int base) {
+	public static FactorRangeConverter getDiscretizedReorderRateConverter(double base) {
 		return new LogCDFDiscretizingConverter(base) {
 			
 			public double[] map(String userId, ScoreRangeProvider provider) throws Exception {
@@ -351,7 +351,7 @@ public class FactorUtil {
 	
 	
 	/**
-	 * Get discretizer utility.
+	 * Discretizer utility.
 	 * 
 	 * Discretization consists of:
 	 * <ol>
@@ -366,7 +366,7 @@ public class FactorUtil {
 	 */
 	protected static abstract class LogCDFDiscretizingConverter extends FactorRangeConverter {
 		
-		private int base;
+		private double base;
 		
 		// Frequency bucket
 		class Bucket {
@@ -386,8 +386,8 @@ public class FactorUtil {
 				cdf += c;
 			}
 			
-			public void caculateNorm(int total) {
-				int bar = total /= base;
+			public void caculateNorm(double total) {
+				double bar = total /= base;
 				norm = 1;
 				while(cdf < bar) {
 					bar /= base;
@@ -401,7 +401,7 @@ public class FactorUtil {
 			
 		}
 		
-		protected LogCDFDiscretizingConverter(int base) {
+		protected LogCDFDiscretizingConverter(double base) {
 			this.base = base;
 		}
 		
@@ -454,7 +454,7 @@ public class FactorUtil {
 		}
 	}
 	
-	public static FactorRangeConverter getLogDiscretizedPersonalConverter(final String column, int base) {
+	public static FactorRangeConverter getLogDiscretizedPersonalConverter(final String column, double base) {
 
 		return new LogCDFDiscretizingConverter(base) {
 			public double[] map(String userId, ScoreRangeProvider provider) throws Exception {
@@ -471,7 +471,7 @@ public class FactorUtil {
 		};
 	}
 	
-	public static FactorRangeConverter getLogDiscretizedGlobalConverter(final String column, int base) {
+	public static FactorRangeConverter getLogDiscretizedGlobalConverter(final String column, double base) {
 		
 		return new LogCDFDiscretizingConverter(base) {
 			public double[] map(String userId, ScoreRangeProvider provider) throws Exception {
@@ -489,7 +489,10 @@ public class FactorUtil {
 	}
 
 	/**
-	 * TODO
+	 * Get max normalized converter for the global factor with given source column.
+	 * 
+	 * Adjust the range such that all values are divided by the range max.
+	 * 
 	 */
 	public static FactorRangeConverter getMaxNormalizedGlobalConvereter(final String column) {
 		return new FactorRangeConverter() {
@@ -512,7 +515,8 @@ public class FactorUtil {
 	}
 	
 	/**
-	 * TODO
+	 * Get max normalized personalized converter for the given source column.
+	 * 
 	 */	
 	public static FactorRangeConverter getMaxNormalizedPersonalConverter(final String column) {
 		return new FactorRangeConverter() {
@@ -535,8 +539,18 @@ public class FactorUtil {
 	}
 	
 	
+	/**
+	 * Department specific statistics.
+	 *
+	 */
 	protected static abstract class DepartmentSpecificConverter extends FactorRangeConverter {
 		
+		/**
+		 * 
+		 * @param userId
+		 * @param provider
+		 * @return Map<DepartmentId:String,List<Index:Integer>>
+		 */
 		protected static Map departmentMap(String userId, ScoreRangeProvider provider) {
 			List products = provider.products(userId);
 			Map map = new HashMap();

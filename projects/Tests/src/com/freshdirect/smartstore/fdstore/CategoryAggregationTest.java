@@ -9,7 +9,7 @@ public class CategoryAggregationTest extends SamplingTestsBase {
 		MockRecommendationService service = new MockRecommendationService("semmi");
 		List items = service.getCandidates(false);
 		
-		assertTrue(items.size() == 7);
+		assertTrue(items.size() == 8);
 		assertEquals(getLabel(items.get(0)),getLabel(EGRES));
 		assertEquals(getLabel(items.get(1)),getLabel(ZOLDALMA));
 		assertEquals(getLabel(items.get(2)),getLabel(MEGGY));
@@ -20,7 +20,7 @@ public class CategoryAggregationTest extends SamplingTestsBase {
 		
 		items = service.getCandidates(true);
 		
-		assertTrue(items.size() == 7);
+		assertTrue(items.size() == 8);
 		assertEquals(getLabel(items.get(0)),getLabel(EGRES));
 		assertEquals(getLabel(items.get(1)),getLabel(ZOLDALMA));
 		assertEquals(getLabel(items.get(2)),getLabel(MEGGY));
@@ -38,7 +38,7 @@ public class CategoryAggregationTest extends SamplingTestsBase {
 		service.setCategoryMarker(ZOLD_GYUMOLCS);
 		
 		List items = service.getCandidates(false);
-		assertTrue(items.size() == 7);
+		assertTrue(items.size() == 8);
 		assertEquals(getLabel(items.get(0)),getLabel(EGRES));
 		assertEquals(getLabel(items.get(1)),getLabel(ZOLDALMA));
 		assertEquals(getLabel(items.get(2)),getLabel(MEGGY));
@@ -49,10 +49,11 @@ public class CategoryAggregationTest extends SamplingTestsBase {
 		
 		items = service.getCandidates(true);
 		
-		assertTrue(items.size() == 3);
+		assertTrue(items.size() == 4);
 		assertEquals(getLabel(items.get(0)), getLabel(PIROS_GYUMOLCS));
 		assertEquals(getLabel(items.get(1)), getLabel(ZOLD_GYUMOLCS));
 		assertEquals(getLabel(items.get(2)), getLabel(SARGA_GYUMOLCS));
+		assertEquals(getLabel(items.get(3)), getLabel(CITROMIZUBANAN));		
 	}
 	
 	public void testTopCategoryLevelAggregationMarkers() {
@@ -61,7 +62,7 @@ public class CategoryAggregationTest extends SamplingTestsBase {
 		service.setCategoryMarker(GYUMOLCS);
 		
 		List items = service.getCandidates(false);
-		assertTrue(items.size() == 7);
+		assertTrue(items.size() == 8);
 		assertEquals(getLabel(items.get(0)),getLabel(EGRES));
 		assertEquals(getLabel(items.get(1)),getLabel(ZOLDALMA));
 		assertEquals(getLabel(items.get(2)),getLabel(MEGGY));
@@ -72,8 +73,9 @@ public class CategoryAggregationTest extends SamplingTestsBase {
 		
 		items = service.getCandidates(true);
 		
-		assertTrue(items.size() == 1);
+		assertTrue(items.size() == 2);
 		assertEquals(getLabel(items.get(0)), getLabel(GYUMOLCS));
+		assertEquals(getLabel(items.get(1)), getLabel(CITROMIZUBANAN));
 		
 	}
 }

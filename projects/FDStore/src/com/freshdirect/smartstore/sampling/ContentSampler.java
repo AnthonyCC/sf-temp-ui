@@ -235,6 +235,9 @@ public class ContentSampler {
 			for(Iterator it = items.iterator(); it.hasNext();) {
 				RankedContent item = (RankedContent)it.next();
 				int w = weight(item.getScore());
+				if (w < 0) {
+					w = 0;
+				}
 				weights[i++] = w;
 			}
 			calculateCumulativeWeights(items.size());
@@ -255,6 +258,9 @@ public class ContentSampler {
 		
 		public void changeWeight(int i, double nw) {
 			int w = weight(nw);
+			if (w < 0) {
+				w = 0;
+			}
 			if (w != weights[i]) {
 				weights[i] = w;
 				recalculate = true;
