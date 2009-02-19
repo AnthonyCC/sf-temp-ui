@@ -27,12 +27,8 @@
 %>
 <TR <%="nutrition".equalsIgnoreCase(sortBy) && skuAvailable && i % 2 ==0 && "false".equalsIgnoreCase(request.getParameter("showThumbnails"))?"bgcolor='#EEEEEE'":""%>>
 <TD WIDTH="40" ALIGN="CENTER"><NOBR>
-<%  if (!skuAvailable) {  %>
-    <font color="#999999">NA</font><INPUT TYPE="hidden"
-<%  } else {    %>
-    <INPUT TYPE="text"
-<%  }   %>
-    NAME="<%= qtyFldName %>" SIZE="2" MAXLENGTH="2"  CLASS="text11" value="<%= !skuAvailable ? "" : request.getParameter(qtyFldName) %>"
+	<% if (!skuAvailable) { %><font color="#999999">NA</font><% } %>
+	<INPUT TYPE="<%= skuAvailable ? "text" : "hidden" %>" NAME="<%= qtyFldName %>" SIZE="2" MAXLENGTH="2"  CLASS="text11" value="<%= !skuAvailable ? "" : request.getParameter(qtyFldName) %>"
     onChange="javascript:chgQty('<%= qtyFldName %>', 0, <%= displayProduct.getQuantityMinimum() %>, <%= user.getQuantityMaximum(displayProduct) %>); syncQty('<%= itemShownIndex %>', 'big');">
 
 </NOBR></TD>
@@ -200,6 +196,7 @@
     <input type="hidden" name="skuCode_<%= itemShownIndex %>" value="<%= sku.getSkuCode() %>">
     <input type="hidden" name="catId_<%= itemShownIndex %>" value="<%= displayProduct.getParentNode() %>">
     <input type="hidden" name="productId_<%= itemShownIndex %>" value="<%= displayProduct %>">
+    <input type="hidden" name="trk_<%= itemShownIndex %>" value="<%= request.getParameter("trk") %>">
 <%  if(skuAvailable) {  %>
     <input type="image" name="addSingleToCart_<%= itemShownIndex %>" src="/media_stat/images/buttons/grocery_addtocart.gif" border="0" alt="Add this item to your cart">
 <%  }   %>

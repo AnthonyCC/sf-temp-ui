@@ -1,11 +1,16 @@
 package com.freshdirect.webapp.util;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspWriter;
 
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
@@ -17,6 +22,7 @@ import com.freshdirect.fdstore.content.ProxyProduct;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeVariant;
 import com.freshdirect.smartstore.Variant;
+import com.octetstring.vde.EntrySet;
 
 
 
@@ -281,26 +287,89 @@ public class FDURLUtil {
 	}
 
 
-	
-	public static void appendCommonParameters(StringBuffer buf, Map params ) {
+
+	/**
+	 * Extracts parameters from request and put them to a separate hash map
+	 * 
+	 * @param params Original request parameters
+	 * @param suffix target key suffix
+	 * @return Extracted parameters
+	 */
+	private static Map collectCommonParameters(Map params, String suffix) {
+		Map collectedParams = new HashMap();
+
+		if (suffix == null) {
+			suffix = "";
+		}
+
 		// tracking code 
 	    if (params.get("trk") != null) {
-	        buf.append("&trk=" + ((String[])params.get("trk"))[0]);
+	    	collectedParams.put("trk"+suffix, ((String[])params.get("trk"))[0]);
 			
-	        // additional DYF parameter
-	        if (params.get("variant") != null) {
-	            buf.append("&variant=" + safeURLEncode(((String[])params.get("variant"))[0]) );
-	        }
+	    	// additional DYF parameter
+	    	if (params.get("variant") != null) {
+	    		collectedParams.put("variant"+suffix, ((String[])params.get("variant"))[0]);
+	    	}
 
-	        // Smart Search parameters
-	        if (params.get("trkd") != null) {
-	            buf.append("&trkd=" + ((String[])params.get("trkd"))[0]);
-	            if (params.get("rank")!=null) {
-	                buf.append("&rank=" + ((String[])params.get("rank"))[0]);
-	            }
-	        }
+	    	// Smart Search parameters
+	    	if (params.get("trkd") != null) {
+	    		collectedParams.put("trkd"+suffix, ((String[])params.get("trkd"))[0]);
+	    		if (params.get("rank")!=null) {
+	    			collectedParams.put("rank"+suffix, ((String[])params.get("rank"))[0]);
+	    		}
+	    	}
 	    }
+	    return collectedParams;
 	}
+
+
+
+	/**
+	 * Extracts parameters from request and put them to string buffer
+	 * 
+	 * @param buf<StringBuffer> Buffer that will have parameters
+	 * @param params Request parameters
+	 */
+	public static void appendCommonParameters(StringBuffer buf, Map params ) {
+		Map _p = collectCommonParameters(params, null);
+
+		for (Iterator it=_p.entrySet().iterator(); it.hasNext();) {
+			Map.Entry e = (Map.Entry) it.next();
+	        buf.append("&"+e.getKey()+"=" + e.getValue());
+		}
+	}
+
+	public static String getHiddenCommonParameters(Map params, String suffix) {
+		Map _p = collectCommonParameters(params, suffix);
+		StringWriter out = new StringWriter();
+		for (Iterator it=_p.entrySet().iterator(); it.hasNext();) {
+			Map.Entry e = (Map.Entry) it.next();
+			appendHiddenField(out, e.getKey().toString(), e.getValue().toString());
+		}
+		return out.toString();
+	}
+
+	/**
+	 * Put parameters to hidden input fields
+	 * 
+	 * @param out
+	 * @param params
+	 * @param suffix
+	 */
+	public static void appendCommonParameters(JspWriter out, Map params, String suffix) {
+		Map _p = collectCommonParameters(params, suffix);
+		for (Iterator it=_p.entrySet().iterator(); it.hasNext();) {
+			Map.Entry e = (Map.Entry) it.next();
+	        appendHiddenField(out, e.getKey().toString(), e.getValue().toString());
+		}
+	}
+	
+	private static void appendHiddenField(Writer out, String name, String value) {
+		try {
+			out.write("<input type=\"hidden\" name=\"" + name + "\" value=\"" + value + "\">\n");
+		} catch (IOException e) {}
+	}
+
 
 	/**
 	 * Build URL from request. Used in product.jsp to redirect to grocery page

@@ -1087,8 +1087,9 @@ public class FDShoppingCartControllerTag extends
 			catName = request.getParameter(paramCatId);
 
 		String prodName = request.getParameter(paramProductId);
-		String variantId = request.getParameter("variant"); // SmartStore
+
 		// variant tracking
+		String variantId = request.getParameter(suffix != null ? "variant"+suffix : "variant"); // SmartStore
 
 		boolean contentSpecified = !(prodName == null || prodName.length() == 0);
 

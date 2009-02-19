@@ -263,7 +263,7 @@ String syncProdSalesUnit = null;
 List skus = new ArrayList( itemsToDisplay );
 
 %>
-<script language="javascript" src="/assets/javascript/grocery_product.js"></script>
+<script type="text/javascript" src="/assets/javascript/grocery_product.js"></script>
 <%
 
 // iterate throught the list of items in the sorted set and remove all folders.  grab the brands in the process
@@ -557,6 +557,7 @@ if(productCode!=null && prodCatId !=null ) {
         </table>
 <br>
 <input type="image" name="addSingleToCart_big" src="/media_stat/images/buttons/add_to_cart.gif"  ALT="ADD THIS ITEM TO YOUR CART" width="93" height="20" HSPACE="2" VSPACE="2" border="0"><br>
+<%= FDURLUtil.getHiddenCommonParameters(request.getParameterMap(), "_big") %>
 <%@ include file="/shared/includes/product/i_minmax_note.jspf" %>
 <%@ include file="/includes/product/i_delivery_note.jspf" %>
 <%@ include file="/includes/product/i_cancellation_note.jspf" %>

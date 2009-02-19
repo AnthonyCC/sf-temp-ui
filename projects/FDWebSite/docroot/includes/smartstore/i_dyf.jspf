@@ -14,6 +14,7 @@
 %><%@ page import="com.freshdirect.webapp.util.ConfigurationStrategy"
 %><%@ page import="com.freshdirect.webapp.util.ConfigurationContext"
 %><%@ page import="com.freshdirect.webapp.util.ProductImpression"
+%><%@ page import="com.freshdirect.webapp.util.ProductLabelling"
 %><%@ page import="com.freshdirect.webapp.util.TransactionalProductImpression"
 %><%@ page import="com.freshdirect.webapp.util.FDURLUtil"
 %><%@ page import="com.freshdirect.framework.webapp.ActionResult"
@@ -57,7 +58,7 @@ if (request.getAttribute("is_ajax") != null) {
 } else {
 %>
 
-<%@page import="com.freshdirect.webapp.util.ProductLabelling"%><br/><br/>
+<br/><br/>
 <script>
 function dyf_ajax_failureCallback() {
 	alert("Failed to retrieve new recommendations.");
@@ -336,6 +337,8 @@ if (request.getParameter("nodyf") == null) {
 									<input type="hidden" name="catId_dyf_<%= txProdCount %>" value="<%= product.getParentNode().getContentName() %>"/>
 									<input type="hidden" name="skuCode_dyf_<%= txProdCount %>" value="<%= tpi.getSku() %>"/>
 									<input type="hidden" name="quantity_dyf_<%= txProdCount %>" value="1"/>
+									<input type="hidden" name="trk_dyf_<%= txProdCount %>" value="<%= recommendations.getVariant().getSiteFeature().getName().toLowerCase() %>">
+									<input type="hidden" name="variant_dyf_<%= txProdCount %>" value="<%= recommendations.getVariant().getId() %>"/>
 									<input type="hidden" name="rank_dyf_<%= txProdCount %>" value="<%= rank %>"/>
 									<% if (pl.getTrackingCode() != null) { %><input type="hidden" name="trkd_dyf_<%= txProdCount %>" value="<%= pl.getTrackingCode() %>"/><% } %>
 <%
@@ -385,6 +388,8 @@ if (request.getParameter("nodyf") == null) {
 										<input type="hidden" name="catId_dyf_<%= txProdCount %>" value="<%= product.getParentNode().getContentName() %>"/>
 										<input type="hidden" name="skuCode_dyf_<%= txProdCount %>" value="<%= tpi.getSku() %>"/>
 										<input type="hidden" name="salesUnit_dyf_<%= txProdCount %>" value="<%= configuration.getSalesUnit() %>"/>
+										<input type="hidden" name="trk_dyf_<%= txProdCount %>" value="<%= recommendations.getVariant().getSiteFeature().getName().toLowerCase() %>">
+										<input type="hidden" name="variant_dyf_<%= txProdCount %>" value="<%= recommendations.getVariant().getId() %>"/>
 										<input type="hidden" name="rank_dyf_<%= txProdCount %>" value="<%= rank %>"/>
 										<% if (pl.getTrackingCode() != null) { %><input type="hidden" name="trkd_dyf_<%= txProdCount %>" value="<%= pl.getTrackingCode() %>"/><% } %>
 <%
