@@ -22,7 +22,7 @@ import com.freshdirect.fdstore.content.ProxyProduct;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeVariant;
 import com.freshdirect.smartstore.Variant;
-import com.octetstring.vde.EntrySet;
+
 
 
 
@@ -136,6 +136,22 @@ public class FDURLUtil {
 
 		return uri.toString();
 	}
+
+
+
+	/**
+	 * Convenience method for recommended products
+	 * 
+	 * @param productNode
+	 * @param variant
+	 * @param trackingCodeEx
+	 * @param rank
+	 * @return
+	 */
+	public static String getProductURI(ProductModel productNode, Variant variant, String trackingCodeEx, int rank) {
+		return getProductURI(productNode, variant.getId(), variant.getSiteFeature().getName().toLowerCase(), trackingCodeEx, rank);
+	}
+
 
 
 	/**
