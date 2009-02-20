@@ -1,15 +1,12 @@
 package com.freshdirect.smartstore.fdstore;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.jsp.JspException;
 
 import com.freshdirect.TestUtils;
 import com.freshdirect.event.RecommendationEventsAggregate;
-import com.freshdirect.fdstore.aspects.ScoreFactorGlobalFactorsAspect;
 import com.freshdirect.fdstore.aspects.ScoreFactorGlobalNameAspect;
 import com.freshdirect.fdstore.aspects.ScoreFactorPersonalNameAspect;
 import com.freshdirect.fdstore.content.ContentNodeModel;

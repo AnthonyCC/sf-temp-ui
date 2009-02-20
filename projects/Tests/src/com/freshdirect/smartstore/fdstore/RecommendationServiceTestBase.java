@@ -94,7 +94,8 @@ public class RecommendationServiceTestBase extends TestCase {
             }
 
         });
-        aspectSystem.add(new ProductStatisticUserProviderAspect() {
+        ScoreProvider.setInstance(new ProductStatisticUserProviderAspect() {
+            
             public Map getUserProductScores(String userId) {
                 try {
                     Map map = new HashMap();
@@ -112,7 +113,6 @@ public class RecommendationServiceTestBase extends TestCase {
                 }
             }
         });
-
         
         RecommendationEventLoggerMockup eventLogger = new RecommendationEventLoggerMockup();
         RecommendationEventLogger.setInstance(eventLogger);

@@ -827,13 +827,19 @@ public class ScoreProvider implements DataAccess {
 		return personalizedScores.keySet();
 	}
 	
-	protected ScoreProvider() {	
+	protected ScoreProvider(boolean init) {
+	    if (init) {
 		LOGGER.info("Personalized cache entries: " + FDStoreProperties.getSmartstorePersonalizedScoresCacheEntries());
 		LOGGER.info("Personalized cache timeout (seconds): " + FDStoreProperties.getSmartstorePersonalizedScoresCacheTimeout());
 		
 		factorInfo = new FactorInfo();
 		
 		reloadFactorHandlers();
+	    }
+	}
+	
+	protected ScoreProvider() {
+	    this(true);
 	}
 	
 	

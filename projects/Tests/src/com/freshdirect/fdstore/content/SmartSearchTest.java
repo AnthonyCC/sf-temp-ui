@@ -34,6 +34,7 @@ import com.freshdirect.fdstore.aspects.ProductStatisticProviderAspect;
 import com.freshdirect.fdstore.aspects.ProductStatisticUserProviderAspect;
 import com.freshdirect.fdstore.content.ContentNodeTree.TreeElement;
 import com.freshdirect.fdstore.util.SearchNavigator;
+import com.freshdirect.smartstore.fdstore.ScoreProvider;
 import com.freshdirect.webapp.taglib.fdstore.SmartSearchTag;
 import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockPageContext;
@@ -106,7 +107,7 @@ public class SmartSearchTest extends TestCase {
             }
 
         });
-        aspectSystem.add(new ProductStatisticUserProviderAspect() {
+        ScoreProvider.setInstance(new ProductStatisticUserProviderAspect() {
             public Map getUserProductScores(String userId) {
                 try {
                     Map map = new HashMap();
