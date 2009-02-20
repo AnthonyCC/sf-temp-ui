@@ -143,7 +143,7 @@ if (currentCategory != null) {
 %>
 		<table cellpadding="0" cellspacing="0" width="550" border="0">
 			<tr>
-				<td class="title14" colspan="<%= products.size()*2 %>">Popular Items<br><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td>
+				<td class="title14" colspan="<%= products.size()*2 %>"><%= recommendations.getVariant().getServiceConfig().getFILabel() %><br><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td>
 			</tr>
 			<tr valign="bottom">
 <logic:iterate id='contentNode' collection="<%= products %>" type="com.freshdirect.fdstore.content.ProductModel"><%

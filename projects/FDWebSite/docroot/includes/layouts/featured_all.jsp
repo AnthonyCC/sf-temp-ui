@@ -110,7 +110,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
 		int ord = 1;
 %><table cellspacing="0" cellpadding="1" border="0" width="<%= tablewidth %>">
 	<tr valign="top">
-	    <td CLASS="text12bold" width="<%= tablewidth %>" colspan="<%= products.size()*2 %>">Our Favorites</td>
+	    <td CLASS="text12bold" width="<%= tablewidth %>" colspan="<%= products.size()*2 %>"><%= recommendations.getVariant().getServiceConfig().getFILabel() %></td>
 	</tr>
 	<tr valign="top" align="CENTER">
 <logic:iterate id='contentNode' collection="<%= products %>" type="com.freshdirect.fdstore.content.ProductModel"><%

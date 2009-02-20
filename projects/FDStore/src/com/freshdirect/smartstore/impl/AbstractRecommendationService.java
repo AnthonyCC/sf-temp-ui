@@ -19,6 +19,7 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -52,6 +53,7 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 	public static final String CKEY_EXPONENT = "exponent";
 	public static final String CKEY_PREZ_DESC = "prez_desc";
 	public static final String CKEY_PREZ_TITLE = "prez_title";
+	public static final String CKEY_FI_LABEL = "fi_label";
 
 
     protected Variant variant;
@@ -471,6 +473,12 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 
 		RecommendationServiceConfig cfg = variant.getServiceConfig();
 		
+		if (variant.getSiteFeature().equals(EnumSiteFeature.FEATURED_ITEMS)) {
+			if (cfg.get(CKEY_FI_LABEL) != null)
+				configMap.put(CKEY_FI_LABEL, cfg.get(CKEY_FI_LABEL));
+			else
+				configMap.put(CKEY_FI_LABEL, RecommendationServiceConfig.FI_DEFAULT_TITLE);
+		}
 
 		if (RecommendationServiceConfig.isPresentationIncluded(variant)) {
 			if (cfg.get(CKEY_PREZ_TITLE) != null)

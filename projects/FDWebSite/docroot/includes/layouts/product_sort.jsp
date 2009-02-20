@@ -101,7 +101,7 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
 		request.setAttribute("recommendationsRendered","true");
 		int ord = 1;
 %><TABLE CELLSPACING="0" CELLPADDING="1" BORDER="0" WIDTH="<%= tablewidth %>">
-	<TR VALIGN="TOP"><TD CLASS="text12bold" WIDTH="<%=tablewidth%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10"><BR>Our Favorites<BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="3"></TD>
+	<TR VALIGN="TOP"><TD CLASS="text12bold" WIDTH="<%=tablewidth%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10"><BR><%= recommendations.getVariant().getServiceConfig().getFILabel() %><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="3"></TD>
 	</TR>
 </TABLE>
 <font class="space4pix"><BR></font>

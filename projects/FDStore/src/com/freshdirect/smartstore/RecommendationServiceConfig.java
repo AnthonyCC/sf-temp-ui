@@ -31,6 +31,7 @@ public class RecommendationServiceConfig implements Serializable {
 
     public static final String PIP_DEFAULT_LABEL = "YOUR FAVORITES";
     public static final String PIP_DEFAULT_INNERTEXT = "These are some of the items you've purchased most often.";
+    public static final String FI_DEFAULT_TITLE = "Our Favorites";
     
     
 	/** Id of the variant. */
@@ -126,6 +127,9 @@ public class RecommendationServiceConfig implements Serializable {
 		return value;
 	}
 	
+	public String getFILabel() {
+		return get(AbstractRecommendationService.CKEY_FI_LABEL, FI_DEFAULT_TITLE);
+	}
 
 	public String getPresentationTitle() {
 		return get(AbstractRecommendationService.CKEY_PREZ_TITLE, PIP_DEFAULT_LABEL);
@@ -406,6 +410,10 @@ public class RecommendationServiceConfig implements Serializable {
 
 			keys.add(AbstractRecommendationService.CKEY_PREZ_TITLE);
 			keys.add(AbstractRecommendationService.CKEY_PREZ_DESC);
+		}
+		
+		if (variant.getSiteFeature().equals(EnumSiteFeature.FEATURED_ITEMS)) {
+			keys.add(AbstractRecommendationService.CKEY_FI_LABEL);
 		}
 		
 		
