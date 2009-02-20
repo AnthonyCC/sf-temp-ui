@@ -2223,6 +2223,7 @@
 				<include name="lucene-queries-2.2.0.jar"/>
 				<include name="lucene-spellchecker-2.2.0.jar"/>
 				<include name="jgroups-2.2.7.jar"/>
+				<include name="jxl.jar"/>
 			</lib>
 			<extra>
 				<zipfileset dir="${thirdparty.home}/slide" prefix="APP-INF/lib" includes="*.jar"/>
