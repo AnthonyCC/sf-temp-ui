@@ -298,6 +298,19 @@ public class ScoreProvider implements DataAccess {
 		return result;
 	}
 	
+	
+	/**
+	 * Get currently loaded factors.
+	 * @return Set<String> name of the factors that are actually loaded
+	 */
+	public Set getLoadedFactors() {
+		Set result = new HashSet();
+		result.addAll(storeLookups.keySet());
+		result.addAll(personalizedIndexes.keySet());
+		result.addAll(globalIndexes.keySet());
+		return result;
+	}
+	
 	// Map<Factor:String,IndexInDoubleArray:Integer> score index
 	// Score indexes tell what position the score is stored in globalScores or personalizesScores
 	// in the double array
@@ -737,6 +750,14 @@ public class ScoreProvider implements DataAccess {
 	// Map<Factor:String,StoreLookup>
 	private Map storeLookups = new HashMap();
 	
+	/**
+	 * Get all cached users.
+	 * @return Set<CustomerId:String>
+	 */
+	public Set getCachedCustomers() {
+		return personalizedScores.keySet();
+	}
+	
 	protected ScoreProvider() {	
 		LOGGER.info("Personalized cache entries: " + FDStoreProperties.getSmartstorePersonalizedScoresCacheEntries());
 		LOGGER.info("Personalized cache timeout (seconds): " + FDStoreProperties.getSmartstorePersonalizedScoresCacheTimeout());
@@ -745,6 +766,8 @@ public class ScoreProvider implements DataAccess {
 		
 		reloadFactorHandlers();
 	}
+	
+	
 	
 	public void reloadFactorHandlers() {
 		
@@ -773,22 +796,22 @@ public class ScoreProvider implements DataAccess {
 		);
 		
 		storeLookups.put(
-			"ProduceRating",
+			"QualityRating",
 			FactorUtil.getProduceRatingLookup()
 		);
 		
 		storeLookups.put(
-			"ProduceRating_Normalized",
+			"QualityRating_Normalized",
 			FactorUtil.getNormalizedProduceRatingLookup()
 		);
 		
 		storeLookups.put(
-			"ProduceRating_Discretized1",
+			"QualityRating_Discretized1",
 			FactorUtil.getDescretizedProduceRatingLookup1()
 		);
 		
 		storeLookups.put(
-			"ProduceRating_Discretized2",
+			"QualityRating_Discretized2",
 			FactorUtil.getDescretizedProduceRatingLookup2()
 		);
 		// Database scores
@@ -940,5 +963,7 @@ public class ScoreProvider implements DataAccess {
 		*/
 		
 	}
+	
+	
 	
 }

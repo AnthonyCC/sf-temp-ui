@@ -47,6 +47,10 @@ if (ServletFileUpload.isMultipartContent(request)) {
 					}
 				}
 				T = ScoreProvider.getInstance().getAllScores(customers);
+			} else if ("cust".equals(fileItem.getFieldName())) {
+				if ("cached".equals(fileItem.getString())) {
+					T = ScoreProvider.getInstance().getAllScores(new ArrayList(ScoreProvider.getInstance().getCachedCustomers()));
+				}
 			} else if ("format".equals(fileItem.getFieldName())) {
 				html = "html".equals(fileItem.getString());
 			} else if ("formula".equals(fileItem.getFieldName())) {
@@ -152,8 +156,8 @@ body {
 </style>
 <script>
 <%
-	ScoreProvider.getInstance().reloadFactorHandlers();
-	List factors = ScoreProvider.getInstance().acquireAllFactors();
+	Set factors = ScoreProvider.getInstance().getLoadedFactors();
+
 	List sortedFactorNames = new ArrayList(factors);
 	Collections.sort(sortedFactorNames);
 %>
@@ -204,10 +208,13 @@ function toggle() {
 	} else if (ch == "some") {
 		inp.innerHTML = 'Customers: <input type="file" name="customers"/>';
 		avalon.innerHTML = ALL_FACTORS;
+	} else if (ch == "cached") {
+		inp.innerHTML = '';
+		avalon.innerHTML = ALL_FACTORS;
 	} else {
 		inp.innerHTML = '';
 		avalon.innerHTML = GLOBAL_FACTORS;
-	}
+	} 
 }
 
 function togglef(checkbox) {
@@ -269,7 +276,20 @@ function toggle_help() {
 <table>
 <tr>
 <td bgcolor="#eeffdd" valign="top">
+<%
+	if (request.getParameter("reload") != null) {
+	        ScoreProvider.getInstance().reloadFactorHandlers();
+		ScoreProvider.getInstance().acquireAllFactors();
+%>
+		<i><font size="-2">(factors were reloaded @ <%=new java.util.Date()%>)</font></i></br>
+<%
+	}
+%>
 <b>Available factors</b>
+<form name="reload">
+<input type="hidden" name="reload" value="do"/>
+<input type="submit" value="reload factors"/>
+</form>
 <span id="avalon"></span>
 </td>
 <td bgcolor="#eeffdd" valign="top">
@@ -279,7 +299,8 @@ function toggle_help() {
 		<td bgcolor="#ddeeff" width="500">
 			<input type="radio" name="cust" value="one" onclick="toggle()"/> One customer<br/>
 			<input type="radio" name="cust" value="none" onclick="toggle()" checked/> No customer<br/>
-			<input type="radio" name="cust" value="some" onclick="toggle()"/> Several customers
+			<input type="radio" name="cust" value="some" onclick="toggle()"/> Several customers</br>
+			<input type="radio" name="cust" value="cached" onclick="toggle()"/> All cached customers
 		</td>
 	</tr>
 	<tr>
