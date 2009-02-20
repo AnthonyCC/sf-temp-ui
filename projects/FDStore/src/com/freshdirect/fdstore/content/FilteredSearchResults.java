@@ -26,6 +26,7 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.ContentNodeTree.TreeElement;
 import com.freshdirect.fdstore.util.RecipesUtil;
 import com.freshdirect.smartstore.fdstore.ProductStatisticsProvider;
+import com.freshdirect.smartstore.fdstore.ScoreProvider;
 
 /**
  * @author zsombor
@@ -675,7 +676,7 @@ public class FilteredSearchResults extends SearchResults implements Serializable
 
     public Map getUserProductScores() {
         if (userProductScores == null) {
-            userProductScores = ProductStatisticsProvider.getInstance().getUserProductScores(customerId);
+            userProductScores = ScoreProvider.getInstance().getUserProductScores(customerId);
         }
         return userProductScores;
     }

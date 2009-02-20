@@ -11,6 +11,7 @@ import com.freshdirect.fdstore.content.ProductModelImpl;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.ProductStatisticsProvider;
+import com.freshdirect.smartstore.fdstore.ScoreProvider;
 
 /**
  * @author zsombor
@@ -28,7 +29,7 @@ public class YourFavoritesInCategoryRecommendationService extends ManualOverride
     protected void fillManualSlots(SessionInput input, CategoryModel category, int slots, List result) {
         String customerId = input.getCustomerId();
         if (customerId!=null) {
-            Map userProductScores = ProductStatisticsProvider.getInstance().getUserProductScores(customerId);
+            Map userProductScores = ScoreProvider.getInstance().getUserProductScores(customerId);
             if (userProductScores!=null && !userProductScores.isEmpty()) {
                 ProductModelImpl pm = findMyMostFavoriteProduct(input, category, userProductScores, 0);
                 if (pm!=null) {

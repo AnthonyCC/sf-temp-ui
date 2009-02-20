@@ -1,7 +1,6 @@
 package com.freshdirect.smartstore.fdstore;
 
 import java.rmi.RemoteException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -18,7 +17,6 @@ import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.ejb.DyfModelHome;
 import com.freshdirect.smartstore.ejb.DyfModelSB;
-import com.freshdirect.smartstore.impl.SessionCache;
 
 /**
  * Product statistics provider.
@@ -41,12 +39,6 @@ public class ProductStatisticsProvider {
          */
         protected Map globalProductScores = new HashMap();
 
-        /**
-         * The user score cache.
-         */
-        SessionCache userScoreCache = new SessionCache(1000, 0.75f);
-	
-	
 	/**
 	 * Get provider instance.
 	 * @return instance (may throw a runtime exception if the instance cannot be created, and it was not cached)
@@ -80,26 +72,6 @@ public class ProductStatisticsProvider {
             globalProductScores = source.getGlobalProductScores();
         }
 	
-	/**
-	 * Get user specific product scores.
-	 * 
-	 * The higher the score, the more the user likes.
-	 * @return Map<{@link ContentKey},{@link Float}> productId->Score, never null
-	 */
-	public Map getUserProductScores(String erpCustomerId) {
-            try {
-                Map productFrequencies = (Map) userScoreCache.get(erpCustomerId);
-                if (productFrequencies == null) {
-                    productFrequencies = getModel().getProductFrequencies(erpCustomerId);
-                    userScoreCache.put(erpCustomerId, productFrequencies);
-                }
-                return productFrequencies;
-            } catch (RemoteException e) {
-                LOGGER.error("remote exception", e);
-                return Collections.EMPTY_MAP;
-            }
-        }
- 	
 	/**
 	 * Get global product score.
 	 * 

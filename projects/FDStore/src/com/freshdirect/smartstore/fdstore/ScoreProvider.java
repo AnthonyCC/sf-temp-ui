@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 
 import org.apache.log4j.Category;
 
@@ -56,7 +57,11 @@ import com.freshdirect.smartstore.scoring.DataAccess;
  */
 public class ScoreProvider implements DataAccess {
 	
-	private static final String[] DATASOURCE_NAMES = new String[] { "FeaturedItems", "CandidateLists", "PurchaseHistory" };
+    public static final String ORIGINAL_SCORES_GLOBAL = "OriginalScores_Global";
+
+    public static final String ORIGINAL_SCORES_PERSONALIZED = "OriginalScores_Personalized";
+
+    private static final String[] DATASOURCE_NAMES = new String[] { "FeaturedItems", "CandidateLists", "PurchaseHistory" };
 	
     // LOGGER
 	private static Category LOGGER = LoggerFactory.getInstance(ScoreProvider.class);
@@ -462,6 +467,67 @@ public class ScoreProvider implements DataAccess {
 	    return Collections.EMPTY_LIST;
 	}
 	
+        /**
+         * Get user specific product scores.
+         * 
+         * The higher the score, the more the user likes.
+         * @return Map<{@link ContentKey},{@link Float}> productId->Score, never null
+         */
+        public Map getUserProductScores(String erpCustomerId) {
+            Map scores = storePersonalizedScores(erpCustomerId);
+            
+            if (scores != null && !scores.isEmpty()) {
+                Number position = ((Number)personalizedIndexes.get(ORIGINAL_SCORES_PERSONALIZED));
+                if (position != null) {
+                    int value = position.intValue();
+                    Map originalScores = new HashMap();
+                    for (Iterator iter = scores.entrySet().iterator();iter.hasNext();) {
+                        Map.Entry entry = (Entry) iter.next();
+                        double[] values = (double[])entry.getValue();
+                        originalScores.put(entry.getKey(), new Float(values[value]));
+                    }
+                    return originalScores;
+                }
+            }
+            return Collections.EMPTY_MAP;
+        }
+
+        /**
+         * return true, if the user has score for that given content key.
+         * 
+         * @param erpCustomerId
+         * @param key
+         * @return
+         */
+        public boolean isUserHasScore(String erpCustomerId, ContentKey key) {
+            Map scores = storePersonalizedScores(erpCustomerId);
+            if (scores != null && !scores.isEmpty()) {
+                return scores.get(key)!=null;
+            }
+            return false;
+        }
+
+        /**
+         * Return the original personalized score for a customer.
+         * 
+         * @param erpCustomerId
+         * @param key
+         * @return
+         */
+        public Float getUserProductScore(String erpCustomerId, ContentKey key) {
+            Map scores = storePersonalizedScores(erpCustomerId);
+            
+            if (scores != null && !scores.isEmpty()) {
+                Number position = ((Number)personalizedIndexes.get(ORIGINAL_SCORES_PERSONALIZED));
+                if (position != null) {
+                    int value = position.intValue();
+                    double[] values = (double[]) scores.get(key);
+                    return new Float(values[value]);
+                }
+            }
+            return null;
+        }
+        
 	public String[] getDatasourceNames() {
 	    return DATASOURCE_NAMES;
 	}
@@ -491,6 +557,9 @@ public class ScoreProvider implements DataAccess {
 	 */
 	public synchronized List acquireFactors(Collection names) {
 		
+	    names.add(ORIGINAL_SCORES_GLOBAL);
+	    names.add(ORIGINAL_SCORES_PERSONALIZED);
+	    
 		factorInfo.reloadNames();
 	
 		Set personalizedFactors = new HashSet();
@@ -940,12 +1009,12 @@ public class ScoreProvider implements DataAccess {
 		
 		// ORIGINAL SCORES
 		rangeConverters.put(
-			"OriginalScores_Personalized",
+			ORIGINAL_SCORES_PERSONALIZED,
 			FactorRangeConverter.getRawPersonalizedScores("Score")
 		);
 		
 		rangeConverters.put(
-			"OriginalScores_Global",
+			ORIGINAL_SCORES_GLOBAL,
 			FactorRangeConverter.getRawGlobalScores("Score")
 		);
 		

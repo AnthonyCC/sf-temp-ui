@@ -17,6 +17,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.ProductStatisticsProvider;
+import com.freshdirect.smartstore.fdstore.ScoreProvider;
 import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
 import com.freshdirect.smartstore.sampling.RankedContent;
 
@@ -101,6 +102,6 @@ public class MostFrequentlyBoughtDyfVariant extends DYFService {
 	 * @return
 	 */
 	private Map getItemsFromAnalysis(String customerId) {
-	    return ProductStatisticsProvider.getInstance().getUserProductScores(customerId);
+	    return ScoreProvider.getInstance().getUserProductScores(customerId);
 	}
 }
