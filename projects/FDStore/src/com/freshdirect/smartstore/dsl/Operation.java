@@ -170,6 +170,19 @@ public class Operation extends Expression {
             }
             throw new CompileException(CompileException.TYPE_ERROR, "Operation between "+Expression.getTypeName(type0) + " "+operator + " "+Expression.getTypeName(type1));
         }
+        if (type0==RET_STRING) {
+            if (operator == '+') {
+                switch (type1) { 
+                    case RET_INT:
+                    case RET_FLOAT:
+                    case RET_STRING : 
+                        return RET_STRING;
+                    default : 
+                        throw new CompileException(CompileException.TYPE_ERROR, "Operation between "+Expression.getTypeName(type0) + " "+operator + " "+Expression.getTypeName(type1));
+                }
+            }
+            throw new CompileException(CompileException.TYPE_ERROR, "Operation between "+Expression.getTypeName(type0) + " "+operator + " "+Expression.getTypeName(type1));
+        }
         throw new CompileException(CompileException.SYNTAX_ERROR, "Unknown operator : '" + operator+"'");
     }
     

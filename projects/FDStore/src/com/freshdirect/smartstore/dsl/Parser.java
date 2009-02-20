@@ -30,6 +30,7 @@ public class Parser {
         tokenizer.ordinaryChar('+');
         tokenizer.ordinaryChar('-');
         tokenizer.ordinaryChar('*');
+        tokenizer.ordinaryChar('"');
         tokenizer.ordinaryChar('/');
 
         tokenizer.wordChars('a', 'z');
@@ -167,11 +168,37 @@ public class Parser {
                     current.add(oper);
                     break;
                 }
+                case '"': {
+                    current.add(new StringExp(parseString(context, tokenizer)));
+                    break;
+                }
                 default: {
-                    throw new CompileException(CompileException.SYNTAX_ERROR, "unknown tt:" + tt + "='" + (char) tt + ", svalue : " + tokenizer.sval);
+                    throw new CompileException(CompileException.SYNTAX_ERROR, "unknown tt:" + tt + "='" + (char) tt + "', svalue : " + tokenizer.sval);
                 }
             }
         } while (tt != StreamTokenizer.TT_EOF);
+    }
+
+    private String parseString(Context context, StreamTokenizer tokenizer) throws IOException, CompileException {
+        StringBuffer current = new StringBuffer();
+        int tt;
+        do {
+            tt = tokenizer.nextToken();
+            switch (tt) {
+                case StreamTokenizer.TT_EOF:
+                    throw new CompileException(CompileException.SYNTAX_ERROR, "Unexpected end of string: " + current );
+                case '"' : {
+                    return current.toString();
+                }
+                default : { 
+                    if (current.length()>0) {
+                        current.append(' ');
+                    }
+                    current.append(tokenizer.sval);
+                }
+            }
+        } while (tt != StreamTokenizer.TT_EOF);
+        return current.toString();
     }
 
     public static void main(String[] args) throws CompileException {

@@ -66,12 +66,10 @@ public class FunctionCall extends Expression {
             Expression exp = (Expression) params.get(i);
             exp.validate();
             int rtype = exp.getReturnType();
-            if (rtype == RET_FLOAT) {
-                paramTypes.append('f');
-            } else if (rtype == RET_INT) {
-                paramTypes.append('i');
+            if (rtype == RET_FLOAT || rtype == RET_INT || rtype == RET_STRING) {
+                paramTypes.append((char) rtype);
             } else {
-                throw new CompileException(CompileException.TYPE_ERROR, "Return type of '" + exp.toCode() + "' is neither float, nor int ! (" + rtype + ")");
+                throw new CompileException(CompileException.TYPE_ERROR, "Return type of '" + exp.toCode() + "' is neither float, nor int, nor string ! (" + rtype + ")");
             }
         }
         this.type = context.getFunctionReturnType(name, paramTypes.toString());

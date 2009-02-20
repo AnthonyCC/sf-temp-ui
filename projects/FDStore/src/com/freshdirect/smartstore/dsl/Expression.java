@@ -3,7 +3,6 @@
  */
 package com.freshdirect.smartstore.dsl;
 
-import javax.jms.IllegalStateException;
 
 public class Expression {
     
@@ -12,6 +11,7 @@ public class Expression {
     public static final int RET_INT       = 'i';
     public static final int RET_FLOAT     = 'f';
     public static final int RET_SET       = 's';
+    public static final int RET_STRING    = 't';
     
     Context context;
     int type = RET_VOID;

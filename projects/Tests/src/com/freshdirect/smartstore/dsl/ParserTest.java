@@ -2,14 +2,6 @@ package com.freshdirect.smartstore.dsl;
 
 import junit.framework.TestCase;
 
-import com.freshdirect.smartstore.dsl.BlockExpression;
-import com.freshdirect.smartstore.dsl.CompileException;
-import com.freshdirect.smartstore.dsl.Expression;
-import com.freshdirect.smartstore.dsl.FunctionCall;
-import com.freshdirect.smartstore.dsl.NumberExp;
-import com.freshdirect.smartstore.dsl.Operation;
-import com.freshdirect.smartstore.dsl.Parser;
-import com.freshdirect.smartstore.dsl.VariableCollector;
 import com.freshdirect.smartstore.dsl.Context.FunctionDef;
 import com.freshdirect.smartstore.dsl.Context.MultiReturnTypeFunctionDef;
 
@@ -27,6 +19,7 @@ public class ParserTest extends TestCase {
         parser.getContext().addFunctionDef("exp", new FunctionDef(1, 1, Expression.RET_FLOAT));
         parser.getContext().addFunctionDef("round", new FunctionDef(1, 1, Expression.RET_INT));
         parser.getContext().addFunctionDef("int", new FunctionDef(1, 1, Expression.RET_INT));
+        parser.getContext().addFunctionDef("cms", new FunctionDef(2, 2, Expression.RET_STRING));
 
         parser.getContext().addVariable("set", Expression.RET_SET);
         parser.getContext().addVariable("setx", Expression.RET_SET);
@@ -171,6 +164,20 @@ public class ParserTest extends TestCase {
         executeTestType("set * 3");
         executeTestType("3 + set");
     }
+    
+    public void testStringParsing() throws CompileException {
+        assertEquals("ret_string 0", Expression.RET_STRING, compile("\"node\"").getReturnType());
+        assertEquals("ret_string 1", Expression.RET_STRING, compile("cms(\"node\",\"value bvalue\")").getReturnType());
+        assertEquals("ret_string 2", Expression.RET_STRING, compile("\"node\" + \"value bvalue\"").getReturnType());
+        assertEquals("ret_string 3", Expression.RET_STRING, compile("\"node\" + 3").getReturnType());
+        assertEquals("ret_string 4", Expression.RET_STRING, compile("\"node\" + 3.6").getReturnType());
+
+        assertEquals("to_code 0", "cms(\"node\",\"value bvalue\")", compile("cms(\"node\",     \"value bvalue\")").toCode());
+        assertEquals("to_code 1", "\"node\" + \"value bvalue\"", compile("\"node\" + \"value bvalue\"").toCode());
+        assertEquals("to_code 2", "\"node\" + 3", compile("\"node\" + 3").toCode());
+        assertEquals("to_code 3", "\"node\" + 3.6", compile("\"node\" + 3.6").toCode());
+    }
+
 
     void executeTestType(String s) {
         try {
