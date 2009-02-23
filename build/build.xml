@@ -1267,6 +1267,7 @@
 					<include name="asm.jar"/>
 					<include name="cglib-2.1.jar"/>
 					<include name="jug-lgpl-2.0.0.jar"/>
+					<include name="jsonrpc-1.0.jar"/>
 					<!-- additional -->
 					<lib/>
 				</zipfileset>
