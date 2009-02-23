@@ -414,7 +414,16 @@ public class ScoreProvider implements DataAccess {
 	 * @return whether factor is global
 	 */
 	public boolean isGlobal(String factor) {
-		return globalIndexes.containsKey(factor) || storeLookups.containsKey(factor);
+		if (storeLookups.containsKey(factor)) return true;
+		try {
+			return !((FactorRangeConverter)rangeConverters.get(factor)).isPersonalized();
+		} catch (NullPointerException e) {
+			return false;
+		}
+	}
+	
+	public boolean isStoreLookup(String factor) {
+		return storeLookups.containsKey(factor);
 	}
 	
 	/**
@@ -423,7 +432,11 @@ public class ScoreProvider implements DataAccess {
 	 * @return whether factor is personalized
 	 */
 	public boolean isPersonalized(String factor) {
-		return personalizedIndexes.containsKey(factor);
+		try {
+			return ((FactorRangeConverter)rangeConverters.get(factor)).isPersonalized();
+		} catch (NullPointerException e) {
+			return false;
+		}
 	}
 
 	/**
@@ -560,7 +573,9 @@ public class ScoreProvider implements DataAccess {
 	    names.add(ORIGINAL_SCORES_GLOBAL);
 	    names.add(ORIGINAL_SCORES_PERSONALIZED);
 	    
-		factorInfo.reloadNames();
+	   
+	    
+	    factorInfo.reloadNames();
 	
 		Set personalizedFactors = new HashSet();
 
@@ -568,6 +583,7 @@ public class ScoreProvider implements DataAccess {
 		
 		Set rawPersonalizedFactors = new HashSet();
 		Set rawGlobalFactors = new HashSet();
+		
 		
 		List result = new ArrayList();
 		
@@ -619,6 +635,9 @@ public class ScoreProvider implements DataAccess {
 			globalIndexes.put(factor, new Integer(globalIndexes.size()));
 		}
 		
+		personalizedScores.clear();
+		globalScores.clear();
+		
 		try {
 			globalScores = loadGlobalDBScores();
 			LOGGER.info("Caching global scores");
@@ -626,7 +645,7 @@ public class ScoreProvider implements DataAccess {
 			LOGGER.debug("Could not cache global scores");
 			e.printStackTrace();
 			throw new FDRuntimeException(e);
-		}
+		}	
 		
 		return result;
 	}

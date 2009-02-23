@@ -6,6 +6,7 @@
 %><%@page import="java.util.Iterator"
 %><%@page import="java.util.Set"
 %><%@page import="java.util.Map"
+%><%@page import="java.util.Arrays"
 %><%@page import="java.util.List"
 %><%@page import="java.util.ArrayList"
 %><%@page import="java.io.PrintWriter"
@@ -13,7 +14,40 @@
 %><%@page import="java.text.NumberFormat"
 %><%@page import="com.freshdirect.smartstore.fdstore.ScoreProvider"
 %><%@page import="com.freshdirect.smartstore.fdstore.ScoresTable"
-%><%@page import="com.freshdirect.framework.util.CSVUtils"%><%
+%><%@page import="com.freshdirect.framework.util.CSVUtils"%><%!
+
+private String makeLinkString(Set loadedFactors, String factor, boolean glob) {
+	StringBuffer buffer = new StringBuffer();
+	buffer.
+		append("<li><input type=\\\"checkbox\\\" name=\\\"LF\\\" value=\\\"").
+		append(factor).
+		append("\\\" ");
+	if (ScoreProvider.getInstance().isStoreLookup(factor)) {
+		buffer.append("disabled=\\\"true\\\" checked=\\\"true\\\"");
+	} else if (loadedFactors.contains(factor)) {
+		buffer.append("checked=\\\"true\\\"");
+	}
+	buffer.append('>');
+	if (ScoreProvider.getInstance().isGlobal(factor)) {
+		buffer.append("<i>");
+	} 
+	buffer.append("<tt><span style=\\\"color: ");
+	if (ScoreProvider.getInstance().isGlobal(factor)) {
+		buffer.append("red");
+	} else {
+		buffer.append("blue");
+	}
+	buffer.
+		append("\\\" onclick=\\\"append(\'${").
+		append(factor).
+		append("}\')\\\">").
+		append(factor).
+		append("</tt>");
+	buffer.append("</span></li>");
+	return buffer.toString();
+}
+
+%><%
 if (ServletFileUpload.isMultipartContent(request)) {
 
 	NumberFormat nf = new DecimalFormat("#,####,###.######");
@@ -156,9 +190,20 @@ body {
 </style>
 <script>
 <%
+	if (request.getParameter("reload") != null) {
+	        ScoreProvider.getInstance().reloadFactorHandlers();
+		String[] values = request.getParameterValues("LF");
+		if (values != null) {
+			Set factorNames = new HashSet(Arrays.asList(values));
+			ScoreProvider.getInstance().acquireFactors(factorNames);
+		}
+	}
+%>
+<%
 	Set factors = ScoreProvider.getInstance().getLoadedFactors();
+	Set availableFactors = ScoreProvider.getInstance().getAvailableFactors();
 
-	List sortedFactorNames = new ArrayList(factors);
+	List sortedFactorNames = new ArrayList(availableFactors);
 	Collections.sort(sortedFactorNames);
 %>
 
@@ -166,20 +211,14 @@ body {
 var GLOBAL_FACTORS = "<ol><% 
 	for(Iterator i = sortedFactorNames.iterator(); i.hasNext(); ) {
 		String factor = i.next().toString();
-		if (ScoreProvider.getInstance().isGlobal(factor)) {
-			%><li><span style=\"color: red\" onclick=\"append('${<%=factor%>}')\"><%=factor%></span></li><%
-		}
+		%><%=makeLinkString(factors,factor,true)%><%
 	}
 %></ol>";
 
 var ALL_FACTORS = "<ol><%
 	for(Iterator i = sortedFactorNames.iterator(); i.hasNext(); ) {
 		String factor = i.next().toString();
-		if (ScoreProvider.getInstance().isGlobal(factor)) {
-			%><li><i><span style=\"color: red\" onclick=\"append('${<%=factor%>}')\"><%=factor%></span></i></tt></li><%
-		} else {
-			%><li><span style=\"color: blue\" onclick=\"append('${<%=factor%>}')\"><%=factor%></span></li><%
-		}
+		%><%=makeLinkString(factors,factor,false)%><%
 	}
 %></ol>";
 
@@ -276,21 +315,12 @@ function toggle_help() {
 <table>
 <tr>
 <td bgcolor="#eeffdd" valign="top">
-<%
-	if (request.getParameter("reload") != null) {
-	        ScoreProvider.getInstance().reloadFactorHandlers();
-		ScoreProvider.getInstance().acquireAllFactors();
-%>
-		<i><font size="-2">(factors were reloaded @ <%=new java.util.Date()%>)</font></i></br>
-<%
-	}
-%>
 <b>Available factors</b>
 <form name="reload">
 <input type="hidden" name="reload" value="do"/>
-<input type="submit" value="reload factors"/>
-</form>
+<input type="submit" value="load selected factors"/>
 <span id="avalon"></span>
+</form>
 </td>
 <td bgcolor="#eeffdd" valign="top">
 <form name="customers_form" method="post" enctype="multipart/form-data">
