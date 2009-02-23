@@ -447,7 +447,7 @@ public class FactorUtil {
 			
 			// assign the values
 			for(int i = 0; i< range.length; ++i) {
-				results[i] = ((Bucket)histo.get(new Double(range[i]))).normValue();
+				results[i] = range[i] == 0 ? 0 : ((Bucket)histo.get(new Double(range[i]))).normValue();
 			}
 			
 			return results;
