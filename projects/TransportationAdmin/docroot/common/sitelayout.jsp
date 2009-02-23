@@ -33,8 +33,11 @@
 			headID.appendChild(newCSS);
 		}
 	</script>
+	<tmpl:get name='yui-lib'/>
+	<tmpl:get name='gmap-lib'/>
+	
 </head>
- <body marginwidth="0" marginheight="0" border="0">
+ <body class="<tmpl:get name='yui-skin'/>" marginwidth="0" marginheight="0" border="0">
 	
 			<%
 				try {

@@ -119,6 +119,10 @@
 	     	<access-uris>georestriction.do,deletegeorestriction.do,editgeorestriction.do</access-uris>
 	     	<access-roles>TrnAdmin</access-roles>
 	     </menu>
+	     <menu id="GEO009" title="GMap" orientation="RIGHT" link="gmap.do?type=zone">
+	     	<access-uris>gmap.do</access-uris>
+	     	<access-roles>TrnAdmin,TrnGuest,TrnDispatch,TrnPlanning</access-roles>
+	     </menu>
          
 </menu>
 </menus>

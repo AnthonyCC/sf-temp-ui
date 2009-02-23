@@ -4,12 +4,16 @@ import java.util.Collection;
 
 import com.freshdirect.transadmin.dao.BaseManagerDaoI;
 import com.freshdirect.transadmin.dao.RestrictionManagerDaoI;
+import com.freshdirect.transadmin.dao.SpatialManagerDaoI;
 import com.freshdirect.transadmin.model.GeoRestriction;
 import com.freshdirect.transadmin.service.RestrictionManagerI;
+import com.freshdirect.transadmin.web.model.SpatialBoundary;
 
 public class RestrictionManagerImpl extends BaseManagerImpl implements RestrictionManagerI {
 	
 	private RestrictionManagerDaoI restrictionManagerDao = null;
+	
+	private SpatialManagerDaoI spatialManagerDao = null;
 	
 	protected BaseManagerDaoI getBaseManageDao() {
 		return getRestrictionManagerDao();
@@ -56,9 +60,21 @@ public class RestrictionManagerImpl extends BaseManagerImpl implements Restricti
 		return getRestrictionManagerDao().getGeoRestrictionDays(restrictionId);
 	}
 
+	public SpatialManagerDaoI getSpatialManagerDao() {
+		return spatialManagerDao;
+	}
 
+	public void setSpatialManagerDao(SpatialManagerDaoI spatialManagerDao) {
+		this.spatialManagerDao = spatialManagerDao;
+	}
+
+	public SpatialBoundary getGeoRestrictionBoundary(String code) {
+		return this.getSpatialManagerDao().getGeoRestrictionBoundary(code);
+	}
 	
-	
+	public SpatialBoundary getZoneBoundary(String code) {
+		return this.getSpatialManagerDao().getZoneBoundary(code);
+	}
 	
 }	
 	

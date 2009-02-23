@@ -25,6 +25,34 @@ public class ZoneManagerDaoOracleImpl implements ZoneManagerDaoI {
 	
 	private final static Category LOGGER = LoggerFactory.getInstance(ZoneManagerDaoOracleImpl.class);
 	
+	/* UseFull Queries
+			select * from dlv.GEO_RESTRICTION_BOUNDARY gr  
+    		where sdo_nn(gr.geoloc, SDO_GEOMETRY(2001, 8265, SDO_POINT_TYPE(-73.9591497, 40.7716796, NULL), NULL, NULL),'sdo_num_res=4') = 'TRUE'
+	
+    		select * from dlv.GEO_RESTRICTION_BOUNDARY gr  
+    		where sdo_within_distance(gr.geoloc, SDO_GEOMETRY(2001, 8265, SDO_POINT_TYPE(-73.9591497, 40.7716796, NULL), NULL, NULL),'distance=.5 unit=mile') = 'TRUE'
+    	
+    		select distinct z.zone_code ZONE_CODE from dlv.region r, dlv.region_data rd, dlv.zone z 
+            where r.id = rd.region_id 
+            and rd.id = z.region_data_id 
+            and (rd.start_date >= (select max(start_date) from dlv.region_data where start_date <= sysdate and region_id = r.id) 
+            or rd.start_date >= (select max(start_date) from dlv.region_data where start_date <= sysdate and region_id = r.id))
+			and sdo_nn(z.geoloc, SDO_GEOMETRY(2001, 8265, SDO_POINT_TYPE(-73.9591497, 40.7716796, NULL), NULL, NULL),'sdo_num_res=4') = 'TRUE'  
+            order by z.zone_code
+            
+            select distinct z.zone_code ZONE_CODE from dlv.region r, dlv.region_data rd, dlv.zone z 
+            where r.id = rd.region_id 
+            and rd.id = z.region_data_id 
+            and (rd.start_date >= (select max(start_date) from dlv.region_data where start_date <= sysdate and region_id = r.id) 
+            or rd.start_date >= (select max(start_date) from dlv.region_data where start_date <= sysdate and region_id = r.id))
+			and sdo_within_distance(z.geoloc, SDO_GEOMETRY(2001, 8265, SDO_POINT_TYPE(-73.9591497, 40.7716796, NULL), NULL, NULL),'distance=.5 unit=mile') = 'TRUE'	  
+            order by z.zone_code
+            
+    	*/			
+	
+	  
+
+	
 	public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }

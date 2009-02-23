@@ -100,7 +100,9 @@
 				<prop key="/deletegeorestriction.do">restrictionController</prop>					                
 				<prop key="/editgeorestriction.do">geoRestrictionFormController</prop>
 
-
+				<prop key="/asyncgeographyprovider.do">asyncGeographyController</prop>
+				
+				<prop key="/gmap.do">geographyController</prop>
 			</props>
 		</property>
 	</bean>
@@ -197,7 +199,7 @@
 		 	<prop key="/georestriction.do">geoRestrictionHandler</prop>					                
  		 	<prop key="/deletegeorestriction.do">geoRestrictionDeleteHandler</prop>
 
-
+			<prop key="/gmap.do">geographicBoundaryHandler</prop>
 		</props>
 		</property>
 	</bean>
@@ -433,7 +435,23 @@
         <property name="formView" value="geoRestrictionEdit" />
 	</bean>
 	
+	<bean name="asyncGeographyController" class="com.freshdirect.transadmin.web.json.GeographyProviderController">
+		<property name="restrictionManagerService" ref="restrictionManager"/>
+		<property name="ajaxServices">
+			<map>
+				<entry key="AsyncGeographyProvider" value="com.freshdirect.transadmin.web.json.IGeographyProvider" />				
+			</map>
+		</property>
+	</bean>
 	
+	
+	
+	<bean id="geographyController" class="com.freshdirect.transadmin.web.GeographyController">
+		<property name="methodNameResolver" ref="transAdminControllerResolver"/>
+        <property name="domainManagerService" ref="domainManager"/>
+        <property name="restrictionManagerService" ref="restrictionManager"/>        
+        <property name="zoneManagerService" ref="zoneManager"/>
+	</bean>
 	    
 	<bean id="employeeValidator" class="com.freshdirect.transadmin.web.validation.EmployeeValidator"/>
 	<bean id="zoneValidator" class="com.freshdirect.transadmin.web.validation.ZoneValidator"/>
