@@ -32,10 +32,16 @@ private String makeLinkString(Set loadedFactors, String factor, boolean glob) {
 		buffer.append("<i>");
 	} 
 	buffer.append("<tt><span style=\\\"color: ");
-	if (ScoreProvider.getInstance().isGlobal(factor)) {
-		buffer.append("red");
+	if (loadedFactors.contains(factor)) {
+		if (ScoreProvider.getInstance().isGlobal(factor)) {
+			buffer.append("red");
+		} else if (glob) {
+			buffer.append("#aaaaaa");
+		} else {
+			buffer.append("blue");
+		}
 	} else {
-		buffer.append("blue");
+		buffer.append("#999999");
 	}
 	buffer.
 		append("\\\" onclick=\\\"append(\'${").
@@ -318,7 +324,7 @@ function toggle_help() {
 <b>Available factors</b>
 <form name="reload">
 <input type="hidden" name="reload" value="do"/>
-<input type="submit" value="load selected factors"/>
+<input type="submit" value="load only selected factors"/>
 <span id="avalon"></span>
 </form>
 </td>
