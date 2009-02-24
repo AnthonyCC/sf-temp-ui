@@ -1,5 +1,7 @@
 alter table cust.ss_variant_params modify key varchar2(256);
 
+delete from cust.ss_variants where type = 'composite';
+
 INSERT INTO CUST.SS_VARIANTS ( ID, CONFIG_ID, FEATURE, TYPE ) VALUES ( 
 'dyf_scr_calc1', NULL, 'DYF', 'scripted'); 
 INSERT INTO CUST.SS_VARIANTS ( ID, CONFIG_ID, FEATURE, TYPE ) VALUES ( 
