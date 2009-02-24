@@ -88,8 +88,22 @@ public abstract class ListSampler implements IConfigurable {
 	 * @return a randomly chosen index
 	 */
 	public int next(int n) {
-		if (n == 1) return 0;
-		int w = R.nextInt(cumulativeWeight(n-1,n))+1;			
+		// there is only one element
+		if (n == 1) {
+			return 0;
+		}
+		
+		int cw = cumulativeWeight(n-1, n);
+		
+		// all elements have been zeroed out (e.g. negatives)
+		// there is "no" information left to choose from
+		// the candidates, but it is known that there are
+		// n of them: pick one uniformly randomly
+		if (cw == 0) {
+			return R.nextInt(n);
+		}
+		
+		int w = R.nextInt(cw) + 1;			
 		
 		int l = 0;
 		int h = n;
