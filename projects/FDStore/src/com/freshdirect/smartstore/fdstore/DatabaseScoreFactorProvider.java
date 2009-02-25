@@ -1,6 +1,7 @@
 package com.freshdirect.smartstore.fdstore;
 
 import java.rmi.RemoteException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -38,6 +39,9 @@ public class DatabaseScoreFactorProvider {
 
 	public Map getPersonalizedFactors(String erpCustomerId, List factors) {
 		try {
+			if (erpCustomerId == null) {
+				return Collections.EMPTY_MAP;
+			}
 			return getSessionBean().getPersonalizedFactors(erpCustomerId, factors);
 		} catch (RemoteException e) {
 			LOGGER.warn(e);

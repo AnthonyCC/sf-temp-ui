@@ -487,6 +487,9 @@ public class ScoreProvider implements DataAccess {
          * @return Map<{@link ContentKey},{@link Float}> productId->Score, never null
          */
         public Map getUserProductScores(String erpCustomerId) {
+        	if (erpCustomerId == null) {
+        		return Collections.EMPTY_MAP;
+        	}
             Map scores = storePersonalizedScores(erpCustomerId);
             
             if (scores != null && !scores.isEmpty()) {
@@ -528,6 +531,9 @@ public class ScoreProvider implements DataAccess {
          * @return
          */
         public Float getUserProductScore(String erpCustomerId, ContentKey key) {
+        	if (erpCustomerId == null) {
+        		return null;
+        	}
             Map scores = storePersonalizedScores(erpCustomerId);
             
             if (scores != null && !scores.isEmpty()) {
