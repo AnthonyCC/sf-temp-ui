@@ -1825,6 +1825,7 @@
 			<pathelement location="${thirdparty.home}/standard.jar"/>
 			<pathelement location="${thirdparty.home}/extremecomponents-1.0.1.jar"/>  
 			<pathelement location="${thirdparty.home}/poi-3.0-rc4-20070503.jar"/>
+			<pathelement location="${thirdparty.home}/fop-0.20.5.jar"/>
 		</path>
 		<trycatch>
 			<try>
