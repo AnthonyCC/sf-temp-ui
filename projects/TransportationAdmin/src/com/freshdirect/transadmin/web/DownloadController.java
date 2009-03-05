@@ -24,6 +24,7 @@ public class DownloadController extends AbstractMultiActionController  {
 		if(strFilePath != null) {
 			File outputFile = new File(strFilePath);
 			response.setBufferSize((int)outputFile.length());
+			
 			response.setHeader("Content-Disposition", "attachment; filename=\""+outputFile.getName()+"\"");
 			response.setContentType("application/x-download");
 			response.setHeader("Pragma", "public");

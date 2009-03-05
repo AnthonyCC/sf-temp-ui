@@ -13,4 +13,7 @@ public interface IAreaModel {
 	boolean getNeedsLoadBalance();
 	void setNeedsLoadBalance(boolean needsLoadBalance);
 	
+	boolean isDepot();
+	void setDepot(boolean isDepot);
+	
 }

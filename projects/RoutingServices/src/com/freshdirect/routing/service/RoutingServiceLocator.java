@@ -75,5 +75,11 @@ public class RoutingServiceLocator {
 		return service.getTransportationWebService(
 							(new URL(RoutingServicesProperties.getTransportationSuiteProviderURL())));
 	}
+	
+	public TransportationWebService_PortType getTransportationSuiteService(String deliveryType) throws ServiceException, MalformedURLException{
+		TransportationWebService_Service service = new TransportationWebService_ServiceLocator();
+		return service.getTransportationWebService(
+							(new URL(RoutingServicesProperties.getTransportationSuiteProviderURL(deliveryType))));
+	}
 
 }

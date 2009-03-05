@@ -76,7 +76,7 @@
               <ec:column property="routeNumberId.routeDate" title="Route Date"/>
           <ec:column property="routeNumberId.cutOffId" title="Cut Off"/>
               <ec:column property="routeNumberId.areaCode" title="Area"/>
-              <ec:column property="currentVal" title="Current Value"/>
+              <ec:column property="currentVal" title="No of Routes"/>
             </ec:row>
           </ec:table>
     </div>  

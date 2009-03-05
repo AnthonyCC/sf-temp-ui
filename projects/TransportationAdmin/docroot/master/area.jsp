@@ -51,12 +51,12 @@
 							  <ec:column property="name" title="Area Name"/>
 							  <ec:column property="description" title="Description"/>
 							  <ec:column property="prefix" title="Prefix" width="10px"/> 
-							  <ec:column property="deliveryModel" title="Delivery Model" width="20px"/> 
-							  <ec:column property="needsLoadBalance" title="Load Balance" width="20px"/> 
-							  <ec:column property="loadBalanceFactor" title="Balance Factor" width="20px"/>
-							  <ec:column format="com.freshdirect.routing.constants.EnumBalanceBy" width="20px" cell="enumcol" property="balanceBy" title="Balance By"/>                        
-							  <ec:column property="active" title="Route w/ UPS" width="20px"/>
-							  
+							  <ec:column property="deliveryModel" title="Delivery Model" width="18px"/> 
+							  <ec:column property="needsLoadBalance" title="Load Balance" width="18px"/> 
+							  <ec:column property="loadBalanceFactor" title="Balance Factor" width="18px"/>
+							  <ec:column format="com.freshdirect.routing.constants.EnumBalanceBy" width="18px" cell="enumcol" property="balanceBy" title="Balance By"/>                        
+							  <ec:column property="active" title="Route w/ UPS" width="18px"/>
+							  <ec:column property="isDepot" title="Depot" width="18px"/>
 							</ec:row>
 						  </ec:table>
 					   </form> 

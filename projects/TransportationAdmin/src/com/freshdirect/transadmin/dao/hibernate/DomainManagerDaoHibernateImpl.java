@@ -1,23 +1,29 @@
 package com.freshdirect.transadmin.dao.hibernate;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.springframework.dao.DataAccessException;
+import org.springframework.orm.hibernate3.HibernateCallback;
 
 import com.freshdirect.transadmin.dao.DomainManagerDaoI;
 import com.freshdirect.transadmin.model.DispositionType;
-import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.model.EmployeeRoleType;
 import com.freshdirect.transadmin.model.Region;
+import com.freshdirect.transadmin.model.RouteMappingId;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
 import com.freshdirect.transadmin.model.TrnEmployee;
-import com.freshdirect.transadmin.model.TrnRoute;
 import com.freshdirect.transadmin.model.TrnTruck;
-import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.model.ZonetypeResource;
@@ -116,21 +122,70 @@ public class DomainManagerDaoHibernateImpl
 		return getDataList("TrnCutOff Order By  sequenceNo");
 	}
 
-	public Collection getRouteNumberGroup(String date, String cutOff, String area) throws DataAccessException {
-
-		StringBuffer strBuf = new StringBuffer();
-		strBuf.append("from TrnRouteNumber tr");
-		strBuf.append(" where tr.id.routeDate='").append(date).append("'");
+	/*public Map getRouteNumberGroup(String date, String cutOff, String groupCode) throws DataAccessException {
+		
+		final Map result = new HashMap();
+		final StringBuffer strBuf = new StringBuffer();
+		strBuf.append("select tr.rd, tr.ci , tr.gc, count(*) from (");
+		strBuf.append("select tx.routeMappingId.routeDate rd, tx.routeMappingId.cutOffId ci, tx.routeMappingId.groupCode gc, tx.routeMappingId.routeID ri");
+		strBuf.append(" from RouteMapping tx ");
+		strBuf.append(" where tx.route_date='").append(date).append("'");
 
 		if(cutOff != null) {
-			strBuf.append(" and tr.id.cutOffId='").append(cutOff).append("'");
+			strBuf.append(" and tx.cutoff_id='").append(cutOff).append("'");
 		}
 
-		if(area != null) {
-			strBuf.append(" and tr.id.areaCode='").append(area).append("'");
+		if(groupCode != null) {
+			strBuf.append(" and tx.group_code='").append(groupCode).append("'");
 		}
-
-		return (Collection) getHibernateTemplate().find(strBuf.toString());
+		
+		strBuf.append(" group by tx.route_date, tx.cutoff_id , tx.group_code, tx.route_id) tr");
+		strBuf.append(" group by tr.rd, tr.ci , tr.gc");
+		strBuf.append(" order by tr.rd, tr.ci , tr.gc ");
+		this.getHibernateTemplate().execute(new HibernateCallback() {
+			 public Object doInHibernate(Session session) throws HibernateException, SQLException {
+			 
+				 Query query = session.createQuery(strBuf.toString());
+				 for (Iterator it = query.iterate(); it.hasNext();) {
+					 Object[] row = (Object[]) it.next();
+					 result.put(new RouteMappingId((Date)row[0], (String)row[1], (String)row[2], null, null), row[3]);
+				 }
+				 return null;
+			 }
+		});
+			 
+		return result;
+	}*/
+	
+	public void saveRouteNumberGroup(final Map routeMapping) throws DataAccessException {
+		
+		List _routeMapping = new ArrayList();
+		if(routeMapping != null) {
+			Iterator _iterator = routeMapping.keySet().iterator();
+			while(_iterator.hasNext()) {
+				final RouteMappingId mappingId = (RouteMappingId)_iterator.next();
+				_routeMapping.addAll((Collection)routeMapping.get(mappingId));
+				this.getHibernateTemplate().execute(new HibernateCallback() {
+					 public Object doInHibernate(Session session) throws HibernateException, SQLException {
+					 
+						 //Query query = session.createQuery("delete from RouteMapping where routeMappingId.routeDate = :rdate and routeMappingId.cutOffId = :coid and routeMappingId.groupCode = :gcode");
+						 Query query = session.createQuery("delete from RouteMapping where ROUTE_DATE = :rdate and CUTOFF_ID = :coid and GROUP_CODE = :gcode");
+						 query.setDate("rdate", mappingId.getRouteDate());
+						 query.setString("coid", mappingId.getCutOffId());
+						 query.setString("gcode", mappingId.getGroupCode());
+						 
+						 int rowCount = query.executeUpdate();
+					     System.out.println("Rows affected: " + rowCount);
+						 return null;
+					 }
+				});
+			}
+			this.saveEntityList(_routeMapping);
+		}
+	}
+	
+	public Collection getRouteMapping(String routeDate, String routeId) throws DataAccessException {
+		return getDataList("RouteMapping tr WHERE tr.routeMappingId.routeDate='"+routeDate+"' and tr.routeMappingId.routeID='"+routeId+"'");
 	}
 
 	public Collection getDeliveryModels() throws DataAccessException {

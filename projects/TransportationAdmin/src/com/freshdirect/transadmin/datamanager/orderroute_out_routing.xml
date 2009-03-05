@@ -28,9 +28,20 @@
 				<record-element length="6" beanref="rowBean.stopArrivalTime" type="time">  
 					 <conversion-option name="format" value="HHmmss"/>
                 </record-element>
+                <record-element length="6" beanref="rowBean.stopDepartureTime" type="time">  
+					 <conversion-option name="format" value="HHmmss"/>
+                </record-element>
 				<record-element length="6" beanref="rowBean.routeStartTime" type="time">                                                                               
 					 <conversion-option name="format" value="HHmmss"/>
                 </record-element>
+                
+                <record-element length="50" beanref="rowBean.address" type="char"/>
+                <record-element length="30" beanref="rowBean.city" type="char"/>
+                <record-element length="20" beanref="rowBean.state" type="char"/>
+                <record-element length="10" beanref="rowBean.zipcode" type="char"/>
+                <record-element length="12" beanref="rowBean.latitude" type="char"/>
+                <record-element length="12" beanref="rowBean.longitude" type="char"/> 
+                
             </line>
         </record-definition>
     </record>

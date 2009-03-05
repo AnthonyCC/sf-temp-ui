@@ -1,10 +1,11 @@
 package com.freshdirect.routing.service;
 
-import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.routing.model.IDeliveryModel;
+import com.freshdirect.routing.model.IDrivingDirection;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 
 public interface IDeliveryService {
@@ -24,5 +25,9 @@ public interface IDeliveryService {
 	Map getDeliveryZoneDetails()  throws RoutingServiceException;
 	
 	List getLateDeliveryOrders(String query) throws RoutingServiceException;
+	
+	List getRoutes(Date routeDate, String internalSessionID, String routeID) throws RoutingServiceException;
+	
+	IDrivingDirection buildDriverDirections(List destinations)  throws RoutingServiceException;
 	
 }

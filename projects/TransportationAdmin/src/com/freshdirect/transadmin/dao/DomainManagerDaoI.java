@@ -1,21 +1,20 @@
 package com.freshdirect.transadmin.dao;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.springframework.dao.DataAccessException;
 
 import com.freshdirect.transadmin.model.DispositionType;
-import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.model.EmployeeRoleType;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
 import com.freshdirect.transadmin.model.TrnEmployee;
-import com.freshdirect.transadmin.model.TrnRoute;
 import com.freshdirect.transadmin.model.TrnTruck;
-import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.model.TrnZoneType;
+import com.freshdirect.transadmin.model.Zone;
 
 public interface DomainManagerDaoI extends BaseManagerDaoI {
 	
@@ -57,7 +56,11 @@ public interface DomainManagerDaoI extends BaseManagerDaoI {
 	
 	Collection getCutOffs() throws DataAccessException;
 	
-	Collection getRouteNumberGroup(String date, String cutOff, String area) throws DataAccessException;
+	//Map getRouteNumberGroup(String date, String cutOff, String groupCode) throws DataAccessException;
+	
+	void saveRouteNumberGroup(Map routeMapping) throws DataAccessException;
+	
+	Collection getRouteMapping(String routeDate, String routeId) throws DataAccessException;
 	
 	Collection getDeliveryModels() throws DataAccessException;
 	

@@ -77,7 +77,8 @@ public abstract class BaseProcessManager implements  IProcessManager {
 			} else {
 				System.out.println("################## START LATE DELIVERY EMPTY QUERY#########################");
 			}
-		} catch (RoutingServiceException e) {
+		} catch (Exception e) {
+			// It is not critical run without late delivery.
 			e.printStackTrace();
 		}
 
@@ -121,51 +122,90 @@ public abstract class BaseProcessManager implements  IProcessManager {
 
     private Set doBatchRouting(ProcessContext request) throws  RoutingProcessException {
 
+    	Set result = new HashSet();
+	 	    		    	    	
+    	System.out.println("################### ROUTING START DEPOT ##################");
+    	List orderDepotGroupInfo = groupOrdersForBatchRouting((List)request.getOrderList(), true);
+    	Set resultDepot = doRoute(request, orderDepotGroupInfo);
+    	System.out.println("################### ROUTING END DEPOT ##################");
+    	if(resultDepot != null) {
+    		result.addAll(resultDepot);
+    	}
+    	
+    	System.out.println("\n################### ROUTING START REGULAR ##################");
+    	List orderRegularGroupInfo = groupOrdersForBatchRouting((List)request.getOrderList(), false);
+    	Set resultNormal = doRoute(request, orderRegularGroupInfo);
+    	System.out.println("################### ROUTING END REGULAR ##################\n");
+    	
+    	if(resultNormal != null) {
+    		result.addAll(resultNormal);
+    	}
+    	
+    	
+    	return result;
+    }
+    
+    private Set doRoute(ProcessContext request, List orderGroupInfo) throws  RoutingProcessException {
+    	
     	Map tmpParams = (Map)request.getProcessParam();
     	String userId = (String)tmpParams.get(IRoutingParamConstants.ROUTING_USER);
-
-    	System.out.println("################### START SAVE LOCATION ##################");
-    	//Save Locations
-		saveLocations((List)request.getOrderList());
-		System.out.println("################### END SAVE LOCATION ##################");
-
-
-    	//Start Order Purge
-    	List orderGroupInfo = groupOrdersForBatchRouting((List)request.getOrderList());
+    	
     	Set schedulerIds = (Set)orderGroupInfo.get(0);
     	Map orderMappedLst = (Map)orderGroupInfo.get(1);
 
-
-    	purgeOrders(schedulerIds);
-
-    	hadLoadBalance = false;
-    	String currentTime = getCurrentTime();
-    	boolean sendRoutes = false;
-    	if(EnumRoutingFlowType.LINEARFLOW.equals(EnumRoutingFlowType.getEnum(RoutingServicesProperties.getRoutingFlowType()))) {
-    		sendRoutes = true;
-    	}
-    	System.out.println("################### BULK RESERVE START ##################");
-    	BulkReserveResult result = schedulerBulkReserveOrders(schedulerIds, orderMappedLst
-    															, (IServiceTimeScenarioModel)request.getProcessScenario()
-    															, userId, currentTime, sendRoutes);
-    	
-    	Map unassignedOrders = result.getUnassignedOrders();
-    	System.out.println("################### BULK RESERVE END ##################"+sendRoutes+"->"+RoutingServicesProperties.getRoutingFlowType()+"->"+EnumRoutingFlowType.getEnum(RoutingServicesProperties.getRoutingFlowType()));
-    	
-    	Map sessionDescriptionMap = null;
-    	if(sendRoutes) {
-    		sessionDescriptionMap = result.getSessionDescriptionMap();
+    	if(schedulerIds.size() > 0) {
+    		
+    		
+        	//Save Locations
+    		Iterator tmpIterator = schedulerIds.iterator();
+    		List orders = new ArrayList();
+    		IRoutingSchedulerIdentity schedulerId = null;
+			while(tmpIterator.hasNext()) {
+				schedulerId = (IRoutingSchedulerIdentity)tmpIterator.next();
+				orders.addAll((List)orderMappedLst.get(schedulerId));
+			}
+			if(orders.size() > 0) {
+				System.out.println("################### START SAVE LOCATION ##################");
+	    		saveLocations((List)request.getOrderList());
+	    		System.out.println("################### END SAVE LOCATION ##################");
+			}
+    		
+    		purgeOrders(schedulerIds);
+	
+	    	hadLoadBalance = false;
+	    	boolean sendRoutes = false;
+	    	
+	    	String currentTime = getCurrentTime();
+	    	
+	    	if(EnumRoutingFlowType.LINEARFLOW.equals(EnumRoutingFlowType.getEnum(RoutingServicesProperties.getRoutingFlowType()))) {
+	    		sendRoutes = true;
+	    	}
+	    	System.out.println("################### BULK RESERVE START ################## "+sendRoutes);
+	    	BulkReserveResult result = schedulerBulkReserveOrders(schedulerIds, orderMappedLst
+	    															, (IServiceTimeScenarioModel)request.getProcessScenario()
+	    															, userId, currentTime, sendRoutes);
+	    	
+	    	Map unassignedOrders = result.getUnassignedOrders();
+	    	System.out.println("################### BULK RESERVE END ##################");
+	    	
+	    	Map sessionDescriptionMap = null;
+	    	if(sendRoutes) {
+	    		sessionDescriptionMap = result.getSessionDescriptionMap();
+	    	} else {
+	    		System.out.println("################### SEND ROUTES TO ROADNET START ##################");
+	        	sessionDescriptionMap = sendRoutesToRoadNet(schedulerIds, userId, currentTime);
+	        	System.out.println("################### SEND ROUTES TO ROADNET END ##################");
+	    	}    	    	
+	
+	    	System.out.println("################### SAVE UNASSIGNED START ################## "+unassignedOrders);
+	    	Map unassignedSaveFailed = saveUnassignedToRoadNet(sessionDescriptionMap, unassignedOrders);
+	    	System.out.println("################### SAVE UNASSIGNED END ##################"+unassignedSaveFailed);
+	    	
+	    	System.out.println("sessionDescriptionMap >>"+sessionDescriptionMap);
+	    	return saveProcessStatus(request, sessionDescriptionMap, unassignedOrders);
     	} else {
-    		System.out.println("################### SEND ROUTES TO ROADNET START ##################");
-        	sessionDescriptionMap = sendRoutesToRoadNet(schedulerIds, userId, currentTime);
-        	System.out.println("################### SEND ROUTES TO ROADNET END ##################");
-    	}    	    	
-
-    	System.out.println("################### SAVE UNASSIGNED START ##################");
-    	Map unassignedSaveFailed = saveUnassignedToRoadNet(sessionDescriptionMap, unassignedOrders);
-    	System.out.println("################### SAVE UNASSIGNED END ##################");
-
-    	return saveProcessStatus(request, sessionDescriptionMap, unassignedOrders);
+    		return null;
+    	}
     }
 
 
@@ -349,15 +389,18 @@ public abstract class BaseProcessManager implements  IProcessManager {
     	String sessionDescription = null;
     	List tmpUnassignedLst = null;
     	Set sessionIds = new HashSet();
+    	String sessionType = null;
 		while(tmpIterator.hasNext()) {
 			schedulerId = (IRoutingSchedulerIdentity)tmpIterator.next();
 			sessionDescription = (String)sessionDescriptionMap.get(schedulerId);
 			tmpUnassignedLst = (List)unassignedOrders.get(schedulerId);
+			
+			sessionType = (schedulerId.isDepot()?"Depot":"Trucks");
 
 			ProcessInfo  processInfoSession = new ProcessInfo();
 			processInfoSession.setProcessType(EnumProcessType.CREATE_ROUTINGSESSION);
 			processInfoSession.setProcessInfoType(EnumProcessInfoType.INFO);
-			processInfoSession.setAdditionalInfo(schedulerId.toString()+" -> "+sessionDescription);
+			processInfoSession.setAdditionalInfo(schedulerId.toString()+":"+sessionType+" -> "+sessionDescription);
 			request.addProcessInfo(processInfoSession);
 
 			ProcessInfo  processInfoUnassinged = new ProcessInfo();
@@ -366,11 +409,11 @@ public abstract class BaseProcessManager implements  IProcessManager {
 			processInfoUnassinged.setAdditionalInfo(schedulerId.toString()+" -> "
 													+(tmpUnassignedLst != null ? tmpUnassignedLst.size() : 0)+" Unassigned Orders");
 			request.addProcessInfo(processInfoUnassinged);
-			sessionIds.add(sessionDescription);
+			sessionIds.add(sessionType+" -> "+sessionDescription);
 		}
 		return sessionIds;
     }
-    private List groupOrdersForBatchRouting(List lstOrders) {
+    private List groupOrdersForBatchRouting(List lstOrders, boolean depot) {
 
     	Map resultOrderIdMap = new HashMap();
     	Set resultIds = new HashSet();
@@ -389,8 +432,12 @@ public abstract class BaseProcessManager implements  IProcessManager {
 			while(tmpIterator.hasNext()) {
 				orderModel = (IOrderModel)tmpIterator.next();
 				schedulerId = getSchedulerId(schedulerId, orderModel);
+				if((depot && !schedulerId.isDepot())
+						|| !depot && schedulerId.isDepot()) {
+					continue;
+				}
 				orderListForId = (List)resultOrderIdMap.get(schedulerId);
-
+				
 				if(orderListForId == null) {
 					orderListForId = new ArrayList();
 					resultOrderIdMap.put(schedulerId, orderListForId);
@@ -398,6 +445,7 @@ public abstract class BaseProcessManager implements  IProcessManager {
 					schedulerId = null;
 				}
 				orderListForId.add(orderModel);
+
 			}
     	}
     	return result;
@@ -412,6 +460,12 @@ public abstract class BaseProcessManager implements  IProcessManager {
     	schedulerId.setRegionId(RoutingServicesProperties.getDefaultRegion());
     	schedulerId.setArea(orderModel.getDeliveryInfo().getDeliveryZone().getArea());
     	schedulerId.setDeliveryDate(orderModel.getDeliveryInfo().getDeliveryDate());
+    	if(orderModel.getDeliveryInfo() != null 
+    				&& orderModel.getDeliveryInfo().getDeliveryZone() != null
+    					&& orderModel.getDeliveryInfo().getDeliveryZone().getArea() != null) {
+    		schedulerId.setDepot(orderModel.getDeliveryInfo().getDeliveryZone().getArea().isDepot());
+    	}
+    	
     	return schedulerId;
     }
 
@@ -469,7 +523,7 @@ public abstract class BaseProcessManager implements  IProcessManager {
     	
     	private Map unassignedOrders;
     	private Map sessionDescriptionMap;
-    	
+    	    	
 		public Map getSessionDescriptionMap() {
 			return sessionDescriptionMap;
 		}
@@ -481,6 +535,6 @@ public abstract class BaseProcessManager implements  IProcessManager {
 		}
 		public void setUnassignedOrders(Map unassignedOrders) {
 			this.unassignedOrders = unassignedOrders;
-		}
+		}		
     }
 }

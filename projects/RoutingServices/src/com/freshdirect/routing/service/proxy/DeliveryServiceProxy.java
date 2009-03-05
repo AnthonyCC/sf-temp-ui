@@ -1,9 +1,11 @@
 package com.freshdirect.routing.service.proxy;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.routing.model.IDeliveryModel;
+import com.freshdirect.routing.model.IDrivingDirection;
 import com.freshdirect.routing.service.IDeliveryService;
 import com.freshdirect.routing.service.RoutingServiceLocator;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
@@ -44,5 +46,13 @@ public class DeliveryServiceProxy extends BaseServiceProxy {
 	
 	public List getLateDeliveryOrders(String query) throws RoutingServiceException {
 		return getService().getLateDeliveryOrders(query);
+	}
+	
+	public List getRoutes(Date routeDate, String internalSessionID, String routeID) throws RoutingServiceException {
+		return getService().getRoutes(routeDate, internalSessionID, routeID);
+	}
+	
+	public IDrivingDirection buildDriverDirections(List destinations)  throws RoutingServiceException {
+		return getService().buildDriverDirections(destinations);
 	}
 }

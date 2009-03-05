@@ -26,10 +26,10 @@
                 <tr>
                   <td>Route Smart Truck File</td>
                   <td>                  
-                    <input type="file" size="50" name="file1"/>
-                    <spring:bind path="command.file1">
+                    <input type="file" size="50" name="truckFile"/>
+                    <spring:bind path="command.truckFile">
                       <c:forEach items="${status.errorMessages}" var="error">
-                                      &nbsp;<span id="file1"><c:out value="${error}"/></span>
+                                      &nbsp;<span id="truckFile"><c:out value="${error}"/></span>
                                     </c:forEach> 
                             </spring:bind>
                 </td>
@@ -41,10 +41,10 @@
                <tr>
                   <td>Route Smart Order File</td>
                   <td>                  
-                    <input type="file" size="50" name="file2"/>
-                    <spring:bind path="command.file2">
+                    <input type="file" size="50" name="orderFile"/>
+                    <spring:bind path="command.orderFile">
                       <c:forEach items="${status.errorMessages}" var="error">
-                                      &nbsp;<span id="file2"><c:out value="${error}"/></span>
+                                      &nbsp;<span id="orderFile"><c:out value="${error}"/></span>
                                     </c:forEach> 
                             </spring:bind>
                 </td>
@@ -54,12 +54,64 @@
                </tr>
                
                <tr>
-                  <td>RoadNet Order/Truck File</td>
+                  <td>RoadNet Truck Routes File</td>
                   <td>                  
-                    <input type="file" size="50" name="file3"/>
-                    <spring:bind path="command.file3">
+                    <input type="file" size="50" name="truckRoutingFile"/>
+                    <spring:bind path="command.truckRoutingFile">
                       <c:forEach items="${status.errorMessages}" var="error">
-                                      &nbsp;<span id="file3"><c:out value="${error}"/></span>
+                                      &nbsp;<span id="truckRoutingFile"><c:out value="${error}"/></span>
+                                    </c:forEach> 
+                            </spring:bind>
+                </td>
+                <td>
+                  &nbsp;
+                </td>
+               </tr>
+               
+               <tr>
+                  <td>Truck Session Description</td>
+                  <td>                  
+                    <input type="text" size="50" name="truckRoutingSessionDesc"/>
+                    	&nbsp;<span id="truckRoutingSessionDesc"><c:out value="${error}"/></span>
+                </td>
+                <td>
+                  &nbsp;
+                </td>
+               </tr>
+               
+               <tr>
+                  <td>RoadNet Depot Routes File</td>
+                  <td>                  
+                    <input type="file" size="50" name="depotRoutingFile"/>
+                    <spring:bind path="command.depotRoutingFile">
+                      <c:forEach items="${status.errorMessages}" var="error">
+                                      &nbsp;<span id="depotRoutingFile"><c:out value="${error}"/></span>
+                                    </c:forEach> 
+                            </spring:bind>
+                </td>
+                <td>
+                  &nbsp;
+                </td>
+               </tr>
+               
+               <tr>
+                  <td>Depot Session Description</td>
+                  <td>                  
+                    <input type="text" size="50" name="depotRoutingSessionDesc"/>
+                    	&nbsp;<span id="depotRoutingSessionDesc"><c:out value="${error}"/></span>
+                </td>
+                <td>
+                  &nbsp;
+                </td>
+               </tr>
+               
+               <tr>
+                  <td>Depot Truck Schedule</td>
+                  <td>                  
+                    <input type="file" size="50" name="depotTruckScheduleFile"/>
+                    <spring:bind path="command.depotTruckScheduleFile">
+                      <c:forEach items="${status.errorMessages}" var="error">
+                                      &nbsp;<span id="depotTruckScheduleFile"><c:out value="${error}"/></span>
                                     </c:forEach> 
                             </spring:bind>
                 </td>
@@ -68,10 +120,21 @@
                 </td>
                </tr>
               
+              <tr>
+                  <td>Depot Zones</td>
+                  <td colspan="2" width="350px">                  
+                    <spring:bind path="command.routingDepotZones">
+                    <c:if test="${!empty status.value}">
+                                      <c:out value="${status.value}"/>                                                             
+                                    </c:if> 
+                                </spring:bind>
+                </td>                
+               </tr>    
+              
                <tr>
                   <td>RoadNet Zones</td>
                   <td colspan="2" width="350px">                  
-                    <spring:bind path="command.referenceData">
+                    <spring:bind path="command.routingZones">
                     <c:if test="${!empty status.value}">
                                       <c:out value="${status.value}"/>                                                             
                                     </c:if> 
@@ -116,7 +179,7 @@
               
               <tr>
                 <td> 
-                  <spring:bind path="command.outputFile1">
+                  <spring:bind path="command.orderOutputFilePath">
                     <c:if test="${!empty status.value}">
                                       <a href='<c:out value="${status.value}"/>' >Order Info</a>                                                                
                                     </c:if> 
@@ -124,14 +187,14 @@
                               </td>
                               
                               <td> 
-                  <spring:bind path="command.outputFile2">
+                  <spring:bind path="command.truckOutputFilePath">
                     <c:if test="${!empty status.value}">
                                       <a href='<c:out value="${status.value}"/>' >Truck Info</a> 
                                     </c:if>                                                                
                                 </spring:bind>
                               </td>
                    <td> 
-                  <spring:bind path="command.outputFile3">
+                  <spring:bind path="command.cutoffReportFilePath">
                     <c:if test="${!empty status.value}">
                                       <a href='<c:out value="${status.value}"/>' >CutOff Report</a> 
                                     </c:if>                                                                

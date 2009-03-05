@@ -3,6 +3,7 @@ package com.freshdirect.transadmin.datamanager;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class RoutingResult implements Serializable {
 	
@@ -16,13 +17,33 @@ public class RoutingResult implements Serializable {
 	
 	private String additionalInfo;
 	
-	private List routeNoSaveInfos;	
+	private Map routeNoSaveInfos;
 	
-	public List getRouteNoSaveInfos() {
+	private List orders;
+	
+	private List trucks;
+	
+	private List regularOrders;
+	
+	private List depotOrders;
+			
+	private List depotTruckSchedule;
+			
+	private Map depotRouteMapping;
+		
+	public Map getDepotRouteMapping() {
+		return depotRouteMapping;
+	}
+
+	public void setDepotRouteMapping(Map depotRouteMapping) {
+		this.depotRouteMapping = depotRouteMapping;
+	}
+
+	public Map getRouteNoSaveInfos() {
 		return routeNoSaveInfos;
 	}
 
-	public void setRouteNoSaveInfos(List routeNoSaveInfos) {
+	public void setRouteNoSaveInfos(Map routeNoSaveInfos) {
 		this.routeNoSaveInfos = routeNoSaveInfos;
 	}
 
@@ -73,6 +94,44 @@ public class RoutingResult implements Serializable {
 		this.additionalInfo = additionalInfo;
 	}
 
-	
+	public List getDepotOrders() {
+		return depotOrders;
+	}
 
+	public void setDepotOrders(List depotOrders) {
+		this.depotOrders = depotOrders;
+	}
+
+	public List getDepotTruckSchedule() {
+		return depotTruckSchedule;
+	}
+
+	public void setDepotTruckSchedule(List depotTruckSchedule) {
+		this.depotTruckSchedule = depotTruckSchedule;
+	}
+
+	public List getOrders() {
+		return orders;
+	}
+
+	public void setOrders(List orders) {
+		this.orders = orders;
+	}
+
+	public List getRegularOrders() {
+		return regularOrders;
+	}
+
+	public void setRegularOrders(List regularOrders) {
+		this.regularOrders = regularOrders;
+	}
+
+	public List getTrucks() {
+		return trucks;
+	}
+
+	public void setTrucks(List trucks) {
+		this.trucks = trucks;
+	}
+	
 }

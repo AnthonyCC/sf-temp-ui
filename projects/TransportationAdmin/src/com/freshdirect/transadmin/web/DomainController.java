@@ -455,25 +455,7 @@ public class DomainController extends AbstractMultiActionController {
 		return new ModelAndView("zoneTypeView","zonetypes",dataList);
 	}
 
-	/**
-	 * Custom handler for welcome
-	 * @param request current HTTP request
-	 * @param response current HTTP response
-	 * @return a ModelAndView to render the response
-	 */
-	public ModelAndView routeNumberHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-
-		String routeDate = request.getParameter("routeDate");
-		ModelAndView mav = new ModelAndView("routeNumberView");
-		mav.getModel().put("routeDate", routeDate);
-		if(!TransStringUtil.isEmpty(routeDate)) {
-			Collection dataList = domainManagerService.getRouteNumberGroup(getServerDate(routeDate), null, null);
-			mav.getModel().put("routenumberlist",dataList);
-		}
-
-		return mav;
-	}
-
+	
 	public ModelAndView compositeRouteHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException  {
 		String routeType = request.getParameter("routetype");
 		if("R".equalsIgnoreCase(routeType)) {

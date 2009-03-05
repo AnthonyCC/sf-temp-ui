@@ -93,7 +93,7 @@
 				<prop key="/deletecutoff.do">domainController</prop>					                
 				<prop key="/editcutoff.do">cutOffFormController</prop>
 				<prop key="/viewfile.do">genericBeanFormController</prop> 
-				<prop key="/routenumber.do">domainController</prop>
+				<prop key="/routenumber.do">dispatchController</prop>
 				<prop key="/accessdenied.do">domainController</prop>
 
 				<prop key="/georestriction.do">restrictionController</prop>
@@ -103,6 +103,7 @@
 				<prop key="/asyncgeographyprovider.do">asyncGeographyController</prop>
 				
 				<prop key="/gmap.do">geographyController</prop>
+				<prop key="/drivingdirection.do">dispatchController</prop>
 			</props>
 		</property>
 	</bean>
@@ -200,6 +201,7 @@
  		 	<prop key="/deletegeorestriction.do">geoRestrictionDeleteHandler</prop>
 
 			<prop key="/gmap.do">geographicBoundaryHandler</prop>
+			<prop key="/drivingdirection.do">drivingDirectionsHandler</prop>
 		</props>
 		</property>
 	</bean>
@@ -383,6 +385,7 @@
     </bean>
     <bean id="routingOutputFormController" class="com.freshdirect.transadmin.web.RoutingOutputFormController">
         <property name="domainManagerService" ref="domainManager"/>
+        <property name="dispatchManagerService" ref="dispatchManager"/>
         <property name="commandClass" value="com.freshdirect.transadmin.web.model.RoutingOutCommand"/>
         <property name="formView" value="routingOutputProcess"/>
         <property name="successView" value="routingOutputProcess"/>
@@ -391,6 +394,7 @@
     
     <bean id="routingMergeFormController" class="com.freshdirect.transadmin.web.RoutingMergeFormController">
 	    <property name="domainManagerService" ref="domainManager"/>
+	    <property name="dispatchManagerService" ref="dispatchManager"/>
         <property name="commandClass" value="com.freshdirect.transadmin.web.model.RoutingMergeCommand"/>
         <property name="formView" value="routingMergeProcess"/>
         <property name="successView" value="routingMergeProcess"/>

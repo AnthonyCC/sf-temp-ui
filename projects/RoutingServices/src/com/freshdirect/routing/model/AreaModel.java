@@ -8,6 +8,8 @@ public class AreaModel extends BaseModel implements IAreaModel  {
 	private String balanceBy;
 	
 	private boolean needsLoadBalance;
+	
+	private boolean isDepot;
 
 	public String getAreaCode() {
 		return areaCode;
@@ -39,5 +41,13 @@ public class AreaModel extends BaseModel implements IAreaModel  {
 
 	public void setNeedsLoadBalance(boolean needsLoadBalance) {
 		this.needsLoadBalance = needsLoadBalance;
+	}
+
+	public boolean isDepot() {
+		return isDepot;
+	}
+
+	public void setDepot(boolean isDepot) {
+		this.isDepot = isDepot;
 	}
 }

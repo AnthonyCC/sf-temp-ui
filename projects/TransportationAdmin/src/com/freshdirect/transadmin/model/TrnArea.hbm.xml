@@ -31,6 +31,9 @@
         </property>
         <property name="needsLoadBalance" type="string">
             <column name="NEEDS_LOADBALANCE" length="1" />
-        </property>        
+        </property>
+        <property name="isDepot" type="string">
+            <column name="IS_DEPOT" length="1" />
+        </property>         
     </class>
 </hibernate-mapping>

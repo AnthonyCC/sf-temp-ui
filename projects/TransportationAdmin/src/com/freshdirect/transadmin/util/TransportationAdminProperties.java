@@ -29,6 +29,8 @@ public class TransportationAdminProperties {
 	
 	private final static String PROP_TRANSPORTATION_FORMAT_ROUTE_SAPIN		= "transportation.format.routesapin";
 	
+	private final static String PROP_TRANSPORTATION_FORMAT_TRUCKSCHEDULE_ROUTINGIN		= "transportation.format.truckscheduleroutingin";
+	
 		
 	private final static String PROP_TRANSPORTATION_FILENAME_ORDEROUT		= "transportation.filename.orderout";
 	
@@ -39,6 +41,8 @@ public class TransportationAdminProperties {
 	private final static String PROP_TRANSPORTATION_FILENAME_ROUTINGOUTTRUCK		= "transportation.filename.routingouttruck";
 	
 	private final static String PROP_TRANSPORTATION_FILENAME_CUTOFFREPORT		= "transportation.filename.cutoffreport";
+	
+	private final static String PROP_TRANSPORTATION_FILENAME_DRIVINGDIRECTION		= "transportation.filename.drivingdirection";
 	
 	
 	private final static String PROP_TRANSPORTATION_FILENAME_EXTGEOINLOCDB		= "transportation.filename.extgeolocdb";
@@ -108,6 +112,8 @@ public class TransportationAdminProperties {
 		
 		defaults.put(PROP_TRANSPORTATION_FORMAT_ROUTE_SAPIN, 	"com/freshdirect/transadmin/datamanager/route_in_erp.xml");
 		
+		defaults.put(PROP_TRANSPORTATION_FORMAT_TRUCKSCHEDULE_ROUTINGIN, 	"com/freshdirect/transadmin/datamanager/truckschedule_in_routing.xml");
+		
 		defaults.put(PROP_TRANSPORTATION_FILENAME_ORDEROUT,"trn_order_");
 		
 		defaults.put(PROP_TRANSPORTATION_FILENAME_LOCATIONOUT,"trn_location_");
@@ -117,6 +123,8 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_FILENAME_ROUTINGOUTTRUCK,"trn_truck_");
 		
 		defaults.put(PROP_TRANSPORTATION_FILENAME_CUTOFFREPORT,"trn_cutoffreport_");
+		
+		defaults.put(PROP_TRANSPORTATION_FILENAME_DRIVINGDIRECTION,"trn_drivingdirection_");
 		
 		defaults.put(PROP_TRANSPORTATION_FILENAME_SUFFIX,"prn");
 		
@@ -210,8 +218,11 @@ public class TransportationAdminProperties {
     public static String getErpRouteInputFormat() {
     	return get(PROP_TRANSPORTATION_FORMAT_ROUTE_SAPIN);
     }
-	   
-	
+    
+    public static String getRoutingTruckScheduleFormat() {
+    	return get(PROP_TRANSPORTATION_FORMAT_TRUCKSCHEDULE_ROUTINGIN);
+    }
+	 	
     public static String getOrderOutputFilename() {
     	return get(PROP_TRANSPORTATION_FILENAME_ORDEROUT);
     }
@@ -231,6 +242,11 @@ public class TransportationAdminProperties {
     public static String getRoutingCutOffRptFilename() {
     	return get(PROP_TRANSPORTATION_FILENAME_CUTOFFREPORT);
     }
+    
+    public static String getRoutingDrvDirectionRptFilename() {
+    	return get(PROP_TRANSPORTATION_FILENAME_DRIVINGDIRECTION);
+    }
+    
         	
     public static String getFilenameSuffix() {
     	return get(PROP_TRANSPORTATION_FILENAME_SUFFIX);

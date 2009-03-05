@@ -18,7 +18,6 @@ import com.freshdirect.routing.util.IRoutingParamConstants;
 import com.freshdirect.transadmin.datamanager.RouteInputDataManager;
 import com.freshdirect.transadmin.datamanager.RoutingResult;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
-import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.LocationManagerI;
 import com.freshdirect.transadmin.web.model.FileUploadCommand;
 
@@ -30,16 +29,6 @@ public class RoutingInputFormController extends BaseRoutingFormController {
 		return locationManagerService;
 	}
 	
-	private DomainManagerI domainManagerService;
-		
-	public DomainManagerI getDomainManagerService() {
-		return domainManagerService;
-	}
-
-	public void setDomainManagerService(DomainManagerI domainManagerService) {
-		this.domainManagerService = domainManagerService;
-	}
-
 	public void setLocationManagerService(LocationManagerI locationManagerService) {
 		this.locationManagerService = locationManagerService;
 	}

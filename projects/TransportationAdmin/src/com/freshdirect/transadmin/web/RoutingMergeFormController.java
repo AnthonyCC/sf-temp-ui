@@ -2,9 +2,7 @@ package com.freshdirect.transadmin.web;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -17,11 +15,8 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.freshdirect.routing.util.IRoutingParamConstants;
 import com.freshdirect.transadmin.datamanager.RouteMergeDataManager;
 import com.freshdirect.transadmin.datamanager.RoutingResult;
-import com.freshdirect.transadmin.model.TrnArea;
-import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.web.model.RoutingMergeCommand;
 
@@ -33,7 +28,8 @@ public class RoutingMergeFormController extends BaseRoutingFormController {
 		throws Exception {
 				
 		RoutingMergeCommand bean = new RoutingMergeCommand();		
-		bean.setReferenceData(getZoneString());
+		bean.setRoutingZones(getRoutingZones(domainManagerService));
+		bean.setRoutingDepotZones(getDepotZones(domainManagerService));
 		return bean;
 	}
 	
@@ -50,29 +46,24 @@ public class RoutingMergeFormController extends BaseRoutingFormController {
 		    // cast the bean
 		    logger.info("Merge FileUploadController -- executing onSubmit!");
 		    RoutingMergeCommand bean = (RoutingMergeCommand) command;
-		    	   	   
-		    Map paramMap = new HashMap();
-		    paramMap.put(IRoutingParamConstants.ROUTING_CUTOFF, bean.getCutOff());
-		    
+    		   		    
 		    RouteMergeDataManager manager = new RouteMergeDataManager();
-		    RoutingResult result = manager.process(bean.getFile1(), bean.getFile2()
-		    													, bean.getFile3()
-		    													, com.freshdirect.transadmin.security.SecurityManager.getUserName(request)
-		    													, paramMap, getDomainManagerService());
+		    RoutingResult result = manager.process(bean, com.freshdirect.transadmin.security.SecurityManager.getUserName(request)
+		    													, this);
 		    
 		    List errorList = result.getErrors();
 		    
 		    if(errorList == null || errorList.isEmpty()) {
-			    bean.setOutputFile1(getOutputFilePath(result.getOutputFile1()));
-			    bean.setOutputFile2(getOutputFilePath(result.getOutputFile2()));
-			    bean.setOutputFile3(getOutputFilePath(result.getOutputFile3()));
+			    bean.setOrderOutputFilePath(getOutputFilePath(result.getOutputFile1()));
+			    bean.setTruckOutputFilePath(getOutputFilePath(result.getOutputFile2()));
+			    bean.setCutoffReportFilePath(getOutputFilePath(result.getOutputFile3()));
 			    		    
 			    errorList = new ArrayList();
 			    
 				
 				if("X".equalsIgnoreCase(bean.getForce())) {
 					try {
-						this.getDomainManagerService().saveEntityList(result.getRouteNoSaveInfos());
+						this.getDomainManagerService().saveRouteNumberGroup(result.getRouteNoSaveInfos());
 					} catch(Exception e) {
 						e.printStackTrace();
 						errorList.add(this.getMessage("app.actionmessage.131", new Object[]{}));
@@ -95,27 +86,7 @@ public class RoutingMergeFormController extends BaseRoutingFormController {
 	
 	
 	
-	private String getZoneString() {
-		
-		StringBuffer strBuf = new StringBuffer();
-		Collection dataList = domainManagerService.getZones();
-		Zone tmpZone = null;
-		TrnArea tmpArea = null;
-		if(dataList != null) {
-			Iterator iterator = dataList.iterator();	
-			while(iterator.hasNext()) {
-				tmpZone = (Zone)iterator.next();
-				tmpArea = tmpZone.getArea();
-				if(tmpArea != null && "X".equalsIgnoreCase(tmpArea.getActive())) {
-					if(strBuf.length() != 0) {
-						strBuf.append(", ");
-					}
-					strBuf.append(tmpZone.getZoneCode());
-				}
-			}			
-		}
-		return strBuf.toString();
-	}
+	
 
 	  protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws ServletException	  {
 	    // to actually be able to convert Multipart instance to byte[]

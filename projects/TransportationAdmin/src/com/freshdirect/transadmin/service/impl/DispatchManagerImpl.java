@@ -1,31 +1,24 @@
 package com.freshdirect.transadmin.service.impl;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
-import org.springframework.dao.DataAccessException;
 
 import com.freshdirect.customer.ErpRouteMasterInfo;
 import com.freshdirect.transadmin.dao.BaseManagerDaoI;
 import com.freshdirect.transadmin.dao.DispatchManagerDaoI;
+import com.freshdirect.transadmin.dao.RouteManagerDaoI;
 import com.freshdirect.transadmin.exception.TransAdminApplicationException;
-import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.FDRouteMasterInfo;
-import com.freshdirect.transadmin.model.TrnDispatch;
-import com.freshdirect.transadmin.model.TrnDispatchPlan;
+import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.util.ModelUtil;
@@ -34,6 +27,8 @@ import com.freshdirect.transadmin.util.TransStringUtil;
 public class DispatchManagerImpl extends BaseManagerImpl implements DispatchManagerI {
 	
 	private DispatchManagerDaoI dispatchManagerDao = null;
+	
+	private RouteManagerDaoI routeManagerDao = null;
 	
 	private DomainManagerI domainManagerService; 
 	
@@ -297,5 +292,17 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 			}
 		}						
 		return unusedRouteNumList;
+	}
+	
+	public Map getRouteNumberGroup(String date, String cutOff, String groupCode) {
+		return getRouteManagerDao().getRouteNumberGroup(date, cutOff, groupCode);
+	}
+
+	public RouteManagerDaoI getRouteManagerDao() {
+		return routeManagerDao;
+	}
+
+	public void setRouteManagerDao(RouteManagerDaoI routeManagerDao) {
+		this.routeManagerDao = routeManagerDao;
 	}
 }

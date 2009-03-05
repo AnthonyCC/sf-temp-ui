@@ -383,5 +383,19 @@ public class ModelUtil {
 		}
 
 	}
+	
+	public static List mapToList(Map input) {
+		
+		List output = new ArrayList();
+				
+		if(input != null) {
+			
+			Iterator iterator = input.values().iterator();			
+			while(iterator.hasNext()) {				
+				output.addAll((List)iterator.next());
+			}
+		}
+		return output;
+	}
 
 }

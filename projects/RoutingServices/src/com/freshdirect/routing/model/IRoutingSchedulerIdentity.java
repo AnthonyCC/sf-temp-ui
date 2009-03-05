@@ -13,5 +13,9 @@ public interface IRoutingSchedulerIdentity {
 	java.lang.String getRegionId();
 
 	void setRegionId(java.lang.String regionId);
+	
+	boolean isDepot();
+
+	void setDepot(boolean isDepot);
 		
 }

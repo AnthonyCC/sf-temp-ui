@@ -8,17 +8,21 @@ import java.util.Iterator;
 
 import org.apache.axis.types.Time;
 
+import com.freshdirect.routing.model.IGeoPoint;
 import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
+import com.freshdirect.routing.proxy.stub.roadnet.MapPoint;
 import com.freshdirect.routing.proxy.stub.transportation.Address;
 import com.freshdirect.routing.proxy.stub.transportation.CategoryQuantities;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.Location;
 import com.freshdirect.routing.proxy.stub.transportation.LocationIdentity;
+import com.freshdirect.routing.proxy.stub.transportation.RouteIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingDetailLevel;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder;
+import com.freshdirect.routing.proxy.stub.transportation.RoutingRouteCriteria;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingSessionCriteria;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity;
@@ -172,6 +176,23 @@ public class RoutingDataEncoder {
 		return location;
 	}
 	
+	public static MapPoint[] encodeGeoPointList(Collection lstData) {
+		
+		MapPoint[] result = null;
+		if(lstData != null) {
+			result = new MapPoint[lstData.size()];
+			Iterator tmpIterator = lstData.iterator();
+			IGeoPoint _tmpModel = null;			
+			
+			int intCount = 0;
+			while(tmpIterator.hasNext()) {
+				_tmpModel = (IGeoPoint)tmpIterator.next();
+				result[intCount++] = new MapPoint(_tmpModel.getLatitude(), _tmpModel.getLongitude());
+			}
+		}
+		return result;
+	}
+	
 	public static LocationIdentity encodeLocationIdentity(String regionId, String locationType, String locationId) {
 		//param1 regionId;
 		//param2 locationType;
@@ -207,6 +228,49 @@ public class RoutingDataEncoder {
 		return new RoutingSessionCriteria(schedulerId.getRegionId(), null, null, null, sessionDescription);
 	}
 	
+	public static RouteIdentity encodeRouteIdentity(Date routeDate, String routeId) {
+		//param1 regionIdentity;
+		//param2 dateStart;
+		//param3 dateEnd;
+		//param4 scenario;
+		//param5 description;		
+		return new RouteIdentity(RoutingServicesProperties.getDefaultRegion(),routeDate, routeId);
+	}
+	
+	public static RoutingRouteCriteria encodeRouteCriteria(Date routeDate, String internalSessionID, String routeID) {
+		//param1 regionIdentity;
+		//param2 dateStart;
+		//param3 dateEnd;
+		//param4 scenario;
+		//param5 description;
+		RoutingRouteCriteria criteria = new RoutingRouteCriteria();
+		criteria.setRegionIdentity(RoutingServicesProperties.getDefaultRegion());
+		criteria.setRouteID(routeID);
+		criteria.setDateStart(routeDate);
+		criteria.setInternalSessionID(Integer.parseInt(internalSessionID));
+		
+		return criteria;
+	}
+	
+	
+	
+	public static RoutingRouteInfoRetrieveOptions encodeRouteInfoRetrieveOptionsEx() {
+		//param1 level;
+		//param2 retrieveActivities;
+		//param3 retrieveEquipment;
+		//param4 retrieveActive;
+		//param5 retrieveBuilt;
+		//param6 retrievePublished;
+		return new RoutingRouteInfoRetrieveOptions(RoutingDetailLevel.rdlStop
+													, RoutingServicesProperties.getRoutingParamRetrieveActivities()
+													, RoutingServicesProperties.getRoutingParamRetrieveEquipment()
+													, RoutingServicesProperties.getRoutingParamRetrieveActive()
+													, RoutingServicesProperties.getRoutingParamRetrieveBuilt()
+													, RoutingServicesProperties.getRoutingParamRetrievePublished()
+													, encodeTimeZoneOptions());
+	}	
+	
+	
 	public static RoutingRouteInfoRetrieveOptions encodeRouteInfoRetrieveOptions() {
 		//param1 level;
 		//param2 retrieveActivities;
@@ -214,7 +278,7 @@ public class RoutingDataEncoder {
 		//param4 retrieveActive;
 		//param5 retrieveBuilt;
 		//param6 retrievePublished;
-		return new RoutingRouteInfoRetrieveOptions(RoutingDetailLevel.fromValue(RoutingDetailLevel._rdlSession)
+		return new RoutingRouteInfoRetrieveOptions(RoutingDetailLevel.rdlSession
 													, RoutingServicesProperties.getRoutingParamRetrieveActivities()
 													, RoutingServicesProperties.getRoutingParamRetrieveEquipment()
 													, RoutingServicesProperties.getRoutingParamRetrieveActive()

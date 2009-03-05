@@ -42,7 +42,8 @@
 				<value>com/freshdirect/transadmin/model/GeoRestriction.hbm.xml</value>  				
 				<value>com/freshdirect/transadmin/model/GeoRestrictionDays.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/GeoRestrictionBoundary.hbm.xml</value>
-
+				
+				<value>com/freshdirect/transadmin/model/RouteMapping.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">
@@ -76,11 +77,15 @@
 		<property name="dataSource" ref="dataSource"/>
 	</bean>		
 	
+	 <bean id="routeManagerDAO" class="com.freshdirect.transadmin.dao.oracle.RouteManagerDaoOracleImpl">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>	
+	
 	<bean id="zoneManagerService" class="com.freshdirect.transadmin.service.impl.ZoneManagerImpl">
         <property name="zoneManagerDAO" ref="zoneManagerDAO"/>        
     </bean>
-	
-	
+    
+   	
 	<bean id="zoneManager" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 		<property name="transactionManager" ref="transactionManager"/>
 		<property name="target" ref="zoneManagerService"/>
@@ -141,8 +146,8 @@
     
      <bean id="dispatchManager" class="com.freshdirect.transadmin.service.impl.DispatchManagerImpl">
         <property name="dispatchManagerDao" ref="dispatchManagerDAO"/>
-         <property name="domainManagerService" ref="domainManager"/>
-        
+        <property name="domainManagerService" ref="domainManager"/>
+        <property name="routeManagerDao" ref="routeManagerDAO"/>
     </bean>
     
     <bean id="locationManager" class="com.freshdirect.transadmin.service.impl.LocationManagerImpl">

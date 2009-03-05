@@ -102,6 +102,15 @@
                 </td>
                </tr>
                <tr>
+                  <td>Is Depot</td>
+                  <td> 
+                  <form:checkbox path="isDepot" value="X"/>
+                </td>
+                <td>
+                  &nbsp;<form:errors path="isDepot" />
+                </td>
+               </tr>
+               <tr>
                   <td>Load Balance</td>
                   <td> 
                   <form:checkbox path="needsLoadBalance" value="X" onclick="loadBalanceEvent()"/>

@@ -2,19 +2,17 @@ package com.freshdirect.transadmin.service;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.Map;
 
 import com.freshdirect.transadmin.model.DispositionType;
-import com.freshdirect.transadmin.model.EmployeeRoleType;
 import com.freshdirect.transadmin.model.FDRouteMasterInfo;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
-import com.freshdirect.transadmin.model.TrnEmployee;
-import com.freshdirect.transadmin.model.TrnRoute;
 import com.freshdirect.transadmin.model.TrnTruck;
-import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.model.TrnZoneType;
+import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.util.EnumCachedDataType;
 
 public interface DomainManagerI extends BaseManagerI {
@@ -69,12 +67,9 @@ public interface DomainManagerI extends BaseManagerI {
 	TrnCutOff getCutOff(String id);
 	
 	Collection getCutOffs();
-	
-	Collection getRouteNumberGroup(String date, String cutOff, String area);
-	
+			
 	Collection getDeliveryModels();
-	
-	
+		
 	Collection getZonetypeResources(String zoneTypeId);
 	
 	void refreshCachedData(EnumCachedDataType dataType);
@@ -94,5 +89,9 @@ public interface DomainManagerI extends BaseManagerI {
 	Collection getBalanceBys();
 
 	Collection getActiveZones();
+	
+	void saveRouteNumberGroup(Map routeMapping);	
+	
+	Collection getRouteMapping(String routeDate, String routeId);
 	
 }

@@ -38,11 +38,9 @@ public class BaseManagerDaoHibernateImpl extends HibernateDaoSupport implements 
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("from ").append(table).append(" tb where tb.")
 						.append(keyCol).append("='").append(id).append("'");
-		Collection collection = getHibernateTemplate().find(strBuf.toString());
+		Collection collection = this.getHibernateTemplate().find(strBuf.toString());
 		if(collection==null || collection.size()==0) return null;
 		Iterator iterator = collection.iterator();
 		return iterator.next();
 	}
-
-
 }

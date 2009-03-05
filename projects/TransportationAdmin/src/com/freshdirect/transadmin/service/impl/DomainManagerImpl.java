@@ -3,6 +3,7 @@ package com.freshdirect.transadmin.service.impl;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -131,9 +132,6 @@ public class DomainManagerImpl
 		return getDomainManagerDao().getCutOffs();
 	}
 	
-	public Collection getRouteNumberGroup(String date, String cutOff, String area) {
-		return getDomainManagerDao().getRouteNumberGroup(date, cutOff, area);
-	}
 	
 	public Collection getDeliveryModels() {
 		return getDomainManagerDao().getDeliveryModels();
@@ -225,5 +223,13 @@ public class DomainManagerImpl
 	public Collection getActiveZones() {
 		// TODO Auto-generated method stub
 		return getDomainManagerDao().getActiveZones();
-	} 
+	}
+	
+	public void saveRouteNumberGroup(Map routeMapping) {
+		getDomainManagerDao().saveRouteNumberGroup(routeMapping);
+	}
+	
+	public Collection getRouteMapping(String routeDate, String routeId) {
+		return getDomainManagerDao().getRouteMapping(routeDate, routeId);
+	}
 }

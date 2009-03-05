@@ -20,6 +20,8 @@ public class TrnArea  implements java.io.Serializable, TrnBaseEntityI {
 	private String balanceBy;
 	
 	private String needsLoadBalance;
+	
+	private String isDepot;
 
 	public String getIsNew() {
 		return isNew;
@@ -103,6 +105,14 @@ public class TrnArea  implements java.io.Serializable, TrnBaseEntityI {
 
 	public void setNeedsLoadBalance(String needsLoadBalance) {
 		this.needsLoadBalance = needsLoadBalance;
+	}
+
+	public String getIsDepot() {
+		return isDepot;
+	}
+
+	public void setIsDepot(String isDepot) {
+		this.isDepot = isDepot;
 	}
 
 }

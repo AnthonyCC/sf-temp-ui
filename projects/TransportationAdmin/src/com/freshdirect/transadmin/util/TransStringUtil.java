@@ -43,6 +43,8 @@ public class TransStringUtil {
 	
 	private static NumberFormat formatter = new DecimalFormat("00");
 	
+	private static NumberFormat twoDigitNumber = new DecimalFormat("###.##");
+	
 	private static DateFormat fullMonthFormat = new SimpleDateFormat("dd MMMMM yyyy");
 	static {
 			for(int intCount=0;intCount<daysList.length;intCount++) {
@@ -135,6 +137,17 @@ public class TransStringUtil {
         return "Error";
 	}
 	
+	public static String calcHMS(int timeInSeconds) {
+	      int hours, minutes, seconds;
+	      hours = timeInSeconds / 3600;
+	      timeInSeconds = timeInSeconds - (hours * 3600);
+	      minutes = timeInSeconds / 60;
+	      timeInSeconds = timeInSeconds - (minutes * 60);
+	      seconds = timeInSeconds;
+	      return formatTwoDigitNumber(hours) + ":" + formatTwoDigitNumber(minutes) + ":" + formatTwoDigitNumber(seconds) ;
+	  }
+
+	
 	public static boolean compareDate(Date dateVal1, Date dateVal2) {
 		try {
 			String strDate1 = dateFormat.format(dateVal1);
@@ -197,6 +210,14 @@ public class TransStringUtil {
 	
 	public static String formatRouteNumber(String input) {
 		return formatter.format(Integer.parseInt(input));
+	}
+	
+	public static String formatTwoDigitNumber(double input) {
+		return twoDigitNumber.format(input);
+	}
+	
+	public static String formatTwoDigitNumber(int input) {
+		return formatter.format(input);
 	}
 	
 	public static String formatDateSearch(String search) throws DateFilterException {  
@@ -269,6 +290,19 @@ public class TransStringUtil {
 			return "000";
 		}
 	}
+	
+	public static int splitStringForValue(String search) {
+		try {
+			String[] dataLst = StringUtils.split(search, "-");
+			if(dataLst != null && dataLst.length >1) {
+				return Integer.parseInt(dataLst[1]);
+			} 
+		} catch(Exception e) {
+			//do nothing
+		}
+		return 0;
+	}
+	
 	public static String formatStringSearch(String search) throws StringFilterException {
 		String[] dataLst = StringUtils.split(search, ",");
 		StringBuffer strBuf = new StringBuffer();

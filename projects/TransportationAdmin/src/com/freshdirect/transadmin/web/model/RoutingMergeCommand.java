@@ -1,96 +1,29 @@
 package com.freshdirect.transadmin.web.model;
 
-public class RoutingMergeCommand extends BaseCommand  {
+import com.freshdirect.transadmin.datamanager.model.IRoutingOutputInfo;
+
+public class RoutingMergeCommand extends BaseRoutingOutCommand implements IRoutingOutputInfo {
 	
-	private byte[] file1;
+	private byte[] truckFile;
 	
-	private byte[] file2;
+	private byte[] orderFile;
+
+	public byte[] getOrderFile() {
+		return orderFile;
+	}
+
+	public void setOrderFile(byte[] orderFile) {
+		this.orderFile = orderFile;
+	}
+
+	public byte[] getTruckFile() {
+		return truckFile;
+	}
+
+	public void setTruckFile(byte[] truckFile) {
+		this.truckFile = truckFile;
+	}
 	
-	private byte[] file3;
-	
-	private String outputFile1;
-	
-	private String outputFile2;
-	
-	private String outputFile3;
-	
-	private String referenceData;
-	
-	private String cutOff;
-	
-	private String force;	
-	
-	public String getForce() {
-		return force;
-	}
-
-	public void setForce(String force) {
-		this.force = force;
-	}
-
-	public String getReferenceData() {
-		return referenceData;
-	}
-
-	public void setReferenceData(String referenceData) {
-		this.referenceData = referenceData;
-	}
-
-	public byte[] getFile1() {
-		return file1;
-	}
-
-	public void setFile1(byte[] file1) {
-		this.file1 = file1;
-	}
-
-	public byte[] getFile2() {
-		return file2;
-	}
-
-	public void setFile2(byte[] file2) {
-		this.file2 = file2;
-	}
-
-	public byte[] getFile3() {
-		return file3;
-	}
-
-	public void setFile3(byte[] file3) {
-		this.file3 = file3;
-	}
-
-	public String getOutputFile1() {
-		return outputFile1;
-	}
-
-	public void setOutputFile1(String outputFile1) {
-		this.outputFile1 = outputFile1;
-	}
-
-	public String getOutputFile2() {
-		return outputFile2;
-	}
-
-	public void setOutputFile2(String outputFile2) {
-		this.outputFile2 = outputFile2;
-	}
-
-	public String getCutOff() {
-		return cutOff;
-	}
-
-	public void setCutOff(String cutOff) {
-		this.cutOff = cutOff;
-	}
-
-	public String getOutputFile3() {
-		return outputFile3;
-	}
-
-	public void setOutputFile3(String outputFile3) {
-		this.outputFile3 = outputFile3;
-	}
-
-	
+		
+		
 }

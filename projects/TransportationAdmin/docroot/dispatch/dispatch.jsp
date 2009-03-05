@@ -89,6 +89,31 @@
                           alert('Please Select a Row!');
                         }
                     }
+                    
+                    function directions(tableId, url, columnIndex) {
+                      var table = document.getElementById(tableId);
+                       var checkboxList = table.getElementsByTagName("input");
+                        
+                        var dateField = document.getElementById("dispDate").value;    
+                        var paramValues = null;
+                        for (i = 0; i < checkboxList.length; i++) {
+                          if (checkboxList[i].type=="checkbox" && checkboxList[i].checked) {
+                            var routeId = checkboxList[i].parentNode.parentNode.getElementsByTagName("td")[columnIndex].innerHTML
+                            if(routeId != null && routeId.length > 0) {
+	                            if (paramValues != null) {
+	                              paramValues = paramValues+","+routeId;
+	                            } else {
+	                              paramValues = routeId;
+	                            }
+	                         }
+                          }
+                        }
+                        if (paramValues != null) {
+                          pop(url+"?routeId="+ paramValues+"&rdate="+dateField,400,500);
+                        } else {
+                          alert('Please Select a Row!');
+                        }
+                    }
               
                   </script>
                 </td>
@@ -137,6 +162,11 @@
                   <td>
                      <input type = "button" value="&nbsp;Unassigned Routes&nbsp;" onclick="javascript:doUnassignedRoutes('dispDate')" />
                   </td>  
+                  <td>
+                    <a href="javascript:directions('ec_table','drivingdirection.do', 7)">
+                  		<img src="./images/driving-directions.gif" width="114" height="25" border="0" alt="Driving Directions" title="Driving Directions" />
+                  	</a>
+                  <td>
               </tr>
               </table>        
               

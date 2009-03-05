@@ -57,6 +57,10 @@ public class RoutingServicesProperties {
 	
 	private final static String PROP_LATEDELIVERY_QUERY		= "routingservices.latedelivery.query";
 	
+	private final static String PROP_LDPROCESSING_ENABLED		= "routingservices.ldprocessing.enabled";
+	
+	private final static String PROP_DEFAULTDEPOT_LOCATIONTYPE		= "routingservices.defaultdepot.locationtype";
+	
 	private static long lastRefresh = 0;
 	private final static long REFRESH_PERIOD = 5 * 60 * 1000;
 	
@@ -68,6 +72,7 @@ public class RoutingServicesProperties {
 		defaults.put(PROP_ROADNET_PROVIDER_URL, 	"http://localhost:82");		
 		defaults.put(PROP_DEFAULT_REGION, 	"FD");
 		defaults.put(PROP_DEFAULT_LOCATIONTYPE, 	"SIT");
+		defaults.put(PROP_DEFAULTDEPOT_LOCATIONTYPE, 	"MDP");
 		defaults.put(PROP_DEFAULT_ORDERTYPE, 	"DEF");
 		defaults.put(PROP_DEFAULT_FIXEDSERVICETIME, 	"5");
 		defaults.put(PROP_DEFAULT_VARIABLESERVICETIME, 	"5");
@@ -87,6 +92,7 @@ public class RoutingServicesProperties {
 		defaults.put(PROP_ROUTINGPARAM_RETRIEVEACTIVE, "true");
 		defaults.put(PROP_ROUTINGPARAM_RETRIEVEBUILT, "true");
 		defaults.put(PROP_ROUTINGPARAM_RETRIEVEPUBLISHED, "true");
+		defaults.put(PROP_LDPROCESSING_ENABLED, 	"true");
 		refresh();		
 	}
 
@@ -125,6 +131,10 @@ public class RoutingServicesProperties {
 		return get(PROP_TRANSPORTATIONSUITE_PROVIDER_URL);
 	}
 	
+	public static String getTransportationSuiteProviderURL(String serviceType) {
+		return get(PROP_TRANSPORTATIONSUITE_PROVIDER_URL+"."+serviceType);
+	}
+	
 	public static String getRoadNetProviderURL() {
 		return get(PROP_ROADNET_PROVIDER_URL);
 	}
@@ -159,6 +169,10 @@ public class RoutingServicesProperties {
 	
 	public static boolean isLoadBalanceEnabled() {
         return (new Boolean(get(PROP_LOADBALANCE_ENABLED))).booleanValue();
+    }
+	
+	public static boolean isLDProcessingEnabled() {
+        return (new Boolean(get(PROP_LDPROCESSING_ENABLED))).booleanValue();
     }
 	
 	

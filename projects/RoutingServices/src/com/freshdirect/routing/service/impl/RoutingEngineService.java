@@ -44,7 +44,7 @@ public class RoutingEngineService implements IRoutingEngineService {
 	public void purgeOrders(IRoutingSchedulerIdentity schedulerId) throws RoutingServiceException {
 		
 		try {
-			TransportationWebService_PortType port = RoutingServiceLocator.getInstance().getTransportationSuiteService();
+			TransportationWebService_PortType port = getTransportationSuiteService(schedulerId);//RoutingServiceLocator.getInstance().getTransportationSuiteService();
 			port.schedulerPurge(RoutingDataEncoder.encodeSchedulerIdentity(schedulerId), false);
 		} catch (ServiceException exp) {
 			exp.printStackTrace();
@@ -59,7 +59,7 @@ public class RoutingEngineService implements IRoutingEngineService {
 	public void schedulerRemoveFromServer(IRoutingSchedulerIdentity schedulerId) throws RoutingServiceException {
 		
 		try {
-			TransportationWebService_PortType port = RoutingServiceLocator.getInstance().getTransportationSuiteService();
+			TransportationWebService_PortType port = getTransportationSuiteService(schedulerId);//RoutingServiceLocator.getInstance().getTransportationSuiteService();
 			port.schedulerRemoveFromServer(RoutingDataEncoder.encodeSchedulerIdentity(schedulerId));
 		} catch (ServiceException exp) {
 			exp.printStackTrace();
@@ -76,7 +76,7 @@ public class RoutingEngineService implements IRoutingEngineService {
 												, String orderType) throws RoutingServiceException {
 		List unassignedList = new ArrayList();
 		try {
-			TransportationWebService_PortType port = RoutingServiceLocator.getInstance().getTransportationSuiteService();
+			TransportationWebService_PortType port = getTransportationSuiteService(schedulerId);//RoutingServiceLocator.getInstance().getTransportationSuiteService();
 			
 			DeliveryAreaOrder[] dlvOrderList = RoutingDataEncoder.encodeOrderList(orderList, schedulerId
 																		, region
@@ -108,7 +108,7 @@ public class RoutingEngineService implements IRoutingEngineService {
 											String balanceBy, double balanceFactor) throws RoutingServiceException {
 		
 		try {
-			TransportationWebService_PortType port = RoutingServiceLocator.getInstance().getTransportationSuiteService();
+			TransportationWebService_PortType port = getTransportationSuiteService(schedulerId);//RoutingServiceLocator.getInstance().getTransportationSuiteService();
 			port.schedulerBalanceRoutes(RoutingDataEncoder.encodeSchedulerIdentity(schedulerId), 
 					RoutingDataEncoder.encodeBalanceRoutesOptions(balanceBy, balanceFactor));
 		} catch (ServiceException exp) {
@@ -123,7 +123,7 @@ public class RoutingEngineService implements IRoutingEngineService {
 	
 	public void sendRoutesToRoadNet(IRoutingSchedulerIdentity schedulerId, String sessionDescription) throws RoutingServiceException {
 		try {
-			TransportationWebService_PortType port = RoutingServiceLocator.getInstance().getTransportationSuiteService();
+			TransportationWebService_PortType port = getTransportationSuiteService(schedulerId);//RoutingServiceLocator.getInstance().getTransportationSuiteService();
 			port.schedulerSendRoutesToRoadnetEx(RoutingDataEncoder.encodeSchedulerIdentity(schedulerId), sessionDescription);
 			
 		} catch (ServiceException exp) {
@@ -139,7 +139,7 @@ public class RoutingEngineService implements IRoutingEngineService {
 	public List saveUnassignedToRoadNet(IRoutingSchedulerIdentity schedulerId, String sessionId, Collection orderList) throws RoutingServiceException {
 		List unassignedList = new ArrayList();
 		try {			
-			TransportationWebService_PortType port = RoutingServiceLocator.getInstance().getTransportationSuiteService();
+			TransportationWebService_PortType port = getTransportationSuiteService(schedulerId);//RoutingServiceLocator.getInstance().getTransportationSuiteService();
 			RoutingImportOrder[] unassignedOrders = port.saveRoutingImportOrders(schedulerId.getRegionId()
 													, RoutingDataEncoder.encodeImportOrderList(schedulerId, sessionId, orderList)
 													, RoutingDataEncoder.encodeTimeZoneOptions());
@@ -160,10 +160,10 @@ public class RoutingEngineService implements IRoutingEngineService {
 	public String retrieveRoutingSession(IRoutingSchedulerIdentity schedulerId, String sessionDescription) throws RoutingServiceException {
 		String sessionId = null;
 		try {
-			TransportationWebService_PortType port = RoutingServiceLocator.getInstance().getTransportationSuiteService();
+			TransportationWebService_PortType port = getTransportationSuiteService(schedulerId);//RoutingServiceLocator.getInstance().getTransportationSuiteService();
 			RoutingSession[] routingSession = port.retrieveRoutingSessionsByCriteria(RoutingDataEncoder.encodeRoutingSessionCriteria(schedulerId, sessionDescription)
-													, RoutingDataEncoder.encodeRouteInfoRetrieveOptions());
-			if(routingSession != null && routingSession.length > 0) {
+													, RoutingDataEncoder.encodeRouteInfoRetrieveOptions());			
+			if(routingSession != null && routingSession.length > 0) {				
 				sessionId = ""+routingSession[0].getSessionIdentity().getInternalSessionID();
 			}
 			
@@ -177,5 +177,14 @@ public class RoutingEngineService implements IRoutingEngineService {
 		}
 		
 		return sessionId;
-	}	
+	}
+	
+	private TransportationWebService_PortType getTransportationSuiteService(IRoutingSchedulerIdentity schedulerId) 
+																throws ServiceException, MalformedURLException {
+		if(schedulerId != null &&  schedulerId.isDepot()) {			
+			return RoutingServiceLocator.getInstance().getTransportationSuiteService("DEPOT");
+		} else {
+			return RoutingServiceLocator.getInstance().getTransportationSuiteService();
+		}
+	}
 }

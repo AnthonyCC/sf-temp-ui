@@ -2,10 +2,11 @@ package com.freshdirect.transadmin.service;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.Map;
 
 import com.freshdirect.transadmin.exception.TransAdminApplicationException;
-import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.Dispatch;
+import com.freshdirect.transadmin.model.Plan;
 
 public interface DispatchManagerI extends BaseManagerI {
 	
@@ -46,5 +47,7 @@ public interface DispatchManagerI extends BaseManagerI {
 	void savePlan(Plan plan);
 	
 	Collection getUnusedDispatchRoutes(String dispatchDate);
+	
+	Map getRouteNumberGroup(String date, String cutOff, String groupCode);
 	
 }

@@ -15,20 +15,13 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.freshdirect.routing.util.IRoutingParamConstants;
 import com.freshdirect.transadmin.datamanager.RouteOutputDataManager;
 import com.freshdirect.transadmin.datamanager.RoutingResult;
-import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.web.model.RoutingOutCommand;
 
 public class RoutingOutputFormController extends BaseRoutingFormController {
 	
-	private DomainManagerI domainManagerService;
-	
-	public DomainManagerI getDomainManagerService() {
-		return domainManagerService;
-	}
-	
+		
 	protected Map referenceData(HttpServletRequest request) throws ServletException {
 		Map refData = new HashMap();		
 		refData.put("cutoffs", getDomainManagerService().getCutOffs());
@@ -36,13 +29,11 @@ public class RoutingOutputFormController extends BaseRoutingFormController {
 		return refData;
 	}
 
-	public void setDomainManagerService(DomainManagerI domainManagerService) {
-		this.domainManagerService = domainManagerService;
-	}
-
 	protected Object formBackingObject(HttpServletRequest request)
 		throws Exception {		
-		return new RoutingOutCommand();
+		RoutingOutCommand bean = new RoutingOutCommand();
+		bean.setRoutingDepotZones(getDepotZones(this.getDomainManagerService()));
+		return bean;
 	}
 	
 	protected ModelAndView onSubmit(HttpServletRequest request,HttpServletResponse response,
@@ -51,29 +42,25 @@ public class RoutingOutputFormController extends BaseRoutingFormController {
 		    // cast the bean
 		    logger.info("FileUploadController -- executing onSubmit!");
 		    RoutingOutCommand bean = (RoutingOutCommand) command;
-		    //let's see if there's content there
-		    byte[] bytes = bean.getFile();
+		      	   
 		   
-		   	   
-		    Map paramMap = new HashMap();
-		    paramMap.put(IRoutingParamConstants.ROUTING_CUTOFF, bean.getCutOff());
 		    RouteOutputDataManager manager = new RouteOutputDataManager();
-		    RoutingResult result = manager.process(bytes, null, null, com.freshdirect.transadmin.security.SecurityManager.getUserName(request)
-		    											, paramMap, getDomainManagerService());
+		    RoutingResult result = manager.process(bean, com.freshdirect.transadmin.security.SecurityManager.getUserName(request)
+		    											, this);
 		    
 		    List errorList = result.getErrors();
 		    
 		    if(errorList == null || errorList.isEmpty()) {
-			    bean.setOutputFile1(getOutputFilePath(result.getOutputFile1()));
-			    bean.setOutputFile2(getOutputFilePath(result.getOutputFile2()));
-			    bean.setOutputFile3(getOutputFilePath(result.getOutputFile3()));
+			    bean.setOrderOutputFilePath(getOutputFilePath(result.getOutputFile1()));
+			    bean.setTruckOutputFilePath(getOutputFilePath(result.getOutputFile2()));
+			    bean.setCutoffReportFilePath(getOutputFilePath(result.getOutputFile3()));
 			    		    
 			    errorList = new ArrayList();
 			    
 				
 				if("X".equalsIgnoreCase(bean.getForce())) {
 					try {
-						this.getDomainManagerService().saveEntityList(result.getRouteNoSaveInfos());
+						this.getDomainManagerService().saveRouteNumberGroup(result.getRouteNoSaveInfos());
 					} catch(Exception e) {
 						e.printStackTrace();
 						errorList.add(this.getMessage("app.actionmessage.131", new Object[]{}));
@@ -104,4 +91,6 @@ public class RoutingOutputFormController extends BaseRoutingFormController {
 		    binder.registerCustomEditor(byte[].class, new ByteArrayMultipartFileEditor());
 		    // now Spring knows how to handle multipart object and convert them
 		  }
+		  
+		  
 }

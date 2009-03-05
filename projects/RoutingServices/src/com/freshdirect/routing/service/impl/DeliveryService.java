@@ -1,15 +1,23 @@
 package com.freshdirect.routing.service.impl;
 
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.routing.dao.IDeliveryDetailsDAO;
 import com.freshdirect.routing.model.IDeliveryModel;
+import com.freshdirect.routing.model.IDrivingDirection;
 import com.freshdirect.routing.model.IServiceTimeModel;
+import com.freshdirect.routing.proxy.stub.roadnet.DriverDirectionsOptions;
+import com.freshdirect.routing.proxy.stub.roadnet.RouteNetPortType;
+import com.freshdirect.routing.proxy.stub.transportation.TransportationWebService_PortType;
 import com.freshdirect.routing.service.IDeliveryService;
+import com.freshdirect.routing.service.RoutingServiceLocator;
 import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
+import com.freshdirect.routing.util.RoutingDataDecoder;
+import com.freshdirect.routing.util.RoutingDataEncoder;
 import com.freshdirect.routing.util.ServiceTimeUtil;
 
 public class DeliveryService implements IDeliveryService {
@@ -100,6 +108,29 @@ public class DeliveryService implements IDeliveryService {
 			// TODO Auto-generated catch block
 			throw new RoutingServiceException(e, IIssue.PROCESS_LOADLATEDELIVERYORDERS_UNSUCCESSFUL);
 		}
+	}
+	
+	public List getRoutes(Date routeDate, String internalSessionID, String routeID) throws RoutingServiceException {
+		try {
+			TransportationWebService_PortType port = RoutingServiceLocator.getInstance().getTransportationSuiteService();
+			return RoutingDataDecoder.decodeRouteList(port.retrieveRoutingRoutesByCriteria
+																(RoutingDataEncoder.encodeRouteCriteria(routeDate, internalSessionID, routeID)
+															, RoutingDataEncoder.encodeRouteInfoRetrieveOptionsEx())); 
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public IDrivingDirection buildDriverDirections(List destinations)  throws RoutingServiceException {
+		try {
+			RouteNetPortType port = RoutingServiceLocator.getInstance().getRouteNetService();
+			return RoutingDataDecoder.decodeDrivingDirection(port.buildDriverDirections(RoutingDataEncoder.encodeGeoPointList(destinations)
+												, new DriverDirectionsOptions()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 		
 }

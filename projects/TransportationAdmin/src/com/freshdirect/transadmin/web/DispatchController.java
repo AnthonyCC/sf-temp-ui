@@ -1,8 +1,7 @@
 package com.freshdirect.transadmin.web;
 
-import java.text.DateFormat;
+import java.math.BigDecimal;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -10,8 +9,10 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -20,9 +21,30 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.routing.model.GeoPoint;
+import com.freshdirect.routing.model.GeographicLocation;
+import com.freshdirect.routing.model.IGeoPoint;
+import com.freshdirect.routing.model.IGeographicLocation;
+import com.freshdirect.routing.model.ILocationModel;
+import com.freshdirect.routing.model.IRouteModel;
+import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
+import com.freshdirect.routing.model.IRoutingStopModel;
+import com.freshdirect.routing.model.LocationModel;
+import com.freshdirect.routing.model.RoutingSchedulerIdentity;
+import com.freshdirect.routing.model.RoutingStopModel;
+import com.freshdirect.routing.service.exception.RoutingServiceException;
+import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
+import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
+import com.freshdirect.routing.util.RoutingServicesProperties;
+import com.freshdirect.transadmin.datamanager.report.DrivingDirectionsReport;
+import com.freshdirect.transadmin.datamanager.report.ReportGenerationException;
 import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.FDRouteMasterInfo;
 import com.freshdirect.transadmin.model.Plan;
+import com.freshdirect.transadmin.model.RouteMapping;
+import com.freshdirect.transadmin.model.RouteMappingId;
+import com.freshdirect.transadmin.model.TrnRouteNumber;
+import com.freshdirect.transadmin.model.TrnRouteNumberId;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.security.SecurityManager;
 import com.freshdirect.transadmin.service.DispatchManagerI;
@@ -40,10 +62,6 @@ public class DispatchController extends AbstractMultiActionController {
 	private EmployeeManagerI employeeManagerService;
 	private DomainManagerI domainManagerService;
 
-	private static final DateFormat DATE_FORMAT=new SimpleDateFormat("MM/dd/yyyy");
-	private static final String DRIVER = "001";
-	private static final String HELPER = "002";
-	private static final String RUNNER = "003";
 
 	public DispatchManagerI getDispatchManagerService() {
 		return dispatchManagerService;
@@ -362,6 +380,174 @@ public class DispatchController extends AbstractMultiActionController {
 		}
 		return mav;
 	}
+	
+	/**
+	 * Custom handler for welcome
+	 * @param request current HTTP request
+	 * @param response current HTTP response
+	 * @return a ModelAndView to render the response
+	 */
+	public ModelAndView routeNumberHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+
+		String routeDate = request.getParameter("routeDate");
+		ModelAndView mav = new ModelAndView("routeNumberView");
+		mav.getModel().put("routeDate", routeDate);
+		List dataList = new ArrayList();
+		
+		if(!TransStringUtil.isEmpty(routeDate)) {
+			Map routeInfoGrp = this.getDispatchManagerService().getRouteNumberGroup(getServerDate(routeDate), null, null);
+			Iterator _iterator = routeInfoGrp.keySet().iterator();
+			
+			while(_iterator.hasNext()) {
+				
+				RouteMappingId key = (RouteMappingId)_iterator.next();
+				TrnRouteNumber _routeNo = new TrnRouteNumber();
+				_routeNo.setRouteNumberId(new TrnRouteNumberId(key.getRouteDate(), key.getCutOffId(), key.getGroupCode()));
+				_routeNo.setCurrentVal(new BigDecimal(routeInfoGrp.get(key).toString()));
+				dataList.add(_routeNo);
+			}
+			mav.getModel().put("routenumberlist",dataList);
+		}
+
+		return mav;
+	}
+	
+	/**
+	 * Custom handler for welcome
+	 * @param request current HTTP request
+	 * @param response current HTTP response
+	 * @return a ModelAndView to render the response
+	 */
+	public ModelAndView drivingDirectionsHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+
+		List routingRouteIds = Arrays.asList(StringUtil.decodeStrings(request.getParameter("routeId")));
+		String routeDate = request.getParameter("rdate");
+		
+		try {
+			if(routingRouteIds != null) {
+				
+				DeliveryServiceProxy proxy = new DeliveryServiceProxy();
+				RoutingEngineServiceProxy engineProxy = new RoutingEngineServiceProxy();
+				
+				Iterator _itr = routingRouteIds.iterator();
+				String routingRouteId = null;
+				Map directionRoutes = new TreeMap();
+				IRouteModel _tmpRoute = null;
+				
+				while(_itr.hasNext()) {
+					routingRouteId = (String)_itr.next();
+					Collection routes = domainManagerService.getRouteMapping(TransStringUtil.getServerDate(routeDate), routingRouteId);
+					
+					if(routes != null && routes.size() == 1) {
+						
+						RouteMapping routeMapping = (RouteMapping)routes.toArray()[0];		
+						
+						IRoutingSchedulerIdentity schedulerId = new RoutingSchedulerIdentity();
+						schedulerId.setRegionId(RoutingServicesProperties.getDefaultRegion());
+								
+						String sessionId = engineProxy.retrieveRoutingSession(schedulerId, routeMapping.getRoutingSessionID());
+						
+						List routingRoutes = proxy.getRoutes(TransStringUtil.getDate(routeDate), sessionId
+																, routeMapping.getRouteMappingId().getRoutingRouteID());
+						
+						if(routingRoutes != null && routingRoutes.size() > 0) {
+							_tmpRoute = (IRouteModel)routingRoutes.get(0);
+							System.out.println(">>"+_tmpRoute+" >> "+_tmpRoute.getStops());
+							if(_tmpRoute.getStops() != null && _tmpRoute.getStops().size() > 0) {
+								directionRoutes.put(routingRouteId, _tmpRoute);
+							} else {
+								directionRoutes.put(routingRouteId, null);
+							}
+						}
+					}
+				}
+				DrivingDirectionsReport reportEngine = new DrivingDirectionsReport();
+				if(directionRoutes != null && directionRoutes.size() > 0) {
+					Map directionsReportData = this.getRouteDirections(directionRoutes);
+					reportEngine.generateDrivingDirectionsReport(response.getOutputStream(), directionsReportData);
+					
+				} else {
+					reportEngine.generateError(response.getOutputStream(), "Driving Direction generation error!");
+				}
+			}
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+			saveMessage(request, getMessage("app.actionmessage.123", null));
+		}
+		response.setContentType("application/pdf");
+		return null;
+	}
+	
+	private Map getRouteDirections(Map routes) throws ReportGenerationException {
+		Map result = new TreeMap();
+		DeliveryServiceProxy proxy = new DeliveryServiceProxy();
+		try {
+			Iterator _itr = routes.keySet().iterator();
+			String _routeId = null;
+			IRouteModel route = null;
+			
+			while(_itr.hasNext()) {
+				_routeId = (String)_itr.next();
+				route = (IRouteModel)routes.get(_routeId);
+				if(route != null) {
+					route.getStops().add(getStop(Integer.MIN_VALUE, "DPT/FD", null, null,
+							null, "40740250", "-73951989"));
+					route.getStops().add(getStop(Integer.MAX_VALUE, "DPT/FD", null, null,
+							null, "40740250", "-73951989"));
+		
+					
+					List points = new ArrayList();
+					
+					Iterator stopIterator = route.getStops().iterator();
+					IRoutingStopModel _stop = null;
+					IGeoPoint _geoPoint = null;
+					
+					while (stopIterator.hasNext()) {
+						
+						_stop = (IRoutingStopModel) stopIterator.next();
+						_geoPoint = new GeoPoint();
+						_geoPoint.setLatitude(Integer.parseInt(_stop.getLocation().getGeographicLocation().getLatitude()));
+						_geoPoint.setLongitude(Integer.parseInt(_stop.getLocation().getGeographicLocation().getLongitude()));
+						points.add(_geoPoint);
+					}
+					route.setDrivingDirection(proxy.buildDriverDirections(points));
+					result.put(_routeId, route);
+				} else {
+					result.put(_routeId, null);
+				}
+			}
+		} catch (RoutingServiceException exp) {
+			exp.printStackTrace();
+			throw new ReportGenerationException(
+					"Unable to generate driver directions");
+		}
+		
+		return result;
+	}
+	
+	private IRoutingStopModel getStop(int id, String line1, String city, String state, String zipCode,
+											String latitude, String longitude) {
+	
+		IRoutingStopModel _stop = new RoutingStopModel(id);
+		
+		ILocationModel _locModel = new LocationModel();
+		
+		_locModel.setStreetAddress1(line1);
+		_locModel.setCity(city); 
+		_locModel.setState(state);
+		_locModel.setZipCode(zipCode);
+		
+		_stop.setLocation(_locModel);
+		
+		IGeographicLocation _geoLocModel = new GeographicLocation();
+		_geoLocModel.setLatitude(latitude);
+		_geoLocModel.setLongitude(longitude);
+		
+		_locModel.setGeographicLocation(_geoLocModel);
+		
+		return _stop;
+	}
 
 	private List getTermintedEmployeeIds() {
 		Collection termintedList = employeeManagerService.getTerminatedEmployees();
@@ -377,5 +563,7 @@ public class DispatchController extends AbstractMultiActionController {
 		}
 		return result;
 	}
+	
+	
 
 }

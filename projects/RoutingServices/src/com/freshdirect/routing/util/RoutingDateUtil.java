@@ -20,6 +20,8 @@ public class RoutingDateUtil {
 	
 	private static final Calendar BASE_CALENDAR = Calendar.getInstance();
 	
+	public static DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+	
 	public static String formatTime(Date dateValue) throws ParseException{
 		return MIN_HOUR_SEC_FORMATTER.format(dateValue);
 	}
@@ -50,6 +52,10 @@ public class RoutingDateUtil {
 		BASE_CALENDAR.setTime(dateStart);
 		BASE_CALENDAR.add(Calendar.MINUTE, percentageMinutes);
 		return BASE_CALENDAR.getTime();
+	}
+	
+	public static Date getDate(String dateString) throws ParseException {		
+        return (Date)dateFormat.parse(dateString);
 	}
 	
 	

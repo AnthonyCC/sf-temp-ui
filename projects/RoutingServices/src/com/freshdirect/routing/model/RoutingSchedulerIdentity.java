@@ -7,6 +7,16 @@ public class RoutingSchedulerIdentity extends BaseModel implements IRoutingSched
     private IAreaModel area;
 
     private java.util.Date deliveryDate;
+    
+    private boolean isDepot;
+
+	public boolean isDepot() {
+		return isDepot;
+	}
+
+	public void setDepot(boolean isDepot) {
+		this.isDepot = isDepot;
+	}
 
 	public IAreaModel getArea() {
 		return area;

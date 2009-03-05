@@ -45,7 +45,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 	private static final String GET_DELIVERYZONETYPE_QRY="select z.ZONE_TYPE SERVICE_TYPE from transp.trn_zone z where z.zone_number = ? ";
 	
 	private static final String GET_DELIVERYZONEDETAILS_QRY="select z.ZONE_CODE ZONE_NUMBER, z.ZONE_TYPE ZONE_TYPE, a.CODE AREACODE," +
-			"a.BALANCE_BY BALANCE_BY, a.LOADBALANCE_FACTOR LOADBALANCE_FACTOR, a.NEEDS_LOADBALANCE NEEDS_LOADBALANCE  from transp.zone z, transp.trn_area a  " +
+			"a.BALANCE_BY BALANCE_BY, a.LOADBALANCE_FACTOR LOADBALANCE_FACTOR, a.NEEDS_LOADBALANCE NEEDS_LOADBALANCE,a.IS_DEPOT IS_DEPOT  from transp.zone z, transp.trn_area a  " +
 			" where z.area = a.code and (z.OBSOLETE <> 'X' or z.OBSOLETE IS NULL)";
 			
 	
@@ -143,7 +143,9 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 				    		tmpAreaModel.setAreaCode(rs.getString("AREACODE"));
 				    		tmpAreaModel.setBalanceBy(rs.getString("BALANCE_BY"));
 				    		tmpAreaModel.setLoadBalanceFactor(rs.getDouble("LOADBALANCE_FACTOR"));
-				    		tmpAreaModel.setNeedsLoadBalance("X".equalsIgnoreCase(rs.getString("NEEDS_LOADBALANCE")) ? true : false);
+				    		tmpAreaModel.setNeedsLoadBalance("X".equalsIgnoreCase(rs.getString("NEEDS_LOADBALANCE")));
+				    		
+				    		tmpAreaModel.setDepot("X".equalsIgnoreCase(rs.getString("IS_DEPOT")));
 				    		
 				    		tmpModel.setArea(tmpAreaModel);
 				    		zoneDetailsMap.put(zoneCode, tmpModel);

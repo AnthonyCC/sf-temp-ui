@@ -2,17 +2,23 @@ package com.freshdirect.transadmin.datamanager;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.fop.apps.Driver;
+import org.apache.fop.apps.FOPException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.xml.sax.InputSource;
 
 import com.freshdirect.transadmin.datamanager.assembler.IDataAssembler;
 import com.freshdirect.transadmin.datamanager.parser.ConfigurationReader;
@@ -120,6 +126,30 @@ public class RouteFileManager implements IRouteFileManager {
             return true;
         } catch (IOException ioExp) {
         	ioExp.printStackTrace();  
+        } 
+        return false;
+	}
+	
+	public boolean generatePdfReportFile(OutputStream out,  String data) {
+		
+        try {
+        	InputStream is = new ByteArrayInputStream(((String) data).getBytes("UTF-8"));
+        	
+        	ByteArrayOutputStream dataOut = new ByteArrayOutputStream();
+            Driver driver = new Driver(new InputSource(is), dataOut);
+            driver.setRenderer(Driver.RENDER_PDF);
+            driver.run();
+            
+            //FileOutputStream out = new FileOutputStream(outputFile);
+            //BufferedWriter out = new BufferedWriter(new FileWriter(outputFile));
+            out.write(dataOut.toByteArray());
+            out.close();
+
+            return true;
+        } catch (IOException ioExp) {
+        	ioExp.printStackTrace();  
+        } catch (FOPException fopExp) {
+        	fopExp.printStackTrace();  
         } 
         return false;
 	}

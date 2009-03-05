@@ -20,6 +20,7 @@ public class SecurityManager {
 		UNSECURED_URL.add("unassignedroute.do");
 		UNSECURED_URL.add("asyncgeographyprovider.do");
 		UNSECURED_URL.add("showroute.do");
+		UNSECURED_URL.add("drivingdirection.do");
 	}
 	
 	public static String getUserRole(ServletRequest request, Set roles) {		

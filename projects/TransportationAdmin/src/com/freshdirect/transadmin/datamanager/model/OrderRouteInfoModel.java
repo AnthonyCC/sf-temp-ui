@@ -18,11 +18,19 @@ public class OrderRouteInfoModel  implements IOrderRouteInfo {
 	private String routeId;
 	private String stopNumber;
 	private Date stopArrivalTime;
+	private Date stopDepartureTime;
 	private Date routeStartTime;
 	private String plant = "1000";	
 	private String deliveryModel = "003";
 	private String deliveryArea;
-		
+	
+	private String address;
+	private String city;
+	private String state;
+	private String zipcode;
+	private String latitude;
+	private String longitude;
+	
 	public String getDeliveryModel() {
 		return deliveryModel;
 	}
@@ -136,6 +144,48 @@ public class OrderRouteInfoModel  implements IOrderRouteInfo {
 	}
 	public String toString() {
 		return orderNumber.toString();
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public String getCity() {
+		return city;
+	}
+	public void setCity(String city) {
+		this.city = city;
+	}
+	public String getLatitude() {
+		return latitude;
+	}
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
+	}
+	public String getLongitude() {
+		return longitude;
+	}
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
+	}
+	public String getState() {
+		return state;
+	}
+	public void setState(String state) {
+		this.state = state;
+	}
+	public String getZipcode() {
+		return zipcode;
+	}
+	public void setZipcode(String zipcode) {
+		this.zipcode = zipcode;
+	}
+	public Date getStopDepartureTime() {
+		return stopDepartureTime;
+	}
+	public void setStopDepartureTime(Date stopDepartureTime) {
+		this.stopDepartureTime = stopDepartureTime;
 	}
 
 

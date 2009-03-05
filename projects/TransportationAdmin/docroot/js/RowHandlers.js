@@ -128,6 +128,7 @@ function addCompositeRowHandlers(tableId, rowClassName, url, paramName1, columnI
 
 /* currently being used for help section...*/
 function pop(URL,h,w) {
+    
 	if(isIE){
 		if (window.newWin) { window.newWin.close() }
 	}else{
