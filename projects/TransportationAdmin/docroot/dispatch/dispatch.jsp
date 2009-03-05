@@ -109,7 +109,7 @@
                           }
                         }
                         if (paramValues != null) {
-                          pop(url+"?routeId="+ paramValues+"&rdate="+dateField,400,500);
+                          pop(url+"?routeId="+ paramValues+"&rdate="+dateField,600,800);
                         } else {
                           alert('Please Select a Row!');
                         }

@@ -134,7 +134,7 @@ public class TransStringUtil {
 		} catch (Exception e) {
 			// Do Nothing
 		}
-        return "Error";
+        return ">>";
 	}
 	
 	public static String calcHMS(int timeInSeconds) {

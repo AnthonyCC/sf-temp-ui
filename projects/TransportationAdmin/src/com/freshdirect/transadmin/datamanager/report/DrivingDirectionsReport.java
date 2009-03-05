@@ -33,7 +33,7 @@ public class DrivingDirectionsReport {
     public void generateError(OutputStream out, String message ) 
 							throws ReportGenerationException {
     	xlsfo.append(startRoot());
-    	regionBefore(message);
+    	xlsfo.append(regionBefore(message));
     	xlsfo.append(endRoot());
     	new RouteFileManager().generatePdfReportFile(out, xlsfo.toString());
     }

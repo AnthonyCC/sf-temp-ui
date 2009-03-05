@@ -113,7 +113,7 @@ public class RoutingDataDecoder {
 					
 					_locModel.setStreetAddress1(_refStop.getAddress().getLine1());
 					_locModel.setCity(_refStop.getAddress().getRegion1()); 
-					_locModel.setState(_refStop.getAddress().getRegion2());
+					_locModel.setState(_refStop.getAddress().getRegion3());
 					_locModel.setZipCode(_refStop.getAddress().getPostalCode());
 					
 					_stop.setLocation(_locModel);

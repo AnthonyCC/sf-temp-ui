@@ -451,14 +451,15 @@ public class DispatchController extends AbstractMultiActionController {
 																, routeMapping.getRouteMappingId().getRoutingRouteID());
 						
 						if(routingRoutes != null && routingRoutes.size() > 0) {
-							_tmpRoute = (IRouteModel)routingRoutes.get(0);
-							System.out.println(">>"+_tmpRoute+" >> "+_tmpRoute.getStops());
+							_tmpRoute = (IRouteModel)routingRoutes.get(0);							
 							if(_tmpRoute.getStops() != null && _tmpRoute.getStops().size() > 0) {
 								directionRoutes.put(routingRouteId, _tmpRoute);
 							} else {
 								directionRoutes.put(routingRouteId, null);
 							}
 						}
+					} else {
+						directionRoutes.put(routingRouteId, null);
 					}
 				}
 				DrivingDirectionsReport reportEngine = new DrivingDirectionsReport();
@@ -467,7 +468,7 @@ public class DispatchController extends AbstractMultiActionController {
 					reportEngine.generateDrivingDirectionsReport(response.getOutputStream(), directionsReportData);
 					
 				} else {
-					reportEngine.generateError(response.getOutputStream(), "Driving Direction generation error!");
+					reportEngine.generateError(response.getOutputStream(), "There are no valid routes to build Driving Direction. Please select a valid route or contact routing team for more information.");
 				}
 			}
 		
@@ -491,10 +492,10 @@ public class DispatchController extends AbstractMultiActionController {
 				_routeId = (String)_itr.next();
 				route = (IRouteModel)routes.get(_routeId);
 				if(route != null) {
-					route.getStops().add(getStop(Integer.MIN_VALUE, "DPT/FD", null, null,
-							null, "40740250", "-73951989"));
-					route.getStops().add(getStop(Integer.MAX_VALUE, "DPT/FD", null, null,
-							null, "40740250", "-73951989"));
+					route.getStops().add(getStop(Integer.MIN_VALUE, "DPT/FD", "", "",
+							"", "40740250", "-73951989"));
+					route.getStops().add(getStop(Integer.MAX_VALUE, "DPT/FD", "", "",
+							"", "40740250", "-73951989"));
 		
 					
 					List points = new ArrayList();
