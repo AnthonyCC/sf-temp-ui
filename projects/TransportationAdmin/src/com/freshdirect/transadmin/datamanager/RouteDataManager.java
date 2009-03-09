@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import com.freshdirect.transadmin.datamanager.model.IRoutingOutputInfo;
@@ -184,6 +185,40 @@ public class RouteDataManager {
 		}
 	}
 	
+	protected Map getRoutingAreaMapping(Collection areas) {
+		
+		Map result = new HashMap();
+		
+		TrnArea tmpArea = null;
+		if(areas != null) {
+			Iterator iterator = areas.iterator();
+			while(iterator.hasNext()) {
+				tmpArea = (TrnArea)iterator.next();				
+				if(tmpArea != null && "X".equalsIgnoreCase(tmpArea.getActive())) {
+					result.put(tmpArea.getCode(), tmpArea);
+				}
+			}
+		}
+		return result;
+	}
+	
+	protected Map getDepotAreaMapping(Collection areas) {
+		
+		Map result = new HashMap();
+		
+		TrnArea tmpArea = null;
+		if(areas != null) {
+			Iterator iterator = areas.iterator();
+			while(iterator.hasNext()) {
+				tmpArea = (TrnArea)iterator.next();				
+				if(tmpArea != null && "X".equalsIgnoreCase(tmpArea.getIsDepot())) {
+					result.put(tmpArea.getCode(), tmpArea);
+				}
+			}
+		}
+		return result;
+	}
+	
 	protected class RouteOrderGroupInfo {
 		
 		private int startIndex;
@@ -323,6 +358,30 @@ public class RouteDataManager {
 		public String toString() {
 			return orders.toString()+","+super.toString()+"\n";
 		}
+	}
+	
+	protected class OrderAreaGroup {
+		
+		private Map orderGroup = null;
+						
+		private Set missingAreas;
+
+		public Set getMissingAreas() {
+			return missingAreas;
+		}
+
+		public void setMissingAreas(Set missingAreas) {
+			this.missingAreas = missingAreas;
+		}
+
+		public Map getOrderGroup() {
+			return orderGroup;
+		}
+
+		public void setOrderGroup(Map orderGroup) {
+			this.orderGroup = orderGroup;
+		}		
+
 	}
 
 }

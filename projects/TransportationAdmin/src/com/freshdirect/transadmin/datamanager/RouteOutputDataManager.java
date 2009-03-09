@@ -3,6 +3,7 @@ package com.freshdirect.transadmin.datamanager;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import com.freshdirect.transadmin.datamanager.RouteDataManager.OrderAreaGroup;
 import com.freshdirect.transadmin.datamanager.model.IRoutingOutputInfo;
 import com.freshdirect.transadmin.datamanager.model.ITruckScheduleInfo;
 import com.freshdirect.transadmin.datamanager.model.OrderRouteInfoModel;
@@ -50,42 +52,47 @@ public class RouteOutputDataManager extends RouteDataManager  {
 												, RoutingResult result, IServiceProvider serviceProvider) {
 
 		collectOrders(routingInfo, result);
-		validateData(routingInfo, result);
-		preProcessRoutingOutput(routingInfo, result, serviceProvider);
+		validateData(routingInfo, result, serviceProvider);
+		
 		if(result.getErrors() == null || result.getErrors().size() == 0) {
-			try {
-				convertRegToDptOrders(routingInfo, result, serviceProvider);
-				RouteGenerationResult routeGenResult = generateRouteNumber(result.getDepotRouteMapping()
-																			, result.getRegularOrders(), routingInfo
-																			, serviceProvider);
+			preProcessRoutingOutput(routingInfo, result, serviceProvider);
+			
+			if(result.getErrors() == null || result.getErrors().size() == 0) {
+				try {
+					convertRegToDptOrders(routingInfo, result, serviceProvider);
+					RouteGenerationResult routeGenResult = generateRouteNumber(result.getDepotRouteMapping()
+																				, result.getRegularOrders(), routingInfo
+																				, serviceProvider);
 
-				List cutOffOrders = routeGenResult.getRouteInfos();
-				List regularOrders = new ArrayList();
-				regularOrders.addAll(cutOffOrders);
-				
-				result.setRegularOrders(regularOrders);
-				
-				postProcessRoutingOutput(routingInfo, result, serviceProvider);
+					List cutOffOrders = routeGenResult.getRouteInfos();
+					List regularOrders = new ArrayList();
+					regularOrders.addAll(cutOffOrders);
+					
+					result.setRegularOrders(regularOrders);
+					
+					postProcessRoutingOutput(routingInfo, result, serviceProvider);
 
-				result.setRouteNoSaveInfos(routeGenResult.getRouteNoSaveInfos());
+					result.setRouteNoSaveInfos(routeGenResult.getRouteNoSaveInfos());
 
-				fileManager.generateRouteFile(TransportationAdminProperties.getErpOrderInputFormat()
-						, result.getOutputFile1(), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, result.getRegularOrders()
-						, null);
-				fileManager.generateRouteFile(TransportationAdminProperties.getErpRouteInputFormat()
-						, result.getOutputFile2(), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, filterRoutesFromOrders(result.getRegularOrders())
-						, null);
+					fileManager.generateRouteFile(TransportationAdminProperties.getErpOrderInputFormat()
+							, result.getOutputFile1(), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, result.getRegularOrders()
+							, null);
+					fileManager.generateRouteFile(TransportationAdminProperties.getErpRouteInputFormat()
+							, result.getOutputFile2(), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, filterRoutesFromOrders(result.getRegularOrders())
+							, null);
 
-								
-				CutOffReportData reportData = this.getCutOffReportData(cutOffOrders, routingInfo.getCutOff(), serviceProvider);
-				this.getCutOffReportEngine().generateCutOffReport(result.getOutputFile3(), reportData);
+									
+					CutOffReportData reportData = this.getCutOffReportData(cutOffOrders, routingInfo.getCutOff(), serviceProvider);
+					this.getCutOffReportEngine().generateCutOffReport(result.getOutputFile3(), reportData);
 
-			} catch (RouteNoGenException routeNoGen) {
-				result.addError(routeNoGen.getMessage());
-			} catch (ReportGenerationException reportGen) {
-				result.addError(reportGen.getMessage());
-			}
-		} 
+				} catch (RouteNoGenException routeNoGen) {
+					result.addError(routeNoGen.getMessage());
+				} catch (ReportGenerationException reportGen) {
+					result.addError(reportGen.getMessage());
+				}
+			} 
+		}
+		
 		return result;
 	}
 	
@@ -97,10 +104,18 @@ public class RouteOutputDataManager extends RouteDataManager  {
 		// Nothing Special
 	}
 	
-	protected void validateData(IRoutingOutputInfo routingInfo, RoutingResult result) {
+	protected void validateData(IRoutingOutputInfo routingInfo, RoutingResult result, IServiceProvider serviceProvider) {
 		
 		if(result.getRegularOrders() == null || result.getRegularOrders().size() == 0) {
 			result.addError(INVALID_ORDERROUTEFILE);
+		}
+		
+		Collection areas = serviceProvider.getDomainManagerService().getAreas();
+		Map hshDepotArea = getDepotAreaMapping(areas);
+		
+		OrderAreaGroup truckOrderGroup = groupOrderRouteInfo(result.getDepotOrders(), hshDepotArea, null);
+		if(truckOrderGroup.getMissingAreas() != null && truckOrderGroup.getMissingAreas().size() > 0) {
+			result.addError("Areas "+ truckOrderGroup.getMissingAreas().toString()+ " are missing in roadnet depot file");
 		}
 	}
 	
@@ -138,7 +153,7 @@ public class RouteOutputDataManager extends RouteDataManager  {
 		TrnArea trnArea = null;
 		List depotRouteIds = null;
 
-		if(routeData != null) {
+		if(routeData != null && depotRouteMapping != null) {
 
 			Map routeInfoGrp = groupRouteInfoByRouteMapping(routeData, routingInfo.getCutOff(), serviceProvider);
 			Iterator _iterator = routeInfoGrp.keySet().iterator();
@@ -200,7 +215,6 @@ public class RouteOutputDataManager extends RouteDataManager  {
 		RouteGenerationResult result = new RouteGenerationResult();
 		result.setRouteInfos(routeData);
 		result.setRouteNoSaveInfos(routeNoGenMapping);
-		System.out.println("routeNoGenMapping >>"+routeNoGenMapping);
 		return result; 
 	}
 	
@@ -431,6 +445,61 @@ public class RouteOutputDataManager extends RouteDataManager  {
 		
 		routingResult.setDepotRouteMapping(depotRouteMapping);
 		return result;
+	}
+	
+	protected OrderAreaGroup groupOrderRouteInfo(List fullDataList, Map routingAreas
+			, Set missingDepots) {
+
+		OrderAreaGroup orderGroupResult = new OrderAreaGroup();
+		Map orderGroup = new HashMap();
+
+		orderGroupResult.setOrderGroup(orderGroup);
+
+		OrderRouteInfoModel tmpInfo = null;
+		List tmpList = null;
+
+		String areaCode = null;
+		Set foundAreas = new HashSet();
+
+		if(fullDataList != null) {
+
+			Iterator iterator = fullDataList.iterator();
+			while(iterator.hasNext()) {
+
+				tmpInfo = (OrderRouteInfoModel)iterator.next();				
+				areaCode = TransStringUtil.splitStringForCode(tmpInfo.getRouteId());
+				if(routingAreas.containsKey(areaCode)) {
+
+					foundAreas.add(areaCode);
+
+					if(orderGroup.containsKey(areaCode)) {
+						tmpList = (List)orderGroup.get(areaCode);
+						tmpList.add(tmpInfo);				
+					} else {
+						tmpList = new ArrayList();
+						tmpList.add(tmpInfo);
+						orderGroup.put(areaCode, tmpList);
+					}
+				} 
+			}
+		}	
+
+		Set routingAreaCodes = routingAreas.keySet();
+		Set missingAreas = new HashSet();
+
+		if(routingAreas != null && routingAreaCodes != null) {
+			String strArea = null;
+			Iterator iterator = routingAreaCodes.iterator();
+			while(iterator.hasNext()) {
+				strArea = (String)iterator.next();
+				if(!foundAreas.contains(strArea) && !(missingDepots != null && !missingDepots.contains(strArea))) {
+					missingAreas.add(strArea);
+				}
+			}
+		}
+		orderGroupResult.setMissingAreas(missingAreas);
+
+		return orderGroupResult;
 	}
 
 	private CustomTruckScheduleInfo matchSchedule(OrderRouteInfoModel order, List scheduleLst) {

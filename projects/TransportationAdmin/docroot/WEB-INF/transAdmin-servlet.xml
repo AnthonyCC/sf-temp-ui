@@ -100,7 +100,7 @@
 				<prop key="/deletegeorestriction.do">restrictionController</prop>					                
 				<prop key="/editgeorestriction.do">geoRestrictionFormController</prop>
 
-				<prop key="/asyncgeographyprovider.do">asyncGeographyController</prop>
+				<prop key="/geographyprovider.ax">asyncGeographyController</prop>
 				
 				<prop key="/gmap.do">geographyController</prop>
 				<prop key="/drivingdirection.do">dispatchController</prop>

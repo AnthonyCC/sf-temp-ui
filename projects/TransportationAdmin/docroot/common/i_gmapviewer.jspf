@@ -6,7 +6,7 @@
       var currentAddress;
       var defaultZoomLevel = 15;
                   
-      var jsonrpcClient = new JSONRpcClient("asyncgeographyprovider.do");
+      var jsonrpcClient = new JSONRpcClient("geographyprovider.ax");
       
             
       function init() {

@@ -37,7 +37,7 @@ public class RouteMergeDataManager extends RouteOutputDataManager {
 		super.collectOrders(routingInfo, result);
 	}
 	
-	protected void validateData(IRoutingOutputInfo routingInfo, RoutingResult result) {
+	protected void validateData(IRoutingOutputInfo routingInfo, RoutingResult result, IServiceProvider serviceProvider) {
 		
 		StringBuffer strBuf = new StringBuffer();
 		if(result.getOrders() == null || result.getOrders().size() == 0) {
@@ -57,7 +57,7 @@ public class RouteMergeDataManager extends RouteOutputDataManager {
 			result.addError(INVALID_RSORDERROUTEFILE);
 		}
 		
-		super.validateData(routingInfo, result);
+		super.validateData(routingInfo, result, serviceProvider);
 	}
 
 	protected void preProcessRoutingOutput(IRoutingOutputInfo routingInfo, RoutingResult result, IServiceProvider serviceProvider) {
@@ -68,21 +68,21 @@ public class RouteMergeDataManager extends RouteOutputDataManager {
 		
 		Map hshDepotArea = getDepotAreaMapping(areas);
 		
-		OrderAreaGroup truckOrderGroup = groupOrderRouteInfo(result.getDepotOrders(), hshRoutingArea, null);
+		OrderAreaGroup truckOrderGroup = groupOrderRouteInfo(result.getDepotOrders(), hshDepotArea, null);
 		
 		OrderAreaGroup regularOrderGroup = groupOrderRouteInfo(result.getRegularOrders(), hshRoutingArea, truckOrderGroup.getMissingAreas());
 				
 		OrderAreaGroup truckOrderProcessingGroup = groupOrderRouteInfo(ModelUtil.mapToList(truckOrderGroup.getOrderGroup()), hshDepotArea, null);
 		
-		if(regularOrderGroup.getMissingAreas() != null && regularOrderGroup.getMissingAreas().size() == 0) {
+		if(regularOrderGroup.getMissingAreas() != null && regularOrderGroup.getMissingAreas().size() > 0) {
 			result.addError("Areas "+ regularOrderGroup.getMissingAreas().toString()+ " are missing in roadnet regular file");
 		}
 		
-		if(truckOrderGroup.getMissingAreas() != null && truckOrderGroup.getMissingAreas().size() == 0) {
+		if(truckOrderGroup.getMissingAreas() != null && truckOrderGroup.getMissingAreas().size() > 0) {
 			result.addError("Areas "+ truckOrderGroup.getMissingAreas().toString()+ " are missing in roadnet depot file");
 		}
 		
-		if(truckOrderProcessingGroup.getMissingAreas() != null && truckOrderProcessingGroup.getMissingAreas().size() == 0) {
+		if(truckOrderProcessingGroup.getMissingAreas() != null && truckOrderProcessingGroup.getMissingAreas().size() > 0) {
 			result.addError("Areas "+ truckOrderProcessingGroup.getMissingAreas().toString()+ " are missing in roadnet depot file");
 		}
 		
@@ -115,96 +115,7 @@ public class RouteMergeDataManager extends RouteOutputDataManager {
 			}
 		}
 	}
-			
-	private Map getRoutingAreaMapping(Collection areas) {
-		
-		Map result = new HashMap();
-		
-		TrnArea tmpArea = null;
-		if(areas != null) {
-			Iterator iterator = areas.iterator();
-			while(iterator.hasNext()) {
-				tmpArea = (TrnArea)iterator.next();				
-				if(tmpArea != null && "X".equalsIgnoreCase(tmpArea.getActive())) {
-					result.put(tmpArea.getCode(), tmpArea);
-				}
-			}
-		}
-		return result;
-	}
 	
-	private Map getDepotAreaMapping(Collection areas) {
-		
-		Map result = new HashMap();
-		
-		TrnArea tmpArea = null;
-		if(areas != null) {
-			Iterator iterator = areas.iterator();
-			while(iterator.hasNext()) {
-				tmpArea = (TrnArea)iterator.next();				
-				if(tmpArea != null && "X".equalsIgnoreCase(tmpArea.getIsDepot())) {
-					result.put(tmpArea.getCode(), tmpArea);
-				}
-			}
-		}
-		return result;
-	}
-		
-	private OrderAreaGroup groupOrderRouteInfo(List fullDataList, Map routingAreas
-																	, Set missingDepots) {
-				
-		OrderAreaGroup orderGroupResult = new OrderAreaGroup();
-		Map orderGroup = new HashMap();
-				
-		orderGroupResult.setOrderGroup(orderGroup);
-				
-		OrderRouteInfoModel tmpInfo = null;
-		List tmpList = null;
-		
-		String areaCode = null;
-		Set foundAreas = new HashSet();
-		
-		if(fullDataList != null) {
-			
-			Iterator iterator = fullDataList.iterator();
-			while(iterator.hasNext()) {
-				
-				tmpInfo = (OrderRouteInfoModel)iterator.next();				
-				areaCode = TransStringUtil.splitStringForCode(tmpInfo.getRouteId());
-				if(routingAreas.containsKey(areaCode)) {
-					
-					foundAreas.add(areaCode);
-					
-					if(orderGroup.containsKey(areaCode)) {
-						tmpList = (List)orderGroup.get(areaCode);
-						tmpList.add(tmpInfo);				
-					} else {
-						tmpList = new ArrayList();
-						tmpList.add(tmpInfo);
-						orderGroup.put(areaCode, tmpList);
-					}
-				} 
-			}
-		}	
-		
-		Set routingAreaCodes = routingAreas.keySet();
-		Set missingAreas = new HashSet();
-		
-		if(routingAreas != null && routingAreaCodes != null) {
-			String strArea = null;
-			Iterator iterator = routingAreaCodes.iterator();
-			while(iterator.hasNext()) {
-				strArea = (String)iterator.next();
-				if(!foundAreas.contains(strArea) && !(missingDepots != null && !missingDepots.contains(strArea))) {
-					missingAreas.add(strArea);
-				}
-			}
-		}
-		orderGroupResult.setMissingAreas(missingAreas);
-		
-		return orderGroupResult;
-	}
-
 	private boolean updateRouteInfo(List orderDataList, List truckDataList) {
 		
 		Map routeMap = new HashMap();		
@@ -244,29 +155,7 @@ public class RouteMergeDataManager extends RouteOutputDataManager {
 	}
 		
 	
-	private class OrderAreaGroup {
-		
-		private Map orderGroup = null;
-						
-		private Set missingAreas;
-
-		public Set getMissingAreas() {
-			return missingAreas;
-		}
-
-		public void setMissingAreas(Set missingAreas) {
-			this.missingAreas = missingAreas;
-		}
-
-		public Map getOrderGroup() {
-			return orderGroup;
-		}
-
-		public void setOrderGroup(Map orderGroup) {
-			this.orderGroup = orderGroup;
-		}		
-
-	}
+	
 	
 	
 	

@@ -18,7 +18,7 @@ public class SecurityManager {
 		UNSECURED_URL.add("routenumber.do");
 		UNSECURED_URL.add("viewfile.do");
 		UNSECURED_URL.add("unassignedroute.do");
-		UNSECURED_URL.add("asyncgeographyprovider.do");
+		UNSECURED_URL.add("geographyprovider.ax");
 		UNSECURED_URL.add("showroute.do");
 		UNSECURED_URL.add("drivingdirection.do");
 	}
