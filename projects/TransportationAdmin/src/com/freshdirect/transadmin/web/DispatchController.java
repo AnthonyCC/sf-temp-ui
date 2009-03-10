@@ -22,16 +22,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.routing.model.GeoPoint;
-import com.freshdirect.routing.model.GeographicLocation;
 import com.freshdirect.routing.model.IGeoPoint;
-import com.freshdirect.routing.model.IGeographicLocation;
-import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IRouteModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IRoutingStopModel;
-import com.freshdirect.routing.model.LocationModel;
 import com.freshdirect.routing.model.RoutingSchedulerIdentity;
-import com.freshdirect.routing.model.RoutingStopModel;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
@@ -51,6 +46,7 @@ import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.util.DispatchPlanUtil;
+import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
@@ -437,6 +433,7 @@ public class DispatchController extends AbstractMultiActionController {
 				while(_itr.hasNext()) {
 					routingRouteId = (String)_itr.next();
 					Collection routes = domainManagerService.getRouteMapping(TransStringUtil.getServerDate(routeDate), routingRouteId);
+					boolean hasRoutes = false;
 					
 					if(routes != null && routes.size() == 1) {
 						
@@ -454,11 +451,11 @@ public class DispatchController extends AbstractMultiActionController {
 							_tmpRoute = (IRouteModel)routingRoutes.get(0);							
 							if(_tmpRoute.getStops() != null && _tmpRoute.getStops().size() > 0) {
 								directionRoutes.put(routingRouteId, _tmpRoute);
-							} else {
-								directionRoutes.put(routingRouteId, null);
-							}
+								hasRoutes = true;
+							} 
 						}
-					} else {
+					}
+					if(!hasRoutes) {
 						directionRoutes.put(routingRouteId, null);
 					}
 				}
@@ -492,10 +489,10 @@ public class DispatchController extends AbstractMultiActionController {
 				_routeId = (String)_itr.next();
 				route = (IRouteModel)routes.get(_routeId);
 				if(route != null) {
-					route.getStops().add(getStop(Integer.MIN_VALUE, "DPT/FD", "", "",
-							"", "40740250", "-73951989"));
-					route.getStops().add(getStop(Integer.MAX_VALUE, "DPT/FD", "", "",
-							"", "40740250", "-73951989"));
+					route.getStops().add(ModelUtil.getStop(Integer.MIN_VALUE, "DPT/FD", "", "",
+							"", "40740250", "-73951989", true));
+					route.getStops().add(ModelUtil.getStop(Integer.MAX_VALUE, "DPT/FD", "", "",
+							"", "40740250", "-73951989", true));
 		
 					
 					List points = new ArrayList();
@@ -526,30 +523,7 @@ public class DispatchController extends AbstractMultiActionController {
 		
 		return result;
 	}
-	
-	private IRoutingStopModel getStop(int id, String line1, String city, String state, String zipCode,
-											String latitude, String longitude) {
-	
-		IRoutingStopModel _stop = new RoutingStopModel(id);
 		
-		ILocationModel _locModel = new LocationModel();
-		
-		_locModel.setStreetAddress1(line1);
-		_locModel.setCity(city); 
-		_locModel.setState(state);
-		_locModel.setZipCode(zipCode);
-		
-		_stop.setLocation(_locModel);
-		
-		IGeographicLocation _geoLocModel = new GeographicLocation();
-		_geoLocModel.setLatitude(latitude);
-		_geoLocModel.setLongitude(longitude);
-		
-		_locModel.setGeographicLocation(_geoLocModel);
-		
-		return _stop;
-	}
-
 	private List getTermintedEmployeeIds() {
 		Collection termintedList = employeeManagerService.getTerminatedEmployees();
 		List result = new ArrayList();

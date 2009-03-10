@@ -17,9 +17,12 @@ import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.customer.ErpRouteMasterInfo;
+import com.freshdirect.routing.model.GeographicLocation;
 import com.freshdirect.routing.model.IGeographicLocation;
 import com.freshdirect.routing.model.ILocationModel;
+import com.freshdirect.routing.model.IRoutingStopModel;
 import com.freshdirect.routing.model.LocationModel;
+import com.freshdirect.routing.model.RoutingStopModel;
 import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.DispatchResource;
 import com.freshdirect.transadmin.model.DlvBuilding;
@@ -341,6 +344,31 @@ public class ModelUtil {
 
 		return routes;
 	}
+	
+	public static IRoutingStopModel getStop(int id, String line1, String city, String state, String zipCode,
+			String latitude, String longitude, boolean isDepot) {
+
+		IRoutingStopModel _stop = new RoutingStopModel(id);
+		_stop.setDepot(isDepot);
+
+		ILocationModel _locModel = new LocationModel();
+
+		_locModel.setStreetAddress1(line1);
+		_locModel.setCity(city); 
+		_locModel.setState(state);
+		_locModel.setZipCode(zipCode);
+
+		_stop.setLocation(_locModel);
+
+		IGeographicLocation _geoLocModel = new GeographicLocation();
+		_geoLocModel.setLatitude(latitude);
+		_geoLocModel.setLongitude(longitude);
+
+		_locModel.setGeographicLocation(_geoLocModel);
+
+		return _stop;
+	}
+	
 	public static PlanComparator PLAN_COMPARATOR=new PlanComparator();
 
 	public static RouteComparator ROUTE_COMPARATOR=new RouteComparator();
