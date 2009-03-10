@@ -1,10 +1,8 @@
 package com.freshdirect.transadmin.datamanager;
 
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -13,9 +11,7 @@ import java.util.TreeSet;
 
 import com.freshdirect.transadmin.datamanager.model.IRoutingOutputInfo;
 import com.freshdirect.transadmin.datamanager.model.OrderRouteInfoModel;
-import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.util.ModelUtil;
-import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
 
 public class RouteMergeDataManager extends RouteOutputDataManager {
@@ -153,10 +149,5 @@ public class RouteMergeDataManager extends RouteOutputDataManager {
 		}
 		return true;
 	}
-		
-	
-	
-	
-	
 	
 }

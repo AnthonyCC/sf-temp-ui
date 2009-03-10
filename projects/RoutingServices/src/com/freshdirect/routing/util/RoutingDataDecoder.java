@@ -108,24 +108,26 @@ public class RoutingDataDecoder {
 				for(int intCount=0;intCount<route.getStops().length ;intCount++) {
 					_refStop = route.getStops()[intCount];
 					
-					_stop = new RoutingStopModel(_refStop.getSequenceNumber());
-					_locModel = new LocationModel();
-					
-					_locModel.setStreetAddress1(_refStop.getAddress().getLine1());
-					_locModel.setCity(_refStop.getAddress().getRegion1()); 
-					_locModel.setState(_refStop.getAddress().getRegion3());
-					_locModel.setZipCode(_refStop.getAddress().getPostalCode());
-					
-					_stop.setLocation(_locModel);
-					
-					_geoLocModel = new GeographicLocation();
-					_geoLocModel.setLatitude(""+_refStop.getLatitude());
-					_geoLocModel.setLongitude(""+_refStop.getLongitude());
-					
-					_locModel.setGeographicLocation(_geoLocModel);
-					
-					_stop.setStopArrivalTime(Calendar.getInstance().getTime());
-					result.getStops().add(_stop);
+					if(_refStop.getSequenceNumber() >= 0) {
+						_stop = new RoutingStopModel(_refStop.getSequenceNumber());
+						_locModel = new LocationModel();
+						
+						_locModel.setStreetAddress1(_refStop.getAddress().getLine1());
+						_locModel.setCity(_refStop.getAddress().getRegion1()); 
+						_locModel.setState(_refStop.getAddress().getRegion3());
+						_locModel.setZipCode(_refStop.getAddress().getPostalCode());
+						
+						_stop.setLocation(_locModel);
+						
+						_geoLocModel = new GeographicLocation();
+						_geoLocModel.setLatitude(""+_refStop.getLatitude());
+						_geoLocModel.setLongitude(""+_refStop.getLongitude());
+						
+						_locModel.setGeographicLocation(_geoLocModel);
+						
+						_stop.setStopArrivalTime(Calendar.getInstance().getTime());
+						result.getStops().add(_stop);
+					}
 				}
 			}
 			
