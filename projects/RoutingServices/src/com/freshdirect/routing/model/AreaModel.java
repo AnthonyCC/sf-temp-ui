@@ -19,6 +19,29 @@ public class AreaModel extends BaseModel implements IAreaModel  {
 		this.areaCode = areaCode;
 	}
 
+	public int hashCode() {
+		final int PRIME = 31;
+		int result = 1;
+		result = PRIME * result + ((areaCode == null) ? 0 : areaCode.hashCode());
+		return result;
+	}
+
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final AreaModel other = (AreaModel) obj;
+		if (areaCode == null) {
+			if (other.areaCode != null)
+				return false;
+		} else if (!areaCode.equals(other.areaCode))
+			return false;
+		return true;
+	}
+
 	public String getBalanceBy() {
 		return balanceBy;
 	}
@@ -50,4 +73,6 @@ public class AreaModel extends BaseModel implements IAreaModel  {
 	public void setDepot(boolean isDepot) {
 		this.isDepot = isDepot;
 	}
+
+	
 }
