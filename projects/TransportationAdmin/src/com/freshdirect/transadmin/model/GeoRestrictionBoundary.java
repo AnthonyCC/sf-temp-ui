@@ -12,7 +12,7 @@ public class GeoRestrictionBoundary implements java.io.Serializable {
 	private String code;
 	private String name;
 
-
+	
 	public GeoRestrictionBoundary() {
 	}
 
@@ -38,6 +38,7 @@ public class GeoRestrictionBoundary implements java.io.Serializable {
 		this.name = name;
 	}
 
+	
 	
 
 }

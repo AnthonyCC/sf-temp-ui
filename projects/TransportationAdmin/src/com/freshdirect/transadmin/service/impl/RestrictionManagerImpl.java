@@ -1,6 +1,9 @@
 package com.freshdirect.transadmin.service.impl;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 import com.freshdirect.transadmin.dao.BaseManagerDaoI;
 import com.freshdirect.transadmin.dao.RestrictionManagerDaoI;
@@ -74,6 +77,22 @@ public class RestrictionManagerImpl extends BaseManagerImpl implements Restricti
 	
 	public SpatialBoundary getZoneBoundary(String code) {
 		return this.getSpatialManagerDao().getZoneBoundary(code);
+	}
+	
+	public void deleteGeoRestrictions(Set restrictions) {
+		
+		Set restrictedDays = new HashSet(); 
+		
+		if(restrictions != null) {
+			Iterator _iterator = restrictions.iterator();
+			GeoRestriction geoRestriction = null;
+			while(_iterator.hasNext()) {
+				geoRestriction = (GeoRestriction)_iterator.next();
+				restrictedDays.addAll(geoRestriction.getGeoRestrictionDays());
+			}
+		}
+		this.removeEntity(restrictedDays);
+		this.removeEntity(restrictions);
 	}
 	
 }	
