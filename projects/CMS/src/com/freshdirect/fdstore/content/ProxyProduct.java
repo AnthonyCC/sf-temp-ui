@@ -608,4 +608,8 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 	public String getProductRating() throws FDResourceException{
 		return getProduct().getProductRating();
 	}
+	
+	public String getCOOLText() throws FDResourceException{
+		return getProduct().getCOOLText();
+	}
 }

@@ -972,7 +972,23 @@
         </reference-descriptor>
         <jndi-name>freshdirect.erp.DlvPassManager</jndi-name>
     </weblogic-enterprise-bean>
-        
+    <weblogic-enterprise-bean>
+        <ejb-name>COOLInfoManager</ejb-name>
+        <stateless-session-descriptor>
+            <pool>
+                <max-beans-in-free-pool>10</max-beans-in-free-pool>
+            </pool>
+            <stateless-clustering></stateless-clustering>
+        </stateless-session-descriptor>
+        <transaction-descriptor></transaction-descriptor>
+        <reference-descriptor>
+            <resource-description>
+                <res-ref-name>jdbc/dbpool</res-ref-name>
+                <jndi-name>fddatasource</jndi-name>
+            </resource-description>
+        </reference-descriptor>
+        <jndi-name>freshdirect.erp.COOLManager</jndi-name>
+    </weblogic-enterprise-bean>    
     <transaction-isolation>
         <isolation-level>TRANSACTION_READ_COMMITTED</isolation-level>
         <method>

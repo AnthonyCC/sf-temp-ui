@@ -40,6 +40,7 @@ public class ErpServicesProperties {
     private final static String PROP_MATERIAL_HOME      = "erpservices.material.home";
     private final static String PROP_CLASS_HOME         = "erpservices.class.home";
     private final static String PROP_CVPRICE_HOME       = "erpservices.cvprice.home";
+    private final static String PROP_COOL_MANAGER_HOME  = "erpservices.cool.home";
     
 	private final static String PROP_HORIZON_DAYS		= "erpservices.horizon.days";
     
@@ -140,7 +141,11 @@ public class ErpServicesProperties {
 	private final static String PROP_FUNCTION_ROUTEINFO = "sap.function.routeinfo";
 	
 	private final static String PROP_FUNCTION_TRUCKINFO = "sap.function.truckinfo";
-
+	
+	private final static String PROP_JCO_CLIENT_COOL_LISTENENABLED = "jco.client.cool.listenersEnabled";
+	
+	private final static String PROP_FUNCTION_COOLINFO = "sap.function.coolinfo";
+	
 	static {
 		Properties defaults = new Properties();
 
@@ -156,7 +161,8 @@ public class ErpServicesProperties {
         defaults.put(PROP_MATERIAL_HOME,	"freshdirect.erp.Material");
         defaults.put(PROP_CLASS_HOME,	    "freshdirect.erp.Class");
         defaults.put(PROP_CVPRICE_HOME,	    "freshdirect.erp.CharacteristicValuePrice");
-
+        defaults.put(PROP_COOL_MANAGER_HOME,"freshdirect.erp.COOLManager");
+        
 		defaults.put(PROP_HORIZON_DAYS, "8");
        
 		defaults.put(PROP_AUTHORIZE, "true");
@@ -200,7 +206,7 @@ public class ErpServicesProperties {
 		defaults.put(PROP_CRM_SYSTME_USER_PASSWORD, "system");
 		
 		defaults.put(PROP_JCO_CLIENT_LISTENENABLED, "false");
-		
+				
 		defaults.put(PROP_SAP_MAIL_TO, "erp@freshdirect.com");
 		defaults.put(PROP_SAP_MAIL_CC, "applicationdevelopment@freshdirect.com");
 		defaults.put(PROP_SAP_MAIL_FROM, "applicationdevelopment@freshdirect.com");
@@ -239,6 +245,9 @@ public class ErpServicesProperties {
 		
 		defaults.put(PROP_FUNCTION_ROUTEINFO, "ZBAPI_ROUTE_INFO");
 		defaults.put(PROP_FUNCTION_TRUCKINFO, "ZBAPI_TRUCK_INFO");
+		
+		defaults.put(PROP_JCO_CLIENT_COOL_LISTENENABLED, "false");
+		defaults.put(PROP_FUNCTION_COOLINFO, "ZSDI_COUNTRY_ORIGIN");
 		
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration: "+config);
@@ -568,6 +577,17 @@ public class ErpServicesProperties {
 	
 	public static String getTruckInfoFunctionName() {
 		return config.getProperty(PROP_FUNCTION_TRUCKINFO);
+	}
+	
+	public static String getCOOLManagerHome() {
+		return config.getProperty(PROP_COOL_MANAGER_HOME);
+	}
+	
+	public static boolean getJcoClientCOOLListenersEnabled() {
+		return Boolean.valueOf(config.getProperty(PROP_JCO_CLIENT_COOL_LISTENENABLED)).booleanValue();
+	}
+	public static String getCOOLInfoFunctionName() {
+		return config.getProperty(PROP_FUNCTION_COOLINFO);
 	}
 	
 }

@@ -605,4 +605,6 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI {
 	public int getDealPercentage(String skuCode);
 	
 	public int getExpertWeight();
+	
+	public List getCOOLInfo() throws FDResourceException;
 }
