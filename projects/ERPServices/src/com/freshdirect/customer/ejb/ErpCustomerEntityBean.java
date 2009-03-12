@@ -656,10 +656,11 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 				foundCustomerCredit = true;
 				double remainingAmount = customerCredit.getRemainingAmount();
 				double originalAmount = customerCredit.getOriginalAmount();
-				if ( ( originalAmount < (remainingAmount + delta) ) || ( 0 > (remainingAmount + delta) ) ) {
+				double updatedRemainingAmount=MathUtil.roundDecimal(remainingAmount + delta);
+				if ( ( originalAmount < updatedRemainingAmount ) || ( 0 > updatedRemainingAmount ) ) {
 					throw new EJBException("Credit delta too large; exceeds maximum or minimum boundary conditions.");
 				} else {
-					customerCredit.setRemainingAmount( customerCredit.getRemainingAmount() + delta );
+					customerCredit.setRemainingAmount(updatedRemainingAmount);
 					this.updateCustomerCredit(customerCredit);
 					break;
 				}
