@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.content;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -312,7 +313,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	    		   coolInfo.add(temp.append(domainValue).append(": ").append(coolInfoMap.get(domainValue).toString()).toString());
 	    		   temp=new StringBuffer(100);
 	    	   }
-	    	  
+	    	  Collections.sort(coolInfo);
 	    	   
 	       }
 	       
