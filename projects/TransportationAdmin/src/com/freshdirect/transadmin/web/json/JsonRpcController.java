@@ -21,8 +21,7 @@ import com.metaparadigm.jsonrpc.JSONRPCServlet;
 
 
 public abstract class JsonRpcController extends AbstractController implements
-		DisposableBean, InitializingBean, BeanNameAware
-{
+		DisposableBean, InitializingBean, BeanNameAware {
 	private Log logger = LogFactory.getLog(JsonRpcController.class);
 	private ThreadLocal httpRequest = new ThreadLocal();
 	private ThreadLocal httpResponse = new ThreadLocal();
@@ -35,8 +34,7 @@ public abstract class JsonRpcController extends AbstractController implements
 	private boolean ajaxServicesRegistered;
 
 	
-	public JsonRpcController()
-	{
+	public JsonRpcController() {
 		super();
 	}
 
@@ -86,8 +84,7 @@ public abstract class JsonRpcController extends AbstractController implements
 	}
 
 	
-	public void destroy() throws Exception
-	{
+	public void destroy() throws Exception	{
 		try {
 			jsonRpcServlet.destroy();
 			jsonRpcServlet = null;
@@ -97,14 +94,12 @@ public abstract class JsonRpcController extends AbstractController implements
 	}
 
 	
-	public final void setBeanName(String beanName)
-	{
+	public final void setBeanName(String beanName)	{
 		this.jsonRpcControllerName = beanName;
 	}
 
 	
-	public final void setAjaxServiceName(String serviceProviderName)
-	{
+	public final void setAjaxServiceName(String serviceProviderName) {
 		this.ajaxServiceName = serviceProviderName;
 	}
 
@@ -112,8 +107,7 @@ public abstract class JsonRpcController extends AbstractController implements
 	 * 
 	 * @param serviceProviderInterface
 	 */
-	public final void setAjaxServiceInterface(Class serviceProviderInterface)
-	{
+	public final void setAjaxServiceInterface(Class serviceProviderInterface) {
 		this.ajaxServiceInterface = serviceProviderInterface;
 	}
 
@@ -121,8 +115,7 @@ public abstract class JsonRpcController extends AbstractController implements
 	 * 
 	 * @param serviceProviders
 	 */
-	public final void setAjaxServices(Map serviceProviders)
-	{
+	public final void setAjaxServices(Map serviceProviders)	{
 		this.ajaxServices = serviceProviders;
 	}
 
@@ -131,8 +124,7 @@ public abstract class JsonRpcController extends AbstractController implements
 	 * 
 	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
 	 */
-	public final void afterPropertiesSet() throws Exception
-	{
+	public final void afterPropertiesSet() throws Exception	{
 		if (this.ajaxServiceName == null && this.ajaxServiceInterface == null
 				&& this.ajaxServices == null)
 		{
@@ -188,13 +180,11 @@ public abstract class JsonRpcController extends AbstractController implements
 		this.jsonRpcServlet.init(ctx.getJsonRpcServletConfg());
 	}
 
-	public final HttpServletRequest getHttpServletRequest()
-	{
+	public final HttpServletRequest getHttpServletRequest()	{
 		return (HttpServletRequest) httpRequest.get();
 	}
 
-	public final HttpServletResponse getHttpServletResponse()
-	{
+	public final HttpServletResponse getHttpServletResponse()	{
 		return (HttpServletResponse) httpResponse.get();
 	}
 }

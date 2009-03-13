@@ -3,7 +3,6 @@ package com.freshdirect.transadmin.datamanager;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -29,7 +28,7 @@ import com.freshdirect.transadmin.util.TransportationAdminProperties;
 public class RouteOutputDataManager extends RouteDataManager  {
 	
 	private final String INVALID_ORDERROUTEFILE = "Invalid RoadNet Order/Truck File";
-	private final String INVALID_TRUCKSCHEDULEFILE = "Invalid Depot Truck Schdule File";
+	private final String INVALID_TRUCKSCHEDULEFILE = "Invalid Depot Truck Schedule File : SAP Order No:";
 	
 	public RoutingResult process(IRoutingOutputInfo routingInfo
 			,String userName, IServiceProvider serviceProvider) throws IOException {
@@ -58,7 +57,7 @@ public class RouteOutputDataManager extends RouteDataManager  {
 			
 			if(result.getErrors() == null || result.getErrors().size() == 0) {
 				try {
-					convertRegToDptOrders(routingInfo, result, serviceProvider);
+					convertDptToRegOrders(routingInfo, result, serviceProvider);
 					RouteGenerationResult routeGenResult = generateRouteNumber(result.getDepotRouteMapping()
 																				, result.getRegularOrders(), routingInfo
 																				, serviceProvider);
@@ -109,13 +108,13 @@ public class RouteOutputDataManager extends RouteDataManager  {
 			result.addError(INVALID_ORDERROUTEFILE);
 		}
 		
-		Collection areas = serviceProvider.getDomainManagerService().getAreas();
+		/*Collection areas = serviceProvider.getDomainManagerService().getAreas();
 		Map hshDepotArea = getDepotAreaMapping(areas);
 		
 		OrderAreaGroup truckOrderGroup = groupOrderRouteInfo(result.getDepotOrders(), hshDepotArea, null);
 		if(truckOrderGroup.getMissingAreas() != null && truckOrderGroup.getMissingAreas().size() > 0) {
 			result.addError("Areas "+ truckOrderGroup.getMissingAreas().toString()+ " are missing in roadnet depot file");
-		}
+		}*/
 	}
 	
 	protected void collectOrders(IRoutingOutputInfo routingInfo, RoutingResult result) {
@@ -328,9 +327,10 @@ public class RouteOutputDataManager extends RouteDataManager  {
 	}
 	// Start processing depots 
 	
-	protected boolean convertRegToDptOrders(IRoutingOutputInfo routingInfo, RoutingResult result, IServiceProvider serviceProvider) {
+	protected boolean convertDptToRegOrders(IRoutingOutputInfo routingInfo, RoutingResult result, IServiceProvider serviceProvider) {
 		
 		Date currDepotDeparture = null;
+		String currRouteId = null;
 		
 		if(result.getDepotTruckSchedule() != null) {
 			
@@ -362,9 +362,16 @@ public class RouteOutputDataManager extends RouteDataManager  {
 				while(_itrOrders.hasNext()) {
 					
 					_order = (OrderRouteInfoModel)_itrOrders.next();
-					if(_order.getOrderNumber() == null || _order.getOrderNumber().length() == 0) {
+					if(currRouteId == null) {
+						currRouteId = _order.getRouteId();
+					}
+					
+					if(_order.getOrderNumber() == null || _order.getOrderNumber().trim().length() == 0) {
 						currDepotDeparture = _order.getStopDepartureTime();
 						continue;
+					} else if(currRouteId != null && !currRouteId.equalsIgnoreCase(_order.getRouteId())) {
+						currDepotDeparture = null;
+						currRouteId = _order.getRouteId();
 					}
 					
 					if(currDepotDeparture == null) {
@@ -412,6 +419,7 @@ public class RouteOutputDataManager extends RouteDataManager  {
 				
 				intRountCount++;
 				_tmpCustTrkInfo = (CustomTruckScheduleInfo)_itrCustomerInfos.next();
+				
 				Collections.sort(_tmpCustTrkInfo.getOrders(), _schOrderComparator);
 				OrderRouteInfoModel _order = null;
 				Iterator _itrOrders = _tmpCustTrkInfo.getOrders().iterator();
@@ -436,7 +444,7 @@ public class RouteOutputDataManager extends RouteDataManager  {
 				}
 			}			
 		}
-		System.out.println("routingResult.getRegularOrders() >>"+routingResult.getRegularOrders());
+		//System.out.println("routingResult.getRegularOrders() >>"+routingResult.getRegularOrders());
 		if(routingResult.getRegularOrders() == null) {
 			routingResult.setRegularOrders(new ArrayList());			
 		}
@@ -505,13 +513,14 @@ public class RouteOutputDataManager extends RouteDataManager  {
 		
 		CustomTruckScheduleInfo _schInfo = null;
 		CustomTruckScheduleInfo _preSchInfo = null;
+		
 		if(scheduleLst != null) {
 			
 			Iterator _itrSchedule = scheduleLst.iterator();
 									
 			while(_itrSchedule.hasNext()) {
 				_schInfo = (CustomTruckScheduleInfo)_itrSchedule.next();
-				
+						
 				if(_schInfo.getDepotArrivalTime().after(order.getStopDepartureTime())) {
 					break;
 				} else {
@@ -519,6 +528,16 @@ public class RouteOutputDataManager extends RouteDataManager  {
 				}
 			}
 		}
+		
+		/*if(_preSchInfo != null && _preSchInfo.getGroupCode().equalsIgnoreCase("005")) {
+			try {
+				System.out.println(order.getOrderNumber()+">>"+order.getRouteId()+">>"+RoutingDateUtil.formatTime(order.getTimeWindowStop())+">>"
+												+RoutingDateUtil.formatTime(order.getStopDepartureTime())
+												+"-->"+RoutingDateUtil.formatTime(_preSchInfo.getDepotArrivalTime()));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}*/
 		return _preSchInfo;
 	}
 	

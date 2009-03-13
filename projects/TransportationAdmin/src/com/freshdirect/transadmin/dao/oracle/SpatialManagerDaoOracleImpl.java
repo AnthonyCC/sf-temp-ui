@@ -82,7 +82,7 @@ private JdbcTemplate jdbcTemplate;
        		    	
        		      }
        		   });
-        System.out.println("result>"+result);
+        
 		return result;
 	}
 	

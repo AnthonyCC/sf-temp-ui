@@ -175,7 +175,7 @@ public class DomainManagerDaoHibernateImpl
 						 query.setString("gcode", mappingId.getGroupCode());
 						 
 						 int rowCount = query.executeUpdate();
-					     System.out.println("Rows affected: " + rowCount);
+					     
 						 return null;
 					 }
 				});

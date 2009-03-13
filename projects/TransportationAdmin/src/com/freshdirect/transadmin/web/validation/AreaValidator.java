@@ -43,9 +43,9 @@ public class AreaValidator extends AbstractValidator {
 			}
 		}
 		
-		if("X".equalsIgnoreCase(model.getIsDepot()) && !"X".equals(model.getActive())) {
+		/*if("X".equalsIgnoreCase(model.getIsDepot()) && !"X".equals(model.getActive())) {
 			errors.rejectValue("isDepot", "app.actionmessage.144", new Object[]{},"");
-		}
+		}*/
 		
 		
 	}

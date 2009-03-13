@@ -153,8 +153,7 @@ public abstract class BaseProcessManager implements  IProcessManager {
     	Set schedulerIds = (Set)orderGroupInfo.get(0);
     	Map orderMappedLst = (Map)orderGroupInfo.get(1);
 
-    	if(schedulerIds.size() > 0) {
-    		
+    	if(schedulerIds.size() > 0) {    		
     		
         	//Save Locations
     		Iterator tmpIterator = schedulerIds.iterator();
@@ -448,6 +447,7 @@ public abstract class BaseProcessManager implements  IProcessManager {
 
 			}
     	}
+    	
     	return result;
     }
 

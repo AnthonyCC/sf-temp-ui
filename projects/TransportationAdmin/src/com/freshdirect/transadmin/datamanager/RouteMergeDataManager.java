@@ -11,6 +11,7 @@ import java.util.TreeSet;
 
 import com.freshdirect.transadmin.datamanager.model.IRoutingOutputInfo;
 import com.freshdirect.transadmin.datamanager.model.OrderRouteInfoModel;
+import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
 
@@ -62,7 +63,7 @@ public class RouteMergeDataManager extends RouteOutputDataManager {
 		
 		Map hshRoutingArea = getRoutingAreaMapping(areas);
 		
-		Map hshDepotArea = getDepotAreaMapping(areas);
+		Map hshDepotArea = getRoutingDepotAreaMapping(areas);
 		
 		OrderAreaGroup truckOrderGroup = groupOrderRouteInfo(result.getDepotOrders(), hshDepotArea, null);
 		
@@ -148,6 +149,23 @@ public class RouteMergeDataManager extends RouteOutputDataManager {
 			}
 		}
 		return true;
+	}
+	
+	protected Map getRoutingDepotAreaMapping(Collection areas) {
+		
+		Map result = new HashMap();
+		
+		TrnArea tmpArea = null;
+		if(areas != null) {
+			Iterator iterator = areas.iterator();
+			while(iterator.hasNext()) {
+				tmpArea = (TrnArea)iterator.next();				
+				if(tmpArea != null && "X".equalsIgnoreCase(tmpArea.getIsDepot()) && "X".equalsIgnoreCase(tmpArea.getActive())) {
+					result.put(tmpArea.getCode(), tmpArea);
+				}
+			}
+		}
+		return result;
 	}
 	
 }
