@@ -18,7 +18,6 @@ public class SecurityManager {
 		UNSECURED_URL.add("routenumber.do");
 		UNSECURED_URL.add("viewfile.do");
 		UNSECURED_URL.add("unassignedroute.do");
-		UNSECURED_URL.add("geographyprovider.ax");
 		UNSECURED_URL.add("showroute.do");
 		UNSECURED_URL.add("drivingdirection.do");
 	}
@@ -69,7 +68,7 @@ public class SecurityManager {
 	}
 	
 	public static boolean hasAccessToPage(ServletRequest request, String uri) {
-		if(UNSECURED_URL.contains(uri)) {
+		if(UNSECURED_URL.contains(uri) || (uri != null && uri.endsWith(".ax"))) {
 			return true;
 		}
 		return MenuManager.getInstance().hasAccess(request, uri);

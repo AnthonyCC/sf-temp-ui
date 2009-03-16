@@ -1,0 +1,135 @@
+<%@ include file='/common/i_calendar.jspf'%> 
+<script>
+            
+      var editPanel;
+      var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
+	  var errColor = "#FF0000";
+	  var msgColor = "#00FF00";
+                                 
+      function init() {
+        editPanel = new YAHOO.widget.Panel("panel-1", {       
+                          width: "400px", 
+                          fixedcenter: true, 
+                          close: true, 
+                          draggable: false, 
+                          zindex:4,
+                          modal: true,
+                          visible: false,
+                          effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
+        
+        //editPanel.render();
+        initCustomCalendar("trigger_rDate","rDate","calContainer");	
+        
+        fillOptions("cutOff", "rCutOff");	        		 
+	}
+     
+     function fillOptions(src, dest) {
+     
+       var elSrcSel = document.getElementById(src);
+       var elDstSel = document.getElementById(dest);
+       
+       for(cnt=0;cnt < elSrcSel.options.length; cnt++) {
+       		var elOptOld = elSrcSel.options[cnt];  
+       		var elOptNew = document.createElement('option');
+		    elOptNew.text = elOptOld.text;
+		    elOptNew.value = elOptOld.value;
+		    
+		    try {
+		      elDstSel.add(elOptNew, null); // standards compliant; doesn't work in IE
+		    } catch(ex) {
+		      elDstSel.add(elOptNew); // IE only
+	    	}
+       }	
+	}
+
+       
+          
+      function showForm() {          
+          addSysMessage("", false);
+          editPanel.render(document.body);
+          editPanel.show();
+      }
+              
+      function sendForm() {       	                           
+      	  
+      	  var p_date = YAHOO.util.Dom.get("rDate").value;
+       	  var p_cutoff = YAHOO.util.Dom.get("rCutOff").value;
+		  var p_session = YAHOO.util.Dom.get("rSession").value;		  
+  		  var p_depot = YAHOO.util.Dom.get("isDepot").checked;
+  		  
+      	  if(p_date.trim().length == 0 ||
+      	  			p_cutoff.trim().length == 0
+      	  			|| p_session.trim().length == 0) {
+      	  	addSysMessage("Please enter the required values", true);		
+      	  } else {
+	    	  var result = jsonrpcClient.AsyncDispatchProvider.updateRouteMapping(sendFormCallback
+						    	  											, p_date ,p_cutoff, p_session, p_depot);  
+		  }
+      }
+      
+      function addSysMessage(msg, isError) {
+      		var errContObj = YAHOO.util.Dom.get("errContainer");
+		    if(isError) {
+		    	errContObj.style.color = errColor;
+	      	} else {
+	      		errContObj.style.color = msgColor;
+	      	}
+	      	errContObj.style.fontWeight="bold";
+      		YAHOO.util.Dom.get("errContainer").innerHTML = msg;
+      }
+      
+      function sendFormCallback(result, exception) {
+      	  
+          if(exception) {               
+              alert('Unable to connect to host system. Please contact system administrator!');               
+              return;
+          }
+          if(result == 0) {
+          	addSysMessage("Route Mapping update failed", true);
+          } else {
+          	addSysMessage("Route Mapping updated successfully", false);
+          }                           
+      }
+      
+      function hideForm() { 
+      	  YAHOO.util.Dom.get("errContainer").value = "";
+          editPanel.hide();
+      }
+      
+      YAHOO.util.Event.addListener(window, "load", init);
+      YAHOO.util.Event.addListener(window, "unload", hideForm);
+    </script>
+   
+    <form name="panel-1-form" id="panel-1-form" method="post">
+      <div id="panel-1">
+      <div class="hd"><img src="images/icons/edit_ON.gif" width="16" height="16" border="0" align="absmiddle" />&nbsp;&nbsp;&nbsp;Route Mapping</div>
+      <div class="bd">
+      	<div id="errContainer"></div>
+      	<div style="background-color:#D7C8FF">
+	      	<table class="forms1">
+		      	 <tr>
+		                  <td>Route Date</td>
+		                  <td><div id="calContainer"></div><span><input maxlength="10" size="10" name="rDate" id="rDate" value='' /></span>
+                     <span><a id="trigger_rDate" style="font-size: 9px;">
+                        	<img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date" />
+                        </a></span>
+                      </td> 
+		         </tr> 
+		         <tr>
+		                  <td>Cut Off</td>
+		                  <td><select id="rCutOff" name="rCutOff" ></select></td> 
+		         </tr>
+		         <tr>
+		                  <td>Session</td>
+		                  <td><input type="text" size="40" id="rSession" value="" /></td> 
+		         </tr>
+		         <tr>
+		                  <td>Is Depot</td>
+		                  <td><input type="checkbox" id="isDepot"/></td> 
+		         </tr>
+		         <tr>
+		                  <td colspan="2" align="center"><input type="button" value="Update" onclick="javascript:sendForm()" /> </td>
+		         </tr> 
+	      </div>      
+        </div>
+    </div>

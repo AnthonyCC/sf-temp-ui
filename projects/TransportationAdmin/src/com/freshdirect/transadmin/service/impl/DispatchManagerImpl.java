@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.dao.DataAccessException;
+
 import com.freshdirect.customer.ErpRouteMasterInfo;
 import com.freshdirect.transadmin.dao.BaseManagerDaoI;
 import com.freshdirect.transadmin.dao.DispatchManagerDaoI;
@@ -292,6 +294,10 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 			}
 		}						
 		return unusedRouteNumList;
+	}
+	
+	public int updateRouteMapping(Date routeDate, String cutOffId, String sessionId, boolean isDepot) {
+		return getRouteManagerDao().updateRouteMapping(routeDate, cutOffId, sessionId, isDepot);
 	}
 	
 	public Map getRouteNumberGroup(String date, String cutOff, String groupCode) {

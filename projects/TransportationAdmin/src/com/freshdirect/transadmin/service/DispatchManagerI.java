@@ -50,4 +50,6 @@ public interface DispatchManagerI extends BaseManagerI {
 	
 	Map getRouteNumberGroup(String date, String cutOff, String groupCode);
 	
+	int updateRouteMapping(Date routeDate, String cutOffId, String sessionId, boolean isDepot);
+	
 }

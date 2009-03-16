@@ -101,6 +101,7 @@
 				<prop key="/editgeorestriction.do">geoRestrictionFormController</prop>
 
 				<prop key="/geographyprovider.ax">asyncGeographyController</prop>
+				<prop key="/dispatchprovider.ax">asyncDispatchController</prop>
 				
 				<prop key="/gmap.do">geographyController</prop>
 				<prop key="/drivingdirection.do">dispatchController</prop>
@@ -448,7 +449,14 @@
 		</property>
 	</bean>
 	
-	
+	<bean name="asyncDispatchController" class="com.freshdirect.transadmin.web.json.DispatchProviderController">
+		<property name="dispatchManagerService" ref="dispatchManager"/>
+		<property name="ajaxServices">
+			<map>
+				<entry key="AsyncDispatchProvider" value="com.freshdirect.transadmin.web.json.IDispatchProvider" />				
+			</map>
+		</property>
+	</bean>
 	
 	<bean id="geographyController" class="com.freshdirect.transadmin.web.GeographyController">
 		<property name="methodNameResolver" ref="transAdminControllerResolver"/>

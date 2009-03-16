@@ -3,6 +3,8 @@
 <link rel="stylesheet" type="text/css" href="css/yui/assets/skins/sam/button.css" />
 <link rel="stylesheet" type="text/css" href="css/yui/assets/skins/sam/paginator.css" />
 <link rel="stylesheet" type="text/css" href="css/yui/assets/skins/sam/container.css" />
+<link rel="stylesheet" type="text/css" href="css/yui/assets/skins/sam/calendar.css" />
+<link rel="stylesheet" type="text/css" href="css/yui/assets/skins/sam/fonts-min.css" />
 
 <script src="js/jsonrpc.js" language="javascript" type="text/javascript"></script>
 <script src="js/json2.js" language="javascript" type="text/javascript"></script>  
@@ -24,3 +26,4 @@
 <script type="text/javascript" src="js/yui/yahoo-dom-event.js"></script>
 <script type="text/javascript" src="js/yui/container-min.js"></script>
 <script type="text/javascript" src="js/yui/dragdrop-debug.js"></script> 
+<script type="text/javascript" src="js/yui/calendar-min.js"></script> 

@@ -6,6 +6,11 @@
 
 <tmpl:insert template='/common/sitelayout.jsp'>
 
+<tmpl:put name='yui-lib'>
+	<%@ include file='/common/i_yui.jspf'%>	
+</tmpl:put>	
+<tmpl:put name='yui-skin'>yui-skin-sam</tmpl:put>
+
     <tmpl:put name='title' direct='true'> Routing : Routing Out </tmpl:put>
 
   <tmpl:put name='content' direct='true'>
@@ -14,7 +19,12 @@
       <form method="post" enctype="multipart/form-data">        
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
           <tr>
-            <td class="screentitle">Process Output from Routing System</td>
+            <td class="screentitle">
+                  <span><a href="javascript:showForm()">
+                        	<img src="./images/info.gif" border="0" alt="Info" title="Info" />
+                        </a></span>
+                  Process Output from Routing System
+             </td>
           </tr>
           <tr>
             <td class="screenmessages"><jsp:include page='/common/messages.jsp'/></td>
@@ -105,7 +115,7 @@
                <td>Cut Off</td>
                         <td>
                           <spring:bind path="command.cutOff">
-                            <select name="<c:out value="${status.expression}"/>">
+                            <select id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>">
                               <option value="">--Please Select Cut Off</option> 
                               <c:forEach var="cutOffRow" items="${cutoffs}">                             
                                   <c:choose>
@@ -175,6 +185,7 @@
           </tr>               
         </table>      
       </form>
-     </div>    
+     </div> 
+     <%@ include file='i_routingmapping.jspf'%>   
   </tmpl:put>
 </tmpl:insert>

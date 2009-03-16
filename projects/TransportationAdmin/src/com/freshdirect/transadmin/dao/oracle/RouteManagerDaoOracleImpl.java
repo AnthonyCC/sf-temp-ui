@@ -4,7 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.sql.DataSource;
@@ -14,6 +17,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowCallbackHandler;
+import org.springframework.jdbc.core.SqlParameter;
+import org.springframework.jdbc.object.BatchSqlUpdate;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.transadmin.dao.RouteManagerDaoI;
@@ -70,4 +75,30 @@ public class RouteManagerDaoOracleImpl implements RouteManagerDaoI  {
        		   });
         return result;
 	}
+	
+	private static String UPDATE_ROUTEMAPPING_QRY="" +
+		"UPDATE TRANSP.ROUTE_MAPPING r set r.ROUTING_SESSION_ID = ? where r.ROUTE_DATE = ? " +
+		"and r.CUTOFF_ID = ? and r.GROUP_CODE in (SELECT a.CODE FROM TRANSP.TRN_AREA a where a.IS_DEPOT ";//<> 'X')";
+	
+	public int updateRouteMapping(Date routeDate, String cutOffId, String sessionId, boolean isDepot) throws DataAccessException {
+		
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append(UPDATE_ROUTEMAPPING_QRY);
+		if(isDepot) {
+			strBuf.append("= 'X')");
+		} else {
+			strBuf.append("is NULL)");
+		}
+		BatchSqlUpdate batchUpdater=new BatchSqlUpdate(this.jdbcTemplate.getDataSource(),strBuf.toString());
+		batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+		batchUpdater.declareParameter(new SqlParameter(Types.DATE));
+		batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+		
+		int result = this.jdbcTemplate.update(strBuf.toString(), 
+				new Object[] {sessionId, routeDate, cutOffId});	
+		
+		batchUpdater.flush();
+		LOGGER.debug("ROUTE MAPPING UPDATED");
+		return result;
+	}	
 }
