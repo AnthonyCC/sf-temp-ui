@@ -3,6 +3,7 @@ package com.freshdirect.transadmin.datamanager;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -94,8 +95,37 @@ public class RouteOutputDataManager extends RouteDataManager  {
 		return result;
 	}
 	
-	protected void preProcessRoutingOutput(IRoutingOutputInfo routingInfo, RoutingResult result, IServiceProvider serviceProvider) {
-		// Nothing Special
+	protected Object preProcessRoutingOutput(IRoutingOutputInfo routingInfo, RoutingResult result, IServiceProvider serviceProvider) {
+		
+		OrderAreaGroup orderGrp = (OrderAreaGroup)preProcessLoadData(routingInfo, result, serviceProvider);
+		TrnArea _area = null;
+		if(orderGrp.getTruckOrderGroup() != null) {
+			Iterator _iterator = orderGrp.getTruckOrderGroup().keySet().iterator();
+			while(_iterator.hasNext()) {
+				_area = (TrnArea)_iterator.next();
+				if("X".equalsIgnoreCase(_area.getIsDepot())) {
+					result.addError("Depot Area "+ _area.getCode() + " is found in roadnet truck file");
+				}
+			}
+		}
+		if(orderGrp.getDepotOrderGroup() != null) {
+			Iterator _iterator = orderGrp.getDepotOrderGroup().keySet().iterator();
+			while(_iterator.hasNext()) {
+				_area = (TrnArea)_iterator.next();
+				if(!"X".equalsIgnoreCase(_area.getIsDepot())) {
+					result.addError("Truck Area "+ _area.getCode() + " is found in roadnet depot file");
+				}
+			}
+		}
+		return orderGrp;
+	}
+	
+	protected Object preProcessLoadData(IRoutingOutputInfo routingInfo, RoutingResult result, IServiceProvider serviceProvider) {
+		
+		Collection areas = serviceProvider.getDomainManagerService().getAreas();
+		Map routingArea = this.getAreaMapping(areas);
+				
+		return groupOrderRouteInfo(result.getRegularOrders(), result.getDepotOrders(), routingArea);
 	}
 	
 	protected void postProcessRoutingOutput(IRoutingOutputInfo routingInfo, RoutingResult result, IServiceProvider serviceProvider) {
@@ -106,15 +136,7 @@ public class RouteOutputDataManager extends RouteDataManager  {
 		
 		if(result.getRegularOrders() == null || result.getRegularOrders().size() == 0) {
 			result.addError(INVALID_ORDERROUTEFILE);
-		}
-		
-		/*Collection areas = serviceProvider.getDomainManagerService().getAreas();
-		Map hshDepotArea = getDepotAreaMapping(areas);
-		
-		OrderAreaGroup truckOrderGroup = groupOrderRouteInfo(result.getDepotOrders(), hshDepotArea, null);
-		if(truckOrderGroup.getMissingAreas() != null && truckOrderGroup.getMissingAreas().size() > 0) {
-			result.addError("Areas "+ truckOrderGroup.getMissingAreas().toString()+ " are missing in roadnet depot file");
-		}*/
+		}				
 	}
 	
 	protected void collectOrders(IRoutingOutputInfo routingInfo, RoutingResult result) {
@@ -444,7 +466,7 @@ public class RouteOutputDataManager extends RouteDataManager  {
 				}
 			}			
 		}
-		//System.out.println("routingResult.getRegularOrders() >>"+routingResult.getRegularOrders());
+		
 		if(routingResult.getRegularOrders() == null) {
 			routingResult.setRegularOrders(new ArrayList());			
 		}
@@ -454,59 +476,56 @@ public class RouteOutputDataManager extends RouteDataManager  {
 		return result;
 	}
 	
-	protected OrderAreaGroup groupOrderRouteInfo(List fullDataList, Map routingAreas
-			, Set missingDepots) {
+	protected OrderAreaGroup groupOrderRouteInfo(List truckOrders, List depotOrders, Map routingAreas) {
 
 		OrderAreaGroup orderGroupResult = new OrderAreaGroup();
-		Map orderGroup = new HashMap();
+		Map truckOrderGroup = new HashMap();
+		Map depotOrderGroup = new HashMap();
 
-		orderGroupResult.setOrderGroup(orderGroup);
+		orderGroupResult.setTruckOrderGroup(truckOrderGroup);
+		orderGroupResult.setDepotOrderGroup(truckOrderGroup);
+		orderGroupResult.setRoutingAreaCodes(new HashSet());
+		orderGroupResult.setDepotAreaCodes(new HashSet());
+							
+		groupOrders(orderGroupResult, truckOrders, truckOrderGroup, routingAreas);
+		groupOrders(orderGroupResult, depotOrders, depotOrderGroup, routingAreas);		
 
-		OrderRouteInfoModel tmpInfo = null;
-		List tmpList = null;
-
-		String areaCode = null;
-		Set foundAreas = new HashSet();
-
-		if(fullDataList != null) {
-
-			Iterator iterator = fullDataList.iterator();
+		return orderGroupResult;
+	}
+	
+	private void groupOrders(OrderAreaGroup orderAreaGroup ,List orders, Map orderGroup, Map routingAreas) {
+		
+		if(orders != null) {
+			OrderRouteInfoModel tmpInfo = null;		
+			List tmpList = null;
+			String areaCode = null;
+			TrnArea area = null;
+			
+			Iterator iterator = orders.iterator();
 			while(iterator.hasNext()) {
 
 				tmpInfo = (OrderRouteInfoModel)iterator.next();				
 				areaCode = TransStringUtil.splitStringForCode(tmpInfo.getRouteId());
-				if(routingAreas.containsKey(areaCode)) {
-
-					foundAreas.add(areaCode);
-
-					if(orderGroup.containsKey(areaCode)) {
-						tmpList = (List)orderGroup.get(areaCode);
+				
+				if(routingAreas.containsKey(areaCode)) {	
+					area = (TrnArea)routingAreas.get(areaCode);
+					if("X".equals(area.getActive())) {
+						orderAreaGroup.addRoutingAreaCode(areaCode);
+					}
+					if("X".equals(area.getIsDepot())) {
+						orderAreaGroup.addDepotAreaCode(areaCode);
+					}
+					if(orderGroup.containsKey(area)) {
+						tmpList = (List)orderGroup.get(area);
 						tmpList.add(tmpInfo);				
 					} else {
 						tmpList = new ArrayList();
 						tmpList.add(tmpInfo);
-						orderGroup.put(areaCode, tmpList);
+						orderGroup.put(area, tmpList);
 					}
 				} 
 			}
-		}	
-
-		Set routingAreaCodes = routingAreas.keySet();
-		Set missingAreas = new HashSet();
-
-		if(routingAreas != null && routingAreaCodes != null) {
-			String strArea = null;
-			Iterator iterator = routingAreaCodes.iterator();
-			while(iterator.hasNext()) {
-				strArea = (String)iterator.next();
-				if(!foundAreas.contains(strArea) && !(missingDepots != null && !missingDepots.contains(strArea))) {
-					missingAreas.add(strArea);
-				}
-			}
 		}
-		orderGroupResult.setMissingAreas(missingAreas);
-
-		return orderGroupResult;
 	}
 
 	private CustomTruckScheduleInfo matchSchedule(OrderRouteInfoModel order, List scheduleLst) {

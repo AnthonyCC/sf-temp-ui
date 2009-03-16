@@ -1,6 +1,7 @@
 package com.freshdirect.transadmin.datamanager;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,7 +13,6 @@ import java.util.TreeSet;
 import com.freshdirect.transadmin.datamanager.model.IRoutingOutputInfo;
 import com.freshdirect.transadmin.datamanager.model.OrderRouteInfoModel;
 import com.freshdirect.transadmin.model.TrnArea;
-import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
 
 public class RouteMergeDataManager extends RouteOutputDataManager {
@@ -57,36 +57,55 @@ public class RouteMergeDataManager extends RouteOutputDataManager {
 		super.validateData(routingInfo, result, serviceProvider);
 	}
 
-	protected void preProcessRoutingOutput(IRoutingOutputInfo routingInfo, RoutingResult result, IServiceProvider serviceProvider) {
+	protected Object preProcessRoutingOutput(IRoutingOutputInfo routingInfo, RoutingResult result, IServiceProvider serviceProvider) {
 		
-		Collection areas = serviceProvider.getDomainManagerService().getAreas();
+		OrderAreaGroup orderGrp = (OrderAreaGroup) super.preProcessRoutingOutput(routingInfo, result, serviceProvider);
 		
-		Map hshRoutingArea = getRoutingAreaMapping(areas);
+		Set routingAreaCodes = orderGrp.getRoutingAreaCodes();
+		List missingAreas = new ArrayList();
 		
-		Map hshDepotArea = getRoutingDepotAreaMapping(areas);
-		
-		OrderAreaGroup truckOrderGroup = groupOrderRouteInfo(result.getDepotOrders(), hshDepotArea, null);
-		
-		OrderAreaGroup regularOrderGroup = groupOrderRouteInfo(result.getRegularOrders(), hshRoutingArea, truckOrderGroup.getMissingAreas());
+		if(routingAreaCodes != null) {
+			
+			result.setRegularOrders(new ArrayList());
+			result.setDepotOrders(new ArrayList());
+			
+			Iterator _iterator = routingAreaCodes.iterator();
+			String _areaCode = null;
+			TrnArea _tmpArea = new TrnArea();
+			List orders = null;
+			boolean foundInDepot = false;
+			
+			while(_iterator.hasNext()) {
 				
-		OrderAreaGroup truckOrderProcessingGroup = groupOrderRouteInfo(ModelUtil.mapToList(truckOrderGroup.getOrderGroup()), hshDepotArea, null);
-		
-		if(regularOrderGroup.getMissingAreas() != null && regularOrderGroup.getMissingAreas().size() > 0) {
-			result.addError("Areas "+ regularOrderGroup.getMissingAreas().toString()+ " are missing in roadnet regular file");
+				_areaCode = (String)_iterator.next();
+				_tmpArea.setCode(_areaCode);
+				orders = null;
+				foundInDepot = false;
+				
+				if(orderGrp.getTruckOrderGroup() != null && orderGrp.getTruckOrderGroup().containsKey(_tmpArea)) {
+					orders = (List)orderGrp.getTruckOrderGroup().get(_tmpArea);
+				} else if (orderGrp.getDepotOrderGroup() != null && orderGrp.getDepotOrderGroup().containsKey(_tmpArea)) {
+					foundInDepot = true;
+					orders = (List)orderGrp.getDepotOrderGroup().get(_tmpArea);
+				} else {
+					missingAreas.add(_areaCode);
+				}
+				
+				if(orders != null) {
+					if(foundInDepot) {
+						result.getDepotOrders().addAll(orders);
+					} else {
+						result.getRegularOrders().addAll(orders);
+					}
+				}
+			}
 		}
 		
-		if(truckOrderGroup.getMissingAreas() != null && truckOrderGroup.getMissingAreas().size() > 0) {
-			result.addError("Areas "+ truckOrderGroup.getMissingAreas().toString()+ " are missing in roadnet depot file");
+		if(missingAreas.size() > 0) {
+			result.addError("Areas "+ missingAreas.toString()+ " are missing in roadnet file");
 		}
 		
-		if(truckOrderProcessingGroup.getMissingAreas() != null && truckOrderProcessingGroup.getMissingAreas().size() > 0) {
-			result.addError("Areas "+ truckOrderProcessingGroup.getMissingAreas().toString()+ " are missing in roadnet depot file");
-		}
-		
-		result.setRegularOrders(ModelUtil.mapToList(regularOrderGroup.getOrderGroup()));
-		
-		result.setDepotOrders(ModelUtil.mapToList(truckOrderGroup.getOrderGroup()));
-		
+		return orderGrp;
 	}
 	
 	protected void postProcessRoutingOutput(IRoutingOutputInfo routingInfo, RoutingResult result, IServiceProvider serviceProvider) {

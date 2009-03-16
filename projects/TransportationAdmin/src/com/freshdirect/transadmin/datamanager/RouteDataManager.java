@@ -362,26 +362,58 @@ public class RouteDataManager {
 	
 	protected class OrderAreaGroup {
 		
-		private Map orderGroup = null;
-						
-		private Set missingAreas;
+		private Map truckOrderGroup = null;
+		
+		private Map depotOrderGroup = null;
+		
+		private Set depotAreaCodes = null;
+		
+		private Set routingAreaCodes = null;
 
-		public Set getMissingAreas() {
-			return missingAreas;
+		public Map getDepotOrderGroup() {
+			return depotOrderGroup;
 		}
 
-		public void setMissingAreas(Set missingAreas) {
-			this.missingAreas = missingAreas;
+		public void setDepotOrderGroup(Map depotOrderGroup) {
+			this.depotOrderGroup = depotOrderGroup;
 		}
 
-		public Map getOrderGroup() {
-			return orderGroup;
+		public Map getTruckOrderGroup() {
+			return truckOrderGroup;
 		}
 
-		public void setOrderGroup(Map orderGroup) {
-			this.orderGroup = orderGroup;
-		}		
+		public void setTruckOrderGroup(Map truckOrderGroup) {
+			this.truckOrderGroup = truckOrderGroup;
+		}
 
+		public Set getDepotAreaCodes() {
+			return depotAreaCodes;
+		}
+
+		public void setDepotAreaCodes(Set depotAreaCodes) {
+			this.depotAreaCodes = depotAreaCodes;
+		}
+
+		public Set getRoutingAreaCodes() {
+			return routingAreaCodes;
+		}
+
+		public void setRoutingAreaCodes(Set routingAreaCodes) {
+			this.routingAreaCodes = routingAreaCodes;
+		}
+		
+		public void addDepotAreaCode(String code) {
+			if(depotAreaCodes != null) {
+				depotAreaCodes.add(code);
+			}
+		}
+		
+		public void addRoutingAreaCode(String code) {
+			if(routingAreaCodes != null) {
+				routingAreaCodes.add(code);
+			}
+		}
+				
 	}
 
 }

@@ -115,4 +115,27 @@ public class TrnArea  implements java.io.Serializable, TrnBaseEntityI {
 		this.isDepot = isDepot;
 	}
 
+	public int hashCode() {
+		final int PRIME = 31;
+		int result = 1;
+		result = PRIME * result + ((code == null) ? 0 : code.hashCode());
+		return result;
+	}
+
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final TrnArea other = (TrnArea) obj;
+		if (code == null) {
+			if (other.code != null)
+				return false;
+		} else if (!code.equals(other.code))
+			return false;
+		return true;
+	}
+
 }
