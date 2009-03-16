@@ -483,7 +483,7 @@ public class RouteOutputDataManager extends RouteDataManager  {
 		Map depotOrderGroup = new HashMap();
 
 		orderGroupResult.setTruckOrderGroup(truckOrderGroup);
-		orderGroupResult.setDepotOrderGroup(truckOrderGroup);
+		orderGroupResult.setDepotOrderGroup(depotOrderGroup);
 		orderGroupResult.setRoutingAreaCodes(new HashSet());
 		orderGroupResult.setDepotAreaCodes(new HashSet());
 							
