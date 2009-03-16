@@ -9,7 +9,6 @@
 package com.freshdirect.fdstore;
 
 import java.util.Date;
-import java.util.List;
 
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.model.ErpInventoryModel;
@@ -178,9 +177,5 @@ public class FDProductInfo extends FDSku  {
 
 	public boolean isDeal() {
 		return isDeal;
-	}
-	
-	public List getCOOLInfo() {
-		return FDCOOLInfoCache.getInstance().getCOOLInfo(materialNumbers[0]);
 	}
 }

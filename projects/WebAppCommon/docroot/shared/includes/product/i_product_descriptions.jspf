@@ -1,4 +1,3 @@
-<%@ taglib uri="logic" prefix="logic" %>
 <%
 /* This include paints the: description/nutrition/ratings/tell a friend items for the product page 
  *
@@ -220,12 +219,10 @@
 				
 				
 				<%@ include file="/includes/product/i_related_recipes.jspf" %>
-                <% if(productNode.getCOOLInfo().size()>0) %>
-				<b>Origin: </b>
-                
-			   <logic:iterate id="coolText" collection="<%= productNode.getCOOLInfo() %>" type="java.lang.String">
-               <br><%=coolText%>
-               </logic:iterate>
+				
+			<%if(productNode.getAttribute("SEAFOOD_ORIGIN") != null){%>
+				<b>Origin: </b><%=(String)productNode.getAttribute("SEAFOOD_ORIGIN").getValue()%><br>
+			<%}%>
 
 				<%@  include file="/includes/product/i_how_to_cook.jspf" %>
                                 

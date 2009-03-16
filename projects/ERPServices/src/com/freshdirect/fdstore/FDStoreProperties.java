@@ -260,8 +260,7 @@ public class FDStoreProperties {
 	// Smart Search
 	private static final String SMART_SEARCH_ENABLED = "fdstore.newSearch.enabled";
 
-	//COOL info
-    private final static String PROP_COOLINFO_REFRESH_PERIOD = "fdstore.refresh.coolinfo";
+
 	static {
 
 		defaults.put(PROP_PROVIDER_URL, 	"t3://localhost:7006");
@@ -449,8 +448,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_ROUTING_SENDADDRESS, "false");
 
 		defaults.put(SMART_SEARCH_ENABLED, "false");
-
-		defaults.put(PROP_COOLINFO_REFRESH_PERIOD, "10");
+		
 		refresh();
 	}
 
@@ -993,9 +991,5 @@ public class FDStoreProperties {
 	
 	public static int getSmartstorePersonalizedScoresCacheTimeout() {
 		return Integer.parseInt(get(SMARTSTORE_PERSONAL_SCORES_CAHCE_TIMEOUT));
-	}
-	
-	public static int getCOOLInfoRefreshPeriod(){
-		return Integer.parseInt(get(PROP_COOLINFO_REFRESH_PERIOD));
 	}
 }

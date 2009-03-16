@@ -686,19 +686,7 @@
                 <res-auth>Container</res-auth>
             </resource-ref>
         </session>
-        <session>
-            <ejb-name>COOLInfoManager</ejb-name>
-            <home>com.freshdirect.erp.ejb.ErpCOOLManagerHome</home>
-            <remote>com.freshdirect.erp.ejb.ErpCOOLManagerSB</remote>
-            <ejb-class>com.freshdirect.erp.ejb.ErpCOOLManagerSessionBean</ejb-class>
-            <session-type>Stateless</session-type>
-            <transaction-type>Container</transaction-type>
-            <resource-ref>
-                <res-ref-name>jdbc/dbpool</res-ref-name>
-                <res-type>javax.sql.DataSource</res-type>
-                <res-auth>Container</res-auth>
-            </resource-ref>
-        </session>
+
     </enterprise-beans>
     <assembly-descriptor>
 
@@ -755,11 +743,6 @@
             </method>
             <method>
                 <ejb-name>DlvPassManager</ejb-name>
-                <method-intf>Remote</method-intf>
-                <method-name>*</method-name>
-            </method>
-            <method>
-                <ejb-name>COOLInfoManager</ejb-name>
                 <method-intf>Remote</method-intf>
                 <method-name>*</method-name>
             </method>
