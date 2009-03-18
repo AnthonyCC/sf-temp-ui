@@ -279,4 +279,6 @@ public interface FDUserI extends java.io.Serializable {
     public String getCohortName();
 
     public void setCohortName(String cohortName);
+    
+    public int getTotalCartSkuQuantity(String args[]);
 }

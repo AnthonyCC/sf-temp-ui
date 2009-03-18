@@ -671,4 +671,9 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setCohortName(String cohortName) {
 		this.user.setCohortName(cohortName);
 	}
+	
+	public int getTotalCartSkuQuantity(String[] args) {
+		// TODO Auto-generated method stub
+		return user.getTotalCartSkuQuantity(args);
+	}
 }

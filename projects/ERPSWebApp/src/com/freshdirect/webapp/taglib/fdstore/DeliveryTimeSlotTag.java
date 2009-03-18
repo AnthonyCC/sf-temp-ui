@@ -255,7 +255,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 			Object o = i.next();
 			if (o instanceof OneTimeRestriction) {
 			    restrictionRange = ((OneTimeRestriction) o).getDateRange();
-			} else if (o instanceof OneTimeReverseRestriction) {
+			} else if (o instanceof OneTimeReverseRestriction && useAdvanceOrderDates) {
 			    restrictionRange = ((OneTimeReverseRestriction) o).getDateRange();
 			}
 		}
@@ -287,7 +287,6 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 				}
 		    }
 		}
-	
 				
 		// shrink the date range if it is more than 7
 		if (restrictionRange != null &&  (restrictionRange.getEndDate().getTime()- restrictionRange.getStartDate().getTime()) / DateUtil.DAY > ErpServicesProperties.getHorizonDays()) {

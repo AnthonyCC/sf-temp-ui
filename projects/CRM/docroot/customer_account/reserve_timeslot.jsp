@@ -231,7 +231,10 @@
 							</fd:ErrorHandler> <%String timeSlotId = ""; %> <logic:iterate id="timeslots"
 								collection="<%=timeslotList%>"
 								type="com.freshdirect.fdstore.FDTimeslotList" indexId="idx">
-								<%@ include file="/shared/includes/delivery/i_delivery_slots.jspf"%>
+								<% // fix for advance orders showing on this page
+									if ((timeslotList.size()>1 && idx.intValue() == 1) || timeslotList.size()==1) { %>
+									<%@ include file="/shared/includes/delivery/i_delivery_slots.jspf"%>
+								<% } %>
 							</logic:iterate> <b>X</b> = Delivery slot full<br>
 							<img src="/media_stat/images/layout/ff9933.gif" width="100%"
 								height="1" border="0" vspace="8">

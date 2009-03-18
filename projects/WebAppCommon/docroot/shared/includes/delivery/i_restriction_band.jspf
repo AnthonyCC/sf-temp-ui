@@ -24,8 +24,13 @@
 		if(EnumDlvRestrictionReason.ALCOHOL.equals(reason)){
 			continue;
 		}
-		boolean isHolidayRestriction = ( EnumDlvRestrictionReason.THANKSGIVING.equals(reason) || EnumDlvRestrictionReason.THANKSGIVING_MEALS.equals(reason) 
-			                        || EnumDlvRestrictionReason.VALENTINES.equals(reason) ) ;
+		// check for holidays
+		boolean isHolidayRestriction = 
+			(
+				EnumDlvRestrictionReason.THANKSGIVING.equals(reason) || EnumDlvRestrictionReason.THANKSGIVING_MEALS.equals(reason) || 
+				EnumDlvRestrictionReason.VALENTINES.equals(reason) || 
+				EnumDlvRestrictionReason.EASTER_MEALS.equals(reason) 
+			);
 	%>
 		<tr>
 		<%
@@ -60,8 +65,8 @@
 					<%=!span.isValue() ? "<img src='/media_stat/images/template/checkout/dlv_valentines.gif'":"&nbsp;"%>
 				</td>
 			<%}%>
-			<%if(EnumDlvRestrictionReason.EASTER.equals(reason)){%>
-				<td colspan="<%=span.getSpan()%>" bgcolor="#<%= !span.isValue() ? "339966":"dfe3d0"%>" align="center">
+			<%if(EnumDlvRestrictionReason.EASTER_MEALS.equals(reason)){%>
+				<td colspan="<%=span.getSpan()%>" bgcolor="#<%= !span.isValue() ? "9999aa":"dfe3d0"%>" align="center">
 					<%=!span.isValue() ? "<img src='/media_stat/images/template/checkout/dlv_easter.gif'":"&nbsp;"%>
 				</td>
 			<%}%>

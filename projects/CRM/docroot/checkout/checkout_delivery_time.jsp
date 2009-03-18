@@ -52,6 +52,7 @@
     boolean kosherRestriction = false;
     boolean alcoholRestriction = false;
     boolean thxgiving_meal_Restriction=false;
+	boolean easterMealRestriction = false; //easter meals
     
     for(Iterator i = cart.getApplicableRestrictions().iterator(); i.hasNext(); ){
         EnumDlvRestrictionReason reason = (EnumDlvRestrictionReason) i.next();
@@ -70,6 +71,11 @@
         if(EnumDlvRestrictionReason.KOSHER.equals(reason)){
             kosherRestriction = true;
             continue;
+        }
+		//easter meals
+        if(EnumDlvRestrictionReason.EASTER_MEALS.equals(reason)){
+           easterMealRestriction=true;
+           continue;
         }
     }
     int timeslot_page_type = TimeslotLogic.PAGE_NORMAL;
@@ -194,6 +200,25 @@ List messages = DeliveryTimeSlotResult.getMessages();
 	</table>
 <%}%>
 
+<%if(cart.hasAdvanceOrderItem() && advOrdRangeOK && easterMealRestriction){%>
+	<table width="100%">
+		<tr valign="top">
+			<td colspan="2" class="text12">
+			<fd:IncludeMedia name='/media/editorial/holiday/advance_order/eastermeals/delivbar_adv_msg.html'/>
+			</td>
+		</tr>
+	</table>
+<%}%>
+
+	<%if(easterMealRestriction){%>
+		<table width="100%">
+			<tr valign="top">
+				<td colspan="2" class="text12">
+				<fd:IncludeMedia name='/media/editorial/holiday/easter/eastermeals_chkout_msg.htm'/>
+				</td>
+			</tr>
+		</table>
+	<%}%>
 
 
 <logic:iterate id="timeslots" collection="<%=timeslotList%>" type="com.freshdirect.fdstore.FDTimeslotList" indexId="idx">

@@ -38,7 +38,7 @@ tomorrow = DateUtil.truncate(tomorrow);
 DateRange validRange = new DateRange(tomorrow.getTime(),DateUtil.addDays(tomorrow.getTime(),FDStoreProperties.getHolidayLookaheadDays()));
 boolean advOrdRangeOK = advOrdRange.overlaps(validRange);
 
- System.out.println("validRange:"+validRange);
+ //System.out.println("validRange:"+validRange);
 
 %>
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
@@ -100,6 +100,8 @@ boolean advOrdRangeOK = advOrdRange.overlaps(validRange);
 	}
 	boolean isStaticSlot = false;
 	boolean thxgivingRestriction = false;
+	boolean easterRestriction = false;
+	boolean easterMealRestriction = false; //easter meals
 	boolean valentineRestriction = false;
 	boolean kosherRestriction = false;
 	boolean alcoholRestriction = false;
@@ -112,6 +114,16 @@ boolean advOrdRangeOK = advOrdRange.overlaps(validRange);
 		}
         if(EnumDlvRestrictionReason.THANKSGIVING_MEALS.equals(reason)){
            thxgiving_meal_Restriction=true;
+           continue;
+        }
+		//easter
+        if(EnumDlvRestrictionReason.EASTER.equals(reason)){
+           easterRestriction=true;
+           continue;
+        }
+		//easter meals
+        if(EnumDlvRestrictionReason.EASTER_MEALS.equals(reason)){
+           easterMealRestriction=true;
            continue;
         }
 		if(EnumDlvRestrictionReason.ALCOHOL.equals(reason)){
@@ -263,6 +275,7 @@ if (errorMsg!=null) {%>
 <%@ include file="/shared/includes/delivery/i_loyalty_banner.jspf" %>
 </td>
 </tr>
+
 <%if(cart.hasAdvanceOrderItem() && advOrdRangeOK && thxgivingRestriction){%>
 <tr valign="top">
 	<td colspan="2" class="text12">
@@ -270,6 +283,30 @@ if (errorMsg!=null) {%>
 	</td>
 </tr>
 <%}%>
+
+	<%
+		//start add easter meals
+		//easterMeal is for advanced ordering, easter is a sperate restriction
+	
+	//System.out.println("hasAdvanceOrderItem:"+cart.hasAdvanceOrderItem());
+	//System.out.println("advOrdRangeOK:"+advOrdRangeOK);
+	//System.out.println("easterMealRestriction:"+easterMealRestriction);
+	
+	if(cart.hasAdvanceOrderItem() && advOrdRangeOK && easterMealRestriction){%>
+	<tr valign="top">
+		<td colspan="2" class="text12">
+		<fd:IncludeMedia name='/media/editorial/holiday/advance_order/eastermeals/delivbar_adv_msg.html'/>
+		</td>
+	</tr>
+	<%}%>
+
+	<%if(easterMealRestriction){%>
+	<tr valign="top">
+		<td colspan="2" class="text12">
+		<fd:IncludeMedia name='/media/editorial/holiday/easter/eastermeals_chkout_msg.htm'/>
+		</td>
+	</tr>
+	<%}%>
 
 <%if(thxgiving_meal_Restriction){%>
 <tr valign="top">
@@ -309,13 +346,14 @@ if (errorMsg!=null) {%>
 	<span class="text12"><b>Standard Delivery Slots</b></span>
 <%} else { 
     showAdvanceOrderBand = timeslotList.size()>1 ? true && advOrdRangeOK: false;
+	
+		//System.out.println("=====================showAdvanceOrderBand:"+showAdvanceOrderBand);
   }
 %>
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ START TIME SLOT SELECTION SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
 	<%@ include file="/shared/includes/delivery/i_restriction_band.jspf"%>
 	<%@ include file="/shared/includes/delivery/i_delivery_slots.jspf"%>
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ END TIME SLOT SELECTION SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
-<br>
 </td></TR>
 </logic:iterate>
 <%}%>

@@ -9,6 +9,7 @@
 package com.freshdirect.fdstore.customer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -1139,4 +1140,36 @@ public class FDUser extends ModelSupport implements FDUserI {
 		this.cohortName = VariantSelectorFactory.getCohortName(getPrimaryKey());
 		FDCustomerManager.storeCohortName(this);
 	}
+	public int getTotalCartSkuQuantity(String args[]){
+		Collection c = Arrays.asList(args);
+		Set argSet = new HashSet(c);
+		
+        
+		//System.out.println("** inside getTotalCartSkuQuantity ******************************");
+        if(args==null) {
+                    //System.out.println("** args :"+args);
+                    return 0;
+        }
+
+        if(this.shoppingCart==null || this.shoppingCart.getOrderLines()==null) return 0;
+            int count=0;                                                   
+                    for (Iterator j = this.shoppingCart.getOrderLines().iterator(); j.hasNext();) {
+                                FDCartLineI line = (FDCartLineI) j.next();
+                                for(Iterator i=argSet.iterator();i.hasNext();)
+                                {
+                                            String sku=(String)i.next();                                  
+                                            if (sku.equals(line.getSkuCode()))
+                                            {
+                                                        count += line.getQuantity();
+                                            }
+                                }
+           }                                                                    
+
+        //System.out.println("** count of all quantity :"+count);
+        //System.out.println("** leaving getTotalCartSkuQuantity ******************************");
+
+        return count;
+
+	}
+
 }

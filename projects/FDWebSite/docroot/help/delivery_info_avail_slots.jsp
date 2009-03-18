@@ -80,7 +80,10 @@ SimpleDateFormat deliveryDayFormat = new SimpleDateFormat("EEE MM/d");
 
 	
 	<logic:iterate id="timeslots" collection="<%=timeslotList%>" type="com.freshdirect.fdstore.FDTimeslotList" indexId="idx">
-		<%@ include file="/shared/includes/delivery/i_delivery_slots.jspf"%>
+		<% // fix for advance orders showing on this page
+			if ((timeslotList.size()>1 && idx.intValue() == 1) || timeslotList.size()==1) { %>
+			<%@ include file="/shared/includes/delivery/i_delivery_slots.jspf"%>
+		<% } %>
 	</logic:iterate>
 	<!-- Bryan Restriction Message Added -->
 	<% if(messages != null && messages.size() >= 1) { %>
