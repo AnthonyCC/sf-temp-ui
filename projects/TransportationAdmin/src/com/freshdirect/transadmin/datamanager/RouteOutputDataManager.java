@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.transadmin.datamanager.model.IRoutingOutputInfo;
 import com.freshdirect.transadmin.datamanager.model.ITruckScheduleInfo;
 import com.freshdirect.transadmin.datamanager.model.OrderRouteInfoModel;
@@ -135,9 +134,12 @@ public class RouteOutputDataManager extends RouteDataManager  {
 	
 	protected void validateData(IRoutingOutputInfo routingInfo, RoutingResult result, IServiceProvider serviceProvider) {
 		
-		if(result.getRegularOrders() == null || result.getRegularOrders().size() == 0) {
+		/*if(result.getRegularOrders() == null || result.getRegularOrders().size() == 0) {
 			result.addError(INVALID_ORDERROUTEFILE);
-		}				
+		}*/	
+		if(result.getRegularOrders() == null) {
+			result.setRegularOrders(new ArrayList());
+		}
 	}
 	
 	protected void collectOrders(IRoutingOutputInfo routingInfo, RoutingResult result) {
