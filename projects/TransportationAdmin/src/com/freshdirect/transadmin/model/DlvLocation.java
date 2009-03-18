@@ -19,6 +19,27 @@ public class DlvLocation implements java.io.Serializable, TrnBaseEntityI  {
 	}
 		
 		
+	public int hashCode() {
+		final int PRIME = 31;
+		int result = 1;
+		result = PRIME * result + ((locationId == null) ? 0 : locationId.hashCode());
+		return result;
+	}
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final DlvLocation other = (DlvLocation) obj;
+		if (locationId == null) {
+			if (other.locationId != null)
+				return false;
+		} else if (!locationId.equals(other.locationId))
+			return false;
+		return true;
+	}
 	public String getLocationId() {
 		return locationId;
 	}

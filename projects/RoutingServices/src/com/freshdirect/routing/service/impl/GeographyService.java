@@ -4,8 +4,10 @@ import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.rpc.ServiceException;
 
@@ -128,28 +130,54 @@ public class GeographyService implements IGeographyService {
 			if(locationIds != null && locationIds.size() > 0) {
 				Location[] result = null;
 				List lstOrders = geographyDAOImpl.getLocationByIds(locationIds);
+				Map locationByRegion = new HashMap();
 				if(lstOrders != null) {
-					result = new Location[lstOrders.size()];
+					
 					Iterator tmpIterator = lstOrders.iterator();
-					ILocationModel locModel = null;			
-					int intCount = 0;
+					ILocationModel locModel = null;
+					String _region = null;
+					List locations = null;
 					while(tmpIterator.hasNext()) {
 						locModel = (ILocationModel)tmpIterator.next();
-						if(locModel != null) {					
-							result[intCount++] = RoutingDataEncoder.encodeLocation(locModel
-																	, getRegion(geographyDAOImpl.getZoneMapping(
-																			RoutingUtil.getDouble(locModel.getGeographicLocation().getLatitude()), 
-																			RoutingUtil.getDouble(locModel.getGeographicLocation().getLongitude())))
-																	, RoutingServicesProperties.getDefaultLocationType()
-																	, null);
+						_region = getRegion(geographyDAOImpl.getZoneMapping(
+								RoutingUtil.getDouble(locModel.getGeographicLocation().getLatitude()), 
+								RoutingUtil.getDouble(locModel.getGeographicLocation().getLongitude())));
+						locations = (List)locationByRegion.get(_region);
+						
+						if(locations == null) {
+							locations = new ArrayList();
+							locationByRegion.put(_region, locations);					
+						}
+						locations.add(locModel);
+					}
+					tmpIterator = locationByRegion.keySet().iterator();
+													
+					
+					Iterator _locIterator = null;
+					while(tmpIterator.hasNext()) {
+						_region = (String)tmpIterator.next();
+						locations = (List)locationByRegion.get(_region);
+						int intCount = 0;
+						result = new Location[locations.size()];
+						
+						_locIterator = locations.iterator();
+						while(_locIterator.hasNext()) {
+							locModel = (ILocationModel)_locIterator.next();
+							if(locModel != null) {					
+								result[intCount++] = RoutingDataEncoder.encodeLocation(locModel
+																		, _region
+																		, RoutingServicesProperties.getDefaultLocationType()
+																		, null);
+							}
+						}
+						TransportationWebService_PortType port = RoutingServiceLocator.getInstance().getTransportationSuiteService();
+						Location[] saveResult = port.saveLocations(result);
+						if(saveResult != null && saveResult.length >0) {
+							throw new RoutingServiceException(null, IIssue.PROCESS_LOCATION_SAVEERROR);
 						}
 					}
 				}
-				TransportationWebService_PortType port = RoutingServiceLocator.getInstance().getTransportationSuiteService();
-				Location[] saveResult = port.saveLocations(result);
-				if(saveResult != null && saveResult.length >0) {
-					throw new RoutingServiceException(null, IIssue.PROCESS_LOCATION_SAVEERROR);
-				}
+				
 			}
 			
 		} catch (ServiceException exp) {

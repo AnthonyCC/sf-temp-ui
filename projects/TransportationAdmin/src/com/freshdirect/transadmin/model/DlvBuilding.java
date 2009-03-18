@@ -100,6 +100,27 @@ public class DlvBuilding implements java.io.Serializable, TrnBaseEntityI  {
 	public String toString() {
 		return buildingId+","+srubbedStreet+","+zip;
 	}
+	public int hashCode() {
+		final int PRIME = 31;
+		int result = 1;
+		result = PRIME * result + ((buildingId == null) ? 0 : buildingId.hashCode());
+		return result;
+	}
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final DlvBuilding other = (DlvBuilding) obj;
+		if (buildingId == null) {
+			if (other.buildingId != null)
+				return false;
+		} else if (!buildingId.equals(other.buildingId))
+			return false;
+		return true;
+	}
 	public String getCity() {
 		return city;
 	}
