@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.transadmin.datamanager.model.IRoutingOutputInfo;
 import com.freshdirect.transadmin.datamanager.model.ITruckScheduleInfo;
 import com.freshdirect.transadmin.datamanager.model.OrderRouteInfoModel;
@@ -353,7 +354,7 @@ public class RouteOutputDataManager extends RouteDataManager  {
 		
 		Date currDepotDeparture = null;
 		String currRouteId = null;
-		
+		int allowedDepartTimeDiff = TransportationAdminProperties.getDepotDepartTimeDiff();
 		if(result.getDepotTruckSchedule() != null) {
 			
 			Iterator _itrSchedule = result.getDepotTruckSchedule().iterator();
@@ -397,7 +398,13 @@ public class RouteOutputDataManager extends RouteDataManager  {
 					}
 					
 					if(currDepotDeparture == null) {
-						_order.setStopDepartureTime(_order.getRouteStartTime());
+						if(allowedDepartTimeDiff != 0 
+									&& TransStringUtil.getDiffInHours(_order.getTimeWindowStart(), _order.getRouteStartTime())
+									> allowedDepartTimeDiff) {
+							_order.setStopDepartureTime(_order.getTimeWindowStart());
+						} else {
+							_order.setStopDepartureTime(_order.getRouteStartTime());
+						}
 					} else {
 						_order.setStopDepartureTime(currDepotDeparture);
 					}
@@ -548,7 +555,7 @@ public class RouteOutputDataManager extends RouteDataManager  {
 			}
 		}
 		
-		/*if(_preSchInfo != null && _preSchInfo.getGroupCode().equalsIgnoreCase("005")) {
+		/*if(_preSchInfo != null && _preSchInfo.getGroupCode().equalsIgnoreCase("030")) {
 			try {
 				System.out.println(order.getOrderNumber()+">>"+order.getRouteId()+">>"+RoutingDateUtil.formatTime(order.getTimeWindowStop())+">>"
 												+RoutingDateUtil.formatTime(order.getStopDepartureTime())

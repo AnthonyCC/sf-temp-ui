@@ -56,7 +56,8 @@ public class RoutingDataEncoder {
 						areaCode = orderModel.getDeliveryInfo().getDeliveryZone().getArea().getAreaCode();						
 					} 
 					result[intCount++] = encodeLocation(orderModel.getDeliveryInfo().getDeliveryLocation()
-															, region, locationType, areaCode);
+															, region
+															, locationType, areaCode);
 				}
 			}
 		}
@@ -234,7 +235,7 @@ public class RoutingDataEncoder {
 		//param3 dateEnd;
 		//param4 scenario;
 		//param5 description;		
-		return new RouteIdentity(RoutingServicesProperties.getDefaultRegion(),routeDate, routeId);
+		return new RouteIdentity(RoutingServicesProperties.getDefaultTruckRegion(),routeDate, routeId);
 	}
 	
 	public static RoutingRouteCriteria encodeRouteCriteria(Date routeDate, String internalSessionID, String routeID) {
@@ -244,7 +245,7 @@ public class RoutingDataEncoder {
 		//param4 scenario;
 		//param5 description;
 		RoutingRouteCriteria criteria = new RoutingRouteCriteria();
-		criteria.setRegionIdentity(RoutingServicesProperties.getDefaultRegion());
+		criteria.setRegionIdentity(RoutingServicesProperties.getDefaultTruckRegion());
 		criteria.setRouteID(routeID);
 		criteria.setDateStart(routeDate);
 		criteria.setInternalSessionID(Integer.parseInt(internalSessionID));

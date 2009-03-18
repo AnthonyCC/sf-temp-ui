@@ -52,7 +52,6 @@
                   <td>Truck Session Description</td>
                   <td>                  
                     <input type="text" size="50" name="truckRoutingSessionDesc"/>
-                    	&nbsp;<span id="truckRoutingSessionDesc"><c:out value="${error}"/></span>
                 </td>
                 <td>
                   &nbsp;
@@ -78,7 +77,6 @@
                   <td>Depot Session Description</td>
                   <td>                  
                     <input type="text" size="50" name="depotRoutingSessionDesc"/>
-                    	&nbsp;<span id="depotRoutingSessionDesc"><c:out value="${error}"/></span>
                 </td>
                 <td>
                   &nbsp;

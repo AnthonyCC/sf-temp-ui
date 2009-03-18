@@ -20,6 +20,7 @@ import com.freshdirect.routing.model.IBuildingModel;
 import com.freshdirect.routing.model.IGeocodeResult;
 import com.freshdirect.routing.model.IGeographicLocation;
 import com.freshdirect.routing.model.ILocationModel;
+import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.proxy.stub.roadnet.GeocodeData;
 import com.freshdirect.routing.proxy.stub.roadnet.GeocodeOptions;
 import com.freshdirect.routing.proxy.stub.roadnet.RouteNetPortType;
@@ -89,19 +90,24 @@ public class GeographyService implements IGeographyService {
 
 			TransportationWebService_PortType port = RoutingServiceLocator.getInstance().getTransportationSuiteService();
 			if(locationId != null) {
-				Location deliveryLocation = port.retrieveLocationByIdentity
-												(RoutingDataEncoder.encodeLocationIdentity(RoutingServicesProperties.getDefaultRegion()
-															,RoutingServicesProperties.getDefaultLocationType(), locationId));
-				if(deliveryLocation == null) {
-					throw new RoutingServiceException(null, IIssue.PROCESS_LOCATION_NOTFOUND);
-				} else {
-
-					result.setLatitude(""+(double)(deliveryLocation.getLatitude()/1000000.0));
-					result.setLongitude(""+(double)(deliveryLocation.getLongitude()/1000000.0));
-					result.setConfidence(EnumGeocodeConfidenceType.LOW.getName());
-					result.setQuality(EnumGeocodeQualityType.MANUAL.getName());
+				ILocationModel locModel = geographyDAOImpl.getLocationById(locationId);
+				if(locModel != null) {
+					Location deliveryLocation = port.retrieveLocationByIdentity
+													(RoutingDataEncoder.encodeLocationIdentity
+																(getRegion(geographyDAOImpl.getZoneMapping(
+																		RoutingUtil.getDouble(locModel.getGeographicLocation().getLatitude()), 
+																		RoutingUtil.getDouble(locModel.getGeographicLocation().getLongitude())))
+																,RoutingServicesProperties.getDefaultLocationType(), locationId));
+					if(deliveryLocation == null) {
+						throw new RoutingServiceException(null, IIssue.PROCESS_LOCATION_NOTFOUND);
+					} else {
+	
+						result.setLatitude(""+(double)(deliveryLocation.getLatitude()/1000000.0));
+						result.setLongitude(""+(double)(deliveryLocation.getLongitude()/1000000.0));
+						result.setConfidence(EnumGeocodeConfidenceType.LOW.getName());
+						result.setQuality(EnumGeocodeQualityType.MANUAL.getName());
+					}
 				}
-
 			}
 		} catch (ServiceException exp) {
 			exp.printStackTrace();
@@ -109,6 +115,8 @@ public class GeographyService implements IGeographyService {
 		} catch (MalformedURLException exp) {
 			throw new RoutingServiceException(exp, IIssue.PROCESS_LOCATION_NOTFOUND);
 		} catch (RemoteException exp) {
+			throw new RoutingServiceException(exp, IIssue.PROCESS_LOCATION_NOTFOUND);
+		} catch (SQLException exp) {
 			throw new RoutingServiceException(exp, IIssue.PROCESS_LOCATION_NOTFOUND);
 		}
 		return result;
@@ -129,7 +137,9 @@ public class GeographyService implements IGeographyService {
 						locModel = (ILocationModel)tmpIterator.next();
 						if(locModel != null) {					
 							result[intCount++] = RoutingDataEncoder.encodeLocation(locModel
-																	, RoutingServicesProperties.getDefaultRegion()
+																	, getRegion(geographyDAOImpl.getZoneMapping(
+																			RoutingUtil.getDouble(locModel.getGeographicLocation().getLatitude()), 
+																			RoutingUtil.getDouble(locModel.getGeographicLocation().getLongitude())))
 																	, RoutingServicesProperties.getDefaultLocationType()
 																	, null);
 						}
@@ -353,5 +363,19 @@ public class GeographyService implements IGeographyService {
 		return streetAddressResult;
 	}
 
-
+	private String getRegion(List zones) {
+		IZoneModel zone = null;
+		if(zones != null) {
+			Iterator _iterator = zones.iterator();
+			while(_iterator.hasNext()) {
+				zone = (IZoneModel)_iterator.next();
+				if(zone != null && zone.getArea() != null && zone.getArea().isDepot()) {
+					break;
+				}
+			}
+		}
+		return RoutingUtil.getRegion(zone);
+	}
+	
+	
 }

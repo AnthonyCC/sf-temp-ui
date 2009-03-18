@@ -9,6 +9,7 @@ import com.freshdirect.delivery.InvalidAddressException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.routing.constants.EnumGeocodeConfidenceType;
+import com.freshdirect.routing.model.IZoneModel;
 
 public class RoutingUtil {
 	
@@ -69,5 +70,21 @@ public class RoutingUtil {
 		return null;
     	
 	}
-
+	
+	public static String getRegion(IZoneModel model) {
+		if(model != null && model.getArea() != null && model.getArea().isDepot()) {
+			return RoutingServicesProperties.getDefaultDepotRegion();
+		} else {
+			return RoutingServicesProperties.getDefaultTruckRegion();
+		}
+	}
+	
+	public static double getDouble(String input) {
+		try {
+			return Double.parseDouble(input);
+		} catch (NumberFormatException e) {
+			return 0.0;
+		}
+	}
+	
 }

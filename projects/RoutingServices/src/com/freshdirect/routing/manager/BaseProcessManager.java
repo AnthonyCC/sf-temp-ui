@@ -30,6 +30,7 @@ import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
 import com.freshdirect.routing.util.IRoutingParamConstants;
 import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.routing.util.RoutingServicesProperties;
+import com.freshdirect.routing.util.RoutingUtil;
 
 public abstract class BaseProcessManager implements  IProcessManager {
 
@@ -152,22 +153,26 @@ public abstract class BaseProcessManager implements  IProcessManager {
     	
     	Set schedulerIds = (Set)orderGroupInfo.get(0);
     	Map orderMappedLst = (Map)orderGroupInfo.get(1);
+    	Map orderLocationLst = (Map)orderGroupInfo.get(2);
 
     	if(schedulerIds.size() > 0) {    		
     		
         	//Save Locations
-    		Iterator tmpIterator = schedulerIds.iterator();
-    		List orders = new ArrayList();
-    		IRoutingSchedulerIdentity schedulerId = null;
+    		Iterator tmpIterator = orderLocationLst.keySet().iterator();
+    		    		
+    		String _region = null;
+    		List _locations = null;
+    		
 			while(tmpIterator.hasNext()) {
-				schedulerId = (IRoutingSchedulerIdentity)tmpIterator.next();
-				orders.addAll((List)orderMappedLst.get(schedulerId));
+				_region = (String)tmpIterator.next();
+				_locations = (List)orderLocationLst.get(_region);
+				if(_locations != null && _locations.size() > 0) {
+					System.out.println("################### START SAVE LOCATION ##################"+_region);
+		    		saveLocations(_locations, _region);
+		    		System.out.println("################### END SAVE LOCATION ##################");
+				}	    		
 			}
-			if(orders.size() > 0) {
-				System.out.println("################### START SAVE LOCATION ##################");
-	    		saveLocations((List)request.getOrderList());
-	    		System.out.println("################### END SAVE LOCATION ##################");
-			}
+			
     		
     		purgeOrders(schedulerIds);
 	
@@ -208,10 +213,10 @@ public abstract class BaseProcessManager implements  IProcessManager {
     }
 
 
-    private void saveLocations(List lstOrders) throws  RoutingProcessException {
+    private void saveLocations(List lstOrders, String region) throws  RoutingProcessException {
     	try {
 	    	RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();
-	    	proxy.saveLocations(lstOrders, RoutingServicesProperties.getDefaultRegion(), RoutingServicesProperties.getDefaultLocationType());
+	    	proxy.saveLocations(lstOrders, region, RoutingServicesProperties.getDefaultLocationType());
     	} catch (RoutingServiceException e) {
     		e.printStackTrace();
 			throw new RoutingProcessException(null,e,IIssue.PROCESS_LOCATION_SAVEERROR);
@@ -249,7 +254,7 @@ public abstract class BaseProcessManager implements  IProcessManager {
 				schedulerId = (IRoutingSchedulerIdentity)tmpIterator.next();
 				unassignedOrders.put(schedulerId, proxy.schedulerBulkReserveOrder(schedulerId
 														, (List)orderMappedLst.get(schedulerId)
-														, RoutingServicesProperties.getDefaultRegion()
+														, schedulerId.getRegionId()
 														, RoutingServicesProperties.getDefaultLocationType()				
 														, RoutingServicesProperties.getDefaultOrderType()));
 				
@@ -415,11 +420,14 @@ public abstract class BaseProcessManager implements  IProcessManager {
     private List groupOrdersForBatchRouting(List lstOrders, boolean depot) {
 
     	Map resultOrderIdMap = new HashMap();
+    	Map resultLocationMap = new HashMap();
     	Set resultIds = new HashSet();
 
     	List result = new ArrayList();
     	result.add(resultIds);
     	result.add(resultOrderIdMap);
+    	result.add(resultLocationMap);
+    	   	
 
     	if(lstOrders != null) {
 
@@ -427,6 +435,7 @@ public abstract class BaseProcessManager implements  IProcessManager {
 			IOrderModel orderModel = null;
 			IRoutingSchedulerIdentity schedulerId = null;
 			List orderListForId = null;
+			List orderLocations = null;
 
 			while(tmpIterator.hasNext()) {
 				orderModel = (IOrderModel)tmpIterator.next();
@@ -436,6 +445,12 @@ public abstract class BaseProcessManager implements  IProcessManager {
 					continue;
 				}
 				orderListForId = (List)resultOrderIdMap.get(schedulerId);
+				orderLocations = (List)resultLocationMap.get(schedulerId.getRegionId());
+				
+				if(orderLocations == null) {
+					orderLocations = new ArrayList();
+					resultLocationMap.put(schedulerId.getRegionId(), orderLocations);					
+				}
 				
 				if(orderListForId == null) {
 					orderListForId = new ArrayList();
@@ -443,8 +458,9 @@ public abstract class BaseProcessManager implements  IProcessManager {
 					resultIds.add(schedulerId);
 					schedulerId = null;
 				}
+				
 				orderListForId.add(orderModel);
-
+				orderLocations.add(orderModel);
 			}
     	}
     	
@@ -457,7 +473,7 @@ public abstract class BaseProcessManager implements  IProcessManager {
     	if(schedulerId == null) {
     		schedulerId = new RoutingSchedulerIdentity();
     	}
-    	schedulerId.setRegionId(RoutingServicesProperties.getDefaultRegion());
+    	schedulerId.setRegionId(RoutingUtil.getRegion(orderModel.getDeliveryInfo().getDeliveryZone()));
     	schedulerId.setArea(orderModel.getDeliveryInfo().getDeliveryZone().getArea());
     	schedulerId.setDeliveryDate(orderModel.getDeliveryInfo().getDeliveryDate());
     	if(orderModel.getDeliveryInfo() != null 

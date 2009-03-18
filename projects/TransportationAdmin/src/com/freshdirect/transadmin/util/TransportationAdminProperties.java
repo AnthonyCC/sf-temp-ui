@@ -97,6 +97,8 @@ public class TransportationAdminProperties {
 	
 	private final static String PROP_TRANSPORTATION_CELLDATA_SEPERATOR		= "transportation.celldata.seperator";
 	
+	private final static String PROP_TRANSPORTATION_DEPOT_DEPARTTIMEDIFF		= "transportation.depot.departtimediff";	
+	
 	static {
 				
 		
@@ -168,6 +170,7 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_TRK_CACHE_EXPIRY_TIME, "60");
 		defaults.put(PROP_TRANSPORTATION_ROUTE_CACHE_EXPIRY_TIME, "60");
 		defaults.put(PROP_TRANSPORTATION_EMPLOYEE_CACHE_EXPIRY_TIME, "60");
+		defaults.put(PROP_TRANSPORTATION_DEPOT_DEPARTTIMEDIFF, "0");
 		
 		refresh();		
 	}
@@ -362,5 +365,10 @@ public class TransportationAdminProperties {
 	public static String getCellDataSeperator() {
 		return get(PROP_TRANSPORTATION_CELLDATA_SEPERATOR);
 	}
+	
+	public static int getDepotDepartTimeDiff() {
+		return getIntVal(get(PROP_TRANSPORTATION_DEPOT_DEPARTTIMEDIFF));
+	}
+	
 	
 }

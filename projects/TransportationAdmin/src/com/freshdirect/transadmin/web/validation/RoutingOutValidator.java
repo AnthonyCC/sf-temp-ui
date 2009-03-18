@@ -12,10 +12,16 @@ public class RoutingOutValidator extends AbstractValidator {
 	}
 
 	public void validate(Object obj, Errors errors) {
-						
+		
+		RoutingOutCommand model = (RoutingOutCommand)obj;
 		//  need to decide about the validation part
 		ValidationUtils.rejectIfEmpty(errors, "cutOff", "app.error.112", new Object[]{"Cut Off"},"required field");		
-		ValidationUtils.rejectIfEmpty(errors, "truckRoutingFile", "app.error.112", new Object[]{"File"},"required field");
+		
+		if((model.getDepotRoutingFile() == null || model.getDepotRoutingFile().length == 0)
+							&& (model.getTruckRoutingFile() == null || model.getTruckRoutingFile().length == 0)) {
+			errors.rejectValue("truckRoutingFile", "app.error.112", new Object[]{"Truck or Depot File"},"required field");
+			errors.rejectValue("depotRoutingFile", "app.error.112", new Object[]{"Truck or Depot File"},"required field");
+		}
 	}
 	
 

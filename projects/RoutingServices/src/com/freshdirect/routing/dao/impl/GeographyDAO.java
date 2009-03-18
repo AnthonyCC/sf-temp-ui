@@ -19,12 +19,16 @@ import com.freshdirect.delivery.InvalidAddressException;
 import com.freshdirect.routing.constants.EnumGeocodeConfidenceType;
 import com.freshdirect.routing.constants.EnumGeocodeQualityType;
 import com.freshdirect.routing.dao.IGeographyDAO;
+import com.freshdirect.routing.model.AreaModel;
 import com.freshdirect.routing.model.BuildingModel;
 import com.freshdirect.routing.model.GeographicLocation;
+import com.freshdirect.routing.model.IAreaModel;
 import com.freshdirect.routing.model.IBuildingModel;
 import com.freshdirect.routing.model.IGeographicLocation;
 import com.freshdirect.routing.model.ILocationModel;
+import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.model.LocationModel;
+import com.freshdirect.routing.model.ZoneModel;
 import com.freshdirect.routing.util.RoutingUtil;
 
 public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
@@ -37,13 +41,21 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 													"from dlv.DELIVERY_LOCATION dl, dlv.DELIVERY_BUILDING db "+
 													"where dl.BUILDINGID = db.ID and db.SCRUBBED_STREET = ? ";
 
-	private static final String GET_LOCATION_BYID_QRY = "select dl.ID ID, db.SCRUBBED_STREET SCRUBBED_STREET, "+
+	private static final String GET_LOCATION_BYIDS_QRY = "select dl.ID ID, db.SCRUBBED_STREET SCRUBBED_STREET, "+
 													"dl.APARTMENT APARTMENT,db.CITY CITY, db.STATE STATE, db.COUNTRY COUNTRY, db.ZIP ZIP, " +
 													"db.LONGITUDE LONGITUDE, db.LATITUDE LATITUDE, dl.SERVICETIME_TYPE SERVICETIME_TYPE, "+
 													"db.SERVICETIME_TYPE DEFAULTSERVICETIME_TYPE, dl.BUILDINGID BUILDING_ID, "+
 													"db.GEO_CONFIDENCE GEO_CONFIDENCE, db.GEO_QUALITY GEO_QUALITY "+
 													"from dlv.DELIVERY_LOCATION dl, dlv.DELIVERY_BUILDING db "+
 													"where dl.BUILDINGID = db.ID and dl.ID in (";
+	
+	private static final String GET_LOCATION_BYID_QRY = "select dl.ID ID, db.SCRUBBED_STREET SCRUBBED_STREET, "+
+							"dl.APARTMENT APARTMENT,db.CITY CITY, db.STATE STATE, db.COUNTRY COUNTRY, db.ZIP ZIP, " +
+							"db.LONGITUDE LONGITUDE, db.LATITUDE LATITUDE, dl.SERVICETIME_TYPE SERVICETIME_TYPE, "+
+							"db.SERVICETIME_TYPE DEFAULTSERVICETIME_TYPE, dl.BUILDINGID BUILDING_ID, "+
+							"db.GEO_CONFIDENCE GEO_CONFIDENCE, db.GEO_QUALITY GEO_QUALITY "+
+							"from dlv.DELIVERY_LOCATION dl, dlv.DELIVERY_BUILDING db "+
+							"where dl.BUILDINGID = db.ID and dl.ID = ?";
 
 	private static final String GET_LOCATIONNEXTSEQ_QRY = "SELECT DLV.DELIVERY_LOCATION_SEQ.nextval FROM DUAL";
 
@@ -68,6 +80,14 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 													"db.GEO_CONFIDENCE GEO_CONFIDENCE, db.GEO_QUALITY GEO_QUALITY "+
 													"from dlv.DELIVERY_BUILDING db "+
 													"where db.SCRUBBED_STREET = ? ";
+	
+	private static final String ZONE_AREA_MAPPING =
+		"select z.zone_code ZONE_CODE, a.code AREA_CODE, a.is_depot IS_DEPOT "
+			+ "from dlv.region r, dlv.region_data rd, dlv.zone z, transp.zone  zd, transp.trn_area a "
+			+ "where zd.zone_code = z.zone_code and rd.id = z.region_data_id and rd.region_id = r.id and zd.area = a.code "
+			+ "and rd.start_date = (select max(start_date) from dlv.region_data where start_date <= sysdate and region_id=r.id) "
+			+ "and mdsys.sdo_relate(z.geoloc, mdsys.sdo_geometry(2001, 8265, mdsys.sdo_point_type(?, ?,NULL), NULL, NULL), 'mask=ANYINTERACT querytype=WINDOW') ='TRUE' "
+			+ "order by z.zone_code";
 
 	public void insertLocations(List dataList) throws SQLException {
 		Connection connection=null;
@@ -221,7 +241,7 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 		     public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 
 		    	 StringBuffer locationQ = new StringBuffer();
-		    	 locationQ.append(GET_LOCATION_BYID_QRY);
+		    	 locationQ.append(GET_LOCATION_BYIDS_QRY);
 
 		    	 Iterator tmpIterator = locIds.iterator();
 		    	 int intCount = 0;
@@ -274,7 +294,10 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 
 		return modelList;
 	}
-
+	
+	
+	
+		
 	public IBuildingModel getBuildingLocation(final String street, final List zipCode) throws SQLException {
 		 final IBuildingModel model = new BuildingModel();
 
@@ -377,5 +400,91 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 			}
 		}
 		return result;
+	}
+	
+	public List getZoneMapping(final double latitude, final double longitude) throws SQLException {
+		 final List result = new ArrayList();
+
+		 PreparedStatementCreator creator=new PreparedStatementCreator() {
+		     public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+
+		         PreparedStatement ps =
+		             connection.prepareStatement(ZONE_AREA_MAPPING);
+		         ps.setDouble(1, longitude);
+		 		 ps.setDouble(2, latitude);
+		         return ps;
+		     }
+		 };
+
+		 jdbcTemplate.query(creator,
+				  new RowCallbackHandler() {
+				      public void processRow(ResultSet rs) throws SQLException {
+
+				    	do {
+				    		IZoneModel zoneModel = new ZoneModel();
+				    		zoneModel.setZoneNumber(rs.getString("ZONE_CODE"));
+				    		IAreaModel areaModel = new AreaModel();
+				    		areaModel.setAreaCode(rs.getString("AREA_CODE"));
+				    		areaModel.setDepot("X".equalsIgnoreCase(rs.getString("IS_DEPOT")));
+				    		zoneModel.setArea(areaModel);
+				    		
+				    		result.add(zoneModel);				    		
+
+				    	 } while(rs.next());
+				      }
+				  }
+			);
+
+		return result;
+	}
+	
+	public ILocationModel getLocationById(final String locId) throws SQLException {
+		final ILocationModel model = new LocationModel();
+		 PreparedStatementCreator creator=new PreparedStatementCreator() {
+		     public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+
+		    	 
+		         PreparedStatement ps =
+		             connection.prepareStatement(GET_LOCATION_BYID_QRY);
+		         
+		         ps.setString(1, locId);
+
+		         return ps;
+		     }
+		 };
+
+		 jdbcTemplate.query(creator,
+				  new RowCallbackHandler() {
+				      public void processRow(ResultSet rs) throws SQLException {
+
+				    	do {
+				    		
+				    		model.setStreetAddress1(rs.getString("SCRUBBED_STREET"));
+				    		model.setApartmentNumber(rs.getString("APARTMENT"));
+				    		model.setZipCode(rs.getString("ZIP"));
+				    		model.setState(rs.getString("STATE"));
+				    		model.setCity(rs.getString("CITY"));
+				    		model.setCountry(rs.getString("COUNTRY"));
+				    		model.setLocationId(rs.getString("ID"));
+				    		String serviceTimeType = rs.getString("SERVICETIME_TYPE");
+				    		if(serviceTimeType == null || serviceTimeType.trim().length() ==0) {
+				    			serviceTimeType = rs.getString("DEFAULTSERVICETIME_TYPE");
+				    		}
+				    		model.setServiceTimeType(serviceTimeType);
+				    		model.setBuildingId(rs.getString("BUILDING_ID"));
+
+				    		IGeographicLocation geoLoc = new GeographicLocation();
+				    		geoLoc.setLatitude(rs.getString("LATITUDE"));
+				    		geoLoc.setLongitude(rs.getString("LONGITUDE"));
+				    		geoLoc.setConfidence(rs.getString("GEO_CONFIDENCE"));
+				    		geoLoc.setQuality(rs.getString("GEO_QUALITY"));
+				    		model.setGeographicLocation(geoLoc);
+				    		break;
+				    	 } while(rs.next());
+				      }
+				  }
+			);
+
+		return model;
 	}
 }

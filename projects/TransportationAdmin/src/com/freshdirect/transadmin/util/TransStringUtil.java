@@ -46,6 +46,12 @@ public class TransStringUtil {
 	private static NumberFormat twoDigitNumber = new DecimalFormat("###.##");
 	
 	private static DateFormat fullMonthFormat = new SimpleDateFormat("dd MMMMM yyyy");
+	
+	public final static long SECOND = 1000;
+	public final static long MINUTE = 60 * SECOND;
+	public final static long HOUR = 60 * MINUTE;
+	public final static long DAY = 24 * HOUR;
+	
 	static {
 			for(int intCount=0;intCount<daysList.length;intCount++) {
 				daysMap.put(daysList[intCount], new Integer(intCount));
@@ -370,5 +376,9 @@ public class TransStringUtil {
 		public StringFilterException() {
 			super();
 		}
+	}
+	
+	public static int getDiffInHours(Date d1, Date d2) {
+		return Math.abs((int) Math.round(((d1.getTime() - d2.getTime()) / (double) HOUR)));
 	}
  }

@@ -24,7 +24,9 @@ public class RoutingServicesProperties {
 	
 	private final static String PROP_ROADNET_PROVIDER_URL		= "routingservices.roadnet.providerURL";
 		
-	private final static String PROP_DEFAULT_REGION		= "routingservices.default.region";
+	private final static String PROP_DEFAULT_TRUCKREGION		= "routingservices.default.truckregion";
+	
+	private final static String PROP_DEFAULT_DEPOTREGION		= "routingservices.default.depotregion";
 	
 	private final static String PROP_DEFAULT_LOCATIONTYPE		= "routingservices.default.locationtype";
 	
@@ -70,7 +72,8 @@ public class RoutingServicesProperties {
 		
 		defaults.put(PROP_TRANSPORTATIONSUITE_PROVIDER_URL, 	"http://localhost:81");
 		defaults.put(PROP_ROADNET_PROVIDER_URL, 	"http://localhost:82");		
-		defaults.put(PROP_DEFAULT_REGION, 	"FD");
+		defaults.put(PROP_DEFAULT_TRUCKREGION, 	"FD");
+		defaults.put(PROP_DEFAULT_DEPOTREGION, 	"MDP");
 		defaults.put(PROP_DEFAULT_LOCATIONTYPE, 	"SIT");
 		defaults.put(PROP_DEFAULTDEPOT_LOCATIONTYPE, 	"MDP");
 		defaults.put(PROP_DEFAULT_ORDERTYPE, 	"DEF");
@@ -147,8 +150,12 @@ public class RoutingServicesProperties {
 		return getIntVal(get(PROP_DEFAULT_VARIABLESERVICETIME));
 	}
 	
-	public static String getDefaultRegion() {
-		return get(PROP_DEFAULT_REGION);
+	public static String getDefaultTruckRegion() {
+		return get(PROP_DEFAULT_TRUCKREGION);
+	}
+	
+	public static String getDefaultDepotRegion() {
+		return get(PROP_DEFAULT_DEPOTREGION);
 	}
 	
 	public static String getDefaultLocationType() {

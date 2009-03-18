@@ -27,4 +27,8 @@ public interface IGeographyDAO {
 	
 	List getLocationByIds(final List locIds) throws SQLException;
 	
+	ILocationModel getLocationById(final String locId) throws SQLException;
+
+	List getZoneMapping(final double latitude, final double longitude)  throws SQLException;
+	
 }

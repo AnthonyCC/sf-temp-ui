@@ -437,10 +437,12 @@ public class DispatchController extends AbstractMultiActionController {
 					
 					if(routes != null && routes.size() == 1) {
 						
-						RouteMapping routeMapping = (RouteMapping)routes.toArray()[0];		
+						RouteMapping routeMapping = (RouteMapping)routes.toArray()[0];	
+						
+						
 						
 						IRoutingSchedulerIdentity schedulerId = new RoutingSchedulerIdentity();
-						schedulerId.setRegionId(RoutingServicesProperties.getDefaultRegion());
+						schedulerId.setRegionId(RoutingServicesProperties.getDefaultTruckRegion());
 								
 						String sessionId = engineProxy.retrieveRoutingSession(schedulerId, routeMapping.getRoutingSessionID());
 						
@@ -448,7 +450,7 @@ public class DispatchController extends AbstractMultiActionController {
 																, routeMapping.getRouteMappingId().getRoutingRouteID());
 						
 						if(routingRoutes != null && routingRoutes.size() > 0) {
-							_tmpRoute = (IRouteModel)routingRoutes.get(0);							
+							_tmpRoute = (IRouteModel)routingRoutes.get(0);
 							if(_tmpRoute.getStops() != null && _tmpRoute.getStops().size() > 0) {
 								directionRoutes.put(routingRouteId, _tmpRoute);
 								hasRoutes = true;
