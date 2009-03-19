@@ -66,10 +66,14 @@
 				</td>
 			<%}%>
 			<%if(EnumDlvRestrictionReason.EASTER_MEALS.equals(reason)){%>
-				<td colspan="<%=span.getSpan()%>" bgcolor="#<%= !span.isValue() ? "9999aa":"dfe3d0"%>" align="center">
-					<%=!span.isValue() ? "<img src='/media_stat/images/template/checkout/dlv_easter.gif'":"&nbsp;"%>
-				</td>
-			<%}%>
+			<td colspan="<%=span.getSpan()%>" 
+				<%= !span.isValue() ? "class='easterMealsBG delivbar_adv_head'" : "bgcolor='#dfe3d0'" %> align="center">
+				<%if(!span.isValue()) {%>
+					<fd:IncludeMedia name='/media/editorial/holiday/advance_order/eastermeals/delivbar_adv_head.html'/>
+				<%}else{%>&nbsp;<%}%>
+			</td>
+		<%}%>
+
 		<%}%>
 		</tr>
 	<%}%>
