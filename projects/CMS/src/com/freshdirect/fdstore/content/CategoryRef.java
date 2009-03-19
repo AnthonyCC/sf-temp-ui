@@ -27,7 +27,7 @@ public class CategoryRef extends ContentRef {
 	}
 
 	public CategoryModel getCategory() {
-		return (CategoryModel) ContentFactory.getInstance().getContentNodeByName(this.refName);
+		return (CategoryModel) ContentFactory.getInstance().getContentNode(this.refName);
 	}
 
 }

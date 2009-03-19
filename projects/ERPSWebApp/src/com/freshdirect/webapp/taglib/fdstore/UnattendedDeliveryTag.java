@@ -128,8 +128,10 @@ public class UnattendedDeliveryTag extends AbstractGetterTag {
 				throw new JspException("Neither addressId nor address was provided");
 			}
 		} catch (FDResourceException re) {
+			LOGGER.warn( "FDResourceException in UnattendedDeliveryTag.getResult() while getting zone info : " + re.getMessage() );
 			throw new JspException(re);
 		} catch (FDInvalidAddressException iae) {
+			LOGGER.info( "FDInvalidAddressException in UnattendedDeliveryTag.getResult() while getting zone info : " + iae.getMessage() );
 			// if an address fails because of geocoding, it will be treated as if it were not 
 			// enabled for unattended delivery
 			return null;

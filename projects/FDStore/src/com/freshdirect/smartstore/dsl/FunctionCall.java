@@ -29,6 +29,7 @@ public class FunctionCall extends Expression {
     }
 
     public boolean add(Expression exp) {
+        exp.context = context;
         params.add(exp);
         return true;
     }
@@ -66,7 +67,7 @@ public class FunctionCall extends Expression {
             Expression exp = (Expression) params.get(i);
             exp.validate();
             int rtype = exp.getReturnType();
-            if (rtype == RET_FLOAT || rtype == RET_INT || rtype == RET_STRING) {
+            if (rtype == RET_FLOAT || rtype == RET_INT || rtype == RET_STRING || rtype == RET_NODE || rtype == RET_SET) {
                 paramTypes.append((char) rtype);
             } else {
                 throw new CompileException(CompileException.TYPE_ERROR, "Return type of '" + exp.toCode() + "' is neither float, nor int, nor string ! (" + rtype + ")");
@@ -81,9 +82,21 @@ public class FunctionCall extends Expression {
     public String getName() {
         return name;
     }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Expression getParam(int index) {
         return (Expression) params.get(index);
+    }
+    
+    /**
+     * The raw parameter list.
+     * @return
+     */
+    public List getParams() {
+        return params;
     }
 
     public void visit(ExpressionVisitor visitor) throws VisitException {

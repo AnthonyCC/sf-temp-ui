@@ -1,30 +1,35 @@
-package com.freshdirect.webapp.util;
+package com.freshdirect.webapp.util.prodconf;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Category;
 
 import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
+import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.lists.FDCustomerProductList;
 import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
 import com.freshdirect.fdstore.lists.FDListManager;
+import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.util.ConfigurationContext;
+import com.freshdirect.webapp.util.ConfigurationStrategy;
+import com.freshdirect.webapp.util.ProductImpression;
+import com.freshdirect.webapp.util.TransactionalProductImpression;
 
 /**
  * Configuration utility for DYF impressions.
@@ -34,11 +39,11 @@ import com.freshdirect.fdstore.lists.FDListManager;
  * @author istvan
  *
  */
-public class DyfConfigurationStrategy implements ConfigurationStrategy {
+public class SmartStoreConfigurationStrategy extends FallbackConfigurationStrategy {
 	
 	private final static int MAX_CONFIGURATION_DURATION = 10 * 60 * 1000;
 	
-	private final static Category LOGGER = Category.getInstance(DyfConfigurationStrategy.class);
+	private final static Category LOGGER = LoggerFactory.getInstance(SmartStoreConfigurationStrategy.class);
 	
 	/**
 	 * Wrapper for a customer id and a content key.
@@ -126,24 +131,38 @@ public class DyfConfigurationStrategy implements ConfigurationStrategy {
 	 */
 	protected static Map cache; 
 	
-	private static ConfigurationStrategy instance = null;
-	
+	protected static void setupCache() {
+		final int maxEntries = FDStoreProperties.getMaxDyfStrategyCacheEntries();
+		cache = new LinkedHashMap(3 * maxEntries / 2 + 1, 0.75f, true) {
+			
+			private static final long serialVersionUID = 4998658502428769840L;
+
+			protected boolean removeEldestEntry(Map.Entry e) {
+				return (size() > maxEntries);
+			}		
+		};
+	}
+
+
+
+	protected static ConfigurationStrategy instance = null;
+
 	public static ConfigurationStrategy getInstance() {
 		if (instance == null) {
-			final int maxEntries = FDStoreProperties.getMaxDyfStrategyCacheEntries();
-			cache = new LinkedHashMap(3*maxEntries /2 + 1, 0.75f, true) {
-				
-				private static final long serialVersionUID = 4998658502428769840L;
-
-				protected boolean removeEldestEntry(Map.Entry e) {
-					return (size() > maxEntries);
-				}		
-			};
-			instance = new DyfConfigurationStrategy();
+			setupCache();
+			instance = new SmartStoreConfigurationStrategy(
+					new ConfiguredProductGroupConfigurationStrategy(
+					new ConfiguredProductConfigurationStrategy(
+					new AutoConfigurationStrategy())));
 		}
 		return instance;
 	}
-	
+
+
+	public SmartStoreConfigurationStrategy(ConfigurationStrategy fallback) {
+		super(fallback);
+	}
+
 	/**
 	 * Configure a recommended product from the user's shopping history.
 	 * 
@@ -151,7 +170,7 @@ public class DyfConfigurationStrategy implements ConfigurationStrategy {
 	 * <ul>
 	 *    <li>Get all the sku codes for the product.</li>
 	 *    <li>For each sku code, get all configurations</li>
-	 *    <li>Sort the items by recency</li> TODO check with Neal
+	 *    <li>Sort the items by recency</li>
 	 *    <li>Return the first {@link OrderLineUtil#cleanup(FDProductSelectionI) valid} configuration</li>
 	 *    <li>If all fail, return a non-transactional {@link ProductImpression}
 	 * </ul>
@@ -161,10 +180,20 @@ public class DyfConfigurationStrategy implements ConfigurationStrategy {
 	 * @return product impression
 	 */
 	public ProductImpression configure(ProductModel productModel, ConfigurationContext context) {
-		
+		String erpCustomerPK = getCustomerPK(context);
+
+		// if no appropriate user in the context automatically fall back
+		if (erpCustomerPK == null) {
+			return super.configure(productModel, context);
+		}
+
 		// see if already stored
-		CustomerContentPair key = new CustomerContentPair(context.getFDUser().getIdentity().getErpCustomerPK(),productModel.getContentKey());
-		SkuConfigurationPair storedConfiguration = (SkuConfigurationPair)cache.get(key);
+
+		CustomerContentPair key = new CustomerContentPair(
+				erpCustomerPK,
+				productModel.getContentKey());
+
+		SkuConfigurationPair storedConfiguration = (SkuConfigurationPair) cache.get(key);
         if (storedConfiguration != null && !storedConfiguration.expired()) {
         	if (storedConfiguration.getSkuCode() != null) {
         		return new TransactionalProductImpression(
@@ -172,97 +201,124 @@ public class DyfConfigurationStrategy implements ConfigurationStrategy {
         			storedConfiguration.getSkuCode(),
         			storedConfiguration.getConfiguration());
         	} else {
-        		return new ProductImpression(productModel);
+        		return super.configure(productModel, context);
         	}
         }
 		
 		try {
 			// Get order details
-			FDCustomerProductList details = FDListManager.getOrderDetails(context.getFDUser().getIdentity().getErpCustomerPK(), productModel.getSkuCodes());
-			
-			// if no answer, return unconfigured impression
-			if (details.getLineItems().size() == 0) {
-				cache.put(key,SkuConfigurationPair.NULL);
-				return new ProductImpression(productModel);
+			// List<FDCustomerProductListLineItem>
+			List lineItems = getUserLineItems(erpCustomerPK, productModel.getSkuCodes());
+
+			// fallback if no answer
+			if (lineItems.size() == 0) {
+				cache.put(key, SkuConfigurationPair.NULL);
+				return super.configure(productModel, context);
 			}
 			
 			// sort items by recency
-			Collections.sort(details.getLineItems(),
+			Collections.sort(lineItems,
 				new Comparator() {
-		
 					public int compare(Object o1, Object o2) {
-						FDCustomerProductListLineItem item1 = (FDCustomerProductListLineItem)o1;
-						FDCustomerProductListLineItem item2 = (FDCustomerProductListLineItem)o2;
+						FDCustomerListItem item1 = (FDCustomerListItem)o1;
+						FDCustomerListItem item2 = (FDCustomerListItem)o2;
 						// flip sign, since the newer (larger date) the better
 						return - item1.getLastPurchase().compareTo(item2.getLastPurchase());
 					}
 				}
 			);
-			
+
 			// go through list and get first good one
-			
-			for(Iterator i = details.getLineItems().iterator(); i.hasNext();) {
-				FDCustomerProductListLineItem item = (FDCustomerProductListLineItem)i.next();
+			for(Iterator i = lineItems.iterator(); i.hasNext(); ) {
+				FDCustomerProductListLineItem item = (FDCustomerProductListLineItem) i.next();
 				
 				String selectedSkuCode = item.getSkuCode();
 				SkuModel skuModel = (SkuModel) ContentFactory.getInstance().getContentNode(selectedSkuCode); 
 				
 				// not available, skip
-				if (skuModel.isUnavailable()) continue;
+				if (skuModel.isUnavailable())
+					continue;
+
 				FDConfigurableI configuration = item.getConfiguration();
-				
 				// no stored configuration and no auto-configuration, skip
-				if (configuration == null && !productModel.isAutoconfigurable()) continue;
-				
+				if (configuration == null)
+					continue;
 				
 				// there was a stored configuration, lets see if ok
-				if (configuration != null) {
+				try {
+					FDProductSelectionI selection = item.convertToSelection();
+					OrderLineUtil.cleanup(selection);
 					
-					try {
-						FDProductSelectionI selection = item.convertToSelection();
-						OrderLineUtil.cleanup(selection);
-						
-						configuration = selection.getConfiguration();
-						
-						// see if sku has changed as result of cleanup
-						if (!selection.getSku().getSkuCode().equals(selectedSkuCode)) {
-							selectedSkuCode = selection.getSkuCode();
-						}
-						
-					// any problems, skup
-					} catch (FDInvalidConfigurationException e) {
+					configuration = selection.getConfiguration();
+
+					if (configuration == null)
 						continue;
-					} catch (FDSkuNotFoundException e) {
-						continue;
-					} catch (IllegalStateException e) {
-						continue;
+					
+					// see if sku has changed as result of cleanup
+					if (!selection.getSku().getSkuCode().equals(selectedSkuCode)) {
+						selectedSkuCode = selection.getSkuCode();
 					}
+				// any problems, skip
+				} catch (FDInvalidConfigurationException e) {
+					continue;
+				} catch (FDSkuNotFoundException e) {
+					continue;
+				} catch (IllegalStateException e) {
+					continue;
 				}
 				
 				// ok, we have a transactional impression
-				
-				FDConfigurableI conf = 
-					configuration == null ? 
-						productModel.getAutoconfiguration() : 
-						new FDConfiguration(
-							productModel.getQuantityMinimum(), // mask out any larger quantity
-							configuration.getSalesUnit(),
-							configuration.getOptions());
+				// mask out any larger quantity
+				FDConfigurableI conf = new FDConfiguration(productModel.getQuantityMinimum(),
+							configuration.getSalesUnit(), configuration.getOptions());
 						
-				LOGGER.debug("Storing configuration for " + context.getFDUser().getIdentity().getErpCustomerPK() + ", sku = " + selectedSkuCode);
-				cache.put(key, new SkuConfigurationPair(selectedSkuCode,conf));
-				return new TransactionalProductImpression(
-					productModel,selectedSkuCode,conf);
+				LOGGER.debug("Storing configuration for "
+						+ erpCustomerPK
+						+ ", sku = " + selectedSkuCode);
+				cache.put(key, new SkuConfigurationPair(selectedSkuCode, conf));
+				LOGGER.debug("configuring using smart store configurer + "
+						+ productModel.getContentKey().getId());
+				return new TransactionalProductImpression(productModel, selectedSkuCode, conf);
 			}
 			
-			// we do not have a transactional impression, return a non-transactional
-			cache.put(key,SkuConfigurationPair.NULL);
-			return new ProductImpression(productModel);
+			// we do not have a transactional impression, do a fallback
+			cache.put(key, SkuConfigurationPair.NULL);
+			return super.configure(productModel, context);
 			
 		} catch (FDResourceException e) {
-			// could not make query, return non-transactional
+			// could not make query, do a fallback
 			// Do not cache though, may work next time :)
-			return new ProductImpression(productModel);
+			return super.configure(productModel, context);
 		}
+	}
+
+
+	/**
+	 * Returns the ERP PK of the customer in context
+	 * 
+	 * @param context
+	 * @return Customer's ERP primary key or null if not available
+	 */
+	protected String getCustomerPK(ConfigurationContext context) {
+		try {
+			return context.getFDUser().getIdentity().getErpCustomerPK();
+		} catch(Exception exc) {
+			// this is to handle NPE while dereferencing
+		}
+		return null;
+	}
+
+	
+
+	
+	/**
+	 * @param erpCustomerPK
+	 * @param skuCodes
+	 * 
+	 * @return List<FDCustomerProductListLineItem>
+	 */
+	protected List getUserLineItems(String erpCustomerPK, List skuCodes) throws FDResourceException {
+		FDCustomerProductList details = FDListManager.getOrderDetails(erpCustomerPK, skuCodes);
+		return details.getLineItems();
 	}
 }

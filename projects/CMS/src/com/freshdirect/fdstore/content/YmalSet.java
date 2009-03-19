@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,13 +28,18 @@ import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.query.AttributeEqualsPredicate;
 import com.freshdirect.cms.query.AttributeInPredicate;
 import com.freshdirect.cms.query.RelationshipAnyPredicate;
+import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.DateRange;
 
 /**
  *  A set of You Might Also Like (YMAL) content nodes.
+ *  
+ *  @see Recommender
+ *  @see RecommenderStrategy
  */
-public class YmalSet extends ContentNodeModelImpl {
+public class YmalSet extends ContentNodeModelImpl implements YmalSource {
+	private static final long serialVersionUID = 2177290860515807364L;
 
 	/**
 	 *  The list of node types to return for getYmalProducts.
@@ -45,6 +51,7 @@ public class YmalSet extends ContentNodeModelImpl {
 	 *  The YMAL items in this ymal set.
 	 */
 	private final List ymals = new ArrayList();
+	private final List recommenders = new ArrayList();
 	
 	static {
 		ymalProductTypes = new ArrayList(3);
@@ -153,7 +160,7 @@ public class YmalSet extends ContentNodeModelImpl {
 	 *  @return all YMAL products contained in this Ymal Set,
 	 *          which are of ContentNodeModel type
 	 */
-	private List getYmals() {
+	public List getYmals() {
 		ContentNodeModelUtil.refreshModels(this, "ymals", ymals, false);
 		return Collections.unmodifiableList(ymals);
 	}
@@ -209,7 +216,7 @@ public class YmalSet extends ContentNodeModelImpl {
 	 *  @return a list of AbstractProductModel objects, which are contained in
 	 *          the YMALs for this product. The returned objects may be of
 	 *          ProductModelImpl and ConfiguredProduct type.
-	 *  @see #getYouMightAlsoLike()
+	 *  @see #getYmals()
 	 */
 	public List getYmalProducts() {
 		return getYmals(ymalProductTypes);
@@ -220,7 +227,7 @@ public class YmalSet extends ContentNodeModelImpl {
 	 *  
 	 *  @return a list of CategoryModel objects, which are contained in
 	 *          the YMALs for this product.
-	 *  @see #getYouMightAlsoLike()
+	 *  @see #getYmals()
 	 */
 	public List getYmalCategories() {
 		return getYmals(FDContentTypes.CATEGORY);
@@ -231,7 +238,7 @@ public class YmalSet extends ContentNodeModelImpl {
 	 *  
 	 *  @return a list of Recipe objects, which are contained in
 	 *          the YMALs for this product.
-	 *  @see #getYouMightAlsoLike()
+	 *  @see #getYmals()
 	 */
 	public List getYmalRecipes() {
 		return getYmals(FDContentTypes.RECIPE);
@@ -410,6 +417,47 @@ public class YmalSet extends ContentNodeModelImpl {
 		}
 
 		return recipes;
+	}
+
+	public YmalSet getActiveYmalSet() {
+		return this;
+	}
+
+	public List getYmalProducts(Set removeSkus) {
+		if (removeSkus == null || removeSkus.isEmpty())
+			return getYmalProducts();
+		
+		List prods = getYmalProducts();
+		ListIterator it = prods.listIterator();
+		while (it.hasNext()) {
+			ProductModel p = (ProductModel) it.next();
+			Iterator it2 = p.getSkus().iterator();
+			outer: while (it2.hasNext()) {
+				String skuCode = ((SkuModel) it2.next()).getSkuCode();
+				Iterator it3 = removeSkus.iterator();
+				while (it3.hasNext()) {
+					String removeSkuCode = ((FDSku) it3.next()).getSkuCode();
+					if (skuCode.equals(removeSkuCode)) {
+						it.remove();
+						break outer;
+					}
+				}
+			}
+		}
+		return prods;
+	}
+	
+	public List getRelatedProducts() {
+		return Collections.EMPTY_LIST;
+	}
+	
+	public String getYmalHeader() {
+		return getProductsHeader();
+	}
+	
+	public List getRecommenders() {
+		ContentNodeModelUtil.refreshModels(this, "recommenders", recommenders, false);
+		return Collections.unmodifiableList(recommenders);
 	}
 
 }

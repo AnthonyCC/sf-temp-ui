@@ -2,7 +2,6 @@ package com.freshdirect.smartstore.fdstore;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -13,8 +12,10 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -27,17 +28,22 @@ import com.freshdirect.smartstore.impl.AbstractRecommendationService;
 public class FDStoreRecommender {
     private final static Logger LOGGER = Logger.getLogger(FDStoreRecommender.class);
 
+    /**
+     * @author csongor
+     */
+    abstract static class FilterTemplate {
+    	public abstract List filter(List models);
+    }
     
-
     /**
      * Filtering predicate for product models
      * 
      * @author zsombor
      */
-    abstract static class FilterTemplate {
+    abstract static class ProductFilterTemplate extends FilterTemplate {
         protected abstract ProductModel evaluate(ProductModel model);
 
-        protected FilterTemplate() {}
+        protected ProductFilterTemplate() {}
 
 
         /**
@@ -48,27 +54,26 @@ public class FDStoreRecommender {
         public List filter(List models) {
             List filteredModels = new ArrayList(models.size());
             for (Iterator i = models.iterator(); i.hasNext();) {
-                ProductModel model = (ProductModel) i.next();
-                ProductModel replaced = evaluate(model);
-                if (replaced != null) {
-                    filteredModels.add(replaced);
-                }
+            	Object next = i.next();
+            	if (next instanceof ProductModel) {
+	                ProductModel model = (ProductModel) next;
+	                ProductModel replaced = evaluate(model);
+	                if (replaced != null) {
+	                    filteredModels.add(replaced);
+	                }
+            	}
             }
             return filteredModels;
         }
     }
 
-	
-	
-	
     /**
      * check availabilities
      * 
      * @author zsombor
      *
      */
-    static final class FilterAvailability extends FilterTemplate {
-        
+    static final class FilterProductAvailability extends ProductFilterTemplate {
         protected ProductModel evaluate(ProductModel model) {
             if (available(model)) {
                 return model;
@@ -105,7 +110,7 @@ public class FDStoreRecommender {
      * @author zsombor
      *
      */
-    final static class FilterCartItems extends FilterTemplate {
+    final static class FilterCartItems extends ProductFilterTemplate {
         private final Collection cartItems;
 
         FilterCartItems(Collection cartItems) {
@@ -118,7 +123,7 @@ public class FDStoreRecommender {
     }
 
 
-    final static class FilterExcludedItems extends FilterTemplate {
+    final static class FilterExcludedItems extends ProductFilterTemplate {
         protected ProductModel evaluate(ProductModel model) {
         	return model.isExcludedRecommendation() ? null : model;
         }
@@ -130,16 +135,16 @@ public class FDStoreRecommender {
      * @author segabor
      *
      */
-    final static class UnicityFilter extends FilterTemplate {
+    final static class UnicityFilter extends ProductFilterTemplate {
     	public List filter(List models) {
     		List ret = new ArrayList();
     		
     		HashSet keys = new HashSet();
     		for (Iterator it=models.iterator(); it.hasNext();) {
-    			ProductModel prd = (ProductModel) it.next();
-    			String prdId = prd.getContentName();
+    			ContentNodeModel item = (ContentNodeModel) it.next();
+    			String prdId = item.getContentName();
     			if (!keys.contains(prdId)) {
-    				ret.add(prd);
+    				ret.add(item);
     				keys.add(prdId);
     			}
     		}
@@ -153,17 +158,61 @@ public class FDStoreRecommender {
 		}
     }
 
-
-    final static FilterTemplate UNIQUE_ITEMS = new UnicityFilter();
-    final static FilterTemplate EXCLUDED_ITEMS = new FilterExcludedItems();
-    final static FilterTemplate AVAILABLE_ITEMS = new FilterAvailability();
-
-	
     /**
-     * 
-     * 
+     * @author csongor
      */
-    private List filter(List models, final Collection cartItems, boolean includeCartItems) {
+    final static class CategoryFilter extends FilterTemplate {
+		public List filter(List models) {
+            List filteredModels = new ArrayList(models.size());
+            for (Iterator i = models.iterator(); i.hasNext();) {
+            	Object next = i.next();
+            	if (next instanceof CategoryModel) {
+                    filteredModels.add(next);
+            	}
+            }
+            return filteredModels;
+		}
+    }
+
+    /**
+     * added both type and availability filter
+     * 
+     * @author csongor
+     */
+    final static class RecipeFilter extends FilterTemplate {
+		public List filter(List models) {
+            List filteredModels = new ArrayList(models.size());
+            for (Iterator i = models.iterator(); i.hasNext();) {
+            	Object next = i.next();
+            	if (next instanceof Recipe) {
+            		Recipe r = (Recipe) next;
+            		if (r.isAvailable())
+            			filteredModels.add(r);
+            	}
+            }
+            return filteredModels;
+		}
+    }
+    
+    final static ProductFilterTemplate UNIQUE_ITEMS = new UnicityFilter();
+
+    final static ProductFilterTemplate EXCLUDED_ITEMS = new FilterExcludedItems();
+
+    final static ProductFilterTemplate AVAILABLE_ITEMS = new FilterProductAvailability();
+    
+    final static FilterTemplate CATEGORY_FILTER = new CategoryFilter();
+
+    final static FilterTemplate RECIPE_FILTER = new RecipeFilter();
+
+	private List filterRecipes(List models) {
+		return UNIQUE_ITEMS.filter(RECIPE_FILTER.filter(models));
+	}
+
+	private List filterCategories(List models) {
+		return UNIQUE_ITEMS.filter(CATEGORY_FILTER.filter(models));
+	}
+
+	private List filterProducts(List models, final Collection cartItems, boolean includeCartItems) {
         models = AVAILABLE_ITEMS.filter(models);
 
         models = UNIQUE_ITEMS.filter(models);
@@ -178,7 +227,6 @@ public class FDStoreRecommender {
         return models;
 	}
 
-        
     public static Set getShoppingCartContents(FDUserI user) {
         return getShoppingCartContents(user.getShoppingCart());
     }
@@ -194,13 +242,13 @@ public class FDStoreRecommender {
 		return products;
 	}
 
-
 	/**
 	 * @return recommendations. In case of failure it returns
 	 *   a special EMPTY_RECOMMENDATION object having empty collection.
 	 * @throws FDResourceException 
 	 */
-	public  Recommendations getRecommendations(Trigger trigger, HttpSession session) throws FDResourceException {
+	public Recommendations getRecommendations(Trigger trigger, 
+			HttpSession session) throws FDResourceException {
 		// Get shopping cart and user id
 		// FIXME: replace 'fd.user' constant to SessionName.USER
 		FDUserI user = (FDUserI) session.getAttribute("fd.user");
@@ -217,11 +265,12 @@ public class FDStoreRecommender {
 	 *   a special EMPTY_RECOMMENDATION object having empty collection.
 	 * @throws FDResourceException 
 	 */
-	public  Recommendations getRecommendations(Trigger trigger, FDUserI user, SessionInput input, String overriddenVariantId) throws FDResourceException {
+	public Recommendations getRecommendations(Trigger trigger, FDUserI user, 
+			SessionInput input, String overriddenVariantId) throws FDResourceException {
 		Set cartItems = getShoppingCartContents(user.getShoppingCart());
 		return getRecommendations(trigger, user, input, overriddenVariantId, cartItems);
 	}
-        
+
 	/**
 	 * 
 	 * @param trigger
@@ -232,46 +281,49 @@ public class FDStoreRecommender {
 	 * @return
 	 * @throws FDResourceException
 	 */
-	public  Recommendations getRecommendations(Trigger trigger, FDUserI user, SessionInput input, String overriddenVariantId, Set cartItems) throws FDResourceException {
-		input.setCartContents(cartItems);
+	public Recommendations getRecommendations(Trigger trigger, FDUserI user,
+			SessionInput input, String overriddenVariantId, Set cartItems) throws FDResourceException
+	{
+		if (cartItems != null)
+			input.setCartContents(cartItems);
 
 		// select service		
 		RecommendationService service = 
-			SmartStoreUtil.getRecommendationService(user, trigger.getSiteFeature(),overriddenVariantId);
+			SmartStoreUtil.getRecommendationService(user, trigger.getSiteFeature(), overriddenVariantId);
 		
 		
 		List contentModels = doRecommend(trigger, input, service);
-		
+
 		LOGGER.debug("Items before filter: " + contentModels);
-		
+
 
 		boolean includeCartItems = Boolean.valueOf(service.getVariant().getServiceConfig().get(AbstractRecommendationService.CKEY_INCLUDE_CART_ITEMS)).booleanValue();
 		// filter unnecessary models
-		List renderableModels = filter(contentModels,cartItems, includeCartItems);
+		List renderableProducts = filterProducts(contentModels, cartItems, includeCartItems);
+		
+		List renderableCategories = filterCategories(contentModels);
+		
+		List renderableRecipes = filterRecipes(contentModels);
 
 
 		// shave off the extra ones
-		while(renderableModels.size() > trigger.getMaxRecommendations()) { 
-			renderableModels.remove(renderableModels.size()-1);
+		while(renderableProducts.size() > trigger.getMaxRecommendations()) { 
+			renderableProducts.remove(renderableProducts.size()-1);
 		}
 		
-		LOGGER.debug("Recommended items by " + service.getVariant().getId() + ": " + renderableModels);
+		LOGGER.debug("Recommended products by " + service.getVariant().getId() + ": " + renderableProducts);
 
-		return new Recommendations(service.getVariant(),renderableModels);
+		return new Recommendations(service.getVariant(), renderableProducts,
+				renderableCategories, renderableRecipes, input);
 		
 	}
-
 
 	// mock point
 	protected List doRecommend(Trigger trigger, SessionInput input, RecommendationService service) {
-		return service.recommendNodes(input);
+		return service.recommendNodes(trigger, input);
 	}
 
-
-
-	
 	private static FDStoreRecommender instance = null;
-
 
 	public static synchronized FDStoreRecommender getInstance() { 
 		if (instance == null) {

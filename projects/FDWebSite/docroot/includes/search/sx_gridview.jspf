@@ -13,6 +13,8 @@
 %><%@ page import="com.freshdirect.fdstore.lists.FDListManager"
 %><%@ page import="com.freshdirect.fdstore.lists.FDCustomerProductListLineItem"
 %><%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"
+%><%@ page import="com.freshdirect.webapp.util.ProductLabelling"
+%><%@ page import="com.freshdirect.webapp.util.DYFUtil"
 %><%@ taglib uri="freshdirect" prefix="fd"
 %><%--
 
@@ -27,8 +29,7 @@ Smart Search Grid View
 --%><%
 final java.text.NumberFormat CURRENCY_FORMATTER = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yy");
-
-FDUserI u = (FDUserI) request.getSession().getAttribute(SessionName.USER);
+final FDUserI u = (FDUserI) request.getSession().getAttribute(SessionName.USER);
 
 // turn products into product impressions
 
@@ -66,19 +67,15 @@ int colCount = 0;
 		defaultPrice = new Double(pi.getProductInfo().getDefaultPrice());
 		priceUnit = pi.getProductInfo().getDisplayableDefaultPriceUnit().toLowerCase();
 		isDeal = pi.getProductInfo().isDeal();
-//		isDeal = (defaultPrice.doubleValue() - 0.99) == Math.floor(defaultPrice.doubleValue()); // test line - REMOVE !!!
 		deal = -1;
 		basePrice = Double.NaN;
 		if (isDeal) {
 			deal = pi.getProductInfo().getDealPercentage();
 			basePrice = pi.getProductInfo().getBasePrice();
-//			deal = 5; // test line - REMOVE !!!
-//			basePrice = defaultPrice.doubleValue() * 1.05; // test line - REMOVE !!!
 		}
 	}
 	
-	boolean isYourFave = results.getUserProductScores().get(productNode.getContentKey()) != null;
-//	isYourFave = defaultPrice != null ? defaultPrice.intValue() == 2 : isYourFave; // test line - REMOVE !!!
+	boolean isYourFave = DYFUtil.isFavorite(productNode, u);
 
 	// URI that points to product page
 	String prdURI = FDURLUtil.getProductURI(productNode, (String)trk, (isYourFave ? "fave" : nav.getSortByName()), rank);

@@ -29,6 +29,8 @@
 				<DestinationDef contentType="Synonym"/>
 				<DestinationDef contentType="SearchRelevancyList"/>
 				<DestinationDef contentType="FavoriteList"/>
+				<DestinationDef contentType="Recommender"/>
+				<DestinationDef contentType="RecommenderStrategy"/>
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
@@ -1270,6 +1272,9 @@
 				<DestinationDef contentType="ConfiguredProductGroup"/>
 				<DestinationDef contentType="Recipe" />
 			</RelationshipDef>
+			<RelationshipDef name="recommenders" cardinality="Many" label="Recommenders" inheritable="false" navigable="false">
+				<DestinationDef contentType="Recommender" />
+			</RelationshipDef>
 		</RelationshipDefs>
     </ContentTypeDef>
 
@@ -1410,6 +1415,57 @@
 				<DestinationDef contentType="ConfiguredProduct" />
 			</RelationshipDef>
 		</RelationshipDefs>
+	</ContentTypeDef>
+
+	<!--
+		
+		Recommender
+		
+	-->
+	<ContentTypeDef name="Recommender">
+		<AttributeDefs>
+			<AttributeDef type="S" name="FULL_NAME" label="Description"/>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="strategy" cardinality="One" label="Recommender Strategy" required="true">
+				<DestinationDef contentType="RecommenderStrategy" />
+			</RelationshipDef>
+			<RelationshipDef name="scope" navigable="false" cardinality="Many" label="Scope" required="false">
+				<DestinationDef contentType="Product" />
+				<DestinationDef contentType="ConfiguredProduct" />
+				<DestinationDef contentType="ConfiguredProductGroup" />
+				<DestinationDef contentType="Category" />
+				<DestinationDef contentType="Department" />
+				<DestinationDef contentType="FavoriteList" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+	
+	<!--
+		
+		Strategy
+		
+	-->
+	<ContentTypeDef name="RecommenderStrategy">
+		<AttributeDefs>
+			<AttributeDef type="S" name="FULL_NAME" label="Description"/>
+			<AttributeDef type="S" name="generator" label="Generator expression" required="true" />
+			<AttributeDef type="S" name="scoring" label="Scoring (ranking) expression" required="false" />
+			<EnumDef type="S" name="sampling" label="Sampling strategy" required="false">
+				<EnumValue value="deterministic" label="Deterministic"/>
+				<EnumValue value="uniform" label="Uniform"/>
+				<EnumValue value="linear" label="Linear"/>
+				<EnumValue value="quadratic" label="Quadratic"/>
+				<EnumValue value="cubic" label="Cubic"/>
+				<EnumValue value="harmonic" label="Harmonic"/>
+				<EnumValue value="sqrt" label="Square root"/>
+				<EnumValue value="power" label="Power CDF"/>
+				<EnumValue value="complicated" label="Complicated"/>
+			</EnumDef>
+			<AttributeDef type="I" name="top_n" label="Top N" required="false" />
+			<AttributeDef type="D" name="top_percent" label="Top percent" required="false" />
+			<AttributeDef type="D" name="exponent" label="Exponent (for power sampling)" required="false" />
+		</AttributeDefs>
 	</ContentTypeDef>
 	
 </CMSDef>

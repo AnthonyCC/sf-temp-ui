@@ -28,8 +28,20 @@ public class CompilerTest extends TestCase {
         String[] variableNames = sa.getVariableNames();
         assertNotNull("variableNames", variableNames);
         assertEquals("two variable", 2, variableNames.length);
-        assertEquals("first variable", "fb", variableNames[0]);
-        assertEquals("second variable", "ia", variableNames[1]);
+        
+        int fbPos = -1;
+        int iaPos = -1;
+        for (int i=0;i<variableNames.length;i++) {
+            if ("fb".equals(variableNames[i])) {
+                fbPos = i;
+            }
+            if ("ia".equals(variableNames[i])) {
+                iaPos = i;
+            }
+        }
+        
+        assertTrue("fb variable found", fbPos!=-1);
+        assertTrue("ia variable found", iaPos!=-1);
 
         assertEquals("output variable", 1, sa.getReturnSize());
         
@@ -61,7 +73,10 @@ public class CompilerTest extends TestCase {
             int ia = rnd.nextInt(1000);
             double fb = (double) rnd.nextInt(1000) / 100.0;
 
-            double[] values = new double[] { fb, ia };
+            double[] values = new double[2];
+            values[fbPos] = fb;
+            values[iaPos] = ia;
+            
             double[] sss = sa.getScores(values);
             assertNotNull("score", sss);
             assertEquals("values 1", 1, sss.length);

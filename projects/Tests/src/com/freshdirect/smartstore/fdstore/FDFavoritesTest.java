@@ -103,7 +103,7 @@ public class FDFavoritesTest extends TestCase {
 
         SessionInput si = new SessionInput((String) null);
 
-        List nodes = getFeaturedItemsService().recommendNodes(si);
+        List nodes = getFeaturedItemsService().recommendNodes(null, si);
         assertNotNull("recommended nodes", nodes);
         assertEquals("recommended nodes size", 5, nodes.size());
 

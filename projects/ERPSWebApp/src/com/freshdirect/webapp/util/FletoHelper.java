@@ -197,7 +197,7 @@ public class FletoHelper implements YmalHelper {
 	}
 	
 	// AKOS
-	public String  getPrice(NumberFormat currencyFormatter) 
+	public String getPrice() 
 	throws FDResourceException, FDSkuNotFoundException {
 		if (getProductModel().isUnavailable()) {
 			return "Not Avail.";
@@ -209,7 +209,7 @@ public class FletoHelper implements YmalHelper {
 		if (sku != null) {
 			FDProductInfo productInfo = FDCachedFactory.getProductInfo(sku.getSkuCode());
 	        productPrice = "<b>"
-	        	         + currencyFormatter.format(productInfo.getDefaultPrice())
+	        	         + JspMethods.currencyFormatter.format(productInfo.getDefaultPrice())
 	        	         + "/"
 	        	         + productInfo.getDisplayableDefaultPriceUnit().toLowerCase()
 	        	         + "</b>";
@@ -221,6 +221,4 @@ public class FletoHelper implements YmalHelper {
 		
 		return productPrice;
 	}
-		
-
 }

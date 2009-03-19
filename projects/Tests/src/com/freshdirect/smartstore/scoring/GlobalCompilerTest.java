@@ -9,6 +9,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import com.freshdirect.TestUtils;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -114,7 +115,7 @@ public class GlobalCompilerTest extends TestCase {
             List collection = srs.recommendNodes(s, input);
             assertNotNull("result collection", collection);
             assertEquals("result collection size", 1, collection.size());
-            Collection strings = DataGeneratorCompilerTest.convertToStringList(collection);
+            Collection strings = TestUtils.convertToStringList(collection);
             assertTrue("contains a2", strings.contains("a2"));
 
             Collection factors = srs.collectFactors(new HashSet());
@@ -126,7 +127,7 @@ public class GlobalCompilerTest extends TestCase {
             List collection = srs.recommendNodes(s, input);
             assertNotNull("result collection", collection);
             assertEquals("result collection size", 2, collection.size());
-            Collection strings = DataGeneratorCompilerTest.convertToStringList(collection);
+            Collection strings = TestUtils.convertToStringList(collection);
             assertTrue("contains a2", strings.contains("a2"));
             assertTrue("contains a3", strings.contains("a3"));
 
@@ -140,7 +141,7 @@ public class GlobalCompilerTest extends TestCase {
             List collection = srs.recommendNodes(s, input);
             assertNotNull("result collection", collection);
             assertEquals("result collection size", 3, collection.size());
-            Collection strings = DataGeneratorCompilerTest.convertToStringList(collection);
+            Collection strings = TestUtils.convertToStringList(collection);
             assertTrue("contains a1", strings.contains("a1"));
             assertTrue("contains a2", strings.contains("a2"));
             assertTrue("contains a3", strings.contains("a3"));
@@ -158,7 +159,7 @@ public class GlobalCompilerTest extends TestCase {
             List collection = srs.recommendNodes(s, input);
             assertNotNull("result collection", collection);
             assertEquals("result collection size", 3, collection.size());
-            Collection strings = DataGeneratorCompilerTest.convertToStringList(collection);
+            Collection strings = TestUtils.convertToStringList(collection);
             assertTrue("contains a1", strings.contains("a1"));
             assertTrue("contains a2", strings.contains("a2"));
             assertTrue("contains a3", strings.contains("a3"));
@@ -176,7 +177,7 @@ public class GlobalCompilerTest extends TestCase {
             List collection = srs.recommendNodes(s, input);
             assertNotNull("result collection", collection);
             assertEquals("result collection size", 3, collection.size());
-            Collection strings = DataGeneratorCompilerTest.convertToStringList(collection);
+            Collection strings = TestUtils.convertToStringList(collection);
             assertTrue("contains a1", strings.contains("a1"));
             assertTrue("contains a2", strings.contains("a2"));
             assertTrue("contains a3", strings.contains("a3"));

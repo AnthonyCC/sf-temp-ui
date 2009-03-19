@@ -1,141 +1,199 @@
+<%@ page import='java.util.Set' %>
+<%@ page import='java.util.HashSet' %>
+<%@ page import='java.util.List' %>
+<%@ page import='java.util.Iterator' %>
+<%@ page import='com.freshdirect.fdstore.customer.FDCartLineModel' %>
+<%@ page import='com.freshdirect.fdstore.customer.FDCartLineI' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.framework.webapp.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='com.freshdirect.content.attributes.*'%>
-<%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.customer.*' %>
 <%@ page import="com.freshdirect.common.pricing.Discount" %>
-
-
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%--
+	@param productNode Current product, instance of ProductModel
+	@param recipe      Current recipe, instance of Recipe (optional)
+	@param cart        Customer's shopping cart (FDShoppingCart)
+--%>
 <%
-   FDCartLineI recentOrderLine = (FDCartLineI)cart.getRecentOrderLines().get(0);
-
 	DepartmentModel department = productNode.getDepartment();
-        ContentNodeModel topCategory = productNode.getParentNode();
-        String continueShoppingLink = null;
-        String continueShoppingName = null;
-        while ( topCategory!=null && topCategory.getParentNode() instanceof CategoryModel) {
-            topCategory = topCategory.getParentNode();
-        }
-         
-        
-	if (recipe !=null) 
-    {
-		ContentNodeI cat  =  catIdParam==null ? null : ContentFactory.getInstance().getContentNode(catIdParam);
+	ContentNodeModel topCategory = productNode.getParentNode();
+
+	String continueShoppingLink = null;
+	String continueShoppingName = null;
+
+	// find top category of product
+	while (topCategory != null
+			&& topCategory.getParentNode() instanceof CategoryModel) {
+		topCategory = topCategory.getParentNode();
+	}
+
+	// get category (if given)
+	String cat_id = request.getParameter("catId");
+	ContentNodeModel cat = (cat_id == null ? null : ContentFactory.getInstance().getContentNode(cat_id) );
+
+	if (recipe != null) {
 		RecipeDepartment recDept = RecipeDepartment.getDefault();
 
-		if (cat!=null && cat instanceof CategoryModel) {
-			while ( cat!=null && cat.getParentNode() instanceof CategoryModel) {
-			    cat = cat.getParentNode();
+		if (cat != null && cat instanceof CategoryModel) {
+			// get top category of category
+			while (cat != null && cat.getParentNode() instanceof CategoryModel) {
+				cat = cat.getParentNode();
 			}
 
-			continueShoppingLink = response.encodeURL("/category.jsp?catId=" + cat.getContentName() +"&trk=confcatlink");
-			continueShoppingName = ((CategoryModel)cat).getFullName();
-		
+			continueShoppingLink = response
+					.encodeURL("/category.jsp?catId="
+							+ cat.getContentName() + "&trk=confcatlink");
+			continueShoppingName = ((CategoryModel) cat).getFullName();
+
 		} else {
-	 	  continueShoppingLink = response.encodeURL("/department.jsp?deptId=" + recDept.getContentName() +"&trk=confcatlink");
-	 	  continueShoppingName = recDept.getName();
-	 	}
+			continueShoppingLink = response
+					.encodeURL("/department.jsp?deptId="
+							+ recDept.getContentName()
+							+ "&trk=confcatlink");
+			continueShoppingName = recDept.getName();
+		}
 
-    } else if (topCategory == null) {
-            continueShoppingLink = response.encodeURL("/department.jsp?deptId=" + department+"&trk=confcatlink");
-            continueShoppingName = department.getFullName();
-    } else {
-              ContentNodeModel catNode = null;
-              catNode = ContentFactory.getInstance().getContentNode(catIdParam);
-              if(catNode!=null){
-                int templateType=catNode.getAttribute("TEMPLATE_TYPE",1);
-                if (EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(templateType))) {   
-                   int layouttype = catNode.getAttribute("LAYOUT", -1);
-                   if( EnumLayoutType.TRANSAC_MULTI_PAIRED_ITEMS.getId()==layouttype ||
-                        EnumLayoutType.TRANSAC_GROUPED_ITEMS.getId()==layouttype) {
-                        //Then get the Top level parent.
-                        while ( catNode!=null && catNode.getParentNode() instanceof CategoryModel) {
-                             catNode = catNode.getParentNode();
-                        }
-                    }
-                   continueShoppingLink = response.encodeURL("/category.jsp?catId="+catNode.getPK().getId()+"&trk=confcatlink");
-                   continueShoppingName = catNode.getFullName();
-                }
-                else{
-                    continueShoppingLink = response.encodeURL("/category.jsp?catId=" + topCategory+"&trk=confcatlink");
-                    continueShoppingName = topCategory.getFullName();
-                }
-              }
-    }
-	
-    FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+	} else if (topCategory == null) {
+		continueShoppingLink = response
+				.encodeURL("/department.jsp?deptId=" + department
+						+ "&trk=confcatlink");
+		continueShoppingName = department.getFullName();
+	} else {
+		if (cat != null) {
+			int templateType = cat.getAttribute("TEMPLATE_TYPE", 1);
+			if (EnumTemplateType.WINE.equals(EnumTemplateType
+					.getTemplateType(templateType))) {
+				int layouttype = cat.getAttribute("LAYOUT", -1);
+				if (EnumLayoutType.TRANSAC_MULTI_PAIRED_ITEMS.getId() == layouttype
+						|| EnumLayoutType.TRANSAC_GROUPED_ITEMS.getId() == layouttype) {
+					//Then get the Top level parent.
+					while (cat != null
+							&& cat.getParentNode() instanceof CategoryModel) {
+						cat = cat.getParentNode();
+					}
+				}
+				continueShoppingLink = response
+						.encodeURL("/category.jsp?catId="
+								+ cat.getContentName()
+								+ "&trk=confcatlink");
+				continueShoppingName = cat.getFullName();
+			} else {
+				continueShoppingLink = response
+						.encodeURL("/category.jsp?catId=" + topCategory
+								+ "&trk=confcatlink");
+				continueShoppingName = topCategory.getFullName();
+			}
+		}
+	}
 
-	String spacer = "/media_stat/images/layout/clear.gif";
+	FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 %>
 		<table cellpadding="0" cellspacing="0" border="0" width="400">
 		<tr>
-		<td><img src="<%=spacer%>" width="30" height="8"></td>
-		<td><img src="<%=spacer%>" width="140" height="8"></td>
-		<td><img src="<%=spacer%>" width="200" height="8"></td>
-		<td><img src="<%=spacer%>" width="30" height="8"></td>
+			<td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
+			<td><img src="/media_stat/images/layout/clear.gif" width="140" height="8"></td>
+			<td><img src="/media_stat/images/layout/clear.gif" width="200" height="8"></td>
+			<td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
 		</tr>
 		<tr valign="middle">                    
-					<td valign="top"><a href="<%=continueShoppingLink%>"><img src="/media_stat/images/template/confirmation/arrow_green_left.gif" width="28" height="28" border="0" alt="CONTINUE SHOPPING"></a></td>
-				    <td valign="top"><a href="<%=continueShoppingLink%>"><img src="/media_stat/images/template/confirmation/continue_shopping_text.gif" width="117" height="13" border="0" alt="CONTINUE SHOPPING"></a><br>for <font class="text11bold"><a href="<%=continueShoppingLink%>"><%=continueShoppingName%></a></font></td>
-					<td align="right" valign="middle">
-						<a href="view_cart.jsp?trk=conf"><img src="/media_stat/images/buttons/checkout.gif" width="57" height="9" border="0" alt="CHECKOUT" vspace="2"></a>
-						<table cellpadding="0" cellspacing="0" border="0">
-							<tr>
-							<td><img src="<%=spacer%>" width="1" height="1"></td>
-							<td><img src="<%=spacer%>" width="45" height="1"></td>
-							</tr>
-							
-							<%
-								boolean isSecondOrder = user.getAdjustedValidOrderCount()==1;
-                                                                String promotionFile = "promotion.jsp?cat="+topCategory;
-							
-								if (cart.getTotalDiscountValue() > 0) {
-								List discounts = cart.getDiscounts();
-								for (Iterator iter = discounts.iterator(); iter.hasNext();) {
-									ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
-									Discount discount = discountLine.getDiscount();							
-							%>
-							<tr align="right">
-									<td><!--Est. Subtotal ($<%=(int)user.getMinimumOrderAmount()%> Min.) :--></td>
-									<td><%= currencyFormatter.format(cart.getSubTotal()) %><img src="<%=spacer%>" width="5" height="1"><br><img src="<%=spacer%>" width="1" height="2"></td>
-							</tr>
-							<%-- } %>
-							
-							<% if(cart.getTaxValue() != 0){ %>
-							<tr align="right">
-								<td>Tax :</td>
-								<td><%= currencyFormatter.format(cart.getTaxValue()) %><img src="<%=spacer%>" width="5" height="1" alt="" border="0"><br><img src="<%=spacer%>" width="1" height="2" alt="" border="0"><br></td>
-							</tr>
-							<% } %>
-							
-							<% if (cart.getTotalDiscountValue() > 0) { 
-							--%>
-							<tr align="right">
-								<td><b><a href="<%=promotionFile%>">FREE FOOD</a></b> :</td>
-								<td><b>(-<%= currencyFormatter.format(discount.getAmount()) %>)</b></td>
-							</tr>
-							<%
-								}
-							} %>
-							
-							<tr align="right">
-								<td><a href="javascript:popup('/help/estimated_price.jsp','small')">Estimated</a> Total :</td>
-								<td><%= currencyFormatter.format(cart.getTotal()) %><img src="<%=spacer%>" width="5" height="1" alt="" border="0"><br><img src="<%=spacer%>" width="1" height="2" alt="" border="0"><br></td>
-							</tr>
-							<!--
-							<tr align="right">
-								<td colspan="2"> ($<%=(int)user.getMinimumOrderAmount()%> Minimum)</td>
-							</tr>-->
-			
-							<tr align="right"><td colspan="2"><img src="<%=spacer%>" width="1" height="15"></td></tr>												
-						</table>
-					</td>
-					<td align="right" valign="top">
-						<a href="view_cart.jsp?trk=conf"><img src="/media_stat/images/buttons/checkout_arrow.gif" width="29" height="29"  border="0" alt="CHECKOUT"></a>
-					</td>
-				</tr>
+			<td valign="top"><a href="<%=continueShoppingLink%>"><img src="/media_stat/images/template/confirmation/arrow_green_left.gif" width="28" height="28" border="0" alt="CONTINUE SHOPPING"></a></td>
+		    <td valign="top"><a href="<%=continueShoppingLink%>"><img src="/media_stat/images/template/confirmation/continue_shopping_text.gif" width="117" height="13" border="0" alt="CONTINUE SHOPPING"></a><br>for <font class="text11bold"><a href="<%=continueShoppingLink%>"><%=continueShoppingName%></a></font></td>
+			<td align="right" valign="middle">
+				<a href="view_cart.jsp?trk=conf"><img src="/media_stat/images/buttons/checkout.gif" width="57" height="9" border="0" alt="CHECKOUT" vspace="2"></a>
+				<table cellpadding="0" cellspacing="0" border="0">
+					<tr>
+						<td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+						<td><img src="/media_stat/images/layout/clear.gif" width="45" height="1"></td>
+					</tr>
+<%
+	boolean isSecondOrder = user.getAdjustedValidOrderCount() == 1;
+	String promotionFile = "promotion.jsp?cat=" + topCategory;
 
-<%@ include file="/includes/i_ymal.jspf"%>
+	if (cart.getTotalDiscountValue() > 0) {
+		List discounts = cart.getDiscounts();
+		for (Iterator iter = discounts.iterator(); iter.hasNext();) {
+			ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter
+					.next();
+			Discount discount = discountLine.getDiscount();
+%>
+					<tr align="right">
+						<td><!--Est. Subtotal ($<%=(int) user.getMinimumOrderAmount()%> Min.) :--></td>
+						<td><%=JspMethods.currencyFormatter.format(cart
+									.getSubTotal())%><img src="/media_stat/images/layout/clear.gif" width="5" height="1"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="2"></td>
+					</tr>
+					<tr align="right">
+						<td><b><a href="<%=promotionFile%>">FREE FOOD</a></b> :</td>
+						<td><b>(-<%=JspMethods.currencyFormatter.format(discount
+									.getAmount())%>)</b></td>
+					</tr>
+<%
+		}
+	}
+%>
+							
+					<tr align="right">
+						<td><a href="javascript:popup('/help/estimated_price.jsp','small')">Estimated</a> Total :</td>
+						<td><%=JspMethods.currencyFormatter.format(cart
+									.getTotal())%><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br></td>
+					</tr>
+					<tr align="right"><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="15"></td></tr>												
+				</table>
+			</td>
+			<td align="right" valign="top">
+				<a href="view_cart.jsp?trk=conf"><img src="/media_stat/images/buttons/checkout_arrow.gif" width="29" height="29"  border="0" alt="CHECKOUT"></a>
+			</td>
+		</tr>
+		<tr><td colspan="4" align="center">
+<%--
+/**
+ *
+ *  == YMAL presentation ==
+ *
+ *  A JSP fragment page to display the YMALs for a specific product
+ *  or recipe. This fragment displays a table row containing the YMALs,
+ *  with recipes in a separate fragment - thus the fragment assumes that
+ *  it is put into a table.
+ *
+ */
+--%><%
+	// setup for FDShoppingCart tag
+	String ptrk = "ymal";
+	String sPage = productNode != null ? "/grocery_cart_confirm.jsp?catId="
+			+ productNode.getParentNode().getContentName()
+			+ "&productId="
+			+ productNode.getContentName()
+			+ "&trk="
+			+ ptrk
+			: "";
+%>
+<fd:FDShoppingCart id='cart' result='result' action='addMultipleToCart' successPage='<%=sPage%>' source='SS'>
+<%
+	//hand the action results off to the dynamic include
+	String cartMode = CartName.ADD_TO_CART;
+	FDCartLineI templateLine = null;
 
-</table>
+	request.setAttribute("actionResult", result);
+	request.setAttribute("user", user);
+	request.setAttribute("cartMode", cartMode);
+	request.setAttribute("templateLine", templateLine);
+
+	// YMAL bindings
+	request.setAttribute("ymal_recipe", recipe);
+	request.setAttribute("ymal_product", productNode); //FIXME: will be obsoleted by recommendation
+	request.setAttribute("ymal_set", null);
+
+	// FIXME: soon to be removed!
+	Set removeSkus = new HashSet();
+	for (Iterator it = cart.getOrderLines().iterator(); it.hasNext();) {
+		FDCartLineModel cartLine = (FDCartLineModel) it.next();
+		removeSkus.add(cartLine.getSku());
+	}
+	request.setAttribute("ymal_exclude_skus", removeSkus);
+%>
+<%@ include file="/includes/i_ymal_lists.jspf"%>
+</fd:FDShoppingCart>
+			</td>
+		</tr>
+		</table>

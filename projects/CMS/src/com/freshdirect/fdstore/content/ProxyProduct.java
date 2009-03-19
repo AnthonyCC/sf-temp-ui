@@ -337,8 +337,8 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 		return getProduct().getRatingProdName();
 	}
 
-	public List getYouMightAlsoLike() {
-		return getProduct().getYouMightAlsoLike();
+	public List getYmals() {
+		return getProduct().getYmals();
 	}
 
 	public YmalSet getActiveYmalSet() {
@@ -350,7 +350,7 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 	 *  
 	 *  @return a list of ProductModel objects, which are contained in
 	 *          the YMALs for this product.
-	 *  @see #getYouMightAlsoLike()
+	 *  @see #getYmals()
 	 *  @see #getYmalProducts(Set)
 	 */
 	public List getYmalProducts() {
@@ -365,7 +365,7 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 	 *         this might be null, in which case it has no effect. 
 	 *  @return a list of ProductModel objects, which are contained in
 	 *          the YMALs for this product.
-	 *  @see #getYouMightAlsoLike()
+	 *  @see #getYmals()
 	 */
 	public List getYmalProducts(Set removeSkus) {
 		return getProduct().getYmalProducts(removeSkus);
@@ -376,7 +376,7 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 	 *  
 	 *  @return a list of CategoryModel objects, which are contained in
 	 *          the YMALs for this product.
-	 *  @see #getYouMightAlsoLike()
+	 *  @see #getYmals()
 	 */
 	public List getYmalCategories() {
 		return getProduct().getYmalCategories();
@@ -387,7 +387,7 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 	 *  
 	 *  @return a list of Recipe objects, which are contained in
 	 *          the YMALs for this product.
-	 *  @see #getYouMightAlsoLike()
+	 *  @see #getYmals()
 	 */
 	public List getYmalRecipes() {
 		return getProduct().getYmalRecipes();
@@ -402,7 +402,7 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 	}
 
 	public List getRelatedProducts() {
-		return getProduct().getYouMightAlsoLike();
+		return getProduct().getYmals();
 	}
 
 	public List getRelatedRecipes() {

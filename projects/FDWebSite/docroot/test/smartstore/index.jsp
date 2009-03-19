@@ -1,9 +1,13 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
-
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="freshdirect" prefix="fd"%>
-
+<%@page import="com.freshdirect.event.ImpressionLogger"%>
+<%
+	if (request.getParameter("impressionLogger")!=null) {
+		ImpressionLogger.setEnabled(Boolean.valueOf(request.getParameter("impressionLogger")).booleanValue());	    
+	}
+%>
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -32,6 +36,9 @@
 		<span class="bull">&bull;</span> <a href="cohorts.jsp"><span>Cohorts Tool</span></a>
 		</p>
     	<p>
+		<span class="bull">&bull;</span> <a href="factors.jsp"><span>Factors</span></a>
+		</p>
+    	<p>
 		<span class="bull">&bull;</span> <a href="fi_debugger.jsp"><span>Featured Items Debugger</span></a>
 		</p>
     	<p>
@@ -47,8 +54,17 @@
 		<span class="bull">&bull;</span> <a href="my_variant.jsp"><span>Variant Lookup</span></a>
 		</p>
     	<p>
-		<span class="bull">&bull;</span> <a href="factors.jsp"><span>Factors</span></a>
+		<span class="bull">&bull;</span> <a href="ymal_perf_test.jsp"><span>YMAL Performance Test</span></a>
 		</p>
+    	<p>
+		<span class="bull">&bull;</span> <span>Impression logger :
+		<% if (ImpressionLogger.isEnabled()) { %>
+			enabled, switch <a href="index.jsp?impressionLogger=false"><span>OFF</span></a>
+		<% } else { %>
+			disabled, switch <a href="index.jsp?impressionLogger=true"><span>ON</span></a>
+		<% } %>
+		</span>
+ 		</p>
     </div>
 </body>
 </html>

@@ -15,6 +15,7 @@ import com.freshdirect.fdstore.content.ContentNodeModelImpl;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductModelImpl;
 import com.freshdirect.smartstore.SessionInput;
+import com.freshdirect.smartstore.Trigger;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.ProductStatisticsProvider;
 import com.freshdirect.smartstore.sampling.RankedContent;
@@ -25,7 +26,7 @@ public class CandidateProductRecommendationService extends AllProductInCategoryR
         super(variant);
     }
 
-    public List recommendNodes(SessionInput input) {
+    public List recommendNodes(Trigger trigger, SessionInput input) {
         List result = Collections.EMPTY_LIST;
         if (input.getCurrentNode() != null) {
             ContentNodeModel model = input.getCurrentNode();

@@ -38,6 +38,8 @@ import com.freshdirect.smartstore.impl.MostFrequentlyBoughtDyfVariant;
 import com.freshdirect.smartstore.impl.NullRecommendationService;
 import com.freshdirect.smartstore.impl.RandomDyfVariant;
 import com.freshdirect.smartstore.impl.ScriptedRecommendationService;
+import com.freshdirect.smartstore.impl.ClassicYMALRecommendationService;
+import com.freshdirect.smartstore.impl.SmartYMALRecommendationService;
 import com.freshdirect.smartstore.impl.YourFavoritesInCategoryRecommendationService;
 
 /**
@@ -124,6 +126,10 @@ public class SmartStoreServiceConfiguration {
                     } catch (CompileException e) {
                         throw new FDRuntimeException(e, "Compile error " + e.getMessage());
                     }
+		} else if (RecommendationServiceType.CLASSIC_YMAL.equals(serviceType)) {
+			return new ClassicYMALRecommendationService(variant);
+		} else if (RecommendationServiceType.SMART_YMAL.equals(serviceType)) {
+			return new SmartYMALRecommendationService(variant);
 		} else {
 			throw new FDRuntimeException("Unrecognized variant " + variant);
 		}

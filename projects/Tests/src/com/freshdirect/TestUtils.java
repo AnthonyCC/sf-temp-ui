@@ -1,6 +1,10 @@
 package com.freshdirect;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Set;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
@@ -22,6 +26,7 @@ import com.freshdirect.event.ejb.EventLoggerSB;
 import com.freshdirect.event.ejb.EventLoggerSessionBean;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -155,6 +160,20 @@ public class TestUtils {
         fit.setNoShuffle(true);
         fit.setCurrentNode(ContentFactory.getInstance().getContentNode(contentKey));
         return fit;
+    }
+
+    /**
+     * Convert a Collection<ContentNodeModel> to Set<String>, where the result contains the ids of the nodes.
+     * @param coll
+     * @return
+     */
+    public static Set convertToStringList(Collection coll) {
+        Set set = new HashSet();
+        for (Iterator iter = coll.iterator(); iter.hasNext();) {
+            ContentNodeModel obj = (ContentNodeModel) iter.next();
+            set.add(obj.getContentKey().getId());
+        }
+        return set;
     }
 
 }

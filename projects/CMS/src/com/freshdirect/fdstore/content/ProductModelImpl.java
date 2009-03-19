@@ -16,8 +16,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.Vector;
 
-import javax.servlet.jsp.JspException;
-
 import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
@@ -34,7 +32,6 @@ import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.attributes.Attribute;
 import com.freshdirect.framework.util.DayOfWeekSet;
 
@@ -42,6 +39,7 @@ import com.freshdirect.framework.util.DayOfWeekSet;
  * 
  */
 public class ProductModelImpl extends AbstractProductModelImpl {
+	private static final long serialVersionUID = 2103318183933323914L;
 
 	private List skuModels = new ArrayList();
 	
@@ -786,30 +784,19 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 
 	
 	public List getRelatedProducts() {
-		return getYouMightAlsoLike();
+		return getYmals(FDContentTypes.PRODUCT);
 	}
 
-	/**
-	 *  Return all YMAL products for this recipe.
-	 *  
-	 *  @return a list of all related products for this recipe, of type
-	 *          ContentNode Model
-	 */
-	private List getYmals() {
-		ContentNodeModelUtil.refreshModels(this, "RELATED_PRODUCTS", ymals, false, true);
-		return Collections.unmodifiableList(ymals);
-	}
-	
 	/**
 	 *  Return all the YMAL products, of all types, that are related to this
 	 *  product. The returned list will not contain any items from YMAL sets
 	 *  related to this product.
 	 *  
 	 *  @return a list of content nodes that are YMALs to this product.
-	 *  @deprecated
 	 */
-	public List getYouMightAlsoLike() {
-		return getYmals();
+	public List getYmals() {
+		ContentNodeModelUtil.refreshModels(this, "RELATED_PRODUCTS", ymals, false, true);
+		return Collections.unmodifiableList(ymals);
 	}
 
 	/**
@@ -818,7 +805,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 *  @param type the type of YMAL products to return.
 	 *  @return a list of objects of the specified content type, which are
 	 *          YMALs of this product.
-	 *  @see #getYouMightAlsoLike()
+	 *  @see #getYmals()
 	 */
 	private List getYmals(ContentType type) {
 		List values = getYmals();
@@ -1025,7 +1012,7 @@ inner:
 	 *
 	 *  @return a list of CategoryModel objects, which are contained in
 	 *          the YMALs for this product.
-	 *  @see #getYouMightAlsoLike()
+	 *  @see #getYmals()
 	 */
 	public List getYmalCategories() {
 		LinkedHashSet  ymals   = new LinkedHashSet(getYmals(FDContentTypes.CATEGORY));
@@ -1062,7 +1049,7 @@ inner:
 	 *
 	 *  @return a list of Recipe objects, which are contained in
 	 *          the YMALs for this product.
-	 *  @see #getYouMightAlsoLike()
+	 *  @see #getYmals()
 	 */
 	public List getYmalRecipes() {
 		LinkedHashSet  ymals   = new LinkedHashSet(getYmals(FDContentTypes.RECIPE));
@@ -1333,44 +1320,35 @@ inner:
 	
 	
 	public String getWineClassification() {
-		// TODO Auto-generated method stub
 		return getAttribute("WINE_CLASSIFICATION", "");
 	}
 
 	public String getWineImporter() {
-		// TODO Auto-generated method stub
 		return getAttribute("WINE_IMPORTER", "");
 	}
 
 	public String getWineAlchoholContent() {
-		// TODO Auto-generated method stub
 		return getAttribute("WINE_ALCH_CONTENT", "");
 	}
 
 	public String getWineAging() {
-		// TODO Auto-generated method stub
 		return getAttribute("WINE_AGING", "");
 	}
 
 	public String getWineCity() {
-		// TODO Auto-generated method stub
 		return getAttribute("WINE_CITY", "");
 	}
 	
 	public String getWineType() {
-		// TODO Auto-generated method stub
 		return getAttribute("WINE_TYPE", "");
 	}
 
 	public List getNewWineType() {
-		// TODO Auto-generated method stub		
 		ContentNodeModelUtil.refreshModels(this, "WINE_NEW_TYPE", wineNewTypes, false);
 		return new ArrayList(wineNewTypes);		
 	}
 
 	public List getWineVintage() {
-		// TODO Auto-generated method stub
-		// TODO Auto-generated method stub		
 		ContentNodeModelUtil.refreshModels(this, "WINE_VINTAGE", wineVintages, false);
 		return new ArrayList(wineVintages);		
 
@@ -1378,46 +1356,35 @@ inner:
 	
 	
 	public List getWineVarietal() {
-		// TODO Auto-generated method stub
 		ContentNodeModelUtil.refreshModels(this, "WINE_VARIETAL", wineVarietals, false);
 		return new ArrayList(wineVarietals);		
 	}
 
 	public List getNewWineRegion() {
-		// TODO Auto-generated method stub
-		// TODO Auto-generated method stub		
 		ContentNodeModelUtil.refreshModels(this, "WINE_NEW_REGION", wineRegions, false);
 		return new ArrayList(wineRegions);		
 
 	}
 
 	public List getWineRating1() {
-		// TODO Auto-generated method stub
-		// TODO Auto-generated method stub		
 		ContentNodeModelUtil.refreshModels(this, "WINE_RATING1", wineRatings1, false);
 		return new ArrayList(wineRatings1);		
 
 	}
 
 	public List getWineRating2() {
-		// TODO Auto-generated method stub
-		// TODO Auto-generated method stub		
 		ContentNodeModelUtil.refreshModels(this, "WINE_RATING2", wineRatings2, false);
 		return new ArrayList(wineRatings2);		
 
 	}
 
 	public List getWineRating3() {
-		// TODO Auto-generated method stub
-		// TODO Auto-generated method stub		
 		ContentNodeModelUtil.refreshModels(this, "WINE_RATING3", wineRatings3, false);
 		return new ArrayList(wineRatings3);		
 
 	}
 
 	public Html getWineReview1() {
-		// TODO Auto-generated method stub
-
 		Attribute a = getAttribute("WINE_REVIEW1");
 		return a == null ? null : (Html) a.getValue();			
 	}
@@ -1428,26 +1395,21 @@ inner:
 	}
 
 	public Html getWineReview2() {
-		// TODO Auto-generated method stub
 		Attribute a = getAttribute("WINE_REVIEW2");
 		return a == null ? null : (Html) a.getValue();			
 	}
 
 	public Html getWineReview3() {
-		// TODO Auto-generated method stub
 		Attribute a = getAttribute("WINE_REVIEW3");
 		return a == null ? null : (Html) a.getValue();					
 	}
 
 	public Html getProductBottomMedia() {
-		// TODO Auto-generated method stub
 		Attribute a = getAttribute("PRODUCT_BOTTOM_MEDIA");
 		return a == null ? null : (Html) a.getValue();		
 	}
 
 	public CategoryModel getPerfectPair() {
-		// TODO Auto-generated method stub
-		
 		AttributeI a = getCmsAttribute("PERFECT_PAIR");
 		if(a==null)
 		   return null;

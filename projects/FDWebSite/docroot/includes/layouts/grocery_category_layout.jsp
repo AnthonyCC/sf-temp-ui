@@ -135,10 +135,10 @@ if (currentCategory != null) {
 	//
 %>
 <fd:FeaturedItemsRecommendations id="recommendations"  currentNode="<%= currentFolder %>" itemCount="5"><%
-	if (recommendations != null && recommendations.getContentNodes().size() > 0) {
+	if (recommendations != null && recommendations.getProducts().size() > 0) {
 		request.setAttribute("recommendationsRendered","true");
 	
-		List products = recommendations.getContentNodes();
+		List products = recommendations.getProducts();
 		int ord=1;
 %>
 		<table cellpadding="0" cellspacing="0" width="550" border="0">

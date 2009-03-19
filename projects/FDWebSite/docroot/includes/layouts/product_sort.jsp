@@ -97,7 +97,7 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
 		showRelatedRatingImage = true; 
     } 
 %><fd:FeaturedItemsRecommendations id="recommendations"  currentNode="<%= currentFolder %>" itemCount="4"><%
-	if (recommendations != null && recommendations.getContentNodes().size() > 0) {
+	if (recommendations != null && recommendations.getProducts().size() > 0) {
 		request.setAttribute("recommendationsRendered","true");
 		int ord = 1;
 %><TABLE CELLSPACING="0" CELLPADDING="1" BORDER="0" WIDTH="<%= tablewidth %>">
@@ -107,7 +107,7 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
 <font class="space4pix"><BR></font>
 <TABLE CELLSPACING="0" CELLPADDING="1" BORDER="0" WIDTH="<%= tablewidth %>">
 	<TR VALIGN="TOP" ALIGN="CENTER">
-<logic:iterate id='contentNode' collection="<%= recommendations.getContentNodes() %>" type="com.freshdirect.fdstore.content.ProductModel"><%
+<logic:iterate id='contentNode' collection="<%= recommendations.getProducts() %>" type="com.freshdirect.fdstore.content.ProductModel"><%
 		ProductModel productNode = contentNode;
 		ProductLabelling pl = new ProductLabelling((FDUserI) session.getAttribute(SessionName.USER), productNode);
 		String fiProdPrice = null;

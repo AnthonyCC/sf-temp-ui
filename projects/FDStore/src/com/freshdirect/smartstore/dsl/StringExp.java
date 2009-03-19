@@ -25,5 +25,9 @@ public class StringExp extends Expression {
     public String toJavaCode() throws CompileException {
         return toCode();
     }
+
+    public String toString() {
+        return "String['"+value+"']";
+    }
     
 }

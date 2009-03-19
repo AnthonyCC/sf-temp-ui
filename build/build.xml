@@ -33,6 +33,8 @@
 	<property name="emma.enabled"           value="true"/>
     <property name="jmeter.hostname"        value="localhost" />
     <property name="jmeter.port"            value="7001" />
+	
+	<property name="log4j.jar"				value="log4j.jar"/>
 
 	<path id="j2ee.classpath">
 		<pathelement location="${weblogic.home}/server/lib/weblogic_sp.jar"/>
@@ -41,7 +43,7 @@
 	</path>
 
 	<path id="common.classpath">
-		<pathelement location="${thirdparty.home}/log4j.jar"/>
+		<pathelement location="${thirdparty.home}/${log4j.jar}"/>
 		<pathelement location="${thirdparty.home}/commons-lang-2.3.jar"/>
 		<pathelement location="${thirdparty.home}/commons-logging-1.0.3.jar"/>
 		<pathelement location="${thirdparty.home}/commons-collections-3.1.jar"/>
@@ -1138,7 +1140,7 @@
 				<!-- add the additional FD code jars that the EJBs depend on -->
 				<zipfileset dir="${thirdparty.home}" prefix="APP-INF/lib">
 					<!-- commons -->
-					<include name="log4j.jar"/>
+					<include name="${log4j.jar}"/>
 					<!-- include name="commons-*.jar"/-->
 					<!-- explicitly specify common jar -->
 					<include name="commons-beanutils-1.6.1.jar"/>
@@ -1226,7 +1228,7 @@
 				<!-- add the additional FD code jars that the EJBs depend on -->
 				<zipfileset dir="${thirdparty.home}" prefix="APP-INF/lib">
 					<!-- commons -->
-					<include name="log4j.jar"/>
+					<include name="${log4j.jar}"/>
 					<!-- include name="commons-*.jar"/-->
 					<!-- explicitly specify common jar -->
 					<include name="commons-beanutils-1.7.0.jar"/>
@@ -1324,7 +1326,7 @@
 				<pathelement location="${thirdparty.home}/commons-discovery-0.2.jar"/>
 				<pathelement location="${thirdparty.home}/commons-logging-1.0.4.jar"/>
 				<pathelement location="${thirdparty.home}/jaxrpc.jar"/>
-				<pathelement location="${thirdparty.home}/log4j-1.2.8.jar"/>				
+				<pathelement location="${thirdparty.home}/${log4j.jar}"/>				
 				<pathelement location="${thirdparty.home}/spring.jar"/>
 				<pathelement location="${thirdparty.home}/JFEP-0.1.0.jar"/>
 			</path>
@@ -2281,7 +2283,7 @@
 			<zipfileset src="${thirdparty.home}/dom4j-1.6.1.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/jaxen-1.1-beta-4.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/jakarta-oro-2.0.5.jar" excludes="META-INF/*"/>
-			<zipfileset src="${thirdparty.home}/log4j.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/${log4j.jar}" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/sapjco.jar" excludes="META-INF/*"/>
             <zipfileset src="${thirdparty.home}/backport-util-concurrent.jar" excludes="META-INF/*"/>
 			<!-- hivemind -->
@@ -2328,7 +2330,7 @@
 			<zipfileset src="${thirdparty.home}/dom4j-1.6.1.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/jaxen-1.1-beta-4.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/jakarta-oro-2.0.5.jar" excludes="META-INF/*"/>
-			<zipfileset src="${thirdparty.home}/log4j.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/${log4j.jar}" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/sapjco.jar" excludes="META-INF/*"/>
 			<zipfileset src="${weblogic.home}/server/ext/jdbc/oracle/920/ojdbc14.jar" excludes="META-INF/*"/>
 			<!-- FD classes -->
@@ -2367,7 +2369,7 @@
 			<zipfileset src="${thirdparty.home}/dom4j-1.6.1.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/jaxen-1.1-beta-4.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/jakarta-oro-2.0.5.jar" excludes="META-INF/*"/>
-			<zipfileset src="${thirdparty.home}/log4j.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/${log4j.jar}" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/sapjco.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/backport-util-concurrent.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/opencsv-1.8.jar" excludes="META-INF/*"/>

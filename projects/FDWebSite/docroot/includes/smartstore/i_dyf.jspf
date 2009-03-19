@@ -10,13 +10,13 @@
 %><%@ page import="com.freshdirect.smartstore.fdstore.FDStoreRecommender"
 %><%@ page import="com.freshdirect.smartstore.Trigger"
 %><%@ page import="com.freshdirect.fdstore.util.EnumSiteFeature"
-%><%@ page import="com.freshdirect.webapp.util.ConfigurationStrategyFactory"
 %><%@ page import="com.freshdirect.webapp.util.ConfigurationStrategy"
 %><%@ page import="com.freshdirect.webapp.util.ConfigurationContext"
 %><%@ page import="com.freshdirect.webapp.util.ProductImpression"
 %><%@ page import="com.freshdirect.webapp.util.ProductLabelling"
 %><%@ page import="com.freshdirect.webapp.util.TransactionalProductImpression"
 %><%@ page import="com.freshdirect.webapp.util.FDURLUtil"
+%><%@ page import="com.freshdirect.webapp.util.prodconf.SmartStoreConfigurationStrategy"
 %><%@ page import="com.freshdirect.framework.webapp.ActionResult"
 %><%@ page import="com.freshdirect.framework.webapp.ActionError"
 %><%@ page import="java.net.URLEncoder"
@@ -106,11 +106,11 @@ if (request.getParameter("nodyf") == null) {
 	ConfigurationContext confContext = new ConfigurationContext();
 	confContext.setFDUser(user);
 	boolean hasAnyItemAddable = false;
-	if (recommendations != null && recommendations.getContentNodes().size() > 0) {
+	if (recommendations != null && recommendations.getProducts().size() > 0) {
         request.setAttribute("recommendationsRendered","true");
-		ConfigurationStrategy cUtil = ConfigurationStrategyFactory.getConfigurationStrategy(recommendations.getVariant().getSiteFeature());
+		ConfigurationStrategy cUtil = SmartStoreConfigurationStrategy.getInstance();
 
-		List products = recommendations.getContentNodes();
+		List products = recommendations.getProducts();
 		
 		// List<ProductImpression> impressions : configured products enlisted in 'Your Favourites' table
 		List impressions = new ArrayList();
@@ -156,62 +156,7 @@ if (request.getParameter("nodyf") == null) {
 	<input type="hidden" name="trk" value="<%= recommendations.getVariant().getSiteFeature().getName().toLowerCase() %>">
 
 <!-- PRICING -->
-<%@ include file="/shared/includes/product/i_pricing_script.jspf" %>
-<script type="text/javascript">
-	var <%= tx_pricing_JSNameSpace %> = new Object();
-
-
-	<%= tx_pricing_JSNameSpace %>.pricings = new Array(<%= products.size() %>);
-	<%= tx_pricing_JSNameSpace %>.updateTotal = function() {
-		var total=0;
-		var p;
-		for(i=0; i<<%= tx_pricing_JSNameSpace %>.pricings.length; i++ ) {
-			if (<%= tx_pricing_JSNameSpace %>.pricings[i] == undefined)
-				continue;
-
-			p = <%= tx_pricing_JSNameSpace %>.pricings[i].getPrice();
-			if (p!="") {
-				total+=Number(p.substring(1));
-			}
-		}
-		document.forms['<%= tx_pricing_FormName %>']["total"].value="$"+currencyFormat(total);
-	};
-
-
-
-    <%= tx_pricing_JSNameSpace %>.changeShopQty = function(idx, delta, min, max, increment, qty_inp) {
-        var val = qty_inp.value;
- 
-        var qty = parseFloat(val) + delta;
-        var round = true;
-        if ((delta > 0) && (val == "")) {
-            if (delta < min) {
-                delta = min;
-            }
-            qty = delta;
-        } else if (isNaN(qty) || (qty < 0)) {
-            qty = 0;
-            round = false;
-        } else if ((qty > 0) && (qty < min) && (delta < 0)) {
-            qty = 0;
-            round = false;
-        } else if ((qty > 0) && (qty < min) && (delta >= 0)) {
-            qty = min;
-        } else if (qty >= max) {
-            qty = max;
-        }
-        if (round) {
-            qty = Math.floor( (qty-min)/increment )*increment + min;
-        }
-
-
-        // update 'total' form field
-        if (qty_inp != null)
-	        qty_inp.value = qty;
-
-        <%= tx_pricing_JSNameSpace %>.pricings[idx].setQuantity(qty);
-    };
-</script>
+<fd:TxProductPricingSupport formName="<%= tx_pricing_FormName %>" namespace="<%= tx_pricing_JSNameSpace %>" customer="<%= user %>" impressions="<%= impressions %>" inputNamePostfix="dyf"/>
 <table class="smartstore" cellspacing="0" cellpadding="0" width="693" align="center">
 <tr>
 	<td width="6" colspan="2"><img width="6" height="24" src="/media_stat/images/layout/prpl_tp_lft.gif"></td>
@@ -277,153 +222,28 @@ if (request.getParameter("nodyf") == null) {
 			<!-- CELL CONTAINER -->
 			<table align="center">
 				<tr>
-					<!-- Product Image -->
 					<td style="padding: 0; height: <%= rowHeight.intValue() %>px; vertical-align: bottom; text-align: center">
 						<fd:ProductImage product="<%= product %>" action="<%= actionURI %>" hideYourFave="true" />
 					</td>
 				</tr>
 <%
 
-
-
-
 			if (pi instanceof TransactionalProductImpression) {
-				//
-				// TRANSACTIONAL PRODUCT
-				//
+%>				<tr>
+					<td>
+						<input type="hidden" name="trk_dyf_<%= txProdCount %>" value="<%= recommendations.getVariant().getSiteFeature().getName().toLowerCase() %>">
+						<input type="hidden" name="variant_dyf_<%= txProdCount %>" value="<%= recommendations.getVariant().getId() %>"/>
+						<input type="hidden" name="rank_dyf_<%= txProdCount %>" value="<%= rank %>"/>
+						<% if (pl.getTrackingCode() != null) { %><input type="hidden" name="trkd_dyf_<%= txProdCount %>" value="<%= pl.getTrackingCode() %>"/><% } %>
 
-				TransactionalProductImpression tpi = (TransactionalProductImpression) pi;
-				FDConfigurableI configuration = tpi.getConfiguration();
-				String quant = QUANTITY_FORMATTER.format(configuration.getQuantity());
-
-				
-				//
-				// -- TX PRICING --
-				//
-%>
-<script type="text/javascript">
-	<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>] = new Pricing();
-	<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].setSKU("<%= pi.getSku() %>");
-	<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].setQuantity(<%= product.isSoldBySalesUnits() ? configuration.getQuantity() : 0 %>);
-	<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].setSalesUnit("<%= product.isSoldBySalesUnits() ? "" : configuration.getSalesUnit() %>");
+						<fd:TxProductControl txNumber="<%= txProdCount %>" namespace="<%= tx_pricing_JSNameSpace %>" inputNamePostfix="dyf"  impression="<%= (TransactionalProductImpression) pi %>"/>
+					</td>
+				</tr>
 <%
-				for (Iterator iit = configuration.getOptions().entrySet().iterator(); iit.hasNext(); ) {
-					Map.Entry entry = (Map.Entry) iit.next();
-%>	<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].setOption("<%= entry.getKey() %>", "<%= entry.getValue() %>");
-<%
-				}				
-%>
-	<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].changeQty = function(delta) {
-		<%= tx_pricing_JSNameSpace %>.changeShopQty(<%=txProdCount%>, delta, <%= product.getQuantityMinimum() %>, <%= user.getQuantityMaximum(product) %>, <%= product.getQuantityIncrement() %>, document.forms['<%= tx_pricing_FormName %>']['quantity_dyf_<%= txProdCount %>']);
-	};
-	<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].setCallbackFunction( <%= tx_pricing_JSNameSpace %>.updateTotal );
-</script>
-<%
-
-
-
-
-				if (product.isSoldBySalesUnits()) {
-					//
-					// -- TX Sales Units Editor --
-					//
-					
-%>
-					<tr>
-						<td>
-							<table align="center">
-								<tr><td style="height: 28px">
-									<input type="hidden" name="productId_dyf_<%= txProdCount %>" value="<%= product.getContentName() %>"/>
-									<input type="hidden" name="catId_dyf_<%= txProdCount %>" value="<%= product.getParentNode().getContentName() %>"/>
-									<input type="hidden" name="skuCode_dyf_<%= txProdCount %>" value="<%= tpi.getSku() %>"/>
-									<input type="hidden" name="quantity_dyf_<%= txProdCount %>" value="1"/>
-									<input type="hidden" name="trk_dyf_<%= txProdCount %>" value="<%= recommendations.getVariant().getSiteFeature().getName().toLowerCase() %>">
-									<input type="hidden" name="variant_dyf_<%= txProdCount %>" value="<%= recommendations.getVariant().getId() %>"/>
-									<input type="hidden" name="rank_dyf_<%= txProdCount %>" value="<%= rank %>"/>
-									<% if (pl.getTrackingCode() != null) { %><input type="hidden" name="trkd_dyf_<%= txProdCount %>" value="<%= pl.getTrackingCode() %>"/><% } %>
-<%
-					// render options
-					for (Iterator iit = configuration.getOptions().entrySet().iterator(); iit.hasNext(); ) {
-	    				Map.Entry   entry = (Map.Entry) iit.next();
-%>									<input type="hidden" name="<%= entry.getKey() %>_dyf_<%= txProdCount %>" value="<%= entry.getValue() %>"/>
-<%
-					}
-
-
-
-
-%>									<select name="salesUnit_dyf_<%= txProdCount %>" style="width: 60px" class="text10" onChange="<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].setSalesUnit(this.value);">
-										<option value="" selected="selected"></option>
-<%
-					FDSalesUnit     salesUnits[] = tpi.getFDProduct().getSalesUnits();
-                    for (int ii = 0; ii < salesUnits.length; ++ii) {
-                        FDSalesUnit salesUnit      = salesUnits[ii];
-                        String      salesUnitDescr = salesUnit.getDescription();
-
-                        // clean parenthesis
-                        int ppos = salesUnitDescr.indexOf("(");
-                        if (ppos > -1) {
-                            salesUnitDescr = salesUnitDescr.substring(0, ppos).trim();
-                        }
-%>										<option value="<%= salesUnit.getName() %>"><%= salesUnitDescr %></option>
-<%
-                    }
-%>									</select>
-								</td></tr>
-							</table>
-						</td>
-					</tr>
-<%
-				} else {
-					//
-					// -- TX Quantity Editor --
-					//
-%>
-					<tr>
-						<td>
-							<table align="center">
-								<tr>
-									<td style="height: 28px">
-										<input type="hidden" name="productId_dyf_<%= txProdCount %>" value="<%= product.getContentName() %>"/>
-										<input type="hidden" name="catId_dyf_<%= txProdCount %>" value="<%= product.getParentNode().getContentName() %>"/>
-										<input type="hidden" name="skuCode_dyf_<%= txProdCount %>" value="<%= tpi.getSku() %>"/>
-										<input type="hidden" name="salesUnit_dyf_<%= txProdCount %>" value="<%= configuration.getSalesUnit() %>"/>
-										<input type="hidden" name="trk_dyf_<%= txProdCount %>" value="<%= recommendations.getVariant().getSiteFeature().getName().toLowerCase() %>">
-										<input type="hidden" name="variant_dyf_<%= txProdCount %>" value="<%= recommendations.getVariant().getId() %>"/>
-										<input type="hidden" name="rank_dyf_<%= txProdCount %>" value="<%= rank %>"/>
-										<% if (pl.getTrackingCode() != null) { %><input type="hidden" name="trkd_dyf_<%= txProdCount %>" value="<%= pl.getTrackingCode() %>"/><% } %>
-<%
-					for (Iterator it_opts = configuration.getOptions().entrySet().iterator(); it_opts.hasNext();) {
-						Map.Entry entry = (Map.Entry) it_opts.next();
-%>
-										<input type="hidden" name="<%= entry.getKey() %>_dyf_<%= txProdCount %>" value="<%= entry.getValue() %>"/>
-<%
-					}
-
-
-%>
-
-										<input type="text" name="quantity_dyf_<%= txProdCount %>"  value="" style="width: 36px" size="3" maxlength="4" class="text10" onChange="<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].changeQty(0);" onBlur="<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].setQuantity(this.value);"/>
-									</td>
-									<td style="height: 28px">
-										<img onclick="<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].changeQty(<%= product.getQuantityIncrement() %>);" src="/media_stat/images/template/quickshop/grn_arrow_up.gif" style="width: 10px; height: 9px; border: 0;  margin-bottom: 1px; margin-top: 1px" alt="Increase quantity"><br/>
-										<img onclick="<%= tx_pricing_JSNameSpace %>.pricings[<%= txProdCount %>].changeQty(<%= -product.getQuantityIncrement() %>);" src="/media_stat/images/template/quickshop/grn_arrow.gif" style="width: 10px; height: 9px; border: 0; margin-bottom: 1px; margin-top: 1px" alt="Decrease quantity">
-									</td>
-								</tr>
-							</table>
-						</td>
-					</tr>
-<%					
-				} 
-
 				// Count transactional products only
 				txProdCount++;
 			} else { // transactional items
-				//
-				// NON-TRANSACTIONAL PRODUCT
-				//
-				%>
-				<tr>
+%>				<tr>
 					<td style="height: 28px; text-align: center; vertical-align: middle;">
 						<span class="text8">(click name to buy)</span>
 					</td>
@@ -432,49 +252,11 @@ if (request.getParameter("nodyf") == null) {
 			} // !transactional
 %>
 			</table>
-<%
 
-			//
-			// PRODUCT NAME, ETC
-			//
-		    ProductModel productNode = product; // i_prd_name.jspf requires
-%>
 			<!-- product name, etc -->
 			<fd:ProductRating product="<%= product %>"/>
-			<a href="<%= actionURI %>"><%@ include file="/includes/product/i_prd_name.jspf" %></a>
-<%
-
-			String confDescription = null;
-
-			if (pi instanceof TransactionalProductImpression) {
-				TransactionalProductImpression tpi = (TransactionalProductImpression)pi;
-				confDescription = ConfigurationUtil.getConfigurationDescription(tpi);
-			}
-
-			if (confDescription == null) confDescription = product.getSizeDescription();
-
-			if (confDescription != null) {
-			%><br/>(<%= confDescription %>)<%
-			}
-
-			// Display price
-%><fd:FDProductInfo id="productInfo" skuCode="<%= pi.getSku().getSkuCode() %>">
-				<br/><b><%= CURRENCY_FORMATTER.format(productInfo.getDefaultPrice()) %>/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></b>				
-</fd:FDProductInfo>
-<%				
-
-
-			// Display "SAVE!" ... label
-            String[] ymalScales = pi.getFDProduct().getPricing().getScaleDisplay();
-            if (ymalScales.length>0) {
-%>				<br/><span style="color: #FF9933; font-weight: bold;">Save!</span><br/>
-<%
-                for (int ymalSci = 0; ymalSci < ymalScales.length; ymalSci++) {
-                	%><b><%= ymalScales[ymalSci] %></b><br/>
-<%
-                }
-            }
-%>
+			<fd:ProductName product="<%= product %>" action="<%= actionURI %>"/>
+			<fd:ProductDescription impression="<%= pi %>"/>
 		</td>
 <% ++rank; %>
 	</fd:PIPRow>
@@ -522,7 +304,7 @@ if (request.getParameter("nodyf") == null) {
 </script>
 </form>
 <%
-	} // recommendations.getContentNodes().size() > 0
+	} // recommendations.getProducts().size() > 0
 %></fd:DYFRecommendations><%
 } // !nodyf
 

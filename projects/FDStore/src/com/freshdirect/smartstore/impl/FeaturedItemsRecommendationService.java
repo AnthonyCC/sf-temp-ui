@@ -10,6 +10,7 @@ import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.smartstore.SessionInput;
+import com.freshdirect.smartstore.Trigger;
 import com.freshdirect.smartstore.Variant;
 
 /**
@@ -34,7 +35,7 @@ public class FeaturedItemsRecommendationService extends AbstractRecommendationSe
      * @return a List<{@link ContentNodeModel}> of recommendations
      *         
      */
-    public List recommendNodes(SessionInput input) {
+    public List recommendNodes(Trigger trigger, SessionInput input) {
         List featuredNodes = Collections.EMPTY_LIST; 
         if (input.getCurrentNode()!=null) {
             ContentNodeModel model = input.getCurrentNode();

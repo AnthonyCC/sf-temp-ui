@@ -4,6 +4,7 @@
   <Store id="FreshDirect">
   </Store>
 
+  <!-- Products -->
 
   <Product id="product_ymal_simple">
     <FULL_NAME>product ymal simple</FULL_NAME>
@@ -215,6 +216,9 @@
   </Product>
 
 
+
+  <!-- YMAL SETS -->
+
   <YmalSet id="ymal_set_simple">
     <title>ymal set mea0004561</title>
     <workflowStatus>ACTIVE</workflowStatus>
@@ -345,6 +349,11 @@
     <skus>
       <Sku ref="MEA0004561"/>
     </skus>
+    <ymalSets>
+      <YmalSet ref="ymal_set_pending"/>
+      <YmalSet ref="ymal_set_4_to_6"/>
+      <YmalSet ref="ymal_set_completed"/>
+    </ymalSets>
   </Product>
 
   <Product id="product_mea0004562">
@@ -661,6 +670,11 @@
     <variants>
       <RecipeVariant ref="recipe_variant_mea0004567"/>
     </variants>
+	<!-- YmalSource test -->
+    <ymalSets>
+      <YmalSet ref="ymal_set_4_to_6"/>
+      <YmalSet ref="ymal_set_simple"/>
+    </ymalSets>
   </Recipe>
 
   <RecipeVariant id="recipe_variant_mea0004567">

@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,11 +17,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.xml.sax.AttributeList;
-import org.xml.sax.HandlerBase;
+import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-
-import edu.emory.mathcs.backport.java.util.Collections;
+import org.xml.sax.helpers.DefaultHandler;
 
 public class SearchSnapshot {
 
@@ -321,11 +320,12 @@ public class SearchSnapshot {
     }
     
     private void parseXml(InputStream input, SAXParser parser, final int mode) throws SAXException, IOException {
-        parser.parse(input, new HandlerBase() {
+        parser.parse(input, new DefaultHandler() {
             AggregateSearchResult asr         = null;
             SearchData            data        = null;
 
-            public void startElement(String name, AttributeList attributes) throws SAXException {
+            public void startElement(String uri, String localName,
+                    String name, Attributes attributes) {
                 if ("term".equals(name)) {
                     asr = getAggregateSearchResult(attributes.getValue("name"));
                 } else if ("result".equals(name)) {
@@ -334,7 +334,7 @@ public class SearchSnapshot {
                 }
             }
 
-            public void endElement(String name) throws SAXException {
+            public void endElement(String uri, String localName, String name) throws SAXException {
                 if ("term".equals(name)) {
                     asr = null;
                 } else if ("result".equals(name)) {

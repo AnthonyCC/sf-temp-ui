@@ -2,6 +2,7 @@
     "http://www.w3.org/TR/html4/loose.dtd">
 
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Arrays"%>
 <%@page import="java.util.Collections"%>
 <%@page import="java.util.Iterator"%>
@@ -9,10 +10,19 @@
 <%@page import="java.util.Map"%>
 <%@page import="java.util.WeakHashMap"%>
 <%@page import="java.util.Set"%>
+<%@page import="java.util.HashSet"%>
+<%@page import="java.util.StringTokenizer"%>
+<%@page import="com.freshdirect.cms.ContentKey"%>
+<%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
+<%@page import="com.freshdirect.cms.ContentKey.InvalidContentKeyException"%>
+<%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
+<%@page import="weblogic.security.service.UserLockout"%>
 <%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
 <%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
 <%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.content.YmalSource"%>
+<%@page import="com.freshdirect.fdstore.customer.FDCartLineModel"%>
 <%@page import="com.freshdirect.fdstore.customer.FDCustomerManager"%>
 <%@page import="com.freshdirect.fdstore.customer.FDIdentity"%>
 <%@page import="com.freshdirect.fdstore.customer.FDUser"%>
@@ -21,6 +31,7 @@
 <%@page import="com.freshdirect.mail.EmailUtil"%>
 <%@page import="com.freshdirect.smartstore.RecommendationService"%>
 <%@page import="com.freshdirect.smartstore.SessionInput"%>
+<%@page import="com.freshdirect.smartstore.Trigger"%>
 <%@page import="com.freshdirect.smartstore.fdstore.CohortSelector"%>
 <%@page import="com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration"%>
 <%@page import="com.freshdirect.smartstore.fdstore.SmartStoreUtil"%>
@@ -33,7 +44,10 @@
 <%@page import="com.freshdirect.smartstore.RecommendationServiceType"%>
 <%@page import="com.freshdirect.smartstore.dsl.CompileException"%>
 <%@page import="com.freshdirect.smartstore.impl.ScriptedRecommendationService"%>
+<%@page import="com.freshdirect.smartstore.ymal.YmalUtil"%>
+<%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@ taglib uri="freshdirect" prefix="fd"%>
+<fd:CheckLoginStatus noRedirect="true" />
 <%!
 	Map customRecommenders = new WeakHashMap();
 %>
@@ -54,6 +68,8 @@ if (siteFeature == null) {
 	urlG.remove("siteFeature");
 }
 
+Trigger trigger = new Trigger(siteFeature, EnumSiteFeature.YMAL.equals(siteFeature) ? 6 : 5);
+
 Map variants = SmartStoreServiceConfiguration.getInstance().getServices(siteFeature);
 VariantSelection helper = VariantSelection.getInstance();
 final Map assignment = helper.getVariantMap(siteFeature);
@@ -62,17 +78,17 @@ List varIds = SmartStoreUtil.getVariantNamesSortedInUse(siteFeature);
 
 /* generator function */
 String generatorFunction = urlG.get("generatorFunction");
-if (generatorFunction!=null) {
+if (generatorFunction != null) {
     generatorFunction = generatorFunction.trim();
 }
 
 /* scoring function */
 String scoringFunction = urlG.get("scoringFunction");
-if (scoringFunction!=null) {
+if (scoringFunction != null) {
     scoringFunction = scoringFunction.trim();
 }
 
-if (!(scoringFunction!=null && scoringFunction.length()>0)) {
+if (!(scoringFunction != null && scoringFunction.length() > 0)) {
     urlG.remove("scoringFunction");
     scoringFunction = null;
 }
@@ -162,18 +178,39 @@ if (defaultCustomerEmail.equals(customerEmail)) {
 	urlG.set("customerEmail", customerEmail);
 }
 
+/* customer Use Logged In */
+boolean useLoggedIn = false;
+
+String useLoggedInStr = urlG.get("useLoggedIn");
+if ("true".equalsIgnoreCase(useLoggedInStr)) {
+	useLoggedIn = true;
+}
+if (useLoggedIn) {
+	urlG.set("useLoggedIn", "true");
+} else {
+	urlG.remove("useLoggedIn");
+}
+
 /* customer Id */
 String customerId = null;
 TestSupport ts = TestSupport.getInstance();
-customerId = ts.getErpIDForUserID(customerEmail);
+FDUserI user = (FDUserI) session.getAttribute("fd.user");
+if (useLoggedIn) {
+	if (user != null && user.getIdentity() != null) {
+		customerId = user.getIdentity().getErpCustomerPK();
+		customerEmail = user.getUserId();
+	}
+} else {
+	customerId = ts.getErpIDForUserID(customerEmail); 
+}
 
 
 /* cohort */
 String defaultCohortId = "&lt;unknown&gt;";
 String cohortId = defaultCohortId;
 if (customerId != null) {
-	FDUser user = FDCustomerManager.getFDUser(new FDIdentity(customerId));
-	cohortId = CohortSelector.getInstance().getCohortName(user.getPrimaryKey());
+	FDUser user2 = FDCustomerManager.getFDUser(new FDIdentity(customerId));
+	cohortId = user2.getCohortName();
 }
 
 String defaultUserVariant = "&lt;unknown&gt;";
@@ -209,14 +246,71 @@ if (category != null) {
 	categoryName = category.getFullName();
 }
 
-
-
-
 /* session input */
 SessionInput si = new SessionInput(customerId);
-si.setCartContents(Collections.EMPTY_SET);
 si.setCurrentNode(category);
+
+String ymalError = "";
+
+// gro_folgers_regular_04
+String recentOrderlines = urlG.get("orderlines");
+YmalSource source = null;
+if (useLoggedIn && user != null) {
+	source = YmalUtil.resolveYmalSource(user, null);
+	si.setCurrentNode(YmalUtil.getSelectedCartLine(user).lookupProduct());
+} else if (recentOrderlines != null && !"".equals(recentOrderlines)) {
+	List prods = new ArrayList();
+	Set cartItems = new HashSet();
+	StringTokenizer st = new StringTokenizer(recentOrderlines, ", \t\r\n");
+	while (st.hasMoreElements()) {
+		String cKey = (String) st.nextElement();
+		cartItems.add(cKey);
+	}
+	// transform content keys to prods
+	for (Iterator it2 = cartItems.iterator(); it2.hasNext(); ) {
+		String node = (String) it2.next();
+		try {
+			Object o = ContentFactory.getInstance().getContentNodeByKey(ContentKey.create(FDContentTypes.PRODUCT, node));
+			if (o != null)
+				prods.add(o);
+			else 
+				ymalError += (ymalError.length() == 0 ? "" : "<br>") + "Unknown CMS node: " + node;
+		} catch (ContentKey.InvalidContentKeyException e) {
+			ymalError += (ymalError.length() == 0 ? "" : "<br>") + "Unknown CMS node: " + node;
+		}
+	}
+	source = YmalUtil.resolveYmalSource(prods);
+	si.setCurrentNode(source);
+}
+si.setYmalSource(source);
 si.setNoShuffle(true);
+
+String scopeNodes = urlG.get("scope");
+List scope = new ArrayList();
+if (scopeNodes != null && scopeNodes.length() != 0) {
+	Set scopeItems = new HashSet();
+	StringTokenizer st = new StringTokenizer(scopeNodes, ", \t\r\n");
+	while (st.hasMoreElements()) {
+		String cKey = (String) st.nextElement();
+		scopeItems.add(cKey);
+	}
+	// transform content keys to prods
+	for (Iterator it2 = scopeItems.iterator(); it2.hasNext(); ) {
+		String node = (String) it2.next();
+		try {
+			ContentNodeModel n = ContentFactory.getInstance().getContentNode(node);
+			if (n != null && (n.getContentType().equals(ContentNodeModel.TYPE_DEPARTMENT) ||
+					n.getContentType().equals(ContentNodeModel.TYPE_CATEGORY) ||
+					n.getContentType().equals(ContentNodeModel.TYPE_PRODUCT) ||
+					n.getContentType().equals(ContentNodeModel.TYPE_CONFIGURED_PRODUCT) ||
+					n.getContentType().equals(ContentNodeModel.TYPE_FAVORITE_LIST)))
+				scope.add(n);
+		} catch (RuntimeException e) {
+		}
+	}
+	si.setExplicitList(scope);
+}
+
 
 /* view */
 String[] views = { "default", "detailed", "simple" };
@@ -243,7 +337,7 @@ if (defaultView.equals(view)) {
 String newURL = urlG.build();
 
 // debug
-if (false) {
+if (true) {
 	System.err.println("orig URI: " + origURL);
 	System.err.println("generated URI: " + newURL);
 	System.err.println("site feature: " + siteFeature.getName());
@@ -266,9 +360,9 @@ RecommendationService aRecService = (variantA != null) ? (RecommendationService)
 
 RecommendationService bRecService = (variantB != null) ? (RecommendationService) variants.get(variantB) : null;
 
-if (scriptedRecServ!=null) {
-    aRecService = scriptedRecServ;
-    variantA = "User Provided Functions";
+if (scriptedRecServ != null) {
+    bRecService = scriptedRecServ;
+    variantB = "User Provided Functions";
 }
 
 %>
@@ -288,14 +382,13 @@ p{margin:0px;padding:0px;}
 .bull{color:#cccccc;}
 a{color:#336600;}a:VISITED{color:#336600;}
 table{border-collapse:collapse;border-spacing:0px;width:100%;}
-.rec-chooser{margin:0px 0px 6px;text-align:right;}
-.rec-options{border:1px solid black;font-weight:bold;}
+.rec-chooser{margin:0px 0px 6px;}
+.rec-options{border:1px solid black;font-weight:bold;padding: 5px 10px 10px;}
 .rec-options .view-label{text-transform:capitalize;}
-.rec-options table td{vertical-align: bottom; padding: 5px 10px 10px;}
 .rec-options table td p.label{padding-bottom:4px;}
 .rec-options table td p.result{padding-top:4px;}
-.rec-options table div{padding-right:20px;}
-.var-comparator{margin-top:60px;}
+.rec-options table td{padding-right:20px;vertical-align:top;}
+.var-comparator{margin-top:60px;margin-bottom: 40px;}
 .var-comparator td{width:50%;text-align:center;vertical-align:top;}
 .var-comparator .left{padding-right:20px;}
 .var-comparator .right{padding-left:20px;}
@@ -318,59 +411,78 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 	</style>
 </head>
 <body>
-	<form method="get" action="<%= request.getRequestURI() %>">
+	<form method="get" action="<%= request.getRequestURI() %>" id="f1">
 	<%= urlG.buildHiddenField("siteFeature") %>
-	<%= urlG.buildHiddenField("view") %>
 	<% if (!"simple".equals(view)) { %>
     <div class="rec-chooser title14">
-    	<span style="text-transform: uppercase;">Recommendation type:</span>&nbsp;<%
-    		it = siteFeatures.iterator();
-    		if (it.hasNext()) {
-    			EnumSiteFeature sf = (EnumSiteFeature) it.next();
-    			if (!sf.equals(siteFeature)) {
-    	%>
-		<a href="<%= urlG.set("siteFeature", sf.getName()).build() %>"><%
-    			}
-    	%><span><%= sf.getTitle() %></span><%
-				if (!sf.equals(siteFeature)) {
-    	%></a><%
-    			}
-    		}
-    		while (it.hasNext()) {
-    			EnumSiteFeature sf = (EnumSiteFeature) it.next();
-    	%>
-    	<span class="bull">&bull;</span>
-    	<%
-    			if (!sf.equals(siteFeature)) {
-    	%>
-    	<a href="<%= urlG.set("siteFeature", sf.getName()).build() %>"><%
-    			}
-    	%><span><%= sf.getTitle() %></span><%
-				if (!sf.equals(siteFeature)) {
-    	%></a><%
-    			}
-    		}
-    		// restore site feature
-    		if (defaultSiteFeature.equals(siteFeature)) {
-    			urlG.remove("siteFeature");
-    		} else {
-    			urlG.set("siteFeature", siteFeature.getName());
-    		}
-    	%>
+    	<div style="float: left;">
+    		<%  if (session.getAttribute("fd.user") != null) {
+    				if (user.getIdentity() != null) {
+    		%>
+    		Logged in as <%= user.getUserId() %>.
+    		<%      } else { %>
+    		Not logged in. You are in area  <%= user.getZipCode() %>.
+    		<% 		}
+    			} else { %>
+    		Not logged in.
+    		<% 	} %>
+    	</div>
+    	<div style="float: right; text-align:right;">
+	    	<span style="text-transform: uppercase;">Recommendation type:</span>&nbsp;<%
+	    		it = siteFeatures.iterator();
+	    		if (it.hasNext()) {
+	    			EnumSiteFeature sf = (EnumSiteFeature) it.next();
+	    			if (!sf.equals(siteFeature)) {
+	    	%>
+			<a href="<%= urlG.set("siteFeature", sf.getName()).build() %>"><%
+	    			}
+	    	%><span><%= sf.getTitle() %></span><%
+					if (!sf.equals(siteFeature)) {
+	    	%></a><%
+	    			}
+	    		}
+	    		while (it.hasNext()) {
+	    			EnumSiteFeature sf = (EnumSiteFeature) it.next();
+	    	%>
+	    	<span class="bull">&bull;</span>
+	    	<%
+	    			if (!sf.equals(siteFeature)) {
+	    	%>
+	    	<a href="<%= urlG.set("siteFeature", sf.getName()).build() %>"><%
+	    			}
+	    	%><span><%= sf.getTitle() %></span><%
+					if (!sf.equals(siteFeature)) {
+	    	%></a><%
+	    			}
+	    		}
+	    		// restore site feature
+	    		if (defaultSiteFeature.equals(siteFeature)) {
+	    			urlG.remove("siteFeature");
+	    		} else {
+	    			urlG.set("siteFeature", siteFeature.getName());
+	    		}
+	    	%>
+	    </div>
+	    <div style="clear: both;"></div>
     </div>
     <div class="rec-options" class="rec-chooser title14"<%= "simple".equals(view) ? " style=\"display: none;\"" : "" %>>
     	<table>
     		<tr>
-    			<td class="text12">
-    				<div style="float: left;">
+    			<td class="text12" colspan="2">
+    				<table style="width: auto;"><tr>
+<% if (EnumSiteFeature.DYF.equals(siteFeature) || EnumSiteFeature.YMAL.equals(siteFeature)) { %>
+    				<td>
 	    				<p class="label">
 	    					Customer email
 	    				</p>
 	    				<p>
-	    					<input type="text" name="customerEmail" value="<%= customerEmail %>"
-	    							onfocus="this.select();"
-	    							onkeypress="if ((event.which || event.keyCode) == 13) this.form.submit();"
-	    							title="Press &lt;Enter&gt; to activate the entered customer">
+	    					<input type="text" name="customerEmail" id="customerEmail" value="<%= customerEmail %>"
+	    							onfocus="this.select();"<%= useLoggedIn ? " disabled=\"disabled\"" : "" %>>
+	    				</p>
+	    				<p class="label">
+	    					or use logged in: <input type="checkbox" name="useLoggedIn" id="useLoggedIn"
+	    						onchange="document.getElementById('customerEmail').disabled = this.checked; if (document.getElementById('orderlines')) document.getElementById('orderlines').disabled = this.checked; if (document.getElementById('useLoggedCart')) document.getElementById('useLoggedCart').checked = this.checked;"
+	    						value="true"<%= useLoggedIn ? " checked" : ""%>>
 	    				</p>
 	    				<% if (customerId != null) { %>
 	    				<p class="result">
@@ -387,16 +499,16 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 	    					&lt;not found&gt;
 	    				</p>
 	    				<% } %>
-    				</div>
-    				<div style="float: left;">
+    				</td>
+<% } %>
+<% if (EnumSiteFeature.FEATURED_ITEMS.equals(siteFeature)) { %>
+    				<td>
 	    				<p class="label">
 	    					Category id
 	    				</p>
 	    				<p>
 	    					<input type="text" name="categoryId" value="<%= categoryId %>"
-	    							onfocus="this.select();"
-	    							onkeypress="if ((event.which || event.keyCode) == 13) this.form.submit();"
-	    							title="Press &lt;Enter&gt; to activate the entered category">
+	    							onfocus="this.select();">
 	    				</p>
 	    				<% if (categoryName != null) { %>
 	    				<p class="result">
@@ -407,14 +519,64 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 	    					&lt;not found&gt;
 	    				</p>
 	    				<% } %>
-    				</div>
-    				<div style="float: left;">
+    				</td>
+<% } %>
+<% if (EnumSiteFeature.YMAL.equals(siteFeature)) { %>
+					<td>
+	    				<p class="label">Recent Orderlines:</p>
+						<p>
+							<textarea name="orderlines" id="orderlines" rows="4" 
+								cols="30"<%= useLoggedIn ? " disabled=\"disabled\"" : "" %>><%= urlG.get("orderlines") %></textarea>
+						</p>
+	    				<p class="label">
+	    					or use logged user's cart: <input type="checkbox" name="useLoggedIn" id="useLoggedCart"
+	    						onchange="document.getElementById('orderlines').disabled = this.checked; document.getElementById('customerEmail').disabled = this.checked; document.getElementById('useLoggedIn').checked = this.checked;"
+	    						value="true"<%= useLoggedIn ? " checked" : ""%>>
+	    				</p>
+	    				<% if (useLoggedIn && user != null) { %>
+	    					<% List cartItems = user.getShoppingCart().getRecentOrderLines();
+	    					   if (cartItems == null)
+	    						   cartItems = Collections.EMPTY_LIST; 
+							   it = cartItems.iterator(); %>
+	    					<% if (!it.hasNext()) {	%>
+	    				<p class="result not-found">
+	    						No recent items in cart.
+	    				</p>
+	    					<% } else { %>
+	    				<p class="result">
+	    						Items in recent orderlines:
+	    				</p>
+	    					<% } %>
+	    					<% while (it.hasNext()) {
+	    						FDCartLineModel cartLine = (FDCartLineModel) it.next();
+	    					%>
+	    				<p style="font-weight: normal;" title="<%= cartLine.lookupProduct().getFullName() %>"
+	    						><%= cartLine.getProductRef().getProductName() %></p>
+	    					<% } %>
+	    				<% } %>
+	    				<p class="result">
+	    					Triggering item: <% 
+	    						if (source != null) { 
+	    						%><span style="font-weight: normal;" title="<%= ((ContentNodeModel) source).getFullName() + " (" +
+	    								source.getContentKey().getType().getName() + ")" %>"><%= source.getContentKey().getId() %></span><% 
+	    						} else { 
+	    						%><span class="not-found">&lt;unidentified&gt;</span><% 
+	    						} %>
+	    				</p>
+	    				<%
+	    				   if (ymalError.length() != 0) { %>
+	    				<p class="not-found result">
+	    					<%= ymalError %>
+	    				</p>
+	    				<% } %>
+					</td>
+<% } %>
+    				<td>
 	    				<p class="label">
 	    					Generator function:
 	    				</p>
 						<p>
 	    					<input type="text" name="generatorFunction" value="<%= StringEscapeUtils.escapeHtml(generatorFunction) %>"
-									onkeypress="if ((event.which || event.keyCode) == 13) this.form.submit();"
 	    							title="generator function">
 
 						</p>
@@ -423,7 +585,6 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 	    				</p>
 						<p>
 	    					<input type="text" name="scoringFunction" value="<%= StringEscapeUtils.escapeHtml(scoringFunction) %>"
-									onkeypress="if ((event.which || event.keyCode) == 13) this.form.submit();"
 	    							title="scoring function">
 						</p>
 <%							if (compileErrorMessage!=null) { %>					
@@ -431,10 +592,37 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 	    					&lt;<%= compileErrorMessage %>&gt;
 	    				</p>
 <%						    } %>
-					</div>
-    				<div style="clear: both;"></div>
+	    				<p class="label result">Scope (for explicitList):</p>
+						<p>
+							<textarea name="scope" id="scope" rows="4"><%= urlG.get("scope") %></textarea>
+						</p>
+    					<% it = scope.iterator(); %>
+    					<% if (!it.hasNext()) {	%>
+	    				<p class="result not-found">
+	    						No items in scope.
+	    				</p>
+    					<% } else { %>
+	    				<p class="result">
+	    						Items in scope:
+	    				</p>
+    					<% } %>
+    					<% while (it.hasNext()) {
+	    						ContentNodeModel node = (ContentNodeModel) it.next();
+    					%>
+	    				<p style="font-weight: normal;" title="<%= node.getFullName() + " (" + node.getContentKey().getType().getName() + ")" %>"
+	    						><%= node.getContentName() %></p>
+    					<% } %>
+					</td>
+    				</tr></table>
     			</td>
-    			<td style="text-align: right;" class="title14">
+    		</tr>
+			<tr>
+				<td>
+					<p class="result">
+						<input type="submit" value="Submit">
+					</p>
+				</td>
+    			<td style="text-align: right; vertical-align: bottom; padding-right: 0px;" class="title14">
     				<%
     					for (int i = 0; i < views.length; i++) {
     						if (i != 0) {
@@ -454,7 +642,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
     					}
     				%>
     			</td>
-    		</tr>
+			</tr>
     	</table>
     </div>
     <% } // end if "simple".equals...
@@ -462,7 +650,8 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 	if (aRecService != null) {
 		System.err.println("variant A recommender: " + aRecService.getClass().getName());
 		try {
-			recsA = aRecService.recommendNodes(si);
+			recsA = aRecService.recommendNodes(trigger, si);
+			System.err.println("Recommender A node count: " + recsA.size());
 		} catch (RuntimeException e) {
 			e.printStackTrace(System.err);
 		}
@@ -471,7 +660,8 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 	if (bRecService != null) {
 		System.err.println("variant B recommender: " + bRecService.getClass().getName());
 		try {
-			recsB = bRecService.recommendNodes(si);
+			recsB = bRecService.recommendNodes(trigger, si);
+			System.err.println("Recommender B node count: " + recsB.size());
 		} catch (RuntimeException e) {
 			e.printStackTrace(System.err);
 		}	
@@ -483,9 +673,6 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 				<div class="var-cmp-head">
 				<% if (!"simple".equals(view)) { %>
 					<div class="title14">Variant A</div>
-					<% if (scriptedRecServ!=null) {  %>
-						<%= scriptedRecServ.getDescription() %>
-					<% } else { // if (scriptedRecServ!=null)  %>
 					<select name="variantA" onchange="this.form.submit();">
 					<%
 						String optGroup = "";
@@ -536,7 +723,6 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 						&nbsp;
 					<% } %>
 					</p>
-					<%  } // if (scriptedRecServ)  %>
 				<% } else { %>
 					<span class="title24">A</span>
 				<% }  %>
@@ -546,7 +732,10 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 			<td class="right">
 				<div class="var-cmp-head">
 				<% if (!"simple".equals(view)) { %>
-					<div class="title14">Variant B</div>
+					<div class="title14"><% if (scriptedRecServ != null) { %>Custom Script<% } else { %>Variant B<% } %></div>
+					<% if (scriptedRecServ != null) {  %>
+						<table style="border: 1px solid black; width: auto; margin: 0px auto;"><tr><td class="text12" style="width: auto; padding: 4px;"><%= scriptedRecServ.getDescription() %></td></tr></table>
+					<% } else { // if (scriptedRecServ!=null)  %>
 					<select name="variantB" onchange="this.form.submit();">
 					<%
 						String optGroup = "";
@@ -599,14 +788,17 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 					<p class="not-found">
 					<% if (variantB != null && variantB.equals(userVariant)) { %>
 						<b>This is the user's variant.</b>
+					<% } else if (varIds.size() == 1 && varIds.get(0).equals(variantA) && scriptedRecServ == null) { %>
+						<i>No more variants available.</i>
 					<% } else if (!assignment.containsValue(variantB)) { %>
 						<i>This variant is not assigned to a cohort.</i>
 					<% } else { %>
 						&nbsp;
 					<% } %>
 					</p>
+					<%  } // if (scriptedRecServ)  %>
 				<% } else { %>
-					<span class="title24">B</span>
+					<span class="title24"><% if (scriptedRecServ != null) { %>Custom<% } else { %>B<% } %></span>
 				<% }  %>
 				</div>
 			</td> 
@@ -623,6 +815,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 						while (it.hasNext()) {
 							ContentNodeModel cnm = (ContentNodeModel) it.next();
 							ProductModel pm = (ProductModel) cnm;
+							String actionURL = FDURLUtil.getProductURI(pm, "preview");
 							boolean found = recsB != null && recsB.indexOf(cnm) >= 0;
 							String notFound = "";
 							if ("simple".equals(view)) {
@@ -638,7 +831,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 						</td>
 						<% } %>
 						<td class="pic"<%= notFound %>>
-							<fd:ProductImage product="<%= pm %>" hideBurst="true" />
+							<fd:ProductImage product="<%= pm %>" action="<%= actionURL %>"/>
 						</td>
 						<td class="info"<%= notFound %>><div>
 								<span class="title16" title="<%= cnm.getContentName() %>"><%= cnm.getFullName() %></span><br>
@@ -666,6 +859,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 						while (it.hasNext()) {
 							ContentNodeModel cnm = (ContentNodeModel) it.next();
 							ProductModel pm = (ProductModel) cnm;
+							String actionURL = FDURLUtil.getProductURI(pm, "preview");
 							Integer change = recsA != null && recsA.indexOf(cnm) >= 0 ? new Integer(recsA.indexOf(cnm) - idx) : null;
 							String changeString = "N/A";
 							String changeColor = "unknown";
@@ -690,7 +884,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 				%>
 					<tr<%= notFound %>>
 						<td class="pic">
-							<fd:ProductImage product="<%= pm %>" hideBurst="true" />
+							<fd:ProductImage product="<%= pm %>" action="<%= actionURL %>"/>
 						</td>
 						<td class="info"><div>
 								<span class="title16" title="<%= cnm.getContentName() %>"><%= cnm.getFullName() %></span><br>

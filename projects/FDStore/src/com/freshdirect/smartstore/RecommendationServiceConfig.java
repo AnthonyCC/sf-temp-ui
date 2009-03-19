@@ -98,7 +98,7 @@ public class RecommendationServiceConfig implements Serializable {
 		StringBuffer buf = new StringBuffer();
 		
 		buf.append("{variant:" + variantId + ", ");
-		buf.append("type:" + type.getName() + ", ");
+		buf.append("type:" + (type==null?"":type.getName()) + ", ");
 		buf.append("config:{");
 
 		if (params != null) {

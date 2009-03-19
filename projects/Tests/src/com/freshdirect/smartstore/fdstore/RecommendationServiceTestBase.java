@@ -51,7 +51,7 @@ public class RecommendationServiceTestBase extends TestCase {
 
         CompositeTypeService typeService = new CompositeTypeService(list);
 
-        service = new XmlContentService(typeService, new FlexContentHandler(), "classpath:/com/freshdirect/cms/fdstore/content/FeaturedProducts.xml");
+        service = new XmlContentService(typeService, new FlexContentHandler(), getCmsXmlName());
 
         CmsManager.setInstance(new CmsManager(service, null));
 
@@ -63,6 +63,41 @@ public class RecommendationServiceTestBase extends TestCase {
 
         aspectSystem = TestUtils.createAspectSystem();
 
+        initAspects(aspectSystem);
+        ScoreProvider.setInstance(new ProductStatisticUserProviderAspect() {
+            
+            public Map getUserProductScores(String userId) {
+                try {
+                    Map map = new HashMap();
+                    if ("user-with-favorite-prods".equals(userId)) {
+                        map.put(ContentKey.create(FDContentTypes.PRODUCT, "gro_enfamil_powder_m_02"), new Float(10));
+                    }
+                    // gro_7gen_diaperlg
+                    if ("user-with-favorite-prods2".equals(userId)) {
+                        map.put(ContentKey.create(FDContentTypes.PRODUCT, "gro_enfamil_powder_m_02"), new Float(10));
+                        map.put(ContentKey.create(FDContentTypes.PRODUCT, "gro_7gen_diaperlg"), new Float(20));
+                    }
+                    return map;
+                } catch (InvalidContentKeyException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        
+        createRecommendationEventLoggerMockup();
+
+    }
+
+    protected String getCmsXmlName() {
+        return "classpath:/com/freshdirect/cms/fdstore/content/FeaturedProducts.xml";
+    }
+
+    protected void createRecommendationEventLoggerMockup() throws NamingException {
+        RecommendationEventLoggerMockup eventLogger = new RecommendationEventLoggerMockup();
+        RecommendationEventLogger.setInstance(eventLogger);
+    }
+
+    protected void initAspects(AspectSystem aspectSystem) {
         aspectSystem.add(new FDFactoryProductInfoAspect().addAvailableSku("SPE0063144", 2.0).addAvailableSku("SPE0060510", 3.0).addAvailableSku("SPE0000468",
                 4.0).addAvailableSku("GRO001792", 5.0).addAvailableSku("FRO0066635", 64.0)
                 // YourFavorites in FI
@@ -94,29 +129,6 @@ public class RecommendationServiceTestBase extends TestCase {
             }
 
         });
-        ScoreProvider.setInstance(new ProductStatisticUserProviderAspect() {
-            
-            public Map getUserProductScores(String userId) {
-                try {
-                    Map map = new HashMap();
-                    if ("user-with-favorite-prods".equals(userId)) {
-                        map.put(ContentKey.create(FDContentTypes.PRODUCT, "gro_enfamil_powder_m_02"), new Float(10));
-                    }
-                    // gro_7gen_diaperlg
-                    if ("user-with-favorite-prods2".equals(userId)) {
-                        map.put(ContentKey.create(FDContentTypes.PRODUCT, "gro_enfamil_powder_m_02"), new Float(10));
-                        map.put(ContentKey.create(FDContentTypes.PRODUCT, "gro_7gen_diaperlg"), new Float(20));
-                    }
-                    return map;
-                } catch (InvalidContentKeyException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-        
-        RecommendationEventLoggerMockup eventLogger = new RecommendationEventLoggerMockup();
-        RecommendationEventLogger.setInstance(eventLogger);
-
     }
     
     RecommendationEventLoggerMockup getMockup() {

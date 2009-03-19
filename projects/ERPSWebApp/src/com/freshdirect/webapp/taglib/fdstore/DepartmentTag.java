@@ -24,7 +24,9 @@ import com.freshdirect.webapp.taglib.AbstractGetterTag;
  */
 public class DepartmentTag extends AbstractGetterTag {
 
-    private String departmentId;
+	private static final long serialVersionUID = 3814269255327865319L;
+	
+	private String departmentId;
 
     public void setDepartmentId(String deptId) {
         this.departmentId = deptId;
@@ -32,7 +34,7 @@ public class DepartmentTag extends AbstractGetterTag {
     
 	protected Object getResult() throws FDResourceException {
 		//System.out.println("!!!! Department id ="+this.departmentId);
-		return  ContentFactory.getInstance().getContentNodeByName( this.departmentId );
+		return  ContentFactory.getInstance().getContentNode( this.departmentId );
 	}
 
 	public static class TagEI extends TagExtraInfo {

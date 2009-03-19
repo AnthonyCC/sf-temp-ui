@@ -10,9 +10,12 @@ package com.freshdirect.fdstore;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -143,10 +146,8 @@ public class FDStoreProperties {
 	private final static String DYF_FREQBOUGHT_TOPN = "fdstore.dyf.freqbought.topN";
 	private final static String DYF_FREQBOUGHT_TOPPERCENT = "fdstore.dyf.freqbought.topPercent";
 	
-	// use Customers' EIEO instead of SmartStore analyzed data
-	private final static String DYF_VARIANTS_EIEO = "fdstore.dyf.variants.useHistory";
-	
 	private final static String SMARTSTORE_NEWPRODUCTS_DAYS = "fdstore.smartstore.newProducts.days";
+	private final static String SMARTSTORE_PRELOAD_FACTORS = "fdstore.smartstore.preloadFactors";
 	
 	
 	// maximum number of entries (users) in smartstore personalized scores cache, default 500
@@ -403,7 +404,6 @@ public class FDStoreProperties {
 		
 		
 		defaults.put(DYF_STRATEGY_CACHE_ENTRIES, "1000");
-		defaults.put(DYF_VARIANTS_EIEO, "false");
 
 		defaults.put(SMARTSTORE_NEWPRODUCTS_DAYS, "30");
 		
@@ -852,11 +852,6 @@ public class FDStoreProperties {
 		return Integer.parseInt(get(DYF_FREQBOUGHT_TOPN));
 	}
 
-	public static boolean isDYFUseCustomerHistory() {
-		return Boolean.valueOf(get(DYF_VARIANTS_EIEO)).booleanValue();
-	}
-	
-	
 	public static String getSampleDistributionsPath() {
 		return (String)get(DISTRIBUTION_SAMPLES_DIR);
 	}
@@ -983,6 +978,21 @@ public class FDStoreProperties {
 
 	public static int getSmartstoreNewproductsDays() {
 		return Integer.parseInt(get(SMARTSTORE_NEWPRODUCTS_DAYS));
+	}
+
+	public static Set getSmartstorePreloadFactors() {
+		String frs = get(SMARTSTORE_PRELOAD_FACTORS);
+		if (frs == null)
+			return Collections.EMPTY_SET;
+		
+		String[] factors = frs.split(",");
+		Set fs = new HashSet(factors.length);
+		for (int i = 0; i < factors.length; i++) {
+			String f = factors[i].trim();
+			if (f.length() != 0)
+				fs.add(f);
+		}
+		return fs;
 	}
 	
 	public static int getSmartstorePersonalizedScoresCacheEntries() {

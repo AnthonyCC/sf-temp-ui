@@ -87,11 +87,11 @@ if (sortedColl==null) sortedColl = new ArrayList();
 	// System.err.println("TEST CAT: " + testCat);
 %>
 <fd:FeaturedItemsRecommendations id="recommendations"  currentNode="<%= currentFolder %>" itemCount="4"><%
-	if (recommendations != null && recommendations.getContentNodes().size() > 0) {
+	if (recommendations != null && recommendations.getProducts().size() > 0) {
 	    request.setAttribute("recommendationsRendered","true");
 	    int ord=1;
 %>
-<logic:iterate id='contentNode' collection="<%= recommendations.getContentNodes() %>" type="com.freshdirect.fdstore.content.ProductModel"><%
+<logic:iterate id='contentNode' collection="<%= recommendations.getProducts() %>" type="com.freshdirect.fdstore.content.ProductModel"><%
 			ProductModel productNode = contentNode;
 			ProductLabelling pl = new ProductLabelling((FDUserI) session.getAttribute(SessionName.USER), productNode);
 			String fiRating = "";

@@ -4,7 +4,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-import com.freshdirect.content.nutrition.EnumOrganicValue;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDCachedFactory;
@@ -15,7 +14,7 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.framework.util.DayOfWeekSet;
 import com.freshdirect.framework.util.NVL;
 
-public interface ProductModel extends ContentNodeModel, AvailabilityI {
+public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSource {
 
 	/** Orders products by department & full name */
 	public final static Comparator DEPTFULL_COMPARATOR = new Comparator() {
@@ -342,14 +341,14 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI {
 	 *  @return a list containing ProductModel, Recipe and CategoryModel
 	 *          objects.
 	 */
-	public List getYouMightAlsoLike();
+	public List getYmals();
 
 	/**
 	 *  Return a list of YMAL products.
 	 *  
 	 *  @return a list of ProductModel objects, which are contained in
 	 *          the YMALs for this product.
-	 *  @see #getYouMightAlsoLike()
+	 *  @see #getYmals()
 	 */
 	public List getYmalProducts();
 	
@@ -361,7 +360,7 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI {
 	 *         this might be null, in which case it has no effect. 
 	 *  @return a list of ProductModel objects, which are contained in
 	 *          the YMALs for this product.
-	 *  @see #getYouMightAlsoLike()
+	 *  @see #getYmals()
 	 */
 	public List getYmalProducts(Set removeSkus);
 	
@@ -370,7 +369,7 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI {
 	 *  
 	 *  @return a list of CategoryModel objects, which are contained in
 	 *          the YMALs for this product.
-	 *  @see #getYouMightAlsoLike()
+	 *  @see #getYmals()
 	 */
 	public List getYmalCategories();
 	
@@ -379,7 +378,7 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI {
 	 *  
 	 *  @return a list of Recipe objects, which are contained in
 	 *          the YMALs for this product.
-	 *  @see #getYouMightAlsoLike()
+	 *  @see #getYmals()
 	 */
 	public List getYmalRecipes();
 	

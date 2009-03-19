@@ -17,7 +17,7 @@ import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.DateRange;
 
-public class Recipe extends ContentNodeModelImpl implements ContentStatusI {
+public class Recipe extends ContentNodeModelImpl implements ContentStatusI, YmalSource {
 	
 	/**
 	 * 
@@ -601,4 +601,11 @@ inner:
 				+ "/" + getContentName();
 	}
 	
+	public String getYmalHeader() {
+		final YmalSet activeYmalSet = getActiveYmalSet();
+		if (activeYmalSet != null)
+			return activeYmalSet.getProductsHeader();
+		else
+			return null;
+	}
 }

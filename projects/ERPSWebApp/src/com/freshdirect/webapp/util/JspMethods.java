@@ -33,6 +33,8 @@ import com.freshdirect.fdstore.attributes.Attribute;
 import com.freshdirect.fdstore.attributes.MultiAttribute;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.CategoryRef;
+import com.freshdirect.fdstore.content.ConfiguredProduct;
+import com.freshdirect.fdstore.content.ConfiguredProductGroup;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeI;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -125,6 +127,9 @@ public class JspMethods {
     }
 
    	public static String getTaxonomy(ProductModel product, boolean showId) {
+   		if (product instanceof ConfiguredProduct) {
+   			product = ((ConfiguredProduct )product).getSourceProduct();
+   		}
 		ContentNodeModel parent = product.getParentNode();
 		List catList = new ArrayList();
 		while (parent instanceof CategoryModel) {

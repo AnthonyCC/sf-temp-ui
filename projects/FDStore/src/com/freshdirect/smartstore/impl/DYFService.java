@@ -25,9 +25,6 @@ public abstract class DYFService extends BaseContentKeyRecommendationService {
 
 	protected ServiceLocator serviceLocator;
 
-	protected boolean prefersDB = true;
-	
-
 	protected SessionCache getCache() {
 		return this.cache;
 	}
@@ -51,12 +48,8 @@ public abstract class DYFService extends BaseContentKeyRecommendationService {
 		// connect to database
 		try {
 			this.serviceLocator = new ServiceLocator(FDStoreProperties.getInitialContext());
-			this.prefersDB = !FDStoreProperties.isDYFUseCustomerHistory();
 		} catch (NamingException e) {
 			LOGGER.error("Failed to instantiate MostFrequentlyBoughtVariant", e);
-			
-			// fallback case - use EIEO
-			this.prefersDB = false;
 		}
 	}
 }

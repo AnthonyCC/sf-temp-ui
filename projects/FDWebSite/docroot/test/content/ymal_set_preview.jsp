@@ -9,16 +9,8 @@
 <%@ page import='java.util.*' %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
-<%@ taglib uri='bean' prefix='bean' %>
-<%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
-<%!
-    java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
-%>
-
 <fd:CheckLoginStatus />
-
 <%
 /*
  *  A page used for previewing ymal sets.
@@ -28,44 +20,70 @@
  *  activeYmalSetId - the category id of the product.
  */
 
-    String         activeYmalSetId  = request.getParameter("ymalSetId");
-    ContentFactory cf               = ContentFactory.getInstance();
-    YmalSet        activeYmalSet    = (YmalSet) cf.getContentNode(activeYmalSetId);
-    FDUserI        user             = (FDUserI) session.getAttribute(SessionName.USER);
-	String         spacer           = "/media_stat/images/layout/clear.gif";
-    ProductModel   productNode      = null;
+    String activeYmalSetId   = request.getParameter("ymalSetId");
+    ContentFactory cf        = ContentFactory.getInstance();
+    YmalSource activeYmalSet = (YmalSource) cf.getContentNode(activeYmalSetId);
+    ProductModel productNode = null;
 
-	List   relatedProducts   = null;
-	List   relatedRecipes    = null;
-	List   relatedCategories = null;
-    String ymalHeader        = null;
+	// Pass parameters to YMAL display box
+	List relatedProducts	= activeYmalSet.getYmalProducts();
+	List relatedRecipes		= activeYmalSet.getYmalRecipes();
+	List relatedCategories	= activeYmalSet.getYmalCategories();
 
-	if (activeYmalSet != null) {
-	    relatedProducts   = activeYmalSet.getYmalProducts();
-	    relatedRecipes    = activeYmalSet.getYmalRecipes();
-	    relatedCategories = activeYmalSet.getYmalCategories();
-
-        if (activeYmalSet.getProductsHeader() != null) {
-            ymalHeader = activeYmalSet.getProductsHeader();
-        }
-    }
+	
 %>
 <tmpl:insert template='/common/template/blank.jsp'>
     <tmpl:put name='title' direct='true'>YMAL set preview for <%= activeYmalSetId %></tmpl:put>
     <tmpl:put name='content' direct='true'>
-        <fd:FDShoppingCart id='cart' result='result' action='addMultipleToCart' successPage=''>
-            <%
-                String      cartMode     = CartName.ADD_TO_CART;
-                FDCartLineI templateLine = null ;
+		<div id="error_pane" style="text-align: left; float: left; border: 2px solid #666; padding: 3px 3px; background-color: #eee">
+<%
+// -- sort out non displayable items --
+for (Iterator it = relatedProducts.iterator(); it.hasNext();) {
+	ProductModel prd = (ProductModel) it.next();
+	if (!prd.isDisplayable()) {
+		System.err.println("Throwing non disp prod " + prd.getContentName());
+		%><div>Skip Product <span style="font-weight: bold;"><%= prd %></span></div><%
+		it.remove();
+	}
+}
 
-                request.setAttribute("actionResult", result);
-                request.setAttribute("user", user);
-                request.setAttribute("cartMode", cartMode);
-                request.setAttribute("templateLine", templateLine);
-            %>
-            <%@ include file="/includes/i_ymal_lists.jspf" %>
-        </fd:FDShoppingCart>
-        <hr/>
-        NOTE: the 'add to cart' button does not work in ymal set preview.
+// remove unavailable recipes
+for (Iterator it = relatedRecipes.iterator(); it.hasNext();) {
+	Recipe rec = (Recipe) it.next();
+	if (!rec.isAvailable()) {
+		System.err.println("Throwing unavailable rec " + rec.getContentName());
+		%><div>Skip Unavail Recipe <span style="font-weight: bold;"><%= rec %></span></div><%
+		it.remove();
+	}
+}
+
+// sort out hidden categories
+for (Iterator it = relatedCategories.iterator(); it.hasNext();) {
+	CategoryModel c = (CategoryModel) it.next();
+	if (c.isHidden()) {
+		%><div>Skip Hidden Cat <span style="font-weight: bold;"><%= c %></span></div><%
+		it.remove();
+	}
+}
+%>
+			<br/>
+			Products: <%= relatedProducts.size() %><br/>
+			Recipes: <%= relatedRecipes.size() %><br/>
+			Cats: <%= relatedCategories.size() %><br/>
+		</div>
+<%
+
+// pass parameters to YMAL renderer
+request.setAttribute("ymal_products", relatedProducts);
+request.setAttribute("ymal_categories", relatedCategories);
+request.setAttribute("ymal_recipes", relatedRecipes);
+request.setAttribute("ymal_aset", activeYmalSet);
+request.setAttribute("ymal_product", productNode);
+
+request.setAttribute("ymal_header", activeYmalSet.getYmalHeader());
+
+// consolidate lists
+%>
+<%@ include file="/includes/i_ymal_box.jspf" %>
     </tmpl:put>
 </tmpl:insert>

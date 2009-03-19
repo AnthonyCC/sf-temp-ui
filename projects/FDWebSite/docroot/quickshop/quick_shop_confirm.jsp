@@ -237,7 +237,7 @@ if (!QuickCart.PRODUCT_TYPE_CCL.equals(cartType) && !QuickCart.PRODUCT_TYPE_STAR
 		<fd:ProductGroup id='prodNode' categoryId='<%= orderLine.getCategoryName() %>' productId='<%= orderLine.getProductName() %>'>  
 			<%  productNode = prodNode; %>
 		</fd:ProductGroup>
-		<%@ include file="/includes/i_ymal.jspf"%>
+		<%@ include file="/includes/i_ymal_lists.jspf"%>
 		</td>
 	</tr>
 	</tbody>

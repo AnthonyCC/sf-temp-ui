@@ -14,6 +14,7 @@ import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.RecommendationServiceConfig;
 import com.freshdirect.smartstore.RecommendationServiceType;
 import com.freshdirect.smartstore.SessionInput;
+import com.freshdirect.smartstore.Trigger;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.impl.AbstractRecommendationService;
 import com.freshdirect.smartstore.sampling.RankedContent;
@@ -121,7 +122,7 @@ public class SamplingTestsBase extends TestCase {
 			aggregateAtCategoryLevel = value;
 		}
 
-		public List recommendNodes(SessionInput input) {
+		public List recommendNodes(Trigger trigger, SessionInput input) {
 			return null;
 		}
 		SessionInput input = new SessionInput((String) null) {

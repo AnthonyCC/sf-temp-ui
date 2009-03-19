@@ -6,26 +6,21 @@
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import="com.freshdirect.common.pricing.*" %>
 <%@ page import='java.util.*' %>
-
-
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
 <%!
     java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
     java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 %>
-
-<!-- SIVACHANDAR 07/03/2007
+<%-- SIVACHANDAR 07/03/2007
      Check if FDSESSION USER EXISTS ELSE REDIRECT TO LOGIN PAGE
--->
+--%>
 <fd:CheckLoginStatus />
-
-<!-- ISTVAN 14/03/2007
+<%-- ISTVAN 14/03/2007
      Check if cart has been emptied the item added in the meantime (obviously by someone manipulating it from another window)
--->
+--%>
 <fd:FDShoppingCart id='cart' result='result'>
 <%
    if (cart.getRecentOrderLines().size() == 0) {

@@ -145,6 +145,11 @@ public class ParserTest extends TestCase {
         assertEquals("ret_int 3 ", Expression.RET_INT, compile("round(variable) * 3").getReturnType());
         assertEquals("ret_float 3 ", Expression.RET_FLOAT, compile("exp(round(variable) * 3)").getReturnType());
     }
+    
+    public void testMinus() throws CompileException {
+        compile("5 * - 3");
+        //compile("-5");
+    }
 
     private Expression compile(String line) throws CompileException {
         BlockExpression xpr = parser.parse(line);

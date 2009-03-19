@@ -2,8 +2,6 @@ package com.freshdirect.smartstore.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -11,15 +9,10 @@ import java.util.Set;
 import org.apache.log4j.Category;
 
 import com.freshdirect.cms.ContentKey;
-import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.FDProductSelectionI;
-import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.ProductStatisticsProvider;
-import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
 import com.freshdirect.smartstore.sampling.RankedContent;
 
 
@@ -54,7 +47,7 @@ public class RandomDyfVariant extends DYFService {
 			LOGGER.debug("Loading order history for " + input.getCustomerId() + (shoppingHistory != null ? " (EXPIRED)" : ""));
 			
 			// if not, retrieve history
-			Set products = prefersDB ? getItemsFromAnalysis(input.getCustomerId()) : getItemsFromEIEO(input.getCustomerId());
+			Set products = ProductStatisticsProvider.getInstance().getProducts(input.getCustomerId());
 			
 			if (products == null) return Collections.EMPTY_LIST;
 			
@@ -82,49 +75,8 @@ public class RandomDyfVariant extends DYFService {
 
 
 
-
-	/**
-	 * Lookup keys in customer's Every Item Ever Ordered history (EIEO)
-	 * 
-	 * @param customerId
-	 * 
-	 * @return Set of content keys
-	 */
-	private Set getItemsFromEIEO(String customerId) {
-		List lineItems;
-		try {
-			lineItems =  FDListManager.getEveryItemEverOrdered(new FDIdentity(customerId));
-		} catch (FDResourceException e) {
-			e.printStackTrace();
-			return null;
-		}
-		
-		Set products = new HashSet();
-		
-		for(Iterator i = lineItems.iterator(); i.hasNext(); ) {
-			FDProductSelectionI selection = (FDProductSelectionI)i.next();
-			products.add(SmartStoreUtil.getProductContentKey(selection.getSkuCode()));
-		}
-		
-		return products;
+	protected void configureSampler(Random R) {
+		this.variant.getServiceConfig().set(CKEY_SAMPLING_STRATEGY, "uniform");
+		super.configureSampler(R);
 	}
-
-
-	/***
-	 * Retrieve keys from analyzed data
-	 * 
-	 * @param customerId
-	 *
-	 * @return Set of content keys
-	 */
-	private Set getItemsFromAnalysis(String customerId) {
-	    return ProductStatisticsProvider.getInstance().getProducts(customerId);
-	}
-	
-       protected void configureSampler(Random R) {
-           this.variant.getServiceConfig().set(CKEY_SAMPLING_STRATEGY, "uniform");
-           super.configureSampler(R);
-       }
-
-
 }

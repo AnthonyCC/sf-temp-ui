@@ -13,6 +13,7 @@ import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.smartstore.SessionInput;
+import com.freshdirect.smartstore.Trigger;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.ProductStatisticsProvider;
 import com.freshdirect.smartstore.sampling.RankedContent;
@@ -32,7 +33,7 @@ public class AllProductInCategoryRecommendationService extends AbstractRecommend
     /* (non-Javadoc)
      * @see com.freshdirect.smartstore.impl.AbstractRecommendationService#recommendNodes(int, com.freshdirect.smartstore.SessionInput)
      */
-    public List recommendNodes(SessionInput input) {
+    public List recommendNodes(Trigger trigger, SessionInput input) {
         List result = Collections.EMPTY_LIST;
         if (input.getCurrentNode() != null) {
             ContentNodeModel model = input.getCurrentNode();

@@ -135,16 +135,23 @@ table.t1 td.in-use{border-width:0px;padding:10px 0px 4px;}
     			// retrieve live (actual) configuration keys
 				Map liveConfig = service.getConfiguration();
 
+				newInUse = weight > 0 ? 1 : 0;
 				if (notFirst) {
     	%>
-    	<tr><td class="text13bold space<%= weiStr %>" colspan="2">&nbsp;</td>
+    	<tr>
+    		<td class="text13bold space<%= weiStr %>" colspan="2">
+    		<% if (newInUse == inUse) { %>
+    			<a name="<%= varId %>">&nbsp;</a>
+    		<% } else { %>
+    			&nbsp;
+    		<% } %>
+    		</td>
     	</tr>
     	<%
     			}
     	%>
     	<tr>
     	<% 
-    			newInUse = weight > 0 ? 1 : 0;
     			if (newInUse != inUse) {
     				inUse = newInUse;
     	%>
@@ -152,7 +159,7 @@ table.t1 td.in-use{border-width:0px;padding:10px 0px 4px;}
     		<%= inUse > 0 ? "Variants in Use" : "Variants not in Use" %>
     	</td>
     	</tr>
-    	<tr><td class="text13bold space<%= weiStr %>" colspan="2">&nbsp;</td>
+    	<tr><td class="text13bold space<%= weiStr %>" colspan="2"><a name="<%= varId %>">&nbsp;</a></td>
     	</tr>
     	<%
     			}

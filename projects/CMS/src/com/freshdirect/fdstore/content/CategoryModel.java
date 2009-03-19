@@ -327,6 +327,23 @@ public class CategoryModel extends ContentNodeModelImpl {
 		}
 		return null;
 	}
+	
+
+	/**
+	 * Returns alias category if has
+	 *
+	 * @return category<CategoryModel>
+	 */
+	public CategoryModel getAliasCategory() {
+		ContentRef attrValue = (ContentRef) this.getAttribute("ALIAS", (Object)null);
+		if (attrValue instanceof CategoryRef) {
+	    	return ((CategoryRef)attrValue).getCategory();
+		}
+
+		return null;
+	}
+	
+	
 	/**
 	 * Recursive method to get all brands.
 	 */

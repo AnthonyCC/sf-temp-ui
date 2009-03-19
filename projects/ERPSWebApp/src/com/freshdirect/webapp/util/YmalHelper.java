@@ -108,15 +108,13 @@ public interface YmalHelper {
 	/**
 	 *  Get the price of the product, as a string.
 	 *  
-	 *  @param currencyFormatter a formatter suitable for formatting
-	 *         monetary values.
 	 *  @return the price of the product, suitable for display.
 	 *  @throws FDResourceException if a resource could not be found
 	 *  @throws FDSkuNotFoundException if the product's SKU could not be found
 	 */
-	public String getPrice(NumberFormat currencyFormatter)
-											throws FDResourceException,
-	                                               FDSkuNotFoundException;
+	public String getPrice()
+										throws FDResourceException,
+                                               FDSkuNotFoundException;
 
 	/**
 	 *  Tell if the product is sold by sales unit, or by quantity.

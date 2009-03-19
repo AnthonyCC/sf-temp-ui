@@ -23,8 +23,12 @@
 <%@page import="com.freshdirect.mail.EmailUtil"%>
 <%@page import="com.freshdirect.smartstore.RecommendationService"%>
 <%@page import="com.freshdirect.smartstore.SessionInput"%>
+<%@page import="com.freshdirect.smartstore.fdstore.CohortSelector"%>
 <%@page import="com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration"%>
+<%@page import="com.freshdirect.smartstore.fdstore.SmartStoreUtil"%>
 <%@page import="com.freshdirect.smartstore.fdstore.VariantSelection"%>
+<%@page import="com.freshdirect.smartstore.fdstore.VariantSelector"%>
+<%@page import="com.freshdirect.smartstore.fdstore.VariantSelectorFactory"%>
 <%@page import="com.freshdirect.test.TestSupport"%>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@page import="org.apache.commons.lang.StringEscapeUtils"%>
@@ -39,10 +43,13 @@ Iterator it;
 URLGenerator urlG = new URLGenerator(request);
 String origURL = urlG.build();
 
-String[] siteFeaturesArray = { "DYF", "FEATURED_ITEMS", "FAVORITES" };
-List siteFeatures = Arrays.asList(siteFeaturesArray);
+if (request.getParameter("refresh") != null) {
+	VariantSelectorFactory.refresh();
+}
 
-Map varMap = new HashMap();
+List siteFeatures = EnumSiteFeature.getSmartStoreEnumList();
+
+Map activeMap = new HashMap();
 
 VariantSelection helper = VariantSelection.getInstance();
 
@@ -53,18 +60,17 @@ List dates = helper.getStartDates();
 if (dates.size() > 0)
 	dates.remove(0);
 
-String defaultDate = "(null)";
+String defaultDate = "(active)";
+String latestDate = "(latest)";
 String date = urlG.get("date");
 CHECK: {
 	if (date == null || date.length() == 0) {
 		date = defaultDate;
-	} else {
-		if (!date.equals(defaultDate)) {
-			it = dates.iterator();
-			while (it.hasNext()) {
-				if (date.equals(paramFormat.format(it.next())))
-					break CHECK;
-			}
+	} else if (!date.equals(defaultDate) && !date.equals(latestDate)) {
+		it = dates.iterator();
+		while (it.hasNext()) {
+			if (date.equals(paramFormat.format(it.next())))
+				break CHECK;
 		}
 		date = defaultDate;
 	}
@@ -82,6 +88,17 @@ if (defaultDate.equals(date)) {
 	}
 }
 
+List cohortNames = CohortSelector.getCohortNames();
+SmartStoreUtil.sortCohortNames(cohortNames);
+
+if (defaultDate.equals(date) || latestDate.equals(date)) {
+	it = siteFeatures.iterator();
+	while (it.hasNext()) {
+		EnumSiteFeature sf = (EnumSiteFeature) it.next();
+		activeMap.put(sf, SmartStoreUtil.getAssignment(sf));
+	}
+}
+
 /* redirect */
 String newURL = urlG.build();
 
@@ -89,15 +106,21 @@ if (!origURL.equals(newURL)) {
 	response.sendRedirect(StringEscapeUtils.unescapeHtml(newURL));	
 }
 
-List cohortNames = CohortSelector.getCohortNames();
-SmartStoreUtil.sortCohortNames(cohortNames);
-
 Map assignments = new HashMap();
 it = siteFeatures.iterator();
 while (it.hasNext()) {
-	String sf = (String) it.next();
-	assignments.put(sf, helper.getVariantMap(EnumSiteFeature.getEnum(sf), dateVal));
+	EnumSiteFeature sf = (EnumSiteFeature) it.next();
+	assignments.put(sf, SmartStoreUtil.getAssignment(sf, dateVal));
 }
+
+Boolean needRefresh = null;
+if (defaultDate.equals(date) || latestDate.equals(date)) {
+	needRefresh = new Boolean(!SmartStoreUtil.isCohortAssigmentUptodate());
+}
+
+if (defaultDate.equals(date))
+	assignments  = activeMap;
+
 
 String colors[] = {
 		"#8A2BE2", "#A52A2A", "#DEB887", "#5F9EA0", "#7FFF00", 
@@ -111,9 +134,7 @@ String colors[] = {
 List varColors = new ArrayList();
 
 %>
-
-<%@page import="com.freshdirect.smartstore.fdstore.CohortSelector"%>
-<%@page import="com.freshdirect.smartstore.fdstore.SmartStoreUtil"%><html>
+<html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>COHORTS SUMMARY PAGE</title>
@@ -129,14 +150,27 @@ p.head{padding:10px 0px 20px;}
 .test-page table{border-collapse:collapse;border-spacing:0px;width:100%;}
 .test-page table.t1{width:auto;margin-bottom:20px;}
 .test-page table.t1 td{border:1px solid black;padding:4px 8px;}
+p.red { color: #990000; }
+p.red a { color: #990000; font-weight: bold; text-decoration: underline; }
+p.green { color: #009900; }
 
 	</style>
 </head>
 <body class="test-page">
+	<% if (needRefresh != null) { %>
+	<p class="text13 <%= needRefresh.booleanValue() ? "red" : "green" %>">
+		<% if (needRefresh.booleanValue()) { %>
+		Configuration has been changed in the database. Click <a href="<%= urlG.set("refresh",1).build() %>">here</a> to refresh.
+		<% } else { %>
+		Configuration is up to date.
+		<% } %>
+	</p>
+	<% } %>
 	<form>
 	<p class="head">
 	<select name="date" onchange="this.form.submit();">
-	<option value="<%= defaultDate %>"<%= date.equals(defaultDate) ? " selected=\"selected\"" : "" %>>Current rules</option>
+	<option value="<%= defaultDate %>"<%= date.equals(defaultDate) ? " selected=\"selected\"" : "" %>>Active rules</option>
+	<option value="<%= latestDate %>"<%= date.equals(latestDate) ? " selected=\"selected\"" : "" %>>Latest in DB</option>
 	<%
 		it = dates.iterator();
 		while (it.hasNext()) {
@@ -153,25 +187,26 @@ p.head{padding:10px 0px 20px;}
    	<%
    		it = siteFeatures.iterator();
    		while (it.hasNext()) {
-   			String sf = (String) it.next();
-   			Map curVars = SmartStoreServiceConfiguration.getInstance().getServices(EnumSiteFeature.getEnum(sf));
-   			varMap.put(sf, curVars);
+   			EnumSiteFeature sf = (EnumSiteFeature) it.next();
+   			Map curVars = SmartStoreServiceConfiguration.getInstance().getServices(sf);
    	%>
     <table class="t1">
     	<tr>
     	<td class="text13bold" <%= curVars.size() > 0 ? "colspan=\"" + curVars.size() + "\"" : "" %>
-    			title="Site Feature"><%= sf %></td>
+    			title="Site Feature"><%= sf.getTitle() %></td>
     	</tr>
     	<tr>
     	<%
-    		Map variants = SmartStoreUtil.getVariantsSortedInWeight(EnumSiteFeature.getEnum(sf), dateVal);
+    		Map variants = SmartStoreUtil.getVariantsSortedInWeight(sf, dateVal, defaultDate.equals(date));
     		
    			Iterator it2 = variants.keySet().iterator();
    			Map assignment = (Map) assignments.get(sf);
    			while (it2.hasNext()) {
    				String varId = (String) it2.next();
     	%>
-    	<td class="text13" title="Variant"><%= varId %></td>
+    	<td class="text13" title="Variant">
+    		<a href="/test/smartstore/view_config.jsp#<%= varId %>"><%= varId %></a>
+    	</td>
     	<%
     		}
     	%>
@@ -222,9 +257,9 @@ p.head{padding:10px 0px 20px;}
     	<%
     		it = siteFeatures.iterator();
     		while (it.hasNext()) {
-    			String sf = (String) it.next();
+    			EnumSiteFeature sf = (EnumSiteFeature) it.next();
     	%>
-    	<td class="text13bold" title="Site Feature"><%= sf %></td>
+    	<td class="text13bold" title="Site Feature"><%= sf.getTitle() %></td>
     	<%
     		}
     	%>
@@ -241,7 +276,7 @@ p.head{padding:10px 0px 20px;}
     	<%
     			Iterator it2 = siteFeatures.iterator();
     			while (it2.hasNext()) {
-	    			String sf = (String) it2.next();
+	    			EnumSiteFeature sf = (EnumSiteFeature) it2.next();
 	    			Map assignment = (Map) assignments.get(sf);
 	    			String variant = (String) assignment.get(cohort);
 	    			int colIndex = -1;

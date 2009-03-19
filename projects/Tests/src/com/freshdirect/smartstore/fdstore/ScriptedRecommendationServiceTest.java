@@ -71,9 +71,9 @@ public class ScriptedRecommendationServiceTest extends RecommendationServiceTest
 
             Recommendations recomm = (Recommendations) ctx.getAttribute("recommendations");
             assertNotNull("recommendations", recomm);
-            assertEquals("3 recommendation", 3, recomm.getContentNodes().size());
+            assertEquals("3 recommendation", 3, recomm.getProducts().size());
             
-            List nodes = recomm.getContentNodes();
+            List nodes = recomm.getProducts();
             assertNode("0-spe_madmoose_chc", nodes , 0, "spe_madmoose_chc");
             assertNode("1-spe_moore_lemon", nodes, 1, "spe_moore_lemon");
             assertNode("2-spe_walkers_shortbre_02", nodes, 2, "spe_walkers_shortbre_02");
@@ -112,9 +112,9 @@ public class ScriptedRecommendationServiceTest extends RecommendationServiceTest
 
             Recommendations recomm = (Recommendations) ctx.getAttribute("recommendations");
             assertNotNull("recommendations", recomm);
-            assertEquals("3 recommendation", 1, recomm.getContentNodes().size());
+            assertEquals("3 recommendation", 1, recomm.getProducts().size());
             
-            List nodes = recomm.getContentNodes();
+            List nodes = recomm.getProducts();
             /*assertNode("0-spe_madmoose_chc", nodes , 0, "spe_madmoose_chc");
             assertNode("1-spe_moore_lemon", nodes, 1, "spe_moore_lemon");*/
             assertNode("2-spe_walkers_shortbre_02", nodes, 0, "spe_walkers_shortbre_02");

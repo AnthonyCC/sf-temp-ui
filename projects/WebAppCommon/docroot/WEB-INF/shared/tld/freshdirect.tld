@@ -1150,6 +1150,11 @@
             <rtexprvalue>false</rtexprvalue>
         </attribute>
         <attribute>
+            <name>noRedirect</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <name>redirectPage</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -3182,6 +3187,56 @@
 		</attribute>
 	</tag>
 
+	<tag>
+		<name>YMALRecommendations</name>
+		<tagclass>com.freshdirect.webapp.taglib.smartstore.YMALRecommendationsTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.smartstore.YMALRecommendationsTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>source</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>itemCount</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>skipCheck</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>errorOccurred</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+
+	<tag>
+		<name>YmalContext</name>
+		<tagclass>com.freshdirect.webapp.taglib.smartstore.YmalContextTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.smartstore.YmalContextTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>excludedSkus</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
 
 	<tag>
 		<name>ClickThru</name>
@@ -3312,6 +3367,94 @@
 			<name>hideBurst</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>ProductName</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.ProductNameTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.fdstore.ProductNameTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>product</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>action</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>ProductDescription</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.ProductDescriptionTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.fdstore.ProductDescriptionTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>impression</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>TxProductPricingSupport</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.TxProductPricingSupportTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.fdstore.TxProductPricingSupportTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>namespace</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>formName</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>impressions</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>customer</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>inputNamePostfix</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>TxProductControl</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.TxProductControlTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.fdstore.TxProductControlTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>impression</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>namespace</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>txNumber</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>inputNamePostfix</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
 	<tag>

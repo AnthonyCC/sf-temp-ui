@@ -126,7 +126,7 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
         si.setCurrentNode(category);
         si.setNoShuffle(true);
 
-        List nodes = getFeaturedItemsService().recommendNodes(si);
+        List nodes = getFeaturedItemsService().recommendNodes(null, si);
         assertNotNull("recommend nodes", nodes);
         assertEquals("recommended nodes size", 6, nodes.size());
 
@@ -137,7 +137,7 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
         assertNode("4-fro_up_mudck", nodes, 4, "fro_up_mudck");
         assertNode("5-fro_up_threberylg", nodes, 5, "fro_up_threberylg");
         
-        nodes = getNullService().recommendNodes(si);
+        nodes = getNullService().recommendNodes(null, si);
         assertNotNull("nul recommend nodes", nodes);
         assertEquals("nul recommended nodes size", 0, nodes.size());
     }
@@ -158,9 +158,9 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
 
             Recommendations recomm = (Recommendations) ctx.getAttribute("recommendations");
             assertNotNull("recommendations", recomm);
-            assertEquals("3 recommendation", 3, recomm.getContentNodes().size());
+            assertEquals("3 recommendation", 3, recomm.getProducts().size());
             
-            List nodes = recomm.getContentNodes();
+            List nodes = recomm.getProducts();
             assertNode("0-spe_madmoose_chc", nodes , 0, "spe_madmoose_chc");
             assertNode("1-spe_moore_lemon", nodes, 1, "spe_moore_lemon");
             assertNode("2-spe_walkers_shortbre_02", nodes, 2, "spe_walkers_shortbre_02");
@@ -191,9 +191,9 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
 
             Recommendations recomm = (Recommendations) ctx.getAttribute("recommendations");
             assertNotNull("recommendations", recomm);
-            assertEquals("3 recommendation", 3, recomm.getContentNodes().size());
+            assertEquals("3 recommendation", 3, recomm.getProducts().size());
             
-            List nodes = recomm.getContentNodes();
+            List nodes = recomm.getProducts();
             assertNode("0-spe_madmoose_chc", nodes , 0, "spe_madmoose_chc");
             assertNode("1-spe_moore_lemon", nodes, 1, "spe_moore_lemon");
             assertNode("2-spe_walkers_shortbre_02", nodes, 2, "spe_walkers_shortbre_02");
@@ -228,8 +228,8 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
 
             Recommendations recomm = (Recommendations) ctx.getAttribute("recommendations");
             assertNotNull("all_p : recommendations", recomm);
-            assertEquals("all_p : 5 recommendation", 5, recomm.getContentNodes().size());
-            List nodes = recomm.getContentNodes();
+            assertEquals("all_p : 5 recommendation", 5, recomm.getProducts().size());
+            List nodes = recomm.getProducts();
             assertNode("all_p : 0-spe_walkers_shortbre_02", nodes, 0, "spe_walkers_shortbre_02");
             assertNode("all_p : 1-spe_madmoose_chc", nodes , 1, "spe_madmoose_chc");
             assertNode("all_p : 2-gro_chips_nabisco_04", nodes, 2, "gro_chips_nabisco_04");
@@ -263,8 +263,8 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
 
             Recommendations recomm = (Recommendations) ctx.getAttribute("recommendations");
             assertNotNull("can_p : recommendations", recomm);
-            assertEquals("can_p : 1 recommendation", 1, recomm.getContentNodes().size());
-            List nodes = recomm.getContentNodes();
+            assertEquals("can_p : 1 recommendation", 1, recomm.getProducts().size());
+            List nodes = recomm.getProducts();
             assertNode("can_p : 0-fro_veniero_biscotti", nodes, 0, "fro_veniero_biscotti");
 
             FDEventUtil.flushImpressions();
@@ -294,8 +294,8 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
 
             Recommendations recomm = (Recommendations) ctx.getAttribute("recommendations");
             assertNotNull("man_p : recommendations", recomm);
-            assertEquals("man_p : 2 recommendation", 2, recomm.getContentNodes().size());
-            List nodes = recomm.getContentNodes();
+            assertEquals("man_p : 2 recommendation", 2, recomm.getProducts().size());
+            List nodes = recomm.getProducts();
             // from the FEATURED_ITEMS set:
             assertNode("man_p : 0-spe_madmoose_chc", nodes, 0, "spe_madmoose_chc");
             assertNode("man_p : 1-fro_veniero_biscotti", nodes, 1, "fro_veniero_biscotti");
@@ -319,8 +319,8 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
 
             Recommendations recomm = (Recommendations) ctx.getAttribute("recommendations");
             assertNotNull("speci 1 : recommendations", recomm);
-            assertEquals("speci 1 : 1 recommendation", 1, recomm.getContentNodes().size());
-            List nodes = recomm.getContentNodes();
+            assertEquals("speci 1 : 1 recommendation", 1, recomm.getProducts().size());
+            List nodes = recomm.getProducts();
             // from the FEATURED_ITEMS set:
             assertNode("man_p : 0-spe_madmoose_chc", nodes, 0, "spe_madmoose_chc");
             //assertNode("man_p : 1-fro_veniero_biscotti", nodes, 1, "fro_veniero_biscotti");
@@ -346,8 +346,8 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
 
             Recommendations recomm = (Recommendations) ctx.getAttribute("recommendations");
             assertNotNull("speci 2 : recommendations", recomm);
-            assertEquals("speci 2 : 1 recommendation", 1, recomm.getContentNodes().size());
-            List nodes = recomm.getContentNodes();
+            assertEquals("speci 2 : 1 recommendation", 1, recomm.getProducts().size());
+            List nodes = recomm.getProducts();
             // from the FEATURED_ITEMS set:
             assertNode("speci 2 : 0-fro_veniero_biscotti", nodes, 0, "fro_veniero_biscotti");
             //assertNode("man_p : 1-fro_veniero_biscotti", nodes, 1, "fro_veniero_biscotti");
@@ -380,8 +380,8 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
 
             Recommendations recomm = (Recommendations) ctx.getAttribute("recommendations");
             assertNotNull("yf_p : recommendations", recomm);
-            assertEquals("yf_p : 5 recommendation", 5, recomm.getContentNodes().size());
-            List nodes = recomm.getContentNodes();
+            assertEquals("yf_p : 5 recommendation", 5, recomm.getProducts().size());
+            List nodes = recomm.getProducts();
             // from the FEATURED_ITEMS set
             // gro_earths_oat_cereal, gro_enfamil_powder_m_02, hba_1ups_aloe_rf, hab_pampers_crsrs_4, hba_svngen_dprs_3
             assertNode("without user prefs - manual slot/featured : yf_p : 0 hab_pampers_crsrs_4", nodes, 0, "hab_pampers_crsrs_4");
@@ -413,8 +413,8 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
 
             Recommendations recomm = (Recommendations) ctx.getAttribute("recommendations");
             assertNotNull("yf_p : recommendations", recomm);
-            assertEquals("yf_p : 5 recommendation", 5, recomm.getContentNodes().size());
-            List nodes = recomm.getContentNodes();
+            assertEquals("yf_p : 5 recommendation", 5, recomm.getProducts().size());
+            List nodes = recomm.getProducts();
             // from the FEATURED_ITEMS set
             // gro_earths_oat_cereal, gro_enfamil_powder_m_02, hba_1ups_aloe_rf, hab_pampers_crsrs_4, hba_svngen_dprs_3
             assertNode("with user prefs - manual slot/featured : yf_p : 0 gro_enfamil_powder_m_02", nodes, 0, "gro_enfamil_powder_m_02");
@@ -448,8 +448,8 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
 
             Recommendations recomm = (Recommendations) ctx.getAttribute("recommendations");
             assertNotNull("yf_p : recommendations", recomm);
-            assertEquals("yf_p : 5 recommendation", 5, recomm.getContentNodes().size());
-            List nodes = recomm.getContentNodes();
+            assertEquals("yf_p : 5 recommendation", 5, recomm.getProducts().size());
+            List nodes = recomm.getProducts();
             // from the FEATURED_ITEMS set
             // gro_earths_oat_cereal, gro_enfamil_powder_m_02, hba_1ups_aloe_rf, hab_pampers_crsrs_4, hba_svngen_dprs_3
             assertNode("with user prefs - manual slot/featured : yf_p : 0 gro_7gen_diaperlg", nodes, 0, "gro_7gen_diaperlg");
@@ -488,8 +488,8 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
 
             Recommendations recomm = (Recommendations) ctx.getAttribute("recommendations");
             assertNotNull("yf_p : recommendations", recomm);
-            assertEquals("yf_p : 5 recommendation", 5, recomm.getContentNodes().size());
-            List nodes = recomm.getContentNodes();
+            assertEquals("yf_p : 5 recommendation", 5, recomm.getProducts().size());
+            List nodes = recomm.getProducts();
             // from the FEATURED_ITEMS set
             // gro_earths_oat_cereal, gro_enfamil_powder_m_02, hba_1ups_aloe_rf, hab_pampers_crsrs_4, hba_svngen_dprs_3
             assertNode("with user prefs - manual slot/featured : yf_p : 0 gro_7gen_diaperlg", nodes, 0, "gro_7gen_diaperlg");
@@ -526,9 +526,9 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
 
             {
                 assertNotNull("default-recommendations", recomm);
-                assertEquals("default-3 recommendation", 3, recomm.getContentNodes().size());
+                assertEquals("default-3 recommendation", 3, recomm.getProducts().size());
                 
-                List nodes = recomm.getContentNodes();
+                List nodes = recomm.getProducts();
                 assertNode("default-0-spe_madmoose_chc", nodes , 0, "spe_madmoose_chc");
                 assertNode("default-1-spe_moore_lemon", nodes, 1, "spe_moore_lemon");
                 assertNode("default-2-spe_walkers_shortbre_02", nodes, 2, "spe_walkers_shortbre_02");
@@ -541,9 +541,9 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
             recomm = recommender.getRecommendations(trigger, user, si, SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT, cartItems);
             {
                 assertNotNull("exlusion-recommendations", recomm);
-                assertEquals("exlusion-2 recommendation", 2, recomm.getContentNodes().size());
+                assertEquals("exlusion-2 recommendation", 2, recomm.getProducts().size());
                 
-                List nodes = recomm.getContentNodes();
+                List nodes = recomm.getProducts();
                 assertNode("exlusion-0-spe_madmoose_chc", nodes , 0, "spe_madmoose_chc");
                 assertNode("exlusion-1-spe_walkers_shortbre_02", nodes, 1, "spe_walkers_shortbre_02");
             }
@@ -558,9 +558,9 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
             recomm = recommender.getRecommendations(trigger, user, si, SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT, cartItems);
             {
                 assertNotNull("include-cart-items-recommendations", recomm);
-                assertEquals("include-cart-items-3 recommendation", 3, recomm.getContentNodes().size());
+                assertEquals("include-cart-items-3 recommendation", 3, recomm.getProducts().size());
                 
-                List nodes = recomm.getContentNodes();
+                List nodes = recomm.getProducts();
                 assertNode("include-cart-items 0-spe_madmoose_chc", nodes , 0, "spe_madmoose_chc");
                 assertNode("include-cart-items 1-spe_moore_lemon", nodes, 1, "spe_moore_lemon");
                 assertNode("include-cart-items 2-spe_walkers_shortbre_02", nodes, 2, "spe_walkers_shortbre_02");
@@ -596,7 +596,7 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
         assertNotNull("service["+service.getClass()+"] has config type", service.getVariant().getServiceConfig().getType());
         assertEquals("service["+service.getClass()+"] config type", type, service.getVariant().getServiceConfig().getType());
         
-        List nodes = service.recommendNodes(input);
+        List nodes = service.recommendNodes(null, input);
         assertNotNull("service["+service.getClass()+"] should return a non-null list of recommendations", nodes);
         assertEquals("service["+service.getClass()+"] should return a 0 number of recommendations", 0, nodes.size());
         

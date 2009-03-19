@@ -1,0 +1,289 @@
+<%@ page import='java.util.Iterator' %>
+<%@ page import='java.util.List' %>
+<%@ page import='java.util.Set' %>
+<%@ page import='java.util.ArrayList' %>
+<%@ page import='java.util.Map' %>
+<%@ page import="java.util.Collections"%>
+<%@ page import='com.freshdirect.fdstore.FDConfigurableI' %>
+<%@ page import='com.freshdirect.fdstore.FDSalesUnit' %>
+<%@ page import='com.freshdirect.fdstore.attributes.Attribute'%>
+<%@ page import="com.freshdirect.fdstore.content.YmalSource" %>
+<%@ page import="com.freshdirect.fdstore.content.YmalSet" %>
+<%@ page import='com.freshdirect.fdstore.content.ContentNodeModel' %>
+<%@ page import='com.freshdirect.fdstore.content.ProductModel' %>
+<%@ page import='com.freshdirect.fdstore.content.CategoryModel' %>
+<%@ page import='com.freshdirect.fdstore.content.ContentRef' %>
+<%@ page import='com.freshdirect.fdstore.content.DepartmentRef' %>
+<%@ page import='com.freshdirect.fdstore.content.CategoryRef' %>
+<%@ page import='com.freshdirect.fdstore.content.ProductRef' %>
+<%@ page import='com.freshdirect.fdstore.content.Recipe' %>
+<%@ page import='com.freshdirect.fdstore.customer.FDUserI' %>
+<%@ page import="com.freshdirect.fdstore.util.EnumSiteFeature" %>
+<%@ page import='com.freshdirect.framework.webapp.ActionResult'%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.SessionName' %>
+<%@ page import="com.freshdirect.webapp.util.ProductImpression" %>
+<%@ page import="com.freshdirect.webapp.util.TransactionalProductImpression" %>
+<%@ page import="com.freshdirect.webapp.util.ProductLabelling" %>
+<%@ page import="com.freshdirect.webapp.util.FDURLUtil" %>
+<%@ page import="com.freshdirect.webapp.util.ConfigurationContext" %>
+<%@ page import="com.freshdirect.webapp.util.ConfigurationStrategy" %>
+<%@ page import="com.freshdirect.webapp.util.ConfigurationUtil" %>
+<%@ page import="com.freshdirect.webapp.util.JspMethods" %>
+<%@ page import="com.freshdirect.webapp.util.RequestUtil" %>
+<%@ page import="com.freshdirect.webapp.util.prodconf.SmartStoreConfigurationStrategy" %>
+<%@ page import="com.freshdirect.smartstore.Variant" %>
+<%@ page import="com.freshdirect.smartstore.fdstore.Recommendations" %>
+<%@ page import="com.freshdirect.smartstore.ymal.YmalUtil" %>
+<%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%--
+  == YMAL BOX ==
+  
+  @author segabor
+  
+  Parameter binding
+  -----------------
+  
+  Parameters are passed via request object
+  
+  o 'ymal_products'   - List of YMAL (related) products	     [mandatory]. The list cannot be null and must have at least one item!
+  o 'ymal_categories' - List of YMAL (related) categories    [mandatory]. Cannot be null, can be empty.
+  o 'ymal_recipes'    - List of YMAL (related) recipes       [mandatory]. Cannot be null, can be empty.
+  o 'ymal_aset'       - Active YMAL set						 [optional].
+  o 'ymal_variant'    - Recommender's variant                [optional].
+  o 'ymal_product'    - Originating product                  [optional]. Product to which the YMALs are associated.
+  o 'ymal_result'     - Result of previous Add To Cart event [optional].
+  o 'ymal_header'     - Optional header text for YMAL prods  [optional].
+
+  Note: Make sure YMAL products, recipes and categories lists are NOT NULL and products contain at least one item.
+  Furthermore, none of them may contain unavailable products, hidden categories, etc!
+
+--%><%
+{
+	// CONSTANTS
+	final String TX_FORM_NAME        = "ymal_cart"; // impression form name
+	final String TX_JS_NAMESPACE     = "ymal";
+	final String[] CHECK_ERROR_TYPES = { "technical_difficulty", "quantity" };
+
+
+	// INPUT
+	List r_prods				= (List) request.getAttribute("ymal_products"); // [mandatory]
+	List r_cats					= (List) request.getAttribute("ymal_categories"); // [mandatory]
+	List r_recipes				= (List) request.getAttribute("ymal_recipes"); // [mandatory]
+	YmalSet ym_aset				= (YmalSet) request.getAttribute("ymal_aset"); // [optional] active ymal set
+	ProductModel ym_product		= (ProductModel) request.getAttribute("ymal_product"); // [optional] originating product
+	Variant	variant				= (Variant) request.getAttribute("ymal_variant"); // [optional] variant
+	ActionResult atc_result		= (ActionResult) request.getAttribute("ymal_result"); // [optional]
+	String ym_hdr			= (String) request.getAttribute("ymal_header"); // [optional]
+
+	FDUserI fd_user = (FDUserI) session.getAttribute(SessionName.USER);
+
+	if (variant == null) {
+		// temporary solution
+		variant = new Variant("bad", EnumSiteFeature.YMAL, null);
+	}
+	
+	
+	ConfigurationContext confContext = new ConfigurationContext();
+	confContext.setFDUser(fd_user);
+	ConfigurationStrategy cUtil = SmartStoreConfigurationStrategy.getInstance();
+
+
+	// Transform product to impressions
+	//   and count transactional ones
+	List impressions = new ArrayList();
+	int nConfProd = 0;
+	for (Iterator it = r_prods.iterator(); it.hasNext(); ) {
+	    ProductImpression pi = cUtil.configure((ProductModel) it.next(), confContext);
+	    impressions.add(pi);
+	    
+	    if (pi.isTransactional()) {
+	    	++nConfProd;
+	    }
+	}
+%>
+<%-- PRICING PART --%>
+<fd:TxProductPricingSupport formName="<%= TX_FORM_NAME %>" namespace="<%= TX_JS_NAMESPACE %>" customer="<%= fd_user %>" impressions="<%= impressions %>"/>
+<%
+	String base_url = request.getParameter("base_url");
+	if (base_url == null) {
+		base_url = request.getRequestURI()+(request.getQueryString() == null ? "" : "?" + request.getQueryString());
+	}
+
+
+
+%>	<table class="ymal">
+    	<caption>YOU MIGHT ALSO LIKE</caption>
+        <tr valign="top">
+	    	<td align="center">
+<%
+	boolean firstData = true;
+
+
+%><%-- DISPLAY RECIPES --%><%
+	if (r_recipes.size() > 0) {
+%>				<img src="/media_stat/images/template/confirmation/recommended_recipes.gif" width="149" height="9" border="0" alt="YOU MIGHT ALSO LIKE"><br>
+				<img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
+<%
+		for (Iterator it = r_recipes.iterator(); it.hasNext();) {
+			Recipe rec = (Recipe) it.next();
+%>				<div><a href="/recipe.jsp?recipeId=<%= rec.getContentName() %>&trk=conf" class="text12"><%= rec.getName() %></a></div>
+<%
+		}
+%>				<br>
+<%
+		firstData = false;
+	}
+
+
+
+
+
+%><%-- DISPLAY PRODUCTS --%><%
+	if (impressions.size() > 0) {
+		if (!firstData) {
+%>				<hr class="ymalSeparator"/><%
+		}
+%>
+				<div align="center" style="padding-bottom: 8px;">
+<%		if (ym_hdr != null) { %>
+					<span style="font-size:11px; color: #996699; font-weight: bold;"><%= ym_hdr %></span>
+<%		} else { %>
+					<img width="149" height="9" border="0" alt="YOU MIGHT ALSO LIKE" src="/media_stat/images/template/confirmation/recommended_prods.gif"/>
+<%		} %>
+				</div>
+<% if (atc_result != null) { %><fd:ErrorHandler result='<%= atc_result %>' id='errorMsg' field='<%= CHECK_ERROR_TYPES %>'>
+				<div class="error" style="font-weight: bold; padding-bottom: 8px;"><%= errorMsg %></div>
+</fd:ErrorHandler><% } %>
+				<form name="<%= TX_FORM_NAME %>" method="post" action="<%= base_url %>">
+<%		if (ym_aset != null) { %>
+					<input type="hidden" name="ymalSetId" value="<%= ym_aset.getContentKey().getId() %>">
+<%			if (ym_product != null) { %>
+					<input type="hidden" name="originatingProductId" value="<%= ym_product.getContentName() %>">
+<%			}
+		}
+%>
+					<input type="hidden" name="base_url" value="<%= base_url %>">
+					<input type="hidden" name="rec_product_ids" value="<%= StringEscapeUtils.escapeHtml(Recommendations.getSerializedProducts(r_prods) ) %>">
+
+
+					<table cellpadding="0" cellspacing="0" align="center" width="100%">
+<%
+		int rank = 1;
+		int txProdCount = 0;
+					
+		int rsize = Math.min(3, impressions.size());
+%>
+<fd:PIPLayout id="piRow" rowSize="3" impressions="<%= impressions %>" maxRowHeight="rowHeight" singleRowMode="<%= impressions.size() <= 3 %>">
+						<tr>
+<fd:PIPRow id="pi" impressionRow="<%= piRow %>" isBlankCell="isBlankCell" productImage="prodImage" shouldRenderBlankCells="<%= impressions.size() > 3 %>">
+<%
+		if (isBlankCell.booleanValue()) {
+%>							<td style="width: <%= Math.round(100.0/rsize) %>%;">&nbsp;</td>
+<%
+		} else {
+			// product cell
+			//
+			ProductModel product = pi.getProductModel();
+			ProductLabelling pl = new ProductLabelling(fd_user, product);
+			String actionURI = FDURLUtil.getProductURI(product, variant.getId(), variant.getSiteFeature().getName().toLowerCase(), pl.getTrackingCode(), rank);
+%>							<td style="width: <%= Math.round(100.0/rsize) %>%; text-align: center; vertical-align: top;">
+								<table align="center" style="border-collapse: collapse; border-spacing: 0px">
+									<tr>
+										<td style="padding: 0; margin: 0; height: <%= rowHeight.intValue() %>px; vertical-align: bottom; text-align: center">
+											<fd:ProductImage product="<%= product %>" action="<%= actionURI %>"/>
+										</td>
+									</tr>
+<%
+			if (pi instanceof TransactionalProductImpression) {
+%>									<tr>
+										<td style="padding: 0; margin: 0;">
+											<input type="hidden" name="trk_<%= txProdCount %>" value="<%= variant.getSiteFeature().getName().toLowerCase() %>">
+											<input type="hidden" name="variant_<%= txProdCount %>" value="<%= variant.getId() %>"/>
+											<input type="hidden" name="rank_<%= txProdCount %>" value="<%= rank %>"/>
+											<% if (pl.getTrackingCode() != null) { %><input type="hidden" name="trkd_<%= txProdCount %>" value="<%= pl.getTrackingCode() %>"/><% } %>
+			
+											<fd:TxProductControl txNumber="<%= txProdCount %>" namespace="<%= TX_JS_NAMESPACE %>" impression="<%= (TransactionalProductImpression) pi %>"/>
+										</td>
+									</tr>
+<%				// Count transactional products only
+				txProdCount++;
+			} else {
+%>
+									<tr>
+										<td style="padding: 0; margin: 0; height: 28px; text-align: center; vertical-align: middle;">
+											<span class="text8">(click name to buy)</span>
+										</td>
+									</tr>
+<%			} // !transactional
+%>								</table>
+
+								<!-- product name, etc -->
+								<fd:ProductRating product="<%= product %>"/>
+								<fd:ProductName product="<%= product %>" action="<%= actionURI %>"/>
+								<fd:ProductDescription impression="<%= pi %>"/>
+							</td>
+<%		}
+		rank++;
+%>
+</fd:PIPRow>
+						</tr>
+</fd:PIPLayout>
+<%		if (nConfProd > 0) {
+%>
+						<tr>
+							<td colspan="9"><hr class="ymalSeparator"></td>
+						</tr>
+						<tr>
+							<td colspan="9" class="text11bold">
+								<table width="100%">
+									<tr>
+										<td align="left">
+											<input type="hidden" name="itemCount" value="<%= nConfProd %>">
+											<input type="image" name="addMultipleToCart" src="/media_stat/images/template/quickshop/qs_add_selected_to_cart.gif" width="145" height="17" border="0" vspace="8" alt="ADD SELECTED TO CART">
+										</td>
+										<td align="right">
+											Total&nbsp;Price:&nbsp;&nbsp;<img src="/media_stat/images/layout/clear.gif" width="4" height="1"><input type="text" style="width:60px" name="total" value="" size="6" class="text11bold" onChange="" onFocus="blur()">
+											<script type="text/javascript">	<%= TX_JS_NAMESPACE %>.updateTotal();</script>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+<%		} %>
+					</table>
+				</form>
+<%
+		firstData = false;
+	}
+
+                                    	
+
+
+%><%-- DISPLAY RELATED CATEGORIES --%><%
+	if (r_cats.size() > 0) {
+    	if (!firstData) {
+%>				<hr class="ymalSeparator"/>
+<%		}
+%>				<div align="center" style="padding-top: 8px; padding-bottom: 8px;">
+					<div style="font-size:11px; color: #996699; font-weight: bold;">CONTINUE SHOPPING FOR</div>
+					<img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
+<%
+		for (Iterator it = r_cats.iterator(); it.hasNext();) {
+			CategoryModel c = (CategoryModel) it.next();
+				
+			CategoryModel aliasNode = c.getAliasCategory();
+			String relatedLink = FDURLUtil.getCategoryURI((aliasNode != null ? aliasNode : c), "conf");
+			%><a href="<%= relatedLink %>" class="text12" style="font-weight: bold"><%= c.getFullName() %></a><%= it.hasNext() ? ", " : "" %><%
+		}
+%>				</div>
+<%
+        firstData = false;
+	}
+%>
+			</td>
+		</tr>
+	</table>
+<%
+}
+%>

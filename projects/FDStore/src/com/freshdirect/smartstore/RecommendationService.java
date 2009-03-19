@@ -26,7 +26,7 @@ public interface RecommendationService {
 	 * 
 	 * @return a List<{@link ContentNodeModel}> of recommendations, expected to be sorted by relevance
 	 */
-	public List recommendNodes(SessionInput input);
+	public List recommendNodes(Trigger trigger, SessionInput input);
 	
 	public String getDescription();
 	

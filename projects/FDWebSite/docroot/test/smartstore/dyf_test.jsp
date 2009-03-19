@@ -385,8 +385,8 @@ if ("recommend".equals(action)) {
 		</td>
 		<td width="33%" valign="top">
 <%
-	if (recommendations.getContentNodes().size() > 0) {
-		Iterator r_it = recommendations.getContentNodes().iterator();
+	if (recommendations.getProducts().size() > 0) {
+		Iterator r_it = recommendations.getProducts().iterator();
 		while (r_it.hasNext()) {
 			ProductModel item = (ProductModel) r_it.next();
 			%>			<%= item.getFullName() %><br/>

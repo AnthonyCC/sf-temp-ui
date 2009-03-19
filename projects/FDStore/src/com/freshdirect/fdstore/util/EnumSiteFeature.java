@@ -27,7 +27,7 @@ public class EnumSiteFeature extends Enum implements Serializable {
 	public final static EnumSiteFeature NEW_SEARCH = new EnumSiteFeature("newSearch");
 	public final static EnumSiteFeature CCL = new EnumSiteFeature("CCL");
 	public final static EnumSiteFeature DYF = new EnumSiteFeature("DYF", true, "Your Favorites");
-	public final static EnumSiteFeature YMAL = new EnumSiteFeature("YMAL");
+	public final static EnumSiteFeature YMAL = new EnumSiteFeature("YMAL", true, "You Might Also Like");
 	public final static EnumSiteFeature RATING = new EnumSiteFeature("RATING");
     public final static EnumSiteFeature FEATURED_ITEMS = new EnumSiteFeature("FEATURED_ITEMS", true, "Featured Items");
     public final static EnumSiteFeature FAVORITES = new EnumSiteFeature("FAVORITES", true, "FreshDirect Favorites");

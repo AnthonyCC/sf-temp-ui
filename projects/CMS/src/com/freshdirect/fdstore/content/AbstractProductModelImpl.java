@@ -233,5 +233,12 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 		}
 		return deal;
 	}
-
+	
+	public String getYmalHeader() {
+		final YmalSet activeYmalSet = getActiveYmalSet();
+		if (activeYmalSet != null && activeYmalSet.getProductsHeader() != null)
+			return activeYmalSet.getProductsHeader();
+		
+		return getAttribute("RELATED_PRODUCTS_HEADER", null);
+	}
 }

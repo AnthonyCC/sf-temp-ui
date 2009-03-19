@@ -5,12 +5,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
+
 
 import javax.naming.Context;
-import javax.naming.NamingException;
-
-import junit.framework.TestCase;
 
 import org.mockejb.interceptor.Aspect;
 import org.mockejb.interceptor.InvocationContext;
@@ -37,11 +34,8 @@ import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
-import com.freshdirect.fdstore.content.ProductAutoconfigureTest.FDFactoryProductAspect;
-import com.freshdirect.fdstore.content.ProductAutoconfigureTest.FDFactoryProductInfoAspect;
 import com.freshdirect.fdstore.customer.DebugMethodPatternPointCut;
 import com.freshdirect.fdstore.customer.FDCustomerManagerTestSupport;
-import com.freshdirect.framework.util.DateUtil;
 
 /**
  * Test case for YMALs and YMAL sets.
@@ -69,10 +63,7 @@ public class YmalTest extends FDCustomerManagerTestSupport {
 
 		CmsManager.setInstance(new CmsManager(service, null));
 		
-		Context            context            = null;
 		Hashtable          env                = new Hashtable();
-		MockContextFactory mockContextFactory = new MockContextFactory();
-
 		// set the context factory to the mockejb context factory
 		FDStoreProperties.set("fdstore.initialContextFactory", "org.mockejb.jndi.MockContextFactory");
 
@@ -80,8 +71,6 @@ public class YmalTest extends FDCustomerManagerTestSupport {
 		env.put(Context.INITIAL_CONTEXT_FACTORY, FDStoreProperties.getInitialContextFactory() );
 		
 		MockContextFactory.setAsInitial();
-		context = mockContextFactory.getInitialContext(env);
-
 		aspectSystem.add(new FDFactoryProductAspect());
 		aspectSystem.add(new FDFactoryProductInfoAspect());		
 	}
@@ -507,6 +496,67 @@ public class YmalTest extends FDCustomerManagerTestSupport {
 		assertEquals(relatedRecipes.get(5), findNode("recipe_mea0004566"));
 	}
 	
+	
+	/**
+	 *  Test methods defined in YmalSource interface by
+	 *  calling them on a ConfiguredProduct instance
+	 */
+	public void testYmalSourceMethodsOnConfiguredProduct() {
+		YmalSource cf = (YmalSource) findNode("configured_product_mea0004561");
+		assertNotNull(cf);
+		// assertFalse(cf.isUnavailable());
+		assertTrue(cf instanceof ConfiguredProduct);
+
+		// test getActiveYmalSet()
+		YmalSet ys = cf.getActiveYmalSet();
+		assertEquals(ys.getContentName(), "ymal_set_4_to_6");
+		
+		// test getYmalProducts()
+		List ymalProducts = cf.getYmalProducts();
+
+		assertNotNull(ymalProducts);
+		assertTrue(ymalProducts.size() == 3);
+		
+		// test getYmalRecipes()
+		List ymalRecipes = cf.getYmalRecipes();
+		assertTrue(ymalRecipes.size() == 3);
+
+		// test getYmalCategories()
+		List ymalCategories = cf.getYmalCategories();
+		assertTrue(ymalCategories.size() == 3);
+	}
+
+	
+	/**
+	 *  Test methods defined in YmalSource interface by
+	 *  calling them on a Recipe instance
+	 */
+	public void testYmalSourceMethodsOnRecipe() {
+		YmalSource cf = (YmalSource) findNode("recipe_mea0004567");
+		assertNotNull(cf);
+		// assertFalse(cf.isUnavailable());
+		assertTrue(cf instanceof Recipe);
+
+		// test getActiveYmalSet()
+		YmalSet ys = cf.getActiveYmalSet();
+		assertEquals(ys.getContentName(), "ymal_set_4_to_6");
+		
+		// test getYmalProducts()
+		List ymalProducts = cf.getYmalProducts();
+
+		assertNotNull(ymalProducts);
+		assertTrue(ymalProducts.size() == 3);
+		
+		// test getYmalRecipes()
+		List ymalRecipes = cf.getYmalRecipes();
+		assertTrue(ymalRecipes.size() == 3);
+
+		// test getYmalCategories()
+		List ymalCategories = cf.getYmalCategories();
+		assertTrue(ymalCategories.size() == 3);
+	}
+
+
 	/**
 	 *  Find any product specified by its id.
 	 *  

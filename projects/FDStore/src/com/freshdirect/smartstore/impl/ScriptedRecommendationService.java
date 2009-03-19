@@ -9,6 +9,7 @@ import java.util.TreeSet;
 
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.smartstore.SessionInput;
+import com.freshdirect.smartstore.Trigger;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.dsl.CompileException;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
@@ -50,7 +51,7 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
         this(variant, variant.getServiceConfig().get(CKEY_GENERATOR), variant.getServiceConfig().get(CKEY_SCORING));
     }
 
-    public List recommendNodes(SessionInput input) {
+    public List recommendNodes(Trigger trigger, SessionInput input) {
         return recommendNodes(input, ScoreProvider.getInstance());
     }
     

@@ -11,6 +11,8 @@ import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.smartstore.SessionInput;
+import com.freshdirect.smartstore.Trigger;
 import com.freshdirect.smartstore.Variant;
 
 /**
@@ -22,8 +24,11 @@ public class Recommendations implements Serializable {
 	
 	private static final long serialVersionUID = 8230385944777453868L;
 	private Variant variant;
-	private List contentNodes;
+	private List products;
+	private List categories;
+	private List recipes;
 	
+	private SessionInput sessionInput;
 	
 	/**
 	 * Constructor.
@@ -32,7 +37,7 @@ public class Recommendations implements Serializable {
 	 */
 	public Recommendations(Variant variant, List contentNodes) {
 		this.variant = variant;
-		this.contentNodes = contentNodes;
+		this.products = contentNodes;
 	}
 	
 	/**
@@ -54,20 +59,36 @@ public class Recommendations implements Serializable {
 	            nodes.add((ProductModel) ContentFactory.getInstance().getContentNodeByKey(key));
 			}
 
-			contentNodes = nodes;
+			products = nodes;
 		} else {
 			// Empty case
-			contentNodes = Collections.EMPTY_LIST;
+			products = Collections.EMPTY_LIST;
 		}
 	}
 	
 	
+	public Recommendations(Variant variant, List products,
+			List categories, List recipes, SessionInput sessionInput) {
+		this(variant, products);
+		this.categories = categories;
+		this.recipes = recipes;
+		this.sessionInput = sessionInput;
+	}
+
 	/**
-	 * Get recommended content keys.
+	 * Get recommended product nodes.
 	 * @return List<{@link ProductModel}>
 	 */
-	public List getContentNodes() {
-		return contentNodes;
+	public List getProducts() {
+		return products;
+	}
+	
+	public List getCategories() {
+		return categories != null ? categories : Collections.EMPTY_LIST;
+	}
+	
+	public List getRecipes() {
+		return recipes != null ? recipes : Collections.EMPTY_LIST;
 	}
 	
 	/**
@@ -78,9 +99,28 @@ public class Recommendations implements Serializable {
 		return variant;
 	}
 	
+	/**
+	 * Return the session input.
+	 * @return
+	 */
+	public SessionInput getSessionInput() {
+            return sessionInput;
+        }
+	
 	public String serializeContentNodes() {
+		return Recommendations.getSerializedProducts(products);
+	}
+
+
+	/**
+	 * Serialize products to String
+	 * 
+	 * @param products<ProductModel>
+	 * @return
+	 */
+	public static String getSerializedProducts(List products) {
 		StringBuffer buffer = new StringBuffer();
-		Iterator it = contentNodes.iterator();
+		Iterator it = products.iterator();
 		if (it.hasNext())
 		{
 			buffer.append(((ProductModel) it.next()).getContentKey().getId());
@@ -93,6 +133,13 @@ public class Recommendations implements Serializable {
 		return buffer.toString();
 	}
 	
+	/**
+	 * @deprecated
+	 * 
+	 * @param input
+	 * @return
+	 * @throws InvalidContentKeyException
+	 */
 	public List deserializeContentNodes(String input) throws InvalidContentKeyException {
 		if (input == null || "".equals(input))
 			return Collections.EMPTY_LIST;
@@ -104,6 +151,6 @@ public class Recommendations implements Serializable {
             ContentKey key = ContentKey.create(FDContentTypes.PRODUCT, ids[i]);
             nodes.add((ProductModel) ContentFactory.getInstance().getContentNodeByKey(key));
 		}
-		return contentNodes = nodes;
+		return products = nodes;
 	}
 }

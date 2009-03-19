@@ -24,6 +24,7 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.impl.CandidateProductRecommendationService;
@@ -452,8 +453,12 @@ public class ScoreProvider implements DataAccess {
 				return FeaturedItemsRecommendationService.getFeaturedItems(input.getCurrentNode());
 			}
 		} else if ("CandidateLists".equals(name)) {
-			if (input.getCurrentNode() instanceof CategoryModel) {
-				return CandidateProductRecommendationService.collectCandidateProductsNodes((CategoryModel)input.getCurrentNode());
+			if (input.getCurrentNode() instanceof ProductModel) {
+				return CandidateProductRecommendationService.collectCandidateProductsNodes(
+						((ProductModel) input.getCurrentNode()).getPrimaryHome());
+			} else if (input.getCurrentNode() instanceof CategoryModel) {
+				return CandidateProductRecommendationService.collectCandidateProductsNodes(
+						(CategoryModel) input.getCurrentNode());
 			}
 		} else if ("PurchaseHistory".equals(name)) {
 			if (input.getCustomerId() != null) {
@@ -487,9 +492,11 @@ public class ScoreProvider implements DataAccess {
          * @return Map<{@link ContentKey},{@link Float}> productId->Score, never null
          */
         public Map getUserProductScores(String erpCustomerId) {
+
         	if (erpCustomerId == null) {
         		return Collections.EMPTY_MAP;
         	}
+
             Map scores = storePersonalizedScores(erpCustomerId);
             
             if (scores != null && !scores.isEmpty()) {
@@ -579,6 +586,16 @@ public class ScoreProvider implements DataAccess {
 	    names.add(ORIGINAL_SCORES_GLOBAL);
 	    names.add(ORIGINAL_SCORES_PERSONALIZED);
 	    
+	    // pre-load for Smart YMAL
+	    names.add("Recency_Discretized");
+	    names.add("Popularity_Discretized");
+	    names.add("DealsPercentage");
+	    names.add("DealsPercentage_Discretized");
+	    names.add("QualityRating_Discretized2");
+	    names.add("Frequency_Discretized");
+	    
+	    // extra factors can be parameterized
+	    names.addAll(FDStoreProperties.getSmartstorePreloadFactors());
 	   
 	    
 	    factorInfo.reloadNames();

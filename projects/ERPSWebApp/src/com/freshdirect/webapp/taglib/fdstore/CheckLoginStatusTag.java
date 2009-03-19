@@ -40,6 +40,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
     private String redirectPage;
     private boolean guestAllowed = true;
     private boolean recognizedAllowed = true;
+    private boolean noRedirect = false;
     
     private boolean redirected = false;
     
@@ -60,8 +61,15 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         this.recognizedAllowed = recognizedAllowed;
     }
     
-    
-    public int doStartTag() throws JspException {
+    public boolean isNoRedirect() {
+		return noRedirect;
+	}
+
+	public void setNoRedirect(boolean noRedirect) {
+		this.noRedirect = noRedirect;
+	}
+
+	public int doStartTag() throws JspException {
         HttpSession session = pageContext.getSession();
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
@@ -152,6 +160,9 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
     }
     
     private void doRedirect(boolean firstRequest) throws JspException {
+    	if (noRedirect)
+    		return;
+    	
         HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
         try {
             response.sendRedirect(response.encodeRedirectURL( this.getRedirectURL(firstRequest) ));

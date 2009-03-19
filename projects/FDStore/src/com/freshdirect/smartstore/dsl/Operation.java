@@ -63,6 +63,11 @@ public class Operation extends Expression {
         return (Expression) params.get(index);
     }
     
+    /**
+     * Return the index-th operator. The first operator between the first and second operand is the 0th operator.
+     * @param index
+     * @return
+     */
     public char getOperator(int index) {
         return ((Character)operators.get(index)).charValue();
     }
@@ -234,6 +239,13 @@ public class Operation extends Expression {
             
         } while(max>0 && tParams.size()>1);
         return (BinaryExpression) tParams.get(0);
+    }
+
+    public void removeOperator(int i) {
+        params.remove(i);
+        if (i>0) {
+            operators.remove(i-1);
+        }
     }
     
 

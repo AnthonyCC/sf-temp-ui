@@ -103,10 +103,10 @@ if (sortedColl==null) sortedColl = new ArrayList();
 %>
 <%-- FEATURED ITEMS DISPLAY START --%>
 <fd:FeaturedItemsRecommendations id="recommendations"  currentNode="<%= currentFolder %>" itemCount="4"><%
-	if (recommendations != null && recommendations.getContentNodes().size() > 0) {
+	if (recommendations != null && recommendations.getProducts().size() > 0) {
 	    request.setAttribute("recommendationsRendered","true");
 
-		List products = recommendations.getContentNodes();
+		List products = recommendations.getProducts();
 		int ord = 1;
 %><table cellspacing="0" cellpadding="1" border="0" width="<%= tablewidth %>">
 	<tr valign="top">

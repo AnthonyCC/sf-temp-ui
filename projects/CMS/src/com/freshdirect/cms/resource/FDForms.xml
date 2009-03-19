@@ -21,6 +21,8 @@
 			<CmsEditor ref="configuredProductGroup" />
 			<CmsEditor ref="ymalSet" />
 			<CmsEditor ref="starterList" />
+			<CmsEditor ref="recommender" />
+			<CmsEditor ref="recommenderStrategy" />
 		</editors>
 	</CmsFolder>
 	
@@ -817,6 +819,7 @@
                         <title>Relationships</title>
                         <fields>
                             <CmsField><attribute>ymals</attribute></CmsField>
+                            <CmsField><attribute>recommenders</attribute></CmsField>
                         </fields>
                     </CmsSection>
                 </sections>
@@ -1139,5 +1142,52 @@
 			<CmsField><attribute>notes</attribute></CmsField>
 		</fields>
 	</CmsSection>
+	
+	<CmsEditor id="recommender">
+        <contentType>Recommender</contentType>
+        <pages>
+            <CmsPage>
+                <title>Core Attributes</title>
+                <sections>
+                    <CmsSection>
+                        <title>Main attributes</title>
+                        <fields>
+                            <CmsField><attribute>FULL_NAME</attribute></CmsField>
+                            <CmsField><attribute>strategy</attribute></CmsField>
+                            <CmsField><attribute>scope</attribute></CmsField>
+                        </fields>
+                    </CmsSection>
+                </sections>
+            </CmsPage>
+        </pages>
+    </CmsEditor>
+
+	<CmsEditor id="recommenderStrategy">
+        <contentType>RecommenderStrategy</contentType>
+        <pages>
+            <CmsPage>
+                <title>Core Attributes</title>
+                <sections>
+                    <CmsSection>
+                        <title>Main attributes</title>
+                        <fields>
+                            <CmsField><attribute>FULL_NAME</attribute></CmsField>
+                            <CmsField><attribute>generator</attribute></CmsField>
+                            <CmsField><attribute>scoring</attribute></CmsField>
+                        </fields>
+                    </CmsSection>
+                    <CmsSection>
+                        <title>Sampling attributes</title>
+                        <fields>
+                            <CmsField><attribute>sampling</attribute></CmsField>
+                            <CmsField><attribute>top_n</attribute></CmsField>
+                            <CmsField><attribute>top_percent</attribute></CmsField>
+                            <CmsField><attribute>exponent</attribute></CmsField>
+                        </fields>
+                    </CmsSection>
+                </sections>
+            </CmsPage>
+        </pages>
+    </CmsEditor>
 	
 </Content>

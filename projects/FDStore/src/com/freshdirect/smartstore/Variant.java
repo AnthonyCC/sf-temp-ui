@@ -97,7 +97,7 @@ public class Variant implements Serializable, Comparable {
 	
     public String toString() {
         return "Variant(" + id + ',' + siteFeature + ',' + serviceConfig + ',' + 
-            (serviceConfig != null ? serviceConfig.getType().getName() : "null") + ')';
+            (serviceConfig != null && serviceConfig.getType()!=null ? serviceConfig.getType().getName() : "null") + ')';
     }
 	
 }

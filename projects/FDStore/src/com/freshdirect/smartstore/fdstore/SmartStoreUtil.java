@@ -160,6 +160,11 @@ public class SmartStoreUtil {
 		return false;
 	}
 
+	/**
+	 * Sort cohort names numerically
+	 * 
+	 * @param names
+	 */
 	public static void sortCohortNames(List names) {
 		Collections.sort(names, new Comparator() {
 			public int compare(Object o1, Object o2) {
@@ -208,17 +213,44 @@ public class SmartStoreUtil {
 		});
 	}
 
+	/**
+	 * get the currently active variants sorted in weight
+	 * 
+	 * @param feature
+	 * @return
+	 */
 	public static SortedMap getVariantsSortedInWeight(EnumSiteFeature feature) {
-		return getVariantsSortedInWeight(feature, null);
+		return getVariantsSortedInWeight(feature, null, true);
 	}
 
+	/**
+	 * get the variant mappings in the DB for a given date (null means latest)
+	 * @param feature
+	 * @param date
+	 * @return
+	 */
+	public static SortedMap getVariantsSortedInWeight(EnumSiteFeature feature, Date date) {
+		return getVariantsSortedInWeight(feature, date, false);
+	}
+	
+	/**
+	 * get the currently active variant map or the latest or the one for a
+	 * specific date in DB, depending on the specified parameters
+	 * 
+	 * @param feature
+	 * @param date
+	 *            if current is false, specifies the date for the configuration
+	 *            is searched (if null and current is false then get the latest)
+	 * @param current
+	 *            it true, get the current
+	 * @return
+	 */
 	public static SortedMap getVariantsSortedInWeight(EnumSiteFeature feature,
-			Date date) {
+			Date date, boolean current) {
 
 		final VariantSelection vs = VariantSelection.getInstance();
 		Map cohorts = vs.getCohorts();
-		Map assignment = vs.getVariantMap(feature,
-				date);
+		Map assignment = getAssignment(feature, date, current);
 		final Map clone = new HashMap();
 		List variants = vs.getVariants(feature);
 		Iterator it = variants.iterator();
@@ -267,14 +299,72 @@ public class SmartStoreUtil {
 	}
 
 	public static List getVariantNamesSortedInUse(EnumSiteFeature feature) {
-		return getVariantNamesSortedInUse(feature, null);
+		return getVariantNamesSortedInUse(feature, null, true);
 	}
 
 	public static List getVariantNamesSortedInUse(EnumSiteFeature feature, Date date) {
+		return getVariantNamesSortedInUse(feature, date, false);
+	}
+
+	public static List getVariantNamesSortedInUse(EnumSiteFeature feature, Date date, boolean current) {
 		final VariantSelection vs = VariantSelection.getInstance();
 		List variants = vs.getVariants(feature);
-		final Map assignment = vs.getVariantMap(feature, date);
+		Map assignment;
+		assignment = getAssignment(feature, date, current);
 
+		getVariantNamesSortedInUse(variants, assignment);
+		return variants;
+	}
+
+	/**
+	 * get the currently active cohort-variant assignment for a given feature
+	 * 
+	 * @param feature
+	 * @return
+	 */
+	public static Map getAssignment(EnumSiteFeature feature) {
+		return getAssignment(feature, null, true);
+	}
+
+	/**
+	 * get the cohort-variant assignment for a given feature and for a given date
+	 * 
+	 * Null date means get the latest in the DB (does not necessary equal to the
+	 * currently active 
+	 * 
+	 * @param feature
+	 * @param date
+	 * @return
+	 */
+	public static Map getAssignment(EnumSiteFeature feature, Date date) {
+		return getAssignment(feature, date, false);
+	}
+
+	/**
+	 * get the currently active cohort-variant assignment or the one specific to
+	 * a given date depending on the specified parameters
+	 * 
+	 * @param feature
+	 * @param date
+	 * @param current
+	 * @return
+	 */
+	public static Map getAssignment(EnumSiteFeature feature, Date date,
+			boolean current) {
+		Map assignment;
+		final VariantSelection vs = VariantSelection.getInstance();
+		if (current) {
+			List cohorts = vs.getCohortNames();
+			VariantSelector vsr = VariantSelectorFactory.getInstance(feature);
+			assignment = new HashMap(cohorts.size());
+			for (int i = 0; i < cohorts.size(); i++)
+				assignment.put(cohorts.get(i), vsr.getService((String) cohorts.get(i)).getVariant().getId());
+		} else
+			assignment = vs.getVariantMap(feature, date);
+		return assignment;
+	}
+
+	private static void getVariantNamesSortedInUse(List variants, final Map assignment) {
 		Collections.sort(variants, new Comparator() {
 			public int compare(Object o1, Object o2) {
 				if (o1 == null) {
@@ -306,9 +396,14 @@ public class SmartStoreUtil {
 				}
 			}
 		});
-		return variants;
 	}
 	
+	/**
+	 * sorts the names with ignored case
+	 * 
+	 * @param names
+	 * @return
+	 */
 	public static List sortVariantNames(List names) {
 		Collections.sort(names, new Comparator() {
 			public int compare(Object o1, Object o2) {
@@ -330,5 +425,20 @@ public class SmartStoreUtil {
 		});
 		
 		return names;
+	}
+	
+	public static boolean isCohortAssigmentUptodate() {
+		List siteFeatures = EnumSiteFeature.getSmartStoreEnumList();
+		Iterator it = siteFeatures.iterator();
+		while (it.hasNext()) {
+			EnumSiteFeature sf = (EnumSiteFeature) it.next();
+			Map curVars = getAssignment(sf, null, true);
+			Map asgmnt = (Map) getAssignment(sf, null, false);
+			if (!curVars.equals(asgmnt)) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }

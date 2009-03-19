@@ -1,500 +1,66 @@
-<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
-<%@ page import='com.freshdirect.framework.webapp.*'%>
-<%@ page import='com.freshdirect.webapp.util.*'%>
-<%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
-<%@ page import='com.freshdirect.content.attributes.*'%>
-<%@ page import='com.freshdirect.fdstore.attributes.*' %>
-<%@ page import='com.freshdirect.fdstore.content.*' %>
-<%@ page import='com.freshdirect.customer.*' %>
-<%@ page import='com.freshdirect.cms.fdstore.*' %>
-<%@ page import="com.freshdirect.common.pricing.Discount" %>
-
-<%@ page import="com.freshdirect.webapp.util.FletoHelper" %>
-<%@ page import="com.freshdirect.webapp.util.ConfigurationContext" %>
-<%@ page import="com.freshdirect.webapp.util.ConfigurationStrategy" %>
-<%@ page import="com.freshdirect.webapp.util.ConfigurationStrategyFactory" %>
+<%@ page import='java.util.Iterator' %>
+<%@ page import='java.util.List' %>
+<%@ page import='java.util.Set' %>
+<%@ page import='java.util.ArrayList' %>
+<%@ page import='java.util.Map' %>
+<%@ page import="java.util.Collections"%>
+<%@ page import="com.freshdirect.fdstore.content.YmalSource" %>
+<%@ page import="com.freshdirect.fdstore.content.YmalSet" %>
+<%@ page import='com.freshdirect.fdstore.customer.FDUserI' %>
 <%@ page import="com.freshdirect.fdstore.util.EnumSiteFeature" %>
-<%@ page import="com.freshdirect.webapp.util.RequestUtil" %>
-<%
+<%@ page import='com.freshdirect.framework.webapp.ActionResult'%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.SessionName' %>
+<%@ page import="com.freshdirect.webapp.util.ProductImpression" %>
+<%@ page import="com.freshdirect.webapp.util.TransactionalProductImpression" %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%--
 /**
  *  A JSP fragment page to display the YMALs based on YMAL lists for
  *  product, recipe and category content nodes.
  *
- *  Parameters:
- *
- *  @param user the active user, and FDUserI instance
- *  @param relatedProducts a list of ProductModel objects, the products
- *         to display as YMAL.
- *  @param relatedRecipes a list of Recipe objects, the recipes to display
- *         as YMAL.
- *  @param relatedCategories a list of Category objects, the categories to
- *         display as YMAL.
- *  @param activeYmalSet a YmalSet object, which is the active YMAL set displayed.
- *         may be null.
- *  @param ymalHeader the hearder string to display for YMAL products
- *         (usually the RELATED_PRODUCTS_HEADER attribute of a Product node)
- *         may be null.
- *  @param spacer a string containing a URL to a spacer image
- *         (totally clear image)
- *  @param currencyFormatter a NumberFormat instance, to format currency
- *         values to strings
- *
  */
+--%><%
+	// more things
+	ActionResult ymal_result = (ActionResult) request.getAttribute("actionResult");
+	FDUserI ymal_user = (FDUserI) session.getAttribute(SessionName.USER);
+%>
+<fd:YmalContext id="ymalSource">
+<fd:YMALRecommendations id="recommendations" source="<%= ymalSource %>" errorOccurred="<%=!ymal_result.isSuccess()%>"><%
+	List relatedProducts = recommendations.getProducts();
+	List relatedRecipes = ymalSource.getYmalRecipes();
+	List relatedCategories = ymalSource.getYmalCategories();
+	YmalSet ymal_aset = ymalSource.getActiveYmalSet();
+	String ymalHeader = ymalSource.getYmalHeader();
+	ProductModel ymal_product = ymalSource instanceof ProductModel ? (ProductModel) ymalSource : YmalUtil.getSelectedCartLine(ymal_user).lookupProduct();
 
-	java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##"); 
-%>		
-				<tr><td colspan="4" align="center">
-                        <%
-                        if ((relatedProducts != null) && (relatedProducts.size() > 0)
-                         || (relatedRecipes != null) && (relatedRecipes.size() > 0)
-                         || (relatedCategories != null) && (relatedCategories.size() > 0)) { 
-                            String []    checkErrorType = { "technical_difficulty", "quantity" };
-                            StringBuffer outputC       = new StringBuffer(); // category .. you might also like
-                            StringBuffer outputP       = new StringBuffer(); // product .. recommended prods
-                            StringBuffer outputP2      = new StringBuffer(); // product descriptive image
-                            StringBuffer outputP3      = new StringBuffer(); // configured product quantity selection
-                            StringBuffer outputP4      = new StringBuffer(); // product descriptive name and price
-                            StringBuffer outputRecipes = new StringBuffer();
-                            int          recipeCount   = 0;
-                            int          relatedCount  = 0;
-                            String       catId         = null;
-                            String       prodId        = null;
-                            String       relatedLink   = null;
-                            String       itemFullName  = null;
-                            boolean      closedRow     = false;
-                            int          catCount      = 0;
-                            int          prodCount     = 0;
-                            int          confProdCount = 0;
-                            int          nConfProd     = 0;
-                            boolean      firstData     = true;
-                            boolean      transactional = activeYmalSet == null
-                                                       ? false
-                                                       : activeYmalSet.isTransactional();
+	// -- AVAILABILITY CHECK --
+	// remove unavailable recipes
+	for (Iterator it = relatedRecipes.iterator(); it.hasNext();) {
+		Recipe rec = (Recipe) it.next();
+		if (!rec.isAvailable())
+			it.remove();
+	}
 
-                            for (Iterator it = relatedRecipes.iterator(); it.hasNext(); ) {
-                            	Object itrObj = it.next();
-                                Recipe rec = (Recipe) itrObj;
-
-                                if (!rec.isAvailable()) {
-                                    continue;
-                                }
-
-                                if (recipeCount == 0) {
-                                    outputRecipes.append("<img src=\"/media_stat/images/template/confirmation/recommended_recipes.gif\" width=\"149\" height=\"9\" border=\"0\" alt=\"YOU MIGHT ALSO LIKE\">\n");
-                                    outputRecipes.append("<br><img src=\""+spacer+"\" width=\"1\" height=\"4\"><br>\n");
-                                }
-
-                                outputRecipes.append("<a href=\"/recipe.jsp?recipeId=" + rec.getContentKey().getId() + "&trk=conf\"><font class=\"text12\">" + rec.getName() + "</font></a><br/>\n");
-
-                                ++recipeCount;
-                                ++relatedCount;
-                            }
-
-                            // collect all the SKUs for the pricing script
-                            // this will be used in the script include below
-                            List skus = new ArrayList();
-                            for (Iterator it = relatedProducts.iterator(); it.hasNext(); ) {
-                            	Object       itrObj  = it.next();
-                                ProductModel p       = (ProductModel) itrObj;
-
-                                if (p == null || p.isDiscontinued() || p.isUnavailable()) {
-                                    continue;
-                                }
-
-                                // only collect the skus for the configured products
-                                if (p.getContentKey().getType().equals(FDContentTypes.CONFIGURED_PRODUCT)
-                                 || p.getContentKey().getType().equals(FDContentTypes.CONFIGURED_PRODUCT_GROUP)) {
-
-                                    ConfiguredProduct cp = (ConfiguredProduct) p;
-                                    skus.add(cp.getSku());
-                                    nConfProd++;
-                                }
-
-                                // also collect skus for auto-configurable products, if applicable
-                                if (transactional && p.isAutoconfigurable()) {
-                                    // auto-configurable products only have one SKU, at index 0
-                                    skus.add(p.getDefaultSku());
-                                    nConfProd++;
-                                }
-                            }
-                            %>
-                            <%@ include file="/shared/includes/product/i_pricing_script.jspf" %>
-                            <script language="JavaScript">
-                                var numberOfProducts = <%= nConfProd %>;
-
-                                function updateTotal() {
-                                    var total=0;
-                                    var p;
-                                    for(i=0; i<numberOfProducts; i++ ){
-                                        p = eval("pricing"+i+".getPrice()");
-                                        if (p!="") {
-                                            total+=new Number(p.substring(1));
-                                        }
-                                    }
-                                    document.forms['ymal_cart']["total"].value="$"+currencyFormat(total);
-                                }
-
-                                function changeShopQty(idx, delta, min, max, increment) {
-                                    var val = eval('document.ymal_cart.quantity_'+idx+'.value');
-                                    var qty = parseFloat(val) + delta;
-                                    var round = true;
-                                    if ((delta > 0) && (val == "")) {
-                                        if (delta < min) {
-                                            delta = min;
-                                        }
-                                        qty = delta;
-                                    } else if (isNaN(qty) || (qty < 0)) {
-                                        qty = 0;
-                                        round = false;
-                                    } else if ((qty > 0) && (qty < min) && (delta < 0)) {
-                                        qty = 0;
-                                        round = false;
-                                    } else if ((qty > 0) && (qty < min) && (delta >= 0)) {
-                                        qty = min;
-                                    } else if (qty >= max) {
-                                        qty = max;
-                                    }
-                                    if (round) {
-                                        qty = Math.floor( (qty-min)/increment )*increment + min;
-                                    }
-                                    eval("document.ymal_cart.quantity_"+idx+".value = qty");
-                                    eval("pricing"+idx+".setQuantity(qty)");
-                                }
-                            </script>
-                            <%
-                            
-                               String colWidth="33%";                                
-                                if(relatedProducts!=null && relatedProducts.size()>0 && relatedProducts.size()<3){
-                                  if(relatedProducts.size()==1){ colWidth="100%"; }
-                                  else if(relatedProducts.size()==2){ colWidth="50%";}                                   
-                                }
-                                
-
-                            
-                            for (Iterator it = relatedProducts.iterator(); it.hasNext(); ) {
-                            	Object       itrObj  = it.next();
-                                ProductModel p       = (ProductModel) itrObj;
-
-                                if (p == null || p.isDiscontinued() || p.isUnavailable()) {
-                                    continue;
-                                }
-
-				/*
-                                YmalHelperFactory   yhf         = YmalHelperFactory.getInstance();
-                                YmalHelper          helper      = yhf.getYmalHelper(p, transactional);
-				*/
-				ConfigurationStrategy confUtil    = ConfigurationStrategyFactory.getConfigurationStrategy(EnumSiteFeature.YMAL);
-				System.out.println("Transactional = " + transactional + ", IsProxy = " + (p instanceof ProxyProduct) + ", class = " + p.getClass());				
-				String base_url = request.getParameter("base_url");
-				
-				if (base_url == null) {
-					base_url = request.getRequestURI() + ( request.getQueryString() == null ? "" : "?" + request.getQueryString() );
-				}
-				
-				FletoHelper     helper      = new FletoHelper(
-				                                        transactional || p instanceof ProxyProduct ? 
-										confUtil.configure(p,new ConfigurationContext()) :
-										new ProductImpression(p));
-                                FDConfigurableI     configuration = helper.getConfiguration();
-
-                                if (helper.isTransactional()) {
-                                    %>
-                                    <script language="JavaScript">
-                                        var pricing<%=confProdCount%> = new Pricing();
-                                        pricing<%=confProdCount%>.setSKU("<%= helper.getSkuCode() %>");
-                                        pricing<%=confProdCount%>.setQuantity(<%= helper.isSoldBySalesUnits() ? configuration.getQuantity() : 0 %>);
-                                        pricing<%=confProdCount%>.setSalesUnit("<%= helper.isSoldBySalesUnits() ? "" : configuration.getSalesUnit() %>");
-                                        
-                                        <logic:iterate id="entry" collection="<%= configuration.getOptions().entrySet() %>" type="java.util.Map.Entry">
-                                            pricing<%=confProdCount%>.setOption("<%= entry.getKey() %>", "<%= entry.getValue() %>");
-                                        </logic:iterate>
-                                        
-                                        function chgQty<%=confProdCount%>(delta) { changeShopQty(<%=confProdCount%>, delta, <%= p.getQuantityMinimum() %>, <%= user.getQuantityMaximum(p) %>, <%=p.getQuantityIncrement()%>); }
-                                    </script>
-                                    <%
-                                }
-                                if (prodCount == 0) {
-                                    outputP.append("<div align=\"center\" style=\"padding-bottom: 8px;\">");	
-                                        if (ymalHeader != null) {
-                                            outputP.append("<span style=\"font-size:11px; color: #996699; font-weight: bold;\">"+ymalHeader+"</span>");
-                                        } else {
-                                            outputP.append("<img src=\"/media_stat/images/template/confirmation/recommended_prods.gif\" width=\"149\" height=\"9\" border=\"0\" alt=\"YOU MIGHT ALSO LIKE\">");
-                                        }
-                                    outputP.append("</div>\n");
-                                    %>
-                                    <fd:ErrorHandler result='<%=result%>' id='errorMsg' field='<%=checkErrorType%>' >
-                                        <%
-                                            outputP.append("<div class=\"error\" style=\"font-weight: bold; padding-bottom: 8px;\">");
-                                            outputP.append(errorMsg);
-                                            outputP.append("</div>");                                        
-                                        %>
-                                    </fd:ErrorHandler>
-                                    <%
-                                    
-                                    outputP.append("<form name=\"ymal_cart\" method=\"post\" action=\"");
-				    				outputP.append(base_url);
-								    outputP.append("\">\n");								    
-                                    outputP.append("<table cellpadding=\"0\" cellspacing=\"0\" align=\"center\" width=\"100%\">\n");
-
-                                    if (activeYmalSet != null) {
-                                        outputP.append("<input type=\"hidden\" name=\"catId\" value=\"" + catId + "\">\n");
-                                        outputP.append("<input type=\"hidden\" name=\"ymalSetId\" value=\"" + activeYmalSet.getContentKey().getId() + "\">\n");
-                                        if (productNode != null) {
-                                            // in YMAL set preview, there's no product node
-                                            outputP.append("<input type=\"hidden\" name=\"originatingProductId\" value=\"" + productNode.getContentKey().getId() + "\">\n");
-                                        }
-                                    }
-                                    outputP.append("<input type=\"hidden\" name=\"base_url\" value=\"" + base_url + "\">\n");
-                                }
-                                
-                                if ((prodCount % 3) == 0 ) {
-                                   if (prodCount != 0) {
-                                       outputP.append("</tr><tr>\n");
-                                       outputP.append(outputP2.toString());
-                                       outputP.append("</tr><tr>\n");
-                                       outputP.append(outputP3.toString());
-                                       outputP.append("</tr><tr>\n");
-                                       outputP.append(outputP4.toString());
-                                       outputP.append("</tr>\n");
-                                       outputP2.setLength(0);
-                                       outputP3.setLength(0);
-                                       outputP4.setLength(0);
-                                    }
-                                    outputP.append("<tr>");
-                                }
-
-                                outputP.append("<td colspan=\"3\" valign=\"bottom\" align=\"center\" width=\""+colWidth+"\"><a href=\""+helper.getLink()+"\"><img src=\""+helper.getImage().getPath()+"\" border=\"0\"></a>");
-                                
-                                
-                          %>
-                                <fd:ProduceRatingCheck>
-                          <%                                    
-                                ProductModel model=helper.getRealProduct();                                
-                                if(model!=null)
-                                {
-                                    String rating=JspMethods.getProductRating(model);                                                                                                        
-                                    if(rating!=null && rating.trim().length()>0){                                      
-                                        outputP.append("<br><font class=\"center\">");        
-                                        outputP.append("<img src=\"");
-                                        outputP.append("/media_stat/images/ratings/"+rating+".gif");
-                                        outputP.append("\"  name=\"");
-                                        outputP.append("rating");
-                                        outputP.append("\" width=\"");
-                                        outputP.append("59");
-                                        outputP.append("\"  height=\"");
-                                        outputP.append("11");
-                                        outputP.append("\" ALT=\"");
-                                        outputP.append("");
-                                        outputP.append("\" border=\"0\"");         
-                                        outputP.append(">");
-                                        outputP.append("</font>");
-                                    }
-                                }                                      
-                                    
-                            %>        
-                                </fd:ProduceRatingCheck> 
-
-                            <%    
-                            outputP.append("<br></td>\n");
-                            //outputP2.append("</td>\n");
-
-                                if (helper.isTransactional()) {
-                                    String quant = quantityFormatter.format(configuration.getQuantity());
-
-                                    outputP.append("<script language=\"JavaScript\">\n");
-                                    outputP.append("function updatePriceField" + confProdCount + "() {\n");
-                                    outputP.append("updateTotal();\n");
-                                    outputP.append("}\n");
-                                    outputP.append("pricing" + confProdCount + ".setCallbackFunction( updatePriceField" + confProdCount + " );\n");
-                                    outputP.append("</script>\n");
-
-                                    outputP3.append("<td width=\""+colWidth+"\" align=\"center\" colspan=\"3\">\n");
-                                    if (helper.isSoldBySalesUnits()) {
-                                        outputP3.append("<input type=\"hidden\" name=\"skuCode_" + confProdCount + "\" value=\"" + helper.getSkuCode() + "\">\n");                                        
-                                        outputP3.append("<input type=\"hidden\" name=\"catId_" + confProdCount + "\" value=\"" + helper.getCatId() + "\">\n");
-                                        outputP3.append("<input type=\"hidden\" name=\"productId_" + confProdCount + "\" value=\"" + helper.getRealProduct() + "\">\n");
-                                        outputP3.append("<input type=\"hidden\" name=\"quantity_" + confProdCount + "\" value=\"1\">\n");
-                                        for (Iterator iit = configuration.getOptions().entrySet().iterator(); iit.hasNext(); ) {
-                                            Map.Entry   entry = (Map.Entry) iit.next();
-                                            outputP3.append("<input type=\"hidden\" name=\"" + entry.getKey() + "_" + confProdCount + "\" value=\"" + entry.getValue() + "\">\n");
-                                        }
-                                        outputP3.append("<select name=\"salesUnit_" + confProdCount + "\" STYLE=\"width: 60px\" class=\"text10\" onChange=\"pricing" + confProdCount + ".setSalesUnit(this.value);\">\n");
-                                        outputP3.append("<option value=\"\" SELECTED></option>\n");
-
-                                        FDSalesUnit     salesUnits[] = helper.getFDProduct().getSalesUnits();
-                                        for (int ii = 0; ii < salesUnits.length; ++ii) {
-                                            FDSalesUnit salesUnit      = salesUnits[ii];
-                                            String      salesUnitDescr = salesUnit.getDescription();
-
-                                            // clean parenthesis
-                                            int ppos = salesUnitDescr.indexOf("(");
-                                            if (ppos > -1) {
-                                                salesUnitDescr = salesUnitDescr.substring(0, ppos).trim();
-                                            }
-
-                                            outputP3.append("<option value=\"" + salesUnit.getName() + "\">" + salesUnitDescr + "</option>\n");
-                                        }
-                                        outputP3.append("</select>\n");
-                                    } else {
-                                        outputP3.append("<table><tr><td>\n");                                        
-                                        outputP3.append("<input type=\"hidden\" name=\"salesUnit_" + confProdCount + "\" value=\"" + configuration.getSalesUnit() + "\">\n");
-                                        outputP3.append("<input type=\"hidden\" name=\"skuCode_" + confProdCount + "\" value=\"" + helper.getSkuCode() + "\">\n");
-                                        outputP3.append("<input type=\"hidden\" name=\"catId_" + confProdCount + "\" value=\"" + helper.getCatId() + "\">\n");
-                                        outputP3.append("<input type=\"hidden\" name=\"productId_" + confProdCount + "\" value=\"" + helper.getRealProduct() + "\">\n");
-
-                                        for (Iterator iit = configuration.getOptions().entrySet().iterator(); iit.hasNext(); ) {
-                                            Map.Entry   entry = (Map.Entry) iit.next();
-                                            outputP3.append("<input type=\"hidden\" name=\"" + entry.getKey() + "_" + confProdCount + "\" value=\"" + entry.getValue() + "\">\n");
-                                        }
-                                        outputP3.append("<input type=\"text\" name=\"quantity_" + confProdCount + "\" value=\"\" style=\"width: 36px\" size=\"3\" maxlength=\"4\" class=\"text10\" onChange=\"chgQty" + confProdCount + "(0);\" onBlur=\"pricing" + confProdCount + ".setQuantity(this.value);\">\n");
-                                        outputP3.append("</td>\n");
-                                        outputP3.append("<td>\n");
-                                        outputP3.append("<a href=\"javascript:chgQty" + confProdCount + "(" + p.getQuantityIncrement() + ");\"><img src=\"/media_stat/images/template/quickshop/grn_arrow_up.gif\" width=\"10\" height=\"9\" border=\"0\" vspace=\"1\" alt=\"Increase quantity\"></a><br><a href=\"javascript:chgQty" + confProdCount + "(" + -p.getQuantityIncrement() + ");\"><img src=\"/media_stat/images/template/quickshop/grn_arrow.gif\" width=\"10\" height=\"9\" border=\"0\" vspace=\"1\" alt=\"Decrease quantity\"></a>\n");
-                                        if (helper.isSoldByLb()) {
-                                            outputP3.append("</td><td>lb");
-                                        } else {
-                                            outputP3.append("</td><td>");
-                                        }
-                                        outputP3.append("</td></tr></table>\n");
-                                    }
-                                    outputP3.append("</td>\n");
-
-                                    confProdCount++;
-                                } else {
-                                    if (nConfProd > 0) {
-                                        // only display the "click name to buy" text if there are
-                                        // configured products displayed on the page
-                                        outputP3.append("<td width=\""+colWidth+"\" colspan=\"3\" align=\"center\"><span class=\"text8\">(click&nbsp;name&nbsp;to&nbsp;buy)</span></td>\n");
-                                    } else {
-                                        outputP3.append("<td width=\""+colWidth+"\" colspan=\"3\" align=\"center\"></td>\n");
-                                    }
-                                }
-
-                                outputP4.append("<td width=\""+colWidth+"\" colspan=\"3\" valign=\"top\" align=\"center\" ><a href=\""+helper.getLink()+"\"><font class=\"text11\">"+helper.getFullName()+"</a>"+helper.getSalesDescription()+"<b><br>"+helper.getPrice(currencyFormatter) + "\n");
-
-                                String[] ymalScales = helper.getFDProduct().getPricing().getScaleDisplay();
-                                if (ymalScales.length>0) {
-                                    outputP4.append("<br><font color=\"#FF9933\">Save!</font><br>\n");
-                                
-                                    for (int ymalSci = 0; ymalSci < ymalScales.length; ymalSci++) {
-                                        if (ymalSci != 0) {
-                                            outputP4.append("<br>\n");
-                                        }
-                                        outputP4.append(ymalScales[ymalSci]);
-                                    }
-                                    
-                                }
-                                outputP4.append("</b></span></font>");
-                                outputP4.append("</td>\n");
+	// sort out hidden categories
+	for (Iterator it = relatedCategories.iterator(); it.hasNext();) {
+		CategoryModel c = (CategoryModel) it.next();
+		if (c.isHidden())
+			it.remove();
+	}
 
 
-                                prodCount++;
-                                relatedCount++;
-                            }
 
-                            for (Iterator it = relatedCategories.iterator(); it.hasNext(); ) {
-                                Object itrObj = it.next();
-                                CategoryModel c = (CategoryModel) itrObj;
+	// Pass parameters to YMAL display box
+	request.setAttribute("ymal_products", relatedProducts);
+	request.setAttribute("ymal_categories", relatedCategories);
+	request.setAttribute("ymal_recipes", relatedRecipes);
+	request.setAttribute("ymal_aset", ymal_aset);
+	request.setAttribute("ymal_product", ymal_product);
 
-                                ContentNodeModel aliasNode = null;
-                                if (c == null || c.isHidden()) continue;
-                                itemFullName = c.getFullName();
-                                Attribute aliasAttr = c.getAttribute("ALIAS");
-                                if (aliasAttr !=null ) {
-                                    ContentRef aliasRef = (ContentRef)aliasAttr.getValue();
-                                    if (aliasRef instanceof ProductRef) {
-                                        aliasNode = ((ProductRef)aliasRef).lookupProduct();
-                                        catId = aliasNode.getParentNode().toString();
-                                        relatedLink = "/product.jsp?catId="+catId+"&productId="+aliasNode+"&trk=conf";
-                                    } else if(aliasRef instanceof CategoryRef) {
-                                        aliasNode = ((CategoryRef)aliasRef).getCategory();
-                                        relatedLink = "/category.jsp?catId="+aliasNode+"&trk=conf";
-                                    }
-                                    else if(aliasRef instanceof DepartmentRef){
-                                        aliasNode = ((DepartmentRef)aliasRef).getDepartment();
-                                        relatedLink = "/department.jsp?deptId="+aliasNode+"&trk=conf";
-                                    }
-                                } else {
-                                    relatedLink = "/category.jsp?catId="+c+"&trk=conf";
-                                }
-                                if (catCount == 0) {
-                                    outputC.append("<div align=\"center\" style=\"padding-top: 8px; padding-bottom: 8px;\">\n");
-                                    outputC.append("<span style=\"font-size:11px; color: #996699; font-weight: bold;\">CONTINUE SHOPPING FOR</span>\n");
-                                    outputC.append("<br><img src=\""+spacer+"\" width=\"1\" height=\"4\"><br>\n");
-                                }
-                                if (catCount > 0) outputC.append(", ");
-                                outputC.append("<a href=\""+relatedLink+"\"><font class=\"text12\"><b>"+itemFullName+"</b></font></a>");
-                                catCount++;
-                                
-                                relatedCount++;
-                            }
-                            if (catCount > 0) {
-                                outputC.append("</div>\n");
-                            }
+	request.setAttribute("ymal_result", ymal_result);
+	request.setAttribute("ymal_header", ymalHeader);
 
-
-                            if (prodCount >0 ) {
-                                /*if (prodCount%3!=0) {
-                                    String dummyCell = "<td cellspan=\""+prodCount%3+"\">&nbsp;</td>";
-                                    outputP.append(dummyCell);
-                                    outputP2.append(dummyCell);
-                                } */
-                                outputP.append("</tr><tr>\n");
-                                outputP.append("<!-- starting outputP2 -->");
-                                outputP.append(outputP2.toString());
-                                outputP.append("</tr><tr>\n");
-                                outputP.append("<!-- starting outputP3 -->");
-                                outputP.append(outputP3.toString());
-                                outputP.append("</tr><tr>\n");
-                                outputP.append("<!-- starting outputP4 -->");
-                                outputP.append(outputP4.toString());
-
-                                if (nConfProd > 0) {
-                                    outputP.append("</tr><tr>\n");
-                                    outputP.append("<td colspan=\"9\"><hr class=\"ymalSeparator\"></td>");
-                                    outputP.append("</tr><tr>");
-                                    outputP.append("<td colspan=\"9\" class=\"text11bold\" valign=\"center\">\n");
-                                    outputP.append("<table width=\"100%\">");
-                                    outputP.append("<tr>\n");
-                                    outputP.append("<td align=\"left\">\n");
-                                    outputP.append("<input type=\"hidden\" name=\"itemCount\" value=\"" + nConfProd + "\">\n");
-                                    outputP.append("<input type=\"image\" name=\"addMultipleToCart\" src=\"/media_stat/images/template/quickshop/qs_add_selected_to_cart.gif\" width=\"145\" height=\"17\" border=\"0\" vspace=\"8\" alt=\"ADD SELECTED TO CART\">\n");
-                                    outputP.append("</td><td align=\"right\">\n");
-                                    outputP.append("Total&nbsp;Price:&nbsp;&nbsp;<img src=\"/media_stat/images/layout/clear.gif\" width=\"4\" height=\"1\"><input type=\"text\" style=\"width:60px\" name=\"total\" value=\"\" size=\"6\" class=\"text11bold\" onChange=\"\" onFocus=\"blur()\">\n");
-                                    outputP.append("<script language=\"JavaScript\">updateTotal();</script>\n");
-                                    outputP.append("</td>\n");
-                                    outputP.append("</tr>\n");
-                                    outputP.append("</table>\n");
-                                    outputP.append("</td>\n");
-                                }
-
-                                outputP.append("</tr></table></form>\n");
-                            }
-                            if (relatedCount != 0) { //make sure there are prods to display, not all discontinued/unavail%>
-                                <table class="ymal">
-                                <caption>YOU MIGHT ALSO LIKE</caption>
-                                <tr valign="top">
-                                <td align="center">
-                                    <% firstData = true; %>
-                                    <% if (recipeCount > 0) { %>
-                                        <%= outputRecipes %>
-                                        <br/>
-                                    <%  firstData = false;
-                                       } %>
-                                    <% if (prodCount > 0 ) { %>
-                                        <% if (!firstData) { %><hr class="ymalSeparator"/><% } %>
-                                        <%= outputP %>
-                                    <%  firstData = false;
-                                       } %>
-                                    <% if (catCount > 0 ) { %>
-                                        <% if (!firstData) { %><hr class="ymalSeparator"/><% } %>
-                                        <%= outputC %>
-                                    <%  firstData = false;
-                                       } %>
-                                </td>
-                                </tr>
-                                </table>
-                    <% 	    } // if relatesCount != 0
-                        } // if relatedProducts != null %>			
-          </td></tr>
-			
+	request.setAttribute("ymal_variant", recommendations.getVariant());
+%><%@ include file="/includes/i_ymal_box.jspf" %>
+</fd:YMALRecommendations>
+</fd:YmalContext>

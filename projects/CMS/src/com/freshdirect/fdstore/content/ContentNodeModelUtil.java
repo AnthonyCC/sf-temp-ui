@@ -56,6 +56,8 @@ public class ContentNodeModelUtil {
 		CONTENT_TO_TYPE_MAP.put("YmalSet", ContentNodeI.TYPE_YMAL_SET);
 		CONTENT_TO_TYPE_MAP.put("StarterList", ContentNodeI.TYPE_STARTER_LIST);
 		CONTENT_TO_TYPE_MAP.put("FavoriteList", ContentNodeI.TYPE_FAVORITE_LIST);
+		CONTENT_TO_TYPE_MAP.put("Recommender", ContentNodeI.TYPE_RECOMMENDER);
+		CONTENT_TO_TYPE_MAP.put("RecommenderStrategy", ContentNodeI.TYPE_RECOMMENDER_STRATEGY);
 	}
 
 	public static LinkedHashMap TYPE_MODEL_MAP = new LinkedHashMap();
@@ -88,6 +90,8 @@ public class ContentNodeModelUtil {
 		TYPE_MODEL_MAP.put("YmalSet", YmalSet.class);
 		TYPE_MODEL_MAP.put("StarterList", StarterList.class);
 		TYPE_MODEL_MAP.put("FavoriteList", FavoriteList.class);
+		TYPE_MODEL_MAP.put("Recommender", Recommender.class);
+		TYPE_MODEL_MAP.put("RecommenderStrategy", RecommenderStrategy.class);
 	}
 
 	/**
@@ -206,7 +210,7 @@ public class ContentNodeModelUtil {
 		for (int i = 0; i < keys.size(); i++) {
 			ContentKey key = (ContentKey) keys.get(i);
 			ContentNodeModel model = (ContentNodeModel) models.get(i);
-			if (key.getId().equals(model.getContentName()))
+			if ( key!=null && model!=null && key.getId().equals(model.getContentName()) )
 				continue;
 			else
 				return false;

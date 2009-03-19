@@ -29,17 +29,17 @@ public class LoggerFactory {
 	/**
 	 * Shorthand for getInstance(clazz.getName())
 	 */	
-	public static Category getInstance( Class clazz ) {
+	public static Logger getInstance( Class clazz ) {
 		checkConfig();
-		return Category.getInstance( clazz );
+		return Logger.getLogger(clazz);
 	}
 
 	/**
 	 * Retrieve a category with named as the name parameter
 	 */	
-	public static Category getInstance( String name ) {
+	public static Logger getInstance( String name ) {
 		checkConfig();
-		return Category.getInstance( name );
+		return Logger.getLogger(name);
 	}
 
 

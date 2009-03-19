@@ -854,6 +854,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			return DlvManagerDAO.getZoneInfo(conn, address, date, useApartment);
 
 		} catch (SQLException sqle) {
+			LOGGER.warn("Difficulty locating an address within a zone : " + sqle.getMessage());
 			throw new EJBException("Difficulty locating an address within a zone : " + sqle.getMessage());
 		} finally {
 			try {

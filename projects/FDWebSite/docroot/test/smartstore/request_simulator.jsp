@@ -27,6 +27,7 @@
 <%@page import="com.freshdirect.mail.EmailUtil"%>
 <%@page import="com.freshdirect.smartstore.RecommendationService"%>
 <%@page import="com.freshdirect.smartstore.SessionInput"%>
+<%@page import="com.freshdirect.smartstore.Trigger"%>
 <%@page import="com.freshdirect.smartstore.fdstore.CohortSelector"%>
 <%@page import="com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration"%>
 <%@page import="com.freshdirect.smartstore.fdstore.SmartStoreUtil"%>
@@ -51,6 +52,8 @@ if (siteFeature == null) {
 } else if (defaultSiteFeature.equals(siteFeature)) {
 	urlG.remove("siteFeature");
 }
+
+Trigger trigger = new Trigger(siteFeature, EnumSiteFeature.YMAL.equals(siteFeature) ? 6 : 5);
 
 Map variants = SmartStoreServiceConfiguration.getInstance().getServices(siteFeature);
 VariantSelection helper = VariantSelection.getInstance();
@@ -380,9 +383,9 @@ if (!origURL.equals(newURL)) {
 		RecommendationService rs = (RecommendationService) variants.get(variant);
 		for (int i = 0; i < i_noOfCycles; i++ ) {
 			try {
-				List recs = rs.recommendNodes(si);
-				if (recs.size() > 5)
-					recs = recs.subList(0, 5);
+				List recs = rs.recommendNodes(trigger, si);
+				if (recs.size() > trigger.getMaxRecommendations())
+					recs = recs.subList(0, trigger.getMaxRecommendations());
 				Iterator it2 = recs.iterator();
 				while (it2.hasNext()) {
 					ProductModel pm = (ProductModel) it2.next();

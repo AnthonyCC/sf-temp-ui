@@ -20,6 +20,7 @@ public abstract class FDCustomerList extends ModelSupport {
 	/** The timestamp of the last modification of the list. */
 	private Date modificationDate;
 	
+	// List<FDCustomerListItem>
 	private List lineItems = new ArrayList();
 
 	public void setCustomerPk(PrimaryKey customerPk) {
@@ -41,7 +42,7 @@ public abstract class FDCustomerList extends ModelSupport {
 	}
 	
 	/**
-	 * @return List of FDCustomerListLineItem
+	 * @return List<FDCustomerListItem>
 	 */
 	public List getLineItems() {
 		return lineItems;

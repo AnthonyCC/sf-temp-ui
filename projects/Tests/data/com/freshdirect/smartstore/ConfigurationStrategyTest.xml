@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Content>
+
+  <Store id="FreshDirect">
+  	<departments>
+      <Department ref="mock_dept"/>
+    </departments>
+  </Store>
+
+  <Department id="mock_dept">
+  	<categories>
+      <Category ref="category_mea0004561"/>
+	</categories>
+  </Department>
+
+  <Category id="category_mea0004561">
+    <products>
+      <Product ref="product_mea0004561"/>
+    </products>
+    <products>
+      <Product ref="product_mea0004561a"/>
+    </products>
+  </Category>
+
+ <Product id="product_mea0004561">
+    <FULL_NAME>product mea0004561</FULL_NAME>
+	<SELL_BY_SALESUNIT>SALES_UNIT</SELL_BY_SALESUNIT>
+    <skus>
+      <Sku ref="MEA0004561"/>
+    </skus>
+	<QUANTITY_MAXIMUM>99.99</QUANTITY_MAXIMUM>
+	<QUANTITY_INCREMENT>1.0</QUANTITY_INCREMENT>
+  </Product>
+
+  <Product id="product_mea0004561a">
+    <FULL_NAME>product mea0004561a</FULL_NAME>
+	<SELL_BY_SALESUNIT>SALES_UNIT</SELL_BY_SALESUNIT>
+    <skus>
+      <Sku ref="MEA0004561a"/>
+    </skus>
+	<QUANTITY_MAXIMUM>99.99</QUANTITY_MAXIMUM>
+	<QUANTITY_INCREMENT>1.0</QUANTITY_INCREMENT>
+  </Product>
+
+  <ConfiguredProduct id="configured_product_mea0004561a">
+    <SKU>
+      <Sku ref="MEA0004561a"/>
+    </SKU>
+	<SALES_UNIT>SalesUnit1</SALES_UNIT>
+	<QUANTITY>12.0</QUANTITY>
+	<OPTIONS>var3=VariationOption1</OPTIONS>
+  </ConfiguredProduct>
+
+  <ConfiguredProduct id="configured_product_mea0004561b">
+    <SKU>
+      <Sku ref="MEA0004561a"/>
+    </SKU>
+	<SALES_UNIT>SalesUnit1</SALES_UNIT>
+	<QUANTITY>8.0</QUANTITY>
+	<OPTIONS>var2=VariationOption1</OPTIONS>
+  </ConfiguredProduct>
+
+  <ConfiguredProduct id="configured_product_mea0004561c">
+    <SKU>
+      <Sku ref="MEA0004561a"/>
+    </SKU>
+	<SALES_UNIT>SalesUnit1</SALES_UNIT>
+	<QUANTITY>4.0</QUANTITY>
+	<OPTIONS>var1=VariationOption1</OPTIONS>
+  </ConfiguredProduct>
+
+  <ConfiguredProductGroup id="configured_product_group_mea0004561">
+  	<items>
+       <ConfiguredProduct ref="configured_product_mea0004561c"/>
+       <ConfiguredProduct ref="configured_product_mea0004561b"/>
+       <ConfiguredProduct ref="configured_product_mea0004561a"/>
+  	</items>
+  </ConfiguredProductGroup>
+
+  <!-- default sku -->
+  <Sku id="MEA0004561">
+  </Sku>
+
+  <!-- autoconfigurable sku -->
+  <Sku id="MEA0004561a">
+  </Sku>
+</Content>

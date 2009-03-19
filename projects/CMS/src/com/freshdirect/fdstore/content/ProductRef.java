@@ -36,7 +36,7 @@ public class ProductRef extends ContentRef {
 	}
 
 	public CategoryModel lookupCategory() {
-		return (CategoryModel) ContentFactory.getInstance().getContentNodeByName(this.refName);
+		return (CategoryModel) ContentFactory.getInstance().getContentNode(this.refName);
 	}
 
 	public ProductModel lookupProduct() {

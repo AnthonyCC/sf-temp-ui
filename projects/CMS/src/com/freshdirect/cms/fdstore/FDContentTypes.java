@@ -54,6 +54,9 @@ public class FDContentTypes {
 	
    	public static final ContentType FAVORITE_LIST = ContentType.get("FavoriteList");
 	
+   	public static final ContentType RECOMMMENDER = ContentType.get("Recommender");
+   	public static final ContentType RECOMMENDER_STRATEGY = ContentType.get("RecommenderStrategy");
+   	
 	private FDContentTypes() {
 	}
 

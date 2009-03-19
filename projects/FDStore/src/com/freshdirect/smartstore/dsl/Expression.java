@@ -12,6 +12,7 @@ public class Expression {
     public static final int RET_FLOAT     = 'f';
     public static final int RET_SET       = 's';
     public static final int RET_STRING    = 't';
+    public static final int RET_NODE      = 'n';
     
     Context context;
     int type = RET_VOID;

@@ -10,12 +10,12 @@
 %><%@ page import="com.freshdirect.smartstore.fdstore.FDStoreRecommender"
 %><%@ page import="com.freshdirect.smartstore.Trigger"
 %><%@ page import="com.freshdirect.fdstore.util.EnumSiteFeature"
-%><%@ page import="com.freshdirect.webapp.util.ConfigurationStrategyFactory"
 %><%@ page import="com.freshdirect.webapp.util.ConfigurationStrategy"
 %><%@ page import="com.freshdirect.webapp.util.ConfigurationContext"
 %><%@ page import="com.freshdirect.webapp.util.ProductImpression"
 %><%@ page import="com.freshdirect.webapp.util.TransactionalProductImpression"
 %><%@ page import="com.freshdirect.webapp.util.FDURLUtil"
+%><%@ page import="com.freshdirect.webapp.util.prodconf.SmartStoreConfigurationStrategy"
 %><%@ page import="com.freshdirect.fdstore.content.Image"
 %><%@ page import="java.net.URLEncoder"
 %><%@ taglib uri='template' prefix='tmpl'
@@ -49,10 +49,10 @@ String tx_pricing_JSNameSpace = "DYF";
 	ConfigurationContext confContext = new ConfigurationContext();
 	confContext.setFDUser(user);
 
-	if (recommendations != null && recommendations.getContentNodes().size() > 0) {
-		ConfigurationStrategy cUtil = ConfigurationStrategyFactory.getConfigurationStrategy(recommendations.getVariant().getSiteFeature());
+	if (recommendations != null && recommendations.getProducts().size() > 0) {
+		ConfigurationStrategy cUtil = SmartStoreConfigurationStrategy.getInstance();
 	
-		List products = recommendations.getContentNodes();
+		List products = recommendations.getProducts();
 		// Map impressions = new HashMap();
 		List impressions = new ArrayList();
 		

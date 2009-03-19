@@ -17,36 +17,42 @@ public class RecommendationServiceType extends Enum implements Serializable {
 
 	/** DYF: frequently bought. */
 	public final static RecommendationServiceType FREQUENTLY_BOUGHT_DYF = 
-		new RecommendationServiceType("freqbought_dyf");
+			new RecommendationServiceType("freqbought_dyf");
 	
 	/** DYF: random selection. */	
 	public final static RecommendationServiceType RANDOM_DYF =
-		new RecommendationServiceType("random_dyf");
+			new RecommendationServiceType("random_dyf");
 	
 	/** _ANY_: no recommendation. */
 	public final static RecommendationServiceType NIL =
-		new RecommendationServiceType("nil");
+			new RecommendationServiceType("nil");
 	
 	public final static RecommendationServiceType FEATURED_ITEMS = 
-		new RecommendationServiceType("featured_items");
+			new RecommendationServiceType("featured_items");
 
-        public final static RecommendationServiceType ALL_PRODUCT_IN_CATEGORY = 
-            new RecommendationServiceType("all_prod_in_cat");
+    public final static RecommendationServiceType ALL_PRODUCT_IN_CATEGORY = 
+        	new RecommendationServiceType("all_prod_in_cat");
 
-        public final static RecommendationServiceType CANDIDATE_LIST = 
-            new RecommendationServiceType("candidate_list");
-        
-        public final static RecommendationServiceType MANUAL_OVERRIDE = 
-            new RecommendationServiceType("manual_override");
-        
-        public final static RecommendationServiceType YOUR_FAVORITES_IN_FEATURED_ITEMS = 
-            new RecommendationServiceType("your_fav_in_fi");
+    public final static RecommendationServiceType CANDIDATE_LIST = 
+        	new RecommendationServiceType("candidate_list");
+    
+    public final static RecommendationServiceType MANUAL_OVERRIDE = 
+        	new RecommendationServiceType("manual_override");
+    
+    public final static RecommendationServiceType YOUR_FAVORITES_IN_FEATURED_ITEMS = 
+    		new RecommendationServiceType("your_fav_in_fi");
         
     public final static RecommendationServiceType FAVORITES = 
         new RecommendationServiceType("favorites");
 
-        public final static RecommendationServiceType SCRIPTED = 
+    public final static RecommendationServiceType SCRIPTED = 
             new RecommendationServiceType("scripted");
+    
+    public final static RecommendationServiceType CLASSIC_YMAL =
+    		new RecommendationServiceType("classicYMAL");
+
+    public final static RecommendationServiceType SMART_YMAL =
+    		new RecommendationServiceType("smartYMAL");
     
 	/**
 	 * Constructor.

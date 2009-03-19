@@ -144,6 +144,63 @@
 	</Category>
 	<Category id="dai_milk_1per">
 		<FULL_NAME>1%</FULL_NAME>
+		<products>
+			<Product ref="dai_organi_1_milk_01"></Product>
+		</products>
 	</Category>
 	<Sku id="DAI0059088"/>
+
+	<Department id="xx_dep">
+		<FULL_NAME>X Department</FULL_NAME>
+		<categories>
+			<Category ref="xx_cat_1"/>
+			<Category ref="xx_cat_2"/>
+		</categories>
+	
+	</Department>
+
+	<Category id="xx_cat_1">
+		<FULL_NAME>XX Category</FULL_NAME>
+		<products>
+			<Product ref="xxx_1"/>
+			<Product ref="xxx_2"/>
+		</products>
+	</Category>
+
+	<Category id="xx_cat_2">
+		<FULL_NAME>XX Category 2</FULL_NAME>
+		<products>
+			<Product ref="xxx_3"/>
+			<Product ref="xxx_4"/>
+		</products>
+	</Category>
+
+	
+	<Product id="xxx_1">
+		<FULL_NAME>X1</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="xx_cat_1"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="xxx_2">
+		<FULL_NAME>X2</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="xx_cat_1"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="xxx_3">
+		<FULL_NAME>X3</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="xx_cat_2"/>
+		</PRIMARY_HOME>
+	</Product>
+	<Product id="xxx_4">
+		<FULL_NAME>X4</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="xx_cat_2"/>
+		</PRIMARY_HOME>
+	</Product>
+	
+	
+	
 </Content>

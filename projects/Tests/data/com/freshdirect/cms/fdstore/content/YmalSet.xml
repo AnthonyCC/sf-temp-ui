@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Content>
+	<Store id="FreshDirect">
+		<departments>
+			<Department ref="dep_1"/>
+		</departments>
+	</Store>
+	<Department id="dep_1">
+		<FULL_NAME>Department 1</FULL_NAME>
+		<categories>
+			<Category ref="cat_1"/>
+		</categories>
+	</Department>
+
+
+	<Category id="cat_1">
+		<products>
+			<Product ref="prod_1"/>
+			<Product ref="prod_2"/>
+			<Product ref="prod_3"/>
+			<Product ref="prod_4"/>
+			<Product ref="prod_5"/>
+		</products>
+		<FULL_NAME>Category 1</FULL_NAME>
+	</Category>
+
+
+	<Category id="cat_2">
+		<products>
+			<Product ref="prod_6"/>
+			<Product ref="prod_7"/>
+			<Product ref="prod_8"/>
+			<Product ref="prod_9"/>
+			<Product ref="prod_10"/>
+		</products>
+		<FULL_NAME>Category 2</FULL_NAME>
+	</Category>
+
+	
+	<!-- category 1  -->
+	<Product id="prod_1">
+		<skus><Sku ref="sku_1"/></skus>
+		<FULL_NAME>Prod 1</FULL_NAME>
+		<PRIMARY_HOME><Category ref="cat_1"/></PRIMARY_HOME>
+		<ymalSets>
+			<YmalSet ref="ymal_1"/>
+			<YmalSet ref="ymal_3"/>
+		</ymalSets>
+	</Product>
+
+	<Product id="prod_2">
+		<skus><Sku ref="sku_2"/></skus>
+		<FULL_NAME>Prod 2</FULL_NAME>
+		<PRIMARY_HOME><Category ref="cat_1"/></PRIMARY_HOME>
+	</Product>
+
+	<Product id="prod_3">
+		<skus><Sku ref="sku_3"/></skus>
+		<FULL_NAME>Prod 3</FULL_NAME>
+		<PRIMARY_HOME><Category ref="cat_1"/></PRIMARY_HOME>
+		<ymalSets>
+			<YmalSet ref="ymal_2"/>
+		</ymalSets>
+	</Product>
+
+	<Product id="prod_4">
+		<skus><Sku ref="sku_4"/></skus>
+		<FULL_NAME>Prod 4</FULL_NAME>
+		<PRIMARY_HOME><Category ref="cat_1"/></PRIMARY_HOME>
+	</Product>
+
+	<Product id="prod_5">
+		<skus><Sku ref="sku_5"/></skus>
+		<FULL_NAME>Prod 5</FULL_NAME>
+		<PRIMARY_HOME><Category ref="cat_1"/></PRIMARY_HOME>
+		<RELATED_PRODUCTS>
+			<Product ref="prod_1"/>
+		</RELATED_PRODUCTS>
+	</Product>
+	
+	<!--  category 2 -->
+	<Product id="prod_6">
+		<skus><Sku ref="sku_6"/></skus>
+		<FULL_NAME>Prod 6</FULL_NAME>
+		<PRIMARY_HOME><Category ref="cat_2"/></PRIMARY_HOME>
+		<ymalSets>
+			<YmalSet ref="ymal_4"/>
+		</ymalSets>
+	</Product>
+	
+	<Product id="prod_7">
+		<skus><Sku ref="sku_7"/></skus>
+		<FULL_NAME>Prod 7</FULL_NAME>
+		<PRIMARY_HOME><Category ref="cat_2"/></PRIMARY_HOME>
+		<ymalSets>
+			<YmalSet ref="ymal_5_random"/>
+		</ymalSets>
+	</Product>
+	
+	<Product id="prod_8">
+		<skus><Sku ref="sku_8"/></skus>
+		<FULL_NAME>Prod 8</FULL_NAME>
+		<PRIMARY_HOME><Category ref="cat_2"/></PRIMARY_HOME>
+		<ymalSets>
+			<YmalSet ref="ymal_2"/>
+		</ymalSets>
+	</Product>
+	
+	<Product id="prod_9">
+		<skus><Sku ref="sku_9"/></skus>
+		<FULL_NAME>Prod 9</FULL_NAME>
+		<PRIMARY_HOME><Category ref="cat_2"/></PRIMARY_HOME>
+		<ymalSets>
+			<YmalSet ref="ymal_2"/>
+		</ymalSets>
+	</Product>
+
+	<Product id="prod_10">
+		<skus><Sku ref="sku_10"/></skus>
+		<FULL_NAME>Prod 10</FULL_NAME>
+		<PRIMARY_HOME><Category ref="cat_2"/></PRIMARY_HOME>
+		<ymalSets>
+			<YmalSet ref="ymal_2"/>
+		</ymalSets>
+	</Product>
+	
+	
+	<!-- ymal sets -->
+
+
+	<YmalSet id="ymal_1">
+		<workflowStatus>ACTIVE</workflowStatus>
+		<ymals>
+			<Product ref="prod_2"/>
+		</ymals>
+		<recommenders>
+			<Recommender ref="rec_1"/>
+		</recommenders>
+	</YmalSet>
+
+	<YmalSet id="ymal_2">
+		<workflowStatus>ACTIVE</workflowStatus>
+		<ymals>
+			<Product ref="prod_3"/>
+		</ymals>
+		<recommenders>
+			<Recommender ref="rec_1"/>
+		</recommenders>
+	</YmalSet>
+
+	<YmalSet id="ymal_3">
+		<workflowStatus>PENDING_APPROVAL</workflowStatus>
+		<ymals>
+			<Product ref="prod_3"/>
+		</ymals>
+		<recommenders>
+			<Recommender ref="rec_1"/>
+		</recommenders>
+	</YmalSet>
+
+
+	<YmalSet id="ymal_4">
+		<workflowStatus>ACTIVE</workflowStatus>
+		<ymals>
+			<Product ref="prod_3"/>
+		</ymals>
+		<recommenders>
+			<Recommender ref="rec_2"/>
+		</recommenders>
+	</YmalSet>
+
+	<YmalSet id="ymal_5_random">
+		<workflowStatus>ACTIVE</workflowStatus>
+		<ymals>
+			<Product ref="prod_4"/>
+		</ymals>
+		<recommenders>
+			<Recommender ref="rec_random"/>
+		</recommenders>
+	</YmalSet>
+
+
+	<!-- recommenders -->
+	
+	<Recommender id="rec_1">
+		<strategy><RecommenderStrategy ref="rec_strat_1"/></strategy>
+		<scope>
+			<Product ref="prod_3"/>
+			<Product ref="prod_4"/>
+			<Product ref="prod_5"/>
+		</scope>
+	</Recommender>
+
+
+	<Recommender id="rec_2">
+		<strategy>
+			<RecommenderStrategy ref="rec_strat_2"/>
+		</strategy>
+		<scope>
+			<Product ref="prod_6"/>
+			<Product ref="prod_7"/>
+		</scope>
+	</Recommender>
+
+	<Recommender id="rec_3">
+		<strategy>
+			<RecommenderStrategy ref="rec_strat_1"/>
+			<RecommenderStrategy ref="rec_strat_2"/>
+		</strategy>
+		<scope>
+			<Product ref="prod_8"/>
+			<Product ref="prod_9"/>
+		</scope>
+	</Recommender>
+	
+	<Recommender id="rec_random">
+		<strategy>
+			<RecommenderStrategy ref="rec_strat_3_random"/>
+		</strategy>
+	</Recommender>
+
+
+	<RecommenderStrategy id="rec_strat_1">
+		<generator>explicitList</generator>
+	</RecommenderStrategy>
+
+	<RecommenderStrategy id="rec_strat_2">
+		<generator>RecursiveNodes("cat_2")</generator>
+	</RecommenderStrategy>
+
+	<RecommenderStrategy id="rec_strat_3_random">
+		<generator>RecursiveNodes("cat_2")</generator>
+		<sampling>power</sampling>
+	</RecommenderStrategy>
+
+
+	<Sku id="sku_1"/>
+	<Sku id="sku_2"/>
+	<Sku id="sku_3"/>
+	<Sku id="sku_4"/>
+	<Sku id="sku_5"/>
+	<Sku id="sku_6"/>
+	<Sku id="sku_7"/>
+	<Sku id="sku_8"/>
+	<Sku id="sku_9"/>
+	<Sku id="sku_10"/>
+
+</Content>

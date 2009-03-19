@@ -336,10 +336,10 @@ p.fi{margin:20px 0px;}
 	<fd:FeaturedItemsRecommendations id="recommendations"
 			currentNode="<%= category %>" itemCount="<%= i_noOfItems %>">
 		<%
-			if (recommendations.getContentNodes().size() > 0) {
+			if (recommendations.getProducts().size() > 0) {
 				request.setAttribute("recommendationsRendered", "true");
 	
-				List products = recommendations.getContentNodes();
+				List products = recommendations.getProducts();
 		%>
 		<table cellpadding="0" cellspacing="0" width="550" border="0">
 			<tr>

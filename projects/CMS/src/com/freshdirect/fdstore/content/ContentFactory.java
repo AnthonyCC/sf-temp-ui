@@ -135,6 +135,9 @@ public class ContentFactory {
 		return Collections.unmodifiableList(category.getPrivateProducts());
 	}
 
+	/**
+	 * Get a ContentNode by id.
+	 */
 	public ContentNodeModel getContentNode(String id) {
 		this.getStore(); // ensure Store is loaded
 
@@ -152,6 +155,10 @@ public class ContentFactory {
 					break;
 				}
 			}
+		}
+		
+		if ( m == null ) {
+			LOGGER.warn( "Content node not found ! getContentNode(\""+id+"\") returned null!" );
 		}
 
 		return m;

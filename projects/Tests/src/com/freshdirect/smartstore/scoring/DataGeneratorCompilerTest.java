@@ -3,14 +3,12 @@ package com.freshdirect.smartstore.scoring;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import junit.framework.TestCase;
 
+import com.freshdirect.TestUtils;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -154,7 +152,7 @@ public class DataGeneratorCompilerTest extends TestCase {
             Collection collection = dataGenerator.generate(s, input);
             assertNotNull("result collection", collection);
             assertEquals("result collection size", 2, collection.size());
-            Collection strings = convertToStringList(collection);
+            Collection strings = TestUtils.convertToStringList(collection);
             assertTrue("contains a2", strings.contains("a2"));
             assertTrue("contains a3", strings.contains("a3"));
             assertEquals("afact factor", 1, dataGenerator.getFactors().size());
@@ -166,7 +164,7 @@ public class DataGeneratorCompilerTest extends TestCase {
             Collection collection = dataGenerator.generate(s, input);
             assertNotNull("result collection", collection);
             assertEquals("result collection size", 1, collection.size());
-            Collection strings = convertToStringList(collection);
+            Collection strings = TestUtils.convertToStringList(collection);
             assertTrue("contains a2", strings.contains("a2"));
 
             assertEquals("afact factor", 1, dataGenerator.getFactors().size());
@@ -178,7 +176,7 @@ public class DataGeneratorCompilerTest extends TestCase {
             Collection collection = dataGenerator.generate(s, input);
             assertNotNull("result collection", collection);
             assertEquals("result collection size", 3, collection.size());
-            Collection strings = convertToStringList(collection);
+            Collection strings = TestUtils.convertToStringList(collection);
             assertTrue("contains a2", strings.contains("a2"));
             assertTrue("contains a3", strings.contains("a3"));
             assertTrue("contains bbb", strings.contains("bbb"));
@@ -192,7 +190,7 @@ public class DataGeneratorCompilerTest extends TestCase {
             Collection collection = dataGenerator.generate(s, input);
             assertNotNull("result collection", collection);
             assertEquals("result collection size", 1, collection.size());
-            Collection strings = convertToStringList(collection);
+            Collection strings = TestUtils.convertToStringList(collection);
             assertTrue("contains a2", strings.contains("a2"));
         }
     }
@@ -204,7 +202,7 @@ public class DataGeneratorCompilerTest extends TestCase {
             Collection collection = dataGenerator.generate(s, input);
             assertNotNull("result collection", collection);
             assertEquals("result collection size", 2, collection.size());
-            Collection strings = convertToStringList(collection);
+            Collection strings = TestUtils.convertToStringList(collection);
             assertTrue("contains a2", strings.contains("a2"));
             assertTrue("contains a3", strings.contains("a3"));
             assertEquals("afact factor", 1, dataGenerator.getFactors().size());
@@ -216,21 +214,30 @@ public class DataGeneratorCompilerTest extends TestCase {
             Collection collection = dataGenerator.generate(s, input);
             assertNotNull("result collection", collection);
             assertEquals("result collection size", 2, collection.size());
-            Collection strings = convertToStringList(collection);
+            Collection strings = TestUtils.convertToStringList(collection);
             assertTrue("contains a2", strings.contains("a2"));
             assertTrue("contains a1", strings.contains("a1"));
             assertEquals("afact factor", 1, dataGenerator.getFactors().size());
             assertTrue("afact factor", dataGenerator.getFactors().contains("afact"));
         }
     }
-
-    static Set convertToStringList(Collection coll) {
-        Set set = new HashSet();
-        for (Iterator iter = coll.iterator(); iter.hasNext();) {
-            ContentNodeModel obj = (ContentNodeModel) iter.next();
-            set.add(obj.getContentKey().getId());
-        }
-        return set;
+    
+    public void testYmalRelated() throws CompileException {
+        DataGenerator dataGenerator = comp.createDataGenerator("ymal1", "RecursiveNodes(currentProduct)");
+        assertNotNull("dataGenerator", dataGenerator);
+        Collection collection = dataGenerator.generate(s, input);
     }
+    
+    public void testYmalValidations() {
+        try {
+            DataGenerator dataGenerator = comp.createDataGenerator("ymalVal1", "RecursiveNodes(3)");
+            fail("should fail, with invalid parameter type");
+        } catch (CompileException e) {
+            assertEquals("type error", CompileException.TYPE_ERROR, e.getCode());
+            assertEquals("error message", "The 1. parameter type is integer instead of the expected node/set/string!", e.getMessage());
+        }
+    }
+    
+
 
 }

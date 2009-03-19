@@ -199,4 +199,16 @@ public class Pricing implements Serializable {
 
 		return p;
 	}
+
+	public double getMaxUnitPrice() {
+		if (materialPrices.length == 0)
+			return Double.NaN;
+
+		double p = materialPrices[0].getPrice();
+		for (int i=1; i<materialPrices.length; ++i) {
+			p = Math.max(p, materialPrices[i].getPrice());
+		}
+
+		return p;
+	}
 }

@@ -75,7 +75,7 @@ public class DYFRecommendationsTag extends RecommendationsTag implements Session
         if (results == null) {
         	if (DYFUtil.isCustomerEligible(user)) {
         		results = extractRecommendations(session, EnumSiteFeature.DYF);
-        		if (results.getContentNodes().size() == 0) {
+        		if (results.getProducts().size() == 0) {
         			results = extractRecommendations(session, EnumSiteFeature.FAVORITES);
         		}
         	} else {

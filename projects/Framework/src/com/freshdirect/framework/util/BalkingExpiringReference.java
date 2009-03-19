@@ -66,8 +66,8 @@ public abstract class BalkingExpiringReference extends ExpiringReference {
 
 	public synchronized void reload() {
 		if (loader == null && (referent == null || isExpired())) {
-			AsyncLoader asyncLoader = new AsyncLoader();
-			executor.execute(asyncLoader);
+			loader = new AsyncLoader();
+			executor.execute(loader);
 		}
 	}
 	

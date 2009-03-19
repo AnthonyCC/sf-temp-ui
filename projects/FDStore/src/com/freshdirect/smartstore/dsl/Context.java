@@ -38,6 +38,14 @@ public class Context {
         throw new CompileException(CompileException.UNKNOWN_FUNCTION, "Function '" + name + "' not declared!");
     }
 
+    public String getPreparingCode(String name, List params) throws CompileException {
+        FunctionDef def = (FunctionDef) functionDefs.get(name);
+        if (def != null) {
+            return def.getPreparingCode(name, params);
+        }
+        throw new CompileException(CompileException.UNKNOWN_FUNCTION, "Function '" + name + "' not declared!");
+    }
+    
     public void addFunctionDef(String name, FunctionDef def) {
         functionDefs.put(name, def);
     }
@@ -130,6 +138,10 @@ public class Context {
             }
             buf.append(')');
             return buf.toString();
+        }
+        
+        public String getPreparingCode(String name, List parameters) {
+            return null;
         }
     }
 

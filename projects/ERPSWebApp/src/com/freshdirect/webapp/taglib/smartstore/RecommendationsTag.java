@@ -2,13 +2,19 @@ package com.freshdirect.webapp.taglib.smartstore;
 
 import java.util.Iterator;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
+import com.freshdirect.event.ImpressionLogger;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.FDEventUtil;
 
 public abstract class RecommendationsTag extends AbstractGetterTag {
@@ -45,17 +51,32 @@ public abstract class RecommendationsTag extends AbstractGetterTag {
      * @author segabor
      */
     protected void logImpressions(Recommendations r) {
-    	if (r.getContentNodes().size() > 0) {
-    		FDUserI user = (FDUserI) pageContext.getSession().getAttribute("fd.user");
+        FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
+    	if (r.getProducts().size() > 0) {
     		if (user != null && user instanceof FDSessionUser) {
     			FDSessionUser sessionUser = (FDSessionUser) user;
-    			sessionUser.logImpression(r.getVariant().getId(), r.getContentNodes().size());
+    			sessionUser.logImpression(r.getVariant().getId(), r.getProducts().size());
     		}
     	}
-        Iterator it = r.getContentNodes().iterator();
-        while (it.hasNext()) {
+        for (Iterator it = r.getProducts().iterator();it.hasNext();) {
             ProductModel p = (ProductModel) it.next();
             FDEventUtil.logRecommendationImpression(r.getVariant().getId(), p.getContentKey());
+        }
+        if (ImpressionLogger.isEnabled()) {
+            ContentNodeModel node = r.getSessionInput().getCurrentNode();
+            FDIdentity identity = user.getIdentity();
+            
+            HttpServletRequest httpServletRequest = (HttpServletRequest) this.pageContext.getRequest();
+            String messagePrefix = "" + user.getUserId() + ',' + pageContext.getSession().getId() + ',' + (identity != null ? identity.getErpCustomerPK() : "")
+                    + ',' + (identity != null ? identity.getFDCustomerPK() : "") + ',' + r.getVariant().getId() + ',' + httpServletRequest.getRequestURI()
+                    + ',' + (node != null ? node.getContentKey().getId() : "") + ',';
+            int rank = 1;
+            for (Iterator it = r.getProducts().iterator();it.hasNext();) {
+                ProductModel p = (ProductModel) it.next();
+
+                ImpressionLogger.logEvent(messagePrefix + rank + ','+p.getContentKey().getId());
+                rank++;
+            }
         }
     }
 
@@ -67,7 +88,7 @@ public abstract class RecommendationsTag extends AbstractGetterTag {
     protected Object getResult() throws Exception {
         Recommendations results = getRecommendations();
 
-        if (results != null && results.getContentNodes().size() == 0) {
+        if (results != null && results.getProducts().size() == 0) {
             results = null;
         } else {
             // do impression logging

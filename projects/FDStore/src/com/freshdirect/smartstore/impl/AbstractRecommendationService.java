@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -15,6 +16,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -26,6 +28,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.RecommendationServiceConfig;
 import com.freshdirect.smartstore.SessionInput;
+import com.freshdirect.smartstore.Trigger;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.sampling.ContentSampler;
 import com.freshdirect.smartstore.sampling.ImpressionSampler;
@@ -65,6 +68,13 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 	
     protected boolean           aggregateAtCategoryLevel = false;
     protected boolean           includeCartItems         = false;
+
+
+	public static ThreadLocal CFG_PRODS = new ThreadLocal() {
+		protected Object initialValue() {
+			return new HashMap();
+		}
+	};
 	
     protected static ImpressionSampler DETERMINISTIC_SAMPLER = new ConfiguredImpressionSampler(new SimpleLimit(100, 100), ListSampler.ZERO);
 
@@ -381,7 +391,7 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 		return this.variant;
 	}
 
-	abstract public List recommendNodes(SessionInput input);
+	abstract public List recommendNodes(Trigger trigger, SessionInput input);
 
 
 	public String getDescription() {
@@ -496,5 +506,38 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 
 		sampler.appendConfiguration(configMap);
 		return configMap;
+	}
+
+	public static void clearConfiguredProductCache() {
+		((Map) CFG_PRODS.get()).clear();
+	}
+
+	/**
+	 * This method returns a ProductModel from a ConfiguredProduct or ConfiguredProductGroup and store the original CP or CPG in a thread local cache, this is used later by the configurator.
+	 * @param pm
+	 * @return
+	 */
+	public static ProductModel addConfiguredProductToCache(ProductModel pm) {
+		ProductModel orig = pm;
+		while (pm instanceof ConfiguredProduct)
+			pm = ((ConfiguredProduct) pm).getProduct();
+		if (pm != orig && pm != null)
+			((Map) CFG_PRODS.get()).put(pm.getContentKey().getId(), orig);
+		return pm;
+	}
+
+	public static List addConfiguredProductToCache(List list) {
+		List ret = new ArrayList(list.size());
+		for (ListIterator it = list.listIterator(); it.hasNext(); ) {
+			ProductModel current = (ProductModel) it.next();
+			ProductModel replace = addConfiguredProductToCache((ProductModel) current);
+			if (replace != null)
+				ret.add(replace);
+		}
+		return ret;
+	}
+	
+	public static Map getConfiguredProductCache() {
+		return (Map) CFG_PRODS.get();
 	}
 }
