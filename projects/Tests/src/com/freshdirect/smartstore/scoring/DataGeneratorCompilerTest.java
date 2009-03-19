@@ -107,11 +107,13 @@ public class DataGeneratorCompilerTest extends TestCase {
             assertNotNull("dataGenerator", dataGenerator);
             Collection collection = dataGenerator.generate(s, input);
             assertNotNull("result collection", collection);
-            assertEquals("result collection size", 4, collection.size());
+            // a1, a2, a3, a3, b1
+            assertEquals("result collection size", 5, collection.size());
             assertTrue("contains a1", collection.contains("a1"));
             assertTrue("contains a2", collection.contains("a2"));
             assertTrue("contains a3", collection.contains("a3"));
             assertTrue("contains b1", collection.contains("b1"));
+            assertEquals("result list", "[a1, a2, a3, a3, b1]", collection.toString());
             assertEquals("no factor", 0, dataGenerator.getFactors().size());
         }
         {
@@ -175,7 +177,8 @@ public class DataGeneratorCompilerTest extends TestCase {
             assertNotNull("dataGenerator", dataGenerator);
             Collection collection = dataGenerator.generate(s, input);
             assertNotNull("result collection", collection);
-            assertEquals("result collection size", 3, collection.size());
+            // a2, a3, a2, bbb
+            assertEquals("result collection size", 4, collection.size());
             Collection strings = TestUtils.convertToStringList(collection);
             assertTrue("contains a2", strings.contains("a2"));
             assertTrue("contains a3", strings.contains("a3"));
