@@ -211,12 +211,13 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	}
 	
 	public int getDealPercentage(String skuCode) {
-		if (skuCode == null) {
-			skuCode = getDefaultSku() != null ? getDefaultSku().getSkuCode() : null;
+		SkuModel defaultSku = getDefaultSku();
+                if (skuCode == null) {
+			skuCode = defaultSku != null ? defaultSku.getSkuCode() : null;
 		} else {
 			if (getSkuCodes().indexOf(skuCode) < 0) {
 				// invalid sku code using default
-				skuCode = getDefaultSku().getSkuCode();
+				skuCode = defaultSku.getSkuCode();
 			}
 		}
 		FDProductInfo productInfo = null;

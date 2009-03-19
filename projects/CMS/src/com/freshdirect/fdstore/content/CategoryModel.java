@@ -233,12 +233,12 @@ public class CategoryModel extends ContentNodeModelImpl {
 						newProd.setPriority(prodList.size() + i++);
 						if (!prodList.contains(newProd)) { // don't put a duplicate product in there
 							prodList.add(newProd);
-							LOGGER.debug(" ##### added aliased product: " + newProd.getContentName());
+//							LOGGER.debug(" ##### added aliased product: " + newProd.getContentName());
 						} else {
-							LOGGER.debug(" #### "
-								+ newProd.getContentName()
-								+ " already in list, not adding product: "
-								+ newProd.getContentName());
+//							LOGGER.debug(" #### "
+//								+ newProd.getContentName()
+//								+ " already in list, not adding product: "
+//								+ newProd.getContentName());
 						}
 					}
 				}
