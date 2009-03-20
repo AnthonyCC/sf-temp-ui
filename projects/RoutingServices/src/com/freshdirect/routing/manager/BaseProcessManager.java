@@ -321,7 +321,9 @@ public abstract class BaseProcessManager implements  IProcessManager {
     									String userId, String currentTime) throws  RoutingProcessException {
     	String sessionDescription = null;    	
     	try {
-    		sessionDescription = userId+"_"+RoutingDateUtil.formatPlain(schedulerId.getDeliveryDate())+"_"+currentTime;
+    		sessionDescription = userId+"_"+getSessionType(schedulerId)
+    								+"_"+RoutingDateUtil.formatPlain(schedulerId.getDeliveryDate())
+    									+"_"+currentTime;
 			proxy.sendRoutesToRoadNet(schedulerId, sessionDescription);
     	} catch (RoutingServiceException e) {
     		e.printStackTrace();
@@ -399,7 +401,7 @@ public abstract class BaseProcessManager implements  IProcessManager {
 			sessionDescription = (String)sessionDescriptionMap.get(schedulerId);
 			tmpUnassignedLst = (List)unassignedOrders.get(schedulerId);
 			
-			sessionType = (schedulerId.isDepot()?"Depot":"Trucks");
+			sessionType = getSessionType(schedulerId);
 
 			ProcessInfo  processInfoSession = new ProcessInfo();
 			processInfoSession.setProcessType(EnumProcessType.CREATE_ROUTINGSESSION);
@@ -417,6 +419,11 @@ public abstract class BaseProcessManager implements  IProcessManager {
 		}
 		return sessionIds;
     }
+    
+    private String getSessionType(IRoutingSchedulerIdentity schedulerId) {
+    	return (schedulerId != null && schedulerId.isDepot()?"Depot":"Trucks");
+    }
+    
     private List groupOrdersForBatchRouting(List lstOrders, boolean depot) {
 
     	Map resultOrderIdMap = new HashMap();
