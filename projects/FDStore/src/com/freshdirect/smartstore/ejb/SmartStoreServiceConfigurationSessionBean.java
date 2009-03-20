@@ -191,7 +191,9 @@ public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSuppor
 					type = RecommendationServiceType.getEnum( typeStr );				
 					feature = EnumSiteFeature.getEnum( featureStr );
 					
-					result.add( new Variant( variantId, feature, createConfig(conn, variantIdConfig, type) ) );
+					if ( feature != null && type != null ) {
+						result.add( new Variant( variantId, feature, createConfig(conn, variantIdConfig, type) ) );
+					}
 					
 				} catch (RemoteException exc) {
 					// Ignore variant if error occures during configuration
