@@ -166,7 +166,7 @@ public class HelperFunctions {
      * @param model
      * @param result
      */
-    private static void collect(ContentNodeModel model, List result) {
+    private static void collect(ContentNodeModel model, Collection result) {
         if (model instanceof ProductModel) {
             result.add(AbstractRecommendationService.addConfiguredProductToCache((ProductModel) model));
         } else if (model instanceof CategoryModel) {
@@ -251,18 +251,18 @@ public class HelperFunctions {
     }
 
     private static List collectExcept(ContentNodeModel model, Set exceptionIds) {
-        List result = new ArrayList();
+        Collection result = new HashSet();
         collectExcept(model, result, exceptionIds);
-        return result;
+        return new ArrayList(result);
     }
 
     private static List collectExcept(Collection models, Set exceptionIds) {
-        List result = new ArrayList();
+        Collection result = new HashSet();
         for (Iterator iter= models.iterator(); iter.hasNext();) {
             ContentNodeModel model = (ContentNodeModel) iter.next();
             collectExcept(model, result, exceptionIds);
         }
-        return result;
+        return new ArrayList(result);
     }
 
     private static void collectIds(Set exceptionIds, Object obj) {
@@ -285,7 +285,7 @@ public class HelperFunctions {
      * @param result
      * @param exceptionIds collection of strings, representing the content keys.
      */
-    private static void collectExcept(ContentNodeModel model, List result, Collection exceptionIds) {
+    private static void collectExcept(ContentNodeModel model, Collection result, Collection exceptionIds) {
         if (exceptionIds.contains(model.getContentKey().getId())) {
             return;
         }
