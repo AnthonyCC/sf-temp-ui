@@ -6,6 +6,7 @@
 <%@ page import="java.util.Collections"%>
 <%@ page import='com.freshdirect.fdstore.FDConfigurableI' %>
 <%@ page import='com.freshdirect.fdstore.FDSalesUnit' %>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import='com.freshdirect.fdstore.attributes.Attribute'%>
 <%@ page import="com.freshdirect.fdstore.content.YmalSource" %>
 <%@ page import="com.freshdirect.fdstore.content.YmalSet" %>
@@ -101,6 +102,21 @@
 	    	++nConfProd;
 	    }
 	}
+
+
+
+	/*
+	 * Include Curvy Corners
+	 */
+	if (FDStoreProperties.isCclAjaxDebugClient()) { 
+		// debug JS libs
+%><script type="text/javascript" src="/assets/javascript/rounded_corners.inc.js"></script>
+<%
+	} else {
+		// production JS libs
+%><script type="text/javascript" src="/assets/javascript/rounded_corners-min.js"></script>
+<%
+}
 %>
 <%-- PRICING PART --%>
 <fd:TxProductPricingSupport formName="<%= TX_FORM_NAME %>" namespace="<%= TX_JS_NAMESPACE %>" customer="<%= fd_user %>" impressions="<%= impressions %>"/>
@@ -112,40 +128,20 @@
 
 
 
-%>	<table class="ymal">
-    	<caption>YOU MIGHT ALSO LIKE</caption>
-        <tr valign="top">
-	    	<td align="center">
+%>
+	<div id="ymal-table" style="border: 2px solid #996699; width: 400px; margin-left: 15px; margin-top: 15px">
+		<div style="color: white; background: #996699; font-size: 12px; font-weight: bold; padding-top: 0; padding-bottom: 4px; margin-top: 0;">YOU MIGHT ALSO LIKE</div>
+		<div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
 <%
-	boolean firstData = true;
 
-
-%><%-- DISPLAY RECIPES --%><%
-	if (r_recipes.size() > 0) {
-%>				<img src="/media_stat/images/template/confirmation/recommended_recipes.gif" width="149" height="9" border="0" alt="YOU MIGHT ALSO LIKE"><br>
-				<img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
-<%
-		for (Iterator it = r_recipes.iterator(); it.hasNext();) {
-			Recipe rec = (Recipe) it.next();
-%>				<div><a href="/recipe.jsp?recipeId=<%= rec.getContentName() %>&trk=conf" class="text12"><%= rec.getName() %></a></div>
-<%
-		}
-%>				<br>
-<%
-		firstData = false;
-	}
-
-
-
+	boolean showSeparator = false;
 
 
 %><%-- DISPLAY PRODUCTS --%><%
 	if (impressions.size() > 0) {
-		if (!firstData) {
-%>				<hr class="ymalSeparator"/><%
-		}
-%>
-				<div align="center" style="padding-bottom: 8px;">
+		showSeparator = true;
+
+%>				<div align="center" style="padding-bottom: 8px;">
 <%		if (ym_hdr != null) { %>
 					<span style="font-size:11px; color: #996699; font-weight: bold;"><%= ym_hdr %></span>
 <%		} else { %>
@@ -254,15 +250,37 @@
 					</table>
 				</form>
 <%
-		firstData = false;
 	}
 
-                                    	
+
+
+
+%><%-- DISPLAY RECIPES --%><%
+	if (r_recipes.size() > 0) {
+		if (showSeparator) {
+%>				<hr class="ymalSeparator"/><%
+		} else {
+			showSeparator = true;
+		}
+%>				<img src="/media_stat/images/template/confirmation/ymal_recipes_hdr.gif" width="170" height="11" border="0" alt="YOU MIGHT ALSO LIKE"><br>
+				<img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
+<%
+		for (Iterator it = r_recipes.iterator(); it.hasNext();) {
+			Recipe rec = (Recipe) it.next();
+%>				<div><a href="/recipe.jsp?recipeId=<%= rec.getContentName() %>&trk=conf" class="text12"><%= rec.getName() %></a></div>
+<%
+		}
+%>				<br>
+<%
+	}
+
+
+
 
 
 %><%-- DISPLAY RELATED CATEGORIES --%><%
 	if (r_cats.size() > 0) {
-    	if (!firstData) {
+    	if (showSeparator) {
 %>				<hr class="ymalSeparator"/>
 <%		}
 %>				<div align="center" style="padding-top: 8px; padding-bottom: 8px;">
@@ -278,12 +296,28 @@
 		}
 %>				</div>
 <%
-        firstData = false;
 	}
 %>
-			</td>
-		</tr>
-	</table>
+		</div>
+	</div>
 <%
 }
 %>
+<script type="text/javascript">
+	if (document.getElementById('ymal-table')) {
+		var full_settings = {
+	        tl: { radius: 6 },
+	        tr: { radius: 6 },
+	        bl: { radius: 6 },
+	        br: { radius: 6 },
+	        topColour: "#996699",
+	        xbottomColour: "#E0E3D0",
+	        antiAlias: true,
+	        autoPad: false
+	    };
+	
+	    var fullCorn = new curvyCorners(full_settings, document.getElementById('ymal-table'));
+	    fullCorn.applyCornersToAll();
+	}
+
+</script>
