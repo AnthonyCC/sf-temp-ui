@@ -597,17 +597,12 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 
 			return true;
 			
-		} catch (InvalidAddressException e) {
+		} catch (Exception e) {
 			logActivity(EnumTransactionSource.SYSTEM, EnumAccountActivityType.MAKE_PRE_RESERVATION,"SYSTEM", customerId,
-							"Could not Reserve a Weekly recurring timeslot for customer id - Invalid address");
-			LOGGER.warn("Could not Reserve a Weekly recurring timeslot for customer id: "+customerId+" because of Invalid address", e);
+							"Could not Reserve a Weekly recurring timeslot ->"+e.getMessage());
+			LOGGER.warn("Could not Reserve a Weekly recurring timeslot for customer id: "+customerId, e);
 			return false;
-		} catch (ReservationException e) {
-			logActivity(EnumTransactionSource.SYSTEM, EnumAccountActivityType.MAKE_PRE_RESERVATION,"SYSTEM", customerId,
-							"Could not Reserve a Weekly recurring timeslot for customer id - Reservation Exception");
-			LOGGER.warn("Could not Reserve a Weekly recurring timeslot for customer id: "+customerId+" Reservation Exception", e);
-			return false;
-		}
+		} 
 	}
 
 	public void removeReservation(String reservationId) {
