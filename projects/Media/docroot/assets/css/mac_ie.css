@@ -282,14 +282,35 @@ margin-bottom: 3px;
 	color: #6699CC;
 }
 
+
+/*********************************************************
+					< YMAL styles >
+**********************************************************/
+
+/* internal table in ymal pages */
 table.ymal {
-    padding       : 10px;
-    border        : 0px;
-    width         : 400px;
-    border-right  : 2px solid #996699;
-    border-left   : 2px solid #996699;
-    border-bottom : 2px solid #996699;
-    margin-top    : 10px;
+    width			: 100%;
+    align 			: center;
+	padding-top		: 5px;
+	padding-bottom	: 0px;	
+	padding-left	: 0px;	
+	padding-right	: 0px;	
+}
+
+/* product cell, containing pic, link, price */
+td.ymal_product {
+	padding			: 10px;
+}
+
+td.ymal_separator {
+	padding-top		: 0px;	
+}
+
+td.ymal_addtocart {
+	padding-top		: 0px;
+	padding-bottom	: 0px;	
+	padding-left	: 0px;	
+	padding-right	: 0px;	
 }
 
 table.ymal caption {
@@ -298,15 +319,42 @@ table.ymal caption {
     font-size   : 12px;
     font-weight : bold;
     padding     : 4px;
-    width: 400px;
+    margin-top  : 10px;
 }
 
-.ymalSeparator {
-	height        : 1px;
-	color         : 1px solid #996699;
-	margin-top    : 8px;
-	margin-bottom : 4px;
+
+table.ymal_prod {
+    width			: 100%;
+    align 			: center;
+	padding			: 10px;	
 }
+
+
+/* separator line in ymal pages */
+.ymalSeparator_product {
+	height        : 1px;
+	color         : #C0C0C0;
+	margin-top    : 12px;
+	margin-bottom : 0px;
+}
+.ymalSeparator_recipe {
+	height        : 1px;
+	color         : #C0C0C0;
+	margin-top    : 0px;
+	margin-bottom : 12px;
+}
+.ymalSeparator_category {
+	height        : 1px;
+	color         : #C0C0C0;
+	margin-top    : 12px;
+	margin-bottom : 0px;
+}
+
+/*********************************************************
+					</ YMAL styles >
+**********************************************************/
+
+
 
 /** SMART STORE **/
 table.smartstore {
