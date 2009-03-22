@@ -1327,7 +1327,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			return DlvRestrictionDAO.getGeographicDlvRestrictions(conn, address);
 
 		} catch (SQLException e) {
-			this.getSessionContext().setRollbackOnly();
+			//this.getSessionContext().setRollbackOnly();
 			throw new DlvResourceException(e);
 		} finally {
 			try {
