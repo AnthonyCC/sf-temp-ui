@@ -131,7 +131,8 @@ public class SmartStoreServiceConfiguration {
 		} else if (RecommendationServiceType.SMART_YMAL.equals(serviceType)) {
 			return new SmartYMALRecommendationService(variant);
 		} else {
-			throw new FDRuntimeException("Unrecognized variant " + variant);
+//			throw new FDRuntimeException("Unrecognized variant " + variant);
+			return new NullRecommendationService(variant);
 		}
 	}
 	
