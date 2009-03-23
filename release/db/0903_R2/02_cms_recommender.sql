@@ -45,6 +45,6 @@ INSERT INTO cms.relationshipdestination (RELATIONSHIPDEFINITION_ID,CONTENTTYPE_I
 INSERT INTO cms.relationshipdestination (RELATIONSHIPDEFINITION_ID,CONTENTTYPE_ID,LABEL,ID) VALUES ('FDFolder.children','RecommenderStrategy',NULL,'FDFolder.children.RecommenderStrategy');
 
 
-INSERT INTO cms.relationshipdefinition (NAME,ID,CONTENTTYPE_ID,INHERITABLE,REQUIRED,NAVIGABLE,LABEL,CARDINALITY_CODE) VALUES ('recommenders','YmalSet.recommenders','YmalSet','F','F','F','Recommenders','Many');
+INSERT INTO cms.relationshipdefinition (NAME,ID,CONTENTTYPE_ID,INHERITABLE,REQUIRED,NAVIGABLE,LABEL,CARDINALITY_CODE) VALUES ('recommenders','YmalSet.recommenders','YmalSet','F','F','T','Recommenders','Many');
 INSERT INTO cms.relationshipdestination (RELATIONSHIPDEFINITION_ID,CONTENTTYPE_ID,LABEL,ID) VALUES ('YmalSet.recommenders','Recommender',NULL,'YmalSet.recommenders.Recommender');
 
