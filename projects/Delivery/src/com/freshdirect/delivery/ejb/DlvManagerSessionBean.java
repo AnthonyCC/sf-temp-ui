@@ -598,8 +598,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			return true;
 			
 		} catch (Exception e) {
-			logActivity(EnumTransactionSource.SYSTEM, EnumAccountActivityType.MAKE_PRE_RESERVATION,"SYSTEM", customerId,
-							"Could not Reserve a Weekly recurring timeslot ->"+e.getMessage());
+			
 			LOGGER.warn("Could not Reserve a Weekly recurring timeslot for customer id: "+customerId, e);
 			return false;
 		} 

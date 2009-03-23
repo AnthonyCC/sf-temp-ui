@@ -4,12 +4,11 @@ package com.freshdirect.dataloader.reservation;
  * 
  * @author knadeem
  */
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 
-import javax.ejb.EJBException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -27,8 +26,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public class ReservationCronRunner {
 
 	private final static Category LOGGER = LoggerFactory.getInstance(ReservationCronRunner.class);
-	
-	
+		
 	public static void main(String[] args) {
 		Context ctx = null;
 		try {
@@ -47,10 +45,17 @@ public class ReservationCronRunner {
 			
 			DlvManagerHome dlh =(DlvManagerHome) ctx.lookup("freshdirect.delivery.DeliveryManager");
 			DlvManagerSB dsb = dlh.create();
-
+			
 			for (Iterator i = rsvInfo.iterator(); i.hasNext();) {
 				ReservationInfo info = (ReservationInfo) i.next();
-				dsb.makeRecurringReservation(info.getCustomerId(), info.getDayOfWeek(), info.getStartTime(), info.getEndTime(), info.getAddress());
+								
+				try {
+					dsb.makeRecurringReservation(info.getCustomerId(), info.getDayOfWeek(), info.getStartTime()
+															, info.getEndTime(), info.getAddress());
+				} catch(Exception e) {
+					LOGGER.warn("Could not Reserve a Weekly recurring timeslot "+info.getCustomerId(), e);			
+				}
+				
 			}
 			
 			LOGGER.info("ReservationCron finished");
@@ -67,7 +72,8 @@ public class ReservationCronRunner {
 			}
 		}
 	}
-
+	
+	
 	static public Context getInitialContext() throws NamingException {
 		Hashtable h = new Hashtable();
 		h.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
