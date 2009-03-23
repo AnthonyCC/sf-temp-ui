@@ -1,5 +1,6 @@
 package com.freshdirect.smartstore.scoring;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -15,6 +16,10 @@ import com.freshdirect.smartstore.dsl.BlockExpression;
 import com.freshdirect.smartstore.dsl.ClassCompileException;
 import com.freshdirect.smartstore.dsl.CompileException;
 import com.freshdirect.smartstore.dsl.Context;
+import com.freshdirect.smartstore.dsl.Expression;
+import com.freshdirect.smartstore.dsl.ExpressionVisitor;
+import com.freshdirect.smartstore.dsl.Operation;
+import com.freshdirect.smartstore.dsl.Parser;
 import com.freshdirect.smartstore.dsl.VariableCollector;
 import com.freshdirect.smartstore.dsl.VisitException;
 
@@ -72,6 +77,10 @@ public class ScoringAlgorithmCompiler extends CompilerBase {
         super(cb);
     }
 
+    protected  void setupParser(Parser parser) {
+        super.setupParser(parser);
+        parser.getContext().addVariable("top", Expression.RET_SYMBOL);
+    }
 
     /**
      * Validates the type safetyness, and returns a list of variables.
@@ -86,13 +95,17 @@ public class ScoringAlgorithmCompiler extends CompilerBase {
         try {
             expr.visit(collector);
             Context context = getParser().getContext();
+            Set result = new HashSet();
             for (Iterator iter = collector.getVariables().iterator(); iter.hasNext();) {
                 String varName = (String) iter.next();
                 if (!context.isVariable(varName)) {
                     throw new ClassCompileException("Unknown variable '" + varName + ", available variables:" + context.getVariables());
                 }
+                if (context.getVariableType(varName)!=Expression.RET_SYMBOL) {
+                    result.add(varName);
+                }
             }
-            return collector.getVariables();
+            return result;
         } catch (VisitException e) {
             throw new ClassCompileException("VisitException :" + e.getMessage(), e);
         }
@@ -101,6 +114,7 @@ public class ScoringAlgorithmCompiler extends CompilerBase {
     public Class compileAlgorithm(String name, BlockExpression expr, String toStringValue) throws CompileException {
 
         Set variables = validate(expr);
+        Integer topParam = removeSymbolicOperations(expr);
 
         try {
             CtClass class1 = pool.makeClass(packageName + name);
@@ -130,6 +144,12 @@ public class ScoringAlgorithmCompiler extends CompilerBase {
             
             method = createToStringMethod(class1, toStringValue);
             class1.addMethod(method);
+            
+            if (topParam!=null) {
+                CtMethod method5 = CtNewMethod.make("public OrderingFunction createOrderingFunction() { return new TopLimitOrderingFunction(" + topParam
+                        + "); }", class1);
+                class1.addMethod(method5);
+            }
 
             return class1.toClass();
         } catch (NotFoundException e) {
@@ -137,6 +157,28 @@ public class ScoringAlgorithmCompiler extends CompilerBase {
         } catch (CannotCompileException e) {
             throw new ClassCompileException("CannotCompile:" + e.getMessage(), e);
         }
+    }
+
+    private Integer removeSymbolicOperations(BlockExpression expr) {
+        Integer result = null;
+        for (int i=0;i<expr.size();i++) {
+            if (expr.get(i) instanceof Operation) {
+                if (filterOperation((Operation) expr.get(i))) {
+                    result = result ==null ? new Integer(i) : result;
+                }
+            }
+        }
+        return result;
+    }
+
+    private boolean filterOperation(Operation operation) {
+        int paramCount = operation.size();
+        Expression last = operation.get(paramCount-1);
+        if (last.getReturnType()==Expression.RET_SYMBOL) {
+            operation.removeOperator(paramCount-1);
+            return true;
+        }
+        return false;
     }
 
     private String generateFieldInitializers(BlockExpression expr, Set variables) {
@@ -149,12 +191,14 @@ public class ScoringAlgorithmCompiler extends CompilerBase {
         boolean first = true;
         for (Iterator iter = variables.iterator(); iter.hasNext();) {
             String name = (String) iter.next();
-            if (first) {
-                first = false;
-            } else {
-                buf.append(',');
+            if (getParser().getContext().getVariableType(name)!=Expression.RET_SYMBOL) {
+                if (first) {
+                    first = false;
+                } else {
+                    buf.append(',');
+                }
+                buf.append('"').append(name).append('"');
             }
-            buf.append('"').append(name).append('"');
         }
         buf.append("};");
         return buf.toString();

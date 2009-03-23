@@ -16,6 +16,7 @@ import com.freshdirect.smartstore.fdstore.ScoreProvider;
 import com.freshdirect.smartstore.sampling.RankedContent;
 import com.freshdirect.smartstore.scoring.DataAccess;
 import com.freshdirect.smartstore.scoring.DataGenerator;
+import com.freshdirect.smartstore.scoring.OrderingFunction;
 import com.freshdirect.smartstore.scoring.Score;
 import com.freshdirect.smartstore.scoring.ScoringAlgorithm;
 
@@ -66,22 +67,15 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
             String[] variableNames = scoring.getVariableNames();
              
             if (scoring.getReturnSize() > 1) {
-                // if multiple number is the returning statement, we can't interpret as a probability.
-                TreeSet scores = new TreeSet();
+                
+                OrderingFunction orderingFunction = scoring.createOrderingFunction();
                 for (Iterator iter = result.iterator(); iter.hasNext();) {
                     ContentNodeModel contentNode = (ContentNodeModel) iter.next();
                     double[] values = dataAccess.getVariables(userId, contentNode, variableNames);
                     double[] score = scoring.getScores(values);
-                    Score sc = new Score(contentNode, score);
-                    scores.add(sc);
+                    orderingFunction.addScore(contentNode, score);
                 }
-                int max = scores.size();
-                int i = 0;
-                for (Iterator iter = scores.iterator(); iter.hasNext();) {
-                    Score sc = (Score) iter.next();
-                    rankedContents.add(new RankedContent.Single(max + 1 - i, sc.getNode()));
-                    i++;
-                }
+                rankedContents = orderingFunction.getRankedContents();
             } else {
                 // one score computed, interpret as 'weight' or probability.
                 TreeSet scores = new TreeSet();

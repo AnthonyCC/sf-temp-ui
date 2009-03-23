@@ -13,6 +13,7 @@ public class Expression {
     public static final int RET_SET       = 's';
     public static final int RET_STRING    = 't';
     public static final int RET_NODE      = 'n';
+    public static final int RET_SYMBOL    = 'y';
     
     Context context;
     int type = RET_VOID;
@@ -72,6 +73,7 @@ public class Expression {
             case RET_SET : return "set";
             case RET_UNKNOWN : return "unknown";
             case RET_VOID : return "void";
+            case RET_SYMBOL : return "symbol";
         }
         throw new RuntimeException("Unknown code:"+code);
     }

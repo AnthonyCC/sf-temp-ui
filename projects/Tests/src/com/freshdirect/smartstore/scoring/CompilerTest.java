@@ -1,20 +1,31 @@
 package com.freshdirect.smartstore.scoring;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
 import junit.framework.TestCase;
 
+import com.freshdirect.cms.core.MockContentNodeModel;
+import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.smartstore.dsl.ClassCompileException;
 import com.freshdirect.smartstore.dsl.CompileException;
 import com.freshdirect.smartstore.dsl.Expression;
+import com.freshdirect.smartstore.sampling.RankedContent;
 
 public class CompilerTest extends TestCase {
     ScoringAlgorithmCompiler comp;
 
+    ContentNodeModel[] model = new ContentNodeModel[4];
+    
     protected void setUp() throws Exception {
         comp = new ScoringAlgorithmCompiler();
+        for (int i=0;i<model.length;i++) {
+            model[i] = new MockContentNodeModel(FDContentTypes.PRODUCT, "a"+i);
+        }
     }
 
     public void testSimpleCompilation() throws CompileException {
@@ -183,7 +194,80 @@ public class CompilerTest extends TestCase {
         } catch (CompileException e) {
             assertEquals("unknown function exception expected", CompileException.UNKNOWN_FUNCTION, e.getCode());
         }
-        
     }
 
+    public void testTopLimitCompilation() throws CompileException {
+        comp.getParser().getContext().addVariable("fa", Expression.RET_FLOAT);
+        comp.getParser().getContext().addVariable("fb", Expression.RET_FLOAT);
+
+        ScoringAlgorithm sa = comp.createScoringAlgorithm("testTopLimitFunction", "fa:top; fb; fa*fb");
+        assertEquals("output variable", 3, sa.getReturnSize());
+        List result = calculateScores(sa, true);
+
+        assertEquals("1. element", result.get(0), "a2");
+        assertEquals("2. element", result.get(1), "a0");
+        assertEquals("3. element", result.get(2), "a1");
+        assertEquals("4. element", result.get(3), "a3");
+    }
+
+    public void testNoTopLimitCompilation() throws CompileException {
+        comp.getParser().getContext().addVariable("fa", Expression.RET_FLOAT);
+        comp.getParser().getContext().addVariable("fb", Expression.RET_FLOAT);
+
+        ScoringAlgorithm sa = comp.createScoringAlgorithm("testNoTopLimitFunction", "fa; fb; fa*fb");
+        assertEquals("output variable", 3, sa.getReturnSize());
+        List result = calculateScores(sa, false);
+
+        assertEquals("1. element", result.get(0), "a2");
+        assertEquals("2. element", result.get(1), "a1");
+        assertEquals("3. element", result.get(2), "a0");
+        assertEquals("4. element", result.get(3), "a3");
+    }
+    
+    
+    int[] fa = { 1, 2, 3, 0};
+    int[] fb = { 5, 3, 1, 0};
+
+    private List calculateScores(ScoringAlgorithm sa, boolean topLimitAdded) {
+        String[] variableNames = sa.getVariableNames();
+        
+        assertNotNull("variableNames", variableNames);
+        assertEquals("two variable", 2, variableNames.length);
+
+        int fbPos = -1;
+        int faPos = -1;
+        for (int i=0;i<variableNames.length;i++) {
+            if ("fa".equals(variableNames[i])) {
+                faPos = i;
+            }
+            if ("fb".equals(variableNames[i])) {
+                fbPos = i;
+            }
+        }
+        assertTrue("fa variable found", faPos!=-1);
+        assertTrue("fb variable found", fbPos!=-1);
+        
+        OrderingFunction orderingFunction = sa.createOrderingFunction();
+        if (topLimitAdded) {
+            assertTrue("ordering function is a top limiting", orderingFunction instanceof TopLimitOrderingFunction);
+        } else {
+            assertTrue("ordering function is NOT a top limiting", !(orderingFunction instanceof TopLimitOrderingFunction));
+        }
+
+        double[] vars = new double[2];
+        for (int i=0;i<model.length;i++) {
+            vars[faPos] = fa[i];
+            vars[fbPos] = fb[i];
+            
+            double[] result = sa.getScores(vars);
+            orderingFunction.addScore(model[i], result);
+        }
+        List result = orderingFunction.getRankedContents();
+        List strings = new ArrayList(result.size());
+        for (int i=0;i<result.size();i++) {
+            strings.add( ((RankedContent.Single) result.get(i)).getId());
+        }
+        return strings;
+    }
+    
 }

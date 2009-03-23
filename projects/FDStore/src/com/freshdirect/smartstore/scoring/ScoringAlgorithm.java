@@ -41,5 +41,9 @@ public class ScoringAlgorithm {
         return 0;
     }
     
+    
+    public OrderingFunction createOrderingFunction() {
+        return new OrderingFunction();
+    }
 
 }

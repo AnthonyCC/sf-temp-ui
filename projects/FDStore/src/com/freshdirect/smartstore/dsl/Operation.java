@@ -153,6 +153,8 @@ public class Operation extends Expression {
                         return RET_FLOAT;
                     }
                 }
+            } else if ((type1==RET_SYMBOL) && operator==':') {
+                return type0;
             } else {
                 throw new CompileException(CompileException.TYPE_ERROR, "Operation between "+Expression.getTypeName(type0) + " "+operator + " "+Expression.getTypeName(type1));
             }
