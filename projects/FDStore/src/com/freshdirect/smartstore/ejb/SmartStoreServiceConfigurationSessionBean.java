@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -38,6 +39,7 @@ public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSuppor
 	private static final String GET_VARIANT_CONFIG = "SELECT * FROM cust.SS_VARIANT_PARAMS WHERE ID = ?";
 
 	private static final String GET_VARIANT_ALIAS = "SELECT v.id, v.type, v.feature FROM cust.ss_variants v WHERE id = ?";
+	
 	
     protected void close(ResultSet rs) {
 		if (rs != null) {
@@ -123,9 +125,21 @@ public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSuppor
 				ps = conn.prepareStatement( GET_VARIANTS_QUERY );
 			    ps.setString(1, feature.getName());
 			} else {
-				ps = conn.prepareStatement( GET_ALL_VARIANTS_QUERY );				
+				String query = GET_ALL_VARIANTS_QUERY + " WHERE v.feature IN (";
+
+				int k;
+				final List featList = EnumSiteFeature.getSmartStoreEnumList();
+				for (k=0; k<featList.size()-1; k++) {
+					query += "?, ";
+				}
+				query += "?)";
+				ps = conn.prepareStatement( query );
+
+				for (k=0; k<featList.size(); k++) {
+					ps.setString(k+1, ((EnumSiteFeature)featList.get(k)).getName());
+				}
 			}
-			
+
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				
@@ -136,6 +150,12 @@ public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSuppor
 				String variantIdConfig = variantId;
 				
 				RecommendationServiceType type = null; 
+				
+				if (EnumSiteFeature.getEnum(featureStr) == null) {
+					LOGGER.warn("Skipping unknown site feature " + featureStr);
+					continue;
+				}
+
 				
 				// -------------------
 				// ALIAS type variant
