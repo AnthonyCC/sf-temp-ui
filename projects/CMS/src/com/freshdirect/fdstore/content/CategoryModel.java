@@ -199,30 +199,15 @@ public class CategoryModel extends ContentNodeModelImpl {
 
 	public List getProducts() {
 		List prodList = getPrivateProducts();
-		
-		List filterList = new ArrayList();
 
-		AttributeI filters = getCmsAttribute("FILTER_LIST");
-		if ( (filters != null) && (filters.getValue() != null) ) {
-			StringTokenizer stFilterNames = new StringTokenizer((String) filters.getValue(), ",");
-			for (; stFilterNames.hasMoreTokens();) {
-				String tok = stFilterNames.nextToken();
-				if (!filterList.contains(tok)) {
-					filterList.add(tok);
-				}
-			}
-		} else {
-			filterList = Collections.EMPTY_LIST;
-		}
-
-		if (!hasCategoryAlias()) {
+		if (categoryAlias == null) {
 			List l = getVirtualGroupRefs();
 			if (l != null) {
-				this.categoryAlias = new CategoryAlias(l, filterList);
+				this.categoryAlias = new CategoryAlias(l, getFilterList());
 			}
 		}
 
-		if (hasCategoryAlias()) {
+		if (categoryAlias != null) {
 			try {
 				Collection aliasProds = this.categoryAlias.processCategoryAlias();
 				if (aliasProds != null) { // if we had an error..then we get null, cause empty list is valid
@@ -262,6 +247,25 @@ public class CategoryModel extends ContentNodeModelImpl {
 		return new ArrayList(prodList);
 		
 	}
+
+    private List getFilterList() {
+        List filterList;
+
+        AttributeI filters = getCmsAttribute("FILTER_LIST");
+        if ((filters != null) && (filters.getValue() != null)) {
+            filterList = new ArrayList();
+            StringTokenizer stFilterNames = new StringTokenizer((String) filters.getValue(), ",");
+            for (; stFilterNames.hasMoreTokens();) {
+                String tok = stFilterNames.nextToken();
+                if (!filterList.contains(tok)) {
+                    filterList.add(tok);
+                }
+            }
+        } else {
+            filterList = Collections.EMPTY_LIST;
+        }
+        return filterList;
+    }
 
 	//** ProductRef.lookupProduct() is the main user..
 	public ProductModel getProductByName(String productId) {
