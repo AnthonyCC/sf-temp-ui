@@ -151,12 +151,6 @@ public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSuppor
 				
 				RecommendationServiceType type = null; 
 				
-				if (EnumSiteFeature.getEnum(featureStr) == null) {
-					LOGGER.warn("Skipping unknown site feature " + featureStr);
-					continue;
-				}
-
-				
 				// -------------------
 				// ALIAS type variant
 				// -------------------
