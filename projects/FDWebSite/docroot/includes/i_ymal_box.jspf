@@ -151,7 +151,10 @@
 <% if (atc_result != null) { %><fd:ErrorHandler result='<%= atc_result %>' id='errorMsg' field='<%= CHECK_ERROR_TYPES %>'>
 				<div class="error" style="font-weight: bold; padding-bottom: 8px;"><%= errorMsg %></div>
 </fd:ErrorHandler><% } %>
-				<form name="<%= TX_FORM_NAME %>" method="post" action="<%= base_url %>">
+
+
+				<form name="<%= TX_FORM_NAME %>" method="post" action="<%= base_url %>" style="margin-bottom: 0px;">
+				
 <%		if (ym_aset != null) { %>
 					<input type="hidden" name="ymalSetId" value="<%= ym_aset.getContentKey().getId() %>">
 <%			if (ym_product != null) { %>
@@ -161,8 +164,6 @@
 %>
 					<input type="hidden" name="base_url" value="<%= base_url %>">
 					<input type="hidden" name="rec_product_ids" value="<%= StringEscapeUtils.escapeHtml(Recommendations.getSerializedProducts(r_prods) ) %>">
-
-
 
 
 					<!-- start of ymal products external table -->
@@ -245,7 +246,7 @@
 									<tr>
 										<td align="left">
 											<input type="hidden" name="itemCount" value="<%= nConfProd %>">
-											<input type="image" name="addMultipleToCart" src="/media_stat/images/template/quickshop/qs_add_selected_to_cart.gif" width="145" height="17" border="0" vspace="8" alt="ADD SELECTED TO CART">
+											<input type="image" name="addMultipleToCart" src="/media_stat/images/template/quickshop/qs_add_selected_to_cart.gif" width="145" height="17" border="0" alt="ADD SELECTED TO CART">
 										</td>
 										<td align="right">
 											Total&nbsp;Price:&nbsp;&nbsp;<img src="/media_stat/images/layout/clear.gif" width="4" height="1"><input type="text" style="width:60px" name="total" value="" size="6" class="text11bold" onChange="" onFocus="blur()">

@@ -306,7 +306,7 @@ td.ymal_product {
 }
 
 td.ymal_separator {
-	padding-top		: 0px;	
+	padding			: 0px;	
 }
 
 td.ymal_addtocart {
@@ -349,7 +349,7 @@ table.ymal_prod {
 .ymalSeparator_category {
 	height        : 1px;
 	color         : #C0C0C0;
-	margin-top    : 12px;
+	margin-top    : 0px;
 	margin-bottom : 0px;
 }
 
