@@ -63,17 +63,19 @@ public class TxProductControlTag extends BodyTagSupport {
 		String txPostfix = (inputNamePostfix != null ? "_"+inputNamePostfix+"_" : "_")+txNumber;
 
 		ProductModel product = impression.getProductModel();
+		// The 'real' one (product behind a proxy or itself if it's simple)
+		ProductModel realProduct = product.getSourceProduct();
 		FDConfigurableI configuration = impression.getConfiguration();
 
 
 		buf.append("<table align=\"center\" style=\"border-collapse: collapse; border-spacing: 0px;\">\n");
 		buf.append("  <tr>\n");
 		buf.append("    <td style=\"height: 28px; margin: 0px; padding: 0px;\">\n");
-		buf.append("      <input type=\"hidden\" name=\"productId"+txPostfix+"\" value=\""+product.getContentName()+"\">\n");
-		buf.append("      <input type=\"hidden\" name=\"catId"+txPostfix+"\" value=\""+product.getParentNode().getContentName()+"\">\n");
+		buf.append("      <input type=\"hidden\" name=\"productId"+txPostfix+"\" value=\""+realProduct.getContentName()+"\">\n");
+		buf.append("      <input type=\"hidden\" name=\"catId"+txPostfix+"\" value=\""+realProduct.getParentNode().getContentName()+"\">\n");
 		buf.append("      <input type=\"hidden\" name=\"skuCode"+txPostfix+"\" value=\""+impression.getSku()+"\">\n");
 
-		if (impression.getProductModel().isSoldBySalesUnits()) {
+		if (product.isSoldBySalesUnits()) {
 			buf.append("      <input type=\"hidden\" name=\"quantity"+txPostfix+"\" value=\"1\">\n");
 
 			// render options
