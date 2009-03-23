@@ -1272,7 +1272,7 @@
 				<DestinationDef contentType="ConfiguredProductGroup"/>
 				<DestinationDef contentType="Recipe" />
 			</RelationshipDef>
-			<RelationshipDef name="recommenders" cardinality="Many" label="Recommenders" inheritable="false" navigable="false">
+			<RelationshipDef name="recommenders" cardinality="Many" label="Recommenders" inheritable="false" navigable="true">
 				<DestinationDef contentType="Recommender" />
 			</RelationshipDef>
 		</RelationshipDefs>
