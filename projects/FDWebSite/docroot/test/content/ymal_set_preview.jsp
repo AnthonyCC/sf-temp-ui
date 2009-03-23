@@ -10,7 +10,10 @@
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<fd:CheckLoginStatus />
+
+<%@page import="com.freshdirect.smartstore.SessionInput"%>
+<%@page import="com.freshdirect.smartstore.Trigger"%>
+<%@page import="com.freshdirect.smartstore.fdstore.FDStoreRecommender"%><fd:CheckLoginStatus />
 <%
 /*
  *  A page used for previewing ymal sets.
@@ -24,9 +27,23 @@
     ContentFactory cf        = ContentFactory.getInstance();
     YmalSource activeYmalSet = (YmalSource) cf.getContentNode(activeYmalSetId);
     ProductModel productNode = null;
+    try {
+    	productNode = (ProductModel) ContentFactory.getInstance().getContentNode(request.getParameter("productId"));
+    } catch (Exception e) {
+    	
+    }
 
 	// Pass parameters to YMAL display box
-	List relatedProducts	= activeYmalSet.getYmalProducts();
+	FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
+	SessionInput inp = new SessionInput(user);
+	if (activeYmalSet != null) {
+		inp.setYmalSource(activeYmalSet);
+	}	
+	inp.setCurrentNode(productNode);
+
+	Recommendations recs = FDStoreRecommender.getInstance().getRecommendations(
+			new Trigger(EnumSiteFeature.YMAL, 6), user, inp, null);
+	List relatedProducts	= recs.getProducts();
 	List relatedRecipes		= activeYmalSet.getYmalRecipes();
 	List relatedCategories	= activeYmalSet.getYmalCategories();
 
@@ -35,6 +52,12 @@
 <tmpl:insert template='/common/template/blank.jsp'>
     <tmpl:put name='title' direct='true'>YMAL set preview for <%= activeYmalSetId %></tmpl:put>
     <tmpl:put name='content' direct='true'>
+   		<form method="get" class="text13" style="text-align: center; font-weight: bold;">
+   			<input type="hidden" name="ymalSetId" value="<%= request.getParameter("ymalSetId") %>"/>
+   			Id of current (triggering) product: 
+   			<input type="text" name="productId" value="<%= request.getParameter("productId") %>"/>
+   			<input type="submit" value="Submit"/>
+   		</form>
 		<div id="error_pane" style="text-align: left; float: left; border: 2px solid #666; padding: 3px 3px; background-color: #eee">
 <%
 // -- sort out non displayable items --
@@ -70,6 +93,7 @@ for (Iterator it = relatedCategories.iterator(); it.hasNext();) {
 			Products: <%= relatedProducts.size() %><br/>
 			Recipes: <%= relatedRecipes.size() %><br/>
 			Cats: <%= relatedCategories.size() %><br/>
+			Recommender type: <%= recs.getVariant().getServiceConfig().getType().getName() %><br/>
 		</div>
 <%
 

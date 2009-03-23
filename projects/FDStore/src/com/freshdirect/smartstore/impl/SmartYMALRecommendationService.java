@@ -72,11 +72,14 @@ public class SmartYMALRecommendationService extends AbstractRecommendationServic
 		availSlots -= prodList.size();
 			
 		// smart YMAL products
-		// ... will be generated here
+		YmalSet ymalSet = null;
+		if (ymalSource != null)
+				ymalSet = ymalSource.getActiveYmalSet();
+		if (ymalSet == null && selectedProduct != null)
+			ymalSet = selectedProduct.getActiveYmalSet();
 		
-		YmalSet ymalSet = selectedProduct != null ? selectedProduct.getActiveYmalSet() : null; 
 		// true YMAL products
-		if (ymalSet != null && selectedProduct != null && availSlots > 0) {
+		if (ymalSet != null && availSlots > 0) {
 			// smart YMAL
 			List recommenders = ymalSet.getRecommenders();
 			
@@ -84,7 +87,8 @@ public class SmartYMALRecommendationService extends AbstractRecommendationServic
 			smartInput.setYmalSource(ymalSource);
 			smartInput.setCurrentNode(selectedProduct);
 			smartInput.setCartContents(addContentKeys(new HashSet(), prodList));
-			smartInput.getCartContents().add(selectedProduct.getContentKey());
+			if (selectedProduct != null)
+				smartInput.getCartContents().add(selectedProduct.getContentKey());
 			smartInput.setNoShuffle(input.isNoShuffle());
 			
 			List[] recommendations = new List[recommenders.size()];
