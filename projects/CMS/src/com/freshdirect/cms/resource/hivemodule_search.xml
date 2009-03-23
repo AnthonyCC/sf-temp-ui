@@ -44,6 +44,9 @@ Symbols:
 		<AttributeIndex contentType="Recipe"   attributeName="keywords"/>
 		<AttributeIndex contentType="YmalSet"  attributeName="title"/>
 		<AttributeIndex contentType="ConfiguredProductGroup" attributeName="name"/>
+		<AttributeIndex contentType="FavoriteList"  attributeName="full_name"/>
+		<AttributeIndex contentType="Recommender"  attributeName="FULL_NAME"/>
+		<AttributeIndex contentType="RecommenderStrategy"  attributeName="FULL_NAME"/>
 		<ContentIndex contentType="Sku"/>
 		<ContentIndex contentType="ConfiguredProduct"/>
 		<!--
