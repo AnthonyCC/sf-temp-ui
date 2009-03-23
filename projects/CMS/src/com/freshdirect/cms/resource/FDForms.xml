@@ -818,8 +818,8 @@
                     <CmsSection>
                         <title>Relationships</title>
                         <fields>
-                            <CmsField><attribute>ymals</attribute></CmsField>
                             <CmsField><attribute>recommenders</attribute></CmsField>
+                            <CmsField><attribute>ymals</attribute></CmsField>
                         </fields>
                     </CmsSection>
                 </sections>
