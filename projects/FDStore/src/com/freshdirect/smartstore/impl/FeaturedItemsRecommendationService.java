@@ -9,9 +9,11 @@ import java.util.List;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Trigger;
 import com.freshdirect.smartstore.Variant;
+import com.freshdirect.smartstore.scoring.HelperFunctions;
 
 /**
  * TODO : think about, that the current RecommendationService contract states, that the recommend method should return a list of ContentKey-s. 
@@ -58,13 +60,15 @@ public class FeaturedItemsRecommendationService extends AbstractRecommendationSe
             return ((DepartmentModel) model).getFeaturedProducts();
         } else if (model instanceof CategoryModel) {
             return ((CategoryModel) model).getFeaturedProducts();
+        } else if (model instanceof ProductModel) {
+        	return ((CategoryModel) HelperFunctions.getToplevelCategory(model)).getFeaturedProducts();
         } else {
             Object value = model.getAttribute("FEATURED_PRODUCTS", null);
             if (value instanceof List) {
                 return (List) value;
             }
         }
-        return null;
+        return Collections.EMPTY_LIST;
     }
 
 }
