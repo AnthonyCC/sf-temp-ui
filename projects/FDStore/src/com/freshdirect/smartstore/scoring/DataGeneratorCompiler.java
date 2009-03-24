@@ -43,7 +43,7 @@ public class DataGeneratorCompiler extends CompilerBase {
     final static String SET_TYPE="List";
     
     boolean optimize = false;
-    boolean caching = false;
+    boolean caching = true;
     final static boolean CACHE_BY_CURRENT_NODE_ALSO = false;
     
     Set globalVariables;
