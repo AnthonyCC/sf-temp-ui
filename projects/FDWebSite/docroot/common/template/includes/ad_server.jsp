@@ -189,7 +189,7 @@
 					.addParam("depot", depotAffil)
 					.addParam("nod", lastOrderDate)
 					.addParam("do",
-							user.getOrderHistory().getValidOrderCount())
+							user.getAdjustedValidOrderCount())
 					.addParam("win", 2);
 
 			if (cartDeptIds.size() > 0) {
