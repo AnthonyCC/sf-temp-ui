@@ -26,11 +26,13 @@ import com.freshdirect.smartstore.impl.ScriptedRecommendationService;
 
 public class GlobalCompilerTest extends TestCase {
 
+    
+    
     Variant variant;
     private DataAccess input;
     
     protected void setUp() throws Exception {
-        input = new DataAccess() {
+        input = new MockDataAccess() {
             public List getDatasource(SessionInput input,  String name) {
                 List set = new ArrayList();
                 if ("set".equals(name)) {
@@ -59,8 +61,7 @@ public class GlobalCompilerTest extends TestCase {
                 return null;
             }
 
-            public Map getVariables(ContentNodeModel node) {
-                String key = node.getContentKey().getId();
+            public Map getVariables(String key) {
                 Map mp = new HashMap();
                 if ("a1".equals(key)) {
                     mp.put("afact", new Integer(1));
@@ -75,21 +76,6 @@ public class GlobalCompilerTest extends TestCase {
                     mp.put("bfact", new Double(0.5));
                 }
                 return mp;
-            }
-            
-            public double[] getVariables(String userId, ContentNodeModel contentNode, String[] variables) {
-                Map varMap = getVariables(contentNode);
-                double[] result = new double[variables.length];
-                
-                for (int i=0;i<variables.length;i++) {
-                    String var = variables[i];
-                    Number number = (Number) varMap.get(var);
-                    if (number!=null){ 
-                        result[i] = number.doubleValue();
-                    }
-                }
-                
-                return result;
             }
 
         };

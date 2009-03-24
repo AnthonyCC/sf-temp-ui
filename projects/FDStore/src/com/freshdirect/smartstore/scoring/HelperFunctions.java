@@ -15,6 +15,7 @@ import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.FavoriteList;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.StoreModel;
+import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.impl.AbstractRecommendationService;
 
 /**
@@ -346,5 +347,36 @@ public class HelperFunctions {
     public static List toList(String id) {
         return Collections.singletonList(lookup(id));
     }
+
+    /**
+     * Return the part of the cache key for the current node.
+     * @param input
+     * @return
+     */
+    public static String getCurrentNodeCacheKey(SessionInput input) {
+        return (input!=null && input.getCurrentNode()!=null) ? input.getCurrentNode().getContentKey().getId() : "<null>";
+    }
+    
+    public static String getExplicitListCacheKey(SessionInput input) {
+        if (input!=null && input.getExplicitList()!=null) {
+            StringBuffer buf = new StringBuffer("[");
+            boolean first = true;
+            for (Iterator iter=input.getExplicitList().iterator();iter.hasNext();) {
+                ContentNodeModel model = (ContentNodeModel) iter.next();
+                if (!first) {
+                    buf.append(',');
+                } else {
+                    first = false;
+                }
+                buf.append(model.getContentKey().getId());
+            }
+            buf.append(']');
+            return buf.toString();
+        }
+        return "<empty-list>";
+    }
+    
+    
+    
     
 }

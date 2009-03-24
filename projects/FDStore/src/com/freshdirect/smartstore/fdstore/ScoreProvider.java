@@ -317,6 +317,25 @@ public class ScoreProvider implements DataAccess {
 		return result;
 	}
 	
+	/**
+	 * Get currently loaded, non personalized factors. This is used in the scripting framework, to decide which generator can be cached.
+	 * 
+	 * @return
+	 */
+	public Set getNonPersonalizedFactors() {
+            Set result = new HashSet();
+            result.addAll(storeLookups.keySet());
+            for (Iterator iter=rangeConverters.entrySet().iterator();iter.hasNext();) {
+                Map.Entry e = (Entry) iter.next();
+                FactorRangeConverter converter = (FactorRangeConverter) e.getValue();
+                if (!converter.isPersonalized()) {
+                    String name = (String) e.getKey();
+                    result.add(name);
+                }
+            }
+            return result;
+	}
+	
 	// Map<Factor:String,IndexInDoubleArray:Integer> score index
 	// Score indexes tell what position the score is stored in globalScores or personalizesScores
 	// in the double array

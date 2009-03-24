@@ -87,7 +87,9 @@ public abstract class CompilerBase {
         });
     }
 
-    protected abstract Class compileAlgorithm(String name, BlockExpression ast, String toStringMethod) throws CompileException;    
+    protected Class compileAlgorithm(String name, BlockExpression ast, String toStringMethod) throws CompileException {
+        throw new CompileException("Not implemented!");
+    }
     
     public Parser getParser() {
         if (parser == null) {

@@ -1,5 +1,7 @@
 package com.freshdirect.smartstore.scoring;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -31,6 +33,7 @@ import com.freshdirect.smartstore.dsl.VisitException;
  */
 public class DataGeneratorCompiler extends CompilerBase {
 
+    private static final String CURRENT_NODE = "currentProduct";
     static final String TO_LIST = "toList";
     public static final String RECURSIVE_NODES_EXCEPT = "RecursiveNodesExcept";
     public static final String RECURSIVE_NODES = "RecursiveNodes";
@@ -40,6 +43,10 @@ public class DataGeneratorCompiler extends CompilerBase {
     final static String SET_TYPE="List";
     
     boolean optimize = false;
+    boolean caching = false;
+    final static boolean CACHE_BY_CURRENT_NODE_ALSO = false;
+    
+    Set globalVariables;
     
     private class NodeFunction extends Context.FunctionDef {
 
@@ -233,7 +240,7 @@ public class DataGeneratorCompiler extends CompilerBase {
             }
         });
         
-        parser.getContext().addVariable("currentProduct", Expression.RET_NODE);
+        parser.getContext().addVariable(CURRENT_NODE, Expression.RET_NODE);
         parser.getContext().addVariable(EXPLICIT_LIST, Expression.RET_SET);
         
     }
@@ -241,6 +248,10 @@ public class DataGeneratorCompiler extends CompilerBase {
     public DataGenerator createDataGenerator(String name, String expression) throws CompileException {
         BlockExpression expr = parse(expression);
         try {
+            if (expr.size()>1) {
+                throw new CompileException("One expression expected instead of "+expr.size()+" in '"+expr.toCode()+"'!");
+            }
+            
             if (optimize) {
                 RecursiveNodesCallOptimizer optimizer = new RecursiveNodesCallOptimizer();
                 expr.visit(optimizer);
@@ -248,12 +259,13 @@ public class DataGeneratorCompiler extends CompilerBase {
                     expression += " -> optimized to : "+expr.toCode();
                 }
             }
-            Class generated = compileAlgorithm(name, expr, expression);
+            VariableCollector vc = new VariableCollector();
+            expr.visit(vc);
+
+            Class generated = compileAlgorithm(name, expr, expression, vc);
             
             DataGenerator dg = (DataGenerator) generated.newInstance();
             
-            VariableCollector vc = new VariableCollector();
-            expr.visit(vc);
 
             Context context = getParser().getContext();
             
@@ -276,20 +288,29 @@ public class DataGeneratorCompiler extends CompilerBase {
         }
     }
 
-    protected Class compileAlgorithm(String name, BlockExpression ast, String toStringValue) throws CompileException {
+    protected Class compileAlgorithm(String name, BlockExpression ast, String toStringValue, VariableCollector vc) throws CompileException {
 
         CtClass class1 = pool.makeClass(packageName + name);
         CtClass parent;
+        
+        boolean doCaching = caching && isCacheable(vc.getVariables());
+        
         try {
-            parent = pool.get(DataGenerator.class.getName());
+            parent = doCaching ? pool.get(CachingDataGenerator.class.getName()) : pool.get(DataGenerator.class.getName());
             class1.setSuperclass(parent);
             pool.importPackage("java.util");
             pool.importPackage("com.freshdirect.smartstore.scoring");
+            pool.importPackage("com.freshdirect.smartstore");
 
-            CtMethod method = createGenerateMethod(class1, ast);
+            CtMethod method = createGenerateMethod(class1, ast, doCaching, vc);
             if (method != null) {
                 class1.addMethod(method);
             }
+            if (doCaching) {
+                method = createKeyCreatorMethod(class1, toStringValue, vc);
+                class1.addMethod(method);
+            }
+            
             method = createToStringMethod(class1, toStringValue);
             class1.addMethod(method);
 
@@ -304,19 +325,34 @@ public class DataGeneratorCompiler extends CompilerBase {
     }
 
 
-    private CtMethod createGenerateMethod(CtClass class1, BlockExpression ast) throws CannotCompileException, CompileException, VisitException {
+    private CtMethod createKeyCreatorMethod(CtClass class1, String toStringValue, VariableCollector vc) throws CannotCompileException {
+        Set keys = this.getCachingKeys(vc.getVariables());
+        StringBuffer b = new StringBuffer("public String getKey(SessionInput input) {\n");
+        b.append("   return \""+toStringValue.replace('"', '\'')+"\"");
+        if (keys.contains(CURRENT_NODE)) {
+            b.append("+ '$' + HelperFunctions.getCurrentNodeCacheKey(input)");
+        }
+        if (keys.contains(EXPLICIT_LIST)) {
+            b.append("+ '$' + HelperFunctions.getExplicitListCacheKey(input)");
+        }
+        b.append(";\n");
+        b.append(" } ");
+        return CtNewMethod.make(b.toString(), class1);
+    }
+
+    private CtMethod createGenerateMethod(CtClass class1, BlockExpression ast, boolean doCaching,VariableCollector vc) throws CannotCompileException, CompileException, VisitException {
         CompileState c = new CompileState();
 
         Expression expression = ast.get(0);
         expression.validate();
-
-        VariableCollector vc = new VariableCollector();
-        expression.visit(vc);
         
         OperationCompileResult oc = compile(c, expression);
-        StringBuffer buffer = new StringBuffer("public List generate(com.freshdirect.smartstore.SessionInput sessionInput, DataAccess input) {\n");
+        StringBuffer buffer = new StringBuffer("public List ")
+            .append(doCaching? "generateImpl" : "generate" )
+            .append("(com.freshdirect.smartstore.SessionInput sessionInput, DataAccess input) {\n");
+        
         buffer.append(" String userId = sessionInput.getCustomerId();\n");
-        if (vc.getVariables().contains("currentProduct")) {
+        if (vc.getVariables().contains(CURRENT_NODE)) {
             buffer.append(" "+NODE_TYPE+ " currentProduct = sessionInput.getCurrentNode();\n");
         }
         if (vc.getVariables().contains(EXPLICIT_LIST)) {
@@ -497,5 +533,76 @@ public class DataGeneratorCompiler extends CompilerBase {
     public boolean isOptimize() {
         return optimize;
     }
+    
+    public void setCaching(boolean caching) {
+        this.caching = caching;
+    }
+    
+    public boolean isCaching() {
+        return caching;
+    }
 
+    /**
+     * 
+     * @param globalVariables
+     */
+    public void setGlobalVariables(Set globalVariables) {
+        this.globalVariables = globalVariables;
+    }
+    
+    /**
+     * return the cache key for the given variable, or null, if it's not possible to cache. For example 'PurchaseHistory' is specific to user, 
+     * so it shouldn't be cached. 'explicitList', 'currentProduct', 'FeaturedItems' and 'CandidateList' is global, so it can be cached.
+     *   
+     * @param variable
+     * @return
+     */
+    private String getCacheKeyForVariable(String variable) {
+        if (EXPLICIT_LIST.equals(variable)) {
+            return EXPLICIT_LIST;
+        }
+        if (CACHE_BY_CURRENT_NODE_ALSO) {
+            if (CURRENT_NODE.equals(variable)) {
+                return CURRENT_NODE;
+            }
+            if ("FeaturedItems".equals(variable)) {
+                return CURRENT_NODE;
+            }
+            if ("CandidateLists".equals(variable)) {
+                return CURRENT_NODE;
+            }
+        }
+        return null;
+    }
+    
+    private boolean isCacheable(Collection usedVariables) {
+        for (Iterator iter=usedVariables.iterator();iter.hasNext();) {
+            String varName = (String) iter.next();
+            if (!globalVariables.contains(varName)) {
+                if (getCacheKeyForVariable(varName)==null) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
+    private Set getCachingKeys(Collection usedVariables) {
+        Set result = new HashSet();
+        for (Iterator iter=usedVariables.iterator();iter.hasNext();) {
+            String varName = (String) iter.next();
+            if (!globalVariables.contains(varName)) {
+                String key = getCacheKeyForVariable(varName);
+                if (key==null) {
+                    return null;
+                } else {
+                    result.add(key);
+                }
+            }
+        }
+        return result;
+    }
+    
+    
+    
 }

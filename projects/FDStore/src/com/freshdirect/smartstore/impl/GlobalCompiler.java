@@ -73,6 +73,7 @@ public class GlobalCompiler {
         for (int i=0;i<datasourceNames.length;i++) {
             dg.addVariable(datasourceNames[i], Expression.RET_SET);
         }
+        dg.setGlobalVariables(ScoreProvider.getInstance().getNonPersonalizedFactors());
         
         ScoringAlgorithmCompiler sc = getScoringAlgorithmCompiler();
 

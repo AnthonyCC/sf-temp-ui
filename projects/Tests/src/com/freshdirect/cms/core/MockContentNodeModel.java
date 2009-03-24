@@ -214,4 +214,7 @@ public class MockContentNodeModel implements ContentNodeModel {
         this.parentNode = parentNode;
     }
 
+    public String toString() {
+        return "Mock["+key+']';
+    }
 }
