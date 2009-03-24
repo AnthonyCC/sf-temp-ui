@@ -42,6 +42,21 @@ public class FactorUtil {
 	public static String PERSONALIZED_AMOUNT_COLUMN = "AMOUNT";
 	
 	
+	public static abstract class CachingStoreLookup implements StoreLookup {
+	    Map cache = new HashMap();
+	    
+	    public final double getVariable(ContentNodeModel contentNode) {
+	        Object number = cache.get(contentNode.getContentKey().getId());
+	        if (number instanceof Number) {
+	            return ((Number) number).doubleValue();
+	        }
+	        double result = calculateVariable(contentNode);
+	        cache.put(contentNode.getContentKey().getId(), new Double(result));
+	        return result;
+	    }
+
+            public abstract double calculateVariable(ContentNodeModel contentNode);
+	}
 	
 	/**
 	 * Get a CSM lookup which returns "Deals Percentage".
@@ -49,8 +64,8 @@ public class FactorUtil {
 	 * @return StoreLookup
 	 */
 	public static StoreLookup getDealsPercentageLookup() {
-		return new StoreLookup() {
-			public double getVariable(ContentNodeModel contentNode) {
+		return new CachingStoreLookup() {
+			public double calculateVariable(ContentNodeModel contentNode) {
 				return 
 					contentNode instanceof ProductModel ? 
 							((double)((ProductModel)contentNode).getDealPercentage())/100.0 :
@@ -60,8 +75,8 @@ public class FactorUtil {
 	}
 	
 	public static StoreLookup getDealsPercentageDiscretized() {
-		return new StoreLookup() {
-			public double getVariable(ContentNodeModel contentNode) {
+		return new CachingStoreLookup() {
+			public double calculateVariable(ContentNodeModel contentNode) {
 				int dealp = 
 					contentNode instanceof ProductModel ? ((ProductModel)contentNode).getDealPercentage() : 0;
 				return (double)(dealp/5);
