@@ -19,6 +19,7 @@ import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.framework.util.TimedLruCache;
 
 /**
  * Custom {@link FactorRangeConverter} and {@link StoreLookup} implementations.
@@ -131,67 +132,73 @@ public class FactorUtil {
 		};
 	}
 	
-	protected abstract static class ProduceRatingLookup implements StoreLookup {
-		
-		private Map ordinals = new HashMap();
-		
-		protected int getOrdinal(ContentNodeModel contentNode) {
-			if (!(contentNode instanceof ProductModel)) {
-				return 0;
-			}
-			
-			ProductModel model = (ProductModel)contentNode;
+	private final static Map ordinals = new HashMap();
+	static {
+            ordinals.put(null,new Integer(0));
+            ordinals.put("",new Integer(0));
+            ordinals.put(EnumOrderLineRating.TERRIBLE.getStatusCodeInDisplayFormat(),new Integer(1));
+            ordinals.put(EnumOrderLineRating.BELOW_AVG.getStatusCodeInDisplayFormat(),new Integer(2));
+            ordinals.put(EnumOrderLineRating.BELOW_AVG_PLUS.getStatusCodeInDisplayFormat(),new Integer(3));
+            ordinals.put(EnumOrderLineRating.AVERAGE.getStatusCodeInDisplayFormat(),new Integer(4));
+            ordinals.put(EnumOrderLineRating.NEVER_RATED.getStatusCodeInDisplayFormat(),new Integer(5));
+            ordinals.put(EnumOrderLineRating.NO_RATING.getStatusCodeInDisplayFormat(),new Integer(6));
+            ordinals.put(EnumOrderLineRating.AVERAGE_PLUS.getStatusCodeInDisplayFormat(),new Integer(7));
+            ordinals.put(EnumOrderLineRating.GOOD.getStatusCodeInDisplayFormat(),new Integer(8));
+            ordinals.put(EnumOrderLineRating.VERY_GOOD.getStatusCodeInDisplayFormat(),new Integer(9));
+            ordinals.put(EnumOrderLineRating.GOOD_PLUS.getStatusCodeInDisplayFormat(),new Integer(10));
+            ordinals.put(EnumOrderLineRating.PEAK_PRODUCE_8.getStatusCodeInDisplayFormat(),new Integer(11));
+            ordinals.put(EnumOrderLineRating.VERY_GOOD.getStatusCodeInDisplayFormat(),new Integer(12));
+            ordinals.put(EnumOrderLineRating.PEAK_PRODUCE_9.getStatusCodeInDisplayFormat(),new Integer(13));
+            ordinals.put(EnumOrderLineRating.VERY_GOOD_PLUS.getStatusCodeInDisplayFormat(),new Integer(14));
+            ordinals.put(EnumOrderLineRating.PEAK_PRODUCE_10.getStatusCodeInDisplayFormat(),new Integer(15));
+            
+            ordinals.put(EnumOrderLineRating.TERRIBLE.getStatusCode(),new Integer(1));
+            ordinals.put(EnumOrderLineRating.BELOW_AVG.getStatusCode(),new Integer(2));
+            ordinals.put(EnumOrderLineRating.BELOW_AVG_PLUS.getStatusCode(),new Integer(3));
+            ordinals.put(EnumOrderLineRating.AVERAGE.getStatusCode(),new Integer(4));
+            ordinals.put(EnumOrderLineRating.NEVER_RATED.getStatusCode(),new Integer(5));
+            ordinals.put(EnumOrderLineRating.NO_RATING.getStatusCode(),new Integer(6));
+            ordinals.put(EnumOrderLineRating.AVERAGE_PLUS.getStatusCode(),new Integer(7));
+            ordinals.put(EnumOrderLineRating.GOOD.getStatusCode(),new Integer(8));
+            ordinals.put(EnumOrderLineRating.VERY_GOOD.getStatusCode(),new Integer(9));
+            ordinals.put(EnumOrderLineRating.GOOD_PLUS.getStatusCode(),new Integer(10));
+            ordinals.put(EnumOrderLineRating.PEAK_PRODUCE_8.getStatusCode(),new Integer(11));
+            ordinals.put(EnumOrderLineRating.VERY_GOOD.getStatusCode(),new Integer(12));
+            ordinals.put(EnumOrderLineRating.PEAK_PRODUCE_9.getStatusCode(),new Integer(13));
+            ordinals.put(EnumOrderLineRating.VERY_GOOD_PLUS.getStatusCode(),new Integer(14));
+            ordinals.put(EnumOrderLineRating.PEAK_PRODUCE_10.getStatusCode(),new Integer(15));
+	}
 
-			
-			try {
-				return ((Number)ordinals.get(model.getProductRating())).intValue();
-			} catch (Exception e) {
-				return 0;
-			}
-			
+	static TimedLruCache produceRatingCache = new TimedLruCache(10000,60*60*1000);
+	
+        protected static int getProductRatingOrdinal(ContentNodeModel contentNode) {
+            if (!(contentNode instanceof ProductModel)) {
+                    return 0;
+            }
+            ProductModel model = (ProductModel)contentNode;
+        
+            Number result = (Number) produceRatingCache.get(model.getContentKey().getId());
+            if (result == null) {
+                try {
+                    result = ((Number)ordinals.get(model.getProductRating()));
+                    produceRatingCache.put(model.getContentKey().getId(), result);    
+                } catch (Exception e) {
+                        return 0;
+                }
+            }
+            return result.intValue();
+        }
+	
+	
+	
+	abstract static class ProduceRatingLookup implements StoreLookup {
+		protected int getOrdinal(ContentNodeModel contentNode) {
+		    return FactorUtil.getProductRatingOrdinal(contentNode);
 		}
-		
-		protected ProduceRatingLookup() {
-			ordinals.put(null,new Integer(0));
-			ordinals.put("",new Integer(0));
-			ordinals.put(EnumOrderLineRating.TERRIBLE.getStatusCodeInDisplayFormat(),new Integer(1));
-			ordinals.put(EnumOrderLineRating.BELOW_AVG.getStatusCodeInDisplayFormat(),new Integer(2));
-			ordinals.put(EnumOrderLineRating.BELOW_AVG_PLUS.getStatusCodeInDisplayFormat(),new Integer(3));
-			ordinals.put(EnumOrderLineRating.AVERAGE.getStatusCodeInDisplayFormat(),new Integer(4));
-			ordinals.put(EnumOrderLineRating.NEVER_RATED.getStatusCodeInDisplayFormat(),new Integer(5));
-			ordinals.put(EnumOrderLineRating.NO_RATING.getStatusCodeInDisplayFormat(),new Integer(6));
-			ordinals.put(EnumOrderLineRating.AVERAGE_PLUS.getStatusCodeInDisplayFormat(),new Integer(7));
-			ordinals.put(EnumOrderLineRating.GOOD.getStatusCodeInDisplayFormat(),new Integer(8));
-			ordinals.put(EnumOrderLineRating.VERY_GOOD.getStatusCodeInDisplayFormat(),new Integer(9));
-			ordinals.put(EnumOrderLineRating.GOOD_PLUS.getStatusCodeInDisplayFormat(),new Integer(10));
-			ordinals.put(EnumOrderLineRating.PEAK_PRODUCE_8.getStatusCodeInDisplayFormat(),new Integer(11));
-			ordinals.put(EnumOrderLineRating.VERY_GOOD.getStatusCodeInDisplayFormat(),new Integer(12));
-			ordinals.put(EnumOrderLineRating.PEAK_PRODUCE_9.getStatusCodeInDisplayFormat(),new Integer(13));
-			ordinals.put(EnumOrderLineRating.VERY_GOOD_PLUS.getStatusCodeInDisplayFormat(),new Integer(14));
-			ordinals.put(EnumOrderLineRating.PEAK_PRODUCE_10.getStatusCodeInDisplayFormat(),new Integer(15));
-			
-			ordinals.put(EnumOrderLineRating.TERRIBLE.getStatusCode(),new Integer(1));
-			ordinals.put(EnumOrderLineRating.BELOW_AVG.getStatusCode(),new Integer(2));
-			ordinals.put(EnumOrderLineRating.BELOW_AVG_PLUS.getStatusCode(),new Integer(3));
-			ordinals.put(EnumOrderLineRating.AVERAGE.getStatusCode(),new Integer(4));
-			ordinals.put(EnumOrderLineRating.NEVER_RATED.getStatusCode(),new Integer(5));
-			ordinals.put(EnumOrderLineRating.NO_RATING.getStatusCode(),new Integer(6));
-			ordinals.put(EnumOrderLineRating.AVERAGE_PLUS.getStatusCode(),new Integer(7));
-			ordinals.put(EnumOrderLineRating.GOOD.getStatusCode(),new Integer(8));
-			ordinals.put(EnumOrderLineRating.VERY_GOOD.getStatusCode(),new Integer(9));
-			ordinals.put(EnumOrderLineRating.GOOD_PLUS.getStatusCode(),new Integer(10));
-			ordinals.put(EnumOrderLineRating.PEAK_PRODUCE_8.getStatusCode(),new Integer(11));
-			ordinals.put(EnumOrderLineRating.VERY_GOOD.getStatusCode(),new Integer(12));
-			ordinals.put(EnumOrderLineRating.PEAK_PRODUCE_9.getStatusCode(),new Integer(13));
-			ordinals.put(EnumOrderLineRating.VERY_GOOD_PLUS.getStatusCode(),new Integer(14));
-			ordinals.put(EnumOrderLineRating.PEAK_PRODUCE_10.getStatusCode(),new Integer(15));
-		}		
 	}
 	
 	public static StoreLookup getProduceRatingLookup() {
 		return new ProduceRatingLookup() {
-
-	
 			public double getVariable(ContentNodeModel contentNode) {
 				return (double)getOrdinal(contentNode);
 			}
