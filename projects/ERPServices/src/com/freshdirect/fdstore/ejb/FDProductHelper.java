@@ -154,7 +154,6 @@ class FDProductHelper {
 		if(isDeal) {
 			dealsPercentage=DealsHelper.getVariancePercentage(erpProductInfo.getBasePrice(), erpProductInfo.getDefaultPrice());
 		}
-		
 		return new FDProductInfo(
 			erpProductInfo.getSkuCode(),
 			erpProductInfo.getVersion(),

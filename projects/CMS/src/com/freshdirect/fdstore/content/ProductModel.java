@@ -604,4 +604,6 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	public int getDealPercentage(String skuCode);
 	
 	public int getExpertWeight();
+	
+	public List getCountryOfOrigin() throws FDResourceException;
 }

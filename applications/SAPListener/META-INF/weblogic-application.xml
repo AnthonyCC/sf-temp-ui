@@ -64,5 +64,12 @@
 	<listener>
 		<listener-class>com.freshdirect.framework.console.DebugConsole</listener-class>
 	</listener>
-    
+    <listener>
+        <listener-class>
+            com.freshdirect.dataloader.cool.WLSSapCOOLChangeServer
+        </listener-class>
+        <listener-uri>
+            DataLoaderEJB-WL.jar
+        </listener-uri>
+    </listener>
 </weblogic-application>

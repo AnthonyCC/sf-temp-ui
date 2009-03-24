@@ -9,6 +9,7 @@
 package com.freshdirect.fdstore;
 
 import java.util.Date;
+import java.util.List;
 
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.model.ErpInventoryModel;
@@ -53,6 +54,8 @@ public class FDProductInfo extends FDSku  {
 	private final boolean isDeal;
 	
 	private final int dealPercentage;
+	
+	
     
     public FDProductInfo(String skuCode, int version, double defaultPrice, String defaultPriceUnit, String[] materialNumbers, EnumATPRule atpRule, EnumAvailabilityStatus availStatus, Date availDate, String displayableDefaultPriceUnit, FDInventoryCacheI inventory, String rating,double basePrice,String basePriceUnit,boolean isDeal,int dealPercentage) {
 		super(skuCode, version);
@@ -69,6 +72,7 @@ public class FDProductInfo extends FDSku  {
         this.basePriceUnit=basePriceUnit;
         this.isDeal=isDeal;
         this.dealPercentage=dealPercentage;
+       
 	}
 
 	/**
@@ -177,5 +181,8 @@ public class FDProductInfo extends FDSku  {
 
 	public boolean isDeal() {
 		return isDeal;
+	}
+	public List getCountryOfOrigin() {
+		return FDCOOLInfoCache.getInstance().getCOOLInfo(materialNumbers[0]);
 	}
 }

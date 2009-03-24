@@ -2,8 +2,12 @@ package com.freshdirect.fdstore.content;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.FDCachedFactory;
@@ -242,4 +246,104 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 		
 		return getAttribute("RELATED_PRODUCTS_HEADER", null);
 	}
+	
+	public List getCountryOfOrigin() throws FDResourceException{
+		List coolInfo=new ArrayList();
+		
+		List skus = getSkus(); 
+	       SkuModel sku = null;
+	       //remove the unavailable sku's
+	       for (ListIterator li=skus.listIterator(); li.hasNext(); ) {
+	           sku = (SkuModel)li.next();
+	           if ( sku.isUnavailable() ) {
+	              li.remove();
+	           }
+	       }
+	       if (skus.size()==0) return coolInfo;  // skip this item..it has no skus.  Hmmm?
+	       if (skus.size()==1) {
+	           sku = (SkuModel)skus.get(0);  // we only need one sku
+	           FDProductInfo productInfo;
+				try {
+					productInfo = FDCachedFactory.getProductInfo( sku.getSkuCode());
+					List countries=productInfo.getCountryOfOrigin();
+					String text=getCOOLText(countries);
+					if(!"".equals(text))
+						coolInfo.add(text);
+				} catch (FDSkuNotFoundException ignore) {
+				}
+	       } else {
+	    	  /* int MAX_COOL_COUNT=5;
+	    	   List countries=new ArrayList(MAX_COOL_COUNT);
+	    	   FDProductInfo productInfo;
+	    	   int index=0;
+	    	   while(index<MAX_COOL_COUNT && countries.size()<MAX_COOL_COUNT ) {
+	    		   for(Iterator it=skus.iterator();it.hasNext();) {
+	    			   sku = (SkuModel)it.next();
+		    		   try {
+		    			   if(countries.size()<MAX_COOL_COUNT) {
+		    				   productInfo = FDCachedFactory.getProductInfo( sku.getSkuCode());
+		    				   List _countries=productInfo.getCOOLInfo();
+		    				   if(_countries.size()>index)
+		    					   countries.add(_countries.get(index));
+		    			   } else {
+		    				   break;
+		    			   }
+							
+						} catch (FDSkuNotFoundException ignore) {
+						} 
+		    	   } 
+	    		   index++;
+	    	   }
+	    	   text=getCOOLText(countries);*/
+	    	   Map coolInfoMap=new HashMap();
+	    	   FDProductInfo productInfo=null;
+	    	   List countries=null;
+	    	   String domainValue="";
+	    	   String text="";
+	    	   for(Iterator it=skus.iterator();it.hasNext();) {
+    			   sku = (SkuModel)it.next();
+    			   if(sku.getVariationMatrix()!=null && sku.getVariationMatrix().size()>0) {
+    				   domainValue= ((DomainValue)sku.getVariationMatrix().get(0)).getValue();
+    				   try {
+    					   productInfo = FDCachedFactory.getProductInfo( sku.getSkuCode());
+    					   countries=productInfo.getCountryOfOrigin();
+    					   text=getCOOLText(countries);
+    				   } catch (FDSkuNotFoundException ignore) {
+    					   text="";
+    				   }
+    				   
+    				   if(!coolInfoMap.containsKey(domainValue) && !"".equals(text))
+    					   coolInfoMap.put(domainValue, text);
+    			   }
+	    	   } 
+	    	   
+	    	   StringBuffer temp=new StringBuffer(100);
+	    	   for(Iterator it=coolInfoMap.keySet().iterator();it.hasNext();) {
+	    		   domainValue=it.next().toString();
+	    		   coolInfo.add(temp.append(domainValue).append(": ").append(coolInfoMap.get(domainValue).toString()).toString());
+	    		   temp=new StringBuffer(100);
+	    	   }
+	    	  Collections.sort(coolInfo);
+	    	   
+	       }
+	       
+	       return coolInfo;
+	}
+	private String getCOOLText(List countries) {
+		if(countries==null)
+			return "";
+		
+		StringBuffer temp=new StringBuffer(50);
+		for(int i=0;i<countries.size();i++) {
+			if(i<(countries.size()-2)){
+				temp.append(countries.get(i).toString()).append(", ");
+			}else if(countries.size()>1 && i==(countries.size()-1)){
+				temp.append(" and/or ").append(countries.get(i).toString());
+			} else {
+				temp.append(countries.get(i));
+			}	
+		}
+		return temp.toString();
+	}
+
 }
