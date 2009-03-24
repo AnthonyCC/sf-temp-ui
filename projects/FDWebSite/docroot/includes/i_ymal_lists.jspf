@@ -58,7 +58,11 @@
 	request.setAttribute("ymal_product", ymal_product);
 
 	request.setAttribute("ymal_result", ymal_result);
-	request.setAttribute("ymal_header", ymalHeader);
+	
+	// Special case: Don't pass header if there are related products
+	if (ymalHeader != null && ymalSource.getRelatedProducts().size() == 0) {
+		request.setAttribute("ymal_header", ymalHeader);
+	}
 
 	request.setAttribute("ymal_variant", recommendations.getVariant());
 %><%@ include file="/includes/i_ymal_box.jspf" %>

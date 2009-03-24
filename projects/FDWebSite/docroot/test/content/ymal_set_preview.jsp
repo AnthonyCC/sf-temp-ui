@@ -104,7 +104,11 @@ request.setAttribute("ymal_recipes", relatedRecipes);
 request.setAttribute("ymal_aset", activeYmalSet);
 request.setAttribute("ymal_product", productNode);
 
-request.setAttribute("ymal_header", activeYmalSet.getYmalHeader());
+String ymalHeader = activeYmalSet.getYmalHeader();
+// Special case: Don't pass header if there are related products
+if (ymalHeader != null && activeYmalSet.getRelatedProducts().size() == 0) {
+	request.setAttribute("ymal_header", ymalHeader);
+}
 
 // consolidate lists
 %>
