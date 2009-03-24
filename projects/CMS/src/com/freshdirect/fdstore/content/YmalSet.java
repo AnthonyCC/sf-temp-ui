@@ -420,7 +420,7 @@ public class YmalSet extends ContentNodeModelImpl implements YmalSource {
 	}
 
 	public YmalSet getActiveYmalSet() {
-		return this;
+		return isActive() ? this : null;
 	}
 
 	public List getYmalProducts(Set removeSkus) {
