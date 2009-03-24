@@ -8,6 +8,7 @@
 # JAVA_HOME=<JDK 1.4.2 home path>
 # WL_HOME=<WebLogic 8.1 server home>   ex.: /bea/weblogic81/server
 # YK_HOME=<YourKit installation home>  ex.: /home/segabor/Apps/yjp-7.5.11
+# WL_DOMAIN=<WebLogic domain home>  ex.: /home/segabor/FreshDirect/var/domains/freshdirect
 
 
 if [ ! -d projects -o ! -d properties ]; then
@@ -127,7 +128,7 @@ $FD_BASE/projects/Delivery/bin:\
 $FD_BASE/projects/Resources
 
 
-cd "$FD_BASE/domains/freshdirect"
+cd "$WL_DOMAIN"
 
 
 LD_LIBRARY_PATH="$YK_HOME/bin/linux-x86-32":$LD_LIBRARY_PATH
