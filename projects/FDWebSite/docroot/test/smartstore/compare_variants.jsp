@@ -283,7 +283,7 @@ if (useLoggedIn && user != null) {
 	si.setCurrentNode(source);
 }
 si.setYmalSource(source);
-si.setNoShuffle(false);
+si.setNoShuffle(true);
 
 String scopeNodes = urlG.get("scope");
 List scope = new ArrayList();
@@ -652,8 +652,6 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 		try {
 			recsA = aRecService.recommendNodes(trigger, si);
 			System.err.println("Recommender A node count: " + recsA.size());
-			if (recsA.size() > 6)
-				recsA = recsA.subList(0, 5);
 		} catch (RuntimeException e) {
 			e.printStackTrace(System.err);
 		}
@@ -664,8 +662,6 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 		try {
 			recsB = bRecService.recommendNodes(trigger, si);
 			System.err.println("Recommender B node count: " + recsB.size());
-			if (recsB.size() > 6)
-				recsB = recsB.subList(0, 5);
 		} catch (RuntimeException e) {
 			e.printStackTrace(System.err);
 		}	
