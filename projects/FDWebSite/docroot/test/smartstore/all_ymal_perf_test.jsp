@@ -173,8 +173,6 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
     				</p>
     				<p>
     					<input type="text" name="customerEmail" value="<%= customerEmail %>"
-    							onfocus="this.select();"
-    							onkeypress="if ((event.which || event.keyCode) == 13) this.form.submit();"
     							title="Press &lt;Enter&gt; to activate the entered customer">
     				</p>
     				<% if (customerId != null) { %>
@@ -237,7 +235,7 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
     </td></tr></table>
     <% } else { %>
     <table id="message" class="var-comparator"><tr><td>
-    	<p class="text13 not-found" style="text-align: center;">Searching for YMAL sets... <span id="message-result"></span></p>
+    	<p class="text13 not-found" style="text-align: center;">Searching for Smart YMAL sets... <span id="message-result"></span></p>
     </td></tr></table>
     <%
     	pageContext.getOut().flush();
@@ -251,8 +249,10 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
     		ProductModel p = (ProductModel) ContentFactory.getInstance().getContentNode(key.getId());
     		YmalSet set = p.getActiveYmalSet();
 
-    		if (p != null && p.isDisplayable() && set != null && !sets.containsKey(set))
-    			sets.put(p.getActiveYmalSet(), p);
+    		if (p != null && p.isDisplayable() && set != null
+    				&& set.getRecommenders() != null && set.getRecommenders().size() != 0
+    				&& !sets.containsKey(set))
+    			sets.put(set, p);
     	}
 
     	Set orphans = CmsManager.getInstance().getContentKeysByType(ContentType.get("YmalSet"));
@@ -262,7 +262,9 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
     		ContentKey key = (ContentKey) it.next();
     		YmalSet set = (YmalSet) ContentFactory.getInstance().getContentNode(key.getId());
 
-    		if (set != null && !sets.containsKey(set))
+    		if (set != null
+    				&& set.getRecommenders() != null && set.getRecommenders().size() != 0
+    				&& !sets.containsKey(set))
     			sets.put(set, null);
     	}
     	

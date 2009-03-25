@@ -30,7 +30,7 @@
     	<span style="text-transform: uppercase;">Page Index:</span>
     	</p>
     	<p>
-		<span class="bull">&bull;</span> <a href="all_ymal_perf_test.jsp"><span>All YMALs Performance Test</span></a>
+		<span class="bull">&bull;</span> <a href="all_ymal_perf_test.jsp"><span>All Smart YMALs Performance Test</span></a>
 		</p>
     	<p>
 		<span class="bull">&bull;</span> <a href="view_cohorts.jsp"><span>Cohorts Summary</span></a>
@@ -57,7 +57,7 @@
 		<span class="bull">&bull;</span> <a href="my_variant.jsp"><span>Variant Lookup</span></a>
 		</p>
     	<p>
-		<span class="bull">&bull;</span> <a href="view_ymals.jsp"><span>View YMALs</span></a>
+		<span class="bull">&bull;</span> <a href="view_ymals.jsp"><span>View Smart YMALs</span></a>
 		</p>
     	<p>
 		<span class="bull">&bull;</span> <a href="ymal_perf_test.jsp"><span>YMAL Performance Test</span></a>

@@ -106,7 +106,7 @@ if (!origURL.equals(newURL)) {
 %><html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>VIEW YMALS PAGE</title>
+	<title>VIEW SMART YMALS PAGE</title>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<style type="text/css">
 
@@ -176,7 +176,7 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
     	</table>
     </div>
     <table class="msg-panel"><tr><td>
-    	<p id="message" class="text13 not-found" style="text-align: center;">Searching for YMAL sets...</p>
+    	<p id="message" class="text13 not-found" style="text-align: center;">Searching for Smart YMAL sets...</p>
     </td></tr></table>
     <%
     	pageContext.getOut().flush();
@@ -200,7 +200,9 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
     		ContentKey key = (ContentKey) it.next();
     		YmalSet set = (YmalSet) ContentFactory.getInstance().getContentNode(key.getId());
 
-    		if (set != null && !sets.containsKey(set))
+    		if (set != null
+    				&& set.getRecommenders() != null && set.getRecommenders().size() != 0
+    				&& !sets.containsKey(set))
     			sets.put(set, new TreeSet(new Comparator() {
     				public int compare(Object o1, Object o2) {
     					ContentNodeModel n1 = (ContentNodeModel) o1;
@@ -233,7 +235,8 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
 	    				while (it2.hasNext()) {
 	    					ContentKey key1 = (ContentKey) it2.next();
 	    					YmalSet set = (YmalSet) ContentFactory.getInstance().getContentNode(key1.getId());
-	    					if (set != null)
+	    					if (set != null
+	    		    				&& set.getRecommenders() != null && set.getRecommenders().size() != 0)
 	    						((TreeSet) sets.get(set)).add(node);
 	    				}
 	    			}
@@ -316,7 +319,7 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
 		%>
 		<tr>
 			<td class="title13<%= !set.isActive() ? " inactive" : "" %>" title="<%= set.isActive() ? "ACTIVE" : "INACTIVE" %>">
-				<%= set.getAttribute("title", "") %>
+				<%= set.getAttribute("title", "") %> <span style="font-weight: normal;">(<%= set.getContentKey().getId() %>)</span>
 			</td>
 			<td class="text13<%= !set.isActive() ? " inactive" : "" %>">
 				<%	Iterator it2 = ((TreeSet) sets.get(set)).iterator();
