@@ -1,6 +1,7 @@
 package com.freshdirect.smartstore.scoring;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -46,7 +47,7 @@ public class DataGeneratorCompiler extends CompilerBase {
     boolean caching = true;
     final static boolean CACHE_BY_CURRENT_NODE_ALSO = false;
     
-    Set globalVariables;
+    Set globalVariables = Collections.EMPTY_SET;
     
     private class NodeFunction extends Context.FunctionDef {
 
