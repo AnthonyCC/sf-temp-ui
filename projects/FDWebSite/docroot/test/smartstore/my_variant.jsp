@@ -6,6 +6,7 @@
 %><%@ page import="com.freshdirect.fdstore.customer.FDCustomerManager"
 %><%@ page import="com.freshdirect.webapp.taglib.fdstore.UserUtil"
 %><%@ page import="com.freshdirect.fdstore.customer.FDUserI"
+%><%@ page import="com.freshdirect.fdstore.customer.FDUser"
 %><%@ page import="com.freshdirect.smartstore.fdstore.VariantSelector"
 %><%@ page import="com.freshdirect.smartstore.fdstore.VariantSelectorFactory"
 %><%@ page import="com.freshdirect.smartstore.RecommendationService"
@@ -216,6 +217,7 @@ if (validUserCount == 0) {
 					EnumSiteFeature feature = (EnumSiteFeature) it.next();
 					
 					OverriddenVariantsHelper.VariantInfo vi = vInfoList.get(feature);
+					((FDUser) user).createCohortName();
 					String origVariant = VariantSelectorFactory.getInstance(feature).getService(user.getCohortName()).getVariant().getId();
 					String overridden = origVariant;
 					if (vi != null) {

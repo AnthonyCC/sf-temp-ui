@@ -266,7 +266,8 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
 	    				while (it2.hasNext()) {
 	    					ContentKey key1 = (ContentKey) it2.next();
 	    					YmalSet set = (YmalSet) ContentFactory.getInstance().getContentNode(key1.getId());
-	    					if (set != null)
+	    					if (set != null
+	    		    				&& set.getRecommenders() != null && set.getRecommenders().size() != 0)	    							
 	    						((TreeSet) sets.get(set)).add(node);
 	    				}
 	    			}
@@ -297,7 +298,8 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
 	    				while (it2.hasNext()) {
 	    					ContentKey key1 = (ContentKey) it2.next();
 	    					YmalSet set = (YmalSet) ContentFactory.getInstance().getContentNode(key1.getId());
-	    					if (set != null)
+	    					if (set != null
+	    		    				&& set.getRecommenders() != null && set.getRecommenders().size() != 0)
 	    						((TreeSet) sets.get(set)).add(node);
 	    				}
 	    			}
