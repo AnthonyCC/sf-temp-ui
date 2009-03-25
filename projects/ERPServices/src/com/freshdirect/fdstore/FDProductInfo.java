@@ -183,6 +183,8 @@ public class FDProductInfo extends FDSku  {
 		return isDeal;
 	}
 	public List getCountryOfOrigin() {
+		if(materialNumbers==null) 
+			return null;
 		return FDCOOLInfoCache.getInstance().getCOOLInfo(materialNumbers[0]);
 	}
 }

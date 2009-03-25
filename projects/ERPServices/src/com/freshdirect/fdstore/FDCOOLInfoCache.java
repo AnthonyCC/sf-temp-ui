@@ -66,27 +66,11 @@ public class FDCOOLInfoCache extends FDAbstractCache {
 	}
 	
 	public List getCOOLInfo(String sapMatID) {
+		 
+		if(sapMatID==null||"".equals(sapMatID)) return null;
 		ErpCOOLInfo info=(ErpCOOLInfo)this.getCachedItem(sapMatID);
-		return info!=null? info.getCountryInfo():new ArrayList();
+		return info!=null? info.getCountryInfo():null;
 	}
-	/*public String getErpCOOLInfoText(String sapMatID) {
-		String text="A, B, C";
-		ErpCOOLInfo info=(ErpCOOLInfo)this.getCachedItem(sapMatID);
-		if(info!=null) {
-			List countries=info.getCountryInfo();
-			StringBuffer temp=new StringBuffer(50);
-			for(int i=0;i<countries.size();i++) {
-				if(i<(countries.size()-1)){
-					temp.append(countries.get(i).toString()).append(", ");
-				} else {
-					temp.append(countries.get(i).toString());
-				}
-			}
-			text=temp.toString();
-		}
-		
-		return text;
-	}*/
 	
 	private ErpCOOLManagerHome lookupCOOLInfoHome() {
 		try {
