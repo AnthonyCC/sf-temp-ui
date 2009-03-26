@@ -299,7 +299,8 @@ table.ymal {
 
 /* product cell, containing pic, link, price */
 td.ymal_product {
-	padding			: 10px;
+	padding-top		: 10px;
+	padding-bottom	: 10px;	
 }
 
 td.ymal_separator {
@@ -307,10 +308,7 @@ td.ymal_separator {
 }
 
 td.ymal_addtocart {
-	padding-top		: 0px;
-	padding-bottom	: 0px;	
-	padding-left	: 0px;	
-	padding-right	: 0px;	
+	padding			: 0px;
 }
 
 table.ymal caption {
@@ -325,7 +323,7 @@ table.ymal caption {
 
 table.ymal_prod {
     width			: 100%;
-    align 			: center;
+    text-align		: center;
 	padding			: 10px;	
 }
 
