@@ -221,12 +221,14 @@
 				
 				<%@ include file="/includes/product/i_related_recipes.jspf" %>
 				
-                <% if(productNode.getCountryOfOrigin().size()>0) %>
+                <% if(productNode.getCountryOfOrigin().size()>0) {%>
 				<b>Origin: </b>
                 
 			   <logic:iterate id="coolText" collection="<%= productNode.getCountryOfOrigin() %>" type="java.lang.String">
                <br><%=coolText%>
                </logic:iterate>
+               <br>
+               <%}%>
 				<%@  include file="/includes/product/i_how_to_cook.jspf" %>
                                 
                 <%@ include file="/shared/includes/product/i_you_might_also_like.jspf" %>
