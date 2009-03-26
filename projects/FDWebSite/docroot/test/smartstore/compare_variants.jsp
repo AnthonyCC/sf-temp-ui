@@ -16,7 +16,6 @@
 <%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
 <%@page import="com.freshdirect.cms.ContentKey.InvalidContentKeyException"%>
 <%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
-<%@page import="weblogic.security.service.UserLockout"%>
 <%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
 <%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
