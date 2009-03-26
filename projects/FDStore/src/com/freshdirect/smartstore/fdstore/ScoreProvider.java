@@ -648,10 +648,14 @@ public class ScoreProvider implements DataAccess {
 				}
 				result.add(name);
 			} else if (storeLookups.containsKey(name)) {
+				StoreLookup lookup = (StoreLookup) storeLookups.get(name);
+				if (lookup instanceof CachingStoreLookup)
+					((CachingStoreLookup) lookup).reloadCache();
+				
 				result.add(name);
 			} else {
 				LOGGER.warn("Neither database nor CMS source");
-			} 
+			}
 		}
 		
 		globalScoreRangeProvider = new GlobalScoreRangeProvider(new ArrayList(rawGlobalFactors));

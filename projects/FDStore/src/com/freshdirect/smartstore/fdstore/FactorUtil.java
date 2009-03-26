@@ -16,10 +16,11 @@ import java.util.TreeMap;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.EnumOrderLineRating;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.framework.util.TimedLruCache;
+
 
 /**
  * Custom {@link FactorRangeConverter} and {@link StoreLookup} implementations.
@@ -27,8 +28,7 @@ import com.freshdirect.framework.util.TimedLruCache;
  * @author istvan
  *
  */
-public class FactorUtil {
-	
+public class FactorUtil {	
 	// GLOBAL FACTORS columns, when moved to JDK 1.5+ these should be enums
 	public static String GLOBAL_POPULARITY_COLUMN = "POPULARITY";
 	public static String GLOBAL_REORDER_BUYER_COUNT_COLUMN = "REORDERBUYERCOUNT";
@@ -42,22 +42,27 @@ public class FactorUtil {
 	public static String PERSONALIZED_QUANTITY_COLUMN = "QUANTITY";
 	public static String PERSONALIZED_AMOUNT_COLUMN = "AMOUNT";
 	
-	
-	public static abstract class CachingStoreLookup implements StoreLookup {
-	    Map cache = new HashMap();
-	    
-	    public final double getVariable(ContentNodeModel contentNode) {
-	        Object number = cache.get(contentNode.getContentKey().getId());
-	        if (number instanceof Number) {
-	            return ((Number) number).doubleValue();
-	        }
-	        double result = calculateVariable(contentNode);
-	        cache.put(contentNode.getContentKey().getId(), new Double(result));
-	        return result;
-	    }
-
-            public abstract double calculateVariable(ContentNodeModel contentNode);
+	private static class DealsCache extends OnlineScoreCache {
+		public double calculateVariable(ContentNodeModel contentNode) {
+			return contentNode instanceof ProductModel ? 
+					((double) ((ProductModel) contentNode).getDealPercentage()) : 0.0;
+		}
 	}
+
+	private static class ProduceRatingCache extends OnlineScoreCache {
+		public double calculateVariable(ContentNodeModel contentNode) {
+			try {
+				return contentNode instanceof ProductModel ?
+						((Number) ordinals.get( ((ProductModel) contentNode).getProductRating() )).doubleValue()
+						: 0.0;
+			} catch (FDResourceException e) {
+				return 0.0;
+			}
+		}
+	}
+	
+	private static OnlineScoreCache dealsCache = new DealsCache();
+	private static OnlineScoreCache produceRatingCache = new ProduceRatingCache();
 	
 	/**
 	 * Get a CSM lookup which returns "Deals Percentage".
@@ -65,25 +70,19 @@ public class FactorUtil {
 	 * @return StoreLookup
 	 */
 	public static StoreLookup getDealsPercentageLookup() {
-		return new CachingStoreLookup() {
-			public double calculateVariable(ContentNodeModel contentNode) {
-				return 
-					contentNode instanceof ProductModel ? 
-							((double)((ProductModel)contentNode).getDealPercentage())/100.0 :
-							0.0;
+		return new CachingStoreLookup(dealsCache) {
+			public double getVariable(ContentNodeModel contentNode) {
+				return super.getVariable(contentNode) / 100.0;
 			}	
 		};
 	}
 	
 	public static StoreLookup getDealsPercentageDiscretized() {
-		return new CachingStoreLookup() {
-			public double calculateVariable(ContentNodeModel contentNode) {
-				int dealp = 
-					contentNode instanceof ProductModel ? ((ProductModel)contentNode).getDealPercentage() : 0;
-				return (double)(dealp/5);
+		return new CachingStoreLookup(dealsCache) {
+			public double getVariable(ContentNodeModel contentNode) {
+				return Math.floor(super.getVariable(contentNode) / 5.0);
 			}
 		};
-		
 	}
 
 	
@@ -168,51 +167,23 @@ public class FactorUtil {
             ordinals.put(EnumOrderLineRating.VERY_GOOD_PLUS.getStatusCode(),new Integer(14));
             ordinals.put(EnumOrderLineRating.PEAK_PRODUCE_10.getStatusCode(),new Integer(15));
 	}
-
-	static TimedLruCache produceRatingCache = new TimedLruCache(10000,60*60*1000);
-	
-        protected static int getProductRatingOrdinal(ContentNodeModel contentNode) {
-            if (!(contentNode instanceof ProductModel)) {
-                    return 0;
-            }
-            ProductModel model = (ProductModel)contentNode;
-        
-            Number result = (Number) produceRatingCache.get(model.getContentKey().getId());
-            if (result == null) {
-                try {
-                    result = ((Number)ordinals.get(model.getProductRating()));
-                    produceRatingCache.put(model.getContentKey().getId(), result);    
-                } catch (Exception e) {
-                        return 0;
-                }
-            }
-            return result.intValue();
-        }
-	
-	
-	
-	abstract static class ProduceRatingLookup implements StoreLookup {
-		protected int getOrdinal(ContentNodeModel contentNode) {
-		    return FactorUtil.getProductRatingOrdinal(contentNode);
-		}
-	}
-	
+		
 	public static StoreLookup getProduceRatingLookup() {
-		return new ProduceRatingLookup() {
+		return new CachingStoreLookup(produceRatingCache) {
 			public double getVariable(ContentNodeModel contentNode) {
-				return (double)getOrdinal(contentNode);
+				return super.getVariable(contentNode);
 			}
 		};
 	}
 	
 	public static StoreLookup getNormalizedProduceRatingLookup() {
-		return new ProduceRatingLookup() {		
+		return new CachingStoreLookup(produceRatingCache) {		
 			//   0,    1,    2,    3,    4,   5,   6,    7,   8,   9,  10,  11,  12,  13,  14,  15
 			private double[] scores = 
 				{0, -0.8, -0.6, -0.4, -0.2, 0.0,  0.0, 0.0, 0.2, 0.4, 0.6, 0.6, 0.8, 0.8, 1.0, 1.0};
 
 			public double getVariable(ContentNodeModel contentNode) {
-				return scores[getOrdinal(contentNode)];
+				return scores[(int) super.getVariable(contentNode)];
 			}
 			
 			
@@ -220,25 +191,25 @@ public class FactorUtil {
 	}
 	
 	public static StoreLookup getDescretizedProduceRatingLookup1() {
-		return new ProduceRatingLookup() {		
+		return new CachingStoreLookup(produceRatingCache) {		
 			//   0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15
 			private double[] scores = 
 				{0,  1,  2,  3,  4,  0,  0,  5,  6,  7,  8,  8,  9,  9, 10, 10};
 
 			public double getVariable(ContentNodeModel contentNode) {
-				return scores[getOrdinal(contentNode)];
+				return scores[(int) super.getVariable(contentNode)];
 			}	
 		};		
 	}
 	
 	public static StoreLookup getDescretizedProduceRatingLookup2() {
-		return new ProduceRatingLookup() {		
+		return new CachingStoreLookup(produceRatingCache) {		
 			//   0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15
 			private double[] scores = 
 				{0, -4, -3, -2, -1,  0,  0,  0,  1,  2,  3,  3,  4,  4,  5,  5};
 
 			public double getVariable(ContentNodeModel contentNode) {
-				return scores[getOrdinal(contentNode)];
+				return scores[(int) super.getVariable(contentNode)];
 			}	
 		};		
 	}

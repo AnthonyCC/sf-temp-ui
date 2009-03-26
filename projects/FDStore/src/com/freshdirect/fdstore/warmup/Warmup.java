@@ -17,7 +17,9 @@ import org.apache.log4j.*;
 import java.util.*;
 
 import com.freshdirect.fdstore.content.*;
+import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.*;
+import com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration;
 
 /**
  *
@@ -70,6 +72,8 @@ public class Warmup {
 				try {
 					// Warmup
 					warmupProducts();
+					
+					SmartStoreServiceConfiguration.getInstance().getServices(EnumSiteFeature.YMAL);
 
 					LOGGER.info("Warmup done");
 				} catch (FDResourceException e) {
