@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -60,7 +61,10 @@ public abstract class OnlineScoreCache {
 	}
 
     public void reload() {
-		synchronized (lock) {
+		if (!FDStoreProperties.isSmartstoreOnlineFactorsCached())
+			return;
+
+		synchronized (lock) {	
 			if (System.currentTimeMillis() > nextRuntime) {
 				nextRuntime = System.currentTimeMillis() + HOUR_IN_MILLIS;
 		    	new Loader().run();
@@ -69,6 +73,9 @@ public abstract class OnlineScoreCache {
     }
     
 	public final double getVariable(ContentNodeModel contentNode) {
+		if (!FDStoreProperties.isSmartstoreOnlineFactorsCached())
+			return calculateVariable(contentNode);
+		
 		synchronized (lock) {
 			if (System.currentTimeMillis() > nextRuntime) {
 				nextRuntime = System.currentTimeMillis() + HOUR_IN_MILLIS;
