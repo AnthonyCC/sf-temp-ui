@@ -167,7 +167,7 @@ public class SmartYMALRecommendationService extends AbstractRecommendationServic
 		return false;
 	}
 
-	private synchronized RecommendationService getScriptRecommendationService(RecommenderStrategy strategy) {
+	public synchronized RecommendationService getScriptRecommendationService(RecommenderStrategy strategy) {
 		if (!recommenderCache.containsKey(strategy)) {
 			try {
 				RecommendationServiceConfig config = new RecommendationServiceConfig(strategy.getContentName(),

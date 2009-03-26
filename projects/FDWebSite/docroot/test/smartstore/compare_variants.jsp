@@ -257,7 +257,8 @@ String recentOrderlines = urlG.get("orderlines");
 YmalSource source = null;
 if (useLoggedIn && user != null) {
 	source = YmalUtil.resolveYmalSource(user, null);
-	si.setCurrentNode(YmalUtil.getSelectedCartLine(user).lookupProduct());
+	if (YmalUtil.getSelectedCartLine(user) != null)
+		si.setCurrentNode(YmalUtil.getSelectedCartLine(user).lookupProduct());
 } else if (recentOrderlines != null && !"".equals(recentOrderlines)) {
 	List prods = new ArrayList();
 	Set cartItems = new HashSet();

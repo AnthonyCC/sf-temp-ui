@@ -604,15 +604,7 @@ public class ScoreProvider implements DataAccess {
 		
 	    names.add(ORIGINAL_SCORES_GLOBAL);
 	    names.add(ORIGINAL_SCORES_PERSONALIZED);
-	    
-	    // pre-load for Smart YMAL
-	    names.add("Recency_Discretized");
-	    names.add("Popularity_Discretized");
-	    names.add("DealsPercentage");
-	    names.add("DealsPercentage_Discretized");
-	    names.add("QualityRating_Discretized2");
-	    names.add("Frequency_Discretized");
-	    
+	    	    
 	    // extra factors can be parameterized
 	    names.addAll(FDStoreProperties.getSmartstorePreloadFactors());
 	   

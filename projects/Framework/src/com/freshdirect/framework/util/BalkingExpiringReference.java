@@ -49,6 +49,12 @@ public abstract class BalkingExpiringReference extends ExpiringReference {
 		this.executor = executor;
 	}
 
+	public BalkingExpiringReference(long refreshPeriod, Executor executor, Object initializer) {
+		super(refreshPeriod);
+		this.referent = initializer;
+		this.executor = executor;
+	}
+	
 	protected boolean isExpired() {
 		return System.currentTimeMillis() - lastRefresh > this.refreshPeriod;
 	}

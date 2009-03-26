@@ -105,7 +105,7 @@ public class CachingCompilerTest extends TestCase {
         }
     }
 
-    public void testCachingDataGenerator() throws CompileException {
+    public void testCachingDataGenerator() throws CompileException, InterruptedException {
         DataGenerator dataGenerator = compiler.createDataGenerator("cache4", "explicitList:atLeast(globalfact,1)");
         assertTrue("caching enabled", dataGenerator instanceof CachingDataGenerator);
 
@@ -118,6 +118,8 @@ public class CachingCompilerTest extends TestCase {
         assertNotNull("result", secondLiveResult);
         assertEquals("result size 1", 1, secondLiveResult.size());
         assertEquals("one node", "[Mock[ContentKey[Product:exp4]]]", secondLiveResult.toString());
+        
+        Thread.sleep(1000);
 
         List firstResultFromCache = CachingDataGenerator.peekIntoCache("explicitList:atLeast(globalfact,1)$[exp1,exp2]");
         List secondResultFromCache = CachingDataGenerator.peekIntoCache("explicitList:atLeast(globalfact,1)$[exp2,exp4]");

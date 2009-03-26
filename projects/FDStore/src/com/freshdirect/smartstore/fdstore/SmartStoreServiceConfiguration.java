@@ -17,8 +17,13 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentType;
+import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.RecommenderStrategy;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -178,6 +183,18 @@ public class SmartStoreServiceConfiguration {
                         scriptedRecommenders.add(rs);
                         ((ScriptedRecommendationService) rs).collectFactors(factors);
                     }
+                    if (rs instanceof SmartYMALRecommendationService) {
+                        Set rss = CmsManager.getInstance().getContentKeysByType(ContentType.get("RecommenderStrategy"));
+                    	Iterator it = rss.iterator();
+                    	while (it.hasNext()) {
+                    		ContentKey key = (ContentKey) it.next();
+                    		RecommenderStrategy strat = (RecommenderStrategy)
+                    				ContentFactory.getInstance().getContentNode(key.getId());
+                    		RecommendationService rs1 = 
+                    				((SmartYMALRecommendationService) rs).getScriptRecommendationService(strat);
+                            ((ScriptedRecommendationService) rs1).collectFactors(factors);
+                    	}
+                    }
                     Map siteFeatureSpecMap = (Map) services.get(variant.getSiteFeature());
                     if (siteFeatureSpecMap==null) {
                         siteFeatureSpecMap = new HashMap();
@@ -190,6 +207,7 @@ public class SmartStoreServiceConfiguration {
                     continue;
                 }
             }
+            
             LOGGER.info("needed factors :" +factors);
             ScoreProvider.getInstance().acquireFactors(factors);
             LOGGER.info("configured services :"+services);

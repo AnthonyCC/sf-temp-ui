@@ -148,8 +148,10 @@ public class FDStoreProperties {
 	
 	private final static String SMARTSTORE_NEWPRODUCTS_DAYS = "fdstore.smartstore.newProducts.days";
 	private final static String SMARTSTORE_PRELOAD_FACTORS = "fdstore.smartstore.preloadFactors";
-	
-	
+
+	private final static String SMARTSTORE_CACHE_DATA_SOURCES = "fdstore.smartstore.cacheDataSources";
+	private final static String SMARTSTORE_CACHE_ONLINE_FACTORS = "fdstore.smartstore.cacheOnlineFactors";
+		
 	// maximum number of entries (users) in smartstore personalized scores cache, default 500
 	private final static String SMARTSTORE_PERSONAL_SCORES_CACHE_ENTRIES = "fdstore.smartstore.personalScores.cache.entries";
 	
@@ -408,6 +410,9 @@ public class FDStoreProperties {
 		defaults.put(DYF_STRATEGY_CACHE_ENTRIES, "1000");
 
 		defaults.put(SMARTSTORE_NEWPRODUCTS_DAYS, "30");
+
+		defaults.put(SMARTSTORE_CACHE_DATA_SOURCES, "true");
+		defaults.put(SMARTSTORE_CACHE_ONLINE_FACTORS, "true");
 		
 		defaults.put(SMARTSTORE_PERSONAL_SCORES_CACHE_ENTRIES, "500");
 		defaults.put(SMARTSTORE_PERSONAL_SCORES_CAHCE_TIMEOUT, "" + (30*60));
@@ -999,10 +1004,18 @@ public class FDStoreProperties {
 		return fs;
 	}
 	
+	public static boolean isSmartstoreDataSourcesCached() {
+		return Boolean.valueOf(get(SMARTSTORE_CACHE_DATA_SOURCES)).booleanValue();
+	}
+
+	public static boolean isSmartstoreOnlineFactorsCached() {
+		return Boolean.valueOf(get(SMARTSTORE_CACHE_ONLINE_FACTORS)).booleanValue();
+	}
+
 	public static int getSmartstorePersonalizedScoresCacheEntries() {
 		return Integer.parseInt(get(SMARTSTORE_PERSONAL_SCORES_CACHE_ENTRIES));
 	}
-	
+
 	public static int getSmartstorePersonalizedScoresCacheTimeout() {
 		return Integer.parseInt(get(SMARTSTORE_PERSONAL_SCORES_CAHCE_TIMEOUT));
 	}
