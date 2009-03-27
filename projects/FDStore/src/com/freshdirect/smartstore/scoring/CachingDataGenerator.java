@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.BalkingExpiringReference;
+import com.freshdirect.framework.util.TimedLruCache;
 import com.freshdirect.smartstore.SessionInput;
 
 import edu.emory.mathcs.backport.java.util.concurrent.Executor;
@@ -18,9 +19,8 @@ public class CachingDataGenerator extends DataGenerator {
 
     private static final int HOUR_IN_MILLIS = 60*60*1000;
     
-    private static final int MAX_CACHE_SIZE = 50;
-
-	protected static Map cache = new HashMap();
+	protected static TimedLruCache cache =
+			new TimedLruCache(FDStoreProperties.getSmartStoreDataSourceCacheSize(), HOUR_IN_MILLIS);
     
 	private static Executor threadPool = new ThreadPoolExecutor(1, 1, 60,
 			TimeUnit.SECONDS, new LinkedBlockingQueue(), new ThreadPoolExecutor.DiscardPolicy());
@@ -34,20 +34,17 @@ public class CachingDataGenerator extends DataGenerator {
     	if (FDStoreProperties.isSmartstoreDataSourcesCached()) {
 	        String key = getKey(sessionInput);
 	        if (cache.get(key) == null) {
-	        	if (cache.size() < MAX_CACHE_SIZE) {
-			        final SessionInput inp = new SessionInput(sessionInput.getCustomerId());
-			        inp.setCurrentNode(sessionInput.getCurrentNode());
-			        inp.setExplicitList(sessionInput.getExplicitList());
-			        
-		            cache.put(key, new BalkingExpiringReference(HOUR_IN_MILLIS, threadPool, generateImpl(inp, input)) {
-						protected Object load() {
-					        List result = generateImpl(inp, input);
-							return result;
-						}
-		            	
-		            });
-	        	} else
-	        		return generateImpl(sessionInput, input);
+		        final SessionInput inp = new SessionInput(sessionInput.getCustomerId());
+		        inp.setCurrentNode(sessionInput.getCurrentNode());
+		        inp.setExplicitList(sessionInput.getExplicitList());
+		        
+	            cache.put(key, new BalkingExpiringReference(HOUR_IN_MILLIS, threadPool, generateImpl(inp, input)) {
+					protected Object load() {
+				        List result = generateImpl(inp, input);
+						return result;
+					}
+	            	
+	            });
 	        }
 	        List cached = (List) ((BalkingExpiringReference) cache.get(key)).get();
 	        if (cached != null)

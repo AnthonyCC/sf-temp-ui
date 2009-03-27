@@ -150,8 +150,9 @@ public class FDStoreProperties {
 	private final static String SMARTSTORE_PRELOAD_FACTORS = "fdstore.smartstore.preloadFactors";
 
 	private final static String SMARTSTORE_CACHE_DATA_SOURCES = "fdstore.smartstore.cacheDataSources";
+	private final static String SMARTSTORE_CACHE_DATA_SOURCES_SIZE = "fdstore.smartstore.cacheDataSources.size";
 	private final static String SMARTSTORE_CACHE_ONLINE_FACTORS = "fdstore.smartstore.cacheOnlineFactors";
-		
+	
 	// maximum number of entries (users) in smartstore personalized scores cache, default 500
 	private final static String SMARTSTORE_PERSONAL_SCORES_CACHE_ENTRIES = "fdstore.smartstore.personalScores.cache.entries";
 	
@@ -412,8 +413,9 @@ public class FDStoreProperties {
 		defaults.put(SMARTSTORE_NEWPRODUCTS_DAYS, "30");
 
 		defaults.put(SMARTSTORE_CACHE_DATA_SOURCES, "true");
+		defaults.put(SMARTSTORE_CACHE_DATA_SOURCES_SIZE, "150");
 		defaults.put(SMARTSTORE_CACHE_ONLINE_FACTORS, "true");
-		
+
 		defaults.put(SMARTSTORE_PERSONAL_SCORES_CACHE_ENTRIES, "500");
 		defaults.put(SMARTSTORE_PERSONAL_SCORES_CAHCE_TIMEOUT, "" + (30*60));
 		
@@ -1022,5 +1024,9 @@ public class FDStoreProperties {
 	
 	public static int getCOOLInfoRefreshPeriod(){
 		return Integer.parseInt(get(PROP_COOLINFO_REFRESH_PERIOD));
+	}
+
+	public static int getSmartStoreDataSourceCacheSize() {
+		return Integer.parseInt(get(SMARTSTORE_CACHE_DATA_SOURCES_SIZE));
 	}
 }
