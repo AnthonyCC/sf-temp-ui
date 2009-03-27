@@ -17,6 +17,8 @@ import edu.emory.mathcs.backport.java.util.concurrent.TimeUnit;
 public class CachingDataGenerator extends DataGenerator {
 
     private static final int HOUR_IN_MILLIS = 60*60*1000;
+    
+    private static final int MAX_CACHE_SIZE = 50;
 
 	protected static Map cache = new HashMap();
     
@@ -31,17 +33,21 @@ public class CachingDataGenerator extends DataGenerator {
     public final List generate(SessionInput sessionInput, final DataAccess input) {
     	if (FDStoreProperties.isSmartstoreDataSourcesCached()) {
 	        String key = getKey(sessionInput);
-	        final SessionInput inp = new SessionInput(sessionInput.getCustomerId());
-	        inp.setCurrentNode(sessionInput.getCurrentNode());
-	        inp.setExplicitList(sessionInput.getExplicitList());
 	        if (cache.get(key) == null) {
-	            cache.put(key, new BalkingExpiringReference(HOUR_IN_MILLIS, threadPool, generateImpl(inp, input)) {
-					protected Object load() {
-				        List result = generateImpl(inp, input);
-						return result;
-					}
-	            	
-	            });
+	        	if (cache.size() < MAX_CACHE_SIZE) {
+			        final SessionInput inp = new SessionInput(sessionInput.getCustomerId());
+			        inp.setCurrentNode(sessionInput.getCurrentNode());
+			        inp.setExplicitList(sessionInput.getExplicitList());
+			        
+		            cache.put(key, new BalkingExpiringReference(HOUR_IN_MILLIS, threadPool, generateImpl(inp, input)) {
+						protected Object load() {
+					        List result = generateImpl(inp, input);
+							return result;
+						}
+		            	
+		            });
+	        	} else
+	        		return generateImpl(sessionInput, input);
 	        }
 	        List cached = (List) ((BalkingExpiringReference) cache.get(key)).get();
 	        if (cached != null)
@@ -58,9 +64,6 @@ public class CachingDataGenerator extends DataGenerator {
 
 
     public static List peekIntoCache(String key) {
-    	if (!FDStoreProperties.isSmartstoreDataSourcesCached())
-    		return Collections.EMPTY_LIST;
-    	
     	if (cache.get(key) == null)
     		return Collections.EMPTY_LIST;
 
