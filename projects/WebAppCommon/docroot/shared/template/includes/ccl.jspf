@@ -33,8 +33,6 @@
 	
 		if (FDStoreProperties.isCclAjaxDebugClient()) { 
 %>
-<script type="text/javascript" src="/assets/firebug/firebug.js"></script>
-
 <script type="text/javascript" src="/assets/javascript/rounded_corners.inc.js"></script>
 
 <script type="text/javascript" src="/assets/yui/yahoo/yahoo.js"></script>
@@ -51,7 +49,6 @@
 <%
 		} else {
 %>
-<script type="text/javascript" src="/assets/firebug/firebugx.js"></script>
 <script type="text/javascript" src="/assets/javascript/rounded_corners-min.js"></script>
 <script type="text/javascript" src="/assets/yui/utilities/utilities.js"></script>
 <script type="text/javascript" src="/assets/yui/container/container-min.js"></script>
