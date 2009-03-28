@@ -150,13 +150,17 @@
 			<tr>
 				<td style="<%= bkg %> vertical-align: top;"><%= z %></td>
 				<td style="<%= bkg %> vertical-align: top;"><a href="#" onclick="document.getElementById('preview_frame').src = '<%= uri %>'; return false;"><%= yset.getContentName() %></a></td>
-				<td style="<%= bkg %> vertical-align: top; text-align: center; <%= yset.getYmalProducts().size() == 0 ? "color: grey;" : "" %>"><%= yset.getYmalProducts().size() %></td>
-				<td style="<%= bkg %> vertical-align: top; text-align: center; <%= yset.getYmalCategories().size() == 0 ? "color: grey;" : "" %>"><%= yset.getYmalCategories().size() %></td>
-				<td style="<%= bkg %> vertical-align: top; text-align: center; <%= yset.getYmalRecipes().size() == 0 ? "color: grey;" : "" %>"><%= yset.getYmalRecipes().size() %></td>
+				<td style="<%= bkg %> vertical-align: top; text-align: center; <%= yset.getYmalProducts().size() == 0 ? "color: gray;" : "" %>"><%= yset.getYmalProducts().size() %></td>
+				<td style="<%= bkg %> vertical-align: top; text-align: center; <%= yset.getYmalCategories().size() == 0 ? "color: gray;" : "" %>"><%= yset.getYmalCategories().size() %></td>
+				<td style="<%= bkg %> vertical-align: top; text-align: center; <%= yset.getYmalRecipes().size() == 0 ? "color: gray;" : "" %>"><%= yset.getYmalRecipes().size() %></td>
 				<td style="<%= bkg %> vertical-align: top; text-align: left;">
 				<% if (mdl instanceof ProductModel) {
 					ProductModel prd = (ProductModel) mdl;
-					%><a href="<%= FDURLUtil.getProductURI(prd, "test") %>"><%= prd.getFullName() %></a> : <%= prd.getParentNode().getFullName() %><%
+					if (prd.isDisplayable()) {
+						%><%= prd.getParentNode().getFullName() %> &gt; <a href="<%= FDURLUtil.getProductURI(prd, "test") %>" target="prodwin"><%= prd.getFullName() %></a><%
+					} else {
+						%><span style="color: gray;"><%= prd.getFullName() %></span><%
+					}
 				} %>
 				<% if (mdl instanceof Recipe) {
 					Recipe rec = (Recipe) mdl;
