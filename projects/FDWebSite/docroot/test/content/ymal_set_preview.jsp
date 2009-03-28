@@ -1,3 +1,6 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
+
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
 <%@ page import='com.freshdirect.fdstore.*' %>
@@ -11,9 +14,16 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
-<%@page import="com.freshdirect.smartstore.SessionInput"%>
-<%@page import="com.freshdirect.smartstore.Trigger"%>
-<%@page import="com.freshdirect.smartstore.fdstore.FDStoreRecommender"%><fd:CheckLoginStatus />
+<%@ page import="com.freshdirect.smartstore.SessionInput"%>
+<%@ page import="com.freshdirect.smartstore.Trigger"%>
+<%@ page import="com.freshdirect.smartstore.fdstore.FDStoreRecommender"%><fd:CheckLoginStatus />
+<%
+	if (request.getParameter("ymalSetId") == null) {
+%>
+	<div style="text-align: center; font-size: 14px; font-weight: bold; color: red;">Nothing to render...</div>
+<%		
+	} else {
+%>
 <%
 /*
  *  A page used for previewing ymal sets.
@@ -115,3 +125,6 @@ if (ymalHeader != null && activeYmalSet.getRelatedProducts().size() == 0) {
 <%@ include file="/includes/i_ymal_box.jspf" %>
     </tmpl:put>
 </tmpl:insert>
+<%
+	}
+%>
