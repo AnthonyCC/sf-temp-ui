@@ -23,13 +23,12 @@ String criteria = request.getParameter("searchParams");
 if (FDStoreProperties.isCclAjaxDebugClient()) { 
 	// debug JS libs
 %>
-	<script type="text/javascript" src="/assets/firebug/firebugx.js"></script>
-	<script type="text/javascript" src="/assets/javascript/rounded_corners.inc.js"></script>
+<script type="text/javascript" src="/assets/javascript/rounded_corners.inc.js"></script>
 <%
 } else {
 	// production JS libs
 %>
-	<script type="text/javascript" src="/assets/javascript/rounded_corners-min.js"></script>
+<script type="text/javascript" src="/assets/javascript/rounded_corners-min.js"></script>
 <%
 }
 %>
