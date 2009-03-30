@@ -97,7 +97,9 @@ public class TransportationAdminProperties {
 	
 	private final static String PROP_TRANSPORTATION_CELLDATA_SEPERATOR		= "transportation.celldata.seperator";
 	
-	private final static String PROP_TRANSPORTATION_DEPOT_DEPARTTIMEDIFF		= "transportation.depot.departtimediff";	
+	private final static String PROP_TRANSPORTATION_DEPOT_DEPARTTIMEDIFF		= "transportation.depot.departtimediff";
+	
+	private final static String PROP_TRANSPORTATION_DEPOT_USESTPARRTIME		= "transportation.depot.usestoparrtime";
 	
 	static {
 				
@@ -171,6 +173,8 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_ROUTE_CACHE_EXPIRY_TIME, "60");
 		defaults.put(PROP_TRANSPORTATION_EMPLOYEE_CACHE_EXPIRY_TIME, "60");
 		defaults.put(PROP_TRANSPORTATION_DEPOT_DEPARTTIMEDIFF, "0");
+		
+		defaults.put(PROP_TRANSPORTATION_DEPOT_USESTPARRTIME, "true");
 		
 		refresh();		
 	}
@@ -370,5 +374,8 @@ public class TransportationAdminProperties {
 		return getIntVal(get(PROP_TRANSPORTATION_DEPOT_DEPARTTIMEDIFF));
 	}
 	
+	public static boolean useStopArrivalTime() {
+        return (new Boolean(get(PROP_TRANSPORTATION_DEPOT_USESTPARRTIME))).booleanValue();
+    }
 	
 }

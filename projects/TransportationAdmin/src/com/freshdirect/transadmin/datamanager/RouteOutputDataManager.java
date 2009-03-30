@@ -392,7 +392,11 @@ public class RouteOutputDataManager extends RouteDataManager  {
 					}
 					
 					if(_order.getOrderNumber() == null || _order.getOrderNumber().trim().length() == 0) {
-						currDepotDeparture = _order.getStopDepartureTime();
+						if(TransportationAdminProperties.useStopArrivalTime()) {
+							currDepotDeparture = _order.getStopArrivalTime();
+						} else {
+							currDepotDeparture = _order.getStopDepartureTime();
+						}
 						continue;
 					} else if(currRouteId != null && !currRouteId.equalsIgnoreCase(_order.getRouteId())) {
 						currDepotDeparture = null;
@@ -503,7 +507,16 @@ public class RouteOutputDataManager extends RouteDataManager  {
 	}
 	
 	private void groupOrders(OrderAreaGroup orderAreaGroup ,List orders, Map orderGroup, Map routingAreas) {
-		
+		TrnArea tmpArea = null;
+		if(routingAreas != null) {
+			Iterator iterator = routingAreas.keySet().iterator();
+			while(iterator.hasNext()) {
+				tmpArea = (TrnArea)routingAreas.get(iterator.next());				
+				if(tmpArea != null && "X".equalsIgnoreCase(tmpArea.getActive())) {
+					orderAreaGroup.addRoutingAreaCode(tmpArea.getCode());
+				}
+			}
+		}
 		if(orders != null) {
 			OrderRouteInfoModel tmpInfo = null;		
 			List tmpList = null;
@@ -518,9 +531,7 @@ public class RouteOutputDataManager extends RouteDataManager  {
 				
 				if(routingAreas.containsKey(areaCode)) {	
 					area = (TrnArea)routingAreas.get(areaCode);
-					if("X".equals(area.getActive())) {
-						orderAreaGroup.addRoutingAreaCode(areaCode);
-					}
+					
 					if("X".equals(area.getIsDepot())) {
 						orderAreaGroup.addDepotAreaCode(areaCode);
 					}
