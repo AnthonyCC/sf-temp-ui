@@ -290,11 +290,17 @@ margin-bottom: 3px;
 /* internal table in ymal pages */
 table.ymal {
     width			: 100%;
-    align 			: center;
+    text-align 		: center;
 	padding-top		: 5px;
 	padding-bottom	: 0px;	
-	padding-left	: 0px;	
-	padding-right	: 0px;	
+	padding-left	: 0px;
+	padding-right	: 0px;
+	border-collapse : collapse;
+}
+
+form.ymal {
+	padding: 0;
+	margin: 0;
 }
 
 /* product cell, containing pic, link, price */

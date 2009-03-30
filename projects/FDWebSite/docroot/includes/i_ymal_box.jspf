@@ -153,7 +153,7 @@
 </fd:ErrorHandler><% } %>
 
 
-				<form name="<%= TX_FORM_NAME %>" method="post" action="<%= base_url %>" style="margin-bottom: 0px;">
+				<form class="ymal" name="<%= TX_FORM_NAME %>" method="post" action="<%= base_url %>">
 				
 <%		if (ym_aset != null) { %>
 					<input type="hidden" name="ymalSetId" value="<%= ym_aset.getContentKey().getId() %>">
@@ -167,7 +167,7 @@
 
 
 					<!-- start of ymal products external table -->
-					<table class="ymal" >
+					<table class="ymal" cellspacing="0" cellpadding="0">
 <%
 		int rank = 1;
 		int txProdCount = 0;
@@ -237,11 +237,11 @@
 %>
 						<!-- separator below products -->						
 						<tr>
-							<td class="ymal_separator" colspan="9"><hr class="ymalSeparator_product" noshade="noshade"></td>
+							<td class="ymal_separator" colspan="<%= rsize %>"><hr class="ymalSeparator_product" noshade="noshade"></td>
 						</tr>
 						
 						<tr>
-							<td class="ymal_addtocart" colspan="9" class="text11bold">
+							<td class="ymal_addtocart" colspan="<%= rsize %>" class="text11bold">
 								<table width="100%">
 									<tr>
 										<td align="left">
