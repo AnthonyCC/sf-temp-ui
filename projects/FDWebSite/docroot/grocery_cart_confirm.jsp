@@ -1,33 +1,31 @@
-<%@ page import='com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.fdstore.*' %>
-<%@ page import='com.freshdirect.fdstore.customer.*' %>
-<%@ page import='com.freshdirect.fdstore.content.*' %>
-<%@ page import="com.freshdirect.common.pricing.*" %>
-<%@ page import='java.util.*' %>
-<%@ page import='java.text.*' %>
-<%@ taglib uri='template' prefix='tmpl' %>
-<%@ taglib uri='bean' prefix='bean' %>
-<%@ taglib uri='logic' prefix='logic' %>
-<%@ taglib uri='freshdirect' prefix='fd' %>
-<script language="javascript" src="/assets/javascript/common_javascript.js"></script>
-<%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);%>
-<%! java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##"); %>
+<%@ page import='com.freshdirect.webapp.util.*'
+%><%@ page import='com.freshdirect.fdstore.*'
+%><%@ page import='com.freshdirect.fdstore.customer.*'
+%><%@ page import='com.freshdirect.fdstore.content.*'
+%><%@ page import="com.freshdirect.common.pricing.*"
+%><%@ page import='java.util.*'
+%><%@ page import='java.text.*'
+%><%@ taglib uri='template' prefix='tmpl'
+%><%@ taglib uri='bean' prefix='bean'
+%><%@ taglib uri='logic' prefix='logic'
+%><%@ taglib uri='freshdirect' prefix='fd' %><%!
 
-<!-- ISTVAN 14/03/2007
-     Check if cart has been emptied the item added in the meantime (obviously by someone manipulating it from another window)
--->
-<fd:FDShoppingCart id='cart' result='result'>
-<%
+java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
+java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
+
+%><%--
+	ISTVAN 14/03/2007
+    Check if cart has been emptied the item added in the meantime (obviously by someone manipulating it from another window)
+--%><fd:FDShoppingCart id='cart' result='result'><%
    if (cart.getRecentOrderLines().size() == 0) {
-%>
-   <jsp:forward page="/checkout/view_cart.jsp" />
-<%
+%><jsp:forward page="/checkout/view_cart.jsp" /><%
    }
-%>
-</fd:FDShoppingCart>
+%></fd:FDShoppingCart><%
 
-<%
+// OAS AD
 request.setAttribute("listPos", "SystemMessage,LittleRandy,ProductNote,SideCartBottom");
+
+
 String catIdParam       = request.getParameter("catId");
 String productId=request.getParameter("productId");
 String jspTemplate = "/common/template/both_dnav.jsp";
@@ -53,9 +51,7 @@ if (productId!=null && !"".equals(productId)) {
 }
 Recipe recipe = null;
 
-%>
-
-<tmpl:insert template='<%=jspTemplate%>'>
+%><tmpl:insert template='<%=jspTemplate%>'>
     <tmpl:put name='title' direct='true'>FreshDirect - Cart Confirmation</tmpl:put>
 
     <tmpl:put name='leftnav' direct='true'>
@@ -64,15 +60,11 @@ Recipe recipe = null;
 
     
 <tmpl:put name='content' direct='true'>
-		
-	<SCRIPT LANGUAGE=JavaScript>
-		<!--
-		OAS_AD('ProductNote');
-		//-->
-	</SCRIPT>
-
-	<!-- Includes Bottom of Items added to Cart -->
-	<fd:FDShoppingCart id='cart'  result='result'  successPage='/checkout/view_cart.jsp'>
+<script type="text/javascript">
+	OAS_AD('ProductNote');
+</script>
+<%-- Includes Bottom of Items added to Cart --%>
+<fd:FDShoppingCart id='cart'  result='result'  successPage='/checkout/view_cart.jsp'>
 <%	
 	  FDCartLineModel orderLine = (FDCartLineModel)cart.getRecentOrderLines().get(0);
 
@@ -81,10 +73,9 @@ Recipe recipe = null;
 	  }
 
       boolean groupByDepartments = false;
-%>
-	<%@ include file="/includes/i_add_to_cart_confirmation.jspf" %>	
 
-	<%
+%><%@ include file="/includes/i_add_to_cart_confirmation.jspf" %><%
+
 	ContentNodeModel context;
 	if (orderLine.getRecipeSourceId() != null) {
 		context = ContentFactory.getInstance().getContentNode( orderLine.getRecipeSourceId() );
