@@ -18,6 +18,8 @@
  *  A JSP fragment page to display the YMALs based on YMAL lists for
  *  product, recipe and category content nodes.
  *
+ * @param actionResult Result of latest add to cart operation, instance of ActionResult
+ *
  */
 --%><%
 	// more things

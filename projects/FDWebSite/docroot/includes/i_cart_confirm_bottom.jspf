@@ -174,23 +174,8 @@
 	String cartMode = CartName.ADD_TO_CART;
 	FDCartLineI templateLine = null;
 
-	request.setAttribute("actionResult", result);
-	request.setAttribute("user", user);
-	request.setAttribute("cartMode", cartMode);
-	request.setAttribute("templateLine", templateLine);
-
 	// YMAL bindings
-	request.setAttribute("ymal_recipe", recipe);
-	request.setAttribute("ymal_product", productNode); //FIXME: will be obsoleted by recommendation
-	request.setAttribute("ymal_set", null);
-
-	// FIXME: soon to be removed!
-	Set removeSkus = new HashSet();
-	for (Iterator it = cart.getOrderLines().iterator(); it.hasNext();) {
-		FDCartLineModel cartLine = (FDCartLineModel) it.next();
-		removeSkus.add(cartLine.getSku());
-	}
-	request.setAttribute("ymal_exclude_skus", removeSkus);
+	request.setAttribute("actionResult", result);
 %>
 <%@ include file="/includes/i_ymal_lists.jspf"%>
 </fd:FDShoppingCart>
