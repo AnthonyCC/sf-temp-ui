@@ -80,14 +80,6 @@ if (!QuickCart.PRODUCT_TYPE_CCL.equals(cartType) && !QuickCart.PRODUCT_TYPE_STAR
 <%  if(QuickCart.PRODUCT_TYPE_CCL.equals(cartType) || QuickCart.PRODUCT_TYPE_STARTER_LIST.equals(cartType)) { %> 
 	<tmpl:put name='title' direct='true'>FreshDirect - Quickshop - Shop from This Order</tmpl:put>
 	<tmpl:put name='side_nav' direct='true'>
-	<%--
-	<tmpl:put name='banner' direct='true'>
-	<a href="/newproducts.jsp"><img src="/media_stat/images/template/quickshop/qs_banner_newproduct.gif" width="140" height="108" border="0"></a>
-	<br>
-	<img src="/media_stat/images/layout/clear.gif" width="1" height="10">
-	<br>
-	</tmpl:put>
-	--%>
 	<font class="space4pix"><br/></font>
 	<a href="/quickshop/all_lists.jsp">
 	<img src="/media_stat/images/template/quickshop/yourlists_catnav.gif" border="0" width="81" height="53"></a>
@@ -204,46 +196,23 @@ if (!QuickCart.PRODUCT_TYPE_CCL.equals(cartType) && !QuickCart.PRODUCT_TYPE_STAR
 	</TABLE>
 
 	<font class="space4pix"><br><br></font>
-<%--
-	<table cellpadding="0" cellspacing="0" border="0" width="500">
-		<tr>
-			<td background="/media_stat/images/template/confirmation/linedot_horz.gif" colspan="5"><img src="<%=spacer%>" width="1" height="2"></td>
-		</tr>
-		<tr>
-			<td background="/media_stat/images/template/confirmation/linedot_vert.gif" rowspan="3"><img src="<%=spacer%>" width="2" height="1"></td>
-			<td><img src="<%=spacer%>" width="18" height="1"></td>
-			<td><img src="<%=spacer%>" width="400" height="8"></td>
-			<td><img src="<%=spacer%>" width="18" height="1"></td>
-			<td background="/media_stat/images/template/confirmation/linedot_vert.gif" rowspan="3"><img src="<%=spacer%>" width="2" height="1"></td>
-		</tr>
-		<tr valign="top">
-			<td><img src="<%=spacer%>" width="1" height="1"></td>
-			<td align="center" class="text12"><a href="/index.jsp"><img src="/media_stat/images/buttons/home.gif" width="45" height="35" alt="Continue shopping from our home page!" vspace="6" border="0"><br><b>Click here to continue shopping from our home page!</b></a></td>
-			<td><img src="<%=spacer%>" width="1" height="1"></td>
-		</tr>
-		<tr>
-			<td colspan="3"><img src="<%=spacer%>" width="1" height="15"></td>
-		</tr>
-		<tr>
-			<td background="/media_stat/images/template/confirmation/linedot_horz.gif" colspan="5"><img src="<%=spacer%>" width="1" height="2"></td>
-		</tr>
-	</table>
---%>
 	<table width="100%" cellpadding="0" border="0">
-	<tbody>
-	<tr>
-		<td align="center">
-		<% ProductModel productNode = null; %>
-		<fd:ProductGroup id='prodNode' categoryId='<%= orderLine.getCategoryName() %>' productId='<%= orderLine.getProductName() %>'>  
-			<%  productNode = prodNode; %>
-		</fd:ProductGroup>
-		<%@ include file="/includes/i_ymal_lists.jspf"%>
-		</td>
-	</tr>
-	</tbody>
+		<tr>
+			<td align="center">
+			<% ProductModel productNode = null; %>
+			<fd:ProductGroup id='prodNode' categoryId='<%= orderLine.getCategoryName() %>' productId='<%= orderLine.getProductName() %>'>  
+				<%  productNode = prodNode; %>
+			</fd:ProductGroup>
+<%
+	// YMAL bindings
+	request.setAttribute("actionResult", result);
+%>
+<%@ include file="/includes/i_ymal_lists.jspf"%>
+			</td>
+		</tr>
 	</table>
 
-<br>
+	<br>
 	</fd:FDShoppingCart>
 </tmpl:put>
 
