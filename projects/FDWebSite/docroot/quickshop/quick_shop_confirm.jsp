@@ -1,26 +1,25 @@
-<%@ page import='com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.fdstore.*' %>
-<%@ page import='com.freshdirect.fdstore.util.*' %>
-<%@ page import='com.freshdirect.fdstore.customer.*' %>
-<%@ page import='com.freshdirect.fdstore.lists.*' %>
-<%@ page import='com.freshdirect.fdstore.content.*' %>
-<%@ page import='com.freshdirect.fdstore.promotion.*'%>
-<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
-<%@ page import="com.freshdirect.common.pricing.*" %>
-<%@ page import="com.freshdirect.customer.ErpDiscountLineModel" %>
-<%@ page import='java.util.*' %>
-<%@ page import='java.text.*' %>
-<%@ taglib uri='template' prefix='tmpl' %>
-<%@ taglib uri='bean' prefix='bean' %>
-<%@ taglib uri='logic' prefix='logic' %>
-<%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ page import='com.freshdirect.framework.util.StringUtil'%>
-
-<script language="javascript" src="/assets/javascript/common_javascript.js"></script>
-<%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);%>
-<%! java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##"); %>
-<%! java.text.DateFormat dateFormatter = new java.text.SimpleDateFormat("EEE MM/dd/yy");%>
-<%  
+<%@ page import='com.freshdirect.webapp.util.*'
+%><%@ page import='com.freshdirect.fdstore.*'
+%><%@ page import='com.freshdirect.fdstore.util.*'
+%><%@ page import='com.freshdirect.fdstore.customer.*'
+%><%@ page import='com.freshdirect.fdstore.lists.*'
+%><%@ page import='com.freshdirect.fdstore.content.*'
+%><%@ page import='com.freshdirect.fdstore.promotion.*'
+%><%@ page import='com.freshdirect.webapp.taglib.fdstore.*'
+%><%@ page import="com.freshdirect.common.pricing.*"
+%><%@ page import="com.freshdirect.customer.ErpDiscountLineModel"
+%><%@ page import='java.util.*'
+%><%@ page import='java.text.*'
+%><%@ taglib uri='template' prefix='tmpl'
+%><%@ taglib uri='bean' prefix='bean'
+%><%@ taglib uri='logic' prefix='logic'
+%><%@ taglib uri='freshdirect' prefix='fd'
+%><%@ page import='com.freshdirect.framework.util.StringUtil'
+%><%!
+	java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
+	java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
+	java.text.DateFormat dateFormatter = new java.text.SimpleDateFormat("EEE MM/dd/yy");
+%><%
 	request.setAttribute("confirmation.location","quickshop");
 	String fromPage = null;
 	String spacer = "/media_stat/images/layout/clear.gif";
@@ -36,47 +35,32 @@
 	//--------OAS Page Variables-----------------------
 	request.setAttribute("sitePage", "www.freshdirect.com/quickshop");
 	request.setAttribute("listPos", "QSBottom,SystemMessage,LittleRandy,QSTopRight");
-%>
-
-<fd:CheckLoginStatus guestAllowed='false' recognizedAllowed='false' redirectPage='/quickshop/index_guest.jsp' />
-<fd:QuickShopController id="quickCart">
-
-<%
+%><fd:CheckLoginStatus guestAllowed='false' recognizedAllowed='false' redirectPage='/quickshop/index_guest.jsp' />
+<fd:QuickShopController id="quickCart"><%
 	int n = quickCart.numberOfProducts();
 	cartType=quickCart.getProductType();
 	if(cartType==null) cartType=""; 
-%>
-<fd:FDCustomerCreatedList id='lists' action='loadLists'>
-<%
+%><fd:FDCustomerCreatedList id='lists' action='loadLists'><%
 
 String pageNav = "";
 String pageNavTitle = "";
 
 // ORDER
 if (!QuickCart.PRODUCT_TYPE_CCL.equals(cartType) && !QuickCart.PRODUCT_TYPE_STARTER_LIST.equals(cartType)) { 
-%>
-<fd:OrderHistoryInfo id='orderHistoryInfo'>
-	<% 
-	if (quickCart.isEveryItemEverOrdered()) {%>
-	<%@ include file="/quickshop/includes/department_nav.jspf" %>
-	<%
+%><fd:OrderHistoryInfo id='orderHistoryInfo'><% 
+	if (quickCart.isEveryItemEverOrdered()) {
+		%><%@ include file="/quickshop/includes/department_nav.jspf" %><%
 		pageNav = departmentNav.toString();
 		pageNavTitle = "EVERYTHING YOU'VE EVER ORDERED";
 	} else {
 		boolean showDetails = false; 
-	%>
-	<%@ include file="/quickshop/includes/order_nav.jspf" %>
-	<%	  
+		%><%@ include file="/quickshop/includes/order_nav.jspf" %><%	  
 		pageNav = orderNav.toString();
 		pageNavTitle = "YOUR PREVIOUS ORDERS";
 	}
-%>
-</fd:OrderHistoryInfo> 
-<%
+%></fd:OrderHistoryInfo><%
 }
-%>
-	
-<tmpl:insert template='/common/template/quick_shop_nav.jsp'>
+%><tmpl:insert template='/common/template/quick_shop_nav.jsp'>
 <%  if(QuickCart.PRODUCT_TYPE_CCL.equals(cartType) || QuickCart.PRODUCT_TYPE_STARTER_LIST.equals(cartType)) { %> 
 	<tmpl:put name='title' direct='true'>FreshDirect - Quickshop - Shop from This Order</tmpl:put>
 	<tmpl:put name='side_nav' direct='true'>
@@ -92,9 +76,29 @@ if (!QuickCart.PRODUCT_TYPE_CCL.equals(cartType) && !QuickCart.PRODUCT_TYPE_STAR
 	<tmpl:put name='title' direct='true'>FreshDirect - Quick Shop Confirm</tmpl:put>
 	<tmpl:put name='side_nav' direct='true'><font class="space4pix"><br></font><font class="text10"><b><%= pageNavTitle %></b></font><br><font class="space4pix"><br></font><%= pageNav %><br><br></tmpl:put>
 <%  } %>
-    
-<tmpl:put name='content' direct='true'>
-	<fd:FDShoppingCart id='cart' source='Quickshop' result='result'  successPage='/checkout/view_cart.jsp'>
+<%
+
+
+// Get the first recently added product
+ProductModel firstProductNode = null;
+List orderLines = new ArrayList(user.getShoppingCart().getRecentOrderLines());
+if (orderLines != null && orderLines.size() > 0) {
+	FDCartLineModel firstOrderLine = (FDCartLineModel) orderLines.get(0);
+	firstProductNode = firstOrderLine.lookupProduct();
+}
+
+// setup for FDShoppingCart tag
+String ptrk = "ymal";
+String sPage = firstProductNode != null ? "/grocery_cart_confirm.jsp?catId="
+		+ firstProductNode.getParentNode().getContentName()
+		+ "&productId="
+		+ firstProductNode.getContentName()
+		+ "&trk="
+		+ ptrk
+		: "";
+
+%><tmpl:put name='content' direct='true'>
+	<fd:FDShoppingCart id='cart' action='addMultipleToCart' source='Quickshop' result='result' successPage='<%= sPage %>'>
 	<%
 	FDCartLineModel orderLine = (FDCartLineModel)cart.getRecentOrderLines().get(0);
 	Recipe recipe = null;
