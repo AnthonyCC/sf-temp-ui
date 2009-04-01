@@ -15,7 +15,8 @@ public class EnumPromotionType extends Enum {
 	public static final EnumPromotionType GIFT_CARD= new EnumPromotionType("GIFT_CARD", "Gift Card Promotions", 40);
 	public static final EnumPromotionType DCP_DISCOUNT = new EnumPromotionType("DCPD", "Dept/Category Promotions", 50);
 	public static final EnumPromotionType REDEMPTION = new EnumPromotionType("REDEMPTION", "Redemption Code Promotions", 60);
-		    
+	public static final EnumPromotionType LINE_ITEM = new EnumPromotionType("LINE_ITEM", "Line Item Promotions", 70);
+	
 	private final String description;
 	private final int priority;
 
