@@ -31,6 +31,8 @@ import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmCaseTemplate;
 import com.freshdirect.crm.CrmDepartment;
 import com.freshdirect.crm.CrmQueueInfo;
+import com.freshdirect.customer.ErpCartonInfo;
+import com.freshdirect.customer.ejb.ErpCartonsDAO;
 import com.freshdirect.framework.core.EntityDAOI;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -144,6 +146,12 @@ public class CrmCaseDAO implements EntityDAOI {
 		totalPS.close();
 		rs.close();
 		ps.close();
+
+		for (Iterator it=models.iterator(); it.hasNext();) {
+			CrmCaseModel caseModel = (CrmCaseModel) it.next();
+			if (caseModel.getSalePK() != null)
+				caseModel.setCartonNumbers(loadCartons(conn, caseModel.getPK(), caseModel.getSalePK()));
+		}
 
 		return models;
 	}
@@ -324,6 +332,8 @@ public class CrmCaseDAO implements EntityDAOI {
 
 		this.insertCaseDepartments(conn, pk, c.getDepartments());
 		this.insertCaseActions(conn, pk, c.getActions());
+		
+		this.storeCartonNumbers(conn, pk, c.getCartonNumbers());
 	}
 
 	private void setNullable(PreparedStatement ps, int field, PrimaryKey pk) throws SQLException {
@@ -358,9 +368,44 @@ public class CrmCaseDAO implements EntityDAOI {
 		c.setDepartments(this.selectCaseDepartments(conn, pk));
 		c.setActions(this.selectCaseActions(conn, pk));
 
+		if (c.getSalePK() != null)
+			c.setCartonNumbers(loadCartons(conn, pk, c.getSalePK()));
+
 		return c;
 	}
+	
 
+
+	// [APPREQ-478]
+	private List loadCartons(Connection conn, PrimaryKey casePK, PrimaryKey salePK) {
+		if (salePK == null)
+			return null;
+		
+		List cartonNumbers = null;
+		try {
+			final List orderCartons = ErpCartonsDAO.getCartonInfo(conn, salePK);
+			cartonNumbers = new ArrayList(orderCartons.size());
+			
+			PreparedStatement ps = conn.prepareStatement("SELECT CARTON_NUMBER FROM CUST.CASE_CARTONS WHERE CASE_ID = ?");
+			ps.setString(1, casePK.getId());
+
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				String cartonNumber = rs.getString("CARTON_NUMBER");
+				for (Iterator it=orderCartons.iterator(); it.hasNext();) {
+					ErpCartonInfo ct = (ErpCartonInfo) it.next();
+					if (ct.getCartonNumber().equalsIgnoreCase(cartonNumber)) {
+						cartonNumbers.add(cartonNumber);
+					}
+				}
+			}
+			
+		} catch (SQLException e) {
+		}
+		return cartonNumbers;
+	}
+	
+	
 	private CrmCaseInfo loadFromResultSet(ResultSet rs) throws SQLException {
 		CrmCaseInfo ci = new CrmCaseInfo(new PrimaryKey(rs.getString("ID")));
 		ci.setCustomerPK(getNullable(rs, "CUSTOMER_ID"));
@@ -489,9 +534,11 @@ public class CrmCaseDAO implements EntityDAOI {
 
 		this.insertCaseActions(conn, c.getPK(), anonActions);
 
+		this.storeCartonNumbers(conn, c.getPK(), c.getCartonNumbers());
 	}
 
 	public void remove(Connection conn, PrimaryKey pk) throws SQLException {
+		this.deleteCartonNumbers(conn, pk);
 		this.deleteCaseDepartments(conn, pk);
 		this.deleteCaseActions(conn, pk);
 		PreparedStatement ps = conn.prepareStatement("DELETE FROM CUST.CASE WHERE ID=?");
@@ -598,6 +645,34 @@ public class CrmCaseDAO implements EntityDAOI {
 		ps.close();
 	}
 
+	private void storeCartonNumbers(Connection conn, PrimaryKey casePK, List cartonNumbers) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement("DELETE FROM CUST.CASE_CARTONS WHERE CASE_ID = ?");
+		ps.setString(1, casePK.getId());
+		ps.executeQuery();
+		ps.close();
+		
+		if (cartonNumbers != null && cartonNumbers.size() > 0) {
+			ps = conn.prepareStatement("INSERT INTO CUST.CASE_CARTONS(CASE_ID, CARTON_NUMBER) VALUES (?,?)");
+			for (Iterator it=cartonNumbers.iterator(); it.hasNext();) {
+				String cartonNumber = (String) it.next();
+				ps.setString(1, casePK.getId());
+				ps.setString(2, cartonNumber);
+				ps.addBatch();
+			}
+
+			ps.executeBatch();
+			ps.close();
+		}
+	}
+
+
+	private void deleteCartonNumbers(Connection conn, PrimaryKey casePK) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement("DELETE FROM CUST.CASE_CARTONS WHERE CASE_ID = ?");
+		ps.setString(1, casePK.getId());
+		ps.executeQuery();
+		ps.close();
+	}
+	
 	protected String getNextId(Connection conn) throws SQLException {
 		return SequenceGenerator.getNextId(conn, "CUST");
 	}

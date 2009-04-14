@@ -52,12 +52,14 @@ public class CrmCaseSubject extends EnumModel implements TerminableI {
 	private final boolean obsolete;
 	private final String queueCode;
 	private final String priorityCode;
+	private final boolean isCartonsRequired;
 
-	public CrmCaseSubject(String queueCode, String code, String name, String descr, boolean obsolete, String priorityCode) {
+	public CrmCaseSubject(String queueCode, String code, String name, String descr, boolean obsolete, String priorityCode, boolean isCartonsRequired) {
 		super(code, name, descr);
 		this.obsolete = obsolete;
 		this.queueCode = queueCode;
 		this.priorityCode = priorityCode;
+		this.isCartonsRequired = isCartonsRequired;
 	}
 
 	public boolean isObsolete() {
@@ -112,5 +114,11 @@ public class CrmCaseSubject extends EnumModel implements TerminableI {
 				enums.put(e.getCode(), e);
 			}
 		}
+	}
+
+
+	// [APPREQ-478]
+	public boolean isCartonsRequired() {
+		return this.isCartonsRequired;
 	}
 }

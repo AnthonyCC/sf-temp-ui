@@ -92,6 +92,7 @@ public class FDOrderAdapter implements FDOrderI {
 	private List orderLines;
 	private List sampleLines;
 	private FDReservation deliveryReservation;
+	// List<FDCartonInfo>
 	private List cartonInfo;
 
 	public FDOrderAdapter() {
@@ -990,13 +991,12 @@ public class FDOrderAdapter implements FDOrderI {
 	/* (non-Javadoc)
 	 * @see com.freshdirect.fdstore.customer.FDOrderI#getCartonContents()
 	 */
+	// List<FDCartonInfo>
 	public List getCartonContents() {
-		// TODO Auto-generated method stub
 		return cartonInfo;
 	}
 
 	public List getCartonContents(String orderlineNumber) {
-		// TODO Auto-generated method stub
 		List retList = new ArrayList();
 		for(Iterator i = cartonInfo.iterator(); i.hasNext(); ) {
 			FDCartonInfo cartonInfo = (FDCartonInfo) i.next();

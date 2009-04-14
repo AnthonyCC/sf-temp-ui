@@ -1,8 +1,28 @@
 <%@ page import='com.freshdirect.framework.webapp.ActionError' %>
 <%@ page import='com.freshdirect.enum.EnumModel' %>
+<%@ page import='com.freshdirect.crm.CrmCaseModel' %>
 <%@ page import='com.freshdirect.crm.CrmCaseConstants' %>
+<%@ page import='com.freshdirect.crm.CrmCaseActionType' %>
+<%@ page import='com.freshdirect.crm.CrmAgentRole' %>
+<%@ page import='com.freshdirect.crm.CrmAgentModel' %>
+<%@ page import='com.freshdirect.crm.CrmDepartment' %>
+<%@ page import='com.freshdirect.crm.CrmCasePriority' %>
+<%@ page import='com.freshdirect.crm.CrmCaseQueue' %>
+<%@ page import='com.freshdirect.crm.CrmCaseSubject' %>
+<%@ page import='com.freshdirect.fdstore.customer.FDOrderI' %>
+<%@ page import="com.freshdirect.fdstore.customer.FDCartonInfo"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCartonDetail"%>
+<%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession"%>
 <%@ page import="java.util.*" %>
-<%!
+<%@ taglib uri='template' prefix='tmpl' %>
+<%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri='crm' prefix='crm' %>
+<%--
+
+	@param cm instance of CrmCaseModel
+
+--%><%!
 final static CrmCaseActionType[] BUTTON_ACTION_TYPES = new CrmCaseActionType[] {
 	CrmCaseActionType.getEnum(CrmCaseActionType.CODE_CLOSE),
 	CrmCaseActionType.getEnum(CrmCaseActionType.CODE_ESCRVW),
@@ -24,52 +44,297 @@ final static CrmAgentRole[] DISPLAY_ROLES = {
 	CrmAgentRole.getEnum(CrmAgentRole.ASV_CODE),
 	CrmAgentRole.getEnum(CrmAgentRole.SUP_CODE),
 	CrmAgentRole.getEnum(CrmAgentRole.ADM_CODE) };
+
+
 %>
 <crm:CrmStoreCaseController actionName='storeCase' successPage='/case/case.jsp' result='result' case='<%= cm %>'>
 <crm:GetAllowedActions id="allowedActions" case="<%= cm %>">
 <%
 
-boolean isEditAllowed = (cm.isAnonymous() || allowedActions.contains( CrmCaseActionType.getEnum(CrmCaseActionType.CODE_EDIT))) 
-											&& (cm.getPK() == null || (!cm.getSubject().isObsolete() && !cm.getSubject().getQueue().isObsolete())) ;										
+
+CrmCaseModel thisCase = (CrmCaseModel) cm;
+
+boolean isEditAllowed = (thisCase.isAnonymous() || allowedActions.contains( CrmCaseActionType.getEnum(CrmCaseActionType.CODE_EDIT))) &&
+		(thisCase.getPK() == null || (!thisCase.getSubject().isObsolete() && !thisCase.getSubject().getQueue().isObsolete()));
+
 boolean isAssignmentPriorityAllowed = false;
 
+FDOrderI order = null;
+boolean isNewCase = false;
+if (request.getParameter("orderId") != null) {
+	// new case
+	order = CrmSession.getOrder(session, request.getParameter("orderId"));
+	isNewCase = true;
+} else if (thisCase.getSalePK() != null) {
+	// existing case having order
+	order = CrmSession.getOrder(session, thisCase.getSalePK().getId());
+} else {
+	%><div>NO ORDER ID</div><%
+}
 
 
-%>
-<crm:GetCurrentAgent id="currentAgent">
-		<% isAssignmentPriorityAllowed = currentAgent.isSupervisor(); %> 
-		<% if (!cm.isAnonymous()) {
-			if ("ASQ".equals(cm.getSubject().getQueue().getCode()) && currentAgent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.ASV_CODE))) {
 
-				isAssignmentPriorityAllowed = true;
-			} else if (CrmCaseQueue.isTrnQueue(cm.getSubject().getQueue().getCode()) && currentAgent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.TRN_CODE))) {
-				isAssignmentPriorityAllowed = true;
+%><crm:GetCurrentAgent id="currentAgent"><%
+	isAssignmentPriorityAllowed = currentAgent.isSupervisor();
+	if (!thisCase.isAnonymous()) {
+		if ("ASQ".equals(thisCase.getSubject().getQueue().getCode()) && currentAgent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.ASV_CODE))) {
+			isAssignmentPriorityAllowed = true;
+		} else if (CrmCaseQueue.isTrnQueue(thisCase.getSubject().getQueue().getCode()) && currentAgent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.TRN_CODE))) {
+			isAssignmentPriorityAllowed = true;
+		}
+	}
+%></crm:GetCurrentAgent>
+
+
+
+<%-- Scripts START --%>
+<script type="text/javascript">
+	/* from the prototype lib*/
+	function $() {
+		var elements = new Array();
+		for (var i = 0; i < arguments.length; i++) {
+			var element = arguments[i];
+			if (typeof element == 'string')
+				element = document.getElementById(element);
+			if (arguments.length == 1)
+				return element;
+			elements.push(element);
+		}
+		return elements;
+	}
+
+
+	/* enable reason select if not resolved on first contact */
+	function CaseDisp_FirstContact(RefId, ToggleId) {
+
+		if (document.getElementById(RefId).value != 'No')
+		{
+			$(ToggleId).style.display = 'none';
+			$(ToggleId+'_text').style.display = 'none';
+			$(ToggleId+'_select').style.display = 'none';
+		} else {
+			$(ToggleId).style.display = 'block';
+			$(ToggleId+'_text').style.display = 'block';
+			$(ToggleId+'_select').style.display = 'block';
+		}
+		verifyCaseDisp();
+	}
+	/*
+		called on change of select fields to verify Case Disposition fields
+		if a field is hidden, it doesn't count
+		if a field is disabled, it doesn't count
+	*/
+	function verifyCaseDisp() {
+
+		//default to no error
+		var err = false;
+
+		//get status of current case on screen
+		// known values [STR]: ( New | Open | Closed )
+		var caseStatus = $('CaseStatus').innerHTML;
+
+		/* START fix early call by IE */
+		var CaseButton = $('CreateCase');
+		if ( !CaseButton ) { return false; }
+		if ($('close')) {
+			var CloseButton = $('close');
+			if ( !CloseButton ) { return false; }
+		}
+		/* END fix early call by IE */
+
+		for ( var i=0,n=document.case_details.elements.length; i<n; i++ )
+		{
+			var field = document.case_details.elements[i];
+
+			//check for Media : other
+			if ( field.id == 'media' ) {
+				if ( field.value == 'Other' ) {
+					//hide other form fields
+					$('MediaIsOther').style.display = 'none';
+						$('morethenone').disabled = true;
+						$('firstContact').disabled = true;
+						$('Resolved').disabled = true;
+						$('NotResolved').disabled = true;
+						$('satisfactoryReason').disabled = true;
+						$('customerTone').disabled = true;
+
+					if ( caseStatus != 'New' ) {
+						$('MediaIsOtherWarn').className = 'casedisp_Err_vis';
+					}
+				} else {
+					$('MediaIsOther').style.display = 'block';
+						$('morethenone').disabled =  false;
+						$('firstContact').disabled = false;
+						$('Resolved').disabled = false;
+						$('NotResolved').disabled = false;
+						$('satisfactoryReason').disabled = false;
+						$('customerTone').disabled = false;
+
+					if ( caseStatus != 'New' ) {
+						$('MediaIsOtherWarn').className = 'casedisp_Err_invis';
+					}
+				}
 			}
-		} %>
-</crm:GetCurrentAgent>
 
-<table width="92%" cellpadding="0" cellspacing="5" border="0" class="case_content_text">
+			/* Disable all disp fields on Closed Case*/
+			if ( caseStatus == 'Closed' ) {	
+				$('media').disabled = true;
+				$('morethenone').disabled = true;
+				$('firstContact').disabled = true;
+				$('Resolved').disabled = true;
+				$('NotResolved').disabled = true;
+				$('satisfactoryReason').disabled = true;
+				$('customerTone').disabled = true;
+			}
+
+			if ( caseStatus == 'New' ) {
+			//check for NewCase only
+				if (  field.type.substring(0,6) == "select" && (field.id == 'queue' || field.id == 'subject') )
+				{
+					if ( field.selectedIndex <= 0 ) {
+						err = true;
+						$(field.id+'Err').className = 'casedisp_Err_vis';
+						$('requiredError').className = 'casedisp_Err_vis';
+					}else{
+						$(field.id+'Err').className = 'casedisp_Err_invis';
+						$('requiredError').className = 'casedisp_Err_invis';
+					}
+				}
+			} else {
+				if (  field.type.substring(0,6) == "select" && field.id != 'priority' && field.id != 'assignedAgent' ) //these are fields to ignore
+				{
+					if ( field.selectedIndex <= 0 && $(field.id).style.display != 'none' && $(field.id).disabled != true )
+					{
+						err = true;
+						$(field.id+'Err').className = 'casedisp_Err_vis';
+						$('requiredError').className = 'casedisp_Err_vis';
+					} else {
+						$(field.id+'Err').className = 'casedisp_Err_invis';
+						$('requiredError').className = 'casedisp_Err_invis';
+					}
+				}
+			}
+		}
+
+
+		/* check summary and notes */
+		if ( $('summary').value.length <= 0 ) {
+			err = true;
+			$('summaryErr').className = 'casedisp_Err_vis';
+			$('requiredError').className = 'casedisp_Err_vis';
+		} else {
+			$('summaryErr').className = 'casedisp_Err_invis';
+			$('requiredError').className = 'casedisp_Err_invis';
+		}
+
+		/* check summary and notes */
+		if ( $('note').value.length <= 0 ) {
+			err = true;
+			$('noteErr').className = 'casedisp_Err_vis';
+			$('requiredError').className = 'casedisp_Err_vis';
+		} else {
+			$('noteErr').className = 'casedisp_Err_invis';
+			$('requiredError').className = 'casedisp_Err_invis';
+		}
+
+		if ( err ) { 
+			CaseButton.className = 'case_save_disabled';
+			CaseButton.disabled = true;
+			if ($('close')){
+				CloseButton.className = 'case_save_disabled';
+				CloseButton.disabled = true;
+			}
+			$('requiredError').className = 'casedisp_Err_vis';
+		} else { 
+			CaseButton.className = 'case_save'; 
+			CaseButton.disabled = false;
+			if ($('close')){
+				CloseButton.className = 'case_save';
+				CloseButton.disabled = false;
+			}
+			$('requiredError').className = 'casedisp_Err_invis';
+		}
+			
+		return true;
+	}
+
+
+
+
+	function Queue(code, name, subjects) {
+		this.code = code;
+		this.name = name;
+		this.subjects = subjects;
+	}
+
+	function Subject(code, name) {
+		this.code = code;
+		this.name = name;
+	}
+
+	function populateSubject(queue, subjectField, selectedSubj){				
+		subjectField.options.length = 1;
+		var numSubj = queues[queue].subjects.length;
+		subjectField.options[0].text = numSubj==0 ? "-Select Queue then Subject-" : "-Select One-";
+		subjectField.disabled = numSubj==0;
+		for (i=0; i < numSubj; i++) {
+			var optName = queues[queue].subjects[i].name;
+			var optValue = queues[queue].subjects[i].code;
+			subjectField.options[subjectField.options.length]= new Option(optName, optValue, false, false);
+		}
+
+        if(selectedSubj != null){
+                subjectField.value="<%= !thisCase.isAnonymous() ? thisCase.getSubject().getCode() : request.getParameter("subject") %>";
+        }
+	}
+
+	var queues = new Array();
+	queues[""] = new Queue("", "", []);
+<%
+		for (Iterator i = CrmCaseQueue.getEnumList().iterator(); i.hasNext(); ) {
+			CrmCaseQueue q = (CrmCaseQueue)i.next();
+			if (!q.isObsolete()) {
+%>
+	queues["<%= q.getCode() %>"] = new Queue("<%= q.getCode() %>", "<%= q.getName() %>", [
+<%
+				int c = 0;
+				for (Iterator j = q.getSubjects().iterator(); j.hasNext();) {
+					CrmCaseSubject s = (CrmCaseSubject)j.next();						
+					if (!s.isObsolete()) {
+						if (c>0) out.print(", ");
+						 c++;
+						%>new Subject("<%= s.getCode() %>", "<%= s.getName() %>")<%
+					}
+				}
+				out.println("]);");
+			}
+		}
+%>		
+</script>
+<%-- Scripts END --%>
+
+
 <form name="case_details" method="POST">
-<input type="hidden" name="customerPK" value="<%= cm.getCustomerPK() != null ? cm.getCustomerPK().getId() : "" %>">
-<input type="hidden" name="salePK" value="<%= cm.getSalePK() != null ? cm.getSalePK().getId() : "" %>">
-<input type="hidden" name="isCaseClosed" value="<%= "closed".equalsIgnoreCase(cm.getState().getName()) ? "true" : "false" %>">
+<input type="hidden" name="customerPK" value="<%= thisCase.getCustomerPK() != null ? thisCase.getCustomerPK().getId() : "" %>">
+<input type="hidden" name="salePK" value="<%= thisCase.getSalePK() != null ? thisCase.getSalePK().getId() : "" %>">
+<input type="hidden" name="isCaseClosed" value="<%= "closed".equalsIgnoreCase(thisCase.getState().getName()) ? "true" : "false" %>">
 
-
+<table width="100%" cellpadding="0" cellspacing="5" border="0" class="case_content_text">
 	<tr>
 		<td class="case_content_field">Status</td>
-		<td><div id="CaseStatus"><%= cm.getState()==null ? "Open" : cm.getState().getName() %></div></td>
+		<td><div id="CaseStatus"><%= thisCase.getState()==null ? "Open" : thisCase.getState().getName() %></div></td>
 		<td class="case_content_field">Assigned</td>
 		<td>
 
 		<% if (isEditAllowed && isAssignmentPriorityAllowed) { %>
 			<select id="assignedAgent" name="assignedAgent" class="pulldown">
 				<crm:GetAllAgents id="agentList">
-				<option class="title" value="<%= !cm.isAnonymous() ? ((CrmAgentModel)agentList.getAgents(CrmAgentRole.getEnum(CrmAgentRole.SYS_CODE)).get(0)).getPK().getId() : "" %>">-Select Agent-</option>
+				<option class="title" value="<%= !thisCase.isAnonymous() ? ((CrmAgentModel)agentList.getAgents(CrmAgentRole.getEnum(CrmAgentRole.SYS_CODE)).get(0)).getPK().getId() : "" %>">-Select Agent-</option>
 				<logic:iterate id='role' collection="<%= DISPLAY_ROLES %>" type="com.freshdirect.crm.CrmAgentRole">
 					<option class="header"><%= role.getName() %></option>
 					<logic:iterate id='agent' collection="<%= agentList.getAgents(role) %>" type="com.freshdirect.crm.CrmAgentModel">
 					<% if (agent.isActive()) { %>
-						<option value="<%= agent.getPK().getId() %>" <%= agent.getPK().equals(cm.getAssignedAgentPK()) ? "selected" : "" %>>
+						<option value="<%= agent.getPK().getId() %>" <%= agent.getPK().equals(thisCase.getAssignedAgentPK()) ? "selected" : "" %>>
 							&nbsp;<%= agent.getUserId() %>
 						</option>
 					<% } %>
@@ -79,190 +344,15 @@ boolean isAssignmentPriorityAllowed = false;
 				</crm:GetAllAgents>
 			</select>
 		<% } else { %>
-			<crm:GetAgent id="agent" agentId="<%= cm.getAssignedAgentPK().getId() %>">
-				<input type="hidden" name="assignedAgent" value="<%= cm.getAssignedAgentPK().getId() %>">
+			<crm:GetAgent id="agent" agentId="<%= thisCase.getAssignedAgentPK().getId() %>">
+				<input type="hidden" name="assignedAgent" value="<%= thisCase.getAssignedAgentPK().getId() %>">
 				<%= agent.getUserId() %>
 			</crm:GetAgent>
 		<% } %>
-		<fd:ErrorHandler result='<%= result %>' name='assignedAgent' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
+<fd:ErrorHandler result='<%= result %>' name='assignedAgent' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>
+		
 		<td rowspan="9" class="casedisp_cell">
-			<script language="JavaScript">
-				<!--
-
-					/* from the prototype lib*/
-					function $() {
-						var elements = new Array();
-						for (var i = 0; i < arguments.length; i++) {
-							var element = arguments[i];
-							if (typeof element == 'string')
-								element = document.getElementById(element);
-							if (arguments.length == 1)
-								return element;
-							elements.push(element);
-						}
-						return elements;
-					}
-
-					/* enable reason select if not resolved on first contact */
-					function CaseDisp_FirstContact (RefId, ToggleId) {
-	
-						if (document.getElementById(RefId).value != 'No')
-						{
-							$(ToggleId).style.display = 'none';
-							$(ToggleId+'_text').style.display = 'none';
-							$(ToggleId+'_select').style.display = 'none';
-						}else{
-							$(ToggleId).style.display = 'block';
-							$(ToggleId+'_text').style.display = 'block';
-							$(ToggleId+'_select').style.display = 'block';
-						}
-						verifyCaseDisp();
-					}
-					/*
-						called on change of select fields to verify Case Disposition fields
-						if a field is hidden, it doesn't count
-						if a field is disabled, it doesn't count
-					*/
-					function verifyCaseDisp() {
-
-						//default to no error
-						var err = false;
-
-						//get status of current case on screen
-						// known values [STR]: ( New | Open | Closed )
-						var caseStatus = $('CaseStatus').innerHTML;
-
-						/* START fix early call by IE */
-							var CaseButton = $('CreateCase');
-							if ( !CaseButton ) { return false; }
-							if ($('close')){
-								var CloseButton = $('close');
-								if ( !CloseButton ) { return false; }
-							}
-						/* END fix early call by IE */
-
-						for ( var i=0,n=document.case_details.elements.length; i<n; i++ )
-						{
-							var field = document.case_details.elements[i];
-
-							//check for Media : other
-							if ( field.id == 'media' ) {
-								if ( field.value == 'Other' ) {
-									//hide other form fields
-									$('MediaIsOther').style.display = 'none';
-										$('morethenone').disabled = true;
-										$('firstContact').disabled = true;
-										$('Resolved').disabled = true;
-										$('NotResolved').disabled = true;
-										$('satisfactoryReason').disabled = true;
-										$('customerTone').disabled = true;
-
-									if ( caseStatus != 'New' ) {
-										$('MediaIsOtherWarn').className = 'casedisp_Err_vis';
-									}
-								}else{
-									$('MediaIsOther').style.display = 'block';
-										$('morethenone').disabled =  false;
-										$('firstContact').disabled = false;
-										$('Resolved').disabled = false;
-										$('NotResolved').disabled = false;
-										$('satisfactoryReason').disabled = false;
-										$('customerTone').disabled = false;
-
-									if ( caseStatus != 'New' ) {
-										$('MediaIsOtherWarn').className = 'casedisp_Err_invis';
-									}
-								}
-							}
-
-							/* Disable all disp fields on Closed Case*/
-							if ( caseStatus == 'Closed' ) {	
-								$('media').disabled = true;
-								$('morethenone').disabled = true;
-								$('firstContact').disabled = true;
-								$('Resolved').disabled = true;
-								$('NotResolved').disabled = true;
-								$('satisfactoryReason').disabled = true;
-								$('customerTone').disabled = true;
-							}
-
-							if ( caseStatus == 'New' ) {
-							//check for NewCase only
-								if (  field.type.substring(0,6) == "select" && (field.id == 'queue' || field.id == 'subject') )
-								{
-									if ( field.selectedIndex <= 0 ) {
-										err = true;
-										$(field.id+'Err').className = 'casedisp_Err_vis';
-										$('requiredError').className = 'casedisp_Err_vis';
-									}else{
-										$(field.id+'Err').className = 'casedisp_Err_invis';
-										$('requiredError').className = 'casedisp_Err_invis';
-									}
-								}
-							}else{
-								if (  field.type.substring(0,6) == "select" && field.id != 'priority' && field.id != 'assignedAgent' ) //these are fields to ignore
-								{
-									if ( field.selectedIndex <= 0 && $(field.id).style.display != 'none' && $(field.id).disabled != true )
-									{
-										err = true;
-										$(field.id+'Err').className = 'casedisp_Err_vis';
-										$('requiredError').className = 'casedisp_Err_vis';
-									}else{
-										$(field.id+'Err').className = 'casedisp_Err_invis';
-										$('requiredError').className = 'casedisp_Err_invis';
-									}
-								}
-							}
-						}
-
-
-						/* check summary and notes */
-						if ( $('summary').value.length <= 0 ) {
-							err = true;
-							$('summaryErr').className = 'casedisp_Err_vis';
-							$('requiredError').className = 'casedisp_Err_vis';
-						}else{
-							$('summaryErr').className = 'casedisp_Err_invis';
-							$('requiredError').className = 'casedisp_Err_invis';
-						}
-
-						/* check summary and notes */
-						if ( $('note').value.length <= 0 ) {
-							err = true;
-							$('noteErr').className = 'casedisp_Err_vis';
-							$('requiredError').className = 'casedisp_Err_vis';
-						}else{
-							$('noteErr').className = 'casedisp_Err_invis';
-							$('requiredError').className = 'casedisp_Err_invis';
-						}
-
-						if ( err ) { 
-							CaseButton.className = 'case_save_disabled';
-							CaseButton.disabled = true;
-							if ($('close')){
-								CloseButton.className = 'case_save_disabled';
-								CloseButton.disabled = true;
-							}
-							$('requiredError').className = 'casedisp_Err_vis';
-						}else{ 
-							CaseButton.className = 'case_save'; 
-							CaseButton.disabled = false;
-							if ($('close')){
-								CloseButton.className = 'case_save';
-								CloseButton.disabled = false;
-							}
-							$('requiredError').className = 'casedisp_Err_invis';
-						}
-							
-						return true;
-					}
-				-->
-			</script>
-            
-            
-            
-            
 			<div class="casedisp_container">
 				<div class="casedisp_line">
 					<div class="casedisp_text">
@@ -277,10 +367,10 @@ boolean isAssignmentPriorityAllowed = false;
                             for(int i=0;i<caseMediaList.size();i++)
                             {
                              String value=(String)caseMediaList.get(i);
-                             String media=cm.getCrmCaseMedia();
+                             String media=thisCase.getCrmCaseMedia();
                                if(value.equalsIgnoreCase(media))
                                {
-                        %> <option value="<%=value%>" selected><%=value%></option>
+                        %> <option value="<%=value%>" selected="selected"><%=value%></option>
                         <%
                                }else{
                          %>
@@ -305,10 +395,10 @@ boolean isAssignmentPriorityAllowed = false;
 								for(int i=0;i<caseMoreThanOneList.size();i++)
 								{
 								 String value=(String)caseMoreThanOneList.get(i);
-								 String media=cm.getMoreThenOneIssue();
+								 String media=thisCase.getMoreThenOneIssue();
 								   if(value.equalsIgnoreCase(media))
 								   {
-							%> <option value="<%=value%>" selected><%=value%></option>
+							%> <option value="<%=value%>" selected="selected"><%=value%></option>
 							<%
 								   }else{
 							 %>
@@ -332,10 +422,10 @@ boolean isAssignmentPriorityAllowed = false;
 								for(int i=0;i<caseFirstContactList.size();i++)
 								{
 								 String value=(String)caseFirstContactList.get(i);
-								 String media=cm.getFirstContactForIssue();
+								 String media=thisCase.getFirstContactForIssue();
 								   if(value.equalsIgnoreCase(media))
 								   {
-							%> <option value="<%=value%>" selected><%=value%></option>
+							%> <option value="<%=value%>" selected="selected"><%=value%></option>
 							<%
 								   }else{
 							 %>
@@ -359,10 +449,10 @@ boolean isAssignmentPriorityAllowed = false;
 								for(int i=0;i<caseResolvedFirstContactList.size();i++)
 								{
 								 String value=(String)caseResolvedFirstContactList.get(i);
-								 String media=cm.getFirstContactResolved();
+								 String media=thisCase.getFirstContactResolved();
 								   if(value.equalsIgnoreCase(media))
 								   {
-							%> <option value="<%=value%>" selected><%=value%></option>
+							%> <option value="<%=value%>" selected="selected"><%=value%></option>
 							<%
 								   }else{
 							 %>
@@ -387,10 +477,10 @@ boolean isAssignmentPriorityAllowed = false;
 								for(int i=0;i<caseReasonList.size();i++)
 								{                             
 								 String value=(String)caseReasonList.get(i);                                                         
-								 String reason=cm.getResonForNotResolve();
+								 String reason=thisCase.getResonForNotResolve();
 								   if(value.equalsIgnoreCase(reason))
 								   {
-							%> <option value="<%=value%>" selected><%=value%></option>
+							%> <option value="<%=value%>" selected="selected"><%=value%></option>
 							<%
 								   }else{
 							 %>
@@ -415,10 +505,10 @@ boolean isAssignmentPriorityAllowed = false;
 								for(int i=0;i<caseResolSatisfactoryList.size();i++)
 								{
 								 String value=(String)caseResolSatisfactoryList.get(i);
-								 String media=cm.getSatisfiedWithResolution();
+								 String media=thisCase.getSatisfiedWithResolution();
 								   if(value.equalsIgnoreCase(media))
 								   {
-							%> <option value="<%=value%>" selected><%=value%></option>
+							%> <option value="<%=value%>" selected="selected"><%=value%></option>
 							<%
 								   }else{
 							 %>
@@ -442,10 +532,10 @@ boolean isAssignmentPriorityAllowed = false;
 								for(int i=0;i<caseToneList.size();i++)
 								{
 								 String value=(String)caseToneList.get(i);
-								 String media=cm.getCustomerTone();
+								 String media=thisCase.getCustomerTone();
 								   if(value.equalsIgnoreCase(media))
 								   {
-							%> <option value="<%=value%>" selected><%=value%></option>
+							%> <option value="<%=value%>" selected="selected"><%=value%></option>
 							<%
 								   }else{
 							 %>
@@ -458,77 +548,145 @@ boolean isAssignmentPriorityAllowed = false;
 				<fd:ErrorHandler result='<%= result %>' name='caseDisp07' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 						</div>
 					</div>
+<%--
+
+  == MISSING CARTONS PART ==
+  See [APPREQ-478]
+  
+--%><%
+
+if (order != null) {
+	// selected cartons
+	List cartonIDs = new ArrayList();
+
+	// List<FDCartonInfo>
+	final List cartons = new ArrayList(order.getCartonContents());
+
+
+	if (isNewCase) {
+		// process selected cartons
+		int nCartons = ( request.getParameter("cts") != null ? Integer.parseInt(request.getParameter("cts")) : 0);
+		
+		if (nCartons > 0) {
+			for (int i=0; i<nCartons; i++) {
+				cartonIDs.add(request.getParameter("ct["+i+"]"));	
+			}
+		}
+	} else {
+		cartonIDs = thisCase.getCartonNumbers();
+	}
+
+	if (cartons.size() > 0) {
+%>
+					<div id="cartons" style="padding: 0 1em;">
+						<div style="text-align: center; font-weight: bold; padding-bottom: 0.5em;">Carton Info</div>
+						<% if (result.getError("carton") != null) { %><div style="text-align: center; padding-bottom: 0.5em;">
+							<fd:ErrorHandler result='<%= result %>' name='carton' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
+						<% } %></div>
+						<table style="width: 100%" cellspacing="0" cellpadding="0">
+							<tr>
+								<th>&nbsp;</th>
+								<th style="text-align: left; border-bottom: 1px solid black;">Carton Number</th>
+								<th style="text-align: left; border-bottom: 1px solid black;">Type</th>
+							</tr>								
+<%
+		for (Iterator it=cartons.iterator(); it.hasNext(); ) {
+			FDCartonInfo ci = (FDCartonInfo) it.next();
+%>
+							<tr>
+								<td><input type="checkbox" name="cid_<%= ci.getCartonInfo().getCartonNumber() %>" <%= cartonIDs.contains(ci.getCartonInfo().getCartonNumber()) ? "checked=\"checked\"" : "" %>></td>
+								<td style="font-weight: bold;"><a style="text-decoration: none;" href="#" onclick="showCartonInfo('<%= ci.getCartonInfo().getCartonNumber() %>');return false;"><%= ci.getCartonInfo().getCartonNumber() %></a></td>
+								<td style="font-weight: bold;"><%= ci.getCartonInfo().getCartonType() %></td>
+							</tr>
+<%
+		}
+%>
+						</table>
+					</div>
+<%
+	}
+%>
 				</div>
+
+<script type="text/javascript">
+function showCartonInfo(cn) {
+	var ctPanel = new YAHOO.widget.Panel("cn_"+cn, {
+		fixedcenter: true, 
+		constraintoviewport: true, 
+		underlay: "shadow", 
+		close: true, 
+		visible: false,
+		modal: true,
+		draggable: true}
+	);
+	ctPanel.cfg.setProperty("underlay","matte");
+
+	ctPanel.setHeader("FreshDirect CRM : Carton Contents");
+	ctPanel.setBody(document.getElementById("t_cn_"+cn).innerHTML);
+
+	ctPanel.render(document.body);
+
+	// open panel
+	ctPanel.show();
+}
+
+// skin body
+document.body.setAttribute("class", "yui-skin-sam"); // non-IE
+document.body.setAttribute("className", "yui-skin-sam"); // IE
+</script>
+	<div id="cases" style="display: none">
+<%
+
+		for (Iterator it=order.getCartonContents().iterator(); it.hasNext(); ) {
+			FDCartonInfo ci = (FDCartonInfo) it.next();
+%>	<div id="t_cn_<%= ci.getCartonInfo().getCartonNumber() %>">
+		<div style="padding-bottom: 1em">
+			Carton: <%= ci.getCartonInfo().getCartonNumber() %> / Type: <%= ci.getCartonInfo().getCartonType() %>
+		</div>
+		<table style="width: 100%; border: 0; border-collapse: collapse; padding: 0; margin: 0">
+			<tr>
+				<th>Quantity</th>
+				<th>Product</th>
+				<th>Final Weight</th>
+				<th>Unit Price</th>
+			</tr>
+<%
+			for (Iterator j=ci.getCartonDetails().iterator(); j.hasNext(); ) {
+				FDCartonDetail cartonDetail = (FDCartonDetail) j.next();
+%>			<tr>
+				<td><%= cartonDetail.getCartonDetail().getPackedQuantity() %><% if(cartonDetail.getCartonDetail().getWeightUnit() != null) {	%>&nbsp;<%= cartonDetail.getCartonDetail().getWeightUnit().toLowerCase() %><% } %>
+				</td>
+				<td><%= cartonDetail.getCartLine().getDescription() %> (<%= cartonDetail.getCartLine().getSkuCode() %>)</td>
+				<td><%= cartonDetail.getCartonDetail().getNetWeight() %></td>
+				<td><%= cartonDetail.getCartLine().getUnitPrice() %></td>
+			</tr>
+<%
+			}
+%>		</table>
+	</div>
+<%
+		}	
+%>
+</div>
+			
+<%
+} // order != null
+%><%-- END OF CARTONS --%>
 				<div id="MediaIsOtherWarn" class="casedisp_Err_invis">Choosing 'Other' will erase any previously saved Case Disposition choices!</div>
 			</div>
 		</td>
 	</tr>
-	<script language="JavaScript">
-		<!--
-			function Queue(code, name, subjects) {
-				this.code = code;
-				this.name = name;
-				this.subjects = subjects;
-			}
-
-			function Subject(code, name) {
-				this.code = code;
-				this.name = name;
-			}
-
-			function populateSubject(queue, subjectField, selectedSubj){				
-				subjectField.options.length = 1;
-				var numSubj = queues[queue].subjects.length;
-				subjectField.options[0].text = numSubj==0 ? "-Select Queue then Subject-" : "-Select One-";
-				subjectField.disabled = numSubj==0;
-				for (i=0; i < numSubj; i++) {
-					var optName = queues[queue].subjects[i].name;
-					var optValue = queues[queue].subjects[i].code;
-					subjectField.options[subjectField.options.length]= new Option(optName, optValue, false, false);
-				}
-                                if(selectedSubj != null){
-                                        subjectField.value="<%= !cm.isAnonymous() ? cm.getSubject().getCode() : request.getParameter("subject") %>";
-                                }
-			}
-
-			var queues = new Array();
-			queues[""] = new Queue("", "", []);
-			<%
-			for (Iterator i = CrmCaseQueue.getEnumList().iterator(); i.hasNext(); ) {
-				CrmCaseQueue q = (CrmCaseQueue)i.next();
-				if (!q.isObsolete()) {
-				%>
-					queues["<%= q.getCode() %>"] = new Queue("<%= q.getCode() %>", "<%= q.getName() %>", [
-					<%
-					int c = 0;
-					for (Iterator j = q.getSubjects().iterator(); j.hasNext();) {
-						CrmCaseSubject s = (CrmCaseSubject)j.next();						
-						if (!s.isObsolete()) {
-							if (c>0) out.print(", ");
-							 c++;
-							%>new Subject("<%= s.getCode() %>", "<%= s.getName() %>")<%
-						}
-					}
-					out.println("]);");
-				}
-			}
-			%>		
-            
-           CaseDisp_FirstContact("Resolved", 'NotResolved'); verifyCaseDisp(); 
-            
-		//-->
-		</script>
 	<tr>
 		<td class="case_content_field">Queue<span class="casedisp_Err_invis" id="queueErr">*</span></td>
 		<td>
 			<% if (isEditAllowed) { %>
-				<select id="queue" name="queue" class="pulldown" onChange="populateSubject(case_details.queue.value,case_details.subject);" onchange="verifyCaseDisp();">
+				<select id="queue" name="queue" class="pulldown" onChange="populateSubject(document.case_details.queue.value, document.case_details.subject);" onchange="verifyCaseDisp();">
 					<option class="title" value="">-Select Queue-</option>					
 					<logic:iterate id='queue' collection="<%=CrmCaseQueue.getEnumList()%>" type="com.freshdirect.crm.CrmCaseQueue">
-						<% if (!queue.isObsolete()) {%>
+						<% if (!queue.isObsolete()) { %>
 						<option value='<%= queue.getCode() %>' 
-                                                <% if (!cm.isAnonymous()) {%>
-                                                    <%= cm.getSubject().getQueue().getCode().equals(queue.getCode()) ? "selected":"" %>
+                                                <% if (!thisCase.isAnonymous()) {%>
+                                                    <%= thisCase.getSubject().getQueue().getCode().equals(queue.getCode()) ? "selected":"" %>
                                                 <% } else { %>
                                                     <%= queue.getCode().equals(request.getParameter("queue")) ? "selected" : "" %>
                                                  <%}%>><%= queue.getCode() %> - <%= queue.getName() %></option>
@@ -538,7 +696,7 @@ boolean isAssignmentPriorityAllowed = false;
 				
 				</select>
 			<% } else { %>
-				<%= cm.getSubject().getQueue().getCode() %> - <%= cm.getSubject().getQueue().getName() %>
+				<%= thisCase.getSubject().getQueue().getCode() %> - <%= thisCase.getSubject().getQueue().getName() %>
 			<% } %>
 			<fd:ErrorHandler result='<%= result %>' name='queue' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>
@@ -548,12 +706,12 @@ boolean isAssignmentPriorityAllowed = false;
 				<select id="priority" name="priority" class="pulldown">
 					<option>Automatic Selection</option>
 					<logic:iterate id='priority' collection="<%=CrmCasePriority.getEnumList()%>" type="com.freshdirect.crm.CrmCasePriority">
-						<option value='<%= priority.getCode() %>' <%= priority.equals(cm.getPriority()) ? "selected" : "" %>><%= priority.getName() %></option>
+						<option value='<%= priority.getCode() %>' <%= priority.equals(thisCase.getPriority()) ? "selected" : "" %>><%= priority.getName() %></option>
 					</logic:iterate>
 				</select>
 			<% } else { %>
-				<input type="hidden" name="priority" value='<%= cm.getPriority()==null ? "" : cm.getPriority().getCode() %>'>
-				<%= cm.getPriority()==null ? "Automatic Selection" : cm.getPriority().getName() %>
+				<input type="hidden" name="priority" value='<%= thisCase.getPriority()==null ? "" : thisCase.getPriority().getCode() %>'>
+				<%= thisCase.getPriority()==null ? "Automatic Selection" : thisCase.getPriority().getName() %>
 			<% } %>
 			<fd:ErrorHandler result='<%= result %>' name='priority' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>
@@ -562,33 +720,31 @@ boolean isAssignmentPriorityAllowed = false;
 		<td class="case_content_field">Subject<span class="casedisp_Err_invis" id="subjectErr">*</span></td>
 		<td>
 			<% if (isEditAllowed) { %>
-				<select id="subject" name="subject" class="pulldown" disabled="true" onchange="verifyCaseDisp();">
+				<select id="subject" name="subject" class="pulldown" disabled="disabled" onchange="verifyCaseDisp();">
 					<option class="title" value="">-Select Queue then Subject-</option>
 				</select>
-				<% if (cm.getSubject() != null) {%>
-					<script language="JavaScript">
-					<!--
-						populateSubject('<%=cm.getSubject().getQueue().getCode()%>', case_details.subject);
-						case_details.subject.value="<%= cm.getSubject().getCode() %>";
-					//-->
-					</script>
+				<% if (thisCase.getSubject() != null) {%>
+<script type="text/javascript">
+	populateSubject('<%=thisCase.getSubject().getQueue().getCode()%>', document.case_details.subject);
+	document.case_details.subject.value="<%= thisCase.getSubject().getCode() %>";
+</script>
 				<% } %>
 			<% } else { %>
-				<input type="hidden" name="subject" value="<%= cm.getSubject().getCode() %>">
-				<%= cm.getSubject().getName() %>
+				<input type="hidden" name="subject" value="<%= thisCase.getSubject().getCode() %>">
+				<%= thisCase.getSubject().getName() %>
 			<% } %>
 			<fd:ErrorHandler result='<%= result %>' name='subject' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>
-		<td class="case_content_field"><!--  -->Quantities</td>
-		<td><!--  -->Reported: <input type="text" name="reported" value="<%=cm.getProjectedQuantity()%>" size="3" maxlength="3">&nbsp;&nbsp;&nbsp;
-		    Actual: <input type="text" name="actual"  value="<%=cm.getActualQuantity()%>" size="3" maxlength="3">&nbsp;&nbsp;&nbsp;
+		<td class="case_content_field">Quantities</td>
+		<td>Reported: <input type="text" name="reported" value="<%=thisCase.getProjectedQuantity()%>" size="3" maxlength="3">&nbsp;&nbsp;&nbsp;
+		    Actual: <input type="text" name="actual"  value="<%=thisCase.getActualQuantity()%>" size="3" maxlength="3">&nbsp;&nbsp;&nbsp;
 		</td>
-</tr>
+	</tr>
 	<tr><td colspan="4"></td></tr>
 	<tr valign="top">
 		<td class="case_content_field">Summary<span class="casedisp_Err_invis" id="summaryErr">*</span></td>
 		<td colspan="3">
-			<textarea <%= isEditAllowed ? "" : "readonly" %> name="summary" id="summary" rows="2" wrap="VIRTUAL" style="width: 600px;" onkeyup="verifyCaseDisp(); return true;"><%= request.getParameter("summary")!= null ? request.getParameter("summary"):cm.getSummary() %></textarea>
+			<textarea <%= isEditAllowed ? "" : "readonly" %> name="summary" id="summary" rows="2" wrap="VIRTUAL" style="width: 600px;" onkeyup="verifyCaseDisp(); return true;"><%= request.getParameter("summary")!= null ? request.getParameter("summary"):thisCase.getSummary() %></textarea>
 			<fd:ErrorHandler result='<%= result %>' name='summary' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>
 	</tr>
@@ -622,8 +778,8 @@ boolean isAssignmentPriorityAllowed = false;
 	<tr>
 		<td></td>
 		<td colspan="3">
-			<input id="CreateCase" disabled="true" type="submit" class="case_save_disabled" value='<%= cm.isAnonymous() ? "Create Case" : (isEditAllowed ? "Update Case" : "Add Note") %>' onKeyUp="verifyCaseDisp();">
-			<% if (!cm.isAnonymous()) { 
+			<input id="CreateCase" disabled="true" type="submit" class="case_save_disabled" value='<%= thisCase.isAnonymous() ? "Create Case" : (isEditAllowed ? "Update Case" : "Add Note") %>' onKeyUp="verifyCaseDisp();">
+			<% if (!thisCase.isAnonymous()) { 
 			int countButton = 0;
 			%>
 				<logic:iterate id='actionType' collection='<%= BUTTON_ACTION_TYPES %>' type='com.freshdirect.crm.CrmCaseActionType'>
@@ -644,12 +800,12 @@ boolean isAssignmentPriorityAllowed = false;
 			<fd:ErrorHandler result='<%= result %>' name='<%= ActionError.GENERIC %>' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>
 	</tr>
-</form>
 </table>
-<% if (cm.isAnonymous()) { %>
+</form>
+<% if (thisCase.isAnonymous()) { %>
 
 <script type="text/javascript">
-	populateSubject(case_details.queue.value,case_details.subject,'<%=request.getParameter("subject")%>');
+	populateSubject(document.case_details.queue.value, document.case_details.subject,'<%=request.getParameter("subject")%>');
 
 	/* Call form verify functions - fixes hitting reload on page */
 	
@@ -657,17 +813,13 @@ boolean isAssignmentPriorityAllowed = false;
 	CaseDisp_FirstContact('Resolved', 'NotResolved');
 	/* this verifies the form and enables the create button */
 	verifyCaseDisp();
-   
-   
 </script>
-<% }else{ %>
-
+<% } else { %>
 <script type="text/javascript">
-/* this causes any hidden fields that should be shown, to show*/
+	/* this causes any hidden fields that should be shown, to show*/
 	CaseDisp_FirstContact('Resolved', 'NotResolved');
 	/* this verifies the form and enables the create button */
 	verifyCaseDisp();
-   
 </script>
 <% } %>
 

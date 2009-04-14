@@ -3,6 +3,8 @@
 <%@ taglib uri='crm' prefix='crm' %>
 <%@ page import='com.freshdirect.crm.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession" %>
+<%@ page import="com.freshdirect.customer.ErpShippingInfo" %>
 <%@ page import='com.freshdirect.webapp.util.CCFormatter'%>
 
 	<link rel="stylesheet" href="/ccassets/css/crm.css" type="text/css">
@@ -79,7 +81,7 @@ if (caseId==null) {
 		<div class="case_subheader">
 			<table width="100%" class="case_subheader_text">
 				<tr>
-					<td width="30%">
+					<td>
                         Customer: 
                         <% if (cm.getCustomerPK()!=null) { %>
                             <b><%= cm.getCustomerFirstName().toUpperCase().charAt(0) %> 
@@ -89,8 +91,20 @@ if (caseId==null) {
                             <span class="not_set">-None-</span>
                         <% } %>
                     </td>
-					<td width="30%" align="center">Order #: <% if (cm.getSalePK()!=null) { %><b><%= cm.getSalePK().getId() %></b><% } else { %><span class="not_set">-None-</span><% } %></td>
-					<td width="40%" align="right">Created: <b><%= CCFormatter.formatCaseDate(cm.getCreateDate()) %></b></td>
+					<td style="text-align: center;">Order #: <% if (cm.getSalePK()!=null) { %><b><%= cm.getSalePK().getId() %></b><% } else { %><span class="not_set">-None-</span><% } %>
+					</td>
+					<% if (cm.getSalePK() != null) { 
+						ErpShippingInfo si = CrmSession.getOrder(session, cm.getSalePK().getId()).getShippingInfo();
+						if (si != null) {
+					%>
+					<td>
+					T: <span style="font-weight: bold;"><%= Integer.parseInt(si.getTruckNumber()) %></span>
+					</td><td>
+					S: <span style="font-weight: bold;"><%= Integer.parseInt(si.getStopSequence()) %></span>
+					</td>
+					<%		}
+						} %>
+					<td style="text-align: right;">Created: <b><%= CCFormatter.formatCaseDate(cm.getCreateDate()) %></b></td>
 				</tr>
 			</table>
 		</div>

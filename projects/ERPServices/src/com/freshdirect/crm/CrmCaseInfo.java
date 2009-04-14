@@ -8,9 +8,11 @@ package com.freshdirect.crm;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import com.freshdirect.framework.core.ModelSupport;
@@ -88,7 +90,9 @@ public class CrmCaseInfo extends ModelSupport implements CrmCaseI {
     private String SatisfiedWithResolution;
     
     private String customerTone;
-    
+
+    // holds assigned carton numbers (missing, misloaded, etc)
+    private List cartonNumbers;
     
     public CrmCaseInfo() {
         super();
@@ -427,5 +431,15 @@ public class CrmCaseInfo extends ModelSupport implements CrmCaseI {
 		 SatisfiedWithResolution = satisfiedWithResolution;
 	   //  this.firePropertyChange("SatisfiedWithResolution", old, SatisfiedWithResolution);;										 												
 	}
-    
+
+	
+
+	// List<String>
+	public List getCartonNumbers() {
+		return this.cartonNumbers == null ? Collections.EMPTY_LIST : this.cartonNumbers;
+	}
+
+	public void setCartonNumbers(List cartons) {
+		this.cartonNumbers = cartons;
+	}
 }

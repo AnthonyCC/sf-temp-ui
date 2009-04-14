@@ -1,9 +1,10 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
+
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
-<%@ taglib uri='crm' prefix='crm' %>
 <%@ page import="com.freshdirect.crm.CrmAgentRole"%>
-
+<%@ taglib uri='crm' prefix='crm' %>
 <% String pageURI = request.getRequestURI(); %>
-
 <crm:GetCurrentAgent id="currentAgent">
 <a name="top"></a>
 <table width="100%" cellpadding="6" cellspacing="0" border="0" class="main_nav">

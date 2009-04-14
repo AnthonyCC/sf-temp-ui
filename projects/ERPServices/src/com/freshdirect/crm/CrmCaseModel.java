@@ -247,5 +247,15 @@ public class CrmCaseModel extends ModelSupport implements CrmCaseI {
 	public void setSatisfiedWithResolution(String satisfiedWithResolution) {
 		this.caseInfo.setSatisfiedWithResolution(satisfiedWithResolution);
 	}
+
+
 	
+
+	public List getCartonNumbers() {
+		return this.caseInfo.getCartonNumbers();
+	}
+
+	public void setCartonNumbers(List cartons) {
+		this.caseInfo.setCartonNumbers(cartons);
+	}	
 }

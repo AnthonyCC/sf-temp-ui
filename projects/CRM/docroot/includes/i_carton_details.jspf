@@ -1,77 +1,124 @@
-<%@ page import="com.freshdirect.fdstore.customer.adapter.FDOrderAdapter"%>
-<%@ page import="com.freshdirect.fdstore.customer.FDCartonInfo"%>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Iterator" %>
+<%@ page import="com.freshdirect.fdstore.customer.adapter.FDOrderAdapter" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDCartonInfo" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDCartonDetail" %>
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
+<%--
+	@param order instance of FDOrderAdapter
+--%>
+<%
+	// List<FDCartonInfo>
+	List cartonInfo = ((FDOrderAdapter)order).getCartonContents(); 
+	int idx = 0;
+	
+	if( (cartonInfo != null) && (cartonInfo.size() > 0) ) { %>
+<script type="text/javascript">
+var cartons = new Array();
+var cartonItems = new Array();
 
-<%	List cartonInfo = null; %>
-<%  List cartonDetails = null; %>
-<%  cartonInfo = ((FDOrderAdapter)order).getCartonContents(); %>
-<% int idx = 0; %>
 
+// change state of carton
+function toggleCarton(obj) {
+	cartons[obj.id] = obj.checked;
+}
+
+// update all item checkboxes when a carton checkbox changes
+function updateItemCheckboxes(cartonId) {
+	var ctObj = document.getElementById(cartonId);
+	for (i=0; i<cartonItems[cartonId]; i++) {
+		document.getElementById(cartonId+"_"+i).checked = ctObj.checked;
+	}
+}
+
+// change state of parent carton checkbox
+function toggleCartonItem(cartonId) {
+	var ctObj = document.getElementById(cartonId);
+	for (i=0; i<cartonItems[cartonId]; i++) {
+		if (document.getElementById(cartonId+"_"+i).checked == false) {
+			ctObj.checked = false;
+			toggleCarton(ctObj);
+			return;
+		}
+	}
+
+	ctObj.checked = true;
+	toggleCarton(ctObj);
+}
+
+
+// attach to NEW CASE anchor
+document.getElementById('newcase_trigger').onclick = function() {
+	try {
+		var str = this.href;
+	
+		var k = 0;
+		for (x in cartons) {
+			if (cartons[x] == true) {
+				str += "&ct["+k+"]="+x; // append carton ID
+				k++;
+			}
+		}
+		str += "&cts="+k; // append item count
+
+		// alert(str);
+		this.href = str;
+	} catch(exc) {
+		alert(exc);
+	}
+	return true;
+};
+</script>
 <table width="100%" cellpadding="0" cellspacing="0" border="0" class="order">
 	<tr valign="top">
-  <% if( (cartonInfo != null) && (cartonInfo.size() > 0) ) { %>
-    <th width="5%" align="left">&nbsp;</th>
-	  <th align="left">Quantity</th>
-	  <th align="left">Product</th>
-	  <th align="left">Final Weight</th>
-	  <th align="left">Unit Price</th>
-		<logic:iterate id="carton" collection="<%= cartonInfo %>" type="com.freshdirect.fdstore.customer.FDCartonInfo" indexId="counter"> 
-
-    <input type="hidden" name="itemCount" value="<%= carton.getCartonDetails().size() %>">
-    <input type="hidden" name="cartUpdated" value="true">
+		<th style="text-align: left; width: 2em;">&nbsp;</th>
+		<th align="left">Quantity</th>
+		<th align="left">Product</th>
+		<th align="left">Final Weight</th>
+		<th align="left">Unit Price</th>
+    </tr>
+<%
+		for (Iterator it=cartonInfo.iterator(); it.hasNext(); ) {
+			FDCartonInfo carton = (FDCartonInfo) it.next();
+			String cId = carton.getCartonInfo().getCartonNumber();
+%>
 	<tr valign="top" class="list_odd_row">
-		<td colspan="2">Carton: <%= carton.getCartonInfo().getCartonNumber() %> &nbsp;&nbsp;&nbsp;&nbsp;
-		Type: <%= carton.getCartonInfo().getCartonType() %></td>
-		<td colspan="3">
-            &nbsp;
-   		</td>
+		<td><input id="<%= cId %>" type="checkbox" name="cb<%= cId %>" onclick="toggleCarton(this);updateItemCheckboxes('<%= cId %>');"></td>
+		<td colspan="4">Carton: <%= cId %> Type: <%= carton.getCartonInfo().getCartonType() %></td>
 	</tr>
 	<tr>
 		<td colspan="5" class="list_separator" style="padding: 0px;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 	</tr>
-	
-	<% idx = 0; %>
-			<logic:iterate id="cartonDetail" collection="<%= carton.getCartonDetails() %>" type="com.freshdirect.fdstore.customer.FDCartonDetail" indexId="det"> 
-    <% if(cartonDetail.getCartLine() != null) { %>
-		    <input type="hidden" name="skuCode_<%=idx%>" value="<%= cartonDetail.getCartLine().getSkuCode() %>">
-		    <input type="hidden" name="quantity_<%=idx%>" value="<%= cartonDetail.getCartonDetail().getPackedQuantity() %>">
-		    <input type="hidden" name="salesUnit_<%=idx%>" value="<%= cartonDetail.getCartLine().getSalesUnit() %>">
-		    <input type="hidden" name="estPrice_<%=idx%>" value="">
-        <logic:iterate id="entry" collection="<%= cartonDetail.getCartLine().getConfiguration().getOptions().entrySet() %>" type="java.util.Map.Entry">
-            <input type="hidden" name='<%= entry.getKey() + "_" + idx %>' value="<%= entry.getValue() %>">
-        </logic:iterate>
-
-			<tr valign="top">
-                <td><input type="checkbox"></td>
-				<td> 
+<%
+			int ix=0;
+			for (Iterator it2 = carton.getCartonDetails().iterator(); it2.hasNext();) {
+				FDCartonDetail cartonDetail = (FDCartonDetail) it2.next();
+				if (cartonDetail.getCartLine() != null) {
+%>			<tr valign="top">
+                <td><input id="<%= cId %>_<%= ix %>" type="checkbox" name="cb<%= cId %>_<%= ix %>" onclick="toggleCartonItem('<%= cId %>');"></td>
+				<td>
 					<%= cartonDetail.getCartonDetail().getPackedQuantity() %>&nbsp;
 					<% if(cartonDetail.getCartonDetail().getWeightUnit() != null) { %>
  						<%= cartonDetail.getCartonDetail().getWeightUnit().toLowerCase() %>
  					<% } %>
 				</td>
-				<td>
-					&nbsp;&nbsp;&nbsp;&nbsp;<%= cartonDetail.getCartLine().getDescription() %>
-					(<%= cartonDetail.getCartLine().getSkuCode() %>)
-				</td>
-				<td> 
-					<%= cartonDetail.getCartonDetail().getNetWeight() %>
-				</td>
-				<td>
-					<%= cartonDetail.getCartLine().getUnitPrice() %>
-				</td>
+				<td><%= cartonDetail.getCartLine().getDescription() %> (<%= cartonDetail.getCartLine().getSkuCode() %>)</td>
+				<td><%= cartonDetail.getCartonDetail().getNetWeight() %></td>
+				<td><%= cartonDetail.getCartLine().getUnitPrice() %></td>
 			</tr>
-    <%    idx++;
-    	} // cartonDetail.getCartLine() != null %>
-
-			</logic:iterate>
-	</logic:iterate>
-  <% } else { %>
-	<tr valign="top">
-	  No cartons found!
-	</tr>
-  <% } %>
-</table>
+<%			
+					ix++;
+				} // cartonDetail.getCartLine() != null
+			}
+%><script type="text/javascript">
+cartonItems['<%= cId %>'] = <%= ix %>;
+</script>
+<%
+		} // cartonInfo iterator
+%></table>
+<%	} else { %><div class="order">No cartons found!</div>
+<%	} %>

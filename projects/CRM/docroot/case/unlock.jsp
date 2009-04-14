@@ -13,6 +13,19 @@
 		}	
 		if (request.getParameter("orderId")!=null) {
 			redirect += "&orderId=" + request.getParameter("orderId");
+
+
+			// [APPREQ-478] pass selected carton IDs
+			if (request.getParameter("cts") != null) {
+				int nCartons = ( request.getParameter("cts") != null ? Integer.parseInt(request.getParameter("cts")) : 0);
+				
+				if (nCartons > 0) {
+					redirect += "&cts=" + request.getParameter("cts");
+					for (int i=0; i<nCartons; i++) {
+						redirect += "&ct["+i+"]=" + request.getParameter("ct["+i+"]");
+					}
+				}
+			}
 		}
 	} else if ("new_customer".equalsIgnoreCase(request.getParameter("redirect"))) {
 		redirect = "/registration/nw_cst_check_zone.jsp";

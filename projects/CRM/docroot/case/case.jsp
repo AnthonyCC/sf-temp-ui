@@ -4,6 +4,7 @@
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI"%>
 <%@ page import="com.freshdirect.fdstore.customer.*" %>
 <%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession" %>
+<%@ page import="com.freshdirect.customer.ErpShippingInfo" %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -40,7 +41,7 @@
 						<div class="case_subheader" style="border-bottom: none; padding: 2px;">
 							<table width="100%" cellpadding="0" cellspacing="0" class="case_subheader_text">
 								<tr>
-									<td width="23%">&nbsp;Customer:
+									<td>Customer:
 									<% if (cm.getCustomerPK()!=null) { 
 										boolean noCaseCust = false;
 										FDIdentity identity = null;
@@ -53,12 +54,27 @@
 										}
 										if (noCaseCust) {%><a href="/main/account_details.jsp?erpCustId=<%= cm.getCustomerPK().getId() %>&fdCustId=<%= fdCustId %>" class="case_subheader_action"><% } %><b><%= cm.getCustomerFirstName().toUpperCase().charAt(0) %> <%= cm.getCustomerLastName().toUpperCase().charAt(0) + cm.getCustomerLastName().substring(1,cm.getCustomerLastName().length()).toLowerCase()%></b><% if (noCaseCust) {%></a><% } %>
 									<% } else { %>
-									<span class="not_set">-None-</span>
+										<span class="not_set">-None-</span>
 									<% } %>
+									</td><td>
+									<% if (cm.getSalePK()!=null) {
+									%>Order #: <a href="/main/order_details.jsp?orderId=<%= cm.getSalePK().getId() %>" class="case_subheader_action"><b><%= cm.getSalePK().getId() %></b></a>
+									<% 
+										ErpShippingInfo si = CrmSession.getOrder(session, cm.getSalePK().getId()).getShippingInfo();
+										if (si != null) {
+									%>
+									</td><td>
+									Truck: <span style="font-weight: bold;"><%= si.getTruckNumber() %></span>
+									</td><td>
+									Stop: <span style="font-weight: bold;"><%= si.getStopSequence() %></span>
+									<%	}
+									} else {
+									%>Order #: <span class="not_set">-None-</span>
+									<% } %>
+									</td><td>
+									Origin: <span style="font-weight: bold;"><%= cm.getOrigin().getName() %></span>
 									</td>
-									<td width="22%">Order #: <% if (cm.getSalePK()!=null) { %><a href="/main/order_details.jsp?orderId=<%= cm.getSalePK().getId() %>" class="case_subheader_action"><b><%= cm.getSalePK().getId() %></b></a><% } else { %><span class="not_set">-None-</span><% } %></td>
-									<td align="center" width="25%">Origin: <b><%= cm.getOrigin().getName() %></b></td>
-									<td align="right" width="30%">Created: <b><%= CCFormatter.formatCaseDate(cm.getCreateDate()) %></b>&nbsp;</td>
+									<td align="right">Created: <b><%= CCFormatter.formatCaseDate(cm.getCreateDate()) %></b>&nbsp;</td>
 								</tr>
 							</table>
 						</div>
@@ -82,7 +98,6 @@
 					<tr>
 						<td colspan="1" class="case_header_color"><img src="/media_stat/crm/images/clear.gif" width="1" height="3"></td>
 					</tr>
-					</form>
 				</table>
 				<div class="case_content<%=forPrint?"":"_scroll"%>" style="width: 100%; bottom: 0px; height: <%= (session.getAttribute(SessionName.USER) != null) ? "35": "42" %>%;">
 					<%@ include file="/includes/case_actions.jspf" %>

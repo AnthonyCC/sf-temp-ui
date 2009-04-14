@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -44,6 +45,7 @@ public class CrmTRQIssuesController extends AbstractControllerTag {
 	private List caseList=new ArrayList();
 	private String id;
 	private String action;
+	private String saleIdName;
 	private boolean allBlank = true;
 	
 	private String erpCustomerId=null;
@@ -53,6 +55,7 @@ public class CrmTRQIssuesController extends AbstractControllerTag {
 
 	private List casesForStop = Collections.EMPTY_LIST;
 	
+	// OUT
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -69,12 +72,20 @@ public class CrmTRQIssuesController extends AbstractControllerTag {
 	private boolean isAllBlank() {
 		return allBlank;
 	}
-	
+
+	// OUT
+	public void setSaleId(String saleIdName) {
+		this.saleIdName = saleIdName;
+	}
+
 	protected boolean performGetAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
 		if ("getCases".equalsIgnoreCase(this.action)) {
 			validateCommonStuff(request,actionResult);
 			casesForStop = getTRQCasesForSale(saleId,actionResult);
 			pageContext.setAttribute(this.id, casesForStop);
+			if (this.saleIdName != null) {
+				pageContext.setAttribute(this.saleIdName, saleId);
+			}
 		}
 		return true;
 	}
@@ -107,6 +118,9 @@ public class CrmTRQIssuesController extends AbstractControllerTag {
 			
 			if (this.id!=null) {
 				pageContext.setAttribute(this.id, casesForStop);
+			}
+			if (this.saleIdName != null) {
+				pageContext.setAttribute(this.saleIdName, saleId);
 			}
 			return true;
 	}
@@ -161,6 +175,7 @@ public class CrmTRQIssuesController extends AbstractControllerTag {
 		}
 	}
 	
+	// @return List<CrmCaseModel>
 	private List getTRQCasesForSale(String saleId,ActionResult actionResult) { 
 		if (saleId!=null) {
 			CrmCaseTemplate template = new CrmCaseTemplate();
@@ -175,8 +190,8 @@ public class CrmTRQIssuesController extends AbstractControllerTag {
 					CrmManager cmgr = CrmManager.getInstance();
 					for (Iterator itr = cases.iterator(); itr.hasNext();) {
 						CrmCaseModel cm = (CrmCaseModel)itr.next();
-						if (CrmCaseState.CODE_CLOSED.equals(cm.getState().getCode()) || 
-							!CrmCaseQueue.CODE_DSQ.equals(cm.getSubject().getQueue().getCode())) { //Changed to replace obsolete queue TRQ
+						if (CrmCaseState.CODE_CLOSED.equals(cm.getState().getCode()) /* || 
+							!CrmCaseQueue.CODE_DSQ.equals(cm.getSubject().getQueue().getCode()) */) { //Changed to replace obsolete queue TRQ
 							itr.remove();
 						} else {
 							trqCases.add(cmgr.getCaseByPk(cm.getPK().getId()));
@@ -198,6 +213,7 @@ public class CrmTRQIssuesController extends AbstractControllerTag {
 		String frmReported;
 		String frmActual;
 		String frmPK;
+		String frmCtNumbers; // carton numbers assigned to case
 		int iReported=0;
 		int iActual=0;
 		
@@ -207,7 +223,7 @@ public class CrmTRQIssuesController extends AbstractControllerTag {
 		CrmCaseModel crmCase=null ;
 
 		try {
-		 cmgr = CrmManager.getInstance();
+			cmgr = CrmManager.getInstance();
 		} catch (FDResourceException fdre) {
 			fdre.printStackTrace();
 			result.addError(new ActionError("technical_error",SystemMessageList.MSG_TECHNICAL_ERROR+" Getting CrmManager instance."));
@@ -223,7 +239,8 @@ public class CrmTRQIssuesController extends AbstractControllerTag {
 			frmReported=NVL.apply(request.getParameter("reported"+suffix),"0");
 			frmActual=NVL.apply(request.getParameter("actual"+suffix),"0");
 			frmPK = NVL.apply(request.getParameter("PK"+suffix),"");
-			
+			frmCtNumbers = NVL.apply(request.getParameter("cartonNumbers"+suffix),"");
+
 			//if notes or reported amount or acutal amount is not empty string then process it
 			if ("".equals(frmNote) && "".equals(frmReported)  && "".equals(frmActual)) {
 			 	continue; // skip nothing entered
@@ -262,6 +279,22 @@ public class CrmTRQIssuesController extends AbstractControllerTag {
 			}
 			
 			result.addError(iActual<0,    "actual"+suffix,"Actual amount cannot be negative.");
+
+
+			/*
+			 * [APPREQ-498] get carton numbers
+			 */
+			List cartonNumbers = new ArrayList();
+			if (!"".equals(frmCtNumbers)) {
+				// retrieve carton numbers freezed to string
+				StringTokenizer st = new StringTokenizer(frmCtNumbers, ";");
+				while (st.hasMoreElements()) {
+					cartonNumbers.add(st.nextElement());
+				}
+			}
+
+			result.addError(caseSubject.isCartonsRequired() && cartonNumbers.size() == 0, "carton"+suffix, "Cartons must be assigned." );
+			
 
 			if (result.isSuccess()) {
 				caseInfo=null ;
@@ -310,6 +343,7 @@ public class CrmTRQIssuesController extends AbstractControllerTag {
 					caseInfo.setCustomerPK(new PrimaryKey(erpCustomerId));
 					caseInfo.setSalePK(new PrimaryKey(saleId));
 				}
+
 				
 				crmCase = new CrmCaseModel(caseInfo);
 				
@@ -323,7 +357,12 @@ public class CrmTRQIssuesController extends AbstractControllerTag {
 				caseAction.setAgentPK(this.getCurrentAgent().getPK());
 				caseAction.setNote(frmNote);
 				crmCase.addAction(caseAction);
-				
+
+				/*
+				 * [APPREQ-498] assign carton numbers
+				 */
+				crmCase.setCartonNumbers(cartonNumbers);
+
 				caseList.add(crmCase);
 			}
 		}
@@ -364,13 +403,17 @@ public class CrmTRQIssuesController extends AbstractControllerTag {
 		   public VariableInfo[] getVariableInfo(TagData data) {
 	        return new VariableInfo[] {
 	            new VariableInfo(data.getAttributeString("id"),
-	                            "java.util.List",
-	                            true,
-	                            VariableInfo.NESTED),
-					            new VariableInfo(data.getAttributeString("result"),
-		                            "com.freshdirect.framework.webapp.ActionResult",
-		                            true,
-		                            VariableInfo.NESTED)             
+                    "java.util.List",
+                    true,
+                    VariableInfo.NESTED),
+	            new VariableInfo(data.getAttributeString("result"),
+                    "com.freshdirect.framework.webapp.ActionResult",
+                    true,
+                    VariableInfo.NESTED),
+	            new VariableInfo(data.getAttributeString("saleId"),
+                    "java.lang.String",
+                    true,
+                    VariableInfo.NESTED)             
 	        };
 
 	    }

@@ -1,6 +1,13 @@
+<%@ page import="java.util.Collection" %>
+<%@ page import="java.util.Iterator" %>
 <%@ page import="com.freshdirect.crm.*"%>
 <%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession" %>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
 <%@ page import="com.freshdirect.fdstore.customer.*"%>
+<%@ page import="com.freshdirect.customer.EnumPaymentType" %>
+<%@ page import="com.freshdirect.customer.EnumSaleStatus" %>
+<%@ page import="com.freshdirect.customer.EnumComplaintStatus" %>
+<%@ page import="com.freshdirect.customer.ErpComplaintModel" %>
 <%@ page import="com.freshdirect.fdstore.customer.FDCustomerCreditHistoryModel"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDComplaintUtil"%>
 <%@ page import="com.freshdirect.framework.core.*"%>
@@ -72,16 +79,16 @@ boolean hasCase = false;
 	<% if (cm!= null) hasCase = true; %>
 </crm:GetLockedCase>
 <% boolean resubmitted = "resubmitted".equalsIgnoreCase(request.getParameter("status")); %>
-<script language="JavaScript" type="text/javascript">
+<script type="text/javascript">
 	function setAction(formObj, val) {
 		formObj.action.value=val;
 		formObj.submit();
 	}
 </script>
 <div class="order_header">
+	<form name="order_details" action="/main/order_details.jsp?orderId=<%= nav_orderId %>" method="POST">
+	<input type="hidden" name="action" value="modify">
 	<table width="100%" cellpadding="0" cellspacing="3" border="0">
-		<form name="order_details" action="/main/order_details.jsp?orderId=<%= nav_orderId %>" method="POST">
-		<input type="hidden" name="action" value="modify">
 		<tr>
 			<td width="29%">&nbsp;<nobr><b>Order # <span class="order_number"><%= nav_orderId %></span>
 				<% if (o_details) { %>
@@ -114,8 +121,7 @@ boolean hasCase = false;
 					<div class="cust_sub_nav" style="width: 120px;"><a href="/main/order_details.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text">Order Details</a></div>
 				<% } %>
 				<% if (!o_order_cases && hasCasesForOrder) { %>
-					<div class="cust_sub_nav_new" style="width: 140px;"><a name="linked_cases" href="<%= response.encodeURL("/main/order_cases.jsp?orderId=" + nav_orderId) %>" class="cust_sub_nav_text_new" onmouseover="return overlib('Cases linked to this order', AUTOSTATUS, WRAP, REF,'linked_cases',REFP,'LL');"
- onmouseout="nd();">Linked Cases</div>
+					<div class="cust_sub_nav_new" style="width: 140px;"><a name="linked_cases" href="<%= response.encodeURL("/main/order_cases.jsp?orderId=" + nav_orderId) %>" class="cust_sub_nav_text_new" onmouseover="return overlib('Cases linked to this order', AUTOSTATUS, WRAP, REF,'linked_cases',REFP,'LL');" onmouseout="nd();">Linked Cases</a></div>
 				<% } %>
 				<% if (o_details && currentAgent.isAuthorizedToSeeAuthAndCCInfo()){%>
 					<div class="cust_sub_nav" style="width: 120px;"><a href="javascript:pop('/supervisor/credit_card_info.jsp?orderId=<%= nav_orderId %>', '500', '580')" class="cust_sub_nav_text">CC Details</a></div>
@@ -165,11 +171,11 @@ boolean hasCase = false;
 
 			</td>
 			<td width="10%" align="center">
-				<a href="/case/<%= hasCase ? "unlock" : "new_case"%>.jsp?<%= hasCase ? "redirect=new_case&" : ""%>erpCustId=<%= nav_custId %>&orderId=<%= nav_orderId %>" class="new">NEW CASE</a>
+				<a id="newcase_trigger" href="/case/<%= hasCase ? "unlock" : "new_case"%>.jsp?<%= hasCase ? "redirect=new_case&" : ""%>erpCustId=<%= nav_custId %>&orderId=<%= nav_orderId %>" class="new">NEW CASE</a>
 			</td>
 		</tr>
-		</form>
 	</table>
+	</form>
 </div>
 </crm:GetCurrentAgent>
 </crm:ResubmitOrderController>

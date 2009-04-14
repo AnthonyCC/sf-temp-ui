@@ -4,18 +4,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.List;
 import java.util.ArrayList;
-
-import com.freshdirect.framework.core.PrimaryKey;
+import java.util.Iterator;
+import java.util.List;
 
 import com.freshdirect.customer.ErpCartonDetails;
 import com.freshdirect.customer.ErpCartonInfo;
+import com.freshdirect.framework.core.PrimaryKey;
 
 public class ErpCartonsDAO {
 
@@ -77,6 +72,7 @@ public class ErpCartonsDAO {
 		ps.close();
 	}
 
+	// @return List<ErpCartonInfo>
 	public static List getCartonInfo(Connection conn, PrimaryKey salePk) throws SQLException {
 		ArrayList cartons = new ArrayList();
 		PreparedStatement ps =

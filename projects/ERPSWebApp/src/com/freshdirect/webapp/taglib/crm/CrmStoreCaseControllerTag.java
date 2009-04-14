@@ -1,5 +1,7 @@
 package com.freshdirect.webapp.taglib.crm;
 
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -23,6 +25,8 @@ import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmDepartment;
 import com.freshdirect.crm.CrmManager;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.FDCartonInfo;
+import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -132,8 +136,24 @@ public class CrmStoreCaseControllerTag extends AbstractControllerTag {
                 	customerTone="";
                 }
                 
-                
-                
+                /* [APPREQ-478] assign cartons - if case has order */
+                List cartons = new ArrayList();
+                if (salePK != null) {
+                	FDOrderI order = CrmSession.getOrder(request.getSession(), salePK.getId());
+
+                	final List orderCartons = new ArrayList(order.getCartonContents());
+                	for (Iterator it=orderCartons.iterator(); it.hasNext();) {
+                		FDCartonInfo ct = (FDCartonInfo) it.next();
+                		String cn = ct.getCartonInfo().getCartonNumber();
+						if (request.getParameter("cid_"+cn) != null) {
+                			// put selected carton number to bag
+                			cartons.add(cn);
+                		}
+                	}
+                }
+
+
+
                 // validate
 				actionResult.addError(subject == null, "subject", "required");
 				if (priority == null && subject != null) {
@@ -151,6 +171,9 @@ public class CrmStoreCaseControllerTag extends AbstractControllerTag {
 				}
 				actionResult.addError(note.length() > MAX_NOTE, "note", "too long (max " + MAX_NOTE + ")");
 
+                // [APPREQ-478] Special case - if subject is ??? then case must have at least one carton assigned
+				actionResult.addError(subject.isCartonsRequired() && cartons.size() == 0, "carton", "One or more cartons required!");
+
 				// execute
 				if (actionResult.isSuccess()) {
 					PrimaryKey pk = null;
@@ -167,6 +190,7 @@ public class CrmStoreCaseControllerTag extends AbstractControllerTag {
 						caseInfo.setDepartments(departments);
 						caseInfo.setActualQuantity(actualQuantity);
 						caseInfo.setProjectedQuantity(reportedQuantity);
+						caseInfo.setCartonNumbers(cartons);
 						
 						caseInfo.setCrmCaseMedia(media);
 						caseInfo.setMoreThenOneIssue(morethenOne);
@@ -196,6 +220,8 @@ public class CrmStoreCaseControllerTag extends AbstractControllerTag {
 						caseInfo.setDepartments(departments);
 						caseInfo.setActualQuantity(actualQuantity);
 						caseInfo.setProjectedQuantity(reportedQuantity);
+						caseInfo.setCartonNumbers(cartons);
+
 						if(!"true".equalsIgnoreCase(isCaseClosed)){
 							caseInfo.setCrmCaseMedia(media);
 							caseInfo.setMoreThenOneIssue(morethenOne);

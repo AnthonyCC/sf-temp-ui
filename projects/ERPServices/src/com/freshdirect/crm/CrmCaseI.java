@@ -111,8 +111,14 @@ public interface CrmCaseI extends Serializable {
 	public String getSatisfiedWithResolution(); 
 
 	public void setSatisfiedWithResolution(String satisfiedWithResolution);
-		
+
+
+
+	/* [APPREQ-478] Cartons associated to case */
 	
-    
-    
- }
+	// Get assigned cartons for case (missing, damaged, misloaded)
+    public List getCartonNumbers();
+
+    // Set assigned cartons
+    public void setCartonNumbers(List cartons);
+}

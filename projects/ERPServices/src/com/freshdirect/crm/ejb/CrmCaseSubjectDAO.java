@@ -13,7 +13,7 @@ import com.freshdirect.enum.EnumDAOI;
 public class CrmCaseSubjectDAO implements EnumDAOI {
 
 	public List loadAll(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("SELECT CODE, NAME, DESCRIPTION, OBSOLETE, CASE_QUEUE, CASE_PRIORITY FROM CUST.CASE_SUBJECT");
+		PreparedStatement ps = conn.prepareStatement("SELECT CODE, NAME, DESCRIPTION, OBSOLETE, CASE_QUEUE, CASE_PRIORITY, CARTONS_REQ FROM CUST.CASE_SUBJECT");
 		ResultSet rs = ps.executeQuery();
 		List l = new ArrayList();
 		while (rs.next()) {
@@ -23,8 +23,9 @@ public class CrmCaseSubjectDAO implements EnumDAOI {
 			boolean obsolete = "X".equals(rs.getString("OBSOLETE"));
 			String queueCode = rs.getString("CASE_QUEUE");
 			String priorityCode = rs.getString("CASE_PRIORITY");
+			boolean isCartonsRequired = "X".equals(rs.getString("CARTONS_REQ"));
 
-			CrmCaseSubject subject = new CrmCaseSubject(queueCode, code, name, desc, obsolete, priorityCode);
+			CrmCaseSubject subject = new CrmCaseSubject(queueCode, code, name, desc, obsolete, priorityCode, isCartonsRequired);
 
 			l.add(subject);
 		}
