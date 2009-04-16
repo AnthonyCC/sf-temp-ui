@@ -38,11 +38,10 @@ public abstract class DbTestCaseSupport extends TestCase {
 
 	private final static String JDBC_URL = "jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=nyc1dbcl01-vip01.nyc1.freshdirect.com)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=nyc1dbcl01-vip02.nyc1.freshdirect.com)(PORT=1521))(LOAD_BALANCE=yes)(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=appunit_test)))";
 
-	//private final static String JDBC_URL = "jdbc:oracle:thin:@(DESCRIPTION =     (ADDRESS_LIST =       (ADDRESS = (PROTOCOL = TCP)(HOST = 10.70.8.14)(PORT = 1521))       (ADDRESS = (PROTOCOL = TCP)(HOST = 10.70.8.15)(PORT = 1521))     )     (CONNECT_DATA =       (SERVICE_NAME = DBSTG.nyc.freshdirect.com)       (SRVR = DEDICATED)     )   )";
 	private final static String JDBC_USER = "fdstore";
-	//private final static String JDBC_USER = "appdev";
+	
 	private final static String JDBC_PASSWORD = "fdstore";
-	//private final static String JDBC_PASSWORD = "readn0wrt";
+
 	private final static String JNDI_PREFIX = "java:comp/env/jdbc/";
 	
 	private final static String DATASOURCE_NAME = "testDB";
