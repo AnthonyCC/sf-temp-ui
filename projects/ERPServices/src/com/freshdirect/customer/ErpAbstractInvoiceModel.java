@@ -55,13 +55,7 @@ public abstract class ErpAbstractInvoiceModel extends ErpTransactionModel {
 	} 
 
 	public double getSubTotal(){		
-		double subTotal = 0.0;
-		if(this.invoiceLines==null) return 0; 
-		for (Iterator i = this.invoiceLines.iterator(); i.hasNext();) {
-			ErpInvoiceLineModel invoiceLine = (ErpInvoiceLineModel)i.next();
-			subTotal += MathUtil.roundDecimal(invoiceLine.getPrice());
-		}
-		return MathUtil.roundDecimal(subTotal);		
+		return this.subtotal;
 	}
 	
 	

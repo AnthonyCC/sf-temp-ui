@@ -22,6 +22,7 @@ import com.freshdirect.customer.ErpInvoiceModel;
 import com.freshdirect.framework.collection.DependentPersistentBeanList;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.util.MathUtil;
 
 
 /**
@@ -162,7 +163,7 @@ public class ErpInvoicePersistentBean extends ErpTransactionPersistentBean {
 		this.model.setTransactionSource(EnumTransactionSource.getTransactionSource(rs.getString("SOURCE")));
 		this.model.setInvoiceNumber(rs.getString("INVOICE_NUMBER"));
 		this.model.setTax(rs.getDouble("TAX"));
-		this.model.setSubTotal(rs.getDouble("SUB_TOTAL"));
+		//this.model.setSubTotal(rs.getDouble("SUB_TOTAL"));
 		
 		
 		// load children
@@ -170,6 +171,18 @@ public class ErpInvoicePersistentBean extends ErpTransactionPersistentBean {
 		ilList.setParentPK(this.getPK());
 		ilList.load(conn);
 		this.model.setInvoiceLines(ilList.getModelList());
+		/*
+		 * This section sums up all line item discounts if any and subtract the sum from actual sub total.
+		 * If no line item discounts then sub total remains the same.
+		 */
+		double discountAmt = 0.0;
+		if(this.model.getInvoiceLines() != null){
+			for (Iterator i = model.getInvoiceLines().iterator(); i.hasNext();) {
+				ErpInvoiceLineModel invoiceLine = (ErpInvoiceLineModel)i.next();
+				discountAmt += MathUtil.roundDecimal(invoiceLine.getActualDiscountAmount());
+			}
+		}
+		this.model.setSubTotal(rs.getDouble("SUB_TOTAL") - discountAmt);
 		
 		AppliedCreditList acList = new AppliedCreditList();
 		acList.setParentPK(this.getPK());
@@ -198,7 +211,6 @@ public class ErpInvoicePersistentBean extends ErpTransactionPersistentBean {
 			Discount d = new Discount(rs.getString("PROMOTION_CAMPAIGN"), promotionType, rs.getDouble("PROMOTION_AMT"));
 			this.model.addDiscount(new ErpDiscountLineModel(d));
 		}
-
 		this.unsetModified();
 		
 	}
