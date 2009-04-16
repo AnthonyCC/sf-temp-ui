@@ -73,13 +73,22 @@ public class DYFRecommendationsTag extends RecommendationsTag implements Session
 
         // get recommendations by recommender
         if (results == null) {
+        	if(user.isEligibleForSavings(EnumSiteFeature.SOYF)) {
+            	results = extractRecommendations(session, EnumSiteFeature.SOYF);
+        	}
+        	if(user.isEligibleForSavings(EnumSiteFeature.SAVE_ON_FAVORITES)) {
+            	results = extractRecommendations(session, EnumSiteFeature.SAVE_ON_FAVORITES);
+        	}
+        }
+        
+        if (results == null || results.getProducts().size() == 0) {
         	if (DYFUtil.isCustomerEligible(user)) {
         		results = extractRecommendations(session, EnumSiteFeature.DYF);
         		if (results.getProducts().size() == 0) {
         			results = extractRecommendations(session, EnumSiteFeature.FAVORITES);
         		}
         	} else {
-        		results = extractRecommendations(session, EnumSiteFeature.FAVORITES);
+        		results = extractRecommendations(session, EnumSiteFeature.SAVE_ON_FAVORITES);
         	}
         }
         return results;

@@ -29,6 +29,7 @@ if(cart.hasInvoice()) {
 		<td>&nbsp;</td>
 		<td><b>Final<br>Weight</b></td>
 		<td><b>Unit<br>Price</b></td>
+        <td><b>Disc. Unit<br>Price</b></td>
 		<td><b>Options<br>Price</b></td>
 		<td align="right"><b>Final<%=cart.hasSettledReturn()?"*":""%><br>Price</b></td>
 		<td colspan="3">&nbsp;</td>

@@ -17,7 +17,7 @@ public class ErpReturnOrderModel extends ErpAbstractInvoiceModel {
 	private boolean dlvPassApplied;
 	private String dlvPassId;
 	private boolean restockingApplied;
-	
+	private double subTotal;
 	
 	public boolean isRestockingApplied() {
 		return restockingApplied;
@@ -53,6 +53,14 @@ public class ErpReturnOrderModel extends ErpAbstractInvoiceModel {
 
 	public void setContainsDeliveryPass(boolean containsDeliveryPass) {
 		this.containsDeliveryPass = containsDeliveryPass;
+	}
+
+	public double getSubTotal() {
+		return subTotal;
+	}
+
+	public void setSubTotal(double subTotal) {
+		this.subTotal = subTotal;
 	}
 
 }

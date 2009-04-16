@@ -17,5 +17,8 @@ public interface ErpInvoiceLineI extends Serializable {
 	public double getCustomizationPrice();
 
 	public String getOrderLineNumber();
+	
+	public double getActualDiscountAmount();
+	
 
 }

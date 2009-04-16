@@ -9,8 +9,13 @@
 package com.freshdirect.fdstore.customer;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
+import com.freshdirect.common.pricing.Discount;
+import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpReturnLineModel;
@@ -22,6 +27,12 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.ProductRef;
+import com.freshdirect.fdstore.promotion.LineItemStrategyI;
+import com.freshdirect.fdstore.promotion.PercentOffApplicator;
+import com.freshdirect.fdstore.promotion.Promotion;
+import com.freshdirect.fdstore.promotion.PromotionFactory;
+import com.freshdirect.fdstore.promotion.PromotionI;
+import com.freshdirect.fdstore.promotion.PromotionStrategyI;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.sap.PosexUtil;
 
@@ -34,6 +45,8 @@ import com.freshdirect.sap.PosexUtil;
 public class FDCartLineModel extends AbstractCartLine {
 
 	private EnumEventSource source;
+	//private Set eligiblePromos = new HashSet();
+	//private String recommendedPromoCode;
 	
 	public FDCartLineModel(ErpOrderLineModel orderLine) {
 		this(orderLine, null, null, null);
@@ -72,6 +85,15 @@ public class FDCartLineModel extends AbstractCartLine {
 				ol.setProduceRating(rating);
 				ol.setBasePrice(productInfo.getBasePrice());
 				ol.setBasePriceUnit(productInfo.getBasePriceUnit());
+				
+//				Promotion p= (Promotion) PromotionFactory.getInstance().getPromotion("SORI_TEST");
+//				PercentOffApplicator app = (PercentOffApplicator)p.getApplicator();
+//				double discUnitPrice =  (ol.getPrice()/ol.getQuantity()) * app.getPercentOff();
+//				Discount dis=new Discount("SORI_TEST",EnumDiscountType.DOLLAR_OFF,discUnitPrice );
+//				
+//				System.out.println("discUnitPrice111 : "+discUnitPrice);
+				
+				//ol.setDiscount(dis);
 				
 			}			
 		} catch (FDResourceException e) {
@@ -121,5 +143,50 @@ public class FDCartLineModel extends AbstractCartLine {
 	 */
 	public EnumEventSource getSource() {
 		return source;
+	}
+/*
+	public Set getEligiblePromoCodes() {
+		return eligiblePromos;
+	}
+
+	public void setEligiblePromoCode(String promoCode, boolean eligible) {
+		if (eligible) {
+			this.eligiblePromos.add(promoCode);
+		} else {
+			this.eligiblePromos.remove(promoCode);
+		}
+	}
+
+	public void setRecommendedPromoCode(String promoCode) {
+		// TODO Auto-generated method stub
+		this.recommendedPromoCode=promoCode;
+	}
+
+	public String getRecommendedPromoCode() {
+		// TODO Auto-generated method stub
+		return this.recommendedPromoCode;
+	}
+
+	*/
+	public void setSavingsId(String savingsId){
+		this.orderLine.setSavingsId(savingsId);
+	}
+	
+	public String getSavingsId(){
+		return this.orderLine.getSavingsId();
+	}
+	
+	public void removeLineItemDiscount(){
+		this.setDiscountAmount(0.0);
+		this.setDiscount(null);
+		//this.setDiscountApplied(false);	
+		//this.setSavingsId(null);
+	}
+
+	public boolean hasDiscount(String promoCode) {
+		if(this.getDiscount() != null && this.getDiscount().getPromotionCode().equals(promoCode)) {
+			return true;	
+		}
+		return false;
 	}
 }

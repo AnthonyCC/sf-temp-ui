@@ -149,7 +149,9 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	//
 
 	private final List recentOrderLines = new ArrayList();
-
+	
+	private List recommendedItemList=null;
+		 	
 	private transient FDAvailabilityI availability;
 	//This attribute is to hold the count of deliverypasses this cart holds.
 	private int deliveryPassCount = 0;
@@ -162,6 +164,9 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	
 	//This attribute contains the list of unavailable delivery passes to the user.
 	private List unavailablePasses;
+	
+	private int discountAppliedCount=0;
+	
 	
 	public boolean isDlvPassApplied() {
 		return dlvPassApplied;
@@ -435,6 +440,22 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		}
 		return MathUtil.roundDecimal(subTotal);
 	}
+	
+	
+	public double getActualSubTotal() {
+		double subTotal = 0.0;
+		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
+			
+			FDCartLineI cartLineModel=(FDCartLineI) i.next();
+			System.out.println("**************cartLineModel:"+cartLineModel.getDiscountAmount());
+			subTotal += MathUtil.roundDecimal(cartLineModel.getPrice());
+			// add the discount amount for reporting
+			subTotal += MathUtil.roundDecimal(cartLineModel.getDiscountAmount());
+		}
+				
+		return MathUtil.roundDecimal(subTotal);
+	}
+	
 	
 	/**  
 	 * @return total price of orderlines in USD, with taxes, charges without discounts applied
@@ -1155,6 +1176,32 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			}
 		}
 		return desc;
+	}
+
+	public List getRecommendedItemList() {
+		return recommendedItemList;
+	}
+
+	public void setRecommendedItemList(List recommendedItemList) {
+		this.recommendedItemList = recommendedItemList;
+	}
+	
+	public int getLineItemDiscountCount(String promoCode){
+		Set uniqueDiscountedProducts =new HashSet(); 
+		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
+			FDCartLineI cartLine = (FDCartLineI)i.next();
+			if(cartLine.hasDiscount(promoCode)) {
+				uniqueDiscountedProducts.add(cartLine.getProductRef().lookupProduct().getContentKey().getId());
+			}
+		}
+		return uniqueDiscountedProducts.size();
+	}
+	
+	public void clearLineItemDiscounts(){
+		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
+			FDCartLineI cartLine = (FDCartLineI)i.next();
+			if(cartLine.getDiscount() !=  null) cartLine.removeLineItemDiscount();
+		}
 	}
 
 }

@@ -15,7 +15,7 @@ public class FDPromotionEligibility implements Serializable {
 
 	/** Set of String (promotionCode) */
 	private final Set appliedPromos = new HashSet();
-
+	
 	public boolean isEligible(String promotionCode) {
 		return this.eligibilePromos.contains(promotionCode);
 	}

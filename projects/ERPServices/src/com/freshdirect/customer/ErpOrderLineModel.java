@@ -12,6 +12,7 @@ import java.util.Map;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.Discount;
+import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDConfiguration;
@@ -50,6 +51,9 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
     private String cartLineId;
     private boolean requestNotification;
     private boolean deliveryPass;
+    private double discountAmount=0.0;
+    // SORI
+    private boolean isDiscountApplied=false;
     
     // produce rating
     
@@ -87,7 +91,22 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
     private double basePrice;
     private String basePriceUnit;
     
-    public boolean isDeliveryPass() {
+    /** 
+     * Savings ID which is nothing variant id used only for tracking smart savings
+     * @return
+     */ 
+    
+    private String savingsId;
+    
+    public String getSavingsId() {
+		return savingsId;
+	}
+    
+	public void setSavingsId(String savingsId) {
+		this.savingsId = savingsId;
+	}
+	
+	public boolean isDeliveryPass() {
 		return deliveryPass;
 	}
 	public void setDeliveryPass(boolean deliveryPass) {
@@ -155,7 +174,9 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 	public void setDepartmentDesc(String departmentDesc){ this.departmentDesc = departmentDesc; }
 
     public double getPrice(){ return price; }
-    public void setPrice(double price){ this.price = price; }
+    public void setPrice(double price){ 
+    	this.price = price; 
+    }
 
 	public boolean isPerishable(){ return this.perishable; }
 	public void setPerishable(boolean perishable) { this.perishable = perishable; }
@@ -237,6 +258,24 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
     public String getBasePriceUnit(){ return basePriceUnit; }
     public void setBasePriceUnit(String unit){ this.basePriceUnit = unit; }
     
+	public double getDiscountAmount() {
+		return discountAmount;
+	}
+	public void setDiscountAmount(double discountAmount) {
+		this.discountAmount = discountAmount;
+	}
+	public boolean isDiscountApplied() {
+		return isDiscountApplied;
+	}
+	public void setDiscountApplied(boolean isDiscountApplied) {
+		this.isDiscountApplied = isDiscountApplied;
+	}
+    public double getActualPrice() {
+    	Discount d = this.getDiscount();
+    	if(d == null || d.getDiscountType().isSample()) 
+    			return this.getPrice();
+    	return this.getPrice() + this.getDiscountAmount();
+    }
 }
 
 

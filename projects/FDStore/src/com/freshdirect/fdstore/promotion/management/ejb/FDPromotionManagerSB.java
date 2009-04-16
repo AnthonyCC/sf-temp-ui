@@ -27,6 +27,8 @@ public interface FDPromotionManagerSB extends EJBObject {
 	
 	public FDPromotionModel getPromotion(String promoId) throws FDResourceException, RemoteException;
 	
+	public List getPromotionVariants(String promoId) throws FDResourceException, RemoteException;	
+	
 	public void storePromotion(FDPromotionModel promotion) throws FDResourceException, FDDuplicatePromoFieldException, FDPromoTypeNotFoundException, FDPromoCustNotFoundException, RemoteException;
 	
 	public void removePromotion(PrimaryKey pk) throws FDResourceException, RemoteException;
@@ -60,4 +62,5 @@ public interface FDPromotionManagerSB extends EJBObject {
 	
 	public Map getPromotionCodes() throws RemoteException;
 	
+	public List getAllActivePromoVariants(List smartSavingsFeatures) throws RemoteException;
 }

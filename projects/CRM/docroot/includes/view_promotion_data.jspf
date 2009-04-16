@@ -107,7 +107,8 @@ int col2Width = 200;
     	 				    	    	  
 					 <% 
 					 boolean hasSampleItem = false;	
-					 boolean hasPercentageOff = false;					 
+					 boolean hasPercentageOff = false;	
+                     boolean isLineItemDiscount=false;                     
 					 if ("discount".equals(promotion.getValueType())) {%>		              
 		                <td colspan="1" align="right">Maximum Discount:&nbsp;</td>
 		                <td colspan="3">$ <strong><%=promotion.getMaxAmount()%></strong></td>		              
@@ -115,6 +116,11 @@ int col2Width = 200;
 		            		hasPercentageOff = true; %>		              
 		                <td colspan="1" align="right">Percent Off:&nbsp;</td>
 		                <td colspan="3"><strong><%= promotion.getPercentOff() %>%</strong></td>		              
+		            <% } else if ("lineitem".equals(promotion.getValueType())) { 
+                         isLineItemDiscount=true;  		 %>		              
+		                <td colspan="1" align="right">Line Item Discount:&nbsp;</td>
+		                <td colspan="3"><strong><%= promotion.getPercentOff() %>%</strong></td>		              
+                        <td colspan="3"></strong></td>
 		            <% } else if ("waiveCharge".equals(promotion.getValueType())) { %>		              
 		                <td colspan="1" align="right">Waive Charge Type:&nbsp;</td>
 		                <td colspan="3"><strong><%= promotion.getWaiveChargeType() %></strong></td>		             
@@ -155,6 +161,27 @@ int col2Width = 200;
 		         <td colspan="4">&nbsp;</td>
 		    </tr>        	       
 		 <% } %> 
+         <% if(isLineItemDiscount) { %>	
+		 	<tr valign="top">
+			 	<td colspan="1" align="right">Max Item Count:</td>
+		        <td colspan="3">&nbsp;<strong><strong><%= promotion.getMaxItemCount() %></strong></td>	
+		         <td colspan="4">&nbsp;</td>
+		    </tr>
+		    <tr valign="top">
+			 	<td colspan="1" align="right">Recommended Item Only:</td>
+		        <td colspan="3">&nbsp;<strong><%=promotion.isRecommendedItemsOnly() ? "true" : "false"%></strong></td>	
+		         <td colspan="4">&nbsp;</td>
+		    </tr>
+		    <tr valign="top">
+			 	<td colspan="1" align="right">Apply Header Discount:</td>
+		        <td colspan="3">&nbsp;<strong><%=promotion.isAllowHeaderDiscount() ? "true" : "false"%></strong></td>	
+		         <td colspan="4">&nbsp;</td>
+		    </tr>
+
+		 <% } %>
+         
+         
+         
 		<tr>
       		<td colspan="12" style="border-bottom: solid 1px #999999;"><br/>&nbsp;<strong>CUSTOMER REQUIREMENT</strong></td>
    		 </tr>

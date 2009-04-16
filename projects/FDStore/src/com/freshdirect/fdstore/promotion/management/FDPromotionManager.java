@@ -82,6 +82,24 @@ public class FDPromotionManager {
 
 	}
 	
+	
+	public static List loadPromotionVariants(String promotionId) throws FDResourceException, FinderException {
+		lookupManagerHome();
+
+		try {
+			FDPromotionManagerSB sb = managerHome.create();
+			return sb.getPromotionVariants(promotionId);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+
+	}
+	
+	
 	public static void storePromotion(FDPromotionModel promotion) throws FDResourceException, FDDuplicatePromoFieldException, FDPromoTypeNotFoundException, FDPromoCustNotFoundException {
 		lookupManagerHome();
 
@@ -321,6 +339,21 @@ public class FDPromotionManager {
 		try {
 			FDPromotionManagerSB sb = managerHome.create();
 			return sb.getPromotionCodes();
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	public static List getAllActivePromoVariants(List smartSavingsFeatures) throws FDResourceException {
+		lookupManagerHome();
+
+		try {
+			FDPromotionManagerSB sb = managerHome.create();
+			return sb.getAllActivePromoVariants(smartSavingsFeatures);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");

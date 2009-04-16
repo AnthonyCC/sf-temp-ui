@@ -17,6 +17,9 @@ import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.content.AvailabilityFactory;
 import com.freshdirect.fdstore.content.ProductRef;
+import com.freshdirect.fdstore.promotion.PercentOffApplicator;
+import com.freshdirect.fdstore.promotion.Promotion;
+import com.freshdirect.fdstore.promotion.PromotionFactory;
 
 public abstract class AbstractCartLine extends FDProductSelection implements FDCartLineI {
 	
@@ -40,6 +43,7 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 		this.returnLine = null;
 		
 		this.variantId = variantId;
+		//dummy();
 	}
 
 	public AbstractCartLine(
@@ -262,4 +266,42 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 		this.orderLine.setOrderLineId(orderLineId);
 	}
 	
+	public boolean isDiscountApplied() {
+		return this.getDiscount() != null && (EnumDiscountType.DOLLAR_OFF.equals(this.getDiscount().getDiscountType()) 
+				|| EnumDiscountType.PERCENT_OFF.equals(this.getDiscount().getDiscountType()));
+	}
+	
+	public String getDiscountedUnitPrice(){
+		System.out.println("isDiscountApplied %%%%%%%%%%%%%%% "+isDiscountApplied());
+		if(!isDiscountApplied()) {
+			return "";
+		}
+		if(EnumDiscountType.DOLLAR_OFF.equals(this.getDiscount().getDiscountType())) 
+			return CURRENCY_FORMATTER.format(this.price.getBasePrice() - this.getDiscount().getAmount())  + "/" + this.price.getBasePriceUnit().toLowerCase();
+		else if(EnumDiscountType.PERCENT_OFF.equals(this.getDiscount().getDiscountType())){
+			double discountAmt = this.price.getBasePrice() * this.getDiscount().getAmount();
+			return CURRENCY_FORMATTER.format(this.price.getBasePrice() - discountAmt)  + "/" + this.price.getBasePriceUnit().toLowerCase();
+		}else {
+			throw new IllegalArgumentException("Invalid Discount Type");
+			
+		}
+	}
+	private void dummy(){
+		//this.performPricing();
+		Promotion p= (Promotion) PromotionFactory.getInstance().getPromotion("SORI_TEST");
+		PercentOffApplicator app = (PercentOffApplicator)p.getApplicator();
+		//System.out.println("Price $$$$$$$$$$$ "+this.price.getBasePrice());
+		//double discUnitPrice =  this.price.getBasePrice() * app.getPercentOff();
+		Discount dis=new Discount("SORI_TEST",EnumDiscountType.PERCENT_OFF, app.getPercentOff() );
+		
+	
+		this.orderLine.setDiscount(dis);	
+		orderLine.setDiscount(dis);
+		
+
+	}
+	
+	public String getLineItemDiscount() {
+		return CURRENCY_FORMATTER.format(this.price.getPromotionValue());
+	}
 }

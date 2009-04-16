@@ -115,7 +115,11 @@ public class FDOrderTranslator {
 			order.setPricingDate(Calendar.getInstance().getTime());
 			
 			order.setTax(cart.getTaxValue());
-			order.setSubTotal(cart.getSubTotal());
+			
+			// instead we add the actual subtotal which is subtotal + disount amount for the order 
+			//order.setSubTotal(cart.getSubTotal());
+			order.setSubTotal(cart.getActualSubTotal());
+			
 			
 			order.setGlCode(lookupGLCode(cart.getDeliveryAddress()));
 

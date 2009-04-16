@@ -10,6 +10,7 @@ package com.freshdirect.fdstore.customer;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
@@ -24,8 +25,10 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
+import com.freshdirect.fdstore.promotion.PromoVariantModel;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.SignupDiscountRule;
+import com.freshdirect.fdstore.util.EnumSiteFeature;
 
 /**
  *
@@ -281,4 +284,10 @@ public interface FDUserI extends java.io.Serializable {
     public void setCohortName(String cohortName);
     
     public int getTotalCartSkuQuantity(String args[]);
+    
+    public Map getPromoVariantMap();
+    
+    public PromoVariantModel getPromoVariant(String variantId);
+    
+    public boolean isEligibleForSavings(EnumSiteFeature siteFeature);
 }

@@ -10,6 +10,7 @@ package com.freshdirect.fdstore.customer;
 
 import java.util.Iterator;
 
+import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumZipCheckResponses;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
@@ -35,6 +36,13 @@ public class FDModifyCartModel extends FDCartModel {
 		for (Iterator i = originalOrder.getOrderLines().iterator(); i.hasNext();) {
 			FDCartLineI origLine = (FDCartLineI) i.next();
 			FDCartLineI cartLine = new FDModifyCartLineModel(origLine);
+			Discount d = origLine.getDiscount();
+			if( d != null && !(d.getDiscountType().isSample())) {
+				cartLine.setDiscount(d);
+				cartLine.setDiscountApplied(true);
+			}
+			if(origLine.getSavingsId() != null)
+				cartLine.setSavingsId(origLine.getSavingsId());			
 			this.addOrderLine(cartLine);
 		}
 

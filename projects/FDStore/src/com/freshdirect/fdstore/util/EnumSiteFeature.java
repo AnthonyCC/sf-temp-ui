@@ -31,11 +31,20 @@ public class EnumSiteFeature extends Enum implements Serializable {
 	public final static EnumSiteFeature RATING = new EnumSiteFeature("RATING");
     public final static EnumSiteFeature FEATURED_ITEMS = new EnumSiteFeature("FEATURED_ITEMS", true, "Featured Items");
     public final static EnumSiteFeature FAVORITES = new EnumSiteFeature("FAVORITES", true, "FreshDirect Favorites");
+    public final static EnumSiteFeature SOYF = new EnumSiteFeature("SOYF", true, true, "Save on Your Favorites");
+    public final static EnumSiteFeature SAVE_ON_FAVORITES = new EnumSiteFeature("SOFDF", true, true ,"Save on FreshDirect Favorites");
+    public final static EnumSiteFeature SAVE_ON_YMAL = new EnumSiteFeature("SOYMAL", true, true ,"Save on You Might Also Like");
 
     /**
      * Is Smart Store feature?
      */
-    boolean isSmartStore;
+    boolean isSmartStore; 
+    
+    /**
+     * Is Smart Savings feature?
+     */
+    boolean isSmartSavings;
+    
     String title;
     
 	protected EnumSiteFeature(String name) {
@@ -54,6 +63,12 @@ public class EnumSiteFeature extends Enum implements Serializable {
 		this.title = title;
 	}
 
+	protected EnumSiteFeature(String name, boolean isSmartStore, boolean isSmartSavings, String title) {
+		super(name);
+		this.isSmartStore = isSmartStore;
+		this.isSmartSavings = isSmartSavings;
+		this.title = title;
+	}
 	public static EnumSiteFeature getEnum(String name) {
 		return (EnumSiteFeature) getEnum(EnumSiteFeature.class, name);
 	}
@@ -108,6 +123,19 @@ public class EnumSiteFeature extends Enum implements Serializable {
 			EnumSiteFeature sf = (EnumSiteFeature) it.next();
 			if (sf.isSmartStore)
 				list.add(sf);
+		}
+		
+		return list;
+	}
+	
+	public static List getSmartSavingsFeatureList() {
+		List list = new ArrayList();
+		
+		Iterator it = getEnumList().iterator();
+		while (it.hasNext()) {
+			EnumSiteFeature sf = (EnumSiteFeature) it.next();
+			if (sf.isSmartSavings)
+				list.add(sf.getName());
 		}
 		
 		return list;

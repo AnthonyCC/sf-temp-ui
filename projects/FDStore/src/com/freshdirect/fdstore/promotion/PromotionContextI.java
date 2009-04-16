@@ -12,7 +12,7 @@ import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 
 public interface PromotionContextI {
-
+		
 	public boolean isFraudulent();
 
 	public boolean isAddressMismatch();
@@ -82,4 +82,8 @@ public interface PromotionContextI {
 	public List getEligibleLinesForDCPDiscount(String promoId, Set contentKeys);
 	
 	public boolean applyHeaderDiscount(String promoCode, double promotionAmt, EnumPromotionType type);
+	
+	public Discount getHeaderDiscount();
+	
+	public Map getPromoVariantMap();
 }

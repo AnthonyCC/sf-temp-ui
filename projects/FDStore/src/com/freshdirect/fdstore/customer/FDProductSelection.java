@@ -244,6 +244,10 @@ public class FDProductSelection implements FDProductSelectionI {
 		return this.orderLine.getPrice();
 	}
 
+	public double getActualPrice() {
+		return this.orderLine.getActualPrice();
+	}
+	
 	public double getTaxRate() {
 		return this.orderLine.getTaxRate();
 	}
@@ -395,8 +399,8 @@ public class FDProductSelection implements FDProductSelectionI {
 	protected void performPricing() {
 		try {
 			this.price = FDPricingEngine.doPricing(this.lookupFDProduct(), this, this.getDiscount());
-
 			this.orderLine.setPrice(price.getConfiguredPrice() - price.getPromotionValue());
+			this.orderLine.setDiscountAmount(price.getPromotionValue());
 			//this.orderLine.setTaxRate(price.getTaxRate());
 			//this.orderLine.setDepositValue(price.getDepositValue());
 
@@ -407,7 +411,7 @@ public class FDProductSelection implements FDProductSelectionI {
 
 	/** template method */
 	protected Discount getDiscount() {
-		return null;
+		return this.orderLine.getDiscount();
 	}
 
 	public SaleStatisticsI getStatistics() {
@@ -480,4 +484,19 @@ public class FDProductSelection implements FDProductSelectionI {
 	}
 
 
+	public double getDiscountAmount() {
+		return orderLine.getDiscountAmount();
+	}
+	public void setDiscountAmount(double discountAmount) {
+		this.orderLine.setDiscountAmount(discountAmount);
+	}
+	
+	public boolean isDiscountApplied(){
+		return orderLine.isDiscountApplied();
+	}
+	
+	public void setDiscountApplied(boolean discountApplied){
+		this.orderLine.setDiscountApplied(discountApplied);
+	}
+	
 }

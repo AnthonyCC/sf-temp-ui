@@ -59,10 +59,26 @@ public class PromotionControllerTag extends AbstractControllerTag {
 	protected boolean performAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
 		try{
 			if ("new_promotion".equalsIgnoreCase(this.getActionName()) ||
-					"edit_promotion".equalsIgnoreCase(this.getActionName())) {
-				this.populatePromotionModel(request);
-				this.validatePromotion(actionResult);
+					"edit_promotion".equalsIgnoreCase(this.getActionName()) || "edit_variant_promotion".equalsIgnoreCase(this.getActionName()) ) {
+				
+				System.out.println("this.getActionName() :"+this.getActionName());
+				
+				
+				if(!"edit_variant_promotion".equalsIgnoreCase(this.getActionName()))
+				{
+				  this.populatePromotionModel(request);
+				 			  
+				}
+				else{
+					this.populatePromotionVariantModel(request);
+				}
+				
+				 this.validatePromotion(actionResult);	
+				
 				if (!actionResult.isSuccess()) {
+					
+					System.out.println("actionResult :"+actionResult.getErrors());
+					
 					return true;
 				}
 				savePromotionInSession();
@@ -82,7 +98,7 @@ public class PromotionControllerTag extends AbstractControllerTag {
 				FDPromotionManager.storePromotion(this.promotion);
 				sendEmail(oldPromotion, newPromotion);
 				removePromotionFromSession();
-			}
+			}			
 			if ("search_customer_restriction".equalsIgnoreCase(this.getActionName())) {
 				
 				String userId = request.getParameter("userId");
@@ -416,6 +432,32 @@ public class PromotionControllerTag extends AbstractControllerTag {
 		return true;
 	}
 	
+	
+	private void populatePromotionVariantModel(HttpServletRequest request) {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		//this.promotion.setId(NVL.apply(request.getParameter("promo_id"), "").trim());
+		this.promotion.setName(NVL.apply(request.getParameter("promo_name"), "").trim());
+		this.promotion.setActive(request.getParameter("active")!=null);
+		//this.promotion.setPromotionCode(NVL.apply(request.getParameter("code_name"), "").trim());
+		this.promotion.setDescription(NVL.apply(request.getParameter("promo_description"), "").trim());
+		//this.promotion.setPromotionType(NVL.apply(request.getParameter("campaign_type"), "").trim());
+		//this.promotion.setMinSubtotal(NVL.apply(request.getParameter("min_subtotal"), "").trim());
+		this.promotion.setStartMonth(NVL.apply(request.getParameter("start_month"), "").trim());
+		this.promotion.setStartDay(NVL.apply(request.getParameter("start_date"), "").trim());
+		this.promotion.setStartYear(NVL.apply(request.getParameter("start_year"), "").trim());
+		this.promotion.setStartDate(getDate(this.promotion.getStartDay(), this.promotion.getStartMonth(), this.promotion.getStartYear(),0,0,0,"AM"));
+		
+		this.promotion.setExpirationMonth(NVL.apply(request.getParameter("end_month"), "").trim());
+		this.promotion.setExpirationDay(NVL.apply(request.getParameter("end_date"), "").trim());
+		this.promotion.setExpirationYear(NVL.apply(request.getParameter("end_year"), "").trim());		
+		this.promotion.setExpirationDate(getDate(this.promotion.getExpirationDay(), this.promotion.getExpirationMonth(), this.promotion.getExpirationYear(),11,59,59,"PM"));
+		
+		this.promotion.setMaxUsage(NVL.apply(request.getParameter("usage_limit"), "").trim());
+		
+		
+		
+	}
+	
 	private void populatePromotionModel(HttpServletRequest request) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		this.promotion.setId(NVL.apply(request.getParameter("promo_id"), "").trim());
@@ -478,6 +520,9 @@ public class PromotionControllerTag extends AbstractControllerTag {
 		this.promotion.setValueType(NVL.apply(request.getParameter("value_type"), "").trim());
 		this.promotion.setMaxAmount(NVL.apply(request.getParameter("maximum_discount"), "").trim());
 		this.promotion.setPercentOff(NVL.apply(request.getParameter("percentOff"), "").trim());
+		System.out.println("percetoff1 :"+request.getParameter("percentOff1"));
+		if(request.getParameter("percentOff1")!=null && request.getParameter("percentOff1").trim().length()>0)
+		    this.promotion.setPercentOff(NVL.apply(request.getParameter("percentOff1"), "").trim());
 		this.promotion.setWaiveChargeType(NVL.apply(request.getParameter("waiveChargeType"), "").trim());
 		this.promotion.setCategoryName(NVL.apply(request.getParameter("prod_category"), "").trim());
 		this.promotion.setProductName(NVL.apply(request.getParameter("prod_name"), "").trim());
@@ -500,6 +545,10 @@ public class PromotionControllerTag extends AbstractControllerTag {
 		this.promotion.setActive(request.getParameter("active")!=null);
 		this.promotion.setApplyFraud(request.getParameter("dontApplyFraud")==null);
 		this.promotion.setProfileOperator(request.getParameter("profileOperator"));
+		
+		this.promotion.setAllowHeaderDiscount(request.getParameter("applyHeaderDiscount")==null);
+		this.promotion.setRecommendedItemsOnly(request.getParameter("recommendedItemsOnly")==null);
+		this.promotion.setMaxItemCount(Integer.parseInt(NVL.apply(request.getParameter("maximumItemCount"), "0").trim()));
 		
 		HttpSession session = pageContext.getSession();
 		CrmAgentModel agent = CrmSession.getCurrentAgent(session);

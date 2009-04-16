@@ -33,6 +33,8 @@ import com.freshdirect.customer.ErpReturnLineModel;
 import com.freshdirect.customer.ErpReturnOrderModel;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
+import com.freshdirect.fdstore.FDConfiguredPrice;
+import com.freshdirect.fdstore.FDPricingEngine;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
@@ -92,9 +94,9 @@ public class ErpGenerateInvoiceCommand {
 		ErpInvoiceLineModel newInvoiceLine = new ErpInvoiceLineModel();
 		newInvoiceLine.setOrderLineNumber(invoiceLine.getOrderLineNumber());
 		newInvoiceLine.setMaterialNumber(invoiceLine.getMaterialNumber());
-
+        
 		if (returnLine.isRestockingOnly()) {
-			double returnPrice = this.getPrice(orderLine, returnLine.getQuantity()).getPrice();
+			double returnPrice = this.getDiscountedPrice(orderLine, returnLine.getQuantity()).getPrice();			
 			if(ErpAffiliate.getEnum(ErpAffiliate.CODE_WBL).equals(orderLine.getAffiliate())){
 				wblRestocking += returnPrice * ALCOHOL_RESTOCKING_PERC;
 			} else if(ErpAffiliate.getEnum(ErpAffiliate.CODE_BC).equals(orderLine.getAffiliate())){
@@ -111,6 +113,8 @@ public class ErpGenerateInvoiceCommand {
 
 		newInvoiceLine.setQuantity(finalQuantity);
 		this.priceInvoiceLine(newInvoiceLine, orderLine);
+		
+		//System.out.println("newInvoiceLine.getPrice():"+newInvoiceLine.getPrice());
 		
 		if (invoiceLine.getQuantity()!=0) {
 			double finalRatio = returnLine.getQuantity() / invoiceLine.getQuantity();
@@ -130,12 +134,33 @@ public class ErpGenerateInvoiceCommand {
 			throw new EJBException(e);
 		}
 	}
+	
+	
+	private Price getDiscountedPrice(ErpOrderLineModel orderLine, double quantity) {
+		if (((int) Math.round(quantity * 100)) == 0) {
+			return new Price(0, 0);
+		}
+		FDProduct fdProduct = this.getFDProduct(orderLine);
+		Pricing pricing = fdProduct.getPricing();
+		FDConfiguration prConf = new FDConfiguration(quantity, orderLine.getSalesUnit(), orderLine.getOptions());
+		try {
+			FDConfiguredPrice price = FDPricingEngine.doPricing(fdProduct, prConf, orderLine.getDiscount());
+			orderLine.setPrice(price.getConfiguredPrice() - price.getPromotionValue());
+			orderLine.setDiscountAmount(price.getPromotionValue());			
+			Price oldPrice=PricingEngine.getConfiguredPrice(pricing, prConf).getPrice();
+			Price pr = new Price(MathUtil.roundDecimal(oldPrice.getBasePrice()-price.getPromotionValue()), MathUtil.roundDecimal(oldPrice.getSurcharge()));
+			return pr;
+		} catch (PricingException e) {
+			throw new EJBException(e);
+		}					
+	}
+	
+	
 
 	private Price getPrice(ErpOrderLineModel orderLine, double quantity) {
 		if (((int) Math.round(quantity * 100)) == 0) {
 			return new Price(0, 0);
 		}
-
 		FDProduct fdProduct = this.getFDProduct(orderLine);
 		Pricing pricing = fdProduct.getPricing();
 		FDConfiguration prConf = new FDConfiguration(quantity, orderLine.getSalesUnit(), orderLine.getOptions());
@@ -143,19 +168,35 @@ public class ErpGenerateInvoiceCommand {
 			return PricingEngine.getConfiguredPrice(pricing, prConf).getPrice();
 		} catch (PricingException e) {
 			throw new EJBException(e);
-		}
+		}						
 	}
 
 	private void priceInvoiceLine(ErpInvoiceLineModel invoiceLine, ErpOrderLineModel orderLine) {
+		
 		Price configuredPrice = this.getPrice(orderLine, invoiceLine.getQuantity());
-
+      
 		invoiceLine.setPrice(configuredPrice.getPrice());
 		invoiceLine.setCustomizationPrice(configuredPrice.getSurcharge());
 		
 		FDProduct fdProduct = this.getFDProduct(orderLine);
 		double tax = fdProduct.isTaxable() ? invoiceLine.getPrice() * orderLine.getTaxRate() : 0;
 		double depositValue = calculateDepositValue(fdProduct.getDepositsPerEach(), orderLine.getDepositValue(), orderLine.getQuantity(), invoiceLine.getQuantity());
-		
+		double discountAmount=0;
+		try {
+			Price afterDiscountPrice=PricingEngine.applyDiscount(configuredPrice,invoiceLine.getQuantity(),orderLine.getDiscount());
+			if(afterDiscountPrice!=null){
+				double afterDiscountAmount=afterDiscountPrice.getBasePrice();
+				discountAmount=invoiceLine.getPrice()-afterDiscountAmount;
+			}
+		} catch (PricingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//System.out.println("actual discount amount :"+discountAmount);
+		//System.out.println("actual amount before discount:"+configuredPrice.getPrice());		
+		invoiceLine.setActualDiscountAmount(discountAmount);
+		invoiceLine.setPrice(configuredPrice.getPrice()-discountAmount);
+		//System.out.println("actual amount after discount:"+invoiceLine.getPrice());
 		invoiceLine.setTaxValue(tax);
 		invoiceLine.setDepositValue(depositValue);
 	}

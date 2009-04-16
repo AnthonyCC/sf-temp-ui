@@ -58,6 +58,10 @@ public class FDPromotionModel extends ModelSupport {
 	private Integer rollingExpirationDays;
 	private Map assignedCustomerParams;
 	private boolean uniqueUse;
+	
+	private int maxItemCount=0;
+	private boolean recommendedItemsOnly=false;
+	private boolean allowHeaderDiscount=false;
 
 	private String notes;
 	private boolean active;
@@ -76,6 +80,8 @@ public class FDPromotionModel extends ModelSupport {
 	private String profileOperator;
 	
 	private String tmpAssignedCustomerUserIds;
+	
+	private List promoVariants;
 
 	public FDPromotionModel() {
 		super();
@@ -542,6 +548,38 @@ public class FDPromotionModel extends ModelSupport {
 
 	public void setTmpAssignedCustomerUserIds(String tmpAssignedCustomerUserIds) {
 		this.tmpAssignedCustomerUserIds = tmpAssignedCustomerUserIds;
+	}
+
+	public boolean isAllowHeaderDiscount() {
+		return allowHeaderDiscount;
+	}
+
+	public void setAllowHeaderDiscount(boolean applyHeaderDiscount) {
+		this.allowHeaderDiscount = applyHeaderDiscount;
+	}
+
+	public int getMaxItemCount() {
+		return maxItemCount;
+	}
+
+	public void setMaxItemCount(int maxItemCount) {
+		this.maxItemCount = maxItemCount;
+	}
+
+	public boolean isRecommendedItemsOnly() {
+		return recommendedItemsOnly;
+	}
+
+	public void setRecommendedItemsOnly(boolean recommendedItemsOnly) {
+		this.recommendedItemsOnly = recommendedItemsOnly;
+	}
+
+	public List getPromoVariants() {
+		return promoVariants;
+	}
+
+	public void setPromoVariants(List promoVariants) {
+		this.promoVariants = promoVariants;
 	}
 
 }

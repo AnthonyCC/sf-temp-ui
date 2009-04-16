@@ -1733,10 +1733,16 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			returnOrder.setTransactionDate(new java.util.Date());
 			ErpGenerateInvoiceCommand command = new ErpGenerateInvoiceCommand();
 			ErpInvoiceModel newInvoice = command.generateNewInvoice(order, invoice, returnOrder);
-			returnOrder.setSubTotal(invoice.getSubTotal() - newInvoice.getSubTotal());
+			
+			//System.out.println("invoice.getSubTotal() :"+invoice.getSubTotal());
+			//System.out.println("newInvoice.getSubTotal() :"+newInvoice.getSubTotal());
+			returnOrder.setSubTotal(invoice.getActualSubTotal() - newInvoice.getActualSubTotal());
 			returnOrder.setTax(invoice.getTax() - newInvoice.getTax());
+			//System.out.println("invoice.getActualSubTotal() :"+invoice.getActualSubTotal());
+			//System.out.println("newInvoice.getActualSubTotal() :"+newInvoice.getActualSubTotal());
 			returnOrder.setAmount(invoice.getAmount() - newInvoice.getAmount());
 
+			//System.out.println("returnOrder.getSubTotal():"+returnOrder.getSubTotal());
 			saleEB.addReturn(returnOrder);
 
 		} catch (RemoteException ex) {
@@ -1755,8 +1761,10 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			ErpAbstractOrderModel order = saleEB.getCurrentOrder();
 			ErpInvoiceModel invoice = saleEB.getInvoice();
 			ErpGenerateInvoiceCommand invoiceCommand = new ErpGenerateInvoiceCommand();
-			ErpInvoiceModel newInvoice = invoiceCommand.generateNewInvoice(order, invoice, returnOrder);
+			ErpInvoiceModel newInvoice = invoiceCommand.generateNewInvoice(order, invoice, returnOrder);			
 			this.reconcileInvoicedCredits(saleEB.getCustomerPk(), newInvoice.getAppliedCredits(), invoice.getAppliedCredits());
+			//System.out.println("newInvoice.getSubTotal():"+newInvoice.getSubTotal());
+			//System.out.println("newInvoice.getActualSubTotal():"+newInvoice.getActualSubTotal());
 			saleEB.addInvoice(newInvoice);
 			SapPostReturnCommand sapCommand = createSapReturnCommand(order, newInvoice);
 			postReturnToSap(sapCommand);

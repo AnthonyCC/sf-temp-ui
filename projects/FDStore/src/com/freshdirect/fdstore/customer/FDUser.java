@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -40,6 +41,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.adapter.PromoVariantHelper;
 import com.freshdirect.fdstore.customer.adapter.PromotionContextAdapter;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.lists.CclUtils;
@@ -47,6 +49,7 @@ import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
 import com.freshdirect.fdstore.promotion.FDPromotionVisitor;
+import com.freshdirect.fdstore.promotion.PromoVariantModel;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.SignupDiscountRule;
@@ -129,7 +132,9 @@ public class FDUser extends ModelSupport implements FDUserI {
 	// Cohort ID
 	private String cohortName;
 
-
+	//Eligible Promo Variant Map
+	private Map promoVariantMap;
+	
 	public FDUserDlvPassInfo getDlvPassInfo() {
 		return dlvPassInfo;
 	}
@@ -308,6 +313,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 		
 		this.getShoppingCart().clearSampleLines();
 		this.getShoppingCart().setDiscounts(new ArrayList());
+		this.getShoppingCart().clearLineItemDiscounts();
+		//this.setPromoVariantMap(null);
 		// evaluate special dlv charge override
 		WaiveDeliveryCharge.apply(this);
 
@@ -1143,9 +1150,6 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public int getTotalCartSkuQuantity(String args[]){
 		Collection c = Arrays.asList(args);
 		Set argSet = new HashSet(c);
-		
-        
-		//System.out.println("** inside getTotalCartSkuQuantity ******************************");
         if(args==null) {
                     //System.out.println("** args :"+args);
                     return 0;
@@ -1165,11 +1169,36 @@ public class FDUser extends ModelSupport implements FDUserI {
                                 }
            }                                                                    
 
-        //System.out.println("** count of all quantity :"+count);
-        //System.out.println("** leaving getTotalCartSkuQuantity ******************************");
-
         return count;
 
 	}
-
+	
+	public Map getPromoVariantMap() {
+		if(this.promoVariantMap == null) {
+			//Load the map if not available
+			this.promoVariantMap = PromoVariantHelper.getPromoVariantMap(this);
+		}
+		return this.promoVariantMap;
+	}
+	
+	public PromoVariantModel getPromoVariant(String variantId) {
+		if(this.getPromoVariantMap() == null) return null;
+		return (PromoVariantModel) this.getPromoVariantMap().get(variantId);
+	}
+	
+	public boolean isEligibleForSavings(EnumSiteFeature siteFeature) {
+		if(this.getPromoVariantMap() == null || this.getPromoVariantMap().size() == 0)
+			return false;
+		Set keys = this.promoVariantMap.keySet();
+		for(Iterator iter = keys.iterator(); iter.hasNext();){
+			PromoVariantModel pvModel = (PromoVariantModel) this.promoVariantMap.get(iter.next());
+			String promoCode =pvModel.getAssignedPromotion().getPromotionCode();
+			if(pvModel.getSiteFeature().equals(siteFeature) && this.getPromotionEligibility().isEligible(promoCode)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
+	
+

@@ -18,10 +18,13 @@ import java.util.Map.Entry;
 
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
 import com.freshdirect.fdstore.promotion.EnumDCPDContentType;
+import com.freshdirect.fdstore.promotion.PromoVariantModel;
+import com.freshdirect.fdstore.promotion.PromoVariantModelImpl;
 import com.freshdirect.fdstore.promotion.management.FDPromoCustomerInfo;
 import com.freshdirect.fdstore.promotion.management.FDPromoZipRestriction;
 import com.freshdirect.fdstore.promotion.management.FDPromotionAttributeParam;
 import com.freshdirect.fdstore.promotion.management.FDPromotionModel;
+import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
@@ -44,8 +47,9 @@ public class FDPromotionManagerDAO {
 				+ " CAMPAIGN_CODE, MIN_SUBTOTAL, MAX_AMOUNT, PERCENT_OFF, WAIVE_CHARGE_TYPE, UNIQUE_USE, CATEGORY_NAME, PRODUCT_NAME,"
 				+ " ORDERTYPE_HOME, ORDERTYPE_PICKUP, ORDERTYPE_DEPOT, ORDERTYPE_CORPORATE, NEEDDRYGOODS,"
 				+ " ORDERCOUNT, NEEDITEMSFROM, EXCLUDESKUPREFIX, NEEDBRANDS, EXCLUDEBRANDS, RULE_BASED, REF_PROG_CAMPAIGN_CODE,"
-				+ " IS_MAX_USAGE_PER_CUST, ROLLING_EXPIRATION_DAYS, NOTES, ACTIVE, MODIFY_DATE, MODIFIED_BY, DONOT_APPLY_FRAUD, PROFILE_OPERATOR)"
-				+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,SYSDATE,?,?,?)");
+				+ " IS_MAX_USAGE_PER_CUST, ROLLING_EXPIRATION_DAYS, NOTES, ACTIVE, MODIFY_DATE, MODIFIED_BY, DONOT_APPLY_FRAUD, PROFILE_OPERATOR,"
+				+ " recommended_items_only, allow_header_discount, max_item_count)"
+				+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,SYSDATE,?,?,?,?,?,?)");
 		
 		int i = 1;
 		ps.setString(i++, id);
@@ -210,6 +214,24 @@ public class FDPromotionManagerDAO {
 		}else{
 			ps.setNull(i++, Types.VARCHAR);
 		}
+		if(!promotion.isRecommendedItemsOnly()){
+			ps.setString(i++, "X");
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
+		
+		if(!promotion.isAllowHeaderDiscount()){
+			ps.setString(i++, "X");
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
+		
+		if (promotion.getMaxItemCount()>0) {
+			ps.setInt(i++,promotion.getMaxItemCount());
+		} else {
+			ps.setNull(i++, Types.INTEGER);					
+		}
+
 
 		if (ps.executeUpdate() != 1) {
 			ps.close();
@@ -255,6 +277,41 @@ public class FDPromotionManagerDAO {
 	
 		return promoCodes;
 	}
+	
+	
+	private static final String PROMO_VARIANT_QUERY="SELECT VP.VARIANT_ID, VP.PROMO_CODE, VP.PRIORITY, V.FEATURE, VP.FEATURE_PRIORITY FROM CUST.PROMO_VARIANTS VP, "+
+													"CUST.SS_VARIANTS V, CUST.PROMOTION P WHERE P.CODE = VP.PROMO_CODE AND V.ID = VP.VARIANT_ID AND P.ACTIVE='X' AND (P.EXPIRATION_DATE > (SYSDATE-7) "+
+													" OR P.EXPIRATION_DATE IS NULL) AND P.RECOMMENDED_ITEMS_ONLY='X' AND P.CODE=?";
+	
+	public static List getPromotionVariants(Connection conn,String promoId) throws SQLException {
+		
+		PreparedStatement ps = conn.prepareStatement(PROMO_VARIANT_QUERY);
+		ps.setString(1,promoId);
+		ResultSet rs = ps.executeQuery();
+
+		List promoList = new ArrayList();
+		
+		while (rs.next()) {			
+			//FDPromotionModel promotion = loadPromotionResult(rs);
+			
+			PromoVariantModel model=new PromoVariantModelImpl(rs.getString("VARIANT_ID"),promoId,rs.getInt("PRIORITY"),EnumSiteFeature.getEnum(rs.getString("FEATURE")),rs.getInt("FEATURE_PRIORITY"));			
+			
+			/*List assignedCustomerUserIds = FDPromotionManagerDAO.loadAssignedCustomerUserIds(conn, promotion.getId());
+			if (assignedCustomerUserIds != null && assignedCustomerUserIds.size() > 0) {
+				promotion.setAssignedCustomerUserIds(encodeString(assignedCustomerUserIds));
+			} else {
+				promotion.setAssignedCustomerUserIds("");				
+			}*/			
+			promoList.add(model);
+		}
+
+		rs.close();
+		ps.close();
+
+		return promoList;
+		
+	}
+	
 
 	public static List getPromotions(Connection conn) throws SQLException {
 		
@@ -450,6 +507,8 @@ public class FDPromotionManagerDAO {
 		}
 		if (!"".equals(promotion.getCategoryName()) && !"".equals(promotion.getProductName())) {
 			promotion.setValueType("sample");
+		} else if (!"".equals(promotion.getPromotionType()) && "LINE_ITEM".equalsIgnoreCase(promotion.getPromotionType()) ) {
+			promotion.setValueType("lineitem");
 		} else if (!"".equals(promotion.getMaxAmount())) {
 			promotion.setValueType("discount");
 		} else if (!"".equals(promotion.getPercentOff())) {
@@ -491,6 +550,12 @@ public class FDPromotionManagerDAO {
 		} else {
 			promotion.setModifiedBy("");
 		}
+		
+		
+		promotion.setAllowHeaderDiscount("X".equalsIgnoreCase(rs.getString("allow_header_discount")));
+		promotion.setRecommendedItemsOnly("X".equalsIgnoreCase(rs.getString("recommended_items_only")));
+		promotion.setMaxItemCount(rs.getInt("max_item_count"));
+		
 		return promotion;
 	}
 	
@@ -504,7 +569,7 @@ public class FDPromotionManagerDAO {
 				+ " CAMPAIGN_CODE = ?, MIN_SUBTOTAL = ?, MAX_AMOUNT = ?, PERCENT_OFF = ?, WAIVE_CHARGE_TYPE = ?, UNIQUE_USE = ?, CATEGORY_NAME = ?, PRODUCT_NAME = ?,"
 				+ " ORDERTYPE_HOME = ?, ORDERTYPE_PICKUP = ?, ORDERTYPE_DEPOT = ?, ORDERTYPE_CORPORATE = ?, NEEDDRYGOODS = ?,"
 				+ " ORDERCOUNT = ?, NEEDITEMSFROM = ?, EXCLUDESKUPREFIX = ?, NEEDBRANDS = ?, EXCLUDEBRANDS = ?, RULE_BASED = ?, REF_PROG_CAMPAIGN_CODE = ?, IS_MAX_USAGE_PER_CUST = ?,"
-				+ " ROLLING_EXPIRATION_DAYS = ?, NOTES = ?, ACTIVE = ?, MODIFY_DATE = SYSDATE, MODIFIED_BY = ?, DONOT_APPLY_FRAUD = ? , PROFILE_OPERATOR = ? "
+				+ " ROLLING_EXPIRATION_DAYS = ?, NOTES = ?, ACTIVE = ?, MODIFY_DATE = SYSDATE, MODIFIED_BY = ?, DONOT_APPLY_FRAUD = ? , PROFILE_OPERATOR = ?, recommended_items_only=?, allow_header_discount=?, max_item_count=?  "
 				+ " WHERE ID = ?");
 		int i = 1;
 		ps.setString(i++, promotion.getPromotionCode());
@@ -654,6 +719,24 @@ public class FDPromotionManagerDAO {
 			ps.setString(i++, promotion.getProfileOperator());
 		}else{
 			ps.setNull(i++, Types.VARCHAR);
+		}
+		
+		if(promotion.isRecommendedItemsOnly()){
+			ps.setString(i++, "X");
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
+		
+		if(promotion.isAllowHeaderDiscount()){
+			ps.setString(i++, "X");
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
+		
+		if (promotion.getMaxItemCount()>0) {
+			ps.setInt(i++,promotion.getMaxItemCount());
+		} else {
+			ps.setNull(i++, Types.INTEGER);					
 		}
 		
 		ps.setString(i++, promotion.getPK().getId());

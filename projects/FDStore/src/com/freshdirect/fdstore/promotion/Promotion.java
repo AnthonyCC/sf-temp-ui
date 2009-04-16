@@ -30,15 +30,25 @@ public class Promotion extends ModelSupport implements PromotionI {
 	//private boolean audienceBased;
 
 	private final List strategies = new ArrayList();
+	
+	//private final List lineItemStrategies= new ArrayList();
 
 	private PromotionApplicatorI applicator;
+	
+	//private PromotionApplicatorI lineItemApplicator;
 
 	private Timestamp lastModified;
+		
 	
 	private int priority;
 	
+	private boolean allowHeaderDiscount=false;
+	
+	private boolean recommendedItemsOnly=false;
+	
 	private final static Comparator PRECEDENCE_COMPARATOR = new Comparator() {
 		public int compare(Object o1, Object o2) {
+			
 			int p1 = ((PromotionStrategyI) o1).getPrecedence();
 			int p2 = ((PromotionStrategyI) o2).getPrecedence();
 			return p1 - p2;
@@ -63,6 +73,12 @@ public class Promotion extends ModelSupport implements PromotionI {
 		this.strategies.add(strategy);
 		Collections.sort(this.strategies, PRECEDENCE_COMPARATOR);
 	}
+/*	
+	public void addLineItemStrategy(PromotionStrategyI strategy) {
+		this.lineItemStrategies.add(strategy);
+		Collections.sort(this.lineItemStrategies, PRECEDENCE_COMPARATOR);
+	}
+*/	
 
 	public void setApplicator(PromotionApplicatorI applicator) {
 		this.applicator = applicator;
@@ -71,19 +87,22 @@ public class Promotion extends ModelSupport implements PromotionI {
 			setPriority(10);
 		else if(this.isWaiveCharge())
 			//Delivery Promo
-			setPriority(20);
+			setPriority(20);	
+		else if(this.isLineItemDiscount()) //&& this.isAllowHeaderDiscount())
+			//Line Item Promo
+			setPriority(30);					
 		else if(this.isSignupDiscount())
 			//Signup promo
-			setPriority(30);
+			setPriority(40);
 		else if(this.isRedemption())
 			//Redemption promo
-			setPriority(40);
+			setPriority(50);
 		else if(this.isCategoryDiscount())
 			//DCPD promotion
-			setPriority(50);
+			setPriority(60);
 		else{
 			//Any other automatic percent off or dollar off.
-			setPriority(60);
+			setPriority(70);
 		}
 	}
 
@@ -119,7 +138,7 @@ public class Promotion extends ModelSupport implements PromotionI {
 	 * @return true if the Promotion is configured properly.
 	 */
 	public boolean isValid() {
-		return this.applicator != null;
+		return this.applicator != null ;
 	}
 
 	public boolean evaluate(PromotionContextI context) {
@@ -128,8 +147,8 @@ public class Promotion extends ModelSupport implements PromotionI {
 			PromotionStrategyI strategy = (PromotionStrategyI) i.next();
 			int response = strategy.evaluate(this.promotionCode, context);
 
-			// System.out.println("Evaluated " + this.promotionCode + " / " +
-			// strategy.getClass().getName() + " -> " + response);
+			 //System.out.println("Evaluated " + this.promotionCode + " / " +
+			 //strategy.getClass().getName() + " -> " + response);
 
 			switch (response) {
 
@@ -151,13 +170,19 @@ public class Promotion extends ModelSupport implements PromotionI {
 	}
 
 	public boolean apply(PromotionContextI context) {
+		System.out.println("Applicator type :"+applicator);
 		return this.applicator.apply(this.promotionCode, context);
 	}
+	/*
+	public boolean applyLineItem(PromotionContextI context) {
+		return this.lineItemApplicator.apply(this.promotionCode, context);
+	}
+	*/
 
 	public Collection getStrategies() {
 		return Collections.unmodifiableCollection(this.strategies);
 	}
-
+	
 	public PromotionStrategyI getStrategy(Class strategyClass) {
 		for (Iterator i = this.strategies.iterator(); i.hasNext();) {
 			PromotionStrategyI strategy = (PromotionStrategyI) i.next();
@@ -242,6 +267,10 @@ public class Promotion extends ModelSupport implements PromotionI {
 		if (this.applicator instanceof WaiveChargeApplicator) {
 			return ((WaiveChargeApplicator) this.applicator).getMinSubtotal();
 		}
+		if (this.applicator instanceof LineItemDiscountApplicator) {
+			return ((LineItemDiscountApplicator) this.applicator).getMinSubtotal();
+		}
+
 		List discountRules = this.getHeaderDiscountRules();
 		if (discountRules == null) {
 			return 0;
@@ -278,4 +307,62 @@ public class Promotion extends ModelSupport implements PromotionI {
 		sb.append("\n\t], Applicator=").append(this.applicator).append("\n]");
 		return sb.toString();
 	}
+/*
+	public boolean evaluateLineItemPromo(PromotionContextI context) {
+		// TODO Auto-generated method stub
+		for (Iterator i = this.lineItemStrategies.iterator(); i.hasNext();) {
+			PromotionStrategyI strategy = (PromotionStrategyI) i.next();
+			int response = strategy.evaluate(this.promotionCode, context);
+
+			 System.out.println("Evaluated " + this.promotionCode + " / " +
+			 strategy.getClass().getName() + " -> " + response);
+
+			switch (response) {
+
+			case PromotionStrategyI.ALLOW:
+				// check next rule
+				continue;
+
+			case PromotionStrategyI.FORCE:
+				// eligible, terminate evaluation
+				return true;
+
+			default:
+				// not eligible, terminate evaluation
+				return false;
+			}
+		}
+
+		return true;
+	}
+		
+*/
+
+	public boolean isLineItemDiscount() {
+		// TODO Auto-generated method stub
+		return this.applicator instanceof LineItemDiscountApplicator;
+	}
+	
+	
+/*
+	public Collection getLineItemStrategies() {
+			return Collections.unmodifiableCollection(this.lineItemStrategies);
+	}
+*/
+	public boolean isAllowHeaderDiscount() {
+		return allowHeaderDiscount;
+	}
+
+	public void setAllowHeaderDiscount(boolean applyHeaderDiscount) {
+		this.allowHeaderDiscount = applyHeaderDiscount;
+	}
+
+	public void setRecommendedItemsOnly(boolean recommendedItemsOnly) {
+		this.recommendedItemsOnly = recommendedItemsOnly;
+	}
+	 public boolean isRecommendedItemsOnly(){
+		 return this.recommendedItemsOnly;
+	 }
+
+
 }

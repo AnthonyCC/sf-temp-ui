@@ -110,6 +110,7 @@ public interface SAPConstants {
 	public static final String NUMBER_REGULAR_CARTONS = "Total Number of Regular Cartons";
 	public static final String NUMBER_FREEZER_CARTONS = "Number of Freezer Cartons";
 	public static final String NUMBER_ALCOHOL_CARTONS = "Number of Cartons Containing alcohol";
+	public static final String ACTUAL_DISCOUNT_AMOUNT = "Actual header discount amount";
 
 	//
 	// constants for invoice line item
@@ -130,6 +131,8 @@ public interface SAPConstants {
 	public static final String WEIGHT_UNIT = "Weight unit";
 	public static final String ORDER_LINE_STATUS = "Line status";
 	public static final String ACTUAL_COST = "Actual Cost";
+	public static final String INVOICE_LINE_DISCOUNT_AMOUNT = "Invoice line discount amount";
+	
 	//credit memo fields
 	public static final String WEB_REFERENCE_NUMBER = "Web reference number";
 	public static final String CREDIT_MEMO_NUMBER = "Credit memo number";

@@ -91,7 +91,7 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 	 */
 	public static List findByParent(Connection conn, PrimaryKey parentPK) throws SQLException {
 		java.util.List lst = new java.util.LinkedList();
-		PreparedStatement ps = conn.prepareStatement("SELECT ID, ORDERLINE_NUMBER, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN, DESCRIPTION, CONFIGURATION_DESC, DEPARTMENT_DESC, MATERIAL_NUMBER, PRICE, PERISHABLE, TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, RATING,BASE_PRICE,BASE_PRICE_UNIT FROM CUST.ORDERLINE WHERE SALESACTION_ID=? ORDER BY ORDERLINE_NUMBER");
+		PreparedStatement ps = conn.prepareStatement("SELECT ID, ORDERLINE_NUMBER, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN, DESCRIPTION, CONFIGURATION_DESC, DEPARTMENT_DESC, MATERIAL_NUMBER, PRICE, PERISHABLE, TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, RATING,BASE_PRICE,BASE_PRICE_UNIT,DISCOUNT_AMT, VARIANT_ID, SAVINGS_ID FROM CUST.ORDERLINE WHERE SALESACTION_ID=? ORDER BY ORDERLINE_NUMBER");
 		ps.setString(1, parentPK.getId());
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
@@ -108,8 +108,8 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 		"INSERT INTO CUST.ORDERLINE (ID, SALESACTION_ID, ORDERLINE_NUMBER, SKU_CODE, VERSION,"
 		+ " QUANTITY, SALES_UNIT, CONFIGURATION, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN,"
 		+ " DESCRIPTION, CONFIGURATION_DESC, DEPARTMENT_DESC, MATERIAL_NUMBER, PRICE, PERISHABLE,"
-		+ " TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION,RATING,BASE_PRICE,BASE_PRICE_UNIT)"
-		+ " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		+ " TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION,RATING,BASE_PRICE,BASE_PRICE_UNIT,DISCOUNT_AMT,VARIANT_ID,SAVINGS_ID)"
+		+ " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	public PrimaryKey create(Connection conn) throws SQLException {
 		String id = this.getNextId(conn, "CUST");
@@ -138,7 +138,7 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 		ps.setString(13, this.model.getConfigurationDesc());
 		ps.setString(14, this.model.getDepartmentDesc());
 		ps.setString(15, this.model.getMaterialNumber());
-		ps.setDouble(16, this.model.getPrice());
+		ps.setDouble(16, this.model.getActualPrice());
 		ps.setString(17, (this.model.isPerishable() ? "X" : ""));
 		ps.setDouble(18, this.model.getTaxRate());
 		ps.setDouble(19, this.model.getDepositValue());
@@ -162,6 +162,18 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 			ps.setNull(27, Types.VARCHAR);
 		}
 		
+		ps.setDouble(28,model.getDiscountAmount());
+		
+		if(this.model.getVariantId()!=null) {
+			ps.setString(29,this.model.getVariantId());
+		} else {
+			ps.setNull(29, Types.VARCHAR);
+		}				
+		if(this.model.getSavingsId()!=null) {
+			ps.setString(30,this.model.getSavingsId());
+		} else {
+			ps.setNull(30, Types.VARCHAR);
+		}
 		try {
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not created");
@@ -179,7 +191,7 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 
 	public void load(Connection conn) throws SQLException {
 				
-		PreparedStatement ps = conn.prepareStatement("SELECT ORDERLINE_NUMBER, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN, DESCRIPTION, CONFIGURATION_DESC, DEPARTMENT_DESC, MATERIAL_NUMBER, PRICE, PERISHABLE, TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, RATING,BASE_PRICE,BASE_PRICE_UNIT FROM CUST.ORDERLINE WHERE ID=?");
+		PreparedStatement ps = conn.prepareStatement("SELECT ORDERLINE_NUMBER, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN, DESCRIPTION, CONFIGURATION_DESC, DEPARTMENT_DESC, MATERIAL_NUMBER, PRICE, PERISHABLE, TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, RATING,BASE_PRICE,BASE_PRICE_UNIT,DISCOUNT_AMT,VARIANT_ID,SAVINGS_ID FROM CUST.ORDERLINE WHERE ID=?");
 		ps.setString(1, this.getPK().getId());
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
@@ -202,7 +214,7 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 		this.model.setConfigurationDesc(NVL.apply(rs.getString("CONFIGURATION_DESC"), ""));
 		this.model.setDepartmentDesc(rs.getString("DEPARTMENT_DESC"));
 		this.model.setMaterialNumber(rs.getString("MATERIAL_NUMBER"));
-		this.model.setPrice(rs.getDouble("PRICE"));
+		this.model.setPrice(rs.getDouble("PRICE") - rs.getDouble("DISCOUNT_AMT"));
 		this.model.setPerishable(NVL.apply(rs.getString("PERISHABLE"), "").equals("X"));
 		this.model.setTaxRate(rs.getDouble("TAX_RATE"));
 		this.model.setDepositValue(rs.getDouble("DEPOSIT_VALUE"));
@@ -214,7 +226,10 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
         this.model.setProduceRating(EnumOrderLineRating.getEnumByStatusCode(NVL.apply(rs.getString("RATING"), "X")));  
         this.model.setBasePrice(rs.getDouble("BASE_PRICE"));
         this.model.setBasePriceUnit(rs.getString("BASE_PRICE_UNIT"));
-		
+        this.model.setDiscountAmount(rs.getDouble("DISCOUNT_AMT"));
+        this.model.setVariantId(rs.getString("VARIANT_ID"));
+        this.model.setSavingsId(rs.getString("SAVINGS_ID"));
+        
 		// deal with no promotion (PROMOTION_TYPE is NULL)
 		int type = rs.getInt("PROMOTION_TYPE");
 		if(!rs.wasNull()){

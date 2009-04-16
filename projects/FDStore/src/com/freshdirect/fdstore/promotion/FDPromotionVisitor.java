@@ -7,12 +7,14 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDPromotionEligibility;
+import com.freshdirect.fdstore.customer.adapter.PromoVariantHelper;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 
@@ -23,7 +25,6 @@ public class FDPromotionVisitor {
 	public static FDPromotionEligibility applyPromotions(PromotionContextI context) {
 		long startTime = System.currentTimeMillis();
 		LOGGER.info("Apply Promotions - START TIME ");
-		
 		List ruleBasedPromotions = FDPromotionRulesEngine.getEligiblePromotions(context);
 		context.setRulePromoCode(ruleBasedPromotions);
 		FDPromotionEligibility eligibilities = evaluatePromotions(context);
@@ -32,53 +33,37 @@ public class FDPromotionVisitor {
 		LOGGER.info("Promotion eligibility:after resolve conflicts " + eligibilities);
 		applyPromotions(context, eligibilities);
 		LOGGER.info("Promotion eligibility: after apply " + eligibilities);
-		
 		LOGGER.info("Apply Promotions - END TIME ");
 		long endTime = System.currentTimeMillis();
 		LOGGER.info("Apply Promotions - TOTAL EXECUTION TIME "+(endTime - startTime)+" milliseconds");
 		return eligibilities;
 	}
 
-	/**
-	 * @return Map of promotionCode String -> EnumPromotionEligibility
-	 */
-	/*private static FDPromotionEligibility evaluatePromotions(PromotionContextI context) {
-		FDPromotionEligibility eligibilities = new FDPromotionEligibility();
-
-		Collection promotions = FDPromotionFactory.getInstance().getPromotions();
-		for (Iterator i = promotions.iterator(); i.hasNext();) {
-			PromotionI promotion = (PromotionI) i.next();
-
-			boolean e = promotion.evaluate(context);
-
-			eligibilities.setEligibility(promotion.getPromotionCode(), e);
-		}
-
-		return eligibilities;
-	}*/
-
-	private static FDPromotionEligibility evaluatePromotions(PromotionContextI context) {
-		long startTime = System.currentTimeMillis();
-		FDPromotionEligibility eligibilities = new FDPromotionEligibility();
-		//Get All Automatic Promo codes.  Evaluate them.
-		Collection promotions = PromotionFactory.getInstance().getAllAutomaticPromotions();
-		for (Iterator i = promotions.iterator(); i.hasNext();) {
-			PromotionI autopromotion  = (PromotionI) i.next();
-			boolean e = autopromotion.evaluate(context);
-			eligibilities.setEligibility(autopromotion.getPromotionCode(), e);
-		}
-		//Get the redemption promotion if user redeemed one and evaluate it.
-		PromotionI redeemedPromotion = context.getRedeemedPromotion();
-		if(redeemedPromotion != null){
-			boolean e = redeemedPromotion.evaluate(context);
-			eligibilities.setEligibility(redeemedPromotion.getPromotionCode(), e);
-		}
-		long endTime = System.currentTimeMillis();
-		return eligibilities;
-	}
-
 	
-	
+	 private static FDPromotionEligibility evaluatePromotions(PromotionContextI context) {
+         long startTime = System.currentTimeMillis();
+         FDPromotionEligibility eligibilities = new FDPromotionEligibility();
+         int counter = 0;
+         //Get All Automatic Promo codes.  Evaluate them.
+         Collection promotions = PromotionFactory.getInstance().getAllAutomaticPromotions();
+         for (Iterator i = promotions.iterator(); i.hasNext();) {
+               PromotionI autopromotion  = (PromotionI) i.next(); 
+               String promoCode = autopromotion.getPromotionCode();
+               boolean e = autopromotion.evaluate(context);
+               eligibilities.setEligibility(promoCode, e);
+        }
+         
+         //Get the redemption promotion if user redeemed one and evaluate it.
+         PromotionI redeemedPromotion = context.getRedeemedPromotion();
+         if(redeemedPromotion != null){
+               boolean e = redeemedPromotion.evaluate(context);
+               String promoCode = redeemedPromotion.getPromotionCode();
+               eligibilities.setEligibility(promoCode, e);
+         }
+         long endTime = System.currentTimeMillis();
+         return eligibilities;
+   }
+
 	protected static List resolveConflicts(boolean allowMultipleHeader, List promotions) {
 		if (promotions.isEmpty() || promotions.size() == 1) {
 			return promotions;

@@ -123,4 +123,32 @@ public interface FDCartLineI extends FDProductSelectionI {
 	 * @return Variant ID
 	 */
 	public String getVariantId();
+	
+	/**
+	 * Returns the Discount Amount for the line item
+	 * 
+	 * @return line discount amount.	 */
+	
+	public double getDiscountAmount();
+	
+	/**
+	 * Returns boolean if this line item has discount applied.
+	 * 
+	 * @return boolean
+	 */
+	public boolean isDiscountApplied();
+	
+	public void setDiscountApplied(boolean b);
+	
+	public void setDiscount(Discount d);
+	
+	public boolean hasDiscount(String promoCode);
+	
+	public void setSavingsId(String savingsId);
+	
+	public String getSavingsId();
+	
+	public void removeLineItemDiscount();
+	
+	public double getActualPrice();
 }

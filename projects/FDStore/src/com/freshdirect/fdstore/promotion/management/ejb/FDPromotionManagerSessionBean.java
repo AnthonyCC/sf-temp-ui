@@ -98,6 +98,35 @@ public class FDPromotionManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
+	
+	
+	
+	public List getPromotionVariants(String promoId) throws FDResourceException{
+		
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			List promotionList = FDPromotionManagerDAO.getPromotionVariants(
+					conn, promoId);
+			return promotionList;
+
+		} catch (SQLException sqle) {
+			throw new EJBException(sqle.getMessage());
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException sqle2) {
+					LOGGER
+							.error(
+									"Unable to close connection after getting promotion.",
+									sqle2);
+					throw new FDResourceException(sqle2);
+				}
+			}
+		}
+		
+	}
 
 	public PrimaryKey createPromotion(FDPromotionModel promotion)
 			throws FDResourceException, FDDuplicatePromoFieldException,
@@ -599,7 +628,37 @@ public class FDPromotionManagerSessionBean extends SessionBeanSupport {
 		}
 		return sb.toString();
 	}
+	// 
 
+	/**
+	 * Methods for loading All Active promo variants.
+	 * Map variantId --> FDPromoVariantModel
+	 */
+	public List getAllActivePromoVariants(List smartSavingsFeatures) {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+
+			List promoVariants = FDPromotionDAO.loadAllActivePromoVariants(conn, smartSavingsFeatures);
+
+			return promoVariants;
+
+		} catch (SQLException sqle) {
+			throw new EJBException(sqle);
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException sqle2) {
+					LOGGER
+							.error(
+									"Unable to close connection after loading all active Promo Variants.",
+									sqle2);
+					throw new EJBException(sqle2);
+				}
+			}
+		}
+	}
 	private ActivityLogHome getActivityLogHome() {
 		try {
 			return (ActivityLogHome) LOCATOR.getRemoteHome(

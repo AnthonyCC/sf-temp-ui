@@ -8,7 +8,9 @@
 
 <script language="javascript">
                       function handleValueType(chkFld) {
-                      	var fldVal = chkFld.value;                      	
+                      	var fldVal = chkFld.value;        
+
+                        alert("fldVal :"+fldVal); 
                       	if(fldVal != "discount") {
                         	document.getElementById("maximum_discount").value = "";                        	
                         }                                                                         	
@@ -27,6 +29,17 @@
                         	document.getElementById("prod_name").disabled = true;
                         	document.getElementById("prod_category").disabled = true;
                         }
+                        if(fldVal != "lineitem") {
+                       
+                         document.getElementById("percentOff1").value = "";                        	
+                         document.getElementById("percentOff1").disabled = true;                        	
+                         document.getElementById("maximumItemCount").value = "";                        	
+                         document.getElementById("maximumItemCount").disabled = true;                        	
+                        	document.getElementById("applyHeaderDiscount").disabled = true;
+                        	document.getElementById("recommendedItemsOnly").disabled = true;
+                        }
+   
+                        
                         document.getElementById("maximum_discount").disabled = (fldVal != "discount");
                         document.getElementById("percentOff").disabled = (fldVal != "percentOff");
                         document.getElementById("department_ids").disabled = (fldVal != "percentOff");
@@ -35,6 +48,11 @@
                         document.getElementById("waiveChargeType").disabled = (fldVal != "waiveCharge");
                         document.getElementById("prod_name").disabled = (fldVal != "sample");
                         document.getElementById("prod_category").disabled = (fldVal != "sample");
+                        document.getElementById("percentOff1").disabled = (fldVal != "lineitem");                        	
+                        document.getElementById("maximumItemCount").disabled = (fldVal != "lineitem");                        	
+                        document.getElementById("applyHeaderDiscount").disabled = (fldVal != "lineitem");                        	
+                        document.getElementById("recommendedItemsOnly").disabled = (fldVal != "lineitem");                        	
+                        
                       }
                       
                       function handleCampaignType(selectChamFld) {
@@ -178,6 +196,8 @@
 			<td colspan="1" align="right">Referral Program Code:</td>
 			<td colspan="3">&nbsp;<input type="text" name="ref_prog_campaign_code" class="input" style="width: 150px;" maxlength="16" value="<%=promotion.getRefProgCampaignCode()%>">&nbsp;<fd:ErrorHandler result="<%= result %>" name="ref_prog_campaign_code" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
 		</tr>						
+        
+        
 		
 		  <tr>
       		<td colspan="12" style="border-bottom: solid 1px #999999;"><br/>*&nbsp;<strong>VALUE:</strong> (Dollar Off discount/ Percent off discount/ Waive Charge/ Sample Item)&nbsp;<fd:ErrorHandler result="<%= result %>" name="value_type" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
@@ -243,6 +263,9 @@
 			
 		</tr>
 		
+        
+        
+        
 		<tr valign="top">
 			<td colspan="1" align="right"><span class="field_note">enter comma separated<br/> department or category id(s)<br/> no whitespaces</span></td>
 			<td colspan="3" >
@@ -265,6 +288,45 @@
 			<span class="field_note">e.g. corn</span>&nbsp;<fd:ErrorHandler result="<%= result %>" name="prod_category" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
 		</tr>				
 		
+        <!-- new changes here -->
+        
+       	<tr valign="top">
+			<td colspan="4" style="border-bottom: dashed 1px #999999;">&nbsp;</td>
+			<td colspan="4" style="border-bottom: dashed 1px #999999;">&nbsp;</td>
+		</tr>
+
+        
+        <tr valign="top">
+			 <td nowrap colspan="1" align="right"><input type="radio" name="value_type" onClick="handleValueType(this)" value="lineitem" <%=("lineitem".equals(promotion.getValueType())) ? "CHECKED" : ""%>> <strong>LINE ITEM DISCOUNT</strong>
+			 </td>
+			 <td colspan="3" >&nbsp;&nbsp;<input type="text" id="percentOff1" name="percentOff1" class="input" style="width: 40px;" value="<%= promotion.getPercentOff() %>" <%=("lineitem".equals(promotion.getValueType())) ?  "" : "DISABLED"%>>%&nbsp;
+			 	<span class="field_note">&nbsp;e.g. 20</span><fd:ErrorHandler result="<%= result %>" name="percentOff" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
+			 </td>
+             
+			<td colspan="1" align="left">
+			 </td>
+			 <td colspan="3">&nbsp;</td>
+		</tr>
+        
+        
+        <tr valign="top">
+			<td colspan="1" align="right">* Maximum Item Count:</td>
+			<td colspan="3">&nbsp;<input type="text" id="maximumItemCount" name="maximumItemCount" maxlength="3" class="input" style="width: 50px;" value="<%=StringUtil.isEmpty(""+promotion.getMaxItemCount()) ? "0" : ""+promotion.getMaxItemCount()%>"  <%=("lineitem".equals(promotion.getValueType())) ?  "" : "DISABLED"%> > &nbsp;<fd:ErrorHandler result="<%= result %>" name="maximumItemCount" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+        </tr>
+
+       <tr valign="top">
+    		<td colspan="1" align="right">Recommended Item Promo :</td>
+  			<td colspan="3">&nbsp;<input type="checkbox" id="recommendedItemsOnly" name="recommendedItemsOnly" <%=promotion.isRecommendedItemsOnly() ? "CHECKED" : ""%>  <%=("lineitem".equals(promotion.getValueType())) ?  "" : "DISABLED"%> >&nbsp;&nbsp;&nbsp;&nbsp;</td>					
+		</tr>
+
+        <tr valign="top">
+			<td colspan="1" align="right">Apply Header Discount Also :</td>
+  			<td colspan="3">&nbsp;<input type="checkbox" id="applyHeaderDiscount" name="applyHeaderDiscount" <%=promotion.isAllowHeaderDiscount() ? "CHECKED" : ""%>>&nbsp;&nbsp;&nbsp;&nbsp;</td>					
+		</tr>
+
+        
+        <!-- new changes ends here -->
+        
 		<tr>
       		<td colspan="12" style="border-bottom: solid 1px #999999;"><br/>&nbsp;<strong>CUSTOMER REQUIREMENT</strong></td>
    		 </tr>

@@ -8,6 +8,7 @@ package com.freshdirect.customer;
 import java.util.*;
 
 import com.freshdirect.affiliate.ErpAffiliate;
+import com.freshdirect.framework.util.MathUtil;
 
 /**
  * @stereotype fd-model 
@@ -53,13 +54,33 @@ public abstract class ErpAbstractInvoiceModel extends ErpTransactionModel {
 		return deposit;
 	} 
 
-	public double getSubTotal(){
-		return this.subtotal;
+	public double getSubTotal(){		
+		double subTotal = 0.0;
+		if(this.invoiceLines==null) return 0; 
+		for (Iterator i = this.invoiceLines.iterator(); i.hasNext();) {
+			ErpInvoiceLineModel invoiceLine = (ErpInvoiceLineModel)i.next();
+			subTotal += MathUtil.roundDecimal(invoiceLine.getPrice());
+		}
+		return MathUtil.roundDecimal(subTotal);		
 	}
+	
+	
+	public double getActualSubTotal(){		
+		double subTotal = 0.0;
+		if(this.invoiceLines==null) return 0; 
+		for (Iterator i = this.invoiceLines.iterator(); i.hasNext();) {
+			ErpInvoiceLineModel invoiceLine = (ErpInvoiceLineModel)i.next();
+			subTotal += MathUtil.roundDecimal(invoiceLine.getPrice()+invoiceLine.getActualDiscountAmount());
+		}
+		return MathUtil.roundDecimal(subTotal);		
+	}
+			
 
 	public void setSubTotal(double subTotal){
 		this.subtotal = subTotal;
 	}
+
+		
 
 	public List getInvoiceLines(){
 		return this.invoiceLines;
@@ -76,6 +97,7 @@ public abstract class ErpAbstractInvoiceModel extends ErpTransactionModel {
 		}
 		return foundInvoiceLine;
 	}
+			
 
 	public void  setInvoiceLines(List lines){
 		this.invoiceLines = lines;

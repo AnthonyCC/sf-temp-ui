@@ -10,9 +10,13 @@ public interface PromotionI extends Serializable {
 	public String getPromotionCode();
 
 	public boolean evaluate(PromotionContextI context);
+	
+	//public boolean evaluateLineItemPromo(PromotionContextI context);
 
 	public boolean apply(PromotionContextI context);
-
+	
+	//public boolean applyLineItem(PromotionContextI context);
+	
 	public String getDescription();
 
 	public Date getExpirationDate();
@@ -40,4 +44,8 @@ public interface PromotionI extends Serializable {
 	public boolean isSignupDiscount();
 	
 	public boolean isCategoryDiscount();
+	
+	public boolean isLineItemDiscount();
+	
+	public boolean isRecommendedItemsOnly();
 }

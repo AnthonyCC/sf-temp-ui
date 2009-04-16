@@ -108,7 +108,7 @@ public class ErpInvoicePersistentBean extends ErpTransactionPersistentBean {
 		ps.setString(6, this.model.getTransactionSource().getCode());
 		ps.setString(7, this.model.getInvoiceNumber());
 		ps.setDouble(8, this.model.getTax());
-		ps.setDouble(9, this.model.getSubTotal()); 
+		ps.setDouble(9, this.model.getActualSubTotal()); 
 		ps.setString(10, this.model.getCustomerId());	
 		
 		try {

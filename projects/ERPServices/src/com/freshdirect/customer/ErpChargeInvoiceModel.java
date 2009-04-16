@@ -10,6 +10,8 @@ package com.freshdirect.customer;
 
 public class ErpChargeInvoiceModel extends ErpAbstractInvoiceModel {
 	
+	private double subTotal;
+	
     public ErpChargeInvoiceModel() {
 		super(EnumTransactionType.INVOICE_CHARGE);
     }
@@ -17,5 +19,13 @@ public class ErpChargeInvoiceModel extends ErpAbstractInvoiceModel {
     public ErpChargeInvoiceModel(EnumTransactionType transType){
     	super(transType);
     }
+
+	public double getSubTotal() {
+		return subTotal;
+	}
+
+	public void setSubTotal(double subTotal) {
+		this.subTotal = subTotal;
+	}
     	
 }

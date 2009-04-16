@@ -1,5 +1,7 @@
 package com.freshdirect.webapp.taglib.promotion;
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
@@ -31,7 +33,16 @@ public class GetPromotionTag extends AbstractGetterTag {
 			if (promotionId != null && !"".equals(promotionId)) {
 				try{
 					promotion = FDPromotionManager.loadPromotion(this.promotionId);
-					session.setAttribute(SessionName.EDIT_PROMOTION, promotion);
+					List promoVariantList=FDPromotionManager.loadPromotionVariants(this.promotionId);
+					
+					System.out.println("promoVariantList :"+promoVariantList);
+					
+					if(promoVariantList!=null && promoVariantList.size()>0)
+					    promotion.setPromoVariants(promoVariantList);
+					
+					session.setAttribute(SessionName.EDIT_PROMOTION, promotion);					
+					
+					
 				}catch(FDResourceException e){
 					throw new JspException(e);
 				}

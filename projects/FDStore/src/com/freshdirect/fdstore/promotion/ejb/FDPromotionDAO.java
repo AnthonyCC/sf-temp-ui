@@ -17,6 +17,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import com.freshdirect.common.pricing.Discount;
+import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.fdstore.content.ProductRef;
 import com.freshdirect.fdstore.promotion.ActiveInactiveStrategy;
@@ -28,6 +30,9 @@ import com.freshdirect.fdstore.promotion.DCPDiscountRule;
 import com.freshdirect.fdstore.promotion.DateRangeStrategy;
 import com.freshdirect.fdstore.promotion.EnumOrderType;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
+import com.freshdirect.fdstore.promotion.LineItemDiscountApplicator;
+import com.freshdirect.fdstore.promotion.MaxLineItemCountStrategy;
+import com.freshdirect.fdstore.promotion.PromoVariantModel;
 import com.freshdirect.fdstore.promotion.FraudStrategy;
 import com.freshdirect.fdstore.promotion.GeographyStrategy;
 import com.freshdirect.fdstore.promotion.HeaderDiscountApplicator;
@@ -36,17 +41,21 @@ import com.freshdirect.fdstore.promotion.LimitedUseStrategy;
 import com.freshdirect.fdstore.promotion.OrderTypeStrategy;
 import com.freshdirect.fdstore.promotion.PercentOffApplicator;
 import com.freshdirect.fdstore.promotion.ProfileAttributeStrategy;
+import com.freshdirect.fdstore.promotion.PromoVariantModelImpl;
 import com.freshdirect.fdstore.promotion.Promotion;
 import com.freshdirect.fdstore.promotion.PromotionApplicatorI;
 import com.freshdirect.fdstore.promotion.PromotionGeography;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.PromotionStrategyI;
+import com.freshdirect.fdstore.promotion.RecommendationStrategy;
+import com.freshdirect.fdstore.promotion.RecommendedLineItemStrategy;
 import com.freshdirect.fdstore.promotion.RedemptionCodeStrategy;
 import com.freshdirect.fdstore.promotion.RuleBasedPromotionStrategy;
 import com.freshdirect.fdstore.promotion.SampleLineApplicator;
 import com.freshdirect.fdstore.promotion.SampleStrategy;
 import com.freshdirect.fdstore.promotion.UniqueUseStrategy;
 import com.freshdirect.fdstore.promotion.WaiveChargeApplicator;
+import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.core.PrimaryKey;
 
 public class FDPromotionDAO {
@@ -127,7 +136,7 @@ public class FDPromotionDAO {
 			if(!"X".equals(rs.getString("DONOT_APPLY_FRAUD"))){
 				promo.addStrategy(new FraudStrategy());
 			}
-
+				
 			decorateOrderTypestrategy(rs, promo);
 
 			PromotionStrategyI geoStrategy = (PromotionStrategyI) geoStrategies.get(pk);
@@ -144,6 +153,20 @@ public class FDPromotionDAO {
 				Set saleIds = (Set) uniqueUseParticipation.get(promo.getPK().getId());
 				promo.addStrategy(new UniqueUseStrategy(saleIds == null ? Collections.EMPTY_SET : saleIds));
 			}
+
+			if(promoType.getName().equals(EnumPromotionType.LINE_ITEM.getName())){
+				boolean recItemsOnly = "X".equalsIgnoreCase(rs.getString("RECOMMENDED_ITEMS_ONLY"));
+				promo.setRecommendedItemsOnly(recItemsOnly);
+				if(recItemsOnly) {
+					promo.addStrategy(new RecommendationStrategy());
+				}
+				if("X".equalsIgnoreCase(rs.getString("ALLOW_HEADER_DISCOUNT"))){				
+				   promo.setAllowHeaderDiscount(true);		
+				}
+				//promo.addLineItemStrategy(new RecommendedItemStrategy());
+			}
+				
+			
 
 			decorateSampleStrategy(rs, promo);
 			//Load the profile strategy
@@ -319,6 +342,17 @@ public class FDPromotionDAO {
 		if(profStrategy != null){
 			promo.addStrategy(profStrategy);	
 		}
+		
+		if(promoType.getName().equals(EnumPromotionType.LINE_ITEM.getName())){
+			boolean recItemsOnly = "X".equalsIgnoreCase(rs.getString("RECOMMENDED_ITEMS_ONLY"));
+			promo.setRecommendedItemsOnly(recItemsOnly);
+			if("X".equalsIgnoreCase(rs.getString("ALLOW_HEADER_DISCOUNT"))){				
+			   promo.setAllowHeaderDiscount(true);		
+			}
+			//promo.addLineItemStrategy(new RecommendedItemStrategy());
+		}
+				
+		
 		PromotionApplicatorI applicator = null;
 		if(promoType.getName().equals(EnumPromotionType.DCP_DISCOUNT.getName())){
 			/*
@@ -426,18 +460,53 @@ public class FDPromotionDAO {
 		double maxAmount = rs.getDouble("max_amount");
 		wasNull |= rs.wasNull();
 
+
+/*		
+		if("LINE_ITEM".equalsIgnoreCase(rs.getString("CAMPAIGN_CODE")))
+		{   double percentOff = rs.getDouble("percent_off");
+		    System.out.println("returning the LineItemDiscountApplicator"+percentOff);						
+			return new RecommendedDiscountApplicator(minSubtotal,percentOff,maxItemCount,"X".equalsIgnoreCase(rs.getString("apply_header_discount"))?true:false);							   	
+		}
+*/
+		
+		// this code is for line item discount
+//		if(maxItemCount>0){
+//			System.out.println("*************loading the max item count applicator ******************"+maxItemCount);
+//			double percentOff = rs.getDouble("percent_off");									
+//			Discount dis=new Discount("SORI_TEST",EnumDiscountType.PERCENT_OFF,percentOff);				
+//			return new MaxLineItemCountApplicator(maxItemCount,dis);
+//			 
+//		}
+		
 		if (!wasNull) {
 			return new HeaderDiscountApplicator(new HeaderDiscountRule(minSubtotal, maxAmount));
 		}
 
+		
 		//
 		// percent-off applicator
 		//
 		wasNull = false;
 		double percentOff = rs.getDouble("percent_off");
+		String promoType = rs.getString("CAMPAIGN_CODE");
+		
 		wasNull |= rs.wasNull();
-		if (!wasNull) {
+		if (!wasNull && "REDEMPTION".equals(promoType)) {
+			
 			return new PercentOffApplicator(minSubtotal, percentOff);
+		}
+		
+		if(!wasNull && "LINE_ITEM".equals(promoType)){
+			LineItemDiscountApplicator applicator = new LineItemDiscountApplicator(minSubtotal, percentOff);
+			boolean recItemsOnly = "X".equalsIgnoreCase(rs.getString("RECOMMENDED_ITEMS_ONLY"));
+			if(recItemsOnly){
+				applicator.addLineItemStrategy(new RecommendedLineItemStrategy());
+			}
+			int maxItemCount = rs.getInt("MAX_ITEM_COUNT");
+			if(!rs.wasNull() && maxItemCount > 0){
+				applicator.addLineItemStrategy(new MaxLineItemCountStrategy(maxItemCount));
+			}
+			return applicator;
 		}
 
 		//
@@ -462,6 +531,7 @@ public class FDPromotionDAO {
 			return new SampleLineApplicator(new ProductRef(categoryName, productName), minSubtotal);
 		}
 
+		int maxItemCount=rs.getInt("max_item_count");
 		return null;
 	}
 
@@ -954,5 +1024,51 @@ public class FDPromotionDAO {
 //
 //		return strategies;
 //	}
+	private final static String GET_ALL_ACTIVE_PROMO_VARIANTS = "select vp.VARIANT_ID, vp.PROMO_CODE, vp.PRIORITY, v.FEATURE, vp.FEATURE_PRIORITY from cust.PROMO_VARIANTS vp, " +
+			"cust.SS_VARIANTS v, cust.PROMOTION p where p.CODE = vp.PROMO_CODE and v.ID = vp.VARIANT_ID and p.active='X' and (p.expiration_date > (sysdate-7) " +
+			"or p.expiration_date is null) and p.RECOMMENDED_ITEMS_ONLY='X'";
+	
+	public static List loadAllActivePromoVariants(Connection conn, List smartSavingFeatures) throws SQLException {
+		StringBuffer preparedStmtQry = new StringBuffer(GET_ALL_ACTIVE_PROMO_VARIANTS); 
+		StringBuffer buffer = new StringBuffer();
+		if(smartSavingFeatures != null && smartSavingFeatures.size() > 0) {
+			buffer.append(" AND ").append("V.FEATURE IN ").append("(");
+			for(Iterator it = smartSavingFeatures.iterator(); it.hasNext();){
+				buffer.append("\'").append(it.next()).append("\'");
+				if (it.hasNext()){
+					buffer.append(",");
+				}else{
+					buffer.append(")");
+				}
+			}
+		}
+		
+		if(buffer.length() > 0){
+			preparedStmtQry.append(buffer);
+		}
+		//preparedStmtQry.append(" order by vp.VARIANT_ID, vp.PRIORITY desc");
+		System.out.println("Query $$$$$$$$$$$$$$$$$ "+preparedStmtQry);
+		PreparedStatement ps = conn.prepareStatement(preparedStmtQry.toString());
+		ResultSet rs = ps.executeQuery();
+		List promoVariants =  constructPromoVariants(rs);
+		rs.close();
+		ps.close();
+		return promoVariants;
+	}
+	
+	private static List constructPromoVariants(ResultSet rs) throws SQLException {
+		List promoVariants = new ArrayList();
+		String currVariantId = "";
 
+		while(rs.next()){
+			String variantId = rs.getString("VARIANT_ID");
+			String promoCode = rs.getString("PROMO_CODE");
+			int priority = rs.getInt("PRIORITY");
+			String featureId = rs.getString("FEATURE");
+			int featurePriority = rs.getInt("FEATURE_PRIORITY");
+			PromoVariantModel promoVariant = new PromoVariantModelImpl(variantId, promoCode, priority, EnumSiteFeature.getEnum(featureId),featurePriority);
+			promoVariants.add(promoVariant);
+		}
+		return promoVariants;
+	}
 }

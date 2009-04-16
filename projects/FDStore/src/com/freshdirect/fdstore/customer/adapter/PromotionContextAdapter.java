@@ -305,14 +305,9 @@ public class PromotionContextAdapter implements PromotionContextI {
 		this.user.getShoppingCart().setDiscounts(new ArrayList());
 	}
 	private boolean isMaxDiscountAmount(double promotionAmt, EnumPromotionType type){
-		List l = this.getShoppingCart().getDiscounts();
-		if(l.isEmpty())
-			return true;
+		Discount applied = this.getHeaderDiscount();
+		if(applied == null) return true;
 		boolean flag = false;
-		Iterator i = l.iterator();
-		//Get the applied discount from the cart.
-		ErpDiscountLineModel model = (ErpDiscountLineModel)i.next();
-		Discount applied = model.getDiscount();
 		String appliedCode = applied.getPromotionCode();
 		PromotionI appliedPromo = PromotionFactory.getInstance().getPromotion(appliedCode);
 		EnumPromotionType appliedType = appliedPromo.getPromotionType();
@@ -324,5 +319,23 @@ public class PromotionContextAdapter implements PromotionContextI {
 			flag = true;
 		}
 		return flag;
+	}
+
+	public Discount getHeaderDiscount() {
+		// TODO Auto-generated method stub
+		List l = this.getShoppingCart().getDiscounts();
+		if(l.isEmpty())
+			return null;
+
+		Iterator i = l.iterator();
+		//Get the applied discount from the cart.
+		ErpDiscountLineModel model = (ErpDiscountLineModel)i.next();
+		if(model==null) return null;
+		Discount applied = model.getDiscount();
+		return applied; 
+	}
+	
+	public Map getPromoVariantMap() {
+		return this.getUser().getPromoVariantMap();
 	}
 }

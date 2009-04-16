@@ -44,8 +44,10 @@ import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
+import com.freshdirect.fdstore.promotion.PromoVariantModel;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.SignupDiscountRule;
+import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionImpressionLogEntry;
 import com.freshdirect.smartstore.fdstore.SessionImpressionLog;
@@ -675,5 +677,18 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public int getTotalCartSkuQuantity(String[] args) {
 		// TODO Auto-generated method stub
 		return user.getTotalCartSkuQuantity(args);
+	}
+	
+	public Map getPromoVariantMap() {
+		return this.user.getPromoVariantMap();
+	}
+	
+	public PromoVariantModel getPromoVariant(String variantId) {
+		// TODO Auto-generated method stub
+	   return user.getPromoVariant(variantId);
+	}
+	
+	public boolean isEligibleForSavings(EnumSiteFeature siteFeature) {
+		return user.isEligibleForSavings(siteFeature);
 	}
 }

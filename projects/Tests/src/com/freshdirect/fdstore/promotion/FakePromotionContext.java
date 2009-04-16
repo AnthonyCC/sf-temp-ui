@@ -3,6 +3,7 @@ package com.freshdirect.fdstore.promotion;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.common.pricing.Discount;
@@ -143,4 +144,11 @@ public class FakePromotionContext implements PromotionContextI {
 		return true;
 	}
 
+	public Map getPromoVariantMap(){
+		return null;
+	}
+	
+	public Discount getHeaderDiscount(){
+		return null;
+	}
 }

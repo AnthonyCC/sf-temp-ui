@@ -1,0 +1,180 @@
+<%@ page import='com.freshdirect.customer.EnumChargeType'%>
+<%@ page import='com.freshdirect.fdstore.promotion.management.FDPromoZipRestriction'%>
+<%@ page import='com.freshdirect.webapp.util.CCFormatter'%>
+<%@ page import='com.freshdirect.framework.util.StringUtil'%>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties'%>
+<%@ page import="com.freshdirect.fdstore.customer.ProfileAttributeName"%>
+<%@ page import="com.freshdirect.fdstore.promotion.management.FDPromotionAttributeParam"%>
+<%@ page import='com.freshdirect.fdstore.promotion.PromoVariantModel'%>
+
+
+
+<script language="javascript">
+                      function handleValueType(chkFld) {
+                      	var fldVal = chkFld.value;        
+
+                        alert("fldVal :"+fldVal); 
+                      	if(fldVal != "discount") {
+                        	document.getElementById("maximum_discount").value = "";                        	
+                        }                                                                         	
+                        if(fldVal != "percentOff") {
+                        	document.getElementById("percentOff").value = "";
+                        	document.getElementById("department_ids").value = "";
+                        	document.getElementById("category_ids").value = "";
+                        	document.getElementById("recipe_ids").value = "";
+                        } 
+                        if(fldVal != "waiveCharge") {
+                        	document.getElementById("waiveChargeType").value = "";
+                        }
+                        if(fldVal != "sample") {
+                        	document.getElementById("prod_name").value = "";
+                        	document.getElementById("prod_category").value = "";
+                        	document.getElementById("prod_name").disabled = true;
+                        	document.getElementById("prod_category").disabled = true;
+                        }
+                        if(fldVal != "lineitem") {
+                       
+                         document.getElementById("percentOff1").value = "";                        	
+                         document.getElementById("percentOff1").disabled = true;                        	
+                         document.getElementById("maximumItemCount").value = "";                        	
+                         document.getElementById("maximumItemCount").disabled = true;                        	
+                        	document.getElementById("applyHeaderDiscount").disabled = true;
+                        	document.getElementById("recommendedItemsOnly").disabled = true;
+                        }
+   
+                        
+                        document.getElementById("maximum_discount").disabled = (fldVal != "discount");
+                        document.getElementById("percentOff").disabled = (fldVal != "percentOff");
+                        document.getElementById("department_ids").disabled = (fldVal != "percentOff");
+                        document.getElementById("category_ids").disabled = (fldVal != "percentOff");
+                        document.getElementById("recipe_ids").disabled = (fldVal != "percentOff");
+                        document.getElementById("waiveChargeType").disabled = (fldVal != "waiveCharge");
+                        document.getElementById("prod_name").disabled = (fldVal != "sample");
+                        document.getElementById("prod_category").disabled = (fldVal != "sample");
+                        document.getElementById("percentOff1").disabled = (fldVal != "lineitem");                        	
+                        document.getElementById("maximumItemCount").disabled = (fldVal != "lineitem");                        	
+                        document.getElementById("applyHeaderDiscount").disabled = (fldVal != "lineitem");                        	
+                        document.getElementById("recommendedItemsOnly").disabled = (fldVal != "lineitem");                        	
+                        
+                      }
+                      
+                      function handleCampaignType(selectChamFld) {
+                      	var fldVal = selectChamFld.value;
+                      	document.getElementById("unique_use").checked = (fldVal != null && fldVal == "GIFT_CARD");
+                      }
+                      
+ </script> 
+<input type="hidden" name="promo_id" class="input" value="<%=promotion.getId()%>" />
+
+<table cellpadding="0" cellspacing="5" border="0" width="99%">
+		
+		<tr>
+			<td colspan="1" align="right"> Active:</td>
+			<td colspan="3">&nbsp;<input type="checkbox" name="active" <%=promotion.isActive() ? "CHECKED" : ""%>>&nbsp;</td>
+			
+			<td rowspan="12" style="border-left: solid 1px #CCCCCC;">&nbsp;</td>
+			
+			<td colspan="1" align="right">Start Date:</td>
+			<td colspan="3">&nbsp;<select name="start_month" class="pulldown">
+				<option></option>
+				<%for(Iterator i = EnumMonth.getEnumList().iterator(); i.hasNext(); ){
+					EnumMonth month = (EnumMonth)i.next(); %>
+					<option <%=month.getDescription().equals(promotion.getStartMonth()) ? "selected" : "" %> value="<%=month.getDescription()%>"><%=month.getDescription()%></option>
+				<%}%>
+			</select>&nbsp;<select name="start_date" class="pulldown">
+				<option></option>
+				<%for(int day = 1; day <=31; day++){
+					String d = String.valueOf(day); %>
+					<option <%=d.equals(promotion.getStartDay()) ? "selected" : "" %> value="<%=d%>"><%=d%></option>
+				<%}%>
+			</select>&nbsp;<select name="start_year" class="pulldown">
+				<option></option>
+				<%for(int year = 2002; year <=2015; year++){
+					String y = String.valueOf(year); %>
+					<option <%=y.equals(promotion.getStartYear()) ? "selected" : "" %> value="<%=y%>"><%=y%></option>
+				<%}%>
+			</select>&nbsp;<fd:ErrorHandler result="<%= result %>" name="start_year" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+
+		</tr>
+		<tr valign="top">
+            <td colspan="1" align="right">Promotion ID:</td>
+			<td colspan="3">&nbsp;<span class="field_note"><strong><%=promotion.getId()%></strong></span>&nbsp;</td>
+			
+			<td colspan="1" align="right">End Date:</td>
+			<td colspan="3">&nbsp;<select name="end_month" class="pulldown">
+				<option></option>
+				<%for(Iterator i = EnumMonth.getEnumList().iterator(); i.hasNext(); ){
+					EnumMonth month = (EnumMonth)i.next(); %>
+					<option <%=month.getDescription().equals(promotion.getExpirationMonth()) ? "selected" : "" %> value="<%=month.getDescription()%>"><%=month.getDescription()%></option>
+				<%}%>
+			</select>&nbsp;<select name="end_date" class="pulldown">
+				<option></option>
+				<%for(int day = 1; day <=31; day++){
+					String d = String.valueOf(day); %>
+					<option <%=d.equals(promotion.getExpirationDay()) ? "selected" : "" %> value="<%=d%>"><%=d%></option>
+				<%}%>
+			</select>&nbsp;<select name="end_year" class="pulldown">
+				<option></option>
+				<%for(int year = 2002; year <=2015; year++){
+					String y = String.valueOf(year); %>
+					<option <%=y.equals(promotion.getExpirationYear()) ? "selected" : "" %> value="<%=y%>"><%=y%></option>
+				<%}%>
+			</select>&nbsp;<fd:ErrorHandler result="<%= result %>" name="end_year" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+		</tr>
+			
+			<td colspan="1" align="right">* Maximum Usage:</td>
+			<td colspan="3">&nbsp;<input type="text" name="usage_limit" maxlength="3" class="input" style="width: 50px;" value="<%=StringUtil.isEmpty(promotion.getMaxUsage()) ? "1" : promotion.getMaxUsage()%>"> time(s)&nbsp;<fd:ErrorHandler result="<%= result %>" name="usage_limit" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+
+            <td colspan="1" align="right">Variants:</td>
+            <td colspan="3">
+            <%
+               java.util.List promoList=promotion.getPromoVariants();
+               if(promoList!=null){               
+                  for(int i=0;i<promoList.size();i++){
+                        PromoVariantModel model=(PromoVariantModel)promoList.get(i);  %>
+                        <%=model.getVariantId()%><BR>
+               <%                       
+                  }                              
+               }                              
+            %>
+            </td>
+            
+		</tr>
+		<tr valign="top">
+			<td colspan="1" align="right">* Name:</td>
+			<td colspan="3">&nbsp;<input type="text" name="promo_name" maxlength="32" class="input" style="width: 250px;" value="<%=promotion.getName()%>">&nbsp;<fd:ErrorHandler result="<%= result %>" name="promo_name" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+			
+			<td colspan="1" align="right">&nbsp;</td>
+			<td colspan="3"><span class="field_note"></span></td>			
+		            			
+		</tr>
+        <tr valign="top">
+			<td colspan="1" rowspan="3" align="right">* Description:<br/>
+			<span class="field_note">This is shown upon<br/> redemption to customer</span></td>
+			<td rowspan="3" colspan="3">&nbsp;<textarea name="promo_description" class="input" style="width: 300px;" wrap="virtual" rows="3" maxlength="256"><%=promotion.getDescription()%></textarea>&nbsp;<fd:ErrorHandler result="<%= result %>" name="promo_description" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
+				            
+			<td colspan="1" align="right"></td>
+			<td colspan="3">&nbsp;&nbsp;
+				</td>
+		</tr>
+				                                            
+		
+	</table>
+ 
+	<style>
+        .posthidden {
+            display:none;
+            text-align: center;
+        } 
+        .postshown {
+            display:inline;
+            text-align: center;
+        }
+		.promoValue {
+			border-bottom: 1px dotted grey;
+		}
+		.promoValue table td.label {
+			text-align: right;
+			width: 14em;
+		}
+	</style>	

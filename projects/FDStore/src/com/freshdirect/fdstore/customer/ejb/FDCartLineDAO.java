@@ -22,7 +22,7 @@ public class FDCartLineDAO {
 	}
 
 	private final static String QUERY_CARTLINES =
-		"SELECT ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID"
+		"SELECT ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, DISCOUNT_APPLIED "
 			+ " FROM CUST.FDCARTLINE WHERE FDUSER_ID = ?";
 
 	public static List loadCartLines(Connection conn, PrimaryKey fdUserPk) throws SQLException {
@@ -46,7 +46,9 @@ public class FDCartLineDAO {
 			line.setRecipeSourceId(rs.getString("RECIPE_SOURCE_ID"));
 			line.setRequestNotification(NVL.apply(rs.getString("REQUEST_NOTIFICATION"), "").equals("X"));
 			line.setVariantId(rs.getString("VARIANT_ID"));
-			
+			if(rs.getString("DISCOUNT_APPLIED")!=null && rs.getString("DISCOUNT_APPLIED").equalsIgnoreCase("X")){
+			line.setDiscountApplied(true);
+			}
 			lst.add(line);
 		}
 		rs.close();
@@ -61,13 +63,15 @@ public class FDCartLineDAO {
 		ps.executeUpdate();
 		ps.close();
 
+		 System.out.println("******************************trying to insert cartline"+fdUserPk.getId());
+		
 		ps =
 			conn.prepareStatement(
-				"INSERT INTO CUST.FDCARTLINE (ID, FDUSER_ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID) values (?,?,?,?,?,?,?,?,?,?)");
+				"INSERT INTO CUST.FDCARTLINE (ID, FDUSER_ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, DISCOUNT_APPLIED) values (?,?,?,?,?,?,?,?,?,?,?)");
 
 		for (Iterator i = erpOrderlines.iterator(); i.hasNext();) {
 			ErpOrderLineModel line = (ErpOrderLineModel) i.next();
-
+			System.out.println("trying to insert cartline"+line.getCartlineId()); 
 			ps.setString(1, line.getCartlineId());
 			ps.setString(2, fdUserPk.getId());
 			ps.setString(3, line.getSku().getSkuCode());
@@ -78,7 +82,7 @@ public class FDCartLineDAO {
 			ps.setString(8, line.getRecipeSourceId());
 			ps.setString(9, line.isRequestNotification() ? "X" : "");
 			ps.setString(10, line.getVariantId());
-			
+			ps.setString(11, line.isDiscountApplied()? "X" : "");			
 			ps.addBatch();
 		}
 

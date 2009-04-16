@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -168,7 +169,6 @@ public class FDOrderAdapter implements FDOrderI {
 		List erpLines = erpOrder.getOrderLines();
 		for (int i = 0; i < erpLines.size(); i++) {
 			ErpOrderLineModel ol = (ErpOrderLineModel) erpLines.get(i);
-
 			String olNum = ol.getOrderLineNumber();
 			ErpInvoiceLineI firstInvoiceLine = this.getFirstInvoiceLine(olNum);
 			ErpInvoiceLineI lastInvoiceLine = this.getLastInvoiceLine(olNum);
@@ -689,7 +689,12 @@ public class FDOrderAdapter implements FDOrderI {
 	}
 
 	public double getSubTotal() {
-		return this.erpOrder.getSubTotal();
+		//return this.erpOrder.getSubTotal();
+		double subTotal = 0.0;
+		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
+			subTotal += MathUtil.roundDecimal(((FDCartLineI) i.next()).getPrice());
+		}
+		return MathUtil.roundDecimal(subTotal);
 	}
 
 	public double getTaxValue() {
@@ -1105,5 +1110,16 @@ public class FDOrderAdapter implements FDOrderI {
 	
 	public EnumSaleType getOrderType(){
 		return this.sale.getType();
+	}
+	
+	public int getLineItemDiscountCount(String promoCode){
+		Set uniqueDiscountedProducts =new HashSet(); 
+		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
+			FDCartLineI cartLine = (FDCartLineI)i.next();
+			if(cartLine.hasDiscount(promoCode)) {
+				uniqueDiscountedProducts.add(cartLine.getProductRef().lookupProduct().getContentKey().getId());
+			}
+		}
+		return uniqueDiscountedProducts.size();
 	}
 }

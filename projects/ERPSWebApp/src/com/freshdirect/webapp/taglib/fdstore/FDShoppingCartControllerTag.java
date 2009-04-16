@@ -1087,10 +1087,9 @@ public class FDShoppingCartControllerTag extends
 			catName = request.getParameter(paramCatId);
 
 		String prodName = request.getParameter(paramProductId);
-
 		// variant tracking
 		String variantId = request.getParameter(suffix != null ? "variant"+suffix : "variant"); // SmartStore
-
+		
 		boolean contentSpecified = !(prodName == null || prodName.length() == 0);
 
 		if (strictCheck && !contentSpecified) {
@@ -1235,7 +1234,12 @@ public class FDShoppingCartControllerTag extends
 				theCartLine.setRequestNotification(requestNotification);
 			}
 		}
-
+		//Get the original discount applied flag if available
+		boolean discountApplied = false;
+		if (originalLine != null) {
+			discountApplied = originalLine.isDiscountApplied();
+		}
+		
 		if (theCartLine != null) {
 			String catId = request.getParameter("catId");
 			String ymalSetId = request.getParameter("ymalSetId");
@@ -1253,6 +1257,15 @@ public class FDShoppingCartControllerTag extends
 			if (suffix != null) {
 				request.setAttribute("atc_suffix", suffix);
 			}
+			
+			if (originalLine != null) {
+				//First get the savingsId(already determined for promotion eligibility) if available else get variant id.
+				String savingsId = originalLine.getSavingsId();
+				if(savingsId == null) savingsId = originalLine.getVariantId();
+				theCartLine.setSavingsId(savingsId);
+			}
+
+			theCartLine.setDiscountApplied(discountApplied);
 		}
 
 		return theCartLine;

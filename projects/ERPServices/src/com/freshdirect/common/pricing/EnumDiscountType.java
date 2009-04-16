@@ -20,7 +20,7 @@ public class EnumDiscountType implements java.io.Serializable {
 	public final static EnumDiscountType DOLLAR_OFF = new EnumDiscountType(1, "Dollar off");;
 	public final static EnumDiscountType FREE = new EnumDiscountType(2, "Free item");
 	public final static EnumDiscountType SAMPLE = new EnumDiscountType(3, "Sample item");
-	public final static EnumDiscountType DCPD = new EnumDiscountType(4, "Sample item");
+	//public final static EnumDiscountType DCPD = new EnumDiscountType(4, "Sample item");
 
 	protected final int id;
 	private final String name;
@@ -44,8 +44,8 @@ public class EnumDiscountType implements java.io.Serializable {
 				return FREE;
 			case 3:
 				return SAMPLE;
-			case 4:
-				return DCPD;				
+			//case 4:
+				//return DCPD;				
 			default:
 				return null;
 		}
@@ -61,6 +61,11 @@ public class EnumDiscountType implements java.io.Serializable {
 		}
 		return false;
 	}
-	
+	public boolean isSample(){
+		if(this.equals(EnumDiscountType.FREE) || this.equals(EnumDiscountType.SAMPLE)){
+			return true;
+		}
+		return false;
+	}
 
 }

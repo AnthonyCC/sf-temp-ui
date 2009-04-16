@@ -111,6 +111,7 @@ public class SmartStoreUtil {
 			String customerPK = user != null ? user.getPrimaryKey() : null;
 			svc = VariantSelectorFactory.getInstance(feature)
 					.select(customerPK);
+			System.out.println("Recommended service "+svc);
 		}
 
 		return svc;
@@ -440,5 +441,28 @@ public class SmartStoreUtil {
 		}
 
 		return true;
+	}
+
+	public static boolean isCustomerEligible(FDUserI user, EnumSiteFeature siteFeature) throws FDResourceException {
+		if(siteFeature.equals(EnumSiteFeature.DYF) || siteFeature.equals(EnumSiteFeature.SOYF)) {
+			if (user.getLevel()==FDUserI.GUEST || !user.isDYFEnabled()) {
+				return false;
+			}
+	
+			// throw customers having only one or two orders
+			if (user.getOrderHistory().getValidOrderCount() < 2) {
+				return false;
+			}
+			return true;
+		}
+		if(siteFeature.equals(EnumSiteFeature.FAVORITES) || siteFeature.equals(EnumSiteFeature.SAVE_ON_FAVORITES)) {
+			return true;
+		}
+		if(siteFeature.equals(EnumSiteFeature.YMAL) || siteFeature.equals(EnumSiteFeature.SAVE_ON_YMAL)) {
+			return true;
+		}
+		//Unknown site feature
+		return false;
+		
 	}
 }

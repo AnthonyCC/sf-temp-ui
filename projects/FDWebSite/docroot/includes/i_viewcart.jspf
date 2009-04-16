@@ -111,8 +111,8 @@ FDIdentity identity = user.getIdentity();
 				}
 				
 			}
-		}
 
+		}
 		if (cartLine.getApplicableRestrictions().contains(EnumDlvRestrictionReason.PLATTER)) {
 			hadPlatterRestriction = true;
 		}
@@ -192,8 +192,14 @@ FDIdentity identity = user.getIdentity();
 			<% if (displayShortTermUnavailability && earliestAvailability != null && !(cartLine instanceof FDModifyCartLineI)) { %><br>&nbsp;&nbsp;<span class="text10rbold">Earliest Delivery <%=earliestAvailability%></span><%  }%>
 			</div>
 			</td>
-			<td width="70" align="right">(<%= cartLine.getUnitPrice() %>)</td>
+            <% if(cartLine.getDiscount() != null) { %>
+			<td width="70" align="right"><font color="#FF0000">(<%= cartLine.getUnitPrice() %>)</font></td>
+			<td width="60" align="right"><span class="text10bold"><font color="#FF0000"><%= CCFormatter.formatCurrency(cartLine.getPrice()) %></font></span></td>
+            <% } else { %>
+  			<td width="70" align="right">(<%= cartLine.getUnitPrice() %>)</td>
+            <%-- <td width="70" align="right">(<%= cartLine.getDiscountedUnitPrice() %>)</td> --%>
 			<td width="60" align="right"><span class="text10bold"><%= CCFormatter.formatCurrency(cartLine.getPrice()) %></span></td>
+            <% } %>
 			<td width="10"><%= cartLine.isEstimatedPrice() ? "*" : "" %><b><%=cartLine.hasTax() ? "&nbsp;T" : ""%></b></td>
 			<td width="10"><b><%= cartLine.hasScaledPricing() ? "&nbsp;S" : "" %><%= cartLine.hasDepositValue() ? "&nbsp;D" : "" %></b></td>
 			<td width="60" align="right">&nbsp;<a href="<%= request.getRequestURI() %>?remove=1&cartLine=<%= cartLine.getRandomId() %>" class="note">Remove</A></td>

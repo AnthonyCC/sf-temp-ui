@@ -202,6 +202,7 @@ public class InvoiceParser extends FlatFileParser implements SAPConstants, Produ
 	 * supplied tokens
 	 */
 	protected void makeObjects(HashMap tokens) throws BadDataException {
+						
 		String type = (String)tokens.get(TYPE_INDICATOR);
 		if(CREDIT_MEMO.equalsIgnoreCase(type)){
 			ErpInvoicedCreditModel credit = new ErpInvoicedCreditModel();
@@ -262,11 +263,17 @@ public class InvoiceParser extends FlatFileParser implements SAPConstants, Produ
 				invoice.setTax(tax);
 				invoice.setTransactionDate(new Date(System.currentTimeMillis()));
 				invoice.setTransactionSource(EnumTransactionSource.SYSTEM);
+								
 				for(Iterator i = headerFields.iterator(); i.hasNext(); ){
 					Field f = (Field)i.next();
 					String name = f.getName();
 					System.out.println(name+": "+tokens.get(name));
 				}
+				
+				double discountAmount = getDouble(tokens, ACTUAL_DISCOUNT_AMOUNT);
+
+				//invoice.setSubTotal(invoice.getSubTotal() +discountAmount);									
+				
 			}
 			if(INVOICE_LINE.equalsIgnoreCase(type)){
 				String materialNumber = getString(tokens, MATERIAL_NUMBER);
@@ -298,6 +305,7 @@ public class InvoiceParser extends FlatFileParser implements SAPConstants, Produ
 						}
 					}
 					
+					
 					if (!chargeMatch) {
 						// process as regular invoice line
 						
@@ -312,6 +320,8 @@ public class InvoiceParser extends FlatFileParser implements SAPConstants, Produ
 						invoiceLine.setOrderLineNumber(getString(tokens, INVOICE_LINE_NUMBER));
 						invoiceLine.setWeight(getDouble(tokens, GROSS_WEIGHT));
 						invoiceLine.setActualCost(getDouble(tokens, ACTUAL_COST));
+						invoiceLine.setActualDiscountAmount(getDouble(tokens, INVOICE_LINE_DISCOUNT_AMOUNT));						
+						//invoiceLine.setPrice(invoiceLine.getPrice()+invoiceLine.getActualDiscountAmount());
 						invoiceLines.add(invoiceLine);
 					}
 				}
@@ -335,7 +345,7 @@ public class InvoiceParser extends FlatFileParser implements SAPConstants, Produ
 	}
 	
 	 protected String getString(HashMap tokens, String fieldName) throws BadDataException {
-        
+        System.out.println("fieldName :"+fieldName);
         String s = ((String)tokens.get(fieldName)).trim();
         //
         // check if this is a required field
@@ -362,6 +372,7 @@ public class InvoiceParser extends FlatFileParser implements SAPConstants, Produ
 		headerFields.add(new Field(NUMBER_REGULAR_CARTONS, 3, false));
 		headerFields.add(new Field(NUMBER_FREEZER_CARTONS, 3, false));
 		headerFields.add(new Field(NUMBER_ALCOHOL_CARTONS, 3, false));
+		headerFields.add(new Field(ACTUAL_DISCOUNT_AMOUNT, 15, false));
 		
 		//line fields
 		lineFields.add(new Field(INVOICE_LINE_NUMBER, 6, true));
@@ -380,6 +391,7 @@ public class InvoiceParser extends FlatFileParser implements SAPConstants, Produ
 		lineFields.add(new Field(ORDER_LINE_STATUS, 1, true));
 		lineFields.add(new Field(SALES_ORDER_NUMBER, 10, true));
 		lineFields.add(new Field(ACTUAL_COST, 15, true));
+		lineFields.add(new Field(INVOICE_LINE_DISCOUNT_AMOUNT, 15, true));
 		
 		//credit fields
 		creditFields.add(new Field(TYPE_INDICATOR, 1, true));

@@ -4,6 +4,7 @@
 <%@ page import="com.freshdirect.common.pricing.Discount" %>
 <%@ page import="java.text.MessageFormat" %>
 <%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import="java.util.Calendar" %>
 <%@ page import="com.freshdirect.fdstore.deliverypass.DeliveryPassUtil" %>
 <%@ taglib uri="logic" prefix="logic" %>
@@ -85,8 +86,13 @@ int idx = 0;
 					<span class="text10bold"><%= cartLine.getDescription() %></span>&nbsp;<%=!cartLine.getConfigurationDesc().equals("")?"("+cartLine.getConfigurationDesc()+")":""%>
 				</div>
 			</td>
-			<td width="70" align="right">(<%= cartLine.getUnitPrice() %>)</td>
-			<td align="right"><span class="text10bold"><%= currencyFormatter.format(cartLine.getPrice()) %></span></td>
+            <% if(cartLine.getDiscount() != null) { %>
+			<td width="70" align="right"><font color="#FF0000">(<%= cartLine.getUnitPrice() %>)</font></td>
+			<td align="right"><span class="text10bold"><font color="#FF0000"><%= CCFormatter.formatCurrency(cartLine.getPrice()) %></font></span></td>
+            <% } else { %>
+  			<td width="70" align="right">(<%= cartLine.getUnitPrice() %>)</td>
+			<td align="right"><span class="text10bold"><%= CCFormatter.formatCurrency(cartLine.getPrice()) %></span></td>
+            <% } %>
 			<td width="10"><%= cartLine.isEstimatedPrice() ? "*" : " " %></td>
 			<td colspan="3" width="70"><b><%=cartLine.hasTax() ? "&nbsp;T" : ""%><%= cartLine.hasScaledPricing() ? "&nbsp;S" : "" %><%= cartLine.hasDepositValue() ? "&nbsp;D" : "" %></b></td>
 		</tr>
