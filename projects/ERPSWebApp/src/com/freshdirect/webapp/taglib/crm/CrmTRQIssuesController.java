@@ -83,7 +83,7 @@ public class CrmTRQIssuesController extends AbstractControllerTag {
 			validateCommonStuff(request,actionResult);
 			casesForStop = getTRQCasesForSale(saleId,actionResult);
 			pageContext.setAttribute(this.id, casesForStop);
-			if (this.saleIdName != null) {
+			if (this.saleIdName != null && saleId != null) {
 				pageContext.setAttribute(this.saleIdName, saleId);
 			}
 		}
@@ -119,7 +119,7 @@ public class CrmTRQIssuesController extends AbstractControllerTag {
 			if (this.id!=null) {
 				pageContext.setAttribute(this.id, casesForStop);
 			}
-			if (this.saleIdName != null) {
+			if (this.saleIdName != null && saleId != null) {
 				pageContext.setAttribute(this.saleIdName, saleId);
 			}
 			return true;

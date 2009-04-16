@@ -81,7 +81,7 @@ for (Iterator itr = crmSubjects.iterator(); itr.hasNext();) {
     	<tmpl:put name='content' direct='true'>
 <%@ include file="/includes/transportation_nav.jsp"%>
     		<crm:GetCurrentAgent id='currAgent'>
-			<crm:CrmTRQIssuesController id="casesForOrder" result="result" action="<%=action%>" saleId="mySaleId">
+			<crm:CrmTRQIssuesController id="casesForOrder" result="result" action="<%=action%>" saleId="mySaleId" successPage="/main/worklist.jsp">
 <%				if (result.isFailure()) {
 					for (Iterator r = result.getErrors().iterator(); r.hasNext(); ) { 
 				    	ActionError er= (ActionError) r.next();
@@ -103,6 +103,7 @@ if (mySaleId != null) {
 
 
 
+if (theOrder != null) {
 %><script type="text/javascript">
 
 var currentPanel;
@@ -271,10 +272,11 @@ document.body.setAttribute("className", "yui-skin-sam"); // IE
 %>		</table>
 	</div>
 <%
-		}	
+		}
 %>
 </div>
 <%-- [TEMPLATE] End of modal form templates --%>
+<% } // theOrder != null %>
 <form name="trqIssues" action="/transportation/crmTrqCases.jsp" method="post">
 	<input type="hidden" name="action" value="storeCases">
 	<input type="hidden" name="route" value="<%=route%>">
@@ -400,7 +402,11 @@ for (int j=0; j < loopControl; j++) {
 				<input id="cts_<%= i %>" type="hidden" name="cartonNumbers_<%=i%>" value="<%= frmCartonNumbers %>">
 			</td>
 		 	<td style="border-top: solid 4px #0352C9; text-align: center;">
+<% if (theOrder != null) { %>
 				<a href="#" onclick="assignCartons('cts_<%= i %>'); return false;"><img style="border: 0" src="/media_stat/crm/images/cartons.png"></a>
+<% } else { %>
+				<img style="border: 0" src="/media_stat/crm/images/cartons_grey.png">
+<% } %>
 		 	</td>
 			<td style="border-top: solid 4px #0352C9;"><input type="text" size="80" name="note_<%=i%>" value="<%=frmNote%>"></td>
 			<td style="border-top: solid 4px #0352C9; text-align: center;"><input type="text" size='2' name="reported_<%=i%>" maxlength="3" value="<%=frmRQty%>"></td>

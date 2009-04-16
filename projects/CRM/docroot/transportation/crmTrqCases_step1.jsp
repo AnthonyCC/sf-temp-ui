@@ -50,7 +50,7 @@ String successPage = "/transportation/crmTrqCases.jsp?dlvDate="+fmtDlvDate+"&rou
     	<tmpl:put name='content' direct='true'>
 <%@ include file="/includes/transportation_nav.jsp"%>
     		<crm:GetCurrentAgent id='currAgent'>
-			<crm:CrmTRQIssuesController id="issueList" result="result" successPage="<%=successPage%>">
+			<crm:CrmTRQIssuesController id="issueList" result="result" successPage="<%= successPage %>" saleId="mySaleId">
 <%				if (result.isFailure()) {  %>
 				   <table>
 <%				    for (Iterator r = result.getErrors().iterator(); r.hasNext(); ) { 
@@ -59,7 +59,7 @@ String successPage = "/transportation/crmTrqCases.jsp?dlvDate="+fmtDlvDate+"&rou
 					   <tr><td><font color="red"><%=er.getDescription()%></font></td></tr>
 <%				    }  %>
 					</table>
-<%				}   
+<%				}
 	            List routesForDate = crmManager.getTruckNumbersForDate(dlvDate);
 %>
 <script type="text/javascript">
