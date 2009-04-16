@@ -88,7 +88,7 @@ public class DYFRecommendationsTag extends RecommendationsTag implements Session
         			results = extractRecommendations(session, EnumSiteFeature.FAVORITES);
         		}
         	} else {
-        		results = extractRecommendations(session, EnumSiteFeature.SAVE_ON_FAVORITES);
+        		results = extractRecommendations(session, EnumSiteFeature.FAVORITES);
         	}
         }
         return results;
