@@ -574,8 +574,18 @@ if(productCode!=null && prodCatId !=null ) {
 	</fd:CCLCheck>
 <%  if (productNode.getProductDescription()!=null && productNode.getProductDescription().getPath()!=null && productNode.getProductDescription().getPath().indexOf("blank_file.txt") < 0) { %>
           <br><fd:IncludeMedia name="<%= productNode.getProductDescription().getPath() %>" /><br>
-<%  } 
-    if (product!= null && product.hasNutritionInfo(ErpNutritionInfoType.HEATING)) {                        %>
+<%  } %>
+
+<% if(productNode.getCountryOfOrigin().size()>0) {%>
+				<br><b>Origin: </b>
+                
+			   <logic:iterate id="coolText" collection="<%= productNode.getCountryOfOrigin() %>" type="java.lang.String">
+               <br><%=coolText%>
+               </logic:iterate>
+               <br>
+  <%}%>
+
+    <%if (product!= null && product.hasNutritionInfo(ErpNutritionInfoType.HEATING)) {                        %>
                      <br><font class="title12">Heating Instructions</font><br>
                      <%=product.getNutritionInfoString(ErpNutritionInfoType.HEATING) %><br>
 <%        }  %>
