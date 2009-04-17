@@ -217,7 +217,7 @@ class FDFactory {
 			pinfo.getSkuCode(),
 			pinfo.getVersion(),
 			pinfo.getDefaultPrice(),
-			pinfo.getDefaultPriceUnit(),
+			pinfo.getDisplayableDefaultPriceUnit(),
 			null,
 			EnumATPRule.JIT,
 			EnumAvailabilityStatus.AVAILABLE,
