@@ -153,9 +153,14 @@ your account information, this is the place to do it.<br></td>
 		Change your e-mail reminder preferences.
 		<br><br>
         <font class="text13bold">
-		<a href="<%=response.encodeURL("/quickshop/all_lists.jsp")%>">Your Shopping Lists</a> </font>  <font class="text13bold" color="#990000">*NEW </font>
+		<a href="<%=response.encodeURL("/quickshop/all_lists.jsp")%>">Your Shopping Lists</a> </font>
 		<br>
 		Visit Quickshop for your shopping lists
+		<br><br>
+        <font class="text13bold">
+		<a href="<%=response.encodeURL("/your_account/customer_profile_summary.jsp")%>">Your Profile</a> </font>  <font class="text13bold" color="#990000">*NEW </font>
+		<br>
+		Tell us about yourself
 		<br><br>
 		
 	</td>

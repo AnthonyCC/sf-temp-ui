@@ -10,9 +10,10 @@ import java.util.List;
 /**
  * @author ekracoff
  */
-public class FDSurveyQuestion {
+public class FDSurveyQuestion implements java.io.Serializable {
 	private final String name;
 	private final String description;
+	private final String shortDescr;
 	private List answers = new ArrayList();
 	private final boolean multiselect;
 	private final boolean required;
@@ -20,16 +21,23 @@ public class FDSurveyQuestion {
 	private final boolean rating;
 	private final boolean subQuestion;
 	private boolean showOptionalText;
+	private final boolean pulldown;
+	private EnumFormDisplayType formDisplayType;
+	private EnumViewDisplayType viewDisplayType;
 	
 	public FDSurveyQuestion(String name, String description, boolean required, boolean multiselect, boolean openEnded, boolean rating, boolean subQuestion){
 		this.name = name;
 		this.description = description;
+		this.shortDescr=description;
 		this.multiselect = multiselect;
 		this.required = required;
 		this.openEnded = openEnded;
 		this.rating = rating;
 		this.subQuestion = subQuestion;
 		this.showOptionalText = !required;
+		this.pulldown=false;
+		this.formDisplayType=EnumFormDisplayType.SINGLE_ANS_PER_ROW;
+		this.viewDisplayType=EnumViewDisplayType.SINGLE_ANS_PER_ROW;
 	}
 	
 	public FDSurveyQuestion(String name, String description, boolean required, boolean multiselect, boolean openEnded, boolean rating){
@@ -42,6 +50,21 @@ public class FDSurveyQuestion {
 	
 	public FDSurveyQuestion(String name, String description, boolean required, boolean multiselect){
 		this(name, description, required, multiselect, false, false, false);
+	}
+
+	public FDSurveyQuestion(String name, String description,String shortDescr, boolean required, boolean multiselect, boolean openEnded, boolean rating,boolean pulldown, boolean subQuestion,EnumFormDisplayType formDisplayType,EnumViewDisplayType viewDisplayType) {
+		this.name = name;
+		this.description = description;
+		this.shortDescr=shortDescr;
+		this.multiselect = multiselect;
+		this.required = required;
+		this.openEnded = openEnded;
+		this.rating = rating;
+		this.subQuestion = subQuestion;
+		this.showOptionalText = !required;;
+		this.pulldown=pulldown;
+		this.formDisplayType=formDisplayType;
+		this.viewDisplayType=viewDisplayType;
 	}
 
 	public void addAnswer(FDSurveyAnswer answer){
@@ -140,5 +163,48 @@ public class FDSurveyQuestion {
 			return an1.getDescription().compareTo(an2.getDescription());
 		}
 	};
+
+	public boolean isPulldown() {
+		return pulldown;
+	}
+
+	public EnumFormDisplayType getFormDisplayType() {
+		return formDisplayType;
+	}
+	
+	public EnumViewDisplayType getViewDisplayType() {
+		return viewDisplayType;
+	}
+	
+	public List getAnswerGroups() {
+		List answerGroup=new ArrayList();
+		List answers=getAnswers();
+		FDSurveyAnswer answer=null;
+		for(Iterator it=answers.iterator();it.hasNext();) {
+			answer=(FDSurveyAnswer)it.next();
+			if(!"".equals(answer.getGroup()) && !answerGroup.contains(answer.getGroup()))
+				answerGroup.add(answer.getGroup());
+		}
+		return answerGroup;
+	}
+	
+	public List getAnswersByGroup(String answerGroup) {
+		
+		if(answerGroup==null ||"".equals(answerGroup))
+			return new ArrayList();
+		List answers=getAnswers();
+		List filteredList=new ArrayList(2);
+		FDSurveyAnswer answer=null;
+		for(Iterator it=answers.iterator();it.hasNext();) {
+			answer=(FDSurveyAnswer)it.next();
+			if(answerGroup.equals(answer.getGroup()))
+				filteredList.add(answer);
+		}
+		return filteredList;
+		
+	}
+	public String getShortDescr() {
+		return (shortDescr==null ||"".equals(shortDescr))? description:shortDescr;
+	}
 	
 }

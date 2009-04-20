@@ -23,6 +23,10 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
+import com.freshdirect.fdstore.survey.EnumSurveyType;
+import com.freshdirect.fdstore.survey.FDSurvey;
+import com.freshdirect.fdstore.survey.FDSurveyCachedFactory;
+import com.freshdirect.fdstore.survey.FDSurveyConstants;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
@@ -81,11 +85,12 @@ public class SurveyControllerTag extends com.freshdirect.framework.webapp.BodyTa
 			try {
 
 				if ("filled_survey".equalsIgnoreCase(action)) {
-					form.initialize(request);
-					form.validate(result);
+					//form.initialize(request);
+					//form.validate(result);
 					if (result.isSuccess()) {
-						FDSurveyResponse survey = form.getFormValues(user.getIdentity(), "second_order_survey");
-
+						//FDSurveyResponse survey = form.getFormValues(user.getIdentity(), "second_order_survey");
+						FDSurvey custProfile = FDSurveyCachedFactory.getSurvey(EnumSurveyType.SECOND_ORDER_SURVEY);
+                         FDSurveyResponse survey=SurveyHelper.getSurveyResponse(user.getIdentity(), custProfile, result, request.getParameterMap());
 						boolean promoAvailable = PromotionFactory.getInstance().getPromotion("2ND_ORDER_SURVEY") != null;
 						BigInteger id = new BigInteger(user.getIdentity().getFDCustomerPK());
 						BigInteger modVal = new BigInteger("4");
@@ -109,6 +114,7 @@ public class SurveyControllerTag extends com.freshdirect.framework.webapp.BodyTa
 						user.invalidateCache();
 
 						user.updateUserState();
+						
 					}
 				}
 				if ("skip_survey".equalsIgnoreCase(action)) {

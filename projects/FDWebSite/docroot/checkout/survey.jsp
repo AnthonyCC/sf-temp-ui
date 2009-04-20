@@ -8,7 +8,115 @@
 <%@ page import='com.freshdirect.customer.ErpSaleInfo'%>
 <%@ page import='com.freshdirect.common.pricing.Discount'%>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
+<%@ page import='com.freshdirect.fdstore.survey.*' %>
+<%@ taglib uri='logic' prefix='logic' %>
+<style>
+	body { font-family:Verdana,Arial,sans-serif; font-size: 10px; height: 100%; }
+	.container { border: 2px solid #060; width: 100%; }
+	.ctext { text-align: left; margin: 10px 2px; font-size: 11px; }
+	.etext { text-align: left; margin: 10px 20px; font-size: 11px; font-weight: bold; }
+	.notes { text-align: left; margin: 10px 20px; font-size: 10px; font-weight: normal; }
+	.example { border: 1px dashed #4c4; width: 703px; text-align: left; margin: 5px auto 5px auto; }
+	.fleft { float: left; }
+	.cleft { clear: left; }
+	.cright { clear: right; }
+	.cboth { clear: both; }
+	.question { color: orange; font-size: 12px; font-weight: bold; padding:10px 0px }
+	.question_number { float: left; width: 25px; }
+	.question_text { float: left; width: 675px; }
+	.answer { margin: 10px; }
+	.other { padding-left: 32px; }
 
+	.q02_container { float: left; margin: 0 10px 0 0; }
+	.q02_input { float: left; padding: 1px; }
+	.q02_input input { font-size: 11px; text-align: center; width: 30px; }
+	.q02_incr { float: left; }
+	.q02_incr div { height: 8px; width: 10px; padding: 1px; }
+	.q02_incr div img { height: 9px; width: 10px; margin: 0 2px; }
+	.q02_text { float: left; line-height: 22px; padding-left: 4px; }
+
+	.q03_container { float: left; margin: 0 10px 0 0; }
+
+	.q04_container { float: left; margin: 0 10px 0 0; width: 48%; line-height: 22px; }
+	.q04_container div { clear: right; }
+	.q04_container input { float: left; }
+	.q04_container div div { float: right; width: 90%; line-height: 22px; }
+
+	.q05_container { float: left; margin: 0; line-height: 23px; }
+	.q05_col50per { width: 50%; }
+	.q05_col25per { width: 25%; }
+	.q05_col75per { width: 75%; }
+	.q05_container div { line-height: 24px; }
+	.q05_container div div { float: left; padding-right: 10px; line-height: 22px; width: 22px; }
+	.q05_container .other_input { font-size: 11px; text-align: left; width: 100px; margin: 2px 10px 1px 3px; }
+
+	.q06_container { height: 30px; }
+	.q06_container span { font-weight: bold; }
+	.q06_container select { margin-left: 10px; }
+
+	.q07_container { margin: 0 10px 0 0; width: 100%; line-height: 22px; }
+	.q07_container div { padding: 1px 0; line-height: 22px; }
+	.q07_container div div { clear: left; float: left; padding-right: 3px; }
+    .q07_container .other_input { font-size: 11px; text-align: left; width: 100px; margin: 2px 10px 1px 3px; }
+	//.q07_container .other_input { font-size: 11px; text-align: left; width: 100px; margin-left: 10px; }
+
+	.q08_container { margin: 0 10px 0 0; width: 75%; line-height: 22px; }
+	.q08_container .q08_text { clear: both; }
+	.q08_text { float: left; padding: 1px 0; line-height: 22px; width: 75%; }
+	.q08_cb { float: right; padding: 1px 0; line-height: 22px; width: 10%; text-align: center; font-weight: bold; }
+	
+	.q09_container { float: left; width: 33%; padding: 20px 0; }
+	.q09_container .box { width: 100%; }
+	.q09_container div div { line-height: 22px; }
+	.q09_rb { float: left; width: 35%; text-align: right; }
+	.q09_text { float: left; width: 65%; text-align: left; }
+	.odd { background-color: #ddd;  line-height: 26px; height: 26px;}
+	.even { background-color: #aaa;  line-height: 26px; height: 26px;}
+
+	.q10_container { float: left; width: 49%; }
+	.q10_container div { margin: 5px 0; }
+	.q10_container select { margin: 0 10px 0 0; width: 97%; }
+	
+	.q11_container { margin: 0 10px 0 0; line-height: 22px; }
+	.q11_colfright { float: right; }
+	.q11_col35per { width: 35%; }
+	.q11_col65per { width: 65%; }
+	.q11_col65per div { width: 50%; }
+	.q11_container div { float: left; padding: 1px 0; line-height: 22px; }
+	.other_input { font-size: 11px; text-align: left; width: 100px; margin-left: 10px; }
+
+	.q12_container { float: left; padding: 1px; }
+	.q12_container input { margin: 5px; }
+	.rb_image { text-align: center; width: 110px; }
+
+
+	/* below is the table styles */
+	.tQuestion { color: orange; font-size: 12px; font-weight: bold; width: 100%; border: 0; text-align: left; border-collapse: collapse; line-height: 24px; }
+	.tQuestion td { vertical-align: top; }
+	td.tIndex { width: 20px; }
+	.tAnswer { padding: 6px 0 10px 10px; width: 100%; border-spacing: 0px; border-collapse: collapse; line-height: 24px; }
+	.tAnswer td { padding: 0; }
+	.tAnswer table { float: left; line-height: 24px; }
+	.incr_input { font-size: 11px; text-align: center; width: 30px; }
+	.col25per { width: 25%; }
+	.col33per { width: 33.3%; }	
+	.col49per { width: 49%; }
+	.col50per { width: 50%; }
+	.col75per { width: 75%; }
+	.col100per { width: 100%; }
+	.other { padding: 0 0 0 24px; }
+	.odd { background-color: #ddd; }
+	.even { background-color: #aaa; }
+	.bolded { font-weight: bold; }
+	.cbHead { width: 10%; text-align: center; font-weight: bold; }
+	.other_input { font-size: 11px; text-align: left; width: 100px; margin-left: 10px; }
+	.tLeft { text-align: left; }
+	.tCen { text-align: center; }
+	.pad10px { padding: 10px; }
+	.padTop30px { padding-top: 30px; }
+	.rb_image { text-align: center; width: 110px; }
+
+</style>
 <fd:CheckLoginStatus id="yuzer" guestAllowed="false" recognizedAllowed="false"  /> 
 <%!
 	java.text.NumberFormat CURRENCY_FORMATTER = java.text.NumberFormat.getCurrencyInstance(Locale.US);
@@ -33,6 +141,12 @@
 	/*if(promoAvailable && (id % 4 == 0 || isManualRetention) && firstOrder.getRequestedDate().after(startPromo.getTime())) {
 		incentivize = true;
 	}*/
+    FDSurvey Usability = FDSurveyCachedFactory.getSurvey(EnumSurveyType.SECOND_ORDER_SURVEY);
+	FDSurveyResponse surveyResponse= FDCustomerManager.getCustomerProfileSurveyInfo(yuzer.getIdentity());
+    //FDSurveyResponse registrationResponse= FDCustomerManager.getSurveyResponse(yuzer.getIdentity(),FDSurveyConstants.REGISTRATION_SURVEY);
+    List questions = Usability.getQuestions();
+    int quesCount = 1; 
+    
 %>
 <tmpl:insert template='/common/template/no_space_border.jsp'>
     <tmpl:put name='title' direct='true'>Survey</tmpl:put>
@@ -41,22 +155,13 @@
 <fd:SurveyController successPage="/checkout/step_1_choose.jsp" resultName="result" formName="surveyForm">	
 <form method="post" name="survey" action="survey.jsp">
 <FONT CLASS="space4pix"><BR></FONT>
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="680">
+
+<TABLE BORDER="0" CELLP++++++++++++++++++++++++++++++++++ADDING="0" CELLSPACING="0" WIDTH="680">
 <tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"></td></tr>
 <tr>
 	<td colspan="2">
 	<input type="hidden" name="skipSurvey" value="false">
-		<%-- if (incentivize) { %>
-		<span class="title18" style="color: #990000;"><b>TELL US WHAT YOU THINK AND GET 10% OFF</b></span><br>
-		<font class="space4pix"><br></font>
-		Direct customer feedback is the best way for us to gauge how we're doing&mdash;that's why we'd like to offer you 10% off this order in exchange for a few minutes of your time. 
-		< % } else { --%>
-		<span class="title18" style="color: #990000;"><b>TELL US WHAT YOU THINK OF FRESHDIRECT</b></span><br>
-		<font class="space4pix"><br></font>
-		Direct customer feedback is the best way for us to gauge how we're doing-that's why we'd like to ask for a few minutes of your time.
-		<%-- } --%>
-		The survey is completely optional&mdash;just click "Skip Survey" to continue Checkout now. Of course, we keep all of your information private.  Whether you choose to fill out the survey or not, your feedback is always greatly appreciated!
-		<br><font class="space8pix"><br></font>
+		<font class="space8pix"><br></font>
 	</td>
 </TR>
 <tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"></td></tr>
@@ -96,304 +201,41 @@ String[] checkSurveyForm =	{"question1_prices", "question1_selection", "question
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="677">
 <tr><td>
 <TABLE WIDTH="675" CELLSPACING="0" CELLPADDING="0" BORDER="0">
-
-<TR VALIGN="TOP">
-<TD WIDTH="10" ALIGN="RIGHT">&nbsp;<b>1.</b>&nbsp;</TD>
-<TD WIDTH="665">
-	<% String[] checkQuestion1 = {"question1_prices", "question1_selection", "question1_quality", "question1_convenience", "question1_customerservice"}; %>
-	<fd:ErrorHandler result="<%=result%>" field="<%=checkQuestion1%>"><span class="text11rbold"></fd:ErrorHandler><b>What do you think about FreshDirect?</b><fd:ErrorHandler result="<%=result%>" field="<%=checkQuestion1%>"></span></fd:ErrorHandler><br>
-	<img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"><br>
-	<table border="0" cellspacing="0" cellpadding="0">
-	<tr>
-		<td><img src="/media_stat/images/layout/clear.gif" width="30" height="1" alt="" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="80" height="1" alt="" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="80" height="1" alt="" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="80" height="1" alt="" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="80" height="1" alt="" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="80" height="1" alt="" border="0"></td>
-		<td></td>
-	</tr>
-	<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"></td></tr>
-	<tr>
-		<td></td>
-		<td></td>	
-		<td align=center><i>Excellent</i></td>
-		<td align=center><i>Good</i></td>
-		<td align=center><i>Satisfactory</i></td>
-		<td align=center><i>Poor</i></td>
-		<td></td>
-	</tr>
-	
-	<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"></td></tr>	
-	<tr>
-		<td></td>
-		<td>Prices</td>
-		<td align=center><%surveyForm.getElement("question1_prices").print(out, null);%></td>
-		<td><fd:ErrorHandler result="<%=result%>" name="question1_prices" id="errorMsg">&nbsp;&nbsp;<span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
-	</tr>
-	
-	<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"></td></tr>	
-	<tr >
-		<td></td>
-		<td bgcolor="#eeeeee">Selection</td>
-		<td align=center bgcolor="#eeeeee"><%surveyForm.getElement("question1_selection").print(out, null);%></td>
-		<td><fd:ErrorHandler result="<%=result%>" name="question1_selection" id="errorMsg">&nbsp;&nbsp;<span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>		
-	</tr>
-	
-	<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"></td></tr>	
-	<tr>
-		<td></td>
-		<td>Quality</td>
-		<td align=center><%surveyForm.getElement("question1_quality").print(out, null);%></td>
-		<td><fd:ErrorHandler result="<%=result%>" name="question1_quality" id="errorMsg">&nbsp;&nbsp;<span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>	
-	</tr>
-
-	<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"></td></tr>	
-	<tr>
-		<td></td>
-		<td bgcolor="#eeeeee">Convenience</td>
-		<td align=center bgcolor="#eeeeee"><%surveyForm.getElement("question1_convenience").print(out, null);%></td>
-		<td><fd:ErrorHandler result="<%=result%>" name="question1_convenience" id="errorMsg">&nbsp;&nbsp;<span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
-	</tr>
-	
-	<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"></td></tr>	
-	<tr>
-		<td></td>
-		<td>Customer Service</td>
-		<td align=center><%surveyForm.getElement("question1_customerservice").print(out, null);%></td>
-		<td><fd:ErrorHandler result="<%=result%>" name="question1_customerservice" id="errorMsg">&nbsp;&nbsp;<span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
-	</tr>
-	</table>
-</TD>
-</TR>
-<TR><TD WIDTH="675" COLSPAN="2"><FONT CLASS="space8pix"><BR></FONT><FONT CLASS="space2pix"><BR></FONT></TD></TR> 
-
-
-<TR VALIGN="TOP">
-<TD WIDTH="10" ALIGN="RIGHT">&nbsp;<b>2.</b>&nbsp;</TD>
-<TD WIDTH="665">
-	<% String[] checkQuestion2 = {"question2_professional", "question2_prompt"}; %>
-	<fd:ErrorHandler result="<%=result%>" field="<%=checkQuestion2%>"><span class="text11rbold"></fd:ErrorHandler><b>How would you rate our delivery?</b><fd:ErrorHandler result="<%=result%>" field="<%=checkQuestion2%>"></span></fd:ErrorHandler><br>
-	<img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"><br>
-	<table border="0" cellspacing="0" cellpadding="0">
-	<tr>
-		<td><img src="/media_stat/images/layout/clear.gif" width="30" height="1" alt="" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="80" height="1" alt="" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="80" height="1" alt="" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="80" height="1" alt="" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="80" height="1" alt="" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="80" height="1" alt="" border="0"></td>
-		<td></td>
-	</tr>
-	<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"></td></tr>
-	<tr>
-		<td></td>
-		<td></td>	
-		<td align=center><i>Excellent</i></td>
-		<td align=center><i>Good</i></td>
-		<td align=center><i>Satisfactory</i></td>
-		<td align=center><i>Poor</i></td>
-		<td></td>
-	</tr>
-
-	<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"></td></tr>	
-	<tr>
-		<td></td>
-		<td>Professional</td>
-		<td align=center><%surveyForm.getElement("question2_professional").print(out, null);%></td>
-		<td><fd:ErrorHandler result="<%=result%>" name="question2_professional" id="errorMsg">&nbsp;&nbsp;<span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>	
-	</tr>
-	
-	<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"></td></tr>	
-	<tr>
-		<td></td>
-		<td bgcolor="#eeeeee">Prompt</td>
-		<td align=center bgcolor="#eeeeee"><%surveyForm.getElement("question2_prompt").print(out, null);%></td>
-		<td><fd:ErrorHandler result="<%=result%>" name="question2_prompt" id="errorMsg">&nbsp;&nbsp;<span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>	
-	</tr>
-	</table>
-</TD>
-</TR>
-<TR><TD WIDTH="675" COLSPAN="2"><FONT CLASS="space8pix"><BR></FONT><FONT CLASS="space2pix"><BR></FONT></TD></TR> 
-
-
-<TR VALIGN="TOP">
-<TD WIDTH="10" ALIGN="RIGHT">&nbsp;<b>3.</b>&nbsp;</TD>
-<TD WIDTH="665">
-	<% String[] checkQuestion3 = {"question3_easeofuse", "question3_information", "question3_speed"}; %>
-	<fd:ErrorHandler result="<%=result%>" field="<%=checkQuestion3%>"><span class="text11rbold"></fd:ErrorHandler><b>How would you rate the FreshDirect Web Site?</b><fd:ErrorHandler result="<%=result%>" field="<%=checkQuestion3%>"></span></fd:ErrorHandler><br>
-	<img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"><br>
-	<table border="0" cellspacing="0" cellpadding="0">
-	<tr>
-		<td><img src="/media_stat/images/layout/clear.gif" width="30" height="1" alt="" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="80" height="1" alt="" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="80" height="1" alt="" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="80" height="1" alt="" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="80" height="1" alt="" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="80" height="1" alt="" border="0"></td>
-		<td></td>
-	</tr>
-	<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"></td></tr>
-	<tr>
-		<td></td>
-		<td></td>	
-		<td align=center><i>Excellent</i></td>
-		<td align=center><i>Good</i></td>
-		<td align=center><i>Satisfactory</i></td>
-		<td align=center><i>Poor</i></td>
-		<td></td>
-	</tr>
-	<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"></td></tr>	
-	<tr>
-		<td></td>
-		<td>Ease of Use</td>
-		<td align=center><%surveyForm.getElement("question3_easeofuse").print(out, null);%></td>
-		<td><fd:ErrorHandler result="<%=result%>" name="question3_easeofuse" id="errorMsg">&nbsp;&nbsp;<span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>	
-	</tr>
-	<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"></td></tr>	
-	<tr>
-		<td></td>
-		<td bgcolor="#eeeeee">Information</td>
-		<td align=center bgcolor='#eeeeee'><%surveyForm.getElement("question3_information").print(out, null);%></td>
-		<td><fd:ErrorHandler result="<%=result%>" name="question3_information" id="errorMsg">&nbsp;&nbsp;<span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>	
-	</tr>
-	<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"></td></tr>	
-	<tr>
-		<td></td>
-		<td>Speed</td>
-		<td align=center><%surveyForm.getElement("question3_speed").print(out, null);%></td>
-		<td><fd:ErrorHandler result="<%=result%>" name="question3_speed" id="errorMsg">&nbsp;&nbsp;<span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>	
-	</tr>
-	</table>
-</TD>
-</TR>
-<TR><TD WIDTH="675" COLSPAN="2"><FONT CLASS="space8pix"><BR></FONT><FONT CLASS="space2pix"><BR></FONT></TD></TR> 
-
-<TR VALIGN="TOP">
-<TD WIDTH="10" ALIGN="RIGHT">&nbsp;<b>4.</b>&nbsp;</TD>
-<TD WIDTH="665"><fd:ErrorHandler result="<%=result%>" name="question4_favoritecuisine"><span class="text11rbold"></fd:ErrorHandler><b>Which of the following are your favorite cuisines?</b> (Check all that apply)<fd:ErrorHandler result="<%=result%>" name="question4_favoritecuisine"></span></fd:ErrorHandler><fd:ErrorHandler result="<%=result%>" name="question4_favoritecuisine" id="errorMsg">&nbsp;&nbsp;<span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler><br>
-<%surveyForm.getElement("question4_favoritecuisine").print(out, null);%>
-<%surveyForm.getElement("question4_favoritecuisine_other").print(out, null);%>
-</TD>
-</TR>
-<TR><TD WIDTH="675" COLSPAN="2"><FONT CLASS="space8pix"><BR></FONT></TD></TR>
-
-<TR VALIGN="TOP">
-<TD WIDTH="10" ALIGN="RIGHT">&nbsp;<b>5.</b>&nbsp;</TD>
-<TD WIDTH="665"><fd:ErrorHandler result="<%=result%>" name="question5_cookingattitude"><span class="text11rbold"></fd:ErrorHandler><b>How would you describe your attitudes toward cooking?</b> (Check all that apply)<fd:ErrorHandler result="<%=result%>" name="question5_cookingattitude"></span></fd:ErrorHandler><fd:ErrorHandler result="<%=result%>" name="question5_cookingattitude" id="errorMsg">&nbsp;&nbsp;<span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler><br>
-<%surveyForm.getElement("question5_cookingattitude").print(out, null);%>
-</TD>
-</TR>
-<TR><TD WIDTH="675" COLSPAN="2"><FONT CLASS="space8pix"><BR></FONT></TD></TR>
-
-<TR VALIGN="TOP">
-<TD WIDTH="10" ALIGN="RIGHT">&nbsp;<b>6.</b>&nbsp;</TD>
-<TD WIDTH="665"><fd:ErrorHandler result="<%=result%>" name="question6_importantnutrition"><span class="text11rbold"></fd:ErrorHandler><b>When you shop for food, what specific nutritional/dietary factors are important to you?</b> (Check all that apply)<fd:ErrorHandler result="<%=result%>" name="question6_importantnutrition"></span></fd:ErrorHandler><fd:ErrorHandler result="<%=result%>" name="question6_importantnutrition" id="errorMsg">&nbsp;&nbsp;<span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler><br>
-<%surveyForm.getElement("question6_importantnutrition").print(out, null);%><%surveyForm.getElement("question6_importantnutrition_other").print(out, null);%>
-</TD>
-</TR>
-<TR><TD WIDTH="675" COLSPAN="2"><FONT CLASS="space8pix"><BR></FONT></TD></TR>
-
-<TR VALIGN="TOP">
-<TD WIDTH="10" ALIGN="RIGHT">&nbsp;<b>7.</b>&nbsp;</TD>
-<TD WIDTH="665"><fd:ErrorHandler result="<%=result%>" name="question7_foodallergy"><span class="text11rbold"></fd:ErrorHandler><b>Does anyone in your household have food sensitivities?</b> (Check all that apply)<fd:ErrorHandler result="<%=result%>" name="question7_foodallergy"></span></fd:ErrorHandler><fd:ErrorHandler result="<%=result%>" name="question7_foodallergy" id="errorMsg">&nbsp;&nbsp;<span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler><br>
-<%surveyForm.getElement("question7_foodallergy").print(out, null);%><%surveyForm.getElement("question7_foodallergy_other").print(out, null);%>
-</TD>
-</TR>
-<TR><TD WIDTH="675" COLSPAN="2"><FONT CLASS="space8pix"><BR></FONT></TD></TR>
-
-<TR VALIGN="TOP">
-<TD WIDTH="10" ALIGN="RIGHT">&nbsp;<b>8.</b>&nbsp;</TD>
-<% String[] checkQuestion8 = {"question8_weeklyspend_store", "question8_weeklyspend_restaurant"}; %>
-<TD WIDTH="665"><fd:ErrorHandler result="<%=result%>" field="<%=checkQuestion8%>"><span class="text11rbold"></fd:ErrorHandler><b>How much do you typically spend each week at:</b><fd:ErrorHandler result="<%=result%>" field="<%=checkQuestion8%>"></span></fd:ErrorHandler><fd:ErrorHandler result="<%=result%>" field="<%=checkQuestion8%>" id="errorMsg">&nbsp;&nbsp;<span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler><br>
-<table width="100%">
-<tr>
-<td width="50%">A) <fd:ErrorHandler result="<%=result%>" name="question8_weeklyspend_store" id="errorMsg"><span class="text11rbold"></fd:ErrorHandler><i>grocery stores, specialty food stores, and delis</i><fd:ErrorHandler result="<%=result%>" name="question8_weeklyspend_store" id="errorMsg"></span></fd:ErrorHandler></td>
-<td width="50%">B) <fd:ErrorHandler result="<%=result%>" name="question8_weeklyspend_restaurant" id="errorMsg"><span class="text11rbold"></fd:ErrorHandler><i>restaurants, including takeout</i><fd:ErrorHandler result="<%=result%>" name="question8_weeklyspend_restaurant" id="errorMsg"></span></fd:ErrorHandler></td>
-</tr>
-<tr>
-<td width="50%"><%surveyForm.getElement("question8_weeklyspend_store").print(out, null);%></td>
-<td width="50%"><%surveyForm.getElement("question8_weeklyspend_restaurant").print(out, null);%></td>
-</tr>
-</table>
-</TD>
-</TR>
-<TR><TD WIDTH="675" COLSPAN="2"><FONT CLASS="space8pix"><BR></FONT></TD></TR>
-
-<TR VALIGN="TOP">
-<TD WIDTH="10" ALIGN="RIGHT">&nbsp;<b>9.</b>&nbsp;</TD>
-<TD WIDTH="665"><fd:ErrorHandler result="<%=result%>" name="question9_numpeopleshopfor"><span class="text11rbold"></fd:ErrorHandler><b>When you shop for food, how many people do you typically shop for?</b><fd:ErrorHandler result="<%=result%>" name="question9_numpeopleshopfor"></span></fd:ErrorHandler><fd:ErrorHandler result="<%=result%>" name="question9_numpeopleshopfor" id="errorMsg">&nbsp;&nbsp;<span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler><br>
-<%surveyForm.getElement("question9_numpeopleshopfor").print(out, null);%>
-</TD>
-</TR>
-<TR><TD WIDTH="675" COLSPAN="2"><FONT CLASS="space8pix"><BR></FONT></TD></TR>
-
-<TR VALIGN="TOP">
-<TD WIDTH="10" ALIGN="RIGHT">&nbsp;<b>10.</b>&nbsp;</TD>
-<TD WIDTH="665"><fd:ErrorHandler result="<%=result%>" name="question10_household"><span class="text11rbold"></fd:ErrorHandler><b>Which best describes your household?</b><fd:ErrorHandler result="<%=result%>" name="question10_household"></span></fd:ErrorHandler><fd:ErrorHandler result="<%=result%>" name="question10_household" id="errorMsg">&nbsp;&nbsp;<span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler><br>
-<%surveyForm.getElement("question10_household").print(out, null);%>
-</TD>
-</TR>
-<TR><TD WIDTH="675" COLSPAN="2"><FONT CLASS="space8pix"><BR></FONT></TD></TR>
-
-<TR VALIGN="TOP">
-<TD WIDTH="10" ALIGN="RIGHT">&nbsp;<b>11.</b>&nbsp;</TD>
-<TD WIDTH="665"><b>When is your birthday?</b> (Optional)<br><FONT CLASS="space4pix"><BR></FONT>
-&nbsp;&nbsp;<%surveyForm.getElement("question11_birthday").print(out, null);%><%surveyForm.getElement("question11_birthmonth").print(out, null);%><%surveyForm.getElement("question11_birthyear").print(out, null);%>
-</TD>
-</TR>
-<TR><TD WIDTH="675" COLSPAN="2"><FONT CLASS="space8pix"><BR></FONT><FONT CLASS="space2pix"><BR></FONT></TD></TR>
-
-<TR VALIGN="TOP">
-<TD WIDTH="10" ALIGN="RIGHT">&nbsp;<b>12.</b>&nbsp;</TD>
-<TD WIDTH="665"><b>What is your gender?</b> (Optional)<br><FONT CLASS="space4pix"><BR></FONT>
-<%surveyForm.getElement("question12_gender").print(out, null);%>
-</TD>
-</TR>
-<TR><TD WIDTH="675" COLSPAN="2"><FONT CLASS="space8pix"><BR></FONT><FONT CLASS="space2pix"><BR></FONT></TD></TR>
-
-<TR VALIGN="TOP">
-<TD WIDTH="10" ALIGN="RIGHT">&nbsp;<b>13.</b>&nbsp;</TD>
-<TD WIDTH="665"><fd:ErrorHandler result="<%=result%>" name="question13_recommend"><span class="text11rbold"></fd:ErrorHandler><b>Would you recommend FreshDirect to a friend?</b><fd:ErrorHandler result="<%=result%>" name="question13_recommend"></span></fd:ErrorHandler><fd:ErrorHandler result="<%=result%>" name="question13_recommend" id="errorMsg"> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
-	<table border="0" cellspacing="0" cellpadding="0">
-	<tr>
-		<td><img src="/media_stat/images/layout/clear.gif" width="70" height="6" alt="" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="70" height="6" alt="" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="70" height="6" alt="" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="70" height="6" alt="" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="70" height="6" alt="" border="0"></td>
-	</tr>
-	<tr></tr>
-		<td  colspan="3"><i>Definitely No</i></td>	
-		<td colspan="2" align="right"><i>Definitely Yes</i></td>
-	</tr>
-	<tr>
-		<td align="center"><%surveyForm.getElement("question13_recommend").print(out, null);%></td>	
-	</tr>
-	</table>
-</TD>
-</TR>
-<TR><TD WIDTH="675" COLSPAN="2"><FONT CLASS="space8pix"><BR></FONT><FONT CLASS="space2pix"><BR></FONT></TD></TR>
-
-<TR VALIGN="TOP">
-<TD WIDTH="10" ALIGN="RIGHT">&nbsp;<b>14.</b>&nbsp;</TD>
-<TD WIDTH="665"><fd:ErrorHandler result="<%=result%>" name="question14_additional_comments"><span class="text11rbold"></fd:ErrorHandler><b>Additional comments about FreshDirect</b> (Optional)<fd:ErrorHandler result="<%=result%>" name="question14_additional_comments"></span></fd:ErrorHandler><fd:ErrorHandler result="<%=result%>" name="question14_additional_comments" id="errorMsg"> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler><BR>
-<%surveyForm.getElement("question14_additional_comments").print(out, "cols='40' rows='7' wrap='virtual'");%><BR>
-<BR>
-</TD>
-</TR>
-<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" alt="" border="0"><br>
-<img src="/media_stat/images/layout/cccccc.gif" width="100%" height="1">
-<table width="100%" cellpadding="0" cellspacing="0">
-	<tr><td colspan="4" valign="top"><img src="/media_stat/images/template/corp/food.jpg" width="229" height="79" vspace="8" align="right"><br><span style="font-size: 11px; font-weight: bold; color:#000099;">We now deliver to the office!</span> If you work for a mid-town or Downtown Manhattan company that either stocks an office pantry/kitchen with food or regularly orders platters/catering for business meetings, we'd like to see if your company is interested in ordering from FreshDirect. We'd appreciate the following information and permission to use your name as a reference:</td></tr>
-	<tr>
-		<td class="text12" align="right"><strong>Company name:</strong>&nbsp;&nbsp;</td>
-		<td width="180"><%surveyForm.getElement("questionCOS1_company").print(out, null);%><%--input type="text" size="25" maxlength="200"--%></td>
-		<td class="text12" align="right"><strong>Person ordering food:</strong>&nbsp;&nbsp;</td>
-		<td width="180"><%surveyForm.getElement("questionCOS2_contact").print(out, null);%><%--input type="text" size="25" maxlength="200"--%></td>
-	</tr>
-	</table><br>
-</td></tr>
+	    <logic:iterate id="question" collection="<%= questions %>" type="com.freshdirect.fdstore.survey.FDSurveyQuestion" indexId='index'>
+        <tr><td>
+            
+			    <div class="question">
+				    <div class="question_number">
+					<%=quesCount%>
+				    </div>
+			    <div class="question_text">
+					<%=SurveyHtmlHelper.getQuestionText(question)%>
+				</div>
+				    <div class="cleft"><!--  --></div>
+			    </div>
+		   
+                    <% String container="q07_container";
+                       if(EnumFormDisplayType.DISPLAY_PULLDOWN_GROUP.equals(question.getFormDisplayType())){
+                            container="q06_container";
+                       }else if(question.isPulldown()) {
+                            container="q10_container";
+                       } else if(EnumFormDisplayType.TWO_ANS_PER_ROW.equals(question.getFormDisplayType())) {
+                            container="answer_container";
+                       }else if(EnumFormDisplayType.GROUPED_MULTI_SELECTION.equals(question.getFormDisplayType())){
+                            container="q8_container";
+                       }
+                       
+                     %>
+                     
+				        <div class="<%=container%>" id="<%=quesCount%>">
+					        
+                              <%=SurveyHtmlHelper.getAnswersHtml(String.valueOf(quesCount),question,surveyResponse)%>
+				
+                         </div>   
+                <%quesCount++;%>
+                <div class="cleft"><!--  --></div>
+         </tr></td>       
+		</logic:iterate>
 </TABLE>
 	</td>
 </tr>

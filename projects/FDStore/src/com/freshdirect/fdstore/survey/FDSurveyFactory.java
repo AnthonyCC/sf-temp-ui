@@ -1,9 +1,27 @@
 package com.freshdirect.fdstore.survey;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.ejb.CreateException;
+import javax.ejb.EJBException;
+import javax.naming.Context;
+import javax.naming.NamingException;
+
+import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
+import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.ejb.FDFactoryHome;
+import com.freshdirect.fdstore.ejb.FDFactorySB;
+import com.freshdirect.fdstore.survey.ejb.FDSurveyHome;
+import com.freshdirect.fdstore.survey.ejb.FDSurveySB;
+import com.freshdirect.framework.core.ServiceLocator;
 
 public class FDSurveyFactory {
 
@@ -11,6 +29,8 @@ public class FDSurveyFactory {
 
 	private final Map surveys = new HashMap();
 
+	private static FDSurveyHome surveyHome = null;
+	private final static ServiceLocator LOCATOR = new ServiceLocator();
 	private FDSurveyFactory() {
 	}
 
@@ -18,8 +38,26 @@ public class FDSurveyFactory {
 		return INSTANCE;
 	}
 
-	public FDSurvey getSurvey(String surveyName) {
-		return (FDSurvey) this.surveys.get(surveyName);
+	public FDSurvey getSurvey(String surveyName) throws FDResourceException {
+		
+		FDSurvey survey=null;
+		if(this.surveys.containsKey(surveyName))
+			survey= (FDSurvey) this.surveys.get(surveyName);
+		else {
+			
+			try {
+				//FDSurveySB sb = getFDSurveyHome().create();
+				if(surveyHome==null)
+					lookupFactoryHome();
+				FDSurveySB sb = surveyHome.create();
+				survey=sb.getSurvey(surveyName);
+			} catch (CreateException ce) {
+				throw new FDResourceException(ce, "Error creating session bean");
+			} catch (RemoteException re) {
+				throw new FDResourceException(re, "Error talking to session bean");
+			}
+		}
+		return survey;
 	}
 
 	private void addSurvey(FDSurvey survey) {
@@ -1233,7 +1271,42 @@ public class FDSurveyFactory {
 
 
 	}
+
 	
 	
+	protected static void lookupFactoryHome() throws FDResourceException {
+		Context ctx = null;
+		try {
+			ctx = FDStoreProperties.getInitialContext();
+			surveyHome = (FDSurveyHome) ctx.lookup( FDStoreProperties.getFDSurveyHome() );
+		} catch (NamingException ne) {
+			throw new FDResourceException(ne);
+		} finally {
+			try {
+				if (ctx != null) {
+					ctx.close();
+				}
+			} catch (NamingException e) {
+			}
+		}
+	}
+
+	public Collection getSurveys(String[] strings) throws FDResourceException {
+		Collection surveys=new ArrayList(strings.length);
+		for(int i=0;i<strings.length;i++) {
+			FDSurvey survey=getSurvey(strings[i]);
+			if(survey!=null) {
+				surveys.add(survey);
+			}
+		}
+		return surveys;
+	}
+	/*private FDSurveyHome getFDSurveyHome() {
+        try {
+            return (FDSurveyHome) LOCATOR.getRemoteHome("java:comp/env/ejb/FDSurvey", FDSurveyHome.class);
+        } catch (NamingException e) {
+            throw new EJBException(e);
+        }
+    }*/
 	
 }

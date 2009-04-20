@@ -2,6 +2,7 @@
 <%@ page import='java.util.*' %>
 <%@ page import='java.text.MessageFormat' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
+<%@ page import='com.freshdirect.fdstore.survey.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.customer.*' %>
 <%@ page import="java.net.*"%>
@@ -18,7 +19,9 @@
 <%
 
 // redirect to Survey if this is the second order && first order is delivered
+System.out.println(" yuzer.isSurveySkipped() :"+yuzer.isSurveySkipped()+" yuzer.getAdjustedValidOrderCount():"+yuzer.getAdjustedValidOrderCount()+" yuzer.getDeliveredOrderCount():"+yuzer.getDeliveredOrderCount());
 if (!yuzer.isSurveySkipped() && yuzer.getAdjustedValidOrderCount()==1 && yuzer.getDeliveredOrderCount()==1) {
+
 
 // leave previous 4th order logic
     FDCustomerModel customer = FDCustomerFactory.getFDCustomer(yuzer.getIdentity());
@@ -32,14 +35,21 @@ if (!yuzer.isSurveySkipped() && yuzer.getAdjustedValidOrderCount()==1 && yuzer.g
 								   ||  "SKIP".equals(customer.getProfile().getAttribute("fourth_order_cos_survey"))
 								   ||  "SKIP".equals(customer.getProfile().getAttribute("second_order_survey"));
 
+System.out.println("alreadyTookFirstSurvey :"+alreadyTookFirstSurvey+" alreadyTookSecondSurvey :"+alreadyTookSecondSurvey+" skippedSecondSurvey: "+skippedSecondSurvey);
  if (!alreadyTookFirstSurvey && !alreadyTookSecondSurvey && !skippedSecondSurvey) {
 
  		if (yuzer.getSelectedServiceType().equals(EnumServiceType.CORPORATE)) {
 			response.sendRedirect(response.encodeRedirectURL("/checkout/survey_cos.jsp?successPage=/checkout/step_1_choose.jsp"));
 		} else {
-        	response.sendRedirect(response.encodeRedirectURL("/checkout/survey.jsp?successPage=/checkout/step_1_choose.jsp"));
+            FDSurvey Usability = FDSurveyCachedFactory.getSurvey(EnumSurveyType.SECOND_ORDER_SURVEY);
+	        FDSurveyResponse surveyResponse= FDCustomerManager.getCustomerProfileSurveyInfo(yuzer.getIdentity());
+           int coverage=com.freshdirect.webapp.taglib.fdstore.SurveyHelper.getResponseCoverage(Usability,surveyResponse);
+           if(coverage<Usability.getAcceptableCoverage()) {
+        	    response.sendRedirect(response.encodeRedirectURL("/checkout/survey.jsp?successPage=/checkout/step_1_choose.jsp"));
+                return;
+           } 
     	}
-	    return;
+	    
     }
 }
 
@@ -57,6 +67,7 @@ if (yuzer.getLevel()==FDUser.RECOGNIZED) {
 }
 
 String forwardPage = "/checkout/step_1_choose.jsp";
+
 List dlvAddresses = FDCustomerFactory.getErpCustomer(yuzer.getIdentity()).getShipToAddresses();
 %>
 

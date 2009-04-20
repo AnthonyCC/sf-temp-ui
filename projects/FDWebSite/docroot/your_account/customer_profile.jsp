@@ -1,65 +1,139 @@
+<%@ page import="com.freshdirect.fdstore.mail.*"%>
+<%@ page import='com.freshdirect.fdstore.content.*'  %>
+<%@ page import='com.freshdirect.fdstore.attributes.*'  %>
+<%@ page import='com.freshdirect.fdstore.customer.*'  %>
+<%@ page import='com.freshdirect.fdstore.*' %>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.*"%>
+<%@ page import="com.freshdirect.customer.*"%>
+<%@ page import="java.net.URLEncoder" %>
+<%@ page import='com.freshdirect.fdstore.survey.*' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri='bean' prefix='bean' %>
+<%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri='template' prefix='tmpl' %>
 <%
-response.setHeader("Cache-Control", "no-cache");
-response.setHeader("Pragma", "no-cache");
-response.setDateHeader ("Expires", 0);
-
-String surveyStatus = NVL.apply(user.getFDCustomer().getProfile().getAttribute("ReceiptPageSurvey2"),"");
-String actionName = "submitSurvey";
-boolean submitted = "filled".equalsIgnoreCase(request.getParameter("info")) && "FILL".equalsIgnoreCase(surveyStatus);
-boolean skipped =   "skipped".equalsIgnoreCase(request.getParameter("info"));
-boolean alreadyTookSecondSurvey = "FILL".equals(user.getFDCustomer().getProfile().getAttribute("signup_survey_v2"))
-                                       || "FILL".equals(user.getFDCustomer().getProfile().getAttribute("fourth_order_survey"))
-									   || "FILL".equals(user.getFDCustomer().getProfile().getAttribute("fourth_order_cos_survey"))
-									   || "FILL".equals(user.getFDCustomer().getProfile().getAttribute("second_order_survey"));
-
-System.out.println("surveyStatus :"+surveyStatus+" submitted: "+ submitted+" skipped: "+skipped+" alreadyTookSecondSurvey: "+alreadyTookSecondSurvey);
-if (submitted) {
+String successPage = "/your_account/customer_profile_summary.jsp";
+String redirectPage = "/login/login.jsp?successPage=" + successPage;
 %>
-<table width="630" cellpadding="0" cellspacing="0" border="0" class="text12">
-<tr>
-	<td colspan="11" class="text12" align="center"><br>
-	<span class="title18">Thank you for your feedback.</span><br>Your information has been submitted.<br>We greatly appreciate your time and interest.<br><img src="/media_stat/images/template/tell_a_friend/confirm_berry.jpg" width="70" height="70"><br><br></td></tr>
-</table>
-<%	
-} else if (!skipped) {
-	
-	FDSurvey survey = null;
-	FDSurveyResponse surveyResponse=null;
+<fd:CheckLoginStatus guestAllowed='false' recognizedAllowed='false' redirectPage='<%=redirectPage%>'/>
+<% 
+    FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+    FDIdentity customerIdentity = null;
+    ErpCustomerInfoModel customerInfo = null;
+    if (user!=null && user.getLevel() == 2){
+        customerIdentity = user.getIdentity();
+        customerInfo = FDCustomerFactory.getErpCustomerInfo(customerIdentity);	
+    }
+	boolean submitted = "thankyou".equalsIgnoreCase(request.getParameter("info"));
+	boolean hasTaken = false;
+	FDCustomerModel customer = FDCustomerFactory.getFDCustomer(user.getIdentity());
+	if ("FILL".equals(customer.getProfile().getAttribute("Usability"))) {
+		if (!"thankyou".equalsIgnoreCase(request.getParameter("info"))) hasTaken = true;
+		submitted = true;
+	}
+	FDSurvey Usability = FDSurveyCachedFactory.getSurvey(EnumSurveyType.CUSTOMER_PROFILE_SURVEY);
+	FDSurveyResponse surveyResponse= FDCustomerManager.getCustomerProfileSurveyInfo(customerIdentity);
+    List questions = Usability.getQuestions();
+	String[] checkSurveyForm = new String[questions.size()];
    
-System.out.println("User object is: "+user.getClass().getName());
-   boolean showSurvey = !alreadyTookSecondSurvey  && !"skip_3".equalsIgnoreCase(surveyStatus) && !"FILL".equalsIgnoreCase(surveyStatus)
-   &   ((FDSessionUser)user).getDeliveredOrderCount()>-2;
-   System.out.println("showSurvey : "+showSurvey);
-   System.out.println("!alreadyTookSecondSurvey : "+!alreadyTookSecondSurvey);
-   System.out.println("!\"skip_3\".equalsIgnoreCase(surveyStatus) : "+!"skip_3".equalsIgnoreCase(surveyStatus));
-   System.out.println("!\"FILL\".equalsIgnoreCase(surveyStatus) : "+"FILL".equalsIgnoreCase(surveyStatus));
-   System.out.println("((FDSessionUser)user).getDeliveredOrderCount()>2 : "+(((FDSessionUser)user).getDeliveredOrderCount()>2));
-   
-    survey = FDSurveyCachedFactory.getSurvey(EnumSurveyType.POST_ORDER_SURVEY);
-    surveyResponse= FDCustomerManager.getCustomerProfileSurveyInfo(user.getIdentity());
-    int coverage=com.freshdirect.webapp.taglib.fdstore.SurveyHelper.getResponseCoverage(survey,surveyResponse);
-    showSurvey=coverage<survey.getAcceptableCoverage()?true:false;
-    System.out.println("showSurvey after coverage : "+showSurvey);
-   
-   if (showSurvey) {
-
-	
-    
-       	List questions = survey.getQuestions();
-	
-      	String[] checkSurveyForm = new String[questions.size()];
-   
-       if (questions.size() > 0) {
+   if (questions.size() > 0) {
 	   int c = 0;
 	   for(Iterator it = questions.iterator();it.hasNext();c++){
 	       FDSurveyQuestion question = (FDSurveyQuestion)it.next();
 	       checkSurveyForm[c] = question.getName();
 	    }
 	}
-	
-	
+   
 %>
-  <style>
+<%
+response.setHeader("Pragma", "no-cache");
+response.setHeader("Cache-Control", "no-cache");
+String department = request.getParameter("department");
+
+%>
+<script type="text/javascript">
+	/*
+	 *	this probably isn't a good idea usabilty-wise
+	 *
+	*/
+	function clearSection(pId, isChecked){
+		var store = pId+'store';
+		if (isChecked)
+		{
+			/* checking none */
+			/* if not stored, create store */
+			if (!window[store])
+			{
+				window[store] = new Array();
+			}
+			/* grab all inputs to store and then clear them  */
+			var selections = (document.getElementById(pId)).getElementsByTagName('input');
+			for (var n=0; n < (selections.length-1); n++) {
+				switch (selections[n].type)
+				{
+					case 'radio':
+					case 'checkbox' :
+						window[store][n] = selections[n].checked;
+						selections[n].checked = false;
+						selections[n].disabled = true;
+						break;
+					case 'text' :
+						window[store][n] = selections[n].value;
+						selections[n].value = '';
+						selections[n].disabled = true;
+						break;
+				
+				}
+			}
+		}else{
+			/* unchecking none */
+			/* grab all selections */
+			var selections = (document.getElementById(pId)).getElementsByTagName('input');
+			/* check if stored already */
+			if (window[store])
+			{
+				/* replace them */
+				for (var n=0; n < (selections.length-1); n++) {
+					switch (selections[n].type)
+					{
+					case 'radio':
+					case 'checkbox' :
+							selections[n].disabled = false;
+							selections[n].checked = window[store][n];
+							break;
+						case 'text' :
+							selections[n].disabled = false;
+							selections[n].value = window[store][n];
+							break;
+					
+					}
+				}
+			}
+		}
+	}
+	/* if we don't want the values, just disabling would be the way to go */
+	function disableForNone(pId, noneVal){
+		if(document.getElementById(pId)) {
+			var inputs = (document.getElementById(pId)).getElementsByTagName('input');
+		}else{ return false; }
+
+		/* check if we're dealing with radio buttons. if so, toggle the noneVal  */
+		if ((inputs[inputs.length-1].disabled || inputs[0].disabled) && inputs[0].type=='radio') {
+			(noneVal) ? noneVal = false : noneVal = true;
+		}
+		for (var n=0; n < inputs.length; n++) {
+			if (inputs[n].className.indexOf('none_choice') < 0)
+			{
+				/* disable all but the none choice */
+				(noneVal) ? inputs[n].disabled = true :	inputs[n].disabled = false;
+			}else{
+				/* toggle the none choice */
+				(noneVal) ? inputs[n].checked = true : inputs[n].checked = false;
+			}
+		}
+	}
+</script>
+<style>
 	body { font-family:Verdana,Arial,sans-serif; font-size: 10px; height: 100%; }
 	.container { border: 2px solid #060; width: 100%; }
 	.ctext { text-align: left; margin: 10px 2px; font-size: 11px; }
@@ -165,55 +239,50 @@ System.out.println("User object is: "+user.getClass().getName());
 	.padTop30px { padding-top: 30px; }
 	.rb_image { text-align: center; width: 110px; }
 
-</style>  
-<table width="630" cellpadding="0" cellspacing="0" border="0" class="text12">
-<fd:ReceiptSurvey actionName="<%=actionName%>" result="result" successPage="/checkout/step_4_receipt.jsp" survey="<%=survey%>">
-<form name="postOrderSurvey" method="POST">
-<script>
-   function doSubmitForm(skipForm) {
-	if (skipForm) {
-	     document.postOrderSurvey.skipSurvey.value="yes";
-	} else {
-	     document.postOrderSurvey.skipSurvey.value="no";
-	}
-	document.postOrderSurvey.submit();
-   }
+</style>
+<tmpl:insert template='/common/template/dnav.jsp'>
+<tmpl:put name='title' direct='true'>FreshDirect - Your Profile</tmpl:put>
+<tmpl:put name='content' direct='true'>
 
-</script>
-<fd:IncludeMedia name="/media/editorial/site_pages/survey/pos_intro.html" />
-<input type="hidden" value="" name="skipSurvey">
-	<tr>
-		<td colspan="11" class="text11"><img src="/media_stat/images/layout/999966.gif" width="630" height="1" vspace="8"><br><span class="title18" style="color:#990000;">HELP US SERVE YOU BETTER</span><br><span class="space4pix"><br></span>
-		We want to make your FreshDirect experience the best it can be. Please help us by filling out this survey. Of course we keep all your information private. Whether you choose to fill out the survey or not, your feedback is greatly appreciated.
-		<br><img src="/media_stat/images/layout/cccccc.gif" width="630" height="1" vspace="8"><br>
+<fd:CustomerProfileSurveyTag actionName="submitSurvey" result="result" successPage="<%=successPage%>" survey="<%=Usability%>">
+<fd:IncludeMedia name="/media/editorial/site_pages/survey/cps_intro.html" />	
+ 	
+<table cellpadding="0" cellspacing="0" border="0" class="text12">
+<tr><td colspan="10">
+    <form name="request_product" method="post">
+    <input type="hidden" name="department" value="<%=department%>">
+    <br>
+    
+<% if (submitted) {%>
+<tr>
+	<td colspan="10" class="text12" align="center">
+	<span class="title18">Thank you for your feedback.</span><br><%= hasTaken?"Your information has been submitted.<br>":""%>We greatly appreciate your time and interest.<br>
+<br><a href="/index.jsp"><img src="/media_stat/images/template/help/help_home.gif" width="71" height="26" border="" alt="BACK HOME"></a><br>Go to <a href="/index.jsp">Home Page</a><br><br></td></tr>
+<% } else { %>
+
+
+	
 		<%  if (questions.size() > 0) { %>
+        
 			<fd:ErrorHandler result='<%=result%>' field='<%=checkSurveyForm%>'>
+            <tr>
 				<% String errorMsg = SystemMessageList.MSG_MISSING_SURVEY_INFO; %>
 				<br><%@ include file="/includes/i_error_messages.jspf" %><span class="space8pix"><br></span>
+                </tr>
 			</fd:ErrorHandler>
+            
 		<% } %>
-		</td>
-	</tr>
-	<tr>
-		<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="20" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="110" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="130" height="1"></td>
-	</tr>
+		
+	
+
 	<% int quesCount = 1; 
+       String questionPostFix=" (Choose one)";
        List previousAnswers=null;
        
     %>
     <!--<div class="container">-->
 	    <logic:iterate id="question" collection="<%= questions %>" type="com.freshdirect.fdstore.survey.FDSurveyQuestion" indexId='index'>
-           <tr>
+        
             <% 
 				String input = "radio";
 				//String surveyQuestion = subQuestion? "text12":"text13";
@@ -242,7 +311,7 @@ System.out.println("User object is: "+user.getClass().getName());
 					<%=quesCount%>
 				    </div>
 				    <div class="question_text">
-                   		<%=SurveyHtmlHelper.getQuestionText(question)%>
+					<%=SurveyHtmlHelper.getQuestionText(question)%>
 				    </div>
 				    <div class="cleft"><!--  --></div>
 			    </div>
@@ -272,15 +341,44 @@ System.out.println("User object is: "+user.getClass().getName());
 		        <!-- </div>-->
                 <%quesCount++;%>
                 <div class="cleft"><!--  --></div>
-              </tr>  
+                
 		</logic:iterate>
 <!--</div>	-->
-	<tr><td colspan="11" align="center"><img src="/media_stat/images/layout/cccccc.gif" width="630" height="1" vspace="12"><br><input type="image" src="/media_stat/images/buttons/b_submit_survey.gif" width="176" height="21" alt="SUBMIT SURVEY" onclick="doSubmitForm(false);"><br><img src="/media_stat/images/layout/999966.gif" width="630" height="1" vspace="18"><br>
-	<input type="image" src="/media_stat/images/buttons/b_ask_me_later.gif" width="120" height="21" alt="SKIP SURVEY" onclick="doSubmitForm(true);"><br><br>
-	</td></tr>
-
 </form>
-</fd:ReceiptSurvey>
+</td>
+</tr>
+<% } %>
+	<tr>
+		<td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
+	</tr>
+
+	<tr>
+		<td colspan="10" align="center">
+			<a href="javascript:document.request_product.reset()"><img src="/media_stat/images/template/newproduct/b_clear.gif" width="47" height="17" border="0" alt="Clear"></a>&nbsp;&nbsp;
+			<input type="image" name="send_email" src="/media_stat/images/template/newproduct/b_send.gif" width="45" height="15" vspace="1" border="0" alt="Send Request"onClick="javascript:document.request_product.submit()"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="12"><br>
+    </td>
+    </tr>
+
 </table>
-<% } //if show survey%>
-<% } //if not submitted %>
+<br><br>
+<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="675" HEIGHT="1" BORDER="0"><BR>
+<FONT CLASS="space4pix"><BR><BR></FONT>
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="675">
+<tr VALIGN="TOP">
+<td WIDTH="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="CONTINUE SHOPPING" ALIGN="LEFT"></a></td>
+<td WIDTH="640"><a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="CONTINUE SHOPPING"></a>
+<BR>from <FONT CLASS="text11bold"><A HREF="/index.jsp">Home Page</A></FONT><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="340" HEIGHT="1" BORDER="0"></td>
+</tr>
+</TABLE>
+</fd:CustomerProfileSurveyTag>
+	</tmpl:put>
+</tmpl:insert>

@@ -3,6 +3,7 @@
 <%@ page import="com.freshdirect.common.address.AddressModel" %>
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
+<%@ page import='com.freshdirect.fdstore.survey.*' %>
 <%//***********************************  Error Handling ******************************************%>
 <%!
 String[] checkRegistrationForm = {
@@ -338,71 +339,167 @@ if(user.isDepotUser()){
 </tr>
 </table>
 <font class="space4pix"><br></font>
+<style>
+	body { font-family:Verdana,Arial,sans-serif; font-size: 10px; height: 100%; }
+	.container { border: 2px solid #060; width: 100%; }
+	.ctext { text-align: left; margin: 10px 2px; font-size: 11px; }
+	.etext { text-align: left; margin: 10px 20px; font-size: 11px; font-weight: bold; }
+	.notes { text-align: left; margin: 10px 20px; font-size: 10px; font-weight: normal; }
+	.example { border: 1px dashed #4c4; width: 703px; text-align: left; margin: 5px auto 5px auto; }
+	.fleft { float: left; }
+	.cleft { clear: left; }
+	.cright { clear: right; }
+	.cboth { clear: both; }
+	.question { color: orange; font-size: 12px; font-weight: bold; padding:10px 0px }
+	.question_number { float: left; width: 25px; }
+	.question_text { float: left; width: 675px; }
+	.answer { margin: 10px; }
+	.other { padding-left: 32px; }
+
+	.q02_container { float: left; margin: 0 10px 0 0; }
+	.q02_input { float: left; padding: 1px; }
+	.q02_input input { font-size: 11px; text-align: center; width: 30px; }
+	.q02_incr { float: left; }
+	.q02_incr div { height: 8px; width: 10px; padding: 1px; }
+	.q02_incr div img { height: 9px; width: 10px; margin: 0 2px; }
+	.q02_text { float: left; line-height: 22px; padding-left: 4px; }
+
+	.q03_container { float: left; margin: 0 10px 0 0; }
+
+	.q04_container { float: left; margin: 0 10px 0 0; width: 48%; line-height: 22px; }
+	.q04_container div { clear: right; }
+	.q04_container input { float: left; }
+	.q04_container div div { float: right; width: 90%; line-height: 22px; }
+
+	.q05_container { float: left; margin: 0; line-height: 23px; }
+	.q05_col50per { width: 50%; }
+	.q05_col25per { width: 25%; }
+	.q05_col75per { width: 75%; }
+	.q05_container div { line-height: 24px; }
+	.q05_container div div { float: left; padding-right: 10px; line-height: 22px; width: 22px; }
+	.q05_container .other_input { font-size: 11px; text-align: left; width: 100px; margin: 2px 10px 1px 3px; }
+
+	.q06_container { height: 30px; }
+	.q06_container span { font-weight: bold; }
+	.q06_container select { margin-left: 10px; }
+
+	.q07_container { margin: 0 10px 0 0; width: 100%; line-height: 22px; }
+	.q07_container div { padding: 1px 0; line-height: 22px; }
+	.q07_container div div { clear: left; float: left; padding-right: 3px; }
+    .q07_container .other_input { font-size: 11px; text-align: left; width: 100px; margin: 2px 10px 1px 3px; }
+	//.q07_container .other_input { font-size: 11px; text-align: left; width: 100px; margin-left: 10px; }
+
+	.q08_container { margin: 0 10px 0 0; width: 75%; line-height: 22px; }
+	.q08_container .q08_text { clear: both; }
+	.q08_text { float: left; padding: 1px 0; line-height: 22px; width: 75%; }
+	.q08_cb { float: right; padding: 1px 0; line-height: 22px; width: 10%; text-align: center; font-weight: bold; }
+	
+	.q09_container { float: left; width: 33%; padding: 20px 0; }
+	.q09_container .box { width: 100%; }
+	.q09_container div div { line-height: 22px; }
+	.q09_rb { float: left; width: 35%; text-align: right; }
+	.q09_text { float: left; width: 65%; text-align: left; }
+	.odd { background-color: #ddd;  line-height: 26px; height: 26px;}
+	.even { background-color: #aaa;  line-height: 26px; height: 26px;}
+
+	.q10_container { float: left; width: 49%; }
+	.q10_container div { margin: 5px 0; }
+	.q10_container select { margin: 0 10px 0 0; width: 97%; }
+	
+	.q11_container { margin: 0 10px 0 0; line-height: 22px; }
+	.q11_colfright { float: right; }
+	.q11_col35per { width: 35%; }
+	.q11_col65per { width: 65%; }
+	.q11_col65per div { width: 50%; }
+	.q11_container div { float: left; padding: 1px 0; line-height: 22px; }
+	.other_input { font-size: 11px; text-align: left; width: 100px; margin-left: 10px; }
+
+	.q12_container { float: left; padding: 1px; }
+	.q12_container input { margin: 5px; }
+	.rb_image { text-align: center; width: 110px; }
+
+
+	/* below is the table styles */
+	.tQuestion { color: orange; font-size: 12px; font-weight: bold; width: 100%; border: 0; text-align: left; border-collapse: collapse; line-height: 24px; }
+	.tQuestion td { vertical-align: top; }
+	td.tIndex { width: 20px; }
+	.tAnswer { padding: 6px 0 10px 10px; width: 100%; border-spacing: 0px; border-collapse: collapse; line-height: 24px; }
+	.tAnswer td { padding: 0; }
+	.tAnswer table { float: left; line-height: 24px; }
+	.incr_input { font-size: 11px; text-align: center; width: 30px; }
+	.col25per { width: 25%; }
+	.col33per { width: 33.3%; }	
+	.col49per { width: 49%; }
+	.col50per { width: 50%; }
+	.col75per { width: 75%; }
+	.col100per { width: 100%; }
+	.other { padding: 0 0 0 24px; }
+	.odd { background-color: #ddd; }
+	.even { background-color: #aaa; }
+	.bolded { font-weight: bold; }
+	.cbHead { width: 10%; text-align: center; font-weight: bold; }
+	.other_input { font-size: 11px; text-align: left; width: 100px; margin-left: 10px; }
+	.tLeft { text-align: left; }
+	.tCen { text-align: center; }
+	.pad10px { padding: 10px; }
+	.padTop30px { padding-top: 30px; }
+	.rb_image { text-align: center; width: 110px; }
+
+</style>
 <table border="0" cellspacing="1" cellpadding="0" width="675">
-<%  String marketingQ1 = request.getParameter("shopFor");
-    if(marketingQ1 == null){
-        marketingQ1 = "";
-    }
-	String marketingQ2 = request.getParameter("household");
-    if(marketingQ2 == null){
-        marketingQ2 = "";
-    }
+<%  
+FDSurvey Usability = FDSurveyCachedFactory.getSurvey("Registration_survey");
+	
+    List questions = Usability.getQuestions();
+    List surveyResponse=null;
+    int quesCount = 1; 
 %>
-<tr valign="top">
-	<td colspan="3" class="text12">When you shop for food, how many people do you typically shop for?</td>
-		<td><select name="shopFor" class="text12">
-	            <option value="" <%=("".equalsIgnoreCase(marketingQ1) ? "selected" : "")%>>PLEASE SELECT</option>
-		    <option value="1" <%=("1".equalsIgnoreCase(marketingQ1) ? "selected" : "")%>>1</option>
-		    <option value="2" <%=("2".equalsIgnoreCase(marketingQ1) ? "selected" : "" )%>>2</option>
-		    <option value="3" <%=("3".equalsIgnoreCase(marketingQ1) ? "selected" : "" )%>>3</option>
-		    <option value="4" <%=("4".equalsIgnoreCase(marketingQ1) ? "selected" : "" )%>>4</option>
-		    <option value="5+" <%=("5+".equalsIgnoreCase(marketingQ1) ? "selected" : "" )%>>5 or more</option>
-		</select></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="300" height="1" alt="" border="0"><br></td>
-</tr>
-<tr><td colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"></td></tr>
-<tr valign="top">
-	<td colspan="3" class="text12">Which best describes your household?</td>
-		<td><select name="household" class="text12">
-	            <option value="" <%=("".equalsIgnoreCase(marketingQ2) ? "selected" : "")%>>PLEASE SELECT</option>
-		    <option value="single" <%=("single".equalsIgnoreCase(marketingQ2) ? "selected" : "")%>>Single</option>
-		    <option value="couple2" <%=("couple2".equalsIgnoreCase(marketingQ2) ? "selected" : "" )%>>Couple</option>
-		    <option value="family with children" <%=("family with children".equalsIgnoreCase(marketingQ2) ? "selected" : "" )%>>Family with Children</option>
-		    <option value="roommate(s)" <%=("roommate(s)".equalsIgnoreCase(marketingQ2) ? "selected" : "" )%>>Roommate(s)</option>
-			<option value="office" <%=("office".equalsIgnoreCase(marketingQ2) ? "selected" : "" )%>>Office</option>
-			<option value="caterer/person chef" <%=("caterer/person chef".equalsIgnoreCase(marketingQ2) ? "selected" : "" )%>>Caterer/Personal Chef</option>
-		</select></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="300" height="1" alt="" border="0"></td>
-</tr>
+
+	<logic:iterate id="question" collection="<%= questions %>" type="com.freshdirect.fdstore.survey.FDSurveyQuestion" indexId='index'>
+        
+            <tr valign="top">
+			    <td colspan="3" ><div class="question">
+				    
+			    <div class="question_text">
+                    <% 
+                       String _response=request.getParameter(question.getName());
+                       if(_response!=null && !"".equals(_response)) {
+                          surveyResponse=new ArrayList();
+                          surveyResponse.add(_response);
+                       }
+                    %>
+                    
+					<%=SurveyHtmlHelper.getQuestionText(question)%>
+				    </div>
+				    <div class="cleft"><!--  --></div>
+			    </div>
+		   
+                    <% String container="q07_container";
+                       if(EnumFormDisplayType.DISPLAY_PULLDOWN_GROUP.equals(question.getFormDisplayType())){
+                            container="q06_container";
+                       }else if(question.isPulldown()) {
+                            container="q10_container";
+                       } else if(EnumFormDisplayType.TWO_ANS_PER_ROW.equals(question.getFormDisplayType())) {
+                            container="answer_container";
+                       }else if(EnumFormDisplayType.GROUPED_MULTI_SELECTION.equals(question.getFormDisplayType())){
+                            container="q8_container";
+                       }
+                       
+                     %>
+                     
+				        <div class="<%=container%>" id="<%=index.intValue()+1%>">
+					        
+                              <%=SurveyHtmlHelper.getAnswersHtml(String.valueOf(quesCount),question,surveyResponse)%>
+				        </div>
+                <div class="cleft"><!--  --></div></td>
+                
+                </tr>
+		</logic:iterate>
+		
+
 </table>
 <% } %>
-<table border="0" cellspacing="1" cellpadding="0" width="675">
-<%  String marketingQ3 = request.getParameter("howDidYouHear");
-    if(marketingQ3 == null){
-        marketingQ3 = "";
-    }
-%>
-<tr><td colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"></td></tr>
-<tr valign="top">
-	<td colspan="3" class="text12">How did you hear about FreshDirect?</td>
-		<td><select name="howDidYouHear" class="text12">
-                        <option value="" <%=("".equalsIgnoreCase(marketingQ3) ? "selected" : "")%>>PLEASE SELECT</option>
-			<option value="flyer" <%=("flyer".equalsIgnoreCase(marketingQ3) ? "selected" : "")%>>Flyer</option>
-			<option value="newspaper" <%=("newspaper".equalsIgnoreCase(marketingQ3) ? "selected" : "" )%>>Newspaper</option>
-			<option value="magazine" <%=("magazine".equalsIgnoreCase(marketingQ3) ? "selected" : "" )%>>Magazine</option>
-			<option value="tv" <%=("tv".equalsIgnoreCase(marketingQ3) ? "selected" : "" )%>>TV</option>
-			<option value="radio" <%=("radio".equalsIgnoreCase(marketingQ3) ? "selected" : "" )%>>Radio</option>
-			<option value="email" <%=("email".equalsIgnoreCase(marketingQ3) ? "selected" : "" )%>>Email</option>
-			<option value="friend" <%=("friend".equalsIgnoreCase(marketingQ3) ? "selected" : "")%>>Friend</option>
-			<option value="poster/billboard" <%=("poster or billboard".equalsIgnoreCase(marketingQ3) ? "selected" : "")%>>Poster/Billboard</option>
-			<option value="direct mail" <%=("direct mail".equalsIgnoreCase(marketingQ3) ? "selected" : "")%>>Direct Mail</option>
-			<option value="internet/web ad" <%=("internet/web ad".equalsIgnoreCase(marketingQ3) ? "selected" : "")%>>Internet/Web Ad</option>
-			<option value="freshdirect truck" <%=("freshdirect truck".equalsIgnoreCase(marketingQ3) ? "selected" : "")%>>Fresh Direct Truck</option>
-			<option value="taxi tops" <%=("taxi tops".equalsIgnoreCase(marketingQ3) ? "selected" : "")%>>Taxi Tops</option>				
-		</select></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="300" height="1" alt="" border="0"><br></td>
-</tr>
-</table>
+
 <BR>
 <table border="0" cellspacing="0" cellpadding="2" width="693">
 <tr valign="top">

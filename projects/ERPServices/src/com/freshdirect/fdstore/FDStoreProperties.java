@@ -267,6 +267,11 @@ public class FDStoreProperties {
 //	COOL info
     private final static String PROP_COOLINFO_REFRESH_PERIOD = "fdstore.refresh.coolinfo";
     
+//  Survey Def
+	private final static String PROP_SURVEYDEF_CACHE_SIZE	= "fdstore.surveyDef.cache.size";
+	private static final String PROP_REFRESHSECS_SURVEYDEF = "fdstore.refreshSecs.surveyDef";
+	private final static String PROP_FDSURVEY_HOME		= "fdstore.fdSurvey.home";
+    
 	static {
 
 		defaults.put(PROP_PROVIDER_URL, 	"t3://localhost:7006");
@@ -459,6 +464,11 @@ public class FDStoreProperties {
 		defaults.put(SMART_SEARCH_ENABLED, "false");
 		
 		defaults.put(PROP_COOLINFO_REFRESH_PERIOD, "10");
+		
+		defaults.put(PROP_SURVEYDEF_CACHE_SIZE, "25");
+		defaults.put(PROP_REFRESHSECS_SURVEYDEF, "600");
+		defaults.put(PROP_FDSURVEY_HOME,	"freshdirect.fdstore.FDSurvey");
+
 		
 		refresh();
 	}
@@ -1029,4 +1039,16 @@ public class FDStoreProperties {
 	public static int getSmartStoreDataSourceCacheSize() {
 		return Integer.parseInt(get(SMARTSTORE_CACHE_DATA_SOURCES_SIZE));
 	}
+	
+	public static int getSurveyDefCacheSize() {
+		return Integer.parseInt(get(PROP_SURVEYDEF_CACHE_SIZE));
+	}
+
+	public static int getRefreshSecsSurveyDef() {
+		return Integer.parseInt(get(PROP_REFRESHSECS_SURVEYDEF));
+	}
+	public static String getFDSurveyHome() {
+		return get(PROP_FDSURVEY_HOME);
+	}
+	
 }

@@ -38,7 +38,8 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) {
                     <%if(user.isEligibleForPreReservation()){%>
 							<a href="<%=response.encodeURL("/your_account/newsletter.jsp")%>">President's&nbsp;Picks&nbsp;Newsletter</a><br>
 					<%}%>                    
-                    <a href="<%=response.encodeURL("/your_account/reminder_service.jsp")%>">Reminder&nbsp;Service</a>
+                    <a href="<%=response.encodeURL("/your_account/reminder_service.jsp")%>">Reminder&nbsp;Service</a><br>
+                    <a href="<%=response.encodeURL("/your_account/customer_profile_summary.jsp")%>">Your&nbsp;Profile</a>
 					</td>
 				</tr>
 				<tr><td colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="6" border="0"></td></tr>

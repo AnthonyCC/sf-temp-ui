@@ -395,7 +395,7 @@ public class RegistrationAction extends WebActionSupport {
 		private String deliveryInstructions;
 		
 		private String household;
-		private String shopFor;
+		private String shoppingConsideration;
 		private String howDidYouHear;
 
 		private boolean receiveNews;
@@ -419,7 +419,7 @@ public class RegistrationAction extends WebActionSupport {
 			this.plainTextEmail = false;
 			
 			this.household = request.getParameter("household");
-			this.shopFor = request.getParameter("shopFor");
+			this.shoppingConsideration = request.getParameter("Important_Consideration");
 			this.howDidYouHear = request.getParameter("howDidYouHear");
 			this.termsAccepted = request.getParameter("terms") != null;
 
@@ -473,15 +473,15 @@ public class RegistrationAction extends WebActionSupport {
 			FDSurveyResponse survey = new FDSurveyResponse(identity, name);
 			
 			if (!"".equals(this.household)) {
-				survey.addAnswer("Household type", this.household);
+				survey.addAnswer("household", this.household);
 			}
 
-			if (!"".equals(this.shopFor)) {
-				survey.addAnswer("Number shop for", this.shopFor);
+			if (!"".equals(this.shoppingConsideration)) {
+				survey.addAnswer("Important_Consideration", this.shoppingConsideration);
 			}
 
 			if (!"".equals(this.howDidYouHear)) {
-				survey.addAnswer("How did you hear about us", this.howDidYouHear);	
+				survey.addAnswer("howDidYouHear", this.howDidYouHear);	
 			}
 			
 			

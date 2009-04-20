@@ -10,14 +10,27 @@ import java.util.Iterator;
 import java.util.List;
 
 
-public class FDSurvey {
+public class FDSurvey implements java.io.Serializable {
 	private final String name;
 	private final boolean isOrderSurvey;  //property tells whether or not an order number is required
 	private final List questions = new ArrayList();
+    private int acceptableCoverage;
+    
+	public int getAcceptableCoverage() {
+		return acceptableCoverage;
+	}
+
+	
 
 	public FDSurvey(String name, boolean isOrderSurvey) {
 		this.name = name;
 		this.isOrderSurvey = isOrderSurvey;
+		this.acceptableCoverage=0;
+	}
+	public FDSurvey(String name, boolean isOrderSurvey,int acceptableCoverage) {
+		this.name = name;
+		this.isOrderSurvey = isOrderSurvey;
+		this.acceptableCoverage=acceptableCoverage;
 	}
 	
 	public FDSurvey(String name) {
