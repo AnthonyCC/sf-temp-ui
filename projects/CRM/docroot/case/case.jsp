@@ -38,8 +38,7 @@
 					<tr>
 						<td width="20%" class="case_header_title_text"><b>Case # <span class="case_header_title_value"><%= cm.getPK().getId() %></span></b> &raquo; <%= cm.getState()==null ? "Open" : cm.getState().getName() %></td>
 						<td width="60%">
-						<div class="case_subheader" style="border-bottom: none; padding: 2px;">
-							<table width="100%" cellpadding="0" cellspacing="0" class="case_subheader_text">
+							<table width="100%" cellpadding="0" cellspacing="0" class="case_subheader" style="color: #000000; font-size: 8pt; border-bottom: none; padding: 2px;">
 								<tr>
 									<td>Customer:
 									<% if (cm.getCustomerPK()!=null) { 
@@ -77,7 +76,6 @@
 									<td align="right">Created: <b><%= CCFormatter.formatCaseDate(cm.getCreateDate()) %></b>&nbsp;</td>
 								</tr>
 							</table>
-						</div>
 						</td>
 						<td width="20%" align="center"><a href="/case/unlock.jsp" class="case_header_text"><img src="/media_stat/crm/images/unlock.gif" width="10" height="15" border="0" hspace="0" vspace="0"> unlock</a></td>
 					</tr>

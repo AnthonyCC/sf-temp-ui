@@ -68,8 +68,6 @@ if (request.getParameter("orderId") != null) {
 } else if (thisCase.getSalePK() != null) {
 	// existing case having order
 	order = CrmSession.getOrder(session, thisCase.getSalePK().getId());
-} else {
-	%><div>NO ORDER ID</div><%
 }
 
 
@@ -314,12 +312,12 @@ if (request.getParameter("orderId") != null) {
 <%-- Scripts END --%>
 
 
-<form name="case_details" method="POST">
+<form name="case_details" method="POST" style="margin: 0; padding: 0">
 <input type="hidden" name="customerPK" value="<%= thisCase.getCustomerPK() != null ? thisCase.getCustomerPK().getId() : "" %>">
 <input type="hidden" name="salePK" value="<%= thisCase.getSalePK() != null ? thisCase.getSalePK().getId() : "" %>">
 <input type="hidden" name="isCaseClosed" value="<%= "closed".equalsIgnoreCase(thisCase.getState().getName()) ? "true" : "false" %>">
 
-<table width="100%" cellpadding="0" cellspacing="5" border="0" class="case_content_text">
+<table width="96%" cellpadding="0" cellspacing="5" border="0" class="case_content_text">
 	<tr>
 		<td class="case_content_field">Status</td>
 		<td><div id="CaseStatus"><%= thisCase.getState()==null ? "Open" : thisCase.getState().getName() %></div></td>
