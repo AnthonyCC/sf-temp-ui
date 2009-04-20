@@ -448,7 +448,7 @@ if(user.isDepotUser()){
 </style>
 <table border="0" cellspacing="1" cellpadding="0" width="675">
 <%  
-FDSurvey Usability = FDSurveyCachedFactory.getSurvey("Registration_survey");
+FDSurvey Usability = FDSurveyCachedFactory.getSurvey(EnumSurveyType.REGISTRATION_SURVEY);
 	
     List questions = Usability.getQuestions();
     List surveyResponse=null;
