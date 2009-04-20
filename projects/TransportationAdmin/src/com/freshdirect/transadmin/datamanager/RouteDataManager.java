@@ -84,7 +84,7 @@ public class RouteDataManager {
 	    return result;
 	}
 	
-	private File createFile(String prefix, String suffix) throws IOException  {		
+	protected File createFile(String prefix, String suffix) throws IOException  {		
 		if(TransportationAdminProperties.getDownloadFolder() != null 
 					&& TransportationAdminProperties.getDownloadFolder().trim().length() > 0) {
 			return File.createTempFile(prefix, suffix, new File(TransportationAdminProperties.getDownloadFolder()));

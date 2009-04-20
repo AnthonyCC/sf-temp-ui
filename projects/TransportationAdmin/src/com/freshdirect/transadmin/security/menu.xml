@@ -51,7 +51,7 @@
 	     </menu>
 	     
 	     <menu id="RUT003" title="Routing Merge" orientation="RIGHT" link="routingmerge.do">
-	     	<access-uris>routingmerge.do</access-uris>
+	     	<access-uris>routingmerge.do,rsmergefile.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
 	     </menu>
 	     

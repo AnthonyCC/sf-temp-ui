@@ -31,7 +31,7 @@
             <td class="screencontent">
               <table class="forms1">          
                 <tr>
-                  <td>Route Smart Truck File</td>
+                  <td>Route Smart Truck File&nbsp;&nbsp;<a href="rsmergefile.do">Merge</a></td>
                   <td>                  
                     <input type="file" size="50" name="truckFile"/>
                     <spring:bind path="command.truckFile">

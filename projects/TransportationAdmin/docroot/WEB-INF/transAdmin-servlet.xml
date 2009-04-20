@@ -71,6 +71,7 @@
  		 	    <prop key="/routinginput.do">routingInputFormController</prop> 
  		 	    <prop key="/routingoutput.do">routingOutputFormController</prop>
  		 	    <prop key="/routingmerge.do">routingMergeFormController</prop> 
+ 		 	    <prop key="/rsmergefile.do">rsFileMergeFormController</prop>
  		 	    <prop key="/download.do">downloadController</prop>	
  		 	    <prop key="/zonetype.do">domainController</prop>
  		 	    <prop key="/deletezonetype.do">domainController</prop>					                
@@ -400,6 +401,12 @@
         <property name="formView" value="routingMergeProcess"/>
         <property name="successView" value="routingMergeProcess"/>
         <property name="validator" ref="routingMergeValidator"/>
+    </bean>
+    
+     <bean id="rsFileMergeFormController" class="com.freshdirect.transadmin.web.RSFileMergeFormController">
+	    <property name="commandClass" value="com.freshdirect.transadmin.web.model.RSFileMergeCommand"/>
+        <property name="formView" value="rsFileMergeProcess"/>
+        <property name="successView" value="rsFileMergeProcess"/>
     </bean>
     
     <bean id="deliveryBuildingFormController" class="com.freshdirect.transadmin.web.DlvBuildingFormController">

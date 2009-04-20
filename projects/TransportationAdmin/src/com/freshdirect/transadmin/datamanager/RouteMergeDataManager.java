@@ -1,6 +1,7 @@
 package com.freshdirect.transadmin.datamanager;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -14,12 +15,14 @@ import com.freshdirect.transadmin.datamanager.model.IRoutingOutputInfo;
 import com.freshdirect.transadmin.datamanager.model.OrderRouteInfoModel;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
+import com.freshdirect.transadmin.web.model.RSFileMergeCommand;
 
 public class RouteMergeDataManager extends RouteOutputDataManager {
 	
 	private final String INVALID_RSORDERFILE = "Invalid Route Smart Order File";
 	private final String INVALID_RSROUTEFILE = "Invalid Route Smart Truck File";
 	private final String INVALID_RSORDERROUTEFILE = "Invalid Route Smart Order/Truck File";
+	private final String NODATA_RSORDERROUTEFILE = "No Data in Route Smart Order/Truck File";
 		
 	protected void collectOrders(IRoutingOutputInfo routingInfo, RoutingResult result) {
 		
@@ -185,6 +188,74 @@ public class RouteMergeDataManager extends RouteOutputDataManager {
 			}
 		}
 		return result;
+	}
+	
+	public RoutingResult process(RSFileMergeCommand routingInfo ,String userName) throws IOException {
+		
+		long time = System.currentTimeMillis();
+		String outputFileName1 = TransportationAdminProperties.getRoutingOutputOrderFilename()+userName+time;
+		String outputFileName2 = TransportationAdminProperties.getRoutingOutputTruckFilename()+userName+time;
+		
+		List orders = new ArrayList();
+		List trucks = new ArrayList();
+		
+		RoutingResult result = new RoutingResult();
+		
+		if((routingInfo.getOrderFile1() == null || routingInfo.getOrderFile1().length == 0 
+					|| routingInfo.getTruckFile1() == null || routingInfo.getTruckFile1().length == 0) 
+				&& (routingInfo.getOrderFile2() == null || routingInfo.getOrderFile2().length == 0 
+						|| routingInfo.getTruckFile2() == null || routingInfo.getTruckFile2().length == 0)
+				&& (routingInfo.getOrderFile3() == null || routingInfo.getOrderFile3().length == 0 
+						|| routingInfo.getTruckFile3() == null || routingInfo.getTruckFile3().length == 0)) {
+			result.addError(NODATA_RSORDERROUTEFILE);
+		} else {
+			collectMergeData(result, orders, trucks, routingInfo.getOrderFile1(), routingInfo.getTruckFile1(), 1);
+			collectMergeData(result, orders, trucks, routingInfo.getOrderFile2(), routingInfo.getTruckFile2(), 2);
+			collectMergeData(result, orders, trucks, routingInfo.getOrderFile3(), routingInfo.getTruckFile3(), 3);
+			
+			result.setOutputFile1(createFile(outputFileName1, "."+TransportationAdminProperties.getFilenameSuffix()).getAbsolutePath());
+			result.setOutputFile2(createFile(outputFileName2, "."+TransportationAdminProperties.getFilenameSuffix()).getAbsolutePath());
+		    
+			fileManager.generateRouteFile(TransportationAdminProperties.getErpOrderInputFormat()
+					, result.getOutputFile1(), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, orders
+					, null);
+			fileManager.generateRouteFile(TransportationAdminProperties.getErpRouteInputFormat()
+					, result.getOutputFile2(), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, trucks
+					, null);
+		}
+		
+		return result;
+	}
+	
+	private void collectMergeData(RoutingResult result, List orderLst, List truckLst, byte[] orders, byte[] trucks
+			, int index) {
+		
+		List tmpOrders = null;
+		List tmpTrucks = null;
+		if(orders != null && orders.length > 0) {
+			tmpOrders = fileManager.parseRouteFile(TransportationAdminProperties.getErpOrderInputFormat()
+					, new ByteArrayInputStream(orders), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER
+					, null);
+			if(tmpOrders == null || tmpOrders.size() == 0) {
+				result.addError(INVALID_RSORDERFILE+" "+index);
+			} else {
+				orderLst.addAll(tmpOrders);
+			}
+		}
+		
+		if(trucks != null && trucks.length > 0) {
+			tmpTrucks = fileManager.parseRouteFile(TransportationAdminProperties.getErpRouteInputFormat()
+					, new ByteArrayInputStream(trucks), ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER
+					, null);
+			if(tmpTrucks == null || tmpTrucks.size() == 0) {
+				result.addError(INVALID_RSROUTEFILE+" "+index);
+			} else {
+				if (!updateRouteInfo(tmpOrders, tmpTrucks)){
+					result.addError(INVALID_RSORDERROUTEFILE+" "+index);
+				}
+				truckLst.addAll(tmpTrucks);
+			}
+		}
 	}
 	
 }
