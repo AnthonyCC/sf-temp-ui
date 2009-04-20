@@ -52,26 +52,29 @@ function toggleCartonItem(cartonId) {
 
 
 // attach to NEW CASE anchor
-document.getElementById('newcase_trigger').onclick = function() {
-	try {
-		var str = this.href;
-	
-		var k = 0;
-		for (x in cartons) {
-			if (cartons[x] == true) {
-				str += "&ct["+k+"]="+x; // append carton ID
-				k++;
+var newCaseObj = document.getElementById('newcase_trigger');
+if (newCaseObj != null) {
+	newCaseObj.onclick = function() {
+		try {
+			var str = this.href;
+		
+			var k = 0;
+			for (x in cartons) {
+				if (cartons[x] == true) {
+					str += "&ct["+k+"]="+x; // append carton ID
+					k++;
+				}
 			}
+			str += "&cts="+k; // append item count
+	
+			// alert(str);
+			this.href = str;
+		} catch(exc) {
+			alert(exc);
 		}
-		str += "&cts="+k; // append item count
-
-		// alert(str);
-		this.href = str;
-	} catch(exc) {
-		alert(exc);
-	}
-	return true;
-};
+		return true;
+	};
+}
 </script>
 <table width="100%" cellpadding="0" cellspacing="0" border="0" class="order">
 	<tr valign="top">
