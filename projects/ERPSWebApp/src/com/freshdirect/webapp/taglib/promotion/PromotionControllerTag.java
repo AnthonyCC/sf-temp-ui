@@ -546,8 +546,8 @@ public class PromotionControllerTag extends AbstractControllerTag {
 		this.promotion.setApplyFraud(request.getParameter("dontApplyFraud")==null);
 		this.promotion.setProfileOperator(request.getParameter("profileOperator"));
 		
-		this.promotion.setAllowHeaderDiscount(request.getParameter("applyHeaderDiscount")==null);
-		this.promotion.setRecommendedItemsOnly(request.getParameter("recommendedItemsOnly")==null);
+		this.promotion.setAllowHeaderDiscount(request.getParameter("applyHeaderDiscount")!=null);
+		this.promotion.setRecommendedItemsOnly(request.getParameter("recommendedItemsOnly")!=null);
 		this.promotion.setMaxItemCount(Integer.parseInt(NVL.apply(request.getParameter("maximumItemCount"), "0").trim()));
 		
 		HttpSession session = pageContext.getSession();
