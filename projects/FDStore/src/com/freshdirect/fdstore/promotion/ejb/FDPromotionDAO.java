@@ -1034,7 +1034,8 @@ public class FDPromotionDAO {
 		if(smartSavingFeatures != null && smartSavingFeatures.size() > 0) {
 			buffer.append(" AND ").append("V.FEATURE IN ").append("(");
 			for(Iterator it = smartSavingFeatures.iterator(); it.hasNext();){
-				buffer.append("\'").append(it.next()).append("\'");
+				EnumSiteFeature siteFeature = (EnumSiteFeature)it.next();
+				buffer.append("\'").append(siteFeature.getName()).append("\'");
 				if (it.hasNext()){
 					buffer.append(",");
 				}else{

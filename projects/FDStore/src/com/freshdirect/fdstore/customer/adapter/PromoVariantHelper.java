@@ -39,7 +39,7 @@ public class PromoVariantHelper {
 	        List eligiblePVList = new ArrayList();
 	        for(Iterator it = ssFeatures.iterator(); it.hasNext();){
 	            // fetch variant assignment (cohort -> variant map)
-	        	EnumSiteFeature siteFeature = EnumSiteFeature.getEnum((String)it.next());
+	        	EnumSiteFeature siteFeature = (EnumSiteFeature) it.next();
 	        	if(!SmartStoreUtil.isCustomerEligible(user, siteFeature)) continue;
 				// lookup overridden variant
 				OverriddenVariantsHelper vhelper = new OverriddenVariantsHelper(user);
