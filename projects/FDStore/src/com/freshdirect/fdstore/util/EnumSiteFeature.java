@@ -83,12 +83,6 @@ public class EnumSiteFeature implements Serializable, Comparable {
      */
     boolean isSmartSavings;
     
-    
-    /**
-     * Is Smart Savings feature?
-     */
-    boolean isSmartSavings;
-    
     String title;
     
     String prez_title = null;
