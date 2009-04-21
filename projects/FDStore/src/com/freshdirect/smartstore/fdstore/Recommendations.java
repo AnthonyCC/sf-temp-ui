@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
@@ -12,7 +13,6 @@ import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.smartstore.SessionInput;
-import com.freshdirect.smartstore.Trigger;
 import com.freshdirect.smartstore.Variant;
 
 /**
@@ -25,10 +25,9 @@ public class Recommendations implements Serializable {
 	private static final long serialVersionUID = 8230385944777453868L;
 	private Variant variant;
 	private List products;
-	private List categories;
-	private List recipes;
 	
 	private SessionInput sessionInput;
+	private Map impressionIds;
 	
 	/**
 	 * Constructor.
@@ -49,29 +48,12 @@ public class Recommendations implements Serializable {
 	 */
 	public Recommendations(Variant variant, String input) throws InvalidContentKeyException {
 		this.variant = variant;
-
-		if (input != null && !"".equals(input)) {
-			List nodes = new ArrayList();
-
-			String[] ids = input.split(",");
-			for (int i = 0; i < ids.length; i++) {
-	            ContentKey key = ContentKey.create(FDContentTypes.PRODUCT, ids[i]);
-	            nodes.add((ProductModel) ContentFactory.getInstance().getContentNodeByKey(key));
-			}
-
-			products = nodes;
-		} else {
-			// Empty case
-			products = Collections.EMPTY_LIST;
-		}
+		this.products = deserializeContentNodes(input);
 	}
 	
 	
-	public Recommendations(Variant variant, List products,
-			List categories, List recipes, SessionInput sessionInput) {
+	public Recommendations(Variant variant, List products, SessionInput sessionInput) {
 		this(variant, products);
-		this.categories = categories;
-		this.recipes = recipes;
 		this.sessionInput = sessionInput;
 	}
 
@@ -81,14 +63,6 @@ public class Recommendations implements Serializable {
 	 */
 	public List getProducts() {
 		return products;
-	}
-	
-	public List getCategories() {
-		return categories != null ? categories : Collections.EMPTY_LIST;
-	}
-	
-	public List getRecipes() {
-		return recipes != null ? recipes : Collections.EMPTY_LIST;
 	}
 	
 	/**
@@ -111,6 +85,22 @@ public class Recommendations implements Serializable {
 		return Recommendations.getSerializedProducts(products);
 	}
 
+	public void setImpressionIds(Map impressionIds) {
+            this.impressionIds = impressionIds;
+        }
+	
+	public String getImpressionId(ContentKey key) {
+	    Object obj =  impressionIds!=null ? impressionIds.get(key) : null;
+	    if (obj instanceof String) {
+	        return ((String)obj);
+	    }
+	    return null;
+	}
+
+        public String getImpressionId(ProductModel model) {
+            return model != null ? getImpressionId(model.getContentKey()) : null;
+        }
+	
 
 	/**
 	 * Serialize products to String
@@ -134,23 +124,25 @@ public class Recommendations implements Serializable {
 	}
 	
 	/**
-	 * @deprecated
-	 * 
-	 * @param input
-	 * @return
-	 * @throws InvalidContentKeyException
-	 */
-	public List deserializeContentNodes(String input) throws InvalidContentKeyException {
-		if (input == null || "".equals(input))
-			return Collections.EMPTY_LIST;
+     * 
+     * @param input
+     * @return
+     * @throws InvalidContentKeyException
+     */
+    public static List deserializeContentNodes(String input) throws InvalidContentKeyException {
+        if (input != null && !"".equals(input)) {
+            List nodes = new ArrayList();
 
-		List nodes = new ArrayList();
-		
-		String[] ids = input.split(",");
-		for (int i = 0; i < ids.length; i++) {
-            ContentKey key = ContentKey.create(FDContentTypes.PRODUCT, ids[i]);
-            nodes.add((ProductModel) ContentFactory.getInstance().getContentNodeByKey(key));
-		}
-		return products = nodes;
-	}
+            String[] ids = input.split(",");
+            for (int i = 0; i < ids.length; i++) {
+                ContentKey key = ContentKey.create(FDContentTypes.PRODUCT, ids[i]);
+                nodes.add((ProductModel) ContentFactory.getInstance().getContentNodeByKey(key));
+            }
+
+            return nodes;
+        } else {
+            // Empty case
+            return Collections.EMPTY_LIST;
+        }
+    }
 }

@@ -11,7 +11,7 @@ import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.smartstore.impl.AbstractRecommendationService;
+import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
 import com.freshdirect.webapp.util.ConfigurationContext;
 import com.freshdirect.webapp.util.ConfigurationStrategy;
 import com.freshdirect.webapp.util.ProductImpression;
@@ -25,13 +25,11 @@ public final class ConfiguredProductConfigurationStrategy extends FallbackConfig
 	}
 
 	public ProductImpression configure(ProductModel productModel, ConfigurationContext context) {
-		Map cfgProds = AbstractRecommendationService.getConfiguredProductCache();
+		Map cfgProds = SmartStoreUtil.getConfiguredProductCache();
 		ConfiguredProduct configuredProduct = (ConfiguredProduct)
 				cfgProds.get(productModel.getContentKey().getId());
 		if (configuredProduct != null) {
-			SkuModel sku = configuredProduct.getPreferredSku() == null ?
-					configuredProduct.getDefaultSku() :
-					configuredProduct.getPreferredSku();
+			SkuModel sku = configuredProduct.getDefaultSku();
 					
 			if (sku == null) {
 				return super.configure(productModel, context);

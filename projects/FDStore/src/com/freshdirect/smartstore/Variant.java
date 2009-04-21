@@ -1,6 +1,8 @@
 package com.freshdirect.smartstore;
 
 import java.io.Serializable;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 
@@ -18,7 +20,7 @@ public class Variant implements Serializable, Comparable {
 	 * @author segabor
 	 */
 	public static final Variant BAD_VARIANT = 
-		new Variant("(invalid)", EnumSiteFeature.DYF, null);
+		new Variant("(invalid)", EnumSiteFeature.DYF, null, null);
 
 	// generated id
 	private static final long serialVersionUID = -2411779130333500328L;
@@ -31,6 +33,8 @@ public class Variant implements Serializable, Comparable {
 	
 	// id of variant
 	private String id;
+	
+	private SortedMap tabStrategyPriorities;
 	
 	/**
 	 * Get identifier.
@@ -61,12 +65,22 @@ public class Variant implements Serializable, Comparable {
 	 * @param id
 	 * @param siteFeature {@link EnumSiteFeature}
 	 */
-	public Variant(String id, EnumSiteFeature siteFeature, RecommendationServiceConfig serviceConfig) {
+	public Variant(String id, EnumSiteFeature siteFeature,
+			RecommendationServiceConfig serviceConfig) {
 		this.id = id;
 		this.siteFeature = siteFeature;
 		this.serviceConfig = serviceConfig;
+		this.tabStrategyPriorities = new TreeMap();
 	}
 	
+	public Variant(String id, EnumSiteFeature siteFeature,
+			RecommendationServiceConfig serviceConfig, SortedMap tabStrategyPriorities) {
+		this.id = id;
+		this.siteFeature = siteFeature;
+		this.serviceConfig = serviceConfig;
+		this.tabStrategyPriorities = tabStrategyPriorities;
+	}
+
 	/**
 	 * Compare method.
 	 * @param other variant
@@ -100,4 +114,7 @@ public class Variant implements Serializable, Comparable {
             (serviceConfig != null && serviceConfig.getType()!=null ? serviceConfig.getType().getName() : "null") + ')';
     }
 	
+    public SortedMap getTabStrategyPriorities() {
+		return tabStrategyPriorities;
+	}
 }

@@ -1,17 +1,20 @@
 package com.freshdirect.webapp.taglib.smartstore;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.event.ImpressionLogger;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.fdstore.Recommendations;
+import com.freshdirect.smartstore.impl.AbstractRecommendationService;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -22,6 +25,9 @@ public abstract class RecommendationsTag extends AbstractGetterTag {
     protected int     itemCount     = 5;
 
     // skip checking user eligibility
+    /**
+     * @deprecated
+     * */
     protected boolean skipCheck     = false;
 
     // if this set true tag should not recommend new. Instead, return the
@@ -35,12 +41,27 @@ public abstract class RecommendationsTag extends AbstractGetterTag {
         this.itemCount = cnt;
     }
 
+    /**
+     * @deprecated
+     * */
     public void setSkipCheck(boolean flag) {
         this.skipCheck = flag;
     }
 
     public void setErrorOccurred(boolean flag) {
         this.errorOccurred = flag;
+    }
+    
+    protected void persistToSession(Recommendations r) {
+        Map previousRecommendations = r.getSessionInput().getPreviousRecommendations();
+        if (previousRecommendations!=null) {
+            pageContext.getSession().setAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS, previousRecommendations);
+        }
+    }
+    
+    protected void initFromSession(SessionInput input) {
+        HttpSession session = pageContext.getSession();
+        input.setPreviousRecommendations((Map) session.getAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS));
     }
 
     /**
@@ -62,22 +83,23 @@ public abstract class RecommendationsTag extends AbstractGetterTag {
             ProductModel p = (ProductModel) it.next();
             FDEventUtil.logRecommendationImpression(r.getVariant().getId(), p.getContentKey());
         }
-        if (ImpressionLogger.isEnabled()) {
-            ContentNodeModel node = r.getSessionInput().getCurrentNode();
-            FDIdentity identity = user.getIdentity();
+        if (ImpressionLogger.isGlobalEnabled()) {
             
-            HttpServletRequest httpServletRequest = (HttpServletRequest) this.pageContext.getRequest();
-            String messagePrefix = "" + user.getUserId() + ',' + pageContext.getSession().getId() + ',' + (identity != null ? identity.getErpCustomerPK() : "")
-                    + ',' + (identity != null ? identity.getFDCustomerPK() : "") + ',' + r.getVariant().getId() + ',' + httpServletRequest.getRequestURI()
-                    + ',' + (node != null ? node.getContentKey().getId() : "") + ',';
+            Impression imp = Impression.get(user, (HttpServletRequest) pageContext.getRequest());
+            
             int rank = 1;
+            Map map = new HashMap();
+            String featureImpId = imp.logFeatureImpression(null, r);
             for (Iterator it = r.getProducts().iterator();it.hasNext();) {
                 ProductModel p = (ProductModel) it.next();
 
-                ImpressionLogger.logEvent(messagePrefix + rank + ','+p.getContentKey().getId());
+                String imp_id = imp.logProduct(featureImpId, rank, p.getContentKey());
+                map.put(p.getContentKey(), imp_id);
                 rank++;
             }
+            r.setImpressionIds(map);
         }
+        AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.set(null);
     }
 
     /**

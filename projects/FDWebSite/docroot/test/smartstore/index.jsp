@@ -5,7 +5,7 @@
 <%@ taglib uri="freshdirect" prefix="fd"%>
 <%
 	if (request.getParameter("impressionLogger")!=null) {
-		ImpressionLogger.setEnabled(Boolean.valueOf(request.getParameter("impressionLogger")).booleanValue());	    
+		ImpressionLogger.setGlobalEnabled(Boolean.valueOf(request.getParameter("impressionLogger")).booleanValue());	    
 	}
 %>
 <html>
@@ -33,6 +33,12 @@
 		<span class="bull">&bull;</span> <a href="all_ymal_perf_test.jsp"><span>All Smart YMALs Performance Test</span></a>
 		</p>
     	<p>
+		<span class="bull">&bull;</span> <a href="tabs_test.jsp"><span>Cart Tabs Test Page</span></a>
+		</p>
+    	<p>
+		<span class="bull">&bull;</span> <a href="tabs_perf_test.jsp"><span>Cart Tabs Performance Test Page</span></a>
+		</p>
+    	<p>
 		<span class="bull">&bull;</span> <a href="view_cohorts.jsp"><span>Cohorts Summary</span></a>
 		</p>
     	<p>
@@ -57,6 +63,9 @@
 		<span class="bull">&bull;</span> <a href="my_variant.jsp"><span>Variant Lookup</span></a>
 		</p>
     	<p>
+		<span class="bull">&bull;</span> <a href="view_tabs.jsp"><span>View Cart Tab Strategies</span></a>
+		</p>
+    	<p>
 		<span class="bull">&bull;</span> <a href="view_ymals.jsp"><span>View Smart YMALs</span></a>
 		</p>
     	<p>
@@ -66,8 +75,11 @@
 			<span class="bull">&bull;</span> <a href="ymal_display.jsp">YMAL Display Test</a>
 		</p>
     	<p>
+		<span class="bull">&bull;</span> <a href="all_ymal_perf_test.jsp"><span>All YMAL Performance Test</span></a>
+		</p>
+    	<p>
 		<span class="bull">&bull;</span> <span>Impression logger :
-		<% if (ImpressionLogger.isEnabled()) { %>
+		<% if (ImpressionLogger.isGlobalEnabled()) { %>
 			enabled, switch <a href="index.jsp?impressionLogger=false"><span>OFF</span></a>
 		<% } else { %>
 			disabled, switch <a href="index.jsp?impressionLogger=true"><span>ON</span></a>

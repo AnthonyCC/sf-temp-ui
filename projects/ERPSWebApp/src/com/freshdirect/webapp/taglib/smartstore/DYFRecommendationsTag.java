@@ -1,7 +1,5 @@
 package com.freshdirect.webapp.taglib.smartstore;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
@@ -10,28 +8,19 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
-import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.RecommendationService;
-import com.freshdirect.smartstore.RecommendationServiceConfig;
-import com.freshdirect.smartstore.Trigger;
-import com.freshdirect.smartstore.Variant;
+import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration;
-import com.freshdirect.smartstore.fdstore.VariantSelector;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.DYFUtil;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * SmartStore DYF Recommendations Tag
@@ -97,7 +86,6 @@ public class DYFRecommendationsTag extends RecommendationsTag implements Session
 	private Recommendations extractRecommendations(HttpSession session,
 			EnumSiteFeature sf) throws FDResourceException {
 		Recommendations results;
-		Trigger trigger = new Trigger(sf, itemCount);
 		FDStoreRecommender recommender = FDStoreRecommender.getInstance();
 
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
@@ -106,7 +94,13 @@ public class DYFRecommendationsTag extends RecommendationsTag implements Session
 		if (overriddenVariantID != null)
 		    session.setAttribute("SmartStore.VariantID", overriddenVariantID);
 
-		results = recommender.getRecommendations(trigger, session);
+                FDUserI user = (FDUserI) session.getAttribute("fd.user");
+
+                SessionInput input = new SessionInput(user);
+		initFromSession(input);
+		input.setMaxRecommendations(itemCount);
+		results = recommender.getRecommendations(sf, user, input, overriddenVariantID);
+		persistToSession(results);
 		return results;
 	}
 

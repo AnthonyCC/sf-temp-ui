@@ -18,6 +18,7 @@ import com.freshdirect.framework.event.FDWebEvent;
  * param_11 = eventValues[10] = YMAL set id, if the product is added through a YMAL set  
  * param_12 = eventValues[11] = Customer Created List id
  * param_13 = eventValues[12] = Variant ID (SmartStore DYF)
+ * param_14 = eventValues[13] = impression ID
  * @author Skrishnasamy Date April 26, 2006
  */
 
@@ -192,4 +193,13 @@ public class FDCartLineEvent extends FDWebEvent {
 	public void setVariantId(String vid) {
 		eventValues[12] = vid;
 	}
+	
+	
+	public String getImpressionId() {
+	    return eventValues[13];
+	}
+	
+        public void setImpressionId(String vid) {
+            eventValues[13] = vid;
+    }
 }

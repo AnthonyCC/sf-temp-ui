@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -14,7 +15,10 @@ import java.util.TreeMap;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
@@ -359,7 +363,8 @@ public class SmartStoreUtil {
 			VariantSelector vsr = VariantSelectorFactory.getInstance(feature);
 			assignment = new HashMap(cohorts.size());
 			for (int i = 0; i < cohorts.size(); i++)
-				assignment.put(cohorts.get(i), vsr.getService((String) cohorts.get(i)).getVariant().getId());
+				assignment.put(cohorts.get(i), vsr.getService((String) cohorts.get(i)) == null ? null :
+						vsr.getService((String) cohorts.get(i)).getVariant().getId());
 		} else
 			assignment = vs.getVariantMap(feature, date);
 		return assignment;
@@ -443,6 +448,7 @@ public class SmartStoreUtil {
 		return true;
 	}
 
+
 	public static boolean isCustomerEligible(FDUserI user, EnumSiteFeature siteFeature) throws FDResourceException {
 		if(siteFeature.equals(EnumSiteFeature.DYF) || siteFeature.equals(EnumSiteFeature.SOYF)) {
 			if (user.getLevel()==FDUserI.GUEST || !user.isDYFEnabled()) {
@@ -464,5 +470,99 @@ public class SmartStoreUtil {
 		//Unknown site feature
 		return false;
 		
+	}
+
+
+	/**
+	 * Convenience method to get Variant by its ID
+	 * 
+	 * @param featureId Site Feature
+	 * @param variantId Variant ID
+	 * 
+	 * @return variant
+	 */
+	public static Variant getVariant(String featureId, String variantId) {
+		if (featureId == null || variantId == null)
+			return null;
+
+		EnumSiteFeature feature = EnumSiteFeature.getEnum(featureId);
+		if (feature == null)
+			return null;
+
+		RecommendationService svc = (RecommendationService) SmartStoreServiceConfiguration
+		.getInstance().getServices(feature).get(variantId);
+
+		return svc.getVariant();
+	}
+	
+	
+	/**
+	 * 
+	 * @param models List<ContentNodeModel>
+	 * @return List<ContentKey>
+	 */
+        public static List toContentKeysFromModels(List models) {
+            if (models==null) {
+                return null;
+            }
+            List result = new ArrayList(models.size());
+            for (Iterator iter = models.iterator(); iter.hasNext();) {
+                ContentNodeModel model = (ContentNodeModel) iter.next();
+                result.add(model.getContentKey());
+            }
+            return result;
+        }
+
+        public static List toContentNodesFromKeys(List keys) {
+            if (keys==null) {
+                return null;
+            }
+            List result = new ArrayList(keys.size());
+            ContentFactory factory = ContentFactory.getInstance();
+            for (Iterator iter = keys.iterator(); iter.hasNext();) {
+                ContentKey contentKey = (ContentKey) iter.next();
+                ContentNodeModel model = factory.getContentNodeByKey(contentKey);
+                result.add(model);
+            }
+            return result;
+        }
+
+	public static ThreadLocal CFG_PRODS = new ThreadLocal() {
+	    protected Object initialValue() {
+	        return new HashMap();
+	    }
+	};
+
+	public static void clearConfiguredProductCache() {
+		((Map) CFG_PRODS.get()).clear();
+	}
+
+	/**
+	 * This method returns a ProductModel from a ConfiguredProduct or ConfiguredProductGroup and store the original CP or CPG in a thread local cache, this is used later by the configurator.
+	 * @param pm
+	 * @return
+	 */
+	public static ProductModel addConfiguredProductToCache(ProductModel pm) {
+		ProductModel orig = pm;
+		while (pm instanceof ConfiguredProduct)
+			pm = ((ConfiguredProduct) pm).getProduct();
+		if (pm != orig && pm != null)
+			((Map) CFG_PRODS.get()).put(pm.getContentKey().getId(), orig);
+		return pm;
+	}
+
+	public static Map getConfiguredProductCache() {
+		return (Map) CFG_PRODS.get();
+	}
+
+	public static List addConfiguredProductToCache(List list) {
+		List ret = new ArrayList(list.size());
+		for (ListIterator it = list.listIterator(); it.hasNext(); ) {
+			ProductModel current = (ProductModel) it.next();
+			ProductModel replace = addConfiguredProductToCache((ProductModel) current);
+			if (replace != null)
+				ret.add(replace);
+		}
+		return ret;
 	}
 }

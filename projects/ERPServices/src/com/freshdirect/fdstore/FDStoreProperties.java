@@ -92,6 +92,8 @@ public class FDStoreProperties {
 	private final static String PROP_REFRESHSECS_PRODUCTINFO  = "fdstore.refreshSecs.productInfo";
 	private final static String PROP_REFRESHSECS_PRODUCT  = "fdstore.refreshSecs.product";
 	private final static String PROP_PRODUCT_CACHE_SIZE	= "fdstore.product.cache.size";
+	
+	private final static String PROP_CMS_MOSTLY_READONLY = "fdstore.cms.readonly.optimization";
 
 	private final static String PROP_PRELOAD_STORE = "fdstore.preLoad";
 	private final static String PROP_WARMUP_CLASS = "fdstore.preLoad.class";
@@ -266,6 +268,8 @@ public class FDStoreProperties {
 
 //	COOL info
     private final static String PROP_COOLINFO_REFRESH_PERIOD = "fdstore.refresh.coolinfo";
+    
+    private static final String IMPRESSION_LOGGING = "fdstore.impression.logging";
     
 //  Survey Def
 	private final static String PROP_SURVEYDEF_CACHE_SIZE	= "fdstore.surveyDef.cache.size";
@@ -465,11 +469,13 @@ public class FDStoreProperties {
 		
 		defaults.put(PROP_COOLINFO_REFRESH_PERIOD, "10");
 		
+		defaults.put(IMPRESSION_LOGGING, "false");
+		
 		defaults.put(PROP_SURVEYDEF_CACHE_SIZE, "25");
 		defaults.put(PROP_REFRESHSECS_SURVEYDEF, "600");
 		defaults.put(PROP_FDSURVEY_HOME,	"freshdirect.fdstore.FDSurvey");
 
-		
+
 		refresh();
 	}
 
@@ -989,6 +995,11 @@ public class FDStoreProperties {
 	public static boolean canSendRoutingAddress() {
         return (new Boolean(get(PROP_ROUTING_SENDADDRESS))).booleanValue();
     }
+	
+	
+	public static boolean isCmsReadonlyOptimization() {
+	   return Boolean.valueOf(get(PROP_CMS_MOSTLY_READONLY)).booleanValue(); 
+	}
 
 	/**
 	 * Is Smart Search feature enabled?
@@ -1040,6 +1051,10 @@ public class FDStoreProperties {
 		return Integer.parseInt(get(SMARTSTORE_CACHE_DATA_SOURCES_SIZE));
 	}
 	
+	public static boolean isDetailedImpressionLoggingOn() {
+	    return Boolean.valueOf(get(IMPRESSION_LOGGING)).booleanValue();
+	}
+	
 	public static int getSurveyDefCacheSize() {
 		return Integer.parseInt(get(PROP_SURVEYDEF_CACHE_SIZE));
 	}
@@ -1050,5 +1065,4 @@ public class FDStoreProperties {
 	public static String getFDSurveyHome() {
 		return get(PROP_FDSURVEY_HOME);
 	}
-	
 }

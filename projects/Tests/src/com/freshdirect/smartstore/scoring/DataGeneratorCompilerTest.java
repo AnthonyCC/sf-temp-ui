@@ -21,7 +21,7 @@ public class DataGeneratorCompilerTest extends TestCase {
 
     DataAccess            input;
 
-    SessionInput          s = new SessionInput("ses1");
+    SessionInput          s = new SessionInput("ses1", null);
 
     protected void setUp() throws Exception {
         comp = new DataGeneratorCompiler();

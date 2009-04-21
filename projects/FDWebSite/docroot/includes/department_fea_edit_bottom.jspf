@@ -43,10 +43,8 @@
 <logic:iterate id='contentNode' collection="<%=favorites%>" type="com.freshdirect.fdstore.content.ProductModel">
 <% 
         ProductModel product = contentNode;; //(ProductModel)contentFactory.getProduct(contentRef.getCategoryId(),contentRef.getProductId());
-System.out.println("Processing product: " + product);
         if (product==null) continue;
         prodParent = product.getParentNode(); 
-System.out.println("Processing product parent: " + prodParent);
         List skus = product.getSkus(); 
         if (product.isDiscontinued() || product.isUnavailable() || prodParent==null || !(prodParent instanceof CategoryModel)) continue;
         SkuModel sku = null;
@@ -67,7 +65,6 @@ System.out.println("Processing product parent: " + prodParent);
             +"&productId="+product+"&trk=feat");
 
         deptFeatImage = (Image)product.getAlternateImage();
-		System.out.println("deptFeatImage: "+deptFeatImage);
 		favoriteProducts.append("<tr valign=\"top\">");
         favoriteProducts.append("<td width=\"20%\"><a href=\"");
         favoriteProducts.append(productPageLink_);

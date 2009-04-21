@@ -143,6 +143,6 @@ $JAVA_HOME/bin/java -Xdebug -Xnoagent -Xms256m -Xmx1536m \
 -Dweblogic.management.password=weblogic \
 -Dweblogic.ProductionModeEnabled=false \
 -Djava.security.policy=$WL_HOME/lib/weblogic.policy \
--Xrunyjpagent:disablestacktelemetry,delay=10000,sessionname=WebLogic \
+-Xrunyjpagent:disablestacktelemetry,delay=10000,sessionname=`hostname`-WebLogic \
 -classpath $MYCP \
 weblogic.Server

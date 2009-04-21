@@ -1,6 +1,5 @@
 package com.freshdirect.event;
 
-import com.freshdirect.framework.event.FDEvent;
 
 /**
  * FDAddToCartEvent

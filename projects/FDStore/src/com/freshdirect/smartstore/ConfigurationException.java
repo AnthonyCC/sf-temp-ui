@@ -1,6 +1,6 @@
 package com.freshdirect.smartstore;
 
-public class ConfigurationException extends Exception {
+public class ConfigurationException extends RuntimeException {
 	private static final long serialVersionUID = -40625046299344024L;
 
 	private String parameter;

@@ -1,0 +1,278 @@
+<%@ page import="com.freshdirect.fdstore.util.URLGenerator" %>
+<%@ page import="com.freshdirect.fdstore.util.EnumSiteFeature"%>
+<%@ page import="com.freshdirect.webapp.taglib.smartstore.PIPTabTag"%>
+<%@ page import="com.freshdirect.smartstore.TabRecommendation"%>
+<%@ taglib uri='template' prefix='tmpl'%>
+<%@ taglib uri='logic' prefix='logic'%>
+<%@ taglib uri='freshdirect' prefix='fd'%>
+
+<%
+	// pass cart operation result object to YMAL display (i_ymal_lists.jspf)
+	request.setAttribute("actionResult", result);
+	
+	URLGenerator gen = new URLGenerator(request);
+%>
+
+
+<fd:PIPTab id="pip_tab" maxTabs="3" maxRecommendations="5">
+	<% 
+		TabRecommendation tab = pip_tab.getTabs();
+	
+		final int numTabs = tab.size();
+		
+		int selectedTab = 0; // default value
+		boolean shouldStoreTabPos = session.getAttribute(SessionName.SS_SELECTED_TAB) == null; // true == not stored yet
+		if (session.getAttribute(SessionName.SS_SELECTED_TAB) != null) {
+			// get the stored one if exist
+			selectedTab = ((Integer) session.getAttribute(SessionName.SS_SELECTED_TAB)).intValue();
+		}
+
+		// tab explicitly set
+		String value = gen.get("tab");
+		if (value != null && !"".equals(value)) {
+			selectedTab = Integer.parseInt(value);
+			shouldStoreTabPos = true;
+		}
+
+
+		// check selected tab
+		if (selectedTab >= numTabs ||
+				(selectedTab < numTabs &&
+						session.getAttribute(SessionName.SS_SELECTED_VARIANT) != null &&
+						!tab.get(selectedTab).getId().equals( session.getAttribute(SessionName.SS_SELECTED_VARIANT) ) )) {
+			// reset if selection is out of tab range or the variant of selected tab has changed
+			selectedTab = 0;
+			shouldStoreTabPos = true;
+		}
+
+		if (shouldStoreTabPos) {
+			// store changed tab position in session
+			session.setAttribute(SessionName.SS_SELECTED_TAB, new Integer(selectedTab));
+			session.setAttribute(SessionName.SS_SELECTED_VARIANT, tab.get(selectedTab).getId());
+		}
+
+		//TODO calculate tab sizes depending on number of tabs
+		int totalWidth = 693;
+		int tabSize = numTabs==3 ? 200 : numTabs==2 ? 300 : 600;
+		
+		if ( numTabs > 0 ) { %>
+	
+			<%-- TABS ROW --%>
+			<table width="<%= totalWidth %>px" height="25px" class="tab">
+				<tr height="25px">
+				
+					<% for ( int k = 0; k < numTabs; k++ ) { 
+		
+							boolean selected = ( selectedTab == k );
+							boolean prevSelected = ( selectedTab == k-1 );
+							String varId = tab.get(k).getId();
+							
+							if ( k == 0 ) { // first tab %>				
+								<td height="25px" width="8px" class="tab">
+									<img id="img_<%= varId %>" alt="" src="/media_stat/images/carttab_corners/carttab_first_left_<%= selected?"on":"off" %>.gif" class="tab">
+								</td>
+							<% } else { %>					
+								<td height="25px" width="16px" class="tab">
+									<img id="img_<%= varId %>" alt="" src="/media_stat/images/carttab_corners/carttab_btwn_<%= prevSelected?"on":"off" %>_<%= selected?"on":"off" %>.gif" class="tab">
+								</td>
+							<% } %>
+							
+							
+								<td id="td_<%= varId %>" height="25px" width="<%= tabSize %>px" class="tab_title_<%= selected?"active":"inactive" %>">
+									<a class="tab_<%= selected?"active":"inactive" %>" id="a_<%= varId %>" vid="<%= varId %>" tpos="<%= k %>" href="#"><%= tab.getTabTitle(k) %></a>
+								</td>
+							
+							<% if ( k == numTabs-1 ) { // last tab %>					
+								<td height="25px" width="16px" class="tab">
+									<img id="img_last" alt="" src="/media_stat/images/carttab_corners/carttab_btwn_<%= selected?"on":"off" %>_nothing.gif" class="tab">
+								</td>
+								<td height="25px" width="<%= totalWidth - numTabs*(tabSize+16) - 16 %>px" background="/media_stat/images/carttab_corners/carttab_bg_empty.gif" class="tab">
+								</td>
+								<td height="25px" width="8px" class="tab">
+									<img alt="" src="/media_stat/images/carttab_corners/carttab_cor_tr_1.gif" class="tab">							
+								</td>
+							<% } %>
+					
+					<% } %>
+							
+				</tr>
+			</table>
+		
+			<table width="<%= totalWidth %>px" height="6px" class="tab">
+				<tr height="6px">
+					<td width="8px" height="6px" class="tab">
+						<img alt="" src="/media_stat/images/carttab_corners/carttab_bg_left.gif" class="tab">
+					</td>
+					<td width="<%= totalWidth-16 %>px" height="6px" class="tab">
+					</td>
+					<td width="8px" height="6px" class="tab">
+						<img alt="" src="/media_stat/images/carttab_corners/carttab_cor_tr_2.gif" class="tab">
+					</td>
+				</tr>
+			</table>
+			
+			<table width="<%= totalWidth %>px" class="tab">
+				<tr>
+					<td class="tab"><div class="tab"><table width="100%"><tr><td>
+						<%-- CONTENT --%>
+						<%
+							request.setAttribute("genericRecommendationsVariant", tab.get(selectedTab));
+						
+							for ( int k=0; k<numTabs; k++ ) {
+									if ( selectedTab == k ) {	%>						
+										<p id="header_<%= tab.get(k).getId() %>" class="tab_text"><%= tab.getTabDescription(k) %></p>							
+										<div id="content_<%= tab.get(k).getId() %>" style="width: 100%">
+											<%@ include file="i_generic_recommendations.jspf" %>
+										</div>								
+								<% 	} else { %>
+										<p id="header_<%= tab.get(k).getId() %>" class="tab_text" style="display: none"><%= tab.getTabDescription(k) %></p>							
+										<div id="content_<%= tab.get(k).getId() %>" style="display: none">
+										</div>
+								<% 	}
+							}
+						%>
+					</td></tr></table></div></td>
+				</tr>
+			</table>
+			
+			<table width="<%= totalWidth %>px" height="8px" class="tab">
+				<tr height="8px">
+					<td width="8px" height="8px" class="tab">
+						<img alt="" src="/media_stat/images/carttab_corners/carttab_cor_bl.gif" class="tab">
+					</td>
+					<td width="<%= totalWidth-16 %>px" height="8px" background="/media_stat/images/carttab_corners/carttab_bg_bottom.gif" class="tab">
+					</td>
+					<td width="8px" height="8px" class="tab">
+						<img alt="" src="/media_stat/images/carttab_corners/carttab_cor_br.gif" class="tab">
+					</td>
+				</tr>
+			</table>	
+
+<script type="text/javascript">
+			
+				var loadingMessage = "<br/><br/><p class=\"tab_text\">Refreshing. Please wait...</p><br/><br/>";
+				var errorMessage = "<br/><br/><p class=\"tab_text\">Sorry. Something went wrong. Try refreshing the page.</p><br/><br/>";
+		
+				var PIP = {
+					tabs: [],
+					features: [],
+					selected: '<%= tab.get(selectedTab).getId() %>',
+					impressionIds: [],
+				
+				
+					onFailure: function(tabId) {
+						$('content_'+tabId).innerHTML = errorMessage;
+						alert("Failed to retrieve new recommendations.");
+					},
+					
+				
+					onSuccess: function(resp, tabId) {
+						$('content_'+tabId).innerHTML = resp.responseText;
+						this._execScripts($('content_'+tabId));
+					},
+				
+				
+					_execScripts: function(e) {
+						if (e.nodeType != 1) 
+							return;
+					 
+						if (e.tagName.toLowerCase() == 'script') {
+							eval(e.text);
+						} else {
+							var n = e.firstChild;
+							while ( n ) {
+								if ( n.nodeType == 1 )
+									this._execScripts( n );
+								n = n.nextSibling;
+							}
+						}
+					},
+				
+				
+					load: function(tab, tabPos) {
+						var ctnt = $('content_'+tab);
+						if (ctnt.childNodes.length == 0 || (ctnt.childNodes.length == 1 && ctnt.firstChild.nodeType != 1)) {
+							$('content_'+tab).innerHTML = loadingMessage;
+							PIP.refresh(tab, tabPos);
+						} else {
+							PIP.norefresh(tab, tabPos);
+						}
+					},
+
+					refresh: function(tabId, tabPos) {
+						var self = this;
+						var uri = '/includes/smartstore/refresh.jsp?tab='+tabPos+'&variant='+tabId+'&siteFeature='+PIP.features[tabId]+'&formUri=<%= response.encodeURL(request.getRequestURL().toString()) %>&impId='+PIP.impressionIds[tabPos];
+						$('content_'+tabId).innerHTML = loadingMessage;
+						$C.asyncRequest('GET', uri, {
+							success: function(resp) {
+								self.onSuccess(resp, tabId)
+							},
+							failure: function(resp) {
+								self.onFailure(tabId);
+							}
+						});
+					},
+
+					norefresh: function(tabId, tabPos) {
+						var uri = '/includes/smartstore/norefresh.jsp?tab='+tabPos+'&variant='+tabId+'&siteFeature='+PIP.features[tabId];
+						$C.asyncRequest('HEAD', uri, {});
+					}
+				};
+		
+				
+				
+				<%-- init tabs --%>
+				<% for (int k=0; k<numTabs; k++) {
+				%>PIP.tabs.push('<%= tab.get(k).getId() %>');
+				PIP.features['<%= tab.get(k).getId() %>'] = '<%= tab.get(k).getSiteFeature().getName() %>';
+				PIP.impressionIds.push('<%= tab.getFeatureImpressionId(k) %>');
+				<% } %>
+				
+				<%-- attach to tabs --%>
+				for (k=0; k<PIP.tabs.length; k++) {
+					$E.on($('a_'+PIP.tabs[k]), 'click', function(e) {
+						$E.preventDefault(e);
+		
+						var sel = this.getAttribute('vid');
+						
+						for ( ii=0; ii<PIP.tabs.length; ii++ ) {
+		
+							if ( ii === 0 ) { // first tab
+								$('img_'+PIP.tabs[ii]).src = '/media_stat/images/carttab_corners/carttab_first_left_'+(PIP.tabs[ii]===sel ? 'on' : 'off')+'.gif';
+							} else {
+								$('img_'+PIP.tabs[ii]).src = '/media_stat/images/carttab_corners/carttab_btwn_'+(PIP.tabs[ii-1]===sel ? 'on' : 'off')+'_'+(PIP.tabs[ii]===sel ? 'on' : 'off')+'.gif';
+							}
+		
+							if ( ii === PIP.tabs.length-1 ) { // last tab
+								$('img_last').src = '/media_stat/images/carttab_corners/carttab_btwn_'+(PIP.tabs[ii]===sel ? 'on' : 'off')+'_nothing.gif';
+							}					
+						}
+						
+						if (PIP.selected != this.getAttribute('vid')) {
+		
+							// previous selected tab					
+							$('content_'+PIP.selected).style.display = 'none';
+							$('header_'+PIP.selected).style.display = 'none';
+							
+							$('a_'+PIP.selected).className = 'tab_inactive';				
+							$('td_'+PIP.selected).className = 'tab_title_inactive';					
+							
+							// newly selected tab 
+							PIP.selected = this.getAttribute('vid');
+							$('content_'+PIP.selected).style.display = '';
+							$('header_'+PIP.selected).style.display = '';
+							
+							$('a_'+PIP.selected).className = 'tab_active';				
+							$('td_'+PIP.selected).className = 'tab_title_active';
+				
+							// load content (if necessary)
+							PIP.load(PIP.selected, this.getAttribute("tpos"));
+						}
+						
+					});
+				}
+</script>
+			
+		<% } %>	
+</fd:PIPTab>	
+

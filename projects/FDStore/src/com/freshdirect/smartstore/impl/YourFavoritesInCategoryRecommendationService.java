@@ -10,8 +10,8 @@ import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ProductModelImpl;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
-import com.freshdirect.smartstore.fdstore.ProductStatisticsProvider;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
+import com.freshdirect.smartstore.sampling.ImpressionSampler;
 
 /**
  * @author zsombor
@@ -22,8 +22,9 @@ public class YourFavoritesInCategoryRecommendationService extends ManualOverride
     /**
      * @param variant
      */
-    public YourFavoritesInCategoryRecommendationService(Variant variant) {
-        super(variant);
+    public YourFavoritesInCategoryRecommendationService(Variant variant, ImpressionSampler sampler,
+    		boolean catAggr, boolean includeCartItems) {
+        super(variant, sampler, catAggr, includeCartItems);
     }
 
     protected void fillManualSlots(SessionInput input, CategoryModel category, int slots, List result) {

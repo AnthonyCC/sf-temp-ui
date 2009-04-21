@@ -214,6 +214,19 @@ public class FactorUtil {
 		};		
 	}
 	
+	public static StoreLookup getNewnessLookup() {
+		return new StoreLookup() {
+			public double getVariable(ContentNodeModel contentNode) {
+				Number n = null;
+				try {
+					n = (Number) ContentFactory.getInstance().getProductNewnesses().get(contentNode);
+				} catch (FDResourceException e) {
+				}
+				return n != null ? n.doubleValue() : Integer.MIN_VALUE;
+			}
+		};
+	}
+	
 	protected static class ReorderRateConverter extends FactorRangeConverter {
 
 		private Set dbColumns =

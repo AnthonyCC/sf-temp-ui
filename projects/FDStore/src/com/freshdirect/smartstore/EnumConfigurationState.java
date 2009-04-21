@@ -18,8 +18,12 @@ public class EnumConfigurationState extends Enum {
 			new EnumConfigurationState("CONFIGURED_OVERRIDDEN");
 	public final static EnumConfigurationState CONFIGURED_WRONG =
 			new EnumConfigurationState("CONFIGURED_WRONG", false);
+	public final static EnumConfigurationState CONFIGURED_WRONG_DEFAULT =
+		new EnumConfigurationState("CONFIGURED_WRONG_DEFAULT");
 	public final static EnumConfigurationState CONFIGURED_UNUSED =
 			new EnumConfigurationState("CONFIGURED_UNUSED");
+	public final static EnumConfigurationState UNCONFIGURED_OK =
+		new EnumConfigurationState("UNCONFIGURED_OK", true, false);
 	public final static EnumConfigurationState UNCONFIGURED_DEFAULT =
 			new EnumConfigurationState("UNCONFIGURED_DEFAULT", true, false);
 	public final static EnumConfigurationState UNCONFIGURED_OVERRIDDEN =

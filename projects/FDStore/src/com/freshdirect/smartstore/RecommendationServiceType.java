@@ -54,6 +54,12 @@ public class RecommendationServiceType extends Enum implements Serializable {
     public final static RecommendationServiceType SMART_YMAL =
     		new RecommendationServiceType("smartYMAL");
     
+    public final static RecommendationServiceType YMAL_YF =
+    		new RecommendationServiceType("ymal-yf");
+    
+    public final static RecommendationServiceType TAB_STRATEGY =
+		new RecommendationServiceType("tab-strategy");
+
 	/**
 	 * Constructor.
 	 * Not public, since it is a constant.

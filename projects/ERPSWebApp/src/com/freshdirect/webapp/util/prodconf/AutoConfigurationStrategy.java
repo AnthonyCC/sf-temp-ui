@@ -17,9 +17,7 @@ public class AutoConfigurationStrategy extends SimpleConfigurationStrategy {
 			ConfigurationContext context) {
 		FDConfigurableI configuration = productModel.getAutoconfiguration();
 		if (configuration != null) {
-			SkuModel sku = productModel.getPreferredSku() == null ?
-					productModel.getDefaultSku() :
-					productModel.getPreferredSku();
+			SkuModel sku = productModel.getDefaultSku();
 					
 			if (sku != null) {
 				LOGGER.debug("configuring using auto-configurer + "

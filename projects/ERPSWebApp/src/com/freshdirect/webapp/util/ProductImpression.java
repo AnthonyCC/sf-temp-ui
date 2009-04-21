@@ -113,10 +113,11 @@ public class ProductImpression {
 	 * @return
 	 */
 	public FDProductInfo getProductInfo() {
-		if (getSku() == null) {
+		SkuModel sku = getSku();
+                if (sku == null) {
 			return null;
 		}
-		String skuCode = getSku().getSkuCode();
+		String skuCode = sku.getSkuCode();
 		
 		FDProductInfo productInfo = null;
 		if (skuCode != null) {

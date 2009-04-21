@@ -34,4 +34,11 @@ public interface SessionName {
 	public static final String TEST_DISTRIBUTION_DIRECTORY = "tests.distributions.path";
 
 	public static final String SMART_SEARCH_VIEW = "fd.smartSearchView";
+	
+	public static final String SMART_STORE_PREV_RECOMMENDATIONS = "fd.ss.prevRec";
+	
+	public static final String SS_SELECTED_TAB = "fd.ss.selTab"; // position of selected tab in view cart page
+	public static final String SS_SELECTED_VARIANT = "fd.ss.selVariantId"; // selected variant ID
+
+	public static final String IMPRESSION = "Impression";
 }

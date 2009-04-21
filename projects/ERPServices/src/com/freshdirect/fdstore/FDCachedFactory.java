@@ -267,6 +267,10 @@ public class FDCachedFactory {
     	return FDFactory.getNewSkuCodes(days);
     }
 	
+	public static Map getSkusOldness() throws FDResourceException {
+    	return FDFactory.getSkusOldness();
+    }
+
 	public static Collection getReintroducedSkuCodes(int days) throws FDResourceException {
     	return FDFactory.getReintroducedSkuCodes(days);
     }

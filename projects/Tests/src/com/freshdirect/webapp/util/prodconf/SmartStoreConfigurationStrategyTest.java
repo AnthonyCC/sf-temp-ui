@@ -54,7 +54,7 @@ import com.freshdirect.fdstore.customer.FDCustomerManagerTestSupport;
 import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
 import com.freshdirect.framework.util.DayOfWeekSet;
 import com.freshdirect.smartstore.fdstore.RecommendationEventLoggerMockup;
-import com.freshdirect.smartstore.impl.AbstractRecommendationService;
+import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
 import com.freshdirect.webapp.util.ConfigurationContext;
 import com.freshdirect.webapp.util.ConfigurationStrategy;
 import com.freshdirect.webapp.util.ProductImpression;
@@ -154,7 +154,7 @@ public class SmartStoreConfigurationStrategyTest extends FDCustomerManagerTestSu
 		assertNotNull(prod);
 		
 		// cheat - configured product must be added to cache in order 
-		AbstractRecommendationService.addConfiguredProductToCache(prod);
+		SmartStoreUtil.addConfiguredProductToCache(prod);
 		
 		FDConfigurableI conf = getConfiguration( ((ConfiguredProduct)prod).getProduct(), false);
 		assertNotNull(conf);
@@ -173,7 +173,7 @@ public class SmartStoreConfigurationStrategyTest extends FDCustomerManagerTestSu
 		assertNotNull(prod);
 		
 		// cheat - configured product must be added to cache in order 
-		AbstractRecommendationService.addConfiguredProductToCache(prod);
+		SmartStoreUtil.addConfiguredProductToCache(prod);
 
 		FDConfigurableI conf = getConfiguration( ((ConfiguredProduct) ((ConfiguredProductGroup)prod).getProduct()).getProduct(), false );
 		assertNotNull(conf);
@@ -194,7 +194,7 @@ public class SmartStoreConfigurationStrategyTest extends FDCustomerManagerTestSu
 		assertNotNull(prod);
 		
 		// cheat - configured product must be added to cache in order 
-		AbstractRecommendationService.addConfiguredProductToCache(prod);
+		SmartStoreUtil.addConfiguredProductToCache(prod);
 
 		FDConfigurableI conf = getConfiguration( ((ConfiguredProduct)prod).getProduct(), true);
 		assertNotNull(conf);

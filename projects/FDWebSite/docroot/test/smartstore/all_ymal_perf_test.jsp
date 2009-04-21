@@ -27,7 +27,6 @@
 <%@page import="com.freshdirect.mail.EmailUtil"%>
 <%@page import="com.freshdirect.smartstore.RecommendationService"%>
 <%@page import="com.freshdirect.smartstore.SessionInput"%>
-<%@page import="com.freshdirect.smartstore.Trigger"%>
 <%@page import="com.freshdirect.smartstore.fdstore.CohortSelector"%>
 <%@page import="com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration"%>
 <%@page import="com.freshdirect.smartstore.fdstore.SmartStoreUtil"%>
@@ -49,7 +48,6 @@ URLGenerator urlG = new URLGenerator(request);
 String origURL = urlG.build();
 
 EnumSiteFeature siteFeature = EnumSiteFeature.YMAL;
-Trigger trigger = new Trigger(siteFeature, 6);
 
 /* customer Email */
 String defaultCustomerEmail = "";
@@ -291,7 +289,8 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
 	    			SessionInput input = new SessionInput(user);
 	    			input.setCurrentNode(product);
 	    			input.setYmalSource(set);
-	    			List nodes = smart.recommendNodes(trigger, input);
+	    			input.setMaxRecommendations(6);
+	    			List nodes = smart.recommendNodes(input);
 	    			count += Math.min(6, nodes.size());
 		    	}
 		    	long end = System.currentTimeMillis();

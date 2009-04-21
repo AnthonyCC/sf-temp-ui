@@ -25,9 +25,7 @@ import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.RecommendationServiceConfig;
 import com.freshdirect.smartstore.RecommendationServiceType;
 import com.freshdirect.smartstore.SessionInput;
-import com.freshdirect.smartstore.Trigger;
 import com.freshdirect.smartstore.Variant;
-import com.freshdirect.smartstore.impl.AbstractRecommendationService;
 import com.freshdirect.smartstore.impl.AllProductInCategoryRecommendationService;
 import com.freshdirect.smartstore.impl.CandidateProductRecommendationService;
 import com.freshdirect.smartstore.impl.FeaturedItemsRecommendationService;
@@ -60,14 +58,19 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
     RecommendationService getFeaturedItemsService() {
         if (firs == null) {
             firs = new FeaturedItemsRecommendationService(new Variant("fi", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("fi_config",
-                    RecommendationServiceType.FEATURED_ITEMS)));
+                    RecommendationServiceType.FEATURED_ITEMS)), SmartStoreServiceConfiguration.configureSampler(new RecommendationServiceConfig("fi_config",
+                    RecommendationServiceType.FEATURED_ITEMS), new java.util.HashMap()),
+                    false, false);
         }
         return firs;
     }
 
     RecommendationService getDeterministicFeaturedItemsService() {
         return  new FeaturedItemsRecommendationService(new Variant("fi", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("fi_config",
-                    RecommendationServiceType.FEATURED_ITEMS).set(AbstractRecommendationService.CKEY_SAMPLING_STRATEGY, "deterministic")));
+                    RecommendationServiceType.FEATURED_ITEMS).set(SmartStoreServiceConfiguration.CKEY_SAMPLING_STRATEGY, "deterministic")),
+                    SmartStoreServiceConfiguration.configureSampler(new RecommendationServiceConfig("fi_config",
+                    RecommendationServiceType.FEATURED_ITEMS).set(SmartStoreServiceConfiguration.CKEY_SAMPLING_STRATEGY, "deterministic"), new java.util.HashMap()),
+                    false, false);
     }
     
     
@@ -75,7 +78,10 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
     RecommendationService getAllProductInCategoryService() {
         if (apicrs == null) {
             apicrs = new AllProductInCategoryRecommendationService(new Variant("apc", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("apc_config",
-                    RecommendationServiceType.ALL_PRODUCT_IN_CATEGORY)));
+                    RecommendationServiceType.ALL_PRODUCT_IN_CATEGORY)),
+                    SmartStoreServiceConfiguration.configureSampler(new RecommendationServiceConfig("apc_config",
+                    RecommendationServiceType.ALL_PRODUCT_IN_CATEGORY), new java.util.HashMap()),
+                    false, false);
         }
         return apicrs;
     }
@@ -84,7 +90,10 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
     RecommendationService getCandidateListService() {
         if (cprs == null) {
             cprs = new CandidateProductRecommendationService(new Variant("cpc", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("cpc_config",
-                RecommendationServiceType.CANDIDATE_LIST)));
+                RecommendationServiceType.CANDIDATE_LIST)),
+                SmartStoreServiceConfiguration.configureSampler(new RecommendationServiceConfig("cpc_config",
+                RecommendationServiceType.CANDIDATE_LIST), new java.util.HashMap()),
+                false, false);
         }
         return cprs;
     }
@@ -94,7 +103,10 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
     RecommendationService getManualOverrideService() {
         if (mors == null) {
             mors = new ManualOverrideRecommendationService(new Variant("mos", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("mos_config",
-                RecommendationServiceType.MANUAL_OVERRIDE)));
+                RecommendationServiceType.MANUAL_OVERRIDE)),
+                SmartStoreServiceConfiguration.configureSampler(new RecommendationServiceConfig("mos_config",
+                RecommendationServiceType.MANUAL_OVERRIDE), new java.util.HashMap()),
+                false, false);
         }
         return mors;
     }
@@ -102,14 +114,20 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
     RecommendationService getYourFavoritesService() {
         if (yfrs == null) {
             yfrs = new YourFavoritesInCategoryRecommendationService(new Variant("yf_fi", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("yf_fi",
-                RecommendationServiceType.YOUR_FAVORITES_IN_FEATURED_ITEMS)));
+                RecommendationServiceType.YOUR_FAVORITES_IN_FEATURED_ITEMS)),
+                SmartStoreServiceConfiguration.configureSampler(new RecommendationServiceConfig("yf_fi",
+                RecommendationServiceType.YOUR_FAVORITES_IN_FEATURED_ITEMS), new java.util.HashMap()),
+                false, false);
         }
         return yfrs;
     }
     
     RecommendationService getDeterministicYourFavoritesService() {
         return new YourFavoritesInCategoryRecommendationService(new Variant("yf_fi", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("yf_fi",
-                RecommendationServiceType.YOUR_FAVORITES_IN_FEATURED_ITEMS).set(AbstractRecommendationService.CKEY_SAMPLING_STRATEGY, "deterministic")));
+                RecommendationServiceType.YOUR_FAVORITES_IN_FEATURED_ITEMS).set(SmartStoreServiceConfiguration.CKEY_SAMPLING_STRATEGY, "deterministic")),
+                SmartStoreServiceConfiguration.configureSampler(new RecommendationServiceConfig("yf_fi",
+                RecommendationServiceType.YOUR_FAVORITES_IN_FEATURED_ITEMS).set(SmartStoreServiceConfiguration.CKEY_SAMPLING_STRATEGY, "deterministic"), new java.util.HashMap()),
+                false, false);
     }
 
     
@@ -122,11 +140,11 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
 
         assertNotNull("spe_cooki_cooki category", category);
 
-        SessionInput si = new SessionInput("12345");
+        SessionInput si = new SessionInput("12345", null);
         si.setCurrentNode(category);
         si.setNoShuffle(true);
 
-        List nodes = getFeaturedItemsService().recommendNodes(null, si);
+        List nodes = getFeaturedItemsService().recommendNodes(si);
         assertNotNull("recommend nodes", nodes);
         assertEquals("recommended nodes size", 6, nodes.size());
 
@@ -137,7 +155,7 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
         assertNode("4-fro_up_mudck", nodes, 4, "fro_up_mudck");
         assertNode("5-fro_up_threberylg", nodes, 5, "fro_up_threberylg");
         
-        nodes = getNullService().recommendNodes(null, si);
+        nodes = getNullService().recommendNodes(si);
         assertNotNull("nul recommend nodes", nodes);
         assertEquals("nul recommended nodes size", 0, nodes.size());
     }
@@ -516,13 +534,14 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
         ContentNodeModel contentNode = ContentFactory.getInstance().getContentNode("spe_cooki_cooki");
         try {
 
-            Trigger trigger = new Trigger(EnumSiteFeature.FEATURED_ITEMS, 5);
             FDStoreRecommender recommender = FDStoreRecommender.getInstance();
             
             SessionInput si = new SessionInput(user);
             si.setCurrentNode(contentNode);
             si.setNoShuffle(true);
-            Recommendations recomm = recommender.getRecommendations(trigger, user, si, SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT, new HashSet());
+            si.setMaxRecommendations(5);
+            Recommendations recomm = recommender.getRecommendations(EnumSiteFeature.FEATURED_ITEMS,
+            		user, si, SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT, new HashSet());
 
             {
                 assertNotNull("default-recommendations", recomm);
@@ -538,7 +557,8 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
             Set cartItems = new HashSet();
             cartItems.add(ContentKey.create(FDContentTypes.PRODUCT, "spe_moore_lemon"));
             
-            recomm = recommender.getRecommendations(trigger, user, si, SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT, cartItems);
+            recomm = recommender.getRecommendations(EnumSiteFeature.FEATURED_ITEMS, user,
+            		si, SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT, cartItems);
             {
                 assertNotNull("exlusion-recommendations", recomm);
                 assertEquals("exlusion-2 recommendation", 2, recomm.getProducts().size());
@@ -551,11 +571,15 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
             {
                 // test for 'INCLUDE_CART_ITEMS'
                 FeaturedItemsRecommendationService noRemovalService = new FeaturedItemsRecommendationService(new Variant("fi", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("fi_config",
-                        RecommendationServiceType.FEATURED_ITEMS).set(AbstractRecommendationService.CKEY_INCLUDE_CART_ITEMS, "true")));
+                        RecommendationServiceType.FEATURED_ITEMS).set(SmartStoreServiceConfiguration.CKEY_INCLUDE_CART_ITEMS, "true")),
+                        SmartStoreServiceConfiguration.configureSampler(new RecommendationServiceConfig("fi_config",
+                        RecommendationServiceType.FEATURED_ITEMS).set(SmartStoreServiceConfiguration.CKEY_INCLUDE_CART_ITEMS, "true"), new java.util.HashMap()),
+                        false, false);
                 VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(noRemovalService));
             }
 
-            recomm = recommender.getRecommendations(trigger, user, si, SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT, cartItems);
+            recomm = recommender.getRecommendations(EnumSiteFeature.FEATURED_ITEMS, user,
+            		si, SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT, cartItems);
             {
                 assertNotNull("include-cart-items-recommendations", recomm);
                 assertEquals("include-cart-items-3 recommendation", 3, recomm.getProducts().size());
@@ -596,7 +620,7 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
         assertNotNull("service["+service.getClass()+"] has config type", service.getVariant().getServiceConfig().getType());
         assertEquals("service["+service.getClass()+"] config type", type, service.getVariant().getServiceConfig().getType());
         
-        List nodes = service.recommendNodes(null, input);
+        List nodes = service.recommendNodes(input);
         assertNotNull("service["+service.getClass()+"] should return a non-null list of recommendations", nodes);
         assertEquals("service["+service.getClass()+"] should return a 0 number of recommendations", 0, nodes.size());
         

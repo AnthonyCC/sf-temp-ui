@@ -1,9 +1,6 @@
 package com.freshdirect.smartstore.sampling;
 
-import java.util.Map;
 import java.util.Random;
-
-import com.freshdirect.smartstore.impl.IConfigurable;
 
 /**
  * Select list elements randomly.
@@ -15,7 +12,7 @@ import com.freshdirect.smartstore.impl.IConfigurable;
  * @author istvan
  *
  */
-public abstract class ListSampler implements IConfigurable {
+public abstract class ListSampler {
 	
 	// random stream to use
 	private Random R;
@@ -120,13 +117,6 @@ public abstract class ListSampler implements IConfigurable {
 
 	public String toString() {
 	    return this.getClass().getName();
-	}
-	
-	/**
-	 * Default implementation. Subclasses may override it to add their configuration keys.
-	 */
-	public Map appendConfiguration(Map configMap) {
-		return configMap;
 	}
 	
 	/**
@@ -437,12 +427,6 @@ public abstract class ListSampler implements IConfigurable {
 		
         public String toString() {
             return getName() + "("+scale+','+p+')';
-        }
-
-        public Map appendConfiguration(Map configMap) {
-        	super.appendConfiguration(configMap);
-        	configMap.put(CKEY_EXPONENT, new Double(p));
-        	return configMap;
         }
 	}
 	

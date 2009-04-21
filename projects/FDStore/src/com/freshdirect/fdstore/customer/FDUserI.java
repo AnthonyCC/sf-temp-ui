@@ -285,6 +285,18 @@ public interface FDUserI extends java.io.Serializable {
     
     public int getTotalCartSkuQuantity(String args[]);
     
+    /**
+     * @return the user's favorite site feature for a cart tab
+     */
+    public String getFavoriteTabFeature();
+    
+    /**
+     * sets the user's favorite site feature for a cart tab
+     * 
+     * @param feature
+     */
+    public void setFavoriteTabFeature(String feature);
+    
     public Map getPromoVariantMap();
     
     public PromoVariantModel getPromoVariant(String variantId);

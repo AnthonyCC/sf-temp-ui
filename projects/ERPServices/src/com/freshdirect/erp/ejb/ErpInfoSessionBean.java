@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ejb.EJBException;
-import javax.ejb.FinderException;
 import javax.ejb.ObjectNotFoundException;
 
 import org.apache.log4j.Category;
@@ -31,7 +30,6 @@ import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.erp.model.ErpMaterialInfoModel;
 import com.freshdirect.erp.model.ErpProductInfoModel;
-import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.core.VersionedPrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -972,6 +970,46 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 	public Collection findNewSkuCodes(int days) {
 		return this.querySkus(QUERY_NEW_SKUCODES, new int[] { days });
+	}
+	
+	private final static String QUERY_SKU_NEWNESS = 
+		"select prd.sku_code, trunc(sysdate - hst.date_created) as diff from erps.history hst, erps.product prd"
+			+ " where hst.version=prd.version"
+			+ " and hst.version = (select min(version) from erps.product where sku_code=prd.sku_code and NVL(unavailability_status,' ') <> 'TEST')"
+			+ "and prd.unavailability_status is null";
+	
+	public Map getSkusOldness() {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn = getConnection();
+			ps = conn.prepareStatement(QUERY_SKU_NEWNESS);
+			rs = ps.executeQuery();
+
+			Map skus = new HashMap();
+			while (rs.next()) {
+				skus.put(rs.getString(1), new Integer(rs.getInt(2)));
+			}
+
+			return skus;
+
+		} catch (SQLException sqle) {
+			LOGGER.error("Unable to find skus", sqle);
+			throw new EJBException(sqle);
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (ps != null)
+					ps.close();
+				if (conn != null)
+					conn.close();
+			} catch (SQLException sqle) {
+				LOGGER.warn("Unable to close db resources", sqle);
+			}
+		}
+		
 	}
 
 	private final static String QUERY_REINTRODUCED_SKUCODES =

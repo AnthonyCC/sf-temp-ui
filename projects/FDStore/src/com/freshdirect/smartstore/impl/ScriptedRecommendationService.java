@@ -4,20 +4,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeSet;
 
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.smartstore.SessionInput;
-import com.freshdirect.smartstore.Trigger;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.dsl.CompileException;
+import com.freshdirect.smartstore.fdstore.FactorRequirer;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
+import com.freshdirect.smartstore.sampling.ImpressionSampler;
 import com.freshdirect.smartstore.sampling.RankedContent;
 import com.freshdirect.smartstore.scoring.DataAccess;
 import com.freshdirect.smartstore.scoring.DataGenerator;
 import com.freshdirect.smartstore.scoring.OrderingFunction;
-import com.freshdirect.smartstore.scoring.Score;
 import com.freshdirect.smartstore.scoring.ScoringAlgorithm;
 
 /**
@@ -26,15 +25,13 @@ import com.freshdirect.smartstore.scoring.ScoringAlgorithm;
  * @author zsombor
  *
  */
-public class ScriptedRecommendationService extends AbstractRecommendationService {
-    public final static String   CKEY_GENERATOR = "generator";
-    public final static String   CKEY_SCORING = "scoring";
-
+public class ScriptedRecommendationService extends AbstractRecommendationService implements FactorRequirer {
     private DataGenerator dataGenerator;
     private ScoringAlgorithm scoring;
 
-    public ScriptedRecommendationService(Variant variant, String generator, String scoring) throws CompileException {
-        super(variant);
+    public ScriptedRecommendationService(Variant variant, ImpressionSampler sampler,
+    		boolean catAggr, boolean includeCartItems, String generator, String scoring) throws CompileException {
+        super(variant, sampler, catAggr, includeCartItems);
         if (generator == null) {
             throw new NullPointerException("generator");
         }
@@ -44,15 +41,12 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
         }
     }
     
-    public ScriptedRecommendationService(Variant variant, String generator) throws CompileException {
-        this(variant, generator, null);
-    }
-    
-    public ScriptedRecommendationService(Variant variant) throws CompileException {
-        this(variant, variant.getServiceConfig().get(CKEY_GENERATOR), variant.getServiceConfig().get(CKEY_SCORING));
+    public ScriptedRecommendationService(Variant variant, ImpressionSampler sampler,
+    		boolean catAggr, boolean includeCartItems, String generator) throws CompileException {
+        this(variant, sampler, catAggr, includeCartItems, generator, null);
     }
 
-    public List recommendNodes(Trigger trigger, SessionInput input) {
+    public List recommendNodes(SessionInput input) {
         return recommendNodes(input, ScoreProvider.getInstance());
     }
     
@@ -115,7 +109,7 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
      * @param buffer Collection<String>
      * @return the original buffer.
      */
-    public Collection collectFactors(Collection buffer) {
+    public void collectFactors(Collection buffer) {
         buffer.addAll(dataGenerator.getFactors());
         if (scoring!=null) {
             String[] variableNames = scoring.getVariableNames();
@@ -123,15 +117,6 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
                 buffer.add(variableNames[i]);
             }
         }
-        return buffer;
-    }
-    
-    protected Map appendConfiguration(Map configMap) {
-        configMap.put(CKEY_GENERATOR, this.dataGenerator.toString());
-        if (scoring!=null) {
-            configMap.put(CKEY_SCORING, scoring.toString());
-        }
-        return super.appendConfiguration(configMap);
     }
     
     public String getDescription() {

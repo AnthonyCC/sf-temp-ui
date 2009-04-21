@@ -3,6 +3,7 @@
  */
 package com.freshdirect.webapp.taglib.smartstore;
 
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpSession;
@@ -13,7 +14,6 @@ import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.SessionInput;
-import com.freshdirect.smartstore.Trigger;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -46,15 +46,18 @@ public class FeaturedItemsTag extends RecommendationsTag {
         HttpSession session = pageContext.getSession();
         FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 
-        Trigger trigger = new Trigger(EnumSiteFeature.FEATURED_ITEMS, itemCount);
         FDStoreRecommender recommender = FDStoreRecommender.getInstance();
         
         SessionInput si = new SessionInput(user);
+        initFromSession(si);
         si.setCurrentNode(nodeModel);
         si.setNoShuffle(noShuffle);
+        si.setMaxRecommendations(itemCount);
         
-        Recommendations results = recommender.getRecommendations(trigger, user, si, (String) pageContext.getAttribute("fi_override_variant"), shoppingCart != null ? shoppingCart : FDStoreRecommender.getShoppingCartContents(user));
-
+        Recommendations results = recommender.getRecommendations(EnumSiteFeature.FEATURED_ITEMS, user,
+        		si, (String) pageContext.getAttribute("fi_override_variant"),
+        		shoppingCart != null ? shoppingCart : FDStoreRecommender.getShoppingCartContents(user));
+        persistToSession(results);
         return results;
     }
     

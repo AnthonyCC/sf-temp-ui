@@ -12,8 +12,8 @@ import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModelImpl;
 import com.freshdirect.smartstore.SessionInput;
-import com.freshdirect.smartstore.Trigger;
 import com.freshdirect.smartstore.Variant;
+import com.freshdirect.smartstore.sampling.ImpressionSampler;
 
 /**
  * @author zsombor
@@ -24,11 +24,12 @@ public class ManualOverrideRecommendationService extends CandidateProductRecomme
     /**
      * @param variant
      */
-    public ManualOverrideRecommendationService(Variant variant) {
-        super(variant);
+    public ManualOverrideRecommendationService(Variant variant, ImpressionSampler sampler,
+    		boolean catAggr, boolean includeCartItems) {
+        super(variant, sampler, catAggr, includeCartItems);
     }
     
-    public List recommendNodes(Trigger trigger, SessionInput input) {
+    public List recommendNodes(SessionInput input) {
         if (input.getCurrentNode() != null) {
             ContentNodeModel model = input.getCurrentNode();
             if (model instanceof CategoryModel) {

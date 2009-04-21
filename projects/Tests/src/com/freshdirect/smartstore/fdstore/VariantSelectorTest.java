@@ -14,7 +14,6 @@ import junit.framework.TestCase;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
-import com.freshdirect.smartstore.Trigger;
 import com.freshdirect.smartstore.Variant;
 
 public class VariantSelectorTest extends TestCase {
@@ -32,7 +31,7 @@ public class VariantSelectorTest extends TestCase {
 			return variant;
 		}
 
-		public List recommendNodes(Trigger trigger, SessionInput input) {
+		public List recommendNodes(SessionInput input) {
 			return null;
 		}
 

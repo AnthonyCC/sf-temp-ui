@@ -48,7 +48,7 @@ public class CmsFunctionsTest extends TestCase {
         
         comp = new DataGeneratorCompiler();
         {   
-            s = new SessionInput("ses1");
+            s = new SessionInput("ses1", null);
             s.setCurrentNode(ContentFactory.getInstance().getContentNode("cfncndy_ash_mcrrd"));
             
             List explicitList = new ArrayList(2);

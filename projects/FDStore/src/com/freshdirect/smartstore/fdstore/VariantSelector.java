@@ -35,11 +35,11 @@ public class VariantSelector {
 	
     /**
      * Select a variant based on user id.
-     * @param erpUserId user id
+     * @param primaryId user id
      * @return variant
      */
-    public RecommendationService select(String erpUserId) {
-        String cohortName = CohortSelector.getInstance().getCohortName(erpUserId);
+    public RecommendationService select(String primaryId) {
+        String cohortName = CohortSelector.getInstance().getCohortName(primaryId);
         return (RecommendationService) services.get(cohortName);
     }
     

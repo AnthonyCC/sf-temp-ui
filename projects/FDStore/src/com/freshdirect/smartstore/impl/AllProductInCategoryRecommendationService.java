@@ -13,9 +13,9 @@ import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.smartstore.SessionInput;
-import com.freshdirect.smartstore.Trigger;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.ProductStatisticsProvider;
+import com.freshdirect.smartstore.sampling.ImpressionSampler;
 import com.freshdirect.smartstore.sampling.RankedContent;
 
 /**
@@ -26,14 +26,15 @@ public class AllProductInCategoryRecommendationService extends AbstractRecommend
 
     
     
-    public AllProductInCategoryRecommendationService(Variant variant) {
-        super(variant);
+    public AllProductInCategoryRecommendationService(Variant variant, ImpressionSampler sampler,
+    		boolean catAggr, boolean includeCartItems) {
+        super(variant, sampler, catAggr, includeCartItems);
     }
 
     /* (non-Javadoc)
-     * @see com.freshdirect.smartstore.impl.AbstractRecommendationService#recommendNodes(int, com.freshdirect.smartstore.SessionInput)
+     * @see com.freshdirect.smartstore.impl.AbstractRecommendationService#doRecommendNodes(com.freshdirect.smartstore.Trigger, com.freshdirect.smartstore.SessionInput)
      */
-    public List recommendNodes(Trigger trigger, SessionInput input) {
+    public List recommendNodes(SessionInput input) {
         List result = Collections.EMPTY_LIST;
         if (input.getCurrentNode() != null) {
             ContentNodeModel model = input.getCurrentNode();

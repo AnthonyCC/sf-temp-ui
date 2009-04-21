@@ -438,8 +438,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 			SkuModel sku = (SkuModel) li.next();
 			if (sku.isUnavailable()) {
 				li.remove();
-			}
-			if (sku.getContentKey().equals(preferredSku)) {
+			} else if (sku.getContentKey().equals(preferredSku)) {
 				return sku;
 			}
 		}

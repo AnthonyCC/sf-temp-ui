@@ -25,19 +25,27 @@ public class CachingDataGenerator extends DataGenerator {
 	private static Executor threadPool = new ThreadPoolExecutor(1, 1, 60,
 			TimeUnit.SECONDS, new LinkedBlockingQueue(), new ThreadPoolExecutor.DiscardPolicy());
     
-    public String getKey(SessionInput input) {
+	boolean cacheEnabled;
+	
+    public CachingDataGenerator() {
+		super();
+		cacheEnabled = FDStoreProperties.isSmartstoreDataSourcesCached();
+	}
+
+
+	public String getKey(SessionInput input) {
         return null;
     }
     
     
     public final List generate(SessionInput sessionInput, final DataAccess input) {
-    	if (FDStoreProperties.isSmartstoreDataSourcesCached()) {
+		if (cacheEnabled) {
 	        String key = getKey(sessionInput);
+	        final SessionInput inp = new SessionInput(sessionInput.getCustomerId(),
+	        		sessionInput.getCustomerServiceType());
+	        inp.setCurrentNode(sessionInput.getCurrentNode());
+	        inp.setExplicitList(sessionInput.getExplicitList());
 	        if (cache.get(key) == null) {
-		        final SessionInput inp = new SessionInput(sessionInput.getCustomerId());
-		        inp.setCurrentNode(sessionInput.getCurrentNode());
-		        inp.setExplicitList(sessionInput.getExplicitList());
-		        
 	            cache.put(key, new BalkingExpiringReference(HOUR_IN_MILLIS, threadPool, generateImpl(inp, input)) {
 					protected Object load() {
 				        List result = generateImpl(inp, input);

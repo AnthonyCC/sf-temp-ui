@@ -12,9 +12,12 @@ import javax.servlet.jsp.tagext.VariableInfo;
 import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.FDEventUtil;
+import com.freshdirect.webapp.util.FDURLUtil;
 
 
 /**
@@ -84,9 +87,10 @@ public class ClickThruTag extends BodyTagSupport {
 			LOGGER.debug("Click-Thru: SKIPPED - missing variant id");
 			return SKIP_BODY;
 		}
-		
+
 		FDEventUtil.logRecommendationClickThrough(variantId, product.getContentKey());
 		
+		FDURLUtil.logProductClick(req);
 		return SKIP_BODY;
 	}
 

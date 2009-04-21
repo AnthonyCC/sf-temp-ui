@@ -27,6 +27,7 @@ import com.freshdirect.fdstore.aspects.FDFactoryProductInfoAspect;
 import com.freshdirect.fdstore.aspects.ProductStatisticProviderAspect;
 import com.freshdirect.fdstore.aspects.ProductStatisticUserProviderAspect;
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.webapp.util.FDEventUtil;
 
 import junit.framework.TestCase;
@@ -46,6 +47,7 @@ public class RecommendationServiceTestBase extends TestCase {
     
     public void setUp() throws Exception {
         super.setUp();
+        EnumSiteFeature.mock();
         List list = new ArrayList();
         list.add(new XmlTypeService("classpath:/com/freshdirect/cms/resource/CMSStoreDef.xml"));
 

@@ -25,4 +25,12 @@ public interface SmartStoreServiceConfigurationSB extends EJBObject {
 	 */
 	public Collection getVariants(EnumSiteFeature feature) throws RemoteException, SQLException;
 
+	/**
+	 * Get the available site features stored in database
+	 * 
+	 * @return available site features , {@link DynamicSiteFeature}<{@link DynamicSiteFeature}>
+	 * @throws RemoteException
+	 * @throws SQLException
+	 */
+	public Collection getSiteFeatures() throws RemoteException, SQLException;
 }

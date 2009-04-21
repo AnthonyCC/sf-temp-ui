@@ -7,6 +7,7 @@
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Arrays"%>
+<%@page import="java.util.Collections"%>
 <%@page import="java.util.Date"%>
 <%@page import="java.util.Iterator"%>
 <%@page import="java.util.Locale"%>
@@ -48,6 +49,7 @@ if (request.getParameter("refresh") != null) {
 }
 
 List siteFeatures = EnumSiteFeature.getSmartStoreEnumList();
+Collections.sort(siteFeatures);
 
 Map activeMap = new HashMap();
 
@@ -188,16 +190,16 @@ p.green { color: #009900; }
    		it = siteFeatures.iterator();
    		while (it.hasNext()) {
    			EnumSiteFeature sf = (EnumSiteFeature) it.next();
-   			Map curVars = SmartStoreServiceConfiguration.getInstance().getServices(sf);
-   	%>
+    		Map variants = SmartStoreUtil.getVariantsSortedInWeight(sf, dateVal, defaultDate.equals(date));
+    %>
     <table class="t1">
     	<tr>
-    	<td class="text13bold" <%= curVars.size() > 0 ? "colspan=\"" + curVars.size() + "\"" : "" %>
+    	<td class="text13bold" <%= variants.size() > 0 ? "colspan=\"" + variants.size() + "\"" : "" %>
     			title="Site Feature"><%= sf.getTitle() %></td>
     	</tr>
     	<tr>
     	<%
-    		Map variants = SmartStoreUtil.getVariantsSortedInWeight(sf, dateVal, defaultDate.equals(date));
+
     		
    			Iterator it2 = variants.keySet().iterator();
    			Map assignment = (Map) assignments.get(sf);

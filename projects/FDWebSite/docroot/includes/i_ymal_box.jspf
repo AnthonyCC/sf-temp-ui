@@ -55,6 +55,7 @@
   o 'ymal_product'    - Originating product                  [optional]. Product to which the YMALs are associated.
   o 'ymal_result'     - Result of previous Add To Cart event [optional].
   o 'ymal_header'     - Optional header text for YMAL prods  [optional].
+  o 'recommendations' - The recommendation object from the SmartStore [optional]
 
   Note: Make sure YMAL products, recipes and categories lists are NOT NULL and products contain at least one item.
   Furthermore, none of them may contain unavailable products, hidden categories, etc!
@@ -76,6 +77,7 @@
 	Variant	variant				= (Variant) request.getAttribute("ymal_variant"); // [optional] variant
 	ActionResult atc_result		= (ActionResult) request.getAttribute("ymal_result"); // [optional]
 	String ym_hdr			= (String) request.getAttribute("ymal_header"); // [optional]
+	Recommendations recmnd = (Recommendations) request.getAttribute("recommendations"); // [optional]
 
 	FDUserI fd_user = (FDUserI) session.getAttribute(SessionName.USER);
 
@@ -176,7 +178,7 @@
 %>
 <fd:PIPLayout id="piRow" rowSize="3" impressions="<%= impressions %>" maxRowHeight="rowHeight" singleRowMode="<%= impressions.size() <= 3 %>">
 						<tr>
-<fd:PIPRow id="pi" impressionRow="<%= piRow %>" isBlankCell="isBlankCell" productImage="prodImage" shouldRenderBlankCells="<%= impressions.size() > 3 %>">
+<fd:PIPRow id="pi" impressionRow="<%= piRow %>" isBlankCell="isBlankCell" shouldRenderBlankCells="<%= impressions.size() > 3 %>">
 <%
 		if (isBlankCell.booleanValue()) {
 %>							<td style="width: <%= Math.round(100.0/rsize) %>%;">&nbsp;</td>
@@ -186,7 +188,7 @@
 			//
 			ProductModel product = pi.getProductModel();
 			ProductLabelling pl = new ProductLabelling(fd_user, product);
-			String actionURI = FDURLUtil.getProductURI(product, variant.getId(), variant.getSiteFeature().getName().toLowerCase(), pl.getTrackingCode(), rank);
+			String actionURI = FDURLUtil.getProductURI(product, variant.getId(), variant.getSiteFeature().getName().toLowerCase(), pl.getTrackingCode(), rank, recmnd!=null ? recmnd.getImpressionId(product) : null);
 %>							<td class="ymal_product" style="width: <%= Math.round(100.0/rsize) %>%; text-align: center; vertical-align: top;">
 
 								<!-- start of ymal products internal table -->								

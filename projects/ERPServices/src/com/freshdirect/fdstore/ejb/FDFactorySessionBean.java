@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
@@ -206,6 +207,23 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 		}
 	}
     
+    public Map getSkusOldness() throws FDResourceException {
+		if (this.infoHome==null) {
+			this.lookupInfoHome();	
+		}
+		try {
+			ErpInfoSB infoSB = this.infoHome.create();
+
+			return infoSB.getSkusOldness();
+
+		} catch (RemoteException re) {
+			this.infoHome=null;
+			throw new FDResourceException(re);
+		} catch (CreateException ce) {
+			this.infoHome=null;
+			throw new FDResourceException(ce);
+		}
+	}
     
     public Collection getReintroducedSkuCodes(int days) throws FDResourceException {
 		if (this.infoHome==null) {

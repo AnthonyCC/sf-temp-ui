@@ -54,7 +54,7 @@ int rank = nav.getPageOffset()+1;
 <%
 int colCount = 0;
 %>
-	<fd:PIPRow id="pi" impressionRow="<%= piRow %>" isBlankCell="isBlankCell" productImage="prodImage" shouldRenderBlankCells="<%= false %>"><%
+	<fd:PIPRow id="pi" impressionRow="<%= piRow %>" isBlankCell="isBlankCell" shouldRenderBlankCells="<%= false %>"><%
 	// product to render
 	ProductModel productNode = pi.getProductModel();
 

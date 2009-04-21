@@ -517,3 +517,82 @@ a.usq_left_nav_menu_on:hover {color: #FBF1D3; cursor: pointer; text-decoration: 
 .normal-price{color:#333333;font-weight:bold;}
 .save-base-price{color:rgb(136,136,136);font-weight:normal;}
 .fav-label{color:#996699;font-weight:bold;}
+
+
+
+/*********************************************************
+					< Cart&tabs tab display >
+**********************************************************/
+
+table.tab {
+	border-collapse:collapse;
+	border-spacing:0px;
+	padding:0px;
+}
+
+td.tab {
+	padding: 0px;	
+	background-repeat: repeat-x;
+	white-space: nowrap;
+	text-align: center;
+	vertical-align: bottom;
+}
+
+td.tab_title_active {
+	padding: 0px;	
+	background-repeat: repeat-x;
+	white-space: nowrap;
+	text-align: center;
+	vertical-align: middle;
+	height: 25px;
+	background: url("/media_stat/images/carttab_corners/carttab_bg_on.gif");
+}
+
+td.tab_title_inactive {
+	padding: 0px;	
+	background-repeat: repeat-x;
+	white-space: nowrap;
+	text-align: center;
+	vertical-align: middle;
+	height: 25px;
+	background: url("/media_stat/images/carttab_corners/carttab_bg_off.gif");
+}
+
+img.tab {
+	display: block;
+	margin: 0px;
+}
+
+div.tab {
+	border-left: 2px solid #996699; 
+	border-right: 2px solid #996699;
+	text-align: center;
+	vertical-align: middle;
+}
+
+a.tab_active {
+	color: #996699; 
+	font: small-caps bold small sans-serif; 
+	text-decoration: none;
+}
+
+a.tab_inactive {
+	color: white; 
+	font: small-caps bold small sans-serif; 
+	text-decoration: none;
+}
+
+p.tab_text {
+	color: black; 
+	font: small-caps bold small sans-serif; 
+	text-decoration: none;
+	text-align: center;					
+}
+
+a.tab_active:link		{ color : #996699; }
+a.tab_active:visited	{ color : #996699; }
+a.tab_active:active		{ color : #996699; }
+
+a.tab_inactive:link		{ color : white; }
+a.tab_inactive:visited	{ color : white; }
+a.tab_inactive:active	{ color : white; }

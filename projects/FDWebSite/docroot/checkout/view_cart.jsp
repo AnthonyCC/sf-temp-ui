@@ -1,4 +1,3 @@
-<!-- checkout / view cart -->
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>  

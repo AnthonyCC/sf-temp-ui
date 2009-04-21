@@ -30,8 +30,8 @@ public class DBEventSink implements EventSinkI {
 		// FDCartLineEvent parameters (12)
 		+ "PRODUCT_ID, SKU_CODE, CATEGORY_ID, DEPARTMENT_ID, "
 		+ "CARTLINE_ID, QUANTITY, SALES_UNIT, CONFIGURATION, "
-		+ "YMAL_CATEGORY, YMAL_PRODUCT, YMAL_SET_ID, CCL_ID, VARIANT_ID) "
-		+ "VALUES(CUST.LOG_CART_EVENTS_SEQ.NEXTVAL, ?,?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		+ "YMAL_CATEGORY, YMAL_PRODUCT, YMAL_SET_ID, CCL_ID, VARIANT_ID, IMPRESSION_ID) "
+		+ "VALUES(CUST.LOG_CART_EVENTS_SEQ.NEXTVAL, ?,?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	public DBEventSink(DataSource dataSource) {
 		this.dataSource = dataSource;
@@ -81,6 +81,7 @@ public class DBEventSink implements EventSinkI {
 				ps.setString(idx++, cle.getCclId());			// 11
 				
 				ps.setString(idx++, cle.getVariantId());		// 12
+				ps.setString(idx++, cle.getImpressionId());             // 13
 			} else {
 				LOGGER.error("Skipped event with unknown class " + event.getClass().getName() );
 				return false;

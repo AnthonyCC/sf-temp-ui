@@ -30,7 +30,9 @@ public class HiLoGenerator {
 	}
 	
 	private void padZeros(int width, StringBuffer result, String keyPart) {
-		for(int i=0; i< width-keyPart.length(); ++i) result.append('0');
+		for(int i=0; i< width-keyPart.length(); ++i) { 
+		    result.append('0');
+		}
 		result.append(keyPart);
 	}
 

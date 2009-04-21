@@ -100,7 +100,7 @@ public class FDEventFactory {
 		return new FDRecommendationEvent.ClickThrough(variantId,idBuffer.toString(),cal.getTime());
 	}
 	
-	private static void populateEvent (FDWebEvent event, HttpServletRequest request, String eventType) {
+	private static void populateEvent (FDCartLineEvent event, HttpServletRequest request, String eventType) {
 		HttpSession session = request.getSession();
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 		FDIdentity identity = user.getIdentity();
@@ -126,6 +126,9 @@ public class FDEventFactory {
 				event.setTrackingCode(request.getParameter("trk"));
 				event.setTrackingCodeEx(request.getParameter("trkd"));
 			}
+		}
+		if (request.getParameter("impId")!=null) {
+		    event.setImpressionId(request.getParameter("impId"));
 		}
 		event.setUrl(request.getRequestURI());
 		event.setQueryString(request.getQueryString());

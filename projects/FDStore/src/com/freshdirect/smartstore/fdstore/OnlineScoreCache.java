@@ -57,11 +57,14 @@ public abstract class OnlineScoreCache {
     
     Map cache = Collections.synchronizedMap(new HashMap(20000));
     
-    public OnlineScoreCache() {
+	boolean cacheEnabled;
+
+	public OnlineScoreCache() {
+		cacheEnabled = FDStoreProperties.isSmartstoreOnlineFactorsCached();
 	}
 
     public void reload() {
-		if (!FDStoreProperties.isSmartstoreOnlineFactorsCached())
+		if (!(cacheEnabled = FDStoreProperties.isSmartstoreOnlineFactorsCached()))
 			return;
 
 		synchronized (lock) {	
@@ -73,7 +76,7 @@ public abstract class OnlineScoreCache {
     }
     
 	public final double getVariable(ContentNodeModel contentNode) {
-		if (!FDStoreProperties.isSmartstoreOnlineFactorsCached())
+		if (!cacheEnabled)
 			return calculateVariable(contentNode);
 		
 		synchronized (lock) {

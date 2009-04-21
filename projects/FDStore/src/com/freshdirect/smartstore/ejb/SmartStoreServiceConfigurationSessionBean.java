@@ -5,16 +5,19 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
-import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.core.SessionBeanSupport;
+import com.freshdirect.smartstore.CartTabStrategyPriority;
 import com.freshdirect.smartstore.RecommendationServiceConfig;
 import com.freshdirect.smartstore.RecommendationServiceType;
 import com.freshdirect.smartstore.Variant;
@@ -40,6 +43,10 @@ public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSuppor
 
 	private static final String GET_VARIANT_ALIAS = "SELECT v.id, v.type, v.feature FROM cust.ss_variants v WHERE id = ?";
 	
+	private static final String GET_ALL_SITE_FEATURES_QUERY = "SELECT sf.id, sf.title, sf.prez_title, sf.prez_desc FROM cust.ss_site_feature sf";
+
+	private static final String GET_TAB_STRAT_PRIOS = "SELECT SITE_FEATURE_ID, PRIMARY_PRIORITY, SECONDARY_PRIORITY " +
+			"FROM CUST.SS_TAB_STRATEGY_PRIORITY WHERE TAB_STRATEGY_ID = ?";
 	
     protected void close(ResultSet rs) {
 		if (rs != null) {
@@ -149,7 +156,8 @@ public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSuppor
 				String aliasId = rs.getString( "alias_id" );
 				String variantIdConfig = variantId;
 				
-				RecommendationServiceType type = null; 
+				RecommendationServiceType type = null;
+				SortedMap prios = new TreeMap();
 				
 				// -------------------
 				// ALIAS type variant
@@ -198,6 +206,38 @@ public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSuppor
 						if (aliasRs != null) aliasRs.close();
 						if (aliasPs != null) aliasPs.close();
 					}					
+				} else if ( RecommendationServiceType.TAB_STRATEGY.getName().equals(typeStr) ) {
+					
+					PreparedStatement prioPs = null;
+					ResultSet prioRs = null;
+					try {
+						prioPs = conn.prepareStatement( GET_TAB_STRAT_PRIOS );
+						prioPs.setString( 1, variantId );
+						prioRs = prioPs.executeQuery();
+						
+						while (prioRs.next()) {
+							CartTabStrategyPriority p = new CartTabStrategyPriority(variantId, prioRs.getString("SITE_FEATURE_ID"),
+									prioRs.getInt("PRIMARY_PRIORITY"), prioRs.getInt("SECONDARY_PRIORITY"));
+
+							Integer p1 = new Integer(p.getPrimaryPriority());
+							Integer p2 = new Integer(p.getSecondaryPriority());
+							SortedMap pMap;
+							if (prios.containsKey(p1))
+								pMap = (SortedMap) prios.get(p1);
+							else
+								prios.put(p1, pMap = new TreeMap());
+							
+							pMap.put(p2, p);
+						}
+						
+					} catch (SQLException e) {
+						LOGGER.error("Skipping variant " + variantId + " due to sql error while getting variant...");
+						continue;	
+						
+					} finally {
+						if (prioRs != null) prioRs.close();
+						if (prioPs != null) prioPs.close();
+					}					
 				}
 				
 				// continue normally...			
@@ -206,13 +246,68 @@ public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSuppor
 					feature = EnumSiteFeature.getEnum( featureStr );
 					
 					if ( feature != null && type != null ) {
-						result.add( new Variant( variantId, feature, createConfig(conn, variantIdConfig, type) ) );
+						if (variantId.equals(variantIdConfig)) { // not an alias
+							result.add( new Variant( variantId, feature, createConfig(conn, variantIdConfig, type), prios ) );
+						} else { // alias
+							// first fetch original configuration
+							RecommendationServiceConfig origConfig = createConfig(conn, variantIdConfig, type);
+							// then override with alias' configuration
+							RecommendationServiceConfig aliasConfig = createConfig(conn, variantId, type);
+							Iterator it = aliasConfig.keys().iterator();
+							while (it.hasNext()) {
+								String key = (String) it.next();
+								origConfig.set(key, aliasConfig.get(key));
+							}
+							result.add( new Variant( variantId, feature, origConfig, prios ) );
+						}
 					}
 					
 				} catch (RemoteException exc) {
 					// Ignore variant if error occures during configuration
 					LOGGER.error("Skipping variant " + variantId + " due to configuration error...");
 				}
+			}
+
+			return result;
+			
+		} catch (Exception e) {
+			LOGGER.error("Getting variants failed. ",e);
+			throw new RemoteException(e.getMessage(),e);
+		} finally {
+			if (rs != null) rs.close();
+			if (ps != null) ps.close();
+			if (conn != null) conn.close();
+		}
+	}
+
+	/**
+	 * Get the available site features. 
+	 * @return available site features , {@link DynamicSiteFeature}<{@link DynamicSiteFeature}>
+	 * @throws RemoteException
+	 * @throws SQLException
+	 */
+	public Collection getSiteFeatures() throws RemoteException, SQLException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Connection conn = null;
+		try {
+			
+			List result = new ArrayList();
+			
+			conn = getConnection();
+			
+			ps = conn.prepareStatement(GET_ALL_SITE_FEATURES_QUERY);
+
+			rs = ps.executeQuery();
+			while (rs.next()) {
+
+				String name = rs.getString( "id" );
+				String title = rs.getString( "title" );
+				String prez_title = rs.getString("prez_title");
+				String prez_desc = rs.getString("prez_desc");
+				
+				result.add(new DynamicSiteFeature(name, title, prez_title, prez_desc));
+
 			}
 
 			return result;

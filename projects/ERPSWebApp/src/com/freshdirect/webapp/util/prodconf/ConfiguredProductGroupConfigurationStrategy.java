@@ -12,7 +12,7 @@ import com.freshdirect.fdstore.content.ConfiguredProductGroup;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.smartstore.impl.AbstractRecommendationService;
+import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
 import com.freshdirect.webapp.util.ConfigurationContext;
 import com.freshdirect.webapp.util.ConfigurationStrategy;
 import com.freshdirect.webapp.util.ProductImpression;
@@ -27,16 +27,14 @@ public final class ConfiguredProductGroupConfigurationStrategy
 	}
 
 	public ProductImpression configure(ProductModel productModel, ConfigurationContext context) {
-		Map cfgProds = AbstractRecommendationService.getConfiguredProductCache();
+		Map cfgProds = SmartStoreUtil.getConfiguredProductCache();
 		ConfiguredProduct associateProduct = (ConfiguredProduct)
 				cfgProds.get(productModel.getContentKey().getId());
 		if (associateProduct != null && associateProduct instanceof ConfiguredProductGroup) {
 			ConfiguredProductGroup configuredProduct = (ConfiguredProductGroup) associateProduct;
 			ConfiguredProduct embeddedProduct = (ConfiguredProduct) configuredProduct.getProduct();
 			
-			SkuModel sku = embeddedProduct.getPreferredSku() == null ?
-					embeddedProduct.getDefaultSku() :
-					embeddedProduct.getPreferredSku();
+			SkuModel sku = embeddedProduct.getDefaultSku();
 					
 			if (sku == null) {
 				return super.configure(productModel, context);

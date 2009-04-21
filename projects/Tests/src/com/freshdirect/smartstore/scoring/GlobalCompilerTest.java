@@ -21,6 +21,7 @@ import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.dsl.CompileException;
 import com.freshdirect.smartstore.dsl.Expression;
+import com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration;
 import com.freshdirect.smartstore.impl.GlobalCompiler;
 import com.freshdirect.smartstore.impl.ScriptedRecommendationService;
 
@@ -93,23 +94,30 @@ public class GlobalCompilerTest extends TestCase {
     }
     
     public void testRecommenderService() throws CompileException {
-        SessionInput s = new SessionInput("");
+        SessionInput s = new SessionInput("", null);
         s.setNoShuffle(true);
         
         {
-            ScriptedRecommendationService srs = new ScriptedRecommendationService(variant, "content:(between(afact,2,3)*between(afact,1,2))", null);
+            ScriptedRecommendationService srs = new ScriptedRecommendationService(variant,
+            		SmartStoreServiceConfiguration.configureSampler(variant.getServiceConfig(), new java.util.HashMap()),
+            		false, false,
+            		"content:(between(afact,2,3)*between(afact,1,2))", null);
             List collection = srs.recommendNodes(s, input);
             assertNotNull("result collection", collection);
             assertEquals("result collection size", 1, collection.size());
             Collection strings = TestUtils.convertToStringList(collection);
             assertTrue("contains a2", strings.contains("a2"));
 
-            Collection factors = srs.collectFactors(new HashSet());
+            Collection factors = new HashSet();
+            srs.collectFactors(factors);
             assertEquals("factor number", 1, factors.size());
             assertTrue("afact factor needed", factors.contains("afact"));
         }
         {
-            ScriptedRecommendationService srs = new ScriptedRecommendationService(variant, "content:between(afact,2,3)", null);
+            ScriptedRecommendationService srs = new ScriptedRecommendationService(variant,
+            		SmartStoreServiceConfiguration.configureSampler(variant.getServiceConfig(), new java.util.HashMap()),
+            		false, false,
+            		"content:between(afact,2,3)", null);
             List collection = srs.recommendNodes(s, input);
             assertNotNull("result collection", collection);
             assertEquals("result collection size", 2, collection.size());
@@ -117,13 +125,17 @@ public class GlobalCompilerTest extends TestCase {
             assertTrue("contains a2", strings.contains("a2"));
             assertTrue("contains a3", strings.contains("a3"));
 
-            Collection factors = srs.collectFactors(new HashSet());
+            Collection factors = new HashSet();
+            srs.collectFactors(factors);
             assertEquals("factor number", 1, factors.size());
             assertTrue("afact factor needed", factors.contains("afact"));
 
         }
         {
-            ScriptedRecommendationService srs = new ScriptedRecommendationService(variant, "content", "afact");
+            ScriptedRecommendationService srs = new ScriptedRecommendationService(variant,
+            		SmartStoreServiceConfiguration.configureSampler(variant.getServiceConfig(), new java.util.HashMap()),
+            		false, false,
+            		"content", "afact");
             List collection = srs.recommendNodes(s, input);
             assertNotNull("result collection", collection);
             assertEquals("result collection size", 3, collection.size());
@@ -136,12 +148,16 @@ public class GlobalCompilerTest extends TestCase {
             assertEquals("2. elem:", "a2", ((ContentNodeModel)collection.get(1)).getContentKey().getId());
             assertEquals("3. elem:", "a1", ((ContentNodeModel)collection.get(2)).getContentKey().getId());
 
-            Collection factors = srs.collectFactors(new HashSet());
+            Collection factors = new HashSet();
+            srs.collectFactors(factors);
             assertEquals("factor number", 1, factors.size());
             assertTrue("afact factor needed", factors.contains("afact"));
         }
         {
-            ScriptedRecommendationService srs = new ScriptedRecommendationService(variant, "content", "bfact");
+            ScriptedRecommendationService srs = new ScriptedRecommendationService(variant,
+            		SmartStoreServiceConfiguration.configureSampler(variant.getServiceConfig(), new java.util.HashMap()),
+            		false, false,
+            		"content", "bfact");
             List collection = srs.recommendNodes(s, input);
             assertNotNull("result collection", collection);
             assertEquals("result collection size", 3, collection.size());
@@ -154,12 +170,16 @@ public class GlobalCompilerTest extends TestCase {
             assertEquals("2. elem:", "a2", ((ContentNodeModel)collection.get(1)).getContentKey().getId());
             assertEquals("3. elem:", "a3", ((ContentNodeModel)collection.get(2)).getContentKey().getId());
 
-            Collection factors = srs.collectFactors(new HashSet());
+            Collection factors = new HashSet();
+            srs.collectFactors(factors);
             assertEquals("factor number", 1, factors.size());
             assertTrue("bfact factor needed", factors.contains("bfact"));
         }
         {
-            ScriptedRecommendationService srs = new ScriptedRecommendationService(variant, "content", "afact*bfact");
+            ScriptedRecommendationService srs = new ScriptedRecommendationService(variant,
+            		SmartStoreServiceConfiguration.configureSampler(variant.getServiceConfig(), new java.util.HashMap()),
+            		false, false,
+            		"content", "afact*bfact");
             List collection = srs.recommendNodes(s, input);
             assertNotNull("result collection", collection);
             assertEquals("result collection size", 3, collection.size());
@@ -172,7 +192,8 @@ public class GlobalCompilerTest extends TestCase {
             assertEquals("2. elem:", "a1", ((ContentNodeModel)collection.get(1)).getContentKey().getId());
             assertEquals("3. elem:", "a3", ((ContentNodeModel)collection.get(2)).getContentKey().getId());
 
-            Collection factors = srs.collectFactors(new HashSet());
+            Collection factors = new HashSet();
+            srs.collectFactors(factors);
             assertEquals("factor number", 2, factors.size());
             assertTrue("afact factor needed", factors.contains("afact"));
             assertTrue("bfact factor needed", factors.contains("bfact"));

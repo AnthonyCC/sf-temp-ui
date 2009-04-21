@@ -161,6 +161,11 @@ public class PIPLayoutTag extends AbstractGetterTag {
 		
 		return !singleRowMode && (_row*rowSize) < impressions.size() ? EVAL_BODY_AGAIN : SKIP_BODY;
 	}
+	
+	public int doEndTag() throws JspException {
+		_row = 0;
+		return super.doEndTag();
+	}
 
 
 

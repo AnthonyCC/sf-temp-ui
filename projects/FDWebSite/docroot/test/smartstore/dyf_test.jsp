@@ -12,7 +12,6 @@
 <%@ page import='org.apache.commons.fileupload.disk.DiskFileItemFactory' %>
 <%@ page import="com.freshdirect.webapp.taglib.test.SmartStoreSession"%>
 <%@ page import="com.freshdirect.smartstore.fdstore.*" %>
-<%@ page import="com.freshdirect.smartstore.Trigger" %>
 <%@ page import="com.freshdirect.fdstore.util.EnumSiteFeature" %>
 <%@ page import="com.freshdirect.fdstore.customer.*" %>
 <%@ page import="com.freshdirect.fdstore.lists.*" %>
@@ -219,7 +218,8 @@ if ("recommend".equals(action)) {
 
 %>
 
-<%@page import="com.freshdirect.fdstore.content.ContentFactory"%><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@page import="com.freshdirect.smartstore.SessionInput"%><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <% if ("recommend".equals(action)) { %>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
@@ -290,7 +290,9 @@ if ("recommend".equals(action)) {
 	
 	// recommend!
 	//
-	Recommendations recommendations = recommender.getRecommendations(new Trigger(EnumSiteFeature.DYF,5), mockSession);
+	SessionInput sessInp = new SessionInput(looser);
+	sessInp.setMaxRecommendations(6);
+	Recommendations recommendations = recommender.getRecommendations(EnumSiteFeature.DYF, looser, sessInp, null);
 %>
 <center>
 	<span style="font-size: 11px;"><b>Legend</b> <span style="text-decoration: line-through; border: 1px dotted grey;">Unavailable product</span> <span style="color: gray; border: 1px dotted grey;">Product already in cart</span></span> | 
@@ -298,10 +300,11 @@ if ("recommend".equals(action)) {
 	<br/>
 </center>
 <table id="result-table" border="0">
-	<tr>
+	<thead>
 		<th>Cart</th>
 		<th>Every Item Ever Ordered</th>
-		<th>Suggestions / <%= recommendations.getVariant().getId() %></span></th>
+		<th>Suggestions / <%= recommendations.getVariant().getId() %></th>
+	</thead>
 	<tr>
 	</tr>
 	<tr>

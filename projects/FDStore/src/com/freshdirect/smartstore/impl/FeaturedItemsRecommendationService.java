@@ -11,8 +11,8 @@ import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.smartstore.SessionInput;
-import com.freshdirect.smartstore.Trigger;
 import com.freshdirect.smartstore.Variant;
+import com.freshdirect.smartstore.sampling.ImpressionSampler;
 import com.freshdirect.smartstore.scoring.HelperFunctions;
 
 /**
@@ -27,8 +27,9 @@ public class FeaturedItemsRecommendationService extends AbstractRecommendationSe
     /**
      * @param variant
      */
-    public FeaturedItemsRecommendationService(Variant variant) {
-        super(variant);
+    public FeaturedItemsRecommendationService(Variant variant, ImpressionSampler sampler,
+    		boolean catAggr, boolean includeCartItems) {
+        super(variant, sampler, catAggr, includeCartItems);
     }
 
     /**
@@ -37,7 +38,7 @@ public class FeaturedItemsRecommendationService extends AbstractRecommendationSe
      * @return a List<{@link ContentNodeModel}> of recommendations
      *         
      */
-    public List recommendNodes(Trigger trigger, SessionInput input) {
+    public List recommendNodes(SessionInput input) {
         List featuredNodes = Collections.EMPTY_LIST; 
         if (input.getCurrentNode()!=null) {
             ContentNodeModel model = input.getCurrentNode();

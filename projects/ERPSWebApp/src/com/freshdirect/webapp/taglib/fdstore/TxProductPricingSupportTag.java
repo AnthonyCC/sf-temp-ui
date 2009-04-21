@@ -193,19 +193,21 @@ public class TxProductPricingSupportTag extends BodyTagSupport {
 		// PART II. -- Configure pricing script
 		int nConfProd = txImpressions.size();
 
+		final String nsObj = "document."+namespace;
+		
 		buf.append("<script type=\"text/javascript\">\n");
-		buf.append("  var "+ namespace +" = new Object();\n");
+		buf.append("  "+ nsObj +" = new Object();\n");
 		buf.append("\n");
 		buf.append("\n");
-		buf.append("  "+ namespace +".pricings = new Array("+ nConfProd +");\n");
-		buf.append("  "+ namespace +".updateTotal = function() {\n");
+		buf.append("  "+ nsObj +".pricings = new Array("+ nConfProd +");\n");
+		buf.append("  "+ nsObj +".updateTotal = function() {\n");
 		buf.append("    var total=0;\n");
 		buf.append("    var p;\n");
-		buf.append("    for(i=0; i<"+ namespace +".pricings.length; i++ ) {\n");
-		buf.append("      if ("+ namespace +".pricings[i] == undefined)\n");
+		buf.append("    for(i=0; i<"+ nsObj +".pricings.length; i++ ) {\n");
+		buf.append("      if ("+ nsObj +".pricings[i] == undefined)\n");
 		buf.append("        continue;\n");
 		buf.append("\n");
-		buf.append("        p = "+ namespace +".pricings[i].getPrice();\n");
+		buf.append("        p = "+ nsObj +".pricings[i].getPrice();\n");
 		buf.append("        if (p!=\"\") {\n");
 		buf.append("        total+=Number(p.substring(1));\n");
 		buf.append("      }\n");
@@ -213,7 +215,7 @@ public class TxProductPricingSupportTag extends BodyTagSupport {
 		buf.append("    document.forms['"+ formName +"'][\"total\"].value=\"$\"+currencyFormat(total);\n");
 		buf.append("  };\n");
 		buf.append("\n");
-		buf.append("  "+ namespace +".changeShopQty = function(idx, delta, min, max, increment, qty_inp) {\n");
+		buf.append("  "+ nsObj +".changeShopQty = function(idx, delta, min, max, increment, qty_inp) {\n");
 		buf.append("    var val = qty_inp.value;\n");
 		buf.append(" \n");
 		buf.append("    var qty = parseFloat(val) + delta;\n");
@@ -244,7 +246,7 @@ public class TxProductPricingSupportTag extends BodyTagSupport {
 		buf.append("  if (qty_inp != null)\n");
 		buf.append("	  qty_inp.value = qty;\n");
 		buf.append("\n");
-		buf.append("    "+ namespace +".pricings[idx].setQuantity(qty);\n");
+		buf.append("    "+ nsObj +".pricings[idx].setQuantity(qty);\n");
 		buf.append("  };\n");
 		buf.append("\n");		
 
@@ -263,29 +265,29 @@ public class TxProductPricingSupportTag extends BodyTagSupport {
 
 			buf.append("<script type=\"text/javascript\">\n");
 			
-			buf.append( namespace + ".pricings["+j+"] = new Pricing();\n");
-			buf.append( namespace + ".pricings["+j+"].setSKU(\""+ sku + "\");\n");
+			buf.append( nsObj + ".pricings["+j+"] = new Pricing();\n");
+			buf.append( nsObj + ".pricings["+j+"].setSKU(\""+ sku + "\");\n");
 			if (tpi.getProductModel().isSoldBySalesUnits()) {
-				buf.append( namespace + ".pricings["+j+"].setQuantity("+ tpi.getConfiguration().getQuantity() +");\n");
-				buf.append( namespace + ".pricings["+j+"].setSalesUnit(\"\");\n");
+				buf.append( nsObj + ".pricings["+j+"].setQuantity("+ tpi.getConfiguration().getQuantity() +");\n");
+				buf.append( nsObj + ".pricings["+j+"].setSalesUnit(\"\");\n");
 			} else {
-				buf.append( namespace + ".pricings["+j+"].setQuantity(0);\n");
-				buf.append( namespace + ".pricings["+j+"].setSalesUnit(\""+ tpi.getConfiguration().getSalesUnit() +"\");\n");
+				buf.append( nsObj + ".pricings["+j+"].setQuantity(0);\n");
+				buf.append( nsObj + ".pricings["+j+"].setSalesUnit(\""+ tpi.getConfiguration().getSalesUnit() +"\");\n");
 			}
 			
 			// options
 			for (Iterator iit = tpi.getConfiguration().getOptions().entrySet().iterator(); iit.hasNext(); ) {
 				Map.Entry entry = (Map.Entry) iit.next();
-				buf.append( namespace + ".pricings["+j+"].setOption(\""+ entry.getKey() +"\", \""+ entry.getValue() +"\");\n");
+				buf.append( nsObj + ".pricings["+j+"].setOption(\""+ entry.getKey() +"\", \""+ entry.getValue() +"\");\n");
 			}
 			
 			// change quantity function
-			buf.append( namespace + ".pricings["+j+"].changeQty = function(delta) {\n");
-			buf.append( "  " + namespace + ".changeShopQty("+j+", delta, "+ product.getQuantityMinimum() +", "+ customer.getQuantityMaximum(product) +", "+ product.getQuantityIncrement() +", document.forms['"+ formName +"']['quantity"+ inpPx +"']);\n");
+			buf.append( nsObj + ".pricings["+j+"].changeQty = function(delta) {\n");
+			buf.append( "  " + nsObj + ".changeShopQty("+j+", delta, "+ product.getQuantityMinimum() +", "+ customer.getQuantityMaximum(product) +", "+ product.getQuantityIncrement() +", document.forms['"+ formName +"']['quantity"+ inpPx +"']);\n");
 			buf.append("};\n");
 
 			// bind updater function
-			buf.append( namespace + ".pricings["+j+"].setCallbackFunction( "+namespace+".updateTotal );\n");
+			buf.append( nsObj + ".pricings["+j+"].setCallbackFunction( "+nsObj+".updateTotal );\n");
 
 			buf.append("</script>\n");
 		

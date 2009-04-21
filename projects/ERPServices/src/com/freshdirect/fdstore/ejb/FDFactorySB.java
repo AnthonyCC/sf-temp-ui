@@ -11,6 +11,7 @@ package com.freshdirect.fdstore.ejb;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.EJBObject;
 
@@ -78,7 +79,10 @@ public interface FDFactorySB extends EJBObject {
 	/** @return list of sku codes */
     public Collection getNewSkuCodes(int days) throws RemoteException, FDResourceException;
 	
-	/** @return list of sku codes */
+	/** @return map of sku codes --&gt; oldness pairs */
+    public Map getSkusOldness() throws RemoteException, FDResourceException;
+
+    /** @return list of sku codes */
     public Collection getReintroducedSkuCodes(int days) throws RemoteException, FDResourceException;
 
 	/** @return list of sku codes */

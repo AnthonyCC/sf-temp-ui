@@ -53,11 +53,11 @@ public class VariantSelectionSessionBean extends SessionBeanSupport {
 	final static String SQL_GETVARIANTMAP = getVariantMapQuery("current_date");
 	
 	final static String SQL_GETVARIANTMAP_ON = getVariantMapQuery("?");
-
+	
 	public Map getVariantMap(EnumSiteFeature feature) throws RemoteException {
 		return getVariantMap(feature, null);
 	}
-
+	
 	/**
 	 * Returns (Cn,Vn) pairs where Cn is a Cohort and Vn is the assigned Variant ID
 	 * @param feature Name of Site Feature
@@ -255,7 +255,7 @@ public class VariantSelectionSessionBean extends SessionBeanSupport {
 			rs.close();
 			ps.close();
 		} catch (SQLException e) {
-			LOGGER.error("VariantSelectionSessionBean.getVariants failed; exc=" + e);
+			LOGGER.error("VariantSelectionSessionBean.getStartDates failed; exc=" + e);
 			try {
 				LOGGER.error("Connection URL: " + conn.getMetaData().getURL() + "/ User: " + conn.getMetaData().getUserName());
 			} catch (SQLException e1) {

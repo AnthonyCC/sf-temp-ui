@@ -3,7 +3,6 @@ package com.freshdirect.smartstore.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 import org.apache.log4j.Category;
@@ -13,6 +12,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.ProductStatisticsProvider;
+import com.freshdirect.smartstore.sampling.ImpressionSampler;
 import com.freshdirect.smartstore.sampling.RankedContent;
 
 
@@ -28,10 +28,10 @@ public class RandomDyfVariant extends DYFService {
 	
 	private static final Category LOGGER = LoggerFactory.getInstance(RandomDyfVariant.class);
 
-	public RandomDyfVariant(Variant variant) {
-		super(variant);
+	public RandomDyfVariant(Variant variant, ImpressionSampler sampler,
+    		boolean catAggr, boolean includeCartItems) {
+		super(variant, sampler, catAggr, includeCartItems);
 	}
-
 
 	/**
 	 * Randomly selects keys.
@@ -71,12 +71,5 @@ public class RandomDyfVariant extends DYFService {
 		    rankedContents.add(new RankedContent.Single(key, size-i));
 		}
 		return RankedContent.getKeys(getSampler(input).sample(rankedContents, includeCartItems ? Collections.EMPTY_SET : input.getCartContents(), toSelect));
-	}
-
-
-
-	protected void configureSampler(Random R) {
-		this.variant.getServiceConfig().set(CKEY_SAMPLING_STRATEGY, "uniform");
-		super.configureSampler(R);
 	}
 }

@@ -76,6 +76,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	private Map impressions = new HashMap();
 
 	private String sessionId = null;
+	
+	private String tabSiteFeature = null;
 	    
     public FDSessionUser(FDUser user, HttpSession session) {
         super();
@@ -675,16 +677,24 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	}
 	
 	public int getTotalCartSkuQuantity(String[] args) {
-		// TODO Auto-generated method stub
 		return user.getTotalCartSkuQuantity(args);
 	}
+
+	
+	public String getFavoriteTabFeature() {
+		return tabSiteFeature;
+	}
+	
+	public void setFavoriteTabFeature(String feature) {
+		this.tabSiteFeature = feature;
+	}
+
 	
 	public Map getPromoVariantMap() {
 		return this.user.getPromoVariantMap();
 	}
 	
 	public PromoVariantModel getPromoVariant(String variantId) {
-		// TODO Auto-generated method stub
 	   return user.getPromoVariant(variantId);
 	}
 	

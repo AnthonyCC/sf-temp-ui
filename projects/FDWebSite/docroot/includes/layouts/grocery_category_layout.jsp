@@ -157,7 +157,7 @@ if (currentCategory != null) {
 			fiDeal			= productInfo.getDealPercentage();
 		}
 %></fd:FDProductInfo><%
-		String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord);
+		String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord, recommendations.getImpressionId(productNode));
 %><%-- display a product --%>
 		<td align="center" width="105" valign="bottom">
 			<fd:ProductImage product="<%= productNode %>" action="<%= actionURI %>" />
@@ -186,7 +186,7 @@ if (currentCategory != null) {
 			fiDeal			= productInfo.getDealPercentage();
 		}
 %></fd:FDProductInfo><%
-String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord);
+String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord, recommendations.getImpressionId(productNode));
 %><%-- display a product --%>
 		<td align="center" WIDTH="105">
 			<fd:ProductRating product="<%= productNode %>"/>

@@ -15,7 +15,6 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
 <%@ page import="com.freshdirect.smartstore.SessionInput"%>
-<%@ page import="com.freshdirect.smartstore.Trigger"%>
 <%@ page import="com.freshdirect.smartstore.fdstore.FDStoreRecommender"%><fd:CheckLoginStatus />
 <%
 	if (request.getParameter("ymalSetId") == null) {
@@ -50,9 +49,10 @@
 		inp.setYmalSource(activeYmalSet);
 	}	
 	inp.setCurrentNode(productNode);
+	inp.setMaxRecommendations(6);
 
 	Recommendations recs = FDStoreRecommender.getInstance().getRecommendations(
-			new Trigger(EnumSiteFeature.YMAL, 6), user, inp, null);
+			EnumSiteFeature.YMAL, user, inp, null);
 	List relatedProducts	= recs.getProducts();
 	List relatedRecipes		= activeYmalSet.getYmalRecipes();
 	List relatedCategories	= activeYmalSet.getYmalCategories();

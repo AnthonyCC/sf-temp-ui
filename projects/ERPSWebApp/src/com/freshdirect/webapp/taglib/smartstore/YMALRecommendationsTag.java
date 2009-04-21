@@ -14,7 +14,6 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
-import com.freshdirect.smartstore.Trigger;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration;
@@ -64,7 +63,6 @@ public class YMALRecommendationsTag extends RecommendationsTag implements Sessio
 
         // get recommendations by recommender
         if (results == null) {
-			Trigger trigger = new Trigger(EnumSiteFeature.YMAL, itemCount);
 			FDStoreRecommender recommender = FDStoreRecommender.getInstance();
 			
 			HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
@@ -76,6 +74,7 @@ public class YMALRecommendationsTag extends RecommendationsTag implements Sessio
 			// setup an input
 			FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 			SessionInput inp = new SessionInput(user);
+			initFromSession(inp);
 			if (source != null) {
 				inp.setYmalSource(source);
 				if (source instanceof ProductModel)
@@ -86,8 +85,11 @@ public class YMALRecommendationsTag extends RecommendationsTag implements Sessio
 			if (inp.getCurrentNode() == null)
 				inp.setCurrentNode(YmalUtil.getSelectedCartLine(user).lookupProduct());
 
+			inp.setMaxRecommendations(itemCount);
 
-			results = recommender.getRecommendations(trigger, user, inp, overriddenVariantID);
+
+			results = recommender.getRecommendations(EnumSiteFeature.YMAL, user, inp, overriddenVariantID);
+			persistToSession(results);
         }
 
         return results;

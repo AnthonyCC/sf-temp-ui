@@ -64,11 +64,6 @@ public class PIPRowTag extends AbstractGetterTag {
 		this.blankCellVarName = varName;
 	}
 	
-	private String productImageVarName;
-	public void setProductImage(String varName) {
-		this.productImageVarName = varName;
-	}
-
 
 	protected boolean doIt() throws JspException {
 		Object result;
@@ -94,9 +89,6 @@ public class PIPRowTag extends AbstractGetterTag {
 			// retrieve product image
 			Image prodImage = productNode.getSourceProduct().getCategoryImage();
 			
-			// pass image to JSP
-			if (this.productImageVarName != null)
-				pageContext.setAttribute(this.productImageVarName, prodImage);
 		}
 
 		return result != null;
@@ -152,11 +144,6 @@ public class PIPRowTag extends AbstractGetterTag {
 				new VariableInfo(
 					data.getAttributeString("isBlankCell"),
 					"java.lang.Boolean",
-					true,
-					VariableInfo.NESTED ),
-				new VariableInfo(
-					data.getAttributeString("productImage"),
-					"com.freshdirect.fdstore.content.Image",
 					true,
 					VariableInfo.NESTED )
 			};

@@ -298,6 +298,51 @@ public class ContentFactory {
 		} else
 			return null;
 	}
+	
+	private static BalkingExpiringReference productNewnesses = null;
+	
+	private static final Object sync = new Object();
+	
+	public Map getProductNewnesses() throws FDResourceException {
+		synchronized (sync) {
+			if (productNewnesses == null) {
+				Map pn = extractProductNewnesses();
+				productNewnesses = new BalkingExpiringReference(DAY_IN_MILLIS, threadPool, pn) {
+					protected Object load() {
+						try {
+							Map pn = extractProductNewnesses();
+							return pn;
+						} catch (FDResourceException e1) {
+							LOGGER.error("", e1);
+							return null;
+						}
+					}
+				};
+			}
+		}
+		return (Map) productNewnesses.get();
+	}
+
+	private Map extractProductNewnesses() throws FDResourceException {
+		final ContentFactory cf = ContentFactory.getInstance();
+		Map so = FDCachedFactory.getSkusOldness();
+		Map pn = new HashMap(so.size());
+		Iterator it = so.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry e = (Map.Entry) it.next();
+			ProductModel key = cf.filterProduct(e.getKey().toString());
+			if (key != null) {
+				int nv = -((Integer) e.getValue()).intValue();
+				if (pn.containsKey(key)) {
+					int ov = ((Integer) pn.get(key)).intValue();
+					if (nv > ov)
+						pn.put(key, new Integer(nv));
+				} else
+					pn.put(key, new Integer(nv));
+			}
+		}
+		return pn;
+	}
 
 	private static final Map reintroducedProductsCache = Collections.synchronizedMap(new HashMap());
 	
@@ -380,6 +425,21 @@ public class ContentFactory {
 		return prods;
 	}
 
+	private ProductModel filterProduct(String skuCode) {
+		try {
+			ProductModel prod = this.getProduct(skuCode);
+
+			if (prod.isHidden() || !prod.isSearchable() || prod.isUnavailable()) {
+				return null;
+			}
+			
+			return prod;
+		} catch (FDSkuNotFoundException fdsnfe) {
+			LOGGER.info("No matching product node for sku " + skuCode);
+			return null;
+		}
+	}
+	
 	private void filterProdsByDept(List prods, String dept) {
 		if (dept == null) {
 			return;

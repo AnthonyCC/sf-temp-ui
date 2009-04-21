@@ -12,6 +12,7 @@
 <%@page import="java.util.List"%>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.Set"%>
+<%@page import="java.util.SortedMap"%>
 <%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
 <%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
@@ -32,7 +33,6 @@
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@page import="org.apache.commons.lang.StringEscapeUtils"%>
 <%@page import="org.apache.commons.lang.math.NumberUtils"%>
-<%@page import="com.freshdirect.smartstore.RecommendationServiceConfig.ConfigEntryStatus"%>
 <%@ taglib uri="freshdirect" prefix="fd"%>
 <%
 
@@ -40,13 +40,17 @@ Iterator it;
 URLGenerator urlG = new URLGenerator(request);
 String origURL = urlG.build();
 
-List siteFeatures = new ArrayList();
-for (Iterator fit=EnumSiteFeature.iterator(); fit.hasNext();) {
-	EnumSiteFeature feature = (EnumSiteFeature) fit.next();
-	if (feature.isSmartStore()) {
-		siteFeatures.add(feature);
-	}
-}
+if (urlG.get("refresh") != null) {
+	SmartStoreServiceConfiguration.getInstance().refreshAll();
+	urlG.remove("refresh");
+	urlG.set("reloaded", "1");
+	String newURL = urlG.build();
+	response.sendRedirect(StringEscapeUtils.unescapeHtml(newURL));
+	return;
+} 
+
+List siteFeatures = EnumSiteFeature.getSmartStoreEnumList();
+Collections.sort(siteFeatures);
 
 Map varMap = new HashMap();
 
@@ -54,16 +58,12 @@ VariantSelection helper = VariantSelection.getInstance();
 
 Map cohorts = helper.getCohorts();
 
-/* redirect */
-String newURL = urlG.build();
-
-if (!origURL.equals(newURL)) {
-	response.sendRedirect(StringEscapeUtils.unescapeHtml(newURL));
-	return;
-}
-
 %>
-<html>
+
+<%@page import="com.freshdirect.smartstore.ConfigurationStatus"%>
+<%@page import="com.freshdirect.smartstore.RecommendationServiceType"%>
+<%@page import="com.freshdirect.smartstore.impl.NullRecommendationService"%>
+<%@page import="com.freshdirect.smartstore.EnumConfigurationState"%><html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>VARIANT CONFIGURATIONS PAGE</title>
@@ -83,20 +83,34 @@ table.t1 td.space{border-width:0px 0px;}
 table.t1 td.in-use{border-width:0px;padding:10px 0px 4px;}
 .info{color:red}
 .no-use{color:#999 !important;border-color:#999 !important;}
-
+.faulty{border-color:red !important;}
+.erring{color:red; !important}
+.warning{color:#FF6633; !important}
+.unused{color:green; !important}
+.valid{font-weight:bold;}
+.overridden{text-decoration: underline;}
+.default{font-style: italic;}
 	</style>
 </head>
 <body>
 <%
-	if (request.getParameter("refresh")!=null) {
-    	SmartStoreServiceConfiguration.getInstance().refresh();
-    	VariantSelectorFactory.refresh();
+	if (request.getParameter("reloaded") != null) {
 %>
    	<span class="text11bold info" title="Configuration reloaded">Configuration reloaded</span>
 <% 
 	}
 %>
 	<p><a href="<%= urlG.set("refresh",1).build() %>">Click to reload configuration</a></p>
+    <div>
+    	Legend for variant configuration parameters:
+    	<ul>
+    		<li><b>Bold</b> - valid</li>
+    		<li><i>Italic</i> - using default value</li>
+    		<li><u>Underlined</u> - overridden</li>
+    		<li><span class="erring valid">Red Bold</span> - invalid</li>
+    		<li><span class="warning">Orange</span> - warning</li>
+    	</ul>
+    </div>
 
    	<%
 	it = siteFeatures.iterator();
@@ -111,7 +125,7 @@ table.t1 td.in-use{border-width:0px;padding:10px 0px 4px;}
  		Iterator it2 = sortedVars.keySet().iterator();
    		if (!it2.hasNext()) {
    	%>
-   	<p>No configuration.</p>
+   	<p class="text13">No variants.</p>
    	<%
    		} else {
    	%>
@@ -122,18 +136,14 @@ table.t1 td.in-use{border-width:0px;padding:10px 0px 4px;}
     		int newInUse;
    			while (it2.hasNext()) {
    				String varId = (String) it2.next();
-   				int weight = ((Integer) sortedVars.get(varId)).intValue();
-   				String weiStr = weight > 0 ? "" : " no-use";
    				RecommendationService service = (RecommendationService) curVars.get(varId);
     			Variant variant = service.getVariant();
-    			
-    			// validate config
-    			RecommendationServiceConfig cfg = variant.getServiceConfig();
-    			RecommendationServiceConfig.ConfigStatus cfgStatus = cfg.validate(variant);
-    			List configKeys = cfg.getConfigKeys(variant);
-    			
-    			// retrieve live (actual) configuration keys
-				Map liveConfig = service.getConfiguration();
+   				int weight = ((Integer) sortedVars.get(varId)).intValue();
+   				boolean faulty = (!variant.getServiceConfig().getType().equals(RecommendationServiceType.NIL)
+   						&& !variant.getServiceConfig().getType().equals(RecommendationServiceType.TAB_STRATEGY)) &&
+   						service instanceof NullRecommendationService;
+   				String weiStr = faulty ? " faulty" : (weight > 0 ? "" : " no-use");
+				SortedMap statuses = service.getVariant().getServiceConfig().getConfigStatus();
 
 				newInUse = weight > 0 ? 1 : 0;
 				if (notFirst) {
@@ -166,7 +176,7 @@ table.t1 td.in-use{border-width:0px;padding:10px 0px 4px;}
     	%>
     	<tr>
     	<td class="text13bold var<%= weiStr %>" colspan="2" title="Variant">
-    		<%= varId %>
+    		<span class="<%= faulty ? "erring" : "" %>"><%= varId %><%= faulty ? " - Misconfigured and Not in Operation" : "" %></span>
     	</td>
     	</tr>
     	<tr>
@@ -182,69 +192,36 @@ table.t1 td.in-use{border-width:0px;padding:10px 0px 4px;}
     	<td class="text13<%= weiStr %>" title="Parameter Value"><%= service.getDescription() %></td>
     	</tr>
     	<%
-				for (Iterator keyIt = configKeys.iterator(); keyIt.hasNext(); ) {
+				for (Iterator keyIt = statuses.keySet().iterator(); keyIt.hasNext(); ) {
 					String configKey = (String) keyIt.next();
-					RecommendationServiceConfig.ConfigEntryStatus ces = cfgStatus.get(configKey);
-					RecommendationServiceConfig.ConfigEntryInfo info = ces.getInfo();
-
-					// active value (may be null if variant does not have such a parameter
-					Object activeValue = liveConfig.get(configKey);
-					// configured value
-					String configValue = cfg.get(ces.getKeyName());
-					boolean sameValue = false;
-					
-					// Let's check whether they are same
-					if (activeValue != null && configValue != null) {
-						if (activeValue instanceof String) {
-							sameValue = ( ((String)activeValue).equalsIgnoreCase(configValue) );
-						} else if (activeValue instanceof Integer) {
-							sameValue = ( ((Integer)activeValue).equals( Integer.valueOf(configValue) ) );
-						} else if (activeValue instanceof Float) {
-							sameValue = ( ((Float)activeValue).equals( Float.valueOf(configValue) ) );
-						} else if (activeValue instanceof Double) {
-							sameValue = ( ((Double)activeValue).equals( Double.valueOf(configValue) ) );
-						} else {
-							// if no active value regard it 'same'
-							sameValue = activeValue == null || (activeValue != null && activeValue.toString().equalsIgnoreCase(configValue));
-						}
-					} else {
-					    // handle null - null case ... somehow ...
-					    sameValue = (activeValue == configValue); 
-					}
-					
+					ConfigurationStatus status = (ConfigurationStatus) statuses.get(configKey);
+					String description = SmartStoreServiceConfiguration.configDesc.containsKey(configKey) ?
+							(String) SmartStoreServiceConfiguration.configDesc.get(configKey) : "&lt;Unknown description&gt;";
+					String warning = status.getWarning();
+					String error = status.getError();
+					String textClass = "";
+					if (status.isValid())
+						textClass += "valid";
+					else
+						textClass += "erring valid";
+					if (warning != null)
+						textClass += " warning";
+					if (status.isDefault())
+						textClass += " default";
+					if (status.isOverridden())
+						textClass += " overridden";
 		%>
     	<tr>
-		<%		
-					if (ces.isValid()) {
-						// key exists and has value
-		%>
-			<td class="text13 left<%= weiStr %>" style="font-weight: bold;" title="<%= ces.getKeyDesc() %>"><%= ces.getKeyName() %></td>
-	    	<td class="text13<%= weiStr %>" title="Parameter Value"><%
-	    				if (sameValue) {
-	    					%><%= activeValue %><%
-	    				} else {
-	    					// the two values differ
-%>				<div>ACTUAL: <%= activeValue %></div>
-				<div>Configured: <%= configValue %></div>
-	    					<%
-	   					}
-%>			</td>
-		<%
-					} else if (ces.isUnconfigured()) {
-						// key does not exists - default value used instead
-						
-		%>
-	    	<td class="text13 left<%= weiStr %>" style="font-style: italic;" title="<%= ces.getKeyDesc() %>"><%= ces.getKeyName() %></td>
-	    	<td class="text13<%= weiStr %>" style="font-style: italic;" title="Parameter Value"><%= activeValue != null ? activeValue.toString() : "<b>(null)</b>" %></td>
-		<%
-					} else if (ces.isInvalid()) {
-						// not used key - maybe it's mispelled
-		%>
-	    	<td class="text13 left<%= weiStr %>" style="color: red;" title="<%= ces.getKeyDesc() %>"><%= ces.getKeyName() %></td>
-	    	<td class="text13<%= weiStr %>" style="color: red;" title="Parameter Value"><%= info == null ? "(no default value)" : info.getDefaultValue() %></td>
-		<%
-					}
-		%>
+			<td class="text13 left<%= weiStr %>" title="<%= description %>">
+				<span class="<%= textClass %>"><%= configKey %></span>
+			</td>
+	    	<td class="text13<%= weiStr %>" title="Parameter Value"><span class="<%= textClass %>"><%= status.getAppliedValue() +
+	    			(!status.isValueSame() ? " (loaded: " + status.getLoadedValue() + ")" : "") %></span><%
+	    					
+	    			if (error != null || warning != null) { 
+	    	%><span class="valid <%= error != null ? "erring" : "warning" %>"> - <%= error != null ? error : warning %></span><%
+	    			} 
+	    	%></td>
 		</tr>
 		<%
 				}
@@ -256,15 +233,19 @@ table.t1 td.in-use{border-width:0px;padding:10px 0px 4px;}
     	}
    	}
 	%>
+	<% if (siteFeatures.size() > 0) { %>
     <p>Hover over the items in the table to view their meanings.</p>
     <div>
     	Legend for variant configuration parameters:
     	<ul>
-    		<li><b>Bold</b> - defined and valid</li>
-    		<li><i>Italic</i> - undefined and using default value</li>
-    		<li><span style="color: red">Red</span> - defined and invalid</li>
+    		<li><b>Bold</b> - valid</li>
+    		<li><i>Italic</i> - using default value</li>
+    		<li><u>Underlined</u> - overridden</li>
+    		<li><span class="erring valid">Red Bold</span> - invalid</li>
+    		<li><span class="warning">Orange</span> - warning</li>
     	</ul>
     </div>
 	<p><a href="<%= urlG.set("refresh",1).build() %>">Click to reload configuration</a></p>
+    <% } %>
 </body>
 </html>

@@ -6,7 +6,7 @@ public class CategoryAggregationTest extends SamplingTestsBase {
 
 	
 	public void testNoAggregationMarkers() {
-		MockRecommendationService service = new MockRecommendationService("semmi");
+		MockRecommendationService service = new MockRecommendationService("deterministic");
 		List items = service.getCandidates(false);
 		
 		assertTrue(items.size() == 8);
@@ -31,7 +31,7 @@ public class CategoryAggregationTest extends SamplingTestsBase {
 	}
 	
 	public void testFirtCategoryLevelAggregationMarkers() {
-		MockRecommendationService service = new MockRecommendationService("semmi");
+		MockRecommendationService service = new MockRecommendationService("deterministic");
 		
 		service.setCategoryMarker(SARGA_GYUMOLCS);
 		service.setCategoryMarker(PIROS_GYUMOLCS);
@@ -57,7 +57,7 @@ public class CategoryAggregationTest extends SamplingTestsBase {
 	}
 	
 	public void testTopCategoryLevelAggregationMarkers() {
-		MockRecommendationService service = new MockRecommendationService("semmi");
+		MockRecommendationService service = new MockRecommendationService("deterministic");
 		
 		service.setCategoryMarker(GYUMOLCS);
 		

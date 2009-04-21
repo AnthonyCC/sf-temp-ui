@@ -10,8 +10,8 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.smartstore.SessionInput;
-import com.freshdirect.smartstore.Trigger;
 import com.freshdirect.smartstore.Variant;
+import com.freshdirect.smartstore.sampling.ImpressionSampler;
 
 public abstract class BaseContentKeyRecommendationService extends AbstractRecommendationService {
     /**
@@ -27,11 +27,12 @@ public abstract class BaseContentKeyRecommendationService extends AbstractRecomm
      */
     abstract public List recommend(SessionInput input);
 
-    public BaseContentKeyRecommendationService(Variant variant) {
-        super(variant);
+    public BaseContentKeyRecommendationService(Variant variant, ImpressionSampler sampler,
+    		boolean catAggr, boolean includeCartItems) {
+        super(variant, sampler, catAggr, includeCartItems);
     }
 
-    public List recommendNodes(Trigger trigger, SessionInput input) {
+    public List recommendNodes(SessionInput input) {
         List contentKeys = recommend(input);
         // remove duplicates and turn content keys into content nodes
         Set seen = new HashSet();

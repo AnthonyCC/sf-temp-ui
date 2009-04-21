@@ -8,7 +8,6 @@
 %><%@ page import="com.freshdirect.webapp.util.FDEventUtil"
 %><%@ page import="com.freshdirect.smartstore.fdstore.Recommendations"
 %><%@ page import="com.freshdirect.smartstore.fdstore.FDStoreRecommender"
-%><%@ page import="com.freshdirect.smartstore.Trigger"
 %><%@ page import="com.freshdirect.fdstore.util.EnumSiteFeature"
 %><%@ page import="com.freshdirect.webapp.util.ConfigurationStrategy"
 %><%@ page import="com.freshdirect.webapp.util.ConfigurationContext"
@@ -205,14 +204,15 @@ if (request.getParameter("nodyf") == null) {
 	int rank=1;
 %>
 	<tr>
-	<fd:PIPRow id="pi" impressionRow="<%= piRow %>" isBlankCell="isBlankCell" productImage="prodImage" shouldRenderBlankCells="<%= false %>">
+	<fd:PIPRow id="pi" impressionRow="<%= piRow %>" isBlankCell="isBlankCell" shouldRenderBlankCells="<%= false %>">
 <%
 		// product cell
 		//
 		ProductModel product = pi.getProductModel();
 		ProductLabelling pl = new ProductLabelling(user, product);
 		pl.setHideYourFave(true);
-		String actionURI = FDURLUtil.getProductURI(product, recommendations.getVariant().getId(), recommendations.getVariant().getSiteFeature().getName().toLowerCase(), pl.getTrackingCode(), rank);
+		String actionURI = FDURLUtil.getProductURI(product, recommendations.getVariant().getId(), 
+		        recommendations.getVariant().getSiteFeature().getName().toLowerCase(), pl.getTrackingCode(), rank,  recommendations.getImpressionId(product));
 
 		// cell renderning starts here		
 %>

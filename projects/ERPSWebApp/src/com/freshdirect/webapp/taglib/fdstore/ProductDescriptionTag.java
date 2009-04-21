@@ -7,6 +7,7 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
+import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.webapp.BodyTagSupport;
@@ -54,11 +55,14 @@ public class ProductDescriptionTag extends BodyTagSupport {
 		}
 
 		// Display "SAVE!" ... label
-        String[] ymalScales = impression.getFDProduct().getPricing().getScaleDisplay();
-        if (ymalScales.length>0) {
-        	buf.append("<div style=\"color: #FF9933; font-weight: bold;\">Save!</div>\n");
-            for (int ymalSci = 0; ymalSci < ymalScales.length; ymalSci++) {
-    			buf.append("<div style=\"font-weight: bold;\">" + ymalScales[ymalSci] + "</div>\n");
+        FDProduct product = impression.getFDProduct();
+        if (product!=null) {
+            String[] ymalScales = product.getPricing().getScaleDisplay();
+            if (ymalScales.length>0) {
+            	buf.append("<div style=\"color: #FF9933; font-weight: bold;\">Save!</div>\n");
+                for (int ymalSci = 0; ymalSci < ymalScales.length; ymalSci++) {
+        			buf.append("<div style=\"font-weight: bold;\">" + ymalScales[ymalSci] + "</div>\n");
+                }
             }
         }
 

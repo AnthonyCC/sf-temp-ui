@@ -62,7 +62,7 @@ public class FDUrlUtilTest extends TestCase {
 		String productId = "gro_stroe_hnywhite";
 		String categoryId = "gro_baker_white";
 		String deptId = "bak";
-		
+		String impId = "123566";
 		String trackingCode = "ymal";
 		String trackingCodeEx = "deal";
 		String variantId = "std-ymal";
@@ -101,6 +101,7 @@ public class FDUrlUtilTest extends TestCase {
 		String u4  = FDURLUtil.getProductURI( product, variantId, trackingCode, trackingCodeEx, rank );
 		String u5  = FDURLUtil.getProductURI( product, variant );
 		String u6  = FDURLUtil.getProductURI( product, variant, trackingCodeEx, rank );
+                String u9  = FDURLUtil.getProductURI( product, variant.getId(), trackingCode, trackingCodeEx, rank, impId );
 		
 		String u7  = FDURLUtil.getCategoryURI(categoryId, trackingCode);
 		String u8  = FDURLUtil.getDepartmentURI(deptId, trackingCode);
@@ -129,6 +130,7 @@ public class FDUrlUtilTest extends TestCase {
 		assertEquals("url generating error", u7,  "/category.jsp?catId="+categoryId+SEP+"trk="+trackingCode );	
 		assertEquals("url generating error", u8,  "/department.jsp?deptId="+deptId+SEP+	"trk="+trackingCode );	
 		
+                assertEquals("url generating error", u9,  "/product.jsp?catId="+categoryId+SEP+ "productId="+productId+SEP+     "variant="+variantId+SEP+       "trk="+trackingCode+SEP+        "trkd="+trackingCodeEx+SEP+     "rank="+rank+SEP  + "impId="+impId );         
 		
 	}
 	

@@ -11,7 +11,6 @@ import java.util.Random;
 import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
-import com.freshdirect.smartstore.impl.IConfigurable;
 
 /**
  * Sampler for lists of ranked content.
@@ -27,7 +26,7 @@ public class ContentSampler {
 	 * @author istvan
 	 *
 	 */
-	public interface ConsiderationLimit extends IConfigurable {
+	public interface ConsiderationLimit {
 	
 		/**
 		 * 

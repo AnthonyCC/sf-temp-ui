@@ -167,8 +167,8 @@ public class CohortSelector {
         return ((CohortAssignment) cdf.get(p));
     }
 
-    public String getCohortName(String erpUserId) {
-        CohortAssignment cohortAssignment = getCohortAssignment(erpUserId);
+    public String getCohortName(String primaryId) {
+        CohortAssignment cohortAssignment = getCohortAssignment(primaryId);
         if (cohortAssignment != null) {
             return cohortAssignment.getCohort();
        

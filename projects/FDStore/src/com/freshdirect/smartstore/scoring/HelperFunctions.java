@@ -16,7 +16,7 @@ import com.freshdirect.fdstore.content.FavoriteList;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.smartstore.SessionInput;
-import com.freshdirect.smartstore.impl.AbstractRecommendationService;
+import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
 
 /**
  * This class contains functions which used by the generated code.
@@ -169,7 +169,7 @@ public class HelperFunctions {
      */
     private static void collect(ContentNodeModel model, Collection result) {
         if (model instanceof ProductModel) {
-            result.add(AbstractRecommendationService.addConfiguredProductToCache((ProductModel) model));
+            result.add(SmartStoreUtil.addConfiguredProductToCache((ProductModel) model));
         } else if (model instanceof CategoryModel) {
             CategoryModel cat = (CategoryModel) model;
             for (Iterator iter = cat.getProducts().iterator(); iter.hasNext();) {
@@ -291,7 +291,7 @@ public class HelperFunctions {
             return;
         }
         if (model instanceof ProductModel) {
-            result.add(AbstractRecommendationService.addConfiguredProductToCache((ProductModel) model));
+            result.add(SmartStoreUtil.addConfiguredProductToCache((ProductModel) model));
         } else if (model instanceof CategoryModel) {
             CategoryModel cat = (CategoryModel) model;
             for (Iterator iter = cat.getProducts().iterator(); iter.hasNext();) {

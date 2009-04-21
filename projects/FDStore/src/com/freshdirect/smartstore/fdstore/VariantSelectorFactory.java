@@ -25,11 +25,11 @@ public class VariantSelectorFactory {
 
     /**
      * Returns the cohort name (eg. 'C1', ...) for a given user ID
-     * @param erpUserId
+     * @param primaryId
      * @return
      */
-    public static String getCohortName(String erpUserId) {
-        return CohortSelector.getInstance().getCohortName(erpUserId);
+    public static String getCohortName(String primaryId) {
+        return CohortSelector.getInstance().getCohortName(primaryId);
     }
 
     /**

@@ -7,7 +7,6 @@ import java.util.Map;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
-import com.freshdirect.smartstore.Trigger;
 import com.freshdirect.smartstore.Variant;
 
 /**
@@ -28,7 +27,7 @@ public class NullRecommendationService implements RecommendationService {
 		this.variant = variant;
 	}
 
-	public List recommendNodes(Trigger trigger, SessionInput input) {
+	public List recommendNodes(SessionInput input) {
 		return Collections.EMPTY_LIST;
 	}
 

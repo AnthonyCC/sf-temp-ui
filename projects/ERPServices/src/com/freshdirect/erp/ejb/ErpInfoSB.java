@@ -67,6 +67,9 @@ public interface ErpInfoSB extends EJBObject {
     /** @return collection of sku codes */
     public Collection findNewSkuCodes(int days) throws RemoteException;
     
+    /** @return map of sku -&gt; days, where days is the oldness */
+    public Map getSkusOldness() throws RemoteException;
+    
 	/** @return collection of sku codes */
     public Collection findReintroducedSkuCodes(int days) throws RemoteException;
 

@@ -10,6 +10,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
+import com.freshdirect.smartstore.sampling.ImpressionSampler;
 import com.freshdirect.smartstore.sampling.RankedContent;
 
 /**
@@ -24,8 +25,9 @@ import com.freshdirect.smartstore.sampling.RankedContent;
 public class MostFrequentlyBoughtDyfVariant extends DYFService {
 	private static final Category LOGGER = LoggerFactory.getInstance(MostFrequentlyBoughtDyfVariant.class);
 	
-	public MostFrequentlyBoughtDyfVariant(Variant variant) {
-		super(variant);
+	public MostFrequentlyBoughtDyfVariant(Variant variant, ImpressionSampler sampler,
+    		boolean catAggr, boolean includeCartItems) {
+		super(variant, sampler, catAggr, includeCartItems);
 	}
 
 	/**

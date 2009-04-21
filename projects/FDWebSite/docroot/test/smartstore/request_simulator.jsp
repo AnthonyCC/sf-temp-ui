@@ -3,6 +3,7 @@
 
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@page import="java.text.DecimalFormat"%>
+<%@page import="java.text.NumberFormat"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Arrays"%>
 <%@page import="java.util.Collections"%>
@@ -21,30 +22,32 @@
 <%@page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@page import="com.freshdirect.fdstore.customer.FDCustomerManager"%>
 <%@page import="com.freshdirect.fdstore.customer.FDIdentity"%>
-<%@page import="com.freshdirect.fdstore.customer.FDUser"%>
+<%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
 <%@page import="com.freshdirect.fdstore.util.EnumSiteFeature"%>
 <%@page import="com.freshdirect.fdstore.util.URLGenerator"%>
 <%@page import="com.freshdirect.mail.EmailUtil"%>
 <%@page import="com.freshdirect.smartstore.RecommendationService"%>
 <%@page import="com.freshdirect.smartstore.SessionInput"%>
-<%@page import="com.freshdirect.smartstore.Trigger"%>
 <%@page import="com.freshdirect.smartstore.fdstore.CohortSelector"%>
+<%@page import="com.freshdirect.smartstore.fdstore.FDStoreRecommender"%>
 <%@page import="com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration"%>
 <%@page import="com.freshdirect.smartstore.fdstore.SmartStoreUtil"%>
 <%@page import="com.freshdirect.smartstore.fdstore.VariantSelection"%>
+<%@page import="com.freshdirect.smartstore.fdstore.VariantSelectorFactory"%>
+<%@page import="com.freshdirect.smartstore.ymal.YmalUtil"%>
 <%@page import="com.freshdirect.test.TestSupport"%>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@page import="org.apache.commons.lang.StringEscapeUtils"%>
 <%@page import="org.apache.commons.lang.math.NumberUtils"%>
 <%@ taglib uri="freshdirect" prefix="fd"%>
 <%
-Iterator it;
 URLGenerator urlG = new URLGenerator(request);
 String origURL = urlG.build();
 
 /* site feature */
 EnumSiteFeature defaultSiteFeature = EnumSiteFeature.DYF;
 List siteFeatures = EnumSiteFeature.getSmartStoreEnumList();
+Collections.sort(siteFeatures);
 
 EnumSiteFeature siteFeature = EnumSiteFeature.getEnum(urlG.get("siteFeature")); 
 if (siteFeature == null) {
@@ -52,8 +55,6 @@ if (siteFeature == null) {
 } else if (defaultSiteFeature.equals(siteFeature)) {
 	urlG.remove("siteFeature");
 }
-
-Trigger trigger = new Trigger(siteFeature, EnumSiteFeature.YMAL.equals(siteFeature) ? 6 : 5);
 
 Map variants = SmartStoreServiceConfiguration.getInstance().getServices(siteFeature);
 VariantSelection helper = VariantSelection.getInstance();
@@ -65,7 +66,7 @@ List varIds = SmartStoreUtil.getVariantNamesSortedInUse(siteFeature);
 String defaultVariant = null;
 
 
-it = varIds.iterator();
+Iterator it = varIds.iterator();
 if (it.hasNext()) {
 	defaultVariant = (String) it.next();
 } else {
@@ -83,6 +84,21 @@ if (variant != null && variant.equals(defaultVariant)) {
 	urlG.set("variant", variant);
 }
 
+/* customer Use Logged In */
+boolean useLoggedIn = false;
+
+String useLoggedInStr = urlG.get("useLoggedIn");
+if ("true".equalsIgnoreCase(useLoggedInStr)) {
+	useLoggedIn = true;
+}
+if (useLoggedIn) {
+	urlG.set("useLoggedIn", "true");
+} else {
+	urlG.remove("useLoggedIn");
+}
+
+FDUserI loggedUser = (FDUserI) session.getAttribute("fd.user");
+
 /* customer Email */
 String defaultCustomerEmail = "";
 
@@ -90,56 +106,74 @@ String customerEmail = urlG.get("customerEmail");
 if (customerEmail == null || customerEmail.length() == 0 || !EmailUtil.isValidEmailAddress(customerEmail)) {
 	customerEmail = defaultCustomerEmail;
 }
-if (defaultCustomerEmail.equals(customerEmail)) {
+if (defaultCustomerEmail.equals(customerEmail) || useLoggedIn) {
 	urlG.remove("customerEmail");
 } else {
 	urlG.set("customerEmail", customerEmail);
 }
 
 /* customer Id */
-String customerId = null;
-TestSupport ts = TestSupport.getInstance();
-customerId = ts.getErpIDForUserID(customerEmail);
-
-
 /* cohort */
-String defaultCohortId = "&lt;unknown&gt;";
+String customerId = null;
+String primaryKey = null;
+String defaultCohortId = "<span class=\"not-found\">&lt;unknown&gt;</span>";
 String cohortId = defaultCohortId;
-String defaultUserVariant = "&lt;unknown&gt;";
-String userVariant = defaultUserVariant;
-if (customerId != null) {
-	FDUser user = FDCustomerManager.getFDUser(new FDIdentity(customerId));
-	cohortId = CohortSelector.getInstance().getCohortName(user.getPrimaryKey());
-	RecommendationService userRs = SmartStoreUtil.getRecommendationService(user, 
-			siteFeature, null);
-	userVariant = userRs.getVariant().getId();
-}
+String defaultuserStrategy = "<span class=\"not-found\">&lt;unknown&gt;</span>";
+String userStrategy = defaultuserStrategy;
+String userServiceType = defaultuserStrategy;
+SessionInput input = null;
+FDUserI user = null;
 
-/* category Id */
-String defaultCategoryId = "";
-
-String categoryId = urlG.get("categoryId");
-if (categoryId == null || categoryId.length() == 0) {
-	categoryId = defaultCategoryId;
-}
-if (defaultCategoryId.equals(categoryId)) {
-	urlG.remove("categoryId");
+TestSupport ts = TestSupport.getInstance();
+if (useLoggedIn) {
+	if (loggedUser != null) {
+		user = loggedUser;
+		if (user != null && user.getIdentity() != null)
+			customerId = user.getIdentity().getErpCustomerPK();
+	}
 } else {
-	urlG.set("categoryId", categoryId);
-}
-
-/* category */
-ContentNodeModel category = defaultCategoryId.equals(categoryId) ? null : ContentFactory.getInstance().getContentNode(categoryId);
-if (category != null) {
-	if (!(category instanceof CategoryModel)) {
-		category = null;
+	customerId = ts.getErpIDForUserID(customerEmail);
+	try {
+		user = FDCustomerManager.getFDUser(new FDIdentity(customerId));
+	} catch (Exception e) {
+		
 	}
 }
+if (user != null) {
+	primaryKey = user.getPrimaryKey();
+	if (user.getUserServiceType() != null)
+		userServiceType = user.getUserServiceType().getName();
+	cohortId = CohortSelector.getInstance().getCohortName(user.getPrimaryKey());
+	userStrategy = VariantSelectorFactory.getInstance(EnumSiteFeature.CART_N_TABS).getService(cohortId).getVariant().getId();
+}
+input = new SessionInput(user);
+input.setMaxRecommendations(EnumSiteFeature.YMAL.equals(siteFeature) ? 6 : 5);
 
-/* category name */
-String categoryName = null;
-if (category != null) {
-	categoryName = category.getFullName();
+String userVariant = null;
+if (assignment.containsKey(cohortId)) {
+	userVariant = (String) assignment.get(cohortId);
+}
+
+String trigError = "";
+ProductModel source = null;
+if (useLoggedIn) {
+	if (user != null) {
+		List products = FDStoreRecommender.getShoppingCartProductList(user);
+		if (products != null && products.size() != 0)
+			source = (ProductModel) YmalUtil.resolveYmalSource(products);
+		input.setCartContents(FDStoreRecommender.getShoppingCartContents(user));
+	}
+} else {
+	String triggeringProduct = urlG.get("triggeringProduct");
+	if (triggeringProduct != null && triggeringProduct.trim().length() != 0) {
+		ContentNodeModel node = ContentFactory.getInstance().getContentNode(triggeringProduct.trim());
+		if (node != null && node instanceof ProductModel)
+			source = (ProductModel) node; 
+	}
+}
+if (input != null && source != null) {
+	input.setYmalSource(source);
+	input.setCurrentNode(source);
 }
 
 /* No of Cycles */
@@ -165,27 +199,8 @@ if (i_noOfCycles <= 0) {
 	i_noOfCycles = 5;
 }
 
-/* session input */
-SessionInput si = new SessionInput(customerId);
-si.setCartContents(Collections.EMPTY_SET);
-si.setCurrentNode(category);
-si.setNoShuffle(false);
-
 /* redirect */
 String newURL = urlG.build();
-
-// debug
-System.err.println("orig URI: " + origURL);
-System.err.println("generated URI: " + newURL);
-System.err.println("site feature: " + siteFeature.getName());
-System.err.println("variant: " + variant);
-System.err.println("customer Email: " + customerEmail);
-System.err.println("customer Id: " + customerId);
-System.err.println("cohort Id: " + cohortId);
-System.err.println("user variant: " + userVariant);
-System.err.println("category Id: " + categoryId);
-System.err.println("category name: " + categoryName);
-System.err.println("# of cycles to simulate: " + noOfCycles);
 
 if (!origURL.equals(newURL)) {
 	response.sendRedirect(StringEscapeUtils.unescapeHtml(newURL));	
@@ -207,7 +222,7 @@ if (!origURL.equals(newURL)) {
 .test-page .bull{color:#cccccc;}
 .test-page a{color:#336600;}.test-page a:VISITED{color:#336600;}
 .test-page table{border-collapse:collapse;border-spacing:0px;width:100%;}
-.test-page .rec-chooser{margin:0px 0px 6px;text-align:right;}
+.test-page .rec-chooser{margin:0px 0px 6px;text-align:left;}
 .test-page .rec-options{border:1px solid black;font-weight:bold;}
 .test-page .rec-options .view-label{text-transform:capitalize;}
 .test-page .rec-options table td{vertical-align: top; padding: 5px 10px 10px;}
@@ -240,54 +255,104 @@ if (!origURL.equals(newURL)) {
 </head>
 <body class="test-page">
 	<form method="get" action="<%= request.getRequestURI() %>">
+    <div class="rec-chooser title14">
+    		<%  if (loggedUser != null) {
+    				if (loggedUser.getIdentity() != null) {
+    		%>
+    		Logged in as <%= loggedUser.getUserId() %>.
+    		<%      } else { %>
+    		Not logged in. You are in area  <%= loggedUser.getZipCode() %>.
+    		<% 		}
+    			} else { %>
+    		Not logged in.
+    		<% 	} %>
+    </div>
     <div class="rec-options" class="rec-chooser title14">
     	<table style="width: auto;">
     		<tr>
-    			<td class="text12">
+   				<td class="text12">
     				<p class="label">
     					Customer email
     				</p>
     				<p>
-    					<input type="text" name="customerEmail" value="<%= customerEmail %>"
-    							onfocus="this.select();"
-    							onkeypress="if ((event.which || event.keyCode) == 13) this.form.submit();"
-    							title="Press &lt;Enter&gt; to activate the entered customer">
+    					<input type="text" name="customerEmail" id="customerEmail" value="<%= customerEmail %>"
+    							onfocus="this.select();"<%= useLoggedIn ? " disabled=\"disabled\"" : "" %>>
+    				</p>
+    				<p class="label">
+    					or use logged in: <input type="checkbox" name="useLoggedIn" id="useLoggedIn"
+    						onchange="document.getElementById('customerEmail').disabled = this.checked;
+    						document.getElementById('triggeringProduct').disabled = this.checked;
+    						document.getElementById('useLoggedCart').checked = this.checked;"
+    						value="true"<%= useLoggedIn ? " checked" : ""%>>
     				</p>
     				<% if (customerId != null) { %>
     				<p class="result">
     					Customer ID: <%= customerId %>
     				</p>
+    				<% } else { %>
+    				<p class="result">
+    					Customer ID: <span class="not-found">&lt;not found&gt;</span>
+    				</p>
+    				<% } %>
     				<p class="result">
     					Cohort ID: <%= cohortId %>
     				</p>
     				<p class="result">
-    					User Variant: <%= userVariant %>
+    					Cart Strategy: <%= userStrategy %>
     				</p>
-    				<% } else { %>
-    				<p class="not-found result">
-    					&lt;not found&gt;
-    				</p>
-    				<% } %>
-				</td>
-				<td class="text12">
-    				<p class="label">
-    					Category id
-    				</p>
-    				<p>
-    					<input type="text" name="categoryId" value="<%= categoryId %>"
-    							onfocus="this.select();"
-    							onkeypress="if ((event.which || event.keyCode) == 13) this.form.submit();"
-    							title="Press &lt;Enter&gt; to activate the entered category">
-    				</p>
-    				<% if (categoryName != null) { %>
     				<p class="result">
-    					Category name: <%= categoryName %>
+    					Customer Service Type: <%= userServiceType %>
     				</p>
-    				<% } else { %>
-    				<p class="not-found result">
-    					&lt;not found&gt;
-    				</p>
-    				<% } %>
+   				</td>
+				<td class="text12">
+	   				<p class="label">Triggering product:</p>
+					<p>
+						<input type="text" name="triggeringProduct" id="triggeringProduct"
+							value="<%= source != null ? source.getContentKey().getId() : "" %>"<%= useLoggedIn ? " disabled=\"disabled\"" : "" %>>
+					</p>
+	   				<p class="label">
+	   					or use logged user's cart: <input type="checkbox" name="useLoggedIn" id="useLoggedCart"
+	   						onchange="document.getElementById('triggeringProduct').disabled = this.checked;
+	   						document.getElementById('customerEmail').disabled = this.checked;
+	   						document.getElementById('useLoggedIn').checked = this.checked;"
+	   						value="true"<%= useLoggedIn ? " checked" : ""%>>
+	   				</p>
+	   				<% if (useLoggedIn && user != null) { %>
+	   					<% List cartItems = FDStoreRecommender.getShoppingCartProductList(user);
+	   					   if (cartItems == null)
+	   						   cartItems = Collections.EMPTY_LIST; 
+						   it = cartItems.iterator(); %>
+	   					<% if (!it.hasNext()) {	%>
+	   				<p class="result not-found">
+	   						No recent items in cart.
+	   				</p>
+	   					<% } else { %>
+	   				<p class="result">
+	   						Items in cart:
+	   				</p>
+	   					<% } %>
+	   					<% while (it.hasNext()) {
+	   						ProductModel product = (ProductModel) it.next();
+	   					%>
+	   				<p style="font-weight: normal;" title="<%= product.getFullName() %>"
+	   						><%= product.getContentKey().getId() %></p>
+	   					<% } %>
+	   				<% } %>
+	   				<p class="result">
+	   					Triggering item: <% 
+	   						if (source != null) { 
+	   						%><span style="font-weight: normal;" title="<%= source.getFullName() + " (" +
+	   								source.getContentKey().getType().getName() + ")" %>"><%= source.getContentKey().getId() %></span><% 
+	   						} else { 
+	   						%><span class="not-found">&lt;unidentified&gt;</span><% 
+	   						} %>
+	   				</p>
+	   				<%
+	   				   if (trigError.length() != 0) { %>
+	   				<p class="not-found result">
+	   					<%= trigError %>
+	   				</p>
+	   				<% } %>
 				</td>
 				<td class="text12">
 					<p class="label">
@@ -375,17 +440,25 @@ if (!origURL.equals(newURL)) {
     				</p>
     			</td>
     		</tr>
+    		<tr>
+    			<td colspan="5">
+    				<p>
+    					<input type="submit" value="Submit">
+    				</p>
+    			</td>
+    		</tr>
     	</table>
     </div>
     <%
     final Map clone = new HashMap();
+	long start = System.currentTimeMillis();
 	if (variant != null) {
 		RecommendationService rs = (RecommendationService) variants.get(variant);
 		for (int i = 0; i < i_noOfCycles; i++ ) {
 			try {
-				List recs = rs.recommendNodes(trigger, si);
-				if (recs.size() > trigger.getMaxRecommendations())
-					recs = recs.subList(0, trigger.getMaxRecommendations());
+				List recs = rs.recommendNodes(input);
+				if (recs.size() > input.getMaxRecommendations())
+					recs = recs.subList(0, input.getMaxRecommendations());
 				Iterator it2 = recs.iterator();
 				while (it2.hasNext()) {
 					ProductModel pm = (ProductModel) it2.next();
@@ -397,7 +470,8 @@ if (!origURL.equals(newURL)) {
 			}
 		}
 	}
-	System.err.println("clone size: " + clone.size());
+	double time = variant != null ? System.currentTimeMillis() - start : Double.NaN;
+	double perReq = i_noOfCycles > 0 ? time / (double) i_noOfCycles : Double.NaN;
     Map products = new TreeMap(new Comparator() {
     	public int compare(Object o1, Object o2) {
 			if (o1 == null) {
@@ -413,8 +487,6 @@ if (!origURL.equals(newURL)) {
 					ProductModel pm2 = (ProductModel) o2;
 					int i1 = ((Integer) clone.get(pm1)).intValue();
 					int i2 = ((Integer) clone.get(pm2)).intValue();
-					System.err.println("pm1: " + pm1.getContentName() + ", " + i1);
-					System.err.println("pm2: " + pm2.getContentName() + ", " + i2);
 					if (i2 == i1) {
 						int c = pm1.getFullName().compareToIgnoreCase(pm2.getFullName());
 						if (c == 0)
@@ -428,7 +500,7 @@ if (!origURL.equals(newURL)) {
     	}
     });
     products.putAll(clone);
-	System.err.println("products size: " + products.size());
+	NumberFormat format = NumberFormat.getInstance();
     %>
 	<table class="var-comparator">
 		<tr>
@@ -460,6 +532,24 @@ if (!origURL.equals(newURL)) {
 							<span class="text13" title="No. of requests"><%= noOfCycles %> requests</span>
 						</td>
 						<td class="info"></td><td class="value"></td><td class="value"></td>
+					</tr> 
+					<tr>
+						<td class="info">
+							<span class="text13" title="Total execution time">Total execution time</span>
+						</td>
+						<td class="value">
+							<span class="text13" title="Total execution time"><%= format.format((double) time) %> ms</span>
+						</td>
+						<td class="value"></td><td class="value"></td>
+					</tr> 
+					<tr>
+						<td class="info">
+							<span class="text13" title="Average execution time">Avg. exec. time per request</span>
+						</td>
+						<td class="value">
+							<span class="text13" title="Average execution time"><%= format.format((double) perReq) %> ms</span>
+						</td>
+						<td class="value"></td><td class="value"></td>
 					</tr> 
 					<tr>
 						<td class="info">

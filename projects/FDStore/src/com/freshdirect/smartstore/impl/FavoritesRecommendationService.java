@@ -6,17 +6,15 @@ package com.freshdirect.smartstore.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.FavoriteList;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.smartstore.SessionInput;
-import com.freshdirect.smartstore.Trigger;
 import com.freshdirect.smartstore.Variant;
+import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
+import com.freshdirect.smartstore.sampling.ImpressionSampler;
 import com.freshdirect.smartstore.sampling.RankedContent;
 
 /**
@@ -27,16 +25,15 @@ import com.freshdirect.smartstore.sampling.RankedContent;
  *
  */
 public class FavoritesRecommendationService extends AbstractRecommendationService {
-	
-	public static final String CKEY_FAVORITE_LIST_ID = "favorite_list_id";
-
-	public static final String FAVORITES_NODE_NAME = "fd_favorites";
+	private String favoriteListId;
 	
 	/**
      * @param variant
      */
-    public FavoritesRecommendationService(Variant variant) {
-        super(variant);
+    public FavoritesRecommendationService(Variant variant, ImpressionSampler sampler,
+    		boolean catAggr, boolean includeCartItems, String favoriteListId) {
+        super(variant, sampler, catAggr, includeCartItems);
+        this.favoriteListId = favoriteListId;
     }
 
     /**
@@ -46,12 +43,14 @@ public class FavoritesRecommendationService extends AbstractRecommendationServic
      * @return a List<{@link ContentNodeModel}> of recommendations
      *         
      */
-    public List recommendNodes(Trigger trigger, SessionInput input) {
+    public List recommendNodes(SessionInput input) {
         List favoriteNodes = Collections.EMPTY_LIST;
         
     	ContentFactory cf = ContentFactory.getInstance();
-    	String listId = getListId();
-    	FavoriteList fl = (FavoriteList) cf.getContentNodeByKey(new ContentKey(FDContentTypes.FAVORITE_LIST, listId));
+    	if (favoriteListId == null)
+    		return favoriteNodes;
+    	
+    	FavoriteList fl = (FavoriteList) cf.getContentNodeByKey(new ContentKey(FDContentTypes.FAVORITE_LIST, favoriteListId));
     	if (fl != null) {
     	    favoriteNodes = fl.getFavoriteItems();
     	    
@@ -61,26 +60,10 @@ public class FavoritesRecommendationService extends AbstractRecommendationServic
                 keys.add(new RankedContent.Single((favoriteNodes.size() - i) * 5.0, contentNodeModel));
     	    }
     	    List sample = RankedContent.getContentNodeModel(getSampler(input).sample(keys, input.getCartContents(), keys.size()));
-    	    AbstractRecommendationService.clearConfiguredProductCache();
-    	    favoriteNodes = AbstractRecommendationService.addConfiguredProductToCache(sample);
+    	    SmartStoreUtil.clearConfiguredProductCache();
+    	    favoriteNodes = SmartStoreUtil.addConfiguredProductToCache(sample);
     	}
 
         return favoriteNodes;
     }
-
-	protected String getListId() {
-		String listId = this.getVariant().getServiceConfig().get(CKEY_FAVORITE_LIST_ID);
-    	if (listId == null) {
-    		listId = FAVORITES_NODE_NAME;
-    	}
-		return listId;
-	}
-
-	protected Map appendConfiguration(Map configMap) {
-		// append FD List Id
-		configMap.put(CKEY_FAVORITE_LIST_ID, getListId());
-		
-		return super.appendConfiguration(configMap);
-	}
-
 }

@@ -22,7 +22,6 @@
 <%@page import="com.freshdirect.fdstore.util.URLGenerator"%>
 <%@page import="com.freshdirect.smartstore.RecommendationService"%>
 <%@page import="com.freshdirect.smartstore.SessionInput"%>
-<%@page import="com.freshdirect.smartstore.Trigger"%>
 <%@page import="com.freshdirect.smartstore.fdstore.CohortSelector"%>
 <%@page import="com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration"%>
 <%@page import="com.freshdirect.smartstore.fdstore.VariantSelector"%>
@@ -80,7 +79,6 @@ static class TestPair {
 
 
 EnumSiteFeature siteFeature = EnumSiteFeature.YMAL;
-Trigger trigger = new Trigger(siteFeature, 6);
 
 boolean defaultFromFile = false;
 boolean fromFile = defaultFromFile;
@@ -339,7 +337,8 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
 	    			SessionInput input = new SessionInput(tp.getUser());
 	    			input.setCurrentNode(tp.getProduct());
 	    			input.setYmalSource(tp.getProduct());
-	    			classic.recommendNodes(trigger, input);
+	    			input.setMaxRecommendations(6);
+	    			classic.recommendNodes(input);
 	    		}
 	    	}
 	    	long end = System.currentTimeMillis();
@@ -357,7 +356,8 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
 	    			SessionInput input = new SessionInput(tp.getUser());
 	    			input.setCurrentNode(tp.getProduct());
 	    			input.setYmalSource(tp.getProduct());
-	    			smart.recommendNodes(trigger, input);
+	    			input.setMaxRecommendations(6);
+	    			smart.recommendNodes(input);
 	    		}
 	    	}
 	    	long end = System.currentTimeMillis();

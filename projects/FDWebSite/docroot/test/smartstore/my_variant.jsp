@@ -18,7 +18,8 @@
 %><%@page import="com.freshdirect.webapp.util.DYFUtil"
 %><%@page import="com.freshdirect.mail.EmailUtil"
 %><%@page import="org.apache.commons.lang.math.NumberUtils"%>
-<%@page import="com.freshdirect.fdstore.FDException"%><html lang="en">
+<%@page import="com.freshdirect.fdstore.FDException"%>
+<%@page import="com.freshdirect.smartstore.fdstore.CohortSelector"%><html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>VARIANT LOOKUP</title>
@@ -209,7 +210,7 @@ if (validUserCount == 0) {
 		%>
 		<tr>
 			<td class="text12"><%= user.getUserId() != null ? user.getUserId() : "&lt;anonymous user&gt;" %></td>
-			<td class="text12 right"><%= user.getCohortName() %></td>
+			<td class="text12 right"><%= CohortSelector.getInstance().getCohortName(user.getPrimaryKey()) %></td>
 			<td class="text12 right"><%= user.getIdentity() != null ? user.getIdentity().getErpCustomerPK() : "&lt;anonymous user&gt;" %></td>
 			<td class="text12 right"><%= DYFUtil.isCustomerEligible(user) ? "yes" : "no" %></td>
 			<%
@@ -217,8 +218,10 @@ if (validUserCount == 0) {
 					EnumSiteFeature feature = (EnumSiteFeature) it.next();
 					
 					OverriddenVariantsHelper.VariantInfo vi = vInfoList.get(feature);
-					((FDUser) user).createCohortName();
-					String origVariant = VariantSelectorFactory.getInstance(feature).getService(user.getCohortName()).getVariant().getId();
+					RecommendationService service = VariantSelectorFactory.getInstance(feature).getService(
+							CohortSelector.getInstance().getCohortName(user.getPrimaryKey()));
+					String origVariant = service != null ? service.getVariant().getId() :
+							"<span class=\"not-found\">&lt;no variant defined&gt;</span>";
 					String overridden = origVariant;
 					if (vi != null) {
 						overridden = "<span class=\"overridden\">" + vi.variant + "</span> <span class=\"original\">(" + origVariant + ")</span>";

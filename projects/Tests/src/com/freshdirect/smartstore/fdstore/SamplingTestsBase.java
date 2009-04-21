@@ -14,7 +14,6 @@ import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.RecommendationServiceConfig;
 import com.freshdirect.smartstore.RecommendationServiceType;
 import com.freshdirect.smartstore.SessionInput;
-import com.freshdirect.smartstore.Trigger;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.impl.AbstractRecommendationService;
 import com.freshdirect.smartstore.sampling.RankedContent;
@@ -92,7 +91,21 @@ public class SamplingTestsBase extends TestCase {
 					}
 					
 				}
-			}));		
+			}), SmartStoreServiceConfiguration.configureSampler(new RecommendationServiceConfig("SEMMI",RecommendationServiceType.NIL) {
+				
+				private static final long serialVersionUID = 1L;
+
+				public String get(String key) {
+					if ("sampling_strat".equals(key)) {
+						return sampling_strat;
+					} else if ("exponent".equals(key)) {
+						return "" + exponent;
+					} else {
+						return super.get(key);			
+					}
+					
+				}
+			}, new java.util.HashMap()), false, false);		
 		}
 		
 		protected Set markers = new HashSet();
@@ -122,10 +135,11 @@ public class SamplingTestsBase extends TestCase {
 			aggregateAtCategoryLevel = value;
 		}
 
-		public List recommendNodes(Trigger trigger, SessionInput input) {
+		public List recommendNodes(SessionInput input) {
 			return null;
 		}
-		SessionInput input = new SessionInput((String) null) {
+
+		SessionInput input = new SessionInput((String) null, null) {
 		    public boolean isNoShuffle() { return false; }
 		};
 

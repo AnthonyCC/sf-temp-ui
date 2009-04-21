@@ -10,9 +10,14 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recommender;
@@ -25,34 +30,37 @@ import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.RecommendationServiceConfig;
 import com.freshdirect.smartstore.RecommendationServiceType;
 import com.freshdirect.smartstore.SessionInput;
-import com.freshdirect.smartstore.Trigger;
 import com.freshdirect.smartstore.Variant;
-import com.freshdirect.smartstore.dsl.CompileException;
+import com.freshdirect.smartstore.fdstore.FactorRequirer;
+import com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration;
+import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
+import com.freshdirect.smartstore.sampling.ImpressionSampler;
 
 /**
  * @author csongor
  */
-public class SmartYMALRecommendationService extends AbstractRecommendationService {
+public class SmartYMALRecommendationService extends AbstractRecommendationService implements FactorRequirer {
 	private static final Category LOGGER = LoggerFactory.getInstance(SmartYMALRecommendationService.class);
 	
 	Map recommenderCache;
 	
-	public SmartYMALRecommendationService(Variant variant) {
-		super(variant);
+	public SmartYMALRecommendationService(Variant variant, ImpressionSampler sampler,
+    		boolean catAggr, boolean includeCartItems) {
+		super(variant, sampler, catAggr, includeCartItems);
 		recommenderCache = new HashMap(); 
 	}
 
 	/**
 	 * Recommends products for the current node
 	 */
-	public List recommendNodes(Trigger trigger, SessionInput input) {
+	public List recommendNodes(SessionInput input) {
 		
 		List prodList = new ArrayList();
 		final YmalSource ymalSource = input.getYmalSource();
 		final ProductModel selectedProduct = (ProductModel) input.getCurrentNode();
-		int availSlots = trigger.getMaxRecommendations();
+		int availSlots = input.getMaxRecommendations();
 
-		clearConfiguredProductCache();
+		SmartStoreUtil.clearConfiguredProductCache();
 
 		// related products
 		List relatedProducts = ymalSource != null ?
@@ -63,7 +71,7 @@ public class SmartYMALRecommendationService extends AbstractRecommendationServic
 		for (int i = 0; i < relatedProducts.size(); i++) {
 			ProductModel pm = (ProductModel) relatedProducts.get(i);
 			if (pm.isDisplayable()) {
-				ProductModel q = addConfiguredProductToCache(pm);
+				ProductModel q = SmartStoreUtil.addConfiguredProductToCache(pm);
 				ProductModel p = q;
 				if (p != null)
 					prodList.add(p);
@@ -83,13 +91,17 @@ public class SmartYMALRecommendationService extends AbstractRecommendationServic
 			// smart YMAL
 			List recommenders = ymalSet.getRecommenders();
 			
-			SessionInput smartInput = new SessionInput(input.getCustomerId());
+			SessionInput smartInput = new SessionInput(input.getCustomerId(),
+					input.getCustomerServiceType());
 			smartInput.setYmalSource(ymalSource);
 			smartInput.setCurrentNode(selectedProduct);
 			smartInput.setCartContents(addContentKeys(new HashSet(), prodList));
 			if (selectedProduct != null)
 				smartInput.getCartContents().add(selectedProduct.getContentKey());
 			smartInput.setNoShuffle(input.isNoShuffle());
+			
+			Map recServiceAudit = new HashMap();
+			RECOMMENDER_SERVICE_AUDIT.set(recServiceAudit);
 			
 			List[] recommendations = new List[recommenders.size()];
 			
@@ -105,8 +117,12 @@ public class SmartYMALRecommendationService extends AbstractRecommendationServic
 					continue;
 				}
 				smartInput.setExplicitList(scope);
-				List recNodes = rs.recommendNodes(trigger, smartInput);
+				List recNodes = rs.recommendNodes(smartInput);
 				
+				for (int j=0;j<recNodes.size();j++) {
+				    ContentNodeModel model = (ContentNodeModel) recNodes.get(j);
+				    recServiceAudit.put(model.getContentKey().getId(), strategy.getContentKey().getId());
+				}
 				addContentKeys(smartInput.getCartContents(), recNodes);
 				recommendations[i] = recNodes;
 			
@@ -114,7 +130,7 @@ public class SmartYMALRecommendationService extends AbstractRecommendationServic
 			
 			if (recommenders.size() == 1) {
 				
-				prodList.addAll(addConfiguredProductToCache(recommendations[0]));
+				prodList.addAll(SmartStoreUtil.addConfiguredProductToCache(recommendations[0]));
 				
 			} else if (recommenders.size() > 1) {
 				
@@ -126,7 +142,7 @@ public class SmartYMALRecommendationService extends AbstractRecommendationServic
 					do {
 						next = recommendations[i].size() > 0 ? 
 								(ProductModel) recommendations[i].remove(0) : null;
-						p = addConfiguredProductToCache(next);
+						p = SmartStoreUtil.addConfiguredProductToCache(next);
 					} while (next != null && (!next.isDisplayable() || prodList.contains(p)));
 					if (next != null) {
 						if (p != null) { 
@@ -145,7 +161,7 @@ public class SmartYMALRecommendationService extends AbstractRecommendationServic
 			List ymalProducts = new ArrayList(ymalSource.getYmalProducts());
 			for (ListIterator it = ymalProducts.listIterator(); it.hasNext(); ) {
 				ProductModel pm = (ProductModel) it.next();
-				ProductModel q = addConfiguredProductToCache((ProductModel) pm);
+				ProductModel q = SmartStoreUtil.addConfiguredProductToCache((ProductModel) pm);
 				if (relatedProducts.contains(pm) || q == null)
 					it.remove();
 				else {
@@ -169,23 +185,22 @@ public class SmartYMALRecommendationService extends AbstractRecommendationServic
 
 	public synchronized RecommendationService getScriptRecommendationService(RecommenderStrategy strategy) {
 		if (!recommenderCache.containsKey(strategy)) {
-			try {
-				RecommendationServiceConfig config = new RecommendationServiceConfig(strategy.getContentName(),
-						RecommendationServiceType.SCRIPTED);
-				config.set(CKEY_SAMPLING_STRATEGY, strategy.getSampling());
-				config.set(CKEY_TOP_N, Integer.toString(strategy.getTopN()));
-				config.set(CKEY_TOP_PERC, Double.toString(strategy.getTopPercent()));
-				config.set(CKEY_EXPONENT, Double.toString(strategy.getExponent()));
-				
-				Variant v = new Variant(strategy.getContentName(), EnumSiteFeature.YMAL, config);
-				
-				RecommendationService rs = new ScriptedRecommendationService(v, strategy.getGenerator(), strategy.getScoring());
-				recommenderCache.put(strategy, rs);
-				return rs;
-			} catch (CompileException e) {
-				LOGGER.error("compile error when creating recommender with strategy '" + strategy + "'", e);
+			RecommendationServiceConfig config = new RecommendationServiceConfig(strategy.getContentName(),
+					RecommendationServiceType.SCRIPTED);
+			config.set(SmartStoreServiceConfiguration.CKEY_SAMPLING_STRATEGY, strategy.getSampling());
+			config.set(SmartStoreServiceConfiguration.CKEY_TOP_N, Integer.toString(strategy.getTopN()));
+			config.set(SmartStoreServiceConfiguration.CKEY_TOP_PERC, Double.toString(strategy.getTopPercent()));
+			config.set(SmartStoreServiceConfiguration.CKEY_EXPONENT, Double.toString(strategy.getExponent()));
+			config.set(SmartStoreServiceConfiguration.CKEY_GENERATOR, strategy.getGenerator());
+			config.set(SmartStoreServiceConfiguration.CKEY_SCORING, strategy.getScoring());
+			
+			Variant v = new Variant(strategy.getContentName(), EnumSiteFeature.YMAL, config, new TreeMap());
+			
+			RecommendationService rs = SmartStoreServiceConfiguration.configure(v);
+			if (rs == null)
 				return null;
-			}
+			recommenderCache.put(strategy, rs);
+			return rs;
 		} else
 			return (RecommendationService) recommenderCache.get(strategy);
 	}
@@ -199,4 +214,18 @@ public class SmartYMALRecommendationService extends AbstractRecommendationServic
 		
 		return keys;
 	}
+
+    public void collectFactors(Collection buffer) {
+        Set rss = CmsManager.getInstance().getContentKeysByType(FDContentTypes.RECOMMENDER_STRATEGY);
+        Iterator it = rss.iterator();
+        while (it.hasNext()) {
+            ContentKey key = (ContentKey) it.next();
+            RecommenderStrategy strat = (RecommenderStrategy) ContentFactory.getInstance().getContentNode(key.getId());
+            RecommendationService rs = this.getScriptRecommendationService(strat);
+            if (rs instanceof FactorRequirer) {
+                ((FactorRequirer)rs).collectFactors(buffer);
+            }
+        }
+    }
+	
 }

@@ -604,6 +604,7 @@ public class ScoreProvider implements DataAccess {
 		
 	    names.add(ORIGINAL_SCORES_GLOBAL);
 	    names.add(ORIGINAL_SCORES_PERSONALIZED);
+	    names.add("Newness");
 	    	    
 	    // extra factors can be parameterized
 	    names.addAll(FDStoreProperties.getSmartstorePreloadFactors());
@@ -945,6 +946,11 @@ public class ScoreProvider implements DataAccess {
 		storeLookups.put(
 			"QualityRating_Discretized2",
 			FactorUtil.getDescretizedProduceRatingLookup2()
+		);
+
+		storeLookups.put(
+			"Newness",
+			FactorUtil.getNewnessLookup()
 		);
 		// Database scores
 		

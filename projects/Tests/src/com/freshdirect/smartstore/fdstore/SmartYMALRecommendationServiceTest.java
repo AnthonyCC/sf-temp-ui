@@ -16,7 +16,6 @@ import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.RecommendationServiceConfig;
 import com.freshdirect.smartstore.RecommendationServiceType;
 import com.freshdirect.smartstore.SessionInput;
-import com.freshdirect.smartstore.Trigger;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.impl.SmartYMALRecommendationService;
 
@@ -24,7 +23,6 @@ public class SmartYMALRecommendationServiceTest extends RecommendationServiceTes
     
     private RecommendationService firs;
     SessionInput input ;
-    Trigger trigger;
     
     protected String getCmsXmlName() {
         return "classpath:/com/freshdirect/cms/fdstore/content/YmalSet.xml";
@@ -32,9 +30,9 @@ public class SmartYMALRecommendationServiceTest extends RecommendationServiceTes
     
     public void setUp() throws Exception {
         super.setUp();
-        input = new SessionInput("12345");
+        input = new SessionInput("12345", null);
         input.setNoShuffle(true);
-        trigger = new Trigger(EnumSiteFeature.YMAL, 10);
+        input.setMaxRecommendations(10);
     }
 
     
@@ -48,7 +46,9 @@ public class SmartYMALRecommendationServiceTest extends RecommendationServiceTes
     RecommendationService getSmartYmalService() {
         if (firs == null) {
             firs = new SmartYMALRecommendationService(new Variant("smart_ymal", EnumSiteFeature.YMAL, new RecommendationServiceConfig("smart_ymal_config",
-                    RecommendationServiceType.SMART_YMAL)));
+                    RecommendationServiceType.SMART_YMAL)),
+                    SmartStoreServiceConfiguration.configureSampler(new RecommendationServiceConfig("smart_ymal_config",
+                    RecommendationServiceType.SMART_YMAL), new java.util.HashMap()), false, false);
         }
         return firs;
     }
@@ -61,7 +61,7 @@ public class SmartYMALRecommendationServiceTest extends RecommendationServiceTes
         input.setYmalSource(product);
         
         {        
-            List nodes = getSmartYmalService().recommendNodes(trigger, input);
+            List nodes = getSmartYmalService().recommendNodes(input);
             assertNotNull("nodes", nodes);
             assertEquals("node size", 4, nodes.size());
             Set nodeNames = TestUtils.convertToStringList(nodes);
@@ -76,7 +76,7 @@ public class SmartYMALRecommendationServiceTest extends RecommendationServiceTes
             input.setCurrentNode(product);
             input.setYmalSource(product);
 
-            List nodes = getSmartYmalService().recommendNodes(trigger, input);
+            List nodes = getSmartYmalService().recommendNodes(input);
             assertNotNull("nodes", nodes);
             assertEquals("node size", 0, nodes.size());
         }
@@ -85,7 +85,7 @@ public class SmartYMALRecommendationServiceTest extends RecommendationServiceTes
             input.setCurrentNode(product);
             input.setYmalSource(product);
 
-            List nodes = getSmartYmalService().recommendNodes(trigger, input);
+            List nodes = getSmartYmalService().recommendNodes(input);
             assertNotNull("nodes", nodes);
             assertEquals("node size", 2, nodes.size());
             Set nodeNames = TestUtils.convertToStringList(nodes);
@@ -99,7 +99,7 @@ public class SmartYMALRecommendationServiceTest extends RecommendationServiceTes
         input.setCurrentNode(product);
         input.setYmalSource(product);
         {        
-            List nodes = getSmartYmalService().recommendNodes(trigger, input);
+            List nodes = getSmartYmalService().recommendNodes(input);
             assertNotNull("nodes", nodes);
             assertEquals("node size", 1, nodes.size());
             Set nodeNames = TestUtils.convertToStringList(nodes);
@@ -113,7 +113,7 @@ public class SmartYMALRecommendationServiceTest extends RecommendationServiceTes
         input.setCurrentNode(product);
         input.setYmalSource(product);
         {        
-            List nodes = getSmartYmalService().recommendNodes(trigger, input);
+            List nodes = getSmartYmalService().recommendNodes(input);
             assertNotNull("nodes", nodes);
             assertEquals("node size", 5, nodes.size());
             Set nodeNames = TestUtils.convertToStringList(nodes);
@@ -140,7 +140,7 @@ public class SmartYMALRecommendationServiceTest extends RecommendationServiceTes
         input.setYmalSource(product);
         
         {        
-            List nodes = getSmartYmalService().recommendNodes(trigger, input);
+            List nodes = getSmartYmalService().recommendNodes(input);
             assertNotNull("nodes", nodes);
             assertEquals("node size", 5, nodes.size());
             Set nodeNames = TestUtils.convertToStringList(nodes);
@@ -167,7 +167,7 @@ public class SmartYMALRecommendationServiceTest extends RecommendationServiceTes
         Set lastNames = new HashSet();
         
         for (int i=0;i<10;i++) {
-            List nodes = getSmartYmalService().recommendNodes(trigger, input);
+            List nodes = getSmartYmalService().recommendNodes(input);
             assertNotNull("nodes", nodes);
             assertEquals("node size", 5, nodes.size());
             firstNames.add(getId(nodes, 0));

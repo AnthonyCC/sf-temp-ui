@@ -1199,6 +1199,23 @@ public class FDUser extends ModelSupport implements FDUserI {
 		}
 		return false;
 	}
-}
+
+	/**
+	 * @return Always returns null
+	 * @see com.freshdirect.fdstore.customer.FDUserI#getFavoriteTabFeature()
+	 */
+	public String getFavoriteTabFeature() {
+		return null;
+	}
 	
+	/**
+	 * Calling this function has no effect (only FDSessionUser implements it)
+	 * 
+	 * @param feature ignored
+	 * @see com.freshdirect.fdstore.customer.FDUserI#setFavoriteTabFeature(java.lang.String)
+	 */
+	public void setFavoriteTabFeature(String feature) {
+		// has no effect
+	}
+}
 

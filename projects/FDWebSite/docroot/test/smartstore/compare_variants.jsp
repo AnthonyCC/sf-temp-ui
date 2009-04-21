@@ -30,8 +30,8 @@
 <%@page import="com.freshdirect.mail.EmailUtil"%>
 <%@page import="com.freshdirect.smartstore.RecommendationService"%>
 <%@page import="com.freshdirect.smartstore.SessionInput"%>
-<%@page import="com.freshdirect.smartstore.Trigger"%>
 <%@page import="com.freshdirect.smartstore.fdstore.CohortSelector"%>
+<%@page import="com.freshdirect.smartstore.fdstore.FDStoreRecommender"%>
 <%@page import="com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration"%>
 <%@page import="com.freshdirect.smartstore.fdstore.SmartStoreUtil"%>
 <%@page import="com.freshdirect.smartstore.fdstore.VariantSelection"%>
@@ -42,15 +42,13 @@
 <%@page import="com.freshdirect.smartstore.RecommendationServiceConfig"%>
 <%@page import="com.freshdirect.smartstore.RecommendationServiceType"%>
 <%@page import="com.freshdirect.smartstore.dsl.CompileException"%>
-<%@page import="com.freshdirect.smartstore.impl.ScriptedRecommendationService"%>
+<%@page import="com.freshdirect.smartstore.impl.NullRecommendationService"%>
 <%@page import="com.freshdirect.smartstore.ymal.YmalUtil"%>
 <%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
-<%@ taglib uri="freshdirect" prefix="fd"%>
-<fd:CheckLoginStatus noRedirect="true" />
-<%!
+<%@ taglib uri="freshdirect" prefix="fd"
+%><fd:CheckLoginStatus noRedirect="true" /><%!
 	Map customRecommenders = new WeakHashMap();
-%>
-<%
+%><%
 Iterator it;
 URLGenerator urlG = new URLGenerator(request);
 String origURL = urlG.build();
@@ -58,6 +56,7 @@ String origURL = urlG.build();
 /* site feature */
 EnumSiteFeature defaultSiteFeature = EnumSiteFeature.DYF;
 List siteFeatures = EnumSiteFeature.getSmartStoreEnumList();
+Collections.sort(siteFeatures);
 
 EnumSiteFeature siteFeature = EnumSiteFeature.getEnum(urlG.get("siteFeature"));
 
@@ -66,8 +65,6 @@ if (siteFeature == null) {
 } else if (defaultSiteFeature.equals(siteFeature)) {
 	urlG.remove("siteFeature");
 }
-
-Trigger trigger = new Trigger(siteFeature, EnumSiteFeature.YMAL.equals(siteFeature) ? 6 : 5);
 
 Map variants = SmartStoreServiceConfiguration.getInstance().getServices(siteFeature);
 VariantSelection helper = VariantSelection.getInstance();
@@ -92,18 +89,17 @@ if (!(scoringFunction != null && scoringFunction.length() > 0)) {
     scoringFunction = null;
 }
 
-ScriptedRecommendationService scriptedRecServ = null;  
+RecommendationService scriptedRecServ = null;  
 String compileErrorMessage = null;
 if (generatorFunction != null && generatorFunction.length() > 0) {
-    scriptedRecServ = (ScriptedRecommendationService) customRecommenders.get(generatorFunction + "@@@" + scoringFunction);
+    scriptedRecServ = (RecommendationService) customRecommenders.get(generatorFunction + "@@@" + scoringFunction);
 	if (scriptedRecServ == null) {
-	    try {
-	    	scriptedRecServ = new ScriptedRecommendationService(new Variant("scripted-test", siteFeature, new RecommendationServiceConfig("scripted-test", RecommendationServiceType.SCRIPTED)), generatorFunction, scoringFunction);
-	    	customRecommenders.put(generatorFunction + "@@@" + scoringFunction, scriptedRecServ);
-	    } catch (CompileException ce) {
-	        ce.printStackTrace();
-	        compileErrorMessage = ce.getMessage();
-	    }
+        //SmartStoreServiceConfiguration.configureSampler(new RecommendationServiceConfig("scripted-test", RecommendationServiceType.SCRIPTED))
+    	scriptedRecServ = SmartStoreServiceConfiguration.configure(new Variant("scripted-test", siteFeature, new RecommendationServiceConfig("scripted-test",
+    	        RecommendationServiceType.SCRIPTED).set("generator", generatorFunction).set("scoring", scoringFunction)));
+    	customRecommenders.put(generatorFunction + "@@@" + scoringFunction, scriptedRecServ);
+		if (scriptedRecServ instanceof NullRecommendationService)
+    		compileErrorMessage = "Failed to create script recommender. Possible Script Compile Exception.";
 	}
 } else {
     urlG.remove("generatorFunction");
@@ -165,20 +161,19 @@ if (variantB != null && variantB.equals(defaultVariantB)) {
 }
 
 /* customer Email */
-String defaultCustomerEmail = "";
-
-String customerEmail = urlG.get("customerEmail");
-if (customerEmail == null || customerEmail.length() == 0 || !EmailUtil.isValidEmailAddress(customerEmail)) {
-	customerEmail = defaultCustomerEmail;
-}
-if (defaultCustomerEmail.equals(customerEmail)) {
-	urlG.remove("customerEmail");
-} else {
-	urlG.set("customerEmail", customerEmail);
-}
-
 /* customer Use Logged In */
+/* customer Id */
+/* primary key */
+/* cohort */
 boolean useLoggedIn = false;
+String defaultCustomerEmail = "";
+String customerEmail = defaultCustomerEmail;
+FDUserI sessionUser = (FDUserI) session.getAttribute("fd.user");
+String customerId = null;
+String primaryKey = null;
+String cohortId = null;
+FDUserI user = null;
+String unknown = "<span class=\"not-found\">&lt;unknown&gt;</span>";
 
 String useLoggedInStr = urlG.get("useLoggedIn");
 if ("true".equalsIgnoreCase(useLoggedInStr)) {
@@ -190,30 +185,43 @@ if (useLoggedIn) {
 	urlG.remove("useLoggedIn");
 }
 
-/* customer Id */
-String customerId = null;
 TestSupport ts = TestSupport.getInstance();
-FDUserI user = (FDUserI) session.getAttribute("fd.user");
 if (useLoggedIn) {
-	if (user != null && user.getIdentity() != null) {
-		customerId = user.getIdentity().getErpCustomerPK();
-		customerEmail = user.getUserId();
+	if (sessionUser != null) {
+		user = sessionUser;
+		primaryKey = sessionUser.getPrimaryKey();
+		cohortId = CohortSelector.getInstance().getCohortName(primaryKey);
+		if (sessionUser.getUserId() != null)
+			customerEmail = sessionUser.getUserId();
+		if (sessionUser.getIdentity() != null)
+			customerId = sessionUser.getIdentity().getErpCustomerPK();
 	}
+	urlG.remove("customerEmail");
 } else {
-	customerId = ts.getErpIDForUserID(customerEmail); 
+	customerEmail = urlG.get("customerEmail");
+	if (customerEmail == null || customerEmail.length() == 0 || !EmailUtil.isValidEmailAddress(customerEmail)) {
+		customerEmail = defaultCustomerEmail;
+	}
+	if (defaultCustomerEmail.equals(customerEmail)) {
+		urlG.remove("customerEmail");
+	} else {
+		urlG.set("customerEmail", customerEmail);
+		customerId = ts.getErpIDForUserID(customerEmail); 
+		user = FDCustomerManager.getFDUser(new FDIdentity(customerId));
+		cohortId = CohortSelector.getInstance().getCohortName(primaryKey);
+	}
 }
 
-
-/* cohort */
-String defaultCohortId = "&lt;unknown&gt;";
-String cohortId = defaultCohortId;
-if (customerId != null) {
-	FDUser user2 = FDCustomerManager.getFDUser(new FDIdentity(customerId));
-	cohortId = user2.getCohortName();
+String defaultCartAlgorithm = "allItems"; // "recentlyAdded"
+String cartAlgorithm = urlG.get("cartAlgorithm");
+if (cartAlgorithm == null || !("allItems".equals(cartAlgorithm)
+		|| "recentlyAdded".equals(cartAlgorithm))) {
+	cartAlgorithm = defaultCartAlgorithm;
 }
+if (defaultCartAlgorithm.equals(cartAlgorithm) || !useLoggedIn)
+	urlG.remove("cartAlgorithm");
 
-String defaultUserVariant = "&lt;unknown&gt;";
-String userVariant = defaultUserVariant;
+String userVariant = null;
 if (assignment.containsKey(cohortId)) {
 	userVariant = (String) assignment.get(cohortId);
 }
@@ -246,7 +254,7 @@ if (category != null) {
 }
 
 /* session input */
-SessionInput si = new SessionInput(customerId);
+SessionInput si = new SessionInput(user);
 si.setCurrentNode(category);
 
 String ymalError = "";
@@ -255,9 +263,27 @@ String ymalError = "";
 String recentOrderlines = urlG.get("orderlines");
 YmalSource source = null;
 if (useLoggedIn && user != null) {
-	source = YmalUtil.resolveYmalSource(user, null);
-	if (YmalUtil.getSelectedCartLine(user) != null)
-		si.setCurrentNode(YmalUtil.getSelectedCartLine(user).lookupProduct());
+	if (("allItems").equals(cartAlgorithm)) {
+		Set prodkeys = FDStoreRecommender.getShoppingCartContents(user);
+		List prods = new ArrayList(prodkeys.size());
+		Iterator it2 = prodkeys.iterator();
+		while (it2.hasNext()) {
+			ContentKey key = (ContentKey) it2.next();
+			try {
+				Object o = ContentFactory.getInstance().getContentNodeByKey(
+						ContentKey.create(FDContentTypes.PRODUCT, key.getId()));
+				if (o != null)
+					prods.add(o);
+			} catch (ContentKey.InvalidContentKeyException e) {
+			}
+		}
+		source = YmalUtil.resolveYmalSource(prods);
+		si.setCurrentNode(source);
+	} else {
+		source = YmalUtil.resolveYmalSource(user, null);
+		if (YmalUtil.getSelectedCartLine(user) != null)
+			si.setCurrentNode(YmalUtil.getSelectedCartLine(user).lookupProduct());
+	}
 } else if (recentOrderlines != null && !"".equals(recentOrderlines)) {
 	List prods = new ArrayList();
 	Set cartItems = new HashSet();
@@ -284,6 +310,7 @@ if (useLoggedIn && user != null) {
 }
 si.setYmalSource(source);
 si.setNoShuffle(true);
+si.setMaxRecommendations(EnumSiteFeature.YMAL.equals(siteFeature) ? 6 : 5);
 
 String scopeNodes = urlG.get("scope");
 List scope = new ArrayList();
@@ -309,7 +336,10 @@ if (scopeNodes != null && scopeNodes.length() != 0) {
 		}
 	}
 	si.setExplicitList(scope);
+} else {
+	urlG.remove("scope");
 }
+
 
 
 /* view */
@@ -365,8 +395,7 @@ if (scriptedRecServ != null) {
     variantB = "User Provided Functions";
 }
 
-%>
-<html>
+%><html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>VARIANT COMPARISON PAGE - <%= siteFeature.getName() %><%=
@@ -376,7 +405,7 @@ if (scriptedRecServ != null) {
 	%></title>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<style type="text/css">
-body{margin:20px 60px;color:#333333;background-color:#fff;}
+body{margin:20px 60px;color:#333333;background-color:#fff;height:auto;}
 input{font-weight:normal;}
 p{margin:0px;padding:0px;}
 .bull{color:#cccccc;}
@@ -412,16 +441,16 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 </head>
 <body>
 	<form method="get" action="<%= request.getRequestURI() %>" id="f1">
-	<%= urlG.buildHiddenField("siteFeature") %>
+
 	<% if (!"simple".equals(view)) { %>
     <div class="rec-chooser title14">
     	<div style="float: left;">
-    		<%  if (session.getAttribute("fd.user") != null) {
-    				if (user.getIdentity() != null) {
+    		<%  if (sessionUser != null) {
+    				if (sessionUser.getIdentity() != null) {
     		%>
-    		Logged in as <%= user.getUserId() %>.
+    		Logged in as <%= sessionUser.getUserId() %>.
     		<%      } else { %>
-    		Not logged in. You are in area  <%= user.getZipCode() %>.
+    		Not logged in. You are in area  <%= sessionUser.getZipCode() %>.
     		<% 		}
     			} else { %>
     		Not logged in.
@@ -430,36 +459,23 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
     	<div style="float: right; text-align:right;">
 	    	<span style="text-transform: uppercase;">Recommendation type:</span>&nbsp;<%
 	    		it = siteFeatures.iterator();
-	    		if (it.hasNext()) {
-	    			EnumSiteFeature sf = (EnumSiteFeature) it.next();
-	    			if (!sf.equals(siteFeature)) {
-	    	%>
-			<a href="<%= urlG.set("siteFeature", sf.getName()).build() %>"><%
-	    			}
-	    	%><span><%= sf.getTitle() %></span><%
-					if (!sf.equals(siteFeature)) {
-	    	%></a><%
-	    			}
-	    		}
-	    		while (it.hasNext()) {
-	    			EnumSiteFeature sf = (EnumSiteFeature) it.next();
-	    	%>
-	    	<span class="bull">&bull;</span>
-	    	<%
-	    			if (!sf.equals(siteFeature)) {
-	    	%>
-	    	<a href="<%= urlG.set("siteFeature", sf.getName()).build() %>"><%
-	    			}
-	    	%><span><%= sf.getTitle() %></span><%
-					if (!sf.equals(siteFeature)) {
-	    	%></a><%
-	    			}
-	    		}
-	    		// restore site feature
-	    		if (defaultSiteFeature.equals(siteFeature)) {
-	    			urlG.remove("siteFeature");
+	    		if (!it.hasNext()) {
+			%><span class="disabled">No known site features.</span><%	    			
 	    		} else {
-	    			urlG.set("siteFeature", siteFeature.getName());
+	    	%>
+			<select name="siteFeature" onchange="this.form.submit();">
+			<%
+		    		while (it.hasNext()) {
+	    				EnumSiteFeature sf = (EnumSiteFeature) it.next();
+	    	%>
+	    		<option value="<%= sf.getName() %>"<%= 
+	    				sf.equals(siteFeature) ?
+	    				" selected=\"selected\"" : "" %>><%= sf.getTitle() %></option>
+	    	<%
+		    		}
+			%>
+	    	</select>
+			<%
 	    		}
 	    	%>
 	    </div>
@@ -470,7 +486,6 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
     		<tr>
     			<td class="text12" colspan="2">
     				<table style="width: auto;"><tr>
-<% if (EnumSiteFeature.DYF.equals(siteFeature) || EnumSiteFeature.YMAL.equals(siteFeature)) { %>
     				<td>
 	    				<p class="label">
 	    					Customer email
@@ -481,26 +496,26 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 	    				</p>
 	    				<p class="label">
 	    					or use logged in: <input type="checkbox" name="useLoggedIn" id="useLoggedIn"
-	    						onchange="document.getElementById('customerEmail').disabled = this.checked; if (document.getElementById('orderlines')) document.getElementById('orderlines').disabled = this.checked; if (document.getElementById('useLoggedCart')) document.getElementById('useLoggedCart').checked = this.checked;"
+	    						onchange="document.getElementById('customerEmail').disabled = this.checked; if (document.getElementById('orderlines')) document.getElementById('orderlines').disabled = this.checked;
+	    						if (document.getElementById('useLoggedCart')) document.getElementById('useLoggedCart').checked = this.checked;
+	    						if (document.getElementById('div-cartAlg')) { document.getElementById('div-cartAlg').className = this.checked ? '' : 'disabled';
+	    						document.getElementById('cartAlg-1').disabled = !this.checked;
+	    						document.getElementById('cartAlg-2').disabled = !this.checked; }"
 	    						value="true"<%= useLoggedIn ? " checked" : ""%>>
 	    				</p>
-	    				<% if (customerId != null) { %>
 	    				<p class="result">
-	    					Customer ID: <%= customerId %>
-	    				</p>
-	    				<p class="result">
-	    					Cohort ID: <%= cohortId %>
+	    					Customer ID: <%= customerId != null ? customerId : unknown %>
 	    				</p>
 	    				<p class="result">
-	    					User Variant: <%= userVariant %>
+	    					Cohort ID: <%= cohortId != null ? cohortId : unknown %>
 	    				</p>
-	    				<% } else { %>
-	    				<p class="not-found result">
-	    					&lt;not found&gt;
+	    				<p class="result">
+	    					User Variant: <%= userVariant != null ? userVariant : unknown %>
 	    				</p>
-	    				<% } %>
+	    				<p class="result">
+	    					Service Type: <%= user != null ? user.getUserServiceType().getName() : unknown %>
+	    				</p>
     				</td>
-<% } %>
 <% if (EnumSiteFeature.FEATURED_ITEMS.equals(siteFeature)) { %>
     				<td>
 	    				<p class="label">
@@ -521,7 +536,10 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 	    				<% } %>
     				</td>
 <% } %>
-<% if (EnumSiteFeature.YMAL.equals(siteFeature)) { %>
+<% if (!EnumSiteFeature.DYF.equals(siteFeature)
+			&& !EnumSiteFeature.FAVORITES.equals(siteFeature)
+			&& !EnumSiteFeature.FEATURED_ITEMS.equals(siteFeature)
+			&& !EnumSiteFeature.YMAL_YF.equals(siteFeature)) { %>
 					<td>
 	    				<p class="label">Recent Orderlines:</p>
 						<p>
@@ -530,11 +548,28 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 						</p>
 	    				<p class="label">
 	    					or use logged user's cart: <input type="checkbox" name="useLoggedIn" id="useLoggedCart"
-	    						onchange="document.getElementById('orderlines').disabled = this.checked; document.getElementById('customerEmail').disabled = this.checked; document.getElementById('useLoggedIn').checked = this.checked;"
+	    						onchange="document.getElementById('orderlines').disabled = this.checked; document.getElementById('customerEmail').disabled = this.checked;
+	    						document.getElementById('useLoggedIn').checked = this.checked;
+	    						document.getElementById('div-cartAlg').className = this.checked ? '' : 'disabled';
+	    						document.getElementById('cartAlg-1').disabled = !this.checked;
+	    						document.getElementById('cartAlg-2').disabled = !this.checked;"
 	    						value="true"<%= useLoggedIn ? " checked" : ""%>>
 	    				</p>
-	    				<% if (useLoggedIn && user != null) { %>
-	    					<% List cartItems = user.getShoppingCart().getRecentOrderLines();
+	    				<div id="div-cartAlg"<%= useLoggedIn ? "" : " class=\"disabled\"" %>>
+	    				<p class="label">
+	    					Cart Item Selection Algorithm:
+	    				</p>
+	    				<p class="label" style="font-weight: normal;">
+	    					<input type="radio" name="cartAlgorithm" id="cartAlg-1"
+	    							value="allItems"<%= useLoggedIn ? "" : " disabled"%>
+	    							<%= "allItems".equals(cartAlgorithm) ? " checked" : "" %>>Select from all items in cart<br>
+	    					<input type="radio" name="cartAlgorithm" id="cartAlg-2"
+	    							value="recentlyAdded"<%= useLoggedIn ? "" : " disabled"%>
+	    							<%= "recentlyAdded".equals(cartAlgorithm) ? " checked" : "" %>>Select from recently added items
+	    				</p>
+	    				</div>
+	    				<% if (useLoggedIn && sessionUser != null) { %>
+	    					<% List cartItems = sessionUser.getShoppingCart().getRecentOrderLines();
 	    					   if (cartItems == null)
 	    						   cartItems = Collections.EMPTY_LIST; 
 							   it = cartItems.iterator(); %>
@@ -650,7 +685,8 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 	if (aRecService != null) {
 		System.err.println("variant A recommender: " + aRecService.getClass().getName());
 		try {
-			recsA = aRecService.recommendNodes(trigger, si);
+			recsA = aRecService.recommendNodes(si);
+			recsA = FDStoreRecommender.getInstance().filterProducts(recsA, null, true);
 			System.err.println("Recommender A node count: " + recsA.size());
 		} catch (RuntimeException e) {
 			e.printStackTrace(System.err);
@@ -660,7 +696,8 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 	if (bRecService != null) {
 		System.err.println("variant B recommender: " + bRecService.getClass().getName());
 		try {
-			recsB = bRecService.recommendNodes(trigger, si);
+			recsB = bRecService.recommendNodes(si);
+			recsB = FDStoreRecommender.getInstance().filterProducts(recsB, null, true);
 			System.err.println("Recommender B node count: " + recsB.size());
 		} catch (RuntimeException e) {
 			e.printStackTrace(System.err);

@@ -1,0 +1,2 @@
+CREATE SEQUENCE PAGE_IMPRESSION_SEQ;
+grant select on cust.PAGE_IMPRESSION_SEQ to fdstore;

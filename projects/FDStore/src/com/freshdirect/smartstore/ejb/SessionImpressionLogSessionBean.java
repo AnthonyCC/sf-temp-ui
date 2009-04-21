@@ -1,7 +1,6 @@
 package com.freshdirect.smartstore.ejb;
 
 import java.rmi.RemoteException;
-import java.sql.BatchUpdateException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

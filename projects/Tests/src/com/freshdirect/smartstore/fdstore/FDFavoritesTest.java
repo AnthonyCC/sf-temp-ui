@@ -4,21 +4,14 @@
 package com.freshdirect.smartstore.fdstore;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.naming.Context;
-import javax.servlet.jsp.JspException;
 
 import junit.framework.TestCase;
 
-import org.mockejb.MockContainer;
-import org.mockejb.interceptor.AspectSystem;
-
 import com.freshdirect.TestUtils;
 import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.service.CompositeTypeService;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
@@ -26,10 +19,6 @@ import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.event.RecommendationEventLogger;
-import com.freshdirect.event.RecommendationEventsAggregate;
-import com.freshdirect.fdstore.aspects.FDFactoryProductInfoAspect;
-import com.freshdirect.fdstore.aspects.ProductStatisticProviderAspect;
-import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.FavoriteList;
@@ -39,14 +28,7 @@ import com.freshdirect.smartstore.RecommendationServiceConfig;
 import com.freshdirect.smartstore.RecommendationServiceType;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
-import com.freshdirect.smartstore.impl.AbstractRecommendationService;
-import com.freshdirect.smartstore.impl.AllProductInCategoryRecommendationService;
-import com.freshdirect.smartstore.impl.CandidateProductRecommendationService;
-import com.freshdirect.smartstore.impl.FavoritesRecommendationService;
-import com.freshdirect.smartstore.impl.FeaturedItemsRecommendationService;
-import com.freshdirect.webapp.taglib.smartstore.FeaturedItemsTag;
-import com.freshdirect.webapp.util.FDEventUtil;
-import com.mockrunner.mock.web.MockPageContext;
+import com.freshdirect.smartstore.dsl.CompileException;
 
 /**
  * @author zsombor
@@ -78,32 +60,32 @@ public class FDFavoritesTest extends TestCase {
         
         TestUtils.createTransaction(context);
         
-        AspectSystem aspectSystem = TestUtils.createAspectSystem();
+        TestUtils.createAspectSystem();
                
         eventLogger = new RecommendationEventLoggerMockup();
         RecommendationEventLogger.setInstance(eventLogger);
     }
 
-    FavoritesRecommendationService favrs = null;
+    RecommendationService favrs = null;
 
-    RecommendationService getFeaturedItemsService() {
+    RecommendationService getFeaturedItemsService() throws CompileException {
         if (favrs == null) {
-        	favrs = new FavoritesRecommendationService(new Variant("favorites", EnumSiteFeature.FAVORITES,
+        	favrs = SmartStoreServiceConfiguration.configure(new Variant("favorites", EnumSiteFeature.FAVORITES,
 					new RecommendationServiceConfig("favorites_config", RecommendationServiceType.FAVORITES)
-        	    .set(AbstractRecommendationService.CKEY_SAMPLING_STRATEGY, "deterministic")));
+        	    .set(SmartStoreServiceConfiguration.CKEY_SAMPLING_STRATEGY, "deterministic")));
         }
         return favrs;
     }
 
-    public void testRecommendationService() {
+    public void testRecommendationService() throws CompileException {
     	FavoriteList favorites = (FavoriteList) ContentFactory.getInstance().getContentNodeByKey(
-    			new ContentKey(FDContentTypes.FAVORITE_LIST, FavoritesRecommendationService.FAVORITES_NODE_NAME));
+    			new ContentKey(FDContentTypes.FAVORITE_LIST, SmartStoreServiceConfiguration.DEFAULT_FAVORITE_LIST_ID));
 
         assertNotNull("spe_cooki_cooki category", favorites);
 
-        SessionInput si = new SessionInput((String) null);
+        SessionInput si = new SessionInput((String) null, null);
 
-        List nodes = getFeaturedItemsService().recommendNodes(null, si);
+        List nodes = getFeaturedItemsService().recommendNodes(si);
         assertNotNull("recommended nodes", nodes);
         assertEquals("recommended nodes size", 5, nodes.size());
 

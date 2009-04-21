@@ -10,6 +10,7 @@ import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.ejb.DyfModelHome;
+import com.freshdirect.smartstore.sampling.ImpressionSampler;
 
 /**
  * Base class of DYF Recommendation Services
@@ -42,8 +43,9 @@ public abstract class DYFService extends BaseContentKeyRecommendationService {
 
 	
 
-	public DYFService(Variant variant) {
-		super(variant);
+	public DYFService(Variant variant, ImpressionSampler sampler,
+    		boolean catAggr, boolean includeCartItems) {
+		super(variant, sampler, catAggr, includeCartItems);
 
 		// connect to database
 		try {

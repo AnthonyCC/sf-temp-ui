@@ -8,7 +8,6 @@
 %><%@ page import="com.freshdirect.webapp.util.FDEventUtil"
 %><%@ page import="com.freshdirect.smartstore.fdstore.Recommendations"
 %><%@ page import="com.freshdirect.smartstore.fdstore.FDStoreRecommender"
-%><%@ page import="com.freshdirect.smartstore.Trigger"
 %><%@ page import="com.freshdirect.fdstore.util.EnumSiteFeature"
 %><%@ page import="com.freshdirect.webapp.util.ConfigurationStrategy"
 %><%@ page import="com.freshdirect.webapp.util.ConfigurationContext"
@@ -67,7 +66,7 @@ String tx_pricing_JSNameSpace = "DYF";
 	<table style="width: 669px;">
 	<fd:PIPLayout id="piRow" rowSize="3" impressions="<%= impressions %>" maxRowHeight="rowHeight">
 		<tr>
-		<fd:PIPRow id="pi" impressionRow="<%= piRow %>" isBlankCell="isBlankCell" productImage="prodImage">
+		<fd:PIPRow id="pi" impressionRow="<%= piRow %>" isBlankCell="isBlankCell">
 <%
 		if (isBlankCell.booleanValue()) {
 			%><td>&nbsp;</td><%
@@ -79,9 +78,7 @@ String tx_pricing_JSNameSpace = "DYF";
 				<table align="center">
 					<tr>
 						<td style="padding: 0; height: <%= rowHeight.intValue() %>px; vertical-align: bottom; text-align: center">
-							<a href="<%= FDURLUtil.getProductURI(product, recommendations.getVariant()) %>">
-								<img src="<%= prodImage.getPath() %>" style="border: 0"/>
-							</a>
+							<fd:ProductImage product="<%= product %>" action="<%= FDURLUtil.getProductURI(product, recommendations.getVariant()) %>" hideYourFave="false" />							
 						</td>
 					</tr>
 <%

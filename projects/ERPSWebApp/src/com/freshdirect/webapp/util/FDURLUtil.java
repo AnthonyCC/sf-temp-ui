@@ -23,6 +23,7 @@ import com.freshdirect.fdstore.content.ProxyProduct;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeVariant;
 import com.freshdirect.smartstore.Variant;
+import com.freshdirect.webapp.taglib.smartstore.Impression;
 
 
 
@@ -34,7 +35,9 @@ import com.freshdirect.smartstore.Variant;
  *
  */
 public class FDURLUtil {
-	public static final String URL_PARAM_SEP = "&amp;";
+	private static final String IMPRESSION_ID = "impId";
+
+    public static final String URL_PARAM_SEP = "&amp;";
 	
 	public static final String PRODUCT_PAGE_BASE		= "/product.jsp";
 	public static final String CATEGORY_PAGE_BASE		= "/category.jsp";
@@ -153,7 +156,19 @@ public class FDURLUtil {
 		return getProductURI(productNode, variant.getId(), variant.getSiteFeature().getName().toLowerCase(), trackingCodeEx, rank);
 	}
 
-
+        /**
+         * Generate product page URL
+         * (called from Featured Items pages)
+         * 
+         * @param productNode {@link ProductModel} product instance
+         * @param variantId {@link String} variant identifier
+         * @param trackingCode {@link String} Tracking code (dyf, cpage, ...)
+         * @param trackingCodeEx {@link String} Tracking code (fave, ...)
+         * @return URI that points to the page of product
+         */
+        public static String getProductURI(ProductModel productNode, String variantId, String trackingCode, String trackingCodeEx, int rank) {
+            return getProductURI(productNode, variantId, trackingCode,trackingCodeEx,rank, null);
+        }
 
 	/**
 	 * Generate product page URL
@@ -165,7 +180,7 @@ public class FDURLUtil {
 	 * @param trackingCodeEx {@link String} Tracking code (fave, ...)
 	 * @return URI that points to the page of product
 	 */
-	public static String getProductURI(ProductModel productNode, String variantId, String trackingCode, String trackingCodeEx, int rank) {
+	public static String getProductURI(ProductModel productNode, String variantId, String trackingCode, String trackingCodeEx, int rank, String impressionId) {
 		
 		StringBuffer uri = new StringBuffer();
 		
@@ -194,7 +209,9 @@ public class FDURLUtil {
 
 			uri.append(URL_PARAM_SEP + "rank=" + rank);
 		}
-
+		if (impressionId != null) {
+		    uri.append(URL_PARAM_SEP).append(IMPRESSION_ID+"=").append(impressionId);
+		}
 
 		return uri.toString();
 	}
@@ -339,6 +356,9 @@ public class FDURLUtil {
 	    			collectedParams.put("rank"+suffix, ((String[])params.get("rank"))[0]);
 	    		}
 	    	}
+	    }
+	    if (params.get(IMPRESSION_ID) != null) {
+	        collectedParams.put(IMPRESSION_ID, ((String[])params.get(IMPRESSION_ID))[0]);
 	    }
 	    return collectedParams;
 	}
@@ -502,5 +522,15 @@ public class FDURLUtil {
 		}
 
 		return uri.toString();
+	}
+	
+	
+	public static void logProductClick(HttpServletRequest req) {
+            String impressionId = req.getParameter(IMPRESSION_ID);
+            String trkId = req.getParameter("trk");
+            String trkdId = req.getParameter("trkd");
+            if (impressionId!=null) {
+                Impression.productClick(impressionId, trkId, trkdId);
+            }
 	}
 }
