@@ -239,28 +239,20 @@ response.setHeader("Cache-Control", "no-cache");
             <% if(FDSurveyConstants.PROFILE.equals(question.getName()))
                continue;
             %>
-			<tr>
-				<td class="padB6px">
-					<span class="t12px bolded tOrange"> <%=question.getShortDescr()%> </span>
-					<a href="/your_account/customer_profile.jsp" title="">Edit</a></td>
-			</tr>
-			<!-- answer row -->
-            <% if(surveyResponse==null || surveyResponse.getAnswerAsList(question.getName()).isEmpty()) {%>
-                
+            <% if(surveyResponse!=null && !surveyResponse.getAnswerAsList(question.getName()).isEmpty()) {%>
+                <tr>
+                    <td class="padB6px">
+                        <span class="t12px bolded tOrange"> <%=question.getShortDescr()%> </span>
+                        <a href="/your_account/customer_profile.jsp" title="">Edit</a></td>
+                </tr>
+                <!-- answer row -->
+               
+                <logic:iterate id="answer" collection="<%= surveyResponse.getAnswerAsList(question.getName()) %>" type="java.lang.String">
                 <tr>
                     <td class="padB12px">
-                        <div>N/A</div>
+                        <div><%=answer%></div>
                     </td>
                 </tr>
-                
-             <%} else { int ansCount=1;%>
-            
-            <logic:iterate id="answer" collection="<%= surveyResponse.getAnswerAsList(question.getName()) %>" type="java.lang.String">
-			<tr>
-				<td class="padB12px">
-					<div><%=answer%></div>
-				</td>
-			</tr>
             </logic:iterate>
             <%}%>
             </logic:iterate>
