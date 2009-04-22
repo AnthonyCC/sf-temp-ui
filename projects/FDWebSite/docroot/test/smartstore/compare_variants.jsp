@@ -435,7 +435,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 .prod-items .taxonomy{font-style:italic;}
 .prod-items td.info div{position:relative;height:80px;}
 .prod-items .position{font-weight:bold;position:absolute !important;height:auto !important;bottom:0px;right:0px;}
-.prod-items .score{font-weight:bold;position:absolute !important;height:auto !important;bottom:0px;left:0px;}
+.prod-items .score{font-weight:bold;position:absolute !important;height:auto !important;bottom:0px;left:0px;margin-right:25px;}
 .prod-items .positive{color:#006600;}
 .prod-items .negative{color:#990000;}
 .prod-items .unknown{color:#FF9900;}
@@ -755,6 +755,9 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 						}
 					%>
 					</select>
+					<% if (aRecService.getVariant().getServiceConfig().getType().equals(RecommendationServiceType.SCRIPTED) ) {  %>
+						<table class="text11" style="border: 1px solid black; margin: 2px auto; width: auto;"><tr><td style="width: auto; padding: 4px;"><%= aRecService.getDescription() %></td></tr></table>
+					<% } %>
 
 					<p class="not-found">
 					<% if (variantA != null && variantA.equals(userVariant)) { %>
@@ -776,7 +779,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 				<% if (!"simple".equals(view)) { %>
 					<div class="title14"><% if (scriptedRecServ != null) { %>Custom Script<% } else { %>Variant B<% } %></div>
 					<% if (scriptedRecServ != null) {  %>
-						<div class="text11" style="border: 1px solid black; margin: 0px auto; padding: 4px;"><%= scriptedRecServ.getDescription() %></div>
+						<table class="text11" style="border: 1px solid black; margin: 2px auto; width: auto;"><tr><td style="width: auto; padding: 4px;"><%= scriptedRecServ.getDescription() %></td></tr></table>
 					<% } else { // if (scriptedRecServ!=null)  %>
 					<select name="variantB" onchange="this.form.submit();">
 					<%
@@ -827,6 +830,9 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 						}
 					%>
 					</select>
+					<% if (bRecService.getVariant().getServiceConfig().getType().equals(RecommendationServiceType.SCRIPTED) ) {  %>
+						<table class="text11" style="border: 1px solid black; margin: 2px auto; width: auto;"><tr><td style="width: auto; padding: 4px;"><%= bRecService.getDescription() %></td></tr></table>
+					<% } %>
 					<p class="not-found">
 					<% if (variantB != null && variantB.equals(userVariant)) { %>
 						<b>This is the user's variant.</b>
