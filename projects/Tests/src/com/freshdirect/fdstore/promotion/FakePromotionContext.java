@@ -151,4 +151,24 @@ public class FakePromotionContext implements PromotionContextI {
 	public Discount getHeaderDiscount(){
 		return null;
 	}
+
+	public boolean isPostPromoConflictEnabled() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public void clearLineItemDiscounts() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public double getTotalLineItemDiscount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public void clearHeaderDiscounts() {
+		// TODO Auto-generated method stub
+		
+	}
 }
