@@ -32,8 +32,10 @@
 <%@page import="com.freshdirect.smartstore.SessionInput"%>
 <%@page import="com.freshdirect.smartstore.fdstore.CohortSelector"%>
 <%@page import="com.freshdirect.smartstore.fdstore.FDStoreRecommender"%>
+<%@page import="com.freshdirect.smartstore.fdstore.FactorUtil"%>
 <%@page import="com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration"%>
 <%@page import="com.freshdirect.smartstore.fdstore.SmartStoreUtil"%>
+<%@page import="com.freshdirect.smartstore.fdstore.StoreLookup"%>
 <%@page import="com.freshdirect.smartstore.fdstore.VariantSelection"%>
 <%@page import="com.freshdirect.test.TestSupport"%>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
@@ -362,6 +364,9 @@ if (defaultView.equals(view)) {
 } else {
 	urlG.set("view", view);
 }
+
+StoreLookup qrLookup = "detailed".equals(view) ? FactorUtil.getDescretizedProduceRatingLookup1() : null;
+StoreLookup nsLookup = "detailed".equals(view) ? FactorUtil.getNewnessLookup() : null;
 
 /* redirect */
 String newURL = urlG.build();
@@ -771,7 +776,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 				<% if (!"simple".equals(view)) { %>
 					<div class="title14"><% if (scriptedRecServ != null) { %>Custom Script<% } else { %>Variant B<% } %></div>
 					<% if (scriptedRecServ != null) {  %>
-						<table style="border: 1px solid black; width: auto; margin: 0px auto;"><tr><td class="text12" style="width: auto; padding: 4px;"><%= scriptedRecServ.getDescription() %></td></tr></table>
+						<div class="text11" style="border: 1px solid black; margin: 0px auto; padding: 4px;"><%= scriptedRecServ.getDescription() %></div>
 					<% } else { // if (scriptedRecServ!=null)  %>
 					<select name="variantB" onchange="this.form.submit();">
 					<%
@@ -860,6 +865,14 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 							} else if (!found) {
 								notFound = " style=\"background-color: #DFD;\"";								
 							}
+							String days = "";
+							if ("detailed".equals(view)) {
+								int d = (int) nsLookup.getVariable(cnm);
+								if (d < -2000000000)
+									days = "&lt;unknown&gt;";
+								else
+									days = -d + " day" + (-d > 1 ? "s" : "");
+							}
 				%>
 					<tr>
 						<% if ("detailed".equals(view)) { %>
@@ -873,7 +886,13 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 						<td class="info"<%= notFound %>><div>
 								<span class="title16" title="<%= cnm.getContentName() %>"><%= cnm.getFullName() %></span><br>
 								<span class="taxonomy text13"><%= JspMethods.getTaxonomy(pm, true) %></span>
-								<!-- <div class="score text12">Score: &lt;currently no data available&gt;</div> -->
+								<% if ("detailed".equals(view)) { %>
+								<div class="score text12">
+									<span style="white-space: nowrap">Deals Percentage: <%= pm.getDealPercentage() %>%</span>&nbsp;
+									<span style="white-space: nowrap">Quality Rating: <%= qrLookup.getVariable(cnm) %></span>&nbsp;
+									<span style="white-space: nowrap">Product Age: <%= days %></span>
+								</div>
+								<% } %>
 						</div></td>
 					</tr> 
 				<%
@@ -918,6 +937,14 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 							} else {
 								notFound = " style=\"background-color: #DFD;\"";
 							}
+							String days = "";
+							if ("detailed".equals(view)) {
+								int d = (int) nsLookup.getVariable(cnm);
+								if (d < -2000000000)
+									days = "&lt;unknown&gt;";
+								else
+									days = -d + " day" + (-d > 1 ? "s" : "");
+							}
 				%>
 					<tr<%= notFound %>>
 						<td class="pic">
@@ -926,7 +953,13 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 						<td class="info"><div>
 								<span class="title16" title="<%= cnm.getContentName() %>"><%= cnm.getFullName() %></span><br>
 								<span class="taxonomy text13"><%= JspMethods.getTaxonomy(pm, true) %></span>
-								<!-- <div class="score text12">Score: &lt;currently no data available&gt;</div> -->
+								<% if ("detailed".equals(view)) { %>
+								<div class="score text12">
+									<span style="white-space: nowrap">Deals Percentage: <%= pm.getDealPercentage() %>%</span>&nbsp;
+									<span style="white-space: nowrap">Quality Rating: <%= qrLookup.getVariable(cnm) %></span>&nbsp;
+									<span style="white-space: nowrap">Product Age: <%= days %></span>
+								</div>
+								<% } %>
 								<% if (!"simple".equals(view)) { %>
 								<div class="position text12 <%= changeColor %>"><%= changeString %></div>
 								<% } %>

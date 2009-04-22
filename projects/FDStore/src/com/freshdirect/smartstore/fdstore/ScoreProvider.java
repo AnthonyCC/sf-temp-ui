@@ -605,6 +605,7 @@ public class ScoreProvider implements DataAccess {
 	    names.add(ORIGINAL_SCORES_GLOBAL);
 	    names.add(ORIGINAL_SCORES_PERSONALIZED);
 	    names.add("Newness");
+	    names.add("QualityRating_Discretized1");
 	    	    
 	    // extra factors can be parameterized
 	    names.addAll(FDStoreProperties.getSmartstorePreloadFactors());
