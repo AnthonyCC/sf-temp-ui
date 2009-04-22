@@ -127,8 +127,15 @@ boolean showMinError = true;
 </form>
 
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-<!-- Place of SmartStore Recommendations Tag -->
-<%@ include file="/includes/smartstore/i_dyf.jspf" %>
+
+
+<!-- ===================================== -->
+<!-- ============ Cart & tabs ============ -->
+<!-- ===================================== -->
+
+<%@ include file="/includes/smartstore/i_recommender_tabs.jspf" %>
+
+
 <BR>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 <% if (!"true".equals(request.getAttribute("recommendationsRendered"))) { %>
