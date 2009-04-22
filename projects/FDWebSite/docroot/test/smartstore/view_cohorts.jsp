@@ -207,7 +207,7 @@ p.green { color: #009900; }
    				String varId = (String) it2.next();
     	%>
     	<td class="text13" title="Variant">
-    		<a href="/test/smartstore/view_config.jsp#<%= varId %>"><%= varId %></a>
+    		<a href="/test/smartstore/view_config.jsp?expand=<%= sf.getName() %>#<%= varId %>"><%= varId %></a>
     	</td>
     	<%
     		}

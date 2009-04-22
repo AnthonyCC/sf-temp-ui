@@ -38,6 +38,7 @@
 
 Iterator it;
 URLGenerator urlG = new URLGenerator(request);
+System.err.println(request.getServletPath());
 String origURL = urlG.build();
 
 if (urlG.get("refresh") != null) {
@@ -51,6 +52,10 @@ if (urlG.get("refresh") != null) {
 
 List siteFeatures = EnumSiteFeature.getSmartStoreEnumList();
 Collections.sort(siteFeatures);
+
+EnumSiteFeature expandSf = null;
+if (urlG.get("expand") != null)
+	expandSf = EnumSiteFeature.getEnum(urlG.get("expand")); 
 
 Map varMap = new HashMap();
 
@@ -72,7 +77,7 @@ Map cohorts = helper.getCohorts();
 
 body{margin:20px 60px;color:#333333;background-color:#fff;}
 input{font-weight:normal;}
-p{margin:0px;padding:0px 0px 8px;}
+p{margin:0px;padding:0px 0px 15px;}
 p.head{padding:10px 0px 20px;}
 a{color:#336600;}.test-page a:VISITED{color:#336600;}
 table{border-collapse:collapse;border-spacing:0px;width:100%;}
@@ -80,9 +85,11 @@ table.t1{width:auto;margin-bottom:20px; border: 3px}
 table.t1 td{border:1px solid black;padding:4px 8px;}
 table.t1 td.sf{background-color:#ccc;}
 table.t1 td.space{border-width:0px 0px;}
+table.t1 td.expander{padding:15px 0px 0px;}
 table.t1 td.in-use{border-width:0px;padding:10px 0px 4px;}
 .info{color:red}
-.no-use{color:#999 !important;border-color:#999 !important;}
+.no-use{color:#999 !important;}
+td.no-use{border-color:#999 !important;}
 .faulty{border-color:red !important;}
 .erring{color:red; !important}
 .warning{color:#FF6633; !important}
@@ -90,6 +97,9 @@ table.t1 td.in-use{border-width:0px;padding:10px 0px 4px;}
 .valid{font-weight:bold;}
 .overridden{text-decoration: underline;}
 .default{font-style: italic;}
+.hidden{display: none;}
+.visible{display: block;}
+.hand{cursor: pointer;}
 	</style>
 </head>
 <body>
@@ -111,7 +121,41 @@ table.t1 td.in-use{border-width:0px;padding:10px 0px 4px;}
     		<li><span class="warning">Orange</span> - warning</li>
     	</ul>
     </div>
+	<script type="text/javascript">
+	function expand(sf) {
+		var label = document.getElementById('lbl-' + sf);
+		label.title = 'Site Feature';
+		label.onclick = null;
+		label.className = '';
+		document.getElementById('sf-' + sf).className =
+		document.getElementById('sf-' + sf).className.replace(/hidden/, '');
+	}
 
+	function expandAll() {
+
+<%
+	it = siteFeatures.iterator();
+	while (it.hasNext()) {
+		EnumSiteFeature sf = (EnumSiteFeature) it.next();
+		response.getWriter().println("document.getElementById('lbl-" + sf.getName() + "').className = 'hidden';");
+		response.getWriter().println("document.getElementById('sf-" + sf.getName() +
+				"').className = document.getElementById('sf-" + sf.getName() + "').className.replace(/hidden/, '');");
+	}
+%>
+	}
+
+	function expandNotInUse(sf) {
+		document.getElementById('vnu-' + sf).style.display = 'none';
+		var sfDiv = document.getElementById('sf-' + sf);
+		var trs = sfDiv.getElementsByTagName('tr');
+		for (var i = 0; i < trs.length; i++) {
+			var node = trs.item(i);
+			if (node.className != null)
+				node.className = node.className.replace(/hidden/, '');
+		}
+	}
+
+	</script>
    	<%
 	it = siteFeatures.iterator();
 	while (it.hasNext()) {
@@ -119,16 +163,62 @@ table.t1 td.in-use{border-width:0px;padding:10px 0px 4px;}
 		Map curVars = SmartStoreServiceConfiguration.getInstance().getServices(sf);
 		Map sortedVars = SmartStoreUtil.getVariantsSortedInWeight(sf);
 		varMap.put(sf, curVars);
-   	%>
-    <h1 title="Site Feature"><%= sf.getTitle() %> (<%= sf.getName() %>)</h1>
-   	<%
+
  		Iterator it2 = sortedVars.keySet().iterator();
-   		if (!it2.hasNext()) {
+ 		List varErrors = new ArrayList();
+		while (it2.hasNext()) {
+			String varId = (String) it2.next();
+			RecommendationService service = (RecommendationService) curVars.get(varId);
+   			Variant variant = service.getVariant();
+			int weight = ((Integer) sortedVars.get(varId)).intValue();
+  			boolean faulty = (!variant.getServiceConfig().getType().equals(RecommendationServiceType.NIL)
+  					&& !variant.getServiceConfig().getType().equals(RecommendationServiceType.TAB_STRATEGY)) &&
+  					service instanceof NullRecommendationService;
+  			if (weight > 0 && faulty) {
+  				varErrors.add(varId);
+  			}
+		}
+		it2 = varErrors.iterator();
+		String sfError = "";
+		if (it2.hasNext()) {
+			sfError = " &ndash; Error in variant &lsquo;" + (String) it2.next();
+			sfError += "&rsquo;";
+		}
+		while (it2.hasNext()) {
+			String varId = (String) it2.next();
+			if (it2.hasNext())
+				sfError += ", &lsquo;" + varId + "&rsquo;";
+			else
+				sfError += " and &lsquo;" + varId + "&rsquo;";					
+		}
+ 		it2 = sortedVars.keySet().iterator();
+ 		boolean emptySf = !it2.hasNext();
+ 		String sfClass = sfError.length() != 0 ? "erring" : null;
+ 		if (emptySf)
+ 			sfClass = "no-use";
+ 		boolean expand = sf.equals(expandSf);
+	%>
+    <div title="Site Feature"<%= sfClass != null ?
+    		" class=\"" + sfClass + "\"" : "" %> style="padding: 10px 0px; 4px;">
+    	<% if (expand) { %>
+    	<span id="lbl-<%= sf.getName() %>" title="Site Feature">
+    	<span class="title18"><%= sf.getTitle() %> (<%= sf.getName() %>)<%= sfError %></span>
+    	</span>
+    	<% } else { %>
+    	<span id="lbl-<%= sf.getName() %>" title="Click to expand" class="hand" onclick="expand('<%= sf.getName() %>'); return false;">
+    	<span class="title18"><%= sf.getTitle() %> (<%= sf.getName() %>)<%= sfError %></span>
+    	</span>
+    	<% } %>
+    </div>
+   	<%
+ 		it2 = sortedVars.keySet().iterator();
+   		if (emptySf) {
    	%>
-   	<p class="text13">No variants.</p>
+   	<p class="text13 no-use hidden" id="sf-<%= sf.getName() %>" style="margin-left: 3em;">No variants.</p>
    	<%
    		} else {
    	%>
+   	<div <%= expand ? "" : "class=\"hidden\" "%>id="<%= "sf-" + sf.getName() %>" style="margin-left: 3em;">
     <table class="t1">
     	<%
     		boolean notFirst = false;
@@ -142,14 +232,15 @@ table.t1 td.in-use{border-width:0px;padding:10px 0px 4px;}
    				boolean faulty = (!variant.getServiceConfig().getType().equals(RecommendationServiceType.NIL)
    						&& !variant.getServiceConfig().getType().equals(RecommendationServiceType.TAB_STRATEGY)) &&
    						service instanceof NullRecommendationService;
-   				String weiStr = faulty ? " faulty" : (weight > 0 ? "" : " no-use");
+   				String tdClass = faulty ? " faulty" : (weight > 0 ? "" : " no-use");
+   				String trClass = weight > 0 ? "" : "hidden";
 				SortedMap statuses = service.getVariant().getServiceConfig().getConfigStatus();
 
 				newInUse = weight > 0 ? 1 : 0;
 				if (notFirst) {
     	%>
-    	<tr>
-    		<td class="text13bold space<%= weiStr %>" colspan="2">
+    	<tr class="<%= trClass %>">
+    		<td class="text13bold space<%= tdClass %>" colspan="2">
     		<% if (newInUse == inUse) { %>
     			<a name="<%= varId %>">&nbsp;</a>
     		<% } else { %>
@@ -160,36 +251,40 @@ table.t1 td.in-use{border-width:0px;padding:10px 0px 4px;}
     	<%
     			}
     	%>
-    	<tr>
     	<% 
     			if (newInUse != inUse) {
     				inUse = newInUse;
+    				if (inUse == 0) {
     	%>
-    	<td class="title18 in-use<%= weiStr %>" colspan="2">
+    	<tr id="vnu-<%= sf.getName() %>">
+    		<td class="text10 left space expander" colspan="2"><a href="#" onclick="expandNotInUse('<%= sf.getName() %>'); return false;">Expand unused</a></td>
+    	</tr>
+    	<%
+    				}
+    	%>
+    	<tr class="<%= trClass %>">
+    	<td class="title16 in-use<%= tdClass %>" colspan="2">
     		<%= inUse > 0 ? "Variants in Use" : "Variants not in Use" %>
     	</td>
     	</tr>
-    	<tr><td class="text13bold space<%= weiStr %>" colspan="2"><a name="<%= varId %>">&nbsp;</a></td>
+    	<tr class="<%= trClass %>">
+    		<td class="text13bold space<%= tdClass %>" colspan="2"><a name="<%= varId %>">&nbsp;</a></td>
     	</tr>
     	<%
     			}
     	%>
-    	<tr>
-    	<td class="text13bold var<%= weiStr %>" colspan="2" title="Variant">
-    		<span class="<%= faulty ? "erring" : "" %>"><%= varId %><%= faulty ? " - Misconfigured and Not in Operation" : "" %></span>
+    	<tr class="<%= trClass %>">
+    	<td class="text13bold var<%= tdClass %>" colspan="2" title="Variant">
+    		<span class="<%= faulty ? "erring" : "" %>"><%= varId %><%= faulty ? " &ndash; Misconfigured and Not in Operation" : "" %></span>
     	</td>
     	</tr>
-    	<tr>
-    	<td class="text13 left<%= weiStr %>" title="Parameter Name">Variant type</td>
-    	<td class="text13<%= weiStr %>" title="<%= service.getClass().getName() %>"><%= variant.getServiceConfig().getType().getName() %></td>
+    	<tr class="<%= trClass %>">
+    	<td class="text13 left<%= tdClass %>" title="Parameter Name">Variant type</td>
+    	<td class="text13<%= tdClass %>" title="<%= service.getClass().getName() %>"><%= variant.getServiceConfig().getType().getName() %></td>
     	</tr>
-    	<tr>
-    	<td class="text13 left<%= weiStr %>" title="Parameter Name">Customers percentage</td>
-    	<td class="text13<%= weiStr %>" title="Parameter Value"><%= weight %>%</td>
-    	</tr>
-    	<tr>
-    	<td class="text13 left<%= weiStr %>" title="Parameter Name">Description</td>
-    	<td class="text13<%= weiStr %>" title="Parameter Value"><%= service.getDescription() %></td>
+    	<tr class="<%= trClass %>">
+    	<td class="text13 left<%= tdClass %>" title="Parameter Name">Customers percentage</td>
+    	<td class="text13<%= tdClass %>" title="Parameter Value"><%= weight %>%</td>
     	</tr>
     	<%
 				for (Iterator keyIt = statuses.keySet().iterator(); keyIt.hasNext(); ) {
@@ -211,15 +306,15 @@ table.t1 td.in-use{border-width:0px;padding:10px 0px 4px;}
 					if (status.isOverridden())
 						textClass += " overridden";
 		%>
-    	<tr>
-			<td class="text13 left<%= weiStr %>" title="<%= description %>">
+    	<tr class="<%= trClass %>">
+			<td class="text13 left<%= tdClass %>" title="<%= description %>">
 				<span class="<%= textClass %>"><%= configKey %></span>
 			</td>
-	    	<td class="text13<%= weiStr %>" title="Parameter Value"><span class="<%= textClass %>"><%= status.getAppliedValue() +
+	    	<td class="text13<%= tdClass %>" title="Parameter Value"><span class="<%= textClass %>"><%= status.getAppliedValue() +
 	    			(!status.isValueSame() ? " (loaded: " + status.getLoadedValue() + ")" : "") %></span><%
 	    					
 	    			if (error != null || warning != null) { 
-	    	%><span class="valid <%= error != null ? "erring" : "warning" %>"> - <%= error != null ? error : warning %></span><%
+	    	%><span class="valid <%= error != null ? "erring" : "warning" %>"> &ndash; <%= error != null ? error : warning %></span><%
 	    			} 
 	    	%></td>
 		</tr>
@@ -229,20 +324,21 @@ table.t1 td.in-use{border-width:0px;padding:10px 0px 4px;}
    			}
 	  	%>
   	</table>
+  	</div>
     <%
     	}
    	}
 	%>
 	<% if (siteFeatures.size() > 0) { %>
-    <p>Hover over the items in the table to view their meanings.</p>
+    <p style="padding-top: 20px;">Hover over the items in the table to view their meanings.</p>
     <div>
     	Legend for variant configuration parameters:
     	<ul>
-    		<li><b>Bold</b> - valid</li>
-    		<li><i>Italic</i> - using default value</li>
-    		<li><u>Underlined</u> - overridden</li>
-    		<li><span class="erring valid">Red Bold</span> - invalid</li>
-    		<li><span class="warning">Orange</span> - warning</li>
+    		<li><b>Bold</b> &ndash; valid</li>
+    		<li><i>Italic</i> &ndash; using default value</li>
+    		<li><u>Underlined</u> &ndash; overridden</li>
+    		<li><span class="erring valid">Red Bold</span> &ndash; invalid</li>
+    		<li><span class="warning">Orange</span> &ndash; warning</li>
     	</ul>
     </div>
 	<p><a href="<%= urlG.set("refresh",1).build() %>">Click to reload configuration</a></p>
