@@ -1,222 +1,288 @@
 
--- YMAL/YF
--- site feature is built in
+-- New Site Features
 
-INSERT INTO ss_variants (id, type, feature) VALUES ('ymal-yf-var', 'ymal-yf', 'YMAL_YF');
+INSERT INTO ss_site_feature (id, title) VALUES ('C_SAVE_YF', 'C''n''T Save on Your Favorites');
+INSERT INTO ss_site_feature (id, title) VALUES ('C_SAVE_FDF', 'C''n''T Save on FreshDirect Favorites');
+INSERT INTO ss_site_feature (id, title) VALUES ('C_DEALS', 'C''n''T Don''t Miss Deals');
+INSERT INTO ss_site_feature (id, title) VALUES ('C_PEAK_PRODUCE', 'C''n''T Peak Season Produce');
+INSERT INTO ss_site_feature (id, title) VALUES ('C_PEAK_FRUIT', 'C''n''T Peak Season Fruit');
+INSERT INTO ss_site_feature (id, title) VALUES ('C_HEALTHY_SNACKS', 'C''n''T Healthy Snacks');
+INSERT INTO ss_site_feature (id, title) VALUES ('C_NEW_PRODUCTS', 'C''n''T New Products');
+INSERT INTO ss_site_feature (id, title) VALUES ('C_YMAL', 'C''n''T You Might Also Like');
+INSERT INTO ss_site_feature (id, title) VALUES ('C_YMAL_YF', 'C''n''T YMAL from Your Favorites');
+
+-- Save on Your Blah-blah
+-- THIS SECTION HAS TO BE CHANGED ACCORDINGLY WITH ACTUAL VALUES OF SAVE VARIANTS
+
+INSERT INTO ss_variants (id, type, feature, alias_id) VALUES ('c_save_yf_1', 'alias', 'C_SAVE_YF', 'dyf-freqbought3');
+INSERT INTO ss_variants (id, type, feature, alias_id) VALUES ('c_save_fdf_1', 'alias', 'C_SAVE_FDF', 'favorites-1');
+INSERT INTO ss_variant_params (id, key, value)
+    VALUES ('c_save_yf_1', 'prez_title', 'SAVE ON YOUR FAVORITES');
+INSERT INTO ss_variant_params (id, key, value)
+    VALUES ('c_save_fdf_1', 'prez_title', 'SAVE ON FRESHDIRECT FAVORITES');
+
+
+-- Don't Miss Deals
+
+INSERT INTO ss_variants (id, type, feature) VALUES ('c_deal_1', 'scripted', 'C_DEALS');
 
 INSERT INTO ss_variant_params (id, key, value)
-	VALUES ('ymal-yf-var', 'prez_title', 'You Might Also Like');
+    VALUES ('c_deal_1', 'generator',
+    'RecursiveNodes("FreshDirect"):atLeast(QualityRating_Discretized2,0):between(DealsPercentage,0.1,0.75)');
+INSERT INTO ss_variant_params (id, key, value)
+    VALUES ('c_deal_1', 'scoring', 'Recency_Discretized:top; DealsPercentage_Discretized; Popularity_Discretized');
+INSERT INTO ss_variant_params (id, key, value)
+    VALUES ('c_deal_1', 'sampling_strat', 'power');
+INSERT INTO ss_variant_params (id, key, value)
+    VALUES ('c_deal_1', 'top_n', '20');
+INSERT INTO ss_variant_params (id, key, value)
+    VALUES ('c_deal_1', 'top_perc', '2.0');
+INSERT INTO ss_variant_params (id, key, value)
+    VALUES ('c_deal_1', 'exponent', '0.4');
+INSERT INTO ss_variant_params (id, key, value)
+    VALUES ('c_deal_1', 'prez_title', 'DON''T-MISS DEALS');
+INSERT INTO ss_variant_params (id, key, value)
+    VALUES ('c_deal_1', 'prez_desc', 'Great deals on some of our most popular items.');
+    
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C1', 'c_deal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C2', 'c_deal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C3', 'c_deal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C4', 'c_deal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C5', 'c_deal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C6', 'c_deal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C7', 'c_deal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C8', 'c_deal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C9', 'c_deal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C10', 'c_deal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C11', 'c_deal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C12', 'c_deal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C13', 'c_deal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C14', 'c_deal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C15', 'c_deal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C16', 'c_deal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C17', 'c_deal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C18', 'c_deal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C19', 'c_deal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C20', 'c_deal_1', sysdate);
 
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C1', 'ymal-yf-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C2', 'ymal-yf-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C3', 'ymal-yf-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C4', 'ymal-yf-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C5', 'ymal-yf-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C6', 'ymal-yf-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C7', 'ymal-yf-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C8', 'ymal-yf-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C9', 'ymal-yf-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C10', 'ymal-yf-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C11', 'ymal-yf-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C12', 'ymal-yf-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C13', 'ymal-yf-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C14', 'ymal-yf-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C15', 'ymal-yf-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C16', 'ymal-yf-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C17', 'ymal-yf-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C18', 'ymal-yf-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C19', 'ymal-yf-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C20', 'ymal-yf-var', sysdate);
+-- Peak Produce
+
+INSERT INTO ss_variants (id, type, feature) VALUES ('c_peak_prod_1', 'scripted', 'C_PEAK_PRODUCE');
+
+INSERT INTO ss_variant_params (id, key, value)
+    VALUES ('c_peak_prod_1', 'generator', 'RecursiveNodes("fru","veg"):atLeast(QualityRating_Discretized2,0)');
+INSERT INTO ss_variant_params (id, key, value)
+    VALUES ('c_peak_prod_1', 'scoring', 'Recency_Discretized:top; QualityRating; Popularity_Discretized; ReorderRate_DepartmentNormalized');
+INSERT INTO ss_variant_params (id, key, value)
+    VALUES ('c_peak_prod_1', 'sampling_strat', 'power');
+INSERT INTO ss_variant_params (id, key, value)
+    VALUES ('c_peak_prod_1', 'top_n', '20');
+INSERT INTO ss_variant_params (id, key, value)
+    VALUES ('c_peak_prod_1', 'top_perc', '2.0');
+INSERT INTO ss_variant_params (id, key, value)
+    VALUES ('c_peak_prod_1', 'exponent', '0.4');
+INSERT INTO ss_variant_params (id, key, value)
+    VALUES ('c_peak_prod_1', 'prez_title', 'DON''T-MISS DEALS');
+INSERT INTO ss_variant_params (id, key, value)
+    VALUES ('c_peak_prod_1', 'prez_desc', 'We test every item every day to find produce that will be great for delivery tomorrow.<br><a href="javascript:pop(''/brandpop.jsp?brandId=fd_ratings'',400,585)">Click here to learn about our Daily Quality Ratings.</a>');
+    
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C1', 'c_peak_prod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C2', 'c_peak_prod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C3', 'c_peak_prod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C4', 'c_peak_prod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C5', 'c_peak_prod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C6', 'c_peak_prod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C7', 'c_peak_prod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C8', 'c_peak_prod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C9', 'c_peak_prod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C10', 'c_peak_prod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C11', 'c_peak_prod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C12', 'c_peak_prod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C13', 'c_peak_prod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C14', 'c_peak_prod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C15', 'c_peak_prod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C16', 'c_peak_prod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C17', 'c_peak_prod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C18', 'c_peak_prod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C19', 'c_peak_prod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C20', 'c_peak_prod_1', sysdate);
+
+-- Peak Season Fruits
+
+INSERT INTO ss_variants (id, type, feature) VALUES ('c_peak_fru_1', 'scripted', 'C_PEAK_FRUIT');
+
+INSERT INTO ss_variant_params (id, key, value)
+    VALUES ('c_peak_fru_1', 'generator', 'RecursiveNodes("fru"):atLeast(QualityRating_Discretized2,0)');
+INSERT INTO ss_variant_params (id, key, value)
+    VALUES ('c_peak_fru_1', 'scoring', 'Recency_Discretized:top; QualityRating; Popularity_Discretized; ReorderRate_DepartmentNormalized');
+INSERT INTO ss_variant_params (id, key, value)
+    VALUES ('c_peak_fru_1', 'sampling_strat', 'power');
+INSERT INTO ss_variant_params (id, key, value)
+    VALUES ('c_peak_fru_1', 'top_n', '20');
+INSERT INTO ss_variant_params (id, key, value)
+    VALUES ('c_peak_fru_1', 'top_perc', '2.0');
+INSERT INTO ss_variant_params (id, key, value)
+    VALUES ('c_peak_fru_1', 'exponent', '0.4');
+INSERT INTO ss_variant_params (id, key, value)
+    VALUES ('c_peak_fru_1', 'cos_filter', 'CORPORATE');
+INSERT INTO ss_variant_params (id, key, value)
+    VALUES ('c_peak_fru_1', 'prez_title', 'DON''T-MISS DEALS');
+INSERT INTO ss_variant_params (id, key, value)
+    VALUES ('c_peak_fru_1', 'prez_desc', 'We test every item every day to find produce that will be great for delivery tomorrow.<br><a href="javascript:pop(''/brandpop.jsp?brandId=fd_ratings'',400,585)">Click here to learn about our Daily Quality Ratings.</a>');
+
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C1', 'c_peak_fru_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C2', 'c_peak_fru_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C3', 'c_peak_fru_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C4', 'c_peak_fru_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C5', 'c_peak_fru_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C6', 'c_peak_fru_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C7', 'c_peak_fru_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C8', 'c_peak_fru_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C9', 'c_peak_fru_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C10', 'c_peak_fru_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C11', 'c_peak_fru_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C12', 'c_peak_fru_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C13', 'c_peak_fru_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C14', 'c_peak_fru_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C15', 'c_peak_fru_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C16', 'c_peak_fru_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C17', 'c_peak_fru_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C18', 'c_peak_fru_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C19', 'c_peak_fru_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C20', 'c_peak_fru_1', sysdate);
+
+-- Healthy Snacks
+
+INSERT INTO ss_variants (id, type, feature) VALUES ('c_hea_snck_1', 'favorites', 'C_HEALTHY_SNACKS');
+
+INSERT INTO ss_variant_params (id, key, value)
+    VALUES ('c_hea_snck_1', 'favorite_list_id', 'fd_favs_healthy_snacks');
+INSERT INTO ss_variant_params (id, key, value)
+    VALUES ('c_hea_snck_1', 'cos_filter', 'CORPORATE');
+INSERT INTO ss_variant_params (id, key, value)
+    VALUES ('c_hea_snck_1', 'prez_title', 'DON''T-MISS DEALS');
+INSERT INTO ss_variant_params (id, key, value)
+    VALUES ('c_hea_snck_1', 'prez_desc', 'Keep the office healthy and happy with favorite fruit and nut snacks.');
+
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C1', 'c_hea_snck_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C2', 'c_hea_snck_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C3', 'c_hea_snck_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C4', 'c_hea_snck_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C5', 'c_hea_snck_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C6', 'c_hea_snck_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C7', 'c_hea_snck_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C8', 'c_hea_snck_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C9', 'c_hea_snck_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C10', 'c_hea_snck_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C11', 'c_hea_snck_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C12', 'c_hea_snck_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C13', 'c_hea_snck_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C14', 'c_hea_snck_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C15', 'c_hea_snck_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C16', 'c_hea_snck_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C17', 'c_hea_snck_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C18', 'c_hea_snck_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C19', 'c_hea_snck_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C20', 'c_hea_snck_1', sysdate);
 
 -- New Products
 
-INSERT INTO ss_site_feature (id, title) VALUES ('NEW_PRODUCTS', 'New Products');
-
-INSERT INTO ss_variants (id, type, feature) VALUES ('new-prods-var', 'scripted', 'NEW_PRODUCTS');
+INSERT INTO ss_variants (id, type, feature) VALUES ('c_newprod_1', 'scripted', 'C_NEW_PRODUCTS');
 
 INSERT INTO ss_variant_params (id, key, value)
-	VALUES ('new-prods-var', 'generator', 'RecursiveNodes("FreshDirect"):atLeast(Newness,0-1250)');
+	VALUES ('c_newprod_1', 'generator', 'RecursiveNodes("FreshDirect"):atLeast(Newness,0-30)');
 INSERT INTO ss_variant_params (id, key, value)
-	VALUES ('new-prods-var', 'scoring', 'DealsPercentage_Discretized; Newness;');
+	VALUES ('c_newprod_1', 'scoring', 'DealsPercentage_Discretized; Newness;');
 INSERT INTO ss_variant_params (id, key, value)
-    VALUES ('new-prods-var', 'sampling_strat', 'power');
+    VALUES ('c_newprod_1', 'sampling_strat', 'power');
 INSERT INTO ss_variant_params (id, key, value)
-    VALUES ('new-prods-var', 'top_n', '20');
+    VALUES ('c_newprod_1', 'top_n', '20');
 INSERT INTO ss_variant_params (id, key, value)
-    VALUES ('new-prods-var', 'top_perc', '2.0');
+    VALUES ('c_newprod_1', 'top_perc', '2.0');
 INSERT INTO ss_variant_params (id, key, value)
-    VALUES ('new-prods-var', 'exponent', '0.4');
+    VALUES ('c_newprod_1', 'exponent', '0.4');
+INSERT INTO ss_variant_params (id, key, value)
+    VALUES ('c_newprod_1', 'prez_title', 'DON''T-MISS DEALS');
+INSERT INTO ss_variant_params (id, key, value)
+    VALUES ('c_newprod_1', 'prez_desc', 'We''re constantly adding new brands and products!');
 
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C1', 'new-prods-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C2', 'new-prods-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C3', 'new-prods-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C4', 'new-prods-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C5', 'new-prods-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C6', 'new-prods-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C7', 'new-prods-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C8', 'new-prods-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C9', 'new-prods-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C10', 'new-prods-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C11', 'new-prods-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C12', 'new-prods-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C13', 'new-prods-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C14', 'new-prods-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C15', 'new-prods-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C16', 'new-prods-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C17', 'new-prods-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C18', 'new-prods-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C19', 'new-prods-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C20', 'new-prods-var', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C1', 'c_newprod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C2', 'c_newprod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C3', 'c_newprod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C4', 'c_newprod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C5', 'c_newprod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C6', 'c_newprod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C7', 'c_newprod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C8', 'c_newprod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C9', 'c_newprod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C10', 'c_newprod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C11', 'c_newprod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C12', 'c_newprod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C13', 'c_newprod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C14', 'c_newprod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C15', 'c_newprod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C16', 'c_newprod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C17', 'c_newprod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C18', 'c_newprod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C19', 'c_newprod_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C20', 'c_newprod_1', sysdate);
 
--- Peak Produce
-INSERT INTO ss_site_feature (id, title) VALUES ('PEAK_PRODUCE', 'Peak Produce');
+-- YMAL and YMAL/YF
 
-INSERT INTO ss_variants (id, type, feature) VALUES ('peak-prod-var', 'scripted', 'PEAK_PRODUCE');
-
-INSERT INTO ss_variant_params (id, key, value)
-    VALUES ('peak-prod-var', 'generator', 'RecursiveNodes("fru","veg"):atLeast(QualityRating_Discretized2,0)');
-INSERT INTO ss_variant_params (id, key, value)
-    VALUES ('peak-prod-var', 'scoring', 'Recency_Discretized; QualityRating; Popularity_Discretized; ReorderRate_DepartmentNormalized');
-INSERT INTO ss_variant_params (id, key, value)
-    VALUES ('peak-prod-var', 'sampling_strat', 'power');
-INSERT INTO ss_variant_params (id, key, value)
-    VALUES ('peak-prod-var', 'top_n', '20');
-INSERT INTO ss_variant_params (id, key, value)
-    VALUES ('peak-prod-var', 'top_perc', '2.0');
-INSERT INTO ss_variant_params (id, key, value)
-    VALUES ('peak-prod-var', 'exponent', '0.4');
-    
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C1', 'peak-prod-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C2', 'peak-prod-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C3', 'peak-prod-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C4', 'peak-prod-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C5', 'peak-prod-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C6', 'peak-prod-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C7', 'peak-prod-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C8', 'peak-prod-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C9', 'peak-prod-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C10', 'peak-prod-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C11', 'peak-prod-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C12', 'peak-prod-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C13', 'peak-prod-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C14', 'peak-prod-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C15', 'peak-prod-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C16', 'peak-prod-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C17', 'peak-prod-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C18', 'peak-prod-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C19', 'peak-prod-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C20', 'peak-prod-var', sysdate);
-
--- Don't Miss Deals
-INSERT INTO ss_site_feature (id, title) VALUES ('GREAT_DEALS', 'Don''t Miss Deals');
-
-INSERT INTO ss_variants (id, type, feature) VALUES ('great-deal-var', 'scripted', 'GREAT_DEALS');
+INSERT INTO ss_variants (id, type, feature) VALUES ('c_ymal_1', 'smartYMAL', 'C_YMAL');
 
 INSERT INTO ss_variant_params (id, key, value)
-    VALUES ('great-deal-var', 'generator',
-    'RecursiveNodes("FreshDirect"):atLeast(QualityRating_Discretized2,0):between(DealsPercentage,0.1,0.75)');
+	VALUES ('c_ymal_1', 'prez_title', 'YOU MIGHT ALSO LIKE...');
 INSERT INTO ss_variant_params (id, key, value)
-    VALUES ('great-deal-var', 'scoring', 'Recency_Discretized:top; DealsPercentage_Discretized; Popularity_Discretized');
-INSERT INTO ss_variant_params (id, key, value)
-    VALUES ('great-deal-var', 'sampling_strat', 'power');
-INSERT INTO ss_variant_params (id, key, value)
-    VALUES ('great-deal-var', 'top_n', '20');
-INSERT INTO ss_variant_params (id, key, value)
-    VALUES ('great-deal-var', 'top_perc', '2.0');
-INSERT INTO ss_variant_params (id, key, value)
-    VALUES ('great-deal-var', 'exponent', '0.4');
-    
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C1', 'great-deal-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C2', 'great-deal-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C3', 'great-deal-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C4', 'great-deal-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C5', 'great-deal-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C6', 'great-deal-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C7', 'great-deal-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C8', 'great-deal-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C9', 'great-deal-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C10', 'great-deal-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C11', 'great-deal-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C12', 'great-deal-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C13', 'great-deal-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C14', 'great-deal-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C15', 'great-deal-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C16', 'great-deal-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C17', 'great-deal-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C18', 'great-deal-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C19', 'great-deal-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C20', 'great-deal-var', sysdate);
+    VALUES ('c_ymal_1', 'prez_desc', 'Based on the items in your cart, we recommend:');
 
--- Peak Season Fruits
-INSERT INTO ss_site_feature (id, title) VALUES ('PEAK_FRUITS', 'Peak Season Fruits');
-
-INSERT INTO ss_variants (id, type, feature) VALUES ('peak-fruits-var', 'scripted', 'PEAK_FRUITS');
-
-INSERT INTO ss_variant_params (id, key, value)
-    VALUES ('peak-fruits-var', 'generator', 'RecursiveNodes("fru"):atLeast(QualityRating_Discretized2,0)');
-INSERT INTO ss_variant_params (id, key, value)
-    VALUES ('peak-fruits-var', 'scoring', 'Recency_Discretized; QualityRating; Popularity_Discretized; ReorderRate_DepartmentNormalized');
-INSERT INTO ss_variant_params (id, key, value)
-    VALUES ('peak-fruits-var', 'sampling_strat', 'power');
-INSERT INTO ss_variant_params (id, key, value)
-    VALUES ('peak-fruits-var', 'top_n', '20');
-INSERT INTO ss_variant_params (id, key, value)
-    VALUES ('peak-fruits-var', 'top_perc', '2.0');
-INSERT INTO ss_variant_params (id, key, value)
-    VALUES ('peak-fruits-var', 'exponent', '0.4');
-INSERT INTO ss_variant_params (id, key, value)
-    VALUES ('peak-fruits-var', 'cos_filter', 'CORPORATE');
-    
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C1', 'peak-fruits-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C2', 'peak-fruits-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C3', 'peak-fruits-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C4', 'peak-fruits-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C5', 'peak-fruits-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C6', 'peak-fruits-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C7', 'peak-fruits-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C8', 'peak-fruits-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C9', 'peak-fruits-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C10', 'peak-fruits-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C11', 'peak-fruits-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C12', 'peak-fruits-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C13', 'peak-fruits-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C14', 'peak-fruits-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C15', 'peak-fruits-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C16', 'peak-fruits-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C17', 'peak-fruits-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C18', 'peak-fruits-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C19', 'peak-fruits-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C20', 'peak-fruits-var', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C1', 'c_ymal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C2', 'c_ymal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C3', 'c_ymal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C4', 'c_ymal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C5', 'c_ymal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C6', 'c_ymal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C7', 'c_ymal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C8', 'c_ymal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C9', 'c_ymal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C10', 'c_ymal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C11', 'c_ymal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C12', 'c_ymal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C13', 'c_ymal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C14', 'c_ymal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C15', 'c_ymal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C16', 'c_ymal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C17', 'c_ymal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C18', 'c_ymal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C19', 'c_ymal_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C20', 'c_ymal_1', sysdate);
 
 
--- Healthy Snacks
-INSERT INTO ss_site_feature (id, title) VALUES ('HEALTHY_SNACKS', 'Healthy Snacks');
-
-INSERT INTO ss_variants (id, type, feature) VALUES ('fdf-hs-var', 'favorites', 'HEALTHY_SNACKS');
+INSERT INTO ss_variants (id, type, feature) VALUES ('c_ymal_yf_1', 'ymal-yf', 'C_YMAL_YF');
 
 INSERT INTO ss_variant_params (id, key, value)
-    VALUES ('fdf-hs-var', 'favorite_list_id', 'fd_favs_nb');
+	VALUES ('c_ymal_yf_1', 'prez_title', 'YOU MIGHT ALSO LIKE...');
 INSERT INTO ss_variant_params (id, key, value)
-    VALUES ('fdf-hs-var', 'cos_filter', 'CORPORATE');
-    
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C1', 'fdf-hs-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C2', 'fdf-hs-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C3', 'fdf-hs-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C4', 'fdf-hs-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C5', 'fdf-hs-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C6', 'fdf-hs-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C7', 'fdf-hs-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C8', 'fdf-hs-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C9', 'fdf-hs-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C10', 'fdf-hs-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C11', 'fdf-hs-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C12', 'fdf-hs-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C13', 'fdf-hs-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C14', 'fdf-hs-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C15', 'fdf-hs-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C16', 'fdf-hs-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C17', 'fdf-hs-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C18', 'fdf-hs-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C19', 'fdf-hs-var', sysdate);
-INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C20', 'fdf-hs-var', sysdate);
+    VALUES ('c_ymal_yf_1', 'prez_desc', 'Based on the items you''ve purchased, we recommend:');
+
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C1', 'c_ymal_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C2', 'c_ymal_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C3', 'c_ymal_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C4', 'c_ymal_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C5', 'c_ymal_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C6', 'c_ymal_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C7', 'c_ymal_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C8', 'c_ymal_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C9', 'c_ymal_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C10', 'c_ymal_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C11', 'c_ymal_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C12', 'c_ymal_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C13', 'c_ymal_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C14', 'c_ymal_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C15', 'c_ymal_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C16', 'c_ymal_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C17', 'c_ymal_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C18', 'c_ymal_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C19', 'c_ymal_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C20', 'c_ymal_yf_1', sysdate);
 
