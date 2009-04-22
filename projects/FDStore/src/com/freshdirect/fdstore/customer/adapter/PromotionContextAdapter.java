@@ -26,6 +26,7 @@ import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -43,16 +44,18 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class PromotionContextAdapter implements PromotionContextI {
 
-	private final FDUser user;
+	private final FDUserI user;
 	private List rulePromoCodes;
 	private Date now;
 	private static Category LOGGER = LoggerFactory.getInstance(PromotionContextAdapter.class);
 
-	public PromotionContextAdapter(FDUser user) {
+
+	public PromotionContextAdapter(FDUserI user) {		
 		this.user = user;
 		now = new Date();
 	}
-
+	
+	
 	/**
 	 * @return total price of orderlines in USD, with taxes, charges without discounts applied
 	 */
@@ -291,7 +294,7 @@ public class PromotionContextAdapter implements PromotionContextI {
 		//Poll the promotion context to know if this is the max discount amount.
 		if(this.isMaxDiscountAmount(promotionAmt, type)){
 			//Clear any existing discount.
-			this.clearDiscounts();
+			this.clearHeaderDiscounts();
 			//Add this discount.
 			Discount discount = new Discount(promoCode, EnumDiscountType.DOLLAR_OFF, promotionAmt);
 			this.addDiscount(discount);
@@ -300,7 +303,7 @@ public class PromotionContextAdapter implements PromotionContextI {
 		return false;
 	}
 
-	private void clearDiscounts(){
+	public void clearHeaderDiscounts(){
 		//Clear all header discounts.
 		this.user.getShoppingCart().setDiscounts(new ArrayList());
 	}
@@ -335,7 +338,37 @@ public class PromotionContextAdapter implements PromotionContextI {
 		return applied; 
 	}
 	
+	
 	public Map getPromoVariantMap() {
 		return this.getUser().getPromoVariantMap();
 	}
+	
+	public boolean isPostPromoConflictEnabled(){
+		return this.getUser().isPostPromoConflictEnabled();
+	}
+
+
+	public void clearLineItemDiscounts() {
+		// TODO Auto-generated method stub
+		  FDCartModel cart= this.getUser().getShoppingCart();
+		  cart.clearLineItemDiscounts();
+		  try {					
+				cart.refreshAll();
+		  } catch (FDInvalidConfigurationException e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+				throw new FDRuntimeException(e);		
+		} catch (FDResourceException e) {
+				// TODO Auto-generated catch block
+				throw new FDRuntimeException(e);
+		}														
+	}
+
+
+	public double getTotalLineItemDiscount() {
+		// TODO Auto-generated method stub
+		FDCartModel cart= this.getUser().getShoppingCart();
+		return cart.getTotalLineItemsDiscountAmount();
+	}
+	
 }

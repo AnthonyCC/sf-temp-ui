@@ -1122,4 +1122,16 @@ public class FDOrderAdapter implements FDOrderI {
 		}
 		return uniqueDiscountedProducts.size();
 	}
+
+	public double getTotalLineItemsDiscountAmount() {
+		// TODO Auto-generated method stub
+		double discountAmt=0;
+		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
+			FDCartLineI cartLine = (FDCartLineI)i.next();
+			if(cartLine.getDiscount() !=  null){
+				discountAmt+=cartLine.getDiscountAmount();
+			}
+		}
+        return discountAmt;
+	}
 }
