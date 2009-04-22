@@ -264,6 +264,9 @@ public class FDStoreProperties {
 	private static final String PROP_ROUTING_SENDADDRESS = "fdstore.routing.sendAddress";
 
 	// Smart Search
+	/**
+	 * @deprecated
+	 */
 	private static final String SMART_SEARCH_ENABLED = "fdstore.newSearch.enabled";
 
 //	COOL info
@@ -1003,6 +1006,8 @@ public class FDStoreProperties {
 
 	/**
 	 * Is Smart Search feature enabled?
+	 * 
+	 * @deprecated Property is no longer used
 	 */
 	public static boolean isSmartSearchEnabled() {
 		return (new Boolean(get(SMART_SEARCH_ENABLED))).booleanValue();

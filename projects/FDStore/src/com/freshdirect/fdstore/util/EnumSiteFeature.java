@@ -30,6 +30,9 @@ public class EnumSiteFeature implements Serializable, Comparable {
     
     private final static Latch mocked = new Latch(false);
     
+    /**
+     * @deprecated
+     */
 	public final static EnumSiteFeature NEW_SEARCH = new EnumSiteFeature("newSearch");
 	public final static EnumSiteFeature CCL = new EnumSiteFeature("CCL");
 	public final static EnumSiteFeature DYF = new EnumSiteFeature("DYF", true, "Your Favorites");
