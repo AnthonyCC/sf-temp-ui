@@ -21,6 +21,47 @@ INSERT INTO ss_variant_params (id, key, value)
 INSERT INTO ss_variant_params (id, key, value)
     VALUES ('c_save_fdf_1', 'prez_title', 'SAVE ON FRESHDIRECT FAVORITES');
 
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C1', 'c_save_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C2', 'c_save_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C3', 'c_save_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C4', 'c_save_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C5', 'c_save_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C6', 'c_save_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C7', 'c_save_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C8', 'c_save_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C9', 'c_save_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C10', 'c_save_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C11', 'c_save_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C12', 'c_save_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C13', 'c_save_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C14', 'c_save_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C15', 'c_save_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C16', 'c_save_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C17', 'c_save_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C18', 'c_save_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C19', 'c_save_yf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C20', 'c_save_yf_1', sysdate);
+
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C1', 'c_save_fdf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C2', 'c_save_fdf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C3', 'c_save_fdf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C4', 'c_save_fdf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C5', 'c_save_fdf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C6', 'c_save_fdf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C7', 'c_save_fdf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C8', 'c_save_fdf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C9', 'c_save_fdf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C10', 'c_save_fdf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C11', 'c_save_fdf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C12', 'c_save_fdf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C13', 'c_save_fdf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C14', 'c_save_fdf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C15', 'c_save_fdf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C16', 'c_save_fdf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C17', 'c_save_fdf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C18', 'c_save_fdf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C19', 'c_save_fdf_1', sysdate);
+INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C20', 'c_save_fdf_1', sysdate);
 
 -- Don't Miss Deals
 
