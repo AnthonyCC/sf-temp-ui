@@ -219,9 +219,9 @@
 							<td style="text-align: left;">
 								<a class="text11bold" id="ra_<%= genericRecommendationsVariant.getId() %>" href="#">Click here to refresh</a>
 								<script type="text/javascript">
-									$E.on($('ra_<%= genericRecommendationsVariant.getId() %>'), 'click', function(e) {
+									$E.on('ra_<%= genericRecommendationsVariant.getId() %>', 'click', function(e) {
 										$E.preventDefault(e);
-										PIP.refresh('<%= genericRecommendationsVariant.getId() %>');
+										PIP.refresh('<%= genericRecommendationsVariant.getId() %>', <%= ((Integer)session.getAttribute(SessionName.SS_SELECTED_TAB)).intValue() %>);
 									});
 								</script>
 							</td>
