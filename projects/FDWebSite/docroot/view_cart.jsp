@@ -1,9 +1,13 @@
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
+<%@ page import='com.freshdirect.framework.webapp.ActionWarning'%>  
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>  
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+
+
+
 <%! final java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US); %>
 <%! final java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##"); %>
 <fd:CheckLoginStatus id="user" />
@@ -54,8 +58,21 @@ request.setAttribute("listPos", "SystemMessage");
 <fd:ErrorHandler result='<%=result%>' name='pass_cancelled' id='errorMsg'>
     <%@ include file="/includes/i_error_messages.jspf" %>   
 </fd:ErrorHandler>
-
 <%
+if(cart.hasHeaderDiscount() && cart.getTotalLineItemsDiscountAmount()>0){
+StringBuffer buffer = new StringBuffer(
+					SystemMessageList.MSG_PROMOTION_APPLIED_VARY1);
+			result.addWarning(new ActionWarning("promo_war1", buffer
+					.toString()));
+                    
+                    
+%>
+
+<fd:ErrorHandler result='<%=result%>' name='promo_war1' id='errorMsg'>
+    <%@ include file="/includes/i_warning_messages.jspf" %>   
+</fd:ErrorHandler>
+<%
+}
     // get customer's first name
     String custFirstName = user.getLevel()==FDUser.GUEST ? "Your" : user.getFirstName() + "'s"; 
     //Reload the DP status from Database to make the session and DB are in sync.

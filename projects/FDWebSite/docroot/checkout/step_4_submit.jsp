@@ -97,6 +97,27 @@ BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2"><% } %></td>
     	<fd:ErrorHandler result='<%=result%>' name='invalid_deliverypass' id='errorMsg'>
     		<br><span class="text11rbold"><%= errorMsg %></span><br><br>
     </fd:ErrorHandler>
+    
+    
+    
+    <%
+if(user.isPromoConflictResolutionApplied()){
+StringBuffer buffer = new StringBuffer(
+					SystemMessageList.MSG_PROMOTION_APPLIED_VARY2);
+			result.addWarning(new ActionWarning("promo_war2", buffer
+					.toString()));
+                    
+    user.setPromoConflictResolutionApplied(false);                                    
+%>
+
+<fd:ErrorHandler result='<%=result%>' name='promo_war2' id='errorMsg'>
+    <%@ include file="/includes/i_warning_messages.jspf" %>   
+</fd:ErrorHandler>
+ 
+<%
+  }
+ %> 
+    
 <%
 
         if (doubleSubmit) {
