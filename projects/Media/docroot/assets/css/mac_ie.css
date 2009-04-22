@@ -556,6 +556,7 @@ td.tab_title_inactive {
 	vertical-align: middle;
 	height: 25px;
 	background: url("/media_stat/images/carttab_corners/carttab_bg_off.gif");
+	cursor: pointer;
 }
 
 img.tab {
@@ -570,23 +571,26 @@ div.tab {
 	vertical-align: middle;
 }
 
-a.tab_active {
+span.tab_active {
 	color: #996699; 
-	font: small-caps bold small sans-serif; 
+	font: bold small sans-serif;
+	text-transform: uppercase; 
 	text-decoration: none;
 }
 
-a.tab_inactive {
+span.tab_inactive {
 	color: white; 
-	font: small-caps bold small sans-serif; 
+	font: bold small sans-serif; 
+	text-transform: uppercase; 
 	text-decoration: none;
 }
 
 p.tab_text {
 	color: black; 
-	font: small-caps bold small sans-serif; 
+	font: bold small sans-serif; 
+	text-transform: uppercase; 
 	text-decoration: none;
-	text-align: center;					
+	text-align: center;			
 }
 
 a.tab_active:link		{ color : #996699; }

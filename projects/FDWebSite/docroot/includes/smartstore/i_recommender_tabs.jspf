@@ -78,8 +78,8 @@
 							<% } %>
 							
 							
-								<td id="td_<%= varId %>" height="25px" width="<%= tabSize %>px" class="tab_title_<%= selected?"active":"inactive" %>">
-									<a class="tab_<%= selected?"active":"inactive" %>" id="a_<%= varId %>" vid="<%= varId %>" tpos="<%= k %>" href="#"><%= tab.getTabTitle(k) %></a>
+								<td id="td_<%= varId %>" vid="<%= varId %>" tpos="<%= k %>" height="25px" width="<%= tabSize %>px" class="tab_title_<%= selected?"active":"inactive" %>">
+									<span class="tab_<%= selected?"active":"inactive" %>" id="a_<%= varId %>" href="#"><%= tab.getTabTitle(k) %></span>
 								</td>
 							
 							<% if ( k == numTabs-1 ) { // last tab %>					
@@ -148,10 +148,13 @@
 				</tr>
 			</table>	
 
-<script type="text/javascript">
+
+			<%-- =============== AJAX =============== --%>
 			
-				var loadingMessage = "<br/><br/><p class=\"tab_text\">Refreshing. Please wait...</p><br/><br/>";
-				var errorMessage = "<br/><br/><p class=\"tab_text\">Sorry. Something went wrong. Try refreshing the page.</p><br/><br/>";
+			<script type="text/javascript">
+			
+				var loadingMessage = "<br/><br/><br/><br/><p class=\"tab_text\">Refreshing. Please wait...</p><br/><br/><br/><br/>";
+				var errorMessage = "<br/><br/><br/><br/><p class=\"tab_text\">Sorry. Something went wrong. Try refreshing the page.</p><br/><br/><br/><br/>";
 		
 				var PIP = {
 					tabs: [],
@@ -230,7 +233,7 @@
 				
 				<%-- attach to tabs --%>
 				for (k=0; k<PIP.tabs.length; k++) {
-					$E.on($('a_'+PIP.tabs[k]), 'click', function(e) {
+					$E.on($('td_'+PIP.tabs[k]), 'click', function(e) {
 						$E.preventDefault(e);
 		
 						var sel = this.getAttribute('vid');
@@ -271,7 +274,7 @@
 						
 					});
 				}
-</script>
+			</script>
 			
 		<% } %>	
 </fd:PIPTab>	

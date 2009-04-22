@@ -6,7 +6,8 @@ import com.freshdirect.fdstore.content.YmalSource;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 
 public class TabRecommendation {
-    public static final String        PIP_DEFAULT_DESC = "&lt;No description has been configured. Contact administrator.&gt;";
+	
+    public static final String        PIP_DEFAULT_DESC = ""; //"&lt;No description has been configured. Contact administrator.&gt;";
 
     final List                  variants;
     final RecommendationService tabRecommender;
