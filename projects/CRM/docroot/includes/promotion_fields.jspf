@@ -9,8 +9,7 @@
 <script language="javascript">
                       function handleValueType(chkFld) {
                       	var fldVal = chkFld.value;        
-
-                        alert("fldVal :"+fldVal); 
+                        
                       	if(fldVal != "discount") {
                         	document.getElementById("maximum_discount").value = "";                        	
                         }                                                                         	
