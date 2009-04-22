@@ -1,5 +1,6 @@
 package com.freshdirect.webapp.taglib.smartstore;
 
+import java.util.Date;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.YmalSource;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.framework.util.QuickDateFormat;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.smartstore.fdstore.SessionImpressionLog;
 import com.freshdirect.smartstore.impl.AbstractRecommendationService;
@@ -45,7 +47,7 @@ public class Impression {
 
         String erpCustomerId = identity != null ? identity.getErpCustomerPK() : "";
 
-        String message = pageImpressionId + ',' + filter(user.getUserId()) + ',' + 
+        String message = pageImpressionId + ",\""+QuickDateFormat.ISO_FORMATTER.format(new Date())+"\","+ filter(user.getUserId()) + ',' + 
             filter(sessionId) + ',' + erpCustomerId + ',' + filter(uri) + ','
                 + filter(httpServletRequest.getQueryString());
         ImpressionLogger.REQUEST.logEvent(message);

@@ -12,6 +12,6 @@ public class CSVwithDateLogFormat extends SimpleLayout {
     QuickDateFormat dateFormat = QuickDateFormat.ISO_FORMATTER;
     
     public String format(LoggingEvent event) {
-        return dateFormat.format(new Date(event.getTimeStamp()))+','+event.getMessage()+'\n';
+        return "\""+dateFormat.format(new Date(event.getTimeStamp()))+"\","+event.getMessage()+'\n';
     }
 }

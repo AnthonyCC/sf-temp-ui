@@ -12,7 +12,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class ImpressionLogger {
 
-    public final static ImpressionLogger REQUEST = new ImpressionLogger(LoggerFactory.getInstance("freshdirect.request"), "request.csv", true);
+    public final static ImpressionLogger REQUEST = new ImpressionLogger(LoggerFactory.getInstance("freshdirect.request"), "request.csv", false);
     public final static ImpressionLogger PRODUCT = new ImpressionLogger(LoggerFactory.getInstance("freshdirect.product"), "product_impression.csv", false);
     public final static ImpressionLogger TAB     = new ImpressionLogger(LoggerFactory.getInstance("freshdirect.tab"), "tab_impression.csv", false);
     public final static ImpressionLogger FEATURE = new ImpressionLogger(LoggerFactory.getInstance("freshdirect.feature"), "feature_impression.csv", false);
