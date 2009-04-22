@@ -13,6 +13,7 @@ import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.WrapperRecommendationService;
+import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
 
 /**
@@ -47,6 +48,8 @@ public class SmartSavingRecommendationService extends WrapperRecommendationServi
         }
         if (input.getMaxRecommendations() < cartSuggestions.size()) {
             List internalRec = internal.recommendNodes(input);
+            // we have to filter out cart items from the internaly recommended item list.
+            internalRec = FDStoreRecommender.getInstance().filterProducts(internalRec, input.getCartContents(), false);            
             cartSuggestions.addAll(internalRec);
         }
         if (prevMap == null) {

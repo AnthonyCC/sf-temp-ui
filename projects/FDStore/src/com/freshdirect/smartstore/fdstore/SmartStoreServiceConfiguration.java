@@ -238,8 +238,9 @@ public class SmartStoreServiceConfiguration {
         	variant.getServiceConfig().setConfigStatus(statuses = new TreeMap());
         
         if (!RecommendationServiceType.TAB_STRATEGY.equals(serviceType)) {
-        	includeCartItems = extractIncludeCartItems(config, statuses);
         	smartSave = extractSmartSave(config, statuses);
+        	// if smart saving used, we will return items from the cart.
+                includeCartItems = extractIncludeCartItems(config, statuses) || smartSave;
         	cosFilter = extractCosFilter(config, statuses);
         	extractCartPresentation(config, statuses);
         }
