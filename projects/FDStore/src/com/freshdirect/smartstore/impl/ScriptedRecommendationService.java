@@ -33,7 +33,7 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
     		boolean catAggr, boolean includeCartItems, String generator, String scoring) throws CompileException {
         super(variant, sampler, catAggr, includeCartItems);
         if (generator == null) {
-            throw new NullPointerException("generator");
+            throw new IllegalArgumentException("generator cannot be null");
         }
         this.dataGenerator = GlobalCompiler.getInstance().createDataGenerator(generator);
         if (scoring != null) {

@@ -204,7 +204,7 @@
 
 					refresh: function(tabId, tabPos) {
 						var self = this;
-						var uri = '/includes/smartstore/refresh.jsp?tab='+tabPos+'&variant='+tabId+'&siteFeature='+PIP.features[tabId]+'&formUri=<%= response.encodeURL(request.getRequestURL().toString()) %>&impId='+PIP.impressionIds[tabPos];
+						var uri = '/ajax/refresh.jsp?tab='+tabPos+'&variant='+tabId+'&siteFeature='+PIP.features[tabId]+'&formUri=<%= response.encodeURL(request.getRequestURL().toString()) %>&impId='+PIP.impressionIds[tabPos];
 						$('content_'+tabId).innerHTML = loadingMessage;
 						$C.asyncRequest('GET', uri, {
 							success: function(resp) {
@@ -217,7 +217,7 @@
 					},
 
 					norefresh: function(tabId, tabPos) {
-						var uri = '/includes/smartstore/norefresh.jsp?tab='+tabPos+'&variant='+tabId+'&siteFeature='+PIP.features[tabId];
+						var uri = '/ajax/norefresh.jsp?tab='+tabPos+'&variant='+tabId+'&siteFeature='+PIP.features[tabId];
 						$C.asyncRequest('HEAD', uri, {});
 					}
 				};

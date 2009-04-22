@@ -2,13 +2,16 @@
 java.util.Iterator,com.freshdirect.smartstore.RecommendationService,com.freshdirect.framework.webapp.ActionResult,
 com.freshdirect.fdstore.customer.FDUserI,com.freshdirect.smartstore.fdstore.SmartStoreUtil,com.freshdirect.fdstore.util.EnumSiteFeature,
 com.freshdirect.webapp.taglib.fdstore.SessionName"%>
+<%@ taglib uri="freshdirect" prefix="fd"%>
+
 <%--
 	AJAX refresh page
 	called from i_generic_recommendations.jspf
 
 	@author segabor
 --%>
-<%@ taglib uri="freshdirect" prefix="fd"%><%
+
+<%
 	// serve only AJAX requests!
 	if (request.getHeader("X-Requested-With") != null) {
 		// Prevent caching AJAX responses on browser-side
