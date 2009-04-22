@@ -203,6 +203,9 @@ public class SubmitOrderAction extends WebActionSupport {
 			
 		}
 
+		// SORI changes
+		
+		user.setPostPromoConflictEnabled(true);
 		// make sure we're not using stale data
 		user.invalidateCache();
         // make sure we're not using stale order history data
