@@ -98,9 +98,9 @@ if (caseId==null) {
 						if (si != null) {
 					%>
 					<td>
-					T: <span style="font-weight: bold;"><%= Integer.parseInt(si.getTruckNumber()) %></span>
+					T: <span style="font-weight: bold;"><%= si.getTruckNumber() != null ? Integer.parseInt(si.getTruckNumber()) : "-" %></span>
 					</td><td>
-					S: <span style="font-weight: bold;"><%= Integer.parseInt(si.getStopSequence()) %></span>
+					S: <span style="font-weight: bold;"><%= si.getStopSequence() != null ? Integer.parseInt(si.getStopSequence()) : "-" %></span>
 					</td>
 					<%		}
 						} %>

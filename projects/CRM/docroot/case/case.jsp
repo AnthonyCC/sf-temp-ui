@@ -63,9 +63,9 @@
 										if (si != null) {
 									%>
 									</td><td>
-									Truck: <span style="font-weight: bold;"><%= si.getTruckNumber() %></span>
+									Truck: <span style="font-weight: bold;"><%= si.getTruckNumber() != null ? si.getTruckNumber() : "-" %></span>
 									</td><td>
-									Stop: <span style="font-weight: bold;"><%= si.getStopSequence() %></span>
+									Stop: <span style="font-weight: bold;"><%= si.getStopSequence() != null ? si.getStopSequence() : "-" %></span>
 									<%	}
 									} else {
 									%>Order #: <span class="not_set">-None-</span>
