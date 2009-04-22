@@ -8,7 +8,9 @@ import java.util.Map;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.MaterialPrice;
+import com.freshdirect.common.pricing.Price;
 import com.freshdirect.common.pricing.Pricing;
+import com.freshdirect.common.pricing.PricingEngine;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.fdstore.EnumOrderLineRating;
@@ -277,7 +279,22 @@ public class FDProductSelection implements FDProductSelectionI {
 	}
 
 	public String getUnitPrice() {
-		return CURRENCY_FORMATTER.format(this.price.getBasePrice()) + "/" + this.price.getBasePriceUnit().toLowerCase();
+		// dirty requirement so got to do this
+		double disAmount=0;
+		Price p=new Price(this.price.getBasePrice());
+		if(this.getDiscount()!=null){
+			try {
+				Price discountP=PricingEngine.applyDiscount(p,1,this.getDiscount());
+				disAmount=discountP.getBasePrice();
+			} catch (PricingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else{
+			disAmount=this.price.getBasePrice();
+		}
+		
+		return CURRENCY_FORMATTER.format(disAmount) + "/" + this.price.getBasePriceUnit().toLowerCase();
 	}
 
 	protected double getConfiguredPrice() {

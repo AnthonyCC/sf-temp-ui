@@ -1021,6 +1021,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	public List getDiscounts() {
 		return this.discounts;
 	}
+	
+	
 
 	public void setDiscounts(List discounts) {
 		this.discounts = discounts;
@@ -1202,6 +1204,27 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			FDCartLineI cartLine = (FDCartLineI)i.next();
 			if(cartLine.getDiscount() !=  null) cartLine.removeLineItemDiscount();
 		}
+	}
+
+	public double getTotalLineItemsDiscountAmount() {
+		// TODO Auto-generated method stub
+		double discountAmt=0;
+		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
+			FDCartLineI cartLine = (FDCartLineI)i.next();
+			if(cartLine.getDiscount() !=  null){
+				discountAmt+=cartLine.getDiscountAmount();
+			}
+		}
+        return discountAmt;
+	}
+	
+	
+	public boolean hasHeaderDiscount() {
+		// TODO Auto-generated method stub
+		List l = this.getDiscounts();
+		if(l.isEmpty())
+			return false;
+		return true;
 	}
 
 }

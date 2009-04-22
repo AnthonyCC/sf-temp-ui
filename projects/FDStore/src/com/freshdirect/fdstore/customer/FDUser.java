@@ -135,6 +135,10 @@ public class FDUser extends ModelSupport implements FDUserI {
 	//Eligible Promo Variant Map
 	private Map promoVariantMap;
 	
+	private boolean isPostPromoConflictEnabled;
+	private boolean isPromoConflictResolutionApplied;
+	
+	
 	public FDUserDlvPassInfo getDlvPassInfo() {
 		return dlvPassInfo;
 	}
@@ -1217,5 +1221,23 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public void setFavoriteTabFeature(String feature) {
 		// has no effect
 	}
+	
+	public boolean isPostPromoConflictEnabled() {
+		return isPostPromoConflictEnabled;
+	}
+
+	public void setPostPromoConflictEnabled(boolean isPostPromoConflictEnabled) {
+		this.isPostPromoConflictEnabled = isPostPromoConflictEnabled;
+	}
+
+	public boolean isPromoConflictResolutionApplied() {
+		return isPromoConflictResolutionApplied;
+	}
+
+	public void setPromoConflictResolutionApplied(
+			boolean isPromoConflictResolutionApplied) {
+		this.isPromoConflictResolutionApplied = isPromoConflictResolutionApplied;
+	}
+	
 }
 

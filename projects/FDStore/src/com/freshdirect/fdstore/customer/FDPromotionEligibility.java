@@ -3,10 +3,12 @@ package com.freshdirect.fdstore.customer;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
+import com.freshdirect.fdstore.promotion.PromotionI;
 
 public class FDPromotionEligibility implements Serializable {
 
@@ -15,6 +17,7 @@ public class FDPromotionEligibility implements Serializable {
 
 	/** Set of String (promotionCode) */
 	private final Set appliedPromos = new HashSet();
+		
 	
 	public boolean isEligible(String promotionCode) {
 		return this.eligibilePromos.contains(promotionCode);
@@ -45,6 +48,17 @@ public class FDPromotionEligibility implements Serializable {
 		}
 		this.appliedPromos.add(promotionCode);
 	}
+	
+	public void removeAppliedPromo(String promotionCode){
+		if (!this.eligibilePromos.contains(promotionCode)) {
+			throw new IllegalArgumentException("Attempted to apply non-eligible promotion " + promotionCode);
+		}
+		if (!this.appliedPromos.contains(promotionCode)) {
+			throw new IllegalArgumentException("Attempted to remove non-applied promotion " + promotionCode);
+		}
+		this.appliedPromos.remove(promotionCode);
+	}
+	
 
 	public boolean isApplied(String promotionCode) {
 		return this.appliedPromos.contains(promotionCode);
@@ -70,6 +84,17 @@ public class FDPromotionEligibility implements Serializable {
 	public boolean isEligibleForType(EnumPromotionType type) {
 		return this.getEligiblePromotionCodes(type).size() > 0;
 	}
+	
+	
+	public String getAppliedLineItemPromoCode(){			
+		for (Iterator i = this.appliedPromos.iterator(); i.hasNext();) {
+			String promoCode = (String) i.next();
+			PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
+			if(promo.isLineItemDiscount()) return promoCode;
+		}
+		return null;
+	}
+	
 
 	public String toString() {
 		return "FDPromotionEligibility[eligible=" + this.eligibilePromos.toString() + ", applied=" + this.appliedPromos + "] ";

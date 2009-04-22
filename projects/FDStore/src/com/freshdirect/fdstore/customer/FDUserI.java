@@ -302,4 +302,16 @@ public interface FDUserI extends java.io.Serializable {
     public PromoVariantModel getPromoVariant(String variantId);
     
     public boolean isEligibleForSavings(EnumSiteFeature siteFeature);
+            
+    public boolean isPostPromoConflictEnabled();
+
+	public void setPromotionAddressMismatch(boolean b);
+
+	public void setSignupDiscountRule(SignupDiscountRule discountRule);
+	
+	public void setPostPromoConflictEnabled(boolean isPostPromoConflictEnabled); 
+	
+	public boolean isPromoConflictResolutionApplied();
+
+	public void setPromoConflictResolutionApplied(boolean isPromoConflictResolutionApplied); 
 }
