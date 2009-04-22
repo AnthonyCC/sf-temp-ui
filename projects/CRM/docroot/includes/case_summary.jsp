@@ -7,7 +7,8 @@
 <%@ page import="com.freshdirect.customer.ErpShippingInfo" %>
 <%@ page import='com.freshdirect.webapp.util.CCFormatter'%>
 
-	<link rel="stylesheet" href="/ccassets/css/crm.css" type="text/css">
+	
+<%@page import="weblogic.utils.StringUtils"%><link rel="stylesheet" href="/ccassets/css/crm.css" type="text/css">
 	<link rel="stylesheet" href="/ccassets/css/case.css" type="text/css">
 <%
 String pageURI = request.getRequestURI();
@@ -98,9 +99,9 @@ if (caseId==null) {
 						if (si != null) {
 					%>
 					<td>
-					T: <span style="font-weight: bold;"><%= si.getTruckNumber() != null ? Integer.parseInt(si.getTruckNumber()) : "-" %></span>
+					T: <span style="font-weight: bold;"><%= si.getTruckNumber() != null ? new Integer(si.getTruckNumber()).toString() : "-" %></span>
 					</td><td>
-					S: <span style="font-weight: bold;"><%= si.getStopSequence() != null ? Integer.parseInt(si.getStopSequence()) : "-" %></span>
+					S: <span style="font-weight: bold;"><%= si.getStopSequence() != null ? new Integer(si.getStopSequence()).toString() : "-" %></span>
 					</td>
 					<%		}
 						} %>
