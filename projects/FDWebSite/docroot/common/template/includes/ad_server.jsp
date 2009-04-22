@@ -156,7 +156,6 @@
 					"manage_account");
 			pages.put("/login/login.jsp", "login");
 			pages.put("/search.jsp", "search");
-			pages.put("/search2.jsp", "search");
 			pages.put("/help/index.jsp", "help");
 			pages.put("grocery_cart_confirm.jsp", "gconfirm");
 			pages.put("/pay_by_check.jsp", "pay_by_check_popup");

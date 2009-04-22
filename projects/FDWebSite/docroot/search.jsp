@@ -59,7 +59,7 @@ request.setAttribute("recipes.show_all", new Boolean(nav.isRecipesDeptSelected()
 
 
 <fd:SmartSearch searchResults="results" productList="productList" categorySet="categorySet" brandSet="brandSet" categoryTree="categoryTree" filteredCategoryTreeName="filteredCategoryTree">
-<tmpl:insert template='/common/template/search2_nav.jsp'>
+<tmpl:insert template='/common/template/search_nav.jsp'>
 <%
 //special case
 
