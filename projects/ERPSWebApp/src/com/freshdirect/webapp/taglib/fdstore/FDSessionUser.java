@@ -42,8 +42,10 @@ import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDPromotionEligibility;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.adapter.PromotionContextAdapter;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
+import com.freshdirect.fdstore.promotion.FDPromotionVisitor;
 import com.freshdirect.fdstore.promotion.PromoVariantModel;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.SignupDiscountRule;
@@ -73,7 +75,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	
 	private Date startDate;
 	private long lastRequestDate;
-	private Map impressions = new HashMap();
+	private Map impressions = new HashMap();		
 
 	private String sessionId = null;
 	
@@ -313,8 +315,10 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	}
     
     public void updateUserState() {
-        this.user.updateUserState();
+        this.user.updateUserState();        
     }
+    
+    
     
     public String getFirstName() throws FDResourceException {
         return this.user.getFirstName();
@@ -701,4 +705,34 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public boolean isEligibleForSavings(EnumSiteFeature siteFeature) {
 		return user.isEligibleForSavings(siteFeature);
 	}
+
+	public boolean isPostPromoConflictEnabled() {
+		return user.isPostPromoConflictEnabled();
+	}
+
+	public void setPostPromoConflictEnabled(boolean isPostPromoConflictEnabled) {
+		user.setPostPromoConflictEnabled(isPostPromoConflictEnabled);
+	}
+
+	public void setPromotionAddressMismatch(boolean b) {
+		// TODO Auto-generated method stub
+		user.setPromotionAddressMismatch(b);
+	}
+
+	public void setSignupDiscountRule(SignupDiscountRule discountRule) {
+		// TODO Auto-generated method stub
+        user.setSignupDiscountRule(discountRule);		
+	}
+
+	public boolean isPromoConflictResolutionApplied() {
+		// TODO Auto-generated method stub
+		return user.isPromoConflictResolutionApplied();
+	}
+
+	public void setPromoConflictResolutionApplied(boolean isPromoConflictResolutionApplied) {
+		// TODO Auto-generated method stub
+		user.setPromoConflictResolutionApplied(isPromoConflictResolutionApplied);
+	}
+	
+	
 }
