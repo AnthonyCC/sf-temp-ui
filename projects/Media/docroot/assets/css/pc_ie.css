@@ -598,6 +598,12 @@ p.tab_text {
 	text-align: center;			
 }
 
+p.tab_text_simple {
+	color: black; 
+	font: bold small sans-serif; 
+	text-align: center;			
+}
+
 a.tab_active:link		{ color : #996699; }
 a.tab_active:visited	{ color : #996699; }
 a.tab_active:active		{ color : #996699; }
