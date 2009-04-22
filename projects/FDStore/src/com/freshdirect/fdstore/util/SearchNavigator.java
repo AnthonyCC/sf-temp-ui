@@ -33,7 +33,7 @@ public class SearchNavigator {
     public static final int VIEW_LIST		= 0;
     public static final int VIEW_GRID		= 1;
     public static final int VIEW_TEXT		= 2;
-    public static final int VIEW_DEFAULT	= VIEW_LIST;
+    public static final int VIEW_DEFAULT	= VIEW_GRID;
     
     
     int		view = VIEW_DEFAULT;
@@ -156,7 +156,7 @@ public class SearchNavigator {
 			}
 		} else {
 			// default view
-			view = VIEW_LIST;
+			view = VIEW_DEFAULT;
 		}
 		
 
@@ -389,7 +389,7 @@ public class SearchNavigator {
 			}
 		} else {
 			// default view
-			view = VIEW_LIST;
+			view = VIEW_DEFAULT;
 		}
 	}	
 
@@ -401,9 +401,9 @@ public class SearchNavigator {
 	protected String getViewName() {
 		switch (view) {
 		case VIEW_LIST:
-		default:
 			return "list";
 		case VIEW_GRID:
+		default: // VIEW_DEFAULT
 			return "grid";
 		case VIEW_TEXT:
 			return "text";
@@ -797,10 +797,10 @@ public class SearchNavigator {
 
 	public static String convertToViewName(int viewType) {
 		switch(viewType) {
-		case VIEW_DEFAULT:
-		default:
+		case VIEW_LIST:
 			return "list";
-		case VIEW_GRID:
+		case VIEW_GRID: // == VIEW_DEFAULT
+		default: // VIEW_GRID == VIEW_DEFAULT
 			return "grid";
 		case VIEW_TEXT:
 			return "text";
