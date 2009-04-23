@@ -48,14 +48,8 @@ public class RecommendationServiceTestBase extends TestCase {
     public void setUp() throws Exception {
         super.setUp();
         EnumSiteFeature.mock();
-        List list = new ArrayList();
-        list.add(new XmlTypeService("classpath:/com/freshdirect/cms/resource/CMSStoreDef.xml"));
 
-        CompositeTypeService typeService = new CompositeTypeService(list);
-
-        service = new XmlContentService(typeService, new FlexContentHandler(), getCmsXmlName());
-
-        CmsManager.setInstance(new CmsManager(service, null));
+        service = TestUtils.initCmsManagerFromXmls(getCmsXmlName());
 
         Context context = TestUtils.createContext();
         

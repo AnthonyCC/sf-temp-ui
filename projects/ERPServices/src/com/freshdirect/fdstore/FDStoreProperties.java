@@ -153,7 +153,7 @@ public class FDStoreProperties {
 
 	private final static String SMARTSTORE_CACHE_DATA_SOURCES = "fdstore.smartstore.cacheDataSources";
 	private final static String SMARTSTORE_CACHE_DATA_SOURCES_SIZE = "fdstore.smartstore.cacheDataSources.size";
-	private final static String SMARTSTORE_CACHE_ONLINE_FACTORS = "fdstore.smartstore.cacheOnlineFactors";
+	public final static String SMARTSTORE_CACHE_ONLINE_FACTORS = "fdstore.smartstore.cacheOnlineFactors";
 	
 	// maximum number of entries (users) in smartstore personalized scores cache, default 500
 	private final static String SMARTSTORE_PERSONAL_SCORES_CACHE_ENTRIES = "fdstore.smartstore.personalScores.cache.entries";
@@ -1070,4 +1070,12 @@ public class FDStoreProperties {
 	public static String getFDSurveyHome() {
 		return get(PROP_FDSURVEY_HOME);
 	}
+	/**
+	 * Used for testing, do not call from the App.
+	 * @param lastRefresh
+	 */
+	public static void setLastRefresh(long lastRefresh) {
+            FDStoreProperties.lastRefresh = lastRefresh;
+        }
+	
 }

@@ -1,9 +1,11 @@
 package com.freshdirect;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import javax.naming.Context;
@@ -19,6 +21,11 @@ import org.mockejb.interceptor.AspectSystemFactory;
 import org.mockejb.interceptor.ClassPatternPointcut;
 import org.mockejb.jndi.MockContextFactory;
 
+import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.application.service.CompositeTypeService;
+import com.freshdirect.cms.application.service.xml.FlexContentHandler;
+import com.freshdirect.cms.application.service.xml.XmlContentService;
+import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.customer.ejb.ErpCustomerEntityBean;
 import com.freshdirect.event.ejb.EventLoggerHome;
@@ -175,5 +182,24 @@ public class TestUtils {
         }
         return set;
     }
+    
+    public static XmlContentService initCmsManagerFromXmls(String xmlPath) {
+        List list = new ArrayList();
+        list.add(new XmlTypeService("classpath:/com/freshdirect/cms/resource/CMSStoreDef.xml"));
+
+        CompositeTypeService typeService = new CompositeTypeService(list);
+
+        XmlContentService service = new XmlContentService(typeService, new FlexContentHandler(), xmlPath);
+
+        CmsManager.setInstance(new CmsManager(service, null));
+        
+        return service;
+    }
+    
+    public static void initFDStoreProperties() {
+        FDStoreProperties.set(FDStoreProperties.SMARTSTORE_CACHE_ONLINE_FACTORS, "false");
+        FDStoreProperties.setLastRefresh(System.currentTimeMillis()+ (1000*60*10));
+    }
+    
 
 }

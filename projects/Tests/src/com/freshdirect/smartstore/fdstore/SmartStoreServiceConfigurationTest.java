@@ -37,8 +37,10 @@ public class SmartStoreServiceConfigurationTest extends TestCase {
     protected void setUp() throws Exception {
         Context context = TestUtils.createContext();
 
+        TestUtils.initCmsManagerFromXmls("classpath:/com/freshdirect/cms/fdstore/content/FeaturedProducts.xml");
         TestUtils.createTransaction(context);
-
+        TestUtils.initFDStoreProperties();
+        
         MockContainer mockContainer = TestUtils.createMockContainer(context);
 
         AspectSystem aspectSystem = TestUtils.createAspectSystem();
