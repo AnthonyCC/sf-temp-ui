@@ -111,7 +111,7 @@ INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C20',
 INSERT INTO ss_variants (id, type, feature) VALUES ('c_peak_prod_1', 'scripted', 'C_PEAK_PRODUCE');
 
 INSERT INTO ss_variant_params (id, key, value)
-    VALUES ('c_peak_prod_1', 'generator', 'RecursiveNodes("fru","veg"):atLeast(QualityRating_Discretized2,0)');
+    VALUES ('c_peak_prod_1', 'generator', 'RecursiveNodes("fru","veg"):atLeast(QualityRating_Discretized2,3)');
 INSERT INTO ss_variant_params (id, key, value)
     VALUES ('c_peak_prod_1', 'scoring', 'Recency_Discretized:top; QualityRating; Popularity_Discretized; ReorderRate_DepartmentNormalized');
 INSERT INTO ss_variant_params (id, key, value)
@@ -153,7 +153,7 @@ INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C20',
 INSERT INTO ss_variants (id, type, feature) VALUES ('c_peak_fru_1', 'scripted', 'C_PEAK_FRUIT');
 
 INSERT INTO ss_variant_params (id, key, value)
-    VALUES ('c_peak_fru_1', 'generator', 'RecursiveNodes("fru"):atLeast(QualityRating_Discretized2,0)');
+    VALUES ('c_peak_fru_1', 'generator', 'RecursiveNodes("fru"):atLeast(QualityRating_Discretized2,3)');
 INSERT INTO ss_variant_params (id, key, value)
     VALUES ('c_peak_fru_1', 'scoring', 'Recency_Discretized:top; QualityRating; Popularity_Discretized; ReorderRate_DepartmentNormalized');
 INSERT INTO ss_variant_params (id, key, value)
