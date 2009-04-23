@@ -829,7 +829,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 						}
 					%>
 					</select>
-					<% if (bRecService.getVariant().getServiceConfig().getType().equals(RecommendationServiceType.SCRIPTED) ) {  %>
+					<% if (bRecService != null && bRecService.getVariant().getServiceConfig().getType().equals(RecommendationServiceType.SCRIPTED) ) {  %>
 						<table class="text11" style="border: 1px solid black; margin: 2px auto; width: auto;"><tr><td style="width: auto; padding: 4px;"><%= bRecService.getDescription() %></td></tr></table>
 					<% } %>
 					<p class="not-found">
