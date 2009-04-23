@@ -19,8 +19,8 @@
 <%
 
 // redirect to Survey if this is the second order && first order is delivered
-System.out.println(" yuzer.isSurveySkipped() :"+yuzer.isSurveySkipped()+" yuzer.getAdjustedValidOrderCount():"+yuzer.getAdjustedValidOrderCount()+" yuzer.getDeliveredOrderCount():"+yuzer.getDeliveredOrderCount());
-if (!yuzer.isSurveySkipped() && yuzer.getAdjustedValidOrderCount()==1 && yuzer.getDeliveredOrderCount()==1) {
+//if (!yuzer.isSurveySkipped() && yuzer.getAdjustedValidOrderCount()==1 && yuzer.getDeliveredOrderCount()==1) {
+if(true) {
 
 
 // leave previous 4th order logic
@@ -35,7 +35,6 @@ if (!yuzer.isSurveySkipped() && yuzer.getAdjustedValidOrderCount()==1 && yuzer.g
 								   ||  "SKIP".equals(customer.getProfile().getAttribute("fourth_order_cos_survey"))
 								   ||  "SKIP".equals(customer.getProfile().getAttribute("second_order_survey"));
 
-System.out.println("alreadyTookFirstSurvey :"+alreadyTookFirstSurvey+" alreadyTookSecondSurvey :"+alreadyTookSecondSurvey+" skippedSecondSurvey: "+skippedSecondSurvey);
  if (!alreadyTookFirstSurvey && !alreadyTookSecondSurvey && !skippedSecondSurvey) {
 
  		if (yuzer.getSelectedServiceType().equals(EnumServiceType.CORPORATE)) {
@@ -44,7 +43,8 @@ System.out.println("alreadyTookFirstSurvey :"+alreadyTookFirstSurvey+" alreadyTo
             FDSurvey Usability = FDSurveyCachedFactory.getSurvey(EnumSurveyType.SECOND_ORDER_SURVEY);
 	        FDSurveyResponse surveyResponse= FDCustomerManager.getCustomerProfileSurveyInfo(yuzer.getIdentity());
            int coverage=com.freshdirect.webapp.taglib.fdstore.SurveyHelper.getResponseCoverage(Usability,surveyResponse);
-           if(coverage<Usability.getAcceptableCoverage()) {
+           //if(coverage<Usability.getAcceptableCoverage()) {
+           if(true) {
         	    response.sendRedirect(response.encodeRedirectURL("/checkout/survey.jsp?successPage=/checkout/step_1_choose.jsp"));
                 return;
            } 
