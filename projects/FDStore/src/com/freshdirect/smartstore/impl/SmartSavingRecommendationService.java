@@ -54,8 +54,9 @@ public class SmartSavingRecommendationService extends WrapperRecommendationServi
         }
         if (cartSuggestions.size() < input.getMaxRecommendations()) {
             List internalRec = internal.recommendNodes(input);
-            // we have to filter out cart items from the internaly recommended item list.
-            internalRec = FDStoreRecommender.getInstance().filterProducts(internalRec, input.getCartContents(), false);            
+            // we have to filter out cart items from the internally recommended item list.
+            // segabor: why?
+            internalRec = FDStoreRecommender.getInstance().filterProducts(internalRec, input.getCartContents(), true);            
             cartSuggestions.addAll(internalRec);
         }
         if (prevMap == null) {

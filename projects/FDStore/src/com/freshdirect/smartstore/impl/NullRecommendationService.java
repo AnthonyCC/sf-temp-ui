@@ -15,8 +15,6 @@ import com.freshdirect.smartstore.Variant;
  *
  */
 public class NullRecommendationService implements RecommendationService {
-	
-
 	private Variant variant;
 	
 	public Variant getVariant() {
@@ -44,4 +42,8 @@ public class NullRecommendationService implements RecommendationService {
 	public Map getConfiguration() {
 		return Collections.EMPTY_MAP;
 	}
+
+    public boolean isIncludeCartItems() {
+    	return false;
+    }
 }

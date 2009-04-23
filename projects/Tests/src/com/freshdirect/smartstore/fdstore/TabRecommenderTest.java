@@ -63,7 +63,10 @@ public class TabRecommenderTest extends RecommendationServiceTestBase {
 		public Map getConfiguration() {
 			return Collections.EMPTY_MAP;
 		}
-		
+
+		public boolean isIncludeCartItems() {
+			return false;
+		}
 	};
 	
 	private RecommendationService v1 = new MockService("A1");

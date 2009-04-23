@@ -30,4 +30,6 @@ public interface RecommendationService {
 	public List recommendNodes(SessionInput input);
 
 	public String getDescription();
+	
+	public boolean isIncludeCartItems();
 }

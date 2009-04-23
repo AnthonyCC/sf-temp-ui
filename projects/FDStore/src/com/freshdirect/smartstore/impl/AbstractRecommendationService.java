@@ -326,4 +326,8 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 		    ','+SmartStoreServiceConfiguration.CKEY_INCLUDE_CART_ITEMS + ':' + includeCartItems + 
 		    ",sampler:("+sampler+"),"+getDescription()+")";
 	}
+
+	public boolean isIncludeCartItems() {
+		return includeCartItems;
+	}
 }

@@ -42,7 +42,10 @@ public class VariantSelectorTest extends TestCase {
 		public Map getConfiguration() {
 			return Collections.EMPTY_MAP;
 		}
-		
+
+		public boolean isIncludeCartItems() {
+			return false;
+		}
 	};
 	
 	private List userIds;

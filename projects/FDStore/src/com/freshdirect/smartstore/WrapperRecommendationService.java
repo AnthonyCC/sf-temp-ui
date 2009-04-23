@@ -24,4 +24,7 @@ public abstract class WrapperRecommendationService implements RecommendationServ
 
     public abstract List recommendNodes(SessionInput input);
 
+    public boolean isIncludeCartItems() {
+    	return internal.isIncludeCartItems();
+    }
 }

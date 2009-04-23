@@ -33,5 +33,4 @@ public class COSFilter extends WrapperRecommendationService {
             return Collections.EMPTY_LIST;
         }
     }
-
 }

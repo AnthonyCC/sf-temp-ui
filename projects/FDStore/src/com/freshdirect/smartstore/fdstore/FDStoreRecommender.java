@@ -110,9 +110,9 @@ public class FDStoreRecommender {
 		LOGGER.debug("Items before filter: " + contentModels);
 
 
-		boolean includeCartItems = Boolean.valueOf(service.getVariant().getServiceConfig().get(SmartStoreServiceConfiguration.CKEY_INCLUDE_CART_ITEMS)).booleanValue();
+		// boolean includeCartItems = Boolean.valueOf(service.getVariant().getServiceConfig().get(SmartStoreServiceConfiguration.CKEY_INCLUDE_CART_ITEMS)).booleanValue();
 		// filter unnecessary models
-		List renderableProducts = filterProducts(contentModels, cartItems, includeCartItems);
+		List renderableProducts = filterProducts(contentModels, cartItems, service.isIncludeCartItems());
 		
 		// shave off the extra ones
 		if (renderableProducts.size() > input.getMaxRecommendations()) 
