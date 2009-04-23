@@ -50,6 +50,7 @@ import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
 import com.freshdirect.fdstore.promotion.FDPromotionVisitor;
 import com.freshdirect.fdstore.promotion.PromoVariantModel;
+import com.freshdirect.fdstore.promotion.PromoVariantModelImpl;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.SignupDiscountRule;
@@ -1178,16 +1179,22 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 	
 	public Map getPromoVariantMap() {
+		//Map m = null;
 		if(this.promoVariantMap == null) {
 			//Load the map if not available
 			this.promoVariantMap = PromoVariantHelper.getPromoVariantMap(this);
+			//PromoVariantModel model = new PromoVariantModelImpl("c_save_yf_1", "dyf_save_test", 1,EnumSiteFeature.SOYF, 2);
+			//m = new HashMap();
+			//m.put("c_save_yf_1", model);
 		}
 		return this.promoVariantMap;
+		//return m;
 	}
 	
 	public PromoVariantModel getPromoVariant(String variantId) {
 		if(this.getPromoVariantMap() == null) return null;
 		return (PromoVariantModel) this.getPromoVariantMap().get(variantId);
+		//return new PromoVariantModelImpl("c_save_yf_1", "dyf_save_test", 1,EnumSiteFeature.SOYF, 2);
 	}
 	
 	public boolean isEligibleForSavings(EnumSiteFeature siteFeature) {

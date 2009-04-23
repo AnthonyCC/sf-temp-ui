@@ -62,7 +62,7 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 		FDCartModel cart= context.getShoppingCart();
 		List orderLines=cart.getOrderLines();
         Map recommendedItemMap=new HashMap();
-        
+        int appliedCnt = 0;
 		if(orderLines!=null){	
 			for(int i=0;i<orderLines.size();i++) {
 				  FDCartLineI model=(FDCartLineI)orderLines.get(i);
@@ -78,6 +78,7 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 							}
 							String productId = model.getProductRef().lookupProduct().getContentKey().getId();							
 							recommendedItemMap.put(productId, savingsId);
+							appliedCnt++;
 						}		
 				  }
 			}
@@ -92,6 +93,7 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 							String productId = model.getProductRef().lookupProduct().getContentKey().getId();
 							recommendedItemMap.put(productId, model.getVariantId());
 							model.setDiscountApplied(true);
+							appliedCnt++;
 						}		
 						
 				  }
@@ -107,10 +109,12 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 							cartModel.setDiscount(dis);
 							cartModel.setSavingsId((String)recommendedItemMap.get(productId));
 							cartModel.setDiscountApplied(true);
+							appliedCnt++;
 						}
 					
 				}	
 			}
+			if(appliedCnt <= 0) return false;
 			//Update Pricing after discount application.
 			try {
 					cart.refreshAll();

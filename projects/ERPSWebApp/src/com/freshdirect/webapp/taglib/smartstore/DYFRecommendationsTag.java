@@ -65,7 +65,7 @@ public class DYFRecommendationsTag extends RecommendationsTag implements Session
         	if(user.isEligibleForSavings(EnumSiteFeature.SOYF)) {
             	results = extractRecommendations(session, EnumSiteFeature.SOYF);
         	}
-        	if(user.isEligibleForSavings(EnumSiteFeature.SAVE_ON_FAVORITES)) {
+        	else if(user.isEligibleForSavings(EnumSiteFeature.SAVE_ON_FAVORITES)) {
             	results = extractRecommendations(session, EnumSiteFeature.SAVE_ON_FAVORITES);
         	}
         }

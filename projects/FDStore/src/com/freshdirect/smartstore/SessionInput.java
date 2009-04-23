@@ -39,6 +39,10 @@ public class SessionInput {
 	private Map previousRecommendations;
 
 	int maxRecommendations = Integer.MAX_VALUE;
+	
+	private Map promoVariantMap = null;
+	
+	private Set eligiblePromotions = null;
 
 	/**
 	 * Constructor.
@@ -53,6 +57,14 @@ public class SessionInput {
 		this.customerServiceType = customerServiceType;
 	}
 
+	public Set getEligiblePromotions() {
+		return eligiblePromotions;
+	}
+
+	public Map getPromoVariantMap() {
+		return promoVariantMap;
+	}
+
 	/**
 	 * Constructor.
 	 * 
@@ -63,6 +75,8 @@ public class SessionInput {
 		if (user != null) {
 			this.customerServiceType = user.getUserServiceType();
 			this.cartModel = user.getShoppingCart();
+			this.promoVariantMap = user.getPromoVariantMap();
+			this.eligiblePromotions = user.getPromotionEligibility().getEligiblePromotionCodes();
 			if (user.getIdentity() != null)
 				this.customerId = user.getIdentity().getErpCustomerPK();
 		}
@@ -161,4 +175,5 @@ public class SessionInput {
 	public int getMaxRecommendations() {
 		return maxRecommendations;
 	}
+
 }

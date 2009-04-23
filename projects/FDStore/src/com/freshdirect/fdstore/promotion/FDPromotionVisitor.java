@@ -169,6 +169,9 @@ public class FDPromotionVisitor {
 		// clear the both discounts
 		context.clearHeaderDiscounts();
 		context.clearLineItemDiscounts();
+		eligibilities.removeAppliedPromo(lineItemPromoCode);
+		eligibilities.removeAppliedPromo(headerPromoCode);
+		context.getUser().setRedeemedPromotion(null);
 		
 		PromotionI headerPromo = PromotionFactory.getInstance().getPromotion(headerPromoCode);
 		if(headerPromo.apply(context)){		
@@ -187,11 +190,13 @@ public class FDPromotionVisitor {
 		}
 		if((headerDiscAmount!=0 && headerDiscAmount>=lineItemDiscAmount)) {
 			context.clearLineItemDiscounts();			
-			eligibilities.removeAppliedPromo(lineItemPromoCode);			
+			eligibilities.setApplied(headerPromoCode);			
+			if(headerPromo.isRedemption())
+				context.getUser().setRedeemedPromotion(headerPromo);
 		}else if(lineItemDiscAmount!=0 && lineItemDiscAmount>headerDiscAmount) {
 			context.clearHeaderDiscounts();	
-			eligibilities.removeAppliedPromo(headerPromoCode);
-			context.getUser().setRedeemedPromotion(null);
+			eligibilities.setApplied(lineItemPromoCode);
+			
 		}					
 	}
 

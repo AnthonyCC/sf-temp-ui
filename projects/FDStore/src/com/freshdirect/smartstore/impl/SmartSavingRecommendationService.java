@@ -4,12 +4,17 @@
 package com.freshdirect.smartstore.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
+import com.freshdirect.fdstore.promotion.PromoVariantModel;
+import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.WrapperRecommendationService;
@@ -31,6 +36,7 @@ public class SmartSavingRecommendationService extends WrapperRecommendationServi
 
     public List recommendNodes(SessionInput input) {
         String variantId = getVariant().getId();
+        if(!isEligibleForSavings(input, variantId)) return Collections.EMPTY_LIST;
         Map prevMap = input.getPreviousRecommendations();
         if (prevMap != null) {
             List prevRecommendations = (List) prevMap.get(variantId);
@@ -42,11 +48,11 @@ public class SmartSavingRecommendationService extends WrapperRecommendationServi
         List cartSuggestions = new ArrayList();
         for (int i = 0; i < cartModel.numberOfOrderLines(); i++) {
             FDCartLineI orderLine = cartModel.getOrderLine(i);
-            if (variantId.equals(orderLine.getVariantId())) {
+            if (variantId.equals(orderLine.getSavingsId()) || variantId.equals(orderLine.getVariantId())) {
                 cartSuggestions.add(orderLine.lookupProduct());
             }
         }
-        if (input.getMaxRecommendations() < cartSuggestions.size()) {
+        if (cartSuggestions.size() < input.getMaxRecommendations()) {
             List internalRec = internal.recommendNodes(input);
             // we have to filter out cart items from the internaly recommended item list.
             internalRec = FDStoreRecommender.getInstance().filterProducts(internalRec, input.getCartContents(), false);            
@@ -60,4 +66,15 @@ public class SmartSavingRecommendationService extends WrapperRecommendationServi
         return cartSuggestions;
     }
 
+	private boolean isEligibleForSavings(SessionInput sessionInput, String variantId) {
+		Map promoVariantMap = sessionInput.getPromoVariantMap();
+		if(promoVariantMap == null || promoVariantMap.size() == 0)
+			return false;
+		PromoVariantModel pvModel = (PromoVariantModel) promoVariantMap.get(variantId);
+		String promoCode =pvModel.getAssignedPromotion().getPromotionCode();
+		if(sessionInput.getEligiblePromotions().contains(promoCode)) {
+			return true;
+		}
+		return false;
+	}
 }
