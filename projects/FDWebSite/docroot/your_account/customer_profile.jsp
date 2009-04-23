@@ -38,16 +38,29 @@ response.setHeader("Cache-Control", "no-cache");
 String department = request.getParameter("department");
 
 %>
+<script type="text/javascript">
+
+function clear(p) {
+    var x = p;
+
+    for(i=0; i<x.length; i++) {
+
+        x[i].value = '';
+        x[i].checked= false;
+        x[i].disabled= false;
+    }
+}
+</script>
 <tmpl:insert template='/common/template/dnav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Your Profile</tmpl:put>
 <tmpl:put name='content' direct='true'>
 
 <fd:CustomerProfileSurveyTag actionName="submitSurvey" result="result" successPage="<%=successPage%>" survey="Customer Profile Survey">
 <fd:IncludeMedia name="/media/editorial/site_pages/survey/cps_intro.html" />	
- 	
+ <form name="request_product" method="post">	
 <table cellpadding="0" cellspacing="0" border="0" class="text12">
 <tr><td colspan="10">
-    <form name="request_product" method="post">
+    
     <input type="hidden" name="department" value="<%=department%>">
     <br>
     
@@ -61,7 +74,7 @@ String department = request.getParameter("department");
 <% request.setAttribute("Survey","Customer Profile Survey");%>
 <%@ include file="/includes/your_account/i_customer_profile.jspf" %>
 	
-</form>
+
 </td>
 </tr>
 <% } %>
@@ -80,12 +93,13 @@ String department = request.getParameter("department");
 
 	<tr>
 		<td colspan="10" align="center">
-			<a href="javascript:document.request_product.reset()"><img src="/media_stat/images/template/newproduct/b_clear.gif" width="47" height="17" border="0" alt="Clear"></a>&nbsp;&nbsp;
+			<a href="javascript:clear(document.request_product)"><img src="/media_stat/images/template/newproduct/b_clear.gif" width="47" height="17" border="0" alt="Clear"></a>&nbsp;&nbsp;
 			<input type="image" name="send_email" src="/media_stat/images/template/newproduct/b_send.gif" width="45" height="15" vspace="1" border="0" alt="Send Request"onClick="javascript:document.request_product.submit()"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="12"><br>
     </td>
     </tr>
 
 </table>
+
 <br><br>
 <IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="675" HEIGHT="1" BORDER="0"><BR>
 <FONT CLASS="space4pix"><BR><BR></FONT>
@@ -96,6 +110,7 @@ String department = request.getParameter("department");
 <BR>from <FONT CLASS="text11bold"><A HREF="/index.jsp">Home Page</A></FONT><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="340" HEIGHT="1" BORDER="0"></td>
 </tr>
 </TABLE>
+</FORM>
 </fd:CustomerProfileSurveyTag>
 	</tmpl:put>
 </tmpl:insert>
