@@ -18,7 +18,7 @@
 String successPage = "/your_account/customer_profile_summary.jsp";
 String redirectPage = "/login/login.jsp?successPage=" + successPage;
 request.setAttribute("sitePage", "www.freshdirect.com/your_account/customer_profile_summary.jsp");
-request.setAttribute("listPos", "SystemMessage,HPLeftTop");
+request.setAttribute("listPos", "HPLeftTop");
 %>
 <fd:CheckLoginStatus guestAllowed='false' recognizedAllowed='false' redirectPage='<%=redirectPage%>'/>
 <% 
@@ -170,7 +170,7 @@ response.setHeader("Cache-Control", "no-cache");
 					</td>
 				</tr>
                 <%}%>
-                <% if(birthDay!=null){%>
+                <% if(birthDay!=null && birthDay.length==2){%>
 				<tr>
 					<td>
                         
@@ -203,10 +203,11 @@ response.setHeader("Cache-Control", "no-cache");
 							<tr>
 								<td align="center" style="border-left: 1px solid #996; border-right: 1px solid #996;" colspan="3">
 									<!-- fake oas ad -->
-									<% if (FDStoreProperties.isAdServerEnabled()) { %>
-						                <SCRIPT LANGUAGE=JavaScript>
+									<% 
+                                    if (FDStoreProperties.isAdServerEnabled()) { %>
+						                <SCRIPT LANGUAGE="JavaScript">
 						                    <!--
-						                    OAS_AD('HPTopLeft');
+						                    OAS_AD('HPLeftTop');
                                         //-->
 						             </SCRIPT>
 					                <% } %>

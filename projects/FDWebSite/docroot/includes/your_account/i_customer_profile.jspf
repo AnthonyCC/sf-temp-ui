@@ -190,7 +190,7 @@
 <% int quesCount = 1; 
        FDSurvey Usability = FDSurveyCachedFactory.getSurvey(EnumSurveyType.getEnum(request.getAttribute("Survey").toString()));
        request.removeAttribute("Survey");
-       FDSurveyResponse surveyResponse= FDCustomerManager.getCustomerProfileSurveyInfo(customerIdentity);
+       FDSurveyResponse surveyResponse= FDCustomerManager.getCustomerProfileSurveyInfo(user.getIdentity());
        List questions = Usability.getQuestions();
        String questionPostFix=" (Choose one)";
        List previousAnswers=null;

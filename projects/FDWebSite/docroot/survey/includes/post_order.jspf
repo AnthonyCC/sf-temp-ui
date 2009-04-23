@@ -12,7 +12,6 @@ boolean alreadyTookSecondSurvey = "FILL".equals(user.getFDCustomer().getProfile(
 									   || "FILL".equals(user.getFDCustomer().getProfile().getAttribute("fourth_order_cos_survey"))
 									   || "FILL".equals(user.getFDCustomer().getProfile().getAttribute("second_order_survey"));
 
-System.out.println("surveyStatus :"+surveyStatus+" submitted: "+ submitted+" skipped: "+skipped+" alreadyTookSecondSurvey: "+alreadyTookSecondSurvey);
 if (submitted) {
 %>
 <table width="630" cellpadding="0" cellspacing="0" border="0" class="text12">
@@ -23,149 +22,20 @@ if (submitted) {
 <%	
 } else if (!skipped) {
 	
-	FDSurvey survey = null;
-	FDSurveyResponse surveyResponse=null;
-   
-System.out.println("User object is: "+user.getClass().getName());
-   boolean showSurvey = !alreadyTookSecondSurvey  && !"skip_3".equalsIgnoreCase(surveyStatus) && !"FILL".equalsIgnoreCase(surveyStatus)
-   &   ((FDSessionUser)user).getDeliveredOrderCount()>-2;
-   System.out.println("showSurvey : "+showSurvey);
-   System.out.println("!alreadyTookSecondSurvey : "+!alreadyTookSecondSurvey);
-   System.out.println("!\"skip_3\".equalsIgnoreCase(surveyStatus) : "+!"skip_3".equalsIgnoreCase(surveyStatus));
-   System.out.println("!\"FILL\".equalsIgnoreCase(surveyStatus) : "+"FILL".equalsIgnoreCase(surveyStatus));
-   System.out.println("((FDSessionUser)user).getDeliveredOrderCount()>2 : "+(((FDSessionUser)user).getDeliveredOrderCount()>2));
-   
-    survey = FDSurveyCachedFactory.getSurvey(EnumSurveyType.POST_ORDER_SURVEY);
-    surveyResponse= FDCustomerManager.getCustomerProfileSurveyInfo(user.getIdentity());
-    int coverage=com.freshdirect.webapp.taglib.fdstore.SurveyHelper.getResponseCoverage(survey,surveyResponse);
-    showSurvey=coverage<survey.getAcceptableCoverage()?true:false;
-    System.out.println("showSurvey after coverage : "+showSurvey);
+	
+
+   boolean showSurvey = !alreadyTookSecondSurvey  && !"skip_3".equalsIgnoreCase(surveyStatus) && !"FILL".equalsIgnoreCase(surveyStatus)   &   ((FDSessionUser)user).getDeliveredOrderCount()>2;
+   FDSurvey survey =null;
+   if(showSurvey) {
+        survey = FDSurveyCachedFactory.getSurvey(EnumSurveyType.POST_ORDER_SURVEY);
+        int coverage=com.freshdirect.webapp.taglib.fdstore.SurveyHelper.getResponseCoverage(survey,FDCustomerManager.getCustomerProfileSurveyInfo(user.getIdentity()));
+        showSurvey=coverage<survey.getAcceptableCoverage()?true:false;
+   }
    
    if (showSurvey) {
-
-	
-    
-       	List questions = survey.getQuestions();
-	
-      	String[] checkSurveyForm = new String[questions.size()];
-   
-       if (questions.size() > 0) {
-	   int c = 0;
-	   for(Iterator it = questions.iterator();it.hasNext();c++){
-	       FDSurveyQuestion question = (FDSurveyQuestion)it.next();
-	       checkSurveyForm[c] = question.getName();
-	    }
-	}
-	
 	
 %>
-  <style>
-	body { font-family:Verdana,Arial,sans-serif; font-size: 10px; height: 100%; }
-	.container { border: 2px solid #060; width: 100%; }
-	.ctext { text-align: left; margin: 10px 2px; font-size: 11px; }
-	.etext { text-align: left; margin: 10px 20px; font-size: 11px; font-weight: bold; }
-	.notes { text-align: left; margin: 10px 20px; font-size: 10px; font-weight: normal; }
-	.example { border: 1px dashed #4c4; width: 703px; text-align: left; margin: 5px auto 5px auto; }
-	.fleft { float: left; }
-	.cleft { clear: left; }
-	.cright { clear: right; }
-	.cboth { clear: both; }
-	.question { color: orange; font-size: 12px; font-weight: bold; padding:10px 0px }
-	.question_number { float: left; width: 25px; }
-	.question_text { float: left; width: 675px; }
-	.answer { margin: 10px; }
-	.other { padding-left: 32px; }
 
-	.q02_container { float: left; margin: 0 10px 0 0; }
-	.q02_input { float: left; padding: 1px; }
-	.q02_input input { font-size: 11px; text-align: center; width: 30px; }
-	.q02_incr { float: left; }
-	.q02_incr div { height: 8px; width: 10px; padding: 1px; }
-	.q02_incr div img { height: 9px; width: 10px; margin: 0 2px; }
-	.q02_text { float: left; line-height: 22px; padding-left: 4px; }
-
-	.q03_container { float: left; margin: 0 10px 0 0; }
-
-	.q04_container { float: left; margin: 0 10px 0 0; width: 48%; line-height: 22px; }
-	.q04_container div { clear: right; }
-	.q04_container input { float: left; }
-	.q04_container div div { float: right; width: 90%; line-height: 22px; }
-
-	.q05_container { float: left; margin: 0; line-height: 23px; }
-	.q05_col50per { width: 50%; }
-	.q05_col25per { width: 25%; }
-	.q05_col75per { width: 75%; }
-	.q05_container div { line-height: 24px; }
-	.q05_container div div { float: left; padding-right: 10px; line-height: 22px; width: 22px; }
-	.q05_container .other_input { font-size: 11px; text-align: left; width: 100px; margin: 2px 10px 1px 3px; }
-
-	.q06_container { height: 30px; }
-	.q06_container span { font-weight: bold; }
-	.q06_container select { margin-left: 10px; }
-
-	.q07_container { margin: 0 10px 0 0; width: 100%; line-height: 22px; }
-	.q07_container div { padding: 1px 0; line-height: 22px; }
-	.q07_container div div { clear: left; float: left; padding-right: 3px; }
-    .q07_container .other_input { font-size: 11px; text-align: left; width: 100px; margin: 2px 10px 1px 3px; }
-	//.q07_container .other_input { font-size: 11px; text-align: left; width: 100px; margin-left: 10px; }
-
-	.q08_container { margin: 0 10px 0 0; width: 75%; line-height: 22px; }
-	.q08_container .q08_text { clear: both; }
-	.q08_text { float: left; padding: 1px 0; line-height: 22px; width: 75%; }
-	.q08_cb { float: right; padding: 1px 0; line-height: 22px; width: 10%; text-align: center; font-weight: bold; }
-	
-	.q09_container { float: left; width: 33%; padding: 20px 0; }
-	.q09_container .box { width: 100%; }
-	.q09_container div div { line-height: 22px; }
-	.q09_rb { float: left; width: 35%; text-align: right; }
-	.q09_text { float: left; width: 65%; text-align: left; }
-	.odd { background-color: #ddd;  line-height: 26px; height: 26px;}
-	.even { background-color: #aaa;  line-height: 26px; height: 26px;}
-
-	.q10_container { float: left; width: 49%; }
-	.q10_container div { margin: 5px 0; }
-	.q10_container select { margin: 0 10px 0 0; width: 97%; }
-	
-	.q11_container { margin: 0 10px 0 0; line-height: 22px; }
-	.q11_colfright { float: right; }
-	.q11_col35per { width: 35%; }
-	.q11_col65per { width: 65%; }
-	.q11_col65per div { width: 50%; }
-	.q11_container div { float: left; padding: 1px 0; line-height: 22px; }
-	.other_input { font-size: 11px; text-align: left; width: 100px; margin-left: 10px; }
-
-	.q12_container { float: left; padding: 1px; }
-	.q12_container input { margin: 5px; }
-	.rb_image { text-align: center; width: 110px; }
-
-
-	/* below is the table styles */
-	.tQuestion { color: orange; font-size: 12px; font-weight: bold; width: 100%; border: 0; text-align: left; border-collapse: collapse; line-height: 24px; }
-	.tQuestion td { vertical-align: top; }
-	td.tIndex { width: 20px; }
-	.tAnswer { padding: 6px 0 10px 10px; width: 100%; border-spacing: 0px; border-collapse: collapse; line-height: 24px; }
-	.tAnswer td { padding: 0; }
-	.tAnswer table { float: left; line-height: 24px; }
-	.incr_input { font-size: 11px; text-align: center; width: 30px; }
-	.col25per { width: 25%; }
-	.col33per { width: 33.3%; }	
-	.col49per { width: 49%; }
-	.col50per { width: 50%; }
-	.col75per { width: 75%; }
-	.col100per { width: 100%; }
-	.other { padding: 0 0 0 24px; }
-	.odd { background-color: #ddd; }
-	.even { background-color: #aaa; }
-	.bolded { font-weight: bold; }
-	.cbHead { width: 10%; text-align: center; font-weight: bold; }
-	.other_input { font-size: 11px; text-align: left; width: 100px; margin-left: 10px; }
-	.tLeft { text-align: left; }
-	.tCen { text-align: center; }
-	.pad10px { padding: 10px; }
-	.padTop30px { padding-top: 30px; }
-	.rb_image { text-align: center; width: 110px; }
-
-</style>  
 <table width="630" cellpadding="0" cellspacing="0" border="0" class="text12">
 <fd:ReceiptSurvey actionName="<%=actionName%>" result="result" successPage="/checkout/step_4_receipt.jsp" survey="<%=survey%>">
 <form name="postOrderSurvey" method="POST">
@@ -186,12 +56,6 @@ System.out.println("User object is: "+user.getClass().getName());
 		<td colspan="11" class="text11"><img src="/media_stat/images/layout/999966.gif" width="630" height="1" vspace="8"><br><span class="title18" style="color:#990000;">HELP US SERVE YOU BETTER</span><br><span class="space4pix"><br></span>
 		We want to make your FreshDirect experience the best it can be. Please help us by filling out this survey. Of course we keep all your information private. Whether you choose to fill out the survey or not, your feedback is greatly appreciated.
 		<br><img src="/media_stat/images/layout/cccccc.gif" width="630" height="1" vspace="8"><br>
-		<%  if (questions.size() > 0) { %>
-			<fd:ErrorHandler result='<%=result%>' field='<%=checkSurveyForm%>'>
-				<% String errorMsg = SystemMessageList.MSG_MISSING_SURVEY_INFO; %>
-				<br><%@ include file="/includes/i_error_messages.jspf" %><span class="space8pix"><br></span>
-			</fd:ErrorHandler>
-		<% } %>
 		</td>
 	</tr>
 	<tr>
@@ -207,74 +71,9 @@ System.out.println("User object is: "+user.getClass().getName());
 	    <td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td>
 	    <td><img src="/media_stat/images/layout/clear.gif" width="130" height="1"></td>
 	</tr>
-	<% int quesCount = 1; 
-       List previousAnswers=null;
-       
-    %>
-    <!--<div class="container">-->
-	    <logic:iterate id="question" collection="<%= questions %>" type="com.freshdirect.fdstore.survey.FDSurveyQuestion" indexId='index'>
-           <tr>
-            <% 
-				String input = "radio";
-				//String surveyQuestion = subQuestion? "text12":"text13";
-				String surveyQuestion = "text13";
-                if(question.isMultiselect())input = "checkbox";
-                
-                List prevAnswers = new ArrayList();
-                String[] paramValues = request.getParameterValues(question.getName());
-                if(paramValues != null)
-                    for (int j = 0; j < paramValues.length; j++) {
-					prevAnswers.add(paramValues[j]);
-				}
-                
-                if(surveyResponse!=null && surveyResponse.getAnswer(question.getName())!=null) {
-                    previousAnswers=surveyResponse.getAnswerAsList(question.getName());
-                } else {
-                   previousAnswers=null;
-                }
-            %>
-            <fd:ErrorHandler result='<%=result%>' name='<%=question.getName()%>'>
-                    <% surveyQuestion = "text13rbold"; %>
-            </fd:ErrorHandler>
-			<!--<div class="example">-->
-			    <div class="question">
-				    <div class="question_number">
-					<%=quesCount%>
-				    </div>
-				    <div class="question_text">
-                   		<%=SurveyHtmlHelper.getQuestionText(question)%>
-				    </div>
-				    <div class="cleft"><!--  --></div>
-			    </div>
-		    <!--</div>-->
-                <!--<div class="example">-->
-			        <!--<div class="answer">-->
-                    <% String container="q07_container";
-                       if(EnumFormDisplayType.DISPLAY_PULLDOWN_GROUP.equals(question.getFormDisplayType())){
-                            container="q06_container";
-                       }else if(question.isPulldown()) {
-                            container="q10_container";
-                       } else if(EnumFormDisplayType.TWO_ANS_PER_ROW.equals(question.getFormDisplayType())) {
-                            container="answer_container";
-                       }else if(EnumFormDisplayType.GROUPED_MULTI_SELECTION.equals(question.getFormDisplayType())){
-                            container="q8_container";
-                       }
-                       
-                     %>
-                     
-				        <div class="<%=container%>" id="<%=quesCount%>">
-					        
-                              <%=SurveyHtmlHelper.getAnswersHtml(String.valueOf(quesCount),question,previousAnswers)%>
-				
-                            
-				        </div>
-			        <!--</div>-->
-		        <!-- </div>-->
-                <%quesCount++;%>
-                <div class="cleft"><!--  --></div>
-              </tr>  
-		</logic:iterate>
-<!--</div>	-->
+<% request.setAttribute("Survey","Post Order Survey");%>
+<%@ include file="/includes/your_account/i_customer_profile.jspf" %>
+
 	<tr><td colspan="11" align="center"><img src="/media_stat/images/layout/cccccc.gif" width="630" height="1" vspace="12"><br><input type="image" src="/media_stat/images/buttons/b_submit_survey.gif" width="176" height="21" alt="SUBMIT SURVEY" onclick="doSubmitForm(false);"><br><img src="/media_stat/images/layout/999966.gif" width="630" height="1" vspace="18"><br>
 	<input type="image" src="/media_stat/images/buttons/b_ask_me_later.gif" width="120" height="21" alt="SKIP SURVEY" onclick="doSubmitForm(true);"><br><br>
 	</td></tr>
