@@ -37,14 +37,10 @@ public class EnumSiteFeature implements Serializable, Comparable {
 	public final static EnumSiteFeature CCL = new EnumSiteFeature("CCL");
 	public final static EnumSiteFeature DYF = new EnumSiteFeature("DYF", true, "Your Favorites");
 	public final static EnumSiteFeature YMAL = new EnumSiteFeature("YMAL", true, "You Might Also Like");
-	public final static EnumSiteFeature YMAL_YF = new EnumSiteFeature("YMAL_YF", true, "YMAL from Your Favorites");
 	public final static EnumSiteFeature RATING = new EnumSiteFeature("RATING");
     public final static EnumSiteFeature FEATURED_ITEMS = new EnumSiteFeature("FEATURED_ITEMS", true, "Featured Items");
     public final static EnumSiteFeature FAVORITES = new EnumSiteFeature("FAVORITES", true, "FreshDirect Favorites");
     public final static EnumSiteFeature CART_N_TABS = new EnumSiteFeature("CART_N_TABS", true, "Cart & Tabs");
-    public final static EnumSiteFeature SOYF = new EnumSiteFeature("SOYF", true, true, "Save on Your Favorites");
-    public final static EnumSiteFeature SAVE_ON_FAVORITES = new EnumSiteFeature("SOFDF", true, true ,"Save on FreshDirect Favorites");
-    public final static EnumSiteFeature SAVE_ON_YMAL = new EnumSiteFeature("SOYMAL", true, true ,"Save on You Might Also Like");
 
 
     private static class Latch implements Serializable {
@@ -118,10 +114,10 @@ public class EnumSiteFeature implements Serializable, Comparable {
 	public EnumSiteFeature(DynamicSiteFeature sf) {
 		this.name = sf.getName();
 		this.isSmartStore = true;
-		this.isSmartSavings = false;
 		this.title = sf.getTitle();
 		this.prez_title = sf.getPresentationTitle();
 		this.prez_desc = sf.getPresentationDescription();
+		this.isSmartSavings = sf.isSmartSaving();
 		dynamicEnum.put(name, this);
 	}
 	
@@ -245,6 +241,10 @@ public class EnumSiteFeature implements Serializable, Comparable {
 
 	public boolean isSmartStore() {
 		return isSmartStore;
+	}
+	
+	public boolean isSmartSavings() {
+		return isSmartSavings;
 	}
 	
 	public String getTitle() {

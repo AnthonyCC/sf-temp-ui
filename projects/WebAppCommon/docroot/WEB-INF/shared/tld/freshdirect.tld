@@ -3164,33 +3164,6 @@
 		</attribute>
 	</tag>	
 	<tag>
-		<name>DYFRecommendations</name>
-		<tagclass>com.freshdirect.webapp.taglib.smartstore.DYFRecommendationsTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.smartstore.RecommendationsTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>id</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>itemCount</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>skipCheck</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>errorOccurred</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
 		<name>FeaturedItemsRecommendations</name>
 		<tagclass>com.freshdirect.webapp.taglib.smartstore.FeaturedItemsTag</tagclass>
 		<teiclass>com.freshdirect.webapp.taglib.smartstore.RecommendationsTag$TagEI</teiclass>

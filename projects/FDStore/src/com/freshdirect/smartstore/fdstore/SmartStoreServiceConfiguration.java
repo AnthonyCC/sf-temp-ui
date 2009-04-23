@@ -238,9 +238,9 @@ public class SmartStoreServiceConfiguration {
         	variant.getServiceConfig().setConfigStatus(statuses = new TreeMap());
         
         if (!RecommendationServiceType.TAB_STRATEGY.equals(serviceType)) {
-        	smartSave = extractSmartSave(config, statuses);
+        	smartSave = extractSmartSave(config, statuses, variant.getSiteFeature());
         	// if smart saving used, we will return items from the cart.
-                includeCartItems = extractIncludeCartItems(config, statuses) || smartSave;
+            includeCartItems = extractIncludeCartItems(config, statuses, smartSave);
         	cosFilter = extractCosFilter(config, statuses);
         	extractCartPresentation(config, statuses);
         }
@@ -381,9 +381,21 @@ public class SmartStoreServiceConfiguration {
 	}
 
 	private static boolean extractIncludeCartItems(RecommendationServiceConfig config,
-			Map statuses) {
+			Map statuses, boolean smartSave) {
 		boolean includeCartItems = DEFAULT_INCLUDE_CART_ITEMS;
 		String iciStr = config.get(CKEY_INCLUDE_CART_ITEMS);
+		if (smartSave) {
+			includeCartItems = true;
+			if (iciStr != null)
+				statuses.put(CKEY_INCLUDE_CART_ITEMS, new ConfigurationStatus(CKEY_INCLUDE_CART_ITEMS, iciStr,
+						Boolean.toString(includeCartItems), EnumConfigurationState.CONFIGURED_OVERRIDDEN)
+						.setWarning("Variant belongs to Smart Savings enabled Site Feature therefore automatically turned on"));
+			else
+				statuses.put(CKEY_INCLUDE_CART_ITEMS, new ConfigurationStatus(CKEY_INCLUDE_CART_ITEMS, null,
+						Boolean.toString(includeCartItems), EnumConfigurationState.UNCONFIGURED_OVERRIDDEN)
+						.setWarning("Variant belongs to Smart Savings enabled Site Feature therefore automatically turned on"));
+			return includeCartItems;
+		}
 		if (iciStr != null) {
 			if (iciStr.equalsIgnoreCase("yes")
 					|| iciStr.equalsIgnoreCase("true")
@@ -402,9 +414,21 @@ public class SmartStoreServiceConfiguration {
 	}
 	
 	private static boolean extractSmartSave(RecommendationServiceConfig config,
-			Map statuses) {
+			Map statuses, EnumSiteFeature siteFeature) {
 		boolean smartSave = DEFAULT_SMART_SAVE;
 		String smartSaveStr = config.get(CKEY_SMART_SAVE);
+		if (siteFeature.isSmartSavings()) {
+			smartSave = true;
+			if (smartSaveStr != null)
+				statuses.put(CKEY_SMART_SAVE, new ConfigurationStatus(CKEY_SMART_SAVE, smartSaveStr,
+						Boolean.toString(smartSave), EnumConfigurationState.CONFIGURED_OVERRIDDEN)
+						.setWarning("Variant belongs to Smart Savings enabled Site Feature therefore automatically turned on"));
+			else
+				statuses.put(CKEY_SMART_SAVE, new ConfigurationStatus(CKEY_SMART_SAVE, null,
+						Boolean.toString(smartSave), EnumConfigurationState.UNCONFIGURED_OVERRIDDEN)
+						.setWarning("Variant belongs to Smart Savings enabled Site Feature therefore automatically turned on"));
+			return smartSave;
+		}
 		if (smartSaveStr != null) {
 			if (smartSaveStr.equalsIgnoreCase("yes")
 					|| smartSaveStr.equalsIgnoreCase("true")

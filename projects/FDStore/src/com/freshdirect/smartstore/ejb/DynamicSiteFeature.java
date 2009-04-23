@@ -13,13 +13,16 @@ public class DynamicSiteFeature implements Comparable, Serializable {
 	private String prez_title;
 	
 	private String prez_desc;
+	
+	boolean smartSaving;
 
-	protected DynamicSiteFeature(String name, String title, String prez_title, String prez_desc) {
+	protected DynamicSiteFeature(String name, String title, String prez_title, String prez_desc, boolean smartSaving) {
 		if (name == null)
 			throw new IllegalArgumentException("name must not be null");
 		
 		this.name = name;
 		this.title = title;
+		this.smartSaving = smartSaving;
 	}
 
 	public String getName() {
@@ -65,5 +68,13 @@ public class DynamicSiteFeature implements Comparable, Serializable {
 
 	public String getPresentationDescription() {
 		return prez_desc;
+	}
+
+	public boolean isSmartSaving() {
+		return smartSaving;
+	}
+
+	public void setSmartSaving(boolean smartSaving) {
+		this.smartSaving = smartSaving;
 	}
 }

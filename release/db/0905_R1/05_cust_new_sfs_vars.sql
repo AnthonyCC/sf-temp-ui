@@ -1,8 +1,8 @@
 
 -- New Site Features
 
-INSERT INTO ss_site_feature (id, title) VALUES ('C_SAVE_YF', 'C''n''T Save on Your Favorites');
-INSERT INTO ss_site_feature (id, title) VALUES ('C_SAVE_FDF', 'C''n''T Save on FreshDirect Favorites');
+INSERT INTO ss_site_feature (id, title, smart_saving) VALUES ('C_SAVE_YF', 'C''n''T Save on Your Favorites', 1);
+INSERT INTO ss_site_feature (id, title, smart_saving) VALUES ('C_SAVE_FDF', 'C''n''T Save on FreshDirect Favorites', 1);
 INSERT INTO ss_site_feature (id, title) VALUES ('C_DEALS', 'C''n''T Don''t Miss Deals');
 INSERT INTO ss_site_feature (id, title) VALUES ('C_PEAK_PRODUCE', 'C''n''T Peak Season Produce');
 INSERT INTO ss_site_feature (id, title) VALUES ('C_PEAK_FRUIT', 'C''n''T Peak Season Fruit');

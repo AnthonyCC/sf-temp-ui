@@ -43,7 +43,7 @@ public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSuppor
 
 	private static final String GET_VARIANT_ALIAS = "SELECT v.id, v.type, v.feature FROM cust.ss_variants v WHERE id = ?";
 	
-	private static final String GET_ALL_SITE_FEATURES_QUERY = "SELECT sf.id, sf.title, sf.prez_title, sf.prez_desc FROM cust.ss_site_feature sf";
+	private static final String GET_ALL_SITE_FEATURES_QUERY = "SELECT sf.id, sf.title, sf.prez_title, sf.prez_desc, sf.smart_saving FROM cust.ss_site_feature sf";
 
 	private static final String GET_TAB_STRAT_PRIOS = "SELECT SITE_FEATURE_ID, PRIMARY_PRIORITY, SECONDARY_PRIORITY " +
 			"FROM CUST.SS_TAB_STRATEGY_PRIORITY WHERE TAB_STRATEGY_ID = ?";
@@ -305,8 +305,9 @@ public class SmartStoreServiceConfigurationSessionBean extends SessionBeanSuppor
 				String title = rs.getString( "title" );
 				String prez_title = rs.getString("prez_title");
 				String prez_desc = rs.getString("prez_desc");
+				boolean smartSaving = rs.getBoolean("smart_saving");
 				
-				result.add(new DynamicSiteFeature(name, title, prez_title, prez_desc));
+				result.add(new DynamicSiteFeature(name, title, prez_title, prez_desc, smartSaving));
 
 			}
 
