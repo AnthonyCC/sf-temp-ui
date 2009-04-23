@@ -47,13 +47,6 @@ public class DeliveryTimeslotTagTestCase extends TestCase {
 
 		//
 
-		expectedRange = new DateRange(DF.parse("2003-10-22"), DF.parse("2003-10-29"));
-		ranges = DeliveryTimeSlotTag.getDateRanges(expectedRange, true, restrictions, EnumDlvRestrictionReason.THANKSGIVING);
-		assertEquals(1, ranges.size());
-		assertEquals(new DateRange(DF.parse("2003-10-29"), DF.parse("2003-10-29")), ranges.get(0));
-
-		//
-
 		expectedRange = new DateRange(DF.parse("2003-10-23"), DF.parse("2003-10-30"));
 		ranges = DeliveryTimeSlotTag.getDateRanges(expectedRange, true, restrictions, EnumDlvRestrictionReason.THANKSGIVING);
 		assertEquals(1, ranges.size());
