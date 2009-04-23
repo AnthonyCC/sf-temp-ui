@@ -332,7 +332,10 @@ public class SmartStoreServiceConfiguration {
 			try {
 				service = new ScriptedRecommendationService(variant, sampler, catAggr, includeCartItems, generator, scoring);
 			} catch (CompileException e) {
-				LOGGER.error("cannot instantiate script recommender (fall back to NIL): " + variant.getId(), e);
+				LOGGER.error("cannot instantiate script recommender - compile error (fall back to NIL): " + variant.getId(), e);
+				return new NullRecommendationService(variant);
+			} catch (NullPointerException e) {
+				LOGGER.error("cannot instantiate script recommender - generator null (fall back to NIL): " + variant.getId(), e);
 				return new NullRecommendationService(variant);
 			}
         } else if (RecommendationServiceType.CLASSIC_YMAL.equals(serviceType)) {
