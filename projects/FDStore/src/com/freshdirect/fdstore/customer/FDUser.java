@@ -97,7 +97,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     private transient ErpCustomerInfoModel customerInfoModel;
     private transient OrderHistoryI cachedOrderHistory;
     private transient FDCustomerModel cachedFDCustomer;
-	private transient FDPromotionEligibility promotionEligibility;
+	protected transient FDPromotionEligibility promotionEligibility;
 	private transient Boolean checkEligible;
 	private transient Boolean referrerEligible;
 	private transient String regRefTrackingCode;

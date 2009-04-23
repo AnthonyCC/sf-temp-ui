@@ -11,6 +11,7 @@ import java.util.Set;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
+import org.apache.log4j.Logger;
 import org.mockejb.EntityBeanDescriptor;
 import org.mockejb.MockContainer;
 import org.mockejb.SessionBeanDescriptor;
@@ -28,6 +29,9 @@ import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.customer.ejb.ErpCustomerEntityBean;
+import com.freshdirect.delivery.ejb.DlvManagerHome;
+import com.freshdirect.delivery.ejb.DlvManagerSB;
+import com.freshdirect.delivery.ejb.DlvManagerSessionBean;
 import com.freshdirect.event.ejb.EventLoggerHome;
 import com.freshdirect.event.ejb.EventLoggerSB;
 import com.freshdirect.event.ejb.EventLoggerSessionBean;
@@ -35,6 +39,7 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDPromotionEligibility;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.NullEventLogger;
@@ -70,6 +75,8 @@ import com.mockrunner.mock.web.MockPageContext;
 
 public class TestUtils {
 
+    final static Logger LOG = Logger.getLogger(TestUtils.class);
+    
     public static MockPageContext createMockPageContext(FDUserI user) {
         MockPageContext ctx = new MockPageContext();
         MockHttpSession session = new MockHttpSession();
@@ -81,7 +88,12 @@ public class TestUtils {
     }
 
     public static FDUser createUser(String primaryKey, String erpCustomerId, String fdCustomerId) {
-        FDUser user = new FDUser(new PrimaryKey(primaryKey));
+        FDUser user = new FDUser(new PrimaryKey(primaryKey)) {
+            public void updateUserState() {
+                LOG.info("No one can call updateUserState!");
+                this.promotionEligibility=  new FDPromotionEligibility();
+            }
+        };
         user.setIdentity(new FDIdentity(erpCustomerId, fdCustomerId));
         return user;
     }
@@ -125,6 +137,10 @@ public class TestUtils {
         SessionBeanDescriptor scoreFactServiceDesc = new SessionBeanDescriptor("freshdirect.smartstore.ScoreFactorHome", ScoreFactorHome.class, ScoreFactorSB.class,
                 ScoreFactorSessionBean.class);
         container.deploy(scoreFactServiceDesc);
+
+        SessionBeanDescriptor dlvAdminDesc = new SessionBeanDescriptor(FDStoreProperties.getDeliveryManagerHome(), DlvManagerHome.class, DlvManagerSB.class,
+                DlvManagerSessionBean.class);
+        container.deploy(dlvAdminDesc);
         
         return container;
     }

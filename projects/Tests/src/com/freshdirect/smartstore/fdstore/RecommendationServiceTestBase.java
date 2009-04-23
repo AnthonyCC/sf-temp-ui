@@ -1,12 +1,13 @@
 package com.freshdirect.smartstore.fdstore;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
+
+import junit.framework.TestCase;
 
 import org.apache.commons.lang.StringUtils;
 import org.mockejb.MockContainer;
@@ -15,22 +16,18 @@ import org.mockejb.interceptor.AspectSystem;
 import com.freshdirect.TestUtils;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
-import com.freshdirect.cms.application.CmsManager;
-import com.freshdirect.cms.application.service.CompositeTypeService;
-import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
-import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.event.RecommendationEventLogger;
 import com.freshdirect.event.RecommendationEventsAggregate;
+import com.freshdirect.fdstore.aspects.DlvManagerMunicipalityAspect;
+import com.freshdirect.fdstore.aspects.DlvManagerStateCountyLookupAspect;
 import com.freshdirect.fdstore.aspects.FDFactoryProductInfoAspect;
 import com.freshdirect.fdstore.aspects.ProductStatisticProviderAspect;
 import com.freshdirect.fdstore.aspects.ProductStatisticUserProviderAspect;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.webapp.util.FDEventUtil;
-
-import junit.framework.TestCase;
 
 public class RecommendationServiceTestBase extends TestCase {
     
@@ -125,6 +122,8 @@ public class RecommendationServiceTestBase extends TestCase {
             }
 
         });
+        aspectSystem.add(new DlvManagerMunicipalityAspect());
+        aspectSystem.add(new DlvManagerStateCountyLookupAspect());
     }
     
     RecommendationEventLoggerMockup getMockup() {

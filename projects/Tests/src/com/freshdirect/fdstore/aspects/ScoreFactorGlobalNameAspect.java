@@ -15,21 +15,13 @@ import com.freshdirect.fdstore.customer.DebugMethodPatternPointCut;
  * @author zsombor
  * 
  */
-public class ScoreFactorGlobalNameAspect implements Aspect {
+public class ScoreFactorGlobalNameAspect extends BaseAspect {
 
     Set globalFactorNames;
 
     public ScoreFactorGlobalNameAspect(Set factorNames) {
+        super(new DebugMethodPatternPointCut("ScoreFactorSessionBean\\.getGlobalFactorNames\\(\\)"));
         this.globalFactorNames = factorNames;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.mockejb.interceptor.Aspect#getPointcut()
-     */
-    public Pointcut getPointcut() {
-        return new DebugMethodPatternPointCut("ScoreFactorSessionBean\\.getGlobalFactorNames\\(\\)");
     }
 
     /*

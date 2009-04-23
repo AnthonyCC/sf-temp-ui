@@ -13,9 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.mockejb.interceptor.Aspect;
 import org.mockejb.interceptor.InvocationContext;
-import org.mockejb.interceptor.Pointcut;
 
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
@@ -28,7 +26,7 @@ import com.freshdirect.fdstore.content.TestFDInventoryCache;
 import com.freshdirect.fdstore.customer.DebugMethodPatternPointCut;
 import com.freshdirect.framework.util.DateUtil;
 
-public class FDFactoryProductInfoAspect implements Aspect {
+public class FDFactoryProductInfoAspect extends BaseAspect {
 
     final static Logger LOG = Logger.getLogger(FDFactoryProductInfoAspect.class);
     
@@ -36,6 +34,10 @@ public class FDFactoryProductInfoAspect implements Aspect {
     Set tomorrowAvailable = new HashSet();
     Map prices            = new HashMap();
 
+    public FDFactoryProductInfoAspect() {
+        super(new DebugMethodPatternPointCut("FDFactorySessionBean\\.getProductInfo\\(java.lang.String\\)"));
+    }
+    
     public FDFactoryProductInfoAspect addAvailableSku(String sku) {
         avialableSkus.add(sku);
         return this;
@@ -56,10 +58,6 @@ public class FDFactoryProductInfoAspect implements Aspect {
         tomorrowAvailable.add(sku);
         prices.put(sku, new Double(price));
         return this;
-    }
-
-    public Pointcut getPointcut() {
-        return new DebugMethodPatternPointCut("FDFactorySessionBean\\.getProductInfo\\(java.lang.String\\)");
     }
 
     public void intercept(InvocationContext ctx) throws Exception {
