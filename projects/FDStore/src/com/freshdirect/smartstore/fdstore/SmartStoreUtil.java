@@ -115,7 +115,6 @@ public class SmartStoreUtil {
 			String customerPK = user != null ? user.getPrimaryKey() : null;
 			svc = VariantSelectorFactory.getInstance(feature)
 					.select(customerPK);
-			System.out.println("Recommended service "+svc);
 		}
 
 		return svc;

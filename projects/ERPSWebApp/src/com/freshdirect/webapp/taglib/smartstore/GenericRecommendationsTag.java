@@ -91,12 +91,14 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
 		SessionInput input = new SessionInput(user);
 		Set cart = FDStoreRecommender.getShoppingCartContents( user );
 		input.setCartContents( cart );
+		initFromSession(input);
 		input.setYmalSource( YmalUtil.resolveYmalSource( FDStoreRecommender.getShoppingCartProductList( user ) ) );
 		input.setCurrentNode( input.getYmalSource() );
 		input.setMaxRecommendations(itemCount);
 
 		recommendations = recommender.getRecommendations(sf, user, input, overriddenVariantID);
 		
+		persistToSession(recommendations);
 		return recommendations;
 	}
 
