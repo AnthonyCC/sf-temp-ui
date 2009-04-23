@@ -19,6 +19,7 @@ import com.freshdirect.customer.ErpSaleInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.survey.EnumSurveyType;
 import com.freshdirect.fdstore.survey.FDSurvey;
 import com.freshdirect.fdstore.survey.FDSurveyQuestion;
 import com.freshdirect.fdstore.survey.FDSurveyAnswer;
@@ -48,7 +49,7 @@ public class ReceiptSurveyControllerTag  extends AbstractControllerTag implement
 		FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
 		FDIdentity identity = user!= null ? user.getIdentity() : null;
 		
-		boolean isPostOrderSurvey = "postOrder".equalsIgnoreCase(survey.getName()) || "postOrderDetail".equalsIgnoreCase(survey.getName());
+		boolean isPostOrderSurvey ="postOrder".equalsIgnoreCase(survey.getName()) || "postOrderDetail".equalsIgnoreCase(survey.getName());
 		boolean toPostOrderDetail = "PROBLEM".equalsIgnoreCase(request.getParameter("q_post_order_response"));
 		boolean isCOSSurvey = "COS_Feedback_Survey".equalsIgnoreCase(survey.getName());
 		boolean isHamptonsSurvey = "Hamptons05".equalsIgnoreCase(survey.getName());
@@ -56,7 +57,7 @@ public class ReceiptSurveyControllerTag  extends AbstractControllerTag implement
 		boolean isMorningDeliverySurvey = "MorningDelivery".equalsIgnoreCase(survey.getName());
 		boolean isUsabilitySurvey = "Usability".equalsIgnoreCase(survey.getName());
 		boolean isNutritionSurvey = "DietNutrition".equalsIgnoreCase(survey.getName());
-		boolean isRcptPage2Survey = "ReceiptPageSurvey2".equalsIgnoreCase(survey.getName());
+		boolean isRcptPage2Survey = EnumSurveyType.POST_ORDER_SURVEY.getName().equalsIgnoreCase(survey.getName());//"ReceiptPageSurvey2".equalsIgnoreCase(survey.getName());
 		boolean submitNow = false;
 		
 		List hamptonsPurgeReqQuestions = new ArrayList();
@@ -165,7 +166,7 @@ public class ReceiptSurveyControllerTag  extends AbstractControllerTag implement
 						for(Iterator i = parameters.entrySet().iterator(); i.hasNext();){
 							Entry e = (Entry) i.next();
 							String question = (String)e.getKey();
-							String[] answers = (String[])e.getValue();
+							String[] answers = SurveyHelper.getSelectedValues((String[])e.getValue());
 							
 							FDSurveyQuestion q = survey.getQuestion(question);
 							if(q == null){

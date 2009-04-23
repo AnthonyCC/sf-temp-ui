@@ -50,7 +50,7 @@ public class SurveyHelper {
 		return surveyResponse;
 	}
 	
-	private static String[] getSelectedValues(String[] answers) {
+	public static String[] getSelectedValues(String[] answers) {
 		 
 		List _answer=new ArrayList(answers.length);
 		for(int j=0;j<answers.length;j++) {
@@ -83,10 +83,6 @@ public class SurveyHelper {
 			if(response.getAnswers().containsKey(question.getName())) 
 				responseCount++;
 		}
-		System.out.println("survey name :"+survey.getName());
-		System.out.println("responseCount :"+responseCount);
-		System.out.println("survey.getQuestions().size() :"+survey.getQuestions().size());
-		System.out.println("response coverage:"+(int)((responseCount*100)/survey.getQuestions().size()));
 		coverage=(int)((responseCount*100)/survey.getQuestions().size());
 		return coverage;
 		
