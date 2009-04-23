@@ -180,6 +180,7 @@
 														<td>
 															<input type="hidden" name="trk_tab_<%= txProdCount %>" value="<%= recommendations.getVariant().getSiteFeature().getName().toLowerCase() %>">
 															<input type="hidden" name="variant_tab_<%= txProdCount %>" value="<%= recommendations.getVariant().getId() %>"/>
+                                                            <input type="hidden" name="variant_<%= tx_input_postfix %>_<%= txProdCount %>" value="<%= recommendations.getVariant().getId() %>"/>
 															<input type="hidden" name="rank_tab_<%= txProdCount %>" value="<%= rank %>"/>
 															<% if (pl.getTrackingCode() != null) { %>
 																<input type="hidden" name="trkd_tab_<%= txProdCount %>" value="<%= pl.getTrackingCode() %>"/>
