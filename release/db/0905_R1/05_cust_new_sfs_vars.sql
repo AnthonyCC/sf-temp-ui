@@ -123,7 +123,7 @@ INSERT INTO ss_variant_params (id, key, value)
 INSERT INTO ss_variant_params (id, key, value)
     VALUES ('c_peak_prod_1', 'exponent', '0.4');
 INSERT INTO ss_variant_params (id, key, value)
-    VALUES ('c_peak_prod_1', 'prez_title', 'DON''T-MISS DEALS');
+    VALUES ('c_peak_prod_1', 'prez_title', 'PEAK SEASON PRODUCE');
 INSERT INTO ss_variant_params (id, key, value)
     VALUES ('c_peak_prod_1', 'prez_desc', 'We test every item every day to find produce that will be great for delivery tomorrow.<br><a href="javascript:pop(''/brandpop.jsp?brandId=fd_ratings'',400,585)">Click here to learn about our Daily Quality Ratings.</a>');
     
@@ -148,7 +148,7 @@ INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C18',
 INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C19', 'c_peak_prod_1', sysdate);
 INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C20', 'c_peak_prod_1', sysdate);
 
--- Peak Season Fruits
+-- Peak Season Fruit
 
 INSERT INTO ss_variants (id, type, feature) VALUES ('c_peak_fru_1', 'scripted', 'C_PEAK_FRUIT');
 
@@ -167,7 +167,7 @@ INSERT INTO ss_variant_params (id, key, value)
 INSERT INTO ss_variant_params (id, key, value)
     VALUES ('c_peak_fru_1', 'cos_filter', 'CORPORATE');
 INSERT INTO ss_variant_params (id, key, value)
-    VALUES ('c_peak_fru_1', 'prez_title', 'DON''T-MISS DEALS');
+    VALUES ('c_peak_fru_1', 'prez_title', 'PEAK SEASON FRUIT');
 INSERT INTO ss_variant_params (id, key, value)
     VALUES ('c_peak_fru_1', 'prez_desc', 'We test every item every day to find produce that will be great for delivery tomorrow.<br><a href="javascript:pop(''/brandpop.jsp?brandId=fd_ratings'',400,585)">Click here to learn about our Daily Quality Ratings.</a>');
 
@@ -201,7 +201,7 @@ INSERT INTO ss_variant_params (id, key, value)
 INSERT INTO ss_variant_params (id, key, value)
     VALUES ('c_hea_snck_1', 'cos_filter', 'CORPORATE');
 INSERT INTO ss_variant_params (id, key, value)
-    VALUES ('c_hea_snck_1', 'prez_title', 'DON''T-MISS DEALS');
+    VALUES ('c_hea_snck_1', 'prez_title', 'HEALTHY SNACKS');
 INSERT INTO ss_variant_params (id, key, value)
     VALUES ('c_hea_snck_1', 'prez_desc', 'Keep the office healthy and happy with favorite fruit and nut snacks.');
 
@@ -243,7 +243,7 @@ INSERT INTO ss_variant_params (id, key, value)
 INSERT INTO ss_variant_params (id, key, value)
     VALUES ('c_newprod_1', 'exponent', '0.4');
 INSERT INTO ss_variant_params (id, key, value)
-    VALUES ('c_newprod_1', 'prez_title', 'DON''T-MISS DEALS');
+    VALUES ('c_newprod_1', 'prez_title', 'NEW PRODUCTS');
 INSERT INTO ss_variant_params (id, key, value)
     VALUES ('c_newprod_1', 'prez_desc', 'We''re constantly adding new brands and products!');
 
