@@ -270,25 +270,13 @@ public class ContentFactory {
 	private static Executor threadPool = new ThreadPoolExecutor(1, 1, 60,
 			TimeUnit.SECONDS, new LinkedBlockingQueue(), new ThreadPoolExecutor.DiscardPolicy());
 
-	private final static int DAYS_MAX = 128;
-	public Collection getNewProducts(final int days, final String deptId) throws FDResourceException {
+	public Collection getNewProducts(int days, String deptId) throws FDResourceException {
 		final ContentFactory cf = ContentFactory.getInstance();
 		final Integer cacheKey = new Integer(days);
 		if (!newProductsCache.containsKey(cacheKey)) {
-			newProductsCache.put(cacheKey, new BalkingExpiringReference(DAY_IN_MILLIS, threadPool) {
-				protected Object load() {
-					try {
-						Collection skus = FDCachedFactory.getNewSkuCodes(days);
-						List prods = skus != null ? cf.filterWholeProducts(skus) : Collections.EMPTY_LIST;
-						return prods;
-					} catch (FDResourceException e) {
-						LOGGER.info("failed to retrieve new sku codes for " + days + " days");
-						return null;
-					}
-				}
-			});
+			newProductsCache.put(cacheKey, findProductsWithAge(days));
 		}
-		Collection cached = (Collection) ((BalkingExpiringReference) newProductsCache.get(cacheKey)).get();
+		Collection cached = (Collection) newProductsCache.get(cacheKey);
 		if (cached != null) {
 			List list = new ArrayList(cached);
 			LOGGER.info("returning " + list.size() + " new products for (" + days + "," + deptId + "), unfiltered");
@@ -299,6 +287,20 @@ public class ContentFactory {
 			return null;
 	}
 	
+	private Collection findProductsWithAge(int days) throws FDResourceException {
+		List products = new ArrayList();
+		Iterator it = getProductNewnesses().entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry entry = (Map.Entry) it.next();
+			ProductModel p = (ProductModel) entry.getKey();
+			int age = Math.abs(((Integer) entry.getValue()).intValue());
+			if (age <= days)
+				products.add(p);
+		}
+		return products;
+	}
+
+
 	private static BalkingExpiringReference productNewnesses = null;
 	
 	private static final Object sync = new Object();
@@ -311,6 +313,7 @@ public class ContentFactory {
 					protected Object load() {
 						try {
 							Map pn = extractProductNewnesses();
+							newProductsCache.clear();
 							return pn;
 						} catch (FDResourceException e1) {
 							LOGGER.error("", e1);
