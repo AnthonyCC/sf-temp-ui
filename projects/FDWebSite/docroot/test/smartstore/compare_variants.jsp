@@ -543,8 +543,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 <% } %>
 <% if (!EnumSiteFeature.DYF.equals(siteFeature)
 			&& !EnumSiteFeature.FAVORITES.equals(siteFeature)
-			&& !EnumSiteFeature.FEATURED_ITEMS.equals(siteFeature)
-			&& !EnumSiteFeature.YMAL_YF.equals(siteFeature)) { %>
+			&& !EnumSiteFeature.FEATURED_ITEMS.equals(siteFeature)) { %>
 					<td>
 	    				<p class="label">Recent Orderlines:</p>
 						<p>
