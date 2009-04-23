@@ -520,6 +520,7 @@ a.usq_left_nav_menu_on:hover {color: #FBF1D3; cursor: pointer; text-decoration: 
 
 
 
+
 /*********************************************************
 					< Cart&tabs tab display >
 **********************************************************/
@@ -590,13 +591,15 @@ p.tab_text {
 	font: bold small sans-serif; 
 	text-transform: uppercase; 
 	text-decoration: none;
-	text-align: center;			
+	text-align: center;		
+	white-space: normal;	
 }
 
 p.tab_text_simple {
 	color: black; 
 	font: bold small sans-serif; 
 	text-align: center;			
+	white-space: normal;	
 }
 
 a.tab_active:link		{ color : #996699; }
