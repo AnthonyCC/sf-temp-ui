@@ -19,8 +19,8 @@
 <%
 
 // redirect to Survey if this is the second order && first order is delivered
-//if (!yuzer.isSurveySkipped() && yuzer.getAdjustedValidOrderCount()==1 && yuzer.getDeliveredOrderCount()==1) {
-if(true) {
+if (!yuzer.isSurveySkipped() && yuzer.getAdjustedValidOrderCount()==1 && yuzer.getDeliveredOrderCount()==1) {
+
 
 
 // leave previous 4th order logic
@@ -43,8 +43,8 @@ if(true) {
             FDSurvey Usability = FDSurveyCachedFactory.getSurvey(EnumSurveyType.SECOND_ORDER_SURVEY);
 	        FDSurveyResponse surveyResponse= FDCustomerManager.getCustomerProfileSurveyInfo(yuzer.getIdentity());
            int coverage=com.freshdirect.webapp.taglib.fdstore.SurveyHelper.getResponseCoverage(Usability,surveyResponse);
-           //if(coverage<Usability.getAcceptableCoverage()) {
-           if(true) {
+           if(coverage<Usability.getAcceptableCoverage()) {
+           
         	    response.sendRedirect(response.encodeRedirectURL("/checkout/survey.jsp?successPage=/checkout/step_1_choose.jsp"));
                 return;
            } 
