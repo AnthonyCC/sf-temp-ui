@@ -198,7 +198,6 @@
 
 </style>
 <% int quesCount = 1; 
-       FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
        FDSurvey Usability = FDSurveyCachedFactory.getSurvey(EnumSurveyType.getEnum(request.getAttribute("Survey").toString()));
        request.removeAttribute("Survey");
        FDSurveyResponse surveyResponse= FDCustomerManager.getCustomerProfileSurveyInfo(user.getIdentity());

@@ -74,7 +74,10 @@
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="677">
 <tr><td>
 <TABLE WIDTH="675" CELLSPACING="0" CELLPADDING="0" BORDER="0">
-<% request.setAttribute("Survey","Second Order Survey");%>
+<%
+request.setAttribute("Survey","Second Order Survey");
+FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
+%>
 <%@ include file="/includes/your_account/i_customer_profile.jspf" %>
 
 </TABLE>
