@@ -19,7 +19,7 @@ import com.freshdirect.framework.webapp.BodyTagSupport;
  * @author segabor
  *
  */
-public class OpaqueBoxTag extends BodyTagSupport {
+public class TransparentBoxTag extends BodyTagSupport {
 
 	/**
 	 * Opacity (0-100)
@@ -32,12 +32,6 @@ public class OpaqueBoxTag extends BodyTagSupport {
 	 * IN, OPTIONAL
 	 */
 	boolean disabled = false;
-	
-	/**
-	 * DOM ID of frame element
-	 * IN, OPTIONAL
-	 */
-	String boxId;
 	
 	/**
 	 * Additional style parameters
@@ -70,14 +64,6 @@ public class OpaqueBoxTag extends BodyTagSupport {
 
 
 
-	public void setBoxId(String boxId) {
-		this.boxId = boxId;
-	}
-
-
-
-
-
 	public void setStyle(String style) {
 		this.style = style;
 	}
@@ -103,7 +89,8 @@ public class OpaqueBoxTag extends BodyTagSupport {
 					obStyle = "opacity: "+f_op+";";
 				}
 			}
-			
+
+			// append additional CSS style
 			if (this.style != null)
 				obStyle += " " + style;
 
@@ -111,8 +98,8 @@ public class OpaqueBoxTag extends BodyTagSupport {
 			buf.append("<div");
 			
 			// append ID
-			if (boxId != null)
-				buf.append(" id=\""+boxId+"\"");
+//			if (boxId != null)
+//				buf.append(" id=\""+boxId+"\"");
 
 			// append style
 			buf.append(" style=\""+obStyle+"\"");
