@@ -1,6 +1,9 @@
 package com.freshdirect.webapp.taglib.smartstore;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +18,6 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.YmalSource;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.framework.util.QuickDateFormat;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.smartstore.fdstore.SessionImpressionLog;
 import com.freshdirect.smartstore.impl.AbstractRecommendationService;
@@ -24,6 +26,8 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 public class Impression {
 
     final static Logger LOGGER    = Logger.getLogger(Impression.class);
+    
+    private final static DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US); 
 
     final Map           recServiceAudit;
 
@@ -47,7 +51,7 @@ public class Impression {
 
         String erpCustomerId = identity != null ? identity.getErpCustomerPK() : "";
 
-        String message = pageImpressionId + ",\""+QuickDateFormat.ISO_FORMATTER.format(new Date())+"\","+ filter(user.getUserId()) + ',' + 
+        String message = pageImpressionId + ","+DATE_FORMAT.format(new Date())+","+ filter(user.getUserId()) + ',' + 
             filter(sessionId) + ',' + erpCustomerId + ',' + filter(uri) + ','
                 + filter(httpServletRequest.getQueryString());
         ImpressionLogger.REQUEST.logEvent(message);
