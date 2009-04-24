@@ -52,11 +52,9 @@
 	boolean isAjax = (request.getHeader("X-Requested-With") != null);
 
 	String formUri = request.getRequestURI();
-	System.err.println("formUri: " + formUri);
 	if (request.getHeader("X-Requested-With") != null) {
 		formUri = (String) request.getParameter("formUri");
 	}
-	System.err.println("formUri 2: " + formUri);
 
 	if ( genericRecommendationsVariant != null ) {
 %>
