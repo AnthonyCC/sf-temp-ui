@@ -97,6 +97,9 @@ public class PIPTabTag extends javax.servlet.jsp.tagext.BodyTagSupport {
 		
 		tabs = CartTabRecommender.recommendTabs( user, input, overriddenVariantId);
 		
+		if (tabs.size() == 0)
+			return SKIP_BODY;
+		
 		if ( tabs.size() < maxTabs ) {
 		    LOGGER.warn( "not enough variants ("+tabs.size()+") for "+maxTabs+" tabs." );
 		}
