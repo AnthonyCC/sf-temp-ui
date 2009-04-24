@@ -20,6 +20,8 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.fdstore.customer.FDCartI;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.RecommendationService;
@@ -539,5 +541,40 @@ public class SmartStoreUtil {
 				ret.add(replace);
 		}
 		return ret;
+	}
+	
+	
+
+	/**
+	 * Helper method to decide if the product should be 'greyed out'
+	 * That is the product recommended by a savings variant is already in the cart
+	 * 
+	 * @param v actual recommender variant (or tab)
+	 * @param prod current product
+	 * @param user actual user
+	 * @return render product opaque
+	 */
+	public static boolean isSavingProductInCart(Variant v, ProductModel prod, FDUserI user) {
+		// null check, variant is NOT savings -> bye
+		if (v == null || prod == null || user == null ||
+				!v.getSiteFeature().isSmartSavings())
+			return false;
+
+
+
+		final String prodName = prod.getContentName();
+
+		for (Iterator it=user.getShoppingCart().getOrderLines().iterator(); it.hasNext(); ) {
+			FDCartLineI cl = (FDCartLineI) it.next();
+
+			final boolean isSavingsItem = v.getId().equals(cl.getSavingsId()) /** || v.getSiteFeature().isSmartSavings() */;
+
+			// is cart item 'saving' and equals to this product?
+			if (isSavingsItem && prodName.equals(cl.getProductName()) ) {
+				return true; // make it opaque
+			}
+		}
+
+		return false;
 	}
 }

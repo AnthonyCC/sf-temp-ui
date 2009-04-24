@@ -18,15 +18,20 @@ import com.freshdirect.framework.webapp.BodyTagSupport;
  * @author segabor
  */
 public class ProductNameTag extends BodyTagSupport {
-	ProductModel	product; 	// product (mandatory)
-	String			action;		// URL (optional)
-
+	ProductModel	product; 			// product (mandatory)
+	String			action;				// URL (optional)
+	boolean			disabled = false;	// Not clickable (optional)
+	
 	public void setProduct(ProductModel product) {
 		this.product = product;
 	}
 
 	public void setAction(String action) {
 		this.action = action;
+	}
+
+	public void setDisabled(boolean disabled) {
+		this.disabled = disabled;
 	}
 
 	public int doStartTag() {
@@ -46,7 +51,7 @@ public class ProductNameTag extends BodyTagSupport {
 		
 		StringBuffer buf = new StringBuffer();
 		
-		if (action != null) {
+		if (!this.disabled && action != null) {
 			buf.append("<a href=\"" + action + "\">");
 		} else {
 			buf.append("<span>");
@@ -61,7 +66,7 @@ public class ProductNameTag extends BodyTagSupport {
 			buf.append(fullName != null && !"".equalsIgnoreCase(fullName) ? fullName : "(this product)");
 		}
 
-		if (action != null) {
+		if (!this.disabled && action != null) {
 			buf.append("</a>");
 		} else {
 			buf.append("</span>");

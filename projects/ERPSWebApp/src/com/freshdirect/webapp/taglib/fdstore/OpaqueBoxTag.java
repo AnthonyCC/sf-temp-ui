@@ -88,12 +88,10 @@ public class OpaqueBoxTag extends BodyTagSupport {
 		if (!this.disabled) {
 			BrowserInfo bi = new BrowserInfo( (HttpServletRequest) pageContext.getRequest() );
 
-			System.err.println(bi);
-			
 			String obStyle = "";
 			
 			if (bi.isIE6()) {
-				obStyle = "display: inline-block; filter:alpha(opacity="+opacity+");";
+				obStyle = "display: inline-block; filter:alpha(opacity="+opacity+"); width: 100%; height: 100%;";
 			} else {
 				float f_op = ((float)opacity)/100.0f;
 				

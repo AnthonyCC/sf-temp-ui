@@ -36,7 +36,7 @@ public class TxProductControlTag extends BodyTagSupport {
 
 	private int txNumber;
 
-
+	boolean disabled = false;
 
 	public void setImpression(TransactionalProductImpression impression) {
 		this.impression = impression;
@@ -53,6 +53,10 @@ public class TxProductControlTag extends BodyTagSupport {
 
 	public void setTxNumber(int txNumber) {
 		this.txNumber = txNumber;
+	}
+
+	public void setDisabled(boolean disabled) {
+		this.disabled = disabled;
 	}
 
 	public int doStartTag() {
@@ -85,7 +89,7 @@ public class TxProductControlTag extends BodyTagSupport {
 			}
 			
 			// render sales units
-			buf.append("      <select name=\"salesUnit"+txPostfix+"\" style=\"width: 60px\" class=\"text10\" onChange=\""+ namespace +".pricings["+ txNumber +"].setSalesUnit(this.value);\">\n");
+			buf.append("      <select name=\"salesUnit"+txPostfix+"\" "+(disabled ? "disabled=\"disabled\"" : "")+" style=\"width: 60px\" class=\"text10\" onChange=\""+ namespace +".pricings["+ txNumber +"].setSalesUnit(this.value);\">\n");
 			buf.append("        <option value=\"\" selected=\"selected\"></option>\n");
 			FDSalesUnit     salesUnits[] = impression.getFDProduct().getSalesUnits();
             for (int ii = 0; ii < salesUnits.length; ++ii) {
@@ -108,14 +112,19 @@ public class TxProductControlTag extends BodyTagSupport {
 				Map.Entry entry = (Map.Entry) it_opts.next();
 				buf.append("      <input type=\"hidden\" name=\""+entry.getKey()+txPostfix+"\" value=\""+entry.getValue()+"\">\n");
 			}
-			buf.append("      <input type=\"text\" name=\"quantity"+txPostfix+"\" value=\"\" style=\"width: 36px\" size=\"3\" maxlength=\"4\" class=\"text10\" onChange=\""+ namespace +".pricings["+ txNumber +"].changeQty(0);\" onBlur=\""+ namespace +".pricings["+ txNumber +"].setQuantity(this.value);\"/>\n");
+			buf.append("      <input type=\"text\" name=\"quantity"+txPostfix+"\" "+(disabled ? "disabled=\"disabled\"" : "")+" value=\"\" style=\"width: 36px\" size=\"3\" maxlength=\"4\" class=\"text10\" onChange=\""+ namespace +".pricings["+ txNumber +"].changeQty(0);\" onBlur=\""+ namespace +".pricings["+ txNumber +"].setQuantity(this.value);\"/>\n");
 			buf.append("    </td>\n");
 			buf.append("    <td style=\"height: 28px; margin: 0px; padding: 0px;\">\n");
 			
-			buf.append("      <img onclick=\""+namespace+".pricings["+ txNumber +"].changeQty("+ product.getQuantityIncrement() + ");\" src=\"/media_stat/images/template/quickshop/grn_arrow_up.gif\" style=\"width: 10px; height: 9px; border: 0;  margin-bottom: 1px; margin-top: 1px; cursor: pointer;\" alt=\"Increase quantity\"><br/>\n");
-			buf.append("      <img onclick=\""+namespace+".pricings["+ txNumber +"].changeQty("+ (-product.getQuantityIncrement()) + ");\" src=\"/media_stat/images/template/quickshop/grn_arrow.gif\" style=\"width: 10px; height: 9px; border: 0;  margin-bottom: 1px; margin-top: 1px; cursor: pointer;\" alt=\"Decrease quantity\">\n");
+			if (disabled) {
+				buf.append("      <img src=\"/media_stat/images/template/quickshop/grn_arrow_up.gif\" style=\"width: 10px; height: 9px; border: 0;  margin-bottom: 1px; margin-top: 1px; cursor: pointer;\" alt=\"Increase quantity\"><br/>\n");
+				buf.append("      <img src=\"/media_stat/images/template/quickshop/grn_arrow.gif\" style=\"width: 10px; height: 9px; border: 0;  margin-bottom: 1px; margin-top: 1px; cursor: pointer;\" alt=\"Decrease quantity\">\n");
+			} else {
+				buf.append("      <img onclick=\""+namespace+".pricings["+ txNumber +"].changeQty("+ product.getQuantityIncrement() + ");\" src=\"/media_stat/images/template/quickshop/grn_arrow_up.gif\" style=\"width: 10px; height: 9px; border: 0;  margin-bottom: 1px; margin-top: 1px; cursor: pointer;\" alt=\"Increase quantity\"><br/>\n");
+				buf.append("      <img onclick=\""+namespace+".pricings["+ txNumber +"].changeQty("+ (-product.getQuantityIncrement()) + ");\" src=\"/media_stat/images/template/quickshop/grn_arrow.gif\" style=\"width: 10px; height: 9px; border: 0;  margin-bottom: 1px; margin-top: 1px; cursor: pointer;\" alt=\"Decrease quantity\">\n");
+			}
 		}
-		
+
 		buf.append("    </td>\n");
 		buf.append("  </tr>\n");
 		buf.append("</table>\n");

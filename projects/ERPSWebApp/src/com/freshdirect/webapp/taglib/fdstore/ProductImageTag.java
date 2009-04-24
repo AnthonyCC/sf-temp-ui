@@ -26,6 +26,7 @@ public class ProductImageTag extends BodyTagSupport {
 	String			style; // CSS style modification (optional)
 	String			className;	// CSS class name (optional)
 	String			action; // URL (optional)
+	boolean			disabled = false; // Image is not clickable
 	String			prefix; // For internal use only! (optional)
 	boolean			hideDeals = false; // whether display Deals burst (optional)
 	boolean			hideNew = false; // whether display New Product burst (optional)
@@ -48,6 +49,10 @@ public class ProductImageTag extends BodyTagSupport {
 		this.action = action;
 	}
 
+	public void setDisabled(boolean flag) {
+		this.disabled = flag;
+	}
+	
 	public void setPrefix(String uriPrefix) {
 		this.prefix = uriPrefix;
 	}
@@ -79,6 +84,8 @@ public class ProductImageTag extends BodyTagSupport {
 			ProductLabelling pl = new ProductLabelling((FDUserI) pageContext.getSession().getAttribute(SessionName.USER), product,
 					hideBurst, hideNew, hideDeals, hideYourFave);
 			
+			
+			// burst image
 			if (pl.isDisplayAny()) {
 				buf.append("<div style=\"padding: 0px; border: 0px; margin: 0px auto; "
 						+ "width: " + prodImg.getWidth() + "px; "
@@ -86,7 +93,7 @@ public class ProductImageTag extends BodyTagSupport {
 						+ "position: relative;\">");
 				buf.append("<div style=\"position: absolute; top: 0px; left: 0px\">");
 			
-				if (action != null) {
+				if (!this.disabled && this.action != null) {
 					buf.append("<a href=\"");
 					buf.append(action);
 					buf.append("\">");
@@ -103,14 +110,17 @@ public class ProductImageTag extends BodyTagSupport {
 					buf.append("<img alt=\"NEW\" src=\"/media_stat/images/template/search/brst_sm_new.png\" width=\"35\" height=\"35\" style=\"border: 0px;\">");
 				}
 				
-				if (action != null) {
+				if (!this.disabled && action != null) {
 					buf.append("</a>");
 				}
 	
 				buf.append("</div>");
 			}
 
-			if (action != null) {
+
+
+			// product image
+			if (!this.disabled && action != null) {
 				buf.append("<a href=\"");
 				buf.append(action);
 				buf.append("\">");
@@ -152,7 +162,7 @@ public class ProductImageTag extends BodyTagSupport {
 
 			buf.append(">");
 
-			if (action != null) {
+			if (!this.disabled && action != null) {
 				buf.append("</a>");
 			}
 			

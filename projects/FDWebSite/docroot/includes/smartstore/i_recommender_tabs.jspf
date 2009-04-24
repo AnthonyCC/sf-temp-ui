@@ -5,15 +5,12 @@
 <%@ taglib uri='template' prefix='tmpl'%>
 <%@ taglib uri='logic' prefix='logic'%>
 <%@ taglib uri='freshdirect' prefix='fd'%>
-
 <%
 	// pass cart operation result object to YMAL display (i_ymal_lists.jspf)
 	request.setAttribute("actionResult", result);
 	
 	URLGenerator gen = new URLGenerator(request);
 %>
-
-
 <fd:PIPTab id="pip_tab" maxTabs="3" maxRecommendations="5">
 	<% 
 		TabRecommendation tab = pip_tab.getTabs();

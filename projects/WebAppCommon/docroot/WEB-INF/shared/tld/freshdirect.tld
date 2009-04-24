@@ -1180,17 +1180,24 @@
 			Evaluates body if address is eligible for unattended delivery.
 
 			The address is either specifed as an explicit ErpAddressModel
-			or an addressId. In the latter case, the address is only
-			searched within the user's addresses.
+			or an
+			addressId. In the latter case, the address is only
+			searched within the
+			user's addresses.
 
-			If the zone corresponding has unattended delivery enabled or
-			if checkUserOptions is true AND the user has seen the unattended
+			If the zone corresponding has unattended delivery
+			enabled or
+			if checkUserOptions is true AND the user has seen the
+			unattended
 			delivery
-			option (i.e. either explictly opted in or opted out) the body of the tag
+			option (i.e. either explictly opted in or opted
+			out) the body of the tag
 			will be evaluated, otherwise skipped.
 
-			The date for checking zone information is now, but can be overridden
-			by specifying another date.
+			The date
+			for checking zone information is now, but can be overridden
+			by
+			specifying another date.
        </info>
 		<attribute>
 			<name>id</name>
@@ -3162,7 +3169,7 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
-	</tag>	
+	</tag>
 	<tag>
 		<name>FeaturedItemsRecommendations</name>
 		<tagclass>com.freshdirect.webapp.taglib.smartstore.FeaturedItemsTag</tagclass>
@@ -3360,6 +3367,11 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>disabled</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>prefix</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
@@ -3398,6 +3410,11 @@
 		</attribute>
 		<attribute>
 			<name>action</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>disabled</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -3469,6 +3486,11 @@
 		</attribute>
 		<attribute>
 			<name>inputNamePostfix</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>disabled</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -3569,58 +3591,58 @@
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
-<tag>
-            <name>CustomerProfileSurveyTag</name>
-            <tagclass>com.freshdirect.webapp.taglib.fdstore.CustomerProfileSurveyTag</tagclass>
-            <teiclass>com.freshdirect.webapp.taglib.fdstore.CustomerProfileSurveyTag$TagEI</teiclass>
-            <bodycontent>JSP</bodycontent>
-            <info></info>
-            <attribute>
-                <name>actionName</name>
-                <required>true</required>
-                <rtexprvalue>true</rtexprvalue>
-            </attribute>
-            <attribute>
-                <name>successPage</name>
-                <required>true</required>
-                <rtexprvalue>true</rtexprvalue>
-            </attribute>
-            <attribute>
-                <name>result</name>
-                <required>true</required>
-                <rtexprvalue>false</rtexprvalue>
-            </attribute>
-            <attribute>
-                <name>survey</name>
-                <required>true</required>
-                <rtexprvalue>true</rtexprvalue>
-            </attribute>            
-    </tag> 
 	<tag>
-            <name>OpaqueBox</name>
-            <tagclass>com.freshdirect.webapp.taglib.fdstore.OpaqueBoxTag</tagclass>
-            <teiclass>com.freshdirect.webapp.taglib.fdstore.OpaqueBoxTag$TagEI</teiclass>
-            <bodycontent>JSP</bodycontent>
-            <info></info>
-            <attribute>
-                <name>opacity</name>
-                <required>false</required>
-                <rtexprvalue>true</rtexprvalue>
-            </attribute>
-            <attribute>
-                <name>disabled</name>
-                <required>false</required>
-                <rtexprvalue>true</rtexprvalue>
-            </attribute>
-            <attribute>
-                <name>boxId</name>
-                <required>false</required>
-                <rtexprvalue>false</rtexprvalue>
-            </attribute>
-            <attribute>
-                <name>style</name>
-                <required>false</required>
-                <rtexprvalue>false</rtexprvalue>
-            </attribute>            
-    </tag> 
+		<name>CustomerProfileSurveyTag</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.CustomerProfileSurveyTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.fdstore.CustomerProfileSurveyTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>actionName</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>successPage</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>result</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>survey</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>OpaqueBox</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.OpaqueBoxTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.fdstore.OpaqueBoxTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>opacity</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>disabled</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>boxId</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>style</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
 </taglib>

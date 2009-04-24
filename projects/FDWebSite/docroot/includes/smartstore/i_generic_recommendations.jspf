@@ -161,18 +161,22 @@
 										        rank,  
 										        recommendations.getImpressionId(product)
 										 );
-																
-										// cell rendering starts here		
+
+										boolean shouldDimProduct = SmartStoreUtil.isSavingProductInCart(genericRecommendationsVariant, product, pip_u);
+
+
+										// cell rendering starts here
 									%>
 																							
 									<td style="white-space: normal; text-align: center; padding-left: 2px; padding-right: 2px;" valign="top" width="<%= Math.round(100.0/impressions.size()) %>%">
 																																
 										<% if ( ! blankCell_var.booleanValue() ) { %>
+										<fd:OpaqueBox disabled="<%= !shouldDimProduct %>">
 											<!-- CELL CONTAINER -->
 											<table align="center" >
 												<tr>
 													<td style="padding: 0; height: <%= rowHeight.intValue() %>px; vertical-align: bottom; text-align: center">
-														<fd:ProductImage product="<%= product %>" action="<%= actionURI %>" hideYourFave="true" />
+														<fd:ProductImage product="<%= product %>" action="<%= actionURI %>" hideYourFave="true" disabled="<%= shouldDimProduct %>" />
 													</td>
 												</tr>
 												<% if (recommendations_row instanceof TransactionalProductImpression) {	%>												
@@ -185,7 +189,7 @@
 															<% if (pl.getTrackingCode() != null) { %>
 																<input type="hidden" name="trkd_tab_<%= txProdCount %>" value="<%= pl.getTrackingCode() %>"/>
 															<% } %>
-															<fd:TxProductControl txNumber="<%= txProdCount %>" namespace="<%= tx_pricing_JSNameSpace %>" inputNamePostfix="<%= tx_input_postfix %>" impression="<%= (TransactionalProductImpression) recommendations_row %>"/>
+															<fd:TxProductControl txNumber="<%= txProdCount %>" namespace="<%= tx_pricing_JSNameSpace %>" inputNamePostfix="<%= tx_input_postfix %>" impression="<%= (TransactionalProductImpression) recommendations_row %>" disabled="<%= shouldDimProduct %>"/>
 														</td>
 													</tr>
 												<%
@@ -201,9 +205,9 @@
 											</table>
 																							
 											<fd:ProductRating product="<%= product %>"/>
-											<fd:ProductName product="<%= product %>" action="<%= actionURI %>"/>
+											<fd:ProductName product="<%= product %>" action="<%= actionURI %>" disabled="<%= shouldDimProduct %>"/>
 											<fd:ProductDescription impression="<%= recommendations_row %>"/>
-																																											
+										</fd:OpaqueBox>
 										<% } else { // blank cell %>
 											&nbsp;
 										<% } %>	
