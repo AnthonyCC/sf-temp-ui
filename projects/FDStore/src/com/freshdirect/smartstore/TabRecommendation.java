@@ -2,22 +2,18 @@ package com.freshdirect.smartstore;
 
 import java.util.List;
 
-import com.freshdirect.fdstore.content.YmalSource;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 
 public class TabRecommendation {
-	
-    public static final String        PIP_DEFAULT_DESC = ""; //"&lt;No description has been configured. Contact administrator.&gt;";
+    public static final String PIP_DEFAULT_DESC = "These are some of the items we recommend you:";
 
-    final List                  variants;
+    final List variants;
     final RecommendationService tabRecommender;
-    final YmalSource            source;
     String[] featureImpId;
 
-    public TabRecommendation(RecommendationService tabRecommender, List variants, YmalSource source) {
+    public TabRecommendation(RecommendationService tabRecommender, List variants) {
         this.tabRecommender = tabRecommender;
         this.variants = variants;
-        this.source = source;
         this.featureImpId = new String[variants.size()];
     }
 
@@ -62,22 +58,12 @@ public class TabRecommendation {
     public String getTabDescription(int index) {
         Variant variant = get(index);
 
-        if (EnumSiteFeature.YMAL.equals(variant.getSiteFeature()) && source != null && source.getYmalHeader() != null) {
-            return source.getYmalHeader();
-        }
-
         String varPrezDescription = variant.getServiceConfig().getPresentationDescription();
         if (varPrezDescription != null) {
             return varPrezDescription;
         }
 
-        EnumSiteFeature siteFeature = variant.getSiteFeature();
-        String sfPrezDescription = siteFeature.getPresentationDescription();
-        if (sfPrezDescription != null) {
-            return sfPrezDescription;
-        } else {
-            return PIP_DEFAULT_DESC;
-        }
+        return PIP_DEFAULT_DESC;
     }
 
     public RecommendationService getTabRecommender() {

@@ -73,6 +73,6 @@ public class CartTabRecommender {
             LOGGER.error("unable to query Cart Tab Recommenders", e);
         }
 
-        return new TabRecommendation(rs, recs, input.getYmalSource());
+        return new TabRecommendation(rs, recs);
     }
 }
