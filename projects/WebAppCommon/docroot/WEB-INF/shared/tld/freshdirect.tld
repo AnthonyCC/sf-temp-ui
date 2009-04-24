@@ -3619,9 +3619,9 @@
 		</attribute>
 	</tag>
 	<tag>
-		<name>OpaqueBox</name>
-		<tagclass>com.freshdirect.webapp.taglib.fdstore.OpaqueBoxTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.fdstore.OpaqueBoxTag$TagEI</teiclass>
+		<name>TransparentBox</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.TransparentBoxTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.fdstore.TransparentBoxTag$TagEI</teiclass>
 		<bodycontent>JSP</bodycontent>
 		<info></info>
 		<attribute>
@@ -3633,11 +3633,6 @@
 			<name>disabled</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>boxId</name>
-			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 		<attribute>
 			<name>style</name>
