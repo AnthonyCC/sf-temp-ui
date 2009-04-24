@@ -53,7 +53,7 @@ public class RouteMergeDataManager extends RouteOutputDataManager {
 		
 		if(strBuf.length() > 0) {
 			result.addError(strBuf.toString());
-		} else if (!updateRouteInfo(result.getOrders(), result.getTrucks())){
+		} else if (!updateRouteInfo(result.getOrders(), result.getTrucks(), null)){
 			result.addError(INVALID_RSORDERROUTEFILE);
 		}
 		
@@ -135,7 +135,7 @@ public class RouteMergeDataManager extends RouteOutputDataManager {
 		}
 	}
 	
-	private boolean updateRouteInfo(List orderDataList, List truckDataList) {
+	private boolean updateRouteInfo(List orderDataList, List truckDataList, List orderIds) {
 		
 		Map routeMap = new HashMap();		
 				
@@ -159,6 +159,13 @@ public class RouteMergeDataManager extends RouteOutputDataManager {
 			while(iterator.hasNext()) {
 				tmpOrderInfo = (OrderRouteInfoModel)iterator.next();
 				routeId = tmpOrderInfo.getRouteId();
+				if(orderIds != null) {
+					if(orderIds.contains(tmpOrderInfo.getOrderNumber())) {
+						return false;
+					} else {
+						orderIds.add(tmpOrderInfo.getOrderNumber());
+					}
+				}
 				if(routeMap.containsKey(routeId)) {
 					tmpRouteInfo = (OrderRouteInfoModel)routeMap.get(routeId);
 					tmpOrderInfo.setPlant(tmpRouteInfo.getPlant());
@@ -209,9 +216,10 @@ public class RouteMergeDataManager extends RouteOutputDataManager {
 						|| routingInfo.getTruckFile3() == null || routingInfo.getTruckFile3().length == 0)) {
 			result.addError(NODATA_RSORDERROUTEFILE);
 		} else {
-			collectMergeData(result, orders, trucks, routingInfo.getOrderFile1(), routingInfo.getTruckFile1(), 1);
-			collectMergeData(result, orders, trucks, routingInfo.getOrderFile2(), routingInfo.getTruckFile2(), 2);
-			collectMergeData(result, orders, trucks, routingInfo.getOrderFile3(), routingInfo.getTruckFile3(), 3);
+			List orderIds = new ArrayList();
+			collectMergeData(result, orderIds, orders, trucks, routingInfo.getOrderFile1(), routingInfo.getTruckFile1(), 1);
+			collectMergeData(result, orderIds, orders, trucks, routingInfo.getOrderFile2(), routingInfo.getTruckFile2(), 2);
+			collectMergeData(result, orderIds, orders, trucks, routingInfo.getOrderFile3(), routingInfo.getTruckFile3(), 3);
 			
 			result.setOutputFile1(createFile(outputFileName1, "."+TransportationAdminProperties.getFilenameSuffix()).getAbsolutePath());
 			result.setOutputFile2(createFile(outputFileName2, "."+TransportationAdminProperties.getFilenameSuffix()).getAbsolutePath());
@@ -227,7 +235,8 @@ public class RouteMergeDataManager extends RouteOutputDataManager {
 		return result;
 	}
 	
-	private void collectMergeData(RoutingResult result, List orderLst, List truckLst, byte[] orders, byte[] trucks
+	private void collectMergeData(RoutingResult result, List orderIds, List orderLst
+									, List truckLst, byte[] orders, byte[] trucks
 			, int index) {
 		
 		List tmpOrders = null;
@@ -250,7 +259,7 @@ public class RouteMergeDataManager extends RouteOutputDataManager {
 			if(tmpTrucks == null || tmpTrucks.size() == 0) {
 				result.addError(INVALID_RSROUTEFILE+" "+index);
 			} else {
-				if (!updateRouteInfo(tmpOrders, tmpTrucks)){
+				if (!updateRouteInfo(tmpOrders, tmpTrucks, orderIds)){
 					result.addError(INVALID_RSORDERROUTEFILE+" "+index);
 				}
 				truckLst.addAll(tmpTrucks);
