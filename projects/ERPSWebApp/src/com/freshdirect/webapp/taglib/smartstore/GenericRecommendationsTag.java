@@ -59,12 +59,13 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
 
         Recommendations recommendations = null;
 
-        if ( errorOccurred ) {        	
+        String storedProductIds = request.getParameter("rec_product_ids");
+		if ( errorOccurred && storedProductIds != null && storedProductIds.trim().length() != 0) {        	
         	
     		// reconstruct recommendations
 			Map svcMap = SmartStoreServiceConfiguration.getInstance().getServices( variant.getSiteFeature() );
 			RecommendationService svc = (RecommendationService)svcMap.get( variant.getId() );
-			recommendations = new Recommendations( svc.getVariant(), request.getParameter( "rec_product_ids" ) );	//TODO request.getParameter( "rec_product_ids" ) helyett ... 
+			recommendations = new Recommendations( svc.getVariant(), storedProductIds ); 
         }
 
         // get recommendations by recommender

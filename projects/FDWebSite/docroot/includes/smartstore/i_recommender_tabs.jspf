@@ -204,7 +204,8 @@
 
 					refresh: function(tabId, tabPos) {
 						var self = this;
-						var uri = '/ajax/refresh.jsp?tab='+tabPos+'&variant='+tabId+'&siteFeature='+PIP.features[tabId]+'&formUri=<%= response.encodeURL(request.getRequestURL().toString()) %>&impId='+PIP.impressionIds[tabPos];
+						var uri = '/ajax/refresh.jsp?tab='+tabPos+'&variant='+tabId+'&siteFeature='+PIP.features[tabId]+'&formUri=<%= 
+							response.encodeURL(request.getRequestURL().toString().replaceFirst("^[^:]*://[^/]*/", "/")) %>&impId='+PIP.impressionIds[tabPos];
 						$('content_'+tabId).innerHTML = loadingMessage;
 						$C.asyncRequest('GET', uri, {
 							success: function(resp) {
