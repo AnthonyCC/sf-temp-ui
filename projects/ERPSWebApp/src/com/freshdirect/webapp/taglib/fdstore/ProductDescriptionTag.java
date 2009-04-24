@@ -51,7 +51,24 @@ public class ProductDescriptionTag extends BodyTagSupport {
 		// display price
 		FDProductInfo productInfo = impression.getProductInfo();
 		if (productInfo != null) {
-			buf.append("<div style=\"font-weight: bold;\">"+ JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()) +"/"+productInfo.getDisplayableDefaultPriceUnit().toLowerCase()+"</div>\n");
+			if ( productInfo.isDeal() ) {
+				buf.append(
+						"<div style=\"font-weight: bold; color: red;\">" + 
+						JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()) + "/" + 
+						productInfo.getDisplayableDefaultPriceUnit().toLowerCase() + 
+						"</div>\n" +
+						"<div style=\"font-weight: normal; color: gray\">" + 
+						"(was " + JspMethods.currencyFormatter.format(productInfo.getBasePrice()) + ")" +
+						"</div>\n"
+				);
+			} else {
+				buf.append(
+						"<div style=\"font-weight: bold;\">" + 
+						JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()) + "/" + 
+						productInfo.getDisplayableDefaultPriceUnit().toLowerCase() + 
+						"</div>\n"
+				);
+			}
 		}
 
 		// Display "SAVE!" ... label
