@@ -577,14 +577,14 @@ div.tab {
 }
 
 span.tab_active {
-	color: #996699; 
+	color: #845286; 
 	font: bold small sans-serif;
 	text-transform: uppercase; 
 	text-decoration: none;
 }
 
 span.tab_inactive {
-	color: white; 
+	color: #845286; 
 	font: bold small sans-serif; 
 	text-transform: uppercase; 
 	text-decoration: none;
@@ -600,7 +600,14 @@ p.tab_text {
 }
 
 p.tab_text_simple {
-	color: black; 
+	color: #666666; 
+	font: bold small sans-serif; 
+	text-align: center;			
+	white-space: normal;	
+}
+
+p.tab_text_descr {
+	color: #515151; 
 	font: bold small sans-serif; 
 	text-align: center;			
 	white-space: normal;	

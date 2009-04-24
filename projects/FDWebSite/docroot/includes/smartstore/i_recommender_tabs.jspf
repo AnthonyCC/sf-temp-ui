@@ -120,12 +120,12 @@
 						
 							for ( int k=0; k<numTabs; k++ ) {
 									if ( selectedTab == k ) {	%>						
-										<p id="header_<%= tab.get(k).getId() %>" class="tab_text"><%= tab.getTabDescription(k) %></p>							
+										<p id="header_<%= tab.get(k).getId() %>" class="tab_text_descr"><%= tab.getTabDescription(k) %></p>							
 										<div id="content_<%= tab.get(k).getId() %>" style="width: 100%">
 											<%@ include file="i_generic_recommendations.jspf" %>
 										</div>								
 								<% 	} else { %>
-										<p id="header_<%= tab.get(k).getId() %>" class="tab_text" style="display: none"><%= tab.getTabDescription(k) %></p>							
+										<p id="header_<%= tab.get(k).getId() %>" class="tab_text_descr" style="display: none"><%= tab.getTabDescription(k) %></p>							
 										<div id="content_<%= tab.get(k).getId() %>" style="display: none">
 										</div>
 								<% 	}
@@ -153,9 +153,9 @@
 			
 			<script type="text/javascript">
 			
-				var loadingMessage = "<br/><br/><br/><br/><p class=\"tab_text\">Refreshing. Please wait...</p><br/><br/><br/><br/>";
-				var errorMessage = "<br/><br/><br/><br/><p class=\"tab_text\">Sorry. Something went wrong. Try refreshing the page.</p><br/><br/><br/><br/>";
-		
+				var loadingMessage = "<br/><br/><br/><br/><p class=\"tab_text_simple\">Refreshing, please wait...</p><br/><br/><br/><br/>";
+				var errorMessage = "<br/><br/><br/><br/><p class=\"tab_text_simple\">Sorry, we weren't able to get recommendations.<br/><a href=\"#\" onClick=\"window.location.reload(false)\">Click here</a> to refresh with new products. </p><br/><br/><br/><br/>";
+
 				var PIP = {
 					tabs: [],
 					features: [],

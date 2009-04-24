@@ -221,7 +221,7 @@
 														
 								<% if (impressions.size() >= 5) { %>
 									<td style="text-align: left;">
-										<a class="text11bold" id="ra_<%= genericRecommendationsVariant.getId() %>" href="#">Click here to refresh</a>
+										<a class="text11bold" style="padding-left: 6px" id="ra_<%= genericRecommendationsVariant.getId() %>" href="#">Click here to refresh</a>
 										<script type="text/javascript">
 											$E.on('ra_<%= genericRecommendationsVariant.getId() %>', 'click', function(e) {
 												$E.preventDefault(e);
@@ -237,7 +237,7 @@
 									<td style="text-align: right;">
 										<input type="hidden" style="width:60px" name="total" value="" size="6" class="text11bold" onChange="" onFocus="blur()"/>
 										<input type="hidden" name="itemCount" value="<%= txProdCount %>"/>
-										<input type="image" name="addMultipleToCart" style="padding: 8px 0px; border: 0" src="/media_stat/images/template/confirmation/add_to_cart_purple.gif" alt="ADD SELECTED TO CART"/>
+										<input type="image" name="addMultipleToCart" style="padding: 8px 6px; border: 0" src="/media_stat/images/template/confirmation/add_to_cart_purple.gif" alt="ADD SELECTED TO CART"/>
 									</td>
 								<% } %>
 							</tr>
