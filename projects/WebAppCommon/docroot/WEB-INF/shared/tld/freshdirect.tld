@@ -3596,4 +3596,31 @@
                 <rtexprvalue>true</rtexprvalue>
             </attribute>            
     </tag> 
+	<tag>
+            <name>OpaqueBox</name>
+            <tagclass>com.freshdirect.webapp.taglib.fdstore.OpaqueBoxTag</tagclass>
+            <teiclass>com.freshdirect.webapp.taglib.fdstore.OpaqueBoxTag$TagEI</teiclass>
+            <bodycontent>JSP</bodycontent>
+            <info></info>
+            <attribute>
+                <name>opacity</name>
+                <required>false</required>
+                <rtexprvalue>true</rtexprvalue>
+            </attribute>
+            <attribute>
+                <name>disabled</name>
+                <required>false</required>
+                <rtexprvalue>true</rtexprvalue>
+            </attribute>
+            <attribute>
+                <name>boxId</name>
+                <required>false</required>
+                <rtexprvalue>false</rtexprvalue>
+            </attribute>
+            <attribute>
+                <name>style</name>
+                <required>false</required>
+                <rtexprvalue>false</rtexprvalue>
+            </attribute>            
+    </tag> 
 </taglib>
