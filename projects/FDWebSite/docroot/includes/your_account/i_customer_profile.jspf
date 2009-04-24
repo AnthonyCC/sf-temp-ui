@@ -1,4 +1,14 @@
-<script type="text/javascript">
+
+<%@page import="com.freshdirect.fdstore.survey.FDSurvey"%>
+<%@page import="com.freshdirect.fdstore.survey.FDSurveyCachedFactory"%>
+<%@page import="com.freshdirect.fdstore.survey.EnumSurveyType"%>
+<%@page import="com.freshdirect.fdstore.survey.FDSurveyResponse"%>
+<%@page import="com.freshdirect.fdstore.customer.FDCustomerManager"%>
+<%@page import="java.util.List"%>
+<%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
+<%@page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
+<%@page import="com.freshdirect.fdstore.survey.SurveyHtmlHelper"%>
+<%@page import="com.freshdirect.fdstore.survey.EnumFormDisplayType"%><script type="text/javascript">
 	/*
 	 *	this probably isn't a good idea usabilty-wise
 	 *
@@ -188,6 +198,7 @@
 
 </style>
 <% int quesCount = 1; 
+       FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
        FDSurvey Usability = FDSurveyCachedFactory.getSurvey(EnumSurveyType.getEnum(request.getAttribute("Survey").toString()));
        request.removeAttribute("Survey");
        FDSurveyResponse surveyResponse= FDCustomerManager.getCustomerProfileSurveyInfo(user.getIdentity());
