@@ -67,6 +67,7 @@
 	}
 
 	request.setAttribute("ymal_variant", recommendations.getVariant());
+	request.setAttribute("recommendations", recommendations);
 %><%@ include file="/includes/i_ymal_box.jspf" %>
 </fd:YMALRecommendations>
 </fd:YmalContext>

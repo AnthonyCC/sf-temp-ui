@@ -166,6 +166,10 @@
 %>
 					<input type="hidden" name="base_url" value="<%= base_url %>">
 					<input type="hidden" name="rec_product_ids" value="<%= StringEscapeUtils.escapeHtml(Recommendations.getSerializedProducts(r_prods) ) %>">
+					<input type="hidden" name="rec_current_node" value="<%= recmnd != null && recmnd.getSessionInput() != null && recmnd.getSessionInput().getCurrentNode() != null ? 
+							recmnd.getSessionInput().getCurrentNode().getContentKey().getId() : "(null)" %>">
+					<input type="hidden" name="rec_ymal_source" value="<%= recmnd != null && recmnd.getSessionInput() != null && recmnd.getSessionInput().getCurrentNode() != null ? 
+							recmnd.getSessionInput().getCurrentNode().getContentKey().getId() : "(null)" %>">
 
 
 					<!-- start of ymal products external table -->

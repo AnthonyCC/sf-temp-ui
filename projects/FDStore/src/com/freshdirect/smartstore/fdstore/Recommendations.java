@@ -10,8 +10,10 @@ import java.util.Map;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.YmalSource;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 
@@ -46,9 +48,16 @@ public class Recommendations implements Serializable {
 	 * 
 	 * @throws InvalidContentKeyException Invalid content key in the list
 	 */
-	public Recommendations(Variant variant, String input) throws InvalidContentKeyException {
+	public Recommendations(Variant variant, String input, String currentNodeId, String ymalSourceId) throws InvalidContentKeyException {
 		this.variant = variant;
 		this.products = deserializeContentNodes(input);
+		// irrelevant attributes, ignored
+		this.sessionInput = new SessionInput("", EnumServiceType.HOME);
+		this.sessionInput.setCurrentNode(ContentFactory.getInstance().getContentNode(currentNodeId));
+		try {
+			this.sessionInput.setYmalSource((YmalSource) ContentFactory.getInstance().getContentNode(ymalSourceId));
+		} catch (ClassCastException e) {
+		}
 	}
 	
 	

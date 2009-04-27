@@ -65,7 +65,9 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
     		// reconstruct recommendations
 			Map svcMap = SmartStoreServiceConfiguration.getInstance().getServices( variant.getSiteFeature() );
 			RecommendationService svc = (RecommendationService)svcMap.get( variant.getId() );
-			recommendations = new Recommendations( svc.getVariant(), storedProductIds ); 
+			recommendations = new Recommendations( svc.getVariant(), storedProductIds,
+					request.getParameter("rec_current_node"),
+					request.getParameter("rec_ymal_source") ); 
         }
 
         // get recommendations by recommender

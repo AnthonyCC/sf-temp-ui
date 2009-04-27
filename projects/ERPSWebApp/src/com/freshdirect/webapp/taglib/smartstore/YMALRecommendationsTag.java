@@ -57,7 +57,11 @@ public class YMALRecommendationsTag extends RecommendationsTag implements Sessio
     			Map svcMap = SmartStoreServiceConfiguration.getInstance().getServices(sf);
     			RecommendationService svc = (RecommendationService) svcMap.get(variantId);
     			
-    			results = new Recommendations(svc.getVariant(),	request.getParameter("rec_product_ids"));
+    			if (request.getParameter("rec_product_ids") != null)
+    				results = new Recommendations( svc.getVariant(),
+    						request.getParameter("rec_product_ids"),
+    						request.getParameter("rec_current_node"),
+    						request.getParameter("rec_ymal_source") ); 
     		}
         }
 
