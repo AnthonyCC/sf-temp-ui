@@ -201,9 +201,9 @@ public abstract class BaseProcessManager implements  IProcessManager {
 	        	System.out.println("################### SEND ROUTES TO ROADNET END ##################");
 	    	}    	    	
 	
-	    	System.out.println("################### SAVE UNASSIGNED START ################## "+unassignedOrders);
+	    	System.out.println("################### SAVE UNASSIGNED START ################## ");
 	    	Map unassignedSaveFailed = saveUnassignedToRoadNet(sessionDescriptionMap, unassignedOrders);
-	    	System.out.println("################### SAVE UNASSIGNED END ##################"+unassignedSaveFailed);
+	    	System.out.println("################### SAVE UNASSIGNED END ##################");
 	    	
 	    	System.out.println("sessionDescriptionMap >>"+sessionDescriptionMap);
 	    	return saveProcessStatus(request, sessionDescriptionMap, unassignedOrders);
