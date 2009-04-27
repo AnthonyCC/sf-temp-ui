@@ -570,11 +570,12 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
             
             {
                 // test for 'INCLUDE_CART_ITEMS'
-                FeaturedItemsRecommendationService noRemovalService = new FeaturedItemsRecommendationService(new Variant("fi", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("fi_config",
-                        RecommendationServiceType.FEATURED_ITEMS).set(SmartStoreServiceConfiguration.CKEY_INCLUDE_CART_ITEMS, "true")),
-                        SmartStoreServiceConfiguration.configureSampler(new RecommendationServiceConfig("fi_config",
-                        RecommendationServiceType.FEATURED_ITEMS).set(SmartStoreServiceConfiguration.CKEY_INCLUDE_CART_ITEMS, "true"), new java.util.HashMap()),
-                        false, false);
+                RecommendationServiceConfig fiConfig = new RecommendationServiceConfig("fi_config",
+                        RecommendationServiceType.FEATURED_ITEMS).set(SmartStoreServiceConfiguration.CKEY_INCLUDE_CART_ITEMS, "true");
+                FeaturedItemsRecommendationService noRemovalService = new FeaturedItemsRecommendationService(new Variant("fi", EnumSiteFeature.FEATURED_ITEMS, 
+                        fiConfig),
+                        SmartStoreServiceConfiguration.configureSampler(fiConfig, new java.util.HashMap()),
+                        false, true);
                 VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(noRemovalService));
             }
 
