@@ -72,6 +72,11 @@ public class SmartSavingRecommendationService extends WrapperRecommendationServi
 		if(promoVariantMap == null || promoVariantMap.size() == 0)
 			return false;
 		PromoVariantModel pvModel = (PromoVariantModel) promoVariantMap.get(variantId);
+
+		// variant is marked as savings although it has no promotion
+		if (pvModel == null)
+			return false;
+
 		String promoCode =pvModel.getAssignedPromotion().getPromotionCode();
 		if(sessionInput.getEligiblePromotions().contains(promoCode)) {
 			return true;

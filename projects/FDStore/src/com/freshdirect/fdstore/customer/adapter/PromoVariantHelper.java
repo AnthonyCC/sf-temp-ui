@@ -26,7 +26,7 @@ public class PromoVariantHelper {
 	        for(Iterator it = ssFeatures.iterator(); it.hasNext();){
 	            // fetch variant assignment (cohort -> variant map)
 	        	EnumSiteFeature siteFeature = (EnumSiteFeature) it.next();
-	        	if (!siteFeature.isSmartSavings()) continue;
+
 				// lookup overridden variant
 				OverriddenVariantsHelper vhelper = new OverriddenVariantsHelper(user);
 				String variantId = vhelper.getOverriddenVariant(siteFeature);

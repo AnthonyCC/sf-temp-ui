@@ -556,8 +556,7 @@ public class SmartStoreUtil {
 	 */
 	public static boolean isSavingProductInCart(Variant v, ProductModel prod, FDUserI user) {
 		// null check, variant is NOT savings -> bye
-		if (v == null || prod == null || user == null ||
-				!v.getSiteFeature().isSmartSavings())
+		if (v == null || prod == null || user == null)
 			return false;
 
 
@@ -567,7 +566,7 @@ public class SmartStoreUtil {
 		for (Iterator it=user.getShoppingCart().getOrderLines().iterator(); it.hasNext(); ) {
 			FDCartLineI cl = (FDCartLineI) it.next();
 
-			final boolean isSavingsItem = v.getId().equals(cl.getSavingsId()) /** || v.getSiteFeature().isSmartSavings() */;
+			final boolean isSavingsItem = v.getId().equals(cl.getSavingsId());
 
 			// is cart item 'saving' and equals to this product?
 			if (isSavingsItem && prodName.equals(cl.getProductName()) ) {
