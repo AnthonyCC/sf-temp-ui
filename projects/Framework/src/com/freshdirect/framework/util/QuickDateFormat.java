@@ -36,11 +36,15 @@ public class QuickDateFormat {
 	/** Format as "yyyy-MM-dd HH:mm:ss,SSS" */
 	public final static int FORMAT_ISO = 4;
 
+	/** Format as "yyyy-MM-dd HH:mm:ss.SSS" */
+	public final static int FORMAT_ISO_2 = 5;
+
 	public final static QuickDateFormat DATE_FORMATTER = new QuickDateFormat( FORMAT_DATE );
 	public final static QuickDateFormat SHORT_DATE_FORMATTER = new QuickDateFormat( FORMAT_SHORT_DATE );
 	public final static QuickDateFormat TIME_FORMATTER = new QuickDateFormat( FORMAT_TIME );
 	public final static QuickDateFormat SHORT_TIME_FORMATTER = new QuickDateFormat( FORMAT_SHORT_TIME );
 	public final static QuickDateFormat ISO_FORMATTER = new QuickDateFormat( FORMAT_ISO );
+	public final static QuickDateFormat ISO_FORMATTER_2 = new QuickDateFormat( FORMAT_ISO_2 );
 	
 	private final int format;
 	private final TimeZone timeZone;
@@ -56,6 +60,7 @@ public class QuickDateFormat {
 			case FORMAT_TIME:
 			case FORMAT_SHORT_TIME:
 			case FORMAT_ISO:
+			case FORMAT_ISO_2:
 				this.format = format;
 				break;
 			default:
@@ -103,6 +108,22 @@ public class QuickDateFormat {
 					buf.append('0');
 				}
 				buf.append(millis);
+
+				break;	
+
+			case FORMAT_ISO_2:
+				appendDate(true, buf, cal);
+				buf.append(' ');
+				appendTime(true, buf, cal);
+				buf.append('.');
+				int millis2 = cal.get(Calendar.MILLISECOND);
+				if (millis2 < 100) {
+					buf.append('0');
+				}
+				if (millis2 < 10) {
+					buf.append('0');
+				}
+				buf.append(millis2);
 
 				break;	
 		}
