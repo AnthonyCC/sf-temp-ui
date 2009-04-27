@@ -12,14 +12,11 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.CartTabRecommender;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.TabRecommendation;
-import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.ymal.YmalUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -36,8 +33,6 @@ public class PIPTabTag extends javax.servlet.jsp.tagext.BodyTagSupport {
 	
 	private static Logger LOGGER = LoggerFactory.getInstance( PIPTabTag.class );
 
-	private static final String defaultTabLabel = "-empty tab-";	//TODO defaults?
-	private static final String defaultHeaderText = "-empty-";
 	private static final String overriddenVariantId = null; //SmartStoreUtil.SKIP_OVERRIDDEN_VARIANT;	
 	
 	//=============================================================

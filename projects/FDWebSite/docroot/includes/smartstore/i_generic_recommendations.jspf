@@ -191,9 +191,15 @@
 															<input type="hidden" name="variant_tab_<%= txProdCount %>" value="<%= recommendations.getVariant().getId() %>"/>
                                                             <input type="hidden" name="variant_<%= tx_input_postfix %>_<%= txProdCount %>" value="<%= recommendations.getVariant().getId() %>"/>
 															<input type="hidden" name="rank_tab_<%= txProdCount %>" value="<%= rank %>"/>
+															
+															<input type="hidden" name="impId_<%= tx_input_postfix %>_<%= txProdCount %>" value="<%= recommendations.getImpressionId( recommendations_row.getProductModel() ) %>"/>
+															<input type="hidden" name="trk_<%= tx_input_postfix %>_<%= txProdCount %>" value="<%= recommendations.getVariant().getSiteFeature().getName().toLowerCase() %>"/>
+															
 															<% if (pl.getTrackingCode() != null) { %>
 																<input type="hidden" name="trkd_tab_<%= txProdCount %>" value="<%= pl.getTrackingCode() %>"/>
+																<input type="hidden" name="trkd_<%= tx_input_postfix %>_<%= txProdCount %>" value="<%= pl.getTrackingCode() %>"/>
 															<% } %>
+															
 															<fd:TxProductControl txNumber="<%= txProdCount %>" namespace="<%= tx_pricing_JSNameSpace %>" inputNamePostfix="<%= tx_input_postfix %>" impression="<%= (TransactionalProductImpression) recommendations_row %>" disabled="<%= shouldDimProduct %>"/>
 														</td>
 													</tr>

@@ -111,31 +111,41 @@ public class FDEventFactory {
 		event.setCookie(user.getCookie());
 		event.setEventType(eventType);
 		event.setTimestamp(new Date());
-		if (FD_ADD_TO_CART_EVENT.equalsIgnoreCase(event.getEventType())) {
-			String suffix = (String) request.getAttribute("atc_suffix");
-			if (suffix != null) {
-				// special case: ATC is generated during adding multiple items to cart
-				String trk = request.getParameter("trk" + suffix);
-				if (trk != null)
-					event.setTrackingCode(trk);
-
-				String trkd = request.getParameter("trkd" + suffix);
-				if (trkd != null)
-					event.setTrackingCodeEx(trkd);
-			} else {
-				event.setTrackingCode(request.getParameter("trk"));
-				event.setTrackingCodeEx(request.getParameter("trkd"));
-			}
-		}
-		if (request.getParameter("impId")!=null) {
-		    event.setImpressionId(request.getParameter("impId"));
-		}
+		
 		event.setUrl(request.getRequestURI());
 		event.setQueryString(request.getQueryString());
 		
 		EnumTransactionSource src = user.getApplication();
 		event.setApplication(src != null ? src.getCode() : EnumTransactionSource.WEBSITE.getCode());
 		event.setServer(request.getServerName());
+		
+		if (request.getParameter("impId")!=null) {
+		    event.setImpressionId(request.getParameter("impId"));
+		}
+		
+		if ( FD_ADD_TO_CART_EVENT.equalsIgnoreCase( event.getEventType() ) ) {
+			
+			String suffix = (String) request.getAttribute("atc_suffix");
+			if ( suffix != null ) {				
+				// special case: ATC is generated during adding multiple items to cart
+				
+				String trk = request.getParameter( "trk" + suffix );
+				if ( trk != null )
+					event.setTrackingCode(trk);
+
+				String trkd = request.getParameter( "trkd" + suffix );
+				if ( trkd != null )
+					event.setTrackingCodeEx(trkd);
+				
+				String impId = request.getParameter( "impId" + suffix ); 
+				if (  impId != null ) 
+				    event.setImpressionId( impId );
+				
+			} else {
+				event.setTrackingCode(request.getParameter("trk"));
+				event.setTrackingCodeEx(request.getParameter("trkd"));
+			}
+		}
 	}
 
 	private static void setParamsToEvent(FDCartLineI cartline, FDCartLineEvent event, String cclId) {
