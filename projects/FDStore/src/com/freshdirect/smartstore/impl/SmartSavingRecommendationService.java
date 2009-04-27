@@ -83,4 +83,12 @@ public class SmartSavingRecommendationService extends WrapperRecommendationServi
 		}
 		return false;
 	}
+	
+	public boolean isSmartSavings() {
+		return true;
+	}
+	
+	public boolean isRefreshable() {
+		return false;
+	}
 }

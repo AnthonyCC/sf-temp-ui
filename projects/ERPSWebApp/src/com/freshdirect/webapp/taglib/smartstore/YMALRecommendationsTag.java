@@ -61,7 +61,8 @@ public class YMALRecommendationsTag extends RecommendationsTag implements Sessio
     				results = new Recommendations( svc.getVariant(),
     						request.getParameter("rec_product_ids"),
     						request.getParameter("rec_current_node"),
-    						request.getParameter("rec_ymal_source") ); 
+    						request.getParameter("rec_ymal_source"),
+    						false ); 
     		}
         }
 

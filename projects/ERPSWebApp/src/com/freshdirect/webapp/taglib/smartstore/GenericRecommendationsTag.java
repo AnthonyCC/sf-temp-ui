@@ -67,7 +67,8 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
 			RecommendationService svc = (RecommendationService)svcMap.get( variant.getId() );
 			recommendations = new Recommendations( svc.getVariant(), storedProductIds,
 					request.getParameter("rec_current_node"),
-					request.getParameter("rec_ymal_source") ); 
+					request.getParameter("rec_ymal_source"),
+					Boolean.valueOf(request.getParameter("rec_refreshable")).booleanValue() ); 
         }
 
         // get recommendations by recommender

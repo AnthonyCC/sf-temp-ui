@@ -228,4 +228,7 @@ public class SmartYMALRecommendationService extends AbstractRecommendationServic
         }
     }
 	
+    public boolean isRefreshable() {
+    	return true;
+    }
 }

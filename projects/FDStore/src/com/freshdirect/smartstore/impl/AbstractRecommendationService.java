@@ -330,4 +330,14 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 	public boolean isIncludeCartItems() {
 		return includeCartItems;
 	}
+
+
+	public boolean isSmartSavings() {
+		return false;
+	}
+	
+	public boolean isRefreshable() {
+		final ImpressionSampler sampler2 = getSampler(false);
+		return !(sampler2 == null || sampler2.isDeterministic() );
+	}
 }

@@ -119,6 +119,11 @@ public abstract class ListSampler {
 	    return this.getClass().getName();
 	}
 	
+	public boolean isDeterministic() {
+		return false;
+	}
+	
+	
 	/**
 	 * Returns sampler name. This name is used as
 	 * the value of 'sampling_strat' config key
@@ -457,6 +462,10 @@ public abstract class ListSampler {
 
 		public String toString() {
 		    return getName();
+		}
+
+		public boolean isDeterministic() {
+			return true;
 		}
 	};
 }

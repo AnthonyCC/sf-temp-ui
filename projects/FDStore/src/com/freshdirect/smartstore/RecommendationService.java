@@ -32,4 +32,19 @@ public interface RecommendationService {
 	public String getDescription();
 	
 	public boolean isIncludeCartItems();
+	
+
+	/**
+	 * Recommends savings items
+	 * @return
+	 */
+	public boolean isSmartSavings();
+
+
+	/**
+	 * May provide different results on refresh
+	 * 
+	 * @return
+	 */
+	public boolean isRefreshable();
 }

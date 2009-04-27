@@ -27,4 +27,12 @@ public abstract class WrapperRecommendationService implements RecommendationServ
     public boolean isIncludeCartItems() {
     	return internal.isIncludeCartItems();
     }
+    
+    public boolean isSmartSavings() {
+    	return internal.isSmartSavings();
+    }
+
+    public boolean isRefreshable() {
+    	return internal.isRefreshable();
+    }
 }

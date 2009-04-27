@@ -25,4 +25,8 @@ public class ComplicatedImpressionSampler implements
 	public String toString() {
 		return "complicated";
 	}
+	
+	public boolean isDeterministic() {
+		return false;
+	}
 }

@@ -89,4 +89,7 @@ public class YmalYfRecommendationService extends AbstractRecommendationService i
         popularity.collectFactors(factors);
     }
     
+    public boolean isRefreshable() {
+    	return true;
+    }
 }

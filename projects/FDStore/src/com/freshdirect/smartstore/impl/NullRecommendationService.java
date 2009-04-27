@@ -46,4 +46,12 @@ public class NullRecommendationService implements RecommendationService {
     public boolean isIncludeCartItems() {
     	return false;
     }
+    
+    public boolean isSmartSavings() {
+    	return false;
+    }
+
+    public boolean isRefreshable() {
+    	return false;
+    }
 }

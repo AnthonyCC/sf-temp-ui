@@ -46,6 +46,14 @@ public class VariantSelectorTest extends TestCase {
 		public boolean isIncludeCartItems() {
 			return false;
 		}
+
+		public boolean isSmartSavings() {
+			return false;
+		}
+		
+		public boolean isRefreshable() {
+			return false;
+		}
 	};
 	
 	private List userIds;

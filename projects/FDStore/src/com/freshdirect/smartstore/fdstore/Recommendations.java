@@ -31,16 +31,23 @@ public class Recommendations implements Serializable {
 	private SessionInput sessionInput;
 	private Map impressionIds;
 	
+	private boolean isRefreshable = true;
+	
 	/**
 	 * Constructor.
 	 * @param variant 
 	 * @param contentKeys List<{@link ProductModel}>
 	 */
-	public Recommendations(Variant variant, List contentNodes) {
+	public Recommendations(Variant variant, List contentNodes, boolean isRefreshable) {
 		this.variant = variant;
 		this.products = contentNodes;
+		this.isRefreshable = isRefreshable;
 	}
-	
+
+	public Recommendations(Variant variant, List contentNodes) {
+		this(variant, contentNodes, true);
+	}
+
 	/**
 	 * Creates recommendations from serialized content keys
 	 * @param variant variant ID
@@ -48,7 +55,7 @@ public class Recommendations implements Serializable {
 	 * 
 	 * @throws InvalidContentKeyException Invalid content key in the list
 	 */
-	public Recommendations(Variant variant, String input, String currentNodeId, String ymalSourceId) throws InvalidContentKeyException {
+	public Recommendations(Variant variant, String input, String currentNodeId, String ymalSourceId, boolean isRefreshable) throws InvalidContentKeyException {
 		this.variant = variant;
 		this.products = deserializeContentNodes(input);
 		// irrelevant attributes, ignored
@@ -58,12 +65,14 @@ public class Recommendations implements Serializable {
 			this.sessionInput.setYmalSource((YmalSource) ContentFactory.getInstance().getContentNode(ymalSourceId));
 		} catch (ClassCastException e) {
 		}
+		this.isRefreshable = isRefreshable;
 	}
 	
 	
-	public Recommendations(Variant variant, List products, SessionInput sessionInput) {
+	public Recommendations(Variant variant, List products, SessionInput sessionInput, boolean isRefreshable) {
 		this(variant, products);
 		this.sessionInput = sessionInput;
+		this.isRefreshable = isRefreshable;
 	}
 
 	/**
@@ -153,5 +162,9 @@ public class Recommendations implements Serializable {
             // Empty case
             return Collections.EMPTY_LIST;
         }
+    }
+    
+    public boolean isRefreshable() {
+    	return this.isRefreshable;
     }
 }

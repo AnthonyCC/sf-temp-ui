@@ -23,4 +23,8 @@ public class ConfiguredImpressionSampler implements ImpressionSampler {
     public String toString() {
         return "limit:" + cl + ",list:" + listSampler;
     }
+    
+    public boolean isDeterministic() {
+    	return listSampler.isDeterministic();
+    }
 }

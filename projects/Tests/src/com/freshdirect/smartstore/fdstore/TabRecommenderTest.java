@@ -67,6 +67,14 @@ public class TabRecommenderTest extends RecommendationServiceTestBase {
 		public boolean isIncludeCartItems() {
 			return false;
 		}
+		
+		public boolean isSmartSavings() {
+			return false;
+		}
+		
+		public boolean isRefreshable() {
+			return false;
+		}
 	};
 	
 	private RecommendationService v1 = new MockService("A1");

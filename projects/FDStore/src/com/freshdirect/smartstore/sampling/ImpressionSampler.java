@@ -22,4 +22,6 @@ public interface ImpressionSampler {
 	 * @return List<{@link ContentKey}>
 	 */
 	public List sample(List sortedRankedContent, Set reserved, int k);
+	
+	public boolean isDeterministic();
 }

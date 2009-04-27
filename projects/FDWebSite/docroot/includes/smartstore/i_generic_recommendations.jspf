@@ -111,6 +111,7 @@
 							recommendations.getSessionInput().getCurrentNode().getContentKey().getId() : "(null)" %>">
 					<input type="hidden" name="rec_ymal_source" value="<%= recommendations.getSessionInput() != null && recommendations.getSessionInput().getCurrentNode() != null ? 
 							recommendations.getSessionInput().getCurrentNode().getContentKey().getId() : "(null)" %>">
+					<input type="hidden" name="rec_refreshable" value="<%=  Boolean.toString(recommendations.isRefreshable()) %>">
 					<input type="hidden" name="trk" value="<%= recommendations.getVariant().getSiteFeature().getName().toLowerCase() %>">
 				
 					<!-- PRICING -->
@@ -227,7 +228,7 @@
 						<table style="width: 100%;">
 							<tr>
 														
-								<% if (impressions.size() >= 5) { %>
+								<% if (impressions.size() >= 5 && recommendations.isRefreshable()) { %>
 									<td style="text-align: left;">
 										<a class="text11bold" style="padding-left: 6px" id="ra_<%= genericRecommendationsVariant.getId() %>" href="#">Click here to refresh</a>
 										<script type="text/javascript">
