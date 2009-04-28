@@ -177,10 +177,16 @@ response.setHeader("Cache-Control", "no-cache");
 						<span class="bolded">Birthday: </span><%=birthDay[0]+" "+birthDay[1]%>
 					</td>
 				</tr>
-                <%}%>
+                <%} else if(birthDay!=null && birthDay.length==1){%>
+                <tr>
+					<td>
+                        
+						<span class="bolded">Birthday: </span><%=birthDay[0]%>
+					</td>
+				</tr>
 				</table>
 				<br /><br />
-
+               <%}%>
 			<!-- CHEF'S TABLE member -->
             <% if(user.isChefsTable()) { %>
 	        <table class="col100per noBorder tLeft">
