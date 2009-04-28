@@ -339,8 +339,8 @@ public class PromotionContextAdapter implements PromotionContextI {
 	}
 	
 	
-	public Map getPromoVariantMap() {
-		return this.getUser().getPromoVariantMap();
+	public boolean isPromoVariantMapAvailable() {
+		return this.getUser().isPromoVariantMapAvailable();
 	}
 	
 	public boolean isPostPromoConflictEnabled(){

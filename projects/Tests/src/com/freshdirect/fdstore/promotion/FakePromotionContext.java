@@ -144,8 +144,12 @@ public class FakePromotionContext implements PromotionContextI {
 		return true;
 	}
 
-	public Map getPromoVariantMap(){
+	public Map getPromoVariantMap(boolean forceReload){
 		return null;
+	}
+	
+	public boolean isPromoVariantMapAvailable() {
+		return false;
 	}
 	
 	public Discount getHeaderDiscount(){

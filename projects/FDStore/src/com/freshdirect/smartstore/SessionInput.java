@@ -42,7 +42,7 @@ public class SessionInput {
 	
 	private Map promoVariantMap = null;
 	
-	private Set eligiblePromotions = null;
+	//private Set eligiblePromotions = null;
 
 	/**
 	 * Constructor.
@@ -56,11 +56,11 @@ public class SessionInput {
 		this.customerId = customerId;
 		this.customerServiceType = customerServiceType;
 	}
-
+/*
 	public Set getEligiblePromotions() {
 		return eligiblePromotions;
 	}
-
+*/
 	public Map getPromoVariantMap() {
 		return promoVariantMap;
 	}
@@ -75,8 +75,9 @@ public class SessionInput {
 		if (user != null) {
 			this.customerServiceType = user.getUserServiceType();
 			this.cartModel = user.getShoppingCart();
-			this.promoVariantMap = user.getPromoVariantMap();
-			this.eligiblePromotions = user.getPromotionEligibility().getEligiblePromotionCodes();
+			//Reload PromoVariant Map.
+			this.promoVariantMap = user.getPromoVariantMap(true);
+			//this.eligiblePromotions = user.getPromotionEligibility().getEligiblePromotionCodes();
 			if (user.getIdentity() != null)
 				this.customerId = user.getIdentity().getErpCustomerPK();
 		}

@@ -1178,39 +1178,29 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	}
 	
-	public Map getPromoVariantMap() {
+	public Map getPromoVariantMap(boolean forceReload){
 		//Map m = null;
-		if(this.promoVariantMap == null) {
+		if(this.promoVariantMap == null || forceReload) {
 			//Load the map if not available
 			this.promoVariantMap = PromoVariantHelper.getPromoVariantMap(this);
 			//PromoVariantModel model = new PromoVariantModelImpl("c_save_yf_1", "dyf_save_test", 1,EnumSiteFeature.SOYF, 2);
 			//m = new HashMap();
 			//m.put("c_save_yf_1", model);
+			this.updateUserState();
 		}
 		return this.promoVariantMap;
 		//return m;
 	}
 	
 	public PromoVariantModel getPromoVariant(String variantId) {
-		if(this.getPromoVariantMap() == null) return null;
-		return (PromoVariantModel) this.getPromoVariantMap().get(variantId);
+		if(this.promoVariantMap == null) return null;
+		return (PromoVariantModel) this.promoVariantMap.get(variantId);
 		//return new PromoVariantModelImpl("c_save_yf_1", "dyf_save_test", 1,EnumSiteFeature.SOYF, 2);
 	}
 	
-	public boolean isEligibleForSavings(EnumSiteFeature siteFeature) {
-		if(this.getPromoVariantMap() == null || this.getPromoVariantMap().size() == 0)
-			return false;
-		Set keys = this.promoVariantMap.keySet();
-		for(Iterator iter = keys.iterator(); iter.hasNext();){
-			PromoVariantModel pvModel = (PromoVariantModel) this.promoVariantMap.get(iter.next());
-			String promoCode =pvModel.getAssignedPromotion().getPromotionCode();
-			if(pvModel.getSiteFeature().equals(siteFeature) && this.getPromotionEligibility().isEligible(promoCode)) {
-				return true;
-			}
-		}
-		return false;
+	public boolean isPromoVariantMapAvailable() {
+		return (this.promoVariantMap != null && this.promoVariantMap.size() > 0);
 	}
-
 	/**
 	 * @return Always returns null
 	 * @see com.freshdirect.fdstore.customer.FDUserI#getFavoriteTabFeature()

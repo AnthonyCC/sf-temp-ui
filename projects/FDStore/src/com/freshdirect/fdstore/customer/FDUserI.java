@@ -297,11 +297,12 @@ public interface FDUserI extends java.io.Serializable {
      */
     public void setFavoriteTabFeature(String feature);
     
-    public Map getPromoVariantMap();
+    public Map getPromoVariantMap(boolean forceReload);
     
     public PromoVariantModel getPromoVariant(String variantId);
     
-    public boolean isEligibleForSavings(EnumSiteFeature siteFeature);
+    public boolean isPromoVariantMapAvailable();
+    //public boolean isEligibleForSavings(EnumSiteFeature siteFeature);
             
     public boolean isPostPromoConflictEnabled();
 

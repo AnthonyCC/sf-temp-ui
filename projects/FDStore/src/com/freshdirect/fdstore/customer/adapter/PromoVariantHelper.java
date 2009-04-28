@@ -22,7 +22,9 @@ public class PromoVariantHelper {
 			
 	        VariantSelection helper = VariantSelection.getInstance();
 	        List ssFeatures = EnumSiteFeature.getSmartSavingsFeatureList();
-	        List eligiblePVList = new ArrayList();
+	        //List eligiblePVList = new ArrayList();
+	        Map promoVariantMap = new HashMap();
+	        
 	        for(Iterator it = ssFeatures.iterator(); it.hasNext();){
 	            // fetch variant assignment (cohort -> variant map)
 	        	EnumSiteFeature siteFeature = (EnumSiteFeature) it.next();
@@ -41,16 +43,18 @@ public class PromoVariantHelper {
 		            if(promoVariants != null){
 		                for(Iterator iter = promoVariants.iterator(); iter.hasNext();){
 		                	PromoVariantModel promoVariant = (PromoVariantModel) iter.next();
-		                	//if(lineItemPromoCodes.contains(promoVariant.getAssignedPromotion().getPromotionCode())) {
+		                	String promoCode = promoVariant.getAssignedPromotion().getPromotionCode();
+		                	if(user.getPromotionEligibility() != null || user.getPromotionEligibility().isEligible(promoCode)) {
 		                		//promoVariantMap.put(variantId, promoVariant.getPromoCode());
-		                		eligiblePVList.add(promoVariant);
+		                		//eligiblePVList.add(promoVariant);
+		                		promoVariantMap.put(variantId, promoVariant);
 		                		break;
-		                	//}
+		                	}
 		                }
 		            }
 	        	}
 	        }
-	        Map promoVariantMap = new HashMap();
+	       /*
 	        if(eligiblePVList!= null && eligiblePVList.size() > 0) {
 	        	if(eligiblePVList.size() > 1)//If the user is elgible for more than one smart savings site feature.
 	        		Collections.sort(eligiblePVList, PromoVariantCache.FEATURE_PRIORITY_COMPARATOR);
@@ -59,6 +63,7 @@ public class PromoVariantHelper {
 		        promoVariantMap.put(eligiblePV.getVariantId(), eligiblePV);
 		        //context.getUser().setPromoVariantMap(promoVariantMap);
 	        }
+	        */
 	        return promoVariantMap;
 		} catch(FDResourceException fe){
 			throw new RuntimeException(fe);

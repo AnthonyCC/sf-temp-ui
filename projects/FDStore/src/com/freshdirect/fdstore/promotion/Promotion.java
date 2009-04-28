@@ -170,7 +170,6 @@ public class Promotion extends ModelSupport implements PromotionI {
 	}
 
 	public boolean apply(PromotionContextI context) {
-		System.out.println("Applicator type :"+applicator);
 		return this.applicator.apply(this.promotionCode, context);
 	}
 	/*

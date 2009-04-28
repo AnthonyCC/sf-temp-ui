@@ -37,10 +37,12 @@ public class FDPromotionVisitor {
 		
 		if(context.isPostPromoConflictEnabled()){
 			// post resolve conflict
-			postResolveConflicts(context,eligibilities);
+			boolean e = postResolveConflicts(context,eligibilities);
+			if(e)
+				context.getUser().setPromoConflictResolutionApplied(true);
 			LOGGER.info("Promotion eligibility: after Post resolveconflict apply " + eligibilities);
 			context.getUser().setPostPromoConflictEnabled(false);
-			context.getUser().setPromoConflictResolutionApplied(true);
+			
 		}		
 		LOGGER.info("Apply Promotions - END TIME ");
 		long endTime = System.currentTimeMillis();
@@ -144,14 +146,14 @@ public class FDPromotionVisitor {
 	/**
 	 * Resolve potential conflicts b/w promotions (by altering eligibilities).
 	 */
-	private static void postResolveConflicts(PromotionContextI context, FDPromotionEligibility eligibilities) {
+	private static boolean postResolveConflicts(PromotionContextI context, FDPromotionEligibility eligibilities) {
 		
 		// check if line item discount exists
 		// check if header discount allowed
 		double headerDiscAmount=0;		 
 		double lineItemDiscAmount=0;
 				
-		if(context.getHeaderDiscount()==null || context.getTotalLineItemDiscount()<=0) return;
+		if(context.getHeaderDiscount()==null || context.getTotalLineItemDiscount()<=0) return false;
 		
 		// also check if the allow header promotion flag is off 		
 		
@@ -159,11 +161,8 @@ public class FDPromotionVisitor {
 		if(linePromoCode!=null){
 			PromotionI lineItemPromo = PromotionFactory.getInstance().getPromotion(linePromoCode);
 			if(lineItemPromo.isAllowHeaderDiscount())
-			   return; 
+			   return false; 
 		}
-		
-		
-		
 		String headerPromoCode=context.getHeaderDiscount().getPromotionCode();
 		String lineItemPromoCode=eligibilities.getAppliedLineItemPromoCode();
 		// clear the both discounts
@@ -180,8 +179,11 @@ public class FDPromotionVisitor {
 		}
 		
 		if(headerPromo.isSignupDiscount() || headerPromo.isRedemption()){
-			eligibilities.removeAppliedPromo(lineItemPromoCode);
-			return;
+			//Applied header discount
+			eligibilities.setApplied(headerPromoCode);			
+			if(headerPromo.isRedemption())
+				context.getUser().setRedeemedPromotion(headerPromo);
+			return true;
 		}
 						
 		PromotionI lineItemPromo = PromotionFactory.getInstance().getPromotion(lineItemPromoCode);
@@ -189,15 +191,19 @@ public class FDPromotionVisitor {
 			lineItemDiscAmount=context.getTotalLineItemDiscount();
 		}
 		if((headerDiscAmount!=0 && headerDiscAmount>=lineItemDiscAmount)) {
-			context.clearLineItemDiscounts();			
+			//Applied header discount
 			eligibilities.setApplied(headerPromoCode);			
 			if(headerPromo.isRedemption())
 				context.getUser().setRedeemedPromotion(headerPromo);
-		}else if(lineItemDiscAmount!=0 && lineItemDiscAmount>headerDiscAmount) {
-			context.clearHeaderDiscounts();	
-			eligibilities.setApplied(lineItemPromoCode);
+			context.clearLineItemDiscounts();
 			
-		}					
+		}else if(lineItemDiscAmount!=0 && lineItemDiscAmount>headerDiscAmount) {
+			// Applied line item discount
+			eligibilities.setApplied(lineItemPromoCode);
+			context.clearHeaderDiscounts();
+			
+		}	
+		return true;
 	}
 
 	private static void applyPromotions(PromotionContextI context, FDPromotionEligibility eligibilities) {

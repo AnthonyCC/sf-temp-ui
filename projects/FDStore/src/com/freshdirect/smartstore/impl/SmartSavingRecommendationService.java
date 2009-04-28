@@ -76,12 +76,13 @@ public class SmartSavingRecommendationService extends WrapperRecommendationServi
 		// variant is marked as savings although it has no promotion
 		if (pvModel == null)
 			return false;
-
+		/*
 		String promoCode =pvModel.getAssignedPromotion().getPromotionCode();
 		if(sessionInput.getEligiblePromotions().contains(promoCode)) {
 			return true;
 		}
-		return false;
+		*/
+		return true;
 	}
 	
 	public boolean isSmartSavings() {
