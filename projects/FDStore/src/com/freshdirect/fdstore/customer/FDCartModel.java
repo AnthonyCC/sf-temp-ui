@@ -1218,6 +1218,16 @@ public class FDCartModel extends ModelSupport implements FDCartI {
         return discountAmt;
 	}
 	
+	public double getSmartSavingsDiscountAmount(String promoCode) {
+		double discountAmt=0;
+		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
+			FDCartLineI cartLine = (FDCartLineI)i.next();
+			if(cartLine.hasDiscount(promoCode)){
+				discountAmt+=cartLine.getDiscountAmount();
+			}
+		}
+        return discountAmt;
+	}
 	
 	public boolean hasHeaderDiscount() {
 		// TODO Auto-generated method stub
