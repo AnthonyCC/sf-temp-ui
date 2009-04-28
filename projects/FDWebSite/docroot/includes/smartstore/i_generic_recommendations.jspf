@@ -186,7 +186,7 @@
 														<fd:ProductImage product="<%= product %>" action="<%= actionURI %>" hideYourFave="true" disabled="<%= shouldDimProduct %>" />
 													</td>
 												</tr>
-												<% if (recommendations_row instanceof TransactionalProductImpression) {	%>												
+												<% if (recommendations_row instanceof TransactionalProductImpression && !shouldDimProduct) { %>
 													<tr>
 														<td>
 															<input type="hidden" name="trk_tab_<%= txProdCount %>" value="<%= recommendations.getVariant().getSiteFeature().getName().toLowerCase() %>">
