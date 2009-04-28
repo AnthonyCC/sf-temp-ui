@@ -200,7 +200,8 @@
 <% int quesCount = 1; 
        FDSurvey Usability = FDSurveyCachedFactory.getSurvey(EnumSurveyType.getEnum(request.getAttribute("Survey").toString()));
        request.removeAttribute("Survey");
-       FDSurveyResponse surveyResponse= FDCustomerManager.getCustomerProfileSurveyInfo(user.getIdentity());
+       FDUserI _user = (FDUserI)session.getAttribute(SessionName.USER);
+       FDSurveyResponse surveyResponse= FDCustomerManager.getCustomerProfileSurveyInfo(_user.getIdentity());
        List questions = Usability.getQuestions();
        String questionPostFix=" (Choose one)";
        List previousAnswers=null;
@@ -224,9 +225,9 @@
             </fd:ErrorHandler>
 			<!--<div class="example">-->
 			    <div class="question">
-				    <div class="question_number">
+				   <!-- <div class="question_number">
 					<%=quesCount%>
-				    </div>
+				    </div>-->
 				    <div class="question_text">
 					<%=SurveyHtmlHelper.getQuestionText(question)%>
 				    </div>
