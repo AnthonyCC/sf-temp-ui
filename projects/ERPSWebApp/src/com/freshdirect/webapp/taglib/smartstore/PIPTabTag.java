@@ -3,6 +3,7 @@ package com.freshdirect.webapp.taglib.smartstore;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
@@ -17,6 +18,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.CartTabRecommender;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.TabRecommendation;
+import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.ymal.YmalUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -76,7 +78,6 @@ public class PIPTabTag extends javax.servlet.jsp.tagext.BodyTagSupport {
 
 		LOGGER.debug( "doStartTag()" );	
 		
-		pageContext.setAttribute(this.id, this);
 		
 		// ----------- CartTabRecommender ...  -------------
 		
@@ -92,38 +93,89 @@ public class PIPTabTag extends javax.servlet.jsp.tagext.BodyTagSupport {
 		
 		tabs = CartTabRecommender.recommendTabs( user, input, overriddenVariantId);
 		
-		if (tabs.size() == 0)
-			return SKIP_BODY;
+		if (tabs.size() == 0) {
+		    return SKIP_BODY;
+		}
 		
 		if ( tabs.size() < maxTabs ) {
 		    LOGGER.warn( "not enough variants ("+tabs.size()+") for "+maxTabs+" tabs." );
 		}
 
-		Impression imp = Impression.get(user, (HttpServletRequest) pageContext.getRequest());
+		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+                Impression imp = Impression.get(user, request);
 		String impressionId = imp.logFeatureImpression(null, tabs.getTabRecommender().getVariant().getId(), input.getCurrentNode(), input.getYmalSource());
+		tabs.setParentImpressionId(impressionId);
 		for (int i = 0; i < tabs.size(); i++) {
 		    String tabImp = imp.logTab(impressionId, i, tabs.get(i).getId());
                     tabs.setFeatureImpressionId(i, tabImp);
                 }
 
+		tabs.setSelected(getSelectedTab(session, request));
+                pageContext.setAttribute(this.id, tabs);
+                request.setAttribute("parentImpressionId", impressionId);
+                
 		return EVAL_BODY_INCLUDE; 
-	}	
+	}
+	
+	protected int getSelectedTab(HttpSession session, ServletRequest req) {
+            final int numTabs = tabs.size();
+            
+            int selectedTab = 0; // default value
+            Object selectedTabAttribute = session.getAttribute(SessionName.SS_SELECTED_TAB);
+            
+            boolean shouldStoreTabPos = selectedTabAttribute == null; // true == not stored yet
+            if (selectedTabAttribute != null) {
+                // get the stored one if exist
+                selectedTab = ((Integer) selectedTabAttribute).intValue();
+            }
+
+            // tab explicitly set
+            String value = req.getParameter("tab");
+            if (value != null && !"".equals(value)) {
+                selectedTab = Integer.parseInt(value);
+                shouldStoreTabPos = true;
+            }
+
+
+            // check selected tab
+            Variant selectedVariant = tabs.get(selectedTab);
+            if (selectedTab >= numTabs ||
+                (selectedTab < numTabs &&
+                                session.getAttribute(SessionName.SS_SELECTED_VARIANT) != null &&
+                                !selectedVariant.getId().equals( session.getAttribute(SessionName.SS_SELECTED_VARIANT) ) )) {
+                // reset if selection is out of tab range or the variant of selected tab has changed
+                selectedTab = 0;
+                shouldStoreTabPos = true;
+            }
+
+            Integer iSelectedTab = new Integer(selectedTab);
+            if (shouldStoreTabPos) {
+                // store changed tab position in session
+                session.setAttribute(SessionName.SS_SELECTED_TAB, iSelectedTab);
+                session.setAttribute(SessionName.SS_SELECTED_VARIANT, selectedVariant.getId());
+            }
+            pageContext.setAttribute("selectedTabIndex", iSelectedTab);
+
+            return selectedTab;
+	}
 	
 
 	//=============================================================
 	//						Tag extra info
 	//=============================================================	
 	
-	public static class TagEI extends TagExtraInfo {
-		public VariableInfo[] getVariableInfo(TagData data) {
-	
-			return new VariableInfo[] {
-					new VariableInfo(
-						data.getAttributeString("id"),
-						"com.freshdirect.webapp.taglib.smartstore.PIPTabTag",
-						true,
-						VariableInfo.NESTED )
-			};
-		}
-	}
+    public static class TagEI extends TagExtraInfo {
+        public VariableInfo[] getVariableInfo(TagData data) {
+            return new VariableInfo[] { 
+                    new VariableInfo(
+                            "selectedTabIndex", 
+                            "java.lang.Integer", 
+                            true, 
+                            VariableInfo.AT_BEGIN),
+                    new VariableInfo(data.getAttributeString("id"), 
+                            "com.freshdirect.smartstore.TabRecommendation", 
+                            true, 
+                            VariableInfo.AT_BEGIN)};
+        }
+    }
 }

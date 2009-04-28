@@ -11,43 +11,11 @@
 	
 	URLGenerator gen = new URLGenerator(request);
 %>
-<fd:PIPTab id="pip_tab" maxTabs="3" maxRecommendations="5">
+<fd:PIPTab id="tab" maxTabs="3" maxRecommendations="5">
 	<% 
-		TabRecommendation tab = pip_tab.getTabs();
-	
 		final int numTabs = tab.size();
 		
-		int selectedTab = 0; // default value
-		boolean shouldStoreTabPos = session.getAttribute(SessionName.SS_SELECTED_TAB) == null; // true == not stored yet
-		if (session.getAttribute(SessionName.SS_SELECTED_TAB) != null) {
-			// get the stored one if exist
-			selectedTab = ((Integer) session.getAttribute(SessionName.SS_SELECTED_TAB)).intValue();
-		}
-
-		// tab explicitly set
-		String value = gen.get("tab");
-		if (value != null && !"".equals(value)) {
-			selectedTab = Integer.parseInt(value);
-			shouldStoreTabPos = true;
-		}
-
-
-		// check selected tab
-		if (selectedTab >= numTabs ||
-				(selectedTab < numTabs &&
-						session.getAttribute(SessionName.SS_SELECTED_VARIANT) != null &&
-						!tab.get(selectedTab).getId().equals( session.getAttribute(SessionName.SS_SELECTED_VARIANT) ) )) {
-			// reset if selection is out of tab range or the variant of selected tab has changed
-			selectedTab = 0;
-			shouldStoreTabPos = true;
-		}
-
-		if (shouldStoreTabPos) {
-			// store changed tab position in session
-			session.setAttribute(SessionName.SS_SELECTED_TAB, new Integer(selectedTab));
-			session.setAttribute(SessionName.SS_SELECTED_VARIANT, tab.get(selectedTab).getId());
-		}
-
+		final int selectedTab = selectedTabIndex.intValue();
 		//TODO calculate tab sizes depending on number of tabs
 		int totalWidth = 693;
 		int tabSize = numTabs==3 ? 200 : numTabs==2 ? 300 : 600;
@@ -158,6 +126,7 @@
 					tabs: [],
 					features: [],
 					selected: '<%= tab.get(selectedTab).getId() %>',
+					parentImpressionId : '<%= tab.getParentImpressionId() %> ',
 					impressionIds: [],
 				
 				
@@ -203,7 +172,7 @@
 					refresh: function(tabId, tabPos) {
 						var self = this;
 						var uri = '/ajax/refresh.jsp?tab='+tabPos+'&variant='+tabId+'&siteFeature='+PIP.features[tabId]+'&formUri=<%= 
-							response.encodeURL(request.getRequestURL().toString().replaceFirst("^[^:]*://[^/]*/", "/")) %>&impId='+PIP.impressionIds[tabPos];
+							response.encodeURL(request.getRequestURL().toString().replaceFirst("^[^:]*://[^/]*/", "/")) %>&impId='+PIP.impressionIds[tabPos] + '&pImpId='+PIP.parentImpressionId;
 						if ( $('ra_'+tabId) != null ) {
 							$('ra_'+tabId).innerHTML = loadingLink;
 						}

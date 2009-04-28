@@ -9,7 +9,9 @@ public class TabRecommendation {
 
     final List variants;
     final RecommendationService tabRecommender;
+    String parentImpressionId;
     String[] featureImpId;
+    int selected;
 
     public TabRecommendation(RecommendationService tabRecommender, List variants) {
         this.tabRecommender = tabRecommender;
@@ -69,5 +71,21 @@ public class TabRecommendation {
     public RecommendationService getTabRecommender() {
         return tabRecommender;
     }
+    
+    public String getParentImpressionId() {
+        return parentImpressionId;
+    }
+    
+    public void setParentImpressionId(String parentImpressionId) {
+        this.parentImpressionId = parentImpressionId;
+    }
 
+    public void setSelected(int selected) {
+        this.selected = selected;
+    }
+    
+    public int getSelected() {
+        return selected;
+    }
+    
 }

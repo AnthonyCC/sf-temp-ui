@@ -43,6 +43,7 @@ com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 		    Impression.tabClick(impId);
 		}
 		request.setAttribute("genericRecommendationsVariant", v);
+		request.setAttribute("parentImpressionId", request.getParameter("pImpId"));
 %><%@ include file='/includes/smartstore/i_generic_recommendations.jspf' %><%
 	}
 %>

@@ -30,12 +30,14 @@
 	INPUTS : 
 
 	@input genericRecommendationsVariant (request) actual variant
+	@input parentImpressionId String parent impression ID
 --%>
 
 
 <% {
 	// mandatory parameter
 	Variant genericRecommendationsVariant = (Variant) request.getAttribute("genericRecommendationsVariant");
+	String parentImpressionId = (String) request.getAttribute("parentImpressionId");
 	final FDUserI pip_u = (FDUserI) session.getAttribute(SessionName.USER);
 
 	String vId = genericRecommendationsVariant.getId();
@@ -61,7 +63,7 @@
 
 
 
-	<fd:GenericRecommendations id="recommendations" errorOccurred="<%= !pip_result.isSuccess() %>">
+	<fd:GenericRecommendations id="recommendations" errorOccurred="<%= !pip_result.isSuccess() %>" parentFeatureImpressionId="<%= parentImpressionId %>">
 		<% 		
 			ConfigurationContext confContext = new ConfigurationContext();
 			confContext.setFDUser( pip_u );
