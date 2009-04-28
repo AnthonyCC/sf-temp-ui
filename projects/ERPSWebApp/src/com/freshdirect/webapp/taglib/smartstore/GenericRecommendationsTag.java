@@ -10,11 +10,14 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
+
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
@@ -38,10 +41,9 @@ import com.freshdirect.webapp.util.prodconf.SmartStoreConfigurationStrategy;
 
 public class GenericRecommendationsTag extends RecommendationsTag implements SessionName {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
+    
+    private static final Logger LOGGER = LoggerFactory.getInstance( GenericRecommendationsTag.class );
     
     protected Recommendations getRecommendations() throws FDResourceException, InvalidContentKeyException {
     	
@@ -147,12 +149,5 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
 		
 		return impressions;
 	
-	}
-	
-	
-	
-	
-//    public static class TagEI extends RecommendationsTag.TagEI {
-//    }
-
+	}	
 }

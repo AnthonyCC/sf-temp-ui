@@ -132,7 +132,6 @@
 				
 					onFailure: function(tabId) {
 						$('content_'+tabId).innerHTML = errorMessage;
-						alert("Failed to retrieve new recommendations.");
 					},
 					
 				
@@ -141,6 +140,10 @@
 						this._execScripts($('content_'+tabId));
 					},
 				
+					onTimeout: function() {
+						//alert("session timeout...");
+						window.location.reload(false);
+					},
 				
 					_execScripts: function(e) {
 						if (e.nodeType != 1) 
@@ -178,7 +181,11 @@
 						}
 						$C.asyncRequest('GET', uri, {
 							success: function(resp) {
-								self.onSuccess(resp, tabId)
+								if ( resp.status === 205 ) {
+									self.onTimeout();
+								} else {
+									self.onSuccess(resp, tabId);
+								}
 							},
 							failure: function(resp) {
 								self.onFailure(tabId);
