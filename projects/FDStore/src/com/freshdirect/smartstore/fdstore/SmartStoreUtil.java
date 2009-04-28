@@ -566,7 +566,7 @@ public class SmartStoreUtil {
 		for (Iterator it=user.getShoppingCart().getOrderLines().iterator(); it.hasNext(); ) {
 			FDCartLineI cl = (FDCartLineI) it.next();
 
-			final boolean isSavingsItem = v.getId().equals(cl.getSavingsId());
+			final boolean isSavingsItem = v.getId().equals(cl.getSavingsId()) || v.getId().equals(cl.getVariantId());
 
 			// is cart item 'saving' and equals to this product?
 			if (isSavingsItem && prodName.equals(cl.getProductName()) ) {
