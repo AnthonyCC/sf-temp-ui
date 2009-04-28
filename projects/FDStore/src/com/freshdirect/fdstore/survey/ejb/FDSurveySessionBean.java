@@ -82,13 +82,18 @@ public class FDSurveySessionBean extends SessionBeanSupport {
 				FDSurveyResponse additionalResponse=null;
 				for(int i=1;i<surveys.size();i++) {
 					additionalResponse=FDSurveyDAO.getResponse(conn, identity, EnumSurveyType.getEnum(surveys.get(i).toString()));
-					Map additionalAnswers=additionalResponse.getAnswers();
-					Iterator it=additionalAnswers.keySet().iterator();
-					String key="";
-					while(it.hasNext()) {
-						key=it.next().toString();
-						if(surveyResponse.getAnswer(key)==null) {
-							surveyResponse.addAnswer(key, additionalResponse.getAnswer(key));
+					if(additionalResponse!=null) {
+						if(surveyResponse==null) {
+							surveyResponse=additionalResponse;
+						}
+						Map additionalAnswers=additionalResponse.getAnswers();
+						Iterator it=additionalAnswers.keySet().iterator();
+						String key="";
+						while(it.hasNext()) {
+							key=it.next().toString();
+							if(surveyResponse.getAnswer(key)==null) {
+								surveyResponse.addAnswer(key, additionalResponse.getAnswer(key));
+							}
 						}
 					}
 				}
