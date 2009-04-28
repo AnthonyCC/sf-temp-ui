@@ -59,4 +59,9 @@ public class PromoVariantModelImpl implements PromoVariantModel {
 		this.variantId = variantId;
 	}
 
+	public double getPercentageOff() {
+		// TODO Auto-generated method stub		
+		return this.getAssignedPromotion().getLineItemDiscountPercentOff();
+	}
+
 }

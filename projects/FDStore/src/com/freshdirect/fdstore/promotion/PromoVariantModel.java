@@ -30,5 +30,7 @@ public interface PromoVariantModel extends Serializable {
 	public String getVariantId();
 	
 	public void setVariantId(String variantId) ;
-
+	
+	public double getPercentageOff();
+		
 }

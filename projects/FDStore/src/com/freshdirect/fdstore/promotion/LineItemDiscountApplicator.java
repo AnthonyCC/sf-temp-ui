@@ -164,4 +164,12 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 
 		return true;
 	}
+
+	public double getPercentOff() {
+		return percentOff;
+	}
+
+	public void setPercentOff(double percentOff) {
+		this.percentOff = percentOff;
+	}
 }

@@ -364,5 +364,15 @@ public class Promotion extends ModelSupport implements PromotionI {
 		 return this.recommendedItemsOnly;
 	 }
 
+	 
+	 public double getLineItemDiscountPercentOff(){
+		 double percentOff=0;
+		 if(isLineItemDiscount()){
+			 LineItemDiscountApplicator app=(LineItemDiscountApplicator)applicator;
+			 percentOff=app.getPercentOff();
+		 }
+		 return percentOff;
+	 }
+	 
 
 }

@@ -50,4 +50,6 @@ public interface PromotionI extends Serializable {
 	public boolean isRecommendedItemsOnly();
 	
 	public boolean isAllowHeaderDiscount();
+	
+	public double getLineItemDiscountPercentOff();
 }
