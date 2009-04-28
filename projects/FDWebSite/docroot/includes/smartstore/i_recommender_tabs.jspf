@@ -141,7 +141,6 @@
 					},
 				
 					onTimeout: function() {
-						//alert("session timeout...");
 						window.location.reload(false);
 					},
 				
