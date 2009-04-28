@@ -27,7 +27,7 @@ public class SessionImpressionLogSessionBean extends SessionBeanSupport {
 	private static String INSERT = "INSERT INTO CUST.LOG_SESSION_IMPRESSIONS "
 			+ "(ID, FDUSER_ID, SESSION_ID, START_TIME,"
 			+ " END_TIME, VARIANT_ID, PRODUCT_IMPRESSIONS,"
-			+ " FEATURE_IMPRESSIONS) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+			+ " FEATURE_IMPRESSIONS, TAB_IMPRESSIONS) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 	public void saveLogEntry(SessionImpressionLogEntry entry) throws RemoteException {
 		Connection conn = null;
@@ -36,17 +36,7 @@ public class SessionImpressionLogSessionBean extends SessionBeanSupport {
 			conn = getConnection();
 			PreparedStatement ps = conn.prepareStatement(INSERT);
 			
-			String id = SequenceGenerator.getNextIdFromSequence(conn, SEQUENCE);
-			ps.setString(1, id);
-			ps.setString(2, entry.getUserPrimaryKey());
-			ps.setString(3, entry.getSessionId());
-			ps.setTimestamp(4, new java.sql.Timestamp(entry.getStartTime().getTime()));
-			ps.setTimestamp(5, new java.sql.Timestamp(entry.getEndTime() != null
-					? entry.getEndTime().getTime()
-					: new java.util.Date().getTime()));
-			ps.setString(6, entry.getVariantId());
-			ps.setInt(7, entry.getProductImpressions());
-			ps.setInt(8, entry.getFeatureImpressions());
+			setupStatement(conn, ps, entry);
 			
 			int count = ps.executeUpdate();
 
@@ -80,6 +70,21 @@ public class SessionImpressionLogSessionBean extends SessionBeanSupport {
 		}
 	}
 
+    private void setupStatement(Connection conn, PreparedStatement ps, SessionImpressionLogEntry entry) throws SQLException {
+        String id = SequenceGenerator.getNextIdFromSequence(conn, SEQUENCE);
+        ps.setString(1, id);
+        ps.setString(2, entry.getUserPrimaryKey());
+        ps.setString(3, entry.getSessionId());
+        ps.setTimestamp(4, new java.sql.Timestamp(entry.getStartTime().getTime()));
+        ps.setTimestamp(5, new java.sql.Timestamp(entry.getEndTime() != null
+        		? entry.getEndTime().getTime()
+        		: new java.util.Date().getTime()));
+        ps.setString(6, entry.getVariantId());
+        ps.setInt(7, entry.getProductImpressions());
+        ps.setInt(8, entry.getFeatureImpressions());
+        ps.setInt(9, entry.getTabImpressions());
+    }
+
 	public void saveLogEntries(Collection entries) throws RemoteException {
 		Connection conn = null;
 
@@ -91,17 +96,7 @@ public class SessionImpressionLogSessionBean extends SessionBeanSupport {
 			while (it.hasNext()) {
 				SessionImpressionLogEntry entry = (SessionImpressionLogEntry) it.next();
 				
-				String id = SequenceGenerator.getNextIdFromSequence(conn, SEQUENCE);
-				ps.setString(1, id);
-				ps.setString(2, entry.getUserPrimaryKey());
-				ps.setString(3, entry.getSessionId());
-				ps.setTimestamp(4, new java.sql.Timestamp(entry.getStartTime().getTime()));
-				ps.setTimestamp(5, new java.sql.Timestamp(entry.getEndTime() != null
-						? entry.getEndTime().getTime()
-						: new java.util.Date().getTime()));
-				ps.setString(6, entry.getVariantId());
-				ps.setInt(7, entry.getProductImpressions());
-				ps.setInt(8, entry.getFeatureImpressions());
+				setupStatement(conn, ps, entry);
 				
 				ps.addBatch();
 			}

@@ -155,6 +155,21 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
         entry.incrementImpressions(productCount);
     }
+    
+    public void logTabImpression(String variant, int tabCount) {
+        if (sessionId == null) {
+            throw new IllegalStateException("current FD user not bound to session");
+        }
+        
+        SessionImpressionLogEntry entry = (SessionImpressionLogEntry) impressions.get(variant);
+        if (entry == null) {
+            entry = new SessionImpressionLogEntry(user.getPrimaryKey(), sessionId, variant);
+            impressions.put(variant, entry);
+        }
+
+        entry.incrementTabImpressions(tabCount);
+    }
+    
 
     public void saveCart() {
         this.saveCart(false);

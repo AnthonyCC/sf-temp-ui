@@ -21,6 +21,7 @@ import com.freshdirect.smartstore.TabRecommendation;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.ymal.YmalUtil;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 /**
@@ -93,9 +94,20 @@ public class PIPTabTag extends javax.servlet.jsp.tagext.BodyTagSupport {
 		
 		tabs = CartTabRecommender.recommendTabs( user, input, overriddenVariantId);
 		
+		// it's very similar to RecommendationsTag.persistToSession()
+		if (input.getPreviousRecommendations() != null) {
+		    pageContext.getSession().setAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS, input.getPreviousRecommendations());
+		}
+		
 		if (tabs.size() == 0) {
 		    return SKIP_BODY;
 		}
+		
+		// old db logging..
+                if (user instanceof FDSessionUser) {
+                    FDSessionUser sessionUser = (FDSessionUser) user;
+                    sessionUser.logTabImpression(tabs.getTabRecommender().getVariant().getId(), tabs.size());
+                }
 		
 		if ( tabs.size() < maxTabs ) {
 		    LOGGER.warn( "not enough variants ("+tabs.size()+") for "+maxTabs+" tabs." );

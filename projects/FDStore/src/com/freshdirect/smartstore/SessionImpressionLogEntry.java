@@ -21,6 +21,8 @@ public class SessionImpressionLogEntry implements Serializable {
 	int productImpressions;
 
 	int featureImpressions;
+	
+	int tabImpressions;
 
 	public SessionImpressionLogEntry() {
 		super();
@@ -115,12 +117,24 @@ public class SessionImpressionLogEntry implements Serializable {
 	public int getFeatureImpressions() {
 		return featureImpressions;
 	}
+	
+	public int getTabImpressions() {
+            return tabImpressions;
+        }
+	
 
 	public void incrementImpressions(int productCount) {
 		this.productImpressions += productCount;
 		if (productCount >= 1) {
 			this.featureImpressions++;
 		}
+	}
+	
+	public void incrementTabImpressions(int tabs) {
+	    this.tabImpressions += tabs;
+            if (tabs >= 1) {
+                this.featureImpressions ++;
+            }
 	}
 
     public void setStartEndTime(Date startDate, Date endDate) {

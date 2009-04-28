@@ -75,17 +75,21 @@ public class FDEventFactory {
 	
 	
 	public static FDRecommendationEvent getImpressionEvent(String variantId, ContentKey contentKey) {
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.HOUR, 0);
-		cal.set(Calendar.MINUTE,0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND,0);
+	    StringBuffer idBuffer = new StringBuffer(contentKey.getId().length() + 12);
+	    idBuffer.append(contentKey.getType()).append(':').append(contentKey.getId());
 		
-		StringBuffer idBuffer = new StringBuffer(contentKey.getId().length() + 12);
-		idBuffer.append(contentKey.getType()).append(':').append(contentKey.getId());
-		
-		return new FDRecommendationEvent.Impression(variantId,idBuffer.toString(),cal.getTime());
+	    return getImpressionEvent(variantId, idBuffer.toString());
 	}
+
+    public static FDRecommendationEvent getImpressionEvent(String variantId, String id) {
+        Calendar cal = Calendar.getInstance();
+	    cal.set(Calendar.HOUR, 0);
+	    cal.set(Calendar.MINUTE,0);
+	    cal.set(Calendar.SECOND, 0);
+	    cal.set(Calendar.MILLISECOND,0);
+		
+	    return new FDRecommendationEvent.Impression(variantId,id,cal.getTime());
+    }
 	
 	public static FDRecommendationEvent getClickThroughEvent(String variantId, ContentKey contentKey) {
 		Calendar cal = Calendar.getInstance();
