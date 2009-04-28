@@ -129,4 +129,5 @@ public interface SystemMessageList {
 	public final static String MSG_PROMOTION_APPLIED_VARY1 = "PLEASE NOTE: You are currently eligible for multiple promotional offers which cannot be combined. <BR>When you check out, we will automatically choose the offer that gives you the greatest discount";
 	public final static String MSG_PROMOTION_APPLIED_VARY2 = "PLEASE NOTE: You are currently eligible for multiple promotional offers which cannot be combined. We have applied the offer which gives you greater discount.";
 	
+	
 }
