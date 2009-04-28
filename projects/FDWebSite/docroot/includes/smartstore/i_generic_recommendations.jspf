@@ -7,6 +7,7 @@
 <%@page import="java.util.List"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Collection"%>
+<%@page import="java.util.Map"%>
 <%@page import="java.net.URLEncoder"%>
 <%@page import="org.apache.commons.lang.StringEscapeUtils"%>
 <%@page import="com.freshdirect.fdstore.content.ProductModel"%>
@@ -23,7 +24,9 @@
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 <%@ page import="com.freshdirect.framework.webapp.ActionResult"%>
-
+<%@ page import="com.freshdirect.fdstore.customer.adapter.PromoVariantHelper" %>
+<%@ page import="com.freshdirect.fdstore.promotion.PromoVariantModel" %>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.BrowserInfo"%>
 
 <%--
 
@@ -58,10 +61,12 @@
 		formUri = (String) request.getParameter("formUri");
 	}
 	
+
 	if ( genericRecommendationsVariant != null ) {
 %>
 
-	<fd:GenericRecommendations id="recommendations" errorOccurred="<%= !pip_result.isSuccess() %>" parentFeatureImpressionId="<%= parentImpressionId %>">
+	
+<fd:GenericRecommendations id="recommendations" errorOccurred="<%= !pip_result.isSuccess() %>" parentFeatureImpressionId="<%= parentImpressionId %>">
 		<% 		
 			ConfigurationContext confContext = new ConfigurationContext();
 			confContext.setFDUser( pip_u );
@@ -98,7 +103,17 @@
 		
 		<%
 			if ( impressions!=null && impressions.size() > 0 ) {
-		%>			
+				BrowserInfo bi = new BrowserInfo(request);
+				
+				boolean isVariantSavings = false;
+				
+				Map pvMap = PromoVariantHelper.getPromoVariantMap(pip_u);
+				PromoVariantModel pvm = (PromoVariantModel) pvMap.get(genericRecommendationsVariant.getId());
+				if (pvm != null) {
+					// variant is savings
+					isVariantSavings = true;
+				}
+		%>
 				<form id="id_<%= tx_pricing_FormName %>" name="<%= tx_pricing_FormName %>" method="post" action="<%= formUri %>" style="margin:0px">
 					<input type="hidden" name="fdsc.action" value="addMultipleToCart"/>
 					<input type="hidden" name="fdsc.succpage" value="<%= formUri %>?confirm=1"/>
@@ -165,14 +180,14 @@
 										        pl.getTrackingCode(), 
 										        rank,  
 										        recommendations.getImpressionId(product)
-										 );
+										);
 
-										boolean shouldDimProduct = SmartStoreUtil.isSavingProductInCart(genericRecommendationsVariant, product, pip_u);
+										boolean shouldDimProduct = isVariantSavings && SmartStoreUtil.isSavingProductInCart(genericRecommendationsVariant, product, pip_u);
 
 
 										// cell rendering starts here
 									%>
-																							
+
 									<td style="white-space: normal; text-align: center; padding-left: 2px; padding-right: 2px;" valign="top" width="<%= Math.round(100.0/impressions.size()) %>%">
 																																
 										<% if ( ! blankCell_var.booleanValue() ) { %>
@@ -181,10 +196,14 @@
 											<table align="center" >
 												<tr>
 													<td style="padding: 0; height: <%= rowHeight.intValue() %>px; vertical-align: bottom; text-align: center">
-														<fd:ProductImage product="<%= product %>" action="<%= actionURI %>" hideYourFave="true" disabled="<%= shouldDimProduct %>" />
+														<% if (isVariantSavings) { %><fd:ProductImage product="<%= product %>" action="<%= actionURI %>" savingsPercentage="<%= pvm.getPercentageOff() %>" inCart="<%= shouldDimProduct %>" browserInfo="<%= bi %>" /><% } else {%><fd:ProductImage product="<%= product %>" action="<%= actionURI %>" hideYourFave="true" browserInfo="<%= bi %>" /><% } %>
 													</td>
 												</tr>
-												<% if (recommendations_row instanceof TransactionalProductImpression && !shouldDimProduct) { %>
+												<% if (shouldDimProduct) { %>
+													<tr>
+														<td style="height: 28px; text-align: center; vertical-align: middle;">&nbsp;</td>
+													</tr>
+												<% } else if (recommendations_row instanceof TransactionalProductImpression) { %>
 													<tr>
 														<td>
 															<input type="hidden" name="trk_tab_<%= txProdCount %>" value="<%= recommendations.getVariant().getSiteFeature().getName().toLowerCase() %>">
@@ -217,7 +236,7 @@
 																							
 											<fd:ProductRating product="<%= product %>"/>
 											<fd:ProductName product="<%= product %>" action="<%= actionURI %>" disabled="<%= shouldDimProduct %>"/>
-											<fd:ProductDescription impression="<%= recommendations_row %>"/>
+											<fd:ProductDescription impression="<%= recommendations_row %>" savingsPercentage="<%= isVariantSavings ? pvm.getPercentageOff() : 0 %>" />
 										</fd:TransparentBox>
 										<% } else { // blank cell %>
 											&nbsp;

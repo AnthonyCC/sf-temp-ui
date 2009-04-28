@@ -33,6 +33,10 @@ public class ProductImageTag extends BodyTagSupport {
 	boolean			hideYourFave = false; // whether display Your Fave burst (optional)
 	boolean			hideBurst = false; // whether display any burst (optional)
 
+	BrowserInfo		browserInfo = null;
+	double			savingsPercentage = 0; // savings % off
+	boolean			isInCart = false; // display savings - in cart
+
 	public void setProduct(ProductModel prd) {
 		this.product = prd;
 	}
@@ -73,6 +77,23 @@ public class ProductImageTag extends BodyTagSupport {
 		this.hideYourFave = hideYourFave;
 	}
 
+	
+	
+	
+	public void setBrowserInfo(BrowserInfo browserInfo) {
+		this.browserInfo = browserInfo;
+	}
+
+
+	public void setInCart(boolean isInCart) {
+		this.isInCart = isInCart;
+	}
+
+	public void setSavingsPercentage(double savingsPercentage) {
+		this.savingsPercentage = savingsPercentage;
+	}
+
+
 	public int doStartTag() {
 		try {
 			Image prodImg = product.getProdImage();
@@ -85,23 +106,37 @@ public class ProductImageTag extends BodyTagSupport {
 					hideBurst, hideNew, hideDeals, hideYourFave);
 			
 			
+			final boolean supportsPNG = browserInfo != null && !browserInfo.isIE6();
+			// not disabled, has action and not in cart (savings) -> add link
+			final boolean shouldGenerateAction = !this.disabled && this.action != null && !this.isInCart;
+
 			// burst image
-			if (pl.isDisplayAny()) {
+			if (savingsPercentage > 0 || pl.isDisplayAny()) {
+				// get deal
+				int deal = 0;
+				if (savingsPercentage > 0) {
+					deal = (int)(savingsPercentage*100);
+				} else if (pl.isDisplayDeal()) {
+					deal = product.getDealPercentage();
+				}
+				
 				buf.append("<div style=\"padding: 0px; border: 0px; margin: 0px auto; "
 						+ "width: " + prodImg.getWidth() + "px; "
 						+ "height: " + prodImg.getHeight() + "px; "
 						+ "position: relative;\">");
 				buf.append("<div style=\"position: absolute; top: 0px; left: 0px\">");
-			
-				if (!this.disabled && this.action != null) {
+
+
+				if (shouldGenerateAction) {
 					buf.append("<a href=\"");
 					buf.append(action);
 					buf.append("\">");
 				}
-	
-				if (pl.isDisplayDeal()) {
-					int deal = product.getDealPercentage();
-					buf.append("<img alt=\"SAVE " + deal + "\" src=\"/media_stat/images/deals/brst_sm_" + deal + ".gif\" style=\"border: 0px;\">");
+
+				if (this.isInCart) {
+					// Smart Savings - display "In Cart" burst
+				} else if (deal > 0 /* pl.isDisplayDeal() */) {
+					buf.append("<img alt=\"SAVE " + deal + "\" src=\"/media_stat/images/deals/brst_sm_" + deal + (supportsPNG ? ".png" : ".gif") + "\" style=\"border: 0px;\">");
 				} else if (pl.isDisplayFave()) {
 					// we need width and height for png behavior
 					buf.append("<img alt=\"NEW\" src=\"/media_stat/images/template/search/brst_sm_fave.png\" width=\"35\" height=\"35\" style=\"border: 0px;\">");
@@ -110,7 +145,7 @@ public class ProductImageTag extends BodyTagSupport {
 					buf.append("<img alt=\"NEW\" src=\"/media_stat/images/template/search/brst_sm_new.png\" width=\"35\" height=\"35\" style=\"border: 0px;\">");
 				}
 				
-				if (!this.disabled && action != null) {
+				if (!this.disabled && action != null && !this.isInCart) {
 					buf.append("</a>");
 				}
 	
@@ -120,7 +155,7 @@ public class ProductImageTag extends BodyTagSupport {
 
 
 			// product image
-			if (!this.disabled && action != null) {
+			if (shouldGenerateAction) {
 				buf.append("<a href=\"");
 				buf.append(action);
 				buf.append("\">");
@@ -162,7 +197,7 @@ public class ProductImageTag extends BodyTagSupport {
 
 			buf.append(">");
 
-			if (!this.disabled && action != null) {
+			if (shouldGenerateAction) {
 				buf.append("</a>");
 			}
 			

@@ -21,10 +21,20 @@ public class ProductDescriptionTag extends BodyTagSupport {
 
 	private ProductImpression impression;
 
+	double savingsPercentage = 0 ; // savings % off
+	
 	public void setImpression(ProductImpression impression) {
 		this.impression = impression;
 	}
 	
+
+
+	public void setSavingsPercentage(double savingsPercentage) {
+		this.savingsPercentage = savingsPercentage;
+	}
+
+
+
 	public int doStartTag() {
 		JspWriter out = pageContext.getOut();
 
@@ -51,7 +61,20 @@ public class ProductDescriptionTag extends BodyTagSupport {
 		// display price
 		FDProductInfo productInfo = impression.getProductInfo();
 		if (productInfo != null) {
-			if ( productInfo.isDeal() ) {
+			if (savingsPercentage > 0) {
+				// smart savings price
+				double savingsPrice = productInfo.getDefaultPrice() * (1-savingsPercentage);
+				buf.append(
+						"<div style=\"font-weight: bold; color: red;\">" + 
+						JspMethods.currencyFormatter.format(savingsPrice) + "/" + 
+						productInfo.getDisplayableDefaultPriceUnit().toLowerCase() + 
+						"</div>\n" +
+						"<div style=\"font-weight: normal; color: gray\">" + 
+						"(was " + JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()) + ")" +
+						"</div>\n"
+				);
+			} else if ( productInfo.isDeal() ) {
+				// deal price
 				buf.append(
 						"<div style=\"font-weight: bold; color: red;\">" + 
 						JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()) + "/" + 
@@ -71,6 +94,7 @@ public class ProductDescriptionTag extends BodyTagSupport {
 			}
 		}
 
+		
 		// Display "SAVE!" ... label
         FDProduct product = impression.getFDProduct();
         if (product!=null) {
@@ -82,7 +106,6 @@ public class ProductDescriptionTag extends BodyTagSupport {
                 }
             }
         }
-
 
 		try {
 			// write out
