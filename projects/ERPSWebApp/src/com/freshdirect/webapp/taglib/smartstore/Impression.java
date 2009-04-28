@@ -27,7 +27,7 @@ public class Impression {
     
     final Map           recServiceAudit;
 
-    final String        pageImpressionId;
+    final String        requestId;
 
     int                 lastId    = 0;
 
@@ -36,7 +36,7 @@ public class Impression {
     int                 featureId = 0;
 
     Impression(FDUserI user, HttpServletRequest httpServletRequest) {
-        this.pageImpressionId = SessionImpressionLog.getPageId();
+        this.requestId = SessionImpressionLog.getPageId();
 
         this.recServiceAudit = (Map) AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.get();
 
@@ -47,7 +47,7 @@ public class Impression {
 
         String erpCustomerId = identity != null ? identity.getErpCustomerPK() : "";
 
-        String message = pageImpressionId + ","+QuickDateFormat.ISO_FORMATTER_2.format(new Date())+","+ filter(user.getUserId()) + ',' + 
+        String message = requestId + ","+QuickDateFormat.ISO_FORMATTER_2.format(new Date())+","+ filter(user.getUserId()) + ',' + 
             filter(sessionId) + ',' + erpCustomerId + ',' + filter(uri) + ','
                 + filter(httpServletRequest.getQueryString());
         ImpressionLogger.REQUEST.logEvent(message);
@@ -86,8 +86,8 @@ public class Impression {
 
     public String logFeatureImpression(String parentFeatureImpId, String variantId, String triggeringCategoryId, String triggeringProductId, String ymalId) {
         featureId++;
-        String uniqId = pageImpressionId + "_f" + featureId;
-        String message = uniqId + ',' + pageImpressionId + ',' + (parentFeatureImpId!=null ? parentFeatureImpId : "") + ',' + variantId + ',' + triggeringCategoryId + ',' + triggeringProductId
+        String uniqId = requestId + "_f" + featureId;
+        String message = uniqId + ',' + requestId + ',' + (parentFeatureImpId!=null ? parentFeatureImpId : "") + ',' + variantId + ',' + triggeringCategoryId + ',' + triggeringProductId
                 + ',' + ymalId;
         ImpressionLogger.FEATURE.logEvent(message);
         return uniqId;
@@ -103,7 +103,7 @@ public class Impression {
      */
     public String logProduct(String featureImpressionId, int rank, ContentKey key) {
         lastId++;
-        String impId = filter(pageImpressionId + "_p" + lastId);
+        String impId = filter(requestId + "_p" + lastId);
         String contentId = key.getId();
         ImpressionLogger.PRODUCT.logEvent(impId + ',' + featureImpressionId + ',' + contentId + ',' + rank + ','
                 + (recServiceAudit != null ? recServiceAudit.get(contentId) : ""));
@@ -112,7 +112,7 @@ public class Impression {
 
     public String logTab(String featureImpressionId, int number, String tabName) {
         tabId++;
-        String impId = filter(pageImpressionId + "_t" + tabId);
+        String impId = filter(requestId + "_t" + tabId);
         ImpressionLogger.TAB.logEvent(impId + ',' + filter(featureImpressionId) + ',' + number + ',' + filter(tabName));
         return impId;
     }
