@@ -18,35 +18,35 @@ com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 		response.setHeader("Cache-Control", "no-cache");
 		response.setHeader("Pragma", "no-cache");
 		
+		if (request.getParameter("tab") != null && !"".equals(request.getParameter("tab")) &&
+				request.getParameter("variant") != null && !"".equals(request.getParameter("variant"))) {
+			String tabPos = (String) request.getParameter("tab");
+			String variantId = (String) request.getParameter("variant");
+
+			// store change
+			session.setAttribute(SessionName.SS_SELECTED_TAB, new Integer(tabPos));
+			session.setAttribute(SessionName.SS_SELECTED_VARIANT, variantId);
+		}
+
+
+		ActionResult result = new ActionResult();
+		request.setAttribute("actionResult", result);
+		
+
+		// TODO: maybe null (??)
+		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
+		
+		Variant v = SmartStoreUtil.getVariant(request.getParameter("siteFeature"), request.getParameter("variant"));
+		String impId = request.getParameter("impId");
+		if (impId!=null) {
+		    Impression.tabClick(impId);
+		}
+		request.setAttribute("genericRecommendationsVariant", v);
+		request.setAttribute("parentImpressionId", request.getParameter("pImpId"));
+			
 		if ( session.isNew() ) {	// session timeout
 			response.setStatus(HttpServletResponse.SC_RESET_CONTENT);
 		} else {
-
-			if (request.getParameter("tab") != null && !"".equals(request.getParameter("tab")) &&
-					request.getParameter("variant") != null && !"".equals(request.getParameter("variant"))) {
-				String tabPos = (String) request.getParameter("tab");
-				String variantId = (String) request.getParameter("variant");
-	
-				// store change
-				session.setAttribute(SessionName.SS_SELECTED_TAB, new Integer(tabPos));
-				session.setAttribute(SessionName.SS_SELECTED_VARIANT, variantId);
-			}
-	
-	
-			ActionResult result = new ActionResult();
-			request.setAttribute("actionResult", result);
-			
-	
-			// TODO: maybe null (??)
-			FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
-			
-			Variant v = SmartStoreUtil.getVariant(request.getParameter("siteFeature"), request.getParameter("variant"));
-			String impId = request.getParameter("impId");
-			if (impId!=null) {
-			    Impression.tabClick(impId);
-			}
-			request.setAttribute("genericRecommendationsVariant", v);
-			request.setAttribute("parentImpressionId", request.getParameter("pImpId"));
 			%><%@ include file='/includes/smartstore/i_generic_recommendations.jspf' %><%
 		}
 	}
