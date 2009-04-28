@@ -50,6 +50,8 @@ function clear(p) {
         x[i].disabled= false;
     }
 }
+
+
 </script>
 <tmpl:insert template='/common/template/dnav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Your Profile</tmpl:put>
@@ -57,7 +59,7 @@ function clear(p) {
 
 <fd:CustomerProfileSurveyTag actionName="submitSurvey" result="result" successPage="<%=successPage%>" survey="Customer Profile Survey">
 <fd:IncludeMedia name="/media/editorial/site_pages/survey/cps_intro.html" />	
- <form name="request_product" method="post">	
+ <form id="junk" name="request_product" method="POST">	
 <table cellpadding="0" cellspacing="0" border="0" class="text12">
 <tr><td colspan="10">
     
@@ -94,12 +96,12 @@ function clear(p) {
 	<tr>
 		<td colspan="10" align="center">
 			<a href="javascript:clear(document.request_product)"><img src="/media_stat/images/template/newproduct/b_clear.gif" width="47" height="17" border="0" alt="Clear"></a>&nbsp;&nbsp;
-			<input type="image" name="send_email" src="/media_stat/images/template/newproduct/b_send.gif" width="45" height="15" vspace="1" border="0" alt="Send Request"onClick="javascript:document.request_product.submit()"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="12"><br>
+            <a href="javascript:document.request_product.submit()"><img src="/media_stat/images/template/newproduct/b_send.gif" width="45" height="15" border="0" alt="Send Request"></a>&nbsp;&nbsp;
     </td>
     </tr>
 
 </table>
-
+</form>
 <br><br>
 <IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="675" HEIGHT="1" BORDER="0"><BR>
 <FONT CLASS="space4pix"><BR><BR></FONT>
@@ -110,7 +112,7 @@ function clear(p) {
 <BR>from <FONT CLASS="text11bold"><A HREF="/index.jsp">Home Page</A></FONT><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="340" HEIGHT="1" BORDER="0"></td>
 </tr>
 </TABLE>
-</FORM>
+
 </fd:CustomerProfileSurveyTag>
 	</tmpl:put>
 </tmpl:insert>
