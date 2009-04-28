@@ -239,6 +239,7 @@ public class SmartStoreServiceConfiguration {
         
         if (!RecommendationServiceType.TAB_STRATEGY.equals(serviceType)) {
         	smartSave = extractSmartSave(config, statuses, variant.getSiteFeature());
+        	variant.setSmartSavings(smartSave);
         	// if smart saving used, we will return items from the cart.
             includeCartItems = extractIncludeCartItems(config, statuses, smartSave);
         	cosFilter = extractCosFilter(config, statuses);

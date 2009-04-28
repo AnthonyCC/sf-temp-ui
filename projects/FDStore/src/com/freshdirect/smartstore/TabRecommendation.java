@@ -38,28 +38,23 @@ public class TabRecommendation {
     public String getTabTitle(int index) {
         Variant variant = get(index);
 
-        String varPrezTitle = variant.getServiceConfig().getPresentationTitle();
-        if (varPrezTitle != null) {
-            return varPrezTitle;
+        String prezTitle = variant.getServiceConfig().getPresentationTitle();
+        if (prezTitle == null) {
+            EnumSiteFeature siteFeature = variant.getSiteFeature();
+            prezTitle = siteFeature.getPresentationTitle();
+            if (prezTitle == null)
+                prezTitle = siteFeature.getTitle();
+            if (prezTitle == null)
+                prezTitle = siteFeature.getName();
         }
-
-        EnumSiteFeature siteFeature = variant.getSiteFeature();
-        String sfPrezTitle = siteFeature.getPresentationTitle();
-        if (sfPrezTitle != null) {
-            return sfPrezTitle;
-        }
-
-        String sfTitle = siteFeature.getTitle();
-        if (sfTitle != null) {
-            return sfTitle;
-        } else {
-            return siteFeature.getName();
-        }
+        if (!variant.isSmartSavings() || prezTitle.toLowerCase().startsWith("save on "))
+        	return prezTitle;
+        else
+        	return "Save on " + prezTitle;
     }
 
     public String getTabDescription(int index) {
         Variant variant = get(index);
-
         String varPrezDescription = variant.getServiceConfig().getPresentationDescription();
         if (varPrezDescription != null) {
             return varPrezDescription;
@@ -67,7 +62,7 @@ public class TabRecommendation {
 
         return PIP_DEFAULT_DESC;
     }
-
+    
     public RecommendationService getTabRecommender() {
         return tabRecommender;
     }

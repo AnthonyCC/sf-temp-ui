@@ -606,11 +606,17 @@ p.tab_text_simple {
 	white-space: normal;	
 }
 
-p.tab_text_descr {
+.tab_text_descr {
 	color: #515151; 
 	font: bold small sans-serif; 
 	text-align: center;			
-	white-space: normal;	
+	white-space: normal;
+	padding-bottom: 0.25em;	
+}
+
+.tab_text_descr p {
+	padding: 0px 0px 0.25em;
+	margin: 0px;
 }
 
 a.tab_active:link		{ color : #996699; }

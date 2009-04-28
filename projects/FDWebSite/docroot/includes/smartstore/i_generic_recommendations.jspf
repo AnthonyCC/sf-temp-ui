@@ -127,6 +127,7 @@
 					<input type="hidden" name="rec_ymal_source" value="<%= recommendations.getSessionInput() != null && recommendations.getSessionInput().getCurrentNode() != null ? 
 							recommendations.getSessionInput().getCurrentNode().getContentKey().getId() : "(null)" %>">
 					<input type="hidden" name="rec_refreshable" value="<%=  Boolean.toString(recommendations.isRefreshable()) %>">
+					<input type="hidden" name="rec_smart_savings" value="<%=  Boolean.toString(recommendations.isSmartSavings()) %>">
 					<input type="hidden" name="trk" value="<%= recommendations.getVariant().getSiteFeature().getName().toLowerCase() %>">
 				
 					<!-- PRICING -->

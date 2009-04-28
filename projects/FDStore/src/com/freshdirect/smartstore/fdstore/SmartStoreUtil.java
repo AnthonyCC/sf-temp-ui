@@ -13,8 +13,10 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.CmsContentNodeAdapter;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -556,7 +558,7 @@ public class SmartStoreUtil {
 	 */
 	public static boolean isSavingProductInCart(Variant v, ProductModel prod, FDUserI user) {
 		// null check, variant is NOT savings -> bye
-		if (v == null || prod == null || user == null)
+		if (v == null || !v.isSmartSavings() || prod == null || user == null)
 			return false;
 
 
@@ -575,5 +577,66 @@ public class SmartStoreUtil {
 		}
 
 		return false;
+	}
+	
+	public static int countSavingProductsInCart(Variant v, FDUserI user, Map previousRecommendations) {
+		if (v == null || !v.isSmartSavings() || user == null)
+			return 0;
+
+		int count = 0;
+		List cachedItems = (List) previousRecommendations.get(v.getId());
+		if (cachedItems == null)
+			return 0;
+		
+		OUTER: for (Iterator it=user.getShoppingCart().getOrderLines().iterator(); it.hasNext(); ) {
+			FDCartLineI cl = (FDCartLineI) it.next();
+
+			final boolean isSavingsItem = v.getId().equals(cl.getVariantId()) || v.getId().equals(cl.getSavingsId());
+
+			if (isSavingsItem) {
+				String productId = cl.getProductName();
+				for (int i = 0; i < cachedItems.size(); i++) {
+					ContentKey key = (ContentKey) cachedItems.get(i);
+					if (key.getId().equals(productId)) {
+						count++;
+						continue OUTER;
+					}
+				}
+			}
+		}
+		
+		if (cachedItems.size() == count)
+			return -count;
+		
+		return count;
+	}
+	
+	public static double sumOfSavingsInCart(Variant v, FDUserI user, Map previousRecommendations) {
+		if (v == null || !v.isSmartSavings() || user == null)
+			return 0.;
+
+		double sum = 0.;
+		List cachedItems = (List) previousRecommendations.get(v.getId());
+		if (cachedItems == null)
+			return 0.;
+		
+		OUTER: for (Iterator it=user.getShoppingCart().getOrderLines().iterator(); it.hasNext(); ) {
+			FDCartLineI cl = (FDCartLineI) it.next();
+
+			final boolean isSavingsItem = v.getId().equals(cl.getVariantId()) || v.getId().equals(cl.getSavingsId());
+
+			if (isSavingsItem) {
+				String productId = cl.getProductName();
+				for (int i = 0; i < cachedItems.size(); i++) {
+					ContentKey key = (ContentKey) cachedItems.get(i);
+					if (key.getId().equals(productId)) {
+						sum += cl.getDiscountAmount();
+						continue OUTER;
+					}
+				}
+			}
+		}
+		
+		return sum;
 	}
 }

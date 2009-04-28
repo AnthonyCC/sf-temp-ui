@@ -50,8 +50,6 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
         HttpSession session = pageContext.getSession();
     	ServletRequest request = pageContext.getRequest();
     	
-        FDUserI user = (FDUserI) session.getAttribute("fd.user");        
-        
         // get selected tab (variant) on UI
         Variant variant = (Variant)request.getAttribute( "genericRecommendationsVariant" );
         
@@ -70,7 +68,8 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
 			recommendations = new Recommendations( svc.getVariant(), storedProductIds,
 					request.getParameter("rec_current_node"),
 					request.getParameter("rec_ymal_source"),
-					Boolean.valueOf(request.getParameter("rec_refreshable")).booleanValue() ); 
+					Boolean.valueOf(request.getParameter("rec_refreshable")).booleanValue(),
+					Boolean.valueOf(request.getParameter("rec_smart_savings")).booleanValue()); 
         }
 
         // get recommendations by recommender
@@ -118,7 +117,6 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
         HttpSession session = pageContext.getSession();
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 		confContext.setFDUser(user);
-		boolean hasAnyItemAddable = false;
 		
 		// List<ProductImpression> impressions : configured products enlisted in 'Your Favourites' table
 		List impressions = new ArrayList();
@@ -128,7 +126,6 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
 		
 		if ( recommendations != null && recommendations.getProducts().size() > 0 ) {
 			
-	        //request.setAttribute("recommendationsRendered","true");		//TODO kell ez?
 			ConfigurationStrategy cUtil = SmartStoreConfigurationStrategy.getInstance();
 
 			List products = recommendations.getProducts();
@@ -139,8 +136,6 @@ public class GenericRecommendationsTag extends RecommendationsTag implements Ses
 			while ( it.hasNext() ) {
 				ProductModel prd = (ProductModel) it.next();
 				ProductImpression pi = cUtil.configure(prd, confContext);
-				if (pi.isTransactional())
-					hasAnyItemAddable = true;
 
 				impressions.add(pi);
 				skus.add(pi.getSku());

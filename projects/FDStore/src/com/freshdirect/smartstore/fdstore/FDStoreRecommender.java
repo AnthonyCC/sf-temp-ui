@@ -120,7 +120,8 @@ public class FDStoreRecommender {
 		
 		LOGGER.debug("Recommended products by " + service.getVariant().getId() + ": " + renderableProducts);
 
-		return new Recommendations(service.getVariant(), renderableProducts, input, service.isRefreshable());
+		return new Recommendations(service.getVariant(), renderableProducts, input,
+				service.isRefreshable(), service.isSmartSavings());
 	}
 
 	// mock point

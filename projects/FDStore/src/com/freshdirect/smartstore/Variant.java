@@ -36,6 +36,8 @@ public class Variant implements Serializable, Comparable {
 	
 	private SortedMap tabStrategyPriorities;
 	
+	private boolean isSmartSavings = false;
+	
 	/**
 	 * Get identifier.
 	 * @return id
@@ -116,5 +118,13 @@ public class Variant implements Serializable, Comparable {
 	
     public SortedMap getTabStrategyPriorities() {
 		return tabStrategyPriorities;
+	}
+   
+    public boolean isSmartSavings() {
+		return isSmartSavings;
+	}
+    
+    public void setSmartSavings(boolean isSmartSavings) {
+		this.isSmartSavings = isSmartSavings;
 	}
 }

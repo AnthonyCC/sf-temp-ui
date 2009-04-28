@@ -1,15 +1,10 @@
 package com.freshdirect.fdstore.promotion;
 
-/*
- * @author skrishnasamy
- * This model class holds the mapping between variantId and Promotion code
- * tied to it.
- */
-import java.io.Serializable;
-
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 
 public class PromoVariantModelImpl implements PromoVariantModel {
+	private static final long serialVersionUID = 4213257883052956128L;
+
 	private String variantId;
 	private String promoCode;
 	private int priority;
@@ -60,7 +55,6 @@ public class PromoVariantModelImpl implements PromoVariantModel {
 	}
 
 	public double getPercentageOff() {
-		// TODO Auto-generated method stub		
 		return this.getAssignedPromotion().getLineItemDiscountPercentOff();
 	}
 

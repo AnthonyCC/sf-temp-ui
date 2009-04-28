@@ -32,20 +32,22 @@ public class Recommendations implements Serializable {
 	private Map impressionIds;
 	
 	private boolean isRefreshable = true;
+	private boolean isSmartSavings = false;
 	
 	/**
 	 * Constructor.
 	 * @param variant 
 	 * @param contentKeys List<{@link ProductModel}>
 	 */
-	public Recommendations(Variant variant, List contentNodes, boolean isRefreshable) {
+	public Recommendations(Variant variant, List contentNodes, boolean isRefreshable, boolean isSmartSavings) {
 		this.variant = variant;
 		this.products = contentNodes;
 		this.isRefreshable = isRefreshable;
+		this.isSmartSavings = isSmartSavings;
 	}
 
 	public Recommendations(Variant variant, List contentNodes) {
-		this(variant, contentNodes, true);
+		this(variant, contentNodes, true, false);
 	}
 
 	/**
@@ -55,7 +57,8 @@ public class Recommendations implements Serializable {
 	 * 
 	 * @throws InvalidContentKeyException Invalid content key in the list
 	 */
-	public Recommendations(Variant variant, String input, String currentNodeId, String ymalSourceId, boolean isRefreshable) throws InvalidContentKeyException {
+	public Recommendations(Variant variant, String input, String currentNodeId, String ymalSourceId,
+			boolean isRefreshable, boolean isSmartSavings) throws InvalidContentKeyException {
 		this.variant = variant;
 		this.products = deserializeContentNodes(input);
 		// irrelevant attributes, ignored
@@ -66,13 +69,16 @@ public class Recommendations implements Serializable {
 		} catch (ClassCastException e) {
 		}
 		this.isRefreshable = isRefreshable;
+		this.isSmartSavings = isSmartSavings;
 	}
 	
 	
-	public Recommendations(Variant variant, List products, SessionInput sessionInput, boolean isRefreshable) {
+	public Recommendations(Variant variant, List products, SessionInput sessionInput,
+			boolean isRefreshable, boolean isSmartSavings) {
 		this(variant, products);
 		this.sessionInput = sessionInput;
 		this.isRefreshable = isRefreshable;
+		this.isSmartSavings = isSmartSavings;
 	}
 
 	/**
@@ -167,4 +173,8 @@ public class Recommendations implements Serializable {
     public boolean isRefreshable() {
     	return this.isRefreshable;
     }
+    
+    public boolean isSmartSavings() {
+		return isSmartSavings;
+	}
 }

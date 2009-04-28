@@ -6,15 +6,12 @@ package com.freshdirect.smartstore.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.promotion.PromoVariantModel;
-import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.WrapperRecommendationService;
@@ -59,6 +56,8 @@ public class SmartSavingRecommendationService extends WrapperRecommendationServi
             internalRec = FDStoreRecommender.getInstance().filterProducts(internalRec, input.getCartContents(), true);            
             cartSuggestions.addAll(internalRec);
         }
+        if (cartSuggestions.size() > input.getMaxRecommendations())
+        	cartSuggestions = cartSuggestions.subList(0, input.getMaxRecommendations());
         if (prevMap == null) {
             prevMap = new HashMap();
             input.setPreviousRecommendations(prevMap);

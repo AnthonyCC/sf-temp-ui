@@ -1,5 +1,6 @@
 
 -- New Site Features
+ALTER TABLE SS_VARIANT_PARAMS MODIFY ("VALUE" VARCHAR2(1024 BYTE));
 
 INSERT INTO ss_site_feature (id, title, smart_saving) VALUES ('C_SAVE_YF', 'C''n''T Save on Your Favorites', 1);
 INSERT INTO ss_site_feature (id, title, smart_saving) VALUES ('C_SAVE_FDF', 'C''n''T Save on FreshDirect Favorites', 1);
@@ -18,8 +19,11 @@ INSERT INTO ss_variants (id, type, feature, alias_id) VALUES ('c_save_yf_1', 'al
 INSERT INTO ss_variants (id, type, feature, alias_id) VALUES ('c_save_fdf_1', 'alias', 'C_SAVE_FDF', 'favorites-1');
 INSERT INTO ss_variant_params (id, key, value)
     VALUES ('c_save_yf_1', 'prez_title', 'SAVE ON YOUR FAVORITES');
+INSERT INTO SS_VARIANT_PARAMS (id, key, value) VALUES ('c_save_yf_1', 'prez_desc', '{0,choice,-1#''<p>ENJOY YOUR <span class="save-price">{1,number,percent} OFF</span>!</p><p class="text11">You''''''''re saving ${2,number,#.##} for the favorites already in your cart.</p><p class="text11">For your convenience, <a href="#">click here</a> for ALL of your favorite items at their regular prices.</p>''|0#''<p style="text-transform: uppercase;">LET US TREAT YOU TO <span class="save-price">{1,number,percent}</span> OFF A FEW OF YOUR FAVORITE ITEMS</p><a href="#">Click here for details</a></p>''|0<''<p>You''''''''re saving <span class="save-price">${2,number,#.##}</span> for the favorites already in your cart.</p><p class="text11">Keep shopping.. you''''''''ll save {1,number,percent} on any items you buy from<br>Your Favorites.<a href="#">Click here for details</a></p>''}');
+
 INSERT INTO ss_variant_params (id, key, value)
     VALUES ('c_save_fdf_1', 'prez_title', 'SAVE ON FRESHDIRECT FAVORITES');
+INSERT INTO SS_VARIANT_PARAMS (id, key, value) VALUES ('c_save_fdf_1', 'prez_desc', '{0,choice,-1#''<p>ENJOY YOUR <span class="save-price">{1,number,percent} OFF</span>!</p><p class="text11">You''''''''re saving ${2,number,#.##} for the favorites already in your cart.</p><p class="text11">For your convenience, <a href="#">click here</a> for your favorite items at their regular prices.</p>''|0#''<p style="text-transform: uppercase;">LET US TREAT YOU TO <span class="save-price">{1,number,percent}</span> OFF A FEW OF OUR FAVORITE ITEMS</p><a href="#">Click here for details</a></p>''|0<''<p>You''''''''re saving <span class="save-price">${2,number,#.##}</span> for the favorites already in your cart.</p><p class="text11">Keep shopping.. you''''''''ll save {1,number,percent} on any items you buy from<br>FreshDirect Favorites.<a href="#">Click here for details</a></p>''}');
 
 INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C1', 'c_save_yf_1', sysdate);
 INSERT INTO ss_variant_assignment (cohort_id, variant_id, "DATE") values ('C2', 'c_save_yf_1', sysdate);
