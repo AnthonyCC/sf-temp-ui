@@ -486,16 +486,15 @@ public class FDPromotionDAO {
 		// percent-off applicator
 		//
 		wasNull = false;
-		double percentOff = rs.getDouble("percent_off");
-		String promoType = rs.getString("CAMPAIGN_CODE");
+		double percentOff = rs.getDouble("percent_off");		
 		
 		wasNull |= rs.wasNull();
-		if (!wasNull && "REDEMPTION".equals(promoType)) {
+		if (!wasNull && "REDEMPTION".equals(rs.getString("CAMPAIGN_CODE"))) {
 			
 			return new PercentOffApplicator(minSubtotal, percentOff);
 		}
 		
-		if(!wasNull && "LINE_ITEM".equals(promoType)){
+		if("LINE_ITEM".equals(rs.getString("CAMPAIGN_CODE"))){
 			LineItemDiscountApplicator applicator = new LineItemDiscountApplicator(minSubtotal, percentOff);
 			boolean recItemsOnly = "X".equalsIgnoreCase(rs.getString("RECOMMENDED_ITEMS_ONLY"));
 			if(recItemsOnly){
