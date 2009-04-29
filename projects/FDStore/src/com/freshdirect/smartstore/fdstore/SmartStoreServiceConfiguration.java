@@ -73,6 +73,7 @@ public class SmartStoreServiceConfiguration {
 
 	public static final String CKEY_PREZ_DESC = "prez_desc";
 	public static final String CKEY_PREZ_TITLE = "prez_title";
+	public static final String CKEY_PREZ_FOOTER = "prez_footer";
 	public static final String CKEY_FI_LABEL = "fi_label";
 
 	public static final String CKEY_CAT_AGGR = "cat_aggr";
@@ -95,6 +96,7 @@ public class SmartStoreServiceConfiguration {
     	configDesc.put(CKEY_EXPONENT, "Exponent");
     	configDesc.put(CKEY_PREZ_DESC, "Presentation Description");
     	configDesc.put(CKEY_PREZ_TITLE, "Presentation Title");
+    	configDesc.put(CKEY_PREZ_FOOTER, "Presentation Footer");
     	configDesc.put(CKEY_FI_LABEL, "Featured Items Label");
     	configDesc.put(CKEY_CAT_AGGR, "Category Aggregation");
     	configDesc.put(CKEY_INCLUDE_CART_ITEMS, "Include Cart Items");
@@ -487,6 +489,9 @@ public class SmartStoreServiceConfiguration {
 			status = new ConfigurationStatus(CKEY_PREZ_DESC, null, EnumConfigurationState.UNCONFIGURED_OK).setWarning(
 					"Missing value may cause visual issues.");
 		statuses.put(CKEY_PREZ_DESC, status);
+
+		if (config.get(CKEY_PREZ_FOOTER) != null)
+			statuses.put(CKEY_PREZ_FOOTER, new ConfigurationStatus(CKEY_PREZ_FOOTER, config.get(CKEY_PREZ_FOOTER), EnumConfigurationState.CONFIGURED_OK));
 	}
 
 	private static void extractFeaturedPresentation(

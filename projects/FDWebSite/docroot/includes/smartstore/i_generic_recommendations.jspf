@@ -27,6 +27,7 @@
 <%@ page import="com.freshdirect.fdstore.customer.adapter.PromoVariantHelper" %>
 <%@ page import="com.freshdirect.fdstore.promotion.PromoVariantModel" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.BrowserInfo"%>
+<%@ page import="com.freshdirect.smartstore.fdstore.SmartStoreUtil"%>
 
 <%--
 
@@ -37,7 +38,8 @@
 --%>
 
 
-<% {
+<%
+{
 	// mandatory parameter
 	Variant genericRecommendationsVariant = (Variant) request.getAttribute("genericRecommendationsVariant");
 	String parentImpressionId = (String) request.getAttribute("parentImpressionId");
@@ -61,8 +63,10 @@
 		formUri = (String) request.getParameter("formUri");
 	}
 	
+	Map prevRecs = (Map) session.getAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
+	boolean hideSavings = genericRecommendationsVariant.isSmartSavings() && SmartStoreUtil.countSavingProductsInCart(genericRecommendationsVariant, pip_u, prevRecs) < 0;
 
-	if ( genericRecommendationsVariant != null ) {
+	if ( genericRecommendationsVariant != null && !hideSavings) {
 %>
 
 	
@@ -294,7 +298,5 @@
 	</fd:GenericRecommendations>
 	
 	
-<% } else { %>
-	<p>ERROR : variant is null ....</p>
 <% }
 } %>

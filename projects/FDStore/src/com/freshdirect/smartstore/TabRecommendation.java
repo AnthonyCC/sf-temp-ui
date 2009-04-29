@@ -63,6 +63,11 @@ public class TabRecommendation {
         return PIP_DEFAULT_DESC;
     }
     
+    public String getTabFooter(int index) {
+        Variant variant = get(index);
+        return variant.getServiceConfig().getPresentationFooter();
+    }
+    
     public RecommendationService getTabRecommender() {
         return tabRecommender;
     }

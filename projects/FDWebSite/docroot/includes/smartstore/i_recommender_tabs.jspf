@@ -5,6 +5,8 @@
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
 <%@ page import="com.freshdirect.smartstore.fdstore.SmartStoreUtil"%>
+<%@page import="java.text.MessageFormat"%>
+<%@page import="java.util.Collections"%>
 <%@ page import="java.util.Map"%>
 <%@ taglib uri='template' prefix='tmpl'%>
 <%@ taglib uri='logic' prefix='logic'%>
@@ -14,9 +16,18 @@
 	request.setAttribute("actionResult", result);
 	
 	URLGenerator gen = new URLGenerator(request);
+	String hideSavingsVarId = gen.get("hideSavingsVarId");
+	if (hideSavingsVarId != null) {
+		Map xNodes = (Map) session.getAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
+		Object xRecs = xNodes.get(hideSavingsVarId);
+		if (xRecs != null)
+			xNodes.put(hideSavingsVarId, Collections.EMPTY_LIST);
+		gen.remove("hideSavingsVarId");
+		response.sendRedirect(StringEscapeUtils.unescapeHtml(gen.build()));
+		return;
+	}
 %>
-
-<%@page import="java.text.MessageFormat"%><fd:PIPTab id="tab" maxTabs="3" maxRecommendations="5">
+<fd:PIPTab id="tab" maxTabs="3" maxRecommendations="5">
 	<% 
 		final int numTabs = tab.size();
 		
@@ -88,25 +99,43 @@
 							request.setAttribute("genericRecommendationsVariant", tab.get(selectedTab));
 						
 							for ( int k=0; k < numTabs; k++ ) {
-									boolean selected = selectedTab == k; %> 
+									boolean selected = selectedTab == k; 
+									int savingsItemCount = 0;
+									double savingsPercent = 0.0;
+									double sumOfSavings = 0.0;
+									String hideSavingsUrl = "";
+									if (tab.get(k).isSmartSavings()) {
+										FDUserI xUser = (FDUserI) session.getAttribute(SessionName.USER);
+										Map xNodes = (Map) session.getAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
+										savingsItemCount = SmartStoreUtil.countSavingProductsInCart(tab.get(k), xUser, xNodes);
+										savingsPercent = xUser.getPromoVariant(tab.get(k).getId()).getPercentageOff();
+										sumOfSavings = SmartStoreUtil.sumOfSavingsInCart(tab.get(k), xUser, xNodes);
+										hideSavingsUrl = gen.set("hideSavingsVarId", tab.get(k).getId()).build();
+									}
+									%> 
 										<div id="header_<%= tab.get(k).getId() %>" class="tab_text_descr"<%= selected ? "" : " style=\"display: none;\"" %>>
 									    <% if (!tab.get(k).isSmartSavings()) { %>						
 											<%= tab.getTabDescription(k) %>
 										<% } else {
-											FDUserI xUser = (FDUserI) session.getAttribute(SessionName.USER);
-											Map xNodes = (Map) session.getAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
-											int savingsItemCount = SmartStoreUtil.countSavingProductsInCart(tab.get(k), xUser, xNodes);
-											double savingsPercent = xUser.getPromoVariant(tab.get(k).getId()).getPercentageOff();
-											double sumOfSavings = SmartStoreUtil.sumOfSavingsInCart(tab.get(k), xUser, xNodes);
-											System.err.println(tab.getTabDescription(k));
 											MessageFormat xFormat = new MessageFormat(tab.getTabDescription(k));
-											Object[] xParams = { new Integer(savingsItemCount), new Double(savingsPercent), new Double(sumOfSavings) }; %>
+											Object[] xParams = { new Integer(savingsItemCount), new Double(savingsPercent), new Double(sumOfSavings), hideSavingsUrl }; %>
 											<%= xFormat.format(xParams) %><%
 										   } %>							
 										</div>
 										<div id="content_<%= tab.get(k).getId() %>" style="width: 100%"<%= selected ? "" : " style=\"display: none;\"" %>>
 											<% if (selected) { %><%@ include file="i_generic_recommendations.jspf" %><% } %>
 										</div><%
+										   if (tab.getTabFooter(k) != null) {
+										%>
+										<div class="tab_text_desc" style="text-align: center;">
+									    <% if (!tab.get(k).isSmartSavings()) { %>						
+											<%= tab.getTabFooter(k) %>
+										<% } else {
+											MessageFormat xFormat = new MessageFormat(tab.getTabFooter(k));
+											Object[] xParams = { new Integer(savingsItemCount), hideSavingsUrl }; %>
+											<%= xFormat.format(xParams) %><%
+										   } %>							
+										</div><% }
 							}
 						%>
 					</td></tr></table></div></td>

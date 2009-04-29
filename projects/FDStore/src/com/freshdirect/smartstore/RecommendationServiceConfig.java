@@ -141,6 +141,10 @@ public class RecommendationServiceConfig implements Serializable {
 		return get(SmartStoreServiceConfiguration.CKEY_PREZ_DESC);
 	}
 
+	public String getPresentationFooter() {
+		return get(SmartStoreServiceConfiguration.CKEY_PREZ_FOOTER);
+	}
+	
 	public RecommendationServiceConfig set(String key, String value) {
 		if (params == null) {
 			params = new HashMap();
