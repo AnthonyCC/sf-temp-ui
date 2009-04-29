@@ -59,7 +59,8 @@ public class FavoritesRecommendationService extends AbstractRecommendationServic
     	        ContentNodeModel contentNodeModel = (ContentNodeModel)favoriteNodes.get(i);
                 keys.add(new RankedContent.Single((favoriteNodes.size() - i) * 5.0, contentNodeModel));
     	    }
-    	    List sample = RankedContent.getContentNodeModel(getSampler(input).sample(keys, input.getCartContents(), keys.size()));
+    	    List sample = RankedContent.getContentNodeModel(getSampler(input).sample(keys,
+    	    		includeCartItems ? Collections.EMPTY_SET : input.getCartContents(), keys.size()));
     	    SmartStoreUtil.clearConfiguredProductCache();
     	    favoriteNodes = SmartStoreUtil.addConfiguredProductToCache(sample);
     	}

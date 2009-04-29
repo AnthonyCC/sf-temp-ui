@@ -281,7 +281,8 @@ public abstract class AbstractRecommendationService implements RecommendationSer
                     ContentNodeModel node = (ContentNodeModel) nodes.get(i);
                     rankedContents.add(new RankedContent.Single(size - i, node));
                 }
-                List result = RankedContent.getContentNodeModel(getSampler(input).sample(rankedContents, input.getCartContents(), rankedContents.size()));
+                List result = RankedContent.getContentNodeModel(getSampler(input).sample(rankedContents,
+                		includeCartItems ? Collections.EMPTY_SET : input.getCartContents(), rankedContents.size()));
                 return result;
             }
             return nodes;
@@ -296,7 +297,8 @@ public abstract class AbstractRecommendationService implements RecommendationSer
          */
         protected List sampleRankedContents(SessionInput input, List nodes, Collection exclude) {
             if (!(nodes.isEmpty() || input.isNoShuffle())) {
-                List sample = RankedContent.getContentNodeModel(getSampler(input).sample(nodes, input.getCartContents(), nodes.size()));
+                List sample = RankedContent.getContentNodeModel(getSampler(input).sample(nodes,
+                		includeCartItems ? Collections.EMPTY_SET : input.getCartContents(), nodes.size()));
                 List result = new ArrayList(sample.size());
                 for (int i=0;i<sample.size();i++) {
                     ContentNodeModel model = (ContentNodeModel)  sample.get(i);

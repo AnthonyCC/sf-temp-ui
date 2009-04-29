@@ -2,6 +2,7 @@ package com.freshdirect.smartstore.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
@@ -99,7 +100,8 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
         if (aggregateAtCategoryLevel) {
             rankedContents = aggregateContentList(rankedContents);
         }
-        List sample = RankedContent.getContentNodeModel(getSampler(input.isNoShuffle()).sample(rankedContents, input.getCartContents(), rankedContents.size()));
+        List sample = RankedContent.getContentNodeModel(getSampler(input.isNoShuffle()).sample(rankedContents,
+        		includeCartItems ? Collections.EMPTY_SET : input.getCartContents(), rankedContents.size()));
         return sample;
     }
 

@@ -70,6 +70,7 @@ public class RandomDyfVariant extends DYFService {
 		    ContentKey key = (ContentKey) productList.get(i);
 		    rankedContents.add(new RankedContent.Single(key, size-i));
 		}
-		return RankedContent.getKeys(getSampler(input).sample(rankedContents, includeCartItems ? Collections.EMPTY_SET : input.getCartContents(), toSelect));
+		return RankedContent.getKeys(getSampler(input).sample(rankedContents,
+				includeCartItems ? Collections.EMPTY_SET : input.getCartContents(), toSelect));
 	}
 }
