@@ -1178,29 +1178,19 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	}
 	
-	public Map getPromoVariantMap(boolean forceReload){
-		//Map m = null;
-		if(this.promoVariantMap == null || forceReload) {
-			//Load the map if not available
-			this.promoVariantMap = PromoVariantHelper.getPromoVariantMap(this);
-			//PromoVariantModel model = new PromoVariantModelImpl("c_save_yf_1", "dyf_save_test", 1,EnumSiteFeature.SOYF, 2);
-			//m = new HashMap();
-			//m.put("c_save_yf_1", model);
-			this.updateUserState();
-		}
+	public Map getPromoVariantMap(){
 		return this.promoVariantMap;
-		//return m;
+	}
+	
+	public void setPromoVariantMap(Map pvMap) {
+		this.promoVariantMap = pvMap;
 	}
 	
 	public PromoVariantModel getPromoVariant(String variantId) {
 		if(this.promoVariantMap == null) return null;
 		return (PromoVariantModel) this.promoVariantMap.get(variantId);
-		//return new PromoVariantModelImpl("c_save_yf_1", "dyf_save_test", 1,EnumSiteFeature.SOYF, 2);
 	}
 	
-	public boolean isPromoVariantMapAvailable() {
-		return (this.promoVariantMap != null && this.promoVariantMap.size() > 0);
-	}
 	/**
 	 * @return Always returns null
 	 * @see com.freshdirect.fdstore.customer.FDUserI#getFavoriteTabFeature()

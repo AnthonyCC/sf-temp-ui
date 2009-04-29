@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -17,7 +18,7 @@ import com.freshdirect.smartstore.fdstore.VariantSelection;
 
 public class PromoVariantHelper {
 
-	public static Map getPromoVariantMap(FDUserI user){
+	public static Map getPromoVariantMap(FDUserI user, Set eligiblePromos){
 		try{
 			
 	        VariantSelection helper = VariantSelection.getInstance();
@@ -44,7 +45,7 @@ public class PromoVariantHelper {
 		                for(Iterator iter = promoVariants.iterator(); iter.hasNext();){
 		                	PromoVariantModel promoVariant = (PromoVariantModel) iter.next();
 		                	String promoCode = promoVariant.getAssignedPromotion().getPromotionCode();
-		                	if(user.getPromotionEligibility() != null || user.getPromotionEligibility().isEligible(promoCode)) {
+		                	if(eligiblePromos != null && eligiblePromos.contains(promoCode)) {
 		                		//promoVariantMap.put(variantId, promoVariant.getPromoCode());
 		                		//eligiblePVList.add(promoVariant);
 		                		promoVariantMap.put(variantId, promoVariant);

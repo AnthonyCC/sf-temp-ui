@@ -107,6 +107,29 @@ public class MaterialPrice implements Serializable {
 		return buf.toString();
 	}
 	
+	public String getScaleDisplay(double savingsPercentage) {
+		StringBuffer buf = new StringBuffer();
+		if ( this.getPricingUnit().equals("EA") ) {
+
+			buf.append( FORMAT_QUANTITY.format( this.getScaleLowerBound() ) );
+			buf.append( " for " );
+			buf.append( FORMAT_CURRENCY.format( (this.getPrice() * (1-savingsPercentage)) * this.getScaleLowerBound() ) );
+
+		} else {
+
+			buf.append( FORMAT_CURRENCY.format( this.getPrice() * (1-savingsPercentage)) );
+			buf.append( '/' );
+			buf.append( this.getPricingUnit().toLowerCase() );
+
+			buf.append( " for " );
+
+			buf.append( FORMAT_QUANTITY.format( this.getScaleLowerBound() ) );
+			buf.append( this.getScaleUnit().toLowerCase() );
+			
+			buf.append( " or more" );
+		}
+		return buf.toString();
+	}
 	public double getScaledPrice() {
 		if ("EA".equalsIgnoreCase(getPricingUnit())) {
 			return getPrice()*getScaleLowerBound();

@@ -98,7 +98,11 @@ public class ProductDescriptionTag extends BodyTagSupport {
 		// Display "SAVE!" ... label
         FDProduct product = impression.getFDProduct();
         if (product!=null) {
-            String[] ymalScales = product.getPricing().getScaleDisplay();
+        	String[] ymalScales = null;
+        	if (savingsPercentage > 0) 
+        		ymalScales = product.getPricing().getScaleDisplay(savingsPercentage);
+        	else
+        		ymalScales = product.getPricing().getScaleDisplay();
             if (ymalScales.length>0) {
             	buf.append("<div style=\"color: #FF9933; font-weight: bold;\">Save!</div>\n");
                 for (int ymalSci = 0; ymalSci < ymalScales.length; ymalSci++) {

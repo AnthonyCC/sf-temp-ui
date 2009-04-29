@@ -107,7 +107,7 @@
 				
 				boolean isVariantSavings = false;
 				
-				Map pvMap = PromoVariantHelper.getPromoVariantMap(pip_u);
+				Map pvMap = pip_u.getPromoVariantMap();
 				PromoVariantModel pvm = (PromoVariantModel) pvMap.get(genericRecommendationsVariant.getId());
 				if (pvm != null) {
 					// variant is savings

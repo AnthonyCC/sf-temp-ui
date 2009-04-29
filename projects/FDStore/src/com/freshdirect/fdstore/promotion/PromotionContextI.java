@@ -85,8 +85,6 @@ public interface PromotionContextI {
 	
 	public Discount getHeaderDiscount();
 	
-	public boolean isPromoVariantMapAvailable();
-	
 	public boolean isPostPromoConflictEnabled();
 	
 	public void clearLineItemDiscounts();

@@ -709,22 +709,18 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	}
 
 	
-	public Map getPromoVariantMap(boolean forceReload) {
-		return this.user.getPromoVariantMap(forceReload);
+	public Map getPromoVariantMap() {
+		return this.user.getPromoVariantMap();
+	}
+	
+	public void setPromoVariantMap(Map pvMap) {
+		user.setPromoVariantMap(pvMap);
 	}
 	
 	public PromoVariantModel getPromoVariant(String variantId) {
 	   return user.getPromoVariant(variantId);
 	}
 	
-	public boolean isPromoVariantMapAvailable() {
-		return user.isPromoVariantMapAvailable();
-	}
-	/*
-	public boolean isEligibleForSavings(EnumSiteFeature siteFeature) {
-		return user.isEligibleForSavings(siteFeature);
-	}
-	*/
 	public boolean isPostPromoConflictEnabled() {
 		return user.isPostPromoConflictEnabled();
 	}

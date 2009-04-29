@@ -339,10 +339,6 @@ public class PromotionContextAdapter implements PromotionContextI {
 	}
 	
 	
-	public boolean isPromoVariantMapAvailable() {
-		return this.getUser().isPromoVariantMapAvailable();
-	}
-	
 	public boolean isPostPromoConflictEnabled(){
 		return this.getUser().isPostPromoConflictEnabled();
 	}
@@ -352,16 +348,6 @@ public class PromotionContextAdapter implements PromotionContextI {
 		// TODO Auto-generated method stub
 		  FDCartModel cart= this.getUser().getShoppingCart();
 		  cart.clearLineItemDiscounts();
-		  try {					
-				cart.refreshAll();
-		  } catch (FDInvalidConfigurationException e) {
-				// TODO Auto-generated catch block
-				//e.printStackTrace();
-				throw new FDRuntimeException(e);		
-		} catch (FDResourceException e) {
-				// TODO Auto-generated catch block
-				throw new FDRuntimeException(e);
-		}														
 	}
 
 

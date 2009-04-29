@@ -41,8 +41,10 @@ import com.freshdirect.delivery.restriction.FDRestrictedAvailabilityInfo;
 import com.freshdirect.deliverypass.DeliveryPassType;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.atp.FDAvailabilityHelper;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
@@ -1203,6 +1205,13 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
 			FDCartLineI cartLine = (FDCartLineI)i.next();
 			if(cartLine.getDiscount() !=  null) cartLine.removeLineItemDiscount();
+			
+			try {
+				cartLine.refreshConfiguration();
+			} catch (FDException e) {
+				// !!! improve error handling
+				throw new FDRuntimeException(e);
+			}
 		}
 	}
 
@@ -1212,17 +1221,6 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
 			FDCartLineI cartLine = (FDCartLineI)i.next();
 			if(cartLine.getDiscount() !=  null){
-				discountAmt+=cartLine.getDiscountAmount();
-			}
-		}
-        return discountAmt;
-	}
-	
-	public double getSmartSavingsDiscountAmount(String promoCode) {
-		double discountAmt=0;
-		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
-			FDCartLineI cartLine = (FDCartLineI)i.next();
-			if(cartLine.hasDiscount(promoCode)){
 				discountAmt+=cartLine.getDiscountAmount();
 			}
 		}

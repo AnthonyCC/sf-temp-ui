@@ -31,6 +31,9 @@ public class FDPromotionVisitor {
 		FDPromotionEligibility eligibilities = evaluatePromotions(context);
 		LOGGER.info("Promotion eligibility:after evaluate " + eligibilities);
 		resolveConflicts(eligibilities);
+		//Reload the promo variant map based on new promotion eligibilities.	
+		Map pvMap = PromoVariantHelper.getPromoVariantMap(context.getUser(), eligibilities.getEligiblePromotionCodes());
+		context.getUser().setPromoVariantMap(pvMap);
 		LOGGER.info("Promotion eligibility:after resolve conflicts " + eligibilities);					
 		applyPromotions(context, eligibilities);
 		LOGGER.info("Promotion eligibility: after apply " + eligibilities);

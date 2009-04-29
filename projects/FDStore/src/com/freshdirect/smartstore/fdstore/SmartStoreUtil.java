@@ -636,7 +636,7 @@ public class SmartStoreUtil {
 				}
 			}
 		}
-		
+		System.out.println("Sum $$$$$$$$$$ "+sum);
 		return sum;
 	}
 }

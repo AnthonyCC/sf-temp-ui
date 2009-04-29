@@ -286,21 +286,6 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 			
 		}
 	}
-	private void dummy(){
-		//this.performPricing();
-		Promotion p= (Promotion) PromotionFactory.getInstance().getPromotion("SORI_TEST");
-		PercentOffApplicator app = (PercentOffApplicator)p.getApplicator();
-		//System.out.println("Price $$$$$$$$$$$ "+this.price.getBasePrice());
-		//double discUnitPrice =  this.price.getBasePrice() * app.getPercentOff();
-		Discount dis=new Discount("SORI_TEST",EnumDiscountType.PERCENT_OFF, app.getPercentOff() );
-		
-	
-		this.orderLine.setDiscount(dis);	
-		orderLine.setDiscount(dis);
-		
-
-	}
-	
 	public String getLineItemDiscount() {
 		return CURRENCY_FORMATTER.format(this.price.getPromotionValue());
 	}
