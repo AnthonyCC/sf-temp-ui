@@ -113,7 +113,7 @@ public class Recommendations implements Serializable {
             this.impressionIds = impressionIds;
         }
 	
-	public String getImpressionId(ContentKey key) {
+	String getImpressionId(ContentKey key) {
 	    Object obj =  impressionIds!=null ? impressionIds.get(key) : null;
 	    if (obj instanceof String) {
 	        return ((String)obj);
@@ -122,7 +122,7 @@ public class Recommendations implements Serializable {
 	}
 
         public String getImpressionId(ProductModel model) {
-            return model != null ? getImpressionId(model.getContentKey()) : null;
+            return model != null ? getImpressionId(model.getSourceProduct().getContentKey()) : null;
         }
 	
 
