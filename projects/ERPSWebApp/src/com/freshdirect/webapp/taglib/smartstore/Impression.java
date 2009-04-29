@@ -26,6 +26,8 @@ public class Impression {
     final static Logger LOGGER    = Logger.getLogger(Impression.class);
     
     final Map           recServiceAudit;
+    
+    final Map           recStratServiceAudit;
 
     final String        requestId;
 
@@ -34,11 +36,13 @@ public class Impression {
     int                 tabId     = 0;
 
     int                 featureId = 0;
+    
 
     Impression(FDUserI user, HttpServletRequest httpServletRequest) {
         this.requestId = SessionImpressionLog.getPageId();
 
         this.recServiceAudit = (Map) AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.get();
+        this.recStratServiceAudit = (Map) AbstractRecommendationService.RECOMMENDER_STRATEGY_SERVICE_AUDIT.get();
 
         FDIdentity identity = user.getIdentity();
 
@@ -47,10 +51,14 @@ public class Impression {
 
         String erpCustomerId = identity != null ? identity.getErpCustomerPK() : "";
 
-        String message = requestId + ","+QuickDateFormat.ISO_FORMATTER_2.format(new Date())+","+ filter(user.getUserId()) + ',' + 
-            filter(sessionId) + ',' + erpCustomerId + ',' + filter(uri) + ','
+        
+        String message = requestId + "," + createTimestamp() + "," + filter(user.getUserId()) + ',' + filter(sessionId) + ',' + erpCustomerId + ',' + filter(uri) + ','
                 + filter(httpServletRequest.getQueryString());
         ImpressionLogger.REQUEST.logEvent(message);
+    }
+    
+    static String createTimestamp() {
+        return QuickDateFormat.ISO_FORMATTER_2.format(new Date());
     }
     
     /**
@@ -106,10 +114,19 @@ public class Impression {
         String impId = filter(requestId + "_p" + lastId);
         String contentId = key.getId();
         ImpressionLogger.PRODUCT.logEvent(impId + ',' + featureImpressionId + ',' + contentId + ',' + rank + ','
-                + (recServiceAudit != null ? recServiceAudit.get(contentId) : ""));
+                + getRecommenderId(contentId)+',' + getRecommenderStratId(contentId));
         return impId;
     }
 
+    private Object getRecommenderId(String contentId) {
+        return (recServiceAudit != null ? recServiceAudit.get(contentId) : "");
+    }
+
+    private Object getRecommenderStratId(String contentId) {
+        return (recStratServiceAudit != null ? recStratServiceAudit.get(contentId) : "");
+    }
+
+    
     public String logTab(String featureImpressionId, int number, String tabName) {
         tabId++;
         String impId = filter(requestId + "_t" + tabId);
@@ -118,11 +135,11 @@ public class Impression {
     }
 
     public static void productClick(String impressionId, String trackingCode, String trackingOtherCode) {
-        ImpressionLogger.PROD_CLICK.logEvent(filter(impressionId) + ',' + filter(trackingCode) + ',' + filter(trackingOtherCode));
+        ImpressionLogger.PROD_CLICK.logEvent(SessionImpressionLog.getPageId() + ','+ createTimestamp() + ',' + filter(impressionId) + ',' + filter(trackingCode) + ',' + filter(trackingOtherCode));
     }
 
     public static void tabClick(String impressionId) {
-        ImpressionLogger.TAB_CLICK.logEvent(filter(impressionId));
+        ImpressionLogger.TAB_CLICK.logEvent(SessionImpressionLog.getPageId() + ','+ createTimestamp() + ',' + filter(impressionId));
     }
     
     private static String filter(String value) {

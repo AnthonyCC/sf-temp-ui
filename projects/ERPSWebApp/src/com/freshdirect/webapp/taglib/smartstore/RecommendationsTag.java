@@ -106,6 +106,7 @@ public abstract class RecommendationsTag extends AbstractGetterTag {
             r.setImpressionIds(map);
         }
         AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.set(null);
+        AbstractRecommendationService.RECOMMENDER_STRATEGY_SERVICE_AUDIT.set(null);
     }
 
     /**

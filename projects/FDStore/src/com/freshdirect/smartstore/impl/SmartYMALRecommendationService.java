@@ -102,6 +102,8 @@ public class SmartYMALRecommendationService extends AbstractRecommendationServic
 			
 			Map recServiceAudit = new HashMap();
 			RECOMMENDER_SERVICE_AUDIT.set(recServiceAudit);
+                        Map recStratServiceAudit = new HashMap();
+                        RECOMMENDER_STRATEGY_SERVICE_AUDIT.set(recStratServiceAudit);
 			
 			List[] recommendations = new List[recommenders.size()];
 			
@@ -121,7 +123,8 @@ public class SmartYMALRecommendationService extends AbstractRecommendationServic
 				
 				for (int j=0;j<recNodes.size();j++) {
 				    ContentNodeModel model = (ContentNodeModel) recNodes.get(j);
-				    recServiceAudit.put(model.getContentKey().getId(), strategy.getContentKey().getId());
+                                    recServiceAudit.put(model.getContentKey().getId(), rec.getContentKey().getId());
+                                    recStratServiceAudit.put(model.getContentKey().getId(), strategy.getContentKey().getId());
 				}
 				addContentKeys(smartInput.getCartContents(), recNodes);
 				recommendations[i] = recNodes;

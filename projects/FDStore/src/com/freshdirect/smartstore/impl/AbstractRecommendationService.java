@@ -53,7 +53,13 @@ public abstract class AbstractRecommendationService implements RecommendationSer
      * ThreadLocal<Map<String:ContentKey.id,String:Recommender.id>>
      */
     public static ThreadLocal RECOMMENDER_SERVICE_AUDIT = new ThreadLocal();
-	
+
+    /**
+     * ThreadLocal<Map<String:ContentKey.id,String:RecommenderStrategy.id>>
+     */
+    public static ThreadLocal RECOMMENDER_STRATEGY_SERVICE_AUDIT = new ThreadLocal();
+
+    
     /**
 	 * Get the highest node the content key is aggregated at.
 	 * 
