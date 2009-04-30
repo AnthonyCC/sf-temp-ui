@@ -124,18 +124,19 @@
 										</div>
 										<div id="content_<%= tab.get(k).getId() %>" style="width: 100%"<%= selected ? "" : " style=\"display: none;\"" %>>
 											<% if (selected) { %><%@ include file="i_generic_recommendations.jspf" %><% } %>
-										</div><%
-										   if (tab.getTabFooter(k) != null) {
+										</div>
+										<div id="footer_<%= tab.get(k).getId() %>" class="tab_text_desc" style="text-align: center;<%= selected ? "" : " display: none;\"" %>"><%
+										if (tab.getTabFooter(k) != null) {
 										%>
-										<div class="tab_text_desc" style="text-align: center;">
 									    <% if (!tab.get(k).isSmartSavings()) { %>						
 											<%= tab.getTabFooter(k) %>
 										<% } else {
 											MessageFormat xFormat = new MessageFormat(tab.getTabFooter(k));
 											Object[] xParams = { new Integer(savingsItemCount), hideSavingsUrl }; %>
 											<%= xFormat.format(xParams) %><%
-										   } %>							
-										</div><% }
+										   } 
+										} %>							
+										</div><%
 							}
 						%>
 					</td></tr></table></div></td>
@@ -274,6 +275,7 @@
 							// previous selected tab					
 							$('content_'+PIP.selected).style.display = 'none';
 							$('header_'+PIP.selected).style.display = 'none';
+							$('footer_'+PIP.selected).style.display = 'none';
 							
 							$('a_'+PIP.selected).className = 'tab_inactive';				
 							$('td_'+PIP.selected).className = 'tab_title_inactive';					
@@ -282,6 +284,7 @@
 							PIP.selected = this.getAttribute('vid');
 							$('content_'+PIP.selected).style.display = '';
 							$('header_'+PIP.selected).style.display = '';
+							$('footer_'+PIP.selected).style.display = '';
 							
 							$('a_'+PIP.selected).className = 'tab_active';				
 							$('td_'+PIP.selected).className = 'tab_title_active';
