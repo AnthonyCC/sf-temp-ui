@@ -119,11 +119,13 @@ public class Impression {
     }
 
     private Object getRecommenderId(String contentId) {
-        return (recServiceAudit != null ? recServiceAudit.get(contentId) : "");
+        Object res = (recServiceAudit != null ? recServiceAudit.get(contentId) : null);
+        return res!=null ? res : "";
     }
 
     private Object getRecommenderStratId(String contentId) {
-        return (recStratServiceAudit != null ? recStratServiceAudit.get(contentId) : "");
+        Object res = (recStratServiceAudit  != null ? recStratServiceAudit.get(contentId) : null);
+        return res!=null ? res : "";
     }
 
     
