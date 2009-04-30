@@ -266,21 +266,7 @@ String recentOrderlines = urlG.get("orderlines");
 YmalSource source = null;
 if (useLoggedIn && user != null) {
 	if (("allItems").equals(cartAlgorithm)) {
-		Set prodkeys = FDStoreRecommender.getShoppingCartContents(user);
-		List prods = new ArrayList(prodkeys.size());
-		Iterator it2 = prodkeys.iterator();
-		while (it2.hasNext()) {
-			ContentKey key = (ContentKey) it2.next();
-			try {
-				Object o = ContentFactory.getInstance().getContentNodeByKey(
-						ContentKey.create(FDContentTypes.PRODUCT, key.getId()));
-				if (o != null)
-					prods.add(o);
-			} catch (ContentKey.InvalidContentKeyException e) {
-			}
-		}
-		source = YmalUtil.resolveYmalSource(prods);
-		si.setCurrentNode(source);
+	    FDStoreRecommender.initYmalSource(si, user);
 	} else {
 		source = YmalUtil.resolveYmalSource(user, null);
 		if (YmalUtil.getSelectedCartLine(user) != null)
@@ -307,7 +293,7 @@ if (useLoggedIn && user != null) {
 			ymalError += (ymalError.length() == 0 ? "" : "<br>") + "Unknown CMS node: " + node;
 		}
 	}
-	source = YmalUtil.resolveYmalSource(prods);
+	source = FDStoreRecommender.resolveYmalSource(prods);
 	si.setCurrentNode(source);
 }
 si.setYmalSource(source);

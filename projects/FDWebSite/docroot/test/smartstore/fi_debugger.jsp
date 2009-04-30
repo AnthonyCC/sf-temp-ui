@@ -273,14 +273,14 @@ p.fi{margin:20px 0px;}
     							List orderlines = user.getShoppingCart().getOrderLines();
     							for(Iterator i = orderlines.iterator(); i.hasNext();) {
     								FDCartLineI cartLine = (FDCartLineI) i.next();
-    								ContentNodeI prod = SmartStoreUtil.getProductContentKey(cartLine.getSkuCode()).getContentNode();
+    								ProductModel prod = cartLine.getProductRef().lookupProduct();
     								if (notFirst) {
     					%>
     					<br>
     					<%
     								}
     					%>
-    					&bull; <span><%= prod.getLabel() %>  (<%= prod.getKey().getId() %>)</span>
+    					&bull; <span><%= prod.getFullName() %>  (<%= prod.getContentKey().getId() %>)</span>
     					<%
     								notFirst = true;
     							}

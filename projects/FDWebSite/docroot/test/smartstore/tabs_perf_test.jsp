@@ -104,10 +104,7 @@
 	ProductModel source = null;
 	if (useLoggedIn) {
 		if (user != null) {
-			List products = FDStoreRecommender.getShoppingCartProductList(user);
-			if (products != null && products.size() != 0)
-				source = (ProductModel) YmalUtil.resolveYmalSource(products);
-			input.setCartContents(FDStoreRecommender.getShoppingCartContents(user));
+		    FDStoreRecommender.initYmalSource(input, user);
 		}
 	} else {
 		String triggeringProduct = urlG.get("triggeringProduct");
@@ -154,7 +151,8 @@
 	if (!origURL.equals(newURL)) {
 		response.sendRedirect(StringEscapeUtils.unescapeHtml(newURL));
 	}
-%><html>
+%>
+<%@page import="java.util.Set"%><html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>CART TABS PERFORMANCE TEST PAGE</title>
@@ -266,9 +264,9 @@ p.fi{margin:20px 0px;}
 	   						value="true"<%= useLoggedIn ? " checked" : ""%>>
 	   				</p>
 	   				<% if (useLoggedIn && user != null) { %>
-	   					<% List cartItems = FDStoreRecommender.getShoppingCartProductList(user);
+	   					<% Set cartItems = FDStoreRecommender.getShoppingCartContents(user);
 	   					   if (cartItems == null)
-	   						   cartItems = Collections.EMPTY_LIST; 
+	   						   cartItems = Collections.EMPTY_SET; 
 						   Iterator it = cartItems.iterator(); %>
 	   					<% if (!it.hasNext()) {	%>
 	   				<p class="result not-found">
