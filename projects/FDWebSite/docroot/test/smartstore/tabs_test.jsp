@@ -108,10 +108,7 @@
 	ProductModel source = null;
 	if (useLoggedIn) {
 		if (user != null) {
-			List products = FDStoreRecommender.getShoppingCartProductList(user);
-			if (products != null && products.size() != 0)
-				source = (ProductModel) YmalUtil.resolveYmalSource(products);
-			input.setCartContents(FDStoreRecommender.getShoppingCartContents(user));
+		    FDStoreRecommender.initYmalSource(input, user);
 		}
 	} else {
 		String triggeringProduct = urlG.get("triggeringProduct");

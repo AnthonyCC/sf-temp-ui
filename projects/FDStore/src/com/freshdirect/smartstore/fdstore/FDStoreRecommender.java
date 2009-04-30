@@ -92,7 +92,7 @@ public class FDStoreRecommender {
          * 
          * @return The most expensive product as YmalSource
          */
-        private static YmalSource resolveYmalSource(Collection products) {
+        public static YmalSource resolveYmalSource(Collection products) {
             if (products == null || products.isEmpty()) {
                 return null;
             } else  {
