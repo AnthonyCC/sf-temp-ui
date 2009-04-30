@@ -590,6 +590,13 @@ span.tab_inactive {
 	text-decoration: none;
 }
 
+a.tab {
+	color: #845286; 
+	font: bold small sans-serif; 
+	text-transform: uppercase; 
+	text-decoration: none;
+}
+
 p.tab_text {
 	color: black; 
 	font: bold small sans-serif; 
@@ -619,10 +626,6 @@ p.tab_text_simple {
 	margin: 0px;
 }
 
-a.tab_active:link		{ color : #996699; }
-a.tab_active:visited	{ color : #996699; }
-a.tab_active:active		{ color : #996699; }
-
-a.tab_inactive:link		{ color : white; }
-a.tab_inactive:visited	{ color : white; }
-a.tab_inactive:active	{ color : white; }
+a.tab:link		{ color : #845286; }
+a.tab:visited	{ color : #845286; }
+a.tab:active	{ color : #845286; }

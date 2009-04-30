@@ -60,7 +60,7 @@
 							
 							
 								<td id="td_<%= varId %>" vid="<%= varId %>" tpos="<%= k %>" height="25px" width="<%= tabSize %>px" class="tab_title_<%= selected?"active":"inactive" %>">
-									<span class="tab_<%= selected?"active":"inactive" %>" id="a_<%= varId %>" href="#"><%= tab.getTabTitle(k) %></span>
+									<span class="tab_<%= selected?"active":"inactive" %>" id="a_<%= varId %>"><a href="/unsupported.jsp" class="tab"><%= tab.getTabTitle(k) %></a></span>
 								</td>
 							
 							<% if ( k == numTabs-1 ) { // last tab %>					
@@ -162,7 +162,7 @@
 			<script type="text/javascript">
 			
 				var loadingMessage = "<br/><br/><br/><br/><p class=\"tab_text_simple\">Refreshing, please wait...</p><br/><br/><br/><br/>";
-				var errorMessage = "<br/><br/><br/><br/><p class=\"tab_text_simple\">Sorry, we weren't able to get recommendations.<br/><a href=\"#\" onClick=\"window.location.reload(false)\">Click here</a> to refresh with new products. </p><br/><br/><br/><br/>";
+				var errorMessage = "<br/><br/><br/><br/><p class=\"tab_text_simple\">Sorry, we weren't able to get recommendations.<br/><a href=\"/unsupported.jsp\" onClick=\"window.location.reload(false)\">Click here</a> to refresh with new products. </p><br/><br/><br/><br/>";
 				var loadingLink = "Refreshing...";
 
 				var PIP = {
