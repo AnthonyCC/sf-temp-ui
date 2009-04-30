@@ -133,7 +133,8 @@
 		response.sendRedirect(StringEscapeUtils.unescapeHtml(newURL));
 	}
 %>
-<%@page import="com.freshdirect.smartstore.TabRecommendation"%><html>
+<%@page import="com.freshdirect.smartstore.TabRecommendation"%>
+<%@page import="java.util.Set"%><html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>CART TABS TEST PAGE</title>
@@ -245,9 +246,9 @@ p.fi{margin:20px 0px;}
 	   						value="true"<%= useLoggedIn ? " checked" : ""%>>
 	   				</p>
 	   				<% if (useLoggedIn && user != null) { %>
-	   					<% List cartItems = FDStoreRecommender.getShoppingCartProductList(user);
+	   					<% Set cartItems = FDStoreRecommender.getShoppingCartContents(user);
 	   					   if (cartItems == null)
-	   						   cartItems = Collections.EMPTY_LIST; 
+	   						   cartItems = Collections.EMPTY_SET; 
 						   Iterator it = cartItems.iterator(); %>
 	   					<% if (!it.hasNext()) {	%>
 	   				<p class="result not-found">
