@@ -4,6 +4,7 @@
 package com.freshdirect.smartstore.ymal;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.Set;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
@@ -18,6 +20,9 @@ import com.freshdirect.fdstore.content.YmalSource;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.smartstore.SessionInput;
+import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
+import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
 
 
 /**
@@ -87,23 +92,7 @@ public class YmalUtil {
 	}
 
 	
-
-	/**
-	 * Selects the 'best' fitting product from list.
-	 * This is currently the most expensive.
-	 * 
-	 * @param products List of ProductModel instances
-	 * 
-	 * @return The most expensive product as YmalSource
-	 */
-	public static YmalSource resolveYmalSource(List products) {
-		if (products == null || products.isEmpty())
-			return null;
-		else if (products.size() > 1)
-			Collections.sort(products, ProductModel.PRODUCT_MODEL_PRICE_COMPARATOR_INVERSE);
-		
-		return (YmalSource) products.get(0);
-	}
+	
 
 
 

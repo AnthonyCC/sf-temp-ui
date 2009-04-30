@@ -78,15 +78,16 @@ public class Impression {
     }
 
     public String logFeatureImpression(String parentFeatureImpId, Recommendations recommendations) {
+        CategoryModel category = recommendations.getSessionInput().getCategory();
         ContentNodeModel trigger = recommendations.getSessionInput().getCurrentNode();
         YmalSource ymalSource = recommendations.getSessionInput().getYmalSource();
         
-        return logFeatureImpression(parentFeatureImpId, recommendations.getVariant().getId(), trigger, ymalSource);
+        return logFeatureImpression(parentFeatureImpId, recommendations.getVariant().getId(), category, trigger, ymalSource);
     }
 
-    public String logFeatureImpression(String parentFeatureImpId, String variantId, ContentNodeModel trigger, YmalSource ymalSource) {
+    public String logFeatureImpression(String parentFeatureImpId, String variantId, CategoryModel category, ContentNodeModel trigger, YmalSource ymalSource) {
         String triggerProductId = (trigger instanceof ProductModel)? trigger.getContentKey().getId() : "";
-        String triggerCategoryId= (trigger instanceof CategoryModel)? trigger.getContentKey().getId() : "";
+        String triggerCategoryId = (category != null) ? category.getContentKey().getId() : "";
         String ymalSourceId = ymalSource != null ? ymalSource.getContentKey().getId() : "";
 
         return logFeatureImpression(parentFeatureImpId, variantId, triggerCategoryId, triggerProductId, ymalSourceId);

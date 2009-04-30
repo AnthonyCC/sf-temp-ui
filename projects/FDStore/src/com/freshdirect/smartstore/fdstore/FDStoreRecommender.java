@@ -2,6 +2,7 @@ package com.freshdirect.smartstore.fdstore;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -11,9 +12,11 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.YmalSource;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -45,30 +48,26 @@ public class FDStoreRecommender {
         return newModels;
 	}
 
-    public static Set getShoppingCartContents(FDUserI user) {
-        return getShoppingCartContents(user.getShoppingCart());
-    }
-    
-    public static List getShoppingCartProductList(FDUserI user) {
-    	Set keys = getShoppingCartContents(user);
-    	List products = new ArrayList(keys.size());
-    	Iterator it = keys.iterator();
-    	while (it.hasNext()) {
-    		ContentKey key = (ContentKey) it.next();
-			ContentNodeModel node = ContentFactory.getInstance().getContentNode(key.getId());
-			if (node instanceof ProductModel)
-				products.add(node);
-    	}
-    	return products;
-    }
+        /**
+         * 
+         * @param user
+         * @return Set<ProductModel>
+         */
+        public static Set getShoppingCartContents(FDUserI user) {
+            return getShoppingCartContents(user.getShoppingCart());
+        }
 	
-	// helper to turn a shopping cart into a set of products
+        /**
+         * helper to turn a shopping cart into a set of products
+         * 
+         * @return Set<ProductModel>
+         */
 	protected static Set getShoppingCartContents(FDCartModel cart) {
 		List orderlines = cart.getOrderLines();
 		Set products = new HashSet();
 		for(Iterator i = orderlines.iterator(); i.hasNext();) {
 			FDCartLineI cartLine = (FDCartLineI)i.next();
-			products.add(SmartStoreUtil.getProductContentKey(cartLine.getSkuCode()));
+			products.add(ContentFactory.getInstance().getProduct(cartLine.getProductRef()));
 		}
 		return products;
 	}
@@ -80,10 +79,46 @@ public class FDStoreRecommender {
 	 */
 	public Recommendations getRecommendations(EnumSiteFeature siteFeature, FDUserI user, 
 			SessionInput input, String overriddenVariantId) throws FDResourceException {
-		Set cartItems = getShoppingCartContents(user.getShoppingCart());
+		Set cartItems = SmartStoreUtil.toContentKeySetFromModels(getShoppingCartContents(user.getShoppingCart()));
 		return getRecommendations(siteFeature, user, input, overriddenVariantId, cartItems);
 	}
 
+
+        /**
+         * Selects the 'best' fitting product from list.
+         * This is currently the most expensive.
+         * 
+         * @param products List of ProductModel instances
+         * 
+         * @return The most expensive product as YmalSource
+         */
+        private static YmalSource resolveYmalSource(Collection products) {
+            if (products == null || products.isEmpty()) {
+                return null;
+            } else  {
+                return (YmalSource) Collections.max(products, ProductModel.PRODUCT_MODEL_PRICE_COMPARATOR_INVERSE);
+            }
+        }
+
+        /**
+         * This method selects a good ymal source product, with it's parent category,
+         * and assign to the given SessionInput.
+         *  
+         * @param input sessionInput
+         * @param products List<ProductModel>
+         */
+        public static void initYmalSource(SessionInput input, FDUserI user) {
+            Set cartContents = FDStoreRecommender.getShoppingCartContents( user ) ;
+            input.setCartContents(SmartStoreUtil.toContentKeySetFromModels(cartContents));
+            YmalSource ymal = resolveYmalSource(cartContents);
+            if (ymal!=null) {
+                input.setYmalSource(ymal);
+                if (ymal instanceof ProductModel) {
+                    input.setCategory((CategoryModel) ((ProductModel)ymal).getParentNode());
+                }
+            }
+        }
+	
 	/**
 	 * 
 	 * @param trigger
@@ -97,8 +132,9 @@ public class FDStoreRecommender {
 	public Recommendations getRecommendations(EnumSiteFeature siteFeature, FDUserI user,
 			SessionInput input, String overriddenVariantId, Set cartItems) throws FDResourceException
 	{
-		if (cartItems != null)
-			input.setCartContents(cartItems);
+		if (cartItems != null) {
+		    input.setCartContents(cartItems);
+		}
 
 		// select service		
 		RecommendationService service = 

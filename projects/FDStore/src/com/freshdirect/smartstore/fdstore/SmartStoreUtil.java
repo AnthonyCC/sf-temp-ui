@@ -1,28 +1,26 @@
 package com.freshdirect.smartstore.fdstore;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.ContentType;
-import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.content.CmsContentNodeAdapter;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.SkuModel;
-import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
@@ -48,20 +46,20 @@ public class SmartStoreUtil {
 	 *            query content key
 	 * @return corresponding product
 	 */
-	public static ContentKey getProductContentKey(ContentKey key) {
-		try {
-			if (key.getType().equals(FDContentTypes.PRODUCT))
-				return key;
-			else if (key.getType().equals(FDContentTypes.SKU)) {
-				SkuModel skuModel = (SkuModel) ContentFactory.getInstance()
-						.getContentNodeByKey(key);
-				return skuModel.getParentNode().getContentKey();
-			} else
-				return null;
-		} catch (Exception e) {
-			return null;
-		}
-	}
+//	public static ContentKey getProductContentKey(ContentKey key) {
+//		try {
+//			if (key.getType().equals(FDContentTypes.PRODUCT))
+//				return key;
+//			else if (key.getType().equals(FDContentTypes.SKU)) {
+//				SkuModel skuModel = (SkuModel) ContentFactory.getInstance()
+//						.getContentNodeByKey(key);
+//				return skuModel.getParentNode().getContentKey();
+//			} else
+//				return null;
+//		} catch (Exception e) {
+//			return null;
+//		}
+//	}
 
 	/**
 	 * Get the product corresponding to a SKU code.
@@ -69,9 +67,9 @@ public class SmartStoreUtil {
 	 * @param skuCode
 	 * @return product
 	 */
-	public static ContentKey getProductContentKey(String skuCode) {
-		return getProductContentKey(new ContentKey(FDContentTypes.SKU, skuCode));
-	}
+//	public static ContentKey getProductContentKey(String skuCode) {
+//		return getProductContentKey(new ContentKey(FDContentTypes.SKU, skuCode));
+//	}
 
 	public static final String SKIP_OVERRIDDEN_VARIANT = "__skip_overridden_variant__";
 
@@ -480,11 +478,29 @@ public class SmartStoreUtil {
 	 * @param models List<ContentNodeModel>
 	 * @return List<ContentKey>
 	 */
-        public static List toContentKeysFromModels(List models) {
+        public static List toContentKeysFromModels(Collection models) {
             if (models==null) {
                 return null;
             }
             List result = new ArrayList(models.size());
+            for (Iterator iter = models.iterator(); iter.hasNext();) {
+                ContentNodeModel model = (ContentNodeModel) iter.next();
+                result.add(model.getContentKey());
+            }
+            return result;
+        }
+
+        
+        /**
+         * 
+         * @param models List<ContentNodeModel>
+         * @return Set<ContentKey>
+         */
+        public static Set toContentKeySetFromModels(Collection models) {
+            if (models==null) {
+                return null;
+            }
+            Set result = new HashSet(models.size());
             for (Iterator iter = models.iterator(); iter.hasNext();) {
                 ContentNodeModel model = (ContentNodeModel) iter.next();
                 result.add(model.getContentKey());

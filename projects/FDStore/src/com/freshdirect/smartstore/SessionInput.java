@@ -8,6 +8,7 @@ import java.util.Set;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.YmalSource;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -28,6 +29,8 @@ public class SessionInput {
 
 	private boolean noShuffle;
 
+	private CategoryModel category;
+	
 	private YmalSource ymalSource;
 
 	private List explicitList;
@@ -177,5 +180,16 @@ public class SessionInput {
 	public int getMaxRecommendations() {
 		return maxRecommendations;
 	}
+	
+	public void setCategory(CategoryModel category) {
+            this.category = category;
+        }
+	
+	public CategoryModel getCategory() {
+	    if ((category==null) && currentNode instanceof CategoryModel) {
+	        return (CategoryModel) currentNode;
+	    }
+            return category;
+        }
 
 }

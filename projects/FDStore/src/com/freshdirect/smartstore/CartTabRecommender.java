@@ -51,7 +51,7 @@ public class CartTabRecommender {
 
                             try {
                                 Recommendations rec = FDStoreRecommender.getInstance().getRecommendations(EnumSiteFeature.getEnum(strat.getSiteFeatureId()), user, input, overriddenVariantId,
-                                        FDStoreRecommender.getShoppingCartContents(user));
+                                        SmartStoreUtil.toContentKeySetFromModels(FDStoreRecommender.getShoppingCartContents(user)));
                                 if (rec.getProducts().size() > 0) {
                                     recs.add(rec.getVariant());
                                     break;

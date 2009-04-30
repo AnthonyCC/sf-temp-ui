@@ -85,10 +85,9 @@ public class PIPTabTag extends javax.servlet.jsp.tagext.BodyTagSupport {
 		HttpSession session = pageContext.getSession();
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 		SessionInput input = new SessionInput(user);
-		Set cart = FDStoreRecommender.getShoppingCartContents( user );
-		input.setCartContents(cart);
 		input.setPreviousRecommendations((Map) session.getAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS));
-		input.setYmalSource( YmalUtil.resolveYmalSource( FDStoreRecommender.getShoppingCartProductList( user ) ) );
+		
+		FDStoreRecommender.initYmalSource(input, user);
 		input.setCurrentNode( input.getYmalSource() );
 		input.setMaxRecommendations(maxRecommendations);
 		
@@ -115,7 +114,8 @@ public class PIPTabTag extends javax.servlet.jsp.tagext.BodyTagSupport {
 
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
                 Impression imp = Impression.get(user, request);
-		String impressionId = imp.logFeatureImpression(null, tabs.getTabRecommender().getVariant().getId(), input.getCurrentNode(), input.getYmalSource());
+		String impressionId = imp.logFeatureImpression(null, tabs.getTabRecommender().getVariant().getId(), 
+		        input.getCategory(), input.getCurrentNode(), input.getYmalSource());
 		tabs.setParentImpressionId(impressionId);
 		for (int i = 0; i < tabs.size(); i++) {
 		    String tabImp = imp.logTab(impressionId, i, tabs.get(i).getSiteFeature().getName());
