@@ -16,12 +16,12 @@ public class ImpressionLogger {
     public final static ImpressionLogger PRODUCT = new ImpressionLogger(LoggerFactory.getInstance("freshdirect.product"), "product_impression.csv", false);
     public final static ImpressionLogger TAB     = new ImpressionLogger(LoggerFactory.getInstance("freshdirect.tab"), "tab_impression.csv", false);
     public final static ImpressionLogger FEATURE = new ImpressionLogger(LoggerFactory.getInstance("freshdirect.feature"), "feature_impression.csv", false);
-    public final static ImpressionLogger TAB_CLICK = new ImpressionLogger(LoggerFactory.getInstance("freshdirect.click.tab"), "tab_clicks.csv", true);
-    public final static ImpressionLogger PROD_CLICK = new ImpressionLogger(LoggerFactory.getInstance("freshdirect.click.product"), "product_clicks.csv", true);
+    public final static ImpressionLogger TAB_CLICK = new ImpressionLogger(LoggerFactory.getInstance("freshdirect.click.tab"), "tab_clicks.csv", false);
+    public final static ImpressionLogger PROD_CLICK = new ImpressionLogger(LoggerFactory.getInstance("freshdirect.click.product"), "product_clicks.csv", false);
 
     
     final static ImpressionLogger[] ALL = { 
-        PRODUCT,REQUEST,TAB,FEATURE, TAB_CLICK, PROD_CLICK
+        PRODUCT, REQUEST, TAB, FEATURE, TAB_CLICK, PROD_CLICK
     };
     
     static boolean                       globalEnabled = false; 
