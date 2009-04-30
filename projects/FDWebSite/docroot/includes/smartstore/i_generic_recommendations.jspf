@@ -201,7 +201,7 @@
 											<table align="center" >
 												<tr>
 													<td style="padding: 0; height: <%= rowHeight.intValue() %>px; vertical-align: bottom; text-align: center">
-														<% if (isVariantSavings) { %><fd:ProductImage product="<%= product %>" action="<%= actionURI %>" savingsPercentage="<%= pvm.getPercentageOff() %>" inCart="<%= shouldDimProduct %>" browserInfo="<%= bi %>" /><% } else {%><fd:ProductImage product="<%= product %>" action="<%= actionURI %>" hideYourFave="true" browserInfo="<%= bi %>" /><% } %>
+														<% if (isVariantSavings) { %><fd:ProductImage product="<%= product %>" action="<%= actionURI %>" savingsPercentage="<%= pvm.getPercentageOff() %>" inCart="<%= shouldDimProduct %>" browserInfo="<%= bi %>" opacity="<%= shouldDimProduct ? 0.5 : 1.0 %>" /><% } else {%><fd:ProductImage product="<%= product %>" action="<%= actionURI %>" hideYourFave="true" browserInfo="<%= bi %>" /><% } %>
 													</td>
 												</tr>
 												<% if (shouldDimProduct) { %>
@@ -215,7 +215,7 @@
 															<input type="hidden" name="variant_tab_<%= txProdCount %>" value="<%= recommendations.getVariant().getId() %>"/>
                                                             <input type="hidden" name="variant_<%= tx_input_postfix %>_<%= txProdCount %>" value="<%= recommendations.getVariant().getId() %>"/>
 															<input type="hidden" name="rank_tab_<%= txProdCount %>" value="<%= rank %>"/>
-															
+
 															<input type="hidden" name="impId_<%= tx_input_postfix %>_<%= txProdCount %>" value="<%= recommendations.getImpressionId( recommendations_row.getProductModel() ) %>"/>
 															<input type="hidden" name="trk_<%= tx_input_postfix %>_<%= txProdCount %>" value="<%= recommendations.getVariant().getSiteFeature().getName().toLowerCase() %>"/>
 															

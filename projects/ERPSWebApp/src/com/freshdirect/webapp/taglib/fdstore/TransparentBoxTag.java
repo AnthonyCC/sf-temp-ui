@@ -1,8 +1,6 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -20,12 +18,13 @@ import com.freshdirect.framework.webapp.BodyTagSupport;
  *
  */
 public class TransparentBoxTag extends BodyTagSupport {
+	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Opacity (0-100)
+	 * Opacity (0-1)
 	 * IN, OPTIONAL
 	 */
-	int opacity = 50;
+	double opacity = 0.5;
 	
 	/**
 	 * Don't render opaque layer
@@ -43,11 +42,11 @@ public class TransparentBoxTag extends BodyTagSupport {
 
 
 	
-	public void setOpacity(int opacity) {
+	public void setOpacity(double opacity) {
 		if (opacity < 0)
 			this.opacity = 0;
-		else if (opacity > 100)
-			this.opacity = 100;
+		else if (opacity > 1)
+			this.opacity = 1;
 		else
 			this.opacity = opacity;
 	}
@@ -74,21 +73,8 @@ public class TransparentBoxTag extends BodyTagSupport {
 		if (!this.disabled) {
 			BrowserInfo bi = new BrowserInfo( (HttpServletRequest) pageContext.getRequest() );
 
-			String obStyle = "";
-			
-			if (bi.isIE6()) {
-				obStyle = "display: inline-block; filter:alpha(opacity="+opacity+"); width: 100%; height: 100%;";
-			} else {
-				float f_op = ((float)opacity)/100.0f;
-				
-				if (bi.isFirefox()) {
-					obStyle = "-moz-opacity: "+f_op+";";
-				} else if (bi.isSafari()) {
-					obStyle = "-khtml-opacity: "+f_op+";";
-				} else {
-					obStyle = "opacity: "+f_op+";";
-				}
-			}
+			String obStyle = getOpacityStyle(bi, 0.5);
+
 
 			// append additional CSS style
 			if (this.style != null)
@@ -127,14 +113,36 @@ public class TransparentBoxTag extends BodyTagSupport {
 	}
 
 
+	/**
+	 * Helper to create opacity style commands specific to browser
+	 * 
+	 * @param bi
+	 * @param opacity
+	 * @return
+	 */
+	public static String getOpacityStyle(BrowserInfo bi, double opacity) {
+		String obStyle = "";
+
+		if (bi == null)
+			return "opacity: "+opacity+";";
 
 
+		if (bi.isInternetExplorer()) {
+			int i_op = (int) Math.round(opacity*100);
+			obStyle = "filter: progid:DXImageTransform.Microsoft.Alpha(opacity="+i_op+") ! important;";
+		} else {
+			if (bi.isFirefox()) {
+				obStyle = "-moz-opacity: "+opacity+";";
+			} else if (bi.isWebKit()) {
+				obStyle = "-khtml-opacity: "+opacity+";";
+			} else {
+				obStyle = "opacity: "+opacity+";";
+			}
+		}
+		return obStyle;
+	}
 
-	
-	
 
-	
-	
 	public static class TagEI extends TagExtraInfo {
 		public VariableInfo[] getVariableInfo(TagData data) {
 			return new VariableInfo[] {};
