@@ -147,8 +147,8 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 			LineItemStrategyI strategy = (LineItemStrategyI) i.next();
 			int response = strategy.evaluate(lineItem, promoCode, context);
 
-			 //System.out.println("Evaluated " + promoCode + " / " +
-			 //strategy.getClass().getName() + " -> " + response);
+			 System.out.println("Evaluated " + promoCode + " / " +
+			 strategy.getClass().getName() + " -> " + response);
 
 			switch (response) {
 

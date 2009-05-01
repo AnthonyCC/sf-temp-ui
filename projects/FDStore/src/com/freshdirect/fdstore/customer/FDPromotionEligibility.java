@@ -17,7 +17,8 @@ public class FDPromotionEligibility implements Serializable {
 
 	/** Set of String (promotionCode) */
 	private final Set appliedPromos = new HashSet();
-		
+	
+	private final Set recommendedPromos = new HashSet();
 	
 	public boolean isEligible(String promotionCode) {
 		return this.eligibilePromos.contains(promotionCode);
@@ -100,4 +101,11 @@ public class FDPromotionEligibility implements Serializable {
 		return "FDPromotionEligibility[eligible=" + this.eligibilePromos.toString() + ", applied=" + this.appliedPromos + "] ";
 	}
 
+	public Set getRecommendedPromos() {
+		return Collections.unmodifiableSet(this.recommendedPromos);
+	}
+
+	public void addRecommendedPromo(String promoCode) {
+		this.recommendedPromos.add(promoCode);
+	}
 }

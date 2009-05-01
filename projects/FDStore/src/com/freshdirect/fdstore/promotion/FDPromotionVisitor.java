@@ -31,9 +31,7 @@ public class FDPromotionVisitor {
 		FDPromotionEligibility eligibilities = evaluatePromotions(context);
 		LOGGER.info("Promotion eligibility:after evaluate " + eligibilities);
 		resolveConflicts(eligibilities);
-		//Reload the promo variant map based on new promotion eligibilities.	
-		Map pvMap = PromoVariantHelper.getPromoVariantMap(context.getUser(), eligibilities.getEligiblePromotionCodes());
-		context.getUser().setPromoVariantMap(pvMap);
+		resolveLineItemConflicts(context, eligibilities);
 		LOGGER.info("Promotion eligibility:after resolve conflicts " + eligibilities);					
 		applyPromotions(context, eligibilities);
 		LOGGER.info("Promotion eligibility: after apply " + eligibilities);
@@ -53,6 +51,13 @@ public class FDPromotionVisitor {
 		return eligibilities;
 	}
 
+
+	private static void resolveLineItemConflicts(PromotionContextI context, FDPromotionEligibility eligibilities) {
+		//Reload the promo variant map based on new promotion eligibilities.	
+		Map pvMap = PromoVariantHelper.getPromoVariantMap(context.getUser(), eligibilities);
+		context.getUser().setPromoVariantMap(pvMap);
+	}
+
 	
 	 private static FDPromotionEligibility evaluatePromotions(PromotionContextI context) {
          long startTime = System.currentTimeMillis();
@@ -65,6 +70,7 @@ public class FDPromotionVisitor {
                String promoCode = autopromotion.getPromotionCode();
                boolean e = autopromotion.evaluate(context);
                eligibilities.setEligibility(promoCode, e);
+               if(e && autopromotion.isRecommendedItemsOnly()) eligibilities.addRecommendedPromo(promoCode); 
         }
          
          //Get the redemption promotion if user redeemed one and evaluate it.
@@ -73,6 +79,7 @@ public class FDPromotionVisitor {
                boolean e = redeemedPromotion.evaluate(context);
                String promoCode = redeemedPromotion.getPromotionCode();
                eligibilities.setEligibility(promoCode, e);
+               if(e && redeemedPromotion.isRecommendedItemsOnly()) eligibilities.addRecommendedPromo(promoCode);
          }
          long endTime = System.currentTimeMillis();
          return eligibilities;

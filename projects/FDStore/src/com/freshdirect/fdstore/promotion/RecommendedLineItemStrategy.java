@@ -28,8 +28,6 @@ public class RecommendedLineItemStrategy implements LineItemStrategyI {
 				eligibleLine = (eligiblePV != null && eligiblePV.getAssignedPromotion().getPromotionCode().equals(promotionCode));
 				if(eligibleLine){
 					return ALLOW;
-				}else {
-					lineItem.setSavingsId(null);
 				}
 			} 
 			if(!eligibleLine) {

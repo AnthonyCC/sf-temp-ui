@@ -80,7 +80,6 @@ public class SessionInput {
 			this.cartModel = user.getShoppingCart();
 			//Reload PromoVariant Map.
 			this.promoVariantMap = user.getPromoVariantMap();
-			System.out.println("Promo varianr Map %%%%%%% "+promoVariantMap);
 			//this.eligiblePromotions = user.getPromotionEligibility().getEligiblePromotionCodes();
 			if (user.getIdentity() != null)
 				this.customerId = user.getIdentity().getErpCustomerPK();
