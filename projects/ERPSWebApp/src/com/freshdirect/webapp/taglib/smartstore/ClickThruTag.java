@@ -54,33 +54,6 @@ public class ClickThruTag extends BodyTagSupport {
 		
 		String uri = req.getRequestURI();
 
-		// Check page URI against referer
-		if (req.getHeader("Referer") != null) {
-			try {
-				URL refURL = new URL(req.getHeader("Referer"));
-
-				// We are in same page, bye!
-				if (refURL.getPath().startsWith(uri)) {
-					LOGGER.debug("Click-Thru: SKIPPED - staying in the same page as referer was");
-					return SKIP_BODY;
-				}
-			} catch (MalformedURLException e) {}
-		} else {
-			// No referer, bye!
-			LOGGER.debug("Click-Thru: SKIPPED - referer IS NULL");
-			return SKIP_BODY;
-		}
-
-		// No site feature, bye!
-		// List of tracking codes: http://home.freshdirect.com/confluence/display/web/Tracking+Codes
-		// Instead of struggling with trk codes require only the variant.
-		/*** String trk_code = req.getParameter("trk");
-		if (	   !"dyf".equalsIgnoreCase(trk_code)
-				&& !"favorites".equalsIgnoreCase(trk_code)
-				&& !"feat".equalsIgnoreCase(trk_code)) {
-			LOGGER.debug("Click-Thru: SKIPPED - missing site feature");
-			return SKIP_BODY;
-		} ***/
 
 		String variantId = req.getParameter("variant");
 		if (variantId == null || variantId.length() == 0) {
