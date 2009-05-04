@@ -165,9 +165,9 @@ public class ProductImageTag extends BodyTagSupport {
 				}
 
 				if (this.isInCart) {
-					String burstImage = "media_stat/images/deals/brst_sm_20" + (supportsPNG ? ".png" : ".gif");
 					// Smart Savings - display "In Cart" burst
-					buf.append("<img alt=\"IN CART\" src=\"" + burstImage + "\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\" ieopacity=\"50\" >");
+					// No opacity needed since burst image is already faded
+					buf.append("<img alt=\"IN CART\" src=\"media_stat/images/bursts/in_cart" + (supportsPNG ? ".png" : ".gif") + "\" width=\"35px\" height=\"35px\" style=\"border:0;\">");
 				} else if (deal > 0) {
 					String burstImage = "/media_stat/images/deals/brst_sm_" + deal + (supportsPNG ? ".png" : ".gif");
 					buf.append("<img alt=\"SAVE " + deal + "\" src=\""+burstImage+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">");

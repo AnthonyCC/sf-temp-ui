@@ -129,7 +129,7 @@ public class TransparentBoxTag extends BodyTagSupport {
 
 		if (bi.isInternetExplorer()) {
 			int i_op = (int) Math.round(opacity*100);
-			obStyle = "filter: progid:DXImageTransform.Microsoft.Alpha(opacity="+i_op+") ! important;";
+			obStyle = "display: inline-block; filter: progid:DXImageTransform.Microsoft.Alpha(opacity="+i_op+") ! important;";
 		} else {
 			if (bi.isFirefox()) {
 				obStyle = "-moz-opacity: "+opacity+";";

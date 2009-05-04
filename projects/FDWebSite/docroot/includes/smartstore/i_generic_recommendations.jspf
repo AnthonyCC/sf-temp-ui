@@ -195,50 +195,50 @@
 
 									<td style="white-space: normal; text-align: center; padding-left: 2px; padding-right: 2px;" valign="top" width="<%= Math.round(100.0/impressions.size()) %>%">
 																																
-										<% if ( ! blankCell_var.booleanValue() ) { %>
-										<fd:TransparentBox disabled="<%= !shouldDimProduct %>">
-											<!-- CELL CONTAINER -->
-											<table align="center" >
+									<% if ( ! blankCell_var.booleanValue() ) { %>
+										<!-- CELL CONTAINER -->
+										<table align="center" >
+											<tr>
+												<td style="padding: 0; height: <%= rowHeight.intValue() %>px; vertical-align: bottom; text-align: center">
+													<% if (isVariantSavings) { %><fd:ProductImage product="<%= product %>" action="<%= actionURI %>" savingsPercentage="<%= pvm.getPercentageOff() %>" inCart="<%= shouldDimProduct %>" browserInfo="<%= bi %>" opacity="<%= shouldDimProduct ? 0.5 : 1.0 %>" /><% } else {%><fd:ProductImage product="<%= product %>" action="<%= actionURI %>" hideYourFave="true" browserInfo="<%= bi %>" /><% } %>
+												</td>
+											</tr>
+											<% if (shouldDimProduct) { %>
 												<tr>
-													<td style="padding: 0; height: <%= rowHeight.intValue() %>px; vertical-align: bottom; text-align: center">
-														<% if (isVariantSavings) { %><fd:ProductImage product="<%= product %>" action="<%= actionURI %>" savingsPercentage="<%= pvm.getPercentageOff() %>" inCart="<%= shouldDimProduct %>" browserInfo="<%= bi %>" opacity="<%= shouldDimProduct ? 0.5 : 1.0 %>" /><% } else {%><fd:ProductImage product="<%= product %>" action="<%= actionURI %>" hideYourFave="true" browserInfo="<%= bi %>" /><% } %>
+													<td style="height: 28px; text-align: center; vertical-align: middle;">&nbsp;</td>
+												</tr>
+											<% } else if (recommendations_row instanceof TransactionalProductImpression) { %>
+												<tr>
+													<td>
+														<input type="hidden" name="trk_tab_<%= txProdCount %>" value="<%= recommendations.getVariant().getSiteFeature().getName().toLowerCase() %>">
+														<input type="hidden" name="variant_tab_<%= txProdCount %>" value="<%= recommendations.getVariant().getId() %>"/>
+                                                           <input type="hidden" name="variant_<%= tx_input_postfix %>_<%= txProdCount %>" value="<%= recommendations.getVariant().getId() %>"/>
+														<input type="hidden" name="rank_tab_<%= txProdCount %>" value="<%= rank %>"/>
+
+														<input type="hidden" name="impId_<%= tx_input_postfix %>_<%= txProdCount %>" value="<%= recommendations.getImpressionId( recommendations_row.getProductModel() ) %>"/>
+														<input type="hidden" name="trk_<%= tx_input_postfix %>_<%= txProdCount %>" value="<%= recommendations.getVariant().getSiteFeature().getName().toLowerCase() %>"/>
+														
+														<% if (pl.getTrackingCode() != null) { %>
+															<input type="hidden" name="trkd_tab_<%= txProdCount %>" value="<%= pl.getTrackingCode() %>"/>
+															<input type="hidden" name="trkd_<%= tx_input_postfix %>_<%= txProdCount %>" value="<%= pl.getTrackingCode() %>"/>
+														<% } %>
+														
+														<fd:TxProductControl txNumber="<%= txProdCount %>" namespace="<%= tx_pricing_JSNameSpace %>" inputNamePostfix="<%= tx_input_postfix %>" impression="<%= (TransactionalProductImpression) recommendations_row %>" disabled="<%= shouldDimProduct %>"/>
 													</td>
 												</tr>
-												<% if (shouldDimProduct) { %>
-													<tr>
-														<td style="height: 28px; text-align: center; vertical-align: middle;">&nbsp;</td>
-													</tr>
-												<% } else if (recommendations_row instanceof TransactionalProductImpression) { %>
-													<tr>
-														<td>
-															<input type="hidden" name="trk_tab_<%= txProdCount %>" value="<%= recommendations.getVariant().getSiteFeature().getName().toLowerCase() %>">
-															<input type="hidden" name="variant_tab_<%= txProdCount %>" value="<%= recommendations.getVariant().getId() %>"/>
-                                                            <input type="hidden" name="variant_<%= tx_input_postfix %>_<%= txProdCount %>" value="<%= recommendations.getVariant().getId() %>"/>
-															<input type="hidden" name="rank_tab_<%= txProdCount %>" value="<%= rank %>"/>
-
-															<input type="hidden" name="impId_<%= tx_input_postfix %>_<%= txProdCount %>" value="<%= recommendations.getImpressionId( recommendations_row.getProductModel() ) %>"/>
-															<input type="hidden" name="trk_<%= tx_input_postfix %>_<%= txProdCount %>" value="<%= recommendations.getVariant().getSiteFeature().getName().toLowerCase() %>"/>
-															
-															<% if (pl.getTrackingCode() != null) { %>
-																<input type="hidden" name="trkd_tab_<%= txProdCount %>" value="<%= pl.getTrackingCode() %>"/>
-																<input type="hidden" name="trkd_<%= tx_input_postfix %>_<%= txProdCount %>" value="<%= pl.getTrackingCode() %>"/>
-															<% } %>
-															
-															<fd:TxProductControl txNumber="<%= txProdCount %>" namespace="<%= tx_pricing_JSNameSpace %>" inputNamePostfix="<%= tx_input_postfix %>" impression="<%= (TransactionalProductImpression) recommendations_row %>" disabled="<%= shouldDimProduct %>"/>
-														</td>
-													</tr>
-												<%
-													// Count transactional products only
-													txProdCount++;
-												} else { // !transactional items %>
-													<tr>
-														<td style="height: 28px; text-align: center; vertical-align: middle;">
-															<span class="text8">(click name to buy)</span>
-														</td>
-													</tr>
-												<% } // !transactional %>
-											</table>
+											<%
+												// Count transactional products only
+												txProdCount++;
+											} else { // !transactional items %>
+												<tr>
+													<td style="height: 28px; text-align: center; vertical-align: middle;">
+														<span class="text8">(click name to buy)</span>
+													</td>
+												</tr>
+											<% } // !transactional %>
+										</table>
 																							
+										<fd:TransparentBox disabled="<%= !shouldDimProduct %>">
 											<fd:ProductRating product="<%= product %>"/>
 											<fd:ProductName product="<%= product %>" action="<%= actionURI %>" disabled="<%= shouldDimProduct %>"/>
 											<fd:ProductDescription impression="<%= recommendations_row %>" savingsPercentage="<%= isVariantSavings ? pvm.getPercentageOff() : 0 %>" />
