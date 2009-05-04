@@ -118,6 +118,7 @@
 					isVariantSavings = true;
 				}
 		%>
+				<a name="cartRec"></a>
 				<form id="id_<%= tx_pricing_FormName %>" name="<%= tx_pricing_FormName %>" method="post" action="<%= formUri %>" style="margin:0px">
 					<input type="hidden" name="fdsc.action" value="addMultipleToCart"/>
 					<input type="hidden" name="fdsc.succpage" value="<%= formUri %>?confirm=1"/>
