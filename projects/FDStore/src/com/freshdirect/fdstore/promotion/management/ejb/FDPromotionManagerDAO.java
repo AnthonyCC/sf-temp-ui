@@ -214,13 +214,13 @@ public class FDPromotionManagerDAO {
 		}else{
 			ps.setNull(i++, Types.VARCHAR);
 		}
-		if(!promotion.isRecommendedItemsOnly()){
+		if(promotion.isRecommendedItemsOnly()){
 			ps.setString(i++, "X");
 		} else {
 			ps.setNull(i++, Types.VARCHAR);
 		}
 		
-		if(!promotion.isAllowHeaderDiscount()){
+		if(promotion.isAllowHeaderDiscount()){
 			ps.setString(i++, "X");
 		} else {
 			ps.setNull(i++, Types.VARCHAR);
