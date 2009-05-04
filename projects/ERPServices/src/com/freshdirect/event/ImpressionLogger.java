@@ -2,6 +2,7 @@ package com.freshdirect.event;
 
 import java.io.IOException;
 
+import org.apache.log4j.Appender;
 import org.apache.log4j.AsyncAppender;
 import org.apache.log4j.DailyRollingFileAppender;
 import org.apache.log4j.Logger;
@@ -90,4 +91,9 @@ public class ImpressionLogger {
             ALL[i].setEnabled(globalEnabled);
         }
     }
+    
+    public void addAppender(Appender appender) {
+        log.addAppender(appender);
+    }
+    
 }
