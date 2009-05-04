@@ -13,24 +13,13 @@ public interface PromoVariantModel extends Serializable {
 	
 	public int getFeaturePriority();
 
-	public void setFeaturePriority(int featurePriority);
-
 	public int getPriority() ;
-	
-	public void setPriority(int priority);
 	
 	public PromotionI getAssignedPromotion();
 	
-	//public void setPromoCode(String promoCode);
-	
 	public EnumSiteFeature getSiteFeature();
-	
-	//public void setSiteFeature(EnumSiteFeature siteFeature);
 	
 	public String getVariantId();
 	
-	public void setVariantId(String variantId) ;
-	
 	public double getPercentageOff();
-		
 }

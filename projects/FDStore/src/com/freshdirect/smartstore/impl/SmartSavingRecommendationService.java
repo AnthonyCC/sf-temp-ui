@@ -64,6 +64,9 @@ public class SmartSavingRecommendationService extends WrapperRecommendationServi
         }
         if (cartSuggestions.size() > input.getMaxRecommendations())
         	cartSuggestions = cartSuggestions.subList(0, input.getMaxRecommendations());
+        //If there are no recommendations return empty list. No need to put into previous recommendation map.
+        if(cartSuggestions.size() == 0) return cartSuggestions;
+        
         if (prevMap == null) {
             prevMap = new HashMap();
             input.setPreviousRecommendations(prevMap);
@@ -73,6 +76,9 @@ public class SmartSavingRecommendationService extends WrapperRecommendationServi
     }
 
 	private boolean isEligibleForSavings(SessionInput sessionInput, String variantId) {
+		Map prevMap = sessionInput.getPreviousRecommendations();
+		if(prevMap != null && !prevMap.containsKey(variantId)) return false;
+		 
 		Map promoVariantMap = sessionInput.getPromoVariantMap();
 		if(promoVariantMap == null || promoVariantMap.size() == 0)
 			return false;

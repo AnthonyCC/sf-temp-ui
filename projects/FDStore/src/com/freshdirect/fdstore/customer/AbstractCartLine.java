@@ -272,7 +272,6 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 	}
 	
 	public String getDiscountedUnitPrice(){
-		System.out.println("isDiscountApplied %%%%%%%%%%%%%%% "+isDiscountApplied());
 		if(!isDiscountApplied()) {
 			return "";
 		}

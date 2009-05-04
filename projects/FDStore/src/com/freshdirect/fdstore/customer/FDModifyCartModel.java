@@ -39,7 +39,7 @@ public class FDModifyCartModel extends FDCartModel {
 			Discount d = origLine.getDiscount();
 			if( d != null && !(d.getDiscountType().isSample())) {
 				cartLine.setDiscount(d);
-				cartLine.setDiscountApplied(true);
+				cartLine.setDiscountFlag(true);
 			}
 			if(origLine.getSavingsId() != null)
 				cartLine.setSavingsId(origLine.getSavingsId());			

@@ -78,7 +78,6 @@ public class SessionInput {
 		if (user != null) {
 			this.customerServiceType = user.getUserServiceType();
 			this.cartModel = user.getShoppingCart();
-			//Reload PromoVariant Map.
 			this.promoVariantMap = user.getPromoVariantMap();
 			//this.eligiblePromotions = user.getPromotionEligibility().getEligiblePromotionCodes();
 			if (user.getIdentity() != null)

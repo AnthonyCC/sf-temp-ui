@@ -1237,7 +1237,7 @@ public class FDShoppingCartControllerTag extends
 		//Get the original discount applied flag if available
 		boolean discountApplied = false;
 		if (originalLine != null) {
-			discountApplied = originalLine.isDiscountApplied();
+			discountApplied = originalLine.isDiscountFlag();
 		}
 		
 		if (theCartLine != null) {
@@ -1265,7 +1265,7 @@ public class FDShoppingCartControllerTag extends
 				theCartLine.setSavingsId(savingsId);
 			}
 
-			theCartLine.setDiscountApplied(discountApplied);
+			theCartLine.setDiscountFlag(discountApplied);
 		}
 
 		return theCartLine;

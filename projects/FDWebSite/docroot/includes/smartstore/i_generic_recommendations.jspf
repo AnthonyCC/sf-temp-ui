@@ -208,9 +208,7 @@
 													<tr>
 														<td style="height: 28px; text-align: center; vertical-align: middle;">&nbsp;</td>
 													</tr>
-												<% 
-                                                    if (recommendations_row instanceof TransactionalProductImpression) txProdCount++;
-                                                } else if (recommendations_row instanceof TransactionalProductImpression) { %>
+												<% } else if (recommendations_row instanceof TransactionalProductImpression) { %>
 													<tr>
 														<td>
 															<input type="hidden" name="trk_tab_<%= txProdCount %>" value="<%= recommendations.getVariant().getSiteFeature().getName().toLowerCase() %>">

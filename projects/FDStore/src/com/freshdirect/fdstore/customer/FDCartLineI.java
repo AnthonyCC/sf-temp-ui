@@ -136,9 +136,11 @@ public interface FDCartLineI extends FDProductSelectionI {
 	 * 
 	 * @return boolean
 	 */
+	public boolean isDiscountFlag();
+	
 	public boolean isDiscountApplied();
 	
-	public void setDiscountApplied(boolean b);
+	public void setDiscountFlag(boolean b);
 	
 	public void setDiscount(Discount d);
 	

@@ -508,12 +508,12 @@ public class FDProductSelection implements FDProductSelectionI {
 		this.orderLine.setDiscountAmount(discountAmount);
 	}
 	
-	public boolean isDiscountApplied(){
-		return orderLine.isDiscountApplied();
+	public boolean isDiscountFlag(){
+		return orderLine.isDiscountFlag();
 	}
 	
-	public void setDiscountApplied(boolean discountApplied){
-		this.orderLine.setDiscountApplied(discountApplied);
+	public void setDiscountFlag(boolean discountApplied){
+		this.orderLine.setDiscountFlag(discountApplied);
 	}
 	
 }

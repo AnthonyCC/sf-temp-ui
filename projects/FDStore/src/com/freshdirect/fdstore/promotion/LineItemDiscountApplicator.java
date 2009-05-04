@@ -70,7 +70,7 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 		if(orderLines!=null){	
 			for(int i=0;i<orderLines.size();i++) {
 				  FDCartLineI model=(FDCartLineI)orderLines.get(i);
-				  if(model.isDiscountApplied()){
+				  if(model.isDiscountFlag()){
 						boolean e = evaluate(model, promotionCode, context);
 						if(e) {
 							Discount dis=new Discount(promotionCode,EnumDiscountType.PERCENT_OFF,percentOff);
@@ -89,14 +89,14 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 			//Now run through all recently added items.
 			for(int i=0;i<orderLines.size();i++) {		
 				FDCartLineI model=(FDCartLineI)orderLines.get(i);
-				if(!model.isDiscountApplied()) {
+				if(!model.isDiscountFlag()) {
 					  	boolean e = evaluate(model, promotionCode, context);
 						if(e) {
 							Discount dis=new Discount(promotionCode,EnumDiscountType.PERCENT_OFF,percentOff);
 							model.setDiscount(dis);
 							String productId = model.getProductRef().lookupProduct().getContentKey().getId();
 							recommendedItemMap.put(productId, model.getVariantId());
-							model.setDiscountApplied(true);
+							model.setDiscountFlag(true);
 							appliedCnt++;
 						}		
 						
@@ -112,7 +112,7 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 							Discount dis=new Discount(promotionCode,EnumDiscountType.PERCENT_OFF,percentOff);
 							cartModel.setDiscount(dis);
 							cartModel.setSavingsId((String)recommendedItemMap.get(productId));
-							cartModel.setDiscountApplied(true);
+							cartModel.setDiscountFlag(true);
 							appliedCnt++;
 						}
 					
@@ -147,8 +147,8 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 			LineItemStrategyI strategy = (LineItemStrategyI) i.next();
 			int response = strategy.evaluate(lineItem, promoCode, context);
 
-			 System.out.println("Evaluated " + promoCode + " / " +
-			 strategy.getClass().getName() + " -> " + response);
+			 //System.out.println("Evaluated " + promoCode + " / " +
+			 //strategy.getClass().getName() + " -> " + response);
 
 			switch (response) {
 

@@ -105,7 +105,10 @@ public class PromoVariantCache {
 	 * @return a collection of PromoVariantModel attached to the given variant.
 	 */
 	public List getAllPromoVariants(String variantId) {
-		return Collections.unmodifiableList((List) getPromoVariantMap().get(variantId));
+		List pvlist = (List) getPromoVariantMap().get(variantId);
+		if(pvlist != null)
+			return Collections.unmodifiableList(pvlist);
+		return Collections.EMPTY_LIST;
 	}
 
 }

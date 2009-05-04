@@ -264,10 +264,10 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 	public void setDiscountAmount(double discountAmount) {
 		this.discountAmount = discountAmount;
 	}
-	public boolean isDiscountApplied() {
+	public boolean isDiscountFlag() {
 		return isDiscountApplied;
 	}
-	public void setDiscountApplied(boolean isDiscountApplied) {
+	public void setDiscountFlag(boolean isDiscountApplied) {
 		this.isDiscountApplied = isDiscountApplied;
 	}
     public double getActualPrice() {

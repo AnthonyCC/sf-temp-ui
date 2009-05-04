@@ -30,9 +30,7 @@ public class PromoVariantModelImpl implements PromoVariantModel {
 	public int getPriority() {
 		return priority;
 	}
-	public void setPriority(int priority) {
-		this.priority = priority;
-	}
+
 	public PromotionI getAssignedPromotion() {
 		return PromotionFactory.getInstance().getPromotion(this.promoCode);
 	}
@@ -43,9 +41,6 @@ public class PromoVariantModelImpl implements PromoVariantModel {
 	*/
 	public EnumSiteFeature getSiteFeature() {
 		return siteFeature;
-	}
-	public void setSiteFeature(EnumSiteFeature siteFeature) {
-		this.siteFeature = siteFeature;
 	}
 	public String getVariantId() {
 		return variantId;
