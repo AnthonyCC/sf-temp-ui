@@ -71,8 +71,7 @@ public class TxProductControlTag extends BodyTagSupport {
 		ProductModel realProduct = product.getSourceProduct();
 		FDConfigurableI configuration = impression.getConfiguration();
 
-
-		buf.append("<table align=\"center\" style=\"border-collapse: collapse; border-spacing: 0px;\">\n");
+		buf.append("<table align=\"center\" style=\"border-collapse: collapse; border-spacing: 0px;" + (this.disabled ? " visibility: hidden;" : "") + "\">\n");
 		buf.append("  <tr>\n");
 		buf.append("    <td style=\"height: 28px; margin: 0px; padding: 0px;\">\n");
 		buf.append("      <input type=\"hidden\" name=\"productId"+txPostfix+"\" value=\""+realProduct.getContentName()+"\">\n");
