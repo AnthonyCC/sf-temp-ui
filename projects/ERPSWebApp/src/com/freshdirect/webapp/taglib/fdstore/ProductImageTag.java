@@ -178,7 +178,7 @@ public class ProductImageTag extends BodyTagSupport {
 				} else if (pl.isDisplayNew()) {
 					// we need width and height for png behavior
 					String burstImage = "/media_stat/images/template/search/brst_sm_new.png";
-					buf.append("<img alt=\"NEW\" src=\"/"+burstImage+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">");
+					buf.append("<img alt=\"NEW\" src=\""+burstImage+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">");
 				}
 				
 				if (shouldGenerateAction) {
