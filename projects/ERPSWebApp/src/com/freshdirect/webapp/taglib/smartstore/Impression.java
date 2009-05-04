@@ -50,10 +50,22 @@ public class Impression {
         String sessionId = httpServletRequest.getSession().getId();
 
         String erpCustomerId = identity != null ? identity.getErpCustomerPK() : "";
-
         
-        String message = requestId + "," + createTimestamp() + "," + filter(user.getUserId()) + ',' + filter(sessionId) + ',' + erpCustomerId + ',' + filter(uri) + ','
-                + filter(httpServletRequest.getQueryString());
+        String queryString = httpServletRequest.getQueryString();
+        
+        init(user.getUserId(), uri, sessionId, erpCustomerId, queryString);
+    }
+
+    Impression(String requestId, String userId, String uri, String sessionId, String erpCustomerId, String queryString, Map serviceAudit, Map stratServiceAudit) {
+        this.requestId = requestId;
+        this.recServiceAudit = serviceAudit;
+        this.recStratServiceAudit = stratServiceAudit;
+        init(userId, uri, sessionId, erpCustomerId, queryString);
+    }
+    
+    private void init(String userId, String uri, String sessionId, String erpCustomerId, String queryString) {
+        String message = requestId + "," + createTimestamp() + "," + filter(userId) + ',' + filter(sessionId) + ',' + erpCustomerId + ',' + filter(uri) + ','
+                + filter(queryString);
         ImpressionLogger.REQUEST.logEvent(message);
     }
     
@@ -128,7 +140,6 @@ public class Impression {
         Object res = (recStratServiceAudit  != null ? recStratServiceAudit.get(contentId) : null);
         return res!=null ? res : "";
     }
-
     
     public String logTab(String featureImpressionId, int number, String tabName) {
         tabId++;

@@ -11,7 +11,7 @@ import com.freshdirect.fdstore.FDRuntimeException;
  * When the least significant part reaches its maximum, a new high portion is
  * obtained from the DB sequence.
  */
-public class HiLoGenerator {
+public class HiLoGenerator implements IDGenerator {
 
 	/** How many digits to utilize for the low portion **/
 	private final static int ID_LO_LENGTH = 4;
@@ -36,6 +36,9 @@ public class HiLoGenerator {
 		result.append(keyPart);
 	}
 
+	/* (non-Javadoc)
+     * @see com.freshdirect.fdstore.customer.IDGenerator#getNextId()
+     */
 	public synchronized String getNextId() {
 		try {
 			if (hi == null || "".equals(hi) || lo >= ID_LO_MAX) {

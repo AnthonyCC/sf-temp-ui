@@ -3,7 +3,6 @@
  */
 package com.freshdirect.webapp.taglib.smartstore;
 
-import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpSession;

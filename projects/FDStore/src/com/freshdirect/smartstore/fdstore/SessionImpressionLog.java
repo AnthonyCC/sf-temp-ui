@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.HiLoGenerator;
+import com.freshdirect.fdstore.customer.IDGenerator;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionImpressionLogEntry;
@@ -23,7 +24,7 @@ public class SessionImpressionLog {
 	
 	private static Logger LOGGER = LoggerFactory.getInstance(SessionImpressionLog.class);
 
-	static HiLoGenerator ID_GENERATOR = new HiLoGenerator ("CUST","PAGE_IMPRESSION_SEQ");  
+	static IDGenerator ID_GENERATOR = new HiLoGenerator ("CUST","PAGE_IMPRESSION_SEQ");  
 
 	
 	private SessionImpressionLog() throws NamingException {
@@ -81,6 +82,14 @@ public class SessionImpressionLog {
 	
 	public static String getPageId() {
 	    return ID_GENERATOR.getNextId();
+	}
+	
+	/**
+	 * This is used for testing, to mock out the 
+	 * @param generator
+	 */
+	public static void setIdGenerator(IDGenerator generator) {
+	    ID_GENERATOR = generator;
 	}
 	
 }

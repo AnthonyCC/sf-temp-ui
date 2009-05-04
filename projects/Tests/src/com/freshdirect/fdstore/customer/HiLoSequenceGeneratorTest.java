@@ -14,7 +14,7 @@ public class HiLoSequenceGeneratorTest extends FDCustomerManagerTestSupport {
 
 	private int sequenceVar = 0;
 	
-	private HiLoGenerator ID_GENERATOR = new HiLoGenerator("CUST","FAKER");
+	private IDGenerator ID_GENERATOR = new HiLoGenerator("CUST","FAKER");
 	
 	public HiLoSequenceGeneratorTest(String name) {
 		super(name);

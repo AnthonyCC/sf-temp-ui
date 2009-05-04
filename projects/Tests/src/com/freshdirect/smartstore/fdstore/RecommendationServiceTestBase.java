@@ -126,7 +126,7 @@ public class RecommendationServiceTestBase extends TestCase {
         aspectSystem.add(new DlvManagerStateCountyLookupAspect());
     }
     
-    RecommendationEventLoggerMockup getMockup() {
+    protected RecommendationEventLoggerMockup getMockup() {
         RecommendationEventLogger instance = RecommendationEventLogger.getInstance();
         RecommendationEventLoggerMockup result = null;
         if (!(instance instanceof RecommendationEventLoggerMockup)) {

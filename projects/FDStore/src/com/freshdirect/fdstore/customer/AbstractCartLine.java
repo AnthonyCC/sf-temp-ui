@@ -23,7 +23,7 @@ import com.freshdirect.fdstore.promotion.PromotionFactory;
 
 public abstract class AbstractCartLine extends FDProductSelection implements FDCartLineI {
 	
-	protected final static HiLoGenerator ID_GENERATOR = new HiLoGenerator("CUST", "CARTLINE_SEQ");
+	protected final static IDGenerator ID_GENERATOR = new HiLoGenerator("CUST", "CARTLINE_SEQ");
 	
 	private final static Random RND = new Random();
 	/** Random ID, not persisted */
