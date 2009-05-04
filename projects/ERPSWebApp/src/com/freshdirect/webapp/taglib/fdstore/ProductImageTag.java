@@ -167,7 +167,7 @@ public class ProductImageTag extends BodyTagSupport {
 				if (this.isInCart) {
 					// Smart Savings - display "In Cart" burst
 					// No opacity needed since burst image is already faded
-					buf.append("<img alt=\"IN CART\" src=\"media_stat/images/bursts/in_cart" + (supportsPNG ? ".png" : ".gif") + "\" width=\"35px\" height=\"35px\" style=\"border:0;\">");
+					buf.append("<img alt=\"IN CART\" src=\"/media_stat/images/bursts/in_cart" + (supportsPNG ? ".png" : ".gif") + "\" width=\"35px\" height=\"35px\" style=\"border:0;\">");
 				} else if (deal > 0) {
 					String burstImage = "/media_stat/images/deals/brst_sm_" + deal + (supportsPNG ? ".png" : ".gif");
 					buf.append("<img alt=\"SAVE " + deal + "\" src=\""+burstImage+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">");
@@ -177,7 +177,7 @@ public class ProductImageTag extends BodyTagSupport {
 					buf.append("<img alt=\"FAVE\" src=\""+burstImage+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">");
 				} else if (pl.isDisplayNew()) {
 					// we need width and height for png behavior
-					String burstImage = "media_stat/images/template/search/brst_sm_new.png";
+					String burstImage = "/media_stat/images/template/search/brst_sm_new.png";
 					buf.append("<img alt=\"NEW\" src=\"/"+burstImage+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">");
 				}
 				
