@@ -5,6 +5,7 @@
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
 <%@ page import="com.freshdirect.smartstore.fdstore.SmartStoreUtil"%>
+<%@page import="java.net.URLEncoder"%>
 <%@page import="java.text.MessageFormat"%>
 <%@page import="java.util.Collections"%>
 <%@ page import="java.util.Map"%>
@@ -103,12 +104,14 @@
 									int savingsItemCount = 0;
 									double savingsPercent = 0.0;
 									double sumOfSavings = 0.0;
+									String promotionCode = "";
 									String hideSavingsUrl = "";
 									if (tab.get(k).isSmartSavings()) {
 										FDUserI xUser = (FDUserI) session.getAttribute(SessionName.USER);
 										Map xNodes = (Map) session.getAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
 										savingsItemCount = SmartStoreUtil.countSavingProductsInCart(tab.get(k), xUser, xNodes);
 										savingsPercent = xUser.getPromoVariant(tab.get(k).getId()).getPercentageOff();
+										promotionCode = URLEncoder.encode(xUser.getPromoVariant(tab.get(k).getId()).getAssignedPromotion().getPromotionCode(), "UTF-8");
 										sumOfSavings = SmartStoreUtil.sumOfSavingsInCart(tab.get(k), xUser, xNodes);
 										hideSavingsUrl = gen.set("hideSavingsVarId", tab.get(k).getId()).build();
 									}
@@ -118,7 +121,7 @@
 											<%= tab.getTabDescription(k) %>
 										<% } else {
 											MessageFormat xFormat = new MessageFormat(tab.getTabDescription(k));
-											Object[] xParams = { new Integer(savingsItemCount), new Double(savingsPercent), new Double(sumOfSavings), hideSavingsUrl }; %>
+											Object[] xParams = { new Integer(savingsItemCount), new Double(savingsPercent), new Double(sumOfSavings), hideSavingsUrl, promotionCode }; %>
 											<%= xFormat.format(xParams) %><%
 										   } %>							
 										</div>
@@ -132,7 +135,7 @@
 											<%= tab.getTabFooter(k) %>
 										<% } else {
 											MessageFormat xFormat = new MessageFormat(tab.getTabFooter(k));
-											Object[] xParams = { new Integer(savingsItemCount), hideSavingsUrl }; %>
+											Object[] xParams = { new Integer(savingsItemCount), hideSavingsUrl, promotionCode }; %>
 											<%= xFormat.format(xParams) %><%
 										   } 
 										} %>							
