@@ -193,7 +193,7 @@ public class TxProductPricingSupportTag extends BodyTagSupport {
 		// PART II. -- Configure pricing script
 		int nConfProd = txImpressions.size();
 
-		final String nsObj = "document."+namespace;
+		final String nsObj = namespace;
 		
 		buf.append("<script type=\"text/javascript\">\n");
 		buf.append("  "+ nsObj +" = new Object();\n");

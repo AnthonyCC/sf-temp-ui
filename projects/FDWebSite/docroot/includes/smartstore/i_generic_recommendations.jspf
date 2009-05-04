@@ -49,7 +49,7 @@
 	
 	// transactional pricing logic - 'template' parameters
 	final String tx_pricing_FormName = "tabform_"+vId; // impression form name
-	final String tx_pricing_JSNameSpace = "pr"+vId.replaceAll("[^\\w]", "");
+	final String tx_pricing_JSNameSpace = "document.pr"+vId.replaceAll("[^\\w]", "");
 	final String tx_input_postfix = "in_"+vId;
 
 	ActionResult pip_result = (ActionResult) request.getAttribute("actionResult");
@@ -284,7 +284,7 @@
 					</fd:PIPLayout>
 							
 					<script type="text/javascript">
-						document.<%= tx_pricing_JSNameSpace %>.updateTotal();
+						<%= tx_pricing_JSNameSpace %>.updateTotal();
 					</script>
 				</form>		
 				
