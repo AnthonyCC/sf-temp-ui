@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -44,7 +45,7 @@ public class RouteFileManager implements IRouteFileManager {
         try {        	
             FileFormat ff = parser.loadConfigurationFile(configurationPath); 
                                               
-            BufferedReader bufIn = new BufferedReader(new InputStreamReader(in));
+            BufferedReader bufIn = new BufferedReader(new InputStreamReader(in,"UTF-16") );
             MatchedRecord results;
             Object tmpBean = null;
             while ((results = ff.getNextRecord(bufIn)) != null) {
@@ -67,7 +68,9 @@ public class RouteFileManager implements IRouteFileManager {
             e.printStackTrace(); 
         } catch (FlatwormConversionException e) {
             e.printStackTrace(); 
-        }        
+        } catch (UnsupportedEncodingException  e) {
+            e.printStackTrace(); 
+        } 
         return inputList;
 	}
 	
@@ -153,6 +156,6 @@ public class RouteFileManager implements IRouteFileManager {
         } 
         return false;
 	}
-		
+
 	
 }
