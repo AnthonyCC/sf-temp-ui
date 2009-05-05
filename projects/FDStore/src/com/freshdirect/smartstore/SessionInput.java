@@ -1,6 +1,7 @@
 package com.freshdirect.smartstore;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -78,7 +79,7 @@ public class SessionInput {
 		if (user != null) {
 			this.customerServiceType = user.getUserServiceType();
 			this.cartModel = user.getShoppingCart();
-			this.promoVariantMap = user.getPromoVariantMap();
+			this.promoVariantMap = new HashMap(user.getPromoVariantMap());
 			//this.eligiblePromotions = user.getPromotionEligibility().getEligiblePromotionCodes();
 			if (user.getIdentity() != null)
 				this.customerId = user.getIdentity().getErpCustomerPK();

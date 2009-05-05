@@ -279,6 +279,9 @@ public class FDStoreProperties {
 	private static final String PROP_REFRESHSECS_SURVEYDEF = "fdstore.refreshSecs.surveyDef";
 	private final static String PROP_FDSURVEY_HOME		= "fdstore.fdSurvey.home";
     
+	//Smart Savings
+	
+	private static final String PROMO_VARIANT_FEATURE_PRIORITY_ENABLED = "fdstore.promo.variant.featurepriority.enabled";
 	static {
 
 		defaults.put(PROP_PROVIDER_URL, 	"t3://localhost:7006");
@@ -478,7 +481,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_REFRESHSECS_SURVEYDEF, "600");
 		defaults.put(PROP_FDSURVEY_HOME,	"freshdirect.fdstore.FDSurvey");
 
-
+		defaults.put(PROMO_VARIANT_FEATURE_PRIORITY_ENABLED, "false");
 		refresh();
 	}
 
@@ -1069,6 +1072,10 @@ public class FDStoreProperties {
 	}
 	public static String getFDSurveyHome() {
 		return get(PROP_FDSURVEY_HOME);
+	}
+	
+	public static boolean isFeaturePriorityEnabled() {
+		return Boolean.valueOf(get(PROMO_VARIANT_FEATURE_PRIORITY_ENABLED)).booleanValue();
 	}
 	/**
 	 * Used for testing, do not call from the App.

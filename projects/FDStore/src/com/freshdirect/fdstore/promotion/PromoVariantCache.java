@@ -79,17 +79,18 @@ public class PromoVariantCache {
 
 	protected synchronized Map getPromoVariantMap() {
 		List promoVariants = (List) this.activePromoVariants.get();
+		String prevVariantId = "";
+		List valueList = null;
 		for(Iterator iter = promoVariants.iterator(); iter.hasNext();) {
 			PromoVariantModel pv = (PromoVariantModel) iter.next();
-			List valueList = (List) promoVariantMap.get(pv.getVariantId());
-			if( valueList == null) {
+			String variantId = pv.getVariantId();
+			if(!variantId.equals(prevVariantId)){
 				valueList = new ArrayList();
-				promoVariantMap.put(pv.getVariantId(), valueList);
+				promoVariantMap.put(variantId, valueList);
+				prevVariantId = variantId;
 			}
 			valueList.add(pv);
 			Collections.sort(valueList, PRIORITY_COMPARATOR);
-			promoVariantMap.put(pv.getVariantId(), valueList);
-			
 		}
 		return this.promoVariantMap;
 	}

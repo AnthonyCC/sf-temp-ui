@@ -599,11 +599,11 @@ public class SmartStoreUtil {
 		if (v == null || !v.isSmartSavings() || user == null)
 			return 0;
 
-		int count = 0;
+		//int count = 0;
 		List cachedItems = (List) previousRecommendations.get(v.getId());
 		if (cachedItems == null)
 			return 0;
-		
+		Set uniqueKeys = new HashSet();
 		OUTER: for (Iterator it=user.getShoppingCart().getOrderLines().iterator(); it.hasNext(); ) {
 			FDCartLineI cl = (FDCartLineI) it.next();
 
@@ -614,13 +614,14 @@ public class SmartStoreUtil {
 				for (int i = 0; i < cachedItems.size(); i++) {
 					ContentKey key = (ContentKey) cachedItems.get(i);
 					if (key.getId().equals(productId)) {
-						count++;
+						//count++;
+						uniqueKeys.add(productId);
 						continue OUTER;
 					}
 				}
 			}
 		}
-		
+		int count = uniqueKeys.size();
 		if (cachedItems.size() == count)
 			return -count;
 		

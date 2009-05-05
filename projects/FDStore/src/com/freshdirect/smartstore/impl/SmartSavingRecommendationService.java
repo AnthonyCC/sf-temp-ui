@@ -7,10 +7,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -64,8 +66,11 @@ public class SmartSavingRecommendationService extends WrapperRecommendationServi
         }
         if (cartSuggestions.size() > input.getMaxRecommendations())
         	cartSuggestions = cartSuggestions.subList(0, input.getMaxRecommendations());
-        //If there are no recommendations return empty list. No need to put into previous recommendation map.
-        if(cartSuggestions.size() == 0) return cartSuggestions;
+        //If there are no recommendations return empty list. 
+        if(cartSuggestions.size() == 0 || (FDStoreProperties.isFeaturePriorityEnabled() && !(variantId.equals(getPriorityVariant(input))))) {
+        	input.getPromoVariantMap().remove(variantId);
+        	return Collections.EMPTY_LIST;
+        }
         
         if (prevMap == null) {
             prevMap = new HashMap();
@@ -94,6 +99,20 @@ public class SmartSavingRecommendationService extends WrapperRecommendationServi
 		}
 		*/
 		return true;
+	}
+	
+	private String getPriorityVariant(SessionInput sessionInput) {
+		int priority = 0;
+		String priorityVariant = "";
+		Map promoVariantMap = sessionInput.getPromoVariantMap();
+		for(Iterator it=promoVariantMap.keySet().iterator(); it.hasNext();){
+			PromoVariantModel pvModel = (PromoVariantModel) promoVariantMap.get(it.next());
+			if(pvModel.getFeaturePriority() > priority) {
+				priorityVariant = pvModel.getVariantId();
+				priority = pvModel.getFeaturePriority();
+			}
+		}
+		return priorityVariant;
 	}
 	
 	public boolean isSmartSavings() {

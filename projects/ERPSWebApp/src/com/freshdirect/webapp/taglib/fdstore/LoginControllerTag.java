@@ -104,6 +104,8 @@ public class LoginControllerTag extends AbstractControllerTag {
                 }
                 
                 UserUtil.createSessionUser(request, response, loginUser);
+                //The previous recommendations of the current user need to be removed.
+                session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
                 
             } else {
                 // the logged in user was the same as the current user,

@@ -1045,7 +1045,7 @@ public class FDPromotionDAO {
 		if(buffer.length() > 0){
 			preparedStmtQry.append(buffer);
 		}
-		//preparedStmtQry.append(" order by vp.VARIANT_ID, vp.PRIORITY desc");
+		preparedStmtQry.append(" order by vp.VARIANT_ID desc");
 		PreparedStatement ps = conn.prepareStatement(preparedStmtQry.toString());
 		ResultSet rs = ps.executeQuery();
 		List promoVariants =  constructPromoVariants(rs);
