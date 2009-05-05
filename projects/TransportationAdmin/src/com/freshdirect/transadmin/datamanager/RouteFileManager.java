@@ -45,7 +45,10 @@ public class RouteFileManager implements IRouteFileManager {
         try {        	
             FileFormat ff = parser.loadConfigurationFile(configurationPath); 
                                               
-            BufferedReader bufIn = new BufferedReader(new InputStreamReader(in,"UTF-16") );
+            BufferedReader bufIn = new BufferedReader(new InputStreamReader(in,TransportationAdminProperties.getFileEncoding()) );
+            //InputStreamReader defaultReader = new InputStreamReader(in);
+            //BufferedReader bufIn = new BufferedReader(defaultReader );
+            //System.out.println("defaultReader.getEncoding()"+defaultReader.getEncoding());
             MatchedRecord results;
             Object tmpBean = null;
             while ((results = ff.getNextRecord(bufIn)) != null) {
