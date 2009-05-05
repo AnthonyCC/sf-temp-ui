@@ -76,7 +76,11 @@
 		</p>
     	<p>
 		<span class="bull">&bull;</span> <a href="all_ymal_perf_test.jsp"><span>All YMAL Performance Test</span></a>
+		</p>        
+        <p>
+		<span class="bull">&bull;</span> <a href="view_promovariant_cfg.jsp"><span>Promo Variant Configurations</span></a> <a href="view_promovariant_cfg.jsp?refresh=1">(reload)</a>
 		</p>
+        
     	<p>
 		<span class="bull">&bull;</span> <span>Impression logger :
 		<% if (ImpressionLogger.isGlobalEnabled()) { %>

@@ -72,12 +72,22 @@ public class PromoVariantCache {
 	private PromoVariantCache() {
 		
 	}
+			
 
 	public static PromoVariantCache getInstance() {
 		return INSTANCE;
 	}
+	
+	
+	public void refreshAll(){
+		this.activePromoVariants.forceRefresh();
+		// just to confirm this reloads all the cached data
+		this.activePromoVariants.get();		
+	}
+	
 
-	protected synchronized Map getPromoVariantMap() {
+	public synchronized Map getPromoVariantMap() {
+		
 		List promoVariants = (List) this.activePromoVariants.get();
 		String prevVariantId = "";
 		List valueList = null;
@@ -92,6 +102,7 @@ public class PromoVariantCache {
 			valueList.add(pv);
 			Collections.sort(valueList, PRIORITY_COMPARATOR);
 		}
+		
 		return this.promoVariantMap;
 	}
 	
