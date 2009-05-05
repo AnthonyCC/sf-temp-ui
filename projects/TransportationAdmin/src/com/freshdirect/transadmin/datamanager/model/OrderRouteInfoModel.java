@@ -16,6 +16,7 @@ public class OrderRouteInfoModel  implements IOrderRouteInfo {
 	private Date orderBeginDate;
 	private Date orderEndDate;
 	private String routeId;
+	private String tripId;
 	private String stopNumber;
 	private Date stopArrivalTime;
 	private Date stopDepartureTime;
@@ -186,6 +187,12 @@ public class OrderRouteInfoModel  implements IOrderRouteInfo {
 	}
 	public void setStopDepartureTime(Date stopDepartureTime) {
 		this.stopDepartureTime = stopDepartureTime;
+	}
+	public String getTripId() {
+		return tripId;
+	}
+	public void setTripId(String tripId) {
+		this.tripId = tripId;
 	}
 
 

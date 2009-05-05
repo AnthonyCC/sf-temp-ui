@@ -22,6 +22,7 @@ import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.hssf.util.Region;
 
 import com.freshdirect.transadmin.datamanager.RouteFileManager;
+import com.freshdirect.transadmin.datamanager.model.OrderRouteInfoModel;
 import com.freshdirect.transadmin.datamanager.report.model.CutOffReportData;
 import com.freshdirect.transadmin.datamanager.report.model.CutOffReportKey;
 import com.freshdirect.transadmin.datamanager.report.model.TimeWindow;
@@ -41,7 +42,7 @@ public class XlsCutOffReport implements ICutOffReport  {
 										throws ReportGenerationException {
 
 		HSSFWorkbook wb = new HSSFWorkbook();
-
+		Map styles = initStyles(wb);
 				
 		if (reportData != null) {
 			List cutOffKeys = getCutOffReportKeys(reportData.getReportData().keySet());
@@ -50,15 +51,16 @@ public class XlsCutOffReport implements ICutOffReport  {
 			Set orderDates = (Set) cutOffKeys.get(2);
 			//System.out.println("timeSlots >>"+timeSlots);
 			Iterator _orderDateItr = orderDates.iterator();
+			int totalRoutes = 0;
+			int totalOrders = 0;
+			
 			while (_orderDateItr.hasNext()) {
 				Date orderDate = (Date) _orderDateItr.next();
 				
 				HSSFSheet sheet = wb.createSheet(getFormattedDate(orderDate));
 				sheet.setDefaultColumnWidth((short)DEFAULT_WIDTH);	
 				sheet.setPrintGridlines(true);
-
-			    
-			    Map styles = initStyles(wb);
+ 			    
 			    HSSFPrintSetup ps = sheet.getPrintSetup();
 			    sheet.setAutobreaks(true);
 		        ps.setFitHeight((short) 1);
@@ -145,6 +147,7 @@ public class XlsCutOffReport implements ICutOffReport  {
 			        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
 			        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
 			        hssfCell.setCellValue(new HSSFRichTextString(routeId));
+			        totalRoutes++;
 			        
 			        int totalStops = 0;
 					while (_timeSlotItr.hasNext()) {
@@ -180,13 +183,225 @@ public class XlsCutOffReport implements ICutOffReport  {
 			        	hssfCell.setCellValue(new HSSFRichTextString(""));
 			        } else {
 			        	hssfCell.setCellValue(totalStops);
-			        }			        
+			        }
+			        totalOrders = totalOrders + totalStops;
 				}
-				
+				createTotalRows(sheet, rownum, totalRoutes, totalOrders, styles);
 			}
+			
+			createSummarySheet(wb, reportData, styles);
+			createTripInfoSheet(wb, reportData, styles);			
 		}		 
 
 		new RouteFileManager().generateReportFile(file, wb);
+	}
+	
+	private void createTotalRows(HSSFSheet sheet, int rowNum, int totalRoutes, int totalOrders, Map styles) {
+		
+		cellnum = 0;
+		HSSFRow row = sheet.createRow(rowNum++);
+		row = sheet.createRow(rowNum++);
+        
+		HSSFCell hssfCell = row.createCell(cellnum++);		        
+        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+        hssfCell.setCellValue(new HSSFRichTextString("Total Routes"));
+        		        
+        hssfCell = row.createCell(cellnum++);		        
+        hssfCell.setCellStyle((HSSFCellStyle) styles.get("numericStyle"));
+        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+        hssfCell.setCellValue(new HSSFRichTextString(totalRoutes+""));
+        
+        cellnum = 0;
+		row = sheet.createRow(rowNum++);
+        
+		hssfCell = row.createCell(cellnum++);		        
+        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+        hssfCell.setCellValue(new HSSFRichTextString("Total Orders"));
+        		        
+        hssfCell = row.createCell(cellnum++);		        
+        hssfCell.setCellStyle((HSSFCellStyle) styles.get("numericStyle"));
+        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+        hssfCell.setCellValue(new HSSFRichTextString(totalOrders+""));
+        
+        
+	}
+	
+	private short createTripInfoSheet(HSSFWorkbook wb, CutOffReportData reportData, Map styles) {
+		
+		if(reportData.getTripReportData() != null) {
+			Set tripKeys = reportData.getTripReportData().keySet();
+			
+			Iterator _tripKeyItr = tripKeys.iterator();
+			
+			short rownum = 0;	
+		    short cellnum = 0;
+		    
+		    HSSFSheet sheet = wb.createSheet("Trip Summary");
+		    sheet.setDefaultColumnWidth((short)DEFAULT_WIDTH);	
+			sheet.setPrintGridlines(true);
+		    
+		    HSSFPrintSetup ps = sheet.getPrintSetup();
+		    sheet.setAutobreaks(true);
+	        ps.setFitHeight((short) 1);
+	        ps.setFitWidth((short) 1);
+	       		    
+		    HSSFRow row = sheet.createRow(rownum++);
+		    HSSFCell hssfCell = row.createCell(cellnum);
+
+	        setCellEncoding(hssfCell);
+
+	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("titleStyle"));
+	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+	        hssfCell.setCellValue(new HSSFRichTextString("Trip Summary Info"));
+	        			        
+			sheet.addMergedRegion(new Region(0,(short)0,0,(short)8));
+			row = sheet.createRow(rownum++);//blank Row
+			
+	        row = sheet.createRow(rownum++);
+	        
+	        hssfCell = row.createCell(cellnum++);		        
+	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+	        hssfCell.setCellValue(new HSSFRichTextString("Route Id"));
+	        		        
+	        hssfCell = row.createCell(cellnum++);		        
+	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+	        hssfCell.setCellValue(new HSSFRichTextString("Trip Id"));
+	        
+	        hssfCell = row.createCell(cellnum++);		        
+	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+	        hssfCell.setCellValue(new HSSFRichTextString("Stop No"));
+	        
+	        hssfCell = row.createCell(cellnum++);		        
+	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+	        hssfCell.setCellValue(new HSSFRichTextString("Order No"));
+	        
+	        hssfCell = row.createCell(cellnum++);		        
+	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+	        hssfCell.setCellValue(new HSSFRichTextString("Address"));
+	        
+			while (_tripKeyItr.hasNext()) {
+				String _tripRouteId = (String) _tripKeyItr.next();
+						        			        
+		        Iterator _colsTripItr = ((List)reportData.getTripReportData().get(_tripRouteId)).iterator();
+	       			        		        
+		        while (_colsTripItr.hasNext()) {
+		        	cellnum = 0;
+		        	OrderRouteInfoModel _model = (OrderRouteInfoModel)_colsTripItr.next();
+		        	
+		        	row = sheet.createRow(rownum++);
+		        	
+					hssfCell = row.createCell(cellnum++);		        
+				    hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+				    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+				    hssfCell.setCellValue(new HSSFRichTextString(_tripRouteId));
+				    
+				    hssfCell = row.createCell(cellnum++);		        
+				    hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+				    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+				    hssfCell.setCellValue(new HSSFRichTextString(_model.getTripId()));
+				    
+				    hssfCell = row.createCell(cellnum++);		        
+				    hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+				    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+				    hssfCell.setCellValue(new HSSFRichTextString(_model.getStopNumber()));
+				    
+				    hssfCell = row.createCell(cellnum++);		        
+				    hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+				    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+				    hssfCell.setCellValue(new HSSFRichTextString(_model.getOrderNumber()));
+				    
+				    hssfCell = row.createCell(cellnum++);		        
+				    hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyleNoWrap"));
+				    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+				    hssfCell.setCellValue(new HSSFRichTextString(_model.getAddress()+","+_model.getZipcode()));
+				    //sheet.autoSizeColumn((short)(cellnum-1));				
+				}		        			        
+				
+			}
+		}
+		
+        
+        return rownum;
+	}
+	
+	private short createSummarySheet(HSSFWorkbook wb, CutOffReportData reportData, Map styles) {
+		
+		if(reportData.getSummaryData() != null) {
+			Set summaryKeys = reportData.getSummaryData().keySet();
+			
+			Iterator _itr = summaryKeys.iterator();
+			
+			short rownum = 0;	
+		    short cellnum = 0;
+		    
+		    int totalRoutes = 0;
+			int totalOrders = 0;
+		    
+		    HSSFSheet sheet = wb.createSheet("Route Summary");
+		    sheet.setDefaultColumnWidth((short)DEFAULT_WIDTH);	
+			sheet.setPrintGridlines(true);
+		    
+		    HSSFPrintSetup ps = sheet.getPrintSetup();
+		    sheet.setAutobreaks(true);
+	        ps.setFitHeight((short) 1);
+	        ps.setFitWidth((short) 1);
+	       		    
+		    HSSFRow row = sheet.createRow(rownum++);
+		    HSSFCell hssfCell = row.createCell(cellnum);
+
+	        setCellEncoding(hssfCell);
+
+	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("titleStyle"));
+	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+	        hssfCell.setCellValue(new HSSFRichTextString("Route Summary Report"));
+	        			        
+			sheet.addMergedRegion(new Region(0,(short)0,0,(short)8));
+			row = sheet.createRow(rownum++);//blank Row
+			
+	        row = sheet.createRow(rownum++);
+	        
+	        hssfCell = row.createCell(cellnum++);		        
+	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+	        hssfCell.setCellValue(new HSSFRichTextString("Route Id"));
+	       
+	        		        
+	        hssfCell = row.createCell(cellnum++);		        
+	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+	        hssfCell.setCellValue(new HSSFRichTextString("No of Orders"));
+	        	        
+			while (_itr.hasNext()) {
+				String _routeId = (String) _itr.next();
+				List _orders = 	(List)reportData.getSummaryData().get(_routeId);        			        
+		        int totalStops =  _orders != null ? _orders.size():0;      
+		        cellnum = 0;
+	        	        	
+	        	row = sheet.createRow(rownum++);
+	        	
+				hssfCell = row.createCell(cellnum++);		        
+			    hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+			    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			    hssfCell.setCellValue(new HSSFRichTextString(_routeId));
+			    totalRoutes++;
+			    
+			    hssfCell = row.createCell(cellnum++);		        
+			    hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+			    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			    hssfCell.setCellValue(new HSSFRichTextString(totalStops+""));
+			    totalOrders = totalOrders+totalStops;
+			}
+			createTotalRows(sheet, rownum, totalRoutes, totalOrders, styles);
+		}
+		       
+        return rownum;
 	}
 
 	private List getCutOffReportKeys(Set keys) {
@@ -223,6 +438,7 @@ public class XlsCutOffReport implements ICutOffReport  {
         HSSFCellStyle textStyle = wb.createCellStyle();
         HSSFCellStyle boldStyle = wb.createCellStyle();
         HSSFCellStyle boldRightAlignStyle = wb.createCellStyle();
+        HSSFCellStyle textStyleNoWrap = wb.createCellStyle();
         HSSFCellStyle numericStyle = wb.createCellStyle();
         HSSFCellStyle numericStyleBold = wb.createCellStyle();
         
@@ -234,6 +450,8 @@ public class XlsCutOffReport implements ICutOffReport  {
         result.put("textStyle", textStyle);
         result.put("boldStyle", boldStyle);
         result.put("boldRightAlignStyle", boldRightAlignStyle);
+        result.put("textStyleNoWrap", textStyleNoWrap);
+        
         result.put("numericStyle", numericStyle);
         result.put("numericStyleBold", numericStyleBold);
         result.put("numericStyle_Totals", numericStyle_Totals);
@@ -295,6 +513,11 @@ public class XlsCutOffReport implements ICutOffReport  {
         boldRightAlignStyle.setFont(fontBold);
         boldRightAlignStyle.setWrapText(true);
         boldRightAlignStyle.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
+        
+        textStyleNoWrap.setFont(font);
+        textStyleNoWrap.setWrapText(false);
+          
+        
         
        
         // Numeric Style Total

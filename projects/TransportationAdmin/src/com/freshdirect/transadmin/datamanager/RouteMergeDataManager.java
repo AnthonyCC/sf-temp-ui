@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import java.util.TreeSet;
 import com.freshdirect.transadmin.datamanager.model.IRoutingOutputInfo;
 import com.freshdirect.transadmin.datamanager.model.OrderRouteInfoModel;
 import com.freshdirect.transadmin.model.TrnArea;
+import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.web.model.RSFileMergeCommand;
 
@@ -114,6 +116,10 @@ public class RouteMergeDataManager extends RouteOutputDataManager {
 	protected void postProcessRoutingOutput(IRoutingOutputInfo routingInfo, RoutingResult result, IServiceProvider serviceProvider) {
 		
 		Set regularOrderIds = new TreeSet();
+		Set rnZones = getRoutingZoneMapping(serviceProvider.getDomainManagerService().getZones());
+		
+		Set rnMissingAreas = new TreeSet();
+		
 		if(result.getRegularOrders() != null) {
 			Iterator iterator = result.getRegularOrders().iterator();
 			OrderRouteInfoModel tmpInfo = null;
@@ -126,11 +132,22 @@ public class RouteMergeDataManager extends RouteOutputDataManager {
 		if(result.getOrders() != null) {
 			Iterator iterator = result.getOrders().iterator();
 			OrderRouteInfoModel tmpInfo = null;
+			String _tmpZoneId = null;
+			
 			while(iterator.hasNext()) {
 				tmpInfo = (OrderRouteInfoModel)iterator.next();					
 				if(!regularOrderIds.contains(tmpInfo.getOrderNumber())) {
-					result.getRegularOrders().add(tmpInfo);							
+					_tmpZoneId = TransStringUtil.getZoneNumber(tmpInfo.getRouteId());
+					if(rnZones.contains(_tmpZoneId)) {
+						rnMissingAreas.add(_tmpZoneId);
+					} else {
+						result.getRegularOrders().add(tmpInfo);
+					}
 				}					
+			}
+			iterator = rnMissingAreas.iterator();
+			while(iterator.hasNext()) {
+				result.addError("Orders missing in roadnet file for Route /w UPS zone "+iterator.next());
 			}
 		}
 	}

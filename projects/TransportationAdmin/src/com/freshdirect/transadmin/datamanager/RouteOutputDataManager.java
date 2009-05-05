@@ -81,7 +81,8 @@ public class RouteOutputDataManager extends RouteDataManager  {
 							, null);
 
 									
-					CutOffReportData reportData = this.getCutOffReportData(cutOffOrders, routingInfo.getCutOff(), serviceProvider);
+					CutOffReportData reportData = this.getCutOffReportData(cutOffOrders, result.getRegularOrders()
+															, routingInfo.getCutOff(), serviceProvider);
 					this.getCutOffReportEngine().generateCutOffReport(result.getOutputFile3(), reportData);
 
 				} catch (RouteNoGenException routeNoGen) {
@@ -473,6 +474,7 @@ public class RouteOutputDataManager extends RouteDataManager  {
 						depotRouteMapping.put(_tmpRptKey, _tmpLst);
 					}
 					
+					_order.setTripId(_order.getRouteId());
 					_order.setRouteId(grpKey+"-"+intRountCount);
 					_order.setStopNumber(""+intStopCount);
 					result.add(_order);

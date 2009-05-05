@@ -378,6 +378,19 @@ public class TransStringUtil {
 		}
 	}
 	
+	public static String getZoneNumber(String routeId) {
+		
+		String result = null;
+		if(routeId != null) {
+			try {
+				result = routeId.substring(1,4);
+			} catch(Exception e) {
+				//Do Nothing
+			}
+		}
+	    return result;    
+	}
+	
 	public static int getDiffInHours(Date d1, Date d2) {
 		return Math.abs((int) Math.round(((d1.getTime() - d2.getTime()) / (double) HOUR)));
 	}

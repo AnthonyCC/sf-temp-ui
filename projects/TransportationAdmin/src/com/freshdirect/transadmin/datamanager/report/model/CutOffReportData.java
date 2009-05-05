@@ -8,6 +8,8 @@ import java.util.TreeMap;
 public class CutOffReportData implements  Serializable {
 	private String cutOff;
 	private TreeMap reportData;
+	private TreeMap summaryData;
+	private TreeMap tripReportData;
 	
 	public String getCutOff() {
 		return cutOff;
@@ -28,8 +30,35 @@ public class CutOffReportData implements  Serializable {
 		}
 		((List)reportData.get(key)).add(value);
 	}
+	
+	public void putSummaryData(Object key , Object value) {
+		if(!summaryData.containsKey(key)) {
+			summaryData.put(key, new ArrayList());
+		}
+		((List)summaryData.get(key)).add(value);
+	}
+	
+	public void putTripReportData(Object key , Object value) {
+		if(!tripReportData.containsKey(key)) {
+			tripReportData.put(key, new ArrayList());
+		}
+		((List)tripReportData.get(key)).add(value);
+	}
+	
 	public String toString() {
 		return cutOff.toString()+"->"+reportData;
+	}
+	public TreeMap getTripReportData() {
+		return tripReportData;
+	}
+	public void setTripReportData(TreeMap tripReportData) {
+		this.tripReportData = tripReportData;
+	}
+	public TreeMap getSummaryData() {
+		return summaryData;
+	}
+	public void setSummaryData(TreeMap summaryData) {
+		this.summaryData = summaryData;
 	}
 	
 }

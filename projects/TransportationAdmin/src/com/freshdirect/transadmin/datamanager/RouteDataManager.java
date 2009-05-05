@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ import com.freshdirect.transadmin.datamanager.report.model.CutOffReportKey;
 import com.freshdirect.transadmin.model.RouteMappingId;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
+import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
 
@@ -138,14 +140,16 @@ public class RouteDataManager {
 		}
 	}
 	
-	protected CutOffReportData getCutOffReportData(List orderLst, String cutOff, IServiceProvider serviceProvider ) {
+	protected CutOffReportData getCutOffReportData(List rnOrderLst, List fullOrderLst, String cutOff, IServiceProvider serviceProvider ) {
 		
 		CutOffReportData result = new CutOffReportData();
 		result.setCutOff(getCutOffTime(cutOff, serviceProvider));
 		result.setReportData(new TreeMap());
+		result.setTripReportData(new TreeMap());
+		result.setSummaryData(new TreeMap());
 		
-		if(orderLst != null) {
-			Iterator _iterator = orderLst.iterator();
+		if(rnOrderLst != null) {
+			Iterator _iterator = rnOrderLst.iterator();
 			OrderRouteInfoModel _model = null;
 			while(_iterator.hasNext()) {
 				_model = (OrderRouteInfoModel)_iterator.next();
@@ -157,6 +161,20 @@ public class RouteDataManager {
 																_model.getTimeWindowStart(),
 																_model.getTimeWindowStop(),
 																_model.getRouteId()), _model);
+					if(_model.getTripId() != null) {
+						result.putTripReportData(_model.getRouteId(), _model);
+					}
+				}
+			}
+		}
+		
+		if(fullOrderLst != null) {
+			Iterator _iterator = fullOrderLst.iterator();
+			OrderRouteInfoModel _model = null;
+			while(_iterator.hasNext()) {
+				_model = (OrderRouteInfoModel)_iterator.next();
+				if(	_model.getRouteId() != null) {
+					result.putSummaryData(_model.getRouteId(), _model);					
 				}
 			}
 		}
@@ -183,6 +201,23 @@ public class RouteDataManager {
 		public RouteNoGenException(String message) {
 			super(message);
 		}
+	}
+	
+	protected Set getRoutingZoneMapping(Collection zones) {
+		
+		Set result = new HashSet();
+		
+		Zone tmpZone = null;
+		if(zones != null) {
+			Iterator iterator = zones.iterator();
+			while(iterator.hasNext()) {
+				tmpZone = (Zone)iterator.next();				
+				if(tmpZone != null && tmpZone.getArea() != null && "X".equalsIgnoreCase(tmpZone.getArea().getActive())) {
+					result.add(tmpZone.getZoneCode());
+				}
+			}
+		}
+		return result;
 	}
 	
 	protected Map getRoutingAreaMapping(Collection areas) {
@@ -415,5 +450,7 @@ public class RouteDataManager {
 		}
 				
 	}
+	
+	
 
 }
