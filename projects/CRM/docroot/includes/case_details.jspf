@@ -61,6 +61,7 @@ boolean isAssignmentPriorityAllowed = false;
 
 FDOrderI order = null;
 boolean isNewCase = false;
+boolean orderHasCartons = false; // case has order with cartons assigned
 if (request.getParameter("orderId") != null) {
 	// new case
 	order = CrmSession.getOrder(session, request.getParameter("orderId"));
@@ -68,6 +69,7 @@ if (request.getParameter("orderId") != null) {
 } else if (thisCase.getSalePK() != null) {
 	// existing case having order
 	order = CrmSession.getOrder(session, thisCase.getSalePK().getId());
+	orderHasCartons = (order != null && order.getCartonContents().size() > 0);
 }
 
 
@@ -297,8 +299,11 @@ if (request.getParameter("orderId") != null) {
 <%
 				int c = 0;
 				for (Iterator j = q.getSubjects().iterator(); j.hasNext();) {
-					CrmCaseSubject s = (CrmCaseSubject)j.next();						
-					if (!s.isObsolete()) {
+					CrmCaseSubject s = (CrmCaseSubject)j.next();
+					// Rule to display a subject:
+					// Subject.CartonsRequired => NOT NEW case AND HAS cartons assigned
+					final boolean subjectRequiresCartons = (!s.isCartonsRequired() || (!isNewCase && orderHasCartons ) );
+					if (!s.isObsolete() && (!s.isCartonsRequired() || (!isNewCase && orderHasCartons ) )) {
 						if (c>0) out.print(", ");
 						 c++;
 						%>new Subject("<%= s.getCode() %>", "<%= s.getName() %>")<%
@@ -546,6 +551,8 @@ if (request.getParameter("orderId") != null) {
 				<fd:ErrorHandler result='<%= result %>' name='caseDisp07' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 						</div>
 					</div>
+				<div id="MediaIsOtherWarn" class="casedisp_Err_invis">Choosing 'Other' will erase any previously saved Case Disposition choices!</div>
+			</div>
 <%--
 
   == MISSING CARTONS PART ==
@@ -574,9 +581,10 @@ if (order != null) {
 		cartonIDs = thisCase.getCartonNumbers();
 	}
 
+	
 	if (cartons.size() > 0) {
 %>
-					<div id="cartons" style="padding: 0 1em;">
+					<div id="cartons" style="float-left; padding: 0 1em;">
 						<div style="text-align: center; font-weight: bold; padding-bottom: 0.5em;">Carton Info</div>
 						<% if (result.getError("carton") != null) { %><div style="text-align: center; padding-bottom: 0.5em;">
 							<fd:ErrorHandler result='<%= result %>' name='carton' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
@@ -604,7 +612,6 @@ if (order != null) {
 <%
 	}
 %>
-				</div>
 
 <script type="text/javascript">
 function showCartonInfo(cn) {
@@ -637,7 +644,7 @@ document.body.setAttribute("className", "yui-skin-sam"); // IE
 
 		for (Iterator it=order.getCartonContents().iterator(); it.hasNext(); ) {
 			FDCartonInfo ci = (FDCartonInfo) it.next();
-%>	<div id="t_cn_<%= ci.getCartonInfo().getCartonNumber() %>">
+%>		<div id="t_cn_<%= ci.getCartonInfo().getCartonNumber() %>">
 		<div style="padding-bottom: 1em">
 			Carton: <%= ci.getCartonInfo().getCartonNumber() %> / Type: <%= ci.getCartonInfo().getCartonType() %>
 		</div>
@@ -665,12 +672,10 @@ document.body.setAttribute("className", "yui-skin-sam"); // IE
 <%
 		}	
 %>
-</div>
-			
+</div>	
 <%
 } // order != null
 %><%-- END OF CARTONS --%>
-				<div id="MediaIsOtherWarn" class="casedisp_Err_invis">Choosing 'Other' will erase any previously saved Case Disposition choices!</div>
 			</div>
 		</td>
 	</tr>
