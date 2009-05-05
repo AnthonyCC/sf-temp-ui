@@ -71,62 +71,69 @@ public class TxProductControlTag extends BodyTagSupport {
 		ProductModel realProduct = product.getSourceProduct();
 		FDConfigurableI configuration = impression.getConfiguration();
 
-		buf.append("<table align=\"center\" style=\"border-collapse: collapse; border-spacing: 0px;" + (this.disabled ? " visibility: hidden;" : "") + "\">\n");
-		buf.append("  <tr>\n");
-		buf.append("    <td style=\"height: 28px; margin: 0px; padding: 0px;\">\n");
-		buf.append("      <input type=\"hidden\" name=\"productId"+txPostfix+"\" value=\""+realProduct.getContentName()+"\">\n");
-		buf.append("      <input type=\"hidden\" name=\"catId"+txPostfix+"\" value=\""+realProduct.getParentNode().getContentName()+"\">\n");
-		buf.append("      <input type=\"hidden\" name=\"skuCode"+txPostfix+"\" value=\""+impression.getSku()+"\">\n");
+		if (disabled) {
+			// Hidden case: render empty container and
+			//   populate with the necessary input fields
+			buf.append("<div style=\"height: 28px; margin: 0px; padding: 0px; visibility: hidden;\">\n");
 
-		if (product.isSoldBySalesUnits()) {
-			buf.append("      <input type=\"hidden\" name=\"quantity"+txPostfix+"\" value=\"1\">\n");
+			buf.append("  <input type=\"hidden\" name=\"productId"+txPostfix+"\" value=\""+realProduct.getContentName()+"\">\n");
+			buf.append("  <input type=\"hidden\" name=\"catId"+txPostfix+"\" value=\""+realProduct.getParentNode().getContentName()+"\">\n");
+			buf.append("  <input type=\"hidden\" name=\"skuCode"+txPostfix+"\" value=\""+impression.getSku()+"\">\n");
+			buf.append("  <input type=\"hidden\" name=\"quantity"+txPostfix+"\" value=\"0\">\n");
 
-			// render options
-			for (Iterator iit = configuration.getOptions().entrySet().iterator(); iit.hasNext(); ) {
-				Map.Entry   entry = (Map.Entry) iit.next();
-				buf.append("      <input type=\"hidden\" name=\""+entry.getKey()+txPostfix+"\" value=\""+entry.getValue()+"\">\n");
-			}
-			
-			// render sales units
-			buf.append("      <select name=\"salesUnit"+txPostfix+"\" "+(disabled ? "disabled=\"disabled\"" : "")+" style=\"width: 60px\" class=\"text10\" onChange=\""+ namespace +".pricings["+ txNumber +"].setSalesUnit(this.value);\">\n");
-			buf.append("        <option value=\"\" selected=\"selected\"></option>\n");
-			FDSalesUnit     salesUnits[] = impression.getFDProduct().getSalesUnits();
-            for (int ii = 0; ii < salesUnits.length; ++ii) {
-                FDSalesUnit salesUnit      = salesUnits[ii];
-                String      salesUnitDescr = salesUnit.getDescription();
-
-                // clean parenthesis
-                int ppos = salesUnitDescr.indexOf("(");
-                if (ppos > -1) {
-                    salesUnitDescr = salesUnitDescr.substring(0, ppos).trim();
-                }
-                
-                buf.append("        <option value=\""+ salesUnit.getName() +"\">"+ salesUnitDescr +"</option>\n");
-            }
-			buf.append("      </select>\n");
+			buf.append("</div>\n");
 		} else {
-			buf.append("      <input type=\"hidden\" name=\"salesUnit"+txPostfix+"\" value=\""+configuration.getSalesUnit()+"\">\n");
-
-			for (Iterator it_opts = configuration.getOptions().entrySet().iterator(); it_opts.hasNext();) {
-				Map.Entry entry = (Map.Entry) it_opts.next();
-				buf.append("      <input type=\"hidden\" name=\""+entry.getKey()+txPostfix+"\" value=\""+entry.getValue()+"\">\n");
-			}
-			buf.append("      <input type=\"text\" name=\"quantity"+txPostfix+"\" "+(disabled ? "disabled=\"disabled\"" : "")+" value=\"\" style=\"width: 36px\" size=\"3\" maxlength=\"4\" class=\"text10\" onChange=\""+ namespace +".pricings["+ txNumber +"].changeQty(0);\" onBlur=\""+ namespace +".pricings["+ txNumber +"].setQuantity(this.value);\"/>\n");
-			buf.append("    </td>\n");
+			buf.append("<table align=\"center\" style=\"border-collapse: collapse; border-spacing: 0px;\">\n");
+			buf.append("  <tr>\n");
 			buf.append("    <td style=\"height: 28px; margin: 0px; padding: 0px;\">\n");
-			
-			if (disabled) {
-				buf.append("      <img src=\"/media_stat/images/template/quickshop/grn_arrow_up.gif\" style=\"width: 10px; height: 9px; border: 0;  margin-bottom: 1px; margin-top: 1px; cursor: pointer;\" alt=\"Increase quantity\"><br/>\n");
-				buf.append("      <img src=\"/media_stat/images/template/quickshop/grn_arrow.gif\" style=\"width: 10px; height: 9px; border: 0;  margin-bottom: 1px; margin-top: 1px; cursor: pointer;\" alt=\"Decrease quantity\">\n");
+			buf.append("      <input type=\"hidden\" name=\"productId"+txPostfix+"\" value=\""+realProduct.getContentName()+"\">\n");
+			buf.append("      <input type=\"hidden\" name=\"catId"+txPostfix+"\" value=\""+realProduct.getParentNode().getContentName()+"\">\n");
+			buf.append("      <input type=\"hidden\" name=\"skuCode"+txPostfix+"\" value=\""+impression.getSku()+"\">\n");
+	
+			if (product.isSoldBySalesUnits()) {
+				buf.append("      <input type=\"hidden\" name=\"quantity"+txPostfix+"\" value=\"1\">\n");
+	
+				// render options
+				for (Iterator iit = configuration.getOptions().entrySet().iterator(); iit.hasNext(); ) {
+					Map.Entry   entry = (Map.Entry) iit.next();
+					buf.append("      <input type=\"hidden\" name=\""+entry.getKey()+txPostfix+"\" value=\""+entry.getValue()+"\">\n");
+				}
+				
+				// render sales units
+				buf.append("      <select name=\"salesUnit"+txPostfix+"\" style=\"width: 60px\" class=\"text10\" onChange=\""+ namespace +".pricings["+ txNumber +"].setSalesUnit(this.value);\">\n");
+				buf.append("        <option value=\"\" selected=\"selected\"></option>\n");
+				FDSalesUnit     salesUnits[] = impression.getFDProduct().getSalesUnits();
+	            for (int ii = 0; ii < salesUnits.length; ++ii) {
+	                FDSalesUnit salesUnit      = salesUnits[ii];
+	                String      salesUnitDescr = salesUnit.getDescription();
+	
+	                // clean parenthesis
+	                int ppos = salesUnitDescr.indexOf("(");
+	                if (ppos > -1) {
+	                    salesUnitDescr = salesUnitDescr.substring(0, ppos).trim();
+	                }
+	                
+	                buf.append("        <option value=\""+ salesUnit.getName() +"\">"+ salesUnitDescr +"</option>\n");
+	            }
+				buf.append("      </select>\n");
 			} else {
+				buf.append("      <input type=\"hidden\" name=\"salesUnit"+txPostfix+"\" value=\""+configuration.getSalesUnit()+"\">\n");
+	
+				for (Iterator it_opts = configuration.getOptions().entrySet().iterator(); it_opts.hasNext();) {
+					Map.Entry entry = (Map.Entry) it_opts.next();
+					buf.append("      <input type=\"hidden\" name=\""+entry.getKey()+txPostfix+"\" value=\""+entry.getValue()+"\">\n");
+				}
+				buf.append("      <input type=\"text\" name=\"quantity"+txPostfix+"\" value=\"\" style=\"width: 36px\" size=\"3\" maxlength=\"4\" class=\"text10\" onChange=\""+ namespace +".pricings["+ txNumber +"].changeQty(0);\" onBlur=\""+ namespace +".pricings["+ txNumber +"].setQuantity(this.value);\">\n");
+				buf.append("    </td>\n");
+				buf.append("    <td style=\"height: 28px; margin: 0px; padding: 0px;\">\n");
 				buf.append("      <img onclick=\""+namespace+".pricings["+ txNumber +"].changeQty("+ product.getQuantityIncrement() + ");\" src=\"/media_stat/images/template/quickshop/grn_arrow_up.gif\" style=\"width: 10px; height: 9px; border: 0;  margin-bottom: 1px; margin-top: 1px; cursor: pointer;\" alt=\"Increase quantity\"><br/>\n");
 				buf.append("      <img onclick=\""+namespace+".pricings["+ txNumber +"].changeQty("+ (-product.getQuantityIncrement()) + ");\" src=\"/media_stat/images/template/quickshop/grn_arrow.gif\" style=\"width: 10px; height: 9px; border: 0;  margin-bottom: 1px; margin-top: 1px; cursor: pointer;\" alt=\"Decrease quantity\">\n");
 			}
+	
+			buf.append("    </td>\n");
+			buf.append("  </tr>\n");
+			buf.append("</table>\n");
 		}
-
-		buf.append("    </td>\n");
-		buf.append("  </tr>\n");
-		buf.append("</table>\n");
 
 		try {
 			// write out

@@ -1,8 +1,5 @@
 package com.freshdirect.webapp.taglib.smartstore;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagData;
@@ -12,10 +9,8 @@ import javax.servlet.jsp.tagext.VariableInfo;
 import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
-import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.FDEventUtil;
 import com.freshdirect.webapp.util.FDURLUtil;
 
@@ -52,9 +47,6 @@ public class ClickThruTag extends BodyTagSupport {
 	public int doStartTag() throws JspException {
 		HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
 		
-		String uri = req.getRequestURI();
-
-
 		String variantId = req.getParameter("variant");
 		if (variantId == null || variantId.length() == 0) {
 			LOGGER.debug("Click-Thru: SKIPPED - missing variant id");
