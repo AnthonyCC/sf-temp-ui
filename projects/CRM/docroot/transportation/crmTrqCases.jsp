@@ -149,20 +149,15 @@ function assignCartons(obj) {
 		myPanel.hide();
 	});
 
-	// fix form input names
+	// fix form input names, check selected ones
 	for (j=0;j<cform.elements.length;j++) {
 		el = cform.elements[j];
 		if (el.type == "checkbox") {
-			el.name = "cb"+el.name;
-		}
-	}
-
-	// check already saved elements
-	var storedIds = document.getElementById(obj).value;
-	if ("" != storedIds) {
-		var cids = storedIds.split(/;/);
-		for (j=0; j<cids.length; j++) {
-			cform['cb'+cids[j]].checked = true;
+			n = el.getAttribute("name");
+			el.setAttribute("name", "cb"+n );
+			if (storedIds.match(n)) {
+				el.checked = true;
+			}
 		}
 	}
 
@@ -344,6 +339,8 @@ for (int j=0; j < loopControl; j++) {
 		origNote="";
 		origRQty="";
 		origAQty="";
+ 		frmCartonNumbers = "";
+ 
 		boolean foundCase = false;
 		for( Iterator itrCase = casesForOrder.iterator(); !foundCase && itrCase.hasNext();) { 
 			CrmCaseModel cm = (CrmCaseModel) itrCase.next();
@@ -363,6 +360,16 @@ for (int j=0; j < loopControl; j++) {
 				origNote = ca.getNote();
 			 	origRQty = frmRQty;
 			 	origAQty = frmAQty;
+
+		 		List cartons = thisCase.getCartonNumbers();
+		 		final int clen = cartons.size();
+		 		for (int k=0; k<clen; k++) {
+		 			if (k<clen-1) {
+		 				frmCartonNumbers += cartons.get(k) + ";";
+		 			} else {
+		 				frmCartonNumbers += cartons.get(k);
+		 			}
+		 		}
 
 				j--; // some people will cringe at this.!!!!
 			}
