@@ -7,28 +7,24 @@ public class PromoVariantModelImpl implements PromoVariantModel {
 
 	private String variantId;
 	private String promoCode;
-	private int priority;
+	private int promoPriority;
 	private EnumSiteFeature siteFeature;
-	private int featurePriority;
+	private int variantPriority;
 	
-	public int getFeaturePriority() {
-		return featurePriority;
+	public int getVariantPriority() {
+		return variantPriority;
 	}
 
-	public void setFeaturePriority(int featurePriority) {
-		this.featurePriority = featurePriority;
-	}
-
-	public PromoVariantModelImpl(String variantId, String promoCode,int priority, EnumSiteFeature siteFeature, int featurePriority){
+	public PromoVariantModelImpl(String variantId, String promoCode,int priority, EnumSiteFeature siteFeature, int variantPriority){
 		this.variantId = variantId;
 		this.promoCode = promoCode;
-		this.priority = priority;
+		this.promoPriority = priority;
 		this.siteFeature = siteFeature;
-		this.featurePriority = featurePriority;
+		this.variantPriority = variantPriority;
 	}
 	
-	public int getPriority() {
-		return priority;
+	public int getPromoPriority() {
+		return promoPriority;
 	}
 
 	public PromotionI getAssignedPromotion() {

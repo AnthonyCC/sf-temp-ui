@@ -1,5 +1,6 @@
 package com.freshdirect.webapp.taglib.smartstore;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,13 +14,16 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.promotion.PromoVariantModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.CartTabRecommender;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.TabRecommendation;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
+import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.smartstore.ymal.YmalUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -86,11 +90,17 @@ public class PIPTabTag extends javax.servlet.jsp.tagext.BodyTagSupport {
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 		SessionInput input = new SessionInput(user);
 		input.setPreviousRecommendations((Map) session.getAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS));
-		
+
 		FDStoreRecommender.initYmalSource(input, user);
 		input.setCurrentNode( input.getYmalSource() );
 		input.setMaxRecommendations(maxRecommendations);
 		
+		if(input.getPreviousRecommendations() == null){
+			//when no smart savings variant was previously set.
+			input.setCheckForEnoughSavingsMode(true);
+			validateForEnoughSavings(user, input, overriddenVariantId);
+			input.setCheckForEnoughSavingsMode(false);
+		}
 		tabs = CartTabRecommender.recommendTabs( user, input, overriddenVariantId);
 		
 		// it's very similar to RecommendationsTag.persistToSession()
@@ -171,7 +181,26 @@ public class PIPTabTag extends javax.servlet.jsp.tagext.BodyTagSupport {
             return selectedTab;
 	}
 	
-
+	private void validateForEnoughSavings(FDUserI user, SessionInput input, String overriddenVariantId){
+		
+		Map pvMap = input.getPromoVariantMap();
+		if(pvMap != null && pvMap.size() > 0) {
+			FDStoreRecommender recommender = FDStoreRecommender.getInstance();
+			for(Iterator it = pvMap.keySet().iterator(); it.hasNext();){
+				//String variantId = (String) it.next();
+				PromoVariantModel pv = (PromoVariantModel)pvMap.get(it.next());
+				try {
+				Recommendations rec = recommender.getRecommendations(pv.getSiteFeature(), user, input, overriddenVariantId);
+				  if (rec.getProducts().size() == 0) {
+					  //no recommendations found for this smart saving feature. remove it from the promo variant map.
+					 it.remove();
+				  }
+				}catch (FDResourceException e) {
+					//Do nothing.
+                }
+			}
+		}
+	}
 	//=============================================================
 	//						Tag extra info
 	//=============================================================	

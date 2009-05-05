@@ -11,9 +11,9 @@ import com.freshdirect.fdstore.util.EnumSiteFeature;
 
 public interface PromoVariantModel extends Serializable {
 	
-	public int getFeaturePriority();
+	public int getVariantPriority();
 
-	public int getPriority() ;
+	public int getPromoPriority() ;
 	
 	public PromotionI getAssignedPromotion();
 	

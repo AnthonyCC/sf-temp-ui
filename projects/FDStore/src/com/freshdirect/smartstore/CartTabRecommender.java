@@ -29,6 +29,7 @@ public class CartTabRecommender {
     public static TabRecommendation recommendTabs(FDUserI user, SessionInput input, String overriddenVariantId) {
         List recs = new ArrayList();
         RecommendationService rs = null;
+        boolean smartSavingsFound = false;
         try {
             if (user != null) {
                 rs = SmartStoreUtil.getRecommendationService(user, EnumSiteFeature.CART_N_TABS, overriddenVariantId);
@@ -50,10 +51,13 @@ public class CartTabRecommender {
                             }
 
                             try {
-                                Recommendations rec = FDStoreRecommender.getInstance().getRecommendations(EnumSiteFeature.getEnum(strat.getSiteFeatureId()), user, input, overriddenVariantId,
+                            	EnumSiteFeature sf = EnumSiteFeature.getEnum(strat.getSiteFeatureId());
+                            	if(sf.isSmartSavings() && smartSavingsFound) continue;
+                                Recommendations rec = FDStoreRecommender.getInstance().getRecommendations(sf, user, input, overriddenVariantId,
                                         SmartStoreUtil.toContentKeySetFromModels(FDStoreRecommender.getShoppingCartContents(user)));
                                 if (rec.getProducts().size() > 0) {
                                     recs.add(rec.getVariant());
+                                    if(sf.isSmartSavings()) smartSavingsFound = true;
                                     break;
                                 }
                             } catch (FDResourceException e) {

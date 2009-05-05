@@ -345,6 +345,8 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			currentUser.invalidateCache();
 			currentUser.updateUserState( );
 			session.setAttribute( SessionName.USER, currentUser );
+            //The previous recommendations of the current user need to be removed.
+            session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
 
 		} catch (FDException ex) {
 			LOGGER.warn("Unable to create modify cart", ex);

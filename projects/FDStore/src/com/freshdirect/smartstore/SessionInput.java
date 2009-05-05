@@ -46,6 +46,8 @@ public class SessionInput {
 	
 	private Map promoVariantMap = null;
 	
+	private boolean checkForEnoughSavingsMode = false;
+	
 	//private Set eligiblePromotions = null;
 
 	/**
@@ -79,6 +81,7 @@ public class SessionInput {
 		if (user != null) {
 			this.customerServiceType = user.getUserServiceType();
 			this.cartModel = user.getShoppingCart();
+			//Clone the promoVariantMap.
 			this.promoVariantMap = new HashMap(user.getPromoVariantMap());
 			//this.eligiblePromotions = user.getPromotionEligibility().getEligiblePromotionCodes();
 			if (user.getIdentity() != null)
@@ -180,15 +183,23 @@ public class SessionInput {
 		return maxRecommendations;
 	}
 	
+	public boolean isCheckForEnoughSavingsMode() {
+		return checkForEnoughSavingsMode;
+	}
+	public void setCheckForEnoughSavingsMode(boolean checkForSavings) {
+		this.checkForEnoughSavingsMode = checkForSavings;
+	}
+	
 	public void setCategory(CategoryModel category) {
             this.category = category;
-        }
+    }
 	
 	public CategoryModel getCategory() {
 	    if ((category==null) && currentNode instanceof CategoryModel) {
 	        return (CategoryModel) currentNode;
 	    }
             return category;
-        }
+    }
+
 
 }

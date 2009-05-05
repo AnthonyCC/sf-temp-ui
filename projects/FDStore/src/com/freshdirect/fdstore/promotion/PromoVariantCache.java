@@ -44,7 +44,7 @@ public class PromoVariantCache {
 
 			PromoVariantModel pv1 = (PromoVariantModel) o1;
 			PromoVariantModel pv2 = (PromoVariantModel) o2;
-			return new Integer(pv2.getPriority()).compareTo(new Integer(pv1.getPriority()));
+			return new Integer(pv2.getPromoPriority()).compareTo(new Integer(pv1.getPromoPriority()));
 		}
 	};
 	
@@ -54,7 +54,7 @@ public class PromoVariantCache {
 
 			PromoVariantModel pv1 = (PromoVariantModel) o1;
 			PromoVariantModel pv2 = (PromoVariantModel) o2;
-			return new Integer(pv2.getFeaturePriority()).compareTo(new Integer(pv1.getFeaturePriority()));
+			return new Integer(pv2.getVariantPriority()).compareTo(new Integer(pv1.getVariantPriority()));
 		}
 	};
 	

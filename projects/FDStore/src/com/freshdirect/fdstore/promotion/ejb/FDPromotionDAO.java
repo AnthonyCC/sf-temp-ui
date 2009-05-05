@@ -1022,7 +1022,7 @@ public class FDPromotionDAO {
 //
 //		return strategies;
 //	}
-	private final static String GET_ALL_ACTIVE_PROMO_VARIANTS = "select vp.VARIANT_ID, vp.PROMO_CODE, vp.PRIORITY, v.FEATURE, vp.FEATURE_PRIORITY from cust.PROMO_VARIANTS vp, " +
+	private final static String GET_ALL_ACTIVE_PROMO_VARIANTS = "select vp.VARIANT_ID, vp.PROMO_CODE, vp.PROMO_PRIORITY, v.FEATURE, vp.VARIANT_PRIORITY from cust.PROMO_VARIANTS vp, " +
 			"cust.SS_VARIANTS v, cust.PROMOTION p where p.CODE = vp.PROMO_CODE and v.ID = vp.VARIANT_ID and p.active='X' and (p.expiration_date > (sysdate-7) " +
 			"or p.expiration_date is null) and p.RECOMMENDED_ITEMS_ONLY='X'";
 	
@@ -1061,9 +1061,9 @@ public class FDPromotionDAO {
 		while(rs.next()){
 			String variantId = rs.getString("VARIANT_ID");
 			String promoCode = rs.getString("PROMO_CODE");
-			int priority = rs.getInt("PRIORITY");
+			int priority = rs.getInt("PROMO_PRIORITY");
 			String featureId = rs.getString("FEATURE");
-			int featurePriority = rs.getInt("FEATURE_PRIORITY");
+			int featurePriority = rs.getInt("VARIANT_PRIORITY");
 			PromoVariantModel promoVariant = new PromoVariantModelImpl(variantId, promoCode, priority, EnumSiteFeature.getEnum(featureId),featurePriority);
 			promoVariants.add(promoVariant);
 		}
