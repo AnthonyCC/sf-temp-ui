@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author ekracoff
@@ -182,7 +183,7 @@ public class FDSurveyQuestion implements java.io.Serializable {
 		FDSurveyAnswer answer=null;
 		for(Iterator it=answers.iterator();it.hasNext();) {
 			answer=(FDSurveyAnswer)it.next();
-			if(!"".equals(answer.getGroup()) && !answerGroup.contains(answer.getGroup()))
+			if(answer.getGroup()!=null && !"".equals(answer.getGroup()) && !answerGroup.contains(answer.getGroup()))
 				answerGroup.add(answer.getGroup());
 		}
 		return answerGroup;

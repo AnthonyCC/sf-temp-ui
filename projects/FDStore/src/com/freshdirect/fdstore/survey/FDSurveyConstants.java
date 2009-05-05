@@ -33,6 +33,8 @@ public class FDSurveyConstants {
 	public final static String PROFILE="Profile";
 	public final static String BIRTHDAY="Birthday";
 	
+	public final static String MEAL_COUNT_SUMMARY=" X per week";
+	
 	
 	
 }

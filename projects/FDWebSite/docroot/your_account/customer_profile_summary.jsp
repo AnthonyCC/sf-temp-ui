@@ -243,24 +243,16 @@ response.setHeader("Cache-Control", "no-cache");
             <% if(questions!=null){%>
             <logic:iterate id="question" collection="<%= questions %>" type="com.freshdirect.fdstore.survey.FDSurveyQuestion" indexId='index'>
             
-            <% if(FDSurveyConstants.PROFILE.equals(question.getName()))
+            <% if(FDSurveyConstants.PROFILE.equals(question.getName()) || FDSurveyConstants.BIRTHDAY.equals(question.getName()))
                continue;
             %>
-            <% if(surveyResponse!=null && !surveyResponse.getAnswerAsList(question.getName()).isEmpty()) {%>
+            <% if(surveyResponse!=null && SurveyHtmlHelper.hasActiveAnswers(question,surveyResponse.getAnswerAsList(question.getName()))) {%>
                 <tr>
                     <td class="padB6px">
                         <span class="t12px bolded tOrange"> <%=question.getShortDescr()%> </span>
                         <a href="/your_account/customer_profile.jsp" title="">Edit</a></td>
                 </tr>
-                <!-- answer row -->
-               
-                <logic:iterate id="answer" collection="<%= surveyResponse.getAnswerAsList(question.getName()) %>" type="java.lang.String">
-                <tr>
-                    <td class="padB12px">
-                        <div><%=answer%></div>
-                    </td>
-                </tr>
-            </logic:iterate>
+               <%=SurveyHtmlHelper.getAnswers(question,surveyResponse.getAnswerAsList(question.getName()))%>
             <%}%>
             </logic:iterate>
             <%}%>

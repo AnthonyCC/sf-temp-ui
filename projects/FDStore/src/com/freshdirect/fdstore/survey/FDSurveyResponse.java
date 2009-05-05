@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -109,6 +110,38 @@ public class FDSurveyResponse implements Serializable {
 		
 	}
 	
+	/*public boolean equals(Object o) {
+		 if ((o != null) && (o.getClass().equals(this.getClass()))) {
+			 FDSurveyResponse another=((FDSurveyResponse)o);
+			 System.out.println(another.answers);
+			 System.out.println(this.answers);
+			 if(!another.identity.toString().equals(this.identity.toString())) return false;
+				 if(another.answers!=null) {
+	             Iterator it=another.answers.keySet().iterator();
+	             boolean matches=true;
+	             while (matches && it.hasNext()) {
+	            	 String key=it.next().toString();
+	            	 if(!this.answers.containsKey(key)) {
+	            		 matches=false;
+	            	 } else {
+	            		 String[] _values=(String[])another.answers.get(key);
+	            		 String[] _values1=(String[])this.answers.get(key);
+	            		 if(_values.length!=_values1.length) {
+	            			 matches=false; 
+	            		 } else {
+	            			 
+	            			 for(int i=0;i<_values.length;i++) {
+	            				 System.out.print(_values[i]+" "+_values1[i]);
+	            			 }
+	            			 System.out.println();
+	            		 }
+	            	 }
+	             }
+			 }
+         }
+
+         return false;
+	}*/
 	
 
 	

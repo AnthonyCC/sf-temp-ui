@@ -1,8 +1,8 @@
 package com.freshdirect.fdstore.survey;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -11,21 +11,146 @@ import com.freshdirect.framework.util.StringUtil;
 public class SurveyHtmlHelper {
 	
 	
+	public static boolean hasActiveAnswers(FDSurveyQuestion question, List response) {
+		
+		if(response==null || response.isEmpty()) return false;
+		List answers=question.getAnswers();
+		if(answers==null || answers.isEmpty()) return false;
+		boolean hasActiveAns=false;
+		Iterator it=answers.iterator();
+		List ansGroups=question.getAnswerGroups();
+
+		while(!hasActiveAns && it.hasNext()) {
+			FDSurveyAnswer _validAns=(FDSurveyAnswer)it.next();//
+			if((EnumFormDisplayType.GROUPED_RADIO_BUTTON.equals(question.getFormDisplayType())||EnumFormDisplayType.DISPLAY_PULLDOWN_GROUP.equals(question.getFormDisplayType())) && response.contains(_validAns.getName())) {
+				hasActiveAns=true;
+			}else if(ansGroups.size()==0 && response.contains(_validAns.getName())) {
+				hasActiveAns=true;
+			}else if(ansGroups.size()>0){
+				Iterator _it=ansGroups.iterator();
+				while(!hasActiveAns&& _it.hasNext()) {
+					String ansGroup=_it.next().toString();
+					if(response.contains(_validAns.getName()+ansGroup)) {
+						hasActiveAns=true;
+					}
+				}
+			}
+		}
+		return hasActiveAns;
+	}
+	
+	
 	public static String getQuestionText(FDSurveyQuestion quest) {
 		
 		return quest.isPulldown()? quest.getDescription():quest.isMultiselect()?quest.getDescription()+FDSurveyConstants.MULTIPLE_CHOICE:quest.getDescription()+FDSurveyConstants.SINGLE_CHOICE;
 	}
-	public static List getAnswers(EnumViewDisplayType view, List answers) {
+	public static String getAnswers(FDSurveyQuestion question, List answers) {
 		
+		
+		EnumViewDisplayType view=question.getViewDisplayType();
 		if ((view==null)||(answers==null)||answers.isEmpty())
-			return answers;
+			return "";
 		
 		StringBuffer response=new StringBuffer(200);
-		if(EnumViewDisplayType.SINGLE_ANS_PER_ROW.equals(view)) {
-			return answers;
-		} 
 		
-		return answers;
+		if(EnumViewDisplayType.SINGLE_ANS_PER_ROW.equals(view)) {
+			for (int i=0;i<answers.size();i++) {
+				
+				response.append(getRow(getAnsDesc(answers.get(i).toString(),question.getAnswers())));
+		    }
+			return response.toString();
+		} else if(EnumViewDisplayType.NUMBERED_LIST.equals(view)) {
+			for (int i=0;i<answers.size();i++) {
+				
+				response.append(getRow((i+1)+" "+answers.get(i).toString()));
+		    }
+			return response.toString();
+		} else if (EnumViewDisplayType.GROUPED_COMMA_SEPARATED.equals(view)) {
+			Collections.sort(answers);
+			List ansGroup=question.getAnswerGroups();
+			String _ansGroup="";
+			for(int i=0;i<ansGroup.size();i++) {
+				StringBuffer temp=new StringBuffer(300);
+				_ansGroup=ansGroup.get(i).toString();
+				//temp.append("<DIV style=\"font-weight:bold\" >"+_ansGroup+": </DIV>");
+				temp.append("<b>"+_ansGroup+": </b>");
+				String _ans="";
+				boolean needsDisplay=false;
+				for(int j=0;j<answers.size();j++) {
+					_ans=answers.get(j).toString();
+					if(_ans.indexOf(_ansGroup)!=-1) {
+						temp.append(getAnsDesc(_ans.substring(0, _ans.indexOf(_ansGroup)),question.getAnswers())).append(", ");
+						needsDisplay=true;
+					}
+				}
+				if(needsDisplay) {
+					response.append(getRow(temp.substring(0, temp.length()-2)));
+				}
+				
+			}
+			return response.toString();
+		} else if(EnumViewDisplayType.COMMA_SEPARATED.equals(view)) {
+			Collections.sort(answers);
+			StringBuffer temp=new StringBuffer(300);
+			for(int j=0;j<answers.size();j++) {
+				temp.append(getAnsDesc(answers.get(j).toString(),question.getAnswers())).append(", ");
+			}
+			response.append(getRow(temp.substring(0, temp.length()-2)));
+			return response.toString();
+		} else if(EnumViewDisplayType.GROUPED_LIST.equals(view)) {
+			
+			List ansGroup=question.getAnswerGroups();
+			String _ansGroup="";
+			for(int i=0;i<ansGroup.size();i++) {
+				StringBuffer temp=new StringBuffer(300);
+				_ansGroup=ansGroup.get(i).toString();
+				
+				temp.append("<b>"+_ansGroup+": </b>");
+				String _ans="";
+				boolean needsDisplay=false;
+				for(int j=0;j<answers.size();j++) {
+					_ans=answers.get(j).toString();
+					if(_ans.indexOf(_ansGroup)!=-1) {
+						temp.append(getAnsDesc(_ans,question.getAnswers())).append(FDSurveyConstants.MEAL_COUNT_SUMMARY);
+						needsDisplay=true;
+					}
+				}
+				if(needsDisplay) {
+					response.append(getRow(temp.substring(0, temp.length())));
+				}
+				
+			}
+			return response.toString();		
+		}
+		
+		return "";
+	}
+	
+	private static String getAnsDesc(String ansId, List answers) {
+		
+		if (StringUtil.isEmpty(ansId)||answers==null || answers.isEmpty()) return "";
+		if(FDSurveyConstants.NONE.equals(ansId)) return FDSurveyConstants.NONE;
+		
+		boolean match=false;
+		Iterator it=answers.iterator();
+		String desc="";
+		while(!match && it.hasNext()) {
+			FDSurveyAnswer ans=(FDSurveyAnswer)it.next();
+			if (ansId.equals(ans.getName())) {
+				match=true;
+				desc=ans.getDescription();
+			}
+		}
+		return desc; 
+	}
+	private static String getRow(String data) {
+		
+		StringBuffer response=new StringBuffer(400);
+		response.append("<tr><td style=\"padding-bottom: 12px;\">");
+		response.append("<div>").append(data).append("</div>");
+		response.append("</td>");
+		response.append("</tr>");
+		return response.toString();
 	}
 
 	public static final String getAnswersHtml(String id,FDSurveyQuestion question, List  previousAnswers) {
@@ -183,15 +308,19 @@ public class SurveyHtmlHelper {
 		StringBuffer response = new StringBuffer(200);
 		List answerGroups=question.getAnswerGroups();
 		String _group="";
-		for(Iterator it=answerGroups.iterator();it.hasNext();) {
-			Object obj=it.next();
-			if(obj!=null)
-				_group=obj.toString();
-			if(group) {
-				response.append(getSpanTag(_group)+getDivTag(getSelectTag(question,_group,previousAnswers)));
-			} else {				
-				response.append(getDivTag(getSelectTag(question,_group,previousAnswers)));
+		if(answerGroups!=null && answerGroups.size()>0) {
+			for(Iterator it=answerGroups.iterator();it.hasNext();) {
+				Object obj=it.next();
+				if(obj!=null)
+					_group=obj.toString();
+				if(group) {
+					response.append(getSpanTag(_group)+getDivTag(getSelectTag(question,_group,previousAnswers)));
+				} else {				
+					response.append(getDivTag(getSelectTag(question,_group,previousAnswers)));
+				}
 			}
+		} else {
+			response.append(getDivTag(getSelectTag(question,"",previousAnswers)));
 		}
 		return response.toString();
 	}
@@ -354,8 +483,6 @@ public class SurveyHtmlHelper {
 	
 
 	private static boolean isNoneOptionSelected(List previousAnswers) {
-
-		//return previousAnswers.contains(FDSurveyConstants.NONE)? true:false;
 		return previousAnswers.contains(FDSurveyConstants.NONE);
 	}
 
@@ -366,12 +493,6 @@ public class SurveyHtmlHelper {
 
 	private static List getPreviousAnswers(FDSurveyResponse previousResponse,
 			FDSurveyQuestion question) {
-
-		/*List previousAnswers = new ArrayList();
-		if (previousResponse != null)
-			previousAnswers = previousResponse.getAnswerAsList(question
-					.getName());
-		return previousAnswers;*/
 		return previousResponse != null?previousResponse.getAnswerAsList(question.getName()):new ArrayList();
 	}
 }
