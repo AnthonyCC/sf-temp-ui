@@ -150,6 +150,8 @@ function assignCartons(obj) {
 	});
 
 	// fix form input names, check selected ones
+	var storedIds = document.getElementById(obj).value;
+
 	for (j=0;j<cform.elements.length;j++) {
 		el = cform.elements[j];
 		if (el.type == "checkbox") {
