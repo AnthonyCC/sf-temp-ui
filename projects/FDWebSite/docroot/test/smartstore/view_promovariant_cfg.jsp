@@ -122,9 +122,14 @@ if(promoList!=null){
     	</tr>
         <tr>
     		<td class="text13bold space" colspan="2">
-               Priority : <%=pv.getPriority()%>
+               Promo Priority : <%=pv.getPromoPriority()%>
     		</td>
     	</tr>
+        <tr>
+    		<td class="text13bold space" colspan="2">
+               Variant Priority : <%=pv.getVariantPriority()%>
+    		</td>
+    	</tr>        
         <tr>
             <td class="text13bold space" colspan="2">
                Site Feature: <%=pv.getSiteFeature().getName()%>
