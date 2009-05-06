@@ -37,6 +37,7 @@
 	@input parentImpressionId String parent impression ID
 --%>
 
+<script type="text/javascript" src="/assets/javascript/pricing.js"></script>
 
 <%
 {

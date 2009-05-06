@@ -158,13 +158,8 @@ public class PIPTabTag extends javax.servlet.jsp.tagext.BodyTagSupport {
                 shouldStoreTabPos = true;
             }
 
-
-            // check selected tab
-            Variant selectedVariant = tabs.get(selectedTab);
-            if (selectedTab >= numTabs ||
-                (selectedTab < numTabs &&
-                                session.getAttribute(SessionName.SS_SELECTED_VARIANT) != null &&
-                                !selectedVariant.getId().equals( session.getAttribute(SessionName.SS_SELECTED_VARIANT) ) )) {
+            if (selectedTab >= numTabs || (session.getAttribute(SessionName.SS_SELECTED_VARIANT) != null &&
+            		!tabs.get(selectedTab).getId().equals( session.getAttribute(SessionName.SS_SELECTED_VARIANT) ) )) {
                 // reset if selection is out of tab range or the variant of selected tab has changed
                 selectedTab = 0;
                 shouldStoreTabPos = true;
@@ -174,7 +169,7 @@ public class PIPTabTag extends javax.servlet.jsp.tagext.BodyTagSupport {
             if (shouldStoreTabPos) {
                 // store changed tab position in session
                 session.setAttribute(SessionName.SS_SELECTED_TAB, iSelectedTab);
-                session.setAttribute(SessionName.SS_SELECTED_VARIANT, selectedVariant.getId());
+                session.setAttribute(SessionName.SS_SELECTED_VARIANT, tabs.get(selectedTab).getId());
             }
             pageContext.setAttribute("selectedTabIndex", iSelectedTab);
 

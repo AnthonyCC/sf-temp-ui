@@ -121,6 +121,7 @@
 }
 %>
 <%-- PRICING PART --%>
+<script type="text/javascript" src="/assets/javascript/pricing.js"></script>
 <fd:TxProductPricingSupport formName="<%= TX_FORM_NAME %>" namespace="<%= TX_JS_NAMESPACE %>" customer="<%= fd_user %>" impressions="<%= impressions %>"/>
 <%
 	String base_url = request.getParameter("base_url");

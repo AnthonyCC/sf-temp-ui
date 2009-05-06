@@ -28,6 +28,8 @@ import com.freshdirect.webapp.util.TransactionalProductImpression;
  * This tag generates client-side scripts to support pricing controls
  * Used in DYF and YMAL transactional displays
  * 
+ * Before using this tag you have to include script /assets/javascript/pricing.js unconditionally in the HTML
+ * 
  * @author segabor
  *
  */
@@ -108,8 +110,6 @@ public class TxProductPricingSupportTag extends BodyTagSupport {
 		
 		// PART I. -- Generate pricing basics
 		// NOTE: this code replaces i_pricing_script.jsp
-		
-		appendScriptInclude(buf, "/assets/javascript/pricing.js");
 		
 		buf.append("<script type=\"text/javascript\">\n");
 
@@ -297,14 +297,6 @@ public class TxProductPricingSupportTag extends BodyTagSupport {
 		
 		return buf.toString();
 	}
-
-
-	private void appendScriptInclude(StringBuffer buf, String path) {
-		buf.append("<script type=\"text/javascript\" src=\"");
-		buf.append(path);
-		buf.append("\"></script>\n");
-	}
-
 
 
 	public static class TagEI extends TagExtraInfo {
