@@ -279,7 +279,7 @@ public class FDPromotionManagerDAO {
 	}
 	
 	
-	private static final String PROMO_VARIANT_QUERY="SELECT VP.VARIANT_ID, VP.PROMO_CODE, VP.PRIORITY, V.FEATURE, VP.FEATURE_PRIORITY FROM CUST.PROMO_VARIANTS VP, "+
+	private static final String PROMO_VARIANT_QUERY="SELECT VP.VARIANT_ID, VP.PROMO_CODE, VP.PROMO_PRIORITY, V.FEATURE, VP.VARIANT_PRIORITY FROM CUST.PROMO_VARIANTS VP, "+
 													"CUST.SS_VARIANTS V, CUST.PROMOTION P WHERE P.CODE = VP.PROMO_CODE AND V.ID = VP.VARIANT_ID AND P.ACTIVE='X' AND (P.EXPIRATION_DATE > (SYSDATE-7) "+
 													" OR P.EXPIRATION_DATE IS NULL) AND P.RECOMMENDED_ITEMS_ONLY='X' AND P.CODE=?";
 	
@@ -294,7 +294,7 @@ public class FDPromotionManagerDAO {
 		while (rs.next()) {			
 			//FDPromotionModel promotion = loadPromotionResult(rs);
 			
-			PromoVariantModel model=new PromoVariantModelImpl(rs.getString("VARIANT_ID"),promoId,rs.getInt("PRIORITY"),EnumSiteFeature.getEnum(rs.getString("FEATURE")),rs.getInt("FEATURE_PRIORITY"));			
+			PromoVariantModel model=new PromoVariantModelImpl(rs.getString("VARIANT_ID"),promoId,rs.getInt("PROMO_PRIORITY"),EnumSiteFeature.getEnum(rs.getString("FEATURE")),rs.getInt("VARIANT_PRIORITY"));			
 			
 			/*List assignedCustomerUserIds = FDPromotionManagerDAO.loadAssignedCustomerUserIds(conn, promotion.getId());
 			if (assignedCustomerUserIds != null && assignedCustomerUserIds.size() > 0) {

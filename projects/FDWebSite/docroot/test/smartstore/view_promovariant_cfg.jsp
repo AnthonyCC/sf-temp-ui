@@ -132,7 +132,7 @@ if(promoList!=null){
     	</tr>        
         <tr>
             <td class="text13bold space" colspan="2">
-               Site Feature: <%=pv.getSiteFeature().getName()%>
+               Site Feature: <%=pv.getSiteFeature().getTitle()%>
     		</td>
     	</tr>
 
