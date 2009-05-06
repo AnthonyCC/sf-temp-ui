@@ -22,32 +22,7 @@
 	<!-- Sam Skin CSS -->
 	<link rel="stylesheet" type="text/css" href="/assets/yui/container/assets/skins/sam/container.css">
 	
-<% 	if (!FDStoreProperties.isCclAjaxDebugClient()) { %>
-	<!-- Dependencies -->
-	<script type="text/javascript" src="/assets/yui/yahoo-dom-event/yahoo-dom-event.js"></script>
-	
-	<!-- OPTIONAL: Animation (only required if using ContainerEffect) -->
-	<script type="text/javascript" src="/assets/yui/animation/animation-min.js"></script>
-	
-	<!-- OPTIONAL: Drag & Drop (only required if enabling Drag & Drop) -->
-	<script type="text/javascript" src="/assets/yui/dragdrop/dragdrop-min.js"></script>
-
-	<!-- Source file -->
-	<script type="text/javascript" src="/assets/yui/container/container-min.js"></script>
-<% } else { %>
-	<!-- Dependencies -->
-	<script type="text/javascript" src="/assets/yui/yahoo-dom-event/yahoo-dom-event.js"></script>
-	
-	<!-- OPTIONAL: Animation (only required if using ContainerEffect) -->
-	<script type="text/javascript" src="/assets/yui/animation/animation.js"></script>
-	
-	<!-- OPTIONAL: Drag & Drop (only required if enabling Drag & Drop) -->
-	<script type="text/javascript" src="/assets/yui/dragdrop/dragdrop.js"></script>
-
-	<!-- Source file -->
-	<script type="text/javascript" src="/assets/yui/container/container.js"></script>
-<% } %>
-
+<%@ include file="/shared/template/includes/yui.jspf" %>
 <% if ("true".equals(request.getAttribute("needsCCL"))) {
 %>
     <%@ include file="/shared/template/includes/ccl.jspf"%>

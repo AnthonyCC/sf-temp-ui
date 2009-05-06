@@ -61,7 +61,6 @@ boolean isAssignmentPriorityAllowed = false;
 
 FDOrderI order = null;
 boolean isNewCase = false;
-boolean orderHasCartons = false; // case has order with cartons assigned
 if (request.getParameter("orderId") != null) {
 	// new case
 	order = CrmSession.getOrder(session, request.getParameter("orderId"));
@@ -69,7 +68,6 @@ if (request.getParameter("orderId") != null) {
 } else if (thisCase.getSalePK() != null) {
 	// existing case having order
 	order = CrmSession.getOrder(session, thisCase.getSalePK().getId());
-	orderHasCartons = (order != null && order.getCartonContents().size() > 0);
 }
 
 
@@ -90,6 +88,7 @@ if (request.getParameter("orderId") != null) {
 <%-- Scripts START --%>
 <script type="text/javascript">
 	/* from the prototype lib*/
+	/* obsoleted by YUI
 	function $() {
 		var elements = new Array();
 		for (var i = 0; i < arguments.length; i++) {
@@ -102,7 +101,7 @@ if (request.getParameter("orderId") != null) {
 		}
 		return elements;
 	}
-
+	*/
 
 	/* enable reason select if not resolved on first contact */
 	function CaseDisp_FirstContact(RefId, ToggleId) {
@@ -237,6 +236,33 @@ if (request.getParameter("orderId") != null) {
 			$('requiredError').className = 'casedisp_Err_invis';
 		}
 
+		/* check if subject requires one ore more checked cartons */
+		{
+			var t = true;
+			if (subjectRequiresCartons[document.case_details.subject.value] && cartonNumbers.length > 0) {
+				t = false;
+				var k;
+				for (k=0; k<cartonNumbers.length; k++) {
+					if (true === $('cb'+cartonNumbers[k]).checked) {
+						t = true;
+						break;
+					}
+				}
+			}
+
+			if (!t) {
+				err = true;
+			}
+
+			if ($('cartonsErr')) {
+				if ( !t ) {
+					$('cartonsErr').className = 'casedisp_Err_vis';
+				} else {
+					$('cartonsErr').className = 'casedisp_Err_invis';
+				}
+			}
+		}
+
 		if ( err ) { 
 			CaseButton.className = 'case_save_disabled';
 			CaseButton.disabled = true;
@@ -291,6 +317,8 @@ if (request.getParameter("orderId") != null) {
 	var queues = new Array();
 	queues[""] = new Queue("", "", []);
 <%
+
+		// populate subjects
 		for (Iterator i = CrmCaseQueue.getEnumList().iterator(); i.hasNext(); ) {
 			CrmCaseQueue q = (CrmCaseQueue)i.next();
 			if (!q.isObsolete()) {
@@ -300,10 +328,7 @@ if (request.getParameter("orderId") != null) {
 				int c = 0;
 				for (Iterator j = q.getSubjects().iterator(); j.hasNext();) {
 					CrmCaseSubject s = (CrmCaseSubject)j.next();
-					// Rule to display a subject:
-					// Subject.CartonsRequired => NOT NEW case AND HAS cartons assigned
-					final boolean subjectRequiresCartons = (!s.isCartonsRequired() || (!isNewCase && orderHasCartons ) );
-					if (!s.isObsolete() && (!s.isCartonsRequired() || (!isNewCase && orderHasCartons ) )) {
+					if (!s.isObsolete()) {
 						if (c>0) out.print(", ");
 						 c++;
 						%>new Subject("<%= s.getCode() %>", "<%= s.getName() %>")<%
@@ -312,7 +337,35 @@ if (request.getParameter("orderId") != null) {
 				out.println("]);");
 			}
 		}
-%>		
+%>
+
+
+	var subjectRequiresCartons = [];
+<%
+	// populate subjects
+	for (Iterator i = CrmCaseQueue.getEnumList().iterator(); i.hasNext(); ) {
+		CrmCaseQueue q = (CrmCaseQueue)i.next();
+		if (!q.isObsolete()) {
+			for (Iterator j = q.getSubjects().iterator(); j.hasNext();) {
+				CrmCaseSubject s = (CrmCaseSubject)j.next();
+				if (!s.isObsolete() && s.isCartonsRequired()) {
+%>	subjectRequiresCartons['<%= s.getCode() %>'] = true;
+<%
+				}
+			}
+		}
+	}
+%>
+	var cartonNumbers = [];
+<%
+	if (order != null && order.getCartonContents().size() > 0) {
+		for (Iterator it=order.getCartonContents().iterator(); it.hasNext(); ) {
+			FDCartonInfo ci = (FDCartonInfo) it.next();
+%>	cartonNumbers.push('<%= ci.getCartonInfo().getCartonNumber() %>');
+<%
+		}
+	}
+%>
 </script>
 <%-- Scripts END --%>
 
@@ -565,7 +618,7 @@ if (order != null) {
 	List cartonIDs = new ArrayList();
 
 	// List<FDCartonInfo>
-	final List cartons = new ArrayList(order.getCartonContents());
+	List cartons = order.getCartonContents();
 
 
 	if (isNewCase) {
@@ -585,7 +638,7 @@ if (order != null) {
 	if (cartons.size() > 0) {
 %>
 					<div id="cartons" style="float-left; padding: 0 1em;">
-						<div style="text-align: center; font-weight: bold; padding-bottom: 0.5em;">Carton Info</div>
+						<div style="text-align: center; font-weight: bold; padding-bottom: 0.5em;">Carton Info<span class="casedisp_Err_invis" id="cartonsErr">*</span></div>
 						<% if (result.getError("carton") != null) { %><div style="text-align: center; padding-bottom: 0.5em;">
 							<fd:ErrorHandler result='<%= result %>' name='carton' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 						<% } %></div>
@@ -600,7 +653,7 @@ if (order != null) {
 			FDCartonInfo ci = (FDCartonInfo) it.next();
 %>
 							<tr>
-								<td><input type="checkbox" name="cid_<%= ci.getCartonInfo().getCartonNumber() %>" <%= cartonIDs.contains(ci.getCartonInfo().getCartonNumber()) ? "checked=\"checked\"" : "" %>></td>
+								<td><input type="checkbox" id="cb<%= ci.getCartonInfo().getCartonNumber() %>" name="cid_<%= ci.getCartonInfo().getCartonNumber() %>" <%= cartonIDs.contains(ci.getCartonInfo().getCartonNumber()) ? "checked=\"checked\"" : "" %>></td>
 								<td style="font-weight: bold;"><a style="text-decoration: none;" href="#" onclick="showCartonInfo('<%= ci.getCartonInfo().getCartonNumber() %>');return false;"><%= ci.getCartonInfo().getCartonNumber() %></a></td>
 								<td style="font-weight: bold;"><%= ci.getCartonInfo().getCartonType() %></td>
 							</tr>
@@ -806,7 +859,6 @@ document.body.setAttribute("className", "yui-skin-sam"); // IE
 </table>
 </form>
 <% if (thisCase.isAnonymous()) { %>
-
 <script type="text/javascript">
 	populateSubject(document.case_details.queue.value, document.case_details.subject,'<%=request.getParameter("subject")%>');
 
@@ -825,6 +877,19 @@ document.body.setAttribute("className", "yui-skin-sam"); // IE
 	verifyCaseDisp();
 </script>
 <% } %>
+<script type="text/javascript">
+$E.onDOMReady(function() {
+	$E.on(document.case_details.subject, 'change', function(e) {
+		verifyCaseDisp();
+	});
+
+	for (k=0;k<cartonNumbers.length;k++) {
+		$E.on('cb'+cartonNumbers[k], 'click', function(e) {
+			verifyCaseDisp();
+		});
+	}
+});
+</script>
 
 </crm:GetAllowedActions>
 </crm:CrmStoreCaseController>
