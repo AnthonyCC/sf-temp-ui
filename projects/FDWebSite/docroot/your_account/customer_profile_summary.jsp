@@ -177,15 +177,7 @@ response.setHeader("Cache-Control", "no-cache");
 						<span class="bolded">Birthday: </span><%=birthDay[0]+" "+birthDay[1]%>
 					</td>
 				</tr>
-                <%} else if(birthDay!=null && birthDay.length==1){%>
-                <tr>
-					<td>
-                        
-						<span class="bolded">Birthday: </span><%=birthDay[0]%>
-					</td>
-				</tr>
-				</table>
-				<br /><br />
+                
                <%}%>
 			<!-- CHEF'S TABLE member -->
             <% if(user.isChefsTable()) { %>
@@ -250,7 +242,7 @@ response.setHeader("Cache-Control", "no-cache");
                 <tr>
                     <td class="padB6px">
                         <span class="t12px bolded tOrange"> <%=question.getShortDescr()%> </span>
-                        <a href="/your_account/customer_profile.jsp" title="">Edit</a></td>
+                        <a href="<%="/your_account/customer_profile.jsp#"+question.getName()%>" title="">Edit</a></td>
                 </tr>
                <%=SurveyHtmlHelper.getAnswers(question,surveyResponse.getAnswerAsList(question.getName()))%>
             <%}%>

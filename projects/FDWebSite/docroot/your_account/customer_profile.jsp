@@ -45,13 +45,15 @@ function clear(p) {
 
     for(i=0; i<x.length; i++) {
 
-        x[i].value = '';
+        
         x[i].checked= false;
         x[i].disabled= false;
     }
 }
 
-
+function _submit(p) {
+   p.submit();
+}
 </script>
 <tmpl:insert template='/common/template/dnav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Your Profile</tmpl:put>
@@ -96,7 +98,7 @@ function clear(p) {
 	<tr>
 		<td colspan="10" align="center">
 			<a href="javascript:clear(document.request_product)"><img src="/media_stat/images/template/newproduct/b_clear.gif" width="47" height="17" border="0" alt="Clear"></a>&nbsp;&nbsp;
-            <a href="javascript:document.request_product.submit()"><img src="/media_stat/images/template/newproduct/b_send.gif" width="45" height="15" border="0" alt="Send Request"></a>&nbsp;&nbsp;
+            <a href="javascript:_submit(document.request_product)"><img src="/media_stat/images/template/newproduct/b_send.gif" width="45" height="15" border="0" alt="Send Request"></a>&nbsp;&nbsp;
     </td>
     </tr>
 

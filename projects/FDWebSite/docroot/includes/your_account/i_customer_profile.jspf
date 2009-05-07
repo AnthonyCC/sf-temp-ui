@@ -229,7 +229,7 @@
 					<%=quesCount%>
 				    </div>-->
 				    <div class="question_text">
-					<%=SurveyHtmlHelper.getQuestionText(question)%>
+					<a name="<%=question.getName()%>"><%=SurveyHtmlHelper.getQuestionText(question)%></a>
 				    </div>
 				    <div class="cleft"><!--  --></div>
 			    </div>

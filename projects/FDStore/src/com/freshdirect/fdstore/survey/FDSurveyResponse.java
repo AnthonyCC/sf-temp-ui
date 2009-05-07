@@ -103,69 +103,41 @@ public class FDSurveyResponse implements Serializable {
 			return new ArrayList();
 		else {
 			List answerList=new ArrayList(answer.length);
-			for(int i=0;i<answer.length;i++)
+			for(int i=0;i<answer.length;i++) {
+				if(answer[i]!=null && !"".equals(answer[i]))
 				answerList.add(answer[i]);
+			}
 		    return answerList;
 		}
 		
 	}
 	
-	/*public boolean equals(Object o) {
-		 if ((o != null) && (o.getClass().equals(this.getClass()))) {
-			 FDSurveyResponse another=((FDSurveyResponse)o);
-			 System.out.println(another.answers);
-			 System.out.println(this.answers);
-			 if(!another.identity.toString().equals(this.identity.toString())) return false;
-				 if(another.answers!=null) {
-	             Iterator it=another.answers.keySet().iterator();
-	             boolean matches=true;
-	             while (matches && it.hasNext()) {
-	            	 String key=it.next().toString();
-	            	 if(!this.answers.containsKey(key)) {
-	            		 matches=false;
-	            	 } else {
-	            		 String[] _values=(String[])another.answers.get(key);
-	            		 String[] _values1=(String[])this.answers.get(key);
-	            		 if(_values.length!=_values1.length) {
-	            			 matches=false; 
-	            		 } else {
-	            			 
-	            			 for(int i=0;i<_values.length;i++) {
-	            				 System.out.print(_values[i]+" "+_values1[i]);
-	            			 }
-	            			 System.out.println();
-	            		 }
-	            	 }
-	             }
-			 }
-         }
-
-         return false;
-	}*/
-	
-
-	
-	/*public List getAnswerAsList(FDSurveyQuestion question) {
+	public static boolean hasActiveAnswers(FDSurveyQuestion question, List response) {
 		
-		String[] answer=getAnswer(question.getName());
-		if(answer==null)
-			return new ArrayList();
-		else {
-			List answerList=new ArrayList(answer.length);
-			List answers=question.getAnswers();
-			FDSurveyAnswer _answer=null;
-			for(int i=0;i<answer.length;i++) {
-				for(int j=0;j<answers.size();j++) {
-					_answer=(FDSurveyAnswer)answers.get(j);
-					if(_answer.getName().equals(answer[i])) {
-						answerList.add(_answer.getDescription());
-						break;
+		if(response==null || response.isEmpty()) return false;
+		List answers=question.getAnswers();
+		if(answers==null || answers.isEmpty()) return false;
+		boolean hasActiveAns=false;
+		Iterator it=answers.iterator();
+		List ansGroups=question.getAnswerGroups();
+
+		while(!hasActiveAns && it.hasNext()) {
+			FDSurveyAnswer _validAns=(FDSurveyAnswer)it.next();//
+			if((EnumFormDisplayType.GROUPED_RADIO_BUTTON.equals(question.getFormDisplayType())||EnumFormDisplayType.DISPLAY_PULLDOWN_GROUP.equals(question.getFormDisplayType())) && response.contains(_validAns.getName())) {
+				hasActiveAns=true;
+			}else if(ansGroups.size()==0 && response.contains(_validAns.getName())) {
+				hasActiveAns=true;
+			}else if(ansGroups.size()>0){
+				Iterator _it=ansGroups.iterator();
+				while(!hasActiveAns&& _it.hasNext()) {
+					String ansGroup=_it.next().toString();
+					if(response.contains(_validAns.getName()+ansGroup)) {
+						hasActiveAns=true;
 					}
 				}
 			}
-		    return answerList;
 		}
-		
-	}*/
+		return hasActiveAns;
+	}
 
 }
