@@ -337,6 +337,9 @@ public class SmartStoreServiceConfiguration {
 			} catch (CompileException e) {
 				LOGGER.error("cannot instantiate script recommender - compile error (fall back to NIL): " + variant.getId(), e);
 				return new NullRecommendationService(variant);
+			} catch (IllegalArgumentException e) {
+				LOGGER.error("cannot instantiate script recommender - generator null (fall back to NIL): " + variant.getId(), e);
+				return new NullRecommendationService(variant);
 			} catch (NullPointerException e) {
 				LOGGER.error("cannot instantiate script recommender - generator null (fall back to NIL): " + variant.getId(), e);
 				return new NullRecommendationService(variant);
