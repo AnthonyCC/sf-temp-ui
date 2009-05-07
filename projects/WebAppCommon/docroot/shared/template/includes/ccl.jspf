@@ -30,10 +30,12 @@
 		}
 		// Make sure that the CCL_hookEvents is called on body load.
 		RequestUtil.appendToAttribute(request,"bodyOnLoad","CCL_hookEvents()",";");
-	
+
+		// Load YUI dependencies
+%><%@ include file="/shared/template/includes/yui.jspf" %><%
+		
 		if (FDStoreProperties.isCclAjaxDebugClient()) { 
 %>
-<%@ include file="/shared/template/includes/yui.jspf" %>
 <script type="text/javascript" src="/assets/javascript/rounded_corners.inc.js"></script>
 
 <script type="text/javascript" src="/assets/javascript/jsonrpc.js"></script>
