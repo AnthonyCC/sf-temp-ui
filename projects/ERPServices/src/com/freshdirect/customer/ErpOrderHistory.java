@@ -9,6 +9,8 @@ import java.util.Date;
  * @created 19-Dec-2007 2:58:50 PM
  */
 public class ErpOrderHistory implements OrderHistoryI {
+	private static final long serialVersionUID = 4888213033162047918L;
+
 
 	private Collection erpSaleInfos;
 	private Collection erpRegSaleInfos;

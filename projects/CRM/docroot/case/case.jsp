@@ -1,10 +1,12 @@
+<%@ page import='java.util.Iterator' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.crm.*' %>
 <%@ page import='com.freshdirect.webapp.util.CCFormatter'%>
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI"%>
 <%@ page import="com.freshdirect.fdstore.customer.*" %>
 <%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession" %>
-<%@ page import="com.freshdirect.customer.ErpShippingInfo" %>
+<%@ page import="com.freshdirect.customer.ErpSaleInfo" %>
+<%@ page import="com.freshdirect.customer.ErpOrderHistory" %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -59,13 +61,26 @@
 									<% if (cm.getSalePK()!=null) {
 									%>Order #: <a href="/main/order_details.jsp?orderId=<%= cm.getSalePK().getId() %>" class="case_subheader_action"><b><%= cm.getSalePK().getId() %></b></a>
 									<% 
-										ErpShippingInfo si = CrmSession.getOrder(session, cm.getSalePK().getId()).getShippingInfo();
-										if (si != null) {
+									ErpOrderHistory hist = (ErpOrderHistory) user.getOrderHistory();
+
+									// display truck and stop no if available
+									final String saleId = cm.getSalePK().getId();
+									ErpSaleInfo esi = null;
+
+									for (Iterator it=hist.getErpSaleInfos().iterator(); it.hasNext();) {
+										ErpSaleInfo esi2 = (ErpSaleInfo) it.next();
+										if (saleId.equals(esi2.getSaleId()) ) {
+											esi = esi2;
+											break;
+										}
+									}
+
+									if (esi != null) {
 									%>
 									</td><td>
-									Truck: <span style="font-weight: bold;"><%= si.getTruckNumber() != null ? si.getTruckNumber() : "-" %></span>
+									Truck: <span style="font-weight: bold;"><%= esi.getTruckNumber() != null ? esi.getTruckNumber() : "-" %></span>
 									</td><td>
-									Stop: <span style="font-weight: bold;"><%= si.getStopSequence() != null ? si.getStopSequence() : "-" %></span>
+									Stop: <span style="font-weight: bold;"><%= esi.getStopSequence() != null ? esi.getStopSequence() : "-" %></span>
 									<%	}
 									} else {
 									%>Order #: <span class="not_set">-None-</span>

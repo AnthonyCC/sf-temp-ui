@@ -21,6 +21,7 @@ import java.util.Date;
  * @author $Author$
  */
 public class FDOrderInfoAdapter implements FDOrderInfoI {
+	private static final long serialVersionUID = -4023909427656438190L;
 
 	protected final ErpSaleInfo saleInfo;
 
@@ -115,5 +116,15 @@ public class FDOrderInfoAdapter implements FDOrderInfoI {
 
 	public EnumSaleType getSaleType() {
 		return this.saleInfo.getSaleType();
+	}
+
+	// can be null
+	public String getStopSequence() {
+		return this.saleInfo.getTruckNumber();
+	}
+
+	// can be null
+	public String getTruckNumber() {
+		return this.saleInfo.getStopSequence();
 	}
 }

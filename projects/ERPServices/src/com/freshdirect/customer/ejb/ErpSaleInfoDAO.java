@@ -66,8 +66,8 @@ public class ErpSaleInfoDAO {
 		+ "and s.id=del.id order by to_number(s.id) desc";
 	*/
 	//New query using Customer_id index in SALESACTION table. As part of PERF-27 task.
-	private static final String QUERY_ORDER_HISTORY = "select cre.customer_id, cre.id, cre.dlv_pass_id,cre.type, del.requested_date, cre.status, sac.amount, del.payment_method_type,  cre.action_date as create_date, cre.source as create_source, cre.initiator as create_by, del.action_date as mod_date,  del.source as mod_source, del.initiator as mod_by, del.starttime, del.endtime, del.cutofftime, del.delivery_type,  NVL(app.amount, 0) as credit_approved, NVL(pen.amount, 0) as credit_pending, del.zone"
-		+ " from   (select  s.customer_id, s.id, s.status, s.dlv_pass_id,s.type,"
+	private static final String QUERY_ORDER_HISTORY = "select cre.customer_id, cre.id, cre.truck_number, cre.stop_sequence, cre.dlv_pass_id,cre.type, del.requested_date, cre.status, sac.amount, del.payment_method_type,  cre.action_date as create_date, cre.source as create_source, cre.initiator as create_by, del.action_date as mod_date,  del.source as mod_source, del.initiator as mod_by, del.starttime, del.endtime, del.cutofftime, del.delivery_type,  NVL(app.amount, 0) as credit_approved, NVL(pen.amount, 0) as credit_pending, del.zone"
+		+ " from   (select  s.customer_id, s.id, s.status, s.dlv_pass_id,s.type, s.truck_number, s.stop_sequence,"
 		+ " sa.action_date, sa.source, sa.initiator"
 		+ "         from   cust.sale s, cust.salesaction sa"
 		+ "         where  sale_id = s.id"
@@ -166,7 +166,9 @@ public class ErpSaleInfoDAO {
 					rs.getString("ZONE"),
 					EnumPaymentMethodType.getEnum(rs.getString("PAYMENT_METHOD_TYPE")),
 					rs.getString("DLV_PASS_ID"),
-					EnumSaleType.getSaleType(rs.getString("TYPE"))
+					EnumSaleType.getSaleType(rs.getString("TYPE")),
+					rs.getString("TRUCK_NUMBER"),
+					rs.getString("STOP_SEQUENCE")
 					));
 		}
 		rs.close();
@@ -176,7 +178,7 @@ public class ErpSaleInfoDAO {
 	}
 	
 	private static final String ORDERS_BY_DLV_PASS =
-		"select s.customer_id,s.id, s.dlv_pass_id,del.requested_date, s.status,s.type, del.payment_method_type, sa.action_date as create_date, sa.source as create_source, sa.initiator as create_by, "
+		"select s.customer_id,s.id, s.dlv_pass_id,del.requested_date, s.status,s.type, s.truck_number, s.stop_sequence, del.payment_method_type, sa.action_date as create_date, sa.source as create_source, sa.initiator as create_by, "
 		+ "del.action_date as mod_date, del.source as mod_source, del.initiator as mod_by, del.starttime, del.endtime, del.cutofftime, del.delivery_type, del.zone, "
 		+ "NVL(( select sum(c.amount) as amount from cust.complaint c where c.sale_id=s.id and c.status='APP'), 0) as credit_approved, "
 		+ "NVL(( select sum(c.amount) as amount from cust.complaint c where c.sale_id=s.id and c.status='PEN'), 0) as credit_pending, "
@@ -221,7 +223,9 @@ public class ErpSaleInfoDAO {
 					rs.getString("ZONE"),
 					EnumPaymentMethodType.getEnum(rs.getString("PAYMENT_METHOD_TYPE")),
 					rs.getString("DLV_PASS_ID"),
-					EnumSaleType.getSaleType(rs.getString("TYPE"))
+					EnumSaleType.getSaleType(rs.getString("TYPE")),
+					rs.getString("TRUCK_NUMBER"),
+					rs.getString("STOP_SEQUENCE")
 					));
 		}
 		rs.close();
@@ -623,7 +627,7 @@ public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpC
   */
 	//New query using Customer_id index in SALESACTION table.
 	private static final String QUERY_WEB_ORDER_HISTORY = 
-		"select	s.id, s.status, sa.action_date as mod_date, sa.requested_date, sa.action_type, sa.source as mod_source,"
+		"select	s.id, s.status, s.truck_number, s.stop_sequence, sa.action_date as mod_date, sa.requested_date, sa.action_type, sa.source as mod_source,"
 		+ "		(select action_date from cust.salesaction where sale_id = s.id and customer_id=s.customer_id and action_type = 'CRO') as create_date, "
 		+ "		(select source from cust.salesaction where sale_id = s.id and customer_id=s.customer_id and action_type = 'CRO') as create_source,"
 		+ "		di.delivery_type, di.zone, pi.payment_method_type "
@@ -677,7 +681,9 @@ public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpC
 					rs.getString("ZONE"),
 					EnumPaymentMethodType.getEnum(rs.getString("PAYMENT_METHOD_TYPE")),
 					"",
-					EnumSaleType.REGULAR
+					EnumSaleType.REGULAR,
+					rs.getString("TRUCK_NUMBER"),
+					rs.getString("STOP_SEQUENCE")
 					));
 		}
 		rs.close();

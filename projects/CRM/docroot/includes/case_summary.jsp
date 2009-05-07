@@ -1,15 +1,16 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='crm' prefix='crm' %>
+<%@ page import='java.util.Iterator' %>
 <%@ page import='com.freshdirect.crm.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession" %>
-<%@ page import="com.freshdirect.customer.ErpShippingInfo" %>
+<%@ page import="com.freshdirect.customer.ErpSaleInfo" %>
+<%@ page import="com.freshdirect.customer.ErpOrderHistory" %>
 <%@ page import='com.freshdirect.webapp.util.CCFormatter'%>
-
-	
-<%@page import="weblogic.utils.StringUtils"%><link rel="stylesheet" href="/ccassets/css/crm.css" type="text/css">
-	<link rel="stylesheet" href="/ccassets/css/case.css" type="text/css">
+<%@ page import="weblogic.utils.StringUtils"%>
+<link rel="stylesheet" href="/ccassets/css/crm.css" type="text/css">
+<link rel="stylesheet" href="/ccassets/css/case.css" type="text/css">
 <%
 String pageURI = request.getRequestURI();
 String height = "100";
@@ -36,7 +37,12 @@ if (caseId==null) {
 } else {
 %>
 	<crm:GetCase id="cm" caseId="<%= caseId %>">
-	<crm:GetCurrentAgent id='currAgent'>
+	<crm:GetCurrentAgent id='currAgent'><%
+
+String erpCustId = request.getParameter("erpCustId");
+String fdCustId = request.getParameter("fdCustId");
+
+%><crm:GetFDUser id="user" useId="true" erpCustId="<%= erpCustId %>" fdCustId="<%= fdCustId %>">
 	<div class="case_summary_header">
 	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="case_header_text">
 		<tr>
@@ -61,10 +67,6 @@ if (caseId==null) {
 			<td width="50%">
 				<table width="100%" cellpadding="0" cellspacing="0" border="0" class="case_header_text">
 					<tr>
-					<%
-					String erpCustId = request.getParameter("erpCustId");
-					String fdCustId = request.getParameter("fdCustId");
-					%>
 						<td width="50%"><b>Actions</b></td>
 						<td width="50%" align="right">
 								<% if (currAgent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.ADM_CODE)) || cm.getLockedAgentPK() == null || currAgent.getPK().equals(cm.getLockedAgentPK())) { %>
@@ -94,14 +96,29 @@ if (caseId==null) {
                     </td>
 					<td style="text-align: center;">Order #: <% if (cm.getSalePK()!=null) { %><b><%= cm.getSalePK().getId() %></b><% } else { %><span class="not_set">-None-</span><% } %>
 					</td>
-					<% if (cm.getSalePK() != null) { 
-						ErpShippingInfo si = CrmSession.getOrder(session, cm.getSalePK().getId()).getShippingInfo();
-						if (si != null) {
+					<%
+					
+					ErpOrderHistory hist = (ErpOrderHistory) user.getOrderHistory();
+
+					// display truck and stop no if available
+					if (cm.getSalePK() != null) {
+						final String saleId = cm.getSalePK().getId();
+						ErpSaleInfo esi = null;
+
+						for (Iterator it=hist.getErpSaleInfos().iterator(); it.hasNext();) {
+							ErpSaleInfo esi2 = (ErpSaleInfo) it.next();
+							if (saleId.equals(esi2.getSaleId()) ) {
+								esi = esi2;
+								break;
+							}
+						}
+
+						if (esi != null) {
 					%>
 					<td>
-					T: <span style="font-weight: bold;"><%= si.getTruckNumber() != null ? new Integer(si.getTruckNumber()).toString() : "-" %></span>
+					T: <span style="font-weight: bold;"><%= esi.getTruckNumber() != null ? new Integer(esi.getTruckNumber()).toString() : "-" %></span>
 					</td><td>
-					S: <span style="font-weight: bold;"><%= si.getStopSequence() != null ? new Integer(si.getStopSequence()).toString() : "-" %></span>
+					S: <span style="font-weight: bold;"><%= esi.getStopSequence() != null ? new Integer(esi.getStopSequence()).toString() : "-" %></span>
 					</td>
 					<%		}
 						} %>
@@ -160,8 +177,9 @@ if (caseId==null) {
 		<%@ include file="/includes/case_actions.jspf" %>
 	</div>
 
-	</crm:GetCurrentAgent>
-	</crm:GetCase>
+</crm:GetFDUser>
+</crm:GetCurrentAgent>
+</crm:GetCase>
 	
 <%	}	%>	
 	

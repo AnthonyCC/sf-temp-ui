@@ -69,4 +69,8 @@ public interface FDOrderInfoI extends Serializable {
 	public String getDlvPassId();
 	
 	public EnumSaleType getSaleType();
+	
+	public String getTruckNumber();
+	
+	public String getStopSequence();
 }

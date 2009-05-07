@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
 import com.freshdirect.payment.EnumPaymentMethodType;
+import com.sun.rsasign.t;
 
 /**
  * Lightweight information about a Sale.
@@ -43,6 +44,10 @@ public class ErpSaleInfo extends BasicSaleInfo {
 	private Set usedPromotionCodes = Collections.EMPTY_SET;
 	//DlvPassId will be not null if delivery pass was applied to this order.
 	private String dlvPassId;
+
+	
+	private String truckNumber;
+	private String stopSequence;
 	
 	public ErpSaleInfo(
 		String saleId,
@@ -65,7 +70,9 @@ public class ErpSaleInfo extends BasicSaleInfo {
 		String zone,
 		EnumPaymentMethodType paymentMethodType,
 		String dlvPassId,
-		EnumSaleType saleType) {
+		EnumSaleType saleType,
+		String truckNumber,
+		String stopSequence) {
 
 		super(saleId, erpCustomerId,status);
 		this.amount = amount;
@@ -87,6 +94,9 @@ public class ErpSaleInfo extends BasicSaleInfo {
 		this.paymentMethodType = paymentMethodType;
 		this.dlvPassId = dlvPassId;
 		this.saleType=saleType;
+		
+		this.truckNumber = truckNumber;
+		this.stopSequence = stopSequence;
 	}
 
 	public double getAmount() {
@@ -175,5 +185,16 @@ public class ErpSaleInfo extends BasicSaleInfo {
 	
 	public EnumSaleType getSaleType() {
 		return saleType;
+	}
+
+
+
+
+	public String getTruckNumber() {
+		return truckNumber;
+	}
+
+	public String getStopSequence() {
+		return stopSequence;
 	}
 }
