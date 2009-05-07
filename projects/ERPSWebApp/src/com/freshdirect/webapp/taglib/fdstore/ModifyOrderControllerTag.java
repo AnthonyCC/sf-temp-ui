@@ -394,7 +394,8 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			currentUser.invalidateCache();
 
 			session.setAttribute( SessionName.USER, currentUser );
-
+            //The previous recommendations of the current user need to be removed.
+            session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
 		} catch (FDResourceException ex) {
 			LOGGER.warn("Error accessing resources", ex);
 			throw new JspException(ex.getMessage());

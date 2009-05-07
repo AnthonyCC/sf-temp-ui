@@ -253,6 +253,8 @@ public class SubmitOrderAction extends WebActionSupport {
 					sendEmail, cra, status
 				);
 				modifying = true;
+	            //The previous recommendations of the current user need to be removed.
+	            session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
 				
 			} else {
 				// new order -> place it
