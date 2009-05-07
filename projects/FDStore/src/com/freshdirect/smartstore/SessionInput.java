@@ -10,6 +10,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.YmalSource;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -197,7 +198,9 @@ public class SessionInput {
 	public CategoryModel getCategory() {
 	    if ((category==null) && currentNode instanceof CategoryModel) {
 	        return (CategoryModel) currentNode;
-	    }
+	    } else if (currentNode instanceof ProductModel)
+	    	return (CategoryModel) ((ProductModel) currentNode).getParentNode();
+	    else
             return category;
     }
 

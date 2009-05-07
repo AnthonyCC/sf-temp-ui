@@ -124,7 +124,7 @@ public class PIPTabTag extends javax.servlet.jsp.tagext.BodyTagSupport {
 
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
                 Impression imp = Impression.get(user, request);
-		String impressionId = imp.logFeatureImpression(null, tabs.getTabRecommender().getVariant().getId(), 
+		String impressionId = imp.logFeatureImpression(null, tabs.getTabRecommender().getVariant(), 
 		        input.getCategory(), input.getCurrentNode(), input.getYmalSource());
 		tabs.setParentImpressionId(impressionId);
 		for (int i = 0; i < tabs.size(); i++) {

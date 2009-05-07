@@ -16,8 +16,11 @@ import com.freshdirect.fdstore.content.YmalSource;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.QuickDateFormat;
+import com.freshdirect.smartstore.RecommendationServiceType;
+import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.smartstore.fdstore.SessionImpressionLog;
+import com.freshdirect.smartstore.fdstore.SmartStoreServiceConfiguration;
 import com.freshdirect.smartstore.impl.AbstractRecommendationService;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
@@ -94,15 +97,29 @@ public class Impression {
         ContentNodeModel trigger = recommendations.getSessionInput().getCurrentNode();
         YmalSource ymalSource = recommendations.getSessionInput().getYmalSource();
         
-        return logFeatureImpression(parentFeatureImpId, recommendations.getVariant().getId(), category, trigger, ymalSource);
+        return logFeatureImpression(parentFeatureImpId, recommendations.getVariant(), category, trigger, ymalSource);
     }
 
-    public String logFeatureImpression(String parentFeatureImpId, String variantId, CategoryModel category, ContentNodeModel trigger, YmalSource ymalSource) {
+    public String logFeatureImpression(String parentFeatureImpId, Variant variant, CategoryModel category, ContentNodeModel trigger, YmalSource ymalSource) {
+        RecommendationServiceType type = variant.getServiceConfig().getType();
+		if (!type.equals(RecommendationServiceType.CLASSIC_YMAL) &&
+        		!type.equals(RecommendationServiceType.SMART_YMAL))
+        	ymalSource = null;
+
+		String generator = variant.getServiceConfig().get(SmartStoreServiceConfiguration.CKEY_GENERATOR);
+        if (!type.equals(RecommendationServiceType.CLASSIC_YMAL) &&
+        		!type.equals(RecommendationServiceType.SMART_YMAL) &&
+        		!(type.equals(RecommendationServiceType.SCRIPTED) && generator != null
+        				&& generator.indexOf("currentProduct") >= 0)) {
+        	trigger = null;
+        	category = null;
+        }
+        
         String triggerProductId = (trigger instanceof ProductModel)? trigger.getContentKey().getId() : "";
         String triggerCategoryId = (category != null) ? category.getContentKey().getId() : "";
-        String ymalSourceId = ymalSource != null ? ymalSource.getContentKey().getId() : "";
+        String ymalSetId = ymalSource != null ? ymalSource.getActiveYmalSet().getContentKey().getId() : "";
 
-        return logFeatureImpression(parentFeatureImpId, variantId, triggerCategoryId, triggerProductId, ymalSourceId);
+        return logFeatureImpression(parentFeatureImpId, variant.getId(), triggerCategoryId, triggerProductId, ymalSetId);
     }
 
     public String logFeatureImpression(String parentFeatureImpId, String variantId, String triggeringCategoryId, String triggeringProductId, String ymalId) {
