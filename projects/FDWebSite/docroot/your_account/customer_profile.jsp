@@ -60,8 +60,8 @@ function _submit(p) {
 <tmpl:put name='content' direct='true'>
 
 <fd:CustomerProfileSurveyTag actionName="submitSurvey" result="result" successPage="<%=successPage%>" survey="Customer Profile Survey">
-<fd:IncludeMedia name="/media/editorial/site_pages/survey/cps_intro.html" />	
- <form id="junk" name="request_product" method="POST">	
+<div style="width:700px;"><fd:IncludeMedia name="/media/editorial/site_pages/survey/cps_intro.html" /></div>
+<form id="junk" name="request_product" method="POST">	
 <table cellpadding="0" cellspacing="0" border="0" class="text12">
 <tr><td colspan="10">
     
@@ -83,38 +83,38 @@ function _submit(p) {
 </tr>
 <% } %>
 	<tr>
-		<td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
-	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="8"></td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="30" height="28"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="28"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="28"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="18"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="18"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="18"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="18"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="18"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="18"></td>
+	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="18"></td>
 	</tr>
 
 	<tr>
-		<td colspan="10" align="center">
-			<a href="javascript:clear(document.request_product)"><img src="/media_stat/images/template/newproduct/b_clear.gif" width="47" height="17" border="0" alt="Clear"></a>&nbsp;&nbsp;
-            <a href="javascript:_submit(document.request_product)"><img src="/media_stat/images/template/newproduct/b_send.gif" width="45" height="15" border="0" alt="Send Request"></a>&nbsp;&nbsp;
-    </td>
-    </tr>
-
-</table>
+		<td colspan="10" style="border-top:solid 1px #CCCCCC;"><br>
+			<a href="javascript:document.request_product.submit()"><img src="/media_stat/images/buttons/submit_profile.gif" width="166" height="20" border="0" alt="SUBMIT MY PROFILE"></a>
+			&nbsp;&nbsp;
+ 			<a href="javascript:clear(document.request_product)"><img src="/media_stat/images/buttons/clear_form.gif" width="110" height="20" border="0" alt="CLEAR FORM"></a>
+			<br><img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br>
+			Of course, we keep all of your information private 
+	</td>
 </form>
-<br><br>
-<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="675" HEIGHT="1" BORDER="0"><BR>
-<FONT CLASS="space4pix"><BR><BR></FONT>
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="675">
-<tr VALIGN="TOP">
-<td WIDTH="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="CONTINUE SHOPPING" ALIGN="LEFT"></a></td>
-<td WIDTH="640"><a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="CONTINUE SHOPPING"></a>
-<BR>from <FONT CLASS="text11bold"><A HREF="/index.jsp">Home Page</A></FONT><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="340" HEIGHT="1" BORDER="0"></td>
-</tr>
-</TABLE>
+    </tr>
+</table>
+<!--table width="693" border="0" cellspacing="0" cellpadding="0">
+		<tr valign="top">
+			<td width="30"><font class="space2pix"><br></font><input type="image" name="checkout" src="/media_stat/images/buttons/checkout_arrow.gif" width="29" HEIGHT="29" border="0" alt="CONTINUE CHECKOUT" VSPACE="0"></td>
+			<td width="345"><input type="image" name="checkout" src="/media_stat/images/buttons/checkout.gif" width="57" HEIGHT="9" border="0" alt="CHECKOUT" VSPACE="0"></td>
 
+			<td width="283" align="right" valign="middle">Clear preferences</td>
+			<td width="35" align="right"><a href="/index.jsp"><img src="/media_stat/images/buttons/x_green.gif" width="20" HEIGHT="19" border="0" alt="CONTINUE SHOPPING"></a></td>
+		</tr>
+	</table-->
 </fd:CustomerProfileSurveyTag>
 	</tmpl:put>
 </tmpl:insert>
