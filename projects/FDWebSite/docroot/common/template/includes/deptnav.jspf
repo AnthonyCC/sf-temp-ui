@@ -4,8 +4,9 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) {
 %>
 <table cellpadding="0" cellspacing="0" border="0">
 			    <tr>
-				    <td valign="middle"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/template/youraccount/youraccount_deptnav.gif" width="200" height="36" border="0" alt="YOUR ACCOUNT"></a></td>					<td>&nbsp;<img src="/media_stat/images/layout/999966.gif" width="1" height="31" border="0" hspace="0" vspace="0" ALIGN="TOP">&nbsp;</td>
-					<td class="text9_lh12" valign="top" width="65">
+				    <td valign="middle"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/template/youraccount/youraccount_deptnav.gif" width="198" height="33" border="0" alt="YOUR ACCOUNT"></a></td>
+					<td><img src="/media_stat/images/layout/999966.gif" width="1" height="41" border="0" hspace="0" vspace="0" ALIGN="TOP"></td>
+					<td class="text9_lh12" valign="top" style="padding-left:3px;">
 					    <a href="<%=response.encodeURL("/your_account/order_history.jsp")%>">Your Orders</a><br>
 						<%if(user.isEligibleForPreReservation()){%>
 							<a href="<%=response.encodeURL("/your_account/reserve_timeslot.jsp")%>">Reserve&nbsp;Delivery</a><br>
@@ -19,9 +20,8 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) {
 						<%}%>
 						                
 					</td>
-					<td>&nbsp;<img src="/media_stat/images/layout/999966.gif" width="1" height="31" border="0" hspace="0" vspace="0" ALIGN="TOP">&nbsp;</td>
-					<td class="text9_lh12" valign="top">
-                       
+					<td style="padding-left:2px;"><img src="/media_stat/images/layout/999966.gif" width="1" height="41" border="0" hspace="0" vspace="0" ALIGN="TOP"></td>
+					<td class="text9_lh12" valign="top" style="padding-left:3px;">
 						<%if(user.isEligibleForPreReservation()){%>
                         <a href="<%=response.encodeURL("/your_account/delivery_information.jsp")%>">Delivery&nbsp;Addresses</a><br>
 						<a href="<%=response.encodeURL("/your_account/payment_information.jsp")%>">Payment&nbsp;Options</a><br>
@@ -29,12 +29,12 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) {
 						<%}%>                        					                            
                          <%if(!user.isEligibleForPreReservation()){%>
                             <a href="<%=response.encodeURL("/your_account/payment_information.jsp")%>">Payment Options</a><br>
-                            <a href="<%=response.encodeURL("/your_account/signin_information.jsp")%>">User&nbsp;Name,&nbsp;Password&nbsp;&&nbsp;Contact&nbsp;Information</a><br>
+                            <a href="<%=response.encodeURL("/your_account/signin_information.jsp")%>">User Name, Password & Contact Information</a><br>
 							<a href="<%=response.encodeURL("/your_account/newsletter.jsp")%>">President's&nbsp;Picks&nbsp;Newsletter</a>
 						<%}%>
 					</td>
-					<td>&nbsp;<img src="/media_stat/images/layout/999966.gif" width="1" height="31" border="0" hspace="0" vspace="0" ALIGN="TOP">&nbsp;</td>
-					<td class="text9_lh12" valign="top">
+					<td style="padding-left:2px;"><img src="/media_stat/images/layout/999966.gif" width="1" height="41" border="0" hspace="0" vspace="0" ALIGN="TOP"></td>
+					<td class="text9_lh12" valign="top" style="padding-left:3px;">
                     <%if(user.isEligibleForPreReservation()){%>
 							<a href="<%=response.encodeURL("/your_account/newsletter.jsp")%>">President's&nbsp;Picks&nbsp;Newsletter</a><br>
 					<%}%>                    

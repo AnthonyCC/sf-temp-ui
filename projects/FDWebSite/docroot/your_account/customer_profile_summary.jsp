@@ -129,26 +129,20 @@ response.setHeader("Cache-Control", "no-cache");
 	<!-- left column -->
 		<td class="col39per padLR10px vTop">
 			<!-- profile image / edit profile link -->
-            <%if(!"".equals(profileImagePath)){%>
-				<table class="col100per noBorder">
+            <table class="col100per noBorder">
 				<tr>
-					<td class="rb_image">
+				<%if(!"".equals(profileImagePath)){%>
+					<td class="rb_image" style="padding-right:5px;">
 						<img src=<%="/media_stat/images/profile/"+profileImagePath+".jpg"%>><br />
 					</td>
-					<!--<td class="ico">
-						<img src="edit.gif" width="16" height="16" border="0" alt="" title="">
-					</td>-->
-					<td class="t12px bolded tLeft"><a href="/your_account/customer_profile.jsp" title="">Edit my profile</a></td>
+				<%}%>
+					<td width="18">
+						<img src="/media_stat/images/template/youraccount/edit_profile.gif" width="15" height="15" border="0">
+					</td>
+					<td class="t11px bolded tLeft"><a href="/your_account/customer_profile.jsp">Edit my profile</a></td>
 				</tr>
-				</table>
-                <%} else {%>
-                <table class="col100per noBorder">
-				<tr>
-					<td class="t12px bolded tLeft"><a href="/your_account/customer_profile.jsp" title="">Edit my profile</a></td>
-				</tr>
-				</table>
-                
-                <%}%>
+				<%if("".equals(profileImagePath)){%><tr><td colspan="2" style="padding-bottom:10px;"><img height="1" width="1" src="/media_stat/images/layout/clear.gif"/></td></tr><%}%>
+			</table>
 			<!-- NAME profile - customer info -->
 				<table class="col100per noBorder tLeft">
 				<tr>
@@ -160,43 +154,39 @@ response.setHeader("Cache-Control", "no-cache");
                       user.getOrderHistory().getLastOrderDlvDate()!=null
                   ){%>
 				<tr>
-					<td>
-						<span class="bolded">Customer Since: </span><%= TimeslotPageUtil.formatFirstOrderYear(user.getOrderHistory().getFirstNonPickupOrderDate()) %>
+					<td class="t11px">
+						<span class="t11px bolded">Customer Since: </span><%= TimeslotPageUtil.formatFirstOrderYear(user.getOrderHistory().getFirstNonPickupOrderDate()) %>
 					</td>
 				</tr>
 				<tr>
-					<td>
-						<span class="bolded">Last Ordered: </span><%=dateFormatter.format(user.getOrderHistory().getLastOrderDlvDate())%>
+					<td class="t11px">
+						<span class="t11px bolded">Last Ordered: </span><%=dateFormatter.format(user.getOrderHistory().getLastOrderDlvDate())%>
 					</td>
-				</tr>
+				</tr>  
                 <%}%>
                 <% if(birthDay!=null && birthDay.length==2){%>
 				<tr>
-					<td>
-                        
-						<span class="bolded">Birthday: </span><%=birthDay[0]+" "+birthDay[1]%>
+					<td class="t11px">
+						<span class="t11px bolded">Birthday: </span><%=birthDay[0]+" "+birthDay[1]%>
 					</td>
 				</tr>
-                
-               <%}%>
+                <%}%>
+				</table>
+   
 			<!-- CHEF'S TABLE member -->
             <% if(user.isChefsTable()) { %>
 	        <table class="col100per noBorder tLeft">
-	         <tr><td class="t12px bolded">CHEF'S TABLE MEMBER</td></tr>
+	         <tr><td width="15" style="padding-top:12px;"><img src="/media_stat/images/template/youraccount/ct_star.gif" width="15" height="15"></td><td class="t11px bolded" style="padding-top:12px;">CHEF'S TABLE MEMBER</td></tr>
 	        </table>
 	        <% } %>
-				<br /><br />
-
 
 			<!-- OAS ad -->
-				<table>
-				<tr>
-					<td style="text-align: right;">
-						<table class="clean">
-							<tr> 
-								<td height="5"><img height="6" width="6" src="top_left_curve.gif"/></td>
-								<td height="5" style="border-top: 1px solid #996;"><img height="1" width="204" src="clear.gif"/></td>
-								<td height="5"><img height="6" width="6" src="top_right_curve.gif"/></td>
+						<table cellpadding="0" cellspacing="0" border="0">
+							<tr><td colspan="3" style="padding-top:12px;"><img height="1" width="1" src="/media_stat/images/layout/clear.gif"/></td></tr>
+							<tr valign="top"> 
+								<td><img height="6" width="6" src="/media_stat/images/layout/top_left_curve.gif"/></td>
+								<td style="border-top: 1px solid #996;"><img height="1" width="204" src="/media_stat/images/layout/clear.gif"/></td>
+								<td><img height="6" width="6" src="/media_stat/images/layout/top_right_curve.gif"/></td>
 							</tr>
 							<tr>
 								<td align="center" style="border-left: 1px solid #996; border-right: 1px solid #996;" colspan="3">
@@ -211,15 +201,12 @@ response.setHeader("Cache-Control", "no-cache");
 					                <% } %>
 								</td>
 							  </tr>
-							<tr>
-								<td height="5"><img height="6" width="6" vspace="0" src="bottom_left_curve.gif"/></td>
-								<td height="5" style="border-bottom: 1px solid #996;"><img height="1" width="1" src="clear.gif"/></td>
-								<td height="5"><img height="6" width="6" vspace="0" src="bottom_right_curve.gif"/></td>
+							<tr valign="top">
+								<td><img height="6" width="6" vspace="0" src="/media_stat/images/layout/bottom_left_curve.gif"/></td>
+								<td style="border-bottom: 1px solid #996;"><img height="1" width="1" src="/media_stat/images/layout/clear.gif"/></td>
+								<td><img height="6" width="6" vspace="0" src="/media_stat/images/layout/bottom_right_curve.gif"/></td>
 							</tr>
 						</table>
-					</td>
-				</tr>
-				</table>
 				<!-- OAS ad position goes here -->
 		</td>
 	<!-- end left column -->
@@ -245,6 +232,7 @@ response.setHeader("Cache-Control", "no-cache");
                         <a href="<%="/your_account/customer_profile.jsp#"+question.getName()%>" title="">Edit</a></td>
                 </tr>
                <%=SurveyHtmlHelper.getAnswers(question,surveyResponse.getAnswerAsList(question.getName()))%>
+			   <tr><td><img height="8" width="1" src="/media_stat/images/layout/clear.gif"/></td></tr>
             <%}%>
             </logic:iterate>
             <%}%>

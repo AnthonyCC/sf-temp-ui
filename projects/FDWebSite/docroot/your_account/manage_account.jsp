@@ -158,9 +158,9 @@ your account information, this is the place to do it.<br></td>
 		Visit Quickshop for your shopping lists
 		<br><br>
         <font class="text13bold">
-		<a href="<%=response.encodeURL("/your_account/customer_profile_summary.jsp")%>">Your Profile</a> </font>  <font class="text13bold" color="#990000">*NEW </font>
+		<a href="<%=response.encodeURL("/your_account/customer_profile_summary.jsp")%>">Your Profile</a> </font>  <font class="text13bold" color="#990000">*NEW</font>
 		<br>
-		Tell us about yourself
+		Tell us your food preferences
 		<br><br>
 		
 	</td>
