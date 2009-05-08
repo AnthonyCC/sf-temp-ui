@@ -13,7 +13,7 @@ public class EnumFormDisplayType  extends Enum {
 	public static final EnumFormDisplayType SINGLE_ANS_PER_ROW = new EnumFormDisplayType("1", "Single Answer per row");
 	public static final EnumFormDisplayType TWO_ANS_PER_ROW = new EnumFormDisplayType("2", "Two Answers per row");
 	public static final EnumFormDisplayType GROUPED_RADIO_BUTTON = new EnumFormDisplayType("3", "Grouped Radio Buttons");
-	public static final EnumFormDisplayType GROUPED_MULTI_SELECTION = new EnumFormDisplayType("4", "Grouped Radio Buttons");
+	public static final EnumFormDisplayType GROUPED_MULTI_SELECTION = new EnumFormDisplayType("4", "Grouped Multi selections");
 	public static final EnumFormDisplayType DISPLAY_PULLDOWN_GROUP = new EnumFormDisplayType("5", "Pulldown with grouped display");
 	public static final EnumFormDisplayType IMAGE_DISPLAY = new EnumFormDisplayType("6", "Display 6 images per row");
 	public static final EnumFormDisplayType MULTIPLE_PULLDOWN_GROUP = new EnumFormDisplayType("7", "Multiple Pulldown with grouped display");

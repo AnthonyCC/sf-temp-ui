@@ -45,9 +45,9 @@ function clear(p) {
 
     for(i=0; i<x.length; i++) {
 
-        
         x[i].checked= false;
         x[i].disabled= false;
+        x[i].selectedIndex=0;
     }
 }
 

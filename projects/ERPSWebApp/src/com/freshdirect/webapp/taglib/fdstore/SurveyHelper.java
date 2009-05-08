@@ -82,6 +82,7 @@ public class SurveyHelper {
 		FDSurveyQuestion question=null;
 		for (Iterator it=survey.getQuestions().iterator();it.hasNext();) {
 			question=(FDSurveyQuestion)it.next();
+			System.out.println(question.getName());
 			if(response.getAnswers().containsKey(question.getName())) {
 				//if(!response.getAnswerAsList(question.getName()).isEmpty())
 				if(hasActiveAnswers(question,response.getAnswerAsList(question.getName())))
@@ -113,7 +114,7 @@ public class SurveyHelper {
 				Iterator _it=ansGroups.iterator();
 				while(!hasActiveAns&& _it.hasNext()) {
 					String ansGroup=_it.next().toString();
-					if(response.contains(_validAns.getName()+ansGroup)) {
+					if(response.contains(_validAns.getName())||response.contains(_validAns.getName()+ansGroup)) {
 						hasActiveAns=true;
 					}
 				}
