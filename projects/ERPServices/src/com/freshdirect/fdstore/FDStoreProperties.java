@@ -342,7 +342,7 @@ public class FDStoreProperties {
 
 		defaults.put(PROP_REFRESHSECS_PRODUCTINFO, "600");
 		defaults.put(PROP_REFRESHSECS_PRODUCT, "7200");
-		defaults.put(PROP_PRODUCT_CACHE_SIZE, "17000");
+		defaults.put(PROP_PRODUCT_CACHE_SIZE, "30000");
 
 		// mktadmin
 		defaults.put(MKT_ADMIN_FILE_UPLOAD_SIZE, "2000");

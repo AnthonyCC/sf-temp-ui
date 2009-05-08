@@ -112,7 +112,12 @@ public class Impression {
         		!(type.equals(RecommendationServiceType.SCRIPTED) && generator != null
         				&& generator.indexOf("currentProduct") >= 0)) {
         	trigger = null;
-        	category = null;
+        	if (!type.equals(RecommendationServiceType.ALL_PRODUCT_IN_CATEGORY)
+        			&& !type.equals(RecommendationServiceType.CANDIDATE_LIST)
+        			&& !type.equals(RecommendationServiceType.FEATURED_ITEMS)
+        			&& !type.equals(RecommendationServiceType.MANUAL_OVERRIDE)
+        			&& !type.equals(RecommendationServiceType.YOUR_FAVORITES_IN_FEATURED_ITEMS))
+        		category = null;
         }
         
         String triggerProductId = (trigger instanceof ProductModel)? trigger.getContentKey().getId() : "";

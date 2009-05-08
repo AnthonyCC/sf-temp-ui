@@ -91,6 +91,7 @@
 		customerId = ts.getErpIDForUserID(customerEmail);
 		try {
 			user = FDCustomerManager.getFDUser(new FDIdentity(customerId));
+			user.updateUserState();
 		} catch (Exception e) {
 			
 		}
