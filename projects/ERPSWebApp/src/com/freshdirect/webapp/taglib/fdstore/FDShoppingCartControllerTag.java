@@ -1263,6 +1263,9 @@ public class FDShoppingCartControllerTag extends
 				String savingsId = originalLine.getSavingsId();
 				if(savingsId == null) savingsId = originalLine.getVariantId();
 				theCartLine.setSavingsId(savingsId);
+			} else {
+				//for any new recommended line
+				theCartLine.setSavingsId(variantId);
 			}
 
 			theCartLine.setDiscountFlag(discountApplied);

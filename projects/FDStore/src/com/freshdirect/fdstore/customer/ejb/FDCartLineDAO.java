@@ -64,15 +64,12 @@ public class FDCartLineDAO {
 		ps.executeUpdate();
 		ps.close();
 
-		 System.out.println("******************************trying to insert cartline"+fdUserPk.getId());
-		
 		ps =
 			conn.prepareStatement(
 				"INSERT INTO CUST.FDCARTLINE (ID, FDUSER_ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, DISCOUNT_APPLIED, SAVINGS_ID) values (?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		for (Iterator i = erpOrderlines.iterator(); i.hasNext();) {
 			ErpOrderLineModel line = (ErpOrderLineModel) i.next();
-			System.out.println("trying to insert cartline"+line.getCartlineId()); 
 			ps.setString(1, line.getCartlineId());
 			ps.setString(2, fdUserPk.getId());
 			ps.setString(3, line.getSku().getSkuCode());

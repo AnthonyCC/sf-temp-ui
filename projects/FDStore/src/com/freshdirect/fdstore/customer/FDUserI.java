@@ -301,6 +301,10 @@ public interface FDUserI extends java.io.Serializable {
     
     public void setPromoVariantMap(Map pvMap);
     
+	public String getSavingsVariantId();
+	
+	public void setSavingsVariantId(String savingsVariantId) ;
+
     public PromoVariantModel getPromoVariant(String variantId);
     
     public boolean isPostPromoConflictEnabled();

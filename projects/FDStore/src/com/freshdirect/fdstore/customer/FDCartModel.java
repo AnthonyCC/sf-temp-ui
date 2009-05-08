@@ -1227,6 +1227,15 @@ public class FDCartModel extends ModelSupport implements FDCartI {
         return discountAmt;
 	}
 	
+	public Set getUniqueSavingsIds() {
+		Set saveIdsInCart = new HashSet();
+		for (Iterator i = this.getOrderLines().iterator(); i.hasNext();) {
+			FDCartLineI cartLine = (FDCartLineI) i.next();
+			saveIdsInCart.add(cartLine.getSavingsId());;
+		}
+		return saveIdsInCart;
+	}
+	
 	public boolean hasHeaderDiscount() {
 		// TODO Auto-generated method stub
 		List l = this.getDiscounts();

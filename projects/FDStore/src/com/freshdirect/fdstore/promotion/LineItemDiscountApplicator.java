@@ -76,10 +76,6 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 							Discount dis=new Discount(promotionCode,EnumDiscountType.PERCENT_OFF,percentOff);
 							model.setDiscount(dis);
 							String savingsId = model.getSavingsId();
-							if(savingsId == null){
-								//If SavingsID is null check if the variant id is not null.
-								savingsId  = model.getVariantId();
-							}
 							String productId = model.getProductRef().lookupProduct().getContentKey().getId();							
 							recommendedItemMap.put(productId, savingsId);
 							appliedCnt++;
@@ -94,8 +90,9 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 						if(e) {
 							Discount dis=new Discount(promotionCode,EnumDiscountType.PERCENT_OFF,percentOff);
 							model.setDiscount(dis);
-							String productId = model.getProductRef().lookupProduct().getContentKey().getId();
-							recommendedItemMap.put(productId, model.getVariantId());
+							String savingsId = model.getSavingsId();
+							String productId = model.getProductRef().lookupProduct().getContentKey().getId();							
+							recommendedItemMap.put(productId, savingsId);
 							model.setDiscountFlag(true);
 							appliedCnt++;
 						}		
