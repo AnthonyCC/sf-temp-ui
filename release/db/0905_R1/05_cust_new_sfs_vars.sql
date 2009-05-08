@@ -16,6 +16,20 @@ INSERT INTO ss_site_feature (id, title) VALUES ('C_YMAL_YF', 'C''n''T YMAL from 
 -- THIS SECTION HAS TO BE CHANGED ACCORDINGLY WITH ACTUAL VALUES OF SAVE VARIANTS
 
 INSERT INTO ss_variants (id, type, feature, alias_id) VALUES ('c_save_yf_1', 'alias', 'C_SAVE_YF', 'dyf-freqbought3');
+
+-- changes done by gopal
+INSERT INTO ss_variants (id, type, feature, alias_id) VALUES ('dyf-freqbought1_s', 'alias', 'C_SAVE_YF', 'dyf-freqbought1');
+INSERT INTO ss_variants (id, type, feature, alias_id) VALUES ('dyf_scr_calc1_s', 'alias', 'C_SAVE_YF', 'dyf_scr_calc1');
+INSERT INTO ss_variants (id, type, feature, alias_id) VALUES ('dyf_scr_ord1_s', 'alias', 'C_SAVE_YF', 'dyf_scr_ord1');
+INSERT INTO ss_variants (id, type, feature, alias_id) VALUES ('dyf_scr_ord2_s', 'alias', 'C_SAVE_YF', 'dyf_scr_ord2');
+INSERT INTO ss_variants (id, type, feature, alias_id) VALUES ('dyf_spnd_s', 'alias', 'C_SAVE_YF', 'dyf_spnd');
+
+INSERT INTO ss_variants (id, type, feature, alias_id) VALUES ('favorites-1_s', 'alias', 'C_SAVE_FDF', 'favorites-1');
+INSERT INTO ss_variants (id, type, feature, alias_id) VALUES ('favorites-2_s', 'alias', 'C_SAVE_FDF', 'favorites-2');
+INSERT INTO ss_variants (id, type, feature, alias_id) VALUES ('favorites-3_s', 'alias', 'C_SAVE_FDF', 'favorites-3');
+-- changes over
+
+
 INSERT INTO ss_variants (id, type, feature, alias_id) VALUES ('c_save_fdf_1', 'alias', 'C_SAVE_FDF', 'favorites-1');
 INSERT INTO ss_variant_params (id, key, value)
     VALUES ('c_save_yf_1', 'prez_title', 'SAVE ON YOUR FAVORITES');

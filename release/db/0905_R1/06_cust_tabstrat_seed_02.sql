@@ -3,6 +3,9 @@ INSERT INTO SS_TAB_STRATEGY_PRIORITY (tab_strategy_id, site_feature_id, primary_
     VALUES ('tabs_var1fave', 'C_SAVE_YF', 10, 10);
 INSERT INTO SS_TAB_STRATEGY_PRIORITY (tab_strategy_id, site_feature_id, primary_priority, secondary_priority)
     VALUES ('tabs_var1fave', 'DYF', 10, 20);
+-- changes done by gopal
+INSERT INTO SS_TAB_STRATEGY_PRIORITY (tab_strategy_id, site_feature_id, primary_priority, secondary_priority)
+    VALUES ('tabs_var1fave', 'C_SAVE_FDF', 10, 25);    
 INSERT INTO SS_TAB_STRATEGY_PRIORITY (tab_strategy_id, site_feature_id, primary_priority, secondary_priority)
     VALUES ('tabs_var1fave', 'FAVORITES', 10, 30);
 INSERT INTO SS_TAB_STRATEGY_PRIORITY (tab_strategy_id, site_feature_id, primary_priority, secondary_priority)
@@ -28,6 +31,9 @@ INSERT INTO SS_TAB_STRATEGY_PRIORITY (tab_strategy_id, site_feature_id, primary_
     VALUES ('tabs_var1peak', 'C_SAVE_YF', 20, 10);
 INSERT INTO SS_TAB_STRATEGY_PRIORITY (tab_strategy_id, site_feature_id, primary_priority, secondary_priority)
     VALUES ('tabs_var1peak', 'DYF', 20, 20);
+-- changes done by gopal
+INSERT INTO SS_TAB_STRATEGY_PRIORITY (tab_strategy_id, site_feature_id, primary_priority, secondary_priority)
+    VALUES ('tabs_var1peak', 'C_SAVE_FDF', 20, 25);            
 INSERT INTO SS_TAB_STRATEGY_PRIORITY (tab_strategy_id, site_feature_id, primary_priority, secondary_priority)
     VALUES ('tabs_var1peak', 'FAVORITES', 20, 30);
 INSERT INTO SS_TAB_STRATEGY_PRIORITY (tab_strategy_id, site_feature_id, primary_priority, secondary_priority)
@@ -53,6 +59,9 @@ INSERT INTO SS_TAB_STRATEGY_PRIORITY (tab_strategy_id, site_feature_id, primary_
     VALUES ('tabs_var1deal', 'C_SAVE_YF', 30, 10);
 INSERT INTO SS_TAB_STRATEGY_PRIORITY (tab_strategy_id, site_feature_id, primary_priority, secondary_priority)
     VALUES ('tabs_var1deal', 'DYF', 30, 20);
+-- changes done by gopal
+INSERT INTO SS_TAB_STRATEGY_PRIORITY (tab_strategy_id, site_feature_id, primary_priority, secondary_priority)
+    VALUES ('tabs_var1deal', 'C_SAVE_FDF', 30, 25);        
 INSERT INTO SS_TAB_STRATEGY_PRIORITY (tab_strategy_id, site_feature_id, primary_priority, secondary_priority)
     VALUES ('tabs_var1deal', 'FAVORITES', 30, 30);
 
@@ -60,6 +69,9 @@ INSERT INTO SS_TAB_STRATEGY_PRIORITY (tab_strategy_id, site_feature_id, primary_
     VALUES ('tabs_var2fave', 'C_SAVE_YF', 10, 10);
 INSERT INTO SS_TAB_STRATEGY_PRIORITY (tab_strategy_id, site_feature_id, primary_priority, secondary_priority)
     VALUES ('tabs_var2fave', 'DYF', 10, 20);
+-- changes done by gopal
+INSERT INTO SS_TAB_STRATEGY_PRIORITY (tab_strategy_id, site_feature_id, primary_priority, secondary_priority)
+    VALUES ('tabs_var2fave', 'C_SAVE_FDF', 10, 25);            
 INSERT INTO SS_TAB_STRATEGY_PRIORITY (tab_strategy_id, site_feature_id, primary_priority, secondary_priority)
     VALUES ('tabs_var2fave', 'FAVORITES', 10, 30);
 INSERT INTO SS_TAB_STRATEGY_PRIORITY (tab_strategy_id, site_feature_id, primary_priority, secondary_priority)
