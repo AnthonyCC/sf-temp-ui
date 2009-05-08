@@ -49,8 +49,6 @@ public class SessionInput {
 	
 	private boolean checkForEnoughSavingsMode = false;
 	
-	private String savingsVariantId;
-	
 	//private Set eligiblePromotions = null;
 
 	/**
@@ -84,8 +82,8 @@ public class SessionInput {
 		if (user != null) {
 			this.customerServiceType = user.getUserServiceType();
 			this.cartModel = user.getShoppingCart();
-			this.savingsVariantId = user.getSavingsVariantId();
-			//this.promoVariantMap = user.getPromoVariantMap();
+			//Clone the promoVariantMap.
+			this.promoVariantMap = new HashMap(user.getPromoVariantMap());
 			//this.eligiblePromotions = user.getPromotionEligibility().getEligiblePromotionCodes();
 			if (user.getIdentity() != null)
 				this.customerId = user.getIdentity().getErpCustomerPK();
@@ -197,10 +195,6 @@ public class SessionInput {
             this.category = category;
     }
 	
-	public String getSavingsVariantId() {
-		return savingsVariantId;
-	}
-
 	public CategoryModel getCategory() {
 	    if ((category==null) && currentNode instanceof CategoryModel) {
 	        return (CategoryModel) currentNode;

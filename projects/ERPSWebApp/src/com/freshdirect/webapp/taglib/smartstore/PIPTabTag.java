@@ -1,6 +1,5 @@
 package com.freshdirect.webapp.taglib.smartstore;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -96,16 +95,19 @@ public class PIPTabTag extends javax.servlet.jsp.tagext.BodyTagSupport {
 		input.setCurrentNode( input.getYmalSource() );
 		input.setMaxRecommendations(maxRecommendations);
 		
+		if(input.getPreviousRecommendations() == null){
+			//when no smart savings variant was previously set.
+			input.setCheckForEnoughSavingsMode(true);
+			validateForEnoughSavings(user, input, overriddenVariantId);
+			input.setCheckForEnoughSavingsMode(false);
+		}
 		tabs = CartTabRecommender.recommendTabs( user, input, overriddenVariantId);
 		
 		// it's very similar to RecommendationsTag.persistToSession()
 		if (input.getPreviousRecommendations() != null) {
 		    pageContext.getSession().setAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS, input.getPreviousRecommendations());
 		}
-		/* savings variant id is the variant attached to the pre-selected smart saving site feature tab by CartTabRecommender.*/
-		if (input.getSavingsVariantId() != null) {
-			user.setSavingsVariantId(input.getSavingsVariantId());
-		}
+		
 		if (tabs.size() == 0) {
 		    return SKIP_BODY;
 		}
@@ -174,6 +176,26 @@ public class PIPTabTag extends javax.servlet.jsp.tagext.BodyTagSupport {
             return selectedTab;
 	}
 	
+	private void validateForEnoughSavings(FDUserI user, SessionInput input, String overriddenVariantId){
+		
+		Map pvMap = input.getPromoVariantMap();
+		if(pvMap != null && pvMap.size() > 0) {
+			FDStoreRecommender recommender = FDStoreRecommender.getInstance();
+			for(Iterator it = pvMap.keySet().iterator(); it.hasNext();){
+				//String variantId = (String) it.next();
+				PromoVariantModel pv = (PromoVariantModel)pvMap.get(it.next());
+				try {
+				Recommendations rec = recommender.getRecommendations(pv.getSiteFeature(), user, input, overriddenVariantId);
+				  if (rec.getProducts().size() == 0) {
+					  //no recommendations found for this smart saving feature. remove it from the promo variant map.
+					 it.remove();
+				  }
+				}catch (FDResourceException e) {
+					//Do nothing.
+                }
+			}
+		}
+	}
 	//=============================================================
 	//						Tag extra info
 	//=============================================================	

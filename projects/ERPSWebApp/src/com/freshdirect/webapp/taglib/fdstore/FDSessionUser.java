@@ -717,14 +717,6 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		user.setPromoVariantMap(pvMap);
 	}
 	
-	public String getSavingsVariantId() {
-		return this.user.getSavingsVariantId();
-	}
-	public void setSavingsVariantId(String savingsVariantId) {
-		this.user.setSavingsVariantId(savingsVariantId);
-	}
-
-	
 	public PromoVariantModel getPromoVariant(String variantId) {
 	   return user.getPromoVariant(variantId);
 	}

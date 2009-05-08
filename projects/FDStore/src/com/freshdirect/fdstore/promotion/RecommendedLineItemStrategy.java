@@ -26,11 +26,18 @@ public class RecommendedLineItemStrategy implements LineItemStrategyI {
 			if(savingsId != null) {
 				PromoVariantModel eligiblePV = (PromoVariantModel) context.getUser().getPromoVariant(savingsId);
 				eligibleLine = (eligiblePV != null && eligiblePV.getAssignedPromotion().getPromotionCode().equals(promotionCode));
+				if(eligibleLine){
+					return ALLOW;
+				}
 			} 
-			if(eligibleLine){
-				String savVariantId = context.getUser().getSavingsVariantId();
-				if( savVariantId == null ) return ALLOW;
-				if(savVariantId != null && savVariantId.equals(savingsId)) return ALLOW;
+			if(!eligibleLine) {
+				//If savingsId is null check if the variant id is not null.
+				savingsId  = lineItem.getVariantId();
+				PromoVariantModel eligiblePV = (PromoVariantModel) context.getUser().getPromoVariant(savingsId);
+				eligibleLine = (eligiblePV != null && eligiblePV.getAssignedPromotion().getPromotionCode().equals(promotionCode));
+				if(eligibleLine){
+					return ALLOW;
+				}
 			}
 		return DENY;
 	}
