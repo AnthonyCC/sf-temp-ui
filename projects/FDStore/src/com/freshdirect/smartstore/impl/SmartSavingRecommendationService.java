@@ -37,8 +37,13 @@ public class SmartSavingRecommendationService extends WrapperRecommendationServi
     }
 
     public List recommendNodes(SessionInput input) {
+    	if(input.isCheckForEnoughSavingsMode()) {
+    		return internal.recommendNodes(input);
+    	}
+    		
         String variantId = getVariant().getId();
-        if(!isEligibleForSavings(input, variantId)) return Collections.EMPTY_LIST;
+        if(!variantId.equals(input.getSavingsVariantId()))return Collections.EMPTY_LIST;
+        //if(!isEligibleForSavings(input, variantId)) return Collections.EMPTY_LIST;
         Map prevMap = input.getPreviousRecommendations();
         if (prevMap != null) {
             List prevRecommendations = (List) prevMap.get(variantId);
@@ -51,7 +56,7 @@ public class SmartSavingRecommendationService extends WrapperRecommendationServi
         for (int i = 0; i < cartModel.numberOfOrderLines(); i++) {
             FDCartLineI orderLine = cartModel.getOrderLine(i);
             if (!cartSuggestions.contains(orderLine.lookupProduct()) && 
-            		(variantId.equals(orderLine.getSavingsId()) || variantId.equals(orderLine.getVariantId()))) {
+            		(variantId.equals(orderLine.getSavingsId()))) {
                 cartSuggestions.add(orderLine.lookupProduct());
             }
         }
@@ -67,10 +72,6 @@ public class SmartSavingRecommendationService extends WrapperRecommendationServi
         }
         if (cartSuggestions.size() > input.getMaxRecommendations())
         	cartSuggestions = cartSuggestions.subList(0, input.getMaxRecommendations());
-        //If there are no recommendations return empty list. No need set to previous recommendations map.
-        if(cartSuggestions.size() == 0 ) {
-        	return cartSuggestions;
-        }
 
         if (prevMap == null) {
             prevMap = new HashMap();
@@ -80,50 +81,6 @@ public class SmartSavingRecommendationService extends WrapperRecommendationServi
         return cartSuggestions;
     }
 
-	private boolean isEligibleForSavings(SessionInput sessionInput, String variantId) {
-		if(sessionInput.isCheckForEnoughSavingsMode()) return true; 
-		
-		Map prevMap = sessionInput.getPreviousRecommendations();
-		if((prevMap != null && !prevMap.containsKey(variantId))) return false;
-		
-        if(FDStoreProperties.isFeaturePriorityEnabled() 
-        		&& !(variantId.equals(getPriorityVariant(sessionInput)))) {
-        	return false;
-        }
-		 
-		Map promoVariantMap = sessionInput.getPromoVariantMap();
-		if(promoVariantMap == null || promoVariantMap.size() == 0)
-			return false;
-		PromoVariantModel pvModel = (PromoVariantModel) promoVariantMap.get(variantId);
-
-		// variant is marked as savings although it has no promotion
-		if (pvModel == null)
-			return false;
-		/*
-		String promoCode =pvModel.getAssignedPromotion().getPromotionCode();
-		if(sessionInput.getEligiblePromotions().contains(promoCode)) {
-			return true;
-		}
-		*/
-		return true;
-	}
-	
-	private String getPriorityVariant(SessionInput sessionInput) {
-		int priority = 0;
-		String priorityVariant = "";
-		Map prevMap = sessionInput.getPreviousRecommendations();
-		Map promoVariantMap = sessionInput.getPromoVariantMap();
-		for(Iterator it=promoVariantMap.keySet().iterator(); it.hasNext();){
-			String variantId = (String) it.next();
-			if(!prevMap.containsKey(variantId)) continue;
-			PromoVariantModel pvModel = (PromoVariantModel) promoVariantMap.get(variantId);
-			if(pvModel.getVariantPriority() > priority) {
-				priorityVariant = pvModel.getVariantId();
-				priority = pvModel.getVariantPriority();
-			}
-		}
-		return priorityVariant;
-	}
 	
 	public boolean isSmartSavings() {
 		return true;

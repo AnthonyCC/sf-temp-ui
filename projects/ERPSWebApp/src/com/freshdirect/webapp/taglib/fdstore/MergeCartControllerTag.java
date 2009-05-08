@@ -10,6 +10,8 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,6 +21,8 @@ import javax.servlet.jsp.JspWriter;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -70,6 +74,8 @@ public class MergeCartControllerTag extends com.freshdirect.framework.webapp.Bod
 					user.setShoppingCart( cartMerged );
 					// invalidate promotion and recalc
                     user.updateUserState();
+                    //Check for multiple savings. 
+                    checkForMultipleSavings(cartCurrent, cartSaved, cartMerged);
                     session.setAttribute(USER, user);
 				}
                 // get rid of the extra cart in the session
@@ -93,6 +99,22 @@ public class MergeCartControllerTag extends com.freshdirect.framework.webapp.Bod
 
 	
 		return EVAL_BODY_BUFFERED;
+	}
+	
+	private void checkForMultipleSavings(FDCartModel cartCurrent, FDCartModel cartSaved, FDCartModel cartMerged) {
+		Set savedProdKeys = cartSaved.getProductKeysForLineItems();
+		Set currProdKeys = cartCurrent.getProductKeysForLineItems();
+	
+		for (Iterator i = cartMerged.getOrderLines().iterator(); i.hasNext();) {
+			FDCartLineI line     = (FDCartLineI) i.next();
+			ProductModel model = line.getProductRef().lookupProduct();
+			String productId = model.getContentKey().getId();
+			if(savedProdKeys.contains(productId) && !currProdKeys.contains(productId)){
+				line.setDiscount(null);
+				line.setSavingsId(null);
+			}
+		}
+			
 	}
 	
 }

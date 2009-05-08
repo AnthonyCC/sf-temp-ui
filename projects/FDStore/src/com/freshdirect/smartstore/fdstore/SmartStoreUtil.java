@@ -584,7 +584,7 @@ public class SmartStoreUtil {
 		for (Iterator it=user.getShoppingCart().getOrderLines().iterator(); it.hasNext(); ) {
 			FDCartLineI cl = (FDCartLineI) it.next();
 
-			final boolean isSavingsItem = v.getId().equals(cl.getSavingsId()) || v.getId().equals(cl.getVariantId());
+			final boolean isSavingsItem = v.getId().equals(cl.getSavingsId());
 
 			// is cart item 'saving' and equals to this product?
 			if (isSavingsItem && prodName.equals(cl.getProductName()) ) {
@@ -607,7 +607,7 @@ public class SmartStoreUtil {
 		OUTER: for (Iterator it=user.getShoppingCart().getOrderLines().iterator(); it.hasNext(); ) {
 			FDCartLineI cl = (FDCartLineI) it.next();
 
-			final boolean isSavingsItem = v.getId().equals(cl.getVariantId()) || v.getId().equals(cl.getSavingsId());
+			final boolean isSavingsItem =  v.getId().equals(cl.getSavingsId());
 
 			if (isSavingsItem) {
 				String productId = cl.getProductName();
@@ -640,7 +640,7 @@ public class SmartStoreUtil {
 		OUTER: for (Iterator it=user.getShoppingCart().getOrderLines().iterator(); it.hasNext(); ) {
 			FDCartLineI cl = (FDCartLineI) it.next();
 
-			final boolean isSavingsItem = v.getId().equals(cl.getVariantId()) || v.getId().equals(cl.getSavingsId());
+			final boolean isSavingsItem = v.getId().equals(cl.getSavingsId());
 
 			if (isSavingsItem) {
 				String productId = cl.getProductName();
@@ -653,7 +653,6 @@ public class SmartStoreUtil {
 				}
 			}
 		}
-		System.out.println("Sum $$$$$$$$$$ "+sum);
 		return sum;
 	}
 }

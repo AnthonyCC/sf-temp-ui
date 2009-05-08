@@ -61,6 +61,7 @@ public class CartTabRecommender {
                                     break;
                                 }
                             } catch (FDResourceException e) {
+
                             }
 
                         }

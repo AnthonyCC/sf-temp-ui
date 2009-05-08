@@ -47,6 +47,7 @@ import com.freshdirect.fdstore.promotion.PromotionApplicatorI;
 import com.freshdirect.fdstore.promotion.PromotionGeography;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.PromotionStrategyI;
+import com.freshdirect.fdstore.promotion.RecommendationStrategy;
 import com.freshdirect.fdstore.promotion.RecommendedLineItemStrategy;
 import com.freshdirect.fdstore.promotion.RedemptionCodeStrategy;
 import com.freshdirect.fdstore.promotion.RuleBasedPromotionStrategy;
@@ -156,9 +157,9 @@ public class FDPromotionDAO {
 			if(promoType.getName().equals(EnumPromotionType.LINE_ITEM.getName())){
 				boolean recItemsOnly = "X".equalsIgnoreCase(rs.getString("RECOMMENDED_ITEMS_ONLY"));
 				promo.setRecommendedItemsOnly(recItemsOnly);
-				/*if(recItemsOnly) {
+				if(recItemsOnly) {
 					promo.addStrategy(new RecommendationStrategy());
-				}*/
+				}
 				if("X".equalsIgnoreCase(rs.getString("ALLOW_HEADER_DISCOUNT"))){				
 				   promo.setAllowHeaderDiscount(true);		
 				}
@@ -345,6 +346,9 @@ public class FDPromotionDAO {
 		if(promoType.getName().equals(EnumPromotionType.LINE_ITEM.getName())){
 			boolean recItemsOnly = "X".equalsIgnoreCase(rs.getString("RECOMMENDED_ITEMS_ONLY"));
 			promo.setRecommendedItemsOnly(recItemsOnly);
+			if(recItemsOnly) {
+				promo.addStrategy(new RecommendationStrategy());
+			}
 			if("X".equalsIgnoreCase(rs.getString("ALLOW_HEADER_DISCOUNT"))){				
 			   promo.setAllowHeaderDiscount(true);		
 			}

@@ -41,4 +41,8 @@ public interface SessionName {
 	public static final String SS_SELECTED_VARIANT = "fd.ss.selVariantId"; // selected variant ID
 
 	public static final String IMPRESSION = "Impression";
+	
+	public static final String SAVINGS_FEATURE_LOOK_UP_TABLE= "savingsFeatureLookup";
+	
+	public static final String PREV_SAVINGS_VARIANT = "prevSavingsVariant";
 }

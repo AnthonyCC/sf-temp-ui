@@ -1,4 +1,5 @@
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
+<%@ page import='com.freshdirect.fdstore.customer.adapter.PromoVariantHelper' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='com.freshdirect.framework.webapp.ActionWarning'%>  
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>  
@@ -36,6 +37,22 @@ request.setAttribute("listPos", "SystemMessage");
     }
 	    
 	String cartSource = request.getParameter("fdsc.source"); // can be null
+%>
+<%
+//Added for Smart Savings.
+    Map savingsLookupTable = (Map) session.getAttribute(SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE);
+    if(savingsLookupTable == null){
+        savingsLookupTable = new HashMap();
+    }
+    PromoVariantHelper.updateSavingsVariant(user, savingsLookupTable);
+    session.setAttribute(SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE, savingsLookupTable);
+    String savingsVariant =  (String) session.getAttribute(SessionName.PREV_SAVINGS_VARIANT);
+    String usrVariant = user.getSavingsVariantId();
+    if(usrVariant != null && !usrVariant.equals(savingsVariant)) {
+        //If current savings variant is different from previous savings variant
+        user.updateUserState();
+        session.setAttribute(SessionName.PREV_SAVINGS_VARIANT, usrVariant);
+    }
 %>
 <fd:FDShoppingCart id='cart' result='result' action='<%= actionName %>' successPage='<%= successPage %>' cleanupCart='true' source='<%= cartSource %>'>
 <fd:RedemptionCodeController actionName="<%=actionName%>" result="redemptionResult">

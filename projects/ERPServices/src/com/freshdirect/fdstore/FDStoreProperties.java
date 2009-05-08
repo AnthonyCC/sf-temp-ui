@@ -281,7 +281,7 @@ public class FDStoreProperties {
     
 	//Smart Savings
 	
-	private static final String PROMO_VARIANT_FEATURE_PRIORITY_ENABLED = "fdstore.promo.variant.featurepriority.enabled";
+	private static final String SMART_SAVINGS_FEATURE_ENABLED = "fdstore.smartsavings.enabled";
 	static {
 
 		defaults.put(PROP_PROVIDER_URL, 	"t3://localhost:7006");
@@ -481,7 +481,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_REFRESHSECS_SURVEYDEF, "600");
 		defaults.put(PROP_FDSURVEY_HOME,	"freshdirect.fdstore.FDSurvey");
 
-		defaults.put(PROMO_VARIANT_FEATURE_PRIORITY_ENABLED, "false");
+		defaults.put(SMART_SAVINGS_FEATURE_ENABLED, "true");
 		refresh();
 	}
 
@@ -1074,8 +1074,8 @@ public class FDStoreProperties {
 		return get(PROP_FDSURVEY_HOME);
 	}
 	
-	public static boolean isFeaturePriorityEnabled() {
-		return Boolean.valueOf(get(PROMO_VARIANT_FEATURE_PRIORITY_ENABLED)).booleanValue();
+	public static boolean isSmartSavingsEnabled() {
+		return Boolean.valueOf(get(SMART_SAVINGS_FEATURE_ENABLED)).booleanValue();
 	}
 	/**
 	 * Used for testing, do not call from the App.

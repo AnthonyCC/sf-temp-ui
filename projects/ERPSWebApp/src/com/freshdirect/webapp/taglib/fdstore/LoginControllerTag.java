@@ -88,7 +88,6 @@ public class LoginControllerTag extends AbstractControllerTag {
                 
             } else if (!loginUser.getCookie().equals(currentUser.getCookie())) {
                 // current user is different from user who just logged in
-                
                 int currentLines = currentUser.getShoppingCart().numberOfOrderLines();
                 int loginLines = loginUser.getShoppingCart().numberOfOrderLines();
                 
@@ -106,6 +105,7 @@ public class LoginControllerTag extends AbstractControllerTag {
                 UserUtil.createSessionUser(request, response, loginUser);
                 //The previous recommendations of the current user need to be removed.
                 session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
+                session.removeAttribute(SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE);
                 
             } else {
                 // the logged in user was the same as the current user,
