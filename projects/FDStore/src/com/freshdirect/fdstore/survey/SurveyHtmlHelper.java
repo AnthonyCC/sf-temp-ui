@@ -146,8 +146,8 @@ public class SurveyHtmlHelper {
 	private static String getRow(String data) {
 		
 		StringBuffer response=new StringBuffer(400);
-		response.append("<tr><td style=\"padding-bottom: 12px;\">");
-		response.append("<div>").append(data).append("</div>");
+		response.append("<tr><td style=\"padding-bottom: 6px;\">");
+		response.append(data);
 		response.append("</td>");
 		response.append("</tr>");
 		return response.toString();
@@ -174,7 +174,11 @@ public class SurveyHtmlHelper {
 				String data = "";
 				for (int i = 0; i < displayElements.size(); i++) {
 					data = (String) displayElements.get(i);
-					response.append(getDivTag(getRowStyle(i + 1), "", data));
+					if (displayElements.size() <=4) {
+						response.append(getDivTag(getRowStyle(0), "", data));
+					} else {
+						response.append(getDivTag(getRowStyle(i + 1), "", data));
+					}
 				}
 			} else if (EnumFormDisplayType.TWO_ANS_PER_ROW.equals(question
 					.getFormDisplayType())) {
@@ -221,20 +225,35 @@ public class SurveyHtmlHelper {
 		StringBuffer response=new StringBuffer(200);
 		List answers=question.getAnswers();
 		FDSurveyAnswer answer=null;
+		//
+		response.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\" align=\"center\"><tr>");
+		//
+		int colCount = 0;
 		for(int i=0;i<answers.size();i++) {
 			answer=(FDSurveyAnswer)answers.get(i);
 			StringBuffer temp=new StringBuffer(200);
-			temp.append("<div style=\"width: 110px;\" class=\"rb_image\">");
+			//temp.append("<div style=\"width: 110px;\" class=\"rb_image\" align=\"center\">");
+			temp.append("<td width=\"16%\" align=\"center\">");
 			temp.append(getDivTag(getImageTag(answer.getDescription())));
 			if(previousAnswers.contains(answer.getName())) {
-				temp.append(getDivTag(getInputTag(FDSurveyConstants.SINGLE_SELECT_INPUT, question.getName(), "", answer.getName(), true, false, "")));
+				temp.append(getInputTag(FDSurveyConstants.SINGLE_SELECT_INPUT, question.getName(), "", answer.getName(), true, false, ""));
 			} else {
-				temp.append(getDivTag(getInputTag(FDSurveyConstants.SINGLE_SELECT_INPUT, question.getName(), "", answer.getName(), false, false, "")));
+				temp.append(getInputTag(FDSurveyConstants.SINGLE_SELECT_INPUT, question.getName(), "", answer.getName(), false, false, ""));
 			}
-			temp.append("</div>");
-			response.append(getDivTag("q12_container","",temp.toString()));
+			//temp.append("</div>");
+			temp.append("</td>");
+			colCount++;
+			if (colCount == 6) {
+				temp.append("</tr><tr><td style=\"height:8px;\">&nbsp;</td></tr>");
+				temp.append("<tr>");
+				colCount = 0;
+			}
+			//response.append(getDivTag("q12_container","",temp.toString()));
+			response.append(temp.toString());
 		}
-		
+		//
+		response.append("</tr></table>");
+		//
 		return response.toString();
 	}
 
@@ -281,6 +300,13 @@ public class SurveyHtmlHelper {
     	List answerGroups=question.getAnswerGroups();
     	String group="";
     	int counter=0;
+    	int colCount = 0;
+    	int colTotalCount = 0;
+    	// number of rows to be painted whole
+    	int rowCountWhole = (int) (answerGroups.size()/3);
+    	String lastRow = rowCountWhole%2==0 ? "odd":"even";
+    	int rowCount = 0;
+    	int colToAdd = 3 - (answerGroups.size()%3);
 		for(Iterator it=answerGroups.iterator();it.hasNext();) {
 			StringBuffer temp=new StringBuffer(200);
 			group=it.next().toString();
@@ -292,14 +318,55 @@ public class SurveyHtmlHelper {
 				answer=(FDSurveyAnswer)answers.get(i);
 				String value = answer.getName();
 				boolean checked = previousAnswers.contains(value) ? true: false;
-				temp.append(getDivTag("q09_rb","",getInputTag(FDSurveyConstants.SINGLE_SELECT_INPUT, question.getName()+FDSurveyConstants.NAME_SEPERATOR+group, "", value, checked, false, "")));
-				temp.append(getDivTag("q09_text","",answer.getDescription()));
+				temp.append(getInputTag(FDSurveyConstants.SINGLE_SELECT_INPUT, question.getName()+FDSurveyConstants.NAME_SEPERATOR+group, "", value, checked, false, ""));
+				temp.append(answer.getDescription());
+				if (i==0 || i%2 == 0) {
+					temp.append("<br>");
+				}
+				//temp.append(getDivTag("q09_rb","",getInputTag(FDSurveyConstants.SINGLE_SELECT_INPUT, question.getName()+FDSurveyConstants.NAME_SEPERATOR+group, "", value, checked, false, "")));
+				//temp.append(getDivTag("q09_text","",answer.getDescription()));
 				
 			}
+			colTotalCount++;
 			String container=(counter%2==0)?"q09_container even":"q09_container odd";
-			response.append(getDivTag(container,"",getDivTag("box","",temp.toString())));
+			System.out.println(">>>>>>>>>>>>>"+counter+" "+colCount + " total " + rowCountWhole  );
+			if (colCount == 0) {
+				if (rowCount == rowCountWhole) {
+					container += " leftBL";
+				} else {
+					container += " leftB";
+				}
+			} else if (colCount == 1){
+				if (rowCount == rowCountWhole) {
+					container += " middleBL";
+				} else {
+					container += " middleB";
+				}
+			} else if (colCount == 2){
+				if (rowCount == rowCountWhole) {
+					container += " rightBL";
+				} else {
+					container += " rightB";
+				}
+				rowCount++;
+			}
+			response.append(getDivTag(container,"",temp.toString()));
+			//response.append(getDivTag(container,"",getDivTag("box","",temp.toString())));
+			if (colCount == 2) {
+				colCount = 0;
+			} else {
+				colCount++;
+			}
 			counter++;
 		}
+		//paint the last divs to close up 'table'
+		if (colToAdd == 1) {
+			response.append(getDivTag("q09_container "+("even".equals(lastRow)?"odd":"even")+" rightBL","","<br><br><br>"));
+		} else if (colToAdd == 2){
+			response.append(getDivTag("q09_container "+("even".equals(lastRow)?"even":"odd")+" middleBL","","<br><br><br>"));
+			response.append(getDivTag("q09_container "+("even".equals(lastRow)?"odd":"even")+" rightBL","","<br><br><br>"));
+		}
+		
 		return response.toString();
     }
     
@@ -308,19 +375,33 @@ public class SurveyHtmlHelper {
 		StringBuffer response = new StringBuffer(200);
 		List answerGroups=question.getAnswerGroups();
 		String _group="";
+		int countGroup = 0;
 		if(answerGroups!=null && answerGroups.size()>0) {
 			for(Iterator it=answerGroups.iterator();it.hasNext();) {
 				Object obj=it.next();
 				if(obj!=null)
 					_group=obj.toString();
+				// multi response
 				if(group) {
-					response.append(getSpanTag(_group)+getDivTag(getSelectTag(question,_group,previousAnswers)));
-				} else {				
-					response.append(getDivTag(getSelectTag(question,_group,previousAnswers)));
+					// meals question style
+					response.append(getSelectTag(question,_group,previousAnswers,"50","--")+ "&nbsp;&nbsp;"+ getSpanTag(_group)+"<br/>");
+					countGroup++;
+					if (countGroup-1 != answerGroups.size()) {
+						response.append("<br/>");
+					}
+				} else {
+					// birthday style
+					if (countGroup == 0) {
+						response.append(getSelectTag(question,_group,previousAnswers,"90","MONTH"));
+					} else {
+						response.append(getSelectTag(question,_group,previousAnswers,"60","DAY"));
+					}
+					countGroup++;
 				}
 			}
 		} else {
-			response.append(getDivTag(getSelectTag(question,"",previousAnswers)));
+			// single response
+			response.append(getSelectTag(question,"",previousAnswers,"",""));
 		}
 		return response.toString();
 	}
@@ -330,7 +411,7 @@ public class SurveyHtmlHelper {
 		StringBuffer response = new StringBuffer(200);
 		List answerGroups=question.getAnswerGroups();
 		for(Iterator it=answerGroups.iterator();it.hasNext();) {
-			response.append(getDivTag(getSelectTag(question,it.next().toString(),previousAnswers)));
+			response.append(getSelectTag(question,it.next().toString(),previousAnswers,"",""));
 		}
 		return response.toString();
 	}
@@ -338,16 +419,18 @@ public class SurveyHtmlHelper {
 	private static String getSpanTag(String data) {
 		return "<span>"+data+"</span>";
 	}
-	private static String getSelectTag(FDSurveyQuestion question,String group, List selectedValues) {
-		
+	private static String getSelectTag(FDSurveyQuestion question,String group, List selectedValues,String width, String chooseText) {
+		// Pulldown rendering
 		StringBuffer response=new StringBuffer(200);
 		List answers=null;
+		if("".equals(width)) width="160";
+		if("".equals(chooseText)) chooseText="Please choose one";
 		if(!"".equals(group))
 			answers=question.getAnswersByGroup(group);
 		else
 			answers=question.getAnswers();
-		response.append("<select name=\"").append(question.getName()).append("\" >");
-		response.append("<option value=\"\" selected=\"selected\">Please choose one</option>");
+		response.append("<select name=\"").append(question.getName()).append("\" style=\"width:"+width+"px;\" class=\"surveyText\">");
+		response.append("<option value=\"\" selected=\"selected\">"+chooseText+"</option>");
 		FDSurveyAnswer answer=null;
 		for(int i=0;i<answers.size();i++) {
 			
@@ -404,6 +487,22 @@ public class SurveyHtmlHelper {
 		}
 		if (!StringUtil.isEmpty(id)) {
 			response.append(" id=\"").append(id).append("\"");
+		}
+		response.append(">").append(data).append("</div>");
+		return response.toString();
+	}
+	
+	private static String getDivTag(String className, String id, String data, String divStyle) {
+		StringBuffer response = new StringBuffer(200);
+		response.append("<div");
+		if (!StringUtil.isEmpty(className)) {
+			response.append(" class=\"").append(className).append("\"");
+		}
+		if (!StringUtil.isEmpty(id)) {
+			response.append(" id=\"").append(id).append("\"");
+		}
+		if (!StringUtil.isEmpty(divStyle)) {
+			response.append(" style=\"").append(divStyle).append("\"");
 		}
 		response.append(">").append(data).append("</div>");
 		return response.toString();
@@ -466,14 +565,25 @@ public class SurveyHtmlHelper {
 			} else if (isNoneOption(answer.getName())) {
 				String script = "onclick=\" " + FDSurveyConstants.CLEAR_SCRIPT
 						+ "(\'" + id + "\',this.checked)\" ";
+				displayElements.add(getInputTag(input, question
+						.getName(), FDSurveyConstants.NONE_INPUT_STYLE, value,
+						checked, false, script)
+						+ "&nbsp;" + answer.getDescription());
+				/*
 				displayElements.add(getDivTag(getInputTag(input, question
 						.getName(), FDSurveyConstants.NONE_INPUT_STYLE, value,
 						checked, false, script))
 						+ answer.getDescription());
+				*/
 			} else {
+				displayElements.add(getInputTag(input, question
+						.getName(), "", value, checked, disable, "")
+						+ "&nbsp;" + answer.getDescription());
+				/*
 				displayElements.add(getDivTag(getInputTag(input, question
 						.getName(), "", value, checked, disable, ""))
 						+ answer.getDescription());
+				*/
 			}
 		}
 		return displayElements;
