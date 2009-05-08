@@ -113,6 +113,7 @@
 		//}
 	%>  
 	<a href="<%= response.encodeURL("/main/delivery_pass.jsp") %>" class="<%= pageURI.indexOf("delivery_pass.jsp") > -1  ? "cust_nav_tab_on" : "cust_nav_tab" %>">Delivery Pass</a>
+    <a href="<%= response.encodeURL("/customerprofile/customer_profile.jsp") %>" class="<%= pageURI.indexOf("customer_profile") > -1  ? "cust_nav_tab_on" : "cust_nav_tab" %>">Customer Profile</a>
 	</td></tr>
 </table>
 <%  } %>
