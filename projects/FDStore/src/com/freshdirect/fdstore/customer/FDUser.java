@@ -412,6 +412,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 		this.regRefTrackingCode = null;
 		this.cclListInfos = null;
 		this.cachedPromoHistory = null;
+		this.promoVariantMap = null;
     }
     /*
      * This method was introduced as part of PERF-22 task.
@@ -1180,6 +1181,9 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 	
 	public Map getPromoVariantMap(){
+		if (this.promoVariantMap==null) {
+			this.updateUserState();
+		}
 		return this.promoVariantMap;
 	}
 	

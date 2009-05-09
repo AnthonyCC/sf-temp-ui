@@ -66,7 +66,10 @@ public class PromoVariantHelper {
 	
 	public static void updateSavingsVariant(FDUserI user, Map savingsLookupTable){
 		Map pvMap = user.getPromoVariantMap();
-		if(pvMap == null || pvMap.size() == 0) return ;
+		if(pvMap == null || pvMap.size() == 0) {
+			user.setSavingsVariantId(null);
+			return ;
+		}
 		String savVariant = null;
 		Set keys = pvMap.keySet();
 		if(keys.size() > 1) { //If it is more than 1 then hit recommender to check for recommendations.
@@ -97,6 +100,7 @@ public class PromoVariantHelper {
 			}
 			if(availablePromoVariants.size() == 0) {
 				//no savings variant available to show.
+				user.setSavingsVariantId(null);
 				return;
 			}
 			if(availablePromoVariants.size() > 1)

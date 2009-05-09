@@ -38,6 +38,9 @@ request.setAttribute("listPos", "SystemMessage");
 	    
 	String cartSource = request.getParameter("fdsc.source"); // can be null
 %>
+
+<fd:FDShoppingCart id='cart' result='result' action='<%= actionName %>' successPage='<%= successPage %>' cleanupCart='true' source='<%= cartSource %>'>
+<fd:RedemptionCodeController actionName="<%=actionName%>" result="redemptionResult">
 <%
 //Added for Smart Savings.
     Map savingsLookupTable = (Map) session.getAttribute(SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE);
@@ -53,9 +56,7 @@ request.setAttribute("listPos", "SystemMessage");
         user.updateUserState();
         session.setAttribute(SessionName.PREV_SAVINGS_VARIANT, usrVariant);
     }
-%>
-<fd:FDShoppingCart id='cart' result='result' action='<%= actionName %>' successPage='<%= successPage %>' cleanupCart='true' source='<%= cartSource %>'>
-<fd:RedemptionCodeController actionName="<%=actionName%>" result="redemptionResult">
+%>    
 <tmpl:put name='title' direct='true'>FreshDirect - View Cart</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <fd:ErrorHandler result='<%=result%>' name='order_minimum' id='errorMsg'>

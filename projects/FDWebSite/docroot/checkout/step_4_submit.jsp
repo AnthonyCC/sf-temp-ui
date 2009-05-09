@@ -1,4 +1,5 @@
 <%@ page import='com.freshdirect.common.customer.*,com.freshdirect.fdstore.*' %>
+<%@ page import='com.freshdirect.fdstore.customer.adapter.PromoVariantHelper' %>
 <%@ page import ='com.freshdirect.fdstore.customer.*'%>
 <%@ page import='com.freshdirect.customer.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -39,6 +40,23 @@ java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 		boolean doubleSubmit = result.hasError("processing_order");
 
 %>
+
+<%
+//Added for Smart Savings.
+    Map savingsLookupTable = (Map) session.getAttribute(SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE);
+    if(savingsLookupTable == null){
+        savingsLookupTable = new HashMap();
+    }
+    PromoVariantHelper.updateSavingsVariant(user, savingsLookupTable);
+    session.setAttribute(SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE, savingsLookupTable);
+    String savingsVariant =  (String) session.getAttribute(SessionName.PREV_SAVINGS_VARIANT);
+    String usrVariant = user.getSavingsVariantId();
+    if(usrVariant != null && !usrVariant.equals(savingsVariant)) {
+        //If current savings variant is different from previous savings variant
+        user.updateUserState();
+        session.setAttribute(SessionName.PREV_SAVINGS_VARIANT, usrVariant);
+    }
+%> 
 
 <%@ include file="/includes/i_modifyorder.jspf" %>
 

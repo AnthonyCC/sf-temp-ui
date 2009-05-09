@@ -1,6 +1,7 @@
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.adapter.PromoVariantHelper' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
+<%@ page import='com.freshdirect.framework.webapp.ActionWarning'%>  
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>  
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -37,6 +38,9 @@ boolean showMinError = true;
 	    
 	String cartSource = request.getParameter("fdsc.source"); // can be null
 %>
+
+<fd:FDShoppingCart id='cart' result='result' action='<%= actionName %>' successPage='<%= successPage %>' cleanupCart='true' source='<%= cartSource %>'>
+<fd:RedemptionCodeController actionName="<%=actionName%>" result="redemptionResult">
 <%
 //Added for Smart Savings.
     Map savingsLookupTable = (Map) session.getAttribute(SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE);
@@ -53,8 +57,6 @@ boolean showMinError = true;
         session.setAttribute(SessionName.PREV_SAVINGS_VARIANT, usrVariant);
     }
 %>
-<fd:FDShoppingCart id='cart' result='result' action='<%= actionName %>' successPage='<%= successPage %>' cleanupCart='true' source='<%= cartSource %>'>
-<fd:RedemptionCodeController actionName="<%=actionName%>" result="redemptionResult">
 <tmpl:put name='title' direct='true'>FreshDirect - View Cart</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <%
@@ -88,10 +90,26 @@ boolean showMinError = true;
 <fd:ErrorHandler result='<%=result%>' name='pass_cancelled' id='errorMsg'>
     <%@ include file="/includes/i_error_messages.jspf" %>   
 </fd:ErrorHandler>
+
+
 <!-- ===================================================================================
      NOTE: there's some promo cells commented out at bottom of table, some comments there 
     =================================================================================== -->
 <%
+if(cart.hasHeaderDiscount() && cart.getTotalLineItemsDiscountAmount()>0){
+StringBuffer buffer = new StringBuffer(
+					SystemMessageList.MSG_PROMOTION_APPLIED_VARY1);
+			result.addWarning(new ActionWarning("promo_war1", buffer
+					.toString()));
+                    
+                    
+%>
+
+<fd:ErrorHandler result='<%=result%>' name='promo_war1' id='errorMsg'>
+    <%@ include file="/includes/i_warning_messages.jspf" %>   
+</fd:ErrorHandler>
+<%
+}
     // get customer''s first name
     String custFirstName = user.getLevel()==FDUser.GUEST ? "Your" : user.getFirstName() + "'s"; 
     //Reload the DP status from Database to make the session and DB are in sync.
