@@ -101,7 +101,7 @@ public class TransportationAdminProperties {
 	
 	private final static String PROP_TRANSPORTATION_DEPOT_USESTPARRTIME		= "transportation.depot.usestoparrtime";
 	
-	private final static String PROP_TRANSPORTATION_ENCODING		= "transportation.file.encoding";
+	private final static String PROP_TRANSPORTATION_SAPORDERFILE_ENCODING		= "transportation.saporderfile.encoding";
 	
 	static {
 				
@@ -177,9 +177,7 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_DEPOT_DEPARTTIMEDIFF, "0");
 		
 		defaults.put(PROP_TRANSPORTATION_DEPOT_USESTPARRTIME, "true");
-		
-		defaults.put(PROP_TRANSPORTATION_ENCODING, "Cp1252");
-		
+				
 		refresh();		
 	}
 
@@ -191,8 +189,8 @@ public class TransportationAdminProperties {
 		refresh(false);
 	}
 	
-    public static String getFileEncoding() {
-    	return get(PROP_TRANSPORTATION_ENCODING);    	
+    public static String getSapOrderFileEncoding() {
+    	return get(PROP_TRANSPORTATION_SAPORDERFILE_ENCODING);    	
     }
     
     public static String getDownloadFolder() {

@@ -44,7 +44,8 @@ public class RouteInputDataManager extends RouteDataManager {
 		OrderModelAssembler assembler = new OrderModelAssembler();
 		List inputDataList = fileManager.parseRouteFile(TransportationAdminProperties.getErpOrderLocationOutputFormat()
 														, new ByteArrayInputStream(inputInfo)
-														, ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, assembler);
+														, ROW_IDENTIFIER, ROW_BEAN_IDENTIFIER, assembler
+														, TransportationAdminProperties.getSapOrderFileEncoding());
 		if(inputDataList != null && inputDataList.size() > 0) {
 			IProcessManager rootProcessMgr = getProcessChain();
 			ProcessContext context = new ProcessContext();

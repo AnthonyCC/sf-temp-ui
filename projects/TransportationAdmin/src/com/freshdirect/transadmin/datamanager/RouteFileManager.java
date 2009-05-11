@@ -40,15 +40,23 @@ public class RouteFileManager implements IRouteFileManager {
 	
 	public List parseRouteFile(String configurationPath,InputStream in, String recordName,String beanName, IDataAssembler assembler) {
 		
+		return parseRouteFile(configurationPath,in, recordName,beanName, assembler, null);
+	}
+	
+	public List parseRouteFile(String configurationPath,InputStream in, String recordName,String beanName, IDataAssembler assembler, String encoding) {
+				
 		ConfigurationReader parser = new ConfigurationReader();
 		List inputList = new ArrayList();
         try {        	
             FileFormat ff = parser.loadConfigurationFile(configurationPath); 
                                               
-            BufferedReader bufIn = new BufferedReader(new InputStreamReader(in,TransportationAdminProperties.getFileEncoding()) );
-            //InputStreamReader defaultReader = new InputStreamReader(in);
-            //BufferedReader bufIn = new BufferedReader(defaultReader );
-            //System.out.println("defaultReader.getEncoding()"+defaultReader.getEncoding());
+            BufferedReader bufIn = null;
+            if(encoding == null) {
+            	bufIn =new BufferedReader(new InputStreamReader(in) );
+            } else {
+            	bufIn =new BufferedReader(new InputStreamReader(in, encoding) );
+            }
+           
             MatchedRecord results;
             Object tmpBean = null;
             while ((results = ff.getNextRecord(bufIn)) != null) {
