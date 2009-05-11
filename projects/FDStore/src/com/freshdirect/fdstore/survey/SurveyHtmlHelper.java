@@ -187,18 +187,22 @@ public class SurveyHtmlHelper {
 				StringBuffer tmp1 = new StringBuffer(200);
 				StringBuffer tmp2 = new StringBuffer(200);
 				int rowStyle = 1;
+				boolean oddRow = (ansCount %2 == 0 && ansCount !=0)?false:true;
 				for (int i = 0; i < ansCount; i++) {
 					data = (String) displayElements.get(i);
 					if (i % 2 == 0)
-						tmp1.append(getDivTag(getRowStyle(rowStyle), "", ("<nobr>"+data+"&nbsp;&nbsp;</nobr>")));
+						tmp1.append(getDivTag(getRowStyle(rowStyle), "", ("<nobr>"+data+"&nbsp;</nobr>")));
 					else {
-						tmp2.append(getDivTag(getRowStyle(rowStyle), "", ("<nobr>"+data+"&nbsp;&nbsp;</nobr>")));
+						tmp2.append(getDivTag(getRowStyle(rowStyle), "", ("<nobr>"+data+"&nbsp;</nobr>")));
 						rowStyle=(rowStyle == 0)?1:0;
+					}
+					if (i== ansCount-1 && oddRow) {
+						tmp2.append(getDivTag(getRowStyle(rowStyle), "", ("<nobr>&nbsp;</nobr>")));
 					}
 				}
 				response.append(getDivTag("q05_container col49per", "", tmp1
 						.toString()));
-				response.append(getDivTag("q05_container col50per leftBorder", "", tmp2
+				response.append(getDivTag("q05_container col50per", "", tmp2
 						.toString()));
 				
 			} else if(EnumFormDisplayType.GROUPED_RADIO_BUTTON.equals(question.getFormDisplayType())) {
@@ -243,7 +247,7 @@ public class SurveyHtmlHelper {
 			//temp.append("</div>");
 			temp.append("</td>");
 			colCount++;
-			System.out.println("colCount "+colCount + " i="+i +" answers.size() "+answers.size());
+			//System.out.println("colCount "+colCount + " i="+i +" answers.size() "+answers.size());
 			if (colCount == 6 && i != answers.size()-1) {
 				temp.append("</tr><tr><td style=\"height:8px;\" colspan=\"6\">&nbsp;</td></tr>");
 				temp.append("<tr>");
@@ -330,7 +334,7 @@ public class SurveyHtmlHelper {
 			}
 			colTotalCount++;
 			String container=(counter%2==0)?"q09_container even":"q09_container odd";
-			System.out.println(">>>>>>>>>>>>>"+counter+" "+colCount + " total " + rowCountWhole  );
+			//System.out.println(">>>>>>>>>>>>>"+counter+" "+colCount + " total " + rowCountWhole  );
 			if (colCount == 0) {
 				if (rowCount == rowCountWhole) {
 					container += " leftBL";

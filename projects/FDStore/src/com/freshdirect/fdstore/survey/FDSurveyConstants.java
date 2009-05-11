@@ -10,8 +10,8 @@ public class FDSurveyConstants {
 	
 	public final static String NONE="None";
 	public final static String OTHER="Other (please list)";
-	public final static String SINGLE_CHOICE="  (Choose one)";
-	public final static String MULTIPLE_CHOICE="  (Check all that apply)";
+	public final static String SINGLE_CHOICE="  <span style=\"font-weight:normal;\">(Choose one)</span>";
+	public final static String MULTIPLE_CHOICE="  <span style=\"font-weight:normal;\">(Check all that apply)</span>";
 	
 	public final static String ODD_ROW_STYLE="odd";
 	public final static String EVEN_ROW_STYLE="even";
