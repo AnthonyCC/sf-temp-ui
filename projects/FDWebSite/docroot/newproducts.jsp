@@ -35,7 +35,7 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote");
 	final static int DAYS_1 = 7;
 	final static int DAYS_2 = 14;
 	final static int DAYS_3 = 21;
-	final static int DEFAULT_DAYS = DAYS_2;
+	final static int DEFAULT_DAYS = DAYS_3;
 	final static Map DAYS = new HashMap();
 	static {
 		DAYS.put( "1", new Integer(DAYS_1) );
