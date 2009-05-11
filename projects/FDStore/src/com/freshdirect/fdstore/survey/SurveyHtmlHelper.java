@@ -190,9 +190,9 @@ public class SurveyHtmlHelper {
 				for (int i = 0; i < ansCount; i++) {
 					data = (String) displayElements.get(i);
 					if (i % 2 == 0)
-						tmp1.append(getDivTag(getRowStyle(rowStyle), "", data));
+						tmp1.append(getDivTag(getRowStyle(rowStyle), "", ("<nobr>"+data+"&nbsp;&nbsp;</nobr>")));
 					else {
-						tmp2.append(getDivTag(getRowStyle(rowStyle), "", data));
+						tmp2.append(getDivTag(getRowStyle(rowStyle), "", ("<nobr>"+data+"&nbsp;&nbsp;</nobr>")));
 						rowStyle=(rowStyle == 0)?1:0;
 					}
 				}
@@ -243,8 +243,9 @@ public class SurveyHtmlHelper {
 			//temp.append("</div>");
 			temp.append("</td>");
 			colCount++;
-			if (colCount == 6) {
-				temp.append("</tr><tr><td style=\"height:8px;\">&nbsp;</td></tr>");
+			System.out.println("colCount "+colCount + " i="+i +" answers.size() "+answers.size());
+			if (colCount == 6 && i != answers.size()-1) {
+				temp.append("</tr><tr><td style=\"height:8px;\" colspan=\"6\">&nbsp;</td></tr>");
 				temp.append("<tr>");
 				colCount = 0;
 			}
@@ -271,7 +272,7 @@ public class SurveyHtmlHelper {
 		for(int i=0;i<answers.size();i++) {
 			StringBuffer temp=new StringBuffer(200);
 			answer=(FDSurveyAnswer)answers.get(i);
-			temp.append(getDivTag("q08_text","",answer.getDescription()));
+			temp.append(getDivTag(("q08_text ")+getRowStyle(i + 1),"",answer.getDescription()));
 			for(int j=0;j<answerGroups.size();j++) {
 				String answerGroup=answerGroups.get(j).toString();
 				String value = answer.getName()+answerGroup;
