@@ -140,20 +140,22 @@
 						</xsl:if>
 					</div>
 				</td>
-                <xsl:if test="discount != ''">
-				<td width="70" align="right"><font color="red">(<xsl:value-of select="unitPrice"/>)</font></td>                
-				<td width="60" align="right"><span class="text10bold"><font color="red"><xsl:value-of select="format-number(price, '$###,##0.00', 'USD')"/></font></span></td>
-				<td width="10"><xsl:if test="estimatedPrice = 'true'">*</xsl:if></td>
-				<td colspan="3" width="70"><b><xsl:if test="tax = 'true'">&nbsp;T</xsl:if><xsl:if test="scaledPricing = 'true'">&nbsp;S</xsl:if><xsl:if test="depositValue = '
-                true'">&nbsp;D</xsl:if></b></td>
-                </xsl:if>
-                <xsl:if test="discount = ''">
-                <td width="70" align="right"><font color="red">(<xsl:value-of select="unitPrice"/>)</font></td>                
-				<td width="60" align="right"><span class="text10bold"><xsl:value-of select="format-number(price, '$###,##0.00', 'USD')"/></span></td>
-				<td width="10"><xsl:if test="estimatedPrice = 'true'">*</xsl:if></td>
-				<td colspan="3" width="70"><b><xsl:if test="tax = 'true'">&nbsp;T</xsl:if><xsl:if test="scaledPricing = 'true'">&nbsp;S</xsl:if><xsl:if test="depositValue = '
-                true'">&nbsp;D</xsl:if></b></td>
-                </xsl:if>
+  				<xsl:choose>
+					<xsl:when test="discount != ''">
+                        <td width="70" align="right"><font color="red">(<xsl:value-of select="unitPrice"/>)</font></td>                
+                        <td width="60" align="right"><span class="text10bold"><font color="red"><xsl:value-of select="format-number(price, '$###,##0.00', 'USD')"/></font></span></td>
+                        <td width="10"><xsl:if test="estimatedPrice = 'true'">*</xsl:if></td>
+                        <td colspan="3" width="70"><b><xsl:if test="tax = 'true'">&nbsp;T</xsl:if><xsl:if test="scaledPricing = 'true'">&nbsp;S</xsl:if><xsl:if test="depositValue = '
+                        true'">&nbsp;D</xsl:if></b></td>                    
+                    </xsl:when>
+					<xsl:otherwise>
+                        <td width="70" align="right">(<xsl:value-of select="unitPrice"/>)</td>                
+                        <td width="60" align="right"><span class="text10bold"><xsl:value-of select="format-number(price, '$###,##0.00', 'USD')"/></span></td>
+                        <td width="10"><xsl:if test="estimatedPrice = 'true'">*</xsl:if></td>
+                        <td colspan="3" width="70"><b><xsl:if test="tax = 'true'">&nbsp;T</xsl:if><xsl:if test="scaledPricing = 'true'">&nbsp;S</xsl:if><xsl:if test="depositValue = '
+                        true'">&nbsp;D</xsl:if></b></td>                    
+                    </xsl:otherwise>
+				</xsl:choose>
 			</tr>
 			
 		</xsl:for-each>	
