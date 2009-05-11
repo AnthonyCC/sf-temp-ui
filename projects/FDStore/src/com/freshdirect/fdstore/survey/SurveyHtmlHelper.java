@@ -198,7 +198,7 @@ public class SurveyHtmlHelper {
 				}
 				response.append(getDivTag("q05_container col49per", "", tmp1
 						.toString()));
-				response.append(getDivTag("q05_container col50per", "", tmp2
+				response.append(getDivTag("q05_container col50per leftBorder", "", tmp2
 						.toString()));
 				
 			} else if(EnumFormDisplayType.GROUPED_RADIO_BUTTON.equals(question.getFormDisplayType())) {

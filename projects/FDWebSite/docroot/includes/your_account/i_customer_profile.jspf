@@ -144,7 +144,7 @@
 	.q08_container { margin: 0 10px 0 0; width: 80%; line-height: 22px;}
 	//.q08_container .q08_text { clear: both; }
 	.q08_text { float: left; padding: 1px 0; padding-left:10px; line-height: 22px; width: 200px; }
-	.q08_cb { float: right; padding: 1px 0; line-height: 22px; width: 70px; text-align: center; font-weight: bold; }
+	.q08_cb { float: right; padding: 1px 0; line-height: 22px; width: 70px; text-align: center; font-weight: bold;}
 	
 	.q09_container { float: left; width: 30%; padding:10px; }
 	.q09_container .box { width: 100%; }
@@ -194,6 +194,7 @@
 	.col50per { width: 50%; }
 	.col75per { width: 75%; }
 	.col100per { width: 100%; }
+	.leftBorder { border-left: solid 3px #FFFFFF;}
 	.other { padding: 0 0 0 24px; }
 	.odd { background-color: #eee; }
 	.even { background-color: #fff; }
@@ -231,6 +232,8 @@
                 } else {
                    previousAnswers=null;
                 }
+				boolean tableRestrict = false;
+				boolean multiSelection = false;
             %>
             <fd:ErrorHandler result='<%=result%>' name='<%=question.getName()%>'>
                     <% surveyQuestion = "text13rbold"; %>
@@ -244,21 +247,22 @@
                             container="q10_container";
                        } else if(EnumFormDisplayType.TWO_ANS_PER_ROW.equals(question.getFormDisplayType())) {
                             container="answer_container";
-                       }else if(EnumFormDisplayType.GROUPED_MULTI_SELECTION.equals(question.getFormDisplayType())){
+                       } else if(EnumFormDisplayType.GROUPED_MULTI_SELECTION.equals(question.getFormDisplayType())){
                             container="q8_container";
+							tableRestrict = true;
+							multiSelection = true;
 						} else if(EnumFormDisplayType.IMAGE_DISPLAY.equals(question.getFormDisplayType())) {
-							container="q14_container";
+							container="q13_container";
                        } else if(EnumFormDisplayType.GROUPED_RADIO_BUTTON.equals(question.getFormDisplayType())) {
-					   		container="q13_container";
+					   		container="q14_container";
 					   }
-                       
+						if (("q07_container").equals(container)) {tableRestrict = true;}
                      %>
-                     <!-- table cellpadding="0" cellspacing="0" border="0"><tr><td -->
+                     <% if (tableRestrict) { %><table cellpadding="0" cellspacing="0" border="0" <%=multiSelection?"width=\"450\"":""%>><tr><td><%}%>
 				        <div class="<%=container%>" id="<%=quesCount%>" style="font-size:10px;">
                               <%=SurveyHtmlHelper.getAnswersHtml(String.valueOf(quesCount),question,previousAnswers)%>            
 				        </div>
-					<!-- /td></tr>
-					</table -->
+					<% if (tableRestrict) { %></td></tr></table><%}%>
 
                 <%quesCount++;%>
 				
