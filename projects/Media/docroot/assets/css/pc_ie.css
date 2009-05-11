@@ -592,9 +592,10 @@ span.tab_inactive {
 
 a.tab {
 	color: #845286; 
-	font: bold small sans-serif; 
+	font: bold 8.6pt sans-serif; 
 	text-transform: uppercase; 
 	text-decoration: none;
+	font-size: expression('9pt');
 }
 
 p.tab_text {

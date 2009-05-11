@@ -588,7 +588,7 @@ span.tab_inactive {
 
 a.tab {
 	color: #845286; 
-	font: bold small sans-serif; 
+	font: bold 9pt sans-serif; 
 	text-transform: uppercase; 
 	text-decoration: none;
 }
