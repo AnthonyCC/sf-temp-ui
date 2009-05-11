@@ -62,26 +62,21 @@ function _submit(p) {
 <fd:CustomerProfileSurveyTag actionName="submitSurvey" result="result" successPage="<%=successPage%>" survey="Customer Profile Survey">
 <div style="width:700px;"><fd:IncludeMedia name="/media/editorial/site_pages/survey/cps_intro.html" /></div>
 <form id="junk" name="request_product" method="POST">	
-<table cellpadding="0" cellspacing="0" border="0" class="text12">
-<tr><td colspan="10">
+<table width="700" cellpadding="0" cellspacing="0" border="0" align="center">
     
-    <input type="hidden" name="department" value="<%=department%>">
-    <br>
+<input type="hidden" name="department" value="<%=department%>">
+<tr>
+	<td colspan="10" class="text12">
     
 <% if (submitted) {%>
-<tr>
-	<td colspan="10" class="text12" align="center">
 	<span class="title18">Thank you for your feedback.</span><br><%= hasTaken?"Your information has been submitted.<br>":""%>We greatly appreciate your time and interest.<br>
-<br><a href="/index.jsp"><img src="/media_stat/images/template/help/help_home.gif" width="71" height="26" border="" alt="BACK HOME"></a><br>Go to <a href="/index.jsp">Home Page</a><br><br></td></tr>
+<br><a href="/index.jsp"><img src="/media_stat/images/template/help/help_home.gif" width="71" height="26" border="" alt="BACK HOME"></a><br>Go to <a href="/index.jsp">Home Page</a><br><br>
 <% } else { %>
-
 <% request.setAttribute("Survey","Customer Profile Survey");%>
 <%@ include file="/includes/your_account/i_customer_profile.jspf" %>
-	
-
-</td>
-</tr>
 <% } %>
+	</td>
+</tr>
 	<tr>
 		<td><img src="/media_stat/images/layout/clear.gif" width="30" height="28"></td>
 	    <td><img src="/media_stat/images/layout/clear.gif" width="30" height="28"></td>
