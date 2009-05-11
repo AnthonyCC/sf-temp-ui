@@ -304,6 +304,10 @@ public interface FDUserI extends java.io.Serializable {
 	public String getSavingsVariantId();
 	
 	public void setSavingsVariantId(String savingsVariantId) ;
+	
+	public void setSavingsVariantFound(boolean savingsVariantFound) ;
+	
+	public boolean isSavingsVariantFound() ;
 
     public PromoVariantModel getPromoVariant(String variantId);
     

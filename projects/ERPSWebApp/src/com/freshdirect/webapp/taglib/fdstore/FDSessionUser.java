@@ -724,7 +724,15 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		this.user.setSavingsVariantId(savingsVariantId);
 	}
 
+	public boolean isSavingsVariantFound() {
+		return this.user.isSavingsVariantFound();
+	}
+
+	public void setSavingsVariantFound(boolean savingsVariantFound) {
+		this.user.setSavingsVariantFound(savingsVariantFound);
+	}
 	
+
 	public PromoVariantModel getPromoVariant(String variantId) {
 	   return user.getPromoVariant(variantId);
 	}

@@ -30,7 +30,8 @@ public class RecommendedLineItemStrategy implements LineItemStrategyI {
 			if(eligibleLine){
 				String savVariantId = context.getUser().getSavingsVariantId();
 				if( savVariantId == null ) return ALLOW;
-				if(savVariantId != null && savVariantId.equals(savingsId)) return ALLOW;
+				boolean smartSavingsFound = context.getUser().isSavingsVariantFound();
+				if(smartSavingsFound && savVariantId != null && savVariantId.equals(savingsId)) return ALLOW;
 			}
 		return DENY;
 	}

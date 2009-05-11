@@ -14,7 +14,9 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.promotion.PromoVariantCache;
 import com.freshdirect.fdstore.promotion.PromoVariantModel;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
+import com.freshdirect.smartstore.CartTabRecommender;
 import com.freshdirect.smartstore.SessionInput;
+import com.freshdirect.smartstore.TabRecommendation;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.OverriddenVariantsHelper;
 import com.freshdirect.smartstore.fdstore.Recommendations;
@@ -75,6 +77,8 @@ public class PromoVariantHelper {
 		if(keys.size() > 1) { //If it is more than 1 then hit recommender to check for recommendations.
 			FDStoreRecommender recommender = FDStoreRecommender.getInstance();
 			SessionInput input = new SessionInput(user);
+			input.setCheckForEnoughSavingsMode(true);
+			
 			List availablePromoVariants = new ArrayList();
 			int recSize = 0;
 			for(Iterator it = keys.iterator(); it.hasNext();){
@@ -84,11 +88,10 @@ public class PromoVariantHelper {
 					recSize = ((Integer)savingsLookupTable.get(variantId)).intValue();
 				}else {
 					try {
-						input.setCheckForEnoughSavingsMode(true);
+
 						Recommendations rec = recommender.getRecommendations(pv.getSiteFeature(), user, input, null);
 						recSize = rec.getProducts().size();
 						savingsLookupTable.put(variantId, new Integer(recSize));
-						input.setCheckForEnoughSavingsMode(false);
 					}catch (FDResourceException e) {
 						//Do nothing.
 	                }
@@ -98,6 +101,7 @@ public class PromoVariantHelper {
 					  availablePromoVariants.add(pv);
 				  }
 			}
+			input.setCheckForEnoughSavingsMode(false);
 			if(availablePromoVariants.size() == 0) {
 				//no savings variant available to show.
 				user.setSavingsVariantId(null);
@@ -111,5 +115,23 @@ public class PromoVariantHelper {
 			savVariant = (String)keys.iterator().next();
 		}
 		user.setSavingsVariantId(savVariant);
+	}
+	
+	public static void updateSavingsVariantFound(FDUserI user,  int maxRecommendations){
+		SessionInput input = new SessionInput(user);
+		TabRecommendation tabs = null;
+		FDStoreRecommender.initYmalSource(input, user);
+		input.setCurrentNode( input.getYmalSource() );
+		input.setMaxRecommendations(maxRecommendations);
+		tabs = CartTabRecommender.recommendTabs( user, input, null);	
+		if(tabs == null || tabs.size() == 0) user.setSavingsVariantFound(false);
+		for (int i = 0; i < tabs.size(); i++) {
+			String variantId = tabs.get(i).getId();
+			if(variantId.equals(user.getSavingsVariantId())){
+				user.setSavingsVariantFound(true);
+				return;
+			}
+		}
+		user.setSavingsVariantFound(false);
 	}
 }

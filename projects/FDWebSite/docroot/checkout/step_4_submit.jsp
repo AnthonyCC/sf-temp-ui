@@ -53,6 +53,7 @@ java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
     String usrVariant = user.getSavingsVariantId();
     if(usrVariant != null && !usrVariant.equals(savingsVariant)) {
         //If current savings variant is different from previous savings variant
+        PromoVariantHelper.updateSavingsVariantFound(user, 5);
         user.updateUserState();
         session.setAttribute(SessionName.PREV_SAVINGS_VARIANT, usrVariant);
     }

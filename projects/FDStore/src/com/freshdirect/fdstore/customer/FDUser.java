@@ -136,6 +136,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	//Eligible Promo Variant Map
 	private Map promoVariantMap;
 	private String savingsVariantId;
+	private boolean savingsVariantFound;
 	
 	private boolean isPostPromoConflictEnabled;
 	private boolean isPromoConflictResolutionApplied;
@@ -1202,6 +1203,16 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public void setSavingsVariantId(String savingsVariantId) {
 		this.savingsVariantId = savingsVariantId;
 	}
+	
+	public boolean isSavingsVariantFound() {
+		return savingsVariantFound;
+	}
+
+	public void setSavingsVariantFound(boolean savingsVariantFound) {
+		this.savingsVariantFound = savingsVariantFound;
+	}
+	
+	
 	/**
 	 * @return Always returns null
 	 * @see com.freshdirect.fdstore.customer.FDUserI#getFavoriteTabFeature()
@@ -1236,6 +1247,6 @@ public class FDUser extends ModelSupport implements FDUserI {
 			boolean isPromoConflictResolutionApplied) {
 		this.isPromoConflictResolutionApplied = isPromoConflictResolutionApplied;
 	}
-	
+
 }
 
