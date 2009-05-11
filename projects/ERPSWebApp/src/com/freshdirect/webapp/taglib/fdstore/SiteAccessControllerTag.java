@@ -395,6 +395,11 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 			}
 						
 		}
+        //The previous recommendations of the current session need to be removed.
+        session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
+        session.removeAttribute(SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE);
+        session.removeAttribute(SessionName.PREV_SAVINGS_VARIANT);
+		
 	}
 
 }
