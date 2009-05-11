@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -36,7 +37,6 @@ public class PromoVariantCache {
 
 	private final static PromoVariantCache INSTANCE = new PromoVariantCache();
 	private static Category LOGGER = LoggerFactory.getInstance(PromoVariantCache.class);
-	private Map promoVariantMap = new LinkedHashMap();
 	
 	public final static Comparator PRIORITY_COMPARATOR = new Comparator() {
 
@@ -58,11 +58,25 @@ public class PromoVariantCache {
 		}
 	};
 	
-	private ExpiringReference activePromoVariants = new ExpiringReference(30 * 60 * 1000) {
+	private ExpiringReference activePromoVariants = new ExpiringReference(60 * 60 * 1000) {
 		protected Object load() {
 			try {
 				List promoVariants = FDPromotionManager.getAllActivePromoVariants(EnumSiteFeature.getSmartSavingsFeatureList());
-				return promoVariants;
+				String prevVariantId = "";
+				Map pvMap = new HashMap();
+				List valueList = null;
+				for(Iterator iter = promoVariants.iterator(); iter.hasNext();) {
+					PromoVariantModel pv = (PromoVariantModel) iter.next();
+					String variantId = pv.getVariantId();
+					if(!variantId.equals(prevVariantId)){
+						valueList = new ArrayList();
+						pvMap.put(variantId, valueList);
+						prevVariantId = variantId;
+					}
+					valueList.add(pv);
+					Collections.sort(valueList, PRIORITY_COMPARATOR);
+				}
+				return pvMap;
 			} catch (FDResourceException ex) {
 				throw new FDRuntimeException(ex);
 			}
@@ -82,28 +96,12 @@ public class PromoVariantCache {
 	public void refreshAll(){
 		this.activePromoVariants.forceRefresh();
 		// just to confirm this reloads all the cached data
-		this.activePromoVariants.get();		
+		//this.activePromoVariants.get();		
 	}
 	
 
-	public synchronized Map getPromoVariantMap() {
-		
-		List promoVariants = (List) this.activePromoVariants.get();
-		String prevVariantId = "";
-		List valueList = null;
-		for(Iterator iter = promoVariants.iterator(); iter.hasNext();) {
-			PromoVariantModel pv = (PromoVariantModel) iter.next();
-			String variantId = pv.getVariantId();
-			if(!variantId.equals(prevVariantId)){
-				valueList = new ArrayList();
-				promoVariantMap.put(variantId, valueList);
-				prevVariantId = variantId;
-			}
-			valueList.add(pv);
-			Collections.sort(valueList, PRIORITY_COMPARATOR);
-		}
-		
-		return this.promoVariantMap;
+	public  Map getPromoVariantMap() {
+		return (Map) this.activePromoVariants.get();
 	}
 	
 	public Collection getPromoVariantIds() {
