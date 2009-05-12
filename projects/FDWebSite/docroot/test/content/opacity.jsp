@@ -29,6 +29,14 @@ BrowserInfo bi = new BrowserInfo(request);
 		padding-right: 1em;
 	}
 	</style>
+<%
+if (request.getHeader("User-Agent").indexOf("Mac") > -1) {
+%>	<link rel="stylesheet" href="/assets/css/mac_ie.css" type="text/css"><%
+} else {
+%>	<link rel="stylesheet" href="/assets/css/pc_ie.css" type="text/css"><%
+}
+%>
+	<link href="/assets/css/wine.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 <%

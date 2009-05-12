@@ -121,12 +121,15 @@ public class ProductImageTag extends BodyTagSupport {
 			
 			if (browserInfo == null)
 				browserInfo = new BrowserInfo((HttpServletRequest) pageContext.getRequest());
+
+
+			final boolean needsOpacityWorkaround = browserInfo.isInternetExplorer() && browserInfo.getVersionNumber() < 8.0;
 			
 			// IE workaround
-			if (this.opacity == 1 && browserInfo.isInternetExplorer())
+			if (this.opacity == 1 && needsOpacityWorkaround)
 				this.opacity = 0.999;
-			
-			final boolean supportsPNG = !(opacity < 1 && browserInfo.isInternetExplorer())  /* browserInfo != null && !browserInfo.isIE6() */;
+
+			final boolean supportsPNG = !(opacity < 1 && browserInfo.isInternetExplorer() && browserInfo.getVersionNumber() < 8.0);
 			// not disabled, has action and not in cart (savings) -> add link
 			final boolean shouldGenerateAction = !this.disabled && this.action != null && !this.isInCart;
 

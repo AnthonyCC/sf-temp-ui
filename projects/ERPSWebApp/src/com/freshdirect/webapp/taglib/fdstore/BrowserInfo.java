@@ -89,6 +89,23 @@ public class BrowserInfo {
 		return version;
 	}
 
+	/**
+	 * Tries to convert version string to a number.
+	 * "8.0" -> 8.0
+	 * 
+	 * @return version as double precision number
+	 */
+	public double getVersionNumber() {
+		double ret = Double.NaN;
+		
+		Pattern ver = Pattern.compile("(\\d(\\.\\d+)).*");
+		Matcher m = ver.matcher(this.version);
+		if (m.matches() && m.groupCount() > 0) {
+			ret = Double.parseDouble(m.group(1));
+		}
+		return ret;
+	}
+
 
 	public boolean isInternetExplorer() {
 		return "MSIE".equals(type);
