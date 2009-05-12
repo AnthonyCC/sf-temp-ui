@@ -122,10 +122,16 @@ public class ProductImageTag extends BodyTagSupport {
 			if (browserInfo == null)
 				browserInfo = new BrowserInfo((HttpServletRequest) pageContext.getRequest());
 			
+			// IE workaround
+			if (this.opacity == 1 && browserInfo.isInternetExplorer())
+				this.opacity = 0.999;
 			
 			final boolean supportsPNG = !(opacity < 1 && browserInfo.isInternetExplorer())  /* browserInfo != null && !browserInfo.isIE6() */;
 			// not disabled, has action and not in cart (savings) -> add link
 			final boolean shouldGenerateAction = !this.disabled && this.action != null && !this.isInCart;
+
+			
+
 
 
 			String imageStyle = "border: 0; ";
@@ -138,55 +144,10 @@ public class ProductImageTag extends BodyTagSupport {
 			buf.append("<div style=\"padding: 0px; border: 0px; margin: 0px auto; "
 					+ "width: " + prodImg.getWidth() + "px; "
 					+ "height: " + prodImg.getHeight() + "px; "
-					+ "position: relative;\">");
-
-			// burst image
-			final boolean displayBurst = savingsPercentage > 0 || pl.isDisplayAny();
-			if (displayBurst) {
-				String burstImageStyle = "border: 0;";
-				if (opacity < 1) {
-					burstImageStyle += TransparentBoxTag.getOpacityStyle(browserInfo, opacity);
-				}
-				
-				// get deal
-				int deal = 0;
-				if (savingsPercentage > 0) {
-					deal = (int)(savingsPercentage*100);
-				} else if (pl.isDisplayDeal()) {
-					deal = product.getDealPercentage();
-				}
+					+ "position: relative;\">\n");
 
 
-				buf.append("<div style=\"position: absolute; top: 0px; left: 0px\">");
-				if (shouldGenerateAction) {
-					buf.append("<a href=\"");
-					buf.append(action);
-					buf.append("\">");
-				}
 
-				if (this.isInCart) {
-					// Smart Savings - display "In Cart" burst
-					// No opacity needed since burst image is already faded
-					buf.append("<img alt=\"IN CART\" src=\"/media_stat/images/bursts/in_cart" + (supportsPNG ? ".png" : ".gif") + "\" width=\"35px\" height=\"35px\" style=\"border:0;\">");
-				} else if (deal > 0) {
-					String burstImage = "/media_stat/images/deals/brst_sm_" + deal + (supportsPNG ? ".png" : ".gif");
-					buf.append("<img alt=\"SAVE " + deal + "\" src=\""+burstImage+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">");
-				} else if (pl.isDisplayFave()) {
-					// we need width and height for png behavior
-					String burstImage = "/media_stat/images/template/search/brst_sm_fave.png";
-					buf.append("<img alt=\"FAVE\" src=\""+burstImage+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">");
-				} else if (pl.isDisplayNew()) {
-					// we need width and height for png behavior
-					String burstImage = "/media_stat/images/template/search/brst_sm_new.png";
-					buf.append("<img alt=\"NEW\" src=\""+burstImage+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">");
-				}
-				
-				if (shouldGenerateAction) {
-					buf.append("</a>");
-				}
-
-				buf.append("</div>");
-			}
 
 
 
@@ -215,10 +176,6 @@ public class ProductImageTag extends BodyTagSupport {
 			buf.append(product.getFullName());
 			buf.append("\"");
 			
-//			if (action != null) {
-//				buf.append(" border=\"0\"");
-//			}
-			
 			if (className != null && className.length() > 0) {
 				buf.append(" class=\"");
 				buf.append(className);
@@ -240,14 +197,78 @@ public class ProductImageTag extends BodyTagSupport {
 			if (shouldGenerateAction) {
 				buf.append("</a>");
 			}
-			
-			buf.append("</div>");
+
+
+
+			appendBurst(buf, pl, supportsPNG, shouldGenerateAction);
+
+
+
+			buf.append("</div>\n");
 
 			out.println(buf.toString());
 		} catch (IOException e) {
 		}
 		
 		return EVAL_BODY_INCLUDE;
+	}
+
+
+
+	/**
+	 * Appends burst image
+	 * 
+	 * @param buf output
+	 * @param pl Product Labelling
+	 * @param supportsPNG Is PNG supported?
+	 * @param shouldGenerateAction Should add link to image
+	 */
+	private void appendBurst(StringBuffer buf, ProductLabelling pl,
+			final boolean supportsPNG, final boolean shouldGenerateAction) {
+		// burst image
+		final boolean displayBurst = savingsPercentage > 0 || pl.isDisplayAny();
+		if (displayBurst) {
+			String burstImageStyle = "border: 0;";
+			
+			if (this.opacity < 1) {
+				burstImageStyle += TransparentBoxTag.getOpacityStyle(browserInfo, this.opacity);
+			}
+			
+			// get deal
+			int deal = 0;
+			if (savingsPercentage > 0) {
+				deal = (int)(savingsPercentage*100);
+			} else if (pl.isDisplayDeal()) {
+				deal = product.getDealPercentage();
+			}
+
+
+			buf.append("<div style=\"position: absolute; top: 0px; left: 0px\">\n");
+			if (shouldGenerateAction) {
+				buf.append("<a href=\"");
+				buf.append(action);
+				buf.append("\">");
+			}
+
+			if (this.isInCart) {
+				// Smart Savings - display "In Cart" burst
+				// No opacity needed since burst image is already faded
+				buf.append("<img alt=\"IN CART\" src=\"/media_stat/images/bursts/in_cart" + (supportsPNG ? ".png" : ".gif") + "\" width=\"35px\" height=\"35px\" style=\"border:0;\">\n");
+			} else if (deal > 0) {
+				String burstImage = "/media_stat/images/deals/brst_sm_" + deal + (supportsPNG ? ".png" : ".gif");
+				buf.append("<img alt=\"SAVE " + deal + "\" src=\""+burstImage+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
+			} else if (pl.isDisplayFave()) {
+				buf.append("<img alt=\"FAVE\" src=\"/media_stat/images/template/search/brst_sm_fave.png\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
+			} else if (pl.isDisplayNew()) {
+				buf.append("<img alt=\"NEW\" src=\"/media_stat/images/template/search/brst_sm_new.png\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
+			}
+
+			if (shouldGenerateAction) {
+				buf.append("</a>\n");
+			}
+
+			buf.append("</div>\n");
+		}
 	}
 
 	public static class TagEI extends TagExtraInfo {

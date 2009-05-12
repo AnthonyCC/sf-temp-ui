@@ -2,6 +2,9 @@
     "http://www.w3.org/TR/html4/loose.dtd">
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.BrowserInfo"%>
+<%@ page import="com.freshdirect.fdstore.content.ProductModel" %>
+<%@ page import="com.freshdirect.fdstore.content.ContentFactory" %>
+<%@ taglib uri='freshdirect' prefix='fd'%>
 <%
 BrowserInfo bi = new BrowserInfo(request);
 %><html>
@@ -28,8 +31,11 @@ BrowserInfo bi = new BrowserInfo(request);
 	</style>
 </head>
 <body>
-<div><span class="enabled2">Client info:</span><span id="ua_div"></span></div>
-<div><span class="enabled2">BrowserInfo:</span><%= new BrowserInfo(request) %></div>
+<%
+	ProductModel prd = ContentFactory.getInstance().getProduct("apl_apl", "apl_rome");
+
+	
+%>
 
 <table style="border: 1px dotted #ccc" cellpadding="3">
 	<tr>
@@ -65,66 +71,26 @@ BrowserInfo bi = new BrowserInfo(request);
 		<td><%= bi.isOpera() ? bi.getVersion() : "&nbsp;" %></td>
 	</tr>
 </table>
-
-
-<table style="text-align: center;">
+<br>
+<br>
+<br>
+<table>
 	<tr>
-		<td>
-<h2>Transparent JPG</h2>
-<fd:TransparentBox disabled="false">
-	<img src="/media_stat/images/thanksgiving/home_turkey.jpg">
-	<div>Lorem ipsum</div>
-</fd:TransparentBox>
-		</td>
-
-
-		<td>
-<h2>Normal JPG</h2>
-<fd:TransparentBox disabled="true">
-	<img src="/media_stat/images/thanksgiving/home_turkey.jpg">
-	<div>Lorem ipsum</div>
-</fd:TransparentBox>
-		</td>
+		<td>&nbsp;</td>
+		<td style="font-size: 9pt; text-align: center">20%</td>
+		<td style="font-size: 9pt; text-align: center">In CART</td>
 	</tr>
-	
 	<tr>
-		<td>
-<h2>Transparent GIF</h2>
-<fd:TransparentBox disabled="false">
-	<img src="/media_stat/images/navigation/department/home/trialoffer.gif">
-	<div>Lorem ipsum</div>
-</fd:TransparentBox>
-		</td>
-		<td>
-<h2>Normal GIF</h2>
-<fd:TransparentBox disabled="true">
-	<img src="/media_stat/images/navigation/department/home/trialoffer.gif">
-	<div>Lorem ipsum</div>
-</fd:TransparentBox>
-		</td>
+		<td style="font-size: 9pt">Opacity: 1</td>
+		<td><fd:ProductImage product="<%= prd %>" browserInfo="<%= bi %>" savingsPercentage="<%= 0.2 %>"></fd:ProductImage></td>
+		<td><fd:ProductImage product="<%= prd %>" browserInfo="<%= bi %>" savingsPercentage="<%= 0.2 %>" inCart="<%= true %>"></fd:ProductImage></td>
 	</tr>
-		
 	<tr>
-		<td>
-<h2>Transparent JPG</h2>
-<fd:TransparentBox disabled="false">
-	<img src="/media/images/product/frozen/fro_mornin_harvest_01_c.jpg">
-	<div>Lorem ipsum</div>
-</fd:TransparentBox>
-		</td>
-		<td>
-<h2>Normal JPG</h2>
-<fd:TransparentBox disabled="true">
-	<img src="/media/images/product/frozen/fro_mornin_harvest_01_c.jpg">
-	<div>Lorem ipsum</div>
-</fd:TransparentBox>
-		</td>
+		<td style="font-size: 9pt">Opacity: 0.5</td>
+		<td><fd:ProductImage product="<%= prd %>" browserInfo="<%= bi %>" savingsPercentage="<%= 0.2 %>" opacity="<%= 0.5 %>"></fd:ProductImage></td>
+		<td><fd:ProductImage product="<%= prd %>" browserInfo="<%= bi %>" savingsPercentage="<%= 0.2 %>" inCart="<%= true %>" opacity="<%= 0.5 %>"></fd:ProductImage></td>
 	</tr>
-			
 </table>
 
-<script type="text/javascript">
-document.getElementById('ua_div').innerHTML = navigator.userAgent;
-</script>
 </body>
 </html>
