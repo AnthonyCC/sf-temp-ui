@@ -13,7 +13,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='crm' prefix='crm' %>
 
-<tmpl:insert template='/template/top_nav.jsp'>
+<tmpl:insert template='/template/top_nav_changed_dtd.jsp'>
 
     <tmpl:put name='title' direct='true'>Case Details</tmpl:put>
 	<crm:GetCase id="cm" caseId='<%= request.getParameter("case") %>'>

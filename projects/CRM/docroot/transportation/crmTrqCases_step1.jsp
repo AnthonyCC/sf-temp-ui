@@ -43,7 +43,7 @@ String route = NVL.apply(request.getParameter("route"),"");
 String successPage = "/transportation/crmTrqCases.jsp?dlvDate="+fmtDlvDate+"&route="+route+"&stopNumber="+NVL.apply(request.getParameter("stopNumber"),"");
 %>
 
-<tmpl:insert template='/template/top_nav.jsp'>
+<tmpl:insert template='/template/top_nav_changed_dtd.jsp'>
 
     <tmpl:put name='title' direct='true'>Transportation Issues</tmpl:put>
 		

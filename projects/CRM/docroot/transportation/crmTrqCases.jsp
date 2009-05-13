@@ -74,7 +74,7 @@ for (Iterator itr = crmSubjects.iterator(); itr.hasNext();) {
 
 %>
 
-<tmpl:insert template='/template/top_nav.jsp'>
+<tmpl:insert template='/template/top_nav_changed_dtd.jsp'>
 
     <tmpl:put name='title' direct='true'>Transportation Issues</tmpl:put>
 		

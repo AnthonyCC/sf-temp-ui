@@ -1,7 +1,9 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
+
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <jsp:include page="/shared/template/includes/server_info.jsp"/>
 <html>
 <head>
@@ -16,6 +18,11 @@
     <script type="text/javascript" src="/ccassets/javascript/jscalendar-1.0/lang/calendar-en.js"></script>
     <script type="text/javascript" src="/ccassets/javascript/jscalendar-1.0/calendar-setup.js"></script>
 
+	<%-- YUI --%>
+	<!-- Sam Skin CSS -->
+	<link rel="stylesheet" type="text/css" href="/assets/yui/container/assets/skins/sam/container.css">
+	
+<%@ include file="/shared/template/includes/yui.jspf" %>
 <% if ("true".equals(request.getAttribute("needsCCL"))) {
 %>
     <%@ include file="/shared/template/includes/ccl.jspf"%>

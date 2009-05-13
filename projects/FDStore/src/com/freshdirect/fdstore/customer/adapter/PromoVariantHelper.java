@@ -69,51 +69,47 @@ public class PromoVariantHelper {
 	public static void updateSavingsVariant(FDUserI user, Map savingsLookupTable){
 		Map pvMap = user.getPromoVariantMap();
 		if(pvMap == null || pvMap.size() == 0) {
-			user.setSavingsVariantId(null);
+			user.setSavingsVariantId("");
 			return ;
 		}
 		String savVariant = null;
 		Set keys = pvMap.keySet();
-		if(keys.size() > 1) { //If it is more than 1 then hit recommender to check for recommendations.
-			FDStoreRecommender recommender = FDStoreRecommender.getInstance();
-			SessionInput input = new SessionInput(user);
-			input.setCheckForEnoughSavingsMode(true);
-			
-			List availablePromoVariants = new ArrayList();
-			int recSize = 0;
-			for(Iterator it = keys.iterator(); it.hasNext();){
-				String variantId = (String) it.next();
-				PromoVariantModel pv = (PromoVariantModel)pvMap.get(variantId);
-				if(savingsLookupTable != null && savingsLookupTable.containsKey(variantId)) {
-					recSize = ((Integer)savingsLookupTable.get(variantId)).intValue();
-				}else {
-					try {
+		FDStoreRecommender recommender = FDStoreRecommender.getInstance();
+		SessionInput input = new SessionInput(user);
+		input.setCheckForEnoughSavingsMode(true);
+		
+		List availablePromoVariants = new ArrayList();
+		int recSize = 0;
+		for(Iterator it = keys.iterator(); it.hasNext();){
+			String variantId = (String) it.next();
+			PromoVariantModel pv = (PromoVariantModel)pvMap.get(variantId);
+			if(savingsLookupTable != null && savingsLookupTable.containsKey(variantId)) {
+				recSize = ((Integer)savingsLookupTable.get(variantId)).intValue();
+			}else {
+				try {
 
-						Recommendations rec = recommender.getRecommendations(pv.getSiteFeature(), user, input, null);
-						recSize = rec.getProducts().size();
-						savingsLookupTable.put(variantId, new Integer(recSize));
-					}catch (FDResourceException e) {
-						//Do nothing.
-	                }
-				}
-				  if (recSize > 0) {
-					  //no recommendations found for this smart saving feature. remove it from the promo variant map.
-					  availablePromoVariants.add(pv);
-				  }
+					Recommendations rec = recommender.getRecommendations(pv.getSiteFeature(), user, input, null);
+					recSize = rec.getProducts().size();
+					savingsLookupTable.put(variantId, new Integer(recSize));
+				}catch (FDResourceException e) {
+					//Do nothing.
+                }
 			}
-			input.setCheckForEnoughSavingsMode(false);
-			if(availablePromoVariants.size() == 0) {
-				//no savings variant available to show.
-				user.setSavingsVariantId(null);
-				return;
-			}
-			if(availablePromoVariants.size() > 1)
-				Collections.sort(availablePromoVariants, PromoVariantCache.FEATURE_PRIORITY_COMPARATOR);
-			PromoVariantModel selected = (PromoVariantModel) availablePromoVariants.get(0);
-			savVariant = selected.getVariantId();
-		} else {//If it is only 1 variant then return that.
-			savVariant = (String)keys.iterator().next();
+			  if (recSize > 0) {
+				  //no recommendations found for this smart saving feature. remove it from the promo variant map.
+				  availablePromoVariants.add(pv);
+			  }
 		}
+		input.setCheckForEnoughSavingsMode(false);
+		if(availablePromoVariants.size() == 0) {
+			//no savings variant available to show.
+			user.setSavingsVariantId("");
+			return;
+		}
+		if(availablePromoVariants.size() > 1)
+			Collections.sort(availablePromoVariants, PromoVariantCache.FEATURE_PRIORITY_COMPARATOR);
+		PromoVariantModel selected = (PromoVariantModel) availablePromoVariants.get(0);
+		savVariant = selected.getVariantId();
 		user.setSavingsVariantId(savVariant);
 	}
 	
