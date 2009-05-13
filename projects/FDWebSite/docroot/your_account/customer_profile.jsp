@@ -95,8 +95,7 @@ function _submit(p) {
 			<a href="javascript:document.request_product.submit()"><img src="/media_stat/images/buttons/submit_profile.gif" width="166" height="20" border="0" alt="SUBMIT MY PROFILE"></a>
 			&nbsp;&nbsp;
  			<a href="javascript:clear(document.request_product)"><img src="/media_stat/images/buttons/clear_form.gif" width="110" height="20" border="0" alt="CLEAR FORM"></a>
-			<br><img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br>
-			Of course, we keep all of your information private 
+			<br><img src="/media_stat/images/layout/clear.gif" width="1" height="6">
 	</td>
 </form>
     </tr>

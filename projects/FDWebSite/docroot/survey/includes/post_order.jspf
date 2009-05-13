@@ -50,12 +50,10 @@ if (submitted) {
    }
 
 </script>
-<fd:IncludeMedia name="/media/editorial/site_pages/survey/pos_intro.html" />
+
 <input type="hidden" value="" name="skipSurvey">
 	<tr>
-		<td colspan="11" class="text11"><img src="/media_stat/images/layout/999966.gif" width="630" height="1" vspace="8"><br><span class="title18" style="color:#990000;">HELP US SERVE YOU BETTER</span><br><span class="space4pix"><br></span>
-		We want to make your FreshDirect experience the best it can be. Please help us by filling out this survey. Of course we keep all your information private. Whether you choose to fill out the survey or not, your feedback is greatly appreciated.
-		<br><img src="/media_stat/images/layout/cccccc.gif" width="630" height="1" vspace="8"><br>
+		<td colspan="11" style="border-top:solid 1px #ccc; padding-top:6px;"><fd:IncludeMedia name="/media/editorial/site_pages/survey/pos_intro.html" />
 		</td>
 	</tr>
 	<tr>
@@ -72,7 +70,9 @@ if (submitted) {
 	    <td><img src="/media_stat/images/layout/clear.gif" width="130" height="1"></td>
 	</tr>
 <% request.setAttribute("Survey","Post Order Survey");%>
-<%@ include file="/includes/your_account/i_customer_profile.jspf" %>
+<tr>
+		<td colspan="11"><%@ include file="/includes/your_account/i_customer_profile.jspf" %>
+</td></tr>        
 
 	<tr><td colspan="11" align="center"><img src="/media_stat/images/layout/cccccc.gif" width="630" height="1" vspace="12"><br><input type="image" src="/media_stat/images/buttons/b_submit_survey.gif" width="176" height="21" alt="SUBMIT SURVEY" onclick="doSubmitForm(false);"><br><img src="/media_stat/images/layout/999966.gif" width="630" height="1" vspace="18"><br>
 	<input type="image" src="/media_stat/images/buttons/b_ask_me_later.gif" width="120" height="21" alt="SKIP SURVEY" onclick="doSubmitForm(true);"><br><br>

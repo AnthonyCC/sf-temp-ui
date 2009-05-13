@@ -46,29 +46,22 @@
 <form method="post" name="survey" action="survey.jsp">
 <FONT CLASS="space4pix"><BR></FONT>
 
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="680">
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="700">
 <tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"></td></tr>
+<input type="hidden" name="skipSurvey" value="false">
 <tr>
-	<td colspan="2">
-	<input type="hidden" name="skipSurvey" value="false">
-		<font class="space8pix"><br></font>
-	</td>
-</TR>
+ <td colspan="2" style="padding-bottom:6px;">
+ <fd:IncludeMedia name="/media/editorial/site_pages/survey/sos_intro.html" />
+ </td>
+</tr>
+
 <tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"></td></tr>
 <tr><td colspan="2" bgcolor="#999999"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" border="0"></td></tr>
 <tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"></td></tr>
 <tr>
-	<td colspan="2">
-	<table width="100%" border=0 cellspacing=0 cellpadding=0>
-	<tr><td><img src="/media_stat/images/layout/clear.gif" width="560" height="1" alt="" border="0"><br></td></tr>
-	<tr>
 		<td>&nbsp;</td> 
 		<td align=right><input type="image" src="/media_stat/images/template/checkout/skip_survey.gif" name="skip_survey"></td>
 	</tr>
-	</table>
-	</td>
-</tr>
-
 </TABLE>
 
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="677">
@@ -84,33 +77,33 @@ FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 	</td>
 </tr>
 </table>
-<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="677">
+<br>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="700">
 <tr>
-	<td bgcolor="#999999" colspan=3><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" border="0"></td>
+ <td bgcolor="#999999" colspan=3><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" border="0"></td>
 </tr>
 <tr>
-	<td colspan=3><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"></td>
+ <td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"></td>
 </tr>
 <tr>
-	<td colspan=3>
-		
-		<table>
-		<tr>
-			<td valign="top">
-				<input type="image"  src="/media_stat/images/buttons/checkout_arrow.gif" WIDTH="29" HEIGHT="29" name="submit_survey">
-			</td>
-			<td><img src="/media/images/layout/clear.gif" width="2" height="1" alt="" border="0"></td>
-			<td valign="top">
-				<input type="image"  src="/media_stat/images/template/checkout/submit_survey.gif" name="submit_survey"><br>
-				To continue Checkout.<br>
-				Thank you for your feedback!
-			</td>
-		</tr>
-		</table>
-	
-	</td>
+ <td colspan="3">
+  <table>
+  <tr>
+   <td valign="top">
+    <input type="image"  src="/media_stat/images/buttons/checkout_arrow.gif" WIDTH="29" HEIGHT="29" name="submit_survey">
+   </td>
+   <td><img src="/media/images/layout/clear.gif" width="2" height="1" alt="" border="0"></td>
+   <td valign="top">
+    <input type="image"  src="/media_stat/images/template/checkout/submit_survey.gif" name="submit_survey"><br>
+    To continue Checkout.<br>
+    Thank you for your feedback!
+   </td>
+  </tr>
+  </table>
+ <br>
+ </td>
 </tr>
-
+ 
 </table>
 </form>
 </fd:SurveyController>

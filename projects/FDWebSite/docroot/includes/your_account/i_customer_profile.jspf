@@ -93,6 +93,7 @@
 <style>
 	body { font-family:Verdana,Arial,sans-serif; font-size: 10px; height: 100%; }
 	.container {width: 700px;}
+    .container1 {width: 630px;}
 	.ctext { text-align: left; margin: 10px 2px; font-size: 11px; }
 	.etext { text-align: left; margin: 10px 20px; font-size: 11px; font-weight: bold; }
 	.notes { text-align: left; margin: 10px 20px; font-size: 10px; font-weight: normal; }
@@ -210,6 +211,7 @@
 
 </style>
 <% int quesCount = 1; 
+       String _survey_Name=request.getAttribute("Survey").toString();
        FDSurvey Usability = FDSurveyCachedFactory.getSurvey(EnumSurveyType.getEnum(request.getAttribute("Survey").toString()));
        request.removeAttribute("Survey");
        FDUserI _user = (FDUserI)session.getAttribute(SessionName.USER);
@@ -219,7 +221,11 @@
        List previousAnswers=null;
        
     %>
-    <div class="container">
+    <% if(EnumSurveyType.POST_ORDER_SURVEY.equals(EnumSurveyType.getEnum(_survey_Name))) {%>
+        <div class="container1">
+    <% } else {%>
+        <div class="container">
+    <%}%>
 	
 	    <logic:iterate id="question" collection="<%= questions %>" type="com.freshdirect.fdstore.survey.FDSurveyQuestion" indexId='index'>
         
