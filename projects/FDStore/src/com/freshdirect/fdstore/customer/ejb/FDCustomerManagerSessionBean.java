@@ -1439,7 +1439,7 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			} else if ("fourth_order_survey".equals(survey.getName())) {
 				FDCustomerEB eb = getFdCustomerHome().findByPrimaryKey(new PrimaryKey(survey.getIdentity().getFDCustomerPK()));
 				eb.setProfileAttribute("fourth_order_survey", "FILL");
-			} else if ("second_order_survey".equals(survey.getName())) {
+			} else if ("Second Order Survey".equals(survey.getName())) {
 				FDCustomerEB eb = getFdCustomerHome().findByPrimaryKey(new PrimaryKey(survey.getIdentity().getFDCustomerPK()));
 				eb.setProfileAttribute("second_order_survey", "FILL");
 			}

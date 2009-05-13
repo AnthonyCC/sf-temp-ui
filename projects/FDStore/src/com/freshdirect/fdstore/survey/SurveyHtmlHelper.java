@@ -42,6 +42,10 @@ public class SurveyHtmlHelper {
 	
 	public static String getQuestionText(FDSurveyQuestion quest) {
 		
+		if(FDSurveyConstants.PROFILE.equals(quest.getName()))
+				return quest.getDescription();
+		if(EnumFormDisplayType.GROUPED_RADIO_BUTTON.equals(quest.getFormDisplayType()))
+			return quest.getDescription()+FDSurveyConstants.PAIRED_CHOICE;
 		return quest.isPulldown()? quest.getDescription():quest.isMultiselect()?quest.getDescription()+FDSurveyConstants.MULTIPLE_CHOICE:quest.getDescription()+FDSurveyConstants.SINGLE_CHOICE;
 	}
 	public static String getAnswers(FDSurveyQuestion question, List answers) {
@@ -68,6 +72,7 @@ public class SurveyHtmlHelper {
 		} else if (EnumViewDisplayType.GROUPED_COMMA_SEPARATED.equals(view)) {
 			Collections.sort(answers);
 			List ansGroup=question.getAnswerGroups();
+			Collections.sort(ansGroup);
 			String _ansGroup="";
 			for(int i=0;i<ansGroup.size();i++) {
 				StringBuffer temp=new StringBuffer(300);
@@ -108,6 +113,9 @@ public class SurveyHtmlHelper {
 				temp.append("<b>"+_ansGroup+": </b>");
 				String _ans="";
 				boolean needsDisplay=false;
+				if(_ansGroup.indexOf(" ")!=-1) {
+					_ansGroup=_ansGroup.substring(0, _ansGroup.indexOf(" "));
+				}
 				for(int j=0;j<answers.size();j++) {
 					_ans=answers.get(j).toString();
 					if(_ans.indexOf(_ansGroup)!=-1) {
@@ -268,6 +276,7 @@ public class SurveyHtmlHelper {
 	private static String getGroupedSelection(FDSurveyQuestion question, List previousAnswers) {
 		StringBuffer response=new StringBuffer(200);
 		List answerGroups=question.getAnswerGroups();
+		Collections.sort(answerGroups);
     	if(answerGroups==null || answerGroups.size()==0)
     		return "";
     	List answers=question.getAnswersByGroup(answerGroups.get(0).toString());
@@ -280,9 +289,8 @@ public class SurveyHtmlHelper {
 			for(int j=0;j<answerGroups.size();j++) {
 				String answerGroup=answerGroups.get(j).toString();
 				String value = answer.getName()+answerGroup;
-				String input = FDSurveyConstants.MULTI_SELECT_INPUT;
 				boolean checked = previousAnswers.contains(answer.getName()+answerGroup) ? true: false;
-				temp.append(getDivTag("q08_cb","",getInputTag(input, question.getName()+FDSurveyConstants.NAME_SEPERATOR+answerGroup, "", value, checked, false, "")));
+				temp.append(getDivTag("q08_cb","",getInputTag(FDSurveyConstants.MULTI_SELECT_INPUT, question.getName()+FDSurveyConstants.NAME_SEPERATOR+answerGroup, "", value, checked, false, "")));
 			}
 			temp.append(getDivTag("cboth","","<!--  -->"));
 			response.append(getDivTag(getRowStyle(i + 1),"",temp.toString()));
@@ -312,6 +320,7 @@ public class SurveyHtmlHelper {
     	String lastRow = rowCountWhole%2==0 ? "odd":"even";
     	int rowCount = 0;
     	int colToAdd = 3 - (answerGroups.size()%3);
+    	boolean fullGrid = colToAdd == 3?true:false;
 		for(Iterator it=answerGroups.iterator();it.hasNext();) {
 			StringBuffer temp=new StringBuffer(200);
 			group=it.next().toString();
@@ -336,25 +345,26 @@ public class SurveyHtmlHelper {
 			String container=(counter%2==0)?"q09_container even":"q09_container odd";
 			//System.out.println(">>>>>>>>>>>>>"+counter+" "+colCount + " total " + rowCountWhole  );
 			if (colCount == 0) {
-				if (rowCount == rowCountWhole) {
+				if (rowCount == rowCountWhole || (fullGrid && rowCount == rowCountWhole-1) ) {
 					container += " leftBL";
 				} else {
 					container += " leftB";
 				}
 			} else if (colCount == 1){
-				if (rowCount == rowCountWhole) {
+				if (rowCount == rowCountWhole || (fullGrid && rowCount == rowCountWhole-1) ){
 					container += " middleBL";
 				} else {
 					container += " middleB";
 				}
 			} else if (colCount == 2){
-				if (rowCount == rowCountWhole) {
+				if (rowCount == rowCountWhole  || (fullGrid && rowCount == rowCountWhole-1) ){
 					container += " rightBL";
 				} else {
 					container += " rightB";
 				}
 				rowCount++;
 			}
+
 			response.append(getDivTag(container,"",temp.toString()));
 			//response.append(getDivTag(container,"",getDivTag("box","",temp.toString())));
 			if (colCount == 2) {
