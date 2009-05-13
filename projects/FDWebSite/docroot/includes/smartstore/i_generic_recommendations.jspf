@@ -63,6 +63,7 @@
 	if (request.getHeader("X-Requested-With") != null) {
 		formUri = (String) request.getParameter("formUri");
 	}
+	boolean isRendered = false;
 	
 	Map prevRecs = (Map) session.getAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
 	boolean hideSavings = genericRecommendationsVariant.isSmartSavings() && SmartStoreUtil.countSavingProductsInCart(genericRecommendationsVariant, pip_u, prevRecs) < 0;
@@ -73,6 +74,7 @@
 	
 <fd:GenericRecommendations id="recommendations" errorOccurred="<%= !pip_result.isSuccess() %>" parentFeatureImpressionId="<%= parentImpressionId %>">
 		<% 		
+		    isRendered = true;
 			ConfigurationContext confContext = new ConfigurationContext();
 			confContext.setFDUser( pip_u );
 			boolean hasAnyItemAddable = false;
@@ -289,12 +291,19 @@
 		<%	} else { // impressions is empty %>
 				<br/><br/>
 				<p class="tab_text_simple">	Oops! It looks like we've run out of items to recommend. </p>
-				<p class="tab_text_simple">	<a href="/unsupported.jsp" onClick="window.location.reload(false)">Click here</a> to refresh with new products. </p>		
+				<p class="tab_text_simple">	<a href="/unsupported.jsp" onClick="window.location.reload(false); return false;">Click here</a> to refresh with new products. </p>		
 				<br/><br/>
 		<% 	} %>							
 									
 	</fd:GenericRecommendations>
 	
 	
-<% }
+<%
+		if (!isRendered) { %>
+			<br/><br/>
+			<p class="tab_text_simple">	Oops! It looks like we've run out of items to recommend. </p>
+			<p class="tab_text_simple">	<a href="/unsupported.jsp" onClick="window.location.reload(false); return false;">Click here</a> to refresh with new products. </p>		
+			<br/><br/>
+	<% 	}
+	}
 } %>

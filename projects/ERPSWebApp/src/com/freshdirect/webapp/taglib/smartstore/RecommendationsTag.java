@@ -116,10 +116,11 @@ public abstract class RecommendationsTag extends AbstractGetterTag {
      */
     protected Object getResult() throws Exception {
         Recommendations results = getRecommendations();
+        
+        if (results != null && results.getProducts().size() == 0)
+        	results = null;
 
-        if (results != null && results.getProducts().size() == 0) {
-            results = null;
-        } else {
+        if (results != null) {
             // do impression logging
             logImpressions(results);
         }
