@@ -45,4 +45,6 @@ public interface SessionName {
 	public static final String SAVINGS_FEATURE_LOOK_UP_TABLE= "savingsFeatureLookup";
 	
 	public static final String PREV_SAVINGS_VARIANT = "prevSavingsVariant";
+	
+	public static final String PREV_VARIANT_FOUND = "prevVariantFound";
 }

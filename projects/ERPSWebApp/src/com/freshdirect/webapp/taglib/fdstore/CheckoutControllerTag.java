@@ -825,7 +825,6 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 			}
 		}
 
-		System.out.println("****************** trying to set setPostPromoConflictEnabled ***********************");
 		FDSessionUser currentUser = (FDSessionUser) pageContext.getSession().getAttribute( SessionName.USER );
 		currentUser.setPostPromoConflictEnabled(true);		
 		currentUser.updateUserState();			

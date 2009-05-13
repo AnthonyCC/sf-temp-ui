@@ -48,14 +48,23 @@ java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
         savingsLookupTable = new HashMap();
     }
     PromoVariantHelper.updateSavingsVariant(user, savingsLookupTable);
+    String usrVariant = user.getSavingsVariantId();
+    if(usrVariant != null) {
+        PromoVariantHelper.updateSavingsVariantFound(user, 5);
+    } else {
+        user.setSavingsVariantFound(false);
+    }
     session.setAttribute(SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE, savingsLookupTable);
     String savingsVariant =  (String) session.getAttribute(SessionName.PREV_SAVINGS_VARIANT);
-    String usrVariant = user.getSavingsVariantId();
-    if(usrVariant != null && !usrVariant.equals(savingsVariant)) {
+    Boolean prevVariantFound = (Boolean) session.getAttribute(SessionName.PREV_VARIANT_FOUND);
+    boolean usrVariantFound = user.isSavingsVariantFound();
+    if((usrVariant != null && !usrVariant.equals(savingsVariant)) || (prevVariantFound != null && usrVariantFound != prevVariantFound.booleanValue())) {
+        //This flag need to be enabled to perform post conflict resolution.
+        user.setPostPromoConflictEnabled(true);	
         //If current savings variant is different from previous savings variant
-        PromoVariantHelper.updateSavingsVariantFound(user, 5);
         user.updateUserState();
         session.setAttribute(SessionName.PREV_SAVINGS_VARIANT, usrVariant);
+        session.setAttribute(SessionName.PREV_VARIANT_FOUND, new Boolean(usrVariantFound));
     }
 %> 
 
