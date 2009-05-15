@@ -2,8 +2,10 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.customer.*'%>
+<%@ page import="com.freshdirect.customer.EnumSaleStatus" %>
 <%@ page import='com.freshdirect.*'%>
 <%@ page import='com.freshdirect.fdstore.FDReservation'%>
+<%@ page import='com.freshdirect.fdstore.FDTimeslot'%>
 <%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
@@ -136,16 +138,61 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
                 FDSessionUser sessionUser=(FDSessionUser)user;
                 sessionUser.saveCart(true);          
               }
-		} else {   
+	  } else {   
     %>
 	<%@ include file="includes/home/i_intro_hdr.jspf"%>
 		<% if (user.getLevel() >= FDUserI.RECOGNIZED) { %>
-			<%@ include file="includes/home/i_pending_order.jspf" %>
+						
+			<fd:OrderHistoryInfo id='orderHistoryInfo'>
+			<%
+			// also need to know how many orders the customer has that are not still pending
+			int pendingOrderCount = 0;
+			for (Iterator hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
+				FDOrderInfoI orderInfo = (FDOrderInfoI) hIter.next();
+				if (orderInfo.isPending()) {
+					pendingOrderCount++;
+				}
+			} 			
+			if (orderHistoryInfo != null && orderHistoryInfo.size() != 0 && pendingOrderCount > 0) {
+			%>
+				<table width="490" cellpadding="0" cellspacing="0" border="0">
+				<%
+				for (Iterator hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
+				     FDOrderInfoI orderInfo = (FDOrderInfoI) hIter.next();
+				     
+				     if (orderInfo.isPending() && orderInfo.getOrderStatus() != EnumSaleStatus.REFUSED_ORDER) {
+				%>
+				       <tr><td><img src="/media_stat/images/layout/clear.gif" width="310" height="6"></td>
+					<td><img src="/media_stat/images/layout/clear.gif" width="150" height="6"></td></tr>
+				       <tr><td colspan="2" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+				       <tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td></tr>
+				       <tr><td><font class="text9"><b>Your order will be delivered on:</b></font> 
+				       		<a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>">
+				       		<%= new SimpleDateFormat("EEE MM/dd/yy").format(orderInfo.getRequestedDate()) %> 
+				       		@ <%= FDTimeslot.format(orderInfo.getDeliveryStartTime(),orderInfo.getDeliveryEndTime())%></a></td>
+				       <td align="right">
+				       <% if ( new Date().before(orderInfo.getDeliveryCutoffTime())) { %>
+						<font class="text9">To make changes, <a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>">click here</a>.</font>
+				       <% } else { %>
+						&nbsp;
+				       <% } %></td></tr>
+
+				     <% } else if (orderInfo.getOrderStatus() == EnumSaleStatus.REFUSED_ORDER) { %>
+					       <tr><td colspan="2" class="text10rbold"><b>Pending Order: Please contact us at <%=user.getCustomerServiceContact()%> as soon as possible to reschedule delivery.</b></td></tr>	
+				<%   }
+				     break;
+				} 
+				%>
+
+				</table>
+		     <% } %>
+		     </fd:OrderHistoryInfo>
+			
 		<% } %>
 		<% if(user.isEligibleForPreReservation() && user.getReservation() != null){
 			FDReservation rsv = user.getReservation();
 		%>
-		<img src="/media_stat/images/layout/cccccc.gif" width="490" height="1" vspace="8"><table width="490" cellpadding="0" cellspacing="0" border="0"><tr><td><font class="text9"><b>You have a delivery slot reserved for:</b></font> <a href="/your_account/reserve_timeslot.jsp"><%=CCFormatter.formatReservationDate(rsv.getStartTime())%> @ <%=CCFormatter.formatTime(rsv.getStartTime())%> - <%=CCFormatter.formatDeliveryTime(rsv.getEndTime())%></a></td>
+		<img src="/media_stat/images/layout/cccccc.gif" width="490" height="1" vspace="8"><table width="490" cellpadding="0" cellspacing="0" border="0"><tr><td><font class="text9"><b>You have a delivery slot reserved for:</b></font> <a href="/your_account/reserve_timeslot.jsp"><%=CCFormatter.formatReservationDate(rsv.getStartTime())%> @ <%=FDTimeslot.format(rsv.getStartTime(), rsv.getEndTime())+"ppp"%></a></td>
 		</tr></table>
 		<%}%>
 		<img src="/media_stat/images/layout/cccccc.gif" width="490" height="1" vspace="8"><br>
