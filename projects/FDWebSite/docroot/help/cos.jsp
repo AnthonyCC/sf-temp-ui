@@ -162,7 +162,7 @@ function linkTo(url){
 					<TD WIDTH="15"><img src="/media/images/layout/clear.gif" width="15" height="1" alt="" border="0"></TD>
 					<TD WIDTH="<%=tableWidth%>" class="bodyCopy">	
 						<b>Is there a charge for delivery?</b><br>
-						Delivery costs $<%=(double)user.getCorpDeliveryFee()%>. The minimum order is $<%=(int)user.getMinCorpOrderAmount()%>.<br>
+						Delivery costs $<%=(double)user.getCorpDeliveryFee()%> Tuesday through Friday and $<%=(double)user.getCorpDeliveryFeeMonday()%> on Monday. The minimum order is $<%=(int)user.getMinCorpOrderAmount()%>.<br>
 				   </TD>
 				</TR>
 			</TABLE>

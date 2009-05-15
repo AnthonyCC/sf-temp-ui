@@ -41,7 +41,9 @@ if (user2 != null) {
 			<td><%
 			if(faqPage.equals("about")){%>
 				<fd:IncludeMedia name="/media/editorial/faq/about.ftl" parameters="<%=params%>" withErrorReport="true"/>	
-			<%}else if(faqPage.equals("signup")){
+			<%}
+			
+			else if(faqPage.equals("signup")){
 				if (user2 != null && user2.isEligibleForSignupPromotion()) {
                     final java.text.DecimalFormat promoFormatter = new java.text.DecimalFormat("$#,##0");
 					params.put("eligibleForSignupPromotion", Boolean.TRUE);
@@ -75,9 +77,11 @@ if (user2 != null) {
             	params.put("deliveryInfoFaq", new Boolean(flag) );
             	if (user2 != null) {
 	            	params.put("corpDeliveryFee", new Double(user2.getCorpDeliveryFee()) );
+	            	params.put("corpDeliveryFeeMonday", new Double(user2.getCorpDeliveryFeeMonday()) );
 	                params.put("minCorpOrderAmount", new Integer((int)user2.getMinCorpOrderAmount()) );
             	} else {
                     params.put("corpDeliveryFee", new Double(0) );
+                    params.put("corpDeliveryFeeMonday", new Double(0) );
                     params.put("minCorpOrderAmount", new Integer(0) );
             	}
             %><fd:IncludeMedia name="/media/editorial/faq/cos.ftl" parameters="<%=params%>" withErrorReport="true"/>

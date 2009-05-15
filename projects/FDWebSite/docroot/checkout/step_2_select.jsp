@@ -322,6 +322,17 @@ if (errorMsg!=null) {%>
 	</td>
 </tr>
 <%}%>
+
+<%
+	if(user.getSelectedServiceType() == EnumServiceType.CORPORATE) {
+%>
+	
+	<TR>
+		<td width="100%" align="center" class="text12" align="center">The delivery charge for FreshDirect At The Office orders is now $9.99 Tuesday through Friday and $14.99 on Monday.<br><br></td>	
+	</TR>	
+<%}%>
+
+
 <%
 	if(user.getSelectedServiceType() == EnumServiceType.CORPORATE  && (user.isDlvPassActive() || cart.getDeliveryPassCount() > 0)) {
 %>

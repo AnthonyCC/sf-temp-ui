@@ -2,6 +2,7 @@
 <#setting locale="en_US">
 <#assign minCorpOrderAmount=parameters["minCorpOrderAmount"]/>
 <#assign corpDeliveryFee=parameters["corpDeliveryFee"]/>
+<#assign corpDeliveryFeeMonday=parameters["corpDeliveryFeeMonday"]/>
           <img src="/media_stat/images/template/help/about_cos.gif" width="291" height="13"><img src="/media_stat/images/template/help/cos_sandwich.jpg" width="108" height="70" align="right"><br><br>
            
 			FreshDirect At The Office brings area businesses the same great, fresh food that's made FreshDirect indispensable for tens of thousands of New York households, with expanded product and service offerings especially for corporate clients, including: 
@@ -21,7 +22,7 @@
 			FreshDirect at the office is available in Manhattan. To see our current corporate delivery zones, <a href="javascript:popup('/help/delivery_zones.jsp','large')">click here</a>. <b>If you're interested but not yet in a delivery zone, <a href="#survey">let us know</a>.</b> 
 			<br><br>
 			<b>Office Delivery Fees</b><br>
-			The minimum order is &#36;${minCorpOrderAmount}. Delivery costs just &#36;${corpDeliveryFee}. You are under no obligation to tip but have the option of providing a nominal tip if you feel that you've received exceptional service. 
+			The minimum order is &#36;${minCorpOrderAmount}. Delivery costs just &#36;${corpDeliveryFee} Tuesday through Friday and &#36;${corpDeliveryFeeMonday} on Monday. . You are under no obligation to tip but have the option of providing a nominal tip if you feel that you've received exceptional service. 
 			<br><br>
 			<b>Handled With Extra Care</b><br>
 			Fresh foods need extra care in handling, and we do all the right things to make sure your food gets to you in top shape. After we prepare everything to fill your order, our trained packers carefully assemble it in sturdy boxes. We put the boxes straight into our own FreshDirect fridge/freeze trucks, keeping everything cool and dry until it reaches you.

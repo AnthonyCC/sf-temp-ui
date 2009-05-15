@@ -22,9 +22,11 @@ params.put("helper", new MediaHelper());
 if (user != null) {
     params.put("minCorpOrderAmount", new Integer((int)user.getMinCorpOrderAmount()) );
     params.put("corpDeliveryFee", new Double(user.getCorpDeliveryFee()) );
+    params.put("corpDeliveryFeeMonday", new Double(user.getCorpDeliveryFeeMonday()) );
 } else {
     params.put("minCorpOrderAmount", new Integer(0) );
     params.put("corpDeliveryFee", new Integer(0) );
+    params.put("corpDeliveryFeeMonday", new Integer(0) );
 }
 
 request.setAttribute("survey_source","deliveryInfo Page");
