@@ -43,6 +43,7 @@ public interface FDUserI extends java.io.Serializable {
     public final static double MIN_CORP_ORDER_AMOUNT = 50.00;
     public final static double BASE_DELIVERY_FEE = 4.99; // Used for site text
     public final static double CORP_DELIVERY_FEE = 9.99; // Used for site text
+    public final static double CORP_DELIVERY_FEE_MONDAY = 14.99;  // Used for site text
 
 	public final static int GUEST = 0;              // anonymously cookied user who have not registered
 	public final static int RECOGNIZED = 1;         // cookied user who has registered and has a known identity
@@ -236,6 +237,8 @@ public interface FDUserI extends java.io.Serializable {
 	public double getMinCorpOrderAmount();
 	
 	public double getCorpDeliveryFee();
+	
+	public double getCorpDeliveryFeeMonday();
 	
 	public int getUsableDeliveryPassCount();
 	

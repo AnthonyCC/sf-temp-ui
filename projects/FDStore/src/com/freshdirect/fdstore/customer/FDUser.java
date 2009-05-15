@@ -1051,6 +1051,10 @@ public class FDUser extends ModelSupport implements FDUserI {
 		return CORP_DELIVERY_FEE;
 	}
 	
+	public double getCorpDeliveryFeeMonday() {
+		return CORP_DELIVERY_FEE_MONDAY;
+	}
+	
 	public int getUsableDeliveryPassCount() {
 		if(dlvPassInfo!=null)
 			return dlvPassInfo.getUsablePassCount();
