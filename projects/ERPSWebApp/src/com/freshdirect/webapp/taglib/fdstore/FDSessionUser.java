@@ -614,6 +614,10 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     	return this.user.getCorpDeliveryFee();
     }
 	 
+	 public double getCorpDeliveryFeeMonday(){
+	    	return this.user.getCorpDeliveryFeeMonday();
+	 }
+	 
 	 public double getMinCorpOrderAmount(){
     	return this.user.getMinCorpOrderAmount();
     }
