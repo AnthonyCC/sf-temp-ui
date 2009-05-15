@@ -18,6 +18,10 @@ public class EquipmentType  implements java.io.Serializable {
 
     private double weight;
 
+    private double carbonFactor;
+
+    private double fuelConsumption;
+
     private boolean travelRestrictions;
 
     private boolean rushHourRestrictions;
@@ -33,6 +37,8 @@ public class EquipmentType  implements java.io.Serializable {
            java.lang.String description,
            double height,
            double weight,
+           double carbonFactor,
+           double fuelConsumption,
            boolean travelRestrictions,
            boolean rushHourRestrictions,
            boolean roadRestrictions) {
@@ -41,6 +47,8 @@ public class EquipmentType  implements java.io.Serializable {
            this.description = description;
            this.height = height;
            this.weight = weight;
+           this.carbonFactor = carbonFactor;
+           this.fuelConsumption = fuelConsumption;
            this.travelRestrictions = travelRestrictions;
            this.rushHourRestrictions = rushHourRestrictions;
            this.roadRestrictions = roadRestrictions;
@@ -148,6 +156,46 @@ public class EquipmentType  implements java.io.Serializable {
 
 
     /**
+     * Gets the carbonFactor value for this EquipmentType.
+     * 
+     * @return carbonFactor
+     */
+    public double getCarbonFactor() {
+        return carbonFactor;
+    }
+
+
+    /**
+     * Sets the carbonFactor value for this EquipmentType.
+     * 
+     * @param carbonFactor
+     */
+    public void setCarbonFactor(double carbonFactor) {
+        this.carbonFactor = carbonFactor;
+    }
+
+
+    /**
+     * Gets the fuelConsumption value for this EquipmentType.
+     * 
+     * @return fuelConsumption
+     */
+    public double getFuelConsumption() {
+        return fuelConsumption;
+    }
+
+
+    /**
+     * Sets the fuelConsumption value for this EquipmentType.
+     * 
+     * @param fuelConsumption
+     */
+    public void setFuelConsumption(double fuelConsumption) {
+        this.fuelConsumption = fuelConsumption;
+    }
+
+
+    /**
      * Gets the travelRestrictions value for this EquipmentType.
      * 
      * @return travelRestrictions
@@ -229,6 +277,8 @@ public class EquipmentType  implements java.io.Serializable {
               this.description.equals(other.getDescription()))) &&
             this.height == other.getHeight() &&
             this.weight == other.getWeight() &&
+            this.carbonFactor == other.getCarbonFactor() &&
+            this.fuelConsumption == other.getFuelConsumption() &&
             this.travelRestrictions == other.isTravelRestrictions() &&
             this.rushHourRestrictions == other.isRushHourRestrictions() &&
             this.roadRestrictions == other.isRoadRestrictions();
@@ -254,6 +304,8 @@ public class EquipmentType  implements java.io.Serializable {
         }
         _hashCode += new Double(getHeight()).hashCode();
         _hashCode += new Double(getWeight()).hashCode();
+        _hashCode += new Double(getCarbonFactor()).hashCode();
+        _hashCode += new Double(getFuelConsumption()).hashCode();
         _hashCode += (isTravelRestrictions() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         _hashCode += (isRushHourRestrictions() ? Boolean.TRUE : Boolean.FALSE).hashCode();
         _hashCode += (isRoadRestrictions() ? Boolean.TRUE : Boolean.FALSE).hashCode();
@@ -297,6 +349,18 @@ public class EquipmentType  implements java.io.Serializable {
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("weight");
         elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "weight"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "double"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("carbonFactor");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "carbonFactor"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "double"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("fuelConsumption");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "fuelConsumption"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "double"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);

@@ -16,7 +16,7 @@ public class RouteNetWebService_BindingStub extends org.apache.axis.client.Stub 
     static org.apache.axis.description.OperationDesc [] _operations;
 
     static {
-        _operations = new org.apache.axis.description.OperationDesc[25];
+        _operations = new org.apache.axis.description.OperationDesc[26];
         _initOperationDesc1();
         _initOperationDesc2();
         _initOperationDesc3();
@@ -266,6 +266,19 @@ public class RouteNetWebService_BindingStub extends org.apache.axis.client.Stub 
         _operations[13] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
+        oper.setName("DistanceToClosestCity");
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "pt"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "MapPoint"), com.freshdirect.routing.proxy.stub.roadnet.MapPoint.class, false, false);
+        param.setOmittable(true);
+        param.setNillable(true);
+        oper.addParameter(param);
+        oper.setReturnType(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "DistanceToClosestCityResult"));
+        oper.setReturnClass(com.freshdirect.routing.proxy.stub.roadnet.DistanceToClosestCityResult.class);
+        oper.setReturnQName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "result"));
+        oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
+        oper.setUse(org.apache.axis.constants.Use.LITERAL);
+        _operations[14] = oper;
+
+        oper = new org.apache.axis.description.OperationDesc();
         oper.setName("SaveArcOverrides");
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "key"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
         oper.addParameter(param);
@@ -276,7 +289,7 @@ public class RouteNetWebService_BindingStub extends org.apache.axis.client.Stub 
         oper.setReturnQName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "response"));
         oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
         oper.setUse(org.apache.axis.constants.Use.LITERAL);
-        _operations[14] = oper;
+        _operations[15] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("EnableAllArcsByExtents");
@@ -289,7 +302,7 @@ public class RouteNetWebService_BindingStub extends org.apache.axis.client.Stub 
         oper.setReturnQName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "response"));
         oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
         oper.setUse(org.apache.axis.constants.Use.LITERAL);
-        _operations[15] = oper;
+        _operations[16] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("Geocode");
@@ -302,7 +315,7 @@ public class RouteNetWebService_BindingStub extends org.apache.axis.client.Stub 
         oper.setReturnQName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "result"));
         oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
         oper.setUse(org.apache.axis.constants.Use.LITERAL);
-        _operations[16] = oper;
+        _operations[17] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("GeocodeEx");
@@ -319,7 +332,7 @@ public class RouteNetWebService_BindingStub extends org.apache.axis.client.Stub 
         oper.setReturnQName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "result"));
         oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
         oper.setUse(org.apache.axis.constants.Use.LITERAL);
-        _operations[17] = oper;
+        _operations[18] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("BatchGeocode");
@@ -335,8 +348,13 @@ public class RouteNetWebService_BindingStub extends org.apache.axis.client.Stub 
         oper.setReturnQName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "results"));
         oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
         oper.setUse(org.apache.axis.constants.Use.LITERAL);
-        _operations[18] = oper;
+        _operations[19] = oper;
 
+    }
+
+    private static void _initOperationDesc3(){
+        org.apache.axis.description.OperationDesc oper;
+        org.apache.axis.description.ParameterDesc param;
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("BuildMatrix");
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "points"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "MapPoint"), com.freshdirect.routing.proxy.stub.roadnet.MapPoint[].class, false, false);
@@ -347,13 +365,8 @@ public class RouteNetWebService_BindingStub extends org.apache.axis.client.Stub 
         oper.setReturnQName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "matrix"));
         oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
         oper.setUse(org.apache.axis.constants.Use.LITERAL);
-        _operations[19] = oper;
+        _operations[20] = oper;
 
-    }
-
-    private static void _initOperationDesc3(){
-        org.apache.axis.description.OperationDesc oper;
-        org.apache.axis.description.ParameterDesc param;
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("BuildMatrixEx");
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "points"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "MapPoint"), com.freshdirect.routing.proxy.stub.roadnet.MapPoint[].class, false, false);
@@ -368,7 +381,7 @@ public class RouteNetWebService_BindingStub extends org.apache.axis.client.Stub 
         oper.setReturnQName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "matrix"));
         oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
         oper.setUse(org.apache.axis.constants.Use.LITERAL);
-        _operations[20] = oper;
+        _operations[21] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("BuildPath");
@@ -380,7 +393,7 @@ public class RouteNetWebService_BindingStub extends org.apache.axis.client.Stub 
         oper.setReturnQName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "response"));
         oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
         oper.setUse(org.apache.axis.constants.Use.LITERAL);
-        _operations[21] = oper;
+        _operations[22] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("BuildPathEx");
@@ -396,7 +409,7 @@ public class RouteNetWebService_BindingStub extends org.apache.axis.client.Stub 
         oper.setReturnQName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "response"));
         oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
         oper.setUse(org.apache.axis.constants.Use.LITERAL);
-        _operations[22] = oper;
+        _operations[23] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("BuildDriverDirections");
@@ -412,7 +425,7 @@ public class RouteNetWebService_BindingStub extends org.apache.axis.client.Stub 
         oper.setReturnQName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "response"));
         oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
         oper.setUse(org.apache.axis.constants.Use.LITERAL);
-        _operations[23] = oper;
+        _operations[24] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("BuildDriverDirectionsEx");
@@ -432,7 +445,7 @@ public class RouteNetWebService_BindingStub extends org.apache.axis.client.Stub 
         oper.setReturnQName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "response"));
         oper.setStyle(org.apache.axis.constants.Style.WRAPPED);
         oper.setUse(org.apache.axis.constants.Use.LITERAL);
-        _operations[24] = oper;
+        _operations[25] = oper;
 
     }
 
@@ -489,6 +502,13 @@ public class RouteNetWebService_BindingStub extends org.apache.axis.client.Stub 
             qName = new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "DirectionData");
             cachedSerQNames.add(qName);
             cls = com.freshdirect.routing.proxy.stub.roadnet.DirectionData.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "DistanceToClosestCityResult");
+            cachedSerQNames.add(qName);
+            cls = com.freshdirect.routing.proxy.stub.roadnet.DistanceToClosestCityResult.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
@@ -583,6 +603,13 @@ public class RouteNetWebService_BindingStub extends org.apache.axis.client.Stub 
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "MapCardinalDirection");
+            cachedSerQNames.add(qName);
+            cls = com.freshdirect.routing.proxy.stub.roadnet.MapCardinalDirection.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(enumsf);
+            cachedDeserFactories.add(enumdf);
 
             qName = new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "MapContext");
             cachedSerQNames.add(qName);
@@ -1252,12 +1279,46 @@ public class RouteNetWebService_BindingStub extends org.apache.axis.client.Stub 
 }
     }
 
-    public int saveArcOverrides(java.lang.String key, com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[] overrides) throws java.rmi.RemoteException {
+    public com.freshdirect.routing.proxy.stub.roadnet.DistanceToClosestCityResult distanceToClosestCity(com.freshdirect.routing.proxy.stub.roadnet.MapPoint pt) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
         _call.setOperation(_operations[14]);
+        _call.setUseSOAPAction(true);
+        _call.setSOAPActionURI("");
+        _call.setEncodingStyle(null);
+        _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
+        _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
+        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/RouteNetWebService", "DistanceToClosestCity"));
+
+        setRequestHeaders(_call);
+        setAttachments(_call);
+ try {        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {pt});
+
+        if (_resp instanceof java.rmi.RemoteException) {
+            throw (java.rmi.RemoteException)_resp;
+        }
+        else {
+            extractAttachments(_call);
+            try {
+                return (com.freshdirect.routing.proxy.stub.roadnet.DistanceToClosestCityResult) _resp;
+            } catch (java.lang.Exception _exception) {
+                return (com.freshdirect.routing.proxy.stub.roadnet.DistanceToClosestCityResult) org.apache.axis.utils.JavaUtils.convert(_resp, com.freshdirect.routing.proxy.stub.roadnet.DistanceToClosestCityResult.class);
+            }
+        }
+  } catch (org.apache.axis.AxisFault axisFaultException) {
+  throw axisFaultException;
+}
+    }
+
+    public int saveArcOverrides(java.lang.String key, com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[] overrides) throws java.rmi.RemoteException {
+        if (super.cachedEndpoint == null) {
+            throw new org.apache.axis.NoEndPointException();
+        }
+        org.apache.axis.client.Call _call = createCall();
+        _call.setOperation(_operations[15]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setEncodingStyle(null);
@@ -1291,7 +1352,7 @@ public class RouteNetWebService_BindingStub extends org.apache.axis.client.Stub 
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[15]);
+        _call.setOperation(_operations[16]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setEncodingStyle(null);
@@ -1325,7 +1386,7 @@ public class RouteNetWebService_BindingStub extends org.apache.axis.client.Stub 
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[16]);
+        _call.setOperation(_operations[17]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setEncodingStyle(null);
@@ -1359,7 +1420,7 @@ public class RouteNetWebService_BindingStub extends org.apache.axis.client.Stub 
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[17]);
+        _call.setOperation(_operations[18]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setEncodingStyle(null);
@@ -1393,7 +1454,7 @@ public class RouteNetWebService_BindingStub extends org.apache.axis.client.Stub 
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[18]);
+        _call.setOperation(_operations[19]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setEncodingStyle(null);
@@ -1427,7 +1488,7 @@ public class RouteNetWebService_BindingStub extends org.apache.axis.client.Stub 
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[19]);
+        _call.setOperation(_operations[20]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setEncodingStyle(null);
@@ -1461,7 +1522,7 @@ public class RouteNetWebService_BindingStub extends org.apache.axis.client.Stub 
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[20]);
+        _call.setOperation(_operations[21]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setEncodingStyle(null);
@@ -1495,7 +1556,7 @@ public class RouteNetWebService_BindingStub extends org.apache.axis.client.Stub 
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[21]);
+        _call.setOperation(_operations[22]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setEncodingStyle(null);
@@ -1529,7 +1590,7 @@ public class RouteNetWebService_BindingStub extends org.apache.axis.client.Stub 
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[22]);
+        _call.setOperation(_operations[23]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setEncodingStyle(null);
@@ -1563,7 +1624,7 @@ public class RouteNetWebService_BindingStub extends org.apache.axis.client.Stub 
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[23]);
+        _call.setOperation(_operations[24]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setEncodingStyle(null);
@@ -1597,7 +1658,7 @@ public class RouteNetWebService_BindingStub extends org.apache.axis.client.Stub 
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[24]);
+        _call.setOperation(_operations[25]);
         _call.setUseSOAPAction(true);
         _call.setSOAPActionURI("");
         _call.setEncodingStyle(null);

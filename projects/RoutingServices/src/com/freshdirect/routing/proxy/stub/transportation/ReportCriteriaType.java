@@ -29,6 +29,7 @@ public class ReportCriteriaType implements java.io.Serializable {
     public static final java.lang.String _value10 = "ctDateRange";
     public static final java.lang.String _value11 = "ctRegion";
     public static final java.lang.String _value12 = "ctMC-DateRange";
+    public static final java.lang.String _value13 = "ctMC-BeginDate";
     public static final ReportCriteriaType value1 = new ReportCriteriaType(_value1);
     public static final ReportCriteriaType value2 = new ReportCriteriaType(_value2);
     public static final ReportCriteriaType value3 = new ReportCriteriaType(_value3);
@@ -41,6 +42,7 @@ public class ReportCriteriaType implements java.io.Serializable {
     public static final ReportCriteriaType value10 = new ReportCriteriaType(_value10);
     public static final ReportCriteriaType value11 = new ReportCriteriaType(_value11);
     public static final ReportCriteriaType value12 = new ReportCriteriaType(_value12);
+    public static final ReportCriteriaType value13 = new ReportCriteriaType(_value13);
     public java.lang.String getValue() { return _value_;}
     public static ReportCriteriaType fromValue(java.lang.String value)
           throws java.lang.IllegalArgumentException {

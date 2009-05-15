@@ -28,6 +28,10 @@ public class RegionOptions  implements java.io.Serializable {
 
     private int stopCriticalMinutes;
 
+    private com.freshdirect.routing.proxy.stub.transportation.CarbonComputationMethod carbonComputationMethod;
+
+    private com.freshdirect.routing.proxy.stub.transportation.CarbonDisplayUnits carbonDisplayUnits;
+
     public RegionOptions() {
     }
 
@@ -41,7 +45,9 @@ public class RegionOptions  implements java.io.Serializable {
            com.freshdirect.routing.proxy.stub.transportation.UnitDistance unitOfDistance,
            com.freshdirect.routing.proxy.stub.transportation.DetailLevel detailLevel,
            com.freshdirect.routing.proxy.stub.transportation.QuantityReference costQuantityReference,
-           int stopCriticalMinutes) {
+           int stopCriticalMinutes,
+           com.freshdirect.routing.proxy.stub.transportation.CarbonComputationMethod carbonComputationMethod,
+           com.freshdirect.routing.proxy.stub.transportation.CarbonDisplayUnits carbonDisplayUnits) {
            this.size1Alias = size1Alias;
            this.size2Alias = size2Alias;
            this.size3Alias = size3Alias;
@@ -52,6 +58,8 @@ public class RegionOptions  implements java.io.Serializable {
            this.detailLevel = detailLevel;
            this.costQuantityReference = costQuantityReference;
            this.stopCriticalMinutes = stopCriticalMinutes;
+           this.carbonComputationMethod = carbonComputationMethod;
+           this.carbonDisplayUnits = carbonDisplayUnits;
     }
 
 
@@ -254,6 +262,46 @@ public class RegionOptions  implements java.io.Serializable {
         this.stopCriticalMinutes = stopCriticalMinutes;
     }
 
+
+    /**
+     * Gets the carbonComputationMethod value for this RegionOptions.
+     * 
+     * @return carbonComputationMethod
+     */
+    public com.freshdirect.routing.proxy.stub.transportation.CarbonComputationMethod getCarbonComputationMethod() {
+        return carbonComputationMethod;
+    }
+
+
+    /**
+     * Sets the carbonComputationMethod value for this RegionOptions.
+     * 
+     * @param carbonComputationMethod
+     */
+    public void setCarbonComputationMethod(com.freshdirect.routing.proxy.stub.transportation.CarbonComputationMethod carbonComputationMethod) {
+        this.carbonComputationMethod = carbonComputationMethod;
+    }
+
+
+    /**
+     * Gets the carbonDisplayUnits value for this RegionOptions.
+     * 
+     * @return carbonDisplayUnits
+     */
+    public com.freshdirect.routing.proxy.stub.transportation.CarbonDisplayUnits getCarbonDisplayUnits() {
+        return carbonDisplayUnits;
+    }
+
+
+    /**
+     * Sets the carbonDisplayUnits value for this RegionOptions.
+     * 
+     * @param carbonDisplayUnits
+     */
+    public void setCarbonDisplayUnits(com.freshdirect.routing.proxy.stub.transportation.CarbonDisplayUnits carbonDisplayUnits) {
+        this.carbonDisplayUnits = carbonDisplayUnits;
+    }
+
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof RegionOptions)) return false;
@@ -287,7 +335,13 @@ public class RegionOptions  implements java.io.Serializable {
             ((this.costQuantityReference==null && other.getCostQuantityReference()==null) || 
              (this.costQuantityReference!=null &&
               this.costQuantityReference.equals(other.getCostQuantityReference()))) &&
-            this.stopCriticalMinutes == other.getStopCriticalMinutes();
+            this.stopCriticalMinutes == other.getStopCriticalMinutes() &&
+            ((this.carbonComputationMethod==null && other.getCarbonComputationMethod()==null) || 
+             (this.carbonComputationMethod!=null &&
+              this.carbonComputationMethod.equals(other.getCarbonComputationMethod()))) &&
+            ((this.carbonDisplayUnits==null && other.getCarbonDisplayUnits()==null) || 
+             (this.carbonDisplayUnits!=null &&
+              this.carbonDisplayUnits.equals(other.getCarbonDisplayUnits())));
         __equalsCalc = null;
         return _equals;
     }
@@ -321,6 +375,12 @@ public class RegionOptions  implements java.io.Serializable {
             _hashCode += getCostQuantityReference().hashCode();
         }
         _hashCode += getStopCriticalMinutes();
+        if (getCarbonComputationMethod() != null) {
+            _hashCode += getCarbonComputationMethod().hashCode();
+        }
+        if (getCarbonDisplayUnits() != null) {
+            _hashCode += getCarbonDisplayUnits().hashCode();
+        }
         __hashCodeCalc = false;
         return _hashCode;
     }
@@ -392,6 +452,18 @@ public class RegionOptions  implements java.io.Serializable {
         elemField.setFieldName("stopCriticalMinutes");
         elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "stopCriticalMinutes"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("carbonComputationMethod");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "carbonComputationMethod"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "CarbonComputationMethod"));
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("carbonDisplayUnits");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "carbonDisplayUnits"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "CarbonDisplayUnits"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
     }

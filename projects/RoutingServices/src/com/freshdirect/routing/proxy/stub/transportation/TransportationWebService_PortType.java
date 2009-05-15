@@ -485,81 +485,6 @@ public interface TransportationWebService_PortType extends java.rmi.Remote {
     public com.freshdirect.routing.proxy.stub.transportation.RouteDailyStats[] retrieveRoutingRouteDailyStatsByCriteria(com.freshdirect.routing.proxy.stub.transportation.RoutingRouteDailyStatsCriteria criteria, com.freshdirect.routing.proxy.stub.transportation.RoutingRouteDailyStatsRetrieveOptions options) throws java.rmi.RemoteException;
 
     /**
-     * Service definition of function ns1__RetrieveNotificationsByRecipientIdentity
-     */
-    public com.freshdirect.routing.proxy.stub.transportation.Notification[] retrieveNotificationsByRecipientIdentity(com.freshdirect.routing.proxy.stub.transportation.RecipientIdentity identity, com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions, com.freshdirect.routing.proxy.stub.transportation.NotificationRetrieveOptions options) throws java.rmi.RemoteException;
-
-    /**
-     * Service definition of function ns1__DeleteNotifications
-     */
-    public void deleteNotifications(com.freshdirect.routing.proxy.stub.transportation.NotificationIdentity[] identities) throws java.rmi.RemoteException;
-
-    /**
-     * Service definition of function ns1__UnlockNotifications
-     */
-    public void unlockNotifications(com.freshdirect.routing.proxy.stub.transportation.UnlockNotificationsCriteria criteria) throws java.rmi.RemoteException;
-
-    /**
-     * Service definition of function ns1__UpdateDeliveryDetails
-     */
-    public void updateDeliveryDetails(com.freshdirect.routing.proxy.stub.transportation.DeliveryDetailInfo info) throws java.rmi.RemoteException;
-
-    /**
-     * Service definition of function ns1__StartRoute
-     */
-    public void startRoute(com.freshdirect.routing.proxy.stub.transportation.RouteStartInfo info) throws java.rmi.RemoteException;
-
-    /**
-     * Service definition of function ns1__DepartOrigin
-     */
-    public void departOrigin(com.freshdirect.routing.proxy.stub.transportation.OriginDepartInfo info) throws java.rmi.RemoteException;
-
-    /**
-     * Service definition of function ns1__ArriveDestination
-     */
-    public void arriveDestination(com.freshdirect.routing.proxy.stub.transportation.DestinationArriveInfo info) throws java.rmi.RemoteException;
-
-    /**
-     * Service definition of function ns1__CompleteRoute
-     */
-    public void completeRoute(com.freshdirect.routing.proxy.stub.transportation.RouteCompleteInfo info) throws java.rmi.RemoteException;
-
-    /**
-     * Service definition of function ns1__ArriveStop
-     */
-    public void arriveStop(com.freshdirect.routing.proxy.stub.transportation.StopArriveInfo info) throws java.rmi.RemoteException;
-
-    /**
-     * Service definition of function ns1__DepartStop
-     */
-    public void departStop(com.freshdirect.routing.proxy.stub.transportation.StopDepartInfo info) throws java.rmi.RemoteException;
-
-    /**
-     * Service definition of function ns1__BulkArriveDepartStop
-     */
-    public void bulkArriveDepartStop(com.freshdirect.routing.proxy.stub.transportation.BulkArriveDepartInfo[] arriveDepartInfos) throws java.rmi.RemoteException;
-
-    /**
-     * Service definition of function ns1__SequenceStop
-     */
-    public void sequenceStop(com.freshdirect.routing.proxy.stub.transportation.StopSequenceInfo info) throws java.rmi.RemoteException;
-
-    /**
-     * Service definition of function ns1__CancelStop
-     */
-    public void cancelStop(com.freshdirect.routing.proxy.stub.transportation.StopCancelInfo info) throws java.rmi.RemoteException;
-
-    /**
-     * Service definition of function ns1__UpdateRoutePosition
-     */
-    public com.freshdirect.routing.proxy.stub.transportation.UpdatePositionReturnCode updateRoutePosition(com.freshdirect.routing.proxy.stub.transportation.RoutePositionInfo info) throws java.rmi.RemoteException;
-
-    /**
-     * Service definition of function ns1__TextMessage
-     */
-    public void textMessage(com.freshdirect.routing.proxy.stub.transportation.TextMessageInfo info) throws java.rmi.RemoteException;
-
-    /**
      * Service definition of function ns1__SchedulerAnalyzeOrder
      */
     public com.freshdirect.routing.proxy.stub.transportation.DeliveryWindow[] schedulerAnalyzeOrder(com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder order, com.freshdirect.routing.proxy.stub.transportation.SchedulerAnalyzeOptions options) throws java.rmi.RemoteException;
@@ -650,6 +575,31 @@ public interface TransportationWebService_PortType extends java.rmi.Remote {
     public boolean schedulerUpdateOrder(com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity, com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderIdentity identity, com.freshdirect.routing.proxy.stub.transportation.SchedulerUpdateOrderOptions options) throws java.rmi.RemoteException;
 
     /**
+     * Service definition of function ns1__SchedulerReloadWaveInstances
+     */
+    public boolean schedulerReloadWaveInstances(com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity, com.freshdirect.routing.proxy.stub.transportation.SchedulerReloadWaveInstancesOptions options) throws java.rmi.RemoteException;
+
+    /**
+     * Service definition of function ns1__SchedulerSaveDeliveryWaveInstance
+     */
+    public java.lang.String[] schedulerSaveDeliveryWaveInstance(com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity, com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveInstanceIdentity waveIdentity, com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveAttributes attributes, com.freshdirect.routing.proxy.stub.transportation.SchedulerSaveDeliveryWaveInstanceOptions options) throws java.rmi.RemoteException;
+
+    /**
+     * Service definition of function ns1__SchedulerRetrieveDeliveryWaveInstancesByCriteria
+     */
+    public com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveInstance[] schedulerRetrieveDeliveryWaveInstancesByCriteria(com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity, com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWaveInstanceCriteria criteria, com.freshdirect.routing.proxy.stub.transportation.SchedulerRetrieveDeliveryWaveInstanceOptions options) throws java.rmi.RemoteException;
+
+    /**
+     * Service definition of function ns1__SchedulerSaveDeliveryWindow
+     */
+    public boolean schedulerSaveDeliveryWindow(com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity, com.freshdirect.routing.proxy.stub.transportation.SchedulerSaveDeliveryWindowOptions options) throws java.rmi.RemoteException;
+
+    /**
+     * Service definition of function ns1__SchedulerDeleteDeliveryWindow
+     */
+    public void schedulerDeleteDeliveryWindow(com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity, com.freshdirect.routing.proxy.stub.transportation.DeliveryWindow window, com.freshdirect.routing.proxy.stub.transportation.SchedulerDeleteDeliveryWindowOptions options) throws java.rmi.RemoteException;
+
+    /**
      * Service definition of function ns1__SchedulerRetrieveOrderByIdentity
      */
     public com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder schedulerRetrieveOrderByIdentity(com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderIdentity identity, com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderRetrieveOptions options) throws java.rmi.RemoteException;
@@ -658,4 +608,84 @@ public interface TransportationWebService_PortType extends java.rmi.Remote {
      * Service definition of function ns1__SchedulerRetrieveOrdersByCriteria
      */
     public com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder[] schedulerRetrieveOrdersByCriteria(com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity, com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderCriteria criteria, com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderRetrieveOptions options) throws java.rmi.RemoteException;
+
+    /**
+     * Service definition of function ns1__SchedulerCalculateDeliveryWindowMetrics
+     */
+    public com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetrics[] schedulerCalculateDeliveryWindowMetrics(com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity, com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetricsOptions options) throws java.rmi.RemoteException;
+
+    /**
+     * Service definition of function ns1__RetrieveNotificationsByRecipientIdentity
+     */
+    public com.freshdirect.routing.proxy.stub.transportation.Notification[] retrieveNotificationsByRecipientIdentity(com.freshdirect.routing.proxy.stub.transportation.RecipientIdentity identity, com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions, com.freshdirect.routing.proxy.stub.transportation.NotificationRetrieveOptions options) throws java.rmi.RemoteException;
+
+    /**
+     * Service definition of function ns1__DeleteNotifications
+     */
+    public void deleteNotifications(com.freshdirect.routing.proxy.stub.transportation.NotificationIdentity[] identities) throws java.rmi.RemoteException;
+
+    /**
+     * Service definition of function ns1__UnlockNotifications
+     */
+    public void unlockNotifications(com.freshdirect.routing.proxy.stub.transportation.UnlockNotificationsCriteria criteria) throws java.rmi.RemoteException;
+
+    /**
+     * Service definition of function ns1__UpdateDeliveryDetails
+     */
+    public void updateDeliveryDetails(com.freshdirect.routing.proxy.stub.transportation.DeliveryDetailInfo info) throws java.rmi.RemoteException;
+
+    /**
+     * Service definition of function ns1__StartRoute
+     */
+    public void startRoute(com.freshdirect.routing.proxy.stub.transportation.RouteStartInfo info) throws java.rmi.RemoteException;
+
+    /**
+     * Service definition of function ns1__DepartOrigin
+     */
+    public void departOrigin(com.freshdirect.routing.proxy.stub.transportation.OriginDepartInfo info) throws java.rmi.RemoteException;
+
+    /**
+     * Service definition of function ns1__ArriveDestination
+     */
+    public void arriveDestination(com.freshdirect.routing.proxy.stub.transportation.DestinationArriveInfo info) throws java.rmi.RemoteException;
+
+    /**
+     * Service definition of function ns1__CompleteRoute
+     */
+    public void completeRoute(com.freshdirect.routing.proxy.stub.transportation.RouteCompleteInfo info) throws java.rmi.RemoteException;
+
+    /**
+     * Service definition of function ns1__ArriveStop
+     */
+    public void arriveStop(com.freshdirect.routing.proxy.stub.transportation.StopArriveInfo info) throws java.rmi.RemoteException;
+
+    /**
+     * Service definition of function ns1__DepartStop
+     */
+    public void departStop(com.freshdirect.routing.proxy.stub.transportation.StopDepartInfo info) throws java.rmi.RemoteException;
+
+    /**
+     * Service definition of function ns1__BulkArriveDepartStop
+     */
+    public void bulkArriveDepartStop(com.freshdirect.routing.proxy.stub.transportation.BulkArriveDepartInfo[] arriveDepartInfos) throws java.rmi.RemoteException;
+
+    /**
+     * Service definition of function ns1__SequenceStop
+     */
+    public void sequenceStop(com.freshdirect.routing.proxy.stub.transportation.StopSequenceInfo info) throws java.rmi.RemoteException;
+
+    /**
+     * Service definition of function ns1__CancelStop
+     */
+    public void cancelStop(com.freshdirect.routing.proxy.stub.transportation.StopCancelInfo info) throws java.rmi.RemoteException;
+
+    /**
+     * Service definition of function ns1__UpdateRoutePosition
+     */
+    public com.freshdirect.routing.proxy.stub.transportation.UpdatePositionReturnCode updateRoutePosition(com.freshdirect.routing.proxy.stub.transportation.RoutePositionInfo info) throws java.rmi.RemoteException;
+
+    /**
+     * Service definition of function ns1__TextMessage
+     */
+    public void textMessage(com.freshdirect.routing.proxy.stub.transportation.TextMessageInfo info) throws java.rmi.RemoteException;
 }

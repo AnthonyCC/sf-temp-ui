@@ -66,6 +66,8 @@ public class RoutingImportOrder  implements java.io.Serializable {
 
     private com.freshdirect.routing.proxy.stub.transportation.RoutingImportLineItem[] lineItems;
 
+    private com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderActivity[] orderActivities;
+
     public RoutingImportOrder() {
     }
 
@@ -98,7 +100,8 @@ public class RoutingImportOrder  implements java.io.Serializable {
            int dailyUrgencyIncrease,
            com.freshdirect.routing.proxy.stub.transportation.LocationIdentity preferredOriginIdentity,
            com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderRejectCode rejectCode,
-           com.freshdirect.routing.proxy.stub.transportation.RoutingImportLineItem[] lineItems) {
+           com.freshdirect.routing.proxy.stub.transportation.RoutingImportLineItem[] lineItems,
+           com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderActivity[] orderActivities) {
            this.orderNumber = orderNumber;
            this.sessionIdentity = sessionIdentity;
            this.quantities = quantities;
@@ -128,6 +131,7 @@ public class RoutingImportOrder  implements java.io.Serializable {
            this.preferredOriginIdentity = preferredOriginIdentity;
            this.rejectCode = rejectCode;
            this.lineItems = lineItems;
+           this.orderActivities = orderActivities;
     }
 
 
@@ -718,6 +722,34 @@ public class RoutingImportOrder  implements java.io.Serializable {
         this.lineItems[i] = _value;
     }
 
+
+    /**
+     * Gets the orderActivities value for this RoutingImportOrder.
+     * 
+     * @return orderActivities
+     */
+    public com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderActivity[] getOrderActivities() {
+        return orderActivities;
+    }
+
+
+    /**
+     * Sets the orderActivities value for this RoutingImportOrder.
+     * 
+     * @param orderActivities
+     */
+    public void setOrderActivities(com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderActivity[] orderActivities) {
+        this.orderActivities = orderActivities;
+    }
+
+    public com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderActivity getOrderActivities(int i) {
+        return this.orderActivities[i];
+    }
+
+    public void setOrderActivities(int i, com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderActivity _value) {
+        this.orderActivities[i] = _value;
+    }
+
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof RoutingImportOrder)) return false;
@@ -806,7 +838,10 @@ public class RoutingImportOrder  implements java.io.Serializable {
               this.rejectCode.equals(other.getRejectCode()))) &&
             ((this.lineItems==null && other.getLineItems()==null) || 
              (this.lineItems!=null &&
-              java.util.Arrays.equals(this.lineItems, other.getLineItems())));
+              java.util.Arrays.equals(this.lineItems, other.getLineItems()))) &&
+            ((this.orderActivities==null && other.getOrderActivities()==null) || 
+             (this.orderActivities!=null &&
+              java.util.Arrays.equals(this.orderActivities, other.getOrderActivities())));
         __equalsCalc = null;
         return _equals;
     }
@@ -897,6 +932,17 @@ public class RoutingImportOrder  implements java.io.Serializable {
                  i<java.lang.reflect.Array.getLength(getLineItems());
                  i++) {
                 java.lang.Object obj = java.lang.reflect.Array.get(getLineItems(), i);
+                if (obj != null &&
+                    !obj.getClass().isArray()) {
+                    _hashCode += obj.hashCode();
+                }
+            }
+        }
+        if (getOrderActivities() != null) {
+            for (int i=0;
+                 i<java.lang.reflect.Array.getLength(getOrderActivities());
+                 i++) {
+                java.lang.Object obj = java.lang.reflect.Array.get(getOrderActivities(), i);
                 if (obj != null &&
                     !obj.getClass().isArray()) {
                     _hashCode += obj.hashCode();
@@ -1108,6 +1154,14 @@ public class RoutingImportOrder  implements java.io.Serializable {
         elemField.setFieldName("lineItems");
         elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "lineItems"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "RoutingImportLineItem"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(false);
+        elemField.setMaxOccursUnbounded(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("orderActivities");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "orderActivities"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "RoutingImportOrderActivity"));
         elemField.setMinOccurs(0);
         elemField.setNillable(false);
         elemField.setMaxOccursUnbounded(true);

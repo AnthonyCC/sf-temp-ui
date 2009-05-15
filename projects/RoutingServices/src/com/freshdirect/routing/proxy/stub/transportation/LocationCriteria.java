@@ -16,6 +16,8 @@ public class LocationCriteria  implements java.io.Serializable {
 
     private java.lang.String description;
 
+    private int maximumLocationsRetrieved;
+
     public LocationCriteria() {
     }
 
@@ -23,11 +25,13 @@ public class LocationCriteria  implements java.io.Serializable {
            java.lang.String regionID,
            java.lang.String locationType,
            java.lang.String locationID,
-           java.lang.String description) {
+           java.lang.String description,
+           int maximumLocationsRetrieved) {
            this.regionID = regionID;
            this.locationType = locationType;
            this.locationID = locationID;
            this.description = description;
+           this.maximumLocationsRetrieved = maximumLocationsRetrieved;
     }
 
 
@@ -110,6 +114,26 @@ public class LocationCriteria  implements java.io.Serializable {
         this.description = description;
     }
 
+
+    /**
+     * Gets the maximumLocationsRetrieved value for this LocationCriteria.
+     * 
+     * @return maximumLocationsRetrieved
+     */
+    public int getMaximumLocationsRetrieved() {
+        return maximumLocationsRetrieved;
+    }
+
+
+    /**
+     * Sets the maximumLocationsRetrieved value for this LocationCriteria.
+     * 
+     * @param maximumLocationsRetrieved
+     */
+    public void setMaximumLocationsRetrieved(int maximumLocationsRetrieved) {
+        this.maximumLocationsRetrieved = maximumLocationsRetrieved;
+    }
+
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
         if (!(obj instanceof LocationCriteria)) return false;
@@ -133,7 +157,8 @@ public class LocationCriteria  implements java.io.Serializable {
               this.locationID.equals(other.getLocationID()))) &&
             ((this.description==null && other.getDescription()==null) || 
              (this.description!=null &&
-              this.description.equals(other.getDescription())));
+              this.description.equals(other.getDescription()))) &&
+            this.maximumLocationsRetrieved == other.getMaximumLocationsRetrieved();
         __equalsCalc = null;
         return _equals;
     }
@@ -157,6 +182,7 @@ public class LocationCriteria  implements java.io.Serializable {
         if (getDescription() != null) {
             _hashCode += getDescription().hashCode();
         }
+        _hashCode += getMaximumLocationsRetrieved();
         __hashCodeCalc = false;
         return _hashCode;
     }
@@ -193,6 +219,12 @@ public class LocationCriteria  implements java.io.Serializable {
         elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "description"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setMinOccurs(0);
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("maximumLocationsRetrieved");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "maximumLocationsRetrieved"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         elemField.setNillable(false);
         typeDesc.addFieldDesc(elemField);
     }

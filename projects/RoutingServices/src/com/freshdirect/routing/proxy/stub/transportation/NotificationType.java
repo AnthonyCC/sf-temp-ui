@@ -50,6 +50,9 @@ public class NotificationType implements java.io.Serializable {
     public static final java.lang.String _ntDutyPeriodViolationException = "ntDutyPeriodViolationException";
     public static final java.lang.String _ntOrdersSent = "ntOrdersSent";
     public static final java.lang.String _ntTextMessage = "ntTextMessage";
+    public static final java.lang.String _ntSchedulerSuccessfulOptimize = "ntSchedulerSuccessfulOptimize";
+    public static final java.lang.String _ntSchedulerUpdateOrderFailed = "ntSchedulerUpdateOrderFailed";
+    public static final java.lang.String _ntSchedulerOrderCanceled = "ntSchedulerOrderCanceled";
     public static final NotificationType ntRouteStart = new NotificationType(_ntRouteStart);
     public static final NotificationType ntOriginDepart = new NotificationType(_ntOriginDepart);
     public static final NotificationType ntDestinationArrive = new NotificationType(_ntDestinationArrive);
@@ -83,6 +86,9 @@ public class NotificationType implements java.io.Serializable {
     public static final NotificationType ntDutyPeriodViolationException = new NotificationType(_ntDutyPeriodViolationException);
     public static final NotificationType ntOrdersSent = new NotificationType(_ntOrdersSent);
     public static final NotificationType ntTextMessage = new NotificationType(_ntTextMessage);
+    public static final NotificationType ntSchedulerSuccessfulOptimize = new NotificationType(_ntSchedulerSuccessfulOptimize);
+    public static final NotificationType ntSchedulerUpdateOrderFailed = new NotificationType(_ntSchedulerUpdateOrderFailed);
+    public static final NotificationType ntSchedulerOrderCanceled = new NotificationType(_ntSchedulerOrderCanceled);
     public java.lang.String getValue() { return _value_;}
     public static NotificationType fromValue(java.lang.String value)
           throws java.lang.IllegalArgumentException {

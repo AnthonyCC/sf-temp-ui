@@ -80,6 +80,11 @@ public interface RouteNetPortType extends java.rmi.Remote {
     public java.lang.String formatPositionText(com.freshdirect.routing.proxy.stub.roadnet.MapPoint pt, boolean useArcDetail, boolean useKilometers) throws java.rmi.RemoteException;
 
     /**
+     * Service definition of function ns1__DistanceToClosestCity
+     */
+    public com.freshdirect.routing.proxy.stub.roadnet.DistanceToClosestCityResult distanceToClosestCity(com.freshdirect.routing.proxy.stub.roadnet.MapPoint pt) throws java.rmi.RemoteException;
+
+    /**
      * Service definition of function ns1__SaveArcOverrides
      */
     public int saveArcOverrides(java.lang.String key, com.freshdirect.routing.proxy.stub.roadnet.MapArcOverride[] overrides) throws java.rmi.RemoteException;

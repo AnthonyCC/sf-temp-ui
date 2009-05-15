@@ -12,6 +12,8 @@ public class Address  implements java.io.Serializable {
 
     private java.lang.String line2;
 
+    private java.lang.String crossStreet;
+
     private java.lang.String region1;
 
     private java.lang.String region2;
@@ -28,6 +30,7 @@ public class Address  implements java.io.Serializable {
     public Address(
            java.lang.String line1,
            java.lang.String line2,
+           java.lang.String crossStreet,
            java.lang.String region1,
            java.lang.String region2,
            java.lang.String region3,
@@ -35,6 +38,7 @@ public class Address  implements java.io.Serializable {
            java.lang.String country) {
            this.line1 = line1;
            this.line2 = line2;
+           this.crossStreet = crossStreet;
            this.region1 = region1;
            this.region2 = region2;
            this.region3 = region3;
@@ -80,6 +84,26 @@ public class Address  implements java.io.Serializable {
      */
     public void setLine2(java.lang.String line2) {
         this.line2 = line2;
+    }
+
+
+    /**
+     * Gets the crossStreet value for this Address.
+     * 
+     * @return crossStreet
+     */
+    public java.lang.String getCrossStreet() {
+        return crossStreet;
+    }
+
+
+    /**
+     * Sets the crossStreet value for this Address.
+     * 
+     * @param crossStreet
+     */
+    public void setCrossStreet(java.lang.String crossStreet) {
+        this.crossStreet = crossStreet;
     }
 
 
@@ -200,6 +224,9 @@ public class Address  implements java.io.Serializable {
             ((this.line2==null && other.getLine2()==null) || 
              (this.line2!=null &&
               this.line2.equals(other.getLine2()))) &&
+            ((this.crossStreet==null && other.getCrossStreet()==null) || 
+             (this.crossStreet!=null &&
+              this.crossStreet.equals(other.getCrossStreet()))) &&
             ((this.region1==null && other.getRegion1()==null) || 
              (this.region1!=null &&
               this.region1.equals(other.getRegion1()))) &&
@@ -231,6 +258,9 @@ public class Address  implements java.io.Serializable {
         }
         if (getLine2() != null) {
             _hashCode += getLine2().hashCode();
+        }
+        if (getCrossStreet() != null) {
+            _hashCode += getCrossStreet().hashCode();
         }
         if (getRegion1() != null) {
             _hashCode += getRegion1().hashCode();
@@ -267,6 +297,13 @@ public class Address  implements java.io.Serializable {
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("line2");
         elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "line2"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(false);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("crossStreet");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "crossStreet"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         elemField.setMinOccurs(0);
         elemField.setNillable(false);
