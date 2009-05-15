@@ -92,7 +92,7 @@
               <ec:column alias="trnTrucktruckNumber" property="truck" width="10"  title="Truck"/>
               <ec:column alias="trnNoOfStops" property="noOfStops" width="10"  title="Stops"/>
               <ec:column alias="trnStatus" property="statusName"  title="Status"/>              
-              <ec:column interceptor="com.freshdirect.transadmin.web.ui.interceptor.DispatchObsoleteColumnInterceptor" property="drivers"  cell="com.freshdirect.transadmin.web.ui.FDDispatchSummaryResourceCell" title="Driver"  filterable="true" alias="drivers"/>
+              <ec:column property="drivers"  cell="com.freshdirect.transadmin.web.ui.FDDispatchSummaryResourceCell" title="Driver"  filterable="true" alias="drivers"/>
               <ec:column property="helpers"  cell="com.freshdirect.transadmin.web.ui.FDDispatchSummaryResourceCell" title="Helper"  filterable="true" alias="helpers"/>
               <ec:column property="runners"  cell="com.freshdirect.transadmin.web.ui.FDDispatchSummaryResourceCell" title="Runner"  filterable="true" alias="runners"/>
               <ec:column alias="trnComments" filterable="false" property="comments"  title="Comments"/>              
