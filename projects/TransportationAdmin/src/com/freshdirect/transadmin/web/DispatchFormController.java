@@ -82,7 +82,14 @@ public class DispatchFormController extends AbstractFormController {
 		if(dispatch.getZone() != null) {
 			zone=domainManagerService.getZone(dispatch.getZone().getZoneCode());
 		}
-		return DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService);
+		boolean isToday=TransStringUtil.isToday(dispatch.getDispatchDate());
+		Collection punchInfo=null;
+		if(isToday)
+			punchInfo=employeeManagerService.getPunchInfo(TransStringUtil.getServerDate(dispatch.getDispatchDate()));
+		
+		DispatchCommand dispatchCommand=DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService,punchInfo);
+		if(isToday) DispatchPlanUtil.setDispatchStatus(dispatchCommand);
+		return dispatchCommand;
 	}
 
 
@@ -109,7 +116,6 @@ public class DispatchFormController extends AbstractFormController {
 			return command;
 		}
 		catch(Exception ex){
-			ex.printStackTrace();
 			throw new RuntimeException("An Error Ocuurred when trying construct command object "+ex.getMessage());
 		}
 
@@ -185,7 +191,8 @@ public class DispatchFormController extends AbstractFormController {
 		}catch(ParseException exp){
 			//Ignore it
 		}
-
+		//set userId to command object
+		model.setUserId(getUserId(request));
 	}
 
 
@@ -214,31 +221,5 @@ public class DispatchFormController extends AbstractFormController {
 	public void setEmployeeManagerService(EmployeeManagerI employeeManagerService) {
 		this.employeeManagerService = employeeManagerService;
 	}
-
-	/*protected ModelAndView processFormSubmission(
-			HttpServletRequest request, HttpServletResponse response, Object command, BindException errors)
-			throws Exception {
-
-		DispatchCommand model = (DispatchCommand) command;
-		try{
-			boolean routeChanged = false;
-			Collection assignedRoutes = getDispatchManagerService().getAssignedRoutes(TransStringUtil.getServerDate(model.getDispatchDate()));
-			if(!TransStringUtil.isEmpty(model.getDispatchId())){
-				Dispatch currDispatch = getDispatchManagerService().getDispatch(model.getDispatchId());
-				if(!model.getRoute().equals(currDispatch.getRoute()))
-					routeChanged = true;
-			}else{
-				routeChanged = true;
-			}
-
-			if(routeChanged && assignedRoutes.contains(model.getRoute())){
-				//throw new TransAdminApplicationException("135", new String[]{model.getRoute()});
-				errors
-			}
-		}catch(ParseException exp){
-			//Ignore it
-		}
-		return super.processFormSubmission(request, response, command, errors);
-	}*/
 
 }

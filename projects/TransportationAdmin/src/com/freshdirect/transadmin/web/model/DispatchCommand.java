@@ -2,17 +2,30 @@ package com.freshdirect.transadmin.web.model;
 
 //Generated Dec 5, 2008 2:34:33 PM by Hibernate Tools 3.2.2.GA
 
+
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.transadmin.model.DispatchResource;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.EmployeeRoleType;
+import com.freshdirect.transadmin.model.PunchInfo;
+import com.freshdirect.transadmin.model.PunchInfoI;
 import com.freshdirect.transadmin.model.ResourceI;
 import com.freshdirect.transadmin.model.ResourceId;
 import com.freshdirect.transadmin.model.ResourceInfoI;
-import com.freshdirect.transadmin.model.TrnBaseEntityI;
+
+import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.util.EnumResourceType;
+import com.freshdirect.transadmin.util.EnumStatus;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
 /**
@@ -29,7 +42,17 @@ public class DispatchCommand extends WebPlanInfo {
 	private String comments;
 	private String statusName;
 	private String noOfStops;
-		
+	private String gpsNumber;
+    private String ezpassNumber;
+    private String location;
+    private String dispatchTime;
+    private String checkedInTime;
+    private EnumStatus dispatchStatus;
+	private boolean dispatched;
+	private boolean phoneAssigned;
+	private boolean keysReady;
+	private boolean checkedIn;
+    
 	public String getStatusName() {
 		return statusName;
 	}
@@ -131,5 +154,200 @@ public class DispatchCommand extends WebPlanInfo {
 	public void setNoOfStops(String noOfStops) {
 		this.noOfStops = noOfStops;
 	}
+	
+	public void setResources(EmployeeManagerI employeeManagerService,Set resources, Map resourceReqs, Collection punchInfos) {
 		
+		boolean hasPunchInfo=(punchInfos==null)?false:punchInfos.isEmpty()?false:true;
+		if(resources == null || resources.isEmpty())
+			return;
+		Iterator _it=resources.iterator();
+		int driverCount=0;
+        int helperCount=0;
+        int runnerCount=0;
+        while(_it.hasNext()) {
+        	
+        	
+            ResourceI resource=(ResourceI)_it.next();
+            EnumResourceType role=EnumResourceType.getEnum(resource.getEmployeeRoleType().getCode());   
+            WebEmployeeInfo webEmpInfo=employeeManagerService.getEmployee(resource.getId().getResourceId());
+            ResourceInfoI resourceInfo = getResourceInfo(webEmpInfo, resource);
+            if(hasPunchInfo) 
+            {
+            	resourceInfo.setPunchInfo(getPunchInfo(resourceInfo.getEmployeeId(),punchInfos));
+            	setStatus(resourceInfo.getPunchInfo());
+            }
+            if(resourceReqs.containsKey(role)){
+                  ResourceReq req = (ResourceReq) resourceReqs.get(role);
+                  if(EnumResourceType.DRIVER.equals(role) && driverCount < req.getMax().intValue()) {
+                      this.getDrivers().remove(driverCount);
+                      this.getDrivers().add(driverCount, resourceInfo);
+                      driverCount++;
+
+                  } else if (EnumResourceType.HELPER.equals(role) && helperCount < req.getMax().intValue()) {
+                	  this.getHelpers().remove(helperCount);
+                	  this.getHelpers().add(helperCount, resourceInfo);
+                      helperCount++;
+                  } else if (EnumResourceType.RUNNER.equals(role) && runnerCount < req.getMax().intValue()) {
+                	  this.getRunners().remove(runnerCount);
+                	  this.getRunners().add(runnerCount, resourceInfo);
+                      runnerCount++;
+                  }
+                  
+              }
+        }
+	}
+	
+	private void setStatus(PunchInfoI punchInfo)
+	{
+		try 
+		{
+			Date dispatchDate=TransStringUtil.getDate(getDispatchDate());
+			Date dispatchTime=TransStringUtil.getServerTime(getStartTime());
+			long currentTime=System.currentTimeMillis();
+			long dispatchTimeLong=dispatchDate.getTime()+dispatchTime.getTime();
+			if(currentTime>dispatchTimeLong&&punchInfo.getInPunchDTM()==null)
+			{
+				PunchInfo p=(PunchInfo)punchInfo;
+				p.setLate(true);
+			}
+		} catch (Exception e) {
+			
+		}
+	}
+	
+	private PunchInfoI getPunchInfo(String employeeId, Collection punchInfos) {
+		
+		if ( TransStringUtil.isEmpty(employeeId)||punchInfos==null)
+			return null;
+		List punchedEmployees=new ArrayList();
+		
+		PunchInfoI punchInfo=null;
+		Iterator it=punchInfos.iterator();
+		while(it.hasNext()) 
+		{
+			punchInfo=(PunchInfoI)it.next();
+			if(employeeId.equals(punchInfo.getEmployeeId()))
+			{
+				punchedEmployees.add(punchInfo);
+			}
+				
+		}
+		if(punchedEmployees.size()==1) return (PunchInfoI)punchedEmployees.get(0);		
+		long dispatchTimeLong=-1;
+		try {
+			Date dispatchDate=TransStringUtil.getDate(getDispatchDate());
+			Date dispatchTime=TransStringUtil.getServerTime(getStartTime());			
+			dispatchTimeLong=dispatchDate.getTime()+dispatchTime.getTime();
+		} catch (Exception e) {	}
+		
+		for(int i=0,n=punchedEmployees.size();i<n;i++)
+		{
+			PunchInfoI tempInfo=(PunchInfoI)punchedEmployees.get(i);
+			if(tempInfo.getStartTime().getTime()<=dispatchTimeLong&&dispatchTimeLong<tempInfo.getEndTime().getTime())
+			{
+				return tempInfo;
+			}
+		}
+		
+		return punchInfo;
+		
+	}
+
+	public String getEzpassNumber() {
+		return ezpassNumber;
+	}
+	public void setEzpassNumber(String ezpassNumber) {
+		this.ezpassNumber = ezpassNumber;
+	}
+	public String getGpsNumber() {
+		return gpsNumber;
+	}
+	public void setGpsNumber(String gpsNumber) {
+		this.gpsNumber = gpsNumber;
+	}
+	public String getLocation() {
+		return location;
+	}
+	public void setLocation(String location) {
+		this.location = location;
+	}
+	public String getDispatchTime() {
+		return dispatchTime;
+	}
+	public void setDispatchTime(String dispatchTime) 
+	{
+		this.dispatchTime = dispatchTime;
+		if(dispatchTime!=null)this.dispatched =true;
+		
+	}
+	public EnumStatus getDispatchStatus() {
+		return dispatchStatus;
+	}
+	public void setDispatchStatus(EnumStatus dispatchStatus) {
+		this.dispatchStatus = dispatchStatus;
+	}
+	public boolean isDispatched() {
+		return dispatched;
+	}
+	public void setDispatched(boolean dispatched) 
+	{
+		this.dispatched = dispatched;
+		if(this.dispatched)
+		{
+			try {
+				this.dispatchTime=TransStringUtil.getServerTime(new Date());
+			} catch (ParseException e) {
+				
+			}
+		}
+	}
+	public boolean isToday() 
+	{
+		try 
+		{
+			return TransStringUtil.isToday(dispatchDate);			
+		} catch (ParseException e) {
+			
+		}
+		return false;
+	}
+	
+	public boolean isKeysReady() {
+		return keysReady;
+	}
+	public void setKeysReady(boolean keysReady) {
+		this.keysReady = keysReady;
+	}
+	public boolean isPhoneAssigned() {
+		return phoneAssigned;
+	}
+	public void setPhoneAssigned(boolean phoneAssigned) {
+		this.phoneAssigned = phoneAssigned;
+	}
+	public boolean isCheckedIn() {
+		return checkedIn;
+	}
+	public void setCheckedIn(boolean checkedIn) 
+	{
+		this.checkedIn = checkedIn;
+		if(this.checkedIn)
+		{
+			try {
+				this.checkedInTime=TransStringUtil.getServerTime(new Date());
+			} catch (ParseException e) {
+				
+			}
+		}
+	}
+	public String getCheckedInTime() {
+		return checkedInTime;
+	}
+	public void setCheckedInTime(String checkedInTime) 
+	{
+		this.checkedInTime = checkedInTime;
+		if(checkedInTime!=null)this.checkedIn =true;
+	}
+	
+	
+	
 }

@@ -2,6 +2,7 @@ package com.freshdirect.transadmin.util;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -12,16 +13,20 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Date;
 
+import utils.system;
+
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.Plan;
+import com.freshdirect.transadmin.model.PunchInfo;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.model.ZonetypeResource;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
+import com.freshdirect.transadmin.web.model.DispatchResourceInfo;
 import com.freshdirect.transadmin.web.model.ResourceList;
 import com.freshdirect.transadmin.web.model.ResourceReq;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
@@ -79,6 +84,7 @@ public class DispatchPlanUtil {
 		if(webEmp!=null && webEmp.getEmpInfo()!=null) {
 			planInfo.setSupervisorName(webEmp.getEmpInfo().getName());
 		}
+		
 		try {
 			String val=DateUtil.formatDay(plan.getPlanDate());
 			planInfo.setPlanDay(val);
@@ -91,9 +97,10 @@ public class DispatchPlanUtil {
 		return planInfo;
 	}
 
-	public static DispatchCommand getDispatchCommand(Dispatch dispatch, Zone zone,EmployeeManagerI employeeManagerService) {
+	public static DispatchCommand getDispatchCommand(Dispatch dispatch, Zone zone,EmployeeManagerI employeeManagerService, Collection punchInfos) {
 		DispatchCommand command = new DispatchCommand();
 		command.setDispatchId(dispatch.getDispatchId());
+		
 		try{
 			command.setDispatchDate(TransStringUtil.getDate(dispatch.getDispatchDate()));
 		}catch(ParseException ex){
@@ -140,6 +147,10 @@ public class DispatchPlanUtil {
 		try{
 			command.setStartTime(TransStringUtil.getServerTime(dispatch.getStartTime()));
 			command.setFirstDeliveryTime(TransStringUtil.getServerTime(dispatch.getFirstDlvTime()));
+			if(dispatch.getDispatchTime()!=null)
+			command.setDispatchTime(TransStringUtil.getServerTime(dispatch.getDispatchTime()));
+			if(dispatch.getCheckedInTime()!=null)
+				command.setCheckedInTime(TransStringUtil.getServerTime(dispatch.getCheckedInTime()));
 		}catch(ParseException ex){
 			throw new IllegalArgumentException("Unparseable date "+ex.getMessage());
 		}
@@ -151,11 +162,22 @@ public class DispatchPlanUtil {
 		Map resourceReqs=getResourceRequirements(zone);
 		Set resources=dispatch.getDispatchResources();
 		command.setResourceRequirements(resourceReqs);
-		command.setResources(employeeManagerService,resources,resourceReqs);
+		if(punchInfos!=null && !punchInfos.isEmpty())
+			command.setResources(employeeManagerService,resources,resourceReqs,punchInfos);
+		else
+			command.setResources(employeeManagerService,resources,resourceReqs);
+		//command.setResources(employeeManagerService,resources,resourceReqs,resourceSchedule);
+		command.setEzpassNumber(dispatch.getEzpassNumber());
+		command.setGpsNumber(dispatch.getGpsNumber());		
+		if(dispatch.getPhonesAssigned() != null )
+			command.setPhoneAssigned(dispatch.getPhonesAssigned().booleanValue());
+		
+		if(dispatch.getKeysReady() != null )
+			command.setKeysReady(dispatch.getKeysReady().booleanValue());
 		return command;
 	}
 
-
+    
 	public static Plan getPlan(WebPlanInfo planInfo) {
 
 		Plan plan=new Plan();
@@ -183,6 +205,7 @@ public class DispatchPlanUtil {
 		plan.setIsBullpen(planInfo.getIsBullpen());
 		plan.setSupervisorId(planInfo.getSupervisorCode());
 		plan.setPlanResources(planInfo.getResources());
+		plan.setUserId(planInfo.getUserId());
 		return plan;
 
 	}
@@ -216,6 +239,10 @@ public class DispatchPlanUtil {
 		try{
 			dispatch.setStartTime(TransStringUtil.getServerTime(command.getStartTime()));
 			dispatch.setFirstDlvTime(TransStringUtil.getServerTime(command.getFirstDeliveryTime()));
+			if(command.getDispatchTime()!=null)
+				dispatch.setDispatchTime(TransStringUtil.getServerTime(command.getDispatchTime()));
+			if(command.getCheckedInTime()!=null)
+				dispatch.setCheckedInTime(TransStringUtil.getServerTime(command.getCheckedInTime()));
 		}catch(ParseException exp){
 			throw new RuntimeException("Unparseable date "+exp.getMessage());
 		}
@@ -224,6 +251,11 @@ public class DispatchPlanUtil {
 		dispatch.setPlanId(command.getPlanId());
 		dispatch.setComments(command.getComments());
 		dispatch.setDispatchResources(command.getResources());
+		dispatch.setUserId(command.getUserId());
+		dispatch.setGpsNumber(command.getGpsNumber());
+		dispatch.setEzpassNumber(command.getEzpassNumber());	
+		dispatch.setPhonesAssigned(new Boolean(command.isPhoneAssigned()));
+		dispatch.setKeysReady(new Boolean(command.isKeysReady()));
 		return dispatch;
 
 	}
@@ -348,15 +380,21 @@ public class DispatchPlanUtil {
 	}
 
 	private static void setDriverRequirements(WebPlanInfo planInfo, int req, int max) {
-		planInfo.getDrivers().setResourceReq(getResourceReq(req,max,EnumResourceType.DRIVER));
+		//planInfo.getDrivers().setResourceReq(getResourceReq(req,max,EnumResourceType.DRIVER));
+		planInfo.setDriverMax(max);
+		planInfo.setDriverReq(req);
 	}
 
 	private static void setHelperRequirements(WebPlanInfo planInfo, int req, int max) {
-		planInfo.getHelpers().setResourceReq(getResourceReq(req,max,EnumResourceType.HELPER));
+		//planInfo.getHelpers().setResourceReq(getResourceReq(req,max,EnumResourceType.HELPER));
+		planInfo.setHelperMax(max);
+		planInfo.setHelperReq(req);
 	}
 
 	private static void setRunnerRequirements(WebPlanInfo planInfo, int req, int max) {
-		planInfo.getRunners().setResourceReq(getResourceReq(req,max,EnumResourceType.RUNNER));
+		//planInfo.getRunners().setResourceReq(getResourceReq(req,max,EnumResourceType.RUNNER));
+		planInfo.setRunnerMax(max);
+		planInfo.setRunnerReq(req);
 	}
 
 	private static ResourceReq getResourceReq(int req, int max, EnumResourceType role) {
@@ -383,11 +421,273 @@ public class DispatchPlanUtil {
 
 	private static WebPlanInfo setResourceInfo(WebPlanInfo model, boolean isZoneModified,EmployeeManagerI employeeManagerService) {
 
-		model.setResourceInfo(model.getDrivers(),isZoneModified,EnumResourceType.DRIVER,employeeManagerService);
-		model.setResourceInfo(model.getHelpers(),isZoneModified,EnumResourceType.HELPER,employeeManagerService);
-		model.setResourceInfo(model.getRunners(),isZoneModified,EnumResourceType.RUNNER,employeeManagerService);
+		model.setResourceInfo(model.getDrivers(),isZoneModified,EnumResourceType.DRIVER,employeeManagerService,model.getDriverMax());
+		model.setResourceInfo(model.getHelpers(),isZoneModified,EnumResourceType.HELPER,employeeManagerService,model.getHelperMax());
+		model.setResourceInfo(model.getRunners(),isZoneModified,EnumResourceType.RUNNER,employeeManagerService,model.getRunnerMax());
 		return model;
 
 	}
+	public static Collection getsortedDispatch(Collection unsorted,int page)
+	{
+		Collection result=new ArrayList();
+		List tempResult=(List)getsortedDispatch(unsorted);
+		if(page==-1)return tempResult;
+		int startingIndex=(page-1)*25;
+		int endingIndex=page*25;
+		if(startingIndex>=tempResult.size()) return result;
+		if(endingIndex>tempResult.size())endingIndex=tempResult.size();
+		for(int i=startingIndex;i<endingIndex;i++)
+		{
+			result.add(tempResult.get(i));
+		}
+		
+		return result;
+	}
 
+	public static Collection getsortedDispatch(Collection unsorted)
+	{
+		Collection total=new ArrayList();
+		if(unsorted!=null)
+		{
+			List ready=new ArrayList();
+			List bullpen=new ArrayList();
+			List dispatched=new ArrayList();
+			Iterator unsortedIterator=unsorted.iterator();
+			while(unsortedIterator.hasNext())
+			{
+				DispatchCommand command=(DispatchCommand)unsortedIterator.next();
+				if(command.getDispatchTime()!=null&&command.getDispatchTime().trim().length()>0)
+				{
+					dispatched.add(command);
+				}
+				else if(TransStringUtil.isEmpty(command.getZoneName()))
+				{
+					bullpen.add(command);
+				}
+				else
+				{
+					ready.add(command);
+				}
+					
+			}
+			DispatchTimeComparator compare=new DispatchTimeComparator();			
+			Collections.sort(bullpen, compare);
+			Collections.sort(dispatched, compare);
+			compare.setStatus(true);
+			Collections.sort(ready, compare);
+			
+			total.addAll(ready);
+			total.addAll(bullpen);
+			total.addAll(dispatched);
+			int n=total.size();if(n>5) n=5;
+			for(int i=0;i<n;i++ )
+			{
+				DispatchCommand temp=(DispatchCommand)((List)total).get(i);
+				if(temp.getDispatchStatus()==EnumStatus.EmpReady) temp.setDispatchStatus(EnumStatus.Ready);
+			}
+		}
+		return total;
+	}
+	
+	private static class DispatchTimeComparator implements Comparator{
+        private boolean status=false;
+        
+
+		public boolean isStatus() {
+			return status;
+		}
+
+
+		public void setStatus(boolean status) {
+			this.status = status;
+		}
+
+
+		public int compare(Object o1, Object o2) {
+
+			if(o1 instanceof DispatchCommand && o2 instanceof DispatchCommand)
+			{
+				DispatchCommand p1=(DispatchCommand)o1;
+				DispatchCommand p2=(DispatchCommand)o2;
+
+				try {
+					if(status)
+					{
+						int result=p2.getDispatchStatus().compareTo(p1.getDispatchStatus());
+						if(result==0)
+						{
+							Date d1=TransStringUtil.getServerTime(p1.getStartTime());
+							Date d2=TransStringUtil.getServerTime(p2.getStartTime());
+							return d1.compareTo(d2);
+						}
+						return result;
+					}
+					else
+					{
+						Date d1=TransStringUtil.getServerTime(p1.getStartTime());
+						Date d2=TransStringUtil.getServerTime(p2.getStartTime());
+						return d1.compareTo(d2);
+					}
+				} catch (Exception e) {
+					
+				}
+				
+			}
+			return 0;
+		}
+
+	}
+	
+	
+	public static void setDispatchStatus(Collection c,boolean remove) 
+	{
+		if(remove)
+		{
+			long dispatchProcessingTime=TransportationAdminProperties.getDispatchPeriod();
+			long dispatchProcessedTime=TransportationAdminProperties.getDispatchedPeriod()*-1;
+			Calendar currentCalendar = Calendar.getInstance();
+			Calendar startCalendar = Calendar.getInstance();		
+			Iterator iterator=c.iterator();
+			while(iterator.hasNext())
+			{
+				try {
+					DispatchCommand command=(DispatchCommand)iterator.next();
+					Date startTime=TransStringUtil.getServerTime(command.getDispatchTime()!=null?command.getDispatchTime():command.getStartTime());
+					startCalendar.setTime(startTime);
+					startCalendar.set(currentCalendar.get(Calendar.YEAR), currentCalendar.get(Calendar.MONTH), currentCalendar.get(Calendar.DATE));
+					long timediff=startCalendar.getTimeInMillis()-currentCalendar.getTimeInMillis();					
+					if((timediff<dispatchProcessedTime&&!TransStringUtil.isEmpty(command.getDispatchTime())||timediff>dispatchProcessingTime))
+					{
+						iterator.remove();
+					}
+				} catch (Exception e) {	}
+				
+			}
+		}
+		Iterator iterator=c.iterator();
+		while(iterator.hasNext())
+		{
+			setDispatchStatus((DispatchCommand)(iterator.next()) );
+		}
+	}
+	
+	public static void setDispatchStatus(DispatchCommand command)
+	{
+		//for all non bullpen dispatches
+		if(!TransStringUtil.isEmpty(command.getZoneName()))	
+	    {		
+			//decide the dispatch status after dispatch;
+			if(!TransStringUtil.isEmpty(command.getDispatchTime()))
+			{
+				command.setDispatchStatus(EnumStatus.Dispatched);				
+				
+				//checkedIn status
+				if(!TransStringUtil.isEmpty(command.getCheckedInTime()))
+				{					
+					command.setDispatchStatus(EnumStatus.CheckedIn);
+				}
+				else
+				{
+					return;
+				}
+				
+				if(checkEmployeeStatus(command,command.getDrivers(),false)&&checkEmployeeStatus(command,command.getHelpers(),false))
+				{
+					command.setDispatchStatus(EnumStatus.OffPremises);
+				}
+			}
+			else//decide the dispatch status before dispatch
+			{				
+				command.setDispatchStatus(EnumStatus.NoStatus);
+				
+				boolean empReady=false;
+				if(checkEmployeeStatus(command,command.getDrivers(),true)&&checkEmployeeStatus(command,command.getHelpers(),true))
+				{
+					empReady=true;
+				}
+				
+				//route status
+				if(!TransStringUtil.isEmpty(command.getRoute()))
+				{					
+					command.setDispatchStatus(EnumStatus.Route);
+				}
+				else
+				{
+					return;
+				}
+				
+				//truck status
+				if(!TransStringUtil.isEmpty(command.getTruck()))
+				{					
+					command.setDispatchStatus(EnumStatus.Truck);
+				}
+				else
+				{
+					return;
+				}
+				
+				//Packet status
+				if(command.isKeysReady()||command.isPhoneAssigned())
+				{					
+					command.setDispatchStatus(EnumStatus.Packet);
+				}
+				else
+				{
+					return;
+				}
+				if(empReady)
+				{
+					command.setDispatchStatus(EnumStatus.EmpReady);
+				}
+				
+			}
+	     }
+		else
+		{
+			if(!TransStringUtil.isEmpty(command.getDispatchTime()))
+			{
+				command.setDispatchStatus(EnumStatus.Dispatched);				
+				
+				//checkedIn status
+				if(!TransStringUtil.isEmpty(command.getCheckedInTime()))
+				{					
+					command.setDispatchStatus(EnumStatus.CheckedIn);
+				}
+				else
+				{
+					return;
+				}
+				
+				if(checkEmployeeStatus(command,command.getDrivers(),false)&&checkEmployeeStatus(command,command.getHelpers(),false))
+				{
+					command.setDispatchStatus(EnumStatus.OffPremises);
+				}
+			}
+		}
+				
+	}
+	
+	public static boolean checkEmployeeStatus(DispatchCommand command,List employees,boolean in )
+	{
+		boolean result=true;
+		if(employees!=null&&employees.size()>0)
+		{
+			for(int i=0,n=employees.size();i<n;i++)
+			{
+				DispatchResourceInfo employee=(DispatchResourceInfo)employees.get(i);
+				if(employee!=null&&employee.getEmployeeId()!=null)
+				if(!checkEmployeeStatus(command,employee,in)) result=false;
+			}
+		}
+		return result;
+	}
+	public static boolean checkEmployeeStatus(DispatchCommand command,DispatchResourceInfo employee,boolean in)
+	{
+		if(employee.getPunchInfo()==null) return false;		
+		if(in)
+			return employee.getPunchInfo().isPunchedIn();
+		else
+			return employee.getPunchInfo().isPunchedOut();
+
+	}
 }

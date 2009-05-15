@@ -81,10 +81,10 @@ public class DomainController extends AbstractMultiActionController {
 	 * @return a ModelAndView to render the response
 	 */
 	public ModelAndView employeeHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-//        System.out.println("inside employeeHandler");
+
         String empStatus = request.getParameter("empstatus");
         Collection dataList = null;
-       // System.out.println("./................."+empStatus);
+       
         if("T".equalsIgnoreCase(empStatus)) {
         	dataList = employeeManagerService.getTerminatedEmployees();
         } else {

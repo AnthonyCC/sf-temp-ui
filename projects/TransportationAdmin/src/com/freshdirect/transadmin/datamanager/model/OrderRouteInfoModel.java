@@ -144,7 +144,7 @@ public class OrderRouteInfoModel  implements IOrderRouteInfo {
 		this.deliveryArea = deliveryArea;
 	}
 	public String toString() {
-		return orderNumber.toString();
+		return orderNumber.toString()+"-"+timeWindowStart+"-"+timeWindowStop;
 	}
 	public String getAddress() {
 		return address;

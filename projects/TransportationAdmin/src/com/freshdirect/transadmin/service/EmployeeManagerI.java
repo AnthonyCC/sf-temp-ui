@@ -26,4 +26,6 @@ public interface EmployeeManagerI extends BaseManagerI {
 	Collection getEmployeesByRole(String roleTypeId);
 	
 	Collection getSupervisors();
+	
+	Collection getPunchInfo(String date);
 }

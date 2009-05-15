@@ -27,6 +27,9 @@
          lazy="false" >
             <column name="REGION" length="16" not-null="true" />
         </many-to-one>
+        <property name="priority" type="big_decimal">
+            <column name="PRIORITY" precision="22" scale="0"/>
+        </property>
         <property name="obsolete" type="string">
             <column name="OBSOLETE" length="1" />
         </property>        

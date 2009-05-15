@@ -41,11 +41,19 @@
                            location.href = "<c:out value="${pageContext.request.contextPath}"/>/refreshRouteSummary.do?dispDate=<%= dateRangeVal %>&summary=true";
                         }
                     }
+                    
+                    function doUnassignedEmployees() {
+        	 
+        	            javascript:pop('unassignedactiveemployees.do', 400,600);
+                    }
                   </script>
  
                   <td>
                      <input type = "button" value="&nbsp;Refresh Route&nbsp;" onclick="javascript:refreshRoute()" />
                   </td> 
+                   <td>
+                     <input type = "button" value="&nbsp;Unassigned Employees&nbsp;" onclick="javascript:doUnassignedEmployees()" />
+                  </td>  
               </tr>
               </table>        
               
@@ -60,6 +68,7 @@
           location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2+"&"+compId3+"="+param3;
         } 
 
+        
       </script>      
       </div>
     
@@ -77,13 +86,13 @@
               <ec:column alias="trnConfirm" width="5" cell="confirmcol" property="confirmedValue" title="C"  />            
               <ec:column  cell="tooltip" alias="zoneCode" property="zoneNameEx" title="Zone"/>
               <ec:column alias="trnZoneRegion" property="regionName" title="Region" />
-              <ec:column  alias="trnTimeslotslotName"  property="startTime" title="Start Time"/>  
-              <ec:column  alias="trnTimeEndslotslotName" property="firstDeliveryTime" title="First Dlv."/>
+              <ec:column  cell="date" format="hh:mm aaa" alias="trnTimeslotslotName"  property="startTimeEx" title="Start Time"/>  
+              <ec:column  cell="date" format="hh:mm aaa" alias="trnTimeEndslotslotName" property="firstDeliveryTimeEx" title="First Dlv."/>
               <ec:column alias="trnRouterouteNumber" property="route"  width="10" title="Route"/>
               <ec:column alias="trnTrucktruckNumber" property="truck" width="10"  title="Truck"/>
               <ec:column alias="trnNoOfStops" property="noOfStops" width="10"  title="Stops"/>
               <ec:column alias="trnStatus" property="statusName"  title="Status"/>              
-              <ec:column property="drivers"  cell="com.freshdirect.transadmin.web.ui.FDDispatchSummaryResourceCell" title="Driver"  filterable="true" alias="drivers"/>
+              <ec:column interceptor="com.freshdirect.transadmin.web.ui.interceptor.DispatchObsoleteColumnInterceptor" property="drivers"  cell="com.freshdirect.transadmin.web.ui.FDDispatchSummaryResourceCell" title="Driver"  filterable="true" alias="drivers"/>
               <ec:column property="helpers"  cell="com.freshdirect.transadmin.web.ui.FDDispatchSummaryResourceCell" title="Helper"  filterable="true" alias="helpers"/>
               <ec:column property="runners"  cell="com.freshdirect.transadmin.web.ui.FDDispatchSummaryResourceCell" title="Runner"  filterable="true" alias="runners"/>
               <ec:column alias="trnComments" filterable="false" property="comments"  title="Comments"/>              

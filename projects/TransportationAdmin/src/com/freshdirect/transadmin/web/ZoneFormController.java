@@ -25,10 +25,8 @@ public class ZoneFormController extends AbstractDomainFormController {
 
 
 	protected Map referenceData(HttpServletRequest request) throws ServletException {
-//		System.out.println("referenceData");
+
 		Map refData = new HashMap();
-		//refData.put("supervisors", getDomainManagerService().getSupervisors());
-		//refData.put("region", getDomainManagerService().getR);
 		refData.put("zonetypes", getDomainManagerService().getZoneTypes());
 		refData.put("areas", getDomainManagerService().getAreas());
 		refData.put("regions", getDomainManagerService().getRegions());
@@ -36,7 +34,6 @@ public class ZoneFormController extends AbstractDomainFormController {
 	}
 
 	public Object getBackingObject(String id) {
-	//	System.out.println("getBackingObject");
 		return getDomainManagerService().getZone(id);
 	}
 
@@ -57,7 +54,6 @@ public class ZoneFormController extends AbstractDomainFormController {
 
 	protected void onBind(HttpServletRequest request, Object command) {
 
-	//	System.out.println("On Bind");
 		Zone model = (Zone) command;
 		String areaCode=request.getParameter("area");
 		String trnZoneType=request.getParameter("trnZoneType");
@@ -65,15 +61,10 @@ public class ZoneFormController extends AbstractDomainFormController {
 
 		String unattended=request.getParameter("unattended");
 
-		//System.out.println(" unattended :"+unattended);
-
 		TrnArea area= getDomainManagerService().getArea(areaCode);
 		TrnZoneType zoneType= getDomainManagerService().getZoneType(trnZoneType);
 		Region region= getDomainManagerService().getRegion(regionCode);
 
-		//System.out.println("area"+area);
-		//System.out.println("zoneType"+zoneType);
-		//System.out.println("region"+region);
 
 		model.setArea(area);
 		model.setTrnZoneType(zoneType);
@@ -82,7 +73,7 @@ public class ZoneFormController extends AbstractDomainFormController {
 	}
 
 	protected void preProcessDomainObject(Object domainObject) {
-		//System.out.println("preProcessDomainObject");
+
 		Zone modelIn = (Zone)domainObject;
 		if(TransStringUtil.isEmpty(modelIn.getZoneCode()) ) {
 			modelIn.setZoneCode(modelIn.getZoneCode());

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.freshdirect.transadmin.model.EmployeeInfo;
+import com.freshdirect.transadmin.model.PunchInfoI;
 import com.freshdirect.transadmin.model.ResourceInfoI;
 
 public class DispatchResourceInfo extends BaseCommand implements ResourceInfoI { 
@@ -12,6 +13,7 @@ public class DispatchResourceInfo extends BaseCommand implements ResourceInfoI {
 	private String lastName;
 	private String firstName;
 	private String employeeId;
+	private PunchInfoI punchInfo;
 
 
 	public String getName() {
@@ -94,5 +96,14 @@ public class DispatchResourceInfo extends BaseCommand implements ResourceInfoI {
 
 	public void setNextelNo(String nextelNo) {
 		this.nextelNo = nextelNo;
+	}
+
+	public PunchInfoI getPunchInfo() {
+		return punchInfo;
+	}
+
+	public void setPunchInfo(PunchInfoI punchInfo) {
+		this.punchInfo=punchInfo;
+		
 	}	
 }

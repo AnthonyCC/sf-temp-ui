@@ -1,5 +1,6 @@
 package com.freshdirect.transadmin.web;
 
+import java.security.Principal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -85,4 +86,9 @@ public class BaseFormController extends SimpleFormController {
 		return retDate;
 	}
 	
+	protected String getUserId(HttpServletRequest request)
+	{
+		Principal principal = request.getUserPrincipal();
+		return principal.getName();
+	}
 }

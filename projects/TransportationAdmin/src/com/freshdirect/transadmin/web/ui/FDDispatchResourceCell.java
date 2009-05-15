@@ -51,27 +51,35 @@ public class FDDispatchResourceCell extends FDBaseCell  {
         HtmlBuilder html = columnBuilder.getHtmlBuilder();
         columnBuilder.tdStart();
         ResourceList resources=(ResourceList)column.getPropertyValue();
-        ResourceReq resourceReq=resources.getResourceReq();
+        
         if(resources!=null) {
         	html.table(0).close();
-        	Integer req=new Integer(0);
-        	Integer max=new Integer(0);
         	Iterator it=resources.iterator();
-        	boolean renderReq=true;
         	DispatchResourceInfo resourceInfo=null;
         	while(it.hasNext()) {
         		resourceInfo=(DispatchResourceInfo)it.next();
-        		if(renderReq) {
-        			
-        			req=resourceReq.getReq();
-        			max=resourceReq.getMax();
-            		html.tr(0).close();
-    				html.td(0).close().append(req+"/"+max).tdEnd();
-    				html.trEnd(0);
-        			renderReq=false;
-        		}
         		if(getResourceName(resourceInfo).length() > 0) {
         			html.tr(0).close();
+        			if(resourceInfo.getEmployeeId()==null)
+        			{
+        				html.td(0).styleClass("employee_no");
+        			}
+        			else if(resourceInfo.getPunchInfo()==null)
+        			{
+        				//do nothing white bg
+        			}
+        			else if(resourceInfo.getPunchInfo().isPunchedIn())
+        			{
+        				html.td(0).styleClass("employee_on");
+        			}
+        			else if(resourceInfo.getPunchInfo().isLate())
+        			{
+        				html.td(0).styleClass("employee_off");
+        			}	
+        			else if(resourceInfo.getPunchInfo().getOutPunchDTM()!=null)
+        			{
+        				html.td(0).styleClass("employee_out");
+        			}
         			html.td(0).close().append(getResourceName(resourceInfo));
         			if(!TransStringUtil.isEmpty(resourceInfo.getNextelNo())) {
         				html.append(" ["+resourceInfo.getNextelNo()+"]");

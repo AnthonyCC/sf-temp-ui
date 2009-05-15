@@ -1,0 +1,39 @@
+ <script type="text/javascript" src="js/dataTable.js"></script> 
+ <script>
+      
+      function getData(date)
+      {
+       var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
+       return jsonrpcClient.AsyncDispatchProvider.getActivityLog(date);
+      }
+      function showForm(date) 
+      {   
+          var table=new Table();
+          table.panelId="panel-1";
+		  table.containerId="myContainer";
+		  table.title="Activity Log";
+		  table.result=getData(date);		  
+		  table.columns=
+		    [ 
+			    {key:"userId", label:"User Id",sortable:true,className:"forms1"}, 
+			    {key:"dateString", label:"Log Date",sortable:true,className:"forms1"}, 
+		    	{key:"typeString", label:"Type",sortable:true,className:"forms1"}, 
+		    	{key:"id", label:"Type Id",sortable:true,className:"forms1"} ,
+		    	{key:"fieldName", label:"Field Name",sortable:true,className:"forms1"}, 
+		    	{key:"oldValue", label:"Old Value",sortable:true,className:"forms1"},
+		    	{key:"newValue", label:"New Value",sortable:true,className:"forms1"}
+			];
+		  table.render(); 
+      }              
+  
+    </script>
+ 
+ 
+ 
+ 
+    <div id="panel-1">
+      <div class="bd">
+           <div id="myContainer" style="background-color:#D7C8FF" >
+           </div> 
+      </div>    
+    </div>

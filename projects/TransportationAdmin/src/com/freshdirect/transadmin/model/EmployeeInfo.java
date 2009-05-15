@@ -34,6 +34,8 @@ public class EmployeeInfo implements java.io.Serializable, TrnBaseEntityI, Resou
 	
 	private Date terminationDate;
 	
+	private PunchInfoI punchInfo=null;
+	
 	public EmployeeInfo() {
 	}
 	public EmployeeInfo(String employeeId, String firstName, String lastName, String middleInitial, String shortName, String jobType, Date hireDate, String status, String supervisorId, String supervisorFirstName, String supervisorMiddleInitial, String supervisorLastName, String supervisorShortName,Date terminationDate) {
@@ -179,6 +181,14 @@ public class EmployeeInfo implements java.io.Serializable, TrnBaseEntityI, Resou
 	}
 	public void setTerminationDate(Date terminationDate) {
 		this.terminationDate = terminationDate;
+	}
+	
+	public PunchInfoI getPunchInfo() {
+		return punchInfo;
+	}
+	
+	public void setPunchInfo(PunchInfoI punchInfo) {
+		this.punchInfo = punchInfo;
 	}
 	
 	

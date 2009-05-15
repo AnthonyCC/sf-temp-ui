@@ -65,13 +65,12 @@
               <ec:column  cell="tooltip" alias="zoneCode" property="zoneNameEx" title="Zone"/>
               <ec:column alias="region" property="regionCode" title="Region"/>
               <ec:column property="supervisorEx"   title="Supervisor" cell="tooltip"  />
-              <ec:column cell="date" format="hh:mm aaa" alias="startTime" property="startTime" title="Start Time"/>
-              <ec:column cell="date" format="hh:mm aaa" alias="firstDeliveryTime" property="firstDeliveryTime" title="First Dlv Time"/>
+              <ec:column cell="date" format="hh:mm aaa" alias="startTime" property="startTimeEx" title="Start Time"/>
+              <ec:column cell="date" format="hh:mm aaa" alias="firstDeliveryTime" property="firstDeliveryTimeEx" title="First Dlv Time"/>
               <ec:column  filterable="true" property="drivers"  cell="com.freshdirect.transadmin.web.ui.FDPlanResourceCell" title="Driver" alias="drivers"/>
               <ec:column  filterable="true" property="helpers"  cell="com.freshdirect.transadmin.web.ui.FDPlanResourceCell" title="Helper" alias="helpers"/>
               <ec:column  filterable="true" property="runners"  cell="com.freshdirect.transadmin.web.ui.FDPlanResourceCell" title="Runner" alias="runners"/>
               <ec:column property="sequence"  title="Rank"/>
-            <%--<ec:column property="zonetypeResources" headerCell="com.freshdirect.transadmin.web.ui.FDCompositeResourceHeaderCell" cell="resource" title="Driver" alias="001"/>--%>
             </ec:row>
           </ec:table>
        </form>

@@ -50,6 +50,7 @@
  		 	    <prop key="/assignment.do">assignmentFormController</prop>
  		 	    <prop key="/dispatch.do">dispatchController</prop>
  		 	    <prop key="/dispatchSummary.do">dispatchController</prop>
+ 		 	    <prop key="/dispatchDashboard.do">dispatchController</prop>
  		 	    <prop key="/refreshRoute.do">dispatchController</prop>
  		 	    <prop key="/refreshRouteSummary.do">dispatchController</prop>
  		 	    <prop key="/deletedispatch.do">dispatchController</prop>
@@ -106,6 +107,7 @@
 				
 				<prop key="/gmap.do">geographyController</prop>
 				<prop key="/drivingdirection.do">dispatchController</prop>
+                <prop key="/unassignedactiveemployees.do">dispatchController</prop>
 			</props>
 		</property>
 	</bean>
@@ -167,7 +169,8 @@
  		 	<prop key="/plan.do">planHandler</prop>			      
  		 	<prop key="/deleteplan.do">planDeleteHandler</prop>
  		 	<prop key="/dispatch.do">dispatchHandler</prop>
- 		 	<prop key="/dispatchSummary.do">dispatchSummaryHandler</prop> 		 	
+ 		 	<prop key="/dispatchSummary.do">dispatchSummaryHandler</prop>
+ 		 	<prop key="/dispatchDashboard.do">dispatchDashboardHandler</prop> 	 		 	 		 	
  		 	<prop key="/refreshRoute.do">routeRefreshHandler</prop>
  		 	<prop key="/refreshRouteSummary.do">routeRefreshHandler</prop>						      
  		 	<prop key="/deletedispatch.do">dispatchDeleteHandler</prop>
@@ -204,6 +207,7 @@
 
 			<prop key="/gmap.do">geographicBoundaryHandler</prop>
 			<prop key="/drivingdirection.do">drivingDirectionsHandler</prop>
+            <prop key="/unassignedactiveemployees.do">unassignedPunchedInEmployeeHandler</prop>
 		</props>
 		</property>
 	</bean>
@@ -448,7 +452,7 @@
 	</bean>
 	
 	<bean name="asyncGeographyController" class="com.freshdirect.transadmin.web.json.GeographyProviderController">
-		<property name="restrictionManagerService" ref="restrictionManager"/>
+		<property name="restrictionManagerService" ref="restrictionManager"/>		
 		<property name="ajaxServices">
 			<map>
 				<entry key="AsyncGeographyProvider" value="com.freshdirect.transadmin.web.json.IGeographyProvider" />				
@@ -458,6 +462,8 @@
 	
 	<bean name="asyncDispatchController" class="com.freshdirect.transadmin.web.json.DispatchProviderController">
 		<property name="dispatchManagerService" ref="dispatchManager"/>
+		<property name="domainManagerService" ref="domainManager"/>
+		<property name="logManager" ref="logManagerBase"/>
 		<property name="ajaxServices">
 			<map>
 				<entry key="AsyncDispatchProvider" value="com.freshdirect.transadmin.web.json.IDispatchProvider" />				

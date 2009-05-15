@@ -27,6 +27,8 @@ public class TransStringUtil {
 	
 	public static DateFormat hourInDayFormat = new SimpleDateFormat("H:mm");
 	
+	public static DateFormat dateFormatwithTime = new SimpleDateFormat("MM/dd/yyyy hh:mm aaa");
+
 	private static Calendar clientCalendar = Calendar.getInstance();
 	
 	private static String[] daysList = new String[] {"Monday","Tuesday",
@@ -100,6 +102,10 @@ public class TransStringUtil {
 	
 	public static Date getServerTime(String clientDate) throws ParseException {       
         return (Date)serverTimeFormat.parse(clientDate);
+	}
+	
+	public static String getDatewithTime(Date clientDate) throws ParseException {       
+        return dateFormatwithTime.format(clientDate);
 	}
 	
 	public static Date getDate(String dateString) throws ParseException {		
@@ -393,5 +399,29 @@ public class TransStringUtil {
 	
 	public static int getDiffInHours(Date d1, Date d2) {
 		return Math.abs((int) Math.round(((d1.getTime() - d2.getTime()) / (double) HOUR)));
+	}
+	
+	public static boolean isToday(String date) throws ParseException
+	{
+		return isToday(TransStringUtil.getDate(date));		
+	}
+	public static boolean isToday(Date date) throws ParseException
+	{
+		clientCalendar.setTimeInMillis(System.currentTimeMillis());
+		clientCalendar.set(Calendar.HOUR,0);
+		clientCalendar.set(Calendar.MINUTE, 0);
+		clientCalendar.set(Calendar.SECOND, 0);
+		clientCalendar.set(Calendar.MILLISECOND, 0);
+		clientCalendar.set(Calendar.AM_PM, Calendar.AM);
+		long todayStartTime=clientCalendar.getTimeInMillis();
+		clientCalendar.add(Calendar.DATE, 1);
+		clientCalendar.add(Calendar.MILLISECOND, -1);
+		long todayEndTime=clientCalendar.getTimeInMillis();
+		
+		long toCalculate=date.getTime();
+		
+		if(todayStartTime<=toCalculate&&toCalculate<=todayEndTime) return true;
+		
+		return false;
 	}
  }

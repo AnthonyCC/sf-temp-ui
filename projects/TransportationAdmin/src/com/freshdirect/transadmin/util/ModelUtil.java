@@ -33,6 +33,7 @@ import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.PlanResource;
 import com.freshdirect.transadmin.model.ResourceId;
 import com.freshdirect.transadmin.model.Route;
+import com.freshdirect.transadmin.model.RouteDecorator;
 import com.freshdirect.transadmin.model.RouteInfo;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.Zone;
@@ -40,7 +41,7 @@ import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 
 public class ModelUtil {
 
-	private static final DateFormat DATE_FORMAT=new SimpleDateFormat("MM/dd/yyyy H:m:s");
+	private static final DateFormat DATE_FORMAT=new SimpleDateFormat("MM/dd/yyyy H:m:s a");
 
 	public static List getDeliveryLocations(List lstDlvLocation) {
 
@@ -135,6 +136,123 @@ public class ModelUtil {
 		return finalList;
 	}
 
+	public static String getRegionCode(Collection zones,String zoneCode)
+	{
+		String result="";
+		Iterator zoneIterator=zones.iterator();
+		while(zoneIterator.hasNext())
+		{
+			Zone zone=(Zone)zoneIterator.next();
+			if(zone!=null&&zone.getZoneCode().equals(zoneCode))
+			{
+				return zone.getRegion().getCode();
+			}
+		}
+		
+		return result;
+	}
+	public static Zone getZone(Collection zones,String zoneCode)
+	{		
+		Iterator zoneIterator=zones.iterator();
+		while(zoneIterator.hasNext())
+		{
+			Zone zone=(Zone)zoneIterator.next();
+			if(zone!=null&&zone.getZoneCode().equals(zoneCode))
+			{
+				return zone;
+			}
+		}		
+		return null;
+	}
+	public static List getRoute(List routeDecor)
+	{		
+		List result=new ArrayList();
+		for(int i=0,n=routeDecor.size();i<n;i++)
+		{
+			RouteDecorator decor=(RouteDecorator)routeDecor.get(i);
+			result.add(decor.getRoute());
+		}
+		return result;
+	}
+	//region wise auto dispatch
+	public static List constructDispatchModel(Collection planList,Collection routeList,Collection zones)
+	{
+		Iterator planIterator=planList.iterator();
+		Iterator routeIterator=routeList.iterator();
+		
+		Map planMap=new HashMap();
+		Map routeMap=new HashMap();
+		// for null zone
+		List noZonePlanList=new ArrayList();
+
+		while(planIterator.hasNext()){
+			Plan plan=(Plan)planIterator.next();
+			Zone zone=plan.getZone();
+			if(zone==null){
+				noZonePlanList.add(plan);
+				continue;
+			}
+			String regionCode=getRegionCode(zones,zone.getZoneCode());
+			List planTmpList=(List)planMap.get(regionCode);
+			if(planTmpList==null){
+				planTmpList=new ArrayList();
+				planMap.put(regionCode,planTmpList);
+			}
+			planTmpList.add(plan);
+		}
+
+		Set keySet=planMap.keySet();
+		Iterator keyIterator=keySet.iterator();
+		while(keyIterator.hasNext()){
+			String regionKey=(String)keyIterator.next();
+			List newPlanList=(List)planMap.get(regionKey);
+			Collections.sort(newPlanList,PLAN_REGION_COMPARATOR);
+
+		}
+
+
+		while(routeIterator.hasNext())
+		{
+			ErpRouteMasterInfo route=(ErpRouteMasterInfo)routeIterator.next();
+			String zoneCode=route.getZoneNumber();
+			String regionCode=getRegionCode(zones,zoneCode);
+			Zone zone=getZone(zones, zoneCode);
+			RouteDecorator routeDecor=new RouteDecorator(route,zone);
+			List routeTmpList=(List)routeMap.get(regionCode);
+			if(routeTmpList==null){
+				routeTmpList=new ArrayList();
+				routeMap.put(regionCode,routeTmpList);
+			}
+			routeTmpList.add(routeDecor);
+		}
+
+		Set routeSet=routeMap.keySet();
+		Iterator routeTmpIterator=routeSet.iterator();
+		while(routeTmpIterator.hasNext()){
+			String routeKey=(String)routeTmpIterator.next();
+			List newPlanList=(List)routeMap.get(routeKey);
+			Collections.sort(newPlanList,ROUTE_REGION_COMPARATOR);
+		}
+
+		// for the dispatch object from the above lists
+		List dispatchList=new ArrayList();
+		
+		Set finalSet=planMap.keySet();
+	    Iterator finalIterator=finalSet.iterator();
+		while(finalIterator.hasNext())
+		{
+			String regionCode=(String)finalIterator.next();			
+			List routeLst=(List)routeMap.get(regionCode);
+			if(routeLst==null) routeLst=Collections.EMPTY_LIST;
+			else routeLst=getRoute(routeLst);
+			constructDispatchModelList(dispatchList,(List)planMap.get(regionCode),routeLst);
+
+		}
+
+		
+		constructDispatchModelList(dispatchList,noZonePlanList,Collections.EMPTY_LIST);
+		return dispatchList;
+	}
 
 	public static List constructDispatchModel(Collection planList,Collection routeList){
 		// lot of crap stuff to do
@@ -221,6 +339,8 @@ public class ModelUtil {
 		return dispatchList;
 	}
 
+	
+	
 	private static void  constructDispatchModelList(List dispatchList,List planList,List routeList){
 
 		Iterator ite1=routeList.iterator();
@@ -267,8 +387,14 @@ public class ModelUtil {
 				_tmpInfo = (ErpRouteMasterInfo)_iterator.next();
 				try {
 					if(_tmpInfo.getFirstDlvTime() != null && _tmpInfo.getFirstDlvTime().trim().length() > 0){
-						Date firstDlvTime = DATE_FORMAT.parse("01/01/1970 "+_tmpInfo.getFirstDlvTime());
-						if(firstDlvTime != null && firstDlvTime.equals(p.getFirstDeliveryTime())) {
+						Date firstDlvTime = DATE_FORMAT.parse("01/01/1970 "+_tmpInfo.getFirstDlvTime()+" "+_tmpInfo.getRouteTime());
+						Date firstDlvTime1 = DATE_FORMAT.parse("01/01/1970 "+"12:00:00"+" "+"PM");
+						//if(firstDlvTime != null && firstDlvTime.equals(p.getFirstDeliveryTime()))
+						long l1=firstDlvTime.getTime();
+						long l2=p.getFirstDeliveryTime().getTime();
+						long l3=firstDlvTime1.getTime();
+						if(firstDlvTime != null &&p.getFirstDeliveryTime()!=null&& firstDlvTime.getTime()==p.getFirstDeliveryTime().getTime()) 
+						{
 							result = new ArrayList();
 							result.add(_tmpInfo);
 							result.add(firstDlvTime);
@@ -372,6 +498,10 @@ public class ModelUtil {
 	public static PlanComparator PLAN_COMPARATOR=new PlanComparator();
 
 	public static RouteComparator ROUTE_COMPARATOR=new RouteComparator();
+	
+	public static PlanRegionComparator PLAN_REGION_COMPARATOR=new PlanRegionComparator();
+
+	public static RouteRegionComparator ROUTE_REGION_COMPARATOR=new RouteRegionComparator();
 
 	private static class PlanComparator implements Comparator{
 
@@ -412,6 +542,42 @@ public class ModelUtil {
 
 	}
 	
+	private static class PlanRegionComparator implements Comparator{
+
+		public int compare(Object o1, Object o2) {
+			// TODO Auto-generated method stub
+			if(o1 instanceof Plan && o2 instanceof Plan)
+			{
+				Plan p1=(Plan)o1;
+				Plan p2=(Plan)o2;
+				if(p1.getZone().getPriority().intValue()==-1) return 1;
+				if(p2.getZone().getPriority().intValue()==-1) return -1;
+				return p1.getZone().getPriority().intValue()-p2.getZone().getPriority().intValue();
+			}
+			return 0;
+		}
+
+	}
+
+
+	private static class RouteRegionComparator implements Comparator
+	{
+
+		public int compare(Object o1, Object o2) {
+			// TODO Auto-generated method stub
+			if(o1 instanceof RouteDecorator && o2 instanceof RouteDecorator)
+			{
+				RouteDecorator r1=(RouteDecorator)o1;
+				RouteDecorator r2=(RouteDecorator)o2;
+				if(r1.getZone().getPriority().intValue()==-1) return 1;
+				if(r2.getZone().getPriority().intValue()==-1) return -1;
+				return r1.getZone().getPriority().intValue()-r2.getZone().getPriority().intValue();
+
+			}
+			return 0;
+		}
+
+	}	
 	public static List mapToList(Map input) {
 		
 		List output = new ArrayList();

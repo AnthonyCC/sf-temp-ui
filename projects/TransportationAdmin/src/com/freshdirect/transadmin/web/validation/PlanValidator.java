@@ -40,9 +40,9 @@ public class PlanValidator extends AbstractValidator {
 		}
 		ValidationUtils.rejectIfEmpty(errors, "sequence", "app.error.112", new Object[]{"Sequence"},"required field");
 		validateIntegerMinMax("sequence",new Integer(model.getSequence()),0,99,errors);
-		validateResources(model.getDrivers().getResourceReq().getReq().intValue(),model.getDrivers().getResourceReq().getMax().intValue(),"drivers",model.getDrivers(),errors);
-		validateResources(model.getHelpers().getResourceReq().getReq().intValue(),model.getHelpers().getResourceReq().getMax().intValue(),"helpers",model.getHelpers(),errors);
-		validateResources(model.getRunners().getResourceReq().getReq().intValue(),model.getRunners().getResourceReq().getMax().intValue(),"runners",model.getRunners(),errors);
+		validateResources(model.getDriverReq(),model.getDriverMax(),"drivers",model.getDrivers(),errors);
+		validateResources(model.getHelperReq(),model.getHelperMax(),"helpers",model.getHelpers(),errors);
+		validateResources(model.getRunnerReq(),model.getRunnerMax(),"runners",model.getRunners(),errors);
 		checkForDuplicateResourceAllocation(model,errors);
 	}	
 	

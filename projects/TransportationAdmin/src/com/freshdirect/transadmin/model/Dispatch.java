@@ -26,7 +26,14 @@ public class Dispatch implements java.io.Serializable{
 	private String comments;	
 	private Boolean bullPen;
 	private Set dispatchResources = new HashSet(0);
-
+	private String userId;
+	private String gpsNumber;
+	private String ezpassNumber;
+	private Date dispatchTime;
+	private Boolean phonesAssigned;
+	private Boolean keysReady;
+	private Date checkedInTime;
+	
 	public Dispatch() {
 	}
 
@@ -187,4 +194,61 @@ public class Dispatch implements java.io.Serializable{
 	public void setRegion(Region region) {
 		this.region = region;
 	}
+	
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public String getEzpassNumber() {
+		return ezpassNumber;
+	}
+
+	public void setEzpassNumber(String ezpassNumber) {
+		this.ezpassNumber = ezpassNumber;
+	}
+
+	public String getGpsNumber() {
+		return gpsNumber;
+	}
+
+	public void setGpsNumber(String gpsNumber) {
+		this.gpsNumber = gpsNumber;
+	}
+
+	public Date getDispatchTime() {
+		return dispatchTime;
+	}
+
+	public void setDispatchTime(Date dispatchTime) {
+		this.dispatchTime = dispatchTime;
+	}
+
+	public Boolean getKeysReady() {
+		return keysReady;
+	}
+
+	public void setKeysReady(Boolean keysReady) {
+		this.keysReady = keysReady;
+	}
+
+	public Boolean getPhonesAssigned() {
+		return phonesAssigned;
+	}
+
+	public void setPhonesAssigned(Boolean phonesAssigned) {
+		this.phonesAssigned = phonesAssigned;
+	}
+
+	public Date getCheckedInTime() {
+		return checkedInTime;
+	}
+
+	public void setCheckedInTime(Date checkedInTime) {
+		this.checkedInTime = checkedInTime;
+	}
+
 }

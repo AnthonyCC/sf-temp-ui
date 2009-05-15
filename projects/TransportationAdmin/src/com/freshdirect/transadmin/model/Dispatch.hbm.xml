@@ -46,6 +46,24 @@
         <property name="comments" type="string">
             <column name="COMMENTS" length="1024" />
         </property>
+        <property name="gpsNumber" type="string">
+            <column name="GPS_NO" length="50" />
+        </property>
+        <property name="ezpassNumber" type="string">
+            <column name="EZPASS_NO" length="50" />
+        </property> 
+        <property name="dispatchTime" type="timestamp">
+            <column name="DISPATCH_TIME" length="7" />
+        </property> 
+        <property name="checkedInTime" type="timestamp">
+            <column name="CHECKEDIN_TIME" length="7" />
+        </property>
+        <property name="phonesAssigned" type="yes_no">
+            <column name="PHONE_ASSIGNED" length="1" />
+        </property>
+        <property name="keysReady" type="yes_no">
+            <column name="KEYS_READY" length="1" />
+        </property>
         <many-to-one name="region" class="com.freshdirect.transadmin.model.Region" fetch="select" lazy="false">
             <column name="REGION" length="16" not-null="true" />
         </many-to-one>      

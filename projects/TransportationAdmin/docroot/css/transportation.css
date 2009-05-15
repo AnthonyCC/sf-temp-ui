@@ -1011,3 +1011,20 @@ div.eXor_Active, div.eXor_AdHoc { margin-left: 10px; width: 98%; }
 	.fleft { float: left; }
 	.fright { float: right; }
 /* float simple classes */
+
+.employee_on 
+{
+	background-color: green;
+}
+.employee_off 
+{
+	background-color: red;
+}
+.employee_no 
+{
+	background-color: #FF9966;
+}
+.employee_out 
+{
+	background-color: #308dbb;
+}

@@ -23,7 +23,7 @@ public class Plan implements java.io.Serializable, TrnBaseEntityI  {
 	private String ignoreErrors;
 	private Date errorDate;
 	private String supervisorId;
-
+	private String userId;
 	
 	public String getSupervisorId() {
 		return supervisorId;
@@ -167,5 +167,14 @@ public class Plan implements java.io.Serializable, TrnBaseEntityI  {
 			setZone(trnZone);
 		}
 	}
+	
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
 
 }

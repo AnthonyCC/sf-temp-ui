@@ -1,15 +1,14 @@
 package com.freshdirect.transadmin.web.model;
 
 
-import java.util.Collection;
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.commons.collections.list.LazyList;
 
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.EmployeeRoleType;
@@ -19,7 +18,6 @@ import com.freshdirect.transadmin.model.ResourceId;
 import com.freshdirect.transadmin.model.ResourceInfoI;
 import com.freshdirect.transadmin.model.TrnBaseEntityI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
-import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.EnumResourceType;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
@@ -43,16 +41,23 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 
 	private String supervisorName;
 	private String zoneType;
-	private ResourceList drivers= new ResourceList();/*LazyList.decorate(
-		      new ResourceList(),
-		      FactoryUtils.instantiateFactory(EmployeeInfo.class));*/
-	private ResourceList helpers=new ResourceList();/*LazyList.decorate(
-		      new ResourceList(),
-		      FactoryUtils.instantiateFactory(EmployeeInfo.class));*/
-	private ResourceList runners=new ResourceList();/*LazyList.decorate(
-		      new ResourceList(),
-		      FactoryUtils.instantiateFactory(EmployeeInfo.class));*/
+	/*private ResourceList drivers= new ResourceList();
+	private ResourceList helpers=new ResourceList();		      
+	private ResourceList runners=new ResourceList();*/
+		      
+	private List drivers= new ArrayList();
+	private List helpers=new ArrayList();		      
+	private List runners=new ArrayList();
 	
+	private int driverReq;
+	private int driverMax;
+	
+	private int helperReq;
+	private int helperMax;
+
+	private int runnerReq;
+	private int runnerMax;
+
 	private List termintedEmployees = null;
 	
 	public List getTermintedEmployees() {
@@ -124,7 +129,7 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 		}
 	}
 	
-    public static class MyList {
+   /* public static class MyList {
     	
     	public static ResourceList decorate(ResourceList list,org.apache.commons.collections.Factory factory) {
     		
@@ -136,21 +141,24 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
     		return responseList;
     	}
     	
-    }
+    }*/
 	
 	public int getDriverMax() {
 		
-		if(drivers!=null && drivers.getResourceReq()!=null )
+		/*if(drivers!=null && drivers.getResourceReq()!=null )
 			return drivers.getResourceReq().getMax().intValue();
-		return 0;
+		return 0;*/
+		return driverMax;
 	}
 	
 	
 	
 	public int getDriverReq() {
-		if(drivers!=null && drivers.getResourceReq()!=null )
+		/*if(drivers!=null && drivers.getResourceReq()!=null )
 			return drivers.getResourceReq().getReq().intValue();
-		return 0;
+		return 0;*/
+		
+		return driverReq;
 
 	}
 	
@@ -158,35 +166,38 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	
 	public int getHelperMax() {
 		
-		if(helpers!=null && helpers.getResourceReq()!=null )
+		/*if(helpers!=null && helpers.getResourceReq()!=null )
 			return helpers.getResourceReq().getMax().intValue();
-		return 0;
+		return 0;*/
+		return helperMax;
 	}
 	
 	
 	
 	public int getHelperReq() {
-		if(helpers!=null && helpers.getResourceReq()!=null )
+		/*if(helpers!=null && helpers.getResourceReq()!=null )
 			return helpers.getResourceReq().getReq().intValue();
-		return 0;
-
+		return 0;*/
+		return helperReq;
 	}
 	
 	
 	
 	public int getRunnerMax() {
 		
-		if(runners!=null && runners.getResourceReq()!=null )
+		/*if(runners!=null && runners.getResourceReq()!=null )
 			return runners.getResourceReq().getMax().intValue();
-		return 0;
+		return 0;*/
+		return runnerMax;
 	}
 	
 	
 	
 	public int getRunnerReq() {
-		if(runners!=null && runners.getResourceReq()!=null )
+		/*if(runners!=null && runners.getResourceReq()!=null )
 			return runners.getResourceReq().getReq().intValue();
-		return 0;
+		return 0;*/
+		return runnerReq;
 
 	}
 	
@@ -392,15 +403,15 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 			runners.add(runner);
 	}	
 	
-	public ResourceList getDrivers() {
+	public List getDrivers() {
 		return drivers;
 	}
 	
-	public ResourceList getRunners() {
+	public List getRunners() {
 		return runners;
 	}
 	
-	public ResourceList getHelpers() {
+	public List getHelpers() {
 		return helpers;
 	}
 	
@@ -408,7 +419,7 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 		
 		int size=resourceReq.getMax().intValue();
 		ResourceList resourceList=new ResourceList(size);
-		resourceList.setResourceReq(resourceReq);
+		//resourceList.setResourceReq(resourceReq);
 		for(int i=0;i<size;i++) {
 			resourceList.add(constructResourceInfo());
 		}
@@ -420,10 +431,6 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 		Set planResources=new HashSet();
 		ResourceInfoI supervisorInfo = constructResourceInfo();
 		supervisorInfo.setEmployeeId(this.supervisorCode);
-		/*ResourceI supervisor=getResource(supervisorInfo ,EnumResourceType.SUPERVISOR);
-		if(supervisor!=null) {
-			planResources.add(supervisor);
-		}*/
 		planResources.addAll(getResources(this.getDrivers(),EnumResourceType.DRIVER));
 		planResources.addAll(getResources(this.getHelpers(),EnumResourceType.HELPER));
 		planResources.addAll(getResources(this.getRunners(),EnumResourceType.RUNNER));
@@ -474,6 +481,8 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	}
 	
 	public void setResources(EmployeeManagerI employeeManagerService,Set resources, Map resourceReqs) {
+		
+		
 		if(resources == null || resources.isEmpty())
 			return;
 		Iterator _it=resources.iterator();
@@ -487,6 +496,7 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
             EnumResourceType role=EnumResourceType.getEnum(resource.getEmployeeRoleType().getCode());   
             WebEmployeeInfo webEmpInfo=employeeManagerService.getEmployee(resource.getId().getResourceId());
             ResourceInfoI resourceInfo = getResourceInfo(webEmpInfo, resource);
+            
             if(resourceReqs.containsKey(role)){
                   ResourceReq req = (ResourceReq) resourceReqs.get(role);
                   if(EnumResourceType.DRIVER.equals(role) && driverCount < req.getMax().intValue()) {
@@ -504,19 +514,16 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
                       runnerCount++;
                   }
                   
-              }/* else if(EnumResourceType.SUPERVISOR.equals(role)) {
-            	  if(resource!=null)
-            		this.setSupervisorCode(resourceInfo.getEmployeeId());
-            	  	this.setSupervisorName(resourceInfo.getName());
-            	  	this.setSupervisorId(resourceInfo.getEmployeeId());
-              }*/
+              }
         }
 	}
 	
-	public void setResourceInfo(ResourceList resources, boolean isZoneModified, EnumResourceType role,EmployeeManagerI employeeManagerService) {
+	
+
+	public void setResourceInfo(List resources, boolean isZoneModified, EnumResourceType role,EmployeeManagerI employeeManagerService, int max) {
 		
 		
-		int max=resources.getResourceReq().getMax().intValue();
+		//int max=resources.getResourceReq().getMax().intValue();
 		if(max==0) {
 			resources.clear();
 		}else if (resources.size()>max) {
@@ -616,4 +623,45 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 		return result;
 	}
 	
+   public Date getStartTimeEx() {
+		
+		try {
+			return TransStringUtil.getServerTime(getStartTime());
+		} catch (ParseException e) {
+			return null;
+		}
+		
+	}
+		
+	public Date getFirstDeliveryTimeEx() {
+		try {
+			return TransStringUtil.getServerTime(getFirstDeliveryTime());
+		} catch (ParseException e) {
+			return null;
+		}
+	}
+
+	public void setDriverMax(int driverMax) {
+		this.driverMax = driverMax;
+	}
+
+	public void setDriverReq(int driverReq) {
+		this.driverReq = driverReq;
+	}
+
+	public void setHelperMax(int helperMax) {
+		this.helperMax = helperMax;
+	}
+
+	public void setHelperReq(int helperReq) {
+		this.helperReq = helperReq;
+	}
+
+	public void setRunnerMax(int runnerMax) {
+		this.runnerMax = runnerMax;
+	}
+
+	public void setRunnerReq(int runnerReq) {
+		this.runnerReq = runnerReq;
+	}
 }

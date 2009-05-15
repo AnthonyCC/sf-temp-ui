@@ -2,6 +2,7 @@ package com.freshdirect.transadmin.model;
 
 // Generated Nov 18, 2008 3:11:21 PM by Hibernate Tools 3.2.2.GA
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,7 +17,9 @@ public class Zone implements java.io.Serializable {
 	private String name;
 	private String unattended;
 	private TrnArea area;
+	private BigDecimal priority;
 	private String obsolete;
+	private final BigDecimal DEFAULT_PRIORITY=new BigDecimal(-1);
 
 	public String getObsolete() {
 		return obsolete;
@@ -33,22 +36,23 @@ public class Zone implements java.io.Serializable {
 		this.zoneCode=zonneCode;
 	}
 
-	public Zone(String zoneCode, Region region, String name) {
+	public Zone(String zoneCode, Region region, String name,BigDecimal priority) {
 		this.zoneCode = zoneCode;
 		this.region = region;
 		this.name = name;
+		this.priority=priority;
 	}
 
 	public Zone(String zoneCode, Region region, TrnZoneType trnZoneType,
 			String name, String unattended, TrnArea area, Set plans,
-			Set dispatchs) {
+			Set dispatchs,BigDecimal priority) {
 		this.zoneCode = zoneCode;
 		this.region = region;
 		this.trnZoneType = trnZoneType;
 		this.name = name;
 		this.unattended = unattended;
 		this.area = area;
-		
+		this.priority=priority;
 	}
 
 	public String getZoneCode() {
@@ -101,6 +105,14 @@ public class Zone implements java.io.Serializable {
 
 	public String getDisplayName() {
 		return this.zoneCode+" - "+this.name;
+	}
+
+	public BigDecimal getPriority() {
+		return priority==null?DEFAULT_PRIORITY:priority;
+	}
+
+	public void setPriority(BigDecimal priority) {
+		this.priority = priority;
 	}
 	
 

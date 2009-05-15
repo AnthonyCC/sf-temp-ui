@@ -60,8 +60,26 @@ public class PlanningFormController extends AbstractFormController {
 		this.employeeManagerService = employeeManagerService;
 	}
 
+	private void printRequestParameters(HttpServletRequest request) {
+		Enumeration e=request.getParameterNames();
+		while(e.hasMoreElements()) {
+			String parameter=(String)e.nextElement();
+			System.out.println("Parameter :"+parameter);
+			String[] values=request.getParameterValues(parameter);
+			for(int i=0;i<values.length;i++)
+				if(values.length==1) {
+					System.out.println("{ "+values[i]+" }");
+				} else	if(i==0)
+					System.out.print("{ "+values[i]+", ");
+				else if(i==(values.length-1)) {
+					System.out.print(values[i]+"}");
+				}
+		}
+	}
 	protected Map referenceData(HttpServletRequest request) throws ServletException {
-
+		
+		
+		printRequestParameters(request);
 		Map refData = new HashMap();
 		refData.put("days", domainManagerService.getDays());
 		refData.put("zones", domainManagerService.getZones());
@@ -91,6 +109,7 @@ public class PlanningFormController extends AbstractFormController {
 	private WebPlanInfo getCommand(Plan plan) {
 
 		Zone zone=null;
+		
 		if(plan.getZone()!=null) {
 			zone=domainManagerService.getZone(plan.getZone().getZoneCode());
 		}
@@ -137,7 +156,7 @@ public class PlanningFormController extends AbstractFormController {
 			boolean isNew = isNew(command);
 			Plan domainObject=getPlan(_command);
 			if(!isNew) {
-				getDomainManagerService().saveEntity(domainObject);
+				getDispatchManagerService().saveEntity(domainObject);
 			} else {
 				getDispatchManagerService().savePlan(domainObject);
 				_command.setPlanId(domainObject.getPlanId());
@@ -193,6 +212,8 @@ public class PlanningFormController extends AbstractFormController {
 		}
 		model= DispatchPlanUtil.reconstructWebPlanInfo(model,zone,employeeManagerService);
 
+		//set userId to command object
+		model.setUserId(getUserId(request));
 	}
 
 	protected boolean isFormChangeRequest(HttpServletRequest request, Object command) {

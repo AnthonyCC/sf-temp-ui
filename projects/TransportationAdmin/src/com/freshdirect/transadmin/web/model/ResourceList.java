@@ -35,6 +35,13 @@ public class ResourceList extends java.util.ArrayList implements Comparable {
 		this.resourceReq = resourceReq;
 	}
 	
+	public boolean add(ResourceInfoI o)  {
+		return super.add(o);
+	}
+	
+	public void add(int index, ResourceInfoI element) {
+		 super.add(index, element);
+	}
 	public void clear() {
 		
 		super.clear();
@@ -51,11 +58,15 @@ public class ResourceList extends java.util.ArrayList implements Comparable {
 			buf.append(this.resourceReq.getReq()).append("/").append(this.resourceReq.getMax());
 	   	
 		Iterator it=this.iterator();
+		
     	ResourceInfoI resourceInfo=null;
     	while(it.hasNext()) {
-    		resourceInfo=(ResourceInfoI)it.next();    		    		    		
-    		if(resourceInfo.getLastName()!=null || resourceInfo.getFirstName()!=null) {
-    			buf.append(resourceInfo.getLastName()+" "+resourceInfo.getFirstName());    			    		
+    		Object obj=it.next();
+    		if(obj instanceof ResourceInfoI) {
+    			resourceInfo=(ResourceInfoI)obj;  
+    		}
+    		if(resourceInfo!=null && (resourceInfo.getLastName()!=null || resourceInfo.getFirstName()!=null)) {
+    			buf.append(resourceInfo.getLastName()+" "+resourceInfo.getFirstName()+" "+resourceInfo.getNextelNo());    			    		
     		}
     	}	    	
     	return buf.toString();

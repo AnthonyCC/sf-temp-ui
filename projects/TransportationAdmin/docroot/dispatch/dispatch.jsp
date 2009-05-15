@@ -13,7 +13,11 @@
 <tmpl:insert template='/common/sitelayout.jsp'>
 
     <tmpl:put name='title' direct='true'>Dispatch Sheet</tmpl:put>
-
+	<tmpl:put name='yui-lib'>
+		<%@ include file='/common/i_yui.jspf'%>
+	</tmpl:put>	
+	<tmpl:put name='yui-skin'>yui-skin-sam</tmpl:put>
+	
   <tmpl:put name='content' direct='true'>
     <br/> 
     <div class="contentroot">               
@@ -163,6 +167,9 @@
                      <input type = "button" value="&nbsp;Unassigned Routes&nbsp;" onclick="javascript:doUnassignedRoutes('dispDate')" />
                   </td>  
                   <td>
+                     <input type = "button" value="&nbsp;Activity Log&nbsp;" onclick="javascript:doActivityLog('dispDate')" />
+                  </td>
+                  <td>
                     <a href="javascript:directions('ec_table','drivingdirection.do', 7)">
                   		<img src="./images/driving-directions.gif" width="114" height="25" border="0" alt="Driving Directions" title="Driving Directions" />
                   	</a>
@@ -185,7 +192,10 @@
         	 var param1 = document.getElementById(compId1).value;
         	javascript:pop('unassignedroute.do?routeDate='+param1, 400,600);
         }
-
+		function doActivityLog(compId1) {
+        	 var param1 = document.getElementById(compId1).value;
+        	 showForm(param1);
+        }
       </script>      
       </div>
     
@@ -207,10 +217,13 @@
               <ec:column alias="trnConfirm" width="5" cell="confirmcol" property="confirmedValue" title="C"  />
               <ec:column alias="trnZoneRegion" property="regionName" title="Region" />
               <ec:column property="supervisorEx"   title="Supervisor" cell="tooltip"  />
-              <ec:column  alias="trnTimeslotslotName"  property="startTime" title="Start Time"/>
-              <ec:column  alias="trnTimeEndslotslotName" property="firstDeliveryTime" title="First Dlv."/>
+              <ec:column  alias="trnTimeslotslotName" cell="date" format="hh:mm aaa" property="startTimeEx" title="Start Time"/> 
+              <ec:column  alias="trnTimeEndslotslotName" cell="date" format="hh:mm aaa" property="firstDeliveryTimeEx" title="First Dlv."/>
               <ec:column alias="trnRouterouteNumber" property="route"  width="10" title="Route"/>
               <ec:column alias="trnTrucktruckNumber" property="truck" width="10"  title="Truck"/>
+              <ec:column alias="trnTruckGpsNumber" property="gpsNumber" width="10"  title="GPS No"/>
+              <ec:column alias="trnTruckEzpassNumber" property="ezpassNumber" width="10"  title="EzPass No"/>
+              <ec:column alias="trnTruckLocation" property="location" width="10"  title="Truck Location"/>             
               <ec:column property="drivers"  cell="dispatchResCell" title="Driver"  filterable="true" alias="drivers"/>
               <ec:column property="helpers"  cell="dispatchResCell" title="Helper"  filterable="true" alias="helpers"/>
               <ec:column property="runners"  cell="dispatchResCell" title="Runner"  filterable="true" alias="runners"/>
@@ -220,6 +233,7 @@
     </div>
     <script>
       addMultiRowHandlers('ec_table', 'rowMouseOver', 'editdispatch.do','id',0, 0,'dispDate');
-    </script>   
+    </script>
+    <%@ include file='i_activityLog.jspf'%>      
   </tmpl:put>
 </tmpl:insert>

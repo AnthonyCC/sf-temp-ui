@@ -29,6 +29,7 @@ public interface DispatchManagerI extends BaseManagerI {
 	void copyPlan(Collection addPlanList, Collection removePlanList);
 	
 	void autoDisptch(String date);
+	void autoDisptchRegion(String date);
 	//Based on new Dispatch Model
 	Collection getDispatchList (String date, String zone, String region);
 	
@@ -51,5 +52,7 @@ public interface DispatchManagerI extends BaseManagerI {
 	Map getRouteNumberGroup(String date, String cutOff, String groupCode);
 	
 	int updateRouteMapping(Date routeDate, String cutOffId, String sessionId, boolean isDepot);
+	
+	Collection getUnassignedActiveEmployees();
 	
 }

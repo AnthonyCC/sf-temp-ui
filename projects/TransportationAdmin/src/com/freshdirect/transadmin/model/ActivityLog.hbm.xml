@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Nov 18, 2008 3:11:24 PM by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping schema="transp">
+    <class name="com.freshdirect.transadmin.model.ActivityLog" table="ACTIVITY_LOG">
+        <id name="logId" type="string">
+            <column name="LOG_ID" length="10" />
+           <generator class="sequence">
+    			<param name="sequence">LOGSEQ</param>
+			</generator>
+        </id>
+        
+        <property name="userId" type="string">
+            <column name="USER_ID" length="20" />
+        </property>
+        <property name="date" type="timestamp">
+            <column name="LOG_DATE"  not-null="true" />
+        </property>
+        <property name="type" type="int">
+            <column name="TYPE"  />
+        </property>
+        <property name="id" type="string">
+            <column name="TYPE_ID" length="10" not-null="true" />
+        </property>
+        <property name="fieldName" type="string">
+            <column name="FIELD_NAME" length="40" />
+        </property>
+        <property name="oldValue" type="string">
+            <column name="OLD_VALUE" length="100" />
+        </property>
+        <property name="newValue" type="string">
+            <column name="NEW_VALUE" length="100" />
+        </property>
+    </class>
+</hibernate-mapping>

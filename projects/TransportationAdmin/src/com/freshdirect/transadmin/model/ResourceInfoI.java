@@ -1,6 +1,5 @@
 package com.freshdirect.transadmin.model;
 
-
 public interface ResourceInfoI {
 
 	public String getName();
@@ -44,4 +43,9 @@ public interface ResourceInfoI {
 	public String getNextelNo() ;
 
 	public void setNextelNo(String nextelNo) ;
+	
+	public PunchInfoI getPunchInfo();
+	
+	public void setPunchInfo(PunchInfoI punchInfo);
+	
 }

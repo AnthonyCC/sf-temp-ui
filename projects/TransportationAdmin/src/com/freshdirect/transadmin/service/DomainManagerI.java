@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
+import com.freshdirect.customer.ErpTruckMasterInfo;
 import com.freshdirect.transadmin.model.DispositionType;
 import com.freshdirect.transadmin.model.FDRouteMasterInfo;
 import com.freshdirect.transadmin.model.Region;
@@ -34,6 +35,8 @@ public interface DomainManagerI extends BaseManagerI {
 	Collection getRouteForZone(String zoneId);
 	
 	Collection getTrucks();
+	
+	ErpTruckMasterInfo getERPTruck(String truckId);
 	
 	Collection getZoneTypes();
 	

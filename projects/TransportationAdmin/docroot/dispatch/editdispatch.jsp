@@ -8,6 +8,7 @@
  String id = request.getParameter("id") != null ? request.getParameter("id") : "";
  String dispDate = request.getParameter("dispDate") != null ? request.getParameter("dispDate") : "";
  %>
+ <script src="js/jsonrpc.js" language="javascript" type="text/javascript"></script>
         <script language="javascript">         
         function setTruckNumber(truckNo) {
             dispatchForm.truck.value = truckNo;
@@ -43,6 +44,55 @@
                     chxbox.checked = !(chxbox.checked);
                 }                
         }
+       function getRouteInfo()
+        {
+        	var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
+        	var dispatchDate=dispatchForm.dispatchDate.value;
+        	var zoneCode=dispatchForm.zoneCode.value;
+        	jsonrpcClient.AsyncDispatchProvider.getActiveRoute(getRouteInfoCallback,dispatchDate,zoneCode);
+        }
+        function getRouteInfoCallback(result, exception) 
+        {
+      	  
+          if(exception) {               
+              alert('Unable to connect to host system. Please contact system administrator!');               
+              return;
+          }
+         
+		 	  
+		  for(var i=dispatchForm.route.options.length-1;i>=1;i--)
+		  {
+				dispatchForm.route.remove(i);
+		  }		 
+		  var selected=false;
+		  var results=result.list;
+		  for(var i=0;i<results.length;i++)
+		  {
+			  if( results[i].length>0)
+			  {
+			  	var optn = document.createElement("OPTION");
+			  	optn.text = results[i];
+	          	optn.value = results[i];
+	          	if(optn.text==dispatchForm.selectedroute.value)
+	          	{
+	          		optn.selected=true;
+	          		selected=true;
+	          	}
+	          	dispatchForm.route.options.add(optn);
+	          	
+	          }
+          }
+  /*        //testing
+          var optn = document.createElement("OPTION");
+		  optn.text = dispatchForm.selectedroute.value;
+	      optn.value = dispatchForm.selectedroute.value;
+	      dispatchForm.route.options.add(optn);
+	      */
+	      
+          if(!selected)     
+          dispatchForm.route.options[0].selected=true;
+                                
+      }        
       </script>
       <style>
         .time_picker_div {padding:5px;
@@ -73,11 +123,12 @@
           
 		<tr>
 			<td class="screencontent">
+			<table ><tr><td valign="top">
 				<table class="forms1" border="0">
 					<tr>
 						<td>Date</td>
 						<td>
-							<span><form:input maxlength="50" size="24" path="dispatchDate" /></span>
+								<span><form:input maxlength="50" size="24" path="dispatchDate" onChange="javascript:getRouteInfo();"/></span>
 							<span><a href="#" id="trigger_dispatchDate" style="font-size: 9px;">
 								<img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date"></a>
 							</span>
@@ -222,6 +273,7 @@
 							<form:errors path="firstDeliveryTime" />&nbsp;
 						</td>                 
 					</tr> 
+					<input type="hidden" name = "selectedroute"  value="<c:out value="${dispatchForm.route}"/>" />
                 <tr>
                   <td>Route Number</td>
                   <td>          
@@ -432,6 +484,11 @@
 							<form:errors path="runners" />&nbsp;
 						</td>                
 					</tr>
+					</table>
+					</td>
+					<!-- new table goes here -->
+					<td valign="top">
+					<table class="forms1" border="0">
 					<tr>
 						<td>Status</td>
 						<td colspan="2">                  
@@ -454,6 +511,75 @@
 						</td>
 					</tr> 
 					<tr>
+						<td>GPS No</td>
+						<td colspan="2"> 
+							<form:input maxlength="50" size="8" path="gpsNumber" />
+						</td>
+					</tr>
+					<tr>
+						<td>EzPass No</td>
+						<td colspan="2"> 
+							<form:input maxlength="50" size="8" path="ezpassNumber" />
+						</td>
+					</tr>
+					
+					<c:if test="${dispatchForm.today == true}">
+					<c:if test="${dispatchForm.isBullpen == false}">
+					<c:if test='${dispatchForm.dispatchStatus == "Truck"}'>
+					<tr>
+						<td>Phones Assigned</td>
+						<td colspan="2"> 
+							<form:checkbox path="phoneAssigned" />
+						</td>
+					</tr>
+					<tr>
+						<td>Keys Ready</td>
+						<td colspan="2"> 
+							<form:checkbox path="keysReady" />
+						</td>
+					</tr>
+					</c:if>
+					<c:if test='${dispatchForm.dispatchStatus == "EmpReady"}'>
+					<tr>
+						<td>Dispatched</td>
+						<td colspan="2"> 
+							<form:checkbox path="dispatched" />
+						</td>
+					</tr>
+					</c:if>
+					
+					<c:if test='${dispatchForm.dispatchStatus == "Dispatched"}'>
+					<tr>
+						<td>Checked In</td>
+						<td colspan="2"> 
+							<form:checkbox path="checkedIn" />
+						</td>
+					</tr>
+					</c:if>
+					</c:if>
+					
+					<c:if test="${dispatchForm.isBullpen == true}">	
+					<c:if test='${dispatchForm.dispatched == false}'>				
+					<tr>
+						<td>Dispatched</td>
+						<td colspan="2"> 
+							<form:checkbox path="dispatched" />
+						</td>
+					</tr>					
+					</c:if>
+					
+					<c:if test='${dispatchForm.dispatchStatus == "Dispatched"}'>
+					<tr>
+						<td>Checked In</td>
+						<td colspan="2"> 
+							<form:checkbox path="checkedIn" />
+						</td>
+					</tr>
+					</c:if>
+					</c:if>
+					
+					</c:if>
+					<tr>					
 						<td>Comments</td>
 						<td>                  
 							<form:textarea path="comments" rows="5" cols="45" cssClass="large" />
@@ -465,6 +591,7 @@
 					<tr>
 						<td colspan="3">&nbsp;</td>
 					</tr>
+					</table></td></tr>
 					<tr>
 						<td colspan="3" align="center">
 							<input type = "submit" value="&nbsp;Save&nbsp;"  />
@@ -480,3 +607,4 @@
      
   </tmpl:put>
 </tmpl:insert>
+<script>getRouteInfo();</script>

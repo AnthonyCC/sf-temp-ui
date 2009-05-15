@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.customer.ErpTruckMasterInfo;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.routing.model.GeoPoint;
 import com.freshdirect.routing.model.IGeoPoint;
@@ -46,9 +48,14 @@ import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.util.DispatchPlanUtil;
+import com.freshdirect.transadmin.util.EnumCachedDataType;
+import com.freshdirect.transadmin.util.EnumStatus;
 import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
+import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
+import com.freshdirect.transadmin.web.model.DispatchResourceInfo;
+import com.freshdirect.transadmin.web.model.ResourceList;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 import com.freshdirect.transadmin.web.model.WebPlanInfo;
 
@@ -93,14 +100,15 @@ public class DispatchController extends AbstractMultiActionController {
 		String daterange = request.getParameter("daterange");
 		String zoneLst = request.getParameter("zone");
 		ModelAndView mav = new ModelAndView("planView");
+		if(daterange==null)daterange=TransStringUtil.getCurrentDate();
+		zoneLst=zoneLst==null?"":zoneLst;
 		if(!TransStringUtil.isEmpty(daterange) || !TransStringUtil.isEmpty(zoneLst)) {
 
 			try {
 				String dateQryStr = TransStringUtil.formatDateSearch(daterange);
 				String zoneQryStr = StringUtil.formQueryString(Arrays.asList(StringUtil.decodeStrings(zoneLst)));
-					//TransStringUtil.formatStringSearch(zoneLst);
 				if(dateQryStr != null || zoneQryStr != null) {
-					Collection dataList = getPlanInfo(dateQryStr,zoneQryStr);//dispatchManagerService.getPlan(dateQryStr, zoneQryStr);
+					Collection dataList = getPlanInfo(dateQryStr,zoneQryStr);
 					mav.getModel().put("planlist",dataList);
 				}
 			} catch (Exception e) {
@@ -116,7 +124,7 @@ public class DispatchController extends AbstractMultiActionController {
 
 		Collection plans=dispatchManagerService.getPlan(dateQryStr, zoneQryStr);
 		List termintedEmployees = getTermintedEmployeeIds();
-
+		
 		Collection planInfos=new ArrayList();
 		Iterator it=plans.iterator();
 		while(it.hasNext()) {
@@ -172,11 +180,12 @@ public class DispatchController extends AbstractMultiActionController {
 		String region = request.getParameter("region");
 		ModelAndView mav = new ModelAndView("dispatchView");
 		if(!TransStringUtil.isEmpty(dispDate)) {
-			mav.getModel().put("dispatchInfos", getDispatchInfos(getServerDate(dispDate), zone, region, false));
+			System.out.println(getServerDate(dispDate).equals(TransStringUtil.getCurrentServerDate())?true:false);
+			mav.getModel().put("dispatchInfos", getDispatchInfos(getServerDate(dispDate), zone, region, false,false));
 			mav.getModel().put("dispDate", dispDate);
 		} else {
 			//By default get the today's dispatches.
-			mav.getModel().put("dispatchInfos",getDispatchInfos(TransStringUtil.getCurrentServerDate(), zone, region, false));
+			mav.getModel().put("dispatchInfos",getDispatchInfos(TransStringUtil.getCurrentServerDate(), zone, region, false,true));
 			mav.getModel().put("dispDate", TransStringUtil.getCurrentDate());
 		}
 		mav.getModel().put("zones", domainManagerService.getZones());
@@ -188,16 +197,47 @@ public class DispatchController extends AbstractMultiActionController {
 
 		ModelAndView mav = new ModelAndView("dispatchSummaryView");
 		//By default get the today's dispatches.
-		mav.getModel().put("dispatchInfos",getDispatchInfos(TransStringUtil.getCurrentServerDate(), null, null, true));
+		mav.getModel().put("dispatchInfos",getDispatchInfos(TransStringUtil.getCurrentServerDate(), null, null, true,true));
 		mav.getModel().put("dispDate", TransStringUtil.getCurrentDate());
+		
 		return mav;
 	}
+	
+	public ModelAndView dispatchDashboardHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 
-	private Collection getDispatchInfos(String dispDate, String zoneStr, String region, boolean isSummary){
+		String dispDate = request.getParameter("dispDate");
+		if(TransStringUtil.isEmpty(dispDate)) 
+		{
+			dispDate=TransStringUtil.getCurrentDate();
+		}
+		try {
+			request.setAttribute("lastTime", TransStringUtil.getServerTime(new Date()));
+		} catch (ParseException e1) {}
+		//By default get the today's dispatches.
+		Collection c=getDispatchInfos(getServerDate(dispDate), null, null, true,true);
+		DispatchPlanUtil.setDispatchStatus(c,true);
+		int page=-1;
+		try {
+			page=Integer.parseInt(request.getParameter("page"));
+		} catch (Exception e) {	}
+		ModelAndView mav =null;
+		if(page==-1)		mav=new ModelAndView("dispatchDashboardViewFull");
+		else 				mav=new ModelAndView("dispatchDashboardView");
+		
+		mav.getModel().put("dispatchInfos",DispatchPlanUtil.getsortedDispatch(c,page));
+		mav.getModel().put("dispDate", dispDate);
+		return mav;
+	}	
+
+	private Collection getDispatchInfos(String dispDate, String zoneStr, String region, boolean isSummary, boolean needsPunchInfo){
 		Collection dispatchInfos = new ArrayList();
 		List termintedEmployees = getTermintedEmployeeIds();
 		try {
 		Collection dispatchList = dispatchManagerService.getDispatchList(dispDate, zoneStr, region);
+		Collection punchInfo=null;
+		domainManagerService.refreshCachedData(EnumCachedDataType.TRUCK_DATA);
+		if(needsPunchInfo && dispatchList!=null && !dispatchList.isEmpty())
+			punchInfo=employeeManagerService.getPunchInfo(dispDate);		
 		Iterator iter = dispatchList.iterator();
 			while(iter.hasNext()){
 				Dispatch dispatch = (Dispatch) iter.next();
@@ -205,7 +245,7 @@ public class DispatchController extends AbstractMultiActionController {
 				if(dispatch.getZone() != null) {
 					zone=domainManagerService.getZone(dispatch.getZone().getZoneCode());
 				}
-				DispatchCommand command = DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService);
+				DispatchCommand command = DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService,punchInfo);
 				command.setTermintedEmployees(termintedEmployees);
 				if(isSummary){
 					FDRouteMasterInfo routeInfo = domainManagerService.getRouteMasterInfo(command.getRoute(), new Date());
@@ -213,6 +253,12 @@ public class DispatchController extends AbstractMultiActionController {
 						command.setNoOfStops(routeInfo.getNumberOfStops());
 					}
 
+				}
+				ErpTruckMasterInfo truckInfo=domainManagerService.getERPTruck(command.getTruck());
+				if(truckInfo!=null)
+				{
+					
+					command.setLocation(truckInfo.getLocation());
 				}
 				dispatchInfos.add(command);
 			}
@@ -358,7 +404,7 @@ public class DispatchController extends AbstractMultiActionController {
 						  saveMessage(request, getMessage("app.actionmessage.140", null));
 						  return planHandler(request,response);
 					}
-				   dispatchManagerService.autoDisptch(dispatchDate);
+				   dispatchManagerService.autoDisptchRegion(dispatchDate);
 				   saveMessage(request, getMessage("app.actionmessage.143", null));
 				   return planHandler(request,response);
 	}
@@ -479,6 +525,8 @@ public class DispatchController extends AbstractMultiActionController {
 		return null;
 	}
 	
+	
+	
 	private Map getRouteDirections(Map routes) throws ReportGenerationException {
 		Map result = new TreeMap();
 		DeliveryServiceProxy proxy = new DeliveryServiceProxy();
@@ -541,6 +589,13 @@ public class DispatchController extends AbstractMultiActionController {
 		return result;
 	}
 	
-	
+	public ModelAndView unassignedPunchedInEmployeeHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+
+		ModelAndView mav = new ModelAndView("unassignedActiveEmployeeView");
+		mav.getModel().put("unassignedEmployees",this.getDispatchManagerService().getUnassignedActiveEmployees());
+		mav.getModel().put("dispDate", TransStringUtil.getCurrentDate());
+		
+		return mav;
+	}	
 
 }

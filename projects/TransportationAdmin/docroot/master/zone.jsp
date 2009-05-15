@@ -78,6 +78,7 @@
 							  <ec:column alias="area" property="area.name" title="Area"/>
 							  <ec:column alias="region" property="region.name" title="Region"/>
 							  <ec:column alias="unattended" property="unattended" title="Unattended"/>
+                              <ec:column alias="priority" property="priority" title="Priority"/>
 							</ec:row>
 						  </ec:table>
 		<% }else{ %>
@@ -94,6 +95,7 @@
 							  <ec:column alias="trnZoneType" property="trnZoneType.name" title="Zone Type"/>
 							  <ec:column alias="area" property="area.name" title="Area"/>
 							  <ec:column alias="region" property="region.name" title="Region"/>
+                              <ec:column alias="priority" property="priority" title="Priority"/>
 							  <ec:column alias="unattended" property="unattended" title="Unattended"/>
 							</ec:row>
 						  </ec:table>

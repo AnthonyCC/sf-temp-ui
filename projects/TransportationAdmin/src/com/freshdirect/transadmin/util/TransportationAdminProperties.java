@@ -95,6 +95,9 @@ public class TransportationAdminProperties {
 	private static long lastRefresh = 0;
 	private final static long REFRESH_PERIOD = 5 * 60 * 1000;
 	
+	private final static long PROP_TRANSPORTATION_DISPATCH_DASHBOARD_DISPATCH_PERIOD = 60 * 60 * 1000;
+	private final static long PROP_TRANSPORTATION_DISPATCH_DASHBOARD_DISPATCHED_PERIOD = 10 * 60 * 1000;
+	
 	private final static String PROP_TRANSPORTATION_CELLDATA_SEPERATOR		= "transportation.celldata.seperator";
 	
 	private final static String PROP_TRANSPORTATION_DEPOT_DEPARTTIMEDIFF		= "transportation.depot.departtimediff";
@@ -102,6 +105,8 @@ public class TransportationAdminProperties {
 	private final static String PROP_TRANSPORTATION_DEPOT_USESTPARRTIME		= "transportation.depot.usestoparrtime";
 	
 	private final static String PROP_TRANSPORTATION_SAPORDERFILE_ENCODING		= "transportation.saporderfile.encoding";
+	
+	private final static String PROP_TRANSPORTATION_DISPATCH_REFRESHTIME		= "transportation.dispatch.refreshtime";
 	
 	static {
 				
@@ -177,7 +182,8 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_DEPOT_DEPARTTIMEDIFF, "0");
 		
 		defaults.put(PROP_TRANSPORTATION_DEPOT_USESTPARRTIME, "true");
-				
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_REFRESHTIME, "30");
+		
 		refresh();		
 	}
 
@@ -384,4 +390,14 @@ public class TransportationAdminProperties {
         return (new Boolean(get(PROP_TRANSPORTATION_DEPOT_USESTPARRTIME))).booleanValue();
     }
 	
+	public static long getDispatchPeriod() {
+		return PROP_TRANSPORTATION_DISPATCH_DASHBOARD_DISPATCH_PERIOD;
+	}
+	public static long getDispatchedPeriod() {
+		return PROP_TRANSPORTATION_DISPATCH_DASHBOARD_DISPATCHED_PERIOD;
+	}
+	public static int getDispatchDashboardRefreshTime() 
+	{
+		return getIntVal(get(PROP_TRANSPORTATION_DISPATCH_REFRESHTIME));
+	}
 }

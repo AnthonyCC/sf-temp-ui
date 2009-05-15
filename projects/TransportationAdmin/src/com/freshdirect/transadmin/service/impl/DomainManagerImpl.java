@@ -74,7 +74,10 @@ public class DomainManagerImpl
 		return TransAdminCacheManager.getInstance().getAllTruckMasterInfo(); 
 	}
 	
-
+	public ErpTruckMasterInfo getERPTruck(String truckId)
+	{
+		return TransAdminCacheManager.getInstance().getTruckMasterInfo(truckId);
+	}
 	
 	public Collection getTimeSlots() {
 		return getDomainManagerDao().getTimeSlots();

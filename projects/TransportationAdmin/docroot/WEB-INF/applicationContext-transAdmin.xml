@@ -9,6 +9,7 @@
 		<property name="jndiName" value="fdtrndatasource"/>
 	</bean>
     
+    
     <!-- the following is hibernate configuration via spring -->
     
     <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
@@ -44,6 +45,7 @@
 				<value>com/freshdirect/transadmin/model/GeoRestrictionBoundary.hbm.xml</value>
 				
 				<value>com/freshdirect/transadmin/model/RouteMapping.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/ActivityLog.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">
@@ -59,16 +61,22 @@
     <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
 		<property name="jndiName" value="fdtrndatasource"/>
 	</bean>
-	
+	   
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
    </bean>
-    
+   
+    <!--<bean id="kronosDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="fdKronosDatasource"/>
+	</bean>
+    <bean id="kronosTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="kronosDataSource"/>
+   </bean>-->
     
     <bean id="employeeManagerDAO" class="com.freshdirect.transadmin.dao.oracle.EmployeeManagerDaoOracleImpl">
 		<property name="dataSource" ref="dataSource"/>
 	</bean>	
-	
+    
 	<bean id="zoneManagerDAO" class="com.freshdirect.transadmin.dao.oracle.ZoneManagerDaoOracleImpl">
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
@@ -81,11 +89,16 @@
 		<property name="dataSource" ref="dataSource"/>
 	</bean>	
 	
+    <bean id="punchInfoDAO" class="com.freshdirect.transadmin.dao.sqlserver.PunchInfoDaoImpl">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>	
+    
 	<bean id="zoneManagerService" class="com.freshdirect.transadmin.service.impl.ZoneManagerImpl">
         <property name="zoneManagerDAO" ref="zoneManagerDAO"/>        
     </bean>
     
    	
+   
 	<bean id="zoneManager" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 		<property name="transactionManager" ref="transactionManager"/>
 		<property name="target" ref="zoneManagerService"/>
@@ -99,6 +112,7 @@
 	<bean id="employeeManagerService" class="com.freshdirect.transadmin.service.impl.EmployeeManagerImpl">
         <property name="employeeManagerDAO" ref="employeeManagerDAO"/>
           <property name="domainManagerDao" ref="domainManagerDAO"/>
+          <property name="punchInfoDAO" ref="punchInfoDAO"/>
     </bean>
 	
 	
@@ -133,6 +147,10 @@
 		<property name="sessionFactory" ref="sessionFactory"/>
 	</bean>	
 	
+	<bean id="logManagerDAO" class="com.freshdirect.transadmin.dao.hibernate.LogManagerDaoHibernateImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>	
+	
     <!-- who is driving the transactions? No one... Probably should use directly -->
     <bean id="domainManager" class="com.freshdirect.transadmin.service.impl.DomainManagerImpl">
         <property name="domainManagerDao" ref="domainManagerDAO"/>
@@ -144,16 +162,19 @@
     </bean>
 
     
-     <bean id="dispatchManager" class="com.freshdirect.transadmin.service.impl.DispatchManagerImpl">
+     <bean id="dispatchManagerBase" class="com.freshdirect.transadmin.service.impl.DispatchManagerImpl">
         <property name="dispatchManagerDao" ref="dispatchManagerDAO"/>
         <property name="domainManagerService" ref="domainManager"/>
         <property name="routeManagerDao" ref="routeManagerDAO"/>
+        <property name="employeeManagerService" ref="employeeManagerService"/>
     </bean>
     
     <bean id="locationManager" class="com.freshdirect.transadmin.service.impl.LocationManagerImpl">
         <property name="locationManagerDao" ref="locationManagerDAO"/>
     </bean>
-    
+     <bean id="logManager" class="com.freshdirect.transadmin.service.impl.LogManagerImpl">
+        <property name="logManagerDao" ref="logManagerDAO"/>
+    </bean>
     
      
      <bean id="txManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
@@ -163,8 +184,9 @@
     <bean 
         id="txManager" 
         class="org.springframework.transaction.jta.WebLogicJtaTransactionManager"
-    />  --> 
-    
+    />  -->  
+   
+ 
     <bean id="domainManagerBase" abstract="true" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="target" ref="domainManager"/>
         <property name="transactionManager" ref="txManager"/>
@@ -175,7 +197,6 @@
             </props>
         </property>
     </bean>
-    
     <bean id="restrictionManagerBase" abstract="true" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="target" ref="restrictionManager"/>
         <property name="transactionManager" ref="txManager"/>
@@ -187,10 +208,17 @@
         </property>
     </bean>
  
+    <bean id="dispatchManagerProxy"  class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="dispatchManagerBase"/>
+        <property name="interceptorNames">
+			<list>				
+				<value>activityLogAdvisor</value>
+			</list>
+		</property>	
+    </bean>   
  
- 
-     <bean id="dispatchManagerBase" abstract="true" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-        <property name="target" ref="dispatchManager"/>
+     <bean id="dispatchManager"  class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="target" ref="dispatchManagerProxy"/>
         <property name="transactionManager" ref="txManager"/>
         <property name="transactionAttributes">
             <props>
@@ -211,6 +239,15 @@
         </property>
     </bean>
     
+    <bean id="logManagerBase"  class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="target" ref="logManager"/>
+        <property name="transactionManager" ref="txManager"/>
+        <property name="transactionAttributes">
+            <props>            	
+            	<prop key="*">PROPAGATION_REQUIRED</prop>               
+            </props>
+        </property>
+    </bean>
     <!-- Hibernate 3.0's JMX statistics service -->
 	<!-- Implements the StatisticsServiceMBean management interface -->
 	
@@ -218,5 +255,20 @@
 		<property name="sessionFactory" ref="sessionFactory"/>
 	</bean>
     
+       <!-- Log Advisor and Log Advice -->
+    <bean id="activityLogAdvisor"  class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+      <property name="advice">
+         <ref local="activityLogAdvice"/>
+      </property>
+      <property name="patterns">
+         <value>.*saveEntity.*,.*saveDispatch.*</value>
+      </property>
+   </bean>	
+    
+    <bean id="activityLogAdvice" class="com.freshdirect.transadmin.log.ActivityLogAdvisor" >
+    	<property name="logManager" ref="logManagerBase"/>
+    	<property name="dispatchManagerDao" ref="dispatchManagerDAO"/>
+    </bean>
+   
    
 </beans>
