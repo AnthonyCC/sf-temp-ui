@@ -39,7 +39,8 @@ public class MenuManager {
 	public MenuGroup getMenuGroup(ServletRequest request) {
 		
 		if(menuAccess != null) {
-			String userRole = "TrnAdmin";//SecurityManager.getUserRole(request, menuAccess.getMenuRoleMapping().keySet());
+			String userRole =SecurityManager.getUserRole(request, menuAccess.getMenuRoleMapping().keySet());
+			//String userRole = "TrnAdmin";//
 			
 			HttpServletRequest httpRequest = (HttpServletRequest)request;				
 			String currentRootUrl = (String)httpRequest.getAttribute("ROOT_URI");
@@ -82,7 +83,8 @@ public class MenuManager {
 	
 	public boolean hasAccess(ServletRequest request, String uri) {
 		if(menuAccess != null) {
-			String userRole = "TrnAdmin";//SecurityManager.getUserRole(request, menuAccess.getMenuRoleMapping().keySet());
+			String userRole =SecurityManager.getUserRole(request, menuAccess.getMenuRoleMapping().keySet());
+			//String userRole = "TrnAdmin";
 			Object tmpMapping = menuAccess.getLinkRoleMapping().get(userRole);
 			if(tmpMapping != null) {
 				return ((List)tmpMapping).contains(uri);
