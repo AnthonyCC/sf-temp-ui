@@ -396,7 +396,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 		while(it.hasNext()) {
 			_punchInfo=(PunchInfoI)it.next();
 			if(_punchInfo.getInPunchDTM()!=null &&_punchInfo.getOutPunchDTM()==null) {// add check for inPunch!=null
-				if(dispatchResources==null || !isDispatchAssigned(_punchInfo.getEmployeeId(),dispatchResources)) {
+				if(!isDispatchAssigned(_punchInfo.getEmployeeId(),dispatchResources)) {
 					WebEmployeeInfo webEmpInfo=employeeManagerService.getEmployee(_punchInfo.getEmployeeId());
 					if(webEmpInfo!=null && webEmpInfo.getEmpInfo()!=null ) {
 						unassignedPunchedInEmployees.add(webEmpInfo);
@@ -409,6 +409,9 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	 
 	
 	private boolean isDispatchAssigned(String employeeId, Set dispatchResources) {
+		
+		if(dispatchResources==null)
+			return false;
 		
 		boolean assigned=false;
 		Iterator it=dispatchResources.iterator();
