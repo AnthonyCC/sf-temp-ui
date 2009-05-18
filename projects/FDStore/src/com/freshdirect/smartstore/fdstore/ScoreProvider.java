@@ -1077,6 +1077,9 @@ public class ScoreProvider implements DataAccess {
 			FactorUtil.getDiscretizedSeasonality()
 		);
 		
+		rangeConverters.put("ProfitMargin",
+		        FactorRangeConverter.getRawGlobalScores("GROSS_PROFIT_PCTG"));
+		
 		// ORIGINAL SCORES
 		rangeConverters.put(
 			ORIGINAL_SCORES_PERSONALIZED,
