@@ -138,6 +138,13 @@ public class DispatchFormController extends AbstractFormController {
 
 			boolean isNew = isNew(command);
 			Dispatch domainObject=getDispatch(command);
+			
+			Dispatch old=getDispatchManagerService().getDispatch(domainObject.getDispatchId());
+			if(old!=null)
+			{
+				if(old.getDispatchTime()!=null&&domainObject.getDispatchTime()!=null)domainObject.setDispatchTime(old.getDispatchTime());
+				if(old.getCheckedInTime()!=null&&domainObject.getCheckedInTime()!=null)domainObject.setCheckedInTime(old.getCheckedInTime());
+			}
 			getDispatchManagerService().saveDispatch(domainObject);
 			command.setDispatchId(domainObject.getDispatchId());
 		} catch (TransAdminApplicationException objExp) {

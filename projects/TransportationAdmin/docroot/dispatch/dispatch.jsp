@@ -57,7 +57,7 @@
                    }
                     
                     function doConfirm(tableId, url) {
-                        sendRequest(tableId, url, "Do you want to confirm/deconfirm the selected records?");                      
+                        sendRequestNew(tableId, url, "Do you want to confirm/deconfirm the selected records?");                      
                     }
                     
                     function refreshRoute() {
@@ -93,6 +93,39 @@
                           alert('Please Select a Row!');
                         }
                     }
+                    
+                   function sendRequestNew(tableId, url, message, action) {
+                      var table = document.getElementById(tableId);
+                        var checkboxList = table.getElementsByTagName("input");
+                        var confirmedList = table.getElementsByTagName("input");
+                        var dateField = document.getElementById("dispDate").value;    
+                        var checked="";
+                        var unchecked="";
+                        for (i = 0; i < checkboxList.length; i++) 
+                        {
+                        
+                          if (checkboxList[i].type=="checkbox" && !checkboxList[i].disabled) 
+                          {
+                          	if(checkboxList[i].checked)
+                          	{
+                          		checked+=checkboxList[i].name+",";
+                          	}                          	
+                          }
+                        }
+                        checked=checked.substring(0,checked.length-1);                        
+                        if(checked.length==0)
+                        {
+                         alert('Please Select a Row!');
+                        }
+                        else
+                        {
+                        	var newForm=document.forms["newSubmit"];
+                        	newForm.action=url;
+                        	newForm.id.value=checked;
+                        	newForm.dispDate.value=dateField;
+                        	newForm.submit();
+                        }
+                    }                    
                     
                     function directions(tableId, url, columnIndex) {
                       var table = document.getElementById(tableId);
@@ -209,10 +242,12 @@
               <ec:exportXls fileName="dispatchschedule.xls" tooltip="Export PDF" />
               <ec:exportCsv fileName="dispatchschedule.csv" tooltip="Export CSV" delimiter="|"/>
                 
-            <ec:row interceptor="dispatchobsoletemarker">
-              <ec:column title=" "width="5px" 
-                    filterable="false" sortable="false" cell="selectcol"
-                    property="dispatchId" />                           
+            <ec:row interceptor="dispatchobsoletemarker"> 
+              <ec:column title=" " width="5px"  filterable="false" sortable="false" cell="selectcol"  property="dispatchId" /> 
+              <ec:column title="Phones Assigned" width="5px"  filterable="false" sortable="false" cell="selectsplcol"  property="phoneAssigned" />
+              <ec:column title="Keys Ready" width="5px"  filterable="false" sortable="false" cell="selectsplcol"  property="keysReady" />   
+              <ec:column title="Dispatched" width="5px"  filterable="false" sortable="false" cell="selectsplcol"  property="dispatched" />   
+              <ec:column title="Checked In" width="5px"  filterable="false" sortable="false" cell="selectsplcol"  property="checkedIn" />   
               <ec:column  cell="tooltip" alias="zoneCode" property="zoneNameEx" title="Zone"/>
               <ec:column alias="trnConfirm" width="5" cell="confirmcol" property="confirmedValue" title="C"  />
               <ec:column alias="trnZoneRegion" property="regionName" title="Region" />
@@ -227,13 +262,18 @@
               <ec:column property="drivers"  cell="dispatchResCell" title="Driver"  filterable="true" alias="drivers"/>
               <ec:column property="helpers"  cell="dispatchResCell" title="Helper"  filterable="true" alias="helpers"/>
               <ec:column property="runners"  cell="dispatchResCell" title="Runner"  filterable="true" alias="runners"/>
-              <ec:column alias="trnStatus" property="statusName"  title="Status"/>
+              <ec:column alias="trnStatus" property="dispatchStatus"  title="Status"/>
             </ec:row>
           </ec:table>
     </div>
     <script>
-      addMultiRowHandlers('ec_table', 'rowMouseOver', 'editdispatch.do','id',0, 0,'dispDate');
+      addMultiRowHandlersColumn('ec_table', 'rowMouseOver', 'editdispatch.do','id',0, 4,'dispDate');
     </script>
-    <%@ include file='i_activityLog.jspf'%>      
+    <%@ include file='i_activityLog.jspf'%> 
+    <form name="newSubmit" action="dispatch.do" method="post">
+    <input type=hidden name=id><input type=hidden name=dispDate>
+    </form>     
   </tmpl:put>
+  
+  
 </tmpl:insert>

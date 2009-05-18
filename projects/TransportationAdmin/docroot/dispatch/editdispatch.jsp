@@ -44,6 +44,10 @@
                     chxbox.checked = !(chxbox.checked);
                 }                
         }
+       function checkRouteInfo()
+       {
+       if(!dispatchForm.confirmed.checked)getRouteInfo();
+       }
        function getRouteInfo()
         {
         	var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
@@ -525,13 +529,14 @@
 					
 					<c:if test="${dispatchForm.today == true}">
 					<c:if test="${dispatchForm.isBullpen == false}">
-					<c:if test='${dispatchForm.dispatchStatus == "Truck"}'>
+					<c:if test='${dispatchForm.dispatched == false}'>
 					<tr>
 						<td>Phones Assigned</td>
 						<td colspan="2"> 
 							<form:checkbox path="phoneAssigned" />
 						</td>
 					</tr>
+					
 					<tr>
 						<td>Keys Ready</td>
 						<td colspan="2"> 
@@ -539,7 +544,8 @@
 						</td>
 					</tr>
 					</c:if>
-					<c:if test='${dispatchForm.dispatchStatus == "EmpReady"}'>
+					<c:if test='${dispatchForm.checkedIn == false}'>
+					<c:if test='${dispatchForm.dispatched == true}'>
 					<tr>
 						<td>Dispatched</td>
 						<td colspan="2"> 
@@ -547,8 +553,9 @@
 						</td>
 					</tr>
 					</c:if>
+					</c:if>
 					
-					<c:if test='${dispatchForm.dispatchStatus == "Dispatched"}'>
+					<c:if test='${dispatchForm.checkedIn == true}'>
 					<tr>
 						<td>Checked In</td>
 						<td colspan="2"> 
@@ -559,7 +566,8 @@
 					</c:if>
 					
 					<c:if test="${dispatchForm.isBullpen == true}">	
-					<c:if test='${dispatchForm.dispatched == false}'>				
+					<c:if test='${dispatchForm.checkedIn == false}'>
+					<c:if test='${dispatchForm.dispatched == true}'>				
 					<tr>
 						<td>Dispatched</td>
 						<td colspan="2"> 
@@ -567,8 +575,9 @@
 						</td>
 					</tr>					
 					</c:if>
+					</c:if>
 					
-					<c:if test='${dispatchForm.dispatchStatus == "Dispatched"}'>
+					<c:if test='${dispatchForm.checkedIn == true}'>
 					<tr>
 						<td>Checked In</td>
 						<td colspan="2"> 
@@ -607,4 +616,4 @@
      
   </tmpl:put>
 </tmpl:insert>
-<script>getRouteInfo();</script>
+<script>checkRouteInfo();</script>

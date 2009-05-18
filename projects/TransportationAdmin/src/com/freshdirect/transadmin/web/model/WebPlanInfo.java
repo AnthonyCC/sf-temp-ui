@@ -45,9 +45,9 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	private ResourceList helpers=new ResourceList();		      
 	private ResourceList runners=new ResourceList();*/
 		      
-	private List drivers= new ArrayList();
-	private List helpers=new ArrayList();		      
-	private List runners=new ArrayList();
+	private List drivers= new ResourceList();
+	private List helpers=new ResourceList();		      
+	private List runners=new ResourceList();
 	
 	private int driverReq;
 	private int driverMax;
@@ -230,7 +230,7 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	 * @return the isBullpen
 	 */
 	public String getIsBullpen() {
-		return isBullpen;
+		return isBullpen==null?"false":isBullpen;
 	}
 	/**
 	 * @param isBullpen the isBullpen to set

@@ -42,7 +42,8 @@ public class ActivityLogAdvisor implements MethodBeforeAdvice
 
 	public void before(Method arg1, Object[] arg2, Object arg3) throws Throwable 
 	{				
-		
+		try
+		{
 		if(arg2!=null&&arg2.length>0)
 		{
 			if(arg2[0] instanceof Plan)
@@ -94,8 +95,15 @@ public class ActivityLogAdvisor implements MethodBeforeAdvice
 				}
 			}
 		}
+		}catch(Throwable e)
+		{
+			e.printStackTrace();
+		}
 		
-	}
+		
+		}
+	
+	
 	
 	
 
@@ -121,7 +129,7 @@ abstract class LogComparator implements Comparator
     {
     	if(field1==null)field1="";
     	if(field2==null)field2="";
-    	return compareValues(name,field1,field2);
+    	return compareValues(name,field1.toString(),field2.toString());
     }
 	//public abstract List getPlanUpdateFields();
 	public Object compareValues(String name,Object field1,Object field2)
@@ -316,7 +324,7 @@ class DispatchComparator extends LogComparator
 			{
 				updates.add(obj);
 			}
-			if(( obj=compareValues("PLAN_ID",oldDispatch.getPlanId(),newDispatch.getPlanId()))!=null)
+			if(( obj=compareValueswithNull("PLAN_ID",oldDispatch.getPlanId(),newDispatch.getPlanId()))!=null)
 			{
 				updates.add(obj);
 			}

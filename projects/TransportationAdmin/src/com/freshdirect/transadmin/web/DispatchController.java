@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -179,13 +180,17 @@ public class DispatchController extends AbstractMultiActionController {
 		String zone = request.getParameter("zone");
 		String region = request.getParameter("region");
 		ModelAndView mav = new ModelAndView("dispatchView");
-		if(!TransStringUtil.isEmpty(dispDate)) {
-			System.out.println(getServerDate(dispDate).equals(TransStringUtil.getCurrentServerDate())?true:false);
-			mav.getModel().put("dispatchInfos", getDispatchInfos(getServerDate(dispDate), zone, region, false,false));
+		if(!TransStringUtil.isEmpty(dispDate)) {			
+			boolean punchInfo=getServerDate(dispDate).equals(TransStringUtil.getCurrentServerDate())?true:false;
+			Collection c=getDispatchInfos(getServerDate(dispDate), zone, region, false,punchInfo);
+			DispatchPlanUtil.setDispatchStatus(c,false);
+			mav.getModel().put("dispatchInfos",c );
 			mav.getModel().put("dispDate", dispDate);
 		} else {
 			//By default get the today's dispatches.
-			mav.getModel().put("dispatchInfos",getDispatchInfos(TransStringUtil.getCurrentServerDate(), zone, region, false,true));
+			Collection c=getDispatchInfos(TransStringUtil.getCurrentServerDate(), zone, region, false,true);
+			DispatchPlanUtil.setDispatchStatus(c,false);
+			mav.getModel().put("dispatchInfos",c);
 			mav.getModel().put("dispDate", TransStringUtil.getCurrentDate());
 		}
 		mav.getModel().put("zones", domainManagerService.getZones());
@@ -307,6 +312,7 @@ public class DispatchController extends AbstractMultiActionController {
 	 * @param response current HTTP response
 	 * @return a ModelAndView to render the response
 	 */
+	
 	public ModelAndView dispatchConfirmHandler(HttpServletRequest request, HttpServletResponse response)
 								throws ServletException, ParseException {
 
@@ -315,34 +321,113 @@ public class DispatchController extends AbstractMultiActionController {
 		StringTokenizer splitter = null;
 		Dispatch tmpDispatch = null;
 		int routeBlankCount = 0;
-		if (arrEntityList != null) {
-			int arrLength = arrEntityList.length;
-			for (int intCount = 0; intCount < arrLength; intCount++) {
-				//splitter = new StringTokenizer(arrEntityList[intCount], "$");
-				tmpDispatch =dispatchManagerService.getDispatch(arrEntityList[intCount]);
-				if(TransStringUtil.isEmpty(tmpDispatch.getRoute())){
-					routeBlankCount++;
-					break;
-				}
-				if(tmpDispatch != null) {
+		
+		Map ids=getCheckedInIds(request);
+		Iterator keys=ids.keySet().iterator();
+		while(keys.hasNext())
+		{
+			String key=(String)keys.next();
+			tmpDispatch =dispatchManagerService.getDispatch(key);
+			List list=(List)ids.get(key);
+			for(int i=0,n=list.size();i<n;i++)
+			{
+				String status=(String)list.get(i);
+				if("confirmed".equalsIgnoreCase(status)&&!TransStringUtil.isEmpty(tmpDispatch.getRoute()))
+				{
 					Boolean confirm = tmpDispatch.getConfirmed();
-					if( confirm == null || ! confirm.booleanValue() ) {
+					if( confirm == null || ! confirm.booleanValue() ) 
+					{
 						tmpDispatch.setConfirmed(Boolean.TRUE);
 					} else {
 						tmpDispatch.setConfirmed(Boolean.FALSE);
 					}
-					dispatchSet.add(tmpDispatch);
+					
 				}
-			}
-			if(routeBlankCount > 0){
-				saveMessage(request, getMessage("app.actionmessage.138", null));
-			}else {
-				dispatchManagerService.saveEntityList(dispatchSet);
-				saveMessage(request, getMessage("app.actionmessage.104", null));
+				if("phoneAssigned".equalsIgnoreCase(status))
+				{
+					tmpDispatch.setPhonesAssigned(Boolean.TRUE);
+				}
+				if("keysReady".equalsIgnoreCase(status))
+				{
+					tmpDispatch.setKeysReady(Boolean.TRUE);
+				}
+				if("dispatched".equalsIgnoreCase(status))
+				{
+					tmpDispatch.setDispatchTime(TransStringUtil.getServerTime(TransStringUtil.getServerTime(new Date())));
+				}
+				if("checkedIn".equalsIgnoreCase(status))
+				{
+					tmpDispatch.setCheckedInTime(TransStringUtil.getServerTime(TransStringUtil.getServerTime(new Date())));
+				}
+				
+				dispatchSet.add(tmpDispatch);
 			}
 		}
+		dispatchManagerService.saveEntityList(dispatchSet);
+		saveMessage(request, getMessage("app.actionmessage.104", null));
+		
+//		if (arrEntityList != null) {
+//			int arrLength = arrEntityList.length;
+//			for (int intCount = 0; intCount < arrLength; intCount++) {
+//				//splitter = new StringTokenizer(arrEntityList[intCount], "$");
+//				tmpDispatch =dispatchManagerService.getDispatch(arrEntityList[intCount]);
+//				if(TransStringUtil.isEmpty(tmpDispatch.getRoute())){
+//					routeBlankCount++;
+//					break;
+//				}
+//				if(tmpDispatch != null) {
+//					Boolean confirm = tmpDispatch.getConfirmed();
+//					if( confirm == null || ! confirm.booleanValue() ) {
+//						tmpDispatch.setConfirmed(Boolean.TRUE);
+//					} else {
+//						tmpDispatch.setConfirmed(Boolean.FALSE);
+//					}
+//					dispatchSet.add(tmpDispatch);
+//				}
+//			}
+//			if(routeBlankCount > 0){
+//				saveMessage(request, getMessage("app.actionmessage.138", null));
+//			}else {
+//				dispatchManagerService.saveEntityList(dispatchSet);
+//				saveMessage(request, getMessage("app.actionmessage.104", null));
+//			}
+//		}
 
 		return dispatchHandler(request, response);
+	}
+	public Map getCheckedInIds(HttpServletRequest request)
+	{
+		Map map=new HashMap();
+		String ids=request.getParameter("id");
+		StringTokenizer token=new StringTokenizer(ids,",");
+		while(token.hasMoreTokens())
+		{
+			String tokenStr=token.nextToken();
+			if(tokenStr!=null)
+			{
+				String key;
+				if(tokenStr.indexOf("_")==-1)
+				{
+					key=tokenStr;
+				}
+				else
+				{
+					key=tokenStr.substring(0,tokenStr.indexOf("_"));
+				}
+				List list=(List)map.get(key);
+				if(list==null){ list=new ArrayList(); map.put(key,list);}
+				if(tokenStr.indexOf("_")!=-1)
+				{
+					String value=tokenStr.substring(tokenStr.indexOf("_")+1);
+					list.add(value);
+				}
+				else
+				{
+					list.add("confirmed");
+				}
+			}
+		}
+		return map;
 	}
 
 	public ModelAndView routeRefreshHandler(HttpServletRequest request, HttpServletResponse response)

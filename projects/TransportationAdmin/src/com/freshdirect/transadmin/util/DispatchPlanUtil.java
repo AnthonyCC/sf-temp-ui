@@ -627,7 +627,7 @@ public class DispatchPlanUtil {
 				}
 				
 				//Packet status
-				if(command.isKeysReady()||command.isPhoneAssigned())
+				if(command.isKeysReady()&& command.isPhoneAssigned())
 				{					
 					command.setDispatchStatus(EnumStatus.Packet);
 				}
