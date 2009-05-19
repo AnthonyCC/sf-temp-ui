@@ -80,8 +80,17 @@ public class DlvBuildingFormController extends AbstractFormController {
 					!model.getBuildingId().equalsIgnoreCase(modelIn.getBuildingId())) {
 				errorList.add(this.getMessage("app.actionmessage.119", new Object[]{"Building"}));
 			}  else {
-				modelIn.setGeocodeConfidence(EnumGeocodeConfidenceType.LOW.getName());
-				modelIn.setGeocodeQuality(EnumGeocodeQualityType.USERMANUAL.getName());
+				
+				if((modelIn.getLatitude() != null 
+						&& model.getGeographicLocation() != null
+						&& model.getGeographicLocation().getLatitude() != null &&
+						!model.getGeographicLocation().getLatitude().equalsIgnoreCase(modelIn.getLatitude().toString()))
+						|| (modelIn.getLongitude() != null && model.getGeographicLocation() != null
+								&& model.getGeographicLocation().getLongitude() != null && 
+								!model.getGeographicLocation().getLongitude().equalsIgnoreCase(modelIn.getLongitude().toString()))) {
+					modelIn.setGeocodeConfidence(EnumGeocodeConfidenceType.LOW.getName());
+					modelIn.setGeocodeQuality(EnumGeocodeQualityType.USERMANUAL.getName());
+				}
 				getLocationManagerService().saveEntity(modelIn);
 			}
 			
