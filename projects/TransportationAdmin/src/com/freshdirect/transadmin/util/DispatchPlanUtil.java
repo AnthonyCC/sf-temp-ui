@@ -480,11 +480,11 @@ public class DispatchPlanUtil {
 			total.addAll(bullpen);
 			total.addAll(dispatched);
 			int n=total.size();if(n>5) n=5;
-			for(int i=0;i<n;i++ )
-			{
-				DispatchCommand temp=(DispatchCommand)((List)total).get(i);
-				if(temp.getDispatchStatus()==EnumStatus.EmpReady) temp.setDispatchStatus(EnumStatus.Ready);
-			}
+//			for(int i=0;i<n;i++ )
+//			{
+//				DispatchCommand temp=(DispatchCommand)((List)total).get(i);
+//				if(temp.getDispatchStatus()==EnumStatus.EmpReady) temp.setDispatchStatus(EnumStatus.Ready);
+//			}
 		}
 		return total;
 	}
@@ -639,6 +639,14 @@ public class DispatchPlanUtil {
 				{
 					command.setDispatchStatus(EnumStatus.EmpReady);
 				}
+				else
+				{
+					return;
+				}
+				if(checkReady(command.getStartTime()))
+				{
+					command.setDispatchStatus(EnumStatus.Ready);
+				}
 				
 			}
 	     }
@@ -666,7 +674,19 @@ public class DispatchPlanUtil {
 		}
 				
 	}
-	
+	public static boolean checkReady(String startTime)
+	{
+		boolean result=false; 
+		try {
+			Date d=TransStringUtil.getServerTime(startTime);
+			Date c=TransStringUtil.getServerTime(TransStringUtil.getServerTime(new Date()));
+			if(c.before(d)) return false;
+			else return true;
+		} catch (ParseException e) {
+			
+		}
+		return result;
+	}
 	public static boolean checkEmployeeStatus(DispatchCommand command,List employees,boolean in )
 	{
 		boolean result=true;

@@ -12,7 +12,8 @@ public class LogManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl impl
 
 	public void log(String userId, int type,Object obj) 
 	{
-		Object[] array=(Object[])obj;		
+		Object[] array=(Object[])obj;
+		if(array[0]==null) return;
 		ActivityLog log=new ActivityLog();
 		log.setUserId(userId);
 		log.setType(type);

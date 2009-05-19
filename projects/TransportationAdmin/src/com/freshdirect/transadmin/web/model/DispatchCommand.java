@@ -355,6 +355,17 @@ public class DispatchCommand extends WebPlanInfo {
 		if(checkedInTime!=null)this.checkedIn =true;
 	}
 	
-	
+	public String getRegionZone()
+	{
+		if(getRegionName()==null&&getZoneName()==null) return "";
+		if(getRegionName()==null) return getZoneName();
+		return (getRegionName()==null?"":getRegionName())+(getZoneName()==null?"":"-"+getZoneName());
+	}
+	public String getExtras()
+	{
+		if(getGpsNumber()==null&&getEzpassNumber()==null) return "";
+		if(getGpsNumber()==null) return getEzpassNumber();
+		return (getGpsNumber()==null?"":getGpsNumber())+(getEzpassNumber()==null?",":","+getEzpassNumber());
+	}
 	
 }

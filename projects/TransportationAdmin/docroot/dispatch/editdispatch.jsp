@@ -50,10 +50,13 @@
        }
        function getRouteInfo()
         {
+         if(!dispatchForm.confirmed.checked)
+         {
         	var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
         	var dispatchDate=dispatchForm.dispatchDate.value;
         	var zoneCode=dispatchForm.zoneCode.value;
         	jsonrpcClient.AsyncDispatchProvider.getActiveRoute(getRouteInfoCallback,dispatchDate,zoneCode);
+         }
         }
         function getRouteInfoCallback(result, exception) 
         {

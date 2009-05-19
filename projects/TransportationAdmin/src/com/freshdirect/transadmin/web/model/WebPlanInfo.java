@@ -230,7 +230,7 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	 * @return the isBullpen
 	 */
 	public String getIsBullpen() {
-		return isBullpen==null?"false":isBullpen;
+		return isBullpen==null?"N":isBullpen;
 	}
 	/**
 	 * @param isBullpen the isBullpen to set

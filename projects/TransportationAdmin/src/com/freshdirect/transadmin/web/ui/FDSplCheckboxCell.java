@@ -4,6 +4,7 @@ import org.extremecomponents.table.bean.Column;
 import org.extremecomponents.table.core.TableModel;
 import org.extremecomponents.table.view.html.ColumnBuilder;
 
+import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.EnumStatus;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
 
@@ -34,28 +35,28 @@ public class FDSplCheckboxCell extends FDBaseCell
         		{
 	        		if("phoneAssigned".equalsIgnoreCase(column.getProperty()))
 	    			{
-	        			if("false".equalsIgnoreCase(command.getIsBullpen())&&(command.getDispatchStatus()==EnumStatus.Truck))
+	        			if("N".equalsIgnoreCase(command.getIsBullpen())&&(command.getDispatchStatus()==EnumStatus.Truck))
 	        			{
 	        				enabled=true;
 	        			}
 	    			}
 	    			if("keysReady".equalsIgnoreCase(column.getProperty()))
 	    			{
-	    				if("false".equalsIgnoreCase(command.getIsBullpen())&&(command.getDispatchStatus()==EnumStatus.Truck))
+	    				if("N".equalsIgnoreCase(command.getIsBullpen())&&(command.getDispatchStatus()==EnumStatus.Truck))
 	        			{
 	        				enabled=true;
 	        			}
 	    			}
 	    			if("dispatched".equalsIgnoreCase(column.getProperty()))
 	    			{
-	    				if((command.getDispatchStatus()==EnumStatus.EmpReady))
+	    				if((command.getDispatchStatus()==EnumStatus.EmpReady)||DispatchPlanUtil.isBullpen(command.getIsBullpen()))
 	        			{
 	        				enabled=true;
 	        			}
 	    			}
 	    			if("checkedIn".equalsIgnoreCase(column.getProperty()))
 	    			{
-	    				if((command.getDispatchStatus()==EnumStatus.Dispatched))
+	    				if((command.getDispatchStatus()==EnumStatus.Dispatched)||DispatchPlanUtil.isBullpen(command.getIsBullpen()))
 	        			{
 	        				enabled=true;
 	        			}

@@ -75,7 +75,7 @@
                         var dateField = document.getElementById("dispDate").value;    
                         var paramValues = null;
                         for (i = 0; i < checkboxList.length; i++) {
-                          if (checkboxList[i].type=="checkbox" && checkboxList[i].checked) {
+                          if (checkboxList[i].type=="checkbox" && checkboxList[i].checked && !checkboxList[i].disabled&&checkboxList[i].name.indexOf("_")==-1) {
                             
                             if (paramValues != null) {
                               paramValues = paramValues+","+checkboxList[i].name//+"$"+dateField;
@@ -243,26 +243,25 @@
               <ec:exportCsv fileName="dispatchschedule.csv" tooltip="Export CSV" delimiter="|"/>
                 
             <ec:row interceptor="dispatchobsoletemarker"> 
-              <ec:column title=" " width="5px"  filterable="false" sortable="false" cell="selectcol"  property="dispatchId" /> 
-              <ec:column title="Phones Assigned" width="5px"  filterable="false" sortable="false" cell="selectsplcol"  property="phoneAssigned" />
-              <ec:column title="Keys Ready" width="5px"  filterable="false" sortable="false" cell="selectsplcol"  property="keysReady" />   
+              <ec:column title="Row" width="5px"  filterable="false" sortable="false" cell="selectcol"  property="dispatchId" /> 
+              <ec:column title="Nextel" width="5px"  filterable="false" sortable="false" cell="selectsplcol"  property="phoneAssigned" />
+              <ec:column title="Keys" width="5px"  filterable="false" sortable="false" cell="selectsplcol"  property="keysReady" />   
               <ec:column title="Dispatched" width="5px"  filterable="false" sortable="false" cell="selectsplcol"  property="dispatched" />   
-              <ec:column title="Checked In" width="5px"  filterable="false" sortable="false" cell="selectsplcol"  property="checkedIn" />   
-              <ec:column  cell="tooltip" alias="zoneCode" property="zoneNameEx" title="Zone"/>
-              <ec:column alias="trnConfirm" width="5" cell="confirmcol" property="confirmedValue" title="C"  />
-              <ec:column alias="trnZoneRegion" property="regionName" title="Region" />
-              <ec:column property="supervisorEx"   title="Supervisor" cell="tooltip"  />
+              <ec:column title="ChIn" width="5px"  filterable="false" sortable="false" cell="selectsplcol"  property="checkedIn" />  
+              <ec:column alias="trnStatus" property="dispatchStatus"  title="Status"/> 
+              <ec:column alias="trnZoneRegion" property="regionZone" title="Region - Zone" />             
+              <ec:column property="supervisorEx"   title="Sup" cell="tooltip"  />
               <ec:column  alias="trnTimeslotslotName" cell="date" format="hh:mm aaa" property="startTimeEx" title="Start Time"/> 
               <ec:column  alias="trnTimeEndslotslotName" cell="date" format="hh:mm aaa" property="firstDeliveryTimeEx" title="First Dlv."/>
               <ec:column alias="trnRouterouteNumber" property="route"  width="10" title="Route"/>
               <ec:column alias="trnTrucktruckNumber" property="truck" width="10"  title="Truck"/>
-              <ec:column alias="trnTruckGpsNumber" property="gpsNumber" width="10"  title="GPS No"/>
-              <ec:column alias="trnTruckEzpassNumber" property="ezpassNumber" width="10"  title="EzPass No"/>
-              <ec:column alias="trnTruckLocation" property="location" width="10"  title="Truck Location"/>             
+              <ec:column alias="trnTruckLocation" property="location" width="10"  title="Location"/>
               <ec:column property="drivers"  cell="dispatchResCell" title="Driver"  filterable="true" alias="drivers"/>
               <ec:column property="helpers"  cell="dispatchResCell" title="Helper"  filterable="true" alias="helpers"/>
               <ec:column property="runners"  cell="dispatchResCell" title="Runner"  filterable="true" alias="runners"/>
-              <ec:column alias="trnStatus" property="dispatchStatus"  title="Status"/>
+               <ec:column alias="trnTruckGpsNumber" property="extras" width="10"  title="Extras"/>
+              
+              
             </ec:row>
           </ec:table>
     </div>

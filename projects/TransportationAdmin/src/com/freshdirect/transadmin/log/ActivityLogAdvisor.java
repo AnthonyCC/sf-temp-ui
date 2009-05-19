@@ -97,10 +97,11 @@ public class ActivityLogAdvisor implements MethodBeforeAdvice
 		}
 		}catch(Throwable e)
 		{
-			e.printStackTrace();
+			System.out.println(e);
+			//e.printStackTrace();
 		}
 		
-		
+		System.out.println("done............");
 		}
 	
 	

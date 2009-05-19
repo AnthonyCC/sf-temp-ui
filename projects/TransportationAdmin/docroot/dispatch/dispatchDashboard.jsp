@@ -61,23 +61,23 @@
 	<div align="center" valign="top" border="1">
       <ec:table items="dispatchInfos"   action="${pageContext.request.contextPath}/dispatchDashboard.do"
             imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="&nbsp;"
-            width="98%"  rowsDisplayed="25" view="fd" >      
+            width="98%"  rowsDisplayed="25" view="fd" filterable="false">      
            
             <ec:row interceptor="obsoletemarker">
                                          
-              <ec:column  cell="tooltip" alias="zoneCode" property="zoneNameEx" title="Zone" filterable="false"/>             
-              <ec:column alias="trnZoneRegion" property="regionName" title="Region" filterable="false"/>
+              <ec:column  cell="tooltip" alias="zoneCode" property="zoneNameEx" title="Zone" filterable="false" sortable="false"/>             
+              <ec:column alias="trnZoneRegion" property="regionName" title="Region" filterable="false" sortable="false"/>
               
-              <ec:column  alias="trnTimeslotslotName"  property="startTime" title="Start Time" filterable="false"/>
+              <ec:column  alias="trnTimeslotslotName"  property="startTime" title="Start Time" filterable="false" sortable="false"/>
               
-              <ec:column alias="trnRouterouteNumber" property="route"  width="10" title="Route" filterable="false"/>
-              <ec:column alias="trnTrucktruckNumber" property="truck" width="10"  title="Truck" filterable="false"/>              
-              <ec:column alias="trnTruckLocation" property="location" width="10"  title="Loc" filterable="false"/>
-              <ec:column alias="trnTruckStops" property="noOfStops" width="10"  title="Stops" filterable="false"/>
-               <ec:column alias="trnStatus" property="dispatchStatus"  title="Status" filterable="false"/>
-              <ec:column property="drivers"  cell="dispatchResCell" title="Driver"  filterable="true" alias="drivers" filterable="false"/>
-              <ec:column property="helpers"  cell="dispatchResCell" title="Helper"  filterable="true" alias="helpers" filterable="false"/>             
-             <ec:column  alias="dispatchTime"  property="dispatchTime" title="Dispatch Time" filterable="false" />
+              <ec:column alias="trnRouterouteNumber" property="route"  width="10" title="Route" filterable="false" sortable="false"/>
+              <ec:column alias="trnTrucktruckNumber" property="truck" width="10"  title="Truck" filterable="false" sortable="false"/>              
+              <ec:column alias="trnTruckLocation" property="location" width="10"  title="Loc" filterable="false" sortable="false"/>
+              <ec:column alias="trnTruckStops" property="noOfStops" width="10"  title="Stops" filterable="false" sortable="false"/>
+               <ec:column alias="trnStatus" property="dispatchStatus"  title="Status" filterable="false" sortable="false"/>
+              <ec:column property="drivers"  cell="dispatchResCell" title="Driver"  filterable="true" alias="drivers" filterable="false" sortable="false"/>
+              <ec:column property="helpers"  cell="dispatchResCell" title="Helper"  filterable="true" alias="helpers" filterable="false" sortable="false"/>             
+             <ec:column  alias="dispatchTime"  property="dispatchTime" title="Dispatch Time" filterable="false" sortable="false" />
             </ec:row>
           </ec:table>
     </div>

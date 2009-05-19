@@ -18,7 +18,7 @@ public class FDStatusBar extends DefaultStatusBar {
         if (!filterable) {
             return;
         }
-
+    
         html.td(4).styleClass(BuilderConstants.FILTER_BUTTONS_CSS).close();
 
         html.img();
