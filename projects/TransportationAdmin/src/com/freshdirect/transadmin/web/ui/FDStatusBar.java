@@ -13,6 +13,20 @@ public class FDStatusBar extends DefaultStatusBar {
 	public FDStatusBar(HtmlBuilder html, TableModel model) {
         super(html, model);
     }
+	protected void columnLeft(HtmlBuilder html, TableModel model) 
+	{
+		String hasConfirm = (String)model.getContext().getPageAttribute("HAS_CONFIRMBUTTON_NEW");
+		 
+		if(hasConfirm != null && hasConfirm.equalsIgnoreCase("TRUE")) 
+		{
+			html.td(1).close();
+			FDStatusBarBuilder toolbarBuilder = new FDStatusBarBuilder(html, model);
+    	    toolbarBuilder.confirmItemAsImage();    	     
+    	    html.nbsp();
+    	    html.tdEnd();
+        }
+		super.columnLeft(html,model);
+	}
 	protected void columnRight(HtmlBuilder html, TableModel model) {
         boolean filterable = BuilderUtils.filterable(model);
         if (!filterable) {

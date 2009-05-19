@@ -4,7 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ page import= 'com.freshdirect.transadmin.util.TransStringUtil' %>
 <%  pageContext.setAttribute("HAS_ADDBUTTON", "true"); 
-  pageContext.setAttribute("HAS_CONFIRMBUTTON", "true"); 
+  pageContext.setAttribute("HAS_CONFIRMBUTTON_NEW", "true"); 
    String dateRangeVal = request.getParameter("dispDate") != null ? request.getParameter("dispDate") : "";
    if(dateRangeVal == null || dateRangeVal.length() == 0) dateRangeVal = TransStringUtil.getCurrentDate();
   %>
