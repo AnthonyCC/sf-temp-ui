@@ -5,9 +5,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
@@ -23,6 +26,7 @@ import org.springframework.jdbc.object.BatchSqlUpdate;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.transadmin.dao.RouteManagerDaoI;
 import com.freshdirect.transadmin.model.RouteMappingId;
+import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class RouteManagerDaoOracleImpl implements RouteManagerDaoI  {
 	
@@ -100,5 +104,67 @@ public class RouteManagerDaoOracleImpl implements RouteManagerDaoI  {
 		batchUpdater.flush();
 		LOGGER.debug("ROUTE MAPPING UPDATED");
 		return result;
+	}
+
+	public Map getHTOutScan(Date routeDate) throws DataAccessException {
+		final Map result = new HashMap();
+		try {
+			
+			final String scanStartTime= TransStringUtil.getDate(routeDate)+":12:00:00AM";
+			final String scanEndTime=TransStringUtil.getDate(routeDate)+":12:00:00AM";
+			final StringBuffer strBuf = new StringBuffer();
+			strBuf.append("SELECT ROUTE,MIN(SCANDATE) FROM transp.assettracking WHERE ");
+			strBuf.append("scandate BETWEEN TO_DATE(?, 'yyyy/mm/dd:hh:mi:ssam') AND TO_DATE(?, 'yyyy/mm/dd:hh:mi:ssam') ");
+			strBuf.append("AND action='Check Out' AND asset LIKE 'HT%' GROUP BY ROUTE ");
+			PreparedStatementCreator creator=new PreparedStatementCreator() {
+	            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+	                PreparedStatement ps =
+	                    connection.prepareStatement(strBuf.toString());
+	                ps.setString(1, scanStartTime);
+	                ps.setString(2, scanEndTime);
+	                return ps;
+	            }  
+	        };
+	        jdbcTemplate.query(creator, 
+	       		  new RowCallbackHandler() { 
+	       		      public void processRow(ResultSet rs) throws SQLException {
+	       		    	
+	       		    	 while(rs.next()) {
+	       		    		 result.put(rs.getString(1), rs.getTimestamp(2));
+	       		    	 }
+	       		      }
+	       		   });
+	        	
+			} catch (ParseException e) {
+				LOGGER.warn(e.toString(), e);
+			}
+			return result;
 	}	
+	
+	public Date getHTOutScanTimeForRoute(final String routeId) throws DataAccessException {
+		
+		final List result = new ArrayList();
+		final StringBuffer strBuf = new StringBuffer();
+		strBuf.append("SELECT MIN(SCANDATE) FROM transp.assettracking WHERE ");
+		strBuf.append("ROUTE=? AND action='Check Out' AND asset LIKE 'HT%' ");
+		PreparedStatementCreator creator=new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+                PreparedStatement ps =
+                    connection.prepareStatement(strBuf.toString());
+                ps.setString(1, routeId);
+                return ps;
+            }  
+        };
+        jdbcTemplate.query(creator, 
+       		  new RowCallbackHandler() { 
+       		      public void processRow(ResultSet rs) throws SQLException {
+       		    	
+       		    	 if(rs.next()) {
+       		    		 result.add( rs.getTimestamp(1));
+       		    	 }
+       		      }
+       		   });
+			return  result.size()==0? null:(Date)result.get(0);
+	}
+	
 }
