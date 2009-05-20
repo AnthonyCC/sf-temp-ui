@@ -97,7 +97,7 @@ public class DispatchPlanUtil {
 		return planInfo;
 	}
 
-	public static DispatchCommand getDispatchCommand(Dispatch dispatch, Zone zone,EmployeeManagerI employeeManagerService, Collection punchInfos) {
+	public static DispatchCommand getDispatchCommand(Dispatch dispatch, Zone zone,EmployeeManagerI employeeManagerService, Collection punchInfos,Map htInData,Map htOutData) {
 		DispatchCommand command = new DispatchCommand();
 		command.setDispatchId(dispatch.getDispatchId());
 		
@@ -174,6 +174,10 @@ public class DispatchPlanUtil {
 		
 		if(dispatch.getKeysReady() != null )
 			command.setKeysReady(dispatch.getKeysReady().booleanValue());
+		
+		if(htInData!=null)command.setHtinDate((Date)htInData.get(dispatch.getRoute()));
+		if(htOutData!=null)command.setHtoutDate((Date)htOutData.get(dispatch.getRoute()));
+		
 		return command;
 	}
 

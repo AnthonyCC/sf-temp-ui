@@ -52,6 +52,9 @@ public class DispatchCommand extends WebPlanInfo {
 	private boolean phoneAssigned;
 	private boolean keysReady;
 	private boolean checkedIn;
+    private Date htinDate;
+    private Date htoutDate;
+    
     
 	public String getStatusName() {
 		return statusName;
@@ -373,6 +376,39 @@ public class DispatchCommand extends WebPlanInfo {
 		if(getGpsNumber()==null&&getEzpassNumber()==null) return "";
 		if(getGpsNumber()==null) return getEzpassNumber();
 		return (getGpsNumber()==null?"":getGpsNumber())+(getEzpassNumber()==null?",":","+getEzpassNumber());
+	}
+	public Date getHtinDate() {
+		return htinDate;
+	}
+	public void setHtinDate(Date htinDate) {
+		this.htinDate = htinDate;
+	}
+	public Date getHtoutDate() {
+		return htoutDate;
+	}
+	public void setHtoutDate(Date htoutDate) {
+		this.htoutDate = htoutDate;
+	}
+	
+	public Date getDispatchTimeEx()
+	{
+		try {
+			if(dispatchStatus.compareTo(EnumStatus.Dispatched)>=0)
+			{
+			if(dispatchTime==null&&htoutDate==null) return null;
+			if(dispatchTime==null) return htoutDate;
+			if(htoutDate==null) return TransStringUtil.getServerTime(dispatchTime);;
+			Date dispatchDate=TransStringUtil.getServerTime(dispatchTime);
+			Date htOutDateTemp=TransStringUtil.getServerTime(TransStringUtil.getServerTime(htoutDate));
+			if(dispatchDate.getTime()<htOutDateTemp.getTime()) return htOutDateTemp;
+			return dispatchDate;
+			}
+		} catch (Exception e) 
+		{
+			
+		}
+		return null;
+		
 	}
 	
 }

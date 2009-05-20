@@ -111,10 +111,10 @@ public class RouteManagerDaoOracleImpl implements RouteManagerDaoI  {
 		try {
 			
 			final String scanStartTime= TransStringUtil.getDate(routeDate)+":12:00:00AM";
-			final String scanEndTime=TransStringUtil.getDate(routeDate)+":12:00:00AM";
+			final String scanEndTime=TransStringUtil.getDate(routeDate)+":11:59:59PM";
 			final StringBuffer strBuf = new StringBuffer();
 			strBuf.append("SELECT ROUTE,MIN(SCANDATE) FROM transp.assettracking WHERE ");
-			strBuf.append("scandate BETWEEN TO_DATE(?, 'yyyy/mm/dd:hh:mi:ssam') AND TO_DATE(?, 'yyyy/mm/dd:hh:mi:ssam') ");
+			strBuf.append("scandate BETWEEN TO_DATE(?, 'mm/dd/yyyy:hh:mi:ssam') AND TO_DATE(?, 'mm/dd/yyyy:hh:mi:ssam') ");
 			strBuf.append("AND action='Check Out' AND asset LIKE 'HT%' GROUP BY ROUTE ");
 			PreparedStatementCreator creator=new PreparedStatementCreator() {
 	            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
@@ -178,11 +178,11 @@ public class RouteManagerDaoOracleImpl implements RouteManagerDaoI  {
 		try {
 			
 			final String scanStartTime= TransStringUtil.getDate(routeDate)+":12:00:00AM";
-			final String scanEndTime=TransStringUtil.getDate(routeDate)+":12:00:00AM";
+			final String scanEndTime=TransStringUtil.getDate(routeDate)+":11:59:59PM";
 			final StringBuffer strBuf = new StringBuffer();
 			strBuf.append("SELECT a1.ROUTE,MAX(a1.SCANDATE)  FROM transp.assetstatus a1 ");
-			strBuf.append("WHERE a1.scandate BETWEEN TO_DATE(?, 'yyyy/mm/dd:hh:mi:ssam') AND TO_DATE(?, 'yyyy/mm/dd:hh:mi:ssam') AND a1.ASSET LIKE 'HT%'");
-			strBuf.append("AND a1.action='Check In' AND a1.ROUTE NOT IN (SELECT ROUTE FROM transp.assetstatus WHERE scandate BETWEEN TO_DATE(?, 'yyyy/mm/dd:hh:mi:ssam') AND TO_DATE(?, 'yyyy/mm/dd:hh:mi:ssam') AND action='Check Out' AND ASSET LIKE 'HT%') GROUP BY a1.ROUTE");
+			strBuf.append("WHERE a1.scandate BETWEEN TO_DATE(?, 'mm/dd/yyyy:hh:mi:ssam') AND TO_DATE(?, 'mm/dd/yyyy:hh:mi:ssam') AND a1.ASSET LIKE 'HT%'");
+			strBuf.append("AND a1.action='Check In' AND a1.ROUTE NOT IN (SELECT ROUTE FROM transp.assetstatus WHERE scandate BETWEEN TO_DATE(?, 'mm/dd/yyyy:hh:mi:ssam') AND TO_DATE(?, 'mm/dd/yyyy:hh:mi:ssam') AND action='Check Out' AND ASSET LIKE 'HT%') GROUP BY a1.ROUTE");
 			PreparedStatementCreator creator=new PreparedStatementCreator() {
 	            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
 	                PreparedStatement ps =

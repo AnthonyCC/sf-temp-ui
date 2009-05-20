@@ -87,7 +87,7 @@ public class DispatchFormController extends AbstractFormController {
 		if(isToday)
 			punchInfo=employeeManagerService.getPunchInfo(TransStringUtil.getServerDate(dispatch.getDispatchDate()));
 		
-		DispatchCommand dispatchCommand=DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService,punchInfo);
+		DispatchCommand dispatchCommand=DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService,punchInfo,null,null);
 		if(isToday) DispatchPlanUtil.setDispatchStatus(dispatchCommand);
 		return dispatchCommand;
 	}

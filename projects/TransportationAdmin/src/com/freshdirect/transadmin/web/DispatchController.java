@@ -246,9 +246,14 @@ public class DispatchController extends AbstractMultiActionController {
 		try {
 		Collection dispatchList = dispatchManagerService.getDispatchList(dispDate, zoneStr, region);
 		Collection punchInfo=null;
+		Map htInData=null;
+		Map htOutData=null;
 		domainManagerService.refreshCachedData(EnumCachedDataType.TRUCK_DATA);
 		if(needsPunchInfo && dispatchList!=null && !dispatchList.isEmpty())
-			punchInfo=employeeManagerService.getPunchInfo(dispDate);		
+			punchInfo=employeeManagerService.getPunchInfo(dispDate);
+			Date dispDateTemp=TransStringUtil.serverDateFormat.parse(dispDate);
+		    htInData=dispatchManagerService.getHTInScan(dispDateTemp);
+		    htOutData=dispatchManagerService.getHTOutScan(dispDateTemp);
 		Iterator iter = dispatchList.iterator();
 			while(iter.hasNext()){
 				Dispatch dispatch = (Dispatch) iter.next();
@@ -256,7 +261,7 @@ public class DispatchController extends AbstractMultiActionController {
 				if(dispatch.getZone() != null) {
 					zone=domainManagerService.getZone(dispatch.getZone().getZoneCode());
 				}
-				DispatchCommand command = DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService,punchInfo);
+				DispatchCommand command = DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService,punchInfo,htInData,htOutData);
 				command.setTermintedEmployees(termintedEmployees);
 				if(isSummary){
 					FDRouteMasterInfo routeInfo = domainManagerService.getRouteMasterInfo(command.getRoute(), new Date());

@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
+import org.springframework.dao.DataAccessException;
+
 import com.freshdirect.transadmin.exception.TransAdminApplicationException;
 import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.Plan;
@@ -56,5 +58,9 @@ public interface DispatchManagerI extends BaseManagerI {
 	Collection getUnassignedActiveEmployees();
 	
 	void evictDispatch(Dispatch dispatch);
+	
+	Map getHTOutScan(Date routeDate);
+	
+	Map getHTInScan(Date routeDate);
 	
 }
