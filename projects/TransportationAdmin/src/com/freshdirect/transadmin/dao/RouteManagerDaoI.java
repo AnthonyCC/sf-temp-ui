@@ -14,4 +14,6 @@ public interface RouteManagerDaoI {
 	Map getHTOutScan(Date routeDate) throws DataAccessException;
 	
 	Date getHTOutScanTimeForRoute(String routeId) throws DataAccessException;
+	
+	Map getHTInScan(Date routeDate) throws DataAccessException;
 }

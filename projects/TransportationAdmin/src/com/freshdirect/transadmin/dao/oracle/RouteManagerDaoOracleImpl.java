@@ -167,4 +167,47 @@ public class RouteManagerDaoOracleImpl implements RouteManagerDaoI  {
 			return  result.size()==0? null:(Date)result.get(0);
 	}
 	
+	//SELECT MAX(a1.SCANDATE), a1.ROUTE FROM transp.assetstatus a1
+	// WHERE a1.scandate BETWEEN TO_DATE('2009/05/19:12:00:00am', 'yyyy/mm/dd:hh:mi:ssam') AND TO_DATE('2009/05/19:11:59:59pm', 'yyyy/mm/dd:hh:mi:ssam') AND a1.ASSET LIKE 'HT%'
+	//AND a1.action='Check In' AND a1.ROUTE NOT IN (SELECT ROUTE FROM transp.assetstatus WHERE scandate BETWEEN TO_DATE('2009/05/19:12:00:00am', 'yyyy/mm/dd:hh:mi:ssam') AND TO_DATE('2009/05/19:11:59:59pm', 'yyyy/mm/dd:hh:mi:ssam') AND action='Check Out' AND ASSET LIKE 'HT%')
+	//GROUP BY a1.ROUTE
+	
+	
+	public Map getHTInScan(Date routeDate) throws DataAccessException {
+		final Map result = new HashMap();
+		try {
+			
+			final String scanStartTime= TransStringUtil.getDate(routeDate)+":12:00:00AM";
+			final String scanEndTime=TransStringUtil.getDate(routeDate)+":12:00:00AM";
+			final StringBuffer strBuf = new StringBuffer();
+			strBuf.append("SELECT a1.ROUTE,MAX(a1.SCANDATE)  FROM transp.assetstatus a1 ");
+			strBuf.append("WHERE a1.scandate BETWEEN TO_DATE(?, 'yyyy/mm/dd:hh:mi:ssam') AND TO_DATE(?, 'yyyy/mm/dd:hh:mi:ssam') AND a1.ASSET LIKE 'HT%'");
+			strBuf.append("AND a1.action='Check In' AND a1.ROUTE NOT IN (SELECT ROUTE FROM transp.assetstatus WHERE scandate BETWEEN TO_DATE(?, 'yyyy/mm/dd:hh:mi:ssam') AND TO_DATE(?, 'yyyy/mm/dd:hh:mi:ssam') AND action='Check Out' AND ASSET LIKE 'HT%') GROUP BY a1.ROUTE");
+			PreparedStatementCreator creator=new PreparedStatementCreator() {
+	            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+	                PreparedStatement ps =
+	                    connection.prepareStatement(strBuf.toString());
+	                ps.setString(1, scanStartTime);
+	                ps.setString(2, scanEndTime);
+	                ps.setString(3, scanStartTime);
+	                ps.setString(4, scanEndTime);
+	                return ps;
+	            }  
+	        };
+	        jdbcTemplate.query(creator, 
+	       		  new RowCallbackHandler() { 
+	       		      public void processRow(ResultSet rs) throws SQLException {
+	       		    	
+	       		    	 while(rs.next()) {
+	       		    		 result.put(rs.getString(1), rs.getTimestamp(2));
+	       		    	 }
+	       		      }
+	       		   });
+	        	
+			} catch (ParseException e) {
+				LOGGER.warn(e.toString(), e);
+			}
+			return result;
+	}	
+	
 }
