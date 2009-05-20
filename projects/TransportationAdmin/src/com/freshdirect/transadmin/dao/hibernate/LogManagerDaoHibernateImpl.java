@@ -27,7 +27,7 @@ public class LogManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl impl
 
 	public Collection getLogs(Date fromDate, Date toDate) 
 	{		
-		String query="from ActivityLog a where a.date between ? and ? order by a.logId";
+		String query="from ActivityLog a where a.date between ? and ? order by a.date desc";
 		
 		return (Collection) getHibernateTemplate().find(query,new Object[]{fromDate,toDate});
 	}

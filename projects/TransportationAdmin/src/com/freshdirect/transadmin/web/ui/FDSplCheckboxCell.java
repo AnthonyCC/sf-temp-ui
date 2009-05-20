@@ -49,7 +49,7 @@ public class FDSplCheckboxCell extends FDBaseCell
 	    			}
 	    			if("dispatched".equalsIgnoreCase(column.getProperty()))
 	    			{
-	    				if((command.getDispatchStatus()==EnumStatus.EmpReady)||DispatchPlanUtil.isBullpen(command.getIsBullpen()))
+	    				if((command.getDispatchStatus()==EnumStatus.Ready)||(command.getDispatchStatus()==EnumStatus.EmpReady)||DispatchPlanUtil.isBullpen(command.getIsBullpen()))
 	        			{
 	        				enabled=true;
 	        			}

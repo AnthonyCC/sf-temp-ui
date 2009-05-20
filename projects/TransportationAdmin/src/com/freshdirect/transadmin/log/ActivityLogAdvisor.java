@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
@@ -41,6 +42,32 @@ public class ActivityLogAdvisor implements MethodBeforeAdvice
 
 
 	public void before(Method arg1, Object[] arg2, Object arg3) throws Throwable 
+	{	
+		if(arg2!=null&&arg2.length>0)
+		{
+
+			if(arg2[0] instanceof Collection)
+			{
+				Collection c=(Collection)arg2[0];
+				Iterator iterator=c.iterator();
+				while(iterator.hasNext())
+				{
+					Object newObj=iterator.next();
+					if(newObj instanceof Dispatch)
+					{
+						Object[] argTemp2=new Object[]{newObj};
+						process(arg1,argTemp2,arg3);
+					}
+				}
+			}
+			else
+			{
+				process(arg1,arg2,arg3);
+			}
+		}
+	}
+	
+	public void process(Method arg1, Object[] arg2, Object arg3) throws Throwable 
 	{				
 		try
 		{
@@ -73,6 +100,7 @@ public class ActivityLogAdvisor implements MethodBeforeAdvice
 			{
 				Dispatch newDispatch=(Dispatch)arg2[0];
 				Dispatch oldDispatch=dispatchManagerDao.getDispatch(newDispatch.getDispatchId());
+				dispatchManagerDao.evictDispatch(oldDispatch);
 				if(oldDispatch!=null)
 				{
 					int type=1;
@@ -178,14 +206,14 @@ class PlanComparator extends LogComparator
 			{
 				updates.add(obj);
 			}
-			oldPlan.setFirstDeliveryTime(new Date(oldPlan.getFirstDeliveryTime().getTime()));			
-			if(( obj=compareValues("FIRST_DLV_TIME",getTimeOnly(oldPlan.getFirstDeliveryTime(),sf),getTimeOnly(newPlan.getFirstDeliveryTime(),sf)))!=null)
+			//oldPlan.setFirstDeliveryTime(new Date(oldPlan.getFirstDeliveryTime().getTime()));			
+			if(( obj=compareValues("FIRST_DLV_TIME",getTimeOnly(new Date(oldPlan.getFirstDeliveryTime().getTime()),sf),getTimeOnly(newPlan.getFirstDeliveryTime(),sf)))!=null)
 			{
 				updates.add(obj);
 			}
 			
-			oldPlan.setStartTime(new Date(oldPlan.getStartTime().getTime()));
-			if(( obj=compareValues("START_TIME",getTimeOnly(oldPlan.getStartTime(),sf),getTimeOnly(newPlan.getStartTime(),sf)))!=null)
+			//oldPlan.setStartTime(new Date(oldPlan.getStartTime().getTime()));
+			if(( obj=compareValues("START_TIME",getTimeOnly(new Date(oldPlan.getStartTime().getTime()),sf),getTimeOnly(newPlan.getStartTime(),sf)))!=null)
 			{
 				updates.add(obj);
 			}
@@ -302,14 +330,14 @@ class DispatchComparator extends LogComparator
 			{
 				updates.add(obj);
 			}
-			oldDispatch.setFirstDlvTime(new Date(oldDispatch.getFirstDlvTime().getTime()));			
-			if(( obj=compareValues("FIRST_DLV_TIME",getTimeOnly(oldDispatch.getFirstDlvTime(),sf),getTimeOnly(newDispatch.getFirstDlvTime(),sf)))!=null)
+			//oldDispatch.setFirstDlvTime(new Date(oldDispatch.getFirstDlvTime().getTime()));			
+			if(( obj=compareValues("FIRST_DLV_TIME",getTimeOnly(new Date(oldDispatch.getFirstDlvTime().getTime()),sf),getTimeOnly(newDispatch.getFirstDlvTime(),sf)))!=null)
 			{
 				updates.add(obj);
 			}
 			
-			oldDispatch.setStartTime(new Date(oldDispatch.getStartTime().getTime()));
-			if(( obj=compareValues("START_TIME",getTimeOnly(oldDispatch.getStartTime(),sf),getTimeOnly(newDispatch.getStartTime(),sf)))!=null)
+			//oldDispatch.setStartTime(new Date(oldDispatch.getStartTime().getTime()));
+			if(( obj=compareValues("START_TIME",getTimeOnly(new Date(oldDispatch.getStartTime().getTime()),sf),getTimeOnly(newDispatch.getStartTime(),sf)))!=null)
 			{
 				updates.add(obj);
 			}

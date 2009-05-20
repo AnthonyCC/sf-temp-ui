@@ -388,7 +388,8 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 			  Iterator iterator=dispList.iterator();
 			  while(iterator.hasNext()){							  
 				  Dispatch disp=(Dispatch)iterator.next();
-				  dispatchResources.addAll(disp.getDispatchResources());
+				  if(disp.getBullPen()==null || disp.getBullPen().booleanValue()==false )
+					  dispatchResources.addAll(disp.getDispatchResources());
 			  }
 		}
 		Iterator it=punchInfo.iterator();
@@ -398,7 +399,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 			if(_punchInfo.getInPunchDTM()!=null &&_punchInfo.getOutPunchDTM()==null) {// add check for inPunch!=null
 				if(!isDispatchAssigned(_punchInfo.getEmployeeId(),dispatchResources)) {
 					WebEmployeeInfo webEmpInfo=employeeManagerService.getEmployee(_punchInfo.getEmployeeId());
-					if(webEmpInfo!=null && webEmpInfo.getEmpInfo()!=null ) {
+					if(webEmpInfo!=null && webEmpInfo.getEmpInfo()!=null && !webEmpInfo.getEmpRole().isEmpty() ) {
 						unassignedPunchedInEmployees.add(webEmpInfo);
 					}
 				}
@@ -422,4 +423,10 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 		}
 		return assigned;
 	}
+	public void evictDispatch(Dispatch dispatch)
+	{
+		this.dispatchManagerDao.evictDispatch(dispatch);
+	}
+	
+	
 }

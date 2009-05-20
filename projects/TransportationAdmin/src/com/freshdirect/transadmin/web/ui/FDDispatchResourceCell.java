@@ -60,6 +60,11 @@ public class FDDispatchResourceCell extends FDBaseCell  {
         		resourceInfo=(DispatchResourceInfo)it.next();
         		if(getResourceName(resourceInfo).length() > 0) {
         			html.tr(0).close();
+        			if("500021".equalsIgnoreCase(resourceInfo.getEmployeeId()))
+        			{
+        				System.out.println(resourceInfo);
+        			}
+        			
         			if(resourceInfo.getEmployeeId()==null)
         			{
         				html.td(0).styleClass("employee_no");

@@ -84,8 +84,7 @@
               
             <ec:row interceptor="dispatchobsoletemarker">
               <ec:column alias="trnConfirm" width="5" cell="confirmcol" property="confirmedValue" title="C"  />            
-              <ec:column  cell="tooltip" alias="zoneCode" property="zoneNameEx" title="Zone"/>
-              <ec:column alias="trnZoneRegion" property="regionName" title="Region" />
+              <ec:column alias="trnZoneRegion" property="regionZone" title="Region-Zone" filterable="false" sortable="false"/>
               <ec:column  cell="date" format="hh:mm aaa" alias="trnTimeslotslotName"  property="startTimeEx" title="Start Time"/>  
               <ec:column  cell="date" format="hh:mm aaa" alias="trnTimeEndslotslotName" property="firstDeliveryTimeEx" title="First Dlv."/>
               <ec:column alias="trnRouterouteNumber" property="route"  width="10" title="Route"/>

@@ -54,20 +54,19 @@
 	</script>	
 <META HTTP-EQUIV="Refresh" CONTENT="<%=TransportationAdminProperties.getDispatchDashboardRefreshTime()%>">
 </head>
- <body class="yui-skin-sam" marginwidth="0" marginheight="0" border="0">	
+ <body  marginwidth="0" marginheight="0" border="0">	
 	
-	<table width="100%" border=0 height="75"><tr><td width="200" align="left"><img src="images/TransAppLogo.gif"></td><td align="center" class="tv_header">DISPATCH</td><td width="150" align="right" class="tv_time">Last Refresh Time:<br><span class="tv_time1"><%=request.getAttribute("lastTime")%></span></td></tr></table>
-	<table width="100%"><tr><td
-	<div align="center" valign="top" border="1">
+	<table width="100%" border=0 height="30"><tr><td width="100" align="left"><img width="100" height="30" src="images/TransAppLogo.gif"></td><td align="center" class="tv_header">DISPATCH</td><td width="180" align="right" class="tv_time" nowrap>Last Refresh Time:<br><span class="tv_time1"><%=request.getAttribute("lastTime")%></span></td></tr></table>
+	<table width="100%" ><tr><td>
+	<div id="dispatchDiv" align="center" valign="top" border="0" class="tvMainDiv">
       <ec:table items="dispatchInfos"   action="${pageContext.request.contextPath}/dispatchDashboard.do"
             imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="&nbsp;"
             width="98%"  rowsDisplayed="25" view="fd" filterable="false">      
            
             <ec:row interceptor="obsoletemarker">
                                          
-              <ec:column  cell="tooltip" alias="zoneCode" property="zoneNameEx" title="Zone" filterable="false" sortable="false"/>             
-              <ec:column alias="trnZoneRegion" property="regionName" title="Region" filterable="false" sortable="false"/>
               
+              <ec:column alias="trnZoneRegion" property="regionZone" title="Region-Zone" filterable="false" sortable="false"/>              
               <ec:column  alias="trnTimeslotslotName"  property="startTime" title="Start Time" filterable="false" sortable="false"/>
               
               <ec:column alias="trnRouterouteNumber" property="route"  width="10" title="Route" filterable="false" sortable="false"/>
@@ -75,13 +74,14 @@
               <ec:column alias="trnTruckLocation" property="location" width="10"  title="Loc" filterable="false" sortable="false"/>
               <ec:column alias="trnTruckStops" property="noOfStops" width="10"  title="Stops" filterable="false" sortable="false"/>
                <ec:column alias="trnStatus" property="dispatchStatus"  title="Status" filterable="false" sortable="false"/>
-              <ec:column property="drivers"  cell="dispatchResCell" title="Driver"  filterable="true" alias="drivers" filterable="false" sortable="false"/>
-              <ec:column property="helpers"  cell="dispatchResCell" title="Helper"  filterable="true" alias="helpers" filterable="false" sortable="false"/>             
+              <ec:column property="drivers"  cell="com.freshdirect.transadmin.web.ui.FDDispatchSummaryResourceCell" title="Driver"  filterable="true" alias="drivers" filterable="false" sortable="false"/>
+              <ec:column property="helpers"  cell="com.freshdirect.transadmin.web.ui.FDDispatchSummaryResourceCell" title="Helper"  filterable="true" alias="helpers" filterable="false" sortable="false"/>             
              <ec:column  alias="dispatchTime"  property="dispatchTime" title="Dispatch Time" filterable="false" sortable="false" />
             </ec:row>
           </ec:table>
     </div>
 </td></tr></table>
+ 
    </body>
    </html>
 <script>
@@ -108,4 +108,11 @@ function getElements(element,name)
 	return result;
 }
 removeNav();
+function focusBottom()
+{
+    var objDiv = document.getElementById("dispatchDiv");
+	objDiv.scrollTop = objDiv.scrollHeight;
+
+}
+setTimeout(focusBottom,15000);
 </script>

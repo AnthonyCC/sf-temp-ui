@@ -103,9 +103,15 @@ public class DispatchManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
 	}
 
-	public Dispatch getDispatch(String dispatchId) throws DataAccessException {
+	public Dispatch getDispatch(String dispatchId) throws DataAccessException 
+	{
+		
 		return (Dispatch)getEntityById("Dispatch","dispatchId",dispatchId);
 	
+	}
+	public void evictDispatch(Dispatch d)throws DataAccessException 
+	{
+		getSession().evict(d);
 	}
 
 	public Plan getPlan(String id) throws DataAccessException  {

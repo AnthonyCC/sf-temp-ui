@@ -217,6 +217,10 @@ public class DispatchCommand extends WebPlanInfo {
 	
 	private PunchInfoI getPunchInfo(String employeeId, Collection punchInfos) {
 		
+		if("500021".equalsIgnoreCase(employeeId))
+		{
+			System.out.println(punchInfos);
+		}
 		if ( TransStringUtil.isEmpty(employeeId)||punchInfos==null)
 			return null;
 		List punchedEmployees=new ArrayList();
@@ -231,7 +235,8 @@ public class DispatchCommand extends WebPlanInfo {
 				punchedEmployees.add(punchInfo);
 			}
 				
-		}
+		}		
+		if(punchedEmployees.size()==0)return null;
 		if(punchedEmployees.size()==1) return (PunchInfoI)punchedEmployees.get(0);		
 		long dispatchTimeLong=-1;
 		try {
@@ -292,8 +297,9 @@ public class DispatchCommand extends WebPlanInfo {
 	public void setDispatched(boolean dispatched) 
 	{
 		this.dispatched = dispatched;
+		this.confirmed=dispatched;
 		if(this.dispatched)
-		{
+		{			
 			try {
 				this.dispatchTime=TransStringUtil.getServerTime(new Date());
 			} catch (ParseException e) {
@@ -357,9 +363,10 @@ public class DispatchCommand extends WebPlanInfo {
 	
 	public String getRegionZone()
 	{
-		if(getRegionName()==null&&getZoneName()==null) return "";
-		if(getRegionName()==null) return getZoneName();
-		return (getRegionName()==null?"":getRegionName())+(getZoneName()==null?"":"-"+getZoneName());
+		String zone=getZoneCode()==null?"":""+getZoneCode();
+		if("true".equalsIgnoreCase(getIsBullpen())) zone="Bullpen";		
+		if(getRegionName()==null) return zone;
+		return (getRegionName()==null?"":getRegionName())+"-"+zone;
 	}
 	public String getExtras()
 	{

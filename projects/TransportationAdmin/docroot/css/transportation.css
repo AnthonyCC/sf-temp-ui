@@ -1014,11 +1014,11 @@ div.eXor_Active, div.eXor_AdHoc { margin-left: 10px; width: 98%; }
 
 .employee_on 
 {
-	background-color: green;
+	background-color: #009933;
 }
 .employee_off 
 {
-	background-color: red;
+	background-color: #FF0000;
 }
 .employee_no 
 {

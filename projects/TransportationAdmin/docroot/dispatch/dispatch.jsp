@@ -104,7 +104,7 @@
                         for (i = 0; i < checkboxList.length; i++) 
                         {
                         
-                          if (checkboxList[i].type=="checkbox" && !checkboxList[i].disabled) 
+                          if (checkboxList[i].type=="checkbox" && !checkboxList[i].disabled&&checkboxList[i].name.indexOf("_")!=-1) 
                           {
                           	if(checkboxList[i].checked)
                           	{
@@ -203,7 +203,7 @@
                      <input type = "button" value="&nbsp;Activity Log&nbsp;" onclick="javascript:doActivityLog('dispDate')" />
                   </td>
                   <td>
-                    <a href="javascript:directions('ec_table','drivingdirection.do', 7)">
+                    <a href="javascript:directions('ec_table','drivingdirection.do', 10)">
                   		<img src="./images/driving-directions.gif" width="114" height="25" border="0" alt="Driving Directions" title="Driving Directions" />
                   	</a>
                   <td>
@@ -271,7 +271,7 @@
     <%@ include file='i_activityLog.jspf'%> 
     <form name="newSubmit" action="dispatch.do" method="post">
     <input type=hidden name=id><input type=hidden name=dispDate>
-    </form>     
+    </form>
   </tmpl:put>
   
   

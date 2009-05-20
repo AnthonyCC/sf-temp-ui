@@ -210,28 +210,34 @@ public class DispatchController extends AbstractMultiActionController {
 	
 	public ModelAndView dispatchDashboardHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 
-		String dispDate = request.getParameter("dispDate");
-		if(TransStringUtil.isEmpty(dispDate)) 
-		{
-			dispDate=TransStringUtil.getCurrentDate();
+		try {
+			String dispDate = request.getParameter("dispDate");			
+			if(TransStringUtil.isEmpty(dispDate)) 
+			{
+				dispDate=TransStringUtil.getCurrentDate();
+			}
+			try {
+				request.setAttribute("lastTime", TransStringUtil.getServerTime(new Date()));
+			} catch (ParseException e1) {}
+			//By default get the today's dispatches.
+			Collection c=getDispatchInfos(getServerDate(dispDate), null, null, true,true);
+			DispatchPlanUtil.setDispatchStatus(c,true);
+			int page=-1;
+			try {
+				page=Integer.parseInt(request.getParameter("page"));
+			} catch (Exception e) {	}
+			ModelAndView mav =null;
+			if(page==-1)		mav=new ModelAndView("dispatchDashboardViewFull");
+			else 				mav=new ModelAndView("dispatchDashboardView");
+			
+			mav.getModel().put("dispatchInfos",DispatchPlanUtil.getsortedDispatch(c,page));
+			mav.getModel().put("dispDate", dispDate);
+			return mav;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		try {
-			request.setAttribute("lastTime", TransStringUtil.getServerTime(new Date()));
-		} catch (ParseException e1) {}
-		//By default get the today's dispatches.
-		Collection c=getDispatchInfos(getServerDate(dispDate), null, null, true,true);
-		DispatchPlanUtil.setDispatchStatus(c,true);
-		int page=-1;
-		try {
-			page=Integer.parseInt(request.getParameter("page"));
-		} catch (Exception e) {	}
-		ModelAndView mav =null;
-		if(page==-1)		mav=new ModelAndView("dispatchDashboardViewFull");
-		else 				mav=new ModelAndView("dispatchDashboardView");
-		
-		mav.getModel().put("dispatchInfos",DispatchPlanUtil.getsortedDispatch(c,page));
-		mav.getModel().put("dispDate", dispDate);
-		return mav;
+		return new ModelAndView("dispatchDashboardView");
 	}	
 
 	private Collection getDispatchInfos(String dispDate, String zoneStr, String region, boolean isSummary, boolean needsPunchInfo){
@@ -328,6 +334,8 @@ public class DispatchController extends AbstractMultiActionController {
 		{
 			String key=(String)keys.next();
 			tmpDispatch =dispatchManagerService.getDispatch(key);
+			dispatchManagerService.evictDispatch(tmpDispatch);
+			tmpDispatch.setUserId(request.getUserPrincipal().getName());
 			List list=(List)ids.get(key);
 			for(int i=0,n=list.size();i<n;i++)
 			{
@@ -354,6 +362,7 @@ public class DispatchController extends AbstractMultiActionController {
 				if("dispatched".equalsIgnoreCase(status))
 				{
 					tmpDispatch.setDispatchTime(TransStringUtil.getServerTime(TransStringUtil.getServerTime(new Date())));
+					tmpDispatch.setConfirmed(Boolean.TRUE);
 				}
 				if("checkedIn".equalsIgnoreCase(status))
 				{

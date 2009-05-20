@@ -55,4 +55,6 @@ public interface DispatchManagerI extends BaseManagerI {
 	
 	Collection getUnassignedActiveEmployees();
 	
+	void evictDispatch(Dispatch dispatch);
+	
 }
