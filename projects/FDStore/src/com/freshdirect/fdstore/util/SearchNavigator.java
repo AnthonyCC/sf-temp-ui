@@ -410,6 +410,21 @@ public class SearchNavigator {
 		}
 	}
 
+	public static String getViewName(int viewType) {
+		switch (viewType) {
+		case VIEW_LIST:
+			return "list";
+		case VIEW_GRID:
+		default: // VIEW_DEFAULT
+			return "grid";
+		case VIEW_TEXT:
+			return "text";
+		}
+	}
+
+	public static String getDefaultViewName() {
+		return getViewName(VIEW_DEFAULT);
+	}
 	
 	public void setView(int viewType) {
 		if (viewType == view)
@@ -845,6 +860,52 @@ public class SearchNavigator {
 			return "name";
 		case SORT_BY_SALE:
 			return "sale";
+		}
+	}
+
+
+	public String toString() {
+		return getLink();
+	}
+	
+	public static class SearchDefaults {
+		public final int smallPageSize;
+		public final int normalPageSize;
+		public final int view;
+		public final boolean isDefaultView;
+
+		public SearchDefaults(int view, int pageSize1, int pageSize2, boolean isDefault) {
+			this.smallPageSize = pageSize1; // smaller size
+			this.normalPageSize = pageSize2; // bigger size
+			this.view = view;			// view type - see VIEW_ prefixed constans
+			this.isDefaultView = isDefault;
+		}
+	}
+
+
+	// set defaults:
+	// LIST: 15, 30
+	// GRID: 20, 40
+	// @type Map<String,SearchDefaults>
+	public static Map DEFAULTS = new HashMap();
+
+	static {
+		DEFAULTS.put("list", new SearchDefaults(VIEW_LIST, 15, 30, VIEW_DEFAULT == VIEW_LIST ));
+		DEFAULTS.put("grid", new SearchDefaults(VIEW_GRID, 20, 40, VIEW_DEFAULT == VIEW_GRID ));
+	}
+
+	public SearchDefaults getDefaults() {
+		return (SearchDefaults) SearchNavigator.DEFAULTS.get(getViewName());
+	}
+
+	public static SearchDefaults getDefaultForView(int viewType) {
+		switch(viewType) {
+		case VIEW_LIST:
+			return (SearchDefaults) SearchNavigator.DEFAULTS.get( "list" );
+		case VIEW_GRID:
+			return (SearchDefaults) SearchNavigator.DEFAULTS.get( "grid" );
+		default:
+			return null;
 		}
 	}
 }

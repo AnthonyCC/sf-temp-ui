@@ -1,4 +1,5 @@
-<%--
+<%@ page import="com.freshdirect.fdstore.util.SearchNavigator"
+%><%--
   Search Pager Bar
   ================
 
@@ -14,8 +15,10 @@
 // set defaults:
 // LIST: 15, 30
 // GRID: 20, 40
-final int itemsPerPage1 = nav.isGridView() ? 20 : 15;
-final int itemsPerPage2 = nav.isGridView() ? 40 : 30;
+final SearchNavigator.SearchDefaults defs = nav.getDefaults();
+
+final int itemsPerPage1 = defs.smallPageSize;
+final int itemsPerPage2 = defs.normalPageSize;
 
 final int pg		= results.getCurrentPage();
 final int pages		= results.getPageCount();

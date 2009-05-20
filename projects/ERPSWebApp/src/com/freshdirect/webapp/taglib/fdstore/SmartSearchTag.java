@@ -189,15 +189,14 @@ public class SmartSearchTag extends BodyTagSupport {
             // calculate page size.
             String view = pageContext.getRequest().getParameter("view");
             if (view == null) {
-                view = "list"; // default view
+                view = SearchNavigator.getDefaultViewName();  // "list"; // default view
             }
             int defaultPageSize = 0;
-            if ("grid".equalsIgnoreCase(view)) {
-            	defaultPageSize = 40;
+            SearchNavigator.SearchDefaults defs = (SearchNavigator.SearchDefaults) SearchNavigator.DEFAULTS.get(view);
+            if (defs != null) {
+            	defaultPageSize = defs.normalPageSize;
             }
-            if ("list".equalsIgnoreCase(view)) {
-            	defaultPageSize = 30;
-            }
+            
             fres.setPageSize(Math.max(Math.min(getIntParameter("pageSize", defaultPageSize), 100), 0));
         }
 
