@@ -220,10 +220,6 @@ public class DispatchCommand extends WebPlanInfo {
 	
 	private PunchInfoI getPunchInfo(String employeeId, Collection punchInfos) {
 		
-		if("500021".equalsIgnoreCase(employeeId))
-		{
-			System.out.println(punchInfos);
-		}
 		if ( TransStringUtil.isEmpty(employeeId)||punchInfos==null)
 			return null;
 		List punchedEmployees=new ArrayList();

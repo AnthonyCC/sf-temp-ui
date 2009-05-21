@@ -340,7 +340,7 @@ public class DispatchController extends AbstractMultiActionController {
 			String key=(String)keys.next();
 			tmpDispatch =dispatchManagerService.getDispatch(key);
 			dispatchManagerService.evictDispatch(tmpDispatch);
-			tmpDispatch.setUserId(request.getUserPrincipal().getName());
+			tmpDispatch.setUserId(SecurityManager.getUserName(request));
 			List list=(List)ids.get(key);
 			for(int i=0,n=list.size();i<n;i++)
 			{
