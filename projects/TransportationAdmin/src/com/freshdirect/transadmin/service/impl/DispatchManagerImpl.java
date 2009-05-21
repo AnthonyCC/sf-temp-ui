@@ -428,12 +428,26 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 		this.dispatchManagerDao.evictDispatch(dispatch);
 	}
 
-	public Map getHTInScan(Date routeDate) {
-		return routeManagerDao.getHTInScan(routeDate);
+	public Map getHTInScan(Date routeDate) 
+	{
+		try {
+			return routeManagerDao.getHTInScan(routeDate);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
-	public Map getHTOutScan(Date routeDate) {
-		return routeManagerDao.getHTOutScan(routeDate);
+	public Map getHTOutScan(Date routeDate) 
+	{
+		try {
+			return routeManagerDao.getHTOutScan(routeDate);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	

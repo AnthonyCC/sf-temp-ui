@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.springframework.dao.DataAccessException;
+
 import com.freshdirect.transadmin.dao.BaseManagerDaoI;
 import com.freshdirect.transadmin.dao.DomainManagerDaoI;
 import com.freshdirect.transadmin.dao.EmployeeManagerDaoI;
@@ -143,7 +145,13 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 	}
 
 	public Collection getPunchInfo(String date) {
-		return punchInfoDAO.getPunchInfo(date);
+		try {
+			return punchInfoDAO.getPunchInfo(date);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 

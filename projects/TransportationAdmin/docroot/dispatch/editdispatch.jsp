@@ -190,7 +190,7 @@
 					<tr>
 						<td>Confirmed</td>
 						<td colspan="2"> 
-							<form:checkbox path="confirmed" />
+							<form:checkbox path="confirmed" disabled="true" />
 						</td>
 					</tr>
 					<tr>
