@@ -82,14 +82,9 @@
                   </td>  
                  
                  <td>
-                     <input type = "button" value="&nbsp;Open DashBoard Page 1&nbsp;" onclick="javascript:OpenPage(1)" />
+                     <input type = "button" value="&nbsp;Open DashBoard Page&nbsp;" onclick="javascript:OpenPage(1)" />
                   </td>
-                  <td>
-                     <input type = "button" value="&nbsp;Open DashBoard Page 2&nbsp;" onclick="javascript:OpenPage(2)" />
-                  </td> 
-                  <td>
-                     <input type = "button" value="&nbsp;Open DashBoard Page 3&nbsp;" onclick="javascript:OpenPage(3)" />
-                  </td>  
+                 
                  
               </tr>
               </table>        

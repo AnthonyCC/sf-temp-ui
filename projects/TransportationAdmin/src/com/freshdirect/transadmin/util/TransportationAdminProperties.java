@@ -108,6 +108,10 @@ public class TransportationAdminProperties {
 	
 	private final static String PROP_TRANSPORTATION_DISPATCH_REFRESHTIME		= "transportation.dispatch.refreshtime";
 	
+	private final static String PROP_TRANSPORTATION_DISPATCH_PAGEREFRESHTIME		= "transportation.dispatch.pagerefreshtime";
+	
+	private final static String PROP_TRANSPORTATION_DISPATCH_PAGESIZE		= "transportation.dispatch.pagesize";
+	
 	static {
 				
 		
@@ -183,6 +187,10 @@ public class TransportationAdminProperties {
 		
 		defaults.put(PROP_TRANSPORTATION_DEPOT_USESTPARRTIME, "true");
 		defaults.put(PROP_TRANSPORTATION_DISPATCH_REFRESHTIME, "30");
+		
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_PAGEREFRESHTIME, "5");
+		
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_PAGESIZE, "20");
 		
 		refresh();		
 	}
@@ -396,8 +404,20 @@ public class TransportationAdminProperties {
 	public static long getDispatchedPeriod() {
 		return PROP_TRANSPORTATION_DISPATCH_DASHBOARD_DISPATCHED_PERIOD;
 	}
+	
 	public static int getDispatchDashboardRefreshTime() 
 	{
 		return getIntVal(get(PROP_TRANSPORTATION_DISPATCH_REFRESHTIME));
 	}
+	
+	public static int getDispatchDashboardPageRefreshTime() 
+	{
+		return getIntVal(get(PROP_TRANSPORTATION_DISPATCH_PAGEREFRESHTIME));
+	}
+	
+	public static int getDispatchDashboardPageSize() 
+	{
+		return getIntVal(get(PROP_TRANSPORTATION_DISPATCH_PAGESIZE));
+	}
+	
 }

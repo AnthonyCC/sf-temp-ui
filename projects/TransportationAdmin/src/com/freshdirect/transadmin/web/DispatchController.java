@@ -235,7 +235,8 @@ public class DispatchController extends AbstractMultiActionController {
 			if(page==-1)		mav=new ModelAndView("dispatchDashboardViewFull");
 			else 				mav=new ModelAndView("dispatchDashboardView");
 			
-			mav.getModel().put("dispatchInfos",DispatchPlanUtil.getsortedDispatch(c,page));
+			//mav.getModel().put("dispatchInfos",DispatchPlanUtil.getsortedDispatch(c,page));
+			mav.getModel().put("dispatchInfos",DispatchPlanUtil.getsortedDispatch(c));
 			mav.getModel().put("dispDate", dispDate);
 			return mav;
 		} catch (Exception e) {

@@ -58,10 +58,10 @@
 	
 	<table width="100%" border=0 height="30"><tr><td width="100" align="left"><img width="100" height="30" src="images/TransAppLogo.gif"></td><td align="center" class="tv_header">DISPATCH</td><td width="180" align="right" class="tv_time" nowrap>Last Refresh Time:<br><span class="tv_time1"><%=request.getAttribute("lastTime")%></span></td></tr></table>
 	<table width="100%" ><tr><td>
-	<div id="dispatchDiv" align="center" valign="top" border="0" class="tvMainDiv">
+	<div id="dispatchDiv" align="center" valign="top" border="0" >
       <ec:table items="dispatchInfos"   action="${pageContext.request.contextPath}/dispatchDashboard.do"
             imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="&nbsp;"
-            width="98%"  rowsDisplayed="25" view="fd" filterable="false">      
+            width="98%"  rowsDisplayed="1000" view="fd" filterable="false">      
            
             <ec:row interceptor="obsoletemarker">
                                          
@@ -114,5 +114,52 @@ function focusBottom()
 	objDiv.scrollTop = objDiv.scrollHeight;
 
 }
-setTimeout(focusBottom,15000);
+//setTimeout(focusBottom,15000);
+var c=0;
+var t;
+var k=0;
+var tmpLast = 0;
+var grpSize = <%=TransportationAdminProperties.getDispatchDashboardPageSize()%>;
+
+
+function paginator() {
+
+var rows = document.getElementById("ec_table").tBodies[0].rows;
+
+      t=setTimeout("paginator()",<%=TransportationAdminProperties.getDispatchDashboardPageRefreshTime()*1000%>);
+      var currentPage = 0;
+      var countGrp = 0;
+
+      for (i = 0; i < rows.length; i++) {
+            if(rows[i].name != "local") {
+                  if(countGrp == grpSize) {
+                        countGrp = 0;
+                        currentPage++;
+                  }
+                  countGrp++;
+                  if(currentPage == k+1 ) {
+                        rows[i].style.display = '';
+      
+                        if(i == rows.length-1) {
+                              tmpLast = -1;
+                        } else {
+                              tmpLast = currentPage;
+                        }
+                  } else {
+                        rows[i].style.display = 'none';
+                  }
+            }
+      }
+      k = tmpLast;
+
+}
+
+
+
+function stopCount() {
+      clearTimeout(t);
+}
+paginator();
+
+
 </script>
