@@ -158,8 +158,11 @@ public class DispatchController extends AbstractMultiActionController {
 		String arrEntityList[] = getParamList(request);
 		if (arrEntityList != null) {
 			int arrLength = arrEntityList.length;
-			for (int intCount = 0; intCount < arrLength; intCount++) {
-				employeeSet.add(dispatchManagerService.getPlan(arrEntityList[intCount]));
+			for (int intCount = 0; intCount < arrLength; intCount++) 
+			{
+				Plan p=dispatchManagerService.getPlan(arrEntityList[intCount]);
+				p.setUserId(SecurityManager.getUserName(request));
+				employeeSet.add(p);
 			}
 		}
 		dispatchManagerService.removeEntity(employeeSet);
@@ -201,8 +204,10 @@ public class DispatchController extends AbstractMultiActionController {
 	public ModelAndView dispatchSummaryHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 
 		ModelAndView mav = new ModelAndView("dispatchSummaryView");
+		Collection c=getDispatchInfos(TransStringUtil.getCurrentServerDate(), null, null, true,true);
 		//By default get the today's dispatches.
-		mav.getModel().put("dispatchInfos",getDispatchInfos(TransStringUtil.getCurrentServerDate(), null, null, true,true));
+		DispatchPlanUtil.setDispatchStatus(c,false);
+		mav.getModel().put("dispatchInfos",c);
 		mav.getModel().put("dispDate", TransStringUtil.getCurrentDate());
 		
 		return mav;
@@ -303,8 +308,10 @@ public class DispatchController extends AbstractMultiActionController {
 			for (int intCount = 0; intCount < arrLength; intCount++) {
 				//splitter = new StringTokenizer(arrEntityList[intCount], "$");
 				Dispatch dispatch =dispatchManagerService.getDispatch(arrEntityList[intCount]);
-				if(dispatch.getConfirmed()== null || dispatch.getConfirmed() == Boolean.FALSE){
-					dispatchSet.add(dispatch);
+				if(dispatch.getConfirmed()== null || dispatch.getConfirmed() == Boolean.FALSE)
+				{
+					dispatch.setUserId(SecurityManager.getUserName(request));
+					dispatchSet.add(dispatch);					
 				}
 			}
 			if(dispatchSet.size() == arrLength) {

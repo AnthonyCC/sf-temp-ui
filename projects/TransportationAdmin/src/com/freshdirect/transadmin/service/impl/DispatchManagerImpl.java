@@ -113,6 +113,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 			  Iterator iterator=dispList.iterator();
 			  while(iterator.hasNext()){							  
 						  Dispatch disp=(Dispatch)iterator.next();
+						  disp.setUserId("AUTO-DISPATCH");
 						  Set disResList=disp.getDispatchResources();
 						  removeEntity(disResList);							  							  
 				  }
@@ -166,6 +167,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 			  Iterator iterator=dispList.iterator();
 			  while(iterator.hasNext()){							  
 						  Dispatch disp=(Dispatch)iterator.next();
+						  disp.setUserId("AUTO-DISPATCH");
 						  Set disResList=disp.getDispatchResources();
 						  removeEntity(disResList);							  							  
 				  }

@@ -41,36 +41,69 @@ public class ActivityLogAdvisor implements MethodBeforeAdvice
 	}
 
 
-	public void before(Method arg1, Object[] arg2, Object arg3) throws Throwable 
+	public void before(Method arg1, Object[] arg2, Object arg3)
 	{	
-		if(arg2!=null&&arg2.length>0)
-		{
-
-			if(arg2[0] instanceof Collection)
+		try {
+			if(arg2!=null&&arg2.length>0)
 			{
-				Collection c=(Collection)arg2[0];
-				Iterator iterator=c.iterator();
-				while(iterator.hasNext())
+				if(arg1!=null&&arg1.getName().equalsIgnoreCase("removeEntity"))
 				{
-					Object newObj=iterator.next();
-					if(newObj instanceof Dispatch)
+					delete(arg1,arg2,arg3);
+				}
+				else
+				{
+					if(arg2[0] instanceof Collection)
 					{
-						Object[] argTemp2=new Object[]{newObj};
-						process(arg1,argTemp2,arg3);
+						Collection c=(Collection)arg2[0];
+						Iterator iterator=c.iterator();
+						while(iterator.hasNext())
+						{
+							Object newObj=iterator.next();
+							if(newObj instanceof Dispatch)
+							{
+								Object[] argTemp2=new Object[]{newObj};
+								process(arg1,argTemp2,arg3);
+							}
+						}
+					}
+					else
+					{
+						process(arg1,arg2,arg3);
 					}
 				}
 			}
-			else
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public void delete(Method arg1, Object[] arg2, Object arg3) throws Throwable 
+	{
+		if(arg2[0] instanceof Collection)
+		{
+			Collection c=(Collection)arg2[0];
+			Iterator iterator=c.iterator();
+			while(iterator.hasNext())
 			{
-				process(arg1,arg2,arg3);
+				Object newObj=iterator.next();
+				if(newObj instanceof Dispatch)
+				{
+					Dispatch d=(Dispatch)newObj;
+					Object[] param=new Object[]{d.getDispatchId(),"DELETED","",""};
+					logManager.log(d.getUserId(),3,param);
+				}else if(newObj instanceof Plan)
+				{
+					Plan p=(Plan)newObj;
+					Object[] param=new Object[]{p.getPlanId(),"DELETED","",""};
+					logManager.log(p.getUserId(),1,param);
+				}
+					
 			}
 		}
 	}
-	
 	public void process(Method arg1, Object[] arg2, Object arg3) throws Throwable 
 	{				
-		try
-		{
+		
 		if(arg2!=null&&arg2.length>0)
 		{
 			if(arg2[0] instanceof Plan)
@@ -123,13 +156,7 @@ public class ActivityLogAdvisor implements MethodBeforeAdvice
 				}
 			}
 		}
-		}catch(Throwable e)
-		{
-			System.out.println(e);
-			//e.printStackTrace();
-		}
 		
-		System.out.println("done............");
 		}
 	
 	

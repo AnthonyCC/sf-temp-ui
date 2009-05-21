@@ -358,7 +358,7 @@ public class ModelUtil {
 			d.setDispatchResources(convertPlnToDispatchResource(p.getPlanResources(),d));
 			d.setFirstDlvTime(p.getFirstDeliveryTime());
 			//System.out.println("setting the zone :"+p.getZone());
-			d.setZone(p.getZone());
+			d.setZone(new Zone());
 			//System.out.println("p.getRegion() :"+p.getRegion());
 			d.setBullPen("Y".equalsIgnoreCase(p.getIsBullpen())?Boolean.TRUE:Boolean.FALSE);
 			d.setRegion(p.getRegion());
@@ -371,6 +371,7 @@ public class ModelUtil {
 				d.setRoute(r.getRouteNumber());
 				d.setTruck(r.getTruckNumber());
 				d.setFirstDlvTime(firstDlvTime);
+				d.getZone().setZoneCode(r.getZoneNumber());
 				r = null;
 				firstDlvTime = null;
 			}

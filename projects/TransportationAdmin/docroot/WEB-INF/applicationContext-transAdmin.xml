@@ -261,7 +261,7 @@
          <ref local="activityLogAdvice"/>
       </property>
       <property name="patterns">
-         <value>.*saveEntityList.*,.*saveEntity.*,.*saveDispatch.*</value>
+         <value>.*removeEntity.*,.*saveEntityList.*,.*saveEntity.*,.*saveDispatch.*</value>
       </property>
    </bean>	
     
