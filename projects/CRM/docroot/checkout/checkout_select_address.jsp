@@ -114,7 +114,7 @@
         <% } %>
     </td>
     <td>&nbsp;</td>
-	<td align="right"><a href="javascript:address.submit()" class="checkout">CONTINUE CHECKOUT >></a></td>
+	<td align="right"><a href="#" onclick="document.address.submit(); return false;" class="checkout">CONTINUE CHECKOUT &gt;&gt;</a></td>
     </tr>
 </table>
 <%@ include file="/includes/i_modifyorder.jspf" %>
@@ -160,7 +160,7 @@
 </table>
 
 <%-- ------------ EDIT/DELETE DELIVERY ADDRESS JAVASCRIPT ------------ --%>
-<script language="javascript">
+<script type="text/javascript">
     function setAction(frmObj,actionName) {
         if (frmObj.actionName==null) return;
         frmObj.actionName.value=actionName;
