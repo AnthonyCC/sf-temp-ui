@@ -60,14 +60,11 @@ public class FDDispatchResourceCell extends FDBaseCell  {
         		resourceInfo=(DispatchResourceInfo)it.next();
         		if(getResourceName(resourceInfo).length() > 0) {
         			html.tr(0).close();
-        			if("500021".equalsIgnoreCase(resourceInfo.getEmployeeId()))
-        			{
-        				System.out.println(resourceInfo);
-        			}
+        			HtmlBuilder td=html.td(0);       			
         			
         			if(resourceInfo.getEmployeeId()==null)
         			{
-        				html.td(0).styleClass("employee_no");
+        				td.styleClass("employee_no");
         			}
         			else if(resourceInfo.getPunchInfo()==null)
         			{
@@ -75,17 +72,18 @@ public class FDDispatchResourceCell extends FDBaseCell  {
         			}
         			else if(resourceInfo.getPunchInfo().isPunchedIn())
         			{
-        				html.td(0).styleClass("employee_on");
+        				td.styleClass("employee_on");
         			}
         			else if(resourceInfo.getPunchInfo().isLate())
         			{
-        				html.td(0).styleClass("employee_off");
+        				td.styleClass("employee_off");
         			}	
         			else if(resourceInfo.getPunchInfo().getOutPunchDTM()!=null)
         			{
-        				html.td(0).styleClass("employee_out");
+        				td.styleClass("employee_out");
         			}
-        			html.td(0).close().append(getResourceName(resourceInfo));
+        			td.close();
+        			td.append(getResourceName(resourceInfo));
         			if(!TransStringUtil.isEmpty(resourceInfo.getNextelNo())) {
         				html.append(" ["+resourceInfo.getNextelNo()+"]");
         			}
