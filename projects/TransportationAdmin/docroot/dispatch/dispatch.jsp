@@ -134,7 +134,7 @@
                         var dateField = document.getElementById("dispDate").value;    
                         var paramValues = null;
                         for (i = 0; i < checkboxList.length; i++) {
-                          if (checkboxList[i].type=="checkbox" && checkboxList[i].checked) {
+                          if (checkboxList[i].type=="checkbox" && checkboxList[i].checked&& !checkboxList[i].disabled&&checkboxList[i].name.indexOf("_")==-1) {
                             var routeId = checkboxList[i].parentNode.parentNode.getElementsByTagName("td")[columnIndex].innerHTML
                             if(routeId != null && routeId.length > 0) {
 	                            if (paramValues != null) {
