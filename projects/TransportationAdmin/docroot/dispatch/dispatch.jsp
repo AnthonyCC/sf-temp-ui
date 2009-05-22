@@ -198,10 +198,12 @@
                   </td>
                   <td>
                      <input type = "button" value="&nbsp;Unassigned Routes&nbsp;" onclick="javascript:doUnassignedRoutes('dispDate')" />
-                  </td>  
+                  </td> 
+                  <%if(com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request)){%> 
                   <td>
                      <input type = "button" value="&nbsp;Activity Log&nbsp;" onclick="javascript:doActivityLog('dispDate')" />
                   </td>
+                  <%} %>
                   <td>
                     <a href="javascript:directions('ec_table','drivingdirection.do', 10)">
                   		<img src="./images/driving-directions.gif" width="114" height="25" border="0" alt="Driving Directions" title="Driving Directions" />

@@ -167,6 +167,7 @@
         <property name="domainManagerService" ref="domainManager"/>
         <property name="routeManagerDao" ref="routeManagerDAO"/>
         <property name="employeeManagerService" ref="employeeManagerService"/>
+        <property name="logManager" ref="logManagerBase"/>
     </bean>
     
     <bean id="locationManager" class="com.freshdirect.transadmin.service.impl.LocationManagerImpl">

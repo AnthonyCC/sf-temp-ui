@@ -9,6 +9,7 @@ package com.freshdirect.transadmin.util;
 
 import java.util.Properties;
 
+
 import com.freshdirect.framework.util.ConfigHelper;
 
 public class TransportationAdminProperties {

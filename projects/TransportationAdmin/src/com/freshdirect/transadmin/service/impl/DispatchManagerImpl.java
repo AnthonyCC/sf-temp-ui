@@ -26,6 +26,7 @@ import com.freshdirect.transadmin.model.ResourceI;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
+import com.freshdirect.transadmin.service.LogManagerI;
 import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
@@ -39,6 +40,8 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	private DomainManagerI domainManagerService; 
 	
 	private EmployeeManagerI employeeManagerService;
+	
+	private LogManagerI logManager; 
 	
 	public DispatchManagerDaoI getDispatchManagerDao() {
 		return dispatchManagerDao;
@@ -167,7 +170,8 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 			  Iterator iterator=dispList.iterator();
 			  while(iterator.hasNext()){							  
 						  Dispatch disp=(Dispatch)iterator.next();
-						  disp.setUserId("AUTO-DISPATCH");
+						  Object[] param=new Object[]{disp.getDispatchId(),"DELETED","",""};
+						  logManager.log("AUTO-DISPATCH", 3, param);
 						  Set disResList=disp.getDispatchResources();
 						  removeEntity(disResList);							  							  
 				  }
@@ -450,6 +454,10 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public void setLogManager(LogManagerI logManager) {
+		this.logManager = logManager;
 	}
 	
 	

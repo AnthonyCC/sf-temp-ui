@@ -18,8 +18,7 @@
 	<tmpl:put name='yui-lib'>
 		<%@ include file='/common/i_yui.jspf'%>
 	</tmpl:put>	
-	<tmpl:put name='yui-skin'>yui-skin-sam</tmpl:put>
-	<head><META HTTP-EQUIV="Refresh" CONTENT="<%=TransportationAdminProperties.getDispatchDashboardRefreshTime()%>"></head>
+	<tmpl:put name='yui-skin'>yui-skin-sam</tmpl:put>	
 	
   <tmpl:put name='content' direct='true'>
     <br/> 
@@ -66,8 +65,11 @@
                    {
                    		var height=YAHOO.util.Dom.getDocumentHeight()-30;
                    		var width=YAHOO.util.Dom. getDocumentWidth();
-                   		var param1 = "dispDate="+document.getElementById("dispDate").value+"&page="+page;
-                   		//var param1 = "page="+page;
+                   		var props=document.forms["properties"];                   		
+                  		var param1 = "page="+page;
+                  		param1+="&refreshtime="+props.refreshtime.value;
+                  		param1+="&pagerefreshtime="+props.pagerefreshtime.value;
+                  		param1+="&pagesize="+props.pagesize.value;
                    		window.open('<c:out value="${pageContext.request.contextPath}"/>/dispatchDashboard.do?'+param1,'page'+page,'width='+width+',height='+height+',left=0,top=0,toolbar=no,location=no,resizable=yes,scrollbars=yes'); 
                     }
 
@@ -84,7 +86,9 @@
                  <td>
                      <input type = "button" value="&nbsp;Open DashBoard Page&nbsp;" onclick="javascript:OpenPage(1)" />
                   </td>
-                 
+                 <td>
+                     <input type = "button" value="Config" onclick="javascript:showForm()" />
+                  </td>
                  
               </tr>
               </table>        
@@ -124,6 +128,6 @@
           </ec:table>
     </div>
 
-   
+    <%@ include file='dispatchSummaryEntry.jspf'%> 
   </tmpl:put>
 </tmpl:insert>

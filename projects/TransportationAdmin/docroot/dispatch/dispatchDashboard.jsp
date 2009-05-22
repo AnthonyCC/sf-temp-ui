@@ -52,7 +52,7 @@
 			headID.appendChild(newCSS);
 		}
 	</script>	
-<META HTTP-EQUIV="Refresh" CONTENT="<%=TransportationAdminProperties.getDispatchDashboardRefreshTime()%>">
+<META HTTP-EQUIV="Refresh" CONTENT="<%=request.getParameter("refreshtime")%>">
 </head>
  <body  marginwidth="0" marginheight="0" border="0">	
 	
@@ -61,7 +61,7 @@
 	<div id="dispatchDiv" align="center" valign="top" border="0" >
       <ec:table items="dispatchInfos"   action="${pageContext.request.contextPath}/dispatchDashboard.do"
             imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="&nbsp;"
-            width="98%"  rowsDisplayed="1000" view="fd" filterable="false">      
+            width="98%"  rowsDisplayed="1000" view="flattable" filterable="false">      
            
             <ec:row interceptor="obsoletemarker">
                                          
@@ -85,48 +85,19 @@
    </body>
    </html>
 <script>
-function removeNav()
-{
-	var form=document.getElementById("ec");
-	var divs=getElements(form,"div");
-	var div2Table=getElements(divs[1],"table");	
-	div2Table[0].parentNode.removeChild(div2Table[0]); 
-}
-function getElements(element,name)
-{	
-	var result=new Array();
-	var increment=0;
-	var length=element.childNodes.length;	
-	for(var i=0;i<length;i++)
-	{
-		var temp=element.childNodes[i];	
-		if(temp.tagName!=null&&name==temp.tagName.toLowerCase())
-		{			
-			result[increment++]=temp;
-		}
-	}
-	return result;
-}
-removeNav();
-function focusBottom()
-{
-    var objDiv = document.getElementById("dispatchDiv");
-	objDiv.scrollTop = objDiv.scrollHeight;
 
-}
-//setTimeout(focusBottom,15000);
 var c=0;
 var t;
 var k=0;
 var tmpLast = 0;
-var grpSize = <%=TransportationAdminProperties.getDispatchDashboardPageSize()%>;
+var grpSize = <%=request.getParameter("pagesize")%>;
 
 
 function paginator() {
 
 var rows = document.getElementById("ec_table").tBodies[0].rows;
 
-      t=setTimeout("paginator()",<%=TransportationAdminProperties.getDispatchDashboardPageRefreshTime()*1000%>);
+      t=setTimeout("paginator()",<%=request.getParameter("pagerefreshtime")%>*1000);
       var currentPage = 0;
       var countGrp = 0;
 
