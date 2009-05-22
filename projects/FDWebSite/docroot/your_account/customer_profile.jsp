@@ -24,18 +24,9 @@ String redirectPage = "/login/login.jsp?successPage=" + successPage;
         customerIdentity = user.getIdentity();
         customerInfo = FDCustomerFactory.getErpCustomerInfo(customerIdentity);	
     }
-	boolean submitted = "thankyou".equalsIgnoreCase(request.getParameter("info"));
-	boolean hasTaken = false;
-	FDCustomerModel customer = FDCustomerFactory.getFDCustomer(user.getIdentity());
-	if ("FILL".equals(customer.getProfile().getAttribute("Usability"))) {
-		if (!"thankyou".equalsIgnoreCase(request.getParameter("info"))) hasTaken = true;
-		submitted = true;
-	}
-%>
-<%
-response.setHeader("Pragma", "no-cache");
-response.setHeader("Cache-Control", "no-cache");
-String department = request.getParameter("department");
+    response.setHeader("Pragma", "no-cache");
+    response.setHeader("Cache-Control", "no-cache");
+    String department = request.getParameter("department");
 
 %>
 <script type="text/javascript">
@@ -68,13 +59,9 @@ function _submit(p) {
 <tr>
 	<td colspan="10" class="text12">
     
-<% if (submitted) {%>
-	<span class="title18">Thank you for your feedback.</span><br><%= hasTaken?"Your information has been submitted.<br>":""%>We greatly appreciate your time and interest.<br>
-<br><a href="/index.jsp"><img src="/media_stat/images/template/help/help_home.gif" width="71" height="26" border="" alt="BACK HOME"></a><br>Go to <a href="/index.jsp">Home Page</a><br><br>
-<% } else { %>
-<% request.setAttribute("Survey","Customer Profile Survey");%>
+
+<% request.setAttribute(FDSurveyConstants.SURVEY,EnumSurveyType.CUSTOMER_PROFILE_SURVEY.getName());%>
 <%@ include file="/includes/your_account/i_customer_profile.jspf" %>
-<% } %>
 	</td>
 </tr>
 	<tr>
@@ -100,15 +87,6 @@ function _submit(p) {
 </form>
     </tr>
 </table>
-<!--table width="693" border="0" cellspacing="0" cellpadding="0">
-		<tr valign="top">
-			<td width="30"><font class="space2pix"><br></font><input type="image" name="checkout" src="/media_stat/images/buttons/checkout_arrow.gif" width="29" HEIGHT="29" border="0" alt="CONTINUE CHECKOUT" VSPACE="0"></td>
-			<td width="345"><input type="image" name="checkout" src="/media_stat/images/buttons/checkout.gif" width="57" HEIGHT="9" border="0" alt="CHECKOUT" VSPACE="0"></td>
-
-			<td width="283" align="right" valign="middle">Clear preferences</td>
-			<td width="35" align="right"><a href="/index.jsp"><img src="/media_stat/images/buttons/x_green.gif" width="20" HEIGHT="19" border="0" alt="CONTINUE SHOPPING"></a></td>
-		</tr>
-	</table-->
 </fd:CustomerProfileSurveyTag>
 	</tmpl:put>
 </tmpl:insert>

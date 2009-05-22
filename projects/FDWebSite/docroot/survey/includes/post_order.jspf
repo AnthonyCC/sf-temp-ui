@@ -74,8 +74,8 @@ if (submitted) {
 		<td colspan="11"><%@ include file="/includes/your_account/i_customer_profile.jspf" %>
 </td></tr>        
 
-	<tr><td colspan="11" align="center"><img src="/media_stat/images/layout/cccccc.gif" width="630" height="1" vspace="12"><br><input type="image" src="/media_stat/images/buttons/b_submit_survey.gif" width="176" height="21" alt="SUBMIT SURVEY" onclick="doSubmitForm(false);"><br><img src="/media_stat/images/layout/999966.gif" width="630" height="1" vspace="18"><br>
-	<input type="image" src="/media_stat/images/buttons/b_ask_me_later.gif" width="120" height="21" alt="SKIP SURVEY" onclick="doSubmitForm(true);"><br><br>
+	<tr><td colspan="11" align="center"><img src="/media_stat/images/layout/cccccc.gif" width="630" height="1" vspace="12"><br><a href="javascript:document.postOrderSurvey.submit()"><img src="/media_stat/images/buttons/b_submit_survey.gif" width="176" height="21" alt="SUBMIT SURVEY" border="0"></a><br><img src="/media_stat/images/layout/999966.gif" width="630" height="1" vspace="18"><br>
+	<a href="javascript:doSubmitForm(true)"><img  src="/media_stat/images/buttons/b_ask_me_later.gif" width="120" height="21" alt="SKIP SURVEY"  border="0"></a><br><br>
 	</td></tr>
 
 </form>

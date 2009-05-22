@@ -90,11 +90,11 @@ FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
   <table>
   <tr>
    <td valign="top">
-    <input type="image"  src="/media_stat/images/buttons/checkout_arrow.gif" WIDTH="29" HEIGHT="29" name="submit_survey">
+    <a href="javascript:document.survey.submit()"><img  src="/media_stat/images/buttons/checkout_arrow.gif" WIDTH="29" HEIGHT="29" name="submit_survey" border="0"></a>
    </td>
    <td><img src="/media/images/layout/clear.gif" width="2" height="1" alt="" border="0"></td>
    <td valign="top">
-    <input type="image"  src="/media_stat/images/template/checkout/submit_survey.gif" name="submit_survey"><br>
+    <a href="javascript:document.survey.submit()"><img  src="/media_stat/images/template/checkout/submit_survey.gif" border="0"></a><br>
     To continue Checkout.<br>
     Thank you for your feedback!
    </td>

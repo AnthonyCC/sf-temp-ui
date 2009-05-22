@@ -461,12 +461,10 @@ public class SurveyHtmlHelper {
 	}
 
 	private static boolean isNoneOption(String answer) {
-		//return (FDSurveyConstants.NONE.equalsIgnoreCase(answer))?true:false;
 		return (FDSurveyConstants.NONE.equalsIgnoreCase(answer));
 	}
 
 	private static boolean isOtherOption(String answer) {
-		//return (FDSurveyConstants.OTHER.equalsIgnoreCase(answer))?true:false;
 		return (FDSurveyConstants.OTHER.equalsIgnoreCase(answer));
 	}
 

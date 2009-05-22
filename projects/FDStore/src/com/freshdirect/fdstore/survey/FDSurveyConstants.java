@@ -36,6 +36,8 @@ public class FDSurveyConstants {
 	
 	public final static String MEAL_COUNT_SUMMARY=" X per week";
 	
+	public final static String SURVEY="Survey";
+	
 	
 	
 }

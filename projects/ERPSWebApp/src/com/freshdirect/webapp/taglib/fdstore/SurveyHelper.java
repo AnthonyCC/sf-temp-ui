@@ -37,9 +37,9 @@ public class SurveyHelper {
 			if(q==null)continue;
 			if(reqQuests.contains(question)) reqQuests.remove(question);
 			if (answers.length == 1 && "".equals(answers[0])) continue; //don't create entry for blank open ended questions.
-			if(answers.length>1) {
-				answers=getSelectedValues(answers);
-			}
+			//if(answers.length>1) {
+				answers=getSelectedValues(q,answers);
+			//}
 			if(seperator==-1) 
 				surveyResponse.addAnswer(question, answers);
 			else
@@ -52,13 +52,14 @@ public class SurveyHelper {
 		return surveyResponse;
 	}
 	
-	public static String[] getSelectedValues(String[] answers) {
+	public static String[] getSelectedValues(FDSurveyQuestion quest,String[] answers) {
 		 
 		List _answer=new ArrayList(answers.length);
 		for(int j=0;j<answers.length;j++) {
-			if("".equals(answers[j]))
+			if(answers[j]==null||"".equals(answers[j]))
 				continue;
-			_answer.add(answers[j]);
+			if(contains(quest.getAnswers(),quest.getAnswerGroups(),answers[j]))
+				_answer.add(answers[j]);
 		}
 		String[] answer=new String[_answer.size()];
 		for(int j=0;j<_answer.size();j++) {
@@ -66,11 +67,34 @@ public class SurveyHelper {
 		}
        return answer;
     }
-	
+	private static boolean contains(List validAns,List ansGroup, String userSelection) {
+		
+		if(validAns==null || validAns.isEmpty()) return false;
+		
+		boolean hasSelection=false;
+		int counter=0;
+		while(!hasSelection && counter<validAns.size()) {
+			FDSurveyAnswer _ans=(FDSurveyAnswer)validAns.get(counter);
+			if(ansGroup!=null && !ansGroup.isEmpty()) {
+				for(int i=0;i<ansGroup.size();i++) {
+					if(userSelection.endsWith(ansGroup.get(i).toString())) {
+						userSelection=userSelection.substring(0,userSelection.indexOf(ansGroup.get(i).toString()));
+					}
+				}
+			}
+			if(_ans.getName().equals(userSelection)) {
+				hasSelection=true;
+			} else {
+				
+			}
+			counter++;
+		}
+		
+		return hasSelection;
+		
+	}
 	
 	public static int getResponseCoverage(FDSurvey survey, FDSurveyResponse response) {
-		
-		int coverage=0;
 		
 		if(survey==null || response==null)
 			return 0;
@@ -88,10 +112,7 @@ public class SurveyHelper {
 					responseCount++;
 			}
 		}
-		coverage=(int)((responseCount*100)/survey.getQuestions().size());
-		return coverage;
-		
-		
+		return (int)((responseCount*100)/survey.getQuestions().size());
 	}
 	
 	public static boolean hasActiveAnswers(FDSurveyQuestion question, List response) {
