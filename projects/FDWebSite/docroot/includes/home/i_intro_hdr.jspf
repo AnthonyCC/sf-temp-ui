@@ -27,8 +27,7 @@
      <% if (user.isEligibleForSignupPromotion()) { //has promo 
 			SignupDiscountRule rule = user.getSignupDiscountRule();
 %>
-         <% if (user.isChefsTable() || user.isDlvPassActive()) { %><tr align="left"> 
-         <% } else { %> <tr align="center"> <% } %>
+         <tr align="center">
          
 	 <td>
 		 <font class="title14">Welcome back, <%=custFirstName%>!</font><br><font class="text9">(If you're not <font color="#336600"><%=custFirstName%>, <a href="/login/logout.jsp?logoutPage=site_access">click here</A>!</font>)</font>
@@ -37,28 +36,13 @@
 	</tr>
 	
      <% } else { %>
-          <% if (user.isChefsTable() || user.isDlvPassActive()) { %><tr align="left"> 
-          <% } else { %> <tr align="center"> <% } %>
+          <tr align="center"> 
           
           <td><font class="title14">Welcome back, <%=custFirstName%>!</font>&nbsp;&nbsp;
           <font class="text9">(If you're not <font color="#336600"><%=custFirstName%>, <a href="/login/logout.jsp?logoutPage=site_access">click here</A>!</font>)</font></td></tr>
      <% } %>
 <% } %>
 
-<% if (user.isChefsTable()) { // Chef's Table member
-			
-%>
-        <tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="6"></td></tr>
-	<tr align="left"><td><font class="title12">Thanks for being one of our best customers!</font>&nbsp;&nbsp;
-	<font class="title11"><font color="#336600"><a href="/your_account/manage_account.jsp">Click here for Chef's Table offers.</A></font></font></td></tr>
 
-<% }  else if (user.isDlvPassActive()) { // user has active delivery pass
-
-%>
-	<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="6"></td></tr>
-	<tr align="left"><td><font class="title12">Enjoy your Unlimited DeliveryPass membership!</font>&nbsp;&nbsp;
-	<font class="title11"><font color="#336600"><a href="/your_account/delivery_pass.jsp">Click here for details.</a></font></font></td></tr>
-
-<% } %>
 
 </table>
