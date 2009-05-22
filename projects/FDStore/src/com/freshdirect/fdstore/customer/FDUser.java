@@ -587,6 +587,16 @@ public class FDUser extends ModelSupport implements FDUserI {
 			return customer.getProfile().isChefsTable();
 		}
 	}
+	
+	public String getChefsTableInduction() throws FDResourceException {
+	    
+		FDCustomerModel customer = this.getFDCustomer();
+		if (customer == null || customer.getProfile() == null) {
+			return "0";
+		} else {
+			return customer.getProfile().getChefsTableInduction();
+		}
+	}
 
 	public boolean isEligibleForPreReservation() throws FDResourceException {
 	    if (this.identity == null) {

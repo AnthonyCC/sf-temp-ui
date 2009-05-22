@@ -1,5 +1,6 @@
 package com.freshdirect.fdstore.customer;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,6 +45,11 @@ public class ProfileModel extends ModelSupport {
 	public String getCustomerMetalType() {
 		String metalValue = getAttribute("MetalCategory");
 		return (metalValue == null || metalValue.length() != 1 || "0123456".indexOf(metalValue) == -1) ? "0" : metalValue;
+	}
+	
+	public String getChefsTableInduction() {
+		String inductionValue = getAttribute("ChefsTableInduction");
+		return (inductionValue == null || inductionValue.length() < 1) ? "0" : inductionValue;
 	}
 
 	public boolean isCOSPilot() {

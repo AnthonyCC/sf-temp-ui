@@ -153,6 +153,8 @@ public interface FDUserI extends java.io.Serializable {
     
 	public boolean isChefsTable() throws FDResourceException;
 	
+	public String getChefsTableInduction() throws FDResourceException;
+	
 	public boolean isEligibleForPreReservation() throws FDResourceException;
 	
 	public EnumServiceType getSelectedServiceType();
