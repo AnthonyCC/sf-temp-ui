@@ -357,5 +357,24 @@ class FDFactory {
 		}
 		
 	}
+	
+	
+	public static List findPeakProduceSKUsByDepartment(List skuPrefixes) throws FDResourceException {
+		if (factoryHome==null) {
+			lookupFactoryHome();
+		}
+		try {
+			FDFactorySB sb = factoryHome.create();
+			return sb.findPeakProduceSKUsByDepartment(skuPrefixes);
+
+		} catch (CreateException ce) {
+			factoryHome=null;
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			factoryHome=null;
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+		
+	}
 
 }

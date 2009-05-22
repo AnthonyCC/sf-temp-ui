@@ -89,6 +89,8 @@ public interface FDFactorySB extends EJBObject {
 	public Collection getOutOfStockSkuCodes() throws RemoteException, FDResourceException;
 	
 	public Collection findSKUsByDeal(double lowerLimit, double upperLimit,List skuPrefixes)throws FDResourceException, RemoteException;
+
+	public List findPeakProduceSKUsByDepartment(List skuPrefixes) throws FDResourceException, RemoteException;
 	
 }
 

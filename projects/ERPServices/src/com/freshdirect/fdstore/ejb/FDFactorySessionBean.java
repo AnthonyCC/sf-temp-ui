@@ -315,5 +315,23 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 			throw new FDResourceException(ce);
 		}
 	}
+	
+	
+	public List findPeakProduceSKUsByDepartment(List skuPrefixes)throws FDResourceException {
+		if (this.infoHome==null) {
+			this.lookupInfoHome();	
+		}
+		try {
+			ErpInfoSB infoSB = this.infoHome.create();
+			return infoSB.findPeakProduceSKUsByDepartment(skuPrefixes);
+
+		} catch (RemoteException re) {
+			this.infoHome=null;
+			throw new FDResourceException(re);
+		} catch (CreateException ce) {
+			this.infoHome=null;
+			throw new FDResourceException(ce);
+		}
+	}
 
 }

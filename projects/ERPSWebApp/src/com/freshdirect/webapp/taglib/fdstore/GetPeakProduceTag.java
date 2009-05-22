@@ -47,10 +47,16 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 	private static final int MIN_PEAK_PRODUCE_COUNT=3;
 	
 	String deptId = null;
+	String getGlobalPeakProduceSku="false";
 	
 	public void setDeptId(String deptId) {
 		this.deptId = deptId;
 	}
+	
+	public void setGlobalPeakProduceSku(String b){
+		this.getGlobalPeakProduceSku=b;
+	}
+			
 	
 	protected Object getResult() throws FDResourceException {
 		HttpSession session = pageContext.getSession();
@@ -59,12 +65,55 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 		Collection peakProduce=null;
 		ContentNodeModel node=ContentFactory.getInstance().getContentNode(deptId);
 		if(node instanceof DepartmentModel) {
+			if("true".equalsIgnoreCase(getGlobalPeakProduceSku)){
+				peakProduce=getAllPeakProduceForDept((DepartmentModel)node);
+			}else{
 				peakProduce=getPeakProduce((DepartmentModel)node);
-
+			}
 		}
 		
 		return peakProduce;
 	}
+	
+	
+private Collection getAllPeakProduceForDept(DepartmentModel dept) throws FDResourceException {
+		
+	    List products=new ArrayList();
+		List deptList=new ArrayList();
+		System.out.println("dept.getContentKey().getId()  :"+dept.getContentKey().getId());
+		deptList.add(dept.getContentKey().getId());
+		List _products=FDCachedFactory.findPeakProduceSKUsByDepartment(deptList);
+		
+		if(_products!=null && _products.size()!=0) {
+			products=new ArrayList(_products.size());
+			FDProductInfo productInfo=null;
+			String sku="";
+			for (Iterator i = _products.iterator(); i.hasNext();) {
+				sku=i.next().toString();
+				try {
+					productInfo=FDCachedFactory.getProductInfo(sku);
+					if(productInfo.isAvailable() && isPeakProduce(productInfo.getRating())) {
+						
+						try {
+							   ProductModel sm=ContentFactory.getInstance().getProduct(sku);
+							   if(!sm.isUnavailable())
+								   products.add(sm);
+					     } catch(Exception e) {
+					     }
+					}
+				} catch (FDSkuNotFoundException e) {
+					throw new FDResourceException(e);
+				}
+			}
+		}
+		
+		
+		System.out.println("Peak produce before remove duplicates:"+products);
+        //products=removeDuplicates(products);        
+        System.out.println("Peak produce after remove duplicates:"+products);	
+		return products;			
+	}
+	
 
 	private Collection getPeakProduce(DepartmentModel dept) throws FDResourceException {
 		
@@ -121,29 +170,67 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 
 		while (it.hasNext()) {
 			boolean isBrand=false;
-			SkuModel sku = (SkuModel) it.next();
-			try {
-				FDProductInfo prodInfo = sku.getProductInfo();
-				com.freshdirect.fdstore.FDProduct prod = sku.getProduct();
-				String materialNumber= prod.getMaterial().getMaterialNumber();
-				//System.out.println("materialNumber= "+ materialNumber);
-				final int MAX_DISPLAY_BRANDS=1;
-				List list = sku.getProductModel().getDisplayableBrands(MAX_DISPLAY_BRANDS);			
-				if(!list.isEmpty()){
-					isBrand=true;
-				}
-				if( m.containsKey(materialNumber)){
-					if(isBrand) {
+			Object obj=it.next();
+			if(obj instanceof SkuModel)
+			{
+				SkuModel sku = (SkuModel)obj; 
+				try {
+					FDProductInfo prodInfo = sku.getProductInfo();
+					com.freshdirect.fdstore.FDProduct prod = sku.getProduct();
+					String materialNumber= prod.getMaterial().getMaterialNumber();
+					//System.out.println("materialNumber= "+ materialNumber);
+					final int MAX_DISPLAY_BRANDS=1;
+					List list = sku.getProductModel().getDisplayableBrands(MAX_DISPLAY_BRANDS);			
+					if(!list.isEmpty()){
+						isBrand=true;
+					}
+					if( m.containsKey(materialNumber)){
+						if(isBrand) {
+							m.put(materialNumber, sku);
+						}
+					}
+					else{
 						m.put(materialNumber, sku);
 					}
 				}
-				else{
-					m.put(materialNumber, sku);
+				catch (FDSkuNotFoundException e) { 
+					throw new FDResourceException(e);
 				}
+			}else if(obj instanceof ProductModel){
+
+				ProductModel product = (ProductModel)obj; 								
+				List skus=product.getSkus();
+				String rating=null;
+				SkuModel skuTemp=null;
+				for(int i=0;i<skus.size();i++) {
+					skuTemp=(SkuModel)skus.get(i);
+					if(skuTemp.isDiscontinued() || skuTemp.isOutOfSeason() || skuTemp.isTempUnavailable() ||(!skuTemp.isAvailableWithin(2))) {//sku is available tomorrow.
+						continue;
+					}				   											
+					try {
+						
+						com.freshdirect.fdstore.FDProduct prod = skuTemp.getProduct();
+						String materialNumber= prod.getMaterial().getMaterialNumber();
+						//System.out.println("materialNumber= "+ materialNumber);
+						final int MAX_DISPLAY_BRANDS=1;
+						List list = skuTemp.getProductModel().getDisplayableBrands(MAX_DISPLAY_BRANDS);			
+						if(!list.isEmpty()){
+							isBrand=true;
+						}
+						if( m.containsKey(materialNumber)){
+							if(isBrand) {
+								m.put(materialNumber, product);
+							}
+						}
+						else{
+							m.put(materialNumber, product);
+						}
+					}
+					catch (FDSkuNotFoundException e) { 
+						throw new FDResourceException(e);
+					}
+				}	
 			}
-			catch (FDSkuNotFoundException e) { 
-				throw new FDResourceException(e);
-			}			
 		}
 
 		Collection c = m.values();

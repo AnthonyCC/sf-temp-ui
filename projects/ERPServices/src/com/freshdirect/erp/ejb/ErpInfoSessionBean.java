@@ -1148,6 +1148,70 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		}
 	}
 	
+	
+	public List findPeakProduceSKUsByDepartment(List skuPrefixes){
+		
+		StringBuffer statement=new StringBuffer("SELECT distinct p1.sku_code, rating "+ 
+		"FROM erps.PRODUCT p1 "+
+		"where p1.unavailability_date > sysdate+1 and "+
+		"p1.unavailability_status is null " + 
+		"and p1.VERSION=(SELECT MAX(VERSION) FROM erps.PRODUCT "+
+		"WHERE sku_code=p1.sku_code "+
+		") and rating is not null and rating like 'P%' " );
+				Connection conn = null;
+				try {
+					
+					if(hasValue(skuPrefixes)) {
+						statement.append(" AND (");
+						for(int i=0;i<skuPrefixes.size();i++) {
+							
+							statement.append(" ( p1.sku_code LIKE UPPER(?)) ");
+							if(i<(skuPrefixes.size()-1)) {
+								statement.append(" OR ");
+							}
+						}
+						statement.append(" )");
+					}
+					System.out.println("Statement is : "+statement.toString());
+					conn = this.getConnection();
+				
+					PreparedStatement ps = conn.prepareStatement(statement.toString());
+					
+					
+					if(hasValue(skuPrefixes)) {
+						for(int i=0;i<skuPrefixes.size();i++) {
+							System.out.println(skuPrefixes.get(i).toString()+"%");
+							ps.setString(i+1, skuPrefixes.get(i).toString()+"%");
+						}
+					}
+					
+					ResultSet rs = ps.executeQuery();
+				
+					List lst = new ArrayList();
+					while (rs.next()) {
+						lst.add(rs.getString(1));
+						System.out.println(rs.getString(1));
+					}
+				
+					rs.close();
+					ps.close();
+				
+					return lst;
+				
+				} catch (SQLException sqle) {
+					throw new EJBException(sqle);
+				} finally {
+					try {
+						if (conn != null) {
+							conn.close();
+						}
+					} catch (SQLException sqle2) {
+						LOGGER.warn("Error closing connection", sqle2);
+					}
+				}		
+	}
+	
+	
 	private boolean hasValue(List skuPrefixes) {
 		
 		if(skuPrefixes!=null && skuPrefixes.size()!=0) {

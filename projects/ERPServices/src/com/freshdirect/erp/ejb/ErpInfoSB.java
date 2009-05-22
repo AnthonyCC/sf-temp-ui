@@ -77,6 +77,8 @@ public interface ErpInfoSB extends EJBObject {
 	public Collection findOutOfStockSkuCodes() throws RemoteException;
 	
 	public Collection findSKUsByDeal(double lowerLimit, double upperLimit,List skuPrefixes)throws RemoteException;
+
+	public List findPeakProduceSKUsByDepartment(List skuPrefixes) throws RemoteException;
    
 }
 

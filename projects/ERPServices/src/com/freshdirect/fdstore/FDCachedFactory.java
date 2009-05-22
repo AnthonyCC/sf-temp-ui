@@ -283,4 +283,9 @@ public class FDCachedFactory {
 		return FDFactory.findSKUsByDeal(lowerLimit, upperLimit, skuPrefixes);
 	}
 	
+	public static List findPeakProduceSKUsByDepartment(List skuPrefixes) throws FDResourceException {
+		return FDFactory.findPeakProduceSKUsByDepartment(skuPrefixes);
+	}
+	
+	
 }
