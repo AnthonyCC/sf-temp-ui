@@ -53,6 +53,10 @@ public class FDSplCheckboxCell extends FDBaseCell
 	        			{
 	        				enabled=true;
 	        			}
+	    				if(DispatchPlanUtil.isBullpen(command.getIsBullpen())&&value)
+	    				{
+	    					enabled=false;
+	    				}
 	    			}
 	    			if("checkedIn".equalsIgnoreCase(column.getProperty()))
 	    			{
@@ -60,6 +64,14 @@ public class FDSplCheckboxCell extends FDBaseCell
 	        			{
 	        				enabled=true;
 	        			}
+	    				if(DispatchPlanUtil.isBullpen(command.getIsBullpen())&&value)
+	    				{
+	    					enabled=false;
+	    				}
+	    				if(DispatchPlanUtil.isBullpen(command.getIsBullpen())&&!command.isDispatched())
+	    				{
+	    					enabled=false;
+	    				}
 	    			}
         		}
         		
