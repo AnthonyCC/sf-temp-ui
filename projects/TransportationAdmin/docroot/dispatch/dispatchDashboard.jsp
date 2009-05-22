@@ -55,13 +55,10 @@
 <META HTTP-EQUIV="Refresh" CONTENT="<%=request.getParameter("refreshtime")%>">
 </head>
  <body  marginwidth="0" marginheight="0" border="0">	
-	
 	<table width="100%" border=0 height="30"><tr><td width="100" align="left"><img width="100" height="30" src="images/TransAppLogo.gif"></td><td align="center" class="tv_header">DISPATCH</td><td width="180" align="right" class="tv_time" nowrap>Last Refresh Time:<br><span class="tv_time1"><%=request.getAttribute("lastTime")%></span></td></tr></table>
-	<table width="100%" ><tr><td>
-	<div id="dispatchDiv" align="center" valign="top" border="0" >
       <ec:table items="dispatchInfos"   action="${pageContext.request.contextPath}/dispatchDashboard.do"
             imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="&nbsp;"
-            width="98%"  rowsDisplayed="1000" view="flattable" filterable="false">      
+            width="100%"  rowsDisplayed="1000" view="flattable" filterable="false" >      
            
             <ec:row interceptor="obsoletemarker">
                                          
@@ -78,12 +75,9 @@
               <ec:column property="helpers"  cell="com.freshdirect.transadmin.web.ui.FDDispatchSummaryResourceCell" title="Helper"  filterable="true" alias="helpers" filterable="false" sortable="false"/>             
              <ec:column  alias="dispatchTime"  property="dispatchTimeEx" title="Dispatch Time" filterable="false" sortable="false"  cell="date" format="hh:mm aaa"/>
             </ec:row>
-          </ec:table>
-    </div>
-</td></tr></table>
- 
+          </ec:table>    
    </body>
-   </html>
+   </html> 
 <script>
 
 var c=0;
