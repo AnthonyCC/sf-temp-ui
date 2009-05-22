@@ -435,6 +435,10 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		return this.user.isChefsTable();
 	}
 	
+	public String getChefsTableInduction() throws FDResourceException {
+		return this.user.getChefsTableInduction();
+	}
+	
 	public boolean isEligibleForPreReservation() throws FDResourceException{
 		return this.user.isEligibleForPreReservation();
 	}
