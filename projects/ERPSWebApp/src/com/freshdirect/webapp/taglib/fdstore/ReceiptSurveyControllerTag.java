@@ -166,9 +166,10 @@ public class ReceiptSurveyControllerTag  extends AbstractControllerTag implement
 						for(Iterator i = parameters.entrySet().iterator(); i.hasNext();){
 							Entry e = (Entry) i.next();
 							String question = (String)e.getKey();
-							String[] answers = SurveyHelper.getSelectedValues((String[])e.getValue());
-							
 							FDSurveyQuestion q = survey.getQuestion(question);
+							String[] answers = SurveyHelper.getSelectedValues(q,(String[])e.getValue());
+							
+							
 							if(q == null){
 								if (!isPostOrderSurvey && !isCOSSurvey && !isHamptonsSurvey && !isOrganicSurvey && !isMorningDeliverySurvey && !isUsabilitySurvey && !isNutritionSurvey &&!isRcptPage2Survey) {
 								actionResult.addError(new ActionError("Invalid Question", question + " is an invalid question"));
