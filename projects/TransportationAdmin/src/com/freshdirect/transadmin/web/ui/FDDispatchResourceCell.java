@@ -21,7 +21,7 @@ public class FDDispatchResourceCell extends FDBaseCell  {
 		if(obj instanceof ResourceList) {
 			ResourceList resList=(ResourceList)obj;
 			StringBuffer response=new StringBuffer(200);
-			if(resList.getResourceReq()!=null) {
+			if(resList!=null) {
 				
 				for(int i=0;i<resList.size();i++) {
 					String name= getResourceName(((DispatchResourceInfo)resList.get(i)));
