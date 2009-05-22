@@ -34,7 +34,7 @@ public class SapTruckMasterInfo extends SapCommandSupport {
 
 	public void execute() throws SapException {
 
-		System.out.println("easdhjasdasjhdasjkdsj");
+		
 		BapiTruckMasterInfo bapi = BapiFactory.getInstance().getBapiTruckMasterInfoBuilder();
 		//bapi.addRequest(new Date());
 		this.invoke(bapi);
@@ -48,8 +48,6 @@ public class SapTruckMasterInfo extends SapCommandSupport {
 			ErpTruckMasterInfo info=new ErpTruckMasterInfo(bapi.getTruckNumber(i),bapi.getTruckType(i),bapi.getTruckLicencePlate(i),bapi.getTruckLocation(i));
 			truckInfoDetails.add(info);
 		}
-		
-		System.out.println("truckInfoDetails :"+truckInfoDetails.size());
 	}
 	
 	public List getTruckMasterInfos() {

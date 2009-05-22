@@ -71,8 +71,6 @@ public class JcoBapiRouteMasterInfo extends JcoBapiFunction implements BapiRoute
 		routeMastarMap.put("numberOfStops",numberOfStops);
 		routeMastarMap.put("truckNumbers", truckNumbers);
 		routeMastarMap.put("firstDlvTime",firstDlvTime);
-		System.out.println("numberOfStops :"+routeNumbers.length);
-		
 	}
 
 		
