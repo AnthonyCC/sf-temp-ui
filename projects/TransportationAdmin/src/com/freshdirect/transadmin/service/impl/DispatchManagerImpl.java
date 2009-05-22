@@ -394,7 +394,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 			  Iterator iterator=dispList.iterator();
 			  while(iterator.hasNext()){							  
 				  Dispatch disp=(Dispatch)iterator.next();
-				  if(disp.getBullPen()==null || disp.getBullPen().booleanValue()==false )
+				  if(disp.getBullPen()==null || (disp.getBullPen().booleanValue()==false && disp.getZone()!=null ))
 					  dispatchResources.addAll(disp.getDispatchResources());
 			  }
 		}
