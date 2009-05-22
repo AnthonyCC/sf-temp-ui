@@ -262,7 +262,7 @@
               <ec:column property="helpers"  cell="dispatchResCell" title="Helper"  filterable="true" alias="helpers"/>
               <ec:column property="runners"  cell="dispatchResCell" title="Runner"  filterable="true" alias="runners"/>
                <ec:column alias="trnTruckGpsNumber" property="extras" width="10"  title="Extras"/>
-              <ec:column  alias="dispatchTime"  property="dispatchTimeEx" title="Dispatch Time" filterable="false" sortable="false"  cell="date" format="hh:mm aaa"/>
+              <ec:column  alias="dispatchTime"  property="dispatchTimeEx" title="Dispatch Time"  cell="date" format="hh:mm aaa"/>
               
             </ec:row>
           </ec:table>
