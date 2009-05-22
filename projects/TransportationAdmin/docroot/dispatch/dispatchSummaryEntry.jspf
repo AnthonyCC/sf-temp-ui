@@ -1,0 +1,40 @@
+  <script type="text/javascript" src="js/dataTable.js"></script> 
+ <script>
+      
+     
+      function showForm() 
+      {   
+     	var panel = new YAHOO.widget.Panel("dialog", {
+                         fixedcenter: true, 
+                         close: true, 
+                         draggable: false, 
+                         zindex:4,
+                         modal: true,
+                         visible: false,
+                         effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});  
+        panel.setHeader("Plasma Configuration");
+        panel.render(document.body);
+        panel.show();
+		  
+      }              
+  
+</script>
+ 
+  
+  <div id="dialog">
+      
+   <div class="bd">
+           <div id="myContainer" style="background-color:#D7C8FF" >
+           
+    
+<form name="properties">
+<table>
+<tr><td>Refresh Time:  </td><td><input type=input name="refreshtime" value="<%=TransportationAdminProperties.getDispatchDashboardRefreshTime()%>"></td></tr>
+<tr><td>Page Refresh Time:</td><td><input type=input name="pagerefreshtime" value="<%=TransportationAdminProperties.getDispatchDashboardPageRefreshTime()%>"></td></tr>
+<tr><td>Page Size:</td><td><input type=input name="pagesize" value="<%=TransportationAdminProperties.getDispatchDashboardPageSize()%>"></td></tr>
+</table>
+</form>   
+
+</div> 
+</div> 
+</div>    
