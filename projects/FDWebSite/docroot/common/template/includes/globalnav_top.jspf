@@ -97,16 +97,13 @@ if(user != null) {
 	 <% } %>	
 		</td>
 		<td colspan="13" align="right" valign="bottom">
-		
-		<% if(user.isChefsTable() && !user.getChefsTableInduction().equals("0") && user.getChefsTableInduction().length() == 8) { %>
-			
-			<a href="/your_account/manage_account.jsp"><img src='<%= "/media_stat/images/navigation/global_nav/global_hdr_ct_"+user.getChefsTableInduction().substring(0,4)+".gif"%>' width="256" height="10" alt="CLICK HERE FOR EXCLUSIVE CHEF'S TABLE OFFERS" vspace="0" border="0"></a><br>
-				
-			
-		<% } else if (user.isDlvPassActive()) {
+		<% if (user.isChefsTable()) {
 		%>
-			<a href="/your_account/delivery_pass.jsp"><img src="/media_stat/images/navigation/global_nav/global_hdr_dp.gif" width="217" height="10" alt="CLICK HERE FOR DETAILS"  vspace="0" border="0"></a><br>
-		<% } %>
+		
+		<a href="/your_account/manage_account.jsp"><img src="/media_stat/images/template/checkout/loy_global_member_stars_2008.gif" width="314" height="9" alt="CLICK HERE FOR EXCLUSIVE CHEF'S TABLE OFFERS" vspace="0" border="0"></a><br>
+		
+	<%  } %>
+			
 	   <% if (user.getLevel() == FDUserI.SIGNED_IN) {
 	%>		        <a href="/login/logout.jsp"><b>Click here to log out</b></a>
 	<%             } else if (user.getLevel() == FDUserI.RECOGNIZED) {	%>
