@@ -1,0 +1,104 @@
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.LayoutManager.Settings,com.freshdirect.fdstore.content.util.SortStrategyElement' %>
+<%@ page import='com.freshdirect.fdstore.content.CategoryModel' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
+
+<%
+String catId = "picks_pres";
+//request.getParameter("catId");
+ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNodeByName(catId);
+String trkCode= "";
+boolean isDept = (currentFolder instanceof DepartmentModel);
+boolean isCat = (currentFolder instanceof CategoryModel);
+Collection sortedColl=null; 
+boolean onlyOneProduct =false;
+ProductModel theOnlyProduct =  null;
+
+//** pass the code that should be used as the tracking code **/
+if (isDept) {
+	trkCode = "dpage";
+	request.setAttribute("trk","dpage");
+} else if(isCat) {
+	trkCode = "cpage";
+    request.setAttribute("trk","cpage");
+}
+boolean sortDescending = "true".equalsIgnoreCase(request.getParameter("sortDescending"));
+String sortNameAttrib = currentFolder.getAttribute("LIST_AS", "full");
+    
+Settings layoutSettings = new Settings();
+layoutSettings.setGrabberDepth(0);
+//This setReturnHiddenFolders is temprorarily set to true. Will be removed when go live.
+//layoutSettings.setReturnHiddenFolders(true);
+layoutSettings.setIgnoreShowChildren(true);
+layoutSettings.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRIORITY, false));
+//layoutSettings.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_CATEGORY_PRIORITY, sortDescending));
+//layoutSettings.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, sortNameAttrib, false));
+%>
+<fd:ItemGrabber category='<%=currentFolder %>' id='rtnColl'  
+        depth='<%=layoutSettings.getGrabberDepth()%>' ignoreShowChildren='<%=layoutSettings.isIgnoreShowChildren()%>' 
+        filterDiscontinued='<%= layoutSettings.isFilterDiscontinued() %>'
+        returnHiddenFolders='<%=layoutSettings.isReturnHiddenFolders()%>'
+        ignoreDuplicateProducts='<%=layoutSettings.isIgnoreDuplicateProducts()%>'
+        returnSecondaryFolders='<%=layoutSettings.isReturnSeocndaryFolders()%>' returnSkus='<%=layoutSettings.isReturnSkus()%>'>
+<%
+        sortedColl = rtnColl;
+        
+        request.setAttribute("itemGrabberResult",sortedColl); //** expose result of item grabber to the layout **
+%>
+    </fd:ItemGrabber> 
+ 
+    <fd:ItemSorter nodes='<%=(List)sortedColl%>' strategy='<%=layoutSettings.getSortStrategy()%>'/>
+
+			<fd:IncludeMedia name="/media/editorial/whats_good/whats_good_line.html" />
+			<fd:IncludeMedia name= "/media/editorial/whats_good/whats_good_PICKS_above.html"/>
+
+			
+			<table cellpadding="0" cellspacing="0" border="0">
+			<tr valign="bottom">
+
+				<logic:iterate id="contentNode" collection="<%= sortedColl %>" type="java.lang.Object" indexId="idx">
+					<% ProductModel pm = (ProductModel) contentNode; %>
+
+					<!-- 
+						<%=idx%> : <%=pm.getFullName()%>
+					-->
+
+					<% if (idx.intValue() >= 5) { continue; }
+						
+						String prodNameAttribute = JspMethods.getProductNameToUse(pm);
+						DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,pm.getContentName(),pm,prodNameAttribute,true);
+						int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
+					%>
+						<td align="center" width="<%=adjustedImgWidth%>" style="padding-left:5px; padding-right:5px;">
+							<a href="<%=displayObj.getItemURL()%>&trk=dept"><img src="<%= displayObj.getImagePath()%>"  <%=displayObj.getImageDimensions() %> alt="<%=displayObj.getAltText()%>" vspace="0" hspace="0" border="0" /></a>
+						</td>
+				</logic:iterate>
+				</tr>
+				<tr>
+				<logic:iterate id="contentNode" collection="<%= sortedColl %>" type="java.lang.Object" indexId="idx">
+					<% ProductModel pm = (ProductModel) contentNode; %>
+
+					<!-- 
+						<%=idx%> : <%=pm.getFullName()%>
+					-->
+
+					<% if (idx.intValue() >= 5) { continue; }
+						
+						String prodNameAttribute = JspMethods.getProductNameToUse(pm);
+						DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,pm.getContentName(),pm,prodNameAttribute,true);
+						int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
+					%>
+
+						<td valign="top" width="<%=adjustedImgWidth%>" align="center" style="padding-left:5px; padding-right:5px;padding-bottom:10px;">
+						<% if (displayObj.getRating()!=null && displayObj.getRating().trim().length()>0) { %>          
+							<img src="/media_stat/images/ratings/<%=displayObj.getRating()%>.gif" name="rating" width="59" height="11" border="0" vspace="3" />
+						<% } %>
+						<br /><a href="<%=displayObj.getItemURL()%>&trk=dept" class="text11"><%=displayObj.getItemName()%></a>
+						<%  if (displayObj.getPrice()!=null) { %>
+							<br /><span class="price"><%=displayObj.getPrice()%></span>
+						<%  } %>
+					</td>
+
+				</logic:iterate>
+				</tr>
+			</table>
+

@@ -1,0 +1,211 @@
+<%-- Featured Products column --%>
+<%  
+	String baseURL = "";
+	/*
+	 *	if emailPage is true, set the product base urls to PROD
+	 */
+	if (emailPage) {
+		baseURL = params.get("baseUrl").toString();
+	}
+	currentFolder=ContentFactory.getInstance().getContentNodeByName("gro");
+	isDepartment = true;
+
+    Attribute attribFeatProds = currentFolder.getAttribute("FEATURED_PRODUCTS");
+    List favorites;
+    // List validFavorites = new ArrayList();
+    List favHTMLPieces = new ArrayList();
+    List favHTMLPieceLinks = new ArrayList();
+    if (attribFeatProds!=null && !((List)attribFeatProds.getValue()).isEmpty() ) {
+        List prodList = new ArrayList();
+        for (Iterator itrFav = ((List)attribFeatProds.getValue()).iterator(); itrFav.hasNext();) {
+            ContentRef cr = (ContentRef) itrFav.next();
+            if (!(cr instanceof ProductRef)) continue;
+            ProductModel pm = (ProductModel)JspMethods.getFeaturedProduct(cr);
+            prodList.add(pm);
+        }
+        
+        List filterNames = (List)currentFolder.getAttribute("FILTER_LIST",Collections.EMPTY_LIST);
+        favorites = prodList;
+    } else {
+        favorites = Collections.EMPTY_LIST;
+    }
+    
+    /// StringBuffer favoriteProducts = new StringBuffer("");
+    /// ContentNodeModel prodParent = null;
+    ContentFactory contentFactory = ContentFactory.getInstance();
+    Comparator priceComp = new ProductModel.PriceComparator();
+    int favoritesToShow		= 0;
+    int FAVS_PER_LINE		= 5; //number of products to show per line
+    int MAX_FAVSLINES2SHOW	= 1; //number of lines of featured products
+    int MIN_FAVS2SHOW		= 1; //minimum featured products required to show featured section
+    int	MAX_FAVS2SHOW		= FAVS_PER_LINE*MAX_FAVSLINES2SHOW; //to keep each row matching
+    
+	ProductModel product;
+
+	for (Iterator it = favorites.iterator(); it.hasNext(); ) {
+		product = (ProductModel) it.next();
+
+		ContentNodeModel prodParent = product.getParentNode(); 
+        List skus = product.getSkus();
+
+        if (product.isDiscontinued() || product.isUnavailable() || prodParent==null || !(prodParent instanceof CategoryModel) || skus.size()==0) // || !(product.isDeal())
+        	continue;
+
+        // validFavorites.add(product);	
+
+        SkuModel sku = null;
+        String prodPrice = null;
+        String prodBasePrice=null;
+        boolean isDeal=false;
+        int deal=0;
+
+        /// if (skus.size()==0)
+        ///	  continue;  // skip this item..it has no skus.  Hmmm?
+        if (skus.size() == 1) {
+            sku = (SkuModel)skus.get(0);  // we only need one sku
+        } else {
+            sku = (SkuModel) Collections.min(skus, priceComp);
+        }
+
+        	
+       	%><fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>"><% 
+        prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()); //+"/"+ productInfo.getDisplayableDefaultPriceUnit();
+        
+		
+		//comment out here for DEBUG, just make everything a deal
+		isDeal=productInfo.isDeal();
+		//isDeal = true;
+
+        if(isDeal) {
+            prodBasePrice=JspMethods.currencyFormatter.format(productInfo.getBasePrice()); //+"/"+ productInfo.getBasePriceUnit().toLowerCase();
+            deal=productInfo.getDealPercentage();
+        }  
+
+		%></fd:FDProductInfo><%
+        
+        if(!isDeal) {
+            continue;
+        }
+		String dealsCat="";
+Attribute _featCats = currentFolder.getAttribute("FEATURED_CATEGORIES");
+List _featuredCats=null;
+if (_featCats!=null) {
+      _featuredCats = (List)_featCats.getValue();
+	 
+}
+
+ if (_featuredCats != null && _featuredCats.size() > 0) {
+         CategoryRef catRef= (CategoryRef)_featuredCats.get(0);
+        dealsCat= catRef.getCategoryName();
+}
+			String productPageLink_ = response.encodeURL("/deals.jsp?catId=" + dealsCat
+            +"&amp;sortBy=name&amp;showThumbnails=true&amp;DisplayPerPage=30&amp;sortDescending=false&amp;disp=null&amp;prodCatId="+prodParent
+            +"&amp;productId="+product.getContentName()+"&amp;trk=trans");
+        /*String productPageLink_ = response.encodeURL("/product.jsp?catId=" + prodParent
+            +"&prodCatId="+prodParent
+            +"&productId="+product+"&trk=feat");*/
+        String dealImage=new StringBuffer("/media_stat/images/deals/brst_sm_").append(deal).append(".gif").toString();
+        //productDisplayName = getDisplayName(product,prodNameAttribute);
+	
+			groDeptImage = (Image)product.getCategoryImage();
+		
+        StringBuffer favoriteProducts = new StringBuffer("");
+        StringBuffer favoriteProductLinks = new StringBuffer("");
+        // append product image
+        favoriteProducts.append("<div style=\"width: 100px; height: 100px; text-align: left; position: relative;\">");
+        if (groDeptImage !=null) {
+            favoriteProducts.append("<div style=\"padding: 0px; line-height: 0px; position: absolute; height: 0px; padding: 10px 10px 0px;\">")
+                            .append("<a id=\"prod_link_img_" + sku + "\" style=\"display: block; cursor: hand\" href=\"" + baseURL + productPageLink_ + "\" name=\"prod_link_img_" + sku + "\"><img style=\"border: 0px\" ")
+                            .append(JspMethods.getImageDimensions(groDeptImage))
+                            .append(" alt=\"").append(product.getFullName()).append("\" src=\"").append(groDeptImage.getPath()).append("\" /></a></div>");
+            /*
+			(un)comment here to show/hide starbursts
+			*/
+			favoriteProducts.append("<div style=\"position: absolute; top: 0px; left: 0px;\"><a id=\"prod_link_starimg_" + sku + "\" style=\"display: block;\" href=\"" + productPageLink_ + "\" name=\"prod_link_starimg_" + sku + "\"><img style=\"border: 0px\"  alt=\"SAVE ").append(deal).append("%\" src=\"").append(dealImage).append("\" /></a></div></div>");
+			
+        }
+        
+
+        // append product label
+        //favoriteProductLinks.append("<div id=prod_container2 style=\"width: 100px; height: 100px; text-align: left\"><a id=prod_link_img style=\"display: block; cursor: hand\" href=\"" + productPageLink_ + "\">");
+        favoriteProductLinks.append("<div style=\"font-weight: normal; font-size: 8pt; width: 100px; text-align: center\">");
+		//favoriteProductLinks.append("<a id=\"prod_link_txt_" + sku + "\" name=\"prod_link_txt_" + sku + "\" style=\"display: block;\" href=\"" + productPageLink_ + "\">");
+        favoriteProductLinks.append("<a id=\"prod_link_txt_" + sku + "\" name=\"prod_link_txt_" + sku + "\" style=\"color: #360\" href=\"" + baseURL)
+                            .append(productPageLink_).append("\">");
+
+        String thisProdBrandLabel = product.getPrimaryBrandName();
+        if (thisProdBrandLabel.length()>0) {
+            favoriteProductLinks.append("<b>" + thisProdBrandLabel + "</b><br />");
+        }
+        favoriteProductLinks.append(product.getFullName().substring(thisProdBrandLabel.length()).trim()); 
+        favoriteProductLinks.append("</a>");
+
+        // append product price
+        favoriteProductLinks.append("<div style=\"font-weight: bold; font-size: 8pt; color: #CC0000;\">").append(prodPrice).append("</div>");
+        favoriteProductLinks.append("<div style=\"font-size: 7pt; color: #888\">(was ").append(prodBasePrice).append(")</div>");
+        favoriteProductLinks.append("</div>");        
+
+        favHTMLPieces.add(favoriteProducts);
+        favHTMLPieceLinks.add(favoriteProductLinks);
+        favoritesToShow++;
+		//hardcode max favs
+        if (favoritesToShow >= MAX_FAVS2SHOW) {
+        	break;
+        }
+	}
+
+	%>
+	
+	<%
+	if (favoritesToShow >= MIN_FAVS2SHOW) {
+		//separator needs to be outside table to allow edge-to-edge 
+	%>
+	<!-- separator  -->
+	<fd:IncludeMedia name="/media/editorial/whats_good/whats_good_line.html" />
+	<fd:IncludeMedia name= "/media/editorial/whats_good/whats_good_GRO_above.html"/>
+
+		    <table cellpadding="0" cellspacing="0" border="0" width="125">
+	        	<tr valign="top" align="center">
+	            	<td>
+	            		<table id="fav-prds-table" width="690" border="0" cellspacing="0" cellpadding="0">
+	            		<tr>
+		            	<%  
+		            	List row = favHTMLPieces;
+		            	
+		            	for (int k=0; k<row.size(); ++k) {
+		            		%><td align="center" valign="<%= row == favHTMLPieces ? "bottom" : "top" %>" width="110">
+		            			
+		            			<%= row.get(k) %>
+		            		</td><%
+		            			// start a new row if it has enough content
+		            			if (k>0 && (k%FAVS_PER_LINE) == FAVS_PER_LINE-1) {
+		            				row = row == favHTMLPieces ? favHTMLPieceLinks : favHTMLPieces;
+		            				if (row == favHTMLPieceLinks) k -= FAVS_PER_LINE;
+		            				%></tr><tr><%
+		            			} else if (k == row.size() -1) {
+		            				for(int j=0; j < FAVS_PER_LINE-(favHTMLPieces.size()%FAVS_PER_LINE); ++j) {
+		            					%><%
+		            				}
+		            				if (row == favHTMLPieces) { 
+		            					%></tr><tr><%
+		            					row = favHTMLPieceLinks;
+		            					k -= (favHTMLPieces.size()%FAVS_PER_LINE);
+		            				}
+		            			}
+		            		
+		            	}
+		            	/*
+		            	// put placeholder TD-s if a row is not filled in entirely
+		            	for (int k=0; k<FAVS_PER_LINE-(favHTMLPieces.size()%FAVS_PER_LINE); k++) {
+		            		%><td>&nbsp;</td><%
+		            	}
+		            	*/
+		            	%>
+		            	</tr>
+		            	</table>
+	            	</td>
+	        	</tr>
+	    	</table><br /><%-- close the featured product column --%><%
+    
+    }    
+%>
