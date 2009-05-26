@@ -476,12 +476,13 @@ public class DispatchPlanUtil {
 			total.addAll(ready);
 			total.addAll(bullpen);
 			total.addAll(dispatched);
-			int n=total.size();if(n>5) n=5;
-//			for(int i=0;i<n;i++ )
-//			{
-//				DispatchCommand temp=(DispatchCommand)((List)total).get(i);
-//				if(temp.getDispatchStatus()==EnumStatus.EmpReady) temp.setDispatchStatus(EnumStatus.Ready);
-//			}
+			int READY_MAX=TransportationAdminProperties.getMaxReady();
+			int n=total.size();if(n>READY_MAX) n=READY_MAX;
+			for(int i=0;i<n;i++ )
+			{
+				DispatchCommand temp=(DispatchCommand)((List)total).get(i);
+				if(temp.getDispatchStatus()==EnumStatus.EmpReady) temp.setDispatchStatus(EnumStatus.Ready);
+			}
 		}
 		return total;
 	}
@@ -655,10 +656,10 @@ public class DispatchPlanUtil {
 				{
 					return;
 				}
-				if(checkReady(command.getStartTime()))
-				{
-					command.setDispatchStatus(EnumStatus.Ready);
-				}
+//				if(checkReady(command.getStartTime()))
+//				{
+//					command.setDispatchStatus(EnumStatus.Ready);
+//				}
 				
 			}
 	     }

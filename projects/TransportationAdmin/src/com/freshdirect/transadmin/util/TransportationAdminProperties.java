@@ -97,7 +97,7 @@ public class TransportationAdminProperties {
 	private final static long REFRESH_PERIOD = 5 * 60 * 1000;
 	
 	private final static long PROP_TRANSPORTATION_DISPATCH_DASHBOARD_DISPATCH_PERIOD = 60 * 60 * 1000;
-	private final static long PROP_TRANSPORTATION_DISPATCH_DASHBOARD_DISPATCHED_PERIOD = 10 * 60 * 1000;
+	private final static long PROP_TRANSPORTATION_DISPATCH_DASHBOARD_DISPATCHED_PERIOD = 10 * 60 * 1000;	
 	
 	private final static String PROP_TRANSPORTATION_CELLDATA_SEPERATOR		= "transportation.celldata.seperator";
 	
@@ -112,6 +112,7 @@ public class TransportationAdminProperties {
 	private final static String PROP_TRANSPORTATION_DISPATCH_PAGEREFRESHTIME		= "transportation.dispatch.pagerefreshtime";
 	
 	private final static String PROP_TRANSPORTATION_DISPATCH_PAGESIZE		= "transportation.dispatch.pagesize";
+	private final static String PROP_TRANSPORTATION_DISPATCH_MAX_READY		= "transportation.dispatch.maxready";
 	
 	static {
 				
@@ -192,6 +193,8 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_DISPATCH_PAGEREFRESHTIME, "5");
 		
 		defaults.put(PROP_TRANSPORTATION_DISPATCH_PAGESIZE, "20");
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_MAX_READY, "5");
+		
 		
 		refresh();		
 	}
@@ -419,6 +422,10 @@ public class TransportationAdminProperties {
 	public static int getDispatchDashboardPageSize() 
 	{
 		return getIntVal(get(PROP_TRANSPORTATION_DISPATCH_PAGESIZE));
+	}
+	public static int getMaxReady() 
+	{
+		return getIntVal(get(PROP_TRANSPORTATION_DISPATCH_MAX_READY));
 	}
 	
 }

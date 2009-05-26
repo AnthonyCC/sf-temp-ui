@@ -66,7 +66,7 @@
                    		var height=YAHOO.util.Dom.getDocumentHeight()-30;
                    		var width=YAHOO.util.Dom. getDocumentWidth();
                    		var props=document.forms["properties"];                   		
-                  		var param1 = "dispDate="+document.getElementById("dispDate").value;
+                  		var param1 = "";
                   		param1+="&page="+page;
                   		param1+="&refreshtime="+props.refreshtime.value;
                   		param1+="&pagerefreshtime="+props.pagerefreshtime.value;
