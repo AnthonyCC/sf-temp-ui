@@ -113,7 +113,7 @@ if (catId != null){
 		<area shape="rect" coords="628,0,676,21" href="/department.jsp?deptId=bak&amp;trk=gnav" alt="Bakery" />
 		<area shape="rect" coords="676,0,734,21" href="/department.jsp?deptId=cat&amp;trk=gnav" alt="Catering" />
 
-		<area shape="rect" coords="35,22,114,43" href="/whatsgood.jsp?deptId=wgd&amp;trk=gnav" alt="What's Good" />
+		<area shape="rect" coords="35,22,114,43" href="/department.jsp?deptId=wgd&amp;trk=gnav" alt="What's Good" />
 		<area shape="rect" coords="115,22,170,49" href="/department.jsp?deptId=orgnat&amp;trk=gnav" alt="Organic" />
 		<area shape="rect" coords="170,22,211,55" href="/department.jsp?deptId=local&amp;trk=gnav" alt="Local" />
 		<area shape="rect" coords="212,22,261,56" href="/department.jsp?deptId=kos&amp;trk=gnav" alt="Kosher" />
