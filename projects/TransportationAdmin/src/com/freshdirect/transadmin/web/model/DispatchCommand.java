@@ -170,11 +170,7 @@ public class DispatchCommand extends WebPlanInfo {
         while(_it.hasNext()) {
         	
         	
-            ResourceI resource=(ResourceI)_it.next();
-            if("500844".equalsIgnoreCase(resource.getId().getResourceId()))
-            		{
-            	System.out.println("here");
-            		}
+            ResourceI resource=(ResourceI)_it.next();          
             EnumResourceType role=EnumResourceType.getEnum(resource.getEmployeeRoleType().getCode());   
             WebEmployeeInfo webEmpInfo=employeeManagerService.getEmployee(resource.getId().getResourceId());
             ResourceInfoI resourceInfo = getResourceInfo(webEmpInfo, resource);
