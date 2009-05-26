@@ -3,7 +3,7 @@ package com.freshdirect.transadmin.web.ui;
 import org.extremecomponents.table.bean.Column;
 import org.extremecomponents.table.core.TableModel;
 
-import com.freshdirect.transadmin.util.DispatchPlanUtil;
+import com.freshdirect.transadmin.util.EnumStatus;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
 
 
@@ -68,7 +68,8 @@ public class DispatchDBTableView extends FlatTableView {
 	
 	private boolean isReady(DispatchCommand command) {
 		
-		return DispatchPlanUtil.categorizeDispatch(command) < 0;
+		return command.getStatus() != null && command.getStatus().equals(EnumStatus.Ready);
+				//DispatchPlanUtil.categorizeDispatch(command) < 0;
 				//(!(command.getDispatchTime()!= null && command.getDispatchTime().trim().length()>0) && !TransStringUtil.isEmpty(command.getZoneName()));
 	}
 
