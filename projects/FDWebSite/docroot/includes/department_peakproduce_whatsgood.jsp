@@ -6,10 +6,6 @@
 
 
 <fd:ProduceRatingCheck>
-<%
-	if ( "fru".equals(request.getParameter("deptId")) ||  "veg".equals(request.getParameter("deptId")) || "wgd".equals(request.getParameter("deptId"))
-		) {
-%>
 
 <%
 	//var defines
@@ -124,5 +120,4 @@
 			</tr>
 			</table>
 		<% } %>
-<% } %>
 </fd:ProduceRatingCheck>
