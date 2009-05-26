@@ -112,7 +112,7 @@
                 
             <ec:row interceptor="obsoletemarker">
                                          
-             <ec:column alias="trnZoneRegion" property="regionZone" title="Region-Zone" filterable="false" sortable="false"/>              
+             <ec:column alias="trnZoneRegion" property="regionZone" title="Region-Zone" />              
               
               <ec:column  alias="trnTimeslotslotName"  property="startTime" title="Start Time"/>
               
@@ -124,7 +124,7 @@
               <ec:column property="drivers"  cell="dispatchResCell" title="Driver"  filterable="true" alias="drivers"/>
               <ec:column property="helpers"  cell="dispatchResCell" title="Helper"  filterable="true" alias="helpers"/>
               <ec:column property="runners"  cell="dispatchResCell" title="Runner"  filterable="true" alias="runners"/>
-             <ec:column  alias="dispatchTime"  property="dispatchTimeEx" title="Dispatch Time" filterable="false" sortable="false"  cell="date" format="hh:mm aaa"/>
+             <ec:column  alias="dispatchTime"  property="dispatchTimeEx" title="Dispatch Time"  cell="date" format="hh:mm aaa"/>
             </ec:row>
           </ec:table>
     </div>
