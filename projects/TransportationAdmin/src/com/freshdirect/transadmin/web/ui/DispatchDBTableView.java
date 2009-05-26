@@ -45,6 +45,12 @@ public class DispatchDBTableView extends FlatTableView {
 		}
 		
         if (column.isFirstColumn()) {
+        	
+        	if(hadReady && !closedReady && !isReady(command)) {
+        		getTableBuilder().tbodyEnd();
+        		isOpenTBody = false;
+        		closedReady = true;
+        	}
         	if(!isOpenTBody) {
         		
         		getTableBuilder().tbodyStart();                
@@ -58,11 +64,11 @@ public class DispatchDBTableView extends FlatTableView {
 
         if (column.isLastColumn()) {
         	this.getRowBuilder().rowEnd();
-        	if(hadReady && !closedReady && !isReady(command)) {
+        	/*if(hadReady && !closedReady && !isReady(command)) {
         		getTableBuilder().tbodyEnd();
         		isOpenTBody = false;
         		closedReady = true;
-        	}        	
+        	} */       	
         }
     }
 	
