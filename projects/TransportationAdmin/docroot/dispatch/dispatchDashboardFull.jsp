@@ -66,7 +66,8 @@
                    		var height=YAHOO.util.Dom.getDocumentHeight()-30;
                    		var width=YAHOO.util.Dom. getDocumentWidth();
                    		var props=document.forms["properties"];                   		
-                  		var param1 = "page="+page;
+                  		var param1 = "dispDate="+document.getElementById("dispDate").value;
+                  		param1+="&page="+page;
                   		param1+="&refreshtime="+props.refreshtime.value;
                   		param1+="&pagerefreshtime="+props.pagerefreshtime.value;
                   		param1+="&pagesize="+props.pagesize.value;
@@ -84,10 +85,10 @@
                   </td>  
                  
                  <td>
-                     <input type = "button" value="&nbsp;Open DashBoard Page&nbsp;" onclick="javascript:OpenPage(1)" />
+                     <input type = "button" value="&nbsp;Open DashBoard&nbsp;" onclick="javascript:OpenPage(1)" />
                   </td>
                  <td>
-                     <input type = "button" value="Config" onclick="javascript:showForm()" />
+                     <input type = "button" value="Configure DashBoard" onclick="javascript:showForm()" />
                   </td>
                  
               </tr>

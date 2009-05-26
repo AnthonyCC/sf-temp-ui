@@ -58,7 +58,7 @@
 	<table width="100%" border=0 height="30"><tr><td width="100" align="left"><img width="100" height="30" src="images/TransAppLogo.gif"></td><td align="center" class="tv_header">DISPATCH</td><td width="180" align="right" class="tv_time" nowrap>Last Refresh Time:<br><span class="tv_time1"><%=request.getAttribute("lastTime")%></span></td></tr></table>
       <ec:table items="dispatchInfos"   action="${pageContext.request.contextPath}/dispatchDashboard.do"
             imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="&nbsp;"
-            width="100%"  rowsDisplayed="1000" view="flattable" filterable="false" >      
+            width="100%"  rowsDisplayed="1000" view="dispatchdbtable" filterable="false" >      
            
             <ec:row interceptor="obsoletemarker">
                                          
@@ -75,56 +75,90 @@
               <ec:column property="helpers"  cell="com.freshdirect.transadmin.web.ui.FDDispatchSummaryResourceCell" title="Helper"  filterable="true" alias="helpers" filterable="false" sortable="false"/>             
              <ec:column  alias="dispatchTime"  property="dispatchTimeEx" title="Dispatch Time" filterable="false" sortable="false"  cell="date" format="hh:mm aaa"/>
             </ec:row>
-          </ec:table>    
+          </ec:table>  
+          <div id="nodata" style="display:none;">
+          		<img  height="650" width="100%" src="images/no-data.gif">
+          </div>  
    </body>
    </html> 
 <script>
-
-var c=0;
 var t;
-var k=0;
-var tmpLast = 0;
-var grpSize = <%=request.getParameter("pagesize")%>;
+var pageParam;
 
+var grpSize = <%=request.getParameter("pagesize")%>;
+var pending = 0;
+var pageTableId = "ec_table";
+
+function initPagination() {
+	var tabSrc = document.getElementById(pageTableId);
+	
+	pageParam = new Array(tabSrc.tBodies.length);
+	var totalRowCnt = 0;
+	for(p=0; p < pageParam.length; p++) {
+		var rcCnt = tabSrc.tBodies[p].rows.length;
+		totalRowCnt = totalRowCnt + rcCnt;
+		pageParam[p] = new Array(2);
+		pageParam[p][0] = Math.floor(grpSize/tabSrc.tBodies.length) + pending;
+		pageParam[p][1] = -1;
+		
+		if(rcCnt < pageParam[p][0]) {
+			pending = pageParam[p][0] - rcCnt;
+			pageParam[p][0] = rcCnt;
+			if(p == pageParam.length -1 && p > 0) {
+				pageParam[p-1][0] = pageParam[p-1][0] + pending;
+			}
+		}
+		
+	}
+	if(totalRowCnt == 0) {
+		document.getElementById("nodata").style.display = ''
+	}
+	paginator();	
+}
 
 function paginator() {
+	
+	for(p=0; p < pageParam.length; p++) {
+		pageParam[p][1] = paginateTable(pageTableId, pageParam[p][1], pageParam[p][0], p);
+	}
+          
+	t=setTimeout("paginator()",<%= Integer.parseInt(request.getParameter("pagerefreshtime")) * 1000 %>);
+}
 
-var rows = document.getElementById("ec_table").tBodies[0].rows;
-
-      t=setTimeout("paginator()",<%=request.getParameter("pagerefreshtime")%>*1000);
-      var currentPage = 0;
-      var countGrp = 0;
+function paginateTable(tabId, k , tmpGrpSize, cntGrp) {
+	 var rows = document.getElementById(tabId).tBodies[cntGrp].rows;
+	 var currentPage = 0;
+     var countGrp = 0;
+     var tmpLast = 0;
 
       for (i = 0; i < rows.length; i++) {
-            if(rows[i].name != "local") {
-                  if(countGrp == grpSize) {
-                        countGrp = 0;
-                        currentPage++;
-                  }
-                  countGrp++;
-                  if(currentPage == k+1 ) {
-                        rows[i].style.display = '';
-      
-                        if(i == rows.length-1) {
-                              tmpLast = -1;
-                        } else {
-                              tmpLast = currentPage;
-                        }
-                  } else {
-                        rows[i].style.display = 'none';
-                  }
-            }
+            if(countGrp == tmpGrpSize) {
+                    countGrp = 0;
+                    currentPage++;
+              }
+              countGrp++;
+              if(currentPage == k+1 ) {
+                    rows[i].style.display = '';
+  
+                    if(i == rows.length-1) {
+                          tmpLast = -1;
+                    } else {
+                          tmpLast = currentPage;
+                    }
+              } else {
+                    rows[i].style.display = 'none';
+              }
       }
-      k = tmpLast;
-
+      //k = tmpLast;
+      return tmpLast;
 }
 
 
 
 function stopCount() {
-      clearTimeout(t);
+    clearTimeout(t);
 }
-paginator();
 
+initPagination();
 
 </script>

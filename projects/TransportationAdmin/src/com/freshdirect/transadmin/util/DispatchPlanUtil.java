@@ -6,20 +6,17 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Date;
-
-import utils.system;
 
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.Plan;
-import com.freshdirect.transadmin.model.PunchInfo;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.model.ZonetypeResource;
@@ -27,7 +24,6 @@ import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
 import com.freshdirect.transadmin.web.model.DispatchResourceInfo;
-import com.freshdirect.transadmin.web.model.ResourceList;
 import com.freshdirect.transadmin.web.model.ResourceReq;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 import com.freshdirect.transadmin.web.model.WebPlanInfo;
@@ -457,22 +453,19 @@ public class DispatchPlanUtil {
 			List bullpen=new ArrayList();
 			List dispatched=new ArrayList();
 			Iterator unsortedIterator=unsorted.iterator();
-			while(unsortedIterator.hasNext())
-			{
-				DispatchCommand command=(DispatchCommand)unsortedIterator.next();
-				if(command.getDispatchTime()!=null&&command.getDispatchTime().trim().length()>0)
-				{
+			int dispatchCategory = 0;
+			while(unsortedIterator.hasNext())	{
+				DispatchCommand command = (DispatchCommand)unsortedIterator.next();
+				dispatchCategory = categorizeDispatch(command);
+				if(dispatchCategory == 1) {
 					dispatched.add(command);
 				}
-				else if(TransStringUtil.isEmpty(command.getZoneName()))
-				{
+				else if(dispatchCategory == 0)	{
 					bullpen.add(command);
 				}
-				else
-				{
+				else {
 					ready.add(command);
-				}
-					
+				}					
 			}
 			DispatchTimeComparator compare=new DispatchTimeComparator();			
 			Collections.sort(bullpen, compare);
@@ -491,6 +484,21 @@ public class DispatchPlanUtil {
 //			}
 		}
 		return total;
+	}
+	
+	public static int categorizeDispatch(DispatchCommand command) {
+		// 1  - Dispatched
+		// 0  - Bullpen
+		// -1 - Ready
+		if(command.getDispatchTime()!=null&&command.getDispatchTime().trim().length()>0) {
+			return 1;
+		}
+		else if(TransStringUtil.isEmpty(command.getZoneName()))	{
+			return 0;
+		}
+		else {
+			return -1;
+		}
 	}
 	
 	private static class DispatchTimeComparator implements Comparator{

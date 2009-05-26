@@ -1,10 +1,9 @@
   <script type="text/javascript" src="js/dataTable.js"></script> 
  <script>
-      
      
-      function showForm() 
-      {   
-     	var panel = new YAHOO.widget.Panel("dialog", {
+     var panel; 
+     function initPanel() {
+     	panel = new YAHOO.widget.Panel("dialog", {
                          fixedcenter: true, 
                          close: true, 
                          draggable: false, 
@@ -12,12 +11,22 @@
                          modal: true,
                          visible: false,
                          effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});  
+     }
+      function showForm()  {   
+     	
         panel.setHeader("Plasma Configuration");
         panel.render(document.body);
         panel.show();
 		  
       }              
-  
+  	  
+  	  function hidePanel() { 
+            panel.hide();
+      }
+      
+      YAHOO.util.Event.addListener(window, "load", initPanel);
+      YAHOO.util.Event.addListener(window, "unload", hidePanel);
+      
 </script>
  
   
@@ -30,8 +39,11 @@
 <form name="properties">
 <table>
 <tr><td>Refresh Time:  </td><td><input type=input name="refreshtime" value="<%=TransportationAdminProperties.getDispatchDashboardRefreshTime()%>"></td></tr>
-<tr><td>Page Refresh Time:</td><td><input type=input name="pagerefreshtime" value="<%=TransportationAdminProperties.getDispatchDashboardPageRefreshTime()%>"></td></tr>
+<tr><td>Pagination Interval:</td><td><input type=input name="pagerefreshtime" value="<%=TransportationAdminProperties.getDispatchDashboardPageRefreshTime()%>"></td></tr>
 <tr><td>Page Size:</td><td><input type=input name="pagesize" value="<%=TransportationAdminProperties.getDispatchDashboardPageSize()%>"></td></tr>
+<tr>
+		                  <td colspan="2" align="center"><input type="button" value="Close" onclick="javascript:hidePanel()" /> </td>
+</tr> 
 </table>
 </form>   
 
