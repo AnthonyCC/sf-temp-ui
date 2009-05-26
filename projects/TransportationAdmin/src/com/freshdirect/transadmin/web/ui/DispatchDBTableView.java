@@ -68,7 +68,7 @@ public class DispatchDBTableView extends FlatTableView {
 	
 	private boolean isReady(DispatchCommand command) {
 		
-		return command.getStatus() != null && command.getStatus().equals(EnumStatus.Ready);
+		return command.getDispatchStatus() != null && command.getDispatchStatus().equals(EnumStatus.Ready);
 				//DispatchPlanUtil.categorizeDispatch(command) < 0;
 				//(!(command.getDispatchTime()!= null && command.getDispatchTime().trim().length()>0) && !TransStringUtil.isEmpty(command.getZoneName()));
 	}
