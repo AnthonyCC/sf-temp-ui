@@ -244,9 +244,8 @@ public class DispatchCommand extends WebPlanInfo {
 		if(punchedEmployees.size()==1) return (PunchInfoI)punchedEmployees.get(0);		
 		long dispatchTimeLong=-1;
 		try {
-			Date dispatchDate=TransStringUtil.getDate(getDispatchDate());
-			Date dispatchTime=TransStringUtil.getServerTime(getStartTime());			
-			dispatchTimeLong=dispatchDate.getTime()+dispatchTime.getTime();
+			Date startTime=TransStringUtil.getDatewithTime(getDispatchDate()+" "+getStartTime());
+			dispatchTimeLong=startTime.getTime();
 		} catch (Exception e) {	}
 		
 		for(int i=0,n=punchedEmployees.size();i<n;i++)
