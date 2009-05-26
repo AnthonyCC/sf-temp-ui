@@ -1,122 +1,121 @@
 <%
 //doing a check for your account pages, making static department nav, otherwise, build one for departments below
-if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) {
-%>
-<table cellpadding="0" cellspacing="0" border="0">
-			    <tr>
-				    <td valign="middle"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/template/youraccount/youraccount_deptnav.gif" width="198" height="33" border="0" alt="YOUR ACCOUNT"></a></td>
-					<td><img src="/media_stat/images/layout/999966.gif" width="1" height="41" border="0" hspace="0" vspace="0" ALIGN="TOP"></td>
-					<td class="text9_lh12" valign="top" style="padding-left:3px;">
-					    <a href="<%=response.encodeURL("/your_account/order_history.jsp")%>">Your Orders</a><br>
-						<%if(user.isEligibleForPreReservation()){%>
-							<a href="<%=response.encodeURL("/your_account/reserve_timeslot.jsp")%>">Reserve&nbsp;Delivery</a><br>
-						<%}%>
-						<%if(user.isDlvPassActive() || user.isEligibleForDeliveryPass()){%>
-                            <a href="<%=response.encodeURL("/your_account/delivery_pass.jsp")%>">Unlimited&nbsp;DeliveryPass</a>
-						<%}%>
-                        
-                        <%if(!user.isEligibleForPreReservation()){%>
-							<a href="<%=response.encodeURL("/your_account/delivery_information.jsp")%>">Delivery&nbsp;Addresses</a><br>
-						<%}%>
-						                
-					</td>
-					<td style="padding-left:2px;"><img src="/media_stat/images/layout/999966.gif" width="1" height="41" border="0" hspace="0" vspace="0" ALIGN="TOP"></td>
-					<td class="text9_lh12" valign="top" style="padding-left:3px;">
-						<%if(user.isEligibleForPreReservation()){%>
-                        <a href="<%=response.encodeURL("/your_account/delivery_information.jsp")%>">Delivery&nbsp;Addresses</a><br>
-						<a href="<%=response.encodeURL("/your_account/payment_information.jsp")%>">Payment&nbsp;Options</a><br>
-                        <a href="<%=response.encodeURL("/your_account/signin_information.jsp")%>">User&nbsp;Name,&nbsp;Password&nbsp;&&nbsp;Contact&nbsp;Information</a>
-						<%}%>                        					                            
-                         <%if(!user.isEligibleForPreReservation()){%>
-                            <a href="<%=response.encodeURL("/your_account/payment_information.jsp")%>">Payment Options</a><br>
-                            <a href="<%=response.encodeURL("/your_account/signin_information.jsp")%>">User&nbsp;Name,&nbsp;Password&nbsp;&&nbsp;Contact&nbsp;Information</a><br>
-							<a href="<%=response.encodeURL("/your_account/newsletter.jsp")%>">President's&nbsp;Picks&nbsp;Newsletter</a>
-						<%}%>
-					</td>
-					<td style="padding-left:2px;"><img src="/media_stat/images/layout/999966.gif" width="1" height="41" border="0" hspace="0" vspace="0" ALIGN="TOP"></td>
-					<td class="text9_lh12" valign="top" style="padding-left:3px; padding-right:3px;">
-                    <%if(user.isEligibleForPreReservation()){%>
-							<a href="<%=response.encodeURL("/your_account/newsletter.jsp")%>">President's&nbsp;Picks&nbsp;Newsletter</a><br>
-					<%}%>                    
-                    <a href="<%=response.encodeURL("/your_account/reminder_service.jsp")%>">Reminder&nbsp;Service</a><br>
-                    <a href="<%=response.encodeURL("/your_account/customer_profile_summary.jsp")%>">Your&nbsp;Profile</a>
-					</td>
-				</tr>
-				<tr><td colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="6" border="0"></td></tr>
-			</table>
-<% } else if (request.getRequestURI().toLowerCase().indexOf("help/") != -1) {
-%>
-<!-- help nav hard coded here -->
-<table cellpadding="0" cellspacing="0" border="0">
-			    <tr>
-				    <td valign="middle">&nbsp;&nbsp;&nbsp;&nbsp;<a href="/help/index.jsp"><img src="/media_stat/images/template/help/help_deptnav.gif"  border="0" alt="HELP"></a></td>
-					<td><img src="/media_stat/images/layout/999966.gif" width="1" height="22" border="0" hspace="0" vspace="0" ALIGN="TOP">&nbsp;</td>
-					<td class="text9_lh12">
-					    <a href="/help/contact_fd.jsp">Contact Us</a><br>
-						<a href="/help/faq_home.jsp?page=faqHome">Frequently Asked Questions</a>
-					</td>
-					<td>&nbsp;&nbsp;&nbsp;&nbsp;<img src="/media_stat/images/layout/999966.gif" width="1" height="22" border="0" hspace="0" vspace="0" ALIGN="TOP">&nbsp;</td>
-					<td class="text9_lh12">
-					    <a href="/help/privacy_policy.jsp">Privacy Policy</a><br>
-						<a href="/help/terms_of_service.jsp">Customer Agreement</a>
-					</td>
-				</tr>
-				<tr><td colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" border="0"></td></tr>
-			</table>
+if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) { %>
+	<table cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			<td valign="middle"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/template/youraccount/youraccount_deptnav.gif" width="200" height="36" border="0" alt="YOUR ACCOUNT"></a></td>					<td>&nbsp;<img src="/media_stat/images/layout/999966.gif" width="1" height="31" border="0" hspace="0" vspace="0" ALIGN="TOP">&nbsp;</td>
+			<td class="text9_lh12" valign="top" width="65">
+				<a href="<%=response.encodeURL("/your_account/order_history.jsp")%>">Your Orders</a><br>
+				<%if(user.isEligibleForPreReservation()){%>
+					<a href="<%=response.encodeURL("/your_account/reserve_timeslot.jsp")%>">Reserve&nbsp;Delivery</a><br>
+				<%}%>
+				<%if(user.isDlvPassActive() || user.isEligibleForDeliveryPass()){%>
+					<a href="<%=response.encodeURL("/your_account/delivery_pass.jsp")%>">Unlimited&nbsp;DeliveryPass</a>
+				<%}%>
+				
+				<%if(!user.isEligibleForPreReservation()){%>
+					<a href="<%=response.encodeURL("/your_account/delivery_information.jsp")%>">Delivery&nbsp;Addresses</a><br>
+				<%}%>
+								
+			</td>
+			<td>&nbsp;<img src="/media_stat/images/layout/999966.gif" width="1" height="31" border="0" hspace="0" vspace="0" ALIGN="TOP">&nbsp;</td>
+			<td class="text9_lh12" valign="top">
+			   
+				<%if(user.isEligibleForPreReservation()){%>
+				<a href="<%=response.encodeURL("/your_account/delivery_information.jsp")%>">Delivery&nbsp;Addresses</a><br>
+				<a href="<%=response.encodeURL("/your_account/payment_information.jsp")%>">Payment&nbsp;Options</a><br>
+				<a href="<%=response.encodeURL("/your_account/signin_information.jsp")%>">User&nbsp;Name,&nbsp;Password&nbsp;&&nbsp;Contact&nbsp;Information</a>
+				<%}%>                        					                            
+				 <%if(!user.isEligibleForPreReservation()){%>
+					<a href="<%=response.encodeURL("/your_account/payment_information.jsp")%>">Payment Options</a><br>
+					<a href="<%=response.encodeURL("/your_account/signin_information.jsp")%>">User&nbsp;Name,&nbsp;Password&nbsp;&&nbsp;Contact&nbsp;Information</a><br>
+					<a href="<%=response.encodeURL("/your_account/newsletter.jsp")%>">President's&nbsp;Picks&nbsp;Newsletter</a>
+				<%}%>
+			</td>
+			<td>&nbsp;<img src="/media_stat/images/layout/999966.gif" width="1" height="31" border="0" hspace="0" vspace="0" ALIGN="TOP">&nbsp;</td>
+			<td class="text9_lh12" valign="top">
+			<%if(user.isEligibleForPreReservation()){%>
+					<a href="<%=response.encodeURL("/your_account/newsletter.jsp")%>">President's&nbsp;Picks&nbsp;Newsletter</a><br>
+			<%}%>                    
+			<a href="<%=response.encodeURL("/your_account/reminder_service.jsp")%>">Reminder&nbsp;Service</a>
+			</td>
+		</tr>
+		<tr><td colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="6" border="0"></td></tr>
+	</table>
+<% } else if (request.getRequestURI().toLowerCase().indexOf("help/") != -1) { %>
+	<!-- help nav hard coded here -->
+	<table cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			<td valign="middle">&nbsp;&nbsp;&nbsp;&nbsp;<a href="/help/index.jsp"><img src="/media_stat/images/template/help/help_deptnav.gif"  border="0" alt="HELP"></a></td>
+			<td><img src="/media_stat/images/layout/999966.gif" width="1" height="22" border="0" hspace="0" vspace="0" ALIGN="TOP">&nbsp;</td>
+			<td class="text9_lh12">
+				<a href="/help/contact_fd.jsp">Contact Us</a><br>
+				<a href="/help/faq_home.jsp?page=faqHome">Frequently Asked Questions</a>
+			</td>
+			<td>&nbsp;&nbsp;&nbsp;&nbsp;<img src="/media_stat/images/layout/999966.gif" width="1" height="22" border="0" hspace="0" vspace="0" ALIGN="TOP">&nbsp;</td>
+			<td class="text9_lh12">
+				<a href="/help/privacy_policy.jsp">Privacy Policy</a><br>
+				<a href="/help/terms_of_service.jsp">Customer Agreement</a>
+			</td>
+		</tr>
+		<tr><td colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" border="0"></td></tr>
+	</table>
 <% } else {  %>
 <oscache:cache key='<%= "deptNav_"+request.getQueryString() %>' time='600'>
 <% try { %>
-<fd:DeptNav id='department' categoryList='folderList' categoryId='<%= request.getParameter("catId") %>'>
-<table cellpadding="0" cellspacing="0" border="0">
-	<tr valign="middle">
+<fd:DeptNav id='department' categoryList='folderList' categoryId='<%= request.getParameter("catId") %>' deptId='<%= request.getParameter("deptId") %>' >
 <%
 	Image titleImg = department.getTitleImage();
 	int maxRows = department.getMaxRowCount();
 	int maxCols = folderList.size() / maxRows+(folderList.size()%maxRows!=0?1:0);
 %>
-		<td><a href="<%= response.encodeURL("/department.jsp?deptId=" + department+"&trk=dnav") %>"><img src="<%= titleImg.getPath() %>" border="0" width="<%= titleImg.getWidth() %>" height="<%= titleImg.getHeight() %>"></a></td>
-		<td align="center"><img src="/media_stat/images/layout/999966.gif" width="1" height="<%=12 * maxRows %>" border="0" hspace="0" vspace="0">&nbsp;</td>
+
+<table cellpadding="0" cellspacing="0" border="0">
+	<tr valign="middle">
+		<td>
+			<a href="<%= response.encodeURL("/department.jsp?deptId=" + department+"&amp;trk=dnav") %>"><img src="<%= titleImg.getPath() %>" border="0" width="<%= titleImg.getWidth() %>" height="<%= titleImg.getHeight() %>" alt="" /></a>
+		</td>
+		<td align="center"><img src="/media_stat/images/layout/999966.gif" width="1" height="<%=12 * maxRows %>" border="0" alt="" hspace="0" vspace="0" />&nbsp;</td>
 		<td>
 			<table cellpadding="0" cellspacing="0" border="0">
-<%
-	for (int rowIndex = 0; rowIndex < maxRows; rowIndex++) { 
-%>
+			<% for (int rowIndex = 0; rowIndex < maxRows; rowIndex++) { %>
 				<tr>
-<%
-		for (int colIndex = 0; colIndex < maxCols && ((maxRows * colIndex) + rowIndex)<folderList.size(); colIndex++) {
-			CategoryModel folder = (CategoryModel)folderList.get((maxRows * colIndex) + rowIndex);
-			Attribute alias = folder.getAttribute("ALIAS");
-                        String folderLink=null;
-			if (alias!=null) {
-                            ContentRef aliasRef = (ContentRef)alias.getValue();
-                            if (aliasRef instanceof CategoryRef) {
-                                folderLink = response.encodeURL("/category.jsp?catId=" + aliasRef.getRefName()+"&trk=dnav");
-                            } else if (aliasRef instanceof DepartmentRef) {
-                                folderLink = response.encodeURL("/department.jsp?deptId=" + aliasRef.getRefName()+"&trk=dnav");
-                            }
-                        } else {
-                            folderLink = response.encodeURL("/category.jsp?catId=" + folder+"&trk=dnav");
-                        }
-%>
-			<td class="deptNav"><a href="<%= folderLink %>"><%= folder.getFullName() %></a></td>
+				<%
+					for (int colIndex = 0; colIndex < maxCols && ((maxRows * colIndex) + rowIndex)<folderList.size(); colIndex++) {
+						CategoryModel folder = (CategoryModel)folderList.get((maxRows * colIndex) + rowIndex);
+						Attribute alias = folder.getAttribute("ALIAS");
+						String folderLink=null;
 
-<%
-			// paint a spacer cell after every category cell, except for the last category in the row
-			if (colIndex < maxCols-1 ) {
-%>
-					<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
-					<td width="1" bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="12" border="0"></td>
-					<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
-<%
-			}
- 		}
-%>
+						if (alias!=null) {
+							ContentRef aliasRef = (ContentRef)alias.getValue();
+							if (aliasRef instanceof CategoryRef) {
+								folderLink = response.encodeURL("/category.jsp?catId=" + aliasRef.getRefName()+"&amp;trk=dnav");
+							} else if (aliasRef instanceof DepartmentRef) {
+								folderLink = response.encodeURL("/department.jsp?deptId=" + aliasRef.getRefName()+"&amp;trk=dnav");
+							}
+						} else {
+							folderLink = response.encodeURL("/category.jsp?catId=" + folder+"&amp;trk=dnav");
+						} %>
+
+						<td class="deptNav"><a href="<%= folderLink %>"><%= folder.getFullName() %></a></td>
+
+						<%
+						// paint a spacer cell after every category cell, except for the last category in the row
+						if (colIndex < maxCols-1 ) {
+						%>
+
+						<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" border="0" alt="" /></td>
+						<td width="1" bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="12" border="0" alt="" /></td>
+						<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" border="0" alt="" /></td>
+						<% }
+					}
+				%>
 				</tr>
-<% 	} %>
-				<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"></td></tr>
+			<% 	} %>
+				<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="2" border="0" alt="" /></td></tr>
 			</table>
 		</td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="1" height="<%= 13 * maxRows %>" border="0">&nbsp;</td>
+		<td><img src="/media_stat/images/layout/clear.gif" width="1" height="<%= 13 * maxRows %>" border="0" alt="" />&nbsp;</td>
 	</tr>
 </table>
 </fd:DeptNav>
