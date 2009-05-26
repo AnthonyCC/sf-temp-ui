@@ -193,7 +193,7 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_DISPATCH_PAGEREFRESHTIME, "5");
 		
 		defaults.put(PROP_TRANSPORTATION_DISPATCH_PAGESIZE, "20");
-		defaults.put(PROP_TRANSPORTATION_DISPATCH_MAX_READY, "5");
+		defaults.put(PROP_TRANSPORTATION_DISPATCH_MAX_READY, "8");
 		
 		
 		refresh();		
