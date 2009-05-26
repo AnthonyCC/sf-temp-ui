@@ -15,6 +15,10 @@ public class PunchInfo implements java.io.Serializable, TrnBaseEntityI, PunchInf
 	private boolean isLate;
 	private String employeeId;
 	
+	public PunchInfo()
+	{
+		
+	}
 	public PunchInfo(Date eventDate,String employeeId, Date startTime, Date endTime, Date inPunchDTM, Date outPunchDTM) {
 		_date=eventDate;
 		this.employeeId=employeeId;
