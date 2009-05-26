@@ -1041,6 +1041,12 @@
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>deptId</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
 			<name>categoryId</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
