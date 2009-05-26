@@ -107,7 +107,9 @@ public class TransStringUtil {
 	public static String getDatewithTime(Date clientDate) throws ParseException {       
         return dateFormatwithTime.format(clientDate);
 	}
-	
+	public static Date getDatewithTime(String clientDate) throws ParseException {       
+        return dateFormatwithTime.parse(clientDate);
+	}
 	public static Date getDate(String dateString) throws ParseException {		
         return (Date)dateFormat.parse(dateString);
 	}

@@ -171,12 +171,17 @@ public class DispatchCommand extends WebPlanInfo {
         	
         	
             ResourceI resource=(ResourceI)_it.next();
+            if("500844".equalsIgnoreCase(resource.getId().getResourceId()))
+            		{
+            	System.out.println("here");
+            		}
             EnumResourceType role=EnumResourceType.getEnum(resource.getEmployeeRoleType().getCode());   
             WebEmployeeInfo webEmpInfo=employeeManagerService.getEmployee(resource.getId().getResourceId());
             ResourceInfoI resourceInfo = getResourceInfo(webEmpInfo, resource);
             if(hasPunchInfo) 
             {
             	resourceInfo.setPunchInfo(getPunchInfo(resourceInfo.getEmployeeId(),punchInfos));
+            	if(resourceInfo.getPunchInfo()==null)resourceInfo.setPunchInfo(new PunchInfo());
             	setStatus(resourceInfo.getPunchInfo());
             }
             if(resourceReqs.containsKey(role)){
@@ -203,18 +208,18 @@ public class DispatchCommand extends WebPlanInfo {
 	private void setStatus(PunchInfoI punchInfo)
 	{
 		try 
-		{
-			Date dispatchDate=TransStringUtil.getDate(getDispatchDate());
-			Date dispatchTime=TransStringUtil.getServerTime(getStartTime());
-			long currentTime=System.currentTimeMillis();
-			long dispatchTimeLong=dispatchDate.getTime()+dispatchTime.getTime();
-			if(currentTime>dispatchTimeLong&&punchInfo.getInPunchDTM()==null)
+		{			
+			Date startTime=TransStringUtil.getDatewithTime(getDispatchDate()+" "+getStartTime());
+			long startTimeLong=startTime.getTime();
+			long currentTime=System.currentTimeMillis();	
+			
+			if(currentTime>startTimeLong&&punchInfo.getInPunchDTM()==null)
 			{
 				PunchInfo p=(PunchInfo)punchInfo;
 				p.setLate(true);
 			}
 		} catch (Exception e) {
-			
+			e.printStackTrace();
 		}
 	}
 	
