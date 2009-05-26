@@ -80,23 +80,12 @@ boolean mainPromo = user.getLevel() < FDUserI.RECOGNIZED && user.isEligibleForSi
 			trkCode = "";
 		}
 
-		catId = request.getParameter("catId");
-		String deptId = request.getParameter("deptId");
+		catId = "picks_love";
+		String deptId = "gro";
+		isDepartment = true;
 
-		//ContentNodeModel 
-		currentFolder = null;
-		if (catId!=null) {
-			currentFolder=ContentFactory.getInstance().getContentNodeByName(catId);
-			if ("picks_love".equalsIgnoreCase(catId) || "wgd".equalsIgnoreCase(deptId)) {
-				deptId = "gro";
-				isDepartment = true;
-			%>
-				<%@ include file="/includes/layouts/i_featured_products_whatsgood.jspf" %>
-			<%
-			}
-		} else {
-			currentFolder=ContentFactory.getInstance().getContentNodeByName(catId);
-		} 
+		currentFolder=ContentFactory.getInstance().getContentNodeByName(catId);
+		%><%@ include file="/includes/layouts/i_featured_products_whatsgood.jspf" %><%
 	//END Grocery Deals
 	%>
 

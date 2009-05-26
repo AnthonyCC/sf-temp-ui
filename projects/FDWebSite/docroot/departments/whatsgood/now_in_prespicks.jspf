@@ -65,7 +65,7 @@ layoutSettings.addSortStrategyElement(new SortStrategyElement(SortStrategyElemen
 					<% if (idx.intValue() >= 5) { continue; }
 						
 						String prodNameAttribute = JspMethods.getProductNameToUse(pm);
-						DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,pm.getContentName(),pm,prodNameAttribute,true);
+						DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId,pm,prodNameAttribute,true);
 						int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
 					%>
 						<td align="center" width="<%=adjustedImgWidth%>" style="padding-left:5px; padding-right:5px;">
@@ -84,7 +84,7 @@ layoutSettings.addSortStrategyElement(new SortStrategyElement(SortStrategyElemen
 					<% if (idx.intValue() >= 5) { continue; }
 						
 						String prodNameAttribute = JspMethods.getProductNameToUse(pm);
-						DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,pm.getContentName(),pm,prodNameAttribute,true);
+						DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,catId,pm,prodNameAttribute,true);
 						int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
 					%>
 
