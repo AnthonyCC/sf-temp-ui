@@ -533,6 +533,7 @@
 					<c:if test="${dispatchForm.today == true}">
 					<c:if test="${dispatchForm.isBullpen == false}">
 					<c:if test='${dispatchForm.dispatched == false}'>
+					<c:if test='${dispatchForm.dispatchStatus == "Packet"}'>
 					<tr>
 						<td>Phones Assigned</td>
 						<td colspan="2"> 
@@ -546,6 +547,7 @@
 							<form:checkbox path="keysReady" />
 						</td>
 					</tr>
+					</c:if>
 					</c:if>
 					<c:if test='${dispatchForm.checkedIn == false}'>
 					<c:if test='${dispatchForm.dispatched == true}'>
