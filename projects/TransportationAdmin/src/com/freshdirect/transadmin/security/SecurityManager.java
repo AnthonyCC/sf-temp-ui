@@ -21,6 +21,7 @@ public class SecurityManager {
 		UNSECURED_URL.add("showroute.do");
 		UNSECURED_URL.add("drivingdirection.do");
 		UNSECURED_URL.add("unassignedactiveemployees.do");
+		UNSECURED_URL.add("dispatchDashboardScreen.do");
 	}
 	
 	public static String getUserRole(ServletRequest request, Set roles) {		

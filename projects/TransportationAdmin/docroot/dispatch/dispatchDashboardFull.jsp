@@ -67,11 +67,10 @@
                    		var width=YAHOO.util.Dom. getDocumentWidth();
                    		var props=document.forms["properties"];                   		
                   		var param1 = "";
-                  		param1+="&page="+page;
-                  		param1+="&refreshtime="+props.refreshtime.value;
+                  		param1+="refreshtime="+props.refreshtime.value;
                   		param1+="&pagerefreshtime="+props.pagerefreshtime.value;
                   		param1+="&pagesize="+props.pagesize.value;
-                   		window.open('<c:out value="${pageContext.request.contextPath}"/>/dispatchDashboard.do?'+param1,'page'+page,'width='+width+',height='+height+',left=0,top=0,toolbar=no,location=no,resizable=yes,scrollbars=yes'); 
+                   		window.open('<c:out value="${pageContext.request.contextPath}"/>/dispatchDashboardScreen.do?'+param1,'page'+page,'width='+width+',height='+height+',left=0,top=0,toolbar=no,location=no,resizable=yes,scrollbars=yes'); 
                     }
 
                   </script>

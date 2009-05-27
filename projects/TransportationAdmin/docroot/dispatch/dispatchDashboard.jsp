@@ -56,7 +56,7 @@
 </head>
  <body  marginwidth="0" marginheight="0" border="0">	
 	<table width="100%" border=0 height="30"><tr><td width="100" align="left"><img width="100" height="30" src="images/TransAppLogo.gif"></td><td align="center" class="tv_header">DISPATCH</td><td width="180" align="right" class="tv_time" nowrap>Last Refresh Time:<br><span class="tv_time1"><%=request.getAttribute("lastTime")%></span></td></tr></table>
-      <ec:table items="dispatchInfos"   action="${pageContext.request.contextPath}/dispatchDashboard.do"
+      <ec:table items="dispatchInfos"   action="${pageContext.request.contextPath}/dispatchDashboardScreen.do"
             imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="&nbsp;"
             width="100%"  rowsDisplayed="1000" view="dispatchdbtable" filterable="false" >      
            

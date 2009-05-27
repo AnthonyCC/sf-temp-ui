@@ -215,10 +215,19 @@ public class DispatchController extends AbstractMultiActionController {
 	
 	public ModelAndView dispatchDashboardHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 
+		return processDashboardRequest(request, response, "dispatchDashboardViewFull");
+	}
+	
+	public ModelAndView dispatchDashboardScreenHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+		return processDashboardRequest(request, response, "dispatchDashboardView");
+		
+	}	
+	
+	private ModelAndView processDashboardRequest(HttpServletRequest request, HttpServletResponse response, String view) {
+		
 		try {
 			String dispDate = request.getParameter("dispDate");			
-			if(TransStringUtil.isEmpty(dispDate)) 
-			{
+			if(TransStringUtil.isEmpty(dispDate)) {
 				dispDate=TransStringUtil.getCurrentDate();
 			}
 			try {
@@ -227,15 +236,9 @@ public class DispatchController extends AbstractMultiActionController {
 			//By default get the today's dispatches.
 			Collection c=getDispatchInfos(getServerDate(dispDate), null, null, true,true);
 			DispatchPlanUtil.setDispatchStatus(c,true);
-			int page=-1;
-			try {
-				page=Integer.parseInt(request.getParameter("page"));
-			} catch (Exception e) {	}
-			ModelAndView mav =null;
-			if(page==-1)		mav=new ModelAndView("dispatchDashboardViewFull");
-			else 				mav=new ModelAndView("dispatchDashboardView");
+						
 			
-			//mav.getModel().put("dispatchInfos",DispatchPlanUtil.getsortedDispatch(c,page));
+			ModelAndView mav=new ModelAndView(view);
 			mav.getModel().put("dispatchInfos",DispatchPlanUtil.getsortedDispatch(c));
 			mav.getModel().put("dispDate", dispDate);
 			return mav;
@@ -244,7 +247,7 @@ public class DispatchController extends AbstractMultiActionController {
 			e.printStackTrace();
 		}
 		return new ModelAndView("dispatchDashboardView");
-	}	
+	}
 
 	private Collection getDispatchInfos(String dispDate, String zoneStr, String region, boolean isSummary, boolean needsPunchInfo){
 		Collection dispatchInfos = new ArrayList();
