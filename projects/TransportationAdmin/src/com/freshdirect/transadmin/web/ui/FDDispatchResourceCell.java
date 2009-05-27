@@ -84,7 +84,7 @@ public class FDDispatchResourceCell extends FDBaseCell  {
         			}
         			td.close();
         			td.append(getResourceName(resourceInfo));
-        			if(!TransStringUtil.isEmpty(resourceInfo.getNextelNo())) {
+        			if(!TransStringUtil.isEmpty(formatNextelNo(resourceInfo))) {
         				html.append(" ["+resourceInfo.getNextelNo()+"]");
         			}
         			html.tdEnd();
@@ -105,6 +105,10 @@ public class FDDispatchResourceCell extends FDBaseCell  {
     	} else {
     		return "";
     	}
+    }
+    
+    protected String formatNextelNo(DispatchResourceInfo resource) {
+    	return resource.getNextelNo();
     }
     
     
