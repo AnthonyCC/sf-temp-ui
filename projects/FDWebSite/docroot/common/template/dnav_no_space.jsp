@@ -19,13 +19,9 @@
 		<%@ include file="/common/template/includes/globalnav.jspf" %> 
 		<table width="745" border="0" cellpadding="0" cellspacing="0">
 			<tr>
-				<td width="6" colspan="2" rowspan="2">
-					<img src="/media_stat/images/layout/top_left_curve.gif" width="6" height="6" border="0" alt="" />
-				</td>
+				<td width="6" colspan="2" rowspan="2"><img src="/media_stat/images/layout/top_left_curve.gif" width="6" height="6" border="0" alt="" /></td>
 				<td width="733" valign="top" bgcolor="#999966"><img src="/media_stat/images/layout/999966.gif" width="733" height="1" border="0" alt="" /></td>
-				<td width="6" colspan="2" rowspan="2">
-					<img src="/media_stat/images/layout/top_right_curve.gif" width="6" height="6" border="0" alt="" />
-				</td>
+				<td width="6" colspan="2" rowspan="2"><img src="/media_stat/images/layout/top_right_curve.gif" width="6" height="6" border="0" alt="" /></td>
 			</tr>
 			<tr>
 				<td width="733" valign="top"><img src="/media_stat/images/layout/clear.gif" width="733" height="5" border="0" alt="" /></td>
@@ -47,9 +43,7 @@
 					<tmpl:get name='content'/>
 					<!-- content ends above here-->
 				</td>
-				<td bgcolor="#999966" valign="bottom" width="1">
-					<img src="/media_stat/images/layout/999966.gif" width="1" height="1" border="0" alt="" />
-				</td>
+				<td bgcolor="#999966" valign="bottom" width="1"><img src="/media_stat/images/layout/999966.gif" width="1" height="1" border="0" alt="" /></td>
 			</tr>
 			<%-- spacers --%>
 			<tr valign="top">
