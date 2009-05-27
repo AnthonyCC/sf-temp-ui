@@ -1,0 +1,21 @@
+<html>
+<head>
+<script>
+ function launch()
+ {   
+   var loc=document.location.href;
+   var query=loc.substring(loc.indexOf("?")+1);  
+   query="http://localhost:7001/TrnAdmin/dispatchDashboardScreen.do?"+query;
+   document.all.refresh1.src=query;
+ }
+
+</script>
+<META HTTP-EQUIV="Refresh" CONTENT="30">
+</head>
+<body>
+<iframe width="100%" height="100%" id="refresh1" src=""></iframe>
+</body>
+<script>
+ launch();
+</script>
+</html>

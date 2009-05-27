@@ -1,0 +1,29 @@
+<html>
+<head>
+<script>
+ function OpenPage(page) 
+                   {
+                   		var height=800;
+                   		var width=1200;
+                   		var props=document.forms["properties"];                   		
+                  		var param1 = "";
+                  		param1+="refreshtime="+props.refreshtime.value;
+                  		param1+="&pagerefreshtime="+props.pagerefreshtime.value;
+                  		param1+="&pagesize="+props.pagesize.value;
+                   		window.open('Client1.html?'+param1,'page'+page,'width='+width+',height='+height+',left=0,top=0,toolbar=no,location=no,resizable=yes,scrollbars=yes'); 
+                    }
+</script>
+</head>
+<body>
+<form name="properties">
+<table>
+<tr><td>Refresh Time:  </td><td><input type=input name="refreshtime" value="30"></td></tr>
+<tr><td>Pagination Interval:</td><td><input type=input name="pagerefreshtime" value="10"></td></tr>
+<tr><td>Page Size:</td><td><input type=input name="pagesize" value="15"></td></tr>
+<tr>
+<td colspan="2" align="center"><input type="button" value="Launch Dashboard" onclick="javascript:OpenPage(1)" /> </td>
+</tr> 
+</table>
+</form>   
+</body>
+</html>
