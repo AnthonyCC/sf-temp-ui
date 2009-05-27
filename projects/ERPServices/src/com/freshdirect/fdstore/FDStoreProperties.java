@@ -278,6 +278,7 @@ public class FDStoreProperties {
 	private final static String PROP_SURVEYDEF_CACHE_SIZE	= "fdstore.surveyDef.cache.size";
 	private static final String PROP_REFRESHSECS_SURVEYDEF = "fdstore.refreshSecs.surveyDef";
 	private final static String PROP_FDSURVEY_HOME		= "fdstore.fdSurvey.home";
+	private final static String PROP_FDWHATSGOOD_ENABLED		= "fdstore.fdwhatsgood.enabled";
     
 	//Smart Savings
 	
@@ -482,6 +483,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_FDSURVEY_HOME,	"freshdirect.fdstore.FDSurvey");
 
 		defaults.put(SMART_SAVINGS_FEATURE_ENABLED, "true");
+		defaults.put(PROP_FDWHATSGOOD_ENABLED, "false");
 		refresh();
 	}
 
@@ -1077,6 +1079,12 @@ public class FDStoreProperties {
 	public static boolean isSmartSavingsEnabled() {
 		return Boolean.valueOf(get(SMART_SAVINGS_FEATURE_ENABLED)).booleanValue();
 	}
+	
+	public static boolean isWhatsGoodEnabled() {
+		return Boolean.valueOf(get(PROP_FDWHATSGOOD_ENABLED)).booleanValue();
+	}
+	
+	
 	/**
 	 * Used for testing, do not call from the App.
 	 * @param lastRefresh
