@@ -533,7 +533,7 @@
 					<c:if test="${dispatchForm.today == true}">
 					<c:if test="${dispatchForm.isBullpen == false}">
 					<c:if test='${dispatchForm.dispatched == false}'>
-					<c:if test='${dispatchForm.dispatchStatus == "Packet"}'>
+					<c:if test='${dispatchForm.dispatchStatus == "Packet" || dispatchForm.dispatchStatus == "EmpReady"}'>
 					<tr>
 						<td>Phones Assigned</td>
 						<td colspan="2"> 
