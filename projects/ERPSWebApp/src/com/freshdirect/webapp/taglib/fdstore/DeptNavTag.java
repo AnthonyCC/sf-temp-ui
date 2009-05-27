@@ -25,6 +25,7 @@ import com.freshdirect.fdstore.FDResourceException;
 public class DeptNavTag extends AbstractGetterTag {
 
 	private String categoryId = null;
+	private String deptId=null;
 	private String categoryList = null;
 
 	public void setCategoryId(String categoryId) {
@@ -37,14 +38,22 @@ public class DeptNavTag extends AbstractGetterTag {
 
 	protected Object getResult() throws FDResourceException {
 		// find the department based on category
-
+        DepartmentModel dept=null;
 		// find the relevant category
-		CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNodeByName( this.categoryId );
-		if (category==null) {
-			throw new FDResourceException("Category "+this.categoryId+" not found");
-		}
-		DepartmentModel dept = category.getDepartment();
+        if(this.categoryId!=null){
+        	CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNodeByName( this.categoryId );
+			if (category==null) {
+				throw new FDResourceException("Category "+this.categoryId+" not found");
+			}
+			dept = category.getDepartment();
+	        System.out.println("IF this.dept  :"+this.deptId);
+		
+        }else if(this.deptId!=null){
+        	dept = (DepartmentModel) ContentFactory.getInstance().getContentNodeByName( this.deptId );
 
+	        System.out.println("ELSEIF this.dept  :"+this.deptId);
+        }
+		
 		Attribute deptNavAttrib = dept.getAttribute("DEPT_NAV");
 
 		List catList = null;			
@@ -83,6 +92,10 @@ public class DeptNavTag extends AbstractGetterTag {
 								 VariableInfo.NESTED)
 			};
 		}
+	}
+
+	public void setDeptId(String deptId) {
+		this.deptId = deptId;
 	}
 
 }
