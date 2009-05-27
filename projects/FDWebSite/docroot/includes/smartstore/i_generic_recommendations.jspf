@@ -264,7 +264,7 @@
 										<script type="text/javascript">
 											$E.on('ra_<%= genericRecommendationsVariant.getId() %>', 'click', function(e) {
 												$E.preventDefault(e);
-												PIP.refresh('<%= genericRecommendationsVariant.getId() %>', <%= ((Integer)session.getAttribute(SessionName.SS_SELECTED_TAB)).intValue() %>);
+												PIP.refresh('<%= genericRecommendationsVariant.getId() %>', <%= ((Integer)session.getAttribute(SessionName.SS_SELECTED_TAB)).intValue() %>, true);
 											});
 										</script>
 									</td>

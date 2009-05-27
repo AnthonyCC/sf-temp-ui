@@ -28,6 +28,8 @@ com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 			session.setAttribute(SessionName.SS_SELECTED_VARIANT, variantId);
 		}
 
+		// Clicked 'Click here to refresh' link
+		boolean isContentRefresh = "true".equalsIgnoreCase(request.getParameter("refresh"));
 
 		ActionResult result = new ActionResult();
 		request.setAttribute("actionResult", result);
@@ -38,9 +40,10 @@ com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 		
 		Variant v = SmartStoreUtil.getVariant(request.getParameter("siteFeature"), request.getParameter("variant"));
 		String impId = request.getParameter("impId");
-		if (impId!=null) {
+		if (impId!=null && !isContentRefresh) {
 		    Impression.tabClick(impId);
 		}
+
 		request.setAttribute("genericRecommendationsVariant", v);
 		request.setAttribute("parentImpressionId", request.getParameter("pImpId"));
 			

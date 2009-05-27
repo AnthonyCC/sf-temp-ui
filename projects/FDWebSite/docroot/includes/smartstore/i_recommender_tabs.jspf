@@ -211,16 +211,16 @@
 						var ctnt = $('content_'+tab);
 						if (ctnt.childNodes.length == 0 || (ctnt.childNodes.length == 1 && ctnt.firstChild.nodeType != 1)) {
 							$('content_'+tab).innerHTML = loadingMessage;
-							PIP.refresh(tab, tabPos);
+							PIP.refresh(tab, tabPos, false);
 						} else {
 							PIP.norefresh(tab, tabPos);
 						}
 					},
 
-					refresh: function(tabId, tabPos) {
+					refresh: function(tabId, tabPos, isRefresh) {
 						var self = this;
 						var uri = '/ajax/refresh.jsp?tab='+tabPos+'&variant='+tabId+'&siteFeature='+PIP.features[tabId]+'&formUri=<%= 
-							response.encodeURL(request.getRequestURL().toString().replaceFirst("^[^:]*://[^/]*/", "/")) %>&impId='+PIP.impressionIds[tabPos] + '&pImpId='+PIP.parentImpressionId;
+							response.encodeURL(request.getRequestURL().toString().replaceFirst("^[^:]*://[^/]*/", "/")) %>&impId='+PIP.impressionIds[tabPos] + '&pImpId='+PIP.parentImpressionId+(isRefresh?'&refresh=true':'');
 						if ( $('ra_'+tabId) != null ) {
 							$('ra_'+tabId).innerHTML = loadingLink;
 						}
