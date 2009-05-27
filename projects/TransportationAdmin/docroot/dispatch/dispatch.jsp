@@ -245,11 +245,11 @@
               <ec:exportCsv fileName="dispatchschedule.csv" tooltip="Export CSV" delimiter="|"/>
                 
             <ec:row interceptor="dispatchobsoletemarker"> 
-              <ec:column title="Row" width="5px"  filterable="false" sortable="false" cell="selectcol"  property="dispatchId" /> 
-              <ec:column title="Nextel" width="5px"  filterable="false" sortable="false" cell="selectsplcol"  property="phoneAssigned" />
-              <ec:column title="Keys" width="5px"  filterable="false" sortable="false" cell="selectsplcol"  property="keysReady" />   
-              <ec:column title="Dispatched" width="5px"  filterable="false" sortable="false" cell="selectsplcol"  property="dispatched" />   
-              <ec:column title="ChIn" width="5px"  filterable="false" sortable="false" cell="selectsplcol"  property="checkedIn" />  
+              <ec:column viewsAllowed="fd" title="Row" width="5px"  filterable="false" sortable="false" cell="selectcol"  property="dispatchId" /> 
+              <ec:column viewsAllowed="fd" title="Nextel" width="5px"  filterable="false" sortable="false" cell="selectsplcol"  property="phoneAssigned" />
+              <ec:column viewsAllowed="fd" title="Keys" width="5px"  filterable="false" sortable="false" cell="selectsplcol"  property="keysReady" />   
+              <ec:column viewsAllowed="fd" title="Dispatched" width="5px"  filterable="false" sortable="false" cell="selectsplcol"  property="dispatched" />   
+              <ec:column viewsAllowed="fd" title="ChIn" width="5px"  filterable="false" sortable="false" cell="selectsplcol"  property="checkedIn" />  
               <ec:column alias="trnStatus" property="dispatchStatus"  title="Status"/> 
               <ec:column alias="trnZoneRegion" property="regionZone" title="Region - Zone" />             
               <ec:column property="supervisorEx"   title="Sup" cell="tooltip"  />
