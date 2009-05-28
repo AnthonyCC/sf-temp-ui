@@ -172,7 +172,7 @@
 					tabs: [],
 					features: [],
 					selected: '<%= tab.get(selectedTab).getId() %>',
-					parentImpressionId : '<%= tab.getParentImpressionId() %> ',
+					parentImpressionId : '<%= tab.getParentImpressionId() %>',
 					impressionIds: [],
 				
 				
