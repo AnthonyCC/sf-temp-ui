@@ -147,6 +147,8 @@ public class DispatchFormController extends AbstractFormController {
 			}
 			getDispatchManagerService().saveDispatch(domainObject);
 			command.setDispatchId(domainObject.getDispatchId());
+			boolean isToday=TransStringUtil.isToday(command.getDispatchDate());			
+			if(isToday) DispatchPlanUtil.setDispatchStatus(command);
 		} catch (TransAdminApplicationException objExp) {
 			errorList = new ArrayList();
 			errorList.add(objExp.getMessage());
