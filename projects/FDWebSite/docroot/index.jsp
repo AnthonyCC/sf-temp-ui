@@ -192,7 +192,7 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 		<% if(user.isEligibleForPreReservation() && user.getReservation() != null){
 			FDReservation rsv = user.getReservation();
 		%>
-		<img src="/media_stat/images/layout/cccccc.gif" width="490" height="1" vspace="8"><table width="490" cellpadding="0" cellspacing="0" border="0"><tr><td><font class="text9"><b>You have a delivery slot reserved for:</b></font> <a href="/your_account/reserve_timeslot.jsp"><%=CCFormatter.formatReservationDate(rsv.getStartTime())%> @ <%=FDTimeslot.format(rsv.getStartTime(), rsv.getEndTime())+"ppp"%></a></td>
+		<img src="/media_stat/images/layout/cccccc.gif" width="490" height="1" vspace="8"><table width="490" cellpadding="0" cellspacing="0" border="0"><tr><td><font class="text9"><b>You have a delivery slot reserved for:</b></font> <a href="/your_account/reserve_timeslot.jsp"><%=CCFormatter.formatReservationDate(rsv.getStartTime())%> @ <%=FDTimeslot.format(rsv.getStartTime(), rsv.getEndTime())%></a></td>
 		</tr></table>
 		<%}%>
 		<img src="/media_stat/images/layout/cccccc.gif" width="490" height="1" vspace="8"><br>
