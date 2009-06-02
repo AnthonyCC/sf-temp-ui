@@ -48,9 +48,14 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 	
 	String deptId = null;
 	String getGlobalPeakProduceSku="false";
+	boolean useMinCount = true; //allow ignoring of min value in Tag
 	
 	public void setDeptId(String deptId) {
 		this.deptId = deptId;
+	}
+	
+	public void setUseMinCount(boolean useMinCount) {
+		this.useMinCount = useMinCount;
 	}
 	
 	public void setGlobalPeakProduceSku(String b){
@@ -134,7 +139,13 @@ private Collection getAllPeakProduceForDept(DepartmentModel dept) throws FDResou
         products=removeDuplicates(products);
 //      System.out.println("Peak produce :"+products);
 		if(products.size()<MIN_PEAK_PRODUCE_COUNT) {
-			return new ArrayList();
+			if (this.useMinCount) {
+				//if true (default) return an empty list
+				return new ArrayList();
+			}else{
+				//else retrun whatever we have
+				return products;
+			}
 		} 
 		else if(products.size()>MAX_PEAK_PRODUCE_COUNT) {
 			Random random=new Random();
