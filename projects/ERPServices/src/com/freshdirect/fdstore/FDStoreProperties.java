@@ -279,7 +279,9 @@ public class FDStoreProperties {
 	private static final String PROP_REFRESHSECS_SURVEYDEF = "fdstore.refreshSecs.surveyDef";
 	private final static String PROP_FDSURVEY_HOME		= "fdstore.fdSurvey.home";
 	private final static String PROP_FDWHATSGOOD_ENABLED		= "fdstore.fdwhatsgood.enabled";
-    
+	private final static String PROP_FDWHATSGOOD_PEAKPRODUCE_ENABLED		= "fdstore.fdwhatsgood_peakproduce.enabled";
+	private final static String PROP_FDWHATSGOOD_BBLOCK_ENABLED		= "fdstore.fdwhatsgood_bblock.enabled";
+	
 	//Smart Savings
 	
 	private static final String SMART_SAVINGS_FEATURE_ENABLED  = "fdstore.smartsavings.enabled";
@@ -484,6 +486,9 @@ public class FDStoreProperties {
 
 		defaults.put(SMART_SAVINGS_FEATURE_ENABLED, "true");
 		defaults.put(PROP_FDWHATSGOOD_ENABLED, "false");
+		defaults.put(PROP_FDWHATSGOOD_PEAKPRODUCE_ENABLED, "true");
+		defaults.put(PROP_FDWHATSGOOD_BBLOCK_ENABLED, "false");
+		
 		refresh();
 	}
 
@@ -1082,6 +1087,13 @@ public class FDStoreProperties {
 	
 	public static boolean isWhatsGoodEnabled() {
 		return Boolean.valueOf(get(PROP_FDWHATSGOOD_ENABLED)).booleanValue();
+	}
+	
+	public static boolean isWhatsGoodPeakProduceEnabled() {
+		return Boolean.valueOf(get(PROP_FDWHATSGOOD_PEAKPRODUCE_ENABLED)).booleanValue();
+	}
+	public static boolean isWhatsGoodButchersBlockEnabled() {
+		return Boolean.valueOf(get(PROP_FDWHATSGOOD_BBLOCK_ENABLED)).booleanValue();
 	}
 	
 	
