@@ -170,19 +170,22 @@ public class AddressForm implements WebFormI { //, AddressName
             erpAddress.setAltDelivery(EnumDeliverySetting.NONE);
         } else {
             erpAddress.setAltDelivery(EnumDeliverySetting.getDeliverySetting(alternateDeliverySetting));
+            if (EnumDeliverySetting.NEIGHBOR.getDeliveryCode().equalsIgnoreCase(alternateDeliverySetting)) {
+            	if ((altDlvFirstName != null) && (!altDlvFirstName.equals(""))) {
+                    erpAddress.setAltFirstName(altDlvFirstName);
+                }
+                if ((altDlvLastName != null) && (!altDlvLastName.equals(""))) {
+                    erpAddress.setAltLastName(altDlvLastName);
+                }
+                if ((altDlvApartment != null) && (!altDlvApartment.equals(""))) {
+                    erpAddress.setAltApartment(altDlvApartment);
+                }
+                if ((altDlvPhone != null) && (!altDlvPhone.equals(""))) {
+                    erpAddress.setAltPhone( new PhoneNumber(altDlvPhone, altDlvExt) );
+                }
+            }
         }
-        if ((altDlvFirstName != null) && (!altDlvFirstName.equals(""))) {
-            erpAddress.setAltFirstName(altDlvFirstName);
-        }
-        if ((altDlvLastName != null) && (!altDlvLastName.equals(""))) {
-            erpAddress.setAltLastName(altDlvLastName);
-        }
-        if ((altDlvApartment != null) && (!altDlvApartment.equals(""))) {
-            erpAddress.setAltApartment(altDlvApartment);
-        }
-        if ((altDlvPhone != null) && (!altDlvPhone.equals(""))) {
-            erpAddress.setAltPhone( new PhoneNumber(altDlvPhone, altDlvExt) );
-        }
+        
         
         erpAddress.setUnattendedDeliveryFlag(unattendedDeliveryFLag);
         erpAddress.setUnattendedDeliveryInstructions(unattendedDeliveryInstructions);
