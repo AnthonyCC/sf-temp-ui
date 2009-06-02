@@ -19,7 +19,7 @@ boolean isGroceryVirtual=false;
 boolean isWineLayout = false;
 String deptId = null;
 ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNodeByName(catId);
-System.out.println("currentFolder *************** "+currentFolder);
+//System.out.println("currentFolder *************** "+currentFolder);
 /*if(currentFolder instanceof CategoryModel) {
      deptId=((CategoryModel)currentFolder).getDepartment().getContentName();
 }*/

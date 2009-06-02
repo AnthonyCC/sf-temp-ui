@@ -53,9 +53,9 @@
 
 <% if(FDStoreProperties.isWhatsGoodEnabled()) { %>
 	<map name="bottomlinks" id="bottomlinks">
-		<area shape="rect" coords="169,0,233,49" href="/department.jsp?deptId=our_picks&amp;trk=gnav" alt="Our Picks" />
 		<area shape="rect" coords="10,0,73,25" href="/department.jsp?deptId=about&amp;trk=bnav" alt="About Us" />
 		<area shape="rect" coords="73,0,168,48" href="/department.jsp?deptId=cmty&amp;trk=bnav" alt="Our Community" />
+		<area shape="rect" coords="169,0,233,49" href="/department.jsp?deptId=our_picks&amp;trk=bnav" alt="Our Picks" />
 		<area shape="rect" coords="234,0,314,61" href="/department.jsp?deptId=COS&amp;trk=bnav" alt="At the Office" />
 		<area shape="rect" coords="315,0,373,41" href="/category.jsp?catId=picks_celeb&amp;trk=bnav" alt="Our Ads" />
 		<area shape="rect" coords="374,0,457,60" href="/category.jsp?catId=about_test&amp;trk=bnav" alt="Testimonials" />

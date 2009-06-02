@@ -29,7 +29,7 @@ if(deptId!=null) {
     currentFolder=ContentFactory.getInstance().getContentNodeByName(catId);
 }
 
-
+ //System.out.println("currentFolder:"+currentFolder);
 boolean onlyOneProduct = false;
 ProductModel theOnlyProduct = null;
 //Siva-Changed Tracking Code Retrieval

@@ -21,7 +21,27 @@ FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 String custFirstName = user.getFirstName();
 int validOrderCount = user.getAdjustedValidOrderCount();
 boolean mainPromo = user.getLevel() < FDUserI.RECOGNIZED && user.isEligibleForSignupPromotion();
+String deptId = null;
+String showInContextOf = null;
+String catId="";
+//String deptId = "wgd";
 
+//generic_row variables
+	Collection sortedColl=null;
+	boolean onlyOneProduct =false;
+	ProductModel theOnlyProduct =  null;
+	ContentNodeModel currentFolder;
+	boolean isDept;
+	boolean isCat;
+	String trkCode= "";
+	boolean sortDescending;
+	String sortNameAttrib;
+	Settings layoutSettings;
+	String mediaPath;
+
+deptId = request.getParameter("deptid");
+
+if (deptId==null) { deptId="wgd"; }
 
 /*
  *	Set up email toggle
@@ -59,14 +79,25 @@ boolean mainPromo = user.getLevel() < FDUserI.RECOGNIZED && user.isEligibleForSi
 	<% //START end top section %>
 
 
+<% if (FDStoreProperties.isWhatsGoodPeakProduceEnabled()) { %>
 	<% //START Great Right Now %>
 		<jsp:include page="/includes/department_peakproduce_whatsgood.jsp" flush="true"/>
 	<% //END Great Right Now %>
+<% } %>
+
+<% if (FDStoreProperties.isWhatsGoodButchersBlockEnabled()) { %>
+	<% //START Butcher's Block %>
+		<% catId = "wgd_butchers"; %>
+		<%@ include file="/departments/whatsgood/generic_row.jspf" %>
+	<% //End Butcher's Block %>
+<% } %>
 
 	<% //START Now in Pres Picks %>
-		<%@ include file="/departments/whatsgood/now_in_prespicks.jspf" %>
+		<% catId = "picks_pres"; %>
+		<%@ include file="/departments/whatsgood/generic_row.jspf" %>
 	<% //End Now in Pres Picks %>
 
+	
 	<%
 	//START Grocery Deals
         Image groDeptImage = null;
@@ -80,11 +111,16 @@ boolean mainPromo = user.getLevel() < FDUserI.RECOGNIZED && user.isEligibleForSi
 			trkCode = "";
 		}
 
-		catId = "picks_love";
-		String deptId = "gro";
-		isDepartment = true;
+		//these are needed in the include
+			//catId = "wgd_produce";
+			isDepartment = true;
+			
+			//this determines where the products are pulled from...
+				currentFolder=ContentFactory.getInstance().getContentNodeByName("gro");
+			
+			//...and the dept context (if null, not used)
+				showInContextOf = "wgd";
 
-		currentFolder=ContentFactory.getInstance().getContentNodeByName(catId);
 		%><%@ include file="/includes/layouts/i_featured_products_whatsgood.jspf" %><%
 	//END Grocery Deals
 	%>

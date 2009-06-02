@@ -7,8 +7,6 @@
 	if (emailPage) {
 		baseURL = params.get("baseUrl").toString();
 	}
-	currentFolder=ContentFactory.getInstance().getContentNodeByName("gro");
-	isDepartment = true;
 
     Attribute attribFeatProds = currentFolder.getAttribute("FEATURED_PRODUCTS");
     List favorites;
@@ -97,7 +95,15 @@ if (_featCats!=null) {
  if (_featuredCats != null && _featuredCats.size() > 0) {
          CategoryRef catRef= (CategoryRef)_featuredCats.get(0);
         dealsCat= catRef.getCategoryName();
+
 }
+		/*
+		 *	Change Context
+		 *	Only if the context has specifically been set to change (from callee)
+		 *	this is replacing the three letter dept code from the USED value to the SET value
+		 */
+			if (showInContextOf != null) { dealsCat = dealsCat.replaceAll(dealsCat.substring(0, 3), showInContextOf); }
+
 			String productPageLink_ = response.encodeURL("/deals.jsp?catId=" + dealsCat
             +"&amp;sortBy=name&amp;showThumbnails=true&amp;DisplayPerPage=30&amp;sortDescending=false&amp;disp=null&amp;prodCatId="+prodParent
             +"&amp;productId="+product.getContentName()+"&amp;trk=trans");
@@ -128,7 +134,7 @@ if (_featCats!=null) {
 
         // append product label
         //favoriteProductLinks.append("<div id=prod_container2 style=\"width: 100px; height: 100px; text-align: left\"><a id=prod_link_img style=\"display: block; cursor: hand\" href=\"" + productPageLink_ + "\">");
-        favoriteProductLinks.append("<div style=\"font-weight: normal; font-size: 8pt; width: 100px; text-align: center\">");
+        favoriteProductLinks.append("<div class=\"WG_deals\">");
 		//favoriteProductLinks.append("<a id=\"prod_link_txt_" + sku + "\" name=\"prod_link_txt_" + sku + "\" style=\"display: block;\" href=\"" + productPageLink_ + "\">");
         favoriteProductLinks.append("<a id=\"prod_link_txt_" + sku + "\" name=\"prod_link_txt_" + sku + "\" style=\"color: #360\" href=\"" + baseURL)
                             .append(productPageLink_).append("\">");
@@ -141,8 +147,8 @@ if (_featCats!=null) {
         favoriteProductLinks.append("</a>");
 
         // append product price
-        favoriteProductLinks.append("<div style=\"font-weight: bold; font-size: 8pt; color: #CC0000;\">").append(prodPrice).append("</div>");
-        favoriteProductLinks.append("<div style=\"font-size: 7pt; color: #888\">(was ").append(prodBasePrice).append(")</div>");
+        favoriteProductLinks.append("<div class=\"price dealPrice\">").append(prodPrice).append("</div>");
+        favoriteProductLinks.append("<div class=\"wasPrice\">(was ").append(prodBasePrice).append(")</div>");
         favoriteProductLinks.append("</div>");        
 
         favHTMLPieces.add(favoriteProducts);

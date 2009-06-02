@@ -184,6 +184,7 @@ for(int itmIdx=0; itmIdx < availableList.size();itmIdx++) {
 %>
 	<td valign="top" align="center" width="<%=colWidth%>">
         <a href="<%=displayObj.getItemURL()%>&trk=<%=trkCode%>"><img src="<%= displayObj.getImagePath()%>"  <%=displayObj.getImageDimensions() %> alt="<%=displayObj.getAltText()%>" hspace="0" border="0" /></a>
+
     <%  if (displayObj.getRating()!=null && displayObj.getRating().trim().length()>0) { %>
     <fd:ProduceRatingCheck>
             <br><font class="center">           
