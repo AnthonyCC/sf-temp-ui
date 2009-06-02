@@ -67,7 +67,7 @@ if (deptId==null) { deptId="wgd"; }
 	<%
 		//--------OAS Page Variables-----------------------
 		request.setAttribute("sitePage", "www.freshdirect.com/whatsgood");
-		request.setAttribute("listPos", "WGL,WGC,WGR");
+		request.setAttribute("listPos", "WGLeft,WGCenter,WGRight");
 	%>
 
 	<!-- START EMAIL -->
@@ -137,7 +137,7 @@ if (deptId==null) { deptId="wgd"; }
 						<!-- AD SPOT Left -->
 						<SCRIPT LANGUAGE=JavaScript>
 							<!--
-								OAS_AD('WGL');
+								OAS_AD('WGLeft');
 							//-->
 						</SCRIPT>
 					</td>
@@ -145,7 +145,7 @@ if (deptId==null) { deptId="wgd"; }
 						<!-- AD SPOT Center -->
 						<SCRIPT LANGUAGE=JavaScript>
 							<!--
-								OAS_AD('WGC');
+								OAS_AD('WGCenter');
 							//-->
 						</SCRIPT>
 					</td>
@@ -153,7 +153,7 @@ if (deptId==null) { deptId="wgd"; }
 						<!-- AD SPOT Right -->
 						<SCRIPT LANGUAGE=JavaScript>
 							<!--
-								OAS_AD('WGR');
+								OAS_AD('WGRight');
 							//-->
 						</SCRIPT>
 					</td>
