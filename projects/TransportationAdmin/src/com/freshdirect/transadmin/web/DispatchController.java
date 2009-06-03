@@ -4,8 +4,9 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -50,13 +51,9 @@ import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.EnumCachedDataType;
-import com.freshdirect.transadmin.util.EnumStatus;
 import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
-import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
-import com.freshdirect.transadmin.web.model.DispatchResourceInfo;
-import com.freshdirect.transadmin.web.model.ResourceList;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 import com.freshdirect.transadmin.web.model.WebPlanInfo;
 
@@ -65,8 +62,35 @@ public class DispatchController extends AbstractMultiActionController {
 	private DispatchManagerI dispatchManagerService;
 	private EmployeeManagerI employeeManagerService;
 	private DomainManagerI domainManagerService;
+	private static DispatchComparator DISPATCH_COMPARATOR=new DispatchComparator();
+	private static class DispatchComparator implements Comparator{
 
 
+		public int compare(Object o1, Object o2) {
+
+			if(o1 instanceof DispatchCommand && o2 instanceof DispatchCommand)
+			{
+				DispatchCommand p1=(DispatchCommand)o1;
+				DispatchCommand p2=(DispatchCommand)o2;
+
+				
+				if(!p1.isDispatched() && !p2.isDispatched()) {
+					return p1.getStartTimeEx().compareTo(p2.getStartTimeEx());
+					//return (val==0)? p1.getRegionZone().compareTo(p2.getRegionZone()):val;
+				}
+				else if(p1.isDispatched() && !p2.isDispatched()) {
+					return 1;
+				} else if (!p1.isDispatched() && p2.isDispatched()) {
+					return -1;
+				} else if(p1.isDispatched() && p2.isDispatched()){
+					int val= p1.getDispatchTimeEx().compareTo(p2.getDispatchTimeEx());
+					return (val==0)? p1.getStartTimeEx().compareTo(p2.getStartTimeEx()):val;
+				}
+			}
+			return 0;
+		}
+
+	}
 	public DispatchManagerI getDispatchManagerService() {
 		return dispatchManagerService;
 	}
@@ -292,6 +316,7 @@ public class DispatchController extends AbstractMultiActionController {
 			throw new RuntimeException("Exception ocuurred while processing the dispatch list for requested date "+dispDate);
 		}
 
+		Collections.sort((List)dispatchInfos, DISPATCH_COMPARATOR);
 		return dispatchInfos;
 	}
 
