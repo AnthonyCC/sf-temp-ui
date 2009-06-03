@@ -55,6 +55,10 @@ public class ItemGrabberTag extends com.freshdirect.framework.webapp.BodyTagSupp
         
     }
     
+    public void setWorkSet(List workSet){
+    	this.workSet=workSet;
+    }
+    
     public void setReturnSkus(boolean flag) {
         this.returnSkus = flag;
      }
@@ -181,7 +185,9 @@ public class ItemGrabberTag extends com.freshdirect.framework.webapp.BodyTagSupp
 			subFolders = ((DepartmentModel)currentNode).getCategories();				   
 		
 		}
-
+		
+		//System.out.println("currentNode :"+currentNode);
+		//System.out.println("workSet1 :"+workSet);
 		//
 		// Now get the products for the subfolders that have their Show_Folder=true and Show_children=always
 		//
@@ -221,6 +227,8 @@ public class ItemGrabberTag extends com.freshdirect.framework.webapp.BodyTagSupp
 				}
 			}
 		}
+		
+		//System.out.println("workSet2 :"+workSet);
 		return rtnValue;
 	}
 		

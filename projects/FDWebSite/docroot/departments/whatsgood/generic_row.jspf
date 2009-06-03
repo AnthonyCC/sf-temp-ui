@@ -27,10 +27,12 @@ layoutSettings.setGrabberDepth(0);
 layoutSettings.setIgnoreShowChildren(true);
 layoutSettings.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRIORITY, false));
 
+List tmpList=new ArrayList();
 %>
 <fd:ItemGrabber
 	category='<%=currentFolder %>' 
-	id='rtnColl'  
+	id='rtnColl' 
+	workSet='<%=tmpList%>'
 	depth='<%=layoutSettings.getGrabberDepth()%>'
 	ignoreShowChildren='<%=layoutSettings.isIgnoreShowChildren()%>' 
 	filterDiscontinued='<%= layoutSettings.isFilterDiscontinued() %>'
