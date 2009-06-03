@@ -28,7 +28,7 @@ public final class EnumStatus implements Comparable
 			EnumStatus temp=(EnumStatus)o;
 			return status-temp.status;
 		}
-		return 0;
+		return -1;
 	}
 	public boolean equals(Object obj) 
 	{

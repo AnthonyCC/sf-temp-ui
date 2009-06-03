@@ -412,6 +412,9 @@ public class DispatchCommand extends WebPlanInfo {
 			if(dispatchDate.getTime()<htOutDateTemp.getTime()) return htOutDateTemp;
 			return dispatchDate;
 			}
+			else if(dispatchTime!=null) {
+				return TransStringUtil.getServerTime(dispatchTime);
+			}
 		} catch (Exception e) 
 		{
 			
