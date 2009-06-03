@@ -593,6 +593,19 @@
 					</c:if>
 					
 					</c:if>
+					
+					
+					<c:if test="${dispatchForm.today == false}">					
+					<c:if test='${dispatchForm.checkedIn == true}'>
+					<tr>
+						<td>Checked In</td>
+						<td colspan="2"> 
+							<form:checkbox path="checkedIn" />
+						</td>
+					</tr>
+					</c:if>					
+					</c:if>
+					
 					<tr>					
 						<td>Comments</td>
 						<td>                  

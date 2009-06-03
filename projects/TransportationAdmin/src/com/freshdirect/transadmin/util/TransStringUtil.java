@@ -426,4 +426,29 @@ public class TransStringUtil {
 		
 		return false;
 	}
+	
+	public static boolean isTodayTomorrow(String date) throws ParseException
+	{
+		return isTodayTomorrow(TransStringUtil.getDate(date));		
+	}
+	public static boolean isTodayTomorrow(Date date) throws ParseException
+	{
+		clientCalendar.setTimeInMillis(System.currentTimeMillis());
+		clientCalendar.set(Calendar.HOUR,0);
+		clientCalendar.set(Calendar.MINUTE, 0);
+		clientCalendar.set(Calendar.SECOND, 0);
+		clientCalendar.set(Calendar.MILLISECOND, 0);
+		clientCalendar.set(Calendar.AM_PM, Calendar.AM);
+		clientCalendar.add(Calendar.DATE, -1);
+		long todayStartTime=clientCalendar.getTimeInMillis();
+		clientCalendar.add(Calendar.DATE, 1);
+		clientCalendar.add(Calendar.MILLISECOND, -1);
+		long todayEndTime=clientCalendar.getTimeInMillis();
+		
+		long toCalculate=date.getTime();
+		
+		if(todayStartTime<=toCalculate&&toCalculate<=todayEndTime) return true;
+		
+		return false;
+	}
  }

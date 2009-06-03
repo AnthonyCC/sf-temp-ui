@@ -58,6 +58,9 @@ public class FDSplCheckboxCell extends FDBaseCell
 	    					enabled=false;
 	    				}
 	    			}
+        		}
+        		//if(command.isTodayTomorrow())
+        		{
 	    			if("checkedIn".equalsIgnoreCase(column.getProperty()))
 	    			{
 	    				if((command.getDispatchStatus()==EnumStatus.Dispatched)||DispatchPlanUtil.isBullpen(command.getIsBullpen()))
@@ -74,6 +77,7 @@ public class FDSplCheckboxCell extends FDBaseCell
 	    				}
 	    			}
         		}
+        		
         		
         		 columnBuilder.getHtmlBuilder().input("checkbox").name(id+"_"+column.getProperty()).styleClass("datalistchx"); 
         		 if(!enabled)columnBuilder.getHtmlBuilder().disabled();
