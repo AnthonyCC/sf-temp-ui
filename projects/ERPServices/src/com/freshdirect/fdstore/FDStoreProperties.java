@@ -97,6 +97,10 @@ public class FDStoreProperties {
 
 	private final static String PROP_PRELOAD_STORE = "fdstore.preLoad";
 	private final static String PROP_WARMUP_CLASS = "fdstore.preLoad.class";
+	private final static String PROP_PRELOAD_NEWNESS = "fdstore.preLoad.newness";
+	private final static String PROP_PRELOAD_REINTRODUCED = "fdstore.preLoad.reintroduced";
+	private final static String PROP_PRELOAD_SMARTSTORE = "fdstore.preLoad.smartStore";
+	private final static String PROP_PRELOAD_AUTOCOMPLETIONS = "fdstore.preLoad.autocompletions";
 
 	private final static String PROP_CMS_MEDIABASEURL = "cms.mediaBaseURL";
 
@@ -287,7 +291,7 @@ public class FDStoreProperties {
 	private static final String SMART_SAVINGS_FEATURE_ENABLED  = "fdstore.smartsavings.enabled";
 	static {
 
-		defaults.put(PROP_PROVIDER_URL, 	"t3://localhost:7006");
+		defaults.put(PROP_PROVIDER_URL, 	"t3://appp1.nyc1.freshdirect.com:7001");
 		defaults.put(PROP_INIT_CTX_FACTORY,	"weblogic.jndi.WLInitialContextFactory");
 		defaults.put(PROP_CRM_GEOCODELINK, "http://www.geocode.com/EZLI/LoginServlet?uname=ECM0001468&pword=Lzxjb&servID=USA_Geo_002&formAction=GetInputFormServlet&submit=Login&cmd=li");
 		defaults.put(PROP_CRM_CASE_LIST_LENGTH, "100");
@@ -370,6 +374,10 @@ public class FDStoreProperties {
 
 		defaults.put(PROP_PRELOAD_STORE, "true");
 		// No default for PROP_WARMUP_CLASS
+		defaults.put(PROP_PRELOAD_NEWNESS, "true");
+		defaults.put(PROP_PRELOAD_REINTRODUCED, "true");
+		defaults.put(PROP_PRELOAD_SMARTSTORE, "true");
+		defaults.put(PROP_PRELOAD_AUTOCOMPLETIONS, "true");
 
 		defaults.put(PROP_CMS_MEDIABASEURL, "http://www.freshdirect.com");
 
@@ -707,6 +715,22 @@ public class FDStoreProperties {
 		return Boolean.valueOf(get(PROP_PRELOAD_STORE)).booleanValue();
 	}
 
+	public static boolean isPreloadAutocompletions() {
+		return Boolean.valueOf(get(PROP_PRELOAD_AUTOCOMPLETIONS)).booleanValue();
+	}
+	
+	public static boolean isPreloadSmartStore() {
+		return Boolean.valueOf(get(PROP_PRELOAD_SMARTSTORE)).booleanValue();
+	}
+	
+	public static boolean isPreloadNewness() {
+		return Boolean.valueOf(get(PROP_PRELOAD_NEWNESS)).booleanValue();
+	}
+	
+	public static boolean isPreloadReintroduced() {
+		return Boolean.valueOf(get(PROP_PRELOAD_REINTRODUCED)).booleanValue();
+	}
+	
 	public static Date getDlvPromoExpDate(){
 		Date d = null;
 		try{

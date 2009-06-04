@@ -64,8 +64,9 @@ public class Warmup {
 		//Get instance loads up the Nutrition
 		FDNutritionCache.getInstance();
 		
-		ContentSearch.getInstance().getAutocompletions("qwertyuqwerty");
-		
+		if (FDStoreProperties.isPreloadAutocompletions()) {
+			ContentSearch.getInstance().getAutocompletions("qwertyuqwerty");
+		}
 		
 		new Thread() {
 			public void run() {
@@ -73,7 +74,9 @@ public class Warmup {
 					// Warmup
 					warmupProducts();
 					
-					SmartStoreServiceConfiguration.getInstance().getServices(EnumSiteFeature.YMAL);
+					if (FDStoreProperties.isPreloadSmartStore()) {
+						SmartStoreServiceConfiguration.getInstance().getServices(EnumSiteFeature.YMAL);
+					}
 
 					LOGGER.info("Warmup done");
 				} catch (FDResourceException e) {
@@ -126,20 +129,24 @@ public class Warmup {
 		}
 
 		// initiating the asynchronous load of new and reintroduced products cache
-		contentFactory.getProductNewnesses();
-		contentFactory.getNewProducts(60, null);
-		contentFactory.getNewProducts(30, null);
-		contentFactory.getNewProducts(21, null);
-		contentFactory.getNewProducts(15, null);
-		contentFactory.getNewProducts(14, null);
-		contentFactory.getNewProducts(7, null);
+		if (FDStoreProperties.isPreloadNewness()) {
+			contentFactory.getProductNewnesses();
+			contentFactory.getNewProducts(60, null);
+			contentFactory.getNewProducts(30, null);
+			contentFactory.getNewProducts(21, null);
+			contentFactory.getNewProducts(15, null);
+			contentFactory.getNewProducts(14, null);
+			contentFactory.getNewProducts(7, null);
+		}
 
-		contentFactory.getReintroducedProducts(60, null);
-		contentFactory.getReintroducedProducts(30, null);
-		contentFactory.getReintroducedProducts(21, null);
-		contentFactory.getReintroducedProducts(15, null);
-		contentFactory.getReintroducedProducts(14, null);
-		contentFactory.getReintroducedProducts(7, null);
+		if (FDStoreProperties.isPreloadReintroduced()) {
+			contentFactory.getReintroducedProducts(60, null);
+			contentFactory.getReintroducedProducts(30, null);
+			contentFactory.getReintroducedProducts(21, null);
+			contentFactory.getReintroducedProducts(15, null);
+			contentFactory.getReintroducedProducts(14, null);
+			contentFactory.getReintroducedProducts(7, null);
+		}
 	}
 
 }
