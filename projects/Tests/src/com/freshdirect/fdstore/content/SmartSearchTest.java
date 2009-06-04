@@ -153,7 +153,7 @@ public class SmartSearchTest extends TestCase {
 
             FilteredSearchResults fres = (FilteredSearchResults) ctx.getAttribute("searchResults");
             assertEquals("currentPage-0", 0, fres.getCurrentPage());
-            assertEquals("pageSize", 30, fres.getPageSize());
+            assertEquals("pageSize", SearchNavigator.getDefaultForView(SearchNavigator.VIEW_DEFAULT).normalPageSize, fres.getPageSize());
             assertEquals("start", 0, fres.getStart());
             assertEquals("pageCount", 1, fres.getPageCount());
 
