@@ -57,6 +57,10 @@ public class ItemGrabberTag extends com.freshdirect.framework.webapp.BodyTagSupp
         this.ignoreDuplicateProducts = ignoreFlag;
         
     }
+    public void setWorkSet(List workSet){
+    	this.workSet=workSet;
+    }
+    
     
     public void setReturnSkus(boolean flag) {
         this.returnSkus = flag;
