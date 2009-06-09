@@ -1,0 +1,306 @@
+<%
+	// multiple skus
+
+    // build matrix (map of primary DomainValues / List of SkuModels)
+
+    boolean hasSecondaryDomain = domains.size()==2;
+
+	ProductModel.PriceComparator priceComparator = new ProductModel.PriceComparator();
+
+    Map matrix = new TreeMap(domainValueComp);
+    
+    Iterator skui = skus.iterator();
+    while ( skui.hasNext() ) {
+        SkuModel sku = (SkuModel)skui.next();
+        MultiAttribute skuMatrix = (MultiAttribute)sku.getAttribute("VARIATION_MATRIX");
+        DomainValue key = ((DomainValueRef)skuMatrix.getValue(0)).getDomainValue();
+        if ( matrix.containsKey(key) ) {
+            List coll = (List)matrix.get(key);
+            coll.add(sku);
+        } else {
+            List coll = new ArrayList();
+            coll.add(sku);
+            matrix.put(key, coll);
+        }
+
+    }
+
+    // === really big loop ===
+    Iterator keyIter = matrix.keySet().iterator();
+    while ( keyIter.hasNext() ) {
+        DomainValue priDomainValue = (DomainValue) keyIter.next();
+        List group = (List)matrix.get(priDomainValue);
+
+        // are the skus all the same price?
+        boolean allSamePrice = false;
+        if (hasSecondaryDomain || group.size()>1) {
+            priceComparator.reset();
+            Collections.sort(group, priceComparator);
+            allSamePrice = priceComparator.allTheSame();
+        }
+
+        // do all skus have the same optional variations?
+        boolean allSameOption = true;
+        if ( ((SkuModel)group.get(0)).getAttribute("VARIATION_OPTIONS")!=null ) {
+            String dvId = ((DomainValueRef) ((MultiAttribute)((SkuModel)group.get(0)).getAttribute("VARIATION_OPTIONS")).getValue(0)).getDomainValue().getPK().getId();
+            
+            Iterator skuIter = group.iterator();
+            while ( skuIter.hasNext() ) {
+                SkuModel sku = (SkuModel) skuIter.next();
+                allSameOption &= dvId.equals(((DomainValueRef) ((MultiAttribute)sku.getAttribute("VARIATION_OPTIONS")).getValue(0)).getDomainValue().getPK().getId());
+            }
+        }
+
+        if (hasSecondaryDomain) {
+            // sort the group by secondary domainvalue priority
+            Collections.sort(group, skuSecDomainValueComp);
+        }
+
+        %>
+        
+        
+
+
+
+<%-- ============================================================================================================================================= --%>
+        
+        <%-- Nested Table 2 Options list - radio buttions/ multiple SKUs --%>
+        <table width="185" cellpadding="0" cellspacing="2" border="0"> 
+         <% if ( hasSecondaryDomain ) { %>
+             <tr valign="bottom">
+                 <td colspan="2" align="right"><br/>
+                     <%
+                      if (productNode.getAttribute("FDDEF_SOURCE")!=null) {
+                          TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_SOURCE").getValue();
+                          EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
+                          String path = popup + "&attrib=FDDEF_SOURCE" + "&tmpl=" + tm.getPopupSize();
+                          
+                          %><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><b><%= priDomainValue.getLabel().toUpperCase() %></b></a><%
+                          
+                      } else if (productNode.getAttribute("FDDEF_GRADE")!=null) {
+                          TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_GRADE").getValue();
+                          EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
+                          String path = popup + "&attrib=FDDEF_GRADE" + "&tmpl=" + tm.getPopupSize();
+                          
+                          %><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><b><%= priDomainValue.getLabel().toUpperCase() %></b></a><%
+                          
+                      } else {
+                          %><b><%= priDomainValue.getLabel().toUpperCase() %></b>    <%
+                      }
+
+                      if (allSamePrice) {
+                          %>
+                          <fd:FDProductInfo id="prdinfo" skuCode="<%= ((SkuModel)group.get(0)).getSkuCode() %>">
+                              <font class="productPageSecondaryVarPrice"><%= currencyFormatter.format(prdinfo.getDefaultPrice()) %></font>
+                              <font class="productPageSecondaryVarPriceUnit">/<%=prdinfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
+                          </fd:FDProductInfo>
+                          <%
+                      }
+                     %>
+                 </td>
+             </tr>
+         <% } // hasSecondaryDomain %>
+        
+<%-- ==================================================== iterate over each sku ================================================================== --%>
+
+        	<logic:iterate id="sku" collection="<%= group %>" type="SkuModel">
+				<fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
+                	<fd:FDProduct id="product" productInfo="<%= productInfo %>">
+                 
+                     <%
+                      String labelLink1 = "";
+                      String labelLink2 = "";
+                      String labelLink3 = ")</b>";
+                      String labelNolink = "";
+                      if (hasSecondaryDomain) {
+                          DomainValue secDomainValue = ((DomainValueRef) ((MultiAttribute)sku.getAttribute("VARIATION_MATRIX")).getValue(1)).getDomainValue();
+                          labelLink1 = secDomainValue.getLabel() + " <b>(";
+                          labelNolink = secDomainValue.getLabel();
+                          if ((sku.getAttribute("VARIATION_OPTIONS") != null) && (group.size() > 1) && !allSameOption) {
+                              DomainValue optDomainValue = ((DomainValueRef) ((MultiAttribute)sku.getAttribute("VARIATION_OPTIONS")).getValue(0)).getDomainValue();
+                              labelNolink += " <b>(" + optDomainValue.getLabel() +")</b>";
+                              labelLink2 = optDomainValue.getLabel();
+                          }
+                      } 
+                     %>
+                     
+                     <fd:ErrorHandler result='<%=result%>' name='skuCode' id='errorMsg'>
+                         <tr valign="top">
+                             <td colspan="2" align="right"><span class="text11rbold"><%=errorMsg%></span></td>
+                         </tr>
+                     </fd:ErrorHandler>
+
+                     <tr valign="top">
+                    
+                      <%-- Left side for scaled pricing --%>
+                      <td width="<%=!hasSecondaryDomain ? "185":"170"%>" align="right" class="text10">
+                    			<%--[SKU:<%=sku %>] <br/> --%>
+                    		
+<%-- ============================================================================================================================================= --%>
+		<% if ( !hasSecondaryDomain ) {
+			
+			if (productNode.getAttribute("FDDEF_GRADE")!=null) {
+				TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_GRADE").getValue();
+				EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
+				String path = popup + "&attrib=FDDEF_GRADE" + "&tmpl=" + tm.getPopupSize();
+			
+				%><b><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= priDomainValue.getLabel().toUpperCase() %></a><%= labelNolink %></b><%
+				
+			} else if (productNode.getAttribute("FDDEF_SOURCE")!=null) {
+				TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_SOURCE").getValue();
+				EnumPopupType popupType = EnumPopupType.getPopupType(tm.getPopupSize());
+				String path = popup + "&attrib=FDDEF_SOURCE" + "&tmpl=" + tm.getPopupSize();
+				
+				%><b><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= priDomainValue.getLabel().toUpperCase() %></a><%= labelNolink %></b><%
+				
+			} else if (productNode.getAttribute("FDDEF_FRENCHING")!=null) {
+				TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_FRENCHING").getValue();
+				EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
+				String path = popup + "&attrib=FDDEF_FRENCHING" + "&tmpl=" + tm.getPopupSize();
+				
+				%><b><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= priDomainValue.getLabel().toUpperCase() %></a><%= labelNolink %></b><%
+				
+			} else {
+				%><b><%= priDomainValue.getLabel().toUpperCase() %> <%= labelNolink %></b><%
+			}
+		
+			
+			if ( hasSingleSalesUnit && !isSoldByLB && ( !salesUnitsMatch || !salesUnitDescrsMatch ) ) {
+				String suDescr = product.getSalesUnits()[0].getDescription();										
+			
+				if (!"nm".equalsIgnoreCase(suDescr)) {
+					%><%= suDescr %><%
+				}
+			} 
+		
+                           if (!allSamePrice) { // extra space below for Size desc and price %> 
+                           	<% if ( productInfo.isDeal() ) { %>
+                                <font class="productPageSecondaryVarPrice" color="red"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font>
+                                <font class="productPageSecondaryVarPriceUnit" color="red">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
+                                <br/>
+                                <font class="text11nb">(was <%= currencyFormatter.format(productInfo.getBasePrice()) %>)</font>
+                                <br/>
+                               <% } else { %>
+                                <font class="productPageSecondaryVarPrice"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font>
+                                <font class="productPageSecondaryVarPriceUnit">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
+                               <% } 
+                           }
+		
+			%><%@ include file="/shared/includes/product/i_scaled_prices_fixed.jspf" %>
+			
+									  
+				<%-- radio button for scaled pricing --%>
+				<input type="radio" name="skuCode" value="<%= sku.getSkuCode() %>" onClick="pricing.setSKU(this.value);" <% if (defaultSku == sku) out.print("checked"); %>><br/>
+			
+     		
+<%-- ============================================================================================================================================= --%>
+		<% } else { // for !hasSecondaryDomain 
+                                      
+                   		if (productNode.getAttribute("FDDEF_RIPENESS")!=null && !"".equals(labelLink2)) {
+                               TitledMedia tm = (TitledMedia)productNode.getAttribute("FDDEF_RIPENESS").getValue();
+                               EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
+                               String path = popup + "&attrib=FDDEF_RIPENESS" + "&tmpl=" + tm.getPopupSize();
+                               %>
+                               <font class="text11bold"><%=labelLink1%><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%=labelLink2%></a><%=labelLink3%></font>
+                               <%
+                           } else {                                                                                                
+                               %><%= labelNolink %><%
+                               if (hasSingleSalesUnit && !isSoldByLB && (!salesUnitsMatch || !salesUnitDescrsMatch)) {
+                                   String suDescr = product.getSalesUnits()[0].getDescription();
+                                   if (!"nm".equalsIgnoreCase(suDescr)) {
+                                       %><%= suDescr %><%
+                                   }
+                               }
+                           }
+	
+                           if (!allSamePrice) { // extra space below for Size desc and price %> 
+                           	<% if ( productInfo.isDeal() ) { %>
+                                <font class="productPageSecondaryVarPrice" color="red"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font>
+                                <font class="productPageSecondaryVarPriceUnit" color="red">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
+                                <br/>
+                                <font class="text11nb">(was <%= currencyFormatter.format(productInfo.getBasePrice()) %>)</font>
+                                <br/>
+                               <% } else { %>
+                                <font class="productPageSecondaryVarPrice"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font>
+                                <font class="productPageSecondaryVarPriceUnit">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
+                               <% } 
+                           }
+                           
+                           if (product.getPricing().getScaleDisplay().length==0) {
+                               %><br/><%
+                           }
+                            
+                           %><%@ include file="/shared/includes/product/i_scaled_prices_fixed.jspf" %><%
+                           
+                           Date earliestDate = sku.getEarliestAvailability();
+                           Calendar testDate = new GregorianCalendar();
+                           testDate.add(Calendar.DATE, 1);
+                           // cheat: if no availability indication, show the horizon as the
+                           //        earliest availability
+                           if (earliestDate == null) {
+                               earliestDate = DateUtil.addDays( DateUtil.truncate( new Date() ), ErpServicesProperties.getHorizonDays() );
+                           }
+                           if (QuickDateFormat.SHORT_DATE_FORMATTER.format(testDate.getTime()).compareTo(QuickDateFormat.SHORT_DATE_FORMATTER.format(earliestDate)) < 0) {
+                               %><font class="text11rbold">*</font><%
+                           } %>
+                           
+                       <%-- end of left side for scaled pricing --%>
+                       
+			</td>	                               
+			<td width="15">
+				<%-- radio button for scaled pricing --%>
+				<input type="radio" name="skuCode" value="<%= sku.getSkuCode() %>" onClick="pricing.setSKU(this.value);" <% if (defaultSku == sku) out.print("checked"); %>><br/>
+			</td>
+                     	</tr>
+                            
+		<% } // for !hasSecondaryDomain %>
+
+<%-- ========================================================= Rating ============================================================================ --%>
+
+		<%-- Need extra row for rating that spans 2 cols  // Tiered pricing display - with radio buttons - bottom placement	--%>
+
+		<fd:ProduceRatingCheck>
+		    <% 
+		    String skuCodeRat=productInfo.getSkuCode();                 
+			if ( skuCodeRat.startsWith("FRU") || skuCodeRat.startsWith("VEG") || skuCodeRat.startsWith("YEL") ) {
+				if ( productInfo.getRating() != null && productInfo.getRating().trim().length() > 0 ) { 
+					String rating="";
+					EnumOrderLineRating enumRating = EnumOrderLineRating.getEnumByStatusCode( productInfo.getRating() );
+					if( enumRating != null && enumRating.isEligibleToDisplay() ) {
+						rating = enumRating.getStatusCodeInDisplayFormat();
+						
+						// if !hasSecondaryDomains don't break into new row
+						if ( hasSecondaryDomain ) { 					
+							%><tr><td colspan="2" style="padding-bottom:8px;" align="center"><% 
+		      			} %>		
+			
+						<table cellpadding="0" cellspacing="0" border="0">
+							<tr valign="middle">
+								<td class="qualityRating">
+									<span class="qualityRating"><%=enumRating.getShortDescription()%> - </span>
+								</td>
+								<td style="padding-top:1px;">
+									<img src="/media_stat/images/ratings/product_<%=rating%>.gif" name="rating" height="11" alt="<%=enumRating.getShortDescription()%>" border="0">
+								</td>
+							</tr>
+						</table>
+				
+						<% if ( hasSecondaryDomain ) { %>			
+							</td></tr>					
+						<% } else { %>
+							<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0">
+							</td></tr>
+						<% }
+					}
+				} 
+			 }
+			%>                        
+		</fd:ProduceRatingCheck> 
+		<%-- End extra row for rating in scaled prices --%>
+
+	</fd:FDProduct>
+</fd:FDProductInfo>
+</logic:iterate>
+</table>
+<% } %>
+

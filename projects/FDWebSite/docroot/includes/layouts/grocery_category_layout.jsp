@@ -10,10 +10,13 @@
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import='com.freshdirect.framework.util.*' %>
+
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
+
 <%!
 
 public void produceBrandsAndTypes(Set brands, List typesList, Collection sortedColl) {
@@ -160,7 +163,7 @@ if (currentCategory != null) {
 		String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord, recommendations.getImpressionId(productNode));
 %><%-- display a product --%>
 		<td align="center" width="105" valign="bottom">
-			<fd:ProductImage product="<%= productNode %>" action="<%= actionURI %>" />
+			<display:ProductImage product="<%= productNode %>" action="<%= actionURI %>" />
 		</td>
 		<td width="10">
 			<img src="/media/images/layout/clear.gif" width="8" height="1">
@@ -189,11 +192,11 @@ if (currentCategory != null) {
 String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord, recommendations.getImpressionId(productNode));
 %><%-- display a product --%>
 		<td align="center" WIDTH="105">
-			<fd:ProductRating product="<%= productNode %>"/>
+			<display:ProductRating product="<%= productNode %>"/>
 <%		if (productNode.isDisplayable()) { %>
-			<div><a href="<%= actionURI %>"><%@ include file="/includes/product/i_prd_name.jspf" %></a></div>
+			<div><display:ProductName product="<%= productNode %>" action="<%= actionURI %>"/></div>
 <%		} else { %>
-			<div><a style="color: #999999" href="<%= actionURI %>"><%@ include file="/includes/product/i_prd_name.jspf" %></a></div>
+			<div style="color: #999999"><display:ProductName product="<%= productNode %>" action="<%= actionURI %>"/></div>
 <%		}
 		if (fiIsDeal) {
 %>			<div style="FONT-WEIGHT: bold; FONT-SIZE: 8pt; COLOR: #c00"><%= fiProdPrice %></div>

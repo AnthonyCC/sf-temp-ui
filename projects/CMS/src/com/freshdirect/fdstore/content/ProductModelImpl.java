@@ -33,6 +33,7 @@ import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.attributes.Attribute;
+import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 import com.freshdirect.framework.util.DayOfWeekSet;
 
 /**
@@ -280,11 +281,9 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	}
 
 	/**
+	 * a product is discontinued only if all of its skus are discontinued
 	 * @return  */
 	public boolean isDiscontinued() {
-		//
-		// a product is discontinued only if all of its skus are discontinued
-		//
 		List skus = getSkus();
 		Iterator skuIter = skus.iterator();
 		while (skuIter.hasNext()) {
@@ -296,11 +295,9 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	}
 
 	/**
+	 * a product is out of season only if all of its skus are out of season
 	 * @return  */
 	public boolean isOutOfSeason() {
-		//
-		// a product is out of season only if all of its skus are out of season
-		//
 		List skus = getSkus();
 		Iterator skuIter = skus.iterator();
 		while (skuIter.hasNext()) {
@@ -312,11 +309,9 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	}
 
 	/**
+	 * a product is unavailable only if all of its skus are unavailable
 	 * @return  */
 	public boolean isUnavailable() {
-		//
-		// a product is unavailable only if all of its skus are unavailable
-		//
 		List skus = getSkus();
 		Iterator skuIter = skus.iterator();
 		while (skuIter.hasNext()) {
@@ -329,11 +324,9 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	}
 
 	/**
+	 * a product is temp. unavailable only if all of its skus are temp. unavailable
 	 * @return  */
 	public boolean isTempUnavailable() {
-		//
-		// a product is temp. unavailable only if all of its skus are temp. unavailable
-		//
 		List skus = getSkus();
 		Iterator skuIter = skus.iterator();
 		while (skuIter.hasNext()) {
@@ -381,12 +374,10 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	}
 
 	/**
+	 * a product is available with X days if any of its skus are available within X days
 	 * @param days
 	 * @return  */
 	public boolean isAvailableWithin(int days) {
-		//
-		// a product is available with X days if any of its skus are available within X days
-		//
 		List skus = getSkus();
 		Iterator skuIter = skus.iterator();
 		while (skuIter.hasNext()) {
@@ -398,11 +389,9 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	}
 
 	/**
+	 * a product's earliest availability is the earliest of it's sku's earliest availability
 	 * @return  */
 	public Date getEarliestAvailability() {
-		//
-		// a product's earliest availability is the earliest of it's sku's earliest availability
-		//
 		List skus = getSkus();
 		Date ea = null;
 		Iterator skuIter = skus.iterator();
@@ -523,7 +512,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 		return "";
 	}
 	
-	/*
+	/**
 	 * @return list of brands that can be displayed on the product page
 	 *  (did not want to use the word primaryBrands since the notion of primary brand is a brand name 
 	 * that is part of the full name of the product )
@@ -531,6 +520,9 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	public List getDisplayableBrands() {
 		return this.getDisplayableBrands(1);
 	}
+	/**
+	 * @return list of brands that can be displayed on the product page
+	 */
 	public List getDisplayableBrands(int numberOfBrands) {
 		List prodBrands = this.getBrands();
 		List displayableBrands = new ArrayList();
@@ -1212,11 +1204,16 @@ inner:
 	}
 
 	public Image getRolloverImage() {
-		ContentKey key = (ContentKey) getCmsAttribute("PROD_IMAGE_ROLLOVER").getValue();
+
+		AttributeI attr = getCmsAttribute("PROD_IMAGE_ROLLOVER");
+		if ( attr == null )
+			return null;
 		
-		return key == null
-  	         ? null
-             : (Image) ContentFactory.getInstance().getContentNode(key.getId());
+		Attribute attr2 = FDAttributeFactory.getAttribute( attr );
+		if ( attr2 == null )
+			return null;
+		
+		return (Image) attr2.getValue();
 	}
 
 	public Html getProductAbout() {		

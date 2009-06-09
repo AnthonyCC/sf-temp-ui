@@ -13,11 +13,14 @@
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.content.nutrition.*'%>
 <%@ page import='java.net.URLEncoder'%>
+<%@page import="java.util.Locale"%>
+
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
+
 <fd:CheckLoginStatus />
 <%!
 	java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
@@ -110,12 +113,13 @@ if (EnumTemplateType.WINE.equals( productNode.getTemplateType() )) {
     <tmpl:put name='leftnav' direct='true'>
     </tmpl:put>
 <tmpl:put name='content' direct='true'>
+
 <%if (FDStoreProperties.isAdServerEnabled()) {%>
-    <SCRIPT LANGUAGE=JavaScript>
-    <!--
-    OAS_AD('ProductNote');
-    //-->
-    </SCRIPT>
+
+	<script type="text/javascript">
+		OAS_AD('ProductNote');
+	</script>
+
 <%} else {%>
     <%@ include file="/shared/includes/product/i_product_quality_note.jspf" %>
 <%}%>

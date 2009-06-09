@@ -11,10 +11,13 @@
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import='com.freshdirect.framework.util.*' %>
+
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+
 <%
 
 //********** Start of Stuff to let JSPF's become JSP's **************
@@ -117,13 +120,14 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
 		String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord, recommendations.getImpressionId(productNode));
 %><%-- display a product --%>
 		<td width="<%= tdwidth %>">
-			<p style="border: 0px; padding: 0px; margin: 0px;"><fd:ProductImage product="<%= productNode %>" action="<%= actionURI %>"/></p>
-			<fd:ProductRating product="<%= productNode %>" />
+			<p style="border: 0px; padding: 0px; margin: 0px;">
+			<display:ProductImage product="<%= productNode %>" action="<%= actionURI %>"/></p>
+			<display:ProductRating product="<%= productNode %>" />
 <%			// product name
 		if (productNode.isDisplayable()) { %>
-			<div><a href="<%= actionURI %>"><%@ include file="/includes/product/i_prd_name.jspf" %></a></div>
+			<div><display:ProductName product="<%= productNode %>" action="<%= actionURI %>"/></div>
 <%		} else { %>
-			<div><a style="color: #999999" href="<%= actionURI %>"><%@ include file="/includes/product/i_prd_name.jspf" %></a></div>
+			<div style="color: #999999"><display:ProductName product="<%= productNode %>" action="<%= actionURI %>"/></div>
 <%		} %>
 			<div class="favoritePrice"><%= fiProdPrice %></div>
 		</td>

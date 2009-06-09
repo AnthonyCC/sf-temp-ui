@@ -15,20 +15,25 @@
 %><%@ page import="java.util.*"
 %><%@ page import="java.net.URLEncoder"
 %><%@ page import="java.text.DecimalFormat"
-%><%@ page import="com.freshdirect.framework.util.NVL"
-%><%@ taglib uri='template' prefix='tmpl'
-%><%@ taglib uri='logic' prefix='logic'
-%><%@ taglib uri='freshdirect' prefix='fd'
-%>
-
+%><%@ page import="com.freshdirect.framework.util.NVL"%>
 <%@ page import='org.apache.commons.fileupload.servlet.ServletFileUpload' %>
 <%@ page import='org.apache.commons.fileupload.FileItemFactory' %>
 <%@ page import='org.apache.commons.fileupload.FileItem' %>
 <%@ page import='org.apache.commons.fileupload.disk.DiskFileItemFactory' %>
-
 <%@ page import="java.io.File" %>
 <%@ page import="java.io.FileInputStream" %>
-<%@page import="com.freshdirect.webapp.taglib.test.SearchSnapshot"%>
+<%@ page import="com.freshdirect.webapp.taglib.test.SearchSnapshot"%>
+<%@page import="com.freshdirect.webapp.taglib.test.SearchSnapshot.SearchData"%>
+<%@page import="com.freshdirect.cms.ContentKey"%>
+<%@page import="com.freshdirect.webapp.taglib.test.SnapshotGenerator"%>
+<%@page import="com.freshdirect.smartstore.fdstore.ProductStatisticsProvider"%>
+<%@page import="com.freshdirect.cms.ContentKey.InvalidContentKeyException"%>
+
+<%@ taglib uri='template' prefix='tmpl'%>
+<%@ taglib uri='logic' prefix='logic'%>
+<%@ taglib uri='freshdirect' prefix='fd'%>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+
 <%
 /**
 * author: gmark
@@ -51,11 +56,7 @@
 %>
 
 
-<%@page import="com.freshdirect.webapp.taglib.test.SearchSnapshot.SearchData"%>
-<%@page import="com.freshdirect.cms.ContentKey"%>
-<%@page import="com.freshdirect.webapp.taglib.test.SnapshotGenerator"%>
-<%@page import="com.freshdirect.smartstore.fdstore.ProductStatisticsProvider"%>
-<%@page import="com.freshdirect.cms.ContentKey.InvalidContentKeyException"%><html>
+<html>
 <head>
 <title>SmartSearch Test Page</title>
 <style>
@@ -377,7 +378,7 @@
 	<tr <%=style %>>
 		<td style="text-align: right; font-weight: bold"><%=(pos == -1 ? "" : Integer.toString(pos + 1)) %>.</td>
 		<td style="text-align: right; font-weight: bold;<%=diffStyle %>"><%=(diff > 0 ? "+" : "") + Integer.toString(diff) %></td>
-		<td><fd:ProductImage product="<%=product %>" prefix="http://www.freshdirect.com"></fd:ProductImage></td>
+		<td><display:ProductImage product="<%=product %>" prefix="http://www.freshdirect.com"/></td>
 		<td>
 			<div><span style="font-weight: bold"><%=product.getFullName() %></span></div>
 			<div style="margin-bottom: 5px;"><span style="font-style: italic;font-size: smaller"><%=taxonomy %></span></div>

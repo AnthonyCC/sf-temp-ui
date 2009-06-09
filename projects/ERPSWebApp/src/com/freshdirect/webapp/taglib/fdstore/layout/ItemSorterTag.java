@@ -1,4 +1,4 @@
-package com.freshdirect.webapp.taglib.fdstore;
+package com.freshdirect.webapp.taglib.fdstore.layout;
 
 import java.util.Collections;
 import java.util.List;

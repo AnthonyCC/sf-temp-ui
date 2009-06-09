@@ -1,157 +1,171 @@
-<% /**********************************************************
-    Host file Dependencies:  
-        Int offset
-        Int len
-        ContentNodeModel currentFolder
-        List displayList
-
-*************************************************************/
-String itemNameFont= null;
-double d=0.0;
-int tablewidth=0;
-int tdwidth=0;
-int maxCols = 0;
-int maxWidth = 0;
-Image img = null;
-int itemWidth = 0;
-int totalWidth = 0;
-StringBuffer tblCells = new StringBuffer(600);
-boolean isDepartment = currentFolder.getContentType().equals(ContentNodeI.TYPE_DEPARTMENT);
-String trkCode = "";
-
-if (isDepartment) {
-    maxCols=5;
-    maxWidth = 550;
-    tdwidth=110;
-	trkCode = "dpage";
-} else {
-     maxCols=4;
-     maxWidth = 440;
-     tdwidth=100;
-	 trkCode = "cpage";
-}
-String prodNameAttribute = JspMethods.getProductNameToUse(currentFolder);
-int counter = 0;
-boolean onlyOneProduct = false;
-ProductModel theOnlyProduct = null;
-DisplayObject displayObj = null;
-int rowsPrinted  =0;
+<% 
+	/**********************************************************
+	    Host file Dependencies:  
+	        Int offset
+	        Int len
+	        ContentNodeModel currentFolder
+	        List displayList
+	
+	*************************************************************/
+	
+	String itemNameFont= null;
+	double d=0.0;
+	int tablewidth=0;
+	int tdwidth=0;
+	int maxCols = 0;
+	int maxWidth = 0;
+	Image img = null;
+	int itemWidth = 0;
+	int totalWidth = 0;
+	StringBuffer tblCells = new StringBuffer(600);
+	boolean isDepartment = currentFolder.getContentType().equals(ContentNodeI.TYPE_DEPARTMENT);
+	String trkCode = "";
+	
+	if (isDepartment) {
+	    maxCols=5;
+	    maxWidth = 550;
+	    tdwidth=110;
+		trkCode = "dpage";
+	} else {
+	     maxCols=4;
+	     maxWidth = 440;
+	     tdwidth=100;
+		 trkCode = "cpage";
+	}
+	String prodNameAttribute = JspMethods.getProductNameToUse(currentFolder);
+	int counter = 0;
+	boolean onlyOneProduct = false;
+	ProductModel theOnlyProduct = null;
+	DisplayObject displayObj = null;
+	int rowsPrinted  =0;
 %>
-<logic:iterate indexId="idx" id="displayThing" length="<%= len.toString() %>" offset="<%= offset.toString() %>" collection="<%= displayList %>" type="com.freshdirect.fdstore.content.ContentNodeModel">
-<%
-Attribute attribInGenericLayout = null;
-itemWidth = 0;
-boolean showSelf = false;
-if (displayThing.getContentType().equals(ContentNodeI.TYPE_DEPARTMENT)) {
-    showSelf = true;
-} else if (displayThing.getContentType().equals(ContentNodeI.TYPE_CATEGORY)) {
-    showSelf = ((CategoryModel)displayThing).getShowSelf();
-}
-
-itemNameFont = "text11";
-if ((displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) ||  showSelf) {
-    if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
-        if(theOnlyProduct==null) {
-            theOnlyProduct = (ProductModel)displayThing;
-            onlyOneProduct=true;
-        } else {
-            onlyOneProduct = false;
-        }
-        itemNameFont = "catPageProdNameUnderImg";
-        displayObj = JspMethods.loadLayoutDisplayStrings(response,displayThing.getParentNode().getContentName(),displayThing,prodNameAttribute,true);
-        img = ((ProductModel)displayThing).getCategoryImage();
-    } else if (displayThing.getContentType().equals(ContentNodeI.TYPE_CATEGORY)){
-        onlyOneProduct=false;
-        displayObj = JspMethods.loadLayoutDisplayStrings(response,"",displayThing,prodNameAttribute);
-        attribInGenericLayout = ((CategoryModel)displayThing).getAttribute("CAT_PHOTO");
-        img = attribInGenericLayout==null?null:(Image)attribInGenericLayout.getValue();
-    } else if (displayThing.getContentType().equals(ContentNodeI.TYPE_DEPARTMENT)){
-        onlyOneProduct=false;
-        displayObj = JspMethods.loadLayoutDisplayStrings(response,"",displayThing,prodNameAttribute);
-        attribInGenericLayout = ((DepartmentModel)displayThing).getAttribute("DEPT_PHOTO");
-        img = attribInGenericLayout==null?null:(Image)attribInGenericLayout.getValue();
-    }
-    if (img !=null ) {
-        itemWidth = img.getWidth();
-    }
-    if(counter >= maxCols || (totalWidth+itemWidth) > maxWidth){
-        int numOfColumns =  counter / maxCols;
-        if (numOfColumns == 0) {
-                tablewidth = ((displayList.size() - counter) % maxCols) * tdwidth;
-        }
-        else {
-                tablewidth = maxCols * tdwidth;
-        }
-        if (tablewidth > maxWidth) tablewidth = maxWidth;
-%>
-<table WIDTH="<%=tablewidth%>" CELLPADDING="0" CELLSPACING="0" BORDER="0">
- <tr align="center" valign="top"><%=tblCells.toString()%></tr></table>
-<%
-     rowsPrinted++;
-     counter=0;
-     totalWidth = 0;
-     tblCells.setLength(0);
-    }
-
-    totalWidth+=itemWidth;
-    tblCells.append("<td align=\"center\" width=\"");
-    tblCells.append(tdwidth);
-    tblCells.append("\"><a href=\"");
-    tblCells.append(displayObj.getItemURL());
-	tblCells.append("&trk="+trkCode);
-    tblCells.append("\"");
-    tblCells.append(displayObj.getRolloverString());
-    tblCells.append("><img src=\"");
-    tblCells.append(displayObj.getImagePath());
-    tblCells.append("\"  name=\"");
-    tblCells.append(displayObj.getImageName());
-    tblCells.append("\" width=\"");
-    tblCells.append(displayObj.getImageWidth());
-    tblCells.append("\"  height=\"");
-    tblCells.append(displayObj.getImageHeight());
-    tblCells.append("\" ALT=\"");
-    tblCells.append(displayObj.getAltText());
-    tblCells.append("\" border=\"0\"></a><br><a href=\"");
-    tblCells.append(displayObj.getItemURL());
-	tblCells.append("&trk="+trkCode);
-    tblCells.append("\"><font class=\"");
-    tblCells.append(itemNameFont);
-    tblCells.append("\">");
-    tblCells.append(displayObj.getItemName());
-    tblCells.append("</font></a>");
-    if (displayObj.getPrice()!=null) { 
-        tblCells.append("<br><font class=\"price\">");
-        tblCells.append(displayObj.getPrice());
-        tblCells.append("</font>");
-    }
-    tblCells.append("<br><br></td>");
-// <td width="<%=itemWidth % >"><a href="<%=displayObj.getItemURL()% >" <%=displayObj.getRolloverString()% >><img src="<%=displayObj.getImagePath()% >"  name="<%=displayObj.getImageName()% >" width="<%=displayObj.getImageWidth()% >"  height="<%=displayObj.getImageHeight()% >"ALT="<%=displayObj.getAltText()% >" border="0"></a><br><a href="<%=displayObj.getItemURL()% >"><font class="<%=itemNameFont% >"><%=displayObj.getItemName()% ></font></a><%=displayObj.getPrice()!=null?"<br><font class=\"price\">"+displayObj.getPrice()+"</font>":""% ><br><br></td>
-    counter++;
-    if (counter==itemsToDisplay) break; //get out of logic:iterate block
-}
-%>
-</logic:iterate>
-<%
-   if (tblCells.length() !=0) {
-/* need to do some sort of adjusting so that the last rows looks ok if more than one row : here's the "formula"
- * 1- if there is only one item..then size the table to the width of the item
- * 2- if the number of items is the same as the max allowable items then size the table to the maxWidth
- * 3 - if the number of items  > 1 and less than 60% of the maxWidht then size table to 60% of the maxWidth
- */
-    int tblWidth = totalWidth; // default settting
-    if (counter>=maxCols || rowsPrinted==0 ) {
-        tblWidth = tablewidth;
-    } else if( counter>1) {
-        double myMultiplier = counter==2?.50:.65;
-        if (totalWidth<(int)(myMultiplier * tablewidth)) {
-            tblWidth = (int)(tablewidth * myMultiplier);
-        }
-    }
-%>
-<table WIDTH="<%=tblWidth%>" CELLPADDING="0" CELLSPACING="0" BORDER="0">
- <tr align="center" valign="top"><%=tblCells.toString()%></tr></table>
-<% } 
-if (onlyOneProduct) {
-	request.setAttribute("theOnlyProduct",theOnlyProduct);
-}
+	
+	<logic:iterate indexId="idx" id="displayThing" length="<%= len.toString() %>" offset="<%= offset.toString() %>" collection="<%= displayList %>" type="com.freshdirect.fdstore.content.ContentNodeModel">
+		<%
+		Attribute attribInGenericLayout = null;
+		itemWidth = 0;
+		boolean showSelf = false;
+		if (displayThing.getContentType().equals(ContentNodeI.TYPE_DEPARTMENT)) {
+		    showSelf = true;
+		} else if (displayThing.getContentType().equals(ContentNodeI.TYPE_CATEGORY)) {
+		    showSelf = ((CategoryModel)displayThing).getShowSelf();
+		}
+		
+		itemNameFont = "text11";
+		if ((displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) ||  showSelf) {
+		    if (displayThing.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
+		        if(theOnlyProduct==null) {
+		            theOnlyProduct = (ProductModel)displayThing;
+		            onlyOneProduct=true;
+		        } else {
+		            onlyOneProduct = false;
+		        }
+		        itemNameFont = "catPageProdNameUnderImg";
+		        displayObj = JspMethods.loadLayoutDisplayStrings(response,displayThing.getParentNode().getContentName(),displayThing,prodNameAttribute,true);
+		        img = ((ProductModel)displayThing).getCategoryImage();
+		    } else if (displayThing.getContentType().equals(ContentNodeI.TYPE_CATEGORY)){
+		        onlyOneProduct=false;
+		        displayObj = JspMethods.loadLayoutDisplayStrings(response,"",displayThing,prodNameAttribute);
+		        attribInGenericLayout = ((CategoryModel)displayThing).getAttribute("CAT_PHOTO");
+		        img = attribInGenericLayout==null?null:(Image)attribInGenericLayout.getValue();
+		    } else if (displayThing.getContentType().equals(ContentNodeI.TYPE_DEPARTMENT)){
+		        onlyOneProduct=false;
+		        displayObj = JspMethods.loadLayoutDisplayStrings(response,"",displayThing,prodNameAttribute);
+		        attribInGenericLayout = ((DepartmentModel)displayThing).getAttribute("DEPT_PHOTO");
+		        img = attribInGenericLayout==null?null:(Image)attribInGenericLayout.getValue();
+		    }
+		    if (img !=null ) {
+		        itemWidth = img.getWidth();
+		    }
+		    if(counter >= maxCols || (totalWidth+itemWidth) > maxWidth){
+		        int numOfColumns =  counter / maxCols;
+		        if (numOfColumns == 0) {
+		                tablewidth = ((displayList.size() - counter) % maxCols) * tdwidth;
+		        }
+		        else {
+		                tablewidth = maxCols * tdwidth;
+		        }
+		        if (tablewidth > maxWidth) tablewidth = maxWidth;
+		%>
+		
+		<table WIDTH="<%=tablewidth%>" CELLPADDING="0" CELLSPACING="0" BORDER="0">
+			<tr align="center" valign="top">
+				<%=tblCells.toString()%>
+			</tr>
+		</table>
+		
+		<%
+		     rowsPrinted++;
+		     counter=0;
+		     totalWidth = 0;
+		     tblCells.setLength(0);
+		    }
+		
+		    totalWidth+=itemWidth;
+		    tblCells.append("<td align=\"center\" width=\"");
+		    tblCells.append(tdwidth);
+		    tblCells.append("\"><a href=\"");
+		    tblCells.append(displayObj.getItemURL());
+			tblCells.append("&trk="+trkCode);
+		    tblCells.append("\"");
+		    tblCells.append(displayObj.getRolloverString());
+		    tblCells.append("><img src=\"");
+		    tblCells.append(displayObj.getImagePath());
+		    tblCells.append("\"  name=\"");
+		    tblCells.append(displayObj.getImageName());
+		    tblCells.append("\" width=\"");
+		    tblCells.append(displayObj.getImageWidth());
+		    tblCells.append("\"  height=\"");
+		    tblCells.append(displayObj.getImageHeight());
+		    tblCells.append("\" ALT=\"");
+		    tblCells.append(displayObj.getAltText());
+		    tblCells.append("\" border=\"0\"></a><br><a href=\"");
+		    tblCells.append(displayObj.getItemURL());
+			tblCells.append("&trk="+trkCode);
+		    tblCells.append("\"><font class=\"");
+		    tblCells.append(itemNameFont);
+		    tblCells.append("\">");
+		    tblCells.append(displayObj.getItemName());
+		    tblCells.append("</font></a>");
+		    if (displayObj.getPrice()!=null) { 
+		        tblCells.append("<br><font class=\"price\">");
+		        tblCells.append(displayObj.getPrice());
+		        tblCells.append("</font>");
+		    }
+		    tblCells.append("<br><br></td>");
+		// <td width="<%=itemWidth % >"><a href="<%=displayObj.getItemURL()% >" <%=displayObj.getRolloverString()% >><img src="<%=displayObj.getImagePath()% >"  name="<%=displayObj.getImageName()% >" width="<%=displayObj.getImageWidth()% >"  height="<%=displayObj.getImageHeight()% >"ALT="<%=displayObj.getAltText()% >" border="0"></a><br><a href="<%=displayObj.getItemURL()% >"><font class="<%=itemNameFont% >"><%=displayObj.getItemName()% ></font></a><%=displayObj.getPrice()!=null?"<br><font class=\"price\">"+displayObj.getPrice()+"</font>":""% ><br><br></td>
+		    counter++;
+		    if (counter==itemsToDisplay) break; //get out of logic:iterate block
+		}
+		%>
+	</logic:iterate>
+	
+	<%
+	   if (tblCells.length() !=0) {
+	/* need to do some sort of adjusting so that the last rows looks ok if more than one row : here's the "formula"
+	 * 1- if there is only one item..then size the table to the width of the item
+	 * 2- if the number of items is the same as the max allowable items then size the table to the maxWidth
+	 * 3 - if the number of items  > 1 and less than 60% of the maxWidht then size table to 60% of the maxWidth
+	 */
+	    int tblWidth = totalWidth; // default settting
+	    if (counter>=maxCols || rowsPrinted==0 ) {
+	        tblWidth = tablewidth;
+	    } else if( counter>1) {
+	        double myMultiplier = counter==2?.50:.65;
+	        if (totalWidth<(int)(myMultiplier * tablewidth)) {
+	            tblWidth = (int)(tablewidth * myMultiplier);
+	        }
+	    }
+	%>
+	
+	<table WIDTH="<%=tblWidth%>" CELLPADDING="0" CELLSPACING="0" BORDER="0">
+		<tr align="center" valign="top">
+			<%=tblCells.toString()%>
+		</tr>
+	</table>
+	
+	<% } 
+	if (onlyOneProduct) {
+		request.setAttribute("theOnlyProduct",theOnlyProduct);
+	}
 %>

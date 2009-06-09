@@ -1,18 +1,56 @@
+<%@page import="com.freshdirect.webapp.taglib.fdstore.BrowserInfo"%>
 <%
 	Image productImage = productNode.getDetailImage();
-        Image zoomImage=(Image) productNode.getZoomImage();
+	Image zoomImage=(Image) productNode.getZoomImage();
+	
+	BrowserInfo browserInfo = new BrowserInfo((HttpServletRequest) pageContext.getRequest());
+	boolean supportsPNG = !(browserInfo.isInternetExplorer() && browserInfo.getVersionNumber() < 8.0);
+	
+	//boolean isDeal = productNode.isDeal();
+	int dealPercentage = productNode.getDealPercentage();
+	boolean isDeal = dealPercentage > 0;
+	String burstImage = "/media_stat/images/deals/brst_lg_" + dealPercentage + (supportsPNG ? ".png" : ".gif");
         
-        if( zoomImage!=null && zoomImage.getPath().indexOf("clear.gif")==-1 ){
-%>
-
-		<A HREF="javascript:pop('/shared/prodpop.jsp?productId=<%= productNode %>&catId=<%= productNode.getParentNode() %>',335,375)"><img border=0 src="<%= productImage.getPath() %>" width="<%= productImage.getWidth() %>" height="<%= productImage.getHeight() %>"></A><br>
-<%	} else { %>
-		<img border=0 src="<%= productImage.getPath() %>" width="<%= productImage.getWidth() %>" height="<%= productImage.getHeight() %>"><br>
-<%	} %>
-		<FONT CLASS="space2pix"><BR></FONT>
-			
-		<% 
-		//Show product summary link only in test environments
-		 if (FDStoreProperties.isAnnotationMode()) { %>
-			<br><br><a href="javascript:popResize('/shared/product_summary.jsp?productId=<%= productNode %>&catId=<%= productNode.getParentNode() %>',800,555)" class="text12">Product Summary</a><br><br>
+	if ( zoomImage != null && zoomImage.getPath().indexOf("clear.gif") == -1 ) {
+		if ( isDeal ) { %>
+			<div style="padding: 0px; border: 0px; margin: 0px auto; position: relative;" width="<%= productImage.getWidth() %>px" height="<%= productImage.getHeight() %>px">
+					<div style="position: absolute; top: 0px; left: 0px">
+						<a href="javascript:pop('/shared/prodpop.jsp?productId=<%= productNode %>&catId=<%= productNode.getParentNode() %>',335,375)">
+							<img alt="SAVE" src="<%=burstImage %>" width="55px" height="55px" style="border: 0">
+						</a>
+					</div>
 		<% } %>
+		
+		<a href="javascript:pop('/shared/prodpop.jsp?productId=<%= productNode %>&catId=<%= productNode.getParentNode() %>',335,375)">
+			<img border="0" src="<%= productImage.getPath() %>" width="<%= productImage.getWidth() %>" height="<%= productImage.getHeight() %>">
+		</a><br/>
+				
+		<% if ( isDeal ) { %>
+			</div>
+		<% } %>
+				
+	<% } else { 
+		if ( isDeal ) { %>
+			<div style="padding: 0px; border: 0px; margin: 0px auto; position: relative;" width="<%= productImage.getWidth() %>px" height="<%= productImage.getHeight() %>px">					
+				<div style="position: absolute; top: 0px; left: 0px">
+					<img alt="SAVE" src="<%=burstImage %>" width="55px" height="55px" style="border: 0">
+				</div>
+		<% } %>
+
+		<img border="0" src="<%= productImage.getPath() %>" width="<%= productImage.getWidth() %>" height="<%= productImage.getHeight() %>"><br/>
+		
+		<% if ( isDeal ) { %>
+			</div>
+		<% } %>		
+<%	} %>
+
+
+
+<font class="space2pix"><br/></font>
+			
+<% 
+	//Show product summary link only in test environments
+	if (FDStoreProperties.isAnnotationMode()) { 
+		%><br/><br/><a href="javascript:popResize('/shared/product_summary.jsp?productId=<%= productNode %>&catId=<%= productNode.getParentNode() %>',800,555)" class="text12">Product Summary</a><br/><br/><% 
+	} 
+%>

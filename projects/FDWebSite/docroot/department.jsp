@@ -127,7 +127,7 @@ try {
 <%
             if (introTitle != null || !"".equals(introTitle)) {
                 %><%=introTitle%><%}%></font><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="3"><BR><fd:IncludeMedia name='<%= introCopy %>' /><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="4"></td>
-		<td CLASS="text11" width="88" align="right"><img src="<%=deptImage.getPath()%>" width="<%=deptImage.getWidth()%>"  height="<%=deptImage.getHeight()%>" border="0" alt="Coffee Beans"><td>
+		<td CLASS="text11" width="88" align="right"><img src="<%=deptImage.getPath()%>" width="<%=deptImage.getWidth()%>"  height="<%=deptImage.getHeight()%>" border="0" alt="Coffee Beans"></td>
 <%
             } else {
                 %><td class="text11" width="550"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="9"><BR><font class="title16"><%=introTitle%></font><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="3"><BR><fd:IncludeMedia name='<%= introCopy %>' /><BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="4"></td><%

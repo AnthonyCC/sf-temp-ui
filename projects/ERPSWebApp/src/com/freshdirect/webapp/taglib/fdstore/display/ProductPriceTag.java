@@ -1,4 +1,4 @@
-package com.freshdirect.webapp.taglib.fdstore;
+package com.freshdirect.webapp.taglib.fdstore.display;
 
 import java.io.IOException;
 
@@ -16,23 +16,20 @@ import com.freshdirect.webapp.util.JspMethods;
 import com.freshdirect.webapp.util.ProductImpression;
 import com.freshdirect.webapp.util.TransactionalProductImpression;
 
-public class ProductDescriptionTag extends BodyTagSupport {
+public class ProductPriceTag extends BodyTagSupport {
 	private static final long serialVersionUID = 5175263850081406757L;
 
 	private ProductImpression impression;
-
 	double savingsPercentage = 0 ; // savings % off
+	
 	
 	public void setImpression(ProductImpression impression) {
 		this.impression = impression;
 	}
 	
-
-
 	public void setSavingsPercentage(double savingsPercentage) {
 		this.savingsPercentage = savingsPercentage;
 	}
-
 
 
 	public int doStartTag() {
@@ -52,6 +49,8 @@ public class ProductDescriptionTag extends BodyTagSupport {
 				confDescription = impression.getProductModel().getSizeDescription();
 			} catch (FDResourceException e1) {}
 		}
+		
+		buf.append( "<font class=\"price\">" );
 
 		// display description
 		if (confDescription != null) {
@@ -96,21 +95,23 @@ public class ProductDescriptionTag extends BodyTagSupport {
 
 		
 		// Display "SAVE!" ... label
-        FDProduct product = impression.getFDProduct();
-        if (product!=null) {
-        	String[] ymalScales = null;
-        	if (savingsPercentage > 0) 
-        		ymalScales = product.getPricing().getScaleDisplay(savingsPercentage);
-        	else
-        		ymalScales = product.getPricing().getScaleDisplay();
-            if (ymalScales.length>0) {
-            	buf.append("<div style=\"color: #FF9933; font-weight: bold;\">Save!</div>\n");
-                for (int ymalSci = 0; ymalSci < ymalScales.length; ymalSci++) {
-        			buf.append("<div style=\"font-weight: bold;\">" + ymalScales[ymalSci] + "</div>\n");
-                }
-            }
-        }
+		FDProduct product = impression.getFDProduct();
+		if ( product != null ) {
+			String[] ymalScales = null;
+			if ( savingsPercentage > 0 )
+				ymalScales = product.getPricing().getScaleDisplay( savingsPercentage );
+			else
+				ymalScales = product.getPricing().getScaleDisplay();
+			if ( ymalScales.length > 0 ) {
+				buf.append( "<div style=\"color: #FF9933; font-weight: bold;\">Save!</div>\n" );
+				for ( int ymalSci = 0; ymalSci < ymalScales.length; ymalSci++ ) {
+					buf.append( "<div style=\"font-weight: bold;\">" + ymalScales[ymalSci] + "</div>\n" );
+				}
+			}
+		}
 
+		buf.append( "</font>" );
+		
 		try {
 			// write out
 			out.write(buf.toString());

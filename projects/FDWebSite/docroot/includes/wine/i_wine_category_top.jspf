@@ -102,12 +102,13 @@ List wineSortList=catModel.getWineSortCriteria();
 <% WineSortStrategy sortStrategy = new WineSortStrategy(sortNameAttrib, sortDescending); %>
 
 <fd:ItemSorter nodes='<%=displayList%>' strategy='<%=sortStrategy.getSortStrategyElements(sortCol)%>'/>
+
 <script language='Javascript'>
 function filterFormSubmit(idx){
 <% if (wineFilterList.size() > 1) { %>
     var selectedValue = document.wine_detail_form.show_filter[idx].options[document.wine_detail_form.show_filter[idx].selectedIndex].value;
     
- <% }else { %>
+<% }else { %>
     var selectedValue = document.wine_detail_form.show_filter.options[document.wine_detail_form.show_filter.selectedIndex].value;
 <% }  %>
    

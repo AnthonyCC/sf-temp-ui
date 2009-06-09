@@ -1,7 +1,10 @@
 <%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
-<%@ page import='com.freshdirect.fdstore.*, com.freshdirect.webapp.taglib.fdstore.*'%>
+<%@ page import='com.freshdirect.fdstore.*, com.freshdirect.webapp.taglib.fdstore.*, com.freshdirect.webapp.taglib.fdstore.layout.*'%>
+
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
 <%
 	String trkCode= "";
@@ -22,13 +25,14 @@
 	boolean sortDescending = "true".equalsIgnoreCase(request.getParameter("sortDescending"));
 %>
 
-<fd:LayoutManager 
+
+<display:LayoutManager
 		result='result' 
 		currentNode='<%=currentFolder%>' 
 		isDepartment='<%=isDept%>' 
 		isCategory='<%=isCat%>' 
 		layoutSettingsName='layoutSettings'>
-	<fd:ItemGrabber 
+	<display:ItemGrabber 
 			id='rtnColl'
 			category='<%=currentFolder %>'   
 	        depth='<%=layoutSettings.getGrabberDepth()%>' 
@@ -36,19 +40,19 @@
 	        filterDiscontinued='<%= layoutSettings.isFilterDiscontinued() %>'
 	        returnHiddenFolders='<%=layoutSettings.isReturnHiddenFolders()%>'
 			ignoreDuplicateProducts='<%=layoutSettings.isIgnoreDuplicateProducts()%>'
-	        returnSecondaryFolders='<%=layoutSettings.isReturnSeocndaryFolders()%>' 
+	        returnSecondaryFolders='<%=layoutSettings.isReturnSecondaryFolders()%>' 
 	        returnSkus='<%=layoutSettings.isReturnSkus()%>'>
 		<%
     	    sortedColl = rtnColl;
 	        request.setAttribute("itemGrabberResult",sortedColl); //** expose result of item grabber to the layout **
 		%>
-    </fd:ItemGrabber>
+    </display:ItemGrabber>
      
 	<%
 	if ( layoutSettings != null && layoutSettings.getLayoutFileName() != null ) {
 		JspLogger.NAV.debug( " calling layout: " + layoutSettings.getLayoutFileName() ); %>          
-		<fd:ItemSorter nodes='<%= (List)sortedColl %>' strategy='<%= layoutSettings.getSortStrategy() %>'/>
-		<jsp:include page="<%=layoutSettings.getLayoutFileName()%>" flush="false"/> 
+		<display:ItemSorter nodes='<%= (List)sortedColl %>' strategy='<%= layoutSettings.getSortStrategy() %>'/>
+		<jsp:include page="<%=layoutSettings.getLayoutFileName() %>" flush="false"/> 
 	<% }
 	
 	//the included layout will set two attributes in the response object (Boolean onlyOneProduct and ProductModel theOnlyProduct)
@@ -75,6 +79,6 @@
 		}
 	} %>
 	
-</fd:LayoutManager>
+</display:LayoutManager>
 
                                                                                                         

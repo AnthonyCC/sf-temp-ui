@@ -861,28 +861,6 @@
 		</attribute>
 	</tag>
 	<tag>
-		<name>horizontalpattern</name>
-		<tagclass>com.freshdirect.webapp.taglib.fdstore.HorizontalPatternTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.fdstore.HorizontalPatternTagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>id</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>itemsToShow</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>patternArray</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
 		<name>SideNav</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.SideNav</tagclass>
 		<teiclass>com.freshdirect.webapp.taglib.fdstore.SideNavEI</teiclass>
@@ -920,63 +898,6 @@
 		</attribute>
 		<attribute>
 			<name>sortByPriority</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
-		<name>ItemGrabber</name>
-		<tagclass>com.freshdirect.webapp.taglib.fdstore.ItemGrabberTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.fdstore.ItemGrabberTagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>category</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>workSet</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>id</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>depth</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>returnHiddenFolders</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>ignoreShowChildren</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>ignoreDuplicateProducts</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>returnSecondaryFolders</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>filterDiscontinued</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>returnSkus</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -1050,7 +971,6 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
-
 		<attribute>
 			<name>categoryId</name>
 			<required>true</required>
@@ -1096,43 +1016,7 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
-	<tag>
-		<name>VerticalPattern</name>
-		<tagclass>com.freshdirect.webapp.taglib.fdstore.VerticalPatternTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.fdstore.VerticalPatternTagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>id</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>collection</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>columns</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>rows</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>showFolder</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>returnCategory</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
+		
 	<tag>
 		<name>CheckCSRLoginStatus</name>
 		<tagclass>com.freshdirect.webapp.taglib.callcenter.CheckCSRLoginStatusTag</tagclass>
@@ -2338,38 +2222,6 @@
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.GetServiceEmailTag</tagclass>
 	</tag>
 	<tag>
-		<name>LayoutManager</name>
-		<tagclass>com.freshdirect.webapp.taglib.fdstore.LayoutManager</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.fdstore.LayoutManager$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>isCategory</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>isDepartment</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>currentNode</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>layoutSettingsName</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>result</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
 		<name>ReceiptSurvey</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.ReceiptSurveyControllerTag</tagclass>
 		<teiclass>com.freshdirect.webapp.taglib.fdstore.ReceiptSurveyControllerTag$TagEI</teiclass>
@@ -2407,21 +2259,6 @@
 			<name>id</name>
 			<required>true</required>
 			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
-		<name>ItemSorter</name>
-		<tagclass>com.freshdirect.webapp.taglib.fdstore.ItemSorterTag</tagclass>
-		<info></info>
-		<attribute>
-			<name>nodes</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>strategy</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
 	<tag>
@@ -2958,7 +2795,7 @@
 		<attribute>
 			<name>id</name>
 			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
+			<rtexprvalue>false</rtexprvalue>			
 		</attribute>
 		<attribute>
 			<name>deliveryPassId</name>
@@ -3283,205 +3120,7 @@
 		</attribute>
 	</tag>
 
-	<!-- [APPREQ-122] Product Impression Presentation Tag Support -->
-	<tag>
-		<name>PIPLayout</name>
-		<tagclass>com.freshdirect.webapp.taglib.smartstore.PIPLayoutTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.smartstore.PIPLayoutTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>id</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>impressions</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>rowSize</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>singleRowMode</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>maxRowHeight</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
-		<name>PIPRow</name>
-		<tagclass>com.freshdirect.webapp.taglib.smartstore.PIPRowTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.smartstore.PIPRowTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>id</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>impressionRow</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>shouldRenderBlankCells</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<!-- out -->
-		<attribute>
-			<name>isBlankCell</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
-		<name>PIPTab</name>
-		<tagclass>com.freshdirect.webapp.taglib.smartstore.PIPTabTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.smartstore.PIPTabTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>id</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>maxTabs</name>
-			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>maxRecommendations</name>
-			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
-		<name>ProductImage</name>
-		<tagclass>com.freshdirect.webapp.taglib.fdstore.ProductImageTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.fdstore.ProductImageTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>product</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>style</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>className</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>action</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>disabled</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>prefix</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>hideDeals</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>hideYourFave</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>hideNew</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>hideBurst</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>browserInfo</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>savingsPercentage</name><!-- savings item -->
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>inCart</name><!-- savings / in cart -->
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>opacity</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
-		<name>ProductName</name>
-		<tagclass>com.freshdirect.webapp.taglib.fdstore.ProductNameTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.fdstore.ProductNameTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>product</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>action</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>disabled</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
-		<name>ProductDescription</name>
-		<tagclass>com.freshdirect.webapp.taglib.fdstore.ProductDescriptionTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.fdstore.ProductDescriptionTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>impression</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>savingsPercentage</name><!-- savings item -->
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
+	
 	<tag>
 		<name>TxProductPricingSupport</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.TxProductPricingSupportTag</tagclass>
@@ -3547,23 +3186,6 @@
 		</attribute>
 	</tag>
 	<tag>
-		<name>ProductRating</name>
-		<tagclass>com.freshdirect.webapp.taglib.fdstore.ProductRatingTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.fdstore.ProductRatingTag$TagEI</teiclass>
-		<bodycontent>JSP</bodycontent>
-		<info></info>
-		<attribute>
-			<name>product</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>action</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
 		<name>GetPeakProduce</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.GetPeakProduceTag</tagclass>
 		<teiclass>com.freshdirect.webapp.taglib.fdstore.GetPeakProduceTag$TagEI</teiclass>
@@ -3584,11 +3206,7 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
-		<attribute>
-			<name>useMinCount</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
+
 	</tag>
 	<tag>
 		<name>ProduceRatingCheck</name>
@@ -3679,26 +3297,163 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+
+
+	<!-- ============ following tags have been moved to fd-display, temporarily they are kept here too ============ -->
+	
+	<!-- ============ LAYOUT TAGS ============ -->
+
 	<tag>
-		<name>TransparentBox</name>
-		<tagclass>com.freshdirect.webapp.taglib.fdstore.TransparentBoxTag</tagclass>
-		<teiclass>com.freshdirect.webapp.taglib.fdstore.TransparentBoxTag$TagEI</teiclass>
+		<name>ItemGrabber</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.layout.ItemGrabberTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.fdstore.layout.ItemGrabberTag$TagEI</teiclass>
 		<bodycontent>JSP</bodycontent>
 		<info></info>
 		<attribute>
-			<name>opacity</name>
+			<name>category</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>depth</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>returnHiddenFolders</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>disabled</name>
+			<name>ignoreShowChildren</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>style</name>
+			<name>ignoreDuplicateProducts</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>returnSecondaryFolders</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>filterDiscontinued</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>returnSkus</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>ItemSorter</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.layout.ItemSorterTag</tagclass>
+		<info></info>
+		<attribute>
+			<name>nodes</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>strategy</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	
+		<!-- ============ [APPREQ-122] Product Impression Presentation Tag Support ============ -->
+	
+	<tag>
+		<name>PIPLayout</name>
+		<tagclass>com.freshdirect.webapp.taglib.smartstore.PIPLayoutTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.smartstore.PIPLayoutTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>impressions</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>rowSize</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>singleRowMode</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>maxRowHeight</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>PIPRow</name>
+		<tagclass>com.freshdirect.webapp.taglib.smartstore.PIPRowTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.smartstore.PIPRowTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>impressionRow</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>shouldRenderBlankCells</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<!-- out -->
+		<attribute>
+			<name>isBlankCell</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>PIPTab</name>
+		<tagclass>com.freshdirect.webapp.taglib.smartstore.PIPTabTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.smartstore.PIPTabTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>maxTabs</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>maxRecommendations</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
+	
 </taglib>

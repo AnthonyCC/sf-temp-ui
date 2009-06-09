@@ -25,8 +25,11 @@
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@page import="org.apache.commons.lang.StringEscapeUtils"%>
 <%@page import="org.apache.commons.lang.math.NumberUtils"%>
+
 <%@ taglib uri="freshdirect" prefix="fd"%>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%@ taglib uri='logic' prefix='logic' %>
+
 <fd:CheckLoginStatus />
 <%
 	Iterator it;
@@ -382,7 +385,7 @@ p.fi{margin:20px 0px;}
 					%>
 					<div id="prod_container"
 							style="height: 90px; width: 100px; text-align: left;">
-						<fd:ProductImage product="<%=productNode%>" action="<%=actionURI%>" />
+						<display:ProductImage product="<%=productNode%>" action="<%=actionURI%>" />
 					</div>
 					<div style="position: absolute;" id="sale_star">
 						<a href="<%=actionURI%>">
@@ -394,7 +397,7 @@ p.fi{margin:20px 0px;}
 					<%
 						} else {
 					%> 
-					<fd:ProductImage product="<%=productNode%>" action="<%=actionURI%>" />
+					<display:ProductImage product="<%=productNode%>" action="<%=actionURI%>" />
 					<%
 					 	}
 					%>
@@ -445,17 +448,13 @@ p.fi{margin:20px 0px;}
 						if (productNode.isDisplayable()) {
 					%>
 					<div>
-						<a href="<%=actionURI%>"><%@
-							include file="/includes/product/i_prd_name.jspf"
-						%></a>
+						<display:ProductName product="<%= productNode %>" action="<%= actionURI %>"/>
 					</div>
 					<%
 						} else {
 					%>
-					<div>
-						<a style="color: #999999" href="<%=actionURI%>"><%@
-							include file="/includes/product/i_prd_name.jspf"
-						%></a>
+					<div style="color: #999999">
+						<display:ProductName product="<%= productNode %>" action="<%= actionURI %>"/>							
 					</div>
 					<%
 						}

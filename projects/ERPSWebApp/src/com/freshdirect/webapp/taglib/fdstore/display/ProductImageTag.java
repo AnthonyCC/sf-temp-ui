@@ -1,4 +1,4 @@
-package com.freshdirect.webapp.taglib.fdstore;
+package com.freshdirect.webapp.taglib.fdstore.display;
 
 import java.io.IOException;
 
@@ -12,6 +12,8 @@ import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.webapp.BodyTagSupport;
+import com.freshdirect.webapp.taglib.fdstore.BrowserInfo;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.ProductLabelling;
 
 /**
@@ -21,22 +23,25 @@ import com.freshdirect.webapp.util.ProductLabelling;
  *
  */
 public class ProductImageTag extends BodyTagSupport {
+	
 	private static final long serialVersionUID = 8159061278833068855L;
 
-	ProductModel	product; // product (mandatory)
-	String			style; // CSS style modification (optional)
-	String			className;	// CSS class name (optional)
-	String			action; // URL (optional)
-	boolean			disabled = false; // Image is not clickable
-	String			prefix; // For internal use only! (optional)
-	boolean			hideDeals = false; // whether display Deals burst (optional)
-	boolean			hideNew = false; // whether display New Product burst (optional)
-	boolean			hideYourFave = false; // whether display Your Fave burst (optional)
-	boolean			hideBurst = false; // whether display any burst (optional)
+	ProductModel	product; 					// product (mandatory)
+	String			style; 						// CSS style modification (optional)
+	String			className;					// CSS class name (optional)
+	String			action; 					// URL (optional)
+	boolean			disabled = false; 			// Image is not clickable
+	String			prefix; 					// For internal use only! (optional)
+	boolean			hideDeals = false; 			// whether display Deals burst (optional)
+	boolean			hideNew = false; 			// whether display New Product burst (optional)
+	boolean			hideYourFave = false; 		// whether display Your Fave burst (optional)
+	boolean			hideBurst = false; 			// whether display any burst (optional)
 
 	BrowserInfo		browserInfo = null;
-	double			savingsPercentage = 0; // savings % off
-	boolean			isInCart = false; // display savings - in cart
+	double			savingsPercentage = 0; 		// savings % off
+	boolean			isInCart = false; 			// display savings - in cart
+	
+	boolean 		showRolloverImage = true;	// rollover image
 
 	double			opacity = 1; // 1-transparency
 
@@ -80,8 +85,7 @@ public class ProductImageTag extends BodyTagSupport {
 		this.hideYourFave = hideYourFave;
 	}
 
-	
-	
+
 	
 	public void setBrowserInfo(BrowserInfo browserInfo) {
 		this.browserInfo = browserInfo;
@@ -96,6 +100,9 @@ public class ProductImageTag extends BodyTagSupport {
 		this.savingsPercentage = savingsPercentage;
 	}
 
+	public void setShowRolloverImage( boolean showRolloverImage ) {
+		this.showRolloverImage = showRolloverImage;
+	}
 	
 	public void setOpacity(double opacity) {
 		if (opacity < 0)
@@ -105,9 +112,8 @@ public class ProductImageTag extends BodyTagSupport {
 		else
 			this.opacity = opacity;
 	}
-
-
-
+	
+	
 	public int doStartTag() {
 		try {
 			Image prodImg = product.getProdImage();
@@ -149,10 +155,27 @@ public class ProductImageTag extends BodyTagSupport {
 					+ "height: " + prodImg.getHeight() + "px; "
 					+ "position: relative;\">\n");
 
-
-
-
-
+			
+			String imageName = "ro_img_" + product.getContentName();
+			
+			// ============= prepare rollover image script =============  
+			
+			String rolloverStr = "";	
+			if ( showRolloverImage ) {
+				Image rolloverImage = product.getRolloverImage();
+				
+				if ( rolloverImage != null ) {					
+					String rolloverImagePath = rolloverImage.getPath();
+					String baseImagePath = prodImg.getPath();
+					
+					if ( ! "".equals( rolloverImagePath ) && ! "".equals( baseImagePath ) ) {
+						rolloverStr = 
+							" onMouseover='swapImage(\"" 	+ imageName + "\",\"" + rolloverImagePath 	+ "\");return true;'" + 
+							" onMouseout='swapImage(\"" 	+ imageName + "\",\"" + baseImagePath 		+ "\");return true;'";
+					}
+				}
+			}
+			
 
 			// product image
 			if (shouldGenerateAction) {
@@ -194,6 +217,12 @@ public class ProductImageTag extends BodyTagSupport {
 				buf.append(imageStyle);
 				buf.append("\"");
 			}
+			
+			buf.append( " name=\"" );
+			buf.append( imageName );
+			buf.append( "\"" );
+			
+			buf.append( rolloverStr );			
 
 			buf.append(">");
 

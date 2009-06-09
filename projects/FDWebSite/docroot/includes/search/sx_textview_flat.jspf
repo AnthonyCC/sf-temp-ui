@@ -12,8 +12,13 @@
 %><%@ page import="com.freshdirect.fdstore.customer.FDUserI"
 %><%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"
 %><%@ page import="java.text.SimpleDateFormat"
-%><%@ taglib uri="freshdirect" prefix="fd"
-%><%@ taglib uri="logic" prefix="logic"%><%--
+%>
+
+<%@ taglib uri="freshdirect" prefix="fd"%>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+<%@ taglib uri="logic" prefix="logic"%>
+
+<%--
 
 Smart Search Text View (Flat)
 =============================
@@ -69,14 +74,14 @@ int k = 0;
 			<div>
 			<%
 				String aka = pi.getProductModel().getAka() != null && !pi.getProductModel().getAka().equals("") ? "(" + pi.getProductModel().getAka() + ")" : "";
-				String unit = pi.getConfigurationDescrpition() != null && pi.getConfigurationDescrpition() != "" ? "(" + pi.getConfigurationDescrpition() + ")" : ""; 
+				String unit = pi.getConfigurationDescription() != null && pi.getConfigurationDescription() != "" ? "(" + pi.getConfigurationDescription() + ")" : ""; 
 				if (productNode.isDisplayable()) {
 			%>
-						<a href="<%= actionURI %>"><%@ include file="/includes/product/i_prd_name.jspf" %></a>&nbsp;<%=aka %>&nbsp;<%=unit %>
+					<display:ProductName product="<%= productNode %>" action="<%= prdURI %>" />&nbsp;<%=aka %>&nbsp;<%=unit %>
 			<%
 				} else {
 			%>
-						<a style="color: #999999" href="<%= actionURI %>"><%@ include file="/includes/product/i_prd_name.jspf" %>&nbsp;<%= aka %>&nbsp;<%=unit %></a>
+					<display:ProductName product="<%= productNode %>" action="<%= prdURI %>" style="color:#999999"/>&nbsp;<%= aka %>&nbsp;<%=unit %>
 			<%
 				}			
 

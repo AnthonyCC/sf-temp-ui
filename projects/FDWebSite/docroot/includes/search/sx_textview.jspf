@@ -28,6 +28,8 @@ Smart Search Text View (Tree)
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+
 <fd:CheckLoginStatus />
 <%
 
@@ -109,19 +111,19 @@ ContentNodeModel lastSubCategory = null;
 				String actionURI = FDURLUtil.getProductURI(pi.getProductModel(), trk, (isYourFave ? "fave" : nav.getSortByName()), rank);
 				if (pi.getProductModel().isDisplayable()) {
 			%>
-						<a href="<%= actionURI %>"><%@ include file="/includes/product/i_prd_name.jspf" %></a>
-						<%=aka %>
+					<display:ProductName product="<%= productNode %>" action="<%= prdURI %>" />
+					<%=aka %>
 			<%
 				} else {
 			%>
-						<a style="color: #999999" href="<%= actionURI %>"><%@ include file="/includes/product/i_prd_name.jspf" %></a>
-						<%=aka %>
+					<display:ProductName product="<%= productNode %>" action="<%= prdURI %>" style="color: #999999"/>
+					<%=aka %>
 			<%
 				}
 			%>
 			<span style="color: <%=pi.getProductModel().isDisplayable() ? "black" : "#999999" %>">
-			<% if (pi.getConfigurationDescrpition() != null && pi.getConfigurationDescrpition() != "") {%>
-				(<%= pi.getConfigurationDescrpition() %>)
+			<% if (pi.getConfigurationDescription() != null && pi.getConfigurationDescription() != "") {%>
+				(<%= pi.getConfigurationDescription() %>)
 			<% }
 			if (defaultPrice != null) {%>
 				-

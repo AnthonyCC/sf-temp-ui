@@ -109,10 +109,17 @@ public class TransactionalProductImpression extends ProductImpression {
 	}
 	
 
-	
+	/**
+	 * @deprecated
+	 */
 	public String getConfigurationDescrpition() {
+		return getConfigurationDescription();
+	}
+	
+	
+	public String getConfigurationDescription() {
 		String desc = ConfigurationUtil.getConfigurationDescription(this);
-		return desc != null ? desc : super.getConfigurationDescrpition();
+		return desc != null ? desc : super.getConfigurationDescription();
 	}
 
 	

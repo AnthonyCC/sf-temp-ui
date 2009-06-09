@@ -82,12 +82,18 @@ public class ProductImpression {
 	
 
 	
-
+	/**
+	 * @deprecated
+	 */
+	public String getConfigurationDescrpition() {
+		return getConfigurationDescription();
+	}
+	
 	/**
 	 * Returns configuration description
 	 * @return
 	 */
-	public String getConfigurationDescrpition() {
+	public String getConfigurationDescription() {
 		try {
 			return productModel.getSizeDescription();
 		} catch (FDResourceException e) {

@@ -7,10 +7,13 @@
  *
  */
 
-package com.freshdirect.webapp.taglib.fdstore;
+package com.freshdirect.webapp.taglib.fdstore.layout;
 
 import java.util.*;
 import javax.servlet.jsp.*;
+import javax.servlet.jsp.tagext.TagData;
+import javax.servlet.jsp.tagext.TagExtraInfo;
+import javax.servlet.jsp.tagext.VariableInfo;
 
 import com.freshdirect.fdstore.content.*;
 import com.freshdirect.fdstore.*;
@@ -53,10 +56,6 @@ public class ItemGrabberTag extends com.freshdirect.framework.webapp.BodyTagSupp
     public void setIgnoreDuplicateProducts(boolean ignoreFlag) {
         this.ignoreDuplicateProducts = ignoreFlag;
         
-    }
-    
-    public void setWorkSet(List workSet){
-    	this.workSet=workSet;
     }
     
     public void setReturnSkus(boolean flag) {
@@ -185,9 +184,7 @@ public class ItemGrabberTag extends com.freshdirect.framework.webapp.BodyTagSupp
 			subFolders = ((DepartmentModel)currentNode).getCategories();				   
 		
 		}
-		
-		//System.out.println("currentNode :"+currentNode);
-		//System.out.println("workSet1 :"+workSet);
+
 		//
 		// Now get the products for the subfolders that have their Show_Folder=true and Show_children=always
 		//
@@ -227,9 +224,23 @@ public class ItemGrabberTag extends com.freshdirect.framework.webapp.BodyTagSupp
 				}
 			}
 		}
-		
-		//System.out.println("workSet2 :"+workSet);
 		return rtnValue;
 	}
-		
+
+	public static class TagEI extends TagExtraInfo {
+
+	    /**
+	     * Return information about the scripting variables to be created.
+	     *
+	     */
+	    public VariableInfo[] getVariableInfo(TagData data) {
+
+	        return new VariableInfo[] {
+	            new VariableInfo(data.getAttributeString("id"),
+	                "java.util.Collection",true, VariableInfo.NESTED),
+	        };
+
+	    }
+
+	}
 }

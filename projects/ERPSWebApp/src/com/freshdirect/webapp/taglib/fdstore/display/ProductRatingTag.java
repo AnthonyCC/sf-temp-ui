@@ -1,4 +1,4 @@
-package com.freshdirect.webapp.taglib.fdstore;
+package com.freshdirect.webapp.taglib.fdstore.display;
 
 import java.io.IOException;
 
@@ -11,6 +11,8 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.webapp.BodyTagSupport;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.JspMethods;
 
 /**
@@ -38,7 +40,7 @@ public class ProductRatingTag extends BodyTagSupport {
 			HttpSession session = pageContext.getSession();
 			FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 			
-			if (user == null ||  !user.isProduceRatingEnabled()) {
+			if ( user == null || !user.isProduceRatingEnabled() ) {
 				return SKIP_BODY;
 			}
 			
@@ -48,7 +50,7 @@ public class ProductRatingTag extends BodyTagSupport {
 			
 			StringBuffer buf = new StringBuffer();
 
-			if (rating != null && rating.trim().length() > 0) {
+			if ( rating != null && rating.trim().length() > 0 ) {
 				if (action != null) {
 					buf.append("<a href=\"");
 					buf.append(action);
@@ -66,8 +68,8 @@ public class ProductRatingTag extends BodyTagSupport {
 				buf.append(" border=\"0\"");
 				
 				buf.append(">");
-	
-				if (action != null) {
+				
+				if ( action != null ) {
 					buf.append("</a>");
 				}
 				

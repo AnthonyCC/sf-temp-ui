@@ -8,7 +8,7 @@ public class Html extends MediaModel {
 
     public Html() {
         super();
-        mediaType = MediaModel.TYPE_HTML;
+        mediaType = TYPE_HTML;
     }
     
     public Html(String path) {

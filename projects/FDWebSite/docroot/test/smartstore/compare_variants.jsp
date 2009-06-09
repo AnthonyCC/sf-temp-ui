@@ -47,8 +47,11 @@
 <%@page import="com.freshdirect.smartstore.impl.NullRecommendationService"%>
 <%@page import="com.freshdirect.smartstore.ymal.YmalUtil"%>
 <%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
-<%@ taglib uri="freshdirect" prefix="fd"
-%><fd:CheckLoginStatus noRedirect="true" /><%!
+
+<%@ taglib uri="freshdirect" prefix="fd"%>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+
+<fd:CheckLoginStatus noRedirect="true" /><%!
 	Map customRecommenders = new WeakHashMap();
 %><%
 Iterator it;
@@ -872,7 +875,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 						</td>
 						<% } %>
 						<td class="pic"<%= notFound %>>
-							<fd:ProductImage product="<%= pm %>" action="<%= actionURL %>"/>
+							<display:ProductImage product="<%= pm %>" action="<%= actionURL %>"/>
 						</td>
 						<td class="info"<%= notFound %>><div>
 								<span class="title16" title="<%= cnm.getContentName() %>"><%= cnm.getFullName() %></span><br>
@@ -939,7 +942,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 				%>
 					<tr<%= notFound %>>
 						<td class="pic">
-							<fd:ProductImage product="<%= pm %>" action="<%= actionURL %>"/>
+							<display:ProductImage product="<%= pm %>" action="<%= actionURL %>"/>
 						</td>
 						<td class="info"><div>
 								<span class="title16" title="<%= cnm.getContentName() %>"><%= cnm.getFullName() %></span><br>

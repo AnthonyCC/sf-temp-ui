@@ -23,12 +23,14 @@ Smart Search List View
 <%@ page import="java.util.*" %>
 <%@ page import="java.text.DecimalFormat" %>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
+<%@ page import="com.freshdirect.fdstore.util.URLGenerator" %>
 
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
 
-<%@ page import="com.freshdirect.fdstore.util.URLGenerator" %><fd:CheckLoginStatus />
+<fd:CheckLoginStatus />
 <%
 
 final java.text.NumberFormat CURRENCY_FORMATTER = java.text.NumberFormat.getCurrencyInstance(Locale.US);
@@ -69,24 +71,24 @@ int rank = nav.getPageOffset()+1;
 %>
 <tr>
 	<td style="width: <%=prodImage.getWidth() %>px;text-align: center">
-			<fd:ProductImage product="<%= productNode %>" action="<%= actionURL %>" hideDeals="true" hideYourFave="true" hideNew="true" />
+			<display:ProductImage product="<%= productNode %>" action="<%= actionURL %>" hideDeals="true" hideYourFave="true" hideNew="true" />
 	</td>
 	<td style="vertical-align: middle; text-align:left">
 		<div class="text13" style="padding-left:10px; text-indent: -10px;">
 			<%
 			if (pi.getProductModel().isDisplayable()) {
 			%>
-			<a href="<%= actionURL %>"><%@ include file="/includes/product/i_prd_name.jspf" %></a>
+			<display:ProductName product="<%= productNode %>" action="<%= prdURI %>" />
 			<%
 			} else {
 			%>
-			<a style="color: #999999" href="<%= actionURL %>"><%@ include file="/includes/product/i_prd_name.jspf" %></a>
+			<display:ProductName product="<%= productNode %>" action="<%= prdURI %>" style="color: #999999"/>
 			<%
 			} 
 			%>
 			<span style="color: <%=pi.getProductModel().isDisplayable() ? "black" : "#999999" %>">
-			<% if (pi.getConfigurationDescrpition() != null && !pi.getConfigurationDescrpition().equals("")) {%>
-				- <%=pi.getConfigurationDescrpition() %>
+			<% if (pi.getConfigurationDescription() != null && !pi.getConfigurationDescription().equals("")) {%>
+				- <%=pi.getConfigurationDescription() %>
 			<% } %>
 			</span>
 		</div>		

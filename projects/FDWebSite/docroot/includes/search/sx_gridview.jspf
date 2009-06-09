@@ -15,8 +15,12 @@
 %><%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"
 %><%@ page import="com.freshdirect.webapp.util.ProductLabelling"
 %><%@ page import="com.freshdirect.webapp.util.DYFUtil"
-%><%@ taglib uri="freshdirect" prefix="fd"
-%><%--
+%>
+
+<%@ taglib uri="freshdirect" prefix="fd"%>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+
+<%--
 
 Smart Search Grid View
 ======================
@@ -88,24 +92,24 @@ int colCount = 0;
 			<table align="center">
 				<tr>
 					<td style="padding: 0; height: <%= rowHeight.intValue() %>px; vertical-align: bottom; text-align: center">
-						<fd:ProductImage product="<%= productNode %>" action="<%= prdURI %>" hideNew="true" />
+						<display:ProductImage product="<%= productNode %>" action="<%= prdURI %>" hideNew="true" />
 					</td>
 				</tr>
 			</table>
 			<%
 			if (pi.getProductModel().isDisplayable()) {
 			%>
-			<a href="<%= prdURI %>"><%@ include file="/includes/product/i_prd_name.jspf" %></a>
+			<display:ProductName product="<%= productNode %>" action="<%= prdURI %>" />
 			<%} else { %>
-			<a style="color: #999999" href="<%= prdURI %>"><%@ include file="/includes/product/i_prd_name.jspf" %></a>
+			<display:ProductName product="<%= productNode %>" action="<%= prdURI %>" style="color: #999999"/>
 			<%
 			}
 			%>
 <%
 	// Configuration description
 	//
-	if (pi.getConfigurationDescrpition() != null) {
-		%><div style="color: <%=pi.getProductModel().isDisplayable() ? "black" : "#999999" %>">(<%= pi.getConfigurationDescrpition() %>)</div>
+	if (pi.getConfigurationDescription() != null) {
+		%><div style="color: <%=pi.getProductModel().isDisplayable() ? "black" : "#999999" %>">(<%= pi.getConfigurationDescription() %>)</div>
 <%
 	}
 

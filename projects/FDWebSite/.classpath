@@ -20,6 +20,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/RulesAdmin"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Tests"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-fileupload-1.1.1.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/struts.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/struts.jar" sourcepath="/STRUTS_SRC"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

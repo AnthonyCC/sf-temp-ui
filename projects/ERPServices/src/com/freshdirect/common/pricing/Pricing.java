@@ -163,10 +163,10 @@ public class Pricing implements Serializable {
 		return scales;
 	}
 	
-	public String[] getScaleDisplay(double savingsPercenatge) {
+	public String[] getScaleDisplay(double savingsPercentage) {
 		String[] scales = new String[ this.materialPrices.length-1 ];
 		for (int i=0; i<scales.length; i++) {
-			scales[i] = this.materialPrices[i+1].getScaleDisplay(savingsPercenatge);
+			scales[i] = this.materialPrices[i+1].getScaleDisplay(savingsPercentage);
 		}
 		return scales;
 	}

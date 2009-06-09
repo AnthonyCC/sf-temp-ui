@@ -14,6 +14,7 @@ import com.freshdirect.fdstore.content.util.EnumWineSortType;
 import com.freshdirect.fdstore.content.util.SortStrategyElement;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.TagSupport;
+import com.freshdirect.webapp.taglib.fdstore.layout.ItemSorterTag;
 
 /**@author ekracoff*/
 public class WineSortStrategy extends TagSupport {

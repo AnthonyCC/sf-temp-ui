@@ -1,4 +1,4 @@
-<%@ page import='com.freshdirect.webapp.taglib.fdstore.LayoutManager.Settings,com.freshdirect.fdstore.content.util.SortStrategyElement' %>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings,com.freshdirect.fdstore.content.util.SortStrategyElement' %>
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import='java.util.*'  %>
 <%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*,com.freshdirect.fdstore.content.util.EnumWineSortType' %>
@@ -31,7 +31,7 @@ layoutSettings.setIgnoreShowChildren(true);
         filterDiscontinued='<%= layoutSettings.isFilterDiscontinued() %>'
         returnHiddenFolders='<%=layoutSettings.isReturnHiddenFolders()%>'
         ignoreDuplicateProducts='<%=layoutSettings.isIgnoreDuplicateProducts()%>'
-        returnSecondaryFolders='<%=layoutSettings.isReturnSeocndaryFolders()%>' returnSkus='<%=layoutSettings.isReturnSkus()%>'>
+        returnSecondaryFolders='<%=layoutSettings.isReturnSecondaryFolders()%>' returnSkus='<%=layoutSettings.isReturnSkus()%>'>
 <%
         sortedColl = rtnColl;
         

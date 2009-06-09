@@ -1,4 +1,4 @@
-package com.freshdirect.webapp.taglib.fdstore;
+package com.freshdirect.webapp.taglib.fdstore.display;
 
 import java.io.IOException;
 
@@ -10,6 +10,7 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
 import com.freshdirect.framework.webapp.BodyTagSupport;
+import com.freshdirect.webapp.taglib.fdstore.BrowserInfo;
 
 /**
  * Renders an opaque div around HTML content

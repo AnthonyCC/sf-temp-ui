@@ -10,10 +10,13 @@
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import='com.freshdirect.framework.util.*' %>
+
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+
 <%
 
 //********** Start of Stuff to let JSPF's become JSP's **************
@@ -101,9 +104,10 @@ if (sortedColl==null) sortedColl = new ArrayList();
 			fiProdPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
 %></fd:FDProductInfo><%
 			String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord, recommendations.getImpressionId(productNode));
-%>			<p style="border: 0px; padding: 0px; margin: 0px;"><fd:ProductImage product="<%= productNode %>" action="<%= actionURI %>"/></p>
-			<fd:ProductRating product="<%= productNode %>" />
-			<a href="<%= actionURI %>"><%@ include file="/includes/product/i_prd_name.jspf" %></a><br>
+%>			<p style="border: 0px; padding: 0px; margin: 0px;">
+			<display:ProductImage product="<%= productNode %>" action="<%= actionURI %>"/></p>
+			<display:ProductRating product="<%= productNode %>" />
+			<display:ProductName product="<%= productNode %>" action="<%= actionURI %>"/><br/>
 			<% if (fiSubtitle.length() > 0) { %><span class="text12"><%= fiSubtitle %></span><br><% } %>
 			<span class="favoritePrice"><%= fiProdPrice %></span><br>
 			<span class="space8pix"><br></span><%

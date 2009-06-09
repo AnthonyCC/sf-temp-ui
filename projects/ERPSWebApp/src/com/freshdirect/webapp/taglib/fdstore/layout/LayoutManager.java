@@ -1,4 +1,4 @@
-package com.freshdirect.webapp.taglib.fdstore;
+package com.freshdirect.webapp.taglib.fdstore.layout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -314,7 +314,7 @@ public class LayoutManager extends BodyTagSupport {
 		} else if (layoutType == EnumLayoutType.PICKS_PROMO.getId()) {
 			s.setLayoutFileName("/includes/layouts/picks_promo.jsp");
 		} else if (layoutType == EnumLayoutType.VERTICAL_LABELED_CATEGORY.getId()) {
-			s.setLayoutFileName("/includes/layouts/vertical_labeled_layout.jsp");
+			s.setLayoutFileName("/includes/layouts/vertical_layout.jsp");
 			s.setGrabberDepth(1);
 			s.setReturnHiddenFolders(true);
 			s.setIgnoreShowChildren(true);
@@ -404,28 +404,13 @@ public class LayoutManager extends BodyTagSupport {
 		return s;
 	}
 
-	public static class TagEI extends TagExtraInfo {
-		public VariableInfo[] getVariableInfo(TagData data) {
-			return new VariableInfo[] {
-				new VariableInfo(
-					data.getAttributeString("result"),
-					"com.freshdirect.framework.webapp.ActionResult",
-					true,
-					VariableInfo.NESTED),
-				new VariableInfo(
-					data.getAttributeString("layoutSettingsName"),
-					"com.freshdirect.webapp.taglib.fdstore.LayoutManager.Settings",
-					true,
-					VariableInfo.NESTED)};
-		}
-	}
-
+	
 	public static class Settings {
 		private int grabberDepth = 99;
 		private boolean filterDiscontinued = true;
 		private boolean ignoreShowChildren = false;
 		private boolean returnHiddenFolders = false;
-		private boolean returnSeocndaryFolders = false;
+		private boolean returnSecondaryFolders = false;
 		private boolean ignoreDuplicateProducts = false;
 		private boolean includeUnavailable = true; //include the unavailable jspf file.
 		private String layoutFileName = null;
@@ -460,8 +445,8 @@ public class LayoutManager extends BodyTagSupport {
 			return returnHiddenFolders;
 		}
 
-		public boolean isReturnSeocndaryFolders() {
-			return returnSeocndaryFolders;
+		public boolean isReturnSecondaryFolders() {
+			return returnSecondaryFolders;
 		}
 
 		public List getSortStrategy() {
@@ -483,7 +468,7 @@ public class LayoutManager extends BodyTagSupport {
 					+ "\n ReturnHiddenFolders ="
 					+ returnHiddenFolders
 					+ "\n FoldersByPriority ="
-					+ returnSeocndaryFolders
+					+ returnSecondaryFolders
 					+ "\n IgnoreDuplicateProducts ="
 					+ ignoreDuplicateProducts
 					+ "\n IncludeUnavailable ="
@@ -521,8 +506,8 @@ public class LayoutManager extends BodyTagSupport {
 			returnHiddenFolders = b;
 		}
 
-		public void setReturnSeocndaryFolders(boolean b) {
-			returnSeocndaryFolders = b;
+		public void setReturnSecondaryFolders(boolean b) {
+			returnSecondaryFolders = b;
 		}
 
 		public void setSortStrategy(List sortStrategy) {
@@ -534,6 +519,23 @@ public class LayoutManager extends BodyTagSupport {
 		}
 		public void setReturnSkus(boolean flag) {
 			this.returnSkus = flag;
+		}
+	}
+
+	
+	public static class TagEI extends TagExtraInfo {
+		public VariableInfo[] getVariableInfo(TagData data) {
+			return new VariableInfo[] {
+				new VariableInfo(
+					data.getAttributeString("result"),
+					"com.freshdirect.framework.webapp.ActionResult",
+					true,
+					VariableInfo.NESTED),
+				new VariableInfo(
+					data.getAttributeString("layoutSettingsName"),
+					"com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings",
+					true,
+					VariableInfo.NESTED)};
 		}
 	}
 

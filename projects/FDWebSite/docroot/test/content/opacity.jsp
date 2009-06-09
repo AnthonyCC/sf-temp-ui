@@ -1,10 +1,12 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
-<%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.BrowserInfo"%>
 <%@ page import="com.freshdirect.fdstore.content.ProductModel" %>
 <%@ page import="com.freshdirect.fdstore.content.ContentFactory" %>
+
 <%@ taglib uri='freshdirect' prefix='fd'%>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+
 <%
 BrowserInfo bi = new BrowserInfo(request);
 %><html>
@@ -90,13 +92,13 @@ if (request.getHeader("User-Agent").indexOf("Mac") > -1) {
 	</tr>
 	<tr>
 		<td style="font-size: 9pt">Opacity: 1</td>
-		<td><fd:ProductImage product="<%= prd %>" browserInfo="<%= bi %>" savingsPercentage="<%= 0.2 %>"></fd:ProductImage></td>
-		<td><fd:ProductImage product="<%= prd %>" browserInfo="<%= bi %>" savingsPercentage="<%= 0.2 %>" inCart="<%= true %>"></fd:ProductImage></td>
+		<td><display:ProductImage product="<%= prd %>" browserInfo="<%= bi %>" savingsPercentage="<%= 0.2 %>"/></td>
+		<td><display:ProductImage product="<%= prd %>" browserInfo="<%= bi %>" savingsPercentage="<%= 0.2 %>" inCart="<%= true %>"/></td>
 	</tr>
 	<tr>
 		<td style="font-size: 9pt">Opacity: 0.5</td>
-		<td><fd:ProductImage product="<%= prd %>" browserInfo="<%= bi %>" savingsPercentage="<%= 0.2 %>" opacity="<%= 0.5 %>"></fd:ProductImage></td>
-		<td><fd:ProductImage product="<%= prd %>" browserInfo="<%= bi %>" savingsPercentage="<%= 0.2 %>" inCart="<%= true %>" opacity="<%= 0.5 %>"></fd:ProductImage></td>
+		<td><display:ProductImage product="<%= prd %>" browserInfo="<%= bi %>" savingsPercentage="<%= 0.2 %>" opacity="<%= 0.5 %>"/></td>
+		<td><display:ProductImage product="<%= prd %>" browserInfo="<%= bi %>" savingsPercentage="<%= 0.2 %>" inCart="<%= true %>" opacity="<%= 0.5 %>"/></td>
 	</tr>
 </table>
 

@@ -36,7 +36,10 @@
 <%@ page import="com.freshdirect.smartstore.fdstore.Recommendations" %>
 <%@ page import="com.freshdirect.smartstore.ymal.YmalUtil" %>
 <%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
+
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+
 <%--
   == YMAL BOX ==
   
@@ -200,7 +203,7 @@
 								<table align="center" style="border-collapse: collapse; border-spacing: 0px">
 									<tr>
 										<td style="padding: 0; margin: 0; height: <%= rowHeight.intValue() %>px; vertical-align: bottom; text-align: center">
-											<fd:ProductImage product="<%= product %>" action="<%= actionURI %>"/>
+											<display:ProductImage product="<%= product %>" action="<%= actionURI %>"/>
 										</td>
 									</tr>
 <%
@@ -230,9 +233,9 @@
 
 
 								<!-- product name, etc -->
-								<fd:ProductRating product="<%= product %>"/>
-								<fd:ProductName product="<%= product %>" action="<%= actionURI %>"/>
-								<fd:ProductDescription impression="<%= pi %>"/>
+								<display:ProductRating product="<%= product %>"/>
+								<display:ProductName product="<%= product %>" action="<%= actionURI %>"/>
+								<display:ProductPrice impression="<%= pi %>"/>
 							</td>
 <%		}
 		rank++;

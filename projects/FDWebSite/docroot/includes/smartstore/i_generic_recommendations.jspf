@@ -1,6 +1,7 @@
 <%@ taglib uri='template' prefix='tmpl'%>
 <%@ taglib uri='logic' prefix='logic'%>
 <%@ taglib uri='freshdirect' prefix='fd'%>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
 <%@page import="java.util.Enumeration"%>
 <%@page import="java.util.Iterator"%>
@@ -204,7 +205,11 @@
 										<table align="center" >
 											<tr>
 												<td style="padding: 0; height: <%= rowHeight.intValue() %>px; vertical-align: bottom; text-align: center">
-													<% if (isVariantSavings) { %><fd:ProductImage product="<%= product %>" action="<%= actionURI %>" savingsPercentage="<%= pvm.getPercentageOff() %>" inCart="<%= shouldDimProduct %>" browserInfo="<%= bi %>" opacity="<%= shouldDimProduct ? 0.5 : 1.0 %>" /><% } else {%><fd:ProductImage product="<%= product %>" action="<%= actionURI %>" hideYourFave="true" browserInfo="<%= bi %>" /><% } %>
+													<% if (isVariantSavings) { %>
+														<display:ProductImage product="<%= product %>" action="<%= actionURI %>" savingsPercentage="<%= pvm.getPercentageOff() %>" inCart="<%= shouldDimProduct %>" browserInfo="<%= bi %>" opacity="<%= shouldDimProduct ? 0.5 : 1.0 %>" showRolloverImage="true"/>
+													<% } else {%>
+														<display:ProductImage product="<%= product %>" action="<%= actionURI %>" hideYourFave="true" browserInfo="<%= bi %>" showRolloverImage="true"/>
+													<% } %>
 												</td>
 											</tr>
 											<% if (recommendations_row instanceof TransactionalProductImpression) { %>
@@ -238,11 +243,11 @@
 											<% } // !transactional %>
 										</table>
 																							
-										<fd:TransparentBox disabled="<%= !shouldDimProduct %>">
-											<fd:ProductRating product="<%= product %>"/>
-											<fd:ProductName product="<%= product %>" action="<%= actionURI %>" disabled="<%= shouldDimProduct %>"/>
-											<fd:ProductDescription impression="<%= recommendations_row %>" savingsPercentage="<%= isVariantSavings ? pvm.getPercentageOff() : 0 %>" />
-										</fd:TransparentBox>
+										<display:TransparentBox disabled="<%= !shouldDimProduct %>">
+											<display:ProductRating product="<%= product %>"/>
+											<display:ProductName product="<%= product %>" action="<%= actionURI %>" disabled="<%= shouldDimProduct %>"/>
+											<display:ProductPrice impression="<%= recommendations_row %>" savingsPercentage="<%= isVariantSavings ? pvm.getPercentageOff() : 0 %>" />
+										</display:TransparentBox>
 										<% } else { // blank cell %>
 											&nbsp;
 										<% } %>	
