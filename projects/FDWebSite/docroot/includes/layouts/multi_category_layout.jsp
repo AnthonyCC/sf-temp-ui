@@ -36,6 +36,8 @@
 			
 		} else if ( node instanceof ProductModel ) {
 			// add product
+			if ( l == null ) 
+				multiList.add( l = new ArrayList() );
 			l.add( node );
 			
 		} else {
