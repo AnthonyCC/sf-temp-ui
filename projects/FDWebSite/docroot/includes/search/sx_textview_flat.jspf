@@ -77,11 +77,11 @@ int k = 0;
 				String unit = pi.getConfigurationDescription() != null && pi.getConfigurationDescription() != "" ? "(" + pi.getConfigurationDescription() + ")" : ""; 
 				if (productNode.isDisplayable()) {
 			%>
-					<display:ProductName product="<%= productNode %>" action="<%= prdURI %>" />&nbsp;<%=aka %>&nbsp;<%=unit %>
+					<display:ProductName product="<%= productNode %>" action="<%= actionURI %>" />&nbsp;<%=aka %>&nbsp;<%=unit %>
 			<%
 				} else {
 			%>
-					<display:ProductName product="<%= productNode %>" action="<%= prdURI %>" style="color:#999999"/>&nbsp;<%= aka %>&nbsp;<%=unit %>
+					<display:ProductName product="<%= productNode %>" action="<%= actionURI %>" style="color:#999999"/>&nbsp;<%= aka %>&nbsp;<%=unit %>
 			<%
 				}			
 

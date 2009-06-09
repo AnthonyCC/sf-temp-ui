@@ -111,12 +111,12 @@ ContentNodeModel lastSubCategory = null;
 				String actionURI = FDURLUtil.getProductURI(pi.getProductModel(), trk, (isYourFave ? "fave" : nav.getSortByName()), rank);
 				if (pi.getProductModel().isDisplayable()) {
 			%>
-					<display:ProductName product="<%= productNode %>" action="<%= prdURI %>" />
+					<display:ProductName product="<%= productNode %>" action="<%= actionURI %>" />
 					<%=aka %>
 			<%
 				} else {
 			%>
-					<display:ProductName product="<%= productNode %>" action="<%= prdURI %>" style="color: #999999"/>
+					<display:ProductName product="<%= productNode %>" action="<%= actionURI %>" style="color: #999999"/>
 					<%=aka %>
 			<%
 				}
