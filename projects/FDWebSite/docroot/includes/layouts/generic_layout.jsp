@@ -66,8 +66,6 @@
    	<br/><img src="/media_stat/images/layout/ourfreshfruit.gif" name="Our Fresh Fruit" width="535" height="15" border="0">
 <% } %>
 
-<br/>[horizontal-pattern]<br/>
-
 <display:HorizontalPattern 
 	id="horizontalPattern" 
 	itemsToShow="<%=sortedCollection%>" 
