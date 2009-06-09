@@ -32,7 +32,6 @@ List tmpList=new ArrayList();
 <fd:ItemGrabber
 	category='<%=currentFolder %>' 
 	id='rtnColl' 
-	workSet='<%=tmpList%>'
 	depth='<%=layoutSettings.getGrabberDepth()%>'
 	ignoreShowChildren='<%=layoutSettings.isIgnoreShowChildren()%>' 
 	filterDiscontinued='<%= layoutSettings.isFilterDiscontinued() %>'
@@ -171,7 +170,7 @@ List tmpList=new ArrayList();
 						<td valign="top" width="<%=adjustedImgWidth%>" align="center" style="padding-left:5px; padding-right:5px;padding-bottom:10px;">
 
 							<div class="WG_deals">
-								<a id=\"prod_link_txt_<%= sku %>" name="prod_link_txt_<%= sku %>" href="<%=displayObj.getItemURL()%>&trk=<%= trkCode %>">
+								<a id="prod_link_txt_<%= sku %>" name="prod_link_txt_<%= sku %>" href="<%=displayObj.getItemURL()%>&trk=<%= trkCode %>">
 									<% if (thisProdBrandLabel.length()>0) { %>
 										<b><%= thisProdBrandLabel %></b><br />
 									<% } %>
