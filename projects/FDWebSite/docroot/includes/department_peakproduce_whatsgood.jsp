@@ -1,5 +1,11 @@
 <%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
+<%@ page import="java.util.Collection"%>
+<%@ page import="java.util.Comparator"%>
+<%@ page import="java.util.List"%>
+<%@ page import="java.util.Collections"%>
+<%@ page import="java.util.Iterator"%>
+
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
@@ -261,7 +267,7 @@
 						<% if (displayObj.getRating()!=null && displayObj.getRating().trim().length()>0) { %>          
 							<img src="/media_stat/images/ratings/<%=displayObj.getRating()%>.gif" name="rating" width="59" height="11" border="0" vspace="3" /><br />
 						<% } %>
-							<a id=\"prod_link_txt_<%= sku %>" name="prod_link_txt_<%= sku %>" style="color: #360" href="<%=displayObj.getItemURL()%>&trk=<%= trkCode %>">
+							<a id="prod_link_txt_<%= sku %>" name="prod_link_txt_<%= sku %>" style="color: #360" href="<%=displayObj.getItemURL()%>&trk=<%= trkCode %>">
 								<% if (thisProdBrandLabel.length()>0) { %>
 									<b><%= thisProdBrandLabel %></b><br />
 								<% } %>
@@ -339,7 +345,7 @@
 						<% if (displayObj.getRating()!=null && displayObj.getRating().trim().length()>0) { %>          
 							<img src="/media_stat/images/ratings/<%=displayObj.getRating()%>.gif" name="rating" width="59" height="11" border="0" vspace="3" /><br />
 						<% } %>
-							<a id=\"prod_link_txt_<%= sku %>" name="prod_link_txt_<%= sku %>" style="color: #360" href="<%=displayObj.getItemURL()%>&trk=<%= trkCode %>">
+							<a id="prod_link_txt_<%= sku %>" name="prod_link_txt_<%= sku %>" style="color: #360" href="<%=displayObj.getItemURL()%>&trk=<%= trkCode %>">
 								<% if (thisProdBrandLabel.length()>0) { %>
 									<b><%= thisProdBrandLabel %></b><br />
 								<% } %>

@@ -1,4 +1,5 @@
-<%@ page import='com.freshdirect.webapp.taglib.fdstore.LayoutManager.Settings,com.freshdirect.fdstore.content.util.SortStrategyElement' %>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings' %>
+<%@ page import='com.freshdirect.fdstore.content.util.SortStrategyElement' %>
 <%@ page import='com.freshdirect.fdstore.content.CategoryModel' %>
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
 
@@ -37,8 +38,9 @@ List tmpList=new ArrayList();
 	filterDiscontinued='<%= layoutSettings.isFilterDiscontinued() %>'
 	returnHiddenFolders='<%=layoutSettings.isReturnHiddenFolders()%>'
 	ignoreDuplicateProducts='<%=layoutSettings.isIgnoreDuplicateProducts()%>'
-	returnSecondaryFolders='<%=layoutSettings.isReturnSeocndaryFolders()%>' 
+	returnSecondaryFolders='<%=layoutSettings.isReturnSecondaryFolders()%>' 
 	returnSkus='<%=layoutSettings.isReturnSkus()%>'
+	workSet='<%=tmpList%>'
 >
 <%
         sortedColl = rtnColl;
@@ -168,7 +170,6 @@ List tmpList=new ArrayList();
 					%>
 
 						<td valign="top" width="<%=adjustedImgWidth%>" align="center" style="padding-left:5px; padding-right:5px;padding-bottom:10px;">
-
 							<div class="WG_deals">
 								<a id="prod_link_txt_<%= sku %>" name="prod_link_txt_<%= sku %>" href="<%=displayObj.getItemURL()%>&trk=<%= trkCode %>">
 									<% if (thisProdBrandLabel.length()>0) { %>
@@ -176,7 +177,7 @@ List tmpList=new ArrayList();
 									<% } %>
 										<%= pm.getFullName().substring(thisProdBrandLabel.length()).trim() %>
 								</a>
-								<div class="price <% if(isDeal) { %>dealPrice<% } %>">
+								<div class="price <% if(isDeal) { %>dealPrice<% } %>" <%= isDeal ? " style=\"color: red;\"" : "" %>>
 									<%= displayObj.getPrice() %>
 								</div>
 							<% if(isDeal) {	%>
@@ -184,6 +185,7 @@ List tmpList=new ArrayList();
 									(was <%= prodBasePrice %>)
 								</div>
 							<% } %>
+							<!-- the above css styles do not exist !?!? (wasPrice,dealPrice) -->
 							</div>
 					</td>
 

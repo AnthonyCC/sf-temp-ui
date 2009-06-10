@@ -11,10 +11,16 @@
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import='java.text.*' %>
+<%@ page import="java.util.Collection"%>
+<%@ page import="java.util.Map"%>
+<%@ page import="java.util.HashMap"%>
+
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
+
+
 <fd:CheckLoginStatus />
 <%
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
@@ -116,10 +122,10 @@ if (deptId==null) { deptId="wgd"; }
 			isDepartment = true;
 			
 			//this determines where the products are pulled from...
-				currentFolder=ContentFactory.getInstance().getContentNodeByName("gro");
+			currentFolder=ContentFactory.getInstance().getContentNodeByName("gro");
 			
 			//...and the dept context (if null, not used)
-				showInContextOf = "wgd";
+			showInContextOf = "wgd";
 
 		%><%@ include file="/includes/layouts/i_featured_products_whatsgood.jspf" %><%
 	//END Grocery Deals
@@ -135,27 +141,21 @@ if (deptId==null) { deptId="wgd"; }
 				<tr>
 					<td>
 						<!-- AD SPOT Left -->
-						<SCRIPT LANGUAGE=JavaScript>
-							<!--
+						<script type="text/javascript">
 								OAS_AD('WGLeft');
-							//-->
-						</SCRIPT>
+						</script>
 					</td>
 					<td>
 						<!-- AD SPOT Center -->
-						<SCRIPT LANGUAGE=JavaScript>
-							<!--
+						<script type="text/javascript">
 								OAS_AD('WGCenter');
-							//-->
-						</SCRIPT>
+						</script>
 					</td>
 					<td>
 						<!-- AD SPOT Right -->
-						<SCRIPT LANGUAGE=JavaScript>
-							<!--
+						<script type="text/javascript">
 								OAS_AD('WGRight');
-							//-->
-						</SCRIPT>
+						</script>
 					</td>
 				</tr>
 			</table>
