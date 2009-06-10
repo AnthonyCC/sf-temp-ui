@@ -1,0 +1,287 @@
+#!/bin/bash
+# !!! IMPORTANT: This script uses features supported only by bash !!!
+
+### BEGIN CONFIGURATION SECTION ###
+
+# LOGGING_FACILITY="local4" # default value
+LOGGING_FACILITY="local4"
+
+# IMAGEMAGICK_IDENTIFY="identify" # default value
+IMAGEMAGICK_IDENTIFY="identify"
+
+# Mandatory parameter
+# URL for the Notification Service
+SERVICE_URL="http://<host>/cms-tap/notification"
+
+# Set PATH to be able to acces the following command line tools / SVN commands:
+# sed, logger, svnlook, file, curl
+PATH=/usr/local/bin:/bin:/usr/bin
+
+### END CONFIGURATION SECTION ###
+
+REPOS="$1"
+TXN="$2"
+
+export PATH
+
+# new line character
+NL=$'\n'
+
+# log(): logs a message to the specified level
+# LOGGING_FACILITY is used to determine which facility to log
+# $1 - the level
+# $2, $3, ... - the message (maybe multiline)
+function log {
+    local level="$1"
+    shift
+    local oifs=$IFS
+    IFS=" "
+    local message="$*"
+    IFS="$oifs"
+    if [ "`echo "\""$message"\"" | wc -l`" -le 1 ]; then
+        logger -p ${LOGGING_FACILITY:-local4}.$level -t svn "$REPOS $TXN $message" || { echo "Failed to log into syslog" 1>&2; exit 1; }
+    else
+        OIFS="$IFS"
+        IFS=""
+        while read line; do
+            logger -p ${LOGGING_FACILITY:-local4}.$level -t svn "$REPOS $TXN $line" || { echo "Failed to log into syslog" 1>&2; exit 1; }
+        done <<< "$message"
+        IFS="$OIFS"
+    fi
+}
+
+# error(): prints and logs the error message and exits with status 1
+# $1 - error message
+function error {
+    echo "$@" 1>&2
+    log "error" "$@"
+    exit 1
+}
+
+if [ ! -d "$REPOS/hooks" ];
+then
+    error "Wrong input parameters, $REPOS is not a real repository"
+fi
+
+# notice(): logs a notice message in the syslog
+# $1 - notice message
+function notice {
+    log "notice" "$@"
+}
+
+# info(): logs a info message in the syslog
+# $1 - info message
+function info {
+    log "info" "$@"
+}
+
+# debug(): logs a debug message in the syslog
+# $1 - debug message
+function debug {
+    log "debug" "$@"
+}
+
+# mime_type(): determines the MIME type of the file (being handled by the
+# transaction)
+# $1 - file name
+function mime_type {
+    local last_char=`echo $1 | sed 's/^.*\(.\)$/\1/'`
+    if [ "$last_char" = "/" ]; then
+        echo "directory"
+    else
+        svnlook cat -t "$TXN" "$REPOS" $1 2>/dev/null | file -bi -
+    fi
+}
+
+# dimensions(): determines the dimension of the file (being handled by the
+# transaction)
+#              only if the MIME type is image/*
+# IMAGEMAGICK_IDENTIFY is used to execute ImageMagick identity program
+# $1 - file name
+# $2 - MIME type
+function dimensions {
+case "$2" in
+image/*)
+    svnlook cat -t "$TXN" "$REPOS" $1 2>/dev/null | ${IMAGEMAGICK_IDENTIFY:-identify} -format '%wx%h' -
+    ;;
+*)
+    echo ""
+    ;;
+esac
+}
+
+# format_fname(): for logging prepare the info string for a given file in the
+#                 following format:
+#                 file_name [(mime_type[,dimensions])]
+# $1 - file name
+# $2 - MIME type
+# $3 - dimensions
+function format_finfo {
+    if [ -n "$2" ]; then
+        if [ -n "$3" ]; then
+            echo "$1 ($2,$3)"
+        else
+            echo "$1 ($2)"
+        fi
+    else
+        echo "$1"
+    fi
+}
+
+# urlencode(): using sed encodes a string to URL-encoded format
+# $1 - input string
+function urlencode {
+    echo "$1" | sed -f $REPOS/hooks/urlencode.sed
+}
+
+# format_cmd(): formats the URL being sent to the server using the following
+#               format:
+#               service_url[?cmd=cmd_name[&src=src_file[&dst=dst_file][&mime=mime_type][&dim=dimensions]]]
+# SERVICE_URL is used to address the service used process the command
+# $1 - cmd_name - name of the command (update, delete, add, move)
+# $2 - src_file - source file of the commands
+# $3 - dst_file - destination of move command
+# $4 - mime_type - MIME type of the source file (for update and add commands)
+#                  (if command is move then it is the destination file)
+# $5 - dimensions - dimensions of the source file (for update and add commands)
+#                   (if command is move then it is the destination file)
+function format_cmd {
+    local url="$SERVICE_URL"
+    if [ -n "$1" ]; then
+        url="$url?cmd=`urlencode "\""$1"\""`"
+        if [ -n "$2" ]; then
+            url="$url&src=`urlencode "\""$2"\""`"
+            if [ -n "$3" ]; then
+                url="$url&dst=`urlencode "\""$3"\""`"
+            fi
+            if [ -n "$4" ]; then
+                url="$url&mime=`urlencode "\""$4"\""`"
+            fi
+            if [ -n "$5" ]; then
+                url="$url&dim=`urlencode "\""$5"\""`"
+            fi
+        fi
+        if [ -n "$AUTHOR" ]; then
+            url="$url&user=`urlencode "\""$AUTHOR"\""`"
+        fi
+    fi
+    echo "$url"
+}
+
+# notify(): send a notification to the servlet and process response
+function notify {
+    local url="$1"
+    local status=""
+    local output=""
+    debug "URL: $url"
+    output="`curl -L -s -S -I "\""$url"\"" 2>&1`"
+    status="$?"
+    if [ "$status" -ne 0 ];then
+        error "Error when connecting to the notification service:$NL    $output"
+    else
+        local http_code=`echo $output | head -1 | cut -d ' ' -f 2`
+        debug "HTTP Response Code: $http_code"
+        case "$http_code" in
+20*)
+            return 0 # ok
+            ;;
+*)
+            error "Error when processing request ($http_code). See logs for details."
+            ;;
+        esac
+    fi
+}
+
+ADDED=""
+REMOVED=""
+UPDATED=""
+
+STDOUT=`svnlook changed -t "$TXN" "$REPOS"`
+AUTHOR=`svnlook author -t "$TXN" "$REPOS"`
+OIFS="$IFS"
+IFS=""
+while read line; do
+    file=`echo "$line" | sed 's/^....//'`
+    command=${line:0:4}
+    case $command in
+A*)
+    if [ -n "$ADDED" ]; then
+        error "Cannot handle multiple additions at the same time"
+    fi
+    ADDED="$file";;
+D*)
+    if [ -n "$REMOVED" ]; then
+        error "Cannot handle multiple deletions at the same time"
+    fi
+    REMOVED="$file";;
+[_U]*)
+    UPDATED="$file";;
+*)
+    ;;
+    esac
+done <<< "$STDOUT"
+IFS="$OIFS"
+
+SOURCE=""
+DESTINATION=""
+MIME=""
+DIMENSIONS=""
+COMMAND=""
+if [ -n "$UPDATED" ]; then
+    # updated
+    SOURCE="$UPDATED"
+    COMMAND="update"
+elif [ -n "$ADDED" ]; then
+    if [ -n "$REMOVED" ]; then
+        # moved / renamed
+        SOURCE="$REMOVED"
+        DESTINATION="$ADDED"
+        COMMAND="move"
+    else
+        # added
+        SOURCE="$ADDED"
+        COMMAND="create"
+    fi
+elif [ -n "$REMOVED" ]; then
+    # removed
+    SOURCE="$REMOVED"
+    COMMAND="delete"
+elif [ -z "$ADDED" -a -z "$REMOVED" -a -z "$UPDATED" ]; then
+    # no change - pass it on
+    exit 0
+else
+    # unknown - technically this cannot happen
+    error "Unknown modification"
+fi
+
+MIME=`mime_type "$SOURCE"`
+DIMENSIONS=`dimensions "$SOURCE" "$MIME"`
+
+# POST PROCESSING
+# make file naming corrections
+if [ "$MIME" = "directory" ]; then
+    MIME=""
+    DIMENSIONS=""
+    SOURCE="`echo "\""$SOURCE"\"" | sed 's/\/$//'`"
+    DESTINATION="`echo "\""$DESTINATION"\"" | sed 's/\/$//'`"
+fi
+SOURCE="/$SOURCE"
+if [ -n "$DESTINATION" ]; then
+    DESTINATION="/$DESTINATION"
+fi
+
+# send request to notification service
+notify `format_cmd "$COMMAND" "$SOURCE" "$DESTINATION" "$MIME" "$DIMENSIONS"`
+
+FINFO=`format_finfo "$SOURCE" "$MIME" "$DIMENSIONS"`
+if [ "$COMMAND" = "update" ]; then
+    info "~$FINFO"
+elif [ "$COMMAND" = "move" ]; then
+    info "$FINFO > $DESTINATION"
+elif [ "$COMMAND" = "create" ]; then
+    info "+$FINFO"
+elif [ "$COMMAND" = "delete" ]; then
+    info "-$SOURCE"
+fi
+# All checks passed, so allow the commit.
+exit 0

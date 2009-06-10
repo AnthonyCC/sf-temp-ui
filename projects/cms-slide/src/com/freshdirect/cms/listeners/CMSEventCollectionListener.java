@@ -93,11 +93,12 @@ public class CMSEventCollectionListener implements EventCollectionListener {
 
 	private void doUpdate(MediaEventHandlerI handler, List events) throws IOException {
 		ContentEvent event = (ContentEvent) findEvent(ContentEvent.STORE.getName(), events);
-		if (!event.getUri().startsWith(HISTORY_PREFIX) && handler.isBulkload()) {
+		if (!event.getUri().startsWith(HISTORY_PREFIX)) {
 			Media media = convertMedia(event);
 			String userId = getUserId(event);
 
-			doBulkLoad(event, userId);
+			if (handler.isBulkload())
+				doBulkLoad(event, userId);
 			handler.update(media, userId);
 		}
 	}
@@ -120,12 +121,13 @@ public class CMSEventCollectionListener implements EventCollectionListener {
 	private void doCreate(MediaEventHandlerI handler, List events) throws ContentValidationException, IOException {
 		ContentEvent event = (ContentEvent) findEvent(ContentEvent.CREATE.getName(), events);
 
-		if (!event.getUri().startsWith(HISTORY_PREFIX) && handler.isBulkload()) {
+		if (!event.getUri().startsWith(HISTORY_PREFIX)) {
 
 			Media media = convertMedia(event);
 			String userId = getUserId(event);
 
-			doBulkLoad(event, userId);
+			if (handler.isBulkload())
+				doBulkLoad(event, userId);
 
 			handler.create(media, userId);
 		}

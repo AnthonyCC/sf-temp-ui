@@ -661,7 +661,7 @@
             <http-method>LOCK</http-method>
             <http-method>MKCOL</http-method>
             <http-method>MOVE</http-method>
-            <http-method>OPTIONS</http-method>
+            <!--http-method>OPTIONS</http-method-->
             <http-method>POST</http-method>
             <!--http-method>PROPFIND</http-method-->
             <http-method>PROPPATCH</http-method>
@@ -689,7 +689,7 @@
             <http-method>NOTIFY</http-method>
         </web-resource-collection>
         <auth-constraint>
-            <role-name>cms_slide</role-name>
+            <role-name>denied</role-name>
         </auth-constraint>
     </security-constraint>
     <login-config>
@@ -698,5 +698,8 @@
     </login-config>
     <security-role>
         <role-name>cms_slide</role-name>
+    </security-role>
+    <security-role>
+        <role-name>denied</role-name>
     </security-role>
 </web-app>

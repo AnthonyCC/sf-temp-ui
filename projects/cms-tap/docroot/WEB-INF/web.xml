@@ -57,17 +57,35 @@
 		<filter-name>registry</filter-name>
 		<url-pattern>/app</url-pattern>
 	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>registry</filter-name>
+		<url-pattern>/notification</url-pattern>
+	</filter-mapping>
 	
 	<servlet>
 		<servlet-name>cms</servlet-name>
 	 	<servlet-class>com.freshdirect.cms.ui.tapestry.CmsApplicationServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
+	
+	<servlet>
+		<servlet-name>notification</servlet-name>
+		<servlet-class>com.freshdirect.cms.listeners.NotificationReceiverServlet</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+		
 
 	<servlet-mapping>
 		<servlet-name>cms</servlet-name>
 		<url-pattern>/app</url-pattern>
 	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>notification</servlet-name>
+		<url-pattern>/notification</url-pattern>
+	</servlet-mapping>
+
 	
 	<mime-mapping>
 		<extension>css</extension>
