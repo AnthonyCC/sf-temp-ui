@@ -155,7 +155,9 @@ boolean advOrdRangeOK = advOrdRange.overlaps(validRange);
 		isKosherSlotAvailable = isKosherSlotAvailable || lst.isKosherSlotAvailable(restrictions);
 		hasCapacity = hasCapacity || lst.hasCapacity();
 	}
+	request.setAttribute("listPos", "SystemMessage,CategoryNote");
 %>
+
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Checkout - Choose Delivery Time </tmpl:put>
 <tmpl:put name='content' direct='true'>
@@ -211,6 +213,7 @@ boolean advOrdRangeOK = advOrdRange.overlaps(validRange);
 <%
 String errorMsg = (String) session.getAttribute(SessionName.SIGNUP_WARNING);
 if (errorMsg==null && user.isPromotionAddressMismatch()) {
+	
 	Promotion promo = (Promotion)user.getEligibleSignupPromotion();
 	Double totalPromo = new Double(promo.getHeaderDiscountTotal());
     errorMsg = MessageFormat.format(SystemMessageList.MSG_CHECKOUT_NOT_ELIGIBLE, new Object[]{totalPromo, user.getCustomerServiceContact()});
@@ -349,6 +352,13 @@ if (errorMsg!=null) {%>
 		<%@ include file="/includes/delivery/i_slots_no_capacity.jspf"%>
 	<br></td></TR>
 <%}else{%>
+<% if (FDStoreProperties.isAdServerEnabled()) { %>
+		<SCRIPT LANGUAGE="JavaScript">
+                <!--
+                OAS_AD('CategoryNote');
+                //-->
+      	</SCRIPT>
+<% } %>
 <logic:iterate id="timeslots" collection="<%=timeslotList%>" type="com.freshdirect.fdstore.FDTimeslotList" indexId="idx">
 <TR><td colspan="2" align="center">
 <%if(idx.intValue() == 1){
