@@ -250,6 +250,9 @@ public class FDStoreProperties {
 
 	// Produce Rating changes
 	private static final String PRODUCE_RATING_ENABLED="fdstore.isProduceRatingEnabled";
+	//additional ratings 2009.06
+	private static final String PRODUCE_RATING_PREFIXES="fdstore.produceRatingPrefixes";
+	
 	
 
 	private static final String HPLETTER_MEDIA_ENABLED="fdstore.isHomePageMediaEnabled";
@@ -464,6 +467,8 @@ public class FDStoreProperties {
 
 		// produce rating enabled
 		defaults.put(PRODUCE_RATING_ENABLED, "true");
+		//produce rating sku prefixes
+		defaults.put(PRODUCE_RATING_PREFIXES, "FRU,VEG,YEL");
 		
 		defaults.put(HP_LETTER_MEDIA_PATH1, "/media/editorial/home/letter/hp_letter_new.html");
 		defaults.put(HP_LETTER_MEDIA_PATH2, "/media/editorial/home/letter/hp_letter_customer.html");
@@ -982,6 +987,10 @@ public class FDStoreProperties {
 
 	public static boolean IsProduceRatingEnabled() {
 		return Boolean.valueOf(get(PRODUCE_RATING_ENABLED)).booleanValue();
+	}
+	//	ratings
+	public static String getRatingsSkuPrefixes(){
+		return get(PRODUCE_RATING_PREFIXES);
 	}
 
 //  marketing admin changes

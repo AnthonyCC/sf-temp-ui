@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpSession;
 
@@ -27,6 +28,7 @@ import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -113,9 +115,9 @@ private Collection getAllPeakProduceForDept(DepartmentModel dept) throws FDResou
 		}
 		
 		
-		System.out.println("Peak produce before remove duplicates:"+products);
+		//System.out.println("Peak produce before remove duplicates:"+products);
         //products=removeDuplicates(products);        
-        System.out.println("Peak produce after remove duplicates:"+products);	
+        //System.out.println("Peak produce after remove duplicates:"+products);	
 		return products;			
 	}
 	
@@ -295,13 +297,46 @@ private Collection getAllPeakProduceForDept(DepartmentModel dept) throws FDResou
 	}
 	
 	private boolean isProduce(String skuCode) {
-		if(skuCode.startsWith("FRU") || skuCode.startsWith("VEG") || skuCode.startsWith("YEL")) {
-			return true;
+
+		/*
+		 * There is a similar setup in the JspMethods.java file
+		 */
+		
+		//System.out.println("===== in PProdTag isProduceg :"+skuCode);
+
+		boolean matchFound = false; //default to false
+		
+		// grab sku prefixes that should show ratings
+		String _skuPrefixes=FDStoreProperties.getRatingsSkuPrefixes();
+		//System.out.println("* getRatingsSkuPrefixes :"+_skuPrefixes);
+	   
+		//if we have prefixes then check them
+		if (_skuPrefixes!=null && !"".equals(_skuPrefixes)) {
+			StringTokenizer st=new StringTokenizer(_skuPrefixes, ","); //setup for splitting property
+			String curPrefix = ""; //holds prefix to check against
+			//String spacer="* "; //spacing for sysOut calls
+			//System.out.println(spacer+"Rating _skuPrefixes 1st :"+firstPrefix); 
+			
+			//loop and check each prefix
+			while(st.hasMoreElements()) {
+				
+				curPrefix=st.nextToken();
+				//System.out.println(spacer+"Rating _skuPrefixes checking :"+curPrefix);
+				
+				//if prefix matches get product info
+				if(skuCode.startsWith(curPrefix)) {
+					matchFound=true;
+				}
+				//exit on matched sku prefix
+				//System.out.println(spacer+"Rating matchFound :"+matchFound);
+				if (matchFound) { break; }
+				//spacer=spacer+"   ";
+			}
 		}
-		return false;
+		
+		return matchFound;
 	}
 	private boolean isPeakProduce(String rating) {
-		
 		
 		if ( EnumOrderLineRating.PEAK_PRODUCE_10.getStatusCode().equals(rating)||
 			 EnumOrderLineRating.PEAK_PRODUCE_9.getStatusCode().equals(rating)||

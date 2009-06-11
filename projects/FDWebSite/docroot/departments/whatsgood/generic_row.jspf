@@ -185,7 +185,6 @@ List tmpList=new ArrayList();
 									(was <%= prodBasePrice %>)
 								</div>
 							<% } %>
-							<!-- the above css styles do not exist !?!? (wasPrice,dealPrice) -->
 							</div>
 					</td>
 

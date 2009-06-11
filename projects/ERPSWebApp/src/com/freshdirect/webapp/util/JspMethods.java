@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
+import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,6 +27,7 @@ import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.attributes.Attribute;
 import com.freshdirect.fdstore.attributes.MultiAttribute;
 import com.freshdirect.fdstore.content.CategoryModel;
@@ -222,7 +224,7 @@ public class JspMethods {
 	}
 
 	public static String getProductRating( ProductModel theProduct ) throws JspException {
-		// System.out.println("inside getProductRating :"+theProduct);
+		System.out.println("inside getProductRating :"+theProduct);
 
 		String rating = "";
 
@@ -255,21 +257,61 @@ public class JspMethods {
 			// get the FDProductInfo from the FDCachedFactory
 			//
 			try {
-
-				if ( sku.getSkuCode().startsWith( "FRU" ) || sku.getSkuCode().startsWith( "VEG" )
-						|| sku.getSkuCode().startsWith( "YEL" ) ) {
-					productInfo = FDCachedFactory.getProductInfo( sku.getSkuCode() );
-					// System.out.println(" Rating productInfo :"+productInfo);
-					String tmpRating = productInfo.getRating();
-					if ( tmpRating != null && tmpRating.trim().length() > 0 ) {
-						EnumOrderLineRating enumRating = EnumOrderLineRating.getEnumByStatusCode( tmpRating );
-						// System.out.println(" enumRating :"+enumRating);
-						if ( enumRating != null && enumRating.isEligibleToDisplay() ) {
-							rating = enumRating.getStatusCodeInDisplayFormat();
-							// System.out.println(" rating in display format  :"+rating);
+					/*
+					 * grab property to determine which sku prefixes to display ratings for
+					 * 
+					 * assuming some prefixes are set, loop, checking to see if the current product's
+					 * sku prefix matches an allowed prefix.
+					 * 
+					 * exit loop on a match.
+					 */
+					
+					/*
+					 * There is a similar setup in the GetPeakProduceTag.java file
+					 */
+					//System.out.println("===== in getProductRating :"+sku.getSkuCode());
+					
+					// grab sku prefixes that should show ratings
+					String _skuPrefixes=FDStoreProperties.getRatingsSkuPrefixes();
+					//System.out.println("* getRatingsSkuPrefixes :"+_skuPrefixes);
+         	   
+					//if we have prefixes then check them
+					if (_skuPrefixes!=null && !"".equals(_skuPrefixes)) {
+						StringTokenizer st=new StringTokenizer(_skuPrefixes, ","); //setup for splitting property
+						String curPrefix = ""; //holds prefix to check against
+						//String spacer="* "; //spacing for sysOut calls
+						boolean matchFound = false;
+						//System.out.println(spacer+"Rating _skuPrefixes 1st :"+firstPrefix); 
+						
+						//loop and check each prefix
+						while(st.hasMoreElements()) {
+							
+							curPrefix=st.nextToken();
+							//System.out.println(spacer+"Rating _skuPrefixes checking :"+curPrefix);
+							
+							//if prefix matches get product info
+							if(sku.getSkuCode().startsWith(curPrefix)) {
+								productInfo = FDCachedFactory.getProductInfo( sku.getSkuCode() );
+								// System.out.println(" Rating productInfo :"+productInfo);
+								String tmpRating = productInfo.getRating();
+								
+								if ( tmpRating != null && tmpRating.trim().length() > 0 ) {
+									EnumOrderLineRating enumRating = EnumOrderLineRating.getEnumByStatusCode( tmpRating );
+									// System.out.println(" enumRating :"+enumRating);
+									
+									if ( enumRating != null && enumRating.isEligibleToDisplay() ) {
+										rating = enumRating.getStatusCodeInDisplayFormat();
+										// System.out.println(" rating in display format  :"+rating);
+									}
+								}
+								matchFound=true;
+							}
+							//exit on matched sku prefix
+							//System.out.println(spacer+"Rating matchFound :"+matchFound);
+							if (matchFound) { break; }
+							//spacer=spacer+"   ";
 						}
 					}
-				}
 
 			} catch ( FDResourceException fdre ) {
 				LOGGER.warn( "FDResourceException occured", fdre );
