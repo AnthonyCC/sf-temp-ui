@@ -29,7 +29,7 @@ if (user.isChefsTable()) timeslot_page_type = TimeslotLogic.PAGE_CHEFSTABLE;
 FDReservation rsv = user.getReservation();
 
 request.setAttribute("sitePage", "www.freshdirect.com/help");
-request.setAttribute("listPos", "CategoryNote");
+request.setAttribute("listPos", "SystemMessage,CategoryNote");
 
 boolean isStaticSlot = true;
 boolean hasPreReserved = false;
