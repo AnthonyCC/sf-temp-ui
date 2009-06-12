@@ -133,12 +133,9 @@ public class ScriptedRecommendationServiceTest extends RecommendationServiceTest
     }
     
     RecommendationService getScriptedRecommendationService(String generator) throws CompileException {
-        return new ScriptedRecommendationService(new Variant("fi", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("yf_fi",
-                RecommendationServiceType.YOUR_FAVORITES_IN_FEATURED_ITEMS)),
-                SmartStoreServiceConfiguration.configureSampler(new RecommendationServiceConfig("yf_fi",
-                RecommendationServiceType.YOUR_FAVORITES_IN_FEATURED_ITEMS), new java.util.HashMap()), false, false, generator);
+        RecommendationServiceConfig config = new RecommendationServiceConfig("yf_fi", RecommendationServiceType.YOUR_FAVORITES_IN_FEATURED_ITEMS);
+        return new ScriptedRecommendationService(new Variant("fi", EnumSiteFeature.FEATURED_ITEMS, config),
+                SmartStoreServiceConfiguration.configureSampler(config, new java.util.HashMap()), false, false, generator);
     }
-    
 
-    
 }
