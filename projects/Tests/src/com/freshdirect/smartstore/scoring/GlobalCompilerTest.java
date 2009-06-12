@@ -92,16 +92,15 @@ public class GlobalCompilerTest extends TestCase {
         GlobalCompiler.setInstance(gc);
         variant = new Variant("srs", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("srs_variant", RecommendationServiceType.SCRIPTED));
     }
+
+    
     
     public void testRecommenderService() throws CompileException {
         SessionInput s = new SessionInput("", null);
         s.setNoShuffle(true);
         
         {
-            ScriptedRecommendationService srs = new ScriptedRecommendationService(variant,
-            		SmartStoreServiceConfiguration.configureSampler(variant.getServiceConfig(), new java.util.HashMap()),
-            		false, false,
-            		"content:(between(afact,2,3)*between(afact,1,2))", null);
+            ScriptedRecommendationService srs = build("content:(between(afact,2,3)*between(afact,1,2))", null);
             List collection = srs.recommendNodes(s, input);
             assertNotNull("result collection", collection);
             assertEquals("result collection size", 1, collection.size());
@@ -114,10 +113,7 @@ public class GlobalCompilerTest extends TestCase {
             assertTrue("afact factor needed", factors.contains("afact"));
         }
         {
-            ScriptedRecommendationService srs = new ScriptedRecommendationService(variant,
-            		SmartStoreServiceConfiguration.configureSampler(variant.getServiceConfig(), new java.util.HashMap()),
-            		false, false,
-            		"content:between(afact,2,3)", null);
+            ScriptedRecommendationService srs = build("content:between(afact,2,3)", null);
             List collection = srs.recommendNodes(s, input);
             assertNotNull("result collection", collection);
             assertEquals("result collection size", 2, collection.size());
@@ -132,10 +128,7 @@ public class GlobalCompilerTest extends TestCase {
 
         }
         {
-            ScriptedRecommendationService srs = new ScriptedRecommendationService(variant,
-            		SmartStoreServiceConfiguration.configureSampler(variant.getServiceConfig(), new java.util.HashMap()),
-            		false, false,
-            		"content", "afact");
+            ScriptedRecommendationService srs = build("content", "afact");
             List collection = srs.recommendNodes(s, input);
             assertNotNull("result collection", collection);
             assertEquals("result collection size", 3, collection.size());
@@ -154,10 +147,7 @@ public class GlobalCompilerTest extends TestCase {
             assertTrue("afact factor needed", factors.contains("afact"));
         }
         {
-            ScriptedRecommendationService srs = new ScriptedRecommendationService(variant,
-            		SmartStoreServiceConfiguration.configureSampler(variant.getServiceConfig(), new java.util.HashMap()),
-            		false, false,
-            		"content", "bfact");
+            ScriptedRecommendationService srs = build("content", "bfact");
             List collection = srs.recommendNodes(s, input);
             assertNotNull("result collection", collection);
             assertEquals("result collection size", 3, collection.size());
@@ -176,10 +166,7 @@ public class GlobalCompilerTest extends TestCase {
             assertTrue("bfact factor needed", factors.contains("bfact"));
         }
         {
-            ScriptedRecommendationService srs = new ScriptedRecommendationService(variant,
-            		SmartStoreServiceConfiguration.configureSampler(variant.getServiceConfig(), new java.util.HashMap()),
-            		false, false,
-            		"content", "afact*bfact");
+            ScriptedRecommendationService srs = build("content", "afact*bfact");
             List collection = srs.recommendNodes(s, input);
             assertNotNull("result collection", collection);
             assertEquals("result collection size", 3, collection.size());
@@ -199,6 +186,15 @@ public class GlobalCompilerTest extends TestCase {
             assertTrue("bfact factor needed", factors.contains("bfact"));
         }
 
+    }
+
+
+
+    private ScriptedRecommendationService build(String generator, String scoringFunction) throws CompileException {
+        return new ScriptedRecommendationService(variant,
+        		SmartStoreServiceConfiguration.configureSampler(variant.getServiceConfig(), new java.util.HashMap()),
+        		false, false,
+        		generator, scoringFunction);
     }
 
 }
