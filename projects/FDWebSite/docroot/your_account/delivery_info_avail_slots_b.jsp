@@ -39,7 +39,7 @@ if (user.isChefsTable()) timeslot_page_type = TimeslotLogic.PAGE_CHEFSTABLE;
 FDReservation rsv = user.getReservation();
 
 request.setAttribute("sitePage", "www.freshdirect.com/your_account");
-request.setAttribute("listPos", "CategoryNote,TimeslotBottom");
+request.setAttribute("listPos", "SystemMessage,CategoryNote,TimeslotBottom");
 
 Collection shipToAddresses = new ArrayList();
 ErpAddressModel address = null;
