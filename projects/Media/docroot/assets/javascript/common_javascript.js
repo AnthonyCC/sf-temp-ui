@@ -21,19 +21,42 @@ function swapImage2(imgName,imgURL, w, h){
 	var h = h || document.images[imgName].height;
 
 	if (imgURL.length) {
-    		while( !swapImage2sup(imgName, w, noW) ){ document.images[imgName].src = 'clear.gif'; }
-			document.images[imgName].src = imgURL;
-    	}
+		swapImage2sup(imgName, w, noW);
+		document.images[imgName].src = imgURL;
+   	}
 }
 //swapImage2 support function
-function swapImage2sup(imgName, w, noW){
-	if (w > 90 && noW)	{
+function swapImage2sup( imgName, w, noW ){
+	if ( w > 90 && noW )	{
 		document.images[imgName].width = '90';
-	}else{
+	} else {
 		document.images[imgName].width = w;
 	}
 	return true;
 }
+
+//rollover swap with width check + burst swap
+function swapImageAndBurst( imgName, imgURL, w, h, hasBurst, burstName, burstURL ) {
+	
+	var noW;
+	(w) ? noW = true : noW = false;
+	
+	var w = w || document.images[imgName].width;
+	var h = h || document.images[imgName].height;
+
+	if ( imgURL.length ) {
+		swapImage2sup( imgName, w, noW );
+		document.images[imgName].src = imgURL;
+	}
+	
+	if ( hasBurst ) {
+		document.images[burstName].src = burstURL;		
+		document.images[burstName].style.display = "";
+	} else {
+		document.images[burstName].style.display="none"
+	}
+}
+
 
 var isIE = !!(window.attachEvent && !window.opera);
 

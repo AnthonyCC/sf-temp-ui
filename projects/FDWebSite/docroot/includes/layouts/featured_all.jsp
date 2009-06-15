@@ -66,12 +66,18 @@
     LinkedList productPrices = new LinkedList();
     LinkedList unAvailableProds = new LinkedList();
     StringBuffer col1 = new StringBuffer(300);
+    
     String imgName = null;
+    String burstImgName = null;
+    String burstDivName = null;
+    
     boolean folderAsProduct = false;
     ContentNodeModel aliasNode = null;
     ContentNodeModel prodParent = null;
     Comparator priceComp = new ProductModel.PriceComparator();
-    
+
+	BrowserInfo browserInfo = new BrowserInfo((HttpServletRequest) pageContext.getRequest());
+	boolean supportsPNG = !(browserInfo.isInternetExplorer() && browserInfo.getVersionNumber() < 8.0);
 %>
 
 
@@ -227,23 +233,29 @@
     		
             ProductModel product = null;
             favAllImage = null;
-            imageDim = "";
-            imagePath = "";
-            imgName = "Img"+displayCategory;
-            notAvailImgName = imgName+"_unavailable";
             imagePath = null;
             imageDim = null;
+            
+            imgName = "Img" + displayCategory;       
+            burstImgName = "BurstImg" + displayCategory;
+            burstDivName = "BurstDiv" + displayCategory;
+            notAvailImgName = imgName + "_unavailable";
+            
+        	int imgWidth = 70, imgHeight = 70;
 
+        	
             if ( folderAsProduct ) {
                 if ( aliasNode instanceof CategoryModel ) {
                     if ( aliasNode.getAttribute("CAT_PHOTO") != null ) {
                         favAllImage = (Image)aliasNode.getAttribute("CAT_PHOTO").getValue();
                         imagePath = favAllImage.getPath();
                         imageDim = JspMethods.getImageDimensions(favAllImage);
+                        imgWidth = favAllImage.getWidth();
+                        imgHeight = favAllImage.getHeight();
                         onlyOneProduct = false;
                     }
                 } 
-            } else if ( contentNode instanceof ProductModel ){
+            } else if ( contentNode instanceof ProductModel ) {
                 if ( theOnlyProduct != null ) {
                     onlyOneProduct = false;
                 } else {
@@ -255,13 +267,28 @@
                 owningFolder = (CategoryModel) product.getParentNode();
                 imagePath = product.getCategoryImage().getPath();
                 imageDim = JspMethods.getImageDimensions(product.getCategoryImage());
+                imgWidth = product.getCategoryImage().getWidth();
+                imgHeight = product.getCategoryImage().getHeight();
             }
+            
 
             if ( col1.length() == 0  || !gotAvailProdImg ) {
-                col1.setLength(0);
+            	
+                col1.setLength(0);             
+                
+                // burst related stuff ->
+                
+                col1.append("<div style=\"padding: 0px; border: 0px; margin: 0px auto; "
+    					+ "width: " + imgWidth + "px; "
+    					+ "height: " + imgHeight + "px; "
+    					+ "position: relative;\">\n");
+                
+                // <- burst related stuff
+                
+                
                 col1.append("<img name=\"");
                 col1.append(imgName);
-                col1.append("\" SRC=\"");
+                col1.append("\" src=\"");
                 col1.append(imagePath);
                 
                 if ( "".equals(imageDim) ) {
@@ -283,9 +310,9 @@
 					//output width
                     col1.append(" width=\""+imgSarr[0]+"\">");
                 }
-                col1.append("<br /><img name=\"");
+                col1.append("<br/><img name=\"");
                 col1.append(notAvailImgName);
-                col1.append("\" SRC=\"");
+                col1.append("\" src=\"");
                 
                 if ( folderAsProduct || ( product != null && !product.isUnavailable() ) ) {
                     col1.append(clearImage);
@@ -296,6 +323,23 @@
                 col1.append("\"");
                 col1.append("width=\"70\" height=\"9\"");
                 col1.append(">");
+                
+                
+                
+                // burst related stuff ->
+                
+                int deal = product.getDealPercentage();
+                
+				col1.append("<div style=\"position: absolute; top: 0px; left: 0px\">\n");
+                
+				String burstImage = deal > 0 ? "/media_stat/images/deals/brst_sm_" + deal + (supportsPNG ? ".png" : ".gif") : clearImage;
+				col1.append("<img name=\"" + burstImgName + "\" src=\"" + burstImage + "\" width=\"35px\" height=\"35px\" style=\"border: 0; " + ( deal > 0 ? "" : "display: none;" ) + "\">");                
+                
+                col1.append( "</div>" );                
+                col1.append( "</div>" );
+                
+                // <- burst related stuff
+                
             }
 
             appendColumn.setLength(0);
@@ -344,8 +388,8 @@
             if ( folderAsProduct ) {
                 if ( aliasNode != null ) {
                 	String fldrURL = FDURLUtil.getCategoryURI((CategoryModel)aliasNode,trackingCode);
-                    //String fldrURL = response.encodeURL("/category.jsp?catId=" + aliasNode + trackingCode);
-                    appendColumn.append("<div style=\"margin-left: 8px; text-indent: -8px;\"><A HREF=\"");
+                	
+                    appendColumn.append("<div style=\"margin-left: 8px; text-indent: -8px; \"><a href=\"");
                     appendColumn.append(fldrURL);
                     appendColumn.append("\" ");
                     if ( aliasNode.getAttribute("CAT_PHOTO") != null ) {
@@ -358,7 +402,7 @@
                     }
                     appendColumn.append(">");
                     appendColumn.append(aliasNode.getFullName());
-                    appendColumn.append("</A>");
+                    appendColumn.append("</a>");
                     appendColumnPrices.append("&nbsp;");
                 }
             } else {
@@ -370,8 +414,8 @@
                 }
 
             	String prodURL = FDURLUtil.getProductURI( product, trackingCode );
-                //String prodURL = response.encodeURL("/product.jsp?productId=" + product + "&catId=" + owningFolder+trackingCode);
-                appendColumn.append("<div style=\"margin-left: 8px; text-indent: -8px;\"><A HREF=\"");
+            	
+                appendColumn.append("<div style=\"margin-left: 8px; text-indent: -8px; \"><a href=\"");
                 appendColumn.append(prodURL);
                 appendColumn.append("\" onMouseover='");
                 
@@ -384,9 +428,16 @@
 				imgS = imgS.replaceFirst("\" ", ",");
 				//remove everything except "W,H"
 				imgS = imgS.replaceAll("[ =\"a-z]", "");
-				//change to new swapImage function and append dimensions to func call
-				appendColumn.append("swapImage2(\""+imgName+"\",\""+((Image)product.getCategoryImage()).getPath()+"\","+imgS);
-                appendColumn.append(")");
+				
+				
+                // burst related stuff ->
+                
+				int deal = product.getDealPercentage();				
+				String burstUrl = deal > 0 ? "/media_stat/images/deals/brst_sm_" + deal + (supportsPNG ? ".png" : ".gif") : clearImage;
+				appendColumn.append( "swapImageAndBurst(\"" + imgName + "\",\"" + ((Image)product.getCategoryImage()).getPath() + "\"," + imgS + ",\"" + 
+						(deal > 0) + "\",\"" + burstImgName  + "\",\"" + burstUrl + "\"" + ")" );
+				
+                // <- burst related stuff				
 				
                 if( product.isUnavailable() ) {
                     appendColumn.append(";swapImage(\""+notAvailImgName+"\",\""+unAvailableImg+"\"");
@@ -399,7 +450,7 @@
                     appendColumn.append("<font color=\"#999999\">");
                     appendColumn.append(theProductName);
                     appendColumn.append("</font>");
-                    appendColumn.append("</A>");
+                    appendColumn.append("</a>");
                     appendColumn.append(lstUnitPrice);
                     appendColumn.append("</div>");
                     
@@ -408,7 +459,7 @@
                     appendColumnPrices.append("</font>");
                 } else {
                     appendColumn.append(theProductName);
-                    appendColumn.append("</A></div>");
+                    appendColumn.append("</a></div>");
                     
                     appendColumnPrices.append(lstUnitPrice);
                 }
