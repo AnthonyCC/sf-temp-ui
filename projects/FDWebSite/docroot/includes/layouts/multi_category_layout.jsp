@@ -17,28 +17,37 @@
 <%@ taglib uri='oscache' prefix='oscache' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
+
+<%@page import="com.freshdirect.framework.util.log.LoggerFactory"%>
+<%@page import="org.apache.log4j.Logger"%>
+
 <display:InitLayout/>
 
 <%
 	// create separate lists for each category
 	List multiList = new ArrayList();
 	List l = null;
+	String currentFolderPKId = currentFolder.getPK().getId();
+	boolean hasAnyProducts = false;
 
 	Iterator it = sortedCollection.iterator();
 	while ( it.hasNext() ) {
-		ContentNodeModel node = (ContentNodeModel)it.next();
+		ContentNodeModel node = (ContentNodeModel)it.next();		
 		
-		if ( node instanceof CategoryModel ) {
-			// add new category
+		if ( node instanceof CategoryModel && node.getParentNode() != null && node.getParentNode().getPK().getId().equals(currentFolderPKId) ) {
+			// add new separating category
 			multiList.add( node );
 			l = new ArrayList();
 			multiList.add( l );			
 			
-		} else if ( node instanceof ProductModel ) {
-			// add product
+		} else if ( node instanceof ProductModel || node instanceof CategoryModel ) {
+			// add product or subcategory
 			if ( l == null ) 
 				multiList.add( l = new ArrayList() );
 			l.add( node );
+			
+			if ( node instanceof ProductModel ) 
+				hasAnyProducts = true;
 			
 		} else {
 			//skip node
@@ -76,6 +85,7 @@
 			} 
 			
 		} else if ( obj instanceof List ) {
+
 			%>
 				<display:HorizontalPattern 
 					id="horizontalPattern" 
@@ -83,9 +93,10 @@
 					folderCellWidth="136" 
 					productCellWidth="105" 
 					itemsToShow="<%= (List)obj %>" 
-					useLayoutPattern="true"
-					dynamicSize="false"
-					tableWidth="<%= maxWidth %>" 
+					useLayoutPattern="<%= hasAnyProducts %>"
+					dynamicSize="<%= !hasAnyProducts %>"
+					tableWidth="<%= maxWidth %>"
+					showCategories="true"
 				>
 				
 					<table cellspacing="0" cellpadding="0" width="<%=tableWidth%>">
@@ -93,19 +104,33 @@
 						
 							<display:PatternRow id="patternRow" itemsToShow="<%= rowList %>">
 							
-								<%
+								<% if ( currentItem instanceof ProductModel ) {		
 									ProductModel product = (ProductModel)currentItem;
 									String actionUrl = FDURLUtil.getProductURI( product, trackingCode );
-								%>
+									%>
 								
-								<td width="<%= horizontalPattern.getProductCellWidth() %>" style="padding-bottom: 15px"><font class="catPageProdNameUnderImg">
+									<td width="<%= horizontalPattern.getFolderCellWidth() %>" style="padding-bottom: 15px;"><font class="catPageProdNameUnderImg">
+										
+										<display:ProductImage product="<%= product %>" showRolloverImage="true" action="<%= actionUrl %>"/><br/>
+										<display:ProductRating product="<%= product %>" action="<%= actionUrl %>"/>
+										<display:ProductName product="<%= product %>" action="<%= actionUrl %>"/>
+										<display:ProductPrice impression="<%= new ProductImpression(product) %>"/>
+										
+									</font></td>
+								
+								<% } else { // is a category 
+									CategoryModel category = (CategoryModel)currentItem;
+									String actionUrl = FDURLUtil.getCategoryURI( category, trackingCode );
+									%>
 									
-									<display:ProductImage product="<%= product %>" showRolloverImage="true" action="<%= actionUrl %>"/><br/>
-									<display:ProductRating product="<%= product %>" action="<%= actionUrl %>"/>
-									<display:ProductName product="<%= product %>" action="<%= actionUrl %>"/>
-									<display:ProductPrice impression="<%= new ProductImpression(product) %>"/>
-									
-								</font></td> 
+									<td width="<%= horizontalPattern.getProductCellWidth() %>" style="padding-bottom: 15px;"><font class="text11">
+										
+										<display:CategoryImage category="<%= category %>" action="<%= actionUrl %>"/><br/>
+										<display:CategoryName category="<%= category %>" action="<%= actionUrl %>" style="font-weight:normal;"/>
+										
+									</font></td>
+								
+								<% } %> 
 									
 							</display:PatternRow>
 							
