@@ -751,7 +751,7 @@ if ( skuSize == 0 ) {
         					<a href="<%=referer%>"><img name="no_changes" src="/media_stat/images/buttons/no_change.gif" border="0"></a><br/><font class="space4pix"><br/></font>
         					<% 
         				} else {
-        					%><input type="image" name="add_to_cart" src="/media_stat/images/buttons/add_to_cart.gif" width="93" height="20" border="0" style="padding-top:5px; padding-bottom:3px;"><%
+        					%><input type="image" name="add_to_cart" src="/media_stat/images/buttons/add_to_cart.gif" width="93" height="20" border="0" style="padding-top:5px; padding-bottom:3px; display: block;"><%
     					}
 
     					if ( CartName.QUICKSHOP.equals(cartMode) ) {
