@@ -328,7 +328,7 @@
                 
                 // burst related stuff ->
                 
-                int deal = product.getDealPercentage();
+                int deal = (product == null) ? 0 : product.getDealPercentage();
                 
 				col1.append("<div style=\"position: absolute; top: 0px; left: 0px\">\n");
                 
