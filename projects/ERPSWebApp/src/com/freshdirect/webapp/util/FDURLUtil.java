@@ -12,10 +12,12 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspWriter;
 
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ConfiguredProductGroup;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -322,6 +324,13 @@ public class FDURLUtil {
 
 	// convenience method
 	public static String getCategoryURI(CategoryModel cat, String trackingCode) {
+		
+		// Use alias category if present
+		ContentKey aliasKey = cat.getAliasAttributeValue();
+		if ( aliasKey  != null ) {
+			cat = (CategoryModel)ContentFactory.getInstance().getContentNodeByKey( aliasKey );
+		}
+		
 		return getCategoryURI(cat.getContentName(), trackingCode);
 	}
 
