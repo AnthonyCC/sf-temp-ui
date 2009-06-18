@@ -398,6 +398,38 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public float getQuantityMaximum(ProductModel product) {
 		return this.user.getQuantityMaximum(product);
 	}
+	
+	public int getOrderCountForChefsTableEligibility() throws FDResourceException {
+		return this.user.getOrderCountForChefsTableEligibility();
+	}
+	   
+	public String getOrderTotalForChefsTableEligibility() throws FDResourceException {
+		return this.user.getOrderTotalForChefsTableEligibility();
+	}
+	
+	public String getOrderCountRemainingForChefsTableEligibility() throws FDResourceException {
+		return this.user.getOrderCountRemainingForChefsTableEligibility();
+	}
+	
+	public String getOrderTotalRemainingForChefsTableEligibility() throws FDResourceException {
+		return this.user.getOrderTotalRemainingForChefsTableEligibility();
+	}
+	
+	public boolean isCloseToCTEligibilityByOrderCount() throws FDResourceException {
+		return this.user.isCloseToCTEligibilityByOrderCount();
+	}
+	
+	public boolean isCloseToCTEligibilityByOrderTotal() throws FDResourceException {
+		return this.user.isCloseToCTEligibilityByOrderTotal();
+	}
+	
+	public boolean isOkayToDisplayCTEligibility() throws FDResourceException {
+		return this.user.isOkayToDisplayCTEligibility();
+	}
+	
+	public String getEndChefsTableQualifyingDate() throws FDResourceException {
+		return this.user.getEndChefsTableQualifyingDate();
+	}
     
     public boolean isPickupOnly() {
         return this.user.isPickupOnly();
@@ -437,6 +469,14 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	
 	public String getChefsTableInduction() throws FDResourceException {
 		return this.user.getChefsTableInduction();
+	}
+	
+	public String getWinback() throws FDResourceException {
+		return this.user.getWinback();
+	}
+	
+	public String getMarketingPromo() throws FDResourceException {
+		return this.user.getMarketingPromo();
 	}
 	
 	public boolean isEligibleForPreReservation() throws FDResourceException{
@@ -686,6 +726,17 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		user.setHomePageLetterVisited(isHomePageLetterVisited);
 	}
 	
+	public boolean isCampaignMsgLimitViewed() {
+		return user.isCampaignMsgLimitViewed();
+	}
+	
+	public int getCampaignMsgViewed() {
+		return user.getCampaignMsgViewed();
+	}
+	
+	public void setCampaignMsgViewed(int campaignMsgViewed) {
+		user.setCampaignMsgViewed(campaignMsgViewed);
+	}
 	
 	public static FDUserI getFDSessionUser(HttpSession session) {
 	    if (session==null) {
@@ -693,7 +744,6 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	    }
             return (FDUserI) session.getAttribute(SessionName.USER);
 	}
-	
 	
 	public String getCohortName() {
 		return this.user.getCohortName();
