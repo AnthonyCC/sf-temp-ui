@@ -42,6 +42,14 @@ public class ErpOrderHistory implements OrderHistoryI {
 	public Date getLastOrderDlvDate(){
 		return ErpOrderHistoryUtil.getLastOrderDlvDate(erpRegSaleInfos);
 	}
+	
+	public int getOrderCountForChefsTableEligibility(){
+		return ErpOrderHistoryUtil.getOrderCountForChefsTableEligibility(erpRegSaleInfos);
+	}
+	
+	public double getOrderTotalForChefsTableEligibility(){
+		return ErpOrderHistoryUtil.getOrderTotalForChefsTableEligibility(erpRegSaleInfos);
+	}
 
 	public String getLastOrderId(){
 		return ErpOrderHistoryUtil.getLastOrderId(erpRegSaleInfos);
