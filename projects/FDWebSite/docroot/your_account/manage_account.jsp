@@ -168,21 +168,61 @@ your account information, this is the place to do it.<br></td>
 	</tr>
 </table>
 </td>
+<% if(!user.isChefsTable() && user.isOkayToDisplayCTEligibility()) { %>
+	<TD valign="top" align="CENTER" width="40">
+		<img src="/media_stat/images/layout/ff9900.gif" width="1" height="580"><br>
+	</td>
+<% } %>
 <td valign="top">
 	<!-- ct user logo -->
 	<% 
-    if(user.isChefsTable()) {
+    if(!user.isChefsTable() && user.isOkayToDisplayCTEligibility()) {
     
-
 %>
+ 	
+	<table align="center" border="0" cellspacing="0" cellpadding="0">
+		<tr valign="top">
+			<td valign="top" class="text13">
+			<td><img src="/media_stat/images/chefs_table/ct_almost_hdr.gif"/><br><br></td>
+		</tr>
+	</table>
+	
+	<table align="center" border="0" cellspacing="0" cellpadding="0">
+		<tr valign="top">
+			<td valign="top" class="text13">We enroll new members in our Chef's Table rewards program every month. 
+			<br><br><font class="text13bold">
+			<% if(user.isCloseToCTEligibilityByOrderCount() && user.isCloseToCTEligibilityByOrderTotal()) { %>
+				Simply receive <%=user.getOrderCountRemainingForChefsTableEligibility()%> more <%=(user.getOrderCountForChefsTableEligibility() < 11 ? "orders" :"order" )%>or spend <%= user.getOrderTotalRemainingForChefsTableEligibility() %> by <%= user.getEndChefsTableQualifyingDate() %> to qualify!</td>
+			<% } else if( user.isCloseToCTEligibilityByOrderCount() && !user.isCloseToCTEligibilityByOrderTotal()) { %>
+				Simply receive <%=user.getOrderCountRemainingForChefsTableEligibility()%> more <%=(user.getOrderCountForChefsTableEligibility() < 11 ? "orders" :"order" )%> by <%= user.getEndChefsTableQualifyingDate() %> to qualify!</td>
+			<% } else if( !user.isCloseToCTEligibilityByOrderCount() && user.isCloseToCTEligibilityByOrderTotal()) { %>
+				Simply spend <%= user.getOrderTotalRemainingForChefsTableEligibility() %> by <%= user.getEndChefsTableQualifyingDate() %> to qualify!</td>
+			<% } %>
+			</font>
+			<td valign="top" colspan="2"><img src="/media_stat/images/chefs_table/ct_almost_card.gif"/></td>
+		</tr>
+		<tr valign="top">
+			<td valign="top" class="text13" colspan="2"><br>There are no fees, no forms and no hidden costs. <font class="text13bold">
+				<a href="/media/brands/fd_chefstable/fd_chefstable_pop.html">Click here to learn more.</a>
+				</font> 
+			</td>
+		</tr>
+	</table>
+<%  }
+	if(user.isChefsTable() || user.isOkayToDisplayCTEligibility()) {
+	%>
 	<table align="center" border="0" cellspacing="0" cellpadding="0">
 	<tr valign="top">
 		<td valign="top" class="text13">
-        <fd:IncludeMedia name="/media/editorial/site_pages/account/right_ct.html" />
-        </td>
+		<% if(!user.isChefsTable() && user.isOkayToDisplayCTEligibility()) { %>
+			<fd:IncludeMedia name="/media/editorial/site_pages/account/right_ct_new.html" />
+		<% } else if( user.isChefsTable()) { %>
+			<fd:IncludeMedia name="/media/editorial/site_pages/account/right_ct.html" />
+		<% } %>
+        	</td>
 	</tr>
 	</table>
-	<% }else{ %>
+	<% } else { %>
     	<table align="center" border="0" cellspacing="0" cellpadding="0">
 	<tr valign="top">
 		<td valign="top" class="text13">
