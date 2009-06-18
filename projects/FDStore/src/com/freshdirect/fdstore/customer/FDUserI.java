@@ -44,6 +44,10 @@ public interface FDUserI extends java.io.Serializable {
     public final static double BASE_DELIVERY_FEE = 4.99; // Used for site text
     public final static double CORP_DELIVERY_FEE = 9.99; // Used for site text
     public final static double CORP_DELIVERY_FEE_MONDAY = 14.99;  // Used for site text
+    public final static int CHEFS_TABLE_ORDER_COUNT_QUALIFIER = 12;
+    public final static double CHEFS_TABLE_ORDER_TOTAL_QUALIFIER = 1500.00;
+    public final static int CHEFS_TABLE_GETTING_CLOSE_COUNT = 5;
+    public final static double CHEFS_TABLE_GETTING_CLOSE_TOTAL = 625.00;
 
 	public final static int GUEST = 0;              // anonymously cookied user who have not registered
 	public final static int RECOGNIZED = 1;         // cookied user who has registered and has a known identity
@@ -120,6 +124,22 @@ public interface FDUserI extends java.io.Serializable {
 	public void invalidateCache();
 
 	public OrderHistoryI getOrderHistory() throws FDResourceException;
+	
+	public int getOrderCountForChefsTableEligibility() throws FDResourceException;
+	
+	public String getOrderTotalForChefsTableEligibility() throws FDResourceException;
+	
+	public String getOrderCountRemainingForChefsTableEligibility() throws FDResourceException;
+	
+	public String getOrderTotalRemainingForChefsTableEligibility() throws FDResourceException;
+	
+	public boolean isCloseToCTEligibilityByOrderCount() throws FDResourceException;
+	
+	public boolean isCloseToCTEligibilityByOrderTotal() throws FDResourceException;
+	
+	public boolean isOkayToDisplayCTEligibility() throws FDResourceException;
+	
+	public String getEndChefsTableQualifyingDate() throws FDResourceException;
 
     public int getAdjustedValidOrderCount() throws FDResourceException;
     
@@ -154,6 +174,10 @@ public interface FDUserI extends java.io.Serializable {
 	public boolean isChefsTable() throws FDResourceException;
 	
 	public String getChefsTableInduction() throws FDResourceException;
+	
+	public String getWinback() throws FDResourceException;
+	
+	public String getMarketingPromo() throws FDResourceException;
 	
 	public boolean isEligibleForPreReservation() throws FDResourceException;
 	
@@ -266,6 +290,11 @@ public interface FDUserI extends java.io.Serializable {
 	
 	public boolean isHomePageLetterVisited();
 	
+	public boolean isCampaignMsgLimitViewed();
+	
+	public int getCampaignMsgViewed();
+	
+	public void setCampaignMsgViewed(int campaignMsgViewed);
 	
     /*
      * This method was introduced as part of PERF-22 task.

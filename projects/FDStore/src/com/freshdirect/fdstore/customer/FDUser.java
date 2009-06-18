@@ -8,15 +8,22 @@
  */
 package com.freshdirect.fdstore.customer;
 
+import java.text.ChoiceFormat;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -71,6 +78,7 @@ import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
  */
 public class FDUser extends ModelSupport implements FDUserI {
 	public static final String SERVICE_EMAIL = "service@freshdirect.com";
+	public final static int CAMPAIGN_MSG_VIEW_LIMIT = 4;
 
 	private EnumTransactionSource application; 
     private String depotCode;
@@ -115,6 +123,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	private boolean receiveFDemails = true;
 	
 	private boolean isHomePageLetterVisited=false;
+	private int campaignMsgViewed;
 	
 	//Contains user specific Delivery Pass Details.
 	private FDUserDlvPassInfo dlvPassInfo;
@@ -445,6 +454,76 @@ public class FDUser extends ModelSupport implements FDUserI {
 	   return FDCustomerManager.getOrderHistoryInfo(this.identity);
     }
    
+   public int getOrderCountForChefsTableEligibility() throws FDResourceException {
+	   return FDCustomerManager.getOrderCountForChefsTableEligibility(this.identity);
+   }
+   
+   public String getOrderTotalForChefsTableEligibility() throws FDResourceException {
+	   return NumberFormat.getCurrencyInstance(Locale.US).format(FDCustomerManager.getOrderTotalForChefsTableEligibility(this.identity));
+   }
+   
+   public String getOrderCountRemainingForChefsTableEligibility() throws FDResourceException {
+	   ChoiceFormat fmt = new ChoiceFormat(
+	      "1#one |2#two |3#three | 4#four | 5#five");
+
+		int orderCount = getOrderCountForChefsTableEligibility();
+		if(orderCount == 0 || (orderCount >= CHEFS_TABLE_ORDER_COUNT_QUALIFIER) || 
+				(CHEFS_TABLE_ORDER_COUNT_QUALIFIER - orderCount > CHEFS_TABLE_GETTING_CLOSE_COUNT)) {
+			return "";
+		}
+		return fmt.format(CHEFS_TABLE_ORDER_COUNT_QUALIFIER - orderCount);
+	}
+	
+	public String getOrderTotalRemainingForChefsTableEligibility() throws FDResourceException {
+		double orderTotal = FDCustomerManager.getOrderTotalForChefsTableEligibility(this.identity);
+		if(orderTotal == 0.0 || (orderTotal >= CHEFS_TABLE_ORDER_TOTAL_QUALIFIER) ||
+				CHEFS_TABLE_ORDER_TOTAL_QUALIFIER - orderTotal > CHEFS_TABLE_GETTING_CLOSE_TOTAL) {
+			return "";
+		}
+		
+		return new DecimalFormat("$#0").format(CHEFS_TABLE_ORDER_TOTAL_QUALIFIER - orderTotal);
+	}
+	
+	public boolean isCloseToCTEligibilityByOrderCount() throws FDResourceException {
+		int orderCount = getOrderCountForChefsTableEligibility();
+		if( (CHEFS_TABLE_ORDER_COUNT_QUALIFIER - orderCount <= CHEFS_TABLE_GETTING_CLOSE_COUNT) && 
+				(CHEFS_TABLE_ORDER_COUNT_QUALIFIER - orderCount > 0) ) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isCloseToCTEligibilityByOrderTotal() throws FDResourceException {
+		double orderTotal = FDCustomerManager.getOrderTotalForChefsTableEligibility(this.identity);
+		if( (CHEFS_TABLE_ORDER_TOTAL_QUALIFIER - orderTotal <= CHEFS_TABLE_GETTING_CLOSE_TOTAL) && 
+				(CHEFS_TABLE_ORDER_TOTAL_QUALIFIER - orderTotal > 0.0 ) ) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isOkayToDisplayCTEligibility() throws FDResourceException {
+		if(!isCloseToCTEligibilityByOrderTotal() && !isCloseToCTEligibilityByOrderCount()) {
+			return false;
+		}
+		Calendar cal = new GregorianCalendar(Locale.getDefault());
+		cal = Calendar.getInstance();
+		int lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+		if( lastDay == cal.get(Calendar.DAY_OF_MONTH) ||
+				cal.get(Calendar.DAY_OF_MONTH) <= 2) {
+			return false;
+		}		
+		return true;
+	}
+	
+	public String getEndChefsTableQualifyingDate() throws FDResourceException {
+		Calendar cal = new GregorianCalendar(Locale.getDefault());
+		cal = Calendar.getInstance();
+		int lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+		cal.set(Calendar.DAY_OF_MONTH, lastDay);
+		return new SimpleDateFormat("MMMMM d").format(cal.getTime());
+	}
+   
     public ErpPromotionHistory getPromotionHistory() throws FDResourceException {
         if (this.cachedPromoHistory==null) {
             this.cachedPromoHistory = FDCustomerManager.getPromoHistoryInfo(this.identity);
@@ -597,6 +676,27 @@ public class FDUser extends ModelSupport implements FDUserI {
 			return customer.getProfile().getChefsTableInduction();
 		}
 	}
+	
+	public String getWinback() throws FDResourceException {
+	    
+		FDCustomerModel customer = this.getFDCustomer();
+		if (customer == null || customer.getProfile() == null) {
+			return "";
+		} else {
+			return customer.getProfile().getWinback();
+		}
+	}
+
+	public String getMarketingPromo() throws FDResourceException {
+    
+	FDCustomerModel customer = this.getFDCustomer();
+	if (customer == null || customer.getProfile() == null) {
+		return "";
+	} else {
+		return customer.getProfile().getMarketingPromo();
+	}
+}
+
 
 	public boolean isEligibleForPreReservation() throws FDResourceException {
 	    if (this.identity == null) {
@@ -1150,7 +1250,20 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public void setHomePageLetterVisited(boolean isHomePageLetterVisited) {
 		this.isHomePageLetterVisited = isHomePageLetterVisited;
 	}
+	
+	public boolean isCampaignMsgLimitViewed() {
+		if(getCampaignMsgViewed() >= FDUser.CAMPAIGN_MSG_VIEW_LIMIT)
+			return true;
+		return false;
+	}
 
+	public int getCampaignMsgViewed() {
+		return campaignMsgViewed;
+	}
+	
+	public void setCampaignMsgViewed(int campaignMsgViewed) {
+		this.campaignMsgViewed = campaignMsgViewed;
+	}
 	/**
 	 * Returns user's cohort ID
 	 *

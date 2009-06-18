@@ -51,6 +51,16 @@ public class ProfileModel extends ModelSupport {
 		String inductionValue = getAttribute("ChefsTableInduction");
 		return (inductionValue == null || inductionValue.length() < 1) ? "0" : inductionValue;
 	}
+	
+	public String getWinback() {
+		String winbackValue = getAttribute("Winback");
+		return (winbackValue == null || winbackValue.length() < 1) ? "0" : winbackValue;
+	}
+	
+	public String getMarketingPromo() {
+		String marketingPromoValue = getAttribute("MarketingPromo");
+		return (marketingPromoValue == null || marketingPromoValue.length() < 1) ? "0" : marketingPromoValue;
+	}
 
 	public boolean isCOSPilot() {
 		return "true".equalsIgnoreCase(getAttribute("COSPilot"));
