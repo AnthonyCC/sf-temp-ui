@@ -99,9 +99,9 @@ int colCount = 0;
 			<%
 			if (pi.getProductModel().isDisplayable()) {
 			%>
-			<display:ProductName product="<%= productNode %>" action="<%= prdURI %>" />
+				<display:ProductName product="<%= productNode %>" action="<%= prdURI %>" />
 			<%} else { %>
-			<display:ProductName product="<%= productNode %>" action="<%= prdURI %>" style="color: #999999"/>
+				<display:ProductName product="<%= productNode %>" action="<%= prdURI %>" style="color: #999999;"/>
 			<%
 			}
 			%>

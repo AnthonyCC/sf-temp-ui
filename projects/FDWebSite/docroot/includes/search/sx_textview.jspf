@@ -116,7 +116,7 @@ ContentNodeModel lastSubCategory = null;
 			<%
 				} else {
 			%>
-					<display:ProductName product="<%= productNode %>" action="<%= actionURI %>" style="color: #999999"/>
+					<display:ProductName product="<%= productNode %>" action="<%= actionURI %>" style="color: #999999;"/>
 					<%=aka %>
 			<%
 				}

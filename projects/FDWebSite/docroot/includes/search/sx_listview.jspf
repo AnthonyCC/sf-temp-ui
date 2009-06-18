@@ -78,11 +78,11 @@ int rank = nav.getPageOffset()+1;
 			<%
 			if (pi.getProductModel().isDisplayable()) {
 			%>
-			<display:ProductName product="<%= productNode %>" action="<%= actionURL %>" />
+				<display:ProductName product="<%= productNode %>" action="<%= actionURL %>" />
 			<%
 			} else {
 			%>
-			<display:ProductName product="<%= productNode %>" action="<%= actionURL %>" style="color: #999999"/>
+				<display:ProductName product="<%= productNode %>" action="<%= actionURL %>" style="color: #999999;"/>
 			<%
 			} 
 			%>

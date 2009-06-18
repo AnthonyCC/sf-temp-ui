@@ -76,14 +76,11 @@ int k = 0;
 				String aka = pi.getProductModel().getAka() != null && !pi.getProductModel().getAka().equals("") ? "(" + pi.getProductModel().getAka() + ")" : "";
 				String unit = pi.getConfigurationDescription() != null && pi.getConfigurationDescription() != "" ? "(" + pi.getConfigurationDescription() + ")" : ""; 
 				if (productNode.isDisplayable()) {
-			%>
+				%>
 					<display:ProductName product="<%= productNode %>" action="<%= actionURI %>" />&nbsp;<%=aka %>&nbsp;<%=unit %>
-			<%
-				} else {
-			%>
-					<display:ProductName product="<%= productNode %>" action="<%= actionURI %>" style="color:#999999"/>&nbsp;<%= aka %>&nbsp;<%=unit %>
-			<%
-				}			
+				<% } else {	%>
+					<display:ProductName product="<%= productNode %>" action="<%= actionURI %>" style="color:#999999;"/>&nbsp;<%= aka %>&nbsp;<%=unit %>
+				<% }			
 
 %>		</div>
 <%

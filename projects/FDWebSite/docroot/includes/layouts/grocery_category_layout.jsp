@@ -196,7 +196,7 @@ String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVaria
 <%		if (productNode.isDisplayable()) { %>
 			<div><display:ProductName product="<%= productNode %>" action="<%= actionURI %>"/></div>
 <%		} else { %>
-			<div style="color: #999999"><display:ProductName product="<%= productNode %>" action="<%= actionURI %>"/></div>
+			<div style="color: #999999;"><display:ProductName product="<%= productNode %>" action="<%= actionURI %>" style="color: #999999;"/></div>
 <%		}
 		if (fiIsDeal) {
 %>			<div style="FONT-WEIGHT: bold; FONT-SIZE: 8pt; COLOR: #c00"><%= fiProdPrice %></div>

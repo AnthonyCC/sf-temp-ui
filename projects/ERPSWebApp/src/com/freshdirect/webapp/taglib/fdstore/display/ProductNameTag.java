@@ -18,9 +18,11 @@ import com.freshdirect.framework.webapp.BodyTagSupport;
  * @author segabor
  */
 public class ProductNameTag extends BodyTagSupport {
+	
 	ProductModel	product; 							// product (mandatory)
 	String			action;								// URL (optional)
-	String			style 		= "font-weight:bold";	// CSS style modification (optional)
+	String			style 		= "";					// CSS style modification (optional)
+	String			brandStyle 	= "font-weight:bold;";	// CSS style modification for brand name (optional)
 	boolean			disabled 	= false;				// Not clickable (optional)
 	
 	public void setProduct(ProductModel product) {
@@ -39,6 +41,10 @@ public class ProductNameTag extends BodyTagSupport {
 		this.style = style;
 	}
 
+	public void setBrandStyle( String brandStyle ) {
+		this.brandStyle = brandStyle;
+	}
+	
 	public int doStartTag() {
 		JspWriter out = pageContext.getOut();
 
@@ -56,18 +62,23 @@ public class ProductNameTag extends BodyTagSupport {
 		
 		StringBuffer buf = new StringBuffer();
 		
+		String styleStr = "";
+		if ( style != null && !"".equals( style ) ) {
+			styleStr = " style=\"" + style + "\"";
+		}
+		
 		if ( !this.disabled && action != null ) {
-			buf.append("<a href=\"" + action + "\">");
+			buf.append("<a href=\"" + action + "\"" + styleStr + ">");
 		} else {
-			buf.append("<span>");
+			buf.append("<span" + styleStr + ">");
 		}
 
-		if (shortenedProductName != null ) {
+		if ( shortenedProductName != null ) {
 			buf.append("<span style=\"" );
-			buf.append( style );
+			buf.append( brandStyle );
 			buf.append( "\">");
 			buf.append(brandName);
-			buf.append("</span><br>");
+			buf.append("</span><br/>");
 			buf.append(shortenedProductName);
 		} else {
 			buf.append( fullName != null && !"".equalsIgnoreCase(fullName) ? fullName : "(this product)" );
