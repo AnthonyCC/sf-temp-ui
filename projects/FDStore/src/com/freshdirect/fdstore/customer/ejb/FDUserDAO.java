@@ -147,7 +147,7 @@ public class FDUserDAO {
 	}
 	
 	private static final String LOAD_FROM_IDENTITY_QUERY =
-		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE,fdu.HPLETTER_VISITED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
+		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE,fdu.HPLETTER_VISITED, fdu.CAMPAIGN_VIEWED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
 		"erpc.active, ci.receive_news,fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls, fdu.COHORT_ID " +
 		"FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci " +
 		"WHERE fdu.FDCUSTOMER_ID=fdc.id and fdc.ERP_CUSTOMER_ID=erpc.ID and erpc.id=? " +
@@ -172,7 +172,7 @@ public class FDUserDAO {
 	}
 
 	private static final String LOAD_FROM_COOKIE_QUERY =
-		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE, fdu.HPLETTER_VISITED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
+		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE, fdu.HPLETTER_VISITED, fdu.CAMPAIGN_VIEWED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
 		"erpc.active, ci.receive_news, fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls, fdu.COHORT_ID " +
 		"FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci " +
 		"WHERE fdu.cookie=? and fdu.FDCUSTOMER_ID=fdc.id(+) and fdc.ERP_CUSTOMER_ID=erpc.ID(+) " +
@@ -227,7 +227,8 @@ public class FDUserDAO {
 			user.setActive("1".equals(rs.getString("ACTIVE")));
 			user.setReceiveFDEmails("X".equals(rs.getString("RECEIVE_NEWS")));
 			user.setHomePageLetterVisited(NVL.apply(rs.getString("HPLETTER_VISITED"), "").equalsIgnoreCase("X")?true:false);
-
+			user.setCampaignMsgViewed(rs.getInt("CAMPAIGN_VIEWED"));
+			
 			// Smart Store - Cohort ID
 			user.setCohortName(rs.getString("COHORT_ID"));
 		} else {
@@ -241,7 +242,7 @@ public class FDUserDAO {
 	private static final String STORE_USER_SQL =
 		"UPDATE CUST.FDUSER " +
 		"SET COOKIE=?, ZIPCODE=?, FDCUSTOMER_ID=?, DEPOT_CODE=?, SERVICE_TYPE=?, ADDRESS1=?, APARTMENT=?, " +
-		"LAST_REF_PROG_ID=?, REF_PROG_INVT_ID=?, REF_TRK_KEY_DTLS=?, HPLETTER_VISITED=?, COHORT_ID=? " + 
+		"LAST_REF_PROG_ID=?, REF_PROG_INVT_ID=?, REF_TRK_KEY_DTLS=?, HPLETTER_VISITED=?, CAMPAIGN_VIEWED=?, COHORT_ID=? " + 
 		"WHERE ID=?";
 
 
@@ -309,6 +310,10 @@ public class FDUserDAO {
 			ps.setNull(index++, Types.VARCHAR);
 		}
 
+		if(user.getCampaignMsgViewed() < FDUser.CAMPAIGN_MSG_VIEW_LIMIT) {
+			ps.setInt(index++, user.getCampaignMsgViewed());
+		}
+		
 		// Smart Store - Cohort ID
 		if (user.getCohortName() != null)
 			ps.setString(index++, user.getCohortName());
