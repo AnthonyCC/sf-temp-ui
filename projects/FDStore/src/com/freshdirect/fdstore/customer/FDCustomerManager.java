@@ -1150,6 +1150,16 @@ public class FDCustomerManager {
 		ErpOrderHistory history = getErpOrderHistoryInfo(identity);
 		return new FDOrderHistory(history.getErpSaleInfos());
 	}
+	
+	public static int getOrderCountForChefsTableEligibility(FDIdentity identity) throws FDResourceException {
+		ErpOrderHistory history = getErpOrderHistoryInfo(identity);
+		return history.getOrderCountForChefsTableEligibility();
+	}
+	
+	public static double getOrderTotalForChefsTableEligibility(FDIdentity identity) throws FDResourceException {
+		ErpOrderHistory history = getErpOrderHistoryInfo(identity);
+		return history.getOrderTotalForChefsTableEligibility();
+	}
 
 	public static ErpPromotionHistory getPromoHistoryInfo(FDIdentity identity) throws FDResourceException {
 
