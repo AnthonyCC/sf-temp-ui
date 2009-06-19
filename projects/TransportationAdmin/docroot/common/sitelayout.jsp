@@ -18,6 +18,7 @@
     <script type="text/javascript" language="javascript" src="js/jscalendar-1.0/calendar.js"></script>
     <script type="text/javascript" language="javascript" src="js/jscalendar-1.0/lang/calendar-en.js"></script>
     <script type="text/javascript" language="javascript" src="js/jscalendar-1.0/calendar-setup.js"></script>
+    <script type="text/javascript" language="javascript" src="js/filter.js"></script>
 	<script language="javascript" src="js/time.js"></script>
 	<script type="text/javascript">
 		/* allow lower resolutions to display */
