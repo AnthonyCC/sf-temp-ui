@@ -91,7 +91,22 @@
           
           location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2;
         } 
-      addRowHandlers('ec_table', 'rowMouseOver', 'editplan.do','id',0, 0);
+      addRowHandlersFilter('ec_table', 'rowMouseOver', 'editplan.do','id',0, 0);
+      
+      function doDelete(tableId, url) 
+      {    
+		    var paramValues = getParamList(tableId, url);
+		    if (paramValues != null) {
+		    	var hasConfirmed = confirm ("Do you want to delete the selected records?")
+				if (hasConfirmed) 
+				{
+					var filter="&daterange="+document.getElementById("daterange").value+"&"+getFilterValue(document.getElementById("planListForm"),false)
+				  	location.href = url+"?id="+ paramValues+filter;
+				} 
+		    } else {
+		    	alert('Please Select a Row!');
+		    }
+		}
     </script>   
   </tmpl:put>
 </tmpl:insert>

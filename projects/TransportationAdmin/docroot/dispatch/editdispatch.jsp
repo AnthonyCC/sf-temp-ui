@@ -100,6 +100,20 @@
           dispatchForm.route.options[0].selected=true;
                                 
       }        
+      
+      function back()
+      {
+      	var filters=unescape(getParameter("filter"));      	
+      	var params=filters.split("&");
+      	var dispatchForm=document.forms["dispatch"];
+      	for(var i=0;i<params.length;i++)
+      	{
+      		var param=params[i].split("=");         				
+      		add_input(dispatchForm,"hidden",param[0],param[1]);
+      	}     	      	
+      	dispatchForm.submit();
+      }
+  
       </script>
       <style>
         .time_picker_div {padding:5px;
@@ -623,6 +637,7 @@
 						<td colspan="3" align="center">
 							<input type = "submit" value="&nbsp;Save&nbsp;"  />
 							<input type = "button" value="&nbsp;Reset&nbsp;" onclick="javascript:resetDetails();" />
+							<input type = "button" value="&nbsp;Back&nbsp;" onclick="javascript:back();" />
 						</td> 
 					</tr>
 				</table>        
@@ -635,3 +650,4 @@
   </tmpl:put>
 </tmpl:insert>
 <script>checkRouteInfo();</script>
+<form name="dispatch" action="dispatch.do" method="post">  </form>

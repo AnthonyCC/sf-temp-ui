@@ -203,11 +203,12 @@
 							<td colspan="3" align="center">
 								<input type= "button" align="center" value="&nbsp;Continue&nbsp;" onclick="submitData()" />
 								&nbsp;
-								<input type = "button" value="&nbsp;Cancel&nbsp;" onclick="javascript:location.href ='plan.do'" />
+								<input type = "button" value="&nbsp;Cancel&nbsp;" onclick="javascript:back();" />
 							</td>
 						<% } else { %>
 							<td colspan="3" align="center">
 								<input type = "submit" value="&nbsp;Save&nbsp;" />
+								<input type = "button" value="&nbsp;Back&nbsp;" onclick="javascript:back();" />
 							</td> 
 						<% } %>   
 						</tr>
@@ -255,6 +256,19 @@
 			document.getElementById("ignoreErrors").value = "true";
 			document.getElementById("planForm").submit();
 		}
+		function back()
+	    {
+	      	var filters=unescape(getParameter("filter"));      	
+	      	var params=filters.split("&");
+	      	var planForm=document.forms["plan"];
+	      	for(var i=0;i<params.length;i++)
+	      	{
+	      		var param=params[i].split("=");         				
+	      		add_input(planForm,"hidden",param[0],param[1]);
+	      	}     	      	
+	      	planForm.submit();
+	    }
 	</script>
   </tmpl:put>
 </tmpl:insert>
+<form name="plan" action="plan.do" method="post">  </form>

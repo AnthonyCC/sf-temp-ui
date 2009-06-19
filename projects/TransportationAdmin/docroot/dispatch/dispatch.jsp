@@ -87,7 +87,7 @@
                         if (paramValues != null) {
                           var hasConfirmed = confirm (message);
                         if (hasConfirmed) {
-                            location.href = url+"?id="+ paramValues+"&dispDate="+dateField;
+                            location.href = url+"?id="+ paramValues+"&dispDate="+dateField+"&"+getFilterValue(document.getElementById("ec"),false);
                         } 
                         } else {
                           alert('Please Select a Row!');
@@ -123,10 +123,11 @@
                         	newForm.action=url;
                         	newForm.id.value=checked;
                         	newForm.dispDate.value=dateField;
+                        	setFilter(document.getElementById("ec"),newForm);                    	
                         	newForm.submit();
                         }
                     }                    
-                    
+                    				
                     function directions(tableId, url, columnIndex) {
                       var table = document.getElementById(tableId);
                        var checkboxList = table.getElementsByTagName("input");
@@ -268,11 +269,13 @@
           </ec:table>
     </div>
     <script>
-      addMultiRowHandlersColumn('ec_table', 'rowMouseOver', 'editdispatch.do','id',0, 4,'dispDate');
+      addMultiRowHandlersColumnFilter('ec_table', 'rowMouseOver', 'editdispatch.do','id',0, 4,'dispDate');
     </script>
     <%@ include file='i_activityLog.jspf'%> 
     <form name="newSubmit" action="dispatch.do" method="post">
     <input type=hidden name=id><input type=hidden name=dispDate>
+    </form>
+    <form name="edit"  method="get">   
     </form>
   </tmpl:put>
   

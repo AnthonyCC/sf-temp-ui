@@ -29,3 +29,4 @@ function setFormAction(form, action, method) {
 	
 	document.forms[form].ec_eti.value='';
 }
+

@@ -51,6 +51,62 @@ function addHandlers(tableId, rowClassName, url, paramName, columnIndex, checkCo
 	}
 }
 
+function addRowHandlersFilter(tableId, rowClassName, url, paramName, columnIndex, checkCol) {
+   addHandlersFilter(tableId, rowClassName, url, paramName, columnIndex, checkCol, false);
+}
+
+function addHandlersFilter(tableId, rowClassName, url, paramName, columnIndex, checkCol, needKeyPress) {
+	
+	var previousClass = null;
+    var table = document.getElementById(tableId);
+    
+    if(table != null) {
+	    var rows = table.tBodies[0].getElementsByTagName("tr");	 	       
+	    for (i = 0; i < rows.length; i++) {	    	
+	        var cells = rows[i].getElementsByTagName("td");
+	        
+	        for (j = 1; j < cells.length; j++) {
+	        	
+	            cells[j].onmouseover = function () {
+	            	previousClass = this.parentNode.className;
+	            	this.parentNode.className = this.parentNode.className + " " + rowClassName ;
+	            };
+	        
+	            cells[j].onmouseout = function () {
+	              	this.parentNode.className = previousClass;
+	            };
+	        
+	            if(checkCol == -1 || checkCol != j ) {
+					if(!(needKeyPress && (j == (cells.length-1)))) {	            
+				    	cells[j].onclick = function () {			    		
+				      		var cell = this.parentNode.getElementsByTagName("td")[columnIndex];
+				      		var selectBox = this.parentNode.getElementsByTagName("input")[0];
+				      		
+				      		/*if(needKeyPress) {
+					      		var param1 = this.parentNode.getElementsByTagName("td")[1];			      		
+					      		var param2 = this.parentNode.getElementsByTagName("td")[5];
+					      		var param3 = this.parentNode.getElementsByTagName("td")[7];	
+					      		var param4 = this.parentNode.getElementsByTagName("td")[8];
+					      		javascript:pop('common/geography.jsp?address='+param1.innerHTML+' '
+					      							+param2.innerHTML+'&latitude='+param3.innerHTML+'&longitude='+param4.innerHTML, 600,500);			      		
+					      	}*/
+				      		location.href = url+"?"+ paramName + "=" + selectBox.name+"&filter="+getPlanFilterValue();			      		
+				    	};
+				    }
+		    	}
+		    	
+		    		    	
+	        }
+	    }
+	}
+}
+
+function getPlanFilterValue()
+{
+	var filters=getFilterValue(document.getElementById("planListForm"),false);
+	filters+="&daterange="+document.getElementById("daterange").value;
+	return escape(filters)
+}
 // Adds onmouseover, onmouseout, and onclick handlers to each table row.  The onmouseover handler changes the row's class attribute to
 // rowMouseOver.  The onmouseout handler changes it back.  The onclick function makes a request for the specified url, including the
 // innerHTML of the specified column as a request parameter.
@@ -117,6 +173,48 @@ function addMultiRowHandlersColumn(tableId, rowClassName, url, paramName, column
 	        }
 	    }
 	}
+}
+
+function addMultiRowHandlersColumnFilter(tableId, rowClassName, url, paramName, columnIndex, checkCol, requestParam) {
+    var previousClass = null;
+    var table = document.getElementById(tableId);
+    
+    if(table != null) {
+	    var rows = table.tBodies[0].getElementsByTagName("tr");	 	       
+	    for (i = 0; i < rows.length; i++) {	    	
+	        var cells = rows[i].getElementsByTagName("td");
+	        
+	        for (j = 1; j < cells.length; j++) {
+	        	
+	            cells[j].onmouseover = function () {
+	            	previousClass = this.parentNode.className;
+	            	this.parentNode.className = this.parentNode.className + " " + rowClassName ;
+	            };
+	        
+	            cells[j].onmouseout = function () {
+	              	this.parentNode.className = previousClass;
+	            };
+	        
+	            if(j>checkCol) {
+			    	cells[j].onclick = function () 
+			    	{
+			      		var cell = this.parentNode.getElementsByTagName("td")[columnIndex];
+			      		var selectBox = this.parentNode.getElementsByTagName("input")[0];			      					      		
+			      		location.href = url+"?"+ paramName + "=" + selectBox.name+"&"
+			      		+document.getElementById(requestParam).name + "=" +document.getElementById(requestParam).value
+			      		+"&filter="+getDispatchFilterValue();			      		
+			    	};
+		    	}
+	        }
+	    }
+	}
+}
+
+function getDispatchFilterValue()
+{
+	var filters=getFilterValue(document.getElementById("ec"),false);
+	filters+="&dispDate="+document.getElementById("dispDate").value;
+	return escape(filters)
 }
 
 // Adds onmouseover, onmouseout, and onclick handlers to each table row.  The onmouseover handler changes the row's class attribute to

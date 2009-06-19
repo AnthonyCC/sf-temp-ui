@@ -140,7 +140,17 @@
   	background-color: #4C4C4C;
   	color: white;  	
 }
-
+.eXtremeTable .red {
+  	background-color: #4C4C4C;
+  	color: red; 
+  	height:1px;  	
+}
+.eXtremeTable .red td{ 
+{
+	background-color: #4C4C4C;	
+	color: red;  
+	height:1px; 
+}
 .eXtremeTable .obsoleteRow {
   	background-color: #4C4C4C;
 }
