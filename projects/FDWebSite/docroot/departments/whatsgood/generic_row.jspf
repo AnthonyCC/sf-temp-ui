@@ -25,7 +25,7 @@ sortNameAttrib = currentFolder.getAttribute("LIST_AS", "full");
     
 layoutSettings = new Settings();
 layoutSettings.setGrabberDepth(0);
-layoutSettings.setIgnoreDuplicateProducts(true);
+layoutSettings.setIgnoreDuplicateProducts(false);
 layoutSettings.setIgnoreShowChildren(true);
 layoutSettings.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRIORITY, false));
 
