@@ -107,7 +107,6 @@
 									String promotionCode = "";
 									String hideSavingsUrl = "";
                                     Date promoExpDate = new Date();
-                                    String expDateFormat = "";
 									if (tab.get(k).isSmartSavings()) {
 										FDUserI xUser = (FDUserI) session.getAttribute(SessionName.USER);
 										Map xNodes = (Map) session.getAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
@@ -115,7 +114,6 @@
 										savingsPercent = xUser.getPromoVariant(tab.get(k).getId()).getPercentageOff();
 										promotionCode = URLEncoder.encode(xUser.getPromoVariant(tab.get(k).getId()).getAssignedPromotion().getPromotionCode(), "UTF-8");
                                         promoExpDate = xUser.getPromoVariant(tab.get(k).getId()).getAssignedPromotion().getExpirationDate();
-                                        expDateFormat = "MMMMM dd, yyyy";
 										sumOfSavings = SmartStoreUtil.sumOfSavingsInCart(tab.get(k), xUser, xNodes);
 										hideSavingsUrl = gen.set("hideSavingsVarId", tab.get(k).getId()).build();
 									}
@@ -125,7 +123,7 @@
 											<%= tab.getTabDescription(k) %>
 										<% } else {
 											MessageFormat xFormat = new MessageFormat(tab.getTabDescription(k));
-											Object[] xParams = { new Integer(savingsItemCount), new Double(savingsPercent), new Double(sumOfSavings), hideSavingsUrl, promotionCode, promoExpDate,  expDateFormat}; %>
+											Object[] xParams = { new Integer(savingsItemCount), new Double(savingsPercent), new Double(sumOfSavings), hideSavingsUrl, promotionCode, promoExpDate}; %>
 											<%= xFormat.format(xParams) %><%
 										   } %>							
 										</div>
