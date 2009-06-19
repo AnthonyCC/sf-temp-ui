@@ -58,12 +58,12 @@ public class TransAdminCacheManager {
 
 
 //	 make the time constant in property
-	private ExpiringReference employeeDataHolder = new ExpiringReference(TransportationAdminProperties.getEmployeeCacheExpiryTime() * 60 * 1000) {
+	private CustomExpiringReference employeeDataHolder = new CustomExpiringReference(TransportationAdminProperties.getEmployeeCacheExpiryTime() * 60 * 1000) {
 
 		protected Object load() {
 			try {
 				if(TransportationAdminProperties.isKronosBlackhole()) {
-					return this.get();
+					return this.getEx();
 				} else {
 					return loadAllEmployeeData();
 				}
@@ -76,12 +76,12 @@ public class TransAdminCacheManager {
 
 
 //	 make the time constant in property
-	private ExpiringReference terminatedEmployeeDataHolder = new ExpiringReference(TransportationAdminProperties.getEmployeeCacheExpiryTime() * 60 * 1000) {
+	private CustomExpiringReference terminatedEmployeeDataHolder = new CustomExpiringReference(TransportationAdminProperties.getEmployeeCacheExpiryTime() * 60 * 1000) {
 
 		protected Object load() {
 			try {
 				if(TransportationAdminProperties.isKronosBlackhole()) {
-					return this.get();
+					return this.getEx();
 				} else {
 					return loadAllTerminatedEmployeeData();
 				}				
