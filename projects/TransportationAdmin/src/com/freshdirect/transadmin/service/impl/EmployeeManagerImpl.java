@@ -18,6 +18,7 @@ import com.freshdirect.transadmin.model.EmployeeRoleType;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransAdminCacheManager;
+import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 
 public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeManagerI {
@@ -146,7 +147,9 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 
 	public Collection getPunchInfo(String date) {
 		try {
-			return punchInfoDAO.getPunchInfo(date);
+			if(!TransportationAdminProperties.isKronosBlackhole()) {
+				return punchInfoDAO.getPunchInfo(date);
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

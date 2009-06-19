@@ -62,7 +62,11 @@ public class TransAdminCacheManager {
 
 		protected Object load() {
 			try {
-				return loadAllEmployeeData();
+				if(TransportationAdminProperties.isKronosBlackhole()) {
+					return this.get();
+				} else {
+					return loadAllEmployeeData();
+				}
 			} catch (SapException e) {
 				LOGGER.error("Could not load load Referral program due to: ", e);
 			}
@@ -76,7 +80,11 @@ public class TransAdminCacheManager {
 
 		protected Object load() {
 			try {
-				return loadAllTerminatedEmployeeData();
+				if(TransportationAdminProperties.isKronosBlackhole()) {
+					return this.get();
+				} else {
+					return loadAllTerminatedEmployeeData();
+				}				
 			} catch (SapException e) {
 				LOGGER.error("Could not load load Referral program due to: ", e);
 			}

@@ -114,6 +114,10 @@ public class TransportationAdminProperties {
 	private final static String PROP_TRANSPORTATION_DISPATCH_PAGESIZE		= "transportation.dispatch.pagesize";
 	private final static String PROP_TRANSPORTATION_DISPATCH_MAX_READY		= "transportation.dispatch.maxready";
 	
+	private final static String PROP_KRONOS_BLACKHOLE		= "kronos.blackhole";
+	
+	private final static String PROP_AIRCLIC_BLACKHOLE		= "airclic.blackhole";
+	
 	static {
 				
 		
@@ -195,6 +199,8 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_DISPATCH_PAGESIZE, "16");
 		defaults.put(PROP_TRANSPORTATION_DISPATCH_MAX_READY, "8");
 		
+		defaults.put(PROP_KRONOS_BLACKHOLE, "false");
+		defaults.put(PROP_AIRCLIC_BLACKHOLE, "false");
 		
 		refresh();		
 	}
@@ -427,5 +433,13 @@ public class TransportationAdminProperties {
 	{
 		return getIntVal(get(PROP_TRANSPORTATION_DISPATCH_MAX_READY));
 	}
+	
+	public static boolean isKronosBlackhole() {
+        return (new Boolean(get(PROP_KRONOS_BLACKHOLE))).booleanValue();
+    }
+	
+	public static boolean isAirclicBlackhole() {
+        return (new Boolean(get(PROP_AIRCLIC_BLACKHOLE))).booleanValue();
+    }
 	
 }

@@ -29,6 +29,7 @@ import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.service.LogManagerI;
 import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
+import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 
 public class DispatchManagerImpl extends BaseManagerImpl implements DispatchManagerI {
@@ -437,7 +438,9 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	public Map getHTInScan(Date routeDate) 
 	{
 		try {
-			return routeManagerDao.getHTInScan(routeDate);
+			if(!TransportationAdminProperties.isAirclicBlackhole()) {
+				return routeManagerDao.getHTInScan(routeDate);
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -448,7 +451,9 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	public Map getHTOutScan(Date routeDate) 
 	{
 		try {
-			return routeManagerDao.getHTOutScan(routeDate);
+			if(!TransportationAdminProperties.isAirclicBlackhole()) {
+				return routeManagerDao.getHTOutScan(routeDate);
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
