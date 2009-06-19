@@ -2,6 +2,7 @@ package com.freshdirect.transadmin.web.ui;
 
 import org.extremecomponents.table.bean.Column;
 import org.extremecomponents.table.core.TableModel;
+import org.extremecomponents.util.HtmlBuilder;
 
 import com.freshdirect.transadmin.util.EnumStatus;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
@@ -15,7 +16,7 @@ public class DispatchDBTableView extends FlatTableView {
 	
 	private boolean closedReady = false;
 	
-		
+	
 	protected void beforeBodyInternal(TableModel model) {
         toolbar(getHtmlBuilder(), getTableModel());
         
@@ -46,7 +47,21 @@ public class DispatchDBTableView extends FlatTableView {
 		
         if (column.isFirstColumn()) {
         	
-        	if(hadReady && !closedReady && !isReady(command)) {
+        	if(hadReady && !closedReady && !isReady(command)) 
+        	{
+        		//line between ready and non-ready state
+        		HtmlBuilder html =getHtmlBuilder();
+        		html.tr(1);
+        		html.styleClass("red");                
+                html.close();
+                html.td(1).colSpan("10");                
+                html.close();
+                html.append("<hr>");
+                html.tdEnd();
+        		this.getRowBuilder().rowEnd();
+        		
+        		
+        		
         		getTableBuilder().tbodyEnd();
         		isOpenTBody = false;
         		closedReady = true;
@@ -73,8 +88,7 @@ public class DispatchDBTableView extends FlatTableView {
     }
 	
 	private boolean isReady(DispatchCommand command) {
-		
-		return command.getDispatchStatus() != null && command.getDispatchStatus().equals(EnumStatus.Ready);
+			return command.getDispatchStatus() != null && command.getDispatchStatus().equals(EnumStatus.Ready);
 				//DispatchPlanUtil.categorizeDispatch(command) < 0;
 				//(!(command.getDispatchTime()!= null && command.getDispatchTime().trim().length()>0) && !TransStringUtil.isEmpty(command.getZoneName()));
 	}
