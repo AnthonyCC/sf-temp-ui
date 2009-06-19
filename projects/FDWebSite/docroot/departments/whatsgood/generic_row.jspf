@@ -2,6 +2,7 @@
 <%@ page import='com.freshdirect.fdstore.content.util.SortStrategyElement' %>
 <%@ page import='com.freshdirect.fdstore.content.CategoryModel' %>
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.display.*' %>
 
 <%
 sortedColl = null; 
@@ -24,7 +25,7 @@ sortNameAttrib = currentFolder.getAttribute("LIST_AS", "full");
     
 layoutSettings = new Settings();
 layoutSettings.setGrabberDepth(0);
-
+layoutSettings.setIgnoreDuplicateProducts(true);
 layoutSettings.setIgnoreShowChildren(true);
 layoutSettings.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRIORITY, false));
 
@@ -46,6 +47,8 @@ List tmpList=new ArrayList();
         sortedColl = rtnColl;
         
         request.setAttribute("itemGrabberResult",sortedColl); //** expose result of item grabber to the layout **
+		
+		//System.out.println("-=-=-=-=-= in generic row ItemGrabber layoutSettings.isIgnoreDuplicateProducts() : "+layoutSettings.isIgnoreDuplicateProducts());
 %>
     </fd:ItemGrabber> 
  
@@ -58,6 +61,7 @@ List tmpList=new ArrayList();
 			<table cellpadding="0" cellspacing="0" border="0">
 			<tr valign="bottom">
 
+				<% //System.out.println("-=-=-=-=-= in generic row sortedColl : "+catId+" : "+(List)sortedColl); %>
 				<logic:iterate id="contentNode" collection="<%= sortedColl %>" type="java.lang.Object" indexId="idx">
 					<%
 						ProductModel pm = (ProductModel) contentNode;
@@ -67,6 +71,9 @@ List tmpList=new ArrayList();
 						List skus = pm.getSkus();
 
 						SkuModel sku = null;
+
+						
+						List useSkus = new ArrayList();
 						
 						String prodPrice = null;
 						String prodBasePrice=null;
@@ -77,20 +84,46 @@ List tmpList=new ArrayList();
 						if (skus.size() == 1) {
 							sku = (SkuModel)skus.get(0);  // we only need one sku
 						} else {
-							sku = (SkuModel) Collections.min(skus, priceComp);
+							
+							%><logic:iterate id="skusCheck" collection="<%= skus %>" type="java.lang.Object" indexId="idxSkus"><%
+
+							//System.out.println("========================================================== : "+skusCheck);
+							//System.out.println("in generic row skusCheck : "+skusCheck);
+							//sku = (SkuModel) Collections.min(skus, priceComp);
+								%><fd:FDProductInfo id="skusCheckPM" skuCode="<%= skusCheck.toString() %>"><%
+									
+									//System.out.println("	in generic row avail? : "+skusCheckPM.isAvailable());
+									//System.out.println("	in generic row deal? : "+skusCheckPM.isDeal());
+									//System.out.println("	in generic row sku? : "+skusCheckPM.getSkuCode());
+									if (skusCheckPM.isAvailable()) {
+											useSkus.add(skusCheck);
+									}
+
+								%></fd:FDProductInfo><%
+									
+							//System.out.println("========================================================== : "+skusCheck);
+
+							%></logic:iterate><%
+
+							sku = (SkuModel) Collections.min(useSkus, priceComp);
 						}
+
+							//sku = (SkuModel)skus.get(0);
 
 
 					if (idx.intValue() >= 5) { continue; } 
 						%>
+
 						<fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
 							<% 
-							prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()); 
-
+							prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice());
 
 							//comment out here for DEBUG, just make everything a deal
 							isDeal=productInfo.isDeal();
 							//isDeal = true;
+							
+							//System.out.println("in generic row : "+productInfo.isAvailable());
+							//System.out.println("in generic row : "+productInfo.getSkuCode());
 
 							if(isDeal) {
 								prodBasePrice=JspMethods.currencyFormatter.format(productInfo.getBasePrice());

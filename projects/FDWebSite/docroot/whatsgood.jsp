@@ -10,6 +10,7 @@
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@ page import='java.util.StringTokenizer' %>
 <%@ page import='java.text.*' %>
 <%@ page import="java.util.Collection"%>
 <%@ page import="java.util.Map"%>
@@ -55,11 +56,13 @@ if (deptId==null) { deptId="wgd"; }
  */
 	Map params = new HashMap();
 	String baseUrl = "";
+	String templatePath = "/common/template/dnav_no_space.jsp"; //the default
 	boolean emailPage = false;
 
 	if ( "true".equals ((String)request.getParameter("email")) ) {
 		emailPage = true;
-		//baseUrl = "http://www.freshdirect.com";
+		baseUrl = "http://www.freshdirect.com";
+		templatePath = "/common/template/blank.jsp"; //email
 	}
 
 	//	add emailPage to params passed to ftls
@@ -67,106 +70,188 @@ if (deptId==null) { deptId="wgd"; }
 	params.put("baseUrl", baseUrl);
 %>
 
-<tmpl:insert template='/common/template/dnav_no_space.jsp'>
+	<tmpl:insert template='<%=templatePath%>'>
 	<tmpl:put name='title' direct='true'>FreshDirect - What's Good</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 	<%
 		//--------OAS Page Variables-----------------------
 		request.setAttribute("sitePage", "www.freshdirect.com/whatsgood");
 		request.setAttribute("listPos", "WGLeft,WGCenter,WGRight");
-	%>
 
-	<!-- START EMAIL -->
+	if (emailPage) { %>
+		<!-- START EMAIL -->
+		<style>
+			body { width: 690px; text-align: center; }
+			.WG_EMAIL, table { width: 100%; text-align: center; }
+		</style>
+		<center>
+		<table width="690" border="0" cellspacing="0" cellpadding="0" align="center" class="WG_EMAIL">
+
+		<tr>
+			<td valign="bottom">
+
+	<%}%>
 	
 	<% //START top section %>
 		<fd:IncludeMedia name="/media/editorial/whats_good/whats_good_line.html" />
 		<fd:IncludeMedia name="/media/editorial/whats_good/whats_good_top_msg.html" />
-		<fd:IncludeMedia name="/media/editorial/whats_good/whats_good.ftl" parameters="<%=params%>"/>
 	<% //START end top section %>
 
 
-<% if (FDStoreProperties.isWhatsGoodPeakProduceEnabled()) { %>
-	<% //START Great Right Now %>
-		<jsp:include page="/includes/department_peakproduce_whatsgood.jsp" flush="true"/>
-	<% //END Great Right Now %>
-<% } %>
+<%
 
-<% if (FDStoreProperties.isWhatsGoodButchersBlockEnabled()) { %>
-	<% //START Butcher's Block %>
-		<% catId = "wgd_butchers"; %>
-		<%@ include file="/departments/whatsgood/generic_row.jspf" %>
-	<% //End Butcher's Block %>
-<% } %>
-
-	<% //START Now in Pres Picks %>
-		<% catId = "picks_pres"; %>
-		<%@ include file="/departments/whatsgood/generic_row.jspf" %>
-	<% //End Now in Pres Picks %>
-
+	String strWGRows = "";
 	
-	<%
-	//START Grocery Deals
-        Image groDeptImage = null;
-		boolean isDepartment = true;
-		
-		//String trkCode = (String)request.getAttribute("trk");
+	//System.out.println("================inside WG :");
 
-		if (trkCode!=null && !"".equals(trkCode.trim()) ) {
-			trkCode = "&trk="+trkCode.trim();
-		} else {
-			trkCode = "";
+	//get property with rows
+	strWGRows = FDStoreProperties.getWhatsGoodRows();
+
+	//if there are rows, use them
+	if (strWGRows !=null && !"".equals(strWGRows)) {
+
+		//System.out.println("=============* strWGRows :"+strWGRows);
+
+		String curRow = ""; //holds current row
+
+		String[] result = strWGRows.split(",");
+		//System.out.println("=============rows total :"+result.length);
+
+		for (int rowId=0; rowId<result.length; rowId++) {
+
+
+			//get current row
+			curRow=result[rowId];
+
+			//System.out.println("=============row :"+rowId);
+			//System.out.println("=============row strWGRows :"+curRow);
+
+
+			//first, check for specials
+			
+			//special : peak produce
+			if ("wg_peakproduce".equals(curRow)) {
+
+				//do peak produce stuff
+				//START Great Right Now 
+				
+					System.out.println("=============row in wg_peakproduce :");
+					%><jsp:include page="/includes/department_peakproduce_whatsgood.jsp" flush="true"/><%
+				//END Great Right Now
+
+			//special : deals
+			}else if ("wg_deals".equals(curRow)) {
+
+				//START Grocery Deals
+				Image groDeptImage = null;
+				boolean isDepartment = true;
+
+				if (trkCode!=null && !"".equals(trkCode.trim()) ) {
+					trkCode = "&trk="+trkCode.trim();
+				} else {
+					trkCode = "";
+				}
+
+				//these are needed in the include
+					isDepartment = true;
+					
+					//this determines where the products are pulled from...
+					currentFolder=ContentFactory.getInstance().getContentNodeByName("gro");
+					
+					//...and the dept context (if null, not used)
+					showInContextOf = "wgd";
+
+					//System.out.println("=============row in wg_deals :");
+					%><%@ include file="/includes/layouts/i_featured_products_whatsgood.jspf" %><%
+				//END Grocery Deals
+
+			//special : ADs
+			}else if ("wg_ads".equals(curRow)) {
+
+				//do ad row
+				//START AD spots
+
+					//System.out.println("=============row in wg_ads :");
+
+					%><fd:IncludeMedia name="/media/editorial/whats_good/whats_good_line.html" /><%
+
+					if (!emailPage && FDStoreProperties.isAdServerEnabled()) {
+						//not an email %>
+						<table style="text-align: center;">
+							<tr>
+								<td>
+									<!-- AD SPOT Left -->
+									<script type="text/javascript">
+											OAS_AD('WGLeft');
+									</script>
+								</td>
+								<td>
+									<!-- AD SPOT Center -->
+									<script type="text/javascript">
+											OAS_AD('WGCenter');
+									</script>
+								</td>
+								<td>
+									<!-- AD SPOT Right -->
+									<script type="text/javascript">
+											OAS_AD('WGRight');
+									</script>
+								</td>
+							</tr>
+						</table>
+					<%
+					}else{
+						//is an email, or adserver is disabled
+						%><fd:IncludeMedia name="/media/editorial/whats_good/whats_good_AD_space.ftl" parameters="<%=params%>"/><%
+					}
+				//END AD spots
+
+			//no specials
+			}else{
+				//see if row is a category
+				ContentNodeModel currentFolderTemp = ContentFactory.getInstance().getContentNode(curRow);
+
+				if(currentFolderTemp instanceof CategoryModel) {
+					//is a category
+					//System.out.println("==============cat : IS cat");
+
+					//we know it's a category, so use it in the generic row
+					catId = curRow;
+					%><%@include file="/departments/whatsgood/generic_row.jspf" %><%
+
+				}else{
+					//is NOT a category
+					//System.out.println("==============cat : IS NOT cat");
+
+					//try using it as media instead
+					String mediaPathTemp="/media/editorial/whats_good/"+curRow;
+
+					
+					//add an id to params
+					params.put("rowId", String.valueOf(rowId) );
+					params.put("rowName", curRow);
+					
+					%><fd:IncludeMedia name="<%= mediaPathTemp %>" parameters="<%=params%>"/><%
+				}
+			}
 		}
+	//no rows were found
+	}else{
+		//System.out.println("=============* strWGRows returning null/empty:");
+	}
 
-		//these are needed in the include
-			//catId = "wgd_produce";
-			isDepartment = true;
-			
-			//this determines where the products are pulled from...
-			currentFolder=ContentFactory.getInstance().getContentNodeByName("gro");
-			
-			//...and the dept context (if null, not used)
-			showInContextOf = "wgd";
 
-		%><%@ include file="/includes/layouts/i_featured_products_whatsgood.jspf" %><%
-	//END Grocery Deals
-	%>
+	if (emailPage) {	%>
 
-	<% //START AD spots %>
-		<fd:IncludeMedia name="/media/editorial/whats_good/whats_good_line.html" />
-
-		<% if (!emailPage && FDStoreProperties.isAdServerEnabled()) {
-			//not an email 
-			%>
-			<table style="text-align: center;">
-				<tr>
-					<td>
-						<!-- AD SPOT Left -->
-						<script type="text/javascript">
-								OAS_AD('WGLeft');
-						</script>
-					</td>
-					<td>
-						<!-- AD SPOT Center -->
-						<script type="text/javascript">
-								OAS_AD('WGCenter');
-						</script>
-					</td>
-					<td>
-						<!-- AD SPOT Right -->
-						<script type="text/javascript">
-								OAS_AD('WGRight');
-						</script>
-					</td>
-				</tr>
-			</table>
-		<%}else{
-			//is an email, or adserver is disabled
-			%>
-			<fd:IncludeMedia name="/media/editorial/whats_good/whats_good_AD_space.ftl" parameters="<%=params%>"/>
-		<%}%>
-	<% //END AD spots %>
+				</td>
+			</tr>
+		</table>
+		</center>
+		<!-- END EMAIL -->
+	<%}%>
 	
-	<!-- END EMAIL -->
+	
+	
 
 </tmpl:put>
 </tmpl:insert>

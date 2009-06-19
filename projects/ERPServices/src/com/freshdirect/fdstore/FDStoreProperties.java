@@ -285,9 +285,14 @@ public class FDStoreProperties {
 	private final static String PROP_SURVEYDEF_CACHE_SIZE	= "fdstore.surveyDef.cache.size";
 	private static final String PROP_REFRESHSECS_SURVEYDEF = "fdstore.refreshSecs.surveyDef";
 	private final static String PROP_FDSURVEY_HOME		= "fdstore.fdSurvey.home";
-	private final static String PROP_FDWHATSGOOD_ENABLED		= "fdstore.fdwhatsgood.enabled";
-	private final static String PROP_FDWHATSGOOD_PEAKPRODUCE_ENABLED		= "fdstore.fdwhatsgood_peakproduce.enabled";
-	private final static String PROP_FDWHATSGOOD_BBLOCK_ENABLED		= "fdstore.fdwhatsgood_bblock.enabled";
+	
+//What's Good Department
+	private final static String PROP_FDWHATSGOOD_ENABLED				= "fdstore.fdwhatsgood.enabled";
+	private final static String PROP_FDWHATSGOOD_PEAKPRODUCE_ENABLED	= "fdstore.fdwhatsgood_peakproduce.enabled";
+	private final static String PROP_FDWHATSGOOD_BBLOCK_ENABLED			= "fdstore.fdwhatsgood_bblock.enabled";
+	//new prop to set dynamic rows
+	private final static String PROP_FDWHATSGOOD_ROWS					= "fdstore.fdwhatsgood.rows";
+	
 	
 	//Smart Savings
 	
@@ -498,9 +503,12 @@ public class FDStoreProperties {
 		defaults.put(PROP_FDSURVEY_HOME,	"freshdirect.fdstore.FDSurvey");
 
 		defaults.put(SMART_SAVINGS_FEATURE_ENABLED, "true");
+		
+//		What's Good Department
 		defaults.put(PROP_FDWHATSGOOD_ENABLED, "false");
 		defaults.put(PROP_FDWHATSGOOD_PEAKPRODUCE_ENABLED, "true");
 		defaults.put(PROP_FDWHATSGOOD_BBLOCK_ENABLED, "false");
+		defaults.put(PROP_FDWHATSGOOD_ROWS, "");
 		
 		refresh();
 	}
@@ -1127,6 +1135,9 @@ public class FDStoreProperties {
 	}
 	public static boolean isWhatsGoodButchersBlockEnabled() {
 		return Boolean.valueOf(get(PROP_FDWHATSGOOD_BBLOCK_ENABLED)).booleanValue();
+	}
+	public static String getWhatsGoodRows() {
+		return get(PROP_FDWHATSGOOD_ROWS);
 	}
 	
 	

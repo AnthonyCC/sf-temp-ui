@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.Vector;
 
 import com.freshdirect.cms.AttributeI;
@@ -32,6 +33,7 @@ import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.attributes.Attribute;
 import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 import com.freshdirect.framework.util.DayOfWeekSet;
@@ -1454,23 +1456,64 @@ inner:
            //
            // get the FDProductInfo from the FDCachedFactory
            //
-           try {
-        	   
-        	   if(sku.getSkuCode().startsWith("FRU") || sku.getSkuCode().startsWith("VEG") || sku.getSkuCode().startsWith("YEL"))
-        	   {
-        		  
-                   productInfo = FDCachedFactory.getProductInfo( sku.getSkuCode());
-   	
-                   String tmpRating = productInfo.getRating();
-                   if(tmpRating!=null && tmpRating.trim().length()>0){
-                	   EnumOrderLineRating enumRating=EnumOrderLineRating.getEnumByStatusCode(tmpRating);
-                	   if(enumRating!=null && enumRating.isEligibleToDisplay()){
-                		   rating=enumRating.getStatusCodeInDisplayFormat();
-                	   }
-                   }
-        	   } 
-               
-           } catch (FDSkuNotFoundException ignore) {
+    	   try {
+				/*
+				 * grab property to determine which sku prefixes to display ratings for
+				 * 
+				 * assuming some prefixes are set, loop, checking to see if the current product's
+				 * sku prefix matches an allowed prefix.
+				 * 
+				 * exit loop on a match.
+				 */
+				
+				/*
+				 * There is a similar setup in the GetPeakProduceTag.java file
+				 * and in ProductModelImpl.java
+				 */
+				System.out.println("===== in getProductRating in ProductModelImpl :"+sku.getSkuCode());
+				
+				// grab sku prefixes that should show ratings
+				String _skuPrefixes=FDStoreProperties.getRatingsSkuPrefixes();
+				System.out.println("* getRatingsSkuPrefixes :"+_skuPrefixes);
+    	   
+				//if we have prefixes then check them
+				if (_skuPrefixes!=null && !"".equals(_skuPrefixes)) {
+					StringTokenizer st=new StringTokenizer(_skuPrefixes, ","); //setup for splitting property
+					String curPrefix = ""; //holds prefix to check against
+					String spacer="* "; //spacing for sysOut calls
+					boolean matchFound = false;
+					
+					//loop and check each prefix
+					while(st.hasMoreElements()) {
+						
+						curPrefix=st.nextToken();
+						System.out.println(spacer+"Rating _skuPrefixes checking :"+curPrefix);
+						
+						//if prefix matches get product info
+						if(sku.getSkuCode().startsWith(curPrefix)) {
+							productInfo = FDCachedFactory.getProductInfo( sku.getSkuCode() );
+							System.out.println(" Rating productInfo :"+productInfo);
+							String tmpRating = productInfo.getRating();
+							
+							if ( tmpRating != null && tmpRating.trim().length() > 0 ) {
+								EnumOrderLineRating enumRating = EnumOrderLineRating.getEnumByStatusCode( tmpRating );
+								System.out.println(" enumRating :"+enumRating);
+								
+								if ( enumRating != null && enumRating.isEligibleToDisplay() ) {
+									rating = enumRating.getStatusCodeInDisplayFormat();
+									System.out.println(" rating in display format  :"+rating);
+								}
+							}
+							matchFound=true;
+						}
+						//exit on matched sku prefix
+						System.out.println(spacer+"Rating matchFound :"+matchFound);
+						if (matchFound) { break; }
+						spacer=spacer+"   ";
+					}
+				}
+
+		} catch (FDSkuNotFoundException ignore) {
 
            }
        }

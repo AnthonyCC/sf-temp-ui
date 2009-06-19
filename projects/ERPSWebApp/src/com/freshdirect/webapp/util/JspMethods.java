@@ -224,7 +224,7 @@ public class JspMethods {
 	}
 
 	public static String getProductRating( ProductModel theProduct ) throws JspException {
-		System.out.println("inside getProductRating :"+theProduct);
+		//System.out.println("inside getProductRating :"+theProduct);
 
 		String rating = "";
 
@@ -268,6 +268,7 @@ public class JspMethods {
 					
 					/*
 					 * There is a similar setup in the GetPeakProduceTag.java file
+					 * and in ProductModelImpl.java
 					 */
 					//System.out.println("===== in getProductRating :"+sku.getSkuCode());
 					
@@ -281,7 +282,6 @@ public class JspMethods {
 						String curPrefix = ""; //holds prefix to check against
 						//String spacer="* "; //spacing for sysOut calls
 						boolean matchFound = false;
-						//System.out.println(spacer+"Rating _skuPrefixes 1st :"+firstPrefix); 
 						
 						//loop and check each prefix
 						while(st.hasMoreElements()) {
@@ -292,16 +292,16 @@ public class JspMethods {
 							//if prefix matches get product info
 							if(sku.getSkuCode().startsWith(curPrefix)) {
 								productInfo = FDCachedFactory.getProductInfo( sku.getSkuCode() );
-								// System.out.println(" Rating productInfo :"+productInfo);
+								//System.out.println(" Rating productInfo :"+productInfo);
 								String tmpRating = productInfo.getRating();
 								
 								if ( tmpRating != null && tmpRating.trim().length() > 0 ) {
 									EnumOrderLineRating enumRating = EnumOrderLineRating.getEnumByStatusCode( tmpRating );
-									// System.out.println(" enumRating :"+enumRating);
+									//System.out.println(" enumRating :"+enumRating);
 									
 									if ( enumRating != null && enumRating.isEligibleToDisplay() ) {
 										rating = enumRating.getStatusCodeInDisplayFormat();
-										// System.out.println(" rating in display format  :"+rating);
+										//System.out.println(" rating in display format  :"+rating);
 									}
 								}
 								matchFound=true;
