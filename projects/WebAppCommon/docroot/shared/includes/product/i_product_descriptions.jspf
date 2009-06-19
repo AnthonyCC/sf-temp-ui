@@ -1,208 +1,286 @@
 <%@ taglib uri="logic" prefix="logic" %>
 <%
-/* This include paints the: description/nutrition/ratings/tell a friend items for the product page 
- *
- */
-                try { 
-                    Html productDesc = productNode.getProductDescription();
-                    boolean showAbout = false;
-                    boolean pd_isWineLayout = EnumProductLayout.NEW_WINE_PRODUCT.equals(productNode.getProductLayout());
-                    
-  
-                    // if there is nothing to display in the 'about' view then set the showAboutheading to false
-                     if (productDesc!=null && productDesc.getPath()!=null) {
-                         showAbout = true;  // there's a product description
-                     } else if (prodPageRatingStuff!=null) {
-                         showAbout = true;  // there's rating info
-                     } else if (request.getParameter("catId")!=null && "che".equalsIgnoreCase(findDepartment(findParentOfCategory (request.getParameter("catId"))).getContentName())) {
-                         showAbout = true; // there's cheese 101
-                     //} else if (productNode.getAttribute("FRESH_TIPS")!=null)  {
-                        // showAbout = true; // there's fresh tips
-                     } else if (false==true) {  // replace with test for how-to-cook it.
-                         showAbout = true;  //There's how-to_cook-it info
-                     }
-                      
+	/* This include paints the: description/nutrition/ratings/tell a friend items for the product page 
+	 *
+	 */
 
- String separatorChar = "";
-	String productView = request.getParameter("product_view");
+	try { 
+		Html productDesc = productNode.getProductDescription();
+		boolean showAbout = false;
+		boolean pd_isWineLayout = EnumProductLayout.NEW_WINE_PRODUCT.equals(productNode.getProductLayout());
+		
+
+		// if there is nothing to display in the 'about' view then set the showAboutheading to false
+		if (productDesc!=null && productDesc.getPath()!=null) {
+			showAbout = true;  // there's a product description
+		} else if (prodPageRatingStuff!=null) {
+			showAbout = true;  // there's rating info
+		} else if (request.getParameter("catId") != null && "che".equalsIgnoreCase(findDepartment(findParentOfCategory (request.getParameter("catId"))).getContentName())) {
+			showAbout = true; // there's cheese 101
+			//} else if (productNode.getAttribute("FRESH_TIPS")!=null)  {
+			// showAbout = true; // there's fresh tips
+		} else if (false==true) {  // replace with test for how-to-cook it.
+			showAbout = true;  //There's how-to_cook-it info
+		}
+	
+		String separatorChar = "";
+		String productView = request.getParameter("product_view");
         SkuModel defaultSku = !productNode.isUnavailable()?productNode.getDefaultSku():(SkuModel)productNode.getSkus().get(0);
         String aboutLabel = null;
-        if (defaultSku!=null) {
-        	FDProduct fdprd = productNode.isUnavailable()? null:defaultSku.getProduct();
-                if (showAbout && !pd_isWineLayout) {
-                    separatorChar = "|";
-		    if(productView == null || "".equals(productView) || "about".equalsIgnoreCase(productView)){%>  <FONT CLASS="text12bold">About</FONT>
-                    <% }else{%>
-                    <a href="product.jsp?productId=<%= request.getParameter("productId")%>&catId=<%=request.getParameter("catId")%>&product_view=about">About</a>
-<%                  }
-                }
-           if (fdprd!=null && fdprd.hasNutritionFacts()){
-				if(!"".equals(productView) && !"nutrition".equalsIgnoreCase(productView)) { %> <%=separatorChar%> <a href="product.jsp?productId=<%= request.getParameter("productId")%>&catId=<%=request.getParameter("catId")%>&product_view=nutrition<% if (request.getParameter("skuCode")!=null) out.print("&skuCode="+request.getParameter("skuCode")); %>">Nutrition</a>
-				<% }else{%>
-					<%=separatorChar%><FONT CLASS="text12bold"> Nutrition</FONT>
-				<%}
-                                separatorChar="|";
+        
+		if (defaultSku!=null) {
+			FDProduct fdprd = productNode.isUnavailable()? null:defaultSku.getProduct();
+			
+			if (showAbout && !pd_isWineLayout) {
+				separatorChar = "|";
+				
+				if (productView == null || "".equals(productView) || "about".equalsIgnoreCase(productView)) { 
+				%>
+					<font class="text12bold">About</font>
+				<%
+				}else{
+				%>
+					<a href="product.jsp?productId=<%= request.getParameter("productId")%>&catId=<%=request.getParameter("catId")%>&product_view=about">About</a>
+				<%
+				}
+			}
+			
+			if (fdprd!=null && fdprd.hasNutritionFacts()) {
+				if(!"".equals(productView) && !"nutrition".equalsIgnoreCase(productView)) {
+				%>
+				 <%=separatorChar%> <a href="product.jsp?productId=<%= request.getParameter("productId")%>&catId=<%=request.getParameter("catId")%>&product_view=nutrition<% if (request.getParameter("skuCode")!=null) out.print("&skuCode="+request.getParameter("skuCode")); %>">Nutrition</a>
+				<%
+				}else{
+				%>
+					<%=separatorChar%><font class="text12bold"> Nutrition</font>
+				<%
+				}
+                
+				separatorChar="|";
+			}
+			
+			if (fdprd!=null && fdprd.hasIngredients()) {
+				if(!"".equals(productView) && !"ingredients".equalsIgnoreCase(productView)) { 
+				%>
+				 <%=separatorChar%> <a href="product.jsp?productId=<%= request.getParameter("productId")%>&catId=<%=request.getParameter("catId")%>&product_view=ingredients<% if (request.getParameter("skuCode")!=null) out.print("&skuCode="+request.getParameter("skuCode")); %>">Ingredients</a>
+				<%
+				}else{
+				%>
+					<%=separatorChar%><font class="text12bold"> Ingredients</font>
+				<%
+				}
+			}
+			
+			if (!isWineLayout) {
+			%>
+				<br />
+				<font class="space2pix"><br /></font>
+			<%
+			}
+			
+			boolean multiple = false;
+			boolean sameFirstVar = true;
+			boolean sameSecondVar = true;
+			String lastFirst = null;
+			String lastSecond = null;
+			
+			if (productNode.getAttribute("NUTRITION_MULTIPLE", false)) {
+				multiple = true;
+				skus = productNode.getSkus();
 
-	  }
-          if (fdprd!=null && fdprd.hasIngredients()){
-				if(!"".equals(productView) && !"ingredients".equalsIgnoreCase(productView)) { %> <%=separatorChar%> <a href="product.jsp?productId=<%= request.getParameter("productId")%>&catId=<%=request.getParameter("catId")%>&product_view=ingredients<% if (request.getParameter("skuCode")!=null) out.print("&skuCode="+request.getParameter("skuCode")); %>">Ingredients</a>
-				<% }else{ %>
-					<%=separatorChar%><FONT CLASS="text12bold"> Ingredients</FONT>
-				<%}%>
-			<%}
-                     if (!isWineLayout) {
-%>
-                <BR>
-		<FONT CLASS="space2pix"><BR></FONT>
-<%                  }
-                    boolean multiple = false;
-                    boolean sameFirstVar = true;
-                    boolean sameSecondVar = true;
-                    String lastFirst = null;
-                    String lastSecond = null;
-                    if (productNode.getAttribute("NUTRITION_MULTIPLE", false)) {
-                        multiple = true;
-                        skus = productNode.getSkus();
+				for (Iterator sIter = skus.iterator(); sIter.hasNext(); ) {
+					SkuModel sm = (SkuModel) sIter.next();
+					
+					if (sm.isUnavailable()) {
+						sIter.remove();
+						continue;
+					}
+					
+					if (sm.getAttribute("VARIATION_MATRIX") != null) {
+						List dvals = ((MultiAttribute) sm.getAttribute("VARIATION_MATRIX")).getValues();
+						DomainValue dv = ((DomainValueRef) dvals.get(0)).getDomainValue();
+						if (lastFirst == null) {
+							lastFirst = dv.getLabel();
+						} else if (!dv.getLabel().equals(lastFirst)) {
+							lastFirst = dv.getLabel();
+							sameFirstVar = false;
+						}
 
-                        for (Iterator sIter = skus.iterator(); sIter.hasNext(); ) {
-                            SkuModel sm = (SkuModel) sIter.next();
-                            if (sm.isUnavailable()) {
-                                sIter.remove();
-                                continue;
-                            }
-                            if (sm.getAttribute("VARIATION_MATRIX") != null) {
-                                List dvals = ((MultiAttribute) sm.getAttribute("VARIATION_MATRIX")).getValues();
-                                DomainValue dv = ((DomainValueRef) dvals.get(0)).getDomainValue();
-                                if (lastFirst == null) {
-                                    lastFirst = dv.getLabel();
-                                } else if (!dv.getLabel().equals(lastFirst)) {
-                                    lastFirst = dv.getLabel();
-                                    sameFirstVar = false;
-                                }
-                                if (dvals.size() > 1) {
-                                    dv = ((DomainValueRef) dvals.get(1)).getDomainValue();
-                                    if (lastSecond == null) {
-                                        lastSecond = dv.getLabel();
-                                    } else if (!dv.getLabel().equals(lastSecond)) {
-                                        lastSecond = dv.getLabel();
-                                        sameSecondVar = false;
-                                    }
-                                }
+						if (dvals.size() > 1) {
+							dv = ((DomainValueRef) dvals.get(1)).getDomainValue();
+							if (lastSecond == null) {
+								lastSecond = dv.getLabel();
+							} else if (!dv.getLabel().equals(lastSecond)) {
+								lastSecond = dv.getLabel();
+								sameSecondVar = false;
+							}
+						}
 
-                            }
-                        }
-                    }
-%>
-                <%      if ("nutrition".equalsIgnoreCase(productView)) {
-                          if (multiple) {
-                                if (skus.size() > 1) {
-                                    String skuCode = request.getParameter("skuCode");
-                                    if (skuCode == null) {
-                                        skuCode = productNode.getDefaultSku().getSkuCode();
-                                    }
-                                %>
-                                <script language="JavaScript">
+					}
+				}
+			}
+			
+			if ("nutrition".equalsIgnoreCase(productView)) {
+				if (multiple) {
+					if (skus.size() > 1) {
+						String skuCode = request.getParameter("skuCode");
+						
+						if (skuCode == null) {
+							skuCode = productNode.getDefaultSku().getSkuCode();
+						}
+						%>
 
-                                    function viewNutrition(skucode) {
-                                        window.location.href = "/product.jsp?productId=<%= request.getParameter("productId") %>&catId=<%= request.getParameter("catId") %>&product_view=nutrition&skuCode=" + skucode;
-                                    }
+						<script language="JavaScript">
 
-                                </script>
-                                <form>
-                                <select name="skuCode" onChange="javascript:viewNutrition(this.options[this.selectedIndex].value)">
-                                <%  for (Iterator sIter = skus.iterator(); sIter.hasNext(); ) {
-                                        SkuModel s = (SkuModel) sIter.next();
-                                        List dvals = ((MultiAttribute) s.getAttribute("VARIATION_MATRIX")).getValues();
-                                        out.print("<option value=\"" + s.getSkuCode() + "\"");
-                                        if (s.getSkuCode().equals(skuCode)) {
-                                            out.print(" SELECTED");
-                                            fdprd = s.getProduct();
-                                        }
-                                        out.print(" >");
-                                        if (!sameFirstVar) out.print(((DomainValueRef) dvals.get(0)).getDomainValue().getLabel());
-                                        if (!sameFirstVar && ! sameSecondVar) out.print(" - ");
-                                        if (!sameSecondVar) out.print(((DomainValueRef) dvals.get(1)).getDomainValue().getLabel());
-                                    } %>
-                                </select>
-                                </form>
-                    <%          }
-                            }   %>
-                            <%@ include file="/includes/product/i_product_nutrition.jspf" %>
-                <%      } else if ("ingredients".equalsIgnoreCase(productView)) {
-                            if (multiple) {
-                                if (skus.size() > 1) {
-                                    String skuCode = request.getParameter("skuCode");
-                                    if (skuCode == null) {
-                                        skuCode = productNode.getDefaultSku().getSkuCode();
-                                    }
-                                %>
-                                <script language="JavaScript">
+							function viewNutrition(skucode) {
+								window.location.href = "/product.jsp?productId=<%= request.getParameter("productId") %>&catId=<%= request.getParameter("catId") %>&product_view=nutrition&skuCode=" + skucode;
+							}
 
-                                    function viewNutrition(skucode) {
-                                        window.location.href = "/product.jsp?productId=<%= request.getParameter("productId") %>&catId=<%= request.getParameter("catId") %>&product_view=ingredients&skuCode=" + skucode;
-                                    }
+						</script>
+						<form>
+							<select name="skuCode" onChange="javascript:viewNutrition(this.options[this.selectedIndex].value)">
+							<%
+							for (Iterator sIter = skus.iterator(); sIter.hasNext(); ) {
+								SkuModel s = (SkuModel) sIter.next();
+								List dvals = ((MultiAttribute) s.getAttribute("VARIATION_MATRIX")).getValues();
+								out.print("<option value=\"" + s.getSkuCode() + "\"");
+								
+								if (s.getSkuCode().equals(skuCode)) {
+									out.print(" SELECTED");
+									fdprd = s.getProduct();
+								}
 
-                                </script>
-                                <form>
-                                <select name="skuCode" onChange="javascript:viewNutrition(this.options[this.selectedIndex].value)">
-                                <%  for (Iterator sIter = skus.iterator(); sIter.hasNext(); ) {
-                                        SkuModel s = (SkuModel) sIter.next();
-                                        List dvals = ((MultiAttribute) s.getAttribute("VARIATION_MATRIX")).getValues();
-                                        out.print("<option value=\"" + s.getSkuCode() + "\"");
-                                        if (s.getSkuCode().equals(skuCode)) {
-                                            out.print(" SELECTED");
-                                            fdprd = s.getProduct();
-                                        }
-                                        out.print(" >");
-                                        if (!sameFirstVar) out.print(((DomainValueRef) dvals.get(0)).getDomainValue().getLabel());
-                                        if (!sameFirstVar && ! sameSecondVar) out.print(" - ");
-                                        if (!sameSecondVar) out.print(((DomainValueRef) dvals.get(1)).getDomainValue().getLabel());
-                                    } %>
-                                </select>
-                                </form>
-                        <%      }
-                            }   %>
+								out.print(" >");
+								
+								if (!sameFirstVar) {
+									out.print(((DomainValueRef) dvals.get(0)).getDomainValue().getLabel());
+								}
+
+								if (!sameFirstVar && ! sameSecondVar) {
+									out.print(" - ");
+								}
+
+								if (!sameSecondVar) {
+									out.print(((DomainValueRef) dvals.get(1)).getDomainValue().getLabel());
+								}
+							}
+							%>
+							</select>
+						</form>
+					<%
+					}
+				}
+				%>
+				
+				<%@ include file="/includes/product/i_product_nutrition.jspf" %>
+                
+				<%
+			} else if ("ingredients".equalsIgnoreCase(productView)) {
+				if (multiple) {
+					if (skus.size() > 1) {
+						String skuCode = request.getParameter("skuCode");
+						
+						if (skuCode == null) {
+							skuCode = productNode.getDefaultSku().getSkuCode();
+						}
+						%>
+						
+						<script language="JavaScript">
+
+							function viewNutrition(skucode) {
+								window.location.href = "/product.jsp?productId=<%= request.getParameter("productId") %>&catId=<%= request.getParameter("catId") %>&product_view=ingredients&skuCode=" + skucode;
+							}
+
+						</script>
+
+						<form>
+							<select name="skuCode" onChange="javascript:viewNutrition(this.options[this.selectedIndex].value)">
+							<%
+							for (Iterator sIter = skus.iterator(); sIter.hasNext(); ) {
+								SkuModel s = (SkuModel) sIter.next();
+								List dvals = ((MultiAttribute) s.getAttribute("VARIATION_MATRIX")).getValues();
+								out.print("<option value=\"" + s.getSkuCode() + "\"");
+								
+								if (s.getSkuCode().equals(skuCode)) {
+									out.print(" SELECTED");
+									fdprd = s.getProduct();
+								}
+								
+								out.print(" >");
+
+								if (!sameFirstVar) {
+									out.print(((DomainValueRef) dvals.get(0)).getDomainValue().getLabel());
+								}
+								
+								if (!sameFirstVar && ! sameSecondVar) {
+									out.print(" - ");
+								}
+								
+								if (!sameSecondVar)  {
+									out.print(((DomainValueRef)dvals.get(1)).getDomainValue().getLabel());
+								}
+							}
+							%>
+							</select>
+						</form>
+					<%
+					}
+				}
+				%>
+
 				<%@ include file="/includes/product/i_product_ingredients.jspf" %>
-			<%} else if (showAbout) {
+
+			<%
+			} else if (showAbout) {
+
 				boolean isProductWine = defaultSku.getProduct().isWine();
 	            // [MNT-26] In case of wines show popup link only in wine department and
 	            //   skip on other departments like our picks
 	            boolean doShowAbout = !isProductWine;
-	            %><%@ include file="/shared/includes/product/i_product_about.jspf" %>
-<%
+	           
+				%>
+				
+				<%@ include file="/shared/includes/product/i_product_about.jspf" %>
+
+				<%
 	            if (productNode.getAttribute("PRODUCT_ABOUT")!=null && doShowAbout) {
-	                %><br><a href="javascript:popup('/shared/popup.jsp?prodId=<%= productNode.getContentName() %>&catId=<%= productNode.getParentNode().getContentName()%>&attrib=PRODUCT_ABOUT&tmpl=large','large');"><b>Learn more about this <%=productNode.getDepartment().getFullName().toLowerCase()%>.</b></a>
-<%
+	                %><br /><a href="javascript:popup('/shared/popup.jsp?prodId=<%= productNode.getContentName() %>&catId=<%= productNode.getParentNode().getContentName()%>&attrib=PRODUCT_ABOUT&tmpl=large','large');"><b>Learn more about this <%=productNode.getDepartment().getFullName().toLowerCase()%>.</b></a>
+				<%
 	            }
 
-			Attribute seasonTextAttrib = productNode.getAttribute("SEASON_TEXT");
-			if (seasonTextAttrib!=null) {
-			%><br>
-    			<img src="/media_stat/images/layout/cccccc.gif" vspace="6" width="200" height="1"><br>
-			<%=seasonTextAttrib.getValue()%>
-    			<img src="/media_stat/images/layout/cccccc.gif" vspace="6" width="200" height="1"><br>
-			<% } %>
+				Attribute seasonTextAttrib = productNode.getAttribute("SEASON_TEXT");
+				
+				if (seasonTextAttrib!=null) {
+					%><br /><img src="/media_stat/images/layout/cccccc.gif" vspace="6" width="200" height="1"><br /><%=seasonTextAttrib.getValue()%><img src="/media_stat/images/layout/cccccc.gif" vspace="6" width="200" height="1"><br />
+				<%
+				}
 
-                <% if (!isProductWine && productNode.hasAttribute("PROD_DESCRIPTION_NOTE")) {
-                        Html media = (Html)productNode.getAttribute("PROD_DESCRIPTION_NOTE").getValue();
-                        String pathToMedia = media.getPath();
-                 %><br><fd:IncludeMedia name="<%=pathToMedia%>" /><br>
-                 <% } %>
+				if (!isProductWine && productNode.hasAttribute("PROD_DESCRIPTION_NOTE")) {
+					Html media = (Html)productNode.getAttribute("PROD_DESCRIPTION_NOTE").getValue();
+					String pathToMedia = media.getPath();
+					%><br /><fd:IncludeMedia name="<%=pathToMedia%>" /><br />
+				<%
+				}
+				%>
 			
-            <fd:ProduceRatingCheck>
-                <% 
-                
-                String produceRating=productNode.getProductRating();                
+				<fd:ProduceRatingCheck>
+					<%
+					/*
+					 *	Dynamic media include based on SKU prefix 
+					 */
+					String produceRatingPrefix=productNode.getDefaultSku().getSkuCode().toString().substring(0,3);
+					String produceRating=productNode.getProductRating();                
                                                 
-                if(produceRating!=null && produceRating.trim().length()>0)
-                {
-                
-                  String ratingMediaPath="/media/brands/fd_ratings/prod_rating.html";                                                                
-                 %>
+					if(produceRating!=null && produceRating.trim().length()>0) {
+						String ratingMediaPath="/media/brands/fd_ratings/"+produceRatingPrefix+"/prod_rating.html";
+						System.out.println("========================	ratingMediaPath? : "+ratingMediaPath);
+						%>
                    
-                      <br><fd:IncludeMedia name="<%=ratingMediaPath%>" /><br> 
-              <% } %>
-            </fd:ProduceRatingCheck>       
+						<br /><fd:IncludeMedia name="<%=ratingMediaPath%>" /><br />
+					<%
+					}
+					%>
+				</fd:ProduceRatingCheck>       
             
  				<%@ include file="/shared/includes/product/organic_claims.jspf" %>
                                 
@@ -210,7 +288,7 @@
 				
 				<%@ include file="/includes/product/kosher.jspf" %>
 				
-				<%= prodPageRatingStuff %><%= prodPageRatingStuff != null ? "<br>" : ""%>
+				<%= prodPageRatingStuff %><%= prodPageRatingStuff != null ? "<br />" : ""%>
 
 				<%@ include file="/includes/product/i_heating_instructions.jspf" %>
 
@@ -221,34 +299,35 @@
 				
 				<%@ include file="/includes/product/i_related_recipes.jspf" %>
 				
-                <% if(productNode.getCountryOfOrigin().size()>0) {%>
-				<b>Origin: </b>
-                
-			   <logic:iterate id="coolText" collection="<%= productNode.getCountryOfOrigin() %>" type="java.lang.String">
-               <br><%=coolText%>
-               </logic:iterate>
-               <br>
-               <%}%>
+                <%
+				if(productNode.getCountryOfOrigin().size()>0) {
+					%><b>Origin: </b>
+					
+					<logic:iterate id="coolText" collection="<%= productNode.getCountryOfOrigin() %>" type="java.lang.String">
+						<br /><%=coolText%>
+					</logic:iterate>
+					<br />
+				<%
+				}
+				%>
+				
 				<%@  include file="/includes/product/i_how_to_cook.jspf" %>
                                 
                 <%@ include file="/shared/includes/product/i_you_might_also_like.jspf" %>
                                 
                 <%@ include file="/shared/includes/product/i_bundled_product_info.jspf" %>
 
-                        <%
-			if (productNode.getParentNode().hasAttribute("CAT_STORAGE_GUIDE_MEDIA")) {
-			%><br>
-    			<img src="/media_stat/images/template/fruit/from_our_experts.gif" width="133" height="13"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
-			<a href="javascript:popup('/shared/popup.jsp?catId=<%=productNode.getParentNode().getContentName()%>&attrib=CAT_STORAGE_GUIDE_MEDIA&tmpl=large','large')"><%=productNode.getDepartment().getFullName()%> Storage Guide</a>
-    			<br>
-			<% } %>
-
-			<% } %>
-                                
-		<% } %>
-
-	<% } catch (Exception ex) {
-			ex.printStackTrace();
-	%>
+				<%
+				if (productNode.getParentNode().hasAttribute("CAT_STORAGE_GUIDE_MEDIA")) {
+					%><br /><img src="/media_stat/images/template/fruit/from_our_experts.gif" width="133" height="13"><br /><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br /><a href="javascript:popup('/shared/popup.jsp?catId=<%=productNode.getParentNode().getContentName()%>&attrib=CAT_STORAGE_GUIDE_MEDIA&tmpl=large','large')"><%=productNode.getDepartment().getFullName()%> Storage Guide</a><br />
+				<%
+				}
+			}
+		}
+	} catch (Exception ex) {
+		ex.printStackTrace();
+		%>
 		<oscache:usecached />
-	<% } %>
+	<%
+	}
+%>
