@@ -72,9 +72,9 @@
             
 		<fd:ProduceRatingCheck>
 			<%
-				String skuCodeRat = productInfo.getSkuCode();
-			
-				if ( skuCodeRat.startsWith("FRU") || skuCodeRat.startsWith("VEG") || skuCodeRat.startsWith("YEL") ) {
+				//sku prefixes are now checked in ProduceRatingCheck
+				//String skuCodeRat = productInfo.getSkuCode();
+				//if ( skuCodeRat.startsWith("FRU") || skuCodeRat.startsWith("VEG") || skuCodeRat.startsWith("YEL") ) {
 					
 					if ( productInfo.getRating() != null && productInfo.getRating().trim().length() > 0 ) { 
 						
@@ -92,7 +92,7 @@
 							<%  
 						}
 					}                            
-				}
+				//}
 			%>                      
 		</fd:ProduceRatingCheck>
                  
