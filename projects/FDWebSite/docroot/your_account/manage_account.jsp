@@ -203,11 +203,11 @@ your account information, this is the place to do it.<br></td>
 		</tr>
 		<tr valign="top">
 			<td valign="top" class="text13" colspan="2"><br>There are no fees, no forms and no hidden costs. <font class="text13bold">
-				<a href="/media/brands/fd_chefstable/fd_chefstable_pop.html">Click here to learn more.</a>
+				<a href="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/brands/fd_chefstable/fd_chefstable_pop.html&windowSize=large&name=Chefs+Table+Almost','large')"><b>Click here to learn more.</b></a>
 				</font> 
 			</td>
 		</tr>
-	</table>
+	</table><br>
 <%  }
 	if(user.isChefsTable() || user.isOkayToDisplayCTEligibility()) {
 	%>
