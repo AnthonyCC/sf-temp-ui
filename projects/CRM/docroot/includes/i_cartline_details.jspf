@@ -1,4 +1,6 @@
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+
 <%
     boolean firstRecipe = true;
 %>
@@ -82,14 +84,56 @@
 	    	  <%= cartLine.getSkuCode() %>
     	  </a>
     	</span>
-		<%          
-		  boolean isRightSkuCode=false;
-			if(cartLine.getSkuCode()!=null && (cartLine.getSkuCode().startsWith("FRU") || cartLine.getSkuCode().startsWith("VEG") || cartLine.getSkuCode().startsWith("YEL") ) )
-			{
-				isRightSkuCode=true;
+		<%
+
+			/*
+			 * There is a similar setup in the JspMethods.java file
+			 */
+	
+			//System.out.println("==== in dept peak produce include ProduceRatingCheck : ");
+
+			boolean matchFound = false; //default to false
+
+			//this is taking the place of a skuCode
+			String deptIdCheck = cartLine.getSkuCode().toString().substring(0,3);
+			if (!"".equals(deptIdCheck) && deptIdCheck != null) {
+				deptIdCheck= deptIdCheck.toUpperCase();
+
+				//System.out.println("	* deptIdCheck :"+deptIdCheck);
+				
+				// grab sku prefixes that should show ratings
+				String _skuPrefixes=FDStoreProperties.getRatingsSkuPrefixes();
+
+				//System.out.println("	* getRatingsSkuPrefixes :"+_skuPrefixes);
+			   
+				//if we have prefixes then check them
+				if (_skuPrefixes!=null && !"".equals(_skuPrefixes)) {
+					StringTokenizer st=new StringTokenizer(_skuPrefixes, ","); //setup for splitting property
+					String curPrefix = ""; //holds prefix to check against
+					String spacer="* "; //spacing for sysOut calls
+					
+					//loop and check each prefix
+					while(st.hasMoreElements()) {
+						
+						curPrefix=st.nextToken();
+
+						//System.out.println(spacer+"Rating _skuPrefixes checking :"+curPrefix);
+						
+						//if prefix matches get product info
+						if(deptIdCheck.startsWith(curPrefix)) {
+							matchFound=true;
+						}
+						//exit on matched sku prefix
+						//System.out.println(spacer+"Rating matchFound :"+matchFound);
+						if (matchFound) { break; }
+						spacer=spacer+"   ";
+					}
+				}
+
+				//System.out.println("Rating matchFound :"+matchFound);
 			}
-		%>
-		<%  if(cartLine.getProduceRating()!=null && isRightSkuCode && cartLine.getProduceRating().isEligibleToDisplay()){ %>
+			
+			if(cartLine.getProduceRating()!=null && matchFound && cartLine.getProduceRating().isEligibleToDisplay()){ %>
 			&nbsp;<img src="/media_stat/images/ratings/product_<%=cartLine.getProduceRating().getStatusCodeInDisplayFormat()%>.gif"  name="rating" alt="<%=cartLine.getProduceRating().getStatusCodeInDisplayFormat()%>"  height="11" border="0">
 		<% } %> 
     </td>

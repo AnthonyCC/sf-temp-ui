@@ -83,13 +83,15 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 	}
 	
 	
-private Collection getAllPeakProduceForDept(DepartmentModel dept) throws FDResourceException {
+	private Collection getAllPeakProduceForDept(DepartmentModel dept) throws FDResourceException {
 		
 	    List products=new ArrayList();
 		List deptList=new ArrayList();
-		System.out.println("dept.getContentKey().getId()  :"+dept.getContentKey().getId());
+		//System.out.println("|=== dept.getContentKey().getId()  :"+dept.getContentKey().getId());
 		deptList.add(dept.getContentKey().getId());
 		List _products=FDCachedFactory.findPeakProduceSKUsByDepartment(deptList);
+		//System.out.println("||===== getAllPeakProduceForDept after query: "+_products);
+        
 		
 		if(_products!=null && _products.size()!=0) {
 			products=new ArrayList(_products.size());
@@ -115,10 +117,10 @@ private Collection getAllPeakProduceForDept(DepartmentModel dept) throws FDResou
 		}
 		
 		
-		//System.out.println("Peak produce before remove duplicates:"+products);
+		//System.out.println("||||=== getAllPeakProduceForDept before remove duplicates: "+products);
         //products=removeDuplicates(products);        
         //System.out.println("Peak produce after remove duplicates:"+products);	
-		return products;			
+		return products;
 	}
 	
 
@@ -137,9 +139,10 @@ private Collection getAllPeakProduceForDept(DepartmentModel dept) throws FDResou
 				products.addAll(_products);
 			}
 		}
-		
+
+	      //System.out.println("-=--=-=--=-==-==-=BEFORE Peak produce :"+products);
         products=removeDuplicates(products);
-//      System.out.println("Peak produce :"+products);
+      //System.out.println("-=--=-=--=-==-==-=AFTER Peak produce :"+products);
 		if(products.size()<MIN_PEAK_PRODUCE_COUNT) {
 			if (this.useMinCount) {
 				//if true (default) return an empty list
@@ -178,6 +181,7 @@ private Collection getAllPeakProduceForDept(DepartmentModel dept) throws FDResou
 //		 agb begin
 		//return products;		
 
+		//System.out.println("===start=== removeDuplicates:"+products);
 		Map m = new HashMap();
 		Iterator it = set.iterator();
 
@@ -186,6 +190,8 @@ private Collection getAllPeakProduceForDept(DepartmentModel dept) throws FDResou
 			Object obj=it.next();
 			if(obj instanceof SkuModel)
 			{
+
+				//System.out.println("=== instanceof SkuModel:");
 				SkuModel sku = (SkuModel)obj; 
 				try {
 					FDProductInfo prodInfo = sku.getProductInfo();
@@ -211,12 +217,15 @@ private Collection getAllPeakProduceForDept(DepartmentModel dept) throws FDResou
 				}
 			}else if(obj instanceof ProductModel){
 
+				//System.out.println("=== instanceof ProductModel:");
 				ProductModel product = (ProductModel)obj; 								
 				List skus=product.getSkus();
 				String rating=null;
 				SkuModel skuTemp=null;
 				for(int i=0;i<skus.size();i++) {
 					skuTemp=(SkuModel)skus.get(i);
+
+					//System.out.println("=== skuTemp: "+skuTemp);
 					if(skuTemp.isDiscontinued() || skuTemp.isOutOfSeason() || skuTemp.isTempUnavailable() ||(!skuTemp.isAvailableWithin(2))) {//sku is available tomorrow.
 						continue;
 					}				   											
@@ -234,9 +243,11 @@ private Collection getAllPeakProduceForDept(DepartmentModel dept) throws FDResou
 							if(isBrand) {
 								m.put(materialNumber, product);
 							}
+							//System.out.println("=== DOES === m.containsKey(materialNumber): ");
 						}
 						else{
 							m.put(materialNumber, product);
+							//System.out.println("=== DOES NOT === m.containsKey(materialNumber): ");
 						}
 					}
 					catch (FDSkuNotFoundException e) { 
@@ -247,13 +258,16 @@ private Collection getAllPeakProduceForDept(DepartmentModel dept) throws FDResou
 		}
 
 		Collection c = m.values();
+
+		//System.out.println("===========Peak produce after remove duplicates:"+products);
 		return new ArrayList(c);  //agb end	
 	}
 
 	
 	private void setPeakProduce(CategoryModel category, List products) throws FDResourceException {
 
-		
+
+	      //System.out.println("-===|||||||---- setPeakProduce :"+products);
 		List peakProduce=getPeakProduce(category.getProducts());
 		if(peakProduce!=null && peakProduce.size()>0)
 			products.addAll(peakProduce);
@@ -270,6 +284,9 @@ private Collection getAllPeakProduceForDept(DepartmentModel dept) throws FDResou
 		if(products==null || products.size()==0) {
 			return null;
 		}
+
+	      //System.out.println("-===__________---- setPeakProduce :"+products);
+		
 		List peakProduce=new ArrayList(10);
 		Iterator it=products.iterator();
 		SkuModel sku=null;
@@ -315,7 +332,6 @@ private Collection getAllPeakProduceForDept(DepartmentModel dept) throws FDResou
 			StringTokenizer st=new StringTokenizer(_skuPrefixes, ","); //setup for splitting property
 			String curPrefix = ""; //holds prefix to check against
 			//String spacer="* "; //spacing for sysOut calls
-			//System.out.println(spacer+"Rating _skuPrefixes 1st :"+firstPrefix); 
 			
 			//loop and check each prefix
 			while(st.hasMoreElements()) {
@@ -333,7 +349,7 @@ private Collection getAllPeakProduceForDept(DepartmentModel dept) throws FDResou
 				//spacer=spacer+"   ";
 			}
 		}
-		
+		//System.out.println("Rating matchFound :"+matchFound);
 		return matchFound;
 	}
 	private boolean isPeakProduce(String rating) {
