@@ -72,4 +72,12 @@
             DataLoaderEJB-WL.jar
         </listener-uri>
     </listener>
+    <listener>
+            <listener-class>
+                com.freshdirect.dataloader.employee.WLSSapEmployeeFeedServer
+            </listener-class>
+            <listener-uri>
+                DataLoaderEJB-WL.jar
+            </listener-uri>
+    </listener>
 </weblogic-application>
