@@ -50,5 +50,7 @@ public abstract class BapiFactory {
 	public abstract BapiPostReturnI getPostReturnBuilder();
 
 	public abstract BapiCartonInfo getCartonInfoProvider();
+	
+	public abstract BapiSendEmployeeInfo getSendEmployeeInfoSender();
 
 }
