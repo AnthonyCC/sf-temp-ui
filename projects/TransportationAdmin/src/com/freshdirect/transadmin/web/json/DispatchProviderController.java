@@ -10,10 +10,12 @@ import java.util.Iterator;
 
 import com.freshdirect.customer.ErpRouteMasterInfo;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
+import com.freshdirect.transadmin.model.UserPref;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.LogManagerI;
 import com.freshdirect.transadmin.util.TransStringUtil;
+import com.freshdirect.transadmin.web.util.TransWebUtil;
 
 public class DispatchProviderController extends JsonRpcController  implements IDispatchProvider {
 	
@@ -122,5 +124,32 @@ public class DispatchProviderController extends JsonRpcController  implements ID
 		return null;
 	}
 	
+	public int updateUserPref(String key,String value)
+	{
+		try {
+			String userName=com.freshdirect.transadmin.security.SecurityManager.getUserName(getHttpServletRequest());
+			UserPref pref=new UserPref();
+			pref.setUserId(userName);
+			pref.setKey(key);
+			pref.setValue(value);
+			Collection list=new ArrayList();
+			list.add(pref);
+			dispatchManagerService.removeEntity(list);
+			dispatchManagerService.saveEntityEx(pref);	
+			TransWebUtil.updatePref(getHttpServletRequest(), pref);
+			return 1;
+		} catch (Exception e) 
+		{
+			e.printStackTrace();
+			return 0;
+		}
+	}
+
+	public String getUserPref(String key) 
+	{
+		String value=TransWebUtil.getUserPref(getHttpServletRequest(), key);
+		if(value==null) value="";
+		return value;
+	}
 	
 }

@@ -28,6 +28,7 @@ import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.EnumResourceType;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
+import com.freshdirect.transadmin.web.util.TransWebUtil;
 
 public class DispatchFormController extends AbstractFormController {
 
@@ -84,11 +85,11 @@ public class DispatchFormController extends AbstractFormController {
 		}
 		boolean isToday=TransStringUtil.isToday(dispatch.getDispatchDate());
 		Collection punchInfo=null;
-		if(isToday)
+		if(isToday&&TransWebUtil.isPunch(getDispatchManagerService()))
 			punchInfo=employeeManagerService.getPunchInfo(TransStringUtil.getServerDate(dispatch.getDispatchDate()));
 		
 		DispatchCommand dispatchCommand=DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService,punchInfo,null,null);
-		if(isToday) DispatchPlanUtil.setDispatchStatus(dispatchCommand);
+		if(isToday&&TransWebUtil.isPunch(getDispatchManagerService())) DispatchPlanUtil.setDispatchStatus(dispatchCommand);
 		return dispatchCommand;
 	}
 
@@ -206,7 +207,9 @@ public class DispatchFormController extends AbstractFormController {
 
 
 
-	protected String getIdFromRequest(HttpServletRequest request){
+	protected String getIdFromRequest(HttpServletRequest request)
+	{
+		TransWebUtil.httpRequest.set(request);
 		String id = request.getParameter("id");
 		if(TransStringUtil.isEmpty(id)) {
 			id=request.getParameter("dispatchId");

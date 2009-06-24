@@ -77,6 +77,11 @@
 	     	<access-uris>cutoff.do,deletecutoff.do,editcutoff.do</access-uris>
      	 	<access-roles>TrnAdmin,TrnPlanning</access-roles>
      	 </menu>
+     	 
+     	<!--    <menu id="RUT008" title="SCRIB" orientation="LEFT" link="scrib.do">
+	     	<access-uris>scrib.do,editscrib.do,copyscrib.do,deletescrib.do</access-uris>
+     	 	<access-roles>TrnAdmin,TrnPlanning</access-roles>
+     	 </menu> -->
 </menu>
 
 	<menu id="MNM003" title="GEOGRAPHY" orientation="LEFT" link="">

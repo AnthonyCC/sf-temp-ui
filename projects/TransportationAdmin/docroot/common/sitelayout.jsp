@@ -37,9 +37,18 @@
 	<tmpl:get name='yui-lib'/>
 	<tmpl:get name='gmap-lib'/>
 	
-</head>
- <body class="<tmpl:get name='yui-skin'/>" marginwidth="0" marginheight="0" border="0">
 	
+	
+</head>
+
+
+
+ <body id="body1" class="" marginwidth="0" marginheight="0" border="0">
+	<script>
+    var s='<tmpl:get name='yui-skin'/>';   
+    if(s=='') s="yui-skin-sam";
+    document.getElementById("body1").className=s;          
+	</script>
 			<%
 				try {
 				MenuGroup menuGroup = MenuManager.getInstance().getMenuGroup(request);				
@@ -65,7 +74,7 @@
 					<% } else { %>
 					<div class="loginout"><input type="button" value="LOG IN" onclick="location.href='.'"></div>
 					<% } %>
-					<div><span class="nameTitle">User:</span> <span style=""><%= userId != null ? userId : ""%></span></div>
+					<div><span class="nameTitle"><a href="javascript:showUserPref()"> User:</a></span> <span style=""><%= userId != null ? userId : ""%></span></div>
 					<div><span class="levelTitle">Level:</span> <span style=""><%=userRole != null ? userRole : ""%></span></div>
 				</div>
 
@@ -140,5 +149,6 @@
 		<br style="clear:both;">
     <tmpl:get name='content'/>
 	<br>
+	 <%@ include file='i_userPref.jspf'%> 
 </body>
 </html>

@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Nov 18, 2008 3:11:24 PM by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping schema="transp">
+    <class name="com.freshdirect.transadmin.model.Scrib" table="SCRIB">
+        <id name="scribId" type="string">
+            <column name="SCRIB_ID" length="10" />
+           <generator class="sequence">
+    			<param name="sequence">SCRIBSEQ</param>
+			</generator>
+        </id>
+        <many-to-one name="zone" class="com.freshdirect.transadmin.model.Zone" fetch="select" lazy="false">
+            <column name="ZONE_ID" length="16" />
+        </many-to-one>
+        <many-to-one name="region" class="com.freshdirect.transadmin.model.Region" fetch="select" lazy="false">
+            <column name="REGION_ID" length="16" not-null="true" />
+        </many-to-one>
+        <property name="scribDate" type="timestamp">
+            <column name="SCRIB_DATE" length="7" />
+        </property>
+        <property name="startTime" type="timestamp">
+            <column name="START_TIME" length="7" />
+        </property>
+        <property name="firstDlvTime" type="timestamp">
+            <column name="FIRST_WINDOW_TIME" length="7" />
+        </property>
+        <property name="endDlvTime" type="timestamp">
+            <column name="END_WINDOW_TIME" length="7" />
+        </property>
+        <property name="maxReturnTime" type="timestamp">
+            <column name="MAX_RETURN_TIME" length="7" />
+        </property>
+         <property name="routeLength" type="int">
+            <column name="ROUTE_LENGTH" precision="5" scale="0" />
+        </property>
+         <property name="count" type="int">
+            <column name="COUNT" precision="5" scale="0"  />
+        </property>
+        
+     
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,79 @@
+ <%@ include file='i_yui.jspf'%>
+ <script type="text/javascript" src="js/dataTable.js"></script> 
+ <script>
+      
+      function savePref()
+      {
+       var key=document.getElementById("userPref_key").value;
+        var s=document.getElementById("pref_success");
+       if(key!="")
+       {
+	       var value=document.getElementById("userPref_value").value;      
+	       var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
+	       var result= jsonrpcClient.AsyncDispatchProvider.updateUserPref(key,value);      
+	      
+	       if(result==1)    	s.innerHTML="Successfully Submitted";   
+	       else     s.innerHTML="Error while updating";  
+	    }
+       else
+       {
+      		 s.innerHTML="Please Select Pref";
+      		 document.getElementById("userPref_value").value="";  
+       } 
+      }
+      function fetchValue()
+      {
+       var key=document.getElementById("userPref_key").value;
+       if(key!="")
+       {
+       		var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
+       		var result= jsonrpcClient.AsyncDispatchProvider.getUserPref(key);      
+       		document.getElementById("userPref_value").value=result;
+       }
+       else
+       {
+       	document.getElementById("userPref_value").value="";
+       }  
+      }
+      function showUserPref() 
+      {   
+         var  panel = new YAHOO.widget.Panel("userPref", 
+         {
+                         fixedcenter: true, 
+                         close: true, 
+                         draggable: false, 
+                         zindex:4,
+                         modal: true,
+                         visible: false,
+                         effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});  
+                   
+         panel.setHeader("User Configuration");
+         panel.render(document.body);
+         panel.show();
+         document.getElementById("pref_success").innerHTML="";
+     }
+    </script>
+ <div STYLE='display:none;height:0px;width:0px;'> 
+    <div id="userPref" >
+      <div class="bd">
+           <div id="userPrefContainer" style="background-color:#D7C8FF;" >
+           <span id="pref_success"></span>
+           	<table>           		
+				<tr><td>Key:  </td><td>
+				<select id="userPref_key" name="key" onchange="javascript:fetchValue()">
+					<option value="">Select</option>
+					<option value="punch">Punch</option>
+					<option value="airclick">Air Click</option>					
+				</select>
+				
+				</td></tr>
+				<tr><td>Value:</td><td><input id="userPref_Value" type=input name="value" value=""></td></tr>
+				
+				<tr>
+					<td colspan="2" align="center"><input type="button" value="Submit" onclick="javascript:savePref()" /> </td>
+				</tr> 
+				</table>
+           </div> 
+      </div>    
+    </div>
+</div>    

@@ -46,6 +46,8 @@
 				
 				<value>com/freshdirect/transadmin/model/RouteMapping.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/ActivityLog.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/Scrib.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/UserPref.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">

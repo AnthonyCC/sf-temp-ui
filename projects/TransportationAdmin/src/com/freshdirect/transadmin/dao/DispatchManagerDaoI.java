@@ -6,6 +6,7 @@ import org.springframework.dao.DataAccessException;
 
 import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.Plan;
+import com.freshdirect.transadmin.model.Scrib;
 
 public interface DispatchManagerDaoI extends BaseManagerDaoI {
 
@@ -37,4 +38,9 @@ public interface DispatchManagerDaoI extends BaseManagerDaoI {
 	void savePlan(Plan plan) throws DataAccessException;
 	
 	public void evictDispatch(Dispatch d)throws DataAccessException ;
+	
+	public Collection getScribList(String date);
+	
+	public Scrib getScrib(String id);
+	public Collection getUserPref(String userId);
 }

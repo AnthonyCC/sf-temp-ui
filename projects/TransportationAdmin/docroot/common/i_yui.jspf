@@ -1,3 +1,4 @@
+<head>
 <link rel="stylesheet" type="text/css" href="css/yui/assets/skins/sam/logger.css" />
 <link rel="stylesheet" type="text/css" href="css/yui/assets/skins/sam/datatable.css" />
 <link rel="stylesheet" type="text/css" href="css/yui/assets/skins/sam/button.css" />
@@ -27,3 +28,4 @@
 <script type="text/javascript" src="js/yui/container-min.js"></script>
 <script type="text/javascript" src="js/yui/dragdrop-debug.js"></script> 
 <script type="text/javascript" src="js/yui/calendar-min.js"></script> 
+</head>

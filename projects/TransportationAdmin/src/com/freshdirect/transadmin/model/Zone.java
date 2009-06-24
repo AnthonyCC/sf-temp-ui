@@ -3,6 +3,7 @@ package com.freshdirect.transadmin.model;
 // Generated Nov 18, 2008 3:11:21 PM by Hibernate Tools 3.2.2.GA
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,7 +21,8 @@ public class Zone implements java.io.Serializable {
 	private BigDecimal priority;
 	private String obsolete;
 	private final BigDecimal DEFAULT_PRIORITY=new BigDecimal(-1);
-
+    private BigInteger stemTime;
+	
 	public String getObsolete() {
 		return obsolete;
 	}
@@ -113,6 +115,14 @@ public class Zone implements java.io.Serializable {
 
 	public void setPriority(BigDecimal priority) {
 		this.priority = priority;
+	}
+
+	public BigInteger getStemTime() {
+		return stemTime;
+	}
+
+	public void setStemTime(BigInteger stemTime) {
+		this.stemTime = stemTime;
 	}
 	
 

@@ -11,6 +11,7 @@ import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.DispatchResource;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.PlanResource;
+import com.freshdirect.transadmin.model.Scrib;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class DispatchManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl implements DispatchManagerDaoI {
@@ -194,5 +195,25 @@ public class DispatchManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 		}
 
 		
+	}
+
+	public Collection getScribList(String date) {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from Scrib s");
+		strBuf.append(" where s.scribDate='").append(date).append("' order by s.scribDate");
+
+		return (Collection) getHibernateTemplate().find(strBuf.toString());
+	}
+
+	public Scrib getScrib(String id) {
+		return (Scrib)getEntityById("Scrib","scribId",id);
+	}
+	public Collection getUserPref(String userId)
+	{
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from UserPref s");
+		strBuf.append(" where s.userId='").append(userId).append("'");
+
+		return (Collection) getHibernateTemplate().find(strBuf.toString());
 	}
 }

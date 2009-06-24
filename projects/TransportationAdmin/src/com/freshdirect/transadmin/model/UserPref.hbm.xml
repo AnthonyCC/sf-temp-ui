@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Nov 18, 2008 3:11:24 PM by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping schema="transp">
+    <class name="com.freshdirect.transadmin.model.UserPref" table="USER_PREF">
+        <composite-id >       
+        	<key-property name="userId" column="USER_ID" type="string" />
+        	<key-property name="key" column="KEY" type="string"/>       
+       </composite-id> 
+       
+         <property name="value" type="string">
+            <column name="VALUE" />
+        </property>
+        
+     
+    </class>
+</hibernate-mapping>

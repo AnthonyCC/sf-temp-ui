@@ -56,6 +56,7 @@ import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 import com.freshdirect.transadmin.web.model.WebPlanInfo;
+import com.freshdirect.transadmin.web.util.TransWebUtil;
 
 public class DispatchController extends AbstractMultiActionController {
 
@@ -208,14 +209,14 @@ public class DispatchController extends AbstractMultiActionController {
 		String region = request.getParameter("region");
 		ModelAndView mav = new ModelAndView("dispatchView");
 		if(!TransStringUtil.isEmpty(dispDate)) {			
-			boolean punchInfo=getServerDate(dispDate).equals(TransStringUtil.getCurrentServerDate())?true:false;
-			Collection c=getDispatchInfos(getServerDate(dispDate), zone, region, false,punchInfo);
+			//boolean punchInfo=getServerDate(dispDate).equals(TransStringUtil.getCurrentServerDate())?true:false;			
+			Collection c=getDispatchInfos(getServerDate(dispDate), zone, region, false,TransWebUtil.isPunch(request, dispatchManagerService),TransWebUtil.isAirClick(request, dispatchManagerService));
 			DispatchPlanUtil.setDispatchStatus(c,false);
 			mav.getModel().put("dispatchInfos",c );
 			mav.getModel().put("dispDate", dispDate);
 		} else {
 			//By default get the today's dispatches.
-			Collection c=getDispatchInfos(TransStringUtil.getCurrentServerDate(), zone, region, false,true);
+			Collection c=getDispatchInfos(TransStringUtil.getCurrentServerDate(), zone, region, false,TransWebUtil.isPunch(request, dispatchManagerService),TransWebUtil.isAirClick(request, dispatchManagerService));
 			DispatchPlanUtil.setDispatchStatus(c,false);
 			mav.getModel().put("dispatchInfos",c);
 			mav.getModel().put("dispDate", TransStringUtil.getCurrentDate());
@@ -228,7 +229,7 @@ public class DispatchController extends AbstractMultiActionController {
 	public ModelAndView dispatchSummaryHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 
 		ModelAndView mav = new ModelAndView("dispatchSummaryView");
-		Collection c=getDispatchInfos(TransStringUtil.getCurrentServerDate(), null, null, true,true);
+		Collection c=getDispatchInfos(TransStringUtil.getCurrentServerDate(), null, null, true,TransWebUtil.isPunch(request, dispatchManagerService),TransWebUtil.isAirClick(request, dispatchManagerService));
 		//By default get the today's dispatches.
 		DispatchPlanUtil.setDispatchStatus(c,false);
 		mav.getModel().put("dispatchInfos",c);
@@ -258,7 +259,7 @@ public class DispatchController extends AbstractMultiActionController {
 				request.setAttribute("lastTime", TransStringUtil.getServerTime(new Date()));
 			} catch (ParseException e1) {}
 			//By default get the today's dispatches.
-			Collection c=getDispatchInfos(getServerDate(dispDate), null, null, true,true);
+			Collection c=getDispatchInfos(getServerDate(dispDate), null, null, true,TransWebUtil.isPunch(request, dispatchManagerService),TransWebUtil.isAirClick(request, dispatchManagerService));
 			DispatchPlanUtil.setDispatchStatus(c,true);
 						
 			
@@ -273,7 +274,7 @@ public class DispatchController extends AbstractMultiActionController {
 		return new ModelAndView("dispatchDashboardView");
 	}
 
-	private Collection getDispatchInfos(String dispDate, String zoneStr, String region, boolean isSummary, boolean needsPunchInfo){
+	private Collection getDispatchInfos(String dispDate, String zoneStr, String region, boolean isSummary, boolean needsPunchInfo,boolean needsAirClick){
 		Collection dispatchInfos = new ArrayList();
 		List termintedEmployees = getTermintedEmployeeIds();
 		try {
@@ -282,11 +283,15 @@ public class DispatchController extends AbstractMultiActionController {
 		Map htInData=null;
 		Map htOutData=null;
 		domainManagerService.refreshCachedData(EnumCachedDataType.TRUCK_DATA);
+		//needsPunchInfo=false;
 		if(needsPunchInfo && dispatchList!=null && !dispatchList.isEmpty())
 			punchInfo=employeeManagerService.getPunchInfo(dispDate);
 			Date dispDateTemp=TransStringUtil.serverDateFormat.parse(dispDate);
-		    htInData=dispatchManagerService.getHTInScan(dispDateTemp);
-		    htOutData=dispatchManagerService.getHTOutScan(dispDateTemp);
+			if(needsAirClick)
+			{
+				htInData=dispatchManagerService.getHTInScan(dispDateTemp);
+				htOutData=dispatchManagerService.getHTOutScan(dispDateTemp);
+			}
 		Iterator iter = dispatchList.iterator();
 			while(iter.hasNext()){
 				Dispatch dispatch = (Dispatch) iter.next();

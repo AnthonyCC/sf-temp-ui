@@ -23,6 +23,7 @@ import com.freshdirect.transadmin.model.FDRouteMasterInfo;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.PunchInfoI;
 import com.freshdirect.transadmin.model.ResourceI;
+import com.freshdirect.transadmin.model.Scrib;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
@@ -464,6 +465,18 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	public void setLogManager(LogManagerI logManager) {
 		this.logManager = logManager;
 	}
+
+	public Collection getScribList(String date) {
+		return getDispatchManagerDao().getScribList(date);
+	}
+
+	public Scrib getScrib(String id) {
+		return getDispatchManagerDao().getScrib(id);
+	}
 	
+	public Collection getUserPref(String userId)
+	{
+		return getDispatchManagerDao().getUserPref(userId);
+	}
 	
 }

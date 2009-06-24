@@ -109,6 +109,9 @@
 				<prop key="/gmap.do">geographyController</prop>
 				<prop key="/drivingdirection.do">dispatchController</prop>
                 <prop key="/unassignedactiveemployees.do">dispatchController</prop>
+                <prop key="/scrib.do">scribController</prop>
+                <prop key="/deletescrib.do">scribController</prop>
+                <prop key="/editscrib.do">scribFormController</prop>
 			</props>
 		</property>
 	</bean>
@@ -210,6 +213,8 @@
 			<prop key="/gmap.do">geographicBoundaryHandler</prop>
 			<prop key="/drivingdirection.do">drivingDirectionsHandler</prop>
             <prop key="/unassignedactiveemployees.do">unassignedPunchedInEmployeeHandler</prop>
+            <prop key="/scrib.do">scribHandler</prop>
+            <prop key="/deletescrib.do">deleteScribHandler</prop>	
 		</props>
 		</property>
 	</bean>
@@ -479,6 +484,23 @@
         <property name="restrictionManagerService" ref="restrictionManager"/>        
         <property name="zoneManagerService" ref="zoneManager"/>
 	</bean>
+	
+	<bean id="scribController" class="com.freshdirect.transadmin.web.ScribController">
+		<property name="methodNameResolver" ref="transAdminControllerResolver"/>
+        <property name="dispatchManagerService" ref="dispatchManager"/>
+        <property name="employeeManagerService" ref="employeeManager"/>
+        <property name="domainManagerService" ref="domainManager"/>
+	</bean>
+	<bean id="scribFormController" class="com.freshdirect.transadmin.web.ScribFormController">		
+		<property name="domainManagerService" ref="domainManager"/>
+		<property name="dispatchManagerService" ref="dispatchManager"/>
+        <property name="sessionForm" value="true"/>
+        <property name="commandName" value="scribForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.model.Scrib"/>
+        <property name="validator" ref="scribValidator"/>
+        <property name="successView" value="editScribView" />
+        <property name="formView" value="editScribView" />
+	</bean>
 	    
 	<bean id="employeeValidator" class="com.freshdirect.transadmin.web.validation.EmployeeValidator"/>
 	<bean id="zoneValidator" class="com.freshdirect.transadmin.web.validation.ZoneValidator"/>
@@ -503,6 +525,7 @@
 	<bean id="cutOffValidator" class="com.freshdirect.transadmin.web.validation.CutOffValidator"/>
 	
 	<bean id="geoRestrictionValidator" class="com.freshdirect.transadmin.web.validation.GeoRestrictionValidator"/>
+	<bean id="scribValidator" class="com.freshdirect.transadmin.web.validation.ScribValidator"/>
 	
 	
 </beans>
