@@ -1,3 +1,5 @@
+
+
 .tvMainDiv
 {
 	width: 100%;
@@ -145,7 +147,7 @@
   	color: red; 
   	height:1px;  	
 }
-.eXtremeTable .red td{ 
+.eXtremeTable .red td 
 {
 	background-color: #4C4C4C;	
 	color: red;  
@@ -262,7 +264,6 @@
 	font-size: 9px;
 	border: solid 1px #EEE;
 }
-
 .tv_header
 {
 	background-color: green;
@@ -285,3 +286,4 @@
 	font-weight: bold;
 	font-size: 15px;
 }
+
