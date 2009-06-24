@@ -23,7 +23,12 @@
 	boolean mainPromo = user.getLevel() < FDUserI.RECOGNIZED && user.isEligibleForSignupPromotion();
         
         request.setAttribute("sitePage", "www.freshdirect.com/index.jsp");
-        request.setAttribute("listPos", "SystemMessage,HPLeftTop,HPLeftMiddle,HPLeftBottom,HPMiddleBottom,HPRightBottom");
+        if(!user.isCampaignMsgLimitViewed() && (!user.getWinbackPath().equals("") || !user.getMarketingPromoPath().equals(""))) {
+        	request.setAttribute("listPos", "SystemMessage,HPLeftTop,HPLeftMiddle,HPLeftBottom");
+        } else {
+        	request.setAttribute("listPos", "SystemMessage,HPLeftTop,HPLeftMiddle,HPLeftBottom,HPMiddleBottom,HPRightBottom");
+        }
+        user.setCampaignMsgViewed(user.getCampaignMsgViewed() + 1);
 %>
 <tmpl:insert template='/common/template/no_shell.jsp'>
 	<tmpl:put name='title' direct='true'>Welcome to FreshDirect</tmpl:put>
@@ -187,7 +192,6 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 				</table>
 		     <% } %>
 		     </fd:OrderHistoryInfo>
-			
 		<% } %>
 		<% if(user.isEligibleForPreReservation() && user.getReservation() != null){
 			FDReservation rsv = user.getReservation();
@@ -195,7 +199,29 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 		<img src="/media_stat/images/layout/cccccc.gif" width="490" height="1" vspace="8"><table width="490" cellpadding="0" cellspacing="0" border="0"><tr><td><font class="text9"><b>You have a delivery slot reserved for:</b></font> <a href="/your_account/reserve_timeslot.jsp"><%=CCFormatter.formatReservationDate(rsv.getStartTime())%> @ <%=FDTimeslot.format(rsv.getStartTime(), rsv.getEndTime())%></a></td>
 		</tr></table>
 		<%}%>
-		<img src="/media_stat/images/layout/cccccc.gif" width="490" height="1" vspace="8"><br>
+		
+		
+		 <%
+		     if (!user.isCampaignMsgLimitViewed() && (!user.getWinbackPath().equals("") || !user.getMarketingPromo().equals(""))) {
+					%>
+				
+				<table width="490" cellpadding="0" cellspacing="0" border="0">
+				<tr><td><img src="/media_stat/images/layout/clear.gif" width="310" height="6"></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="150" height="6"></td></tr>
+			       	<tr><td colspan="2" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+				<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td></tr>
+				</table>
+				<table width="490" cellpadding="0" cellspacing="0" border="0">
+				<tr><td>
+				<% if(!user.getWinbackPath().equals("")) { %>
+					<fd:IncludeMedia name="<%=user.getWinbackPath()%>" />
+				<% } else if( !user.getMarketingPromoPath().equals("")) { %>
+					<fd:IncludeMedia name="<%=user.getMarketingPromoPath()%>" />
+				<% } %>
+				</td></tr>
+				</table>
+	     <% } %>
+	     <img src="/media_stat/images/layout/cccccc.gif" width="490" height="1" vspace="8"><br>
 		<%@ include file="/includes/i_departments.jspf" %>
 	<% } %>
 	<%-- END MAIN CONTENT--%>

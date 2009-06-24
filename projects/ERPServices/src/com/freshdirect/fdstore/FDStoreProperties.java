@@ -88,6 +88,10 @@ public class FDStoreProperties {
 	private final static String PROP_AD_SERVER_PROFILE_ATTRIBS = "fdstore.adServerProfileAttribs";
 
 	private final static String PROP_AD_SERVER_USES_DEFERRED_IMAGE_LOADING = "fdstore.adServerUsesDeferredImageLoading";
+	
+	private final static String PROP_IMPRESSION_LIMIT = "fdstore.impressionLimit";
+	private final static String PROP_WINBACK_ROOT = "fdstore.winbackRoot";
+	private final static String PROP_MARKETING_PROMO_ROOT = "fdstore.marketingPromoRoot";
 
 	private final static String PROP_REFRESHSECS_PRODUCTINFO  = "fdstore.refreshSecs.productInfo";
 	private final static String PROP_REFRESHSECS_PRODUCT  = "fdstore.refreshSecs.product";
@@ -689,6 +693,18 @@ public class FDStoreProperties {
 
 	public static String getAdServerUpdatesURL(){
 		return get(PROP_AD_SERVER_UPDATES_URL);
+	}
+	
+	public static int getImpressionLimit(){
+		return Integer.parseInt(get(PROP_IMPRESSION_LIMIT));
+	}
+	
+	public static String getWinbackRoot(){
+		return get(PROP_WINBACK_ROOT);
+	}
+	
+	public static String getMarketingPromoRoot(){
+		return get(PROP_MARKETING_PROMO_ROOT);
 	}
 
 	public static int getRefreshSecsProductInfo(){

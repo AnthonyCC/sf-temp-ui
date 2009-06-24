@@ -475,8 +475,16 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		return this.user.getWinback();
 	}
 	
+	public String getWinbackPath() throws FDResourceException {
+		return this.user.getWinbackPath();
+	}
+	
 	public String getMarketingPromo() throws FDResourceException {
 		return this.user.getMarketingPromo();
+	}
+	
+	public String getMarketingPromoPath() throws FDResourceException {
+		return this.user.getMarketingPromoPath();
 	}
 	
 	public boolean isEligibleForPreReservation() throws FDResourceException{

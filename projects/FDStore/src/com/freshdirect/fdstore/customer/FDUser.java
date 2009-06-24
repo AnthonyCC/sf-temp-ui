@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
@@ -686,6 +687,33 @@ public class FDUser extends ModelSupport implements FDUserI {
 			return customer.getProfile().getWinback();
 		}
 	}
+	
+	public String getWinbackPath() throws FDResourceException {
+		
+		String winback = getWinback();
+		if(winback.equals(""))
+			return "";
+		
+		StringTokenizer st = new StringTokenizer(winback, "_");
+		int countTokens = st.countTokens();
+		if (countTokens < 3)
+			return "";
+		String temp = st.nextToken(); // date token which we don't need
+		return FDStoreProperties.getWinbackRoot() + st.nextToken()+ "/" + st.nextToken() + ".html";
+	}
+	
+	public String getMarketingPromoPath() throws FDResourceException {
+		
+		String mktgPromo = getMarketingPromo();
+		if(mktgPromo.equals(""))
+			return "";
+		
+		StringTokenizer st = new StringTokenizer(mktgPromo, "_");
+		int countTokens = st.countTokens();
+		if (countTokens < 3)
+			return "";
+		return FDStoreProperties.getMarketingPromoRoot() + st.nextToken() + "/" + st.nextToken()+ "/" + st.nextToken() + ".html";
+	}
 
 	public String getMarketingPromo() throws FDResourceException {
     
@@ -1252,7 +1280,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 	
 	public boolean isCampaignMsgLimitViewed() {
-		if(getCampaignMsgViewed() >= FDUser.CAMPAIGN_MSG_VIEW_LIMIT)
+		if(getCampaignMsgViewed() >= FDStoreProperties.getImpressionLimit())
 			return true;
 		return false;
 	}

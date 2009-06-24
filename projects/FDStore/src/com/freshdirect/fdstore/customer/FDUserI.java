@@ -177,7 +177,11 @@ public interface FDUserI extends java.io.Serializable {
 	
 	public String getWinback() throws FDResourceException;
 	
+	public String getWinbackPath() throws FDResourceException;
+	
 	public String getMarketingPromo() throws FDResourceException;
+	
+	public String getMarketingPromoPath() throws FDResourceException;
 	
 	public boolean isEligibleForPreReservation() throws FDResourceException;
 	
