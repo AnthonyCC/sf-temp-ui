@@ -99,8 +99,7 @@
       YAHOO.util.Event.addListener(window, "load", init);
       YAHOO.util.Event.addListener(window, "unload", hideForm);
     </script>
-   
-    <form name="panel-1-form" id="panel-1-form" method="post">
+       
       <div id="panel-1">
       <div class="hd"><img src="images/icons/edit_ON.gif" width="16" height="16" border="0" align="absmiddle" />&nbsp;&nbsp;&nbsp;Route Mapping</div>
       <div class="bd">
@@ -130,6 +129,7 @@
 		         <tr>
 		                  <td colspan="2" align="center"><input type="button" value="Update" onclick="javascript:sendForm()" /> </td>
 		         </tr> 
+		      </table>   
 	      </div>      
         </div>
     </div>
