@@ -103,6 +103,7 @@
       YAHOO.util.Event.addListener(window, "unload", hideRptForm);
     </script>
        
+   <div style='display:none;height:0px;width:0px;'> 
       <div id="panelrpt-1">
       <div class="hd"><img src="images/icons/edit_ON.gif" width="16" height="16" border="0" align="absmiddle" />&nbsp;&nbsp;&nbsp;Community Report</div>
       <div class="bd">
@@ -131,4 +132,5 @@
 		      </table>   
 	      </div>      
         </div>
-    </div>
+   	 </div>
+   	</div>

@@ -21,7 +21,11 @@
           <tr>
             <td class="screentitle"> <span><a href="javascript:showForm()">
                         	<img src="./images/info.gif" border="0" alt="Info" title="Info" />
-                        </a></span>Generate Routing File Data</td>
+                        </a></span>
+                        <span><a href="javascript:showRptForm()">
+                        	<img src="./images/report.gif" border="0" alt="Info" title="Info" />
+                        </a></span>
+                        Process Merge from Routing System</td>
           </tr>
           <tr>
             <td class="screenmessages"><jsp:include page='/common/messages.jsp'/></td>
@@ -220,6 +224,7 @@
       </form>
      </div>
       
-     <%@ include file='i_routingmapping.jspf'%>  
+     <%@ include file='i_routingmapping.jspf'%> 
+      <%@ include file='i_communityreport.jspf'%>   
   </tmpl:put>
 </tmpl:insert>
