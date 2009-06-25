@@ -45,6 +45,7 @@ import com.freshdirect.customer.ErpOrderHistory;
 import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPromotionHistory;
+import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
@@ -280,6 +281,8 @@ public interface FDCustomerManagerSB extends EJBObject {
 	public FDOrderI getOrder(FDIdentity identity, String saleId) throws FDResourceException, RemoteException;
     
     public FDOrderI getOrder(String saleId) throws FDResourceException, RemoteException;
+    
+    public ErpSaleModel getErpSaleModel(String saleId) throws FDResourceException, RemoteException;
     
     /**
      * Get lightweight info about a customer's orders.

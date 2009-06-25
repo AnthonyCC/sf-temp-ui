@@ -2317,6 +2317,17 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 			throw new FDResourceException(re);
 		}
 	}
+	
+	public ErpSaleModel getErpSaleModel(String saleId) throws FDResourceException {
+		try {
+			ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
+			return sb.getOrder(new PrimaryKey(saleId));
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+	}
 
 	public List getOrdersByTruck(String truckNumber,Date dlvDate) throws FDResourceException{
 		try {
