@@ -411,7 +411,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		return this.user.getOrderCountRemainingForChefsTableEligibility();
 	}
 	
-	public String getOrderTotalRemainingForChefsTableEligibility() throws FDResourceException {
+	public String getOrderTotalRemainingForChefsTableEligibility() throws FDResourceException  {
 		return this.user.getOrderTotalRemainingForChefsTableEligibility();
 	}
 	
@@ -419,7 +419,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		return this.user.isCloseToCTEligibilityByOrderCount();
 	}
 	
-	public boolean isCloseToCTEligibilityByOrderTotal() throws FDResourceException {
+	public boolean isCloseToCTEligibilityByOrderTotal() throws FDResourceException  {
 		return this.user.isCloseToCTEligibilityByOrderTotal();
 	}
 	
