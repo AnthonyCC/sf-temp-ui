@@ -90,13 +90,19 @@
 
                       if (allSamePrice) {
                           %>
-                          <fd:FDProductInfo id="prdinfo" skuCode="<%= ((SkuModel)group.get(0)).getSkuCode() %>">
-                              <font class="productPageSecondaryVarPrice"><%= currencyFormatter.format(prdinfo.getDefaultPrice()) %></font>
-                              <font class="productPageSecondaryVarPriceUnit">/<%=prdinfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
+                          <fd:FDProductInfo id="productInfo" skuCode="<%= ((SkuModel)group.get(0)).getSkuCode() %>">
+							<% if ( productInfo.isDeal() ) { %>
+						      <font class="productPageSecondaryVarPrice" color="red"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font>
+						      <font class="productPageSecondaryVarPriceUnit" color="red">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
+						      <br/>
+						      <font class="text11nb">(was <%= currencyFormatter.format(productInfo.getBasePrice()) %>)</font>
+						      <br/>
+						    <% } else { %>
+						      <font class="productPageSecondaryVarPrice"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font>
+						      <font class="productPageSecondaryVarPriceUnit">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
+						    <% } %> 
                           </fd:FDProductInfo>
-                          <%
-                      }
-                     %>
+                      <% } %>
                  </td>
              </tr>
          <% } // hasSecondaryDomain %>
@@ -173,18 +179,18 @@
 				}
 			} 
 		
-                           if (!allSamePrice) { // extra space below for Size desc and price %> 
-                           	<% if ( productInfo.isDeal() ) { %>
-                                <font class="productPageSecondaryVarPrice" color="red"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font>
-                                <font class="productPageSecondaryVarPriceUnit" color="red">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
-                                <br/>
-                                <font class="text11nb">(was <%= currencyFormatter.format(productInfo.getBasePrice()) %>)</font>
-                                <br/>
-                               <% } else { %>
-                                <font class="productPageSecondaryVarPrice"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font>
-                                <font class="productPageSecondaryVarPriceUnit">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
-                               <% } 
-                           }
+			if (!allSamePrice) { // extra space below for Size desc and price %> 
+				<% if ( productInfo.isDeal() ) { %>
+			      <font class="productPageSecondaryVarPrice" color="red"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font>
+			      <font class="productPageSecondaryVarPriceUnit" color="red">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
+			      <br/>
+			      <font class="text11nb">(was <%= currencyFormatter.format(productInfo.getBasePrice()) %>)</font>
+			      <br/>
+			    <% } else { %>
+			      <font class="productPageSecondaryVarPrice"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font>
+			      <font class="productPageSecondaryVarPriceUnit">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
+			    <% } 
+			}
 		
 			%><%@ include file="/shared/includes/product/i_scaled_prices_fixed.jspf" %>
 			
