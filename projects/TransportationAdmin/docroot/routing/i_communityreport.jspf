@@ -1,0 +1,134 @@
+<%@ include file='/common/i_calendar.jspf'%> 
+<script>
+            
+      var editRptPanel;
+      var jsonrpcRptClient = new JSONRpcClient("dispatchprovider.ax");
+	  var errColor = "#FF0000";
+	  var msgColor = "#00FF00";
+                                 
+      function initRpt() {
+        editRptPanel = new YAHOO.widget.Panel("panelrpt-1", {       
+                          width: "400px", 
+                          fixedcenter: true, 
+                          close: true, 
+                          draggable: false, 
+                          zindex:4,
+                          modal: true,
+                          visible: false,
+                          effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
+        
+        //editRptPanel.render();
+        initCustomCalendar("trigger_rRptDate","rRptDate","calRptContainer");	
+        
+        fillOptions("cutOff", "rRptCutOff");
+        	        		 
+	}
+     
+      function fillOptions(src, dest) {
+     
+       var elSrcSel = document.getElementById(src);
+       var elDstSel = document.getElementById(dest);
+       
+       for(cnt=0;cnt < elSrcSel.options.length; cnt++) {
+       		var elOptOld = elSrcSel.options[cnt];  
+       		var elOptNew = document.createElement('option');
+		    elOptNew.text = elOptOld.text;
+		    elOptNew.value = elOptOld.value;
+		    
+		    try {
+		      elDstSel.add(elOptNew, null); // standards compliant; doesn't work in IE
+		    } catch(ex) {
+		      elDstSel.add(elOptNew); // IE only
+	    	}
+       }	
+	}     
+          
+      function showRptForm() {          
+          addSysMessage("", false);
+          YAHOO.util.Dom.get("processingContainer").style.display = "none"; 
+	      YAHOO.util.Dom.get("resultContainer").style.display = "none"; 	
+          editRptPanel.render(document.body);
+          editRptPanel.show();
+      }
+              
+      function sendRptForm() {       	                           
+      	  
+      	  var p_date = YAHOO.util.Dom.get("rRptDate").value;
+       	  var p_cutoff = YAHOO.util.Dom.get("rRptCutOff").value;
+  		  
+      	  if(p_date.trim().length == 0) {
+      	  	addSysMessage("Please enter the required values", true);		
+      	  } else {
+	    	  var result = jsonrpcRptClient.AsyncDispatchProvider.generateCommunityReport(sendRptFormCallback	, p_date, p_cutoff);
+	    	  YAHOO.util.Dom.get("processingContainer").style.display = "block"; 
+	    	  YAHOO.util.Dom.get("resultContainer").style.display = "none";  
+	    	      	  
+		  }
+      }
+      
+      function addRptSysMessage(msg, isError) {
+      		var errContObj = YAHOO.util.Dom.get("errRptContainer");
+		    if(isError) {
+		    	errContObj.style.color = errColor;
+	      	} else {
+	      		errContObj.style.color = msgColor;
+	      	}
+	      	errContObj.style.fontWeight="bold";
+      		errContObj.innerHTML = msg;
+      }
+      
+      function sendRptFormCallback(result, exception) {
+      	  
+          if(exception) {               
+              alert('Unable to connect to host system. Please contact system administrator!');               
+              return;
+          }
+          if(result == 0) {
+          	addSysMessage("Community Report Generation failed", true);
+          } else {
+          	addSysMessage("Community Report Generated successfully", false);
+          	YAHOO.util.Dom.get("processingContainer").style.display = "none"; 
+	    	YAHOO.util.Dom.get("resultContainer").style.display = "block"; 	
+          	YAHOO.util.Dom.get("resultContainer").getElementsByTagName("a")[0].href = result;
+
+          }                           
+      }
+      
+      function hideRptForm() { 
+      	  YAHOO.util.Dom.get("errRptContainer").value = "";
+          editRptPanel.hide();
+      }
+      
+      YAHOO.util.Event.addListener(window, "load", initRpt);
+      YAHOO.util.Event.addListener(window, "unload", hideRptForm);
+    </script>
+       
+      <div id="panelrpt-1">
+      <div class="hd"><img src="images/icons/edit_ON.gif" width="16" height="16" border="0" align="absmiddle" />&nbsp;&nbsp;&nbsp;Community Report</div>
+      <div class="bd">
+      	<div id="errRptContainer"></div>
+      	<div style="display:none;" id="resultContainer"><a href="">Download</a></div>
+      	<div style="color:red;display:none;" id="processingContainer">Processing.. Please wait</div>
+      	<div style="background-color:#D7C8FF">
+	      	<table class="forms1">
+		      	 <tr>
+		                  <td>Route Date</td>
+		                  <td><div id="calRptContainer"></div><span><input maxlength="10" size="10" name="rRptDate" id="rRptDate" value='' /></span>
+                     <span><a id="trigger_rRptDate" style="font-size: 9px;">
+                        	<img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date" />
+                        </a></span>
+                      </td> 
+		         </tr> 
+		         
+		         <tr>
+		                  <td>Cut Off</td>
+		                  <td><select id="rRptCutOff" name="rRptCutOff" ></select></td> 
+		         </tr>
+		         
+		         <tr>
+		                  <td colspan="2" align="center"><input type="button" value="Generate" onclick="javascript:sendRptForm()" /> </td>
+		         </tr> 
+		      </table>   
+	      </div>      
+        </div>
+    </div>

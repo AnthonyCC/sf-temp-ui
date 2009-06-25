@@ -9,7 +9,6 @@ package com.freshdirect.transadmin.util;
 
 import java.util.Properties;
 
-
 import com.freshdirect.framework.util.ConfigHelper;
 
 public class TransportationAdminProperties {
@@ -118,6 +117,8 @@ public class TransportationAdminProperties {
 	
 	private final static String PROP_AIRCLIC_BLACKHOLE		= "airclic.blackhole";
 	
+	private final static String PROP_TRANSPORTATION_FILENAME_CUMMUNITYRPT		= "transportation.filename.communityrpt";
+	
 	static {
 				
 		
@@ -201,6 +202,7 @@ public class TransportationAdminProperties {
 		
 		defaults.put(PROP_KRONOS_BLACKHOLE, "false");
 		defaults.put(PROP_AIRCLIC_BLACKHOLE, "false");
+		defaults.put(PROP_TRANSPORTATION_FILENAME_CUMMUNITYRPT, "trn_communityreport_");
 		
 		refresh();		
 	}
@@ -441,5 +443,9 @@ public class TransportationAdminProperties {
 	public static boolean isAirclicBlackhole() {
         return (new Boolean(get(PROP_AIRCLIC_BLACKHOLE))).booleanValue();
     }
+	
+	public static String getCommunityRptFileName() {
+		return get(PROP_TRANSPORTATION_FILENAME_CUMMUNITYRPT);
+	}
 	
 }

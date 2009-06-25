@@ -8,6 +8,8 @@ import java.util.List;
  */
 public class SpatialBoundary implements java.io.Serializable {
 
+	
+
 	private String code;
 	private String name;
 	
@@ -66,6 +68,33 @@ public class SpatialBoundary implements java.io.Serializable {
 
 		return center; 
 	}
+
+	public int hashCode() {
+		final int PRIME = 31;
+		int result = 1;
+		result = PRIME * result + ((code == null) ? 0 : code.hashCode());
+		return result;
+	}
+
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final SpatialBoundary other = (SpatialBoundary) obj;
+		if (code == null) {
+			if (other.code != null)
+				return false;
+		} else if (!code.equals(other.code))
+			return false;
+		return true;
+	}
 	
+	public String toString() {
+		// TODO Auto-generated method stub
+		return code;
+	}
 	
 }

@@ -185,7 +185,25 @@ public class DomainManagerDaoHibernateImpl
 	}
 	
 	public Collection getRouteMapping(String routeDate, String routeId) throws DataAccessException {
-		return getDataList("RouteMapping tr WHERE tr.routeMappingId.routeDate='"+routeDate+"' and tr.routeMappingId.routeID='"+routeId+"'");
+		
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("RouteMapping tr WHERE tr.routeMappingId.routeDate='"+routeDate+"'");
+		if(routeId != null) {
+			strBuf.append(" and tr.routeMappingId.routeID='"+routeId+"'");
+		}
+		strBuf.append(" order by tr.routeMappingId.routeID");
+		return (Collection) getDataList(strBuf.toString());		
+	}
+	
+	public Collection getRouteMappingByCutOff(String routeDate, String cutOff) throws DataAccessException {
+		
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("RouteMapping tr WHERE tr.routeMappingId.routeDate='"+routeDate+"'");
+		if(cutOff != null) {
+			strBuf.append(" and tr.routeMappingId.cutOffId='"+cutOff+"'");
+		}
+		
+		return (Collection) getDataList(strBuf.toString());		
 	}
 
 	public Collection getDeliveryModels() throws DataAccessException {

@@ -17,6 +17,7 @@ import com.freshdirect.customer.ErpRouteMasterInfo;
 import com.freshdirect.transadmin.dao.BaseManagerDaoI;
 import com.freshdirect.transadmin.dao.DispatchManagerDaoI;
 import com.freshdirect.transadmin.dao.RouteManagerDaoI;
+import com.freshdirect.transadmin.dao.SpatialManagerDaoI;
 import com.freshdirect.transadmin.exception.TransAdminApplicationException;
 import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.FDRouteMasterInfo;
@@ -43,6 +44,8 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	
 	private EmployeeManagerI employeeManagerService;
 	
+	private SpatialManagerDaoI spatialManagerDao;
+	
 	private LogManagerI logManager; 
 	
 	public DispatchManagerDaoI getDispatchManagerDao() {
@@ -60,6 +63,11 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	public Collection getDrivers() {
 					
 		return getDispatchManagerDao().getDrivers(); 
+	}
+	
+	public List matchCommunity(double latitiude, double longitude, String deliveryModel) {
+		
+		return getSpatialManagerDao().matchCommunity(latitiude, longitude, deliveryModel); 
 	}
 	
 	public Collection getHelpers() {
@@ -466,6 +474,14 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 		this.logManager = logManager;
 	}
 
+	public SpatialManagerDaoI getSpatialManagerDao() {
+		return spatialManagerDao;
+	}
+
+	public void setSpatialManagerDao(SpatialManagerDaoI spatialManagerDao) {
+		this.spatialManagerDao = spatialManagerDao;
+	}
+	
 	public Collection getScribList(String date) {
 		return getDispatchManagerDao().getScribList(date);
 	}

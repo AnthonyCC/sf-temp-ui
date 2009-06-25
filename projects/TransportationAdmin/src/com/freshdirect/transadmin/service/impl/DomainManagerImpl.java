@@ -235,4 +235,9 @@ public class DomainManagerImpl
 	public Collection getRouteMapping(String routeDate, String routeId) {
 		return getDomainManagerDao().getRouteMapping(routeDate, routeId);
 	}
+	
+	public Collection getRouteMappingByCutOff(String routeDate, String cutOff) {
+		return getDomainManagerDao().getRouteMappingByCutOff(routeDate, cutOff);
+	}
+	
 }

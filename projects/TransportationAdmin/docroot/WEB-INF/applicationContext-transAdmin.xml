@@ -168,6 +168,7 @@
         <property name="dispatchManagerDao" ref="dispatchManagerDAO"/>
         <property name="domainManagerService" ref="domainManager"/>
         <property name="routeManagerDao" ref="routeManagerDAO"/>
+        <property name="spatialManagerDao" ref="spatialManagerDAO"/>
         <property name="employeeManagerService" ref="employeeManagerService"/>
         <property name="logManager" ref="logManagerBase"/>
     </bean>

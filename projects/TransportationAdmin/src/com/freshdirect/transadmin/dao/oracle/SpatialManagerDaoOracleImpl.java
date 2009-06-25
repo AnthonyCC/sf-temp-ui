@@ -32,6 +32,10 @@ private JdbcTemplate jdbcTemplate;
 	
 	private static final String GET_GEOREST_GEOMENTRICBOUNDARY_QRY = "select gr.CODE,gr.NAME, gg.column_value from dlv.GEO_RESTRICTION_BOUNDARY gr , table(gr.geoloc.sdo_ordinates) gg where gr.CODE = ?";
 	
+	private static final String GET_MATCHCOMMUNITY_QRY = "select * from dlv.COMMUNITY r where " +
+			"	mdsys.sdo_relate(r.geoloc, mdsys.sdo_geometry(2001, 8265, mdsys.sdo_point_type(?, ?,NULL), NULL, NULL), 'mask=ANYINTERACT querytype=WINDOW') ='TRUE' " +
+			" and r.DELIVERYMODEL = ?";
+	
 	private static final String GET_ZONE_GEOMENTRICBOUNDARY_QRY =
 						"select z.zone_code, z.name,gg.column_value	from dlv.region r, dlv.region_data rd, dlv.zone z, transp.zone  zd , table(z.geoloc.sdo_ordinates) gg	" +
 						"where zd.zone_code = z.zone_code and rd.id = z.region_data_id and rd.region_id = r.id and z.zone_code = ? " +
@@ -78,6 +82,36 @@ private JdbcTemplate jdbcTemplate;
        		    		geoloc.add(point);
        		    		result.setCode(rs.getString(1));
        		    		result.setName(rs.getString(2));
+       		    	 } while(rs.next());
+       		    	
+       		      }
+       		   });
+        
+		return result;
+	}
+	
+	public List matchCommunity(final double latitiude, final double longitude, final String deliveryModel) throws DataAccessException   {
+		final List result = new ArrayList();
+				
+		PreparedStatementCreator creator=new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+                PreparedStatement ps =
+                    connection.prepareStatement(GET_MATCHCOMMUNITY_QRY);
+                ps.setDouble(1, longitude);
+                ps.setDouble(2, latitiude);
+                ps.setString(3, deliveryModel);
+                return ps;
+            }  
+        };
+        jdbcTemplate.query(creator, 
+       		  new RowCallbackHandler() { 
+       		      public void processRow(ResultSet rs) throws SQLException {
+       		    	do {
+       		    		SpatialBoundary _match = new SpatialBoundary();
+       		    		_match.setCode(rs.getString(1));
+       		    		_match.setName(rs.getString(2));
+       		    		result.add(_match);
+       		    		rs.next();       		    		
        		    	 } while(rs.next());
        		    	
        		      }

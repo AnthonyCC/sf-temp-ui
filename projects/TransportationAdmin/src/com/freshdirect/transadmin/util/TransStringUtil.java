@@ -47,6 +47,8 @@ public class TransStringUtil {
 	
 	private static NumberFormat twoDigitNumber = new DecimalFormat("###.##");
 	
+	private static NumberFormat singleDigitNumber = new DecimalFormat("###.#");
+	
 	private static DateFormat fullMonthFormat = new SimpleDateFormat("dd MMMMM yyyy");
 	
 	public final static long SECOND = 1000;
@@ -229,6 +231,11 @@ public class TransStringUtil {
 	public static String formatTwoDigitNumber(double input) {
 		return twoDigitNumber.format(input);
 	}
+	
+	public static String formatSingleDigitNumber(double input) {
+		return singleDigitNumber.format(input);
+	}
+	
 	
 	public static String formatTwoDigitNumber(int input) {
 		return formatter.format(input);

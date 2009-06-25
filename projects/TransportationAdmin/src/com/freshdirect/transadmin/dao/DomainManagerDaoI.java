@@ -92,6 +92,6 @@ public interface DomainManagerDaoI extends BaseManagerDaoI {
 
 	Collection getActiveZones() throws DataAccessException;
 	
-	
+	Collection getRouteMappingByCutOff(String routeDate, String cutOff) throws DataAccessException;
 	
 }

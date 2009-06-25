@@ -2,6 +2,7 @@ package com.freshdirect.transadmin.service;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.dao.DataAccessException;
@@ -64,9 +65,12 @@ public interface DispatchManagerI extends BaseManagerI {
 	
 	Map getHTInScan(Date routeDate);
 	
+	List matchCommunity(double latitiude, double longitude, String deliveryModel);
+	
 	public Collection getScribList(String date);
 	
 	public Scrib getScrib(String id);
 	
 	public Collection getUserPref(String userId);
+	
 }

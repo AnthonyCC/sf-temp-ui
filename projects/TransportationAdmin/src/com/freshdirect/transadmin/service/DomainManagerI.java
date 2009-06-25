@@ -97,4 +97,6 @@ public interface DomainManagerI extends BaseManagerI {
 	
 	Collection getRouteMapping(String routeDate, String routeId);
 	
+	Collection getRouteMappingByCutOff(String routeDate, String cutOff);
+	
 }
