@@ -23,6 +23,7 @@ import com.sun.rsasign.t;
 public class ErpSaleInfo extends BasicSaleInfo {
 
 	private final double amount;
+	private final double subTotal;
 	private final Date requestedDate;
 	private final EnumTransactionSource source;
 	private final Date deliveryStart;
@@ -41,6 +42,7 @@ public class ErpSaleInfo extends BasicSaleInfo {
 	private final EnumPaymentMethodType paymentMethodType;
 	private final EnumSaleType saleType;
 
+
 	private Set usedPromotionCodes = Collections.EMPTY_SET;
 	//DlvPassId will be not null if delivery pass was applied to this order.
 	private String dlvPassId;
@@ -54,6 +56,7 @@ public class ErpSaleInfo extends BasicSaleInfo {
 		String  erpCustomerId,
 		EnumSaleStatus status,
 		double amount,
+		double subTotal,
 		Date requestedDate,
 		EnumTransactionSource createSource,
 		Date createDate,
@@ -76,6 +79,7 @@ public class ErpSaleInfo extends BasicSaleInfo {
 
 		super(saleId, erpCustomerId,status);
 		this.amount = amount;
+		this.subTotal=subTotal;
 		this.requestedDate = requestedDate;
 		this.source = createSource;
 		this.deliveryStart = deliveryStart;
@@ -94,7 +98,6 @@ public class ErpSaleInfo extends BasicSaleInfo {
 		this.paymentMethodType = paymentMethodType;
 		this.dlvPassId = dlvPassId;
 		this.saleType=saleType;
-		
 		this.truckNumber = truckNumber;
 		this.stopSequence = stopSequence;
 	}
@@ -103,6 +106,9 @@ public class ErpSaleInfo extends BasicSaleInfo {
 		return this.amount;
 	}
 
+	public double getSubTotal() {
+		return this.subTotal;
+	}
 	public Date getRequestedDate() {
 		return this.requestedDate;
 	}
@@ -186,9 +192,6 @@ public class ErpSaleInfo extends BasicSaleInfo {
 	public EnumSaleType getSaleType() {
 		return saleType;
 	}
-
-
-
 
 	public String getTruckNumber() {
 		return truckNumber;

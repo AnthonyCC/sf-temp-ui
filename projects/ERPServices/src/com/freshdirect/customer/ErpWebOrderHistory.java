@@ -112,6 +112,10 @@ public class ErpWebOrderHistory implements OrderHistoryI {
 		return ((Integer)orderHistoryInfo.get(SETTLED_ORDER_COUNT)).intValue();
 	}
 	
+	public double getOrderSubTotalForChefsTableEligibility() {
+		return 0.0;
+	}
+	
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		buf.append("ErpWebOrderHistory version $$$$$$$$$$$$$$$$$$$"+"\n");

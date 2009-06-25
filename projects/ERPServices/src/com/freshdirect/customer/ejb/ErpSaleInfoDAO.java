@@ -66,7 +66,7 @@ public class ErpSaleInfoDAO {
 		+ "and s.id=del.id order by to_number(s.id) desc";
 	*/
 	//New query using Customer_id index in SALESACTION table. As part of PERF-27 task.
-	private static final String QUERY_ORDER_HISTORY = "select cre.customer_id, cre.id, cre.truck_number, cre.stop_sequence, cre.dlv_pass_id,cre.type, del.requested_date, cre.status, sac.amount, del.payment_method_type,  cre.action_date as create_date, cre.source as create_source, cre.initiator as create_by, del.action_date as mod_date,  del.source as mod_source, del.initiator as mod_by, del.starttime, del.endtime, del.cutofftime, del.delivery_type,  NVL(app.amount, 0) as credit_approved, NVL(pen.amount, 0) as credit_pending, del.zone"
+	private static final String QUERY_ORDER_HISTORY = "select cre.customer_id, cre.id, cre.truck_number, cre.stop_sequence, cre.dlv_pass_id,cre.type, del.requested_date, cre.status, sac.amount,sac.sub_total, del.payment_method_type,  cre.action_date as create_date, cre.source as create_source, cre.initiator as create_by, del.action_date as mod_date,  del.source as mod_source, del.initiator as mod_by, del.starttime, del.endtime, del.cutofftime, del.delivery_type,  NVL(app.amount, 0) as credit_approved, NVL(pen.amount, 0) as credit_pending, del.zone"
 		+ " from   (select  s.customer_id, s.id, s.status, s.dlv_pass_id,s.type, s.truck_number, s.stop_sequence,"
 		+ " sa.action_date, sa.source, sa.initiator"
 		+ "         from   cust.sale s, cust.salesaction sa"
@@ -74,7 +74,7 @@ public class ErpSaleInfoDAO {
 		+ "         and    sa.action_type = 'CRO'"
 		+ "         and    sa.customer_id = s.customer_id"
 		+ "         and    s.customer_id = ?) cre,"
-		+ "       (select  s.id, sa.amount"
+		+ "       (select  s.id, sa.amount,sa.sub_total"
 		+ "         from   cust.sale s, cust.salesaction sa"
 		+ "         where  sale_id = s.id"
 		+ "         and    sa.action_type in ('CRO', 'MOD', 'INV')"
@@ -150,6 +150,7 @@ public class ErpSaleInfoDAO {
 					rs.getString("CUSTOMER_ID"),
 					EnumSaleStatus.getSaleStatus(rs.getString("STATUS")),
 					rs.getDouble("AMOUNT"),
+					rs.getDouble("SUB_TOTAL"),
 					rs.getDate("REQUESTED_DATE"),
 					EnumTransactionSource.getTransactionSource(rs.getString("CREATE_SOURCE")),
 					rs.getTimestamp("CREATE_DATE"),
@@ -206,7 +207,7 @@ public class ErpSaleInfoDAO {
 					rs.getString("ID"),
 					rs.getString("CUSTOMER_ID"),
 					EnumSaleStatus.getSaleStatus(rs.getString("STATUS")),
-					rs.getDouble("AMOUNT"),
+					rs.getDouble("AMOUNT"),0.0,
 					rs.getDate("REQUESTED_DATE"),
 					EnumTransactionSource.getTransactionSource(rs.getString("CREATE_SOURCE")),
 					rs.getTimestamp("CREATE_DATE"),
@@ -664,7 +665,7 @@ public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpC
 					rs.getString("ID"),
 					"",
 					EnumSaleStatus.getSaleStatus(rs.getString("STATUS")),
-					0.0,
+					0.0,0.0,
 					rs.getDate("REQUESTED_DATE"),
 					EnumTransactionSource.getTransactionSource(rs.getString("CREATE_SOURCE")),
 					rs.getTimestamp("CREATE_DATE"),

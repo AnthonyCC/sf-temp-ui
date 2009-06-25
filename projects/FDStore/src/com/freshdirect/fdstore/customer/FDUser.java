@@ -458,9 +458,10 @@ public class FDUser extends ModelSupport implements FDUserI {
    public int getOrderCountForChefsTableEligibility() throws FDResourceException {
 	   return FDCustomerManager.getOrderCountForChefsTableEligibility(this.identity);
    }
-   
+     
    public String getOrderTotalForChefsTableEligibility() throws FDResourceException {
-	   return NumberFormat.getCurrencyInstance(Locale.US).format(FDCustomerManager.getOrderTotalForChefsTableEligibility(this.identity));
+	   OrderHistoryI orderHistory=getOrderHistory();
+	   return NumberFormat.getCurrencyInstance(Locale.US).format(orderHistory.getOrderSubTotalForChefsTableEligibility());
    }
    
    public String getOrderCountRemainingForChefsTableEligibility() throws FDResourceException {
@@ -475,8 +476,9 @@ public class FDUser extends ModelSupport implements FDUserI {
 		return fmt.format(CHEFS_TABLE_ORDER_COUNT_QUALIFIER - orderCount);
 	}
 	
-	public String getOrderTotalRemainingForChefsTableEligibility() throws FDResourceException {
-		double orderTotal = FDCustomerManager.getOrderTotalForChefsTableEligibility(this.identity);
+	public String getOrderTotalRemainingForChefsTableEligibility() throws FDResourceException  {
+		OrderHistoryI orderHistory=getOrderHistory();
+		double orderTotal = orderHistory.getOrderSubTotalForChefsTableEligibility();
 		if(orderTotal == 0.0 || (orderTotal >= CHEFS_TABLE_ORDER_TOTAL_QUALIFIER) ||
 				CHEFS_TABLE_ORDER_TOTAL_QUALIFIER - orderTotal > CHEFS_TABLE_GETTING_CLOSE_TOTAL) {
 			return "";
@@ -495,7 +497,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 	
 	public boolean isCloseToCTEligibilityByOrderTotal() throws FDResourceException {
-		double orderTotal = FDCustomerManager.getOrderTotalForChefsTableEligibility(this.identity);
+		double orderTotal = getOrderHistory().getOrderSubTotalForChefsTableEligibility();
 		if( (CHEFS_TABLE_ORDER_TOTAL_QUALIFIER - orderTotal <= CHEFS_TABLE_GETTING_CLOSE_TOTAL) && 
 				(CHEFS_TABLE_ORDER_TOTAL_QUALIFIER - orderTotal > 0.0 ) ) {
 			return true;
@@ -522,7 +524,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 		cal = Calendar.getInstance();
 		int lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
 		cal.set(Calendar.DAY_OF_MONTH, lastDay);
-		return new SimpleDateFormat("MMMMM d").format(cal.getTime());
+		return new SimpleDateFormat("MMMMM d, yyyy").format(cal.getTime());
 	}
    
     public ErpPromotionHistory getPromotionHistory() throws FDResourceException {

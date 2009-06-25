@@ -51,6 +51,10 @@ public class ErpOrderHistory implements OrderHistoryI {
 		return ErpOrderHistoryUtil.getOrderCountForChefsTableEligibility(erpRegSaleInfos);
 	}
 	
+	public double getOrderSubTotalForChefsTableEligibility(){
+		return ErpOrderHistoryUtil.getOrderSubTotalForChefsTableEligibility(erpRegSaleInfos);
+	}
+	
 	public String getLastOrderId(){
 		return ErpOrderHistoryUtil.getLastOrderId(erpRegSaleInfos);
 	}
@@ -112,6 +116,8 @@ public class ErpOrderHistory implements OrderHistoryI {
 		buf.append("ReturnOrderCount "+getReturnOrderCount()+"\n");
 		buf.append("DeliveredOrderCount "+getDeliveredOrderCount()+"\n");
 		buf.append("SettledOrderCount "+getSettledOrderCount()+"\n");
+		buf.append("OrderCountForChefsTableEligibility "+getOrderCountForChefsTableEligibility()+"\n");
+		buf.append("OrderSubTotalForChefsTableEligibility "+getOrderSubTotalForChefsTableEligibility()+"\n");
 		return buf.toString();
 	}
 }

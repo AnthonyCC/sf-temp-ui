@@ -196,7 +196,7 @@ your account information, this is the place to do it.<br></td>
 			<% } else if( user.isCloseToCTEligibilityByOrderCount() && !user.isCloseToCTEligibilityByOrderTotal()) { %>
 				Simply receive <%=user.getOrderCountRemainingForChefsTableEligibility()%> more <%=(user.getOrderCountForChefsTableEligibility() < 11 ? "orders" :"order" )%> by <%= user.getEndChefsTableQualifyingDate() %> to qualify!</td>
 			<% } else if( !user.isCloseToCTEligibilityByOrderCount() && user.isCloseToCTEligibilityByOrderTotal()) { %>
-				Simply spend <%= user.getOrderTotalRemainingForChefsTableEligibility() %> by <%= user.getEndChefsTableQualifyingDate() %> to qualify!</td>
+				Simply spend <%= user.getOrderTotalRemainingForChefsTableEligibility() %> by <%= user.getEndChefsTableQualifyingDate() %>, to qualify!</td>
 			<% } %>
 			</font>
 			<td valign="top" colspan="2"><img src="/media_stat/images/chefs_table/ct_almost_card.gif"/></td>
