@@ -235,31 +235,6 @@ public class ErpOrderHistoryUtil {
 		return orderCount;
 	}
 	
-	/**
-	 * 
-	 * @param erpSaleInfos
-	 */
-	public static double getOrderTotalForChefsTableEligibility(Collection erpSaleInfos){
-		Calendar beginCal = Calendar.getInstance();
-		beginCal.set(Calendar.DAY_OF_MONTH, 1);
-		Calendar endCal = Calendar.getInstance();
-		beginCal.add(Calendar.MONTH, -2);
-		double orderTotal = 0.0;
-		Date beginDate = beginCal.getTime();
-		Date endDate = endCal.getTime();
-		for (Iterator i = erpSaleInfos.iterator(); i.hasNext();) {
-			ErpSaleInfo saleInfo = (ErpSaleInfo) i.next();
-			Date createDate = saleInfo.getCreateDate();
-			if (createDate.after(beginDate) && createDate.before(endDate) && 
-					!saleInfo.getDeliveryType().equals(EnumDeliveryType.CORPORATE) &&
-					!saleInfo.getStatus().equals(EnumSaleStatus.CANCELED) &&
-					!saleInfo.getSaleType().equals(EnumSaleType.SUBSCRIPTION)) {
-				orderTotal += saleInfo.getAmount();
-			}
-		}
-		return new BigDecimal(orderTotal).setScale(0,BigDecimal.ROUND_FLOOR).doubleValue();
-	}
-	
 
 	public static Collection filterOrders(Collection erpSaleInfos, EnumSaleType saleType) {
 		
@@ -279,4 +254,5 @@ public class ErpOrderHistoryUtil {
 		
 		return filteredOrders;
 	}
+
 }

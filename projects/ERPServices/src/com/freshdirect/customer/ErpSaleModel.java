@@ -5,6 +5,7 @@ package com.freshdirect.customer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -37,7 +38,9 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	private List cartonInfo = new ArrayList();
 	private String deliveryPassId;
 	private EnumSaleType type;
-
+	private double subTotal;
+	private EnumDeliveryType deliveryType;
+	private Date createDate;
 
 
 	/**
@@ -71,6 +74,9 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		this.usedPromotionCodes = usedPromotionCodes;
 		this.deliveryPassId = dlvPassId;
 		this.type=type;
+		this.subTotal = order.getSubTotal();
+		this.createDate = new Date();
+		this.deliveryType = EnumDeliveryType.getDeliveryType("");
 
 	}
 	/**
@@ -97,6 +103,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		this.usedPromotionCodes = usedPromotionCodes;
 		this.deliveryPassId = dlvPassId;
 		this.type=type;
+		this.deliveryType = EnumDeliveryType.getDeliveryType("");
 
 	}
 
@@ -1290,8 +1297,29 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 
 		return null;
 	}
+	
 	public EnumSaleType getType() {
 		return type;
+	}
+	
+	public double getSubTotal() {
+		return this.subTotal;
+	}
+	
+	public EnumDeliveryType getDeliveryType() {
+		return this.deliveryType;
+	}
+	
+	public void setDeliveryType(EnumDeliveryType deliveryType) {
+		this.deliveryType = deliveryType;
+	}
+	
+	public Date getCreateDate(){
+		return this.createDate;
+	}
+	
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
 	}
 
 }
