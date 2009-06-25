@@ -57,7 +57,7 @@
        	  var p_cutoff = YAHOO.util.Dom.get("rRptCutOff").value;
   		  
       	  if(p_date.trim().length == 0) {
-      	  	addSysMessage("Please enter the required values", true);		
+      	  	addRptSysMessage("Please enter the required values", true);		
       	  } else {
 	    	  var result = jsonrpcRptClient.AsyncDispatchProvider.generateCommunityReport(sendRptFormCallback	, p_date, p_cutoff);
 	    	  YAHOO.util.Dom.get("processingContainer").style.display = "block"; 
