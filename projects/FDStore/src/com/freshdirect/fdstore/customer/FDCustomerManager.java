@@ -8,6 +8,7 @@
  */
 package com.freshdirect.fdstore.customer;
 
+import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.CustomerRatingI;
+import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
@@ -59,6 +61,8 @@ import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.customer.ErpPromotionHistory;
+import com.freshdirect.customer.ErpSaleInfo;
+import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ErpWebOrderHistory;
@@ -1122,6 +1126,66 @@ public class FDCustomerManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
+	
+	public static ErpSaleModel getErpSaleModel(String saleId) throws FDResourceException {
+		lookupManagerHome();
+		
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			return sb.getErpSaleModel(saleId);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			LOGGER.debug("RemoteException: ", re);
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	public static Collection getErpSaleModels(FDIdentity identity) throws FDResourceException {
+		ErpOrderHistory erpOrderHistory = getErpOrderHistoryInfo(identity);
+		Collection erpSaleInfos = erpOrderHistory.getErpSaleInfos();
+		List erpSaleModels=new ArrayList();
+		if(erpSaleInfos!=null) {
+			ErpSaleInfo saleInfo =null;
+			for (Iterator i = erpSaleInfos.iterator(); i.hasNext();) {
+				saleInfo = (ErpSaleInfo) i.next();
+				ErpSaleModel saleModel = getErpSaleModel(saleInfo.getSaleId());
+				saleModel.setCreateDate(saleInfo.getCreateDate());
+				saleModel.setDeliveryType(saleInfo.getDeliveryType());
+				erpSaleModels.add(saleModel);	
+			}
+		}
+		
+		return erpSaleModels;
+	}
+	
+	/**
+	 * 
+	 * @param erpSaleInfos
+	 */
+	public static double getOrderTotalForChefsTableEligibility(Collection erpSaleModels) throws FDResourceException  {
+		Calendar beginCal = Calendar.getInstance();
+		beginCal.set(Calendar.DAY_OF_MONTH, 1);
+		Calendar endCal = Calendar.getInstance();
+		beginCal.add(Calendar.MONTH, -2);
+		double orderTotal = 0.0;
+		Date beginDate = beginCal.getTime();
+		Date endDate = endCal.getTime();
+		for (Iterator i = erpSaleModels.iterator(); i.hasNext();) {
+			ErpSaleModel saleModel = (ErpSaleModel) i.next();
+			Date createDate = saleModel.getCreateDate();
+			if (createDate.after(beginDate) && createDate.before(endDate) && 
+				!saleModel.getType().equals(EnumSaleType.SUBSCRIPTION) &&
+				!saleModel.getStatus().equals(EnumSaleStatus.CANCELED) && 
+				!saleModel.getDeliveryType().equals(EnumDeliveryType.CORPORATE)) {
+				orderTotal += saleModel.getSubTotal();
+			}
+		}
+		return new BigDecimal(orderTotal).setScale(0,BigDecimal.ROUND_FLOOR).doubleValue();
+		
+	}
 
 	private static ErpOrderHistory getErpOrderHistoryInfo(FDIdentity identity) throws FDResourceException {
 
@@ -1157,8 +1221,8 @@ public class FDCustomerManager {
 	}
 	
 	public static double getOrderTotalForChefsTableEligibility(FDIdentity identity) throws FDResourceException {
-		ErpOrderHistory history = getErpOrderHistoryInfo(identity);
-		return history.getOrderTotalForChefsTableEligibility();
+		Collection erpSaleModels = getErpSaleModels(identity);
+		return getOrderTotalForChefsTableEligibility(erpSaleModels);
 	}
 
 	public static ErpPromotionHistory getPromoHistoryInfo(FDIdentity identity) throws FDResourceException {
