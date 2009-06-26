@@ -41,6 +41,7 @@ public class ErpSaleInfo extends BasicSaleInfo {
 	private final String zone;
 	private final EnumPaymentMethodType paymentMethodType;
 	private final EnumSaleType saleType;
+	private final boolean isMakeGood;
 
 
 	private Set usedPromotionCodes = Collections.EMPTY_SET;
@@ -75,7 +76,8 @@ public class ErpSaleInfo extends BasicSaleInfo {
 		String dlvPassId,
 		EnumSaleType saleType,
 		String truckNumber,
-		String stopSequence) {
+		String stopSequence,
+		boolean isMakeGood) {
 
 		super(saleId, erpCustomerId,status);
 		this.amount = amount;
@@ -100,8 +102,12 @@ public class ErpSaleInfo extends BasicSaleInfo {
 		this.saleType=saleType;
 		this.truckNumber = truckNumber;
 		this.stopSequence = stopSequence;
+		this.isMakeGood=isMakeGood;
 	}
 
+	public boolean isMakeGood() {
+		return isMakeGood;
+	}
 	public double getAmount() {
 		return this.amount;
 	}

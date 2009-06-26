@@ -461,6 +461,7 @@ public class FDUser extends ModelSupport implements FDUserI {
      
    public String getOrderTotalForChefsTableEligibility() throws FDResourceException {
 	   OrderHistoryI orderHistory=getOrderHistory();
+	   
 	   return NumberFormat.getCurrencyInstance(Locale.US).format(orderHistory.getOrderSubTotalForChefsTableEligibility());
    }
    

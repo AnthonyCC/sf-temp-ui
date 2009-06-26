@@ -66,7 +66,7 @@ public class ErpSaleInfoDAO {
 		+ "and s.id=del.id order by to_number(s.id) desc";
 	*/
 	//New query using Customer_id index in SALESACTION table. As part of PERF-27 task.
-	private static final String QUERY_ORDER_HISTORY = "select cre.customer_id, cre.id, cre.truck_number, cre.stop_sequence, cre.dlv_pass_id,cre.type, del.requested_date, cre.status, sac.amount,sac.sub_total, del.payment_method_type,  cre.action_date as create_date, cre.source as create_source, cre.initiator as create_by, del.action_date as mod_date,  del.source as mod_source, del.initiator as mod_by, del.starttime, del.endtime, del.cutofftime, del.delivery_type,  NVL(app.amount, 0) as credit_approved, NVL(pen.amount, 0) as credit_pending, del.zone"
+	private static final String QUERY_ORDER_HISTORY = "select cre.customer_id, cre.id, cre.truck_number, cre.stop_sequence, cre.dlv_pass_id,cre.type, del.requested_date, cre.status, sac.amount,sac.sub_total, del.payment_method_type,del.referenced_order,  cre.action_date as create_date, cre.source as create_source, cre.initiator as create_by, del.action_date as mod_date,  del.source as mod_source, del.initiator as mod_by, del.starttime, del.endtime, del.cutofftime, del.delivery_type,  NVL(app.amount, 0) as credit_approved, NVL(pen.amount, 0) as credit_pending, del.zone"
 		+ " from   (select  s.customer_id, s.id, s.status, s.dlv_pass_id,s.type, s.truck_number, s.stop_sequence,"
 		+ " sa.action_date, sa.source, sa.initiator"
 		+ "         from   cust.sale s, cust.salesaction sa"
@@ -87,7 +87,7 @@ public class ErpSaleInfoDAO {
 		+ "                                  and    sale_id = s.id)"
 		+ "         and    s.customer_id = ?) sac,"
 		+ "       (select s.id, sa.requested_date, sa.action_date, sa.source, sa.initiator, di.starttime, di.endtime, di.cutofftime,"
-		+ "          di.delivery_type, di.zone, pi.payment_method_type"
+		+ "          di.delivery_type, di.zone, pi.payment_method_type,pi.referenced_order"
 		+ "         from   cust.sale s, cust.salesaction sa, cust.deliveryinfo di, "
 		+ "cust.paymentinfo pi"
 		+ "         where  s.id = sa.sale_id"
@@ -144,6 +144,8 @@ public class ErpSaleInfoDAO {
 		ResultSet rs = ps.executeQuery();
 		List extendedInfos = new ArrayList();
 		while (rs.next()) {
+			
+			String referencedOrder=rs.getString("REFERENCED_ORDER");
 			extendedInfos.add(
 				new ErpSaleInfo(
 					rs.getString("ID"),
@@ -169,8 +171,9 @@ public class ErpSaleInfoDAO {
 					rs.getString("DLV_PASS_ID"),
 					EnumSaleType.getSaleType(rs.getString("TYPE")),
 					rs.getString("TRUCK_NUMBER"),
-					rs.getString("STOP_SEQUENCE")
-					));
+					rs.getString("STOP_SEQUENCE"),
+				    (referencedOrder==null || "".equals(referencedOrder))?false:true
+				));
 		}
 		rs.close();
 		ps.close();
@@ -226,7 +229,8 @@ public class ErpSaleInfoDAO {
 					rs.getString("DLV_PASS_ID"),
 					EnumSaleType.getSaleType(rs.getString("TYPE")),
 					rs.getString("TRUCK_NUMBER"),
-					rs.getString("STOP_SEQUENCE")
+					rs.getString("STOP_SEQUENCE"),
+					false
 					));
 		}
 		rs.close();
@@ -684,7 +688,8 @@ public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpC
 					"",
 					EnumSaleType.REGULAR,
 					rs.getString("TRUCK_NUMBER"),
-					rs.getString("STOP_SEQUENCE")
+					rs.getString("STOP_SEQUENCE"),
+					false
 					));
 		}
 		rs.close();

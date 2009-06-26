@@ -222,10 +222,12 @@ public class ErpOrderHistoryUtil {
 		int orderCount = 0;
 		Date beginDate = beginCal.getTime();
 		Date endDate = endCal.getTime();
+		
 		for (Iterator i = erpSaleInfos.iterator(); i.hasNext();) {
 			ErpSaleInfo saleInfo = (ErpSaleInfo) i.next(); 			
 			Date createDate = saleInfo.getCreateDate();
-			if (createDate.after(beginDate) && createDate.before(endDate) && 
+			
+			if (!saleInfo.isMakeGood()&&createDate.after(beginDate) && createDate.before(endDate) && 
 					!saleInfo.getDeliveryType().equals(EnumDeliveryType.CORPORATE) &&
 					!saleInfo.getStatus().equals(EnumSaleStatus.CANCELED) &&
 					!saleInfo.getSaleType().equals(EnumSaleType.SUBSCRIPTION)) {
@@ -234,6 +236,7 @@ public class ErpOrderHistoryUtil {
 		}
 		return orderCount;
 	}
+	
 	
 	public static double getOrderSubTotalForChefsTableEligibility(Collection erpSaleInfos){
 		
@@ -248,9 +251,10 @@ public class ErpOrderHistoryUtil {
 		for (Iterator i = erpSaleInfos.iterator(); i.hasNext();) {
 			ErpSaleInfo saleInfo = (ErpSaleInfo) i.next(); 			
 			Date createDate = saleInfo.getCreateDate();
-			if (createDate.after(beginDate) && createDate.before(endDate) && 
+			if (!saleInfo.isMakeGood()&& createDate.after(beginDate) && createDate.before(endDate) && 
 					!saleInfo.getDeliveryType().equals(EnumDeliveryType.CORPORATE) &&
 					!saleInfo.getStatus().equals(EnumSaleStatus.CANCELED) &&
+					//!saleInfo.getPaymentType().equals(EnumPaymentType.MAKE_GOOD) &&
 					!saleInfo.getSaleType().equals(EnumSaleType.SUBSCRIPTION)) {
 				amount=amount+saleInfo.getSubTotal();
 			}
