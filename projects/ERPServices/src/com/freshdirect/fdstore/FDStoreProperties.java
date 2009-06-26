@@ -696,7 +696,8 @@ public class FDStoreProperties {
 	}
 	
 	public static int getImpressionLimit(){
-		return Integer.parseInt(get(PROP_IMPRESSION_LIMIT));
+		String s = get(PROP_IMPRESSION_LIMIT);
+		return s == null ? 0 : Integer.parseInt(s);
 	}
 	
 	public static String getWinbackRoot(){

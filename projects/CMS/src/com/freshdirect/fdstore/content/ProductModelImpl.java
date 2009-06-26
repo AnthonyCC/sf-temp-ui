@@ -560,11 +560,10 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	
 	public String getSizeDescription() throws FDResourceException {
 		try {
-			List skus = getSkus();
-			if (skus.isEmpty()) {
+			SkuModel sku = getDefaultSku();
+			if ( sku == null )
 				return "";
-			}
-			SkuModel sku = (SkuModel) skus.get(0);
+			
 			FDProduct pr = sku.getProduct();
 			FDSalesUnit[] sus = pr.getSalesUnits();
 			if (sus.length == 1) {
@@ -594,7 +593,10 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 
 	public String getKosherSymbol() throws FDResourceException {
 		try {
-			SkuModel sku = this.getSku(0);
+			SkuModel sku = getDefaultSku();
+			if ( sku == null )
+				return "";
+			
 			FDProduct pr = sku.getProduct();
 			FDKosherInfo ki = pr.getKosherInfo();
 			if (ki.hasKosherSymbol() && ki.getKosherSymbol().display()) {
@@ -609,7 +611,10 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 
 	public String getKosherType() throws FDResourceException {
 		try {
-			SkuModel sku = this.getSku(0);
+			SkuModel sku = getDefaultSku();
+			if ( sku == null )
+				return "";
+			
 			FDProduct pr = sku.getProduct();
 			FDKosherInfo ki = pr.getKosherInfo();
 			if (ki.hasKosherType() && ki.getKosherType().display()) {
@@ -624,7 +629,10 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 
 	public boolean isKosherProductionItem() throws FDResourceException {
 		try {
-			SkuModel sku = this.getSku(0);
+			SkuModel sku = getDefaultSku();
+			if ( sku == null )
+				return false;
+			
 			FDProduct pr = sku.getProduct();
 			FDKosherInfo ki = pr.getKosherInfo();
 			return ki.isKosherProduction();
@@ -635,7 +643,10 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 
 	public int getKosherPriority() throws FDResourceException {
 		try {
-			SkuModel sku = this.getSku(0);
+			SkuModel sku = getDefaultSku();
+			if ( sku == null )
+				return 999;
+			
 			FDProduct pr = sku.getProduct();
 			FDKosherInfo ki = pr.getKosherInfo();
 			return ki.getPriority();
