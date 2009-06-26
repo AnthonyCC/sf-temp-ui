@@ -23,12 +23,27 @@
 	boolean mainPromo = user.getLevel() < FDUserI.RECOGNIZED && user.isEligibleForSignupPromotion();
         
         request.setAttribute("sitePage", "www.freshdirect.com/index.jsp");
-        if(!user.isCampaignMsgLimitViewed() && (!user.getWinbackPath().equals("") || !user.getMarketingPromoPath().equals(""))) {
+        boolean segmentMsg = false;
+        String mktgPath = "";
+        String winbackPath = "";
+        if(!user.isCampaignMsgLimitViewed() && (!user.getWinbackPath().equals("false") || !user.getMarketingPromoPath().equals("false"))) {
+	        segmentMsg = true;
+	        mktgPath = user.getMarketingPromoPath().trim();
+	        winbackPath = user.getWinbackPath().trim();
+        } 
+        if(segmentMsg) {
         	request.setAttribute("listPos", "SystemMessage,HPLeftTop,HPLeftMiddle,HPLeftBottom");
         } else {
         	request.setAttribute("listPos", "SystemMessage,HPLeftTop,HPLeftMiddle,HPLeftBottom,HPMiddleBottom,HPRightBottom");
         }
-        user.setCampaignMsgViewed(user.getCampaignMsgViewed() + 1);
+        System.out.println("limit: " + user.isCampaignMsgLimitViewed() );
+        System.out.println("viewed:  " + user.getCampaignMsgViewed());
+        System.out.println("winback: " + user.getWinbackPath());
+        System.out.println("marketing: " + user.getMarketingPromoPath());
+        System.out.println("isMediaEnabled: " + FDStoreProperties.IsHomePageMediaEnabled());
+        System.out.println("isAdServerEnabled: " + FDStoreProperties.isAdServerEnabled());
+        System.out.println("segmentMsg:  " + segmentMsg);
+        
 %>
 <tmpl:insert template='/common/template/no_shell.jsp'>
 	<tmpl:put name='title' direct='true'>Welcome to FreshDirect</tmpl:put>
@@ -202,7 +217,7 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 		
 		
 		 <%
-		     if (!user.isCampaignMsgLimitViewed() && (!user.getWinbackPath().equals("") || !user.getMarketingPromo().equals(""))) {
+		    if (segmentMsg) {
 					%>
 				
 				<table width="490" cellpadding="0" cellspacing="0" border="0">
@@ -213,14 +228,15 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 				</table>
 				<table width="490" cellpadding="0" cellspacing="0" border="0">
 				<tr><td>
-				<% if(!user.getWinbackPath().equals("")) { %>
-					<fd:IncludeMedia name="<%=user.getWinbackPath()%>" />
-				<% } else if( !user.getMarketingPromoPath().equals("")) { %>
-					<fd:IncludeMedia name="<%=user.getMarketingPromoPath()%>" />
+				<% if(!winbackPath.equals("false")) { %>					
+					<fd:IncludeMedia name="<%=winbackPath%>" />
+				<% } else if( !mktgPath.equals("false")) { %>
+					<fd:IncludeMedia name="<%=mktgPath%>" />
 				<% } %>
+				<% user.setCampaignMsgViewed(user.getCampaignMsgViewed() + 1); %>
 				</td></tr>
 				</table>
-	     <% } %>
+	     	<% } %>
 	     <img src="/media_stat/images/layout/cccccc.gif" width="490" height="1" vspace="8"><br>
 		<%@ include file="/includes/i_departments.jspf" %>
 	<% } %>
@@ -292,9 +308,9 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 	  <%-- PROMO 3, 4, 5 --%>
 	  <tr valign="top"> 
 		<td colspan="7">
-		<% if (FDStoreProperties.isAdServerEnabled()) { %>
+		<% if (FDStoreProperties.isAdServerEnabled() && !segmentMsg) { %>
 			<fd:IncludeMedia name="/media/editorial/home/home_bottom_new.html" />
-		<% } else { %>
+		<% } else if(!segmentMsg) { %>
 			<fd:IncludeMedia name="/media/editorial/home/home_bottom_default.html" />
 		<% } %>
 		</td>
