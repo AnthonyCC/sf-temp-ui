@@ -124,7 +124,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	private boolean receiveFDemails = true;
 	
 	private boolean isHomePageLetterVisited=false;
-	private int campaignMsgViewed;
+	private int campaignMsgViewed = 0;
 	
 	//Contains user specific Delivery Pass Details.
 	private FDUserDlvPassInfo dlvPassInfo;
@@ -683,11 +683,11 @@ public class FDUser extends ModelSupport implements FDUserI {
 	
 	public String getWinback() throws FDResourceException {
 		if (this.identity == null) {
-			return "";
+			return "false";
 		}
 		FDCustomerModel customer = this.getFDCustomer();
 		if (customer == null || customer.getProfile() == null) {
-			return "";
+			return "false";
 		} else {
 			return customer.getProfile().getWinback();
 		}
@@ -696,13 +696,13 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public String getWinbackPath() throws FDResourceException {
 		
 		String winback = getWinback();
-		if(winback.equals(""))
-			return "";
+		if(winback.equals("false"))
+			return "false";
 		
 		StringTokenizer st = new StringTokenizer(winback, "_");
 		int countTokens = st.countTokens();
 		if (countTokens < 3)
-			return "";
+			return "false";
 		String temp = st.nextToken(); // date token which we don't need
 		return FDStoreProperties.getWinbackRoot() + st.nextToken()+ "/" + st.nextToken() + ".html";
 	}
@@ -710,24 +710,24 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public String getMarketingPromoPath() throws FDResourceException {
 		
 		String mktgPromo = getMarketingPromo();
-		if(mktgPromo.equals(""))
-			return "";
+		if(mktgPromo.equals("false"))
+			return "false";
 		
 		StringTokenizer st = new StringTokenizer(mktgPromo, "_");
 		int countTokens = st.countTokens();
 		if (countTokens < 3)
-			return "";
+			return "false";
 		return FDStoreProperties.getMarketingPromoRoot() + st.nextToken() + "/" + st.nextToken()+ "/" + st.nextToken() + ".html";
 	}
 
 	public String getMarketingPromo() throws FDResourceException {
 	
 		if (this.identity == null) {
-			return "";
+			return "false";
 		}
 		FDCustomerModel customer = this.getFDCustomer();
 		if (customer == null || customer.getProfile() == null) {
-			return "";
+			return "false";
 		} else {
 			return customer.getProfile().getMarketingPromo();
 		}

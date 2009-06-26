@@ -23,6 +23,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpOrderLineModel;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -310,7 +311,7 @@ public class FDUserDAO {
 			ps.setNull(index++, Types.VARCHAR);
 		}
 
-		if(user.getCampaignMsgViewed() < FDUser.CAMPAIGN_MSG_VIEW_LIMIT) {
+		if(user.getCampaignMsgViewed() < FDStoreProperties.getImpressionLimit()) {
 			ps.setInt(index++, user.getCampaignMsgViewed());
 		}
 		
