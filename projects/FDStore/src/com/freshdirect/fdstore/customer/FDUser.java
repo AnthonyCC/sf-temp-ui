@@ -681,7 +681,9 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 	
 	public String getWinback() throws FDResourceException {
-	    
+		if (this.identity == null) {
+			return "";
+		}
 		FDCustomerModel customer = this.getFDCustomer();
 		if (customer == null || customer.getProfile() == null) {
 			return "";
@@ -718,14 +720,17 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 
 	public String getMarketingPromo() throws FDResourceException {
-    
-	FDCustomerModel customer = this.getFDCustomer();
-	if (customer == null || customer.getProfile() == null) {
-		return "";
-	} else {
-		return customer.getProfile().getMarketingPromo();
+	
+		if (this.identity == null) {
+			return "";
+		}
+		FDCustomerModel customer = this.getFDCustomer();
+		if (customer == null || customer.getProfile() == null) {
+			return "";
+		} else {
+			return customer.getProfile().getMarketingPromo();
+		}
 	}
-}
 
 
 	public boolean isEligibleForPreReservation() throws FDResourceException {
