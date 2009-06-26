@@ -290,9 +290,9 @@ public class ProductImageTag extends BodyTagSupport {
 				String burstImage = "/media_stat/images/deals/brst_sm_" + deal + (supportsPNG ? ".png" : ".gif");
 				buf.append("<img alt=\"SAVE " + deal + "\" src=\""+burstImage+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
 			} else if (pl.isDisplayFave()) {
-				buf.append("<img alt=\"FAVE\" src=\"/media_stat/images/template/search/brst_sm_fave.png\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
+				buf.append("<img alt=\"FAVE\" src=\"/media_stat/images/bursts/brst_sm_fave"+(supportsPNG ? ".png" : ".gif")+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
 			} else if (pl.isDisplayNew()) {
-				buf.append("<img alt=\"NEW\" src=\"/media_stat/images/template/search/brst_sm_new.png\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
+				buf.append("<img alt=\"NEW\" src=\"/media_stat/images/bursts/brst_sm_new"+(supportsPNG ? ".png" : ".gif")+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
 			}
 
 			if (shouldGenerateAction) {
