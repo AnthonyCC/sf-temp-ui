@@ -311,9 +311,7 @@ public class FDUserDAO {
 			ps.setNull(index++, Types.VARCHAR);
 		}
 
-		if(user.getCampaignMsgViewed() < FDStoreProperties.getImpressionLimit()) {
-			ps.setInt(index++, user.getCampaignMsgViewed());
-		}
+		ps.setInt(index++, user.getCampaignMsgViewed());
 		
 		// Smart Store - Cohort ID
 		if (user.getCohortName() != null)
