@@ -124,7 +124,7 @@
 							<display:ProductImage product="<%= productNode %>" action="<%= actionURI %>" showRolloverImage="true" />
 							<display:ProductRating product="<%= productNode %>" action="<%= actionURI %>"/>
 							<display:ProductName product="<%= productNode %>" action="<%= actionURI %>"/>
-							<display:ProductPrice impression="<%= new ProductImpression(productNode) %>"/>
+							<display:ProductPrice impression="<%= new ProductImpression(productNode) %>" showDescription="false"/>
 						</div>
 					</td>
 					

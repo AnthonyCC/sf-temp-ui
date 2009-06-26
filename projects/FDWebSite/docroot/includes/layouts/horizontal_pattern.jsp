@@ -44,7 +44,7 @@
 					<display:ProductImage product="<%= product %>" showRolloverImage="true" action="<%= actionUrl %>"/><br/>
 					<display:ProductRating product="<%= product %>" action="<%= actionUrl %>"/>
 					<display:ProductName product="<%= product %>" action="<%= actionUrl %>"/>
-					<display:ProductPrice impression="<%= new ProductImpression(product) %>"/>
+					<display:ProductPrice impression="<%= new ProductImpression(product) %>" showDescription="false"/>
 					
 				</font></td> 
 				

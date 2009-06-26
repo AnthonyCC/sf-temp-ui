@@ -209,7 +209,7 @@
 							
 								<display:ProductRating product="<%= (ProductModel)contentNode %>" action="<%= actionUrl %>"/>
 								<display:ProductName product="<%= (ProductModel)contentNode %>" action="<%= actionUrl %>"/>								
-								<display:ProductPrice impression="<%= new ProductImpression( (ProductModel)contentNode ) %>"/>
+								<display:ProductPrice impression="<%= new ProductImpression( (ProductModel)contentNode ) %>" showDescription="false"/>
 								
 							<% } else if ( contentNode instanceof CategoryModel ) { %>
 							
