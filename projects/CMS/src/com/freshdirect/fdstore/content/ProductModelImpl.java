@@ -17,6 +17,8 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
+
 import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
@@ -37,12 +39,15 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.attributes.Attribute;
 import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 import com.freshdirect.framework.util.DayOfWeekSet;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
  * 
  */
 public class ProductModelImpl extends AbstractProductModelImpl {
 	private static final long serialVersionUID = 2103318183933323914L;
+	
+	private static final Logger LOG = LoggerFactory.getInstance( ProductModelImpl.class ); 
 
 	private List skuModels = new ArrayList();
 	
@@ -1481,11 +1486,11 @@ inner:
 				 * There is a similar setup in the GetPeakProduceTag.java file
 				 * and in ProductModelImpl.java
 				 */
-				System.out.println("===== in getProductRating in ProductModelImpl :"+sku.getSkuCode());
+//				LOG.debug("===== in getProductRating in ProductModelImpl :"+sku.getSkuCode());
 				
 				// grab sku prefixes that should show ratings
 				String _skuPrefixes=FDStoreProperties.getRatingsSkuPrefixes();
-				System.out.println("* getRatingsSkuPrefixes :"+_skuPrefixes);
+//				LOG.debug("* getRatingsSkuPrefixes :"+_skuPrefixes);
     	   
 				//if we have prefixes then check them
 				if (_skuPrefixes!=null && !"".equals(_skuPrefixes)) {
@@ -1498,27 +1503,27 @@ inner:
 					while(st.hasMoreElements()) {
 						
 						curPrefix=st.nextToken();
-						System.out.println(spacer+"Rating _skuPrefixes checking :"+curPrefix);
+//						LOG.debug(spacer+"Rating _skuPrefixes checking :"+curPrefix);
 						
 						//if prefix matches get product info
 						if(sku.getSkuCode().startsWith(curPrefix)) {
 							productInfo = FDCachedFactory.getProductInfo( sku.getSkuCode() );
-							System.out.println(" Rating productInfo :"+productInfo);
+//							LOG.debug(" Rating productInfo :"+productInfo);
 							String tmpRating = productInfo.getRating();
 							
 							if ( tmpRating != null && tmpRating.trim().length() > 0 ) {
 								EnumOrderLineRating enumRating = EnumOrderLineRating.getEnumByStatusCode( tmpRating );
-								System.out.println(" enumRating :"+enumRating);
+//								LOG.debug(" enumRating :"+enumRating);
 								
 								if ( enumRating != null && enumRating.isEligibleToDisplay() ) {
 									rating = enumRating.getStatusCodeInDisplayFormat();
-									System.out.println(" rating in display format  :"+rating);
+//									LOG.debug(" rating in display format  :"+rating);
 								}
 							}
 							matchFound=true;
 						}
 						//exit on matched sku prefix
-						System.out.println(spacer+"Rating matchFound :"+matchFound);
+//						LOG.debug(spacer+"Rating matchFound :"+matchFound);
 						if (matchFound) { break; }
 						spacer=spacer+"   ";
 					}
