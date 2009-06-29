@@ -331,7 +331,7 @@ if (errorMsg!=null) {%>
 %>
 	
 	<TR>
-		<td width="100%" align="center"  align="center"><font class="title16" color="#339900">Delivery Charge $9.99 Tuesday-Friday ($14.99 Monday).</font><br><br></td>	
+		<td width="100%" align="center"  align="center" colspan="2"><font class="title16" color="#339900">Delivery Charge $9.99 Tuesday-Friday ($14.99 Monday).</font><br><br></td>	
 	</TR>	
 <%}%>
 
@@ -340,10 +340,10 @@ if (errorMsg!=null) {%>
 	if(user.getSelectedServiceType() == EnumServiceType.CORPORATE  && (user.isDlvPassActive() || cart.getDeliveryPassCount() > 0)) {
 %>
 	<TR>
-	<td width="100%" align="center"><font class="text12bold" color="#FF0000">IMPORTANT INFORMATION FOR OFFICE DELIVERIES</font></td>	
+	<td width="100%" align="center" colspan="2"><font class="text12bold" color="#FF0000">IMPORTANT INFORMATION FOR OFFICE DELIVERIES</font></td>	
 	</TR>
 	<TR>
-		<td class="text12" align="center">Unlimited DeliveryPass is only good for residential deliveries and will not apply to this order.<br><br></td>	
+		<td class="text12" align="center" colspan="2">Unlimited DeliveryPass is only good for residential deliveries and will not apply to this order.<br><br></td>	
 	</TR>	
 <%}%>	
 
