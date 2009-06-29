@@ -686,18 +686,22 @@ public class FDUser extends ModelSupport implements FDUserI {
 			return "false";
 		}
 		FDCustomerModel customer = this.getFDCustomer();
-		if (customer == null || customer.getProfile() == null) {
+		if (null == customer || null == customer.getProfile() || null == customer.getProfile().getWinback()) {
 			return "false";
 		} else {
-			return customer.getProfile().getWinback();
+			String value = customer.getProfile().getWinback().trim();
+			if("".equals(value)) {
+				return "false";
+			}
+			return value;
 		}
 	}
 	
 	public String getWinbackPath() throws FDResourceException {
-		
+		// winback path is in the form of "YYMMDD_winback_segment"
 		String winback = getWinback();
 		if(winback.equals("false"))
-			return "false";
+			return winback;
 		
 		StringTokenizer st = new StringTokenizer(winback, "_");
 		int countTokens = st.countTokens();
@@ -708,10 +712,10 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 	
 	public String getMarketingPromoPath() throws FDResourceException {
-		
+		// marketingPromo path is in the form of "campaign_campaign2_segment"
 		String mktgPromo = getMarketingPromo();
 		if(mktgPromo.equals("false"))
-			return "false";
+			return mktgPromo;
 		
 		StringTokenizer st = new StringTokenizer(mktgPromo, "_");
 		int countTokens = st.countTokens();
@@ -726,10 +730,14 @@ public class FDUser extends ModelSupport implements FDUserI {
 			return "false";
 		}
 		FDCustomerModel customer = this.getFDCustomer();
-		if (customer == null || customer.getProfile() == null) {
+		if (null == customer || null == customer.getProfile() || null == customer.getProfile().getMarketingPromo()) {
 			return "false";
 		} else {
-			return customer.getProfile().getMarketingPromo();
+			String value = customer.getProfile().getMarketingPromo().trim();
+			if("".equals(value)) {
+				return "false";
+			}
+			return value;
 		}
 	}
 
