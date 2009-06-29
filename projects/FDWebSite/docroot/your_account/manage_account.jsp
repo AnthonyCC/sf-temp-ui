@@ -98,7 +98,9 @@ your account information, this is the place to do it.<br></td>
 		<td style="color: white; background: #221e1f; left: inherit; text-align: center;">
 			<%= user.getFirstName() %> <%= user.getLastName() %>
 			<br/>
-			Since <%= TimeslotPageUtil.formatFirstOrderYear(user.getOrderHistory().getFirstNonPickupOrderDate()) %>
+			<% if(user.isChefsTable() && !user.getChefsTableInduction().equals("0") && user.getChefsTableInduction().length() == 8) { %>
+				Since <%= user.getChefsTableInduction().substring(0,4) %>
+			<% }%>
 			<br/>
 			<br/>
 		</td>
