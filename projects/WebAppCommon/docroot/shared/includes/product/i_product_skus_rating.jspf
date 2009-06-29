@@ -1,0 +1,60 @@
+<fd:ProduceRatingCheck>
+	<%
+
+	boolean matchFound = false; //default to false
+
+	//this is taking the place of a skuCode
+	String deptIdCheck = productInfo.getSkuCode().toString().substring(0,3);
+	
+	if ( deptIdCheck != null && !"".equals(deptIdCheck) ) {
+		deptIdCheck= deptIdCheck.toUpperCase();
+
+		// grab sku prefixes that should show ratings
+		String _skuPrefixes = FDStoreProperties.getRatingsSkuPrefixes();
+
+		//if we have prefixes then check them
+		if ( _skuPrefixes != null && !"".equals(_skuPrefixes) ) {
+			StringTokenizer st = new StringTokenizer(_skuPrefixes, ","); //setup for splitting property
+			String curPrefix = ""; //holds prefix to check against
+			String spacer="* "; //spacing for sysOut calls
+			
+			//loop and check each prefix
+			while( st.hasMoreElements() ) {				
+				curPrefix = st.nextToken();
+
+				//if prefix matches get product info
+				if( deptIdCheck.startsWith(curPrefix) ) {
+					matchFound = true;
+				}
+				//exit on matched sku prefix
+				if ( matchFound ) { break; }
+				spacer = spacer + "   ";
+			}
+		}
+	}
+
+	if ( matchFound ) {
+		if ( productInfo.getRating() != null && productInfo.getRating().trim().length() > 0 ) { 
+				
+			String rating="";
+			EnumOrderLineRating enumRating=EnumOrderLineRating.getEnumByStatusCode(productInfo.getRating());
+				
+			if ( enumRating != null && enumRating.isEligibleToDisplay() ) {
+				rating = enumRating.getStatusCodeInDisplayFormat();
+				%>
+				<table cellpadding="0" cellspacing="0" border="0">
+					<tr valign="middle">
+						<td class="qualityRating">
+							<%=enumRating.getShortDescription()%> - 
+						</td>
+						<td>
+							<img src="/media_stat/images/ratings/product_<%=rating%>.gif" name="rating" height="11" alt="<%=enumRating.getShortDescription()%>" border="0">
+						</td>
+					</tr>
+				</table>
+				<%  
+			}
+		}                            
+	}
+	%>                      
+</fd:ProduceRatingCheck>

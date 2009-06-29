@@ -30,8 +30,8 @@
                 }
                 %>
 				<% if ( productInfo.isDeal() ) { %>
-	                <font class="productPageSecondaryVarPrice" color="red"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font>
-	                <font class="productPageSecondaryVarPriceUnit" color="red">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase()%></font>				
+	                <font class="productPageSecondaryVarPrice" color="#C94747"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font>
+	                <font class="productPageSecondaryVarPriceUnit" color="#C94747">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase()%></font>				
                     <br/>
                     <font class="text11nb">(was <%= currencyFormatter.format(productInfo.getBasePrice()) %>)</font>
 				<% } else { %>
@@ -54,8 +54,8 @@
 	                
 	                
 					<% if ( productInfo.isDeal() ) { %>
-	                	<font class="productPageSinglePrice" color="red"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font>
-	                	<font class="productPageSinglePriceUnit" color="red">/<%=productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
+	                	<font class="productPageSinglePrice" color="#C94747"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font>
+	                	<font class="productPageSinglePriceUnit" color="#C94747">/<%=productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
                         <br/>
                         <font class="text11nb">(was <%= currencyFormatter.format(productInfo.getBasePrice()) %>)</font>
                         <br/>
@@ -70,83 +70,9 @@
             }
 		%>
             
-		<fd:ProduceRatingCheck>
-			<%
-
-			/*
-			 * There is a similar setup in the JspMethods.java file
-			 */
-	
-			//System.out.println("==== in dept peak produce include ProduceRatingCheck : ");
-
-			boolean matchFound = false; //default to false
-
-			//this is taking the place of a skuCode
-			String deptIdCheck = productInfo.getSkuCode().toString().substring(0,3);
-			if (!"".equals(deptIdCheck) && deptIdCheck != null) {
-				deptIdCheck= deptIdCheck.toUpperCase();
-
-				//System.out.println("	* deptIdCheck :"+deptIdCheck);
-				
-				// grab sku prefixes that should show ratings
-				String _skuPrefixes=FDStoreProperties.getRatingsSkuPrefixes();
-
-				//System.out.println("	* getRatingsSkuPrefixes :"+_skuPrefixes);
-			   
-				//if we have prefixes then check them
-				if (_skuPrefixes!=null && !"".equals(_skuPrefixes)) {
-					StringTokenizer st=new StringTokenizer(_skuPrefixes, ","); //setup for splitting property
-					String curPrefix = ""; //holds prefix to check against
-					String spacer="* "; //spacing for sysOut calls
-					
-					//loop and check each prefix
-					while(st.hasMoreElements()) {
-						
-						curPrefix=st.nextToken();
-
-						//System.out.println(spacer+"Rating _skuPrefixes checking :"+curPrefix);
-						
-						//if prefix matches get product info
-						if(deptIdCheck.startsWith(curPrefix)) {
-							matchFound=true;
-						}
-						//exit on matched sku prefix
-						//System.out.println(spacer+"Rating matchFound :"+matchFound);
-						if (matchFound) { break; }
-						spacer=spacer+"   ";
-					}
-				}
-
-				//System.out.println("Rating matchFound :"+matchFound);
-			}
-
-			if(matchFound) {
-				//String skuCodeRat = productInfo.getSkuCode();
-				//if ( skuCodeRat.startsWith("FRU") || skuCodeRat.startsWith("VEG") || skuCodeRat.startsWith("YEL") ) {
-					//System.out.println("=====inside i_prod single :");
-					
-					if ( productInfo.getRating() != null && productInfo.getRating().trim().length() > 0 ) { 
-						
-						String rating="";
-						EnumOrderLineRating enumRating=EnumOrderLineRating.getEnumByStatusCode(productInfo.getRating());
-						
-						if ( enumRating != null && enumRating.isEligibleToDisplay() ) {
-							rating = enumRating.getStatusCodeInDisplayFormat();
-							// Single product rating
-							%>
-							<table cellpadding="0" cellspacing="0" border="0"><tr valign="middle">
-								<td class="qualityRating" style="padding-top:3px;"><%=enumRating.getShortDescription()%> - </td>
-								<td style="padding-top:4px;"><img src="/media_stat/images/ratings/product_<%=rating%>.gif" name="rating" height="11" alt="<%=enumRating.getShortDescription()%>" border="0"></td>
-							</tr></table>
-							<%  
-						}
-					}                            
-				//}
-			}
-			%>                      
-		</fd:ProduceRatingCheck>
+		<%@include file="/shared/includes/product/i_product_skus_rating.jspf" %>
                  
-		<%@ include file="/shared/includes/product/i_scaled_prices.jspf" %>
+		<%@ include file="/shared/includes/product/i_scaled_prices_fixed.jspf" %>
 		
 		<input type="hidden" name="skuCode" value="<%= defaultSku.getSkuCode() %>">
 		

@@ -13,8 +13,8 @@
 	
 	if ( scales.length > 0 ) {
 		%>
-		<font class="specialPriceLabel">Save! </font>
-		<font class="specialPrice"><%
+		<font class="specialPrice">Save!
+		<%
 		for ( int sci = 0; sci < scales.length; sci++ ) {
 			out.print( scales[sci] );
 			out.println("<br/>");

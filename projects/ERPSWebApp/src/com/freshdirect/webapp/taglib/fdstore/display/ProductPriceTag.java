@@ -126,7 +126,7 @@ public class ProductPriceTag extends BodyTagSupport {
 					"</div>"
 			);
 			
-		}	// TODO what if productInfo was null?		
+		}
 
 		buf.append( "</font>" );
 		
@@ -151,7 +151,7 @@ public class ProductPriceTag extends BodyTagSupport {
 				ymalScales = product.getPricing().getScaleDisplay();			
 			
 			if ( ymalScales.length > 0 ) {
-				return ymalScales[ ymalScales.length-1 ];	//TODO which one is the largest?? first or last? 
+				return ymalScales[ ymalScales.length-1 ];
 			}
 		}
 		return null;
