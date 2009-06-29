@@ -567,7 +567,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 		try {
 			SkuModel sku = getDefaultSku();
 			if ( sku == null )
-				return "";
+				return null;
 			
 			FDProduct pr = sku.getProduct();
 			FDSalesUnit[] sus = pr.getSalesUnits();
