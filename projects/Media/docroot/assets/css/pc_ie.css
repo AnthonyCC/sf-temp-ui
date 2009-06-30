@@ -81,7 +81,7 @@ A.list		    { line-height: 12px; }
 .text11g	     { font-size: 10px; color: #336600; font-family: Verdana, Arial, sans-serif; }
 .text11gbold	 { font-size: 10px; color: #336600; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .text11bold      { font-size: 10px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
-.text11nb        { font-size: 10px; color: #777777; font-family: Verdana, Arial, sans-serif; }
+.text11nb        { font-size: 10px; font-weight: normal; color: #777777; font-family: Verdana, Arial, sans-serif; }
 .text11wbold     { font-size: 10px; color: #FFFFFF;  font-weight: bold;font-family: Verdana, Arial, sans-serif; }
 .text11rbold     { font-size: 10px; font-weight: bold; color: #CC0000; font-family: Verdana, Arial, sans-serif; }
 .text11orbold	 { font-size: 10px; font-weight: bold; color: #FF9933; font-family: Verdana, Arial, sans-serif; }
