@@ -264,23 +264,26 @@
 				%>
 			
 				<fd:ProduceRatingCheck>
-					<%
+                <% 
 					/*
 					 *	Dynamic media include based on SKU prefix 
 					 */
-					String produceRatingPrefix=productNode.getDefaultSku().getSkuCode().toString().substring(0,3);
-					String produceRating=productNode.getProductRating();                
-                                                
-					if(produceRating!=null && produceRating.trim().length()>0) {
-						String ratingMediaPath="/media/brands/fd_ratings/"+produceRatingPrefix+"/prod_rating.html";
-						//System.out.println("========================	ratingMediaPath? : "+ratingMediaPath);
-						%>
-                   
-						<br /><fd:IncludeMedia name="<%=ratingMediaPath%>" /><br />
-					<%
-					}
-					%>
-				</fd:ProduceRatingCheck>       
+
+						if(productNode.getDefaultSku()!=null && productNode.getDefaultSku().toString().trim().length()>0) {
+							String produceRatingPrefix=productNode.getDefaultSku().getSkuCode().toString().substring(0,3);
+							String produceRating=productNode.getProductRating();                
+															
+							if(produceRating!=null && produceRating.trim().length()>0) {
+								String ratingMediaPath="/media/brands/fd_ratings/"+produceRatingPrefix+"/prod_rating.html";
+								//System.out.println("========================	ratingMediaPath? : "+ratingMediaPath);
+								%>
+						
+								<br /><fd:IncludeMedia name="<%=ratingMediaPath%>" /><br />
+							<%
+							}
+						}
+                 %>
+				</fd:ProduceRatingCheck>
             
  				<%@ include file="/shared/includes/product/organic_claims.jspf" %>
                                 
