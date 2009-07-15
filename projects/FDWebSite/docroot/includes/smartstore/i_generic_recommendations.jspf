@@ -36,6 +36,7 @@
 
 	@input genericRecommendationsVariant (request) actual variant
 	@input parentImpressionId String parent impression ID
+	@input parentVariantId String parent variant ID
 --%>
 
 <script type="text/javascript" src="/assets/javascript/pricing.js"></script>
@@ -45,6 +46,7 @@
 	// mandatory parameter
 	Variant genericRecommendationsVariant = (Variant) request.getAttribute("genericRecommendationsVariant");
 	String parentImpressionId = (String) request.getAttribute("parentImpressionId");
+	String parentVariantId = (String) request.getAttribute("parentVariantId");
 	final FDUserI pip_u = (FDUserI) session.getAttribute(SessionName.USER);
 
 	String vId = genericRecommendationsVariant.getId();
@@ -73,7 +75,7 @@
 %>
 
 	
-<fd:GenericRecommendations id="recommendations" errorOccurred="<%= !pip_result.isSuccess() %>" parentFeatureImpressionId="<%= parentImpressionId %>">
+<fd:GenericRecommendations id="recommendations" errorOccurred="<%= !pip_result.isSuccess() %>" parentFeatureImpressionId="<%= parentImpressionId %>" parentVariantId="<%= parentVariantId %>">
 		<% 		
 		    isRendered = true;
 			ConfigurationContext confContext = new ConfigurationContext();

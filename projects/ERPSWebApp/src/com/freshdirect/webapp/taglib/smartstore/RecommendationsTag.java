@@ -36,6 +36,7 @@ public abstract class RecommendationsTag extends AbstractGetterTag {
     
     protected String parentFeatureImpressionId;
     
+    protected String parentVariantId;
     
     protected abstract Recommendations getRecommendations() throws FDResourceException, InvalidContentKeyException;
 
@@ -47,6 +48,10 @@ public abstract class RecommendationsTag extends AbstractGetterTag {
         this.parentFeatureImpressionId = id;
     }
 
+    public void setParentVariantId(String parentVariantId) {
+        this.parentVariantId = parentVariantId;
+    }
+    
     /**
      * @deprecated
      * */
@@ -95,7 +100,7 @@ public abstract class RecommendationsTag extends AbstractGetterTag {
             
             int rank = 1;
             Map map = new HashMap();
-            String featureImpId = imp.logFeatureImpression(parentFeatureImpressionId, r);
+            String featureImpId = imp.logFeatureImpression(parentFeatureImpressionId, parentVariantId, r);
             for (Iterator it = r.getProducts().iterator();it.hasNext();) {
                 ProductModel p = (ProductModel) it.next();
 

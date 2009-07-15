@@ -92,15 +92,15 @@ public class Impression {
         return imp;
     }
 
-    public String logFeatureImpression(String parentFeatureImpId, Recommendations recommendations) {
+    public String logFeatureImpression(String parentFeatureImpId, String parentVariantId, Recommendations recommendations) {
         CategoryModel category = recommendations.getSessionInput().getCategory();
         ContentNodeModel trigger = recommendations.getSessionInput().getCurrentNode();
         YmalSource ymalSource = recommendations.getSessionInput().getYmalSource();
         
-        return logFeatureImpression(parentFeatureImpId, recommendations.getVariant(), category, trigger, ymalSource);
+        return logFeatureImpression(parentFeatureImpId, parentVariantId, recommendations.getVariant(), category, trigger, ymalSource);
     }
 
-    public String logFeatureImpression(String parentFeatureImpId, Variant variant, CategoryModel category, ContentNodeModel trigger, YmalSource ymalSource) {
+    public String logFeatureImpression(String parentFeatureImpId, String parentVariantId, Variant variant, CategoryModel category, ContentNodeModel trigger, YmalSource ymalSource) {
         RecommendationServiceType type = variant.getServiceConfig().getType();
 		if (!type.equals(RecommendationServiceType.CLASSIC_YMAL) &&
         		!type.equals(RecommendationServiceType.SMART_YMAL))
@@ -124,14 +124,14 @@ public class Impression {
         String triggerCategoryId = (category != null) ? category.getContentKey().getId() : "";
         String ymalSetId = ymalSource != null ? ymalSource.getActiveYmalSet().getContentKey().getId() : "";
 
-        return logFeatureImpression(parentFeatureImpId, variant.getId(), triggerCategoryId, triggerProductId, ymalSetId);
+        return logFeatureImpression(parentFeatureImpId, parentVariantId, variant.getId(), triggerCategoryId, triggerProductId, ymalSetId);
     }
 
-    public String logFeatureImpression(String parentFeatureImpId, String variantId, String triggeringCategoryId, String triggeringProductId, String ymalId) {
+    public String logFeatureImpression(String parentFeatureImpId, String parentVariantId, String variantId, String triggeringCategoryId, String triggeringProductId, String ymalId) {
         featureId++;
         String uniqId = requestId + "_f" + featureId;
         String message = uniqId + ',' + requestId + ',' + (parentFeatureImpId!=null ? parentFeatureImpId : "") + ',' + variantId + ',' + triggeringCategoryId + ',' + triggeringProductId
-                + ',' + ymalId;
+                + ',' + ymalId + ',' + (parentVariantId != null ? parentVariantId : "");
         ImpressionLogger.FEATURE.logEvent(message);
         return uniqId;
     }

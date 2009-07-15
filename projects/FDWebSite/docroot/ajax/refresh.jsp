@@ -45,7 +45,16 @@ com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 		}
 
 		request.setAttribute("genericRecommendationsVariant", v);
-		request.setAttribute("parentImpressionId", request.getParameter("pImpId"));
+		String pimpId = request.getParameter("pImpId");
+		if (pimpId != null) {
+		    int indx = pimpId.indexOf(':');
+		    if (indx != -1) {
+		        String parentVariantId = pimpId.substring(indx + 1);
+				request.setAttribute("parentVariantId", parentVariantId);
+		        pimpId = pimpId.substring(0, indx);
+		    }
+			request.setAttribute("parentImpressionId", pimpId);
+		}
 			
 		if ( session.isNew() ) {	// session timeout
 			response.setStatus(HttpServletResponse.SC_RESET_CONTENT);
