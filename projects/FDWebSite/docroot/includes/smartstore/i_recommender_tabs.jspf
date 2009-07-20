@@ -8,6 +8,7 @@
 <%@page import="java.net.URLEncoder"%>
 <%@page import="java.text.MessageFormat"%>
 <%@page import="java.util.Collections"%>
+<%@ page import="java.util.Date"%>
 <%@ page import="java.util.Map"%>
 <%@ taglib uri='template' prefix='tmpl'%>
 <%@ taglib uri='logic' prefix='logic'%>
@@ -98,6 +99,8 @@
 					<td class="tab"><div class="tab"><table width="100%"><tr><td>
 						<%-- CONTENT --%><%
 							request.setAttribute("genericRecommendationsVariant", tab.get(selectedTab));
+						    request.setAttribute("parentImpressionId", tab.getParentImpressionId());
+						    request.setAttribute("parentVariantId", tab.getTabRecommender().getVariant().getId());
 						
 							for ( int k=0; k < numTabs; k++ ) {
 									boolean selected = selectedTab == k; 
