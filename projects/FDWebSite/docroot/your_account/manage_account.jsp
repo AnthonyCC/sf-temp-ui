@@ -170,7 +170,7 @@ your account information, this is the place to do it.<br></td>
 	</tr>
 </table>
 </td>
-<% if(!user.isChefsTable() && user.isOkayToDisplayCTEligibility()) { %>
+<% if(!user.isChefsTable() && (user.isOkayToDisplayCTEligibility() && !user.hasQualifiedForCT())) { %>
 	<TD valign="top" align="CENTER" width="40">
 		<img src="/media_stat/images/layout/ff9900.gif" width="1" height="580"><br>
 	</td>
@@ -178,7 +178,7 @@ your account information, this is the place to do it.<br></td>
 <td valign="top">
 	<!-- ct user logo -->
 	<% 
-    if(!user.isChefsTable() && user.isOkayToDisplayCTEligibility()) {
+    if(!user.isChefsTable() && user.isOkayToDisplayCTEligibility() && !user.hasQualifiedForCT()) {
     
 %>
  	
@@ -211,28 +211,28 @@ your account information, this is the place to do it.<br></td>
 		</tr>
 	</table><br>
 <%  }
-	if(user.isChefsTable() || user.isOkayToDisplayCTEligibility()) {
-	%>
-	<table align="center" border="0" cellspacing="0" cellpadding="0">
-	<tr valign="top">
-		<td valign="top" class="text13">
-		<% if(!user.isChefsTable() && user.isOkayToDisplayCTEligibility()) { %>
-			<fd:IncludeMedia name="/media/editorial/site_pages/account/right_ct_new.html" />
-		<% } else if( user.isChefsTable()) { %>
-			<fd:IncludeMedia name="/media/editorial/site_pages/account/right_ct.html" />
-		<% } %>
-        	</td>
-	</tr>
-	</table>
+	if(user.isChefsTable() || (user.isOkayToDisplayCTEligibility() && !user.hasQualifiedForCT()) {
+		%>
+		<table align="center" border="0" cellspacing="0" cellpadding="0">
+		<tr valign="top">
+			<td valign="top" class="text13">
+			<% if(!user.isChefsTable() && user.isOkayToDisplayCTEligibility()) { %>
+				<fd:IncludeMedia name="/media/editorial/site_pages/account/right_ct_new.html" />
+			<% } else if( user.isChefsTable()) { %>
+				<fd:IncludeMedia name="/media/editorial/site_pages/account/right_ct.html" />
+			<% } %>
+			</td>
+		</tr>
+		</table>
 	<% } else { %>
-    	<table align="center" border="0" cellspacing="0" cellpadding="0">
-	<tr valign="top">
-		<td valign="top" class="text13">
-        <fd:IncludeMedia name="/media/editorial/site_pages/account/right_all.html" />
-        </td>
-	</tr>
-	</table>
-    <% } %>
+		<table align="center" border="0" cellspacing="0" cellpadding="0">
+		<tr valign="top">
+			<td valign="top" class="text13">
+		<fd:IncludeMedia name="/media/editorial/site_pages/account/right_all.html" />
+		</td>
+		</tr>
+		</table>
+        <% } %>
 </td>
 </tr>
 </table>
