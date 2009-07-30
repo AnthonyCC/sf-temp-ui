@@ -63,38 +63,38 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	private static final long serialVersionUID = 587469031501334715L;
 
 	private static Category LOGGER = LoggerFactory.getInstance( FDUser.class );
-    
+
     private final FDUser user;
-    
+
     private long lastCartSaveTime;
-    
+
     private final static long SAVE_PERIOD = 2 * 60 * 1000; // 2 minutes
 
 	private int failedAuthorizations = 0;
 	private boolean healthWarningAcknowledged = false;
-	
+
 	private Date startDate;
 	private long lastRequestDate;
-	private Map impressions = new HashMap();		
+	private Map impressions = new HashMap();
 
 	private String sessionId = null;
-	
+
 	private String tabSiteFeature = null;
-	    
+
     public FDSessionUser(FDUser user, HttpSession session) {
         super();
         this.user = user;
-		
+
 		String app = (String) session.getAttribute(SessionName.APPLICATION);
 		EnumTransactionSource src = EnumTransactionSource.WEBSITE;
 		if (app!=null && "callcenter".equalsIgnoreCase(app)) {
-			src = EnumTransactionSource.CUSTOMER_REP;  
+			src = EnumTransactionSource.CUSTOMER_REP;
 		}
-		this.user.setApplication(src); 
-		
+		this.user.setApplication(src);
+
         lastCartSaveTime = System.currentTimeMillis();
     }
-    
+
     public void valueBound(HttpSessionBindingEvent event) {
         LOGGER.debug("FDUser bound to session");
         this.saveCart();
@@ -102,7 +102,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         this.startDate = new Date();
         this.lastRequestDate = startDate.getTime();
         sessionId = event.getSession().getId();
-        
+
         // store cohort ID
         if (user.getCohortName() == null) {
             try {
@@ -122,14 +122,14 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         this.saveImpressions();
         sessionId = null;
     }
-    
+
     /**
      * update the last request date.
      */
     public void touch() {
         lastRequestDate = System.currentTimeMillis();
     }
-    
+
     private void saveImpressions() {
         if (!impressions.isEmpty()) {
             ArrayList logEntries = new ArrayList();
@@ -146,7 +146,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         if (sessionId == null) {
             throw new IllegalStateException("current FD user not bound to session");
         }
-        
+
         SessionImpressionLogEntry entry = (SessionImpressionLogEntry) impressions.get(variant);
         if (entry == null) {
             entry = new SessionImpressionLogEntry(user.getPrimaryKey(), sessionId, variant);
@@ -155,12 +155,12 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
         entry.incrementImpressions(productCount);
     }
-    
+
     public void logTabImpression(String variant, int tabCount) {
         if (sessionId == null) {
             throw new IllegalStateException("current FD user not bound to session");
         }
-        
+
         SessionImpressionLogEntry entry = (SessionImpressionLogEntry) impressions.get(variant);
         if (entry == null) {
             entry = new SessionImpressionLogEntry(user.getPrimaryKey(), sessionId, variant);
@@ -169,12 +169,12 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
         entry.incrementTabImpressions(tabCount);
     }
-    
+
 
     public void saveCart() {
         this.saveCart(false);
     }
-    
+
     public void saveCart(boolean forceSave) {
         //
         // don't save carts too often
@@ -232,73 +232,73 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		this.healthWarningAcknowledged = healthWarningAcknowledged;
 	}
 
-    
+
     public FDUser getUser() {
         return this.user;
     }
-    
+
     public String getCookie() {
         return this.user.getCookie();
     }
-    
+
     public void setCookie(String cookie) {
         this.user.setCookie(cookie);
     }
-    
+
     public String getZipCode() {
         return this.user.getZipCode();
     }
-    
+
     public void setZipCode(String zipCode) {
         this.user.setZipCode(zipCode);
     }
-    
+
     public void setAddress(AddressModel a) {
         this.user.setAddress(a);
     }
 
 	public AddressModel getAddress() {
-		return this.user.getAddress();	
+		return this.user.getAddress();
 	}
-    
+
 	public String getPrimaryKey() {
 		return this.user.getPrimaryKey();
 	}
-	
+
     public FDIdentity getIdentity() {
         return this.user.getIdentity();
     }
-    
+
     public void setIdentity(FDIdentity identity) {
         this.user.setIdentity(identity);
     }
-    
+
     public int getLevel() {
         return this.user.getLevel();
     }
-    
+
     public boolean isInZone() {
         return this.user.isInZone();
     }
-    
+
     public void isLoggedIn(boolean loggedIn) {
         this.user.isLoggedIn(loggedIn);
     }
-    
+
     public FDCartModel getShoppingCart() {
         return this.user.getShoppingCart();
     }
-    
+
     public void setShoppingCart(FDCartModel cart) {
         this.user.setShoppingCart(cart);
     }
 
     public boolean isSurveySkipped() {
-		return this.user.isSurveySkipped();    	
+		return this.user.isSurveySkipped();
     }
-    
+
     public void setSurveySkipped(boolean skipped) {
-    	this.user.setSurveySkipped(skipped);	
+    	this.user.setSurveySkipped(skipped);
     }
 
 	public boolean isFraudulent() throws FDResourceException {
@@ -308,11 +308,11 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public FDPromotionEligibility getPromotionEligibility() {
 		return this.user.getPromotionEligibility();
 	}
-    
+
     public double getMaxSignupPromotion() {
         return this.user.getMaxSignupPromotion();
     }
-    
+
 	public SignupDiscountRule getSignupDiscountRule() {
 		return this.user.getSignupDiscountRule();
 	}
@@ -328,17 +328,17 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public PromotionI getRedeemedPromotion() {
 		return this.user.getRedeemedPromotion();
 	}
-    
+
     public void updateUserState() {
-        this.user.updateUserState();        
+        this.user.updateUserState();
     }
-    
-    
-    
+
+
+
     public String getFirstName() throws FDResourceException {
         return this.user.getFirstName();
     }
-    
+
     public String getDepotCode() {
         return this.user.getDepotCode();
     }
@@ -346,11 +346,11 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setDepotCode(String depotCode) {
         this.user.setDepotCode(depotCode);
     }
-    
+
     public boolean isDepotUser() {
         return this.user.isDepotUser();
     }
-    
+
     public boolean isCorporateUser() {
     	return this.user.isCorporateUser();
     }
@@ -366,15 +366,15 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     public int getAdjustedValidOrderCount() throws FDResourceException {
     	return this.user.getAdjustedValidOrderCount();
     }
-    
+
     public int getDeliveredOrderCount() throws FDResourceException {
     	return this.user.getDeliveredOrderCount();
     }
-    
+
     public int getValidPhoneOrderCount() throws FDResourceException {
     	return this.user.getValidPhoneOrderCount();
     }
-   
+
 	public boolean isEligibleForSignupPromotion() {
 		return this.user.isEligibleForSignupPromotion();
 	}
@@ -384,13 +384,13 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	}
 
     public boolean isOrderMinimumMet() throws FDResourceException {
-    	return this.user.isOrderMinimumMet();	
+    	return this.user.isOrderMinimumMet();
     }
-    
+
     public boolean isOrderMinimumMet(boolean alcohol) throws FDResourceException {
     	return this.user.isOrderMinimumMet(alcohol);
     }
-    
+
     public double getMinimumOrderAmount(){
     	return this.user.getMinimumOrderAmount();
     }
@@ -398,117 +398,121 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public float getQuantityMaximum(ProductModel product) {
 		return this.user.getQuantityMaximum(product);
 	}
-	
+
 	public int getOrderCountForChefsTableEligibility() throws FDResourceException {
 		return this.user.getOrderCountForChefsTableEligibility();
 	}
-	   
+
 	public String getOrderTotalForChefsTableEligibility() throws FDResourceException {
 		return this.user.getOrderTotalForChefsTableEligibility();
 	}
-	
+
 	public String getOrderCountRemainingForChefsTableEligibility() throws FDResourceException {
 		return this.user.getOrderCountRemainingForChefsTableEligibility();
 	}
-	
+
 	public String getOrderTotalRemainingForChefsTableEligibility() throws FDResourceException  {
 		return this.user.getOrderTotalRemainingForChefsTableEligibility();
 	}
-	
+
 	public boolean isCloseToCTEligibilityByOrderCount() throws FDResourceException {
 		return this.user.isCloseToCTEligibilityByOrderCount();
 	}
-	
+
 	public boolean isCloseToCTEligibilityByOrderTotal() throws FDResourceException  {
 		return this.user.isCloseToCTEligibilityByOrderTotal();
 	}
-	
+
 	public boolean isOkayToDisplayCTEligibility() throws FDResourceException {
 		return this.user.isOkayToDisplayCTEligibility();
 	}
-	
+
+	public boolean hasQualifiedForCT() throws FDResourceException {
+		return this.user.hasQualifiedForCT();
+    }
+
 	public String getEndChefsTableQualifyingDate() throws FDResourceException {
 		return this.user.getEndChefsTableQualifyingDate();
 	}
-    
+
     public boolean isPickupOnly() {
         return this.user.isPickupOnly();
     }
-    
+
     public boolean isPickupUser() {
         return this.user.isPickupUser();
     }
-    
+
     public boolean isNotServiceable() {
         return this.user.isNotServiceable();
     }
-   
+
     public boolean isDeliverableUser() {
         return this.user.isDeliverableUser();
     }
-    
+
     public boolean isHomeUser() {
         return this.user.isHomeUser();
     }
-    
+
     public FDCustomerModel getFDCustomer() throws FDResourceException {
         return this.user.getFDCustomer();
     }
-    
+
     public FDReservation getReservation(){
     	return this.user.getReservation();
     }
-    
+
     public void setReservation(FDReservation reservation){
     	this.user.setReservation(reservation);
     }
-    
+
 	public boolean isChefsTable() throws FDResourceException{
 		return this.user.isChefsTable();
 	}
-	
+
 	public String getChefsTableInduction() throws FDResourceException {
 		return this.user.getChefsTableInduction();
 	}
-	
+
 	public String getWinback() throws FDResourceException {
 		return this.user.getWinback();
 	}
-	
+
 	public String getWinbackPath() throws FDResourceException {
 		return this.user.getWinbackPath();
 	}
-	
+
 	public String getMarketingPromo() throws FDResourceException {
 		return this.user.getMarketingPromo();
 	}
-	
+
 	public String getMarketingPromoPath() throws FDResourceException {
 		return this.user.getMarketingPromoPath();
 	}
-	
+
 	public boolean isEligibleForPreReservation() throws FDResourceException{
 		return this.user.isEligibleForPreReservation();
 	}
-	
+
 	public EnumServiceType getSelectedServiceType() {
 		return this.user.getSelectedServiceType();
 	}
-	
-	
-	public EnumServiceType getUserServiceType(){		
+
+
+	public EnumServiceType getUserServiceType(){
 		return user.getUserServiceType() ;
 	}
 
-	
+
 	public void setSelectedServiceType(EnumServiceType serviceType){
 		this.user.setSelectedServiceType(serviceType);
 	}
-	
+
 	public void setAvailableServices(Set availableServices) {
 		user.setAvailableServices(availableServices);
 	}
-	
+
 	public String getCustomerServiceContact() {
 		return this.user.getCustomerServiceContact();
 	}
@@ -520,7 +524,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public boolean isCheckEligible() {
         return (user != null) ? user.isCheckEligible() : false;
     }
-   
+
 	public Collection getPaymentMethods() {
         return (user != null) ? user.getPaymentMethods() : new ArrayList();
 	}
@@ -528,15 +532,15 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public String  getUserId() {
         return (user != null) ? user.getUserId() : "";
 	}
-	
+
 	public String getLastRefTrackingCode() {
 		return this.user.getLastRefTrackingCode();
 	}
-	
+
 	public void setLastRefTrackingCode (String lastRefTrackingCode) {
 		this.user.setLastRefTrackingCode(lastRefTrackingCode);
 	}
-	
+
 	public boolean isReferrerRestricted() throws FDResourceException {
         return (user != null) ? user.isReferrerRestricted() : false;
 	}
@@ -548,23 +552,23 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public boolean isECheckRestricted() throws FDResourceException {
         return (user != null) ? user.isECheckRestricted() : false;
 	}
-	
+
 	public String getRegRefTrackingCode() {
         return (user != null) ? user.getRegRefTrackingCode() : "";
 	}
-	
+
 	public String getDefaultCounty() throws FDResourceException{
 		return (user != null) ? user.getDefaultCounty() : null;
 	}
-	
+
 	public boolean isActive() {
 		return user.isActive();
 	}
-	
+
 	public boolean isReceiveFDEmails() {
 		return user.isReceiveFDEmails();
 	}
-	
+
 	public void performDlvPassStatusCheck()throws FDResourceException {
 		user.performDlvPassStatusCheck();
 	}
@@ -597,8 +601,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public boolean isDlvPassActive(){
 		return this.user.isDlvPassActive();
 	}
-	
-	
+
+
 	public boolean isDlvPassPending(){
 		return this.user.isDlvPassPending();
 	}
@@ -614,11 +618,11 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public boolean isDlvPassCancelled(){
 		return this.user.isDlvPassCancelled();
 	}
-	
+
 	public boolean isDlvPassShortShipped(){
 		return this.user.isDlvPassShortShipped();
 	}
-	
+
 	public boolean isDlvPassSettlementFailed(){
 		return this.user.isDlvPassSettlementFailed();
 	}
@@ -626,7 +630,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public boolean isDlvPassReturned() {
 		return this.user.isDlvPassReturned();
 	}
-	
+
 	public void updateDlvPassInfo() throws FDResourceException{
 		user.updateDlvPassInfo();
 	}
@@ -649,7 +653,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setLastRefProgInvtId (String progInvtId) {
     	this.user.setLastRefProgInvtId(progInvtId);
     }
-	
+
 	public String getLastRefProgInvtId() {
 		 return this.user.getLastRefProgInvtId();
 	}
@@ -657,36 +661,36 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public String getLastName() throws FDResourceException {
 		return this.user.getLastName();
 	}
-	 
+
 	 public double getBaseDeliveryFee(){
     	return this.user.getBaseDeliveryFee();
     }
-	 
+
 	 public double getCorpDeliveryFee(){
     	return this.user.getCorpDeliveryFee();
     }
-	 
+
 	 public double getCorpDeliveryFeeMonday(){
 	    	return this.user.getCorpDeliveryFeeMonday();
 	 }
-	 
+
 	 public double getMinCorpOrderAmount(){
     	return this.user.getMinCorpOrderAmount();
     }
-	 
+
 	public int getUsableDeliveryPassCount() {
 	    	return user.getUsableDeliveryPassCount();
 	}
-	
+
 	public EnumDPAutoRenewalType hasAutoRenewDP() throws FDResourceException {
 		return user.hasAutoRenewDP();
 	}
-	
+
 	public AssignedCustomerParam getAssignedCustomerParam(String promoId) {
 		return user.getAssignedCustomerParam(promoId);
 	}
-	
-	public boolean isCCLEnabled() {		
+
+	public boolean isCCLEnabled() {
 		return this.user.isCCLEnabled();
 	}
 
@@ -697,11 +701,11 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public List getCustomerCreatedListInfos() {
 		return this.user.getCustomerCreatedListInfos();
 	}
-	
+
 	public DCPDPromoProductCache getDCPDPromoProductCache(){
 		return this.user.getDCPDPromoProductCache();
 	}
-	
+
 	public ErpPromotionHistory getPromotionHistory() throws FDResourceException {
 		return this.user.getPromotionHistory();
 	}
@@ -713,7 +717,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     public void invalidateOrderHistoryCache() {
     	this.user.invalidateOrderHistoryCache();
     }
-    
+
     public int getAdjustedValidECheckOrderCount() throws FDResourceException{
     	return this.user.getAdjustedValidECheckOrderCount();
     }
@@ -733,56 +737,56 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setHomePageLetterVisited(boolean isHomePageLetterVisited) {
 		user.setHomePageLetterVisited(isHomePageLetterVisited);
 	}
-	
+
 	public boolean isCampaignMsgLimitViewed() {
 		return user.isCampaignMsgLimitViewed();
 	}
-	
+
 	public int getCampaignMsgViewed() {
 		return user.getCampaignMsgViewed();
 	}
-	
+
 	public void setCampaignMsgViewed(int campaignMsgViewed) {
 		user.setCampaignMsgViewed(campaignMsgViewed);
 	}
-	
+
 	public static FDUserI getFDSessionUser(HttpSession session) {
 	    if (session==null) {
 	        return null;
 	    }
             return (FDUserI) session.getAttribute(SessionName.USER);
 	}
-	
+
 	public String getCohortName() {
 		return this.user.getCohortName();
 	}
-	
+
 	public void setCohortName(String cohortName) {
 		this.user.setCohortName(cohortName);
 	}
-	
+
 	public int getTotalCartSkuQuantity(String[] args) {
 		return user.getTotalCartSkuQuantity(args);
 	}
 
-	
+
 	public String getFavoriteTabFeature() {
 		return tabSiteFeature;
 	}
-	
+
 	public void setFavoriteTabFeature(String feature) {
 		this.tabSiteFeature = feature;
 	}
 
-	
+
 	public Map getPromoVariantMap() {
 		return this.user.getPromoVariantMap();
 	}
-	
+
 	public void setPromoVariantMap(Map pvMap) {
 		user.setPromoVariantMap(pvMap);
 	}
-	
+
 	public String getSavingsVariantId() {
 		return this.user.getSavingsVariantId();
 	}
@@ -797,12 +801,12 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setSavingsVariantFound(boolean savingsVariantFound) {
 		this.user.setSavingsVariantFound(savingsVariantFound);
 	}
-	
+
 
 	public PromoVariantModel getPromoVariant(String variantId) {
 	   return user.getPromoVariant(variantId);
 	}
-	
+
 	public boolean isPostPromoConflictEnabled() {
 		return user.isPostPromoConflictEnabled();
 	}
@@ -818,7 +822,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
 	public void setSignupDiscountRule(SignupDiscountRule discountRule) {
 		// TODO Auto-generated method stub
-        user.setSignupDiscountRule(discountRule);		
+        user.setSignupDiscountRule(discountRule);
 	}
 
 	public boolean isPromoConflictResolutionApplied() {
@@ -830,6 +834,6 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		// TODO Auto-generated method stub
 		user.setPromoConflictResolutionApplied(isPromoConflictResolutionApplied);
 	}
-	
-	
+
+
 }
