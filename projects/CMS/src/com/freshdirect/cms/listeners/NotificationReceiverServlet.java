@@ -35,7 +35,7 @@ public class NotificationReceiverServlet extends HttpServlet {
     
     
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+    	LOGGER.debug("-->service()");
         String cmd = req.getParameter("cmd");
         String user = req.getParameter("user");
         String src = req.getParameter("src");
@@ -56,10 +56,12 @@ public class NotificationReceiverServlet extends HttpServlet {
         	LOGGER.error("cannot perform operation '" + cmd + "' on '" + src + "'", e);
        		resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
        				e.getMessage() != null ? e.getMessage() : "Unknown error");
+        	LOGGER.debug("<--service()");
         	return;
 		}
         resp.sendError(HttpServletResponse.SC_OK);
-        LOGGER.debug("command '" + cmd + "' on '" + src + "' has been completed");
+        LOGGER.info("command '" + cmd + "' on '" + src + "' has been completed");
+    	LOGGER.debug("<--service()");
     }
     
     Media create(HttpServletRequest req) {
