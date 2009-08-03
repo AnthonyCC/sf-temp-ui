@@ -84,9 +84,21 @@ public class MediaEventHandler extends DbService implements MediaEventHandlerI {
     	LOGGER.debug("-->create()");
 		new DbTxCommand() {
 			protected void run(Connection conn) throws SQLException {
-				Media m = dao.insert(conn, media);
-				logChange(m.getContentKey(), EnumContentNodeChangeType.ADD, "initial checkin", userId);
-				associate(m, userId);
+				Media m;
+				try {
+					m = dao.insert(conn, media);
+					logChange(m.getContentKey(), EnumContentNodeChangeType.ADD, "initial checkin", userId);
+					associate(m, userId);
+				} catch (SQLException e) {
+					if (e.getMessage().indexOf("unique constraint") >= 0) {
+						LOGGER.debug("create failed for '" + media.getUri() + "', trying update");
+						dao.update(conn, media);
+						m = dao.lookupByUri(conn, media.getUri());
+						logChange(m.getContentKey(), EnumContentNodeChangeType.MODIFY, "updated " + media.getUri(), userId);
+					} else {
+						throw e;
+					}
+				}
 			}
 		}.execute();
     	LOGGER.debug("<--create()");

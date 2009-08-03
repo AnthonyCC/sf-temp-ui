@@ -27,15 +27,8 @@ public class MediaDao {
 
 		PreparedStatement ps = conn
 			.prepareStatement(
-					"MERGE INTO CMS_MEDIA A " +
-						"USING (SELECT ? ID, ? URI, ? WIDTH, ? HEIGHT, ? TYPE, ? MIME_TYPE, ? LAST_MODIFIED FROM DUAL) B " +
-						"ON (A.URI = B.URI) " +
-						"WHEN MATCHED THEN " +
-							"UPDATE SET A.WIDTH = B.WIDTH, A.HEIGHT = B.HEIGHT, A.TYPE = B.TYPE, A.MIME_TYPE = B.MIME_TYPE, " +
-								"A.LAST_MODIFIED = B.LAST_MODIFIED " +
-						"WHEN NOT MATCHED THEN " +
-							"INSERT (A.ID, A.URI, A.WIDTH, A.HEIGHT, A.TYPE, A.MIME_TYPE, A.LAST_MODIFIED) " +
-							"VALUES (B.ID, B.URI, B.WIDTH, B.HEIGHT, B.TYPE, B.MIME_TYPE, B.LAST_MODIFIED)");
+					"INSERT INTO CMS_MEDIA (ID, URI, WIDTH, HEIGHT, TYPE, MIME_TYPE, LAST_MODIFIED) " +
+							"VALUES (?, ?, ?, ?, ?, ?, ?)");
 
 		ps.setString(1, m.getPK().getId());
 		ps.setString(2, m.getUri());
