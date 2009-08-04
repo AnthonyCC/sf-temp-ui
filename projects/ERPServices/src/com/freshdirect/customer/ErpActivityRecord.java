@@ -3,7 +3,7 @@ package com.freshdirect.customer;
 import java.util.Date;
 import java.util.Comparator;
 import java.util.List;
-import com.freshdirect.enum.EnumModel;
+import com.freshdirect.enums.EnumModel;
 
 public class ErpActivityRecord implements java.io.Serializable {
 

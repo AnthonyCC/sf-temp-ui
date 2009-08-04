@@ -484,7 +484,7 @@
         <property name="restrictionManagerService" ref="restrictionManager"/>        
         <property name="zoneManagerService" ref="zoneManager"/>
 	</bean>
-	
+	    
 	<bean id="scribController" class="com.freshdirect.transadmin.web.ScribController">
 		<property name="methodNameResolver" ref="transAdminControllerResolver"/>
         <property name="dispatchManagerService" ref="dispatchManager"/>

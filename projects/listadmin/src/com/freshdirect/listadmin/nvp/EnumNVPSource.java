@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.enum.Enum;
-import org.apache.commons.lang.enum.EnumUtils;
+import org.apache.commons.lang.enums.Enum;
+import org.apache.commons.lang.enums.EnumUtils;
 
 public class EnumNVPSource implements NVPSourceI {
 	private List enums = new ArrayList();

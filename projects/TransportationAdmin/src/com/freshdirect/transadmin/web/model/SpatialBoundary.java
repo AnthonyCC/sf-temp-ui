@@ -68,14 +68,14 @@ public class SpatialBoundary implements java.io.Serializable {
 
 		return center; 
 	}
-
+	
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
 		result = PRIME * result + ((code == null) ? 0 : code.hashCode());
 		return result;
 	}
-
+	
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;

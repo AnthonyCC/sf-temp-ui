@@ -1,5 +1,5 @@
 <%@ page import='com.freshdirect.framework.webapp.ActionError' %>
-<%@ page import='com.freshdirect.enum.EnumModel' %>
+<%@ page import='com.freshdirect.enums.EnumModel' %>
 <%@ page import='com.freshdirect.crm.CrmCaseModel' %>
 <%@ page import='com.freshdirect.crm.CrmCaseConstants' %>
 <%@ page import='com.freshdirect.crm.CrmCaseActionType' %>

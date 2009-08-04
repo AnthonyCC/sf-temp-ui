@@ -9,7 +9,7 @@
 <%@ page import="com.freshdirect.customer.ErpAddressModel"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDCustomerFactory"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDCustomerManager"%>
-<%@ page import="import com.freshdirect.fdstore.customer.FDCustomerModel"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCustomerModel"%>
 <%@ page import="com.freshdirect.payment.*"%>
 <%@ page import='com.freshdirect.framework.webapp.*' %>
 

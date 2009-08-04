@@ -8,7 +8,7 @@ package com.freshdirect.crm;
 
 import java.util.*;
 
-import com.freshdirect.enum.EnumModel;
+import com.freshdirect.enums.EnumModel;
 
 /**
  *

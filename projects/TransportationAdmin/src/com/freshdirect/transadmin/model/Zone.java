@@ -22,7 +22,7 @@ public class Zone implements java.io.Serializable {
 	private String obsolete;
 	private final BigDecimal DEFAULT_PRIORITY=new BigDecimal(-1);
     private BigInteger stemTime;
-	
+
 	public String getObsolete() {
 		return obsolete;
 	}
@@ -127,3 +127,4 @@ public class Zone implements java.io.Serializable {
 	
 
 }
+

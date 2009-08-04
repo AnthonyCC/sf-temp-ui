@@ -1,6 +1,7 @@
 package com.freshdirect.dataloader.payment.ejb;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -9,8 +10,6 @@ import javax.ejb.EJBException;
 import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
-
-import weblogic.utils.collections.ArraySet;
 
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.customer.EnumSaleStatus;
@@ -138,7 +137,7 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 			
 			// collect recipes that will be sent to the users
 			List orderLines = fdOrder.getOrderLines();
-			Set  recipes    = new ArraySet();
+			Set  recipes    = new HashSet();
 			for (Iterator it = orderLines.iterator(); it.hasNext();) {
 				FDCartLineI cartLine = (FDCartLineI) it.next();
 				String		recipeId = cartLine.getRecipeSourceId();

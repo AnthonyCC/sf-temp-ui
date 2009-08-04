@@ -10,7 +10,7 @@ import java.util.Set;
 
 import com.freshdirect.affiliate.dao.ErpAffiliateDAO;
 import com.freshdirect.common.customer.EnumCardType;
-import com.freshdirect.enum.EnumModel;
+import com.freshdirect.enums.EnumModel;
 
 /**
  * EnumModel representing an affiliated company. 

@@ -91,14 +91,14 @@ while (e.hasMoreElements()) {
 <pre>
 <%
   try {
-    weblogic.security.X509 certs [] = (weblogic.security.X509 [])
-	request.getAttribute("javax.net.ssl.peer_certificates");
+	  java.security.cert.X509Certificate[] certs = (java.security.cert.X509Certificate[]) request
+      .getAttribute("javax.servlet.request.X509Certificate");
 
     if (certs != null) {
-      weblogic.security.JDK11Certificate jdk11cert = new weblogic.security.JDK11Certificate(certs[0]);
+      java.security.cert.X509Certificate cert = certs[0];
 %>
-Subject Name : <%= jdk11cert.getPrincipal().getName() %> <br>
-Issuer Name :<%= jdk11cert.getGuarantor().getName() %> <br>
+Subject Name : <%= cert.getSubjectDN().getName() %> <br>
+Issuer Name :<%= cert.getIssuerDN().getName() %> <br>
 Certificate Chain Length : <%= certs.length %> <br>
 <%
       // List the Certificate chain

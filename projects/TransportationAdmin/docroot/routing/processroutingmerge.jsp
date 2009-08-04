@@ -224,7 +224,7 @@
       </form>
      </div>
       
-     <%@ include file='i_routingmapping.jspf'%> 
-      <%@ include file='i_communityreport.jspf'%>   
+     <%@ include file='i_routingmapping.jspf'%>  
+     <%@ include file='i_communityreport.jspf'%>   
   </tmpl:put>
 </tmpl:insert>

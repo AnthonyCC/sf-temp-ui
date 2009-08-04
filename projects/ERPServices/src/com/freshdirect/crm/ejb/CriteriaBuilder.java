@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import com.freshdirect.enum.EnumModel;
+import com.freshdirect.enums.EnumModel;
 import com.freshdirect.framework.core.PrimaryKey;
 
 public class CriteriaBuilder {

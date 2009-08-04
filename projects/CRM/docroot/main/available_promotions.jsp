@@ -75,7 +75,7 @@
 		</tr>
 <fd:GetAllPromotions id = "promoRows">
 <% EnumPromotionType lastPromoType = null; %>
-<logic:iterate id="p" collection="<%= promoRows %>" type="com.freshdirect.webapp.taglib.promotion.GetAllPromotionsTag$PromoRow">
+<logic:iterate id="p" collection="<%= promoRows %>" type="com.freshdirect.webapp.taglib.promotion.PromoRow">
 <% 
 	EnumPromotionType ptype = p.getType();
 	if (lastPromoType==null || !lastPromoType.equals(ptype)) {

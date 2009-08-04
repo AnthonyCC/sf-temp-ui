@@ -13,12 +13,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.enum.Enum;
+import org.apache.commons.lang.enums.Enum;
 
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.crm.ejb.CrmAgentRoleDAO;
 import com.freshdirect.deliverypass.ejb.DlvPassTypeDAO;
-import com.freshdirect.enum.EnumModel;
+import com.freshdirect.enums.EnumModel;
 
 /**
  * @author skrishnasamy

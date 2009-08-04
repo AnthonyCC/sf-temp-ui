@@ -7,14 +7,14 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Properties;
 
-import org.apache.commons.lang.enum.EnumUtils;
-import org.apache.commons.lang.enum.ValuedEnum;
+import org.apache.commons.lang.enums.EnumUtils;
+import org.apache.commons.lang.enums.ValuedEnum;
 import org.hibernate.HibernateException;
 import org.hibernate.usertype.EnhancedUserType;
 import org.hibernate.usertype.ParameterizedType;
 
 /**
- * Maps a <code>org.apache.commons.lang.enum.ValuedEnum</code> to a Hibernate type.
+ * Maps a <code>org.apache.commons.lang.enums.ValuedEnum</code> to a Hibernate type.
 */
 public class ValuedEnumUserType implements EnhancedUserType, ParameterizedType {
 

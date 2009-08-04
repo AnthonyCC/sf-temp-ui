@@ -224,7 +224,7 @@ public class JspMethods {
 	}
 
 	public static String getProductRating( ProductModel theProduct ) throws JspException {
-		//System.out.println("inside getProductRating :"+theProduct);
+		// System.out.println("inside getProductRating :"+theProduct);
 
 		String rating = "";
 
@@ -265,7 +265,7 @@ public class JspMethods {
 					 * 
 					 * exit loop on a match.
 					 */
-					
+
 					/*
 					 * There is a similar setup in the GetPeakProduceTag.java file
 					 * and in ProductModelImpl.java
@@ -291,21 +291,21 @@ public class JspMethods {
 							
 							//if prefix matches get product info
 							if(sku.getSkuCode().startsWith(curPrefix)) {
-								productInfo = FDCachedFactory.getProductInfo( sku.getSkuCode() );
-								//System.out.println(" Rating productInfo :"+productInfo);
-								String tmpRating = productInfo.getRating();
+					productInfo = FDCachedFactory.getProductInfo( sku.getSkuCode() );
+					// System.out.println(" Rating productInfo :"+productInfo);
+					String tmpRating = productInfo.getRating();
 								
-								if ( tmpRating != null && tmpRating.trim().length() > 0 ) {
-									EnumOrderLineRating enumRating = EnumOrderLineRating.getEnumByStatusCode( tmpRating );
-									//System.out.println(" enumRating :"+enumRating);
+					if ( tmpRating != null && tmpRating.trim().length() > 0 ) {
+						EnumOrderLineRating enumRating = EnumOrderLineRating.getEnumByStatusCode( tmpRating );
+						// System.out.println(" enumRating :"+enumRating);
 									
-									if ( enumRating != null && enumRating.isEligibleToDisplay() ) {
-										rating = enumRating.getStatusCodeInDisplayFormat();
-										//System.out.println(" rating in display format  :"+rating);
-									}
-								}
+						if ( enumRating != null && enumRating.isEligibleToDisplay() ) {
+							rating = enumRating.getStatusCodeInDisplayFormat();
+							// System.out.println(" rating in display format  :"+rating);
+						}
+					}
 								matchFound=true;
-							}
+				}
 							//exit on matched sku prefix
 							//System.out.println(spacer+"Rating matchFound :"+matchFound);
 							if (matchFound) { break; }

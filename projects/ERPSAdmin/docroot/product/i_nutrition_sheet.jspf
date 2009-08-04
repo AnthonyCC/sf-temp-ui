@@ -11,5 +11,6 @@
 			transformer = TransformerFactory.newInstance().newTransformer( new StreamSource(xslStream) );
 		}
 		org.dom4j.Document doc = new XMLSerializer().serializeDocument("nutrition", nutritionList);
-		transformer.transform(new org.dom4j.io.DocumentSource(doc), new StreamResult(out));
-%>
+        StringWriter st = new StringWriter();
+		transformer.transform(new org.dom4j.io.DocumentSource(doc), new StreamResult(st));
+%><%=st.toString()%>

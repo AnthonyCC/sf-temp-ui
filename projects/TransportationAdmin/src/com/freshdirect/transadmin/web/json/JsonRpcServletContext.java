@@ -1,4 +1,3 @@
-
 package com.freshdirect.transadmin.web.json;
 
 import java.io.InputStream;
@@ -41,6 +40,16 @@ public class JsonRpcServletContext implements ServletContext
 	public ServletContext getContext(String context)
 	{
 		return this.servletContext.getContext(context);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.servlet.ServletContext#getContextPath()
+	 */
+	public String getContextPath()
+	{
+		return this.servletContext.getContextPath();
 	}
 
 	/*

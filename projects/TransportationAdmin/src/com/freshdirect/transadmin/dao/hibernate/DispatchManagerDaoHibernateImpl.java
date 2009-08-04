@@ -203,7 +203,7 @@ public class DispatchManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 		strBuf.append(" where s.scribDate='").append(date).append("' order by s.scribDate");
 
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
-	}
+}
 
 	public Scrib getScrib(String id) {
 		return (Scrib)getEntityById("Scrib","scribId",id);

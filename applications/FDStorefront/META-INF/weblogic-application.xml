@@ -1,10 +1,8 @@
-  <!DOCTYPE weblogic-application PUBLIC '-//BEA Systems, Inc.//DTD WebLogic Application 8.1.0//EN' 'http://www.bea.com/servers/wls810/dtd/weblogic-application_2_0.dtd'>
-  <weblogic-application>
+<?xml version='1.0' encoding='UTF-8'?>
+<weblogic-application xmlns="http://www.bea.com/ns/weblogic/weblogic-application" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/javaee_5.xsd http://www.bea.com/ns/weblogic/weblogic-application http://www.bea.com/ns/weblogic/weblogic-application/1.0/weblogic-application.xsd">
   
     <listener>
-        <listener-class>
-            com.freshdirect.fdstore.warmup.WLSWarmup
-        </listener-class>
+        <listener-class>com.freshdirect.fdstore.warmup.WLSWarmup</listener-class>
     </listener>
 
 	<listener>

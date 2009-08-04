@@ -84,7 +84,7 @@
 	    	  <%= cartLine.getSkuCode() %>
     	  </a>
     	</span>
-		<%
+		<%          
 
 			/*
 			 * There is a similar setup in the JspMethods.java file
@@ -122,7 +122,7 @@
 						//if prefix matches get product info
 						if(deptIdCheck.startsWith(curPrefix)) {
 							matchFound=true;
-						}
+			}
 						//exit on matched sku prefix
 						//System.out.println(spacer+"Rating matchFound :"+matchFound);
 						if (matchFound) { break; }

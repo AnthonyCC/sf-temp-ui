@@ -876,7 +876,7 @@
                 <jndi-name>fddatasource</jndi-name>
             </resource-description>
         </reference-descriptor>
-        <jndi-name>freshdirect.enum.EnumManager</jndi-name>
+        <jndi-name>freshdirect.enums.EnumManager</jndi-name>
     </weblogic-enterprise-bean>
     
 	<weblogic-enterprise-bean>
@@ -988,7 +988,7 @@
             </resource-description>
         </reference-descriptor>
         <jndi-name>freshdirect.erp.COOLManager</jndi-name>
-    </weblogic-enterprise-bean> 
+    </weblogic-enterprise-bean>           
     
     <weblogic-enterprise-bean>
         <ejb-name>EmployeeInfoManager</ejb-name>

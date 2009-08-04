@@ -99,6 +99,7 @@ public class CMSEventCollectionListener implements EventCollectionListener {
 
 			if (handler.isBulkload())
 				doBulkLoad(event, userId);
+
 			handler.update(media, userId);
 		}
 	}

@@ -238,6 +238,6 @@ public class DomainManagerImpl
 	
 	public Collection getRouteMappingByCutOff(String routeDate, String cutOff) {
 		return getDomainManagerDao().getRouteMappingByCutOff(routeDate, cutOff);
-	}
+}
 	
 }

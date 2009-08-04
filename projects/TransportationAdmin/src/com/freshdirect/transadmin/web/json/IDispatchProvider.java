@@ -10,5 +10,4 @@ public interface IDispatchProvider {
 	String generateCommunityReport(String routeDate, String cutOff);
 	public int updateUserPref(String key,String value);
 	public String getUserPref(String key);
-
 }

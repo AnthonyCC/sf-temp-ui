@@ -4,13 +4,10 @@ import java.util.Hashtable;
 
 import javax.management.InstanceNotFoundException;
 import javax.management.MBeanServer;
+import javax.management.MBeanServerFactory;
 import javax.management.ObjectName;
-import javax.naming.Context;
 
 import org.apache.log4j.Category;
-
-import weblogic.jndi.Environment;
-import weblogic.management.MBeanHome;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -20,12 +17,8 @@ public class JMXUtil {
 	
 	public static final String FRESHDIRECT_DOMAIN = "com.freshdirect";
 	
-	private static MBeanServer getLocalMBeanServer() throws Exception {
-		Environment env = new Environment();
-		Context ctx = env.getInitialContext();
-		MBeanHome home = (MBeanHome) ctx.lookup(MBeanHome.LOCAL_JNDI_NAME);
-		MBeanServer server = home.getMBeanServer();
-		ctx.close();
+	private static MBeanServer getLocalMBeanServer() throws Exception {		
+		MBeanServer server = MBeanServerFactory.newMBeanServer();		
 		return server;
 	}
 	

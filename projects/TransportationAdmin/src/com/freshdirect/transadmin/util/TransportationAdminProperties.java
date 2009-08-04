@@ -9,6 +9,7 @@ package com.freshdirect.transadmin.util;
 
 import java.util.Properties;
 
+
 import com.freshdirect.framework.util.ConfigHelper;
 
 public class TransportationAdminProperties {
@@ -43,7 +44,6 @@ public class TransportationAdminProperties {
 	private final static String PROP_TRANSPORTATION_FILENAME_CUTOFFREPORT		= "transportation.filename.cutoffreport";
 	
 	private final static String PROP_TRANSPORTATION_FILENAME_DRIVINGDIRECTION		= "transportation.filename.drivingdirection";
-	
 	
 	private final static String PROP_TRANSPORTATION_FILENAME_EXTGEOINLOCDB		= "transportation.filename.extgeolocdb";
 		
@@ -277,7 +277,7 @@ public class TransportationAdminProperties {
     public static String getRoutingOutputTruckFilename() {
     	return get(PROP_TRANSPORTATION_FILENAME_ROUTINGOUTTRUCK);
     }
-    
+
     public static String getRoutingCutOffRptFilename() {
     	return get(PROP_TRANSPORTATION_FILENAME_CUTOFFREPORT);
     }
@@ -285,8 +285,7 @@ public class TransportationAdminProperties {
     public static String getRoutingDrvDirectionRptFilename() {
     	return get(PROP_TRANSPORTATION_FILENAME_DRIVINGDIRECTION);
     }
-    
-        	
+
     public static String getFilenameSuffix() {
     	return get(PROP_TRANSPORTATION_FILENAME_SUFFIX);
     }
@@ -413,6 +412,7 @@ public class TransportationAdminProperties {
 	public static long getDispatchPeriod() {
 		return PROP_TRANSPORTATION_DISPATCH_DASHBOARD_DISPATCH_PERIOD;
 	}
+
 	public static long getDispatchedPeriod() {
 		return PROP_TRANSPORTATION_DISPATCH_DASHBOARD_DISPATCHED_PERIOD;
 	}
@@ -449,3 +449,4 @@ public class TransportationAdminProperties {
 	}
 	
 }
+

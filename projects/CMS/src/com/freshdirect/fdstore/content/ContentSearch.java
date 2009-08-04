@@ -133,7 +133,7 @@ public class ContentSearch {
             return new SearchResults(Collections.EMPTY_LIST, Collections.EMPTY_LIST, false, "");
         }
 
-        Collection hits = CmsManager.getInstance().search(searchQuery.getSearchTerm(), 2000);
+        List hits = CmsManager.getInstance().search(searchQuery.getSearchTerm(), 2000);
 
         Map hitsByType = ContentSearchUtil.mapHitsByType(hits);
 

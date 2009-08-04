@@ -10,8 +10,8 @@ import com.freshdirect.DbTestCaseSupport;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.crm.CrmCaseQueue;
-import com.freshdirect.enum.EnumManager;
-import com.freshdirect.enum.TestableEnumManager;
+import com.freshdirect.enums.TestableEnumManager;
+import com.freshdirect.enums.EnumManager;
 import com.freshdirect.framework.core.PrimaryKey;
 
 /**

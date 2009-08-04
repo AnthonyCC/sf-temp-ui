@@ -81,73 +81,71 @@
         <servlet-name>com.freshdirect.webapp.util.json.FDJSONRPCServlet</servlet-name>
         <servlet-class>com.freshdirect.webapp.util.json.FDJSONRPCServlet</servlet-class>
    </servlet>
-   <servlet-mapping>
-        <servlet-name>com.freshdirect.webapp.util.json.FDJSONRPCServlet</servlet-name>
-        <url-pattern>/api/json-rpc.jsp</url-pattern>
-   </servlet-mapping>	
-
-
-
     <servlet>
         <servlet-name>WorkflowImage</servlet-name>
         <servlet-class>com.freshdirect.webapp.crm.WorkflowImageServlet</servlet-class>
     </servlet>
-    <servlet-mapping>
-        <servlet-name>WorkflowImage</servlet-name>
-        <url-pattern>/images/workflow.png</url-pattern>
-    </servlet-mapping>
-    <servlet>
+   <servlet>
         <servlet-name>LateDeliveryExcelReport</servlet-name>
         <servlet-class>com.freshdirect.webapp.util.ExcelReportServletLateDelivery</servlet-class>
     </servlet>
-    <servlet-mapping>
-        <servlet-name>LateDeliveryExcelReport</servlet-name>
-        <url-pattern>/reports/late_delivery_report.xls</url-pattern>
-    </servlet-mapping>
     <servlet>
         <servlet-name>ReservationsReport</servlet-name>
         <servlet-class>com.freshdirect.webapp.util.ReservationsReportServlet</servlet-class>
     </servlet>
-    <servlet-mapping>
-        <servlet-name>ReservationsReport</servlet-name>
-        <url-pattern>/reports/reservations_report.xls</url-pattern>
-    </servlet-mapping>
     <servlet>
 	<servlet-name>OrdersByReservationsReport</servlet-name>
 	    <servlet-class>com.freshdirect.webapp.util.OrdersForResvReportServlet</servlet-class>
 	</servlet>
-     <servlet-mapping>
-	    <servlet-name>OrdersByReservationsReport</servlet-name>
-	    <url-pattern>/reports/orders_by_reservations_report.xls</url-pattern>
-     </servlet-mapping>
     <servlet>
 	<servlet-name>OrdersCancelledReport</servlet-name>
 	    <servlet-class>com.freshdirect.webapp.util.OrdersCancelledReportServlet</servlet-class>
     </servlet>
-     <servlet-mapping>
-	    <servlet-name>OrdersCancelledReport</servlet-name>
-	    <url-pattern>/reports/final_cancel_report.xls</url-pattern>
-     </servlet-mapping>
     <servlet>
 	<servlet-name>OrdersReturnedReportServlet</servlet-name>
 	    <servlet-class>com.freshdirect.webapp.util.OrdersReturnedReportServlet</servlet-class>
     </servlet>
-     <servlet-mapping>
-	    <servlet-name>OrdersReturnedReportServlet</servlet-name>
-	    <url-pattern>/reports/final_return_report.xls</url-pattern>
-     </servlet-mapping>     
      <servlet>
      	<servlet-name>ReturnsVSExportServlet</servlet-name>
      	    <servlet-class>com.freshdirect.webapp.util.ReturnsVSExportServlet</servlet-class>
          </servlet>
-          <servlet-mapping>
-     	    <servlet-name>ReturnsVSExportServlet</servlet-name>
-     	    <url-pattern>/reports/returnsVSExport</url-pattern>
-     </servlet-mapping> 
      <servlet>
      	<servlet-name>ReturnsSPExportServlet</servlet-name>
      	    <servlet-class>com.freshdirect.webapp.util.ReturnsSPExportServlet</servlet-class>
          </servlet>
+    
+   <servlet-mapping>
+        <servlet-name>com.freshdirect.webapp.util.json.FDJSONRPCServlet</servlet-name>
+        <url-pattern>/api/json-rpc.jsp</url-pattern>
+   </servlet-mapping>	
+    <servlet-mapping>
+        <servlet-name>WorkflowImage</servlet-name>
+        <url-pattern>/images/workflow.png</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LateDeliveryExcelReport</servlet-name>
+        <url-pattern>/reports/late_delivery_report.xls</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ReservationsReport</servlet-name>
+        <url-pattern>/reports/reservations_report.xls</url-pattern>
+    </servlet-mapping>
+     <servlet-mapping>
+	    <servlet-name>OrdersByReservationsReport</servlet-name>
+	    <url-pattern>/reports/orders_by_reservations_report.xls</url-pattern>
+     </servlet-mapping>
+     <servlet-mapping>
+	    <servlet-name>OrdersCancelledReport</servlet-name>
+	    <url-pattern>/reports/final_cancel_report.xls</url-pattern>
+     </servlet-mapping>
+     <servlet-mapping>
+	    <servlet-name>OrdersReturnedReportServlet</servlet-name>
+	    <url-pattern>/reports/final_return_report.xls</url-pattern>
+     </servlet-mapping>     
+          <servlet-mapping>
+     	    <servlet-name>ReturnsVSExportServlet</servlet-name>
+     	    <url-pattern>/reports/returnsVSExport</url-pattern>
+     </servlet-mapping> 
           <servlet-mapping>
      	    <servlet-name>ReturnsSPExportServlet</servlet-name>
      	    <url-pattern>/reports/returnsSPExport</url-pattern>

@@ -3,7 +3,7 @@ package com.freshdirect.crm;
 import java.util.Collection;
 import java.util.Iterator;
 
-import com.freshdirect.enum.EnumModel;
+import com.freshdirect.enums.EnumModel;
 import com.freshdirect.framework.core.PrimaryKey;
 
 public class CrmMessageBuffer {
@@ -45,8 +45,8 @@ public class CrmMessageBuffer {
 		return this;
 	}
 
-	public CrmMessageBuffer append(EnumModel enum) {
-		return this.append(enum.getName());
+	public CrmMessageBuffer append(EnumModel en) {
+		return this.append(en.getName());
 	}
 	
 	public CrmMessageBuffer append(PrimaryKey key) {

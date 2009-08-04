@@ -13,7 +13,7 @@ import java.util.Set;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
-import com.freshdirect.enum.EnumDAOI;
+import com.freshdirect.enums.EnumDAOI;
 
 public class ErpAffiliateDAO implements EnumDAOI {
 

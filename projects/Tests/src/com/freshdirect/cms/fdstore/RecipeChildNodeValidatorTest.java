@@ -194,11 +194,11 @@ public class RecipeChildNodeValidatorTest extends TestCase {
 		assertEquals("recipe has two variants", set.size(), 2);
 
 		array = set.toArray();
-		ckey  = (ContentKey) array[1];
+		ckey  = (ContentKey) array[0];
 		node  = service.getContentNode(ckey);
 		assertEquals("test recipe default variant", node.getLabel(), "default");
 
-		ckey  = (ContentKey) array[0];
+		ckey  = (ContentKey) array[1];
 		node  = service.getContentNode(ckey);
 		assertEquals("test recipe second variant", node.getLabel(), "second");
 

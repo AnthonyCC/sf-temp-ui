@@ -9,7 +9,7 @@ import java.util.List;
 
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.deliverypass.DeliveryPassType;
-import com.freshdirect.enum.EnumDAOI;
+import com.freshdirect.enums.EnumDAOI;
 
 public class DlvPassTypeDAO implements EnumDAOI{
 	

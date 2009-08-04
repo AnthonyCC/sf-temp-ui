@@ -1,5 +1,10 @@
 package com.freshdirect.rules;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -147,4 +152,32 @@ public class Rule implements ConditionI {
 		return "Rule[" + id + ", '" + name + "', " + priority + ", " + outcome + "]";
 	}
 
+	
+	public Rule deepCopy() {
+        // do a serialization / de-serialization cycle as a trick
+        // against explicit deep cloning
+
+        // serialization
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(512);
+        ObjectOutputStream    oas  = null;
+        try {
+            oas = new ObjectOutputStream(baos);
+            oas.writeObject(this);
+            oas.close();
+        } catch (IOException e) {
+            return null;
+        }
+
+        // de-serialization
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        ObjectInputStream    oin = null;
+        try {
+            oin = new ObjectInputStream(bais);
+            return (Rule) oin.readObject();
+        } catch (ClassNotFoundException e) {
+            return null;
+        } catch (IOException e) {
+            return null;
+        }		
+	}
 }

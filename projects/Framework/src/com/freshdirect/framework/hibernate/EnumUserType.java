@@ -7,14 +7,14 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Properties;
 
-import org.apache.commons.lang.enum.Enum;
-import org.apache.commons.lang.enum.EnumUtils;
+import org.apache.commons.lang.enums.Enum;
+import org.apache.commons.lang.enums.EnumUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.usertype.EnhancedUserType;
 import org.hibernate.usertype.ParameterizedType;
 
 /**
- * Maps a <code>org.apache.commons.lang.enum.Enum</code> to a Hibernate type.
+ * Maps a <code>org.apache.commons.lang.enums.Enum</code> to a Hibernate type.
  * 
  * @author Gavin King
  * @see http://www.hibernate.org/272.html

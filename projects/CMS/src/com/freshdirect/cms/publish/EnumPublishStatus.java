@@ -7,7 +7,7 @@ package com.freshdirect.cms.publish;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.enum.Enum;
+import org.apache.commons.lang.enums.Enum;
 
 /**
  * Enumeration of content publishing status codes.

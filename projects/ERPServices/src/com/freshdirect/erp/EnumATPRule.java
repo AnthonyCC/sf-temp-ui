@@ -11,7 +11,7 @@ package com.freshdirect.erp;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.enum.ValuedEnum;
+import org.apache.commons.lang.enums.ValuedEnum;
 
 /**
  * Type-safe enumeration for ATP check rules.

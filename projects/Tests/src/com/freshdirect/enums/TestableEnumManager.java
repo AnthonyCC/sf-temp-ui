@@ -1,4 +1,4 @@
-package com.freshdirect.enum;
+package com.freshdirect.enums;
 
 import java.sql.Connection;
 import java.util.List;

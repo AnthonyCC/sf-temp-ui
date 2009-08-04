@@ -16,7 +16,7 @@ import java.util.List;
  * 
  * @see com.freshdirect.cms.changecontrol.ContentNodeChange
  * 
- * @FIXME should be an {@link org.apache.commons.lang.enum.Enum}.
+ * @FIXME should be an {@link org.apache.commons.lang.enums.Enum}.
  */
 public class EnumContentNodeChangeType implements Serializable {
 

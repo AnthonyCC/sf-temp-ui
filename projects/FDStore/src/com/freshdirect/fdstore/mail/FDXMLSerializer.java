@@ -14,7 +14,7 @@ import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpSaleModel;
-import com.freshdirect.enum.EnumModel;
+import com.freshdirect.enums.EnumModel;
 import com.freshdirect.framework.xml.XMLSerializer;
 
 public class FDXMLSerializer extends XMLSerializer {

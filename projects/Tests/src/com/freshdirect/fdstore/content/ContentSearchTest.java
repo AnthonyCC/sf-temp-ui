@@ -85,8 +85,8 @@ public class ContentSearchTest extends FDCustomerManagerTestSupport {
 
         SmartSearchTest.assertContentNodeModel("filtered product 0","Organic Valley 2% Milk", sr.getProducts().get(0));
         SmartSearchTest.assertContentNodeModel("filtered product 1","Organic Valley 1% Milk", sr.getProducts().get(1));
-        SmartSearchTest.assertContentNodeModel("filtered product 2","Asher's Milk Chocolate Pecan Caramel Pattie", sr.getProducts().get(2));
-        SmartSearchTest.assertContentNodeModel("filtered product 3","Organic Valley Ultra Pasteurized Whole Milk", sr.getProducts().get(3));
+        SmartSearchTest.assertContentNodeModel("filtered product 2","Organic Valley Ultra Pasteurized Whole Milk", sr.getProducts().get(2));
+        SmartSearchTest.assertContentNodeModel("filtered product 3","Asher's Milk Chocolate Pecan Caramel Pattie", sr.getProducts().get(3));
 
         
         sr = ContentSearch.getInstance().simpleSearch("milk organic", SearchQueryStemmer.Porter);
@@ -126,8 +126,8 @@ public class ContentSearchTest extends FDCustomerManagerTestSupport {
 
         SmartSearchTest.assertContentNodeModel("filtered product 0","Organic Valley 2% Milk", sr.getProducts().get(0));
         SmartSearchTest.assertContentNodeModel("filtered product 1","Organic Valley 1% Milk", sr.getProducts().get(1));
-        SmartSearchTest.assertContentNodeModel("filtered product 2","Asher's Milk Chocolate Pecan Caramel Pattie", sr.getProducts().get(2));
-        SmartSearchTest.assertContentNodeModel("filtered product 3","Organic Valley Ultra Pasteurized Whole Milk", sr.getProducts().get(3));
+        SmartSearchTest.assertContentNodeModel("filtered product 2","Organic Valley Ultra Pasteurized Whole Milk", sr.getProducts().get(2));
+        SmartSearchTest.assertContentNodeModel("filtered product 3","Asher's Milk Chocolate Pecan Caramel Pattie", sr.getProducts().get(3));
 
         sr = ContentSearch.getInstance().search("milc");
         assertNotNull("searchResults", sr);

@@ -2,7 +2,9 @@ package com.freshdirect.cms.core;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
@@ -59,9 +61,20 @@ public class ContextWalkerTest extends TestCase {
 		assertNotNull(keys);
 		assertEquals(ctxs.size(), keys.length);
 		
-		for(int i=0; i< keys.length; i++) {
-			assertEquals(keys[i], ((Context) ctxs.get(i)).getParentContext().getContentKey().getId());
+		// create sets of both contexts and keys and compare the sets
+		// this is done because the order of the contexts is not important
+		// and each context appearch at most once in the input parameter
+		Set  ctxKeySet = new HashSet(ctxs.size());
+		for(int i = 0; i < ctxs.size(); i++) {
+			ctxKeySet.add(((Context) ctxs.get(i)).getParentContext().getContentKey().getId());
 		}
+		
+		Set keySet = new HashSet(keys.length);
+		for(int i = 0; i < keys.length; i++) {
+			keySet.add(keys[i]);
+		}
+
+		assertEquals(keySet, ctxKeySet);
 		
 		return true;
 	}
@@ -70,10 +83,21 @@ public class ContextWalkerTest extends TestCase {
 		assertNotNull(cKeys);
 		assertNotNull(keys);
 		assertEquals(cKeys.size(), keys.length);
-		
-		for(int i=0; i< keys.length; i++) {
-			assertEquals(keys[i], ((ContentKey) cKeys.get(i)).getId());
+
+		// create sets of both contexts and keys and compare the sets
+		// this is done because the order of the contexts is not important
+		// and each context appearch at most once in the input parameter
+		Set  ctxKeySet = new HashSet(cKeys.size());
+		for(int i = 0; i < cKeys.size(); i++) {
+			ctxKeySet.add(((ContentKey) cKeys.get(i)).getId());
 		}
+		
+		Set keySet = new HashSet(keys.length);
+		for(int i = 0; i < keys.length; i++) {
+			keySet.add(keys[i]);
+		}
+
+		assertEquals(keySet, ctxKeySet);
 
 		return true;
 	}

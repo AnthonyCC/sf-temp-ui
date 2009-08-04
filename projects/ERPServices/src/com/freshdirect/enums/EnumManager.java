@@ -1,4 +1,4 @@
-package com.freshdirect.enum;
+package com.freshdirect.enums;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -10,8 +10,8 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.enum.ejb.EnumManagerHome;
-import com.freshdirect.enum.ejb.EnumManagerSB;
+import com.freshdirect.enums.ejb.EnumManagerHome;
+import com.freshdirect.enums.ejb.EnumManagerSB;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -54,7 +54,7 @@ public class EnumManager {
 	private EnumManagerSB getEnumManagerSB() {
 		try {
 			EnumManagerHome home =
-				(EnumManagerHome) this.serviceLocator.getRemoteHome("freshdirect.enum.EnumManager", EnumManagerHome.class);
+				(EnumManagerHome) this.serviceLocator.getRemoteHome("freshdirect.enums.EnumManager", EnumManagerHome.class);
 			return home.create();
 		} catch (NamingException e) {
 			LOGGER.error(e);

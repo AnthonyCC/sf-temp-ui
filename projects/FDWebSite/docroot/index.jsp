@@ -34,7 +34,7 @@
         if(segmentMsg) {
         	request.setAttribute("listPos", "SystemMessage,HPLeftTop,HPLeftMiddle,HPLeftBottom");
         } else {
-        	request.setAttribute("listPos", "SystemMessage,HPLeftTop,HPLeftMiddle,HPLeftBottom,HPMiddleBottom,HPRightBottom");
+        request.setAttribute("listPos", "SystemMessage,HPLeftTop,HPLeftMiddle,HPLeftBottom,HPMiddleBottom,HPRightBottom");
         }
         System.out.println("limit: " + user.isCampaignMsgLimitViewed() );
         System.out.println("viewed:  " + user.getCampaignMsgViewed());
@@ -237,7 +237,7 @@ if (FDStoreProperties.IsHomePageMediaEnabled() && (!user.isHomePageLetterVisited
 				</td></tr>
 				</table>
 	     	<% } %>
-	     <img src="/media_stat/images/layout/cccccc.gif" width="490" height="1" vspace="8"><br>
+		<img src="/media_stat/images/layout/cccccc.gif" width="490" height="1" vspace="8"><br>
 		<%@ include file="/includes/i_departments.jspf" %>
 	<% } %>
 	<%-- END MAIN CONTENT--%>

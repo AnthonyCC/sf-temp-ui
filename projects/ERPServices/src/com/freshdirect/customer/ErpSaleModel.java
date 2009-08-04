@@ -1323,3 +1323,4 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 	}
 
 }
+

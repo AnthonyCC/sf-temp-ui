@@ -20,6 +20,12 @@
             <param-name>printNulls</param-name>
             <param-value>false</param-value>
         </jsp-param>
-	</jsp-descriptor>
-        <context-root>ERPSAdmin</context-root>
+    </jsp-descriptor>
+
+    <container-descriptor>
+        <prefer-web-inf-classes>true</prefer-web-inf-classes>
+    </container-descriptor>
+
+    <context-root>ERPSAdmin</context-root>
+
 </weblogic-web-app>

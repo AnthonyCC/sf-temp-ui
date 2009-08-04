@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/log4j.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Framework"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring.jar"/>
@@ -15,5 +14,8 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-discovery-0.2.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-logging-1.0.4.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ERPServices"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry kind="con" path="com.bea.workshop.wls.syslib"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/Oracle WebLogic Server v10.3 JRE"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

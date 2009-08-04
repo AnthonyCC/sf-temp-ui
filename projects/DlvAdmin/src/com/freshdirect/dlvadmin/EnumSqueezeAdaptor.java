@@ -3,7 +3,7 @@ package com.freshdirect.dlvadmin;
 import java.io.IOException;
 import java.lang.reflect.Method;
 
-import org.apache.commons.lang.enum.Enum;
+import org.apache.commons.lang.enums.Enum;
 import org.apache.tapestry.services.DataSqueezer;
 
 

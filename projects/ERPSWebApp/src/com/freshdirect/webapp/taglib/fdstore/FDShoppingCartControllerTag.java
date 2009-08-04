@@ -333,7 +333,7 @@ public class FDShoppingCartControllerTag extends
 								+ redirectURL);
 						response.sendRedirect(redirectURL);
 						JspWriter writer = pageContext.getOut();
-						writer.close();
+						//writer.close();
 						return SKIP_BODY;
 					}
 				} catch (IOException ioe) {
@@ -505,7 +505,7 @@ public class FDShoppingCartControllerTag extends
 				try {
 					response.sendRedirect(response.encodeRedirectURL(succPage));
 					JspWriter writer = pageContext.getOut();
-					writer.close();
+					//writer.close();
 				} catch (IOException e) {
 					return SKIP_BODY;
 				}
@@ -593,7 +593,7 @@ public class FDShoppingCartControllerTag extends
 
 				response.sendRedirect(response.encodeRedirectURL(redir));
 				JspWriter writer = pageContext.getOut();
-				writer.close();
+				//writer.close();
 
 				return SKIP_BODY;
 			} catch (IOException ioe) {

@@ -60,8 +60,8 @@ public class HolidayMealControllerTag extends AbstractControllerTag {
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         if ("GET".equalsIgnoreCase(request.getMethod())) {
             boolean requestedMeal = false;
-            for (Enumeration enum = request.getParameterNames(); enum.hasMoreElements(); ) {
-                String pName = (String) enum.nextElement();
+            for (Enumeration en = request.getParameterNames(); en.hasMoreElements(); ) {
+                String pName = (String) en.nextElement();
                 if ("mealId".equalsIgnoreCase(pName)) {
                     requestedMeal = true;
                     break;

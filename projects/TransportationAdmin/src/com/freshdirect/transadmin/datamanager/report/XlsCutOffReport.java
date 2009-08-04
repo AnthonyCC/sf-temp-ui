@@ -422,6 +422,6 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 			}
 		}
 		return result;
-	}	
+	}
 	
 }

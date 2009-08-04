@@ -42,7 +42,7 @@ public class ISOLatin1AccentFilter extends TokenFilter {
 		for (int i = 0; i < input.length(); i++) {
 			switch (input.charAt(i)) {
 				case '\u00C0' : // À
-				case '\u00C1' : // �?
+				case '\u00C1' : // 
 				case '\u00C2' : // Â
 				case '\u00C3' : // Ã
 				case '\u00C4' : // Ä
@@ -62,12 +62,12 @@ public class ISOLatin1AccentFilter extends TokenFilter {
 					output.append("E");
 					break;
 				case '\u00CC' : // Ì
-				case '\u00CD' : // �?
+				case '\u00CD' : // 
 				case '\u00CE' : // Î
-				case '\u00CF' : // �?
+				case '\u00CF' : // 
 					output.append("I");
 					break;
-				case '\u00D0' : // �?
+				case '\u00D0' : // 
 					output.append("D");
 					break;
 				case '\u00D1' : // Ñ
@@ -93,11 +93,11 @@ public class ISOLatin1AccentFilter extends TokenFilter {
 				case '\u00DC' : // Ü
 					output.append("U");
 					break;
-				case '\u00DD' : // �?
+				case '\u00DD' : // 
 				case '\u0178' : // Ÿ
 					output.append("Y");
 					break;
-				case '\u00E0' : // � 
+				case '\u00E0' : // 
 				case '\u00E1' : // á
 				case '\u00E2' : // â
 				case '\u00E3' : // ã

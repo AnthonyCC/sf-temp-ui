@@ -122,7 +122,7 @@
       </style>      
 <tmpl:insert template='/common/sitelayout.jsp'>
 
-    <tmpl:put name='title' direct='true'> Operations : Dispatch : Add/Edit Dispatch</tmpl:put>		
+    <tmpl:put name='title' direct='true'> Operations : Dispatch : Add/Edit Dispatch</tmpl:put>
   <tmpl:put name='content' direct='true'>
     <br/> 
     <div align="center">
@@ -650,3 +650,4 @@
 </tmpl:insert>
 <script>checkRouteInfo();</script>
 <form name="dispatch" action="dispatch.do" method="post">  </form>
+

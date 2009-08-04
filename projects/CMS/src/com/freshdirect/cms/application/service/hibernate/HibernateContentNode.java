@@ -1,11 +1,15 @@
 package com.freshdirect.cms.application.service.hibernate;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.SerializationUtils;
 import org.hibernate.Hibernate;
 import org.hibernate.metadata.ClassMetadata;
 
@@ -129,7 +133,31 @@ class HibernateContentNode implements ContentNodeI {
 	}
 
 	public ContentNodeI copy() {
-		return (ContentNodeI) SerializationUtils.clone(this);
+        // do a serialization / de-serialization cycle as a trick
+        // against explicit deep cloning
+
+        // serialization
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(512);
+        ObjectOutputStream    oas  = null;
+        try {
+            oas = new ObjectOutputStream(baos);
+            oas.writeObject(this);
+            oas.close();
+        } catch (IOException e) {
+            return null;
+        }
+
+        // de-serialization
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        ObjectInputStream    oin = null;
+        try {
+            oin = new ObjectInputStream(bais);
+            return (HibernateContentNode) oin.readObject();
+        } catch (ClassNotFoundException e) {
+            return null;
+        } catch (IOException e) {
+            return null;
+        }		
 	}
 
 	public boolean equals(Object obj) {

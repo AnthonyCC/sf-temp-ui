@@ -229,7 +229,7 @@ public class FDUserDAO {
 			user.setReceiveFDEmails("X".equals(rs.getString("RECEIVE_NEWS")));
 			user.setHomePageLetterVisited(NVL.apply(rs.getString("HPLETTER_VISITED"), "").equalsIgnoreCase("X")?true:false);
 			user.setCampaignMsgViewed(rs.getInt("CAMPAIGN_VIEWED"));
-			
+
 			// Smart Store - Cohort ID
 			user.setCohortName(rs.getString("COHORT_ID"));
 		} else {

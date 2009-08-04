@@ -24,5 +24,10 @@
 			<param-name>printNulls</param-name>
 			<param-value>false</param-value>
 		</jsp-param>
-	</jsp-descriptor>
+    </jsp-descriptor>
+
+    <container-descriptor>
+        <prefer-web-inf-classes>true</prefer-web-inf-classes>
+    </container-descriptor>
+
 </weblogic-web-app>

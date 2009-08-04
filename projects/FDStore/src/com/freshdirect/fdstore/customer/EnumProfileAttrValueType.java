@@ -4,7 +4,7 @@
  */
 package com.freshdirect.fdstore.customer;
 
-import org.apache.commons.lang.enum.Enum;
+import org.apache.commons.lang.enums.Enum;
 
 /**
  * @author jng

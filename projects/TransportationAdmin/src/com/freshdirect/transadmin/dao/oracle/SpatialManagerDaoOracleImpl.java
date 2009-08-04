@@ -92,7 +92,7 @@ private JdbcTemplate jdbcTemplate;
 	
 	public List matchCommunity(final double latitiude, final double longitude, final String deliveryModel) throws DataAccessException   {
 		final List result = new ArrayList();
-				
+	
 		PreparedStatementCreator creator=new PreparedStatementCreator() {
             public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
                 PreparedStatement ps =
@@ -101,7 +101,7 @@ private JdbcTemplate jdbcTemplate;
                 ps.setDouble(2, latitiude);
                 ps.setString(3, deliveryModel);
                 return ps;
-            }  
+}
         };
         jdbcTemplate.query(creator, 
        		  new RowCallbackHandler() { 

@@ -181,6 +181,7 @@ your account information, this is the place to do it.<br></td>
     if(!user.isChefsTable() && user.isOkayToDisplayCTEligibility() && !user.hasQualifiedForCT()) {
     
 %>
+
  	
 	<table align="center" border="0" cellspacing="0" cellpadding="0">
 		<tr valign="top">
@@ -211,7 +212,7 @@ your account information, this is the place to do it.<br></td>
 		</tr>
 	</table><br>
 <%  }
-	if(user.isChefsTable() || (user.isOkayToDisplayCTEligibility() && !user.hasQualifiedForCT()) {
+	if(user.isChefsTable() || (user.isOkayToDisplayCTEligibility() && !user.hasQualifiedForCT())) {
 		%>
 		<table align="center" border="0" cellspacing="0" cellpadding="0">
 		<tr valign="top">
@@ -224,7 +225,7 @@ your account information, this is the place to do it.<br></td>
 			</td>
 		</tr>
 		</table>
-	<% } else { %>
+	<% }else{ %>
 		<table align="center" border="0" cellspacing="0" cellpadding="0">
 		<tr valign="top">
 			<td valign="top" class="text13">
@@ -252,3 +253,4 @@ your account information, this is the place to do it.<br></td>
 
  </tmpl:put>
 </tmpl:insert>
+

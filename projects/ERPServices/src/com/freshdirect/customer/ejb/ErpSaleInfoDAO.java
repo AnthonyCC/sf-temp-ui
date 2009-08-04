@@ -173,7 +173,7 @@ public class ErpSaleInfoDAO {
 					rs.getString("TRUCK_NUMBER"),
 					rs.getString("STOP_SEQUENCE"),
 				    (referencedOrder==null || "".equals(referencedOrder))?false:true
-				));
+					));
 		}
 		rs.close();
 		ps.close();

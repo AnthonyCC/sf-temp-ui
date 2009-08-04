@@ -9,7 +9,13 @@
 
 package com.freshdirect.framework.core;
 
-import org.apache.commons.lang.SerializationUtils;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 
 /** a helper class the provides the basic functionality of all model objects
  *
@@ -73,7 +79,31 @@ abstract class ModelBase implements ModelI {
 	}
 
 	public ModelI deepCopy() {
-		return (ModelI) SerializationUtils.clone(this);
+        // do a serialization / de-serialization cycle as a trick
+        // against explicit deep cloning
+
+        // serialization
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(512);
+        ObjectOutputStream    oas  = null;
+        try {
+            oas = new ObjectOutputStream(baos);
+            oas.writeObject(this);
+            oas.close();
+        } catch (IOException e) {
+            return null;
+        }
+
+        // de-serialization
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        ObjectInputStream    oin = null;
+        try {
+            oin = new ObjectInputStream(bais);
+            return (ModelI) oin.readObject();
+        } catch (ClassNotFoundException e) {
+            return null;
+        } catch (IOException e) {
+            return null;
+        }
 	}
 
     /** gets the string equivalent of this model

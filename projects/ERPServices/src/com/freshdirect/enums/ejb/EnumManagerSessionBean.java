@@ -1,4 +1,4 @@
-package com.freshdirect.enum.ejb;
+package com.freshdirect.enums.ejb;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -8,7 +8,7 @@ import javax.ejb.EJBException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.enum.EnumDAOI;
+import com.freshdirect.enums.EnumDAOI;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 

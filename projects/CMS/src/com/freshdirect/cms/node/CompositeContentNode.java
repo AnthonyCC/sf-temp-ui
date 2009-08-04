@@ -6,8 +6,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.SerializationUtils;
-
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;

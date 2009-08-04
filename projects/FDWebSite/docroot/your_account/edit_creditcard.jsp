@@ -3,7 +3,7 @@
 <%@ page import='java.util.*'%>
 <%@ page import='com.freshdirect.customer.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
-<%@ page import='import com.freshdirect.framework.webapp.*' %>
+<%@ page import='com.freshdirect.framework.webapp.*' %>
 
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ taglib uri='template' prefix='tmpl' %>

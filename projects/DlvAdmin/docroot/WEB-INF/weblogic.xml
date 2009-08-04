@@ -26,5 +26,10 @@
 			<param-name>verbose</param-name>
 			<param-value>true</param-value>
 		</jsp-param>
-	</jsp-descriptor>
+    </jsp-descriptor>
+
+    <container-descriptor>
+        <prefer-web-inf-classes>true</prefer-web-inf-classes>
+    </container-descriptor>
+
 </weblogic-web-app>

@@ -129,7 +129,9 @@ public abstract class Home extends AppPage implements PageDetachListener {
 			throw new IllegalArgumentException("No id of the selected Rule provided");
 		}
 		Rule r = RulesRegistry.getRulesEngine(this.getSelectedSubsystem()).getRule(id);
-		r = (Rule) SerializationUtils.clone(r);
+		
+		r = r.deepCopy();
+		
 		setSelectedRule(r);
 	}
 

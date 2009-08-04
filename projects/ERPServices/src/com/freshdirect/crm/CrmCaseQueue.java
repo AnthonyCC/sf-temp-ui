@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.crm.ejb.CrmCaseQueueDAO;
-import com.freshdirect.enum.EnumModel;
+import com.freshdirect.enums.EnumModel;
 
 public class CrmCaseQueue extends EnumModel implements TerminableI {
 

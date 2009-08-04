@@ -259,6 +259,7 @@ public class FDStoreProperties {
 	
 	
 
+
 	private static final String HPLETTER_MEDIA_ENABLED="fdstore.isHomePageMediaEnabled";
 
 	//Deals changes.
@@ -1142,7 +1143,7 @@ public class FDStoreProperties {
 	public static boolean isSmartSavingsEnabled() {
 		return Boolean.valueOf(get(SMART_SAVINGS_FEATURE_ENABLED)).booleanValue();
 	}
-	
+
 	public static boolean isWhatsGoodEnabled() {
 		return Boolean.valueOf(get(PROP_FDWHATSGOOD_ENABLED)).booleanValue();
 	}
@@ -1157,7 +1158,6 @@ public class FDStoreProperties {
 		return get(PROP_FDWHATSGOOD_ROWS);
 	}
 	
-	
 	/**
 	 * Used for testing, do not call from the App.
 	 * @param lastRefresh
@@ -1167,3 +1167,4 @@ public class FDStoreProperties {
         }
 	
 }
+

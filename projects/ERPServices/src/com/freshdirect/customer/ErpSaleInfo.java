@@ -12,7 +12,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
 import com.freshdirect.payment.EnumPaymentMethodType;
-import com.sun.rsasign.t;
 
 /**
  * Lightweight information about a Sale.

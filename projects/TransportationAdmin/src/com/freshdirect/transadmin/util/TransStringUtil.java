@@ -28,7 +28,7 @@ public class TransStringUtil {
 	public static DateFormat hourInDayFormat = new SimpleDateFormat("H:mm");
 	
 	public static DateFormat dateFormatwithTime = new SimpleDateFormat("MM/dd/yyyy hh:mm aaa");
-
+	
 	public static Calendar clientCalendar = Calendar.getInstance();
 	
 	private static String[] daysList = new String[] {"Monday","Tuesday",

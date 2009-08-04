@@ -769,7 +769,6 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		return user.getTotalCartSkuQuantity(args);
 	}
 
-
 	public String getFavoriteTabFeature() {
 		return tabSiteFeature;
 	}
@@ -777,7 +776,6 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setFavoriteTabFeature(String feature) {
 		this.tabSiteFeature = feature;
 	}
-
 
 	public Map getPromoVariantMap() {
 		return this.user.getPromoVariantMap();
@@ -837,3 +835,4 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
 
 }
+

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="src" path="/OCF"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/myworkspace-0.2.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/tapestry-4.0.2.jar"/>
@@ -12,5 +11,10 @@
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/poi-3.0-rc4-20070503.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Delivery"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/opencsv-1.8.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry kind="con" path="com.bea.workshop.wls.syslib"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/Oracle WebLogic Server v10.3 JRE"/>
+	<classpathentry kind="con" path="com.bea.workshop.wls.core.AppLibrariesContainer/DevEAR"/>
 	<classpathentry kind="output" path="docroot/WEB-INF/classes"/>
 </classpath>

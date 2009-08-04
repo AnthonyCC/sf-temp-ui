@@ -83,15 +83,15 @@ public class CmsManager implements ContentServiceI {
 		ContextService.setInstance(new ContextService(this));
 	}
 
-        /**
-         * Perform a search for content objects.
-         * 
-         * @param query search term (never null)
-         * @param maxHits maximum number of search results
-         * 
-         * @return List of {@link SearchHit}
-         */
-	public Collection search(String term, int maxHits) {
+    /**
+     * Perform a search for content objects.
+     * 
+     * @param query search term (never null)
+     * @param maxHits maximum number of search results
+     * 
+     * @return List of {@link SearchHit}
+     */
+	public List search(String term, int maxHits) {
 		return searchService.search(term, maxHits);
 	}
 	

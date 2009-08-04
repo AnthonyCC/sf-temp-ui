@@ -82,7 +82,6 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 		return peakProduce;
 	}
 	
-	
 	private Collection getAllPeakProduceForDept(DepartmentModel dept) throws FDResourceException {
 		
 	    List products=new ArrayList();
@@ -123,7 +122,6 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 		return products;
 	}
 	
-
 	private Collection getPeakProduce(DepartmentModel dept) throws FDResourceException {
 		
 		List products=new ArrayList(10);
@@ -140,6 +138,7 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 			}
 		}
 
+	      //System.out.println("-=--=-=--=-==-==-=BEFORE Peak produce :"+products);
 	      //System.out.println("-=--=-=--=-==-==-=BEFORE Peak produce :"+products);
         products=removeDuplicates(products);
       //System.out.println("-=--=-=--=-==-==-=AFTER Peak produce :"+products);
@@ -230,7 +229,6 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 						continue;
 					}				   											
 					try {
-						
 						com.freshdirect.fdstore.FDProduct prod = skuTemp.getProduct();
 						String materialNumber= prod.getMaterial().getMaterialNumber();
 						//System.out.println("materialNumber= "+ materialNumber);
@@ -267,6 +265,7 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 	private void setPeakProduce(CategoryModel category, List products) throws FDResourceException {
 
 
+	      //System.out.println("-===|||||||---- setPeakProduce :"+products);
 	      //System.out.println("-===|||||||---- setPeakProduce :"+products);
 		List peakProduce=getPeakProduce(category.getProducts());
 		if(peakProduce!=null && peakProduce.size()>0)
@@ -314,7 +313,6 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 	}
 	
 	private boolean isProduce(String skuCode) {
-
 		/*
 		 * There is a similar setup in the JspMethods.java file
 		 */
@@ -342,16 +340,17 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 				//if prefix matches get product info
 				if(skuCode.startsWith(curPrefix)) {
 					matchFound=true;
-				}
+                }
 				//exit on matched sku prefix
 				//System.out.println(spacer+"Rating matchFound :"+matchFound);
 				if (matchFound) { break; }
 				//spacer=spacer+"   ";
-			}
-		}
+            }
+        }
 		//System.out.println("Rating matchFound :"+matchFound);
 		return matchFound;
 	}
+
 	private boolean isPeakProduce(String rating) {
 		
 		if ( EnumOrderLineRating.PEAK_PRODUCE_10.getStatusCode().equals(rating)||

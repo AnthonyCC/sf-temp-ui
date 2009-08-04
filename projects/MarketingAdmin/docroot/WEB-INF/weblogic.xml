@@ -31,4 +31,9 @@
 	</jsp-descriptor>
        <context-root>MrktAdmin</context-root>
 -->   
+
+    <container-descriptor>
+        <prefer-web-inf-classes>true</prefer-web-inf-classes>
+    </container-descriptor>
+
 </weblogic-web-app>

@@ -12,7 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.enum.Enum;
+import org.apache.commons.lang.enums.Enum;
 import org.dom4j.Branch;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;

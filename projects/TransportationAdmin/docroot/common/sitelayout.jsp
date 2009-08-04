@@ -41,9 +41,7 @@
 	
 </head>
 
-
-
- <body id="body1" class="" marginwidth="0" marginheight="0" border="0">
+<body id="body1" class="" marginwidth="0" marginheight="0" border="0">
 	<script>
     var s='<tmpl:get name='yui-skin'/>';   
     if(s=='') s="yui-skin-sam";

@@ -46,7 +46,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  */
 public class ProductModelImpl extends AbstractProductModelImpl {
 	private static final long serialVersionUID = 2103318183933323914L;
-	
+
 	private static final Logger LOG = LoggerFactory.getInstance( ProductModelImpl.class ); 
 
 	private List skuModels = new ArrayList();
@@ -1472,7 +1472,7 @@ inner:
            //
            // get the FDProductInfo from the FDCachedFactory
            //
-    	   try {
+           try {
 				/*
 				 * grab property to determine which sku prefixes to display ratings for
 				 * 
@@ -1481,13 +1481,13 @@ inner:
 				 * 
 				 * exit loop on a match.
 				 */
-				
+        	   
 				/*
 				 * There is a similar setup in the GetPeakProduceTag.java file
 				 * and in ProductModelImpl.java
 				 */
 //				LOG.debug("===== in getProductRating in ProductModelImpl :"+sku.getSkuCode());
-				
+        		  
 				// grab sku prefixes that should show ratings
 				String _skuPrefixes=FDStoreProperties.getRatingsSkuPrefixes();
 //				LOG.debug("* getRatingsSkuPrefixes :"+_skuPrefixes);
@@ -1507,21 +1507,21 @@ inner:
 						
 						//if prefix matches get product info
 						if(sku.getSkuCode().startsWith(curPrefix)) {
-							productInfo = FDCachedFactory.getProductInfo( sku.getSkuCode() );
+                            productInfo = FDCachedFactory.getProductInfo( sku.getSkuCode());
 //							LOG.debug(" Rating productInfo :"+productInfo);
 							String tmpRating = productInfo.getRating();
-							
-							if ( tmpRating != null && tmpRating.trim().length() > 0 ) {
-								EnumOrderLineRating enumRating = EnumOrderLineRating.getEnumByStatusCode( tmpRating );
+   	
+                   if(tmpRating!=null && tmpRating.trim().length()>0){
+                	   EnumOrderLineRating enumRating=EnumOrderLineRating.getEnumByStatusCode(tmpRating);
 //								LOG.debug(" enumRating :"+enumRating);
 								
-								if ( enumRating != null && enumRating.isEligibleToDisplay() ) {
-									rating = enumRating.getStatusCodeInDisplayFormat();
+                	   if(enumRating!=null && enumRating.isEligibleToDisplay()){
+                		   rating=enumRating.getStatusCodeInDisplayFormat();
 //									LOG.debug(" rating in display format  :"+rating);
-								}
-							}
+                	   }
+                   }
 							matchFound=true;
-						}
+        	   } 
 						//exit on matched sku prefix
 //						LOG.debug(spacer+"Rating matchFound :"+matchFound);
 						if (matchFound) { break; }
@@ -1529,7 +1529,7 @@ inner:
 					}
 				}
 
-		} catch (FDSkuNotFoundException ignore) {
+	        } catch (FDSkuNotFoundException ignore) {
 
            }
        }

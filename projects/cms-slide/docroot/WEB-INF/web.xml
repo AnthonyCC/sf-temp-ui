@@ -295,11 +295,7 @@
     <mime-mapping>
         <extension>etx</extension>
         <mime-type>text/x-setext</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ps</extension>
-        <mime-type>application/x-postscript</mime-type>
-    </mime-mapping>
+    </mime-mapping>    
     <mime-mapping>
         <extension>class</extension>
         <mime-type>application/java</mime-type>
@@ -579,11 +575,7 @@
     <mime-mapping>
         <extension>mpv2</extension>
         <mime-type>video/mpeg2</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>jpg</extension>
-        <mime-type>image/pjpeg</mime-type>
-    </mime-mapping>
+    </mime-mapping>    
     <mime-mapping>
         <extension>sgml</extension>
         <mime-type>text/sgml</mime-type>

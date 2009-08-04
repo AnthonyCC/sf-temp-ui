@@ -23,8 +23,8 @@ import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmCaseTemplate;
 import com.freshdirect.crm.CrmDepartment;
 import com.freshdirect.crm.CrmQueueInfo;
-import com.freshdirect.enum.EnumManager;
-import com.freshdirect.enum.TestableEnumManager;
+import com.freshdirect.enums.EnumManager;
+import com.freshdirect.enums.TestableEnumManager;
 import com.freshdirect.framework.core.PrimaryKey;
 
 public class CrmCaseDAOTestCase extends DbTestCaseSupport {

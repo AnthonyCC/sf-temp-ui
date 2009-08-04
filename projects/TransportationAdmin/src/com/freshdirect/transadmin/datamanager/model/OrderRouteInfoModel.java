@@ -195,5 +195,4 @@ public class OrderRouteInfoModel  implements IOrderRouteInfo {
 		this.tripId = tripId;
 	}
 
-
 }

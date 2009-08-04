@@ -42,5 +42,6 @@ public interface DispatchManagerDaoI extends BaseManagerDaoI {
 	public Collection getScribList(String date);
 	
 	public Scrib getScrib(String id);
+
 	public Collection getUserPref(String userId);
 }

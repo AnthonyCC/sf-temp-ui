@@ -19,13 +19,14 @@
             <web-uri>../FDWebSite/docroot</web-uri>
             <context-root></context-root>
         </web>
-     </module>
+    </module>
      <module>
         <web>
             <web-uri>../ERPSAdmin/docroot</web-uri>
             <context-root>ERPSAdmin</context-root>
         </web>
-     </module>
+    </module>
+    <!--
      <module>
         <web>
             <web-uri>../DlvAdmin/docroot</web-uri>
@@ -37,7 +38,8 @@
             <web-uri>../RulesAdmin/docroot</web-uri>
             <context-root>RulesAdmin</context-root>
         </web>
-     </module>
+    </module>
+    -->
      <module>
         <web>
             <web-uri>../CRM/docroot</web-uri>
@@ -50,24 +52,20 @@
             <context-root>cms-tap</context-root>
         </web>
      </module>
-     <module>
-        <web>
-            <web-uri>../cms-slide/docroot</web-uri>
-            <context-root>cms-slide</context-root>
-        </web>
-     </module>
+    <!--
      <module>
         <web>
             <web-uri>../ocf-adm/docroot</web-uri>
             <context-root>ocf-adm</context-root>
         </web>
-     </module>
+    </module>
+    -->
      <module>
         <web>
             <web-uri>../RefAdmin/docroot</web-uri>
             <context-root>RefAdmin</context-root>
         </web>
-     </module>
+    </module>
 	<!--
      <module>
         <web>

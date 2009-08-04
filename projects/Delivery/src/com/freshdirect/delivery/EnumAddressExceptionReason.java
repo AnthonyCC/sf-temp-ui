@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.enum.ValuedEnum;
+import org.apache.commons.lang.enums.ValuedEnum;
 
 /**@author ekracoff on Aug 9, 2004*/
 public class EnumAddressExceptionReason extends ValuedEnum {

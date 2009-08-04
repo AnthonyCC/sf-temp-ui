@@ -23,7 +23,6 @@ public class RoutingMergeCommand extends BaseRoutingOutCommand implements IRouti
 	public void setTruckFile(byte[] truckFile) {
 		this.truckFile = truckFile;
 	}
-	
-		
 		
 }
+

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="DevEAR">
+        <wb-resource deploy-path="/" source-path="/EarContent"/>
+        <dependent-module deploy-path="/" handle="module:/resource/FDWebSite/FDWebSite">
+            <dependent-object>WebModule_1235040372814</dependent-object>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module deploy-path="/" handle="module:/resource/CRM/CRM">
+            <dependent-object>WebModule_1235040427753</dependent-object>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module deploy-path="/" handle="module:/resource/DataLoader/DataLoader">
+            <dependent-object>EjbModule_1235040427771</dependent-object>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module deploy-path="/" handle="module:/resource/Delivery/Delivery">
+            <dependent-object>EjbModule_1235040427781</dependent-object>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module deploy-path="/" handle="module:/resource/ERPServices/ERPServices">
+            <dependent-object>EjbModule_1235040427795</dependent-object>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module deploy-path="/" handle="module:/resource/MarketingAdmin/MarketingAdmin">
+            <dependent-object>WebModule_1235040427808</dependent-object>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module deploy-path="/" handle="module:/resource/RulesAdmin/RulesAdmin">
+            <dependent-object>WebModule_1235040427830</dependent-object>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module deploy-path="/" handle="module:/resource/TransportationAdmin/TransportationAdmin">
+            <dependent-object>WebModule_1235040427848</dependent-object>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module deploy-path="/" handle="module:/resource/cms-tap/cms-tap">
+            <dependent-object>WebModule_1235040427858</dependent-object>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="Framework.jar" deploy-path="/" handle="module:/resource/Framework/Framework">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module deploy-path="/" handle="module:/resource/DlvAdmin/DlvAdmin">
+            <dependent-object>WebModule_1235055763902</dependent-object>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module deploy-path="/" handle="module:/resource/listadmin/listadmin">
+            <dependent-object>WebModule_1235055763934</dependent-object>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module deploy-path="/" handle="module:/resource/ocf-adm/ocf-adm">
+            <dependent-object>WebModule_1235055763970</dependent-object>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ERPSWebApp.jar" deploy-path="/" handle="module:/resource/ERPSWebApp/ERPSWebApp">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="FDStore.jar" deploy-path="/" handle="module:/resource/FDStore/FDStore">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="OCF.jar" deploy-path="/" handle="module:/resource/OCF/OCF">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="RoutingServices.jar" deploy-path="/" handle="module:/resource/RoutingServices/RoutingServices">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+    </wb-module>
+</project-modules>

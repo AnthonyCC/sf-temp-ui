@@ -4,9 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ page import= 'com.freshdirect.transadmin.util.TransStringUtil' %>
 <%@ page import= 'com.freshdirect.transadmin.util.TransportationAdminProperties' %>
-<%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <%@ page import='com.freshdirect.transadmin.security.*' %>
 <%@ page import='java.util.*' %>
@@ -54,28 +52,31 @@
 	</script>	
 <META HTTP-EQUIV="Refresh" CONTENT="<%=request.getParameter("refreshtime")%>">
 </head>
- <body  marginwidth="0" marginheight="0" border="0">	
-	<table width="100%" border=0 height="30"><tr><td width="100" align="left"><img width="100" height="30" src="images/TransAppLogo.gif"></td><td align="center" class="tv_header">DISPATCH</td><td width="180" align="right" class="tv_time" nowrap>Last Refresh Time:<br><span class="tv_time1"><%=request.getAttribute("lastTime")%></span></td></tr></table>
-      <ec:table items="dispatchInfos"   action="${pageContext.request.contextPath}/dispatchDashboardScreen.do"
-            imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="&nbsp;"
-            width="100%"  rowsDisplayed="1000" view="dispatchdbtable" filterable="false" >      
-           
-            <ec:row interceptor="obsoletemarker">
-                                         
-              
-              <ec:column alias="trnZoneRegion" property="regionZone" title="Region-Zone" filterable="false" sortable="false"/>              
-              <ec:column  alias="trnTimeslotslotName"  property="startTime" title="Start Time" filterable="false" sortable="false"/>
-              
-              <ec:column alias="trnRouterouteNumber" property="route"  width="10" title="Route" filterable="false" sortable="false"/>
-              <ec:column alias="trnTrucktruckNumber" property="truck" width="10"  title="Truck" filterable="false" sortable="false"/>              
-              <ec:column alias="trnTruckLocation" property="location" width="10"  title="Loc" filterable="false" sortable="false"/>
-              <ec:column alias="trnTruckStops" property="noOfStops" width="10"  title="Stops" filterable="false" sortable="false"/>
-               <ec:column alias="trnStatus" property="dispatchStatus"  title="Status" filterable="false" sortable="false"/>
-              <ec:column property="drivers"  cell="dispatchDashBoardResCell" title="Driver"  filterable="true" alias="drivers" filterable="false" sortable="false"/>
-              <ec:column property="helpers"  cell="dispatchDashBoardResCell" title="Helper"  filterable="true" alias="helpers" filterable="false" sortable="false"/>             
-             <ec:column  alias="dispatchTime"  property="dispatchTimeEx" title="Dispatch Time" filterable="false" sortable="false"  cell="date" format="hh:mm aaa"/>
-            </ec:row>
-          </ec:table>  
+ <body marginwidth="0" marginheight="0">	
+	<table width="100%" border=0 height="30">
+		<tr>
+			<td width="100" align="left"><img width="100" height="30" src="images/TransAppLogo.gif"></td>
+			<td align="center" class="tv_header">DISPATCH</td><td width="180" align="right" class="tv_time" nowrap>Last Refresh Time:<br>
+				<span class="tv_time1"><%=request.getAttribute("lastTime")%></span>
+			</td>
+		</tr>
+	</table>
+    <ec:table items="dispatchInfos" action="${pageContext.request.contextPath}/dispatchDashboardScreen.do"
+    		imagePath="${pageContext.request.contextPath}/images/table/*.gif" title="&nbsp;" width="100%"
+            rowsDisplayed="1000" view="dispatchdbtable" filterable="false" >
+    	<ec:row interceptor="obsoletemarker">
+	        <ec:column alias="trnZoneRegion" property="regionZone" title="Region-Zone" filterable="false" sortable="false"/>              
+	        <ec:column alias="trnTimeslotslotName" property="startTime" title="Start Time" filterable="false" sortable="false"/>
+	        <ec:column alias="trnRouterouteNumber" property="route"  width="10" title="Route" filterable="false" sortable="false"/>
+	        <ec:column alias="trnTrucktruckNumber" property="truck" width="10"  title="Truck" filterable="false" sortable="false"/>              
+	        <ec:column alias="trnTruckLocation" property="location" width="10"  title="Loc" filterable="false" sortable="false"/>
+	        <ec:column alias="trnTruckStops" property="noOfStops" width="10"  title="Stops" filterable="false" sortable="false"/>
+	        <ec:column alias="trnStatus" property="dispatchStatus"  title="Status" filterable="false" sortable="false"/>
+	        <ec:column property="drivers" cell="dispatchDashBoardResCell" title="Driver"  filterable="false" alias="drivers" sortable="false"/>
+	        <ec:column property="helpers" cell="dispatchDashBoardResCell" title="Helper"  filterable="false" alias="helpers" sortable="false"/>             
+	        <ec:column alias="dispatchTime" property="dispatchTimeEx" title="Dispatch Time" filterable="false" sortable="false" cell="date" format="hh:mm aaa"/>
+        </ec:row>
+    </ec:table>  
           <div id="nodata" style="display:none;">
           		<img  height="650" width="100%" src="images/no-data.gif">
           </div>  
@@ -162,3 +163,4 @@ function stopCount() {
 initPagination();
 
 </script>
+

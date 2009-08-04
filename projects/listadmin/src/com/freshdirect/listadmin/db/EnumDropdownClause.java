@@ -5,8 +5,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.enum.Enum;
-import org.apache.commons.lang.enum.EnumUtils;
+import org.apache.commons.lang.enums.Enum;
+import org.apache.commons.lang.enums.EnumUtils;
 
 import com.freshdirect.listadmin.nvp.NVP;
 import com.freshdirect.listadmin.nvp.NVPSourceI;

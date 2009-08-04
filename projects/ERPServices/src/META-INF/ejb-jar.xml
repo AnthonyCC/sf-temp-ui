@@ -633,9 +633,9 @@
 
         <session>
             <ejb-name>EnumManager</ejb-name>
-            <home>com.freshdirect.enum.ejb.EnumManagerHome</home>
-            <remote>com.freshdirect.enum.ejb.EnumManagerSB</remote>
-            <ejb-class>com.freshdirect.enum.ejb.EnumManagerSessionBean</ejb-class>
+            <home>com.freshdirect.enums.ejb.EnumManagerHome</home>
+            <remote>com.freshdirect.enums.ejb.EnumManagerSB</remote>
+            <ejb-class>com.freshdirect.enums.ejb.EnumManagerSessionBean</ejb-class>
             <session-type>Stateless</session-type>
             <transaction-type>Container</transaction-type>
             <resource-ref>

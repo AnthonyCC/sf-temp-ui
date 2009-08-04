@@ -138,48 +138,7 @@ public class GetAllPromotionsTag extends AbstractGetterTag {
 		}
 	}
 	
-	public class PromoRow {
-		private String id;
-	    private String code;
-	    private String redemptionCode = "";
-	    private String name;
-	    private String description;
-	    private double amount;
-	    private Date start;
-	    private Date expire;
-	    private String zone;
-	    private EnumPromotionType type;
-		public double getAmount() {
-			return amount;
-		}
-		public String getCode() {
-			return code;
-		}
-		public String getDescription() {
-			return description;
-		}
-		public Date getExpire() {
-			return expire;
-		}
-		public String getId() {
-			return id;
-		}
-		public String getName() {
-			return name;
-		}
-		public String getRedemptionCode() {
-			return redemptionCode;
-		}
-		public Date getStart() {
-			return start;
-		}
-		public EnumPromotionType getType() {
-			return type;
-		}
-		public String getZone() {
-			return zone;
-		}
-	}
+	
 
 	public Comparator COMP_TYPE = new Comparator() { 
 	    public int compare(Object o1, Object o2) { 

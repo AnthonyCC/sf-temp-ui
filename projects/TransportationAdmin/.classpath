@@ -17,7 +17,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/ERPServices"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/poi-3.0-rc4-20070503.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/fop-0.20.5.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/jxl.jar"/>
 	<classpathentry kind="output" path="docroot/WEB-INF/classes"/>
 </classpath>
 

@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -15,8 +16,6 @@ import java.util.Set;
 
 import org.apache.log4j.Category;
 import org.dom4j.Document;
-
-import weblogic.utils.collections.ArraySet;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.customer.EnumDeliveryType;
@@ -377,7 +376,7 @@ public class FDEmailFactory {
 			if (recipe.getSource() != null) {
 				RecipeSource		source      = recipe.getSource();
 				List 			retailers   = source.getBookRetailers();
-				Set				retailerSet = new ArraySet();
+				Set				retailerSet = new HashSet();
 				
 				map.put("sourceId", source.getContentKey().getId());
 				map.put("sourceName", source.getName());
@@ -638,7 +637,7 @@ public class FDEmailFactory {
 				if (recipe.getSource() != null) {
 					RecipeSource		source      = recipe.getSource();
 					List 			retailers   = source.getBookRetailers();
-					Set				retailerSet = new ArraySet();
+					Set				retailerSet = new HashSet();
 					
 					map.put("sourceId", source.getContentKey().getId());
 					map.put("sourceName", source.getName());

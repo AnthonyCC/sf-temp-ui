@@ -30,7 +30,6 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.core.PrimaryKey;
 
 import weblogic.security.Security;
-import weblogic.security.principal.WLSUserImpl;
 import java.security.Principal;
 import javax.security.auth.Subject;
 
@@ -53,7 +52,7 @@ public class DlvAdminEngine extends BaseEngine {
 		if (subject == null) {
 			return null;
 		}
-		Set principals = subject.getPrincipals(WLSUserImpl.class);
+		Set principals = subject.getPrincipals();
 		if (principals.isEmpty()) {
 			return null;
 		}

@@ -71,7 +71,7 @@ public class ConfiguredProductValidatorTest extends TestCase {
 		assertEquals(1, delegate.getValidationMessages().size());
 		assertValidationMessage(
 				0,
-				"Invalid characteristic value XY for characteristic C_MT_BF_PAK. Valid options are [VP, ST]");
+				"Invalid characteristic value XY for characteristic C_MT_BF_PAK. Valid options are [ST, VP]");
 	}
 
 	public void testMissingOption() {

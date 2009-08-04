@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.freshdirect.crm.CrmCasePriority;
-import com.freshdirect.enum.EnumDAOI;
+import com.freshdirect.enums.EnumDAOI;
 
 public class CrmCasePriorityDAO implements EnumDAOI {
 

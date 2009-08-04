@@ -10,6 +10,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.Map.Entry;
 
 import com.freshdirect.cms.AttributeI;
@@ -81,10 +83,12 @@ public class ConfiguredProductValidator implements ContentValidatorI {
 			delegate.record(node.getKey(), "SALES_UNIT", "No sales unit specified");
 		} else {
 			if (!salesUnits.keySet().contains(su)) {
+				SortedSet suKeysSorted = new TreeSet(salesUnits.keySet());
+				
 				delegate.record(node.getKey(), "SALES_UNIT", "Invalid sales unit '"
 					+ su
 					+ "' specified, valid units are "
-					+ salesUnits.keySet());
+					+ suKeysSorted);
 			}
 		}
 
@@ -112,12 +116,14 @@ public class ConfiguredProductValidator implements ContentValidatorI {
 				}
 			}
 			if (!validCharValue) {
+				SortedSet charValueSortedSet = new TreeSet(charValueSet);
+				
 				delegate.record(node.getKey(), "OPTIONS", "Invalid characteristic value "
 					+ charValue
 					+ " for characteristic "
 					+ charName
 					+ ". Valid options are "
-					+ charValueSet);
+					+ charValueSortedSet);
 			}
 		}
 

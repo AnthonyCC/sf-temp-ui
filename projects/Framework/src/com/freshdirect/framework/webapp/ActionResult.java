@@ -10,6 +10,8 @@ package com.freshdirect.framework.webapp;
 
 import java.util.*;
 
+import org.apache.log4j.Category;
+
 /**
  *
  *
@@ -17,6 +19,7 @@ import java.util.*;
  * @author $Author$
  */
 public class ActionResult {
+	private static final Category LOGGER = Category.getInstance(ActionResult.class);
 
 	private HashMap errors = null;
 	private HashMap warnings = null;
@@ -27,14 +30,19 @@ public class ActionResult {
 	}
 
 	public boolean isSuccess() {
-		return (0 == errors.size());
+		boolean success = (0 == errors.size());
+		LOGGER.debug("isSuccess: " + success);
+		return success;
 	}
 
 	public boolean isFailure() {
-		return (0 < errors.size());
+		boolean failure = (0 < errors.size());
+		LOGGER.debug("isFailure: " + failure);
+		return failure;
 	}
 
 	public void addError(ActionError error) {
+		LOGGER.debug("error added: " + error.getType() +", " + error.getDescription());
 		errors.put(error.getType(), error);
 	}
 
@@ -71,6 +79,7 @@ public class ActionResult {
 	}
 	
 	public void addWarning(ActionWarning warning){
+		LOGGER.debug("warning added: " + warning.getType() +", " + warning.getDescription());
 		warnings.put(warning.getType(), warning);
 	}
 	

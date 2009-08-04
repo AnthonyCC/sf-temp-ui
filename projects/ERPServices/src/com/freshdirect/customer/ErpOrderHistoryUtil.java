@@ -222,11 +222,11 @@ public class ErpOrderHistoryUtil {
 		int orderCount = 0;
 		Date beginDate = beginCal.getTime();
 		Date endDate = endCal.getTime();
-		
+	
 		for (Iterator i = erpSaleInfos.iterator(); i.hasNext();) {
 			ErpSaleInfo saleInfo = (ErpSaleInfo) i.next(); 			
 			Date createDate = saleInfo.getCreateDate();
-			
+
 			if (!saleInfo.isMakeGood()&&createDate.after(beginDate) && createDate.before(endDate) && 
 					!saleInfo.getDeliveryType().equals(EnumDeliveryType.CORPORATE) &&
 					!saleInfo.getStatus().equals(EnumSaleStatus.CANCELED) &&

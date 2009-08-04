@@ -3,7 +3,7 @@
 <%@ page import='java.util.*'%>
 <%@ page import='com.freshdirect.customer.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
-<%@ page import='import com.freshdirect.framework.webapp.*' %>
+<%@ page import='com.freshdirect.framework.webapp.*' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>

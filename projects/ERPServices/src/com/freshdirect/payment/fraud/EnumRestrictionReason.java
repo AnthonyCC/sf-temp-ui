@@ -1,6 +1,6 @@
 package com.freshdirect.payment.fraud;
 
-import org.apache.commons.lang.enum.ValuedEnum;
+import org.apache.commons.lang.enums.ValuedEnum;
 import java.util.*;
 
 public class EnumRestrictionReason extends ValuedEnum {

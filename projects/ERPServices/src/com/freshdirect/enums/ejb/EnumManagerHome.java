@@ -1,4 +1,4 @@
-package com.freshdirect.enum.ejb;
+package com.freshdirect.enums.ejb;
 
 import java.rmi.RemoteException;
 
