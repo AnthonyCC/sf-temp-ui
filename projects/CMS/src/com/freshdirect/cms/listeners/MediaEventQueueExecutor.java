@@ -6,7 +6,9 @@ import com.freshdirect.framework.conf.FDRegistry;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 import edu.emory.mathcs.backport.java.util.concurrent.Executor;
+import edu.emory.mathcs.backport.java.util.concurrent.Executors;
 import edu.emory.mathcs.backport.java.util.concurrent.LinkedBlockingQueue;
+import edu.emory.mathcs.backport.java.util.concurrent.ThreadFactory;
 import edu.emory.mathcs.backport.java.util.concurrent.ThreadPoolExecutor;
 import edu.emory.mathcs.backport.java.util.concurrent.TimeUnit;
 
@@ -119,9 +121,26 @@ public class MediaEventQueueExecutor implements MediaEventHandlerI {
 			value = false;
 		}
 	}
+	
+	private static class LowerPriorityThreadFactory implements ThreadFactory {
+		ThreadFactory defaultFactory = Executors.defaultThreadFactory();
+
+		public Thread newThread(Runnable r) {
+			Thread t = defaultFactory.newThread(r);
+			for (int i = 1; i <= 3; i++)
+				try {
+					t.setPriority(t.getPriority() - 1);
+					LOGGER.info("decreased priority of queue executor thread (" + i + ")");
+				} catch (Exception e) {
+					LOGGER.error("failed to decrease priority for queue executor thread (" + i + ")");
+				}
+			return t;
+		}
+	}
 
 	private static Executor threadPool = new ThreadPoolExecutor(1, 1, 360,
-			TimeUnit.SECONDS, new LinkedBlockingQueue(), new ThreadPoolExecutor.DiscardPolicy());
+			TimeUnit.SECONDS, new LinkedBlockingQueue(), new LowerPriorityThreadFactory(),
+			new ThreadPoolExecutor.DiscardPolicy());
 	
 	private static Object handlerSync = new Object();
 	
