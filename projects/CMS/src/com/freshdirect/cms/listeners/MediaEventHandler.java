@@ -25,9 +25,10 @@ import com.freshdirect.cms.changecontrol.EnumContentNodeChangeType;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.node.ContentNodeUtil;
 import com.freshdirect.framework.conf.FDRegistry;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class MediaEventHandler extends DbService implements MediaEventHandlerI {
-	private static final Logger LOGGER = Logger.getLogger(MediaEventHandler.class);
+	private static final Logger LOGGER = LoggerFactory.getInstance(MediaEventHandler.class);
 
 	private MediaAssociator associator = new MediaAssociator();
 	{

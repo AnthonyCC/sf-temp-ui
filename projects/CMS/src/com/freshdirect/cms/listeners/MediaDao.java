@@ -16,9 +16,10 @@ import org.apache.log4j.Logger;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class MediaDao {
-	private static final Logger LOGGER = Logger.getLogger(MediaDao.class);
+	private static final Logger LOGGER = LoggerFactory.getInstance(MediaDao.class);
 
 	public Media insert(Connection conn, Media media) throws SQLException {
     	LOGGER.debug("-->insert()");

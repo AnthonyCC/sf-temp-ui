@@ -17,12 +17,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.apache.lucene.analysis.LowerCaseFilter;
 import org.apache.lucene.analysis.PorterStemFilter;
@@ -212,10 +209,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
 				}
 			}
 
-			writer.optimize();
 			writer.close();
-			
-			
 
 			// replace old reader
 			localReader = this.reader;
@@ -224,8 +218,34 @@ public class LuceneSearchService implements ContentSearchServiceI {
 				localReader.close();
 			}
 			
+		} catch (IOException e) {
+			throw new CmsRuntimeException(e);
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see com.freshdirect.cms.search.ContentSearchServiceI#optimize()
+	 */
+	public synchronized void optimize() {
+		try {
+			LOGGER.debug("Starting optimization process");
+
+			// index new documents
+			IndexWriter writer = new IndexWriter(getIndexLocation(), STEMMER, false);
+
+			writer.optimize();
+			writer.close();
+
+			// replace old reader
+			IndexReader localReader = this.reader;
+			this.reader = createReader();
+			if (localReader != null) {
+				localReader.close();
+			}
+
 			spellService.indexWords(reader);
 			
+			LOGGER.debug("Finished optimization process");
 		} catch (IOException e) {
 			throw new CmsRuntimeException(e);
 		}

@@ -103,6 +103,14 @@ and def_name='source'
 		</invoke-factory>
 	</service-point>
 	
+	<service-point id="Optimize" interface="com.freshdirect.cms.publish.PublishTask">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.publish.OptimizeTask">
+				<service>com.freshdirect.cms.search.SearchService</service>
+			</construct>
+		</invoke-factory>
+	</service-point>
+
 	<configuration-point id="publishTasks" schema-id="com.freshdirect.cms.serviceList"/>
 	<contribution configuration-id="publishTasks" >
 		<service name="PublishValidation"/>
@@ -110,6 +118,7 @@ and def_name='source'
 		<service name="PublishSlide"/>
 		<service name="PublishMedia"/>
 		<service name="OASExport"/>
+		<service name="Optimize"/>
 		<service name="RunScript"/>
 	</contribution>
 

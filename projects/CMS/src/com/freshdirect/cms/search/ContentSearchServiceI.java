@@ -39,8 +39,12 @@ public interface ContentSearchServiceI {
 	 * @param contentNodes Collection of {@link com.freshdirect.cms.ContentNodeI} (never null)
 	 */
 	public void index(Collection contentNodes);
-	
-	
+
+	/**
+	 * Optimize search index.
+	 */ 
+	public void optimize();
+
 	/**
 	 * Get the content types this search service supports.
 	 * 

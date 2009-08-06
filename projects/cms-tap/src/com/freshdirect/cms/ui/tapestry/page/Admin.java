@@ -51,6 +51,7 @@ public class Admin extends BasePage {
 		searchService.setDictionary(SynonymDictionary.createFromCms());
 		
 		searchService.index(nodes.values());
+		searchService.optimize();
 		ContentSearch.getInstance().refreshRelevencyScores();
 	}
 
