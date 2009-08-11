@@ -27,9 +27,92 @@ import com.freshdirect.cms.node.ContentNodeUtil;
 import com.freshdirect.framework.conf.FDRegistry;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
+import edu.emory.mathcs.backport.java.util.concurrent.Executor;
+import edu.emory.mathcs.backport.java.util.concurrent.Executors;
+import edu.emory.mathcs.backport.java.util.concurrent.LinkedBlockingQueue;
+import edu.emory.mathcs.backport.java.util.concurrent.ThreadFactory;
+import edu.emory.mathcs.backport.java.util.concurrent.ThreadPoolExecutor;
+import edu.emory.mathcs.backport.java.util.concurrent.TimeUnit;
+
 public class MediaEventHandler extends DbService implements MediaEventHandlerI {
 	private static final Logger LOGGER = LoggerFactory.getInstance(MediaEventHandler.class);
 
+	private static class LowerPriorityThreadFactory implements ThreadFactory {
+		ThreadFactory defaultFactory = Executors.defaultThreadFactory();
+
+		public Thread newThread(Runnable r) {
+			Thread t = defaultFactory.newThread(r);
+			for (int i = 1; i <= 3; i++)
+				try {
+					t.setPriority(t.getPriority() - 1);
+					LOGGER.info("decreased priority of queue executor thread (" + i + ")");
+				} catch (Exception e) {
+					LOGGER.error("failed to decrease priority for queue executor thread (" + i + ")");
+				}
+			return t;
+		}
+	}
+
+	private static Executor threadPool = new ThreadPoolExecutor(1, 1, 360,
+			TimeUnit.SECONDS, new LinkedBlockingQueue(), new LowerPriorityThreadFactory(),
+			new ThreadPoolExecutor.DiscardPolicy());
+	
+	private static Object threadLock = new Object();
+
+	protected class AssociateTask implements Runnable {
+		Media media;
+		String userId;
+		
+		public AssociateTask(Media media, String userId) {
+			super();
+			this.media = media;
+			this.userId = userId;
+		}
+
+		public void run() {
+			associate(media, userId);
+		}
+
+		private void associate(Media media, String userId) {
+	    	LOGGER.debug("-->associate()");
+			if (!MediaEventHandler.this.isAutoAssociation()) {
+		    	LOGGER.debug("<--associate() auto association disabled");
+				return;
+			}
+			
+			MediaAssociation assoc = MediaEventHandler.this.associator
+					.getAssociation(media.getUri());
+			if (assoc == null) {
+				LOGGER.debug("<--associate() not an association");
+				return;
+			}
+			
+			ContentNodeI assocNode = assoc.getContentKey().lookupContentNode();
+			if (assocNode == null) {
+		    	LOGGER.debug("<--associate() no content node found");
+				return;
+			}
+			assocNode = assocNode.copy();
+
+			AttributeI attrib = assocNode.getAttribute(assoc.getAttributeName());
+			if (attrib == null) {
+		    	LOGGER.debug("<--associate() no attribute found");
+				return;
+			}
+			if (!(attrib instanceof RelationshipI)) {
+		    	LOGGER.debug("<--associate() attribute not a relationship");
+				return;
+			}
+			ContentNodeUtil.addRelationshipKey((RelationshipI) attrib, media.getContentKey());
+			
+			CmsRequest req = new CmsRequest(new CmsUser(userId));
+			req.addNode(assocNode);
+	    	LOGGER.debug("---associate()-->CmsManager.handle() start");
+			CmsManager.getInstance().handle(req);
+	    	LOGGER.debug("<--associate()");
+		}
+	}
+	
 	private MediaAssociator associator = new MediaAssociator();
 	{
 		associator.addRule(null, "c", FDContentTypes.PRODUCT, "PROD_IMAGE");
@@ -89,7 +172,9 @@ public class MediaEventHandler extends DbService implements MediaEventHandlerI {
 				try {
 					m = dao.insert(conn, media);
 					logChange(m.getContentKey(), EnumContentNodeChangeType.ADD, "initial checkin", userId);
-					associate(m, userId);
+					synchronized (threadLock) {
+						threadPool.execute(new AssociateTask(m, userId));
+					}
 				} catch (SQLException e) {
 					if (e.getMessage().indexOf("unique constraint") >= 0) {
 						LOGGER.debug("create failed for '" + media.getUri() + "', trying update");
@@ -153,44 +238,6 @@ public class MediaEventHandler extends DbService implements MediaEventHandlerI {
 			}
 		}.execute();
     	LOGGER.debug("<--update()");
-	}
-
-	private void associate(Media media, String userId) {
-    	LOGGER.debug("-->associate()");
-		if (!isAutoAssociation()) {
-	    	LOGGER.debug("<--associate() auto association disabled");
-			return;
-		}
-		
-		MediaAssociation assoc = associator.getAssociation(media.getUri());
-		if (assoc == null) {
-	    	LOGGER.debug("<--associate() not an association");
-			return;
-		}
-		
-		ContentNodeI assocNode = assoc.getContentKey().lookupContentNode();
-		if (assocNode == null) {
-	    	LOGGER.debug("<--associate() no content node found");
-			return;
-		}
-		assocNode = assocNode.copy();
-
-		AttributeI attrib = assocNode.getAttribute(assoc.getAttributeName());
-		if (attrib == null) {
-	    	LOGGER.debug("<--associate() no attribute found");
-			return;
-		}
-		if (!(attrib instanceof RelationshipI)) {
-	    	LOGGER.debug("<--associate() attribute not a relationship");
-			return;
-		}
-		ContentNodeUtil.addRelationshipKey((RelationshipI) attrib, media.getContentKey());
-		
-		CmsRequest req = new CmsRequest(new CmsUser(userId));
-		req.addNode(assocNode);
-    	LOGGER.debug("---associate()-->CmsManager.handle() start");
-		CmsManager.getInstance().handle(req);
-    	LOGGER.debug("<--associate()");
 	}
 
 	private void logChange(ContentKey contentKey, EnumContentNodeChangeType changeType, String note, final String userId) {

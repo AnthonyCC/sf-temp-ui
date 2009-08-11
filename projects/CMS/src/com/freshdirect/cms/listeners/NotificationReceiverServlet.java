@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.framework.conf.FDRegistry;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class NotificationReceiverServlet extends HttpServlet {
@@ -20,13 +21,19 @@ public class NotificationReceiverServlet extends HttpServlet {
 	
 	private static Logger LOGGER = LoggerFactory.getInstance(NotificationReceiverServlet.class);
 	
-	MediaEventHandlerI handler;
-	
-	public void init() throws ServletException {
-		super.init();
-		handler = new MediaEventQueueExecutor();
-	}
-	
+	private MediaEventHandlerI handler;
+
+    public void init() throws ServletException {
+        super.init();
+        try {
+        	handler = (MediaEventHandlerI) FDRegistry.getInstance().getService(MediaEventHandlerI.class);
+        } catch (RuntimeException e) {
+        	LOGGER.error("cannot initialize servlet, running in DUMMY mode");
+        	handler = DummyMediaEventHandler.getInstance();
+        }
+    }
+    
+    
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     	LOGGER.debug("-->service()");
         String cmd = req.getParameter("cmd");
