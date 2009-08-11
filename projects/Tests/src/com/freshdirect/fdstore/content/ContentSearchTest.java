@@ -58,6 +58,7 @@ public class ContentSearchTest extends FDCustomerManagerTestSupport {
 
         Map contentNodes = service.getContentNodes(service.getContentKeys());
         searchService.index(contentNodes.values());
+        searchService.optimize();
 
         CmsManager.setInstance(new CmsManager(service, searchService));
 
