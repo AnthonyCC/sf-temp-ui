@@ -457,6 +457,7 @@
 				<title>Relationships</title>
 				<sections>
 					<CmsSection>
+						<title>Relationships</title>
 						<fields>
 							<CmsField><attribute>ALSO_SOLD_AS</attribute></CmsField>
 							<CmsField><attribute>RELATED_PRODUCTS_HEADER</attribute></CmsField>

@@ -17,7 +17,9 @@ import com.freshdirect.cms.ContentTypeDefI;
  */
 class ContextualContentNode implements ContextualContentNodeI {
 
-	private final ContextualContentNodeI context;
+	private static final long	serialVersionUID	= 6476077866185509385L;
+	
+	private final ContextualContentNodeI parent;
 	private final ContentNodeI node;
 
 	/**
@@ -25,16 +27,16 @@ class ContextualContentNode implements ContextualContentNodeI {
 	 * @param node
 	 */
 	public ContextualContentNode(ContextualContentNodeI context, ContentNodeI node) {
-		this.context = context;
+		this.parent = context;
 		this.node = node;
 	}
 
 	public boolean isRoot() {
-		return this.context == null;
+		return this.parent == null;
 	}
 
 	public ContextualContentNodeI getParentNode() {
-		return this.context;
+		return this.parent;
 	}
 
 	public String getPath() {
@@ -46,13 +48,13 @@ class ContextualContentNode implements ContextualContentNodeI {
 		if (this.isRoot()) {
 			return path;
 		}
-		return ((ContextualContentNode) this.context).getPath(path);
+		return ((ContextualContentNode) this.parent).getPath(path);
 	}
 
 	public AttributeI getAttribute(String name) {
 		AttributeI attr = node.getAttribute(name);
 		if (attr != null && attr.getValue() == null && !this.isRoot() && attr.getDefinition().isInheritable()) {
-			return this.context.getAttribute(name);
+			return this.parent.getAttribute(name);
 		}
 		return attr;
 	}
@@ -75,7 +77,7 @@ class ContextualContentNode implements ContextualContentNodeI {
 	}
 
 	public Map getInheritedAttributes() {
-		Map inherited = context != null ? context.getInheritedAttributes() : new HashMap();
+		Map inherited = parent != null ? parent.getInheritedAttributes() : new HashMap();
 		Map self = node.getAttributes();
 		return inherit(inherited, self);
 	}
@@ -85,10 +87,11 @@ class ContextualContentNode implements ContextualContentNodeI {
 		for (Iterator i = self.entrySet().iterator(); i.hasNext();) {
 			Map.Entry e = (Map.Entry) i.next();
 			String name = (String) e.getKey();
-			Object value = e.getValue();
+			AttributeI attr = (AttributeI)e.getValue(); 
+			Object value = attr.getValue();			
 			boolean inherit = getDefinition().getAttributeDef(name).isInheritable();
-			if (inherit) {
-				inheritable.put(name, value);
+			if ( inherit && value != null ) {
+				inheritable.put(name, attr);
 			}
 		}
 

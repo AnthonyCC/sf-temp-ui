@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+  <display-name>cms-gwt</display-name>
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+
+  <servlet>
+    <servlet-name>contentService</servlet-name>
+    <servlet-class>com.freshdirect.cms.ui.serviceimpl.ContentServiceImpl</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet>
+    <servlet-name>recipeUpload</servlet-name>
+    <servlet-class>com.freshdirect.cms.ui.serviceimpl.RecipeLoaderServlet</servlet-class>
+    <load-on-startup>2</load-on-startup>
+  </servlet>
+
+  <servlet>
+    <servlet-name>xlsUpload</servlet-name>
+    <servlet-class>com.freshdirect.cms.ui.serviceimpl.XLSLoaderServlet</servlet-class>
+    <load-on-startup>3</load-on-startup>
+  </servlet>
+
+  <servlet>
+    <servlet-name>adminService</servlet-name>
+    <servlet-class>com.freshdirect.cms.ui.serviceimpl.AdminServiceImpl</servlet-class>
+    <load-on-startup>4</load-on-startup>
+  </servlet>
+
+
+  <servlet-mapping>
+    <servlet-name>contentService</servlet-name>
+    <url-pattern>/com.freshdirect.cms.ui.cmsgwt/contentService</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>contentService</servlet-name>
+    <url-pattern>/contentService</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>adminService</servlet-name>
+    <url-pattern>/adminService</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>recipeUpload</servlet-name>
+    <url-pattern>/RecipeUpload</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>xlsUpload</servlet-name>
+    <url-pattern>/XlsUpload</url-pattern>
+  </servlet-mapping>
+  
+  <security-constraint>
+		<display-name>CMS Security Constraint</display-name>
+		<web-resource-collection>
+			<web-resource-name>CMS Application</web-resource-name>
+			<url-pattern>/cmsgwt.html</url-pattern>
+			<url-pattern>/contentService</url-pattern>
+			<url-pattern>/adminService</url-pattern>
+			<url-pattern>/RecipeUpload</url-pattern>
+			<url-pattern>/XlsUpload</url-pattern>
+			<http-method>GET</http-method>
+			<http-method>POST</http-method>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>cms_admin</role-name>
+			<role-name>cms_editor</role-name>
+			<role-name>cms_viewer</role-name>
+		</auth-constraint>
+		<user-data-constraint>
+			<transport-guarantee>NONE</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
+
+	<login-config>
+		<auth-method>FORM</auth-method>
+		<realm-name>FreshDirect</realm-name>
+		<form-login-config>
+			<form-login-page>/Login.html</form-login-page>
+			<form-error-page>/Login.html</form-error-page>
+		</form-login-config>
+	</login-config>
+
+	<security-role>
+		<description>CMS Editors</description>
+		<role-name>cms_editor</role-name>
+	</security-role>
+
+	<security-role>
+		<description>CMS Viewers</description>
+		<role-name>cms_viewer</role-name>
+	</security-role>
+
+	<security-role>
+		<description>CMS Administrator</description>
+		<role-name>cms_admin</role-name>
+	</security-role>
+
+
+</web-app>

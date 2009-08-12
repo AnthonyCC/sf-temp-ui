@@ -13,6 +13,7 @@
 	<property name="dest.dir"			value="${basedir}/lib" />
 	<property name="lib.dir"            value="${basedir}/lib" />
 
+	<property file="${properties.home}/build.local.properties" />
 	<property file="${properties.home}/build.properties" />
 
 	<property name="projects.dir"			value="projects" />
@@ -326,7 +327,7 @@
 		-->
 	</target>
 
-	<target name="webapps" depends="fdwebsite,crm,erpsadmin,dlvadmin,rulesadmin,dlvconfirm,cms-tap,listadmin-lib,listadmin,ocf-adm,refAdmin,mrktAdmin,transportAdmin" description="Build all WAR files">
+	<target name="webapps" depends="fdwebsite,crm,erpsadmin,dlvadmin,rulesadmin,dlvconfirm,cms-tap,cms-gwt,listadmin-lib,listadmin,ocf-adm,refAdmin,mrktAdmin,transportAdmin" description="Build all WAR files">
 	</target>
 
 	<target name="all" depends="clean,prereq,build" description="Build everything, no checkout, no tests">
@@ -369,9 +370,10 @@
 		<mkdir dir="${work.dir}/ocf-adm" />
 		<mkdir dir="${work.dir}/docs" />
 		<mkdir dir="${work.dir}/RefAdmin"/>
-        <mkdir dir="${work.dir}/MrktAdmin"/>
-        <mkdir dir="${work.dir}/TransportationAdmin"/>
-        <mkdir dir="${work.dir}/RoutingServices"/>
+                <mkdir dir="${work.dir}/MrktAdmin"/>
+                <mkdir dir="${work.dir}/TransportationAdmin"/>
+                <mkdir dir="${work.dir}/RoutingServices"/>
+                <mkdir dir="${work.dir}/cms-gwt"/>
 	</target>
 
     <target name        = "copy_shared_dirs"
@@ -893,7 +895,8 @@
 
 	<macrodef name="makeProject">
 		<attribute name="project" />
-		<attribute name="classpathref" default=""/>		
+		<attribute name="classpathref" default=""/>
+                <attribute name="source" default="${javac.source}"/>	
 		<sequential>
 			<trycatch>
 				<try>
@@ -908,7 +911,7 @@
 				deprecation="${javac.deprecation}"
 				optimize="${javac.optimize}"
 				debug="${javac.debug}"
-				source="${javac.source}">
+				source="@{source}">
 						<classpath>
 							<path refid="j2ee.classpath"/>
 							<path refid="common.classpath"/>
@@ -1571,6 +1574,66 @@
 		</jar>
 
 	</target>
+
+    <macrodef name="gwt-compile">
+        <attribute name="project" />
+        <attribute name="module-name" />
+        <attribute name="classpathref" />
+        <sequential>
+            <mkdir dir="${work.dir}/@{project}.js"/>
+            <java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
+	        <classpath>
+                    <pathelement location="projects/@{project}/src"/>
+                    <path refid="@{classpathref}"/>
+                    <pathelement location="${thirdparty.home}/gwt/gwt-dev-linux.jar"/>
+                </classpath>
+                <!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
+                <jvmarg value="-Xmx512M"/>
+                <jvmarg value="-Xss16M"/>
+
+                <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+                <arg value="@{module-name}"/>
+                <arg value="-war" />
+                <arg value="${work.dir}/@{project}.js"/>
+            </java>
+        </sequential>
+    </macrodef>
+
+
+
+        <target name="cms-gwt" description="Build cms-gwt">
+                <path id="cms-gwt.classpath">
+                        <pathelement location="${work.dir}/Framework.jar"/>
+                        <pathelement location="${work.dir}/CMS.jar"/>
+                        <pathelement location="${work.dir}/Framework.jar"/>
+                        <pathelement location="${work.dir}/ERPServices.jar"/>
+			<pathelement location="${thirdparty.home}/gxt.jar"/>
+			<pathelement location="${thirdparty.home}/gwt/gwt-user.jar"/>
+		</path>
+                <property name="cms-gwt.path" value="projects/cms-gwt" />
+                <makeProject
+                        project="cms-gwt"
+                        classpathref="cms-gwt.classpath" 
+                        source="1.5"/>
+                <gwt-compile project="cms-gwt" classpathref="cms-gwt.classpath" module-name="com.freshdirect.cms.ui.cmsgwt" />
+                <war destfile="${work.dir}/cms-gwt.war" webxml="${cms-gwt.path}/war/WEB-INF/web.xml">
+                    <manifest>
+                        <attribute name="Specification-Version" value="${build.counter}"/>
+                        <attribute name="Specification-Vendor" value="FreshDirect LLC"/>
+                        <attribute name="Implementation-Title" value="cms-gwt"/>
+                        <attribute name="Implementation-Version" value="${build.counter}"/>
+                        <attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
+                    </manifest>
+                    <webinf dir="${cms-gwt.path}/war/WEB-INF">
+                        <include name="*.xml"/>
+                        <exclude name="web.xml"/>
+                    </webinf>
+                    <lib file="${work.dir}/cms-gwt.jar"/>
+                    <lib file="${thirdparty.home}/gxt.jar"/>
+                    <lib file="${thirdparty.home}/gwt/gwt-servlet.jar"/>
+                    <fileset dir="${work.dir}/cms-gwt.js/com.freshdirect.cms.ui.cmsgwt"/>
+                </war>	
+        </target>
 
 	<target name="cms-tap" description="Build cms-tap">
 		<!-- directory for compiled stuff -->
@@ -2239,6 +2302,7 @@
 				<include name="DataLoaderEJB-WL.jar"/>
 				<include name="FDWebSite.war"/>
 				<include name="cms-tap.war"/>
+				<include name="cms-gwt.war"/>
 				<include name="cms-slide.war"/>
 				<include name="CRM.war"/>
 			</ejbs>

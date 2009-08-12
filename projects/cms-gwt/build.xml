@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="cmsgwt" default="dev-compile" basedir=".">
+  <!-- Configure path to GWT SDK -->
+  <property file="build.properties" />
+
+  <property name="gwt.sdk" location="PATH_TO_GWT_SDK" />
+  <property name="fd.lib.dir" location="../../lib" />
+  <property name="projects.dir" location=".."/>
+  <property name="CMS.classes.dir" location="${projects.dir}/CMS/bin" />
+  <property name="FDStore.classes.dir" location="${projects.dir}/FDStore/bin" />
+  <property name="Framework.classes.dir" location="${projects.dir}/Framework/bin" />
+  <property name="ERPServices.classes.dir" location="${projects.dir}/ERPServices/bin" />
+  <property name="java.exec" value="java" />
+  <property name="war.dir" value="war"/> 
+  <property name="fd.properties" location="${projects.dir}/../properties"/>
+  <property name="weblogic.deploy.dir" value="target/docroot" />
+  <property name="content.dir" value="war" />
+  <property name="gwtc.compile.out.dir" value="target"/>
+  <property name="module.name" value="com.freshdirect.cms.ui.cmsgwt" />
+  	
+  <path id="project.class.path">
+    <pathelement location="war/WEB-INF/classes"/>
+    <pathelement location="${gwt.sdk}/gwt-user.jar"/>
+    <fileset dir="${gwt.sdk}" includes="gwt-dev*.jar"/>
+    <fileset dir="${fd.lib.dir}">
+        <include name="thirdparty/gxt.jar"/>
+        <include name="thirdparty/commons-lang-2.3.jar"/>
+        <include name="thirdparty/hivemind-1.1.1.jar"/>
+        <include name="thirdparty/log4j.jar"/>
+    </fileset>
+    <pathelement location="${CMS.classes.dir}"/>
+    <pathelement location="${FDStore.classes.dir}"/>
+    <pathelement location="${Framework.classes.dir}"/>
+    <pathelement location="${ERPServices.classes.dir}"/>
+
+    <!-- Add any additional non-server libs (such as JUnit) -->
+
+    <fileset dir="${war.dir}/WEB-INF/lib" includes="**/*.jar"/>
+  </path>
+
+  <macrodef name="init-war" description="creates a WAR structure at the given path">
+  	<attribute name="dir"/>
+  	<sequential>
+  	  <mkdir dir="@{dir}"/>
+  	  <mkdir dir="@{dir}/WEB-INF"/>
+  	  <mkdir dir="@{dir}/WEB-INF/lib"/>
+  	  <mkdir dir="@{dir}/WEB-INF/classes"/>
+	</sequential>	
+  </macrodef>
+<!--
+  <macrodef name="setup-war" description="Copy libs and classes">
+  	<attribute name="dir"/>
+  	<sequential>
+  		<init-war dir="@{dir}"/>
+  		<mkdir dir="@{dir}/${module.name}"/>
+  	    <copy todir="@{dir}/WEB-INF/lib" file="${gwt.sdk}/gwt-servlet.jar" />
+  	    <copy todir="@{dir}/WEB-INF/lib" >
+  	        <fileset dir="${fd.lib.dir}/thirdparty">
+  		        <include name="gxt.jar"/>
+  		        <include name="commons-lang-2.3.jar"/>
+  		        <include name="commons-logging-1.0.4.jar"/>
+  	        	<include name="commons-collections-3.1.jar"/>
+  		        <include name="jakarta-oro-*.jar"/>
+  		        <include name="log4j.jar"/>
+
+  		        <include name="hivemind-1.1.1.jar"/>
+  	        	<include name="hivemind-lib-1.1.1.jar"/>
+  	        	<include name="javassist-3.4.jar"/>
+  	        	
+  	        	<include name="lucene-*.jar"/>
+  	        </fileset>
+  	   	</copy>
+  	  	<copy todir="@{dir}/WEB-INF/classes">
+  	  		<fileset dir="${war.dir}/WEB-INF/classes">
+  	  			<include name="**/*.class"/>
+  	  			<include name="**/*.xml"/>
+  	  			
+  	  		</fileset>
+  	  		<fileset dir="${projects.dir}/Framework/bin">
+  	  			<include name="**/*.class"/>
+  	  			<include name="**/*.xml"/>
+  	  		</fileset>
+  	  		<fileset dir="${projects.dir}/CMS/bin">
+  	  			<include name="**/*.class"/>
+  	  			<include name="**/*.xml"/>
+  	  		</fileset>
+  	  		<fileset dir="${projects.dir}/FDStore/bin">
+  	  			<include name="**/*.class"/>
+  	  			<include name="**/*.xml"/>
+  	  		</fileset>
+  	  		<fileset dir="${projects.dir}/ERPServices/bin">
+  	  			<include name="**/*.class"/>
+  	  			<include name="**/*.xml"/>
+  	  		</fileset>
+  	  		<fileset dir="${fd.properties}">
+  				<include name="*.xml"/>
+  				<include name="*.properties"/>
+  				<include name="*.registry"/>
+  	  		</fileset>
+  	  	</copy>
+  		<copy todir="@{dir}/${module.name}">
+  			<fileset dir="${war.dir}/${module.name}"/>
+  		</copy>
+  		<copy todir="@{dir}/WEB-INF">
+  			<fileset dir="${war.dir}/WEB-INF"> 
+  				<include name="*.xml"/>
+  			</fileset>
+  		</copy>
+  	</sequential>
+  </macrodef>	
+-->
+	
+  <target name="javac" description="Compile java source">
+    <init-war dir="${weblogic.deploy.dir}"/>
+    <echo> Compile source to ${weblogic.deploy.dir}/WEB-INF/classes from src</echo>
+    <javac srcdir="src" includes="**" encoding="utf-8"
+        destdir="${weblogic.deploy.dir}/WEB-INF/classes"
+        source="1.5" target="1.5" nowarn="true"
+        debug="true" debuglevel="lines,vars,source">
+      <classpath refid="project.class.path"/>
+    </javac>
+    <copy todir="${weblogic.deploy.dir}/WEB-INF/classes">
+      <fileset dir="src" excludes="**/*.java,**/*.css,**/*.png,**/*.gif,**/*.html"/>
+    </copy>
+  </target>
+
+  <target name="gwtc" depends="javac" description="GWT compile to JavaScript">
+    <java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
+      <classpath>
+        <pathelement location="src"/>
+        <path refid="project.class.path"/>
+      </classpath>
+      <!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
+      <jvmarg value="-Xmx512M"/>
+      <jvmarg value="-Xss64M"/>
+      <jvmarg value="-XX:CompileCommand=exclude,org/eclipse/core/internal/dtree/DataTreeNode,forwardDeltaWith"/>
+      <jvmarg value="-XX:CompileCommand=exclude,org/eclipse/jdt/internal/compiler/lookup/ParameterizedMethodBinding,&lt;init&gt;"/>
+      <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+      <arg value="${module.name}"/>
+      <arg value="-war"/>
+  	  <arg value="${gwtc.compile.out.dir}"/>
+    </java>
+  </target>
+
+  <target name="hosted" depends="javac" description="Run hosted mode">
+    <java failonerror="true" fork="true" classname="com.google.gwt.dev.HostedMode" jvm="${java.exec}">
+      <classpath>
+        <pathelement location="src"/>
+        <path refid="project.class.path"/>
+      </classpath>
+      <jvmarg value="-Xmx512M"/>
+      <arg value="-startupUrl"/>
+      <arg value="${module.name}/cmsgwt.html"/>
+      <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+      <arg value="${module.name}"/>
+    </java>
+  </target>
+
+  <target name="build" depends="gwtc" description="Build this project" />
+
+<!--  <target name="war" depends="build" description="Create a war file">
+  	<setup-war dir="target/war"/>
+    <zip destfile="target/cmsgwt.war" basedir="target/war"/>
+  </target>-->
+
+  <target name="clean" description="Cleans this project">
+    <delete dir="${weblogic.deploy.dir}" failonerror="false" />
+  </target>
+
+  <target name="copy">
+  	<copy todir="${weblogic.deploy.dir}">
+  		<fileset dir="${gwtc.compile.out.dir}/${module.name}" />
+  		<fileset dir="${war.dir}">
+  			<include name="*.html"/>
+  			<include name="*.jsp"/>
+  			<include name="*.css"/>
+  		</fileset>
+  	</copy>
+	<copy todir="${weblogic.deploy.dir}/WEB-INF" overwrite="true">
+		<fileset dir="${war.dir}/WEB-INF">
+			<include name="*.xml"/>
+		</fileset>	
+	</copy>
+
+  	<copy todir="${weblogic.deploy.dir}/WEB-INF/classes">
+  		<fileset dir="${war.dir}/WEB-INF/classes"/>
+  	</copy>
+  </target>
+  	
+  <target name="dev-compile" depends="build,copy" description="Build the project for running in the DevServer"/>
+
+</project>
