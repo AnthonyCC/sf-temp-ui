@@ -239,8 +239,7 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
             //
             // Check that item is within appropriate return window (depends on Method and department)
             //
-            /* NOTE: disabled for test purposes! */
-            if ( false && !isWithinReturnWindow(line.getMethod() ) ) {
+            if ( !isWithinReturnWindow(line.getMethod() ) ) {
                 result.addError(new ActionError("ol_error_"+i,"It is too late to return this item for the designated credit type."));
                 addGeneralError(result);
                 return;
