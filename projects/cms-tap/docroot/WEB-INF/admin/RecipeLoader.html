@@ -28,8 +28,8 @@
 			<input jwcid="@Upload" file="ognl:file" type="file"/>
             <br/>
             <span jwcid="uploadType@RadioGroup" selected="ognl:uploadType" displayName="upload type">
-                <input type="radio" jwcid="@Radio" value="ognl:@com.freshdirect.cms.fdstore.recipes.BulkLoader@RECIPE"/>recipe
-                <input type="radio" jwcid="@Radio" value="ognl:@com.freshdirect.cms.fdstore.recipes.BulkLoader@CONFIGURED_PRODUCT_GROUP"/>configured product group
+                <input type="radio" jwcid="@Radio" value="ognl:@com.freshdirect.cms.fdstore.recipes.RecipeBulkLoader@RECIPE"/>recipe
+                <input type="radio" jwcid="@Radio" value="ognl:@com.freshdirect.cms.fdstore.recipes.RecipeBulkLoader@CONFIGURED_PRODUCT_GROUP"/>configured product group
             </span>
             <br/>
             <input jwcid="@Submit"/>
