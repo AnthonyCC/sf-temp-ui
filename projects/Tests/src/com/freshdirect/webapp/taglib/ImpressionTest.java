@@ -119,7 +119,7 @@ public class ImpressionTest extends RecommendationServiceTestBase {
 
             assertEquals("request 1", 1, this.requestAppender.getEvents().size());
             assertEquals("feature impressions 1", 1, this.featureAppender.getEvents().size());
-            assertEquals("feature event 1", "mock-id-0_f1,mock-id-0,,fi,spe_cooki_cooki,,", getMessage(this.featureAppender, 0));
+            assertEquals("feature event 1", "mock-id-0_f1,mock-id-0,,fi,spe_cooki_cooki,,,", getMessage(this.featureAppender, 0));
             assertEquals("product impressions 3", 3, this.productAppender.getEvents().size());
             assertEquals("product imp 1", "mock-id-0_p1,mock-id-0_f1,spe_madmoose_chc,1,,", getMessage(this.productAppender, 0));
             assertEquals("product imp 2", "mock-id-0_p2,mock-id-0_f1,spe_moore_lemon,2,,", getMessage(this.productAppender, 1));
