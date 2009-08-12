@@ -1,8 +1,20 @@
-<%@ page import="com.freshdirect.webapp.taglib.callcenter.ComplaintUtil" %>
-<%@ page import="com.freshdirect.customer.ErpInvoiceLineI" %>
-<%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@ page import="java.util.List"%>
+<%@ page import="java.util.LinkedList"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.Iterator"%>
 <%@ page import="com.freshdirect.ErpServicesProperties"%>
-
+<%@ page import="com.freshdirect.fdstore.customer.FDOrderI"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCartLineI"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCartonDetail"%>
+<%@ page import="com.freshdirect.customer.ErpComplaintModel"%>
+<%@ page import="com.freshdirect.customer.ErpComplaintLineModel"%>
+<%@ page import="com.freshdirect.customer.ErpInvoiceLineI" %>
+<%@ page import="com.freshdirect.customer.ErpPaymentMethodI"%>
+<%@ page import="com.freshdirect.webapp.util.CartonComplaintsIterator" %>
+<%@ page import="com.freshdirect.webapp.util.OLIterator" %>
+<%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@ page import="com.freshdirect.webapp.taglib.callcenter.ComplaintUtil" %>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.PaymentMethodUtil"%>
 <% 
 String thisPageURI = request.getRequestURI();
 String bgcolor = "#CCFFCC"; 
@@ -12,6 +24,42 @@ String bgcolor = "#CCFFCC";
 String linecolor = "#CCCCCC";
 
 boolean inPopupWindow = "true".equalsIgnoreCase(request.getParameter("inPopup"));
+
+
+
+
+int render_mode = 0;
+
+List __complaints					= (List) complaints;			// complaints
+List __complaintLs					= (List) lineComplaints;		// complaint lines
+List _pendingLs						= (List) pendingLineComplaints; // pending complaint lines
+FDOrderI __order					= (FDOrderI) order;
+List __pending						= (List) pendingComplaints;		// pending complaints
+List __pendingD						= (List) pendingDeptComplaints;	// pending dept complaints
+ErpPaymentMethodI __paymentMethod	= (ErpPaymentMethodI) paymentMethod;
+
+// choose render mode
+{
+	int complaintsHaveCartonNumber = 0;
+	for (Iterator it=__complaintLs.iterator(); it.hasNext(); ) {
+	    ErpComplaintLineModel line = (ErpComplaintLineModel) it.next();
+		if (line.getCartonNumber() != null)
+			complaintsHaveCartonNumber++;
+	}
+	for (Iterator it=_pendingLs.iterator(); it.hasNext(); ) {
+	    ErpComplaintLineModel line = (ErpComplaintLineModel) it.next();
+		if (line.getCartonNumber() != null)
+			complaintsHaveCartonNumber++;
+	}
+	
+	if (complaintsHaveCartonNumber == 0) {
+		render_mode = 0; // classic, departments view
+	} else if (complaintsHaveCartonNumber == __complaintLs.size()+_pendingLs.size()) {
+		render_mode = 1; // new, cartonized
+	} else {
+		render_mode = 2; // mixed view
+	}
+}
 
 %>
 <table width="100%" cellpadding="0" cellspacing="0" border="0" class="order_detail">
@@ -29,7 +77,7 @@ boolean inPopupWindow = "true".equalsIgnoreCase(request.getParameter("inPopup"))
         <td width="5%" align="center" class="list_header_detail"><b>Credit Amt.</b></td>
     </tr>
     <tr valign="bottom">
-        <td width="45%" colspan="5"><span class="space2pix"><br></span><b>PRODUCTS</b><BR></td>
+        <td width="45%" colspan="5" style="padding-top: 2px; font-weight: bold;"><%= render_mode > 0 ? "CARTONS" : "PRODUCTS" %></td>
         <td width="50%" colspan="9"><b>product credits:</b></td>
     </tr>
     <tr>
@@ -37,71 +85,106 @@ boolean inPopupWindow = "true".equalsIgnoreCase(request.getParameter("inPopup"))
     </tr>
 <%      
         int i = 0;
-        String lastDept = null;%>
-<logic:iterate id="orderLine" collection="<%= order.getOrderLines() %>" type="com.freshdirect.fdstore.customer.FDCartLineI">
-<%      
-        ErpInvoiceLineI invoiceLine = null;
-        if(orderLine.hasInvoiceLine()){
-            invoiceLine = orderLine.getInvoiceLine();
-        }
-        boolean displayNewDept = false;        
-        if ( lastDept == null || !lastDept.equalsIgnoreCase( orderLine.getDepartmentDesc() ) ) {
-            lastDept = orderLine.getDepartmentDesc();
-            displayNewDept = true;
-        }
+        String lastDept = null;
+        
+        OLIterator olit = new OLIterator(
+        	render_mode > 0 ? new CartonComplaintsIterator(__order) : __order.getOrderLines().iterator()
+        );
+
+        while ( olit.hasNext() ) {
+        	FDCartLineI orderLine = (FDCartLineI) olit.next();
+
+	        ErpInvoiceLineI invoiceLine = null;
+	        if(orderLine.hasInvoiceLine()){
+	            invoiceLine = orderLine.getInvoiceLine();
+	        }
+
+	        // obsolete
+	        boolean displayNewDept = false;        
+	        if ( lastDept == null || !lastDept.equalsIgnoreCase( orderLine.getDepartmentDesc() ) ) {
+	            lastDept = orderLine.getDepartmentDesc();
+	            displayNewDept = true;
+	        }
+
+			//
+	        // Calculate orderline complaint values
+	        //
+	        double retQty = 0.0;
+	        double retAmount = 0.0;
+	        // APPROVED complaints
+	        for (Iterator it = __complaintLs.iterator(); it.hasNext(); ) {
+	            ErpComplaintLineModel line = (ErpComplaintLineModel) it.next();
+	            if (i == Integer.parseInt( line.getComplaintLineNumber() ) ) {
+	                retQty += line.getQuantity();
+	                retAmount += line.getAmount();
+	            }
+	        }
+	        double pendingQty = 0.0;
+	        double pendingAmount = 0.0;
+	        String pendingReason = "";
+	        String pendingReasonCode = "";
+	        String pendingMethod = "";
+	        // PENDING complaints
+	        for (Iterator it = _pendingLs.iterator(); it.hasNext(); ) {
+	        	try {
+		            Object anObj = it.next();
+		            if (anObj instanceof ErpComplaintLineModel) {
+			            // ErpComplaintLineModel pendingLine = (ErpComplaintLineModel) it.next();
+			            ErpComplaintLineModel pendingLine = (ErpComplaintLineModel) anObj;
+			            if (i == Integer.parseInt( pendingLine.getComplaintLineNumber() ) ) {
+			                pendingQty += pendingLine.getQuantity();
+			                pendingAmount += pendingLine.getAmount();
+			                pendingReason = pendingLine.getReason().getReason();
+			                pendingMethod = pendingLine.getMethod().getName();
+			            }
+		            } else {
+		            	System.err.println("Unknown class: " + anObj.getClass());
+		            }
+	        	} catch(ClassCastException exc) {
+	        		System.err.println(exc);
+	        		exc.printStackTrace();
+	        	}
+	        }
+	
+		    i++;
+		    // don't display item if popup and has no pending amount in department 
+		    if (inPopupWindow && (pendingReason == null || "".equals(pendingReason) || pendingMethod == null || "".equals(pendingMethod))) { 
+		    	continue;
+		    }
+
+		    if ( olit.isCartonized() && olit.isCartonNumberChanged()) {
+		    	FDCartonDetail cd = olit.getLastCartonDetail();
 %>
-<%      //
-        // Calculate orderline complaint values
-        //
-        double retQty = 0.0;
-        double retAmount = 0.0;
-        // APPROVED complaints
-        for (Iterator it = lineComplaints.iterator(); it.hasNext(); ) {
-            ErpComplaintLineModel line = (ErpComplaintLineModel) it.next();
-            if (i == Integer.parseInt( line.getComplaintLineNumber() ) ) {
-                retQty += line.getQuantity();
-                retAmount += line.getAmount();
-            }
-        }
-        double pendingQty = 0.0;
-        double pendingAmount = 0.0;
-        String pendingReason = "";
-        String pendingReasonCode = "";
-        String pendingMethod = "";
-        // PENDING complaints
-        for (Iterator it = pendingLineComplaints.iterator(); it.hasNext(); ) {
-            ErpComplaintLineModel pendingLine = (ErpComplaintLineModel) it.next();
-            if (i == Integer.parseInt( pendingLine.getComplaintLineNumber() ) ) {
-                pendingQty += pendingLine.getQuantity();
-                pendingAmount += pendingLine.getAmount();
-                pendingReason = pendingLine.getReason().getReason();
-                pendingMethod = pendingLine.getMethod().getName();
-            }
-        }
-
-	    i++;
-	    // don't display item if popup and has no pending amount in department 
-	    if (inPopupWindow && (pendingReason == null || "".equals(pendingReason) || pendingMethod == null || "".equals(pendingMethod))) { 
-	    	continue;
-	    }
-
-		if (displayNewDept) {	 
+    <%-- ~~~~~~~~~  Carton Header row  ~~~~~~~~~ --%>
+	<tr>
+		<td colspan="5" style="padding-top: 0.5em; font-weight: bold; background-color: #eee;"><%= cd.getCartonInfo().getCartonInfo().getCartonNumber() %> / <%= cd.getCartonInfo().getCartonInfo().getCartonType() %></td>
+		<td colspan="9" style="background-color: <%= bgcolor %>;">&nbsp;</td>
+	</tr>
+<%
+		    }
+		    
+			if ( (olit.isCartonized() && olit.isCartonNumberChanged()) || olit.isDepartmentNameChanged() ) {	 
 %>
     <%-- ~~~~~~~~~  Department Header row  ~~~~~~~~~ --%>
     <tr valign="bottom">
         <td width="7%" colspan="2"><BR></td>
-        <td width="32%" colspan="3"><span class="space2pix"><br></span><b><%= lastDept %></b><BR></td>
+        <td width="32%" colspan="3"><span class="space2pix"><br></span><b><%= olit.getLastDepartmentName()  /*lastDept*/ %></b><BR></td>
         <td width="55%" colspan="9" bgcolor="<%= bgcolor %>"><BR></td>
     </tr>
-	<% } %>
+<%			}
+%>
     <%-- ~~~~~~~~~  Order Line row  ~~~~~~~~~ --%>
     <tr valign="TOP">
+<% if (olit.isCartonized()) { %>
+        <td width="2%" align="center"><%= olit.getLastCartonDetail().getCartonDetail().getPackedQuantity() %></td>
+<% } else { %>
         <td width="2%" align="center"><%= invoiceLine != null ? invoiceLine.getQuantity() : orderLine.getQuantity() %></td>
+<% } %>
         <td width="2%" align="center"><%= orderLine.getSalesUnitDescription() %></td>
         <td width="25%"><%= orderLine.getDescription() %> (<%=orderLine.getConfigurationDesc()%>)</td>
         <td width="9%" align="right"><%= orderLine.getUnitPrice() %></td>
         <td width="7%" align="right"><%= invoiceLine != null ? invoiceLine.getPrice() : orderLine.getPrice() %></td>
-        <td width="3%" bgcolor="<%= bgcolor %>" align="center"><%= CCFormatter.formatQuantity( retQty ) %></td>
+        <td width="3%" bgcolor="<%= bgcolor %>" align="center" style="<%= retQty == 0 ? "color: grey" : "" %>"><%= CCFormatter.formatQuantity( retQty ) %></td>
         <td width="4%" bgcolor="<%= bgcolor %>" align="center"><%= orderLine.getSalesUnitDescription() %></td>
         <td width="7%" bgcolor="<%= bgcolor %>" align="center"><%= CCFormatter.formatCurrency( retAmount ) %></td>
         <td width="5%" bgcolor="<%= bgcolor %>" align="right"><%= CCFormatter.formatCurrency( (invoiceLine != null ? invoiceLine.getPrice() : orderLine.getPrice()) - retAmount ) %></td>
@@ -111,7 +194,10 @@ boolean inPopupWindow = "true".equalsIgnoreCase(request.getParameter("inPopup"))
         <td width="8%" bgcolor="<%= bgcolor %>"><%= pendingMethod %></td>
         <td width="5%" bgcolor="<%= bgcolor %>" align="center"><%= CCFormatter.formatCurrency( pendingAmount ) %></td>
     </tr>
-    </logic:iterate>
+
+<%
+} // orderlines
+%>
     <tr>
         <td width="100%" colspan="14"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td width="100%" bgcolor="<%=linecolor%>"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td></tr></table></td>
     </tr>
@@ -123,19 +209,16 @@ boolean inPopupWindow = "true".equalsIgnoreCase(request.getParameter("inPopup"))
     <tr>
         <td width="100%" colspan="14"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td width="100%" bgcolor="<%=linecolor%>"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td></tr></table></td>
     </tr>
-<%!
-    static List fakeDepts = new ArrayList();
-    static {
-        fakeDepts.add("Goodwill");
-        fakeDepts.add("Transportation");
-        fakeDepts.add("Extra Item");
-    }
-%>
-    <logic:iterate id="deptLabel" collection="<%= fakeDepts %>" type="java.lang.String" indexId="index">
-<%      //
+<%    
+    String[] FAKE_DEPT_LABELS = {"Goodwill", "Transportation", "Extra Item"};
+
+
+    for (int n=0;n<FAKE_DEPT_LABELS.length; n++) {
+		String deptLabel = FAKE_DEPT_LABELS[n];
+
         // Calculate department complaint values
         //
-                String fakeDeptName = null;
+		String fakeDeptName = null;
         double deptRetQty = 0.0;
         double deptRetAmount = 0.0;
         for (Iterator it = deptComplaints.iterator(); it.hasNext(); ) {
@@ -151,7 +234,7 @@ boolean inPopupWindow = "true".equalsIgnoreCase(request.getParameter("inPopup"))
         String pendingDeptMethod = "";
         // PENDING complaints
                 
-        for (Iterator it = pendingDeptComplaints.iterator(); it.hasNext(); ) {
+        for (Iterator it = __pendingD.iterator(); it.hasNext(); ) {
             ErpComplaintLineModel pendingLine = (ErpComplaintLineModel) it.next();
             if ( deptLabel.equalsIgnoreCase( pendingLine.getDepartmentName() ) ) {
                 pendingDeptAmount += pendingLine.getAmount();
@@ -164,13 +247,10 @@ boolean inPopupWindow = "true".equalsIgnoreCase(request.getParameter("inPopup"))
 	    if (inPopupWindow && (pendingDeptReason == null || "".equals(pendingDeptReason) || pendingDeptMethod == null || "".equals(pendingDeptMethod))) { 
 	    	continue;
 	    }
-                 
-        fakeDeptName = fakeDepts.get(index.intValue()).toString();
-                
 %>
     <tr valign="bottom">
         <td width="4%" colspan="2"><BR></td>
-        <td width="34%" colspan="2"><span class="space2pix"><br></span><b><%= fakeDeptName %></b><BR></td>
+        <td width="34%" colspan="2"><span class="space2pix"><br></span><b><%= FAKE_DEPT_LABELS[n] %></b><BR></td>
         <td width="7%" align="right">&nbsp;</td>
         <td width="3%" bgcolor="<%= bgcolor %>" align="center"><BR></td>
         <td width="4%" bgcolor="<%= bgcolor %>" align="center"><BR></td>
@@ -182,7 +262,9 @@ boolean inPopupWindow = "true".equalsIgnoreCase(request.getParameter("inPopup"))
         <td width="8%" bgcolor="<%= bgcolor %>"><%= pendingDeptMethod %></td>
         <td width="5%" bgcolor="<%= bgcolor %>" align="right"><%= CCFormatter.formatCurrency(pendingDeptAmount) %></td>
     </tr>
-    </logic:iterate>
+<%
+	}
+%>
 
     <%-- END DEPT TOTALS/CREDITS LINES --%>
 
@@ -193,39 +275,41 @@ boolean inPopupWindow = "true".equalsIgnoreCase(request.getParameter("inPopup"))
         <td width="100%" colspan="14"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td width="100%" bgcolor="<%=linecolor%>"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td></tr></table><BR></td>
     </tr>
 <%      double allCreditsTotal = 0.0;
-        double allPendingCreditsTotal = 0.0; %>
-    <logic:iterate id="complaint" collection="<%= complaints %>" type="com.freshdirect.customer.ErpComplaintModel">
-<%      allCreditsTotal += complaint.getAmount(); %>    
-    </logic:iterate>
-    <logic:iterate id="complaint" collection="<%= pendingComplaints %>" type="com.freshdirect.customer.ErpComplaintModel">
-<%      allPendingCreditsTotal += complaint.getAmount(); %> 
-    </logic:iterate>
+        double allPendingCreditsTotal = 0.0;
+
+        for (Iterator pit=__complaints.iterator(); pit.hasNext();) {
+        	allCreditsTotal += ((ErpComplaintModel) pit.next()).getAmount();
+        }
+        for (Iterator pit=__pending.iterator(); pit.hasNext();) {
+        	allPendingCreditsTotal += ((ErpComplaintModel) pit.next()).getAmount();
+        }
+%>
     <tr valign="bottom">
         <td width="4%" colspan="2"><BR></td>
         <td width="23%" align="right"><b>orig. totals:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
         <td width="9%">Subtotal&nbsp;</td>
-        <td width="7%" align="center"><%= CCFormatter.formatCurrency( order.hasInvoice() ? order.getInvoicedSubTotal() : order.getSubTotal() ) %></td>
+        <td width="7%" align="center"><%= CCFormatter.formatCurrency( __order.hasInvoice() ? __order.getInvoicedSubTotal() : __order.getSubTotal() ) %></td>
         <td width="7%" colspan="2" align="RIGHT"><b>current</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
         <td width="7%">Subtotal&nbsp;</td>
-        <td width="5%" align="center"><%= CCFormatter.formatCurrency( (order.hasInvoice() ? order.getInvoicedSubTotal() : order.getSubTotal()) - allCreditsTotal ) %></td>
+        <td width="5%" align="center"><%= CCFormatter.formatCurrency( (__order.hasInvoice() ? __order.getInvoicedSubTotal() : __order.getSubTotal()) - allCreditsTotal ) %></td>
         <td width="5%" colspan="2" align="center"><BR></td>
         <td width="17%" align="RIGHT"><b>new totals:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
         <td width="8%">Subtotal</td>
-        <td width="5%" align="center"><%= CCFormatter.formatCurrency( (order.hasInvoice() ? order.getInvoicedSubTotal() : order.getSubTotal()) - (allCreditsTotal +  + allPendingCreditsTotal) ) %></td>
+        <td width="5%" align="center"><%= CCFormatter.formatCurrency( (__order.hasInvoice() ? __order.getInvoicedSubTotal() : __order.getSubTotal()) - (allCreditsTotal +  + allPendingCreditsTotal) ) %></td>
         <td width="1%">&nbsp;</td>
     </tr>
     <tr valign="bottom">
         <td width="4%" colspan="2"><BR></td>
         <td width="23%" align="right">&nbsp;</td>
         <td width="9%">Tax&nbsp;</td>
-        <td width="7%" align="center"><%= CCFormatter.formatCurrency( order.hasInvoice() ? order.getInvoicedTaxValue() : order.getTaxValue() ) %></td>
+        <td width="7%" align="center"><%= CCFormatter.formatCurrency( __order.hasInvoice() ? __order.getInvoicedTaxValue() : __order.getTaxValue() ) %></td>
         <td width="7%" colspan="2" align="RIGHT"><b>totals:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
         <td width="7%">Tax&nbsp;</td>
-        <td width="5%" align="center"><%= CCFormatter.formatCurrency( order.hasInvoice() ? order.getInvoicedTaxValue() : order.getTaxValue() ) %></td>
+        <td width="5%" align="center"><%= CCFormatter.formatCurrency( __order.hasInvoice() ? __order.getInvoicedTaxValue() : __order.getTaxValue() ) %></td>
         <td width="5%" colspan="2" align="center"><BR></td>
         <td width="17%" align="RIGHT">&nbsp;</td>
         <td width="8%">Tax</td>
-        <td width="5%" align="center"><%= CCFormatter.formatCurrency( order.hasInvoice() ? order.getInvoicedTaxValue() : order.getTaxValue()) %></td>
+        <td width="5%" align="center"><%= CCFormatter.formatCurrency( __order.hasInvoice() ? __order.getInvoicedTaxValue() : __order.getTaxValue()) %></td>
         <td width="1%">&nbsp;</td>
     </tr>
     
@@ -233,14 +317,14 @@ boolean inPopupWindow = "true".equalsIgnoreCase(request.getParameter("inPopup"))
         <td width="4%" colspan="2"><BR></td>
         <td width="23%" align="right">&nbsp;</td>
         <td width="9%">Bottle Deposit&nbsp;</td>
-        <td width="7%" align="center"><%= CCFormatter.formatCurrency(order.hasInvoice() ? order.getInvoicedDepositValue() : order.getDepositValue()) %></td>
+        <td width="7%" align="center"><%= CCFormatter.formatCurrency(__order.hasInvoice() ? __order.getInvoicedDepositValue() : __order.getDepositValue()) %></td>
         <td width="7%" colspan="2" align="RIGHT">&nbsp;</td>
         <td width="14%">Bottle Deposit&nbsp;</td>
-        <td width="5%" align="center"><%= CCFormatter.formatCurrency(order.hasInvoice() ? order.getInvoicedDepositValue() : order.getDepositValue()) %></td>
+        <td width="5%" align="center"><%= CCFormatter.formatCurrency(__order.hasInvoice() ? __order.getInvoicedDepositValue() : __order.getDepositValue()) %></td>
         <td width="2%" colspan="2" align="center"><BR></td>
         <td width="3%" align="RIGHT">&nbsp;</td>
         <td width="18%">Bottle Deposit</td>
-        <td width="5%" align="center"><%= CCFormatter.formatCurrency(order.hasInvoice() ? order.getInvoicedDepositValue() : order.getDepositValue()) %></td>
+        <td width="5%" align="center"><%= CCFormatter.formatCurrency(__order.hasInvoice() ? __order.getInvoicedDepositValue() : __order.getDepositValue()) %></td>
         <td width="1%">&nbsp;</td>
     </tr>
     
@@ -248,28 +332,28 @@ boolean inPopupWindow = "true".equalsIgnoreCase(request.getParameter("inPopup"))
         <td width="4%" colspan="2"><BR></td>
         <td width="23%" align="right">&nbsp;</td>
         <td width="9%">Shipping&nbsp;</td>
-        <td width="7%" align="center"><%= (order.isDeliveryChargeWaived()) ? "WAIVED" : CCFormatter.formatCurrency(order.getDeliverySurcharge()) %></td>
+        <td width="7%" align="center"><%= (__order.isDeliveryChargeWaived()) ? "WAIVED" : CCFormatter.formatCurrency(__order.getDeliverySurcharge()) %></td>
         <td width="7%" colspan="2">&nbsp;</td>
         <td width="7%">Shipping&nbsp;</td>
-        <td width="5%" align="center"><%= (order.isDeliveryChargeWaived()) ? "WAIVED" : CCFormatter.formatCurrency(order.getDeliverySurcharge()) %></td>
+        <td width="5%" align="center"><%= (__order.isDeliveryChargeWaived()) ? "WAIVED" : CCFormatter.formatCurrency(__order.getDeliverySurcharge()) %></td>
         <td width="5%" colspan="2" align="center"><BR></td>
         <td width="17%" align="RIGHT">&nbsp;</td>
         <td width="8%">Shipping</td>
-        <td width="5%" align="center"><%= (order.isDeliveryChargeWaived()) ? "WAIVED" : CCFormatter.formatCurrency(order.getDeliverySurcharge()) %></td>
+        <td width="5%" align="center"><%= (__order.isDeliveryChargeWaived()) ? "WAIVED" : CCFormatter.formatCurrency(__order.getDeliverySurcharge()) %></td>
         <td width="1%">&nbsp;</td>
     </tr>
     <tr valign="bottom">
         <td width="4%" colspan="2"><BR></td>
         <td width="23%" align="right">&nbsp;</td>
         <td width="9%">Order Total&nbsp;</td>
-        <td width="7%" align="center"><%= CCFormatter.formatCurrency( order.hasInvoice() ? order.getInvoicedTotal() : order.getTotal()) %></td>
+        <td width="7%" align="center"><%= CCFormatter.formatCurrency( __order.hasInvoice() ? __order.getInvoicedTotal() : __order.getTotal()) %></td>
         <td width="7%" colspan="2">&nbsp;</td>
         <td width="7%">Order&nbsp;Total&nbsp;</td>
-        <td width="5%" align="center"><%= CCFormatter.formatCurrency( (order.hasInvoice() ? order.getInvoicedTotal() : order.getTotal()) - allCreditsTotal ) %></td>
+        <td width="5%" align="center"><%= CCFormatter.formatCurrency( (__order.hasInvoice() ? __order.getInvoicedTotal() : __order.getTotal()) - allCreditsTotal ) %></td>
         <td width="5%" colspan="2" align="center"><BR></td>
         <td width="17%" align="RIGHT">&nbsp;</td>
         <td width="8%">Order&nbsp;Total</td>
-        <td width="5%" align="center"><%= CCFormatter.formatCurrency( (order.hasInvoice() ? order.getInvoicedTotal() : order.getTotal()) - (allCreditsTotal + allPendingCreditsTotal) ) %></td>
+        <td width="5%" align="center"><%= CCFormatter.formatCurrency( (__order.hasInvoice() ? __order.getInvoicedTotal() : __order.getTotal()) - (allCreditsTotal + allPendingCreditsTotal) ) %></td>
         <td width="1%">&nbsp;</td>
     </tr>
     <tr valign="bottom">
@@ -289,10 +373,20 @@ boolean inPopupWindow = "true".equalsIgnoreCase(request.getParameter("inPopup"))
     // get pending credit or last approved credit
     //
     ErpComplaintModel thisComplaint = null;
-    if (pendingComplaints.size() != 0) {
-        thisComplaint = (ErpComplaintModel) new LinkedList(pendingComplaints).get(0);
+	if (request.getParameter("complaintId") != null) {
+		String inf_complId = request.getParameter("complaintId");
+
+		for (Iterator it=((FDOrderI) __order).getComplaints().iterator(); it.hasNext();) {
+			ErpComplaintModel compo = (ErpComplaintModel) it.next();
+			if (inf_complId.equalsIgnoreCase(compo.getId())) {
+				thisComplaint = compo;
+				break;
+			}
+		}
+	} else if (__pending.size() != 0) {
+        thisComplaint = (ErpComplaintModel) new LinkedList(__pending).get(0);
     } else {
-        thisComplaint = (ErpComplaintModel) new LinkedList(complaints).get(complaints.size()-1);
+        thisComplaint = (ErpComplaintModel) new LinkedList(__complaints).get(__complaints.size()-1);
     }
 %>
     <tr>
@@ -301,27 +395,30 @@ boolean inPopupWindow = "true".equalsIgnoreCase(request.getParameter("inPopup"))
         <td bgcolor="<%= bgcolor %>" width="4%"><BR></td>
         <td bgcolor="<%= bgcolor %>" width="50%" colspan="9"><%= thisComplaint.getDescription() %><BR><span class="space4pix"><br></span></td>
     </tr>
-<%if (!inPopupWindow) { %>
+<% if (!inPopupWindow) { %>
     <tr valign="bottom">
-        <td width="45%" colspan="5"><BR></td>
-        <td width="55%" colspan="10"><span class="space2pix"><br></span><b>cc for cashback OR mailing address for check:</b></td>
+        <td width="45%" colspan="5">&nbsp;</td>
+        <td width="55%" colspan="10" style="padding-top: 2px; font-weight: bold;">cc for cashback OR mailing address for check:</td>
     </tr>
 <tr>
-<td colspan="5">&nbsp;</td><td colspan="10"><span class="space2pix"><br></span>&nbsp;&nbsp;&nbsp;&nbsp;<b>Payment Method</b><BR></td>
+	<td colspan="5">&nbsp;</td>
+	<td colspan="10" style="padding-top: 2px; font-weight: bold;">
+		&nbsp;&nbsp;&nbsp;&nbsp;Payment Method
+	</td>
 </tr>
 <tr valign="TOP">
     <td colspan="5">&nbsp;</td>
     <td colspan="10">
         <table width="100%" cellpadding="2" cellspacing="0" border="0" bgcolor="<%= bgcolor %>" align="center" class="order_detail">
-            <tr valign="TOP"><td>Payment Method:</td><td><%= paymentMethod.getPaymentMethodType() %></td></tr>
-            <tr valign="TOP"><td width="15%">Name:</td><td><%= paymentMethod.getName() %></td></tr>
-            <% if (paymentMethod.getCardType() != null) { %><tr valign="TOP"><td >Cc Type:</td><td><%= paymentMethod.getCardType() %></td></tr><% } %>
-            <tr valign="TOP"><td >Cc #:</td><td><%= PaymentMethodUtil.getDisplayableAccountNumber(paymentMethod) %></td></tr>
-            <% if (paymentMethod.getExpirationDate() != null) { %><tr valign="TOP"><td >Exp. Date:</td><td><%= CCFormatter.formatCreditCardExpDate( paymentMethod.getExpirationDate() ) %></td></tr><% } %>
-            <% if (paymentMethod.getAbaRouteNumber() != null) { %><tr valign="TOP"><td >Route #:</td><td><%= paymentMethod.getAbaRouteNumber() %></td></tr><% } %>
-            <% if (paymentMethod.getBankAccountType() != null) { %><tr valign="TOP"><td >Account Type:</td><td><%= paymentMethod.getBankAccountType() %></td></tr><% } %>
-            <tr valign="TOP"><td >Address:</td><td><%= paymentMethod.getAddress1() %><BR>
-        <%= paymentMethod.getCity() %>, <%= paymentMethod.getState() %> <%= paymentMethod.getZipCode() %></td></tr>
+            <tr valign="TOP"><td>Payment Method:</td><td><%= __paymentMethod.getPaymentMethodType() %></td></tr>
+            <tr valign="TOP"><td width="15%">Name:</td><td><%= __paymentMethod.getName() %></td></tr>
+            <% if (__paymentMethod.getCardType() != null) { %><tr valign="TOP"><td >Cc Type:</td><td><%= __paymentMethod.getCardType() %></td></tr><% } %>
+            <tr valign="TOP"><td >Cc #:</td><td><%= PaymentMethodUtil.getDisplayableAccountNumber(__paymentMethod) %></td></tr>
+            <% if (__paymentMethod.getExpirationDate() != null) { %><tr valign="TOP"><td >Exp. Date:</td><td><%= CCFormatter.formatCreditCardExpDate( __paymentMethod.getExpirationDate() ) %></td></tr><% } %>
+            <% if (__paymentMethod.getAbaRouteNumber() != null) { %><tr valign="TOP"><td >Route #:</td><td><%= __paymentMethod.getAbaRouteNumber() %></td></tr><% } %>
+            <% if (__paymentMethod.getBankAccountType() != null) { %><tr valign="TOP"><td >Account Type:</td><td><%= __paymentMethod.getBankAccountType() %></td></tr><% } %>
+            <tr valign="TOP"><td >Address:</td><td><%= __paymentMethod.getAddress1() %><BR>
+        <%= __paymentMethod.getCity() %>, <%= __paymentMethod.getState() %> <%= __paymentMethod.getZipCode() %></td></tr>
         </table>
     </td>
 </tr>

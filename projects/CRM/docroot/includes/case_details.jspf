@@ -1,3 +1,4 @@
+<%@ page import="java.util.*" %>
 <%@ page import='com.freshdirect.framework.webapp.ActionError' %>
 <%@ page import='com.freshdirect.enums.EnumModel' %>
 <%@ page import='com.freshdirect.crm.CrmCaseModel' %>
@@ -13,7 +14,8 @@
 <%@ page import="com.freshdirect.fdstore.customer.FDCartonInfo"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDCartonDetail"%>
 <%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession"%>
-<%@ page import="java.util.*" %>
+<%@ page import="com.freshdirect.customer.ErpComplaintModel"%>
+<%@ page import="com.freshdirect.customer.EnumComplaintStatus"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -47,6 +49,8 @@ final static CrmAgentRole[] DISPLAY_ROLES = {
 
 
 %>
+
+
 <crm:CrmStoreCaseController actionName='storeCase' successPage='/case/case.jsp' result='result' case='<%= cm %>'>
 <crm:GetAllowedActions id="allowedActions" case="<%= cm %>">
 <%
@@ -54,13 +58,13 @@ final static CrmAgentRole[] DISPLAY_ROLES = {
 
 CrmCaseModel thisCase = (CrmCaseModel) cm;
 
-boolean isEditAllowed = (thisCase.isAnonymous() || allowedActions.contains( CrmCaseActionType.getEnum(CrmCaseActionType.CODE_EDIT))) &&
-		(thisCase.getPK() == null || (!thisCase.getSubject().isObsolete() && !thisCase.getSubject().getQueue().isObsolete()));
 
 boolean isAssignmentPriorityAllowed = false;
 
 FDOrderI order = null;
 boolean isNewCase = false;
+String autoCaseComplaintId = null; // [auto case]
+ErpComplaintModel autoCaseComplaint = null;
 if (request.getParameter("orderId") != null) {
 	// new case
 	order = CrmSession.getOrder(session, request.getParameter("orderId"));
@@ -68,8 +72,23 @@ if (request.getParameter("orderId") != null) {
 } else if (thisCase.getSalePK() != null) {
 	// existing case having order
 	order = CrmSession.getOrder(session, thisCase.getSalePK().getId());
+
+	// [auto case] if case is automatically created there must be a linked complaint - find it
+	for (Iterator it=order.getComplaints().iterator(); it.hasNext();) {
+		ErpComplaintModel complaint = (ErpComplaintModel) it.next();
+		if (thisCase.getPK().getId().equalsIgnoreCase(complaint.getAutoCaseId())) {
+			autoCaseComplaintId = complaint.getPK().getId();
+			autoCaseComplaint = complaint;
+			break;
+		}
+	}
 }
 
+boolean isEditAllowed = (autoCaseComplaintId != null) || (
+		(thisCase.isAnonymous() || allowedActions.contains( CrmCaseActionType.getEnum(CrmCaseActionType.CODE_EDIT)))
+		&&
+		(thisCase.getPK() == null || (!thisCase.getSubject().isObsolete() && !thisCase.getSubject().getQueue().isObsolete()))
+);
 
 
 %><crm:GetCurrentAgent id="currentAgent"><%
@@ -653,7 +672,7 @@ if (order != null) {
 			FDCartonInfo ci = (FDCartonInfo) it.next();
 %>
 							<tr>
-								<td><input type="checkbox" id="cb<%= ci.getCartonInfo().getCartonNumber() %>" name="cid_<%= ci.getCartonInfo().getCartonNumber() %>" <%= cartonIDs.contains(ci.getCartonInfo().getCartonNumber()) ? "checked=\"checked\"" : "" %>></td>
+								<td><input type="checkbox" id="cb<%= ci.getCartonInfo().getCartonNumber() %>" name="cid_<%= ci.getCartonInfo().getCartonNumber() %>" <%= cartonIDs.contains(ci.getCartonInfo().getCartonNumber()) ? "checked=\"checked\"" : "" %> <%= autoCaseComplaintId != null ? "disabled=\"1\"" : "" %>></td>
 								<td style="font-weight: bold;"><a style="text-decoration: none;" href="#" onclick="showCartonInfo('<%= ci.getCartonInfo().getCartonNumber() %>');return false;"><%= ci.getCartonInfo().getCartonNumber() %></a></td>
 								<td style="font-weight: bold;"><%= ci.getCartonInfo().getCartonType() %></td>
 							</tr>
@@ -729,6 +748,15 @@ document.body.setAttribute("className", "yui-skin-sam"); // IE
 <%
 } // order != null
 %><%-- END OF CARTONS --%>
+			<%-- AUTO CASE SECTION --%>
+<%
+	if (!isNewCase && (autoCaseComplaintId != null) && EnumComplaintStatus.PENDING.equals(autoCaseComplaint.getStatus()) ) {
+%>				<div style="padding: 5px 5px; text-align: center;">
+					<a class="case_action" href="/returns/issue_credit_confirm.jsp?orderId=<%= order.getErpSalesId() %>&autoCaseComplaintId=<%= autoCaseComplaintId %>">Show Related Credit Summary Page</a>
+				</div>
+<%
+	}
+%>
 			</div>
 		</td>
 	</tr>

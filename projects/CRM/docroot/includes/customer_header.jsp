@@ -88,6 +88,8 @@
     </div>
 	</td></tr>
 	<tr><td class="cust_nav">
+        <a href="/main/summary.jsp" class="<%= pageURI.indexOf("summary.jsp") > -1  ? "cust_nav_tab_on" : "cust_nav_tab" %>">Summary</a>
+
         <a href="<%= response.encodeURL("/main/account_details.jsp") %>" class="<%= pageURI.indexOf("account_details.jsp") > -1 || pageURI.indexOf("/customer_account") > -1 ? "cust_nav_tab_on" : "cust_nav_tab" %>">Account Details</a>
     
         <a href="<%= response.encodeURL("/main/case_history.jsp?action=searchCase") %>" class="<%= pageURI.indexOf("case_history.jsp") > -1 ? "cust_nav_tab_on" : "cust_nav_tab" %>">Case History</a>

@@ -86,15 +86,19 @@
 		List recipes = searchResults.getRecipes();
 		List products = new ArrayList();
 		for (Iterator it = relatedItems.iterator(); it.hasNext(); ) {
-                        ContentRef cf = (ContentRef)it.next();
-                        if (cf instanceof ProductRef) {
-                            ProductModel product = contentFactory.getProduct( (ProductRef)cf );
-                            if ( product != null && !product.isDiscontinued() ) {
-                                    products.add(product);
-                            }
-                        } else if (cf instanceof CategoryRef) {
-                           // products.add( ((CategoryRef)cf).getCategory());
-                        }
+			Object obj = it.next();
+			
+			if (obj instanceof ContentRef) {
+				ContentRef cf = (ContentRef) obj;
+				if (cf instanceof ProductRef) {
+				    ProductModel product = contentFactory.getProduct( (ProductRef)cf );
+				    if ( product != null && !product.isDiscontinued() ) {
+				    	products.add(product);
+				    }
+				} else if (cf instanceof CategoryRef) {
+				   // products.add( ((CategoryRef)cf).getCategory());
+				}
+			}
 		}
 		String offSet = "0";
  %>

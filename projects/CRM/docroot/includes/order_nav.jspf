@@ -57,6 +57,7 @@ if ( "resubmit".equalsIgnoreCase(request.getParameter("action")) ) {
 }
 
 String nav_complaintId = "";
+String nav_autoCaseId = null;
 boolean isReversible = false;
 
 FDCustomerCreditHistoryModel _creditHistory = FDCustomerManager.getCreditHistory(new FDIdentity(nav_order.getCustomerId()));
@@ -68,6 +69,7 @@ for (Iterator it = nav_complaints.iterator(); it.hasNext(); ) {
 		isReversible = true;
 	if ( EnumComplaintStatus.PENDING.equals(complaint.getStatus()) ) {
 		nav_complaintId = complaint.getPK().getId();
+		nav_autoCaseId = complaint.getAutoCaseId();
 		break;
 	}
 }
@@ -154,8 +156,9 @@ boolean hasCase = false;
 				<% if (!o_cancel && orderPermissions.allowCancelOrder()) { %>
 					<div class="cust_sub_nav" style="width: 120px;"><%if(hasCustomerCase){%><a href="/order/cancel_order.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text"><%}%>Cancel Order<%if(hasCustomerCase ){%></a><%}%></div>
 				<% } %>
+				<!-- issue credit button -->
 				<% if (!o_issue_credit && orderPermissions.allowComplaint()) { %>
-					<div class="cust_sub_nav" style="width: 120px;"><%if(hasCustomerCase){%><a href="/returns/issue_credit.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text"><%}%>Issue Credit<%if(hasCustomerCase){%></a><%}%></div>
+					<div class="cust_sub_nav" style="width: 120px;"><a href="/returns/issue_credit.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text">Issue Credit</a></div>
 				<% } else if ( !o_approve_credit && nav_order.hasCreditIssued() == 2 ) { %>
 					<div class="cust_sub_nav" style="width: 120px;"><a href="/returns/approve_credit.jsp?orderId=<%= nav_orderId %>&complaintId=<%= nav_complaintId %>" class="cust_sub_nav_text"><%=(currentAgent.isSupervisor() || currentAgent.isMonitor()) ? "Approve Credit" : currentAgent.isCSR() ? "Deny Credit" : ""%></a></div>
 				<% } %>
@@ -170,8 +173,21 @@ boolean hasCase = false;
                 <% } %>
 
 			</td>
+			<%-- PLACE OF CASE BUTTOn --%>
 			<td width="10%" align="center">
-				<a id="newcase_trigger" href="/case/<%= hasCase ? "unlock" : "new_case"%>.jsp?<%= hasCase ? "redirect=new_case&" : ""%>erpCustId=<%= nav_custId %>&orderId=<%= nav_orderId %>" class="new">NEW CASE</a>
+<%
+	if (request.getRequestURI().endsWith("issue_credit_confirm.jsp") ||
+			request.getRequestURI().endsWith("issue_credit.jsp") ||
+			request.getRequestURI().endsWith("approve_credit.jsp")) {
+		if (nav_autoCaseId != null) {
+%>				<a href="/case/case.jsp?case=<%= nav_autoCaseId %>" class="new">Show Related Case</a>
+<%
+		}
+	} else {
+%>				<a id="newcase_trigger" href="/case/<%= hasCase ? "unlock" : "new_case"%>.jsp?<%= hasCase ? "redirect=new_case&" : ""%>erpCustId=<%= nav_custId %>&orderId=<%= nav_orderId %>" class="new">NEW CASE</a>
+<%		
+	}
+%>
 			</td>
 		</tr>
 	</table>

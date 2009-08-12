@@ -1,7 +1,5 @@
 <% // displays a preview of the email:  Used in issue_credit.jsp  %>            
                 <input type="hidden" value="<%=send_email%>" name="send_email">
-                <input type="hidden" value="<%=email_type%>" name="email_type">
-                <input type="hidden" value="<%=email_template_code%>" name="email_template_code">
                 <input type="hidden" value="<%= custom_message%>" name="custom_message">
                 <%
                     String ep;

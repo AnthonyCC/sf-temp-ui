@@ -1,0 +1,267 @@
+<%@ page import="java.util.Iterator" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Set" %>
+<%@ page import="com.freshdirect.customer.ErpInvoiceLineI"%>
+<%@ page import="com.freshdirect.customer.ErpComplaintLineModel"%>
+<%@ page import="com.freshdirect.customer.ErpComplaintReason" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDCartonDetail"%>
+<%@ page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@ page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCartLineI"%>
+<%@ page import="com.freshdirect.framework.webapp.ActionResult"%>
+<%@ page import="com.freshdirect.webapp.util.CCFormatter" %>
+<%@ page import="com.freshdirect.webapp.taglib.callcenter.ComplaintUtil"%>
+<%@ page import="com.freshdirect.framework.util.MathUtil"%>
+<%@ taglib uri="freshdirect" prefix="fd" %>
+<%
+final String ERR_LINE_COLOR = "#FFCCCC";
+final String IS_BGCOLOR="#CCCCFF";
+
+/* internal */
+String _is_lastdept					= (String) request.getAttribute("__is__lastdept");
+
+/* bindings */
+FDCartLineI _is_orderline			= (FDCartLineI) request.getAttribute("__issue_credit_orderline");
+List _is_lineComplaints				= (List) request.getAttribute("__issue_credit_lineComplaints");
+ActionResult	_is_result			= (ActionResult) request.getAttribute("__issue_credit_actionResult");
+String	_is_cartonNumber			= (String) request.getAttribute("__issue_credit_cartonNumber");
+FDCartonDetail _is_detail			= (FDCartonDetail) request.getAttribute("__issue_credits_cartonDetail"); // optional
+Set multis							= (Set) request.getAttribute("__is__multiples");
+
+
+final boolean _is_multi = (multis != null && multis.contains(_is_orderline.getOrderLineId()) );
+
+
+int _is_index = 0;
+{
+	Object paramIndexVal			= request.getAttribute("__issue_credit_paramIndex");
+	if (paramIndexVal instanceof String) {
+		_is_index = Integer.parseInt((String) paramIndexVal);
+	} else if (paramIndexVal instanceof Integer) {
+		_is_index = ((Integer)paramIndexVal).intValue();
+	}
+}
+if (_is_index == 0) // reset at first time
+	_is_lastdept = null;
+
+ErpInvoiceLineI _is_invoiceline	= 	_is_orderline.hasInvoiceLine() ? _is_orderline.getInvoiceLine() : null;
+
+
+double _is_the_quantity = _is_detail != null ? _is_detail.getCartonDetail().getPackedQuantity() : (_is_invoiceline != null ? _is_invoiceline.getQuantity() : _is_orderline.getQuantity() );
+
+/* FORM parameters */
+String [] _is_form_returnQty = request.getParameterValues("ol_credit_qty");
+String [] _is_form_returnQtyChgd = request.getParameterValues("ol_credit_qty_changed");
+String [] _is_form_reason = request.getParameterValues("ol_credit_reason");
+String [] _is_form_method = request.getParameterValues("ol_credit_method");
+String [] _is_form_amount = request.getParameterValues("ol_credit_amount");
+
+boolean dirtyLine = _is_form_returnQty != null && _is_form_returnQty[_is_index].length() > 0 && !"0".equalsIgnoreCase(_is_form_returnQty[_is_index]);
+
+
+
+        if ( _is_lastdept == null || !_is_lastdept.equalsIgnoreCase( _is_orderline.getDepartmentDesc() ) ) {
+            _is_lastdept = _is_orderline.getDepartmentDesc();
+
+
+%>
+<%-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  Department Header row  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --%>
+
+<tr VALIGN="bottom">
+	<td WIDTH="7%" COLSPAN="2">&nbsp;</td>
+	<td WIDTH="32%" COLSPAN="3"><FONT CLASS="space2pix"><BR></FONT><b><%= _is_lastdept %></b><BR></td>
+	<td WIDTH="55%" COLSPAN="8" BGCOLOR=<%= IS_BGCOLOR %>><BR></td>
+</tr>
+<%
+		}
+        //
+        // Calculate orderline complaint values
+        //
+        double retQty = 0.0;
+        double retAmount = 0.0;
+        for (Iterator it = _is_lineComplaints.iterator(); it.hasNext(); ) {
+            ErpComplaintLineModel line = (ErpComplaintLineModel) it.next();
+            if (_is_index == Integer.parseInt( line.getComplaintLineNumber() ) ) {
+                retQty += line.getQuantity();
+                retAmount += line.getAmount();
+            }
+        }
+
+		String deptDesc=_is_lastdept;
+		if (_is_lastdept.startsWith("Recipe:")) {  // get the dept of the primary home of this item
+			ProductModel prodModl = ContentFactory.getInstance().getProduct(_is_orderline.getSku().getSkuCode());
+			if (prodModl!=null){
+				if (prodModl.getPrimaryHome()!=null) {
+					deptDesc=prodModl.getPrimaryHome().getDepartment().getFullName();
+				}
+			}
+		}
+
+		// random generated id
+        String rid = Long.toHexString( 1000000000+Math.round(1000000000*Math.random()) );
+
+		// check if this line contains an error
+        boolean isErrorLine = ( !_is_result.isSuccess() && (_is_result.hasError("ol_error_qty_"+_is_index) || _is_result.hasError("ol_error_"+_is_index)) ) ? true : false;
+%><%-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ORDER LINE ROW ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ --%>
+    <tr VALIGN="TOP" <%= ( isErrorLine ) ? "BGCOLOR='" + ERR_LINE_COLOR + "'" : "" %>>
+        <td WIDTH="2%" ALIGN="CENTER"><%= _is_the_quantity %></td>
+        <td WIDTH="2%" ALIGN="CENTER"><%= _is_orderline.getSalesUnitDescription() %></td>
+        <td WIDTH="25%">
+<% if (_is_multi) { %>
+			<span style="color: #577; font-style: italic;"><%= _is_orderline.getDescription() %> (<%=_is_orderline.getConfigurationDesc()%>)</span>
+<% } else { %>
+			<span><%= _is_orderline.getDescription() %> (<%=_is_orderline.getConfigurationDesc()%>)</span>
+<% } %>
+            <fd:ErrorHandler result='<%=_is_result%>' name='<%= "ol_error_"+_is_index %>' id="errorMsg">
+                <div CLASS="text11rbold">&middot; <%= errorMsg %></div>
+            </fd:ErrorHandler>
+            <fd:ErrorHandler result='<%=_is_result%>' name='<%= "ol_error_qty_"+_is_index %>' id="errorMsg">
+                <div CLASS="text11rbold">&middot; <%= errorMsg %></div>
+            </fd:ErrorHandler>
+        </td>
+        <td WIDTH="9%"><%= _is_orderline.getUnitPrice() %></td>
+        <td WIDTH="7%" ALIGN="CENTER"><%= _is_invoiceline != null ? _is_invoiceline.getPrice(): _is_orderline.getPrice() %></td>
+        <td WIDTH="3%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>" ALIGN="CENTER">
+<%      if ( !_is_result.isSuccess() && (_is_result.hasError("ol_error_qty_"+_is_index) || _is_result.hasError("ol_error_"+_is_index)) ) { %><span CLASS="text8redbold">*</span><%  } %>
+            <%= CCFormatter.formatQuantity( retQty ) %>
+        </td>
+        <td WIDTH="4%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>" ALIGN="CENTER"><%= _is_orderline.getSalesUnitDescription() %></td>
+        <td WIDTH="7%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>" ALIGN="CENTER"><%= CCFormatter.formatCurrency(retAmount) %></td>
+        <td WIDTH="5%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>" ALIGN="CENTER"><%= CCFormatter.formatCurrency(_is_invoiceline != null ? _is_invoiceline.getPrice() - retAmount: _is_orderline.getPrice() - retAmount) %></td>
+		<td WIDTH="5%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>" ALIGN="CENTER">
+        	<INPUT TYPE="TEXT" id="qty<%= rid %>" orderline="<%= _is_orderline.getOrderLineId() %>" NAME="ol_credit_qty" SIZE="4" cartonGroup="QI_<%= _is_cartonNumber %>" fullQuantity="<%= _is_the_quantity %>" value="<%= _is_form_returnQty == null ? "0" : _is_form_returnQty[_is_index] %>" onblur="setEditReturnQty(<%=_is_index%>)">
+		</td>
+        <td WIDTH="17%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>">
+            <SELECT name="ol_credit_reason" class="pulldown_detail" cartonGroup="CR_<%= _is_cartonNumber %>">
+                <OPTION value="">select credit reason</OPTION>
+<%
+		for (Iterator it=ComplaintUtil.getReasonsForDepartment(deptDesc, (_is_detail == null) ).iterator(); it.hasNext();) {
+			com.freshdirect.customer.ErpComplaintReason reason = (com.freshdirect.customer.ErpComplaintReason) it.next();
+%>				<OPTION value="<%= reason.getId() %>" <%= ( _is_form_reason != null && reason.getId().equals(_is_form_reason[_is_index]) ) ? "SELECTED" : "" %>>
+					<%= reason.getReason() %>
+				</OPTION>
+<%
+		}
+		if ( !dirtyLine  && ( (_is_form_reason != null && _is_form_reason[_is_index].length() > 0) ||
+				(_is_form_method != null && "CSH".equals(_is_form_method[_is_index])) ) ) {
+			dirtyLine = true;
+		}
+%>
+            </SELECT>
+        </td>
+        <td WIDTH="8%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>">
+            <SELECT name="ol_credit_method" class="pulldown_detail" cartonGroup="CM_<%= _is_cartonNumber %>">
+                <OPTION value="FDC" <%= ( _is_form_method != null && "FDC".equals(_is_form_method[_is_index]) ) ? "SELECTED" : "" %>>store</OPTION>
+                <OPTION value="CSH" <%= ( _is_form_method != null && "CSH".equals(_is_form_method[_is_index]) ) ? "SELECTED" : "" %>>cash back</OPTION>
+            </SELECT>
+        </td>
+<%      
+        double creditAmount = 0.0;
+        double creditQty = 0.0;
+        boolean quantityChanged = false;
+        if (_is_form_returnQtyChgd != null && _is_form_returnQtyChgd[_is_index] != null && "Q".equals(_is_form_returnQtyChgd[_is_index])){
+            quantityChanged = true;
+        }
+        if ( _is_form_returnQty != null && _is_form_returnQty[_is_index] != null && !"".equals(_is_form_returnQty[_is_index])) {
+            creditQty = Double.parseDouble(_is_form_returnQty[_is_index]);
+        }
+        if (creditQty <= 0 && !quantityChanged){
+            if(_is_form_amount != null && _is_form_amount[_is_index] != null && !"".equals(_is_form_amount[_is_index])){
+                creditAmount = Double.parseDouble(_is_form_amount[_is_index]);
+            }
+        } else {
+            if ( _is_form_returnQty != null && _is_form_returnQty[_is_index] != null && !"".equals(_is_form_returnQty[_is_index])) {
+                creditQty = Double.parseDouble( _is_form_returnQty[_is_index] );
+                double origQty = _is_invoiceline != null ? _is_invoiceline.getQuantity() : _is_orderline.getQuantity();
+                if (origQty!=0) {
+                    creditAmount = creditQty * ( (_is_invoiceline != null ? _is_invoiceline.getPrice() : _is_orderline.getPrice()) / origQty);
+                }
+            }
+        }
+
+        if (!dirtyLine && creditAmount > 0) {
+        	dirtyLine = true;
+        }
+
+%>
+        <td WIDTH="5%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>" ALIGN="CENTER">
+			<input id="amt<%= rid %>" type="text" name="ol_credit_amount" orderline="<%= _is_orderline.getOrderLineId() %>" value="<%= MathUtil.roundDecimal(creditAmount) %>" size="4">
+        </td>
+    </tr>
+
+	<input type="hidden" name="ol_credit_qty_changed" value="">
+<% if (_is_invoiceline != null) { %>
+	<input type="hidden" name="ol_orig_qty" value="<%= _is_invoiceline.getQuantity() %>">
+	<input type="hidden" name="ol_orig_price" value="<%= _is_invoiceline.getPrice() %>">
+<% } else { %>
+	<input type="hidden" name="ol_orig_qty" value="<%= _is_orderline.getQuantity() %>">
+	<input type="hidden" name="ol_orig_price" value="<%= _is_orderline.getPrice() %>">
+<% } %>
+	<input type="hidden" name="ol_sku_code" value="<%= _is_orderline.getSkuCode() %>">
+	<input type="hidden" name="ol_credit_dept" value="<%= _is_orderline.getDepartmentDesc() %>">
+	<input type="hidden" name="ol_credit_qty_returned" value="<%= CCFormatter.formatQuantity( retQty ) %>">
+	<input type="hidden" name="ol_tax_rate" value="<%=_is_orderline.getTaxRate() %>">
+	<input type="hidden" name="ol_deposit_value" value="<%=_is_orderline.getDepositValue() %>">
+	<input type="hidden" name="orderlineId" value="<%=_is_orderline.getOrderLineId() %>">
+
+	<input type="hidden" name="ol_cartnum" value="<%= _is_cartonNumber %>">
+<%
+
+	// mark form dirty
+	if (dirtyLine && request.getAttribute("__is_dirty") == null) {
+		request.setAttribute("__is_dirty", Boolean.TRUE);
+	}
+
+
+	// store last used department name
+	request.setAttribute("__is__lastdept", _is_lastdept);
+
+
+	if (_is_multi) {
+%><script type="text/javascript">
+	$E.on($('amt<%= rid %>'), 'change', function(e){
+		var selectors = YAHOO.util.Selector.query('input[orderline="<%=_is_orderline.getOrderLineId() %>"][name="ol_credit_amount"]', document, false);
+		var sum = 0;
+		for (i=0; i<selectors.length; i++) {
+			var obj = selectors[i];
+			sum+=( Number(selectors[i].value)||0 );
+		}
+		var max = OL_PRICES['<%=_is_orderline.getOrderLineId() %>'];
+		if (max < sum) {
+			var sum2 = sum-(Number(this.value)||0);
+			var final_amt = Math.round( (max-sum2)*100 )/100;
+
+			alert('Total amount $'+max+' is exceeded for this order line! Setting credit to $'+final_amt);
+			
+			this.value = final_amt;
+		}
+	});
+
+	$E.on($('amt<%= rid %>'), 'focus', function(e){
+		var selectors = YAHOO.util.Selector.query('input[orderline="<%=_is_orderline.getOrderLineId() %>"]', document, false);
+		for (i=0; i<selectors.length; i++) {
+			selectors[i].style.backgroundColor = '#ffa';
+		}
+	});
+	$E.on($('amt<%= rid %>'), 'blur', function(e){
+		var selectors = YAHOO.util.Selector.query('input[orderline="<%=_is_orderline.getOrderLineId() %>"]', document, false);
+		for (i=0; i<selectors.length; i++) {
+			selectors[i].style.backgroundColor = '';
+		}
+	});
+	$E.on($('qty<%= rid %>'), 'focus', function(e){
+		var selectors = YAHOO.util.Selector.query('input[orderline="<%=_is_orderline.getOrderLineId() %>"]', document, false);
+		for (i=0; i<selectors.length; i++) {
+			selectors[i].style.backgroundColor = '#ffa';
+		}
+	});
+	$E.on($('qty<%= rid %>'), 'blur', function(e){
+		var selectors = YAHOO.util.Selector.query('input[orderline="<%=_is_orderline.getOrderLineId() %>"]', document, false);
+		for (i=0; i<selectors.length; i++) {
+			selectors[i].style.backgroundColor = '';
+		}
+	});
+</script>
+<%		
+	}
+%>

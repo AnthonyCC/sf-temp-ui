@@ -16,7 +16,7 @@
 session.setAttribute(SessionName.USER,null); 
 %>
 
-<tmpl:insert template='/template/top_nav.jsp'>
+<tmpl:insert template='/template/top_nav_changed_dtd.jsp'>
 
     <tmpl:put name='title' direct='true'>Home</tmpl:put>
 	

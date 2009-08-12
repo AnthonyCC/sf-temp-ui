@@ -15,6 +15,7 @@ boolean bad_account_list = snav_pageURI.indexOf("bad_account_list") > -1;
 boolean broken_accounts = snav_pageURI.indexOf("broken_acct_list") > -1;
 
 boolean acct_lookup = snav_pageURI.indexOf("acct_lookup") > -1;
+boolean canned_text = snav_pageURI.indexOf("canned_text") > -1;
 %>
 <crm:GetCurrentAgent id='currentAgent'>
 <div class="sup_nav_bg">
@@ -31,5 +32,6 @@ boolean acct_lookup = snav_pageURI.indexOf("acct_lookup") > -1;
 <a href="/supervisor/bad_account_list.jsp" class="<%=bad_account_list?"sup_nav_on":"sup_nav"%>">Bad Acct.</a>
 <a href="/supervisor/broken_acct_list.jsp?method=GET" class="<%=broken_accounts?"sup_nav_on":"sup_nav"%>">Broken Accounts</a>
 <a href="javascript:pop('/supervisor/acct_lookup.jsp', '500', '580')" class="<%=acct_lookup?"sup_nav_on":"sup_nav"%>">Acct. Lookup</a>
+<a href="/supervisor/canned_text.jsp" class="<%=canned_text?"sup_nav_on":"sup_nav"%>">Canned Text</a>
 </div>
 </crm:GetCurrentAgent>

@@ -1,0 +1,101 @@
+<%@ page import="java.util.List"%>
+<%@ page import="java.util.Iterator"%>
+<%@ page import="java.util.Set"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCartonInfo"%>
+<%@ page import="com.freshdirect.webapp.taglib.callcenter.ComplaintUtil"%>
+<%@ page import="com.freshdirect.fdstore.customer.OrderLineUtil"%>
+<%
+	/* bindings */
+	final Set _is_orderLines			= (Set) request.getAttribute("__issue_credits_orderlines");
+	final String _is_groupName			= (String) request.getAttribute("__issue_credits_groupName");
+	final FDCartonInfo _is_cartonInfo	= (FDCartonInfo) request.getAttribute("__issue_credits_cartonInfo");
+
+
+  	Set __is_deptNames = OrderLineUtil.collectDepartmentNames(_is_orderLines);
+  	Set cartonComplNames = ComplaintUtil.getReasonsForDepartments(__is_deptNames, (_is_cartonInfo == null) );
+%>	<tr>
+		<td COLSPAN="5" class="text12" style="padding-top: 1em; font-weight: bold; background-color: #eee">
+<% if (_is_cartonInfo != null) { %>
+        <%= _is_cartonInfo.getCartonInfo().getCartonNumber() %> / <%= _is_cartonInfo.getCartonInfo().getCartonType() %>
+<% } else { %>
+        &nbsp;
+<% } %>
+		</td>
+        <td COLSPAN="4" style="padding-top: 1em; background-color: #CCCCee;">&nbsp;</td>
+        <td style="padding-top: 1em; background-color: #CCCCee;">
+            <SELECT id="<%= _is_groupName %>_setQtys" name="n_<%= _is_groupName %>_setQtys" class="pulldown_detail" style="background-color: #eed">
+	            <OPTION value="">set quantities</OPTION>
+                <OPTION value="Reasoned">Reasoned only</OPTION>
+                <OPTION value="All">All</OPTION>
+                <OPTION value="Reset">Reset</OPTION>
+            </SELECT>
+<script type="text/javascript">
+	$E.on('<%= _is_groupName %>_setQtys', 'change', function(e) {
+		var mainObj = $('tbl_order_detail');
+
+		if ('All' == this.value) {
+			var objs = YAHOO.util.Selector.query('input[cartonGroup="QI_<%= _is_groupName %>"]' , mainObj, false);
+			for (var k=0; k<objs.length; k++) {
+				objs[k].value = objs[k].getAttribute("fullQuantity");
+				if (objs[k].onchange)
+					objs[k].onchange();
+			}
+		} else if ('Reset' == this.value) {
+			var objs = YAHOO.util.Selector.query('input[cartonGroup="QI_<%= _is_groupName %>"]' , mainObj, false);
+			for (var k=0; k<objs.length; k++) {
+				objs[k].value = "0";
+				if (objs[k].onchange)
+					objs[k].onchange();
+			}
+		} else if ('Reasoned' == this.value) {
+			var objs = YAHOO.util.Selector.query('input[cartonGroup="QI_<%= _is_groupName %>"]' , mainObj, false);
+			for (var k=0; k<objs.length; k++) {
+				var that = YAHOO.util.Selector.query('select[cartonGroup="CR_<%= _is_groupName %>"]' , objs[k].parentNode.parentNode, true);
+				if (that != null) {
+					if ("" != that.value) { // not default value
+						objs[k].value = objs[k].getAttribute("fullQuantity");
+					}
+				}
+			}
+		}
+
+		this.value = ""; // reset selector
+	});
+</script>
+        </td>
+        <td style="padding-top: 1em; background-color: #CCCCee;">
+            <SELECT id="<%= _is_groupName %>_complaints" name="n_<%= _is_groupName %>_complaints" class="pulldown_detail" style="background-color: #dee" <%= cartonComplNames.size() > 0 ? "" : "\"disabled\"=\"1\""  %>>
+                <OPTION value="0">select credit reason</OPTION>
+<%
+			if (cartonComplNames.size() > 0) {
+				int k = 1;
+				for (Iterator rit=cartonComplNames.iterator(); rit.hasNext(); ) {
+					String reasonName = (String) rit.next();
+%>              <option value="<%= k %>"><%= reasonName %></option>
+<%
+					k++;
+				}
+%>				<option value="-1">RESET</option>
+<%
+			}
+%>
+            </SELECT>
+        </td>
+        <td style="padding-top: 1em; background-color: #CCCCee;">
+            <SELECT id="<%= _is_groupName %>_cmethods" name="n_<%= _is_groupName %>_cmethods" class="pulldown_detail" style="background-color: #ede">
+	            <OPTION value="">select credit method</OPTION>
+                <OPTION value="FDC">store</OPTION>
+                <OPTION value="CSH">cash back</OPTION>
+            </SELECT>
+<script type="text/javascript">
+	$E.onDOMReady(function() {
+		var grp1 = new ISGroupControl('tbl_order_detail', 'CR_<%= _is_groupName %>', '#dee', true);
+		var grp2 = new ISGroupControl('tbl_order_detail', 'CM_<%= _is_groupName %>', '#ede', false);
+
+		grp1.init('<%= _is_groupName %>_complaints');
+		grp2.init('<%= _is_groupName %>_cmethods');
+	});
+</script>
+        </td>
+        <td WIDTH="100%" style="padding-top: 1em; background-color: #CCCCee;">&nbsp;</td>
+    </tr>

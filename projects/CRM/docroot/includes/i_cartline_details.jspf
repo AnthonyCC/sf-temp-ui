@@ -1,11 +1,28 @@
+<%@ page import="java.util.Iterator"%>
+<%@ page import="java.util.Arrays"%>
+<%@ page import="java.util.Map"%>
+<%@ page import="java.util.HashMap"%>
+<%@ page import="com.freshdirect.customer.EnumComplaintLineMethod"%>
+<%@ page import="com.freshdirect.customer.ErpComplaintLineModel"%>
+<%@ page import="com.freshdirect.customer.ErpComplaintReason"%>
+<%@ page import="com.freshdirect.customer.ErpInvoiceLineI"%>
+<%@ page import="com.freshdirect.customer.ErpReturnLineI"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCartLineI"%>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 
 <%
     boolean firstRecipe = true;
-%>
-<logic:iterate id="cartLine" collection="<%= (invoicedView != null ? invoicedView.getOrderLines() : view.getOrderLines()) %>" type="com.freshdirect.fdstore.customer.FDCartLineI" indexId="lineNumber">
-<%  
+	final boolean __cld_hasInvoice = hasInvoice; // defined in i_cart_details.jspf
+
+
+	/*
+	 * LINE ITEMS
+	 */
+	
+	for (Iterator cit=(invoicedView != null ? invoicedView.getOrderLines() : view.getOrderLines()).iterator(); cit.hasNext();) {
+		FDCartLineI cartLine = (FDCartLineI) cit.next();
+
     ErpInvoiceLineI invoiceLine = null;
     ErpReturnLineI returnLine = null;
     String orderLineNumber = "";
@@ -22,11 +39,12 @@
         if (lastDept.startsWith("Recipe: ")) {
             if (firstRecipe) {
 %>
-                <tr class="order_item_dept">
+                
+<tr class="order_item_dept">
                     <td colspan="1"></td>
                     <td colspan="5"><b>RECIPES</b></td>
                     <td colspan="5"></td>
-                    <% if (hasInvoice) {%><td colspan="3"></td><% } %>
+                    <% if (__cld_hasInvoice) {%><td colspan="3"></td><% } %>
                 </tr>
 <%
                 firstRecipe = false;
@@ -38,7 +56,7 @@
                 <td colspan="2"></td>
                 <td colspan="5"><b><%=recipeName%></b></td>
                 <td colspan="4"></td>
-                <% if (hasInvoice) {%><td colspan="3"></td><% } %>
+                <% if (__cld_hasInvoice) {%><td colspan="3"></td><% } %>
             </tr>
 <%
 
@@ -49,7 +67,7 @@
                 <td colspan="2"></td>
                 <td colspan="5"><b><%=lastDept%></b></td>
                 <td colspan="4"></td>
-                <% if (hasInvoice) {%><td colspan="3"></td><% } %>
+                <% if (__cld_hasInvoice) {%><td colspan="3"></td><% } %>
             </tr>
 <%
             }
@@ -67,7 +85,7 @@
         deptTotalMap.put("final", new Double(0.0));
     }
     deptTotalMap.put("est", new Double(((Double)deptTotalMap.get("est")).doubleValue() + cartLine.getPrice()));
-    if (hasInvoice)
+    if (__cld_hasInvoice)
         deptTotalMap.put("final", new Double(((Double)deptTotalMap.get("final")).doubleValue() + invoiceLine.getPrice()));
     allDeptsMap.put(cartLine.getDepartmentDesc(), deptTotalMap);
 %>
@@ -138,50 +156,81 @@
 		<% } %> 
     </td>
     <td width="6%" align="center"> 
-    <%if(hasInvoice && cartLine.isPricedByLb()){%>
+    <%if(__cld_hasInvoice && cartLine.isPricedByLb()){%>
         <%=invoiceLine.getWeight()%>&nbsp;lb 
     <%}%>
     </td>
     <td width="8%" align="center">(<%= cartLine.getUnitPrice() %>)</td>
-    <td width="6%" align="right"><%if(hasInvoice)%><%=invoiceLine.getCustomizationPrice() > 0 ? CCFormatter.formatCurrency(invoiceLine.getCustomizationPrice()) : ""%></td>
-    <td align="right"><%=CCFormatter.formatCurrency(cartLine.getPrice()) %><%if(hasInvoice){%> / <b><%=CCFormatter.formatCurrency(invoiceLine.getPrice())%><%}%></b></td>
+    <td width="6%" align="right"><%if(__cld_hasInvoice)%><%=invoiceLine.getCustomizationPrice() > 0 ? CCFormatter.formatCurrency(invoiceLine.getCustomizationPrice()) : ""%></td>
+    <td align="right"><%=CCFormatter.formatCurrency(cartLine.getPrice()) %><%if(__cld_hasInvoice){%> / <b><%=CCFormatter.formatCurrency(invoiceLine.getPrice())%><%}%></b></td>
     <td width="1%">
         <%if (cartLine.isEstimatedPrice()) {
-                if(!hasInvoice){
+                if(!__cld_hasInvoice){
                     hasEstimatedItems = true;
                     out.print("*");
                 }
          }%>
     </td>
-    <td width="1%" align="center">
-        <b><%= (cartLine.hasTax())  ? "T" : "&nbsp;" %></b>
+    <td style="font-weight: bold; text-align: center;">
+        <%= (cartLine.hasTax())  ? "T" : "&nbsp;" %>
     </td>
-    <td width="1%" align="center">
-        <b><%= (cartLine.hasScaledPricing()) ? "S" : "&nbsp;" %></b>
+    <td style="font-weight: bold; text-align: center;">
+        <%= (cartLine.hasScaledPricing()) ? "S" : "&nbsp;" %>
     </td>
-    <td width="1%" align="center">
-        <b><%=(cartLine.hasDepositValue())  ? "D" : "&nbsp;" %></b>
+    <td style="font-weight: bold; text-align: center;">
+        <%=(cartLine.hasDepositValue())  ? "D" : "&nbsp;" %>
     </td>
-    <%  if (hasInvoice) {
-            ErpComplaintLineModel compLine = null;
-            for (Iterator it = lineComplaints.iterator(); it.hasNext(); ) {
-                ErpComplaintLineModel line = (ErpComplaintLineModel) it.next();
-                if (line.getOrderLineId().equals(cartLine.getOrderLineId()) ) {
-                    compLine = line;
-                }
-            }
-    %>
-    <td width="4%" align="right"><% if (compLine != null) { out.print(compLine.getAmount()); } %></td>
-    <td width="5%"><%  if (compLine != null) { out.print(compLine.getMethod().getName()); } %></td>
-    <td width="4%"><%  if (compLine != null) { out.print(compLine.getReason().getReason());   }   %></td>
-<%  }   %>
+<%
+	if (__cld_hasInvoice) {
+		ErpComplaintLineModel compLine = null;
+		
+		double amount = 0;
+		EnumComplaintLineMethod	method = null;
+		ErpComplaintReason		reason = null;
+		
+		for (Iterator it = lineComplaints.iterator(); it.hasNext(); ) {
+			ErpComplaintLineModel line = (ErpComplaintLineModel) it.next();
+			if (line.getOrderLineId().equals(cartLine.getOrderLineId()) ) {
+				compLine = line;
+
+				// aggregate amounts, get the first reason and method
+				amount += line.getAmount();
+				if (method == null) {
+					method = line.getMethod();
+					reason = line.getReason();
+				}
+			}
+		}
+		
+		if (compLine != null) {
+%>	<td align="right"><%= CCFormatter.formatCurrency(amount) %></td>
+	<td><%= method.getName() %></td>
+	<td><%= reason.getReason() %></td>
+<%
+		} else {
+%>	<td align="right">&nbsp;</td>
+	<td>&nbsp;</td>
+	<td>&nbsp;</td>
+<%
+			
+		}
+	}
+%>
 </tr>
-</logic:iterate>
-<% if(view.isDisplayDepartment()){%>
-<tr><td colspan="<%= hasInvoice ? "14" : "11"%>"><br></td></tr>
+<%
+}
+
+
+	if(view.isDisplayDepartment()){
+		/*
+		 * DEPARTMENT ITEMS
+		 */
+
+%>
+<tr><td colspan="<%= __cld_hasInvoice ? "14" : "11"%>"><br></td></tr>
 <tr>
         <td colspan="3" align="right"><b>Department Subtotals</b> (for reference only, not included in order totals)</td>
-<%if(hasInvoice){%>
+<%if(__cld_hasInvoice){%>
         <td colspan="4" align="right">Total Est./Final</td>
         <td colspan="4"></td>
         <td colspan="2">Credit/Refund</td>
@@ -191,7 +240,7 @@
     <td colspan="4"></td>
 <%}%>
 </tr>
-<tr><td colspan="<%= hasInvoice ? "14" : "11"%>" class="list_separator" style="padding: 0px;"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td></tr>
+<tr><td colspan="<%= __cld_hasInvoice ? "14" : "11"%>" class="list_separator" style="padding: 0px;"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td></tr>
 <%  for (Iterator dIter = allDeptsMap.keySet().iterator(); dIter.hasNext(); ) {
         String deptName = (String) dIter.next();
         Map deptTotalMap = (Map) allDeptsMap.get(deptName);
@@ -201,12 +250,12 @@
     <td colspan="2"><b><%= deptName %></b></td>
     <td colspan="2" align="right">
         <%=CCFormatter.formatCurrency(((Double)deptTotalMap.get("est")).doubleValue()) %>
-        <%  if (hasInvoice) { %>
+        <%  if (__cld_hasInvoice) { %>
         / <b><%=CCFormatter.formatCurrency(((Double)deptTotalMap.get("final")).doubleValue()) %></b>
         <%  }   %>
     </td>
     <td colspan="4"></td>
-    <%  if (hasInvoice) {
+    <%  if (__cld_hasInvoice) {
     ErpComplaintLineModel compLine = null;
     for (Iterator it = deptComplaints.iterator(); it.hasNext(); ) {
         ErpComplaintLineModel line = (ErpComplaintLineModel) it.next();
@@ -221,7 +270,7 @@
 <%  } %>
 </tr>
 <%  }   %>
-<%  if (hasInvoice) {
+<%  if (__cld_hasInvoice) {
         String[] fakeDepts = {"Goodwill","Transportation","Extra Item"};
         for (Iterator dIter = Arrays.asList(fakeDepts).iterator(); dIter.hasNext(); ) {
             String deptName = (String) dIter.next();
@@ -242,13 +291,18 @@
     <td><%  if (compLine != null) { out.print(compLine.getReason().getReason());   }   %></td>
 <%          } %>
 </tr>
-<%  }   %>
-<% } %>
-<% } %>
-<tr><td colspan="<%= hasInvoice ? "14" : "11"%>"><br></td></tr>
+<%  		}   
+        } // hasInvoice
+	} // view.isDisplayDepartment()
+	
+
+
+
+%>
+<tr><td colspan="<%= __cld_hasInvoice ? "14" : "11"%>"><br></td></tr>
 <tr>
     <td colspan="3" align="right"><b>Order Totals <%= order.containsAlcohol() ? "for <span class=\"order_dept\">"+view.getDescription()+"</span>" : "" %></b></td>
-    <%if(hasInvoice){%>
+    <%if(__cld_hasInvoice){%>
         <td colspan="4" align="right">Total Est./Final</td>
         <td colspan="7"></td>
     <%} else {%>
@@ -256,33 +310,33 @@
         <td colspan="4"></TD>
     <%}%>
 </tr>
-<tr><td colspan="<%= hasInvoice ? "14" : "11"%>" class="list_separator" style="padding: 0px;"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td></tr>
+<tr><td colspan="<%= __cld_hasInvoice ? "14" : "11"%>" class="list_separator" style="padding: 0px;"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td></tr>
 <tr valign="top">
     <td colspan="3"></td>
     <td colspan="2">
         SubTotal <%= order.containsAlcohol() ? "("+view.getDescription()+")" : "" %>:
     </td>
-    <td colspan="2" align="right"><%=CCFormatter.formatCurrency(view.getSubtotal()) %><% if (hasInvoice) { %> / <b><%=CCFormatter.formatCurrency( invoicedView.getSubtotal() ) %></b><% } %></td>
+    <td colspan="2" align="right"><%=CCFormatter.formatCurrency(view.getSubtotal()) %><% if (__cld_hasInvoice) { %> / <b><%=CCFormatter.formatCurrency( invoicedView.getSubtotal() ) %></b><% } %></td>
     <td colspan="4"><% if (hasEstimatedItems) out.print("*"); %></td>
-    <% if (hasInvoice) { %>
+    <% if (__cld_hasInvoice) { %>
         <td colspan="3"></td>
     <% } %>
 </tr>
 <tr>
     <td colspan="3"></td>
     <td colspan="2">Bottle Deposit <%= order.containsAlcohol() ? "("+view.getDescription()+")" : "" %>:</td>
-    <td colspan="2" align="right"><%=CCFormatter.formatCurrency(view.getDepositValue()) %><% if (hasInvoice) { %> / <b><%=CCFormatter.formatCurrency( invoicedView.getDepositValue() ) %></b><% } %></td>
+    <td colspan="2" align="right"><%=CCFormatter.formatCurrency(view.getDepositValue()) %><% if (__cld_hasInvoice) { %> / <b><%=CCFormatter.formatCurrency( invoicedView.getDepositValue() ) %></b><% } %></td>
     <td colspan="4"></td>
-    <% if (hasInvoice) { %>
+    <% if (__cld_hasInvoice) { %>
         <td colspan="3"></td>
     <% } %>
 </tr>
 <tr>
     <td colspan="3"></td>
     <td colspan="2">Tax<%= order.containsAlcohol() ? "("+view.getDescription()+")" : "" %>:</td>
-    <td colspan="2" align="right"><%=CCFormatter.formatCurrency(view.getTax()) %><% if (hasInvoice) { %> / <b><%=CCFormatter.formatCurrency( invoicedView.getTax() ) %></b><% } %></td>
+    <td colspan="2" align="right"><%=CCFormatter.formatCurrency(view.getTax()) %><% if (__cld_hasInvoice) { %> / <b><%=CCFormatter.formatCurrency( invoicedView.getTax() ) %></b><% } %></td>
     <td colspan="4"></td>
-    <% if (hasInvoice) { %>
+    <% if (__cld_hasInvoice) { %>
         <td colspan="3"></td>
     <% } %>
 </tr>

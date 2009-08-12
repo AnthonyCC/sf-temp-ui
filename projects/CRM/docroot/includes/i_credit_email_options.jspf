@@ -1,5 +1,42 @@
 <% // displays the editable email options:  Used in issue_credit.jsp  %>            
-            <table width="100%" class="order_detail">
+            
+<%@page import="com.freshdirect.crm.CrmManager"
+%><%@page import="com.freshdirect.customer.EnumCannedTextCategory"
+%><%@page import="java.util.*"
+%><%@page import="com.freshdirect.customer.ErpCannedText"
+%><%@page import="org.apache.commons.lang.StringEscapeUtils"
+%><%
+Collection allCt = CrmManager.getInstance().getAllCannedTextInCategory(EnumCannedTextCategory.CREDIT_ISSUE);
+Iterator jsit = allCt.iterator();
+%>
+<script type="text/javascript">
+				if (typeof FreshDirect == "undefined" || !FreshDirect) {
+				    var FreshDirect = {};
+				}
+
+				(function() {
+					var trim = YAHOO.lang.trim;
+
+					var cannedTexts = {
+						<% while (jsit.hasNext()) {
+								ErpCannedText cannedText = (ErpCannedText) jsit.next(); %>
+							'<%= StringEscapeUtils.escapeJavaScript(cannedText.getId()) %>': '<%= StringEscapeUtils.escapeJavaScript(cannedText.getText()) %>'<%= jsit.hasNext() ? "," : "" %>
+						<% } %>	
+					};
+
+					FreshDirect.chooseCannedText = function (_this) {
+						var cannedText = _this.options[_this.selectedIndex].value;
+						if (cannedText != "_") {
+							var cannedText = cannedTexts[cannedText];
+							var currentValue = document.getElementById('eo_custom_message').value;
+							if (cannedText != currentValue && (trim(currentValue) == "" ||
+									confirm("Custom paragraph will be overwritten. Are you sure?")))
+								document.getElementById('eo_custom_message').value = cannedText;
+						}
+					}
+				})();
+			</script>
+			<table width="100%" class="order_detail">
                 <tr>
                     <td colspan="3">Send this email<img src="/media_stat/crm/images/clear.gif" width="50" height="1"></td>
                 </tr>
@@ -10,46 +47,21 @@
                     <td colspan="3"><hr></td>
                 </tr>
                 <tr>
-                    <td><input type="radio" <%=("generic".equalsIgnoreCase(email_type)?"checked":"")%> value="generic" name="email_type"> Generic</td>
-                    <td colspan="2"><input type="radio" <%=("custom".equalsIgnoreCase(email_type)?"checked":"")%>  value="custom" name="email_type"> Custom (<a href="javascript:setPreviewEmailOn()">Preview</a>)</td>
-                </tr>
-                <tr>
                     <td width="10"></td>
-                    <td width="250" colspan="2">
-                        Select template<br><select name="email_template_code" onchange="selectCustom(document.forms['issue_credit'].elements['email_template_code']); return false;">
-                            <option value="">---Select---</option>
-<%                      for(Iterator iTypes = EnumCreditEmailType.getEnumList().iterator(); iTypes.hasNext();) {
-                            EnumCreditEmailType cet = (EnumCreditEmailType)iTypes.next();
-                            if (cet.equals(EnumCreditEmailType.DEFAULT_EMAIL)) continue;
-                            boolean selected = email_template_code.equalsIgnoreCase(cet.getName());  %>
-                            <option <%=(selected ? "selected" : "" )%> value="<%=cet.getName()%>"><%=cet.getDescription()%></option>
-<%                      }  %>
-                        </select><br>
-                         <fd:ErrorHandler result='<%=result%>' name='email_template_code' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler><BR>
+                    <td width="350" colspan="2">
+						 Select canned text:<br>
+						 <select onchange="FreshDirect.chooseCannedText(this);">
+						 	 <option value="_">---Select---</option><% 
+						 Iterator sit = allCt.iterator();
+						 while (sit.hasNext()) {
+							 ErpCannedText cannedText = (ErpCannedText) sit.next(); %>
+							 <option value="<%= cannedText.getId() %>"><%= cannedText.getName() %></option>
+						 <% } %></select> <a href="javascript:setPreviewEmailOn()">Preview Email</a><br>
                          <fd:ErrorHandler result='<%=result%>' name='previewEmail' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler><BR>
                         <span class="space2pix"><br></span>
-                        Enter custom paragraph:<br>
-                        <textarea cols="30" rows="5" name="custom_message" wrap="virtual" style="width: 250px;"><%= custom_message%></TEXTAREA><br><input type="checkbox" <%=(agent_signature?"checked":"")%> value="yes" name="agent_signature"> Include agent name in the signature.
+                        Edit selected canned text or enter custom paragraph:<br>
+                        <textarea cols="30" rows="5" name="custom_message" id="eo_custom_message" wrap="virtual" style="width: 250px;"><%= custom_message%></TEXTAREA><br><input type="checkbox" <%=(agent_signature?"checked":"")%> value="yes" name="agent_signature"> Include agent name in the signature.
                     </td>
-                    <td width="100%"></td>
                 </tr>
-				<script language="Javascript">
-				<!--
-				function selectCustom (thisTemplate) {
-					var generic = window.document.issue_credit.email_type[0];
-					var custom = window.document.issue_credit.email_type[1];
-					if (thisTemplate.value == "") {
-						if(custom.checked) {
-							custom.checked = false;
-							generic.checked = true;
-						}
-					} else {
-						if(generic.checked) {
-							generic.checked = false;
-							custom.checked = true;
-						}
-					}
-				}
-				//-->
-				</script>
             </table>
+            

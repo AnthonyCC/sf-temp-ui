@@ -21,7 +21,7 @@
 					</tr>
 					<tr>
 						<td>Phone</td>
-						<td colspan="4"><input type="text" name="phone" value="<%= "null".equalsIgnoreCase(request.getParameter("phone")) ? "" : request.getParameter("phone") %>" class="input_text"></td>
+						<td colspan="4"><input type="text" name="phone" id="cust_s_phone" title="Phone" value="<%= "null".equalsIgnoreCase(request.getParameter("phone")) ? "" : request.getParameter("phone") %>" class="input_text"></td>
 					</tr>
 					<tr>
 						<td>Order #</td>
@@ -61,3 +61,6 @@
                     </tr>
                     </form>
 				</table>
+				<script type="text/javascript">
+				FreshDirect.PhoneValidator.register(document.getElementById("cust_s_phone"), true);
+				</script>

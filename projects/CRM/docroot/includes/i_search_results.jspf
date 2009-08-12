@@ -1,6 +1,25 @@
-<%@ page import="com.freshdirect.framework.util.NVL" %>
-<%@ page import="com.freshdirect.webapp.util.JspLogger" %>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.List"%>
+<%@ page import="java.util.Iterator"%>
+<%@ page import="java.util.Comparator"%>
+<%@ page import="java.util.Map"%>
+<%@ page import="java.util.Collections"%>
 <%@ page import="java.net.URLEncoder" %>
+<%@ page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@ page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
+<%@ page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@ page import="com.freshdirect.fdstore.content.Recipe"%>
+<%@ page import="com.freshdirect.fdstore.content.ConfiguredProduct"%>
+<%@ page import="com.freshdirect.fdstore.content.Image"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDUserI"%>
+<%@ page import="com.freshdirect.fdstore.FDResourceException"%>
+<%@ page import="com.freshdirect.framework.util.NVL" %>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
+<%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@ page import="com.freshdirect.webapp.util.JspLogger" %>
+<%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+
 <%-- ===========================================================
 		This file expects the following objects:
 		- Collection products: Collection of ProductModels
@@ -8,10 +27,7 @@
 		- String offSet: indicates the starting position within the products Collection for the iterate tag
 =========================================================== --%>
 
-<%!	java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");%>
-
 <%!
-
  	  ////////////////////////////////////////
 	 ///////// tree builder methods /////////
 	////////////////////////////////////////
@@ -79,7 +95,10 @@
 <%
 	FDUserI searchUser = (FDUserI) session.getAttribute(SessionName.USER);
 %>
-		<TABLE WIDTH="100%" CELLPADDING="2" CELLSPACING="0" BORDER="0" class="order">
+		
+
+
+<TABLE WIDTH="100%" CELLPADDING="2" CELLSPACING="0" BORDER="0" class="order">
 <%		List sortedProducts = new ArrayList();
 		sortedProducts.addAll(recipes);
 		Collections.sort(sortedProducts,new RecipeComparator());
@@ -201,7 +220,7 @@
 <%		} else { %>
 <TD ALIGN="RIGHT" WIDTH="3%">
 <%	if (isAvailable) { %>
-	<script>
+	<script type="text/javascript">
 	function chgConfigQty<%=itemsShown%>(delta) {
 		qty = parseFloat(document.build_list.configQty_<%=itemsShown%>.value) + delta;
 		if (isNaN(qty) || qty < <%= productNode.getQuantityMinimum() %>) {
@@ -241,16 +260,17 @@ ADD</a><% } else { %>&nbsp;<% } %></TD>
 		} %>
 				<TD WIDTH="69%" <%= (isAvailable) ? "" : "class='text7silver'" %>>
 					&nbsp;&nbsp;<a href="<%= prodPageLink %>"><img border="0" src="<%= imgSrc %>" width="<%= imgWidth %>" height="<%= imgHeight %>"></a>&nbsp;<a href="<%=prodPageLink%>" class="product<%= (isAvailable) ? "" : "unavailable" %>"><%= productNode.getFullName() %></a> <%= configuredProd.getConfigurationDesc() != null ? "("+ configuredProd.getConfigurationDesc() +")":"" %></TD>
-			<fd:FDProductInfo id="productInfo" skuCode="<%= configSku %>">
-				<TD WIDTH="8%" class="product<%= (isAvailable) ? "" : "_unavailable" %>"><% if (isAvailable) { %><%= currencyFormatter.format(productInfo.getDefaultPrice()) %>/<%= productInfo.getDisplayableDefaultPriceUnit() %><% } else { %>Not Available<% } %></td>
-			</fd:FDProductInfo>
-				<TD WIDTH="5%" ALIGN="CENTER"><a href="javascript:popResize('/shared/product_summary.jsp?productId=<%=productNode%>&catId=<%=cat%>','740','555','summ')" class="help" title="Product description & Information" style="font-size: 6pt;">?</a><B><% if (showCrossSells) { %><a href="place_order_related_items.jsp?searchIndex=<%= searchIndex %>&productId=<%= productNode %>&catId=<%= cat%>" title="Related Products">&reg;</a><% } else { %><% } %></B></TD>
+<fd:FDProductInfo id="productInfo" skuCode="<%= configSku %>">
+				<TD WIDTH="8%" class="product<%= (isAvailable) ? "" : "_unavailable" %>"><% if (isAvailable) { %><%= CCFormatter.formatCurrency(productInfo.getDefaultPrice()) %>/<%= productInfo.getDisplayableDefaultPriceUnit() %><% } else { %>Not Available<% } %></td>
+</fd:FDProductInfo>
+				<TD WIDTH="5%" ALIGN="CENTER"><a href="javascript:popResize('/shared/product_summary.jsp?productId=<%=productNode%>&catId=<%=cat%>','740','555','summ')" class="help" title="Product description & Information" style="font-size: 6pt;">?</a><B><% if (showCrossSells) { %><a href="place_order_related_items.jsp?searchIndex=<%= searchIndex %>&productId=<%= productNode %>&catId=<%= cat%>" title="Related Products">&reg;</a><% } else { %><% } %></B>
 				<input type="hidden" name="productId" value="<%= productNode.isPreconfigured() ? ((ConfiguredProduct)productNode).getProduct() : productNode %>">
 				<input type="hidden" name="catId" value="<%= cat %>">
 				<input type="hidden" name="skuCode" value="<%= configuredProd.getSkuCode() %>">
 				<input type="hidden" name="vcNames" value="<%= namesBuf.toString() %>">
 				<input type="hidden" name="vcValues" value="<%= valuesBuf.toString() %>">
 				<input type="hidden" name="configDesc" value="<%= description %>">
+				</TD>
 			</TR>
 <%		productCounter++;
 		itemsShown++; %>

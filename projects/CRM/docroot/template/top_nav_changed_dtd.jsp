@@ -43,6 +43,7 @@
 
 <% } %>
 
+	<script type="text/javascript" src="/assets/javascript/phone_number.js"></script>
 </head>
 <body onload="<%=request.getAttribute("bodyOnLoad")%>"
       onunload="<%=request.getAttribute("bodyOnUnload")%>"

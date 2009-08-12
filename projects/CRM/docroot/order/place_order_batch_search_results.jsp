@@ -6,12 +6,52 @@
 <%@ page import="com.freshdirect.fdstore.content.*" %>
 <%@ page import="com.freshdirect.fdstore.customer.*" %>
 <%@ page import="com.freshdirect.framework.webapp.*" %>
+<%@ page import="com.freshdirect.framework.util.StringUtil"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%!
+List getSearchList(String params, int rix, String val2replace) {
+	List list = new ArrayList();
+	if (params != null && !"".equals(params.trim())) {
+		StringTokenizer tokenizer = new StringTokenizer(params, ",\r\n\f\"\'");
+		int k=0;
+		while (tokenizer.hasMoreTokens()) {
+			String currentToken = tokenizer.nextToken().trim();
+			
+			// replace current value with suggested one
+			if (k==rix)
+				currentToken = val2replace;
+			
+			if ( !"".equals(currentToken) ) {
+				list.add(currentToken);
+			}
+			
+			k++;
+		}
+	}
+	return list;
+}
 
+
+// this function replaces term in 'at' position with the suggested one
+String transform(HttpSession s, String suggestion, int at) {
+	// get the actual list from session
+	List a = getSearchList((String) s.getAttribute(SessionName.LIST_SEARCH_RAW), at, suggestion);
+	
+	// serialize word list back
+	StringBuffer paramsBuf = new StringBuffer();
+	for (Iterator it = a.iterator(); it.hasNext(); ) {
+		paramsBuf.append( (String) it.next() );
+		if ( it.hasNext() ) { paramsBuf.append(","); }
+	}
+
+	return paramsBuf.toString();
+}
+
+%>
 <%  //
     // Get index of current search term
     //
@@ -19,7 +59,7 @@
     if (request.getParameter("searchIndex") != null) {
         idx = Integer.parseInt( request.getParameter("searchIndex") );
     }
-    String searchIndex = String.valueOf(idx);
+    int searchIndex = idx /* String.valueOf(idx) */;
     String rawList = request.getParameter("search_pad");
     //
     // Get subset of results to display
@@ -32,15 +72,8 @@
 
 <fd:ParseSearchTerms searchParams="<%= rawList %>" isBulkSearch="true" searchFor="criteria" searchList="searchTerms">
 <fd:Search searchFor="<%= criteria %>" searchResults="searchResults" errorPage="/order/place_order_build.jsp">
-
 <tmpl:insert template='/template/top_nav.jsp'>
-
 <tmpl:put name='title' direct='true'>New Order > Search Results</tmpl:put>
-
-<%! SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy");
-    NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance( Locale.US );
-%>
-
 <tmpl:put name='content' direct='true'>
 
 <jsp:include page='/includes/order_header.jsp'/>
@@ -49,17 +82,13 @@
 <% 
 List products = new ArrayList();
 List recipes =  searchResults.getRecipes();
-if (searchResults != null && (recipes.size() >0 || searchResults.getExactProducts().size() > 0 || searchResults.getFuzzyProducts().size() > 0) ) { 
+if (searchResults != null && (recipes.size() > 0 || searchResults.getProducts().size() > 0) ) { 
         String offSet = "" + (pageCount * 75);
         
         // remove items that do not have a default sku
-        for (Iterator pi = searchResults.getExactProducts().iterator();pi.hasNext();) {
+        for (Iterator pi = searchResults.getProducts().iterator();pi.hasNext();) {
             ProductModel pm = (ProductModel)pi.next();
             if (pm.getDefaultSku()!=null) products.add(pm);
-        }
-        for (Iterator pi = searchResults.getFuzzyProducts().iterator();pi.hasNext();) {
-            ProductModel pm = (ProductModel)pi.next();
-            if (pm.getDefaultSku()!=null)   products.add(pm);
         }
 }
 
@@ -71,7 +100,7 @@ if (searchTerms.size() > 0) { %>
 <%  int termCounter = 0; %>
                         <logic:iterate id="term" collection="<%= searchTerms %>" type="java.lang.String">
 <%  if ( term.equalsIgnoreCase(criteria) ) { 
-        searchIndex=""+(termCounter);
+        searchIndex = termCounter /* ""+(termCounter) */;
 %>
                         &nbsp;<b><%= term %></b>&nbsp;
 <%  } else {  %>
@@ -84,8 +113,8 @@ if (searchTerms.size() > 0) { %>
             </table>
             <%-- =============== END BATCH SEARCH ITEMS SECTION ============ --%>
 <% } %>
-<table width="100%" cellpadding="2" cellspacing="0" border="0" align="CENTER" class="order">
     <form name="build_list" method="post">
+<table width="100%" cellpadding="2" cellspacing="0" border="0" align="CENTER" class="order">
     <tr valign="top">
         <td width="60%">
             <%-- ~~~~~~~~~~~~~ BEGIN RESULTS NAV SECTION ~~~~~~~~~~~~~ --%>
@@ -97,7 +126,7 @@ if (searchTerms.size() > 0) { %>
             <FONT CLASS="space4pix"><BR></FONT>
             <table width="100%" cellpadding="0" cellspacing="0" border="0" class="order">
                 <tr>
-                    <td width="50%">FOUND item <%= searchIndex+1%> of <%= searchTerms.size() %>: &nbsp; <FONT CLASS="text8blackbold"><%= criteria %></FONT> (<%= products.size() %> matches)<BR></td>
+                    <td width="50%">FOUND item #<%= searchIndex+1%> of <%= searchTerms.size() %>: &nbsp; <FONT CLASS="text8blackbold"><%= criteria %></FONT> (<%= products.size() %> matches)<BR></td>
                     <td width="50%" align="RIGHT">
                         <B>page 
 <%  for (int numPages = 0; numPages * 75 <= (recipes.size() + products.size()); numPages++) {
@@ -120,12 +149,21 @@ if (searchTerms.size() > 0) { %>
 %>
         <%@ include file="/includes/i_search_results.jspf"%>
 <%  } else { %>
-        <table width="100%" cellpadding="2" cellspacing="0" border="0" class="order">
-            <tr>
-                <td width="30%"></td>
-                <td width="70%"><% if ( !criteria.equalsIgnoreCase("fedele") ) { %>Your search for <span class="text7grbold"><%= criteria %></span> produced no results.<% } else { %><span class="text7grbold"><%= criteria%></span> runs the place. You can't buy him or sell him.<% } %></td>
-            </tr>
-        </table>
+		<div style="width: 100%; padding: 2px; margin-left: 30%" class="order">
+<%
+	if (searchResults.getSpellingSuggestion() != null) { 
+		String suggestion = searchResults.getSpellingSuggestion();
+%>
+			<div class="text15" style="line-height: 4em">
+			Did you mean <a style="font-weight: bold;" href="?searchIndex=<%= searchIndex %>&search_pad=<%= transform(session, suggestion, searchIndex) %>"><%=suggestion%></a>?
+			</div>
+<%
+	} else {
+%>			Your search for <span class="text7grbold"><%= criteria %></span> produced no results.
+<%
+	}
+%>
+		</div>
 <%  } %>
             <%-- ~~~~~~~~~~~~~ END SEARCH RESULTS SECTION ~~~~~~~~~~~~~ --%>
             
@@ -138,7 +176,7 @@ if (searchTerms.size() > 0) { %>
             <FONT CLASS="space4pix"><BR></FONT>
             <table width="100%" cellpadding="0" cellspacing="0" border="0" class="order">
                 <tr>
-                    <td width="50%">FOUND item <%=searchIndex %> of <%= searchTerms.size() %>: &nbsp; <FONT CLASS="text8blackbold"><%= criteria %></FONT> (<%= products.size() %> matches)<BR></td>
+                    <td width="50%">FOUND item #<%= searchIndex+1 %> of <%= searchTerms.size() %>: &nbsp; <FONT CLASS="text8blackbold"><%= criteria %></FONT> (<%= products.size() %> matches)<BR></td>
                     <td width="50%" align="RIGHT">
                         <B>page 
 <%  for (int numPages = 0; numPages * 75 <=(recipes.size()+ products.size()); numPages++) {
@@ -153,13 +191,13 @@ if (searchTerms.size() > 0) { %>
                 </tr>
             </table><FONT CLASS="space4pix"><BR></FONT>
             <%-- ~~~~~~~~~~~~~ END RESULTS NAV SECTION ~~~~~~~~~~~~~ --%>
-            </form>
             
             <BR>
             <BR>
         </td>
     </tr>
 </table>
+            </form>
 </div>
 
 <div class="order_list">
