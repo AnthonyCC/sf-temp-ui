@@ -256,16 +256,15 @@ public class TranslatorToGwt {
 	 * @param customFieldDefinition 
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
-	public static ModifiableAttributeI translateAttribute(AttributeI attribute, CustomFieldDefinition customFieldDefinition) {
-		
-		AttributeDefI definition = attribute.getDefinition();
-		String name = definition.getLabel();
-		EnumAttributeType type = definition.getAttributeType();
-		Object value = attribute.getValue();
-		ModifiableAttributeI attr = null; 
-		
-		if (type == EnumAttributeType.STRING) {
+    @SuppressWarnings("unchecked")
+    public static ModifiableAttributeI translateAttribute(AttributeI attribute, CustomFieldDefinition customFieldDefinition) {
+        AttributeDefI definition = attribute.getDefinition();
+        String name = definition.getLabel();
+        EnumAttributeType type = definition.getAttributeType();
+        Object value = attribute.getValue();
+        ModifiableAttributeI attr = null;
+
+        if (type == EnumAttributeType.STRING) {
             attr = new SimpleAttribute<String>("string", (String) value, name);
         } else if (type == EnumAttributeType.DOUBLE) {
             attr = new SimpleAttribute<Double>("double", (Double) value, name);
@@ -276,76 +275,75 @@ public class TranslatorToGwt {
         } else if (type == EnumAttributeType.BOOLEAN) {
             attr = new SimpleAttribute<Boolean>("boolean", (Boolean) value, name);
         } else if (type == EnumAttributeType.ENUM) {
-			EnumDef enumD = (EnumDef)definition;
-			EnumAttribute enumA = new EnumAttribute();
-			enumA.setLabel( name );
-			Serializable currValue = (Serializable)value;
+            EnumDef enumD = (EnumDef) definition;
+            EnumAttribute enumA = new EnumAttribute();
+            enumA.setLabel(name);
+            Serializable currValue = (Serializable) value;
 
-			for ( Map.Entry<Serializable, String> e : ((Map<Serializable,String>)enumD.getValues()).entrySet() ) {			
-				enumA.addValue( e.getKey(), e.getValue() );
-				if ( e.getKey().equals( currValue ) ) {
-					enumA.setValue( e.getKey(), e.getValue() );
-				}
-			}
+            for (Map.Entry<Serializable, String> e : ((Map<Serializable, String>) enumD.getValues()).entrySet()) {
+                enumA.addValue(e.getKey(), e.getValue());
+                if (e.getKey().equals(currValue)) {
+                    enumA.setValue(e.getKey(), e.getValue());
+                }
+            }
 
-			attr = enumA;
-		} else if ( type == EnumAttributeType.RELATIONSHIP ) {
-			RelationshipDef relD = (RelationshipDef)definition;
-			HashSet<String> cTypes = new HashSet<String>();
+            attr = enumA;
+        } else if (type == EnumAttributeType.RELATIONSHIP) {
+            RelationshipDef relD = (RelationshipDef) definition;
+            HashSet<String> cTypes = new HashSet<String>();
 
-			for ( Object k : relD.getContentTypes() ) {
-				ContentType ct = (ContentType)k;
-				cTypes.add( ct.getName() );
-			}
+            for (Object k : relD.getContentTypes()) {
+                ContentType ct = (ContentType) k;
+                cTypes.add(ct.getName());
+            }
 
-			if ( relD.isCardinalityOne() ) {
-				ContentKey v = (ContentKey)value;
-				OneToOneAttribute ooAttr = new OneToOneAttribute();
-				ooAttr.setLabel( name );
-				if ( v != null ) {
-					ContentNodeModel model = new ContentNodeModel(v.getType().getName(), v.getContentNode().getLabel(), v.getEncoded() );
-					ooAttr.setValue( model );
-				}
-				ooAttr.setAllowedTypes( cTypes );
-				attr = ooAttr;
-			} else {
-				Collection<ContentKey> values = (Collection<ContentKey>) value;
-				OneToManyAttribute ooAttr = new OneToManyAttribute( cTypes );
-				ooAttr.setLabel( name );
-				ooAttr.setNavigable( relD.isNavigable() );
-				if ( values != null ) {
-					int idx = 0;
-					for ( ContentKey k : values ) {
-					    ContentNodeI contentNode = k.getContentNode();
-						OneToManyModel model = new OneToManyModel( k.getType().getName(), k.getEncoded(), contentNode.getLabel(),
-								idx );
-						if (customFieldDefinition != null) {
-						    if (customFieldDefinition.getGridColumns() != null) {
-						        for (String col : customFieldDefinition.getGridColumns()) {
-						            Object attrValue = contentNode.getAttribute(col).getValue();
-						            model.set(col, attrValue);
-						        }
+            if (relD.isCardinalityOne()) {
+                ContentKey v = (ContentKey) value;
+                OneToOneAttribute ooAttr = new OneToOneAttribute();
+                ooAttr.setLabel(name);
+                if (v != null) {
+                    ContentNodeModel model = new ContentNodeModel(v.getType().getName(), v.getContentNode().getLabel(), v.getEncoded());
+                    ooAttr.setValue(model);
+                }
+                ooAttr.setAllowedTypes(cTypes);
+                attr = ooAttr;
+            } else {
+                Collection<ContentKey> values = (Collection<ContentKey>) value;
+                OneToManyAttribute ooAttr = new OneToManyAttribute(cTypes);
+                ooAttr.setLabel(name);
+                ooAttr.setNavigable(relD.isNavigable());
+                if (values != null) {
+                    int idx = 0;
+                    for (ContentKey k : values) {
+                        ContentNodeI contentNode = k.getContentNode();
+                        OneToManyModel model = new OneToManyModel(k.getType().getName(), k.getEncoded(), contentNode.getLabel(), idx);
+                        if (customFieldDefinition != null) {
+                            if (customFieldDefinition.getGridColumns() != null) {
+                                for (String col : customFieldDefinition.getGridColumns()) {
+                                    Object attrValue = contentNode.getAttribute(col).getValue();
+                                    model.set(col, attrValue);
+                                }
                             }
-						    // for variation matrix, we need the skus other properties too.
-						    if (customFieldDefinition.getType() == CustomFieldDefinition.Type.VariationMatrix) {
+                            // for variation matrix, we need the skus other
+                            // properties too.
+                            if (customFieldDefinition.getType() == CustomFieldDefinition.Type.VariationMatrix) {
                                 model.set("VARIATION_MATRIX", toClientValues(contentNode.getAttribute("VARIATION_MATRIX").getValue()));
                                 model.set("VARIATION_OPTIONS", toClientValues(contentNode.getAttribute("VARIATION_OPTIONS").getValue()));
-						    }
-						}
-						
-						ooAttr.addValue( model );
-						idx++;
-					}
-				}
-				attr = ooAttr;
-			}
-		}
-		attr.setInheritable( definition.isInheritable() );
-		attr.setReadonly( definition.isReadOnly() );
-		
-		return attr;
-		
-	}	
+                            }
+                        }
+
+                        ooAttr.addValue(model);
+                        idx++;
+                    }
+                }
+                attr = ooAttr;
+            }
+        }
+        attr.setInheritable(definition.isInheritable());
+        attr.setReadonly(definition.isReadOnly());
+
+        return attr;
+    }	
 
 
 	@SuppressWarnings("unchecked")
@@ -409,18 +407,18 @@ public class TranslatorToGwt {
 	
 	// =========================== private methods  ===========================
 	
-	@SuppressWarnings("unchecked")
-	private static ContentNodeI findEditor( ContentType type ) {
-		String typeName = type.getName();
-		Set<String> editorKeys = CmsManager.getInstance().getContentKeysByType( ContentType.get( "CmsEditor" ) );
-		Map<String,ContentNodeI> nodes = CmsManager.getInstance().getContentNodes( editorKeys );
-		for ( ContentNodeI node : nodes.values() ) {
-			if ( typeName.equals( node.getAttribute( "contentType" ).getValue().toString() ) ) {
-				return node;
-			}
-		}
-		return null;
-	}
+    @SuppressWarnings("unchecked")
+    private static ContentNodeI findEditor(ContentType type) {
+        String typeName = type.getName();
+        Set<ContentKey> editorKeys = CmsManager.getInstance().getContentKeysByType(ContentType.get("CmsEditor"));
+        Map<ContentKey, ContentNodeI> nodes = CmsManager.getInstance().getContentNodes(editorKeys);
+        for (ContentNodeI node : nodes.values()) {
+            if (typeName.equals(node.getAttribute("contentType").getValue().toString())) {
+                return node;
+            }
+        }
+        return null;
+    }
 
 	
     public static GwtPublishData getPublishData(Publish p) {
