@@ -74,7 +74,7 @@ public class ContentNodeUtil {
 	public static ContentNodeI eagerFetch(ContentKey key, boolean navigableOnly) {
 		ContentNodeI node = CmsManager.getInstance().getContentNode(key);
 		if (node != null) {
-			Set relKeys = collectRelatedKeys(node, navigableOnly);
+			Set<ContentKey> relKeys = collectRelatedKeys(node, navigableOnly);
 			CmsManager.getInstance().getContentNodes(relKeys);
 		}
 		return node;
@@ -86,7 +86,7 @@ public class ContentNodeUtil {
 	 * @param node content node, never null
 	 * @return Set of {@link ContentKey} (never null)
 	 */
-	public static Set getChildKeys(ContentNodeI node) {
+	public static Set<ContentKey> getChildKeys(ContentNodeI node) {
 		return collectRelatedKeys(node, true);
 	}
 
@@ -97,14 +97,14 @@ public class ContentNodeUtil {
 	 * @param type content type to search (null for all types)
 	 * @return Set of {@link ContentKey} (never null)
 	 */
-	public static Set collectReachableKeys(ContentNodeI node, ContentType type) {
-		Set s = new HashSet();
+	public static Set<ContentKey> collectReachableKeys(ContentNodeI node, ContentType type) {
+		Set<ContentKey> s = new HashSet<ContentKey>();
 		collectReachableKeys(s, type, node);
 		return s;
 	}
 
-	private static void collectReachableKeys(Set collectedKeys, ContentType targetType, ContentNodeI root) {
-		Set children = root.getChildKeys();
+	private static void collectReachableKeys(Set<ContentKey> collectedKeys, ContentType targetType, ContentNodeI root) {
+		Set<ContentKey> children = root.getChildKeys();
 		ContentTypeServiceI ts = CmsManager.getInstance().getTypeService();
 		for (Iterator i = children.iterator(); i.hasNext();) {
 			ContentKey k = (ContentKey) i.next();
@@ -126,7 +126,7 @@ public class ContentNodeUtil {
 	 * @param node content node, never null
 	 * @return Set of {@link ContentKey} (never null)
 	 */
-	public static Set getAllRelatedContentKeys(ContentNodeI node) {
+	public static Set<ContentKey> getAllRelatedContentKeys(ContentNodeI node) {
 		return collectRelatedKeys(node, false);
 	}
 
@@ -141,9 +141,9 @@ public class ContentNodeUtil {
 	 */
 	public static boolean addRelationshipKey(RelationshipI relationship, ContentKey key) {
 		if (EnumCardinality.MANY.equals(relationship.getDefinition().getCardinality())) {
-			List value = (List) relationship.getValue();
+			List<ContentKey> value = (List<ContentKey>) relationship.getValue();
 			if (value == null) {
-				value = new ArrayList();
+				value = new ArrayList<ContentKey>();
 				relationship.setValue(value);
 			} else {
 				if (value.contains(key)) {
@@ -157,19 +157,18 @@ public class ContentNodeUtil {
 		return true;
 	}
 
-	private static Set collectRelatedKeys(ContentNodeI node, boolean navigableOnly) {
-		Set s = new HashSet();
-		Map attrs = node.getAttributes();
+	private static Set<ContentKey> collectRelatedKeys(ContentNodeI node, boolean navigableOnly) {
+		Set<ContentKey> s = new HashSet<ContentKey>();
+		Map<String, AttributeI> attrs = node.getAttributes();
 
-		for (Iterator i = attrs.values().iterator(); i.hasNext();) {
-			AttributeI attr = (AttributeI) i.next();
+		for (AttributeI attr : attrs.values()) {
 			if (attr instanceof RelationshipI) {
 				RelationshipI rel = (RelationshipI) attr;
 				RelationshipDefI relDef = (RelationshipDefI) rel.getDefinition();
 				if (!navigableOnly || relDef.isNavigable()) {
 					if (EnumCardinality.ONE.equals(relDef.getCardinality())) {
 						if (rel.getValue() != null) {
-							s.add(rel.getValue());
+							s.add((ContentKey) rel.getValue());
 						}
 					} else {
 						if (rel.getValue() != null) {
@@ -187,19 +186,16 @@ public class ContentNodeUtil {
 	 * 
 	 * @return Map of {@link ContentKey} (child) -> Set of {@link ContentKey} (parents)
 	 */
-	public static Map getParentIndex(Collection nodes) {
-		Map parentsByKey = new HashMap(nodes.size());
+	public static Map<ContentKey, Set<ContentKey>> getParentIndex(Collection<ContentNodeI> nodes) {
+		Map<ContentKey, Set<ContentKey>> parentsByKey = new HashMap<ContentKey,Set<ContentKey>> (nodes.size());
 
-		for (Iterator i = nodes.iterator(); i.hasNext();) {
-			ContentNodeI node = (ContentNodeI) i.next();
+		for (ContentNodeI node : nodes) {
+			Set<ContentKey> childKeys = ContentNodeUtil.getChildKeys(node);
 
-			Set childKeys = ContentNodeUtil.getChildKeys(node);
-
-			for (Iterator di = childKeys.iterator(); di.hasNext();) {
-				ContentKey childKey = (ContentKey) di.next();
-				Set parentKeys = (Set) parentsByKey.get(childKey);
+			for (ContentKey childKey : childKeys) {
+				Set<ContentKey> parentKeys = parentsByKey.get(childKey);
 				if (parentKeys == null) {
-					parentKeys = new HashSet();
+					parentKeys = new HashSet<ContentKey>();
 				}
 				parentKeys.add(node.getKey());
 				parentsByKey.put(childKey, parentKeys);

@@ -53,7 +53,7 @@ public interface ContentNodeI extends Serializable {
 	 * 
 	 * @return Map of String (attr name) -> {@link AttributeI}
 	 */
-	public Map getAttributes();
+	public Map<String, AttributeI> getAttributes();
 
 	//
 	// convenience
@@ -64,7 +64,7 @@ public interface ContentNodeI extends Serializable {
 	 * 
 	 * @return Set of {@link ContentKey} (never null)
 	 */
-	public Set getChildKeys();
+	public Set<ContentKey> getChildKeys();
 
 	/**
 	 * Get a human readable label for this content node.

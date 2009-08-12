@@ -1,8 +1,5 @@
 package com.freshdirect.cms;
 
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang.enums.Enum;
 
 /**
@@ -21,12 +18,12 @@ public class EnumCardinality extends Enum {
 		return (EnumCardinality) getEnum(EnumCardinality.class, name);
 	}
 
-	public static Map getEnumMap() {
-		return getEnumMap(EnumCardinality.class);
-	}
+//	public static Map getEnumMap() {
+//		return getEnumMap(EnumCardinality.class);
+//	}
 
-	public static List getEnumList() {
-		return getEnumList(EnumCardinality.class);
-	}
+//	public static List getEnumList() {
+//		return getEnumList(EnumCardinality.class);
+//	}
 
 }

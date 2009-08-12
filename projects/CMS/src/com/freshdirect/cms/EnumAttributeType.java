@@ -1,8 +1,5 @@
 package com.freshdirect.cms;
 
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang.enums.Enum;
 
 /**
@@ -47,12 +44,12 @@ public class EnumAttributeType extends Enum {
 		return (EnumAttributeType) getEnum(EnumAttributeType.class, name);
 	}
 
-	public static Map getEnumMap() {
-		return getEnumMap(EnumAttributeType.class);
-	}
-
-	public static List getEnumList() {
-		return getEnumList(EnumAttributeType.class);
-	}
+//	public static Map getEnumMap() {
+//		return getEnumMap(EnumAttributeType.class);
+//	}
+//
+//	public static List getEnumList() {
+//		return getEnumList(EnumAttributeType.class);
+//	}
 
 }
