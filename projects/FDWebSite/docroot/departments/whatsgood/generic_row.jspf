@@ -104,7 +104,10 @@ List tmpList=new ArrayList();
 							//System.out.println("========================================================== : "+skusCheck);
 
 							%></logic:iterate><%
-
+							if (useSkus != null && useSkus.size()==0) {
+						            System.out.println(">>> generic_row.jspf 1 >>"+pm.getFullName()+"-->"+pm.getContentKey()+"-->"+pm.getContentName()+"-->"+pm.getContentType());
+						            continue;
+        						}
 							sku = (SkuModel) Collections.min(useSkus, priceComp);
 						}
 
@@ -169,6 +172,10 @@ List tmpList=new ArrayList();
 						boolean isDeal=false;
 						int deal=0;
 						
+						if (skus.size()==0) {
+					            System.out.println(">>> generic_row.jspf 2 >>"+pm.getFullName()+"-->"+pm.getContentKey()+"-->"+pm.getContentName()+"-->"+pm.getContentType());
+					            continue;
+        					}
 						if (skus.size() == 1) {
 							sku = (SkuModel)skus.get(0);  // we only need one sku
 						} else {

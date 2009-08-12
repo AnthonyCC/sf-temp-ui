@@ -57,7 +57,10 @@
         boolean isDeal=false;
         int deal=0;
 
-        /// if (skus.size()==0)
+        if (skus.size()==0) {
+            System.out.println(">>> i_featured_products_whatsgood.jspf >>"+product.getFullName()+"-->"+product.getContentKey()+"-->"+product.getContentName()+"-->"+product.getContentType());
+            continue;
+        }
         ///	  continue;  // skip this item..it has no skus.  Hmmm?
         if (skus.size() == 1) {
             sku = (SkuModel)skus.get(0);  // we only need one sku
