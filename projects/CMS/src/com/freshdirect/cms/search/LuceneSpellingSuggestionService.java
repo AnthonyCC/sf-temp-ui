@@ -352,19 +352,18 @@ public class LuceneSpellingSuggestionService {
 	 * @param hits list of {@link SpellingHit}
 	 * @return a list of spelling hits with the suggestions in the order they occur in the hits parameter 
 	 */
-	static public List getUniqueQueries(List hits) {
-		Set seen = new TreeSet(
-				new Comparator() {
-					public int compare(Object o1, Object o2) {
-						return ((SpellingHit)o1).getSuggestion().compareToIgnoreCase(((SpellingHit)o2).getSuggestion());
+	static public List<SpellingHit> getUniqueQueries(List<SpellingHit> hits) {
+		Set<SpellingHit> seen = new TreeSet<SpellingHit>(
+				new Comparator<SpellingHit>() {
+					public int compare(SpellingHit o1, SpellingHit o2) {
+						return o1.getSuggestion().compareToIgnoreCase(o2.getSuggestion());
 					}
 					
 				}
 			);
 		
-		List result = new ArrayList();
-		for(Iterator i = hits.iterator(); i.hasNext(); ) {
-			SpellingHit hit = (SpellingHit)i.next();
+		List<SpellingHit> result = new ArrayList<SpellingHit>();
+		for(SpellingHit hit : hits) {
 			if (seen.contains(hit)) continue;
 			seen.add(hit);
 			result.add(hit);

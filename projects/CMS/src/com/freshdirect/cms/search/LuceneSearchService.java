@@ -181,7 +181,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
 	/* (non-Javadoc)
 	 * @see com.freshdirect.cms.search.ContentSearchServiceI#index(java.util.Collection)
 	 */
-	public synchronized void index(Collection contentNodes) {
+	public synchronized void index(Collection<ContentNodeI> contentNodes) {
 		try {
 			// delete old documents
 			IndexReader localReader = createReader();
@@ -463,7 +463,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
 	/* (non-Javadoc)
 	 * @see com.freshdirect.cms.search.ContentSearchServiceI#search(java.lang.String, int)
 	 */
-	public List search(String query, int maxHits) {
+	public List<SearchHit> search(String query, int maxHits) {
 
 		try {
 
@@ -505,7 +505,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
 				return Collections.EMPTY_LIST;
 			}
 
-			List h = new ArrayList(hits.length());
+			List<SearchHit> h = new ArrayList<SearchHit>(hits.length());
 			int max = Math.min(maxHits, hits.length());
 			for (int i = 0; i < max; i++) {
 				Document doc = hits.doc(i);
@@ -565,7 +565,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
 	 * @param query original query
 	 * @param maxHits to retrieve for each term
 	 */
-	public List suggestSpelling(String query, int maxHits) {
+	public List<SpellingHit> suggestSpelling(String query, int maxHits) {
 		return LuceneSpellingSuggestionService.getUniqueQueries(
 				spellService.getSpellingHits(query, maxHits, quarterPlusOne));
 	}

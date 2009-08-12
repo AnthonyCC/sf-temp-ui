@@ -3,7 +3,6 @@
  */
 package com.freshdirect.cms.application;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,6 +17,7 @@ import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.context.ContextService;
 import com.freshdirect.cms.search.ContentSearchServiceI;
 import com.freshdirect.cms.search.SearchHit;
+import com.freshdirect.cms.search.SpellingHit;
 import com.freshdirect.framework.conf.FDRegistry;
 
 /**
@@ -91,11 +91,11 @@ public class CmsManager implements ContentServiceI {
      * 
      * @return List of {@link SearchHit}
      */
-	public List search(String term, int maxHits) {
+	public List<SearchHit> search(String term, int maxHits) {
 		return searchService.search(term, maxHits);
 	}
 	
-	public List suggestSpelling(String term, int maxHits) {
+	public List<SpellingHit> suggestSpelling(String term, int maxHits) {
 		return searchService.suggestSpelling(term, maxHits);
 	}
 	
@@ -107,23 +107,23 @@ public class CmsManager implements ContentServiceI {
 		return pipeline.getContentNode(cKey);
 	}
 
-	public Map getContentNodes(Set keys) {
+	public Map<ContentKey, ContentNodeI> getContentNodes(Set<ContentKey> keys) {
 		return pipeline.getContentNodes(keys);
 	}
 
-	public Map queryContentNodes(ContentType type, Predicate criteria) {
+	public Map<ContentKey, ContentNodeI> queryContentNodes(ContentType type, Predicate criteria) {
 		return pipeline.queryContentNodes(type, criteria);
 	}
 	
-	public Set getContentKeys() {
+	public Set<ContentKey> getContentKeys() {
 		return pipeline.getContentKeys();
 	}
 
-	public Set getContentKeysByType(ContentType type) {
+	public Set<ContentKey> getContentKeysByType(ContentType type) {
 		return pipeline.getContentKeysByType(type);
 	}
 
-	public Set getParentKeys(ContentKey key) {
+	public Set<ContentKey> getParentKeys(ContentKey key) {
 		return pipeline.getParentKeys(key);
 	}
 

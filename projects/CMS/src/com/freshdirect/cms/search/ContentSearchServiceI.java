@@ -8,6 +8,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.ContentType;
+
 /**
  * Service interface for indexing and searching content.
  *
@@ -22,7 +25,7 @@ public interface ContentSearchServiceI {
 	 * 
 	 * @return List of {@link SearchHit}
 	 */
-	public List search(String query, int maxHits);
+	public List<SearchHit> search(String query, int maxHits);
 	
 	
 	/**
@@ -31,14 +34,14 @@ public interface ContentSearchServiceI {
 	 * @param maxHits maximum number of spelling recommendations
 	 * @return List of queries
 	 */
-	public List suggestSpelling(String query, int maxHits);
+	public List<SpellingHit> suggestSpelling(String query, int maxHits);
 
 	/**
 	 * Update search index with some content objects.
 	 * 
 	 * @param contentNodes Collection of {@link com.freshdirect.cms.ContentNodeI} (never null)
 	 */
-	public void index(Collection contentNodes);
+	public void index(Collection<ContentNodeI> contentNodes);
 
 	/**
 	 * Optimize search index.
@@ -50,7 +53,7 @@ public interface ContentSearchServiceI {
 	 * 
 	 * @return Set of {@link com.freshdirect.cms.ContentType}
 	 */
-	public Set getIndexedTypes();
+	public Set<ContentType> getIndexedTypes();
 	
 	
 	/**

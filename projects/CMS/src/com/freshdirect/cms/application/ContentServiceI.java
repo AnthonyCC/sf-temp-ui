@@ -28,14 +28,14 @@ public interface ContentServiceI {
 	 * 
 	 * @return Set of ContentKey (never null)
 	 */
-	public Set getContentKeys();
+	public Set<ContentKey> getContentKeys();
 
 	/**
 	 * Get content keys matching given type.  
 	 * 
 	 * @return Set of ContentKey (never null)
 	 */
-	public Set getContentKeysByType(ContentType type);
+	public Set<ContentKey> getContentKeysByType(ContentType type);
 
 	/**
 	 * Get keys that have a navigable relationship TO the given key.
@@ -43,7 +43,7 @@ public interface ContentServiceI {
 	 * @param key ContentKey (never null)
 	 * @return Set of ContentKey (never null)
 	 */
-	public Set getParentKeys(ContentKey key);
+	public Set<ContentKey> getParentKeys(ContentKey key);
 
 	/**
 	 * @return ContentNodeI (or null if not found, or type is not supported)
@@ -56,7 +56,7 @@ public interface ContentServiceI {
 	 * @param keys Set of ContentKey
 	 * @return Map of ContentKey -> ContentNodeI (never null)
 	 */
-	public Map getContentNodes(Set keys);
+	public Map<ContentKey, ContentNodeI> getContentNodes(Set<ContentKey> keys);
 	
 	/**
 	 * Retrieve nodes of a certain type based on filter criteria.
@@ -65,7 +65,7 @@ public interface ContentServiceI {
 	 * @param criteria filter predicate (never null)
 	 * @return Map of ContentKey -> ContentNodeI (never null)
 	 */
-	public Map queryContentNodes(ContentType type, Predicate criteria);
+	public Map<ContentKey, ContentNodeI> queryContentNodes(ContentType type, Predicate criteria);
 
 	/**
 	 * Instantiate a new blank content object. The object is not yet stored at this point.
