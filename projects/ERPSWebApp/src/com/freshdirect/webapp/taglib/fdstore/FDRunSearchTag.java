@@ -68,10 +68,8 @@ public class FDRunSearchTag extends com.freshdirect.framework.webapp.BodyTagSupp
 			}
 		}
 
-		SearchResults res = ContentSearch.getInstance().searchOld(searchFor);
-		
-		//System.err.println("<<< "+res.getProducts().size());
-		
+        SearchResults res = ContentSearch.getInstance().search(searchFor);
+
 		// set search results in PageContext
 		pageContext.setAttribute(searchResults, res);
 

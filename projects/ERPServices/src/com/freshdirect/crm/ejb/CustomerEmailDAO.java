@@ -33,13 +33,12 @@ public class CustomerEmailDAO  {
 			ErpCustomerEmailModel em = (ErpCustomerEmailModel) model;
 			PreparedStatement ps =
 				conn.prepareStatement(
-					"INSERT INTO CUST.CRM_CUSTOMER_EMAIL(ID, EMAIL_SENT, EMAIL_TEMPLATE_CODE, CUSTOM_PARAGRAPH, SIGNATURE)" +					" VALUES(?,?,?,?,?)");
+					"INSERT INTO CUST.CRM_CUSTOMER_EMAIL(ID, EMAIL_SENT, CUSTOM_PARAGRAPH, SIGNATURE)" +					" VALUES(?,?,?,?)");
 
 		ps.setString(1, pk.getId());
 		ps.setString(2, (em.isMailSent() ? "X" : ""));
-		ps.setString(3, em.getEmailTemplateCode());
-		ps.setString(4, em.getCustomMessage()!=null ? em.getCustomMessage().substring(0,Math.min(em.getCustomMessage().length(),MAX_MESSAGE_LENGTH)) : "" );
-		ps.setString(5, em.getSignature());
+		ps.setString(3, em.getCustomMessage()!=null ? em.getCustomMessage().substring(0,Math.min(em.getCustomMessage().length(),MAX_MESSAGE_LENGTH)) : "" );
+		ps.setString(4, em.getSignature());
 		if (ps.executeUpdate() != 1) {
 			throw new SQLException("CRM_CUSTOMER_EMAIL Row not created");
 		}
@@ -77,7 +76,6 @@ public class CustomerEmailDAO  {
 		ErpCustomerEmailModel em = new ErpCustomerEmailModel(pk);
 		String mailSent = rs.getString("email_sent");
 		em.setMailSent("X".equalsIgnoreCase(mailSent));
-		em.setEmailTemplateCode(rs.getString("email_template_code"));
 		em.setCustomMessage(rs.getString("Custom_paragraph"));
 		em.setSignature(rs.getString("signature"));
 		

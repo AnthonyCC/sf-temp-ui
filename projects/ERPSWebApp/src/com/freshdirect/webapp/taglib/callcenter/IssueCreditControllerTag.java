@@ -10,13 +10,13 @@
 package com.freshdirect.webapp.taglib.callcenter;
 
 import java.io.IOException;
-import java.text.NumberFormat;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -26,6 +26,15 @@ import javax.servlet.jsp.JspWriter;
 import org.apache.log4j.Category;
 
 import com.freshdirect.crm.CrmAgentModel;
+import com.freshdirect.crm.CrmCaseAction;
+import com.freshdirect.crm.CrmCaseActionType;
+import com.freshdirect.crm.CrmCaseInfo;
+import com.freshdirect.crm.CrmCaseModel;
+import com.freshdirect.crm.CrmCaseOrigin;
+import com.freshdirect.crm.CrmCasePriority;
+import com.freshdirect.crm.CrmCaseState;
+import com.freshdirect.crm.CrmCaseSubject;
+import com.freshdirect.crm.CrmManager;
 import com.freshdirect.customer.EnumComplaintLineMethod;
 import com.freshdirect.customer.EnumComplaintLineType;
 import com.freshdirect.customer.EnumComplaintStatus;
@@ -37,6 +46,7 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
@@ -44,6 +54,7 @@ import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.taglib.fdstore.CallcenterUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.util.JspMethods;
 
 /**
  *
@@ -165,7 +176,17 @@ public class IssueCreditControllerTag extends com.freshdirect.framework.webapp.B
 					validateComplaint(actionResult, complaintModel);
 					if (actionResult.isSuccess() && "true".equalsIgnoreCase(request.getParameter("do_issue_credit"))) {
 						try {
+							// Create complaint first
 							addComplaint(actionResult, complaintModel);
+							
+							// Generate an auto case
+							CrmCaseModel autoCase = AutoCaseGenerator.createAutoCase(CrmSession.getCurrentAgent(session), order, complaintModel, pageContext.getRequest());
+							// store case
+							PrimaryKey autoCasePK = CrmManager.getInstance().createCase(autoCase);
+
+							FDCustomerManager.assignAutoCaseToComplaint(complaintModel, autoCasePK);
+
+
 							LOGGER.debug("Success, redirecting to: " + successPage);
 							CrmSession.invalidateCachedOrder(session);
 							HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
@@ -301,24 +322,8 @@ public class IssueCreditControllerTag extends com.freshdirect.framework.webapp.B
 	private void addComplaint(ActionResult result, ErpComplaintModel complaintModel)
 		throws FDResourceException, ErpComplaintException {
 
-		NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
-
-		LOGGER.debug("Creating credits for the following departments:");
-		LOGGER.debug("  Method\t\tDepartment\t\t\tAmount\t\t\tReason");
-		LOGGER.debug("  ------\t\t----------\t\t\t------\t\t\t------");
-		List lines = complaintModel.getComplaintLines();
-		for (Iterator it = lines.iterator(); it.hasNext();) {
-			ErpComplaintLineModel line = (ErpComplaintLineModel) it.next();
-			LOGGER.debug(
-				line.getMethod().getStatusCode()
-					+ "\t\t"
-					+ line.getDepartmentCode()
-					+ "\t\t\t"
-					+ currencyFormatter.format(line.getAmount())
-					+ "\t\t\t"
-					+ line.getReason().getReason());
-		}
-		LOGGER.debug("  Credit Notes: " + complaintModel.getDescription());
+		LOGGER.debug(complaintModel.describe() );
+		
 		HttpSession session = pageContext.getSession();
 		FDIdentity identity = ((FDUserI)session.getAttribute(SessionName.USER)).getIdentity();
 		FDCustomerManager.addComplaint(complaintModel, orderId,identity);
@@ -340,5 +345,4 @@ public class IssueCreditControllerTag extends com.freshdirect.framework.webapp.B
 		}
 		return;
 	}
-
 }

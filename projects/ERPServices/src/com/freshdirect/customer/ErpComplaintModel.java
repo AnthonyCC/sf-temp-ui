@@ -9,8 +9,10 @@
 
 package com.freshdirect.customer;
 
+import java.io.Serializable;
 import java.util.*;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.framework.core.ModelSupport;
 
 /**
@@ -21,11 +23,13 @@ import com.freshdirect.framework.core.ModelSupport;
  * @stereotype fd-model
  */
 public class ErpComplaintModel extends ModelSupport {
+	private static final long serialVersionUID = 807721304934675871L;
 
 	public static final int STORE_CREDIT	= 0;
 	public static final int CASH_BACK		= 1;
 	public static final int MIXED			= 2;
 	
+	// List<ErpComplaintLineModel>
 	private List complaintLines;
 	private String description;
 	private String createdBy;
@@ -38,14 +42,27 @@ public class ErpComplaintModel extends ModelSupport {
     private EnumSendCreditEmail emailOption;
     private String makegood_sale_id;
     
+    /**
+     * PK of automatically created case when credit issued
+     */
+    private String autoCaseId;
+    
     public ErpComplaintModel() {
         this.complaintLines = new ArrayList();
     }
 
+	// List<ErpComplaintLineModel>
     public List getComplaintLines() { return complaintLines; }
     public void setComplaintLines(List l) { this.complaintLines = l; }
     public void addComplaintLines(List l) { this.complaintLines.addAll(l); }
 
+    /**
+     * cartonized = complaint lines are following cartonized arrangement
+     */
+    public boolean isCartonized() {
+    	return complaintLines.size() > 0 && ((ErpComplaintLineModel) complaintLines.iterator().next() ).getCartonNumber() != null;
+    }
+    
     public String getDescription() { return description; }
     public void setDescription(String s) { this.description = s; }
 
@@ -239,5 +256,209 @@ public class ErpComplaintModel extends ModelSupport {
 	public boolean dontSendEmail(){
 		return EnumSendCreditEmail.DONT_SEND.equals(emailOption);
 	}
-}
 
+
+	/**
+	 * 
+	 * Complaint can be auto-approved.
+	 * 
+	 * No approval is required if all of the following are true:
+	 *   amount is under threshold
+	 *   only contains store credit
+	 *   order has been delivered
+	 * 
+	 *   -- OR --
+	 * 
+	 *   amount is zero (this is just a complaint with no credit expected)
+	 *   order is at least En-route
+	 * 
+	 *   -- OR --
+	 * 
+	 * 	MIXED or CASH_BACK and less than auto approve amount and STL
+	 * 
+	 * @return Complaint can be auto approved or not
+	 * 
+	 */
+	public boolean canBeAutoApproved() {
+		return
+			((getAmount() <= ErpServicesProperties.getCreditAutoApproveAmount())
+				&& (getComplaintMethod() == ErpComplaintModel.STORE_CREDIT)
+				&& (EnumSaleStatus.SETTLED.equals(status)
+					|| EnumSaleStatus.PAYMENT_PENDING.equals(status)
+					|| EnumSaleStatus.CAPTURE_PENDING.equals(status)))
+			|| ((0 == Math.round(getAmount() * 100.0))
+				&& (getComplaintMethod() == ErpComplaintModel.STORE_CREDIT)
+				&& (EnumSaleStatus.SETTLED.equals(status)
+					|| EnumSaleStatus.PAYMENT_PENDING.equals(status)
+					|| EnumSaleStatus.CAPTURE_PENDING.equals(status)
+					|| EnumSaleStatus.ENROUTE.equals(status)))
+			|| ((getComplaintMethod() == ErpComplaintModel.CASH_BACK
+					|| getComplaintMethod() == ErpComplaintModel.MIXED)
+					&& getAmount() <= ErpServicesProperties.getCreditAutoApproveAmount()
+					&& EnumSaleStatus.SETTLED.equals(status));
+		
+	}
+	
+	public String getAutoCaseId() {
+		return this.autoCaseId;
+	}
+	
+	public void setAutoCaseId(String autoCaseId) {
+		this.autoCaseId = autoCaseId;
+	}
+
+
+	public static java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
+	public String describe() {
+		StringBuffer buf = new StringBuffer();
+		
+		buf.append("Creating credits for the following departments:\n");
+		buf.append("  Method\t\tDepartment\t\t\tAmount\t\t\tReason\n");
+		buf.append("  ------\t\t----------\t\t\t------\t\t\t------\n");
+		List lines = this.getComplaintLines();
+		for (Iterator it = lines.iterator(); it.hasNext();) {
+			ErpComplaintLineModel line = (ErpComplaintLineModel) it.next();
+			buf.append(
+				line.getMethod().getStatusCode()
+					+ "\t\t"
+					+ line.getDepartmentCode()
+					+ "\t\t\t"
+					+ currencyFormatter.format(line.getAmount())
+					+ "\t\t\t"
+					+ line.getReason().getReason()
+					+ "\n");
+		}
+		buf.append("  Credit Notes: " + this.getDescription() + "\n");
+	
+		return buf.toString();
+	}
+	
+
+
+	public Set collectCartonNumbers() {
+		Set cartonNumbers = new HashSet();
+		
+		for (Iterator it=complaintLines.iterator(); it.hasNext(); ) {
+			ErpComplaintLineModel l = (ErpComplaintLineModel) it.next();
+			final String cartonNumber = l.getCartonNumber();
+			if (cartonNumber != null)
+				cartonNumbers.add(cartonNumber);
+		}
+
+		return cartonNumbers;
+	}
+
+	
+
+	/**
+	 * Find the most important reason in complaint lines
+	 */
+	public ErpComplaintReason getTopReason() {
+		ErpComplaintReason topReason = null;
+		
+		for (Iterator it=complaintLines.iterator(); it.hasNext(); ) {
+			ErpComplaintLineModel l = (ErpComplaintLineModel) it.next();
+			if (topReason == null || l.getReason().getPriority() > topReason.getPriority()) {
+				topReason = l.getReason();
+			}
+		}
+
+		return topReason;
+	}
+	
+	
+	// Set<EnumDlvIssueType>
+	public Set getDeliveryIssues() {
+		Set dlvTypes = new HashSet();
+		
+		for (Iterator it=complaintLines.iterator(); it.hasNext(); ) {
+			ErpComplaintLineModel l = (ErpComplaintLineModel) it.next();
+			dlvTypes.add(l.getReason().getDeliveryIssueType());
+		}
+		return dlvTypes;
+	}
+	
+	public int getPriority() {
+		int p = 0;
+		
+		for (Iterator it=getComplaintLines().iterator(); it.hasNext();) {
+			int lp = ((ErpComplaintLineModel) it.next()).getReason().getPriority();
+			if (lp > p)
+				p = lp;
+		}
+		
+		return p;
+	}
+
+
+	/**
+	 * Aggregate class for complaint lines belonging to a given department
+	 * 
+	 * @author segabor
+	 *
+	 */
+	public class AggregatedComplaintLines implements Serializable {
+		private static final long serialVersionUID = 236894187132938375L;
+
+		transient String departmentCode;
+		Collection complaintLines = new HashSet();
+		
+		public AggregatedComplaintLines(String deptCode) {
+			this.departmentCode = deptCode;
+		}
+		
+		public void addComplaintLine(ErpComplaintLineModel l) {
+			complaintLines.add(l);
+		}
+		
+		/**
+		 * Returns sum of complaint amounts
+		 * @return
+		 */
+		public double getAmount() {
+			double amt = 0;
+
+			for (Iterator it=complaintLines.iterator(); it.hasNext();) {
+				amt += ((ErpComplaintLineModel) it.next()).getAmount();
+			}
+			return amt;
+		}
+
+		/**
+		 * Picks the first method
+		 * @return
+		 */
+		public EnumComplaintLineMethod getMethod() {
+			return complaintLines.size() > 0 ?((ErpComplaintLineModel) complaintLines.iterator().next()).getMethod() : null;
+		}
+		
+		public String getDepartmentCode() {
+			return this.departmentCode;
+		}
+		
+		public String getDepartmentName() {
+			return complaintLines.size() > 0 ? ((ErpComplaintLineModel) complaintLines.iterator().next()).getDepartmentName() : null;
+		}
+	}
+
+
+	// @return Collection<AggregatedComplaintLines>
+	public Collection getComplaintLinesAggregated() {
+		// Map of dept code to complaint lines
+		Map deptSet = new HashMap();
+		for (Iterator it=getComplaintLines().iterator(); it.hasNext();) {
+			ErpComplaintLineModel l = (ErpComplaintLineModel) it.next();
+			final String deptCode = l.getDepartmentCode();
+			AggregatedComplaintLines complaintLines = (AggregatedComplaintLines) deptSet.get(deptCode);
+			if (complaintLines == null) {
+				complaintLines = new AggregatedComplaintLines(deptCode);
+				deptSet.put(deptCode, complaintLines);
+			}
+			complaintLines.addComplaintLine(l);
+		}
+		
+
+		// do aggregation
+		return deptSet.values();
+	}
+}

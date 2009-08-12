@@ -42,13 +42,25 @@ public class MailerGatewaySessionBean extends GatewaySessionBeanSupport implemen
 			mailMsg.setStringProperty(MailName.TO_ADDRESS, email.getRecipient());
 			
 			StringBuffer ccList = new StringBuffer(128);
-			for (Iterator i = email.getCCList().iterator(); i.hasNext(); ) {
-				    String e = (String) i.next();
-					ccList.append(e);
-					ccList.append(" ");
+			Iterator it = email.getCCList().iterator();
+			if (it.hasNext())
+				ccList.append(it.next());
+			while (it.hasNext()) {
+				ccList.append(';');
+				ccList.append(it.next());
 			}
 			
+			StringBuffer bccList = new StringBuffer(128);
+			it = email.getBCCList().iterator();
+			if (it.hasNext())
+				bccList.append(it.next());
+			while (it.hasNext()) {
+				bccList.append(';');
+				bccList.append(it.next());
+			}
+
 			mailMsg.setStringProperty(CC_ADDRESS, ccList.toString().trim());
+			mailMsg.setStringProperty(BCC_ADDRESS, bccList.toString().trim());
 			
 			mailMsg.setStringProperty(FROM_ADDRESS, email.getFromAddress().getAddress()); 
 			mailMsg.setStringProperty(FROM_ADDRESS_NAME, email.getFromAddress().getName());

@@ -2,12 +2,18 @@ package com.freshdirect.crm.ejb;
 
 import java.rmi.RemoteException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.ejb.CreateException;
 import javax.ejb.DuplicateKeyException;
@@ -37,8 +43,10 @@ import com.freshdirect.crm.CrmStatus;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.ActivityLog;
 import com.freshdirect.customer.EnumAccountActivityType;
+import com.freshdirect.customer.EnumCannedTextCategory;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.customer.ErpCannedText;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ejb.ErpCustomerEB;
@@ -59,7 +67,8 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 
 public class CrmManagerSessionBean extends SessionBeanSupport {
-	
+	private static final long serialVersionUID = 6027777576711960489L;
+
 	private final static Category LOGGER = LoggerFactory.getInstance( CrmManagerSessionBean.class );
     
     private final static ServiceLocator LOCATOR = new ServiceLocator();
@@ -953,4 +962,234 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		logActivity(rec);
 
 	}
+
+	public ErpCannedText createCannedText(ErpCannedText cannedText) throws FDResourceException {
+        Connection conn = null;
+		try {
+			conn = this.getConnection();
+			CrmCannedTextDAO dao = new CrmCannedTextDAO();
+			return dao.create(conn, cannedText);
+		} catch (SQLException e) {
+			throw new FDResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException se) {
+				throw new FDResourceException(se);
+			}
+		}
+	}
+
+	public void updateCannedText(ErpCannedText cannedText, String id) throws FDResourceException {
+        Connection conn = null;
+		try {
+			conn = this.getConnection();
+			CrmCannedTextDAO dao = new CrmCannedTextDAO();
+			dao.update(conn, cannedText, id);
+		} catch (SQLException e) {
+			throw new FDResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException se) {
+				throw new FDResourceException(se);
+			}
+		}
+	}
+	
+	public void deleteCannedText(String id) throws FDResourceException {
+        Connection conn = null;
+		try {
+			conn = this.getConnection();
+			CrmCannedTextDAO dao = new CrmCannedTextDAO();
+			dao.delete(conn, id);
+		} catch (SQLException e) {
+			throw new FDResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException se) {
+				throw new FDResourceException(se);
+			}
+		}
+	}
+
+	public ErpCannedText getCannedTextById(String id) throws FDResourceException {
+        Connection conn = null;
+		try {
+			conn = this.getConnection();
+			CrmCannedTextDAO dao = new CrmCannedTextDAO();
+			return dao.load(conn, id);
+		} catch (SQLException e) {
+			throw new FDResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException se) {
+				throw new FDResourceException(se);
+			}
+		}
+	}
+
+	public Collection getAllCannedTextInCategory(EnumCannedTextCategory category) throws FDResourceException {
+        Connection conn = null;
+		try {
+			conn = this.getConnection();
+			CrmCannedTextDAO dao = new CrmCannedTextDAO();
+			return dao.loadAllInCategory(conn, category);
+		} catch (SQLException e) {
+			throw new FDResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException se) {
+				throw new FDResourceException(se);
+			}
+		}
+	}
+	
+	public Collection getAllCannedText() throws FDResourceException {
+        Connection conn = null;
+		try {
+			conn = this.getConnection();
+			CrmCannedTextDAO dao = new CrmCannedTextDAO();
+			return dao.loadAll(conn);
+		} catch (SQLException e) {
+			throw new FDResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException se) {
+				throw new FDResourceException(se);
+			}
+		}
+	}
+
+
+
+
+
+	// selects complaint delivery issue types for orders in history
+	public static final String DLV_ISSUE_TYPES_SQL = 
+		"select x.sale_id, x.itype " +
+		"from cust.sale s " +
+		"join ( " +
+		"  select distinct c.sale_id as sale_id, cc.dlv_issue_code as itype " +
+		"  from cust.complaint c " +
+		"  join cust.complaintline cl " +
+		"    on(cl.complaint_id=c.id) " +
+		"  join cust.complaint_dept_code cdc " +
+		"    on(cdc.id=cl.complaint_dept_code_id) " +
+		"  join cust.complaint_code cc " +
+		"    on(cc.code=cdc.comp_code) " +
+		"  order by c.sale_id, cc.dlv_issue_code " +
+		") x on(s.id=x.sale_id) " +
+		"where s.customer_id=? " +
+		"and x.itype is not null " +
+		"order by sale_id";
+	
+	
+	/* @return Map<String,Set<String>> */
+	public Map getComplaintDeliveryIssueTypes(String erpCustomerId) throws FDResourceException {
+        Connection conn = null;
+		try {
+			conn = this.getConnection();
+
+			PreparedStatement ps = conn.prepareStatement(DLV_ISSUE_TYPES_SQL);
+			ps.setString(1, erpCustomerId);
+			ResultSet rs = ps.executeQuery();
+
+			Map complDlvIssueTypes = new HashMap();
+			while(rs.next()) {
+				String key=rs.getString("sale_id");
+				if (complDlvIssueTypes.get(key) == null) {
+					Set s = new HashSet();
+					s.add(rs.getString("itype"));
+					complDlvIssueTypes.put(key, s);
+				} else {
+					((Set) complDlvIssueTypes.get(key)).add(rs.getString("itype"));
+				}
+			}
+
+
+			rs.close();
+			ps.close();
+
+			return complDlvIssueTypes;
+		} catch (SQLException e) {
+			throw new FDResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException se) {
+				throw new FDResourceException(se);
+			}
+		}
+	}
+	
+
+
+	public static final String QUERY_LAST_DELIVERED_ORDER = 
+		"select id from ( " +
+		"  select s.id, row_number() over (order by to_number(s.id) desc) r " +
+		"  from cust.sale s, cust.salesaction sa " +
+		"  where s.id = sa.sale_id " +
+		"  and sa.action_type in ('CRO', 'MOD') " + 
+		"  and sa.action_date = ( " +
+		"    select max(action_date) " +
+		"    from cust.salesaction sa1 " +
+		"    where sa1.action_type in ('CRO', 'MOD') " +
+		"    and sa1.sale_id = s.id " +
+		"  ) " +
+		"  and s.customer_id= ? " +
+		"  and s.truck_number is not null " +
+		"  and s.type='REG' " +
+		") where r=1";
+	
+	public String getLastDeliveredOrder(String erpCustomerId) throws FDResourceException {
+        Connection conn = null;
+		try {
+			conn = this.getConnection();
+
+			PreparedStatement ps = conn.prepareStatement(QUERY_LAST_DELIVERED_ORDER);
+			ps.setString(1, erpCustomerId);
+			ResultSet rs = ps.executeQuery();
+
+			String saleId = null;
+			if (rs.next()) {
+				saleId = rs.getString(1);
+			}
+
+
+			rs.close();
+			ps.close();
+
+			return saleId;
+		} catch (SQLException e) {
+			throw new FDResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException se) {
+				throw new FDResourceException(se);
+			}
+		}
+	}
+	
 }

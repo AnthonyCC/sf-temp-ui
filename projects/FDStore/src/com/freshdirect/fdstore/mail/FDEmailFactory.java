@@ -587,6 +587,7 @@ public class FDEmailFactory {
 			super(customer);
 			this.saleId = saleId;
 			this.complaint = complaint;
+			this.getBCCList().addAll(FDStoreProperties.getIssueCreditBccAddresses());
 		}
 
 		protected void decorateMap(Map map) {

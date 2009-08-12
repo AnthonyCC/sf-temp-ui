@@ -118,10 +118,10 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 
 	private final static ServiceLocator LOCATOR = new ServiceLocator();
 
-	public Map getComplaintReasons() throws FDResourceException {
+	public Map getComplaintReasons(boolean excludeCartonReq) throws FDResourceException {
 		try {
 			ErpComplaintManagerSB complaintSB = this.getComplaintManagerHome().create();
-			return complaintSB.getReasons();
+			return complaintSB.getReasons(excludeCartonReq);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {

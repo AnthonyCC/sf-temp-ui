@@ -10,6 +10,7 @@ package com.freshdirect.customer.ejb;
 
 import java.rmi.RemoteException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,7 +32,6 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.crm.CrmCaseSubject;
@@ -1145,36 +1145,8 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		try {
 			ErpSaleEB eb = getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
 			EnumSaleStatus status = eb.getStatus();
-			//
-			// no approval is required if all of the following are true:
-			//      amount is under threshhold
-			//		only contains store credit
-			//      order has been delivered
-			//
-			//      -- OR --
-			//
-			//      amount is zero (this is just a complaint with no credit expected)
-			//      order is at least En-route
-			//
-			//		-- OR --
-			//		MIXED or CASH_BACK and less than auto approve amount and STL
 			
-			boolean autoApprove =
-				((complaint.getAmount() <= ErpServicesProperties.getCreditAutoApproveAmount())
-					&& (complaint.getComplaintMethod() == ErpComplaintModel.STORE_CREDIT)
-					&& (EnumSaleStatus.SETTLED.equals(status)
-						|| EnumSaleStatus.PAYMENT_PENDING.equals(status)
-						|| EnumSaleStatus.CAPTURE_PENDING.equals(status)))
-				|| ((0 == Math.round(complaint.getAmount() * 100.0))
-					&& (complaint.getComplaintMethod() == ErpComplaintModel.STORE_CREDIT)
-					&& (EnumSaleStatus.SETTLED.equals(status)
-						|| EnumSaleStatus.PAYMENT_PENDING.equals(status)
-						|| EnumSaleStatus.CAPTURE_PENDING.equals(status)
-						|| EnumSaleStatus.ENROUTE.equals(status)))
-				|| ((complaint.getComplaintMethod() == ErpComplaintModel.CASH_BACK
-						|| complaint.getComplaintMethod() == ErpComplaintModel.MIXED)
-						&& complaint.getAmount() <= ErpServicesProperties.getCreditAutoApproveAmount()
-						&& EnumSaleStatus.SETTLED.equals(status));
+			boolean autoApprove = complaint.canBeAutoApproved();
 
 
 			//
@@ -2416,5 +2388,38 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				throw new EJBException(ce);
 			}
 		}
-	 
+
+
+	public void assignAutoCaseToComplaint(ErpComplaintModel complaint, PrimaryKey autoCasePK) {
+		Connection conn = null;
+		try {
+			conn = this.getConnection();
+
+			PreparedStatement ps = conn.prepareStatement("UPDATE CUST.COMPLAINT SET AUTO_CASE_ID=? WHERE ID=?");
+			ps.setString(1, autoCasePK.getId());
+			ps.setString(2, complaint.getPK().getId());
+			
+			try {
+				if (ps.executeUpdate() != 1) {
+					throw new SQLException("Row not updated (missing complaint)");
+				}
+			} catch (SQLException sqle) {
+				throw sqle;
+			} finally {
+				ps.close();
+			}
+
+		} catch(SQLException exc) {
+			throw new EJBException(exc);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+					conn = null;
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("SQLException while cleaning up", se);
+			}
+		}
+	}
 }

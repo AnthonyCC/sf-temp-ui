@@ -10,10 +10,13 @@ package com.freshdirect.fdstore;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -141,6 +144,7 @@ public class FDStoreProperties {
 	private final static String UNLIMITED_PROFILE_POSFIX = "fdstore.unlimitedProfilePosfix";
 	private final static String UNLIMITED_PROMOTIONAL_PROFILE = "fdstore.unlimitedPromotionalProfile";
 	private final static String UNLIMITED_AMAZON_PRIME_PROFILE = "fdstore.unlimitedAmazonPrimeProfile";
+	private static final String CRM_CREDIT_ISSUE_BCC = "fdstore.callCenter.creditIssue.bcc";
 
 	private final static String DLV_PASS_PROMOTION_PREFIX = "fdstore.dlvPassPromotionPrefix";
 	private final static String DLV_PASS_MAX_PURCHASE_LIMIT="fdstore.dlvPass.maxPurchaseLimit";
@@ -417,6 +421,7 @@ public class FDStoreProperties {
 		defaults.put(CRM_UNLIMITED_SIGNUP_URL, "/order/product.jsp?productId=mkt_fd_dlvpss_unl6m&catId=gro_gear_dlvpass");
 		defaults.put(CRM_UNLIMITED_PROMOTIONAL_SIGNUP_URL, "/order/product.jsp?productId=mkt_fd_dlvpss_unl6m&catId=gro_gear_dlvpass");
 		defaults.put(CRM_UNLIMITED_AMAZON_PRIME_SIGNUP_URL, "/order/product.jsp?productId=mkt_fd_dlvpss_unl6m&catId=gro_gear_dlvpass");
+		defaults.put(CRM_CREDIT_ISSUE_BCC, "");
 
 		defaults.put(BSGS_PROFILE_POSFIX, "BuySomeGetSome");
 		defaults.put(UNLIMITED_PROFILE_POSFIX, "Unlimited");
@@ -1165,6 +1170,15 @@ public class FDStoreProperties {
 	public static void setLastRefresh(long lastRefresh) {
             FDStoreProperties.lastRefresh = lastRefresh;
         }
-	
-}
 
+	public static Collection getIssueCreditBccAddresses() {
+ 		String[] bcc = get(CRM_CREDIT_ISSUE_BCC).split(",");
+ 		List bccs = new ArrayList(bcc.length);
+ 		for (int i = 0; i < bcc.length; i++) {
+ 			String addr = bcc[i].trim();
+ 			if (addr.length() != 0)
+ 				bccs.add(addr);
+ 		}
+ 		return bccs;
+ 	}	
+}

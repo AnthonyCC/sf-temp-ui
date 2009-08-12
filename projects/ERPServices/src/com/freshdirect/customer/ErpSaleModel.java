@@ -858,6 +858,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		return lastOrder;
 	}
 
+	/** @return Collection<ErpComplaintModel> */
 	public Collection getComplaints() {
 		return Collections.unmodifiableCollection(this.complaints);
 	}

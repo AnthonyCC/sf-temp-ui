@@ -19,6 +19,7 @@ public interface MailName {
     public final static String TO_ADDRESS 			= "emailToAddress";
     
     public final static String CC_ADDRESS 			= "emailCcAddress"; 
+    public final static String BCC_ADDRESS 			= "emailBccAddress"; 
        
     public final static String FROM_ADDRESS 		= "emailFromAddress";
     public final static String FROM_ADDRESS_NAME 	= "emailFromAddressName";

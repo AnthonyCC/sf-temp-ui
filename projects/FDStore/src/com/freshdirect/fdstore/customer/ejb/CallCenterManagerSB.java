@@ -29,7 +29,7 @@ import com.freshdirect.framework.util.GenericSearchCriteria;
  */
 public interface CallCenterManagerSB extends EJBObject {
 
-	public Map getComplaintReasons() throws FDResourceException, RemoteException;
+	public Map getComplaintReasons(boolean excludeCartonReq) throws FDResourceException, RemoteException;
 	
 	public Map getComplaintCodes() throws FDResourceException, RemoteException;
 

@@ -93,15 +93,6 @@ public class SearchResults implements Serializable {
 	private SpellingResultsDifferences spellingResultsDifferences = null;
 
 	
-	// -- backward compatibility -- //
-	/** @deprecated */
-	private final List exactCategories;
-	/** @deprecated */
-	private final List exactProducts;
-	/** @deprecated */
-	private final List fuzzyProducts;
-
-
 	public SearchResults(
 			List products,
 			List recipes,
@@ -110,34 +101,6 @@ public class SearchResults implements Serializable {
 		this.recipes = recipes;
 		this.productsRelevant = productsRelevant;
 		this.searchTerm = searchTerm;
-
-		// deprecated //
-		exactCategories = null;
-		exactProducts = null;
-		fuzzyProducts = null;
-	}
-
-	/**
-	 * @deprecated
-	 * 
-	 * @param exactCategories
-	 * @param exactProducts
-	 * @param fuzzyProducts
-	 * @param recipes
-	 * @param productsRelevant
-	 */
-	public SearchResults(
-			List exactCategories,
-			List exactProducts,
-			List fuzzyProducts,
-			List recipes,
-			boolean productsRelevant) {
-		this.exactCategories = exactCategories;
-		this.exactProducts = exactProducts;
-		this.fuzzyProducts = fuzzyProducts;
-		this.recipes = recipes;
-		this.productsRelevant = productsRelevant;
-		this.searchTerm = null;
 	}
 
 	/**
@@ -163,18 +126,14 @@ public class SearchResults implements Serializable {
 	}
 	
 	void setProducts(List products) {
-            this.products = products;
-        }
+		this.products = products;
+	}
 	
 	public List getRecipes() {
 		return recipes;
 	}
 
 	public int numberOfResults() {
-		// maintain backward compatibility
-		if (exactCategories != null && exactProducts != null && fuzzyProducts != null)
-			return exactCategories.size() + exactProducts.size() + fuzzyProducts.size() + recipes.size();
-
 		return products.size() + recipes.size();
 	}
 	
@@ -195,29 +154,10 @@ public class SearchResults implements Serializable {
 	}
 
 	public String getSearchTerm() {
-            return searchTerm;
-        }
+		return searchTerm;
+	}
 	
 	public void setSearchTerm(String searchTerm) {
-            this.searchTerm = searchTerm;
-        }
-
-	// -- old code, to be removed later -- //
-	
-	/** @deprecated */
-	public List getExactCategories() {
-		return exactCategories;
+		this.searchTerm = searchTerm;
 	}
-
-	/** @deprecated */
-	public List getExactProducts() {
-		return exactProducts;
-	}
-
-	/** @deprecated */
-	public List getFuzzyProducts() {
-		return fuzzyProducts;
-	}
-	
-	
 }

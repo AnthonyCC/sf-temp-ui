@@ -100,6 +100,8 @@ public class EnumUserInfoName implements Serializable {
 	public final static EnumUserInfoName DLV_UNATTENDED_DELIVERY_INSTRUCTIONS = new EnumUserInfoName(63,"unattendedDeliveryInstr","Unattended Delivery Instructions");
 	public final static EnumUserInfoName DLV_UNATTENDED_CONSENT_SEEN = new EnumUserInfoName(64,"unattendedDeliveryNoticeSeen","Unattended Delivery Notice Seen");
 	
+	public final static EnumUserInfoName DLV_CELL_PHONE = new EnumUserInfoName(65, "dlvcellphone", "Cell Phone");
+
 	private int id;
 	private String code;
 	private String description;

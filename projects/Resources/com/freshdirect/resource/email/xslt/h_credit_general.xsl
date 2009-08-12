@@ -34,22 +34,25 @@
 					<td>
 						<p><b>Dear <xsl:value-of select="customer/firstName"/></b>,</p>
 
-						<p>We are very sorry to hear that your order was incomplete. We take these issues very seriously and every effort will be made to ensure all items are included in future orders. A credit has been issued for the product and we apologize for any inconvenience.
-						<br/><br/>
+                        <xsl:if test="string-length(complaint/customerEmail/customMessage) &gt; 0">
+                        <p style="white-space: pre;">
+                           <xsl:value-of select='complaint/customerEmail/customMessage'/>
+                        </p>
+                        </xsl:if>
 						We have issued you the following credits for <b>order #<xsl:value-of select="saleId"/></b>:
 						<br/><br/>
 
 						<xsl:if test="complaint/storeCreditAmount &gt; 0">
-							<xsl:for-each select="complaint/complaintLines/complaintLines">
+							<xsl:for-each select="complaint/complaintLinesAggregated/complaintLinesAggregated">
                                 <xsl:if test="not(number(amount)=0)">
                                     <xsl:if test="method = 'FDC'">
                                         $<xsl:value-of select='format-number(amount, "###,##0.00", "USD")'/><xsl:text>  </xsl:text> from the 
-										<xsl:if test="departmentCode = 'GDW'">
-											<xsl:text>Customer Service</xsl:text> 
-										</xsl:if>
-										<xsl:if test="not(departmentCode='GDW')">
-											<xsl:value-of select="departmentName"/>
-										</xsl:if>
+                                        <xsl:if test="departmentCode = 'GDW'">
+                                            <xsl:text>Customer Service</xsl:text> 
+                                        </xsl:if>
+                                        <xsl:if test="not(departmentCode='GDW')">
+                                            <xsl:value-of select="departmentName"/>
+                                        </xsl:if>
 										 Department in store credit<br/>
                                     </xsl:if>
                                 </xsl:if>
@@ -62,16 +65,16 @@
 							</xsl:if>
 						</xsl:if>
 						<xsl:if test="complaint/cashBackAmount &gt; 0">
-							<xsl:for-each select="complaint/complaintLines/complaintLines">
+							<xsl:for-each select="complaint/complaintLinesAggregated/complaintLinesAggregated">
                                 <xsl:if test="not(number(amount)=0)">
                                     <xsl:if test="method = 'CSH'">
                                         $<xsl:value-of select='format-number(amount, "###,##0.00", "USD")'/><xsl:text>  </xsl:text> from the 
-										<xsl:if test="departmentCode = 'GDW'">
-											<xsl:text>Customer Service</xsl:text> 
-										</xsl:if>
-										<xsl:if test="not(departmentCode='GDW')">
-											<xsl:value-of select="departmentName"/>
-										</xsl:if>
+                                        <xsl:if test="departmentCode = 'GDW'">
+                                            <xsl:text>Customer Service</xsl:text> 
+                                        </xsl:if>
+                                        <xsl:if test="not(departmentCode='GDW')">
+                                            <xsl:value-of select="departmentName"/>
+                                        </xsl:if>
                                          Department charged back to your credit card<br/>
                                     </xsl:if>
                                 </xsl:if>
@@ -82,26 +85,26 @@
 
 						$<xsl:value-of select='format-number(complaint/amount, "###,##0.00", "USD")'/> TOTAL CREDIT<br/>
 						<br/>
-						<xsl:if test="complaint/storeCreditAmount &gt; 0">We'll automatically subtract these store credits from your next order total at the last stage of checkout.<xsl:text>  </xsl:text></xsl:if>
-						<xsl:if test="complaint/cashBackAmount &gt; 0">Please note that this credit should be reflected on your Credit Card within 5 days.</xsl:if>
+						<xsl:if test="complaint/storeCreditAmount &gt; 0">Please note it takes approximately two business days for your store credit to become available. Once it is available we'll automatically subtract these store credits from your next order total at the last stage of checkout.</xsl:if>
+						<xsl:if test="complaint/cashBackAmount &gt; 0">Please note that this credit should reflect on your credit card within five business days.</xsl:if>
 						<br/>
 						<br/>
+						I'd like to thank you for letting us know what occurred and giving us the opportunity to help solve your problem. If, for any reason you're dissatisfied with how we resolved your problem, or need further assistance, please feel free to e-mail us directly by clicking on the contact us link on the website or call us at 212-796-8002.<br/>
 						<br/>
-						<xsl:if test="string-length(complaint/customerEmail/customMessage) &gt; 0">
-						   <xsl:value-of select='complaint/customerEmail/customMessage'/>
-						   <br/><br/>
-						</xsl:if>
-						We invite you to let us know how we're doing. <a href="http://www.freshdirect.com/help/contact_fd.jsp">Click here</a> to contact us.<br/>
-						<br/>
-						If you have any other questions, please call us toll-free at 1-866-283-7374. We're here Sunday-Thursday 8am-1am and Fridays and Saturdays from 7:30am-10pm. Or, you may email us at <a href="mailto:service@freshdirect.com">service@freshdirect.com</a>.<br/>
+						Your satisfaction is our number one priority!<br/>
 						<br/>
 						Sincerely,<br/>
 						<br/>
-						  <xsl:if test="string-length(complaint/customerEmail/signature) &gt; 0">
-							<xsl:value-of select="complaint/customerEmail/signature"/><br/>
-						  </xsl:if>
-						FreshDirect Customer Service<br/>
-						<a href="http://www.freshdirect.com">www.freshdirect.com</a></p>
+                          <xsl:if test="string-length(complaint/customerEmail/signature) &gt; 0">
+                            <xsl:value-of select="complaint/customerEmail/signature"/><br/>
+                          </xsl:if>
+						Your FreshDirect Customer Service Team<br/>
+						Keep in mind that we are here for you:<br/>
+						<br/>
+						Monday-Thursday 6:30am-12am<br/>
+						Fridays 6:30am-11pm<br/>
+						Saturdays 7:30am-8pm<br/>
+						Sundays 7:30am-12am<br/>
 
 						<p><xsl:call-template name="h_footer_v1"/></p>
 

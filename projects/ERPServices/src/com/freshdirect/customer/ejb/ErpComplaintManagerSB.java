@@ -21,7 +21,7 @@ import java.util.Map;
  */
 public interface ErpComplaintManagerSB extends EJBObject {
 
-	 public Map getReasons() throws RemoteException;
+	 public Map getReasons(boolean excludeCartonReq) throws RemoteException;
 	 
 	 public Map getComplaintCodes() throws RemoteException;
 

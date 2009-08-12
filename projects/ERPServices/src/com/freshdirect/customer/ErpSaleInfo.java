@@ -20,6 +20,7 @@ import com.freshdirect.payment.EnumPaymentMethodType;
  * @author $Author$
  */
 public class ErpSaleInfo extends BasicSaleInfo {
+	private static final long serialVersionUID = 296882849292695124L;
 
 	private final double amount;
 	private final double subTotal;

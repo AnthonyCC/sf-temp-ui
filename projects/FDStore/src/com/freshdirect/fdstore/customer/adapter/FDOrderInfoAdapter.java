@@ -13,6 +13,9 @@ import com.freshdirect.customer.*;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  *
@@ -25,6 +28,8 @@ public class FDOrderInfoAdapter implements FDOrderInfoI {
 
 	protected final ErpSaleInfo saleInfo;
 
+	Set deliveryIssueTypes;
+	
 	public FDOrderInfoAdapter(ErpSaleInfo saleInfo) {
 		this.saleInfo = saleInfo;
 	}
@@ -119,12 +124,12 @@ public class FDOrderInfoAdapter implements FDOrderInfoI {
 	}
 
 	// can be null
-	public String getStopSequence() {
+	public String getTruckNumber() {
 		return this.saleInfo.getTruckNumber();
 	}
-
+	
 	// can be null
-	public String getTruckNumber() {
+	public String getStopSequence() {
 		return this.saleInfo.getStopSequence();
 	}
 }

@@ -10,6 +10,7 @@ package com.freshdirect.fdstore.customer;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.EnumDeliveryType;

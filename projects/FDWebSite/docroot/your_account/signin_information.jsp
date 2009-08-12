@@ -8,10 +8,12 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
+
+<%@page import="com.freshdirect.common.address.PhoneNumber"%><fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <tmpl:insert template='/common/template/dnav.jsp'>
     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - User Name, Password, & Contact Info</tmpl:put>
     <tmpl:put name='content' direct='true'>
+<script type="text/javascript" src="/assets/javascript/phone_number.js"></script>
 
 <fd:RegistrationController actionName='<%=request.getParameter("actionName")%>' result='result'>
 
@@ -84,24 +86,24 @@ if (request.getParameter(EnumUserInfoName.ALT_EMAIL.getCode())!=null) {
 }
 
 if (request.getParameter("homephone")!=null) {
-    homePhone=request.getParameter("homephone");
+    homePhone = PhoneNumber.format(request.getParameter("homephone"));
 }
 if (request.getParameter("ext")!=null) {
-    homePhoneExt = request.getParameter("ext");
+    homePhoneExt = homePhone == null || homePhone.length() == 0 ? "" : request.getParameter("ext");
 }
 
 if (request.getParameter("busphone")!=null) {
-    busPhone=request.getParameter("busphone");
+    busPhone = PhoneNumber.format(request.getParameter("busphone"));
 }
 if (request.getParameter("busphoneext")!=null) {
-    busPhoneExt = request.getParameter("busphoneext");
+    busPhoneExt = busPhone == null || busPhone.length() == 0 ? "" : request.getParameter("busphoneext");
 }
 
 if (request.getParameter("cellphone")!=null) {
-    cellPhone = request.getParameter("cellphone");
+    cellPhone = PhoneNumber.format(request.getParameter("cellphone"));
 }
 if (request.getParameter("cellphoneext")!=null) {
-    cellPhoneExt = request.getParameter("cellphoneext");
+    cellPhoneExt = cellPhone == null || cellPhone.length() == 0 ? "" : request.getParameter("cellphoneext");
 }
 
 if (request.getParameter(EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode())!=null) {
@@ -149,7 +151,8 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 							EnumUserInfoName.REPEAT_PASSWORD.getCode(), EnumUserInfoName.DLV_HOME_PHONE.getCode(),
 							EnumUserInfoName.DLV_FIRST_NAME.getCode(), EnumUserInfoName.DLV_LAST_NAME.getCode(),
 							EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode(), EnumUserInfoName.DLV_EMPLOYEE_ID.getCode(),
-							EnumUserInfoName.ALT_EMAIL.getCode()}; 
+							EnumUserInfoName.ALT_EMAIL.getCode(), EnumUserInfoName.DLV_WORK_PHONE.getCode(),
+							EnumUserInfoName.DLV_CELL_PHONE.getCode()}; 
 %>
 <fd:ErrorHandler result='<%=result%>' field='<%=checkInfoForm%>'>
 	<% String errorMsg = SystemMessageList.MSG_MISSING_INFO; %>	
@@ -244,7 +247,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	</tr>
 </form>
 
-<form method="post" name"updateContactInformation">
+<form method="post" name="updateContactInformation">
 <input type="hidden" name="actionName" value="changeContactInfo">
 <tr>
 	<td colspan="6">
@@ -280,18 +283,20 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 <tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0"></td></tr>
 <tr>
 	<td colspan="2" align="right" style="padding-right:5px;" class="text12"><%=!user.isCorporateUser() ? "* " : "" %> Home Phone #</td>
-    <td colspan="2" class="text12"><input type="text" size="28" maxlength="20" class="text9" name="homephone" value="<%=homePhone%>" required="true" style="width:150px; padding:1px;">&nbsp;&nbsp;Ext. <input type="text" maxlength="6" size="4" class="text9" name="ext" value="<%=homePhoneExt%>"></td>
+    <td colspan="2" class="text12"><input type="text" size="28" maxlength="20" class="text9" name="homephone" id="uci_homePhone" title="Home Phone" value="<%=homePhone%>" required="true" style="width:150px; padding:1px;">&nbsp;&nbsp;Ext. <input type="text" maxlength="6" size="4" class="text9" name="ext" value="<%=homePhoneExt%>"></td>
 	<td colspan="2"><fd:ErrorHandler result='<%=result%>' name='dlvhomephone' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr>
 <tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0"></td></tr>
 <tr>
 	<td colspan="2" align="right" style="padding-right:5px;" class="text12"><%=user.isCorporateUser() ? "* " : "" %>Work Phone #</td>
-    <td colspan="4" class="text12"><input type="text" size="28" maxlength="20" class="text9" name="busphone" value="<%=busPhone%>" style="width:150px; padding:1px;">&nbsp;&nbsp;Ext. <input type="text" maxlength="6" size="4" class="text9" name="busphoneext" value="<%=busPhoneExt%>"></td>
+    <td colspan="2" class="text12"><input type="text" size="28" maxlength="20" class="text9" name="busphone" id="uci_busPhone" title="Business Phone" value="<%=busPhone%>" style="width:150px; padding:1px;">&nbsp;&nbsp;Ext. <input type="text" maxlength="6" size="4" class="text9" name="busphoneext" value="<%=busPhoneExt%>"></td>
+	<td colspan="2"><fd:ErrorHandler result='<%=result%>' name='busphone' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr>
 <tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0"></td></tr>
 <tr>
 	<td colspan="2" align="right" style="padding-right:5px;" class="text12">Cell/Alt. #</td>
-    <td colspan="4" class="text12"><input type="text" size="28" maxlength="20" class="text11" name="cellphone" value="<%=cellPhone%>" style="width:150px; padding:1px;">&nbsp;&nbsp;Ext. <input type="text" maxlength="6" size="4" class="text9" name="cellphoneext" value="<%=cellPhoneExt%>"></td>
+    <td colspan="2" class="text12"><input type="text" size="28" maxlength="20" class="text11" name="cellphone" id="uci_cellPhone" title="Cell Phone" value="<%=cellPhone%>" style="width:150px; padding:1px;">&nbsp;&nbsp;Ext. <input type="text" maxlength="6" size="4" class="text9" name="cellphoneext" value="<%=cellPhoneExt%>"></td>
+	<td colspan="2"><fd:ErrorHandler result='<%=result%>' name='dlvcellphone' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr>
 <tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0"></td></tr>
 <tr>
@@ -343,6 +348,12 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 </tr>
 </form>
 </table>
+
+<script type="text/javascript">
+FreshDirect.PhoneValidator.register(document.getElementById("uci_homePhone"));
+FreshDirect.PhoneValidator.register(document.getElementById("uci_busPhone"));
+FreshDirect.PhoneValidator.register(document.getElementById("uci_cellPhone"));
+</script>
 
 <br>
 <table cellpadding="0" cellspacing="0" border="0" width="675">

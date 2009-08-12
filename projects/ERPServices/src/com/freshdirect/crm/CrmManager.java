@@ -2,11 +2,14 @@ package com.freshdirect.crm;
 
 import java.rmi.RemoteException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
@@ -15,6 +18,9 @@ import javax.naming.NamingException;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.crm.ejb.CrmManagerHome;
 import com.freshdirect.crm.ejb.CrmManagerSB;
+import com.freshdirect.customer.EnumCannedTextCategory;
+import com.freshdirect.customer.EnumComplaintDlvIssueType;
+import com.freshdirect.customer.ErpCannedText;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.fdstore.FDResourceException;
@@ -406,6 +412,84 @@ public class CrmManager {
 			this.getCrmManagerSB().logViewAccount(agent, customerID);
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Error in CrmManagerSB while log view account activity.");
+		}
+	}
+	public ErpCannedText createCannedText(ErpCannedText cannedText) throws FDResourceException {
+		try {
+			return this.getCrmManagerSB().createCannedText(cannedText);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Error in CrmManagerSB while creating canned text.");
+		}		
+	}
+
+	public void updateCannedText(ErpCannedText cannedText, String id) throws FDResourceException {
+		try {
+			this.getCrmManagerSB().updateCannedText(cannedText, id);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Error in CrmManagerSB while updating canned text.");
+		}		
+	}
+	
+	public void deleteCannedText(String id) throws FDResourceException {
+		try {
+			this.getCrmManagerSB().deleteCannedText(id);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Error in CrmManagerSB while deleting canned text.");
+		}		
+	}
+	
+	public ErpCannedText getCannedTextById(String id) throws FDResourceException {
+		try {
+			return this.getCrmManagerSB().getCannedTextById(id);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Error in CrmManagerSB while getting canned text.");
+		}		
+	}
+
+	public Collection getAllCannedTextInCategory(EnumCannedTextCategory category) throws FDResourceException {
+		try {
+			return this.getCrmManagerSB().getAllCannedTextInCategory(category);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Error in CrmManagerSB while getting all canned text in category.");
+		}		
+	}
+
+	public Collection getAllCannedText() throws FDResourceException {
+		try {
+			return this.getCrmManagerSB().getAllCannedText();
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Error in CrmManagerSB while getting all canned text.");
+		}		
+	}
+
+	public Map getDeliveryIssueTypes(String customerId) throws FDResourceException {
+		try {
+			Map m = this.getCrmManagerSB().getComplaintDeliveryIssueTypes(customerId);
+			Map t_m = new HashMap();
+
+			// transform 
+			for (Iterator it=m.entrySet().iterator(); it.hasNext();) {
+				Map.Entry e = (Map.Entry) it.next();
+				
+				Set t_s = new HashSet();
+				for (Iterator it2 = ((Set)e.getValue()).iterator(); it2.hasNext(); ){
+					t_s.add( EnumComplaintDlvIssueType.getEnum( (String) it2.next() )  );
+				}
+				
+				t_m.put(e.getKey(), t_s);
+			}
+			return t_m;
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Error in CrmManagerSB while getting delivery issue types.");
+		}
+	}
+
+	
+	public String getLastDeliveredOrder(String customerId) throws FDResourceException {
+		try {
+			return this.getCrmManagerSB().getLastDeliveredOrder(customerId);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Error in CrmManagerSB while getting first delivered sale.");
 		}
 	}
 }

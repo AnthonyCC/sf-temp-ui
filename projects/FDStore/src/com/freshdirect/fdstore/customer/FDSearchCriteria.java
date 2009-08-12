@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.fdstore.FDResourceException;
 
 public class FDSearchCriteria implements Serializable {
@@ -67,7 +68,7 @@ public class FDSearchCriteria implements Serializable {
 
 	public void setPhone(String phone) {
 		if (phone != null && !"".equals(phone.trim())) {
-			this.phone = phone;
+			this.phone = normalize(phone);
 		}
 	}
 
@@ -141,5 +142,17 @@ public class FDSearchCriteria implements Serializable {
 		buf.append(" DepotCode: ").append(this.depotCode).append("]");
 
 		return buf.toString();
+	}
+
+	private static String normalize(String string) {
+		StringBuffer clean = new StringBuffer();
+		if (string == null)
+			return "";
+		for (int i = 0; i < string.length(); i++) {
+			if (Character.isDigit(string.charAt(i)) || string.charAt(i) == '*') {
+				clean.append(string.charAt(i));
+			}
+		}
+		return clean.toString();
 	}
 }

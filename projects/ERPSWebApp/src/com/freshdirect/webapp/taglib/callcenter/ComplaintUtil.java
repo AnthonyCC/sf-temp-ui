@@ -3,9 +3,11 @@ package com.freshdirect.webapp.taglib.callcenter;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.freshdirect.customer.ErpComplaintReason;
 import com.freshdirect.fdstore.CallCenterServices;
@@ -14,29 +16,104 @@ import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDOrderI;
 
 public class ComplaintUtil {
-
+	private static Object lock = new Object();
     
-    private static Map complaintReasons = new HashMap();
+    private static Map complaintReasons				= new HashMap();
+    private static Map complaintReasons_noCartsReq	= new HashMap();
+
     private static long lastUpdate = 0;
+    private static long lastUpdate_noCartsReq = 0;
+
     private static final long refreshPeriod = 1000 * 60 * 10; // 10 minutes
     
-    private static Map getReasonMap() throws FDResourceException {
-        if (System.currentTimeMillis() - lastUpdate > refreshPeriod) {
-            synchronized (complaintReasons) {
-                complaintReasons = CallCenterServices.getComplaintReasons();
-                lastUpdate = System.currentTimeMillis();
-            }
+    private static Map getReasonMap(boolean excludeCartonReq) throws FDResourceException {
+    	Map ret = null;
+        synchronized (lock) {
+        	if (excludeCartonReq) {
+            	if (System.currentTimeMillis() - lastUpdate_noCartsReq > refreshPeriod) {
+		        	complaintReasons_noCartsReq = CallCenterServices.getComplaintReasons(true);
+		        	lastUpdate_noCartsReq = System.currentTimeMillis();
+            	}
+            	ret = complaintReasons_noCartsReq;
+        	} else {
+            	if (System.currentTimeMillis() - lastUpdate > refreshPeriod) {
+	                complaintReasons = CallCenterServices.getComplaintReasons(false);
+	                lastUpdate = System.currentTimeMillis();
+            	}
+            	ret = complaintReasons;
+        	}
         }
-        return complaintReasons;
+        return ret;
     }
-    
-    public static List getReasonsForDepartment(String dept) throws FDResourceException {
-        List reasons = (List) getReasonMap().get(standardizeDepartment(dept));
+
+
+    // @return List<ErpComplaintReason>
+    public static List getReasonsForDepartment(String dept, boolean excludeCartReq) throws FDResourceException {
+        List reasons = (List) getReasonMap(excludeCartReq).get(standardizeDepartment(dept));
         return reasons != null ? reasons : Collections.EMPTY_LIST;
     }
-    
+
+    // @return List<ErpComplaintReason>
+    // @deprecated use getReasonsForDepartment(String dept, boolean excludeCartReq) instead with 'false' 
+    public static List getReasonsForDepartment(String dept) throws FDResourceException {
+    	return getReasonsForDepartment(dept, false);
+    }
+
+    // @return Set<String>
+    public static Set getReasonTextsForDepartment(String dept, boolean excludeCartReq) throws FDResourceException {
+        List reasons = (List) getReasonMap(excludeCartReq).get(standardizeDepartment(dept));
+
+        if (reasons != null && reasons.size() > 0) {
+        	Set rTexts = new HashSet(reasons.size());
+        	
+        	for (Iterator it=reasons.iterator(); it.hasNext();) {
+        		rTexts.add( ((ErpComplaintReason)it.next()).getReason() );
+        	}
+        	return rTexts;
+        }
+
+        return Collections.EMPTY_SET;
+    }
+
+
+    /**
+     * Produces complaint reasons from list of departments. The result will be the intersection of
+     * department reasons.
+     * 
+     * @param depts Collection of department names
+     * @return Reasons set
+     * @throws FDResourceException
+     */
+    // @return Set<String>
+    public static Set getReasonsForDepartments(Collection depts, boolean excludeCartReq) throws FDResourceException {
+    	Iterator it=depts.iterator();
+    	
+    	// Case k=0
+    	if (!it.hasNext())
+    		return Collections.EMPTY_SET;
+    	
+    	String deptName = (String) it.next();
+    	Set reasons = getReasonTextsForDepartment(deptName, excludeCartReq);
+
+    	// Case k=1
+    	if (!it.hasNext())
+    		return reasons;
+
+    	// Case k>1
+    	Set r0 = reasons; // convert list to set
+    	while (it.hasNext()) {
+        	deptName = (String) it.next();
+        	Set r1 = getReasonTextsForDepartment(deptName, excludeCartReq);
+        	
+        	r0.retainAll(r1); // intersect r0 and r1
+    	}
+
+    	return r0; // convert final set back to list
+    }
+
+
     public static ErpComplaintReason getReasonById(String id) throws FDResourceException {
-        Map allReasons = getReasonMap();
+        Map allReasons = getReasonMap(false);
         for (Iterator dIter = allReasons.keySet().iterator(); dIter.hasNext(); ) {
             String dept = (String) dIter.next();
             List deptReasons = (List) allReasons.get(dept);
@@ -79,7 +156,13 @@ public class ComplaintUtil {
         else if ( dept.toLowerCase().indexOf("health") != -1 ) { r = "HBA"; }
         else if ( "Our Picks".equalsIgnoreCase(dept) ){ r = "OURPICKS"; }        
         else if ( "4-Minute Meals".equalsIgnoreCase(dept) ){ r = "FDI"; }
-        else if ( "Makegood".equalsIgnoreCase(dept) ){ r = "MGD"; }              
+        else if ( "Makegood".equalsIgnoreCase(dept) ){ r = "MGD"; }
+
+        else if ( "at the office".equalsIgnoreCase(dept) ){ r = "COS"; }
+        else if ( "buy big".equalsIgnoreCase(dept) ){ r = "BIG"; }
+        else if ( "local".equalsIgnoreCase(dept) ){ r = "LOC"; }
+        else if ( "what's good".equalsIgnoreCase(dept) ){ r = "WGD"; }
+
         return r;
     }
 

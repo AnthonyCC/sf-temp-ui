@@ -36,5 +36,6 @@
 %>
 <p>Warmup done</p>
 
+<a href="/">Go to home page</a>
 </body>
 </html>

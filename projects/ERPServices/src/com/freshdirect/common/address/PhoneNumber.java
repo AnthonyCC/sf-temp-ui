@@ -12,7 +12,7 @@ public class PhoneNumber implements java.io.Serializable {
 
 	public PhoneNumber(String phone, String extension) {
 		this.phone = retainDigits(NVL.apply(phone, ""));
-		this.extension = extension;
+		this.extension = this.phone.length() == 0 ? null : extension;
 	}
 
 	public boolean equals(Object o) {
@@ -48,14 +48,26 @@ public class PhoneNumber implements java.io.Serializable {
 	}
 
 	private static String retainDigits(String string) {
-		char[] chars = string.toCharArray();
 		StringBuffer clean = new StringBuffer();
-		for (int i = 0; i < chars.length; i++) {
-			if (Character.isDigit(chars[i])) {
-				clean.append(chars[i]);
+		if (string == null)
+			return "";
+		for (int i = 0; i < string.length(); i++) {
+			if (Character.isDigit(string.charAt(i))) {
+				clean.append(string.charAt(i));
 			}
 		}
 		return clean.toString();
 	}
 
+	public static String format(String string) {
+		String digits = retainDigits(string);
+		if (digits.length() == 10)
+			return formatPhone(digits);
+		else
+			return digits;
+	}
+	
+	public static String normalize(String string) {
+		return retainDigits(string);
+	}
 }

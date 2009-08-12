@@ -12,7 +12,9 @@ package com.freshdirect.webapp.taglib.callcenter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -26,7 +28,6 @@ import com.freshdirect.customer.EnumComplaintLineMethod;
 import com.freshdirect.customer.EnumComplaintLineType;
 import com.freshdirect.customer.EnumComplaintStatus;
 import com.freshdirect.customer.EnumComplaintType;
-import com.freshdirect.customer.EnumCreditEmailType;
 import com.freshdirect.customer.EnumSendCreditEmail;
 import com.freshdirect.customer.ErpComplaintLineModel;
 import com.freshdirect.customer.ErpComplaintModel;
@@ -34,6 +35,7 @@ import com.freshdirect.customer.ErpCustomerEmailModel;
 import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -50,6 +52,7 @@ import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.taglib.fdstore.CallcenterUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.util.CCFormatter;
 
 public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTagSupport implements SessionName  {
     
@@ -72,6 +75,7 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
     private String [] orderLineOriginalPrice = null;
     private String [] orderLineDeposit        = null;
     private String [] orderLineTaxRate        = null;
+    private String [] orderLineCartonNumber	= null;
     
     // General credit inputs
     String [] miscCreditAmount      = null;
@@ -120,6 +124,9 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
 		try {
 			 identity = ((FDUserI)session.getAttribute(SessionName.USER)).getIdentity();
 			 ci = FDCustomerManager.getCustomerInfo(identity);
+		} catch (NullPointerException npe) {
+			LOGGER.error("Customer is not drawn into CRM system", npe);
+			throw new JspException(npe.getMessage());
 		} catch (FDResourceException ex) {
 			LOGGER.warn("FDResourceException while building ErpComplaintModel", ex);
 			throw new JspException(ex.getMessage());
@@ -168,7 +175,7 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
         this.parseEmailOptions(result,complaintModel);
     }
     
-    
+
     /**
      * Build complaint lines for each order line and validate data.
      *
@@ -177,6 +184,9 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
         
         ArrayList lines = new ArrayList();
         FDOrderAdapter order = (FDOrderAdapter) FDCustomerManager.getOrder(this.orderId);
+        
+        // Map<String,Double> => orderline ID -> credit amount
+        Map crAmounts = new HashMap();
         
         for (int i = 0; i < orderLineQty.length; i++) {
             
@@ -191,42 +201,19 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
             // ...but make sure they at least have a reason code
             //
             if (orderLineReason[i] == null || "".equals(orderLineReason[i])) continue;
+	            final String oID = this.orderLineId[i];
+	            ErpOrderLineModel orderline = order.getOrderLine(oID);
             
             // Set up the Complaint Line Model with proper info
             //
             line.setType(EnumComplaintLineType.ORDER_LINE);
-            line.setOrderLineId(this.orderLineId[i]);
+			line.setOrderLineId(oID);
             line.setComplaintLineNumber(""+i);
             //line.setDepartment( orderLineDept[i] );
-            double quantity = 0.0;
-            if ( orderLineQty[i] != null && !"".equals(orderLineQty[i]) ){
-                quantity = Double.parseDouble(orderLineQty[i]);
-            	line.setQuantity(quantity);
-            }
-            
-            double amount = 0.0;
-            if(this.orderLineCreditAmount[i] != null && !"".equals(orderLineCreditAmount[i])){
-            	amount = Double.parseDouble(orderLineCreditAmount[i]);
-            	if(amount > 0) {
-            		line.setAmount(amount);
-            	}
-            }
-            // If quanity was entered the amount is recalculated.
-            if ( quantity > 0 ) {
-                double amt = 0.0;
-                if (Double.parseDouble(orderLineOriginalQty[i])!=0) {
-	                amt+= Double.parseDouble(orderLineQty[i]) * (Double.parseDouble( orderLineOriginalPrice[i])/Double.parseDouble(orderLineOriginalQty[i]) ) ;
-	
-					if (orderLineTaxRate[i] != null && !"".equals(orderLineTaxRate[i])) {
-						amt+= (amt * Double.parseDouble( orderLineTaxRate[i]))  ;
-					}
-	
-	                if (orderLineDeposit[i] != null && !"".equals(orderLineDeposit[i])) {
-						amt+= Double.parseDouble(orderLineQty[i]) * (Double.parseDouble( orderLineDeposit[i])/Double.parseDouble(orderLineOriginalQty[i]) ) ;
-	                }
-                }
-                line.setAmount(amt);
-            }
+
+
+            processCreditAmount(line, orderline, crAmounts, i, result);
+
             if ( orderLineReason[i] != null && !"".equals(orderLineReason[i]) )
                 line.setReason( ComplaintUtil.getReasonById(orderLineReason[i]) );
             if ( EnumComplaintLineMethod.STORE_CREDIT.getStatusCode().equals( orderLineMethod[i] ) ) {
@@ -235,6 +222,11 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
             	line.setMethod( EnumComplaintLineMethod.CASH_BACK );
             }
             
+            // assign carton number to complaint line if not null and not 'default' (this comes from dept view)s
+            if (orderLineCartonNumber[i] != null && !"default".equalsIgnoreCase(orderLineCartonNumber[i])) {
+            	line.setCartonNumber(orderLineCartonNumber[i]);
+            }
+
             lines.add(line);
             //
             // Investigate for errors
@@ -247,7 +239,8 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
             //
             // Check that item is within appropriate return window (depends on Method and department)
             //
-            if ( !isWithinReturnWindow(line.getMethod() ) ) {
+            /* NOTE: disabled for test purposes! */
+            if ( false && !isWithinReturnWindow(line.getMethod() ) ) {
                 result.addError(new ActionError("ol_error_"+i,"It is too late to return this item for the designated credit type."));
                 addGeneralError(result);
                 return;
@@ -261,7 +254,7 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
             }
             
             final double previousAmount = this.getPreviousComplaintAmount(order.getComplaints(), line.getOrderLineId());
-            ErpOrderLineModel orderline = order.getOrderLine(line.getOrderLineId());
+            // ErpOrderLineModel orderline = order.getOrderLine(line.getOrderLineId());
             ErpInvoiceLineI invline = order.getInvoiceLine(orderline.getOrderLineNumber());
             final double allowedAmount = MathUtil.roundDecimal((invline != null ? invline.getPrice() : orderline.getPrice()) * (1 + ErpServicesProperties.getCreditBuffer()));
             
@@ -275,6 +268,75 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
             complaintModel.addComplaintLines(lines);
         complaintModel.setType(EnumComplaintType.getEnum(complaintModel.getComplaintMethod()));  
     } 
+    
+    /**
+     * 
+     * @param complaint current complaint in process
+     * @param m order line price accumulator
+     * @param i form input index
+     */
+    private void processCreditAmount(ErpComplaintLineModel line, ErpOrderLineModel orderline, Map crAmounts, int i, ActionResult result) {
+    	final String oID = orderline.getCartlineId();
+
+    	// quantity parameter is set
+    	double quantity = 0.0;
+        double amount = 0.0;
+        if ( orderLineQty[i] != null && !"".equals(orderLineQty[i]) ){
+        	// quantity is set
+            quantity = Double.parseDouble(orderLineQty[i]);
+        }	
+
+        // Stage I - set amount by given quantity OR credit amount
+        //   check quantity first
+    	if (quantity > 0) {
+            if (Double.parseDouble(orderLineOriginalQty[i])>0) {
+                amount+= Double.parseDouble(orderLineQty[i]) * (Double.parseDouble( orderLineOriginalPrice[i])/Double.parseDouble(orderLineOriginalQty[i]) ) ;
+
+				if (orderLineTaxRate[i] != null && !"".equals(orderLineTaxRate[i])) {
+					amount+= (amount * Double.parseDouble( orderLineTaxRate[i]))  ;
+				}
+
+                if (orderLineDeposit[i] != null && !"".equals(orderLineDeposit[i])) {
+                	amount+= Double.parseDouble(orderLineQty[i]) * (Double.parseDouble( orderLineDeposit[i])/Double.parseDouble(orderLineOriginalQty[i]) ) ;
+                }
+
+            	line.setQuantity(quantity);
+            }
+    	} else if(this.orderLineCreditAmount[i] != null && !"".equals(orderLineCreditAmount[i])){
+    		// ... then the explicitly set amount
+        	amount = Double.parseDouble(orderLineCreditAmount[i]);
+        }
+
+
+    	// Stage II - Check amount fits into spendable / freely usable credit amount
+    	if (amount > 0) {
+    		// Ensure price does not exceed orderline total
+    		Double a = (Double) crAmounts.get(oID);
+    		double acc = (a != null ? a.doubleValue() : 0);
+    		if (orderline.getPrice() < amount+acc) {
+    			// amount exceeds the limit
+    			
+    			// calculate the difference
+    			amount = orderline.getPrice() - acc;
+
+    			// total is exceeded
+    			crAmounts.put(oID, new Double(orderline.getPrice()));
+
+    			System.err.println("OL["+i+"]/E: Total " + orderline.getPrice() + " exceeded for " + oID + "; adjusted price=" + amount + ";");
+
+    			result.addError(new ActionError("ol_error_"+i, "Amount exceeded the maximum available "+CCFormatter.formatCurrency(amount)+" for this split order."));
+            	addGeneralError(result);
+            	return;
+    		} else {
+    			// store the increased value
+    			crAmounts.put(oID, new Double(acc+amount));
+    			System.err.println("OL"+i+"]/N: Store incremented price " + crAmounts.get(oID) + " for " + oID);
+    		}
+    	}
+		System.err.println("OL["+i+"]: Set amount " + amount + " for " + oID);
+		line.setAmount(amount);
+    }
+    
     
     private double getPreviousComplaintAmount(Collection complaints, String orderlineId) {
     	if(complaints.isEmpty()) {
@@ -345,7 +407,6 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
     
     private void parseEmailOptions(ActionResult result, ErpComplaintModel complaintModel) {
     	ErpCustomerEmailModel  cem = new ErpCustomerEmailModel();
-    	boolean okToSetEmail = false;
 		
 		//check for an amount on the  complaint greater than 0, cause we doent want to send 
 		// an email when 0 dollars are sent.
@@ -355,30 +416,17 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
 				result.addError(new ActionError("send_email","Cannot send email for complaints without credits."));
     		}
     		
-    		if ("custom".equalsIgnoreCase(email_type)) {
-    			if (EnumCreditEmailType.getEnum(email_template_code)==null) {
-					result.addError(new ActionError("email_template_code","Missing or invalid email template."));
-    			} else {
-    				cem.setEmailTemplateCode(email_template_code);
-    			}
-    			
-	    		if (custom_message!=null && !"".equals(custom_message)) {
-	    			cem.setCustomMessage(custom_message);
-	    		}
-	    		
-	    		if (agent_signature) {
-					CrmAgentModel agent = CrmSession.getCurrentAgent(pageContext.getSession());
-					cem.setSignature(agent.getFirstName()+" "+agent.getLastName());
-	    		}
-	    		okToSetEmail = true;
-    		} else {
-    			cem.setEmailTemplateCode(EnumCreditEmailType.DEFAULT_EMAIL.getName());
-    			okToSetEmail = true;
-    		}
-    		if (okToSetEmail) {
-				complaintModel.setEmailOption(EnumSendCreditEmail.getEnum(send_email));
-				complaintModel.setCustomerEmail(cem);
-    		}
+			complaintModel.setEmailOption(EnumSendCreditEmail.getEnum(send_email));
+			complaintModel.setCustomerEmail(cem);
+			
+			if (custom_message!=null && !"".equals(custom_message)) {
+				cem.setCustomMessage(custom_message);
+			}
+			
+			if (agent_signature) {
+				CrmAgentModel agent = CrmSession.getCurrentAgent(pageContext.getSession());
+				cem.setSignature(agent.getFirstName());
+			}
     	} else {
 			complaintModel.setEmailOption(EnumSendCreditEmail.DONT_SEND);
 			if (previewEmail ) {
@@ -449,7 +497,8 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
         orderLineOriginalPrice	= request.getParameterValues("ol_orig_price");
 		orderLineDeposit        = request.getParameterValues("ol_deposit_value");
 		orderLineTaxRate        = request.getParameterValues("ol_tax_rate");
-        
+		orderLineCartonNumber	= request.getParameterValues("ol_cartnum");
+
         miscCreditAmount          = request.getParameterValues("misc_credit_amount");
         miscCreditReason          = request.getParameterValues("misc_credit_reason");
         miscCreditMethod          = request.getParameterValues("misc_credit_method");

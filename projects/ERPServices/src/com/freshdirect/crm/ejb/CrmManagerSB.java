@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.EJBObject;
 import javax.ejb.FinderException;
@@ -20,6 +21,8 @@ import com.freshdirect.crm.CrmCustomerHeaderInfo;
 import com.freshdirect.crm.CrmLateIssueModel;
 import com.freshdirect.crm.CrmStatus;
 import com.freshdirect.crm.CrmSystemCaseInfo;
+import com.freshdirect.customer.EnumCannedTextCategory;
+import com.freshdirect.customer.ErpCannedText;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.fdstore.FDResourceException;
@@ -110,5 +113,20 @@ public interface CrmManagerSB extends EJBObject {
 	public List lookupOrders(String accountNum) throws FDResourceException, RemoteException;
 	
 	public void logViewAccount(CrmAgentModel agent, String customerID) throws FDResourceException, RemoteException;
-}
+	
+	public ErpCannedText createCannedText(ErpCannedText cannedText) throws FDResourceException, RemoteException;
 
+	public void updateCannedText(ErpCannedText cannedText, String id) throws FDResourceException, RemoteException;
+
+	public void deleteCannedText(String id) throws FDResourceException, RemoteException;
+	
+	public ErpCannedText getCannedTextById(String id) throws FDResourceException, RemoteException;
+
+	public Collection getAllCannedTextInCategory(EnumCannedTextCategory category) throws FDResourceException, RemoteException;
+
+	public Collection getAllCannedText() throws FDResourceException, RemoteException;
+
+	public Map getComplaintDeliveryIssueTypes(String erpCustomerId) throws FDResourceException, RemoteException;
+	
+	public String getLastDeliveredOrder(String erpCustomerId) throws FDResourceException, RemoteException;
+}

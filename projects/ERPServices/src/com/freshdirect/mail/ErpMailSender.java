@@ -28,8 +28,13 @@ public class ErpMailSender {
 	public void sendMail(String from, String recipient, String cc, String subject, String message) throws MessagingException {
 		this.sendMail(from, recipient, cc, subject, message, false, "");
 	}
-	
+
 	public void sendMail(String from, String recipient, String recipientCc, String subject, String message, 
+			boolean isHtml, String personalLabel) throws MessagingException {
+		sendMail(from, recipient, recipientCc, null, subject, message, isHtml, personalLabel);
+	}
+	
+	public void sendMail(String from, String recipient, String recipientCc, String recipientBcc, String subject, String message, 
 		boolean isHtml, String personalLabel) throws MessagingException {
 		
 		try {
@@ -62,6 +67,14 @@ public class ErpMailSender {
 			}
 			msg.setRecipients(javax.mail.Message.RecipientType.CC, addressCc);
 
+			st = new StringTokenizer(recipientBcc, ";");
+			InternetAddress[] addressBcc = new InternetAddress[st.countTokens()];
+			i = 0;
+			while (st.hasMoreTokens()) {
+				addressBcc[i] = new InternetAddress(st.nextToken());
+				i++;
+			}
+			msg.setRecipients(javax.mail.Message.RecipientType.BCC, addressBcc);
 			//
 			// Setting the Subject and Content Type
 			//

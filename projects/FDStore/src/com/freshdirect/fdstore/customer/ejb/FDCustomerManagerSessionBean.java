@@ -4159,4 +4159,18 @@ public class FDCustomerManagerSessionBean extends SessionBeanSupport {
 				}
 			}
 		}
+
+
+
+	
+	public void assignAutoCaseToComplaint(ErpComplaintModel complaint, PrimaryKey autoCasePK) throws FDResourceException {
+		try {
+			ErpCustomerManagerSB erpCustomerManagerSB = this.getErpCustomerManagerHome().create();
+			erpCustomerManagerSB.assignAutoCaseToComplaint(complaint, autoCasePK);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+	}
 }

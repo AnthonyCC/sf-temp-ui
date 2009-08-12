@@ -50,14 +50,17 @@ public class CrmCustomerControllerTag extends AbstractControllerTag {
 		this.customerInfo.setLastName(NVL.apply(request.getParameter("lastName"), "").trim());
 		String phone = NVL.apply(request.getParameter("homePhone"), "").trim();
 		String ext = NVL.apply(request.getParameter("homeExt"), "").trim();
+		ext = phone.length() == 0 ? "" : ext;
 		this.customerInfo.setHomePhone(!"".equals(phone) ? new PhoneNumber(phone, ext) : null);
 
 		phone = NVL.apply(request.getParameter("workPhone"), "").trim();
 		ext = NVL.apply(request.getParameter("workExt"), "").trim();
+		ext = phone.length() == 0 ? "" : ext;
 		this.customerInfo.setBusinessPhone(!"".equals(phone) ? new PhoneNumber(phone, ext) : null);
 
 		phone = NVL.apply(request.getParameter("cellPhone"), "").trim();
 		ext = NVL.apply(request.getParameter("cellExt"), "").trim();
+		ext = phone.length() == 0 ? "" : ext;
 		this.customerInfo.setCellPhone(!"".equals(phone) ? new PhoneNumber(phone, ext) : null);
 
 		this.customerInfo.setAlternateEmail(NVL.apply(request.getParameter("altEmail"), "").trim());
@@ -69,6 +72,12 @@ public class CrmCustomerControllerTag extends AbstractControllerTag {
 		actionResult.addError("".equals(this.customerInfo.getFirstName()), "firstName", "required");
 		actionResult.addError("".equals(this.customerInfo.getLastName()), "lastName", "required");
 		actionResult.addError(this.customerInfo.getHomePhone() == null, "homePhone", "required");
+		actionResult.addError(this.customerInfo.getHomePhone() != null
+				&& PhoneNumber.normalize(this.customerInfo.getHomePhone().getPhone()).length() != 10, "homePhone", "requires 10 digits: 3 digit area-code + 7 digit local number");
+		actionResult.addError(this.customerInfo.getBusinessPhone() != null
+				&& PhoneNumber.normalize(this.customerInfo.getBusinessPhone().getPhone()).length() != 10, "busPhone", "requires 10 digits: 3 digit area-code + 7 digit local number");
+		actionResult.addError(this.customerInfo.getCellPhone() != null
+				&& PhoneNumber.normalize(this.customerInfo.getCellPhone().getPhone()).length() != 10, "cellPhone", "requires 10 digits: 3 digit area-code + 7 digit local number");
 	}
 
 	public static class TagEI extends AbstractControllerTag.TagEI {

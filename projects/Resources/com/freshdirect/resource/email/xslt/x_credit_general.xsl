@@ -8,12 +8,14 @@
 <xsl:template match="fdemail">
 Dear <xsl:value-of select="customer/firstName"/>,
 
-We apologize that you were dissatisfied with the quality that was delivered. We take these concerns very seriously and you can be assured that every effort will be made to select the highest quality available. A credit has been issued for the product and we apologize for any inconvenience. 
-
+<xsl:if test="string-length(complaint/customerEmail/customMessage) &gt; 0">
+<xsl:value-of select='complaint/customerEmail/customMessage'/>
+ 
+</xsl:if>
 We have issued you the following credits for order #<xsl:value-of select="saleId"/>: 
 
 <xsl:if test="complaint/storeCreditAmount &gt; 0">
-<xsl:for-each select="complaint/complaintLines/complaintLines">
+<xsl:for-each select="complaint/complaintLinesAggregated/complaintLinesAggregated">
 <xsl:if test="not(number(amount)=0)">
 <xsl:if test="method = 'FDC'">
     <xsl:variable name="deptName">
@@ -32,7 +34,7 @@ plus...<xsl:text>
 </xsl:text></xsl:if>
 </xsl:if>
 <xsl:if test="complaint/cashBackAmount &gt; 0">
-<xsl:for-each select="complaint/complaintLines/complaintLines">
+<xsl:for-each select="complaint/complaintLinesAggregated/complaintLinesAggregated">
 <xsl:if test="not(number(amount)=0)">
 <xsl:if test="method = 'CSH'">
 <xsl:variable name="deptName">
@@ -47,20 +49,15 @@ $<xsl:value-of select='format-number(complaint/cashBackAmount, "###,##0.00", "US
 
 $<xsl:value-of select='format-number(complaint/amount, "###,##0.00", "USD")'/> TOTAL CREDIT 
 
-<xsl:if test="complaint/storeCreditAmount &gt; 0">We'll automatically subtract these store credits from your next order total at the last stage of checkout. </xsl:if>
+<xsl:if test="complaint/storeCreditAmount &gt; 0">Please note it takes approximately two business days for your store credit to become available. Once it is available we'll automatically subtract these store credits from your next order total at the last stage of checkout.</xsl:if>
 
-<xsl:if test="complaint/cashBackAmount &gt; 0">Please note that this credit should be reflected on your Credit Card within 5 days. </xsl:if>
+<xsl:if test="complaint/cashBackAmount &gt; 0">Please note that this credit should reflect on your credit card within five business days.</xsl:if>
  <xsl:text>
  
 </xsl:text>
-<xsl:if test="string-length(complaint/customerEmail/customMessage) &gt; 0">
-<xsl:value-of select='complaint/customerEmail/customMessage'/> 
-</xsl:if> <xsl:text>
-</xsl:text>
-We invite you to let us know how we're doing. 
-http://www.freshdirect.com/help/contact_fd.jsp 
+I'd like to thank you for letting us know what occurred and giving us the opportunity to help solve your problem. If, for any reason you're dissatisfied with how we resolved your problem, or need further assistance, please feel free to e-mail us directly by clicking on the contact us link on the website or call us at 212-796-8002.<br/>
 
-Thank you for shopping with us. We greatly appreciate your business and hope you'll come back soon. 
+Your satisfaction is our number one priority!
 
 Sincerely, <xsl:text>
 
@@ -68,8 +65,14 @@ Sincerely, <xsl:text>
 <xsl:if test="string-length(complaint/customerEmail/signature) &gt; 0">
 <xsl:value-of select="complaint/customerEmail/signature"/><br/>
 </xsl:if><xsl:text>
-</xsl:text>FreshDirect 
-Customer Service Group 
+</xsl:text>Your FreshDirect Customer Service Team
+Keep in mind that we are here for you:
+
+Monday-Thursday 6:30am-12am
+Fridays 6:30am-11pm
+Saturdays 7:30am-8pm
+Sundays 7:30am-12am
+ 
 
 <xsl:call-template name="x_footer_v1"/>
 

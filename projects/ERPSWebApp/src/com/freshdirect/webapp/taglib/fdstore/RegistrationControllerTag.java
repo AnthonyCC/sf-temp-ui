@@ -312,6 +312,9 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		String busPhoneExt = request.getParameter("busphoneext");
 		String cellPhone = request.getParameter("cellphone");
 		String cellPhoneExt = request.getParameter("cellphoneext");
+		homePhone = homePhone != null && homePhone.trim().length() == 0 ? null : homePhone;
+		busPhone = busPhone != null && busPhone.trim().length() == 0 ? null : busPhone;
+		cellPhone = cellPhone != null && cellPhone.trim().length() == 0 ? null : cellPhone;
 
 		String workDept = request.getParameter(EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode());
 		String employeeId = request.getParameter("employeeId");
@@ -335,7 +338,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 
 		if (!user.isCorporateUser()) {
 			result.addError(
-				homePhone == null || homePhone.trim().length() < 10,
+				homePhone == null,
 				EnumUserInfoName.DLV_HOME_PHONE.getCode(),
 				SystemMessageList.MSG_REQUIRED);
 		}
@@ -343,7 +346,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		if (user.isDepotUser()) {
 
 			result.addError(
-				busPhone == null || busPhone.trim().length() < 10,
+				busPhone == null,
 				EnumUserInfoName.DLV_WORK_PHONE.getCode(),
 				SystemMessageList.MSG_REQUIRED);
 
@@ -364,6 +367,19 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 
 		}
 
+		result.addError(
+				homePhone != null && PhoneNumber.normalize(homePhone).length() != 10,
+				EnumUserInfoName.DLV_HOME_PHONE.getCode(),
+				SystemMessageList.MSG_PHONE_FORMAT);
+		result.addError(
+				busPhone != null && PhoneNumber.normalize(busPhone).length() != 10,
+				EnumUserInfoName.DLV_WORK_PHONE.getCode(),
+				SystemMessageList.MSG_PHONE_FORMAT);
+		result.addError(
+				cellPhone != null && PhoneNumber.normalize(cellPhone).length() != 10,
+				EnumUserInfoName.DLV_CELL_PHONE.getCode(),
+				SystemMessageList.MSG_PHONE_FORMAT);
+		
 		if (!result.isSuccess()) {
 			return;
 		}

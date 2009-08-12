@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Category;
@@ -94,7 +95,7 @@ public class FDOrderAdapter implements FDOrderI {
 	private List sampleLines;
 	private FDReservation deliveryReservation;
 	// List<FDCartonInfo>
-	private List cartonInfo;
+	protected List cartonInfo;
 
 	public FDOrderAdapter() {
 		this.orderLines = new ArrayList();
@@ -436,6 +437,28 @@ public class FDOrderAdapter implements FDOrderI {
 		return hasCredits;
 	}
 
+
+	public static final int IC_FREE2GROUP = -1;
+	public static final int IC_GROUP_BY_DEPTS = 1;
+	public static final int IC_GROUP_BY_CARTONS = 2;
+	public int getComplaintGroupingFashion() {
+		Collection comps = getComplaints();
+
+		if (comps == null || comps.size() == 0)
+			return IC_FREE2GROUP;
+		
+		for (Iterator it=comps.iterator(); it.hasNext();) {
+			ErpComplaintModel compl = (ErpComplaintModel)it.next();
+			
+			// skip rejected complaints
+			if (!EnumComplaintStatus.REJECTED.equals(compl.getStatus()))
+				return compl.isCartonized() ? IC_GROUP_BY_CARTONS : IC_GROUP_BY_DEPTS;
+		}
+		
+		return IC_FREE2GROUP;
+	}
+
+	
 	public Collection getCharges() {
 		return Collections.unmodifiableCollection(erpOrder.getCharges());
 	}

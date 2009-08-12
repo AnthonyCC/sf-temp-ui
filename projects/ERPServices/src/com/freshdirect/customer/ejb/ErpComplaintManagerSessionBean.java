@@ -36,11 +36,11 @@ public class ErpComplaintManagerSessionBean extends SessionBeanSupport {
         return "com.freshdirect.customer.ejb.ErpComplaintHome";
     }
 
-    public Map getReasons() {
+    public Map getReasons(boolean excludeCartonReq) {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			return dao.getReasons(conn);
+			return dao.getReasons(conn, excludeCartonReq);
 		} catch (SQLException ex) {
 			LOGGER.error("SQLException occured", ex);
 			throw new EJBException( ex.getMessage() );

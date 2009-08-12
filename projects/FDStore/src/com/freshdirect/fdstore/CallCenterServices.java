@@ -61,13 +61,13 @@ public class CallCenterServices {
 	private static CallCenterManagerHome callCenterHome = null;
 
 
-	public static Map getComplaintReasons() throws FDResourceException {
+	public static Map getComplaintReasons(boolean excludeCartonReq) throws FDResourceException {
 		if (callCenterHome == null) {
 			lookupManagerHome();
 		}
 		try {
 			CallCenterManagerSB sb = callCenterHome.create();
-			return sb.getComplaintReasons();
+			return sb.getComplaintReasons(excludeCartonReq);
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating session bean");

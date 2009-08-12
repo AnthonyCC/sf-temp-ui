@@ -15,19 +15,28 @@ package com.freshdirect.customer;
  * @author $Author:Mike Rose$
  */
 public class ErpComplaintReason implements java.io.Serializable {
+	private static final long serialVersionUID = -2612789052443612464L;
 
-    private String id;
+	private String id;
 	private String departmentCode;
 	private String departmentName;
 	private String reason;
 
-	public ErpComplaintReason(String id, String dept_code,String dept_name, String reason) {
+	int	priority;
+	String subjectCode;	// Case subject code
+
+	private EnumComplaintDlvIssueType dlvIssueType;
+
+	public ErpComplaintReason(String id, String dept_code,String dept_name, String reason, int pri, String subjectCode, EnumComplaintDlvIssueType dlvIssueType) {
         this.id = id;
         this.departmentCode = dept_code;
 		this.departmentName = dept_name;
 		this.reason = reason;
+		this.priority = pri;
+		this.subjectCode = subjectCode;
+		this.dlvIssueType = dlvIssueType;
 	}
-    
+
     public String getId() {
         return this.id;
     }
@@ -44,4 +53,30 @@ public class ErpComplaintReason implements java.io.Serializable {
 		return this.reason;
 	}
 
+	/**
+	 * Returns reason priority
+	 */
+	public int getPriority() {
+		return priority;
+	}
+
+	/**
+	 * Returns Case Subject code
+	 */
+	public String getSubjectCode() {
+		return subjectCode;
+	}
+
+	
+	/**
+	 * Returns type of delivery issue (can be null)
+	 * @return
+	 */
+	public EnumComplaintDlvIssueType getDeliveryIssueType() {
+		return dlvIssueType;
+	}
+
+	public String toString() {
+		return "{id="+this.id+"; dept="+this.departmentName+"; reason="+this.reason+"}";
+	}
 }

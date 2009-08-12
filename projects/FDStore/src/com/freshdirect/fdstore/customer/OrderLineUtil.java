@@ -9,6 +9,8 @@
 package com.freshdirect.fdstore.customer;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -17,9 +19,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Category;
-
-import com.freshdirect.framework.util.log.LoggerFactory;
-
 
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfigurableI;
@@ -33,13 +32,14 @@ import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.DepartmentModel;import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.lists.FDCustomerProductList;
 import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
  *
@@ -474,4 +474,19 @@ public class OrderLineUtil {
 		}	
 	}
 
+	
+
+	public static Set collectDepartmentNames(Collection orderlines) {
+		if (orderlines == null || orderlines.size() == 0)
+			return Collections.EMPTY_SET;
+		
+		Set depts = new HashSet();
+		
+		for (Iterator it=orderlines.iterator(); it.hasNext(); ) {
+			FDCartLineI orderLine = (FDCartLineI) it.next();
+			depts.add(orderLine.getDepartmentDesc());
+		}
+		
+		return depts;
+	}
 }

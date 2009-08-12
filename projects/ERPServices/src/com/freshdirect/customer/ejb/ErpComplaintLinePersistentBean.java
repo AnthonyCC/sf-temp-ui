@@ -5,6 +5,7 @@ package com.freshdirect.customer.ejb;
 import java.sql.*;
 import com.freshdirect.framework.core.*;
 import com.freshdirect.customer.*;
+
 import java.util.List;
 
 /**
@@ -90,7 +91,7 @@ public class ErpComplaintLinePersistentBean extends ErpReadOnlyPersistentBean {
 
 	public PrimaryKey create(Connection conn) throws SQLException {
 		String id = this.getNextId(conn, "CUST");
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.COMPLAINTLINE (ID, COMPLAINT_ID, AMOUNT, COMPLAINT_DEPT_CODE_ID, COMPLAINT_TYPE, METHOD, LINE_NUMBER, QUANTITY, ORDERLINE_ID) values (?,?,?,?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.COMPLAINTLINE (ID, COMPLAINT_ID, AMOUNT, COMPLAINT_DEPT_CODE_ID, COMPLAINT_TYPE, METHOD, LINE_NUMBER, QUANTITY, ORDERLINE_ID, CARTON_NUMBER) values (?,?,?,?,?,?,?,?,?,?)");
 		ps.setString(1, id);
 		ps.setString(2, this.getParentPK().getId());
 		ps.setDouble(3, this.model.getAmount());
@@ -100,6 +101,7 @@ public class ErpComplaintLinePersistentBean extends ErpReadOnlyPersistentBean {
 		ps.setString(7, this.model.getComplaintLineNumber());
 		ps.setDouble(8, this.model.getQuantity());
 		ps.setString(9, this.model.getOrderLineId());
+		ps.setString(10, this.model.getCartonNumber());
 		try {
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not created");
@@ -118,7 +120,7 @@ public class ErpComplaintLinePersistentBean extends ErpReadOnlyPersistentBean {
 	}
     
     private static final String loadQuery =
-        "SELECT LINE_NUMBER, ORDERLINE_ID, QUANTITY, AMOUNT, CDC.ID AS REASON_CODE_ID, CD.CODE AS DEPT_CODE, CD.NAME AS DEPT_NAME, CC.NAME AS REASON, COMPLAINT_TYPE, METHOD " +
+        "SELECT LINE_NUMBER, ORDERLINE_ID, QUANTITY, AMOUNT, CDC.ID AS REASON_CODE_ID, CD.CODE AS DEPT_CODE, CD.NAME AS DEPT_NAME, CC.NAME AS REASON, CC.PRIORITY AS PRIORITY, CC.SUBJECT_CODE AS SUBJECT_CODE, CC.DLV_ISSUE_CODE AS DLV_ISSUE_CODE, COMPLAINT_TYPE, METHOD, CARTON_NUMBER " +
         "FROM CUST.COMPLAINTLINE CML, CUST.COMPLAINT_DEPT_CODE CDC, CUST.COMPLAINT_DEPT CD, CUST.COMPLAINT_CODE CC " +
         "WHERE CML.COMPLAINT_DEPT_CODE_ID=CDC.ID AND CDC.COMP_DEPT=CD.CODE and CDC.COMP_CODE=CC.CODE AND CML.ID=? ";
 
@@ -131,10 +133,11 @@ public class ErpComplaintLinePersistentBean extends ErpReadOnlyPersistentBean {
 			this.model.setOrderLineId(rs.getString("ORDERLINE_ID"));
 			this.model.setQuantity(rs.getDouble("QUANTITY"));
 			this.model.setAmount(rs.getDouble("AMOUNT"));
-			this.model.setReason(new ErpComplaintReason(rs.getString("REASON_CODE_ID"), rs.getString("DEPT_CODE"),rs.getString("DEPT_NAME"), rs.getString("REASON")));
+			this.model.setReason(new ErpComplaintReason(rs.getString("REASON_CODE_ID"), rs.getString("DEPT_CODE"),rs.getString("DEPT_NAME"), rs.getString("REASON"),
+					rs.getInt("PRIORITY"), rs.getString("SUBJECT_CODE"), EnumComplaintDlvIssueType.getEnum(rs.getString("DLV_ISSUE_CODE"))));
 			this.model.setType(EnumComplaintLineType.getComplaintLineType( rs.getString("COMPLAINT_TYPE")));
 			this.model.setMethod(EnumComplaintLineMethod.getComplaintLineMethod( rs.getString("METHOD")));
-
+			this.model.setCartonNumber(rs.getString("CARTON_NUMBER"));
 		} else {
 			throw new SQLException("No such ErpComplaintLineLine PK: " + this.getPK());
 		}

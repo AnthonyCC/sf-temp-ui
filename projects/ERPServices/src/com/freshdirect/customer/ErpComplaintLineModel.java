@@ -28,7 +28,8 @@ public class ErpComplaintLineModel extends ModelSupport {
 	private EnumComplaintLineType type;
 	private EnumComplaintLineMethod method;
 	private boolean isOrderLineComplaint = false;
-
+	private String cartonNumber;
+	
 	public String getOrderLineId() {
 		return this.orderLineId;
 	}
@@ -92,6 +93,14 @@ public class ErpComplaintLineModel extends ModelSupport {
 
 	private void setIsOrderLineComplaint() {
 		this.isOrderLineComplaint = true;
+	}
+
+	public String getCartonNumber() {
+		return cartonNumber;
+	}
+
+	public void setCartonNumber(String cartonNumber) {
+		this.cartonNumber = cartonNumber;
 	}
 
 	public boolean isValidComplaintLine() {

@@ -39,7 +39,7 @@ public class MailMessageListener extends MessageDrivenBeanSupport implements Mai
 			return;
 		}
 
-		String mailBodyXml, mailFrom, mailTo, mailCc, mailTitle, xslPath, personalLabel;
+		String mailBodyXml, mailFrom, mailTo, mailCc, mailBcc, mailTitle, xslPath, personalLabel;
 		boolean isHtml;
 		try {
 
@@ -51,6 +51,7 @@ public class MailMessageListener extends MessageDrivenBeanSupport implements Mai
 			mailFrom = mailMsg.getStringProperty(MailName.FROM_ADDRESS);
 			mailTo = mailMsg.getStringProperty(MailName.TO_ADDRESS);
 			mailCc = mailMsg.getStringProperty(MailName.CC_ADDRESS);
+			mailBcc = mailMsg.getStringProperty(MailName.BCC_ADDRESS);
 			mailTitle = mailMsg.getStringProperty(MailName.TITLE);
 			xslPath = mailMsg.getStringProperty(MailName.XSL);
 			personalLabel = mailMsg.getStringProperty(MailName.FROM_ADDRESS_NAME);
@@ -83,7 +84,7 @@ public class MailMessageListener extends MessageDrivenBeanSupport implements Mai
 
 		try {
 			ErpMailSender mailer = new ErpMailSender();
-			mailer.sendMail(mailFrom, mailTo, mailCc, mailTitle, mailBody, isHtml, personalLabel);
+			mailer.sendMail(mailFrom, mailTo, mailCc, mailBcc, mailTitle, mailBody, isHtml, personalLabel);
 		} catch (MessagingException ex) {
 			LOGGER.error("Unable to send message, throwing RuntimeException", ex);
 			throw new RuntimeException("Unable to send message: " + ex.getMessage());

@@ -18,7 +18,6 @@ import com.freshdirect.framework.core.PrimaryKey;
  */
 public class ErpCustomerEmailModel extends ModelSupport {
 	private boolean mailSent;
-	private String emailTemplateCode;
 	private String customMessage;
 	private String signature;
 	
@@ -41,10 +40,6 @@ public class ErpCustomerEmailModel extends ModelSupport {
 		return mailSent;
 	}
 
-	public String getEmailTemplateCode() {
-		return emailTemplateCode;
-	}
-
 	public String getSignature() {
 		return signature;
 	}
@@ -57,18 +52,14 @@ public class ErpCustomerEmailModel extends ModelSupport {
 		mailSent = sentFlag;
 	}
 
-	public void setEmailTemplateCode(String tc) {
-		emailTemplateCode = tc;
-	}
-
 	public void setSignature(String sig) {
 		signature = sig;
 	}
 	
 	public String getHtmlXslPath() {
-		return EnumCreditEmailType.getEnum(emailTemplateCode).getHtmlXSLFilename();
+		return "h_credit_general.xsl";
 	}
 	public String getPlainTextXslPath() {
-		return EnumCreditEmailType.getEnum(emailTemplateCode).getPlainTextXSLFilename();
+		return "x_credit_general.xsl";
 	}
 }

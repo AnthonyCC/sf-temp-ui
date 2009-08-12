@@ -23,6 +23,7 @@ public interface SystemMessageList {
 
 	public final static String MSG_EMAIL_FORMAT 		= "Please make sure your email address is in the format \"you@isp.com\"";
 	public final static String MSG_EMAIL_REPEAT			= "Please enter your email again - it doesn't match what you entered above.";
+	public final static String MSG_PHONE_FORMAT 		= "Please make sure the phone number you entered contains exactly 10 digits (3 digits area code, 7 digits local number), e.g. (212) 123-4567";
 
 	// Depot
 	public final static String MSG_DEPOT_WRONGCODE		= "We''re unable to recognize this code. Try entering it again, or for assistance, contact us at {0}.";

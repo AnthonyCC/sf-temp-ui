@@ -1480,6 +1480,36 @@ public class FDCustomerManager {
 		}
 	}
 
+
+	/**
+	 * Assigns auto case to complaint and saves it to database.
+	 * 
+	 * @param complaint
+	 * @param autoCasePK
+	 * 
+	 * @throws FDResourceException
+	 */
+	public static void assignAutoCaseToComplaint(ErpComplaintModel complaint, PrimaryKey autoCasePK) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			
+			// set set case PK
+			complaint.setAutoCaseId(autoCasePK.getId());
+			
+			// update complaint in DB
+			sb.assignAutoCaseToComplaint(complaint, autoCasePK);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+
+
+	
 	public static XMLEmailI makePreviewCreditEmail(FDCustomerInfo custInfo,String saleId,ErpComplaintModel complaint) {
 		return FDEmailFactory.getInstance().createConfirmCreditEmail(custInfo,saleId,complaint);
 	}
