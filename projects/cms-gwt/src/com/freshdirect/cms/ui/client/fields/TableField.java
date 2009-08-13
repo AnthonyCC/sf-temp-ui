@@ -77,9 +77,10 @@ public class TableField extends MultiField {
         cp.setAutoHeight(true);
 
         grid = new Grid<BaseModelData>(store, new ColumnModel(columns));
+        
         grid.setAutoHeight(true);
         grid.setStripeRows(true);
-        grid.getView().setForceFit(true);
+        //grid.getView().setForceFit(true);
         loader.load(0, 20);
 
         cp.add(grid);

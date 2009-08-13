@@ -12,17 +12,30 @@ import java.util.List;
  * 
  */
 public class TableAttribute extends BaseAttribute implements ModifiableAttributeI, Serializable {
+    public enum ColumnType { 
+        NORMAL, ATTRIB, KEY
+    }
 
     ContentNodeAttributeI[] columns;
 
     List<Serializable[]> values = new ArrayList<Serializable[]>();
 
+    ColumnType[] types;
+    
     /**
      * 
      */
     public TableAttribute() {
     }
 
+    public void setTypes(ColumnType[] types) {
+        this.types = types;
+    }
+    
+    public ColumnType[] getTypes() {
+        return types;
+    }
+    
     public void setColumns(ContentNodeAttributeI[] columns) {
         this.columns = columns;
     }

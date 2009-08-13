@@ -59,6 +59,9 @@ import com.freshdirect.cms.ui.model.changeset.GwtContentNodeChange;
 
 public class TranslatorToGwt {
 
+    private final static String SUFFIX_ATTR = "_ATTRIBUTE$";
+    private final static String SUFFIX_KEY = "_KEY$";
+    
 	public static ContentNodeModel getContentNodeModel( ContentNodeI node ) {
 		return new ContentNodeModel(node.getDefinition().getType().getName(), node.getLabel(), node.getKey().getEncoded(), node.getChildKeys().size() > 0 );
 	}
@@ -352,22 +355,7 @@ public class TranslatorToGwt {
             
         } else if (type == EnumAttributeType.TABLE) {
             ITable table = (ITable) value;
-            AttributeDefI[] columnDefinitions = table.getColumnDefinitions();
-            ContentNodeAttributeI[] columns = new ContentNodeAttributeI[columnDefinitions.length];
-            for (int i=0;i<columnDefinitions.length;i++) {
-                columns[i] = translateAttribute(columnDefinitions[i], null, null);
-            }
-
-            TableAttribute tableAttr = new TableAttribute();
-            tableAttr.setColumns(columns);
-            for (ITable.Row rw : table.getRows()) {
-                Serializable[] rowValue = new Serializable[columnDefinitions.length];
-                Object[] serverValue = rw.getValues();
-                for (int i = 0; i < rowValue.length; i++) {
-                    rowValue[i] = (Serializable) toClientValues(serverValue[i]);
-                }
-                tableAttr.addRow(rowValue);
-            }
+            TableAttribute tableAttr = createTableAttribute(table);
             attr = tableAttr;
         } else {
             return null;
@@ -376,6 +364,68 @@ public class TranslatorToGwt {
         attr.setReadonly(definition.isReadOnly());
 
         return attr;
+    }
+
+    /**
+     * Converts ITable to a TableAttribute which contains every information for the client to render the table properly.
+     * 
+     * @param table
+     * @return
+     */
+    private static TableAttribute createTableAttribute(ITable table) {
+        AttributeDefI[] columnDefinitions = table.getColumnDefinitions();
+        ContentNodeAttributeI[] columns = new ContentNodeAttributeI[columnDefinitions.length];
+        TableAttribute.ColumnType[] columnTypes = new TableAttribute.ColumnType[columns.length];
+        
+        for (int i=0;i<columnDefinitions.length;i++) {
+            columns[i] = translateAttribute(columnDefinitions[i], null, null);
+            if (columnDefinitions[i].getName().toUpperCase().endsWith(SUFFIX_ATTR)) {
+                columnTypes[i] = TableAttribute.ColumnType.ATTRIB;
+            } else if (columnDefinitions[i].getName().toUpperCase().endsWith(SUFFIX_KEY)) {
+                columnTypes[i] = TableAttribute.ColumnType.KEY;
+            } else {
+                columnTypes[i] = TableAttribute.ColumnType.NORMAL;
+            }
+        }
+
+        TableAttribute tableAttr = new TableAttribute();
+        tableAttr.setTypes(columnTypes);
+        tableAttr.setColumns(columns);
+        for (ITable.Row rw : table.getRows()) {
+            Serializable[] rowValue = new Serializable[columnDefinitions.length];
+            Object[] serverValue = rw.getValues();
+            for (int i = 0; i < rowValue.length; i++) {
+                rowValue[i] = toClientValues(serverValue[i]);
+                switch (columnTypes[i]) {
+                    case ATTRIB :
+                        // handle columns which name is "_ATTRIBUTES$" and their value like 'Product:id:attribName'
+                        if (rowValue[i] instanceof String) {
+                            String[] tokens = ((String) rowValue[i]).split(":");
+                            if (tokens.length == 3) {
+                                ContentKey key = new ContentKey(ContentType.get(tokens[0]), tokens[1]);
+                                ContentNodeI node = key.getContentNode();
+                                if (node != null) {
+                                    AttributeI attribute = node.getAttribute(tokens[2]);
+                                    if (attribute != null && attribute.getValue() != null) {
+                                        rowValue[i] = String.valueOf(String.valueOf(attribute.getValue()));
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    case KEY : 
+                        if (rowValue[i] instanceof String) {
+                            ContentKey ck = ContentKey.decode((String) rowValue[i]);
+                            ContentNodeI node = ck.getContentNode();
+                            rowValue[i] = new ContentNodeModel(ck.getType().getName(), node.getLabel(), ck.getId());
+                        }
+                        break;
+                    case NORMAL :
+                } 
+            }
+            tableAttr.addRow(rowValue);
+        }
+        return tableAttr;
     }	
 
 
@@ -394,6 +444,9 @@ public class TranslatorToGwt {
         if (value instanceof ContentKey) {
             ContentKey ck = ((ContentKey) value);
             return new ContentNodeModel(ck.getType().getName(), null, ck.getEncoded());
+        }
+        if (value instanceof Integer) {
+            return (Integer) value;
         }
         return null;
     }
