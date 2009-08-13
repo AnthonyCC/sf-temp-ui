@@ -18,6 +18,8 @@ public class GeographyRestriction extends ModelSupport   {
 	private String active;	  
 	private String comments;
 	private String message;
+	private String showMessage;
+	private String serviceType;
 	private Map restrictedDays;
 	
 	private DateRange range;
@@ -132,7 +134,8 @@ public class GeographyRestriction extends ModelSupport   {
 							if(geographicRestrictions.contains(timeslot.getBaseDate())) {
 								//System.out.println("Check Passed >"+DateUtil.format(timeslot.getBaseDate()));
 								isRestricted = restrictedDay.isMatching(timeslot.getDlvTimeslot().getStartTime());
-								if(isRestricted && isWithinBaseRange(baseRange, timeslot.getBaseDate())) {
+								if(isRestricted && isWithinBaseRange(baseRange, timeslot.getBaseDate())
+										&& "X".equalsIgnoreCase(geographicRestrictions.getShowMessage())) {
 									messages.add(geographicRestrictions.getMessage());
 								}
 								if(isRestricted) {
@@ -159,6 +162,18 @@ public class GeographyRestriction extends ModelSupport   {
 						|| date.equals(range.getStartDate()) || date.equals(range.getEndDate());
 		}
 		return result;
+	}
+	public String getShowMessage() {
+		return showMessage;
+	}
+	public void setShowMessage(String showMessage) {
+		this.showMessage = showMessage;
+	}
+	public String getServiceType() {
+		return serviceType;
+	}
+	public void setServiceType(String serviceType) {
+		this.serviceType = serviceType;
 	}
 
 	

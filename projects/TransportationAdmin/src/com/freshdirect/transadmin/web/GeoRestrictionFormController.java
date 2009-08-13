@@ -22,6 +22,7 @@ import com.freshdirect.transadmin.model.GeoRestrictionDays;
 import com.freshdirect.transadmin.model.GeoRestrictionDaysId;
 import com.freshdirect.transadmin.service.RestrictionManagerI;
 import com.freshdirect.transadmin.util.EnumDayOfWeek;
+import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.editor.TimeOfDayPropertyEditor;
 
 public class GeoRestrictionFormController extends AbstractFormController {
@@ -91,6 +92,9 @@ public class GeoRestrictionFormController extends AbstractFormController {
 	protected void onBind(HttpServletRequest request, Object command) {
 
 		GeoRestriction model = (GeoRestriction) command;
+		if(TransStringUtil.isEmpty(model.getServiceType())) {
+			model.setServiceType(null);
+		}
 		String restDtlSizeStr = request.getParameter("restrictionListSize");
 		String restrictionId = request.getParameter("restrictionId");
 		String restrictionLinkStr = request.getParameter("restrictionLinkStr");

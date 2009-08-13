@@ -3,6 +3,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ page import='com.freshdirect.common.customer.*' %>
 
 <tmpl:insert template='/common/sitelayout.jsp'>
 <script language="Javascript">
@@ -355,10 +356,7 @@ return true;
  
   		  <td><td>Active</td></td><td><td>
 		  <form:checkbox id="active" path="active"value="X" /></td></td>
- 
-   
- 
- 
+		   
  <!-- 
                <td>Id</td> 
                   <td>                  
@@ -418,10 +416,25 @@ return true;
                </tr>
                
                <tr>
+                  <td>Service Type</td>
+                  <td>
+                  	<form:select path="serviceType">
+                        <form:option value="null" label="--Please Select Service Type"/>                        
+                    	<form:option value="<%= EnumServiceType.HOME.getName() %>" label="<%= EnumServiceType.HOME.getName() %>"/>
+                    	<form:option value="<%= EnumServiceType.CORPORATE.getName() %>" label="<%= EnumServiceType.CORPORATE.getName() %>"/>
+                   </form:select>
+                 </td>
+                 <td>
+                  &nbsp;<form:errors path="serviceType" />
+                </td>
+               </tr>
+               
+               <tr>
                   <td>Message</td>
                   <td><font size="25">                  
                     <form:textarea path="message" rows="8" cols="50" cssClass="large"  />
                     </font>
+                    &nbsp;&nbsp;&nbsp; Show Message<form:checkbox id="showMessage" path="showMessage"value="X" />
                 </td>
                  <td>
                   &nbsp;<form:errors path="message" />

@@ -31,6 +31,12 @@
         <property name="comments" type="string">
             <column name="COMMENTS" />
         </property>
+        <property name="showMessage" type="string">
+            <column name="SHOW_MESSAGE" length="1" />
+        </property>
+        <property name="serviceType" type="string">
+            <column name="SERVICE_TYPE" length="25" />
+        </property>
         <set name="geoRestrictionDays" inverse="true" lazy="false">
             <key>
                 <column name="RESTRICTION_ID" length="16" not-null="true" />

@@ -25,6 +25,8 @@ public class GeoRestriction implements java.io.Serializable {
 	private String message;
 	private String active;
 	private String comments;
+	private String showMessage;
+	private String serviceType;
 
 	private Set geoRestrictionDays = new HashSet(0);
 
@@ -173,5 +175,23 @@ public class GeoRestriction implements java.io.Serializable {
 
 	public void setRestrictionId(String restrictionId) {
 		this.restrictionId = restrictionId;
+	}
+
+	
+
+	public String getShowMessage() {
+		return showMessage;
+	}
+
+	public void setShowMessage(String showMessage) {
+		this.showMessage = showMessage;
+	}
+
+	public String getServiceType() {
+		return serviceType;
+	}
+
+	public void setServiceType(String serviceType) {
+		this.serviceType = serviceType;
 	}
 }
