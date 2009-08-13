@@ -36,7 +36,7 @@ String doLink2 = "',445,375);";
 <a href="<%=doLink1%>4<%=doLink2%>"><img src="/media_stat/images/template/about/plant_tour/food_safety/food_safety_p_4.jpg" width="126" height="158" alt="" vspace="10" border="0"></a>
 <br>
 Temperature-controlled and entirely washable, our facility is kept <b>colder and cleaner than 
-any retail environment</b>. Unlike retail food stores, we strictly follow USDA guidelines and the 
+any retail environment</b>. Unlike retail food stores, we follow USDA guidelines and the 
 HACCP food safety system in our fresh food storage and production areas, <b>exceeding the 
 national standards</b> for food excellence.
 <br><br>
@@ -48,9 +48,10 @@ national standards</b> for food excellence.
 <img src="/media_stat/images/layout/clear.gif" width="4" height="1">
 <a href="<%=doLink1%>8<%=doLink2%>"><img src="/media_stat/images/template/about/plant_tour/food_safety/food_safety_p_8.jpg" width="126" height="158" alt="" vspace="10" border="0"></a>
 <br>
-A full-time microbiologist runs our <b>onsite laboratory</b>. Every day the lab tests fresh foods 
-to ensure that they're free of pathogens, determines spoilage factors of prepared foods, and 
-analyzes swabs taken from work surfaces. In the fresh food areas everything from floor to ceiling, including the electronic hardware, is washed and <b>disinfected every single day</b> with antiseptic foam.
+In addition to our staff of seven food safety professionals, a full-time microbiologist runs our 
+<b>onsite laboratory</b>. Every day the lab conducts tests to assess freshness and ensure the environment 
+is free from pathogens, determines the spoilage factors of prepared foods and analyzes swabs to ensure the 
+work surfaces are properly cleaned. All  fresh food areas are washed and <b>disinfected each day</b>.
 <br><br><br>
 </td>
 </tr>
