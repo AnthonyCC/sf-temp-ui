@@ -357,50 +357,19 @@ p.fi{margin:20px 0px;}
 					<%
 						ProductModel productNode = contentNode;
 						String fiRating = "";
-						boolean fiIsDeal = false; // is deal?
-						int fiDeal = 0; // deal percentage
 					%>
 					<fd:ProduceRatingCheck>
 					<%
 						fiRating = JspMethods.getProductRating(productNode);
 					%>
 					</fd:ProduceRatingCheck>
-					<fd:FDProductInfo id="productInfo"
-							skuCode="<%=productNode.getDefaultSku().getSkuCode()%>">
-					<%
-						fiIsDeal = productInfo.isDeal();
-						if (fiIsDeal) {
-							fiDeal = productInfo.getDealPercentage();
-						}
-					%>
-					</fd:FDProductInfo>
 					<%
 						String actionURI = FDURLUtil.getProductURI(productNode,
-								"feat", recommendations.getVariant().getId());
+											"feat", recommendations.getVariant().getId());
 					%>
 					<%-- display a product --%>
 					<td align="center" width="105" valign="bottom">
-					<%
-						if (fiIsDeal) {
-					%>
-					<div id="prod_container"
-							style="height: 90px; width: 100px; text-align: left;">
-						<display:ProductImage product="<%=productNode%>" action="<%=actionURI%>" />
-					</div>
-					<div style="position: absolute;" id="sale_star">
-						<a href="<%=actionURI%>">
-							<img alt="SAVE <%=fiDeal%>%"
-									src="/media_stat/images/deals/brst_sm_<%=fiDeal%>.gif"
-									style="BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px">
-						</a>
-					</div>
-					<%
-						} else {
-					%> 
 					<display:ProductImage product="<%=productNode%>" action="<%=actionURI%>" />
-					<%
-					 	}
-					%>
 					</td>
 					<td width="10">
 						<img src="/media/images/layout/clear.gif" width="8" height="1">
@@ -412,11 +381,10 @@ p.fi{margin:20px 0px;}
 						type="com.freshdirect.fdstore.content.ProductModel">
 					<%
 						ProductModel productNode = contentNode;
-						String fiRating = "";
-						String fiProdPrice = null;
-						String fiProdBasePrice = null;
-						boolean fiIsDeal = false; // is deal?
-						int fiDeal = 0; // deal percentage
+									String fiRating = "";
+									String fiProdPrice = null;
+									String fiProdBasePrice = null;
+									boolean fiHasWas = false; // is deal?
 					%>
 					<fd:ProduceRatingCheck>
 					<%
@@ -426,16 +394,15 @@ p.fi{margin:20px 0px;}
 					<fd:FDProductInfo id="productInfo" skuCode="<%=productNode.getDefaultSku().getSkuCode()%>">
 					<%
 						fiProdPrice = JspMethods.currencyFormatter
-								.format(productInfo.getDefaultPrice())
-								/** +"/"+productInfo.getDisplayableDefaultPriceUnit().toLowerCase() **/
-								;
-	
-						fiIsDeal = productInfo.isDeal();
-						if (fiIsDeal) {
-							fiProdBasePrice = JspMethods.currencyFormatter
-								.format(productInfo.getBasePrice()); //+"/"+ productInfo.getBasePriceUnit().toLowerCase();
-							fiDeal = productInfo.getDealPercentage();
-						}
+											.format(productInfo.getDefaultPrice())
+											/** +"/"+productInfo.getDisplayableDefaultPriceUnit().toLowerCase() **/
+											;
+						
+									fiHasWas = productInfo.hasWasPrice();
+									if (fiHasWas) {
+										fiProdBasePrice = JspMethods.currencyFormatter
+											.format(productInfo.getBasePrice()); //+"/"+ productInfo.getBasePriceUnit().toLowerCase();
+									}
 					%>
 					</fd:FDProductInfo>
 					<%
@@ -466,7 +433,7 @@ p.fi{margin:20px 0px;}
 					</div>
 					<%
 						}
-						if (fiIsDeal) {
+						if (fiHasWas) {
 					%>
 					<div style="FONT-WEIGHT: bold; FONT-SIZE: 8pt; COLOR: #c00"><%=fiProdPrice%></div>
 					<div style="FONT-SIZE: 7pt; COLOR: #888">(was <%=fiProdBasePrice%>)</div>

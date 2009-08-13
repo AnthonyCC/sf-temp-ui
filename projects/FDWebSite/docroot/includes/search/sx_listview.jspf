@@ -48,19 +48,19 @@ int rank = nav.getPageOffset()+1;
 	ProductImpression pi = new ProductImpression(productNode);
 	Image prodImage = pi.getProductModel().getSourceProduct().getCategoryImage();
 	
-	boolean isDeal = false;
+	boolean hasWas = false;
 	Double defaultPrice = null;
 	String priceUnit = null;
-	int deal = -1;
+	int wasDeal = -1;
 	double basePrice = Double.NaN;
 	if (pi.getProductInfo() != null) {
 		defaultPrice = new Double(pi.getProductInfo().getDefaultPrice());
 		priceUnit = pi.getProductInfo().getDisplayableDefaultPriceUnit().toLowerCase();
-		isDeal = pi.getProductInfo().isDeal();
-		deal = -1;
+		hasWas = pi.getProductInfo().hasWasPrice();
+		wasDeal = -1;
 		basePrice = Double.NaN;
-		if (isDeal) {
-			deal = pi.getProductInfo().getDealPercentage();
+		if (hasWas) {
+			wasDeal = pi.getProductInfo().getDealPercentage();
 			basePrice = pi.getProductInfo().getBasePrice();
 		}
 	}
@@ -71,7 +71,7 @@ int rank = nav.getPageOffset()+1;
 %>
 <tr>
 	<td style="width: <%=prodImage.getWidth() %>px;text-align: center">
-			<display:ProductImage product="<%= productNode %>" action="<%= actionURL %>" hideDeals="true" hideYourFave="true" hideNew="true" />
+			<display:ProductImage product="<%= productNode %>" action="<%= actionURL %>" />
 	</td>
 	<td style="vertical-align: middle; text-align:left">
 		<div class="text13" style="padding-left:10px; text-indent: -10px;">
@@ -91,19 +91,20 @@ int rank = nav.getPageOffset()+1;
 				- <%=pi.getConfigurationDescription() %>
 			<% } %>
 			</span>
-		</div>		
+		</div>
 		<%
 		// Various labels
 		//	 AKA name
-		if (pi.getProductModel().getAka() != null && pi.getProductModel().getAka() != "" ) {
+		if (pi.getProductModel().getAka() != null && pi.getProductModel().getAka().length() != 0) {
 		%>
-			<div class="text13">"<%=pi.getProductModel().getAka() %>"</div>
+			<div class="text13">"<%= pi.getProductModel().getAka() %>"</div>
 		<%
 		}		
-		//   YOUR FAVORITE
-		if (isYourFave) {
-			%><div style="margin-top:5px;" class=""><span class="fav-label">YOUR FAVORITE!</span></div><%
-		}
+		if (pi.getProductModel().getProductRating() != null && pi.getProductModel().getProductRating().length() != 0) {
+		%>
+			<div style="margin-left:10px; margin-top:5px;"><display:ProductRating product="<%= productNode %>" noBr="true" leftAlign="true" /></div>
+		<%
+		}		
 		%>
 
 	</td>
@@ -111,11 +112,8 @@ int rank = nav.getPageOffset()+1;
 		<div style="white-space: nowrap" class="text13 normal-price">
 		<%
 			if (defaultPrice != null) {
-				if (isDeal) {
+				if (hasWas) {
 		%>
-					<span class="save-label">
-						SAVE <%= deal %>%&nbsp;
-					</span>
 					<span class="save-price">
 						<%=CURRENCY_FORMATTER.format(defaultPrice.doubleValue()) %>/<%= priceUnit %>
 					</span>
@@ -140,11 +138,8 @@ int rank = nav.getPageOffset()+1;
 		if (scaledPrices != null && scaledPrices.length > 0) {
 			for (int ymalSci = 0; ymalSci < scaledPrices.length; ymalSci++) { 
 		%>
-		<div style="white-space: nowrap" class="text13 normal-price">
-				<% if (isDeal) { %>
-				<br>
-				<% } %>
-				<span class="save-label">SAVE!</span>&nbsp;<%= scaledPrices[ymalSci] %>
+		<div style="white-space: nowrap" class="text13 save-price">
+			<%= scaledPrices[ymalSci] %>
 		</div>
 		<%
 			}

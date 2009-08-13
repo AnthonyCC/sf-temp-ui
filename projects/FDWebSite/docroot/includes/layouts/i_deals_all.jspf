@@ -414,7 +414,7 @@ if(productCode!=null && prodCatId !=null ) {
 
         String prodPrice = "";
         String prodBasePrice="";
-        boolean isDeal=false;
+        boolean hasWas=false;
         int deal=0;
         String dealsImage="";
     String priceUnit = "";
@@ -449,13 +449,15 @@ if(productCode!=null && prodCatId !=null ) {
         }
 
         prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice());
-        isDeal=productInfo.isDeal();
-        if(isDeal) {
+        hasWas=productInfo.hasWasPrice();
+        if(hasWas) {
             prodBasePrice = JspMethods.currencyFormatter.format(productInfo.getBasePrice());
-            deal=productInfo.getDealPercentage();
-            dealsImage=new StringBuffer("/media_stat/images/deals/brst_lg_").append(deal).append(".gif").toString();
         }
-        
+        deal=productInfo.getHighestDealPercentage();
+        if (deal>0) {
+        	dealsImage=new StringBuffer("/media_stat/images/deals/brst_lg_").append(deal).append(".gif").toString();
+        }
+
         priceUnit = productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
         String salesUnitDesc = "N/A";
         firstSalesUnit = "N/A";
@@ -554,8 +556,8 @@ if(productCode!=null && prodCatId !=null ) {
 %>
 <br>
 
-<font class="productPageSinglePrice" style="COLOR: #c00"><%=prodPrice%></font>
-<font style="FONT-SIZE: 10pt; COLOR: #333333"><%= "(was "+prodBasePrice+")" %>&nbsp;</font><br>
+<font class="productPageSinglePrice"<%= hasWas ? " style=\"COLOR: #c00\"" : "" %>><%=prodPrice%></font>
+<% if (hasWas) { %><font style="FONT-SIZE: 10pt; COLOR: #333333"><%= "(was "+prodBasePrice+")" %>&nbsp;</font><% } %><br>
 <%@include file="/includes/product/i_price_taxdeposit.jspf"%>
 <span class="text12"><%@include file="/includes/product/i_scaled_prices_nobr.jspf"%></span>
 <br>
@@ -623,7 +625,7 @@ if ((Image)productNode.getZoomImage()!=null) {%>
             <img SRC="<%= bigProductImage.getPath() %>" width="<%= bigProductImage.getWidth() %>" height="<%= bigProductImage.getHeight() %>" border="0" alt="<%=productNode.getFullName()%>">
             </a>
         </div>    
-        <div id=sale_star style="POSITION: absolute">
+        <div id="sale_star" style="POSITION: absolute">
             <a href="javascript:pop('<%=response.encodeURL("shared/prodpop.jsp?productId="+request.getParameter("productId")+"&catId="+request.getParameter("prodCatId"))%>',335,375)" border="0">
             <img style=\"BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px"  alt="<%="SAVE "+deal+"%"%>" border="0" src="<%=dealsImage%>"> </a>
         </div>
@@ -785,7 +787,7 @@ if(showThumbnails) {
                 for(int j = i; j < innerLoopEnd;j++) {
                     SkuModel sku = (SkuModel)allSkuModels.get(j);
                     if (sku==null) continue;
-                     String dealImage=new StringBuffer("/media_stat/images/deals/brst_sm_").append(sku.getProductInfo().getDealPercentage()).append(".gif").toString();
+                     String dealImage=new StringBuffer("/media_stat/images/deals/brst_sm_").append(sku.getProductInfo().getHighestDealPercentage()).append(".gif").toString();
                      
                     ProductModel displayProduct = sku.getProductModel();
                         Image groDeptImage = (Image)displayProduct.getCategoryImage();
@@ -804,7 +806,7 @@ if(showThumbnails) {
 	                    </div>
                         <div style="position: absolute;" id="sale_star">
 			                <a href="<%=imgLinkUrl%>" style="display: block;">
-			                    <img alt="<%="SAVE "+sku.getProductInfo().getDealPercentage()+"%"%>" src="<%=dealImage%>" style="border: 0px none ;" onMouseOver="changeImg(document.bullet<%=imgShownIndex %>,'in',0)" onMouseOut="changeImg(document.bullet<%=imgShownIndex %>,'out',0)">
+			                    <img alt="<%="SAVE "+sku.getProductInfo().getHighestDealPercentage()+"%"%>" src="<%=dealImage%>" style="border: 0px none ;" onMouseOver="changeImg(document.bullet<%=imgShownIndex %>,'in',0)" onMouseOut="changeImg(document.bullet<%=imgShownIndex %>,'out',0)">
 			                </a>
 	                    </div>
                     </div>

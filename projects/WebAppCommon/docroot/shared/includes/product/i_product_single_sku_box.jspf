@@ -29,7 +29,7 @@
                     %>(<%= secDomainValue.getLabel() %>)<%
                 }
                 %>
-				<% if ( productInfo.isDeal() ) { %>
+				<% if ( productInfo.hasWasPrice() ) { %>
 	                <font class="productPageSecondaryVarPrice" color="#C94747"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font>
 	                <font class="productPageSecondaryVarPriceUnit" color="#C94747">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase()%></font>				
                     <br/>
@@ -53,7 +53,7 @@
 	                %>
 	                
 	                
-					<% if ( productInfo.isDeal() ) { %>
+					<% if ( productInfo.hasWasPrice() ) { %>
 	                	<font class="productPageSinglePrice" color="#C94747"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font>
 	                	<font class="productPageSinglePriceUnit" color="#C94747">/<%=productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
                         <br/>

@@ -16,6 +16,7 @@
 <%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
 <%@page import="com.freshdirect.cms.ContentKey.InvalidContentKeyException"%>
 <%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
+<%@page import="com.freshdirect.fdstore.content.BrandModel"%>
 <%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
 <%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
@@ -882,7 +883,19 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 								<span class="taxonomy text13"><%= JspMethods.getTaxonomy(pm, true) %></span>
 								<% if ("detailed".equals(view)) { %>
 								<div class="score text12">
-									<span style="white-space: nowrap">Deals Percentage: <%= pm.getDealPercentage() %>%</span>&nbsp;
+									<span style="white-space: nowrap">Brand<%= pm.getBrands().size() > 1 ? "s" : "" %>: <%
+										String brands = "";
+										Iterator bit = pm.getBrands().iterator();
+										if (bit.hasNext()) {
+											BrandModel b = (BrandModel) bit.next();
+											brands += b.getFullName();
+										}
+										while (bit.hasNext()) {
+											BrandModel b = (BrandModel) bit.next();
+											brands += ", " + b.getFullName();
+										}
+									%><%= brands %></span><br>
+									<span style="white-space: nowrap">Highest Deal: <%= pm.getHighestDealPercentage() %>%</span>&nbsp;
 									<span style="white-space: nowrap">Quality Rating: <%= qrLookup.getVariable(cnm) %></span>&nbsp;
 									<span style="white-space: nowrap">Product Age: <%= days %></span>
 								</div>
@@ -949,7 +962,19 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 								<span class="taxonomy text13"><%= JspMethods.getTaxonomy(pm, true) %></span>
 								<% if ("detailed".equals(view)) { %>
 								<div class="score text12">
-									<span style="white-space: nowrap">Deals Percentage: <%= pm.getDealPercentage() %>%</span>&nbsp;
+									<span style="white-space: nowrap">Brand<%= pm.getBrands().size() > 1 ? "s" : "" %>: <%
+										String brands = "";
+										Iterator bit = pm.getBrands().iterator();
+										if (bit.hasNext()) {
+											BrandModel b = (BrandModel) bit.next();
+											brands += b.getFullName();
+										}
+										while (bit.hasNext()) {
+											BrandModel b = (BrandModel) bit.next();
+											brands += ", " + b.getFullName();
+										}
+									%><%= brands %></span><br>
+									<span style="white-space: nowrap">Highest Deal: <%= pm.getHighestDealPercentage() %>%</span>&nbsp;
 									<span style="white-space: nowrap">Quality Rating: <%= qrLookup.getVariable(cnm) %></span>&nbsp;
 									<span style="white-space: nowrap">Product Age: <%= days %></span>
 								</div>

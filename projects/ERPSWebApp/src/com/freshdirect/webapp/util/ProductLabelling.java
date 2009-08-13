@@ -50,7 +50,7 @@ public class ProductLabelling {
 		displayNew = false;
 
 
-		int deal = !hideBursts && !hideDeals ? product.getDealPercentage() : 0;
+		int deal = !hideBursts && !hideDeals ? product.getHighestDealPercentage() : 0;
 		boolean isNew = !hideBursts && !hideNew && product.isNew();
 		boolean isYourFave = !hideBursts && !hideYourFave && DYFUtil.isFavorite(product, customer);
 

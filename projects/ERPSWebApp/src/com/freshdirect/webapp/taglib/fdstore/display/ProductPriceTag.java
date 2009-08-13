@@ -83,7 +83,7 @@ public class ProductPriceTag extends BodyTagSupport {
 			if ( savingsPercentage > 0 ) {
 				price = productInfo.getDefaultPrice() * (1-savingsPercentage);
 				wasPrice = productInfo.getDefaultPrice();
-			} else if ( productInfo.isDeal() ) {
+			} else if ( productInfo.hasWasPrice() ) {
 				price = productInfo.getDefaultPrice();
 				wasPrice = productInfo.getBasePrice();
 			} else {

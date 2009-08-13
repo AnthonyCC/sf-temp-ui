@@ -412,7 +412,7 @@ public class FDEventUtilTest extends FDCustomerManagerTestSupport {
 					                           EnumATPRule.MATERIAL,
 					                           EnumAvailabilityStatus.AVAILABLE,
 					                           now,
-					                           "", inventoryCache,"",1.0,"ea",false,1);
+					                           "", inventoryCache,"",1.0,"ea",false,-1,-1);
 
 			return productInfo;
 		}

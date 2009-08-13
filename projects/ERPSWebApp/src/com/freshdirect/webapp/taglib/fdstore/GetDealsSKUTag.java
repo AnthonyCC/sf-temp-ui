@@ -53,7 +53,7 @@ public class GetDealsSKUTag extends AbstractGetterTag {
 				sku=i.next().toString();
 				try {
 					productInfo=FDCachedFactory.getProductInfo(sku);
-					if(productInfo.isAvailable() && productInfo.isDeal()) {
+					if(productInfo.isAvailable() && productInfo.hasWasPrice()) {
 						
 						try {
 							   SkuModel sm=ContentFactory.getInstance().getProduct(sku).getSku(sku);

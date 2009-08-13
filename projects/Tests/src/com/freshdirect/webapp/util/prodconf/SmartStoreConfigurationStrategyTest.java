@@ -275,7 +275,7 @@ public class SmartStoreConfigurationStrategyTest extends FDCustomerManagerTestSu
 						                           EnumATPRule.MATERIAL,
 						                           EnumAvailabilityStatus.AVAILABLE,
 						                           now,
-						                           "", inventoryCache,"",1.0,"ea",false,1);
+						                           "", inventoryCache,"",1.0,"ea",false,-1,-1);
 			} else {
 				// fallback: return all other items as available
 				// a 1000 units available starting now
@@ -289,7 +289,7 @@ public class SmartStoreConfigurationStrategyTest extends FDCustomerManagerTestSu
 						                           EnumATPRule.MATERIAL,
 						                           EnumAvailabilityStatus.AVAILABLE,
 						                           now,
-						                           "", inventoryCache,"",1.0,"ea",false,1);
+						                           "", inventoryCache,"",1.0,"ea",false,-1,-1);
 			}
 
 			return productInfo;

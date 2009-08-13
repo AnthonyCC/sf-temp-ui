@@ -315,7 +315,7 @@ public class DCPDReportGenerator {
 	            	price="$"+String.valueOf(skuNode.getProductInfo().getDefaultPrice());
 		        	if(skuNode.getProductInfo().getBasePrice()!=0) {
 		        		basePrice="$"+String.valueOf(skuNode.getProductInfo().getBasePrice());
-		        		isDeal=String.valueOf(skuNode.getProductInfo().isDeal());
+		        		isDeal=String.valueOf(skuNode.getProductInfo().hasWasPrice());
 		        	}	            	
 	            } else {
 	            	rating = null;

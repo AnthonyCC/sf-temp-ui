@@ -26,6 +26,8 @@ public class ProductRatingTag extends BodyTagSupport {
 
 	ProductModel	product; // product (mandatory)
 	String			action; // URL (optional)
+	boolean         noBr;
+	boolean         leftAlign;
 
 	public void setProduct(ProductModel prd) {
 		this.product = prd;
@@ -33,6 +35,14 @@ public class ProductRatingTag extends BodyTagSupport {
 	
 	public void setAction(String action) {
 		this.action = action;
+	}
+	
+	public void setNoBr(boolean noBr) {
+		this.noBr = noBr;
+	}
+	
+	public void setLeftAlign(boolean leftAlign) {
+		this.leftAlign = leftAlign;
 	}
 
 	public int doStartTag() {
@@ -57,7 +67,9 @@ public class ProductRatingTag extends BodyTagSupport {
 					buf.append("\">");
 				}
 	
-				buf.append("<img src=\"/media_stat/images/ratings/" + rating + ".gif\"");
+				buf.append("<img src=\"/media_stat/images/ratings/"
+						+ (leftAlign ? "left_" : "")
+						+ rating + ".gif\"");
 				
 				buf.append(" name=\"" + rating + "\"");
 	
@@ -73,7 +85,8 @@ public class ProductRatingTag extends BodyTagSupport {
 					buf.append("</a>");
 				}
 				
-				buf.append("<br>");
+				if (!noBr)
+					buf.append("<br>");
 			}
 			
 			out.println(buf.toString());

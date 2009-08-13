@@ -108,7 +108,7 @@
        
     <%  if (!skuAvailable) {  %>
     <td colspan="2" width="85" align="center"><font color="#999999"><%=(productInfo.isOutOfSeason()?"Out&nbsp;of&nbsp;Season": "Not&nbsp;Available")%></font>
-    <%  } else if(productInfo.isDeal()) {    %>
+    <%  } else if(productInfo.hasWasPrice()) {    %>
     <TD WIDTH="200" ALIGN="LEFT">&nbsp;<font class="groceryProductLinePrice" style="COLOR: #c00"><%= JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()) %>&nbsp;</font>
     <font style="FONT-SIZE: 7pt; COLOR: #888"><%= "(was "+JspMethods.currencyFormatter.format(productInfo.getBasePrice())+")" %>&nbsp;</font>
     </TD>

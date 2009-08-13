@@ -35,6 +35,7 @@ import com.freshdirect.smartstore.dsl.CompileException;
 import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationHome;
 import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationSB;
 import com.freshdirect.smartstore.impl.AllProductInCategoryRecommendationService;
+import com.freshdirect.smartstore.impl.BrandUniquenessSorter;
 import com.freshdirect.smartstore.impl.COSFilter;
 import com.freshdirect.smartstore.impl.CandidateProductRecommendationService;
 import com.freshdirect.smartstore.impl.ClassicYMALRecommendationService;
@@ -81,6 +82,7 @@ public class SmartStoreServiceConfiguration {
 
 	public static final String CKEY_SMART_SAVE = "smart_saving";
 	public static final String CKEY_COS_FILTER = "cos_filter";
+	public static final String CKEY_BRAND_SORTER = "brand_uniq_sort";
 
 	public static final String CKEY_FAVORITE_LIST_ID = "favorite_list_id";
 
@@ -102,6 +104,7 @@ public class SmartStoreServiceConfiguration {
     	configDesc.put(CKEY_INCLUDE_CART_ITEMS, "Include Cart Items");
     	configDesc.put(CKEY_SMART_SAVE, "Smart Savings");
     	configDesc.put(CKEY_COS_FILTER, "COS Filter");
+    	configDesc.put(CKEY_BRAND_SORTER, "Brand Uniqueness Sorter");
     	configDesc.put(CKEY_FAVORITE_LIST_ID, "Favorite List Id");
     	configDesc.put(CKEY_GENERATOR, "Generator Function");
     	configDesc.put(CKEY_SCORING, "Scoring Function");
@@ -119,6 +122,7 @@ public class SmartStoreServiceConfiguration {
     
     public static final boolean DEFAULT_SMART_SAVE = false;
     public static final String DEFAULT_COS_FILTER = null;
+    public static final boolean DEFAULT_BRAND_SORTER = false;
 
 	public static final String DEFAULT_FAVORITE_LIST_ID = "fd_favorites";
     
@@ -234,6 +238,7 @@ public class SmartStoreServiceConfiguration {
         boolean includeCartItems = DEFAULT_INCLUDE_CART_ITEMS;
         boolean smartSave = DEFAULT_SMART_SAVE;
         String cosFilter = DEFAULT_COS_FILTER;
+        boolean brandUniqueness = DEFAULT_BRAND_SORTER;
         
         SortedMap statuses = variant.getServiceConfig().getConfigStatus();
         if (statuses == null)
@@ -245,6 +250,7 @@ public class SmartStoreServiceConfiguration {
         	// if smart saving used, we will return items from the cart.
             includeCartItems = extractIncludeCartItems(config, statuses, smartSave);
         	cosFilter = extractCosFilter(config, statuses);
+        	brandUniqueness = extractBrandUniquenessSorter(config, statuses);
         	extractCartPresentation(config, statuses);
         }
         
@@ -361,6 +367,9 @@ public class SmartStoreServiceConfiguration {
         
         if (smartSave)
         	service = new SmartSavingRecommendationService(service);
+
+        if (brandUniqueness)
+        	service = new BrandUniquenessSorter(service);
         
         if (cosFilter != null)
         	service = new COSFilter(service, cosFilter);
@@ -476,6 +485,27 @@ public class SmartStoreServiceConfiguration {
 		return cosFilter;
 	}
 
+	private static boolean extractBrandUniquenessSorter(RecommendationServiceConfig config,
+			Map statuses) {
+		boolean brandUniqueness = DEFAULT_BRAND_SORTER;
+		String brandUniquenessStr = config.get(CKEY_BRAND_SORTER);
+		if (brandUniquenessStr != null) {
+			if (brandUniquenessStr.equalsIgnoreCase("yes")
+					|| brandUniquenessStr.equalsIgnoreCase("true")
+					|| brandUniquenessStr.equals("1")) {
+				brandUniqueness = true;
+				statuses.put(CKEY_BRAND_SORTER, new ConfigurationStatus(CKEY_BRAND_SORTER, brandUniquenessStr,
+						Boolean.toString(brandUniqueness), EnumConfigurationState.CONFIGURED_OK));
+			} else
+				statuses.put(CKEY_BRAND_SORTER, new ConfigurationStatus(CKEY_BRAND_SORTER, brandUniquenessStr,
+						Boolean.toString(DEFAULT_BRAND_SORTER), EnumConfigurationState.CONFIGURED_WRONG_DEFAULT,
+						"Unrecognized value defaulting to " + Boolean.toString(DEFAULT_BRAND_SORTER)));
+		} else
+			statuses.put(CKEY_BRAND_SORTER, new ConfigurationStatus(CKEY_BRAND_SORTER, null,
+					Boolean.toString(DEFAULT_BRAND_SORTER), EnumConfigurationState.UNCONFIGURED_DEFAULT));
+		return brandUniqueness;
+	}
+	
 	private static void extractCartPresentation(RecommendationServiceConfig config,
 			Map statuses) {
 		ConfigurationStatus status;

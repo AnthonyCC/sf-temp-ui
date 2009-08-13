@@ -1,17 +1,14 @@
 package com.freshdirect.common.pricing.util;
 
-import com.freshdirect.erp.model.ErpProductInfoModel;
+import org.apache.log4j.Logger;
+
+import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialPrice;
 import com.freshdirect.fdstore.FDStoreProperties;
 
 public class DealsHelper {
+	private static final Logger LOG = Logger.getLogger(DealsHelper.class);
 	
-	
-	public static boolean isDeal(ErpProductInfoModel product ) {
-		return isDeal(product.getSkuCode(), product.getBasePrice(), product.getDefaultPrice(), product.getBasePriceUnit(), product.getDefaultPriceUnit());
-	}
-	
-
-	public static boolean isDeal(String sku, double basePrice, double sellingPrice, String baseUnit, String sellingUnit) {
+	public static boolean hasWasPrice(String sku, double basePrice, double sellingPrice, String baseUnit, String sellingUnit) {
 		if (
 			!isValidInput(sku,4) || !isValidInput(baseUnit) || !isValidInput(sellingUnit) ||
 			!isValidInput(basePrice) || !isValidInput(sellingPrice) ||
@@ -41,13 +38,17 @@ public class DealsHelper {
 		
 		if(!isValidInput(basePrice)||!isValidInput(sellingPrice)||sellingPrice>=basePrice)
 			return -1;
-		String value=String.valueOf(((basePrice-sellingPrice)/basePrice)*100);
-		int val=Integer.parseInt(value.substring(0,value.indexOf(".")));
+		int val = (int) ((basePrice - sellingPrice) * 100.0 / basePrice + 0.2);
 		if( ((val%5)==0)||((val%2)==0))
 			return val;
 		return val-1;
 	}
 	
+	public static double determineBasePrice(double basePrice, double sellingPrice) {
+		
+		return basePrice >= sellingPrice ? basePrice : sellingPrice;
+	}
+
 	private static boolean isValidInput(String input,int length) {
 		return isValidInput(input) && input.length()>=length;
 	}
@@ -65,22 +66,22 @@ public class DealsHelper {
 	
 	public static void main(String[] args) {
 		
-		System.out.println(DealsHelper.isDeal(null, 5.0, 6.0, "EA", "EA"));
-		System.out.println(DealsHelper.isDeal("", 5.0, 6.0, "EA", "EA"));
-		System.out.println(DealsHelper.isDeal(" ", 5.0, 6.0, "EA", "EA"));
-		System.out.println(DealsHelper.isDeal("GR", 0.0, 6.0, "EA", "EA"));
-		System.out.println(DealsHelper.isDeal("GRO000110", 0.0, 6.0, "EA", "EA"));
-		System.out.println(DealsHelper.isDeal(null, 5.0, 6.0, "EA", "PB"));
-		System.out.println(DealsHelper.isDeal("GRO000110", 5.0, 6.0, "EA", "EA"));
-		System.out.println(DealsHelper.isDeal("NNN000110", 5.0, 6.0, "EA", "EA"));
-		System.out.println(DealsHelper.isDeal(null, 5.0, 6.0, "EA", "EA"));
-		System.out.println(DealsHelper.isDeal("GRO000110", 100.0, 6.0, "EA", "EA"));
-		System.out.println(DealsHelper.isDeal("GRO000110", 100.0, 25.1, "EA", "EA"));
-		System.out.println(DealsHelper.isDeal("GRO000110", 100.0, 24.99, "EA", "EA"));
-		System.out.println(DealsHelper.isDeal("GRO000110", 100.0, 24.0, "EA", "EA"));
-		System.out.println(DealsHelper.isDeal("GRO000110", 100.0, 89.99, "EA", "EA"));
-		System.out.println(DealsHelper.isDeal("GRO000110", 10.0, 9.0, "EA", "EA"));
-		System.out.println(DealsHelper.isDeal("GRO000110", 10.0, 25.0, "EA", "EA"));
+		System.out.println(DealsHelper.hasWasPrice(null, 5.0, 6.0, "EA", "EA"));
+		System.out.println(DealsHelper.hasWasPrice("", 5.0, 6.0, "EA", "EA"));
+		System.out.println(DealsHelper.hasWasPrice(" ", 5.0, 6.0, "EA", "EA"));
+		System.out.println(DealsHelper.hasWasPrice("GR", 0.0, 6.0, "EA", "EA"));
+		System.out.println(DealsHelper.hasWasPrice("GRO000110", 0.0, 6.0, "EA", "EA"));
+		System.out.println(DealsHelper.hasWasPrice(null, 5.0, 6.0, "EA", "PB"));
+		System.out.println(DealsHelper.hasWasPrice("GRO000110", 5.0, 6.0, "EA", "EA"));
+		System.out.println(DealsHelper.hasWasPrice("NNN000110", 5.0, 6.0, "EA", "EA"));
+		System.out.println(DealsHelper.hasWasPrice(null, 5.0, 6.0, "EA", "EA"));
+		System.out.println(DealsHelper.hasWasPrice("GRO000110", 100.0, 6.0, "EA", "EA"));
+		System.out.println(DealsHelper.hasWasPrice("GRO000110", 100.0, 25.1, "EA", "EA"));
+		System.out.println(DealsHelper.hasWasPrice("GRO000110", 100.0, 24.99, "EA", "EA"));
+		System.out.println(DealsHelper.hasWasPrice("GRO000110", 100.0, 24.0, "EA", "EA"));
+		System.out.println(DealsHelper.hasWasPrice("GRO000110", 100.0, 89.99, "EA", "EA"));
+		System.out.println(DealsHelper.hasWasPrice("GRO000110", 10.0, 9.0, "EA", "EA"));
+		System.out.println(DealsHelper.hasWasPrice("GRO000110", 10.0, 25.0, "EA", "EA"));
 		
 		/*System.out.println(DealsHelper.getVariancePercentage(6.0, 5.0));
 		System.out.println(DealsHelper.getVariancePercentage(7.0, 5.0));
@@ -97,4 +98,21 @@ public class DealsHelper {
 		*/
 	}
 
+
+	public static int determineHighestDeal(double basePrice, String basePriceUnit,
+			double defaultPrice, String defaultPriceUnit, ErpMaterialPrice[] materialPrices) {
+		double base = basePrice >= defaultPrice ? basePrice : defaultPrice;
+		String baseUnit = basePrice >= defaultPrice ? basePriceUnit: defaultPriceUnit;
+		int highest = getVariancePercentage(base, defaultPrice);
+		for (int i = 0; i < materialPrices.length; i++) {
+			if (!baseUnit.equals(materialPrices[i].getUnit())) {
+				LOG.warn("OOPS! material price with price unit different from the base price unit! Check DB!!!");
+				continue;
+			}
+			int deal = getVariancePercentage(base, materialPrices[i].getPrice());
+			if (deal > highest)
+				highest = deal;
+		}
+		return highest > 0 ? highest : -1;
+	}
 }

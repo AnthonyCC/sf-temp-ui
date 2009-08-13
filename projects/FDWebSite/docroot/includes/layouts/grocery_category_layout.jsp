@@ -152,43 +152,34 @@ if (currentCategory != null) {
 <logic:iterate id='contentNode' collection="<%= products %>" type="com.freshdirect.fdstore.content.ProductModel"><%
 		ProductModel productNode = contentNode;
 		ProductLabelling pl = new ProductLabelling((FDUserI) session.getAttribute(SessionName.USER), productNode);
-		boolean fiIsDeal=false;	// is deal?
-		int 	fiDeal=0;  		// deal percentage
-%><fd:FDProductInfo id="productInfo" skuCode="<%= productNode.getDefaultSku().getSkuCode() %>"><%
-		fiIsDeal=productInfo.isDeal();
-		if (fiIsDeal) {
-			fiDeal			= productInfo.getDealPercentage();
-		}
-%></fd:FDProductInfo><%
-		String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord, recommendations.getImpressionId(productNode));
+
+	String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord, recommendations.getImpressionId(productNode));
 %><%-- display a product --%>
 		<td align="center" width="105" valign="bottom">
-			<display:ProductImage product="<%= productNode %>" action="<%= actionURI %>" />
+			<display:ProductImage product="<%=productNode%>" action="<%=actionURI%>" />
 		</td>
 		<td width="10">
 			<img src="/media/images/layout/clear.gif" width="8" height="1">
 		</td><%
-		++ord;
-%></logic:iterate>
+			++ord;
+		%></logic:iterate>
 	</tr>
 	<tr valign="top"><%
 		ord=1;
-%><logic:iterate id='contentNode' collection="<%= products %>" type="com.freshdirect.fdstore.content.ProductModel"><%
+	%><logic:iterate id='contentNode' collection="<%=products%>" type="com.freshdirect.fdstore.content.ProductModel"><%
 		ProductModel productNode = contentNode;
-		ProductLabelling pl = new ProductLabelling((FDUserI) session.getAttribute(SessionName.USER), productNode);
-		String fiProdPrice = null;
-		String fiProdBasePrice=null;
-		boolean fiIsDeal=false;	// is deal?
-		int 	fiDeal=0;  		// deal percentage
-%><fd:FDProductInfo id="productInfo" skuCode="<%= productNode.getDefaultSku().getSkuCode() %>"><%
+			ProductLabelling pl = new ProductLabelling((FDUserI) session.getAttribute(SessionName.USER), productNode);
+			String fiProdPrice = null;
+			String fiProdBasePrice=null;
+			boolean fiIsDeal=false;	// is deal?
+	%><fd:FDProductInfo id="productInfo" skuCode="<%=productNode.getDefaultSku().getSkuCode()%>"><%
 		fiProdPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()) /** +"/"+productInfo.getDisplayableDefaultPriceUnit().toLowerCase() **/;
-		
-		fiIsDeal=productInfo.isDeal();
-		if (fiIsDeal) {
-			fiProdBasePrice	= JspMethods.currencyFormatter.format(productInfo.getBasePrice()); //+"/"+ productInfo.getBasePriceUnit().toLowerCase();
-			fiDeal			= productInfo.getDealPercentage();
-		}
-%></fd:FDProductInfo><%
+			
+			fiIsDeal=productInfo.hasWasPrice();
+			if (fiIsDeal) {
+		fiProdBasePrice	= JspMethods.currencyFormatter.format(productInfo.getBasePrice()); //+"/"+ productInfo.getBasePriceUnit().toLowerCase();
+			}
+	%></fd:FDProductInfo><%
 String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord, recommendations.getImpressionId(productNode));
 %><%-- display a product --%>
 		<td align="center" WIDTH="105">
@@ -385,7 +376,7 @@ String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVaria
 		<tr>
 		    <TD WIDTH="6"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="6" HEIGHT="1"></TD>
 		    <td colspan="<%=(2*brandSpan)+1%>">
-		        <IMG SRC="/media/images/navigation/department/grocery/gro_choose_brand.gif" WIDTH="123" HEIGHT="10" ALT="CHOOSE A BRAND" BORDER=0><br>
+		        <IMG SRC="/media/images/navigation/department/grocery/gro_choose_brand.gif" WIDTH="123" HEIGHT="10" ALT="CHOOSE A BRAND" BORDER="0"><br>
 		        <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10">
 		    </TD>
 		</tr>

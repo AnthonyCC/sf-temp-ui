@@ -101,6 +101,7 @@
           String prodPrice = null;
           String prodBasePrice=null;
           boolean isDeal=false;
+          boolean hasWas=false;
           int deal=0;
           String dealImage="";
           
@@ -127,12 +128,14 @@
 
 
             //comment out here for DEBUG, just make everything a deal
-            isDeal=productInfo.isDeal();
+            isDeal=productInfo.getHighestDealPercentage() > 0;
+            hasWas=productInfo.hasWasPrice();
             //isDeal = true;
 
-            if(isDeal) {
+			if(hasWas)
               prodBasePrice=JspMethods.currencyFormatter.format(productInfo.getBasePrice());
-              deal=productInfo.getDealPercentage();
+            if(isDeal) {
+              deal=productInfo.getHighestDealPercentage();
               dealImage=new StringBuffer("/media_stat/images/deals/brst_sm_").append(deal).append(".gif").toString();
             }  
 
@@ -166,6 +169,7 @@
           String prodPrice = null;
           String prodBasePrice=null;
           boolean isDeal=false;
+          boolean hasWas=false;
           int deal=0;
           String dealImage="";
           
@@ -192,12 +196,14 @@
 
 
             //comment out here for DEBUG, just make everything a deal
-            isDeal=productInfo.isDeal();
+            isDeal=productInfo.getHighestDealPercentage() > 0;
+            hasWas=productInfo.hasWasPrice();
             //isDeal = true;
 
-            if(isDeal) {
+			if(hasWas)
               prodBasePrice=JspMethods.currencyFormatter.format(productInfo.getBasePrice());
-              deal=productInfo.getDealPercentage();
+            if(isDeal) {
+              deal=productInfo.getHighestDealPercentage();
               dealImage=new StringBuffer("/media_stat/images/deals/brst_sm_").append(deal).append(".gif").toString();
             }  
 
@@ -236,6 +242,7 @@
           String prodPrice = null;
           String prodBasePrice=null;
           boolean isDeal=false;
+          boolean hasWas=false;
           int deal=0;
           String dealImage="";
           
@@ -263,12 +270,14 @@
 
 
               //comment out here for DEBUG, just make everything a deal
-              isDeal=productInfo.isDeal();
+              isDeal=productInfo.getHighestDealPercentage() > 0;
+              hasWas=productInfo.hasWasPrice();
               //isDeal = true;
 
-              if(isDeal) {
+			  if(hasWas)
                 prodBasePrice=JspMethods.currencyFormatter.format(productInfo.getBasePrice()); //+"/"+ productInfo.getBasePriceUnit().toLowerCase();
-                deal=productInfo.getDealPercentage();
+              if(isDeal) {
+                deal=productInfo.getHighestDealPercentage();
               }  
 
               %>
@@ -288,10 +297,10 @@
                 <% } %>
                   <%= pm.getFullName().substring(thisProdBrandLabel.length()).trim() %>
               </a>
-              <div class="price <% if(isDeal) { %>dealPrice<% } %>">
+              <div class="price <% if(hasWas) { %>dealPrice<% } %>">
                 <%= displayObj.getPrice() %>
               </div>
-            <% if(isDeal) { %>
+            <% if(hasWas) { %>
               <div class="wasPrice">
                 (was <%= prodBasePrice %>)
               </div>
@@ -319,6 +328,7 @@
           String prodPrice = null;
           String prodBasePrice=null;
           boolean isDeal=false;
+          boolean hasWas=false;
           int deal=0;
           String dealImage="";
           
@@ -346,12 +356,14 @@
 
 
               //comment out here for DEBUG, just make everything a deal
-              isDeal=productInfo.isDeal();
+              isDeal=productInfo.getHighestDealPercentage() > 0;
+              hasWas=productInfo.hasWasPrice();
               //isDeal = true;
 
-              if(isDeal) {
+			  if(hasWas)
                 prodBasePrice=JspMethods.currencyFormatter.format(productInfo.getBasePrice()); //+"/"+ productInfo.getBasePriceUnit().toLowerCase();
-                deal=productInfo.getDealPercentage();
+              if(isDeal) {
+                deal=productInfo.getHighestDealPercentage();
               }  
 
               %>
@@ -371,10 +383,10 @@
                 <% } %>
                   <%= pm.getFullName().substring(thisProdBrandLabel.length()).trim() %>
               </a>
-              <div style="font-weight: bold; font-size: 8pt; <% if(isDeal) {  %>color: #CC0000;<% } %>">
+              <div style="font-weight: bold; font-size: 8pt; <% if(hasWas) {  %>color: #CC0000;<% } %>">
                 <%= displayObj.getPrice() %>
               </div>
-            <% if(isDeal) { %>
+            <% if(hasWas) { %>
               <div style="font-size: 7pt; color: #888">
                 (was <%= prodBasePrice %>)
               </div>

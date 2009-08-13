@@ -38,7 +38,7 @@
 		ContentNodeModel prodParent = product.getParentNode(); 
         List skus = product.getSkus();
 
-        if (product.isDiscontinued() || product.isUnavailable() || prodParent==null || !(prodParent instanceof CategoryModel) || skus.size()==0) // || !(product.isDeal())
+        if (product.isDiscontinued() || product.isUnavailable() || prodParent==null || !(prodParent instanceof CategoryModel) || skus.size()==0) // || !(product.hasWasPrice())
         	continue;
 
         // validFavorites.add(product);	
@@ -46,6 +46,7 @@
         SkuModel sku = null;
         String prodPrice = null;
         String prodBasePrice=null;
+        boolean hasWas=false;
         boolean isDeal=false;
         int deal=0;
 
@@ -60,11 +61,12 @@
         	
        	%><fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>"><% 
         prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()); //+"/"+ productInfo.getDisplayableDefaultPriceUnit();
-        isDeal=productInfo.isDeal();
-        if(isDeal) {
+        hasWas=productInfo.hasWasPrice();
+        if(hasWas) {
             prodBasePrice=JspMethods.currencyFormatter.format(productInfo.getBasePrice()); //+"/"+ productInfo.getBasePriceUnit().toLowerCase();
-            deal=productInfo.getDealPercentage();
         }  
+        deal=productInfo.getHighestDealPercentage();
+        isDeal=deal>0;
         
 		%></fd:FDProductInfo><%
         
@@ -131,7 +133,9 @@ if (_featCats!=null) {
 
         // append product price
         favoriteProductLinks.append("<DIV id=prod_price_d_container style=\"FONT-WEIGHT: bold; FONT-SIZE: 8pt; COLOR: #c00\">").append(prodPrice).append("</DIV>");
-        favoriteProductLinks.append("<DIV id=prod_price_b_container style=\"FONT-SIZE: 7pt; COLOR: #888\">(was ").append(prodBasePrice).append(")</DIV></DIV>");        
+        if (hasWas) {
+        	favoriteProductLinks.append("<DIV id=prod_price_b_container style=\"FONT-SIZE: 7pt; COLOR: #888\">(was ").append(prodBasePrice).append(")</DIV></DIV>");
+        }
 
         favHTMLPieces.add(favoriteProducts);
         favHTMLPieceLinks.add(favoriteProductLinks);

@@ -24,6 +24,7 @@ public class ProductNameTag extends BodyTagSupport {
 	String			style 		= "";					// CSS style modification (optional)
 	String			brandStyle 	= "font-weight:bold;";	// CSS style modification for brand name (optional)
 	boolean			disabled 	= false;				// Not clickable (optional)
+	boolean         showNew     = false;                // Show NEW! label right after name
 	
 	public void setProduct(ProductModel product) {
 		this.product = product;
@@ -43,6 +44,10 @@ public class ProductNameTag extends BodyTagSupport {
 
 	public void setBrandStyle( String brandStyle ) {
 		this.brandStyle = brandStyle;
+	}
+	
+	public void setShowNew(boolean showNew) {
+		this.showNew = showNew;
 	}
 	
 	public int doStartTag() {
@@ -67,28 +72,29 @@ public class ProductNameTag extends BodyTagSupport {
 			styleStr = " style=\"" + style + "\"";
 		}
 		
-		if ( !this.disabled && action != null ) {
-			buf.append("<a href=\"" + action + "\"" + styleStr + ">");
-		} else {
-			buf.append("<span" + styleStr + ">");
-		}
+		buf.append("<span" + styleStr + ">");
+		if ( !this.disabled && action != null )
+			buf.append("<a href=\"" + action + "\">");
 
 		if ( shortenedProductName != null ) {
 			buf.append("<span style=\"" );
 			buf.append( brandStyle );
 			buf.append( "\">");
 			buf.append(brandName);
-			buf.append("</span><br/>");
+			buf.append("</span>");
+			buf.append("<br/>");
 			buf.append(shortenedProductName);
 		} else {
 			buf.append( fullName != null && !"".equalsIgnoreCase(fullName) ? fullName : "(this product)" );
 		}
 
-		if ( !this.disabled && action != null ) {
+		if ( !this.disabled && action != null )
 			buf.append("</a>");
-		} else {
-			buf.append("</span>");
-		}
+
+		if (showNew && product.isNew())
+			buf.append("&nbsp;&nbsp;<span class=\"save-price\">NEW!</span>");
+			
+		buf.append("</span>");
 
 		try {
 			// write out

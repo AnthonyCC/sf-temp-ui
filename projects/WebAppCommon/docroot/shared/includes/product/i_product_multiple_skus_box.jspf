@@ -91,7 +91,7 @@
                       if (allSamePrice) {
                           %>
                           <fd:FDProductInfo id="productInfo" skuCode="<%= ((SkuModel)group.get(0)).getSkuCode() %>">
-							<% if ( productInfo.isDeal() ) { %>
+							<% if ( productInfo.hasWasPrice() ) { %>
 						      <font class="productPageSecondaryVarPrice" color="#C94747"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font>
 						      <font class="productPageSecondaryVarPriceUnit" color="#C94747">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
 						      <br/>
@@ -178,7 +178,7 @@
 			} 
 		
 			if (!allSamePrice) { // extra space below for Size desc and price %> 
-				<% if ( productInfo.isDeal() ) { %>
+				<% if ( productInfo.hasWasPrice() ) { %>
 			      <font class="productPageSecondaryVarPrice" color="#C94747"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font>
 			      <font class="productPageSecondaryVarPriceUnit" color="#C94747">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
 			      <br/>
@@ -216,7 +216,7 @@
                            }
 	
                            if (!allSamePrice) { // extra space below for Size desc and price %> 
-                           	<% if ( productInfo.isDeal() ) { %>
+                           	<% if ( productInfo.hasWasPrice() ) { %>
                                 <font class="productPageSecondaryVarPrice" color="#C94747"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font>
                                 <font class="productPageSecondaryVarPriceUnit" color="#C94747">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
                                 <br/>

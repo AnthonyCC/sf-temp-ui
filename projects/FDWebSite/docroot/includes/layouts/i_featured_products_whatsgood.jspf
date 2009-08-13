@@ -46,7 +46,7 @@
 		ContentNodeModel prodParent = product.getParentNode(); 
         List skus = product.getSkus();
 
-        if (product.isDiscontinued() || product.isUnavailable() || prodParent==null || !(prodParent instanceof CategoryModel) || skus.size()==0) // || !(product.isDeal())
+        if (product.isDiscontinued() || product.isUnavailable() || prodParent==null || !(prodParent instanceof CategoryModel) || skus.size()==0) // || !(product.hasWasPrice())
         	continue;
 
         // validFavorites.add(product);	
@@ -54,6 +54,7 @@
         SkuModel sku = null;
         String prodPrice = null;
         String prodBasePrice=null;
+        boolean hasWas=false;
         boolean isDeal=false;
         int deal=0;
 
@@ -74,13 +75,14 @@
         
 		
 		//comment out here for DEBUG, just make everything a deal
-		isDeal=productInfo.isDeal();
-		//isDeal = true;
+		hasWas=productInfo.hasWasPrice();
+		//hasWas = true;
 
-        if(isDeal) {
+        if(hasWas) {
             prodBasePrice=JspMethods.currencyFormatter.format(productInfo.getBasePrice()); //+"/"+ productInfo.getBasePriceUnit().toLowerCase();
-            deal=productInfo.getDealPercentage();
         }  
+        deal=productInfo.getHighestDealPercentage();
+        isDeal=deal>0;
 
 		%></fd:FDProductInfo><%
         
@@ -151,7 +153,9 @@ if (_featCats!=null) {
 
         // append product price
         favoriteProductLinks.append("<div class=\"price dealPrice\">").append(prodPrice).append("</div>");
-        favoriteProductLinks.append("<div class=\"wasPrice\">(was ").append(prodBasePrice).append(")</div>");
+        if (hasWas) {
+        	favoriteProductLinks.append("<div class=\"wasPrice\">(was ").append(prodBasePrice).append(")</div>");
+        }
         favoriteProductLinks.append("</div>");        
 
         favHTMLPieces.add(favoriteProducts);

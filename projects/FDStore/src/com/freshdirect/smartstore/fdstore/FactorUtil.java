@@ -49,6 +49,13 @@ public class FactorUtil {
 		}
 	}
 
+	private static class HighestDealsCache extends OnlineScoreCache {
+		public double calculateVariable(ContentNodeModel contentNode) {
+			return contentNode instanceof ProductModel ? 
+					((double) ((ProductModel) contentNode).getHighestDealPercentage()) : 0.0;
+		}
+	}
+
 	private static class ProduceRatingCache extends OnlineScoreCache {
 		public double calculateVariable(ContentNodeModel contentNode) {
 			try {
@@ -62,6 +69,7 @@ public class FactorUtil {
 	}
 	
 	private static OnlineScoreCache dealsCache = new DealsCache();
+	private static OnlineScoreCache highestDealsCache = new HighestDealsCache();
 	private static OnlineScoreCache produceRatingCache = new ProduceRatingCache();
 	
 	/**
@@ -85,6 +93,26 @@ public class FactorUtil {
 		};
 	}
 
+	/**
+	 * Get a CSM lookup which returns "Highest Deals Percentage".
+	 * 
+	 * @return StoreLookup
+	 */
+	public static StoreLookup getHighestDealsPercentageLookup() {
+		return new CachingStoreLookup(highestDealsCache) {
+			public double getVariable(ContentNodeModel contentNode) {
+				return super.getVariable(contentNode) / 100.0;
+			}	
+		};
+	}
+	
+	public static StoreLookup getHighestDealsPercentageDiscretized() {
+		return new CachingStoreLookup(highestDealsCache) {
+			public double getVariable(ContentNodeModel contentNode) {
+				return Math.floor(super.getVariable(contentNode) / 5.0);
+			}
+		};
+	}
 	
 	/**
 	 * Get CMS lookup which returns "Expert Weight".

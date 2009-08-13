@@ -397,7 +397,7 @@ if(productCode!=null && prodCatId !=null ) {
         String prodPrice = "";
         String prodBasePrice="";
         int deal=0;
-        boolean isDeal=false;
+        boolean hasWas=false;
         String dealsImage="";
     String priceUnit = "";
         String firstSalesUnit = null;
@@ -420,7 +420,8 @@ if(productCode!=null && prodCatId !=null ) {
         boolean skuAvailable=false; 
 %>
 <fd:FDProductInfo id="productInfo" skuCode="<%= minSku.getSkuCode() %>">
-<%  /* In preview mode..prods may not have an underlying FDProduct..so if the productInfo says its
+<%
+	/* In preview mode..prods may not have an underlying FDProduct..so if the productInfo says its
     * discontinued or tempUnavailable then skip the product */
 
          skuAvailable = !minSku.isUnavailable();
@@ -431,12 +432,13 @@ if(productCode!=null && prodCatId !=null ) {
         }
 
         prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice());
-        isDeal=productInfo.isDeal();
-        if(isDeal) {
+        hasWas=productInfo.hasWasPrice();
+        if(hasWas) {
             prodBasePrice=JspMethods.currencyFormatter.format(productInfo.getBasePrice());
-            deal=productInfo.getDealPercentage();
-            dealsImage=new StringBuffer("/media_stat/images/deals/brst_lg_").append(deal).append(".gif").toString();
-            
+        }
+        deal=productInfo.getHighestDealPercentage();
+        if (deal > 0) {
+            dealsImage=new StringBuffer("/media_stat/images/deals/brst_lg_").append(deal).append(".gif").toString();        	
         }
         
         priceUnit = productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
@@ -455,24 +457,36 @@ if(productCode!=null && prodCatId !=null ) {
 <input type="hidden" name="skuCode_big" value="<%=minSku.getSkuCode()%>">
 <input type="hidden" name="salesUnit_big" value="<%=firstSalesUnit%>">
 <input type="hidden" name="catId_big" value="<%=prodCatId%>">
-<input type="hidden" name="productId_big" value="<%= productCode %>">
-<% if (request.getParameter("fdsc.source") != null) { %><input type="hidden" name="fdsc.source" value="<%=request.getParameter("fdsc.source")%>"/> <% } %>
+<input type="hidden" name="productId_big" value="<%=productCode%>">
+<%
+	if (request.getParameter("fdsc.source") != null) {
+%><input type="hidden" name="fdsc.source" value="<%=request.getParameter("fdsc.source")%>"/> <%
+ 	}
+ %>
 <tr valign="top"><td width="275">
 <table cellpadding="0" cellspacing="0" border="0"><tr>
-<% if (titleBrandLogo!=null) { %>
+<%
+	if (titleBrandLogo!=null) {
+%>
         <td>
 <%
-                if (brandPopupLink!=null) {
+	if (brandPopupLink!=null) {
 %>
 <table cellpadding="0" cellspacing="0" border="0"><tr><td><a href="<%=brandPopupLink%>"><img src="<%=titleBrandLogo.getPath()%>" width="<%=titleBrandLogo.getWidth()%>" height="<%=titleBrandLogo.getHeight()%>" border="0"></a></td><td>&nbsp; <a href="<%=brandPopupLink%>">Learn more about <%=thisProdBrandLabel%></a></td></tr></table>
-        <%        } else { %>
+        <%
+        	} else {
+        %>
                 <img src="<%=titleBrandLogo.getPath()%>" width="<%=titleBrandLogo.getWidth()%>" height="<%=titleBrandLogo.getHeight()%>" border="0">
-        <%        } %>
+        <%
+        	}
+        %>
         </td>
-<% } %>
+<%
+	}
+%>
 </tr></table><img src="/media_stat/images/layout/clear.gif" width="1" height="5"><br>
-<font class="title14" <% if (!skuAvailable) { %>color="#999999"<% } %>><%
-        //
+<font class="title14" <%if (!skuAvailable) {%>color="#999999"<%}%>><%
+	//
         // annotation mode
         //
         String productTitle = thisProdBrandLabel + " " + productNode.getFullName().substring(thisProdBrandLabel.length()).trim();
@@ -490,13 +504,14 @@ if(productCode!=null && prodCatId !=null ) {
                         productTitle += salesUnitDesc;
                 }
         if (FDStoreProperties.isAnnotationMode()) {
-                %><%@ include file="/includes/layouts/i_grocery_annotated_title.jspf" %><%
-        } else {
+%><%@ include file="/includes/layouts/i_grocery_annotated_title.jspf" %><%
+	} else {
                 // no annotation, just display title
-                %><%= productTitle %><%
-        }
+%><%=productTitle%><%
+	}
 %></font><br>
-<%  boolean showUnavailableText = true;
+<%
+	boolean showUnavailableText = true;
         Date earliestDate = minSku.getEarliestAvailability();
         Calendar testDate = new GregorianCalendar();
         testDate.add(Calendar.DATE, 1);
@@ -511,36 +526,55 @@ if(productCode!=null && prodCatId !=null ) {
                 showUnavailableText = false;
 %>
 <br>
-<b><font class="text12rbold">Earliest Delivery - <%= sf.format(earliestDate) %></font></b>
+<b><font class="text12rbold">Earliest Delivery - <%=sf.format(earliestDate)%></font></b>
 <br>
-<%}%>
+<%
+	}
+%>
 
-<% if (!skuAvailable) { %>
-        <% if (showUnavailableText) { %>
+<%
+	if (!skuAvailable) {
+%>
+        <%
+        	if (showUnavailableText) {
+        %>
         <br>
         <b><font class="text12rbold">This item is temporarily unavailable.</font></b><br><br>
         <img src="/media_stat/images/layout/999999.gif" width="225" height="1" border="0" vspace"5"><br>
-        <% } %>
-        <% if (productNode.getProductDescription()!=null && productNode.getProductDescription().getPath()!=null && (productNode.getProductDescription().getPath().toString()).indexOf("blank_file") < 0 ) { %>
+        <%
+        	}
+        %>
+        <%
+        	if (productNode.getProductDescription()!=null && productNode.getProductDescription().getPath()!=null && (productNode.getProductDescription().getPath().toString()).indexOf("blank_file") < 0 ) {
+        %>
 
-        <br><fd:IncludeMedia name="<%= productNode.getProductDescription().getPath() %>" /><br>
-        <% } %>
+        <br><fd:IncludeMedia name="<%=productNode.getProductDescription().getPath()%>" /><br>
+        <%
+        	}
+        %>
 
         <input type="hidden" value="" name="quantity_big">
         <INPUT type="hidden" class="text11bold" NAME="PRICE" SIZE="7" onFocus="blur()" value="">
-<%  } else {
+<%
+	} else {
         // !productNode.isUnavailable()
         syncProdQty = productNode.getQuantityMinimum();
         syncProdSkuCode = minSku.getSkuCode();
         syncProdSalesUnit = firstSalesUnit;
 %>
 <br>
-<% if(isDeal) {%>
+<%
+	if(hasWas) {
+%>
     <FONT CLASS="productPageSinglePrice" style="COLOR: #c00"><%=prodPrice%></FONT>
-    <font style="FONT-SIZE: 10pt; COLOR: #333333"><%= "(was "+prodBasePrice+")" %>&nbsp;</font><br>
-<%} else {%>    
+    <font style="FONT-SIZE: 10pt; COLOR: #333333"><%="(was "+prodBasePrice+")"%>&nbsp;</font><br>
+<%
+	} else {
+%>    
     <FONT CLASS="productPageSinglePrice"><%=prodPrice%></FONT><FONT CLASS="productPageSinglePriceUnit">/<%=priceUnit%></font><br>
-<% } %>
+<%
+	}
+%>
 
 <%@include file="/includes/product/i_price_taxdeposit.jspf"%>
 <span class="text12"><%@include file="/includes/product/i_scaled_prices_nobr.jspf"%></span>
@@ -548,16 +582,16 @@ if(productCode!=null && prodCatId !=null ) {
         <table border="0" cellspacing="0" cellpadding="1" width="215">
         <tr valign="MIDDLE">
         <td width="25" CLASS="text11bold">Quantity&nbsp;</td>
-        <td width="30" ALIGN="CENTER"><INPUT TYPE="text" NAME="quantity_big" SIZE="2" MAXLENGTH="2" CLASS="text11" value="<%=Math.round(productNode.getQuantityMinimum()) %>" onChange="chgQty('quantity_big',0,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);"></td>
-        <td width="10"><A HREF="javascript:chgQty('quantity_big',<%= productNode.getQuantityIncrement() %>,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="2" alt="greater quantity"></A><br>
-        <A HREF="javascript:chgQty('quantity_big',-<%= productNode.getQuantityIncrement()%>,<%= productNode.getQuantityMinimum() %>,<%= user.getQuantityMaximum(productNode) %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="2" alt="lesser quantity"></A></td>
+        <td width="30" ALIGN="CENTER"><INPUT TYPE="text" NAME="quantity_big" SIZE="2" MAXLENGTH="2" CLASS="text11" value="<%=Math.round(productNode.getQuantityMinimum())%>" onChange="chgQty('quantity_big',0,<%=productNode.getQuantityMinimum()%>,<%=user.getQuantityMaximum(productNode)%>);"></td>
+        <td width="10"><A HREF="javascript:chgQty('quantity_big',<%=productNode.getQuantityIncrement()%>,<%=productNode.getQuantityMinimum()%>,<%=user.getQuantityMaximum(productNode)%>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="2" alt="greater quantity"></A><br>
+        <A HREF="javascript:chgQty('quantity_big',-<%=productNode.getQuantityIncrement()%>,<%=productNode.getQuantityMinimum()%>,<%=user.getQuantityMaximum(productNode)%>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="2" alt="lesser quantity"></A></td>
         <td width="50" CLASS="text11bold" ALIGN="RIGHT">Price&nbsp;</td>
         <td width="100"><INPUT class="text11bold" TYPE="text" NAME="PRICE" SIZE="7" onFocus="blur()" value=""></td>
         </tr>
         </table>
 <br>
 <input type="image" name="addSingleToCart_big" src="/media_stat/images/buttons/add_to_cart.gif"  ALT="ADD THIS ITEM TO YOUR CART" width="93" height="20" HSPACE="2" VSPACE="2" border="0"><br>
-<%= FDURLUtil.getHiddenCommonParameters(request.getParameterMap(), "_big") %>
+<%=FDURLUtil.getHiddenCommonParameters(request.getParameterMap(), "_big")%>
 <%@ include file="/shared/includes/product/i_minmax_note.jspf" %>
 <%@ include file="/includes/product/i_delivery_note.jspf" %>
 <%@ include file="/includes/product/i_cancellation_note.jspf" %>
@@ -572,25 +606,39 @@ if(productCode!=null && prodCatId !=null ) {
              <fd:CCLNew template="/common/template/includes/ccl_moreabout.jspf"/>
 		</div>		             
 	</fd:CCLCheck>
-<%  if (productNode.getProductDescription()!=null && productNode.getProductDescription().getPath()!=null && productNode.getProductDescription().getPath().indexOf("blank_file.txt") < 0) { %>
-          <br><fd:IncludeMedia name="<%= productNode.getProductDescription().getPath() %>" /><br>
-<%  } %>
+<%
+	if (productNode.getProductDescription()!=null && productNode.getProductDescription().getPath()!=null && productNode.getProductDescription().getPath().indexOf("blank_file.txt") < 0) {
+%>
+          <br><fd:IncludeMedia name="<%=productNode.getProductDescription().getPath()%>" /><br>
+<%
+	}
+%>
 
-<% if(productNode.getCountryOfOrigin().size()>0) {%>
+<%
+	if(productNode.getCountryOfOrigin().size()>0) {
+%>
 				<br><b>Origin: </b>
                 
-			   <logic:iterate id="coolText" collection="<%= productNode.getCountryOfOrigin() %>" type="java.lang.String">
+			   <logic:iterate id="coolText" collection="<%=productNode.getCountryOfOrigin()%>" type="java.lang.String">
                <br><%=coolText%>
                </logic:iterate>
                <br>
-  <%}%>
+  <%
+  	}
+  %>
 
-    <%if (product!= null && product.hasNutritionInfo(ErpNutritionInfoType.HEATING)) {                        %>
+    <%
+    	if (product!= null && product.hasNutritionInfo(ErpNutritionInfoType.HEATING)) {
+    %>
                      <br><font class="title12">Heating Instructions</font><br>
-                     <%=product.getNutritionInfoString(ErpNutritionInfoType.HEATING) %><br>
-<%        }  %>
+                     <%=product.getNutritionInfoString(ErpNutritionInfoType.HEATING)%><br>
+<%
+	}
+%>
 
-<% } %>
+<%
+	}
+%>
 
 <%@ include file="/shared/includes/product/organic_claims.jspf" %>
 
@@ -598,13 +646,21 @@ if(productCode!=null && prodCatId !=null ) {
 
 <%@ include file="/includes/product/kosher.jspf" %>
 
-<% if (hasNutrition || hasIngredients) { %>
-<br><A HREF="javascript:pop('/nutrition_info.jsp?catId=<%= request.getParameter("prodCatId")%>&productId=<%=request.getParameter("productId") %>',335,375)">Nutrition, Ingredients, and Allergens</A>
-<% } else { %><br>Please check product label for nutrition, ingredients, and allergens.<% } %><br>
+<%
+	if (hasNutrition || hasIngredients) {
+%>
+<br><A HREF="javascript:pop('/nutrition_info.jsp?catId=<%=request.getParameter("prodCatId")%>&productId=<%=request.getParameter("productId")%>',335,375)">Nutrition, Ingredients, and Allergens</A>
+<%
+	} else {
+%><br>Please check product label for nutrition, ingredients, and allergens.<%
+	}
+%><br>
 </td>
 <td width="10">&nbsp;</td><%-- buffer cell --%>
 <td align="center">
-<% if(qualifies && !productNode.isUnavailable()){%>
+<%
+	if(qualifies && !productNode.isUnavailable()){
+%>
         <table>
                 <tr>
                         <td><img src="/media_stat/images/template/offer_icon.gif" alt="Promotion icon"></td>
@@ -612,42 +668,57 @@ if(productCode!=null && prodCatId !=null ) {
                 </tr>
         </table>
         <br>
-<%}
-if ((Image)productNode.getZoomImage()!=null) {%>
+<%
+	}
+if ((Image)productNode.getZoomImage()!=null) {
+%>
 
-<% if(isDeal &&!productNode.isUnavailable()) {%>
-    <DIV id=sale_star style="POSITION: absolute"><A HREF="javascript:pop('<%=response.encodeURL("shared/prodpop.jsp?productId="+request.getParameter("productId")+"&catId="+request.getParameter("prodCatId"))%>',335,375)"  border="0"><IMG style=\"BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px"  border="0" alt="<%="SAVE "+deal+"%"%>" src="<%=dealsImage%>"></A> </DIV>
-<%}%>
-<A HREF="javascript:pop('<%=response.encodeURL("shared/prodpop.jsp?productId="+request.getParameter("productId")+"&catId="+request.getParameter("prodCatId"))%>',335,375)"><img SRC="<%= bigProductImage.getPath() %>" width="<%= bigProductImage.getWidth() %>" height="<%= bigProductImage.getHeight() %>" border="0" alt="<%=productNode.getFullName()%>"></a>
-<% } else { %>
-<A HREF="javascript:pop('<%=response.encodeURL("shared/prodpop.jsp?productId="+request.getParameter("productId")+"&catId="+request.getParameter("prodCatId"))%>',335,375)"><img SRC="<%= bigProductImage.getPath() %>" width="<%= bigProductImage.getWidth() %>" height="<%= bigProductImage.getHeight() %>" border="0" alt="<%=productNode.getFullName()%>"></A>
-<% } %>
+<%
+	if(deal > 0 &&!productNode.isUnavailable()) {
+%>
+    <DIV id="sale_star" style="POSITION: absolute"><A HREF="javascript:pop('<%=response.encodeURL("shared/prodpop.jsp?productId="+request.getParameter("productId")+"&catId="+request.getParameter("prodCatId"))%>',335,375)"  border="0"><IMG style=\"BORDER-RIGHT: 0px; BORDER-TOP: 0px; BORDER-LEFT: 0px; BORDER-BOTTOM: 0px"  border="0" alt="<%="SAVE "+deal+"%"%>" src="<%=dealsImage%>"></A> </DIV>
+<%
+	}
+%>
+<A HREF="javascript:pop('<%=response.encodeURL("shared/prodpop.jsp?productId="+request.getParameter("productId")+"&catId="+request.getParameter("prodCatId"))%>',335,375)"><img SRC="<%=bigProductImage.getPath()%>" width="<%=bigProductImage.getWidth()%>" height="<%=bigProductImage.getHeight()%>" border="0" alt="<%=productNode.getFullName()%>"></a>
+<%
+	} else {
+%>
+<A HREF="javascript:pop('<%=response.encodeURL("shared/prodpop.jsp?productId="+request.getParameter("productId")+"&catId="+request.getParameter("prodCatId"))%>',335,375)"><img SRC="<%=bigProductImage.getPath()%>" width="<%=bigProductImage.getWidth()%>" height="<%=bigProductImage.getHeight()%>" border="0" alt="<%=productNode.getFullName()%>"></A>
+<%
+	}
+%>
 </td>
 </tr>
 </table>
 <br>
-<% if (thisBrandModel !=null) { 
+<%
+	if (thisBrandModel !=null) { 
 String  viewBrandURL = response.encodeURL("/category.jsp?catId="+groceryCategory+buildOtherParams(showThumbnails,itemsToDisplay,-1,thisProdBrand,sortBy,nutriName,request,groceryCategory.getContentName())+"&sortDescending=" + descending + "&disp=" + display + "&trk=pkprod");
 %>
 <table width="425" cellpadding="1" cellspacing="0" border="0" bgcolor="#FF9933" align="center">
         <tr><td><table width="100%" cellpadding="3" bgcolor="#FFFFFF"><tr><td align="center" class="text11bold"><a href="<%=viewBrandURL%>">View All
-<%=thisProdBrandLabel %> Products in <%=groceryCategory.getFullName()%></a></td></tr></table></td></tr>
+<%=thisProdBrandLabel%> Products in <%=groceryCategory.getFullName()%></a></td></tr></table></td></tr>
 </table>
-<% } else { %>
+<%
+	} else {
+%>
 <img src="/media_stat/images/layout/999999.gif" width="425" height="1" border="0" vspace"5"><br>
-<% } %>
+<%
+	}
+%>
 </fd:FDProductInfo>
 </fd:ProductGroup>
 <br>
 <%
-}
+	}
 if (!bigProdShown) {
         // build hidden field to hold price..so java script does not cause err.
 %><input type="hidden" name="PRICE">
 <input type="hidden" name="quantity_big" value="">
 <input type="hidden" name="skuCode_big" value="noBigProductDisplay">
 <%
-}
+	}
 
 
 //==== grocery top nav ends here  ======
@@ -667,10 +738,11 @@ if(productCode != null || reqSkuCode!=null) {
 }
 
 
-// the grocery top nav stuff starts here %>
+// the grocery top nav stuff starts here
+%>
 <%--- ====================   Start of Header Area ==============================   ----%>
 <%
-String pageNumberLinks = getPageNumbers(request,response,pageNumber,itemsToDisplay, (CategoryModel)currentFolder, skuCount,showThumbnails,brandValue,sortBy,nutriName, descending, display);
+	String pageNumberLinks = getPageNumbers(request,response,pageNumber,itemsToDisplay, (CategoryModel)currentFolder, skuCount,showThumbnails,brandValue,sortBy,nutriName, descending, display);
 String brandOrFolderName = "".equals(brandValue)?currentFolder.getFullName():brandName;
 if (brandLogo !=null) {
         brandOrFolderName = "<img src=\""+brandLogo.getPath()+"\" width=\""+brandLogo.getWidth()+"\"  height=\""+brandLogo.getHeight()+"\" alt=\""+brandName+"\" border=\"0\">";
@@ -679,28 +751,36 @@ if (brandLogo !=null) {
 %>
 <table border="0" cellspacing="0" cellpadding="0" width="425">
 <tr valign="BOTTOM">
-    <td><% if (brandPopupLink!=null) { %><a href="<%=brandPopupLink%>"><% } %><FONT CLASS="title12"><%=brandOrFolderName%></FONT><%if (brandPopupLink!=null) { %></a><% } %> (<%= skuCount %>&nbsp;items)
+    <td><%
+    	if (brandPopupLink!=null) {
+    %><a href="<%=brandPopupLink%>"><%
+    	}
+    %><FONT CLASS="title12"><%=brandOrFolderName%></FONT><%
+    	if (brandPopupLink!=null) {
+    %></a><%
+    	}
+    %> (<%=skuCount%>&nbsp;items)
     </td>
     <td ALIGN="RIGHT">
         <SELECT NAME="brand" onChange="javascript:gotoWindow(this.options[this.selectedIndex].value)" CLASS="text10">
 <%
-        String categoryTitle = groceryCategory.getFullName();
+	String categoryTitle = groceryCategory.getFullName();
         String optionURL = response.encodeURL("/category.jsp?catId=" + groceryCategory + buildOtherParams(showThumbnails,itemsToDisplay,-1,"",sortBy,nutriName,request,groceryCategory.getContentName()) + "&disp=" + display + "&sortDescending=" + descending + "&trk=trans");
 %>
-            <OPTION NAME="ACK">Find a Brand in  <%= categoryTitle %>
+            <OPTION NAME="ACK">Find a Brand in  <%=categoryTitle%>
 <%
-        if(!"".equals(brandValue)) {
+	if(!"".equals(brandValue)) {
 %>
             <OPTION NAME="ACK" value="<%=optionURL%>">All Brands<%
-        }
+            	}
 
-        for (Iterator br = groceryCategory.getAllBrands().iterator(); br.hasNext(); ) {
-                BrandModel myBrand = (BrandModel)br.next();
-                optionURL = response.encodeURL("/category.jsp?catId=" + groceryCategory + buildOtherParams(showThumbnails,itemsToDisplay,-1,myBrand.getContentName(),sortBy,nutriName,request,groceryCategory.getContentName())+ "&disp=" + display + "&sortDescending=" + descending + "&trk=trans");
-%>
+                    for (Iterator br = groceryCategory.getAllBrands().iterator(); br.hasNext(); ) {
+                            BrandModel myBrand = (BrandModel)br.next();
+                            optionURL = response.encodeURL("/category.jsp?catId=" + groceryCategory + buildOtherParams(showThumbnails,itemsToDisplay,-1,myBrand.getContentName(),sortBy,nutriName,request,groceryCategory.getContentName())+ "&disp=" + display + "&sortDescending=" + descending + "&trk=trans");
+            %>
             <OPTION  value="<%=optionURL%>"><%=myBrand.getFullName()%></OPTION>
 <%
-        }
+	}
 %>
         </SELECT>
     </td>
@@ -712,9 +792,7 @@ if (brandLogo !=null) {
     <td colspan="2" bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 </tr>
 <%
-
-
-if (FDStoreProperties.isAdServerEnabled()) {
+	if (FDStoreProperties.isAdServerEnabled()) {
 %>
 <tr>
     <td colspan="2">
@@ -726,7 +804,7 @@ if (FDStoreProperties.isAdServerEnabled()) {
     </td>
 </tr>
 <%
-}
+	}
 
 //
 // EDITORIAL PARTIAL
@@ -739,7 +817,7 @@ if (doRenderEditorialPartial && editorialMedia != null && !editorialMedia.isBlan
     <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td>
 </tr>
 <tr>
-    <td colspan="2"><fd:IncludeMedia name='<%= editorialMedia.getPath() %>'/></td>
+    <td colspan="2"><fd:IncludeMedia name='<%=editorialMedia.getPath()%>'/></td>
 </tr>
 <tr>
     <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8"></td>
@@ -748,16 +826,13 @@ if (doRenderEditorialPartial && editorialMedia != null && !editorialMedia.isBlan
     <td colspan="2" bgcolor="#FF9933"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 </tr>
 <%
-}
-
+	}
 %>
 <tr>
     <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
 </tr>
 <%
-
-
-if (!bigProdShown && brandPopupLink!=null) {
+	if (!bigProdShown && brandPopupLink!=null) {
 %>
 <tr>
     <td colspan="2"><a href="<%=brandPopupLink%>">Learn more about <%=brandName%></a></td>
@@ -772,45 +847,44 @@ if (!bigProdShown && brandPopupLink!=null) {
     <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
 </tr>
 <%
-}
-
+	}
 %>
 </table>
 
 <table border="0" cellspacing="0" cellpadding="0" width="425">
 <tr valign="top">
-    <td CLASS="text10bold" width="215">Page: <%= pageNumberLinks %></td>
+    <td CLASS="text10bold" width="215">Page: <%=pageNumberLinks%></td>
     <td ALIGN="RIGHT"><b>Sort by:</b>
         <SELECT NAME="sort" onChange="javascript:gotoWindow(this.options[this.selectedIndex].value!=''?this.options[this.selectedIndex].value:null)" CLASS="text10">
 <%
-        optionURL = response.encodeURL("/category.jsp?catId=" + currentFolder + "&groceryVirtual=All&trk=cpage");
+	optionURL = response.encodeURL("/category.jsp?catId=" + currentFolder + "&groceryVirtual=All&trk=cpage");
 %>
         <OPTION NAME="Ack" <%="name".equalsIgnoreCase(sortBy)?"selected":""%> value="<%=optionURL%>">Name</option>
 <%
-        optionURL = response.encodeURL("/category.jsp?catId=" + currentFolder + "&sortBy=price&groceryVirtual=All&trk=cpage");
+	optionURL = response.encodeURL("/category.jsp?catId=" + currentFolder + "&sortBy=price&groceryVirtual=All&trk=cpage");
 %>
         <OPTION NAME="Ack" <%="price".equalsIgnoreCase(sortBy)?"selected":""%>  value="<%=optionURL%>">Price</option>
 <%
-        optionURL = response.encodeURL("/category.jsp?catId=" + currentFolder + "&sortBy=kosher&groceryVirtual=All&trk=cpage");
+	optionURL = response.encodeURL("/category.jsp?catId=" + currentFolder + "&sortBy=kosher&groceryVirtual=All&trk=cpage");
 %>
         <OPTION NAME="Ack" <%="kosher".equalsIgnoreCase(sortBy)?"selected":""%>  value="<%=optionURL%>">Kosher</option>
 <%
-        Attribute attrAllowNutSort = currentFolder.getAttribute("NUTRITION_SORT");
+	Attribute attrAllowNutSort = currentFolder.getAttribute("NUTRITION_SORT");
         boolean allowNutSort = attrAllowNutSort != null?((Boolean)attrAllowNutSort.getValue()).booleanValue():true;
         if(allowNutSort){
 %>
         <OPTION value="">Nutrition:</option>
 <%
-            for(Iterator i = ErpNutritionType.getCommonList().iterator(); i.hasNext();){
+	for(Iterator i = ErpNutritionType.getCommonList().iterator(); i.hasNext();){
                 ErpNutritionType.Type nutriType = (ErpNutritionType.Type)i.next();
                 optionURL = response.encodeURL("/category.jsp?catId=" + currentFolder + buildOtherParams(false,45,-1,brandValue,"nutrition",nutriType.getName(),request,null)+"&disp="+nutriType.getName()+"&sortDescending="+nutriType.isGood()+"&trk=trans");
                 String optionDisplay = StringUtils.replace( nutriType.getDisplayName(), " quantity", "");
                 if(nutriType.getUom().equals("%"))
                     optionDisplay = optionDisplay + " % daily value";
 %>
-        <OPTION NAME="Ack" <%=nutriType.getName().equalsIgnoreCase(display)?"selected":""%>  value="<%=optionURL%>">&nbsp;&nbsp;<%= optionDisplay %></option>
+        <OPTION NAME="Ack" <%=nutriType.getName().equalsIgnoreCase(display)?"selected":""%>  value="<%=optionURL%>">&nbsp;&nbsp;<%=optionDisplay%></option>
 <%
-            }
+	}
         }
 %>
 
@@ -818,7 +892,8 @@ if (!bigProdShown && brandPopupLink!=null) {
     </td>
 </tr>
 </table>
-<%//========================  end header area ===============================================
+<%
+	//========================  end header area ===============================================
 
 //begin displaying the products on the page
 boolean isAnyProdAvailable = true;
@@ -835,12 +910,18 @@ for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd && isAnyProdAvailable=
  // if we are not displaying the amplified product (bigProduct area) then show the add selected to cart button at the top
 %>
 <table border="0" cellspacing="0" cellpadding="0" width="425"><tr>
-<% if(!bigProdShown && isAnyProdAvailable) { %><td><input type="image" name="addMultipleToCart" src="/media_stat/images/buttons/add_selected_to_cart.gif" width="145" height="20" hspace="4" vspace="4" border="0" alt="ADD SELECTED ITEMS TO CART"></td><% } if(allowNutSort){%><td align="right"><img src="/media_stat/images/template/grocery/sort_by_nutrition.gif"></td><%}%></tr></table>
+<%
+	if(!bigProdShown && isAnyProdAvailable) {
+%><td><input type="image" name="addMultipleToCart" src="/media_stat/images/buttons/add_selected_to_cart.gif" width="145" height="20" hspace="4" vspace="4" border="0" alt="ADD SELECTED ITEMS TO CART"></td><%
+	} if(allowNutSort){
+%><td align="right"><img src="/media_stat/images/template/grocery/sort_by_nutrition.gif"></td><%
+	}
+%></tr></table>
 <img src="/media_stat/images/layout/clear.gif" width="1" height="6">
 
 
 <%
-if(showThumbnails) {
+	if(showThumbnails) {
         for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd; i += 5) {
                 //now in the main loop, we need two inner loops, the first loop prints 5 images horizontally, the second print the products vertically
                 int innerLoopEnd = Math.min(i + 5, loopEnd);
@@ -848,13 +929,13 @@ if(showThumbnails) {
 <table border="0" cellspacing="0" cellpadding="0" width="425">
         <tr valign="top">
 <%
-                String otherParams = buildOtherParams(showThumbnails, itemsToDisplay, -1, brandValue, sortBy, nutriName,request, null);
+	String otherParams = buildOtherParams(showThumbnails, itemsToDisplay, -1, brandValue, sortBy, nutriName,request, null);
                 for(int j = i; j < innerLoopEnd;j++) {
                     SkuModel sku = (SkuModel)allSkuModels.get(j);
                     if (sku==null) continue;
                     String _dealImage="";
-                    if(sku.getProductInfo().isDeal()) {
-                        _dealImage=new StringBuffer("/media_stat/images/deals/brst_sm_").append(sku.getProductInfo().getDealPercentage()).append(".gif").toString();
+                    if(sku.getProductInfo().getHighestDealPercentage() > 0) {
+                        _dealImage=new StringBuffer("/media_stat/images/deals/brst_sm_").append(sku.getProductInfo().getHighestDealPercentage()).append(".gif").toString();
                     }
                     ProductModel displayProduct = sku.getProductModel();
                         Image groDeptImage = (Image)displayProduct.getCategoryImage();
@@ -868,20 +949,24 @@ if(showThumbnails) {
                 <div id="prod_container" style="height: 90px; width: 90px; text-align: left;">
                 <div style="padding: 10px 10px 0pt; height: 0px; line-height: 0px; position: absolute;" id="prod_image">
 		            <a id="prod_link_img" name="prod_link_img" href="<%=imgLinkUrl%>" style="display: block;">
-			        <img src="<%= groDeptImage.getPath()%>" width="<%= groDeptImage.getWidth()%>" height="<%= groDeptImage.getHeight()%>" border="0" alt="<%=displayProduct.getFullName()%>" onMouseOver="changeImg(document.bullet<%=imgShownIndex %>,'in',0)" onMouseOut="changeImg(document.bullet<%=imgShownIndex %>,'out',0)">
+			        <img src="<%=groDeptImage.getPath()%>" width="<%=groDeptImage.getWidth()%>" height="<%=groDeptImage.getHeight()%>" border="0" alt="<%=displayProduct.getFullName()%>" onMouseOver="changeImg(document.bullet<%=imgShownIndex%>,'in',0)" onMouseOut="changeImg(document.bullet<%=imgShownIndex%>,'out',0)">
 		            </a>
 	            </div>
-                <%if(sku.getProductInfo().isDeal()&&!sku.isUnavailable()) { %>
+                <%
+                	if(sku.getProductInfo().getHighestDealPercentage()>0&&!sku.isUnavailable()) {
+                %>
                     <div style="position: absolute;" id="sale_star">
 			            <a id="prod_link_img" name="prod_link_img" href="<%=imgLinkUrl%>" style="display: block;">
-			            <img alt="<%="SAVE "+sku.getProductInfo().getDealPercentage()+"%"%>" src="<%=_dealImage%>" style="border: 0px none ;" onMouseOver="changeImg(document.bullet<%=imgShownIndex %>,'in',0)" onMouseOut="changeImg(document.bullet<%=imgShownIndex %>,'out',0)">
+			            <img alt="<%="SAVE "+sku.getProductInfo().getHighestDealPercentage()+"%"%>" src="<%=_dealImage%>" style="border: 0px none ;" onMouseOver="changeImg(document.bullet<%=imgShownIndex%>,'in',0)" onMouseOut="changeImg(document.bullet<%=imgShownIndex%>,'out',0)">
 			            </a>
 	                </div>
-                <%}%>
+                <%
+                	}
+                %>
                 </div>
                 <IMG SRC="/media_stat/images/layout/dot_clear.gif" width="5" height="1" border="0"></td>
 <%
-                }
+	}
 %>
         </tr>
 </table>
@@ -889,21 +974,21 @@ if(showThumbnails) {
 <table width="425" border="0" cellspacing="0" cellpadding="0">
 <%@include file="/includes/layouts/i_grocery_product_separator.jspf"%>
 <%
-        //now the second loop - displays product descriptions vertically
+	//now the second loop - displays product descriptions vertically
                 for(int jj = i; jj < innerLoopEnd;  jj++) {
                     SkuModel sku = (SkuModel)allSkuModels.get(jj);
                     ProductModel displayProduct = sku.getProductModel();
                         itemShownIndex++;
                         skus.add( sku);
-                        %><%@include file="/includes/layouts/i_grocery_product_line.jspf"%><%
-                        if (sku.getSkuCode().equals(syncProdSkuCode)) {
+%><%@include file="/includes/layouts/i_grocery_product_line.jspf"%><%
+	if (sku.getSkuCode().equals(syncProdSkuCode)) {
                         //if (displayProduct.getContentName().equals(productCode)) {
                                 syncProdIdx = itemShownIndex;
                         }
                 }
 %></table><br>
 <%
-        } // end outer loop
+	} // end outer loop
 
 } else {
 
@@ -911,12 +996,12 @@ if(showThumbnails) {
 %><table width="425" border="0" cellspacing="0" cellpadding="0">
 <%@include file="/includes/layouts/i_grocery_product_separator.jspf"%>
 <%
-        for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd; i++) {
+	for(int i = (pageNumber -1) * itemsToDisplay; i < loopEnd; i++) {
             SkuModel sku = (SkuModel)allSkuModels.get(i);
             ProductModel displayProduct = sku.getProductModel();
                 skus.add( sku);
                 itemShownIndex++;
-                %><%@include file="/includes/layouts/i_grocery_product_line.jspf"%><%
+%><%@include file="/includes/layouts/i_grocery_product_line.jspf"%><%
 
                 if (displayProduct.getContentName().equals(productCode)) {
                         syncProdIdx = itemShownIndex;

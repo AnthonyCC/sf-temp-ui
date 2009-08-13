@@ -6,8 +6,8 @@
 	BrowserInfo browserInfo = new BrowserInfo((HttpServletRequest) pageContext.getRequest());
 	boolean supportsPNG = !(browserInfo.isInternetExplorer() && browserInfo.getVersionNumber() < 8.0);
 	
-	//boolean isDeal = productNode.isDeal();
-	int dealPercentage = productNode.getDealPercentage();
+	//boolean isDeal = productNode.hasWasPrice();
+	int dealPercentage = productNode.getHighestDealPercentage();
 	boolean isDeal = dealPercentage > 0;
 	String burstImage = "/media_stat/images/deals/brst_lg_" + dealPercentage + (supportsPNG ? ".png" : ".gif");
         

@@ -113,6 +113,16 @@ public class ProductImpression {
 	}
 
 
+	/**
+	 * Returns scaled percentages
+	 *
+	 * @return
+	 */
+	public int[] getScaledPercentages(double basePrice) {
+        FDProduct fdProduct = getFDProduct();
+		return fdProduct != null ? fdProduct.getPricing().getScalePercentage(basePrice) : new int[0];
+	}
+	
 
 	/**
 	 * Returns productInfo instance

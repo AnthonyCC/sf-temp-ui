@@ -170,6 +170,14 @@ public class Pricing implements Serializable {
 		}
 		return scales;
 	}
+
+	public int[] getScalePercentage(double basePrice) {
+		int[] percents = new int[ this.materialPrices.length-1 ];
+		for (int i=0; i<percents.length; i++) {
+			percents[i] = this.materialPrices[i+1].getScalePercentage(basePrice);
+		}
+		return percents;
+	}
 	
 	public String[] getWineScaleDisplay(boolean isBreakRequired) {
 		String[] scales = new String[ this.materialPrices.length-1 ];

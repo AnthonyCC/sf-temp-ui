@@ -49,7 +49,7 @@
 		ContentNodeModel prodParent = product.getParentNode(); 
         List skus = product.getSkus();
 
-        if (product.isDiscontinued() || product.isUnavailable() || prodParent==null || !(prodParent instanceof CategoryModel) || skus.size()==0) // || !(product.isDeal())
+        if (product.isDiscontinued() || product.isUnavailable() || prodParent==null || !(prodParent instanceof CategoryModel) || skus.size()==0) // || !(product.hasWasPrice())
         	continue;
 
         // validFavorites.add(product);	
@@ -57,6 +57,7 @@
         SkuModel sku = null;
         String prodPrice = null;
         String prodBasePrice=null;
+        boolean hasWas=false;
         boolean isDeal=false;
         int deal=0;
 
@@ -71,11 +72,12 @@
         	
        	%><fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>"><% 
         prodPrice = JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()); //+"/"+ productInfo.getDisplayableDefaultPriceUnit();
-        isDeal=productInfo.isDeal();
-        if(isDeal) {
+        hasWas=productInfo.hasWasPrice();
+        if(hasWas) {
             prodBasePrice=JspMethods.currencyFormatter.format(productInfo.getBasePrice()); //+"/"+ productInfo.getBasePriceUnit().toLowerCase();
-            deal=productInfo.getDealPercentage();
         }  
+        deal=productInfo.getHighestDealPercentage();
+        isDeal=deal>0;
         
 		%></fd:FDProductInfo><%
         
@@ -138,7 +140,9 @@ if (_featCats!=null) {
 
         // append product price
         favoriteProductLinks.append("<div style=\"font-weight: bold; font-size: 8pt; color: #CC0000;\">").append(prodPrice).append("</div>");
-        favoriteProductLinks.append("<div style=\"font-size: 7pt; color: #888\">(was ").append(prodBasePrice).append(")</div>");
+        if (hasWas) {
+        	favoriteProductLinks.append("<div style=\"font-size: 7pt; color: #888\">(was ").append(prodBasePrice).append(")</div>");
+        }
         favoriteProductLinks.append("</div>");        
 
         favHTMLPieces.add(favoriteProducts);

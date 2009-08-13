@@ -149,11 +149,17 @@ class FDProductHelper {
 
 
 		String displayablePricingUnit = attributeCollection.getAttribute(EnumAttributeName.PRICING_UNIT_DESCRIPTION.getName(), "");
-		boolean isDeal=DealsHelper.isDeal(erpProductInfo);
+		boolean hasWasPrice = DealsHelper.hasWasPrice(erpProductInfo.getSkuCode(), erpProductInfo.getBasePrice(),
+				erpProductInfo.getDefaultPrice(), erpProductInfo.getBasePriceUnit(), erpProductInfo.getDefaultPriceUnit());
 		int dealsPercentage=-1;
-		if(isDeal) {
+		if(hasWasPrice) {
 			dealsPercentage=DealsHelper.getVariancePercentage(erpProductInfo.getBasePrice(), erpProductInfo.getDefaultPrice());
 		}
+		
+		int highestDeal = DealsHelper.determineHighestDeal(erpProductInfo.getBasePrice(), erpProductInfo.getBasePriceUnit(),
+				erpProductInfo.getDefaultPrice(), erpProductInfo.getDefaultPriceUnit(),
+				erpProductInfo.getMaterialPrices());
+		
 		return new FDProductInfo(
 			erpProductInfo.getSkuCode(),
 			erpProductInfo.getVersion(),
@@ -167,8 +173,9 @@ class FDProductHelper {
 			erpProductInfo.getRating(),
 			erpProductInfo.getBasePrice(),
 			erpProductInfo.getBasePriceUnit(),
-			isDeal,
-			dealsPercentage
+			hasWasPrice,
+			dealsPercentage,
+			highestDeal
 		);
 	
 	}

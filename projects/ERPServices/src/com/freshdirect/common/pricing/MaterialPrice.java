@@ -107,6 +107,10 @@ public class MaterialPrice implements Serializable {
 		return buf.toString();
 	}
 	
+	public int getScalePercentage(double basePrice) {
+		return (int) ((basePrice - this.getPrice()) * 100.0 / basePrice);
+	}
+	
 	public String getScaleDisplay(double savingsPercentage) {
 		StringBuffer buf = new StringBuffer();
 		if ( this.getPricingUnit().equals("EA") ) {

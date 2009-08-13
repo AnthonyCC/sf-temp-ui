@@ -328,7 +328,7 @@
                 
                 // burst related stuff ->
                 
-                int deal = (product == null) ? 0 : product.getDealPercentage();
+                int deal = (product == null) ? 0 : product.getHighestDealPercentage();
                 
 				col1.append("<div style=\"position: absolute; top: 0px; left: 0px\">\n");
                 
@@ -370,10 +370,10 @@
 				%>
 					<fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
 						<%
-	                    lstUnitPrice = "<font class=\"price\"" + ( productInfo.isDeal() ? " style=\"color:#C94747\"" : "" ) + ">" + 
-	                    	JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()) + "/" + productInfo.getDisplayableDefaultPriceUnit().toLowerCase() + 
-	                    	"</font>";
-	                    %>
+							lstUnitPrice = "<font class=\"price\"" + ( productInfo.hasWasPrice() ? " style=\"color:#C94747\"" : "" ) + ">" + 
+							                    	JspMethods.currencyFormatter.format(productInfo.getDefaultPrice()) + "/" + productInfo.getDisplayableDefaultPriceUnit().toLowerCase() + 
+							                    	"</font>";
+						%>
 					</fd:FDProductInfo>
 				<%              
 				}
@@ -432,7 +432,7 @@
 				
                 // burst related stuff ->
                 
-				int deal = product.getDealPercentage();				
+				int deal = product.getHighestDealPercentage();				
 				String burstUrl = deal > 0 ? "/media_stat/images/deals/brst_sm_" + deal + (supportsPNG ? ".png" : ".gif") : clearImage;
 				appendColumn.append( "swapImageAndBurst(\"" + imgName + "\",\"" + ((Image)product.getCategoryImage()).getPath() + "\"," + imgS + ",\"" + 
 						(deal > 0) + "\",\"" + burstImgName  + "\",\"" + burstUrl + "\"" + ")" );

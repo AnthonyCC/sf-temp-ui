@@ -461,69 +461,29 @@ public class FilteredSearchResults extends SearchResults implements Serializable
                 FDProductInfo i1 = c1.getDefaultSku().getProductInfo();
                 FDProductInfo i2 = c2.getDefaultSku().getProductInfo();
 
-                // Stage 1 -- Compare deal percentages
+                // Stage 1 -- Compare highest deal percentages
                 //
-                if (i1.isDeal()) {
-                    if (i2.isDeal()) {
-                        int p1 = i1.getDealPercentage();
-                        int p2 = i2.getDealPercentage();
 
-                        // greater percentage is better
-                        int sc = p1 > p2 ? -1 : (p1 < p2 ? 1 : 0);
+                int p1 = i1.getHighestDealPercentage();
+                int p2 = i2.getHighestDealPercentage();
 
-                        // same prices -> sort by popularity
-                        if (sc == 0)
-                            return super.compare(o1, o2);
-                        return inverse ? -sc : sc;
-                    } else {
-                        return inverse ? 1 : -1;
-                    }
-                } else if (i2.isDeal()) {
-                    return inverse ? -1 : 1;
-                }
+                // greater percentage is better
+                int sc = p1 > p2 ? -1 : (p1 < p2 ? 1 : 0);
 
-                // Stage 2 -- tiered pricing
+                // same prices -> sort by popularity
+                if (sc != 0)
+                	return inverse ? -sc : sc;
+
+                // Stage 2 -- base prices
                 //
-                Pricing prc1 = c1.getDefaultSku().getProduct().getPricing();
-                Pricing prc2 = c2.getDefaultSku().getProduct().getPricing();
+
                 double defp1 = i1.getDefaultPrice();
                 double defp2 = i2.getDefaultPrice();
 
-                if (prc1.hasScales()) {
-                    if (prc2.hasScales()) {
-                        // find best scaled price (if any)
-                        double mp1 = prc1.getMinPrice();
-                        double mp2 = prc2.getMinPrice();
-
-                        if (mp1 != Double.NaN && mp2 != Double.NaN) {
-                        	// if product_1 : base_price:100 min_price : 90
-                        	// if product_2 : base_price:50 min_price : 40
-                        	//  then highest saving for product_1 : (1 - 90/100) = 0.1
-                        	//  then highest saving for product_2 : (1 - 40/50) = 0.2
-                        	
-                            int sc = Double.compare(mp1/defp1, mp2/defp2);
-
-                            // same prices -> sort by popularity
-                            if (sc == 0)
-                                return super.compare(o1, o2);
-                            return inverse ? -sc : sc;
-                        } else {
-                            int sc = (mp1 == Double.NaN ? 1 : -1);
-                            return inverse ? -sc : sc;
-                        }
-                    } else {
-                        return inverse ? 1 : -1;
-                    }
-                } else if (prc2.hasScales()) {
-                    return inverse ? -1 : 1;
-                }
-
-                // Stage 3 -- base prices
-                //
                 if (defp1 != defp2) {
 
                     // cheaper price is better
-                    int sc = Double.compare(defp1, defp2);
+                    sc = Double.compare(defp1, defp2);
                     if (sc == 0)
                         return super.compare(o1, o2);
                     return inverse ? -sc : sc;

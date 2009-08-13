@@ -271,7 +271,7 @@ public class ProductImageTag extends BodyTagSupport {
 			if (savingsPercentage > 0) {
 				deal = (int)(savingsPercentage*100);
 			} else if (pl.isDisplayDeal()) {
-				deal = product.getDealPercentage();
+				deal = product.getHighestDealPercentage();
 			}
 
 

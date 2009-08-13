@@ -213,8 +213,10 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 	}
 
 	private final static String QUERY_PRODUCTS_BY_SKU =
-		"select p.version, p.default_price, p.default_unit, m.sap_id, p.unavailability_status, p.unavailability_date, p.unavailability_reason, m.description, m.atp_rule,p.rating,p.base_price,p.base_pricing_unit"
-			+ " from erps.product p, erps.materialproxy mpx, erps.material m where p.id=mpx.product_id and mpx.mat_id=m.id and p.sku_code = ?"
+		"select p.version, p.default_price, p.default_unit, m.sap_id, p.unavailability_status, p.unavailability_date,"
+			+ " p.unavailability_reason, m.description, m.atp_rule, p.rating, p.base_price, p.base_pricing_unit, mp.price, mp.pricing_unit"
+			+ " from erps.product p, erps.materialproxy mpx, erps.material m, erps.materialprice mp"
+			+ " where p.id = mpx.product_id and mpx.mat_id = m.id and mp.mat_id = m.id and p.sku_code = ?"
 			+ " and p.version = (select max(version) from erps.product where sku_code = ?)";
 
 	public ErpProductInfoModel findProductBySku(String skuCode) throws ObjectNotFoundException {
@@ -235,6 +237,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			}
 
 			List matNos = new ArrayList(5);
+			List matPrices = new ArrayList(5);
 
 			int version = rs.getInt(1);
 			double defPrice = rs.getDouble(2);
@@ -251,8 +254,10 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			String basePriceUnit = rs.getString(12);
 			
 			matNos.add(rs.getString(4));
+			matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(13), rs.getString(14)));
 			while (rs.next()) {
 				matNos.add(rs.getString(4));
+				matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(13), rs.getString(14)));
 			}
 
 			return new ErpProductInfoModel(
@@ -261,6 +266,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				defPrice,
 				defPriceUnit,
 				(String[]) matNos.toArray(new String[0]),
+				(ErpProductInfoModel.ErpMaterialPrice[]) matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),
 				atpRule,
 				unavStatus,
 				unavDate,
@@ -288,9 +294,10 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 	}
 
 	private static final String skuVersionQuery =
-		"select p.default_price, p.default_unit, m.sap_id, p.unavailability_status, p.unavailability_date, "
-			+ "p.unavailability_reason, m.description, m.atp_rule,p.rating,p.base_price,p.base_pricing_unit from erps.product p, erps.materialproxy mpx, erps.material m "
-			+ "where p.id=mpx.product_id and mpx.mat_id=m.id and p.sku_code = ? and p.version = ?";
+		"select p.default_price, p.default_unit, m.sap_id, p.unavailability_status, p.unavailability_date,"
+			+ " p.unavailability_reason, m.description, m.atp_rule, p.rating, p.base_price, p.base_pricing_unit, mp.price, mp.pricing_unit"
+			+ " from erps.product p, erps.materialproxy mpx, erps.material m, erps.materialprice mp"
+			+ " where p.id=mpx.product_id and mpx.mat_id=m.id and mp.mat_id = m.id and p.sku_code = ? and p.version = ?";
 
 	public ErpProductInfoModel findProductBySku(String skuCode, int version) throws ObjectNotFoundException {
 		Connection conn = null;
@@ -307,6 +314,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 			if (rs.next()) {
 				List matNos = new ArrayList(5);
+				List matPrices = new ArrayList(5);
 
 				double defPrice = rs.getDouble(1);
 				String defPriceUnit = rs.getString(2);
@@ -321,8 +329,10 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				double basePrice = rs.getDouble(10);
 				String basePriceUnit = rs.getString(11);				
 				matNos.add(rs.getString(3));
+				matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(12), rs.getString(13)));
 				while (rs.next()) {
 					matNos.add(rs.getString(3));
+					matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(12), rs.getString(13)));
 				}
 
 				return new ErpProductInfoModel(
@@ -331,6 +341,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 					defPrice,
 					defPriceUnit,
 					(String[]) matNos.toArray(new String[0]),
+					(ErpProductInfoModel.ErpMaterialPrice[]) matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),
 					atpRule,
 					unavStatus,
 					unavDate,
@@ -374,6 +385,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 				if (rs.next()) {
 					List matNos = new ArrayList(2);
+					List matPrices = new ArrayList(5);
 
 					int version = rs.getInt(1);
 					double defPrice = rs.getDouble(2);
@@ -388,8 +400,10 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 					double basePrice = rs.getDouble(11);
 					String basePriceUnit = rs.getString(12);					
 					matNos.add(rs.getString(4));
+					matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(13), rs.getString(14)));
 					while (rs.next()) {
 						matNos.add(rs.getString(4));
+						matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(13), rs.getString(14)));
 					}
 
 					products.add(
@@ -399,6 +413,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 							defPrice,
 							defPriceUnit,
 							(String[]) matNos.toArray(new String[0]),
+							(ErpProductInfoModel.ErpMaterialPrice[]) matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),
 							atpRule,
 							unavStatus,
 							unavDate,
@@ -519,9 +534,11 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 	}
 
 	private final static String QUERY_PRODUCTS_BY_SAP_ID =
-		"select p.sku_code, p.version, p.default_price, p.default_unit, m.sap_id, p.unavailability_status, p.unavailability_date, p.unavailability_reason, m.description, m.atp_rule, p.rating,p.base_price,p.base_pricing_unit "
-			+ " from erps.product p, erps.materialproxy mpx, erps.material m where p.id=mpx.product_id and mpx.mat_id=m.id"
-			+ " and p.version = (select max(version)from erps.product p2 where p2.sku_code = p.sku_code)"
+		"select p.sku_code, p.version, p.default_price, p.default_unit, m.sap_id, p.unavailability_status,"
+			+ " p.unavailability_date, p.unavailability_reason, m.description, m.atp_rule, p.rating, p.base_price, p.base_pricing_unit, mp.price, mp.pricing_unit "
+			+ " from erps.product p, erps.materialproxy mpx, erps.material m, erps.materialprice mp"
+			+ " where p.id = mpx.product_id and mpx.mat_id = m.id and mp.mat_id = m.id"
+			+ " and p.version = (select max(version) from erps.product p2 where p2.sku_code = p.sku_code)"
 			+ " and m.sap_id like ? order by m.description";
 
 	public Collection findProductsBySapId(String sapId) {
@@ -537,6 +554,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			List products = new ArrayList();
 			while (rs.next()) {
 				List matNos = new ArrayList(2);
+				List matPrices = new ArrayList(5);
 
 				String skuCode = rs.getString(1);
 				int version = rs.getInt(2);
@@ -552,6 +570,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				double basePrice = rs.getDouble(12);
 				String basePriceUnit = rs.getString(13);
 				matNos.add(rs.getString(5));
+				matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(14), rs.getString(15)));
 
 				products.add(
 					new ErpProductInfoModel(
@@ -560,6 +579,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 						defPrice,
 						defPriceUnit,
 						(String[]) matNos.toArray(new String[0]),
+						(ErpProductInfoModel.ErpMaterialPrice[]) matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),
 						atpRule,
 						unavStatus,
 						unavDate,
@@ -588,8 +608,10 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 	}
 
 	private final static String QUERY_PRODUCTS_BY_DESCRIPTION =
-		"select p.sku_code, p.version, p.default_price, p.default_unit, m.sap_id, p.unavailability_status, p.unavailability_date, p.unavailability_reason, m.description, m.atp_rule, p.rating,p.base_price,p.base_pricing_unit"
-			+ " from erps.product p, erps.materialproxy mpx, erps.material m where p.id=mpx.product_id and mpx.mat_id=m.id"
+		"select p.sku_code, p.version, p.default_price, p.default_unit, m.sap_id, p.unavailability_status,"
+			+ " p.unavailability_date, p.unavailability_reason, m.description, m.atp_rule, p.rating, p.base_price, p.base_pricing_unit, mp.price, mp.pricing_unit"
+			+ " from erps.product p, erps.materialproxy mpx, erps.material m, erps.materialprice mp"
+			+ " where p.id = mpx.product_id and mpx.mat_id = m.id and mp.mat_id = m.id"
 			+ " and p.version = (select max(version) from erps.product p2 where p2.sku_code = p.sku_code)"
 			+ " and m.description like ?"
 			+ " order by m.description";
@@ -607,6 +629,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 
 			while (rs.next()) {
 				List matNos = new ArrayList(2);
+				List matPrices = new ArrayList(5);
 
 				String skuCode = rs.getString(1);
 				int version = rs.getInt(2);
@@ -622,6 +645,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				double basePrice = rs.getDouble(12);
 				String basePriceUnit = rs.getString(13);
 				matNos.add(rs.getString(5));
+				matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(14), rs.getString(15)));
 
 				products.add(
 					new ErpProductInfoModel(
@@ -630,6 +654,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 						defPrice,
 						defPriceUnit,
 						(String[]) matNos.toArray(new String[0]),
+						(ErpProductInfoModel.ErpMaterialPrice[]) matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),
 						atpRule,
 						unavStatus,
 						unavDate,
@@ -658,9 +683,10 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 	}
 
 	private final static String QUERY_PRODUCTS_LIKE_SKU =
-		"select p.sku_code, p.version, p.default_price, p.default_unit, m.sap_id, p.unavailability_status, p.unavailability_date, p.unavailability_reason, m.description, m.atp_rule,p.rating,p.base_price,p.base_pricing_unit"
-			+ " from erps.product p, erps.materialproxy mpx, erps.material m"
-			+ " where p.id=mpx.product_id and mpx.mat_id=m.id and p.sku_code like ?"
+		"select p.sku_code, p.version, p.default_price, p.default_unit, m.sap_id, p.unavailability_status, p.unavailability_date,"
+			+ " p.unavailability_reason, m.description, m.atp_rule, p.rating, p.base_price, p.base_pricing_unit, mp.price, mp.pricing_unit"
+			+ " from erps.product p, erps.materialproxy mpx, erps.material m, erps.materialprice mp"
+			+ " where p.id = mpx.product_id and mpx.mat_id = m.id and mp.mat_id = m.id and p.sku_code like ?"
 			+ " and p.version = (select max(version) from erps.product where sku_code = p.sku_code)";
 
 	public Collection findProductsLikeSku(String skuCode) {
@@ -675,6 +701,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			ArrayList results = new ArrayList();
 			while (rs.next()) {
 				List matNos = new ArrayList(5);
+				List matPrices = new ArrayList(5);
 
 				String sc = rs.getString(1);
 				int version = rs.getInt(2);
@@ -690,6 +717,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				double basePrice = rs.getDouble(12);
 				String basePriceUnit = rs.getString(13);
 				matNos.add(rs.getString(5));
+				matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(14), rs.getString(15)));
 
 				results.add(
 					new ErpProductInfoModel(
@@ -698,6 +726,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 						defPrice,
 						defPriceUnit,
 						(String[]) matNos.toArray(new String[0]),
+						(ErpProductInfoModel.ErpMaterialPrice[]) matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),
 						atpRule,
 						unavStatus,
 						unavDate,
@@ -727,9 +756,10 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 	}
 
 	private final static String QUERY_PRODUCTS_BY_UPC =
-		"select p.sku_code, p.version, p.default_price, p.default_unit, m.sap_id, p.unavailability_status, p.unavailability_date, p.unavailability_reason, m.description, m.atp_rule,p.rating,p.base_price,p.base_pricing_unit"
-			+ " from erps.product p, erps.materialproxy mpx, erps.material m"
-			+ " where p.id=mpx.product_id and mpx.mat_id=m.id and m.upc = ?"
+		"select p.sku_code, p.version, p.default_price, p.default_unit, m.sap_id, p.unavailability_status, p.unavailability_date, p.unavailability_reason,"
+			+ " m.description, m.atp_rule,p.rating, p.base_price, p.base_pricing_unit, mp.price, mp.pricing_unit"
+			+ " from erps.product p, erps.materialproxy mpx, erps.material m, erps.materialprice mp"
+			+ " where p.id = mpx.product_id and mpx.mat_id = m.id and mp.mat_id = m.id and m.upc = ?"
 			+ " and p.version = (select max(version) from erps.product where sku_code = p.sku_code)";
 
 	public Collection findProductsByUPC(String upc) {
@@ -744,6 +774,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			ArrayList results = new ArrayList();
 			while (rs.next()) {
 				List matNos = new ArrayList(5);
+				List matPrices = new ArrayList(5);
 
 				String sc = rs.getString(1);
 				int version = rs.getInt(2);
@@ -759,6 +790,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				double basePrice = rs.getDouble(12);
 				String basePriceUnit = rs.getString(13);
 				matNos.add(rs.getString(5));
+				matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(14), rs.getString(15)));
 
 				results.add(
 					new ErpProductInfoModel(
@@ -767,6 +799,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 						defPrice,
 						defPriceUnit,
 						(String[]) matNos.toArray(new String[0]),
+						(ErpProductInfoModel.ErpMaterialPrice[]) matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),
 						atpRule,
 						unavStatus,
 						unavDate,
@@ -796,9 +829,10 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 	}
 
 	private final static String QUERY_PRODUCTS_LIKE_UPC =
-		"select p.sku_code, p.version, p.default_price, p.default_unit, m.sap_id, p.unavailability_status, p.unavailability_date, p.unavailability_reason, m.description, m.atp_rule,p.rating,p.base_price,p.base_pricing_unit"
-			+ " from erps.product p, erps.materialproxy mpx, erps.material m"
-			+ " where p.id=mpx.product_id and mpx.mat_id=m.id and m.upc like ?"
+		"select p.sku_code, p.version, p.default_price, p.default_unit, m.sap_id, p.unavailability_status, p.unavailability_date, p.unavailability_reason,"
+			+ " m.description, m.atp_rule,p.rating, p.base_price, p.base_pricing_unit, mp.price, mp.pricing_unit"
+			+ " from erps.product p, erps.materialproxy mpx, erps.material m, erps.materialprice mp"
+			+ " where p.id = mpx.product_id and mpx.mat_id = m.id and mp.mat_id = m.id and m.upc like ?"
 			+ " and p.version = (select max(version) from erps.product where sku_code = p.sku_code)";
 
 	public Collection findProductsLikeUPC(String upc) {
@@ -813,6 +847,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			ArrayList results = new ArrayList();
 			while (rs.next()) {
 				List matNos = new ArrayList(5);
+				List matPrices = new ArrayList(5);
 
 				String sc = rs.getString(1);
 				int version = rs.getInt(2);
@@ -828,6 +863,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				double basePrice = rs.getDouble(12);
 				String basePriceUnit = rs.getString(13);
 				matNos.add(rs.getString(5));
+				matPrices.add(new ErpProductInfoModel.ErpMaterialPrice(rs.getDouble(14), rs.getString(15)));
 
 				results.add(
 					new ErpProductInfoModel(
@@ -836,6 +872,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 						defPrice,
 						defPriceUnit,
 						(String[]) matNos.toArray(new String[0]),
+						(ErpProductInfoModel.ErpMaterialPrice[]) matPrices.toArray(new ErpProductInfoModel.ErpMaterialPrice[0]),
 						atpRule,
 						unavStatus,
 						unavDate,

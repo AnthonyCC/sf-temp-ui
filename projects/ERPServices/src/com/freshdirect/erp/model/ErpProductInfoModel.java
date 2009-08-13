@@ -22,7 +22,26 @@ import com.freshdirect.framework.core.*;
  * @stereotype fd-model
  */
 public class ErpProductInfoModel extends ModelSupport {
-
+	
+	public static class ErpMaterialPrice {
+		private final double price;
+		
+		private final String unit;
+		
+		public ErpMaterialPrice(double price, String unit) {
+			this.price = price;
+			this.unit = unit;
+		}
+		
+		public double getPrice() {
+			return price;
+		}
+		
+		public String getUnit() {
+			return unit;
+		}
+	}
+	
 	/** version number */
 	private final int version;
 
@@ -37,7 +56,10 @@ public class ErpProductInfoModel extends ModelSupport {
 
 	/** SapIds for materials in this product */
 	private final String[] materialNumbers;
-
+	
+	/** unit prices of materials for this product */
+	private final ErpMaterialPrice[] materialPrices;
+	
 	/** Availability checking rule */
 	private final EnumATPRule atpRule;
 
@@ -80,6 +102,7 @@ public class ErpProductInfoModel extends ModelSupport {
 		double defaultPrice,
 		String defaultPriceUnit,
 		String[] materialNumbers,
+		ErpMaterialPrice[] materialPrices,
 		EnumATPRule atpRule,
 		String unavailabilityStatus,
 		Date unavailabilityDate,
@@ -94,6 +117,7 @@ public class ErpProductInfoModel extends ModelSupport {
 		this.defaultPrice = defaultPrice;
 		this.defaultPriceUnit = defaultPriceUnit;
 		this.materialNumbers = materialNumbers;
+		this.materialPrices = materialPrices;
 		this.atpRule = atpRule;
 		this.unavailabilityStatus = unavailabilityStatus;
 		this.unavailabilityDate = unavailabilityDate;
@@ -148,7 +172,16 @@ public class ErpProductInfoModel extends ModelSupport {
 	public String[] getMaterialSapIds() {
 		return this.materialNumbers;
 	}
-
+	
+	/**
+	 * Get Material Prices.
+	 * 
+	 * @return material prices
+	 */
+	public ErpMaterialPrice[] getMaterialPrices() {
+		return materialPrices;
+	}
+	
 	public EnumATPRule getATPRule() {
 		return this.atpRule;
 	}

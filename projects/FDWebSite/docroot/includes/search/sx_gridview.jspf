@@ -62,19 +62,16 @@ int colCount = 0;
 	// product to render
 	ProductModel productNode = pi.getProductModel();
 
-	boolean isDeal = false;
+	boolean hasWas = false;
 	Double defaultPrice = null;
 	String priceUnit = null;
-	int deal = -1;
 	double basePrice = Double.NaN;
 	if (pi.getProductInfo() != null) {
 		defaultPrice = new Double(pi.getProductInfo().getDefaultPrice());
 		priceUnit = pi.getProductInfo().getDisplayableDefaultPriceUnit().toLowerCase();
-		isDeal = pi.getProductInfo().isDeal();
-		deal = -1;
+		hasWas = pi.getProductInfo().hasWasPrice();
 		basePrice = Double.NaN;
-		if (isDeal) {
-			deal = pi.getProductInfo().getDealPercentage();
+		if (hasWas) {
 			basePrice = pi.getProductInfo().getBasePrice();
 		}
 	}
@@ -92,13 +89,14 @@ int colCount = 0;
 			<table align="center">
 				<tr>
 					<td style="padding: 0; height: <%= rowHeight.intValue() %>px; vertical-align: bottom; text-align: center">
-						<display:ProductImage product="<%= productNode %>" action="<%= prdURI %>" hideNew="true" />
+						<display:ProductImage product="<%= productNode %>" action="<%= prdURI %>" />
 					</td>
 				</tr>
 			</table>
 			<%
 			if (pi.getProductModel().isDisplayable()) {
 			%>
+				<display:ProductRating product="<%= productNode %>"/>
 				<display:ProductName product="<%= productNode %>" action="<%= prdURI %>" />
 			<%} else { %>
 				<display:ProductName product="<%= productNode %>" action="<%= prdURI %>" style="color: #999999;"/>
@@ -118,7 +116,7 @@ int colCount = 0;
 	if (defaultPrice != null) {%>
 		<div class="normal-price">
 		<%
-			if (isDeal) {
+			if (hasWas) {
 		%>
 				<span class="save-price">
 					<%=CURRENCY_FORMATTER.format(defaultPrice.doubleValue()) %>/<%= priceUnit %>
@@ -143,7 +141,7 @@ int colCount = 0;
 	//
 	String scaledPrices[] = pi.getScaledPrices();
 	if (scaledPrices != null && scaledPrices.length > 0) {
-		%><div class="normal-price"><span class="save-label">Save!</span>
+		%><div class="save-price">
 <%
 		for (int ymalSci = 0; ymalSci < scaledPrices.length; ymalSci++) {
 			%><%= scaledPrices[ymalSci] %><br>
