@@ -17,7 +17,7 @@ import com.freshdirect.cms.RelationshipDefI;
 public class RelationshipDef extends AttributeDef implements RelationshipDefI {
 
 	private final boolean navigable;
-	private final Set contentTypes = new HashSet();
+	private final Set<ContentType> contentTypes = new HashSet<ContentType>();
 
 	public RelationshipDef(
 		String name,
@@ -36,7 +36,7 @@ public class RelationshipDef extends AttributeDef implements RelationshipDefI {
 		return navigable;
 	}
 
-	public Set getContentTypes() {
+	public Set<ContentType> getContentTypes() {
 		return this.contentTypes;
 	}
 

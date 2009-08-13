@@ -20,7 +20,7 @@ public interface RelationshipDefI extends AttributeDefI {
 	 * 
 	 * @return Set of {@link ContentType}
 	 */
-	public Set getContentTypes();
+	public Set<ContentType> getContentTypes();
 
 	/**
 	 * 

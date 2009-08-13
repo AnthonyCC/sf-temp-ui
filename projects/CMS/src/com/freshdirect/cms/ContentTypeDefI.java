@@ -50,7 +50,7 @@ public interface ContentTypeDefI {
 	 * 
 	 * @return Collection of {@link AttributeDefI}, never null
 	 */
-	public Collection getSelfAttributeDefs();
+	public Collection<AttributeDefI> getSelfAttributeDefs();
 
 	//
 	// convenience
@@ -71,6 +71,6 @@ public interface ContentTypeDefI {
 	 * 
 	 * @return Set of String
 	 */
-	public Set getAttributeNames();
+	public Set<String> getAttributeNames();
 
 }

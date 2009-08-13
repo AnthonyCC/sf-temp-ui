@@ -39,15 +39,15 @@ public class ContentTypeUtil {
 	 * 
 	 * @return Collection of {@link RelationshipDefI} 
 	 */
-	public static Collection getNavigableRelationshipDefs(ContentTypeDefI definition) {
+	public static Collection<RelationshipDefI> getNavigableRelationshipDefs(ContentTypeDefI definition) {
 		if (definition==null) {
 			return Collections.EMPTY_LIST;
 		}
-		List l = new ArrayList();
+		List<RelationshipDefI> l = new ArrayList<RelationshipDefI>();
 		for (Iterator i = definition.getSelfAttributeDefs().iterator(); i.hasNext();) {
 			AttributeDefI def = (AttributeDefI) i.next();
 			if (def instanceof RelationshipDefI && ((RelationshipDefI) def).isNavigable()) {
-				l.add(def);
+				l.add((RelationshipDefI) def);
 			}
 		}
 		return l;
@@ -58,15 +58,13 @@ public class ContentTypeUtil {
 	 * 
 	 * @return Set of ContentType
 	 */
-	public static Set getReachableContentTypes(ContentTypeServiceI typeService, ContentTypeDefI definition) {
-		return collectReachableTypes(typeService, definition, new HashSet());
+	public static Set<ContentType> getReachableContentTypes(ContentTypeServiceI typeService, ContentTypeDefI definition) {
+		return collectReachableTypes(typeService, definition, new HashSet<ContentType>());
 	}
 
-	private static Set collectReachableTypes(ContentTypeServiceI typeService, ContentTypeDefI definition, Set typeRefs) {
-		for (Iterator i = getNavigableRelationshipDefs(definition).iterator(); i.hasNext();) {
-			RelationshipDefI rel = (RelationshipDefI) i.next();
-			for (Iterator j = rel.getContentTypes().iterator(); j.hasNext();) {
-				ContentType ctr = (ContentType) j.next();
+	private static Set<ContentType> collectReachableTypes(ContentTypeServiceI typeService, ContentTypeDefI definition, Set<ContentType> typeRefs) {
+		for (RelationshipDefI rel : getNavigableRelationshipDefs(definition)) {
+			for (ContentType ctr : rel.getContentTypes()) {
 				if (!typeRefs.contains(ctr)) {
 					typeRefs.add(ctr);
 					ContentTypeDef typeDef = (ContentTypeDef) typeService.getContentTypeDefinition(ctr);
@@ -151,7 +149,7 @@ public class ContentTypeUtil {
 	 * @param values List of String, never null
 	 * @return attribute value, never null
 	 */
-	public static Object convertAttributeValues(AttributeDefI atrDef, List values) {
+	public static Object convertAttributeValues(AttributeDefI atrDef, List<String> values) {
 		EnumAttributeType valueType = atrDef.getAttributeType();
 		if (EnumAttributeType.ENUM.equals(valueType)) {
 			valueType = ((EnumDefI) atrDef).getValueType();
