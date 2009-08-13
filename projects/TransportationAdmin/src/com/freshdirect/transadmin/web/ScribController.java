@@ -77,7 +77,7 @@ public class ScribController extends AbstractMultiActionController
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			ModelAndView mav = new ModelAndView("copyScribView");
-			saveMessage(request, getMessage("app.actionmessage.150", null));
+			saveMessage(request, getMessage("app.actionmessage.151", null));
 			return mav;
 		}
 	}
