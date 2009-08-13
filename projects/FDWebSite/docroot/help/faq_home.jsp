@@ -59,7 +59,9 @@ if (user2 != null) {
 			<%}else if(faqPage.equals("shopping")){
                 params.put("customerServiceContact", user2.getCustomerServiceContact() );
 			%>
-				<!-- leave as-is --><%@ include file="/help/shopping.jsp"%>
+				<!-- APPDEV-335 Shopping FAQ moved to CMS -->
+				<fd:IncludeMedia name="/media/editorial/faq/shopping.ftl" parameters="<%=params%>" withErrorReport="true"/>
+				<!-- leave as-is --><%//@ include file="/help/shopping.jsp"%>
 			<%}else if(faqPage.equals("payment")){%>
 				<fd:IncludeMedia name="/media/editorial/faq/payment.ftl" parameters="<%=params%>" withErrorReport="true"/>
 			<%}else if(faqPage.equals("deliveryHome")){
