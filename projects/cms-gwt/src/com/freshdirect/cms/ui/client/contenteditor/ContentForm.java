@@ -22,6 +22,7 @@ import com.freshdirect.cms.ui.client.fields.InheritanceField;
 import com.freshdirect.cms.ui.client.fields.OneToManyRelationField;
 import com.freshdirect.cms.ui.client.fields.OneToOneRelationField;
 import com.freshdirect.cms.ui.client.fields.PrimaryHomeSelectorField;
+import com.freshdirect.cms.ui.client.fields.TableField;
 import com.freshdirect.cms.ui.client.fields.VariationMatrixField;
 import com.freshdirect.cms.ui.client.nodetree.ContentNodeModel;
 import com.freshdirect.cms.ui.model.CustomFieldDefinition;
@@ -34,6 +35,7 @@ import com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI;
 import com.freshdirect.cms.ui.model.attributes.EnumAttribute;
 import com.freshdirect.cms.ui.model.attributes.OneToManyAttribute;
 import com.freshdirect.cms.ui.model.attributes.OneToOneAttribute;
+import com.freshdirect.cms.ui.model.attributes.TableAttribute;
 
 public class ContentForm extends FormPanel {
 	
@@ -70,8 +72,10 @@ public class ContentForm extends FormPanel {
 		String ctxPath = contextPath == null ? node.getDefaultContextPath() : contextPath;
 		
 		for ( String attributeKey : attrKeys ) {	
-			Field<Serializable> field = createField( attributeKey, node, ctxPath );	
-			section.add(field);			
+			Field<Serializable> field = createField( attributeKey, node, ctxPath );
+			if (field != null) {
+			    section.add(field);			
+			}
 		}	
 		
 		add(section);
@@ -105,12 +109,13 @@ public class ContentForm extends FormPanel {
 			
 			String ctxPath = contextPath == null ? nodeData.getDefaultContextPath() : contextPath;
 			
-			for ( String attributeKey : tabDefinition.getAttributeKeys( sectionId ) ) {
-				
-				Field<Serializable> field = createField(attributeKey, nodeData, ctxPath);
-				section.add(field);
-				containerIndex++;
-			}
+			for (String attributeKey : tabDefinition.getAttributeKeys(sectionId)) {
+                            Field<Serializable> field = createField(attributeKey, nodeData, ctxPath);
+                            if (field != null) {
+                                section.add(field);
+                                containerIndex++;
+                            }
+                        }
 			
 			add(section);			
 		}
@@ -123,43 +128,47 @@ public class ContentForm extends FormPanel {
 	 * @param node
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
-	protected Field<Serializable> createField( String attributeKey, GwtNodeData node, String contextPath ) {
+    @SuppressWarnings("unchecked")
+    protected Field<Serializable> createField(String attributeKey, GwtNodeData node, String contextPath) {
 
-		ContentNodeAttributeI attribute = node.getNode().getOriginalAttribute( attributeKey );
-		Serializable value = node.getNode().getAttributeValue( attributeKey );
-	    if ( value instanceof Collection && ((Collection)value).isEmpty() ) {
-	    	value = null;
-	    }
-		
-	    final Field<Serializable> innerField = createFieldInner( attributeKey, node, value, attribute );
-	    innerField.setReadOnly( attribute.isReadonly() || node.isReadonly() );
-	    
-	    Field<Serializable> field;
-	    if ( attribute.isInheritable() ) {
-	        field = new InheritanceField<Serializable>( innerField, value == null, attributeKey );
-	        ContentNodeAttributeI attr = node.getContexts() == null ? null : node.getContexts().getInheritedAttribute( contextPath, attributeKey );
-//	        Serializable inhvalue = attr == null ? null : attr instanceof EnumAttribute ? ((EnumAttribute)attr).getEnumModel() : attr.getValue(); 
-	        Serializable inhvalue = attr == null ? null : attr.getValue(); 
-	        ((InheritanceField<Serializable>)field).setInheritedValue( inhvalue );
-	    } else {
-	    	field = innerField;
-	    }
-	    
-	    attribute.setFieldObject( field );
-	    
-	    
-	    if ( attribute.isReadonly() || node.isReadonly() ) {
-	    	field.setFieldLabel( attribute.getLabel() + "[R/O]" );
-	    } else {
-	    	field.setFieldLabel( attribute.getLabel() );	
-		}	    
-	    
-	    //TODO contentkey tooltip...
-	    field.setToolTip( new ToolTipConfig( attributeKey ) );
-	    
-	    return field;
-	}
+        ContentNodeAttributeI attribute = node.getNode().getOriginalAttribute(attributeKey);
+        Serializable value = node.getNode().getAttributeValue(attributeKey);
+        if (value instanceof Collection && ((Collection) value).isEmpty()) {
+            value = null;
+        }
+
+        final Field<Serializable> innerField = createFieldInner(attributeKey, node, value, attribute);
+        if (innerField == null) {
+            return null;
+        }
+        innerField.setReadOnly(attribute.isReadonly() || node.isReadonly());
+
+        Field<Serializable> field;
+        if (attribute.isInheritable()) {
+            field = new InheritanceField<Serializable>(innerField, value == null, attributeKey);
+            ContentNodeAttributeI attr = node.getContexts() == null ? null : node.getContexts().getInheritedAttribute(contextPath, attributeKey);
+            // Serializable inhvalue = attr == null ? null : attr instanceof
+            // EnumAttribute ? ((EnumAttribute)attr).getEnumModel() :
+            // attr.getValue();
+            Serializable inhvalue = attr == null ? null : attr.getValue();
+            ((InheritanceField<Serializable>) field).setInheritedValue(inhvalue);
+        } else {
+            field = innerField;
+        }
+
+        attribute.setFieldObject(field);
+
+        if (attribute.isReadonly() || node.isReadonly()) {
+            field.setFieldLabel(attribute.getLabel() + "[R/O]");
+        } else {
+            field.setFieldLabel(attribute.getLabel());
+        }
+
+        // TODO contentkey tooltip...
+        field.setToolTip(new ToolTipConfig(attributeKey));
+
+        return field;
+    }
 	
 	/**
 	 * 	Creates the inner field for content editors depending on the attribute type. This will be optionally wrapped with an InheritanceField.
@@ -259,6 +268,12 @@ public class ContentForm extends FormPanel {
 			    field.setValue((List<OneToManyModel>)value);
 			}
 			return field;
+		}
+		if (type.equals("table")) {
+		    TableAttribute tableAttr = (TableAttribute) attribute;
+		    TableField t = new TableField(tableAttr);
+		    
+		    return t;
 		}
 		
 		return null;

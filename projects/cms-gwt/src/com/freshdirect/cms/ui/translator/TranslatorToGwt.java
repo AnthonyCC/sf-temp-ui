@@ -17,6 +17,7 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.ContentTypeDefI;
 import com.freshdirect.cms.EnumAttributeType;
+import com.freshdirect.cms.ITable;
 import com.freshdirect.cms.RelationshipDefI;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.application.CmsManager;
@@ -45,6 +46,7 @@ import com.freshdirect.cms.ui.model.attributes.ModifiableAttributeI;
 import com.freshdirect.cms.ui.model.attributes.OneToManyAttribute;
 import com.freshdirect.cms.ui.model.attributes.OneToOneAttribute;
 import com.freshdirect.cms.ui.model.attributes.SimpleAttribute;
+import com.freshdirect.cms.ui.model.attributes.TableAttribute;
 import com.freshdirect.cms.ui.model.changeset.GwtChangeDetail;
 import com.freshdirect.cms.ui.model.changeset.GwtChangeSet;
 import com.freshdirect.cms.ui.model.changeset.GwtContentNodeChange;
@@ -243,7 +245,8 @@ public class TranslatorToGwt {
 		Map<String, ContentNodeAttributeI> translatedAttributes = new HashMap<String, ContentNodeAttributeI>();
 
 		for ( String key : attributeMap.keySet() ) {
-			translatedAttributes.put( key, translateAttribute( attributeMap.get( key ), tabs != null ? tabs.getCustomFieldDefinition( key ) : null ) );
+		    ModifiableAttributeI attribute = translateAttribute( attributeMap.get( key ), tabs != null ? tabs.getCustomFieldDefinition( key ) : null );
+                    translatedAttributes.put( key, attribute );
 		}
 
 		return translatedAttributes;
@@ -259,9 +262,17 @@ public class TranslatorToGwt {
     @SuppressWarnings("unchecked")
     public static ModifiableAttributeI translateAttribute(AttributeI attribute, CustomFieldDefinition customFieldDefinition) {
         AttributeDefI definition = attribute.getDefinition();
+        Object value = attribute.getValue();
+        ModifiableAttributeI attr = translateAttribute(definition, customFieldDefinition, value);
+        if (attr == null) {
+            throw new RuntimeException("Unknown attribute type "+ attribute.getDefinition() + ", in node :"+attribute.getContentNode().getKey());
+        }
+        return attr;
+    }
+
+    private static ModifiableAttributeI translateAttribute(AttributeDefI definition, CustomFieldDefinition customFieldDefinition, Object value) {
         String name = definition.getLabel();
         EnumAttributeType type = definition.getAttributeType();
-        Object value = attribute.getValue();
         ModifiableAttributeI attr = null;
 
         if (type == EnumAttributeType.STRING) {
@@ -338,6 +349,28 @@ public class TranslatorToGwt {
                 }
                 attr = ooAttr;
             }
+            
+        } else if (type == EnumAttributeType.TABLE) {
+            ITable table = (ITable) value;
+            AttributeDefI[] columnDefinitions = table.getColumnDefinitions();
+            ContentNodeAttributeI[] columns = new ContentNodeAttributeI[columnDefinitions.length];
+            for (int i=0;i<columnDefinitions.length;i++) {
+                columns[i] = translateAttribute(columnDefinitions[i], null, null);
+            }
+
+            TableAttribute tableAttr = new TableAttribute();
+            tableAttr.setColumns(columns);
+            for (ITable.Row rw : table.getRows()) {
+                Serializable[] rowValue = new Serializable[columnDefinitions.length];
+                Object[] serverValue = rw.getValues();
+                for (int i = 0; i < rowValue.length; i++) {
+                    rowValue[i] = (Serializable) toClientValues(serverValue[i]);
+                }
+                tableAttr.addRow(rowValue);
+            }
+            attr = tableAttr;
+        } else {
+            return null;
         }
         attr.setInheritable(definition.isInheritable());
         attr.setReadonly(definition.isReadOnly());
@@ -346,23 +379,23 @@ public class TranslatorToGwt {
     }	
 
 
-	@SuppressWarnings("unchecked")
-	private static Object toClientValues( Object value ) {
-	    if ( value instanceof List ) {
-	        List<Object> result = new ArrayList<Object>();
-	        for ( Object item : (List<Object>)value ) {
-				result.add( toClientValues( item ) );
-			}
-	        return result;
-	    }
-	    if ( value instanceof String ) {
-			return value;
-		}
-		if ( value instanceof ContentKey ) {
-			ContentKey ck = ( (ContentKey)value );
-			return new ContentNodeModel( ck.getType().getName(), null, ck.getEncoded() );
-		}
-		return null;
+    @SuppressWarnings("unchecked")
+    private static Serializable toClientValues(Object value) {
+        if (value instanceof List) {
+            List<Object> result = new ArrayList<Object>();
+            for (Object item : (List<Object>) value) {
+                result.add(toClientValues(item));
+            }
+            return (Serializable) result;
+        }
+        if (value instanceof String) {
+            return (String) value;
+        }
+        if (value instanceof ContentKey) {
+            ContentKey ck = ((ContentKey) value);
+            return new ContentNodeModel(ck.getType().getName(), null, ck.getEncoded());
+        }
+        return null;
     }
 
     // =========================== CHANGE SETS ===========================  

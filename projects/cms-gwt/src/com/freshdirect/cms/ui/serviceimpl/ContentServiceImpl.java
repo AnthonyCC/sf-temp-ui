@@ -232,6 +232,9 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
         } catch (InvalidContentKeyException e) {
             LOG.error("InvalidContentKeyException for "+nodeKey, e);
             throw new RuntimeException("Invalid content key : " + e.getMessage());
+        } catch (RuntimeException e) {
+            LOG.error("Runtime Exception : " + e.getMessage(), e);
+            throw e;
         }
     }
 
