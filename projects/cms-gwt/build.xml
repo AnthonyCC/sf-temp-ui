@@ -27,6 +27,7 @@
         <include name="thirdparty/commons-lang-2.3.jar"/>
         <include name="thirdparty/hivemind-1.1.1.jar"/>
         <include name="thirdparty/log4j.jar"/>
+        <include name="thirdparty/commons-fileupload-1.2.jar"/>
     </fileset>
     <pathelement location="${CMS.classes.dir}"/>
     <pathelement location="${FDStore.classes.dir}"/>
