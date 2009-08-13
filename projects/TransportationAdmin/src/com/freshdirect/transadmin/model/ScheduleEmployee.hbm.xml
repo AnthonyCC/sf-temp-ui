@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Nov 18, 2008 3:11:24 PM by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping schema="transp">
+    <class name="com.freshdirect.transadmin.model.ScheduleEmployee" table="SCRIB_BID">
+        <id name="scheduleId" type="string">
+            <column name="ID" length="10" />
+           <generator class="sequence">
+    			<param name="sequence">SCHEDULESEQ</param>
+			</generator>
+        </id>
+        <many-to-one name="depotZone" class="com.freshdirect.transadmin.model.Zone" fetch="select" lazy="false">
+            <column name="DEPOT_ZONE" length="16" />
+        </many-to-one>
+        <many-to-one name="region" class="com.freshdirect.transadmin.model.Region" fetch="select" lazy="false">
+            <column name="REGION" length="16"  />
+        </many-to-one>
+        <property name="employeeId" type="string">
+            <column name="EMPLOYEE_ID"  />
+        </property>
+        <property name="day" type="string">
+            <column name="DAY"  />
+        </property>
+        <property name="time" type="timestamp">
+            <column name="TIME" length="7" />
+        </property>    
+    </class>
+</hibernate-mapping>
