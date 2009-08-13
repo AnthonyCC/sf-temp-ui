@@ -21,9 +21,9 @@ import com.freshdirect.cms.util.DbMappingUtil;
 public class DbTable implements ITable {
 
 	private final AttributeDefI[] columnDefinitions;
-	private final List rows;
+	private final List<Row> rows;
 
-	private DbTable(AttributeDefI[] columnDefinitions, List rows) {
+	private DbTable(AttributeDefI[] columnDefinitions, List<Row> rows) {
 		this.columnDefinitions = columnDefinitions;
 		this.rows = rows;
 	}
@@ -32,7 +32,7 @@ public class DbTable implements ITable {
 		return columnDefinitions;
 	}
 
-	public List getRows() {
+	public List<Row> getRows() {
 		return rows;
 	}
 
@@ -51,7 +51,7 @@ public class DbTable implements ITable {
 
 		int cols = meta.getColumnCount();
 
-		List rows = new ArrayList();
+		List<Row> rows = new ArrayList<Row>();
 		while (rs.next()) {
 			Object[] row = new Object[cols];
 			for (int i = 0; i < cols; i++) {

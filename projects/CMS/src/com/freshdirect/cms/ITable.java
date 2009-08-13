@@ -24,7 +24,7 @@ public interface ITable extends Serializable {
 	 * 
 	 * @return List of ITable.Row
 	 */
-	public List getRows();
+	public List<Row> getRows();
 
 	/**
 	 * Interface for an individual row in the table.
