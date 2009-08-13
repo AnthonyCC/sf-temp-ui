@@ -33,8 +33,11 @@
         <property name="obsolete" type="string">
             <column name="OBSOLETE" length="1" />
         </property> 
-        <property name="stemTime" type="big_integer">
-            <column name="STEM_TIME" precision="5" scale="0" />
+        <property name="stemFromTime" type="big_integer">
+            <column name="STEM_FROM_TIME" precision="5" scale="0" />
+        </property> 
+        <property name="stemToTime" type="big_integer">
+            <column name="STEM_TO_TIME" precision="5" scale="0" />
         </property>       
     </class>
 </hibernate-mapping>

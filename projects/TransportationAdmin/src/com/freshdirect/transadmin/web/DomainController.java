@@ -85,9 +85,17 @@ public class DomainController extends AbstractMultiActionController {
         String empStatus = request.getParameter("empstatus");
         Collection dataList = null;
        
-        if("T".equalsIgnoreCase(empStatus)) {
+        if("T".equalsIgnoreCase(empStatus)) 
+        {
         	dataList = employeeManagerService.getTerminatedEmployees();
-        } else {
+        } 
+        else if("S".equalsIgnoreCase(empStatus)) 
+        {
+        	dataList = employeeManagerService.getScheduleEmployees();
+        	return new ModelAndView("scheduleView","employees",dataList);
+        } 
+        else 
+        {
         	dataList = employeeManagerService.getEmployees();
         }
         return new ModelAndView("employeeView","employees",dataList);

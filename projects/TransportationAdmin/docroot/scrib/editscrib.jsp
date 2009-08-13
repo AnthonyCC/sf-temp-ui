@@ -118,6 +118,23 @@
 							<td><form:errors path="count" />&nbsp;</td>                 
 						</tr>  
 						<tr>
+							<td>Depot Resources</td>
+							<td>         
+								<form:input maxlength="50" size="24" path="resources"  /> 
+							</td>
+							<td><form:errors path="resources" />&nbsp;</td>                 
+						</tr>
+						<tr> 
+						<td>Supervisor</td>
+							<td> 
+								<form:select path="supervisorCode">
+									<form:option value="" label="--Please Select Supervisor"/>
+									<form:options items="${supervisors}" itemLabel="name" itemValue="employeeId" />
+								</form:select>
+							</td>
+							<td><form:errors path="supervisorCode" />&nbsp;</td>   
+						</tr>
+						<tr>
 							<td><input type = "submit" value="&nbsp;Save&nbsp;" />  </td>
 							<td>         
 								<input type = "button" value="&nbsp;Cancel&nbsp;" onclick="javascript:location.href ='scrib.do'" />

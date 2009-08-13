@@ -66,6 +66,39 @@ public class PunchInfoDaoImpl implements PunchInfoDaoI {
 	        return list;
 	}
 	
+	public Collection getPunchInfoPayCode(final String date) throws DataAccessException {
+		
+		 final List list = new ArrayList();
+	        PreparedStatementCreator creator=new PreparedStatementCreator() {
+	            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+	                PreparedStatement ps =
+	                   // connection.prepareStatement("SELECT PERSONNUM,EVENTDATE,STARTDTM,ENDDTM,INPUNCHDTM,OUTPUNCHDTM FROM dbo.VP_TIMESHTPUNCHV42 where eventdate=( ?) ");
+	                	// connection.prepareStatement("SELECT PERSONNUM,EVENTDATE,STARTDTM,ENDDTM,INPUNCHDTM,OUTPUNCHDTM FROM dbo.FDDW_TIMESHTPUNCHV42 where eventdate=( ?) "); 
+	                	 connection.prepareStatement("SELECT PERSONNUM,EVENTDATE ,PAYCODENAME FROM TRANSP.PUNCHINFO where eventdate=(?) and PAYCODENAME in ('PTO','advPTO','PERSONAL','SICK','VACATION','WORKCOMP')" +
+	                	 		" and laborlevelname5 in ('10004','10005','10006','10007','10008','10009')");
+	                ps.setString(1, date);
+	                return ps;
+	            }
+	        };
+	        jdbcTemplate.query(creator,
+	       		  new RowCallbackHandler() {
+	       		      public void processRow(ResultSet rs) throws SQLException {
 
+	       		    	while(rs.next()) {
+	       		    		String employeeId=rs.getString("PERSONNUM");
+	       		    		Date eventDate=rs.getDate("EVENTDATE");	  
+	       		    		String paycode=rs.getString("PAYCODENAME");
+	       		    		PunchInfo p=new PunchInfo(eventDate,employeeId,null,null,null,null);
+	       		    		p.setPaycode(paycode);
+	       		    		list.add(p);
+	       		    	}
+	       		    	  
+	       		      }
+	       		  }
+	       	);
+	        LOGGER.debug("PunchInfoDaoImpl.getPunchInfoPayCode() Total paycode:"+list.size());
+	        return list;
+	}
+	
 }
 

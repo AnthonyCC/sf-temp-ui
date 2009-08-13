@@ -129,19 +129,27 @@
 							<td><form:errors path="firstDeliveryTime" />&nbsp;</td>                 
 						</tr>
 						<tr>
+							<td>&nbsp;</td>
+							<td align="right">     
+								Adjust Time
+							</td>
+							<td></td>                 
+						</tr>
+						<tr>
 							<td>Drivers (Req:<spring:bind path="planForm.driverReq"><c:out value="${planForm.driverReq}"/></spring:bind> Max: <spring:bind path="planForm.driverMax"><c:out value="${planForm.driverMax}"/></spring:bind>)</td>
-							<td> 
+							<td nowrap> 
 								<div class="fleft">
 									<c:forEach items="${planForm.drivers}" var="driver" varStatus="gridRow">
 										<div class="dipatch_AddEdit_row">
 											<spring:bind path="planForm.drivers[${gridRow.index}].employeeId">
-												<SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" >
+												<SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>"  onchange="enableAdjustmentTime('drivers[<c:out value="${gridRow.index}"/>]');">
 													<option value="">Select Drivers</option>          
 													<c:forEach var="driverEmp" items="${drivers}">
 														<option <c:if test='${status.value == driverEmp.employeeId}'> SELECTED </c:if> value="<c:out value="${driverEmp.employeeId}"/>"><c:out value="${driverEmp.name}"/></option>                         
 													</c:forEach>
-												</SELECT>
+												</SELECT>												
 											</spring:bind>
+											<input type="text" maxlength="10" size="7" name="drivers[<c:out value="${gridRow.index}"/>].adjustmentTimeS" value="<c:out value="${driver.adjustmentTimeS}"/>" onblur="this.value=time(this.value);" /> 
 										</div>
 									</c:forEach>
 								</div>
@@ -150,18 +158,19 @@
 						</tr>
 						<tr>
 							<td>Helpers (Req:<spring:bind path="planForm.helperReq"><c:out value="${planForm.helperReq}"/></spring:bind> Max: <spring:bind path="planForm.helperMax"><c:out value="${planForm.helperMax}"/></spring:bind>)</td>
-							<td>
+							<td nowrap>
 								<div class="fleft">	
 									<c:forEach items="${planForm.helpers}" var="helper" varStatus="gridRow">
 										<div class="dipatch_AddEdit_row">
 											<spring:bind path="planForm.helpers[${gridRow.index}].employeeId">
-												<SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" >
+												<SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>"  onchange="enableAdjustmentTime('helpers[<c:out value="${gridRow.index}"/>]');">
 													<OPTION value="">Select Helpers</OPTION>          
 													<c:forEach var="helperEmp" items="${helpers}">
 														<option <c:if test='${status.value == helperEmp.employeeId}'> SELECTED </c:if> value="<c:out value="${helperEmp.employeeId}"/>"><c:out value="${helperEmp.name}"/></option>                         
 													</c:forEach>
 												</SELECT>
 											</spring:bind>
+											<input type="text" maxlength="10" size="7" name="helpers[<c:out value="${gridRow.index}"/>].adjustmentTimeS" value="<c:out value="${helper.adjustmentTimeS}"/>" onblur="this.value=time(this.value);" /> 
 										</div>
 									</c:forEach>
 								</div>
@@ -170,18 +179,19 @@
 						</tr>               
 						<tr>
 							<td>Runners (Req:<spring:bind path="planForm.runnerReq"><c:out value="${planForm.runnerReq}"/></spring:bind> Max: <spring:bind path="planForm.runnerMax"><c:out value="${planForm.runnerMax}"/></spring:bind>)</td>
-							<td> 	
+							<td nowrap> 	
 								<div class="fleft">	
 									<c:forEach items="${planForm.runners}" var="helper" varStatus="gridRow">
 										<div class="dipatch_AddEdit_row">
 											<spring:bind path="planForm.runners[${gridRow.index}].employeeId">
-												<SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" >
+												<SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" onchange="enableAdjustmentTime('runners[<c:out value="${gridRow.index}"/>]');">
 													<OPTION value="">Select Runners</OPTION>          
 													<c:forEach var="runnerEmp" items="${runners}">
 														<option <c:if test='${status.value == runnerEmp.employeeId}'> SELECTED </c:if> value="<c:out value="${runnerEmp.employeeId}"/>"><c:out value="${runnerEmp.name}"/></option>
 													</c:forEach>
 												</SELECT>
 											</spring:bind>
+											<input type="text" maxlength="10" size="7" name="runners[<c:out value="${gridRow.index}"/>].adjustmentTimeS" value="<c:out value="${helper.adjustmentTimeS}"/>" onblur="this.value=time(this.value);" /> 
 										</div>
 									</c:forEach>
 								</div>
@@ -268,6 +278,53 @@
 	      	}     	      	
 	      	planForm.submit();
 	    }
+	    function enableAdjustmentTime(target)
+		{
+			var f=document.forms["planForm"];	
+			var value=eval("f['"+target+".employeeId']");
+			if(value!=null)			
+			{
+				if(value.value!='')
+				{
+					eval("f['"+target+".adjustmentTimeS'].disabled=false");
+				}
+				else
+				{
+					eval("f['"+target+".adjustmentTimeS'].disabled=true");
+					eval("f['"+target+".adjustmentTimeS'].value=''");
+				}
+			}
+				
+		}
+	    function disableAdjustmentTime()
+		{
+			var f=document.forms["planForm"];	
+			for(var i=0;i<15;i++)
+			{
+				var value=eval("f['drivers["+i+"].employeeId']");
+				if(value!=null&&value.value=='')
+				{
+					eval("f['drivers["+i+"].adjustmentTimeS'].disabled=true");
+				}
+			}	
+			for(var i=0;i<15;i++)
+			{
+				var value=eval("f['helpers["+i+"].employeeId']");
+				if(value!=null&&value.value=='')
+				{
+					eval("f['helpers["+i+"].adjustmentTimeS'].disabled=true");
+				}
+			}	
+			for(var i=0;i<15;i++)
+			{
+				var value=eval("f['runners["+i+"].employeeId']");
+				if(value!=null&&value.value=='')
+				{
+					eval("f['runners["+i+"].adjustmentTimeS'].disabled=true");
+				}
+			}			
+		}
+		 disableAdjustmentTime();
 	</script>
   </tmpl:put>
 </tmpl:insert>

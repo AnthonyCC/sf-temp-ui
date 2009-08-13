@@ -44,6 +44,8 @@ private String employeeId;
 	// private EmployeeroleId id;
 	//private EmployeeRoleType employeeRoleType;
 
+	private String region;
+	private boolean bullpen;
 	private EmployeeInfo empInfo;
 	private Collection  empRole;
 
@@ -61,7 +63,9 @@ private String employeeId;
 		this.empInfo = empInfo;
 	}
 
-	public String getEmployeeId() {
+	public String getEmployeeId() 
+	{
+		if(empInfo==null)return null;
 		return empInfo.getEmployeeId();
 	}
 
@@ -183,6 +187,28 @@ private String employeeId;
 		//	e.printStackTrace();
 		//}
 		//return null;
+	}
+
+	public boolean isBullpen() {
+		return bullpen;
+	}
+
+	public void setBullpen(boolean bullpen) {
+		this.bullpen = bullpen;
+	}
+
+	public String getRegion() {
+		return region;
+	}
+	public String getRegionS() 
+	{
+		String result="";
+		if(bullpen)result="Bullpen-";
+		if(region!=null)result+=region;
+		return result;
+	}
+	public void setRegion(String region) {
+		this.region = region;
 	}
 
 }

@@ -31,6 +31,8 @@ import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
+import com.freshdirect.transadmin.service.EmployeeManagerI;
+import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.editor.RegionPropertyEditor;
 import com.freshdirect.transadmin.web.editor.TrnAreaPropertyEditor;
@@ -40,11 +42,21 @@ import com.freshdirect.transadmin.web.model.CopyPlanCommand;
 public class ScribFormController extends AbstractDomainFormController {
 			
 	private DispatchManagerI dispatchManagerService;
+	private EmployeeManagerI employeeManagerService;
 	
+	public EmployeeManagerI getEmployeeManagerService() {
+		return employeeManagerService;
+	}
+
+	public void setEmployeeManagerService(EmployeeManagerI employeeManagerService) {
+		this.employeeManagerService = employeeManagerService;
+	}
+
 	protected Map referenceData(HttpServletRequest request) throws ServletException {
 
 		Map refData = new HashMap();
-		refData.put("zones", getDomainManagerService().getZones());		
+		refData.put("zones", getDomainManagerService().getZones());	
+		refData.put("supervisors", DispatchPlanUtil.getSortedResources(employeeManagerService.getSupervisors()));
 		return refData;
 	}
 

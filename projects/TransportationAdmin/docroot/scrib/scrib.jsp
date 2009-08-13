@@ -37,10 +37,11 @@
                         <img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date"></a></span>
                     	 <select id="scribDay" name="scribDay">
                           	<option value="All">--All Days</option>
-                      		<option value="Monday">Monday</option><option value="Tuesday">Tuesday</option><option value="Wednesday">Wednesday</option><option value="Thurdsay">Thurdsay</option><option value="Friday">Friday</option><option value="Saturday">Saturday</option><option value="Sunday">Sunday</option>
+                      		<option value="2">Monday</option><option value="3">Tuesday</option><option value="4">Wednesday</option><option value="5">Thurdsay</option><option value="6">Friday</option><option value="7">Saturday</option><option value="8">Sunday</option>
                     	 </select>				
 						<span><input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink('daterange','scribDay','scrib.do')" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>
-						
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+						<span> <input type = "button" value="&nbsp;Generate Plan&nbsp;" onclick="javascript:doCompositeLink('daterange','scribDay','scrib.do','y')" /></span>
 				</div>
 			</div>
 		</div> 
@@ -65,8 +66,9 @@
                     filterable="false" sortable="false" cell="selectcol"
                     property="scribId" />              
               <ec:column cell="date" property="scribDate" sortable="true" title="Date"/>
-              <ec:column property="zone.zoneCode" sortable="true" title="Zone"/>
-              <ec:column property="region.code" sortable="true" title="Region"/>                           
+              <ec:column property="zoneS" sortable="true" title="Zone"/>
+              <ec:column property="regionS" sortable="true" title="Region"/> 
+              <ec:column property="supervisorName" sortable="true" title="Supervisor"/>                              
               <ec:column cell="date" format="hh:mm aaa"  property="startTime" title="Start Time"/>
               <ec:column cell="date" format="hh:mm aaa"  property="firstDlvTime" title="First Dlv Time"/>
               <ec:column cell="date" format="hh:mm aaa"  property="endDlvTime" title="Last Dlv Time"/>
@@ -95,11 +97,27 @@
                         button : "trigger_scribDate" 
                        }
                       );
-         function doCompositeLink(compId1,compId2, url) 
+         function doCompositeLink(compId1,compId2, url,generatePlan) 
         {
-          var param1 = document.getElementById(compId1).value;         
-          var param2 = document.getElementById(compId2).value;
-          location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+ param2;
+        	if(generatePlan!=null)
+        	{
+        		var hasConfirmed = confirm ("You are about to perform Generate Plan.  IF PLANS ALREADY EXIST FOR THE DAY, ALL CHANGES WILL BE LOST.  Do you want to continue?")
+				if (hasConfirmed) 
+				{
+			  		 var param1 = document.getElementById(compId1).value;         
+			          var param2 = document.getElementById(compId2).value;
+			          var param3="";
+			          if(generatePlan!=null)param3="&p="+generatePlan;
+			          location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+ param2+param3;
+				} 
+        	}
+        	else
+        	{
+	          var param1 = document.getElementById(compId1).value;         
+	          var param2 = document.getElementById(compId2).value;
+	          var param3="";         
+	          location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+ param2;
+          }
         } 
       addRowHandlers('ec_table', 'rowMouseOver', 'editscrib.do','scribId',0, 0);
     </script>   

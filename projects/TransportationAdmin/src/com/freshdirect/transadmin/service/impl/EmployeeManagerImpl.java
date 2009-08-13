@@ -1,9 +1,12 @@
 package com.freshdirect.transadmin.service.impl;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.dao.DataAccessException;
 
@@ -15,11 +18,20 @@ import com.freshdirect.transadmin.dao.PunchInfoDaoI;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.model.EmployeeRoleType;
+import com.freshdirect.transadmin.model.Plan;
+import com.freshdirect.transadmin.model.PlanResource;
+import com.freshdirect.transadmin.model.PunchInfo;
+import com.freshdirect.transadmin.model.ScheduleEmployee;
+import com.freshdirect.transadmin.model.ScheduleEmployeeInfo;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransAdminCacheManager;
+import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
+import com.freshdirect.transadmin.util.scrib.SchdeuleEmployeeDetails;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
+import com.freshdirect.transadmin.web.model.WebPlanResource;
+import com.freshdirect.transadmin.web.model.WebSchedule;
 
 public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeManagerI {
 
@@ -157,7 +169,198 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 		return null;
 	}
 
+	public Collection getScheduleEmployees()
+	{
+		List result=new ArrayList();
+		Collection employeeInfos=getKronosEmployees();
+		for(Iterator it=employeeInfos.iterator();it.hasNext();)
+		{
+			EmployeeInfo eInfo=(EmployeeInfo)it.next();
+			Collection schedules=getDomainManagerDao().getScheduleEmployee(eInfo.getEmployeeId());
+			ScheduleEmployeeInfo sInfo=new ScheduleEmployeeInfo();
+			Collection empRoles=this.domainManagerDao.getEmployeeRole(eInfo.getEmployeeId());
+			if(empRoles!=null&&empRoles.size()>0)
+			{
+				sInfo.setEmpRole(empRoles);
+				sInfo.setEmpInfo(eInfo);
+				sInfo.setSchedule(schedules);
+				result.add(sInfo);
+			}
+		}
+		return result;
+		
+	}
 
+	public WebSchedule getSchedule(String id) {
+		EmployeeInfo info=TransAdminCacheManager.getInstance().getEmployeeInfo(id,this);
+		Collection schedules=getDomainManagerDao().getScheduleEmployee(id);
+		WebSchedule s=new WebSchedule();
+		s.setEmpInfo(info);
+		s.setSchdules(schedules);
+		return s;
+	}
+
+	public Collection getPunchInfoPayCode(String date)
+	{
+		Collection off=null;
+	    try {
+	    	if(!TransportationAdminProperties.isKronosBlackhole()) 
+	    	{				
+	    		off=punchInfoDAO.getPunchInfoPayCode(date);
+	    	}
+		} catch (Exception e) 
+		{
+			e.printStackTrace();			
+		}
+		return off;
+	}
+	
+	public Collection getScheduledEmployees(String day,String date)
+	{
+	    List result=new ArrayList();
+	    Collection c=getDomainManagerDao().getScheduleEmployees(day);
+	    Collection off=getPunchInfoPayCode(date);
+		for(Iterator it=c.iterator();it.hasNext();)
+		{
+			ScheduleEmployee se=(ScheduleEmployee)it.next();
+			boolean isOff=false;
+			if(off!=null)
+			for(Iterator itt=off.iterator();itt.hasNext();)
+			{
+				PunchInfo p=(PunchInfo)itt.next();
+				if(se.getEmployeeId().equals(p.getEmployeeId())) isOff=true;
+			}
+			if(isOff)continue;
+			SchdeuleEmployeeDetails detail=new SchdeuleEmployeeDetails();
+			detail.setSchedule(se);
+			detail.setEmpRoles(this.domainManagerDao.getEmployeeRole(se.getEmployeeId()));
+			detail.setInfo(TransAdminCacheManager.getInstance().getEmployeeInfo(se.getEmployeeId(),this));
+			result.add(detail);
+		}
+		return result;
+	}
+	
+	public Collection getUnAvailableEmployeesScheduleTime(Collection plans,String date)
+	{
+		List result=new ArrayList();		
+		Collection off=getPunchInfo(date);
+		for(Iterator i=plans.iterator();i.hasNext();)
+		{
+			Plan p=(Plan)i.next();
+			Set Planresources=p.getPlanResources();
+			if(Planresources!=null)
+			for(Iterator j=Planresources.iterator();j.hasNext();)
+			{
+				PlanResource r=(PlanResource)j.next();
+				boolean isPunchAvalable=false;
+				if(r!=null&&off!=null)
+				for(Iterator k=off.iterator();k.hasNext();)
+				{
+					PunchInfo punch=(PunchInfo)k.next();
+					if(r.getId().getResourceId().equals(punch.getEmployeeId()))
+					{
+						isPunchAvalable=true;
+						try {
+							String planTime=TransStringUtil.getServerTime(p.getStartTime());
+							String punchTime="";
+							if(punch.getStartTime()!=null)punchTime=TransStringUtil.getServerTime(punch.getStartTime());
+							if("003".equalsIgnoreCase(r.getEmployeeRoleType().getCode()))
+							{
+								String day=TransStringUtil.getServerDay(TransStringUtil.getServerDateString(date)).toUpperCase();
+								ScheduleEmployee se=getSchedule(r.getId().getResourceId(),day);
+								planTime=TransStringUtil.getServerTime(se.getTime());
+							}
+							if(r.getId().getAdjustmentTime()!=null)
+							{
+								planTime=TransStringUtil.getServerTime(r.getId().getAdjustmentTime());
+							}
+							if(!planTime.equalsIgnoreCase(punchTime))
+							{
+								WebPlanResource wpr=new WebPlanResource();
+								wpr.setEmp(getEmployee(punch.getEmployeeId()));
+								wpr.setPlanId(p.getPlanId());
+								wpr.setPaycode("Schedule");
+								result.add(wpr);
+							}
+							
+						} catch (ParseException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+					}
+				}
+				if(!isPunchAvalable)
+				{
+					WebPlanResource wpr=new WebPlanResource();
+					wpr.setEmp(getEmployee(r.getId().getResourceId()));
+					wpr.setPlanId(p.getPlanId());
+					wpr.setPaycode("Schedule");					
+					result.add(wpr);
+				}
+			}
+		}
+		return result;
+	}
+	
+	public Collection getUnAvailableEmployees(Collection plans,String date)
+	{
+		List result=new ArrayList();
+		Collection off=getPunchInfoPayCode(date);
+		for(Iterator i=plans.iterator();i.hasNext();)
+		{
+			Plan p=(Plan)i.next();
+			Set Planresources=p.getPlanResources();
+			if(Planresources!=null)
+			for(Iterator j=Planresources.iterator();j.hasNext();)
+			{
+				PlanResource r=(PlanResource)j.next();
+				if(r!=null&&off!=null)
+				for(Iterator k=off.iterator();k.hasNext();)
+				{
+					PunchInfo punch=(PunchInfo)k.next();
+					if(r.getId().getResourceId().equals(punch.getEmployeeId()))
+					{
+						WebPlanResource wpr=new WebPlanResource();
+						wpr.setEmp(getEmployee(punch.getEmployeeId()));
+						wpr.setPlanId(p.getPlanId());
+						wpr.setPaycode(punch.getPaycode());
+						result.add(wpr);
+					}
+				}
+			}
+		}
+		Collection sConflict=getUniqueEmployees(getUnAvailableEmployeesScheduleTime(plans,date));		
+		result.addAll(sConflict);
+		return getUniqueEmployees(result);
+	}
+
+	public Collection getUniqueEmployees(Collection c)
+	{
+		List unique=new ArrayList();		
+		
+		for(Iterator i=c.iterator();i.hasNext();)
+		{			
+			WebPlanResource wpr=(WebPlanResource)i.next();	
+			boolean isUnique=true;
+			for(Iterator j=unique.iterator();j.hasNext();)
+			{
+				WebPlanResource wpr1=(WebPlanResource)j.next();
+				if(wpr1.getEmployeeId().equalsIgnoreCase(wpr.getEmployeeId()))
+				{
+					isUnique=false;
+				}				
+			}			
+			if(isUnique)unique.add(wpr);
+		}		
+		return unique;
+	}
+	public ScheduleEmployee getSchedule(String id, String day) {
+		Collection c=getDomainManagerDao().getScheduleEmployee(id, day);
+		if(c!=null&&c.size()>0){Iterator i=c.iterator(); return(ScheduleEmployee) i.next();}
+		return null;
+	}
+	
 }
 
 

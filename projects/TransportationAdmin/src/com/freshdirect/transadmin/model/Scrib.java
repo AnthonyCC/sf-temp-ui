@@ -20,7 +20,9 @@ public class Scrib
 	private Date maxReturnTime;
 	private int routeLength;
 	private int count;
-	
+	private int resources;
+	private String supervisorCode;
+	private String supervisorName;
 	
 	public int getCount() {
 		return count;
@@ -84,7 +86,7 @@ public class Scrib
 		Calendar c=Calendar.getInstance();
 		c.setTime(endDlvTime);
 		int stemTime=0;
-		if(zone.getStemTime()!=null)stemTime=zone.getStemTime().intValue();
+		if(zone.getStemFromTime()!=null)stemTime=zone.getStemFromTime().intValue();
 		c.add(Calendar.MINUTE, stemTime);
 		return c.getTime();
 	}
@@ -109,27 +111,32 @@ public class Scrib
 		Calendar c=Calendar.getInstance();
 		c.setTime(firstDlvTime);
 		int stemTime=0;
-		if(zone.getStemTime()!=null)stemTime=zone.getStemTime().intValue();
+		if(zone.getStemToTime()!=null)stemTime=zone.getStemToTime().intValue();
 		c.add(Calendar.MINUTE, -stemTime);
 		return c.getTime();
 	}
 	public Date getPrefTime()
 	{
 		long time=getPrefRuturn().getTime()-getWaveStart().getTime();
-		return new Date(time);
+		return new Date(time-TimeZone.getDefault().getRawOffset());
 	}
 	public Date getMaxTime()
 	{
 		long time=getMaxReturnTimeDisplay().getTime()-getWaveStart().getTime();
-		return new Date(time);
-	}
-	public Date getStemTime()
-	{
-		long time=0;
-		if(zone.getStemTime()!=null)time=zone.getStemTime().intValue()*60*1000;		
 		return new Date(time-TimeZone.getDefault().getRawOffset());
 	}
-	
+	public Date getStemToTime()
+	{
+		long time=0;
+		if(zone.getStemToTime()!=null)time=zone.getStemToTime().intValue()*60*1000;		
+		return new Date(time-TimeZone.getDefault().getRawOffset());
+	}
+	public Date getStemFromTime()
+	{
+		long time=0;
+		if(zone.getStemFromTime()!=null)time=zone.getStemFromTime().intValue()*60*1000;		
+		return new Date(time-TimeZone.getDefault().getRawOffset());
+	}
 	
 	public String getEndDlvTimeS() 
 	{
@@ -222,10 +229,35 @@ public class Scrib
 		if(zone!=null)return zone.getZoneCode();
 		return null;
 	}
+	public String getRegionS() 
+	{
+		if(region!=null)return region.getCode();
+		return null;
+	}
 	public void setZoneS(String zoneS) 
 	{
 		if(zoneS!=null&&zoneS.length()>0){ zone=new Zone();zone.setZoneCode(zoneS);}
 		else zone=null;
 	}
+	public int getResources() {
+		return resources;
+	}
+	public void setResources(int resources) {
+		this.resources = resources;
+	}
+	public String getSupervisorCode() {
+		return supervisorCode;
+	}
+	public void setSupervisorCode(String supervisorCode) {
+		this.supervisorCode = supervisorCode;
+	}
+	public String getSupervisorName() {
+		return supervisorName;
+	}
+	public void setSupervisorName(String supervisorName) {
+		this.supervisorName = supervisorName;
+	}
+	
+	
 	
 }

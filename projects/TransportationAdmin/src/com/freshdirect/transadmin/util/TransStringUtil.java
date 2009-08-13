@@ -21,14 +21,18 @@ public class TransStringUtil {
 			
 	public static DateFormat dayFormat = new SimpleDateFormat("EEEE");
 	
+	public static DateFormat serverDayFormat = new SimpleDateFormat("EEE");
+	
 	public static DateFormat timeFormat = new SimpleDateFormat("kk:mm:ss");
 	
 	public static DateFormat serverTimeFormat = new SimpleDateFormat("hh:mm aaa");
 	
 	public static DateFormat hourInDayFormat = new SimpleDateFormat("H:mm");
 	
-	public static DateFormat dateFormatwithTime = new SimpleDateFormat("MM/dd/yyyy hh:mm aaa");
+	public static DateFormat hourInDayFormat1 = new SimpleDateFormat("H.mm");
 	
+	public static DateFormat dateFormatwithTime = new SimpleDateFormat("MM/dd/yyyy hh:mm aaa");
+
 	public static Calendar clientCalendar = Calendar.getInstance();
 	
 	private static String[] daysList = new String[] {"Monday","Tuesday",
@@ -97,9 +101,15 @@ public class TransStringUtil {
 	public static String getServerDate(String clientDate) throws ParseException {       
         return serverDateFormat.format((Date)dateFormat.parse(clientDate));
 	}
-	
+	public static Date getServerDateString(String clientDate) throws ParseException {       
+        return serverDateFormat.parse(clientDate);
+	}
 	public static String getServerTime(Date clientDate) throws ParseException {       
         return serverTimeFormat.format(clientDate);
+	}
+	
+	public static String getServerDay(Date clientDate) throws ParseException {       
+        return serverDayFormat.format(clientDate);
 	}
 	
 	public static Date getServerTime(String clientDate) throws ParseException {       
@@ -152,6 +162,16 @@ public class TransStringUtil {
 		}
         return ">>";
 	}
+	
+	public static String formatTime1(Date dateVal) {
+		try {
+			String strTime1 = hourInDayFormat1.format(dateVal);
+			return strTime1;
+		} catch (Exception e) {
+			// Do Nothing
+		}
+        return "0";
+	}	
 	
 	public static String calcHMS(int timeInSeconds) {
 	      int hours, minutes, seconds;

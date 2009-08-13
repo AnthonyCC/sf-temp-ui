@@ -3,6 +3,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ page import= 'com.freshdirect.transadmin.util.TransStringUtil' %>
+<%@ page import= 'com.freshdirect.transadmin.web.model.WebDispatchStatistics' %>
 <%  pageContext.setAttribute("HAS_ADDBUTTON", "false"); 
   pageContext.setAttribute("HAS_CONFIRMBUTTON", "false"); 
   pageContext.setAttribute("HAS_DELETEBUTTON", "false"); 
@@ -57,8 +58,24 @@
               </tr>
               </table>        
               
-            </td>
-          </tr>               
+            </td>           
+          </tr>  
+          <tr><td>
+          <table class="appusertitle">
+          <% WebDispatchStatistics ws=(WebDispatchStatistics)request.getAttribute("statistics"); %>
+          <tr><td>Planned Route:</td><td><%=ws.getDispatchRoute()%></td>          
+          </tr>
+          
+          <td>Dispatch Route:</td><td><%=ws.getPlannedRoute()%></td>
+          </tr>  
+          <tr>
+          <td> Pay Code Exception:</td><td><%=ws.getPaycodeEx()%></td>          
+          </tr> 
+          <tr>          
+          <td>Unassigned :</td><td><%=ws.getUnassigned()%></td>
+          </tr>      
+          </table> 
+          </td></tr>        
         </table>    
        <script>
          function doCompositeLink(compId1,compId2, compId3, url) {

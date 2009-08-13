@@ -21,8 +21,9 @@ public class Zone implements java.io.Serializable {
 	private BigDecimal priority;
 	private String obsolete;
 	private final BigDecimal DEFAULT_PRIORITY=new BigDecimal(-1);
-    private BigInteger stemTime;
-
+    private BigInteger stemFromTime;
+    private BigInteger stemToTime;
+	
 	public String getObsolete() {
 		return obsolete;
 	}
@@ -117,14 +118,23 @@ public class Zone implements java.io.Serializable {
 		this.priority = priority;
 	}
 
-	public BigInteger getStemTime() {
-		return stemTime;
+	public BigInteger getStemFromTime() {
+		return stemFromTime;
 	}
 
-	public void setStemTime(BigInteger stemTime) {
-		this.stemTime = stemTime;
+	public void setStemFromTime(BigInteger stemFromTime) {
+		this.stemFromTime = stemFromTime;
 	}
+
+	public BigInteger getStemToTime() {
+		return stemToTime;
+	}
+
+	public void setStemToTime(BigInteger stemToTime) {
+		this.stemToTime = stemToTime;
+	}
+
+	
 	
 
 }
-

@@ -1,6 +1,9 @@
 package com.freshdirect.transadmin.model;
 
+import java.text.ParseException;
 import java.util.Date;
+
+import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class EmployeeInfo implements java.io.Serializable, TrnBaseEntityI, ResourceInfoI {
 
@@ -35,6 +38,8 @@ public class EmployeeInfo implements java.io.Serializable, TrnBaseEntityI, Resou
 	private Date terminationDate;
 	
 	private PunchInfoI punchInfo=null;
+	
+	private Date adjustmentTime;
 	
 	public EmployeeInfo() {
 	}
@@ -190,7 +195,33 @@ public class EmployeeInfo implements java.io.Serializable, TrnBaseEntityI, Resou
 	public void setPunchInfo(PunchInfoI punchInfo) {
 		this.punchInfo = punchInfo;
 	}
+	public Date getAdjustmentTime() {
+		return adjustmentTime;
+	}
+	public void setAdjustmentTime(Date adjustmentTime) {
+		this.adjustmentTime = adjustmentTime;
+	}
 	
+	public String getAdjustmentTimeS() {
+		try 
+		{
+			if(adjustmentTime!=null)return TransStringUtil.getServerTime(adjustmentTime);
+		} catch (ParseException e) 
+		{
+			
+		}
+		return null;
+	}
+	public void setAdjustmentTimeS(String adjustmentTimeS) {
+		try 
+		{
+			if(adjustmentTimeS!=null&&adjustmentTimeS.length()>0)adjustmentTime=TransStringUtil.getServerTime(adjustmentTimeS);
+			else adjustmentTime=null;
+		} catch (ParseException e) 
+		{
+			
+		}
+	}
 	
 
 }

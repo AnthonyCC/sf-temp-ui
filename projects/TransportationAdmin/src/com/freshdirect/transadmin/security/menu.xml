@@ -28,7 +28,7 @@
 	     </menu>
 	     
 	     <menu id="OPR004" title="Employee" orientation="RIGHT" link="employee.do">
-	     	<access-uris>employee.do,editemployee.do,deleteemployee.do</access-uris>
+	     	<access-uris>employee.do,editemployee.do,deleteemployee.do,editschedule.do</access-uris>
 	     	<access-roles>TrnAdmin</access-roles>
 	     </menu>
 	     
@@ -78,10 +78,10 @@
      	 	<access-roles>TrnAdmin,TrnPlanning</access-roles>
      	 </menu>
      	 
-     	<!--    <menu id="RUT008" title="SCRIB" orientation="LEFT" link="scrib.do">
+     	<menu id="RUT008" title="SCRIB" orientation="LEFT" link="scrib.do">
 	     	<access-uris>scrib.do,editscrib.do,copyscrib.do,deletescrib.do</access-uris>
      	 	<access-roles>TrnAdmin,TrnPlanning</access-roles>
-     	 </menu> -->
+     	 </menu>
 </menu>
 
 	<menu id="MNM003" title="GEOGRAPHY" orientation="LEFT" link="">

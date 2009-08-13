@@ -37,7 +37,12 @@
          <property name="count" type="int">
             <column name="COUNT" precision="5" scale="0"  />
         </property>
-        
+        <property name="resources" type="int">
+            <column name="MIN_DEPOT_RESOURCE" precision="5" scale="0"  />
+        </property>
+        <property name="supervisorCode" type="string">
+            <column name="SUPERVISOR_ID" length="50" />
+        </property>
      
     </class>
 </hibernate-mapping>

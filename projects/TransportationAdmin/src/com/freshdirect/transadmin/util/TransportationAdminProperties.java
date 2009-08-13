@@ -9,7 +9,6 @@ package com.freshdirect.transadmin.util;
 
 import java.util.Properties;
 
-
 import com.freshdirect.framework.util.ConfigHelper;
 
 public class TransportationAdminProperties {
@@ -44,6 +43,7 @@ public class TransportationAdminProperties {
 	private final static String PROP_TRANSPORTATION_FILENAME_CUTOFFREPORT		= "transportation.filename.cutoffreport";
 	
 	private final static String PROP_TRANSPORTATION_FILENAME_DRIVINGDIRECTION		= "transportation.filename.drivingdirection";
+	
 	
 	private final static String PROP_TRANSPORTATION_FILENAME_EXTGEOINLOCDB		= "transportation.filename.extgeolocdb";
 		
@@ -118,6 +118,9 @@ public class TransportationAdminProperties {
 	private final static String PROP_AIRCLIC_BLACKHOLE		= "airclic.blackhole";
 	
 	private final static String PROP_TRANSPORTATION_FILENAME_CUMMUNITYRPT		= "transportation.filename.communityrpt";
+	
+	private final static String KRONOS_UPLOAD_ALL="transportation.filename.kronosuploadall";
+	private final static String KRONOS_UPLOAD_ALL_EMPTY="transportation.filename.kronosuploadallempty";
 	
 	static {
 				
@@ -203,6 +206,8 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_KRONOS_BLACKHOLE, "false");
 		defaults.put(PROP_AIRCLIC_BLACKHOLE, "false");
 		defaults.put(PROP_TRANSPORTATION_FILENAME_CUMMUNITYRPT, "trn_communityreport_");
+		defaults.put(KRONOS_UPLOAD_ALL, "Upload_All.csv");
+		defaults.put(KRONOS_UPLOAD_ALL_EMPTY, "Upload_All_Empty.csv");
 		
 		refresh();		
 	}
@@ -277,7 +282,7 @@ public class TransportationAdminProperties {
     public static String getRoutingOutputTruckFilename() {
     	return get(PROP_TRANSPORTATION_FILENAME_ROUTINGOUTTRUCK);
     }
-
+    
     public static String getRoutingCutOffRptFilename() {
     	return get(PROP_TRANSPORTATION_FILENAME_CUTOFFREPORT);
     }
@@ -285,7 +290,8 @@ public class TransportationAdminProperties {
     public static String getRoutingDrvDirectionRptFilename() {
     	return get(PROP_TRANSPORTATION_FILENAME_DRIVINGDIRECTION);
     }
-
+    
+        	
     public static String getFilenameSuffix() {
     	return get(PROP_TRANSPORTATION_FILENAME_SUFFIX);
     }
@@ -412,7 +418,6 @@ public class TransportationAdminProperties {
 	public static long getDispatchPeriod() {
 		return PROP_TRANSPORTATION_DISPATCH_DASHBOARD_DISPATCH_PERIOD;
 	}
-
 	public static long getDispatchedPeriod() {
 		return PROP_TRANSPORTATION_DISPATCH_DASHBOARD_DISPATCHED_PERIOD;
 	}
@@ -437,7 +442,7 @@ public class TransportationAdminProperties {
 	}
 	
 	public static boolean isKronosBlackhole() {
-        return (new Boolean(get(PROP_KRONOS_BLACKHOLE))).booleanValue();
+        return (new Boolean(get(PROP_KRONOS_BLACKHOLE))).booleanValue();		
     }
 	
 	public static boolean isAirclicBlackhole() {
@@ -447,6 +452,10 @@ public class TransportationAdminProperties {
 	public static String getCommunityRptFileName() {
 		return get(PROP_TRANSPORTATION_FILENAME_CUMMUNITYRPT);
 	}
-	
+	public static String getKronosUploadAllFileName() {
+		return get(KRONOS_UPLOAD_ALL);
+	}
+	public static String getKronosUploadAllEmptyFileName() {
+		return get(KRONOS_UPLOAD_ALL_EMPTY);
+	}
 }
-

@@ -319,5 +319,18 @@ public class DomainManagerDaoHibernateImpl
 		// TODO Auto-generated method stub
 		return getDataList("Zone where OBSOLETE IS NULL Order By ZONE_CODE");
 	}
+	
+	public Collection getScheduleEmployee(String employeeId) throws DataAccessException {
+		// TODO Auto-generated method stub
+		return getDataList("ScheduleEmployee where employeeId ='"+employeeId+"'");
+	}
+	public Collection getScheduleEmployees(String day) throws DataAccessException {
+		// TODO Auto-generated method stub
+		return getDataList("ScheduleEmployee where day='"+day+"'");
+	}
+
+	public Collection getScheduleEmployee(String employeeId, String day) throws DataAccessException {
+		return getDataList("ScheduleEmployee where employeeId ='"+employeeId+"' and day='"+day+"'");
+	}
 
 }

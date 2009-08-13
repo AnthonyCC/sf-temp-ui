@@ -57,9 +57,12 @@ public class FDPlanResourceCell extends FDBaseCell  {
         	ResourceInfoI resourceInfo=null;
         	while(it.hasNext()) {
         		resourceInfo=(ResourceInfoI)it.next();
-        		if(resourceInfo.getLastName()!=null || resourceInfo.getFirstName()!=null) {
+        		if(resourceInfo.getLastName()!=null || resourceInfo.getFirstName()!=null) 
+        		{
+        			String star="";
+        			if(resourceInfo.getAdjustmentTime()!=null) star="*";
         			html.tr(0).close();
-        			html.td(0).close().append(resourceInfo.getLastName()+" "+resourceInfo.getFirstName()).tdEnd();
+        			html.td(0).close().append(star+resourceInfo.getLastName()+" "+resourceInfo.getFirstName()).tdEnd();
         			html.trEnd(0);
         		}
         	}

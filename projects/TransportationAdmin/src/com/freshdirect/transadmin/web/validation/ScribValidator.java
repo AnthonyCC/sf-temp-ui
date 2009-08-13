@@ -35,6 +35,10 @@ public class ScribValidator extends AbstractValidator {
 		{
 			errors.rejectValue("zoneS", "app.error.112", new Object[]{"Zone"},"required field");
 		}
+		if(model.getSupervisorCode()==null)
+		{
+			errors.rejectValue("supervisorCode", "app.error.112", new Object[]{"Supervisor"},"required field");
+		}
 		
 	}
 	

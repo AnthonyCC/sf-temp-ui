@@ -24,6 +24,7 @@ import com.freshdirect.transadmin.model.FDRouteMasterInfo;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.PunchInfoI;
 import com.freshdirect.transadmin.model.ResourceI;
+import com.freshdirect.transadmin.model.ScheduleEmployee;
 import com.freshdirect.transadmin.model.Scrib;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
@@ -33,6 +34,7 @@ import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
+import com.freshdirect.transadmin.web.model.WebSchedule;
 
 public class DispatchManagerImpl extends BaseManagerImpl implements DispatchManagerI {
 	
@@ -390,38 +392,67 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	
 	public Collection getUnassignedActiveEmployees() {
 		
-		Set unassignedPunchedInEmployees=new HashSet();
-		String date=TransStringUtil.getCurrentServerDate();
-		//String date="12-Apr-2009";
-		Collection punchInfo=employeeManagerService.getPunchInfo(date);
-		if(punchInfo==null || punchInfo.isEmpty())
-			return unassignedPunchedInEmployees;
-		
-		Collection dispList=getDispatchList(date,null,null);	
-		Set dispatchResources=new HashSet();
-		if(dispList!=null || dispList.size()>0)
-		{						
-			  Iterator iterator=dispList.iterator();
-			  while(iterator.hasNext()){							  
-				  Dispatch disp=(Dispatch)iterator.next();
-				  if(disp.getBullPen()==null || (disp.getBullPen().booleanValue()==false && disp.getZone()!=null ))
-					  dispatchResources.addAll(disp.getDispatchResources());
-			  }
-		}
-		Iterator it=punchInfo.iterator();
-		PunchInfoI _punchInfo=null;
-		while(it.hasNext()) {
-			_punchInfo=(PunchInfoI)it.next();
-			if(_punchInfo.getInPunchDTM()!=null &&_punchInfo.getOutPunchDTM()==null) {// add check for inPunch!=null
-				if(!isDispatchAssigned(_punchInfo.getEmployeeId(),dispatchResources)) {
-					WebEmployeeInfo webEmpInfo=employeeManagerService.getEmployee(_punchInfo.getEmployeeId());
-					if(webEmpInfo!=null && webEmpInfo.getEmpInfo()!=null && !webEmpInfo.getEmpRole().isEmpty() ) {
-						unassignedPunchedInEmployees.add(webEmpInfo);
+		try {
+			Set unassignedPunchedInEmployees=new HashSet();
+			String date=TransStringUtil.getCurrentServerDate();
+			String day=TransStringUtil.getServerDay(TransStringUtil.getServerDateString(date)).toUpperCase();
+			//String date="12-Apr-2009";
+			Collection punchInfo=employeeManagerService.getPunchInfo(date);
+			if(punchInfo==null || punchInfo.isEmpty())
+				return unassignedPunchedInEmployees;
+			
+			Collection dispList=getDispatchList(date,null,null);	
+			Set dispatchResources=new HashSet();
+			if(dispList!=null || dispList.size()>0)
+			{						
+				  Iterator iterator=dispList.iterator();
+				  while(iterator.hasNext()){							  
+					  Dispatch disp=(Dispatch)iterator.next();
+					  if(disp.getBullPen()==null || (disp.getBullPen().booleanValue()==false && disp.getZone()!=null ))
+						  dispatchResources.addAll(disp.getDispatchResources());
+				  }
+			}
+			Iterator it=punchInfo.iterator();
+			PunchInfoI _punchInfo=null;
+			while(it.hasNext()) {
+				_punchInfo=(PunchInfoI)it.next();
+				if(_punchInfo.getInPunchDTM()!=null &&_punchInfo.getOutPunchDTM()==null) {// add check for inPunch!=null
+					if(!isDispatchAssigned(_punchInfo.getEmployeeId(),dispatchResources)) {
+						WebEmployeeInfo webEmpInfo=employeeManagerService.getEmployee(_punchInfo.getEmployeeId());
+						if(webEmpInfo!=null && webEmpInfo.getEmpInfo()!=null && !webEmpInfo.getEmpRole().isEmpty() )
+						{
+							ScheduleEmployee s=employeeManagerService.getSchedule(_punchInfo.getEmployeeId(), day);	
+							if(s!=null)
+							webEmpInfo.setRegion(s.getRegionS());
+							for(Iterator i=dispList.iterator();i.hasNext();)
+							{
+								Dispatch disp=(Dispatch)i.next();
+								Set r=disp.getDispatchResources();
+								for(Iterator j=r.iterator();j.hasNext();)
+								{
+									ResourceI resource=(ResourceI)it.next();
+									if(_punchInfo.getEmployeeId().equals(resource.getId().getResourceId()))
+									{
+										if(disp.getBullPen()!=null&&disp.getBullPen().booleanValue()==true)
+										{
+											webEmpInfo.setBullpen(true);
+										}
+									}
+											
+								}
+								
+							}
+							unassignedPunchedInEmployees.add(webEmpInfo);
+						}
 					}
 				}
-			}
+			}			
+			return unassignedPunchedInEmployees;
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		return unassignedPunchedInEmployees;
+		return null;
 	}
 	 
 	
@@ -496,4 +527,3 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	}
 	
 }
-

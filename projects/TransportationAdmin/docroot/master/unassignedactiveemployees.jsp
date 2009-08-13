@@ -37,6 +37,7 @@
 								<ec:column property="jobType" title="JobType"/>              
 								<ec:column property="supervisorFirstName" title="supervisor"/>
 								<ec:column property="employeeRoleType" title="roles"/>
+								<ec:column property="regionS" title="Region"/>
 		                                      
 		</ec:row>
 	  </ec:table>

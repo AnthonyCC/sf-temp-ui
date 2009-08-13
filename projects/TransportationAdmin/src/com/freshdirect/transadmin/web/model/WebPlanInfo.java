@@ -459,7 +459,9 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 		ResourceI resource= new PlanResource();
 		EmployeeRoleType empRole=new EmployeeRoleType();
 		empRole.setCode(role.getName());
-		resource.setId(new ResourceId(this.planId,resourceInfo.getEmployeeId()));
+		ResourceId r=new ResourceId(this.planId,resourceInfo.getEmployeeId());
+		r.setAdjustmentTime(resourceInfo.getAdjustmentTime());
+		resource.setId(r);
 		resource.setEmployeeRoleType(empRole);
 		return resource;
 		
@@ -496,7 +498,7 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
             EnumResourceType role=EnumResourceType.getEnum(resource.getEmployeeRoleType().getCode());   
             WebEmployeeInfo webEmpInfo=employeeManagerService.getEmployee(resource.getId().getResourceId());
             ResourceInfoI resourceInfo = getResourceInfo(webEmpInfo, resource);
-            
+            resourceInfo.setAdjustmentTime(resource.getId().getAdjustmentTime());
             if(resourceReqs.containsKey(role)){
                   ResourceReq req = (ResourceReq) resourceReqs.get(role);
                   if(EnumResourceType.DRIVER.equals(role) && driverCount < req.getMax().intValue()) {
@@ -542,10 +544,12 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 			ResourceInfoI resourceInfo=(ResourceInfoI)resources.get(i);
 			if(!TransStringUtil.isEmpty(resourceInfo.getEmployeeId())) {
 				WebEmployeeInfo webEmplInfo=employeeManagerService.getEmployee(resourceInfo.getEmployeeId());
+				webEmplInfo.getEmpInfo().setAdjustmentTime(resourceInfo.getAdjustmentTime());
 				String nexttel=resourceInfo.getNextelNo();
 				if(webEmplInfo!=null && webEmplInfo.getEmpInfo()!=null) {
 					resources.remove(i);
-					ResourceInfoI resourceInfoI=getResourceInfo(webEmplInfo, null);
+					ResourceInfoI resourceInfoI=getResourceInfo(webEmplInfo, null);	
+					resourceInfoI.setAdjustmentTime(resourceInfo.getAdjustmentTime());
 					resourceInfoI.setNextelNo(nexttel);
 					resources.add(i,resourceInfoI );
 				}
@@ -573,6 +577,8 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 			empInfo.setEmployeeId(webEmpInfo.getEmpInfo().getEmployeeId());
 			empInfo.setFirstName(webEmpInfo.getEmpInfo().getFirstName());
 			empInfo.setLastName(webEmpInfo.getEmpInfo().getLastName());
+			if(resource!=null&&resource.getId()!=null)
+			empInfo.setAdjustmentTime(resource.getId().getAdjustmentTime());
 			return empInfo;
 			
 		}else {

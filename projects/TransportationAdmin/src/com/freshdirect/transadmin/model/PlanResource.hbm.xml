@@ -11,7 +11,11 @@
             <key-property name="resourceId" type="string">
                 <column name="RESOURCE_ID" length="10" />
             </key-property>
+            
         </composite-id>
+        	<property name="adjustmentTime" type="timestamp">
+            	<column name="ADJUSTMENT_TIME" length="7" />
+        	</property>
         <many-to-one name="employeeRoleType" class="com.freshdirect.transadmin.model.EmployeeRoleType" lazy="false">
             <column name="ROLE" length="16" not-null="true" />
         </many-to-one>

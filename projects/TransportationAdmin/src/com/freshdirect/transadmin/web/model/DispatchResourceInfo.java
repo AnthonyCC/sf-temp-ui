@@ -1,6 +1,7 @@
 package com.freshdirect.transadmin.web.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.freshdirect.transadmin.model.EmployeeInfo;
@@ -104,6 +105,16 @@ public class DispatchResourceInfo extends BaseCommand implements ResourceInfoI {
 
 	public void setPunchInfo(PunchInfoI punchInfo) {
 		this.punchInfo=punchInfo;
+		
+	}
+
+	public Date getAdjustmentTime() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setAdjustmentTime(Date adjustmentTime) {
+		// TODO Auto-generated method stub
 		
 	}	
 }

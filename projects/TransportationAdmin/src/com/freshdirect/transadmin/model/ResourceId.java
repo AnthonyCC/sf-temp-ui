@@ -1,5 +1,7 @@
 package com.freshdirect.transadmin.model;
 
+import java.util.Date;
+
 // Generated Nov 18, 2008 3:11:21 PM by Hibernate Tools 3.2.2.GA
 
 /**
@@ -9,6 +11,7 @@ public class ResourceId implements java.io.Serializable {
 
 	private String contextId;
 	private String resourceId;
+	private Date adjustmentTime;
 	
 	public ResourceId() {
 	}
@@ -66,5 +69,15 @@ public class ResourceId implements java.io.Serializable {
 						.hashCode());
 		return result;
 	}
+
+	public Date getAdjustmentTime() {
+		return adjustmentTime;
+	}
+
+	public void setAdjustmentTime(Date adjustmentTime) {
+		this.adjustmentTime = adjustmentTime;
+	}
+
+	
 
 }

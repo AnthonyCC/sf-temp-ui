@@ -1,7 +1,13 @@
 package com.freshdirect.transadmin.web;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -16,12 +22,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.ModelAndView;
+
+
 
 import com.freshdirect.customer.ErpTruckMasterInfo;
 import com.freshdirect.framework.util.StringUtil;
@@ -40,8 +50,11 @@ import com.freshdirect.transadmin.datamanager.report.ReportGenerationException;
 import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.FDRouteMasterInfo;
 import com.freshdirect.transadmin.model.Plan;
+import com.freshdirect.transadmin.model.PlanResource;
 import com.freshdirect.transadmin.model.RouteMapping;
 import com.freshdirect.transadmin.model.RouteMappingId;
+import com.freshdirect.transadmin.model.ScheduleEmployee;
+import com.freshdirect.transadmin.model.Scrib;
 import com.freshdirect.transadmin.model.TrnRouteNumber;
 import com.freshdirect.transadmin.model.TrnRouteNumberId;
 import com.freshdirect.transadmin.model.Zone;
@@ -53,9 +66,13 @@ import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.EnumCachedDataType;
 import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
+import com.freshdirect.transadmin.util.TransportationAdminProperties;
+import com.freshdirect.transadmin.util.TransStringUtil.DateFilterException;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
+import com.freshdirect.transadmin.web.model.WebDispatchStatistics;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 import com.freshdirect.transadmin.web.model.WebPlanInfo;
+import com.freshdirect.transadmin.web.model.WebSchedule;
 import com.freshdirect.transadmin.web.util.TransWebUtil;
 
 public class DispatchController extends AbstractMultiActionController {
@@ -130,11 +147,34 @@ public class DispatchController extends AbstractMultiActionController {
 		zoneLst=zoneLst==null?"":zoneLst;
 		if(!TransStringUtil.isEmpty(daterange) || !TransStringUtil.isEmpty(zoneLst)) {
 
-			try {
+			try 
+			{						
 				String dateQryStr = TransStringUtil.formatDateSearch(daterange);
 				String zoneQryStr = StringUtil.formQueryString(Arrays.asList(StringUtil.decodeStrings(zoneLst)));
 				if(dateQryStr != null || zoneQryStr != null) {
 					Collection dataList = getPlanInfo(dateQryStr,zoneQryStr);
+					if("y".equalsIgnoreCase(request.getParameter("unavailable")))
+					{
+						Collection plans=dispatchManagerService.getPlan(dateQryStr, zoneQryStr);
+						plans=employeeManagerService.getUnAvailableEmployees(plans, TransStringUtil.getServerDate(daterange));
+						mav = new ModelAndView("unavailableView");
+						mav.getModel().put("unavailable",plans);
+						return mav;
+					}
+					if("y".equalsIgnoreCase(request.getParameter("kronos")))
+					{
+						String file=request.getParameter("file");
+						Collection plans=dispatchManagerService.getPlan(dateQryStr, zoneQryStr);
+						try {
+							updateKronos(plans,daterange,file,request,response);
+							return null;
+							//saveMessage(request, getMessage("app.actionmessage.146", null));
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							saveMessage(request, getMessage("app.actionmessage.145", null));
+						}
+					}
 					mav.getModel().put("planlist",dataList);
 				}
 			} catch (Exception e) {
@@ -146,6 +186,108 @@ public class DispatchController extends AbstractMultiActionController {
 		return mav;
 	}
 
+	public void updateKronos(Collection plans,String daterange,String file,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{			
+		response.setContentType("application/x-zip-compressed");
+		response.setHeader("Content-Disposition", "attachment; filename=Upload_All.zip"); 
+		String date=TransStringUtil.getServerDate(daterange);
+		Map kronos=new HashMap();
+		Collection scribs=dispatchManagerService.getScribList(date);
+		for(Iterator i=plans.iterator();i.hasNext();)
+		{
+			Plan p=(Plan)i.next();
+			Set resources=p.getPlanResources();
+			if(resources!=null)
+				for(Iterator j=resources.iterator();j.hasNext();)
+				{
+						PlanResource r=(PlanResource)j.next();
+						if(kronos.get(r.getId().getResourceId())!=null) continue;
+						String day=new SimpleDateFormat("EEE").format(TransStringUtil.getDate(daterange)).toUpperCase();
+						ScheduleEmployee ws=employeeManagerService.getSchedule(r.getId().getResourceId(),day);
+						Scrib s=new Scrib();
+						s.setScribId(r.getId().getResourceId());
+						s.setScribDate(p.getPlanDate());
+						if(r.getId().getAdjustmentTime()!=null)
+						{
+							s.setStartTime(r.getId().getAdjustmentTime());
+						}
+						else
+						{
+							if(ws!=null&&ws.getTime()!=null)s.setStartTime(ws.getTime());
+							else s.setStartTime(p.getStartTime());
+						}
+						for(Iterator k=scribs.iterator();k.hasNext();)
+						{
+							Scrib ss=(Scrib)k.next();
+							if(ss.getZone().getZoneCode().equalsIgnoreCase(p.getZoneCode())&&ss.getStartTime().getTime()==p.getStartTime().getTime())
+							{
+								long time=0;
+								if(ws!=null&&ws.getTime()!=null)time=ws.getTime().getTime();
+								else time=p.getStartTime().getTime();
+								if(r.getId().getAdjustmentTime()!=null)
+								{
+									time-=r.getId().getAdjustmentTime().getTime();
+								}
+								time+=ss.getMaxTime().getTime();
+								s.setEndDlvTime(new Date(time));
+								kronos.put(r.getId().getResourceId(),s);
+							}
+						}
+					
+				}
+			
+		}
+		
+//		if(kronos.size()>0)
+		{
+			
+			OutputStream out=response.getOutputStream();
+			ByteArrayOutputStream  f1=new ByteArrayOutputStream();
+			ByteArrayOutputStream f2=new ByteArrayOutputStream();
+			for(Iterator i=kronos.values().iterator();i.hasNext();)
+			{
+				Scrib s=(Scrib)i.next();
+				String line1=s.getScribId()+","+TransStringUtil.getDate(s.getScribDate())+","
+				+TransStringUtil.getServerTime(s.getStartTime())+","+TransStringUtil.formatTime1(s.getEndDlvTime())+"\n";
+				String line2=s.getScribId()+","+TransStringUtil.getDate(s.getScribDate())+"\n";
+				f1.write(line1.getBytes());
+				f2.write(line2.getBytes());
+				
+			}
+			f1.flush();
+			f2.flush();
+			ZipOutputStream zipout = new ZipOutputStream(out);
+			 
+			 String[] filenames = new String[]{TransportationAdminProperties.getKronosUploadAllFileName(), TransportationAdminProperties.getKronosUploadAllEmptyFileName()};
+			 byte[] buf = new byte[1024];
+	        for (int i=0; i<filenames.length; i++) 
+	        {    
+	        	InputStream in;
+	        	if(i==0)
+	        		in=new ByteArrayInputStream(f1.toByteArray());
+	        	else in= new ByteArrayInputStream(f2.toByteArray());
+	            // Add ZIP entry to output stream.
+	        	zipout.putNextEntry(new ZipEntry(filenames[i]));
+	    
+	            // Transfer bytes from the file to the ZIP file
+	            int len;
+	            while ((len = in.read(buf)) > 0) 
+	            {
+	            	zipout.write(buf, 0, len);
+	            }
+	    
+	            // Complete the entry
+	            zipout.closeEntry();
+	            in.close();
+	        }	        
+	        f1.close();
+	        f2.close();
+	        zipout.flush();
+			out.flush();
+			zipout.close();
+		}
+		
+	}
 	private Collection getPlanInfo(String dateQryStr, String zoneQryStr) {
 
 		Collection plans=dispatchManagerService.getPlan(dateQryStr, zoneQryStr);
@@ -234,10 +376,32 @@ public class DispatchController extends AbstractMultiActionController {
 		DispatchPlanUtil.setDispatchStatus(c,false);
 		mav.getModel().put("dispatchInfos",c);
 		mav.getModel().put("dispDate", TransStringUtil.getCurrentDate());
-		
+		dispatchStatisticsHandler(request,response);
 		return mav;
 	}
 	
+	public ModelAndView dispatchStatisticsHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException 
+	{
+		
+		try {
+			Collection c1=getDispatchInfos(TransStringUtil.getCurrentServerDate(), null, null, true,TransWebUtil.isPunch(request, dispatchManagerService),TransWebUtil.isAirClick(request, dispatchManagerService));
+			Collection c2=this.getDispatchManagerService().getUnassignedActiveEmployees();
+			String date=TransStringUtil.formatDateSearch(TransStringUtil.getCurrentDate());
+			Collection c3=dispatchManagerService.getPlan(date, null);
+			Collection c4=employeeManagerService.getUnAvailableEmployees(c3, TransStringUtil.getCurrentServerDate());
+			
+			WebDispatchStatistics s=new WebDispatchStatistics();
+			s.calculateDispatchRoute(c1);
+			s.calculateUnassigned(c2);
+			s.calculatePlanRoute(c3);
+			s.calculatePaycode(c4);
+			request.setAttribute("statistics", s);
+		} catch (DateFilterException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
 	public ModelAndView dispatchDashboardHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 
 		return processDashboardRequest(request, response, "dispatchDashboardViewFull");
@@ -537,7 +701,12 @@ public class DispatchController extends AbstractMultiActionController {
 				    	saveMessage(request, getMessage("app.actionmessage.142", null));
 				    	return planHandler(request,response);
 				    }
-
+				   Collection unavailable=employeeManagerService.getUnAvailableEmployees(planList, dispatchDate);
+				   if(unavailable!=null&&unavailable.size()>0)
+				   {
+					   saveMessage(request, getMessage("app.actionmessage.147", null));
+				    	return planHandler(request,response);
+				   }
 					Collection dispList = dispatchManagerService.getDispatchList(dispatchDate,null,null);
 					//System.out.println("dispList >>"+dispList);
 					if(!SecurityManager.isUserAdmin(request)){

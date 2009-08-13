@@ -110,8 +110,10 @@
 				<prop key="/drivingdirection.do">dispatchController</prop>
                 <prop key="/unassignedactiveemployees.do">dispatchController</prop>
                 <prop key="/scrib.do">scribController</prop>
+                <prop key="/copyscrib.do">scribController</prop>
                 <prop key="/deletescrib.do">scribController</prop>
                 <prop key="/editscrib.do">scribFormController</prop>
+                <prop key="/editschedule.do">scheduleFormController</prop>
 			</props>
 		</property>
 	</bean>
@@ -214,6 +216,7 @@
 			<prop key="/drivingdirection.do">drivingDirectionsHandler</prop>
             <prop key="/unassignedactiveemployees.do">unassignedPunchedInEmployeeHandler</prop>
             <prop key="/scrib.do">scribHandler</prop>
+            <prop key="/copyscrib.do">copyScribHandler</prop>
             <prop key="/deletescrib.do">deleteScribHandler</prop>	
 		</props>
 		</property>
@@ -484,13 +487,14 @@
         <property name="restrictionManagerService" ref="restrictionManager"/>        
         <property name="zoneManagerService" ref="zoneManager"/>
 	</bean>
-	    
+	
 	<bean id="scribController" class="com.freshdirect.transadmin.web.ScribController">
 		<property name="methodNameResolver" ref="transAdminControllerResolver"/>
         <property name="dispatchManagerService" ref="dispatchManager"/>
         <property name="employeeManagerService" ref="employeeManager"/>
         <property name="domainManagerService" ref="domainManager"/>
 	</bean>
+	
 	<bean id="scribFormController" class="com.freshdirect.transadmin.web.ScribFormController">		
 		<property name="domainManagerService" ref="domainManager"/>
 		<property name="dispatchManagerService" ref="dispatchManager"/>
@@ -500,6 +504,17 @@
         <property name="validator" ref="scribValidator"/>
         <property name="successView" value="editScribView" />
         <property name="formView" value="editScribView" />
+         <property name="employeeManagerService" ref="employeeManagerService"/>
+	</bean>
+	<bean id="scheduleFormController" class="com.freshdirect.transadmin.web.ScheduleFormController">
+		<property name="employeeManagerService" ref="employeeManagerService"/>
+		<property name="domainManagerService" ref="domainManager"/>
+		<property name="sessionForm" value="true"/>
+        <property name="commandName" value="scheduleForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.web.model.WebSchedule"/>
+        <property name="validator" ref="scheduleValidator"/>
+        <property name="successView" value="scheduleEdit" />
+        <property name="formView" value="scheduleEdit" />
 	</bean>
 	    
 	<bean id="employeeValidator" class="com.freshdirect.transadmin.web.validation.EmployeeValidator"/>
@@ -526,6 +541,6 @@
 	
 	<bean id="geoRestrictionValidator" class="com.freshdirect.transadmin.web.validation.GeoRestrictionValidator"/>
 	<bean id="scribValidator" class="com.freshdirect.transadmin.web.validation.ScribValidator"/>
-	
+	<bean id="scheduleValidator" class="com.freshdirect.transadmin.web.validation.ScheduleValidator"/>
 	
 </beans>

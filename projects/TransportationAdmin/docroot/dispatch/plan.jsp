@@ -32,11 +32,15 @@
 			<div class="cont_row">
 				<div class="cont_Litem" id="page_<%=pageTitle%>">
 					<span class="scrTitle"><%=pageTitle%></span>
-						<span><input maxlength="40" name="daterange" id="daterange" value="<%= dateRangeVal %>" /></span>
+						<span ><input maxlength="40" name="daterange" id="daterange" value="<%= dateRangeVal %>" style="width:100px"/>
 
-							<span><input maxlength="40" size="40" name="zone" id="zone" value="<%= zoneVal %>" /></span>
+							<input maxlength="40" size="20" name="zone" id="zone" value="<%= zoneVal %>" style="width:100px" /></span>
 						<span><input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink('daterange','zone','plan.do')" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>
 						<span><input id="view_button" type="image" alt="Dispatch" src="./images/icons/dispatch.gif" onclick="javascript:doAutoDispatch('daterange','zone','autoDispatch.do')" onmousedown="this.src='./images/icons/dispatch_ON.gif'" /> <a href="#"  onclick="javascript:doAutoDispatch('daterange','zone','autoDispatch.do')" class="dispatch_link">Dispatch</a></span>
+					<span>
+                     <input type = "button" value=" U/A " onclick="javascript:doUnavailable('plan.do','daterange','y')" />
+                     <input type = "button" value="Kronos Files" onclick="javascript:doKronos('plan.do','daterange','y','1')" />                    
+                  </span>
 				</div>
 			</div>
 		</div> 
@@ -107,6 +111,21 @@
 		    	alert('Please Select a Row!');
 		    }
 		}
+		
+	  function doUnavailable(url,id1,param2)
+	  {
+	  	var param1 = document.getElementById(id1).value;
+        var id2 = "unavailable";
+          
+         javascript:pop(url+"?"+id1+"="+ param1+"&"+id2+"="+param2, 400,600);
+	  }
+	   function doKronos(url,id1,param2,param3)
+	  {
+	  	var param1 = document.getElementById(id1).value;
+        var id2 = "kronos"; 
+         var id3 = "file";          
+        location.href =url+"?"+id1+"="+ param1+"&"+id2+"="+param2+"&"+id3+"="+param3  ;
+	  }
     </script>   
   </tmpl:put>
 </tmpl:insert>

@@ -14,7 +14,7 @@ public class PunchInfo implements java.io.Serializable, TrnBaseEntityI, PunchInf
 	private boolean isPunchedOut;
 	private boolean isLate;
 	private String employeeId;
-	
+	private String paycode;
 	public PunchInfo()
 	{
 		
@@ -107,6 +107,12 @@ public class PunchInfo implements java.io.Serializable, TrnBaseEntityI, PunchInf
 
 	public Date getOutPunchDTM() {
 		return outPunchDTM;
+	}
+	public String getPaycode() {
+		return paycode;
+	}
+	public void setPaycode(String paycode) {
+		this.paycode = paycode;
 	}
 
 

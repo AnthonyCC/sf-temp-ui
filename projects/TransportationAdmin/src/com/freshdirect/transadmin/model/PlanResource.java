@@ -1,5 +1,7 @@
 package com.freshdirect.transadmin.model;
 
+import java.util.Date;
+
 // Generated Nov 18, 2008 3:11:21 PM by Hibernate Tools 3.2.2.GA
 
 /**
@@ -46,5 +48,15 @@ public class PlanResource implements ResourceI, java.io.Serializable {
 		
 	}
 
+	public Date getAdjustmentTime() {
+		if(id!=null) return id.getAdjustmentTime();
+		return null;
+	}
+
+	public void setAdjustmentTime(Date adjustmentTime) 
+	{
+		if(id!=null)
+		id.setAdjustmentTime(adjustmentTime);
+	}
 
 }

@@ -278,10 +278,9 @@ public class DispatchProviderController extends JsonRpcController  implements ID
 
 	public String getUserPref(String key) 
 	{
-		String value=TransWebUtil.getUserPref(getHttpServletRequest(), key);
+		String value=TransWebUtil.getUserPref(getHttpServletRequest(), key,dispatchManagerService);
 		if(value==null) value="";
 		return value;
 	}
 	
 }
-

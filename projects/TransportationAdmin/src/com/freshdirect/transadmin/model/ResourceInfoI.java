@@ -1,5 +1,7 @@
 package com.freshdirect.transadmin.model;
 
+import java.util.Date;
+
 public interface ResourceInfoI {
 
 	public String getName();
@@ -47,5 +49,8 @@ public interface ResourceInfoI {
 	public PunchInfoI getPunchInfo();
 	
 	public void setPunchInfo(PunchInfoI punchInfo);
+	
+	public Date getAdjustmentTime();
+	public void setAdjustmentTime(Date adjustmentTime);
 	
 }
