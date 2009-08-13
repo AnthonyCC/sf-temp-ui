@@ -24,8 +24,10 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.attributes.Attribute;
@@ -707,6 +709,7 @@ public class JspMethods {
 			try {
 				if ( dfltSku != null && showPrice ) {
 					FDProductInfo pi = FDCachedFactory.getProductInfo( dfltSku.getSkuCode() );
+					FDProduct fdProduct = FDCachedFactory.getProduct(dfltSku.getSkuCode(), pi.getVersion());
 					// pi.getAttribute(EnumAttributeName.PRICING_UNIT_DESCRIPTION.getName(),
 					// pi.getDefaultPriceUnit().toLowerCase())
 					displayObj.setPrice( currencyFormatter.format( pi.getDefaultPrice() ) + "/"
@@ -717,7 +720,11 @@ public class JspMethods {
 						displayObj.setSalesUnitDescription( salesUnitDescr );
 					} else {
 						displayObj.setSalesUnitDescription( "" );
-					}
+					}	
+					
+					/* Display Sales Units price-Apple Pricing[AppDev-209] */					
+					displayObj.setDisplaySalesUnitPrice(getAboutPriceForDisplay(pi));				 
+
 				}
 				thisProdBrandLabel = displayProduct.getPrimaryBrandName();
 			} catch ( FDResourceException fde ) {
@@ -923,5 +930,86 @@ public class JspMethods {
 		}
 		return "";
 	}
+	
+	/**
+	 * Apple Pricing - APPDEV-209.
+	 * Utility method to calculate the price/lb based on the base price and weight, for display. 
+	 * @param prodInfo - FDProductInfo
+	 * @return
+	 */
+	public static String getAboutPriceForDisplay(FDProductInfo prodInfo)throws JspException{
+		String displayPriceString = "";
+		try {
+			FDProduct fdProduct = FDCachedFactory.getProduct(prodInfo);
+			if(null != fdProduct.getDisplaySalesUnits() && fdProduct.getDisplaySalesUnits().length > 0){
+				FDSalesUnit fdSalesUnit = fdProduct.getDisplaySalesUnits()[0];
+				double salesUnitRatio = (double)fdSalesUnit.getNumerator()/(double)fdSalesUnit.getDenominator();
+				String alternateUnit = fdSalesUnit.getName();
+				double displayPrice = prodInfo.getDefaultPrice()/salesUnitRatio;
+				if(displayPrice>0){
+					displayPriceString = "about "+JspMethods.currencyFormatter.format( displayPrice ) + "/" +alternateUnit.toLowerCase();					
+				}
+			}
+		} catch (FDResourceException fdre) {
+			throw new JspException( fdre );
+		} catch (FDSkuNotFoundException fdse) {
+			throw new JspException( fdse );
+		}
+		return displayPriceString;
+	}
+	
+	/**
+	 * Apple Pricing - APPDEV-209.
+	 * Utility method to calculate the price/lb based on the base price and weight, for display. 
+	 * @param node - ContentNodeI
+	 * @return
+	 */
+	public static String getAboutPriceForDisplay(ContentNodeI node) throws JspException{
+		String       displayPriceString = "";		
+		if (node.getContentType().equals(ContentNodeI.TYPE_PRODUCT)) {
+			ProductModel product    = (ProductModel) node;
+			SkuModel     defaultSku = product.getDefaultSku();			
+			try {
+				if (defaultSku != null) {
+					FDProductInfo pi    = FDCachedFactory.getProductInfo(defaultSku.getSkuCode());
+					displayPriceString = getAboutPriceForDisplay(pi);					
+			 	}
+			} catch (FDResourceException fdre) {
+				throw new JspException( fdre );
+			} catch (FDSkuNotFoundException fdse) {
+				throw new JspException( fdse );
+			}
+		}		
+		return displayPriceString;
+	}
+	
+	/**
+	 * Apple Pricing - APPDEV-209.
+	 * This method will be used to display the about weight and price/lb in product with single sku and multiple sku pages.
+	 * @param prodInfo
+	 * @return
+	 * @throws JspException
+	 */
+	public static String getAboutPriceAndWeightForDisplay(FDProductInfo prodInfo)throws JspException{
+		String displayPriceString = "";		
+		try {
+			FDProduct fdProduct = FDCachedFactory.getProduct(prodInfo);
+			if(null != fdProduct.getDisplaySalesUnits() && fdProduct.getDisplaySalesUnits().length > 0){
+				FDSalesUnit fdSalesUnit = fdProduct.getDisplaySalesUnits()[0];
+				double salesUnitRatio = (double)fdSalesUnit.getNumerator()/(double)fdSalesUnit.getDenominator();
+				String alternateUnit = fdSalesUnit.getName();
+				double displayPrice = prodInfo.getDefaultPrice()/salesUnitRatio;
+				if(displayPrice>0){
+					displayPriceString = "about "+ salesUnitRatio + alternateUnit.toLowerCase() + ", "+JspMethods.currencyFormatter.format( displayPrice ) + "/" +alternateUnit.toLowerCase();					
+				}
+			}
+		} catch (FDResourceException fdre) {
+			throw new JspException( fdre );
+		} catch (FDSkuNotFoundException fdse) {
+			throw new JspException( fdse );
+		} 
+		return displayPriceString;
+	}
+	
 
 }

@@ -40,6 +40,7 @@ public class SalesUnitParser extends SAPParser {
         fields.add(new Field(NUMERATOR,                5, true));
         fields.add(new Field(BASE_UNIT,                3, true));
         fields.add(new Field(MATERIAL_NUMBER,         18, true));
+        fields.add(new Field(DISPLAY_IND,         3, false));
     }   
     
     /** gets the collection of sales unit object parsed from a file
@@ -76,6 +77,7 @@ public class SalesUnitParser extends SAPParser {
             salesUnit.setDescription(getString(tokens, MEASUREMENT_UNIT_TEXT));
             salesUnit.setNumerator(getInt(tokens, NUMERATOR));
             salesUnit.setBaseUnit(getString(tokens, BASE_UNIT));
+            salesUnit.setDisplayInd(("w1".equalsIgnoreCase(getString(tokens,DISPLAY_IND))));
             //
             // which material does this sales unit belong to?
             //
@@ -112,5 +114,19 @@ public class SalesUnitParser extends SAPParser {
         
     }
     
+    protected int tokenize(String line, HashMap retval, int startPosition,
+			String name, int length) throws BadDataException{
+    	if(name.equals(DISPLAY_IND)){    	
+    		int endPosition = startPosition+length;
+    		if(line.length() >= endPosition){
+    			retval.put(name, line.substring(startPosition, endPosition).trim());
+    		}
+    			startPosition = endPosition;
+    	}else{
+    		startPosition = super.tokenize(line, retval, startPosition, name, length);
+    	}
+    	
+    	return startPosition;
+    }
 
 }

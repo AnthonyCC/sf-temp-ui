@@ -100,6 +100,9 @@ class FDProductHelper {
 		
 		// get nutritional information
 		ErpNutritionModel nutrModel = FDNutritionCache.getInstance().getNutrition(product.getSkuCode());
+
+		// construct display sales units
+		FDSalesUnit[] displaySalesUnits = this.getSalesUnits(product.getDisplaySalesUnits());
 		
 
 
@@ -127,7 +130,7 @@ class FDProductHelper {
 		}
 
 		// construct FDProduct
-		return new FDProduct(product.getSkuCode(), version, product.getPricingDate(), fdMaterial, variations, salesUnits, pricing, nutrition);
+		return new FDProduct(product.getSkuCode(), version, product.getPricingDate(), fdMaterial, variations, salesUnits, pricing, nutrition,displaySalesUnits);
 	}
 	
 	public FDProductInfo getFDProductInfo(ErpProductInfoModel erpProductInfo) throws FDResourceException {
@@ -239,7 +242,8 @@ class FDProductHelper {
 			// get attributes
 			AttributesI attribs = new AttributeCollection( su.getAttributes() );
 
-			salesUnits[i] = new FDSalesUnit(attribs, su.getAlternativeUnit(), su.getDescription());
+//			salesUnits[i] = new FDSalesUnit(attribs, su.getAlternativeUnit(), su.getDescription());
+			salesUnits[i] = new FDSalesUnit(attribs, su.getAlternativeUnit(), su.getDescription(),su.getNumerator(),su.getDenominator(),su.getBaseUnit());
 		}
 		return salesUnits;
 	}

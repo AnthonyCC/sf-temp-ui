@@ -24,6 +24,13 @@ public class FDSalesUnit extends FDAttributeProxy {
 
 	/** Sales unit description */
 	private String description;
+	
+	private int numerator;
+	
+	private int denominator;
+	
+	private String baseUnit;
+	
 
 	/**
 	 * Constructor with all properties.
@@ -105,5 +112,27 @@ public class FDSalesUnit extends FDAttributeProxy {
 
 	public String toString() {
 		return "FDSalesUnit[" + this.name + "," + this.description + "," + this.getDescription() + "]";
+	}
+
+	public FDSalesUnit(AttributesI attributes, String name, String description,
+			int numerator, int denominator, String baseUnit) {
+		super(attributes);
+		this.name = name;
+		this.description = description;
+		this.numerator = numerator;
+		this.denominator = denominator;
+		this.baseUnit = baseUnit;
+	}
+
+	public int getNumerator() {
+		return numerator;
+	}
+
+	public int getDenominator() {
+		return denominator;
+	}
+
+	public String getBaseUnit() {
+		return baseUnit;
 	}
 }

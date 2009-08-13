@@ -362,5 +362,14 @@ public class ErpProductModel extends ErpModelSupport implements DurableModelI, E
 	public void setBasePriceUnit(String basePriceUnit) {
 		this.basePriceUnit = basePriceUnit;
 	}
+	
+	/**
+	 * Get sales units for display only.
+	 *
+	 * @return collection of ErpSalesUnitModel objects
+	 */
+	public List getDisplaySalesUnits() {
+		return Collections.unmodifiableList( this.material.getDisplaySalesUnits() );
+	} 
 
 }

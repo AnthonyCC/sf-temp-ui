@@ -745,10 +745,20 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
             ErpSalesUnitModel su2 = (ErpSalesUnitModel) o2;
             double ratio1 = su1.getNumerator()/su1.getDenominator();
             double ratio2 = su2.getNumerator()/su2.getDenominator();
-            if (ratio1 < ratio2)
-                return -1;
-            else if (ratio2 < ratio1)
-                return 1;
+            if (ratio1 < ratio2){
+            	if(!su1.isDisplayInd() ||(su1.isDisplayInd()==su2.isDisplayInd())){
+            		return -1;
+            	}else{
+            		return 1;
+            	}
+            }                
+            else if (ratio2 < ratio1){
+            	if(!su2.isDisplayInd() ||(su1.isDisplayInd()==su2.isDisplayInd())){
+            		return 1;
+            	}else{
+            		return -1;
+            	}
+            }
             else
                 return 0;
         }

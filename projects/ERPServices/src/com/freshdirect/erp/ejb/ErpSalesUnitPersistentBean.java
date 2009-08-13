@@ -44,6 +44,9 @@ public class ErpSalesUnitPersistentBean extends ErpPersistentBeanSupport {
 	/** Sales unit description */
 	private String description;
 
+	/** [APPDEV-209]Display Indicator - Only for display or not.*/
+	private boolean displayInd;
+	
 	/**
 	 * Copy constructor, from model.
 	 *
@@ -64,13 +67,15 @@ public class ErpSalesUnitPersistentBean extends ErpPersistentBeanSupport {
 		String baseUnit,
 		int numerator,
 		int denominator,
-		String description) {
+		String description,
+		boolean displayInd) {
 		super(pk);
 		this.alternativeUnit = alternativeUnit;
 		this.baseUnit = baseUnit;
 		this.numerator = numerator;
 		this.denominator = denominator;
 		this.description = description;
+		this.displayInd = displayInd;
 	}
 
 	/**
@@ -80,7 +85,7 @@ public class ErpSalesUnitPersistentBean extends ErpPersistentBeanSupport {
 	 */
 	public ModelI getModel() {
 		ErpSalesUnitModel model =
-			new ErpSalesUnitModel(this.alternativeUnit, this.baseUnit, this.numerator, this.denominator, this.description);
+			new ErpSalesUnitModel(this.alternativeUnit, this.baseUnit, this.numerator, this.denominator, this.description, this.displayInd);
 		super.decorateModel(model);
 		return model;
 	}
@@ -95,6 +100,7 @@ public class ErpSalesUnitPersistentBean extends ErpPersistentBeanSupport {
 		this.numerator = m.getNumerator();
 		this.denominator = m.getDenominator();
 		this.description = m.getDescription();
+		this.displayInd = m.isDisplayInd();
 	}
 
 	/**
@@ -109,7 +115,7 @@ public class ErpSalesUnitPersistentBean extends ErpPersistentBeanSupport {
 	 */
 	public static List findByParent(Connection conn, VersionedPrimaryKey parentPK) throws SQLException {
 		java.util.List lst = new java.util.LinkedList();
-		PreparedStatement ps = conn.prepareStatement("select id, alternative_unit, base_unit, numerator, denominator, description from erps.salesunit where mat_id = ?");
+		PreparedStatement ps = conn.prepareStatement("select id, alternative_unit, base_unit, numerator, denominator, description, display_ind from erps.salesunit where mat_id = ? and upper(display_ind) <>'Y'" );
 		ps.setString(1, parentPK.getId());
 		ResultSet rs = ps.executeQuery();
 
@@ -121,7 +127,8 @@ public class ErpSalesUnitPersistentBean extends ErpPersistentBeanSupport {
 					rs.getString(3),
 					rs.getInt(4),
 					rs.getInt(5),
-					rs.getString(6));
+					rs.getString(6),
+					"Y".equalsIgnoreCase(rs.getString(7)));
 			bean.setParentPK(parentPK);
 			lst.add(bean);
 		}
@@ -133,7 +140,7 @@ public class ErpSalesUnitPersistentBean extends ErpPersistentBeanSupport {
 	public PrimaryKey create(Connection conn) throws SQLException {
 		String id = this.getNextId(conn, "ERPS");
 		int version = ((VersionedPrimaryKey) this.getParentPK()).getVersion();
-		PreparedStatement ps = conn.prepareStatement("insert into erps.salesunit (id, mat_id, version, alternative_unit, base_unit, numerator, denominator, description) values (?, ?, ?, ?, ?, ?, ?, ?)");
+		PreparedStatement ps = conn.prepareStatement("insert into erps.salesunit (id, mat_id, version, alternative_unit, base_unit, numerator, denominator, description, display_ind) values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 		ps.setString(1, id);
 		ps.setString(2, this.getParentPK().getId());
 		ps.setInt(3, version);
@@ -142,6 +149,7 @@ public class ErpSalesUnitPersistentBean extends ErpPersistentBeanSupport {
 		ps.setInt(6, this.numerator);
 		ps.setInt(7, this.denominator);
 		ps.setString(8, this.description);
+		ps.setString(9, this.displayInd?"Y":"N");
 		
 		if (ps.executeUpdate() != 1) {
 			throw new SQLException("No database rows created!");
@@ -153,4 +161,39 @@ public class ErpSalesUnitPersistentBean extends ErpPersistentBeanSupport {
 		return this.getPK();
 	}
 
+	
+	/**
+	 * Find ErpSalesUnitPersistentBean objects for a given parent.
+	 *
+	 * @param conn the database connection to operate on
+	 * @param parentPK primary key of parent
+	 *
+	 * @return a List of ErpSalesUnitPersistentBean objects (empty if found none).
+	 *
+	 * @throws SQLException if any problems occur talking to the database
+	 */
+	public static List findByParentForDisplay(Connection conn, VersionedPrimaryKey parentPK) throws SQLException {
+		java.util.List lst = new java.util.LinkedList();
+		PreparedStatement ps = conn.prepareStatement("select id, alternative_unit, base_unit, numerator, denominator, description, display_ind from erps.salesunit where mat_id = ? and upper(display_ind) ='Y'" );
+		ps.setString(1, parentPK.getId());
+		ResultSet rs = ps.executeQuery();
+
+		while (rs.next()) {
+			ErpSalesUnitPersistentBean bean =
+				new ErpSalesUnitPersistentBean(
+					new VersionedPrimaryKey(rs.getString(1), parentPK.getVersion()),
+					rs.getString(2),
+					rs.getString(3),
+					rs.getInt(4),
+					rs.getInt(5),
+					rs.getString(6),
+					"Y".equalsIgnoreCase(rs.getString(7)));
+			bean.setParentPK(parentPK);
+			lst.add(bean);
+		}
+		rs.close();
+		ps.close();
+		return lst;
+	}
+	
 }

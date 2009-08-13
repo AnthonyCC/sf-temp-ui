@@ -60,16 +60,23 @@ public abstract class FieldDelimitedFileParser extends FlatFileParser {
                 //
                 // just read the specified number of characters
                 //
-                int endPosition = startPosition + length;
-                try {
-                    retval.put(name, line.substring(startPosition, endPosition).trim());
-                } catch (StringIndexOutOfBoundsException sie) {
-                    throw new BadDataException(sie, "Found a line that was too short, couldn't read " + f.getName());
-                }
-                startPosition = endPosition;
+            	startPosition = tokenize(line, retval, startPosition, name,
+						length);
             }
         }
         return retval;
     }
+    
+    protected int tokenize(String line, HashMap retval, int startPosition,
+			String name, int length) throws BadDataException {
+		int endPosition = startPosition + length;
+		try {
+		    retval.put(name, line.substring(startPosition, endPosition).trim());
+		} catch (StringIndexOutOfBoundsException sie) {
+		    throw new BadDataException(sie, "Found a line that was too short, couldn't read " + name);
+		}
+		startPosition = endPosition;
+		return startPosition;
+	}
     
 }

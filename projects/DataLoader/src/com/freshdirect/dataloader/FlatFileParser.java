@@ -182,7 +182,10 @@ public abstract class FlatFileParser {
         //
         // get the field and trim any extra whitespace
         //
-        String s = ((String)tokens.get(fieldName)).trim();
+        String s = "";
+        if(null !=tokens.get(fieldName)){
+        	s=((String)tokens.get(fieldName)).trim();
+        }
         //
         // check if this is a required field
         //

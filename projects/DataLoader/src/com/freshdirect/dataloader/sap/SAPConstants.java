@@ -137,4 +137,7 @@ public interface SAPConstants {
 	public static final String WEB_REFERENCE_NUMBER = "Web reference number";
 	public static final String CREDIT_MEMO_NUMBER = "Credit memo number";
 	//public static final String CREDIT_AMOUNT		    = "Credit amount";
+	
+	//Apple Pricing -[APPDEV-209]
+	public static final String DISPLAY_IND = "Display Indicator";
 }

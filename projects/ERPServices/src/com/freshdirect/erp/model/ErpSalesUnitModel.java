@@ -36,6 +36,10 @@ public class ErpSalesUnitModel extends ErpModelSupport implements DurableModelI 
 
 	/** Sales unit description */
 	private String description;
+	
+	/** [APPDEV-209]Display Indicator - Only for display or not.*/
+	private boolean displayInd;
+
 
 	/**
 	 * Default constructor.
@@ -60,6 +64,15 @@ public class ErpSalesUnitModel extends ErpModelSupport implements DurableModelI 
 		this.setDenominator( denominator );
 		this.setDescription( description );
 	}
+	public ErpSalesUnitModel(String alternativeUnit, String baseUnit, int numerator, int denominator, String description, boolean displayInd) {
+		this.setAlternativeUnit( alternativeUnit );
+		this.setBaseUnit( baseUnit );
+		this.setNumerator( numerator );
+		this.setDenominator( denominator );
+		this.setDescription( description );
+		this.setDisplayInd(displayInd);
+	}
+
 
 	/**
 	 * Get alternative unit of measure.
@@ -170,6 +183,11 @@ public class ErpSalesUnitModel extends ErpModelSupport implements DurableModelI 
 	public void visitChildren(ErpVisitorI visitor) {
 		// no children
 	}
+	public boolean isDisplayInd() {
+		return displayInd;
+	}
 
-
+	public void setDisplayInd(boolean displayInd) {
+		this.displayInd = displayInd;
+	}
 }

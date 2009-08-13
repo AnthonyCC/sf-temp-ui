@@ -2,7 +2,6 @@ package com.freshdirect.webapp.template;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -10,9 +9,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.jsp.JspException;
+
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.fdstore.PreviewLinkProvider;
-import com.freshdirect.content.attributes.EnumAttributeName;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -28,6 +28,7 @@ import com.freshdirect.fdstore.content.RecipeCategory;
 import com.freshdirect.fdstore.content.RecipeSubcategory;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.webapp.util.FDURLUtil;
+import com.freshdirect.webapp.util.JspMethods;
 
 /**
  * Collection of helper methods made available to templates.
@@ -385,5 +386,11 @@ public class TemplateContext {
 //	     
 //	}
 	
-	
+	/**
+	 * Apple Pricing -[APPDEV-209].
+	 * Method to get the price/lb, for display. 
+	 */
+	public String getAboutPrice(ContentNodeI node)throws JspException {
+		return JspMethods.getAboutPriceForDisplay(node);
+	}	
 }

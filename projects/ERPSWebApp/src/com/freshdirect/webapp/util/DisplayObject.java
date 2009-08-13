@@ -17,7 +17,15 @@ public class DisplayObject {
 		private String indicators=null;
 		private String salesUnitDescription=null;
 		private String rating=null;
+		private String displaySalesUnitDescription = null;
+		private String displaySalesUnitPrice = null;
 
+		public String getDisplaySalesUnitPrice() {
+			return displaySalesUnitPrice;
+		}
+		public void setDisplaySalesUnitPrice(String displaySalesUnitPrice) {
+			this.displaySalesUnitPrice = displaySalesUnitPrice;
+		}
 		public void setItemName(String itemName) {
 			this.itemName=itemName;
 		}
@@ -31,6 +39,7 @@ public class DisplayObject {
 		public void setIndicators(String indicators) {this.indicators=indicators;}
 		public void setPrice(String price) {this.price = price;}
 		public void setSalesUnitDescription(String pd) {this.salesUnitDescription = pd;}
+		public void setDisplaySalesUnitDescription(String dsud) {this.displaySalesUnitDescription = dsud;}
 		
 		public String getItemName() {return this.itemName;}
 		public String getItemNameWithoutBreaks() {
@@ -47,6 +56,7 @@ public class DisplayObject {
 		public String getIndicators() {return this.indicators;}
 		public String getPrice() {return this.price;}
 		public String getSalesUnitDescription() {return this.salesUnitDescription; }
+		public String getDisplaySalesUnitDescription(){return this.displaySalesUnitDescription;}
 		
 		public int getImageWidthAsInt() {
 			if (this.imageWidth==null) return 0; 

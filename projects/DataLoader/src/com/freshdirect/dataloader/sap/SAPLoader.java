@@ -73,7 +73,8 @@ public class SAPLoader {
 			// parse the raw files
 			//
 			//loader.load("C:\\FreshDirect\\projects\\FDWebSite\\docroot\\test\\adServing", "20040405_160105", "B");
-			loader.load("C:\\Manoj", "ProduceRating", "B");
+//			loader.load("C:\\Manoj", "ProduceRating", "B");
+			loader.load("C:\\bea10\\freshdirect\\testingIdocs", "20090804_125830", "B");
 			//loader.load("\\\\File1\\Corporate Shares\\R3doc\\exports_by_client\\200\\product_data", "20020208_132554", "cheese");
 			if (!loader.parseSuccessful()) {
 				loader.reportParsingExceptions();

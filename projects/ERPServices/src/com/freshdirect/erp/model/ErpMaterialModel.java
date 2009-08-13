@@ -82,6 +82,12 @@ public class ErpMaterialModel extends ErpMaterialInfoModel {
 	/** UPC code assigned by manufacturer */
 	private String UPC;
 
+	/** Collection of sales units for display only.
+	 * @link aggregationByValue
+	 * @associates <{com.freshdirect.erp.model.ErpSalesUnitModel}>
+	 */
+	private LocalObjectList displaySalesUnits = new LocalObjectList();
+
 	/**
 	 * Default constructor.
 	 */
@@ -108,7 +114,8 @@ public class ErpMaterialModel extends ErpMaterialInfoModel {
 		DayOfWeekSet blockedDays,
 		List prices,
 		List salesUnits,
-		List classes ) {
+		List classes,
+		List displaySalesUnits ) {
 		super(sapId, description);
 		this.setBaseUnit(baseUnit);
 		this.setATPRule(atpRule);
@@ -124,6 +131,7 @@ public class ErpMaterialModel extends ErpMaterialInfoModel {
 		this.setKosherProduction(kosherProduction);
 		this.setPlatter(platter);
 		this.setBlockedDays(blockedDays);
+		this.setDisplaySalesUnits(displaySalesUnits);
 	}
 
 	/**
@@ -356,6 +364,9 @@ public class ErpMaterialModel extends ErpMaterialInfoModel {
 		for (Iterator i = this.prices.iterator(); i.hasNext();) {
 			((ErpMaterialPriceModel) i.next()).accept(visitor);
 		}
+		for (Iterator i = this.displaySalesUnits.iterator(); i.hasNext();) {
+			((ErpSalesUnitModel) i.next()).accept(visitor);
+		}
 	}
 
 	/** Getter for property UPC.
@@ -434,4 +445,21 @@ public class ErpMaterialModel extends ErpMaterialInfoModel {
 		this.basePricingUnit = basePricingUnit;
 	}
 
+	/**
+	 * Set sales units.
+	 *
+	 * @param displaySalesUnits collection of ErpSalesUnitModel objects
+	 */
+	public void setDisplaySalesUnits(List displaySalesUnits) {
+		this.displaySalesUnits.set(displaySalesUnits);
+	}
+	
+	/**
+	 * Get display sales units .
+	 *
+	 * @return collection of ErpSalesUnitModel objects
+	 */
+	public List getDisplaySalesUnits() {
+		return Collections.unmodifiableList(this.displaySalesUnits);
+	}
 }

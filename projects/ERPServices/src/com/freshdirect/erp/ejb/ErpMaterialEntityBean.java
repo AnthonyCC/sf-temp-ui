@@ -123,6 +123,14 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 	private EnumAlcoholicContent alcoholicContent;
 
 	/**
+	 * Collection of dependent display ErpSalesUnit persistent beans .
+	 *
+	 * @link aggregationByValue
+	 * @directed
+	 * @associates <{ErpSalesUnitPersistentBean}>
+	 */
+	private DisplaySalesUnitList displaySalesUnits;
+	/**
 	 * Template method that returns the cache key to use for caching resources.
 	 *
 	 * @return the bean's home interface name
@@ -145,6 +153,7 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 		this.prices = new MaterialPriceList();
 		this.salesUnits = new SalesUnitList();
 		this.classes = new ClassList();
+		this.displaySalesUnits = new DisplaySalesUnitList();
 		// find home for objects in remote object list
 		this.classes.setEJBHome(getClassHome());
 	}
@@ -181,7 +190,8 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
                 this.blockedDays,
 				this.prices.getModelList(),
 				this.salesUnits.getModelList(),
-				this.classes.getModelList());
+				this.classes.getModelList(),
+				this.displaySalesUnits.getModelList());
 		super.decorateModel(model);
 		return model;
 	}
@@ -291,6 +301,8 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 		p.classes.setParentPK(pk);
 		p.classes.setEJBHome(getClassHome());
 		p.classes.load(conn);
+		p.displaySalesUnitList.setParentPK(pk);
+		p.displaySalesUnitList.load(conn);
 
 		return p;
 	}
@@ -318,6 +330,8 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 		this.prices = p.prices;
 		this.salesUnits = p.salesUnits;
 		this.classes = p.classes;
+		this.displaySalesUnits = p.displaySalesUnitList;
+
 	}
 
 	public void remove(Connection conn) throws SQLException {
@@ -435,6 +449,7 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 		MaterialPriceList prices = new MaterialPriceList();
 		SalesUnitList salesUnits = new SalesUnitList();
 		ClassList classes = new ClassList();
+		DisplaySalesUnitList displaySalesUnitList = new DisplaySalesUnitList();
 	}
 
 	/**
@@ -473,5 +488,13 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 		}
 
 	}
-
+	/**
+	 * Inner class for the list of dependent ErpSalesUnit persistent beans.
+	 */
+	private static class DisplaySalesUnitList extends DependentPersistentBeanList {
+		public void load(Connection conn) throws SQLException {
+			this.set(ErpSalesUnitPersistentBean.findByParentForDisplay(conn, (VersionedPrimaryKey) DisplaySalesUnitList.this.getParentPK()));
+		}
+	}
+	
 }
