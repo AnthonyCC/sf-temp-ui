@@ -315,6 +315,7 @@ class TimeNode
 			p.setStartTime(s.getStartTime());
 			p.setFirstDeliveryTime(s.getFirstDlvTime());
 			p.setSupervisorId(s.getSupervisorCode());
+			p.setMaxTime(s.getMaxTimeOrig());
 			if(s.getZone().getTrnZoneType()==null)continue;
 			Set resources=s.getZone().getTrnZoneType().getZonetypeResources();
 			
@@ -329,7 +330,7 @@ class TimeNode
 					for(Iterator k=employees.iterator();k.hasNext();)
 					{
 						if(count>=min) break;
-						SchdeuleEmployeeDetails se=(SchdeuleEmployeeDetails)k.next();
+						SchdeuleEmployeeDetails se=(SchdeuleEmployeeDetails)k.next();						
 						Collection c=se.getEmpRoles();
 						if(isRole(ScheduleEmployeeInfo.DRIVER,c))
 						{
@@ -343,7 +344,7 @@ class TimeNode
 							p.getPlanResources().add(planResource);
 							k.remove();
 							count++;
-						}
+						}						
 					}
 				}
 				
@@ -355,7 +356,7 @@ class TimeNode
 					for(Iterator k=employees.iterator();k.hasNext();)
 					{
 						if(count>=min) break;
-						SchdeuleEmployeeDetails se=(SchdeuleEmployeeDetails)k.next();
+						SchdeuleEmployeeDetails se=(SchdeuleEmployeeDetails)k.next();						
 						Collection c=se.getEmpRoles();
 						if(isRole(ScheduleEmployeeInfo.HELPER,c))
 						{
@@ -369,7 +370,7 @@ class TimeNode
 							p.getPlanResources().add(planResource);
 							k.remove();
 							count++;
-						}
+						}					
 					}
 				}
 				
@@ -416,7 +417,7 @@ class TimeNode
 				p.setIsBullpen("Y");
 				for(Iterator i=employees.iterator();i.hasNext();)
 				{
-					SchdeuleEmployeeDetails ss=(SchdeuleEmployeeDetails )i.next();
+					SchdeuleEmployeeDetails ss=(SchdeuleEmployeeDetails )i.next();					
 					PlanResource planResource=new PlanResource();
 					EmployeeRoleType type=new EmployeeRoleType();
 					for( Iterator si=ss.getEmpRoles().iterator();si.hasNext();)
@@ -428,6 +429,7 @@ class TimeNode
 					planResource.setEmployeeRoleType(type);
 					planResource.setId(resource);
 					p.getPlanResources().add(planResource);
+					
 				}
 			}
 	}
@@ -496,6 +498,7 @@ class DepotTimeNode
 			p.setStartTime(s.getStartTime());
 			p.setFirstDeliveryTime(s.getFirstDlvTime());
 			p.setSupervisorId(s.getSupervisorCode());
+			p.setMaxTime(s.getMaxTimeOrig());
 			if(s.getZone().getTrnZoneType()==null)continue;
 			Set resources=s.getZone().getTrnZoneType().getZonetypeResources();
 			

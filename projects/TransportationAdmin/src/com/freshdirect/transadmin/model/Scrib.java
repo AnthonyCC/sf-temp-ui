@@ -125,6 +125,11 @@ public class Scrib
 		long time=getMaxReturnTimeDisplay().getTime()-getWaveStart().getTime();
 		return new Date(time-TimeZone.getDefault().getRawOffset());
 	}
+	public Date getMaxTimeOrig()
+	{
+		long time=getMaxReturnTimeDisplay().getTime()-getWaveStart().getTime();
+		return new Date(time);
+	}
 	public Date getStemToTime()
 	{
 		long time=0;

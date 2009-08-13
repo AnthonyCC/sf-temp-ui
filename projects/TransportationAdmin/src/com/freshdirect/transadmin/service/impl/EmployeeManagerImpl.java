@@ -235,6 +235,7 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 			detail.setSchedule(se);
 			detail.setEmpRoles(this.domainManagerDao.getEmployeeRole(se.getEmployeeId()));
 			detail.setInfo(TransAdminCacheManager.getInstance().getEmployeeInfo(se.getEmployeeId(),this));
+			if(detail.getEmpRoles()!=null&&detail.getEmpRoles().size()>0&&detail.getInfo()!=null)
 			result.add(detail);
 		}
 		return result;

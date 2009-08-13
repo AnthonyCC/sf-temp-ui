@@ -78,6 +78,11 @@ public class ResourceId implements java.io.Serializable {
 		this.adjustmentTime = adjustmentTime;
 	}
 
+	public String toString() {
+		// TODO Auto-generated method stub
+		return contextId +":"+resourceId;
+	}
+
 	
 
 }

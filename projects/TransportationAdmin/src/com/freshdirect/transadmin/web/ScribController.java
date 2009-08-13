@@ -123,7 +123,8 @@ public class ScribController extends AbstractMultiActionController
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			throw new RuntimeException("Error in getiing Scrib List");
+			saveMessage(request, getMessage("app.actionmessage.151", null));
+			return new ModelAndView("scribView");	
 		}
 	}
 	

@@ -29,7 +29,7 @@
                 <tr>
                   <td>Source Week Of</td>
                   <td>
-                  <input  type="text" maxlength="50" size="30" name="sourceDate" readonly/>
+                  <input  type="text" maxlength="50" size="30" id="sourceDate" name="sourceDate" readonly/>
                   &nbsp;<a href="#" id="trigger_sourceDate" style="font-size: 9px;">
                         <img src="images/calendar.gif"  style="border:0"  alt=">>" />
                         </a>
@@ -69,7 +69,7 @@
                <tr>
                   <td>Destination Week Of</td>
                   <td>
-                  <input type="text" maxlength="50" size="30" name="destinationDate" readonly/>
+                  <input type="text" maxlength="50" size="30" id="destinationDate" name="destinationDate" readonly/>
                   &nbsp;<a href="#" id="trigger_destinationDate" style="font-size: 9px;">
                         <img src="images/calendar.gif"  style="border:0"  alt=">>" />
                         </a>

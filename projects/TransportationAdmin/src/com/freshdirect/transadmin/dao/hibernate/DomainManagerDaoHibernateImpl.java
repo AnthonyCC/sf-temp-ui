@@ -326,7 +326,7 @@ public class DomainManagerDaoHibernateImpl
 	}
 	public Collection getScheduleEmployees(String day) throws DataAccessException {
 		// TODO Auto-generated method stub
-		return getDataList("ScheduleEmployee where day='"+day+"'");
+		return getDataList("ScheduleEmployee where day='"+day+"' and region is not null" );
 	}
 
 	public Collection getScheduleEmployee(String employeeId, String day) throws DataAccessException {

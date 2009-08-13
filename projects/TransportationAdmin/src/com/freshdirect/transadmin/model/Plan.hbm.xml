@@ -34,6 +34,9 @@
         <property name="isBullpen" type="string">
             <column name="IS_BULLPEN" length="1" />
         </property>
+         <property name="maxTime" type="timestamp">
+            <column name="MAX_TIME" length="7"  />
+        </property>
         <set name="planResources" inverse="true" lazy="false" cascade="all,delete-orphan">
             <key>
                 <column name="PLAN_ID" length="10" not-null="true" />
