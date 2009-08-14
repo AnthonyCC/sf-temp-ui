@@ -99,11 +99,11 @@ public class DealsHelper {
 	}
 
 
-	public static int determineHighestDeal(double basePrice, String basePriceUnit,
+	public static int determineTieredDeal(double basePrice, String basePriceUnit,
 			double defaultPrice, String defaultPriceUnit, ErpMaterialPrice[] materialPrices) {
 		double base = basePrice >= defaultPrice ? basePrice : defaultPrice;
 		String baseUnit = basePrice >= defaultPrice && basePriceUnit != null ? basePriceUnit: defaultPriceUnit;
-		int highest = getVariancePercentage(base, defaultPrice);
+		int highest = 0;
 		for (int i = 0; i < materialPrices.length; i++) {
 			if (!baseUnit.equals(materialPrices[i].getUnit())) {
 				LOG.warn("OOPS! material price with price unit different from the base price unit! Check DB!!!");

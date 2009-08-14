@@ -241,7 +241,7 @@ class FDFactory {
 			EnumAvailabilityStatus.AVAILABLE,
 			new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),
 			"", null,pinfo.getRating(),pinfo.getBasePrice(),pinfo.getBasePriceUnit(),pinfo.hasWasPrice(),pinfo.getDealPercentage(),
-			pinfo.getHighestDealPercentage());
+			pinfo.getTieredDealPercentage());
 	}
 	
 	/**

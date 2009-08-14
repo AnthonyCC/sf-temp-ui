@@ -603,6 +603,10 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 
 	public int getDealPercentage(String skuCode);
 	
+	public int getTieredDealPercentage();
+
+	public int getTieredDealPercentage(String skuCode);
+
 	public int getHighestDealPercentage();
 
 	public int getHighestDealPercentage(String skuCode);

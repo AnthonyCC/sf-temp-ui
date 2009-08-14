@@ -49,6 +49,13 @@ public class FactorUtil {
 		}
 	}
 
+	private static class TieredDealsCache extends OnlineScoreCache {
+		public double calculateVariable(ContentNodeModel contentNode) {
+			return contentNode instanceof ProductModel ? 
+					((double) ((ProductModel) contentNode).getTieredDealPercentage()) : 0.0;
+		}
+	}
+
 	private static class HighestDealsCache extends OnlineScoreCache {
 		public double calculateVariable(ContentNodeModel contentNode) {
 			return contentNode instanceof ProductModel ? 
@@ -69,6 +76,7 @@ public class FactorUtil {
 	}
 	
 	private static OnlineScoreCache dealsCache = new DealsCache();
+	private static OnlineScoreCache tieredDealsCache = new TieredDealsCache();
 	private static OnlineScoreCache highestDealsCache = new HighestDealsCache();
 	private static OnlineScoreCache produceRatingCache = new ProduceRatingCache();
 	
@@ -93,6 +101,27 @@ public class FactorUtil {
 		};
 	}
 
+	/**
+	 * Get a CSM lookup which returns "Tiered Deals Percentage".
+	 * 
+	 * @return StoreLookup
+	 */
+	public static StoreLookup getTieredDealsPercentageLookup() {
+		return new CachingStoreLookup(tieredDealsCache) {
+			public double getVariable(ContentNodeModel contentNode) {
+				return super.getVariable(contentNode) / 100.0;
+			}	
+		};
+	}
+	
+	public static StoreLookup getTieredDealsPercentageDiscretized() {
+		return new CachingStoreLookup(tieredDealsCache) {
+			public double getVariable(ContentNodeModel contentNode) {
+				return Math.floor(super.getVariable(contentNode) / 5.0);
+			}
+		};
+	}
+	
 	/**
 	 * Get a CSM lookup which returns "Highest Deals Percentage".
 	 * 

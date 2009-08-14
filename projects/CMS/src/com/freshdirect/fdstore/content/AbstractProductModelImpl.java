@@ -238,6 +238,35 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 		}
 		return deal;
 	}
+
+	public int getTieredDealPercentage() {
+		return getTieredDealPercentage(null);
+	}
+	
+	public int getTieredDealPercentage(String skuCode) {
+		SkuModel defaultSku = getDefaultSku();
+                if (skuCode == null) {
+			skuCode = defaultSku != null ? defaultSku.getSkuCode() : null;
+		} else {
+			if (getSkuCodes().indexOf(skuCode) < 0) {
+				// invalid sku code using default
+				skuCode = defaultSku.getSkuCode();
+			}
+		}
+		FDProductInfo productInfo = null;
+		int deal = 0;
+		if (skuCode != null) {
+			try {
+				productInfo = FDCachedFactory.getProductInfo(skuCode);
+				if (productInfo.hasWasPrice()) {
+					deal = productInfo.getTieredDealPercentage();
+				}
+			} catch (FDSkuNotFoundException ex) {
+			} catch (FDResourceException e) {
+			}
+		}
+		return deal;
+	}
 	
 	public int getHighestDealPercentage() {
 		return getHighestDealPercentage(null);

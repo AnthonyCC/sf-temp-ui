@@ -55,12 +55,14 @@ public class FDProductInfo extends FDSku  {
 	
 	private final int dealPercentage;
 	
+	private final int tieredDealPercentage;
+	
 	private final int highestDealPercentage;
     
     public FDProductInfo(String skuCode, int version, double defaultPrice, String defaultPriceUnit,
     		String[] materialNumbers, EnumATPRule atpRule, EnumAvailabilityStatus availStatus, Date availDate, 
     		String displayableDefaultPriceUnit, FDInventoryCacheI inventory, String rating,
-    		double basePrice, String basePriceUnit, boolean hasWasPrice, int dealPercentage, int highestDealPercentage) {
+    		double basePrice, String basePriceUnit, boolean hasWasPrice, int dealPercentage, int tieredDealPercentage) {
 		super(skuCode, version);
 		this.defaultPrice = defaultPrice;
 		this.defaultPriceUnit = defaultPriceUnit;
@@ -75,7 +77,8 @@ public class FDProductInfo extends FDSku  {
         this.basePriceUnit=basePriceUnit;
         this.hasWasPrice=hasWasPrice;
         this.dealPercentage=dealPercentage;
-        this.highestDealPercentage=highestDealPercentage;
+        this.tieredDealPercentage=tieredDealPercentage;
+        this.highestDealPercentage=Math.max(dealPercentage, tieredDealPercentage);
 	}
 
 	/**
@@ -182,6 +185,10 @@ public class FDProductInfo extends FDSku  {
 		return dealPercentage;
 	}
 	
+	public int getTieredDealPercentage() {
+		return tieredDealPercentage;
+	}
+
 	public int getHighestDealPercentage() {
 		return highestDealPercentage;
 	}

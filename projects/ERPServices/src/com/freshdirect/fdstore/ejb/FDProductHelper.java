@@ -159,7 +159,7 @@ class FDProductHelper {
 			dealsPercentage=DealsHelper.getVariancePercentage(erpProductInfo.getBasePrice(), erpProductInfo.getDefaultPrice());
 		}
 		
-		int highestDeal = DealsHelper.determineHighestDeal(erpProductInfo.getBasePrice(), erpProductInfo.getBasePriceUnit(),
+		int tieredDeal = DealsHelper.determineTieredDeal(erpProductInfo.getBasePrice(), erpProductInfo.getBasePriceUnit(),
 				erpProductInfo.getDefaultPrice(), erpProductInfo.getDefaultPriceUnit(),
 				erpProductInfo.getMaterialPrices());
 		
@@ -178,7 +178,7 @@ class FDProductHelper {
 			erpProductInfo.getBasePriceUnit(),
 			hasWasPrice,
 			dealsPercentage,
-			highestDeal
+			tieredDeal
 		);
 	
 	}
