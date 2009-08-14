@@ -1,0 +1,22 @@
+<% // APPDEV-209 Apple pricing
+    String displayPriceString = null;
+	if(null!=product.getDisplaySalesUnits()&& product.getDisplaySalesUnits().length > 0) {
+		FDSalesUnit fdSalesUnit = product.getDisplaySalesUnits()[0];
+		double salesUnitRatio = (double)fdSalesUnit.getNumerator()/(double)fdSalesUnit.getDenominator();
+		String baseUnit = fdSalesUnit.getName();
+		double displayPrice = productInfo.getDefaultPrice()/salesUnitRatio;
+
+		if(displayPrice>0){
+			displayPriceString = "about "+ salesUnitRatio + baseUnit.toLowerCase() + ", " + JspMethods.currencyFormatter.format( displayPrice ) + "/" +baseUnit.toLowerCase();	
+		}
+	}
+%>     
+<%if(null != displayPriceString && !displayPriceString.equals("")){%>
+	<table cellpadding="0" cellspacing="0" border="0">
+		<tr valign="middle">
+			<td class="aboutDisplaySalesUnitProd">
+				<%=displayPriceString%>
+			</td>
+		</tr>
+	</table>
+<% } %>

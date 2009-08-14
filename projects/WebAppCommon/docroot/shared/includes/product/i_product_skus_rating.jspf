@@ -47,7 +47,7 @@
 						<td class="qualityRating">
 							<%=enumRating.getShortDescription()%> - 
 						</td>
-						<td>
+						<td class="qualityRating">
 							<img src="/media_stat/images/ratings/product_<%=rating%>.gif" name="rating" height="11" alt="<%=enumRating.getShortDescription()%>" border="0">
 						</td>
 					</tr>

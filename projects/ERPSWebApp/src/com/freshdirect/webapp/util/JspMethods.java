@@ -947,7 +947,7 @@ public class JspMethods {
 				String alternateUnit = fdSalesUnit.getName();
 				double displayPrice = prodInfo.getDefaultPrice()/salesUnitRatio;
 				if(displayPrice>0){
-					displayPriceString = "about "+JspMethods.currencyFormatter.format( displayPrice ) + "/" +alternateUnit.toLowerCase();					
+					displayPriceString = JspMethods.currencyFormatter.format( displayPrice ) + "/" +alternateUnit.toLowerCase();					
 				}
 			}
 		} catch (FDResourceException fdre) {

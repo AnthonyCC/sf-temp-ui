@@ -91,6 +91,7 @@
                       if (allSamePrice) {
                           %>
                           <fd:FDProductInfo id="productInfo" skuCode="<%= ((SkuModel)group.get(0)).getSkuCode() %>">
+							<fd:FDProduct id="product" productInfo="<%= productInfo %>">
 							<% if ( productInfo.hasWasPrice() ) { %>
 						      <font class="productPageSecondaryVarPrice" color="#C94747"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font>
 						      <font class="productPageSecondaryVarPriceUnit" color="#C94747">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
@@ -101,6 +102,8 @@
 						      <font class="productPageSecondaryVarPrice"><%= currencyFormatter.format(productInfo.getDefaultPrice()) %></font>
 						      <font class="productPageSecondaryVarPriceUnit">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
 						    <% } %> 
+						    <%@ include file="/shared/includes/product/i_product_display_about.jspf" %>
+						    </fd:FDProduct>
                           </fd:FDProductInfo>
                       <% } %>
                  </td>
@@ -193,7 +196,7 @@
 			%>
 			
 			<input type="radio" name="skuCode" value="<%= sku.getSkuCode() %>" onClick="pricing.setSKU(this.value);" <% if (defaultSku == sku) out.print("checked"); %>><br/>
-			
+			<%@ include file="/shared/includes/product/i_product_display_about.jspf" %>
      		
 <%-- ============================================================================================================================================= --%>
 		<% } else { // for !hasSecondaryDomain 
@@ -247,7 +250,7 @@
 				<input type="radio" name="skuCode" value="<%= sku.getSkuCode() %>" onClick="pricing.setSKU(this.value);" <% if (defaultSku == sku) out.print("checked"); %>><br/>
 			</td>
        	</tr>
-                            
+        <%@ include file="/shared/includes/product/i_product_display_about.jspf" %>                    
 		<% } // for !hasSecondaryDomain %>
 
 

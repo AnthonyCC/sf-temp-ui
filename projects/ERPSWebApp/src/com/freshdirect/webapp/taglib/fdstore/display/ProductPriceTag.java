@@ -2,6 +2,7 @@ package com.freshdirect.webapp.taglib.fdstore.display;
 
 import java.io.IOException;
 
+import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
@@ -73,7 +74,7 @@ public class ProductPriceTag extends BodyTagSupport {
 		}
 
 		// display price
-		FDProductInfo productInfo = impression.getProductInfo();
+		FDProductInfo productInfo = impression.getProductInfo();		
 		
 		if ( productInfo != null ) {
 			
@@ -96,7 +97,16 @@ public class ProductPriceTag extends BodyTagSupport {
 			String scaleString = getScaleDisplay();
 			
 			String wasString = "(was " + JspMethods.currencyFormatter.format( wasPrice ) + ")";
- 
+
+			/* Display Sales Units price-Apple Pricing[AppDev-209].. */
+			String displayPriceString = "";
+			
+			try {
+				displayPriceString = JspMethods.getAboutPriceForDisplay(productInfo);
+			} catch (JspException e) {
+			
+			}
+			
 			// style for the real price depends on what kind of deals we have
 			String styleRegular;			
 			if ( scaleString != null )
@@ -126,6 +136,14 @@ public class ProductPriceTag extends BodyTagSupport {
 					"</div>"
 			);
 			
+			//about price
+			if(null != displayPriceString && !"".equals(displayPriceString)){
+				buf.append(
+						"<div class=\"aboutDisplaySalesUnitCat\">about<br>" + 
+						displayPriceString +
+						"</div>"
+				);
+			}
 		}
 
 		buf.append( "</font>" );
