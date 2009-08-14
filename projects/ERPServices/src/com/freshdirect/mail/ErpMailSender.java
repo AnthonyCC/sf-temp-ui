@@ -67,14 +67,16 @@ public class ErpMailSender {
 			}
 			msg.setRecipients(javax.mail.Message.RecipientType.CC, addressCc);
 
-			st = new StringTokenizer(recipientBcc, ";");
-			InternetAddress[] addressBcc = new InternetAddress[st.countTokens()];
-			i = 0;
-			while (st.hasMoreTokens()) {
-				addressBcc[i] = new InternetAddress(st.nextToken());
-				i++;
+			if (recipientBcc != null) {
+				st = new StringTokenizer(recipientBcc, ";");
+				InternetAddress[] addressBcc = new InternetAddress[st.countTokens()];
+				i = 0;
+				while (st.hasMoreTokens()) {
+					addressBcc[i] = new InternetAddress(st.nextToken());
+					i++;
+				}
+				msg.setRecipients(javax.mail.Message.RecipientType.BCC, addressBcc);
 			}
-			msg.setRecipients(javax.mail.Message.RecipientType.BCC, addressBcc);
 			//
 			// Setting the Subject and Content Type
 			//
