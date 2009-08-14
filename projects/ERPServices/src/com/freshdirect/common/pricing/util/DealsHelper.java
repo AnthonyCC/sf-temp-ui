@@ -102,7 +102,7 @@ public class DealsHelper {
 	public static int determineHighestDeal(double basePrice, String basePriceUnit,
 			double defaultPrice, String defaultPriceUnit, ErpMaterialPrice[] materialPrices) {
 		double base = basePrice >= defaultPrice ? basePrice : defaultPrice;
-		String baseUnit = basePrice >= defaultPrice ? basePriceUnit: defaultPriceUnit;
+		String baseUnit = basePrice >= defaultPrice && basePriceUnit != null ? basePriceUnit: defaultPriceUnit;
 		int highest = getVariancePercentage(base, defaultPrice);
 		for (int i = 0; i < materialPrices.length; i++) {
 			if (!baseUnit.equals(materialPrices[i].getUnit())) {
