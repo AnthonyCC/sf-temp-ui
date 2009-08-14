@@ -70,6 +70,7 @@ public class DispatchPlanUtil {
 		try{
 			planInfo.setFirstDeliveryTime(TransStringUtil.getServerTime(plan.getFirstDeliveryTime()));
 			planInfo.setStartTime(TransStringUtil.getServerTime(plan.getStartTime()));
+			planInfo.setMaxTime(TransStringUtil.formatTimeFromDate(plan.getMaxTime()));
 		}catch(ParseException exp){
 			throw new RuntimeException("Unparseable date "+exp.getMessage());
 		}
@@ -198,6 +199,7 @@ public class DispatchPlanUtil {
 
 			plan.setFirstDeliveryTime(TransStringUtil.getServerTime(planInfo.getFirstDeliveryTime()));
 			plan.setStartTime(TransStringUtil.getServerTime(planInfo.getStartTime()));
+			plan.setMaxTime(TransStringUtil.formatTimeFromString(planInfo.getMaxTime()));
 		}catch(ParseException exp){
 			throw new RuntimeException("Unparseable date "+exp.getMessage());
 		}

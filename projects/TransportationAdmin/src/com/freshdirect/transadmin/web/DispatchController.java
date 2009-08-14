@@ -191,8 +191,7 @@ public class DispatchController extends AbstractMultiActionController {
 		response.setContentType("application/x-zip-compressed");
 		response.setHeader("Content-Disposition", "attachment; filename=Upload_All.zip"); 
 		String date=TransStringUtil.getServerDate(daterange);
-		Map kronos=new HashMap();
-		Collection scribs=dispatchManagerService.getScribList(date);
+		Map kronos=new HashMap();		
 		for(Iterator i=plans.iterator();i.hasNext();)
 		{
 			Plan p=(Plan)i.next();
@@ -213,26 +212,14 @@ public class DispatchController extends AbstractMultiActionController {
 						}
 						else
 						{
-							if(ws!=null&&ws.getTime()!=null)s.setStartTime(ws.getTime());
+							if("003".equalsIgnoreCase(r.getEmployeeRoleType().getCode()))
+							{
+								s.setStartTime(p.getFirstDeliveryTime());
+							}//ws!=null&&ws.getTime()!=null)s.setStartTime(ws.getTime());
 							else s.setStartTime(p.getStartTime());
 						}
-						for(Iterator k=scribs.iterator();k.hasNext();)
-						{
-							Scrib ss=(Scrib)k.next();
-							if(ss.getZone().getZoneCode().equalsIgnoreCase(p.getZoneCode())&&ss.getStartTime().getTime()==p.getStartTime().getTime())
-							{
-								long time=0;
-								if(ws!=null&&ws.getTime()!=null)time=ws.getTime().getTime();
-								else time=p.getStartTime().getTime();
-								if(r.getId().getAdjustmentTime()!=null)
-								{
-									time-=r.getId().getAdjustmentTime().getTime();
-								}
-								time+=ss.getMaxTime().getTime();
-								s.setEndDlvTime(new Date(time));
-								kronos.put(r.getId().getResourceId(),s);
-							}
-						}
+						s.setEndDlvTime(p.getMaxTime());
+						kronos.put(r.getId().getResourceId(),s);						
 					
 				}
 			

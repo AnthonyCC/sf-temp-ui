@@ -68,3 +68,21 @@ function time(time_string) {
 	return temptime
 
  }
+ 
+ function hour(time) 
+ {		
+	var result=parseFloat(time.trim());
+	if(result==null||isNaN(result)) return "";
+	if(result>24) return "";
+	var result1=""+result;
+	if(result1.indexOf(".")==-1) result1+=".00";
+	else 
+	{
+		var index=result1.indexOf(".");
+		var le=result1.trim().length;
+		if(le-index>3) result1=result1.substring(0,index+3);
+	}
+	if(time.trim().length==1) result1="0"+result1;
+	return result1;
+
+ }

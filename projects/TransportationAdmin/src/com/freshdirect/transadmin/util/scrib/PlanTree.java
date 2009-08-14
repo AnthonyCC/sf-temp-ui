@@ -315,7 +315,7 @@ class TimeNode
 			p.setStartTime(s.getStartTime());
 			p.setFirstDeliveryTime(s.getFirstDlvTime());
 			p.setSupervisorId(s.getSupervisorCode());
-			p.setMaxTime(s.getMaxTimeOrig());
+			p.setMaxTime(s.getMaxTime());
 			if(s.getZone().getTrnZoneType()==null)continue;
 			Set resources=s.getZone().getTrnZoneType().getZonetypeResources();
 			
@@ -498,7 +498,7 @@ class DepotTimeNode
 			p.setStartTime(s.getStartTime());
 			p.setFirstDeliveryTime(s.getFirstDlvTime());
 			p.setSupervisorId(s.getSupervisorCode());
-			p.setMaxTime(s.getMaxTimeOrig());
+			p.setMaxTime(s.getMaxTime());
 			if(s.getZone().getTrnZoneType()==null)continue;
 			Set resources=s.getZone().getTrnZoneType().getZonetypeResources();
 			

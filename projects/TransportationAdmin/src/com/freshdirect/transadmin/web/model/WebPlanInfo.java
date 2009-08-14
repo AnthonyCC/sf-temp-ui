@@ -38,7 +38,8 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	private String zoneModified;
 	private Date errorDate;
 	private String  supervisorCode;
-
+    private String maxTime;
+    
 	private String supervisorName;
 	private String zoneType;
 	/*private ResourceList drivers= new ResourceList();
@@ -669,5 +670,13 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 
 	public void setRunnerReq(int runnerReq) {
 		this.runnerReq = runnerReq;
+	}
+
+	public String getMaxTime() {
+		return maxTime;
+	}
+
+	public void setMaxTime(String maxTime) {
+		this.maxTime = maxTime;
 	}
 }

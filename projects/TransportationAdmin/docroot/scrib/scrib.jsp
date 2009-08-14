@@ -35,7 +35,7 @@
 						<span><input maxlength="40" name="daterange" id="daterange" value="<%= dateRangeVal %>" /></span>
 						 <span><a href="#" id="trigger_scribDate" style="font-size: 9px;">
                         <img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date"></a></span>
-                    	 <select id="scribDay" name="scribDay">
+                    	 <select id="scribDay" name="scribDay" >
                           	<option value="All">--All Days</option>
                       		<option value="2">Monday</option><option value="3">Tuesday</option><option value="4">Wednesday</option><option value="5">Thurdsay</option><option value="6">Friday</option><option value="7">Saturday</option><option value="8">Sunday</option>
                     	 </select>				
@@ -120,6 +120,7 @@
           }
         } 
       addRowHandlers('ec_table', 'rowMouseOver', 'editscrib.do','scribId',0, 0);
+      document.getElementById("scribDay").value=<%=request.getParameter("scribDay")==null?"All":request.getParameter("scribDay")%>;
     </script>   
   </tmpl:put>
 </tmpl:insert>

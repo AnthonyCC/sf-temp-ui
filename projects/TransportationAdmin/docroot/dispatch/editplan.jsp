@@ -129,6 +129,13 @@
 							<td><form:errors path="firstDeliveryTime" />&nbsp;</td>                 
 						</tr>
 						<tr>
+							<td><a id="maxTime_toggler">Max Time</a></td>
+							<td>     
+								<form:input maxlength="50" size="24" path="maxTime" onblur="this.value=hour(this.value);" />             
+							</td>
+							<td><form:errors path="maxTime" />&nbsp;</td>                 
+						</tr>
+						<tr>
 							<td>&nbsp;</td>
 							<td align="right">     
 								Adjust Time

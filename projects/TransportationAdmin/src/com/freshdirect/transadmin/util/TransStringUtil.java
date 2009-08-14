@@ -163,6 +163,24 @@ public class TransStringUtil {
         return ">>";
 	}
 	
+	public static Date formatTimeFromString(String dateVal) {
+		try {
+			Date strTime1 = hourInDayFormat1.parse(dateVal);
+			return strTime1;
+		} catch (Exception e) {
+			// Do Nothing
+		}
+        return null;
+	}
+	public static String formatTimeFromDate(Date dateVal) {
+		try {
+			String strTime1 = hourInDayFormat1.format(dateVal);
+			return strTime1;
+		} catch (Exception e) {
+			// Do Nothing
+		}
+        return null;
+	}
 	public static String formatTime1(Date dateVal) {
 		try {
 			String strTime1 = hourInDayFormat1.format(dateVal);
