@@ -416,25 +416,7 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> {
 		add(f);
 	}
 	
-	GridCellRenderer<OneToManyModel> cellRenderer = new GridCellRenderer<OneToManyModel>() {
-        public Object render( OneToManyModel model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<OneToManyModel> store, Grid<OneToManyModel> grid ) {
-        	StringBuilder sb = new StringBuilder(512);
-        	sb.append( "<table class=\"content-label\"><tr><td><img src=\"img/icons/" );
-        	sb.append( model.getType() );
-        	sb.append( ".gif\"></td>" );
-        	if ( model.isMediaType() ) {
-        		//  TODO media url 
-        		sb.append( "<td><a target=\"_blank\" href=\"#\"><img src=\"img/image_zoom.gif\"></a></td>" );
-        	}
-        	sb.append( "<td><a href=\"#" );
-        	sb.append( model.getKey() );
-        	sb.append( "\">" );
-        	sb.append( model.getLabel() );
-        	sb.append( "</a></td></tr></table>" );
-        	
-        	return sb.toString();
-        }
-    };
+
 
     protected List<ColumnConfig> setupExtraColumns() {
         List<ColumnConfig> config = new ArrayList<ColumnConfig>();
@@ -459,7 +441,7 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> {
 		    column.setId("label");
             column.setMenuDisabled(true);
             column.setWidth(MAIN_LABEL_WIDTH);
-            column.setRenderer( cellRenderer );
+            column.setRenderer(Utils.GRID_LINK_RENDERER);
             config.add(column);
 		} else {
             int idx = 0;

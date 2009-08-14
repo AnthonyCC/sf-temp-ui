@@ -73,6 +73,15 @@ public class ContentNodeModel extends BaseModel implements Comparable<ContentNod
 		return type != null && ( type.equals( "Image" ) || type.equals( "Html" ) );
 	}
 	
+        public boolean isImageType() {
+            return "Image".equals(getType()) ;
+        }
+        
+        public boolean isHtmlType() {
+            return "Html".equals(getType()) ;
+        }
+	
+	
     @Override
     public String toString() {
         return "ContentNodeModel[" + getKey() + ',' + getType() + ',' + getLabel() + ']';

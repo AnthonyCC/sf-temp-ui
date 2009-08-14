@@ -12,8 +12,8 @@ import java.util.List;
  * 
  */
 public class TableAttribute extends BaseAttribute implements ModifiableAttributeI, Serializable {
-    public enum ColumnType { 
-        NORMAL, ATTRIB, KEY
+    public enum ColumnType {
+        NORMAL, ATTRIB, KEY, CLASS, GROUPING
     }
 
     ContentNodeAttributeI[] columns;
@@ -21,7 +21,7 @@ public class TableAttribute extends BaseAttribute implements ModifiableAttribute
     List<Serializable[]> values = new ArrayList<Serializable[]>();
 
     ColumnType[] types;
-    
+
     /**
      * 
      */
@@ -31,15 +31,15 @@ public class TableAttribute extends BaseAttribute implements ModifiableAttribute
     public void setTypes(ColumnType[] types) {
         this.types = types;
     }
-    
+
     public ColumnType[] getTypes() {
         return types;
     }
-    
+
     public void setColumns(ContentNodeAttributeI[] columns) {
         this.columns = columns;
     }
-    
+
     public ContentNodeAttributeI[] getColumns() {
         return columns;
     }
@@ -68,9 +68,8 @@ public class TableAttribute extends BaseAttribute implements ModifiableAttribute
         return (Serializable) values;
     }
 
-    
     public List<Serializable[]> getRows() {
         return values;
     }
-    
+
 }

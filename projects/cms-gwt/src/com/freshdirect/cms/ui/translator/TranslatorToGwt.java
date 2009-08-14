@@ -50,6 +50,7 @@ import com.freshdirect.cms.ui.model.attributes.TableAttribute;
 import com.freshdirect.cms.ui.model.changeset.GwtChangeDetail;
 import com.freshdirect.cms.ui.model.changeset.GwtChangeSet;
 import com.freshdirect.cms.ui.model.changeset.GwtContentNodeChange;
+import com.freshdirect.fdstore.FDStoreProperties;
 
 /**
  * Static class for converting server-side CMS data types to client-side serializable data types for Gwt.
@@ -61,6 +62,9 @@ public class TranslatorToGwt {
 
     private final static String SUFFIX_ATTR = "_ATTRIBUTE$";
     private final static String SUFFIX_KEY = "_KEY$";
+    private final static String CLASS_COL = "CLASS$";
+    private final static String GROUP_COL = "GROUP$";
+    
     
 	public static ContentNodeModel getContentNodeModel( ContentNodeI node ) {
 		return new ContentNodeModel(node.getDefinition().getType().getName(), node.getLabel(), node.getKey().getEncoded(), node.getChildKeys().size() > 0 );
@@ -379,10 +383,17 @@ public class TranslatorToGwt {
         
         for (int i=0;i<columnDefinitions.length;i++) {
             columns[i] = translateAttribute(columnDefinitions[i], null, null);
-            if (columnDefinitions[i].getName().toUpperCase().endsWith(SUFFIX_ATTR)) {
+            String name = columnDefinitions[i].getName();
+            if (name.toUpperCase().endsWith(SUFFIX_ATTR)) {
                 columnTypes[i] = TableAttribute.ColumnType.ATTRIB;
-            } else if (columnDefinitions[i].getName().toUpperCase().endsWith(SUFFIX_KEY)) {
+                ((ModifiableAttributeI)columns[i]).setLabel(name.substring(0, name.length() - SUFFIX_ATTR.length()));
+            } else if (name.toUpperCase().endsWith(SUFFIX_KEY)) {
                 columnTypes[i] = TableAttribute.ColumnType.KEY;
+                ((ModifiableAttributeI)columns[i]).setLabel(name.substring(0, name.length() - SUFFIX_KEY.length()));
+            } else if (CLASS_COL.equals(name.toUpperCase())) {
+                columnTypes[i] = TableAttribute.ColumnType.CLASS;
+            } else if (GROUP_COL.equals(name.toUpperCase())) {
+                columnTypes[i] = TableAttribute.ColumnType.GROUPING;
             } else {
                 columnTypes[i] = TableAttribute.ColumnType.NORMAL;
             }
@@ -416,11 +427,11 @@ public class TranslatorToGwt {
                     case KEY : 
                         if (rowValue[i] instanceof String) {
                             ContentKey ck = ContentKey.decode((String) rowValue[i]);
-                            ContentNodeI node = ck.getContentNode();
-                            rowValue[i] = new ContentNodeModel(ck.getType().getName(), node.getLabel(), ck.getId());
+                            rowValue[i] = toContentNodeModel(ck);
                         }
                         break;
                     case NORMAL :
+                    default :
                 } 
             }
             tableAttr.addRow(rowValue);
@@ -450,6 +461,26 @@ public class TranslatorToGwt {
         }
         return null;
     }
+
+    
+    private static ContentNodeModel toContentNodeModel(ContentKey key) {
+        ContentNodeI node = key.getContentNode();
+        ContentNodeModel  result = new ContentNodeModel (key.getType().getName(), node.getLabel(), key.getEncoded());
+        if (result.isHtmlType()) {
+            Object path = node.getAttribute("path").getValue();
+            result.set("path", FDStoreProperties.getCmsMediaBaseURL() + path);
+        }
+        if (result.isImageType()) {
+            Object path = node.getAttribute("path").getValue();
+            result.set("path", FDStoreProperties.getCmsMediaBaseURL() + path);
+            Object width = node.getAttribute("width").getValue();
+            result.set("width", width);
+            Object height = node.getAttribute("height").getValue();
+            result.set("height", height);
+        }
+        return result;
+    }
+    
 
     // =========================== CHANGE SETS ===========================  
 	
