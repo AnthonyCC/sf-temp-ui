@@ -96,11 +96,11 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
 
     private void validateEditorsImpl() {
         CmsManager instance = CmsManager.getInstance();
-        Set editorKeys = instance.getContentKeysByType(ContentType.get("CmsEditor"));
-        Map nodes = instance.getContentNodes(editorKeys);
+        Set<ContentKey> editorKeys = instance.getContentKeysByType(ContentType.get("CmsEditor"));
+        Map<ContentKey, ContentNodeI> nodes = instance.getContentNodes(editorKeys);
         ContentValidationDelegate delegate = new ContentValidationDelegate();
         ContentValidatorI validator = new CmsFormValidator();
-        for (Iterator i = nodes.values().iterator(); i.hasNext();) {
+        for (Iterator<ContentNodeI> i = nodes.values().iterator(); i.hasNext();) {
             ContentNodeI e = (ContentNodeI) i.next();
             validator.validate(delegate, instance, e, null);
         }
@@ -119,23 +119,23 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
             ContentType type = ContentType.get(node.getAttribute("contentType").getValue().toString());
             ContentTypeDefI def = service.getTypeService().getContentTypeDefinition(type);
 
-            Set editorFields = collectFieldNames(delegate, service, node);
-            Set attributes = def.getAttributeNames();
+            Set<String> editorFields = collectFieldNames(delegate, service, node);
+            Set<String> attributes = def.getAttributeNames();
 
-            Set extra = new HashSet(editorFields);
+            Set<String> extra = new HashSet<String>(editorFields);
             extra.removeAll(attributes);
             if (!extra.isEmpty()) {
                 delegate.record(node.getKey(), "Extraneous fields: " + extra);
             }
 
-            Set missing = new HashSet(attributes);
+            Set<String> missing = new HashSet<String>(attributes);
             missing.removeAll(editorFields);
             if (!missing.isEmpty()) {
                 delegate.record(node.getKey(), "Missing fields: " + missing);
             }
         }
 
-        private Set collectFieldNames(ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI editor) {
+        private Set<String> collectFieldNames(ContentValidationDelegate delegate, ContentServiceI service, ContentNodeI editor) {
             Set<String> names = new HashSet<String>();
 
             Set<ContentKey> pageKeys = ContentNodeUtil.getChildKeys(editor);

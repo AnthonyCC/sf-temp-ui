@@ -54,11 +54,11 @@ public class RecipeLoaderServlet extends FileUploadServlet {
 
     private ContentKey load(HttpServletRequest request, Reader reader, String recipeId, int type) throws IOException, InvalidContentKeyException {
 
-        List list;
+        List<ContentNodeI> list;
         RecipeBulkLoader loader = new RecipeBulkLoader(CmsManager.getInstance(), reader, recipeId, type);
 
         // parse the input
-        list = loader.parse();
+        loader.parse();
 
         // process the input
         list = loader.process();
@@ -67,7 +67,7 @@ public class RecipeLoaderServlet extends FileUploadServlet {
         // service
         CmsRequest cmsRequest = new CmsRequest(ContentServiceImpl.getCmsUserFromRequest(request));
 
-        for (Iterator it = list.iterator(); it.hasNext();) {
+        for (Iterator<ContentNodeI> it = list.iterator(); it.hasNext();) {
             ContentNodeI node = (ContentNodeI) it.next();
 
             cmsRequest.addNode(node);
