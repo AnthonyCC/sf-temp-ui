@@ -945,7 +945,14 @@ public class JspMethods {
 				FDSalesUnit fdSalesUnit = fdProduct.getDisplaySalesUnits()[0];
 				double salesUnitRatio = (double)fdSalesUnit.getNumerator()/(double)fdSalesUnit.getDenominator();
 				String alternateUnit = fdSalesUnit.getName();
-				double displayPrice = prodInfo.getDefaultPrice()/salesUnitRatio;
+//				double displayPrice = prodInfo.getDefaultPrice()/salesUnitRatio;
+				String[] scales =fdProduct.getPricing().getScaleDisplay();
+				double displayPrice = 0;
+				if(null !=scales && scales.length >0){
+					displayPrice = fdProduct.getPricing().getMinPrice()/salesUnitRatio;
+				}else{
+					displayPrice = prodInfo.getDefaultPrice()/salesUnitRatio;
+				}
 				if(displayPrice>0){
 					displayPriceString = JspMethods.currencyFormatter.format( displayPrice ) + "/" +alternateUnit.toLowerCase();					
 				}

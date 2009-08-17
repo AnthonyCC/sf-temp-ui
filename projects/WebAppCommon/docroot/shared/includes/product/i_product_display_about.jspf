@@ -4,7 +4,13 @@
 		FDSalesUnit fdSalesUnit = product.getDisplaySalesUnits()[0];
 		double salesUnitRatio = (double)fdSalesUnit.getNumerator()/(double)fdSalesUnit.getDenominator();
 		String baseUnit = fdSalesUnit.getName();
-		double displayPrice = productInfo.getDefaultPrice()/salesUnitRatio;
+		String[] scales =product.getPricing().getScaleDisplay();
+		double displayPrice = 0;
+		if(null !=scales && scales.length >0){
+			displayPrice = product.getPricing().getMinPrice()/salesUnitRatio;
+		}else{
+			displayPrice = productInfo.getDefaultPrice()/salesUnitRatio;
+		}
 
 		if(displayPrice>0){
 			displayPriceString = "about "+ salesUnitRatio + baseUnit.toLowerCase() + ", " + JspMethods.currencyFormatter.format( displayPrice ) + "/" +baseUnit.toLowerCase();	
