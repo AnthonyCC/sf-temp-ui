@@ -27,6 +27,7 @@ public class CmsGwt implements EntryPoint {
             @Override
             public void onSuccess(GwtUser result) {
                 CmsGwt.currentUser = result;
+                mainLayout.userChanged();
             }
         });
 

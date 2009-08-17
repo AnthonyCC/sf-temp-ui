@@ -147,7 +147,7 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
 		// ============ layout ============
 		
 		BorderLayoutData pageHeaderData = new BorderLayoutData(LayoutRegion.NORTH);
-		pageHeaderData.setSize(19);
+		pageHeaderData.setSize(30);
 		
 		BorderLayoutData treeLayoutData = new BorderLayoutData(LayoutRegion.WEST);
 		treeLayoutData.setCollapsible(true);
@@ -581,6 +581,30 @@ public class MainLayout extends Viewport implements ValueChangeHandler<String> {
     
     protected boolean isFormChanged() {
         return (currentNode != null) && !currentNode.isReadonly() && currentNode.isChanged();
+    }
+
+    /**
+     * Add the necessary buttons, and widgets to the header panel.
+     */
+    public void userChanged() {
+        if (CmsGwt.getCurrentUser() != null && CmsGwt.getCurrentUser().isAdmin()) {
+            final Button adminButton = new Button("Administration");
+            adminButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+               @Override
+                public void componentSelected(ButtonEvent ce) {
+                   AdminWindow aw = new AdminWindow(adminButton);
+                   aw.show();
+                } 
+            });
+            this.header.addToButtonPanel(adminButton);
+            Button showPublish = new Button("Publish", new SelectionListener<ButtonEvent>() {
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    showPublishPanel();
+                }
+            });
+            this.header.addToButtonPanel(showPublish);
+        }
     }
 
     
