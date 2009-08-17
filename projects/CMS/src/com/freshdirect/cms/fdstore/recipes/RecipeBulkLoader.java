@@ -75,13 +75,13 @@ public class RecipeBulkLoader {
 	 *  A list of SectionNode objects that is the result of parsing
 	 *  the input.
 	 */
-	private List sectionNodes;
+	private List<SectionNode> sectionNodes;
 
 	/**
 	 *  The list of content nodes created through the parsing
 	 *  and processing.
 	 */
-	private List nodes;
+	private List<ContentNodeI> nodes;
 	
 	/**
 	 *  A counter to help generating unique ids.
@@ -150,11 +150,11 @@ public class RecipeBulkLoader {
 	 *         to the input parsed. 
 	 * @throws IOException on I/O errors.
 	 */
-	public List parse() throws IOException {
+	public List<SectionNode> parse() throws IOException {
 		String line;
 		
-		sectionNodes = new ArrayList();
-		nodes        = new ArrayList();
+		sectionNodes = new ArrayList<SectionNode>();
+		nodes        = new ArrayList<ContentNodeI>();
 		
 		// skip the very first line, should be the column declarations only
 		// one may want to check these just to make sure
@@ -192,8 +192,8 @@ public class RecipeBulkLoader {
 	 *  @see #CONFIGURED_PRODUCT_GROUP
 	 *  @see #RECIPE
 	 */
-	public List process() throws InvalidContentKeyException {
-		List		list;
+	public List<ContentNodeI> process() throws InvalidContentKeyException {
+		List<ContentNodeI> list;
 		
 		switch (type) {
 			case CONFIGURED_PRODUCT_GROUP:
@@ -224,7 +224,7 @@ public class RecipeBulkLoader {
 	 *          add the node to the newborn folder as well, if one exists.  
 	 * @throws InvalidContentKeyException 
 	 */
-	private List addToNewbornFolder(List list) throws InvalidContentKeyException {
+	private List<ContentNodeI> addToNewbornFolder(List<ContentNodeI> list) throws InvalidContentKeyException {
 		ContentKey		newbornKey    = ContentKey.create(FDContentTypes.FDFOLDER, NEWBORN_FOLDER_NAME);
 		ContentNodeI		newbornFolder = service.getContentNode(newbornKey);
 		
@@ -251,13 +251,13 @@ public class RecipeBulkLoader {
 	 *          while parsing and processing the input. 
 	 *  @throws InvalidContentKeyException 
 	 */
-	private List processConfiguredProductGroup() throws InvalidContentKeyException {
+	private List<ContentNodeI> processConfiguredProductGroup() throws InvalidContentKeyException {
 		ContentKey		groupKey  = ContentKey.create(FDContentTypes.CONFIGURED_PRODUCT_GROUP, recipeId);
 		ContentNodeI    groupNode = service.createPrototypeContentNode(groupKey);
-		List			keyList   = new ArrayList();
+		List<ContentKey>      keyList   = new ArrayList<ContentKey>();
 		
 		// get the list of keys of the existing nodes
-		for (Iterator it = nodes.iterator(); it.hasNext();) {
+		for (Iterator<ContentNodeI> it = nodes.iterator(); it.hasNext();) {
 			ContentNodeI node = (ContentNodeI) it.next();
 			
 			keyList.add(node.getKey());
@@ -279,15 +279,15 @@ public class RecipeBulkLoader {
 	 *          while parsing and processing the input. 
 	 *  @throws InvalidContentKeyException 
 	 */
-	private List processRecipe() throws InvalidContentKeyException {
+	private List<ContentNodeI> processRecipe() throws InvalidContentKeyException {
 		ContentNodeI 	recipe;
 		ContentNodeI 	variant;
 		ContentNodeI 	section;
 		ContentKey	 	key;
 		String	     	variantId;
 		String			id;
-		List				keyList;
-		List				sectionList;
+		List<ContentKey>  keyList;
+		List<String>    sectionList;
 		
 		// create a recipe
 		key    = ContentKey.create(FDContentTypes.RECIPE, recipeId);
@@ -301,9 +301,9 @@ public class RecipeBulkLoader {
 
 		
 		// list all sections
-		sectionList = new ArrayList();
+		sectionList = new ArrayList<String>();
 		
-		for (Iterator it = sectionNodes.iterator(); it.hasNext();) {
+		for (Iterator<SectionNode> it = sectionNodes.iterator(); it.hasNext();) {
 			SectionNode sectionNode = (SectionNode) it.next();
 			
 			if (!sectionList.contains(sectionNode.section)) {
@@ -313,7 +313,7 @@ public class RecipeBulkLoader {
 
 		
 		// insert all sections, with the appropriate ingredients
-		for (Iterator it = sectionList.iterator(); it.hasNext();) {
+		for (Iterator<String> it = sectionList.iterator(); it.hasNext();) {
 			String sectionName = (String) it.next();
 			
 			// lower case main because of the naming convention for main sections
@@ -327,10 +327,10 @@ public class RecipeBulkLoader {
 			ContentNodeUtil.addRelationshipKey((RelationshipI) variant.getAttribute("sections"), key);
 			
 			// add all ingredients to the section
-			keyList   = new ArrayList();
+			keyList   = new ArrayList<ContentKey>();
 
 			// get the list of keys of the sections nodes
-			for (Iterator iter = sectionNodes.iterator(); iter.hasNext();) {
+			for (Iterator<SectionNode> iter = sectionNodes.iterator(); iter.hasNext();) {
 				SectionNode sectionNode = (SectionNode) iter.next();
 				
 				if (sectionNode.section.equals(sectionName)) {
