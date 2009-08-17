@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
@@ -82,22 +83,23 @@ class ContextualContentNode implements ContextualContentNodeI {
 		return inherit(inherited, self);
 	}
 
-	private Map inherit(Map inherited, Map self) {
-		Map inheritable = new HashMap();
-		for (Iterator i = self.entrySet().iterator(); i.hasNext();) {
-			Map.Entry e = (Map.Entry) i.next();
-			String name = (String) e.getKey();
-			AttributeI attr = (AttributeI)e.getValue(); 
-			Object value = attr.getValue();			
-			boolean inherit = getDefinition().getAttributeDef(name).isInheritable();
-			if ( inherit && value != null ) {
-				inheritable.put(name, attr);
-			}
-		}
+    private Map inherit(Map inherited, Map self) {
+        Map inheritable = new HashMap();
+        for (Iterator i = self.entrySet().iterator(); i.hasNext();) {
+            Map.Entry e = (Map.Entry) i.next();
+            String name = (String) e.getKey();
+            AttributeI attr = (AttributeI) e.getValue();
+            Object value = attr.getValue();
+            AttributeDefI attributeDef = attr.getDefinition();
+            boolean inherit = attributeDef.isInheritable();
+            if (inherit && value != null) {
+                inheritable.put(name, attr);
+            }
+        }
 
-		inherited.putAll(inheritable);
-		return inherited;
-	}
+        inherited.putAll(inheritable);
+        return inherited;
+    }
 
 	public Set getChildKeys() {
 		return node.getChildKeys();
